@@ -107,7 +107,13 @@ class CardFactory_UnitySet_Faction5 {
       card.rarityId = Rarity.Rare;
       card.durability = 3;
       card.setTargetModifiersContextObjects([
-        Modifier.createContextObjectWithAuraForAllAlliesAndSelf([ModifierGrowPermanent.createContextObject(1)], null, null, null, 'Your minions have "Grow: +1/+1."'),
+        Modifier.createContextObjectWithAuraForAllAlliesAndSelf(
+          [ModifierGrowPermanent.createContextObject(1)],
+          null,
+          null,
+          null,
+          'Your minions have "Grow: +1/+1."',
+        ),
       ]);
       card.setFXResource(['FX.Cards.Artifact.SunstoneBracers']);
       card.setBaseAnimResource({
@@ -188,7 +194,10 @@ class CardFactory_UnitySet_Faction5 {
       card.atk = 4;
       card.maxHP = 10;
       card.manaCost = 8;
-      card.setInherentModifiersContextObjects([ModifierGrow.createContextObject(5), ModifierTakeDamageWatchJuggernaut.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierGrow.createContextObject(5),
+        ModifierTakeDamageWatchJuggernaut.createContextObject(),
+      ]);
       card.rarityId = Rarity.Legendary;
       card.addKeywordClassToInclude(ModifierTokenCreator);
     }

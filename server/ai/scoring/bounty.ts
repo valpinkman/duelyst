@@ -55,7 +55,7 @@ const BOUNTY = {
   REMOVAL_OVERKILL: -6.0,
   DISPEL_PER_UNIT_SCORE: 3.25, // changing from 1.25
   DISPEL_WASTED: -5,
-  UNIT_SCORE_TONED_DOWN: 0.10,
+  UNIT_SCORE_TONED_DOWN: 0.1,
   STUN_PER_UNIT_ATK: 2.0,
   STUN_WASTED: -5,
   UNIT_TRANSFORM: 2.0,
@@ -112,7 +112,6 @@ const BOUNTY = {
   CARDS_IN_HAND: 0.5, // Board Score: Tie-breaking minor bounty rewarding players for having more cards in-hand (up to max. of 4)
   DRAW_SUCCESS: 40,
   DRAW_FAIL: -50,
-
 };
 
 module.exports = BOUNTY;

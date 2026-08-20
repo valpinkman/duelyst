@@ -13,15 +13,22 @@ class ModifierTakeDamageWatchSpawnRandomBattlePet extends ModifierTakeDamageWatc
   static description = 'Whenever this minion takes damage, summon a random Battle Pet nearby';
 
   getCardDataOrIndexToSpawn() {
-    const neutralBattlePetCards = this.getGameSession().getCardCaches().getFaction(Factions.Neutral).getRace(Races.BattlePet)
+    const neutralBattlePetCards = this.getGameSession()
+      .getCardCaches()
+      .getFaction(Factions.Neutral)
+      .getRace(Races.BattlePet)
       .getIsToken(true)
       .getIsPrismatic(false)
       .getIsSkinned(false)
       .getCards();
-    const card = neutralBattlePetCards[this.getGameSession().getRandomIntegerForExecution(neutralBattlePetCards.length)];
+    const card =
+      neutralBattlePetCards[
+        this.getGameSession().getRandomIntegerForExecution(neutralBattlePetCards.length)
+      ];
     return card.createNewCardData();
   }
 }
-ModifierTakeDamageWatchSpawnRandomBattlePet.prototype.type = 'ModifierTakeDamageWatchSpawnRandomBattlePet';
+ModifierTakeDamageWatchSpawnRandomBattlePet.prototype.type =
+  'ModifierTakeDamageWatchSpawnRandomBattlePet';
 
 module.exports = ModifierTakeDamageWatchSpawnRandomBattlePet;

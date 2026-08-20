@@ -29,7 +29,10 @@ function matchParen(src, open) {
   let depth = 0;
   for (let i = open; i < src.length; i += 1) {
     if (src[i] === '(') depth += 1;
-    else if (src[i] === ')') { depth -= 1; if (depth === 0) return i; }
+    else if (src[i] === ')') {
+      depth -= 1;
+      if (depth === 0) return i;
+    }
   }
   return -1;
 }
@@ -56,7 +59,9 @@ for (const file of process.argv.slice(2)) {
       if (lastRequire) {
         const at = lastRequire.index + lastRequire[0].length;
         const depth = (file.match(/\//g) || []).length;
-        const rel = file.startsWith('app/') ? 'app/common/utils/utils_promise' : `${'../'.repeat(depth)}app/common/utils/utils_promise`;
+        const rel = file.startsWith('app/')
+          ? 'app/common/utils/utils_promise'
+          : `${'../'.repeat(depth)}app/common/utils/utils_promise`;
         src = `${src.slice(0, at)}\nconst { onType } = require('${rel}');${src.slice(at)}`;
       }
     }

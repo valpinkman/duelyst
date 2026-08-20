@@ -28,16 +28,42 @@ class ModifierOpeningGambitSpawnPartyAnimals extends ModifierOpeningGambit {
     ];
 
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
-      const animalToSpawn = possibleAnimals.splice(this.getGameSession().getRandomIntegerForExecution(possibleAnimals.length), 1)[0];
-      const animalCard = this.getGameSession().getExistingCardFromIndexOrCachedCardFromData(animalToSpawn);
+      const animalToSpawn = possibleAnimals.splice(
+        this.getGameSession().getRandomIntegerForExecution(possibleAnimals.length),
+        1,
+      )[0];
+      const animalCard =
+        this.getGameSession().getExistingCardFromIndexOrCachedCardFromData(animalToSpawn);
       const ownerId = this.getOwnerId();
-      const validSpawnLocations = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(this.getGameSession(), this.getGameSession().getGeneralForPlayerId(ownerId).getPosition(), CONFIG.PATTERN_3x3, animalCard, this.getCard(), 8);
+      const validSpawnLocations = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(
+        this.getGameSession(),
+        this.getGameSession().getGeneralForPlayerId(ownerId).getPosition(),
+        CONFIG.PATTERN_3x3,
+        animalCard,
+        this.getCard(),
+        8,
+      );
       this.summonAnimals(animalToSpawn, ownerId, validSpawnLocations);
 
-      const enemyAnimalToSpawn = possibleAnimals.splice(this.getGameSession().getRandomIntegerForExecution(possibleAnimals.length), 1)[0];
-      const enemyAnimalCard = this.getGameSession().getExistingCardFromIndexOrCachedCardFromData(enemyAnimalToSpawn);
-      const opponentId = this.getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId()).getOwnerId();
-      const enemyValidSpawnLocations = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(this.getGameSession(), this.getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId()).getPosition(), CONFIG.PATTERN_3x3, enemyAnimalCard, this.getCard(), 8);
+      const enemyAnimalToSpawn = possibleAnimals.splice(
+        this.getGameSession().getRandomIntegerForExecution(possibleAnimals.length),
+        1,
+      )[0];
+      const enemyAnimalCard =
+        this.getGameSession().getExistingCardFromIndexOrCachedCardFromData(enemyAnimalToSpawn);
+      const opponentId = this.getGameSession()
+        .getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId())
+        .getOwnerId();
+      const enemyValidSpawnLocations = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(
+        this.getGameSession(),
+        this.getGameSession()
+          .getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId())
+          .getPosition(),
+        CONFIG.PATTERN_3x3,
+        enemyAnimalCard,
+        this.getCard(),
+        8,
+      );
       return this.summonAnimals(enemyAnimalToSpawn, opponentId, enemyValidSpawnLocations);
     }
   }
@@ -47,14 +73,25 @@ class ModifierOpeningGambitSpawnPartyAnimals extends ModifierOpeningGambit {
 
     for (let i = 0; i < 3; i++) {
       if (validSpawnLocations.length > 0) {
-        spawnLocations.push(validSpawnLocations.splice(this.getGameSession().getRandomIntegerForExecution(validSpawnLocations.length), 1)[0]);
+        spawnLocations.push(
+          validSpawnLocations.splice(
+            this.getGameSession().getRandomIntegerForExecution(validSpawnLocations.length),
+            1,
+          )[0],
+        );
       }
     }
 
     return (() => {
       const result = [];
       for (var position of Array.from<any>(spawnLocations)) {
-        var playCardAction = new PlayCardSilentlyAction(this.getGameSession(), playerId, position.x, position.y, animal);
+        var playCardAction = new PlayCardSilentlyAction(
+          this.getGameSession(),
+          playerId,
+          position.x,
+          position.y,
+          animal,
+        );
         playCardAction.setSource(this.getCard());
         result.push(this.getGameSession().executeAction(playCardAction));
       }
@@ -63,6 +100,9 @@ class ModifierOpeningGambitSpawnPartyAnimals extends ModifierOpeningGambit {
   }
 }
 ModifierOpeningGambitSpawnPartyAnimals.prototype.type = 'ModifierOpeningGambitSpawnPartyAnimals';
-ModifierOpeningGambitSpawnPartyAnimals.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericSpawn'];
+ModifierOpeningGambitSpawnPartyAnimals.prototype.fxResource = [
+  'FX.Modifiers.ModifierOpeningGambit',
+  'FX.Modifiers.ModifierGenericSpawn',
+];
 
 module.exports = ModifierOpeningGambitSpawnPartyAnimals;

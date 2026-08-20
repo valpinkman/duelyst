@@ -33,8 +33,12 @@ var FXEnergyBallSprite = FXSprite.extend({
 
   setOptions(options) {
     this._super(options);
-    if (options.timeScale != null) { this.setTimeScale(options.timeScale); }
-    if (options.noiseLevel != null) { this.setNoiseLevel(options.noiseLevel); }
+    if (options.timeScale != null) {
+      this.setTimeScale(options.timeScale);
+    }
+    if (options.noiseLevel != null) {
+      this.setNoiseLevel(options.noiseLevel);
+    }
   },
 
   setNoiseLevel(noiseLevel) {
@@ -47,15 +51,15 @@ var FXEnergyBallSprite = FXSprite.extend({
 
   updateTweenAction(value, key) {
     switch (key) {
-    case 'timeScale':
-      this.timeScale = this._timeScaleTarget * value;
-      break;
-    case 'noiseLevel':
-      this.noiseLevel = this._noiseLevelTarget * value;
-      break;
-    default:
-      FXSprite.prototype.updateTweenAction.call(this, value, key);
-      break;
+      case 'timeScale':
+        this.timeScale = this._timeScaleTarget * value;
+        break;
+      case 'noiseLevel':
+        this.noiseLevel = this._noiseLevelTarget * value;
+        break;
+      default:
+        FXSprite.prototype.updateTweenAction.call(this, value, key);
+        break;
     }
   },
 });
@@ -63,7 +67,9 @@ var FXEnergyBallSprite = FXSprite.extend({
 FXEnergyBallSprite.WebGLRenderCmd = function (renderable) {
   FXSprite.WebGLRenderCmd.call(this, renderable);
 };
-const proto = FXEnergyBallSprite.WebGLRenderCmd.prototype = Object.create(FXSprite.WebGLRenderCmd.prototype);
+const proto = (FXEnergyBallSprite.WebGLRenderCmd.prototype = Object.create(
+  FXSprite.WebGLRenderCmd.prototype,
+));
 proto.constructor = FXEnergyBallSprite.WebGLRenderCmd;
 
 proto.rendering = function () {
@@ -76,7 +82,11 @@ proto.rendering = function () {
   const shaderProgram = this._shaderProgram;
   shaderProgram.use();
   shaderProgram._setUniformForMVPMatrixWithMat4(this._stackMatrix);
-  shaderProgram.setUniformLocationWith2f(shaderProgram.loc_texResolution, node._texture.getPixelsWide(), node._texture.getPixelsHigh());
+  shaderProgram.setUniformLocationWith2f(
+    shaderProgram.loc_texResolution,
+    node._texture.getPixelsWide(),
+    node._texture.getPixelsHigh(),
+  );
   shaderProgram.setUniformLocationWith1f(shaderProgram.loc_time, node.getFX().getTime());
   shaderProgram.setUniformLocationWith1f(shaderProgram.loc_noiseLevel, node.noiseLevel);
   shaderProgram.setUniformLocationWith1f(shaderProgram.loc_timeScale, node.timeScale);

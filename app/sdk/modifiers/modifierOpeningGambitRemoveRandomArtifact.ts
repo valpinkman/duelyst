@@ -15,7 +15,9 @@ class ModifierOpeningGambitRemoveRandomArtifact extends ModifierOpeningGambit {
   static description = 'Destroy a random enemy artifact';
 
   onOpeningGambit() {
-    const general = this.getCard().getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
+    const general = this.getCard()
+      .getGameSession()
+      .getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
     const modifiersByArtifact = general.getArtifactModifiersGroupedByArtifactCard();
 
     // if enemy General has at least one artifact on, then remove 1 artifact at random
@@ -26,6 +28,7 @@ class ModifierOpeningGambitRemoveRandomArtifact extends ModifierOpeningGambit {
     }
   }
 }
-ModifierOpeningGambitRemoveRandomArtifact.prototype.type = 'ModifierOpeningGambitRemoveRandomArtifact';
+ModifierOpeningGambitRemoveRandomArtifact.prototype.type =
+  'ModifierOpeningGambitRemoveRandomArtifact';
 
 module.exports = ModifierOpeningGambitRemoveRandomArtifact;

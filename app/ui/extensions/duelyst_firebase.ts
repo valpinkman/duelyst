@@ -28,14 +28,13 @@ if (Backbone.Firebase && Backbone.Firebase.prototype) {
  */
 function toRef(target) {
   if (target == null) return target;
-  return typeof target.ref === 'function' ? target.ref() : (target.ref || target);
+  return typeof target.ref === 'function' ? target.ref() : target.ref || target;
 }
 exports.toRef = toRef;
 
 Backbone.DuelystFirebase = {};
 
 Backbone.DuelystFirebase.Model = Backbone.Firebase.Model.extend({
-
   constructor: function () {
     this.isSynced = false;
     this.listenToOnce(this, 'sync', function () {
@@ -46,15 +45,17 @@ Backbone.DuelystFirebase.Model = Backbone.Firebase.Model.extend({
   },
 
   onSyncOrReady: function (callback) {
-    var p = new Promise(function (resolve, reject) {
-      if (this.isSynced) {
-        resolve(this);
-      } else {
-        this.listenToOnce(this, 'ready', function () {
+    var p = new Promise(
+      function (resolve, reject) {
+        if (this.isSynced) {
           resolve(this);
-        });
-      }
-    }.bind(this));
+        } else {
+          this.listenToOnce(this, 'ready', function () {
+            resolve(this);
+          });
+        }
+      }.bind(this),
+    );
     PromiseUtils.nodeify(p, callback);
     return p;
   },
@@ -65,7 +66,7 @@ Backbone.DuelystFirebase.Model = Backbone.Firebase.Model.extend({
     var modelObj = model.changedAttributes();
     _.each(model.changed, function (value, key) {
       if (key.indexOf('_') == 0) {
-      // ignore all attributes starting with an underscore
+        // ignore all attributes starting with an underscore
         delete modelObj[key];
       } else if (typeof value === 'undefined' || value === null) {
         if (key == 'id') {
@@ -88,8 +89,7 @@ Backbone.DuelystFirebase.Model = Backbone.Firebase.Model.extend({
       var diff = _.difference(_.keys(this.attributes), _.keys(newModel));
       var self = this;
       _.each(diff, function (key) {
-        if (key.indexOf('_') != 0)
-          self.unset(key);
+        if (key.indexOf('_') != 0) self.unset(key);
       });
     }
     this._listenLocalChange(false);
@@ -97,11 +97,9 @@ Backbone.DuelystFirebase.Model = Backbone.Firebase.Model.extend({
     this._listenLocalChange(true);
     this.trigger('sync', this, null, null);
   },
-
 });
 
 Backbone.DuelystFirebase.Collection = Backbone.Firebase.Collection.extend({
-
   constructor: function () {
     this.isSynced = false;
     this.listenToOnce(this, 'sync', function () {
@@ -112,19 +110,20 @@ Backbone.DuelystFirebase.Collection = Backbone.Firebase.Collection.extend({
   },
 
   onSyncOrReady: function (callback) {
-    var p = new Promise(function (resolve, reject) {
-      if (this.isSynced) {
-        resolve(this);
-      } else {
-        this.listenToOnce(this, 'ready', function () {
+    var p = new Promise(
+      function (resolve, reject) {
+        if (this.isSynced) {
           resolve(this);
-        });
-      }
-    }.bind(this));
+        } else {
+          this.listenToOnce(this, 'ready', function () {
+            resolve(this);
+          });
+        }
+      }.bind(this),
+    );
     PromiseUtils.nodeify(p, callback);
     return p;
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

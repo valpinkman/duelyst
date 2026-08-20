@@ -14,7 +14,11 @@ class SpellSpawnEntityOnShadowCreep extends SpellSpawnEntity {
     const board = this.getGameSession().getBoard();
     const entityToSpawn = this.getEntityToSpawn();
     for (var tile of Array.from<any>(board.getTiles(true))) {
-      if ((tile != null) && (tile.getBaseCardId() === Cards.Tile.Shadow) && (tile.getOwnerId() === this.getOwnerId())) {
+      if (
+        tile != null &&
+        tile.getBaseCardId() === Cards.Tile.Shadow &&
+        tile.getOwnerId() === this.getOwnerId()
+      ) {
         var pos = tile.getPosition();
         if (!board.getObstructionAtPositionForEntity(pos, entityToSpawn)) {
           finalPositions.push(pos);

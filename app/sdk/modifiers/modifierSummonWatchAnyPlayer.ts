@@ -25,9 +25,7 @@ class ModifierSummonWatchAnyPlayer extends Modifier {
   onAction(e) {
     super.onAction(e);
 
-    const {
-      action,
-    } = e;
+    const { action } = e;
 
     // watch for a unit being summoned in any way by any player, but don't react to transforms
     if (this.getIsActionRelevant(action) && this.getIsCardRelevantToWatcher(action.getCard())) {
@@ -36,7 +34,15 @@ class ModifierSummonWatchAnyPlayer extends Modifier {
   }
 
   getIsActionRelevant(action) {
-    return action instanceof ApplyCardToBoardAction && (__guard__(action.getCard(), (x) => x.type) === CardType.Unit) && (action.getCard() !== this.getCard()) && !(action instanceof PlayCardAsTransformAction || action instanceof CloneEntityAsTransformAction);
+    return (
+      action instanceof ApplyCardToBoardAction &&
+      __guard__(action.getCard(), (x) => x.type) === CardType.Unit &&
+      action.getCard() !== this.getCard() &&
+      !(
+        action instanceof PlayCardAsTransformAction ||
+        action instanceof CloneEntityAsTransformAction
+      )
+    );
   }
 
   onSummonWatch(action) {}
@@ -57,5 +63,5 @@ ModifierSummonWatchAnyPlayer.prototype.fxResource = ['FX.Modifiers.ModifierSummo
 module.exports = ModifierSummonWatchAnyPlayer;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

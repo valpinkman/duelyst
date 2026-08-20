@@ -18,7 +18,6 @@ const LootCrateNode = require('./LootCrateNode');
  *************************************************************************** */
 
 const MysteryCrateNode = LootCrateNode.extend({
-
   _lootCrateKeySprite: null,
   _showKeyPromise: null,
   _stopShowingKeyPromise: null,
@@ -81,33 +80,43 @@ const MysteryCrateNode = LootCrateNode.extend({
       }
 
       // create/show key
-      this._showKeyPromise = PromiseUtils.cancellable(this.whenRequiredResourcesReady().then((requestId) => {
-        if (!this.getAreResourcesValid(requestId)) return; // load invalidated or resources changed
+      this._showKeyPromise = PromiseUtils.cancellable(
+        this.whenRequiredResourcesReady().then((requestId) => {
+          if (!this.getAreResourcesValid(requestId)) return; // load invalidated or resources changed
 
-        return new Promise<void>((resolve) => {
-          this._showKeyPromise = null;
+          return new Promise<void>((resolve) => {
+            this._showKeyPromise = null;
 
-          // key sprite
-          if (this._lootCrateKeySprite == null) {
-            this._lootCrateKeySprite = BaseSprite.create(this._getLootCrateKeySpriteIdentifier());
-            this._lootCrateKeySprite.setVisible(false);
-            this._lootCrateKeySprite.setRotation(90.0);
-            this.addChild(this._lootCrateKeySprite, this._zOrderBehindCrate);
-          }
+            // key sprite
+            if (this._lootCrateKeySprite == null) {
+              this._lootCrateKeySprite = BaseSprite.create(this._getLootCrateKeySpriteIdentifier());
+              this._lootCrateKeySprite.setVisible(false);
+              this._lootCrateKeySprite.setRotation(90.0);
+              this.addChild(this._lootCrateKeySprite, this._zOrderBehindCrate);
+            }
 
-          // animate key in
-          const contentSize = this.getContentSize();
-          const centerPosition = this.getCenterPosition();
-          this._lootCrateKeySprite.setPosition(centerPosition.x, centerPosition.y - contentSize.height * 0.5 - this._lootCrateKeySprite.getContentSize().width * 0.5 - 30.0);
-          this._lootCrateKeySprite.fadeTo(duration, 255.0, () => {
-            resolve();
+            // animate key in
+            const contentSize = this.getContentSize();
+            const centerPosition = this.getCenterPosition();
+            this._lootCrateKeySprite.setPosition(
+              centerPosition.x,
+              centerPosition.y -
+                contentSize.height * 0.5 -
+                this._lootCrateKeySprite.getContentSize().width * 0.5 -
+                30.0,
+            );
+            this._lootCrateKeySprite.fadeTo(duration, 255.0, () => {
+              resolve();
+            });
+          }).catch((error) => {
+            EventBus.getInstance().trigger(EVENTS.error, error);
           });
-        })
-          .catch((error) => { EventBus.getInstance().trigger(EVENTS.error, error); });
-      }))
-        .catch(onType(PromiseUtils.CancellationError, () => {
+        }),
+      ).catch(
+        onType(PromiseUtils.CancellationError, () => {
           Logger.module('APPLICATION').log('MysteryCrateNode -> key show promise chain cancelled');
-        }));
+        }),
+      );
     }
     return this._showKeyPromise;
   },
@@ -126,58 +135,77 @@ const MysteryCrateNode = LootCrateNode.extend({
 
     // hide key
     if (this._lootCrateKeySprite != null) {
-      if (duration == null) { duration = 0.0; }
-      this._stopShowingKeyPromise = PromiseUtils.cancellable(this.whenRequiredResourcesReady().then((requestId) => {
-        if (!this.getAreResourcesValid(requestId)) return; // load invalidated or resources changed
+      if (duration == null) {
+        duration = 0.0;
+      }
+      this._stopShowingKeyPromise = PromiseUtils.cancellable(
+        this.whenRequiredResourcesReady().then((requestId) => {
+          if (!this.getAreResourcesValid(requestId)) return; // load invalidated or resources changed
 
-        return new Promise<void>((resolve) => {
-          this._stopShowingKeyPromise = null;
-          this._lootCrateKeySprite.fadeToInvisible(duration, () => { resolve(); });
-        })
-          .catch((error) => { EventBus.getInstance().trigger(EVENTS.error, error); });
-      }))
-        .catch(onType(PromiseUtils.CancellationError, () => {
+          return new Promise<void>((resolve) => {
+            this._stopShowingKeyPromise = null;
+            this._lootCrateKeySprite.fadeToInvisible(duration, () => {
+              resolve();
+            });
+          }).catch((error) => {
+            EventBus.getInstance().trigger(EVENTS.error, error);
+          });
+        }),
+      ).catch(
+        onType(PromiseUtils.CancellationError, () => {
           Logger.module('APPLICATION').log('MysteryCrateNode -> key hide promise chain cancelled');
-        }));
+        }),
+      );
     }
 
     return this._stopShowingKeyPromise;
   },
 
   showOpeningAndRewards() {
-    return this.showKey(CONFIG.ANIMATE_MEDIUM_DURATION).then(() =>
-    // show unlock
-      new Promise<void>((resolve) => {
-        // show crate as static but preserve fx
-        this.showStaticState(CONFIG.ANIMATE_FAST_DURATION, true);
+    return this.showKey(CONFIG.ANIMATE_MEDIUM_DURATION)
+      .then(() =>
+        // show unlock
+        new Promise<void>((resolve) => {
+          // show crate as static but preserve fx
+          this.showStaticState(CONFIG.ANIMATE_FAST_DURATION, true);
 
-        // animate key into box
-        const contentSize = this.getContentSize();
-        const centerPosition = this.getCenterPosition();
-        this._lootCrateKeySprite.runAction(cc.sequence(
-          cc.spawn(
-            cc.rotateTo(CONFIG.ANIMATE_SLOW_DURATION, 0.0).easing(cc.easeCubicActionInOut()),
-            cc.moveBy(CONFIG.ANIMATE_SLOW_DURATION, 0.0, -60.0).easing(cc.easeCubicActionInOut()),
-          ),
-          cc.moveTo(CONFIG.ANIMATE_MEDIUM_DURATION, centerPosition.x, centerPosition.y - contentSize.height * 0.5).easing(cc.easeBackIn()),
-          cc.spawn(
+          // animate key into box
+          const contentSize = this.getContentSize();
+          const centerPosition = this.getCenterPosition();
+          this._lootCrateKeySprite.runAction(
             cc.sequence(
-              cc.fadeOut(CONFIG.ANIMATE_FAST_DURATION),
-              cc.hide(),
+              cc.spawn(
+                cc.rotateTo(CONFIG.ANIMATE_SLOW_DURATION, 0.0).easing(cc.easeCubicActionInOut()),
+                cc
+                  .moveBy(CONFIG.ANIMATE_SLOW_DURATION, 0.0, -60.0)
+                  .easing(cc.easeCubicActionInOut()),
+              ),
+              cc
+                .moveTo(
+                  CONFIG.ANIMATE_MEDIUM_DURATION,
+                  centerPosition.x,
+                  centerPosition.y - contentSize.height * 0.5,
+                )
+                .easing(cc.easeBackIn()),
+              cc.spawn(
+                cc.sequence(cc.fadeOut(CONFIG.ANIMATE_FAST_DURATION), cc.hide()),
+                cc.callFunc(() => {
+                  resolve();
+                }),
+              ),
             ),
-            cc.callFunc(() => {
-              resolve();
-            }),
-          ),
-        ));
-      })
-        .catch((error) => { EventBus.getInstance().trigger(EVENTS.error, error); })).then(() =>
-    // show actual opening
-      LootCrateNode.prototype.showOpeningAndRewards.call(this));
+          );
+        }).catch((error) => {
+          EventBus.getInstance().trigger(EVENTS.error, error);
+        }),
+      )
+      .then(() =>
+        // show actual opening
+        LootCrateNode.prototype.showOpeningAndRewards.call(this),
+      );
   },
 
   /* endregion REWARDS */
-
 });
 
 MysteryCrateNode.create = function (node) {

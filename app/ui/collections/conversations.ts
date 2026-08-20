@@ -4,7 +4,6 @@ var Logger = require('app/common/logger');
 var Conversation = require('app/ui/models/conversation');
 
 var Conversations = Backbone.Collection.extend({
-
   model: Conversation,
 
   initialize: function () {
@@ -22,14 +21,15 @@ var Conversations = Backbone.Collection.extend({
 
   getUnreadConversationCount: function () {
     var count = 0;
-    this.each(function (conversationModel) {
-      if (conversationModel.get('unread')) {
-        count++;
-      }
-    }.bind(this));
+    this.each(
+      function (conversationModel) {
+        if (conversationModel.get('unread')) {
+          count++;
+        }
+      }.bind(this),
+    );
     return count;
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

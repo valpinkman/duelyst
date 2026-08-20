@@ -17,7 +17,16 @@ class ModifierMyMoveWatchApplyModifiers extends ModifierMyMoveWatch {
   static type = 'ModifierMyMoveWatchApplyModifiers';
   static description = '';
 
-  static createContextObject(modifiersContextObjects, auraIncludeSelf, auraIncludeAlly, auraIncludeEnemy, auraRadius, canTargetGeneral, description, options) {
+  static createContextObject(
+    modifiersContextObjects,
+    auraIncludeSelf,
+    auraIncludeAlly,
+    auraIncludeEnemy,
+    auraRadius,
+    canTargetGeneral,
+    description,
+    options,
+  ) {
     const contextObject = super.createContextObject(options);
     contextObject.modifiersContextObjects = modifiersContextObjects;
     contextObject.auraIncludeAlly = auraIncludeAlly;
@@ -33,15 +42,27 @@ class ModifierMyMoveWatchApplyModifiers extends ModifierMyMoveWatch {
     if (this.modifiersContextObjects != null) {
       return Array.from<any>(this.getAffectedEntities()).map((entity) =>
         Array.from<any>(this.modifiersContextObjects).map((modifierContextObject) =>
-          this.getGameSession().applyModifierContextObject(modifierContextObject, entity)));
+          this.getGameSession().applyModifierContextObject(modifierContextObject, entity),
+        ),
+      );
     }
   }
 
   getAffectedEntities(action) {
-    const entityList = this.getGameSession().getBoard().getCardsWithinRadiusOfPosition(this.getCard().position, this.auraFilterByCardType, this.auraRadius, this.auraIncludeSelf);
+    const entityList = this.getGameSession()
+      .getBoard()
+      .getCardsWithinRadiusOfPosition(
+        this.getCard().position,
+        this.auraFilterByCardType,
+        this.auraRadius,
+        this.auraIncludeSelf,
+      );
     const affectedEntities = [];
     for (var entity of Array.from<any>(entityList)) {
-      if ((this.auraIncludeAlly && entity.getIsSameTeamAs(this.getCard())) || (this.auraIncludeEnemy && !entity.getIsSameTeamAs(this.getCard()))) {
+      if (
+        (this.auraIncludeAlly && entity.getIsSameTeamAs(this.getCard())) ||
+        (this.auraIncludeEnemy && !entity.getIsSameTeamAs(this.getCard()))
+      ) {
         if (this.canTargetGeneral || !entity.getIsGeneral()) {
           affectedEntities.push(entity);
         }
@@ -51,6 +72,9 @@ class ModifierMyMoveWatchApplyModifiers extends ModifierMyMoveWatch {
   }
 }
 ModifierMyMoveWatchApplyModifiers.prototype.type = 'ModifierMyMoveWatchApplyModifiers';
-ModifierMyMoveWatchApplyModifiers.prototype.fxResource = ['FX.Modifiers.ModifierMyMoveWatch', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierMyMoveWatchApplyModifiers.prototype.fxResource = [
+  'FX.Modifiers.ModifierMyMoveWatch',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 
 module.exports = ModifierMyMoveWatchApplyModifiers;

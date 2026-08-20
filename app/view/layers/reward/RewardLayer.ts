@@ -18,7 +18,6 @@ const i18next = require('i18next');
  *************************************************************************** */
 
 const RewardLayer = BaseLayer.extend({
-
   _backCallback: null, // function to call when back triggered
   _backContext: null, // context to call when back triggered
   backNodeOffsetFromTopLeft: cc.p(0, 0),
@@ -70,7 +69,9 @@ const RewardLayer = BaseLayer.extend({
   /* region RESOURCES */
 
   getRequiredResources() {
-    return BaseLayer.prototype.getRequiredResources.call(this).concat(PKGS.getPkgForIdentifier('reward'));
+    return BaseLayer.prototype.getRequiredResources
+      .call(this)
+      .concat(PKGS.getPkgForIdentifier('reward'));
   },
 
   /* endregion RESOURCES */
@@ -129,8 +130,12 @@ const RewardLayer = BaseLayer.extend({
    * @returns {Promise}
    */
   showVignetteBackground(duration, zOrder) {
-    if (duration == null) { duration = 0.0; }
-    if (zOrder == null) { zOrder = this.bgZOrder; }
+    if (duration == null) {
+      duration = 0.0;
+    }
+    if (zOrder == null) {
+      zOrder = this.bgZOrder;
+    }
 
     return this.whenRequiredResourcesReady().then((requestId) => {
       if (!this.getAreResourcesValid(requestId)) return; // load invalidated or resources changed
@@ -168,9 +173,15 @@ const RewardLayer = BaseLayer.extend({
    * @returns {Promise}
    */
   showFlatBackground(duration, color, zOrder) {
-    if (duration == null) { duration = 0.0; }
-    if (color == null) { color = this.bgColor; }
-    if (zOrder == null) { zOrder = this.bgZOrder; }
+    if (duration == null) {
+      duration = 0.0;
+    }
+    if (color == null) {
+      color = this.bgColor;
+    }
+    if (zOrder == null) {
+      zOrder = this.bgZOrder;
+    }
 
     return this.whenRequiredResourcesReady().then((requestId) => {
       if (!this.getAreResourcesValid(requestId)) return; // load invalidated or resources changed
@@ -207,7 +218,9 @@ const RewardLayer = BaseLayer.extend({
    */
   removeBackground(duration) {
     if (this.bg != null) {
-      if (duration == null) { duration = 0.0; }
+      if (duration == null) {
+        duration = 0.0;
+      }
       this.bg.destroy(duration);
       this.bg = null;
     }
@@ -219,7 +232,11 @@ const RewardLayer = BaseLayer.extend({
       if (this.bg instanceof cc.DrawNode) {
         const winSize = UtilsEngine.getGSIWinSize();
         this.bg.clear();
-        this.bg.drawRect(cc.p(-Math.round(winSize.width * 0.5) - 1.0, -Math.round(winSize.height * 0.5) - 1.0), cc.p(Math.round(winSize.width * 0.5) + 1.0, Math.round(winSize.height * 0.5) + 1.0), this.bgColor);
+        this.bg.drawRect(
+          cc.p(-Math.round(winSize.width * 0.5) - 1.0, -Math.round(winSize.height * 0.5) - 1.0),
+          cc.p(Math.round(winSize.width * 0.5) + 1.0, Math.round(winSize.height * 0.5) + 1.0),
+          this.bgColor,
+        );
       } else {
         // scale bg
         this.bg.setScale(UtilsEngine.getWindowSizeRelativeNodeScale(this.bg));
@@ -289,9 +306,15 @@ const RewardLayer = BaseLayer.extend({
    * @returns {Promise}
    */
   showPressAnywhereToContinueNode(duration, fontSize, textColor) {
-    if (duration == null) { duration = 0.0; }
-    if (fontSize == null) { fontSize = this.continueFontSize; }
-    if (textColor == null) { textColor = this.continueTextColor; }
+    if (duration == null) {
+      duration = 0.0;
+    }
+    if (fontSize == null) {
+      fontSize = this.continueFontSize;
+    }
+    if (textColor == null) {
+      textColor = this.continueTextColor;
+    }
 
     return this.whenRequiredResourcesReady().then((requestId) => {
       if (!this.getAreResourcesValid(requestId)) return; // load invalidated or resources changed
@@ -301,7 +324,13 @@ const RewardLayer = BaseLayer.extend({
       this.continueFontSize = fontSize;
       this.continueTextColor = textColor;
 
-      this.continueNode = new cc.LabelTTF(i18next.t('common.press_anywhere_to_continue_label').toUpperCase(), RSX.font_light.name, this.continueFontSize, null, cc.TEXT_ALIGNMENT_CENTER);
+      this.continueNode = new cc.LabelTTF(
+        i18next.t('common.press_anywhere_to_continue_label').toUpperCase(),
+        RSX.font_light.name,
+        this.continueFontSize,
+        null,
+        cc.TEXT_ALIGNMENT_CENTER,
+      );
       this.continueNode.setFontFillColor(this.continueTextColor);
       this.addChild(this.continueNode, this.continueZOrder);
 
@@ -328,11 +357,21 @@ const RewardLayer = BaseLayer.extend({
    * @returns {Promise}
    */
   showPressToContinueNode(duration, buttonText, font, fontSize, textColor) {
-    if (duration == null) { duration = 0.0; }
-    if (buttonText == null) { buttonText = this.continueButtonText; }
-    if (font == null) { font = this.continueButtonFont; }
-    if (fontSize == null) { fontSize = this.continueFontSize; }
-    if (textColor == null) { textColor = this.continueButtonTextColor; }
+    if (duration == null) {
+      duration = 0.0;
+    }
+    if (buttonText == null) {
+      buttonText = this.continueButtonText;
+    }
+    if (font == null) {
+      font = this.continueButtonFont;
+    }
+    if (fontSize == null) {
+      fontSize = this.continueFontSize;
+    }
+    if (textColor == null) {
+      textColor = this.continueButtonTextColor;
+    }
 
     return this.whenRequiredResourcesReady().then((requestId) => {
       if (!this.getAreResourcesValid(requestId)) return; // load invalidated or resources changed
@@ -347,7 +386,13 @@ const RewardLayer = BaseLayer.extend({
       const continueButtonSprite = new ccui.Scale9Sprite(RSX.button_secondary.img);
       const continueButtonGlowSprite = new ccui.Scale9Sprite(RSX.button_secondary_glow.img);
       const continueButtonSize = continueButtonSprite.getContentSize();
-      const continueButtonLabel = new cc.LabelTTF(this.continueButtonText, this.continueButtonFont, this.continueFontSize, null, cc.TEXT_ALIGNMENT_CENTER);
+      const continueButtonLabel = new cc.LabelTTF(
+        this.continueButtonText,
+        this.continueButtonFont,
+        this.continueFontSize,
+        null,
+        cc.TEXT_ALIGNMENT_CENTER,
+      );
       continueButtonLabel.setFontFillColor(this.continueButtonTextColor);
 
       this.continueNode = new cc.ControlButton(continueButtonLabel, continueButtonSprite);
@@ -355,7 +400,10 @@ const RewardLayer = BaseLayer.extend({
       this.continueNode.setAdjustBackgroundImage(false);
       this.continueNode.setZoomOnTouchDown(false);
       this.continueNode.setBackgroundSpriteForState(continueButtonSprite, cc.CONTROL_STATE_NORMAL);
-      this.continueNode.setBackgroundSpriteForState(continueButtonGlowSprite, cc.CONTROL_STATE_HIGHLIGHTED);
+      this.continueNode.setBackgroundSpriteForState(
+        continueButtonGlowSprite,
+        cc.CONTROL_STATE_HIGHLIGHTED,
+      );
       this.addChild(this.continueNode, this.continueZOrder);
 
       // add as interactive
@@ -380,7 +428,9 @@ const RewardLayer = BaseLayer.extend({
    */
   removeContinueNodes(duration) {
     if (this.continueNode != null) {
-      if (duration == null) { duration = 0.0; }
+      if (duration == null) {
+        duration = 0.0;
+      }
       this.removeInteractiveElement(this.continueNode);
       this.continueNode.destroy(duration);
       this.continueNode = null;
@@ -500,7 +550,9 @@ const RewardLayer = BaseLayer.extend({
    * @returns {Promise}
    */
   showBackCornerButton(duration) {
-    if (duration == null) { duration = 0.0; }
+    if (duration == null) {
+      duration = 0.0;
+    }
 
     return this.whenRequiredResourcesReady().then((requestId) => {
       if (!this.getAreResourcesValid(requestId)) return; // load invalidated or resources changed
@@ -533,7 +585,9 @@ const RewardLayer = BaseLayer.extend({
    */
   removeBackNodes(duration) {
     if (this.backNode != null) {
-      if (duration == null) { duration = 0.0; }
+      if (duration == null) {
+        duration = 0.0;
+      }
       this.removeInteractiveElement(this.backNode);
       this.backNode.destroy(duration);
       this.backNode = null;
@@ -587,7 +641,9 @@ const RewardLayer = BaseLayer.extend({
    */
   showTitles(duration, title, subtitle, titlePosition, subtitlePosition) {
     return new Promise<void>((resolve) => {
-      if (duration == null) { duration = 0.0; }
+      if (duration == null) {
+        duration = 0.0;
+      }
 
       if (this._titlesAction != null) {
         this.stopAction(this._titlesAction);
@@ -610,14 +666,20 @@ const RewardLayer = BaseLayer.extend({
       let subtitleLabel;
       if (subtitle != null && subtitle.length > 0) {
         // dual positions
-        if (titlePosition == null) { titlePosition = cc.p(0.0, -UtilsEngine.getGSIWinHeight() * 0.5 + 180); }
-        if (subtitlePosition == null) { subtitlePosition = cc.p(0.0, -UtilsEngine.getGSIWinHeight() * 0.5 + 120); }
+        if (titlePosition == null) {
+          titlePosition = cc.p(0.0, -UtilsEngine.getGSIWinHeight() * 0.5 + 180);
+        }
+        if (subtitlePosition == null) {
+          subtitlePosition = cc.p(0.0, -UtilsEngine.getGSIWinHeight() * 0.5 + 120);
+        }
 
         subtitleLabel = this.getOrCreateSubtitleLabel();
         subtitleLabel.setString(subtitle);
       } else {
         // single position
-        if (titlePosition == null) { titlePosition = cc.p(0.0, -UtilsEngine.getGSIWinHeight() * 0.5 + 140); }
+        if (titlePosition == null) {
+          titlePosition = cc.p(0.0, -UtilsEngine.getGSIWinHeight() * 0.5 + 140);
+        }
 
         // remove subtitle
         if (this._subtitleLabel != null) {
@@ -658,11 +720,13 @@ const RewardLayer = BaseLayer.extend({
           if (titleLabel != null) {
             subtitleSequence.push(cc.delayTime(0.1));
           }
-          subtitleSequence.push(cc.spawn(
-            cc.show(),
-            cc.fadeIn(duration),
-            cc.moveBy(duration, cc.p(0, 10)).easing(cc.easeCubicActionOut()),
-          ));
+          subtitleSequence.push(
+            cc.spawn(
+              cc.show(),
+              cc.fadeIn(duration),
+              cc.moveBy(duration, cc.p(0, 10)).easing(cc.easeCubicActionOut()),
+            ),
+          );
           let subtitleAction;
           if (subtitleSequence.length > 1) {
             subtitleAction = cc.sequence(subtitleSequence);
@@ -689,8 +753,9 @@ const RewardLayer = BaseLayer.extend({
       } else {
         resolve();
       }
-    })
-      .catch((error) => { EventBus.getInstance().trigger(EVENTS.error, error); });
+    }).catch((error) => {
+      EventBus.getInstance().trigger(EVENTS.error, error);
+    });
   },
 
   /**
@@ -700,7 +765,9 @@ const RewardLayer = BaseLayer.extend({
    */
   stopShowingTitles(duration) {
     return new Promise<void>((resolve) => {
-      if (duration == null) { duration = 0.0; }
+      if (duration == null) {
+        duration = 0.0;
+      }
       const isAnimating = duration > 0.0;
 
       if (this._titlesAction != null) {
@@ -731,8 +798,9 @@ const RewardLayer = BaseLayer.extend({
         // immediate resolve when not animating
         resolve();
       }
-    })
-      .catch((error) => { EventBus.getInstance().trigger(EVENTS.error, error); });
+    }).catch((error) => {
+      EventBus.getInstance().trigger(EVENTS.error, error);
+    });
   },
 
   getTitleLabel() {
@@ -741,7 +809,13 @@ const RewardLayer = BaseLayer.extend({
 
   getOrCreateTitleLabel() {
     if (this._titleLabel == null) {
-      this._titleLabel = new cc.LabelTTF('', RSX.font_light.name, 32, cc.size(1200, 36), cc.TEXT_ALIGNMENT_CENTER);
+      this._titleLabel = new cc.LabelTTF(
+        '',
+        RSX.font_light.name,
+        32,
+        cc.size(1200, 36),
+        cc.TEXT_ALIGNMENT_CENTER,
+      );
       this._titleLabel.setFontFillColor({ r: 255, g: 255, b: 255 });
       this._titleLabel.setVisible(false);
       this.addChild(this._titleLabel);
@@ -755,7 +829,13 @@ const RewardLayer = BaseLayer.extend({
 
   getOrCreateSubtitleLabel() {
     if (this._subtitleLabel == null) {
-      this._subtitleLabel = new cc.LabelTTF('', RSX.font_light.name, 20, cc.size(1200, 60), cc.TEXT_ALIGNMENT_CENTER);
+      this._subtitleLabel = new cc.LabelTTF(
+        '',
+        RSX.font_light.name,
+        20,
+        cc.size(1200, 60),
+        cc.TEXT_ALIGNMENT_CENTER,
+      );
       this._subtitleLabel.setFontFillColor({ r: 255, g: 255, b: 255 });
       this._subtitleLabel.setVisible(false);
       this.addChild(this._subtitleLabel);
@@ -809,7 +889,10 @@ const RewardLayer = BaseLayer.extend({
         if (this._interactiveNodes.length > 0) {
           for (var i = this._interactiveNodes.length - 1; i >= 0; i--) {
             const interactiveNode = this._interactiveNodes[i];
-            if (interactiveNode.isVisible() && UtilsEngine.getNodeUnderMouse(interactiveNode, location.x, location.y)) {
+            if (
+              interactiveNode.isVisible() &&
+              UtilsEngine.getNodeUnderMouse(interactiveNode, location.x, location.y)
+            ) {
               mouseOverInteractiveElement = interactiveNode;
               event.stopPropagation();
               break;
@@ -849,19 +932,23 @@ const RewardLayer = BaseLayer.extend({
     const location = event && event.getLocation();
     if (location && this.getIsInteractionEnabled()) {
       // try back
-      if (this.backNode != null
-        && this.backNode.isVisible()
-        && UtilsEngine.getNodeUnderMouse(this.backNode, location.x, location.y)) {
+      if (
+        this.backNode != null &&
+        this.backNode.isVisible() &&
+        UtilsEngine.getNodeUnderMouse(this.backNode, location.x, location.y)
+      ) {
         event.stopPropagation();
         this.onBack();
       }
 
       // try continue
       if (!event.isStopped) {
-        if (this.getIsContinueOnPressAnywhere()
-          || (this.continueNode instanceof cc.ControlButton
-          && this.continueNode.isVisible()
-          && UtilsEngine.getNodeUnderMouse(this.continueNode, location.x, location.y))) {
+        if (
+          this.getIsContinueOnPressAnywhere() ||
+          (this.continueNode instanceof cc.ControlButton &&
+            this.continueNode.isVisible() &&
+            UtilsEngine.getNodeUnderMouse(this.continueNode, location.x, location.y))
+        ) {
           event.stopPropagation();
           this.onContinue();
         } else if (this._continueHitboxes.length > 0) {
@@ -887,7 +974,9 @@ const RewardLayer = BaseLayer.extend({
   },
 
   onContinue() {
-    audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
+    audio_engine
+      .current()
+      .play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
 
     if (this._continueCallback != null) {
       const context = this._continueContext || this;
@@ -902,7 +991,9 @@ const RewardLayer = BaseLayer.extend({
   },
 
   onBack() {
-    audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_cancel.audio, CONFIG.CANCEL_SFX_PRIORITY);
+    audio_engine
+      .current()
+      .play_effect_for_interaction(RSX.sfx_ui_cancel.audio, CONFIG.CANCEL_SFX_PRIORITY);
 
     if (this._backCallback != null) {
       const context = this._backContext || this;
@@ -917,7 +1008,6 @@ const RewardLayer = BaseLayer.extend({
   },
 
   /* endregion EVENTS */
-
 });
 
 RewardLayer.create = function (layer) {

@@ -26,19 +26,39 @@ class PlayerModifierEndTurnRespawnEntityAnywhere extends PlayerModifier {
   onEndTurn(action) {
     super.onEndTurn(action);
 
-    if (this.getGameSession().getIsRunningAsAuthoritative() && (this.cardDataOrIndexToSpawn != null)) {
-      const card = this.getGameSession().getExistingCardFromIndexOrCachedCardFromData(this.cardDataOrIndexToSpawn);
-      const validSpawnLocations = UtilsGameSession.getSmartSpawnPositionsFromPattern(this.getGameSession(), { x: 0, y: 0 }, CONFIG.PATTERN_WHOLE_BOARD, card);
+    if (
+      this.getGameSession().getIsRunningAsAuthoritative() &&
+      this.cardDataOrIndexToSpawn != null
+    ) {
+      const card = this.getGameSession().getExistingCardFromIndexOrCachedCardFromData(
+        this.cardDataOrIndexToSpawn,
+      );
+      const validSpawnLocations = UtilsGameSession.getSmartSpawnPositionsFromPattern(
+        this.getGameSession(),
+        { x: 0, y: 0 },
+        CONFIG.PATTERN_WHOLE_BOARD,
+        card,
+      );
       if (validSpawnLocations.length > 0) {
-        const spawnLocation = validSpawnLocations[this.getGameSession().getRandomIntegerForExecution(validSpawnLocations.length)];
-        const playCardAction = new PlayCardSilentlyAction(this.getGameSession(), this.getPlayer().getPlayerId(), spawnLocation.x, spawnLocation.y, this.cardDataOrIndexToSpawn);
+        const spawnLocation =
+          validSpawnLocations[
+            this.getGameSession().getRandomIntegerForExecution(validSpawnLocations.length)
+          ];
+        const playCardAction = new PlayCardSilentlyAction(
+          this.getGameSession(),
+          this.getPlayer().getPlayerId(),
+          spawnLocation.x,
+          spawnLocation.y,
+          this.cardDataOrIndexToSpawn,
+        );
         playCardAction.setSource(this.getCard());
         return this.getGameSession().executeAction(playCardAction);
       }
     }
   }
 }
-PlayerModifierEndTurnRespawnEntityAnywhere.prototype.type = 'PlayerModifierEndTurnRespawnEntityAnywhere';
+PlayerModifierEndTurnRespawnEntityAnywhere.prototype.type =
+  'PlayerModifierEndTurnRespawnEntityAnywhere';
 PlayerModifierEndTurnRespawnEntityAnywhere.prototype.durationEndTurn = 1;
 PlayerModifierEndTurnRespawnEntityAnywhere.prototype.cardDataOrIndexToSpawn = null;
 

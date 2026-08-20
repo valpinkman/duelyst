@@ -12,7 +12,6 @@ const BaseSprite = require('../../nodes/BaseSprite');
  *************************************************************************** */
 
 const WorldMapLayer = FXCompositeLayer.extend({
-
   _scrollAcceleration: null,
   _scrollEasing: null,
   _scrollOffset: null,
@@ -67,7 +66,9 @@ const WorldMapLayer = FXCompositeLayer.extend({
   },
 
   getRequiredResources() {
-    return FXCompositeLayer.prototype.getRequiredResources.call(this).concat(PKGS.getPkgForIdentifier('world_map'));
+    return FXCompositeLayer.prototype.getRequiredResources
+      .call(this)
+      .concat(PKGS.getPkgForIdentifier('world_map'));
   },
 
   /* endregion INITIALIZE */
@@ -94,11 +95,20 @@ const WorldMapLayer = FXCompositeLayer.extend({
       this._bg.setScale(scale);
       const bgWidth = this._bg._contentSize.width * scale;
       const bgHeight = this._bg._contentSize.height * scale;
-      this._scrollSize = cc.size(bgWidth - globalScaleInvertedWinSize.width, bgHeight - globalScaleInvertedWinSize.height);
+      this._scrollSize = cc.size(
+        bgWidth - globalScaleInvertedWinSize.width,
+        bgHeight - globalScaleInvertedWinSize.height,
+      );
 
       // get content size scale
-      const widthScale = previousContentSize.width > 0 ? globalScaleInvertedWinSize.width / previousContentSize.width : 1.0;
-      const heightScale = previousContentSize.height > 0 ? globalScaleInvertedWinSize.height / previousContentSize.height : 1.0;
+      const widthScale =
+        previousContentSize.width > 0
+          ? globalScaleInvertedWinSize.width / previousContentSize.width
+          : 1.0;
+      const heightScale =
+        previousContentSize.height > 0
+          ? globalScaleInvertedWinSize.height / previousContentSize.height
+          : 1.0;
 
       // update scroll ratio
       this._scrollRatio.x *= widthScale;
@@ -230,28 +240,44 @@ const WorldMapLayer = FXCompositeLayer.extend({
     this._scrollVelocity[axisKey] += this._scrollAcceleration[axisKey];
 
     // ease velocity as scroll approaches edges
-    const edgeModifier = Math.min(1.0, (1.0 + Math.abs(this._scrollVelocity[axisKey] / (this.accelerationSpeed * 3.0)) ** 1.5) ** 2.0 - 1.0);
+    const edgeModifier = Math.min(
+      1.0,
+      (1.0 + Math.abs(this._scrollVelocity[axisKey] / (this.accelerationSpeed * 3.0)) ** 1.5) **
+        2.0 -
+        1.0,
+    );
     const edgeDist = Math.max(this.edgeDistance, axisSize * this.edgeDistancePct) * edgeModifier;
-    if (this._scrollAcceleration[axisKey] < 0 && this._scrollOffset[axisKey] < -axisSize + edgeDist) {
+    if (
+      this._scrollAcceleration[axisKey] < 0 &&
+      this._scrollOffset[axisKey] < -axisSize + edgeDist
+    ) {
       if (!this._scrollEasing[axisKey]) {
         this._scrollEasing[axisKey] = true;
         this._scrollVelocityEdge[axisKey] = this._scrollVelocity[axisKey];
       }
       var easeVal = (this._scrollOffset[axisKey] + axisSize) / edgeDist;
-      this._scrollVelocity[axisKey] = this._scrollVelocityEdge[axisKey] * (easeVal * (2.0 - easeVal));
-    } else if (this._scrollAcceleration[axisKey] > 0 && this._scrollOffset[axisKey] > axisSize - edgeDist) {
+      this._scrollVelocity[axisKey] =
+        this._scrollVelocityEdge[axisKey] * (easeVal * (2.0 - easeVal));
+    } else if (
+      this._scrollAcceleration[axisKey] > 0 &&
+      this._scrollOffset[axisKey] > axisSize - edgeDist
+    ) {
       if (!this._scrollEasing[axisKey]) {
         this._scrollEasing[axisKey] = true;
         this._scrollVelocityEdge[axisKey] = this._scrollVelocity[axisKey];
       }
       var easeVal = (this._scrollOffset[axisKey] - axisSize) / -edgeDist;
-      this._scrollVelocity[axisKey] = this._scrollVelocityEdge[axisKey] * (easeVal * (2.0 - easeVal));
+      this._scrollVelocity[axisKey] =
+        this._scrollVelocityEdge[axisKey] * (easeVal * (2.0 - easeVal));
     } else {
       this._scrollEasing[axisKey] = false;
     }
 
     // update offset
-    this._scrollOffset[axisKey] = Math.max(-axisSize, Math.min(axisSize, this._scrollOffset[axisKey] + this._scrollVelocity[axisKey]));
+    this._scrollOffset[axisKey] = Math.max(
+      -axisSize,
+      Math.min(axisSize, this._scrollOffset[axisKey] + this._scrollVelocity[axisKey]),
+    );
 
     // decay velocity
     this._scrollVelocity[axisKey] *= this.velocityDecay;
@@ -261,7 +287,6 @@ const WorldMapLayer = FXCompositeLayer.extend({
   },
 
   /* endregion EVENTS */
-
 });
 
 WorldMapLayer.create = function (layer) {

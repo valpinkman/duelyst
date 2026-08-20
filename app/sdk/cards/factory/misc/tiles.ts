@@ -55,9 +55,7 @@ class CardFactory_Tiles {
       card.manaCost = 0;
       card.uses = 1;
       card.dieOnDepleted = false;
-      card.setInherentModifiersContextObjects([
-        ModifierCollectableBonusMana.createContextObject(),
-      ]);
+      card.setInherentModifiersContextObjects([ModifierCollectableBonusMana.createContextObject()]);
       card.setFXResource(['FX.Cards.Tile.BonusMana']);
       card.setSpriteOptions({
         occludes: true,
@@ -81,7 +79,10 @@ class CardFactory_Tiles {
       //      card.setDescription("Deals damage to enemy minion equal to the number of Shadow Creep tiles on the battlefield.")
       card.setIsHiddenInCollection(true);
       card.manaCost = 0;
-      card.setInherentModifiersContextObjects([ModifierStackingShadows.createContextObject(), ModifierStackingShadowsDebuff.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierStackingShadows.createContextObject(),
+        ModifierStackingShadowsDebuff.createContextObject(),
+      ]);
       card.setFXResource(['FX.Cards.Tile.Shadow']);
       card.setSpriteOptions({
         scale: 1.3,
@@ -110,7 +111,10 @@ class CardFactory_Tiles {
       card.name = i18next.t('modifiers.hallowed_ground_name');
       card.setIsHiddenInCollection(true);
       card.manaCost = 0;
-      card.setInherentModifiersContextObjects([ModifierHallowedGround.createContextObject(), ModifierHallowedGroundBuff.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierHallowedGround.createContextObject(),
+        ModifierHallowedGroundBuff.createContextObject(),
+      ]);
       card.setFXResource(['FX.Cards.Tile.Hallowed']);
       card.setSpriteOptions({
         scale: 1.3,
@@ -168,7 +172,10 @@ class CardFactory_Tiles {
       card.name = i18next.t('modifiers.primal_flourish_name');
       card.setIsHiddenInCollection(true);
       card.manaCost = 0;
-      card.setInherentModifiersContextObjects([ModifierPrimalTile.createContextObject(), ModifierPrimalProtection.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierPrimalTile.createContextObject(),
+        ModifierPrimalProtection.createContextObject(),
+      ]);
       card.setFXResource(['FX.Cards.Tile.PrimalMojo']);
       card.setSpriteOptions({
         scale: 1.3,

@@ -14,7 +14,6 @@ var SlidingPanelSelectCompositeView = require('./sliding_panel_select');
 var PlayModeSelectTmpl = require('../../templates/composite/play_mode_select.hbs');
 
 var PlayModeSelectCompositeView = SlidingPanelSelectCompositeView.extend({
-
   className: 'sliding-panel-select play-mode-select',
 
   template: PlayModeSelectTmpl,
@@ -41,16 +40,29 @@ var PlayModeSelectCompositeView = SlidingPanelSelectCompositeView.extend({
     Scene.getInstance().showContentByClass(PlayLayer, true);
 
     // change fx
-    Scene.getInstance().getFX().showGradientColorMap(this._requestId, CONFIG.ANIMATE_FAST_DURATION, {
-      r: 194, g: 203, b: 230, a: 255,
-    }, {
-      r: 26, g: 31, b: 50, a: 255,
-    });
+    Scene.getInstance().getFX().showGradientColorMap(
+      this._requestId,
+      CONFIG.ANIMATE_FAST_DURATION,
+      {
+        r: 194,
+        g: 203,
+        b: 230,
+        a: 255,
+      },
+      {
+        r: 26,
+        g: 31,
+        b: 50,
+        a: 255,
+      },
+    );
   },
 
   onPrepareForDestroy: function () {
     // reset fx
-    Scene.getInstance().getFX().clearGradientColorMap(this._requestId, CONFIG.ANIMATE_MEDIUM_DURATION);
+    Scene.getInstance()
+      .getFX()
+      .clearGradientColorMap(this._requestId, CONFIG.ANIMATE_MEDIUM_DURATION);
   },
 
   setSelectedChildView: function () {
@@ -58,9 +70,10 @@ var PlayModeSelectCompositeView = SlidingPanelSelectCompositeView.extend({
     SlidingPanelSelectCompositeView.prototype.setSelectedChildView.apply(this, arguments);
 
     // play audio
-    audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
+    audio_engine
+      .current()
+      .play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

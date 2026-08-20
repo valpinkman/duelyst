@@ -17,8 +17,12 @@ class ModifierOpeningGambitBonusManaCrystal extends ModifierOpeningGambit {
   static type = 'ModifierOpeningGambitBonusManaCrystal';
 
   static createContextObject(giveToOwner, amountToGive, options) {
-    if (giveToOwner == null) { giveToOwner = true; }
-    if (amountToGive == null) { amountToGive = 1; }
+    if (giveToOwner == null) {
+      giveToOwner = true;
+    }
+    if (amountToGive == null) {
+      amountToGive = 1;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.amountToGive = amountToGive;
     contextObject.giveToOwner = giveToOwner;
@@ -30,13 +34,19 @@ class ModifierOpeningGambitBonusManaCrystal extends ModifierOpeningGambit {
     if (this.amountToGive > 0) {
       return (() => {
         const result = [];
-        for (let i = 0, end = this.amountToGive, asc = end >= 0; asc ? i < end : i > end; asc ? i++ : i--) {
+        for (
+          let i = 0, end = this.amountToGive, asc = end >= 0;
+          asc ? i < end : i > end;
+          asc ? i++ : i--
+        ) {
           var bonusManaCoreAction = new BonusManaCoreAction(this.getGameSession());
           bonusManaCoreAction.setSource(this.getCard());
           if (this.giveToOwner) {
             bonusManaCoreAction.setOwnerId(this.getCard().getOwnerId());
           } else {
-            bonusManaCoreAction.setOwnerId(this.getGameSession().getOpponentPlayerIdOfPlayerId(this.getCard().getOwnerId()));
+            bonusManaCoreAction.setOwnerId(
+              this.getGameSession().getOpponentPlayerIdOfPlayerId(this.getCard().getOwnerId()),
+            );
           }
           result.push(this.getGameSession().executeAction(bonusManaCoreAction));
         }

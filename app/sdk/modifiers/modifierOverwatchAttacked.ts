@@ -21,7 +21,11 @@ class ModifierOverwatchAttacked extends ModifierOverwatch {
 
   getIsActionRelevant(action) {
     // watch for explicit attacks on this unit
-    return action instanceof AttackAction && !action.getIsImplicit() && (action.getTarget() === this.getCard());
+    return (
+      action instanceof AttackAction &&
+      !action.getIsImplicit() &&
+      action.getTarget() === this.getCard()
+    );
   }
 }
 ModifierOverwatchAttacked.prototype.type = 'ModifierOverwatchAttacked';

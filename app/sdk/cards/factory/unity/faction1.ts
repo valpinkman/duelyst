@@ -84,7 +84,13 @@ class CardFactory_UnitySet_Faction1 {
       card.rarityId = Rarity.Common;
       const buffContextObject = Modifier.createContextObjectWithAttributeBuffs(1, 1);
       buffContextObject.appliedName = i18next.t('modifiers.faction_1_warblade_applied_name');
-      card.setInherentModifiersContextObjects([ModifierBondApplyModifiers.createContextObjectForAllAllies([buffContextObject], false, 'Other friendly minions gain +1/+1')]);
+      card.setInherentModifiersContextObjects([
+        ModifierBondApplyModifiers.createContextObjectForAllAllies(
+          [buffContextObject],
+          false,
+          'Other friendly minions gain +1/+1',
+        ),
+      ]);
     }
 
     if (identifier === Cards.Spell.LifeCoil) {
@@ -97,9 +103,7 @@ class CardFactory_UnitySet_Faction1 {
       card.manaCost = 3;
       card.rarityId = Rarity.Common;
       card.spellFilterType = SpellFilterType.NeutralDirect;
-      card.setTargetModifiersContextObjects([
-        ModifierDoubleHealthStat.createContextObject(),
-      ]);
+      card.setTargetModifiersContextObjects([ModifierDoubleHealthStat.createContextObject()]);
       card.setFXResource(['FX.Cards.Spell.LifeCoil']);
       card.setBaseSoundResource({
         apply: RSX.sfx_spell_forcebarrier.audio,
@@ -143,10 +147,25 @@ class CardFactory_UnitySet_Faction1 {
       card.manaCost = 3;
       card.rarityId = Rarity.Epic;
       const statBuffContextObject = Modifier.createContextObjectWithAttributeBuffs(2);
-      statBuffContextObject.appliedName = i18next.t('modifiers.faction_1_sol_pontiff_applied_name_1');
-      const zealBuffContextObject = Modifier.createContextObjectWithAuraForAllAlliesAndSelf([statBuffContextObject], [Races.Golem], null, null, 'Your Golems have +2 Attack');
-      zealBuffContextObject.appliedName = i18next.t('modifiers.faction_1_sol_pontiff_applied_name_2');
-      card.setInherentModifiersContextObjects([ModifierBandingApplyModifiers.createContextObject([zealBuffContextObject], 'Your Golems have +2 Attack')]);
+      statBuffContextObject.appliedName = i18next.t(
+        'modifiers.faction_1_sol_pontiff_applied_name_1',
+      );
+      const zealBuffContextObject = Modifier.createContextObjectWithAuraForAllAlliesAndSelf(
+        [statBuffContextObject],
+        [Races.Golem],
+        null,
+        null,
+        'Your Golems have +2 Attack',
+      );
+      zealBuffContextObject.appliedName = i18next.t(
+        'modifiers.faction_1_sol_pontiff_applied_name_2',
+      );
+      card.setInherentModifiersContextObjects([
+        ModifierBandingApplyModifiers.createContextObject(
+          [zealBuffContextObject],
+          'Your Golems have +2 Attack',
+        ),
+      ]);
     }
 
     if (identifier === Cards.Faction1.Peacekeeper) {
@@ -186,7 +205,8 @@ class CardFactory_UnitySet_Faction1 {
         ModifierForcefield.createContextObject(),
         ModifierAirdrop.createContextObject(),
         ModifierTranscendance.createContextObject(),
-        ModifierProvoke.createContextObject()]);
+        ModifierProvoke.createContextObject(),
+      ]);
     }
 
     if (identifier === Cards.Artifact.GoldVitriol) {

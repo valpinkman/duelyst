@@ -17,14 +17,23 @@ class ModifierBandingChangeCardDraw extends ModifierBanding {
   static type = 'ModifierBandingChangeCardDraw';
 
   static createContextObject(cardDraw, options) {
-    if (cardDraw == null) { cardDraw = 0; }
+    if (cardDraw == null) {
+      cardDraw = 0;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.appliedName = i18next.t('modifiers.banding_change_card_draw_name');
     contextObject.cardDraw = cardDraw;
     const cardDrawContextObject = PlayerModifierCardDrawModifier.createContextObject(cardDraw);
-    cardDrawContextObject.activeInHand = (contextObject.activeInDeck = (contextObject.activeInSignatureCards = false));
+    cardDrawContextObject.activeInHand =
+      contextObject.activeInDeck =
+      contextObject.activeInSignatureCards =
+        false;
     cardDrawContextObject.activeOnBoard = true;
-    const bandedContextObject = ModifierCardControlledPlayerModifiers.createContextObjectToTargetOwnPlayer([cardDrawContextObject], 'Draw cards');
+    const bandedContextObject =
+      ModifierCardControlledPlayerModifiers.createContextObjectToTargetOwnPlayer(
+        [cardDrawContextObject],
+        'Draw cards',
+      );
     bandedContextObject.appliedName = contextObject.appliedName;
     bandedContextObject.description = ModifierBandingChangeCardDraw.getDescription(contextObject);
     contextObject.modifiersContextObjects = [bandedContextObject];
@@ -33,7 +42,9 @@ class ModifierBandingChangeCardDraw extends ModifierBanding {
 
   static getDescription(modifierContextObject) {
     if (modifierContextObject) {
-      return i18next.t('modifiers.banding_change_card_draw_def', { amount: modifierContextObject.cardDraw });
+      return i18next.t('modifiers.banding_change_card_draw_def', {
+        amount: modifierContextObject.cardDraw,
+      });
       // return @description.replace /%X/, modifierContextObject.cardDraw
     }
     return this.description;
@@ -43,17 +54,30 @@ class ModifierBandingChangeCardDraw extends ModifierBanding {
     super.onChangeOwner(fromOwnerId, toOwnerId);
     this.removeManagedModifiersFromCard(this.getCard());
     const cardDrawContextObject = PlayerModifierCardDrawModifier.createContextObject(this.cardDraw);
-    cardDrawContextObject.activeInHand = (cardDrawContextObject.activeInDeck = (cardDrawContextObject.activeInSignatureCards = false));
+    cardDrawContextObject.activeInHand =
+      cardDrawContextObject.activeInDeck =
+      cardDrawContextObject.activeInSignatureCards =
+        false;
     cardDrawContextObject.activeOnBoard = true;
-    const bandedContextObject = ModifierCardControlledPlayerModifiers.createContextObjectToTargetOwnPlayer([cardDrawContextObject], 'Draw cards');
+    const bandedContextObject =
+      ModifierCardControlledPlayerModifiers.createContextObjectToTargetOwnPlayer(
+        [cardDrawContextObject],
+        'Draw cards',
+      );
     bandedContextObject.appliedName = this.modifiersContextObjects[0].appliedName;
     bandedContextObject.description = this.modifiersContextObjects[0].description;
     this.modifiersContextObjects = [bandedContextObject];
-    return this.applyManagedModifiersFromModifiersContextObjectsOnce(this.modifiersContextObjects, this.getCard());
+    return this.applyManagedModifiersFromModifiersContextObjectsOnce(
+      this.modifiersContextObjects,
+      this.getCard(),
+    );
   }
 }
 ModifierBandingChangeCardDraw.prototype.type = 'ModifierBandingChangeCardDraw';
 ModifierBandingChangeCardDraw.description = i18next.t('modifiers.banding_change_card_draw_def');
-ModifierBandingChangeCardDraw.prototype.fxResource = ['FX.Modifiers.ModifierZeal', 'FX.Modifiers.ModifierZealHeal'];
+ModifierBandingChangeCardDraw.prototype.fxResource = [
+  'FX.Modifiers.ModifierZeal',
+  'FX.Modifiers.ModifierZealHeal',
+];
 
 module.exports = ModifierBandingChangeCardDraw;

@@ -24,15 +24,18 @@ class RankFactory {
     for (var rankKey in RankDivisionLookup) {
       var rankValue = RankDivisionLookup[rankKey];
       if (rank <= rankValue) {
-        if ((lowestRankValue == null) || (rankValue < lowestRankValue)) {
+        if (lowestRankValue == null || rankValue < lowestRankValue) {
           lowestRankKey = rankKey;
           lowestRankValue = rankValue;
         }
       }
     }
 
-    if ((lowestRankKey == null)) {
-      return console.error(`RankedDivisionFactory.rankedDivisionKeyForRank - Failed to find division for rank: ${rank}`.red);
+    if (lowestRankKey == null) {
+      return console.error(
+        `RankedDivisionFactory.rankedDivisionKeyForRank - Failed to find division for rank: ${rank}`
+          .red,
+      );
     }
     return lowestRankKey;
   }
@@ -69,8 +72,11 @@ class RankFactory {
   static rankedDivisionNameForRank(rank) {
     const divisionKey = this.rankedDivisionKeyForRank(rank);
 
-    if ((divisionKey == null)) {
-      return console.error(`RankedDivisionFactory.rankedDivisionForRank - Failed to find division for rank: ${rank}`.red);
+    if (divisionKey == null) {
+      return console.error(
+        `RankedDivisionFactory.rankedDivisionForRank - Failed to find division for rank: ${rank}`
+          .red,
+      );
     }
     return this._rankedDivisionNameForRankKey(divisionKey);
   }
@@ -84,16 +90,23 @@ class RankFactory {
   static _rankedDivisionAssetNameForRankKey(rankKey) {
     if (rankKey === 'Bronze') {
       return 'bronze';
-    } if (rankKey === 'Silver') {
+    }
+    if (rankKey === 'Silver') {
       return 'silver';
-    } if (rankKey === 'Gold') {
+    }
+    if (rankKey === 'Gold') {
       return 'gold';
-    } if (rankKey === 'Diamond') {
+    }
+    if (rankKey === 'Diamond') {
       return 'diamond';
-    } if (rankKey === 'Elite') {
+    }
+    if (rankKey === 'Elite') {
       return 'elite';
     }
-    return console.error(`RankedDivisionFactory._rankedDivisionAssetNameForRankKey - Unidentified rankKey provided: ${rankKey}`.red);
+    return console.error(
+      `RankedDivisionFactory._rankedDivisionAssetNameForRankKey - Unidentified rankKey provided: ${rankKey}`
+        .red,
+    );
   }
 
   /**
@@ -105,8 +118,11 @@ class RankFactory {
   static rankedDivisionAssetNameForRank(rank) {
     const divisionKey = this.rankedDivisionKeyForRank(rank);
 
-    if ((divisionKey == null)) {
-      return console.error(`RankedDivisionFactory.rankedDivisionAssetNameForRank - Failed to find division for rank: ${rank}`.red);
+    if (divisionKey == null) {
+      return console.error(
+        `RankedDivisionFactory.rankedDivisionAssetNameForRank - Failed to find division for rank: ${rank}`
+          .red,
+      );
     }
     return this._rankedDivisionAssetNameForRankKey(divisionKey);
   }
@@ -119,10 +135,13 @@ class RankFactory {
    * @return  {Boolean}        Can the user lose stars?
    */
   static canLoseStars(rank, stars) {
-    if (stars == null) { stars = 0; }
+    if (stars == null) {
+      stars = 0;
+    }
     if (rank > RankDivisionLookup.Silver) {
       return false;
-    } if (stars === 0) {
+    }
+    if (stars === 0) {
       const name = this.rankedDivisionKeyForRank(rank);
       const nameIfStarsLost = this.rankedDivisionKeyForRank(rank + 1);
       if (name !== nameIfStarsLost) {
@@ -140,9 +159,10 @@ class RankFactory {
    * @return  {Boolean}
    */
   static areWinStreaksEnabled(rank) {
-    if ((rank <= 30) && (rank >= 26)) {
+    if (rank <= 30 && rank >= 26) {
       return false;
-    } if ((rank <= 5) && (rank >= 0)) {
+    }
+    if (rank <= 5 && rank >= 0) {
       return false;
     }
     return true;
@@ -157,15 +177,20 @@ class RankFactory {
   static starsNeededToAdvanceRank(rankValue) {
     if (rankValue > 25) {
       return 1;
-    } if (rankValue > 20) {
+    }
+    if (rankValue > 20) {
       return 2;
-    } if (rankValue > 15) {
+    }
+    if (rankValue > 15) {
       return 3;
-    } if (rankValue > 10) {
+    }
+    if (rankValue > 10) {
       return 4;
-    } if (rankValue > 5) {
+    }
+    if (rankValue > 5) {
       return 5;
-    } if (rankValue > 0) {
+    }
+    if (rankValue > 0) {
       return 5;
     }
     return undefined;
@@ -241,7 +266,9 @@ class RankFactory {
     const rankData = _.clone(rankDataIn);
 
     if (rankData) {
-      if (rankData.top_rank == null) { rankData.top_rank = 30; }
+      if (rankData.top_rank == null) {
+        rankData.top_rank = 30;
+      }
 
       rankData.delta = {
         stars: 0,
@@ -249,9 +276,7 @@ class RankFactory {
       };
 
       if (isDraw) {
-
         // do nothing
-
       } else if (isWinner) {
         // rank 0 is kumite and does not need any cycling
         if (rankData.rank > 0) {
@@ -286,7 +311,8 @@ class RankFactory {
               rankData.top_rank = rankData.rank;
             }
           }
-        } else {}
+        } else {
+        }
 
         // we've got a KUMITE rank player... no change in rank
       } else {
@@ -302,10 +328,13 @@ class RankFactory {
           if (rankData.stars > 0) {
             rankData.delta.stars = -1;
             rankData.stars -= 1;
-          } else if (rankData.rank < 30) { // otherwise drop a rank and set stars to full for the lower rank
+          } else if (rankData.rank < 30) {
+            // otherwise drop a rank and set stars to full for the lower rank
             rankData.delta.rank = 1;
             rankData.rank = parseInt(rankData.rank) + 1;
-            const starsNeededToAdvancePreviousRank = RankFactory.starsNeededToAdvanceRank(rankData.rank);
+            const starsNeededToAdvancePreviousRank = RankFactory.starsNeededToAdvanceRank(
+              rankData.rank,
+            );
             rankData.stars = starsNeededToAdvancePreviousRank;
             rankData.stars_required = starsNeededToAdvancePreviousRank;
           }

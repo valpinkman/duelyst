@@ -23,20 +23,24 @@ const checklocks = function () {
   });
 };
 
-const locks = Promise.all([lock1, lock2]).then(([unlockFn1, unlockFn2]) => {
-  console.log(`lock1 acquired: ${_.isFunction(unlockFn1)}`);
-  console.log(`lock2 acquired: ${_.isFunction(unlockFn2)}`);
-  // the unlock functions are promise-returning now, not node callbacks
-  unlock1 = unlockFn1;
-  return unlock2 = unlockFn2;
-}).then(() => {
-  console.log('locking done...');
-  checklocks();
-  return Promise.all([unlock1(), unlock2()]).then(([result1, result2]) => {
-    console.log(`unlock1 success: ${Boolean(result1)}`);
-    return console.log(`unlock2 success: ${Boolean(result2)}`);
-  }).then(() => {
-    console.log('unlocking done...');
-    return checklocks();
+const locks = Promise.all([lock1, lock2])
+  .then(([unlockFn1, unlockFn2]) => {
+    console.log(`lock1 acquired: ${_.isFunction(unlockFn1)}`);
+    console.log(`lock2 acquired: ${_.isFunction(unlockFn2)}`);
+    // the unlock functions are promise-returning now, not node callbacks
+    unlock1 = unlockFn1;
+    return (unlock2 = unlockFn2);
+  })
+  .then(() => {
+    console.log('locking done...');
+    checklocks();
+    return Promise.all([unlock1(), unlock2()])
+      .then(([result1, result2]) => {
+        console.log(`unlock1 success: ${Boolean(result1)}`);
+        return console.log(`unlock2 success: ${Boolean(result2)}`);
+      })
+      .then(() => {
+        console.log('unlocking done...');
+        return checklocks();
+      });
   });
-});

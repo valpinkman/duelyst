@@ -19,7 +19,9 @@ class ModifierDamageGeneralOnAttack extends ModifierDealDamageWatch {
   static description = 'Whenever this damages an enemy minion, deal %X damage to the enemy General';
 
   static createContextObject(damageAmount, options) {
-    if (damageAmount == null) { damageAmount = 0; }
+    if (damageAmount == null) {
+      damageAmount = 0;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.damageAmount = damageAmount;
     return contextObject;
@@ -33,8 +35,11 @@ class ModifierDamageGeneralOnAttack extends ModifierDealDamageWatch {
   }
 
   onDealDamage(action) {
-    const opponentGeneral = this.getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
-    if (action.getTarget() !== opponentGeneral) { // if not attacking the enemy general
+    const opponentGeneral = this.getGameSession().getGeneralForOpponentOfPlayerId(
+      this.getCard().getOwnerId(),
+    );
+    if (action.getTarget() !== opponentGeneral) {
+      // if not attacking the enemy general
       // then damage the enemy general as well
       // we can't use an attack action here in case the general has strikeback
       const damageAction = this.getCard().getGameSession().createActionForType(DamageAction.type);

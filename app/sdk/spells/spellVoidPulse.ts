@@ -24,7 +24,7 @@ class SpellVoidPulse extends Spell {
     const position = { x, y };
     const entity = board.getCardAtPosition(position, this.targetType);
 
-    if ((entity != null) && entity.getIsGeneral()) {
+    if (entity != null && entity.getIsGeneral()) {
       if (entity.getOwnerId() === this.getOwnerId()) {
         // heal my general
         const healAction = new HealAction(this.getGameSession());
@@ -47,9 +47,13 @@ class SpellVoidPulse extends Spell {
 
     // only affects generals
     const enemyGeneral = this.getGameSession().getGeneralForOpponentOfPlayerId(this.getOwnerId());
-    if (enemyGeneral != null) { applyEffectPositions.push(enemyGeneral.getPosition()); }
+    if (enemyGeneral != null) {
+      applyEffectPositions.push(enemyGeneral.getPosition());
+    }
     const myGeneral = this.getGameSession().getGeneralForPlayerId(this.getOwnerId());
-    if (myGeneral != null) { applyEffectPositions.push(myGeneral.getPosition()); }
+    if (myGeneral != null) {
+      applyEffectPositions.push(myGeneral.getPosition());
+    }
 
     return applyEffectPositions;
   }

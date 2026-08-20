@@ -28,14 +28,14 @@ let audio_engine = function () {
   this._sfx = [];
   this._music_stopping = [];
   this._voice_stopping = [];
-  this._update_waiting_effect_for_interaction_bound = this._update_waiting_effect_for_interaction.bind(this);
+  this._update_waiting_effect_for_interaction_bound =
+    this._update_waiting_effect_for_interaction.bind(this);
 
   // ensure volumes are updated (Needed for cocos in case no profile will sync yet to trigger updating volumes)
   this._update_volume();
 };
 
 audio_engine.prototype = {
-
   constructor: audio_engine,
 
   // master volume
@@ -289,11 +289,15 @@ audio_engine.prototype = {
       let numEffectsPlaying = 0;
       for (let j = 0, jl = this._sfx.length; j < jl; j++) {
         const existingEffect = this._sfx[j];
-        if (existingEffect.get_is_playing() && existingEffect.get_elapsed() < CONFIG.SFX_MULTIPLIER_DURATION_THRESHOLD) {
+        if (
+          existingEffect.get_is_playing() &&
+          existingEffect.get_elapsed() < CONFIG.SFX_MULTIPLIER_DURATION_THRESHOLD
+        ) {
           numEffectsPlaying++;
         }
       }
-      this._sfx_volume_modifier = (1.0 / Math.max(1, numEffectsPlaying)) ** CONFIG.SFX_MULTIPLIER_POWER;
+      this._sfx_volume_modifier =
+        (1.0 / Math.max(1, numEffectsPlaying)) ** CONFIG.SFX_MULTIPLIER_POWER;
 
       // apply sfx volume
       const sfxVolume = this.get_sfx_volume();
@@ -311,12 +315,16 @@ audio_engine.prototype = {
         const effectList = audioPool[audioKey];
         for (let j = 0, jl = effectList.length; j < jl; j++) {
           const existingEffect = effectList[j];
-          if (existingEffect.getPlaying() && existingEffect.getElapsed() < CONFIG.SFX_MULTIPLIER_DURATION_THRESHOLD) {
+          if (
+            existingEffect.getPlaying() &&
+            existingEffect.getElapsed() < CONFIG.SFX_MULTIPLIER_DURATION_THRESHOLD
+          ) {
             numEffectsPlaying++;
           }
         }
       }
-      this._sfx_volume_modifier = (1.0 / Math.max(1, numEffectsPlaying)) ** CONFIG.SFX_MULTIPLIER_POWER;
+      this._sfx_volume_modifier =
+        (1.0 / Math.max(1, numEffectsPlaying)) ** CONFIG.SFX_MULTIPLIER_POWER;
 
       // apply sfx volume
       const sfxVolume = this.get_sfx_volume();
@@ -339,7 +347,9 @@ audio_engine.prototype = {
    */
   _play(audio, fadeDuration, volume) {
     if (audio instanceof audio_object) {
-      if (volume == null) { volume = this.get_master_volume(); }
+      if (volume == null) {
+        volume = this.get_master_volume();
+      }
 
       // play audio
       const play_promise = audio.play(fadeDuration, volume);
@@ -397,7 +407,9 @@ audio_engine.prototype = {
   play_music(options, fadeDuration) {
     const src = _.isString(options) ? options : options.src;
     if (this._music == null || this._music.get_src() !== src) {
-      if (fadeDuration == null) { fadeDuration = CONFIG.MUSIC_CROSSFADE_DURATION; }
+      if (fadeDuration == null) {
+        fadeDuration = CONFIG.MUSIC_CROSSFADE_DURATION;
+      }
 
       // stop currently playing music
       this.stop_music(fadeDuration);
@@ -421,11 +433,15 @@ audio_engine.prototype = {
    */
   stop_music(fadeDuration) {
     if (this._music != null) {
-      if (fadeDuration == null) { fadeDuration = CONFIG.MUSIC_CROSSFADE_DURATION; }
+      if (fadeDuration == null) {
+        fadeDuration = CONFIG.MUSIC_CROSSFADE_DURATION;
+      }
       const audio = this._music;
       this._music_stopping.push(audio);
       this._music = null;
-      return this._stop(audio, fadeDuration).then(() => { this._music_stopping = _.without(this._music_stopping, audio); });
+      return this._stop(audio, fadeDuration).then(() => {
+        this._music_stopping = _.without(this._music_stopping, audio);
+      });
     }
     return Promise.resolve();
   },
@@ -467,7 +483,9 @@ audio_engine.prototype = {
   play_voice(options, fadeDuration) {
     const src = _.isString(options) ? options : options.src;
     if (this._voice == null || this._voice.get_src() !== src) {
-      if (fadeDuration == null) { fadeDuration = CONFIG.VOICE_CROSSFADE_DURATION; }
+      if (fadeDuration == null) {
+        fadeDuration = CONFIG.VOICE_CROSSFADE_DURATION;
+      }
 
       // stop currently playing voice
       this.stop_voice(fadeDuration);
@@ -491,11 +509,15 @@ audio_engine.prototype = {
    */
   stop_voice(fadeDuration) {
     if (this._voice != null) {
-      if (fadeDuration == null) { fadeDuration = CONFIG.VOICE_CROSSFADE_DURATION; }
+      if (fadeDuration == null) {
+        fadeDuration = CONFIG.VOICE_CROSSFADE_DURATION;
+      }
       const audio = this._voice;
       this._voice_stopping.push(audio);
       this._voice = null;
-      return this._stop(audio, fadeDuration).then(() => { this._voice_stopping = _.without(this._voice_stopping, audio); });
+      return this._stop(audio, fadeDuration).then(() => {
+        this._voice_stopping = _.without(this._voice_stopping, audio);
+      });
     }
     return Promise.resolve();
   },
@@ -575,9 +597,15 @@ audio_engine.prototype = {
    * @returns {audio_object|null} audio sfx object if playing, otherwise null
    */
   play_effect_for_interaction(src, priority) {
-    if (priority == null) { priority = CONFIG.DEFAULT_SFX_PRIORITY; }
+    if (priority == null) {
+      priority = CONFIG.DEFAULT_SFX_PRIORITY;
+    }
 
-    const isPlayingEffect = this._interaction_sfx != null && (window.isDesktop || this._interaction_sfx.getPlaying()) && (Date.now() - this._interaction_sfx_started_at < CONFIG.INTERACTION_SFX_BLOCKING_DURATION_THRESHOLD * 1000.0);
+    const isPlayingEffect =
+      this._interaction_sfx != null &&
+      (window.isDesktop || this._interaction_sfx.getPlaying()) &&
+      Date.now() - this._interaction_sfx_started_at <
+        CONFIG.INTERACTION_SFX_BLOCKING_DURATION_THRESHOLD * 1000.0;
     if (isPlayingEffect) {
       this._interaction_sfx_waiting_src = src;
       this._interaction_sfx_waiting_priority = priority;
@@ -597,10 +625,15 @@ audio_engine.prototype = {
   },
 
   _update_waiting_effect_for_interaction(dt) {
-    if (Date.now() - this._interaction_sfx_waiting_started_at >= CONFIG.SFX_INTERACTION_DELAY * 1000.0) {
+    if (
+      Date.now() - this._interaction_sfx_waiting_started_at >=
+      CONFIG.SFX_INTERACTION_DELAY * 1000.0
+    ) {
       this._play_waiting_effect_for_interaction();
     } else if (this._interaction_sfx_waiting_src != null) {
-      this._interaction_sfx_raf = requestAnimationFrame(this._update_waiting_effect_for_interaction_bound);
+      this._interaction_sfx_raf = requestAnimationFrame(
+        this._update_waiting_effect_for_interaction_bound,
+      );
     }
   },
 
@@ -609,7 +642,11 @@ audio_engine.prototype = {
     const priority = this._interaction_sfx_waiting_priority;
     this._reset_waiting_interaction_sfx();
     if (src != null && priority != null) {
-      const isPlayingEffect = this._interaction_sfx != null && (window.isDesktop || this._interaction_sfx.getPlaying()) && (Date.now() - this._interaction_sfx_started_at < CONFIG.INTERACTION_SFX_BLOCKING_DURATION_THRESHOLD * 1000.0);
+      const isPlayingEffect =
+        this._interaction_sfx != null &&
+        (window.isDesktop || this._interaction_sfx.getPlaying()) &&
+        Date.now() - this._interaction_sfx_started_at <
+          CONFIG.INTERACTION_SFX_BLOCKING_DURATION_THRESHOLD * 1000.0;
       if (!isPlayingEffect || priority > this._interaction_sfx_priority) {
         // stop previous
         if (isPlayingEffect) {
@@ -698,5 +735,4 @@ audio_engine.prototype = {
   },
 
   /* endregion SFX */
-
 };

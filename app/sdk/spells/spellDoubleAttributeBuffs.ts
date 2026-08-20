@@ -20,8 +20,11 @@ class SpellDoubleAttributeBuffs extends Spell {
       const attackDifference = entity.getATK(true) - entity.getBaseATK();
       const healthDifference = entity.getMaxHP(true) - entity.getBaseMaxHP();
 
-      if ((attackDifference !== 0) || (healthDifference !== 0)) {
-        const buffContextObject = Modifier.createContextObjectWithAttributeBuffs(attackDifference, healthDifference);
+      if (attackDifference !== 0 || healthDifference !== 0) {
+        const buffContextObject = Modifier.createContextObjectWithAttributeBuffs(
+          attackDifference,
+          healthDifference,
+        );
         buffContextObject.appliedName = this.appliedName;
         return this.getGameSession().applyModifierContextObject(buffContextObject, entity);
       }

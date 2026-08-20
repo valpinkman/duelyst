@@ -43,10 +43,14 @@ class UpdateSignatureCardAction extends Action {
 
     const activeSignatureCard = this.getTargetPlayer().getCurrentSignatureCard();
     if (activeSignatureCard) {
-      return this.getGameSession().executeAction(this.getTargetPlayer().actionGenerateSignatureCard());
+      return this.getGameSession().executeAction(
+        this.getTargetPlayer().actionGenerateSignatureCard(),
+      );
     }
     this.getTargetPlayer().flushCachedReferenceSignatureCard();
-    return this.getGameSession().getGeneralForPlayerId(this.getTargetPlayerId()).flushCachedReferenceSignatureCard();
+    return this.getGameSession()
+      .getGeneralForPlayerId(this.getTargetPlayerId())
+      .flushCachedReferenceSignatureCard();
   }
 }
 UpdateSignatureCardAction.prototype.targetPlayerId = null;

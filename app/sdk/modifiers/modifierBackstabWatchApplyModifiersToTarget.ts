@@ -22,7 +22,7 @@ class ModifierBackstabWatchApplyModifiersToTarget extends ModifierBackstabWatch 
 
   onBackstabWatch(action) {
     const target = action.getTarget();
-    if ((target != null) && (this.modifiersContextObjects != null)) {
+    if (target != null && this.modifiersContextObjects != null) {
       return (() => {
         const result = [];
         for (var modifier of Array.from<any>(this.modifiersContextObjects)) {
@@ -37,7 +37,8 @@ class ModifierBackstabWatchApplyModifiersToTarget extends ModifierBackstabWatch 
     }
   }
 }
-ModifierBackstabWatchApplyModifiersToTarget.prototype.type = 'ModifierBackstabWatchApplyModifiersToTarget';
+ModifierBackstabWatchApplyModifiersToTarget.prototype.type =
+  'ModifierBackstabWatchApplyModifiersToTarget';
 ModifierBackstabWatchApplyModifiersToTarget.prototype.modifiersContextObjects = null;
 
 module.exports = ModifierBackstabWatchApplyModifiersToTarget;

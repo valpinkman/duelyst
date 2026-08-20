@@ -112,29 +112,61 @@ var FXSprite = BaseSprite.extend({
     if (options.autoStart != null) this.setAutoStart(options.autoStart);
     if (options.impactAtStart != null) this.setImpactAtStart(options.impactAtStart);
     if (options.impactAtEnd != null) this.setImpactAtEnd(options.impactAtEnd);
-    if (options.impactFX) { this.setImpactFX(options.impactFX); }
-    if (options.sourceBoardPosition) { this.setSourceBoardPosition(options.sourceBoardPosition); }
-    if (options.targetBoardPosition) { this.setTargetBoardPosition(options.targetBoardPosition); }
-    if (options.sourceScreenPosition) { this.setSourceScreenPosition(options.sourceScreenPosition, options.sourceOffset); }
-    if (options.targetScreenPosition) { this.setTargetScreenPosition(options.targetScreenPosition, options.targetOffset); }
-    if (options.emitFX) { this.setEmitFX(options.emitFX); }
+    if (options.impactFX) {
+      this.setImpactFX(options.impactFX);
+    }
+    if (options.sourceBoardPosition) {
+      this.setSourceBoardPosition(options.sourceBoardPosition);
+    }
+    if (options.targetBoardPosition) {
+      this.setTargetBoardPosition(options.targetBoardPosition);
+    }
+    if (options.sourceScreenPosition) {
+      this.setSourceScreenPosition(options.sourceScreenPosition, options.sourceOffset);
+    }
+    if (options.targetScreenPosition) {
+      this.setTargetScreenPosition(options.targetScreenPosition, options.targetOffset);
+    }
+    if (options.emitFX) {
+      this.setEmitFX(options.emitFX);
+    }
     if (options.duration != null) this.setDuration(options.duration);
-    if (options.looping != null) { this.setLooping(options.looping); }
-    if (options.fadeLooping != null) { this.setFadeLooping(options.fadeLooping); }
+    if (options.looping != null) {
+      this.setLooping(options.looping);
+    }
+    if (options.fadeLooping != null) {
+      this.setFadeLooping(options.fadeLooping);
+    }
     if (options.fadeInDurationPct != null) this.setFadeInDurationPct(options.fadeInDurationPct);
     if (options.fadeOutDurationPct != null) this.setFadeOutDurationPct(options.fadeOutDurationPct);
-    if (options.rotationPerSecond != null) { this.setRotationPerSecond(options.rotationPerSecond); }
-    if (options.xyzRotationPerSecond != null) { this.setXYZRotationPerSecond(options.xyzRotationPerSecond); }
-    if (options.pulseSmooth != null) { this.setPulseSmooth(options.pulseSmooth); }
-    if (options.pulseScaleMin != null) { this.setPulseScaleMin(options.pulseScaleMin); }
-    if (options.pulseScaleMax != null) { this.setPulseScaleMax(options.pulseScaleMax); }
-    if (options.reverse != null) { this.setReverse(options.reverse); }
-    if (options.removeOnEnd != null) { this.setRemoveOnEnd(options.removeOnEnd); }
+    if (options.rotationPerSecond != null) {
+      this.setRotationPerSecond(options.rotationPerSecond);
+    }
+    if (options.xyzRotationPerSecond != null) {
+      this.setXYZRotationPerSecond(options.xyzRotationPerSecond);
+    }
+    if (options.pulseSmooth != null) {
+      this.setPulseSmooth(options.pulseSmooth);
+    }
+    if (options.pulseScaleMin != null) {
+      this.setPulseScaleMin(options.pulseScaleMin);
+    }
+    if (options.pulseScaleMax != null) {
+      this.setPulseScaleMax(options.pulseScaleMax);
+    }
+    if (options.reverse != null) {
+      this.setReverse(options.reverse);
+    }
+    if (options.removeOnEnd != null) {
+      this.setRemoveOnEnd(options.removeOnEnd);
+    }
     if (options.destinationParent) {
       this.setDestinationParent(options.destinationParent);
       this.setRemoveOnEnd(false);
     }
-    if (options.destinationZOrder != null) { this.setDestinationZOrder(options.destinationZOrder); }
+    if (options.destinationZOrder != null) {
+      this.setDestinationZOrder(options.destinationZOrder);
+    }
   },
 
   setAutoStart(autoStart) {
@@ -165,7 +197,9 @@ var FXSprite = BaseSprite.extend({
   getImpactFXSprites() {
     if (this.impactFX && !this._impactFXSprites) {
       this._impactFXSprites = NodeFactory.createFX(this.impactFX, {
-        targetBoardPosition: UtilsEngine.transformScreenToBoard(this.getTargetOffsetScreenPosition()),
+        targetBoardPosition: UtilsEngine.transformScreenToBoard(
+          this.getTargetOffsetScreenPosition(),
+        ),
       });
       this._calculateImpactFXTimings();
     }
@@ -189,7 +223,10 @@ var FXSprite = BaseSprite.extend({
   getSourceOffsetScreenPosition() {
     let sourceScreenPosition = this.getSourceScreenPosition();
     if (this.sourceOffset) {
-      sourceScreenPosition = cc.p(sourceScreenPosition.x + this.sourceOffset.x, sourceScreenPosition.y + this.sourceOffset.y);
+      sourceScreenPosition = cc.p(
+        sourceScreenPosition.x + this.sourceOffset.x,
+        sourceScreenPosition.y + this.sourceOffset.y,
+      );
     }
     return sourceScreenPosition;
   },
@@ -214,7 +251,10 @@ var FXSprite = BaseSprite.extend({
   getTargetOffsetScreenPosition() {
     let targetScreenPosition = this.getTargetScreenPosition();
     if (this.targetOffset) {
-      targetScreenPosition = cc.p(targetScreenPosition.x + this.targetOffset.x, targetScreenPosition.y + this.targetOffset.y);
+      targetScreenPosition = cc.p(
+        targetScreenPosition.x + this.targetOffset.x,
+        targetScreenPosition.y + this.targetOffset.y,
+      );
     }
     return targetScreenPosition;
   },
@@ -224,7 +264,8 @@ var FXSprite = BaseSprite.extend({
   getScreenPositionFrom(object) {
     if (object instanceof cc.Node) {
       return object.getPosition();
-    } if (object instanceof SDK.Unit) {
+    }
+    if (object instanceof SDK.Unit) {
       return UtilsEngine.transformBoardToTileMap(object.getPosition());
     }
     return object;
@@ -232,7 +273,8 @@ var FXSprite = BaseSprite.extend({
   getBoardPositionFrom(object) {
     if (object instanceof cc.Node) {
       return UtilsEngine.transformScreenToBoard(object.getPosition());
-    } if (object instanceof SDK.Unit) {
+    }
+    if (object instanceof SDK.Unit) {
       return object.getPosition();
     }
     return object;
@@ -391,13 +433,22 @@ var FXSprite = BaseSprite.extend({
         }
 
         if (fxSprite.getLifeDuration) {
-          this._emitFXLifeDuration = Math.max(this._emitFXLifeDuration, fxSprite.getLifeDuration(baseDuration));
+          this._emitFXLifeDuration = Math.max(
+            this._emitFXLifeDuration,
+            fxSprite.getLifeDuration(baseDuration),
+          );
         }
         if (fxSprite.getShowDelay) {
-          this._emitFXShowDelay = Math.max(this._emitFXShowDelay, fxSprite.getShowDelay(baseDuration));
+          this._emitFXShowDelay = Math.max(
+            this._emitFXShowDelay,
+            fxSprite.getShowDelay(baseDuration),
+          );
         }
         if (fxSprite.getImpactDelay) {
-          this._emitFXImpactDelay = Math.max(this._emitFXImpactDelay, fxSprite.getImpactDelay(baseDuration));
+          this._emitFXImpactDelay = Math.max(
+            this._emitFXImpactDelay,
+            fxSprite.getImpactDelay(baseDuration),
+          );
         }
       }
     }
@@ -420,13 +471,19 @@ var FXSprite = BaseSprite.extend({
         }
 
         if (fxSprite.getLifeDuration) {
-          this._impactFXLifeDuration = Math.max(this._impactFXLifeDuration, fxSprite.getLifeDuration());
+          this._impactFXLifeDuration = Math.max(
+            this._impactFXLifeDuration,
+            fxSprite.getLifeDuration(),
+          );
         }
         if (fxSprite.getShowDelay) {
           this._impactFXShowDelay = Math.max(this._impactFXShowDelay, fxSprite.getShowDelay());
         }
         if (fxSprite.getImpactDelay) {
-          this._impactFXImpactDelay = Math.max(this._impactFXImpactDelay, fxSprite.getImpactDelay());
+          this._impactFXImpactDelay = Math.max(
+            this._impactFXImpactDelay,
+            fxSprite.getImpactDelay(),
+          );
         }
       }
     }
@@ -474,11 +531,19 @@ var FXSprite = BaseSprite.extend({
     // fade sequence
     let fadeSequenceSteps;
     let fadeDuration;
-    if (this.fadeInDuration > 0.0 || this.fadeOutDuration > 0.0 || this.fadeInDurationPct > 0.0 || this.fadeOutDurationPct > 0.0) {
+    if (
+      this.fadeInDuration > 0.0 ||
+      this.fadeOutDuration > 0.0 ||
+      this.fadeInDurationPct > 0.0 ||
+      this.fadeOutDurationPct > 0.0
+    ) {
       const duration = animationDuration || mainDuration;
       fadeSequenceSteps = [];
 
-      const fadeDelay = Math.max(0.0, duration - duration * (this.fadeInDurationPct + this.fadeOutDurationPct));
+      const fadeDelay = Math.max(
+        0.0,
+        duration - duration * (this.fadeInDurationPct + this.fadeOutDurationPct),
+      );
       const fadeInDuration = this.fadeInDuration + duration * this.fadeInDurationPct;
       const fadeOutDuration = this.fadeOutDuration + duration * this.fadeOutDurationPct;
       fadeDuration = fadeInDuration + fadeDelay + fadeOutDuration;
@@ -502,7 +567,12 @@ var FXSprite = BaseSprite.extend({
       this._rotationBase = this.getRotation();
       needsUpdate = true;
     }
-    if (this.xyzRotationPerSecond && (this.xyzRotationPerSecond.x !== 0.0 || this.xyzRotationPerSecond.y !== 0.0 || this.xyzRotationPerSecond.z !== 0.0)) {
+    if (
+      this.xyzRotationPerSecond &&
+      (this.xyzRotationPerSecond.x !== 0.0 ||
+        this.xyzRotationPerSecond.y !== 0.0 ||
+        this.xyzRotationPerSecond.z !== 0.0)
+    ) {
       this._xyzRotationBase = this.getXYZRotation();
       needsUpdate = true;
     }
@@ -526,7 +596,11 @@ var FXSprite = BaseSprite.extend({
       } else {
         if (maxDuration - animationDuration) {
           if (this.removeOnEnd) {
-            animationSequenceSteps.push(cc.callFunc(function () { this._texture = null; }, this));
+            animationSequenceSteps.push(
+              cc.callFunc(function () {
+                this._texture = null;
+              }, this),
+            );
           }
           animationSequenceSteps.push(cc.delayTime(maxDuration - animationDuration));
         }
@@ -580,7 +654,10 @@ var FXSprite = BaseSprite.extend({
 
         // shift to center
         const fxSpritePosition = fxSprite.getPosition();
-        fxSprite.setPosition(fxSpritePosition.x + this._contentSize.width * 0.5, fxSpritePosition.y + this._contentSize.height * 0.5);
+        fxSprite.setPosition(
+          fxSpritePosition.x + this._contentSize.width * 0.5,
+          fxSpritePosition.y + this._contentSize.height * 0.5,
+        );
 
         // correct for multiplicative scale
         fxSprite.setScale(fxSprite.getScale() / this.getScale());
@@ -621,10 +698,12 @@ var FXSprite = BaseSprite.extend({
   impact() {
     const impactFXSprites = this.getImpactFXSprites();
     if (impactFXSprites && impactFXSprites.length > 0) {
-      this.getScene().getGameLayer().addNodes(impactFXSprites, {
-        sourceScreenPosition: UtilsEngine.transformScreenToBoard(this.getSourceScreenPosition()),
-        targetScreenPosition: UtilsEngine.transformScreenToBoard(this.getPosition()),
-      });
+      this.getScene()
+        .getGameLayer()
+        .addNodes(impactFXSprites, {
+          sourceScreenPosition: UtilsEngine.transformScreenToBoard(this.getSourceScreenPosition()),
+          targetScreenPosition: UtilsEngine.transformScreenToBoard(this.getPosition()),
+        });
     }
   },
   onEnter() {
@@ -653,7 +732,9 @@ var FXSprite = BaseSprite.extend({
   },
   _textureLoadedCallback(sender) {
     BaseSprite.prototype._textureLoadedCallback.call(this, sender);
-    if (this._running) { this._restart(); }
+    if (this._running) {
+      this._restart();
+    }
   },
   removeChild(child, cleanup) {
     BaseSprite.prototype.removeChild.call(this, child, cleanup);
@@ -678,7 +759,9 @@ var FXSprite = BaseSprite.extend({
       this.setXYZRotation(rotationXYZ);
     }
     if (this.pulseScaleMin !== this.pulseScaleMax) {
-      const pulseTime = this.pulseSmooth ? this.getFX().getLoopingDirectionalTime() : this.getFX().getLoopingTime();
+      const pulseTime = this.pulseSmooth
+        ? this.getFX().getLoopingDirectionalTime()
+        : this.getFX().getLoopingTime();
       this.setScale(this.pulseScaleMax * pulseTime + this.pulseScaleMin * (1.0 - pulseTime));
 
       const { pulseFadeIn } = this;
@@ -686,7 +769,7 @@ var FXSprite = BaseSprite.extend({
       if (pulseTime <= pulseFadeIn) {
         this.setOpacity(255 * Math.min(1.0, pulseTime / pulseFadeIn));
       } else if (pulseTime >= pulseFadeOut) {
-        this.setOpacity(255 * (1.0 - pulseTime) / (1.0 - pulseFadeOut));
+        this.setOpacity((255 * (1.0 - pulseTime)) / (1.0 - pulseFadeOut));
       }
     }
   },
@@ -695,7 +778,9 @@ var FXSprite = BaseSprite.extend({
 FXSprite.WebGLRenderCmd = function (renderable) {
   BaseSprite.WebGLRenderCmd.call(this, renderable);
 };
-const proto = FXSprite.WebGLRenderCmd.prototype = Object.create(BaseSprite.WebGLRenderCmd.prototype);
+const proto = (FXSprite.WebGLRenderCmd.prototype = Object.create(
+  BaseSprite.WebGLRenderCmd.prototype,
+));
 proto.constructor = FXSprite.WebGLRenderCmd;
 
 FXSprite.create = function (options, sprite) {

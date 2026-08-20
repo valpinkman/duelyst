@@ -17,7 +17,6 @@ var ProfileLayout = require('app/ui/views2/profile/profile_layout');
 var i18next = require('i18next');
 
 var BuddySelectionLayout = Backbone.Marionette.LayoutView.extend({
-
   className: 'buddy buddy-selection',
 
   template: BuddySelectionTemplate,
@@ -44,12 +43,12 @@ var BuddySelectionLayout = Backbone.Marionette.LayoutView.extend({
   },
 
   onBeforeRender: function () {
-    this.$el.find('[data-toggle=\'tooltip\']').tooltip('destroy');
+    this.$el.find("[data-toggle='tooltip']").tooltip('destroy');
   },
 
   onRender: function () {
     this.onUpdateBuddy();
-    this.$el.find('[data-toggle=\'tooltip\']').tooltip();
+    this.$el.find("[data-toggle='tooltip']").tooltip();
   },
 
   onShow: function () {
@@ -57,14 +56,19 @@ var BuddySelectionLayout = Backbone.Marionette.LayoutView.extend({
   },
 
   onDestroy: function () {
-    this.$el.find('[data-toggle=\'tooltip\']').tooltip('destroy');
+    this.$el.find("[data-toggle='tooltip']").tooltip('destroy');
   },
 
   onChatManagerConnected: function () {
     this.conversationModel = ChatManager.getInstance().startConversation(this.model.userId);
 
     // show conversation container between me and my buddy
-    this.conversationRegion.show(new ConversationCompositeView({ model: this.conversationModel, collection: this.conversationModel.messages }));
+    this.conversationRegion.show(
+      new ConversationCompositeView({
+        model: this.conversationModel,
+        collection: this.conversationModel.messages,
+      }),
+    );
 
     this.listenTo(this.model, 'change', this.onUpdateBuddy);
   },
@@ -107,13 +111,17 @@ var BuddySelectionLayout = Backbone.Marionette.LayoutView.extend({
 
   onSpectateGame: function () {
     if (this.model.get('status') === ChatManager.STATUS_GAME) {
-      NavigationManager.getInstance().showDialogForLoad().then(function () {
-        // analytics call
-        Analytics.track('spectate game', {
-          category: Analytics.EventCategory.Chat,
-        });
-        GamesManager.getInstance().spectateBuddyGame(this.model.userId);
-      }.bind(this));
+      NavigationManager.getInstance()
+        .showDialogForLoad()
+        .then(
+          function () {
+            // analytics call
+            Analytics.track('spectate game', {
+              category: Analytics.EventCategory.Chat,
+            });
+            GamesManager.getInstance().spectateBuddyGame(this.model.userId);
+          }.bind(this),
+        );
     }
   },
 
@@ -123,27 +131,44 @@ var BuddySelectionLayout = Backbone.Marionette.LayoutView.extend({
 
   onInviteBuddyToGame: function () {
     if (this.getCanSendBuddyGameInvite()) {
-      audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
+      audio_engine
+        .current()
+        .play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
       GamesManager.getInstance().invitePlayerToGame(this.model.userId, this.model.get('username'));
     } else {
-      audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_error.audio, CONFIG.ERROR_SFX_PRIORITY);
+      audio_engine
+        .current()
+        .play_effect_for_interaction(RSX.sfx_ui_error.audio, CONFIG.ERROR_SFX_PRIORITY);
     }
   },
 
   onRemoveBuddy: function () {
-    var confirmDialogItemView = new ConfirmDialogItemView({ title: 'Are you sure you want to remove ' + this.model.get('username') + '?' });
-    this.listenToOnce(confirmDialogItemView, 'confirm', function () {
-      ChatManager.getInstance().removeBuddy(this.model);
-    }.bind(this));
-    this.listenToOnce(confirmDialogItemView, 'cancel', function () {
-      this.stopListening(confirmDialogItemView);
-    }.bind(this));
+    var confirmDialogItemView = new ConfirmDialogItemView({
+      title: 'Are you sure you want to remove ' + this.model.get('username') + '?',
+    });
+    this.listenToOnce(
+      confirmDialogItemView,
+      'confirm',
+      function () {
+        ChatManager.getInstance().removeBuddy(this.model);
+      }.bind(this),
+    );
+    this.listenToOnce(
+      confirmDialogItemView,
+      'cancel',
+      function () {
+        this.stopListening(confirmDialogItemView);
+      }.bind(this),
+    );
     NavigationManager.getInstance().showDialogView(confirmDialogItemView);
   },
 
   getCanSendBuddyGameInvite: function () {
     // only allow buddy game invites when both me and buddy have valid status
-    return ChatManager.getInstance().getIsMyStatusValidForBuddyGameInvite() && ChatManager.getInstance().getIsStatusValidForBuddyGameInvite(this.model.getStatus());
+    return (
+      ChatManager.getInstance().getIsMyStatusValidForBuddyGameInvite() &&
+      ChatManager.getInstance().getIsStatusValidForBuddyGameInvite(this.model.getStatus())
+    );
   },
 
   getShowSpectateBuddyGame: function () {
@@ -151,9 +176,11 @@ var BuddySelectionLayout = Backbone.Marionette.LayoutView.extend({
   },
 
   getCanSpectateBuddyGame: function () {
-    return this.model.get('status') === ChatManager.STATUS_GAME && ChatManager.getInstance().getIsMyStatusValidForBuddyGameInvite();
+    return (
+      this.model.get('status') === ChatManager.STATUS_GAME &&
+      ChatManager.getInstance().getIsMyStatusValidForBuddyGameInvite()
+    );
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

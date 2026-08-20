@@ -6,7 +6,6 @@ var FactionModel = require('app/ui/models/faction');
 var CONFIG = require('app/common/config');
 
 var FactionsCollection = Backbone.Collection.extend({
-
   model: FactionModel,
 
   initialize: function () {
@@ -26,7 +25,7 @@ var FactionsCollection = Backbone.Collection.extend({
 
   comparator: function (a, b) {
     // sort by non-neutrality then id ascending
-    return (a.get('isNeutral') - b.get('isNeutral')) || (a.get('id') - b.get('id'));
+    return a.get('isNeutral') - b.get('isNeutral') || a.get('id') - b.get('id');
   },
 });
 

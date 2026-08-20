@@ -26,11 +26,20 @@ class ModifierOpeningGambitBuffSelfByShadowTileCount extends ModifierOpeningGamb
   }
 
   static createContextObject(attackBuff, maxHPBuff, options) {
-    if (attackBuff == null) { attackBuff = 0; }
-    if (maxHPBuff == null) { maxHPBuff = 0; }
-    if (options == null) { options = undefined; }
+    if (attackBuff == null) {
+      attackBuff = 0;
+    }
+    if (maxHPBuff == null) {
+      maxHPBuff = 0;
+    }
+    if (options == null) {
+      options = undefined;
+    }
     const contextObject = super.createContextObject(options);
-    const perTileStatBuffContextObject = Modifier.createContextObjectWithAttributeBuffs(attackBuff, maxHPBuff);
+    const perTileStatBuffContextObject = Modifier.createContextObjectWithAttributeBuffs(
+      attackBuff,
+      maxHPBuff,
+    );
     perTileStatBuffContextObject.appliedName = 'Drawn Power';
     contextObject.modifiersContextObjects = [perTileStatBuffContextObject];
     return contextObject;
@@ -39,7 +48,13 @@ class ModifierOpeningGambitBuffSelfByShadowTileCount extends ModifierOpeningGamb
   static getDescription(modifierContextObject) {
     if (modifierContextObject) {
       const subContextObject = modifierContextObject.modifiersContextObjects[0];
-      return this.description.replace(/%X/, Stringifiers.stringifyAttackHealthBuff(subContextObject.attributeBuffs.atk, subContextObject.attributeBuffs.maxHP));
+      return this.description.replace(
+        /%X/,
+        Stringifiers.stringifyAttackHealthBuff(
+          subContextObject.attributeBuffs.atk,
+          subContextObject.attributeBuffs.maxHP,
+        ),
+      );
     }
     return this.description;
   }
@@ -47,18 +62,29 @@ class ModifierOpeningGambitBuffSelfByShadowTileCount extends ModifierOpeningGamb
   applyManagedModifiersFromModifiersContextObjects(modifiersContextObjects, card) {
     // apply once per sacrifice
     return __range__(0, this._private.numTilesAtSpawn, false).map((i) =>
-      super.applyManagedModifiersFromModifiersContextObjects(modifiersContextObjects, card));
+      super.applyManagedModifiersFromModifiersContextObjects(modifiersContextObjects, card),
+    );
   }
 
   onOpeningGambit() {
     super.onOpeningGambit();
 
-    this._private.numTilesAtSpawn = ModifierStackingShadows.getNumStacksForPlayer(this.getGameSession().getBoard(), this.getCard().getOwner());
-    return this.applyManagedModifiersFromModifiersContextObjects(this.modifiersContextObjects, this.getCard());
+    this._private.numTilesAtSpawn = ModifierStackingShadows.getNumStacksForPlayer(
+      this.getGameSession().getBoard(),
+      this.getCard().getOwner(),
+    );
+    return this.applyManagedModifiersFromModifiersContextObjects(
+      this.modifiersContextObjects,
+      this.getCard(),
+    );
   }
 }
-ModifierOpeningGambitBuffSelfByShadowTileCount.prototype.type = 'ModifierOpeningGambitBuffSelfByShadowTileCount';
-ModifierOpeningGambitBuffSelfByShadowTileCount.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierOpeningGambitBuffSelfByShadowTileCount.prototype.type =
+  'ModifierOpeningGambitBuffSelfByShadowTileCount';
+ModifierOpeningGambitBuffSelfByShadowTileCount.prototype.fxResource = [
+  'FX.Modifiers.ModifierOpeningGambit',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 
 module.exports = ModifierOpeningGambitBuffSelfByShadowTileCount;
 

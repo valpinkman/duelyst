@@ -16,7 +16,6 @@ var Firebase = require('app/firebase');
 var Manager = require('./manager');
 
 var ProfileManager = Manager.extend({
-
   initialize: function (options) {
     Manager.prototype.initialize.call(this);
   },
@@ -29,10 +28,9 @@ var ProfileManager = Manager.extend({
   onBeforeConnect: function () {
     Manager.prototype.onBeforeConnect.call(this);
 
-    this.profile = new Profile(
-      null,
-      { firebase: process.env.FIREBASE_URL + '/users/' + this.userId },
-    );
+    this.profile = new Profile(null, {
+      firebase: process.env.FIREBASE_URL + '/users/' + this.userId,
+    });
     this._markAsReadyWhenModelsAndCollectionsSynced([this.profile]);
   },
 
@@ -56,5 +54,4 @@ var ProfileManager = Manager.extend({
     }
     return this.profile.set(key, val, options);
   },
-
 });

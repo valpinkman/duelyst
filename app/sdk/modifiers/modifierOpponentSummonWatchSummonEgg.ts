@@ -32,14 +32,32 @@ class ModifierOpponentSummonWatchSummonEgg extends ModifierOpponentSummonWatch {
     super.onSummonWatch(action);
 
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
-      const validSpawnLocations = UtilsGameSession.getSmartSpawnPositionsFromPattern(this.getGameSession(), this.getCard().getPosition(), CONFIG.PATTERN_3x3, this.getCard());
+      const validSpawnLocations = UtilsGameSession.getSmartSpawnPositionsFromPattern(
+        this.getGameSession(),
+        this.getCard().getPosition(),
+        CONFIG.PATTERN_3x3,
+        this.getCard(),
+      );
       if (validSpawnLocations.length > 0) {
-        const spawnLocation = validSpawnLocations.splice(this.getGameSession().getRandomIntegerForExecution(validSpawnLocations.length), 1)[0];
+        const spawnLocation = validSpawnLocations.splice(
+          this.getGameSession().getRandomIntegerForExecution(validSpawnLocations.length),
+          1,
+        )[0];
         const eggToSpawn: Record<string, any> = { id: Cards.Faction5.Egg };
         // add modifiers to card data
-        if (eggToSpawn.additionalInherentModifiersContextObjects == null) { eggToSpawn.additionalInherentModifiersContextObjects = []; }
-        eggToSpawn.additionalInherentModifiersContextObjects.push(ModifierEgg.createContextObject(this.cardDataOrIndexToSpawn, this.eggName));
-        const spawnAction = new PlayCardSilentlyAction(this.getGameSession(), this.getCard().getOwnerId(), spawnLocation.x, spawnLocation.y, eggToSpawn);
+        if (eggToSpawn.additionalInherentModifiersContextObjects == null) {
+          eggToSpawn.additionalInherentModifiersContextObjects = [];
+        }
+        eggToSpawn.additionalInherentModifiersContextObjects.push(
+          ModifierEgg.createContextObject(this.cardDataOrIndexToSpawn, this.eggName),
+        );
+        const spawnAction = new PlayCardSilentlyAction(
+          this.getGameSession(),
+          this.getCard().getOwnerId(),
+          spawnLocation.x,
+          spawnLocation.y,
+          eggToSpawn,
+        );
         spawnAction.setSource(this.getCard());
         return this.getGameSession().executeAction(spawnAction);
       }
@@ -47,7 +65,9 @@ class ModifierOpponentSummonWatchSummonEgg extends ModifierOpponentSummonWatch {
   }
 }
 ModifierOpponentSummonWatchSummonEgg.prototype.type = 'ModifierOpponentSummonWatchSummonEgg';
-ModifierOpponentSummonWatchSummonEgg.prototype.fxResource = ['FX.Modifiers.ModifierOpponentSummonWatch'];
+ModifierOpponentSummonWatchSummonEgg.prototype.fxResource = [
+  'FX.Modifiers.ModifierOpponentSummonWatch',
+];
 ModifierOpponentSummonWatchSummonEgg.prototype.cardDataOrIndexToSpawn = null;
 ModifierOpponentSummonWatchSummonEgg.prototype.eggName = null;
 

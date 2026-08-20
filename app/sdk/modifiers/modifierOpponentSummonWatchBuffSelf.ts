@@ -19,34 +19,52 @@ class ModifierOpponentSummonWatchBuffSelf extends ModifierOpponentSummonWatch {
   static description = 'Whenever opponent summons a minion, this minion gains %X';
 
   static createContextObject(attackBuff, maxHPBuff, options) {
-    if (attackBuff == null) { attackBuff = 0; }
-    if (maxHPBuff == null) { maxHPBuff = 0; }
+    if (attackBuff == null) {
+      attackBuff = 0;
+    }
+    if (maxHPBuff == null) {
+      maxHPBuff = 0;
+    }
     const contextObject = super.createContextObject(options);
-    const statContextObject = Modifier.createContextObjectWithAttributeBuffs(attackBuff, maxHPBuff, {
-      modifierName: this.modifierName,
-      description: Stringifiers.stringifyAttackHealthBuff(attackBuff, maxHPBuff),
-    });
-    statContextObject.appliedName = 'Overseer\'s Growth';
-    contextObject.modifiersContextObjects = [
-      statContextObject,
-    ];
+    const statContextObject = Modifier.createContextObjectWithAttributeBuffs(
+      attackBuff,
+      maxHPBuff,
+      {
+        modifierName: this.modifierName,
+        description: Stringifiers.stringifyAttackHealthBuff(attackBuff, maxHPBuff),
+      },
+    );
+    statContextObject.appliedName = "Overseer's Growth";
+    contextObject.modifiersContextObjects = [statContextObject];
     return contextObject;
   }
 
   static getDescription(modifierContextObject) {
     if (modifierContextObject) {
       const subContextObject = modifierContextObject.modifiersContextObjects[0];
-      return this.description.replace(/%X/, Stringifiers.stringifyAttackHealthBuff(subContextObject.attributeBuffs.atk, subContextObject.attributeBuffs.maxHP));
+      return this.description.replace(
+        /%X/,
+        Stringifiers.stringifyAttackHealthBuff(
+          subContextObject.attributeBuffs.atk,
+          subContextObject.attributeBuffs.maxHP,
+        ),
+      );
     }
     return this.description;
   }
 
   onSummonWatch(action) {
     // override me in sub classes to implement special behavior
-    return this.applyManagedModifiersFromModifiersContextObjects(this.modifiersContextObjects, this.getCard());
+    return this.applyManagedModifiersFromModifiersContextObjects(
+      this.modifiersContextObjects,
+      this.getCard(),
+    );
   }
 }
 ModifierOpponentSummonWatchBuffSelf.prototype.type = 'ModifierOpponentSummonWatchBuffSelf';
-ModifierOpponentSummonWatchBuffSelf.prototype.fxResource = ['FX.Modifiers.ModifierOpponentSummonWatch', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierOpponentSummonWatchBuffSelf.prototype.fxResource = [
+  'FX.Modifiers.ModifierOpponentSummonWatch',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 
 module.exports = ModifierOpponentSummonWatchBuffSelf;

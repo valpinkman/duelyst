@@ -14,7 +14,6 @@ var ProfileManager = require('app/ui/managers/profile_manager');
 var CodexChapterTmpl = require('./templates/codex_chapter.hbs');
 
 var CodexChapterItemView = Backbone.Marionette.ItemView.extend({
-
   className: 'codex-chapter',
 
   template: CodexChapterTmpl,
@@ -137,9 +136,11 @@ var CodexChapterItemView = Backbone.Marionette.ItemView.extend({
         audio_engine.current().play_voice(audio);
       }
       var voice = audio_engine.current().get_voice();
-      voice.when_ended().then(function () {
-        this.stopAudio();
-      }.bind(this));
+      voice.when_ended().then(
+        function () {
+          this.stopAudio();
+        }.bind(this),
+      );
 
       // update seek
       this._elapsedIntervalId = setInterval(this._updateAudioSeek.bind(this), 1000);
@@ -198,9 +199,11 @@ var CodexChapterItemView = Backbone.Marionette.ItemView.extend({
     if (voice == null || !voice.get_is_playing()) {
       this.playAudio();
       voice = audio_engine.current().get_voice();
-      voice.when_playing().then(function () {
-        this.seekAudio(val);
-      }.bind(this));
+      voice.when_playing().then(
+        function () {
+          this.seekAudio(val);
+        }.bind(this),
+      );
     } else {
       var duration = voice.get_duration();
       voice.set_elapsed(duration * val);
@@ -216,7 +219,9 @@ var CodexChapterItemView = Backbone.Marionette.ItemView.extend({
       var seekPct = duration > 0.0 ? elapsed / duration : 0.0;
       var minutes = Math.floor(elapsed / 60);
       var seconds = Math.round(elapsed % 60);
-      this.ui.$audioElapsed.text((minutes < 10 ? '0' + minutes : minutes) + ':' + (seconds < 10 ? '0' + seconds : seconds));
+      this.ui.$audioElapsed.text(
+        (minutes < 10 ? '0' + minutes : minutes) + ':' + (seconds < 10 ? '0' + seconds : seconds),
+      );
       this.ui.$audioSeekRange.val(seekPct);
     } else {
       this.ui.$audioElapsed.text('00:00');
@@ -225,7 +230,6 @@ var CodexChapterItemView = Backbone.Marionette.ItemView.extend({
   },
 
   /* endregion AUDIO */
-
 });
 
 // Expose the class either via CommonJS or the global object

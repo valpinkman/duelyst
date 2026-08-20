@@ -48,7 +48,9 @@ var CreditCardFormView = Backbone.Marionette.ItemView.extend({
 
   onSubmit: function () {
     const _self = this;
-    audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
+    audio_engine
+      .current()
+      .play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
     NavigationManager.getInstance().showDialogView(new ActivityDialogItemView());
 
     this.submit()
@@ -57,16 +59,20 @@ var CreditCardFormView = Backbone.Marionette.ItemView.extend({
         _self.trigger('complete');
       })
       .catch(function (errorMessage) {
-        NavigationManager.getInstance().showDialogView(new ErrorDialogItemView({ title: errorMessage }));
+        NavigationManager.getInstance().showDialogView(
+          new ErrorDialogItemView({ title: errorMessage }),
+        );
       });
   },
 
   submit: function () {
     this.trigger('submit');
-    return new Promise(function (resolve, reject) {
-      var errorMessage = 'Failed to save credit card data.';
-      reject(errorMessage);
-    }.bind(this));
+    return new Promise(
+      function (resolve, reject) {
+        var errorMessage = 'Failed to save credit card data.';
+        reject(errorMessage);
+      }.bind(this),
+    );
   },
 
   isFocused: function () {
@@ -74,7 +80,9 @@ var CreditCardFormView = Backbone.Marionette.ItemView.extend({
   },
 
   onCancelCreditCard: function () {
-    audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_cancel.audio, CONFIG.CANCEL_SFX_PRIORITY);
+    audio_engine
+      .current()
+      .play_effect_for_interaction(RSX.sfx_ui_cancel.audio, CONFIG.CANCEL_SFX_PRIORITY);
     this.trigger('cancel');
   },
 });

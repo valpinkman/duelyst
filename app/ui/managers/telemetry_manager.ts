@@ -19,7 +19,6 @@ var Manager = require('./manager');
 var ProfileManager = require('./profile_manager');
 
 var TelemetryManager = Manager.extend({
-
   _statusReferences: null,
   _statusReferencesIndexHash: null,
 
@@ -61,11 +60,14 @@ var TelemetryManager = Manager.extend({
     if (ProfileManager.getInstance().isReady === true) {
       id = ProfileManager.getInstance().get('id');
     }
-    statusRef.setWithPriority({
-      u: id,
-      l: label || null,
-      v: value || null,
-    }, Firebase.ServerValue.TIMESTAMP);
+    statusRef.setWithPriority(
+      {
+        u: id,
+        l: label || null,
+        v: value || null,
+      },
+      Firebase.ServerValue.TIMESTAMP,
+    );
 
     statusRef.onDisconnect().remove();
 
@@ -90,5 +92,4 @@ var TelemetryManager = Manager.extend({
       this._statusReferences[i].onDisconnect().cancel();
     }
   },
-
 });

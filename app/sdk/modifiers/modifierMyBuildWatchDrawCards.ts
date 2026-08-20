@@ -22,7 +22,10 @@ class ModifierMyBuildWatchDrawCards extends ModifierMyBuildWatch {
     super.onBuildWatch();
 
     return __range__(0, this.drawAmount, false).map((i) =>
-      this.getGameSession().executeAction(new DrawCardAction(this.getGameSession(), this.getCard().getOwnerId())));
+      this.getGameSession().executeAction(
+        new DrawCardAction(this.getGameSession(), this.getCard().getOwnerId()),
+      ),
+    );
   }
 }
 ModifierMyBuildWatchDrawCards.prototype.type = 'ModifierMyBuildWatchDrawCards';

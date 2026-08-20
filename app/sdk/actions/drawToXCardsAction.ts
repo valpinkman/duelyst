@@ -22,7 +22,7 @@ class DrawToXCardsAction extends Action {
   }
 
   setCardCount(cardCountToDrawTo) {
-    return this.cardCount = cardCountToDrawTo;
+    return (this.cardCount = cardCountToDrawTo);
   }
 
   _execute() {
@@ -35,7 +35,8 @@ class DrawToXCardsAction extends Action {
     const neededCards = this.cardCount - deck.getNumCardsInHand();
     if (neededCards > 0) {
       return __range__(0, neededCards, false).map((i) =>
-        this.getGameSession().executeAction(deck.actionDrawCard()));
+        this.getGameSession().executeAction(deck.actionDrawCard()),
+      );
     }
   }
 }

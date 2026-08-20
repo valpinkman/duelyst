@@ -18,7 +18,6 @@ const PromiseUtils = require('../../../common/utils/utils_promise');
  *************************************************************************** */
 
 var BottomDeckLayer = BaseLayer.extend({
-
   _backgroundFrameSprite: null,
   _replaceNode: null,
   _status: null,
@@ -79,13 +78,18 @@ var BottomDeckLayer = BaseLayer.extend({
 
     // background
     if (this._backgroundFrameSprite != null) {
-      this._backgroundFrameSprite.setScale(UtilsEngine.getWindowWidthRelativeNodeScale(this._backgroundFrameSprite));
+      this._backgroundFrameSprite.setScale(
+        UtilsEngine.getWindowWidthRelativeNodeScale(this._backgroundFrameSprite),
+      );
       this._backgroundFrameSprite.setPosition(winCenterPosition.x, winRect.y);
     }
 
     // replace node
     if (this._replaceNode != null) {
-      const replacePosition = cc.p(cardsStartPosition.x - CONFIG.HAND_CARD_SIZE - 15.0, cardsStartPosition.y + 15.0);
+      const replacePosition = cc.p(
+        cardsStartPosition.x - CONFIG.HAND_CARD_SIZE - 15.0,
+        cardsStartPosition.y + 15.0,
+      );
       this._replaceNode.setPosition(replacePosition);
     }
 
@@ -101,11 +105,17 @@ var BottomDeckLayer = BaseLayer.extend({
     const winCenterPosition = UtilsEngine.getGSIWinCenterPosition();
     const cardNodes = this.getCardNodes();
     const numCards = CONFIG.STARTING_HAND_SIZE;
-    const cardsStartPosition = cc.p(winCenterPosition.x - (CONFIG.HAND_CARD_SIZE * (numCards - 1)) * 0.5, winCenterPosition.y);
+    const cardsStartPosition = cc.p(
+      winCenterPosition.x - CONFIG.HAND_CARD_SIZE * (numCards - 1) * 0.5,
+      winCenterPosition.y,
+    );
     for (let i = 0; i < numCards; i++) {
       const cardNode = cardNodes[i];
       if (cardNode != null) {
-        const cardPosition = cc.p(cardsStartPosition.x + CONFIG.HAND_CARD_SIZE * i, cardsStartPosition.y);
+        const cardPosition = cc.p(
+          cardsStartPosition.x + CONFIG.HAND_CARD_SIZE * i,
+          cardsStartPosition.y,
+        );
         cardNode.stopActionByTag(CONFIG.CARD_TAG);
         cardNode.setOpacity(255.0);
         cardNode.setPosition(cardPosition);
@@ -122,7 +132,10 @@ var BottomDeckLayer = BaseLayer.extend({
     for (let i = 0; i < numCards; i++) {
       const cardNode = cardNodes[i];
       if (cardNode != null) {
-        const cardPosition = cc.p(cardsStartPosition.x + CONFIG.HAND_CARD_SIZE * 0.125 + dx * i, cardsStartPosition.y);
+        const cardPosition = cc.p(
+          cardsStartPosition.x + CONFIG.HAND_CARD_SIZE * 0.125 + dx * i,
+          cardsStartPosition.y,
+        );
         cardNode.stopActionByTag(CONFIG.CARD_TAG);
         cardNode.setOpacity(255.0);
         cardNode.setPosition(cardPosition);
@@ -290,12 +303,14 @@ var BottomDeckLayer = BaseLayer.extend({
       }
 
       // delay and then resolve
-      this.runAction(cc.sequence(
-        cc.delayTime(showDelay + 0.5),
-        cc.callFunc(() => {
-          resolve();
-        }),
-      ));
+      this.runAction(
+        cc.sequence(
+          cc.delayTime(showDelay + 0.5),
+          cc.callFunc(() => {
+            resolve();
+          }),
+        ),
+      );
     });
   },
 
@@ -330,12 +345,14 @@ var BottomDeckLayer = BaseLayer.extend({
       }
 
       // delay and then resolve
-      this.runAction(cc.sequence(
-        cc.delayTime(showDelay),
-        cc.callFunc(() => {
-          resolve();
-        }),
-      ));
+      this.runAction(
+        cc.sequence(
+          cc.delayTime(showDelay),
+          cc.callFunc(() => {
+            resolve();
+          }),
+        ),
+      );
     });
   },
 
@@ -364,7 +381,10 @@ var BottomDeckLayer = BaseLayer.extend({
     // card nodes
     let showDelay = 0.0;
     for (let i = 0; i < numCards; i++) {
-      const cardPosition = cc.p(cardsStartPosition.x + CONFIG.HAND_CARD_SIZE * 0.125 + dx * i, cardsStartPosition.y);
+      const cardPosition = cc.p(
+        cardsStartPosition.x + CONFIG.HAND_CARD_SIZE * 0.125 + dx * i,
+        cardsStartPosition.y,
+      );
       showDelay += CONFIG.STAGGER_MEDIUM_DELAY;
       this._showActiveCard(i, cardPosition, showDelay);
     }
@@ -375,19 +395,21 @@ var BottomDeckLayer = BaseLayer.extend({
     } else {
       showDelay += CONFIG.MOVE_SLOW_DURATION * 0.5;
     }
-    this.runAction(cc.sequence(
-      cc.delayTime(showDelay),
-      cc.callFunc(() => {
-        // replace node
-        if (!this._replaceNode.getIsDisabled()) {
-          this._replaceNode.setOpacity(0.0);
-          this._replaceNode.fadeTo(CONFIG.FADE_FAST_DURATION, 255.0);
-        }
+    this.runAction(
+      cc.sequence(
+        cc.delayTime(showDelay),
+        cc.callFunc(() => {
+          // replace node
+          if (!this._replaceNode.getIsDisabled()) {
+            this._replaceNode.setOpacity(0.0);
+            this._replaceNode.fadeTo(CONFIG.FADE_FAST_DURATION, 255.0);
+          }
 
-        // set active
-        this.setStatus(BottomDeckLayer.STATUS.ACTIVE);
-      }),
-    ));
+          // set active
+          this.setStatus(BottomDeckLayer.STATUS.ACTIVE);
+        }),
+      ),
+    );
   },
 
   _showActiveCard(i, cardPosition, showDelay) {
@@ -554,7 +576,6 @@ var BottomDeckLayer = BaseLayer.extend({
   },
 
   /* endregion BINDING */
-
 });
 
 BottomDeckLayer.STATUS = {

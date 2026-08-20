@@ -15,7 +15,7 @@ const ScoreForUnitSummon = function (summonedCard, targetPosition) {
   score += ScoreForUnit(summonedCard);
   // console.log("1 ScoreForUnitSummon = " + score)
 
-  score += (ScoreForCardAtTargetPosition(summonedCard, targetPosition) / 5); // softened to not override value of unit, especially eg. 1/1
+  score += ScoreForCardAtTargetPosition(summonedCard, targetPosition) / 5; // softened to not override value of unit, especially eg. 1/1
   // console.log("2 ScoreForUnitSummon = " + score)
 
   return score;

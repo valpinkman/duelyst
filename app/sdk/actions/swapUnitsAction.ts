@@ -20,13 +20,16 @@ class SwapUnitsAction extends Action {
   _execute() {
     super._execute();
 
-    if ((this.getSource() != null) && (this.getTarget() != null)) {
+    if (this.getSource() != null && this.getTarget() != null) {
       // normally we'll swap these units based on where they were when the action was created
       // but if either unit wasn't yet on the board at action creation, re-evaluate
       // their positions at action execution
       const board = this.getGameSession().getBoard();
 
-      if (!board.isOnBoard(this.getTargetPosition()) || !board.isOnBoard(this.getSourcePosition())) {
+      if (
+        !board.isOnBoard(this.getTargetPosition()) ||
+        !board.isOnBoard(this.getSourcePosition())
+      ) {
         this.setTargetPosition(this.getTarget().getPosition());
         this.setSourcePosition(this.getSource().getPosition());
       }

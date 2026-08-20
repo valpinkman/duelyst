@@ -2,7 +2,7 @@ const RSX = require('./resources');
 
 /**
  * fx.js - map of fx options and resources.
-*/
+ */
 
 const FX = {
   Factions: {
@@ -1928,7 +1928,10 @@ const FX = {
             offset: { x: 15, y: 20 },
             rotation: 65,
             emitFX: {
-              type: 'Light', radius: 50, intensity: 9, duration: 0.75,
+              type: 'Light',
+              radius: 50,
+              intensity: 9,
+              duration: 0.75,
             },
           },
           {
@@ -5104,14 +5107,21 @@ const FX = {
       Lightchaser: {
         UnitAttackedFX: [
           {
-            type: 'Vortex', radius: 90, duration: 1.1, atSource: true, impactAtStart: false,
+            type: 'Vortex',
+            radius: 90,
+            duration: 1.1,
+            atSource: true,
+            impactAtStart: false,
           },
           {
             spriteIdentifier: RSX.fxTeleportOrangeOrb.name,
             offset: { x: 0, y: 15 },
           },
           {
-            spriteIdentifier: RSX.f1CasterProjectile.name, type: 'EnergyBeam', moveDuration: 1, looping: true,
+            spriteIdentifier: RSX.f1CasterProjectile.name,
+            type: 'EnergyBeam',
+            moveDuration: 1,
+            looping: true,
           },
         ],
       },
@@ -5127,9 +5137,7 @@ const FX = {
       IroncliffeGuardian: {
         UnitAttackedFX: [
           {
-            spriteIdentifier: [
-              RSX.fxExplosionMediumWhiteHot.name,
-            ],
+            spriteIdentifier: [RSX.fxExplosionMediumWhiteHot.name],
             flippedX: true,
             offset: { x: 0, y: -20 },
           },
@@ -5186,9 +5194,7 @@ const FX = {
         ],
       },
       RadiantDragoon: {
-        UnitAttackedFX: [
-          { spriteIdentifier: RSX.fxElectricalGroundUpBlue.name, flippedX: true },
-        ],
+        UnitAttackedFX: [{ spriteIdentifier: RSX.fxElectricalGroundUpBlue.name, flippedX: true }],
       },
       SunforgeLancer: {
         UnitAttackedFX: [
@@ -5218,7 +5224,10 @@ const FX = {
       },
       GrandmasterZir: {
         UnitAttackedFX: [
-          { spriteIdentifier: [RSX.fxImpactBigOrange.name, RSX.fxImpactBigOrange.name], flippedX: true },
+          {
+            spriteIdentifier: [RSX.fxImpactBigOrange.name, RSX.fxImpactBigOrange.name],
+            flippedX: true,
+          },
           {
             spriteIdentifier: RSX.fxCollisionSparksBlue.name,
             offset: { x: -10, y: 10 },
@@ -5433,9 +5442,7 @@ const FX = {
                 friction: 0.95,
               },
             ],
-            impactFX: [
-              { spriteIdentifier: RSX.fxImpactBigOrange.name },
-            ],
+            impactFX: [{ spriteIdentifier: RSX.fxImpactBigOrange.name }],
             looping: true,
           },
         ],
@@ -6188,14 +6195,10 @@ const FX = {
         ],
       },
       PrimordialGazer: {
-        UnitAttackedFX: [
-          { spriteIdentifier: RSX.fxCollisionSparksGreen.name, flippedX: true },
-        ],
+        UnitAttackedFX: [{ spriteIdentifier: RSX.fxCollisionSparksGreen.name, flippedX: true }],
       },
       Egg: {
-        UnitAttackedFX: [
-          { spriteIdentifier: [RSX.fxImpactGreenBig.name] },
-        ],
+        UnitAttackedFX: [{ spriteIdentifier: [RSX.fxImpactGreenBig.name] }],
       },
       YoungSilithar: {
         UnitAttackedFX: [
@@ -6302,9 +6305,7 @@ const FX = {
         ],
       },
       AncientGrove: {
-        UnitAttackedFX: [
-          { spriteIdentifier: RSX.fxBubbleEnergySootGround.name },
-        ],
+        UnitAttackedFX: [{ spriteIdentifier: RSX.fxBubbleEnergySootGround.name }],
       },
       HearthSister: {
         UnitAttackedFX: [
@@ -6431,9 +6432,7 @@ const FX = {
         ],
       },
       ArcticRhyno: {
-        UnitAttackedFX: [
-          { spriteIdentifier: RSX.fxCollisionSparksBlue.name, flippedX: true },
-        ],
+        UnitAttackedFX: [{ spriteIdentifier: RSX.fxCollisionSparksBlue.name, flippedX: true }],
       },
       ArcticDisplacer: {
         UnitAttackedFX: [
@@ -6589,9 +6588,7 @@ const FX = {
             offset: { x: 0, y: -22.5 },
           },
         ],
-        UnitDamagedFX: [
-          { spriteIdentifier: RSX.fxCollisionSparksOrange.name, flippedX: true },
-        ],
+        UnitDamagedFX: [{ spriteIdentifier: RSX.fxCollisionSparksOrange.name, flippedX: true }],
       },
       SunSeer: {
         UnitAttackedFX: [
@@ -6693,9 +6690,7 @@ const FX = {
             type: 'Chain',
             impactAtStart: false,
             impactAtEnd: true,
-            impactFX: [
-              { spriteIdentifier: RSX.fxPlasmaBlueHorizontal.name },
-            ],
+            impactFX: [{ spriteIdentifier: RSX.fxPlasmaBlueHorizontal.name }],
           },
           {
             spriteIdentifier: RSX.fxPlasmaBlueHorizontal.name,
@@ -6749,9 +6744,7 @@ const FX = {
         ],
       },
       PrimusShieldmaster: {
-        UnitAttackedFX: [
-          { spriteIdentifier: [RSX.fxImpactWhiteMedium.name] },
-        ],
+        UnitAttackedFX: [{ spriteIdentifier: [RSX.fxImpactWhiteMedium.name] }],
       },
       Moebius: {
         UnitAttackedFX: [
@@ -7510,7 +7503,10 @@ const FX = {
             offset: { x: 0, y: 170 },
           },
           {
-            type: 'Shockwave', atSource: true, radius: 180, duration: 0.75,
+            type: 'Shockwave',
+            atSource: true,
+            radius: 180,
+            duration: 0.75,
           },
           {
             spriteIdentifier: RSX.fxSmokeGround.name,
@@ -7611,9 +7607,7 @@ const FX = {
         ],
       },
       DiamondGolem: {
-        UnitAttackedFX: [
-          { spriteIdentifier: RSX.fxFrozenIceBlock.name },
-        ],
+        UnitAttackedFX: [{ spriteIdentifier: RSX.fxFrozenIceBlock.name }],
       },
       Abjudicator: {
         UnitAttackedFX: [
@@ -7973,9 +7967,7 @@ const FX = {
       ZenRui: {
         UnitAttackedFX: [
           {
-            spriteIdentifier: [
-              RSX.fxExplosionMediumWhiteHot.name,
-            ],
+            spriteIdentifier: [RSX.fxExplosionMediumWhiteHot.name],
             flippedX: true,
             offset: { x: 0, y: -20 },
           },
@@ -8056,9 +8048,7 @@ const FX = {
         ],
       },
       Fog: {
-        UnitAttackedFX: [
-          { spriteIdentifier: [RSX.fxImpactWhiteMedium.name] },
-        ],
+        UnitAttackedFX: [{ spriteIdentifier: [RSX.fxImpactWhiteMedium.name] }],
       },
       Ubo: {
         UnitAttackedFX: [
@@ -8191,9 +8181,7 @@ const FX = {
           {
             spriteIdentifier: RSX.neutralMercGrenadierProjectile.name,
             type: 'Projectile',
-            impactFX: [
-              { spriteIdentifier: RSX.fxImpactBigOrange.name },
-            ],
+            impactFX: [{ spriteIdentifier: RSX.fxImpactBigOrange.name }],
             looping: true,
           },
         ],
@@ -8333,9 +8321,7 @@ const FX = {
             type: 'Chain',
             impactAtStart: false,
             impactAtEnd: true,
-            impactFX: [
-              { spriteIdentifier: RSX.fxPlasmaBlueHorizontal.name },
-            ],
+            impactFX: [{ spriteIdentifier: RSX.fxPlasmaBlueHorizontal.name }],
           },
         ],
       },
@@ -8563,9 +8549,7 @@ const FX = {
             type: 'Chain',
             impactAtStart: false,
             impactAtEnd: true,
-            impactFX: [
-              { spriteIdentifier: RSX.fxPlasmaBlueHorizontal.name },
-            ],
+            impactFX: [{ spriteIdentifier: RSX.fxPlasmaBlueHorizontal.name }],
           },
           {
             spriteIdentifier: RSX.fxPlasmaBlueHorizontal.name,
@@ -8585,9 +8569,7 @@ const FX = {
             type: 'Chain',
             impactAtStart: false,
             impactAtEnd: true,
-            impactFX: [
-              { spriteIdentifier: RSX.fxPlasmaBlueHorizontal.name },
-            ],
+            impactFX: [{ spriteIdentifier: RSX.fxPlasmaBlueHorizontal.name }],
           },
           {
             spriteIdentifier: RSX.fxPlasmaBlueHorizontal.name,
@@ -8737,7 +8719,13 @@ const FX = {
       ],
       MoveFX: [
         {
-          type: 'Particles', plistFile: RSX.ptcl_pixelteleport.plist, needsDepthTest: true, positionType: 'PARTICLE_TYPE_FOLLOW', maxInertia: 16, maxInertiaRandom: 16, friction: 0.9,
+          type: 'Particles',
+          plistFile: RSX.ptcl_pixelteleport.plist,
+          needsDepthTest: true,
+          positionType: 'PARTICLE_TYPE_FOLLOW',
+          maxInertia: 16,
+          maxInertiaRandom: 16,
+          friction: 0.9,
         },
       ],
     },
@@ -8763,9 +8751,7 @@ const FX = {
     ModifierAirdrop: {},
     ModifierAttackEqualsHealth: {},
     ModifierBackstab: {
-      ModifierTriggeredTargetFX: [
-        { spriteIdentifier: RSX.fx_f2_backstab.name },
-      ],
+      ModifierTriggeredTargetFX: [{ spriteIdentifier: RSX.fx_f2_backstab.name }],
     },
     ModifierCannotAttackGeneral: {},
     ModifierCelerity: {},
@@ -8950,12 +8936,8 @@ const FX = {
         {
           spriteIdentifier: RSX.fxSiphon.name,
           type: 'Chain',
-          emitFX: [
-            { plistFile: RSX.ptcl_siphon.plist, type: 'Particles', fitToParent: true },
-          ],
-          impactFX: [
-            { spriteIdentifier: RSX.fxExplosionMediumIcyWhite.name },
-          ],
+          emitFX: [{ plistFile: RSX.ptcl_siphon.plist, type: 'Particles', fitToParent: true }],
+          impactFX: [{ spriteIdentifier: RSX.fxExplosionMediumIcyWhite.name }],
         },
       ],
     },
@@ -8964,9 +8946,7 @@ const FX = {
         {
           spriteIdentifier: RSX.fxChainLightningBlue.name,
           type: 'Chain',
-          impactFX: [
-            { spriteIdentifier: RSX.fxExplosionMediumIcyWhite.name },
-          ],
+          impactFX: [{ spriteIdentifier: RSX.fxExplosionMediumIcyWhite.name }],
         },
       ],
     },
@@ -8975,9 +8955,7 @@ const FX = {
         {
           spriteIdentifier: RSX.fxChainLightningRed.name,
           type: 'Chain',
-          impactFX: [
-            { spriteIdentifier: RSX.fxImpactBigOrange.name },
-          ],
+          impactFX: [{ spriteIdentifier: RSX.fxImpactBigOrange.name }],
         },
       ],
     },
@@ -9115,9 +9093,7 @@ const FX = {
       ],
     },
     ModifierGenericDamageNearbyShadow: {
-      ModifierTriggeredSourceFX: [
-        { spriteIdentifier: RSX.fx_f4_voidpulse.name },
-      ],
+      ModifierTriggeredSourceFX: [{ spriteIdentifier: RSX.fx_f4_voidpulse.name }],
     },
     ModifierGenericHeal: {},
     ModifierGenericKill: {
@@ -9356,9 +9332,7 @@ const FX = {
     },
   },
   Game: {
-    CardDrawFX: [
-      { spriteIdentifier: RSX.fx_carddraw.name, scale: 1 },
-    ],
+    CardDrawFX: [{ spriteIdentifier: RSX.fx_carddraw.name, scale: 1 }],
     CardRemoveFX: [
       {
         spriteIdentifier: RSX.fxCrossSlash.name,
@@ -9366,9 +9340,7 @@ const FX = {
       },
       { spriteIdentifier: RSX.fxBladestorm.name },
     ],
-    CardBurnFX: [
-      { plistFile: RSX.ptcl_fireexplosion.plist, type: 'Particles' },
-    ],
+    CardBurnFX: [{ plistFile: RSX.ptcl_fireexplosion.plist, type: 'Particles' }],
     CardLegendaryPlayFX: [
       {
         spriteIdentifier: RSX.fxSummonLegendary.name,

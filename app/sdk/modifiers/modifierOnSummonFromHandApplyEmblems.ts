@@ -21,8 +21,12 @@ class ModifierOnSummonFromHandApplyEmblems extends ModifierOnSummonFromHand {
   static keywordDefinition = 'Summon to gain a permanent game-changing effect.';
 
   static createContextObject(emblems, applyToSelf, applyToEnemy, options) {
-    if (applyToSelf == null) { applyToSelf = true; }
-    if (applyToEnemy == null) { applyToEnemy = false; }
+    if (applyToSelf == null) {
+      applyToSelf = true;
+    }
+    if (applyToEnemy == null) {
+      applyToEnemy = false;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.emblems = emblems;
     contextObject.applyToSelf = applyToSelf;
@@ -32,8 +36,12 @@ class ModifierOnSummonFromHandApplyEmblems extends ModifierOnSummonFromHand {
 
   onSummonFromHand() {
     if (this.emblems != null) {
-      const general = this.getCard().getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
-      const enemyGeneral = this.getCard().getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
+      const general = this.getCard()
+        .getGameSession()
+        .getGeneralForPlayerId(this.getCard().getOwnerId());
+      const enemyGeneral = this.getCard()
+        .getGameSession()
+        .getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
       return (() => {
         const result = [];
         for (var emblem of Array.from<any>(this.emblems)) {

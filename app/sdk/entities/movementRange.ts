@@ -28,7 +28,7 @@ var MovementRange = (function () {
         declare pathTo: any;
         constructor(_position, parent) {
           this._position = _position;
-          this.pathTo = (parent != null) ? parent.pathTo.slice() : [];
+          this.pathTo = parent != null ? parent.pathTo.slice() : [];
           this.pathTo.push(this._position);
         }
       };
@@ -36,11 +36,11 @@ var MovementRange = (function () {
 
     flushCachedState() {
       super.flushCachedState();
-      return this._pathsToPositionsByIndex = null;
+      return (this._pathsToPositionsByIndex = null);
     }
 
     getValidPositions(board, entity) {
-      if ((this._validPositions == null)) {
+      if (this._validPositions == null) {
         const entityPosition = entity.getPosition();
         const entityMovementPatternMap = entity.getMovementPatternMap();
         const speed = entity.getSpeed();
@@ -63,29 +63,51 @@ var MovementRange = (function () {
           var node = nodesToProcess.shift();
           for (var offset of Array.from<any>(step)) {
             // calculate distance and current speed required to get to this node
-            var distance = Math.sqrt((offset.x * offset.x) + (offset.y * offset.y));
+            var distance = Math.sqrt(offset.x * offset.x + offset.y * offset.y);
             var nextSpeed = node.speed + distance;
             // skip this node if it is too far away
             if (nextSpeed > speed) {
               continue;
             }
 
-            var nextNode: Record<string, any> = { x: node.x + offset.x, y: node.y + offset.y, speed: nextSpeed };
-            var movePosition = { x: entityPosition.x + nextNode.x, y: entityPosition.y + nextNode.y };
-            var index = UtilsPosition.getMapIndexFromPosition(columnCount, movePosition.x, movePosition.y);
+            var nextNode: Record<string, any> = {
+              x: node.x + offset.x,
+              y: node.y + offset.y,
+              speed: nextSpeed,
+            };
+            var movePosition = {
+              x: entityPosition.x + nextNode.x,
+              y: entityPosition.y + nextNode.y,
+            };
+            var index = UtilsPosition.getMapIndexFromPosition(
+              columnCount,
+              movePosition.x,
+              movePosition.y,
+            );
             // skip this node if we already have a shorter path to this position
             // or if the node is off the board or not within pattern
-            if ((bufferInterface[index] === 1) || !board.isOnBoard(movePosition) || !this.getIsPositionInPatternMap(board, entityMovementPatternMap, nextNode)) {
+            if (
+              bufferInterface[index] === 1 ||
+              !board.isOnBoard(movePosition) ||
+              !this.getIsPositionInPatternMap(board, entityMovementPatternMap, nextNode)
+            ) {
               continue;
             }
 
             // mark position as tested
             bufferInterface[index] = 1;
 
-            var obstructionAtPosition = board.getObstructionAtPositionForEntity(movePosition, entity);
+            var obstructionAtPosition = board.getObstructionAtPositionForEntity(
+              movePosition,
+              entity,
+            );
 
             // valid node to path through if unoccupied, occupant is same team, or moving entity is flying
-            if (!obstructionAtPosition || entity.getIsSameTeamAs(obstructionAtPosition) || entity.hasActiveModifierClass(ModifierFlying)) {
+            if (
+              !obstructionAtPosition ||
+              entity.getIsSameTeamAs(obstructionAtPosition) ||
+              entity.hasActiveModifierClass(ModifierFlying)
+            ) {
               nextNode.parent = node;
               nodesToProcess.push(nextNode);
             }
@@ -93,14 +115,10 @@ var MovementRange = (function () {
             // valid node to move to only if nothing is there
             if (!obstructionAtPosition) {
               var path = [movePosition];
-              var {
-                parent,
-              } = nextNode;
+              var { parent } = nextNode;
               while (parent != null) {
                 path.unshift({ x: entityPosition.x + parent.x, y: entityPosition.y + parent.y });
-                ({
-                  parent,
-                } = parent);
+                ({ parent } = parent);
               }
               validPositions.push(path);
             }
@@ -114,8 +132,14 @@ var MovementRange = (function () {
     getPathTo(board, entity, position) {
       if (board.isOnBoard(position)) {
         // if we've already tested this position, return previous result
-        const index = UtilsPosition.getMapIndexFromPosition(board.getColumnCount(), position.x, position.y);
-        if ((this._pathsToPositionsByIndex == null)) { this._pathsToPositionsByIndex = {}; }
+        const index = UtilsPosition.getMapIndexFromPosition(
+          board.getColumnCount(),
+          position.x,
+          position.y,
+        );
+        if (this._pathsToPositionsByIndex == null) {
+          this._pathsToPositionsByIndex = {};
+        }
         let path = this._pathsToPositionsByIndex[index];
         if (path != null) {
           return path;
@@ -123,9 +147,9 @@ var MovementRange = (function () {
         const moves = this.getValidPositions(board, entity);
         for (path of Array.from<any>(moves)) {
           var realEnd = path[path.length - 1];
-          if ((realEnd.x === position.x) && (realEnd.y === position.y)) {
+          if (realEnd.x === position.x && realEnd.y === position.y) {
             // valid path found
-            return this._pathsToPositionsByIndex[index] = path;
+            return (this._pathsToPositionsByIndex[index] = path);
           }
         }
 
@@ -144,8 +168,14 @@ var MovementRange = (function () {
 
     getPatternByDistance(board, distance) {
       let pattern = MovementRange.patternsByDistance[distance];
-      if ((pattern == null)) {
-        Range._generateAndCachePatternAndMap(board, distance, CONFIG.MOVE_PATTERN_STEP, MovementRange.patternsByDistance, MovementRange.patternMapsByDistance);
+      if (pattern == null) {
+        Range._generateAndCachePatternAndMap(
+          board,
+          distance,
+          CONFIG.MOVE_PATTERN_STEP,
+          MovementRange.patternsByDistance,
+          MovementRange.patternMapsByDistance,
+        );
         pattern = MovementRange.patternsByDistance[distance];
       }
       return pattern;
@@ -153,8 +183,14 @@ var MovementRange = (function () {
 
     getPatternMapByDistance(board, distance) {
       let patternMap = MovementRange.patternMapsByDistance[distance];
-      if ((patternMap == null)) {
-        Range._generateAndCachePatternAndMap(board, distance, CONFIG.MOVE_PATTERN_STEP, MovementRange.patternsByDistance, MovementRange.patternMapsByDistance);
+      if (patternMap == null) {
+        Range._generateAndCachePatternAndMap(
+          board,
+          distance,
+          CONFIG.MOVE_PATTERN_STEP,
+          MovementRange.patternsByDistance,
+          MovementRange.patternMapsByDistance,
+        );
         patternMap = MovementRange.patternMapsByDistance[distance];
       }
       return patternMap;
@@ -162,6 +198,6 @@ var MovementRange = (function () {
   };
   MovementRange.initClass();
   return MovementRange;
-}());
+})();
 
 module.exports = MovementRange;

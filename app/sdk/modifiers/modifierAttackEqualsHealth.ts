@@ -42,7 +42,7 @@ class ModifierAttackEqualsHealth extends Modifier {
   }
 
   getBuffsAttribute(buffKey) {
-    return (buffKey === 'atk') || super.getBuffsAttribute(buffKey);
+    return buffKey === 'atk' || super.getBuffsAttribute(buffKey);
   }
 
   updateCachedStateAfterActive() {

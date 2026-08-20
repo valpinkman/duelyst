@@ -42,22 +42,33 @@ class SpellForgeArtifact extends Spell {
         artifactModifiers.push(ModifierTakeDamageWatchHealMyGeneral.createContextObject(attack));
       } else if (faction === 2) {
         cardDataToEquip = { id: Cards.Artifact.SonghaiRelic };
-        artifactModifiers.push(ModifierMyAttackOrCounterattackWatchDamageRandomEnemy.createContextObject(attack));
+        artifactModifiers.push(
+          ModifierMyAttackOrCounterattackWatchDamageRandomEnemy.createContextObject(attack),
+        );
       } else if (faction === 3) {
         cardDataToEquip = { id: Cards.Artifact.VetruvianRelic };
         artifactModifiers.push(ModifierMyAttackWatchSummonDeadMinions.createContextObject(attack));
       } else if (faction === 4) {
         cardDataToEquip = { id: Cards.Artifact.AbyssianRelic };
-        artifactModifiers.push(ModifierMyAttackMinionWatchStealGeneralHealth.createContextObject(attack));
+        artifactModifiers.push(
+          ModifierMyAttackMinionWatchStealGeneralHealth.createContextObject(attack),
+        );
       } else if (faction === 5) {
         cardDataToEquip = { id: Cards.Artifact.MagmarRelic };
         const statsBuff = Modifier.createContextObjectWithAttributeBuffs(attack, attack);
         statsBuff.appliedName = this.magmarModifierAppliedName;
-        const attackWatchModifier = ModifierDealDamageWatchApplyModifiersToAllies.createContextObject([statsBuff], false);
+        const attackWatchModifier =
+          ModifierDealDamageWatchApplyModifiersToAllies.createContextObject([statsBuff], false);
         artifactModifiers.push(attackWatchModifier);
       } else if (faction === 6) {
         cardDataToEquip = { id: Cards.Artifact.VanarRelic };
-        artifactModifiers.push(ModifierMyAttackWatchSpawnMinionNearby.createContextObject({ id: Cards.Faction6.ShadowVespyr }, i18next.t('cards.faction_6_unit_night_howler_name'), attack));
+        artifactModifiers.push(
+          ModifierMyAttackWatchSpawnMinionNearby.createContextObject(
+            { id: Cards.Faction6.ShadowVespyr },
+            i18next.t('cards.faction_6_unit_night_howler_name'),
+            attack,
+          ),
+        );
       } else {
         cardDataToEquip = { id: Cards.Artifact.NeutralRelic };
       }
@@ -67,9 +78,17 @@ class SpellForgeArtifact extends Spell {
       artifactModifiers.push(attackBuff);
 
       cardDataToEquip.targetModifiersContextObjects = artifactModifiers;
-      cardDataToEquip.additionalInherentModifiersContextObjects = [ModifierForgedArtifactDescription.createContextObject(faction, attack)];
+      cardDataToEquip.additionalInherentModifiersContextObjects = [
+        ModifierForgedArtifactDescription.createContextObject(faction, attack),
+      ];
 
-      const playCardAction = new PlayCardSilentlyAction(this.getGameSession(), this.getOwnerId(), x, y, cardDataToEquip);
+      const playCardAction = new PlayCardSilentlyAction(
+        this.getGameSession(),
+        this.getOwnerId(),
+        x,
+        y,
+        cardDataToEquip,
+      );
       playCardAction.setSource(this);
       return this.getGameSession().executeAction(playCardAction);
     }

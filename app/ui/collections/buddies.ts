@@ -7,7 +7,6 @@ var DuelystFirebase = require('app/ui/extensions/duelyst_firebase');
 var PresenceCollection = require('./presence');
 
 var BuddiesCollection = DuelystFirebase.Collection.extend({
-
   _presenceCollection: null,
 
   initialize: function () {
@@ -22,18 +21,22 @@ var BuddiesCollection = DuelystFirebase.Collection.extend({
     Logger.module('UI').log('BuddiesCollection::onAdd');
     var presenceReferenceURL = process.env.FIREBASE_URL + '/users/' + model.id + '/presence';
     var buddyPresenceModel = new PresenceModel(null, { firebase: presenceReferenceURL });
-    buddyPresenceModel.onSyncOrReady().then(function () {
-      if (buddyPresenceModel.has('status') && buddyPresenceModel.has('username')) {
-        buddyPresenceModel.userId = model.id;
-        this._presenceCollection.add(buddyPresenceModel);
-        this.trigger('presence_change', buddyPresenceModel);
-        buddyPresenceModel.on('change', this.onPresenceChange, this);
-      } else {
-        Logger.module('UI').log('BuddiesCollection::onPresenceChange -> detected a buddy with no presence record. Might be a deleted user... deleting buddy record');
-        // Logger.module("UI").log("BuddiesCollection::onPresenceChange -> destroying buddy",model);
-        // this.remove(model);
-      }
-    }.bind(this));
+    buddyPresenceModel.onSyncOrReady().then(
+      function () {
+        if (buddyPresenceModel.has('status') && buddyPresenceModel.has('username')) {
+          buddyPresenceModel.userId = model.id;
+          this._presenceCollection.add(buddyPresenceModel);
+          this.trigger('presence_change', buddyPresenceModel);
+          buddyPresenceModel.on('change', this.onPresenceChange, this);
+        } else {
+          Logger.module('UI').log(
+            'BuddiesCollection::onPresenceChange -> detected a buddy with no presence record. Might be a deleted user... deleting buddy record',
+          );
+          // Logger.module("UI").log("BuddiesCollection::onPresenceChange -> destroying buddy",model);
+          // this.remove(model);
+        }
+      }.bind(this),
+    );
   },
 
   onRemove: function (model) {
@@ -52,13 +55,19 @@ var BuddiesCollection = DuelystFirebase.Collection.extend({
     if (buddyPresenceModel.has('status')) {
       // lazy init throttle on presence list updates
       if (this._presenceCollectionUpdateThrottled == null) {
-        this._presenceCollectionUpdateThrottled = _.throttle(function () {
-          this._presenceCollection.sort();
-        }.bind(this), 1000 / CONFIG.MAX_BUDDY_LIST_UPDATES_PER_SECOND);
+        this._presenceCollectionUpdateThrottled = _.throttle(
+          function () {
+            this._presenceCollection.sort();
+          }.bind(this),
+          1000 / CONFIG.MAX_BUDDY_LIST_UPDATES_PER_SECOND,
+        );
       }
 
       // update presence collection
-      if (buddyPresenceModel.hasChanged('status') || buddyPresenceModel.hasChanged('_lastUnreadMessageAt'))
+      if (
+        buddyPresenceModel.hasChanged('status') ||
+        buddyPresenceModel.hasChanged('_lastUnreadMessageAt')
+      )
         this._presenceCollectionUpdateThrottled();
 
       // if the status has changed, notify anyone listening via presence_change
@@ -73,15 +82,19 @@ var BuddiesCollection = DuelystFirebase.Collection.extend({
 
   getOnlineBuddyCount: function () {
     var count = 0;
-    this._presenceCollection.each(function (presence) {
-      if (this.getIsBuddyOnlineByPresence(presence)) {
-        count++;
-      }
-    }.bind(this));
+    this._presenceCollection.each(
+      function (presence) {
+        if (this.getIsBuddyOnlineByPresence(presence)) {
+          count++;
+        }
+      }.bind(this),
+    );
     return count;
   },
   getIsBuddyOnlineById: function (buddyId) {
-    var presence = this._presenceCollection.find(function (presenceModel) { return presenceModel.userId == buddyId; });
+    var presence = this._presenceCollection.find(function (presenceModel) {
+      return presenceModel.userId == buddyId;
+    });
     return this.getIsBuddyOnlineByPresence(presence);
   },
   getIsBuddyOnlineByPresence: function (presence) {

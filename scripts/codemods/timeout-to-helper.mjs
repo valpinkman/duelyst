@@ -37,12 +37,17 @@ function walk(node, visit, parents = []) {
   }
 }
 
-let files = 0; let sites = 0;
+let files = 0;
+let sites = 0;
 for (const file of process.argv.slice(2)) {
   const src = fs.readFileSync(file, 'utf8');
   let ast;
-  try { ast = tsParser.parse(src, { ecmaVersion: 2022, sourceType: 'script', range: true }); }
-  catch { console.log(`skipped ${file}: parse error`); continue; }
+  try {
+    ast = tsParser.parse(src, { ecmaVersion: 2022, sourceType: 'script', range: true });
+  } catch {
+    console.log(`skipped ${file}: parse error`);
+    continue;
+  }
 
   const hits = [];
   walk(ast, (node) => {
@@ -53,7 +58,12 @@ for (const file of process.argv.slice(2)) {
     if (node.arguments.length !== 1) return;
     const arg = node.arguments[0];
     if (arg.type !== 'Literal' || typeof arg.value !== 'number') return;
-    hits.push({ objStart: c.object.range[0], objEnd: c.object.range[1], end: node.range[1], ms: arg.value });
+    hits.push({
+      objStart: c.object.range[0],
+      objEnd: c.object.range[1],
+      end: node.range[1],
+      ms: arg.value,
+    });
   });
   if (!hits.length) continue;
 
@@ -72,13 +82,19 @@ for (const file of process.argv.slice(2)) {
     if (reqs.length) {
       const last = reqs[reqs.length - 1];
       const depth = file.startsWith('app/') ? 0 : (file.match(/\//g) || []).length;
-      const rel = depth ? `${'../'.repeat(depth)}app/common/utils/utils_promise` : 'app/common/utils/utils_promise';
+      const rel = depth
+        ? `${'../'.repeat(depth)}app/common/utils/utils_promise`
+        : 'app/common/utils/utils_promise';
       out = `${out.slice(0, last.index + last[0].length)}\nconst PromiseUtils = require('${rel}');${out.slice(last.index + last[0].length)}`;
     }
   }
 
-  try { tsParser.parse(out, { ecmaVersion: 2022, sourceType: 'script' }); }
-  catch { console.log(`SKIPPED ${file}: output would not parse`); continue; }
+  try {
+    tsParser.parse(out, { ecmaVersion: 2022, sourceType: 'script' });
+  } catch {
+    console.log(`SKIPPED ${file}: output would not parse`);
+    continue;
+  }
 
   fs.writeFileSync(file, out);
   files += 1;

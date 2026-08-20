@@ -21,7 +21,9 @@ const router = express.Router();
 router.get('/', function (req, res, next) {
   const user_id = req.user.d.id;
 
-  return knex('user_new_player_progression').where('user_id', user_id).select()
+  return knex('user_new_player_progression')
+    .where('user_id', user_id)
+    .select()
     .then(function (challengeRows) {
       challengeRows = DataAccessHelpers.restifyData(challengeRows);
       return res.status(200).json(challengeRows);
@@ -39,7 +41,8 @@ router.post('/core', function (req, res, next) {
       } else {
         return res.status(304).json({});
       }
-    }).catch((error) => next(error));
+    })
+    .catch((error) => next(error));
 });
 
 router.post('/:module_name/stage', function (req, res, next) {
@@ -60,12 +63,16 @@ router.post('/:module_name/stage', function (req, res, next) {
   return UsersModule.setNewPlayerFeatureProgression(user_id, module_name, stage)
     .then(function (progressionData) {
       _chainState.progressionData = progressionData;
-      if ((module_name === NewPlayerProgressionModuleLookup.Core) && NewPlayerProgressionHelper.questsForStage(stage)) {
+      if (
+        module_name === NewPlayerProgressionModuleLookup.Core &&
+        NewPlayerProgressionHelper.questsForStage(stage)
+      ) {
         return QuestsModule.generateBeginnerQuests(user_id);
       } else {
         return Promise.resolve();
       }
-    }).then(function (questData) {
+    })
+    .then(function (questData) {
       if (questData) {
         _chainState.questData = questData;
       }

@@ -33,13 +33,19 @@ router.delete('/card_collection', function (req, res, next) {
   const user_id = req.user.d.id;
   const card_ids = result.value;
 
-  Logger.module('API').debug(`Disenchanting cards ${util.inspect(card_ids)} for user ${user_id.blue}`.magenta);
+  Logger.module('API').debug(
+    `Disenchanting cards ${util.inspect(card_ids)} for user ${user_id.blue}`.magenta,
+  );
   return InventoryModule.disenchantCards(user_id, card_ids)
     .then(function (rewardsData) {
       Logger.module('API').debug(`Disenchanted cards for user ${user_id.blue}`.cyan);
       return res.status(200).json(rewardsData);
-    }).catch(function (error) {
-      Logger.module('API').error(`ERROR Disenchanting cards for user ${user_id.blue}`.red, util.inspect(error));
+    })
+    .catch(function (error) {
+      Logger.module('API').error(
+        `ERROR Disenchanting cards for user ${user_id.blue}`.red,
+        util.inspect(error),
+      );
       return next(error);
     });
 });
@@ -52,8 +58,12 @@ router.delete('/card_collection/duplicates', function (req, res, next) {
     .then(function (rewardsData) {
       Logger.module('API').debug(`Disenchanted cards for user ${user_id.blue}`.cyan);
       return res.status(200).json(rewardsData);
-    }).catch(function (error) {
-      Logger.module('API').error(`ERROR Disenchanting cards for user ${user_id.blue}`.red, util.inspect(error));
+    })
+    .catch(function (error) {
+      Logger.module('API').error(
+        `ERROR Disenchanting cards for user ${user_id.blue}`.red,
+        util.inspect(error),
+      );
       return next(error);
     });
 });
@@ -72,8 +82,13 @@ router.post('/card_collection/:card_id', function (req, res, next) {
     .then(function (data) {
       Logger.module('API').debug(`Crafted card ${card_id} for user ${user_id.blue}`.cyan);
       return res.status(200).json(data);
-    }).catch(onType(Errors.InsufficientFundsError, (error) => res.status(403).json({}))).catch(function (error) {
-      Logger.module('API').error(`ERROR crafting card for user ${user_id.blue}`.red, util.inspect(error));
+    })
+    .catch(onType(Errors.InsufficientFundsError, (error) => res.status(403).json({})))
+    .catch(function (error) {
+      Logger.module('API').error(
+        `ERROR crafting card for user ${user_id.blue}`.red,
+        util.inspect(error),
+      );
       return next(error);
     });
 });
@@ -122,32 +137,36 @@ router.put('/card_lore_collection/:card_id/read_lore_at', function (req, res, ne
 
 router.post('/spirit_orbs', function (req, res, next) {
   const user_id = req.user.d.id;
-  const {
-    sku,
-  } = req.body;
-  const {
-    qty,
-  } = req.body;
-  const {
-    card_set_id,
-  } = req.body;
-  const {
-    currency_type,
-  } = req.body;
+  const { sku } = req.body;
+  const { qty } = req.body;
+  const { card_set_id } = req.body;
+  const { currency_type } = req.body;
 
-  Logger.module('API').debug(`Buying ${qty} Booster Packs for user ${user_id.blue} from set ${card_set_id}`.magenta);
+  Logger.module('API').debug(
+    `Buying ${qty} Booster Packs for user ${user_id.blue} from set ${card_set_id}`.magenta,
+  );
 
   if (currency_type === 'soft') {
     Logger.module('API').debug(`Buying Booster Packs for user ${user_id.blue} with GOLD`);
     return InventoryModule.buyBoosterPacksWithGold(user_id, qty, card_set_id, sku)
       .then(function (value) {
-        Logger.module('API').debug(`COMPLETE Buying Booster Pack with GOLD for user ${user_id.blue}`.cyan);
+        Logger.module('API').debug(
+          `COMPLETE Buying Booster Pack with GOLD for user ${user_id.blue}`.cyan,
+        );
         return res.status(200).json(value);
-      }).catch(onType(Errors.InsufficientFundsError, function (error) {
-        Logger.module('API').error(`INSUFFICIENT FUNDS Buying Booster Pack with GOLD for user ${user_id.blue}`.red);
-        return res.status(403).json({});
-      })).catch(function (error) {
-        Logger.module('API').error(`ERROR Buying Booster Pack with GOLD for user ${user_id.blue}`.red);
+      })
+      .catch(
+        onType(Errors.InsufficientFundsError, function (error) {
+          Logger.module('API').error(
+            `INSUFFICIENT FUNDS Buying Booster Pack with GOLD for user ${user_id.blue}`.red,
+          );
+          return res.status(403).json({});
+        }),
+      )
+      .catch(function (error) {
+        Logger.module('API').error(
+          `ERROR Buying Booster Pack with GOLD for user ${user_id.blue}`.red,
+        );
         return next(error);
       });
   } else if (currency_type === 'hard') {
@@ -156,7 +175,10 @@ router.post('/spirit_orbs', function (req, res, next) {
 });
 
 router.put('/spirit_orbs/opened/:booster_pack_id', function (req, res, next) {
-  const result = t.validate(req.params.booster_pack_id, t.subtype(t.Str, (s) => s.length === 20));
+  const result = t.validate(
+    req.params.booster_pack_id,
+    t.subtype(t.Str, (s) => s.length === 20),
+  );
   if (!result.isValid()) {
     return res.status(400).json(result.errors);
   }
@@ -169,7 +191,8 @@ router.put('/spirit_orbs/opened/:booster_pack_id', function (req, res, next) {
     .then(function (value) {
       Logger.module('API').debug(`UNLOCKED Booster Pack ${pack_id} for user ${user_id.blue}`.cyan);
       return res.status(200).json(value);
-    }).catch(function (error) {
+    })
+    .catch(function (error) {
       Logger.module('API').error(`ERROR Unlocking Booster Pack for user ${user_id.blue}`.red);
       return next(error);
     });
@@ -182,8 +205,17 @@ router.post('/gauntlet_tickets', function (req, res, next) {
     .then(function (data) {
       Logger.module('API').debug(`Arena ticket PURCHASED for user ${user_id.blue}`.cyan);
       return res.status(200).json(data);
-    }).catch(onType(Errors.InsufficientFundsError, (error) => res.status(401).json({ message: 'Insufficient gold to buy a Gauntlet ticket.' }))).catch(function (error) {
-      Logger.module('API').error(`ERROR buying arena ticket for user ${user_id.blue}`.red, util.inspect(error));
+    })
+    .catch(
+      onType(Errors.InsufficientFundsError, (error) =>
+        res.status(401).json({ message: 'Insufficient gold to buy a Gauntlet ticket.' }),
+      ),
+    )
+    .catch(function (error) {
+      Logger.module('API').error(
+        `ERROR buying arena ticket for user ${user_id.blue}`.red,
+        util.inspect(error),
+      );
       return next(error);
     });
 });
@@ -195,8 +227,17 @@ router.post('/rift_tickets', function (req, res, next) {
     .then(function (ticketId) {
       Logger.module('API').log(`Rift ticket ${ticketId} PURCHASED for user ${user_id.blue}`.cyan);
       return res.status(200).json({ id: ticketId });
-    }).catch(onType(Errors.InsufficientFundsError, (error) => res.status(401).json({ message: 'Insufficient gold to buy a Rift ticket.' }))).catch(function (error) {
-      Logger.module('API').error(`ERROR buying rift ticket for user ${user_id.blue}`.red, util.inspect(error));
+    })
+    .catch(
+      onType(Errors.InsufficientFundsError, (error) =>
+        res.status(401).json({ message: 'Insufficient gold to buy a Rift ticket.' }),
+      ),
+    )
+    .catch(function (error) {
+      Logger.module('API').error(
+        `ERROR buying rift ticket for user ${user_id.blue}`.red,
+        util.inspect(error),
+      );
       return next(error);
     });
 });
@@ -205,19 +246,23 @@ router.post('/codex/missing', function (req, res, next) {
   const user_id = req.user.d.id;
 
   return InventoryModule.giveUserMissingCodexChapters(user_id)
-    .then((acquiredCodexChapterIds) => res.status(200).json(acquiredCodexChapterIds)).catch((error) => next(error));
+    .then((acquiredCodexChapterIds) => res.status(200).json(acquiredCodexChapterIds))
+    .catch((error) => next(error));
 });
 
 // "Soft Wipe" is a mechanism for replacing a user's inventory with unopened orbs.
 // This was a temporary system which ended on 2016-04-20.
 // See server/lib/data_access/inventory:softWipeUserCardInventory.
 // Stub the handler so we can remove the AWS SDK dependency.
-router.post('/card_collection/soft_wipe', (req, res, next) => res.status(403).json({
-  status: 'error',
-  code: 403,
-  message: 'Inventory soft wipes are no longer available.',
-}),
-/*
+router.post(
+  '/card_collection/soft_wipe',
+  (req, res, next) =>
+    res.status(403).json({
+      status: 'error',
+      code: 403,
+      message: 'Inventory soft wipes are no longer available.',
+    }),
+  /*
   user_id = req.user.d.id
   password = req.body.password
   Logger.module("API").debug "#{user_id} requesting inventory soft wipe"
@@ -282,7 +327,8 @@ router.post('/card_collection/soft_wipe', (req, res, next) => res.status(403).js
   .catch Errors.BadRequestError, (e) ->
     return res.status(400).json({message:e.message})
   .catch (error) -> next(error)
-  */);
+  */
+);
 
 // Crafting a cosmetic
 router.post('/cosmetics/:cosmetic_id', function (req, res, next) {
@@ -299,8 +345,17 @@ router.post('/cosmetics/:cosmetic_id', function (req, res, next) {
     .then(function (data) {
       Logger.module('API').debug(`Crafted cosmetic ${cosmetic_id} for user ${user_id.blue}`.cyan);
       return res.status(200).json(data);
-    }).catch(onType(Errors.InsufficientFundsError, (error) => res.status(403).json({ message: 'Insufficient Spirit' }))).catch(function (error) {
-      Logger.module('API').error(`ERROR crafting cosmetic for user ${user_id.blue}`.red, util.inspect(error));
+    })
+    .catch(
+      onType(Errors.InsufficientFundsError, (error) =>
+        res.status(403).json({ message: 'Insufficient Spirit' }),
+      ),
+    )
+    .catch(function (error) {
+      Logger.module('API').error(
+        `ERROR crafting cosmetic for user ${user_id.blue}`.red,
+        util.inspect(error),
+      );
       return next(error);
     });
 });
@@ -309,8 +364,12 @@ router.post('/free_card_of_the_day', function (req, res, next) {
   const user_id = req.user.d.id;
   Logger.module('API').debug(`Claiming free card of the day for user ${user_id.blue}`.magenta);
   return InventoryModule.claimFreeCardOfTheDay(user_id)
-    .then((cardId) => res.status(200).json({ card_id: cardId })).catch(function (error) {
-      Logger.module('API').error(`ERROR claiming free card of the day for user ${user_id.blue}`.red, util.inspect(error));
+    .then((cardId) => res.status(200).json({ card_id: cardId }))
+    .catch(function (error) {
+      Logger.module('API').error(
+        `ERROR claiming free card of the day for user ${user_id.blue}`.red,
+        util.inspect(error),
+      );
       return next(error);
     });
 });

@@ -136,7 +136,14 @@ class CardFactory_ShimzarSet_Faction3 {
       buffContextObject.durationEndTurn = 1;
       const immunityContextObject = ModifierImmuneToDamage.createContextObject();
       immunityContextObject.durationEndTurn = 1;
-      card.setInherentModifiersContextObjects([ModifierOpeningGambitApplyModifiersToGeneral.createContextObject([buffContextObject, immunityContextObject], true, false, 'Your General gains +2 Attack and takes no damage this turn')]);
+      card.setInherentModifiersContextObjects([
+        ModifierOpeningGambitApplyModifiersToGeneral.createContextObject(
+          [buffContextObject, immunityContextObject],
+          true,
+          false,
+          'Your General gains +2 Attack and takes no damage this turn',
+        ),
+      ]);
     }
 
     if (identifier === Cards.Faction3.Rae) {
@@ -169,7 +176,10 @@ class CardFactory_ShimzarSet_Faction3 {
       card.maxHP = 1;
       card.manaCost = 0;
       card.rarityId = Rarity.Common;
-      card.setInherentModifiersContextObjects([ModifierBattlePet.createContextObject(), ModifierDyingWishDispelNearestEnemy.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierBattlePet.createContextObject(),
+        ModifierDyingWishDispelNearestEnemy.createContextObject(),
+      ]);
     }
 
     if (identifier === Cards.Faction3.Pax) {
@@ -202,7 +212,15 @@ class CardFactory_ShimzarSet_Faction3 {
       card.maxHP = 1;
       card.manaCost = 2;
       card.rarityId = Rarity.Rare;
-      card.setInherentModifiersContextObjects([ModifierBattlePet.createContextObject(), ModifierDyingWishSpawnEntity.createContextObject({ id: Cards.Faction3.IronDervish }, 'two 2/2 Iron Dervishes', 2, CONFIG.PATTERN_3x3)]);
+      card.setInherentModifiersContextObjects([
+        ModifierBattlePet.createContextObject(),
+        ModifierDyingWishSpawnEntity.createContextObject(
+          { id: Cards.Faction3.IronDervish },
+          'two 2/2 Iron Dervishes',
+          2,
+          CONFIG.PATTERN_3x3,
+        ),
+      ]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
     }
 
@@ -235,7 +253,15 @@ class CardFactory_ShimzarSet_Faction3 {
       card.maxHP = 3;
       card.manaCost = 2;
       const contextObject = ModifierManaCostChange.createContextObject(-1);
-      card.setInherentModifiersContextObjects([ModifierOpeningGambitApplyModifiersToHand.createContextObjectToTargetOwnPlayer([contextObject], false, CardType.Unit, Races.Structure, 'Lower the cost of all Structure minions in your action bar by 1')]);
+      card.setInherentModifiersContextObjects([
+        ModifierOpeningGambitApplyModifiersToHand.createContextObjectToTargetOwnPlayer(
+          [contextObject],
+          false,
+          CardType.Unit,
+          Races.Structure,
+          'Lower the cost of all Structure minions in your action bar by 1',
+        ),
+      ]);
       card.rarityId = Rarity.Rare;
     }
 
@@ -317,7 +343,9 @@ class CardFactory_ShimzarSet_Faction3 {
         { id: Cards.Faction3.LavastormObelysk },
         { id: Cards.Faction3.SimulacraObelysk },
       ];
-      card.setInherentModifiersContextObjects([ModifierDyingWishSpawnRandomEntity.createContextObject(cardDataToSpawn, 'random Obelysk')]);
+      card.setInherentModifiersContextObjects([
+        ModifierDyingWishSpawnRandomEntity.createContextObject(cardDataToSpawn, 'random Obelysk'),
+      ]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
     }
 
@@ -351,7 +379,10 @@ class CardFactory_ShimzarSet_Faction3 {
       card.manaCost = 5;
       card.rarityId = Rarity.Legendary;
       card.setInherentModifiersContextObjects([
-        ModifierTakeDamageWatchSpawnEntity.createContextObject({ id: Cards.Faction3.SoulburnObelysk }, 'a Soulburn Obelysk'),
+        ModifierTakeDamageWatchSpawnEntity.createContextObject(
+          { id: Cards.Faction3.SoulburnObelysk },
+          'a Soulburn Obelysk',
+        ),
       ]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
     }
@@ -448,9 +479,7 @@ class CardFactory_ShimzarSet_Faction3 {
       const swapAllegianceContextObject = ModifierEndTurnWatchSwapAllegiance.createContextObject();
       swapAllegianceContextObject.durationEndTurn = 1;
       swapAllegianceContextObject.isRemovable = false;
-      card.setTargetModifiersContextObjects([
-        swapAllegianceContextObject,
-      ]);
+      card.setTargetModifiersContextObjects([swapAllegianceContextObject]);
       card.setFXResource(['FX.Cards.Spell.PsychicConduit']);
       card.setBaseSoundResource({
         apply: RSX.sfx_spell_voidpulse.audio,
@@ -516,10 +545,18 @@ class CardFactory_ShimzarSet_Faction3 {
           name: i18next.t('cards.faction_3_artifact_spinecleaver_name'),
           description: i18next.t('modifiers.plus_attack_key', { amount: 1 }),
         }),
-        ModifierKillWatchSpawnEnemyEntity.createContextObject({ id: Cards.Faction3.PlagueTotem }, false, false, 1, CONFIG.PATTERN_1x1, true, {
-          name: i18next.t('cards.faction_3_artifact_spinecleaver_name'),
-          description: i18next.t('modifiers.faction_3_artifact_spinecleaver_1'),
-        }),
+        ModifierKillWatchSpawnEnemyEntity.createContextObject(
+          { id: Cards.Faction3.PlagueTotem },
+          false,
+          false,
+          1,
+          CONFIG.PATTERN_1x1,
+          true,
+          {
+            name: i18next.t('cards.faction_3_artifact_spinecleaver_name'),
+            description: i18next.t('modifiers.faction_3_artifact_spinecleaver_1'),
+          },
+        ),
       ]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
       card.setFXResource(['FX.Cards.Artifact.StaffOfYKir']);

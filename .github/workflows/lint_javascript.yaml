@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-    - main
+      - main
   pull_request:
     paths:
       - .mocharc.js
@@ -23,43 +23,48 @@ jobs:
   linting:
     runs-on: ubuntu-latest
     steps:
-    - name: check out code
-      uses: actions/checkout@v4
+      - name: check out code
+        uses: actions/checkout@v4
 
-    - name: install pnpm
-      uses: pnpm/action-setup@v4
+      - name: install pnpm
+        uses: pnpm/action-setup@v4
 
-    - name: install node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: 24
-        cache: pnpm
+      - name: install node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
 
-    - name: install node dependencies
-      run: pnpm install --frozen-lockfile
+      - name: install node dependencies
+        run: pnpm install --frozen-lockfile
 
-    - name: compile typescript dependencies
-      run: pnpm tsc:chroma-js
+      - name: compile typescript dependencies
+        run: pnpm tsc:chroma-js
 
-    - name: lint javascript code
-      run: pnpm lint
+      - name: lint javascript code
+        run: pnpm lint
 
-    # guards the binding class of bug the bluebird codemods introduced:
-    # a file using PromiseUtils/onType without requiring it passes lint and
-    # unit tests, then throws ReferenceError at runtime.
-    - name: check utils_promise bindings
-      run: pnpm check:promise-utils
+      # oxfmt owns JS/TS/JSON/MD/YAML formatting; .editorconfig covers only what
+      # it does not (templates, styles, shaders).
+      - name: check formatting
+        run: pnpm format:check
 
-    # the mirror-image bug: a file that uses a bluebird-only API but no longer
-    # requires bluebird. worker.ts and api.ts shipped exactly this
-    # (Promise.longStackTraces) and crashed on boot; lint and 1350 unit tests
-    # were both green.
-    - name: check for bluebird orphans
-      run: pnpm check:bluebird-orphans
+      # guards the binding class of bug the bluebird codemods introduced:
+      # a file using PromiseUtils/onType without requiring it passes lint and
+      # unit tests, then throws ReferenceError at runtime.
+      - name: check utils_promise bindings
+        run: pnpm check:promise-utils
 
-    # TS2304 is a list of identifiers that do not exist -- ReferenceErrors
-    # waiting to happen. The linter's no-undef does not apply to .ts, so TypeScript is the
-    # only thing that sees them. The count was swept to zero, and this keeps it
-    # there: a codemod regression that shipped once would have been caught here.
-    - name: check for undefined names (TS2304)
-      run: pnpm check:undefined-names
+      # the mirror-image bug: a file that uses a bluebird-only API but no longer
+      # requires bluebird. worker.ts and api.ts shipped exactly this
+      # (Promise.longStackTraces) and crashed on boot; lint and 1350 unit tests
+      # were both green.
+      - name: check for bluebird orphans
+        run: pnpm check:bluebird-orphans
+
+      # TS2304 is a list of identifiers that do not exist -- ReferenceErrors
+      # waiting to happen. The linter's no-undef does not apply to .ts, so TypeScript is the
+      # only thing that sees them. The count was swept to zero, and this keeps it
+      # there: a codemod regression that shipped once would have been caught here.
+      - name: check for undefined names (TS2304)
+        run: pnpm check:undefined-names

@@ -27,7 +27,10 @@ const ScoreForUnitHeal = function (unit, healAmount) {
       if (unit.getIsGeneral()) {
         score += Math.max(1.0, 25 / hp) * (damageTaken * 0.5) * BOUNTY.HEALING_PER_GENERAL_DAMAGE;
       } else {
-        score += Math.max(1.0, (unit.getMaxHP() * 0.5) / hp) * damageTaken * BOUNTY.HEALING_PER_UNIT_DAMAGE;
+        score +=
+          Math.max(1.0, (unit.getMaxHP() * 0.5) / hp) *
+          damageTaken *
+          BOUNTY.HEALING_PER_UNIT_DAMAGE;
       }
     }
 

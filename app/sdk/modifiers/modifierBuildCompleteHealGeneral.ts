@@ -13,7 +13,12 @@ class ModifierBuildCompleteHealGeneral extends ModifierBuilding {
   static type = 'ModifierBuildCompleteHealGeneral';
 
   static createContextObject(healAmount, description, transformCardData, turnsToBuild, options) {
-    const contextObject = super.createContextObject(description, transformCardData, turnsToBuild, options);
+    const contextObject = super.createContextObject(
+      description,
+      transformCardData,
+      turnsToBuild,
+      options,
+    );
     contextObject.healAmount = healAmount;
     return contextObject;
   }
@@ -21,7 +26,9 @@ class ModifierBuildCompleteHealGeneral extends ModifierBuilding {
   onBuildComplete() {
     super.onBuildComplete();
 
-    const general = this.getCard().getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
+    const general = this.getCard()
+      .getGameSession()
+      .getGeneralForPlayerId(this.getCard().getOwnerId());
     const healAction = new HealAction(this.getGameSession());
     healAction.setOwnerId(this.getCard().getOwnerId());
     healAction.setTarget(general);

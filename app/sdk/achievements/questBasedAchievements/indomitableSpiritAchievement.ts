@@ -17,7 +17,7 @@ class IndomitableSpiritAchievement extends Achievement {
 
   static progressForCompletingQuestId(questId) {
     const sdkQuest = QuestFactory.questForIdentifier(questId);
-    if ((sdkQuest != null) && !sdkQuest.isBeginner) {
+    if (sdkQuest != null && !sdkQuest.isBeginner) {
       return 1;
     }
     return 0;

@@ -22,7 +22,9 @@ class ModifierQuestStatusVanar extends ModifierQuestStatus {
       if (modifierContextObject.questCompleted) {
         return i18next.t('modifiers.quest_completed_applied_desc');
       }
-      return i18next.t('modifiers.vanarquest_counter_applied_desc', { token_count: modifierContextObject.numTokensFound });
+      return i18next.t('modifiers.vanarquest_counter_applied_desc', {
+        token_count: modifierContextObject.numTokensFound,
+      });
     }
   }
 

@@ -15,12 +15,14 @@ class ModifierWhenAttackedDestroyThis extends Modifier {
 
   onAfterAction(event) {
     super.onAfterAction(event);
-    const {
-      action,
-    } = event;
+    const { action } = event;
 
     // when attacked, remove self immediately
-    if (action instanceof AttackAction && (action.getTarget() === this.getCard()) && !action.getIsImplicit()) {
+    if (
+      action instanceof AttackAction &&
+      action.getTarget() === this.getCard() &&
+      !action.getIsImplicit()
+    ) {
       if (__guard__(this.getCard(), (x) => x.getIsActive())) {
         const killAction = new KillAction(this.getGameSession());
         killAction.setOwnerId(this.getCard().getOwnerId());
@@ -36,5 +38,5 @@ ModifierWhenAttackedDestroyThis.prototype.type = 'ModifierWhenAttackedDestroyThi
 module.exports = ModifierWhenAttackedDestroyThis;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

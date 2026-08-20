@@ -14,13 +14,9 @@ Logger.enabled = false;
 describe('bloodstorm', () => {
   describe('faction5', () => {
     beforeEach(() => {
-      const player1Deck = [
-        { id: SDK.Cards.Faction5.General },
-      ];
+      const player1Deck = [{ id: SDK.Cards.Faction5.General }];
 
-      const player2Deck = [
-        { id: SDK.Cards.Faction5.AltGeneral },
-      ];
+      const player2Deck = [{ id: SDK.Cards.Faction5.AltGeneral }];
 
       UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
     });
@@ -40,8 +36,18 @@ describe('bloodstorm', () => {
       gameSession.executeAction(gameSession.actionEndTurn());
       gameSession.executeAction(gameSession.actionEndTurn());
 
-      const wraithling = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.Wraithling }, 6, 1, gameSession.getPlayer1Id());
-      const thraex = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction5.Thraex }, 4, 3, gameSession.getPlayer1Id());
+      const wraithling = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.Wraithling },
+        6,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const thraex = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction5.Thraex },
+        4,
+        3,
+        gameSession.getPlayer1Id(),
+      );
 
       const action = player1.actionPlaySignatureCard(1, 1);
       gameSession.executeAction(action);
@@ -58,12 +64,32 @@ describe('bloodstorm', () => {
       const player2 = gameSession.getPlayer2();
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.TrinityOath }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.TrinityOath }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer2Id(), { id: SDK.Cards.Spell.TrinityOath }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer2Id(), { id: SDK.Cards.Spell.TrinityOath }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.TrinityOath,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.TrinityOath,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer2Id(), {
+          id: SDK.Cards.Spell.TrinityOath,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer2Id(), {
+          id: SDK.Cards.Spell.TrinityOath,
+        }),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.EntropicGaze }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.EntropicGaze,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 3, 1));
 
       const hand = player1.getDeck().getCardsInHand();
@@ -83,10 +109,24 @@ describe('bloodstorm', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      const rancour = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction5.Rancour }, 4, 3, gameSession.getPlayer1Id());
-      const rancour2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction5.Rancour }, 2, 3, gameSession.getPlayer2Id());
+      const rancour = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction5.Rancour },
+        4,
+        3,
+        gameSession.getPlayer1Id(),
+      );
+      const rancour2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction5.Rancour },
+        2,
+        3,
+        gameSession.getPlayer2Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.EntropicGaze }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.EntropicGaze,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 3, 1));
 
       expect(gameSession.getGeneralForPlayer2().getDamage()).to.equal(2);
@@ -101,9 +141,18 @@ describe('bloodstorm', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      const rancour = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction5.Rancour }, 4, 3, gameSession.getPlayer1Id());
+      const rancour = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction5.Rancour },
+        4,
+        3,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.Tempest }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.Tempest,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 3, 1));
 
       expect(rancour.getATK()).to.equal(3);
@@ -116,16 +165,52 @@ describe('bloodstorm', () => {
       const player2 = gameSession.getPlayer2();
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.TrinityOath }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.TrinityOath }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.TrinityOath }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.TrinityOath }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer2Id(), { id: SDK.Cards.Spell.TrinityOath }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer2Id(), { id: SDK.Cards.Spell.TrinityOath }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer2Id(), { id: SDK.Cards.Spell.TrinityOath }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer2Id(), { id: SDK.Cards.Spell.TrinityOath }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.TrinityOath,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.TrinityOath,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.TrinityOath,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.TrinityOath,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer2Id(), {
+          id: SDK.Cards.Spell.TrinityOath,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer2Id(), {
+          id: SDK.Cards.Spell.TrinityOath,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer2Id(), {
+          id: SDK.Cards.Spell.TrinityOath,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer2Id(), {
+          id: SDK.Cards.Spell.TrinityOath,
+        }),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.TectonicSpikes }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.TectonicSpikes,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 3, 1));
 
       const hand = player1.getDeck().getCardsInHand();
@@ -150,7 +235,11 @@ describe('bloodstorm', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.ValknusSeal }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.ValknusSeal,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 1, 1));
 
       gameSession.executeAction(gameSession.actionEndTurn());
@@ -180,7 +269,11 @@ describe('bloodstorm', () => {
 
       expect(general.getATK()).to.equal(3);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.ValknusSeal }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.ValknusSeal,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 1, 1));
 
       gameSession.executeAction(gameSession.actionEndTurn());
@@ -198,16 +291,30 @@ describe('bloodstorm', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Artifact.PristineScale }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Artifact.PristineScale,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 1, 1));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Artifact.AdamantineClaws }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Artifact.AdamantineClaws,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 1, 1));
 
-      expect(gameSession.getGeneralForPlayer1().hasModifierClass(SDK.ModifierFrenzy)).to.equal(true);
+      expect(gameSession.getGeneralForPlayer1().hasModifierClass(SDK.ModifierFrenzy)).to.equal(
+        true,
+      );
 
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.ValknusSeal }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.ValknusSeal,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 1, 1));
 
       gameSession.executeAction(gameSession.actionEndTurn());
@@ -226,9 +333,18 @@ describe('bloodstorm', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      const elyxStormblade = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.ElyxStormblade }, 4, 3, gameSession.getPlayer1Id());
+      const elyxStormblade = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.ElyxStormblade },
+        4,
+        3,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.ValknusSeal }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.ValknusSeal,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 1, 1));
 
       gameSession.executeAction(gameSession.actionEndTurn());
@@ -254,9 +370,18 @@ describe('bloodstorm', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      const groveLion = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.GroveLion }, 4, 3, gameSession.getPlayer1Id());
+      const groveLion = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.GroveLion },
+        4,
+        3,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.ValknusSeal }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.ValknusSeal,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 1, 1));
 
       gameSession.executeAction(gameSession.actionEndTurn());
@@ -264,7 +389,9 @@ describe('bloodstorm', () => {
 
       const clone = board.getUnitAtPosition({ x: 1, y: 1 });
 
-      expect(gameSession.getGeneralForPlayer1().hasActiveModifierClass(ModifierForcefield)).to.equal(true);
+      expect(
+        gameSession.getGeneralForPlayer1().hasActiveModifierClass(ModifierForcefield),
+      ).to.equal(true);
       expect(clone.hasActiveModifierClass(ModifierForcefield)).to.equal(true);
 
       var damageAction = new SDK.DamageAction(gameSession);
@@ -277,7 +404,9 @@ describe('bloodstorm', () => {
       UtilsSDK.executeActionWithoutValidation(damageAction);
 
       expect(clone.hasActiveModifierClass(ModifierForcefield)).to.equal(true);
-      expect(gameSession.getGeneralForPlayer1().hasActiveModifierClass(ModifierForcefield)).to.equal(false);
+      expect(
+        gameSession.getGeneralForPlayer1().hasActiveModifierClass(ModifierForcefield),
+      ).to.equal(false);
     });
 
     it('expect valknus seals max HP to equal your generals current HP', () => {
@@ -291,7 +420,11 @@ describe('bloodstorm', () => {
       damageAction.setDamageAmount(10);
       UtilsSDK.executeActionWithoutValidation(damageAction);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.ValknusSeal }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.ValknusSeal,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 1, 1));
 
       gameSession.executeAction(gameSession.actionEndTurn());
@@ -306,7 +439,11 @@ describe('bloodstorm', () => {
 
       expect(clone.getHP()).to.equal(13);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.SundropElixir }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.SundropElixir,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 1, 1));
 
       expect(clone.getHP()).to.equal(15);
@@ -323,7 +460,12 @@ describe('bloodstorm', () => {
       gameSession.executeAction(gameSession.actionEndTurn());
       gameSession.executeAction(gameSession.actionEndTurn());
 
-      const drogon = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction5.Drogon }, 4, 3, gameSession.getPlayer1Id());
+      const drogon = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction5.Drogon },
+        4,
+        3,
+        gameSession.getPlayer1Id(),
+      );
 
       const action = player1.actionPlaySignatureCard(1, 1);
       gameSession.executeAction(action);

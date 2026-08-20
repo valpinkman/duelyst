@@ -27,13 +27,21 @@ class ModifierOpponentSummonWatchOpponentDrawCard extends ModifierOpponentSummon
 
   onSummonWatch(action) {
     if (action instanceof PlayCardFromHandAction) {
-      const enemyGeneral = this.getCard().getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
-      return this.getGameSession().executeAction(new DrawCardAction(this.getGameSession(), enemyGeneral.getOwnerId()));
+      const enemyGeneral = this.getCard()
+        .getGameSession()
+        .getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
+      return this.getGameSession().executeAction(
+        new DrawCardAction(this.getGameSession(), enemyGeneral.getOwnerId()),
+      );
     }
   }
 }
-ModifierOpponentSummonWatchOpponentDrawCard.prototype.type = 'ModifierOpponentSummonWatchOpponentDrawCard';
+ModifierOpponentSummonWatchOpponentDrawCard.prototype.type =
+  'ModifierOpponentSummonWatchOpponentDrawCard';
 ModifierOpponentSummonWatchOpponentDrawCard.prototype.damageAmount = 0;
-ModifierOpponentSummonWatchOpponentDrawCard.prototype.fxResource = ['FX.Modifiers.ModifierOpponentSummonWatch', 'FX.Modifiers.ModifierGenericDamage'];
+ModifierOpponentSummonWatchOpponentDrawCard.prototype.fxResource = [
+  'FX.Modifiers.ModifierOpponentSummonWatch',
+  'FX.Modifiers.ModifierGenericDamage',
+];
 
 module.exports = ModifierOpponentSummonWatchOpponentDrawCard;

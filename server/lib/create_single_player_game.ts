@@ -33,9 +33,26 @@ const knex = require('./data_access/knex');
 const Errors = require('./custom_errors');
 const Consul = require('./consul');
 
-const createSinglePlayerGame = function (userId, name, gameType, deck, cardBackId, battleMapIndexesToSampleFrom, aiPlayerId, aiUsername, aiGeneralId, aiDeckId, aiDifficulty, aiNumRandomCards, ticketId, gameSetupOptions) {
+const createSinglePlayerGame = function (
+  userId,
+  name,
+  gameType,
+  deck,
+  cardBackId,
+  battleMapIndexesToSampleFrom,
+  aiPlayerId,
+  aiUsername,
+  aiGeneralId,
+  aiDeckId,
+  aiDifficulty,
+  aiNumRandomCards,
+  ticketId,
+  gameSetupOptions,
+) {
   const _chainState: Record<string, any> = {};
-  if ((gameType == null)) { gameType = GameType.SinglePlayer; }
+  if (gameType == null) {
+    gameType = GameType.SinglePlayer;
+  }
 
   let playerIsPlayer1 = true;
 
@@ -45,10 +62,13 @@ const createSinglePlayerGame = function (userId, name, gameType, deck, cardBackI
   Logger.module('SINGLE PLAYER').debug('ticketId:', ticketId);
 
   if (config.get('consul.enabled')) {
-    getSinglePlayerStatusPromise = Consul.kv.get(`environments/${process.env.NODE_ENV}/single-player-status.json`)
+    getSinglePlayerStatusPromise = Consul.kv
+      .get(`environments/${process.env.NODE_ENV}/single-player-status.json`)
       .then(JSON.parse);
   } else {
-    Logger.module('SINGLE PLAYER').debug('No need to check single player stack status since no CONSUL in environment.'.cyan);
+    Logger.module('SINGLE PLAYER').debug(
+      'No need to check single player stack status since no CONSUL in environment.'.cyan,
+    );
     getSinglePlayerStatusPromise = Promise.resolve({ enabled: true });
   }
 
@@ -56,24 +76,29 @@ const createSinglePlayerGame = function (userId, name, gameType, deck, cardBackI
 
   return getSinglePlayerStatusPromise
     .then(function (matchmakingStatus) {
-    // matchmakingEnabled is currently a string
+      // matchmakingEnabled is currently a string
       if (matchmakingStatus.enabled) {
         Logger.module('SINGLE PLAYER').debug('SINGLE PLAYER status is active'.cyan);
         return true;
       } else {
         Logger.module('SINGLE PLAYER').debug('SINGLE PLAYER status is inactive'.red);
-        throw new Errors.SinglePlayerModeDisabledError('Single Player mode is temporarily disabled.');
+        throw new Errors.SinglePlayerModeDisabledError(
+          'Single Player mode is temporarily disabled.',
+        );
       }
-    }).then(function () {
+    })
+    .then(function () {
       let eventValidationPromise = null;
       if (gameType !== GameType.BossBattle) {
         eventValidationPromise = Promise.resolve();
       } else {
-        eventValidationPromise = DuelystFirebase.connect().getRootRef()
+        eventValidationPromise = DuelystFirebase.connect()
+          .getRootRef()
           .then(function (fbRootRef) {
             const bossEventsRef = fbRootRef.child('boss-events');
             return FirebasePromises.once(bossEventsRef, 'value');
-          }).then(function (bossEventsSnapshot) {
+          })
+          .then(function (bossEventsSnapshot) {
             const bossEventsData = bossEventsSnapshot.val();
 
             let matchingEventData = null;
@@ -95,20 +120,17 @@ const createSinglePlayerGame = function (userId, name, gameType, deck, cardBackI
               break;
             }
 
-            if ((matchingEventData == null)) {
+            if (matchingEventData == null) {
               throw new Errors.BossEventNotFound('No active event found for boss.');
             }
           });
       }
 
       return eventValidationPromise;
-    }).then(function () {
-    // get ai deck
-      let aiDeck,
-        startingOrderAI,
-        startingOrderPlayer,
-        tmp,
-        withoutManaTiles;
+    })
+    .then(function () {
+      // get ai deck
+      let aiDeck, startingOrderAI, startingOrderPlayer, tmp, withoutManaTiles;
       if (aiDeckId != null) {
         aiDeck = UsableDecks.getUsableDeckForIdentifier(aiGeneralId, aiDeckId);
       } else {
@@ -133,35 +155,34 @@ const createSinglePlayerGame = function (userId, name, gameType, deck, cardBackI
 
       // merge in any custom game setup options
       if (gameSetupOptions != null) {
-        ({
-          withoutManaTiles,
-        } = gameSetupOptions);
+        ({ withoutManaTiles } = gameSetupOptions);
 
         // parse player options
         const playerOptions = gameSetupOptions.player;
         if (playerOptions != null) {
-          startingOrderPlayer = (playerOptions.startingOrder != null) ? playerOptions.startingOrder : 0;
+          startingOrderPlayer =
+            playerOptions.startingOrder != null ? playerOptions.startingOrder : 0;
           player1DataForGame = _.extend(player1DataForGame, playerOptions);
         }
 
         // parse ai options
         const aiOptions = gameSetupOptions.ai;
         if (aiOptions != null) {
-          startingOrderAI = (aiOptions.startingOrder != null) ? aiOptions.startingOrder : 0;
+          startingOrderAI = aiOptions.startingOrder != null ? aiOptions.startingOrder : 0;
           player2DataForGame = _.extend(player2DataForGame, aiOptions);
         }
       }
 
-      if ((startingOrderAI != null) && (startingOrderAI > 0)) {
-      // ai has a fixed starting order
+      if (startingOrderAI != null && startingOrderAI > 0) {
+        // ai has a fixed starting order
         if (startingOrderAI === 1) {
           playerIsPlayer1 = false;
           tmp = player1DataForGame;
           player1DataForGame = player2DataForGame;
           player2DataForGame = tmp;
         }
-      } else if ((startingOrderPlayer != null) && (startingOrderPlayer > 0)) {
-      // player has a fixed starting order
+      } else if (startingOrderPlayer != null && startingOrderPlayer > 0) {
+        // player has a fixed starting order
         if (startingOrderPlayer === 2) {
           playerIsPlayer1 = false;
           tmp = player1DataForGame;
@@ -169,7 +190,7 @@ const createSinglePlayerGame = function (userId, name, gameType, deck, cardBackI
           player2DataForGame = tmp;
         }
       } else {
-      // make it random who goes first
+        // make it random who goes first
         if (Math.random() >= 0.5) {
           playerIsPlayer1 = false;
           tmp = player1DataForGame;
@@ -184,7 +205,12 @@ const createSinglePlayerGame = function (userId, name, gameType, deck, cardBackI
       _chainState.newGameSession.gameFormat = GameFormat.Legacy;
       _chainState.newGameSession.version = version;
       _chainState.newGameSession.setIsRunningAsAuthoritative(true);
-      GameSetup.setupNewSession(_chainState.newGameSession, player1DataForGame, player2DataForGame, withoutManaTiles);
+      GameSetup.setupNewSession(
+        _chainState.newGameSession,
+        player1DataForGame,
+        player2DataForGame,
+        withoutManaTiles,
+      );
 
       // set ai properties for later retrieval by ai
       _chainState.newGameSession.setAiPlayerId(aiPlayerId);
@@ -193,15 +219,20 @@ const createSinglePlayerGame = function (userId, name, gameType, deck, cardBackI
       // generate game id
       return GameManager.generateGameId();
     })
-    .then(function (gameId) { // save game to redis
+    .then(function (gameId) {
+      // save game to redis
       _chainState.gameId = gameId;
       Logger.module('SINGLE-PLAYER').debug(`New Game ID: ${gameId}`);
       _chainState.newGameSession.gameId = gameId;
-      return GameManager.saveGameSession(gameId, _chainState.newGameSession.serializeToJSON(_chainState.newGameSession));
+      return GameManager.saveGameSession(
+        gameId,
+        _chainState.newGameSession.serializeToJSON(_chainState.newGameSession),
+      );
     })
-    .then(function () { // assign the player to a server
-    // Consul flow (disabled).
-    /*
+    .then(function () {
+      // assign the player to a server
+      // Consul flow (disabled).
+      /*
     if config.get('consul.enabled')
       Consul.getHealthySinglePlayerServers()
       .then (servers) ->
@@ -229,10 +260,7 @@ const createSinglePlayerGame = function (userId, name, gameType, deck, cardBackI
       return Promise.resolve(null);
     })
     .then(function (gameServer) {
-      let myGeneral,
-        myPlayerSetupData,
-        opponentGeneral,
-        opponentSetupData;
+      let myGeneral, myPlayerSetupData, opponentGeneral, opponentSetupData;
       const createdDate = moment().utc().valueOf();
       _chainState.newGameSession.createdAt = createdDate;
       _chainState.newGameSession.gameServer = gameServer;
@@ -289,7 +317,8 @@ const createSinglePlayerGame = function (userId, name, gameType, deck, cardBackI
       // ...
       return GamesModule.newUserGame(userId, _chainState.gameId, gameData);
     })
-    .then(function () { // send data back to the player
+    .then(function () {
+      // send data back to the player
       return _chainState.responseData;
     });
 };

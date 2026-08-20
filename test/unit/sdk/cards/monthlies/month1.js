@@ -13,13 +13,9 @@ Logger.enabled = false;
 describe('monthlies', () => {
   describe('month 1', () => {
     beforeEach(() => {
-      const player1Deck = [
-        { id: SDK.Cards.Faction6.General },
-      ];
+      const player1Deck = [{ id: SDK.Cards.Faction6.General }];
 
-      const player2Deck = [
-        { id: SDK.Cards.Faction1.General },
-      ];
+      const player2Deck = [{ id: SDK.Cards.Faction1.General }];
 
       UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
     });
@@ -33,7 +29,12 @@ describe('monthlies', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const blackLocust = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.BlackLocust }, 1, 2, gameSession.getPlayer1Id());
+      const blackLocust = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.BlackLocust },
+        1,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
       blackLocust.refreshExhaustion();
       var action = blackLocust.actionMove({ x: 2, y: 2 });
@@ -52,12 +53,21 @@ describe('monthlies', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const blackLocust = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.BlackLocust }, 1, 2, gameSession.getPlayer1Id());
+      const blackLocust = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.BlackLocust },
+        1,
+        2,
+        gameSession.getPlayer1Id(),
+      );
       blackLocust.setDamage(1);
 
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.GreaterFortitude }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.GreaterFortitude,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 2);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -78,9 +88,24 @@ describe('monthlies', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const windRunner = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.WindRunner }, 1, 2, gameSession.getPlayer1Id());
-      const brightmossGolem = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.BrightmossGolem }, 3, 2, gameSession.getPlayer1Id());
-      const brightmossGolem2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.BrightmossGolem }, 2, 3, gameSession.getPlayer1Id());
+      const windRunner = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.WindRunner },
+        1,
+        2,
+        gameSession.getPlayer1Id(),
+      );
+      const brightmossGolem = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.BrightmossGolem },
+        3,
+        2,
+        gameSession.getPlayer1Id(),
+      );
+      const brightmossGolem2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.BrightmossGolem },
+        2,
+        3,
+        gameSession.getPlayer1Id(),
+      );
 
       windRunner.refreshExhaustion();
       const action = windRunner.actionMove({ x: 2, y: 2 });
@@ -100,9 +125,18 @@ describe('monthlies', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      var brightmossGolem = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.BrightmossGolem }, 1, 2, gameSession.getPlayer1Id());
+      var brightmossGolem = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.BrightmossGolem },
+        1,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.GhostLynx }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.GhostLynx,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
       const followupCard = playCardFromHandAction.getCard().getCurrentFollowupCard();
@@ -111,7 +145,9 @@ describe('monthlies', () => {
 
       var brightmossGolem = UtilsSDK.getEntityOnBoardById(SDK.Cards.Neutral.BrightmossGolem);
 
-      expect(brightmossGolem.getPosition().x !== 1 || brightmossGolem.getPosition().y !== 2).to.equal(true);
+      expect(
+        brightmossGolem.getPosition().x !== 1 || brightmossGolem.getPosition().y !== 2,
+      ).to.equal(true);
     });
 
     it('expect mogwai to draw a card every time it moves', () => {
@@ -119,9 +155,18 @@ describe('monthlies', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const mogwai = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Mogwai }, 1, 2, gameSession.getPlayer1Id());
+      const mogwai = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.Mogwai },
+        1,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction4.SpectralRevenant }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction4.SpectralRevenant,
+        }),
+      );
 
       mogwai.refreshExhaustion();
       const action = mogwai.actionMove({ x: 2, y: 2 });

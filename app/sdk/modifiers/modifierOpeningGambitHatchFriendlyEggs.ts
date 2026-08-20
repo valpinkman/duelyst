@@ -20,7 +20,10 @@ class ModifierOpeningGambitHatchFriendlyEggs extends ModifierOpeningGambit {
     return (() => {
       const result = [];
       for (var entity of Array.from<any>(this.getCard().getGameSession().getBoard().getUnits())) {
-        if (((entity != null ? entity.getOwnerId() : undefined) === this.getCard().getOwnerId()) && entity.hasModifierClass(ModifierEgg)) {
+        if (
+          (entity != null ? entity.getOwnerId() : undefined) === this.getCard().getOwnerId() &&
+          entity.hasModifierClass(ModifierEgg)
+        ) {
           var eggModifier = entity.getModifierByType(ModifierEgg.type);
           this.getGameSession().pushTriggeringModifierOntoStack(eggModifier);
           eggModifier.removeAndReplace();
@@ -34,6 +37,8 @@ class ModifierOpeningGambitHatchFriendlyEggs extends ModifierOpeningGambit {
   }
 }
 ModifierOpeningGambitHatchFriendlyEggs.prototype.type = 'ModifierOpeningGambitHatchFriendlyEggs';
-ModifierOpeningGambitHatchFriendlyEggs.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
+ModifierOpeningGambitHatchFriendlyEggs.prototype.fxResource = [
+  'FX.Modifiers.ModifierOpeningGambit',
+];
 
 module.exports = ModifierOpeningGambitHatchFriendlyEggs;

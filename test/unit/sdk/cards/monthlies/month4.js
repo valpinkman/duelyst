@@ -13,13 +13,9 @@ Logger.enabled = false;
 describe('monthlies', () => {
   describe('month 4', () => {
     beforeEach(() => {
-      const player1Deck = [
-        { id: SDK.Cards.Faction6.General },
-      ];
+      const player1Deck = [{ id: SDK.Cards.Faction6.General }];
 
-      const player2Deck = [
-        { id: SDK.Cards.Faction1.General },
-      ];
+      const player2Deck = [{ id: SDK.Cards.Faction1.General }];
 
       UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
     });
@@ -33,20 +29,48 @@ describe('monthlies', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const aethermaster = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Aethermaster }, 1, 2, gameSession.getPlayer1Id());
-      const whiteWidow = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.WhiteWidow }, 2, 2, gameSession.getPlayer1Id());
-      const brightmossGolem = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.BrightmossGolem }, 6, 2, gameSession.getPlayer2Id());
+      const aethermaster = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.Aethermaster },
+        1,
+        2,
+        gameSession.getPlayer1Id(),
+      );
+      const whiteWidow = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.WhiteWidow },
+        2,
+        2,
+        gameSession.getPlayer1Id(),
+      );
+      const brightmossGolem = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.BrightmossGolem },
+        6,
+        2,
+        gameSession.getPlayer2Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.Metamorphosis }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.GhostLightning }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PhoenixFire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.Metamorphosis,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.GhostLightning,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
 
       var action = player1.actionReplaceCardFromHand(0);
       gameSession.executeAction(action);
       var action = player1.actionReplaceCardFromHand(0);
       gameSession.executeAction(action);
 
-      const totalDamage = brightmossGolem.getDamage() + gameSession.getGeneralForPlayer2().getDamage();
+      const totalDamage =
+        brightmossGolem.getDamage() + gameSession.getGeneralForPlayer2().getDamage();
       expect(totalDamage).to.equal(4);
     });
 
@@ -87,12 +111,34 @@ describe('monthlies', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const aethermaster = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Aethermaster }, 1, 2, gameSession.getPlayer1Id());
-      const wings = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.WingsOfParadise }, 2, 2, gameSession.getPlayer1Id());
+      const aethermaster = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.Aethermaster },
+        1,
+        2,
+        gameSession.getPlayer1Id(),
+      );
+      const wings = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.WingsOfParadise },
+        2,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.Metamorphosis }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.GhostLightning }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PhoenixFire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.Metamorphosis,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.GhostLightning,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
 
       var action = player1.actionReplaceCardFromHand(0);
       gameSession.executeAction(action);
@@ -111,8 +157,16 @@ describe('monthlies', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.Dreamgazer }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PhoenixFire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.Dreamgazer,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
 
       const action = player1.actionReplaceCardFromHand(0);
       gameSession.executeAction(action);

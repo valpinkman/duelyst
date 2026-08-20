@@ -19,8 +19,10 @@ cc.Director.prototype.getZEye = function () {
 // clear to background color
 cc.Director.prototype._clear = function () {
   const gl = cc._renderContext;
-  let r; let g; let b; let
-    a;
+  let r;
+  let g;
+  let b;
+  let a;
   if (CONFIG.BACKGROUND_COLOR != null) {
     r = (CONFIG.BACKGROUND_COLOR.r || 0) / 255.0;
     g = (CONFIG.BACKGROUND_COLOR.g || 0) / 255.0;
@@ -42,7 +44,9 @@ cc.rendererWebGL.rendering = function (ctx) {
     fx.beginWithClear();
 
     const renderCmds = this._renderCmds;
-    if (ctx == null) { ctx = cc._renderContext; }
+    if (ctx == null) {
+      ctx = cc._renderContext;
+    }
     for (let i = 0, len = renderCmds.length; i < len; i++) {
       const renderCmd = renderCmds[i];
       renderCmd.rendering(ctx);
@@ -56,8 +60,8 @@ cc.rendererWebGL.rendering = function (ctx) {
 cc.rendererWebGL._renderingToBuffer = function (renderTextureId) {
   renderTextureId = renderTextureId || this._currentID;
   const renderCmds = this._cacheToBufferCmds[renderTextureId];
-  const ctx = cc._renderContext; const
-    locIDs = this._cacheInstanceIds;
+  const ctx = cc._renderContext;
+  const locIDs = this._cacheInstanceIds;
 
   // render all commands redirected to buffer
   for (let i = 0, len = renderCmds.length; i < len; i++) {
@@ -77,7 +81,8 @@ cc.rendererWebGL._renderingToBuffer = function (renderTextureId) {
 
 // don't update texture aliasing unless different
 cc.Texture2D.prototype._antiAliased = true;
-cc.Texture2D.prototype._super_setAntiAliasTexParameters = cc.Texture2D.prototype.setAntiAliasTexParameters;
+cc.Texture2D.prototype._super_setAntiAliasTexParameters =
+  cc.Texture2D.prototype.setAntiAliasTexParameters;
 cc.Texture2D.prototype.setAntiAliasTexParameters = function () {
   if (!this._antiAliased) {
     this._antiAliased = true;
@@ -101,7 +106,8 @@ cc.Texture2D.prototype.setAliasTexParametersWhenSafeScale = function () {
 
 // node _syncDisplayOpacity doesn't cascade by default, which causes opacity/display issues
 // node _updateDisplayOpacity is functionally the same but does cascade, so we'll replace sync with update
-cc.Node.WebGLRenderCmd.prototype._syncDisplayOpacity = cc.Node.WebGLRenderCmd.prototype._updateDisplayOpacity;
+cc.Node.WebGLRenderCmd.prototype._syncDisplayOpacity =
+  cc.Node.WebGLRenderCmd.prototype._updateDisplayOpacity;
 
 /**
  * Whether node uses perspective projection for transforms. Defaults to false as most nodes only use orthographic projection.
@@ -173,15 +179,23 @@ cc.Sprite.WebGLRenderCmd.prototype.updateTransform = function () {
 
   // recalculate matrix only if it is dirty
   if (this._dirty) {
-    const locQuad = this._quad; const
-      locParent = node._parent;
+    const locQuad = this._quad;
+    const locParent = node._parent;
     // If it is not visible, or one of its ancestors is not visible, then do nothing:
-    if (!node._visible || (locParent && locParent != node._batchNode && locParent._shouldBeHidden)) {
-      locQuad.br.vertices = locQuad.tl.vertices = locQuad.tr.vertices = locQuad.bl.vertices = { x: 0, y: 0, z: 0 };
+    if (
+      !node._visible ||
+      (locParent && locParent != node._batchNode && locParent._shouldBeHidden)
+    ) {
+      locQuad.br.vertices =
+        locQuad.tl.vertices =
+        locQuad.tr.vertices =
+        locQuad.bl.vertices =
+          { x: 0, y: 0, z: 0 };
       node._shouldBeHidden = true;
     } else {
       node._shouldBeHidden = false;
-      if (this._dirtyFlag !== 0) { // because changing color and opacity uses dirty flag at visit, but visit doesn't call at batching.
+      if (this._dirtyFlag !== 0) {
+        // because changing color and opacity uses dirty flag at visit, but visit doesn't call at batching.
         this.updateStatus();
         this._dirtyFlag = 0;
       }
@@ -189,7 +203,10 @@ cc.Sprite.WebGLRenderCmd.prototype.updateTransform = function () {
       if (!locParent || locParent == node._batchNode) {
         node._transformToBatch = this.getNodeToParentTransform();
       } else {
-        node._transformToBatch = cc.affineTransformConcat(this.getNodeToParentTransform(), locParent._transformToBatch);
+        node._transformToBatch = cc.affineTransformConcat(
+          this.getNodeToParentTransform(),
+          locParent._transformToBatch,
+        );
       }
 
       //
@@ -223,7 +240,8 @@ cc.Sprite.WebGLRenderCmd.prototype.updateTransform = function () {
       const locVertexZ = node._vertexZ;
 
       // ensure positions are set to integer values when possible to fix rendering artifacts caused by sub-pixel positions
-      if (!this.getNeedsSubPixelPosition()) { // || !cc.SPRITEBATCHNODE_RENDER_SUBPIXEL) {
+      if (!this.getNeedsSubPixelPosition()) {
+        // || !cc.SPRITEBATCHNODE_RENDER_SUBPIXEL) {
         ax = Math.round(ax);
         ay = Math.round(ay);
         bx = Math.round(bx);
@@ -244,7 +262,11 @@ cc.Sprite.WebGLRenderCmd.prototype.updateTransform = function () {
   }
 
   // recursively iterate over children
-  if (node._hasChildren) node._arrayMakeObjectsPerformSelector(node._children, cc.Node._stateCallbackType.updateTransform);
+  if (node._hasChildren)
+    node._arrayMakeObjectsPerformSelector(
+      node._children,
+      cc.Node._stateCallbackType.updateTransform,
+    );
 };
 
 /**
@@ -298,7 +320,10 @@ cc.Node.prototype.setActionsUsingSubPixelPosition = function (val) {
   if (this.actionsUsingSubPixelPosition != val) {
     const lastVal = this.actionsUsingSubPixelPosition;
     this.actionsUsingSubPixelPosition = Math.max(0, val);
-    if ((lastVal === 0 && this.actionsUsingSubPixelPosition === 1) || (lastVal === 1 && this.actionsUsingSubPixelPosition === 0)) {
+    if (
+      (lastVal === 0 && this.actionsUsingSubPixelPosition === 1) ||
+      (lastVal === 1 && this.actionsUsingSubPixelPosition === 0)
+    ) {
       this._renderCmd.setDirtyFlag(cc.Node._dirtyFlags.transformDirty);
     }
   }
@@ -373,13 +398,18 @@ cc.Node.WebGLRenderCmd.prototype.getNeedsSubPixelPosition = function () {
  * NOTE: override this method to force sub pixel positioning based on render command state
  */
 cc.Node.WebGLRenderCmd.prototype.getNeedsSubPixelPositionForCache = function () {
-  return this._node.getUsesSubPixelPosition() || this._node.getActionsUsingSubPixelPosition() || this.getNeedsXYZRotation();
+  return (
+    this._node.getUsesSubPixelPosition() ||
+    this._node.getActionsUsingSubPixelPosition() ||
+    this.getNeedsXYZRotation()
+  );
 };
 
 cc.Node.WebGLRenderCmd.prototype.transform = function (parentCmd, recursive) {
   const transformDirty = this._dirtyFlag & cc.Node._dirtyFlags.transformDirty;
-  const t4x4 = this._transform4x4; const stackMatrix = this._stackMatrix; const
-    node = this._node;
+  const t4x4 = this._transform4x4;
+  const stackMatrix = this._stackMatrix;
+  const node = this._node;
   parentCmd = parentCmd || this.getParentRenderCmd();
 
   // update node to parent transform
@@ -387,11 +417,19 @@ cc.Node.WebGLRenderCmd.prototype.transform = function (parentCmd, recursive) {
 
   // get whether needs perspective projection
   const renderingToBuffer = cc.rendererWebGL._isCacheToBufferOn;
-  const parentNeedsPerspectiveProjection = parentCmd != null && _.isFunction(parentCmd.getNeedsPerspectiveProjection) ? parentCmd.getNeedsPerspectiveProjection() : (!renderingToBuffer && !CONFIG.DYNAMIC_PROJECTION);
-  this._needsPerspectiveProjection = parentNeedsPerspectiveProjection || this.getNeedsPerspectiveProjectionForCache();
+  const parentNeedsPerspectiveProjection =
+    parentCmd != null && _.isFunction(parentCmd.getNeedsPerspectiveProjection)
+      ? parentCmd.getNeedsPerspectiveProjection()
+      : !renderingToBuffer && !CONFIG.DYNAMIC_PROJECTION;
+  this._needsPerspectiveProjection =
+    parentNeedsPerspectiveProjection || this.getNeedsPerspectiveProjectionForCache();
 
-  const parentNeedsSubPixelPosition = parentCmd != null && _.isFunction(parentCmd.getNeedsSubPixelPosition) ? parentCmd.getNeedsSubPixelPosition() : cc.Node.prototype.usesSubPixelPosition;
-  this._needsSubPixelPosition = parentNeedsSubPixelPosition || this.getNeedsSubPixelPositionForCache();
+  const parentNeedsSubPixelPosition =
+    parentCmd != null && _.isFunction(parentCmd.getNeedsSubPixelPosition)
+      ? parentCmd.getNeedsSubPixelPosition()
+      : cc.Node.prototype.usesSubPixelPosition;
+  this._needsSubPixelPosition =
+    parentNeedsSubPixelPosition || this.getNeedsSubPixelPositionForCache();
 
   // get projection matrix
   // use render pass projection matrix if visiting this node:
@@ -443,10 +481,18 @@ cc.Node.WebGLRenderCmd.prototype.transform = function (parentCmd, recursive) {
     if (renderingToBuffer) {
       var renderPass = RenderPass.get_top_of_reset_stack();
       if (renderPass) {
-        parentMatrix = cc.kmMat4Multiply(new cc.kmMat4(), renderPass._perspectiveStackMatrix, parentMatrix);
+        parentMatrix = cc.kmMat4Multiply(
+          new cc.kmMat4(),
+          renderPass._perspectiveStackMatrix,
+          parentMatrix,
+        );
       }
     } else {
-      parentMatrix = cc.kmMat4Multiply(new cc.kmMat4(), UtilsEngine.MAT4_PERSPECTIVE_STACK, parentMatrix);
+      parentMatrix = cc.kmMat4Multiply(
+        new cc.kmMat4(),
+        UtilsEngine.MAT4_PERSPECTIVE_STACK,
+        parentMatrix,
+      );
     }
   }
 
@@ -506,12 +552,16 @@ cc.Sprite.prototype.setTexture = function (texture) {
     texture = cc.textureCache.addImage(texture);
 
     if (!texture._textureLoaded) {
-      texture.addEventListener('load', function () {
-        this._renderCmd._setTexture(texture);
-        this._changeRectWithTexture(texture.getContentSize());
-        this.setColor(this._realColor);
-        this._textureLoaded = true;
-      }, this);
+      texture.addEventListener(
+        'load',
+        function () {
+          this._renderCmd._setTexture(texture);
+          this._changeRectWithTexture(texture.getContentSize());
+          this.setColor(this._realColor);
+          this._textureLoaded = true;
+        },
+        this,
+      );
     } else {
       this._renderCmd._setTexture(texture);
       this._changeRectWithTexture(texture.getContentSize());
@@ -529,7 +579,8 @@ cc.Sprite.prototype.setTexture = function (texture) {
   }
 };
 
-cc.Sprite.WebGLRenderCmd.prototype._super_setTextureCoords = cc.Sprite.WebGLRenderCmd.prototype._setTextureCoords;
+cc.Sprite.WebGLRenderCmd.prototype._super_setTextureCoords =
+  cc.Sprite.WebGLRenderCmd.prototype._setTextureCoords;
 cc.Sprite.WebGLRenderCmd.prototype._setTextureCoords = function () {
   const node = this._node;
   const texture = node._batchNode != null ? node.textureAtlas.texture : node._texture;
@@ -574,7 +625,8 @@ cc.Sprite.WebGLRenderCmd.prototype.setTextureCoordsEdgeToEdgeAndFlipped = functi
   this.flipTextureCoords();
 };
 
-cc.SpriteBatchNode.WebGLRenderCmd.prototype._super_rendering = cc.SpriteBatchNode.WebGLRenderCmd.prototype.rendering;
+cc.SpriteBatchNode.WebGLRenderCmd.prototype._super_rendering =
+  cc.SpriteBatchNode.WebGLRenderCmd.prototype.rendering;
 cc.SpriteBatchNode.WebGLRenderCmd.prototype.rendering = function (ctx) {
   if (this._textureAtlas.totalQuads > 0) {
     this.updateMatricesForRender();
@@ -583,7 +635,8 @@ cc.SpriteBatchNode.WebGLRenderCmd.prototype.rendering = function (ctx) {
   }
 };
 
-cc.AtlasNode.WebGLRenderCmd.prototype._super_rendering = cc.AtlasNode.WebGLRenderCmd.prototype.rendering;
+cc.AtlasNode.WebGLRenderCmd.prototype._super_rendering =
+  cc.AtlasNode.WebGLRenderCmd.prototype.rendering;
 cc.AtlasNode.WebGLRenderCmd.prototype.rendering = function (ctx) {
   this.updateMatricesForRender();
   cc.AtlasNode.WebGLRenderCmd.prototype._super_rendering.call(this, ctx);
@@ -591,10 +644,10 @@ cc.AtlasNode.WebGLRenderCmd.prototype.rendering = function (ctx) {
 };
 
 cc.LabelTTF.WebGLRenderCmd.prototype._updateTexture = function () {
-  this._dirtyFlag = this._dirtyFlag & cc.Node._dirtyFlags.textDirty ^ this._dirtyFlag;
+  this._dirtyFlag = (this._dirtyFlag & cc.Node._dirtyFlags.textDirty) ^ this._dirtyFlag;
   const node = this._node;
-  const locContext = this._getLabelContext(); const
-    locLabelCanvas = this._labelCanvas;
+  const locContext = this._getLabelContext();
+  const locLabelCanvas = this._labelCanvas;
   const locContentSize = node._contentSize;
 
   if (node._string.length === 0) {
@@ -645,21 +698,29 @@ cc.LabelTTF.WebGLRenderCmd.prototype._updateTexture = function () {
 cc.LabelTTF.WebGLRenderCmd.prototype._drawTTFInCanvas = function (context) {
   if (!context) return;
   const node = this._node;
-  const locStrokeShadowOffsetX = node._strokeShadowOffsetX; const
-    locStrokeShadowOffsetY = node._strokeShadowOffsetY;
-  const locContentSizeHeight = node._contentSize.height - locStrokeShadowOffsetY; const locVAlignment = node._vAlignment;
-  const locHAlignment = node._hAlignment; const
-    locStrokeSize = node._strokeSize;
+  const locStrokeShadowOffsetX = node._strokeShadowOffsetX;
+  const locStrokeShadowOffsetY = node._strokeShadowOffsetY;
+  const locContentSizeHeight = node._contentSize.height - locStrokeShadowOffsetY;
+  const locVAlignment = node._vAlignment;
+  const locHAlignment = node._hAlignment;
+  const locStrokeSize = node._strokeSize;
 
   // transform canvas to account for pixel scale
-  context.setTransform(CONFIG.pixelScaleEngine, 0, 0, CONFIG.pixelScaleEngine, Math.ceil((locStrokeShadowOffsetX * 0.5) * CONFIG.pixelScaleEngine), Math.ceil((locContentSizeHeight + locStrokeShadowOffsetY * 0.5) * CONFIG.pixelScaleEngine));
+  context.setTransform(
+    CONFIG.pixelScaleEngine,
+    0,
+    0,
+    CONFIG.pixelScaleEngine,
+    Math.ceil(locStrokeShadowOffsetX * 0.5 * CONFIG.pixelScaleEngine),
+    Math.ceil((locContentSizeHeight + locStrokeShadowOffsetY * 0.5) * CONFIG.pixelScaleEngine),
+  );
 
   // this is fillText for canvas
   if (context.font != this._fontStyleStr) context.font = this._fontStyleStr;
   context.fillStyle = this._fillColorStr;
 
-  let xOffset = 0; let
-    yOffset = 0;
+  let xOffset = 0;
+  let yOffset = 0;
   // stroke style setup
   const locStrokeEnabled = node._strokeEnabled;
   if (locStrokeEnabled) {
@@ -690,8 +751,11 @@ cc.LabelTTF.WebGLRenderCmd.prototype._drawTTFInCanvas = function (context) {
   else xOffset += 0;
   if (this._isMultiLine) {
     const locStrLen = this._strings.length;
-    if (locVAlignment === cc.VERTICAL_TEXT_ALIGNMENT_BOTTOM) yOffset = lineHeight - transformTop * 2 + locContentSizeHeight - lineHeight * locStrLen;
-    else if (locVAlignment === cc.VERTICAL_TEXT_ALIGNMENT_CENTER) yOffset = (lineHeight - transformTop * 2) / 2 + (locContentSizeHeight - lineHeight * locStrLen) / 2;
+    if (locVAlignment === cc.VERTICAL_TEXT_ALIGNMENT_BOTTOM)
+      yOffset = lineHeight - transformTop * 2 + locContentSizeHeight - lineHeight * locStrLen;
+    else if (locVAlignment === cc.VERTICAL_TEXT_ALIGNMENT_CENTER)
+      yOffset =
+        (lineHeight - transformTop * 2) / 2 + (locContentSizeHeight - lineHeight * locStrLen) / 2;
 
     for (let i = 0; i < locStrLen; i++) {
       const line = this._strings[i];
@@ -712,14 +776,16 @@ cc.LabelTTF.WebGLRenderCmd.prototype._drawTTFInCanvas = function (context) {
   }
 };
 
-cc.LayerColor.WebGLRenderCmd.prototype._super_rendering = cc.LayerColor.WebGLRenderCmd.prototype.rendering;
+cc.LayerColor.WebGLRenderCmd.prototype._super_rendering =
+  cc.LayerColor.WebGLRenderCmd.prototype.rendering;
 cc.LayerColor.WebGLRenderCmd.prototype.rendering = function (ctx) {
   this.updateMatricesForRender();
   cc.LayerColor.WebGLRenderCmd.prototype._super_rendering.call(this, ctx);
   this.updateMatricesAfterRender();
 };
 
-cc.ParticleSystem.WebGLRenderCmd.prototype._super_rendering = cc.ParticleSystem.WebGLRenderCmd.prototype.rendering;
+cc.ParticleSystem.WebGLRenderCmd.prototype._super_rendering =
+  cc.ParticleSystem.WebGLRenderCmd.prototype.rendering;
 cc.ParticleSystem.WebGLRenderCmd.prototype.rendering = function (ctx) {
   if (this._node._texture != null) {
     this.updateMatricesForRender();
@@ -728,7 +794,8 @@ cc.ParticleSystem.WebGLRenderCmd.prototype.rendering = function (ctx) {
   }
 };
 
-cc.ParticleBatchNode.WebGLRenderCmd.prototype._super_rendering = cc.ParticleBatchNode.WebGLRenderCmd.prototype.rendering;
+cc.ParticleBatchNode.WebGLRenderCmd.prototype._super_rendering =
+  cc.ParticleBatchNode.WebGLRenderCmd.prototype.rendering;
 cc.ParticleBatchNode.WebGLRenderCmd.prototype.rendering = function (ctx) {
   if (this._node.textureAtlas.totalQuads > 0) {
     this.updateMatricesForRender();
@@ -737,7 +804,8 @@ cc.ParticleBatchNode.WebGLRenderCmd.prototype.rendering = function (ctx) {
   }
 };
 
-cc.MotionStreak.WebGLRenderCmd.prototype._super_rendering = cc.MotionStreak.WebGLRenderCmd.prototype.rendering;
+cc.MotionStreak.WebGLRenderCmd.prototype._super_rendering =
+  cc.MotionStreak.WebGLRenderCmd.prototype.rendering;
 cc.MotionStreak.WebGLRenderCmd.prototype.rendering = function (ctx) {
   if (this._node._texture != null && this._node._texture.isLoaded()) {
     this.updateMatricesForRender();
@@ -746,7 +814,8 @@ cc.MotionStreak.WebGLRenderCmd.prototype.rendering = function (ctx) {
   }
 };
 
-cc.ProgressTimer.WebGLRenderCmd.prototype._super_rendering = cc.ProgressTimer.WebGLRenderCmd.prototype.rendering;
+cc.ProgressTimer.WebGLRenderCmd.prototype._super_rendering =
+  cc.ProgressTimer.WebGLRenderCmd.prototype.rendering;
 cc.ProgressTimer.WebGLRenderCmd.prototype.rendering = function (ctx) {
   if (this._node.autoDraw) {
     this.updateMatricesForRender();
@@ -755,7 +824,8 @@ cc.ProgressTimer.WebGLRenderCmd.prototype.rendering = function (ctx) {
   }
 };
 
-cc.RenderTexture.WebGLRenderCmd.prototype._super_rendering = cc.RenderTexture.WebGLRenderCmd.prototype.rendering;
+cc.RenderTexture.WebGLRenderCmd.prototype._super_rendering =
+  cc.RenderTexture.WebGLRenderCmd.prototype.rendering;
 cc.RenderTexture.WebGLRenderCmd.prototype.rendering = function (ctx) {
   if (this._node.autoDraw) {
     this.updateMatricesForRender();
@@ -764,7 +834,8 @@ cc.RenderTexture.WebGLRenderCmd.prototype.rendering = function (ctx) {
   }
 };
 
-cc.DrawNode.WebGLRenderCmd.prototype._super_rendering = cc.DrawNode.WebGLRenderCmd.prototype.rendering;
+cc.DrawNode.WebGLRenderCmd.prototype._super_rendering =
+  cc.DrawNode.WebGLRenderCmd.prototype.rendering;
 cc.DrawNode.WebGLRenderCmd.prototype.rendering = function (ctx) {
   this.updateMatricesForRender();
   cc.DrawNode.WebGLRenderCmd.prototype._super_rendering.call(this, ctx);
@@ -775,8 +846,12 @@ cc.DrawNode.WebGLRenderCmd.prototype.rendering = function (ctx) {
 // fix draw node opacity by applying it to the vertices of the draw shape
 cc.DrawNode.prototype._applyDisplayedOpacityToBuffer = function (indexFrom, indexTo) {
   const buffer = this._buffer;
-  if (indexFrom == null) { indexFrom = 0; }
-  if (indexTo == null) { indexTo = buffer.length; }
+  if (indexFrom == null) {
+    indexFrom = 0;
+  }
+  if (indexTo == null) {
+    indexTo = buffer.length;
+  }
   if (indexTo > indexFrom) {
     for (let i = indexFrom; i < indexTo; i++) {
       const triangle = buffer[i];
@@ -817,12 +892,14 @@ cc.DrawNode.prototype._drawSegments = function () {
   cc.DrawNode.prototype._super_drawSegments.apply(this, arguments);
   this._applyDisplayedOpacityToBuffer(bufferLength);
 };
-cc.DrawNode.WebGLRenderCmd.prototype._super_updateDisplayOpacity = cc.DrawNode.WebGLRenderCmd.prototype._updateDisplayOpacity;
+cc.DrawNode.WebGLRenderCmd.prototype._super_updateDisplayOpacity =
+  cc.DrawNode.WebGLRenderCmd.prototype._updateDisplayOpacity;
 cc.DrawNode.WebGLRenderCmd.prototype._updateDisplayOpacity = function (val) {
   cc.DrawNode.WebGLRenderCmd.prototype._super_updateDisplayOpacity.call(this, val);
   this._node._applyDisplayedOpacityToBuffer();
 };
-cc.DrawNode.WebGLRenderCmd.prototype._super_syncDisplayOpacity = cc.DrawNode.WebGLRenderCmd.prototype._syncDisplayOpacity;
+cc.DrawNode.WebGLRenderCmd.prototype._super_syncDisplayOpacity =
+  cc.DrawNode.WebGLRenderCmd.prototype._syncDisplayOpacity;
 cc.DrawNode.WebGLRenderCmd.prototype._syncDisplayOpacity = function (val) {
   cc.DrawNode.WebGLRenderCmd.prototype._super_syncDisplayOpacity.call(this, val);
   this._node._applyDisplayedOpacityToBuffer();

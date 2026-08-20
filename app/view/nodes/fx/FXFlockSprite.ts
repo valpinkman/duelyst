@@ -106,13 +106,17 @@ const FXFlockSprite = FXProjectileSprite.extend({
     if (options.flockRadius != null) this.setFlockRadius(options.flockRadius);
     if (options.obstacleSpread != null) this.setObstacleSpread(options.obstacleSpread);
     if (options.alignmentWeight != null) this.setAlignmentWeight(options.alignmentWeight);
-    if (options.flockSeparationWeight != null) this.setFlockSeparationWeight(options.flockSeparationWeight);
-    if (options.obstacleSeparationWeight != null) this.setObstacleSeparationWeight(options.obstacleSeparationWeight);
+    if (options.flockSeparationWeight != null)
+      this.setFlockSeparationWeight(options.flockSeparationWeight);
+    if (options.obstacleSeparationWeight != null)
+      this.setObstacleSeparationWeight(options.obstacleSeparationWeight);
     if (options.cohesionWeight != null) this.setCohesionWeight(options.cohesionWeight);
     if (options.centerWeight != null) this.setCenterWeight(options.centerWeight);
     if (options.randomWeight != null) this.setRandomWeight(options.randomWeight);
     if (options.randomRange != null) this.setRandomRange(options.randomRange);
-    if (options.parallaxMode != null) { this.setParallaxMode(options.parallaxMode); }
+    if (options.parallaxMode != null) {
+      this.setParallaxMode(options.parallaxMode);
+    }
   },
 
   // properties
@@ -230,16 +234,22 @@ const FXFlockSprite = FXProjectileSprite.extend({
         const dcx = sourceScreenPosition.x - position.x;
         const dcy = sourceScreenPosition.y - position.y;
         if (Math.abs(dcx) > randomRange.x) {
-          cvx = dcx / randomRange.x * speed;
+          cvx = (dcx / randomRange.x) * speed;
         }
         if (Math.abs(dcy) > randomRange.y) {
-          cvy = dcy / randomRange.y * speed;
+          cvy = (dcy / randomRange.y) * speed;
         }
       }
 
       // update velocity
-      targetVelocity.x = Math.max(Math.min(targetVelocity.x + cvx + (Math.random() * 2.0 - 1.0) * speed, speed), -speed);
-      targetVelocity.y = Math.max(Math.min(targetVelocity.y + cvy + (Math.random() * 2.0 - 1.0) * speed, speed), -speed);
+      targetVelocity.x = Math.max(
+        Math.min(targetVelocity.x + cvx + (Math.random() * 2.0 - 1.0) * speed, speed),
+        -speed,
+      );
+      targetVelocity.y = Math.max(
+        Math.min(targetVelocity.y + cvy + (Math.random() * 2.0 - 1.0) * speed, speed),
+        -speed,
+      );
       velocity.x += (targetVelocity.x - velocity.x) * this.steeringSpeed;
       velocity.y += (targetVelocity.y - velocity.y) * this.steeringSpeed;
 
@@ -276,8 +286,8 @@ const FXFlockSprite = FXProjectileSprite.extend({
       let numFlockmatesClose = 0;
       const numObstacles = 0;
       const diff = new cc.kmVec2();
-      let i; let
-        il;
+      let i;
+      let il;
 
       for (i = 0, il = boids.length; i < il; i++) {
         const flockmate = boids[i];
@@ -316,8 +326,16 @@ const FXFlockSprite = FXProjectileSprite.extend({
       // finalize boids properties
       if (numFlockmates > 0) {
         const flockInfluencers = 1.0 / numFlockmates;
-        cc.kmVec2Subtract(flockVelocity, cc.kmVec2Scale(flockVelocity, flockVelocity, flockInfluencers), velocity);
-        cc.kmVec2Subtract(flockPosition, cc.kmVec2Scale(flockPosition, flockPosition, flockInfluencers), boidPosition);
+        cc.kmVec2Subtract(
+          flockVelocity,
+          cc.kmVec2Scale(flockVelocity, flockVelocity, flockInfluencers),
+          velocity,
+        );
+        cc.kmVec2Subtract(
+          flockPosition,
+          cc.kmVec2Scale(flockPosition, flockPosition, flockInfluencers),
+          boidPosition,
+        );
         if (numFlockmatesClose) {
           cc.kmVec2Scale(flockDifference, flockDifference, 1.0 / numFlockmatesClose);
         }
@@ -344,8 +362,18 @@ const FXFlockSprite = FXProjectileSprite.extend({
         cvy = (dcy / flockRadius) * speed;
       }
     }
-    const fx = cvx + flockVelocity.x * this.alignmentWeight + flockPosition.x * this.cohesionWeight + flockDifference.x * this.flockSeparationWeight + obstacleDifference.x * this.obstacleSeparationWeight;
-    const fy = cvy + flockVelocity.y * this.alignmentWeight + flockPosition.y * this.cohesionWeight + flockDifference.y * this.flockSeparationWeight + obstacleDifference.y * this.obstacleSeparationWeight;
+    const fx =
+      cvx +
+      flockVelocity.x * this.alignmentWeight +
+      flockPosition.x * this.cohesionWeight +
+      flockDifference.x * this.flockSeparationWeight +
+      obstacleDifference.x * this.obstacleSeparationWeight;
+    const fy =
+      cvy +
+      flockVelocity.y * this.alignmentWeight +
+      flockPosition.y * this.cohesionWeight +
+      flockDifference.y * this.flockSeparationWeight +
+      obstacleDifference.y * this.obstacleSeparationWeight;
     const { targetVelocity } = boid;
     targetVelocity.x = Math.max(Math.min(targetVelocity.x + fx, speed), -speed);
     targetVelocity.y = Math.max(Math.min(targetVelocity.y + fy, speed), -speed);
@@ -359,15 +387,15 @@ const FXFlockSprite = FXProjectileSprite.extend({
     let vy = velocity.y * invCenterWeight + cwy * centerWeight;
     const len = Math.sqrt(vx * vx + vy * vy);
     if (len !== 0 && len < this.minSpeed) {
-      vx = vx / len * this.minSpeed;
-      vy = vy / len * this.minSpeed;
+      vx = (vx / len) * this.minSpeed;
+      vy = (vy / len) * this.minSpeed;
     }
     boidPosition.x += vx * dt;
     boidPosition.y += vy * dt;
     boid.setPosition(boidPosition);
 
     // set rotation
-    boid.setRotation(-Math.atan2(dy + vy, dx + vx) * 180 / Math.PI);
+    boid.setRotation((-Math.atan2(dy + vy, dx + vx) * 180) / Math.PI);
   },
 
   // core
@@ -379,10 +407,11 @@ const FXFlockSprite = FXProjectileSprite.extend({
   startTransform() {
     FXSprite.prototype.startTransform.call(this);
 
-    let dx; let
-      dy;
-    let da; let ra; let
-      angle;
+    let dx;
+    let dy;
+    let da;
+    let ra;
+    let angle;
     const { speed } = this;
     const cx = this._contentSize.width * this._anchorPoint.x;
     const cy = this._contentSize.height * this._anchorPoint.y;
@@ -402,8 +431,9 @@ const FXFlockSprite = FXProjectileSprite.extend({
 
     // create new boids
     let { boids } = this;
-    let i; let il; let
-      boid;
+    let i;
+    let il;
+    let boid;
     if (this.boidFX && boids.length !== this.numBoids) {
       // remove all previous
       for (i = 0, il = boids.length; i < il; i++) {
@@ -437,7 +467,7 @@ const FXFlockSprite = FXProjectileSprite.extend({
         boid.targetVelocity.y = boid.velocity.y;
 
         // rotation
-        const boidRad = angle * 180 / Math.PI;
+        const boidRad = (angle * 180) / Math.PI;
         boid.setRotation(boidRad);
 
         // offset
@@ -460,7 +490,11 @@ const FXFlockSprite = FXProjectileSprite.extend({
     if (this.moveDuration) {
       // transition center weight to max
       this._centerWeight = 1.0;
-      this.runAction(cc.EaseExponentialIn.create(cc.ActionTween.create(this.moveDuration, '_centerWeight', 0.0, this.centerWeight)));
+      this.runAction(
+        cc.EaseExponentialIn.create(
+          cc.ActionTween.create(this.moveDuration, '_centerWeight', 0.0, this.centerWeight),
+        ),
+      );
       this._offsetWeight = 0.0;
       this.runAction(cc.ActionTween.create(this.moveDuration, '_offsetWeight', 0.0, 1.0));
 
@@ -471,10 +505,7 @@ const FXFlockSprite = FXProjectileSprite.extend({
           movement = this.easing.create(movement);
         }
 
-        this.runAction(cc.sequence(
-          movement,
-          cc.callFunc(this.end, this),
-        ));
+        this.runAction(cc.sequence(movement, cc.callFunc(this.end, this)));
       }
     }
 

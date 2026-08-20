@@ -16,7 +16,6 @@ var i18next = require('i18next');
 var UtilsEngine = require('../../../common/utils/utils_engine');
 
 var GameBottomBarCompositeView = Backbone.Marionette.CompositeView.extend({
-
   id: 'app-game-bottombar',
 
   template: GameBottomBarTmpl,
@@ -28,7 +27,8 @@ var GameBottomBarCompositeView = Backbone.Marionette.CompositeView.extend({
     $replayControlPause: '.replay-control .control-type-pause',
     $replayControlPlay: '.replay-control .control-type-play',
     $replayControlSpeedValue: '.replay-control .control-info-speed .control-value',
-    $replayControlRealTimeModeValue: '.replay-control .control-type-real-time-mode #checkbox-real-time-mode',
+    $replayControlRealTimeModeValue:
+      '.replay-control .control-type-real-time-mode #checkbox-real-time-mode',
   },
 
   events: {
@@ -46,8 +46,7 @@ var GameBottomBarCompositeView = Backbone.Marionette.CompositeView.extend({
 
   /* region INITIALIZE */
 
-  initialize: function () {
-  },
+  initialize: function () {},
 
   /* endregion INITIALIZE */
 
@@ -59,13 +58,21 @@ var GameBottomBarCompositeView = Backbone.Marionette.CompositeView.extend({
       if (SDK.GameSession.getInstance().getIsReplay()) {
         this.ui.$replayControl.css(
           'transform',
-          'translate(' + (endPosition.x - 60.0) / 10.0 + 'rem, ' + (-endPosition.y + CONFIG.HAND_CARD_SIZE * 0.35) / 10.0 + 'rem)',
+          'translate(' +
+            (endPosition.x - 60.0) / 10.0 +
+            'rem, ' +
+            (-endPosition.y + CONFIG.HAND_CARD_SIZE * 0.35) / 10.0 +
+            'rem)',
         );
       }
     } else {
       this.ui.$submitTurn.css(
         'transform',
-        'translate(' + (endPosition.x - 10.0) / 10.0 + 'rem, ' + (-endPosition.y + CONFIG.HAND_CARD_SIZE * 0.35) / 10.0 + 'rem)',
+        'translate(' +
+          (endPosition.x - 10.0) / 10.0 +
+          'rem, ' +
+          (-endPosition.y + CONFIG.HAND_CARD_SIZE * 0.35) / 10.0 +
+          'rem)',
       );
     }
   },
@@ -98,7 +105,11 @@ var GameBottomBarCompositeView = Backbone.Marionette.CompositeView.extend({
 
   onShow: function () {
     // game events
-    this.listenTo(SDK.GameSession.getInstance().getEventBus(), EVENTS.end_turn, this._setSubmitTurnButtonToEnemyState);
+    this.listenTo(
+      SDK.GameSession.getInstance().getEventBus(),
+      EVENTS.end_turn,
+      this._setSubmitTurnButtonToEnemyState,
+    );
     var scene = Scene.getInstance();
     var gameLayer = scene && scene.getGameLayer();
     if (gameLayer != null) {
@@ -109,9 +120,21 @@ var GameBottomBarCompositeView = Backbone.Marionette.CompositeView.extend({
     }
 
     if (SDK.GameSession.getInstance().getIsSpectateMode()) {
-      this.listenTo(ReplayEngine.getInstance().getEventBus(), EVENTS.replay_started, this._updateReplayControlPlaying);
-      this.listenTo(ReplayEngine.getInstance().getEventBus(), EVENTS.replay_paused, this._updateReplayControlPlaying);
-      this.listenTo(ReplayEngine.getInstance().getEventBus(), EVENTS.replay_resumed, this._updateReplayControlPlaying);
+      this.listenTo(
+        ReplayEngine.getInstance().getEventBus(),
+        EVENTS.replay_started,
+        this._updateReplayControlPlaying,
+      );
+      this.listenTo(
+        ReplayEngine.getInstance().getEventBus(),
+        EVENTS.replay_paused,
+        this._updateReplayControlPlaying,
+      );
+      this.listenTo(
+        ReplayEngine.getInstance().getEventBus(),
+        EVENTS.replay_resumed,
+        this._updateReplayControlPlaying,
+      );
     }
 
     this._updateControls();
@@ -143,13 +166,22 @@ var GameBottomBarCompositeView = Backbone.Marionette.CompositeView.extend({
     var gameLayer = Scene.getInstance().getGameLayer();
     var gameSession = SDK.GameSession.getInstance();
 
-    if (gameSession.isChallenge() && gameSession.getChallenge() != null && gameSession.getChallenge().usesResetTurn && !gameSession.isOver()) {
-      audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
+    if (
+      gameSession.isChallenge() &&
+      gameSession.getChallenge() != null &&
+      gameSession.getChallenge().usesResetTurn &&
+      !gameSession.isOver()
+    ) {
+      audio_engine
+        .current()
+        .play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
       gameSession.getChallenge().challengeReset();
     } else if (gameLayer && gameLayer.getIsMyTurn() && !gameLayer.getPlayerSelectionLocked()) {
       gameSession.submitExplicitAction(gameSession.actionEndTurn());
     } else {
-      audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_error.audio, CONFIG.ERROR_SFX_PRIORITY);
+      audio_engine
+        .current()
+        .play_effect_for_interaction(RSX.sfx_ui_error.audio, CONFIG.ERROR_SFX_PRIORITY);
     }
   },
 
@@ -174,7 +206,9 @@ var GameBottomBarCompositeView = Backbone.Marionette.CompositeView.extend({
 
     if (this._updateAllActionsSpeedModifiersDebounced == null) {
       this._updateAllActionsSpeedModifiersDebounced = _.debounce(function () {
-        cc.director.getActionManager().setAllActionsSpeedModifiers(CONFIG.replayActionSpeedModifier);
+        cc.director
+          .getActionManager()
+          .setAllActionsSpeedModifiers(CONFIG.replayActionSpeedModifier);
       }, 300);
     }
     this._updateAllActionsSpeedModifiersDebounced();
@@ -238,9 +272,16 @@ var GameBottomBarCompositeView = Backbone.Marionette.CompositeView.extend({
       var gameSession = SDK.GameSession.getInstance();
 
       // If in a challenge with reset turn, show reset turn, else if it's my turn show my turn, else show enemy turn
-      if (gameSession.isChallenge() && gameSession.getChallenge() != null && gameSession.getChallenge().usesResetTurn) {
+      if (
+        gameSession.isChallenge() &&
+        gameSession.getChallenge() != null &&
+        gameSession.getChallenge().usesResetTurn
+      ) {
         this._setSubmitTurnButtonToResetOTKState();
-      } else if (!(gameLayer && gameLayer.getIsMyTurn()) || gameSession.getCurrentTurn().getEnded()) {
+      } else if (
+        !(gameLayer && gameLayer.getIsMyTurn()) ||
+        gameSession.getCurrentTurn().getEnded()
+      ) {
         this._setSubmitTurnButtonToEnemyState();
       } else {
         this._setSubmitTurnButtonToMyState();
@@ -294,7 +335,11 @@ var GameBottomBarCompositeView = Backbone.Marionette.CompositeView.extend({
       canUseCard = true;
     } else {
       var signatureCard = player.getCurrentSignatureCard();
-      if (signatureCard != null && signatureCard.getDoesOwnerHaveEnoughManaToPlay() && player.getIsSignatureCardActive()) {
+      if (
+        signatureCard != null &&
+        signatureCard.getDoesOwnerHaveEnoughManaToPlay() &&
+        player.getIsSignatureCardActive()
+      ) {
         canUseCard = true;
       } else {
         var handCards = deck.getCardsInHand();
@@ -321,7 +366,6 @@ var GameBottomBarCompositeView = Backbone.Marionette.CompositeView.extend({
   },
 
   /* endregion TURN */
-
 });
 
 // Expose the class either via CommonJS or the global object

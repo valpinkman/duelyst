@@ -19,9 +19,15 @@ class ModifierEndTurnWatchDealDamageToSelfAndNearbyEnemies extends ModifierEndTu
   static description = 'At the end of your turn, deal %X damage to self and all nearby enemies';
 
   static createContextObject(damageAmount, damageGenerals, damageAmountDelta, options) {
-    if (damageAmount == null) { damageAmount = 1; }
-    if (damageGenerals == null) { damageGenerals = true; }
-    if (damageAmountDelta == null) { damageAmountDelta = 2; }
+    if (damageAmount == null) {
+      damageAmount = 1;
+    }
+    if (damageGenerals == null) {
+      damageGenerals = true;
+    }
+    if (damageAmountDelta == null) {
+      damageAmountDelta = 2;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.damageAmount = damageAmount;
     contextObject.damageGenerals = damageGenerals;
@@ -44,7 +50,9 @@ class ModifierEndTurnWatchDealDamageToSelfAndNearbyEnemies extends ModifierEndTu
 
   onTurnWatch(action) {
     let damageAction;
-    const entities = this.getGameSession().getBoard().getEnemyEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
+    const entities = this.getGameSession()
+      .getBoard()
+      .getEnemyEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
     for (var entity of Array.from<any>(entities)) {
       // don't damage enemy General unless specifically allowed, but do damage enemy units
       if (this.damageGenerals || (!this.damageGenerals && !entity.getIsGeneral())) {
@@ -80,7 +88,7 @@ class ModifierEndTurnWatchDealDamageToSelfAndNearbyEnemies extends ModifierEndTu
 
   onActivate() {
     super.onActivate();
-    return this._private.currentDamageAmount = this.damageAmount;
+    return (this._private.currentDamageAmount = this.damageAmount);
   }
 
   getPrivateDefaults(gameSession) {
@@ -90,8 +98,12 @@ class ModifierEndTurnWatchDealDamageToSelfAndNearbyEnemies extends ModifierEndTu
     return p;
   }
 }
-ModifierEndTurnWatchDealDamageToSelfAndNearbyEnemies.prototype.type = 'ModifierEndTurnWatchDealDamageToSelfAndNearbyEnemies';
+ModifierEndTurnWatchDealDamageToSelfAndNearbyEnemies.prototype.type =
+  'ModifierEndTurnWatchDealDamageToSelfAndNearbyEnemies';
 ModifierEndTurnWatchDealDamageToSelfAndNearbyEnemies.prototype.damageAmount = 1;
-ModifierEndTurnWatchDealDamageToSelfAndNearbyEnemies.prototype.fxResource = ['FX.Modifiers.ModifierEndTurnWatch', 'FX.Modifiers.ModifierExplosionsNearby'];
+ModifierEndTurnWatchDealDamageToSelfAndNearbyEnemies.prototype.fxResource = [
+  'FX.Modifiers.ModifierEndTurnWatch',
+  'FX.Modifiers.ModifierExplosionsNearby',
+];
 
 module.exports = ModifierEndTurnWatchDealDamageToSelfAndNearbyEnemies;

@@ -10,7 +10,6 @@ InstructionalArrowSprite.create()
  *************************************************************************** */
 
 const InstructionalArrowSprite = BaseSprite.extend({
-
   antiAlias: false,
   needsDepthDraw: true,
 
@@ -28,7 +27,9 @@ const InstructionalArrowSprite = BaseSprite.extend({
 
 InstructionalArrowSprite.create = function (sprite) {
   if (sprite == null) {
-    sprite = cc.pool.getFromPool(InstructionalArrowSprite) || BaseSprite.create(null, new InstructionalArrowSprite());
+    sprite =
+      cc.pool.getFromPool(InstructionalArrowSprite) ||
+      BaseSprite.create(null, new InstructionalArrowSprite());
   }
   return sprite;
 };

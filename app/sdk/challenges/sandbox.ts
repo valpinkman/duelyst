@@ -22,7 +22,7 @@ class Sandbox extends Challenge {
   static type = 'Sandbox';
 
   setPlayer1DeckData(player1Deck) {
-    return this.player1Deck = player1Deck;
+    return (this.player1Deck = player1Deck);
   }
 
   getMyPlayerDeckData() {
@@ -30,7 +30,7 @@ class Sandbox extends Challenge {
   }
 
   setPlayer2DeckData(player2Deck) {
-    return this.player2Deck = player2Deck;
+    return (this.player2Deck = player2Deck);
   }
 
   getOpponentPlayerDeckData() {
@@ -38,13 +38,17 @@ class Sandbox extends Challenge {
   }
 
   setupSession(gameSession) {
-    return super.setupSession(gameSession, {
-      userId: gameSession.getUserId(),
-      name: 'Player 1',
-    }, {
-      userId: `${gameSession.getUserId()}test`,
-      name: 'Player 2',
-    });
+    return super.setupSession(
+      gameSession,
+      {
+        userId: gameSession.getUserId(),
+        name: 'Player 1',
+      },
+      {
+        userId: `${gameSession.getUserId()}test`,
+        name: 'Player 2',
+      },
+    );
   }
 
   setupSessionModes(gameSession) {
@@ -56,7 +60,9 @@ class Sandbox extends Challenge {
 }
 Sandbox.prototype.type = 'Sandbox';
 Sandbox.prototype.name = PlayModeFactory.playModeForIdentifier(PlayModes.Sandbox).name;
-Sandbox.prototype.description = PlayModeFactory.playModeForIdentifier(PlayModes.Sandbox).description;
+Sandbox.prototype.description = PlayModeFactory.playModeForIdentifier(
+  PlayModes.Sandbox,
+).description;
 Sandbox.prototype.battleMapTemplateIndex = null;
 Sandbox.prototype.player1Deck = null;
 Sandbox.prototype.player2Deck = null;

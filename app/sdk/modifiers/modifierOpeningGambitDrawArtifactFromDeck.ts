@@ -21,7 +21,9 @@ class ModifierOpeningGambitDrawArtifactFromDeck extends ModifierOpeningGambit {
   static description = 'Draw %X from your deck';
 
   static createContextObject(numArtifacts) {
-    if (numArtifacts == null) { numArtifacts = 1; }
+    if (numArtifacts == null) {
+      numArtifacts = 1;
+    }
     const contextObject = super.createContextObject();
     contextObject.numArtifacts = numArtifacts;
     return contextObject;
@@ -32,7 +34,10 @@ class ModifierOpeningGambitDrawArtifactFromDeck extends ModifierOpeningGambit {
       if (modifierContextObject.numArtifacts <= 1) {
         return this.description.replace(/%X/, 'a random artifact');
       }
-      return this.description.replace(/%X/, `up to ${modifierContextObject.numArtifacts} Artifacts`);
+      return this.description.replace(
+        /%X/,
+        `up to ${modifierContextObject.numArtifacts} Artifacts`,
+      );
     }
     return this.description;
   }
@@ -43,8 +48,8 @@ class ModifierOpeningGambitDrawArtifactFromDeck extends ModifierOpeningGambit {
     const gameSession = this.getGameSession();
     if (gameSession.getIsRunningAsAuthoritative()) {
       // calculate artifacts to draw on the server, since only the server knows contents of both decks
-      let cardIndex; let
-        cardIndicesToDraw;
+      let cardIndex;
+      let cardIndicesToDraw;
       if (!cardIndicesToDraw) {
         cardIndicesToDraw = [];
 
@@ -53,15 +58,24 @@ class ModifierOpeningGambitDrawArtifactFromDeck extends ModifierOpeningGambit {
         const indexOfArtifacts = [];
         for (let i = 0; i < drawPile.length; i++) {
           cardIndex = drawPile[i];
-          if (__guard__(gameSession.getCardByIndex(cardIndex), (x) => x.getType()) === CardType.Artifact) {
+          if (
+            __guard__(gameSession.getCardByIndex(cardIndex), (x) => x.getType()) ===
+            CardType.Artifact
+          ) {
             indexOfArtifacts.push(i);
           }
         }
 
         // find X random artifacts
-        for (let j = 0, end = this.numArtifacts, asc = end >= 0; asc ? j < end : j > end; asc ? j++ : j--) {
+        for (
+          let j = 0, end = this.numArtifacts, asc = end >= 0;
+          asc ? j < end : j > end;
+          asc ? j++ : j--
+        ) {
           if (indexOfArtifacts.length > 0) {
-            var artifactIndexToRemove = this.getGameSession().getRandomIntegerForExecution(indexOfArtifacts.length);
+            var artifactIndexToRemove = this.getGameSession().getRandomIntegerForExecution(
+              indexOfArtifacts.length,
+            );
             var indexOfCardInDeck = indexOfArtifacts[artifactIndexToRemove];
             indexOfArtifacts.splice(artifactIndexToRemove, 1);
             cardIndicesToDraw.push(drawPile[indexOfCardInDeck]);
@@ -70,11 +84,14 @@ class ModifierOpeningGambitDrawArtifactFromDeck extends ModifierOpeningGambit {
       }
 
       // put the random artifacts from deck into hand
-      if (cardIndicesToDraw && (cardIndicesToDraw.length > 0)) {
+      if (cardIndicesToDraw && cardIndicesToDraw.length > 0) {
         return (() => {
           const result = [];
           for (cardIndex of Array.from<any>(cardIndicesToDraw)) {
-            var drawCardAction = this.getGameSession().getPlayerById(this.getCard().getOwnerId()).getDeck().actionDrawCard(cardIndex);
+            var drawCardAction = this.getGameSession()
+              .getPlayerById(this.getCard().getOwnerId())
+              .getDeck()
+              .actionDrawCard(cardIndex);
             result.push(this.getGameSession().executeAction(drawCardAction));
           }
           return result;
@@ -83,10 +100,11 @@ class ModifierOpeningGambitDrawArtifactFromDeck extends ModifierOpeningGambit {
     }
   }
 }
-ModifierOpeningGambitDrawArtifactFromDeck.prototype.type = 'ModifierOpeningGambitDrawArtifactFromDeck';
+ModifierOpeningGambitDrawArtifactFromDeck.prototype.type =
+  'ModifierOpeningGambitDrawArtifactFromDeck';
 
 module.exports = ModifierOpeningGambitDrawArtifactFromDeck;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

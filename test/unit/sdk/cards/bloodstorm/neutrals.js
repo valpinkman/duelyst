@@ -14,13 +14,9 @@ Logger.enabled = false;
 describe('bloodstorm', () => {
   describe('neutrals', () => {
     beforeEach(() => {
-      const player1Deck = [
-        { id: SDK.Cards.Faction6.General },
-      ];
+      const player1Deck = [{ id: SDK.Cards.Faction6.General }];
 
-      const player2Deck = [
-        { id: SDK.Cards.Faction4.AltGeneral },
-      ];
+      const player2Deck = [{ id: SDK.Cards.Faction4.AltGeneral }];
 
       UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
     });
@@ -43,7 +39,11 @@ describe('bloodstorm', () => {
       var action = player1.actionPlaySignatureCard(1, 1);
       gameSession.executeAction(action);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.Cryptographer }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.Cryptographer,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 1, 1));
 
       var action = player1.actionPlaySignatureCard(1, 1);
@@ -57,7 +57,11 @@ describe('bloodstorm', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.Sanguinar }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.Sanguinar,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 1, 1));
 
       // cycle turns until you can use bloodborn spell
@@ -134,11 +138,20 @@ describe('bloodstorm', () => {
       gameSession.executeAction(gameSession.actionEndTurn());
       gameSession.executeAction(gameSession.actionEndTurn());
 
-      const ironcliffe = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.IroncliffeGuardian }, 1, 2, gameSession.getPlayer2Id());
+      const ironcliffe = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.IroncliffeGuardian },
+        1,
+        2,
+        gameSession.getPlayer2Id(),
+      );
 
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.Meltdown }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.Meltdown,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 1, 1));
 
       const action = player1.actionPlaySignatureCard(1, 1);

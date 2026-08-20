@@ -1103,9 +1103,7 @@ GameSetups[Cards.Boss.Boss34] = {
     startingOrder: 2,
     startingMana: 1,
     startingGeneralPosition: { x: 7, y: 2 },
-    startingBoardCardsData: [
-
-    ],
+    startingBoardCardsData: [],
   },
   player: {
     startingOrder: 1,
@@ -1150,9 +1148,7 @@ GameSetups[Cards.Boss.Boss36] = {
     startingOrder: 2,
     startingMana: 4,
     startingGeneralPosition: { x: 8, y: 2 },
-    startingBoardCardsData: [
-
-    ],
+    startingBoardCardsData: [],
   },
   player: {
     startingOrder: 1,
@@ -1193,9 +1189,7 @@ GameSetups[Cards.Boss.Boss37] = {
     startingOrder: 2,
     startingMana: 4,
     startingGeneralPosition: { x: 6, y: 2 },
-    startingBoardCardsData: [
-
-    ],
+    startingBoardCardsData: [],
   },
   player: {
     startingOrder: 1,

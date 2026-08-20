@@ -30,7 +30,8 @@ class SpellEggMorph extends SpellApplyEntityToBoard {
     const applyEffectPosition = { x, y };
     const existingEntity = board.getCardAtPosition(applyEffectPosition, CardType.Entity);
     if (existingEntity != null) {
-      if (existingEntity.getBaseCardId() !== Cards.Faction5.Egg) { // turning non-egg entity into an egg
+      if (existingEntity.getBaseCardId() !== Cards.Faction5.Egg) {
+        // turning non-egg entity into an egg
         const cardDataOrIndexToSpawn = this.getCardDataOrIndexToSpawn(x, y);
 
         // create the action to spawn the new egg before the existing entity is removed
@@ -47,7 +48,8 @@ class SpellEggMorph extends SpellApplyEntityToBoard {
         if (spawnAction != null) {
           return this.getGameSession().executeAction(spawnAction);
         }
-      } else { // entity is an egg, so let's hatch it
+      } else {
+        // entity is an egg, so let's hatch it
         const eggModifier = existingEntity.getModifierByClass(ModifierEgg);
         if (eggModifier != null) {
           this.getGameSession().pushTriggeringModifierOntoStack(eggModifier);
@@ -59,18 +61,28 @@ class SpellEggMorph extends SpellApplyEntityToBoard {
   }
 
   getCardDataOrIndexToSpawn(x, y) {
-    let {
-      cardDataOrIndexToSpawn,
-    } = this;
+    let { cardDataOrIndexToSpawn } = this;
     if (cardDataOrIndexToSpawn != null) {
       const isObject = _.isObject(cardDataOrIndexToSpawn);
-      if (isObject) { cardDataOrIndexToSpawn = UtilsJavascript.fastExtend({}, cardDataOrIndexToSpawn); }
+      if (isObject) {
+        cardDataOrIndexToSpawn = UtilsJavascript.fastExtend({}, cardDataOrIndexToSpawn);
+      }
 
-      const existingEntity = this.getGameSession().getBoard().getCardAtPosition({ x, y }, CardType.Entity);
+      const existingEntity = this.getGameSession()
+        .getBoard()
+        .getCardAtPosition({ x, y }, CardType.Entity);
       if (existingEntity != null) {
-        if (!isObject) { cardDataOrIndexToSpawn = this.getGameSession().getCardByIndex(cardDataOrIndexToSpawn).createNewCardData(); }
-        if (cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects == null) { cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects = []; }
-        cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects.push(ModifierEgg.createContextObject(existingEntity.createNewCardData()));
+        if (!isObject) {
+          cardDataOrIndexToSpawn = this.getGameSession()
+            .getCardByIndex(cardDataOrIndexToSpawn)
+            .createNewCardData();
+        }
+        if (cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects == null) {
+          cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects = [];
+        }
+        cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects.push(
+          ModifierEgg.createContextObject(existingEntity.createNewCardData()),
+        );
       }
     }
 
@@ -79,26 +91,37 @@ class SpellEggMorph extends SpellApplyEntityToBoard {
 
   getSpawnAction(x, y, cardDataOrIndexToSpawn) {
     let spawnEntityAction;
-    if ((cardDataOrIndexToSpawn == null)) { cardDataOrIndexToSpawn = this.getCardDataOrIndexToSpawn(x, y); }
+    if (cardDataOrIndexToSpawn == null) {
+      cardDataOrIndexToSpawn = this.getCardDataOrIndexToSpawn(x, y);
+    }
     const entity = this.getEntityToSpawn(x, y, cardDataOrIndexToSpawn);
     if (entity != null) {
       // we're going to spawn an egg as a transform
-      spawnEntityAction = new PlayCardAsTransformAction(this.getGameSession(), entity.getOwnerId(), x, y, cardDataOrIndexToSpawn);
+      spawnEntityAction = new PlayCardAsTransformAction(
+        this.getGameSession(),
+        entity.getOwnerId(),
+        x,
+        y,
+        cardDataOrIndexToSpawn,
+      );
     }
     return spawnEntityAction;
   }
 
   getEntityToSpawn(x, y, cardDataOrIndexToSpawn) {
     let entity;
-    if ((cardDataOrIndexToSpawn == null)) {
-      ({
-        cardDataOrIndexToSpawn,
-      } = this);
+    if (cardDataOrIndexToSpawn == null) {
+      ({ cardDataOrIndexToSpawn } = this);
     }
     if (cardDataOrIndexToSpawn != null) {
-      const existingEntity = this.getGameSession().getBoard().getCardAtPosition({ x, y }, CardType.Entity);
+      const existingEntity = this.getGameSession()
+        .getBoard()
+        .getCardAtPosition({ x, y }, CardType.Entity);
       if (existingEntity != null) {
-        entity = this.getGameSession().getExistingCardFromIndexOrCreateCardFromData(cardDataOrIndexToSpawn);
+        entity =
+          this.getGameSession().getExistingCardFromIndexOrCreateCardFromData(
+            cardDataOrIndexToSpawn,
+          );
         entity.setOwnerId(existingEntity.getOwnerId());
       }
     }
@@ -111,7 +134,11 @@ class SpellEggMorph extends SpellApplyEntityToBoard {
     const filteredPositions = [];
     for (var position of Array.from<any>(validPositions)) {
       var entityAtPosition = this.getGameSession().getBoard().getEntityAtPosition(position);
-      if ((entityAtPosition != null) && ((entityAtPosition.getBaseCardId() !== Cards.Faction5.Egg) || (entityAtPosition.hasModifierClass(ModifierEgg)))) {
+      if (
+        entityAtPosition != null &&
+        (entityAtPosition.getBaseCardId() !== Cards.Faction5.Egg ||
+          entityAtPosition.hasModifierClass(ModifierEgg))
+      ) {
         filteredPositions.push(position);
       }
     }

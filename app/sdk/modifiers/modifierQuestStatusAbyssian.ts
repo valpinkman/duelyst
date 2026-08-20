@@ -22,7 +22,9 @@ class ModifierQuestStatusAbyssian extends ModifierQuestStatus {
       if (modifierContextObject.questCompleted) {
         return i18next.t('modifiers.quest_completed_applied_desc');
       }
-      return i18next.t('modifiers.abyssianquest_counter_applied_desc', { spell_count: modifierContextObject.deathSpellActionCount });
+      return i18next.t('modifiers.abyssianquest_counter_applied_desc', {
+        spell_count: modifierContextObject.deathSpellActionCount,
+      });
     }
   }
 

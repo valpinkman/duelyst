@@ -20,11 +20,19 @@ class SpellMassMojo extends Spell {
     board = this.getGameSession().getBoard();
 
     for (var tile of Array.from<any>(board.getTiles(true, false))) {
-      if (((tile != null ? tile.getOwnerId() : undefined) === this.getOwnerId()) && (tile.getBaseCardId() === Cards.Tile.PrimalMojo)) {
+      if (
+        (tile != null ? tile.getOwnerId() : undefined) === this.getOwnerId() &&
+        tile.getBaseCardId() === Cards.Tile.PrimalMojo
+      ) {
         var tilePosition = { x: tile.getPosition().x, y: tile.getPosition().y };
         var unitOnTile = board.getCardAtPosition(tilePosition, CardType.Unit);
         // find friendly minions standing on primal flourish tiles who can Grow
-        if ((unitOnTile != null) && (unitOnTile.getOwnerId() === this.getOwnerId()) && !unitOnTile.getIsGeneral() && unitOnTile.hasActiveModifierClass(ModifierGrow)) {
+        if (
+          unitOnTile != null &&
+          unitOnTile.getOwnerId() === this.getOwnerId() &&
+          !unitOnTile.getIsGeneral() &&
+          unitOnTile.hasActiveModifierClass(ModifierGrow)
+        ) {
           for (var mod of Array.from<any>(unitOnTile.getActiveModifiersByClass(ModifierGrow))) {
             mod.activateGrow();
           } // activate each instance of Grow on the minion
@@ -35,9 +43,18 @@ class SpellMassMojo extends Spell {
     return (() => {
       const result = [];
       for (var unit of Array.from<any>(board.getUnits(true, false))) {
-        if (((unit != null ? unit.getOwnerId() : undefined) === this.getOwnerId()) && !unit.getIsGeneral()) {
+        if (
+          (unit != null ? unit.getOwnerId() : undefined) === this.getOwnerId() &&
+          !unit.getIsGeneral()
+        ) {
           var position = unit.getPosition();
-          var playCardAction = new PlayCardSilentlyAction(this.getGameSession(), this.getOwnerId(), position.x, position.y, { id: Cards.Tile.PrimalMojo });
+          var playCardAction = new PlayCardSilentlyAction(
+            this.getGameSession(),
+            this.getOwnerId(),
+            position.x,
+            position.y,
+            { id: Cards.Tile.PrimalMojo },
+          );
           playCardAction.setSource(this);
           result.push(this.getGameSession().executeAction(playCardAction));
         } else {

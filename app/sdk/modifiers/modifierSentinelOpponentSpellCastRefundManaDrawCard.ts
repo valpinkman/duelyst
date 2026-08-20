@@ -26,10 +26,15 @@ class ModifierSentinelOpponentSpellCastRefundManaDrawCard extends ModifierSentin
   }
 
   getIsActionRelevant(action) {
-    if ((action.getOwner() === this.getGameSession().getOpponentPlayerOfPlayerId(this.getCard().getOwnerId())) && action instanceof ApplyCardToBoardAction && action.getIsValid()) {
+    if (
+      action.getOwner() ===
+        this.getGameSession().getOpponentPlayerOfPlayerId(this.getCard().getOwnerId()) &&
+      action instanceof ApplyCardToBoardAction &&
+      action.getIsValid()
+    ) {
       const card = action.getCard();
       // watch for a spell being cast, but ignore followups! (like opening gambits)
-      if ((card != null) && (__guard__(card.getRootCard(), (x) => x.type) === CardType.Spell)) {
+      if (card != null && __guard__(card.getRootCard(), (x) => x.type) === CardType.Spell) {
         return true;
       }
     }
@@ -39,7 +44,11 @@ class ModifierSentinelOpponentSpellCastRefundManaDrawCard extends ModifierSentin
   onOverwatch(action) {
     super.onOverwatch(action); // transform unit
     const card = action.getCard().getRootCard();
-    const enemyGeneral = this.getCard().getGameSession().getGeneralForPlayerId(this.getGameSession().getOpponentPlayerIdOfPlayerId(this.getCard().getOwnerId()));
+    const enemyGeneral = this.getCard()
+      .getGameSession()
+      .getGeneralForPlayerId(
+        this.getGameSession().getOpponentPlayerIdOfPlayerId(this.getCard().getOwnerId()),
+      );
 
     if (card != null) {
       action = this.getGameSession().createActionForType(BonusManaAction.type);
@@ -49,14 +58,19 @@ class ModifierSentinelOpponentSpellCastRefundManaDrawCard extends ModifierSentin
       this.getGameSession().executeAction(action);
     }
 
-    return this.getGameSession().executeAction(new DrawCardAction(this.getGameSession(), enemyGeneral.getOwnerId()));
+    return this.getGameSession().executeAction(
+      new DrawCardAction(this.getGameSession(), enemyGeneral.getOwnerId()),
+    );
   }
 }
-ModifierSentinelOpponentSpellCastRefundManaDrawCard.prototype.type = 'ModifierSentinelOpponentSpellCastRefundManaDrawCard';
-ModifierSentinelOpponentSpellCastRefundManaDrawCard.description = i18next.t('modifiers.sentinel_spell_cast');
+ModifierSentinelOpponentSpellCastRefundManaDrawCard.prototype.type =
+  'ModifierSentinelOpponentSpellCastRefundManaDrawCard';
+ModifierSentinelOpponentSpellCastRefundManaDrawCard.description = i18next.t(
+  'modifiers.sentinel_spell_cast',
+);
 
 module.exports = ModifierSentinelOpponentSpellCastRefundManaDrawCard;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

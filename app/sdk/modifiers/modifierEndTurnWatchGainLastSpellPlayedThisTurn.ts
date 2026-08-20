@@ -25,11 +25,16 @@ class ModifierEndTurnWatchGainLastSpellPlayedThisTurn extends ModifierEndTurnWat
     }
     for (let i = actions.length - 1; i >= 0; i--) {
       action = actions[i];
-      if (action instanceof ApplyCardToBoardAction
-      && (__guard__(__guard__(action.getCard(), (x1) => x1.getRootCard()), (x) => x.getType()) === CardType.Spell)
-      && (action.getCard().getRootCard() === action.getCard())
-      && !action.getIsImplicit()
-      && (action.getOwnerId() === this.getOwnerId())) {
+      if (
+        action instanceof ApplyCardToBoardAction &&
+        __guard__(
+          __guard__(action.getCard(), (x1) => x1.getRootCard()),
+          (x) => x.getType(),
+        ) === CardType.Spell &&
+        action.getCard().getRootCard() === action.getCard() &&
+        !action.getIsImplicit() &&
+        action.getOwnerId() === this.getOwnerId()
+      ) {
         lastSpell = action.getCard();
         break;
       }
@@ -37,16 +42,23 @@ class ModifierEndTurnWatchGainLastSpellPlayedThisTurn extends ModifierEndTurnWat
 
     if (lastSpell != null) {
       // put fresh copy of spell into hand
-      const putCardInHandAction = new PutCardInHandAction(this.getGameSession(), this.getCard().getOwnerId(), lastSpell.createNewCardData());
+      const putCardInHandAction = new PutCardInHandAction(
+        this.getGameSession(),
+        this.getCard().getOwnerId(),
+        lastSpell.createNewCardData(),
+      );
       return this.getGameSession().executeAction(putCardInHandAction);
     }
   }
 }
-ModifierEndTurnWatchGainLastSpellPlayedThisTurn.prototype.type = 'ModifierEndTurnWatchGainLastSpellPlayedThisTurn';
-ModifierEndTurnWatchGainLastSpellPlayedThisTurn.prototype.fxResource = ['FX.Modifiers.ModifierEndTurnWatch'];
+ModifierEndTurnWatchGainLastSpellPlayedThisTurn.prototype.type =
+  'ModifierEndTurnWatchGainLastSpellPlayedThisTurn';
+ModifierEndTurnWatchGainLastSpellPlayedThisTurn.prototype.fxResource = [
+  'FX.Modifiers.ModifierEndTurnWatch',
+];
 
 module.exports = ModifierEndTurnWatchGainLastSpellPlayedThisTurn;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

@@ -21,7 +21,11 @@ class ModifierSentinelOpponentSummonCopyIt extends ModifierSentinelOpponentSummo
       costChangeModifer.appliedName = 'Tormented Loyalty';
       const newCardData = action.getTarget().createNewCardData();
       newCardData.additionalModifiersContextObjects = [costChangeModifer];
-      const putCardInHandAction = new PutCardInHandAction(this.getGameSession(), this.getCard().getOwnerId(), newCardData);
+      const putCardInHandAction = new PutCardInHandAction(
+        this.getGameSession(),
+        this.getCard().getOwnerId(),
+        newCardData,
+      );
       return this.getGameSession().executeAction(putCardInHandAction);
     }
   }

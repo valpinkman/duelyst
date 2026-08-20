@@ -12,15 +12,20 @@ class ModifierOpeningGambitApplyMechazorPlayerModifiers extends ModifierOpeningG
   static type = 'ModifierOpeningGambitApplyMechazorPlayerModifiers';
 
   static createContextObject(progressAmount, options) {
-    if (progressAmount == null) { progressAmount = 1; }
+    if (progressAmount == null) {
+      progressAmount = 1;
+    }
     const contextObject = super.createContextObject(options);
-    contextObject.modifiersContextObjects = [PlayerModifierMechazorBuildProgress.createContextObject(progressAmount)];
+    contextObject.modifiersContextObjects = [
+      PlayerModifierMechazorBuildProgress.createContextObject(progressAmount),
+    ];
     contextObject.managedByCard = false;
     contextObject.applyToOwnPlayer = true;
     contextObject.applyToEnemyPlayer = false;
     return contextObject;
   }
 }
-ModifierOpeningGambitApplyMechazorPlayerModifiers.prototype.type = 'ModifierOpeningGambitApplyMechazorPlayerModifiers';
+ModifierOpeningGambitApplyMechazorPlayerModifiers.prototype.type =
+  'ModifierOpeningGambitApplyMechazorPlayerModifiers';
 
 module.exports = ModifierOpeningGambitApplyMechazorPlayerModifiers;

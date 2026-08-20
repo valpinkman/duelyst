@@ -22,11 +22,15 @@ const env = config.get('env');
 const awsRegion = config.get('aws.region');
 const replaysBucket = config.get('aws.replaysBucketName');
 if (!awsRegion || !replaysBucket) {
-  throw new Error('Error: Failed to initialize S3 uploader: aws.region and aws.replaysBucketName are required');
+  throw new Error(
+    'Error: Failed to initialize S3 uploader: aws.region and aws.replaysBucketName are required',
+  );
 }
 
 // Configure S3 access.
-Logger.module('REPLAYS').log(`Creating S3 client with Region ${awsRegion} and Bucket ${replaysBucket}`);
+Logger.module('REPLAYS').log(
+  `Creating S3 client with Region ${awsRegion} and Bucket ${replaysBucket}`,
+);
 const s3Opts: Record<string, any> = { region: awsRegion };
 if (config.get('env') === 'development') {
   s3Opts.accessKeyId = config.get('aws.accessKey');
@@ -47,8 +51,7 @@ const upload = function (gameId, serializedGameSession, serializedMouseUIEventDa
   const filename = env + '/' + gameId + '.json';
   return Promise.all(allDeflatePromises)
     .then(function ([gzipGameSessionData, gzipMouseUIEventData]) {
-      let cmd,
-        params;
+      let cmd, params;
       Logger.module('REPLAYS').log(`done compressing game ${gameId} for upload`);
       const allPromises = [];
 
@@ -79,10 +82,12 @@ const upload = function (gameId, serializedGameSession, serializedMouseUIEventDa
       }
 
       return Promise.all(allPromises);
-    }).then(function ([gameDataPutResp, mouseDataPutResp]) {
+    })
+    .then(function ([gameDataPutResp, mouseDataPutResp]) {
       Logger.module('REPLAYS').log(`Successfully uploaded game ${gameId}`);
       return `https://s3.${awsRegion}.amazonaws.com/` + replaysBucket + '/' + filename;
-    }).catch(function (e) {
+    })
+    .catch(function (e) {
       Logger.module('REPLAYS').error(`Error: Failed to upload game ${gameId} to S3: ${e.message}`);
       throw e;
     });

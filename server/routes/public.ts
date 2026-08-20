@@ -39,7 +39,11 @@ const router = express.Router();
 const poolStats = function (pool) {
   if (!pool) {
     return {
-      size: null, min: null, max: null, available: null, queued: null,
+      size: null,
+      min: null,
+      max: null,
+      available: null,
+      queued: null,
     };
   }
 
@@ -72,7 +76,7 @@ const serveIndex = function (req, res) {
   // serve index.html file
   if (config.isDevelopment()) {
     return res.sendFile(path.resolve(__dirname + '/../../dist/src/index.html'));
-  // Staging/Production mode uses index.html from S3
+    // Staging/Production mode uses index.html from S3
   } else {
     return res.sendFile(path.resolve(__dirname + '/../../public/' + env + '/index.html'));
   }
@@ -84,7 +88,7 @@ const serveRegister = function (req, res) {
   // serve index.html file
   if (config.isDevelopment()) {
     return res.sendFile(path.resolve(__dirname + '/../../dist/src/register.html'));
-  // Staging/Production mode uses register.html from S3
+    // Staging/Production mode uses register.html from S3
   } else {
     return res.sendFile(path.resolve(__dirname + '/../../public/' + env + '/register.html'));
   }
@@ -96,7 +100,9 @@ if (config.isDevelopment()) {
   Logger.module('EXPRESS').log(`Configuring for DEVELOPMENT environment ${env}`.yellow);
 
   // Serve enter /dist/src folder
-  router.use(express.static(__dirname + '/../../dist/src', { etag: false, lastModified: false, maxAge: 0 }));
+  router.use(
+    express.static(__dirname + '/../../dist/src', { etag: false, lastModified: false, maxAge: 0 }),
+  );
 
   // Serve main index page /dist/src/index.html
   router.get('/', serveIndex);
@@ -123,49 +129,65 @@ router.get('/version', (req, res) => res.json({ version }));
 router.get('/srank_ladder', function (req, res) {
   const startOfSeasonMonth = moment.utc().startOf('month');
   return SRankManager.getTopLadderUserIds(startOfSeasonMonth, 50)
-    .then((topPlayerIds) => // TODO: Needs validation that this maintains order
-      PromiseUtils.map(
-        topPlayerIds,
-        (playerId) => knex.first('username').from('users').where('id', playerId),
-      )).then(function (topPlayerRows) {
+    .then((topPlayerIds) =>
+      // TODO: Needs validation that this maintains order
+      PromiseUtils.map(topPlayerIds, (playerId) =>
+        knex.first('username').from('users').where('id', playerId),
+      ),
+    )
+    .then(function (topPlayerRows) {
       const topPlayerNames = _.map(topPlayerRows, (row) => row.username);
       return res.json(topPlayerNames);
     });
 });
 
 // /rift_ladder
-router.get('/rift_ladder', (req, res) => RiftManager.getTopLadderUserIdAndRunIds(50)
-  .then((topUserAndRunIds) => PromiseUtils.map(topUserAndRunIds, function (userAndRunId) {
-    if ((userAndRunId == null)) {
-      return Promise.reject(`Top Rift Ladder: Invalid user:run id: ${userAndRunId}`);
-    }
-    const userRunIdTuple = userAndRunId.split(':');
-    if ((userRunIdTuple === null) || (userRunIdTuple.length !== 2)) {
-      return Promise.reject(`Top Rift Ladder: Error parsing user:run id: ${userAndRunId}`);
-    }
-    const userId = userRunIdTuple[0];
-    const ticketId = userRunIdTuple[1];
-    return Promise.all([
-      knex.first('username').from('users').where('id', userId),
-      knex.first().from('user_rift_runs').where('user_id', userId).andWhere('ticket_id', ticketId),
-    ]).then(function ([userNameRow, userRiftRun]) {
-      if ((userNameRow != null) && (userRiftRun != null)) { // Only needed in case a user's data is wiped, but good safety check to have
-        return Promise.resolve({
-          username: userNameRow.username,
-          faction_id: userRiftRun.faction_id,
-          general_id: userRiftRun.general_id,
+router.get('/rift_ladder', (req, res) =>
+  RiftManager.getTopLadderUserIdAndRunIds(50)
+    .then((topUserAndRunIds) =>
+      PromiseUtils.map(topUserAndRunIds, function (userAndRunId) {
+        if (userAndRunId == null) {
+          return Promise.reject(`Top Rift Ladder: Invalid user:run id: ${userAndRunId}`);
+        }
+        const userRunIdTuple = userAndRunId.split(':');
+        if (userRunIdTuple === null || userRunIdTuple.length !== 2) {
+          return Promise.reject(`Top Rift Ladder: Error parsing user:run id: ${userAndRunId}`);
+        }
+        const userId = userRunIdTuple[0];
+        const ticketId = userRunIdTuple[1];
+        return Promise.all([
+          knex.first('username').from('users').where('id', userId),
+          knex
+            .first()
+            .from('user_rift_runs')
+            .where('user_id', userId)
+            .andWhere('ticket_id', ticketId),
+        ]).then(function ([userNameRow, userRiftRun]) {
+          if (userNameRow != null && userRiftRun != null) {
+            // Only needed in case a user's data is wiped, but good safety check to have
+            return Promise.resolve({
+              username: userNameRow.username,
+              faction_id: userRiftRun.faction_id,
+              general_id: userRiftRun.general_id,
+            });
+          } else {
+            return Promise.resolve(null);
+          }
         });
-      } else {
-        return Promise.resolve(null);
+      }),
+    )
+    .then(function (topPlayerDataRows) {
+      topPlayerDataRows = _.filter(topPlayerDataRows, (row) => row !== null);
+      for (
+        let i = 0, end = topPlayerDataRows.length, asc = end >= 0;
+        asc ? i < end : i > end;
+        asc ? i++ : i--
+      ) {
+        topPlayerDataRows[i].rank = i + 1;
       }
-    });
-  })).then(function (topPlayerDataRows) {
-    topPlayerDataRows = _.filter(topPlayerDataRows, (row) => row !== null);
-    for (let i = 0, end = topPlayerDataRows.length, asc = end >= 0; asc ? i < end : i > end; asc ? i++ : i--) {
-      topPlayerDataRows[i].rank = i + 1;
-    }
-    return res.json(topPlayerDataRows);
-  }));
+      return res.json(topPlayerDataRows);
+    }),
+);
 
 // /healthcheck
 // Simple HTTP/200 response for use with load balancer health checks.
@@ -176,9 +198,10 @@ router.get('/healthcheck', (req, res) => res.status(200).send('OK'));
 router.get('/health', function (req, res) {
   const MAX_QUEUED_ALLOWED = 25;
   const pool = poolStats(knex.client.pool);
-  return PromiseUtils.withTimeout(Promise.all([
-    knex('knex_migrations').select('migration_time').orderBy('id', 'desc').limit(1),
-  ]), 5000)
+  return PromiseUtils.withTimeout(
+    Promise.all([knex('knex_migrations').select('migration_time').orderBy('id', 'desc').limit(1)]),
+    5000,
+  )
     .then(function ([row]) {
       if (pool.queued >= MAX_QUEUED_ALLOWED) {
         res.status(500);
@@ -186,7 +209,10 @@ router.get('/health', function (req, res) {
         res.status(200);
       }
       return res.json({ pool });
-    }).catch(onType(PromiseUtils.TimeoutError, (e) => res.status(500).json({ message: 'db timeout' })))
+    })
+    .catch(
+      onType(PromiseUtils.TimeoutError, (e) => res.status(500).json({ message: 'db timeout' })),
+    )
     .catch((e) => res.status(500).json({ message: 'db error' }));
 });
 
@@ -196,7 +222,9 @@ router.get('/stats', function (req, res) {
   const getPlayers = Redis.hget(`servers:${serverId}`, 'players');
   const getGames = Redis.hget(`servers:${serverId}`, 'games');
 
-  return Promise.all([getPlayers, getGames]).then(([players, games]) => res.json({ players, games, pool: poolStats(knex.client.pool) }));
+  return Promise.all([getPlayers, getGames]).then(([players, games]) =>
+    res.json({ players, games, pool: poolStats(knex.client.pool) }),
+  );
 });
 
 router.get('/replay', function (req, res, next) {
@@ -205,11 +233,13 @@ router.get('/replay', function (req, res, next) {
   // where to grab the javascript version
   // use staging CDN in development / testing
   let urlOrigin = config.get('cdn');
-  if ((urlOrigin == null)) {
+  if (urlOrigin == null) {
     urlOrigin = window.location.origin;
   }
 
-  return knex('user_replays').where('replay_id', replayId).first()
+  return knex('user_replays')
+    .where('replay_id', replayId)
+    .first()
     .then(function (replay) {
       if (replay != null) {
         return res.render(__dirname + '/../templates/replay.hbs', {

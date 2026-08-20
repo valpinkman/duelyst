@@ -12,7 +12,6 @@ var GameMenuItemView = require('./esc_game_menu');
  * In game utility menu that shows basic utilities plus buttons to exit/concede.
  */
 var UtilityGameMenuItemView = UtilityMenuItemView.extend({
-
   id: 'app-utility-game-menu',
 
   template: UtilityGameMenuTmpl,
@@ -27,7 +26,11 @@ var UtilityGameMenuItemView = UtilityMenuItemView.extend({
     var endPosition = UtilsEngine.getCardsInHandEndPositionForCSS();
     this.$el.css(
       'transform',
-      'translate(' + (endPosition.x - 40.0) / 10.0 + 'rem, ' + (-endPosition.y + CONFIG.HAND_CARD_SIZE * 0.54) / 10.0 + 'rem)',
+      'translate(' +
+        (endPosition.x - 40.0) / 10.0 +
+        'rem, ' +
+        (-endPosition.y + CONFIG.HAND_CARD_SIZE * 0.54) / 10.0 +
+        'rem)',
     );
   },
 
@@ -40,7 +43,6 @@ var UtilityGameMenuItemView = UtilityMenuItemView.extend({
   /* region MARIONETTE EVENTS */
 
   /* endregion MARIONETTE EVENTS */
-
 });
 
 // Expose the class either via CommonJS or the global object

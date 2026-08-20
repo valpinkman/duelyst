@@ -31,11 +31,13 @@ class ModifierSwitchAllegiancesGainAttack extends Modifier {
     let allowUntargetable;
     super.onActivate();
 
-    const allUnits = this.getGameSession().getBoard().getCards(CardType.Unit, (allowUntargetable = true));
+    const allUnits = this.getGameSession()
+      .getBoard()
+      .getCards(CardType.Unit, (allowUntargetable = true));
     let friendlyUnitCounter = 0;
 
     for (var unit of Array.from<any>(allUnits)) {
-      if (!unit.getIsGeneral() && (unit !== this.getCard())) {
+      if (!unit.getIsGeneral() && unit !== this.getCard()) {
         if (unit.getOwnerId() === this.getCard().getOwnerId()) {
           friendlyUnitCounter++;
         }
@@ -47,10 +49,15 @@ class ModifierSwitchAllegiancesGainAttack extends Modifier {
 
     // apply the buff
     friendlyUnitCounter *= 3;
-    const attackBuff = [Modifier.createContextObjectWithAttributeBuffs(friendlyUnitCounter, friendlyUnitCounter, {
-      modifierName: 'Discordant Spirit',
-      description: Stringifiers.stringifyAttackHealthBuff(friendlyUnitCounter, friendlyUnitCounter),
-    })];
+    const attackBuff = [
+      Modifier.createContextObjectWithAttributeBuffs(friendlyUnitCounter, friendlyUnitCounter, {
+        modifierName: 'Discordant Spirit',
+        description: Stringifiers.stringifyAttackHealthBuff(
+          friendlyUnitCounter,
+          friendlyUnitCounter,
+        ),
+      }),
+    ];
     return this.applyManagedModifiersFromModifiersContextObjects(attackBuff, this.getCard());
   }
 }

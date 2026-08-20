@@ -32,16 +32,21 @@ class SpellFirestormOfAgony extends Spell {
       actions = actions.concat(step.getAction().getFlattenedActionTree());
     }
     for (var action of Array.from<any>(actions)) {
-      if (action instanceof ApplyCardToBoardAction
-      && (__guard__(__guard__(action.getCard(), (x2) => x2.getRootCard()), (x1) => x1.getType()) === CardType.Spell)
-      && (action.getCard().getRootCard() === action.getCard())
-      && !action.getIsImplicit()
-      && (action.getOwnerId() === this.getOwnerId())) {
+      if (
+        action instanceof ApplyCardToBoardAction &&
+        __guard__(
+          __guard__(action.getCard(), (x2) => x2.getRootCard()),
+          (x1) => x1.getType(),
+        ) === CardType.Spell &&
+        action.getCard().getRootCard() === action.getCard() &&
+        !action.getIsImplicit() &&
+        action.getOwnerId() === this.getOwnerId()
+      ) {
         spellCount++;
       }
     }
 
-    if ((entity != null) && entity.getIsGeneral()) {
+    if (entity != null && entity.getIsGeneral()) {
       if (entity.getOwnerId() === this.getOwnerId()) {
         // heal my general
         const healAction = new HealAction(this.getGameSession());
@@ -64,9 +69,13 @@ class SpellFirestormOfAgony extends Spell {
 
     // only affects generals
     const enemyGeneral = this.getGameSession().getGeneralForOpponentOfPlayerId(this.getOwnerId());
-    if (enemyGeneral != null) { applyEffectPositions.push(enemyGeneral.getPosition()); }
+    if (enemyGeneral != null) {
+      applyEffectPositions.push(enemyGeneral.getPosition());
+    }
     const myGeneral = this.getGameSession().getGeneralForPlayerId(this.getOwnerId());
-    if (myGeneral != null) { applyEffectPositions.push(myGeneral.getPosition()); }
+    if (myGeneral != null) {
+      applyEffectPositions.push(myGeneral.getPosition());
+    }
 
     return applyEffectPositions;
   }
@@ -79,5 +88,5 @@ SpellFirestormOfAgony.prototype.damageMultiplier = 2;
 module.exports = SpellFirestormOfAgony;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

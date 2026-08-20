@@ -24,7 +24,10 @@ class SpellAurorasTears extends Spell {
     // get all artifact modifiers and group by artifact
     const modifiersByArtifact = general.getArtifactModifiersGroupedByArtifactCard();
     if (modifiersByArtifact.length > 0) {
-      const modifierContextObject = Modifier.createContextObjectWithAttributeBuffs(modifiersByArtifact.length * 2, 0);
+      const modifierContextObject = Modifier.createContextObjectWithAttributeBuffs(
+        modifiersByArtifact.length * 2,
+        0,
+      );
       modifierContextObject.durationEndTurn = 1;
       modifierContextObject.appliedName = 'Infused Strength';
       return this.getGameSession().applyModifierContextObject(modifierContextObject, general);
@@ -36,7 +39,9 @@ class SpellAurorasTears extends Spell {
 
     // can only target your general
     const general = this.getGameSession().getGeneralForPlayerId(this.getOwnerId());
-    if (general != null) { applyEffectPositions.push(general.getPosition()); }
+    if (general != null) {
+      applyEffectPositions.push(general.getPosition());
+    }
 
     return applyEffectPositions;
   }

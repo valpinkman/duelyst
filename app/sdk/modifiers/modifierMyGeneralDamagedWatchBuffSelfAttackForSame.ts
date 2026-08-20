@@ -21,11 +21,18 @@ class ModifierMyGeneralDamagedWatchBuffSelfAttackForSame extends ModifierMyGener
   }
 
   onDamageDealtToGeneral(action) {
-    const modifierContextObject = Modifier.createContextObjectWithAttributeBuffs(action.getTotalDamageAmount());
+    const modifierContextObject = Modifier.createContextObjectWithAttributeBuffs(
+      action.getTotalDamageAmount(),
+    );
     modifierContextObject.appliedName = this.modifierAppliedName;
-    return this.getGameSession().applyModifierContextObject(modifierContextObject, this.getCard(), this);
+    return this.getGameSession().applyModifierContextObject(
+      modifierContextObject,
+      this.getCard(),
+      this,
+    );
   }
 }
-ModifierMyGeneralDamagedWatchBuffSelfAttackForSame.prototype.type = 'ModifierMyGeneralDamagedWatchBuffSelfAttackForSame';
+ModifierMyGeneralDamagedWatchBuffSelfAttackForSame.prototype.type =
+  'ModifierMyGeneralDamagedWatchBuffSelfAttackForSame';
 
 module.exports = ModifierMyGeneralDamagedWatchBuffSelfAttackForSame;

@@ -17,8 +17,10 @@ class SpellSummoningStones extends Spell {
     super.onApplyOneEffectToBoard(board, x, y, sourceAction);
 
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
-      let cardAtIndex; let cardId; let cardIndex; let
-        i;
+      let cardAtIndex;
+      let cardId;
+      let cardIndex;
+      let i;
       const foundIds = [];
 
       const validCardIds = [
@@ -72,15 +74,32 @@ class SpellSummoningStones extends Spell {
             }
           }
 
-          var indexToSummon = indexesOfObelysk[this.getGameSession().getRandomIntegerForExecution(indexesOfObelysk.length)];
+          var indexToSummon =
+            indexesOfObelysk[
+              this.getGameSession().getRandomIntegerForExecution(indexesOfObelysk.length)
+            ];
 
           if (indexToSummon != null) {
             var card = this.getGameSession().getCardByIndex(indexToSummon);
-            var validSpawnLocations = UtilsGameSession.getSmartSpawnPositionsFromPattern(this.getGameSession(), { x: 0, y: 0 }, CONFIG.ALL_BOARD_POSITIONS, card);
-            var spawnLocation = validSpawnLocations[this.getGameSession().getRandomIntegerForExecution(validSpawnLocations.length)];
+            var validSpawnLocations = UtilsGameSession.getSmartSpawnPositionsFromPattern(
+              this.getGameSession(),
+              { x: 0, y: 0 },
+              CONFIG.ALL_BOARD_POSITIONS,
+              card,
+            );
+            var spawnLocation =
+              validSpawnLocations[
+                this.getGameSession().getRandomIntegerForExecution(validSpawnLocations.length)
+              ];
 
             if (spawnLocation != null) {
-              var playCardAction = new PlayCardSilentlyAction(this.getGameSession(), this.getOwnerId(), spawnLocation.x, spawnLocation.y, card);
+              var playCardAction = new PlayCardSilentlyAction(
+                this.getGameSession(),
+                this.getOwnerId(),
+                spawnLocation.x,
+                spawnLocation.y,
+                card,
+              );
               playCardAction.setSource(this);
               result.push(this.getGameSession().executeAction(playCardAction));
             } else {

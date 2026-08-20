@@ -29,11 +29,26 @@ class ModifierDieSpawnNewGeneral extends Modifier {
   static modifierName = 'Die Spawn New General';
   static description = 'When this reaches low HP, watch out!';
 
-  static createContextObject(cardDataOrIndexToSpawn, spawnDescription, spawnCount, spawnPattern, spawnSilently, options) {
-    if (spawnDescription == null) { spawnDescription = ''; }
-    if (spawnCount == null) { spawnCount = 1; }
-    if (spawnPattern == null) { spawnPattern = CONFIG.PATTERN_3x3; }
-    if (spawnSilently == null) { spawnSilently = false; }
+  static createContextObject(
+    cardDataOrIndexToSpawn,
+    spawnDescription,
+    spawnCount,
+    spawnPattern,
+    spawnSilently,
+    options,
+  ) {
+    if (spawnDescription == null) {
+      spawnDescription = '';
+    }
+    if (spawnCount == null) {
+      spawnCount = 1;
+    }
+    if (spawnPattern == null) {
+      spawnPattern = CONFIG.PATTERN_3x3;
+    }
+    if (spawnSilently == null) {
+      spawnSilently = false;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.cardDataOrIndexToSpawn = cardDataOrIndexToSpawn;
     contextObject.spawnDescription = spawnDescription;
@@ -54,11 +69,12 @@ class ModifierDieSpawnNewGeneral extends Modifier {
   onAfterCleanupAction(event) {
     super.onAfterCleanupAction(event);
 
-    const {
-      action,
-    } = event;
+    const { action } = event;
 
-    if (this.getGameSession().getIsRunningAsAuthoritative() && (this._private.summonNewGeneralAtActionIndex === action.getIndex())) {
+    if (
+      this.getGameSession().getIsRunningAsAuthoritative() &&
+      this._private.summonNewGeneralAtActionIndex === action.getIndex()
+    ) {
       // after cleaning up action, trigger second wind
       return this.onSummonNewGeneral(action);
     }
@@ -67,15 +83,21 @@ class ModifierDieSpawnNewGeneral extends Modifier {
   onValidateAction(event) {
     super.onValidateAction(event);
 
-    const {
-      action,
-    } = event;
+    const { action } = event;
 
     // when our entity would die, invalidate the action until second wind executes
-    if (action instanceof DieAction && (action.getTarget() === this.getCard()) && action.getParentAction() instanceof DamageAction) {
+    if (
+      action instanceof DieAction &&
+      action.getTarget() === this.getCard() &&
+      action.getParentAction() instanceof DamageAction
+    ) {
       // record index of parent action of die action, so we know when to trigger second wind
       this._private.summonNewGeneralAtActionIndex = action.getParentAction().getIndex();
-      return this.invalidateAction(action, this.getCard().getPosition(), `${this.getCard().getName()} combines to form D3cepticle!`);
+      return this.invalidateAction(
+        action,
+        this.getCard().getPosition(),
+        `${this.getCard().getName()} combines to form D3cepticle!`,
+      );
     }
   }
 
@@ -94,13 +116,28 @@ class ModifierDieSpawnNewGeneral extends Modifier {
 
     // summon the new unit
     const ownerId = this.getCard().getOwnerId();
-    const spawnPositions = UtilsGameSession.getRandomNonConflictingSmartSpawnPositionsForModifier(this, ModifierDieSpawnNewGeneral);
+    const spawnPositions = UtilsGameSession.getRandomNonConflictingSmartSpawnPositionsForModifier(
+      this,
+      ModifierDieSpawnNewGeneral,
+    );
     for (var spawnPosition of Array.from<any>(spawnPositions)) {
       var cardDataOrIndexToSpawn = this.getCardDataOrIndexToSpawn();
       if (this.spawnSilently) {
-        spawnAction = new PlayCardSilentlyAction(this.getGameSession(), ownerId, spawnPosition.x, spawnPosition.y, cardDataOrIndexToSpawn);
+        spawnAction = new PlayCardSilentlyAction(
+          this.getGameSession(),
+          ownerId,
+          spawnPosition.x,
+          spawnPosition.y,
+          cardDataOrIndexToSpawn,
+        );
       } else {
-        spawnAction = new PlayCardAction(this.getGameSession(), ownerId, spawnPosition.x, spawnPosition.y, cardDataOrIndexToSpawn);
+        spawnAction = new PlayCardAction(
+          this.getGameSession(),
+          ownerId,
+          spawnPosition.x,
+          spawnPosition.y,
+          cardDataOrIndexToSpawn,
+        );
       }
       spawnAction.setSource(this.getCard());
       this.getGameSession().executeAction(spawnAction);
@@ -110,7 +147,7 @@ class ModifierDieSpawnNewGeneral extends Modifier {
     this.getGameSession().removeModifier(this);
 
     // turn the new unit into your general
-    if ((spawnAction != null) && card.getIsGeneral()) {
+    if (spawnAction != null && card.getIsGeneral()) {
       const oldGeneral = this.getGameSession().getGeneralForPlayerId(card.getOwnerId());
       const newGeneral = spawnAction.getCard();
       const swapGeneralAction = new SwapGeneralAction(this.getGameSession());

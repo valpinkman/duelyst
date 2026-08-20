@@ -7,7 +7,6 @@ var ProgressionManager = require('app/ui/managers/progression_manager');
 var CodexChapterPreviewTmpl = require('./templates/codex_chapter_preview.hbs');
 
 var CodexChapterPreviewItemView = SlidingPanelItemView.extend({
-
   className: 'sliding-panel codex-chapter-preview',
 
   template: CodexChapterPreviewTmpl,
@@ -19,7 +18,12 @@ var CodexChapterPreviewItemView = SlidingPanelItemView.extend({
     if (this.model.get('enabled') && !this.hasUnlockedChapter()) {
       var gamesRequiredToUnlock = this.model.get('gamesRequiredToUnlock');
 
-      this.model.set('unlockMessage', 'Play ' + (gamesRequiredToUnlock - ProgressionManager.getInstance().getGameCount()) + ' more games to unlock.');
+      this.model.set(
+        'unlockMessage',
+        'Play ' +
+          (gamesRequiredToUnlock - ProgressionManager.getInstance().getGameCount()) +
+          ' more games to unlock.',
+      );
     }
   },
 
@@ -43,8 +47,7 @@ var CodexChapterPreviewItemView = SlidingPanelItemView.extend({
     }
   },
 
-  onDestroy: function () {
-  },
+  onDestroy: function () {},
 
   onClick: function () {
     if (this.model.get('enabled') && this.hasUnlockedChapter()) {
@@ -61,7 +64,6 @@ var CodexChapterPreviewItemView = SlidingPanelItemView.extend({
   },
 
   /* endregion HELPERS */
-
 });
 
 // Expose the class either via CommonJS or the global object

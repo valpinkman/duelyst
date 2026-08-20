@@ -18,7 +18,9 @@ class ModifierSentinelOpponentGeneralAttackHealEnemyGeneralDrawCard extends Modi
   static type = 'ModifierSentinelOpponentGeneralAttackHealEnemyGeneralDrawCard';
 
   static createContextObject(description, transformCardId, healAmount, options) {
-    if (healAmount == null) { healAmount = 5; }
+    if (healAmount == null) {
+      healAmount = 5;
+    }
     const contextObject = super.createContextObject(description, transformCardId, options);
     contextObject.healAmount = healAmount;
     return contextObject;
@@ -33,7 +35,11 @@ class ModifierSentinelOpponentGeneralAttackHealEnemyGeneralDrawCard extends Modi
 
   getIsActionRelevant(action) {
     // watch for opponent General attacking
-    if (action instanceof AttackAction && (action.getSource() === this.getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId()))) {
+    if (
+      action instanceof AttackAction &&
+      action.getSource() ===
+        this.getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId())
+    ) {
       return true;
     }
     return false;
@@ -46,7 +52,11 @@ class ModifierSentinelOpponentGeneralAttackHealEnemyGeneralDrawCard extends Modi
         action.setTarget(newUnit);
       }
 
-      const enemyGeneral = this.getCard().getGameSession().getGeneralForPlayerId(this.getGameSession().getOpponentPlayerIdOfPlayerId(this.getCard().getOwnerId()));
+      const enemyGeneral = this.getCard()
+        .getGameSession()
+        .getGeneralForPlayerId(
+          this.getGameSession().getOpponentPlayerIdOfPlayerId(this.getCard().getOwnerId()),
+        );
 
       const healAction2 = new HealAction(this.getGameSession());
       healAction2.setOwnerId(this.getCard().getOwnerId());
@@ -54,11 +64,16 @@ class ModifierSentinelOpponentGeneralAttackHealEnemyGeneralDrawCard extends Modi
       healAction2.setHealAmount(this.healAmount);
       this.getGameSession().executeAction(healAction2);
 
-      return this.getGameSession().executeAction(new DrawCardAction(this.getGameSession(), enemyGeneral.getOwnerId()));
+      return this.getGameSession().executeAction(
+        new DrawCardAction(this.getGameSession(), enemyGeneral.getOwnerId()),
+      );
     }
   }
 }
-ModifierSentinelOpponentGeneralAttackHealEnemyGeneralDrawCard.prototype.type = 'ModifierSentinelOpponentGeneralAttackHealEnemyGeneralDrawCard';
-ModifierSentinelOpponentGeneralAttackHealEnemyGeneralDrawCard.description = i18next.t('modifiers.sentinel_general_attack');
+ModifierSentinelOpponentGeneralAttackHealEnemyGeneralDrawCard.prototype.type =
+  'ModifierSentinelOpponentGeneralAttackHealEnemyGeneralDrawCard';
+ModifierSentinelOpponentGeneralAttackHealEnemyGeneralDrawCard.description = i18next.t(
+  'modifiers.sentinel_general_attack',
+);
 
 module.exports = ModifierSentinelOpponentGeneralAttackHealEnemyGeneralDrawCard;

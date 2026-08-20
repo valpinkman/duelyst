@@ -9,5 +9,5 @@ const whenLocalizationReady = require('app/localization/index');
 whenLocalizationReady.then(() => {
   let register;
   const i18next = require('i18next');
-  return register = require('./register');
+  return (register = require('./register'));
 });

@@ -13,7 +13,11 @@ Logger.enabled = false;
 describe('game active', () => {
   beforeEach(() => {
     // setup test session
-    UtilsSDK.setupSession(SDK.FactionFactory.starterDeckForFactionLevel(SDK.Factions.Faction1, 30), SDK.FactionFactory.starterDeckForFactionLevel(SDK.Factions.Faction2, 30), true);
+    UtilsSDK.setupSession(
+      SDK.FactionFactory.starterDeckForFactionLevel(SDK.Factions.Faction1, 30),
+      SDK.FactionFactory.starterDeckForFactionLevel(SDK.Factions.Faction2, 30),
+      true,
+    );
   });
 
   afterEach(() => {
@@ -39,7 +43,11 @@ describe('game active', () => {
 
         const cardIndex = hand[j];
         if (cardIndex != null) {
-          gameSession.removeCardByIndexFromHand(deck, cardIndex, gameSession.getCardByIndex(cardIndex));
+          gameSession.removeCardByIndexFromHand(
+            deck,
+            cardIndex,
+            gameSession.getCardByIndex(cardIndex),
+          );
           numCardsRemainingInHand--;
         }
       }
@@ -48,7 +56,9 @@ describe('game active', () => {
       gameSession.executeAction(gameSession.actionEndTurn());
 
       // current player should have more cards in hand
-      expect(deck.getNumCardsInHand()).to.equal(numCardsRemainingInHand + CONFIG.CARD_DRAW_PER_TURN);
+      expect(deck.getNumCardsInHand()).to.equal(
+        numCardsRemainingInHand + CONFIG.CARD_DRAW_PER_TURN,
+      );
     }
   });
 

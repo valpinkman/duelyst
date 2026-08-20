@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-    - main
+      - main
   pull_request:
     paths:
       - app/**
@@ -40,52 +40,52 @@ jobs:
           POSTGRES_DB: duelyst
 
     steps:
-    - name: check out code
-      uses: actions/checkout@v4
+      - name: check out code
+        uses: actions/checkout@v4
 
-    - name: install pnpm
-      uses: pnpm/action-setup@v4
+      - name: install pnpm
+        uses: pnpm/action-setup@v4
 
-    - name: install node dependencies
-      run: pnpm install --frozen-lockfile
+      - name: install node dependencies
+        run: pnpm install --frozen-lockfile
 
-    - name: run database migrations
-      run: pnpm migrate:latest
-      env:
-        NODE_ENV: development
-        POSTGRES_CONNECTION: "pg://duelyst:duelyst@db/duelyst"
+      - name: run database migrations
+        run: pnpm migrate:latest
+        env:
+          NODE_ENV: development
+          POSTGRES_CONNECTION: 'pg://duelyst:duelyst@db/duelyst'
 
-    - name: run integration tests (misc - needs no external services)
-      run: pnpm test:integration:misc
-      env:
-        REDIS_HOST: redis
-        POSTGRES_CONNECTION: "pg://duelyst:duelyst@db/duelyst"
-        # misc needs no real database; the dummy satisfies the config format
-        FIREBASE_URL: "https://test-url.firebaseio.com/"
+      - name: run integration tests (misc - needs no external services)
+        run: pnpm test:integration:misc
+        env:
+          REDIS_HOST: redis
+          POSTGRES_CONNECTION: 'pg://duelyst:duelyst@db/duelyst'
+          # misc needs no real database; the dummy satisfies the config format
+          FIREBASE_URL: 'https://test-url.firebaseio.com/'
 
-    # The job seam needs redis and NOTHING else, so unlike the other suites it
-    # can gate every push. It exists because every bug in the kue -> BullMQ
-    # migration was found by hand-probing rather than by a test, and two had
-    # been live for many commits.
-    - name: run integration tests (jobs - needs redis)
-      run: pnpm test:integration:jobs
-      env:
-        REDIS_HOST: redis
-        POSTGRES_CONNECTION: "pg://duelyst:duelyst@db/duelyst"
-        FIREBASE_URL: "https://test-url.firebaseio.com/"
+      # The job seam needs redis and NOTHING else, so unlike the other suites it
+      # can gate every push. It exists because every bug in the kue -> BullMQ
+      # migration was found by hand-probing rather than by a test, and two had
+      # been live for many commits.
+      - name: run integration tests (jobs - needs redis)
+        run: pnpm test:integration:jobs
+        env:
+          REDIS_HOST: redis
+          POSTGRES_CONNECTION: 'pg://duelyst:duelyst@db/duelyst'
+          FIREBASE_URL: 'https://test-url.firebaseio.com/'
 
-    # Runs against a REAL Realtime Database: it connects, writes to
-    # /test-ref-server, reads it back and disconnects. Prefer a Firebase
-    # project dedicated to CI over a shared one - the write path is fixed, so
-    # two concurrent runs would race on it.
-    - name: run integration tests (firebase - needs a real RTDB)
-      if: env.FIREBASE_PROJECT_ID != ''
-      run: pnpm test:integration:firebase
-      env:
-        REDIS_HOST: redis
-        POSTGRES_CONNECTION: "pg://duelyst:duelyst@db/duelyst"
+      # Runs against a REAL Realtime Database: it connects, writes to
+      # /test-ref-server, reads it back and disconnects. Prefer a Firebase
+      # project dedicated to CI over a shared one - the write path is fixed, so
+      # two concurrent runs would race on it.
+      - name: run integration tests (firebase - needs a real RTDB)
+        if: env.FIREBASE_PROJECT_ID != ''
+        run: pnpm test:integration:firebase
+        env:
+          REDIS_HOST: redis
+          POSTGRES_CONNECTION: 'pg://duelyst:duelyst@db/duelyst'
 
-    - name: note skipped firebase tests
-      if: env.FIREBASE_PROJECT_ID == ''
-      run: |
-        echo "::notice title=Firebase integration tests skipped::Set the         FIREBASE_URL, FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL and         FIREBASE_PRIVATE_KEY repository secrets to enable them.         FIREBASE_PRIVATE_KEY may be pasted with either real or escaped         newlines; both are handled."
+      - name: note skipped firebase tests
+        if: env.FIREBASE_PROJECT_ID == ''
+        run: |
+          echo "::notice title=Firebase integration tests skipped::Set the         FIREBASE_URL, FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL and         FIREBASE_PRIVATE_KEY repository secrets to enable them.         FIREBASE_PRIVATE_KEY may be pasted with either real or escaped         newlines; both are handled."

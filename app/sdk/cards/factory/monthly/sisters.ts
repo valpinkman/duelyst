@@ -56,7 +56,9 @@ class CardFactory_Monthly_Sisters {
       card.setBoundingBoxWidth(95);
       card.setBoundingBoxHeight(90);
       card.setIsUnlockableWithAchievement(true);
-      card.setUnlockDescription(i18next.t('collection.seven_sisters_unlock_message'), { faction_name: i18next.t('factions.faction_1_name') });
+      card.setUnlockDescription(i18next.t('collection.seven_sisters_unlock_message'), {
+        faction_name: i18next.t('factions.faction_1_name'),
+      });
       card.setBaseSoundResource({
         apply: RSX.sfx_summonlegendary.audio,
         walk: RSX.sfx_neutral_ladylocke_attack_impact.audio,
@@ -79,7 +81,12 @@ class CardFactory_Monthly_Sisters {
       card.maxHP = 4;
       card.manaCost = 4;
       card.rarityId = Rarity.Legendary;
-      card.setInherentModifiersContextObjects([ModifierHealWatchPutCardInHand.createContextObject({ id: Cards.Spell.TrueStrike }, 'a True Strike')]);
+      card.setInherentModifiersContextObjects([
+        ModifierHealWatchPutCardInHand.createContextObject(
+          { id: Cards.Spell.TrueStrike },
+          'a True Strike',
+        ),
+      ]);
     }
 
     if (identifier === Cards.Faction2.LightningSister) {
@@ -91,7 +98,9 @@ class CardFactory_Monthly_Sisters {
       card.setBoundingBoxWidth(95);
       card.setBoundingBoxHeight(90);
       card.setIsUnlockableWithAchievement(true);
-      card.setUnlockDescription(i18next.t('collection.seven_sisters_unlock_message'), { faction_name: i18next.t('factions.faction_2_name') });
+      card.setUnlockDescription(i18next.t('collection.seven_sisters_unlock_message'), {
+        faction_name: i18next.t('factions.faction_2_name'),
+      });
       card.setBaseSoundResource({
         apply: RSX.sfx_summonlegendary.audio,
         walk: RSX.sfx_neutral_ladylocke_attack_impact.audio,
@@ -116,10 +125,16 @@ class CardFactory_Monthly_Sisters {
       card.rarityId = Rarity.Legendary;
       contextObject = PlayerModifierSpellDamageModifier.createContextObject();
       contextObject.spellDamageChange = 1;
-      contextObject.activeInHand = (contextObject.activeInDeck = (contextObject.activeInSignatureCards = false));
+      contextObject.activeInHand =
+        contextObject.activeInDeck =
+        contextObject.activeInSignatureCards =
+          false;
       contextObject.activeOnBoard = true;
       card.setInherentModifiersContextObjects([
-        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetOwnPlayer([contextObject], 'Spells you cast that deal damage deal +1 damage'),
+        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetOwnPlayer(
+          [contextObject],
+          'Spells you cast that deal damage deal +1 damage',
+        ),
       ]);
     }
 
@@ -132,7 +147,9 @@ class CardFactory_Monthly_Sisters {
       card.setBoundingBoxWidth(80);
       card.setBoundingBoxHeight(90);
       card.setIsUnlockableWithAchievement(true);
-      card.setUnlockDescription(i18next.t('collection.seven_sisters_unlock_message'), { faction_name: i18next.t('factions.faction_3_name') });
+      card.setUnlockDescription(i18next.t('collection.seven_sisters_unlock_message'), {
+        faction_name: i18next.t('factions.faction_3_name'),
+      });
       card.setBaseSoundResource({
         apply: RSX.sfx_summonlegendary.audio,
         walk: RSX.sfx_neutral_ladylocke_attack_impact.audio,
@@ -157,10 +174,16 @@ class CardFactory_Monthly_Sisters {
       card.rarityId = Rarity.Legendary;
       contextObject = Modifier.createContextObjectWithAttributeBuffs(1);
       contextObject.appliedName = i18next.t('modifiers.neutral_sand_sister_modifier');
-      contextObject.activeInHand = (contextObject.activeInDeck = (contextObject.activeInSignatureCards = false));
+      contextObject.activeInHand =
+        contextObject.activeInDeck =
+        contextObject.activeInSignatureCards =
+          false;
       contextObject.activeOnBoard = true;
       card.setInherentModifiersContextObjects([
-        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetOwnPlayer([contextObject], 'Your General has +1 Attack'),
+        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetOwnPlayer(
+          [contextObject],
+          'Your General has +1 Attack',
+        ),
       ]);
     }
 
@@ -173,7 +196,9 @@ class CardFactory_Monthly_Sisters {
       card.setBoundingBoxWidth(75);
       card.setBoundingBoxHeight(105);
       card.setIsUnlockableWithAchievement(true);
-      card.setUnlockDescription(i18next.t('collection.seven_sisters_unlock_message'), { faction_name: i18next.t('factions.faction_4_name') });
+      card.setUnlockDescription(i18next.t('collection.seven_sisters_unlock_message'), {
+        faction_name: i18next.t('factions.faction_4_name'),
+      });
       card.setBaseSoundResource({
         apply: RSX.sfx_summonlegendary.audio,
         walk: RSX.sfx_neutral_ladylocke_attack_impact.audio,
@@ -196,7 +221,9 @@ class CardFactory_Monthly_Sisters {
       card.maxHP = 3;
       card.manaCost = 4;
       card.rarityId = Rarity.Legendary;
-      card.setInherentModifiersContextObjects([ModifierEnemyTakeDamageWatchHealMyGeneral.createContextObject(1)]);
+      card.setInherentModifiersContextObjects([
+        ModifierEnemyTakeDamageWatchHealMyGeneral.createContextObject(1),
+      ]);
     }
 
     if (identifier === Cards.Faction5.EarthSister) {
@@ -208,7 +235,9 @@ class CardFactory_Monthly_Sisters {
       card.setBoundingBoxWidth(85);
       card.setBoundingBoxHeight(90);
       card.setIsUnlockableWithAchievement(true);
-      card.setUnlockDescription(i18next.t('collection.seven_sisters_unlock_message'), { faction_name: i18next.t('factions.faction_5_name') });
+      card.setUnlockDescription(i18next.t('collection.seven_sisters_unlock_message'), {
+        faction_name: i18next.t('factions.faction_5_name'),
+      });
       card.setBaseSoundResource({
         apply: RSX.sfx_summonlegendary.audio,
         walk: RSX.sfx_neutral_ladylocke_attack_impact.audio,
@@ -231,7 +260,9 @@ class CardFactory_Monthly_Sisters {
       card.maxHP = 4;
       card.manaCost = 4;
       card.rarityId = Rarity.Legendary;
-      card.setInherentModifiersContextObjects([ModifierTakeDamageWatchDamageNearbyEnemiesForSame.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierTakeDamageWatchDamageNearbyEnemiesForSame.createContextObject(),
+      ]);
     }
 
     if (identifier === Cards.Faction6.WindSister) {
@@ -243,7 +274,9 @@ class CardFactory_Monthly_Sisters {
       card.setBoundingBoxWidth(85);
       card.setBoundingBoxHeight(90);
       card.setIsUnlockableWithAchievement(true);
-      card.setUnlockDescription(i18next.t('collection.seven_sisters_unlock_message'), { faction_name: i18next.t('factions.faction_6_name') });
+      card.setUnlockDescription(i18next.t('collection.seven_sisters_unlock_message'), {
+        faction_name: i18next.t('factions.faction_6_name'),
+      });
       card.setBaseSoundResource({
         apply: RSX.sfx_summonlegendary.audio,
         walk: RSX.sfx_neutral_ladylocke_attack_impact.audio,
@@ -269,7 +302,11 @@ class CardFactory_Monthly_Sisters {
       const modContextObject = Modifier.createContextObjectWithAttributeBuffs(1, 1);
       modContextObject.appliedName = i18next.t('modifiers.neutral_wind_sister_modifier');
       card.addKeywordClassToInclude(ModifierInfiltrate);
-      card.setInherentModifiersContextObjects([Modifier.createContextObjectWithAuraForAllAllies([modContextObject], null, null, [ModifierInfiltrate.type])]);
+      card.setInherentModifiersContextObjects([
+        Modifier.createContextObjectWithAuraForAllAllies([modContextObject], null, null, [
+          ModifierInfiltrate.type,
+        ]),
+      ]);
     }
 
     if (identifier === Cards.Neutral.SwornSister) {
@@ -281,7 +318,9 @@ class CardFactory_Monthly_Sisters {
       card.setBoundingBoxWidth(70);
       card.setBoundingBoxHeight(90);
       card.setIsUnlockableWithAchievement(true);
-      card.setUnlockDescription(i18next.t('collection.seven_sisters_unlock_message'), { faction_name: i18next.t('factions.faction_neutral_name') });
+      card.setUnlockDescription(i18next.t('collection.seven_sisters_unlock_message'), {
+        faction_name: i18next.t('factions.faction_neutral_name'),
+      });
       card.setBaseSoundResource({
         apply: RSX.sfx_summonlegendary.audio,
         walk: RSX.sfx_neutral_ladylocke_attack_impact.audio,
@@ -304,7 +343,9 @@ class CardFactory_Monthly_Sisters {
       card.maxHP = 4;
       card.manaCost = 4;
       card.rarityId = Rarity.Legendary;
-      card.setInherentModifiersContextObjects([ModifierOpeningGambitDrawFactionCards.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierOpeningGambitDrawFactionCards.createContextObject(),
+      ]);
     }
 
     return card;

@@ -24,8 +24,13 @@ describe('PromiseUtils', () => {
 
     it('passes (item, index, length) to the mapper, like bluebird', async () => {
       const seen = [];
-      await PromiseUtils.map(['a', 'b'], (item, i, len) => { seen.push([item, i, len]); });
-      expect(seen).to.deep.equal([['a', 0, 2], ['b', 1, 2]]);
+      await PromiseUtils.map(['a', 'b'], (item, i, len) => {
+        seen.push([item, i, len]);
+      });
+      expect(seen).to.deep.equal([
+        ['a', 0, 2],
+        ['b', 1, 2],
+      ]);
     });
 
     it('resolves promises inside the list before calling the mapper', async () => {
@@ -39,7 +44,11 @@ describe('PromiseUtils', () => {
     });
 
     it('handles an empty list', async () => {
-      expect(await PromiseUtils.map([], () => { throw new Error('never'); })).to.deep.equal([]);
+      expect(
+        await PromiseUtils.map([], () => {
+          throw new Error('never');
+        }),
+      ).to.deep.equal([]);
     });
 
     // The one that actually guards a bug: achievements.ts relies on concurrency 1
@@ -47,24 +56,32 @@ describe('PromiseUtils', () => {
     it('runs SERIALLY with {concurrency: 1}', async () => {
       let inFlight = 0;
       let maxInFlight = 0;
-      await PromiseUtils.map([1, 2, 3, 4], async () => {
-        inFlight += 1;
-        maxInFlight = Math.max(maxInFlight, inFlight);
-        await PromiseUtils.delay(5);
-        inFlight -= 1;
-      }, { concurrency: 1 });
+      await PromiseUtils.map(
+        [1, 2, 3, 4],
+        async () => {
+          inFlight += 1;
+          maxInFlight = Math.max(maxInFlight, inFlight);
+          await PromiseUtils.delay(5);
+          inFlight -= 1;
+        },
+        { concurrency: 1 },
+      );
       expect(maxInFlight).to.equal(1);
     });
 
     it('never exceeds the concurrency limit', async () => {
       let inFlight = 0;
       let maxInFlight = 0;
-      await PromiseUtils.map([1, 2, 3, 4, 5, 6, 7, 8], async () => {
-        inFlight += 1;
-        maxInFlight = Math.max(maxInFlight, inFlight);
-        await PromiseUtils.delay(5);
-        inFlight -= 1;
-      }, { concurrency: 3 });
+      await PromiseUtils.map(
+        [1, 2, 3, 4, 5, 6, 7, 8],
+        async () => {
+          inFlight += 1;
+          maxInFlight = Math.max(maxInFlight, inFlight);
+          await PromiseUtils.delay(5);
+          inFlight -= 1;
+        },
+        { concurrency: 3 },
+      );
       expect(maxInFlight).to.equal(3);
     });
 
@@ -85,7 +102,9 @@ describe('PromiseUtils', () => {
       await PromiseUtils.map([1, 2, 3], (n) => {
         if (n === 2) throw new Error('boom');
         return n;
-      }).catch((e) => { err = e; });
+      }).catch((e) => {
+        err = e;
+      });
       expect(err && err.message).to.equal('boom');
     });
   });
@@ -120,7 +139,9 @@ describe('PromiseUtils', () => {
       await PromiseUtils.each([1, 2, 3], (n) => {
         if (n === 2) throw new Error('stop');
         seen.push(n);
-      }).catch((e) => { err = e; });
+      }).catch((e) => {
+        err = e;
+      });
       expect(err && err.message).to.equal('stop');
       expect(seen).to.deep.equal([1]);
     });
@@ -134,7 +155,9 @@ describe('PromiseUtils', () => {
 
     it('rejects if any value rejects', async () => {
       let err = null;
-      await PromiseUtils.props({ a: Promise.reject(new Error('nope')) }).catch((e) => { err = e; });
+      await PromiseUtils.props({ a: Promise.reject(new Error('nope')) }).catch((e) => {
+        err = e;
+      });
       expect(err && err.message).to.equal('nope');
     });
   });
@@ -143,8 +166,9 @@ describe('PromiseUtils', () => {
     class AppError extends Error {}
 
     it('handles a matching error class', async () => {
-      const out = await Promise.reject(new AppError('x'))
-        .catch(PromiseUtils.onType(AppError, () => 'handled'));
+      const out = await Promise.reject(new AppError('x')).catch(
+        PromiseUtils.onType(AppError, () => 'handled'),
+      );
       expect(out).to.equal('handled');
     });
 
@@ -153,7 +177,9 @@ describe('PromiseUtils', () => {
       let err = null;
       await Promise.reject(new TypeError('passthrough'))
         .catch(PromiseUtils.onType(AppError, () => 'handled'))
-        .catch((e) => { err = e; });
+        .catch((e) => {
+          err = e;
+        });
       expect(err).to.be.an.instanceof(TypeError);
       expect(err.message).to.equal('passthrough');
     });
@@ -186,7 +212,9 @@ describe('PromiseUtils', () => {
 
     it('rejects with TimeoutError when too slow', async () => {
       let err = null;
-      await PromiseUtils.withTimeout(PromiseUtils.delay(50), 5).catch((e) => { err = e; });
+      await PromiseUtils.withTimeout(PromiseUtils.delay(50), 5).catch((e) => {
+        err = e;
+      });
       expect(err).to.be.an.instanceof(PromiseUtils.TimeoutError);
     });
   });

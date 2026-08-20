@@ -32,7 +32,10 @@ class SpellMoltenRebirth extends SpellSpawnEntity {
       // find valid Magmar minions with cost 1 greater than the source unit
       let cardCache = [];
       if (this.getGameSession().getGameFormat() === GameFormat.Standard) {
-        cardCache = this.getGameSession().getCardCaches().getIsLegacy(false).getFaction(Factions.Faction5)
+        cardCache = this.getGameSession()
+          .getCardCaches()
+          .getIsLegacy(false)
+          .getFaction(Factions.Faction5)
           .getIsHiddenInCollection(false)
           .getIsGeneral(false)
           .getIsPrismatic(false)
@@ -40,7 +43,10 @@ class SpellMoltenRebirth extends SpellSpawnEntity {
           .getType(CardType.Unit)
           .getCards();
       } else {
-        cardCache = this.getGameSession().getCardCaches().getFaction(Factions.Faction5).getIsHiddenInCollection(false)
+        cardCache = this.getGameSession()
+          .getCardCaches()
+          .getFaction(Factions.Faction5)
+          .getIsHiddenInCollection(false)
           .getIsGeneral(false)
           .getIsPrismatic(false)
           .getIsSkinned(false)
@@ -52,7 +58,7 @@ class SpellMoltenRebirth extends SpellSpawnEntity {
         let card;
         let cards = [];
         for (card of Array.from<any>(cardCache)) {
-          if (card.getManaCost() === (targetManaCost + 1)) {
+          if (card.getManaCost() === targetManaCost + 1) {
             cards.push(card);
           }
         }

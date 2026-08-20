@@ -10,7 +10,6 @@ const BaseSprite = require('../../nodes/BaseSprite');
  *************************************************************************** */
 
 const CodexLayer = FXCompositeLayer.extend({
-
   _bg: null,
 
   /* region INITIALIZE */
@@ -31,7 +30,9 @@ const CodexLayer = FXCompositeLayer.extend({
   },
 
   getRequiredResources() {
-    return FXCompositeLayer.prototype.getRequiredResources.call(this).concat(PKGS.getPkgForIdentifier('codex'));
+    return FXCompositeLayer.prototype.getRequiredResources
+      .call(this)
+      .concat(PKGS.getPkgForIdentifier('codex'));
   },
 
   /* endregion INITIALIZE */
@@ -55,7 +56,6 @@ const CodexLayer = FXCompositeLayer.extend({
   },
 
   /* endregion LAYOUT */
-
 });
 
 CodexLayer.create = function (layer) {

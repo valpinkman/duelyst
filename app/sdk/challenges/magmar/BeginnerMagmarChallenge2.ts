@@ -53,10 +53,7 @@ class BeginnerMagmarChallenge2 extends Challenge {
   }
 
   getOpponentPlayerDeckData(gameSession) {
-    return [
-      { id: Cards.Faction6.General },
-      { id: Cards.TutorialSpell.TutorialFrozenFinisher },
-    ];
+    return [{ id: Cards.Faction6.General }, { id: Cards.TutorialSpell.TutorialFrozenFinisher }];
   }
 
   setupBoard(gameSession) {
@@ -91,24 +88,37 @@ class BeginnerMagmarChallenge2 extends Challenge {
   setupOpponentAgent(gameSession) {
     super.setupOpponentAgent(gameSession);
 
-    this._opponentAgent.addActionForTurn(0, AgentActions.createAgentSoftActionShowInstructionLabels([{
-      label: i18next.t('challenges.beginner_magmar_2_taunt'),
-      isSpeech: true,
-      yPosition: 0.6,
-      isPersistent: true,
-      isOpponent: true,
-    },
-    ]));
-    return this._opponentAgent.addActionForTurn(0, AgentActions.createAgentActionPlayCardFindPosition(0, () => [GameSession.getInstance().getGeneralForPlayer1().getPosition()]));
+    this._opponentAgent.addActionForTurn(
+      0,
+      AgentActions.createAgentSoftActionShowInstructionLabels([
+        {
+          label: i18next.t('challenges.beginner_magmar_2_taunt'),
+          isSpeech: true,
+          yPosition: 0.6,
+          isPersistent: true,
+          isOpponent: true,
+        },
+      ]),
+    );
+    return this._opponentAgent.addActionForTurn(
+      0,
+      AgentActions.createAgentActionPlayCardFindPosition(0, () => [
+        GameSession.getInstance().getGeneralForPlayer1().getPosition(),
+      ]),
+    );
   }
 }
 BeginnerMagmarChallenge2.prototype.type = 'BeginnerMagmarChallenge2';
 BeginnerMagmarChallenge2.prototype.categoryType = ChallengeCategory.expert.type;
 BeginnerMagmarChallenge2.prototype.name = i18next.t('challenges.beginner_magmar_2_title');
-BeginnerMagmarChallenge2.prototype.description = i18next.t('challenges.beginner_magmar_2_description');
+BeginnerMagmarChallenge2.prototype.description = i18next.t(
+  'challenges.beginner_magmar_2_description',
+);
 BeginnerMagmarChallenge2.prototype.iconUrl = RSX.speech_portrait_magmar.img;
 BeginnerMagmarChallenge2.prototype._musicOverride = RSX.music_gauntlet.audio;
-BeginnerMagmarChallenge2.prototype.otkChallengeStartMessage = i18next.t('challenges.beginner_magmar_2_start');
+BeginnerMagmarChallenge2.prototype.otkChallengeStartMessage = i18next.t(
+  'challenges.beginner_magmar_2_start',
+);
 BeginnerMagmarChallenge2.prototype.otkChallengeFailureMessages = [
   i18next.t('challenges.beginner_magmar_2_fail'),
 ];

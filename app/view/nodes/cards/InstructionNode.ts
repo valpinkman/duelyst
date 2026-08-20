@@ -19,7 +19,6 @@ const BaseLabel = require('../BaseLabel');
  *************************************************************************** */
 
 var InstructionNode = cc.Node.extend({
-
   _bgResourceRequestId: null,
   bgSprite: null,
   _carrotDirection: null,
@@ -41,9 +40,15 @@ var InstructionNode = cc.Node.extend({
     this.setCascadeOpacityEnabled(true);
 
     // text label setup
-    this.label = new BaseLabel('', RSX.font_regular.name, 16, cc.size(CONFIG.INSTRUCTION_TEXT_MAX_WIDTH, 0.0));
+    this.label = new BaseLabel(
+      '',
+      RSX.font_regular.name,
+      16,
+      cc.size(CONFIG.INSTRUCTION_TEXT_MAX_WIDTH, 0.0),
+    );
     const colorsByFormattingTag = {};
-    colorsByFormattingTag[CONFIG.FORMATTING_ENGINE.emphasisStart] = CONFIG.INSTRUCTION_NODE_HIGHLIGHT_TEXT_COLOR;
+    colorsByFormattingTag[CONFIG.FORMATTING_ENGINE.emphasisStart] =
+      CONFIG.INSTRUCTION_NODE_HIGHLIGHT_TEXT_COLOR;
     this.label.setColorsByFormattingTag(colorsByFormattingTag);
     this.label.setFontFillColor(CONFIG.INSTRUCTION_NODE_TEXT_COLOR);
     this.label.setHorizontalAlignment(cc.TEXT_ALIGNMENT_CENTER);
@@ -53,7 +58,9 @@ var InstructionNode = cc.Node.extend({
   },
 
   getRequiredResources() {
-    return cc.Node.prototype.getRequiredResources.call(this).concat(PKGS.getPkgForIdentifier('instruction'));
+    return cc.Node.prototype.getRequiredResources
+      .call(this)
+      .concat(PKGS.getPkgForIdentifier('instruction'));
   },
 
   onExit() {
@@ -115,12 +122,22 @@ var InstructionNode = cc.Node.extend({
     const location = event.getLocation();
     const scene = this.getScene();
     const gameLayer = scene && scene.getGameLayer();
-    if (gameLayer && this.isVisible() && this.getDisplayedOpacity() > 0.0
-      && (this._isPressedOnPressAnywhere || UtilsEngine.getNodeUnderMouse(this.bgSprite, location.x, location.y))) {
+    if (
+      gameLayer &&
+      this.isVisible() &&
+      this.getDisplayedOpacity() > 0.0 &&
+      (this._isPressedOnPressAnywhere ||
+        UtilsEngine.getNodeUnderMouse(this.bgSprite, location.x, location.y))
+    ) {
       // play sound for click
-      audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_click.audio, CONFIG.CLICK_SFX_PRIORITY);
+      audio_engine
+        .current()
+        .play_effect_for_interaction(RSX.sfx_ui_click.audio, CONFIG.CLICK_SFX_PRIORITY);
 
-      if (this._isDismissable && (this._stopShowingAction == null || this._stopShowingAction.isDone())) {
+      if (
+        this._isDismissable &&
+        (this._stopShowingAction == null || this._stopShowingAction.isDone())
+      ) {
         // stop showing
         this.stopShowingIfAble(true);
 
@@ -137,16 +154,29 @@ var InstructionNode = cc.Node.extend({
 
   /* region TEXT */
 
-  showTextWithSoundForDuration(text, sound, duration, removeFromParentOnComplete, isNotDismissable, carrotDirection) {
-    if (duration == null) { duration = CONFIG.SPEECH_DURATION; }
+  showTextWithSoundForDuration(
+    text,
+    sound,
+    duration,
+    removeFromParentOnComplete,
+    isNotDismissable,
+    carrotDirection,
+  ) {
+    if (duration == null) {
+      duration = CONFIG.SPEECH_DURATION;
+    }
     const showDuration = duration + CONFIG.FADE_MEDIUM_DURATION * 2.0;
 
-    if (removeFromParentOnComplete == null) { removeFromParentOnComplete = false; }
+    if (removeFromParentOnComplete == null) {
+      removeFromParentOnComplete = false;
+    }
     this._removeFromParentOnComplete = removeFromParentOnComplete;
 
     this.setIsDismissable(!isNotDismissable);
 
-    this._setCarrotDirection(carrotDirection != null ? carrotDirection : InstructionNode.DIRECTION_DOWN);
+    this._setCarrotDirection(
+      carrotDirection != null ? carrotDirection : InstructionNode.DIRECTION_DOWN,
+    );
 
     this._stoppingShow = false;
     this.setVisible(false);
@@ -157,58 +187,58 @@ var InstructionNode = cc.Node.extend({
     Promise.all([
       this.whenRequiredResourcesReady(),
       this.whenResourcesReady(this._bgResourceRequestId),
-    ])
-      .then(([requiredRequestId, bgRequestId]) => {
-        if (!this.getAreResourcesValid(requiredRequestId) || !this.getAreResourcesValid(bgRequestId)) return; // load invalidated or resources changed
+    ]).then(([requiredRequestId, bgRequestId]) => {
+      if (!this.getAreResourcesValid(requiredRequestId) || !this.getAreResourcesValid(bgRequestId))
+        return; // load invalidated or resources changed
 
-        // stop any showing/removing
-        this._stoppingShow = false;
-        if (this._stopShowingAction != null) {
-          this.bgSprite.stopAction(this._stopShowingAction);
-          this._stopShowingAction = null;
-        }
-        if (this._showAction != null) {
-          this.bgSprite.stopAction(this._showAction);
+      // stop any showing/removing
+      this._stoppingShow = false;
+      if (this._stopShowingAction != null) {
+        this.bgSprite.stopAction(this._stopShowingAction);
+        this._stopShowingAction = null;
+      }
+      if (this._showAction != null) {
+        this.bgSprite.stopAction(this._showAction);
+        this._showAction = null;
+      }
+
+      // play sound for enter
+      audio_engine.current().play_effect(sound || RSX.sfx_ui_instructional_enter.audio, false);
+
+      // setup for show
+      this.setVisible(true);
+      this.bgSprite.setOpacity(0.0);
+      this.bgSprite.setScale(1.0);
+      const bgPosition = this.bgSprite.getPosition();
+      let offset;
+      if (this.getIsLeft()) {
+        offset = cc.p(20.0, 0.0);
+      } else if (this.getIsRight()) {
+        offset = cc.p(-20.0, 0.0);
+      } else if (this.getIsUp()) {
+        offset = cc.p(0.0, -20.0);
+      } else {
+        offset = cc.p(0.0, 20.0);
+      }
+      this.bgSprite.setPosition(bgPosition.x - offset.x, bgPosition.y - offset.y);
+
+      // animate showing
+      this._showAction = cc.sequence(
+        cc.spawn(
+          cc.fadeTo(CONFIG.FADE_FAST_DURATION, 255.0),
+          cc.moveBy(CONFIG.FADE_FAST_DURATION, offset).easing(cc.easeCubicActionOut()),
+        ),
+        cc.delayTime(duration),
+        cc.callFunc(() => {
           this._showAction = null;
-        }
+          this.stopShowing();
+        }),
+      );
+      this.bgSprite.runAction(this._showAction);
 
-        // play sound for enter
-        audio_engine.current().play_effect(sound || RSX.sfx_ui_instructional_enter.audio, false);
-
-        // setup for show
-        this.setVisible(true);
-        this.bgSprite.setOpacity(0.0);
-        this.bgSprite.setScale(1.0);
-        const bgPosition = this.bgSprite.getPosition();
-        let offset;
-        if (this.getIsLeft()) {
-          offset = cc.p(20.0, 0.0);
-        } else if (this.getIsRight()) {
-          offset = cc.p(-20.0, 0.0);
-        } else if (this.getIsUp()) {
-          offset = cc.p(0.0, -20.0);
-        } else {
-          offset = cc.p(0.0, 20.0);
-        }
-        this.bgSprite.setPosition(bgPosition.x - offset.x, bgPosition.y - offset.y);
-
-        // animate showing
-        this._showAction = cc.sequence(
-          cc.spawn(
-            cc.fadeTo(CONFIG.FADE_FAST_DURATION, 255.0),
-            cc.moveBy(CONFIG.FADE_FAST_DURATION, offset).easing(cc.easeCubicActionOut()),
-          ),
-          cc.delayTime(duration),
-          cc.callFunc(() => {
-            this._showAction = null;
-            this.stopShowing();
-          }),
-        );
-        this.bgSprite.runAction(this._showAction);
-
-        // listen for pointer events
-        this._startListeningToEvents();
-      });
+      // listen for pointer events
+      this._startListeningToEvents();
+    });
 
     return showDuration;
   },
@@ -221,7 +251,11 @@ var InstructionNode = cc.Node.extend({
       showDuration = CONFIG.FADE_MEDIUM_DURATION;
     }
 
-    if (!this._stoppingShow && this.isVisible() && (this._stopShowingAction == null || !this._stopShowingAction.getActive())) {
+    if (
+      !this._stoppingShow &&
+      this.isVisible() &&
+      (this._stopShowingAction == null || !this._stopShowingAction.getActive())
+    ) {
       this._stoppingShow = true;
 
       // stop any removing
@@ -233,63 +267,73 @@ var InstructionNode = cc.Node.extend({
       Promise.all([
         this.whenRequiredResourcesReady(),
         this.whenResourcesReady(this._bgResourceRequestId),
-      ])
-        .then(([requiredRequestId, bgRequestId]) => {
-          if (!this.getAreResourcesValid(requiredRequestId) || !this.getAreResourcesValid(bgRequestId)) return; // load invalidated or resources changed
+      ]).then(([requiredRequestId, bgRequestId]) => {
+        if (
+          !this.getAreResourcesValid(requiredRequestId) ||
+          !this.getAreResourcesValid(bgRequestId)
+        )
+          return; // load invalidated or resources changed
 
-          if (this._stoppingShow && (this._stopShowingAction == null || !this._stopShowingAction.getActive())) {
-            this._stoppingShow = false;
+        if (
+          this._stoppingShow &&
+          (this._stopShowingAction == null || !this._stopShowingAction.getActive())
+        ) {
+          this._stoppingShow = false;
 
-            // stop listening for pointer events
-            this._stopListeningToEvents();
+          // stop listening for pointer events
+          this._stopListeningToEvents();
 
-            // stop any showing
-            if (this._showAction != null) {
-              this.bgSprite.stopAction(this._showAction);
-              this._showAction = null;
-            }
+          // stop any showing
+          if (this._showAction != null) {
+            this.bgSprite.stopAction(this._showAction);
+            this._showAction = null;
+          }
 
-            // play exit sound
-            audio_engine.current().play_effect(RSX.sfx_ui_instructional_exit.audio, false);
+          // play exit sound
+          audio_engine.current().play_effect(RSX.sfx_ui_instructional_exit.audio, false);
 
-            // animate out
-            const sequence = [
-              cc.callFunc(() => {
-                this._stopShowingAction = null;
+          // animate out
+          const sequence = [
+            cc.callFunc(() => {
+              this._stopShowingAction = null;
 
-                // teardown
-                this.setVisible(false);
-                this.setScale(1.0);
-                if (this._removeFromParentOnComplete) {
-                  this.destroy();
-                }
+              // teardown
+              this.setVisible(false);
+              this.setScale(1.0);
+              if (this._removeFromParentOnComplete) {
+                this.destroy();
+              }
 
-                // emit event that we're done showing
-                const scene = this.getScene();
-                const gameLayer = scene && scene.getGameLayer();
-                if (gameLayer != null) {
-                  gameLayer.getEventBus().trigger(EVENTS.instruction_node_done_showing, {
-                    type: EVENTS.instruction_node_done_showing,
-                    tag: this.getText(),
-                  });
-                }
-              }),
-            ];
-            if (fromPress) {
-              sequence.unshift(cc.spawn(
+              // emit event that we're done showing
+              const scene = this.getScene();
+              const gameLayer = scene && scene.getGameLayer();
+              if (gameLayer != null) {
+                gameLayer.getEventBus().trigger(EVENTS.instruction_node_done_showing, {
+                  type: EVENTS.instruction_node_done_showing,
+                  tag: this.getText(),
+                });
+              }
+            }),
+          ];
+          if (fromPress) {
+            sequence.unshift(
+              cc.spawn(
                 cc.fadeTo(showDuration, 0),
                 cc.scaleTo(showDuration, 1.05).easing(cc.easeCubicActionOut()),
-              ));
-            } else {
-              sequence.unshift(cc.spawn(
+              ),
+            );
+          } else {
+            sequence.unshift(
+              cc.spawn(
                 cc.fadeTo(showDuration, 0),
                 cc.scaleTo(showDuration, 0.8).easing(cc.easeCubicActionIn()),
-              ));
-            }
-            this._stopShowingAction = cc.sequence(sequence);
-            this.bgSprite.runAction(this._stopShowingAction);
+              ),
+            );
           }
-        });
+          this._stopShowingAction = cc.sequence(sequence);
+          this.bgSprite.runAction(this._stopShowingAction);
+        }
+      });
     }
 
     return showDuration;
@@ -310,50 +354,56 @@ var InstructionNode = cc.Node.extend({
     Promise.all([
       this.whenRequiredResourcesReady(),
       this.whenResourcesReady(this._bgResourceRequestId),
-    ])
-      .then(([requiredRequestId, bgRequestId]) => {
-        if (!this.getAreResourcesValid(requiredRequestId) || !this.getAreResourcesValid(bgRequestId)) return; // load invalidated or resources changed
+    ]).then(([requiredRequestId, bgRequestId]) => {
+      if (!this.getAreResourcesValid(requiredRequestId) || !this.getAreResourcesValid(bgRequestId))
+        return; // load invalidated or resources changed
 
-        if (this.bgSprite) {
-          this.bgSprite.removeChild(this.label);
-          this.removeChild(this.bgSprite);
-          this.bgSprite = null;
-        }
+      if (this.bgSprite) {
+        this.bgSprite.removeChild(this.label);
+        this.removeChild(this.bgSprite);
+        this.bgSprite = null;
+      }
 
-        // Reposition the text to center (considering anchor point)
-        let bgOffsetToCenter;
-        const centerPositionOffset = cc.p(0, 0);
-        if (this._carrotDirection == InstructionNode.DIRECTION_DOWN) {
-          this.setAnchorPoint(0.5, 0.0);
-          bgOffsetToCenter = cc.p(0, 25);
-          centerPositionOffset.y -= 15;
-        } else if (this._carrotDirection == InstructionNode.DIRECTION_UP) {
-          this.setAnchorPoint(0.5, 1.0);
-          bgOffsetToCenter = cc.p(0, -25);
-          centerPositionOffset.y += 15;
-        } else if (this._carrotDirection == InstructionNode.DIRECTION_LEFT) {
-          this.setAnchorPoint(0.0, 0.5);
-          bgOffsetToCenter = cc.p(25, 0);
-          centerPositionOffset.x -= 20;
-        } else {
-          // Assume right
-          this.setAnchorPoint(1.0, 0.5);
-          bgOffsetToCenter = cc.p(-25, 0);
-          centerPositionOffset.x += 20;
-        }
+      // Reposition the text to center (considering anchor point)
+      let bgOffsetToCenter;
+      const centerPositionOffset = cc.p(0, 0);
+      if (this._carrotDirection == InstructionNode.DIRECTION_DOWN) {
+        this.setAnchorPoint(0.5, 0.0);
+        bgOffsetToCenter = cc.p(0, 25);
+        centerPositionOffset.y -= 15;
+      } else if (this._carrotDirection == InstructionNode.DIRECTION_UP) {
+        this.setAnchorPoint(0.5, 1.0);
+        bgOffsetToCenter = cc.p(0, -25);
+        centerPositionOffset.y += 15;
+      } else if (this._carrotDirection == InstructionNode.DIRECTION_LEFT) {
+        this.setAnchorPoint(0.0, 0.5);
+        bgOffsetToCenter = cc.p(25, 0);
+        centerPositionOffset.x -= 20;
+      } else {
+        // Assume right
+        this.setAnchorPoint(1.0, 0.5);
+        bgOffsetToCenter = cc.p(-25, 0);
+        centerPositionOffset.x += 20;
+      }
 
-        // create bg sprite
-        this.bgSprite = BaseSprite.create(bgResource.img);
-        this.bgSprite.setAntiAlias(false);
-        this.addChild(this.bgSprite, 0);
+      // create bg sprite
+      this.bgSprite = BaseSprite.create(bgResource.img);
+      this.bgSprite.setAntiAlias(false);
+      this.addChild(this.bgSprite, 0);
 
-        // set content size to match bg sprite
-        this.setContentSize(this.bgSprite.getContentSize());
-        this.bgSprite.setPosition(this.getCenterPosition().x + centerPositionOffset.x, this.getCenterPosition().y + centerPositionOffset.y);
-        this.bgSprite.addChild(this.label, 1);
+      // set content size to match bg sprite
+      this.setContentSize(this.bgSprite.getContentSize());
+      this.bgSprite.setPosition(
+        this.getCenterPosition().x + centerPositionOffset.x,
+        this.getCenterPosition().y + centerPositionOffset.y,
+      );
+      this.bgSprite.addChild(this.label, 1);
 
-        this.label.setPosition(this.bgSprite.getContentSize().width * 0.5 + bgOffsetToCenter.x, this.bgSprite.getContentSize().height * 0.5 + bgOffsetToCenter.y);
-      });
+      this.label.setPosition(
+        this.bgSprite.getContentSize().width * 0.5 + bgOffsetToCenter.x,
+        this.bgSprite.getContentSize().height * 0.5 + bgOffsetToCenter.y,
+      );
+    });
   },
 
   setText(value) {
@@ -395,7 +445,6 @@ var InstructionNode = cc.Node.extend({
   },
 
   /* endregion CARROT */
-
 });
 
 InstructionNode.create = function (node) {

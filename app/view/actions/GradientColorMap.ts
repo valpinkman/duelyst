@@ -11,7 +11,6 @@
  * @param {Color}  colorToBlack
  */
 var GradientColorMap = cc.ActionInterval.extend({
-
   _colorFromWhite: cc.color(0.0, 0.0, 0.0, 0.0),
   _colorFromMid: cc.color(0.0, 0.0, 0.0, 0.0),
   _colorFromBlack: cc.color(0.0, 0.0, 0.0, 0.0),
@@ -19,12 +18,36 @@ var GradientColorMap = cc.ActionInterval.extend({
   _colorToMid: cc.color(0.0, 0.0, 0.0, 0.0),
   _colorToBlack: cc.color(0.0, 0.0, 0.0, 0.0),
 
-  ctor(duration, colorFromWhite, colorFromMid, colorFromBlack, colorToWhite, colorToMid, colorToBlack) {
+  ctor(
+    duration,
+    colorFromWhite,
+    colorFromMid,
+    colorFromBlack,
+    colorToWhite,
+    colorToMid,
+    colorToBlack,
+  ) {
     cc.ActionInterval.prototype.ctor.call(this);
-    this.initWithDuration(duration, colorFromWhite, colorFromMid, colorFromBlack, colorToWhite, colorToMid, colorToBlack);
+    this.initWithDuration(
+      duration,
+      colorFromWhite,
+      colorFromMid,
+      colorFromBlack,
+      colorToWhite,
+      colorToMid,
+      colorToBlack,
+    );
   },
 
-  initWithDuration(duration, colorFromWhite, colorFromMid, colorFromBlack, colorToWhite, colorToMid, colorToBlack) {
+  initWithDuration(
+    duration,
+    colorFromWhite,
+    colorFromMid,
+    colorFromBlack,
+    colorToWhite,
+    colorToMid,
+    colorToBlack,
+  ) {
     if (cc.ActionInterval.prototype.initWithDuration.call(this, duration)) {
       this._colorFromWhite = colorFromWhite == null ? this._colorFromWhite : colorFromWhite;
       this._colorFromMid = colorFromMid == null ? this._colorFromMid : colorFromMid;
@@ -54,7 +77,15 @@ var GradientColorMap = cc.ActionInterval.extend({
   },
 
   reverse() {
-    return GradientColorMap.create(this._duration, this._colorToWhite, this._colorToMid, this._colorToBlack, this._colorFromWhite, this._colorFromMid, this._colorFromBlack);
+    return GradientColorMap.create(
+      this._duration,
+      this._colorToWhite,
+      this._colorToMid,
+      this._colorToBlack,
+      this._colorFromWhite,
+      this._colorFromMid,
+      this._colorFromBlack,
+    );
   },
 
   clone() {
@@ -62,26 +93,50 @@ var GradientColorMap = cc.ActionInterval.extend({
     // GradientColorMap has to produce a GradientColorMap: ToneCurve is not even
     // in scope here, and its initWithDuration takes three arguments, not seven.
     const action = new GradientColorMap();
-    action.initWithDuration(this._duration, this._colorFromWhite, this._colorFromMid, this._colorFromBlack, this._colorToWhite, this._colorToMid, this._colorToBlack);
+    action.initWithDuration(
+      this._duration,
+      this._colorFromWhite,
+      this._colorFromMid,
+      this._colorFromBlack,
+      this._colorToWhite,
+      this._colorToMid,
+      this._colorToBlack,
+    );
     return action;
   },
 });
 
 /**
-  * Animates the screen space gradient color map.
-  * NOTE: only run this action on the scene, as it affects global state and the scene is the only guaranteed persistent node.
-  * @function
-  * @param {Number} duration
-  * @param {Color}  colorFromWhite
-  * @param {Color}  colorFromMid
-  * @param {Color}  colorFromBlack
-  * @param {Color}  colorToWhite
-  * @param {Color}  colorToMid
-  * @param {Color}  colorToBlack
-  * @return {GradientColorMap}
-  */
-GradientColorMap.create = function (duration, colorFromWhite, colorFromMid, colorFromBlack, colorToWhite, colorToMid, colorToBlack) {
-  return new GradientColorMap(duration, colorFromWhite, colorFromMid, colorFromBlack, colorToWhite, colorToMid, colorToBlack);
+ * Animates the screen space gradient color map.
+ * NOTE: only run this action on the scene, as it affects global state and the scene is the only guaranteed persistent node.
+ * @function
+ * @param {Number} duration
+ * @param {Color}  colorFromWhite
+ * @param {Color}  colorFromMid
+ * @param {Color}  colorFromBlack
+ * @param {Color}  colorToWhite
+ * @param {Color}  colorToMid
+ * @param {Color}  colorToBlack
+ * @return {GradientColorMap}
+ */
+GradientColorMap.create = function (
+  duration,
+  colorFromWhite,
+  colorFromMid,
+  colorFromBlack,
+  colorToWhite,
+  colorToMid,
+  colorToBlack,
+) {
+  return new GradientColorMap(
+    duration,
+    colorFromWhite,
+    colorFromMid,
+    colorFromBlack,
+    colorToWhite,
+    colorToMid,
+    colorToBlack,
+  );
 };
 
 module.exports = GradientColorMap;

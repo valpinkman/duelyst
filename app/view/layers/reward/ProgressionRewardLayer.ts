@@ -24,9 +24,10 @@ const KeyRewardNode = require('../../nodes/reward/KeyRewardNode');
  *************************************************************************** */
 
 const ProgressionRewardLayer = RewardLayer.extend({
-
   getRequiredResources() {
-    return RewardLayer.prototype.getRequiredResources.call(this).concat(PKGS.getPkgForIdentifier('progression_reward'));
+    return RewardLayer.prototype.getRequiredResources
+      .call(this)
+      .concat(PKGS.getPkgForIdentifier('progression_reward'));
   },
 
   showBackground() {
@@ -64,112 +65,170 @@ const ProgressionRewardLayer = RewardLayer.extend({
         const startingCenterXOffset = (cardsLength - 1) * -0.5 * spacingBetweenCardCenters;
 
         for (let c = 0; c < cardsLength; c++) {
-          _.delay(function (c) {
-            const cardId = cardIds[c];
-            const lastCard = c === cardsLength - 1;
-            const cardCenterPosition = cc.p(centerPosition.x + startingCenterXOffset + c * spacingBetweenCardCenters, centerPosition.y);
-            const flareSprite = FXFireRingSprite.create();
-            flareSprite.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
-            flareSprite.setTimeScale(0.5);
-            flareSprite.setPhase(0.5);
-            flareSprite.setPosition(cardCenterPosition);
-            flareSprite.setScale(1.75);
-            flareSprite.setVisible(false);
-            flareSprite.setFlippedY(true);
-            this.addChild(flareSprite, 0);
+          _.delay(
+            function (c) {
+              const cardId = cardIds[c];
+              const lastCard = c === cardsLength - 1;
+              const cardCenterPosition = cc.p(
+                centerPosition.x + startingCenterXOffset + c * spacingBetweenCardCenters,
+                centerPosition.y,
+              );
+              const flareSprite = FXFireRingSprite.create();
+              flareSprite.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
+              flareSprite.setTimeScale(0.5);
+              flareSprite.setPhase(0.5);
+              flareSprite.setPosition(cardCenterPosition);
+              flareSprite.setScale(1.75);
+              flareSprite.setVisible(false);
+              flareSprite.setFlippedY(true);
+              this.addChild(flareSprite, 0);
 
-            // TODO: The following commented line should work, however when the cardnode reveal gets the description, it fails to use the correct options
-            // https://trello.com/c/40ebEr6N/53-when-grabbing-card-from-cache-getdescription-fails-to-obey-options-correctly
-            // var sdkCard = SDK.GameSession.getCardCaches().getCardById(cardId);
-            const sdkCard = SDK.CardFactory.cardForIdentifier(cardId, SDK.GameSession.getInstance());
-            const cardNode = CardNode.create();
-            cardNode.setVisible(false);
-            cardNode.setPosition(cardCenterPosition);
-            this.addChild(cardNode, 5);
+              // TODO: The following commented line should work, however when the cardnode reveal gets the description, it fails to use the correct options
+              // https://trello.com/c/40ebEr6N/53-when-grabbing-card-from-cache-getdescription-fails-to-obey-options-correctly
+              // var sdkCard = SDK.GameSession.getCardCaches().getCardById(cardId);
+              const sdkCard = SDK.CardFactory.cardForIdentifier(
+                cardId,
+                SDK.GameSession.getInstance(),
+              );
+              const cardNode = CardNode.create();
+              cardNode.setVisible(false);
+              cardNode.setPosition(cardCenterPosition);
+              this.addChild(cardNode, 5);
 
-            // card dissolve-in sprite
-            let cardDissolveSpriteIdentifier;
-            if (sdkCard instanceof SDK.Entity) {
-              cardDissolveSpriteIdentifier = SDK.Cards.getIsPrismaticCardId(sdkCard.getId()) ? RSX.card_neutral_prismatic_unit.img : RSX.card_neutral_unit.img;
-            } else if (sdkCard instanceof SDK.Artifact) {
-              cardDissolveSpriteIdentifier = SDK.Cards.getIsPrismaticCardId(sdkCard.getId()) ? RSX.card_neutral_prismatic_artifact.img : RSX.card_neutral_artifact.img;
-            } else {
-              cardDissolveSpriteIdentifier = SDK.Cards.getIsPrismaticCardId(sdkCard.getId()) ? RSX.card_neutral_prismatic_spell.img : RSX.card_neutral_spell.img;
-            }
-            const cardDissolve = FXDissolveWithDiscFromCenterSprite.create(cardDissolveSpriteIdentifier);
-            cardDissolve.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
-            cardDissolve.setScale(1.0);
-            cardDissolve.setAnchorPoint(cc.p(0.5, 0.5));
-            cardDissolve.setPosition(cardCenterPosition);
-            this.addChild(cardDissolve, 0);
+              // card dissolve-in sprite
+              let cardDissolveSpriteIdentifier;
+              if (sdkCard instanceof SDK.Entity) {
+                cardDissolveSpriteIdentifier = SDK.Cards.getIsPrismaticCardId(sdkCard.getId())
+                  ? RSX.card_neutral_prismatic_unit.img
+                  : RSX.card_neutral_unit.img;
+              } else if (sdkCard instanceof SDK.Artifact) {
+                cardDissolveSpriteIdentifier = SDK.Cards.getIsPrismaticCardId(sdkCard.getId())
+                  ? RSX.card_neutral_prismatic_artifact.img
+                  : RSX.card_neutral_artifact.img;
+              } else {
+                cardDissolveSpriteIdentifier = SDK.Cards.getIsPrismaticCardId(sdkCard.getId())
+                  ? RSX.card_neutral_prismatic_spell.img
+                  : RSX.card_neutral_spell.img;
+              }
+              const cardDissolve = FXDissolveWithDiscFromCenterSprite.create(
+                cardDissolveSpriteIdentifier,
+              );
+              cardDissolve.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
+              cardDissolve.setScale(1.0);
+              cardDissolve.setAnchorPoint(cc.p(0.5, 0.5));
+              cardDissolve.setPosition(cardCenterPosition);
+              this.addChild(cardDissolve, 0);
 
-            // gold flaring
-            const polarFlare = FXFbmPolarFlareSprite.create();
-            polarFlare.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
-            polarFlare.setTextureRect(cc.rect(0, 0, 512, 640));
-            polarFlare.setAnchorPoint(cc.p(0.5, 0.5));
-            polarFlare.setPosition(cardCenterPosition);
-            this.addChild(polarFlare, 0);
+              // gold flaring
+              const polarFlare = FXFbmPolarFlareSprite.create();
+              polarFlare.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
+              polarFlare.setTextureRect(cc.rect(0, 0, 512, 640));
+              polarFlare.setAnchorPoint(cc.p(0.5, 0.5));
+              polarFlare.setPosition(cardCenterPosition);
+              this.addChild(polarFlare, 0);
 
-            const particles = BaseParticleSystem.create(RSX.ptcl_spiral_assemble_for_card_reward.plist);
-            particles.setAnchorPoint(cc.p(0.5, 0.5));
-            particles.setPosition(cardCenterPosition);
-            this.addChild(particles);
+              const particles = BaseParticleSystem.create(
+                RSX.ptcl_spiral_assemble_for_card_reward.plist,
+              );
+              particles.setAnchorPoint(cc.p(0.5, 0.5));
+              particles.setPosition(cardCenterPosition);
+              this.addChild(particles);
 
-            cardDissolve.runAction(cc.actionTween(2.0, 'phase', 0.0, 1.0));
-            polarFlare.runAction(cc.sequence(
-              cc.actionTween(1.0, 'phase', 0.01, 1.0),
-              cc.delayTime(0.5),
-              cc.callFunc(function (cardDissolve, cardNode, sdkCard, cardCenterPosition, flareSprite, lastCard) {
-                // play reveal sound
-                audio_engine.current().play_effect(RSX.sfx_ui_card_reveal.audio, false);
+              cardDissolve.runAction(cc.actionTween(2.0, 'phase', 0.0, 1.0));
+              polarFlare.runAction(
+                cc.sequence(
+                  cc.actionTween(1.0, 'phase', 0.01, 1.0),
+                  cc.delayTime(0.5),
+                  cc.callFunc(
+                    function (
+                      cardDissolve,
+                      cardNode,
+                      sdkCard,
+                      cardCenterPosition,
+                      flareSprite,
+                      lastCard,
+                    ) {
+                      // play reveal sound
+                      audio_engine.current().play_effect(RSX.sfx_ui_card_reveal.audio, false);
 
-                // show card reveal
-                cardNode.setVisible(true);
-                cardNode.showReveal(sdkCard, cardCenterPosition, null);
-                cardNode.factionNameLabel.setOpacity(0);
+                      // show card reveal
+                      cardNode.setVisible(true);
+                      cardNode.showReveal(sdkCard, cardCenterPosition, null);
+                      cardNode.factionNameLabel.setOpacity(0);
 
-                // finalize animation
-                cardNode.runAction(cc.sequence(
-                  cc.delayTime(1.5),
-                  cc.callFunc(((cardDissolve, cardNode, sdkCard, cardCenterPosition, flareSprite, lastCard) => {
-                    cardDissolve.setVisible(false);
-                    cardDissolve.destroy();
+                      // finalize animation
+                      cardNode.runAction(
+                        cc.sequence(
+                          cc.delayTime(1.5),
+                          cc.callFunc(
+                            ((
+                              cardDissolve,
+                              cardNode,
+                              sdkCard,
+                              cardCenterPosition,
+                              flareSprite,
+                              lastCard,
+                            ) => {
+                              cardDissolve.setVisible(false);
+                              cardDissolve.destroy();
 
-                    flareSprite.setVisible(true);
-                    flareSprite.runAction(cc.EaseCubicActionOut.create(cc.scaleTo(1.5, 9.0)));
+                              flareSprite.setVisible(true);
+                              flareSprite.runAction(
+                                cc.EaseCubicActionOut.create(cc.scaleTo(1.5, 9.0)),
+                              );
 
-                    // show card stack
-                    if (showStack) {
-                      cardNode.showStack();
-                    }
+                              // show card stack
+                              if (showStack) {
+                                cardNode.showStack();
+                              }
 
-                    // all done
-                    resolve();
-                  }).bind(this, cardDissolve, cardNode, sdkCard, cardCenterPosition, flareSprite, lastCard)),
-                ));
-              }.bind(this, cardDissolve, cardNode, sdkCard, cardCenterPosition, flareSprite, lastCard)),
-              cc.delayTime(0.5),
-              cc.actionTween(1.0, 'phase', 1.0, 0.01),
-            ));
-          }.bind(this, c), c * 500);
+                              // all done
+                              resolve();
+                            }).bind(
+                              this,
+                              cardDissolve,
+                              cardNode,
+                              sdkCard,
+                              cardCenterPosition,
+                              flareSprite,
+                              lastCard,
+                            ),
+                          ),
+                        ),
+                      );
+                    }.bind(
+                      this,
+                      cardDissolve,
+                      cardNode,
+                      sdkCard,
+                      cardCenterPosition,
+                      flareSprite,
+                      lastCard,
+                    ),
+                  ),
+                  cc.delayTime(0.5),
+                  cc.actionTween(1.0, 'phase', 1.0, 0.01),
+                ),
+              );
+            }.bind(this, c),
+            c * 500,
+          );
         }
       });
 
       // show titles
       const showTitlesPromise = new Promise((resolve) => {
-        this.runAction(cc.sequence(
-          cc.delayTime(2.0),
-          cc.callFunc(() => {
-            this.showTitles(CONFIG.ANIMATE_FAST_DURATION, title, subtitle).then(resolve);
-          }),
-        ));
+        this.runAction(
+          cc.sequence(
+            cc.delayTime(2.0),
+            cc.callFunc(() => {
+              this.showTitles(CONFIG.ANIMATE_FAST_DURATION, title, subtitle).then(resolve);
+            }),
+          ),
+        );
       });
 
-      return Promise.all([
-        showCardsPromise,
-        showTitlesPromise,
-      ]).then(() => {
+      return Promise.all([showCardsPromise, showTitlesPromise]).then(() => {
         this.setIsContinueOnPressAnywhere(true);
         this.setIsInteractionEnabled(true);
         this.continueNode.fadeTo(CONFIG.ANIMATE_FAST_DURATION, 255.0);
@@ -207,14 +266,18 @@ const ProgressionRewardLayer = RewardLayer.extend({
       }
 
       // show titles
-      showPromises.push(new Promise((resolve) => {
-        this.runAction(cc.sequence(
-          cc.delayTime(2.0),
-          cc.callFunc(() => {
-            this.showTitles(CONFIG.ANIMATE_FAST_DURATION, title, subtitle).then(resolve);
-          }),
-        ));
-      }));
+      showPromises.push(
+        new Promise((resolve) => {
+          this.runAction(
+            cc.sequence(
+              cc.delayTime(2.0),
+              cc.callFunc(() => {
+                this.showTitles(CONFIG.ANIMATE_FAST_DURATION, title, subtitle).then(resolve);
+              }),
+            ),
+          );
+        }),
+      );
 
       return Promise.all(showPromises).then(() => {
         this.setIsContinueOnPressAnywhere(true);
@@ -263,14 +326,18 @@ const ProgressionRewardLayer = RewardLayer.extend({
       }
 
       // show titles
-      showPromises.push(new Promise((resolve) => {
-        this.runAction(cc.sequence(
-          cc.delayTime(2.0),
-          cc.callFunc(() => {
-            this.showTitles(CONFIG.ANIMATE_FAST_DURATION, title, subtitle).then(resolve);
-          }),
-        ));
-      }));
+      showPromises.push(
+        new Promise((resolve) => {
+          this.runAction(
+            cc.sequence(
+              cc.delayTime(2.0),
+              cc.callFunc(() => {
+                this.showTitles(CONFIG.ANIMATE_FAST_DURATION, title, subtitle).then(resolve);
+              }),
+            ),
+          );
+        }),
+      );
 
       return Promise.all(showPromises).then(() => {
         this.setIsContinueOnPressAnywhere(true);
@@ -318,14 +385,18 @@ const ProgressionRewardLayer = RewardLayer.extend({
       }
 
       // show titles
-      showPromises.push(new Promise((resolve) => {
-        this.runAction(cc.sequence(
-          cc.delayTime(1.0),
-          cc.callFunc(() => {
-            this.showTitles(CONFIG.ANIMATE_FAST_DURATION, title, subtitle).then(resolve);
-          }),
-        ));
-      }));
+      showPromises.push(
+        new Promise((resolve) => {
+          this.runAction(
+            cc.sequence(
+              cc.delayTime(1.0),
+              cc.callFunc(() => {
+                this.showTitles(CONFIG.ANIMATE_FAST_DURATION, title, subtitle).then(resolve);
+              }),
+            ),
+          );
+        }),
+      );
 
       return Promise.all(showPromises).then(() => {
         this.setIsContinueOnPressAnywhere(true);
@@ -343,7 +414,6 @@ const ProgressionRewardLayer = RewardLayer.extend({
     return ribbonRewardNode.animateReward(true, false);
   },
   /* endregion REWARD RIBBONS */
-
 });
 
 ProgressionRewardLayer.create = function (layer) {

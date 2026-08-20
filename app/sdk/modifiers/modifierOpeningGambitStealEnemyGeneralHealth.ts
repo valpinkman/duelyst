@@ -22,7 +22,9 @@ class ModifierOpeningGambitStealEnemyGeneralHealth extends ModifierOpeningGambit
   }
 
   onOpeningGambit() {
-    const general = this.getCard().getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
+    const general = this.getCard()
+      .getGameSession()
+      .getGeneralForPlayerId(this.getCard().getOwnerId());
 
     const healAction = new HealAction(this.getGameSession());
     healAction.setOwnerId(this.getOwnerId());
@@ -30,7 +32,11 @@ class ModifierOpeningGambitStealEnemyGeneralHealth extends ModifierOpeningGambit
     healAction.setHealAmount(this.damageAmount);
     this.getGameSession().executeAction(healAction);
 
-    const enemyGeneral = this.getCard().getGameSession().getGeneralForPlayerId(this.getGameSession().getOpponentPlayerIdOfPlayerId(this.getCard().getOwnerId()));
+    const enemyGeneral = this.getCard()
+      .getGameSession()
+      .getGeneralForPlayerId(
+        this.getGameSession().getOpponentPlayerIdOfPlayerId(this.getCard().getOwnerId()),
+      );
 
     const damageAction = new DamageAction(this.getGameSession());
     damageAction.setOwnerId(this.getOwnerId());
@@ -39,8 +45,11 @@ class ModifierOpeningGambitStealEnemyGeneralHealth extends ModifierOpeningGambit
     return this.getGameSession().executeAction(damageAction);
   }
 }
-ModifierOpeningGambitStealEnemyGeneralHealth.prototype.type = 'ModifierOpeningGambitStealEnemyGeneralHealth';
-ModifierOpeningGambitStealEnemyGeneralHealth.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
+ModifierOpeningGambitStealEnemyGeneralHealth.prototype.type =
+  'ModifierOpeningGambitStealEnemyGeneralHealth';
+ModifierOpeningGambitStealEnemyGeneralHealth.prototype.fxResource = [
+  'FX.Modifiers.ModifierOpeningGambit',
+];
 ModifierOpeningGambitStealEnemyGeneralHealth.prototype.damageAmount = 0;
 
 module.exports = ModifierOpeningGambitStealEnemyGeneralHealth;

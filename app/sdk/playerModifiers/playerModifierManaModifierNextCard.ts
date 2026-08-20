@@ -21,14 +21,20 @@ class PlayerModifierManaModifierNextCard extends PlayerModifierManaModifier {
     super.onAction(event);
 
     // when a card is played from hand AFTER this modifier is applied
-    const {
-      action,
-    } = event;
-    if ((action.getIndex() > this.getAppliedByActionIndex()) && ((action instanceof PlayCardFromHandAction && this.auraIncludeHand) || (action instanceof PlaySignatureCardAction && this.auraIncludeSignatureCards)) && (action.getOwnerId() === this.getPlayerId())) {
+    const { action } = event;
+    if (
+      action.getIndex() > this.getAppliedByActionIndex() &&
+      ((action instanceof PlayCardFromHandAction && this.auraIncludeHand) ||
+        (action instanceof PlaySignatureCardAction && this.auraIncludeSignatureCards)) &&
+      action.getOwnerId() === this.getPlayerId()
+    ) {
       const card = action.getCard();
       if (card != null) {
         if (action instanceof PlayCardFromHandAction) {
-          if ((action.getOwnerId() === this.getPlayerId()) && (__guard__(action.getCard(), (x) => x.type) === CardType.Unit)) {
+          if (
+            action.getOwnerId() === this.getPlayerId() &&
+            __guard__(action.getCard(), (x) => x.type) === CardType.Unit
+          ) {
             // damage the unit IF a unit was played
             const unitToDamage = action.getTarget();
             if (unitToDamage != null) {
@@ -52,5 +58,5 @@ PlayerModifierManaModifierNextCard.prototype.type = 'PlayerModifierManaModifierN
 module.exports = PlayerModifierManaModifierNextCard;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

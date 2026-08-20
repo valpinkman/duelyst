@@ -23,7 +23,6 @@ const UnitNode = require('../../nodes/cards/UnitNode');
  *************************************************************************** */
 
 const SelectCardFromDeckLayer = BaseLayer.extend({
-
   cards: null,
   cardCounts: null,
   _cardNodes: null,
@@ -53,7 +52,13 @@ const SelectCardFromDeckLayer = BaseLayer.extend({
     this._cardPreviewNode.setPosition(-280, 0);
 
     const winSize = UtilsEngine.getGSIWinSize();
-    this.titleLabel = new cc.LabelTTF(i18next.t('rift.select_card_to_upgrade_message'), RSX.font_bold.name, 20, cc.size(winSize.width, 32), cc.TEXT_ALIGNMENT_CENTER);
+    this.titleLabel = new cc.LabelTTF(
+      i18next.t('rift.select_card_to_upgrade_message'),
+      RSX.font_bold.name,
+      20,
+      cc.size(winSize.width, 32),
+      cc.TEXT_ALIGNMENT_CENTER,
+    );
     this.titleLabel.setPosition(0, -50);
     this.titleLabel.setFontFillColor(cc.color(255, 255, 255));
 
@@ -105,12 +110,14 @@ const SelectCardFromDeckLayer = BaseLayer.extend({
 
     if (this._cardNodes.length && duration) {
       return new Promise<void>((resolve) => {
-        this.runAction(cc.sequence(
-          cc.spawn(actions),
-          cc.callFunc(() => {
-            resolve();
-          }),
-        ));
+        this.runAction(
+          cc.sequence(
+            cc.spawn(actions),
+            cc.callFunc(() => {
+              resolve();
+            }),
+          ),
+        );
       });
     }
     return Promise.resolve();
@@ -195,11 +202,7 @@ const SelectCardFromDeckLayer = BaseLayer.extend({
       // update preview
       if (this._currentlyHighlightedCardNode == null) {
         // no card, just hide preview
-        const fadeAction = cc.sequence(
-          cc.delayTime(0.1),
-          cc.fadeOut(0.1),
-          cc.hide(),
-        );
+        const fadeAction = cc.sequence(cc.delayTime(0.1), cc.fadeOut(0.1), cc.hide());
         this._cardPreviewNode.addAnimationAction(fadeAction);
         this._cardPreviewNode.runAction(fadeAction);
       } else {
@@ -212,14 +215,20 @@ const SelectCardFromDeckLayer = BaseLayer.extend({
 
         // set y position
         const cardContentSize = this._cardPreviewNode.getCardContentSize();
-        const y = UtilsEngine.getGSINodeScreenPosition(this._currentlyHighlightedCardNode).y + this._currentlyHighlightedCardNode.getContentSize().height * 0.5 - this.getPositionY();
+        const y =
+          UtilsEngine.getGSINodeScreenPosition(this._currentlyHighlightedCardNode).y +
+          this._currentlyHighlightedCardNode.getContentSize().height * 0.5 -
+          this.getPositionY();
 
         // make sure card doesn't go outside screen
         const top = UtilsEngine.getGSIWinHeight() - cardContentSize.height * 0.5;
         const bottom = cardContentSize.height * 0.5;
 
         // Math.min(top, Math.max(bottom, y))
-        this._cardPreviewNode.setPosition(this._currentlyHighlightedCardNode.getPosition().x + 50, y);
+        this._cardPreviewNode.setPosition(
+          this._currentlyHighlightedCardNode.getPosition().x + 50,
+          y,
+        );
       }
     }
   },
@@ -293,28 +302,31 @@ const SelectCardFromDeckLayer = BaseLayer.extend({
   transitionIn() {
     return new Promise<void>((resolve, reject) => {
       this.setOpacity(0.0);
-      this.runAction(cc.sequence(
-        cc.fadeIn(CONFIG.FADE_FAST_DURATION),
-        cc.callFunc(() => {
-          resolve();
-        }),
-      ));
+      this.runAction(
+        cc.sequence(
+          cc.fadeIn(CONFIG.FADE_FAST_DURATION),
+          cc.callFunc(() => {
+            resolve();
+          }),
+        ),
+      );
     });
   },
 
   transitionOut() {
     return new Promise<void>((resolve, reject) => {
-      this.runAction(cc.sequence(
-        cc.fadeOut(CONFIG.FADE_FAST_DURATION),
-        cc.callFunc(() => {
-          resolve();
-        }),
-      ));
+      this.runAction(
+        cc.sequence(
+          cc.fadeOut(CONFIG.FADE_FAST_DURATION),
+          cc.callFunc(() => {
+            resolve();
+          }),
+        ),
+      );
     });
   },
 
   /* endregion TRANSITION */
-
 });
 
 SelectCardFromDeckLayer.create = function (layer) {

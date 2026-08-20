@@ -26,7 +26,7 @@ class SpellWhisperOfTheSands extends Spell {
       const obelysks = [];
       const obelyskPositions = [];
       for (var unit of Array.from<any>(this.getGameSession().getBoard().getUnits())) {
-        if ((unit.getOwnerId() === ownerId) && this.isObelysk(unit)) {
+        if (unit.getOwnerId() === ownerId && this.isObelysk(unit)) {
           obelysks.push(unit);
           obelyskPositions.push(unit.getPosition());
         }
@@ -34,17 +34,28 @@ class SpellWhisperOfTheSands extends Spell {
 
       // coordinate spawning near all obelysks
       // this will generate spawn positions without conflicts whenever possible
-      const spawnPositionsWithSource = UtilsGameSession.getRandomNonConflictingSmartSpawnPositionsFromPatterns(this.getGameSession(), obelyskPositions, CONFIG.PATTERN_3x3, cardToSpawn, obelysks);
+      const spawnPositionsWithSource =
+        UtilsGameSession.getRandomNonConflictingSmartSpawnPositionsFromPatterns(
+          this.getGameSession(),
+          obelyskPositions,
+          CONFIG.PATTERN_3x3,
+          cardToSpawn,
+          obelysks,
+        );
 
       return (() => {
         const result = [];
         for (var spawnData of Array.from<any>(spawnPositionsWithSource)) {
-          var {
-            spawnPositions,
-          } = spawnData;
+          var { spawnPositions } = spawnData;
           if (spawnPositions.length > 0) {
             var spawnPosition = spawnPositions[0];
-            var spawnAction = new PlayCardSilentlyAction(this.getGameSession(), ownerId, spawnPosition.x, spawnPosition.y, cardDataToSpawn);
+            var spawnAction = new PlayCardSilentlyAction(
+              this.getGameSession(),
+              ownerId,
+              spawnPosition.x,
+              spawnPosition.y,
+              cardDataToSpawn,
+            );
             spawnAction.setSource(this);
             result.push(this.getGameSession().executeAction(spawnAction));
           } else {
@@ -58,14 +69,16 @@ class SpellWhisperOfTheSands extends Spell {
 
   isObelysk(unit) {
     const unitId = unit.getBaseCardId();
-    return (unitId === Cards.Faction3.BrazierRedSand)
-        || (unitId === Cards.Faction3.BrazierGoldenFlame)
-        || (unitId === Cards.Faction3.BrazierDuskWind)
-        || (unitId === Cards.Faction3.SoulburnObelysk)
-        || (unitId === Cards.Faction3.TrygonObelysk)
-        || (unitId === Cards.Faction3.LavastormObelysk)
-        || (unitId === Cards.Faction3.DuplicatorObelysk)
-        || (unitId === Cards.Faction3.SimulacraObelysk);
+    return (
+      unitId === Cards.Faction3.BrazierRedSand ||
+      unitId === Cards.Faction3.BrazierGoldenFlame ||
+      unitId === Cards.Faction3.BrazierDuskWind ||
+      unitId === Cards.Faction3.SoulburnObelysk ||
+      unitId === Cards.Faction3.TrygonObelysk ||
+      unitId === Cards.Faction3.LavastormObelysk ||
+      unitId === Cards.Faction3.DuplicatorObelysk ||
+      unitId === Cards.Faction3.SimulacraObelysk
+    );
   }
 }
 

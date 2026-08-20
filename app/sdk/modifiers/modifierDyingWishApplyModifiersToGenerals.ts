@@ -17,7 +17,12 @@ class ModifierDyingWishApplyModifiersToGenerals extends ModifierDyingWish {
 
   static type = 'ModifierDyingWishApplyModifiersToGenerals';
 
-  static createContextObject(modifiersContextObjects, includeMyGeneral, includeOppGeneral, options) {
+  static createContextObject(
+    modifiersContextObjects,
+    includeMyGeneral,
+    includeOppGeneral,
+    options,
+  ) {
     const contextObject = super.createContextObject(options);
     contextObject.modifiersContextObjects = modifiersContextObjects;
     contextObject.includeMyGeneral = includeMyGeneral;
@@ -26,8 +31,12 @@ class ModifierDyingWishApplyModifiersToGenerals extends ModifierDyingWish {
   }
 
   onDyingWish() {
-    const general = this.getCard().getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
-    const enemyGeneral = this.getCard().getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
+    const general = this.getCard()
+      .getGameSession()
+      .getGeneralForPlayerId(this.getCard().getOwnerId());
+    const enemyGeneral = this.getCard()
+      .getGameSession()
+      .getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
 
     if (this.modifiersContextObjects != null) {
       return (() => {
@@ -38,7 +47,12 @@ class ModifierDyingWishApplyModifiersToGenerals extends ModifierDyingWish {
               this.getGameSession().applyModifierContextObject(modifierContextObject, general);
             }
             if (this.includeOppGeneral) {
-              result.push(this.getGameSession().applyModifierContextObject(modifierContextObject, enemyGeneral));
+              result.push(
+                this.getGameSession().applyModifierContextObject(
+                  modifierContextObject,
+                  enemyGeneral,
+                ),
+              );
             } else {
               result.push(undefined);
             }
@@ -51,8 +65,12 @@ class ModifierDyingWishApplyModifiersToGenerals extends ModifierDyingWish {
     }
   }
 }
-ModifierDyingWishApplyModifiersToGenerals.prototype.type = 'ModifierDyingWishApplyModifiersToGenerals';
-ModifierDyingWishApplyModifiersToGenerals.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierDyingWishApplyModifiersToGenerals.prototype.type =
+  'ModifierDyingWishApplyModifiersToGenerals';
+ModifierDyingWishApplyModifiersToGenerals.prototype.fxResource = [
+  'FX.Modifiers.ModifierDyingWish',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 ModifierDyingWishApplyModifiersToGenerals.prototype.modifiersContextObjects = null;
 ModifierDyingWishApplyModifiersToGenerals.prototype.includeMyGeneral = true;
 ModifierDyingWishApplyModifiersToGenerals.prototype.includeOppGeneral = true;

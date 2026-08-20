@@ -50,27 +50,40 @@ class SpellRemoveAndReplaceEntity extends SpellApplyEntityToBoard {
   }
 
   getCardDataOrIndexToSpawn(x, y) {
-    let {
-      cardDataOrIndexToSpawn,
-    } = this;
-    if ((cardDataOrIndexToSpawn != null) && _.isObject(cardDataOrIndexToSpawn)) { cardDataOrIndexToSpawn = UtilsJavascript.fastExtend({}, cardDataOrIndexToSpawn); }
+    let { cardDataOrIndexToSpawn } = this;
+    if (cardDataOrIndexToSpawn != null && _.isObject(cardDataOrIndexToSpawn)) {
+      cardDataOrIndexToSpawn = UtilsJavascript.fastExtend({}, cardDataOrIndexToSpawn);
+    }
     return cardDataOrIndexToSpawn;
   }
 
   getSpawnAction(x, y, cardDataOrIndexToSpawn) {
-    if ((cardDataOrIndexToSpawn == null)) { cardDataOrIndexToSpawn = this.getCardDataOrIndexToSpawn(x, y); }
+    if (cardDataOrIndexToSpawn == null) {
+      cardDataOrIndexToSpawn = this.getCardDataOrIndexToSpawn(x, y);
+    }
     const entity = this.getEntityToSpawn(x, y, cardDataOrIndexToSpawn);
     if (entity != null) {
-      return new PlayCardAsTransformAction(this.getGameSession(), entity.getOwnerId(), x, y, cardDataOrIndexToSpawn);
+      return new PlayCardAsTransformAction(
+        this.getGameSession(),
+        entity.getOwnerId(),
+        x,
+        y,
+        cardDataOrIndexToSpawn,
+      );
     }
   }
 
   getEntityToSpawn(x, y, cardDataOrIndexToSpawn) {
     let entity;
-    if ((cardDataOrIndexToSpawn == null)) { cardDataOrIndexToSpawn = this.getCardDataOrIndexToSpawn(x, y); }
+    if (cardDataOrIndexToSpawn == null) {
+      cardDataOrIndexToSpawn = this.getCardDataOrIndexToSpawn(x, y);
+    }
     if (cardDataOrIndexToSpawn != null) {
-      entity = this.getGameSession().getExistingCardFromIndexOrCreateCardFromData(cardDataOrIndexToSpawn);
-      const existingEntity = this.getGameSession().getBoard().getCardAtPosition({ x, y }, CardType.Entity);
+      entity =
+        this.getGameSession().getExistingCardFromIndexOrCreateCardFromData(cardDataOrIndexToSpawn);
+      const existingEntity = this.getGameSession()
+        .getBoard()
+        .getCardAtPosition({ x, y }, CardType.Entity);
       if (existingEntity != null) {
         entity.setOwnerId(existingEntity.getOwnerId());
       } else {

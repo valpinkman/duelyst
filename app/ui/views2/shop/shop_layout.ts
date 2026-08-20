@@ -33,7 +33,6 @@ var ShopSpecialsView = require('./shop_specials_view');
 var Template = require('./templates/shop_layout.hbs');
 
 var ShopLayout = Backbone.Marionette.LayoutView.extend({
-
   className: 'shop-layout',
   template: Template,
   animateIn: Animations.fadeIn,
@@ -99,7 +98,11 @@ var ShopLayout = Backbone.Marionette.LayoutView.extend({
     // listen to events
     this.listenTo(EventBus.getInstance(), EVENTS.resize, this.onResize);
     this.listenTo(InventoryManager.getInstance().walletModel, 'change', this.onWalletChange);
-    this.listenTo(InventoryManager.getInstance().boosterPacksCollection, 'add remove', this.onWalletChange);
+    this.listenTo(
+      InventoryManager.getInstance().boosterPacksCollection,
+      'add remove',
+      this.onWalletChange,
+    );
   },
 
   onPrepareForDestroy: function () {
@@ -124,7 +127,9 @@ var ShopLayout = Backbone.Marionette.LayoutView.extend({
 
   onWalletChange: function () {
     this.ui.gold_amount.text(InventoryManager.getInstance().walletModel.get('gold_amount') || 0);
-    this.ui.spirit_amount.text(InventoryManager.getInstance().walletModel.get('spirit_amount') || 0);
+    this.ui.spirit_amount.text(
+      InventoryManager.getInstance().walletModel.get('spirit_amount') || 0,
+    );
     this.ui.spirit_orb_count.text(InventoryManager.getInstance().boosterPacksCollection.length);
     this.ui.premium_amount.text(InventoryManager.getInstance().getWalletModelPremiumAmount());
   },
@@ -142,9 +147,11 @@ var ShopLayout = Backbone.Marionette.LayoutView.extend({
   setProductCategory: function (selectedValue) {
     if (selectedValue !== this.selectedProductCategory) {
       this.selectedProductCategory = selectedValue;
-      audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_tab_in.audio, CONFIG.SELECT_SFX_PRIORITY);
+      audio_engine
+        .current()
+        .play_effect_for_interaction(RSX.sfx_ui_tab_in.audio, CONFIG.SELECT_SFX_PRIORITY);
       $('button', this.ui.shop_menu).removeClass('active');
-      this.ui.shop_menu.find('[data-value=\'' + selectedValue + '\']').addClass('active');
+      this.ui.shop_menu.find("[data-value='" + selectedValue + "']").addClass('active');
       this.showProductCategory(selectedValue);
     }
   },
@@ -154,71 +161,131 @@ var ShopLayout = Backbone.Marionette.LayoutView.extend({
     var subCategoryOrdering = null;
     var productCollectionView = null;
     switch (category) {
-    case 'emotes':
-      var productsArray = _.map(CosmeticsFactory.cosmeticProductDataForType(CosmeticsType.Emote), function (p) {
-        p.is_purchased = InventoryManager.getInstance().getCosmeticsCollection().find(function (c) { return parseInt(c.get('cosmetic_id')) === p.id; }) || false;
-        return p;
-      });
-      productCollection = new Backbone.Collection(productsArray);
-      subCategoryOrdering = CosmeticsFactory.visibleCosmeticSubTypesForType(CosmeticsType.Emote);
-      break;
-    case 'profile-icons':
-      var productsArray = _.map(CosmeticsFactory.cosmeticProductDataForType(CosmeticsType.ProfileIcon), function (p) {
-        p.is_purchased = InventoryManager.getInstance().getCosmeticsCollection().find(function (c) { return parseInt(c.get('cosmetic_id')) === p.id; }) || false;
-        return p;
-      });
-      productCollection = new Backbone.Collection(productsArray);
-      subCategoryOrdering = CosmeticsFactory.visibleCosmeticSubTypesForType(CosmeticsType.ProfileIcon);
-      break;
-    case 'card-backs':
-      var productsArray = _.map(CosmeticsFactory.cosmeticProductDataForType(CosmeticsType.CardBack), function (p) {
-        p.is_purchased = InventoryManager.getInstance().getCosmeticsCollection().find(function (c) { return parseInt(c.get('cosmetic_id')) === p.id; }) || false;
-        return p;
-      });
-      productCollection = new Backbone.Collection(productsArray);
-      subCategoryOrdering = CosmeticsFactory.visibleCosmeticSubTypesForType(CosmeticsType.CardBack);
-      break;
-    case 'card-skins':
-      var productsArray = _.map(CosmeticsFactory.cosmeticProductDataForType(CosmeticsType.CardSkin), function (p) {
-        p.is_purchased = InventoryManager.getInstance().getCosmeticsCollection().find(function (c) { return parseInt(c.get('cosmetic_id')) === p.id; }) || false;
-        return p;
-      });
-      productCollection = new Backbone.Collection(productsArray);
-      subCategoryOrdering = CosmeticsFactory.visibleCosmeticSubTypesForType(CosmeticsType.CardSkin);
-      break;
-    case 'bundles':
-      var productsDataValues = _.values(ShopData.bundles);
-      productCollection = new Backbone.Collection(productsDataValues);
-      break;
-    case 'sales':
-      var productsDataValues = ShopManager.getInstance().getMappedActiveShopSaleDatas();
-      var productsArray = _.map(productsDataValues, function (p) {
-        if (InventoryManager.getInstance().getCosmeticsCollection().find(function (c) { return parseInt(c.get('cosmetic_id')) === p.id; })) {
-          p.is_purchased = true;
-        }
-        return p;
-      });
-      productCollection = new Backbone.Collection(productsArray);
-      break;
-    case 'battle-maps':
-      var productsArray = _.map(CosmeticsFactory.cosmeticProductDataForType(CosmeticsType.BattleMap), function (p) {
-        p.is_purchased = InventoryManager.getInstance().getCosmeticsCollection().find(function (c) { return parseInt(c.get('cosmetic_id')) === p.id; }) || false;
-        return p;
-      });
-      productCollection = new Backbone.Collection(productsArray);
-      subCategoryOrdering = CosmeticsFactory.visibleCosmeticSubTypesForType(CosmeticsType.BattleMap);
-      break;
-    case 'specials':
-      productCollectionView = new ShopSpecialsView({ model: new Backbone.Model(ShopData.earned_specials) });
-      break;
-    default:
-      productCollectionView = new ShopSpiritOrbsCollectionView({ model: new Backbone.Model() });
-      break;
+      case 'emotes':
+        var productsArray = _.map(
+          CosmeticsFactory.cosmeticProductDataForType(CosmeticsType.Emote),
+          function (p) {
+            p.is_purchased =
+              InventoryManager.getInstance()
+                .getCosmeticsCollection()
+                .find(function (c) {
+                  return parseInt(c.get('cosmetic_id')) === p.id;
+                }) || false;
+            return p;
+          },
+        );
+        productCollection = new Backbone.Collection(productsArray);
+        subCategoryOrdering = CosmeticsFactory.visibleCosmeticSubTypesForType(CosmeticsType.Emote);
+        break;
+      case 'profile-icons':
+        var productsArray = _.map(
+          CosmeticsFactory.cosmeticProductDataForType(CosmeticsType.ProfileIcon),
+          function (p) {
+            p.is_purchased =
+              InventoryManager.getInstance()
+                .getCosmeticsCollection()
+                .find(function (c) {
+                  return parseInt(c.get('cosmetic_id')) === p.id;
+                }) || false;
+            return p;
+          },
+        );
+        productCollection = new Backbone.Collection(productsArray);
+        subCategoryOrdering = CosmeticsFactory.visibleCosmeticSubTypesForType(
+          CosmeticsType.ProfileIcon,
+        );
+        break;
+      case 'card-backs':
+        var productsArray = _.map(
+          CosmeticsFactory.cosmeticProductDataForType(CosmeticsType.CardBack),
+          function (p) {
+            p.is_purchased =
+              InventoryManager.getInstance()
+                .getCosmeticsCollection()
+                .find(function (c) {
+                  return parseInt(c.get('cosmetic_id')) === p.id;
+                }) || false;
+            return p;
+          },
+        );
+        productCollection = new Backbone.Collection(productsArray);
+        subCategoryOrdering = CosmeticsFactory.visibleCosmeticSubTypesForType(
+          CosmeticsType.CardBack,
+        );
+        break;
+      case 'card-skins':
+        var productsArray = _.map(
+          CosmeticsFactory.cosmeticProductDataForType(CosmeticsType.CardSkin),
+          function (p) {
+            p.is_purchased =
+              InventoryManager.getInstance()
+                .getCosmeticsCollection()
+                .find(function (c) {
+                  return parseInt(c.get('cosmetic_id')) === p.id;
+                }) || false;
+            return p;
+          },
+        );
+        productCollection = new Backbone.Collection(productsArray);
+        subCategoryOrdering = CosmeticsFactory.visibleCosmeticSubTypesForType(
+          CosmeticsType.CardSkin,
+        );
+        break;
+      case 'bundles':
+        var productsDataValues = _.values(ShopData.bundles);
+        productCollection = new Backbone.Collection(productsDataValues);
+        break;
+      case 'sales':
+        var productsDataValues = ShopManager.getInstance().getMappedActiveShopSaleDatas();
+        var productsArray = _.map(productsDataValues, function (p) {
+          if (
+            InventoryManager.getInstance()
+              .getCosmeticsCollection()
+              .find(function (c) {
+                return parseInt(c.get('cosmetic_id')) === p.id;
+              })
+          ) {
+            p.is_purchased = true;
+          }
+          return p;
+        });
+        productCollection = new Backbone.Collection(productsArray);
+        break;
+      case 'battle-maps':
+        var productsArray = _.map(
+          CosmeticsFactory.cosmeticProductDataForType(CosmeticsType.BattleMap),
+          function (p) {
+            p.is_purchased =
+              InventoryManager.getInstance()
+                .getCosmeticsCollection()
+                .find(function (c) {
+                  return parseInt(c.get('cosmetic_id')) === p.id;
+                }) || false;
+            return p;
+          },
+        );
+        productCollection = new Backbone.Collection(productsArray);
+        subCategoryOrdering = CosmeticsFactory.visibleCosmeticSubTypesForType(
+          CosmeticsType.BattleMap,
+        );
+        break;
+      case 'specials':
+        productCollectionView = new ShopSpecialsView({
+          model: new Backbone.Model(ShopData.earned_specials),
+        });
+        break;
+      default:
+        productCollectionView = new ShopSpiritOrbsCollectionView({ model: new Backbone.Model() });
+        break;
     }
 
     // show new products
     if (productCollection) {
-      productCollectionView = new ShopProductCollectionView({ model: new Backbone.Model(), collection: productCollection, categoryOrdering: subCategoryOrdering });
+      productCollectionView = new ShopProductCollectionView({
+        model: new Backbone.Model(),
+        collection: productCollection,
+        categoryOrdering: subCategoryOrdering,
+      });
     }
     productCollectionView.listenTo(productCollectionView, 'filter', this.bindScrollbars.bind(this));
     this.productCollectionRegion.show(productCollectionView);
@@ -231,17 +298,19 @@ var ShopLayout = Backbone.Marionette.LayoutView.extend({
 
   /* endregion CATEGORIES */
 
-  onHelpPress: function (e) {
-  },
+  onHelpPress: function (e) {},
 
   onRedeemGiftCodePressed: function () {
     NavigationManager.getInstance().showModalView(new RedeemGiftCodeModalView());
   },
 
-  onPremiumCurrencyPressed: _.throttle(function (e) {
-    // NavigationManager.getInstance().showModalView(new PremiumPurchaseDialog());
-  }, 1500, { trailing: false }),
-
+  onPremiumCurrencyPressed: _.throttle(
+    function (e) {
+      // NavigationManager.getInstance().showModalView(new PremiumPurchaseDialog());
+    },
+    1500,
+    { trailing: false },
+  ),
 });
 
 module.exports = ShopLayout;

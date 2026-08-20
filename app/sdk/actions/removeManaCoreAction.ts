@@ -14,7 +14,9 @@ class RemoveManaCoreAction extends Action {
   static type = 'RemoveManaCoreAction';
 
   constructor(gameSession, manaAmount) {
-    if (manaAmount == null) { manaAmount = 0; }
+    if (manaAmount == null) {
+      manaAmount = 0;
+    }
     super(gameSession);
     this.manaAmount = manaAmount;
   }
@@ -26,7 +28,11 @@ class RemoveManaCoreAction extends Action {
     if (owner != null) {
       return (() => {
         const result = [];
-        for (let i = 0, end = this.manaAmount, asc = end >= 0; asc ? i < end : i > end; asc ? i++ : i--) {
+        for (
+          let i = 0, end = this.manaAmount, asc = end >= 0;
+          asc ? i < end : i > end;
+          asc ? i++ : i--
+        ) {
           if (owner.getMaximumMana() > 0) {
             result.push(owner.maximumMana--);
           } else {
@@ -43,7 +49,7 @@ class RemoveManaCoreAction extends Action {
   }
 
   setManaAmount(manaAmount) {
-    return this.manaAmount = Math.max(manaAmount, 0);
+    return (this.manaAmount = Math.max(manaAmount, 0));
   }
 }
 RemoveManaCoreAction.prototype.manaAmount = 0;

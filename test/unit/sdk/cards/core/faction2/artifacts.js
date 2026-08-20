@@ -14,13 +14,9 @@ describe('faction2', () => {
   describe('artifacts', () => {
     beforeEach(() => {
       // define test decks.  Spells do not work.  Only add minions and generals this way
-      const player1Deck = [
-        { id: SDK.Cards.Faction2.General },
-      ];
+      const player1Deck = [{ id: SDK.Cards.Faction2.General }];
 
-      const player2Deck = [
-        { id: SDK.Cards.Faction1.General },
-      ];
+      const player2Deck = [{ id: SDK.Cards.Faction1.General }];
 
       // setup test session
       UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
@@ -40,10 +36,18 @@ describe('faction2', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Artifact.MaskOfBloodLeech }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Artifact.MaskOfBloodLeech,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 8, 2));
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PhoenixFire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 8, 2));
 
       expect(gameSession.getGeneralForPlayer2().getHP()).to.equal(21);
@@ -54,10 +58,16 @@ describe('faction2', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Artifact.MaskOfTranscendance }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Artifact.MaskOfTranscendance,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 8, 2));
 
-      const action = gameSession.getGeneralForPlayer1().actionAttack(gameSession.getGeneralForPlayer2());
+      const action = gameSession
+        .getGeneralForPlayer1()
+        .actionAttack(gameSession.getGeneralForPlayer2());
       gameSession.executeAction(action);
 
       expect(gameSession.getGeneralForPlayer2().getHP()).to.equal(23);

@@ -46,10 +46,7 @@ class MediumSonghaiChallenge2 extends Challenge {
   }
 
   getOpponentPlayerDeckData(gameSession) {
-    return [
-      { id: Cards.Faction5.General },
-      { id: Cards.TutorialSpell.TutorialFireOrb },
-    ];
+    return [{ id: Cards.Faction5.General }, { id: Cards.TutorialSpell.TutorialFireOrb }];
   }
 
   setupBoard(gameSession) {
@@ -77,24 +74,37 @@ class MediumSonghaiChallenge2 extends Challenge {
   setupOpponentAgent(gameSession) {
     super.setupOpponentAgent(gameSession);
 
-    this._opponentAgent.addActionForTurn(0, AgentActions.createAgentSoftActionShowInstructionLabels([{
-      label: i18next.t('challenges.medium_songhai_2_taunt'),
-      isSpeech: true,
-      yPosition: 0.7,
-      isPersistent: true,
-      isOpponent: true,
-    },
-    ]));
-    return this._opponentAgent.addActionForTurn(0, AgentActions.createAgentActionPlayCardFindPosition(0, () => [GameSession.getInstance().getGeneralForPlayer1().getPosition()]));
+    this._opponentAgent.addActionForTurn(
+      0,
+      AgentActions.createAgentSoftActionShowInstructionLabels([
+        {
+          label: i18next.t('challenges.medium_songhai_2_taunt'),
+          isSpeech: true,
+          yPosition: 0.7,
+          isPersistent: true,
+          isOpponent: true,
+        },
+      ]),
+    );
+    return this._opponentAgent.addActionForTurn(
+      0,
+      AgentActions.createAgentActionPlayCardFindPosition(0, () => [
+        GameSession.getInstance().getGeneralForPlayer1().getPosition(),
+      ]),
+    );
   }
 }
 MediumSonghaiChallenge2.prototype.type = 'MediumSonghaiChallenge2';
 MediumSonghaiChallenge2.prototype.categoryType = ChallengeCategory.vault2.type;
 MediumSonghaiChallenge2.prototype.name = i18next.t('challenges.medium_songhai_2_title');
-MediumSonghaiChallenge2.prototype.description = i18next.t('challenges.medium_songhai_2_description');
+MediumSonghaiChallenge2.prototype.description = i18next.t(
+  'challenges.medium_songhai_2_description',
+);
 MediumSonghaiChallenge2.prototype.iconUrl = RSX.speech_portrait_songhai.img;
 MediumSonghaiChallenge2.prototype._musicOverride = RSX.music_battlemap_songhai.audio;
-MediumSonghaiChallenge2.prototype.otkChallengeStartMessage = i18next.t('challenges.medium_songhai_2_start');
+MediumSonghaiChallenge2.prototype.otkChallengeStartMessage = i18next.t(
+  'challenges.medium_songhai_2_start',
+);
 MediumSonghaiChallenge2.prototype.otkChallengeFailureMessages = [
   i18next.t('challenges.medium_songhai_2_fail'),
 ];

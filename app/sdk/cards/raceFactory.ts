@@ -47,7 +47,9 @@ class RaceFactory {
     if (race) {
       return race;
     }
-    return console.error(`RaceFactory.raceForIdentifier - Unknown race identifier: ${identifier}`.red);
+    return console.error(
+      `RaceFactory.raceForIdentifier - Unknown race identifier: ${identifier}`.red,
+    );
   }
 }
 

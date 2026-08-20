@@ -19,12 +19,8 @@ class ModifierOpeningGambitApplyModifiersToHand extends ModifierOpeningGambitApp
 
   getCardsAffected() {
     let deck;
-    const {
-      cardType,
-    } = this;
-    const {
-      raceId,
-    } = this;
+    const { cardType } = this;
+    const { raceId } = this;
     let cards = [];
 
     if (this.applyToOwnPlayer) {
@@ -33,13 +29,22 @@ class ModifierOpeningGambitApplyModifiersToHand extends ModifierOpeningGambitApp
     }
 
     if (this.applyToEnemyPlayer) {
-      deck = this.getGameSession().getOpponentPlayerOfPlayerId(this.getCard().getOwnerId()).getDeck();
+      deck = this.getGameSession()
+        .getOpponentPlayerOfPlayerId(this.getCard().getOwnerId())
+        .getDeck();
       cards = cards.concat(deck.getCardsInHand());
     }
 
-    return _.filter(cards, (card) => (card != null) && (!cardType || (card.getType() === cardType)) && (!raceId || card.getBelongsToTribe(raceId)));
+    return _.filter(
+      cards,
+      (card) =>
+        card != null &&
+        (!cardType || card.getType() === cardType) &&
+        (!raceId || card.getBelongsToTribe(raceId)),
+    );
   }
 }
-ModifierOpeningGambitApplyModifiersToHand.prototype.type = 'ModifierOpeningGambitApplyModifiersToHand';
+ModifierOpeningGambitApplyModifiersToHand.prototype.type =
+  'ModifierOpeningGambitApplyModifiersToHand';
 
 module.exports = ModifierOpeningGambitApplyModifiersToHand;

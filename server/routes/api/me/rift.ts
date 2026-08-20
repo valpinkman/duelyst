@@ -36,7 +36,10 @@ router.get('/', function (req, res, next) {
     rift_rating: riftRunData.rift_rating,
   });
 
-  return knex('user_rift_runs').where('user_id', user_id).andWhere('win_count', '>', 0).orderBy('rift_rating', 'desc')
+  return knex('user_rift_runs')
+    .where('user_id', user_id)
+    .andWhere('win_count', '>', 0)
+    .orderBy('rift_rating', 'desc')
     .first()
     .then(function (highestRatingRiftRunRow) {
       const responseData: Record<string, any> = {};
@@ -56,8 +59,13 @@ router.get('/', function (req, res, next) {
 router.get('/runs', function (req, res, next) {
   const user_id = req.user.d.id;
 
-  return knex('user_rift_runs').where('user_id', user_id).orderBy('created_at', 'desc').select()
-    .then((rows) => PromiseUtils.map(rows, (riftRunRow) => RiftModule.sanitizeRunCardChoicesIfNeeded(riftRunRow)))
+  return knex('user_rift_runs')
+    .where('user_id', user_id)
+    .orderBy('created_at', 'desc')
+    .select()
+    .then((rows) =>
+      PromiseUtils.map(rows, (riftRunRow) => RiftModule.sanitizeRunCardChoicesIfNeeded(riftRunRow)),
+    )
     .then(function (rows) {
       const playerFacingRows = _.map(rows, function (row) {
         row = _.omit(row, ['rating', 'rating_delta', 'is_bot_game']);
@@ -69,7 +77,10 @@ router.get('/runs', function (req, res, next) {
 });
 
 router.post('/runs', function (req, res, next) {
-  const result = t.validate(req.body.ticket_id, t.subtype(t.Str, (s) => s.length <= 36));
+  const result = t.validate(
+    req.body.ticket_id,
+    t.subtype(t.Str, (s) => s.length <= 36),
+  );
   if (!result.isValid()) {
     return res.status(400).json(result.errors);
   }
@@ -81,8 +92,12 @@ router.post('/runs', function (req, res, next) {
     .then(function (data) {
       Logger.module('API').log(`Rift run STARTED for user ${user_id.blue}`.cyan);
       return res.status(200).json(DataAccessHelpers.restifyData(data));
-    }).catch(function (error) {
-      Logger.module('API').log(`ERROR starting rift run for user ${user_id.blue}`.red, util.inspect(error));
+    })
+    .catch(function (error) {
+      Logger.module('API').log(
+        `ERROR starting rift run for user ${user_id.blue}`.red,
+        util.inspect(error),
+      );
       return next(error);
     });
 });
@@ -91,11 +106,16 @@ router.post('/runs/free', function (req, res, next) {
   const user_id = req.user.d.id;
 
   return RiftModule.claimFirstFreeRiftTicket(user_id)
-    .then((ticketId) => RiftModule.startRun(user_id, ticketId)).then(function (data) {
+    .then((ticketId) => RiftModule.startRun(user_id, ticketId))
+    .then(function (data) {
       Logger.module('API').log(`Free Rift run STARTED for user ${user_id.blue}`.cyan);
       return res.status(200).json(DataAccessHelpers.restifyData(data));
-    }).catch(function (error) {
-      Logger.module('API').log(`ERROR starting free rift run for user ${user_id.blue}`.red, util.inspect(error));
+    })
+    .catch(function (error) {
+      Logger.module('API').log(
+        `ERROR starting free rift run for user ${user_id.blue}`.red,
+        util.inspect(error),
+      );
       return next(error);
     });
 });
@@ -108,16 +128,20 @@ router.put('/runs/:ticket_id/general_id', function (req, res, next) {
 
   const user_id = req.user.d.id;
   const general_id = result.value;
-  const {
-    ticket_id,
-  } = req.params;
+  const { ticket_id } = req.params;
 
   return RiftModule.chooseGeneral(user_id, ticket_id, general_id)
     .then(function (data) {
-      Logger.module('API').log(`Rift general ${general_id} selected for user ${user_id.blue} ticket ${ticket_id}`.cyan);
+      Logger.module('API').log(
+        `Rift general ${general_id} selected for user ${user_id.blue} ticket ${ticket_id}`.cyan,
+      );
       return res.status(200).json(data);
-    }).catch(function (error) {
-      Logger.module('API').log(`ERROR choosing rift general for user ${user_id.blue} ticket ${ticket_id}`.red, util.inspect(error));
+    })
+    .catch(function (error) {
+      Logger.module('API').log(
+        `ERROR choosing rift general for user ${user_id.blue} ticket ${ticket_id}`.red,
+        util.inspect(error),
+      );
       return next(error);
     });
 });
@@ -129,17 +153,22 @@ router.post('/runs/:ticket_id/card_id_to_upgrade', function (req, res, next) {
   }
 
   const user_id = req.user.d.id;
-  const {
-    ticket_id,
-  } = req.params;
+  const { ticket_id } = req.params;
   const card_id = result.value;
 
   return RiftModule.chooseCardToUpgrade(user_id, ticket_id, card_id)
     .then(function (data) {
-      Logger.module('API').log(`Rift card ${card_id} selected for upgrade for user ${user_id.blue} ticket ${ticket_id}`.cyan);
+      Logger.module('API').log(
+        `Rift card ${card_id} selected for upgrade for user ${user_id.blue} ticket ${ticket_id}`
+          .cyan,
+      );
       return res.status(200).json(DataAccessHelpers.restifyData(data));
-    }).catch(function (error) {
-      Logger.module('API').log(`ERROR choosing rift card to upgrade for user ${user_id.blue} ticket ${ticket_id}`.red, util.inspect(error));
+    })
+    .catch(function (error) {
+      Logger.module('API').log(
+        `ERROR choosing rift card to upgrade for user ${user_id.blue} ticket ${ticket_id}`.red,
+        util.inspect(error),
+      );
       return next(error);
     });
 });
@@ -151,49 +180,61 @@ router.post('/runs/:ticket_id/upgrade', function (req, res, next) {
   }
 
   const user_id = req.user.d.id;
-  const {
-    ticket_id,
-  } = req.params;
+  const { ticket_id } = req.params;
   const card_id = result.value;
 
   return RiftModule.upgradeCard(user_id, ticket_id, card_id)
     .then(function (data) {
-      Logger.module('API').log(`Rift card upgraded to ${card_id} for user ${user_id.blue} ticket ${ticket_id}`.cyan);
+      Logger.module('API').log(
+        `Rift card upgraded to ${card_id} for user ${user_id.blue} ticket ${ticket_id}`.cyan,
+      );
       return res.status(200).json(DataAccessHelpers.restifyData(data));
-    }).catch(function (error) {
-      Logger.module('API').log(`ERROR upgrading rift card for user ${user_id.blue} ticket ${ticket_id}`.red, util.inspect(error));
+    })
+    .catch(function (error) {
+      Logger.module('API').log(
+        `ERROR upgrading rift card for user ${user_id.blue} ticket ${ticket_id}`.red,
+        util.inspect(error),
+      );
       return next(error);
     });
 });
 
 router.post('/runs/:ticket_id/store_upgrade', function (req, res, next) {
   const user_id = req.user.d.id;
-  const {
-    ticket_id,
-  } = req.params;
+  const { ticket_id } = req.params;
 
   return RiftModule.storeCurrentUpgrade(user_id, ticket_id)
     .then(function (data) {
-      Logger.module('API').log(`Rift upgrade stored for user ${user_id.blue} ticket ${ticket_id}`.cyan);
+      Logger.module('API').log(
+        `Rift upgrade stored for user ${user_id.blue} ticket ${ticket_id}`.cyan,
+      );
       return res.status(200).json(DataAccessHelpers.restifyData(data));
-    }).catch(function (error) {
-      Logger.module('API').log(`ERROR storing upgrade pack for user ${user_id.blue} ticket ${ticket_id}`.red, util.inspect(error));
+    })
+    .catch(function (error) {
+      Logger.module('API').log(
+        `ERROR storing upgrade pack for user ${user_id.blue} ticket ${ticket_id}`.red,
+        util.inspect(error),
+      );
       return next(error);
     });
 });
 
 router.post('/runs/:ticket_id/reroll_upgrade', function (req, res, next) {
   const user_id = req.user.d.id;
-  const {
-    ticket_id,
-  } = req.params;
+  const { ticket_id } = req.params;
 
   return RiftModule.rerollCurrentUpgrade(user_id, ticket_id)
     .then(function (data) {
-      Logger.module('API').log(`Rift upgrade rerolled for user ${user_id.blue} ticket ${ticket_id}`.cyan);
+      Logger.module('API').log(
+        `Rift upgrade rerolled for user ${user_id.blue} ticket ${ticket_id}`.cyan,
+      );
       return res.status(200).json(DataAccessHelpers.restifyData(data));
-    }).catch(function (error) {
-      Logger.module('API').log(`ERROR rerolling upgrade pack for user ${user_id.blue} ticket ${ticket_id}`.red, util.inspect(error));
+    })
+    .catch(function (error) {
+      Logger.module('API').log(
+        `ERROR rerolling upgrade pack for user ${user_id.blue} ticket ${ticket_id}`.red,
+        util.inspect(error),
+      );
       return next(error);
     });
 });

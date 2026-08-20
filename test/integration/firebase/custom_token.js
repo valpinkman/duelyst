@@ -29,9 +29,8 @@ function decode(token, segment) {
 describe('Firebase.CustomToken', () => {
   const userId = '-TestUserId_9_1';
 
-  it('expect a custom token to be signed RS256 by the service account', () => DuelystFirebase
-    .createCustomToken(userId, { username: 'tester' }, firebaseUrl)
-    .then((token) => {
+  it('expect a custom token to be signed RS256 by the service account', () =>
+    DuelystFirebase.createCustomToken(userId, { username: 'tester' }, firebaseUrl).then((token) => {
       expect(token).to.be.a('string');
       const header = decode(token, 0);
       const body = decode(token, 1);
@@ -42,26 +41,23 @@ describe('Firebase.CustomToken', () => {
       expect(body.aud).to.contain('identitytoolkit');
     }));
 
-  it('expect uid to carry the user id, since the rules read it as auth.uid', () => DuelystFirebase
-    .createCustomToken(userId, { username: 'tester' }, firebaseUrl)
-    .then((token) => {
+  it('expect uid to carry the user id, since the rules read it as auth.uid', () =>
+    DuelystFirebase.createCustomToken(userId, { username: 'tester' }, firebaseUrl).then((token) => {
       const body = decode(token, 1);
       // this is the value 9.2's rules compare against; `auth.id` today
       expect(body.uid).to.equal(userId);
     }));
 
-  it('expect extra claims to land under claims, which rules read as auth.token.*', () => DuelystFirebase
-    .createCustomToken(userId, { username: 'tester' }, firebaseUrl)
-    .then((token) => {
+  it('expect extra claims to land under claims, which rules read as auth.token.*', () =>
+    DuelystFirebase.createCustomToken(userId, { username: 'tester' }, firebaseUrl).then((token) => {
       const body = decode(token, 1);
       expect(body.claims).to.eql({ username: 'tester' });
       // uid is reserved and must NOT be duplicated into claims
       expect(body.claims.uid).to.not.exist;
     }));
 
-  it('expect a null username to be accepted (users can exist without one)', () => DuelystFirebase
-    .createCustomToken(userId, { username: null }, firebaseUrl)
-    .then((token) => {
+  it('expect a null username to be accepted (users can exist without one)', () =>
+    DuelystFirebase.createCustomToken(userId, { username: null }, firebaseUrl).then((token) => {
       expect(decode(token, 1).claims).to.eql({ username: null });
     }));
 });

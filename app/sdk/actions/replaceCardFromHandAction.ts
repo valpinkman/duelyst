@@ -32,7 +32,7 @@ class ReplaceCardFromHandAction extends PutCardInHandAction {
       deck.setNumCardsReplacedThisTurn(deck.getNumCardsReplacedThisTurn() + 1);
     }
 
-    if (this.getGameSession().getIsRunningAsAuthoritative() && (drawPile.length > 0)) {
+    if (this.getGameSession().getIsRunningAsAuthoritative() && drawPile.length > 0) {
       // get replaced card before doing anything
       this.replacedCardIndex = deck.getCardIndexInHandAtIndex(this.indexOfCardInHand);
 
@@ -43,13 +43,16 @@ class ReplaceCardFromHandAction extends PutCardInHandAction {
       let indexOfCardInDeck = null;
       if (this.replacedCardIndex != null) {
         const replacedCard = this.getGameSession().getCardByIndex(this.replacedCardIndex);
-        while ((indexOfCardInDeck == null) && (indices.length > 0)) {
+        while (indexOfCardInDeck == null && indices.length > 0) {
           // get next index
           var index;
           if (!this.getGameSession().getAreDecksRandomized()) {
             index = indices.pop();
           } else {
-            index = indices.splice(this.getGameSession().getRandomIntegerForExecution(indices.length), 1)[0];
+            index = indices.splice(
+              this.getGameSession().getRandomIntegerForExecution(indices.length),
+              1,
+            )[0];
           }
 
           // test whether card is valid to replace
@@ -64,7 +67,9 @@ class ReplaceCardFromHandAction extends PutCardInHandAction {
         }
 
         // default to top of deck
-        if (indexOfCardInDeck == null) { indexOfCardInDeck = drawPile.length - 1; }
+        if (indexOfCardInDeck == null) {
+          indexOfCardInDeck = drawPile.length - 1;
+        }
 
         // get the id of the card replacing
         this.cardDataOrIndex = drawPile[indexOfCardInDeck];
@@ -72,7 +77,12 @@ class ReplaceCardFromHandAction extends PutCardInHandAction {
     }
 
     // put replaced card back into deck
-    this.getGameSession().applyCardToDeck(deck, this.replacedCardIndex, this.getGameSession().getCardByIndex(this.replacedCardIndex), this);
+    this.getGameSession().applyCardToDeck(
+      deck,
+      this.replacedCardIndex,
+      this.getGameSession().getCardByIndex(this.replacedCardIndex),
+      this,
+    );
 
     // add the new card to hand
     return super._execute();

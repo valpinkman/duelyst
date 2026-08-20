@@ -37,7 +37,6 @@ var Manager = require('./manager');
 
 /** @namespace */
 var GamesManager = Manager.extend({
-
   // firebase
   _matchmakingErrorRef: null,
 
@@ -59,10 +58,10 @@ var GamesManager = Manager.extend({
   inviteId: null,
 
   /**
-  * Timer handle for updating the rank at the next midnight UTC since the season may roll over.
-  * @type {number}
-  * @private
-  */
+   * Timer handle for updating the rank at the next midnight UTC since the season may roll over.
+   * @type {number}
+   * @private
+   */
   _rankUpdateScheduleTimeout: null,
 
   initialize: function (options) {
@@ -73,26 +72,43 @@ var GamesManager = Manager.extend({
     const _self = this;
     Manager.prototype.onBeforeConnect.call(this);
 
-    ProfileManager.getInstance().onReady()
+    ProfileManager.getInstance()
+      .onReady()
       .then(function () {
         var userId = ProfileManager.getInstance().get('id');
 
         // initialize a rank model for best season
-        _self.topRankingModel = new DuelystFirebase.Model(null, { firebase: process.env.FIREBASE_URL + '/user-ranking/' + userId + '/top' });
+        _self.topRankingModel = new DuelystFirebase.Model(null, {
+          firebase: process.env.FIREBASE_URL + '/user-ranking/' + userId + '/top',
+        });
 
         // initialize a model for the users stats
-        _self.userStatsModel = new DuelystFirebase.Model(null, { firebase: process.env.FIREBASE_URL + '/user-stats/' + userId });
+        _self.userStatsModel = new DuelystFirebase.Model(null, {
+          firebase: process.env.FIREBASE_URL + '/user-stats/' + userId,
+        });
 
         // init player games collection
-        _self.playerGames = new DuelystFirebase.Collection(null, { firebase: new Firebase(process.env.FIREBASE_URL + '/user-games/' + userId).limitToLast(1) });
+        _self.playerGames = new DuelystFirebase.Collection(null, {
+          firebase: new Firebase(process.env.FIREBASE_URL + '/user-games/' + userId).limitToLast(1),
+        });
 
         // init game invites collection
-        _self.receivedInvitesCollection = new DuelystFirebase.Collection(null, { firebase: process.env.FIREBASE_URL + '/matchmaking/' + process.env.NODE_ENV + '/invites/to/' + userId });
+        _self.receivedInvitesCollection = new DuelystFirebase.Collection(null, {
+          firebase:
+            process.env.FIREBASE_URL +
+            '/matchmaking/' +
+            process.env.NODE_ENV +
+            '/invites/to/' +
+            userId,
+        });
         _self.listenTo(_self.receivedInvitesCollection, 'add', _self._onGameInviteReceived);
 
         // initialize a rank model
-        _self.rankingModel = new DuelystFirebase.Model(null, { firebase: process.env.FIREBASE_URL + '/user-ranking/' + userId + '/current' });
-        _self.rankingModel.onSyncOrReady()
+        _self.rankingModel = new DuelystFirebase.Model(null, {
+          firebase: process.env.FIREBASE_URL + '/user-ranking/' + userId + '/current',
+        });
+        _self.rankingModel
+          .onSyncOrReady()
           .then(function (model) {
             _self._onRankingSyncedOrChanged(model);
             return _self._onRankingSyncedFirstTime(model);
@@ -107,10 +123,15 @@ var GamesManager = Manager.extend({
 
             // initialize a ranked ladder position model
             _self.ladderPositionModel = new DuelystBackbone.Model();
-            _self.ladderPositionModel.url = process.env.API_URL + '/api/me/rank/current_ladder_position';
+            _self.ladderPositionModel.url =
+              process.env.API_URL + '/api/me/rank/current_ladder_position';
             _self.ladderPositionModel.fetch();
 
-            _self._markAsReadyWhenModelsAndCollectionsSynced([_self.historyRankingModelCollection, _self.playerGames, _self.ladderPositionModel]);
+            _self._markAsReadyWhenModelsAndCollectionsSynced([
+              _self.historyRankingModelCollection,
+              _self.playerGames,
+              _self.ladderPositionModel,
+            ]);
           });
       });
   },
@@ -123,14 +144,13 @@ var GamesManager = Manager.extend({
       this._matchmakingErrorRef = null;
     }
     this.stopListening(this.rankingModel);
-    if (this._rankUpdateScheduleTimeout)
-      clearTimeout(this._rankUpdateScheduleTimeout);
+    if (this._rankUpdateScheduleTimeout) clearTimeout(this._rankUpdateScheduleTimeout);
   },
 
   /**
-  * Does first-time setup for ladder ranking. Fired ONCE as a result of the {@link GamesManager.rankingModel} first time 'sync'.
-  * @private
-  */
+   * Does first-time setup for ladder ranking. Fired ONCE as a result of the {@link GamesManager.rankingModel} first time 'sync'.
+   * @private
+   */
   _onRankingSyncedFirstTime: function () {
     Logger.module('UI').log('QuestsManager::_onRankingSynced()');
 
@@ -140,64 +160,72 @@ var GamesManager = Manager.extend({
   },
 
   /**
-  * Requests a ladder ranking update (if needed) from the API server.
-  * @private
-  * @return {Promise} $.ajax promise for the server call to update ranking.
-  */
+   * Requests a ladder ranking update (if needed) from the API server.
+   * @private
+   * @return {Promise} $.ajax promise for the server call to update ranking.
+   */
   _requestRankUpdateFromServer: function () {
-    return new Promise(function (resolve, reject) {
-      var request = $.ajax({
-        url: process.env.API_URL + '/api/me/rank',
-        type: 'POST',
-        contentType: 'application/json',
-        dataType: 'json',
-      });
+    return new Promise(
+      function (resolve, reject) {
+        var request = $.ajax({
+          url: process.env.API_URL + '/api/me/rank',
+          type: 'POST',
+          contentType: 'application/json',
+          dataType: 'json',
+        });
 
-      request.done(function (response) {
-        // schedule an update when the day rolls over
-        // this is because rank could need an update after midnight UTC
-        this._scheduleRankUpdateWhenUTCdayRollsOver();
+        request.done(
+          function (response) {
+            // schedule an update when the day rolls over
+            // this is because rank could need an update after midnight UTC
+            this._scheduleRankUpdateWhenUTCdayRollsOver();
 
-        // If rank was cycled (status 200) and we have a rank history it needs to be refreshed
-        // Also update which S-Rank season we are looking at
-        if (request.status == 200 && this.historyRankingModelCollection) {
-          var historyRequest = this.historyRankingModelCollection.fetch();
+            // If rank was cycled (status 200) and we have a rank history it needs to be refreshed
+            // Also update which S-Rank season we are looking at
+            if (request.status == 200 && this.historyRankingModelCollection) {
+              var historyRequest = this.historyRankingModelCollection.fetch();
 
-          historyRequest.done(function (historyResponse) {
-            resolve(response);
-          }.bind(this));
+              historyRequest.done(
+                function (historyResponse) {
+                  resolve(response);
+                }.bind(this),
+              );
 
-          historyRequest.fail(function (historyResponse) {
-            var error = 'SEASON HISTORY RANK request failed';
-            EventBus.getInstance().trigger(EVENTS.ajax_error, error);
+              historyRequest.fail(
+                function (historyResponse) {
+                  var error = 'SEASON HISTORY RANK request failed';
+                  EventBus.getInstance().trigger(EVENTS.ajax_error, error);
 
-            reject(new Error(error));
-          }.bind(this));
+                  reject(new Error(error));
+                }.bind(this),
+              );
 
-          // Update S-Rank Ladder
-          // refetch ranked ladder position model
-          this.ladderPositionModel.fetch();
-        } else {
-          resolve(response);
-        }
-      }.bind(this));
+              // Update S-Rank Ladder
+              // refetch ranked ladder position model
+              this.ladderPositionModel.fetch();
+            } else {
+              resolve(response);
+            }
+          }.bind(this),
+        );
 
-      request.fail(function (response) {
-        // Temporary error, should parse server response.
-        var error = 'SEASON RANK request failed';
-        EventBus.getInstance().trigger(EVENTS.ajax_error, error);
+        request.fail(function (response) {
+          // Temporary error, should parse server response.
+          var error = 'SEASON RANK request failed';
+          EventBus.getInstance().trigger(EVENTS.ajax_error, error);
 
-        reject(new Error(error));
-      });
-    }.bind(this));
+          reject(new Error(error));
+        });
+      }.bind(this),
+    );
   },
 
   /**
-  * Requests to enter matchmaking queue
-  * @param {Object} matchRequest contains deck,factionId,gameType,etc
-  * @return {Promise} $.ajax promise for the server call to enter matchmaking queue
-  * @return {Object} response from server contains an matchmaking token ID
-  */
+   * Requests to enter matchmaking queue
+   * @param {Object} matchRequest contains deck,factionId,gameType,etc
+   * @return {Promise} $.ajax promise for the server call to enter matchmaking queue
+   * @return {Object} response from server contains an matchmaking token ID
+   */
   requestEnterMatchmaking: function (matchRequest) {
     var request = $.ajax({
       data: JSON.stringify(matchRequest),
@@ -207,41 +235,60 @@ var GamesManager = Manager.extend({
       dataType: 'json',
     });
 
-    request.done(function (response) {
-      Logger.module('UI').log('GamesManager::requestEnterMatchmaking -> entered queue');
-      var tokenId = response.tokenId;
+    request.done(
+      function (response) {
+        Logger.module('UI').log('GamesManager::requestEnterMatchmaking -> entered queue');
+        var tokenId = response.tokenId;
 
-      // We only get a velocity in the response if we entered queue (not invites)
-      if (response.velocity) {
-        var velocity = response.velocity;
-        Logger.module('UI').log('GamesManager::requestEnterMatchmaking -> expected wait ' + prettyMs(velocity));
-        EventBus.getInstance().trigger(EVENTS.matchmaking_velocity, velocity);
-      }
+        // We only get a velocity in the response if we entered queue (not invites)
+        if (response.velocity) {
+          var velocity = response.velocity;
+          Logger.module('UI').log(
+            'GamesManager::requestEnterMatchmaking -> expected wait ' + prettyMs(velocity),
+          );
+          EventBus.getInstance().trigger(EVENTS.matchmaking_velocity, velocity);
+        }
 
-      // start watching for errors using the intermediate game 'tokenId' returned from AJAX request
-      this._matchmakingErrorRef = new Firebase(process.env.FIREBASE_URL + '/user-matchmaking-errors/' + ProfileManager.getInstance().get('id') + '/' + tokenId);
-      this._matchmakingErrorRef.on(
-        'value',
-        function (snapshot) {
-          if (snapshot.val()) {
-            this._onMatchmakingError(snapshot.val());
-          }
-        }.bind(this),
-        function (err) { console.log(err); },
-      );
-    }.bind(this));
+        // start watching for errors using the intermediate game 'tokenId' returned from AJAX request
+        this._matchmakingErrorRef = new Firebase(
+          process.env.FIREBASE_URL +
+            '/user-matchmaking-errors/' +
+            ProfileManager.getInstance().get('id') +
+            '/' +
+            tokenId,
+        );
+        this._matchmakingErrorRef.on(
+          'value',
+          function (snapshot) {
+            if (snapshot.val()) {
+              this._onMatchmakingError(snapshot.val());
+            }
+          }.bind(this),
+          function (err) {
+            console.log(err);
+          },
+        );
+      }.bind(this),
+    );
 
-    request.fail(function (jqXHR) {
-      this._onMatchmakingError(jqXHR && jqXHR.responseJSON && (jqXHR.responseJSON.error || jqXHR.responseJSON.message) || 'Failed to connect to matchmaker. Please retry.');
-    }.bind(this));
+    request.fail(
+      function (jqXHR) {
+        this._onMatchmakingError(
+          (jqXHR &&
+            jqXHR.responseJSON &&
+            (jqXHR.responseJSON.error || jqXHR.responseJSON.message)) ||
+            'Failed to connect to matchmaker. Please retry.',
+        );
+      }.bind(this),
+    );
 
     return request;
   },
 
   /**
-  * Requests to leave matchmaking queue
-  * @return {Promise} $.ajax promise for the server call to leave matchmaking queue
-  */
+   * Requests to leave matchmaking queue
+   * @return {Promise} $.ajax promise for the server call to leave matchmaking queue
+   */
   requestLeaveMatchmaking: function () {
     var request = $.ajax({
       url: process.env.API_URL + '/matchmaking',
@@ -256,18 +303,19 @@ var GamesManager = Manager.extend({
   },
 
   /**
-  * Auto-marks ranking data as read. Fired as a result of the {@link GamesManager.rankingModel} 'change' and the inital load of the data.
-  * @private
-  */
+   * Auto-marks ranking data as read. Fired as a result of the {@link GamesManager.rankingModel} 'change' and the inital load of the data.
+   * @private
+   */
   _onRankingSyncedOrChanged: function () {
     // set rank in chat manager
     var rank = this.rankingModel.get('rank');
-    if (_.isUndefined(rank) || _.isNull(rank))
-      rank = 30;
+    if (_.isUndefined(rank) || _.isNull(rank)) rank = 30;
 
-    ChatManager.getInstance().onReady().then(function () {
-      ChatManager.getInstance().setRankInStatus(rank);
-    });
+    ChatManager.getInstance()
+      .onReady()
+      .then(function () {
+        ChatManager.getInstance().setRankInStatus(rank);
+      });
 
     Analytics.identify(null, { rank: rank });
 
@@ -351,23 +399,27 @@ var GamesManager = Manager.extend({
         dataType: 'json',
       });
 
-      request.done(function (response) {
-        // Convert rewards to backbone models
-        var rewardModels = [];
-        for (var i = 0; i < response.length; i++) {
-          rewardModels.push(new Backbone.Model(response[i]));
-        }
+      request.done(
+        function (response) {
+          // Convert rewards to backbone models
+          var rewardModels = [];
+          for (var i = 0; i < response.length; i++) {
+            rewardModels.push(new Backbone.Model(response[i]));
+          }
 
-        // resolve to rewards in response
-        resolve(rewardModels);
-      }.bind(this));
+          // resolve to rewards in response
+          resolve(rewardModels);
+        }.bind(this),
+      );
 
-      request.fail(function (response) {
-        // Temporary error, should parse server response.
-        var error = 'CLAIM RANK REWARDS request failed';
-        EventBus.getInstance().trigger(EVENTS.ajax_error, error);
-        reject(error);
-      }.bind(this));
+      request.fail(
+        function (response) {
+          // Temporary error, should parse server response.
+          var error = 'CLAIM RANK REWARDS request failed';
+          EventBus.getInstance().trigger(EVENTS.ajax_error, error);
+          reject(error);
+        }.bind(this),
+      );
     });
   },
 
@@ -378,43 +430,54 @@ var GamesManager = Manager.extend({
    * @return   {Promise}        The promise that resolves when the spectate data is loaded and event to start spectating triggered.
    */
   spectateBuddyGame: function (buddyId) {
-    return new Promise(function (resolve, reject) {
-      var request = $.ajax({
-        url: process.env.API_URL + '/api/me/spectate/' + buddyId,
-        type: 'GET',
-        contentType: 'application/json',
-        dataType: 'json',
-      });
-
-      request.done(function (response) {
-        this.trigger(EVENTS.start_spectate, {
-          gameData: response.gameData,
-          token: response.token,
-          playerId: buddyId,
+    return new Promise(
+      function (resolve, reject) {
+        var request = $.ajax({
+          url: process.env.API_URL + '/api/me/spectate/' + buddyId,
+          type: 'GET',
+          contentType: 'application/json',
+          dataType: 'json',
         });
-        resolve(response);
-      }.bind(this));
 
-      request.fail(function (response) {
-        // Temporary error, should parse server response.
-        var error = response && response.responseJSON && response.responseJSON.message || 'SPECTATE request failed';
-        EventBus.getInstance().trigger(EVENTS.ajax_error, error);
-        reject(new Error(error));
-      });
-    }.bind(this));
+        request.done(
+          function (response) {
+            this.trigger(EVENTS.start_spectate, {
+              gameData: response.gameData,
+              token: response.token,
+              playerId: buddyId,
+            });
+            resolve(response);
+          }.bind(this),
+        );
+
+        request.fail(function (response) {
+          // Temporary error, should parse server response.
+          var error =
+            (response && response.responseJSON && response.responseJSON.message) ||
+            'SPECTATE request failed';
+          EventBus.getInstance().trigger(EVENTS.ajax_error, error);
+          reject(new Error(error));
+        });
+      }.bind(this),
+    );
   },
 
   /**
-  * Schedules an update request for the ladder ranking at UTC midnight. Ladder ranks could need a reset after season's end.
-  * @private
-  */
+   * Schedules an update request for the ladder ranking at UTC midnight. Ladder ranks could need a reset after season's end.
+   * @private
+   */
   _scheduleRankUpdateWhenUTCdayRollsOver: function () {
-    if (this._rankUpdateScheduleTimeout)
-      clearTimeout(this._rankUpdateScheduleTimeout);
+    if (this._rankUpdateScheduleTimeout) clearTimeout(this._rankUpdateScheduleTimeout);
     var milisecondsToUTCMidnight = moment().utc().endOf('day').valueOf() - moment().utc().valueOf();
     var duration = moment.duration(milisecondsToUTCMidnight);
-    Logger.module('UI').log('GamesManager::_scheduleRankUpdateWhenUTCdayRollsOver() -> rank scheduled to check for update in ' + duration.humanize());
-    this._rankUpdateScheduleTimeout = setTimeout(this._requestRankUpdateFromServer.bind(this), milisecondsToUTCMidnight);
+    Logger.module('UI').log(
+      'GamesManager::_scheduleRankUpdateWhenUTCdayRollsOver() -> rank scheduled to check for update in ' +
+        duration.humanize(),
+    );
+    this._rankUpdateScheduleTimeout = setTimeout(
+      this._requestRankUpdateFromServer.bind(this),
+      milisecondsToUTCMidnight,
+    );
   },
 
   invitePlayerToGame: function (playerId, playerName) {
@@ -423,7 +486,14 @@ var GamesManager = Manager.extend({
       this.cancelInvite();
 
       // create a firebase reference for the invite keyed for the user we're sending the invite to
-      var inviteRef = new Firebase(process.env.FIREBASE_URL + '/matchmaking/' + process.env.NODE_ENV + '/invites/to/' + playerId + '/').push();
+      var inviteRef = new Firebase(
+        process.env.FIREBASE_URL +
+          '/matchmaking/' +
+          process.env.NODE_ENV +
+          '/invites/to/' +
+          playerId +
+          '/',
+      ).push();
 
       // initialize the invite attributes
       var inviteData: Record<string, any> = {};
@@ -458,19 +528,34 @@ var GamesManager = Manager.extend({
       var gameInviteItemView = new GameInviteItemView({ model: notificationModel });
 
       // listen to changes to the view, such as knowing that the CTA has been clicked
-      this.listenTo(gameInviteItemView, 'cta_accept', function () {
-        this.stopListening(gameInviteItemView);
-      }, this);
-      this.listenTo(gameInviteItemView, 'dismiss', function () {
-        this.stopListening(gameInviteItemView);
-        if (NavigationManager.getInstance().getIsShowingModalViewClass(GameInviteItemView)) {
-          NavigationManager.getInstance().destroyModalView();
-        }
-      }, this);
-      this.listenTo(gameInviteItemView, 'destroy', function () {
-        // this should only be triggered if something replaces the game invite view before it is accepted or dismissed
-        this.stopListening(gameInviteItemView);
-      }, this);
+      this.listenTo(
+        gameInviteItemView,
+        'cta_accept',
+        function () {
+          this.stopListening(gameInviteItemView);
+        },
+        this,
+      );
+      this.listenTo(
+        gameInviteItemView,
+        'dismiss',
+        function () {
+          this.stopListening(gameInviteItemView);
+          if (NavigationManager.getInstance().getIsShowingModalViewClass(GameInviteItemView)) {
+            NavigationManager.getInstance().destroyModalView();
+          }
+        },
+        this,
+      );
+      this.listenTo(
+        gameInviteItemView,
+        'destroy',
+        function () {
+          // this should only be triggered if something replaces the game invite view before it is accepted or dismissed
+          this.stopListening(gameInviteItemView);
+        },
+        this,
+      );
 
       NavigationManager.getInstance().showModalView(gameInviteItemView);
 
@@ -483,13 +568,19 @@ var GamesManager = Manager.extend({
 
   findNewGame: function (deck, factionId, gameType, generalId, cardBackId, battleMapId, ticketId) {
     // if we're already looking for a game, just ignore this
-    if (this.isLookingForGame)
-      return;
+    if (this.isLookingForGame) return;
 
     // grab the current user id
     var userId = ProfileManager.getInstance().get('id');
 
-    Logger.module('UI').log('GamesManager::findNewGame -> for faction id', factionId, 'with name', SDK.FactionFactory.factionForIdentifier(factionId).name, 'with deck', deck);
+    Logger.module('UI').log(
+      'GamesManager::findNewGame -> for faction id',
+      factionId,
+      'with name',
+      SDK.FactionFactory.factionForIdentifier(factionId).name,
+      'with deck',
+      deck,
+    );
 
     // TODO : remove ranking model from AJAX request and retrieve server-side
     var matchRequest: Record<string, any> = {};
@@ -567,14 +658,18 @@ var GamesManager = Manager.extend({
         if (model != null && model.get('game_type') != null) {
           var matchRequestMoment = new moment(this.matchRequest.timestamp);
           var secondsSinceMatchRequest = moment().diff(matchRequestMoment, 'seconds');
-          Analytics.track('matchmaking complete', {
-            category: Analytics.EventCategory.Matchmaking,
-            duration: secondsSinceMatchRequest,
-            game_type: model.get('game_type'),
-          }, {
-            nonInteraction: 1,
-            valueKey: 'duration',
-          });
+          Analytics.track(
+            'matchmaking complete',
+            {
+              category: Analytics.EventCategory.Matchmaking,
+              duration: secondsSinceMatchRequest,
+              game_type: model.get('game_type'),
+            },
+            {
+              nonInteraction: 1,
+              valueKey: 'duration',
+            },
+          );
         }
       }
     }
@@ -600,20 +695,30 @@ var GamesManager = Manager.extend({
   },
 
   _onGameInviteReceived: function (inviteModel) {
-    if (!inviteModel.has('fromName') || this.lastReceivedInviteModel != null || !ChatManager.getInstance().getIsMyStatusValidForBuddyGameInvite()) {
+    if (
+      !inviteModel.has('fromName') ||
+      this.lastReceivedInviteModel != null ||
+      !ChatManager.getInstance().getIsMyStatusValidForBuddyGameInvite()
+    ) {
       // reject bad invite or an old artifact from a race condition
       // reject when we already have an active game invite
       // reject game invites unless our status is valid for buddy game invites
       // defer rejection because this is a direct response to the collection add event
-      _.defer(function () {
-        this._rejectInvite(inviteModel);
-        this.receivedInvitesCollection.remove(inviteModel);
-      }.bind(this));
+      _.defer(
+        function () {
+          this._rejectInvite(inviteModel);
+          this.receivedInvitesCollection.remove(inviteModel);
+        }.bind(this),
+      );
       return;
     }
 
     this.lastReceivedInviteModel = inviteModel;
-    this.listenTo(this.lastReceivedInviteModel, 'change:status', this._onReceivedInviteStatusChanged);
+    this.listenTo(
+      this.lastReceivedInviteModel,
+      'change:status',
+      this._onReceivedInviteStatusChanged,
+    );
 
     // create a notification model
     var notificationModel = new NotificationModel({
@@ -626,36 +731,53 @@ var GamesManager = Manager.extend({
     var gameInviteItemView = new GameInviteItemView({ model: notificationModel });
 
     // listen to changes to the view, such as knowing that the CTA has been clicked
-    this.listenTo(gameInviteItemView, 'cta_accept', function () {
-      this.stopListening(gameInviteItemView);
-      if (NavigationManager.getInstance().getIsShowingModalViewClass(GameInviteItemView)) {
-        NavigationManager.getInstance().destroyModalView();
-      }
-      this.acceptInvite(inviteModel);
-    }, this);
-    this.listenTo(gameInviteItemView, 'dismiss', function () {
-      this.stopListening(gameInviteItemView);
-      if (NavigationManager.getInstance().getIsShowingModalViewClass(GameInviteItemView)) {
-        NavigationManager.getInstance().destroyModalView();
-      }
-      this.rejectInvite(inviteModel);
-    }, this);
-    this.listenTo(gameInviteItemView, 'destroy', function () {
-      // this should only be triggered if something replaces the game invite view before it is accepted or dismissed
-      this.stopListening(gameInviteItemView);
-      this.rejectInvite(inviteModel);
-    }, this);
+    this.listenTo(
+      gameInviteItemView,
+      'cta_accept',
+      function () {
+        this.stopListening(gameInviteItemView);
+        if (NavigationManager.getInstance().getIsShowingModalViewClass(GameInviteItemView)) {
+          NavigationManager.getInstance().destroyModalView();
+        }
+        this.acceptInvite(inviteModel);
+      },
+      this,
+    );
+    this.listenTo(
+      gameInviteItemView,
+      'dismiss',
+      function () {
+        this.stopListening(gameInviteItemView);
+        if (NavigationManager.getInstance().getIsShowingModalViewClass(GameInviteItemView)) {
+          NavigationManager.getInstance().destroyModalView();
+        }
+        this.rejectInvite(inviteModel);
+      },
+      this,
+    );
+    this.listenTo(
+      gameInviteItemView,
+      'destroy',
+      function () {
+        // this should only be triggered if something replaces the game invite view before it is accepted or dismissed
+        this.stopListening(gameInviteItemView);
+        this.rejectInvite(inviteModel);
+      },
+      this,
+    );
 
     // show game invite
     NavigationManager.getInstance().showModalView(gameInviteItemView);
   },
 
   /**
-  * Called when your opponent accepts or cancels an invite.
-  * @private
-  */
+   * Called when your opponent accepts or cancels an invite.
+   * @private
+   */
   _onSentInviteStatusChanged: function (inviteModel) {
-    Logger.module('UI').log('GamesManager::_onSentInviteStatusChanged -> ' + inviteModel.get('status'));
+    Logger.module('UI').log(
+      'GamesManager::_onSentInviteStatusChanged -> ' + inviteModel.get('status'),
+    );
 
     // TODO: hide dialog UI and move on to selecting a deck
     if (inviteModel.hasChanged('status')) {
@@ -667,13 +789,15 @@ var GamesManager = Manager.extend({
         // defer execution of firing off the invite_rejected until the entire stack that's causing this event clears
         // this is because backbone models will process "pending" changes after we call the destroy method on them in the cancelInvite call, and will re-create the object with JUST the pending changes
         // this results in an empty invite with just the status:rejected property left on the database side
-        _.defer(function () {
-          if (this.isLookingForGame) {
-            this._cleanupMatchmaking();
-          }
-          this.trigger(EVENTS.invite_rejected, this.lastSentInviteModel);
-          this.cancelInvite();
-        }.bind(this));
+        _.defer(
+          function () {
+            if (this.isLookingForGame) {
+              this._cleanupMatchmaking();
+            }
+            this.trigger(EVENTS.invite_rejected, this.lastSentInviteModel);
+            this.cancelInvite();
+          }.bind(this),
+        );
 
         TelemetryManager.getInstance().clearSignal('invite', 'waiting');
       }
@@ -681,11 +805,13 @@ var GamesManager = Manager.extend({
   },
 
   /**
-  * Called when your opponent accepts or cancels an invite.
-  * @private
-  */
+   * Called when your opponent accepts or cancels an invite.
+   * @private
+   */
   _onReceivedInviteStatusChanged: function (inviteModel) {
-    Logger.module('UI').log('GamesManager::_onReceivedInviteStatusChanged -> ' + inviteModel.get('status'));
+    Logger.module('UI').log(
+      'GamesManager::_onReceivedInviteStatusChanged -> ' + inviteModel.get('status'),
+    );
 
     if (inviteModel.hasChanged('status')) {
       if (inviteModel.get('status') == 'complete') {
@@ -716,7 +842,11 @@ var GamesManager = Manager.extend({
     this.rejectInvite(); // reject and previous accepted invite
     this.inviteId = inviteModel.id;
     this.lastAcceptedInviteModel = inviteModel;
-    this.listenTo(this.lastAcceptedInviteModel, 'change:status', this._onReceivedInviteStatusChanged);
+    this.listenTo(
+      this.lastAcceptedInviteModel,
+      'change:status',
+      this._onReceivedInviteStatusChanged,
+    );
     this.trigger(EVENTS.invite_accepted, inviteModel);
   },
 
@@ -742,7 +872,10 @@ var GamesManager = Manager.extend({
 
   cancelMatchmaking: function () {
     var wasLookingForGame = this.isLookingForGame;
-    Logger.module('UI').log('GamesManager::cancelMatchmaking -> wasLookingForGame?', wasLookingForGame);
+    Logger.module('UI').log(
+      'GamesManager::cancelMatchmaking -> wasLookingForGame?',
+      wasLookingForGame,
+    );
 
     // Analytics call
     if (this.matchRequest && wasLookingForGame) {
@@ -750,13 +883,17 @@ var GamesManager = Manager.extend({
       if (this.inviteId == null) {
         var matchRequestMoment = new moment(this.matchRequest.timestamp);
         var secondsSinceMatchRequest = moment().diff(matchRequestMoment, 'seconds');
-        Analytics.track('matchmaking canceled', {
-          category: Analytics.EventCategory.Matchmaking,
-          duration: secondsSinceMatchRequest,
-        }, {
-          nonInteraction: 1,
-          valueKey: 'duration',
-        });
+        Analytics.track(
+          'matchmaking canceled',
+          {
+            category: Analytics.EventCategory.Matchmaking,
+            duration: secondsSinceMatchRequest,
+          },
+          {
+            nonInteraction: 1,
+            valueKey: 'duration',
+          },
+        );
       }
     }
 
@@ -772,7 +909,10 @@ var GamesManager = Manager.extend({
     if (this.lastSentInviteModel) {
       Logger.module('UI').log('GamesManager.cancelInvite -> ID:' + this.lastSentInviteModel.id);
       this.stopListening(this.lastSentInviteModel);
-      if (this.lastSentInviteModel.get('status') != 'complete' && this.lastSentInviteModel.get('status') != 'rejected') {
+      if (
+        this.lastSentInviteModel.get('status') != 'complete' &&
+        this.lastSentInviteModel.get('status') != 'rejected'
+      ) {
         this.lastSentInviteModel.set('status', 'cancelled');
       }
       this.lastSentInviteModel.destroy({});
@@ -804,10 +944,13 @@ var GamesManager = Manager.extend({
     if (inviteModel) {
       Logger.module('UI').log('GamesManager.rejectInvite -> ID:' + inviteModel.id);
       this.stopListening(inviteModel);
-      if (inviteModel.has('status') && inviteModel.get('status') != 'complete' && inviteModel.get('status') != 'cancelled') {
+      if (
+        inviteModel.has('status') &&
+        inviteModel.get('status') != 'complete' &&
+        inviteModel.get('status') != 'cancelled'
+      ) {
         inviteModel.set('status', 'rejected');
       }
     }
   },
-
 });

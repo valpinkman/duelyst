@@ -38,7 +38,7 @@ class NewPlayerProgression {
     stage = NewPlayerProgressionStageEnum[stage];
     const stageWhenFeatureIsAvailable = NewPlayerProgression.featureToCoreStageMapping[feature];
 
-    if ((stageWhenFeatureIsAvailable == null)) {
+    if (stageWhenFeatureIsAvailable == null) {
       return true;
     }
 
@@ -53,14 +53,14 @@ class NewPlayerProgression {
   static questsForStage(stage) {
     stage = NewPlayerProgressionStageEnum[stage];
     switch (stage) {
-    case NewPlayerProgressionStageEnum.TutorialDone:
-      return [new QuestBeginnerWinPracticeGames()];
-    case NewPlayerProgressionStageEnum.FirstPracticeDuelDone:
-      return [new QuestBeginnerWinTwoPracticeGames()];
-    case NewPlayerProgressionStageEnum.ExtendedPracticeDone:
-      return [new QuestBeginnerWinOneSeasonGame()];
-    case NewPlayerProgressionStageEnum.FirstGameDone:
-      return [new QuestBeginnerCompleteSoloChallenges(), new QuestBeginnerFactionLevel()];
+      case NewPlayerProgressionStageEnum.TutorialDone:
+        return [new QuestBeginnerWinPracticeGames()];
+      case NewPlayerProgressionStageEnum.FirstPracticeDuelDone:
+        return [new QuestBeginnerWinTwoPracticeGames()];
+      case NewPlayerProgressionStageEnum.ExtendedPracticeDone:
+        return [new QuestBeginnerWinOneSeasonGame()];
+      case NewPlayerProgressionStageEnum.FirstGameDone:
+        return [new QuestBeginnerCompleteSoloChallenges(), new QuestBeginnerFactionLevel()];
     }
   }
 }
@@ -81,7 +81,8 @@ fMap[NewPlayerFeatureLookup.UtilityMenuFriends] = NewPlayerProgressionStageEnum.
 fMap[NewPlayerFeatureLookup.UtilityMenuQuests] = NewPlayerProgressionStageEnum.TutorialDone;
 fMap[NewPlayerFeatureLookup.UtilityMenuShop] = NewPlayerProgressionStageEnum.TutorialDone;
 fMap[NewPlayerFeatureLookup.UtilityMenuDailyChallenge] = NewPlayerProgressionStageEnum.TutorialDone;
-fMap[NewPlayerFeatureLookup.UtilityMenuFreeCardOfTheDay] = NewPlayerProgressionStageEnum.TutorialDone;
+fMap[NewPlayerFeatureLookup.UtilityMenuFreeCardOfTheDay] =
+  NewPlayerProgressionStageEnum.TutorialDone;
 // play modes
 fMap[NewPlayerFeatureLookup.PlayModeFriendly] = NewPlayerProgressionStageEnum.TutorialDone;
 fMap[NewPlayerFeatureLookup.PlayModePractice] = NewPlayerProgressionStageEnum.TutorialDone;

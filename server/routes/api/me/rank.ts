@@ -48,7 +48,7 @@ router.post('/', function (req, res, next) {
 
   return RankModule.userNeedsSeasonStartRanking(user_id)
     .then(function (value) {
-    // check if we need to update rank
+      // check if we need to update rank
       if (!value) {
         Logger.module('API').debug(`RANKING does not need to be cycled for ${user_id.blue}`);
         return res.status(304).json({});
@@ -59,14 +59,24 @@ router.post('/', function (req, res, next) {
             // all good, send the rank over
             Logger.module('API').debug(`SEASON RANKING cycled for ${user_id.blue}`.cyan);
             return res.status(200).json(value);
-          }).catch(function (error) {
+          })
+          .catch(function (error) {
             // oops, looks like we have an error
-            Logger.module('API').debug(`SEASON RANKING failed to cycle for ${user_id.blue}`.red + ' ERROR: ' + util.inspect(error));
+            Logger.module('API').debug(
+              `SEASON RANKING failed to cycle for ${user_id.blue}`.red +
+                ' ERROR: ' +
+                util.inspect(error),
+            );
             return next(error);
           });
       }
-    }).catch(function (error) {
-      Logger.module('API').debug(`Failed to detect if we need a new SEASON RANKING for ${user_id.blue}`.red + ' ERROR: ' + util.inspect(error));
+    })
+    .catch(function (error) {
+      Logger.module('API').debug(
+        `Failed to detect if we need a new SEASON RANKING for ${user_id.blue}`.red +
+          ' ERROR: ' +
+          util.inspect(error),
+      );
       return next(error);
     });
 });
@@ -74,7 +84,10 @@ router.post('/', function (req, res, next) {
 router.get('/history', function (req, res, next) {
   const user_id = req.user.d.id;
 
-  return knex('user_rank_history').where('user_id', user_id).orderBy('starting_at', 'desc').limit(12)
+  return knex('user_rank_history')
+    .where('user_id', user_id)
+    .orderBy('starting_at', 'desc')
+    .limit(12)
     .select()
     .then((rankHistoryRows) => res.status(200).json(DataAccessHelpers.restifyData(rankHistoryRows)))
     .catch((error) => next(error));
@@ -83,7 +96,10 @@ router.get('/history', function (req, res, next) {
 router.get('/history/game_counters', function (req, res, next) {
   const user_id = req.user.d.id;
 
-  return knex('user_game_season_counters').where('user_id', user_id).andWhere('game_type', 'ranked').orderBy('season_starting_at', 'desc')
+  return knex('user_game_season_counters')
+    .where('user_id', user_id)
+    .andWhere('game_type', 'ranked')
+    .orderBy('season_starting_at', 'desc')
     .limit(12)
     .select()
     .then((rankHistoryRows) => res.status(200).json(DataAccessHelpers.restifyData(rankHistoryRows)))
@@ -99,7 +115,10 @@ router.get('/history/:season_key/game_counter', function (req, res, next) {
     return;
   }
 
-  return knex('user_game_season_counters').where('user_id', user_id).andWhere('game_type', 'ranked').andWhere('season_starting_at', season_starting_at.toDate())
+  return knex('user_game_season_counters')
+    .where('user_id', user_id)
+    .andWhere('game_type', 'ranked')
+    .andWhere('season_starting_at', season_starting_at.toDate())
     .first()
     .then(function (rankHistoryRow) {
       if (rankHistoryRow != null) {
@@ -114,7 +133,9 @@ router.get('/history/:season_key/game_counter', function (req, res, next) {
 router.get('/top', function (req, res, next) {
   const user_id = req.user.d.id;
 
-  return knex('users').where('id', user_id).first('top_rank', 'top_rank_starting_at', 'top_rank_ladder_position')
+  return knex('users')
+    .where('id', user_id)
+    .first('top_rank', 'top_rank_starting_at', 'top_rank_ladder_position')
     .then(function (rankRow) {
       rankRow = DataAccessHelpers.restifyData(rankRow);
       return res.status(200).json(rankRow);
@@ -125,7 +146,9 @@ router.get('/top', function (req, res, next) {
 router.get('/division_stats', function (req, res, next) {
   const user_id = req.user.d.id;
 
-  return knex('user_rank_history').where('user_id', user_id).select()
+  return knex('user_rank_history')
+    .where('user_id', user_id)
+    .select()
     .then(function (rankHistoryRows) {
       const stats = {};
       for (var rankKey in RankDivisionLookup) {
@@ -148,7 +171,9 @@ router.get('/current_ladder_position', function (req, res, next) {
   const startOfSeasonMonth = moment(MOMENT_UTC_NOW).utc().startOf('month');
 
   return SRankManager.getUserLadderPosition(user_id, startOfSeasonMonth)
-    .then((userLadderPosition) => Promise.resolve({ ladder_position: userLadderPosition })).then((ladderData) => res.status(200).json(ladderData)).catch((error) => next(error));
+    .then((userLadderPosition) => Promise.resolve({ ladder_position: userLadderPosition }))
+    .then((ladderData) => res.status(200).json(ladderData))
+    .catch((error) => next(error));
 });
 
 //  knex("user_rank_ratings").first("ladder_position").where('user_id',user_id).andWhere("season_starting_at",seasonStartingAt)
@@ -170,13 +195,27 @@ router.put('/history/:season_key/claim_rewards', function (req, res, next) {
 
   return RankModule.claimRewardsForSeasonRank(user_id, season_starting_at)
     .then(function (data) {
-      Logger.module('API').debug(`Season ${season_key} rewards claimed for user ${user_id.blue}`.cyan);
+      Logger.module('API').debug(
+        `Season ${season_key} rewards claimed for user ${user_id.blue}`.cyan,
+      );
       return res.status(200).json(data);
-    }).catch(onType(Errors.AlreadyExistsError, function (error) {
-      Logger.module('API').debug(`ERROR: season ${season_key} rewards already claimed by user ${user_id.blue}`.red, util.inspect(error));
-      return res.status(403).json({ message: `The rewards for season ${season_key} have already been claimed previously.` });
-    })).catch(function (error) {
-      Logger.module('API').debug(`ERROR claiming season ${season_key} rewards for user ${user_id.blue}`.red, util.inspect(error));
+    })
+    .catch(
+      onType(Errors.AlreadyExistsError, function (error) {
+        Logger.module('API').debug(
+          `ERROR: season ${season_key} rewards already claimed by user ${user_id.blue}`.red,
+          util.inspect(error),
+        );
+        return res.status(403).json({
+          message: `The rewards for season ${season_key} have already been claimed previously.`,
+        });
+      }),
+    )
+    .catch(function (error) {
+      Logger.module('API').debug(
+        `ERROR claiming season ${season_key} rewards for user ${user_id.blue}`.red,
+        util.inspect(error),
+      );
       return next(error);
     });
 });

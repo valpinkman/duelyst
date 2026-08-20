@@ -33,7 +33,11 @@ class ModifierDoubleDamageToMinions extends Modifier {
   }
 
   getIsActionRelevant(a) {
-    return a instanceof AttackAction && (a.getSource() === this.getCard()) && !__guard__(a.getTarget(), (x) => x.getIsGeneral());
+    return (
+      a instanceof AttackAction &&
+      a.getSource() === this.getCard() &&
+      !__guard__(a.getTarget(), (x) => x.getIsGeneral())
+    );
   }
 
   _modifyAction(a) {
@@ -67,5 +71,5 @@ ModifierDoubleDamageToMinions.prototype.fxResource = ['FX.Modifiers.ModifierDoub
 module.exports = ModifierDoubleDamageToMinions;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

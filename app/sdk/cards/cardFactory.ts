@@ -104,7 +104,7 @@ class CardFactory {
 
     // check for invalid id
     let card = null;
-    if ((cardId == null) || (cardId <= 0)) {
+    if (cardId == null || cardId <= 0) {
       return card;
     }
 
@@ -113,94 +113,230 @@ class CardFactory {
 
     // core set
 
-    if ((card == null)) { card = CardFactory_CoreSet_Faction1.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_CoreSet_Faction2.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_CoreSet_Faction3.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_CoreSet_Faction4.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_CoreSet_Faction5.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_CoreSet_Faction6.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_CoreSet_Neutral.cardForIdentifier(identifier, gameSession); }
+    if (card == null) {
+      card = CardFactory_CoreSet_Faction1.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_CoreSet_Faction2.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_CoreSet_Faction3.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_CoreSet_Faction4.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_CoreSet_Faction5.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_CoreSet_Faction6.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_CoreSet_Neutral.cardForIdentifier(identifier, gameSession);
+    }
 
     // shimzar set
 
-    if ((card == null)) { card = CardFactory_ShimzarSet_Faction1.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_ShimzarSet_Faction2.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_ShimzarSet_Faction3.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_ShimzarSet_Faction4.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_ShimzarSet_Faction5.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_ShimzarSet_Faction6.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_ShimzarSet_Neutral.cardForIdentifier(identifier, gameSession); }
+    if (card == null) {
+      card = CardFactory_ShimzarSet_Faction1.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_ShimzarSet_Faction2.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_ShimzarSet_Faction3.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_ShimzarSet_Faction4.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_ShimzarSet_Faction5.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_ShimzarSet_Faction6.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_ShimzarSet_Neutral.cardForIdentifier(identifier, gameSession);
+    }
 
     // first watch set
 
-    if ((card == null)) { card = CardFactory_FirstWatchSet_Faction1.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_FirstWatchSet_Faction2.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_FirstWatchSet_Faction3.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_FirstWatchSet_Faction4.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_FirstWatchSet_Faction5.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_FirstWatchSet_Faction6.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_FirstWatchSet_Neutral.cardForIdentifier(identifier, gameSession); }
+    if (card == null) {
+      card = CardFactory_FirstWatchSet_Faction1.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_FirstWatchSet_Faction2.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_FirstWatchSet_Faction3.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_FirstWatchSet_Faction4.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_FirstWatchSet_Faction5.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_FirstWatchSet_Faction6.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_FirstWatchSet_Neutral.cardForIdentifier(identifier, gameSession);
+    }
 
     // monthly
 
-    if ((card == null)) { card = CardFactory_Monthly_Sisters.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_Monthly_M1_Movement.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_Monthly_M2_Reactive.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_Monthly_M3_OpeningGambitBuff.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_Monthly_M4_Replace.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_Monthly_M5_Provoke.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_Monthly_M6_Forcefield.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_Monthly_M7_Warmasters.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_Monthly_M8_Rexx.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_Monthly_M9_Streamers.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_Monthly_M10_GeneralDamage.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_Monthly_M11_PennyArcade.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_Monthly_M12_OctoberMonthlies.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_Monthly_M13_NovemberMonthlies.cardForIdentifier(identifier, gameSession); }
+    if (card == null) {
+      card = CardFactory_Monthly_Sisters.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_Monthly_M1_Movement.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_Monthly_M2_Reactive.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_Monthly_M3_OpeningGambitBuff.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_Monthly_M4_Replace.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_Monthly_M5_Provoke.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_Monthly_M6_Forcefield.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_Monthly_M7_Warmasters.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_Monthly_M8_Rexx.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_Monthly_M9_Streamers.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_Monthly_M10_GeneralDamage.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_Monthly_M11_PennyArcade.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_Monthly_M12_OctoberMonthlies.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_Monthly_M13_NovemberMonthlies.cardForIdentifier(identifier, gameSession);
+    }
 
     // misc
 
-    if ((card == null)) { card = CardFactory_Generic.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_Tiles.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_Bosses.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_Tutorial.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_Gauntlet_Specials.cardForIdentifier(identifier, gameSession); }
+    if (card == null) {
+      card = CardFactory_Generic.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_Tiles.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_Bosses.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_Tutorial.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_Gauntlet_Specials.cardForIdentifier(identifier, gameSession);
+    }
 
     // bloodstorm
-    if ((card == null)) { card = CardFactory_BloodstormSet_Faction1.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_BloodstormSet_Faction2.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_BloodstormSet_Faction3.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_BloodstormSet_Faction4.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_BloodstormSet_Faction5.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_BloodstormSet_Faction6.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_BloodstormSet_Neutral.cardForIdentifier(identifier, gameSession); }
+    if (card == null) {
+      card = CardFactory_BloodstormSet_Faction1.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_BloodstormSet_Faction2.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_BloodstormSet_Faction3.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_BloodstormSet_Faction4.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_BloodstormSet_Faction5.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_BloodstormSet_Faction6.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_BloodstormSet_Neutral.cardForIdentifier(identifier, gameSession);
+    }
 
     // unity
-    if ((card == null)) { card = CardFactory_UnitySet_Faction1.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_UnitySet_Faction2.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_UnitySet_Faction3.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_UnitySet_Faction4.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_UnitySet_Faction5.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_UnitySet_Faction6.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_UnitySet_Neutral.cardForIdentifier(identifier, gameSession); }
+    if (card == null) {
+      card = CardFactory_UnitySet_Faction1.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_UnitySet_Faction2.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_UnitySet_Faction3.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_UnitySet_Faction4.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_UnitySet_Faction5.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_UnitySet_Faction6.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_UnitySet_Neutral.cardForIdentifier(identifier, gameSession);
+    }
 
     // wartech
-    if ((card == null)) { card = CardFactory_WartechSet_Faction1.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_WartechSet_Faction2.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_WartechSet_Faction3.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_WartechSet_Faction4.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_WartechSet_Faction5.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_WartechSet_Faction6.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_WartechSet_Neutral.cardForIdentifier(identifier, gameSession); }
+    if (card == null) {
+      card = CardFactory_WartechSet_Faction1.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_WartechSet_Faction2.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_WartechSet_Faction3.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_WartechSet_Faction4.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_WartechSet_Faction5.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_WartechSet_Faction6.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_WartechSet_Neutral.cardForIdentifier(identifier, gameSession);
+    }
 
     // coreshatter
-    if ((card == null)) { card = CardFactory_CoreshatterSet_Faction1.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_CoreshatterSet_Faction2.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_CoreshatterSet_Faction3.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_CoreshatterSet_Faction4.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_CoreshatterSet_Faction5.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_CoreshatterSet_Faction6.cardForIdentifier(identifier, gameSession); }
-    if ((card == null)) { card = CardFactory_CoreshatterSet_Neutral.cardForIdentifier(identifier, gameSession); }
+    if (card == null) {
+      card = CardFactory_CoreshatterSet_Faction1.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_CoreshatterSet_Faction2.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_CoreshatterSet_Faction3.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_CoreshatterSet_Faction4.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_CoreshatterSet_Faction5.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_CoreshatterSet_Faction6.cardForIdentifier(identifier, gameSession);
+    }
+    if (card == null) {
+      card = CardFactory_CoreshatterSet_Neutral.cardForIdentifier(identifier, gameSession);
+    }
 
     if (card != null) {
       // set the card id to what was passed in
@@ -228,8 +364,12 @@ class CardFactory {
    * @returns {Array}
    */
   static getAllCards(gameSession, factionId, cardType, includeHidden, includeGenerals) {
-    if (includeHidden == null) { includeHidden = true; }
-    if (includeGenerals == null) { includeGenerals = true; }
+    if (includeHidden == null) {
+      includeHidden = true;
+    }
+    if (includeGenerals == null) {
+      includeGenerals = true;
+    }
     const cards = [];
     for (var groupName in Cards) {
       var group = Cards[groupName];
@@ -237,7 +377,13 @@ class CardFactory {
         for (var cardName in group) {
           var identifier = group[cardName];
           var card = this.cardForIdentifier(identifier, gameSession);
-          if ((card != null) && ((factionId == null) || (card.getFactionId() === factionId)) && ((cardType == null) || (card.getType() === cardType)) && (includeHidden || (!card.getIsHiddenInCollection() && card.getIsAvailable())) && (includeGenerals || !((card.getIsGeneral != null) && card.getIsGeneral()))) {
+          if (
+            card != null &&
+            (factionId == null || card.getFactionId() === factionId) &&
+            (cardType == null || card.getType() === cardType) &&
+            (includeHidden || (!card.getIsHiddenInCollection() && card.getIsAvailable())) &&
+            (includeGenerals || !(card.getIsGeneral != null && card.getIsGeneral()))
+          ) {
             cards.push(card);
           }
         }

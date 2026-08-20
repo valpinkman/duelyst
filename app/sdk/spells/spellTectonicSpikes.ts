@@ -18,7 +18,11 @@ class SpellRainOfSpikes extends Spell {
     super.onApplyOneEffectToBoard(board, x, y, sourceAction);
 
     // draw cards
-    for (let i = 1, end = this.cardsToDraw, asc = end >= 1; asc ? i <= end : i >= end; asc ? i++ : i--) {
+    for (
+      let i = 1, end = this.cardsToDraw, asc = end >= 1;
+      asc ? i <= end : i >= end;
+      asc ? i++ : i--
+    ) {
       var player = this.getGameSession().getPlayerById(this.getOwnerId());
       var action1 = player.getDeck().actionDrawCard();
       this.getGameSession().executeAction(action1);

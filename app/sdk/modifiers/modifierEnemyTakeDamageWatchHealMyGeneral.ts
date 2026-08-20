@@ -13,10 +13,13 @@ class ModifierEnemyTakeDamageWatchHealMyGeneral extends ModifierEnemyTakeDamageW
 
   static type = 'ModifierEnemyTakeDamageWatchHealMyGeneral';
   static modifierName = 'Enemy Take Damage Watch Heal My General';
-  static description = 'Whenever an enemy minion or General takes damage, restore %X Health to your General';
+  static description =
+    'Whenever an enemy minion or General takes damage, restore %X Health to your General';
 
   static createContextObject(healAmount, options) {
-    if (healAmount == null) { healAmount = 0; }
+    if (healAmount == null) {
+      healAmount = 0;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.healAmount = healAmount;
     return contextObject;
@@ -40,7 +43,10 @@ class ModifierEnemyTakeDamageWatchHealMyGeneral extends ModifierEnemyTakeDamageW
     }
   }
 }
-ModifierEnemyTakeDamageWatchHealMyGeneral.prototype.type = 'ModifierEnemyTakeDamageWatchHealMyGeneral';
-ModifierEnemyTakeDamageWatchHealMyGeneral.prototype.fxResource = ['FX.Modifiers.ModifierEnemyTakeDamageWatchHealMyGeneral'];
+ModifierEnemyTakeDamageWatchHealMyGeneral.prototype.type =
+  'ModifierEnemyTakeDamageWatchHealMyGeneral';
+ModifierEnemyTakeDamageWatchHealMyGeneral.prototype.fxResource = [
+  'FX.Modifiers.ModifierEnemyTakeDamageWatchHealMyGeneral',
+];
 
 module.exports = ModifierEnemyTakeDamageWatchHealMyGeneral;

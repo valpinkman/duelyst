@@ -83,7 +83,11 @@ class CardFactory_BloodstormSet_Faction4 {
       const contextObject = Modifier.createContextObjectWithAttributeBuffs(1, 1);
       contextObject.appliedName = i18next.t('modifiers.faction_4_furosa');
       card.setInherentModifiersContextObjects([
-        ModifierSynergizeApplyModifiersToWraithlings.createContextObject([contextObject], CONFIG.WHOLE_BOARD_RADIUS, 'Friendly Wraithlings gain +1/+1'),
+        ModifierSynergizeApplyModifiersToWraithlings.createContextObject(
+          [contextObject],
+          CONFIG.WHOLE_BOARD_RADIUS,
+          'Friendly Wraithlings gain +1/+1',
+        ),
       ]);
     }
 
@@ -210,7 +214,9 @@ class CardFactory_BloodstormSet_Faction4 {
       card.setIsHiddenInCollection(true);
       card.id = Cards.Spell.SummonHusks;
       card.name = 'Malice';
-      card.setDescription('Destroy a friendly minion to summon 4/4 Husks equal to its Attack nearby.');
+      card.setDescription(
+        'Destroy a friendly minion to summon 4/4 Husks equal to its Attack nearby.',
+      );
       card.rarityId = Rarity.Legendary;
       card.manaCost = 3;
       card.spellFilterType = SpellFilterType.AllyDirect;
@@ -318,7 +324,13 @@ class CardFactory_BloodstormSet_Faction4 {
       card.maxHP = 1;
       card.manaCost = 3;
       card.rarityId = Rarity.Rare;
-      card.setInherentModifiersContextObjects([ModifierDyingWishTransformRandomMinion.createContextObject({ id: Cards.Faction4.Horror }, true, false)]);
+      card.setInherentModifiersContextObjects([
+        ModifierDyingWishTransformRandomMinion.createContextObject(
+          { id: Cards.Faction4.Horror },
+          true,
+          false,
+        ),
+      ]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
     }
 

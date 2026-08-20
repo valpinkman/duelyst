@@ -17,7 +17,7 @@ module.exports.logError = function (err, req, res, next) {
   err.status = err.status || 500;
 
   // don't log 4xx outside of localdev
-  if ((config.get('env') !== 'development') && (err.status >= 400) && (err.status <= 500)) {
+  if (config.get('env') !== 'development' && err.status >= 400 && err.status <= 500) {
     return next(err);
   }
 
@@ -55,14 +55,14 @@ module.exports.production = function (err, req, res, next) {
 
   // check for 400,401,404, otherwise we have 500 error
   // we scrub the error to a default msg
-  if ((err.status === 400) || (err.status === 401) || (err.status === 404)) {
+  if (err.status === 400 || err.status === 401 || err.status === 404) {
     error.status = err.status;
     error.message = err.message;
     error.description = err.description;
   } else {
     error.status = 500;
     error.message = 'Internal Server Error.';
-    error.description = 'Sorry, we\'ve experienced an error.';
+    error.description = "Sorry, we've experienced an error.";
   }
 
   res.status(error.status);

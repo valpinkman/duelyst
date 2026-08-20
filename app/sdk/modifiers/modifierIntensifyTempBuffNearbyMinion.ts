@@ -29,20 +29,26 @@ class ModifierIntensifyTempBuffNearbyMinion extends ModifierIntensify {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
       const totalAttackBuff = this.getIntensifyAmount() * this.attackBuff;
       const totalHealthBuff = this.getIntensifyAmount() * this.healthBuff;
-      const statContextObject = Modifier.createContextObjectWithAttributeBuffs(totalAttackBuff, totalHealthBuff);
+      const statContextObject = Modifier.createContextObjectWithAttributeBuffs(
+        totalAttackBuff,
+        totalHealthBuff,
+      );
       statContextObject.appliedName = this.modifierName;
       statContextObject.durationEndTurn = 1;
 
-      const entities = this.getGameSession().getBoard().getFriendlyEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
+      const entities = this.getGameSession()
+        .getBoard()
+        .getFriendlyEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
       const nearbyMinions = [];
       for (var entity of Array.from<any>(entities)) {
-        if ((entity != null) && !entity.getIsGeneral()) {
+        if (entity != null && !entity.getIsGeneral()) {
           nearbyMinions.push(entity);
         }
       }
 
       if (nearbyMinions.length > 0) {
-        const minionToBuff = nearbyMinions[this.getGameSession().getRandomIntegerForExecution(nearbyMinions.length)];
+        const minionToBuff =
+          nearbyMinions[this.getGameSession().getRandomIntegerForExecution(nearbyMinions.length)];
         return this.getGameSession().applyModifierContextObject(statContextObject, minionToBuff);
       }
     }

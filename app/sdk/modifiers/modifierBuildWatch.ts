@@ -24,9 +24,7 @@ class ModifierBuildWatch extends Modifier {
   onAfterCleanupAction(e) {
     super.onAfterCleanupAction(e);
 
-    const {
-      action,
-    } = e;
+    const { action } = e;
 
     // watch for a unit transformed by building complete
     if (this.getIsActionRelevant(action) && this.getIsCardRelevantToWatcher(action.getCard())) {
@@ -35,7 +33,11 @@ class ModifierBuildWatch extends Modifier {
   }
 
   getIsActionRelevant(action) {
-    return action instanceof PlayCardAsTransformAction && (action.getTriggeringModifier() instanceof ModifierBuilding || action.getTriggeringModifier() instanceof ModifierOpeningGambitProgressBuild);
+    return (
+      action instanceof PlayCardAsTransformAction &&
+      (action.getTriggeringModifier() instanceof ModifierBuilding ||
+        action.getTriggeringModifier() instanceof ModifierOpeningGambitProgressBuild)
+    );
   }
 
   onBuildWatch(action) {}

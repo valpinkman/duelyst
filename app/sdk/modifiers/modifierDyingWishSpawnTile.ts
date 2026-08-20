@@ -16,7 +16,12 @@ class ModifierDyingWishSpawnTile extends ModifierDyingWishSpawnEntity {
   static getDescription(modifierContextObject) {
     if (modifierContextObject) {
       let replaceText = '';
-      if (UtilsPosition.getArraysOfPositionsAreEqual(modifierContextObject.spawnPattern, CONFIG.PATTERN_1x1)) {
+      if (
+        UtilsPosition.getArraysOfPositionsAreEqual(
+          modifierContextObject.spawnPattern,
+          CONFIG.PATTERN_1x1,
+        )
+      ) {
         replaceText = `this space into ${modifierContextObject.spawnDescription}`;
       } else if (modifierContextObject.spawnCount === 1) {
         replaceText = `a ${modifierContextObject.spawnDescription} in a random nearby space`;
@@ -31,6 +36,9 @@ class ModifierDyingWishSpawnTile extends ModifierDyingWishSpawnEntity {
   }
 }
 ModifierDyingWishSpawnTile.prototype.type = 'ModifierDyingWishSpawnTile';
-ModifierDyingWishSpawnTile.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericSpawn'];
+ModifierDyingWishSpawnTile.prototype.fxResource = [
+  'FX.Modifiers.ModifierDyingWish',
+  'FX.Modifiers.ModifierGenericSpawn',
+];
 
 module.exports = ModifierDyingWishSpawnTile;

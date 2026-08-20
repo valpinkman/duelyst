@@ -7,7 +7,6 @@ const BaseLayer = require('./BaseLayer');
  *************************************************************************** */
 
 var FXCompositeLayer = BaseLayer.extend({
-
   // layer rendered with and affected by fx
   fxLayer: null,
 
@@ -129,13 +128,14 @@ var FXCompositeLayer = BaseLayer.extend({
   },
 
   /* endregion EVENTS */
-
 });
 
 FXCompositeLayer.WebGLRenderCmd = function (renderable) {
   cc.Layer.WebGLRenderCmd.call(this, renderable);
 };
-const proto = FXCompositeLayer.WebGLRenderCmd.prototype = Object.create(cc.Layer.WebGLRenderCmd.prototype);
+const proto = (FXCompositeLayer.WebGLRenderCmd.prototype = Object.create(
+  cc.Layer.WebGLRenderCmd.prototype,
+));
 proto.constructor = FXCompositeLayer.WebGLRenderCmd;
 
 proto.visit = function (parentCmd) {

@@ -14,12 +14,21 @@ class ModifierInquisitorKron extends ModifierReplaceWatchSpawnEntity {
 
   onReplaceWatch(action) {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
-      this.cardDataOrIndexToSpawn = this.prisonerList[this.getGameSession().getRandomIntegerForExecution(this.prisonerList.length)];
+      this.cardDataOrIndexToSpawn =
+        this.prisonerList[
+          this.getGameSession().getRandomIntegerForExecution(this.prisonerList.length)
+        ];
       return super.onReplaceWatch(action);
     }
   }
 }
 ModifierInquisitorKron.prototype.type = 'ModifierInquisitorKron';
-ModifierInquisitorKron.prototype.prisonerList = [{ id: Cards.Neutral.Prisoner1 }, { id: Cards.Neutral.Prisoner2 }, { id: Cards.Neutral.Prisoner3 }, { id: Cards.Neutral.Prisoner5 }, { id: Cards.Neutral.Prisoner6 }];
+ModifierInquisitorKron.prototype.prisonerList = [
+  { id: Cards.Neutral.Prisoner1 },
+  { id: Cards.Neutral.Prisoner2 },
+  { id: Cards.Neutral.Prisoner3 },
+  { id: Cards.Neutral.Prisoner5 },
+  { id: Cards.Neutral.Prisoner6 },
+];
 
 module.exports = ModifierInquisitorKron;

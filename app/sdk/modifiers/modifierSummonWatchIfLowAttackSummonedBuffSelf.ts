@@ -17,10 +17,22 @@ class ModifierSummonWatchIfLowAttackSummonedBuffSelf extends ModifierSummonWatch
   static description = 'Whenever you summon a minion with low attack, this minion gains a buff';
   static maxAttackTrigger = 0;
 
-  static createContextObject(attackBuff, maxHPBuff, maxAttackTrigger, appliedModifierName = null, options) {
-    if (attackBuff == null) { attackBuff = 0; }
-    if (maxHPBuff == null) { maxHPBuff = 0; }
-    if (maxAttackTrigger == null) { maxAttackTrigger = 0; }
+  static createContextObject(
+    attackBuff,
+    maxHPBuff,
+    maxAttackTrigger,
+    appliedModifierName = null,
+    options,
+  ) {
+    if (attackBuff == null) {
+      attackBuff = 0;
+    }
+    if (maxHPBuff == null) {
+      maxHPBuff = 0;
+    }
+    if (maxAttackTrigger == null) {
+      maxAttackTrigger = 0;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.modifiersContextObjects = [
       Modifier.createContextObjectWithAttributeBuffs(attackBuff, maxHPBuff, {
@@ -37,12 +49,19 @@ class ModifierSummonWatchIfLowAttackSummonedBuffSelf extends ModifierSummonWatch
     const entity = action.getTarget();
     if (entity != null) {
       if (entity.getBaseATK() <= this.maxAttackTrigger) {
-        return this.applyManagedModifiersFromModifiersContextObjects(this.modifiersContextObjects, this.getCard());
+        return this.applyManagedModifiersFromModifiersContextObjects(
+          this.modifiersContextObjects,
+          this.getCard(),
+        );
       }
     }
   }
 }
-ModifierSummonWatchIfLowAttackSummonedBuffSelf.prototype.type = 'ModifierSummonWatchIfLowAttackSummonedBuffSelf';
-ModifierSummonWatchIfLowAttackSummonedBuffSelf.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierSummonWatchIfLowAttackSummonedBuffSelf.prototype.type =
+  'ModifierSummonWatchIfLowAttackSummonedBuffSelf';
+ModifierSummonWatchIfLowAttackSummonedBuffSelf.prototype.fxResource = [
+  'FX.Modifiers.ModifierSummonWatch',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 
 module.exports = ModifierSummonWatchIfLowAttackSummonedBuffSelf;

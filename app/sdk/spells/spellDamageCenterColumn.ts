@@ -13,9 +13,18 @@ class SpellDamageCenterColumn extends SpellDamage {
     const board = this.getGameSession().getBoard();
     const centerPosition = { x: 4, y: 2 };
     const applyEffectPositions = [];
-    const validDamageLocations = UtilsGameSession.getValidBoardPositionsFromPattern(board, centerPosition, CONFIG.PATTERN_WHOLE_COLUMN, true);
+    const validDamageLocations = UtilsGameSession.getValidBoardPositionsFromPattern(
+      board,
+      centerPosition,
+      CONFIG.PATTERN_WHOLE_COLUMN,
+      true,
+    );
     if ((validDamageLocations != null ? validDamageLocations.length : undefined) > 0) {
-      for (let i = 0, end = validDamageLocations.length, asc = end >= 0; asc ? i < end : i > end; asc ? i++ : i--) {
+      for (
+        let i = 0, end = validDamageLocations.length, asc = end >= 0;
+        asc ? i < end : i > end;
+        asc ? i++ : i--
+      ) {
         var location = validDamageLocations[i];
         var unit = board.getUnitAtPosition(location);
         if (unit != null) {

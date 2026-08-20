@@ -11,7 +11,6 @@ var BoosterPackPreviewItemView = require('app/ui/views/item/booster_pack_preview
 var i18next = require('i18next');
 
 var BoosterPacksCompositeView = Backbone.Marionette.CompositeView.extend({
-
   className: 'booster-packs',
   template: BoosterPacksCompositeViewTemplate,
   childView: BoosterPackPreviewItemView,
@@ -46,9 +45,13 @@ var BoosterPacksCompositeView = Backbone.Marionette.CompositeView.extend({
   onResize: function () {
     if (!this._stateLocked) {
       var cardSet = this.model.get('cardSet') || SDK.CardSet.Core;
-      this._boosterPackModels = InventoryManager.getInstance().boosterPacksCollection.filter(function (p) {
-        return p.get('card_set') === cardSet || (!p.get('card_set') && cardSet === SDK.CardSet.Core);
-      }.bind(this));
+      this._boosterPackModels = InventoryManager.getInstance().boosterPacksCollection.filter(
+        function (p) {
+          return (
+            p.get('card_set') === cardSet || (!p.get('card_set') && cardSet === SDK.CardSet.Core)
+          );
+        }.bind(this),
+      );
       this.collection.reset(this._boosterPackModels.slice(0, CONFIG.MAX_BOOSTER_PACKS_SHOWN));
 
       if (this.children.length > 0 && this.$childViewContainer instanceof $) {
@@ -105,7 +108,11 @@ var BoosterPacksCompositeView = Backbone.Marionette.CompositeView.extend({
   /* region EVENT LISTENERS */
 
   onInventoryManagerConnected: function () {
-    this.listenTo(InventoryManager.getInstance().boosterPacksCollection, 'add remove', this.onResize);
+    this.listenTo(
+      InventoryManager.getInstance().boosterPacksCollection,
+      'add remove',
+      this.onResize,
+    );
     this.onResize();
   },
 
@@ -136,9 +143,11 @@ var BoosterPacksCompositeView = Backbone.Marionette.CompositeView.extend({
 
   _updateBoosterPackDragging: function () {
     if (this.children.length > 0 && this.$childViewContainer instanceof $) {
-      this.children.each(function (childView) {
-        this._updateBoosterPackDraggingForItemView(childView);
-      }.bind(this));
+      this.children.each(
+        function (childView) {
+          this._updateBoosterPackDraggingForItemView(childView);
+        }.bind(this),
+      );
     }
   },
 
@@ -151,7 +160,6 @@ var BoosterPacksCompositeView = Backbone.Marionette.CompositeView.extend({
       }
     }
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

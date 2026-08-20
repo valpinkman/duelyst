@@ -15,7 +15,9 @@ class PlayerModifierMyDeathwatchDrawCard extends PlayerModifier {
   static type = 'PlayerModifierMyDeathwatchDrawCard';
 
   static createContextObject(duration, options) {
-    if (duration == null) { duration = 1; }
+    if (duration == null) {
+      duration = 1;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.durationEndTurn = duration;
     return contextObject;
@@ -24,12 +26,15 @@ class PlayerModifierMyDeathwatchDrawCard extends PlayerModifier {
   onAfterCleanupAction(e) {
     super.onAfterCleanupAction(e);
 
-    const {
-      action,
-    } = e;
+    const { action } = e;
     const target = action.getTarget();
     // watch for a friendly unit dying
-    if (action instanceof DieAction && ((target != null ? target.type : undefined) === CardType.Unit) && ((target != null ? target.getOwnerId() : undefined) === this.getPlayerId()) && (target !== this.getCard())) {
+    if (
+      action instanceof DieAction &&
+      (target != null ? target.type : undefined) === CardType.Unit &&
+      (target != null ? target.getOwnerId() : undefined) === this.getPlayerId() &&
+      target !== this.getCard()
+    ) {
       // draw a card
       const deck = this.getGameSession().getPlayerById(this.getPlayerId()).getDeck();
       return this.getGameSession().executeAction(deck.actionDrawCard());

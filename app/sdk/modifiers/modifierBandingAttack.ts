@@ -15,8 +15,12 @@ class ModifierBandingAttack extends ModifierBanding {
   static type = 'ModifierBandingAttack';
 
   static createContextObject(attackBuff, options) {
-    if (attackBuff == null) { attackBuff = 0; }
-    if (options == null) { options = undefined; }
+    if (attackBuff == null) {
+      attackBuff = 0;
+    }
+    if (options == null) {
+      options = undefined;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.appliedName = i18next.t('modifiers.banding_attack_applied_name');
     const attackBuffContextObject = ModifierBanded.createContextObject(attackBuff);
@@ -26,6 +30,9 @@ class ModifierBandingAttack extends ModifierBanding {
   }
 }
 ModifierBandingAttack.prototype.type = 'ModifierBandingAttack';
-ModifierBandingAttack.prototype.fxResource = ['FX.Modifiers.ModifierZeal', 'FX.Modifiers.ModifierZealAttack'];
+ModifierBandingAttack.prototype.fxResource = [
+  'FX.Modifiers.ModifierZeal',
+  'FX.Modifiers.ModifierZealAttack',
+];
 
 module.exports = ModifierBandingAttack;

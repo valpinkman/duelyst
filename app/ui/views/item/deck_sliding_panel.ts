@@ -11,7 +11,6 @@ var DeckSlidingPanelTmpl = require('app/ui/templates/item/deck_sliding_panel.hbs
 var SlidingPanelItemView = require('./sliding_panel');
 
 var DeckSlidingPanelItemView = SlidingPanelItemView.extend({
-
   className: 'sliding-panel deck-preview',
 
   template: DeckSlidingPanelTmpl,
@@ -56,16 +55,22 @@ var DeckSlidingPanelItemView = SlidingPanelItemView.extend({
     }
 
     if (this.model.get('_flash')) {
-      this.$el.find('>div').get(0).animate([
-        { 'background-color': '#243341' },
-        { 'background-color': '#00b9fd' },
-        { 'background-color': '#243341' },
-      ], {
-        duration: 800,
-        delay: 300,
-        easing: 'cubic-bezier(0.39, 0.575, 0.565, 1)',
-        fill: 'forwards',
-      });
+      this.$el
+        .find('>div')
+        .get(0)
+        .animate(
+          [
+            { 'background-color': '#243341' },
+            { 'background-color': '#00b9fd' },
+            { 'background-color': '#243341' },
+          ],
+          {
+            duration: 800,
+            delay: 300,
+            easing: 'cubic-bezier(0.39, 0.575, 0.565, 1)',
+            fill: 'forwards',
+          },
+        );
       this.model.set('_flash', false);
     }
   },
@@ -83,7 +88,6 @@ var DeckSlidingPanelItemView = SlidingPanelItemView.extend({
       this.trigger('select');
     }
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

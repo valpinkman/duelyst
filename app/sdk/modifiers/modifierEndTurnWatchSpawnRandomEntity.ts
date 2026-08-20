@@ -10,14 +10,30 @@ class ModifierEndTurnWatchSpawnRandomEntity extends ModifierEndTurnWatchSpawnEnt
 
   static type = 'ModifierEndTurnWatchSpawnRandomEntity';
 
-  static createContextObject(cardDataOrIndicesToSpawn, spawnDescription, spawnCount, spawnPattern, spawnSilently, options) {
-    const contextObject = super.createContextObject(cardDataOrIndicesToSpawn[0], spawnDescription, spawnCount, spawnPattern, spawnSilently, options);
+  static createContextObject(
+    cardDataOrIndicesToSpawn,
+    spawnDescription,
+    spawnCount,
+    spawnPattern,
+    spawnSilently,
+    options,
+  ) {
+    const contextObject = super.createContextObject(
+      cardDataOrIndicesToSpawn[0],
+      spawnDescription,
+      spawnCount,
+      spawnPattern,
+      spawnSilently,
+      options,
+    );
     contextObject.cardDataOrIndicesToSpawn = cardDataOrIndicesToSpawn;
     return contextObject;
   }
 
   getCardDataOrIndexToSpawn() {
-    return this.cardDataOrIndicesToSpawn[this.getGameSession().getRandomIntegerForExecution(this.cardDataOrIndicesToSpawn.length)];
+    return this.cardDataOrIndicesToSpawn[
+      this.getGameSession().getRandomIntegerForExecution(this.cardDataOrIndicesToSpawn.length)
+    ];
   }
 }
 ModifierEndTurnWatchSpawnRandomEntity.prototype.type = 'ModifierEndTurnWatchSpawnRandomEntity';

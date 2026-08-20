@@ -8,7 +8,6 @@ const PlayerLayer = require('./PlayerLayer');
  *************************************************************************** */
 
 const Player2Layer = PlayerLayer.extend({
-
   /* region INITIALIZE */
 
   ctor(playerId) {
@@ -40,7 +39,6 @@ const Player2Layer = PlayerLayer.extend({
   },
 
   /* endregion LAYOUT */
-
 });
 
 Player2Layer.create = function (playerId, layer) {

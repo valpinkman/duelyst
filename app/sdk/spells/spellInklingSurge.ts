@@ -10,7 +10,10 @@ const Cards = require('app/sdk/cards/cardsLookup');
 class SpellInklingSurge extends SpellSpawnEntity {
   onApplyToBoard(board, x, y, sourceAction) {
     for (var entity of Array.from<any>(board.getEntities(true, false))) {
-      if ((entity.getOwnerId() === this.getOwnerId()) && (entity.getBaseCardId() === Cards.Faction4.Wraithling)) {
+      if (
+        entity.getOwnerId() === this.getOwnerId() &&
+        entity.getBaseCardId() === Cards.Faction4.Wraithling
+      ) {
         this.getGameSession().executeAction(this.getOwner().getDeck().actionDrawCard());
         break;
       }

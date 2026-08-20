@@ -23,15 +23,22 @@ class ModifierCounterShadowCreep extends ModifierCounter {
   }
 
   getModifierContextObjectToApply() {
-    const modContextObject = ModifierCounterShadowCreepDescription.createContextObject(this.getCurrentCount());
+    const modContextObject = ModifierCounterShadowCreepDescription.createContextObject(
+      this.getCurrentCount(),
+    );
     modContextObject.appliedName = i18next.t('modifiers.shadowcreep_counter_applied_name');
 
     return modContextObject;
   }
 
   getCurrentCount() {
-    const modifierStackingShadows = this.getGameSession().getModifierClassForType(this.modTypeToTrack);
-    return modifierStackingShadows.getNumStacksForPlayer(this.getGameSession().getBoard(), this.getCard().getOwner());
+    const modifierStackingShadows = this.getGameSession().getModifierClassForType(
+      this.modTypeToTrack,
+    );
+    return modifierStackingShadows.getNumStacksForPlayer(
+      this.getGameSession().getBoard(),
+      this.getCard().getOwner(),
+    );
   }
 }
 ModifierCounterShadowCreep.prototype.type = 'ModifierCounterShadowCreep';

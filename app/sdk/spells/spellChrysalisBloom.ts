@@ -28,14 +28,20 @@ class SpellChrysalisBloom extends SpellSpawnEntity {
     let cards = [];
 
     if (this.getGameSession().getGameFormat() === GameFormat.Standard) {
-      cardCache = this.getGameSession().getCardCaches().getIsLegacy(false).getFaction(Factions.Faction5)
+      cardCache = this.getGameSession()
+        .getCardCaches()
+        .getIsLegacy(false)
+        .getFaction(Factions.Faction5)
         .getIsHiddenInCollection(false)
         .getIsGeneral(false)
         .getIsPrismatic(false)
         .getIsSkinned(false)
         .getType(CardType.Unit);
     } else {
-      cardCache = this.getGameSession().getCardCaches().getFaction(Factions.Faction5).getIsHiddenInCollection(false)
+      cardCache = this.getGameSession()
+        .getCardCaches()
+        .getFaction(Factions.Faction5)
+        .getIsHiddenInCollection(false)
         .getIsGeneral(false)
         .getIsPrismatic(false)
         .getIsSkinned(false)
@@ -43,18 +49,18 @@ class SpellChrysalisBloom extends SpellSpawnEntity {
     }
 
     switch (this.timesApplied) {
-    case 0:
-      cards = cardCache.getRarity(Rarity.Common).getCards();
-      break;
-    case 1:
-      cards = cardCache.getRarity(Rarity.Rare).getCards();
-      break;
-    case 2:
-      cards = cardCache.getRarity(Rarity.Epic).getCards();
-      break;
-    case 3:
-      cards = cardCache.getRarity(Rarity.Legendary).getCards();
-      break;
+      case 0:
+        cards = cardCache.getRarity(Rarity.Common).getCards();
+        break;
+      case 1:
+        cards = cardCache.getRarity(Rarity.Rare).getCards();
+        break;
+      case 2:
+        cards = cardCache.getRarity(Rarity.Epic).getCards();
+        break;
+      case 3:
+        cards = cardCache.getRarity(Rarity.Legendary).getCards();
+        break;
     }
 
     if ((cards != null ? cards.length : undefined) > 0) {
@@ -63,9 +69,17 @@ class SpellChrysalisBloom extends SpellSpawnEntity {
 
       // add modifiers to card data
       let cardDataOrIndexToSpawn = this.getCardDataOrIndexToSpawn(x, y);
-      if ((cardDataOrIndexToSpawn != null) && !_.isObject(cardDataOrIndexToSpawn)) { cardDataOrIndexToSpawn = this.getGameSession().getCardByIndex(cardDataOrIndexToSpawn).createNewCardData(); }
-      if (cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects == null) { cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects = []; }
-      cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects.push(ModifierEgg.createContextObject(card.createNewCardData(), card.getName()));
+      if (cardDataOrIndexToSpawn != null && !_.isObject(cardDataOrIndexToSpawn)) {
+        cardDataOrIndexToSpawn = this.getGameSession()
+          .getCardByIndex(cardDataOrIndexToSpawn)
+          .createNewCardData();
+      }
+      if (cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects == null) {
+        cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects = [];
+      }
+      cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects.push(
+        ModifierEgg.createContextObject(card.createNewCardData(), card.getName()),
+      );
 
       // spawn next egg
       const spawnAction = this.getSpawnAction(x, y, cardDataOrIndexToSpawn);
@@ -81,7 +95,14 @@ class SpellChrysalisBloom extends SpellSpawnEntity {
   _findApplyEffectPositions(position, sourceAction) {
     const wholeBoardPattern = CONFIG.ALL_BOARD_POSITIONS;
     const card = this.getEntityToSpawn();
-    const applyEffectPositions = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(this.getGameSession(), { x: 0, y: 0 }, wholeBoardPattern, card, this, this.numEggs);
+    const applyEffectPositions = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(
+      this.getGameSession(),
+      { x: 0, y: 0 },
+      wholeBoardPattern,
+      card,
+      this,
+      this.numEggs,
+    );
 
     return applyEffectPositions;
   }

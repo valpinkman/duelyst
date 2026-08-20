@@ -17,7 +17,11 @@ const env = config.get('env');
 const keyPrefix = () => `${env}:matchmaking:`;
 
 // Helper returns a random string of specified length
-const randomString = (length) => crypto.randomBytes(Math.ceil(length / 2)).toString('hex').slice(0, length);
+const randomString = (length) =>
+  crypto
+    .randomBytes(Math.ceil(length / 2))
+    .toString('hex')
+    .slice(0, length);
 
 // Helper returns a random key
 const randomKey = () => randomString(8);
@@ -32,7 +36,7 @@ const defaults = { name: randomKey() };
  * Create for each different player queue, ie: normal, ranked, casual
  * Contains 5 timeseries to queue velocity by division
  */
-module.exports = (RedisPlayerQueue = class RedisPlayerQueue {
+module.exports = RedisPlayerQueue = class RedisPlayerQueue {
   declare name: any;
   declare queue: any;
   declare redis: any;
@@ -51,7 +55,9 @@ module.exports = (RedisPlayerQueue = class RedisPlayerQueue {
    */
   constructor(redis, opts) {
     // TODO: add check to ensure Redis client is already promisified
-    if (opts == null) { opts = {}; }
+    if (opts == null) {
+      opts = {};
+    }
     this.redis = redis;
     this.name = opts.name || defaults.name;
     this.queue = `${keyPrefix()}queue:${this.name}`;
@@ -76,7 +82,9 @@ module.exports = (RedisPlayerQueue = class RedisPlayerQueue {
    */
   add(playerId, rank) {
     // Logger.module("REDIS-QUEUE").log("add(#{playerId}, #{rank})")
-    if (rank == null) { rank = 30; }
+    if (rank == null) {
+      rank = 30;
+    }
     return this.redis.zadd(this.queue, rank, playerId);
   }
 
@@ -125,13 +133,13 @@ module.exports = (RedisPlayerQueue = class RedisPlayerQueue {
    */
   search(opts) {
     let score;
-    if (opts == null) { opts = {}; }
+    if (opts == null) {
+      opts = {};
+    }
     if (opts.score === undefined) {
       score = 30;
     } else {
-      ({
-        score,
-      } = opts);
+      ({ score } = opts);
     }
     const searchRadius = opts.searchRadius || 0;
     // calculate min/max by search readius
@@ -149,7 +157,9 @@ module.exports = (RedisPlayerQueue = class RedisPlayerQueue {
    */
   grab(opts) {
     // Logger.module("REDIS-QUEUE").log("grab()")
-    if (opts == null) { opts = {}; }
+    if (opts == null) {
+      opts = {};
+    }
     const withScores = opts.withScores || false;
     if (withScores) {
       return this.redis.zrange(this.queue, 0, -1, 'WITHSCORES');
@@ -167,21 +177,37 @@ module.exports = (RedisPlayerQueue = class RedisPlayerQueue {
     Logger.module('REDIS-QUEUE').debug(`matchMade(${division},${waitTime})`);
 
     switch (division) {
-    case 'bronze': ts = this.ts_bronze; break;
-    case 'silver': ts = this.ts_silver; break;
-    case 'gold': ts = this.ts_gold; break;
-    case 'diamond': ts = this.ts_diamond; break;
-    case 'elite': ts = this.ts_elite; break;
-    case 'gauntlet': ts = this.ts_gauntlet; break;
-    case 'casual': ts = this.ts_casual; break;
-    default: ts.hit = function () {};
+      case 'bronze':
+        ts = this.ts_bronze;
+        break;
+      case 'silver':
+        ts = this.ts_silver;
+        break;
+      case 'gold':
+        ts = this.ts_gold;
+        break;
+      case 'diamond':
+        ts = this.ts_diamond;
+        break;
+      case 'elite':
+        ts = this.ts_elite;
+        break;
+      case 'gauntlet':
+        ts = this.ts_gauntlet;
+        break;
+      case 'casual':
+        ts = this.ts_casual;
+        break;
+      default:
+        ts.hit = function () {};
     }
 
     // Set a bound on waitTime hits, between [1 minute and 10 minutes]
     // if waitTime < 60000 # 1 minute in ms
     //   waitTime = 60000
 
-    if (waitTime > 600000) { // 10 minutes in ms
+    if (waitTime > 600000) {
+      // 10 minutes in ms
       waitTime = 600000;
     }
 
@@ -201,21 +227,36 @@ module.exports = (RedisPlayerQueue = class RedisPlayerQueue {
 
     // this sucks, part deux
     switch (division) {
-    case 'bronze': ts = this.ts_bronze; break;
-    case 'silver': ts = this.ts_silver; break;
-    case 'gold': ts = this.ts_gold; break;
-    case 'diamond': ts = this.ts_diamond; break;
-    case 'elite': ts = this.ts_elite; break;
-    case 'gauntlet': ts = this.ts_gauntlet; break;
-    case 'casual': ts = this.ts_casual; break;
-    default: return Promise.resolve(60000);
+      case 'bronze':
+        ts = this.ts_bronze;
+        break;
+      case 'silver':
+        ts = this.ts_silver;
+        break;
+      case 'gold':
+        ts = this.ts_gold;
+        break;
+      case 'diamond':
+        ts = this.ts_diamond;
+        break;
+      case 'elite':
+        ts = this.ts_elite;
+        break;
+      case 'gauntlet':
+        ts = this.ts_gauntlet;
+        break;
+      case 'casual':
+        ts = this.ts_casual;
+        break;
+      default:
+        return Promise.resolve(60000);
     }
 
     // defaults to 1hr, query the time series
     return ts.query().then((results) => {
       // size = total number of matches made in query range
       const size = _.size(results);
-      const sum = _.reduce(results, ((memo, num) => memo + parseInt(num)), 0);
+      const sum = _.reduce(results, (memo, num) => memo + parseInt(num), 0);
       const avg = Math.floor(sum / size);
 
       // console.log "durations " + results
@@ -223,10 +264,11 @@ module.exports = (RedisPlayerQueue = class RedisPlayerQueue {
       // console.log "sum (mins) " + sum / 60000
       // console.log "avg (mins) " + avg / 60000
 
-      if (size <= 8) { // can set a minimum sample size here
+      if (size <= 8) {
+        // can set a minimum sample size here
         return 60000;
       }
       return avg;
     });
   }
-});
+};

@@ -39,8 +39,7 @@ class GamesModule {
     const NOW_UTC_MOMENT = moment.utc();
 
     return knex.transaction(function (tx) {
-      let player1General,
-        player2General;
+      let player1General, player2General;
       const winner = _.find(gameData.players, (p) => p.isWinner);
       const loser = _.find(gameData.players, (p) => !p.isWinner);
 
@@ -60,19 +59,27 @@ class GamesModule {
       const cardsIndices = Object.keys(gameData.cardsByIndex);
       for (var index of Array.from<any>(cardsIndices)) {
         var card = gameData.cardsByIndex[index];
-        if (card.isGeneral && (card.ownerId === gameData.players[0].playerId)) {
+        if (card.isGeneral && card.ownerId === gameData.players[0].playerId) {
           player1General = card;
         }
-        if (card.isGeneral && (card.ownerId === gameData.players[1].playerId)) {
+        if (card.isGeneral && card.ownerId === gameData.players[1].playerId) {
           player2General = card;
         }
-        if ((player1General != null) && (player2General != null)) {
+        if (player1General != null && player2General != null) {
           break;
         }
       }
 
-      const player1Health = Math.max(0, (player1General != null ? player1General.maxHP : undefined) - ((player1General != null ? player1General.damage : undefined) || 0));
-      const player2Health = Math.max(0, (player2General != null ? player2General.maxHP : undefined) - ((player2General != null ? player2General.damage : undefined) || 0));
+      const player1Health = Math.max(
+        0,
+        (player1General != null ? player1General.maxHP : undefined) -
+          ((player1General != null ? player1General.damage : undefined) || 0),
+      );
+      const player2Health = Math.max(
+        0,
+        (player2General != null ? player2General.maxHP : undefined) -
+          ((player2General != null ? player2General.damage : undefined) || 0),
+      );
 
       let player1Rank = parseInt(gameData.players[0].rank);
       let player2Rank = parseInt(gameData.players[1].rank);
@@ -120,9 +127,7 @@ class GamesModule {
 
       // Logger.module("GamesModule").debug "gameRecord: ",gameRecord
 
-      knex('games').insert(gameRecord).transacting(tx)
-        .then(tx.commit)
-        .catch(tx.rollback);
+      knex('games').insert(gameRecord).transacting(tx).then(tx.commit).catch(tx.rollback);
     });
   }
 
@@ -136,24 +141,54 @@ class GamesModule {
    */
   static newUserGame(userId, gameId, newGameParams) {
     const NOW_UTC_MOMENT = moment.utc();
-    return knex.transaction(function (tx) {
-      newGameParams.user_id = userId;
-      newGameParams.created_at = moment.utc(newGameParams.created_at).toDate();
-      Logger.module('GamesModule').log(`newUserGame() -> inserting u:${userId} g:${gameId} duration: ${moment.utc() - NOW_UTC_MOMENT}ms`);
+    return knex
+      .transaction(function (tx) {
+        newGameParams.user_id = userId;
+        newGameParams.created_at = moment.utc(newGameParams.created_at).toDate();
+        Logger.module('GamesModule').log(
+          `newUserGame() -> inserting u:${userId} g:${gameId} duration: ${moment.utc() - NOW_UTC_MOMENT}ms`,
+        );
 
-      return PromiseUtils.withTimeout(tx('user_games').insert(newGameParams)
-        .then(() => Logger.module('GamesModule').log(`newUserGame() -> inserted u:${userId} g:${gameId} duration: ${moment.utc() - NOW_UTC_MOMENT}ms`)).then(() => DuelystFirebase.connect().getRootRef())
-        .then(function (fbRootRef) {
-        // save game record to user firebase
-          Logger.module('GamesModule').log(`newUserGame() -> updating firebase u:${userId} g:${gameId} duration: ${moment.utc() - NOW_UTC_MOMENT}ms`);
-          return FirebasePromises.set(fbRootRef.child('user-games').child(userId).child(gameId), DataAccessHelpers.restifyData(newGameParams));
-        })
-        .then(() => Logger.module('GamesModule').log(`newUserGame() -> updated firebase u:${userId} g:${gameId} duration: ${moment.utc() - NOW_UTC_MOMENT}ms`)), 15000) // timeout after 15 seconds
-        .catch(onType(PromiseUtils.TimeoutError, function (e) {
-          Logger.module('GamesModule').error(`newUserGame() -> ERROR, operation timeout for u:${userId} g:${gameId}`);
-          throw e;
-        }));
-    }).then(() => Logger.module('GamesModule').log(`newUserGame() -> DONE for u:${userId} g:${gameId} duration: ${moment.utc() - NOW_UTC_MOMENT}ms`));
+        return PromiseUtils.withTimeout(
+          tx('user_games')
+            .insert(newGameParams)
+            .then(() =>
+              Logger.module('GamesModule').log(
+                `newUserGame() -> inserted u:${userId} g:${gameId} duration: ${moment.utc() - NOW_UTC_MOMENT}ms`,
+              ),
+            )
+            .then(() => DuelystFirebase.connect().getRootRef())
+            .then(function (fbRootRef) {
+              // save game record to user firebase
+              Logger.module('GamesModule').log(
+                `newUserGame() -> updating firebase u:${userId} g:${gameId} duration: ${moment.utc() - NOW_UTC_MOMENT}ms`,
+              );
+              return FirebasePromises.set(
+                fbRootRef.child('user-games').child(userId).child(gameId),
+                DataAccessHelpers.restifyData(newGameParams),
+              );
+            })
+            .then(() =>
+              Logger.module('GamesModule').log(
+                `newUserGame() -> updated firebase u:${userId} g:${gameId} duration: ${moment.utc() - NOW_UTC_MOMENT}ms`,
+              ),
+            ),
+          15000,
+        ) // timeout after 15 seconds
+          .catch(
+            onType(PromiseUtils.TimeoutError, function (e) {
+              Logger.module('GamesModule').error(
+                `newUserGame() -> ERROR, operation timeout for u:${userId} g:${gameId}`,
+              );
+              throw e;
+            }),
+          );
+      })
+      .then(() =>
+        Logger.module('GamesModule').log(
+          `newUserGame() -> DONE for u:${userId} g:${gameId} duration: ${moment.utc() - NOW_UTC_MOMENT}ms`,
+        ),
+      );
   }
 
   /**
@@ -167,7 +202,10 @@ class GamesModule {
    * @return  {Promise}                  Promise that will resolve on completion
    */
   static _addRewardIdToUserGame(tx, userId, gameId, rewardId, andUpdateAttributes) {
-    return tx('user_games').first('reward_ids').where({ user_id: userId, game_id: gameId }).forUpdate()
+    return tx('user_games')
+      .first('reward_ids')
+      .where({ user_id: userId, game_id: gameId })
+      .forUpdate()
       .then(function (gameRow) {
         if (gameRow != null) {
           const updateParams: Record<string, any> = {};
@@ -179,8 +217,17 @@ class GamesModule {
         }
       })
       .then(() => DuelystFirebase.connect().getRootRef())
-      .then((fbRootRef) => FirebasePromises.set(fbRootRef.child('user-games').child(userId).child(gameId).child('rewards')
-        .child(rewardId), true));
+      .then((fbRootRef) =>
+        FirebasePromises.set(
+          fbRootRef
+            .child('user-games')
+            .child(userId)
+            .child(gameId)
+            .child('rewards')
+            .child(rewardId),
+          true,
+        ),
+      );
   }
 
   /**
@@ -202,42 +249,94 @@ class GamesModule {
       updateParams.ended_at = NOW_UTC_MOMENT.valueOf();
     }
 
-    return knex.transaction(function (tx) {
-      Logger.module('GamesModule').log(`updateUserGame() -> locking user (u:${userId} g:${gameId}) duration: ${moment.utc() - NOW_UTC_MOMENT}ms`);
-      return PromiseUtils.withTimeout(Promise.resolve(tx('users').where({ id: userId }).first('id').forUpdate())
-        .then(() => Logger.module('GamesModule').log(`updateUserGame() -> locked user (u:${userId} g:${gameId}) duration: ${moment.utc() - NOW_UTC_MOMENT}ms`)).then(function () {
-          Logger.module('GamesModule').log(`updateUserGame() -> locking game (u:${userId} g:${gameId}) duration: ${moment.utc() - NOW_UTC_MOMENT}ms`);
-          return tx('user_games').where({ user_id: userId, game_id: gameId }).first('game_id').forUpdate();
-        }).then(() => Logger.module('GamesModule').log(`updateUserGame() -> locked game (u:${userId} g:${gameId}) duration: ${moment.utc() - NOW_UTC_MOMENT}ms`))
-        .then(function () {
-          Logger.module('GamesModule').log(`updateUserGame() -> updating game data (u:${userId} g:${gameId}) duration: ${moment.utc() - NOW_UTC_MOMENT}ms`);
-          return tx('user_games').where({ user_id: userId, game_id: gameId }).update({
-            status: updateParams.status,
-            is_winner: updateParams.is_winner || false,
-            is_draw: updateParams.is_draw || false,
-            is_scored: updateParams.is_scored,
-            is_bot_game: updateParams.is_bot_game || false,
-            ended_at,
-            updated_at: NOW_UTC_MOMENT.toDate(),
-          });
-        })
-        .then(() => Logger.module('GamesModule').log(`updateUserGame() -> updated game (u:${userId} g:${gameId}) duration: ${moment.utc() - NOW_UTC_MOMENT}ms`))
-        .then(() => DuelystFirebase.connect().getRootRef())
-        .then(function (fbRootRef) {
-          Logger.module('GamesModule').log(`updateUserGame() -> updating firebase data (u:${userId} g:${gameId}) duration: ${moment.utc() - NOW_UTC_MOMENT}ms`);
-          return FirebasePromises.update(fbRootRef.child('user-games').child(userId).child(gameId), DataAccessHelpers.restifyData(updateParams));
-        })
-        .then(() => Logger.module('GamesModule').log(`updateUserGame() -> updated firebase data (u:${userId} g:${gameId}) duration: ${moment.utc() - NOW_UTC_MOMENT}ms`))
-        .then(function () {
-          Logger.module('GamesModule').log(`updateUserGame() -> bumping tx count (u:${userId} g:${gameId}) duration: ${moment.utc() - NOW_UTC_MOMENT}ms`);
-          return SyncModule._bumpUserTransactionCounter(tx, userId);
-        })
-        .then(() => Logger.module('GamesModule').log(`updateUserGame() -> bumped tx count (u:${userId} g:${gameId}) duration: ${moment.utc() - NOW_UTC_MOMENT}ms`)), 10000)
-        .catch(onType(PromiseUtils.TimeoutError, function (e) {
-          Logger.module('GamesModule').error(`updateUserGame() -> ERROR, operation timeout for u:${userId} g:${gameId}`);
-          throw e;
-        }));
-    }).then(() => Logger.module('GamesModule').log(`updateUserGame() -> DONE for u:${userId} g:${gameId} duration: ${moment.utc() - NOW_UTC_MOMENT}ms`));
+    return knex
+      .transaction(function (tx) {
+        Logger.module('GamesModule').log(
+          `updateUserGame() -> locking user (u:${userId} g:${gameId}) duration: ${moment.utc() - NOW_UTC_MOMENT}ms`,
+        );
+        return PromiseUtils.withTimeout(
+          Promise.resolve(tx('users').where({ id: userId }).first('id').forUpdate())
+            .then(() =>
+              Logger.module('GamesModule').log(
+                `updateUserGame() -> locked user (u:${userId} g:${gameId}) duration: ${moment.utc() - NOW_UTC_MOMENT}ms`,
+              ),
+            )
+            .then(function () {
+              Logger.module('GamesModule').log(
+                `updateUserGame() -> locking game (u:${userId} g:${gameId}) duration: ${moment.utc() - NOW_UTC_MOMENT}ms`,
+              );
+              return tx('user_games')
+                .where({ user_id: userId, game_id: gameId })
+                .first('game_id')
+                .forUpdate();
+            })
+            .then(() =>
+              Logger.module('GamesModule').log(
+                `updateUserGame() -> locked game (u:${userId} g:${gameId}) duration: ${moment.utc() - NOW_UTC_MOMENT}ms`,
+              ),
+            )
+            .then(function () {
+              Logger.module('GamesModule').log(
+                `updateUserGame() -> updating game data (u:${userId} g:${gameId}) duration: ${moment.utc() - NOW_UTC_MOMENT}ms`,
+              );
+              return tx('user_games')
+                .where({ user_id: userId, game_id: gameId })
+                .update({
+                  status: updateParams.status,
+                  is_winner: updateParams.is_winner || false,
+                  is_draw: updateParams.is_draw || false,
+                  is_scored: updateParams.is_scored,
+                  is_bot_game: updateParams.is_bot_game || false,
+                  ended_at,
+                  updated_at: NOW_UTC_MOMENT.toDate(),
+                });
+            })
+            .then(() =>
+              Logger.module('GamesModule').log(
+                `updateUserGame() -> updated game (u:${userId} g:${gameId}) duration: ${moment.utc() - NOW_UTC_MOMENT}ms`,
+              ),
+            )
+            .then(() => DuelystFirebase.connect().getRootRef())
+            .then(function (fbRootRef) {
+              Logger.module('GamesModule').log(
+                `updateUserGame() -> updating firebase data (u:${userId} g:${gameId}) duration: ${moment.utc() - NOW_UTC_MOMENT}ms`,
+              );
+              return FirebasePromises.update(
+                fbRootRef.child('user-games').child(userId).child(gameId),
+                DataAccessHelpers.restifyData(updateParams),
+              );
+            })
+            .then(() =>
+              Logger.module('GamesModule').log(
+                `updateUserGame() -> updated firebase data (u:${userId} g:${gameId}) duration: ${moment.utc() - NOW_UTC_MOMENT}ms`,
+              ),
+            )
+            .then(function () {
+              Logger.module('GamesModule').log(
+                `updateUserGame() -> bumping tx count (u:${userId} g:${gameId}) duration: ${moment.utc() - NOW_UTC_MOMENT}ms`,
+              );
+              return SyncModule._bumpUserTransactionCounter(tx, userId);
+            })
+            .then(() =>
+              Logger.module('GamesModule').log(
+                `updateUserGame() -> bumped tx count (u:${userId} g:${gameId}) duration: ${moment.utc() - NOW_UTC_MOMENT}ms`,
+              ),
+            ),
+          10000,
+        ).catch(
+          onType(PromiseUtils.TimeoutError, function (e) {
+            Logger.module('GamesModule').error(
+              `updateUserGame() -> ERROR, operation timeout for u:${userId} g:${gameId}`,
+            );
+            throw e;
+          }),
+        );
+      })
+      .then(() =>
+        Logger.module('GamesModule').log(
+          `updateUserGame() -> DONE for u:${userId} g:${gameId} duration: ${moment.utc() - NOW_UTC_MOMENT}ms`,
+        ),
+      );
   }
 
   /**
@@ -249,9 +348,19 @@ class GamesModule {
    * @return  {Promise}          Promise that will resolve on completion
    */
   static markClientGameJobStatusAsComplete(userId, gameId, jobName) {
-    return DuelystFirebase.connect().getRootRef()
-      .then((fbRootRef) => FirebasePromises.set(fbRootRef.child('user-games').child(userId).child(gameId).child('job_status')
-        .child(jobName), true));
+    return DuelystFirebase.connect()
+      .getRootRef()
+      .then((fbRootRef) =>
+        FirebasePromises.set(
+          fbRootRef
+            .child('user-games')
+            .child(userId)
+            .child(gameId)
+            .child('job_status')
+            .child(jobName),
+          true,
+        ),
+      );
   }
 
   /**
@@ -272,19 +381,25 @@ class GamesModule {
       version: config.version,
     };
 
-    return knex.transaction((tx) => Promise.all([
-      tx('user_games').where({ user_id: userId, game_id: gameId }).first(),
-      tx('user_replays').where({ user_id: userId, game_id: gameId }).first(),
-    ]).then(function ([userGameData, replayData]) {
-      if ((userGameData == null)) {
-        throw new Errors.NotFoundError('Game not found');
-      } else if (replayData != null) {
-        return replayRow = replayData;
-      } else {
-        Logger.module('GamesModule').log(`shareReplay() -> sharing replay (u:${userId} g:${gameId}) replay id: ${replayRow.replay_id}`);
-        return tx('user_replays').insert(replayRow);
-      }
-    })).then(() => replayRow);
+    return knex
+      .transaction((tx) =>
+        Promise.all([
+          tx('user_games').where({ user_id: userId, game_id: gameId }).first(),
+          tx('user_replays').where({ user_id: userId, game_id: gameId }).first(),
+        ]).then(function ([userGameData, replayData]) {
+          if (userGameData == null) {
+            throw new Errors.NotFoundError('Game not found');
+          } else if (replayData != null) {
+            return (replayRow = replayData);
+          } else {
+            Logger.module('GamesModule').log(
+              `shareReplay() -> sharing replay (u:${userId} g:${gameId}) replay id: ${replayRow.replay_id}`,
+            );
+            return tx('user_replays').insert(replayRow);
+          }
+        }),
+      )
+      .then(() => replayRow);
   }
 }
 

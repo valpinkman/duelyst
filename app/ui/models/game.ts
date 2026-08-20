@@ -1,13 +1,9 @@
 'use strict';
 
 var Game = Backbone.Model.extend({
+  initialize: function () {},
 
-  initialize: function () {
-  },
-
-  defaults: {
-  },
-
+  defaults: {},
 });
 
 // Expose the class either via CommonJS or the global object

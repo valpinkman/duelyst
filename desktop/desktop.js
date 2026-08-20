@@ -1,6 +1,4 @@
-const {
-  app, ipcMain, Menu, BrowserWindow, globalShortcut, dialog, shell,
-} = require('electron');
+const { app, ipcMain, Menu, BrowserWindow, globalShortcut, dialog, shell } = require('electron');
 const path = require('path');
 const localShortcut = require('electron-localshortcut');
 const minimist = require('minimist');
@@ -117,7 +115,9 @@ app.on('ready', () => {
   };
   // electron-window (unmaintained since 2017) used to create the window and
   // inject these args; additionalArguments is the supported mechanism.
-  windowOptions.webPreferences.additionalArguments = [`--app-args=${JSON.stringify(argsForRenderer)}`];
+  windowOptions.webPreferences.additionalArguments = [
+    `--app-args=${JSON.stringify(argsForRenderer)}`,
+  ];
   windowOptions.show = false;
 
   mainWindow = new BrowserWindow(windowOptions);
@@ -244,7 +244,9 @@ function setupDarwinMenu() {
       submenu: [
         {
           label: 'Support',
-          click() { shell.openExternal('https://support.duelyst.com'); },
+          click() {
+            shell.openExternal('https://support.duelyst.com');
+          },
         },
       ],
     },
@@ -297,17 +299,21 @@ function setupDiscord() {
 }
 */
 
-const showInfoDialog = debounce((data) => {
-  const options = {
-    type: 'info',
-    title: 'Information',
-    buttons: ['OK'],
-    message: data.message,
-    detail: data.detail,
-  };
-  const noop = () => { };
-  return dialog.showMessageBox(options, noop);
-}, 1000, { leading: true, trailing: false });
+const showInfoDialog = debounce(
+  (data) => {
+    const options = {
+      type: 'info',
+      title: 'Information',
+      buttons: ['OK'],
+      message: data.message,
+      detail: data.detail,
+    };
+    const noop = () => {};
+    return dialog.showMessageBox(options, noop);
+  },
+  1000,
+  { leading: true, trailing: false },
+);
 
 ipcMain.on('quit-app', () => app.quit());
 

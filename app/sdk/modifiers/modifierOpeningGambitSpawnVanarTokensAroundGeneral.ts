@@ -26,7 +26,16 @@ class ModifierOpeningGambitSpawnVanarTokensAroundGeneral extends ModifierOpening
     super.onOpeningGambit(action);
 
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
-      const spawnLocations = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(this.getGameSession(), this.getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId()).getPosition(), CONFIG.PATTERN_3x3, this.getCard(), this.getCard(), 8);
+      const spawnLocations = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(
+        this.getGameSession(),
+        this.getGameSession()
+          .getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId())
+          .getPosition(),
+        CONFIG.PATTERN_3x3,
+        this.getCard(),
+        this.getCard(),
+        8,
+      );
 
       return (() => {
         const result = [];
@@ -37,8 +46,18 @@ class ModifierOpeningGambitSpawnVanarTokensAroundGeneral extends ModifierOpening
             { id: Cards.Faction6.GravityWell },
             { id: Cards.Faction6.FrostBomb },
           ];
-          var card = this.getGameSession().getExistingCardFromIndexOrCreateCardFromData(possibleTokens[this.getGameSession().getRandomIntegerForExecution(possibleTokens.length)]);
-          var playCardAction = new PlayCardSilentlyAction(this.getGameSession(), this.getCard().getOwnerId(), position.x, position.y, card.createNewCardData());
+          var card = this.getGameSession().getExistingCardFromIndexOrCreateCardFromData(
+            possibleTokens[
+              this.getGameSession().getRandomIntegerForExecution(possibleTokens.length)
+            ],
+          );
+          var playCardAction = new PlayCardSilentlyAction(
+            this.getGameSession(),
+            this.getCard().getOwnerId(),
+            position.x,
+            position.y,
+            card.createNewCardData(),
+          );
           playCardAction.setSource(this.getCard());
           result.push(this.getGameSession().executeAction(playCardAction));
         }
@@ -47,8 +66,12 @@ class ModifierOpeningGambitSpawnVanarTokensAroundGeneral extends ModifierOpening
     }
   }
 }
-ModifierOpeningGambitSpawnVanarTokensAroundGeneral.prototype.type = 'ModifierOpeningGambitSpawnVanarTokensAroundGeneral';
+ModifierOpeningGambitSpawnVanarTokensAroundGeneral.prototype.type =
+  'ModifierOpeningGambitSpawnVanarTokensAroundGeneral';
 ModifierOpeningGambitSpawnVanarTokensAroundGeneral.prototype.cardDataOrIndexToSpawn = null;
-ModifierOpeningGambitSpawnVanarTokensAroundGeneral.prototype.fxResource = ['FX.Modifiers.ModifierSpellWatch', 'FX.Modifiers.ModifierGenericSpawn'];
+ModifierOpeningGambitSpawnVanarTokensAroundGeneral.prototype.fxResource = [
+  'FX.Modifiers.ModifierSpellWatch',
+  'FX.Modifiers.ModifierGenericSpawn',
+];
 
 module.exports = ModifierOpeningGambitSpawnVanarTokensAroundGeneral;

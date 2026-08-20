@@ -51,13 +51,25 @@ class ChallengeRemote extends Challenge {
     //    challenge.description = modelAttributes.description
     challenge.name = i18next.t('challenges.daily_challenge_label');
     let opponentFactionName = 'enemy';
-    if (__guard__(__guard__(__guard__(data != null ? data.gameSetupData : undefined, (x2) => x2.players), (x1) => x1[1]), (x) => x.factionId) != null) {
-      const opponentFullFactionName = FactionFactory.factionForIdentifier(data.gameSetupData.players[1].factionId).name;
+    if (
+      __guard__(
+        __guard__(
+          __guard__(data != null ? data.gameSetupData : undefined, (x2) => x2.players),
+          (x1) => x1[1],
+        ),
+        (x) => x.factionId,
+      ) != null
+    ) {
+      const opponentFullFactionName = FactionFactory.factionForIdentifier(
+        data.gameSetupData.players[1].factionId,
+      ).name;
       opponentFactionName = opponentFullFactionName.split(' ')[0];
     }
     challenge.goldReward = modelAttributes.gold;
     // challenge.description = "Defeat the #{opponentFactionName} General in ONE turn."
-    challenge.description = i18next.t('challenges.daily_challenge_desc', { faction: this.opponentFactionName });
+    challenge.description = i18next.t('challenges.daily_challenge_desc', {
+      faction: this.opponentFactionName,
+    });
     challenge.otkChallengeStartMessage = modelAttributes.instructions;
     //    challenge.otkChallengeFailureMessages = [modelAttributes.hint]
     challenge.otkChallengeFailureMessages = [];
@@ -66,10 +78,16 @@ class ChallengeRemote extends Challenge {
     challenge.dateKey = modelAttributes.dateKey;
 
     // Set up iconUrl
-    if (__guard__(__guard__(__guard__(data != null ? data.gameSetupData : undefined, (x5) => x5.players), (x4) => x4[0]), (x3) => x3.generalId) != null) {
-      const {
-        generalId,
-      } = data.gameSetupData.players[0];
+    if (
+      __guard__(
+        __guard__(
+          __guard__(data != null ? data.gameSetupData : undefined, (x5) => x5.players),
+          (x4) => x4[0],
+        ),
+        (x3) => x3.generalId,
+      ) != null
+    ) {
+      const { generalId } = data.gameSetupData.players[0];
       const generalSdkCard = GameSession.getCardCaches().getCardById(generalId);
       const generalSpeechResource = generalSdkCard.getSpeechResource();
       if (generalSpeechResource != null) {
@@ -116,7 +134,9 @@ class ChallengeRemote extends Challenge {
 
     // set battlemap template
     if (this.battleMapTemplateIndex != null) {
-      gameSession.setBattleMapTemplate(new BattleMapTemplate(gameSession, this.battleMapTemplateIndex));
+      gameSession.setBattleMapTemplate(
+        new BattleMapTemplate(gameSession, this.battleMapTemplateIndex),
+      );
     }
 
     // setup agent
@@ -144,16 +164,25 @@ class ChallengeRemote extends Challenge {
   setupOpponentAgent(gameSession) {
     super.setupOpponentAgent(gameSession);
 
-    this._opponentAgent.addActionForTurn(0, AgentActions.createAgentSoftActionShowInstructionLabels([{
-      label: 'Say your prayers.',
-      isSpeech: true,
-      yPosition: 0.7,
-      isPersistent: true,
-      isOpponent: true,
-    },
-    ]));
+    this._opponentAgent.addActionForTurn(
+      0,
+      AgentActions.createAgentSoftActionShowInstructionLabels([
+        {
+          label: 'Say your prayers.',
+          isSpeech: true,
+          yPosition: 0.7,
+          isPersistent: true,
+          isOpponent: true,
+        },
+      ]),
+    );
 
-    return this._opponentAgent.addActionForTurn(0, AgentActions.createAgentActionPlayCardFindPosition(0, () => [gameSession.getGeneralForPlayer1().getPosition()]));
+    return this._opponentAgent.addActionForTurn(
+      0,
+      AgentActions.createAgentActionPlayCardFindPosition(0, () => [
+        gameSession.getGeneralForPlayer1().getPosition(),
+      ]),
+    );
   }
 }
 ChallengeRemote.prototype.type = 'rando-1';
@@ -164,14 +193,12 @@ ChallengeRemote.prototype.description = '<description>';
 ChallengeRemote.prototype.iconUrl = RSX.speech_portrait_vanar.img;
 ChallengeRemote.prototype._musicOverride = RSX.music_battlemap_vanar.audio;
 ChallengeRemote.prototype.otkChallengeStartMessage = '<instructions>';
-ChallengeRemote.prototype.otkChallengeFailureMessages = [
-  'Hint:...',
-];
+ChallengeRemote.prototype.otkChallengeFailureMessages = ['Hint:...'];
 ChallengeRemote.prototype.snapShotOnPlayerTurn = 0;
 ChallengeRemote.prototype._gameSessionData = null;
 
 module.exports = ChallengeRemote;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

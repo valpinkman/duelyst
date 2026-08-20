@@ -10,16 +10,18 @@ const PKGS_DEF = {
 };
 
 // add all fonts to be always loaded
-PKGS_DEF.alwaysloaded = PKGS_DEF.alwaysloaded.concat((function () {
-  const fonts = [];
-  /* eslint-disable guard-for-in */
-  for (const resourceAlias in RSX) {
-    const resourceData = RSX[resourceAlias];
-    if (resourceData.font != null) {
-      fonts.push(resourceData);
+PKGS_DEF.alwaysloaded = PKGS_DEF.alwaysloaded.concat(
+  (function () {
+    const fonts = [];
+    /* eslint-disable guard-for-in */
+    for (const resourceAlias in RSX) {
+      const resourceData = RSX[resourceAlias];
+      if (resourceData.font != null) {
+        fonts.push(resourceData);
+      }
     }
-  }
-  return fonts;
-})());
+    return fonts;
+  })(),
+);
 
 module.exports = PKGS_DEF;

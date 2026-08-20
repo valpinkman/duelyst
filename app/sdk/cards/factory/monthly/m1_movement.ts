@@ -73,7 +73,13 @@ class CardFactory_Monthly_M1_Movement {
       card.maxHP = 2;
       card.manaCost = 4;
       card.rarityId = Rarity.Legendary;
-      card.setInherentModifiersContextObjects([ModifierFlying.createContextObject(), ModifierMyMoveWatchSpawnEntity.createContextObject({ id: Cards.Neutral.BlackLocust }, 'Black Locust')]);
+      card.setInherentModifiersContextObjects([
+        ModifierFlying.createContextObject(),
+        ModifierMyMoveWatchSpawnEntity.createContextObject(
+          { id: Cards.Neutral.BlackLocust },
+          'Black Locust',
+        ),
+      ]);
     }
 
     if (identifier === Cards.Neutral.WindRunner) {
@@ -109,7 +115,15 @@ class CardFactory_Monthly_M1_Movement {
       const statContextObject = Modifier.createContextObjectWithAttributeBuffs(1, 1);
       statContextObject.appliedName = i18next.t('modifiers.neutral_wind_runner_modifier');
       card.setInherentModifiersContextObjects([
-        ModifierMyMoveWatchApplyModifiers.createContextObject([statContextObject], false, true, false, 1, false, 'After this minion moves, give all friendly minions around it +1/+1'),
+        ModifierMyMoveWatchApplyModifiers.createContextObject(
+          [statContextObject],
+          false,
+          true,
+          false,
+          1,
+          false,
+          'After this minion moves, give all friendly minions around it +1/+1',
+        ),
       ]);
     }
 

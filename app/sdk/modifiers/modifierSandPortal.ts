@@ -49,17 +49,38 @@ class ModifierSandPortal extends ModifierSummonWatchFromActionBar {
 
     const appliedToBoardByAction = this.getCard().getAppliedToBoardByAction();
     if (appliedToBoardByAction !== undefined) {
-      const rootAppliedByCard = __guardMethod__(action.getRootAction(), 'getCard', (o) => o.getCard().getRootCard());
-      const thisAppliedByCard = __guardMethod__(appliedToBoardByAction.getRootAction(), 'getCard', (o1) => o1.getCard().getRootCard());
+      const rootAppliedByCard = __guardMethod__(action.getRootAction(), 'getCard', (o) =>
+        o.getCard().getRootCard(),
+      );
+      const thisAppliedByCard = __guardMethod__(
+        appliedToBoardByAction.getRootAction(),
+        'getCard',
+        (o1) => o1.getCard().getRootCard(),
+      );
       // spawn an Iron Dervish on this tile when you summon another minion UNLESS the minion being summoned also caused this tile to spawn
       // (i.e. don't trigger on own creation by opening gambit)
-      if (!board.getObstructionAtPositionForEntity(position, entity) && (rootAppliedByCard !== thisAppliedByCard)) {
-        playCardAction = new PlayCardSilentlyAction(this.getGameSession(), this.getOwnerId(), position.x, position.y, { id: Cards.Faction3.IronDervish });
+      if (
+        !board.getObstructionAtPositionForEntity(position, entity) &&
+        rootAppliedByCard !== thisAppliedByCard
+      ) {
+        playCardAction = new PlayCardSilentlyAction(
+          this.getGameSession(),
+          this.getOwnerId(),
+          position.x,
+          position.y,
+          { id: Cards.Faction3.IronDervish },
+        );
         playCardAction.setSource(this.getCard());
         return this.getGameSession().executeAction(playCardAction);
       }
     } else if (!board.getObstructionAtPositionForEntity(position, entity)) {
-      playCardAction = new PlayCardSilentlyAction(this.getGameSession(), this.getOwnerId(), position.x, position.y, { id: Cards.Faction3.IronDervish });
+      playCardAction = new PlayCardSilentlyAction(
+        this.getGameSession(),
+        this.getOwnerId(),
+        position.x,
+        position.y,
+        { id: Cards.Faction3.IronDervish },
+      );
       playCardAction.setSource(this.getCard());
       return this.getGameSession().executeAction(playCardAction);
     }

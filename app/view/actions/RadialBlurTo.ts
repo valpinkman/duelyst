@@ -9,7 +9,6 @@
  * @return {RadialBlurTo}
  */
 var RadialBlurTo = cc.ActionInterval.extend({
-
   _position: null,
   _radialBlurSpread: 0.25,
   _radialBlurDeadZone: 0.1,
@@ -17,22 +16,32 @@ var RadialBlurTo = cc.ActionInterval.extend({
 
   ctor(duration, position, radialBlurSpread, radialBlurDeadZone, radialBlurStrength) {
     cc.ActionInterval.prototype.ctor.call(this);
-    this.initWithDuration(duration, position, radialBlurSpread, radialBlurDeadZone, radialBlurStrength);
+    this.initWithDuration(
+      duration,
+      position,
+      radialBlurSpread,
+      radialBlurDeadZone,
+      radialBlurStrength,
+    );
   },
 
   initWithDuration(duration, position, radialBlurSpread, radialBlurDeadZone, radialBlurStrength) {
     if (cc.ActionInterval.prototype.initWithDuration.call(this, duration)) {
       this._position = position;
       this._radialBlurSpread = radialBlurSpread == null ? this._radialBlurSpread : radialBlurSpread;
-      this._radialBlurDeadZone = radialBlurDeadZone == null ? this._radialBlurDeadZone : radialBlurDeadZone;
-      this._radialBlurStrength = radialBlurStrength == null ? this._radialBlurStrength : radialBlurStrength;
+      this._radialBlurDeadZone =
+        radialBlurDeadZone == null ? this._radialBlurDeadZone : radialBlurDeadZone;
+      this._radialBlurStrength =
+        radialBlurStrength == null ? this._radialBlurStrength : radialBlurStrength;
       return true;
     }
     return false;
   },
 
   update(timePct) {
-    this.getFX().setRadialBlurSpread(this._originalRadialBlurSpread * (1.0 - timePct) + this._radialBlurSpread * timePct);
+    this.getFX().setRadialBlurSpread(
+      this._originalRadialBlurSpread * (1.0 - timePct) + this._radialBlurSpread * timePct,
+    );
 
     if (timePct === 1.0) {
       this.getFX().setRadialBlurStrength(this._originalRadialBlurStrength);
@@ -41,12 +50,24 @@ var RadialBlurTo = cc.ActionInterval.extend({
   },
 
   reverse() {
-    return RadialBlurTo.create(this._duration, this._position, this._radialBlurSpread, this._radialBlurDeadZone, this._radialBlurStrength);
+    return RadialBlurTo.create(
+      this._duration,
+      this._position,
+      this._radialBlurSpread,
+      this._radialBlurDeadZone,
+      this._radialBlurStrength,
+    );
   },
 
   clone() {
     const action = new RadialBlurTo();
-    action.initWithDuration(this._duration, this._position, this._radialBlurSpread, this._radialBlurDeadZone, this._radialBlurStrength);
+    action.initWithDuration(
+      this._duration,
+      this._position,
+      this._radialBlurSpread,
+      this._radialBlurDeadZone,
+      this._radialBlurStrength,
+    );
     return action;
   },
 
@@ -71,8 +92,20 @@ var RadialBlurTo = cc.ActionInterval.extend({
  * @param {Number} radialBlurStrength
  * @return {RadialBlurTo}
  */
-RadialBlurTo.create = function (duration, position, radialBlurSpread, radialBlurDeadZone, radialBlurStrength) {
-  return new RadialBlurTo(duration, position, radialBlurSpread, radialBlurDeadZone, radialBlurStrength);
+RadialBlurTo.create = function (
+  duration,
+  position,
+  radialBlurSpread,
+  radialBlurDeadZone,
+  radialBlurStrength,
+) {
+  return new RadialBlurTo(
+    duration,
+    position,
+    radialBlurSpread,
+    radialBlurDeadZone,
+    radialBlurStrength,
+  );
 };
 
 module.exports = RadialBlurTo;

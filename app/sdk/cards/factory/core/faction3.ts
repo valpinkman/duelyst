@@ -81,8 +81,10 @@ class CardFactory_CoreSet_Faction3 {
    * @returns {Card}
    */
   static cardForIdentifier(identifier, gameSession) {
-    let attackBuff; let buffContextObject; let customContextObject; let
-      statBuff;
+    let attackBuff;
+    let buffContextObject;
+    let customContextObject;
+    let statBuff;
     let card = null;
 
     if (identifier === Cards.Faction3.General) {
@@ -130,7 +132,7 @@ class CardFactory_CoreSet_Faction3 {
 
     if (identifier === Cards.Faction3.AltGeneral) {
       card = new Unit(gameSession);
-      if ((process.env.ALL_CARDS_AVAILABLE == null)) {
+      if (process.env.ALL_CARDS_AVAILABLE == null) {
         card.setIsUnlockableBasic(true);
       }
       card.setIsGeneral(true);
@@ -177,7 +179,7 @@ class CardFactory_CoreSet_Faction3 {
     if (identifier === Cards.Faction3.ThirdGeneral) {
       card = new Unit(gameSession);
       card.setIsGeneral(true);
-      if ((process.env.ALL_CARDS_AVAILABLE == null)) {
+      if (process.env.ALL_CARDS_AVAILABLE == null) {
         card.setIsUnlockableWithAchievement(true);
         card.setIsUnlockedWithAchievementId(WartechGeneralFaction3Achievement.id);
       }
@@ -251,7 +253,10 @@ class CardFactory_CoreSet_Faction3 {
       card.maxHP = 3;
       card.manaCost = 4;
       card.rarityId = Rarity.Fixed;
-      card.setInherentModifiersContextObjects([ModifierFlying.createContextObject(), ModifierDyingWishDrawCard.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierFlying.createContextObject(),
+        ModifierDyingWishDrawCard.createContextObject(),
+      ]);
     }
 
     if (identifier === Cards.Faction3.StarfireScarab) {
@@ -388,9 +393,11 @@ class CardFactory_CoreSet_Faction3 {
       card.manaCost = 3;
       card.rarityId = Rarity.Common;
       card.addKeywordClassToInclude(ModifierOpeningGambit);
-      card.setFollowups([{
-        id: Cards.Spell.CloneSourceEntity,
-      }]);
+      card.setFollowups([
+        {
+          id: Cards.Spell.CloneSourceEntity,
+        },
+      ]);
     }
 
     if (identifier === Cards.Faction3.NightfallMechanyst) {
@@ -429,7 +436,7 @@ class CardFactory_CoreSet_Faction3 {
     if (identifier === Cards.Faction3.BrazierRedSand) {
       card = new Unit(gameSession);
       card.factionId = Factions.Faction3;
-      if ((process.env.ALL_CARDS_AVAILABLE == null)) {
+      if (process.env.ALL_CARDS_AVAILABLE == null) {
         card.setIsUnlockableBasic(true);
       }
       card.name = i18next.t('cards.faction_3_unit_ethereal_obelysk_name');
@@ -500,7 +507,13 @@ class CardFactory_CoreSet_Faction3 {
       card.setInherentModifiersContextObjects([
         ModifierStartTurnWatchSummonDervish.createContextObject(),
         ModifierPortal.createContextObject(),
-        Modifier.createContextObjectWithAuraForAllAllies([buffContextObject], [Races.Dervish], null, null, 'Your Dervishes have +1 Attack'),
+        Modifier.createContextObjectWithAuraForAllAllies(
+          [buffContextObject],
+          [Races.Dervish],
+          null,
+          null,
+          'Your Dervishes have +1 Attack',
+        ),
       ]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
     }
@@ -610,7 +623,13 @@ class CardFactory_CoreSet_Faction3 {
       card.setInherentModifiersContextObjects([
         ModifierStartTurnWatchSummonDervish.createContextObject(),
         ModifierPortal.createContextObject(),
-        Modifier.createContextObjectWithAuraForAllAllies([buffContextObject], [Races.Dervish], null, null, 'Your Dervishes have +1 Health'),
+        Modifier.createContextObjectWithAuraForAllAllies(
+          [buffContextObject],
+          [Races.Dervish],
+          null,
+          null,
+          'Your Dervishes have +1 Health',
+        ),
       ]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
     }
@@ -649,9 +668,7 @@ class CardFactory_CoreSet_Faction3 {
       card.setFollowups([
         {
           id: Cards.Spell.DunecasterFollowup,
-          targetModifiersContextObjects: [
-            statBuff,
-          ],
+          targetModifiersContextObjects: [statBuff],
           filterRaceIds: [Races.Dervish],
           spellFilterType: SpellFilterType.AllyDirect,
         },
@@ -728,7 +745,10 @@ class CardFactory_CoreSet_Faction3 {
       card.maxHP = 5;
       card.manaCost = 6;
       card.rarityId = Rarity.Legendary;
-      card.setInherentModifiersContextObjects([ModifierProvoke.createContextObject(), ModifierDyingWishDamageEnemyGeneralHealGeneral.createContextObject(5)]);
+      card.setInherentModifiersContextObjects([
+        ModifierProvoke.createContextObject(),
+        ModifierDyingWishDamageEnemyGeneralHealGeneral.createContextObject(5),
+      ]);
     }
 
     if (identifier === Cards.Faction3.PortalGuardian) {
@@ -761,7 +781,11 @@ class CardFactory_CoreSet_Faction3 {
       card.maxHP = 8;
       card.manaCost = 3;
       card.rarityId = Rarity.Epic;
-      const summonWatchBuffSelf = ModifierSummonWatchBuffSelf.createContextObject(1, 0, 'Guardian\'s Duty');
+      const summonWatchBuffSelf = ModifierSummonWatchBuffSelf.createContextObject(
+        1,
+        0,
+        "Guardian's Duty",
+      );
       card.setInherentModifiersContextObjects([
         summonWatchBuffSelf,
         ModifierFrenzy.createContextObject(),
@@ -798,7 +822,10 @@ class CardFactory_CoreSet_Faction3 {
       card.maxHP = 5;
       card.manaCost = 6;
       card.rarityId = Rarity.Legendary;
-      card.setInherentModifiersContextObjects([ModifierFlying.createContextObject(), ModifierDyingWishEquipArtifactFromDeck.createContextObject(2)]);
+      card.setInherentModifiersContextObjects([
+        ModifierFlying.createContextObject(),
+        ModifierDyingWishEquipArtifactFromDeck.createContextObject(2),
+      ]);
     }
 
     if (identifier === Cards.Spell.WindShroud) {
@@ -857,9 +884,7 @@ class CardFactory_CoreSet_Faction3 {
       const statModifierContextObject = Modifier.createContextObjectWithAttributeBuffs(-2, 0);
       statModifierContextObject.appliedName = i18next.t('cards.faction_3_spell_decension_name');
       statModifierContextObject.durationEndTurn = 2;
-      card.setTargetModifiersContextObjects([
-        statModifierContextObject,
-      ]);
+      card.setTargetModifiersContextObjects([statModifierContextObject]);
       card.setFXResource(['FX.Cards.Spell.Decension']);
       card.setBaseSoundResource({
         apply: RSX.sfx_neutral_songweaver_attack_impact.audio,
@@ -913,7 +938,7 @@ class CardFactory_CoreSet_Faction3 {
     if (identifier === Cards.Spell.CosmicFlesh) {
       card = new SpellApplyModifiers(gameSession);
       card.factionId = Factions.Faction3;
-      if ((process.env.ALL_CARDS_AVAILABLE == null)) {
+      if (process.env.ALL_CARDS_AVAILABLE == null) {
         card.setIsUnlockableBasic(true);
       }
       card.id = Cards.Spell.CosmicFlesh;
@@ -942,7 +967,7 @@ class CardFactory_CoreSet_Faction3 {
     if (identifier === Cards.Spell.Blindscorch) {
       card = new SpellApplyModifiers(gameSession);
       card.factionId = Factions.Faction3;
-      if ((process.env.ALL_CARDS_AVAILABLE == null)) {
+      if (process.env.ALL_CARDS_AVAILABLE == null) {
         card.setIsUnlockableBasic(true);
       }
       card.id = Cards.Spell.Blindscorch;
@@ -979,10 +1004,7 @@ class CardFactory_CoreSet_Faction3 {
       card.spellFilterType = SpellFilterType.AllyDirect;
       statBuff = Modifier.createContextObjectWithAttributeBuffs(0, 5);
       statBuff.appliedName = i18next.t('modifiers.faction_3_spell_astral_phasing_1');
-      card.setTargetModifiersContextObjects([
-        ModifierFlying.createContextObject(),
-        statBuff,
-      ]);
+      card.setTargetModifiersContextObjects([ModifierFlying.createContextObject(), statBuff]);
       card.setFXResource(['FX.Cards.Spell.AstralPhasing']);
       card.setBaseSoundResource({
         apply: RSX.sfx_unit_run_magical_4.audio,
@@ -1103,7 +1125,7 @@ class CardFactory_CoreSet_Faction3 {
     if (identifier === Cards.Spell.ScionsSecondWish) {
       card = new SpellApplyModifiers(gameSession);
       card.factionId = Factions.Faction3;
-      if ((process.env.ALL_CARDS_AVAILABLE == null)) {
+      if (process.env.ALL_CARDS_AVAILABLE == null) {
         card.setIsUnlockableBasic(true);
       }
       card.id = Cards.Spell.ScionsSecondWish;
@@ -1115,7 +1137,10 @@ class CardFactory_CoreSet_Faction3 {
       card.spellFilterType = SpellFilterType.AllyDirect;
       attackBuff = Modifier.createContextObjectWithAttributeBuffs(2, 2);
       attackBuff.appliedName = i18next.t('modifiers.faction_3_spell_scions_second_wish_1');
-      card.setTargetModifiersContextObjects([attackBuff, ModifierImmuneToDamageByGeneral.createContextObject()]);
+      card.setTargetModifiersContextObjects([
+        attackBuff,
+        ModifierImmuneToDamageByGeneral.createContextObject(),
+      ]);
       card.setBaseSoundResource({
         apply: RSX.sfx_spell_scionsfirstwish.audio,
       });
@@ -1139,7 +1164,10 @@ class CardFactory_CoreSet_Faction3 {
       customContextObject = Modifier.createContextObjectWithAttributeBuffs(3, 3);
       customContextObject.appliedName = i18next.t('modifiers.faction_3_spell_scions_third_wish_1');
       card.filterRaceIds = [Races.Dervish];
-      card.setTargetModifiersContextObjects([customContextObject, ModifierFlying.createContextObject()]);
+      card.setTargetModifiersContextObjects([
+        customContextObject,
+        ModifierFlying.createContextObject(),
+      ]);
       card.setBaseSoundResource({
         apply: RSX.sfx_spell_scionsfirstwish.audio,
       });
@@ -1267,9 +1295,7 @@ class CardFactory_CoreSet_Faction3 {
       card.rarityId = Rarity.Rare;
       buffContextObject = Modifier.createContextObjectWithAttributeBuffs(0, 3);
       buffContextObject.appliedName = i18next.t('modifiers.faction_3_spell_inner_oasis_1');
-      card.setTargetModifiersContextObjects([
-        buffContextObject,
-      ]);
+      card.setTargetModifiersContextObjects([buffContextObject]);
       card.radius = CONFIG.WHOLE_BOARD_RADIUS;
       card.setFXResource(['FX.Cards.Spell.InnerOasis']);
       card.setBaseSoundResource({
@@ -1350,10 +1376,14 @@ class CardFactory_CoreSet_Faction3 {
           name: i18next.t('cards.faction_3_artifact_hexblade_name'),
           description: i18next.t('modifiers.plus_attack_key', { amount: 3 }),
         }),
-        ModifierDealDamageWatchModifyTarget.createContextObject([customContextObject], i18next.t('modifiers.faction_3_artifact_hexblade_4'), {
-          name: i18next.t('cards.faction_3_artifact_hexblade_name'),
-          description: i18next.t('modifiers.faction_3_artifact_hexblade_1'),
-        }),
+        ModifierDealDamageWatchModifyTarget.createContextObject(
+          [customContextObject],
+          i18next.t('modifiers.faction_3_artifact_hexblade_4'),
+          {
+            name: i18next.t('cards.faction_3_artifact_hexblade_name'),
+            description: i18next.t('modifiers.faction_3_artifact_hexblade_1'),
+          },
+        ),
       ]);
       card.setFXResource(['FX.Cards.Artifact.PoisonHexblade']);
       card.setBaseAnimResource({

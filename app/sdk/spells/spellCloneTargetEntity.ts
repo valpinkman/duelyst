@@ -22,7 +22,12 @@ class SpellCloneTargetEntity extends SpellRemoveAndReplaceEntity {
     let spawnEntityAction;
     const cloningEntity = this.getEntityToSpawn(x, y);
     if (cloningEntity != null) {
-      spawnEntityAction = new CloneEntityAsTransformAction(this.getGameSession(), this.getOwnerId(), x, y);
+      spawnEntityAction = new CloneEntityAsTransformAction(
+        this.getGameSession(),
+        this.getOwnerId(),
+        x,
+        y,
+      );
       spawnEntityAction.targetPosition = this.getFollowupSourcePosition();
       spawnEntityAction.setOwnerId(this.getOwnerId());
       spawnEntityAction.setSource(cloningEntity);
@@ -35,13 +40,15 @@ class SpellCloneTargetEntity extends SpellRemoveAndReplaceEntity {
   }
 
   getValidTargetPositions() {
-    if ((this._private.cachedValidTargetPositions == null)) {
+    if (this._private.cachedValidTargetPositions == null) {
       // use original spell targeting
       const validPositions = super.getValidTargetPositions();
       // filter source position out as we shouldn't be copying ourselves
       const sourcePosition = this.getFollowupSourcePosition();
       if (sourcePosition) {
-        this._private.cachedValidTargetPositions = _.reject(validPositions, (position) => UtilsPosition.getPositionsAreEqual(position, sourcePosition));
+        this._private.cachedValidTargetPositions = _.reject(validPositions, (position) =>
+          UtilsPosition.getPositionsAreEqual(position, sourcePosition),
+        );
       }
     }
     return this._private.cachedValidTargetPositions;

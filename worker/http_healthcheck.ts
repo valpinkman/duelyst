@@ -31,23 +31,25 @@ const poolStats = function (pool) {
 
 const healthcheck = function () {
   const server = http.createServer(function (req, res) {
-    const {
-      pathname,
-    } = url.parse(req.url);
+    const { pathname } = url.parse(req.url);
     if (pathname === '/health') {
       Logger.module('MATCHMAKER').debug('HTTP health check : /health requested.');
       const pool = poolStats(knex.client.pool);
-      return PromiseUtils.withTimeout(Promise.all([
-        knex('knex_migrations').select('migration_time').orderBy('id', 'desc').limit(1),
-      ]), 5000)
+      return PromiseUtils.withTimeout(
+        Promise.all([
+          knex('knex_migrations').select('migration_time').orderBy('id', 'desc').limit(1),
+        ]),
+        5000,
+      )
         .then(function ([row]) {
           if (pool.queued >= MAX_QUEUED_ALLOWED) {
-            return res.statusCode = 500;
+            return (res.statusCode = 500);
           } else {
-            return res.statusCode = 200;
+            return (res.statusCode = 200);
           }
-        }).catch(onType(PromiseUtils.TimeoutError, (e) => res.statusCode = 500))
-        .catch((e) => res.statusCode = 500)
+        })
+        .catch(onType(PromiseUtils.TimeoutError, (e) => (res.statusCode = 500)))
+        .catch((e) => (res.statusCode = 500))
         .finally(function () {
           res.write(JSON.stringify({ pool }));
           return res.end();
@@ -59,7 +61,9 @@ const healthcheck = function () {
     }
   });
 
-  return server.listen(8080, () => Logger.module('MATCHMAKER').debug('HTTP health check : running on port 8080 /health.'));
+  return server.listen(8080, () =>
+    Logger.module('MATCHMAKER').debug('HTTP health check : running on port 8080 /health.'),
+  );
 };
 
 module.exports = healthcheck;

@@ -5,7 +5,6 @@ var TutorialChallengeStartTmpl = require('app/ui/templates/item/tutorial/challen
 var TutorialSupportView = require('./tutorial_support');
 
 var TutorialChallengeStartView = TutorialSupportView.extend({
-
   id: 'tutorial-challenge-start',
 
   template: TutorialChallengeStartTmpl,
@@ -17,7 +16,6 @@ var TutorialChallengeStartView = TutorialSupportView.extend({
   onStartChallenge: function () {
     this.trigger('start_challenge');
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

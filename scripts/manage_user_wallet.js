@@ -10,7 +10,9 @@ const InventoryModule = require('../server/lib/data_access/inventory');
 const UsersModule = require('../server/lib/data_access/users');
 
 if (process.argv.length !== 6) {
-  console.log('Usage: node manage_user_wallet.js <username> <add|subtract> <amount> <currencyType>');
+  console.log(
+    'Usage: node manage_user_wallet.js <username> <add|subtract> <amount> <currencyType>',
+  );
   process.exit(1);
 }
 
@@ -32,14 +34,14 @@ UsersModule.userIdForUsername(username)
 
     knex.transaction((tx) => {
       switch (currencyType) {
-      case 'gold':
-        return InventoryModule.giveUserGold(null, tx, userId, amount, 'manual script run');
-      case 'premium':
-        return InventoryModule.giveUserPremium(null, tx, userId, amount, 'manual script run');
-      case 'spirit':
-        return InventoryModule.giveUserSpirit(null, tx, userId, amount, 'manual script run');
-      default:
-        return Promise.reject(new Error('unsupported currency type'));
+        case 'gold':
+          return InventoryModule.giveUserGold(null, tx, userId, amount, 'manual script run');
+        case 'premium':
+          return InventoryModule.giveUserPremium(null, tx, userId, amount, 'manual script run');
+        case 'spirit':
+          return InventoryModule.giveUserSpirit(null, tx, userId, amount, 'manual script run');
+        default:
+          return Promise.reject(new Error('unsupported currency type'));
       }
     });
   })

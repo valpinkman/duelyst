@@ -32,7 +32,9 @@ class ModifierOpeningGambitDamageBothGenerals extends ModifierOpeningGambit {
   }
 
   onOpeningGambit() {
-    const general = this.getCard().getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
+    const general = this.getCard()
+      .getGameSession()
+      .getGeneralForPlayerId(this.getCard().getOwnerId());
 
     const damageAction = new DamageAction(this.getGameSession());
     damageAction.setOwnerId(this.getCard().getOwnerId());
@@ -41,7 +43,9 @@ class ModifierOpeningGambitDamageBothGenerals extends ModifierOpeningGambit {
     damageAction.setDamageAmount(this.damageAmount);
     this.getGameSession().executeAction(damageAction);
 
-    const enemyGeneral = this.getCard().getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
+    const enemyGeneral = this.getCard()
+      .getGameSession()
+      .getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
 
     const enemyDamageAction = new DamageAction(this.getGameSession());
     enemyDamageAction.setOwnerId(this.getCard().getOwnerId());
@@ -53,6 +57,9 @@ class ModifierOpeningGambitDamageBothGenerals extends ModifierOpeningGambit {
 }
 ModifierOpeningGambitDamageBothGenerals.prototype.type = 'ModifierOpeningGambitDamageBothGenerals';
 ModifierOpeningGambitDamageBothGenerals.prototype.damageAmount = 0;
-ModifierOpeningGambitDamageBothGenerals.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericDamageFire'];
+ModifierOpeningGambitDamageBothGenerals.prototype.fxResource = [
+  'FX.Modifiers.ModifierOpeningGambit',
+  'FX.Modifiers.ModifierGenericDamageFire',
+];
 
 module.exports = ModifierOpeningGambitDamageBothGenerals;

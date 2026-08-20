@@ -32,7 +32,7 @@ class ModifierDynamicCountModifySelf extends Modifier {
 
   onDeactivate() {
     // reset to default states when deactivated
-    this._private.currentCount = (this._private.previousCount = 0);
+    this._private.currentCount = this._private.previousCount = 0;
     return this.removeManagedModifiersFromCard(this.getCard());
   }
 
@@ -96,7 +96,11 @@ class ModifierDynamicCountModifySelf extends Modifier {
 
   addSubModifiers(numModifiers) {
     return __range__(0, numModifiers - 1, true).map((i) =>
-      this.applyManagedModifiersFromModifiersContextObjects(this.modifiersContextObjects, this.getCard()));
+      this.applyManagedModifiersFromModifiersContextObjects(
+        this.modifiersContextObjects,
+        this.getCard(),
+      ),
+    );
   }
 
   getCurrentCount() {

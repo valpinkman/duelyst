@@ -21,7 +21,9 @@ import { execFileSync } from 'node:child_process';
 
 let output = '';
 try {
-  output = execFileSync('pnpm', ['exec', 'tsc', '-p', 'tsconfig.json', '--noEmit'], { encoding: 'utf8' });
+  output = execFileSync('pnpm', ['exec', 'tsc', '-p', 'tsconfig.json', '--noEmit'], {
+    encoding: 'utf8',
+  });
 } catch (e) {
   output = `${e.stdout || ''}${e.stderr || ''}`;
 }

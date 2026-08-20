@@ -26,18 +26,24 @@ class ModifierDispelAreaAttack extends Modifier {
 
   static type = 'ModifierDispelAreaAttack';
   static modifierName = 'Magic Buster Cannon';
-  static description = 'Whenever this attacks or counterattacks, it damages and dispels the enemy and all enemies nearby that target';
+  static description =
+    'Whenever this attacks or counterattacks, it damages and dispels the enemy and all enemies nearby that target';
 
   onBeforeAction(actionEvent) {
     super.onBeforeAction(actionEvent);
     // dispel target before attack action so that it cannot do onAttack actions
     // example: this dispel disables strikeback before it can counter attack
     const a = actionEvent.action;
-    if (a instanceof AttackAction && (a.getSource() === this.getCard())) {
-      this.getGameSession().applyModifierContextObject(ModifierSilence.createContextObject(), a.getTarget());
+    if (a instanceof AttackAction && a.getSource() === this.getCard()) {
+      this.getGameSession().applyModifierContextObject(
+        ModifierSilence.createContextObject(),
+        a.getTarget(),
+      );
 
       // dispel and damage the area too
-      const entities = this.getGameSession().getBoard().getFriendlyEntitiesAroundEntity(a.getTarget(), CardType.Unit, 1);
+      const entities = this.getGameSession()
+        .getBoard()
+        .getFriendlyEntitiesAroundEntity(a.getTarget(), CardType.Unit, 1);
       return (() => {
         const result = [];
         for (var entity of Array.from<any>(entities)) {
@@ -47,7 +53,12 @@ class ModifierDispelAreaAttack extends Modifier {
           damageAction.setTarget(entity);
           damageAction.setDamageAmount(this.getCard().getATK());
           this.getGameSession().executeAction(damageAction);
-          result.push(this.getGameSession().applyModifierContextObject(ModifierSilence.createContextObject(), entity));
+          result.push(
+            this.getGameSession().applyModifierContextObject(
+              ModifierSilence.createContextObject(),
+              entity,
+            ),
+          );
         }
         return result;
       })();

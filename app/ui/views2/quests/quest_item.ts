@@ -7,7 +7,6 @@ var NavigationManager = require('app/ui/managers/navigation_manager');
 var QuestItemViewTempl = require('./templates/quest_item.hbs');
 
 var QuestItemView = Backbone.Marionette.ItemView.extend({
-
   tagName: 'li',
   className: 'quest',
 
@@ -28,7 +27,7 @@ var QuestItemView = Backbone.Marionette.ItemView.extend({
 
       data.quest_name = quest.getName();
       data.quest_instructions = quest.getDescription();
-      data.is_replaceable = (data.is_replaceable != false);
+      data.is_replaceable = data.is_replaceable != false;
       data.is_beginner = quest.isBeginner || false;
       data.is_catch_up = quest.isCatchUp || false;
       data.gift_chests = quest.giftChests;
@@ -47,13 +46,15 @@ var QuestItemView = Backbone.Marionette.ItemView.extend({
     this.listenTo(this.model, 'change', this.render);
 
     this.$el.addClass('animateIn');
-    this.$el.find('[data-toggle="popover"]').popover({
-      container: $('.daily-quests-region'),
-      animation: true,
-      placement: 'right',
-    }).popover('show');
+    this.$el
+      .find('[data-toggle="popover"]')
+      .popover({
+        container: $('.daily-quests-region'),
+        animation: true,
+        placement: 'right',
+      })
+      .popover('show');
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

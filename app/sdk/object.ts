@@ -25,7 +25,7 @@ class SDKObject {
   }
 
   setGameSession(val) {
-    return this._private.gameSession = val;
+    return (this._private.gameSession = val);
   }
 
   getGameSession() {

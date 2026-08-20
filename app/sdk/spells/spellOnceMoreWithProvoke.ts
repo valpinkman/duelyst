@@ -52,7 +52,14 @@ class SpellOnceMoreWithProvoke extends SpellSpawnEntity {
     }
 
     if (numberOfApplyPositions > 0) {
-      applyEffectPositions = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(this.getGameSession(), generalPosition, CONFIG.PATTERN_3x3, card, this, numberOfApplyPositions);
+      applyEffectPositions = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(
+        this.getGameSession(),
+        generalPosition,
+        CONFIG.PATTERN_3x3,
+        card,
+        this,
+        numberOfApplyPositions,
+      );
     } else {
       applyEffectPositions = [];
     }
@@ -65,7 +72,7 @@ class SpellOnceMoreWithProvoke extends SpellSpawnEntity {
   }
 
   getDeadUnits() {
-    if ((this._private.deadUnits == null)) {
+    if (this._private.deadUnits == null) {
       const unitsToAdd = [];
       const deadFriendlyUnits = this.getGameSession().getDeadUnits(this.getOwnerId());
       for (var unit of Array.from<any>(deadFriendlyUnits)) {

@@ -13,13 +13,9 @@ Logger.enabled = false;
 describe('faction3', () => {
   describe('minions', () => {
     beforeEach(() => {
-      const player1Deck = [
-        { id: SDK.Cards.Faction3.General },
-      ];
+      const player1Deck = [{ id: SDK.Cards.Faction3.General }];
 
-      const player2Deck = [
-        { id: SDK.Cards.Faction2.General },
-      ];
+      const player2Deck = [{ id: SDK.Cards.Faction2.General }];
 
       UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
     });
@@ -35,10 +31,24 @@ describe('faction3', () => {
 
       player1.remainingMana = 9;
 
-      const dervish = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.Dervish }, 5, 1, gameSession.getPlayer1Id());
-      const pyromancer = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.Pyromancer }, 6, 1, gameSession.getPlayer1Id());
+      const dervish = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.Dervish },
+        5,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const pyromancer = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.Pyromancer },
+        6,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction3.Dunecaster }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction3.Dunecaster,
+        }),
+      );
       const action = player1.actionPlayCardFromHand(0, 4, 1);
       gameSession.executeAction(action);
 
@@ -65,10 +75,24 @@ describe('faction3', () => {
 
       player1.remainingMana = 9;
 
-      const dervish = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.Dervish }, 5, 1, gameSession.getPlayer1Id());
-      const pyromancer = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.Pyromancer }, 6, 1, gameSession.getPlayer1Id());
+      const dervish = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.Dervish },
+        5,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const pyromancer = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.Pyromancer },
+        6,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction3.Dunecaster }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction3.Dunecaster,
+        }),
+      );
       const action = player1.actionPlayCardFromHand(0, 4, 1);
       gameSession.executeAction(action);
 
@@ -89,8 +113,18 @@ describe('faction3', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const pyromancer = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.Pyromancer }, 1, 2, gameSession.getPlayer1Id());
-      const brightmossGolem = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.BrightmossGolem }, 6, 2, gameSession.getPlayer2Id());
+      const pyromancer = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.Pyromancer },
+        1,
+        2,
+        gameSession.getPlayer1Id(),
+      );
+      const brightmossGolem = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.BrightmossGolem },
+        6,
+        2,
+        gameSession.getPlayer2Id(),
+      );
 
       pyromancer.refreshExhaustion();
       const action = pyromancer.actionAttack(brightmossGolem);
@@ -105,7 +139,12 @@ describe('faction3', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const obelysk = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.BrazierRedSand }, 1, 2, gameSession.getPlayer1Id());
+      const obelysk = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.BrazierRedSand },
+        1,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
       gameSession.executeAction(gameSession.actionEndTurn());
       gameSession.executeAction(gameSession.actionEndTurn());
@@ -118,13 +157,9 @@ describe('faction3', () => {
 
     it('expect obelysks to summon a wind dervish next to each friendly obelysk even if most spaces are blocked (formation 1)', () => {
       for (let i = 0; i < 20; i++) {
-        const player1Deck = [
-          { id: SDK.Cards.Faction3.General },
-        ];
+        const player1Deck = [{ id: SDK.Cards.Faction3.General }];
 
-        const player2Deck = [
-          { id: SDK.Cards.Faction3.General },
-        ];
+        const player2Deck = [{ id: SDK.Cards.Faction3.General }];
 
         // setup test session
         UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
@@ -141,11 +176,29 @@ describe('faction3', () => {
           { cardData: { id: SDK.Cards.Faction3.BrazierRedSand }, position: { x: 0, y: 0 } },
         ];
         for (let j = 0, jl = p1Obelysks.length; j < jl; j++) {
-          const obelyskData = p1Obelysks.splice(Math.floor(Math.random() * p1Obelysks.length), 1)[0];
-          UtilsSDK.applyCardToBoard(obelyskData.cardData, obelyskData.position.x, obelyskData.position.y, gameSession.getPlayer1Id());
+          const obelyskData = p1Obelysks.splice(
+            Math.floor(Math.random() * p1Obelysks.length),
+            1,
+          )[0];
+          UtilsSDK.applyCardToBoard(
+            obelyskData.cardData,
+            obelyskData.position.x,
+            obelyskData.position.y,
+            gameSession.getPlayer1Id(),
+          );
         }
-        const block1 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.PlanarScout }, 2, 0, gameSession.getPlayer1Id());
-        const block2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.PlanarScout }, 0, 2, gameSession.getPlayer1Id());
+        const block1 = UtilsSDK.applyCardToBoard(
+          { id: SDK.Cards.Neutral.PlanarScout },
+          2,
+          0,
+          gameSession.getPlayer1Id(),
+        );
+        const block2 = UtilsSDK.applyCardToBoard(
+          { id: SDK.Cards.Neutral.PlanarScout },
+          0,
+          2,
+          gameSession.getPlayer1Id(),
+        );
 
         gameSession.executeAction(gameSession.actionEndTurn());
         gameSession.executeAction(gameSession.actionEndTurn());
@@ -160,13 +213,9 @@ describe('faction3', () => {
 
     it('expect obelysks to summon a wind dervish next to each friendly obelysk even if most spaces are blocked (formation 2)', () => {
       for (let i = 0; i < 20; i++) {
-        const player1Deck = [
-          { id: SDK.Cards.Faction3.General },
-        ];
+        const player1Deck = [{ id: SDK.Cards.Faction3.General }];
 
-        const player2Deck = [
-          { id: SDK.Cards.Faction3.General },
-        ];
+        const player2Deck = [{ id: SDK.Cards.Faction3.General }];
 
         // setup test session
         UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
@@ -183,11 +232,29 @@ describe('faction3', () => {
           { cardData: { id: SDK.Cards.Faction3.BrazierRedSand }, position: { x: 1, y: 1 } },
         ];
         for (let j = 0, jl = p1Obelysks.length; j < jl; j++) {
-          const obelyskData = p1Obelysks.splice(Math.floor(Math.random() * p1Obelysks.length), 1)[0];
-          UtilsSDK.applyCardToBoard(obelyskData.cardData, obelyskData.position.x, obelyskData.position.y, gameSession.getPlayer1Id());
+          const obelyskData = p1Obelysks.splice(
+            Math.floor(Math.random() * p1Obelysks.length),
+            1,
+          )[0];
+          UtilsSDK.applyCardToBoard(
+            obelyskData.cardData,
+            obelyskData.position.x,
+            obelyskData.position.y,
+            gameSession.getPlayer1Id(),
+          );
         }
-        const block2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.PlanarScout }, 2, 2, gameSession.getPlayer1Id());
-        const block3 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.PlanarScout }, 2, 1, gameSession.getPlayer1Id());
+        const block2 = UtilsSDK.applyCardToBoard(
+          { id: SDK.Cards.Neutral.PlanarScout },
+          2,
+          2,
+          gameSession.getPlayer1Id(),
+        );
+        const block3 = UtilsSDK.applyCardToBoard(
+          { id: SDK.Cards.Neutral.PlanarScout },
+          2,
+          1,
+          gameSession.getPlayer1Id(),
+        );
 
         gameSession.executeAction(gameSession.actionEndTurn());
         gameSession.executeAction(gameSession.actionEndTurn());
@@ -202,13 +269,9 @@ describe('faction3', () => {
 
     it('expect obelysks to summon a wind dervish next to each friendly obelysk even if most spaces are blocked (formation 3)', () => {
       for (let i = 0; i < 20; i++) {
-        const player1Deck = [
-          { id: SDK.Cards.Faction3.General },
-        ];
+        const player1Deck = [{ id: SDK.Cards.Faction3.General }];
 
-        const player2Deck = [
-          { id: SDK.Cards.Faction3.General },
-        ];
+        const player2Deck = [{ id: SDK.Cards.Faction3.General }];
 
         // setup test session
         UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
@@ -225,10 +288,23 @@ describe('faction3', () => {
           { cardData: { id: SDK.Cards.Faction3.BrazierRedSand }, position: { x: 1, y: 1 } },
         ];
         for (let j = 0, jl = p1Obelysks.length; j < jl; j++) {
-          const obelyskData = p1Obelysks.splice(Math.floor(Math.random() * p1Obelysks.length), 1)[0];
-          UtilsSDK.applyCardToBoard(obelyskData.cardData, obelyskData.position.x, obelyskData.position.y, gameSession.getPlayer1Id());
+          const obelyskData = p1Obelysks.splice(
+            Math.floor(Math.random() * p1Obelysks.length),
+            1,
+          )[0];
+          UtilsSDK.applyCardToBoard(
+            obelyskData.cardData,
+            obelyskData.position.x,
+            obelyskData.position.y,
+            gameSession.getPlayer1Id(),
+          );
         }
-        const block2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.PlanarScout }, 2, 2, gameSession.getPlayer1Id());
+        const block2 = UtilsSDK.applyCardToBoard(
+          { id: SDK.Cards.Neutral.PlanarScout },
+          2,
+          2,
+          gameSession.getPlayer1Id(),
+        );
 
         gameSession.executeAction(gameSession.actionEndTurn());
         gameSession.executeAction(gameSession.actionEndTurn());
@@ -290,13 +366,9 @@ describe('faction3', () => {
 
     it('expect obelysks to not crash game if it cannot spawn all dervishes', () => {
       for (let i = 0; i < 20; i++) {
-        const player1Deck = [
-          { id: SDK.Cards.Faction3.General },
-        ];
+        const player1Deck = [{ id: SDK.Cards.Faction3.General }];
 
-        const player2Deck = [
-          { id: SDK.Cards.Faction3.General },
-        ];
+        const player2Deck = [{ id: SDK.Cards.Faction3.General }];
 
         // setup test session
         UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
@@ -313,14 +385,47 @@ describe('faction3', () => {
           { cardData: { id: SDK.Cards.Faction3.BrazierRedSand }, position: { x: 1, y: 1 } },
         ];
         for (let j = 0, jl = p1Obelysks.length; j < jl; j++) {
-          const obelyskData = p1Obelysks.splice(Math.floor(Math.random() * p1Obelysks.length), 1)[0];
-          UtilsSDK.applyCardToBoard(obelyskData.cardData, obelyskData.position.x, obelyskData.position.y, gameSession.getPlayer1Id());
+          const obelyskData = p1Obelysks.splice(
+            Math.floor(Math.random() * p1Obelysks.length),
+            1,
+          )[0];
+          UtilsSDK.applyCardToBoard(
+            obelyskData.cardData,
+            obelyskData.position.x,
+            obelyskData.position.y,
+            gameSession.getPlayer1Id(),
+          );
         }
-        const block1 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.PlanarScout }, 0, 2, gameSession.getPlayer1Id());
-        const block2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.PlanarScout }, 2, 2, gameSession.getPlayer1Id());
-        const block3 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.PlanarScout }, 2, 1, gameSession.getPlayer1Id());
-        const block4 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.PlanarScout }, 1, 2, gameSession.getPlayer1Id());
-        const block5 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.PlanarScout }, 2, 0, gameSession.getPlayer1Id());
+        const block1 = UtilsSDK.applyCardToBoard(
+          { id: SDK.Cards.Neutral.PlanarScout },
+          0,
+          2,
+          gameSession.getPlayer1Id(),
+        );
+        const block2 = UtilsSDK.applyCardToBoard(
+          { id: SDK.Cards.Neutral.PlanarScout },
+          2,
+          2,
+          gameSession.getPlayer1Id(),
+        );
+        const block3 = UtilsSDK.applyCardToBoard(
+          { id: SDK.Cards.Neutral.PlanarScout },
+          2,
+          1,
+          gameSession.getPlayer1Id(),
+        );
+        const block4 = UtilsSDK.applyCardToBoard(
+          { id: SDK.Cards.Neutral.PlanarScout },
+          1,
+          2,
+          gameSession.getPlayer1Id(),
+        );
+        const block5 = UtilsSDK.applyCardToBoard(
+          { id: SDK.Cards.Neutral.PlanarScout },
+          2,
+          0,
+          gameSession.getPlayer1Id(),
+        );
 
         gameSession.executeAction(gameSession.actionEndTurn());
         gameSession.executeAction(gameSession.actionEndTurn());
@@ -338,7 +443,12 @@ describe('faction3', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const obelysk = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.BrazierRedSand }, 1, 2, gameSession.getPlayer1Id());
+      const obelysk = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.BrazierRedSand },
+        1,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
       obelysk.refreshExhaustion();
       const action = obelysk.actionMove({ x: 2, y: 2 });
@@ -352,10 +462,24 @@ describe('faction3', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const obelysk = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.BrazierRedSand }, 1, 2, gameSession.getPlayer1Id());
-      const hailstoneGolem = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.HailstoneGolem }, 2, 2, gameSession.getPlayer2Id());
+      const obelysk = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.BrazierRedSand },
+        1,
+        2,
+        gameSession.getPlayer1Id(),
+      );
+      const hailstoneGolem = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.HailstoneGolem },
+        2,
+        2,
+        gameSession.getPlayer2Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.ScionsFirstWish }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.ScionsFirstWish,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 2);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -371,8 +495,18 @@ describe('faction3', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const obelysk = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.BrazierGoldenFlame }, 1, 2, gameSession.getPlayer1Id());
-      const sandHowler = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.SandHowler }, 7, 4, gameSession.getPlayer1Id());
+      const obelysk = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.BrazierGoldenFlame },
+        1,
+        2,
+        gameSession.getPlayer1Id(),
+      );
+      const sandHowler = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.SandHowler },
+        7,
+        4,
+        gameSession.getPlayer1Id(),
+      );
 
       gameSession.executeAction(gameSession.actionEndTurn());
       gameSession.executeAction(gameSession.actionEndTurn());
@@ -406,13 +540,25 @@ describe('faction3', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Artifact.StaffOfYKir }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Artifact.StaffOfYKir,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 1, 1));
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Artifact.StaffOfYKir }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Artifact.StaffOfYKir,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 1, 1));
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.Tempest }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.Tempest,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 0, 0));
 
       var modifiers = gameSession.getGeneralForPlayer1().getArtifactModifiers();
@@ -421,7 +567,11 @@ describe('faction3', () => {
 
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction3.NightfallMechanyst }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction3.NightfallMechanyst,
+        }),
+      );
       const action = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(action);
 
@@ -435,7 +585,11 @@ describe('faction3', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction3.OrbWeaver }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction3.OrbWeaver,
+        }),
+      );
 
       player1.remainingMana = 9;
 
@@ -462,10 +616,19 @@ describe('faction3', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      const portalGuardian = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.PortalGuardian }, 3, 2, gameSession.getPlayer1Id());
+      const portalGuardian = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.PortalGuardian },
+        3,
+        2,
+        gameSession.getPlayer1Id(),
+      );
       expect(portalGuardian.getATK()).to.equal(0);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction3.OrbWeaver }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction3.OrbWeaver,
+        }),
+      );
 
       // play the followup
       var action = player1.actionPlayCardFromHand(0, 1, 1);
@@ -476,7 +639,11 @@ describe('faction3', () => {
 
       expect(portalGuardian.getATK()).to.equal(2);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction3.Pyromancer }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction3.Pyromancer,
+        }),
+      );
       var action = player1.actionPlayCardFromHand(0, 3, 3);
       gameSession.executeAction(action);
 
@@ -489,11 +656,20 @@ describe('faction3', () => {
       const player1 = gameSession.getPlayer1();
       const player2 = gameSession.getPlayer2();
 
-      const sandHowler = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.SandHowler }, 1, 2, gameSession.getPlayer1Id());
+      const sandHowler = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.SandHowler },
+        1,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
       gameSession.executeAction(gameSession.actionEndTurn());
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer2Id(), { id: SDK.Cards.Spell.PhoenixFire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer2Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
       const playCardFromHandAction = player2.actionPlayCardFromHand(0, 1, 2);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -506,8 +682,18 @@ describe('faction3', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const obelysk = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.BrazierDuskWind }, 1, 2, gameSession.getPlayer1Id());
-      const sandHowler = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.SandHowler }, 7, 4, gameSession.getPlayer1Id());
+      const obelysk = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.BrazierDuskWind },
+        1,
+        2,
+        gameSession.getPlayer1Id(),
+      );
+      const sandHowler = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.SandHowler },
+        7,
+        4,
+        gameSession.getPlayer1Id(),
+      );
 
       gameSession.executeAction(gameSession.actionEndTurn());
       gameSession.executeAction(gameSession.actionEndTurn());
@@ -543,15 +729,28 @@ describe('faction3', () => {
       const player1 = gameSession.getPlayer1();
       const player2 = gameSession.getPlayer2();
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction3.MirrorMaster }));
-      const hailstoneGolem = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.HailstoneGolem }, 1, 2, gameSession.getPlayer2Id()); // 4 / 6
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction3.MirrorMaster,
+        }),
+      );
+      const hailstoneGolem = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.HailstoneGolem },
+        1,
+        2,
+        gameSession.getPlayer2Id(),
+      ); // 4 / 6
       hailstoneGolem.setDamage(2); // 4/4
 
       gameSession.executeAction(gameSession.actionEndTurn());
 
       player2.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer2Id(), { id: SDK.Cards.Spell.KillingEdge }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer2Id(), {
+          id: SDK.Cards.Spell.KillingEdge,
+        }),
+      );
       const playCardFromHandAction = player2.actionPlayCardFromHand(0, 1, 2);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -582,8 +781,18 @@ describe('faction3', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const aymara = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.AymaraHealer }, 1, 2, gameSession.getPlayer1Id());
-      const hamonBladeseeker = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction2.HamonBlademaster }, 1, 3, gameSession.getPlayer2Id());
+      const aymara = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.AymaraHealer },
+        1,
+        2,
+        gameSession.getPlayer1Id(),
+      );
+      const hamonBladeseeker = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction2.HamonBlademaster },
+        1,
+        3,
+        gameSession.getPlayer2Id(),
+      );
 
       gameSession.getGeneralForPlayer1().setDamage(10);
 
@@ -600,11 +809,29 @@ describe('faction3', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const osterix = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.Oserix }, 1, 2, gameSession.getPlayer1Id());
-      const hamonBladeseeker = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction2.HamonBlademaster }, 1, 3, gameSession.getPlayer2Id());
+      const osterix = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.Oserix },
+        1,
+        2,
+        gameSession.getPlayer1Id(),
+      );
+      const hamonBladeseeker = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction2.HamonBlademaster },
+        1,
+        3,
+        gameSession.getPlayer2Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Artifact.StaffOfYKir }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Artifact.PoisonHexblade }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Artifact.StaffOfYKir,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Artifact.PoisonHexblade,
+        }),
+      );
 
       osterix.refreshExhaustion();
       const action = osterix.actionAttack(hamonBladeseeker);

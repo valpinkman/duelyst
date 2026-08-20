@@ -21,8 +21,12 @@ class ModifierDyingWishSpawnEntityInCorner extends ModifierDyingWish {
   static description = 'Summon %X';
 
   static createContextObject(cardDataOrIndexToSpawn, spawnDescription, spawnCount, options) {
-    if (spawnDescription == null) { spawnDescription = ''; }
-    if (spawnCount == null) { spawnCount = 1; }
+    if (spawnDescription == null) {
+      spawnDescription = '';
+    }
+    if (spawnCount == null) {
+      spawnCount = 1;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.cardDataOrIndexToSpawn = cardDataOrIndexToSpawn;
     contextObject.spawnDescription = spawnDescription;
@@ -33,14 +37,24 @@ class ModifierDyingWishSpawnEntityInCorner extends ModifierDyingWish {
   static getDescription(modifierContextObject) {
     if (modifierContextObject) {
       if (modifierContextObject.spawnCount === 4) {
-        return this.description.replace(/%X/, `${modifierContextObject.spawnDescription} in each unoccupied corner`);
-      } if (modifierContextObject.spawnCount === 1) {
+        return this.description.replace(
+          /%X/,
+          `${modifierContextObject.spawnDescription} in each unoccupied corner`,
+        );
+      }
+      if (modifierContextObject.spawnCount === 1) {
         if (modifierContextObject.spawnDescription !== 'a copy of this minion') {
-          return this.description.replace(/%X/, `${modifierContextObject.spawnDescription} in a random corner`);
+          return this.description.replace(
+            /%X/,
+            `${modifierContextObject.spawnDescription} in a random corner`,
+          );
         }
         return 'Re-summon this minion in a random corner';
       }
-      return this.description.replace(/%X/, `${modifierContextObject.spawnDescription} in ${modifierContextObject.spawnCount} random corners`);
+      return this.description.replace(
+        /%X/,
+        `${modifierContextObject.spawnDescription} in ${modifierContextObject.spawnCount} random corners`,
+      );
     }
     return this.description;
   }
@@ -49,14 +63,34 @@ class ModifierDyingWishSpawnEntityInCorner extends ModifierDyingWish {
     super.onDyingWish(action);
 
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
-      const cornerSpawnPattern = [{ x: 0, y: 0 }, { x: 0, y: CONFIG.BOARDROW - 1 }, { x: CONFIG.BOARDCOL - 1, y: 0 }, { x: CONFIG.BOARDCOL - 1, y: CONFIG.BOARDROW - 1 }];
-      const card = this.getGameSession().getExistingCardFromIndexOrCachedCardFromData(this.cardDataOrIndexToSpawn);
-      const spawnLocations = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(this.getGameSession(), { x: 0, y: 0 }, cornerSpawnPattern, card, this.getCard(), this.spawnCount);
+      const cornerSpawnPattern = [
+        { x: 0, y: 0 },
+        { x: 0, y: CONFIG.BOARDROW - 1 },
+        { x: CONFIG.BOARDCOL - 1, y: 0 },
+        { x: CONFIG.BOARDCOL - 1, y: CONFIG.BOARDROW - 1 },
+      ];
+      const card = this.getGameSession().getExistingCardFromIndexOrCachedCardFromData(
+        this.cardDataOrIndexToSpawn,
+      );
+      const spawnLocations = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(
+        this.getGameSession(),
+        { x: 0, y: 0 },
+        cornerSpawnPattern,
+        card,
+        this.getCard(),
+        this.spawnCount,
+      );
 
       return (() => {
         const result = [];
         for (var position of Array.from<any>(spawnLocations)) {
-          var playCardAction = new PlayCardSilentlyAction(this.getGameSession(), this.getCard().getOwnerId(), position.x, position.y, this.cardDataOrIndexToSpawn);
+          var playCardAction = new PlayCardSilentlyAction(
+            this.getGameSession(),
+            this.getCard().getOwnerId(),
+            position.x,
+            position.y,
+            this.cardDataOrIndexToSpawn,
+          );
           playCardAction.setSource(this.getCard());
           result.push(this.getGameSession().executeAction(playCardAction));
         }
@@ -67,6 +101,9 @@ class ModifierDyingWishSpawnEntityInCorner extends ModifierDyingWish {
 }
 ModifierDyingWishSpawnEntityInCorner.prototype.type = 'ModifierDyingWishSpawnEntityInCorner';
 ModifierDyingWishSpawnEntityInCorner.prototype.cardDataOrIndexToSpawn = null;
-ModifierDyingWishSpawnEntityInCorner.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericSpawn'];
+ModifierDyingWishSpawnEntityInCorner.prototype.fxResource = [
+  'FX.Modifiers.ModifierDyingWish',
+  'FX.Modifiers.ModifierGenericSpawn',
+];
 
 module.exports = ModifierDyingWishSpawnEntityInCorner;

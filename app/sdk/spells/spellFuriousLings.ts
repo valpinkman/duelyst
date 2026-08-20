@@ -13,8 +13,12 @@ const Cards = require('app/sdk/cards/cardsLookupComplete');
 class SpellFuriousLings extends SpellShadowspawn {
   getCardDataOrIndexToSpawn(x, y) {
     const cardDataOrIndexToSpawn = super.getCardDataOrIndexToSpawn(x, y);
-    if (cardDataOrIndexToSpawn.additionalModifiersContextObjects == null) { cardDataOrIndexToSpawn.additionalModifiersContextObjects = []; }
-    cardDataOrIndexToSpawn.additionalModifiersContextObjects.push(ModifierWraithlingFury.createContextObject());
+    if (cardDataOrIndexToSpawn.additionalModifiersContextObjects == null) {
+      cardDataOrIndexToSpawn.additionalModifiersContextObjects = [];
+    }
+    cardDataOrIndexToSpawn.additionalModifiersContextObjects.push(
+      ModifierWraithlingFury.createContextObject(),
+    );
     return cardDataOrIndexToSpawn;
   }
 
@@ -23,9 +27,18 @@ class SpellFuriousLings extends SpellShadowspawn {
     return (() => {
       const result = [];
       for (var unit of Array.from<any>(board.getUnits())) {
-        if ((unit != null) && (unit.getBaseCardId() === Cards.Faction4.Wraithling) && (unit.getOwnerId() === this.getOwnerId())) {
+        if (
+          unit != null &&
+          unit.getBaseCardId() === Cards.Faction4.Wraithling &&
+          unit.getOwnerId() === this.getOwnerId()
+        ) {
           if (!unit.hasModifierType(ModifierWraithlingFury.type)) {
-            result.push(this.getGameSession().applyModifierContextObject(ModifierWraithlingFury.createContextObject(), unit));
+            result.push(
+              this.getGameSession().applyModifierContextObject(
+                ModifierWraithlingFury.createContextObject(),
+                unit,
+              ),
+            );
           } else {
             result.push(undefined);
           }

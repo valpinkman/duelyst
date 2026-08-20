@@ -12,7 +12,6 @@ var RankStarItemView = require('app/ui/views/item/rank_star');
 var SDK = require('app/sdk');
 
 var RankCompositeView = Backbone.Marionette.CompositeView.extend({
-
   initialize: function () {
     Logger.module('UI').log('initialize a RankCompositeView');
     this.collection = new Backbone.Collection();
@@ -43,37 +42,37 @@ var RankCompositeView = Backbone.Marionette.CompositeView.extend({
 
   templateHelpers: {
     nextDivisionName: function () {
-      var nextRank = _.find(this.divisions, function (division) {
-        if (this.rank > division.rank)
-          return true;
-      }.bind(this));
+      var nextRank = _.find(
+        this.divisions,
+        function (division) {
+          if (this.rank > division.rank) return true;
+        }.bind(this),
+      );
 
-      if (nextRank)
-        return nextRank.name;
-      else
-        return '';
+      if (nextRank) return nextRank.name;
+      else return '';
     },
     nextDivisionRank: function () {
-      var nextRank = _.find(this.divisions, function (division) {
-        if (this.rank > division.rank)
-          return true;
-      }.bind(this));
+      var nextRank = _.find(
+        this.divisions,
+        function (division) {
+          if (this.rank > division.rank) return true;
+        }.bind(this),
+      );
 
-      if (nextRank)
-        return nextRank.rank;
-      else
-        return 0;
+      if (nextRank) return nextRank.rank;
+      else return 0;
     },
     progressUntilNextDivision: function () {
-      var nextRank = _.find(this.divisions, function (division) {
-        if (this.rank > division.rank)
-          return true;
-      }.bind(this));
+      var nextRank = _.find(
+        this.divisions,
+        function (division) {
+          if (this.rank > division.rank) return true;
+        }.bind(this),
+      );
 
-      if (nextRank)
-        return nextRank.rank - this.rank;
-      else
-        return 0;
+      if (nextRank) return nextRank.rank - this.rank;
+      else return 0;
     },
     shouldShowWinStreakBonus: function () {
       return SDK.RankFactory.areWinStreaksEnabled(this.rank_before);
@@ -153,21 +152,41 @@ var RankCompositeView = Backbone.Marionette.CompositeView.extend({
     var previousWinStreak = Math.max(this.model.get('rank_win_streak') - 1, 0);
 
     // Calculate rank data after game outcome
-    var rankDataAfter = SDK.RankFactory.updateRankDataWithGameOutcome({
-      rank: previousRank,
-      stars: previousStars,
-      win_streak: previousWinStreak,
-    }, this.model.get('is_winner'), this.model.get('is_draw'));
+    var rankDataAfter = SDK.RankFactory.updateRankDataWithGameOutcome(
+      {
+        rank: previousRank,
+        stars: previousStars,
+        win_streak: previousWinStreak,
+      },
+      this.model.get('is_winner'),
+      this.model.get('is_draw'),
+    );
 
     // get current rank and stars
     var rank = rankDataAfter.rank;
     var stars = rankDataAfter.stars;
     var starsRequired = SDK.RankFactory.starsNeededToAdvanceRank(rank);
 
-    this._showRankChange(previousRank, rank, rank, previousStars, stars, previousStarsRequired, starsRequired);
+    this._showRankChange(
+      previousRank,
+      rank,
+      rank,
+      previousStars,
+      stars,
+      previousStarsRequired,
+      starsRequired,
+    );
   },
 
-  _showRankChange: function (fromRank, toRank, finalRank, fromStars, toStars, fromStarsRequired, toStarsRequired) {
+  _showRankChange: function (
+    fromRank,
+    toRank,
+    finalRank,
+    fromStars,
+    toStars,
+    fromStarsRequired,
+    toStarsRequired,
+  ) {
     this._updateStarsRequired(fromStarsRequired);
     this._updateRank(fromRank);
 
@@ -178,101 +197,141 @@ var RankCompositeView = Backbone.Marionette.CompositeView.extend({
 
       if (delta < 0) {
         // gained rank, show stars filling up to max then reset to 0
-        this._showStarsChange(fromStars, fromStarsRequired, 0, function () {
-          // rotate ring once to show gain in rank
-          this.ui.$symbolRankRingOuter.velocity(
-            { rotateZ: '+=360deg' },
-            {
-              duration: 750.0,
-              easing: 'easeInOutSine',
-              complete: function () {
-                // shift text to simulate counter
-                this.ui.$rankValue.velocity(
-                  { translateY: [-20, 0], opacity: [0, 1] },
-                  {
-                    duration: 250.0,
-                    easing: 'easeInSine',
-                    complete: function () {
-                      // set stars to final
-                      this._updateStars(0);
+        this._showStarsChange(
+          fromStars,
+          fromStarsRequired,
+          0,
+          function () {
+            // rotate ring once to show gain in rank
+            this.ui.$symbolRankRingOuter.velocity(
+              { rotateZ: '+=360deg' },
+              {
+                duration: 750.0,
+                easing: 'easeInOutSine',
+                complete: function () {
+                  // shift text to simulate counter
+                  this.ui.$rankValue
+                    .velocity(
+                      { translateY: [-20, 0], opacity: [0, 1] },
+                      {
+                        duration: 250.0,
+                        easing: 'easeInSine',
+                        complete: function () {
+                          // set stars to final
+                          this._updateStars(0);
 
-                      // play rank change
-                      audio_engine.current().play_effect(RSX.sfx_unit_deploy_3.audio, false);
+                          // play rank change
+                          audio_engine.current().play_effect(RSX.sfx_unit_deploy_3.audio, false);
 
-                      // show next rank
-                      var nextRank = fromRank + dir;
-                      var currentMedal = this._medal;
-                      this._updateRank(nextRank);
+                          // show next rank
+                          var nextRank = fromRank + dir;
+                          var currentMedal = this._medal;
+                          this._updateRank(nextRank);
 
-                      // check if medal has changed
-                      if (currentMedal != this._medal) {
-                        this._updateMedal(fromRank);
+                          // check if medal has changed
+                          if (currentMedal != this._medal) {
+                            this._updateMedal(fromRank);
 
-                        // animate medal changing
-                        this.ui.$symbolMedal.velocity(
-                          { opacity: [1, 0], scale: [1, 5] },
-                          {
-                            duration: 350.0,
-                            delay: 250.0,
-                            easing: [0.84, 0.11, 0.3, 1.68],
-                            begin: function () {
-                              this._updateMedal(nextRank);
-                            }.bind(this),
-                            complete: function () {
-                              audio_engine.current().play_effect(RSX.sfx_deploy_circle1.audio, false);
-                              this._showRankChange(nextRank, fromRank + dir * 2, finalRank, 0, toStars, toStarsRequired, toStarsRequired);
-                            }.bind(this),
-                          },
-                        );
-                      } else {
-                        // show next change
-                        this._showRankChange(nextRank, fromRank + dir * 2, finalRank, 0, toStars, toStarsRequired, toStarsRequired);
-                      }
-                    }.bind(this),
-                  },
-                ).velocity(
-                  { translateY: [0, 20], opacity: [1, 0] },
-                  { duration: 250.0, easing: 'easeOutSine' },
-                );
-              }.bind(this),
-            },
-          );
-        }.bind(this));
+                            // animate medal changing
+                            this.ui.$symbolMedal.velocity(
+                              { opacity: [1, 0], scale: [1, 5] },
+                              {
+                                duration: 350.0,
+                                delay: 250.0,
+                                easing: [0.84, 0.11, 0.3, 1.68],
+                                begin: function () {
+                                  this._updateMedal(nextRank);
+                                }.bind(this),
+                                complete: function () {
+                                  audio_engine
+                                    .current()
+                                    .play_effect(RSX.sfx_deploy_circle1.audio, false);
+                                  this._showRankChange(
+                                    nextRank,
+                                    fromRank + dir * 2,
+                                    finalRank,
+                                    0,
+                                    toStars,
+                                    toStarsRequired,
+                                    toStarsRequired,
+                                  );
+                                }.bind(this),
+                              },
+                            );
+                          } else {
+                            // show next change
+                            this._showRankChange(
+                              nextRank,
+                              fromRank + dir * 2,
+                              finalRank,
+                              0,
+                              toStars,
+                              toStarsRequired,
+                              toStarsRequired,
+                            );
+                          }
+                        }.bind(this),
+                      },
+                    )
+                    .velocity(
+                      { translateY: [0, 20], opacity: [1, 0] },
+                      { duration: 250.0, easing: 'easeOutSine' },
+                    );
+                }.bind(this),
+              },
+            );
+          }.bind(this),
+        );
       } else {
         // lost rank, shows stars emptying to 0 then set to current
-        this._showStarsChange(fromStars, 0, toStars, function () {
-          // rotate ring once to show loss in rank
-          this.ui.$symbolRankRingOuter.velocity(
-            { rotateZ: '-=360deg' },
-            {
-              duration: 750.0,
-              easing: 'easeInOutSine',
-              complete: function () {
-                // shift text to simulate counter
-                this.ui.$rankValue.velocity(
-                  { translateY: [20, 0], opacity: [0, 1] },
-                  {
-                    duration: 250.0,
-                    easing: 'easeInSine',
-                    complete: function () {
-                      // set stars to final
-                      this._updateStars(toStars);
+        this._showStarsChange(
+          fromStars,
+          0,
+          toStars,
+          function () {
+            // rotate ring once to show loss in rank
+            this.ui.$symbolRankRingOuter.velocity(
+              { rotateZ: '-=360deg' },
+              {
+                duration: 750.0,
+                easing: 'easeInOutSine',
+                complete: function () {
+                  // shift text to simulate counter
+                  this.ui.$rankValue
+                    .velocity(
+                      { translateY: [20, 0], opacity: [0, 1] },
+                      {
+                        duration: 250.0,
+                        easing: 'easeInSine',
+                        complete: function () {
+                          // set stars to final
+                          this._updateStars(toStars);
 
-                      // play rank change
-                      audio_engine.current().play_effect(RSX.sfx_unit_deploy_1.audio, false);
+                          // play rank change
+                          audio_engine.current().play_effect(RSX.sfx_unit_deploy_1.audio, false);
 
-                      // show next rank
-                      this._showRankChange(fromRank + dir, fromRank + dir * 2, finalRank, toStarsRequired, toStars, toStarsRequired, toStarsRequired);
-                    }.bind(this),
-                  },
-                ).velocity(
-                  { translateY: [0, -20], opacity: [1, 0] },
-                  { duration: 250.0, easing: 'easeOutSine' },
-                );
-              }.bind(this),
-            },
-          );
-        }.bind(this));
+                          // show next rank
+                          this._showRankChange(
+                            fromRank + dir,
+                            fromRank + dir * 2,
+                            finalRank,
+                            toStarsRequired,
+                            toStars,
+                            toStarsRequired,
+                            toStarsRequired,
+                          );
+                        }.bind(this),
+                      },
+                    )
+                    .velocity(
+                      { translateY: [0, -20], opacity: [1, 0] },
+                      { duration: 250.0, easing: 'easeOutSine' },
+                    );
+                }.bind(this),
+              },
+            );
+          }.bind(this),
+        );
       }
     } else {
       // only change stars
@@ -288,20 +347,32 @@ var RankCompositeView = Backbone.Marionette.CompositeView.extend({
       var delta = toStars - fromStars;
       if (delta > 0) {
         for (var i = fromStars + 1; i <= toStars; i++) {
-          this._queueCallback(this._showStarsChangeGain.bind(this), i, CONFIG.STARS_SEQUENCE_DELAY * 1000.0);
+          this._queueCallback(
+            this._showStarsChangeGain.bind(this),
+            i,
+            CONFIG.STARS_SEQUENCE_DELAY * 1000.0,
+          );
         }
       } else {
         for (var i = fromStars - 1; i >= toStars; i--) {
-          this._queueCallback(this._showStarsChangeLoss.bind(this), i, CONFIG.STARS_SEQUENCE_DELAY * 1000.0);
+          this._queueCallback(
+            this._showStarsChangeLoss.bind(this),
+            i,
+            CONFIG.STARS_SEQUENCE_DELAY * 1000.0,
+          );
         }
       }
 
       // show
-      this._queueCallback(function () {
-        if (callback) {
-          callback();
-        }
-      }.bind(this), null, CONFIG.STARS_SEQUENCE_DELAY * 1000.0);
+      this._queueCallback(
+        function () {
+          if (callback) {
+            callback();
+          }
+        }.bind(this),
+        null,
+        CONFIG.STARS_SEQUENCE_DELAY * 1000.0,
+      );
     } else if (callback) {
       callback();
     }
@@ -323,7 +394,10 @@ var RankCompositeView = Backbone.Marionette.CompositeView.extend({
     } else if (!_.isArray(args)) {
       args = [args];
     }
-    return this.$el.delay(delay).queue(function () { callback.apply(this, args); $(this).dequeue(); });
+    return this.$el.delay(delay).queue(function () {
+      callback.apply(this, args);
+      $(this).dequeue();
+    });
   },
 
   /* endregion CHANGES */
@@ -372,8 +446,14 @@ var RankCompositeView = Backbone.Marionette.CompositeView.extend({
     // update medal
     if (this.ui.$imgSymbolMedal instanceof $) {
       this.ui.$symbolMedal.addClass(this._medal);
-      this.ui.$imgSymbolMedal.attr('src', 'resources/season_rewards/season_rank_' + this._medal + '.png');
-      this.ui.$imgSymbolMedal.attr('src', 'resources/season_rewards/season_rank_' + this._medal + '.png');
+      this.ui.$imgSymbolMedal.attr(
+        'src',
+        'resources/season_rewards/season_rank_' + this._medal + '.png',
+      );
+      this.ui.$imgSymbolMedal.attr(
+        'src',
+        'resources/season_rewards/season_rank_' + this._medal + '.png',
+      );
     }
   },
 
@@ -395,13 +475,15 @@ var RankCompositeView = Backbone.Marionette.CompositeView.extend({
   },
 
   _showStars: function () {
-    this.children.each(function (childView, index) {
-      if (index < this._stars) {
-        childView.$el.addClass('active');
-      } else {
-        childView.$el.removeClass('active');
-      }
-    }.bind(this));
+    this.children.each(
+      function (childView, index) {
+        if (index < this._stars) {
+          childView.$el.addClass('active');
+        } else {
+          childView.$el.removeClass('active');
+        }
+      }.bind(this),
+    );
   },
 
   _updateStarsRequired: function (starsRequired) {

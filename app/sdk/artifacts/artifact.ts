@@ -33,7 +33,7 @@ class Artifact extends Card {
   // region ### GETTERS / SETTERS ###
 
   setTargetModifiersContextObjects(targetModifiersContextObjects) {
-    return this.targetModifiersContextObjects = targetModifiersContextObjects;
+    return (this.targetModifiersContextObjects = targetModifiersContextObjects);
   }
 
   getTargetModifiersContextObjects() {
@@ -47,12 +47,16 @@ class Artifact extends Card {
   onApplyToBoard(board, x, y, sourceAction) {
     super.onApplyToBoard(board, x, y, sourceAction);
 
-    if (this.getGameSession().getIsRunningAsAuthoritative() && (this.targetModifiersContextObjects != null)) {
+    if (
+      this.getGameSession().getIsRunningAsAuthoritative() &&
+      this.targetModifiersContextObjects != null
+    ) {
       // find all artifacts on the General
       const general = this.getGameSession().getGeneralForPlayerId(this.getOwnerId());
       const modifiersByArtifact = general.getArtifactModifiersGroupedByArtifactCard();
 
-      if (modifiersByArtifact.length >= CONFIG.MAX_ARTIFACTS) { // if there are already max number of artifacts on the General
+      if (modifiersByArtifact.length >= CONFIG.MAX_ARTIFACTS) {
+        // if there are already max number of artifacts on the General
         const artifactModifiers = modifiersByArtifact.shift(); // get all modifiers attached to the oldest artifact
         for (var modifier of Array.from<any>(artifactModifiers)) {
           this.getGameSession().removeModifier(modifier);
@@ -63,7 +67,7 @@ class Artifact extends Card {
       return (() => {
         const result = [];
         for (var modifierContextObject of Array.from<any>(this.targetModifiersContextObjects)) {
-        // artifact modifiers are not visible to the UI
+          // artifact modifiers are not visible to the UI
           modifierContextObject.isHiddenToUI = true;
 
           // artifact modifiers are not removable by normal methods
@@ -74,7 +78,9 @@ class Artifact extends Card {
           modifierContextObject.durability = this.durability;
 
           // apply modifier
-          result.push(this.getGameSession().applyModifierContextObject(modifierContextObject, general));
+          result.push(
+            this.getGameSession().applyModifierContextObject(modifierContextObject, general),
+          );
         }
         return result;
       })();

@@ -49,13 +49,27 @@ var FXDistortionSprite = FXSprite.extend({
 
   setOptions(options) {
     this._super(options);
-    if (options.time != null) { this.setTime(options.time); }
-    if (options.speed != null) { this.setSpeed(options.speed); }
-    if (options.frequency != null) { this.setFrequency(options.frequency); }
-    if (options.amplitude != null) { this.setAmplitude(options.amplitude); }
-    if (options.refraction != null) { this.setRefraction(options.refraction); }
-    if (options.reflection != null) { this.setReflection(options.reflection); }
-    if (options.fresnelBias != null) { this.setFresnelBias(options.fresnelBias); }
+    if (options.time != null) {
+      this.setTime(options.time);
+    }
+    if (options.speed != null) {
+      this.setSpeed(options.speed);
+    }
+    if (options.frequency != null) {
+      this.setFrequency(options.frequency);
+    }
+    if (options.amplitude != null) {
+      this.setAmplitude(options.amplitude);
+    }
+    if (options.refraction != null) {
+      this.setRefraction(options.refraction);
+    }
+    if (options.reflection != null) {
+      this.setReflection(options.reflection);
+    }
+    if (options.fresnelBias != null) {
+      this.setFresnelBias(options.fresnelBias);
+    }
   },
 
   setTime(time) {
@@ -122,7 +136,10 @@ var FXDistortionSprite = FXSprite.extend({
     return zOrder;
   },
   getWorldDepth() {
-    return this._renderCmd._stackMatrix.mat[13] + (this.depthModifier || 0.0) * this._renderCmd._stackMatrix.mat[5];
+    return (
+      this._renderCmd._stackMatrix.mat[13] +
+      (this.depthModifier || 0.0) * this._renderCmd._stackMatrix.mat[5]
+    );
   },
 
   updateTweenAction(value, key) {
@@ -143,7 +160,9 @@ var FXDistortionSprite = FXSprite.extend({
 FXDistortionSprite.WebGLRenderCmd = function (renderable) {
   FXSprite.WebGLRenderCmd.call(this, renderable);
 };
-const proto = FXDistortionSprite.WebGLRenderCmd.prototype = Object.create(FXSprite.WebGLRenderCmd.prototype);
+const proto = (FXDistortionSprite.WebGLRenderCmd.prototype = Object.create(
+  FXSprite.WebGLRenderCmd.prototype,
+));
 proto.constructor = FXDistortionSprite.WebGLRenderCmd;
 
 proto.setDirtyFlag = function (dirtyFlag) {
@@ -170,12 +189,24 @@ proto.renderingDistortion = function () {
   shaderProgram._setUniformForMVPMatrixWithMat4(this._stackMatrix);
   shaderProgram.setUniformLocationWith1f(shaderProgram.loc_depthOffset, node.depthOffset);
   shaderProgram.setUniformLocationWith1f(shaderProgram.loc_depthModifier, node.depthModifier);
-  if (shaderProgram.loc_refraction) { shaderProgram.setUniformLocationWith1f(shaderProgram.loc_refraction, node.refraction); }
-  if (shaderProgram.loc_reflection) { shaderProgram.setUniformLocationWith1f(shaderProgram.loc_reflection, node.reflection); }
-  if (shaderProgram.loc_fresnelBias) { shaderProgram.setUniformLocationWith1f(shaderProgram.loc_fresnelBias, node.fresnelBias); }
-  if (shaderProgram.loc_frequency) { shaderProgram.setUniformLocationWith1f(shaderProgram.loc_frequency, node.frequency); }
-  if (shaderProgram.loc_amplitude) { shaderProgram.setUniformLocationWith1f(shaderProgram.loc_amplitude, node.amplitude); }
-  if (shaderProgram.loc_time) { shaderProgram.setUniformLocationWith1f(shaderProgram.loc_time, node.time); }
+  if (shaderProgram.loc_refraction) {
+    shaderProgram.setUniformLocationWith1f(shaderProgram.loc_refraction, node.refraction);
+  }
+  if (shaderProgram.loc_reflection) {
+    shaderProgram.setUniformLocationWith1f(shaderProgram.loc_reflection, node.reflection);
+  }
+  if (shaderProgram.loc_fresnelBias) {
+    shaderProgram.setUniformLocationWith1f(shaderProgram.loc_fresnelBias, node.fresnelBias);
+  }
+  if (shaderProgram.loc_frequency) {
+    shaderProgram.setUniformLocationWith1f(shaderProgram.loc_frequency, node.frequency);
+  }
+  if (shaderProgram.loc_amplitude) {
+    shaderProgram.setUniformLocationWith1f(shaderProgram.loc_amplitude, node.amplitude);
+  }
+  if (shaderProgram.loc_time) {
+    shaderProgram.setUniformLocationWith1f(shaderProgram.loc_time, node.time);
+  }
   cc.glBindTexture2DN(0, node._texture);
   cc.glBindTexture2DN(1, depthMap);
   cc.glBindTexture2DN(2, refractMap);

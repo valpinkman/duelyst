@@ -20,9 +20,18 @@ class ModifierEndTurnWatchSpawnEgg extends ModifierEndTurnWatchSpawnEntity {
   static description = 'At the end of your turn, summon %X nearby';
 
   static createContextObject(eggDescription, options) {
-    let spawnCount; let spawnDescription; let spawnPattern; let
-      spawnSilently;
-    const contextObject = super.createContextObject({ id: Cards.Faction5.Egg }, (spawnDescription = ''), (spawnCount = 1), (spawnPattern = CONFIG.PATTERN_3x3), (spawnSilently = true), options);
+    let spawnCount;
+    let spawnDescription;
+    let spawnPattern;
+    let spawnSilently;
+    const contextObject = super.createContextObject(
+      { id: Cards.Faction5.Egg },
+      (spawnDescription = ''),
+      (spawnCount = 1),
+      (spawnPattern = CONFIG.PATTERN_3x3),
+      (spawnSilently = true),
+      options,
+    );
     contextObject.eggDescription = eggDescription;
     return contextObject;
   }
@@ -41,16 +50,28 @@ class ModifierEndTurnWatchSpawnEgg extends ModifierEndTurnWatchSpawnEntity {
       if (_.isObject(cardDataOrIndexToSpawn)) {
         cardDataOrIndexToSpawn = UtilsJavascript.fastExtend({}, cardDataOrIndexToSpawn);
       } else {
-        cardDataOrIndexToSpawn = this.getGameSession().getCardByIndex(cardDataOrIndexToSpawn).createNewCardData();
+        cardDataOrIndexToSpawn = this.getGameSession()
+          .getCardByIndex(cardDataOrIndexToSpawn)
+          .createNewCardData();
       }
 
-      if (cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects == null) { cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects = []; }
-      cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects.push(ModifierEgg.createContextObject(this.getCard().createNewCardData(), this.getCard().getName()));
+      if (cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects == null) {
+        cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects = [];
+      }
+      cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects.push(
+        ModifierEgg.createContextObject(
+          this.getCard().createNewCardData(),
+          this.getCard().getName(),
+        ),
+      );
     }
     return cardDataOrIndexToSpawn;
   }
 }
 ModifierEndTurnWatchSpawnEgg.prototype.type = 'ModifierEndTurnWatchSpawnEgg';
-ModifierEndTurnWatchSpawnEgg.prototype.fxResource = ['FX.Modifiers.ModifierStartTurnWatch', 'FX.Modifiers.ModifierGenericSpawn'];
+ModifierEndTurnWatchSpawnEgg.prototype.fxResource = [
+  'FX.Modifiers.ModifierStartTurnWatch',
+  'FX.Modifiers.ModifierGenericSpawn',
+];
 
 module.exports = ModifierEndTurnWatchSpawnEgg;

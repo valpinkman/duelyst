@@ -19,7 +19,8 @@ class SpellChromaticCold extends SpellSilence {
 
     const applyEffectPosition = { x, y };
     const unit = board.getUnitAtPosition(applyEffectPosition);
-    if ((unit != null) && (unit.getOwnerId() !== this.getOwnerId())) { // damage enemies on this space
+    if (unit != null && unit.getOwnerId() !== this.getOwnerId()) {
+      // damage enemies on this space
       const damageAction = new DamageAction(this.getGameSession());
       damageAction.setOwnerId(this.getOwnerId());
       damageAction.setTarget(unit);

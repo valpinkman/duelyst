@@ -27,7 +27,9 @@ class ModifierApplyMinionToBoardWatchApplyModifiersToTarget extends ModifierAppl
 
   static getDescription(modifierContextObject) {
     if (modifierContextObject) {
-      return i18next.t('modifiers.apply_minion_to_board_watch_apply_modifiers_to_target_def', { desc: this.buffDescription });
+      return i18next.t('modifiers.apply_minion_to_board_watch_apply_modifiers_to_target_def', {
+        desc: this.buffDescription,
+      });
     }
     return this.description;
   }
@@ -39,18 +41,27 @@ class ModifierApplyMinionToBoardWatchApplyModifiersToTarget extends ModifierAppl
       const entity = action.getTarget();
       if (entity != null) {
         return Array.from<any>(this.modifiersContextObjects).map((modifierContextObject) =>
-          this.getGameSession().applyModifierContextObject(modifierContextObject, entity));
+          this.getGameSession().applyModifierContextObject(modifierContextObject, entity),
+        );
       }
     }
   }
 }
-ModifierApplyMinionToBoardWatchApplyModifiersToTarget.prototype.type = 'ModifierApplyMinionToBoardWatchApplyModifiersToTarget';
-ModifierApplyMinionToBoardWatchApplyModifiersToTarget.modifierName = i18next.t('modifiers.apply_minion_to_board_watch_apply_modifiers_to_target_name');
-ModifierApplyMinionToBoardWatchApplyModifiersToTarget.description = i18next.t('modifiers.apply_minion_to_board_watch_apply_modifiers_to_target_def');
-ModifierApplyMinionToBoardWatchApplyModifiersToTarget.prototype.fxResource = ['FX.Modifiers.ModifierApplyMinionToBoardWatch', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierApplyMinionToBoardWatchApplyModifiersToTarget.prototype.type =
+  'ModifierApplyMinionToBoardWatchApplyModifiersToTarget';
+ModifierApplyMinionToBoardWatchApplyModifiersToTarget.modifierName = i18next.t(
+  'modifiers.apply_minion_to_board_watch_apply_modifiers_to_target_name',
+);
+ModifierApplyMinionToBoardWatchApplyModifiersToTarget.description = i18next.t(
+  'modifiers.apply_minion_to_board_watch_apply_modifiers_to_target_def',
+);
+ModifierApplyMinionToBoardWatchApplyModifiersToTarget.prototype.fxResource = [
+  'FX.Modifiers.ModifierApplyMinionToBoardWatch',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 
 module.exports = ModifierApplyMinionToBoardWatchApplyModifiersToTarget;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

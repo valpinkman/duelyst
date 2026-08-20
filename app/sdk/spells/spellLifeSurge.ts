@@ -20,7 +20,7 @@ class SpellLifeSurge extends SpellDamage {
     if (!(entity != null ? entity.isGeneral : undefined)) {
       return super.onApplyEffectToBoardTile(board, x, y, sourceAction);
 
-    // your General, gets healed
+      // your General, gets healed
     }
     const general = this.getGameSession().getGeneralForPlayerId(this.getOwnerId());
     const healAction = new HealAction(this.getGameSession());

@@ -17,8 +17,12 @@ class ModifierSummonWatchBuffSelf extends ModifierSummonWatch {
   static description = 'Whenever you summon a minion, this minion gains %X';
 
   static createContextObject(attackBuff, maxHPBuff, appliedName = null, options) {
-    if (attackBuff == null) { attackBuff = 0; }
-    if (maxHPBuff == null) { maxHPBuff = 0; }
+    if (attackBuff == null) {
+      attackBuff = 0;
+    }
+    if (maxHPBuff == null) {
+      maxHPBuff = 0;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.modifiersContextObjects = [
       Modifier.createContextObjectWithAttributeBuffs(attackBuff, maxHPBuff, {
@@ -33,16 +37,28 @@ class ModifierSummonWatchBuffSelf extends ModifierSummonWatch {
   static getDescription(modifierContextObject) {
     if (modifierContextObject) {
       const subContextObject = modifierContextObject.modifiersContextObjects[0];
-      return this.description.replace(/%X/, Stringifiers.stringifyAttackHealthBuff(subContextObject.attributeBuffs.atk, subContextObject.attributeBuffs.maxHP));
+      return this.description.replace(
+        /%X/,
+        Stringifiers.stringifyAttackHealthBuff(
+          subContextObject.attributeBuffs.atk,
+          subContextObject.attributeBuffs.maxHP,
+        ),
+      );
     }
     return this.description;
   }
 
   onSummonWatch(action) {
-    return this.applyManagedModifiersFromModifiersContextObjects(this.modifiersContextObjects, this.getCard());
+    return this.applyManagedModifiersFromModifiersContextObjects(
+      this.modifiersContextObjects,
+      this.getCard(),
+    );
   }
 }
 ModifierSummonWatchBuffSelf.prototype.type = 'ModifierSummonWatchBuffSelf';
-ModifierSummonWatchBuffSelf.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierSummonWatchBuffSelf.prototype.fxResource = [
+  'FX.Modifiers.ModifierSummonWatch',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 
 module.exports = ModifierSummonWatchBuffSelf;

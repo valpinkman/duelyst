@@ -17,7 +17,6 @@ var UtilsUI = require('app/ui/utils_ui');
 var Template = require('./templates/shop_product_view.hbs');
 
 var ShopProductItemView = Backbone.Marionette.ItemView.extend({
-
   tagName: 'li',
   className: 'shop-product-item',
   template: Template,
@@ -41,7 +40,9 @@ var ShopProductItemView = Backbone.Marionette.ItemView.extend({
 
   serializeModel: function (model) {
     var data = model.toJSON.apply(model, _.rest(arguments));
-    data.spirit_cost = data.rarity_id ? SDK.RarityFactory.rarityForIdentifier(data.rarity_id).spiritCostCosmetic : 0;
+    data.spirit_cost = data.rarity_id
+      ? SDK.RarityFactory.rarityForIdentifier(data.rarity_id).spiritCostCosmetic
+      : 0;
     var saleModel = ShopManager.getInstance().getActiveShopSaleModelForSku(data.sku);
 
     // From here on, the sale information should operate only on passed through information, otherwise sales could expire mid flow
@@ -90,9 +91,14 @@ var ShopProductItemView = Backbone.Marionette.ItemView.extend({
     var iconImageResource = RSX[this.model.get('icon_image_resource_name')];
     var iconImageUrl;
     if (iconImageResource != null) {
-      iconImageUrl = iconImageResource.is16Bit ? iconImageResource.img : RSX.getResourcePathForScale(iconImageResource.img, CONFIG.resourceScaleCSS);
+      iconImageUrl = iconImageResource.is16Bit
+        ? iconImageResource.img
+        : RSX.getResourcePathForScale(iconImageResource.img, CONFIG.resourceScaleCSS);
     } else {
-      iconImageUrl = RSX.getResourcePathForScale(this.model.get('icon_image_url'), CONFIG.resourceScaleCSS);
+      iconImageUrl = RSX.getResourcePathForScale(
+        this.model.get('icon_image_url'),
+        CONFIG.resourceScaleCSS,
+      );
     }
     this.$el.show();
     this.ui.product_animation.hide();
@@ -105,7 +111,11 @@ var ShopProductItemView = Backbone.Marionette.ItemView.extend({
     var delay = (index + (0.5 - Math.random()) * 2.0) / 10;
     this.$el.css('animation-delay', delay + 's');
 
-    this.listenTo(InventoryManager.getInstance().getCosmeticsCollection(), 'add', this.onCosmeticAddedToCollection);
+    this.listenTo(
+      InventoryManager.getInstance().getCosmeticsCollection(),
+      'add',
+      this.onCosmeticAddedToCollection,
+    );
   },
 
   onDestroy: function () {
@@ -139,9 +149,20 @@ var ShopProductItemView = Backbone.Marionette.ItemView.extend({
   isBundlePurchased: function () {
     if (this.model.get('type') === 'cosmetics_bundle') {
       var cosmeticsInBundle = this.model.get('bundle_cosmetic_ids');
-      return _.reduce(cosmeticsInBundle, function (memo, bundleCosmeticId) {
-        return memo && InventoryManager.getInstance().getCosmeticsCollection().find(function (c) { return c.get('cosmetic_id') === bundleCosmeticId; });
-      }, true);
+      return _.reduce(
+        cosmeticsInBundle,
+        function (memo, bundleCosmeticId) {
+          return (
+            memo &&
+            InventoryManager.getInstance()
+              .getCosmeticsCollection()
+              .find(function (c) {
+                return c.get('cosmetic_id') === bundleCosmeticId;
+              })
+          );
+        },
+        true,
+      );
     } else {
       return false;
     }
@@ -164,7 +185,6 @@ var ShopProductItemView = Backbone.Marionette.ItemView.extend({
       this.trigger('select_product', saleData);
     }
   },
-
 });
 
 module.exports = ShopProductItemView;

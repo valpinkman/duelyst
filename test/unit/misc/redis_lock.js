@@ -19,7 +19,9 @@ function fakeRedis() {
     set(key, value, ...args) {
       this.calls.push(['set', key, value, ...args]);
       const nx = args.includes('NX');
-      if (nx && store.has(key)) { return Promise.resolve(null); }
+      if (nx && store.has(key)) {
+        return Promise.resolve(null);
+      }
       store.set(key, value);
       return Promise.resolve('OK');
     },
@@ -44,7 +46,7 @@ describe('redis lock', () => {
     expect(unlock).to.be.a('function');
   });
 
-  it('uses warlock\'s key format so stored data is unchanged', async () => {
+  it("uses warlock's key format so stored data is unchanged", async () => {
     const redis = fakeRedis();
     await makeLock(redis).lock('player1', 5000);
     expect([...redis.store.keys()]).to.deep.equal(['player1:lock']);
@@ -107,8 +109,12 @@ describe('redis lock', () => {
   it('rejects non-string keys, like warlock did', async () => {
     const lock = makeLock(fakeRedis());
     const errs = await Promise.all(
-      [() => lock.lock(42, 1), () => lock.isLocked(42)]
-        .map((fn) => fn().then(() => null, (e) => e.message)),
+      [() => lock.lock(42, 1), () => lock.isLocked(42)].map((fn) =>
+        fn().then(
+          () => null,
+          (e) => e.message,
+        ),
+      ),
     );
     expect(errs).to.deep.equal(['lock key must be string', 'lock key must be string']);
   });

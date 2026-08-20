@@ -47,10 +47,7 @@ class BeginnerSonghaiChallenge2 extends Challenge {
   }
 
   getOpponentPlayerDeckData(gameSession) {
-    return [
-      { id: Cards.Faction6.General },
-      { id: Cards.TutorialSpell.TutorialFrozenFinisher },
-    ];
+    return [{ id: Cards.Faction6.General }, { id: Cards.TutorialSpell.TutorialFrozenFinisher }];
   }
 
   setupBoard(gameSession) {
@@ -78,24 +75,37 @@ class BeginnerSonghaiChallenge2 extends Challenge {
   setupOpponentAgent(gameSession) {
     super.setupOpponentAgent(gameSession);
 
-    this._opponentAgent.addActionForTurn(0, AgentActions.createAgentSoftActionShowInstructionLabels([{
-      label: i18next.t('challenges.beginner_songhai_2_taunt'),
-      isSpeech: true,
-      yPosition: 0.6,
-      isOpponent: true,
-      isPersistent: true,
-    },
-    ]));
-    return this._opponentAgent.addActionForTurn(0, AgentActions.createAgentActionPlayCardFindPosition(0, () => [GameSession.getInstance().getGeneralForPlayer1().getPosition()]));
+    this._opponentAgent.addActionForTurn(
+      0,
+      AgentActions.createAgentSoftActionShowInstructionLabels([
+        {
+          label: i18next.t('challenges.beginner_songhai_2_taunt'),
+          isSpeech: true,
+          yPosition: 0.6,
+          isOpponent: true,
+          isPersistent: true,
+        },
+      ]),
+    );
+    return this._opponentAgent.addActionForTurn(
+      0,
+      AgentActions.createAgentActionPlayCardFindPosition(0, () => [
+        GameSession.getInstance().getGeneralForPlayer1().getPosition(),
+      ]),
+    );
   }
 }
 BeginnerSonghaiChallenge2.prototype.type = 'BeginnerSonghaiChallenge2';
 BeginnerSonghaiChallenge2.prototype.categoryType = ChallengeCategory.starter.type;
 BeginnerSonghaiChallenge2.prototype.name = i18next.t('challenges.beginner_songhai_2_title');
-BeginnerSonghaiChallenge2.prototype.description = i18next.t('challenges.beginner_songhai_2_description');
+BeginnerSonghaiChallenge2.prototype.description = i18next.t(
+  'challenges.beginner_songhai_2_description',
+);
 BeginnerSonghaiChallenge2.prototype.iconUrl = RSX.speech_portrait_songhai.img;
 BeginnerSonghaiChallenge2.prototype._musicOverride = RSX.music_battlemap_songhai.audio;
-BeginnerSonghaiChallenge2.prototype.otkChallengeStartMessage = i18next.t('challenges.beginner_songhai_2_start');
+BeginnerSonghaiChallenge2.prototype.otkChallengeStartMessage = i18next.t(
+  'challenges.beginner_songhai_2_start',
+);
 BeginnerSonghaiChallenge2.prototype.otkChallengeFailureMessages = [
   i18next.t('challenges.beginner_songhai_2_fail'),
 ];

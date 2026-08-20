@@ -25,13 +25,22 @@ class ModifierOpponentSummonWatchSpawn1HealthClone extends ModifierOpponentSummo
 
   static type = 'ModifierOpponentSummonWatchSpawn1HealthClone';
   static modifierName = 'Opponent Summon Watch';
-  static description = 'Whenever an enemy summons a minion, summon a 1 health clone nearby your general';
+  static description =
+    'Whenever an enemy summons a minion, summon a 1 health clone nearby your general';
 
   static createContextObject(spawnDescription, spawnCount, spawnPattern, spawnSilently, options) {
-    if (spawnDescription == null) { spawnDescription = ''; }
-    if (spawnCount == null) { spawnCount = 1; }
-    if (spawnPattern == null) { spawnPattern = CONFIG.PATTERN_3x3; }
-    if (spawnSilently == null) { spawnSilently = false; }
+    if (spawnDescription == null) {
+      spawnDescription = '';
+    }
+    if (spawnCount == null) {
+      spawnCount = 1;
+    }
+    if (spawnPattern == null) {
+      spawnPattern = CONFIG.PATTERN_3x3;
+    }
+    if (spawnSilently == null) {
+      spawnSilently = false;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.spawnDescription = spawnDescription;
     contextObject.spawnCount = spawnCount;
@@ -44,7 +53,12 @@ class ModifierOpponentSummonWatchSpawn1HealthClone extends ModifierOpponentSummo
   static getDescription(modifierContextObject) {
     if (modifierContextObject) {
       let replaceText = '';
-      if (UtilsPosition.getArraysOfPositionsAreEqual(modifierContextObject.spawnPattern, CONFIG.PATTERN_1x1)) {
+      if (
+        UtilsPosition.getArraysOfPositionsAreEqual(
+          modifierContextObject.spawnPattern,
+          CONFIG.PATTERN_1x1,
+        )
+      ) {
         replaceText = `a ${modifierContextObject.spawnDescription} in the same space`;
       } else if (modifierContextObject.spawnCount === 1) {
         replaceText = `a ${modifierContextObject.spawnDescription} into a nearby space`;
@@ -67,17 +81,31 @@ class ModifierOpponentSummonWatchSpawn1HealthClone extends ModifierOpponentSummo
       const cloningEntity = this.getEntityToSpawn(summonedPosition.x, summonedPosition.y);
       if (cloningEntity != null) {
         this.cardDataOrIndexToSpawn = cloningEntity.createNewCardData();
-        const spawnPositions = UtilsGameSession.getRandomNonConflictingSmartSpawnPositionsForModifier(this, ModifierOpponentSummonWatchSpawn1HealthClone);
+        const spawnPositions =
+          UtilsGameSession.getRandomNonConflictingSmartSpawnPositionsForModifier(
+            this,
+            ModifierOpponentSummonWatchSpawn1HealthClone,
+          );
         return (() => {
           const result = [];
           for (var spawnPosition of Array.from<any>(spawnPositions)) {
-            var spawnEntityAction = new CloneEntityAsTransformAction(this.getGameSession(), this.getOwnerId(), spawnPosition.x, spawnPosition.y);
+            var spawnEntityAction = new CloneEntityAsTransformAction(
+              this.getGameSession(),
+              this.getOwnerId(),
+              spawnPosition.x,
+              spawnPosition.y,
+            );
             spawnEntityAction.setOwnerId(this.getSpawnOwnerId(action));
             spawnEntityAction.setSource(cloningEntity);
             this.getGameSession().executeAction(spawnEntityAction);
             // make the clone 1 health
             var spawnedClone = spawnEntityAction.getCard();
-            var set1Health = Modifier.createContextObjectWithRebasedAttributeBuffs(0, 1, false, true);
+            var set1Health = Modifier.createContextObjectWithRebasedAttributeBuffs(
+              0,
+              1,
+              false,
+              true,
+            );
             set1Health.appliedName = 'Imperfect Clone';
             set1Health.appliedDescription = '1 Health';
             result.push(this.getGameSession().applyModifierContextObject(set1Health, spawnedClone));
@@ -104,9 +132,13 @@ class ModifierOpponentSummonWatchSpawn1HealthClone extends ModifierOpponentSummo
     return true;
   }
 }
-ModifierOpponentSummonWatchSpawn1HealthClone.prototype.type = 'ModifierOpponentSummonWatchSpawn1HealthClone';
+ModifierOpponentSummonWatchSpawn1HealthClone.prototype.type =
+  'ModifierOpponentSummonWatchSpawn1HealthClone';
 ModifierOpponentSummonWatchSpawn1HealthClone.prototype.cardDataOrIndexToSpawn = null;
-ModifierOpponentSummonWatchSpawn1HealthClone.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericSpawn'];
+ModifierOpponentSummonWatchSpawn1HealthClone.prototype.fxResource = [
+  'FX.Modifiers.ModifierSummonWatch',
+  'FX.Modifiers.ModifierGenericSpawn',
+];
 // default when no card restrictions are needed
 
 module.exports = ModifierOpponentSummonWatchSpawn1HealthClone;

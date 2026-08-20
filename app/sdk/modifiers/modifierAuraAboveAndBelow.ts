@@ -21,7 +21,10 @@ class ModifierAuraAboveAndBelow extends Modifier {
 
     for (var card of Array.from<any>(potentialCards)) {
       var entityPosition = card.getPosition();
-      if ((Math.abs(entityPosition.x - generalPosition.x) === 0) && (Math.abs(entityPosition.y - generalPosition.y) <= 1)) {
+      if (
+        Math.abs(entityPosition.x - generalPosition.x) === 0 &&
+        Math.abs(entityPosition.y - generalPosition.y) <= 1
+      ) {
         finalFilteredCards.push(card);
       }
     }

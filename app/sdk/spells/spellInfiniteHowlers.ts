@@ -11,7 +11,9 @@ class SpellInfiniteHowlers extends SpellSpawnEntity {
   onApplyToBoard(board, x, y, sourceAction) {
     super.onApplyToBoard(board, x, y, sourceAction);
 
-    const a = new PutCardInHandAction(this.getGameSession(), this.getOwnerId(), { id: Cards.Spell.InfiniteHowlers });
+    const a = new PutCardInHandAction(this.getGameSession(), this.getOwnerId(), {
+      id: Cards.Spell.InfiniteHowlers,
+    });
     return this.getGameSession().executeAction(a);
   }
 }

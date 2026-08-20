@@ -15,10 +15,13 @@ const PromiseUtils = require('app/common/utils/utils_promise');
 
 class Session extends EventEmitter {
   constructor(options?) {
-    if (options == null) { options = {}; }
+    if (options == null) {
+      options = {};
+    }
     super();
     this.url = process.env.API_URL || options.url || 'http://localhost:5000';
-    this.fbUrl = process.env.FIREBASE_URL || options.fbUrl || 'https://duelyst-development.firebaseio.com/';
+    this.fbUrl =
+      process.env.FIREBASE_URL || options.fbUrl || 'https://duelyst-development.firebaseio.com/';
     debug(`constructor: ${this.url} : ${this.fbUrl}`);
     // init props for reference
     this.fbRef = null;
@@ -34,15 +37,14 @@ class Session extends EventEmitter {
   _checkResponse(res) {
     if (res.ok) {
       debug(`_checkResponse: ${res.status}`);
-      return res.json()
-        .then((data) => {
-          data.status = res.status;
-          return data;
-        });
+      return res.json().then((data) => {
+        data.status = res.status;
+        return data;
+      });
     }
     const err = new Error(res.statusText);
     err.status = res.status;
-    if ((res.status === 400) || (res.status === 401)) {
+    if (res.status === 400 || res.status === 401) {
       return res.json().then((data) => {
         err.innerMessage = data.codeMessage ? data.codeMessage : data.message;
         debug(`_checkResponse: ${res.status} : ${err.message} : ${err.innerMessage}`);
@@ -76,7 +78,8 @@ class Session extends EventEmitter {
     debug('authFirebase');
     this.fbRef = new Firebase(this.fbUrl);
     return Promise.resolve(
-      Firebase.auth().signInWithCustomToken(firebaseToken)
+      Firebase.auth()
+        .signInWithCustomToken(firebaseToken)
         .then((credential) => credential.user.getIdTokenResult()),
     ).then((result) => ({
       auth: {
@@ -91,14 +94,10 @@ class Session extends EventEmitter {
   _deauthFirebase() {
     debug('deauthFirebase');
     if (this.userId) {
-      this.fbRef
-        .child('users')
-        .child(this.userId)
-        .child('presence')
-        .update({
-          status: 'offline',
-          ended: Firebase.ServerValue.TIMESTAMP,
-        });
+      this.fbRef.child('users').child(this.userId).child('presence').update({
+        status: 'offline',
+        ended: Firebase.ServerValue.TIMESTAMP,
+      });
     }
     // v2's ref.unauth() became a sign-out on the auth instance
     return Firebase.auth().signOut();
@@ -108,7 +107,7 @@ class Session extends EventEmitter {
     debug('_decodeFirebaseToken');
     this.userId = token.auth.id;
     this.username = token.auth.username;
-    return this.expires = token.expires;
+    return (this.expires = token.expires);
   }
 
   /*
@@ -119,23 +118,28 @@ class Session extends EventEmitter {
   }
 
   login(username, password, silent?) {
-    if (silent == null) { silent = false; }
+    if (silent == null) {
+      silent = false;
+    }
     debug(`login: ${username}`);
 
     const body: Record<string, any> = {};
     body.password = password;
     body.username = username;
 
-    return PromiseUtils.withTimeout(Promise.resolve(
-      fetch(`${this.url}/session`, {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body),
-      }),
-    ), 10000)
+    return PromiseUtils.withTimeout(
+      Promise.resolve(
+        fetch(`${this.url}/session`, {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(body),
+        }),
+      ),
+      10000,
+    )
       .catch(this._networkError.bind(this))
       .then(this._checkResponse.bind(this))
       .then((res) => {
@@ -191,16 +195,19 @@ class Session extends EventEmitter {
 
     opts.is_desktop = window.isDesktop || false;
 
-    return PromiseUtils.withTimeout(Promise.resolve(
-      fetch(`${this.url}/session/register`, {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(opts),
-      }),
-    ), 10000)
+    return PromiseUtils.withTimeout(
+      Promise.resolve(
+        fetch(`${this.url}/session/register`, {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(opts),
+        }),
+      ),
+      10000,
+    )
       .catch(this._networkError.bind(this))
       .then(this._checkResponse.bind(this))
       .then((data) => {
@@ -223,86 +230,103 @@ class Session extends EventEmitter {
       }),
     )
       .then((res) => {
-      // available
-        if (res.ok) { return true; }
+        // available
+        if (res.ok) {
+          return true;
+        }
         // 401 result suggests username is bad or unavailable
-        if (res.status === 401) { return false; }
+        if (res.status === 401) {
+          return false;
+        }
         // all other results suggest server is unavailable or had an error
         // so assume username is valid and let the server handle it in the later registration request
         return true;
-      }).catch((e) => {
+      })
+      .catch((e) => {
         debug(`isUsernameAvailable ${e.message}`);
         return true;
       });
   }
 
   changeUsername(new_username) {
-    return PromiseUtils.withTimeout(Promise.resolve(
-      fetch(`${this.url}/session/change_username`, {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.token}`,
-        },
-        body: JSON.stringify({ new_username }),
-      }),
-    ), 10000)
+    return PromiseUtils.withTimeout(
+      Promise.resolve(
+        fetch(`${this.url}/session/change_username`, {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${this.token}`,
+          },
+          body: JSON.stringify({ new_username }),
+        }),
+      ),
+      10000,
+    )
       .catch(this._networkError.bind(this))
       .then(this._checkResponse.bind(this));
   }
 
   changePassword(currentPassword, new_password) {
-    return PromiseUtils.withTimeout(Promise.resolve(
-      fetch(`${this.url}/session/change_password`, {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.token}`,
-        },
-        body: JSON.stringify({
-          current_password: currentPassword,
-          new_password,
+    return PromiseUtils.withTimeout(
+      Promise.resolve(
+        fetch(`${this.url}/session/change_password`, {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${this.token}`,
+          },
+          body: JSON.stringify({
+            current_password: currentPassword,
+            new_password,
+          }),
         }),
-      }),
-    ), 5000)
+      ),
+      5000,
+    )
       .catch(this._networkError.bind(this))
       .then(this._checkResponse.bind(this));
   }
 
   changePortrait(portraitId?) {
-    if ((portraitId == null)) {
+    if (portraitId == null) {
       return Promise.reject(new Error('Invalid portrait!'));
     }
 
-    return PromiseUtils.withTimeout(Promise.resolve(
-      fetch(`${this.url}/api/me/profile/portrait_id`, {
-        method: 'PUT',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.token}`,
-        },
-        body: JSON.stringify({ portrait_id: portraitId }),
-      }),
-    ), 5000)
+    return PromiseUtils.withTimeout(
+      Promise.resolve(
+        fetch(`${this.url}/api/me/profile/portrait_id`, {
+          method: 'PUT',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${this.token}`,
+          },
+          body: JSON.stringify({ portrait_id: portraitId }),
+        }),
+      ),
+      5000,
+    )
       .catch(this._networkError.bind(this))
       .then(this._checkResponse.bind(this));
   }
 
   changeBattlemap(battlemapId) {
-    return PromiseUtils.withTimeout(Promise.resolve(
-      fetch(`${this.url}/api/me/profile/battle_map_id`, {
-        method: 'PUT',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.token}`,
-        },
-        body: JSON.stringify({ battle_map_id: battlemapId }),
-      }),
-    ), 5000)
+    return PromiseUtils.withTimeout(
+      Promise.resolve(
+        fetch(`${this.url}/api/me/profile/battle_map_id`, {
+          method: 'PUT',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${this.token}`,
+          },
+          body: JSON.stringify({ battle_map_id: battlemapId }),
+        }),
+      ),
+      5000,
+    )
       .catch(this._networkError.bind(this))
       .then(this._checkResponse.bind(this));
   }
@@ -322,31 +346,42 @@ class Session extends EventEmitter {
    * authenticate to Firebase with that.
    */
   isAuthenticated(token?) {
-    if ((token == null)) { return Promise.resolve(false); }
+    if (token == null) {
+      return Promise.resolve(false);
+    }
 
     this.token = token;
-    return PromiseUtils.withTimeout(Promise.resolve(
-      fetch(`${this.url}/session`, {
-        method: 'GET',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      }),
-    ), 15000)
+    return PromiseUtils.withTimeout(
+      Promise.resolve(
+        fetch(`${this.url}/session`, {
+          method: 'GET',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        }),
+      ),
+      15000,
+    )
       .then((res) => {
         debug(`isAuthenticated:fetch ${res.ok}`);
-        if (!res.ok) { return null; }
+        if (!res.ok) {
+          return null;
+        }
         // TODO: @marwan what is the proper way to prevent _checkResponse's errors from causing this to go to the try catch
         // I'm guessing you were trying to avoid that by only checking res.ok?
         return this._checkResponse(res);
       })
       .then((data) => {
-        if (data === null) { return null; }
+        if (data === null) {
+          return null;
+        }
         this.analyticsData = data.analytics_data;
         // the server re-issues both on every session check
-        if (data.token) { this.token = data.token; }
+        if (data.token) {
+          this.token = data.token;
+        }
         return this._authFirebase(data.firebase_token).then((decoded) => {
           debug('isAuthenticated:authFirebase', decoded);
           this.userId = decoded.auth.id;
@@ -356,9 +391,15 @@ class Session extends EventEmitter {
         });
       })
       .then((data) => {
-        if (data === null) { return false; }
+        if (data === null) {
+          return false;
+        }
 
-        this.emit('login', { token: this.token, userId: this.userId, analyticsData: this.analyticsData });
+        this.emit('login', {
+          token: this.token,
+          userId: this.userId,
+          analyticsData: this.analyticsData,
+        });
         return true;
       })
       .catch((e) => {
@@ -368,8 +409,12 @@ class Session extends EventEmitter {
   }
 
   refreshToken(silent?) {
-    if (silent == null) { silent = false; }
-    if ((this.token == null)) { return Promise.resolve(null); }
+    if (silent == null) {
+      silent = false;
+    }
+    if (this.token == null) {
+      return Promise.resolve(null);
+    }
     return Promise.resolve(
       fetch(`${this.url}/session`, {
         method: 'GET',
@@ -382,10 +427,15 @@ class Session extends EventEmitter {
     )
       .then((res) => {
         debug(`refreshToken:fetch ${res.ok}`);
-        if (!res.ok) { return null; }
+        if (!res.ok) {
+          return null;
+        }
         return this._checkResponse(res);
-      }).then((data) => {
-        if (data === null) { return null; }
+      })
+      .then((data) => {
+        if (data === null) {
+          return null;
+        }
         // override existing token and analytics with new ones
         this.token = data.token;
         this.analyticsData = data.analytics_data;
@@ -397,7 +447,11 @@ class Session extends EventEmitter {
         this.expires = decodedToken.expires;
         // emit login event with whatever data we currently have
         if (!silent) {
-          this.emit('login', { token: this.token, analyticsData: this.analyticsData, userId: this.userId });
+          this.emit('login', {
+            token: this.token,
+            analyticsData: this.analyticsData,
+            userId: this.userId,
+          });
         }
         return true;
       })
@@ -411,17 +465,19 @@ class Session extends EventEmitter {
   // Note: this can change during the session if a new day begins
   getIsFirstSessionOfDay() {
     // If no analytics data this is being called before auth, shouldn't happen but return false
-    if ((this.analyticsData == null)) {
+    if (this.analyticsData == null) {
       return false;
     }
 
     // Having no last_session_at means this is their first session ever
-    if ((this.analyticsData.last_session_at == null)) {
+    if (this.analyticsData.last_session_at == null) {
       return true;
     }
 
     const startOfTodayMoment = moment.utc().startOf('day');
-    const lastSessionStartOfDayMoment = moment.utc(this.analyticsData.last_session_at).startOf('day');
+    const lastSessionStartOfDayMoment = moment
+      .utc(this.analyticsData.last_session_at)
+      .startOf('day');
 
     return lastSessionStartOfDayMoment.valueOf() < startOfTodayMoment.valueOf();
   }

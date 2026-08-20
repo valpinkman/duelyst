@@ -42,7 +42,10 @@ const getScoreForApplyModifiersFromCardWithIntentToCard = function (card, intent
 const ScoreForIntentApplyModifiers = function (card, targetPosition, cardIntents) {
   let score = 0;
   const cardId = card.getBaseCardId();
-  const validIntents = cardIntents != null ? CardIntent.filterIntentsByIntentType(cardIntents, CardIntentType.ApplyModifiers) : CardIntent.getIntentsByIntentType(cardId, CardIntentType.ApplyModifiers);
+  const validIntents =
+    cardIntents != null
+      ? CardIntent.filterIntentsByIntentType(cardIntents, CardIntentType.ApplyModifiers)
+      : CardIntent.getIntentsByIntentType(cardId, CardIntentType.ApplyModifiers);
 
   _.each(validIntents, (intent) => {
     const cards = CardIntent.getCardsTargetedByCardWithIntent(card, intent, targetPosition);

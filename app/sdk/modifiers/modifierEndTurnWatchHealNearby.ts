@@ -21,8 +21,12 @@ class ModifierEndTurnWatchHealNearby extends ModifierEndTurnWatch {
   static description = 'At the end of your turn, restore %X Health to all nearby friendly minions';
 
   static createContextObject(healAmount, healGeneral, options) {
-    if (healAmount == null) { healAmount = 1; }
-    if (healGeneral == null) { healGeneral = false; }
+    if (healAmount == null) {
+      healAmount = 1;
+    }
+    if (healGeneral == null) {
+      healGeneral = false;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.healAmount = healAmount;
     contextObject.healGeneral = healGeneral;
@@ -37,7 +41,9 @@ class ModifierEndTurnWatchHealNearby extends ModifierEndTurnWatch {
   }
 
   onTurnWatch(action) {
-    const entities = this.getGameSession().getBoard().getFriendlyEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
+    const entities = this.getGameSession()
+      .getBoard()
+      .getFriendlyEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
     return (() => {
       const result = [];
       for (var entity of Array.from<any>(entities)) {
@@ -59,6 +65,9 @@ class ModifierEndTurnWatchHealNearby extends ModifierEndTurnWatch {
 ModifierEndTurnWatchHealNearby.prototype.type = 'ModifierEndTurnWatchHealNearby';
 ModifierEndTurnWatchHealNearby.prototype.healAmount = 0;
 ModifierEndTurnWatchHealNearby.prototype.healGeneral = false;
-ModifierEndTurnWatchHealNearby.prototype.fxResource = ['FX.Modifiers.ModifierEndTurnWatch', 'FX.Modifiers.ModifierGenericHeal'];
+ModifierEndTurnWatchHealNearby.prototype.fxResource = [
+  'FX.Modifiers.ModifierEndTurnWatch',
+  'FX.Modifiers.ModifierGenericHeal',
+];
 
 module.exports = ModifierEndTurnWatchHealNearby;

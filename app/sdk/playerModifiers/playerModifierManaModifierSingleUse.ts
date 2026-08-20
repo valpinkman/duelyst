@@ -22,10 +22,12 @@ class PlayerModifierManaModifierSingleUse extends PlayerModifierManaModifier {
       super.onAction(event);
 
       // when a card was played from hand
-      const {
-        action,
-      } = event;
-      if (((action instanceof PlayCardFromHandAction && this.auraIncludeHand) || (action instanceof PlaySignatureCardAction && this.auraIncludeSignatureCards)) && (action.getOwnerId() === this.getPlayerId())) {
+      const { action } = event;
+      if (
+        ((action instanceof PlayCardFromHandAction && this.auraIncludeHand) ||
+          (action instanceof PlaySignatureCardAction && this.auraIncludeSignatureCards)) &&
+        action.getOwnerId() === this.getPlayerId()
+      ) {
         let card;
         if (action.overrideCardData) {
           card = action._private.originalCard;
@@ -38,9 +40,12 @@ class PlayerModifierManaModifierSingleUse extends PlayerModifierManaModifier {
           return (() => {
             const result = [];
             for (var modifier of Array.from<any>(modifiers)) {
-            // if the card has any active modifiers that this is the parent modifier for
-            // then we know this modifier was used to modify the cost of the card
-              if (modifier instanceof ModifierManaCostChange && (modifier.getAppliedByModifierIndex() === this.getIndex())) {
+              // if the card has any active modifiers that this is the parent modifier for
+              // then we know this modifier was used to modify the cost of the card
+              if (
+                modifier instanceof ModifierManaCostChange &&
+                modifier.getAppliedByModifierIndex() === this.getIndex()
+              ) {
                 this.getGameSession().removeModifier(this);
                 break;
               } else {

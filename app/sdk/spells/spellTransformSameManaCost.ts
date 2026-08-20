@@ -29,14 +29,20 @@ class SpellTransformSameManaCost extends Spell {
       let card;
       let cardCache = [];
       if (this.getGameSession().getGameFormat() === GameFormat.Standard) {
-        cardCache = this.getGameSession().getCardCaches().getIsLegacy(false).getIsHiddenInCollection(false)
+        cardCache = this.getGameSession()
+          .getCardCaches()
+          .getIsLegacy(false)
+          .getIsHiddenInCollection(false)
           .getIsGeneral(false)
           .getIsPrismatic(false)
           .getIsSkinned(false)
           .getType(CardType.Unit)
           .getCards();
       } else {
-        cardCache = this.getGameSession().getCardCaches().getIsHiddenInCollection(false).getIsGeneral(false)
+        cardCache = this.getGameSession()
+          .getCardCaches()
+          .getIsHiddenInCollection(false)
+          .getIsGeneral(false)
           .getIsPrismatic(false)
           .getIsSkinned(false)
           .getType(CardType.Unit)
@@ -44,7 +50,10 @@ class SpellTransformSameManaCost extends Spell {
       }
       let cards = [];
       for (card of Array.from<any>(cardCache)) {
-        if ((card.getManaCost() === targetManaCost) && (card.getBaseCardId() !== targetUnit.getBaseCardId())) {
+        if (
+          card.getManaCost() === targetManaCost &&
+          card.getBaseCardId() !== targetUnit.getBaseCardId()
+        ) {
           cards.push(card);
         }
       }
@@ -64,10 +73,24 @@ class SpellTransformSameManaCost extends Spell {
         // pick randomly from among the units we found with right mana cost
         card = cards[this.getGameSession().getRandomIntegerForExecution(cards.length)];
         this.cardDataOrIndexToSpawn = card.createNewCardData();
-        if (this.cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects == null) { this.cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects = []; }
-        this.cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects.push(ModifierTransformed.createContextObject(targetUnit.getExhausted(), targetUnit.getMovesMade(), targetUnit.getAttacksMade()));
+        if (this.cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects == null) {
+          this.cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects = [];
+        }
+        this.cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects.push(
+          ModifierTransformed.createContextObject(
+            targetUnit.getExhausted(),
+            targetUnit.getMovesMade(),
+            targetUnit.getAttacksMade(),
+          ),
+        );
 
-        const spawnEntityAction = new PlayCardAsTransformAction(this.getGameSession(), targetOwnerId, targetPosition.x, targetPosition.y, this.cardDataOrIndexToSpawn);
+        const spawnEntityAction = new PlayCardAsTransformAction(
+          this.getGameSession(),
+          targetOwnerId,
+          targetPosition.x,
+          targetPosition.y,
+          this.cardDataOrIndexToSpawn,
+        );
         return this.getGameSession().executeAction(spawnEntityAction);
       }
     }

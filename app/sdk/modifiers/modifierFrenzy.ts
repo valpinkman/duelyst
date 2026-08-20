@@ -40,12 +40,18 @@ class ModifierFrenzy extends Modifier {
 
   getIsActionRelevant(a) {
     // frenzy when we notice our entity is attacking, but only on an explict attack (i.e. not on a strikeback)
-    if ((a.getSource() === this.getCard()) && ((a instanceof AttackAction && !a.getIsImplicit()) || a instanceof ForcedAttackAction)) {
+    if (
+      a.getSource() === this.getCard() &&
+      ((a instanceof AttackAction && !a.getIsImplicit()) || a instanceof ForcedAttackAction)
+    ) {
       // check if attack is in melee range
       const target = a.getTarget();
       const targetPosition = target.getPosition();
       const entityPosition = this.getCard().getPosition();
-      return (Math.abs(targetPosition.x - entityPosition.x) <= 1) && (Math.abs(targetPosition.y - entityPosition.y) <= 1);
+      return (
+        Math.abs(targetPosition.x - entityPosition.x) <= 1 &&
+        Math.abs(targetPosition.y - entityPosition.y) <= 1
+      );
     }
     return false;
   }
@@ -55,7 +61,11 @@ class ModifierFrenzy extends Modifier {
     const target = a.getTarget();
 
     // find all other attackable enemy entities
-    for (var entity of Array.from<any>(this.getGameSession().getBoard().getEnemyEntitiesAroundEntity(this.getCard(), CardType.Unit, 1))) {
+    for (var entity of Array.from<any>(
+      this.getGameSession()
+        .getBoard()
+        .getEnemyEntitiesAroundEntity(this.getCard(), CardType.Unit, 1),
+    )) {
       if (entity !== target) {
         entities.push(entity);
       }

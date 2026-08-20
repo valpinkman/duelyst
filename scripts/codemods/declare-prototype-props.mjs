@@ -43,7 +43,10 @@ for (const file of process.argv.slice(2)) {
     let depth = 0;
     for (let i = start; i < src.length; i += 1) {
       if (src[i] === '{') depth += 1;
-      else if (src[i] === '}') { depth -= 1; if (depth === 0) return i; }
+      else if (src[i] === '}') {
+        depth -= 1;
+        if (depth === 0) return i;
+      }
     }
     return src.length;
   };
@@ -55,10 +58,14 @@ for (const file of process.argv.slice(2)) {
       // (`Foo = class Foo {` matches from the `=`, so the text before it on
       // that line is `  Foo `, not indentation.)
       const line = (src.slice(0, m.index).match(/[^\n]*$/) || [''])[0];
-      return { name: m[1], open: m.index + m[0].length - 1, indent: (line.match(/^\s*/) || [''])[0] };
+      return {
+        name: m[1],
+        open: m.index + m[0].length - 1,
+        indent: (line.match(/^\s*/) || [''])[0],
+      };
     })
     .map((c) => ({ ...c, end: bodyEnd(c.open) }))
-    .sort((a, b) => (a.end - a.open) - (b.end - b.open)); // smallest body first = innermost
+    .sort((a, b) => a.end - a.open - (b.end - b.open)); // smallest body first = innermost
 
   const claimed = new Set();
   const inserts = [];
@@ -72,7 +79,10 @@ for (const file of process.argv.slice(2)) {
     }
     const uniqueOwn = [...new Set(own)];
     if (uniqueOwn.length) {
-      inserts.push({ at: c.open + 1, text: `\n${uniqueOwn.map((n) => `${c.indent}  declare ${n}: any;`).join('\n')}` });
+      inserts.push({
+        at: c.open + 1,
+        text: `\n${uniqueOwn.map((n) => `${c.indent}  declare ${n}: any;`).join('\n')}`,
+      });
       console.log(`${file}: ${c.name} -> ${uniqueOwn.length}`);
     }
   }

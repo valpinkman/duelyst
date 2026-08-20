@@ -25,7 +25,10 @@ class QuestLegacyLaunch extends Quest {
 
   _progressForGameDataForPlayerId(gameData, playerId) {
     for (var player of Array.from<any>(gameData.players)) {
-      var playerSetupData = UtilsGameSession.getPlayerSetupDataForPlayerId(gameData, player.playerId);
+      var playerSetupData = UtilsGameSession.getPlayerSetupDataForPlayerId(
+        gameData,
+        player.playerId,
+      );
       if (gameData.gameType === GameType.Casual) {
         return 1;
       }
@@ -38,7 +41,9 @@ class QuestLegacyLaunch extends Quest {
   }
 
   isAvailableOn(momentUtc) {
-    return momentUtc.isAfter(moment.utc('2018-03-14')) && momentUtc.isBefore(moment.utc('2018-04-30'));
+    return (
+      momentUtc.isAfter(moment.utc('2018-03-14')) && momentUtc.isBefore(moment.utc('2018-04-30'))
+    );
   }
 
   expiresOn() {

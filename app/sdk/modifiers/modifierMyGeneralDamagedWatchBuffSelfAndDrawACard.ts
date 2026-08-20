@@ -29,10 +29,16 @@ class ModifierMyGeneralDamagedWatchBuffSelfAndDrawACard extends ModifierMyGenera
   }
 
   onDamageDealtToGeneral(action) {
-    this.applyManagedModifiersFromModifiersContextObjects(this.modifiersContextObjects, this.getCard());
-    return this.getGameSession().executeAction(this.getCard().getOwner().getDeck().actionDrawCard());
+    this.applyManagedModifiersFromModifiersContextObjects(
+      this.modifiersContextObjects,
+      this.getCard(),
+    );
+    return this.getGameSession().executeAction(
+      this.getCard().getOwner().getDeck().actionDrawCard(),
+    );
   }
 }
-ModifierMyGeneralDamagedWatchBuffSelfAndDrawACard.prototype.type = 'ModifierMyGeneralDamagedWatchBuffSelfAndDrawACard';
+ModifierMyGeneralDamagedWatchBuffSelfAndDrawACard.prototype.type =
+  'ModifierMyGeneralDamagedWatchBuffSelfAndDrawACard';
 
 module.exports = ModifierMyGeneralDamagedWatchBuffSelfAndDrawACard;

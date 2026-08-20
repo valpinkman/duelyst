@@ -21,14 +21,14 @@ class RestoreChargeToAllArtifactsAction extends Action {
     super._execute();
     const target = this.getTarget();
 
-    if ((target != null) && target.getIsGeneral()) {
+    if (target != null && target.getIsGeneral()) {
       // iterate over all modifiers, and if any have durabilty < maxDurablity, add 1 durability
       // (only artifacts have durability, regular modifiers do not)
       const allModifiers = target.getModifiers();
       return (() => {
         const result = [];
         for (var modifier of Array.from<any>(allModifiers)) {
-          if ((modifier != null) && (modifier.getDurability() < modifier.getMaxDurability())) {
+          if (modifier != null && modifier.getDurability() < modifier.getMaxDurability()) {
             result.push(modifier.setDurability(modifier.getDurability() + 1));
           } else {
             result.push(undefined);

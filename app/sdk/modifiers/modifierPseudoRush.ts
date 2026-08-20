@@ -24,8 +24,10 @@ class ModifierPseudoRush extends Modifier {
   onActivate(card) {
     super.onActivate(card);
 
-    if ((this.getCard().getMovesMade() === 0) && (this.getCard().getAttacksMade() === 0)) {
-      const refreshExhaustionAction = this.getGameSession().createActionForType(RefreshExhaustionAction.type);
+    if (this.getCard().getMovesMade() === 0 && this.getCard().getAttacksMade() === 0) {
+      const refreshExhaustionAction = this.getGameSession().createActionForType(
+        RefreshExhaustionAction.type,
+      );
       refreshExhaustionAction.setSource(this.getCard());
       refreshExhaustionAction.setTarget(this.getCard());
       this.getCard().getGameSession().executeAction(refreshExhaustionAction);
@@ -34,13 +36,15 @@ class ModifierPseudoRush extends Modifier {
     if (this._private.cachedIsActive) {
       // if General ended up in an Egg and is respawning, make sure it is not set as General
       card = this.getCard();
-      if ((card.getType() === CardType.Unit) && card.getIsGeneral()) {
+      if (card.getType() === CardType.Unit && card.getIsGeneral()) {
         card.setIsGeneral(false);
       }
 
       // set exhaustion state of hatched card to not exhausted
       // only do this when this modifier is initially applied to the card
-      const setExhaustionAction = this.getGameSession().createActionForType(SetExhaustionAction.type);
+      const setExhaustionAction = this.getGameSession().createActionForType(
+        SetExhaustionAction.type,
+      );
       setExhaustionAction.setExhausted(false);
       setExhaustionAction.setMovesMade(0);
       setExhaustionAction.setAttacksMade(0);

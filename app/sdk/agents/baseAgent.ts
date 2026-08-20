@@ -37,7 +37,7 @@ class BaseAgent {
    *
    */
   addUnitWithTag(unit, tag) {
-    return this.unitIndicesByTag[tag] = unit.index;
+    return (this.unitIndicesByTag[tag] = unit.index);
   }
 
   /**

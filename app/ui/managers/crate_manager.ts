@@ -26,7 +26,6 @@ var ProfileManager = require('./profile_manager');
 var Manager = require('./manager');
 
 var CrateManager = Manager.extend({
-
   _cosmeticChestCollection: null,
   _cosmeticChestKeyCollection: null,
   _giftCrateCollection: null,
@@ -43,7 +42,8 @@ var CrateManager = Manager.extend({
     const _self = this;
     Manager.prototype.onBeforeConnect.call(this);
 
-    ProfileManager.getInstance().onReady()
+    ProfileManager.getInstance()
+      .onReady()
       .then(function () {
         var userId = ProfileManager.getInstance().get('id');
 
@@ -65,18 +65,32 @@ var CrateManager = Manager.extend({
           _self._giftCrateCollection,
         ]);
 
-        _self.onReady().then(function () {
-          this.listenTo(this._cosmeticChestCollection, 'change add remove', this.onCosmeticChestCollectionChange);
-          this.listenTo(this._cosmeticChestKeyCollection, 'change add remove', this.onCosmeticChestKeyCollectionChange);
+        _self.onReady().then(
+          function () {
+            this.listenTo(
+              this._cosmeticChestCollection,
+              'change add remove',
+              this.onCosmeticChestCollectionChange,
+            );
+            this.listenTo(
+              this._cosmeticChestKeyCollection,
+              'change add remove',
+              this.onCosmeticChestKeyCollectionChange,
+            );
 
-          if (this._giftCrateCollection && this._giftCrateCollection.length > 0
-          || this._cosmeticChestCollection && this._cosmeticChestCollection.length > 0
-          || this._cosmeticChestKeyCollection && this._cosmeticChestKeyCollection.length > 0) {
-            NewPlayerManager.getInstance().onReady().then(function () {
-              NewPlayerManager.getInstance().setHasReceivedCrateProduct();
-            });
-          }
-        }.bind(_self));
+            if (
+              (this._giftCrateCollection && this._giftCrateCollection.length > 0) ||
+              (this._cosmeticChestCollection && this._cosmeticChestCollection.length > 0) ||
+              (this._cosmeticChestKeyCollection && this._cosmeticChestKeyCollection.length > 0)
+            ) {
+              NewPlayerManager.getInstance()
+                .onReady()
+                .then(function () {
+                  NewPlayerManager.getInstance().setHasReceivedCrateProduct();
+                });
+            }
+          }.bind(_self),
+        );
       });
   },
 
@@ -104,7 +118,11 @@ var CrateManager = Manager.extend({
     if (this._activeCosmeticChestsCache == null) {
       // If there's no cache then build it
       var chests = [];
-      if (this._cosmeticChestCollection != null && this._cosmeticChestCollection.models != null && this._cosmeticChestCollection.models.length != 0) {
+      if (
+        this._cosmeticChestCollection != null &&
+        this._cosmeticChestCollection.models != null &&
+        this._cosmeticChestCollection.models.length != 0
+      ) {
         var momentNowUtc = moment.utc();
         var chestModels = this._cosmeticChestCollection.models;
         chests = _.filter(chestModels, function (chestModel) {
@@ -273,7 +291,10 @@ var CrateManager = Manager.extend({
         if (GiftCrateFactory.getIsCrateTypeAvailable(giftCrateModel.get('crate_type'))) {
           if (giftCrateType != null && giftCrateModel.get('crate_type') == giftCrateType) {
             count++;
-          } else if (giftCrateType == null && !this.getIsSpecialGiftCrate(giftCrateModel.get('crate_type'))) {
+          } else if (
+            giftCrateType == null &&
+            !this.getIsSpecialGiftCrate(giftCrateModel.get('crate_type'))
+          ) {
             count++;
           }
         }
@@ -305,7 +326,10 @@ var CrateManager = Manager.extend({
         if (GiftCrateFactory.getIsCrateTypeAvailable(giftCrateModel.get('crate_type'))) {
           if (giftCrateType != null && giftCrateModel.get('crate_type') == giftCrateType) {
             return giftCrateModel.get('crate_id');
-          } else if (giftCrateType == null && !this.getIsSpecialGiftCrate(giftCrateModel.get('crate_type'))) {
+          } else if (
+            giftCrateType == null &&
+            !this.getIsSpecialGiftCrate(giftCrateModel.get('crate_type'))
+          ) {
             return giftCrateModel.get('crate_id');
           }
         }
@@ -316,30 +340,39 @@ var CrateManager = Manager.extend({
   },
 
   getGiftCrateModelForId: function (crateId) {
-    return _.find(this._giftCrateCollection.models, function (model) {
-      return model.get('crate_id') == crateId;
-    }.bind(this));
+    return _.find(
+      this._giftCrateCollection.models,
+      function (model) {
+        return model.get('crate_id') == crateId;
+      }.bind(this),
+    );
   },
 
   refreshGiftCrates: function () {
-    return new Promise(function (resolve, reject) {
-      var giftCrateRequest = this._giftCrateCollection.fetch();
+    return new Promise(
+      function (resolve, reject) {
+        var giftCrateRequest = this._giftCrateCollection.fetch();
 
-      giftCrateRequest.done(function (response) {
-        EventBus.getInstance().trigger(EVENTS.gift_crate_collection_change);
-        if (this._giftCrateCollection && this._giftCrateCollection.length > 0) {
-          NewPlayerManager.getInstance().setHasReceivedCrateProduct();
-        }
-        resolve(response);
-      }.bind(this));
+        giftCrateRequest.done(
+          function (response) {
+            EventBus.getInstance().trigger(EVENTS.gift_crate_collection_change);
+            if (this._giftCrateCollection && this._giftCrateCollection.length > 0) {
+              NewPlayerManager.getInstance().setHasReceivedCrateProduct();
+            }
+            resolve(response);
+          }.bind(this),
+        );
 
-      giftCrateRequest.fail(function (response) {
-        var error = 'GIFT CRATE request failed';
-        EventBus.getInstance().trigger(EVENTS.ajax_error, error);
+        giftCrateRequest.fail(
+          function (response) {
+            var error = 'GIFT CRATE request failed';
+            EventBus.getInstance().trigger(EVENTS.ajax_error, error);
 
-        reject(new Error(error));
-      }.bind(this));
-    }.bind(this));
+            reject(new Error(error));
+          }.bind(this),
+        );
+      }.bind(this),
+    );
   },
 
   /* endregion GIFT CRATES */
@@ -365,49 +398,59 @@ var CrateManager = Manager.extend({
       }
     }
 
-    return new Promise(function (resolve, reject) {
-      var request = $.ajax({
-        url: process.env.API_URL + '/api/me/crates/cosmetic_chest/' + crateId + '/unlock',
-        type: 'PUT',
-        contentType: 'application/json',
-        dataType: 'json',
-        data: '',
-      });
+    return new Promise(
+      function (resolve, reject) {
+        var request = $.ajax({
+          url: process.env.API_URL + '/api/me/crates/cosmetic_chest/' + crateId + '/unlock',
+          type: 'PUT',
+          contentType: 'application/json',
+          dataType: 'json',
+          data: '',
+        });
 
-      request.done(function (response) {
-        // convert rewards to backbone models
-        var rewardModels = [];
-        for (var i = 0; i < response.length; i++) {
-          rewardModels.push(new Backbone.Model(response[i]));
-        }
+        request.done(
+          function (response) {
+            // convert rewards to backbone models
+            var rewardModels = [];
+            for (var i = 0; i < response.length; i++) {
+              rewardModels.push(new Backbone.Model(response[i]));
+            }
 
-        if (chestType != null) {
-          Analytics.track('opened cosmetic crate', {
-            category: Analytics.EventCategory.Crate,
-            product_id: chestType,
-          }, {
-            labelKey: 'product_id',
-          });
-        }
+            if (chestType != null) {
+              Analytics.track(
+                'opened cosmetic crate',
+                {
+                  category: Analytics.EventCategory.Crate,
+                  product_id: chestType,
+                },
+                {
+                  labelKey: 'product_id',
+                },
+              );
+            }
 
-        // resolve with rewards
-        resolve(rewardModels);
-      }.bind(this));
+            // resolve with rewards
+            resolve(rewardModels);
+          }.bind(this),
+        );
 
-      request.fail(function (response) {
-        // Temporary error, should parse server response.
-        var error = 'Claim Cosmetic Chest rewards failed';
-        if (response) {
-          error += ' - Status ' + response.status;
-        }
-        if (response && response.responseJSON) {
-          error += '<br>' + (response.responseJSON.error || response.responseJSON.message);
-        }
+        request.fail(
+          function (response) {
+            // Temporary error, should parse server response.
+            var error = 'Claim Cosmetic Chest rewards failed';
+            if (response) {
+              error += ' - Status ' + response.status;
+            }
+            if (response && response.responseJSON) {
+              error += '<br>' + (response.responseJSON.error || response.responseJSON.message);
+            }
 
-        EventBus.getInstance().trigger(EVENTS.ajax_error, error);
-        reject(error);
-      }.bind(this));
-    }.bind(this));
+            EventBus.getInstance().trigger(EVENTS.ajax_error, error);
+            reject(error);
+          }.bind(this),
+        );
+      }.bind(this),
+    );
   },
 
   /**
@@ -416,47 +459,53 @@ var CrateManager = Manager.extend({
    * @param {String} crateId - id of crate to claim rewards for
    */
   unlockGiftCrateWithId: function (crateId) {
-    return new Promise(function (resolve, reject) {
-      var request = $.ajax({
-        url: process.env.API_URL + '/api/me/crates/gift_crate/' + crateId + '/unlock',
-        type: 'PUT',
-        contentType: 'application/json',
-        dataType: 'json',
-      });
+    return new Promise(
+      function (resolve, reject) {
+        var request = $.ajax({
+          url: process.env.API_URL + '/api/me/crates/gift_crate/' + crateId + '/unlock',
+          type: 'PUT',
+          contentType: 'application/json',
+          dataType: 'json',
+        });
 
-      request.done(function (response) {
-        // update gift crates
-        // gift crates don't live in firebase
-        // so we need to manually refresh
-        this.refreshGiftCrates()
-          .then(function () {
-          // convert rewards to backbone models
-            var rewardModels = [];
-            for (var i = 0; i < response.length; i++) {
-              rewardModels.push(new Backbone.Model(response[i]));
+        request.done(
+          function (response) {
+            // update gift crates
+            // gift crates don't live in firebase
+            // so we need to manually refresh
+            this.refreshGiftCrates().then(
+              function () {
+                // convert rewards to backbone models
+                var rewardModels = [];
+                for (var i = 0; i < response.length; i++) {
+                  rewardModels.push(new Backbone.Model(response[i]));
+                }
+
+                // resolve with rewards
+                resolve(rewardModels);
+              }.bind(this),
+            );
+          }.bind(this),
+        );
+
+        request.fail(
+          function (response) {
+            // Temporary error, should parse server response.
+            var error = 'Claim Gift Crate rewards failed';
+            if (response) {
+              error += ' - Status ' + response.status;
+            }
+            if (response && response.responseJSON) {
+              error += '<br>' + (response.responseJSON.error || response.responseJSON.message);
             }
 
-            // resolve with rewards
-            resolve(rewardModels);
-          }.bind(this));
-      }.bind(this));
-
-      request.fail(function (response) {
-        // Temporary error, should parse server response.
-        var error = 'Claim Gift Crate rewards failed';
-        if (response) {
-          error += ' - Status ' + response.status;
-        }
-        if (response && response.responseJSON) {
-          error += '<br>' + (response.responseJSON.error || response.responseJSON.message);
-        }
-
-        EventBus.getInstance().trigger(EVENTS.ajax_error, error);
-        reject(error);
-      }.bind(this));
-    }.bind(this));
+            EventBus.getInstance().trigger(EVENTS.ajax_error, error);
+            reject(error);
+          }.bind(this),
+        );
+      }.bind(this),
+    );
   },
 
   /* endregion UNLOCK */
-
 });

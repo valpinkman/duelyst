@@ -8,7 +8,11 @@ const UtilsGameSession = require('../../common/utils/utils_game_session');
 class SpellSpawnEntityNearbyGeneral extends SpellSpawnEntity {
   _getPrefilteredValidTargetPositions() {
     // get positions around General
-    return UtilsGameSession.getValidBoardPositionsFromPattern(this.getGameSession().getBoard(), this.getGameSession().getGeneralForPlayerId(this.ownerId).getPosition(), CONFIG.PATTERN_3x3);
+    return UtilsGameSession.getValidBoardPositionsFromPattern(
+      this.getGameSession().getBoard(),
+      this.getGameSession().getGeneralForPlayerId(this.ownerId).getPosition(),
+      CONFIG.PATTERN_3x3,
+    );
   }
 }
 

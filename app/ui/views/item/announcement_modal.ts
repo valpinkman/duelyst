@@ -7,7 +7,6 @@ var Animations = require('app/ui/views/animations');
 var openUrl = require('app/common/openUrl');
 
 var AnnouncementModalView = Backbone.Marionette.ItemView.extend({
-
   id: 'app-announcement-modal',
   className: 'modal duelyst-modal announcement',
   template: Templ,
@@ -21,13 +20,15 @@ var AnnouncementModalView = Backbone.Marionette.ItemView.extend({
   },
 
   onShow: function () {
-    this.$el.find('.modal-body').find('a').click(function (e) {
-      openUrl($(e.currentTarget).attr('href'));
-      e.stopPropagation();
-      e.preventDefault();
-    });
+    this.$el
+      .find('.modal-body')
+      .find('a')
+      .click(function (e) {
+        openUrl($(e.currentTarget).attr('href'));
+        e.stopPropagation();
+        e.preventDefault();
+      });
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

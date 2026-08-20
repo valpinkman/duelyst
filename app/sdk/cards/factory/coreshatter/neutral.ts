@@ -79,14 +79,18 @@ class CardFactory_CoreshatterSet_Neutral {
       card.factionId = Factions.Neutral;
       card.setCardSetId(CardSet.Coreshatter);
       card.name = 'Mythron Wanderer';
-      card.setDescription('Trial: Have no duplicate cards in your deck.\nDestiny: Your minions have +1/+1.');
+      card.setDescription(
+        'Trial: Have no duplicate cards in your deck.\nDestiny: Your minions have +1/+1.',
+      );
       card.atk = 6;
       card.maxHP = 6;
       card.manaCost = 6;
       card.rarityId = Rarity.Mythron;
       buffContextObject = ModifierQuestBuffNeutral.createContextObjectWithAttributeBuffs(1, 1);
       buffContextObject.appliedName = 'Those Who Wander';
-      const emblemModifier = PlayerModifierEmblemSummonWatchSingletonQuest.createContextObject([buffContextObject]);
+      const emblemModifier = PlayerModifierEmblemSummonWatchSingletonQuest.createContextObject([
+        buffContextObject,
+      ]);
       emblemModifier.appliedName = 'Roads of Mythron';
       emblemModifier.appliedDescription = 'Your minions have +1/+1.';
       card.setInherentModifiersContextObjects([
@@ -124,7 +128,9 @@ class CardFactory_CoreshatterSet_Neutral {
       card.setCardSetId(CardSet.Coreshatter);
       card.factionId = Factions.Neutral;
       card.name = 'Mirrorrim';
-      card.setDescription('Opening Gambit: Shuffle three copies of a friendly minion into your deck.');
+      card.setDescription(
+        'Opening Gambit: Shuffle three copies of a friendly minion into your deck.',
+      );
       card.atk = 2;
       card.maxHP = 1;
       card.manaCost = 1;
@@ -168,7 +174,9 @@ class CardFactory_CoreshatterSet_Neutral {
       card.setCardSetId(CardSet.Coreshatter);
       card.factionId = Factions.Neutral;
       card.name = 'Aer Pridebeak';
-      card.setDescription('Whenever your opponent casts a spell, restore 1 Health to your General.');
+      card.setDescription(
+        'Whenever your opponent casts a spell, restore 1 Health to your General.',
+      );
       card.atk = 3;
       card.maxHP = 4;
       card.manaCost = 3;
@@ -234,7 +242,9 @@ class CardFactory_CoreshatterSet_Neutral {
       card.setCardSetId(CardSet.Coreshatter);
       card.factionId = Factions.Neutral;
       card.name = 'Alcuin Fugitive';
-      card.setDescription('At the end of any turn you cast a spell, put a copy of the most recently cast spell into your action bar.');
+      card.setDescription(
+        'At the end of any turn you cast a spell, put a copy of the most recently cast spell into your action bar.',
+      );
       card.atk = 2;
       card.maxHP = 5;
       card.manaCost = 5;
@@ -276,9 +286,7 @@ class CardFactory_CoreshatterSet_Neutral {
       card.rarityId = Rarity.Rare;
       const damageGeneral = ModifierDyingWishDamageGeneral.createContextObject();
       damageGeneral.damageAmount = 4;
-      card.setInherentModifiersContextObjects([
-        damageGeneral,
-      ]);
+      card.setInherentModifiersContextObjects([damageGeneral]);
       card.setFXResource(['FX.Cards.Neutral.AlterRexx']);
       card.setBoundingBoxWidth(85);
       card.setBoundingBoxHeight(90);
@@ -348,9 +356,7 @@ class CardFactory_CoreshatterSet_Neutral {
       const speedBuffContextObject = Modifier.createContextObjectOnBoard();
       speedBuffContextObject.attributeBuffs = { speed: 3 };
       speedBuffContextObject.attributeBuffsAbsolute = ['speed'];
-      card.setInherentModifiersContextObjects([
-        speedBuffContextObject,
-      ]);
+      card.setInherentModifiersContextObjects([speedBuffContextObject]);
       card.setFXResource(['FX.Cards.Neutral.Feralu']);
       card.setBoundingBoxWidth(95);
       card.setBoundingBoxHeight(95);
@@ -415,7 +421,9 @@ class CardFactory_CoreshatterSet_Neutral {
       card.setCardSetId(CardSet.Coreshatter);
       card.factionId = Factions.Neutral;
       card.name = 'Fizzling Mystic';
-      card.setDescription('Opening Gambit: Deal 2 damage to an enemy OR restore 2 Health to a friendly minion or General.');
+      card.setDescription(
+        'Opening Gambit: Deal 2 damage to an enemy OR restore 2 Health to a friendly minion or General.',
+      );
       card.atk = 3;
       card.maxHP = 3;
       card.manaCost = 4;
@@ -464,7 +472,10 @@ class CardFactory_CoreshatterSet_Neutral {
       card.rarityId = Rarity.Rare;
       card.raceId = Races.Arcanyst;
       card.setInherentModifiersContextObjects([
-        ModifierReplaceWatchShuffleCardIntoDeck.createContextObject({ id: Cards.Spell.BrilliantPlume }, 1),
+        ModifierReplaceWatchShuffleCardIntoDeck.createContextObject(
+          { id: Cards.Spell.BrilliantPlume },
+          1,
+        ),
       ]);
       card.setFXResource(['FX.Cards.Neutral.AlterRexx']);
       card.setBoundingBoxWidth(85);
@@ -519,7 +530,9 @@ class CardFactory_CoreshatterSet_Neutral {
       card.setCardSetId(CardSet.Coreshatter);
       card.factionId = Factions.Neutral;
       card.name = 'Lodestar';
-      card.setDescription('Airdrop, Forcefield\nAt the end of BOTH players\' turns, pull some things to this minion.');
+      card.setDescription(
+        "Airdrop, Forcefield\nAt the end of BOTH players' turns, pull some things to this minion.",
+      );
       card.atk = 4;
       card.maxHP = 4;
       card.manaCost = 6;
@@ -557,13 +570,17 @@ class CardFactory_CoreshatterSet_Neutral {
       card.setCardSetId(CardSet.Coreshatter);
       card.factionId = Factions.Neutral;
       card.name = 'Chirpuka';
-      card.setDescription('Whenever your opponent summons a minion, summon a 2/1 Puka with Provoke in front of it.');
+      card.setDescription(
+        'Whenever your opponent summons a minion, summon a 2/1 Puka with Provoke in front of it.',
+      );
       card.atk = 3;
       card.maxHP = 6;
       card.manaCost = 5;
       card.rarityId = Rarity.Epic;
       card.setInherentModifiersContextObjects([
-        ModifierOpponentSummonWatchSummonMinionInFront.createContextObject({ id: Cards.Neutral.Doxx }),
+        ModifierOpponentSummonWatchSummonMinionInFront.createContextObject({
+          id: Cards.Neutral.Doxx,
+        }),
       ]);
       card.addKeywordClassToInclude(ModifierProvoke);
       card.addKeywordClassToInclude(ModifierTokenCreator);
@@ -599,9 +616,7 @@ class CardFactory_CoreshatterSet_Neutral {
       card.manaCost = 1;
       card.rarityId = Rarity.TokenUnit;
       card.setIsHiddenInCollection(true);
-      card.setInherentModifiersContextObjects([
-        ModifierProvoke.createContextObject(),
-      ]);
+      card.setInherentModifiersContextObjects([ModifierProvoke.createContextObject()]);
       card.addKeywordClassToInclude(ModifierToken);
       card.setFXResource(['FX.Cards.Neutral.Spelljammer']);
       card.setBaseSoundResource({
@@ -629,7 +644,9 @@ class CardFactory_CoreshatterSet_Neutral {
       card.setCardSetId(CardSet.Coreshatter);
       card.factionId = Factions.Neutral;
       card.name = 'Mnemovore';
-      card.setDescription('Whenever you summon a minion, burn three cards from your opponent\'s deck.');
+      card.setDescription(
+        "Whenever you summon a minion, burn three cards from your opponent's deck.",
+      );
       card.atk = 7;
       card.maxHP = 7;
       card.manaCost = 7;
@@ -665,7 +682,9 @@ class CardFactory_CoreshatterSet_Neutral {
       card.setCardSetId(CardSet.Coreshatter);
       card.factionId = Factions.Neutral;
       card.name = 'Scarzig';
-      card.setDescription('If this minion destroys an enemy and survives, friendly Scarzig ANYWHERE transform into Feather Knights.');
+      card.setDescription(
+        'If this minion destroys an enemy and survives, friendly Scarzig ANYWHERE transform into Feather Knights.',
+      );
       card.atk = 1;
       card.maxHP = 2;
       card.manaCost = 3;
@@ -702,14 +721,16 @@ class CardFactory_CoreshatterSet_Neutral {
       card.setCardSetId(CardSet.Coreshatter);
       card.factionId = Factions.Neutral;
       card.name = 'Scarzig, Feather Knight';
-      card.setDescription('Celerity\nWhenever this minion attacks, give other friendly minions +1/+1.');
+      card.setDescription(
+        'Celerity\nWhenever this minion attacks, give other friendly minions +1/+1.',
+      );
       card.atk = 4;
       card.maxHP = 8;
       card.manaCost = 3;
       card.rarityId = Rarity.TokenUnit;
       card.setIsHiddenInCollection(true);
       buffContextObject = Modifier.createContextObjectWithAttributeBuffs(1, 1);
-      buffContextObject.appliedName = 'Scarzig\'s Command';
+      buffContextObject.appliedName = "Scarzig's Command";
       card.setInherentModifiersContextObjects([
         ModifierTranscendance.createContextObject(),
         ModifierMyAttackWatchApplyModifiersToAllies.createContextObject([buffContextObject], false),
@@ -743,7 +764,9 @@ class CardFactory_CoreshatterSet_Neutral {
       card.setCardSetId(CardSet.Coreshatter);
       card.factionId = Factions.Neutral;
       card.name = 'Orbo the Ostentatious';
-      card.setDescription('Opening Gambit: Transform the cards in your action bar into random prismatic legendary cards.');
+      card.setDescription(
+        'Opening Gambit: Transform the cards in your action bar into random prismatic legendary cards.',
+      );
       card.atk = 3;
       card.maxHP = 4;
       card.manaCost = 3;
@@ -779,15 +802,15 @@ class CardFactory_CoreshatterSet_Neutral {
       card.setCardSetId(CardSet.Coreshatter);
       card.factionId = Factions.Neutral;
       card.name = 'Hsuku';
-      card.setDescription('At the end of any player\'s turn, give one of their minions a random buff and keyword (excluding Hsuku).');
+      card.setDescription(
+        "At the end of any player's turn, give one of their minions a random buff and keyword (excluding Hsuku).",
+      );
       card.atk = 2;
       card.maxHP = 6;
       card.manaCost = 4;
       card.rarityId = Rarity.Epic;
       const hsukuModifier = ModifierEndTurnWatchAnyPlayerHsuku.createContextObject('Hsuku Buff');
-      card.setInherentModifiersContextObjects([
-        hsukuModifier,
-      ]);
+      card.setInherentModifiersContextObjects([hsukuModifier]);
       card.setFXResource(['FX.Cards.Neutral.ArchonSpellbinder']);
       card.setBoundingBoxWidth(55);
       card.setBoundingBoxHeight(85);

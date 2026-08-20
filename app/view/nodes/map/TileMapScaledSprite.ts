@@ -28,7 +28,9 @@ TileMapScaledSprite.create = function (sprite) {
   if (sprite == null) {
     // every caller passes a sprite, so this fallback is effectively dead; it
     // referenced an `options` that was never defined and could only have thrown
-    sprite = cc.pool.getFromPool(TileMapScaledSprite) || BaseSprite.create(null, new TileMapScaledSprite({}));
+    sprite =
+      cc.pool.getFromPool(TileMapScaledSprite) ||
+      BaseSprite.create(null, new TileMapScaledSprite({}));
   }
   return sprite;
 };

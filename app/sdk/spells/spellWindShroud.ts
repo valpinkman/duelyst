@@ -17,7 +17,14 @@ class SpellWindShroud extends SpellSpawnEntity {
   _findApplyEffectPositions(position, sourceAction) {
     const card = this.getEntityToSpawn();
     const generalPosition = this.getGameSession().getGeneralForPlayerId(this.ownerId).getPosition();
-    const applyEffectPositions = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(this.getGameSession(), generalPosition, CONFIG.PATTERN_3x3, card, this, 1);
+    const applyEffectPositions = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(
+      this.getGameSession(),
+      generalPosition,
+      CONFIG.PATTERN_3x3,
+      card,
+      this,
+      1,
+    );
 
     return applyEffectPositions;
   }

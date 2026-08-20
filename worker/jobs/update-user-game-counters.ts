@@ -20,16 +20,10 @@ module.exports = function (job, done) {
   const gameId = job.data.gameId || null;
   const userId = job.data.userId || null;
   const factionId = job.data.factionId || null;
-  const {
-    isWinner,
-  } = job.data;
-  const {
-    isDraw,
-  } = job.data;
+  const { isWinner } = job.data;
+  const { isDraw } = job.data;
   const isUnscored = job.data.isUnscored || false;
-  const {
-    gameType,
-  } = job.data;
+  const { gameType } = job.data;
 
   if (!gameId) {
     return done(new Error('Game ID is not defined.'));
@@ -47,13 +41,21 @@ module.exports = function (job, done) {
     return done(new Error('Game type is not defined.'));
   }
 
-  Logger.module('JOB').debug(`[J:${job.id}] Update User (${userId}) Game Counters for game ${gameId}. UNSCORED: ${isUnscored} starting`);
-  Logger.module('JOB').time(`[J:${job.id}] Update User (${userId}) Game Counters for game ${gameId}. UNSCORED: ${isUnscored}`);
+  Logger.module('JOB').debug(
+    `[J:${job.id}] Update User (${userId}) Game Counters for game ${gameId}. UNSCORED: ${isUnscored} starting`,
+  );
+  Logger.module('JOB').time(
+    `[J:${job.id}] Update User (${userId}) Game Counters for game ${gameId}. UNSCORED: ${isUnscored}`,
+  );
 
   return Promise.all([
     UsersModule.updateGameCounters(userId, factionId, isWinner, gameType, isUnscored, isDraw),
-  ]).then(function () {
-    Logger.module('JOB').timeEnd(`[J:${job.id}] Update User (${userId}) Game Counters for game ${gameId}. UNSCORED: ${isUnscored}`);
-    return done();
-  }).catch((error) => done(error));
+  ])
+    .then(function () {
+      Logger.module('JOB').timeEnd(
+        `[J:${job.id}] Update User (${userId}) Game Counters for game ${gameId}. UNSCORED: ${isUnscored}`,
+      );
+      return done();
+    })
+    .catch((error) => done(error));
 };

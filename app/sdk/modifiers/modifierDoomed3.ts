@@ -21,7 +21,10 @@ class ModifierDoomed3 extends ModifierEndTurnWatch {
     super.onTurnWatch();
 
     // apply next stage of Doom and remove self
-    this.getGameSession().applyModifierContextObject(ModifierDoomed2.createContextObject(), this.getCard());
+    this.getGameSession().applyModifierContextObject(
+      ModifierDoomed2.createContextObject(),
+      this.getCard(),
+    );
     return this.getGameSession().removeModifier(this);
   }
 }

@@ -24,9 +24,7 @@ class ModifierAnySummonWatch extends Modifier {
   onAction(e) {
     super.onAction(e);
 
-    const {
-      action,
-    } = e;
+    const { action } = e;
 
     if (this.getIsActionRelevant(action)) {
       return this.onSummonWatch(action);
@@ -37,7 +35,7 @@ class ModifierAnySummonWatch extends Modifier {
     // watch for a unit being summoned by any player (but not this card itself)
     if (a instanceof PlayCardAction) {
       const card = a.getCard();
-      return (card != null) && (card.type === CardType.Unit) && (card !== this.getCard());
+      return card != null && card.type === CardType.Unit && card !== this.getCard();
     }
   }
 
@@ -48,8 +46,7 @@ class ModifierAnySummonWatch extends Modifier {
     // special check on activation in case this card is created mid-game
     // need to check all actions that occured this gamesession for triggers
     const summonActions = this.getGameSession().filterActions(this.getIsActionRelevant.bind(this));
-    return Array.from<any>(summonActions).map((action) =>
-      this.onSummonWatch(action));
+    return Array.from<any>(summonActions).map((action) => this.onSummonWatch(action));
   }
 }
 ModifierAnySummonWatch.prototype.type = 'ModifierAnySummonWatch';

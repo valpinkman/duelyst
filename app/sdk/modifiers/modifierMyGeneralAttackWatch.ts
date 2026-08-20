@@ -19,11 +19,14 @@ class ModifierMyGeneralAttackWatch extends Modifier {
 
   onAction(event) {
     super.onAction(event);
-    const {
-      action,
-    } = event;
+    const { action } = event;
     const source = action.getSource();
-    if (action instanceof AttackAction && (source.getOwner() === this.getCard().getOwner()) && source.getIsGeneral() && !action.getIsImplicit()) {
+    if (
+      action instanceof AttackAction &&
+      source.getOwner() === this.getCard().getOwner() &&
+      source.getIsGeneral() &&
+      !action.getIsImplicit()
+    ) {
       return this.onMyGeneralAttackWatch(action);
     }
   }

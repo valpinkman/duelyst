@@ -103,9 +103,7 @@ class CardFactory_ShimzarSet_Faction6 {
           id: Cards.Spell.ApplyModifiers,
           filterRaceIds: [Races.Vespyr],
           spellFilterType: SpellFilterType.AllyDirect,
-          targetModifiersContextObjects: [
-            ModifierFlying.createContextObject(), statContextObject,
-          ],
+          targetModifiersContextObjects: [ModifierFlying.createContextObject(), statContextObject],
           _private: {
             followupSourcePattern: CONFIG.PATTERN_WHOLE_BOARD,
           },
@@ -143,7 +141,12 @@ class CardFactory_ShimzarSet_Faction6 {
       card.maxHP = 4;
       card.manaCost = 3;
       card.rarityId = Rarity.Common;
-      card.setInherentModifiersContextObjects([ModifierInfiltrate.createContextObject([ModifierSnowRippler.createContextObject()], 'Whenever this minion damages a General, put a random Battle Pet into your action bar')]);
+      card.setInherentModifiersContextObjects([
+        ModifierInfiltrate.createContextObject(
+          [ModifierSnowRippler.createContextObject()],
+          'Whenever this minion damages a General, put a random Battle Pet into your action bar',
+        ),
+      ]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
     }
 
@@ -184,9 +187,7 @@ class CardFactory_ShimzarSet_Faction6 {
           id: Cards.Spell.ApplyModifiers,
           spellFilterType: SpellFilterType.EnemyDirect,
           canTargetGeneral: true,
-          targetModifiersContextObjects: [
-            ModifierStunnedVanar.createContextObject(),
-          ],
+          targetModifiersContextObjects: [ModifierStunnedVanar.createContextObject()],
           _private: {
             followupSourcePattern: CONFIG.PATTERN_3x3,
           },
@@ -225,7 +226,10 @@ class CardFactory_ShimzarSet_Faction6 {
       card.maxHP = 3;
       card.manaCost = 2;
       card.rarityId = Rarity.Rare;
-      card.setInherentModifiersContextObjects([ModifierBattlePet.createContextObject(), ModifierSurviveDamageWatchBur.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierBattlePet.createContextObject(),
+        ModifierSurviveDamageWatchBur.createContextObject(),
+      ]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
     }
 
@@ -265,9 +269,7 @@ class CardFactory_ShimzarSet_Faction6 {
           id: Cards.Spell.ApplyModifiers,
           filterRaceIds: [Races.Vespyr],
           spellFilterType: SpellFilterType.AllyDirect,
-          targetModifiersContextObjects: [
-            ModifierTranscendance.createContextObject(),
-          ],
+          targetModifiersContextObjects: [ModifierTranscendance.createContextObject()],
           _private: {
             followupSourcePattern: CONFIG.PATTERN_WHOLE_BOARD,
           },
@@ -304,7 +306,13 @@ class CardFactory_ShimzarSet_Faction6 {
       card.maxHP = 3;
       card.manaCost = 5;
       card.rarityId = Rarity.Legendary;
-      card.setInherentModifiersContextObjects([ModifierForcefield.createContextObject(), ModifierMyAttackOrAttackedWatchSpawnMinionNearby.createContextObject({ id: Cards.Faction6.ShadowVespyr }, 'a 3/3 Vespyr Night Howler')]);
+      card.setInherentModifiersContextObjects([
+        ModifierForcefield.createContextObject(),
+        ModifierMyAttackOrAttackedWatchSpawnMinionNearby.createContextObject(
+          { id: Cards.Faction6.ShadowVespyr },
+          'a 3/3 Vespyr Night Howler',
+        ),
+      ]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
     }
 
@@ -375,9 +383,7 @@ class CardFactory_ShimzarSet_Faction6 {
       card.spellFilterType = SpellFilterType.AllyDirect;
       buffContextObject = Modifier.createContextObjectWithAttributeBuffs(5, 5);
       buffContextObject.appliedName = i18next.t('cards.faction_6_spell_wailing_overdrive_name');
-      card.setTargetModifiersContextObjects([
-        buffContextObject,
-      ]);
+      card.setTargetModifiersContextObjects([buffContextObject]);
       card.setFXResource(['FX.Cards.Spell.Mesmerize']);
       card.setBaseAnimResource({
         idle: RSX.iconWailingOverdriveIdle.name,
@@ -420,9 +426,7 @@ class CardFactory_ShimzarSet_Faction6 {
       card.rarityId = Rarity.Epic;
       buffContextObject = Modifier.createContextObjectWithAttributeBuffs(1, 1);
       buffContextObject.appliedName = i18next.t('modifiers.faction_6_spell_lightning_blitz_1');
-      card.setTargetModifiersContextObjects([
-        buffContextObject,
-      ]);
+      card.setTargetModifiersContextObjects([buffContextObject]);
       card.radius = CONFIG.WHOLE_BOARD_RADIUS;
       card._fxResource = ['FX.Cards.Spell.LightningBlitz'];
       card.setBaseAnimResource({
@@ -446,8 +450,12 @@ class CardFactory_ShimzarSet_Faction6 {
       card.spellFilterType = SpellFilterType.AllyIndirect;
       card.radius = CONFIG.WHOLE_BOARD_RADIUS;
       const wintersWakeModContextObject = Modifier.createContextObjectWithAttributeBuffs(4, 4);
-      wintersWakeModContextObject.appliedName = i18next.t('modifiers.faction_6_spell_winters_wake_1');
-      wintersWakeModContextObject.appliedDescription = i18next.t('modifiers.faction_6_spell_winters_wake_2');
+      wintersWakeModContextObject.appliedName = i18next.t(
+        'modifiers.faction_6_spell_winters_wake_1',
+      );
+      wintersWakeModContextObject.appliedDescription = i18next.t(
+        'modifiers.faction_6_spell_winters_wake_2',
+      );
       card.setTargetModifiersContextObjects([wintersWakeModContextObject]);
       card.setFXResource(['FX.Cards.Spell.WintersWake']);
       card.setBaseAnimResource({
@@ -495,10 +503,18 @@ class CardFactory_ShimzarSet_Faction6 {
           name: i18next.t('cards.faction_6_artifact_white_asp_name'),
           description: i18next.t('modifiers.plus_attack_key', { amount: 3 }),
         }),
-        ModifierKillWatchSpawnEntity.createContextObject({ id: Cards.Faction6.BlazingSpines }, true, false, 1, CONFIG.PATTERN_1x1, true, {
-          name: i18next.t('cards.faction_6_artifact_white_asp_name'),
-          description: i18next.t('modifiers.faction_6_artifact_white_asp_2'),
-        }),
+        ModifierKillWatchSpawnEntity.createContextObject(
+          { id: Cards.Faction6.BlazingSpines },
+          true,
+          false,
+          1,
+          CONFIG.PATTERN_1x1,
+          true,
+          {
+            name: i18next.t('cards.faction_6_artifact_white_asp_name'),
+            description: i18next.t('modifiers.faction_6_artifact_white_asp_2'),
+          },
+        ),
       ]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
       card.setFXResource(['FX.Cards.Artifact.WhiteAsp']);

@@ -19,8 +19,12 @@ class ModifierDrawCardWatchBuffSelf extends ModifierDrawCardWatch {
   static modifierName = 'Draw Card Watch';
 
   static createContextObject(attackBuff, maxHPBuff, options) {
-    if (attackBuff == null) { attackBuff = 0; }
-    if (maxHPBuff == null) { maxHPBuff = 0; }
+    if (attackBuff == null) {
+      attackBuff = 0;
+    }
+    if (maxHPBuff == null) {
+      maxHPBuff = 0;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.modifiersContextObjects = [
       Modifier.createContextObjectWithAttributeBuffs(attackBuff, maxHPBuff, {
@@ -35,18 +39,29 @@ class ModifierDrawCardWatchBuffSelf extends ModifierDrawCardWatch {
   static getDescription(modifierContextObject) {
     if (modifierContextObject) {
       const subContextObject = modifierContextObject.modifiersContextObjects[0];
-      return i18next.t('modifiers.draw_card_watch_buff_self_def', { buff: Stringifiers.stringifyAttackHealthBuff(subContextObject.attributeBuffs.atk, subContextObject.attributeBuffs.maxHP) });
+      return i18next.t('modifiers.draw_card_watch_buff_self_def', {
+        buff: Stringifiers.stringifyAttackHealthBuff(
+          subContextObject.attributeBuffs.atk,
+          subContextObject.attributeBuffs.maxHP,
+        ),
+      });
       // return @description.replace /%X/, Stringifiers.stringifyAttackHealthBuff(subContextObject.attributeBuffs.atk,subContextObject.attributeBuffs.maxHP)
     }
     return this.description;
   }
 
   onDrawCardWatch(action) {
-    return this.applyManagedModifiersFromModifiersContextObjects(this.modifiersContextObjects, this.getCard());
+    return this.applyManagedModifiersFromModifiersContextObjects(
+      this.modifiersContextObjects,
+      this.getCard(),
+    );
   }
 }
 ModifierDrawCardWatchBuffSelf.prototype.type = 'ModifierDrawCardWatchBuffSelf';
 ModifierDrawCardWatchBuffSelf.description = i18next.t('modifiers.draw_card_watch_buff_self_def');
-ModifierDrawCardWatchBuffSelf.prototype.fxResource = ['FX.Modifiers.ModifierDrawCardWatch', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierDrawCardWatchBuffSelf.prototype.fxResource = [
+  'FX.Modifiers.ModifierDrawCardWatch',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 
 module.exports = ModifierDrawCardWatchBuffSelf;

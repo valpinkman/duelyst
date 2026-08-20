@@ -25,9 +25,10 @@ const ScoreForModifyHP = function (card, targetCard, amount, rebase) {
 
     if (rebase) {
       score += (amount - targetCard.getHP()) * BOUNTY.UNIT_HP;
-    } else if (targetCard.getHP() + amount > 0) { // remove points for killing a unit
+    } else if (targetCard.getHP() + amount > 0) {
+      // remove points for killing a unit
       const scoreForUnit = ScoreForUnit(targetCard);
-      score += ((scoreForUnit / 2) * amount) * BOUNTY.UNIT_HP;
+      score += (scoreForUnit / 2) * amount * BOUNTY.UNIT_HP;
     }
   }
 

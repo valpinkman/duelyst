@@ -32,7 +32,6 @@ var Manager = require('./manager');
 var ProfileManager = require('./profile_manager');
 
 var NotificationsManager = Manager.extend({
-
   _notificationQueue: null,
 
   mainNotifications: null,
@@ -62,12 +61,17 @@ var NotificationsManager = Manager.extend({
   onBeforeConnect: function () {
     const _self = this;
     Manager.prototype.onBeforeConnect.call(this);
-    ProfileManager.getInstance().onReady()
+    ProfileManager.getInstance()
+      .onReady()
       .then(function () {
         var userId = ProfileManager.getInstance().get('id');
-        var notificationsRef = new Firebase(process.env.FIREBASE_URL + '/user-notifications/' + userId);
+        var notificationsRef = new Firebase(
+          process.env.FIREBASE_URL + '/user-notifications/' + userId,
+        );
 
-        _self.remoteNotifications = new DuelystFirebase.Collection(null, { firebase: notificationsRef.orderByChild('created_at').startAt(moment().utc().valueOf()) });
+        _self.remoteNotifications = new DuelystFirebase.Collection(null, {
+          firebase: notificationsRef.orderByChild('created_at').startAt(moment().utc().valueOf()),
+        });
         _self.listenTo(_self.remoteNotifications, 'add', _self.onRemoteNotificationAdded);
 
         ChatManager.getInstance().on(EVENTS.status, _self._onStatusChanged, _self);
@@ -107,27 +111,27 @@ var NotificationsManager = Manager.extend({
 
   getCollectionForNotification: function (notification) {
     switch (notification.get('type')) {
-    case _NotificationsManager.NOTIFICATION_QUEST_PROGRESS:
-      return this.getQuestProgressNotifications();
-    case _NotificationsManager.NOTIFICATION_BUDDY_MESSAGE:
-      return this.getBuddyMessageNotifications();
-    case _NotificationsManager.NOTIFICATION_BUDDY_INVITE:
-      return this.getBuddyInviteNotifications();
-    default:
-      return this.getMainNotifications();
+      case _NotificationsManager.NOTIFICATION_QUEST_PROGRESS:
+        return this.getQuestProgressNotifications();
+      case _NotificationsManager.NOTIFICATION_BUDDY_MESSAGE:
+        return this.getBuddyMessageNotifications();
+      case _NotificationsManager.NOTIFICATION_BUDDY_INVITE:
+        return this.getBuddyInviteNotifications();
+      default:
+        return this.getMainNotifications();
     }
   },
 
   getCanShowNotification: function (notification) {
     switch (notification.get('type')) {
-    case _NotificationsManager.NOTIFICATION_QUEST_PROGRESS:
-      return this.getCanShowQuestProgressNotification();
-    case _NotificationsManager.NOTIFICATION_BUDDY_MESSAGE:
-      return this.getCanShowBuddyMessageNotification();
-    case _NotificationsManager.NOTIFICATION_BUDDY_INVITE:
-      return this.getCanShowBuddyInviteNotification();
-    default:
-      return this.getCanShowMainNotification();
+      case _NotificationsManager.NOTIFICATION_QUEST_PROGRESS:
+        return this.getCanShowQuestProgressNotification();
+      case _NotificationsManager.NOTIFICATION_BUDDY_MESSAGE:
+        return this.getCanShowBuddyMessageNotification();
+      case _NotificationsManager.NOTIFICATION_BUDDY_INVITE:
+        return this.getCanShowBuddyInviteNotification();
+      default:
+        return this.getCanShowMainNotification();
     }
   },
 
@@ -138,41 +142,47 @@ var NotificationsManager = Manager.extend({
   getCanShowQuestProgressNotification: function () {
     // show quest progress when on landing/main
     // FIXME: this check is brittle
-    return ChatManager.getInstance().getStatusOnline()
-      && !NavigationManager.getInstance().getIsShowingDialogView()
-      && !NavigationManager.getInstance().getIsShowingModalView()
-      && (NavigationManager.getInstance().getIsShowingContentViewClass(MainMenuItemView)
-        || NavigationManager.getInstance().getIsShowingContentViewClass(PlayLayout));
+    return (
+      ChatManager.getInstance().getStatusOnline() &&
+      !NavigationManager.getInstance().getIsShowingDialogView() &&
+      !NavigationManager.getInstance().getIsShowingModalView() &&
+      (NavigationManager.getInstance().getIsShowingContentViewClass(MainMenuItemView) ||
+        NavigationManager.getInstance().getIsShowingContentViewClass(PlayLayout))
+    );
   },
 
   getCanShowBuddyMessageNotification: function () {
     // show buddy messages when on landing/main
     // FIXME: this check is brittle
-    return ChatManager.getInstance().getStatusOnline()
-      && ProfileManager.getInstance().profile
-      && !ProfileManager.getInstance().profile.get('doNotDisturb')
-      && !NavigationManager.getInstance().getIsShowingDialogView()
-      && !NavigationManager.getInstance().getIsShowingModalView()
-      && NavigationManager.getInstance().getIsShowingContentViewClass(MainMenuItemView);
+    return (
+      ChatManager.getInstance().getStatusOnline() &&
+      ProfileManager.getInstance().profile &&
+      !ProfileManager.getInstance().profile.get('doNotDisturb') &&
+      !NavigationManager.getInstance().getIsShowingDialogView() &&
+      !NavigationManager.getInstance().getIsShowingModalView() &&
+      NavigationManager.getInstance().getIsShowingContentViewClass(MainMenuItemView)
+    );
   },
 
   getCanShowBuddyInviteNotification: function () {
     // show buddy invites anywhere as long as we're not loading
-    return !ChatManager.getInstance().getStatusLoading()
-      && ProfileManager.getInstance().profile
-      && !ProfileManager.getInstance().profile.get('doNotDisturb');
+    return (
+      !ChatManager.getInstance().getStatusLoading() &&
+      ProfileManager.getInstance().profile &&
+      !ProfileManager.getInstance().profile.get('doNotDisturb')
+    );
   },
 
   getCanQueueNotification: function (notification) {
     switch (notification.get('type')) {
-    case _NotificationsManager.NOTIFICATION_QUEST_PROGRESS:
-      return true;
-    case _NotificationsManager.NOTIFICATION_BUDDY_MESSAGE:
-      return false;
-    case _NotificationsManager.NOTIFICATION_BUDDY_INVITE:
-      return true;
-    default:
-      return true;
+      case _NotificationsManager.NOTIFICATION_QUEST_PROGRESS:
+        return true;
+      case _NotificationsManager.NOTIFICATION_BUDDY_MESSAGE:
+        return false;
+      case _NotificationsManager.NOTIFICATION_BUDDY_INVITE:
+        return true;
+      default:
+        return true;
     }
   },
 
@@ -285,5 +295,4 @@ var NotificationsManager = Manager.extend({
   onRemoteNotificationAdded: function (remoteModel) {
     this.mainNotifications.add(remoteModel.attributes);
   },
-
 });

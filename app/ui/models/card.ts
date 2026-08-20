@@ -5,7 +5,6 @@ var CONFIG = require('app/common/config');
 var SDK = require('app/sdk');
 
 var CardModel = Backbone.Model.extend({
-
   initialize: function () {
     this.on('change:card', this.onCardChanged, this);
     this.onCardChanged();
@@ -35,7 +34,13 @@ var CardModel = Backbone.Model.extend({
     // add card set data
     var cardSetData = SDK.CardSetFactory.cardSetForIdentifier(this.get('cardSetId'));
     if (cardSetData != null) {
-      searchableContent += ' ' + (cardSetData.title || '') + ' ' + (cardSetData.name || '') + ' ' + (cardSetData.devName || '');
+      searchableContent +=
+        ' ' +
+        (cardSetData.title || '') +
+        ' ' +
+        (cardSetData.name || '') +
+        ' ' +
+        (cardSetData.devName || '');
 
       this.set({
         cardSetName: cardSetData.name,

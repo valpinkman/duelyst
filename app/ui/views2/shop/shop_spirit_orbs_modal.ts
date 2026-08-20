@@ -15,7 +15,6 @@ var ShopSpiritOrbsCollectionView = require('./shop_spirit_orbs_collection_view')
 var Template = require('./templates/shop_spirit_orbs_modal.hbs');
 
 var ShopSpiritOrbsModalView = Backbone.Marionette.LayoutView.extend({
-
   className: 'shop-spirit-orbs-modal',
   template: Template,
   selectedCardSetTab: null,
@@ -56,12 +55,21 @@ var ShopSpiritOrbsModalView = Backbone.Marionette.LayoutView.extend({
     Analytics.page('Shop', { path: '/#shop' });
 
     this.listenTo(InventoryManager.getInstance().walletModel, 'change', this.onWalletChange);
-    this.listenTo(InventoryManager.getInstance().boosterPacksCollection, 'add remove', this.onWalletChange);
+    this.listenTo(
+      InventoryManager.getInstance().boosterPacksCollection,
+      'add remove',
+      this.onWalletChange,
+    );
 
-    audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_tab_in.audio, CONFIG.SHOW_SFX_PRIORITY);
+    audio_engine
+      .current()
+      .play_effect_for_interaction(RSX.sfx_ui_tab_in.audio, CONFIG.SHOW_SFX_PRIORITY);
 
     // show spirit orbs shop
-    var orbsCollectionView = new ShopSpiritOrbsCollectionView({ model: new Backbone.Model({}), selectedCardSetTab: this.selectedCardSetTab });
+    var orbsCollectionView = new ShopSpiritOrbsCollectionView({
+      model: new Backbone.Model({}),
+      selectedCardSetTab: this.selectedCardSetTab,
+    });
     this.productCollectionRegion.show(orbsCollectionView);
   },
 
@@ -76,7 +84,6 @@ var ShopSpiritOrbsModalView = Backbone.Marionette.LayoutView.extend({
   },
 
   /* endregion EVENTS */
-
 });
 
 // Expose the class either via CommonJS or the global object

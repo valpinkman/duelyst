@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-    - main
+      - main
   pull_request:
     paths:
       - app/**
@@ -16,25 +16,25 @@ jobs:
   build_app:
     runs-on: ubuntu-latest
     steps:
-    - name: check out code
-      uses: actions/checkout@v4
+      - name: check out code
+        uses: actions/checkout@v4
 
-    - name: install pnpm
-      uses: pnpm/action-setup@v4
+      - name: install pnpm
+        uses: pnpm/action-setup@v4
 
-    - name: install node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: 24
-        cache: pnpm
+      - name: install node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
 
-    - name: install node dependencies
-      run: pnpm install --frozen-lockfile
+      - name: install node dependencies
+        run: pnpm install --frozen-lockfile
 
-    - name: install typescript dependencies
-      run: pnpm tsc:chroma-js
+      - name: install typescript dependencies
+        run: pnpm tsc:chroma-js
 
-    - name: build the app
-      run: pnpm build
-      env:
-        FIREBASE_URL: "https://test-url.firebaseio.com/"
+      - name: build the app
+        run: pnpm build
+        env:
+          FIREBASE_URL: 'https://test-url.firebaseio.com/'

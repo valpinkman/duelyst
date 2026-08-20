@@ -18,8 +18,12 @@ class ModifierOpeningGambitDamageEverything extends ModifierOpeningGambit {
   static type = 'ModifierOpeningGambitDamageEverything';
 
   static createContextObject(damageAmount, includeSelf, options) {
-    if (damageAmount == null) { damageAmount = 1; }
-    if (includeSelf == null) { includeSelf = false; }
+    if (damageAmount == null) {
+      damageAmount = 1;
+    }
+    if (includeSelf == null) {
+      includeSelf = false;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.damageAmount = damageAmount;
     contextObject.includeSelf = includeSelf;
@@ -30,7 +34,7 @@ class ModifierOpeningGambitDamageEverything extends ModifierOpeningGambit {
     return (() => {
       const result = [];
       for (var unit of Array.from<any>(this.getGameSession().getBoard().getUnits())) {
-        if (this.includeSelf || (unit !== this.getCard())) {
+        if (this.includeSelf || unit !== this.getCard()) {
           var damageAction = new DamageAction(this.getGameSession());
           damageAction.setOwnerId(this.getCard().getOwnerId());
           damageAction.setSource(this.getCard());
@@ -48,6 +52,9 @@ class ModifierOpeningGambitDamageEverything extends ModifierOpeningGambit {
 ModifierOpeningGambitDamageEverything.prototype.type = 'ModifierOpeningGambitDamageEverything';
 ModifierOpeningGambitDamageEverything.prototype.damageAmount = 1;
 ModifierOpeningGambitDamageEverything.prototype.includeSelf = false;
-ModifierOpeningGambitDamageEverything.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericDamage'];
+ModifierOpeningGambitDamageEverything.prototype.fxResource = [
+  'FX.Modifiers.ModifierOpeningGambit',
+  'FX.Modifiers.ModifierGenericDamage',
+];
 
 module.exports = ModifierOpeningGambitDamageEverything;

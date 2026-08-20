@@ -31,43 +31,63 @@ const walk = (node, fn) => {
   }
 };
 
-let total = 0; let files = 0; let skipped = 0;
+let total = 0;
+let files = 0;
+let skipped = 0;
 for (const file of process.argv.slice(2)) {
   const src = readFileSync(file, 'utf8');
   let ast;
-  try { ast = parse(src, { range: true }); } catch { continue; }
+  try {
+    ast = parse(src, { range: true });
+  } catch {
+    continue;
+  }
 
   const edits = [];
   walk(ast, (node) => {
     if (node.type !== 'NewExpression') return;
     if (!node.callee || node.callee.name !== 'Promise') return;
-    if (node.typeArguments || node.typeParameters) return;      // already typed
+    if (node.typeArguments || node.typeParameters) return; // already typed
     const fn = node.arguments && node.arguments[0];
     if (!fn || !['ArrowFunctionExpression', 'FunctionExpression'].includes(fn.type)) return;
     const resolveParam = fn.params && fn.params[0];
     if (!resolveParam || resolveParam.type !== 'Identifier') return;
 
-    let zeroArg = 0; let withArg = 0;
+    let zeroArg = 0;
+    let withArg = 0;
     walk(fn.body, (n) => {
-      if (n.type === 'CallExpression' && n.callee
-          && n.callee.type === 'Identifier' && n.callee.name === resolveParam.name) {
-        if (n.arguments.length === 0) zeroArg += 1; else withArg += 1;
+      if (
+        n.type === 'CallExpression' &&
+        n.callee &&
+        n.callee.type === 'Identifier' &&
+        n.callee.name === resolveParam.name
+      ) {
+        if (n.arguments.length === 0) zeroArg += 1;
+        else withArg += 1;
       }
     });
     if (zeroArg === 0) return;
-    if (withArg > 0) { skipped += 1; return; }                  // mixed: leave alone
+    if (withArg > 0) {
+      skipped += 1;
+      return;
+    } // mixed: leave alone
 
-    edits.push(node.callee.range[1]);                           // just after `Promise`
+    edits.push(node.callee.range[1]); // just after `Promise`
   });
 
   if (!edits.length) continue;
   let out = src;
   for (const at of edits.sort((a, b) => b - a)) out = `${out.slice(0, at)}<void>${out.slice(at)}`;
-  try { parse(out, { range: true }); } catch (e) {
+  try {
+    parse(out, { range: true });
+  } catch (e) {
     console.error(`  !! ${file}: output does not parse (${e.message})`);
     continue;
   }
   writeFileSync(file, out);
-  total += edits.length; files += 1;
+  total += edits.length;
+  files += 1;
 }
-console.log(`added <void> to ${total} promise(s) across ${files} file(s); ${skipped} skipped as mixed resolve()/resolve(x)`);
+console.log(
+  `added <void> to ${total} promise(s) across ${files} file(s); ${skipped} skipped as mixed resolve()/resolve(x)`,
+);

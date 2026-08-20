@@ -26,7 +26,8 @@ class ModifierOpponentSummonWatchRandomTransform extends ModifierOpponentSummonW
 
   static type = 'ModifierOpponentSummonWatchRandomTransform';
   static modifierName = 'Opponent Summon Watch';
-  static description = 'Whenever an enemy summons a minion, transform it into a random minion of the same cost';
+  static description =
+    'Whenever an enemy summons a minion, transform it into a random minion of the same cost';
 
   static createContextObject(options) {
     const contextObject = super.createContextObject(options);
@@ -45,7 +46,10 @@ class ModifierOpponentSummonWatchRandomTransform extends ModifierOpponentSummonW
     if (targetUnit != null) {
       // find valid minions
       let card;
-      const cardCache = this.getGameSession().getCardCaches().getIsHiddenInCollection(false).getIsGeneral(false)
+      const cardCache = this.getGameSession()
+        .getCardCaches()
+        .getIsHiddenInCollection(false)
+        .getIsGeneral(false)
         .getIsPrismatic(false)
         .getIsSkinned(false)
         .getType(CardType.Unit)
@@ -68,7 +72,13 @@ class ModifierOpponentSummonWatchRandomTransform extends ModifierOpponentSummonW
         card = cards[this.getGameSession().getRandomIntegerForExecution(cards.length)];
         this.cardDataOrIndexToSpawn = card.createNewCardData();
 
-        const spawnEntityAction = new PlayCardAsTransformAction(this.getCard().getGameSession(), targetOwnerId, targetPosition.x, targetPosition.y, this.cardDataOrIndexToSpawn);
+        const spawnEntityAction = new PlayCardAsTransformAction(
+          this.getCard().getGameSession(),
+          targetOwnerId,
+          targetPosition.x,
+          targetPosition.y,
+          this.cardDataOrIndexToSpawn,
+        );
         return this.getGameSession().executeAction(spawnEntityAction);
       }
     }
@@ -78,9 +88,13 @@ class ModifierOpponentSummonWatchRandomTransform extends ModifierOpponentSummonW
     return true;
   }
 }
-ModifierOpponentSummonWatchRandomTransform.prototype.type = 'ModifierOpponentSummonWatchRandomTransform';
+ModifierOpponentSummonWatchRandomTransform.prototype.type =
+  'ModifierOpponentSummonWatchRandomTransform';
 ModifierOpponentSummonWatchRandomTransform.prototype.cardDataOrIndexToSpawn = null;
-ModifierOpponentSummonWatchRandomTransform.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericSpawn'];
+ModifierOpponentSummonWatchRandomTransform.prototype.fxResource = [
+  'FX.Modifiers.ModifierSummonWatch',
+  'FX.Modifiers.ModifierGenericSpawn',
+];
 // default when no card restrictions are needed
 
 module.exports = ModifierOpponentSummonWatchRandomTransform;

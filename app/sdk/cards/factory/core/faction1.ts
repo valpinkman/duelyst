@@ -127,7 +127,7 @@ class CardFactory_CoreSet_Faction1 {
 
     if (identifier === Cards.Faction1.AltGeneral) {
       card = new Unit(gameSession);
-      if ((process.env.ALL_CARDS_AVAILABLE == null)) {
+      if (process.env.ALL_CARDS_AVAILABLE == null) {
         card.setIsUnlockableBasic(true);
       }
       card.setIsGeneral(true);
@@ -174,7 +174,7 @@ class CardFactory_CoreSet_Faction1 {
     if (identifier === Cards.Faction1.ThirdGeneral) {
       card = new Unit(gameSession);
       card.setIsGeneral(true);
-      if ((process.env.ALL_CARDS_AVAILABLE == null)) {
+      if (process.env.ALL_CARDS_AVAILABLE == null) {
         card.setIsUnlockableWithAchievement(true);
         card.setIsUnlockedWithAchievementId(WartechGeneralFaction1Achievement.id);
       }
@@ -316,7 +316,7 @@ class CardFactory_CoreSet_Faction1 {
     if (identifier === Cards.Faction1.SilverguardKnight) {
       card = new Unit(gameSession);
       card.factionId = Factions.Faction1;
-      if ((process.env.ALL_CARDS_AVAILABLE == null)) {
+      if (process.env.ALL_CARDS_AVAILABLE == null) {
         card.setIsUnlockableBasic(true);
       }
       card.name = i18next.t('cards.faction_1_unit_silverguard_knight_name');
@@ -387,14 +387,17 @@ class CardFactory_CoreSet_Faction1 {
       card.addKeywordClassToInclude(ModifierOpeningGambit);
       const followUpAttackBuff = 2;
       const followUpMaxHPBuff = -2;
-      const followupModifierContextObject = Modifier.createContextObjectWithAttributeBuffs(followUpAttackBuff, followUpMaxHPBuff);
-      followupModifierContextObject.appliedName = i18next.t('modifiers.faction_1_arclyte_buff_applied_name');
+      const followupModifierContextObject = Modifier.createContextObjectWithAttributeBuffs(
+        followUpAttackBuff,
+        followUpMaxHPBuff,
+      );
+      followupModifierContextObject.appliedName = i18next.t(
+        'modifiers.faction_1_arclyte_buff_applied_name',
+      );
       card.setFollowups([
         {
           id: Cards.Spell.ApplyModifiers,
-          targetModifiersContextObjects: [
-            followupModifierContextObject,
-          ],
+          targetModifiersContextObjects: [followupModifierContextObject],
           _private: {
             followupSourcePattern: CONFIG.PATTERN_3x3,
           },
@@ -497,7 +500,9 @@ class CardFactory_CoreSet_Faction1 {
       card.manaCost = 2;
       card.rarityId = Rarity.Common;
       card.setDescription(i18next.t('cards.faction_1_unit_lightchaser_desc'));
-      card.setInherentModifiersContextObjects([ModifierHealWatchBuffSelf.createContextObject(1, 1)]);
+      card.setInherentModifiersContextObjects([
+        ModifierHealWatchBuffSelf.createContextObject(1, 1),
+      ]);
     }
 
     if (identifier === Cards.Faction1.SunstoneTemplar) {
@@ -566,7 +571,10 @@ class CardFactory_CoreSet_Faction1 {
       card.setDescription(i18next.t('cards.faction_1_unit_ironcliffe_guardian_desc'));
       card.addKeywordClassToInclude(ModifierAirdrop);
       card.addKeywordClassToInclude(ModifierProvoke);
-      card.setInherentModifiersContextObjects([ModifierAirdrop.createContextObject(), ModifierProvoke.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierAirdrop.createContextObject(),
+        ModifierProvoke.createContextObject(),
+      ]);
     }
 
     if (identifier === Cards.Faction1.ElyxStormblade) {
@@ -599,7 +607,9 @@ class CardFactory_CoreSet_Faction1 {
       const speedBuffContextObject = Modifier.createContextObjectOnBoard();
       speedBuffContextObject.attributeBuffs = { speed: 1 };
       speedBuffContextObject.appliedName = i18next.t('modifiers.faction_1_elyx_buff_applied_name');
-      speedBuffContextObject.appliedDescription = i18next.t('modifiers.faction_1_elyx_buff_applied_desc');
+      speedBuffContextObject.appliedDescription = i18next.t(
+        'modifiers.faction_1_elyx_buff_applied_desc',
+      );
       card.setDescription(i18next.t('cards.faction_1_unit_elyx_desc'));
       card.addKeywordClassToInclude(ModifierProvoke);
       card.setInherentModifiersContextObjects([
@@ -636,7 +646,9 @@ class CardFactory_CoreSet_Faction1 {
       card.manaCost = 4;
       card.rarityId = Rarity.Epic;
       card.setDescription(i18next.t('cards.faction_1_unit_sunriser_desc'));
-      card.setInherentModifiersContextObjects([ModifierHealWatchDamageNearbyEnemies.createContextObject(2)]);
+      card.setInherentModifiersContextObjects([
+        ModifierHealWatchDamageNearbyEnemies.createContextObject(2),
+      ]);
     }
 
     if (identifier === Cards.Faction1.GrandmasterZir) {
@@ -670,7 +682,10 @@ class CardFactory_CoreSet_Faction1 {
       card.rarityId = Rarity.Legendary;
       card.setDescription(i18next.t('cards.faction_1_unit_grandmaster_zir_desc'));
       const contextObject = ModifierBackupGeneral.createContextObject();
-      contextObject.activeInHand = (contextObject.activeInDeck = (contextObject.activeInSignatureCards = false));
+      contextObject.activeInHand =
+        contextObject.activeInDeck =
+        contextObject.activeInSignatureCards =
+          false;
       contextObject.activeOnBoard = true;
       card.setInherentModifiersContextObjects([contextObject]);
     }
@@ -721,9 +736,7 @@ class CardFactory_CoreSet_Faction1 {
       card.manaCost = 1;
       buffContextObject = Modifier.createContextObjectWithAttributeBuffs(2);
       buffContextObject.appliedName = i18next.t('modifiers.faction_1_spell_roar_1');
-      card.setTargetModifiersContextObjects([
-        buffContextObject,
-      ]);
+      card.setTargetModifiersContextObjects([buffContextObject]);
       card.setFXResource(['FX.Cards.Spell.Roar']);
       card.setBaseSoundResource({
         apply: RSX.sfx_neutral_arakiheadhunter_attack_swing.audio,
@@ -806,9 +819,7 @@ class CardFactory_CoreSet_Faction1 {
       card.atk = 1;
       card.maxHP = 2;
       card.manaCost = 1;
-      card.setInherentModifiersContextObjects([
-        ModifierBandingProvoke.createContextObject(),
-      ]);
+      card.setInherentModifiersContextObjects([ModifierBandingProvoke.createContextObject()]);
       card.addKeywordClassToInclude(ModifierProvoke);
       card.addKeywordClassToInclude(ModifierToken);
     }
@@ -837,7 +848,7 @@ class CardFactory_CoreSet_Faction1 {
     if (identifier === Cards.Spell.Tempest) {
       card = new SpellDamage(gameSession);
       card.factionId = Factions.Faction1;
-      if ((process.env.ALL_CARDS_AVAILABLE == null)) {
+      if (process.env.ALL_CARDS_AVAILABLE == null) {
         card.setIsUnlockableBasic(true);
       }
       card.id = Cards.Spell.Tempest;
@@ -889,9 +900,7 @@ class CardFactory_CoreSet_Faction1 {
       card.spellFilterType = SpellFilterType.AllyDirect;
       const healthBuff = Modifier.createContextObjectWithAttributeBuffs(0, 3);
       healthBuff.appliedName = i18next.t('modifiers.faction_1_spell_auryn_nexus_1');
-      card.setTargetModifiersContextObjects([
-        healthBuff,
-      ]);
+      card.setTargetModifiersContextObjects([healthBuff]);
       card.setFXResource(['FX.Cards.Spell.AurynNexus']);
       card.setBaseSoundResource({
         apply: RSX.sfx_spell_forcebarrier.audio,
@@ -911,10 +920,10 @@ class CardFactory_CoreSet_Faction1 {
       card.manaCost = 2;
       card.rarityId = Rarity.Rare;
       const statModifierContextObject = Modifier.createContextObjectWithAttributeBuffs(3, -3);
-      statModifierContextObject.appliedName = i18next.t('modifiers.faction_1_spell_lasting_judgement_1');
-      card.setTargetModifiersContextObjects([
-        statModifierContextObject,
-      ]);
+      statModifierContextObject.appliedName = i18next.t(
+        'modifiers.faction_1_spell_lasting_judgement_1',
+      );
+      card.setTargetModifiersContextObjects([statModifierContextObject]);
       card.setFXResource(['FX.Cards.Spell.LastingJudgement']);
       card.setBaseSoundResource({
         apply: RSX.sfx_spell_lastingjudgement.audio,
@@ -928,7 +937,7 @@ class CardFactory_CoreSet_Faction1 {
     if (identifier === Cards.Spell.Martyrdom) {
       card = new SpellMartyrdom(gameSession);
       card.factionId = Factions.Faction1;
-      if ((process.env.ALL_CARDS_AVAILABLE == null)) {
+      if (process.env.ALL_CARDS_AVAILABLE == null) {
         card.setIsUnlockableBasic(true);
       }
       card.id = Cards.Spell.Martyrdom;
@@ -957,9 +966,7 @@ class CardFactory_CoreSet_Faction1 {
       card.rarityId = Rarity.Fixed;
       buffContextObject = Modifier.createContextObjectWithAttributeBuffs(1, 1);
       buffContextObject.appliedName = i18next.t('modifiers.faction_1_spell_war_surge_1');
-      card.setTargetModifiersContextObjects([
-        buffContextObject,
-      ]);
+      card.setTargetModifiersContextObjects([buffContextObject]);
       card.radius = CONFIG.WHOLE_BOARD_RADIUS;
       card.setFXResource(['FX.Cards.Spell.WarSurge']);
       card.setBaseSoundResource({
@@ -979,7 +986,9 @@ class CardFactory_CoreSet_Faction1 {
       card.setDescription(i18next.t('cards.faction_1_spell_lionheart_blessing_description'));
       card.manaCost = 1;
       card.rarityId = Rarity.Rare;
-      card.setTargetModifiersContextObjects([ModifierBandingDealDamageWatchDrawCard.createContextObject()]);
+      card.setTargetModifiersContextObjects([
+        ModifierBandingDealDamageWatchDrawCard.createContextObject(),
+      ]);
       card.spellFilterType = SpellFilterType.AllyDirect;
       card.setFXResource(['FX.Cards.Spell.LionheartBlessing']);
       card.setBaseAnimResource({
@@ -1098,7 +1107,7 @@ class CardFactory_CoreSet_Faction1 {
     if (identifier === Cards.Spell.DivineBond) {
       card = new SpellBuffAttributeByOtherAttribute(gameSession);
       card.factionId = Factions.Faction1;
-      if ((process.env.ALL_CARDS_AVAILABLE == null)) {
+      if (process.env.ALL_CARDS_AVAILABLE == null) {
         card.setIsUnlockableBasic(true);
       }
       card.id = Cards.Spell.DivineBond;
@@ -1131,9 +1140,7 @@ class CardFactory_CoreSet_Faction1 {
       card.drawCardsPostPlay = 1;
       card.rarityId = Rarity.Legendary;
       card.spellFilterType = SpellFilterType.AllyDirect;
-      card.setTargetModifiersContextObjects([
-        ModifierImmuneToSpellsByEnemy.createContextObject(),
-      ]);
+      card.setTargetModifiersContextObjects([ModifierImmuneToSpellsByEnemy.createContextObject()]);
       card.setFXResource(['FX.Cards.Spell.AegisBarrier']);
       card.setBaseAnimResource({
         idle: RSX.iconAegisBarrierIdle.name,
@@ -1197,9 +1204,17 @@ class CardFactory_CoreSet_Faction1 {
       card.rarityId = Rarity.Epic;
       card.durability = 3;
       const attackBuffContextObject = Modifier.createContextObjectWithAttributeBuffs(2, 0);
-      attackBuffContextObject.appliedName = i18next.t('cards.faction_1_artifact_skywind_glaives_name');
+      attackBuffContextObject.appliedName = i18next.t(
+        'cards.faction_1_artifact_skywind_glaives_name',
+      );
       card.setTargetModifiersContextObjects([
-        Modifier.createContextObjectWithAuraForNearbyAllies([attackBuffContextObject], null, null, null, i18next.t('modifiers.faction_1_artifact_skywind_glaives_1')),
+        Modifier.createContextObjectWithAuraForNearbyAllies(
+          [attackBuffContextObject],
+          null,
+          null,
+          null,
+          i18next.t('modifiers.faction_1_artifact_skywind_glaives_1'),
+        ),
       ]);
       card.setFXResource(['FX.Cards.Artifact.IndomitableWill']);
       card.setBaseAnimResource({

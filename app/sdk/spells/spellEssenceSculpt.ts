@@ -21,9 +21,13 @@ class SpellEssenceSculpt extends Spell {
     // add additional modifiers as needed
     if (this.targetModifiersContextObjects) {
       if (newCardData.additionalModifiersContextObjects != null) {
-        newCardData.additionalModifiersContextObjects.concat(UtilsJavascript.deepCopy(this.targetModifiersContextObjects));
+        newCardData.additionalModifiersContextObjects.concat(
+          UtilsJavascript.deepCopy(this.targetModifiersContextObjects),
+        );
       } else {
-        newCardData.additionalModifiersContextObjects = UtilsJavascript.deepCopy(this.targetModifiersContextObjects);
+        newCardData.additionalModifiersContextObjects = UtilsJavascript.deepCopy(
+          this.targetModifiersContextObjects,
+        );
       }
     }
 
@@ -35,7 +39,7 @@ class SpellEssenceSculpt extends Spell {
     const filteredPositions = [];
     for (var position of Array.from<any>(validPositions)) {
       var entityAtPosition = this.getGameSession().getBoard().getEntityAtPosition(position);
-      if ((entityAtPosition != null) && entityAtPosition.hasModifierClass(ModifierStunned)) {
+      if (entityAtPosition != null && entityAtPosition.hasModifierClass(ModifierStunned)) {
         filteredPositions.push(position);
       }
     }

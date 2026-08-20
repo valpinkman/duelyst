@@ -59,7 +59,6 @@ var ArenaDeckSelectEmptyView = Backbone.Marionette.ItemView.extend({
 });
 
 var DeckSelectCompositeView = SlidingPanelSelectCompositeView.extend({
-
   className: 'sliding-panel-select deck-select',
 
   template: DeckSelectTmpl,
@@ -71,7 +70,7 @@ var DeckSelectCompositeView = SlidingPanelSelectCompositeView.extend({
     $deckGroups: '.deck-groups',
     $searchSubmit: '.search-submit',
     $searchClear: '.search-clear',
-    $searchInput: '.search input[type=\'search\']',
+    $searchInput: ".search input[type='search']",
     $battleMapSelect: '.battlemap-select',
   },
 
@@ -80,7 +79,7 @@ var DeckSelectCompositeView = SlidingPanelSelectCompositeView.extend({
     'click .deck-select-confirm-casual': 'onConfirmCasualSelection',
     'click .deck-groups li': 'onDeckGroupChanged',
     'click .search-clear': 'onSearchClear',
-    'input .search input[type=\'search\']': 'onSearch',
+    "input .search input[type='search']": 'onSearch',
     'click .battlemap-select': 'onChangeBattleMapPressed',
     'click .deck-color-code-select-list .deck-color-code': 'onDeckColorCodeClicked',
     'click .toggle-faction': 'onFactionSelectClicked',
@@ -143,8 +142,8 @@ var DeckSelectCompositeView = SlidingPanelSelectCompositeView.extend({
     SlidingPanelSelectCompositeView.prototype.initialize.call(this);
 
     // set decks in collection
-    this.getDecks()
-      .then(function (decks) {
+    this.getDecks().then(
+      function (decks) {
         this.collection.reset(decks);
 
         // set starting selected deck group
@@ -164,7 +163,8 @@ var DeckSelectCompositeView = SlidingPanelSelectCompositeView.extend({
 
         this.render();
         this._showSlidingPanels();
-      }.bind(this));
+      }.bind(this),
+    );
   },
 
   getChildView: function (item) {
@@ -193,10 +193,14 @@ var DeckSelectCompositeView = SlidingPanelSelectCompositeView.extend({
     var decks = [];
 
     // find preset decks
-    var enabledPlayableFactions = GameDataManager.getInstance().visibleFactionsCollection.where({ isNeutral: false, enabled: true });
+    var enabledPlayableFactions = GameDataManager.getInstance().visibleFactionsCollection.where({
+      isNeutral: false,
+      enabled: true,
+    });
     _.each(enabledPlayableFactions, function (factionModel) {
       var factionId = factionModel.get('id');
-      var factionProgressionData = ProgressionManager.getInstance().getFactionProgressionStatsModel(factionId);
+      var factionProgressionData =
+        ProgressionManager.getInstance().getFactionProgressionStatsModel(factionId);
       var factionLevel = (factionProgressionData && factionProgressionData.get('level')) || 0;
       // add starter deck
       var starterDeck = SDK.FactionFactory.starterDeckForFactionLevel(factionId, factionLevel);
@@ -214,14 +218,24 @@ var DeckSelectCompositeView = SlidingPanelSelectCompositeView.extend({
           faction_id: factionId,
           crestImg: factionModel.get('crestResource').img,
           description: factionModel.get('description'),
-          numCardsUnlocked: basicCardModels.length + SDK.FactionProgression.unlockedCardsUpToLevel(factionLevel, factionId, true).length,
-          numCardsUnlockable: basicCardModels.length + SDK.FactionProgression.unlockedCardsUpToLevel(SDK.FactionProgression.maxLevel, factionId, true).length,
+          numCardsUnlocked:
+            basicCardModels.length +
+            SDK.FactionProgression.unlockedCardsUpToLevel(factionLevel, factionId, true).length,
+          numCardsUnlockable:
+            basicCardModels.length +
+            SDK.FactionProgression.unlockedCardsUpToLevel(
+              SDK.FactionProgression.maxLevel,
+              factionId,
+              true,
+            ).length,
         };
 
-        var starterDeckModel = new DeckModel(_.extend({}, factionData, {
-          id: factionModel.get('name') + ' Starter',
-          isStarter: true,
-        }));
+        var starterDeckModel = new DeckModel(
+          _.extend({}, factionData, {
+            id: factionModel.get('name') + ' Starter',
+            isStarter: true,
+          }),
+        );
         starterDeckModel.addCardsData(starterDeck);
         decks.push(starterDeckModel);
       }
@@ -237,15 +251,17 @@ var DeckSelectCompositeView = SlidingPanelSelectCompositeView.extend({
       this.runsCollection.url = process.env.API_URL + '/api/me/rift/runs';
       this.runsCollection.fetch();
 
-      var riftDecksPromise = this.runsCollection.onSyncOrReady().then(function () {
-        _.each(this.runsCollection.models, function (runModel) {
-          runModel.set('isRift', true);
-          runModel.set('id', runModel.get('ticket_id'));
-          decks.push(runModel);
-        });
+      var riftDecksPromise = this.runsCollection.onSyncOrReady().then(
+        function () {
+          _.each(this.runsCollection.models, function (runModel) {
+            runModel.set('isRift', true);
+            runModel.set('id', runModel.get('ticket_id'));
+            decks.push(runModel);
+          });
 
-        return Promise.resolve(decks);
-      }.bind(this));
+          return Promise.resolve(decks);
+        }.bind(this),
+      );
 
       gatherDecksPromises.push(riftDecksPromise);
     }
@@ -255,22 +271,23 @@ var DeckSelectCompositeView = SlidingPanelSelectCompositeView.extend({
       this.gauntletDecksCollection.url = process.env.API_URL + '/api/me/gauntlet/runs/decks';
       this.gauntletDecksCollection.fetch();
 
-      var gauntletDecksPromise = this.gauntletDecksCollection.onSyncOrReady().then(function () {
-        _.each(this.gauntletDecksCollection.models, function (runModel) {
-          runModel.set('isGauntlet', true);
-          decks.push(runModel);
-        });
+      var gauntletDecksPromise = this.gauntletDecksCollection.onSyncOrReady().then(
+        function () {
+          _.each(this.gauntletDecksCollection.models, function (runModel) {
+            runModel.set('isGauntlet', true);
+            decks.push(runModel);
+          });
 
-        return Promise.resolve(decks);
-      }.bind(this));
+          return Promise.resolve(decks);
+        }.bind(this),
+      );
 
       gatherDecksPromises.push(gauntletDecksPromise);
     }
 
-    return Promise.all(gatherDecksPromises)
-      .then(function () {
-        return Promise.resolve(decks);
-      });
+    return Promise.all(gatherDecksPromises).then(function () {
+      return Promise.resolve(decks);
+    });
   },
 
   /* endregion INITIALIZE */
@@ -284,7 +301,8 @@ var DeckSelectCompositeView = SlidingPanelSelectCompositeView.extend({
 
     var needsSlide = this._slidingContainerWidth < this._totalViewsWidth;
     if (needsSlide) {
-      var slidingScale = slidingContainerWidth != null ? slidingContainerWidth / this._slidingContainerWidth : 0.0;
+      var slidingScale =
+        slidingContainerWidth != null ? slidingContainerWidth / this._slidingContainerWidth : 0.0;
       var deckGroupKeys = Object.keys(this._slidingOffsetXByDeckGroup);
       for (var i = 0, il = deckGroupKeys.length; i < il; i++) {
         var deckGroup = deckGroupKeys[i];
@@ -310,7 +328,9 @@ var DeckSelectCompositeView = SlidingPanelSelectCompositeView.extend({
     SlidingPanelSelectCompositeView.prototype.onRender.call(this);
 
     // mark selected deck group as active
-    this.ui.$deckGroups.children('[data-value=\'' + this.selectedDeckGroup + '\']').addClass('active');
+    this.ui.$deckGroups
+      .children("[data-value='" + this.selectedDeckGroup + "']")
+      .addClass('active');
 
     // update deck visuals
     this._updateDecks();
@@ -335,10 +355,20 @@ var DeckSelectCompositeView = SlidingPanelSelectCompositeView.extend({
 
   updateSelectedBattlemapIcon: function () {
     if (ProfileManager.getInstance().get('battle_map_id')) {
-      var battleMap = SDK.CosmeticsFactory.cosmeticForIdentifier(ProfileManager.getInstance().get('battle_map_id'));
-      this.ui.$battleMapSelect.find('span.icon').css('background-image', 'url(' + battleMap.img + ')').find('i').addClass('hidden');
+      var battleMap = SDK.CosmeticsFactory.cosmeticForIdentifier(
+        ProfileManager.getInstance().get('battle_map_id'),
+      );
+      this.ui.$battleMapSelect
+        .find('span.icon')
+        .css('background-image', 'url(' + battleMap.img + ')')
+        .find('i')
+        .addClass('hidden');
     } else {
-      this.ui.$battleMapSelect.find('span.icon').css('background-image', '').find('i').removeClass('hidden');
+      this.ui.$battleMapSelect
+        .find('span.icon')
+        .css('background-image', '')
+        .find('i')
+        .removeClass('hidden');
     }
   },
 
@@ -355,13 +385,13 @@ var DeckSelectCompositeView = SlidingPanelSelectCompositeView.extend({
     this._updateBackgroundForDeck(this._selectedDeckModel);
   },
 
-  _showNewPlayerUI: function () {
-
-  },
+  _showNewPlayerUI: function () {},
 
   onPrepareForDestroy: function () {
     // reset gradient color mapping
-    Scene.getInstance().getFX().clearGradientColorMap(this._requestId, CONFIG.ANIMATE_MEDIUM_DURATION);
+    Scene.getInstance()
+      .getFX()
+      .clearGradientColorMap(this._requestId, CONFIG.ANIMATE_MEDIUM_DURATION);
     Scene.getInstance().getFX().requestUnblurSurface(this._requestId);
   },
 
@@ -431,7 +461,10 @@ var DeckSelectCompositeView = SlidingPanelSelectCompositeView.extend({
         if (this._currentSearchQuery) {
           // break search query into multiple or statements
           // this way we can combine search terms to capture multiple factions
-          this._currentSearchPattern = new RegExp(this._currentSearchQuery.replace(/[\s\t]/g, '|'), 'i');
+          this._currentSearchPattern = new RegExp(
+            this._currentSearchQuery.replace(/[\s\t]/g, '|'),
+            'i',
+          );
         } else {
           this._currentSearchPattern = null;
         }
@@ -441,7 +474,10 @@ var DeckSelectCompositeView = SlidingPanelSelectCompositeView.extend({
         this._slidingOffsetXByDeckGroup[this.selectedDeckGroup] = {};
 
         // filter decks and show matches
-        var collectionModelsToSearch = this.collection instanceof VirtualCollection ? this.collection.collection.models : this.collection.models;
+        var collectionModelsToSearch =
+          this.collection instanceof VirtualCollection
+            ? this.collection.collection.models
+            : this.collection.models;
         var currentDecks = this.collection.models.slice(0);
         var foundDecks = [];
         var changed = false;
@@ -486,7 +522,16 @@ var DeckSelectCompositeView = SlidingPanelSelectCompositeView.extend({
     if (selectedDeckModelForGroup != null) {
       var viewData = this._getSlidingPanelDataForModel(selectedDeckModelForGroup);
       if (this._slidingContainerWidth < this._totalViewsWidth) {
-        this._slidingOffsetX = this._slidingLastOffsetX = this._slidingOffsetXByDeckGroup[this.selectedDeckGroup] = Math.min(0.0, Math.max(-this._slidingRange, -(viewData.x + viewData.outerWidth * 0.5) + this._slidingContainerWidth * 0.5));
+        this._slidingOffsetX =
+          this._slidingLastOffsetX =
+          this._slidingOffsetXByDeckGroup[this.selectedDeckGroup] =
+            Math.min(
+              0.0,
+              Math.max(
+                -this._slidingRange,
+                -(viewData.x + viewData.outerWidth * 0.5) + this._slidingContainerWidth * 0.5,
+              ),
+            );
       }
     }
 
@@ -506,8 +551,11 @@ var DeckSelectCompositeView = SlidingPanelSelectCompositeView.extend({
   setStartingSelectedDeckModel: function () {
     var lastSelectedDeckId = CONFIG.lastSelectedDeckId;
     if (lastSelectedDeckId) {
-      var collectionToSearch = this.collection instanceof VirtualCollection ? this.collection.collection : this.collection;
-      var lastSelectedDeckModel = collectionToSearch.find(function (model) { return model.get('id') === lastSelectedDeckId; });
+      var collectionToSearch =
+        this.collection instanceof VirtualCollection ? this.collection.collection : this.collection;
+      var lastSelectedDeckModel = collectionToSearch.find(function (model) {
+        return model.get('id') === lastSelectedDeckId;
+      });
       if (lastSelectedDeckModel != null) {
         this._selectedDeckModel = lastSelectedDeckModel;
         if (!lastSelectedDeckModel.get('isStarter')) {
@@ -533,7 +581,8 @@ var DeckSelectCompositeView = SlidingPanelSelectCompositeView.extend({
     var isInSelectedGroup = true;
 
     if (this.selectedDeckGroup === 'custom') {
-      isInSelectedGroup = !deckModel.get('isStarter') && !deckModel.get('isRift') && !deckModel.get('isGauntlet');
+      isInSelectedGroup =
+        !deckModel.get('isStarter') && !deckModel.get('isRift') && !deckModel.get('isGauntlet');
     } else if (this.selectedDeckGroup === 'starter') {
       isInSelectedGroup = deckModel.get('isStarter');
     } else if (this.selectedDeckGroup === 'rift') {
@@ -576,7 +625,9 @@ var DeckSelectCompositeView = SlidingPanelSelectCompositeView.extend({
     if (newGroup === this.selectedDeckGroup) {
       return;
     } else {
-      audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_tab_in.audio, CONFIG.SELECT_SFX_PRIORITY);
+      audio_engine
+        .current()
+        .play_effect_for_interaction(RSX.sfx_ui_tab_in.audio, CONFIG.SELECT_SFX_PRIORITY);
 
       this.selectedDeckGroup = newGroup;
       this.ui.$deckGroups.children().removeClass('active');
@@ -584,7 +635,8 @@ var DeckSelectCompositeView = SlidingPanelSelectCompositeView.extend({
       if (this.collection instanceof VirtualCollection) {
         this.collection.updateFilter(this.filterDecks.bind(this));
       }
-      this._slidingOffsetX = this._slidingLastOffsetX = this._slidingOffsetXByDeckGroup[this.selectedDeckGroup] || 0.0;
+      this._slidingOffsetX = this._slidingLastOffsetX =
+        this._slidingOffsetXByDeckGroup[this.selectedDeckGroup] || 0.0;
       this.render();
       this._showSlidingPanels();
     }
@@ -614,7 +666,9 @@ var DeckSelectCompositeView = SlidingPanelSelectCompositeView.extend({
       CONFIG.lastSelectedDeckId = this._selectedDeckModel.get('id');
 
       // play select sound
-      audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_select.audio, CONFIG.SELECT_SFX_PRIORITY);
+      audio_engine
+        .current()
+        .play_effect_for_interaction(RSX.sfx_ui_select.audio, CONFIG.SELECT_SFX_PRIORITY);
 
       // tag selected deck as active
       this._updateDecks();
@@ -628,7 +682,9 @@ var DeckSelectCompositeView = SlidingPanelSelectCompositeView.extend({
     if (this._selectedDeckModel != null) {
       this.ui.$deckSelectConfirm.addClass('disabled');
       this.ui.$deckSelectConfirmCasual.addClass('disabled');
-      audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
+      audio_engine
+        .current()
+        .play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
       GamesManager.getInstance().findNewGame(
         UtilsJavascript.deepCopy(this._selectedDeckModel.get('cards')),
         this._selectedDeckModel.get('faction_id'),
@@ -638,7 +694,9 @@ var DeckSelectCompositeView = SlidingPanelSelectCompositeView.extend({
         ProfileManager.getInstance().get('battle_map_id'),
       );
     } else {
-      audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_error.audio, CONFIG.ERROR_SFX_PRIORITY);
+      audio_engine
+        .current()
+        .play_effect_for_interaction(RSX.sfx_ui_error.audio, CONFIG.ERROR_SFX_PRIORITY);
       this._showSelectDeckWarningPopover(this.ui.$deckSelectConfirm);
     }
   },
@@ -664,43 +722,54 @@ var DeckSelectCompositeView = SlidingPanelSelectCompositeView.extend({
   onChangeBattleMapPressed: function (e) {
     var dialog = new ChangeBattleMapItemView({ model: new Backbone.Model() });
     this.listenToOnce(dialog, 'success', this.updateSelectedBattlemapIcon);
-    this.listenToOnce(dialog, 'cancel', function () { this.stopListening(dialog); }.bind(this));
+    this.listenToOnce(
+      dialog,
+      'cancel',
+      function () {
+        this.stopListening(dialog);
+      }.bind(this),
+    );
     NavigationManager.getInstance().showDialogView(dialog);
   },
 
   _showSelectDeckWarningPopover: function ($target, message) {
     // defer in case this is showing as a result of an event
-    _.defer(function () {
-      if (this._dismissSelectDeckWarningPopover != null) {
-        this._dismissSelectDeckWarningPopover();
-      }
-      if (message == null) {
-        message = i18next.t('game_setup.must_select_deck_message');
-      }
-
-      // show popover
-      $target.popover({
-        content: message,
-        container: this.$el,
-        placement: 'top',
-      });
-      $target.popover('show');
-
-      // set dismiss
-      this._dismissSelectDeckWarningPopover = function () {
-        if (this._dismissSelectDeckWarningTimeoutId != null) {
-          clearTimeout(this._dismissSelectDeckWarningTimeoutId);
-          this._dismissSelectDeckWarningTimeoutId = null;
-        }
+    _.defer(
+      function () {
         if (this._dismissSelectDeckWarningPopover != null) {
-          $('body').off('click', this._dismissSelectDeckWarningPopover);
-          this._dismissSelectDeckWarningPopover = null;
+          this._dismissSelectDeckWarningPopover();
         }
-        $target.popover('destroy');
-      }.bind(this);
-      $('body').one('click', this._dismissSelectDeckWarningPopover);
-      this._dismissSelectDeckWarningTimeoutId = setTimeout(this._dismissSelectDeckWarningPopover, 2000);
-    }.bind(this));
+        if (message == null) {
+          message = i18next.t('game_setup.must_select_deck_message');
+        }
+
+        // show popover
+        $target.popover({
+          content: message,
+          container: this.$el,
+          placement: 'top',
+        });
+        $target.popover('show');
+
+        // set dismiss
+        this._dismissSelectDeckWarningPopover = function () {
+          if (this._dismissSelectDeckWarningTimeoutId != null) {
+            clearTimeout(this._dismissSelectDeckWarningTimeoutId);
+            this._dismissSelectDeckWarningTimeoutId = null;
+          }
+          if (this._dismissSelectDeckWarningPopover != null) {
+            $('body').off('click', this._dismissSelectDeckWarningPopover);
+            this._dismissSelectDeckWarningPopover = null;
+          }
+          $target.popover('destroy');
+        }.bind(this);
+        $('body').one('click', this._dismissSelectDeckWarningPopover);
+        this._dismissSelectDeckWarningTimeoutId = setTimeout(
+          this._dismissSelectDeckWarningPopover,
+          2000,
+        );
+      }.bind(this),
+    );
   },
 
   _updateBackgroundForDeck: function (deckModel) {
@@ -712,16 +781,38 @@ var DeckSelectCompositeView = SlidingPanelSelectCompositeView.extend({
         //   (factionData.gradientColorMapWhite.g + factionData.gradientColorMapBlack.g)/2,
         //   (factionData.gradientColorMapWhite.b + factionData.gradientColorMapBlack.b)/2
         // )
-        CONFIG.razerChromaIdleColor = new Chroma.Color(factionData.gradientColorMapWhite.r, factionData.gradientColorMapWhite.g, factionData.gradientColorMapWhite.b);
+        CONFIG.razerChromaIdleColor = new Chroma.Color(
+          factionData.gradientColorMapWhite.r,
+          factionData.gradientColorMapWhite.g,
+          factionData.gradientColorMapWhite.b,
+        );
         Chroma.setAll(CONFIG.razerChromaIdleColor);
       }
-      Scene.getInstance().getFX().showGradientColorMap(this._requestId, CONFIG.ANIMATE_FAST_DURATION, factionData.gradientColorMapWhite, factionData.gradientColorMapBlack);
+      Scene.getInstance()
+        .getFX()
+        .showGradientColorMap(
+          this._requestId,
+          CONFIG.ANIMATE_FAST_DURATION,
+          factionData.gradientColorMapWhite,
+          factionData.gradientColorMapBlack,
+        );
     } else {
-      Scene.getInstance().getFX().showGradientColorMap(this._requestId, CONFIG.ANIMATE_FAST_DURATION, {
-        r: 194, g: 203, b: 220, a: 255,
-      }, {
-        r: 36, g: 51, b: 65, a: 255,
-      });
+      Scene.getInstance().getFX().showGradientColorMap(
+        this._requestId,
+        CONFIG.ANIMATE_FAST_DURATION,
+        {
+          r: 194,
+          g: 203,
+          b: 220,
+          a: 255,
+        },
+        {
+          r: 36,
+          g: 51,
+          b: 65,
+          a: 255,
+        },
+      );
     }
   },
 
@@ -762,7 +853,10 @@ var DeckSelectCompositeView = SlidingPanelSelectCompositeView.extend({
           placement: 'bottom',
         });
         this._popoverItem.popover('show');
-      } else if (this.selectedDeckGroup === 'starter' && !this._selectedDeckModel.get('isStarter')) {
+      } else if (
+        this.selectedDeckGroup === 'starter' &&
+        !this._selectedDeckModel.get('isStarter')
+      ) {
         // show tooltip to direct player to selected custom deck
         this._popoverItem = this.ui.$deckGroups.children('[data-value="custom"]');
         this._popoverItem.popover({
@@ -783,7 +877,6 @@ var DeckSelectCompositeView = SlidingPanelSelectCompositeView.extend({
   },
 
   /* endregion SELECTION */
-
 });
 
 // Expose the class either via CommonJS or the global object

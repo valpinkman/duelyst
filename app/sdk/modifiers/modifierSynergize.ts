@@ -27,12 +27,14 @@ class ModifierSynergize extends Modifier {
   onAfterCleanupAction(e) {
     super.onAfterCleanupAction(e);
 
-    const {
-      action,
-    } = e;
+    const { action } = e;
 
     // watch for a spell being cast from Signature Card slot by player who owns this entity
-    if ((action instanceof PlaySignatureCardAction) && (action.getOwnerId() === this.getCard().getOwnerId()) && (__guard__(action.getCard(), (x) => x.type) === CardType.Spell)) {
+    if (
+      action instanceof PlaySignatureCardAction &&
+      action.getOwnerId() === this.getCard().getOwnerId() &&
+      __guard__(action.getCard(), (x) => x.type) === CardType.Spell
+    ) {
       return this.onSynergize(action);
     }
   }
@@ -52,5 +54,5 @@ ModifierSynergize.prototype.fxResource = ['FX.Modifiers.ModifierSynergize'];
 module.exports = ModifierSynergize;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

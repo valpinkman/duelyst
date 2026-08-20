@@ -13,7 +13,6 @@ var moment = require('moment');
 var DeckSelectSinglePlayerCompositeView = require('./deck_select_single_player');
 
 var DeckSelectBossBattleCompositeView = DeckSelectSinglePlayerCompositeView.extend({
-
   className: 'sliding-panel-select deck-select deck-select-single-player deck-select-boss-battle',
 
   _opponentClassPrefix: '.boss-opponent',
@@ -74,7 +73,6 @@ var DeckSelectBossBattleCompositeView = DeckSelectSinglePlayerCompositeView.exte
   getConfirmSelectionEvent: function () {
     return EVENTS.start_boss_battle;
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

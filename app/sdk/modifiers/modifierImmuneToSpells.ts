@@ -23,9 +23,19 @@ class ModifierImmuneToSpells extends ModifierImmune {
   onValidateAction(event) {
     const a = event.action;
 
-    if ((this.getCard() != null) && a instanceof ApplyCardToBoardAction && a.getIsValid() && UtilsPosition.getPositionsAreEqual(this.getCard().getPosition(), a.getTargetPosition())) {
+    if (
+      this.getCard() != null &&
+      a instanceof ApplyCardToBoardAction &&
+      a.getIsValid() &&
+      UtilsPosition.getPositionsAreEqual(this.getCard().getPosition(), a.getTargetPosition())
+    ) {
       const card = a.getCard();
-      if ((card != null) && (__guard__(card.getRootCard(), (x) => x.type) === CardType.Spell) && !card.getTargetsSpace() && !card.getAppliesSameEffectToMultipleTargets()) {
+      if (
+        card != null &&
+        __guard__(card.getRootCard(), (x) => x.type) === CardType.Spell &&
+        !card.getTargetsSpace() &&
+        !card.getAppliesSameEffectToMultipleTargets()
+      ) {
         return this.invalidateAction(a, this.getCard().getPosition(), '[Not] a valid target.');
       }
     }
@@ -34,10 +44,13 @@ class ModifierImmuneToSpells extends ModifierImmune {
 ModifierImmuneToSpells.prototype.type = 'ModifierImmuneToSpells';
 ModifierImmuneToSpells.modifierName = i18next.t('modifiers.immune_to_spells_name');
 ModifierImmuneToSpells.description = i18next.t('modifiers.immune_to_spells_def');
-ModifierImmuneToSpells.prototype.fxResource = ['FX.Modifiers.ModifierImmunity', 'FX.Modifiers.ModifierImmunitySpell'];
+ModifierImmuneToSpells.prototype.fxResource = [
+  'FX.Modifiers.ModifierImmunity',
+  'FX.Modifiers.ModifierImmunitySpell',
+];
 
 module.exports = ModifierImmuneToSpells;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

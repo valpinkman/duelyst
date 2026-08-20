@@ -34,7 +34,9 @@ class ModifierOpeningGambitDamageNearby extends ModifierOpeningGambit {
   }
 
   onOpeningGambit() {
-    const entities = this.getGameSession().getBoard().getEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
+    const entities = this.getGameSession()
+      .getBoard()
+      .getEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
     return (() => {
       const result = [];
       for (var entity of Array.from<any>(entities)) {
@@ -51,6 +53,9 @@ class ModifierOpeningGambitDamageNearby extends ModifierOpeningGambit {
 }
 ModifierOpeningGambitDamageNearby.prototype.type = 'ModifierOpeningGambitDamageNearby';
 ModifierOpeningGambitDamageNearby.prototype.damageAmount = 0;
-ModifierOpeningGambitDamageNearby.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericDamageNearby'];
+ModifierOpeningGambitDamageNearby.prototype.fxResource = [
+  'FX.Modifiers.ModifierOpeningGambit',
+  'FX.Modifiers.ModifierGenericDamageNearby',
+];
 
 module.exports = ModifierOpeningGambitDamageNearby;

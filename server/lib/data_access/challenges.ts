@@ -56,33 +56,49 @@ class ChallengesModule {
 
     const MOMENT_NOW_UTC = moment().utc();
 
-    Logger.module('ChallengesModule').time(`completeChallengeWithType() -> user ${userId.blue} completed challenge type ${challengeType}.`);
+    Logger.module('ChallengesModule').time(
+      `completeChallengeWithType() -> user ${userId.blue} completed challenge type ${challengeType}.`,
+    );
 
-    return knex('user_challenges').where({ user_id: userId, challenge_id: challengeType }).first()
+    return knex('user_challenges')
+      .where({ user_id: userId, challenge_id: challengeType })
+      .first()
       .then(function (challengeRow) {
         if (challengeRow && challengeRow.completed_at) {
-          Logger.module('ChallengesModule').debug(`completeChallengeWithType() -> user ${userId.blue} has already completed challenge type ${challengeType}.`);
+          Logger.module('ChallengesModule').debug(
+            `completeChallengeWithType() -> user ${userId.blue} has already completed challenge type ${challengeType}.`,
+          );
           return Promise.resolve(false);
         } else {
           var txPromise = knex.transaction(function (tx) {
-          // lock user record while updating data
-            knex('users').where({ id: userId }).first('id').forUpdate()
+            // lock user record while updating data
+            knex('users')
+              .where({ id: userId })
+              .first('id')
+              .forUpdate()
               .transacting(tx)
               .then(function () {
                 // give the user their rewards
                 let rewardData;
-                const goldReward = SDK.ChallengeFactory.getGoldRewardedForChallengeType(challengeType);
-                const cardRewards = SDK.ChallengeFactory.getCardIdsRewardedForChallengeType(challengeType);
-                const spiritReward = SDK.ChallengeFactory.getSpiritRewardedForChallengeType(challengeType);
-                const boosterPackRewards = SDK.ChallengeFactory.getBoosterPacksRewardedForChallengeType(challengeType);
-                const factionUnlockedReward = SDK.ChallengeFactory.getFactionUnlockedRewardedForChallengeType(challengeType);
+                const goldReward =
+                  SDK.ChallengeFactory.getGoldRewardedForChallengeType(challengeType);
+                const cardRewards =
+                  SDK.ChallengeFactory.getCardIdsRewardedForChallengeType(challengeType);
+                const spiritReward =
+                  SDK.ChallengeFactory.getSpiritRewardedForChallengeType(challengeType);
+                const boosterPackRewards =
+                  SDK.ChallengeFactory.getBoosterPacksRewardedForChallengeType(challengeType);
+                const factionUnlockedReward =
+                  SDK.ChallengeFactory.getFactionUnlockedRewardedForChallengeType(challengeType);
 
                 _chainState.rewards = [];
                 _chainState.challengeRow = {
                   user_id: userId,
                   challenge_id: challengeType,
                   completed_at: MOMENT_NOW_UTC.toDate(),
-                  last_attempted_at: (challengeRow != null ? challengeRow.last_attempted_at : undefined) || MOMENT_NOW_UTC.toDate(),
+                  last_attempted_at:
+                    (challengeRow != null ? challengeRow.last_attempted_at : undefined) ||
+                    MOMENT_NOW_UTC.toDate(),
                   reward_ids: [],
                   is_unread: true,
                 };
@@ -106,7 +122,16 @@ class ChallengesModule {
 
                   // add the promise to our list of reward promises
                   rewardPromises.push(knex('user_rewards').insert(rewardData).transacting(tx));
-                  rewardPromises.push(InventoryModule.giveUserGold(txPromise, tx, userId, goldReward, 'challenge', challengeType));
+                  rewardPromises.push(
+                    InventoryModule.giveUserGold(
+                      txPromise,
+                      tx,
+                      userId,
+                      goldReward,
+                      'challenge',
+                      challengeType,
+                    ),
+                  );
                 }
 
                 if (cardRewards) {
@@ -126,7 +151,9 @@ class ChallengesModule {
 
                   // add the promise to our list of reward promises
                   rewardPromises.push(knex('user_rewards').insert(rewardData).transacting(tx));
-                  rewardPromises.push(InventoryModule.giveUserCards(txPromise, tx, userId, cardRewards, 'challenge'));
+                  rewardPromises.push(
+                    InventoryModule.giveUserCards(txPromise, tx, userId, cardRewards, 'challenge'),
+                  );
                 }
 
                 if (spiritReward) {
@@ -146,7 +173,15 @@ class ChallengesModule {
 
                   // add the promise to our list of reward promises
                   rewardPromises.push(knex('user_rewards').insert(rewardData).transacting(tx));
-                  rewardPromises.push(InventoryModule.giveUserSpirit(txPromise, tx, userId, spiritReward, 'challenge'));
+                  rewardPromises.push(
+                    InventoryModule.giveUserSpirit(
+                      txPromise,
+                      tx,
+                      userId,
+                      spiritReward,
+                      'challenge',
+                    ),
+                  );
                 }
 
                 if (boosterPackRewards) {
@@ -167,10 +202,19 @@ class ChallengesModule {
                   // add the promise to our list of reward promises
                   rewardPromises.push(knex('user_rewards').insert(rewardData).transacting(tx));
 
-                  _.each(boosterPackRewards, (boosterPackData) => // Bound to array of reward promises
+                  _.each(boosterPackRewards, (boosterPackData) =>
+                    // Bound to array of reward promises
                     rewardPromises.push(
-                      InventoryModule.addBoosterPackToUser(txPromise, tx, userId, 1, 'soft', boosterPackData),
-                    ));
+                      InventoryModule.addBoosterPackToUser(
+                        txPromise,
+                        tx,
+                        userId,
+                        1,
+                        'soft',
+                        boosterPackData,
+                      ),
+                    ),
+                  );
                 }
 
                 if (factionUnlockedReward) {
@@ -195,32 +239,56 @@ class ChallengesModule {
                 _chainState.challengeRow.reward_ids = _.map(_chainState.rewards, (r) => r.id);
 
                 if (challengeRow) {
-                  rewardPromises.push(knex('user_challenges').where({ user_id: userId, challenge_id: challengeType }).update(_chainState.challengeRow).transacting(tx));
+                  rewardPromises.push(
+                    knex('user_challenges')
+                      .where({ user_id: userId, challenge_id: challengeType })
+                      .update(_chainState.challengeRow)
+                      .transacting(tx),
+                  );
                 } else {
-                  rewardPromises.push(knex('user_challenges').insert(_chainState.challengeRow).transacting(tx));
+                  rewardPromises.push(
+                    knex('user_challenges').insert(_chainState.challengeRow).transacting(tx),
+                  );
                 }
 
                 return Promise.all(rewardPromises);
               })
               .then(function () {
                 if (_chainState.challengeRow && shouldProcessQuests) {
-                  return QuestsModule.updateQuestProgressWithCompletedChallenge(txPromise, tx, userId, challengeType, MOMENT_NOW_UTC);
+                  return QuestsModule.updateQuestProgressWithCompletedChallenge(
+                    txPromise,
+                    tx,
+                    userId,
+                    challengeType,
+                    MOMENT_NOW_UTC,
+                  );
                 } else {
                   return Promise.resolve();
                 }
               })
               .then(function (questProgressResponse) {
-                if (_chainState.challengeRow && (__guard__(questProgressResponse != null ? questProgressResponse.rewards : undefined, (x) => x.length) > 0)) {
-                  Logger.module('ChallengesModule').debug(`completeChallengeWithType() -> user ${userId.blue} completed challenge quest rewards count: ${(questProgressResponse != null ? questProgressResponse.rewards.length : undefined)}`);
+                if (
+                  _chainState.challengeRow &&
+                  __guard__(
+                    questProgressResponse != null ? questProgressResponse.rewards : undefined,
+                    (x) => x.length,
+                  ) > 0
+                ) {
+                  Logger.module('ChallengesModule').debug(
+                    `completeChallengeWithType() -> user ${userId.blue} completed challenge quest rewards count: ${questProgressResponse != null ? questProgressResponse.rewards.length : undefined}`,
+                  );
 
                   for (var reward of Array.from<any>(questProgressResponse.rewards)) {
                     _chainState.rewards.push(reward);
                     _chainState.challengeRow.reward_ids.push(reward.id);
                   }
 
-                  return knex('user_challenges').where({ user_id: userId, challenge_id: challengeType }).update({
-                    reward_ids: _chainState.challengeRow.reward_ids,
-                  }).transacting(tx);
+                  return knex('user_challenges')
+                    .where({ user_id: userId, challenge_id: challengeType })
+                    .update({
+                      reward_ids: _chainState.challengeRow.reward_ids,
+                    })
+                    .transacting(tx);
                 }
               })
               .then(function () {
@@ -237,10 +305,24 @@ class ChallengesModule {
                   delete challengeRow.user_id;
                   // delete challengeRow.challenge_id
 
-                  if (challengeRow.last_attempted_at) { challengeRow.last_attempted_at = moment.utc(challengeRow.last_attempted_at).valueOf(); }
-                  if (challengeRow.completed_at) { challengeRow.completed_at = moment.utc(challengeRow.completed_at).valueOf(); }
+                  if (challengeRow.last_attempted_at) {
+                    challengeRow.last_attempted_at = moment
+                      .utc(challengeRow.last_attempted_at)
+                      .valueOf();
+                  }
+                  if (challengeRow.completed_at) {
+                    challengeRow.completed_at = moment.utc(challengeRow.completed_at).valueOf();
+                  }
 
-                  allPromises.push(FirebasePromises.set(rootRef.child('user-challenge-progression').child(userId).child(challengeType), challengeRow));
+                  allPromises.push(
+                    FirebasePromises.set(
+                      rootRef
+                        .child('user-challenge-progression')
+                        .child(userId)
+                        .child(challengeType),
+                      challengeRow,
+                    ),
+                  );
 
                   _chainState.challengeRow = challengeRow;
                 }
@@ -265,7 +347,9 @@ class ChallengesModule {
         }
       })
       .then(function () {
-        Logger.module('ChallengesModule').timeEnd(`completeChallengeWithType() -> user ${userId.blue} completed challenge type ${challengeType}.`);
+        Logger.module('ChallengesModule').timeEnd(
+          `completeChallengeWithType() -> user ${userId.blue} completed challenge type ${challengeType}.`,
+        );
 
         let responseData = null;
 
@@ -294,50 +378,72 @@ class ChallengesModule {
 
     const MOMENT_NOW_UTC = moment().utc();
 
-    Logger.module('ChallengesModule').time(`markChallengeAsAttempted() -> user ${userId.blue} attempted challenge type ${challengeType}.`);
+    Logger.module('ChallengesModule').time(
+      `markChallengeAsAttempted() -> user ${userId.blue} attempted challenge type ${challengeType}.`,
+    );
 
-    const txPromise = knex.transaction(function (tx) {
-      // lock user and challenge row
-      Promise.all([
-        knex('user_challenges').where({ user_id: userId, challenge_id: challengeType }).first().forUpdate()
-          .transacting(tx),
-        knex('users').where({ id: userId }).first('id').forUpdate()
-          .transacting(tx),
-      ])
-        .then(function ([challengeRow]) {
-          _chainState.challengeRow = challengeRow;
+    const txPromise = knex
+      .transaction(function (tx) {
+        // lock user and challenge row
+        Promise.all([
+          knex('user_challenges')
+            .where({ user_id: userId, challenge_id: challengeType })
+            .first()
+            .forUpdate()
+            .transacting(tx),
+          knex('users').where({ id: userId }).first('id').forUpdate().transacting(tx),
+        ])
+          .then(function ([challengeRow]) {
+            _chainState.challengeRow = challengeRow;
 
-          if (_chainState.challengeRow != null) {
-            _chainState.challengeRow.last_attempted_at = MOMENT_NOW_UTC.toDate();
-            return knex('user_challenges').where({ user_id: userId, challenge_id: challengeType }).update(_chainState.challengeRow).transacting(tx);
-          } else {
-            _chainState.challengeRow = {
-              user_id: userId,
-              challenge_id: challengeType,
-              last_attempted_at: MOMENT_NOW_UTC.toDate(),
-            };
-            return knex('user_challenges').insert(_chainState.challengeRow).transacting(tx);
-          }
-        }).then(() => DuelystFirebase.connect().getRootRef())
-        .then(function (rootRef) {
-          const allPromises = [];
+            if (_chainState.challengeRow != null) {
+              _chainState.challengeRow.last_attempted_at = MOMENT_NOW_UTC.toDate();
+              return knex('user_challenges')
+                .where({ user_id: userId, challenge_id: challengeType })
+                .update(_chainState.challengeRow)
+                .transacting(tx);
+            } else {
+              _chainState.challengeRow = {
+                user_id: userId,
+                challenge_id: challengeType,
+                last_attempted_at: MOMENT_NOW_UTC.toDate(),
+              };
+              return knex('user_challenges').insert(_chainState.challengeRow).transacting(tx);
+            }
+          })
+          .then(() => DuelystFirebase.connect().getRootRef())
+          .then(function (rootRef) {
+            const allPromises = [];
 
-          if (_chainState.challengeRow != null) {
-            delete _chainState.challengeRow.user_id;
-            // delete @.challengeRow.challenge_id
+            if (_chainState.challengeRow != null) {
+              delete _chainState.challengeRow.user_id;
+              // delete @.challengeRow.challenge_id
 
-            if (_chainState.challengeRow.last_attempted_at) { _chainState.challengeRow.last_attempted_at = moment.utc(_chainState.challengeRow.last_attempted_at).valueOf(); }
-            if (_chainState.challengeRow.completed_at) { _chainState.challengeRow.completed_at = moment.utc(_chainState.challengeRow.completed_at).valueOf(); }
+              if (_chainState.challengeRow.last_attempted_at) {
+                _chainState.challengeRow.last_attempted_at = moment
+                  .utc(_chainState.challengeRow.last_attempted_at)
+                  .valueOf();
+              }
+              if (_chainState.challengeRow.completed_at) {
+                _chainState.challengeRow.completed_at = moment
+                  .utc(_chainState.challengeRow.completed_at)
+                  .valueOf();
+              }
 
-            allPromises.push(FirebasePromises.set(rootRef.child('user-challenge-progression').child(userId).child(challengeType), _chainState.challengeRow));
-          }
+              allPromises.push(
+                FirebasePromises.set(
+                  rootRef.child('user-challenge-progression').child(userId).child(challengeType),
+                  _chainState.challengeRow,
+                ),
+              );
+            }
 
-          return Promise.all(allPromises);
-        })
-        .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
-        .then(tx.commit)
-        .catch(tx.rollback);
-    })
+            return Promise.all(allPromises);
+          })
+          .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
+          .then(tx.commit)
+          .catch(tx.rollback);
+      })
       .then(function () {
         const responseData = { challenge: _chainState.challengeRow };
         return responseData;
@@ -356,19 +462,42 @@ class ChallengesModule {
    * @param  {Moment} systemTime        Current time of the system, used for debugging
    * @return  {Promise}            Promise that will resolve on completion
    */
-  static markDailyChallengeAsCompleted(userId, challengeId, solutionHash, completionTime, systemTime) {
+  static markDailyChallengeAsCompleted(
+    userId,
+    challengeId,
+    solutionHash,
+    completionTime,
+    systemTime,
+  ) {
     const _chainState: Record<string, any> = {};
     const MOMENT_NOW_UTC = systemTime || moment().utc();
     const completionTimeUtc = completionTime || MOMENT_NOW_UTC;
 
     // Verify a challenge in the future nor more than X days old is attempting to be completed
-    if (Math.abs(completionTimeUtc.diff(MOMENT_NOW_UTC, 'days', true)) > ChallengesModule.DAILY_CHALLENGE_ALLOWABLE_CLOCK_SKEW_IN_DAYS) {
-      return Promise.reject(new Errors.DailyChallengeTimeFrameError('Attempting to complete a daily challenge outside allowable time frame.'));
+    if (
+      Math.abs(completionTimeUtc.diff(MOMENT_NOW_UTC, 'days', true)) >
+      ChallengesModule.DAILY_CHALLENGE_ALLOWABLE_CLOCK_SKEW_IN_DAYS
+    ) {
+      return Promise.reject(
+        new Errors.DailyChallengeTimeFrameError(
+          'Attempting to complete a daily challenge outside allowable time frame.',
+        ),
+      );
     }
 
-    return DuelystFirebase.connect().getRootRef().then((fbRootRef) => FirebasePromises.once(fbRootRef.child('daily-challenges').child(completionTimeUtc.format('YYYY-MM-DD')), 'value'))
+    return DuelystFirebase.connect()
+      .getRootRef()
+      .then((fbRootRef) =>
+        FirebasePromises.once(
+          fbRootRef.child('daily-challenges').child(completionTimeUtc.format('YYYY-MM-DD')),
+          'value',
+        ),
+      )
       .then(function (snapshot) {
-        Logger.module('ChallengesModule').debug(`markDailyChallengeAsCompleted() -> ${userId.blue} wants to complete challenge ${challengeId} for day ${completionTimeUtc.format('YYYY-MM-DD')}. Challenge Spec: `, snapshot.val());
+        Logger.module('ChallengesModule').debug(
+          `markDailyChallengeAsCompleted() -> ${userId.blue} wants to complete challenge ${challengeId} for day ${completionTimeUtc.format('YYYY-MM-DD')}. Challenge Spec: `,
+          snapshot.val(),
+        );
 
         if (!snapshot.val()) {
           throw new Errors.NotFoundError('Daily Challenge Not Found');
@@ -378,71 +507,93 @@ class ChallengesModule {
           throw new Errors.BadRequestError('Invalid Daily Challenge ID');
         }
 
-        var txPromise = knex.transaction(function (tx) {
-        // lock user and challenge row
-          Promise.all([
-            knex('user_daily_challenges_completed').where({ user_id: userId, challenge_id: challengeId }).first().forUpdate()
-              .transacting(tx),
-            knex('users').where({ id: userId }).first('id').forUpdate()
-              .transacting(tx),
-          ])
-            .then(function ([challengeRow]) {
-              _chainState.challengeRow = challengeRow;
+        var txPromise = knex
+          .transaction(function (tx) {
+            // lock user and challenge row
+            Promise.all([
+              knex('user_daily_challenges_completed')
+                .where({ user_id: userId, challenge_id: challengeId })
+                .first()
+                .forUpdate()
+                .transacting(tx),
+              knex('users').where({ id: userId }).first('id').forUpdate().transacting(tx),
+            ])
+              .then(function ([challengeRow]) {
+                _chainState.challengeRow = challengeRow;
 
-              if (_chainState.challengeRow != null) {
-                throw new Errors.AlreadyExistsError('Challenge already completed');
-              } else {
-                //
-                let goldAmount;
-                const allPromises = [];
+                if (_chainState.challengeRow != null) {
+                  throw new Errors.AlreadyExistsError('Challenge already completed');
+                } else {
+                  //
+                  let goldAmount;
+                  const allPromises = [];
 
-                // ...
-                _chainState.challengeRow = {
-                  user_id: userId,
-                  challenge_id: challengeId,
-                  reward_ids: [],
-                  completed_at: MOMENT_NOW_UTC.toDate(),
-                };
-
-                _chainState.goldAmount = (goldAmount = snapshot.val().gold);
-
-                if ((goldAmount != null) && (goldAmount > 0)) {
-                  // set up reward data
-                  const rewardData = {
-                    id: generatePushId(),
+                  // ...
+                  _chainState.challengeRow = {
                     user_id: userId,
-                    reward_category: 'daily challenge',
-                    reward_type: challengeId,
-                    gold: goldAmount,
-                    created_at: MOMENT_NOW_UTC.toDate(),
-                    is_unread: true,
+                    challenge_id: challengeId,
+                    reward_ids: [],
+                    completed_at: MOMENT_NOW_UTC.toDate(),
                   };
 
-                  // add it to the reward ids column
-                  _chainState.challengeRow.reward_ids.push(rewardData.id);
+                  _chainState.goldAmount = goldAmount = snapshot.val().gold;
 
-                  // add the promise to our list of reward promises
-                  allPromises.push(knex('user_rewards').insert(rewardData).transacting(tx));
+                  if (goldAmount != null && goldAmount > 0) {
+                    // set up reward data
+                    const rewardData = {
+                      id: generatePushId(),
+                      user_id: userId,
+                      reward_category: 'daily challenge',
+                      reward_type: challengeId,
+                      gold: goldAmount,
+                      created_at: MOMENT_NOW_UTC.toDate(),
+                      is_unread: true,
+                    };
+
+                    // add it to the reward ids column
+                    _chainState.challengeRow.reward_ids.push(rewardData.id);
+
+                    // add the promise to our list of reward promises
+                    allPromises.push(knex('user_rewards').insert(rewardData).transacting(tx));
+                  }
+
+                  allPromises.push(
+                    knex('user_daily_challenges_completed')
+                      .insert(_chainState.challengeRow)
+                      .transacting(tx),
+                  );
+                  allPromises.push(
+                    knex('users')
+                      .where('id', userId)
+                      .update({
+                        daily_challenge_last_completed_at: completionTimeUtc.toDate(),
+                      })
+                      .transacting(tx),
+                  );
+
+                  //
+                  return Promise.all(allPromises);
                 }
-
-                allPromises.push(knex('user_daily_challenges_completed').insert(_chainState.challengeRow).transacting(tx));
-                allPromises.push(knex('users').where('id', userId).update({
-                  daily_challenge_last_completed_at: completionTimeUtc.toDate(),
-                }).transacting(tx));
-
-                //
-                return Promise.all(allPromises);
-              }
-            }).then(function () {
-              // if all of the above succeed, update wallet
-              return InventoryModule.giveUserGold(txPromise, tx, userId, _chainState.goldAmount, 'daily challenge', challengeId);
-            })
-            .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
-            .then(tx.commit)
-            .catch(tx.rollback);
-        })
+              })
+              .then(function () {
+                // if all of the above succeed, update wallet
+                return InventoryModule.giveUserGold(
+                  txPromise,
+                  tx,
+                  userId,
+                  _chainState.goldAmount,
+                  'daily challenge',
+                  challengeId,
+                );
+              })
+              .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
+              .then(tx.commit)
+              .catch(tx.rollback);
+          })
           .then(function () {
-            Logger.module('ChallengesModule').debug(`markDailyChallengeAsCompleted() -> user ${userId.blue} completed challenge ${challengeId} for day ${completionTimeUtc.format('YYYY-MM-DD')}.`);
+            Logger.module('ChallengesModule').debug(
+              `markDailyChallengeAsCompleted() -> user ${userId.blue} completed challenge ${challengeId} for day ${completionTimeUtc.format('YYYY-MM-DD')}.`,
+            );
 
             const responseData = { challenge: _chainState.challengeRow };
             return responseData;
@@ -456,5 +607,5 @@ class ChallengesModule {
 module.exports = ChallengesModule;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

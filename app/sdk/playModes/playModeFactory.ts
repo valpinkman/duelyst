@@ -21,7 +21,9 @@ class PlayModeFactory {
       return playMode;
     }
     // no play mode found
-    return console.error(`PlayModeFactory.playModeForIdentifier - Unknown play mode identifier: ${identifier}`.red);
+    return console.error(
+      `PlayModeFactory.playModeForIdentifier - Unknown play mode identifier: ${identifier}`.red,
+    );
   }
 
   static getAllVisiblePlayModes() {
@@ -30,7 +32,9 @@ class PlayModeFactory {
     const playModeIdentifiers = Object.keys(PlayModeFactory.playModes);
     for (var playModeIdentifier of Array.from<any>(playModeIdentifiers)) {
       var playMode = this.playModeForIdentifier(playModeIdentifier);
-      if (!playMode.isHiddenInUI) { playModes.push(playMode); }
+      if (!playMode.isHiddenInUI) {
+        playModes.push(playMode);
+      }
     }
 
     return playModes;
@@ -42,7 +46,9 @@ class PlayModeFactory {
     const playModeIdentifiers = Object.keys(PlayModeFactory.playModes);
     for (var playModeIdentifier of Array.from<any>(playModeIdentifiers)) {
       var playMode = this.playModeForIdentifier(playModeIdentifier);
-      if (playMode.enabled && !playMode.isHiddenInUI) { playModes.push(playMode); }
+      if (playMode.enabled && !playMode.isHiddenInUI) {
+        playModes.push(playMode);
+      }
     }
 
     return playModes;
@@ -51,7 +57,9 @@ class PlayModeFactory {
   static _initCache() {
     if (!this.playModes) {
       // setup play mode data
-      if (this.playModes == null) { this.playModes = {}; }
+      if (this.playModes == null) {
+        this.playModes = {};
+      }
       const pm = this.playModes;
 
       pm[PlayModes.Practice] = {
@@ -139,14 +147,14 @@ class PlayModeFactory {
         isHiddenInUI: true,
       };
 
-      return pm[PlayModes.Developer] = {
+      return (pm[PlayModes.Developer] = {
         id: PlayModes.Developer,
         name: 'Developer Sandbox',
         description: 'Shuffle free. Mulligan free.',
         img: RSX.play_mode_sandbox.img,
         enabled: true,
         isHiddenInUI: true,
-      };
+      });
     }
   }
 }

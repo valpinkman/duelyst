@@ -20,10 +20,8 @@ class ModifierMyMoveWatch extends Modifier {
 
   onAction(event) {
     super.onAction(event);
-    const {
-      action,
-    } = event;
-    if (action instanceof MoveAction && (action.getSource() === this.getCard())) {
+    const { action } = event;
+    if (action instanceof MoveAction && action.getSource() === this.getCard()) {
       return this.onMyMoveWatch(action);
     }
   }

@@ -28,50 +28,62 @@ module.exports = function (job, done) {
   Logger.module('JOB').debug(`[J:${job.id}] rotate-bosses starting`);
 
   // Get boss events from Firebase.
-  return DuelystFirebase.connect().getRootRef().then((rootRef) => rootRef.child('boss-events').once('value').then(function (snapshot) {
-    let event;
-    const currentBossEvents = snapshot.val();
-    let nextBossId = BossIds[0];
-    const now = moment().utc().valueOf();
+  return DuelystFirebase.connect()
+    .getRootRef()
+    .then((rootRef) =>
+      rootRef
+        .child('boss-events')
+        .once('value')
+        .then(function (snapshot) {
+          let event;
+          const currentBossEvents = snapshot.val();
+          let nextBossId = BossIds[0];
+          const now = moment().utc().valueOf();
 
-    // Check for an active boss event.
-    if ((currentBossEvents != null) && (Object.keys(currentBossEvents).length > 0)) {
-      event = currentBossEvents[Object.keys(currentBossEvents)[0]];
+          // Check for an active boss event.
+          if (currentBossEvents != null && Object.keys(currentBossEvents).length > 0) {
+            event = currentBossEvents[Object.keys(currentBossEvents)[0]];
 
-      // If there is an active boss already, do nothing.
-      if (now < event.event_end) {
-        Logger.module('JOB').log('rotate-bosses: boss event is already active');
-        return done();
-      }
+            // If there is an active boss already, do nothing.
+            if (now < event.event_end) {
+              Logger.module('JOB').log('rotate-bosses: boss event is already active');
+              return done();
+            }
 
-      // Determine the next boss ID.
-      let nextBossIndex = BossIds.indexOf(event.boss_id) + 1;
-      if (nextBossIndex >= BossIds.length) {
-        nextBossIndex = nextBossIndex - BossIds.length;
-      }
-      nextBossId = BossIds[nextBossIndex];
-    }
+            // Determine the next boss ID.
+            let nextBossIndex = BossIds.indexOf(event.boss_id) + 1;
+            if (nextBossIndex >= BossIds.length) {
+              nextBossIndex = nextBossIndex - BossIds.length;
+            }
+            nextBossId = BossIds[nextBossIndex];
+          }
 
-    // Create a new boss event.
-    event = {
-      'boss-battle': {
-        event_id: 'boss-battle',
-        boss_id: nextBossId,
-        event_start: now,
-        event_end: now + oneDay,
-        valid_end: now + oneDay,
-      },
-    };
-    return DuelystFirebase.connect().getRootRef().then((rootRef) => rootRef.child('boss-events').set(event, function (error) {
-      if (error != null) {
-        Logger.module('JOB').error(`rotate-bosses: error: ${error}`);
-        return done(error);
-      }
-      Logger.module('JOB').log(`rotate-bosses: started event for boss ${nextBossId}`);
-      return done();
-    }));
-  })).catch(function (error) {
-    Logger.module('JOB').error(`rotate-bosses: error: ${error}`);
-    return done(error);
-  });
+          // Create a new boss event.
+          event = {
+            'boss-battle': {
+              event_id: 'boss-battle',
+              boss_id: nextBossId,
+              event_start: now,
+              event_end: now + oneDay,
+              valid_end: now + oneDay,
+            },
+          };
+          return DuelystFirebase.connect()
+            .getRootRef()
+            .then((rootRef) =>
+              rootRef.child('boss-events').set(event, function (error) {
+                if (error != null) {
+                  Logger.module('JOB').error(`rotate-bosses: error: ${error}`);
+                  return done(error);
+                }
+                Logger.module('JOB').log(`rotate-bosses: started event for boss ${nextBossId}`);
+                return done();
+              }),
+            );
+        }),
+    )
+    .catch(function (error) {
+      Logger.module('JOB').error(`rotate-bosses: error: ${error}`);
+      return done(error);
+    });
 };

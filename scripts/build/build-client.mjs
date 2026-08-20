@@ -55,7 +55,9 @@ function step1Packages() {
   // diff together with the change that caused it.
   delete require.cache[require.resolve(path.join(rootDir, 'app/data/packages'))];
   const pkgs = require(path.join(rootDir, 'app/data/packages'));
-  const keys = Object.keys(pkgs).filter((k) => typeof pkgs[k] !== 'function').sort();
+  const keys = Object.keys(pkgs)
+    .filter((k) => typeof pkgs[k] !== 'function')
+    .sort();
   if (args.has('--update-packages-manifest') || !fs.existsSync(PACKAGES_MANIFEST)) {
     fs.writeFileSync(PACKAGES_MANIFEST, `${JSON.stringify(keys, null, 1)}\n`);
     log('packages', `manifest updated (${keys.length} keys)`);
@@ -66,7 +68,9 @@ function step1Packages() {
     const missing = golden.filter((k) => !keySet.has(k));
     const added = keys.filter((k) => !goldenSet.has(k));
     if (missing.length > 0 || added.length > 0) {
-      throw new Error(`asset package set changed: ${missing.length} missing (${missing.slice(0, 5).join(', ')}...), ${added.length} added (${added.slice(0, 5).join(', ')}...). If intentional, rerun with --update-packages-manifest and commit the manifest.`);
+      throw new Error(
+        `asset package set changed: ${missing.length} missing (${missing.slice(0, 5).join(', ')}...), ${added.length} added (${added.slice(0, 5).join(', ')}...). If intentional, rerun with --update-packages-manifest and commit the manifest.`,
+      );
     }
     log('packages', `manifest verified (${keys.length} keys)`);
   }
@@ -95,10 +99,14 @@ function step2Bundle() {
     REFERRER_PAGE_URLS: '',
     DAT_GUI_EDITOR_ENABLED: config.get('datGuiEditorEnabled'),
   };
-  execFileSync('node', ['node_modules/vite/bin/vite.js', 'build', '--config', 'vite.config.client.mjs'], {
-    stdio: 'inherit',
-    env: { ...process.env, DUELYST_BUILD_CONFIG: JSON.stringify(buildConfig) },
-  });
+  execFileSync(
+    'node',
+    ['node_modules/vite/bin/vite.js', 'build', '--config', 'vite.config.client.mjs'],
+    {
+      stdio: 'inherit',
+      env: { ...process.env, DUELYST_BUILD_CONFIG: JSON.stringify(buildConfig) },
+    },
+  );
   log('bundle', 'dist/src/duelyst.js built');
 }
 
@@ -152,7 +160,14 @@ async function step5Css() {
   const compiled = sass.compile('app/ui/styles/application.scss', {
     loadPaths: ['app/vendor', 'node_modules'],
     quietDeps: true,
-    silenceDeprecations: ['import', 'global-builtin', 'color-functions', 'slash-div', 'mixed-decls', 'abs-percent'],
+    silenceDeprecations: [
+      'import',
+      'global-builtin',
+      'color-functions',
+      'slash-div',
+      'mixed-decls',
+      'abs-percent',
+    ],
   });
   const prefixed = await postcss([autoprefixer]).process(compiled.css, { from: undefined });
   fs.writeFileSync('dist/src/duelyst.css', prefixed.css);
@@ -165,7 +180,9 @@ function step6Locales() {
   const all = {};
   for (const file of fs.readdirSync(localeDir)) {
     if (!file.endsWith('.json') || file === 'index.json') continue;
-    all[path.basename(file, '.json')] = JSON.parse(fs.readFileSync(path.join(localeDir, file), 'utf8'));
+    all[path.basename(file, '.json')] = JSON.parse(
+      fs.readFileSync(path.join(localeDir, file), 'utf8'),
+    );
   }
   fs.writeFileSync(path.join(localeDir, 'index.json'), JSON.stringify(all));
   // copy every locale's index.json into dist
@@ -180,7 +197,18 @@ function step6Locales() {
   log('locales', 'dist/src/resources/locales updated');
 }
 
-const RSX_KEYS = ['img', 'imgPosX', 'imgNegX', 'imgPosY', 'imgNegY', 'imgPosZ', 'imgNegZ', 'audio', 'plist', 'font'];
+const RSX_KEYS = [
+  'img',
+  'imgPosX',
+  'imgNegX',
+  'imgPosY',
+  'imgNegY',
+  'imgPosZ',
+  'imgNegZ',
+  'audio',
+  'plist',
+  'font',
+];
 
 function step7Resources() {
   // copy non-cdn package resources (gulp/rsx.js copy)

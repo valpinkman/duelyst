@@ -29,21 +29,33 @@ class ModifierInvulnerable extends ModifierUntargetable {
   onValidateAction(event) {
     super.onValidateAction(event);
 
-    const {
-      action,
-    } = event;
+    const { action } = event;
 
     // when this would die, invalidate the death UNLESS it is a player initiated resign
-    if (action instanceof DieAction && !(action instanceof ResignAction) && (action.getTarget() === this.getCard())) {
+    if (
+      action instanceof DieAction &&
+      !(action instanceof ResignAction) &&
+      action.getTarget() === this.getCard()
+    ) {
       return this.invalidateAction(action);
-    // invalidate any damage actions against this, EXCEPT from card draw fatigue damage
-    } if (action instanceof DamageAction && (action.getTarget() === this.getCard()) && !(action instanceof HurtingDamageAction)) {
+      // invalidate any damage actions against this, EXCEPT from card draw fatigue damage
+    }
+    if (
+      action instanceof DamageAction &&
+      action.getTarget() === this.getCard() &&
+      !(action instanceof HurtingDamageAction)
+    ) {
       return this.invalidateAction(action);
-    // invalidate any heal actions that target this
-    } if (action instanceof HealAction && (action.getTarget() === this.getCard())) {
+      // invalidate any heal actions that target this
+    }
+    if (action instanceof HealAction && action.getTarget() === this.getCard()) {
       return this.invalidateAction(action);
-    // if this somehow tries to attack or move, invalidate that action
-    } if ((action instanceof MoveAction || action instanceof AttackAction) && (action.getSource() === this.getCard())) {
+      // if this somehow tries to attack or move, invalidate that action
+    }
+    if (
+      (action instanceof MoveAction || action instanceof AttackAction) &&
+      action.getSource() === this.getCard()
+    ) {
       return this.invalidateAction(action);
     }
   }

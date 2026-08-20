@@ -24,7 +24,11 @@ class ModifierStartTurnWatchBounceToActionBar extends ModifierStartTurnWatch {
       this.getGameSession().executeAction(removeOriginalEntityAction);
 
       // put a fresh card matching the original unit into hand
-      const putCardInHandAction = new PutCardInHandAction(this.getGameSession(), thisEntity.getOwnerId(), thisEntity.createNewCardData());
+      const putCardInHandAction = new PutCardInHandAction(
+        this.getGameSession(),
+        thisEntity.getOwnerId(),
+        thisEntity.createNewCardData(),
+      );
       return this.getGameSession().executeAction(putCardInHandAction);
     }
   }
@@ -35,5 +39,5 @@ ModifierStartTurnWatchBounceToActionBar.prototype.maxStacks = 1;
 module.exports = ModifierStartTurnWatchBounceToActionBar;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

@@ -9,7 +9,6 @@ var LoadingDialogViewTempl = require('app/ui/templates/item/loading_dialog.hbs')
 var NavigationManager = require('app/ui/managers/navigation_manager');
 
 var LoadingDialogItemView = Backbone.Marionette.ItemView.extend({
-
   id: 'app-loading-dialog',
   className: 'dialog',
 
@@ -24,7 +23,6 @@ var LoadingDialogItemView = Backbone.Marionette.ItemView.extend({
       background: this.options.background,
     });
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

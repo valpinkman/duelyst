@@ -22,8 +22,12 @@ class ModifierDyingWishTransformRandomMinion extends ModifierDyingWish {
   static type = 'ModifierDyingWishTransformRandomMinion';
 
   static createContextObject(minionToTransformTo, includeAllies, includeEnemies, race, options) {
-    if (includeAllies == null) { includeAllies = true; }
-    if (includeEnemies == null) { includeEnemies = true; }
+    if (includeAllies == null) {
+      includeAllies = true;
+    }
+    if (includeEnemies == null) {
+      includeEnemies = true;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.minionToTransformTo = minionToTransformTo;
     contextObject.includeAllies = includeAllies;
@@ -39,13 +43,23 @@ class ModifierDyingWishTransformRandomMinion extends ModifierDyingWish {
       for (var unit of Array.from<any>(this.getGameSession().getBoard().getUnits())) {
         if (unit != null) {
           if (this.includeAllies) {
-            if (unit.getIsSameTeamAs(this.getCard()) && !unit.getIsGeneral() && this.getGameSession().getCanCardBeScheduledForRemoval(unit) && ((this.race == null) || unit.getBelongsToTribe(this.race))) {
+            if (
+              unit.getIsSameTeamAs(this.getCard()) &&
+              !unit.getIsGeneral() &&
+              this.getGameSession().getCanCardBeScheduledForRemoval(unit) &&
+              (this.race == null || unit.getBelongsToTribe(this.race))
+            ) {
               potentialUnits.push(unit);
             }
           }
 
           if (this.includeEnemies) {
-            if (!unit.getIsSameTeamAs(this.getCard()) && !unit.getIsGeneral() && this.getGameSession().getCanCardBeScheduledForRemoval(unit) && ((this.race == null) || unit.getBelongsToTribe(this.race))) {
+            if (
+              !unit.getIsSameTeamAs(this.getCard()) &&
+              !unit.getIsGeneral() &&
+              this.getGameSession().getCanCardBeScheduledForRemoval(unit) &&
+              (this.race == null || unit.getBelongsToTribe(this.race))
+            ) {
               potentialUnits.push(unit);
             }
           }
@@ -55,7 +69,8 @@ class ModifierDyingWishTransformRandomMinion extends ModifierDyingWish {
       // if we found at least one minion on the board
       if (potentialUnits.length > 0) {
         // pick one
-        const existingEntity = potentialUnits[this.getGameSession().getRandomIntegerForExecution(potentialUnits.length)];
+        const existingEntity =
+          potentialUnits[this.getGameSession().getRandomIntegerForExecution(potentialUnits.length)];
         const targetPosition = existingEntity.getPosition();
 
         // remove it
@@ -67,9 +82,23 @@ class ModifierDyingWishTransformRandomMinion extends ModifierDyingWish {
         // transform it
         if (existingEntity != null) {
           const cardData = this.minionToTransformTo;
-          if (cardData.additionalInherentModifiersContextObjects == null) { cardData.additionalInherentModifiersContextObjects = []; }
-          cardData.additionalInherentModifiersContextObjects.push(ModifierTransformed.createContextObject(existingEntity.getExhausted(), existingEntity.getMovesMade(), existingEntity.getAttacksMade()));
-          const spawnEntityAction = new PlayCardAsTransformAction(this.getCard().getGameSession(), this.getCard().getOwnerId(), targetPosition.x, targetPosition.y, cardData);
+          if (cardData.additionalInherentModifiersContextObjects == null) {
+            cardData.additionalInherentModifiersContextObjects = [];
+          }
+          cardData.additionalInherentModifiersContextObjects.push(
+            ModifierTransformed.createContextObject(
+              existingEntity.getExhausted(),
+              existingEntity.getMovesMade(),
+              existingEntity.getAttacksMade(),
+            ),
+          );
+          const spawnEntityAction = new PlayCardAsTransformAction(
+            this.getCard().getGameSession(),
+            this.getCard().getOwnerId(),
+            targetPosition.x,
+            targetPosition.y,
+            cardData,
+          );
           return this.getGameSession().executeAction(spawnEntityAction);
         }
       }
@@ -77,7 +106,10 @@ class ModifierDyingWishTransformRandomMinion extends ModifierDyingWish {
   }
 }
 ModifierDyingWishTransformRandomMinion.prototype.type = 'ModifierDyingWishTransformRandomMinion';
-ModifierDyingWishTransformRandomMinion.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierDyingWishTransformRandomMinion.prototype.fxResource = [
+  'FX.Modifiers.ModifierDyingWish',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 ModifierDyingWishTransformRandomMinion.prototype.minionToTransformTo = null;
 ModifierDyingWishTransformRandomMinion.prototype.includeAllies = true;
 ModifierDyingWishTransformRandomMinion.prototype.includeEnemies = true;

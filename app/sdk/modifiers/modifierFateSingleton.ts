@@ -23,8 +23,14 @@ class ModifierFateSingleton extends ModifierFate {
 
   onActivate() {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
-      const general = this.getCard().getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
-      if (((general != null) && general.hasActiveModifierClass(PlayerModifierEmblemSummonWatchSingletonQuest)) || !this.checkDeckForDuplicates()) {
+      const general = this.getCard()
+        .getGameSession()
+        .getGeneralForPlayerId(this.getCard().getOwnerId());
+      if (
+        (general != null &&
+          general.hasActiveModifierClass(PlayerModifierEmblemSummonWatchSingletonQuest)) ||
+        !this.checkDeckForDuplicates()
+      ) {
         this._private.fateFulfilled = true;
         this.unlockFateCard();
         if (!general.hasActiveModifierClass(ModifierQuestStatusNeutral)) {
@@ -48,7 +54,9 @@ class ModifierFateSingleton extends ModifierFate {
 
   checkDeckForDuplicates() {
     let hasDuplicate = false;
-    const deckCards = this.getGameSession().getPlayerSetupDataForPlayerId(this.getCard().getOwnerId()).deck;
+    const deckCards = this.getGameSession().getPlayerSetupDataForPlayerId(
+      this.getCard().getOwnerId(),
+    ).deck;
     const checkedCardIds = [];
     for (var card of Array.from<any>(deckCards)) {
       for (var checkedId of Array.from<any>(checkedCardIds)) {
@@ -73,7 +81,12 @@ class ModifierFateSingleton extends ModifierFate {
 
   getIsActionRelevant(action) {
     if (action.getOwnerId() === this.getOwnerId()) {
-      if (action instanceof DrawCardAction || action instanceof RemoveCardFromDeckAction || action instanceof PutCardInDeckAction || action instanceof PutCardInHandAction) {
+      if (
+        action instanceof DrawCardAction ||
+        action instanceof RemoveCardFromDeckAction ||
+        action instanceof PutCardInDeckAction ||
+        action instanceof PutCardInHandAction
+      ) {
         return true;
       }
     }
@@ -84,7 +97,8 @@ class ModifierFateSingleton extends ModifierFate {
     const general = this.getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
     if (general.hasActiveModifierClass(ModifierQuestStatusNeutral)) {
       return Array.from<any>(general.getModifiersByClass(ModifierQuestStatusNeutral)).map((mod) =>
-        this.getGameSession().removeModifier(mod));
+        this.getGameSession().removeModifier(mod),
+      );
     }
   }
 

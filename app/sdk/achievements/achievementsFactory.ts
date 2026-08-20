@@ -156,12 +156,18 @@ class AchievementsFactory {
     this._achievementsCache[NewPlayerGoldLoginAchievement.id] = NewPlayerGoldLoginAchievement;
     this._achievementsCache[NewPlayerSpiritLoginAchievement.id] = NewPlayerSpiritLoginAchievement;
     // wartech
-    this._achievementsCache[WartechGeneralFaction1Achievement.id] = WartechGeneralFaction1Achievement;
-    this._achievementsCache[WartechGeneralFaction2Achievement.id] = WartechGeneralFaction2Achievement;
-    this._achievementsCache[WartechGeneralFaction3Achievement.id] = WartechGeneralFaction3Achievement;
-    this._achievementsCache[WartechGeneralFaction4Achievement.id] = WartechGeneralFaction4Achievement;
-    this._achievementsCache[WartechGeneralFaction5Achievement.id] = WartechGeneralFaction5Achievement;
-    this._achievementsCache[WartechGeneralFaction6Achievement.id] = WartechGeneralFaction6Achievement;
+    this._achievementsCache[WartechGeneralFaction1Achievement.id] =
+      WartechGeneralFaction1Achievement;
+    this._achievementsCache[WartechGeneralFaction2Achievement.id] =
+      WartechGeneralFaction2Achievement;
+    this._achievementsCache[WartechGeneralFaction3Achievement.id] =
+      WartechGeneralFaction3Achievement;
+    this._achievementsCache[WartechGeneralFaction4Achievement.id] =
+      WartechGeneralFaction4Achievement;
+    this._achievementsCache[WartechGeneralFaction5Achievement.id] =
+      WartechGeneralFaction5Achievement;
+    this._achievementsCache[WartechGeneralFaction6Achievement.id] =
+      WartechGeneralFaction6Achievement;
     // orb opening
     this._achievementsCache[MythronOrb1Achievement.id] = MythronOrb1Achievement;
     this._achievementsCache[MythronOrb2Achievement.id] = MythronOrb2Achievement;
@@ -178,7 +184,7 @@ class AchievementsFactory {
       for (var k in this._achievementsCache) {
         var v = this._achievementsCache[k];
         if (v.enabled) {
-          result.push(this._enabledAchievementsCache[k] = v);
+          result.push((this._enabledAchievementsCache[k] = v));
         } else {
           result.push(undefined);
         }

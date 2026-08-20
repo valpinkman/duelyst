@@ -18,7 +18,6 @@ const TweenTypes = require('app/view/actions/TweenTypes');
  *************************************************************************** */
 
 const VictoryLayer = RewardLayer.extend({
-
   getRequiredResources() {
     let resources = RewardLayer.prototype.getRequiredResources.call(this);
 
@@ -30,9 +29,15 @@ const VictoryLayer = RewardLayer.extend({
     const myPlayerWon = this.getMyPlayerWon();
     const result = myPlayerWon ? 'victory' : 'defeat';
     const friendOrEnemy = myPlayerWon ? 'friendly' : 'enemy';
-    const playerSetupData = SDK.GameSession.getInstance().getPlayerSetupDataForPlayerId(myPlayer.getPlayerId());
-    const myOriginalGeneral = SDK.GameSession.getCardCaches().getCardById(playerSetupData.generalId);
-    const myGeneral = SDK.GameSession.getInstance().getGeneralForPlayerId(myPlayer.getPlayerId()) || myOriginalGeneral;
+    const playerSetupData = SDK.GameSession.getInstance().getPlayerSetupDataForPlayerId(
+      myPlayer.getPlayerId(),
+    );
+    const myOriginalGeneral = SDK.GameSession.getCardCaches().getCardById(
+      playerSetupData.generalId,
+    );
+    const myGeneral =
+      SDK.GameSession.getInstance().getGeneralForPlayerId(myPlayer.getPlayerId()) ||
+      myOriginalGeneral;
 
     // add scene resources based on result
     resources.push(RSX[`scene_glow_${friendOrEnemy}`]);
@@ -41,7 +46,8 @@ const VictoryLayer = RewardLayer.extend({
     resources.push(RSX[`scene_diamonds_blurred_${friendOrEnemy}`]);
 
     // add general concept image
-    const myGeneralConceptResource = myGeneral.getConceptResource() || myOriginalGeneral.getConceptResource();
+    const myGeneralConceptResource =
+      myGeneral.getConceptResource() || myOriginalGeneral.getConceptResource();
     if (myGeneralConceptResource != null) {
       resources.push(myGeneralConceptResource);
     }
@@ -94,13 +100,23 @@ const VictoryLayer = RewardLayer.extend({
       const myPlayerWon = this.getMyPlayerWon();
       const result = myPlayerWon ? 'victory' : 'defeat';
       const friendOrEnemy = myPlayerWon ? 'friendly' : 'enemy';
-      const playerSetupData = SDK.GameSession.getInstance().getPlayerSetupDataForPlayerId(myPlayer.getPlayerId());
-      const myOriginalGeneral = SDK.GameSession.getCardCaches().getCardById(playerSetupData.generalId);
-      const myGeneral = SDK.GameSession.getInstance().getGeneralForPlayerId(myPlayer.getPlayerId()) || myOriginalGeneral;
+      const playerSetupData = SDK.GameSession.getInstance().getPlayerSetupDataForPlayerId(
+        myPlayer.getPlayerId(),
+      );
+      const myOriginalGeneral = SDK.GameSession.getCardCaches().getCardById(
+        playerSetupData.generalId,
+      );
+      const myGeneral =
+        SDK.GameSession.getInstance().getGeneralForPlayerId(myPlayer.getPlayerId()) ||
+        myOriginalGeneral;
 
       // background elements
       this.glowSprite = BaseSprite.create(RSX[`scene_glow_${friendOrEnemy}`].img);
-      this.glowSprite.setPosition(0.0, UtilsEngine.getGSIWinHeight() * 0.5 - this.glowSprite.getContentSize().height * 0.4725 * this.glowSprite.getScale());
+      this.glowSprite.setPosition(
+        0.0,
+        UtilsEngine.getGSIWinHeight() * 0.5 -
+          this.glowSprite.getContentSize().height * 0.4725 * this.glowSprite.getScale(),
+      );
       this.addChild(this.glowSprite, this.bgZOrder - 1);
 
       this.diamondsBGSprite = BaseSprite.create(RSX[`scene_diamonds_background_${result}`].img);
@@ -134,7 +150,8 @@ const VictoryLayer = RewardLayer.extend({
       this.addChild(this.petalsSystem003, this.bgZOrder - 1);
 
       // foreground elements
-      const myGeneralConceptResource = myGeneral.getConceptResource() || myOriginalGeneral.getConceptResource();
+      const myGeneralConceptResource =
+        myGeneral.getConceptResource() || myOriginalGeneral.getConceptResource();
       this.generalSprite = BaseSprite.create(myGeneralConceptResource.img);
       this.generalSprite.setScale(0.8);
       this.generalSprite.setPosition(0.0, -150);
@@ -158,17 +175,16 @@ const VictoryLayer = RewardLayer.extend({
       this.runAction(shakeAction);
 
       // fade continue node
-      this.continueNode.runAction(cc.sequence(
-        cc.delayTime(CONFIG.VIEW_TRANSITION_DURATION + shakeTime),
-        cc.spawn(
-          cc.show(),
-          cc.fadeIn(CONFIG.ANIMATE_FAST_DURATION),
+      this.continueNode.runAction(
+        cc.sequence(
+          cc.delayTime(CONFIG.VIEW_TRANSITION_DURATION + shakeTime),
+          cc.spawn(cc.show(), cc.fadeIn(CONFIG.ANIMATE_FAST_DURATION)),
+          cc.callFunc(() => {
+            this.setIsContinueOnPressAnywhere(true);
+            this.setIsInteractionEnabled(true);
+          }),
         ),
-        cc.callFunc(() => {
-          this.setIsContinueOnPressAnywhere(true);
-          this.setIsInteractionEnabled(true);
-        }),
-      ));
+      );
     });
   },
 
@@ -179,7 +195,11 @@ const VictoryLayer = RewardLayer.extend({
     this.stopActionByTag(CONFIG.MOVE_TAG);
 
     if (this.glowSprite != null) {
-      this.glowSprite.setPosition(0.0, UtilsEngine.getGSIWinHeight() * 0.5 - this.glowSprite.getContentSize().height * 0.4725 * this.glowSprite.getScale());
+      this.glowSprite.setPosition(
+        0.0,
+        UtilsEngine.getGSIWinHeight() * 0.5 -
+          this.glowSprite.getContentSize().height * 0.4725 * this.glowSprite.getScale(),
+      );
     }
 
     // petals
@@ -215,7 +235,10 @@ const VictoryLayer = RewardLayer.extend({
     }
 
     if (this.fireLinearWave != null) {
-      this.fireLinearWave.setPosition(-UtilsEngine.getGSIWinWidth() * 0.5, -UtilsEngine.getGSIWinHeight() * 0.5);
+      this.fireLinearWave.setPosition(
+        -UtilsEngine.getGSIWinWidth() * 0.5,
+        -UtilsEngine.getGSIWinHeight() * 0.5,
+      );
       this.fireLinearWave.setTextureRect(UtilsEngine.getGSIWinRect());
     }
   },
@@ -241,15 +264,20 @@ const VictoryLayer = RewardLayer.extend({
       this.fireLinearWave = FXFireLinearWaveSprite.create();
       this.fireLinearWave.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
       this.fireLinearWave.setAnchorPoint(0.0, 0.0);
-      this.fireLinearWave.setPosition(-UtilsEngine.getGSIWinWidth() * 0.5, -UtilsEngine.getGSIWinHeight() * 0.5);
+      this.fireLinearWave.setPosition(
+        -UtilsEngine.getGSIWinWidth() * 0.5,
+        -UtilsEngine.getGSIWinHeight() * 0.5,
+      );
       this.fireLinearWave.setFlippedY(true);
       this.fireLinearWave.setTextureRect(UtilsEngine.getGSIWinRect());
-      this.fireLinearWave.runAction(cc.sequence(
-        cc.actionTween(2.0, 'phase', 0.0, 1.0),
-        cc.callFunc(() => {
-          this.fireLinearWave.destroy();
-        }),
-      ));
+      this.fireLinearWave.runAction(
+        cc.sequence(
+          cc.actionTween(2.0, 'phase', 0.0, 1.0),
+          cc.callFunc(() => {
+            this.fireLinearWave.destroy();
+          }),
+        ),
+      );
       this.addChild(this.fireLinearWave);
     });
   },
@@ -264,7 +292,6 @@ const VictoryLayer = RewardLayer.extend({
       this.addChild(explosionParticles);
     });
   },
-
 });
 
 VictoryLayer.create = function (layer) {

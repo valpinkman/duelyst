@@ -17,7 +17,11 @@ class CoreshatterLoginAchievement extends Achievement {
   static enabled = true;
 
   static progressForLoggingIn(currentLoginMoment) {
-    if ((currentLoginMoment !== null) && currentLoginMoment.isAfter(moment.utc('2018-03-14')) && currentLoginMoment.isBefore(moment.utc('2018-04-30'))) {
+    if (
+      currentLoginMoment !== null &&
+      currentLoginMoment.isAfter(moment.utc('2018-03-14')) &&
+      currentLoginMoment.isBefore(moment.utc('2018-04-30'))
+    ) {
       return 1;
     }
     return 0;

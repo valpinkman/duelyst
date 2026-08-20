@@ -47,7 +47,12 @@ class DrawStartingHandAction extends Action {
       this.mulliganedHandCardsData = [];
       this.newHandCardsData = [];
 
-      if (this.getGameSession().isNew() && needsStartingHand && (this.mulliganIndices.length > 0) && (this.mulliganIndices.length <= CONFIG.STARTING_HAND_REPLACE_COUNT)) {
+      if (
+        this.getGameSession().isNew() &&
+        needsStartingHand &&
+        this.mulliganIndices.length > 0 &&
+        this.mulliganIndices.length <= CONFIG.STARTING_HAND_REPLACE_COUNT
+      ) {
         // Logger.module("SDK").debug "[G:#{@.getGameSession().gameId}]", "#{@.type}::execute -> computing starting hand. Mulligan indices [#{@mulliganIndices.toString()}]"
         // only allow draw starting hand for new game where this player does not yet have a starting hand
         let index;
@@ -59,7 +64,9 @@ class DrawStartingHandAction extends Action {
         this.newHandCardsData.length = hand.length;
         for (index of Array.from<any>(this.mulliganIndices)) {
           card = deck.getCardInHandAtIndex(index);
-          if (card != null) { this.mulliganedHandCardsData.push(card.createCardData()); }
+          if (card != null) {
+            this.mulliganedHandCardsData.push(card.createCardData());
+          }
         }
 
         if (this.mulliganedHandCardsData.length > 0) {
@@ -83,7 +90,9 @@ class DrawStartingHandAction extends Action {
               if (!this.getGameSession().getAreDecksRandomized()) {
                 indexInCards = cardIndicesToChooseFrom.length - 1;
               } else {
-                indexInCards = this.getGameSession().getRandomIntegerForExecution(cardIndicesToChooseFrom.length);
+                indexInCards = this.getGameSession().getRandomIntegerForExecution(
+                  cardIndicesToChooseFrom.length,
+                );
               }
               var cardIndex = cardIndicesToChooseFrom[indexInCards];
               card = this.getGameSession().getCardByIndex(cardIndex);
@@ -95,7 +104,7 @@ class DrawStartingHandAction extends Action {
       }
     }
 
-    if ((this.mulliganedHandCardsData.length > 0) && (this.newHandCardsData.length > 0)) {
+    if (this.mulliganedHandCardsData.length > 0 && this.newHandCardsData.length > 0) {
       // return mulliganed cards to deck
       let cardData;
       for (cardData of Array.from<any>(this.mulliganedHandCardsData)) {
@@ -127,11 +136,19 @@ class DrawStartingHandAction extends Action {
   scrubSensitiveData(actionData, scrubFromPerspectiveOfPlayerId, forSpectator) {
     // scrub card ids and only retain card indices
     if (actionData.ownerId !== scrubFromPerspectiveOfPlayerId) {
-      actionData.mulliganedHandCardsData = _.map(actionData.mulliganedHandCardsData, (cardData) => ({
-        id: -1,
-        index: cardData.index,
-      }));
-      actionData.newHandCardsData = _.map(actionData.newHandCardsData, (cardData) => { if (cardData != null) { return { id: -1, index: cardData.index }; } return null; });
+      actionData.mulliganedHandCardsData = _.map(
+        actionData.mulliganedHandCardsData,
+        (cardData) => ({
+          id: -1,
+          index: cardData.index,
+        }),
+      );
+      actionData.newHandCardsData = _.map(actionData.newHandCardsData, (cardData) => {
+        if (cardData != null) {
+          return { id: -1, index: cardData.index };
+        }
+        return null;
+      });
     }
     return actionData;
   }

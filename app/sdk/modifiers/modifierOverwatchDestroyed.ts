@@ -21,7 +21,7 @@ class ModifierOverwatchDestroyed extends ModifierOverwatch {
 
   getIsActionRelevant(action) {
     // watch for this unit dying
-    return action instanceof DieAction && (action.getTarget() === this.getCard());
+    return action instanceof DieAction && action.getTarget() === this.getCard();
   }
 }
 ModifierOverwatchDestroyed.prototype.type = 'ModifierOverwatchDestroyed';

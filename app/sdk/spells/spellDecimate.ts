@@ -18,18 +18,25 @@ class SpellDecimate extends SpellKillTarget {
       const board = this.getGameSession().getBoard();
       const general1 = this.getGameSession().getGeneralForPlayer1();
       const general2 = this.getGameSession().getGeneralForPlayer2();
-      const unitsAroundGenerals = _.uniq(_.union(board.getEntitiesAroundEntity(general1, this.targetType, 1), board.getEntitiesAroundEntity(general2, this.targetType, 1)));
+      const unitsAroundGenerals = _.uniq(
+        _.union(
+          board.getEntitiesAroundEntity(general1, this.targetType, 1),
+          board.getEntitiesAroundEntity(general2, this.targetType, 1),
+        ),
+      );
 
       for (var position of Array.from<any>(validPositions)) {
         var validPosition = true;
         for (var unit of Array.from<any>(unitsAroundGenerals)) {
-          if ((unit.position.x === position.x) && (unit.position.y === position.y)) {
+          if (unit.position.x === position.x && unit.position.y === position.y) {
             validPosition = false;
             break;
           }
         }
 
-        if (validPosition) { filteredPositions.push(position); }
+        if (validPosition) {
+          filteredPositions.push(position);
+        }
       }
     }
 

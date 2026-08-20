@@ -17,15 +17,20 @@ class QuestCatchUp extends Quest {
   static Identifier = 20000;
 
   constructor() {
-    super(QuestCatchUp.Identifier, i18next.t('quests.quest_welcome_back_title'), [QuestType.CatchUp]);
+    super(QuestCatchUp.Identifier, i18next.t('quests.quest_welcome_back_title'), [
+      QuestType.CatchUp,
+    ]);
     this.params.completionProgress = 3;
   }
 
   _progressForGameDataForPlayerId(gameData, playerId) {
     // Gain progress for any games played
     for (var player of Array.from<any>(gameData.players)) {
-      var playerSetupData = UtilsGameSession.getPlayerSetupDataForPlayerId(gameData, player.playerId);
-      if ((player.playerId === playerId) && GameType.isCompetitiveGameType(gameData.gameType)) {
+      var playerSetupData = UtilsGameSession.getPlayerSetupDataForPlayerId(
+        gameData,
+        player.playerId,
+      );
+      if (player.playerId === playerId && GameType.isCompetitiveGameType(gameData.gameType)) {
         return 1;
       }
     }

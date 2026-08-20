@@ -17,7 +17,7 @@ class EnteringGauntletAchievement extends Achievement {
   static rewards = { gauntletTicket: 1 };
 
   static progressForGameDataForPlayerId(gameData, playerId, isUnscored, isDraw) {
-    if ((gameData.gameType === GameType.Ranked) && !isUnscored) {
+    if (gameData.gameType === GameType.Ranked && !isUnscored) {
       return 1;
     }
     return 0;

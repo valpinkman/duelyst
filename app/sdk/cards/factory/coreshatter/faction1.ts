@@ -73,14 +73,18 @@ class CardFactory_CoreshatterSet_Faction1 {
       card.factionId = Factions.Faction1;
       card.setCardSetId(CardSet.Coreshatter);
       card.name = 'Grand Strategos';
-      card.setDescription('Trial: Summon 12 minions with 1 or less Attack.\nDestiny: Promote other friendly minions at the end of your turn.');
+      card.setDescription(
+        'Trial: Summon 12 minions with 1 or less Attack.\nDestiny: Promote other friendly minions at the end of your turn.',
+      );
       card.atk = 5;
       card.maxHP = 5;
       card.manaCost = 5;
       card.rarityId = Rarity.Mythron;
-      const emblemModifier = PlayerModifierEmblemEndTurnWatchLyonarSmallMinionQuest.createContextObject();
+      const emblemModifier =
+        PlayerModifierEmblemEndTurnWatchLyonarSmallMinionQuest.createContextObject();
       emblemModifier.appliedName = 'Grand Stratagem';
-      emblemModifier.appliedDescription = 'At the end of your turn, transform friendly minions other than Grand Strategos into faction minions that cost 1 more.';
+      emblemModifier.appliedDescription =
+        'At the end of your turn, transform friendly minions other than Grand Strategos into faction minions that cost 1 more.';
       card.setInherentModifiersContextObjects([
         ModifierStartsInHand.createContextObject(),
         ModifierCannotBeReplaced.createContextObject(),
@@ -139,7 +143,9 @@ class CardFactory_CoreshatterSet_Faction1 {
       card.setCardSetId(CardSet.Coreshatter);
       card.factionId = Factions.Faction1;
       card.name = 'Legion';
-      card.setDescription('Intensify: Put 1 Crestfallen into your action bar. Shuffle a copy of this minion into your deck.');
+      card.setDescription(
+        'Intensify: Put 1 Crestfallen into your action bar. Shuffle a copy of this minion into your deck.',
+      );
       card.atk = 3;
       card.maxHP = 2;
       card.manaCost = 3;
@@ -180,9 +186,7 @@ class CardFactory_CoreshatterSet_Faction1 {
       card.maxHP = 3;
       card.manaCost = 3;
       card.rarityId = Rarity.Rare;
-      card.setInherentModifiersContextObjects([
-        ModifierBandingFlying.createContextObject(),
-      ]);
+      card.setInherentModifiersContextObjects([ModifierBandingFlying.createContextObject()]);
       card.addKeywordClassToInclude(ModifierFlying);
       card.setFXResource(['FX.Cards.Neutral.WingsOfParadise']);
       card.setBaseSoundResource({
@@ -256,7 +260,9 @@ class CardFactory_CoreshatterSet_Faction1 {
       card.setCardSetId(CardSet.Coreshatter);
       card.factionId = Factions.Faction1;
       card.name = 'Windcliffe Protector';
-      card.setDescription('Provoke\nWhen a friendly Windcliffe Alarmist dies, transform this minion into a Windcliffe Alarmist.');
+      card.setDescription(
+        'Provoke\nWhen a friendly Windcliffe Alarmist dies, transform this minion into a Windcliffe Alarmist.',
+      );
       card.atk = 5;
       card.maxHP = 5;
       card.manaCost = 5;
@@ -293,7 +299,9 @@ class CardFactory_CoreshatterSet_Faction1 {
       card.setCardSetId(CardSet.Coreshatter);
       card.factionId = Factions.Faction1;
       card.name = 'Windcliffe Alarmist';
-      card.setDescription('Opening Gambit: Summon a 5/5 Windcliffe Protector with Provoke from your deck.');
+      card.setDescription(
+        'Opening Gambit: Summon a 5/5 Windcliffe Protector with Provoke from your deck.',
+      );
       card.atk = 2;
       card.maxHP = 2;
       card.manaCost = 4;
@@ -332,7 +340,9 @@ class CardFactory_CoreshatterSet_Faction1 {
       card.setCardSetId(CardSet.Coreshatter);
       card.id = Cards.Spell.Rally;
       card.name = 'Marching Orders';
-      card.setDescription('Give friendly minions directly in front of and behind your General +2/+2.  If they have Zeal, they cannot be targeted by enemy spells.');
+      card.setDescription(
+        'Give friendly minions directly in front of and behind your General +2/+2.  If they have Zeal, they cannot be targeted by enemy spells.',
+      );
       card.manaCost = 2;
       card.rarityId = Rarity.Rare;
       card.buffName = 'Marching Command';
@@ -355,7 +365,9 @@ class CardFactory_CoreshatterSet_Faction1 {
       card.factionId = Factions.Faction1;
       card.id = Cards.Artifact.TwoHander;
       card.name = 'Radiant Standard';
-      card.setDescription('Your General has +3 Attack.\nWhen your General attacks, summon a minion that costs 3 from your deck nearby.');
+      card.setDescription(
+        'Your General has +3 Attack.\nWhen your General attacks, summon a minion that costs 3 from your deck nearby.',
+      );
       card.manaCost = 6;
       card.rarityId = Rarity.Epic;
       card.durability = 3;
@@ -385,9 +397,7 @@ class CardFactory_CoreshatterSet_Faction1 {
       card.spellFilterType = SpellFilterType.AllyDirect;
       card.canTargetGeneral = false;
       const celerityObject = ModifierTranscendance.createContextObject();
-      card.setTargetModifiersContextObjects([
-        celerityObject,
-      ]);
+      card.setTargetModifiersContextObjects([celerityObject]);
       card.addKeywordClassToInclude(ModifierTranscendance);
       card.setFXResource(['FX.Cards.Spell.Lionize']);
       card.setBaseSoundResource({
@@ -410,7 +420,9 @@ class CardFactory_CoreshatterSet_Faction1 {
       card.manaCost = 7;
       card.rarityId = Rarity.Legendary;
       card.setInherentModifiersContextObjects([
-        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetOwnPlayer([ModifierInvulnerable.createContextObject()]),
+        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetOwnPlayer([
+          ModifierInvulnerable.createContextObject(),
+        ]),
       ]);
       card.addKeywordClassToInclude(ModifierInvulnerable);
       card.setBoundingBoxWidth(100);
@@ -441,7 +453,9 @@ class CardFactory_CoreshatterSet_Faction1 {
       card.setCardSetId(CardSet.Coreshatter);
       card.factionId = Factions.Faction1;
       card.name = 'War Exorcist';
-      card.setDescription('Provoke\nAt the start of your turn, Holy Immolation your damaged minions.');
+      card.setDescription(
+        'Provoke\nAt the start of your turn, Holy Immolation your damaged minions.',
+      );
       card.atk = 3;
       card.maxHP = 8;
       card.manaCost = 5;
@@ -479,7 +493,9 @@ class CardFactory_CoreshatterSet_Faction1 {
       card.setCardSetId(CardSet.Coreshatter);
       card.id = Cards.Spell.OnceMoreWithProvoke;
       card.name = 'Amaranthine Vow';
-      card.setDescription('Summon around your General all friendly minions with Provoke that died this game.');
+      card.setDescription(
+        'Summon around your General all friendly minions with Provoke that died this game.',
+      );
       card.manaCost = 9;
       card.rarityId = Rarity.Legendary;
       card.addKeywordClassToInclude(ModifierProvoke);

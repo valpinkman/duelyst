@@ -25,6 +25,9 @@ class ModifierStartTurnWatchSummonDervish extends ModifierStartTurnWatchSpawnEnt
 ModifierStartTurnWatchSummonDervish.prototype.type = 'ModifierStartTurnWatchSummonDervish';
 ModifierStartTurnWatchSummonDervish.keywordDefinition = i18next.t('modifiers.summon_dervish_def');
 ModifierStartTurnWatchSummonDervish.modifierName = i18next.t('modifiers.summon_dervish_name');
-ModifierStartTurnWatchSummonDervish.prototype.fxResource = ['FX.Modifiers.ModifierStartTurnWatch', 'FX.Modifiers.ModifierGenericSpawn'];
+ModifierStartTurnWatchSummonDervish.prototype.fxResource = [
+  'FX.Modifiers.ModifierStartTurnWatch',
+  'FX.Modifiers.ModifierGenericSpawn',
+];
 
 module.exports = ModifierStartTurnWatchSummonDervish;

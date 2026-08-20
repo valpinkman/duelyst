@@ -53,7 +53,7 @@ class WartechGeneralFaction6Achievement extends Achievement {
   }
 
   static rewardUnlockMessage(progressMade) {
-    if ((progressMade == null)) {
+    if (progressMade == null) {
       progressMade = 0;
     }
 
@@ -62,12 +62,16 @@ class WartechGeneralFaction6Achievement extends Achievement {
     return `Win ${progressNeeded} more online matches with Vanar to unlock.`;
   }
 }
-WartechGeneralFaction6Achievement.title = i18next.t('achievements.wartech_general_achievement_title', { faction_name: i18next.t('factions.faction_6_abbreviated_name') });
-WartechGeneralFaction6Achievement.description = i18next.t('achievements.wartech_general_achievement_desc', { faction_name: i18next.t('factions.faction_6_abbreviated_name') });
+WartechGeneralFaction6Achievement.title = i18next.t(
+  'achievements.wartech_general_achievement_title',
+  { faction_name: i18next.t('factions.faction_6_abbreviated_name') },
+);
+WartechGeneralFaction6Achievement.description = i18next.t(
+  'achievements.wartech_general_achievement_desc',
+  { faction_name: i18next.t('factions.faction_6_abbreviated_name') },
+);
 WartechGeneralFaction6Achievement.rewards = {
-  cards: [
-    Cards.Faction6.ThirdGeneral,
-  ],
+  cards: [Cards.Faction6.ThirdGeneral],
 };
 
 module.exports = WartechGeneralFaction6Achievement;

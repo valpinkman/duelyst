@@ -22,8 +22,16 @@ class QuestWinWithFaction extends Quest {
 
   _progressForGameDataForPlayerId(gameData, playerId) {
     for (var player of Array.from<any>(gameData.players)) {
-      var playerSetupData = UtilsGameSession.getPlayerSetupDataForPlayerId(gameData, player.playerId);
-      if ((player.playerId === playerId) && player.isWinner && (playerSetupData.factionId === this.getFactionId()) && GameType.isCompetitiveGameType(gameData.gameType)) {
+      var playerSetupData = UtilsGameSession.getPlayerSetupDataForPlayerId(
+        gameData,
+        player.playerId,
+      );
+      if (
+        player.playerId === playerId &&
+        player.isWinner &&
+        playerSetupData.factionId === this.getFactionId() &&
+        GameType.isCompetitiveGameType(gameData.gameType)
+      ) {
         return 1;
       }
     }

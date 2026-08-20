@@ -13,7 +13,7 @@ class HomeTurfAchievement extends Achievement {
 
   static id = 'homeTurf';
   static title = 'Home Turf';
-  static description = 'You\'ve won 5 games as Player One. Enjoy a free Premium Battle Map on us!';
+  static description = "You've won 5 games as Player One. Enjoy a free Premium Battle Map on us!";
   static progressRequired = 5;
   static enabled = false;
 
@@ -22,7 +22,7 @@ class HomeTurfAchievement extends Achievement {
       return 0;
     }
 
-    if ((gameData.players[0].playerId === playerId) && gameData.players[0].isWinner) {
+    if (gameData.players[0].playerId === playerId && gameData.players[0].isWinner) {
       return 1;
     }
 
@@ -30,9 +30,7 @@ class HomeTurfAchievement extends Achievement {
   }
 }
 HomeTurfAchievement.rewards = {
-  newRandomCosmetics: [
-    { type: CosmeticsTypeLookup.BattleMap },
-  ],
+  newRandomCosmetics: [{ type: CosmeticsTypeLookup.BattleMap }],
 };
 
 module.exports = HomeTurfAchievement;

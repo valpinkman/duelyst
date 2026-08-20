@@ -50,10 +50,7 @@ class AdvancedVetruvianChallenge2 extends Challenge {
   }
 
   getOpponentPlayerDeckData(gameSession) {
-    return [
-      { id: Cards.Faction4.General },
-      { id: Cards.TutorialSpell.TutorialFrozenFinisher },
-    ];
+    return [{ id: Cards.Faction4.General }, { id: Cards.TutorialSpell.TutorialFrozenFinisher }];
   }
 
   setupBoard(gameSession) {
@@ -91,15 +88,26 @@ class AdvancedVetruvianChallenge2 extends Challenge {
     return (() => {
       const result = [];
       for (let i = 0; i <= 5; i++) {
-        this._opponentAgent.addActionForTurn(i, AgentActions.createAgentSoftActionShowInstructionLabels([{
-          label: i18next.t('challenges.advanced_vetruvian_2_taunt'),
-          isSpeech: true,
-          yPosition: 0.7,
-          isPersistent: true,
-          isOpponent: true,
-        },
-        ]));
-        result.push(this._opponentAgent.addActionForTurn(i, AgentActions.createAgentActionPlayCardFindPosition(0, () => [GameSession.getInstance().getGeneralForPlayer1().getPosition()])));
+        this._opponentAgent.addActionForTurn(
+          i,
+          AgentActions.createAgentSoftActionShowInstructionLabels([
+            {
+              label: i18next.t('challenges.advanced_vetruvian_2_taunt'),
+              isSpeech: true,
+              yPosition: 0.7,
+              isPersistent: true,
+              isOpponent: true,
+            },
+          ]),
+        );
+        result.push(
+          this._opponentAgent.addActionForTurn(
+            i,
+            AgentActions.createAgentActionPlayCardFindPosition(0, () => [
+              GameSession.getInstance().getGeneralForPlayer1().getPosition(),
+            ]),
+          ),
+        );
       }
       return result;
     })();
@@ -108,10 +116,14 @@ class AdvancedVetruvianChallenge2 extends Challenge {
 AdvancedVetruvianChallenge2.prototype.type = 'AdvancedVetruvianChallenge2';
 AdvancedVetruvianChallenge2.prototype.categoryType = ChallengeCategory.vault1.type;
 AdvancedVetruvianChallenge2.prototype.name = i18next.t('challenges.advanced_vetruvian_2_title');
-AdvancedVetruvianChallenge2.prototype.description = i18next.t('challenges.advanced_vetruvian_2_description');
+AdvancedVetruvianChallenge2.prototype.description = i18next.t(
+  'challenges.advanced_vetruvian_2_description',
+);
 AdvancedVetruvianChallenge2.prototype.iconUrl = RSX.speech_portrait_vetruvian.img;
 AdvancedVetruvianChallenge2.prototype._musicOverride = RSX.music_battlemap_vetruv.audio;
-AdvancedVetruvianChallenge2.prototype.otkChallengeStartMessage = i18next.t('challenges.advanced_vetruvian_2_start');
+AdvancedVetruvianChallenge2.prototype.otkChallengeStartMessage = i18next.t(
+  'challenges.advanced_vetruvian_2_start',
+);
 AdvancedVetruvianChallenge2.prototype.otkChallengeFailureMessages = [
   i18next.t('challenges.advanced_vetruvian_2_fail'),
 ];

@@ -62,14 +62,22 @@ for (const file of process.argv.slice(2)) {
   // collect names assigned onto those classes after the class body
   const wanted = new Map(); // className -> {instance:Set, statics:Set}
   const visitStatement = (node) => {
-    if (node.type !== 'ExpressionStatement' || node.expression.type !== 'AssignmentExpression') return;
+    if (node.type !== 'ExpressionStatement' || node.expression.type !== 'AssignmentExpression')
+      return;
     const { left } = node.expression;
     if (left.type !== 'MemberExpression' || left.computed) return;
     // Foo.prototype.X = ...
-    if (left.object.type === 'MemberExpression' && !left.object.computed
-      && left.object.object.type === 'Identifier' && classes.has(left.object.object.name)
-      && left.object.property.name === 'prototype') {
-      const entry = wanted.get(left.object.object.name) || { instance: new Set(), statics: new Set() };
+    if (
+      left.object.type === 'MemberExpression' &&
+      !left.object.computed &&
+      left.object.object.type === 'Identifier' &&
+      classes.has(left.object.object.name) &&
+      left.object.property.name === 'prototype'
+    ) {
+      const entry = wanted.get(left.object.object.name) || {
+        instance: new Set(),
+        statics: new Set(),
+      };
       entry.instance.add(left.property.name);
       wanted.set(left.object.object.name, entry);
       return;
@@ -89,7 +97,8 @@ for (const file of process.argv.slice(2)) {
     // names already present in the class body must not be redeclared
     const existing = new Set();
     for (const m of klass.body.body) {
-      if (m.key && m.key.type === 'Identifier') existing.add(`${m.static ? 'static:' : ''}${m.key.name}`);
+      if (m.key && m.key.type === 'Identifier')
+        existing.add(`${m.static ? 'static:' : ''}${m.key.name}`);
     }
     const lines = [];
     for (const n of instance) {
@@ -123,7 +132,9 @@ for (const file of process.argv.slice(2)) {
   renamed += 1;
 }
 
-console.log(`${renamed} file(s) renamed to .ts (${declaredInstance} instance + ${declaredStatic} static declarations added)`);
+console.log(
+  `${renamed} file(s) renamed to .ts (${declaredInstance} instance + ${declaredStatic} static declarations added)`,
+);
 if (skipped.length > 0) {
   console.log(`${skipped.length} skipped:`);
   skipped.slice(0, 10).forEach((s) => console.log(`  ${s}`));

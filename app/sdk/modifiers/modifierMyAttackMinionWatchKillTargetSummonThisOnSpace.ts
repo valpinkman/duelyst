@@ -25,14 +25,23 @@ class ModifierMyAttackMinionWatchKillTargetSummonThisOnSpace extends ModifierMyA
       this.getGameSession().executeAction(killAction);
 
       const position = target.getPosition();
-      const playCardAction = new PlayCardSilentlyAction(this.getGameSession(), this.getCard().getOwnerId(), position.x, position.y, this.getCard().createNewCardData());
+      const playCardAction = new PlayCardSilentlyAction(
+        this.getGameSession(),
+        this.getCard().getOwnerId(),
+        position.x,
+        position.y,
+        this.getCard().createNewCardData(),
+      );
       playCardAction.setSource(this.getCard());
       return this.getGameSession().executeAction(playCardAction);
     }
   }
 }
-ModifierMyAttackMinionWatchKillTargetSummonThisOnSpace.prototype.type = 'ModifierMyAttackMinionWatchKillTargetSummonThisOnSpace';
-ModifierMyAttackMinionWatchKillTargetSummonThisOnSpace.prototype.fxResource = ['FX.Modifiers.ModifierGenericKill'];
+ModifierMyAttackMinionWatchKillTargetSummonThisOnSpace.prototype.type =
+  'ModifierMyAttackMinionWatchKillTargetSummonThisOnSpace';
+ModifierMyAttackMinionWatchKillTargetSummonThisOnSpace.prototype.fxResource = [
+  'FX.Modifiers.ModifierGenericKill',
+];
 ModifierMyAttackMinionWatchKillTargetSummonThisOnSpace.prototype.maxStacks = 1;
 
 module.exports = ModifierMyAttackMinionWatchKillTargetSummonThisOnSpace;

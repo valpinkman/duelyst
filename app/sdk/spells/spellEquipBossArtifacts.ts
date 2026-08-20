@@ -37,15 +37,24 @@ class SpellEquipBossArtifacts extends Spell {
     }
 
     const cardDataToPlay = [];
-    const artifact1 = artifactData.splice(this.getGameSession().getRandomIntegerForExecution(artifactData.length), 1)[0]; // random artifact
+    const artifact1 = artifactData.splice(
+      this.getGameSession().getRandomIntegerForExecution(artifactData.length),
+      1,
+    )[0]; // random artifact
     cardDataToPlay.push(artifact1);
 
     // equip the random artifact
-    if ((cardDataToPlay != null) && (cardDataToPlay.length > 0)) {
+    if (cardDataToPlay != null && cardDataToPlay.length > 0) {
       return (() => {
         const result = [];
         for (var cardData of Array.from<any>(cardDataToPlay)) {
-          var playCardAction = new PlayCardSilentlyAction(gameSession, this.getOwnerId(), x, y, cardData);
+          var playCardAction = new PlayCardSilentlyAction(
+            gameSession,
+            this.getOwnerId(),
+            x,
+            y,
+            cardData,
+          );
           playCardAction.setSource(this);
           result.push(gameSession.executeAction(playCardAction));
         }

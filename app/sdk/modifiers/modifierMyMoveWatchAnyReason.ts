@@ -22,13 +22,19 @@ class ModifierMyMoveWatchAnyReason extends Modifier {
 
   onAction(event) {
     super.onAction(event);
-    const {
-      action,
-    } = event;
+    const { action } = event;
 
-    if ((action instanceof MoveAction || (action instanceof TeleportAction && action.getIsValidTeleport())) && (action.getSource() === this.getCard())) {
+    if (
+      (action instanceof MoveAction ||
+        (action instanceof TeleportAction && action.getIsValidTeleport())) &&
+      action.getSource() === this.getCard()
+    ) {
       return this.onMyMoveWatchAnyReason(action);
-    } if (action instanceof SwapUnitsAction && ((action.getSource() === this.getCard()) || (action.getTarget() === this.getCard()))) {
+    }
+    if (
+      action instanceof SwapUnitsAction &&
+      (action.getSource() === this.getCard() || action.getTarget() === this.getCard())
+    ) {
       return this.onMyMoveWatchAnyReason(action);
     }
   }

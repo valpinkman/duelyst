@@ -15,7 +15,11 @@ NC[Cards.Neutral.EphemeralShroud] = [
       {
         type: CardIntentType.Dispel,
         followupIndex: 0,
-        targets: CardTargetType.Minion | CardTargetType.Enemy | CardTargetType.Friendly | CardTargetType.General,
+        targets:
+          CardTargetType.Minion |
+          CardTargetType.Enemy |
+          CardTargetType.Friendly |
+          CardTargetType.General,
       },
     ],
   },
@@ -59,7 +63,11 @@ NC[Cards.Neutral.HealingMystic] = [
         type: CardIntentType.Heal,
         amount: 2,
         followupIndex: 0,
-        targets: CardTargetType.Minion | CardTargetType.General | CardTargetType.Enemy | CardTargetType.Friendly,
+        targets:
+          CardTargetType.Minion |
+          CardTargetType.General |
+          CardTargetType.Enemy |
+          CardTargetType.Friendly,
       },
     ],
   },

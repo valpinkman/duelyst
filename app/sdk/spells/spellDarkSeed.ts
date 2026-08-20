@@ -23,7 +23,9 @@ class SpellDarkSeed extends SpellDamage {
 
     // can only target enemy general
     const general = this.getGameSession().getGeneralForOpponentOfPlayerId(this.getOwnerId());
-    if (general != null) { applyEffectPositions.push(general.getPosition()); }
+    if (general != null) {
+      applyEffectPositions.push(general.getPosition());
+    }
 
     return applyEffectPositions;
   }

@@ -75,7 +75,7 @@ const ScoreForApplyModifiers = function (card, targetCard, amount, modifierTypes
   }
 
   if (targetCard instanceof Entity) {
-    score += (modifierScore * amount);
+    score += modifierScore * amount;
   }
 
   return score;

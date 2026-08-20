@@ -19,9 +19,15 @@ class ModifierMyAttackWatchBuffSelf extends ModifierMyAttackWatch {
   static type = 'ModifierMyAttackWatchBuffSelf';
 
   static createContextObject(attackBuff, maxHPBuff, options) {
-    if (attackBuff == null) { attackBuff = 0; }
-    if (maxHPBuff == null) { maxHPBuff = 0; }
-    if (options == null) { options = undefined; }
+    if (attackBuff == null) {
+      attackBuff = 0;
+    }
+    if (maxHPBuff == null) {
+      maxHPBuff = 0;
+    }
+    if (options == null) {
+      options = undefined;
+    }
     const contextObject = super.createContextObject(options);
     const statContextObject = Modifier.createContextObjectWithAttributeBuffs(attackBuff, maxHPBuff);
     statContextObject.appliedName = i18next.t('modifiers.faction_2_gorehorn_buff_name');
@@ -31,7 +37,10 @@ class ModifierMyAttackWatchBuffSelf extends ModifierMyAttackWatch {
 
   onMyAttackWatch(action) {
     // override me in sub classes to implement special behavior
-    return this.applyManagedModifiersFromModifiersContextObjects(this.modifiersContextObjects, this.getCard());
+    return this.applyManagedModifiersFromModifiersContextObjects(
+      this.modifiersContextObjects,
+      this.getCard(),
+    );
   }
 }
 ModifierMyAttackWatchBuffSelf.prototype.type = 'ModifierMyAttackWatchBuffSelf';

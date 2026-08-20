@@ -30,6 +30,7 @@ scripts/release_containers.sh <version> <ecr-registry-id>
 ```
 
 With the arguments populated, the command might look like this:
+
 ```
 scripts/release_containers.sh 1.2.3 abcd1234
 ```

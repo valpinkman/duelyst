@@ -30,7 +30,6 @@ const RewardsLayer = require('./RewardsLayer');
  *************************************************************************** */
 
 const ArenaLayer = FXCompositeLayer.extend({
-
   bgGradientSprite: null,
   bgRaysSprite: null,
   bgHexSprite: null,
@@ -116,7 +115,9 @@ const ArenaLayer = FXCompositeLayer.extend({
 
     if (this.outerLayer) this.outerLayer.setPosition(winCenterPosition);
 
-    this.bgGradientSprite.setScale(UtilsEngine.getWindowSizeRelativeNodeScale(this.bgGradientSprite));
+    this.bgGradientSprite.setScale(
+      UtilsEngine.getWindowSizeRelativeNodeScale(this.bgGradientSprite),
+    );
     this.bgGradientSprite.setPosition(winCenterPosition);
 
     this.bgRaysSprite.setScaleX(UtilsEngine.getWindowWidthRelativeNodeScale(this.bgRaysSprite));
@@ -134,7 +135,10 @@ const ArenaLayer = FXCompositeLayer.extend({
     this.bgHexSprite.setScaleY(0.2);
 
     this.bgBubblesParticleSystem.setPosVar(cc.p(UtilsEngine.getGSIWinRight(), 100.0));
-    this.bgBubblesParticleSystem.setPosition(winCenterPosition.x, UtilsEngine.getGSIWinTop() - 100.0);
+    this.bgBubblesParticleSystem.setPosition(
+      winCenterPosition.x,
+      UtilsEngine.getGSIWinTop() - 100.0,
+    );
 
     if (this._crestNode) {
       this._crestNode.setPosition(winCenterPosition.x, winCenterPosition.y + 150);
@@ -159,7 +163,12 @@ const ArenaLayer = FXCompositeLayer.extend({
     audio_engine.current().play_music(RSX.music_gauntlet.audio);
 
     // change gradient color mapping
-    this.getFX().showGradientColorMap(this._requestId, CONFIG.ANIMATE_FAST_DURATION, cc.color(64, 226, 255, 255), cc.color(0, 24, 49, 255));
+    this.getFX().showGradientColorMap(
+      this._requestId,
+      CONFIG.ANIMATE_FAST_DURATION,
+      cc.color(64, 226, 255, 255),
+      cc.color(0, 24, 49, 255),
+    );
   },
 
   onExit() {
@@ -260,7 +269,9 @@ const ArenaLayer = FXCompositeLayer.extend({
 
         if (this._crestNode == null) {
           this._crestNode = new BaseSprite();
-          this._crestNode.setRequiredTextureResource(SDK.FactionFactory.getCrestResourceForFactionId(factionId));
+          this._crestNode.setRequiredTextureResource(
+            SDK.FactionFactory.getCrestResourceForFactionId(factionId),
+          );
           const winCenterPosition = UtilsEngine.getGSIWinCenterPosition();
           this._crestNode.setPosition(winCenterPosition.x, winCenterPosition.y + 150);
           this._crestNode.setScale(0.75);
@@ -337,16 +348,24 @@ const ArenaLayer = FXCompositeLayer.extend({
   showShake(delay, duration, strength) {
     return new Promise<void>((resolve, reject) => {
       if (this.outerLayer != null) {
-        if (delay == null) { delay = 0.0; }
-        if (duration == null) { duration = 0.5; }
-        if (strength == null) { strength = 5.0; }
-        this.outerLayer.runAction(cc.sequence(
-          cc.delayTime(delay),
-          Shake.create(duration, strength, UtilsEngine.getGSIWinCenterPosition()),
-          cc.callFunc(() => {
-            resolve();
-          }),
-        ));
+        if (delay == null) {
+          delay = 0.0;
+        }
+        if (duration == null) {
+          duration = 0.5;
+        }
+        if (strength == null) {
+          strength = 5.0;
+        }
+        this.outerLayer.runAction(
+          cc.sequence(
+            cc.delayTime(delay),
+            Shake.create(duration, strength, UtilsEngine.getGSIWinCenterPosition()),
+            cc.callFunc(() => {
+              resolve();
+            }),
+          ),
+        );
       } else {
         resolve();
       }
@@ -372,10 +391,12 @@ const ArenaLayer = FXCompositeLayer.extend({
       this.keyBladeBgSprite.setVisible(true);
       this.keyBladeBgSprite.setScale(0.75);
       this.keyBladeBgSprite.setOpacity(125);
-      this.keyBladeBgSprite.runAction(cc.spawn(
-        // cc.fadeTo(10.0,125),
-        cc.scaleTo(20.0, 1.25),
-      ));
+      this.keyBladeBgSprite.runAction(
+        cc.spawn(
+          // cc.fadeTo(10.0,125),
+          cc.scaleTo(20.0, 1.25),
+        ),
+      );
 
       this.outerLayer = new StartLayer(ticketCount);
       this.outerLayer.delegate = this;
@@ -411,7 +432,9 @@ const ArenaLayer = FXCompositeLayer.extend({
       this.deckLayer.hideDeck();
       this.deckStatsLayer.hideDeckStats();
 
-      return this.outerLayer.transitionIn().then(() => this.outerLayer.showFactionOptions(arenaRunData.faction_choices));
+      return this.outerLayer
+        .transitionIn()
+        .then(() => this.outerLayer.showFactionOptions(arenaRunData.faction_choices));
     });
   },
 
@@ -484,9 +507,7 @@ const ArenaLayer = FXCompositeLayer.extend({
     });
   },
 
-  highlightCard(highlightedSdkCard) {
-
-  },
+  highlightCard(highlightedSdkCard) {},
 
   /**
    * Selects a card by reference and calls the delegate selection.
@@ -500,8 +521,15 @@ const ArenaLayer = FXCompositeLayer.extend({
     // wait for select to resolve and then add the card to deck
     selectCardPromise.then(() => {
       this.addCardToDeck(selectedSdkCard.getId());
-      if (selectedSdkCard != null && selectedSdkCard instanceof SDK.Entity && selectedSdkCard.getIsGeneral()) {
-        this.showFactionVisualsForFactionId(selectedSdkCard.getFactionId(), selectedSdkCard.getId());
+      if (
+        selectedSdkCard != null &&
+        selectedSdkCard instanceof SDK.Entity &&
+        selectedSdkCard.getIsGeneral()
+      ) {
+        this.showFactionVisualsForFactionId(
+          selectedSdkCard.getFactionId(),
+          selectedSdkCard.getId(),
+        );
       }
     });
 
@@ -509,7 +537,9 @@ const ArenaLayer = FXCompositeLayer.extend({
   },
 
   bindDeck(deckCards) {
-    if (deckCards == null) { deckCards = []; }
+    if (deckCards == null) {
+      deckCards = [];
+    }
     this.deckStatsLayer.bindCards(deckCards);
     this.deckLayer.bindCards(deckCards);
   },
@@ -598,7 +628,6 @@ const ArenaLayer = FXCompositeLayer.extend({
   },
 
   /* endregion REWARDS SCREEN */
-
 });
 
 ArenaLayer.create = function (layer) {

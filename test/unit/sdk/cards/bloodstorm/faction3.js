@@ -14,13 +14,9 @@ Logger.enabled = false;
 describe('bloodstorm', () => {
   describe('faction3', () => {
     beforeEach(() => {
-      const player1Deck = [
-        { id: SDK.Cards.Faction2.AltGeneral },
-      ];
+      const player1Deck = [{ id: SDK.Cards.Faction2.AltGeneral }];
 
-      const player2Deck = [
-        { id: SDK.Cards.Faction1.General },
-      ];
+      const player2Deck = [{ id: SDK.Cards.Faction1.General }];
 
       UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
     });
@@ -40,12 +36,19 @@ describe('bloodstorm', () => {
       gameSession.executeAction(gameSession.actionEndTurn());
       gameSession.executeAction(gameSession.actionEndTurn());
 
-      const whiplash = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.Zephyr }, 4, 3, gameSession.getPlayer1Id());
+      const whiplash = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.Zephyr },
+        4,
+        3,
+        gameSession.getPlayer1Id(),
+      );
 
       const action = player1.actionPlaySignatureCard(0, 1);
       gameSession.executeAction(action);
 
-      expect(gameSession.getGeneralForPlayer1().hasModifierClass(SDK.ModifierFrenzy)).to.equal(true);
+      expect(gameSession.getGeneralForPlayer1().hasModifierClass(SDK.ModifierFrenzy)).to.equal(
+        true,
+      );
     });
 
     it('expect divine spark to draw 2 cards', () => {
@@ -54,13 +57,37 @@ describe('bloodstorm', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.TrinityOath }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.TrinityOath }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.TrinityOath }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.TrinityOath }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.TrinityOath }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.TrinityOath,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.TrinityOath,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.TrinityOath,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.TrinityOath,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.TrinityOath,
+        }),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.DivineSpark }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.DivineSpark,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 3, 1));
 
       const hand = player1.getDeck().getCardsInHand();
@@ -74,7 +101,12 @@ describe('bloodstorm', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const incinera = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.Incinera }, 0, 1, gameSession.getPlayer1Id());
+      const incinera = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.Incinera },
+        0,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
       expect(gameSession.getGeneralForPlayer1().getSpeed()).to.equal(4);
     });
@@ -85,9 +117,18 @@ describe('bloodstorm', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      const obelysk = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.BrazierRedSand }, 6, 3, gameSession.getPlayer1Id());
+      const obelysk = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.BrazierRedSand },
+        6,
+        3,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.StoneToSpears }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.StoneToSpears,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 6, 3));
 
       expect(obelysk.getSpeed()).to.equal(2);
@@ -117,10 +158,16 @@ describe('bloodstorm', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.EquipVetArtifacts }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.EquipVetArtifacts,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 6, 3));
 
-      expect(gameSession.getGeneralForPlayer1().getArtifactModifiersGroupedByArtifactCard().length).to.equal(2);
+      expect(
+        gameSession.getGeneralForPlayer1().getArtifactModifiersGroupedByArtifactCard().length,
+      ).to.equal(2);
     });
 
     it('expect grandmaster nosh-rak to make the enemy general take double damage from all sources', () => {
@@ -129,10 +176,24 @@ describe('bloodstorm', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      const obelysk = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.BrazierRedSand }, 6, 3, gameSession.getPlayer1Id());
-      const noshrak = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.GrandmasterNoshRak }, 8, 1, gameSession.getPlayer1Id());
+      const obelysk = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.BrazierRedSand },
+        6,
+        3,
+        gameSession.getPlayer1Id(),
+      );
+      const noshrak = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.GrandmasterNoshRak },
+        8,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.StoneToSpears }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.StoneToSpears,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 6, 3));
 
       noshrak.refreshExhaustion();
@@ -152,7 +213,11 @@ describe('bloodstorm', () => {
       // testing for doubled damage from other minions
       expect(gameSession.getGeneralForPlayer2().getDamage()).to.equal(14);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PhoenixFire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 8, 2));
 
       // testing for doubled spell damage

@@ -97,7 +97,13 @@ class CardFactory_FirstWatchSet_Faction4 {
       card.maxHP = 2;
       card.manaCost = 2;
       card.rarityId = Rarity.Common;
-      card.setInherentModifiersContextObjects([ModifierOpponentSummonWatchBuffMinionInHand.createContextObject(1, 0, i18next.t('modifiers.faction_4_phantasm'))]);
+      card.setInherentModifiersContextObjects([
+        ModifierOpponentSummonWatchBuffMinionInHand.createContextObject(
+          1,
+          0,
+          i18next.t('modifiers.faction_4_phantasm'),
+        ),
+      ]);
     }
 
     if (identifier === Cards.Faction4.Nekomata) {
@@ -129,7 +135,9 @@ class CardFactory_FirstWatchSet_Faction4 {
       card.maxHP = 2;
       card.manaCost = 4;
       card.rarityId = Rarity.Epic;
-      card.setInherentModifiersContextObjects([ModifierDyingWishDrawMinionsWithDyingWish.createContextObject(2)]);
+      card.setInherentModifiersContextObjects([
+        ModifierDyingWishDrawMinionsWithDyingWish.createContextObject(2),
+      ]);
     }
 
     if (identifier === Cards.Spell.InklingSurge) {
@@ -230,7 +238,10 @@ class CardFactory_FirstWatchSet_Faction4 {
       card.rarityId = Rarity.Legendary;
       card.setInherentModifiersContextObjects([
         ModifierOpeningGambitStealEnemyGeneralHealth.createContextObject(2),
-        ModifierDyingWishPutCardInHand.createContextObject({ id: Cards.Faction4.Desolator }, 'Desolator'),
+        ModifierDyingWishPutCardInHand.createContextObject(
+          { id: Cards.Faction4.Desolator },
+          'Desolator',
+        ),
       ]);
     }
 
@@ -247,9 +258,7 @@ class CardFactory_FirstWatchSet_Faction4 {
       card.applyToOpponentGeneral = true;
       const doomedContextObject = ModifierDoomed3.createContextObject();
       doomedContextObject.appliedName = i18next.t('modifiers.faction_4_spell_doom_1');
-      card.setTargetModifiersContextObjects([
-        doomedContextObject,
-      ]);
+      card.setTargetModifiersContextObjects([doomedContextObject]);
       card.setFXResource(['FX.Cards.Spell.Doom']);
       card.setBaseSoundResource({
         apply: RSX.sfx_spell_flashreincarnation.audio,
@@ -327,14 +336,26 @@ class CardFactory_FirstWatchSet_Faction4 {
       card.manaCost = 3;
       card.rarityId = Rarity.Rare;
       sentinelData = { id: Cards.Faction4.AbyssSentinel };
-      if (sentinelData.additionalModifiersContextObjects == null) { sentinelData.additionalModifiersContextObjects = []; }
-      sentinelData.additionalModifiersContextObjects.push(ModifierSentinelOpponentGeneralAttack.createContextObject('transform.', { id: Cards.Faction4.SkullProphet }));
+      if (sentinelData.additionalModifiersContextObjects == null) {
+        sentinelData.additionalModifiersContextObjects = [];
+      }
+      sentinelData.additionalModifiersContextObjects.push(
+        ModifierSentinelOpponentGeneralAttack.createContextObject('transform.', {
+          id: Cards.Faction4.SkullProphet,
+        }),
+      );
       const contextObject = Modifier.createContextObjectWithAttributeBuffs(-1);
       contextObject.appliedName = i18next.t('modifiers.faction_4_skullprophet');
-      contextObject.activeInHand = (contextObject.activeInDeck = (contextObject.activeInSignatureCards = false));
+      contextObject.activeInHand =
+        contextObject.activeInDeck =
+        contextObject.activeInSignatureCards =
+          false;
       contextObject.activeOnBoard = true;
       card.setInherentModifiersContextObjects([
-        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetEnemyPlayer([contextObject], 'The enemy General has -1 Attack'),
+        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetEnemyPlayer(
+          [contextObject],
+          'The enemy General has -1 Attack',
+        ),
         ModifierSentinelSetup.createContextObject(sentinelData),
       ]);
       card.addKeywordClassToInclude(ModifierSentinel);
@@ -373,9 +394,17 @@ class CardFactory_FirstWatchSet_Faction4 {
       card.manaCost = 3;
       card.rarityId = Rarity.Common;
       sentinelData = { id: Cards.Faction4.AbyssSentinel };
-      if (sentinelData.additionalModifiersContextObjects == null) { sentinelData.additionalModifiersContextObjects = []; }
-      sentinelData.additionalModifiersContextObjects.push(ModifierSentinelOpponentSummonCopyIt.createContextObject('transform.', { id: Cards.Faction4.BoundTormentor }));
-      card.setInherentModifiersContextObjects([ModifierSentinelSetup.createContextObject(sentinelData)]);
+      if (sentinelData.additionalModifiersContextObjects == null) {
+        sentinelData.additionalModifiersContextObjects = [];
+      }
+      sentinelData.additionalModifiersContextObjects.push(
+        ModifierSentinelOpponentSummonCopyIt.createContextObject('transform.', {
+          id: Cards.Faction4.BoundTormentor,
+        }),
+      );
+      card.setInherentModifiersContextObjects([
+        ModifierSentinelSetup.createContextObject(sentinelData),
+      ]);
       card.addKeywordClassToInclude(ModifierSentinel);
       card.addKeywordClassToInclude(ModifierTokenCreator);
     }
@@ -411,9 +440,18 @@ class CardFactory_FirstWatchSet_Faction4 {
       card.maxHP = 2;
       card.manaCost = 3;
       sentinelData = { id: Cards.Faction4.AbyssSentinel };
-      if (sentinelData.additionalModifiersContextObjects == null) { sentinelData.additionalModifiersContextObjects = []; }
-      sentinelData.additionalModifiersContextObjects.push(ModifierSentinelOpponentSpellCast.createContextObject('transform.', { id: Cards.Faction4.Xerroloth }));
-      card.setInherentModifiersContextObjects([ModifierEnemySpellWatchPutCardInHand.createContextObject({ id: Cards.Faction4.Fiend }), ModifierSentinelSetup.createContextObject(sentinelData)]);
+      if (sentinelData.additionalModifiersContextObjects == null) {
+        sentinelData.additionalModifiersContextObjects = [];
+      }
+      sentinelData.additionalModifiersContextObjects.push(
+        ModifierSentinelOpponentSpellCast.createContextObject('transform.', {
+          id: Cards.Faction4.Xerroloth,
+        }),
+      );
+      card.setInherentModifiersContextObjects([
+        ModifierEnemySpellWatchPutCardInHand.createContextObject({ id: Cards.Faction4.Fiend }),
+        ModifierSentinelSetup.createContextObject(sentinelData),
+      ]);
       card.rarityId = Rarity.Rare;
       card.addKeywordClassToInclude(ModifierSentinel);
       card.addKeywordClassToInclude(ModifierTokenCreator);
@@ -430,9 +468,11 @@ class CardFactory_FirstWatchSet_Faction4 {
       card.rarityId = Rarity.Epic;
       card.spellFilterType = SpellFilterType.NeutralDirect;
       card.addKeywordClassToInclude(ModifierStackingShadows);
-      card.setFollowups([{
-        id: Cards.Spell.FollowupTeleportToFriendlyCreep,
-      }]);
+      card.setFollowups([
+        {
+          id: Cards.Spell.FollowupTeleportToFriendlyCreep,
+        },
+      ]);
       card.setFXResource(['FX.Cards.Spell.Nethermeld']);
       card.setBaseAnimResource({
         idle: RSX.iconNethermeldIdle.name,

@@ -73,7 +73,13 @@ var RenderPass = cc.Class.extend({
     this.frameBuffer = gl.createFramebuffer();
 
     this.texture = new cc.Texture2D();
-    this.texture.initWithData(null, format, textureWidth, textureHeight, cc.size(textureWidth, textureHeight));
+    this.texture.initWithData(
+      null,
+      format,
+      textureWidth,
+      textureHeight,
+      cc.size(textureWidth, textureHeight),
+    );
     if (this.antiAlias) {
       this.texture.setAntiAliasTexParameters();
     } else {
@@ -82,7 +88,13 @@ var RenderPass = cc.Class.extend({
     this.texture._hasPremultipliedAlpha = true;
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer);
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.texture.getName(), 0);
+    gl.framebufferTexture2D(
+      gl.FRAMEBUFFER,
+      gl.COLOR_ATTACHMENT0,
+      gl.TEXTURE_2D,
+      this.texture.getName(),
+      0,
+    );
 
     if (depthStencilFormat != null) {
       this.renderBuffer = gl.createRenderbuffer();
@@ -91,25 +103,30 @@ var RenderPass = cc.Class.extend({
       // gl.renderbufferStorage(gl.RENDERBUFFER, depthStencilFormat, this.width, this.height);
       // gl.framebufferRenderbuffer(gl.FRAMEBUFFER, depthStencilFormat === gl.STENCIL_INDEX8 ? gl.STENCIL_ATTACHMENT : gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, this.renderBuffer);
       gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_STENCIL, this.width, this.height);
-      gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_STENCIL_ATTACHMENT, gl.RENDERBUFFER, this.renderBuffer);
+      gl.framebufferRenderbuffer(
+        gl.FRAMEBUFFER,
+        gl.DEPTH_STENCIL_ATTACHMENT,
+        gl.RENDERBUFFER,
+        this.renderBuffer,
+      );
     }
 
     // check framebuffer status
     const status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
     switch (status) {
-    case gl.FRAMEBUFFER_UNSUPPORTED:
-      throw 'RenderPass: Framebuffer is unsupported';
-    case gl.FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
-      throw 'RenderPass: Framebuffer incomplete attachment';
-    case gl.FRAMEBUFFER_INCOMPLETE_DIMENSIONS:
-      throw 'RenderPass: Framebuffer incomplete dimensions';
-    case gl.FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
-      throw 'RenderPass: Framebuffer incomplete missing attachment';
+      case gl.FRAMEBUFFER_UNSUPPORTED:
+        throw 'RenderPass: Framebuffer is unsupported';
+      case gl.FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
+        throw 'RenderPass: Framebuffer incomplete attachment';
+      case gl.FRAMEBUFFER_INCOMPLETE_DIMENSIONS:
+        throw 'RenderPass: Framebuffer incomplete dimensions';
+      case gl.FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
+        throw 'RenderPass: Framebuffer incomplete missing attachment';
     }
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, frameBufferLast);
 
-    const quad = this._quad = new cc.V3F_C4B_T2F_Quad();
+    const quad = (this._quad = new cc.V3F_C4B_T2F_Quad());
 
     quad.tl.vertices.x = 0;
     quad.tl.vertices.y = this.height;
@@ -151,9 +168,15 @@ var RenderPass = cc.Class.extend({
     this._stackMatrix = cc.kmMat4Identity(new cc.kmMat4());
 
     // TODO: pass perspective projection/stack matrices are slightly off
-    const zeyePass = (this.height / 2.0 / Math.tan(Math.PI / 6.0));
+    const zeyePass = this.height / 2.0 / Math.tan(Math.PI / 6.0);
     this._perspectiveProjMatrix = cc.kmMat4Identity(new cc.kmMat4());
-    cc.kmMat4PerspectiveProjection(this._perspectiveProjMatrix, 60, this.width / this.height, 0.1, zeyePass * 2);
+    cc.kmMat4PerspectiveProjection(
+      this._perspectiveProjMatrix,
+      60,
+      this.width / this.height,
+      0.1,
+      zeyePass * 2,
+    );
 
     this._perspectiveStackMatrix = cc.kmMat4Identity(new cc.kmMat4());
     const eye = cc.kmVec3Fill(null, this.width / 2, this.height / 2, zeyePass);
@@ -221,7 +244,10 @@ var RenderPass = cc.Class.extend({
   getColor() {
     // sample one vertex (not entirely accurate)
     return {
-      r: this._quad.tl.colors.r, g: this._quad.tl.colors.g, b: this._quad.tl.colors.b, a: this._quad.tl.colors.a,
+      r: this._quad.tl.colors.r,
+      g: this._quad.tl.colors.g,
+      b: this._quad.tl.colors.b,
+      a: this._quad.tl.colors.a,
     };
   },
   getNeedsPerspectiveProjection() {
@@ -341,8 +367,8 @@ var RenderPass = cc.Class.extend({
     const position = node.getPosition();
 
     // flipped stack matrix for nodes so they draw correctly
-    const ox = (position.x || 0);
-    const oy = (position.y || 0);
+    const ox = position.x || 0;
+    const oy = position.y || 0;
     const ax = this.width * (anchorPoint.x || 0);
     const ay = this.height * (anchorPoint.y || 0);
     const stackMat = this._stackMatrix.mat;
@@ -452,7 +478,12 @@ RenderPass.push_to_reset_stack = function (renderPass, stackId) {
   cc.current_stack.top = renderPass._stackMatrix;
 
   const devicePixelRatio = cc.view.getDevicePixelRatio();
-  gl.viewport(0, 0, Math.ceil(renderPass.width * devicePixelRatio), Math.ceil(renderPass.height * devicePixelRatio));
+  gl.viewport(
+    0,
+    0,
+    Math.ceil(renderPass.width * devicePixelRatio),
+    Math.ceil(renderPass.height * devicePixelRatio),
+  );
 
   return renderPass;
 };
@@ -486,7 +517,12 @@ RenderPass.pop_from_reset_stack = function (stackId) {
     }
     if (nextRenderPass != null) {
       const devicePixelRatio = cc.view.getDevicePixelRatio();
-      gl.viewport(0, 0, Math.ceil(nextRenderPass.width * devicePixelRatio), Math.ceil(nextRenderPass.height * devicePixelRatio));
+      gl.viewport(
+        0,
+        0,
+        Math.ceil(nextRenderPass.width * devicePixelRatio),
+        Math.ceil(nextRenderPass.height * devicePixelRatio),
+      );
     } else {
       cc.director.setViewport();
     }

@@ -6,7 +6,6 @@ var EventBus = require('app/common/eventbus');
 var EVENTS = require('app/common/event_types');
 
 var ListWithPooledRowsView = Marionette.ItemView.extend({
-
   currentIndex: 0,
   rowsPerPage: 0,
   scrollInsetTop: 0,
@@ -126,9 +125,9 @@ var ListWithPooledRowsView = Marionette.ItemView.extend({
       if (model) {
         var itemView = this.invisibleItemViews.pop();
         // set the initial item view position
-        itemView.css('transform', 'translateY(' + (i * this._rowHeight) + 'px)');
+        itemView.css('transform', 'translateY(' + i * this._rowHeight + 'px)');
         // set the simple data value for the top offset of this item
-        $.data(itemView[0], 'top', (i * this._rowHeight));
+        $.data(itemView[0], 'top', i * this._rowHeight);
         this.bindModelToItemView(model, itemView);
       }
     }
@@ -143,10 +142,16 @@ var ListWithPooledRowsView = Marionette.ItemView.extend({
 
   bindItemViewsAfterSort: function () {
     Logger.module('UI').log('ListWithPooledRowsView.bindItemViewsAfterSort()');
-    for (var i = Math.max(0, this.currentIndex - 1); i < this.currentIndex + this.rowsPerPage + 1; i++) {
+    for (
+      var i = Math.max(0, this.currentIndex - 1);
+      i < this.currentIndex + this.rowsPerPage + 1;
+      i++
+    ) {
       var model = this.collection.at(i);
       if (model) {
-        var itemView = _.find(this.itemViewPool, function (itemView) { return $.data(itemView[0], 'index') == i; });
+        var itemView = _.find(this.itemViewPool, function (itemView) {
+          return $.data(itemView[0], 'index') == i;
+        });
         if (!itemView) {
           var newTop = i * this._rowHeight;
           itemView = this.invisibleItemViews.pop();
@@ -168,7 +173,7 @@ var ListWithPooledRowsView = Marionette.ItemView.extend({
     var index = Math.ceil(scrollTop / this._rowHeight);
     // index = directionDown ? Math.ceil(index) : Math.floor(index);
     var delta = index - this.currentIndex;
-    var partialScrollAmount = scrollTop / this._rowHeight % 1;
+    var partialScrollAmount = (scrollTop / this._rowHeight) % 1;
     this.previousScrollTop = scrollTop;
 
     if (index != this.currentIndex) {
@@ -179,15 +184,14 @@ var ListWithPooledRowsView = Marionette.ItemView.extend({
 
       if (Math.abs(delta) > this.rowsPerPage) {
         // if it's a full page refresh just change out the entire page of rows
-        delta = (delta > 0) ? this.rowsPerPage : -this.rowsPerPage;
+        delta = delta > 0 ? this.rowsPerPage : -this.rowsPerPage;
         for (var i = index - 1; i < index + this.rowsPerPage + 1; i++) {
           var model = this.collection.at(i);
           if (model) {
             // console.log("re-arranging for "+i);
             var newTop = i * this._rowHeight;
             var replacementRow = this.invisibleItemViews.pop();
-            if (!replacementRow)
-              console.warn('out of replacement rows!');
+            if (!replacementRow) console.warn('out of replacement rows!');
             this.bindModelToItemView(model, replacementRow);
             $.data(replacementRow[0], 'top', newTop);
             replacementRow.css('transform', 'translateY(' + newTop + 'px)');
@@ -197,17 +201,14 @@ var ListWithPooledRowsView = Marionette.ItemView.extend({
         // otherwise change just the delta part
         for (var i = 0; i < Math.abs(delta); i++) {
           var k = 0;
-          if (delta > 0)
-            k = (index) + (this.rowsPerPage - delta) + i;
-          else
-            k = (index) - delta - (i + 2);
+          if (delta > 0) k = index + (this.rowsPerPage - delta) + i;
+          else k = index - delta - (i + 2);
           var model = this.collection.at(k);
           if (model) {
             // console.log("re-arranging for "+k);
             var newTop = k * this._rowHeight;
             var replacementRow = this.invisibleItemViews.pop();
-            if (!replacementRow)
-              console.warn('out of replacement rows!');
+            if (!replacementRow) console.warn('out of replacement rows!');
             this.bindModelToItemView(model, replacementRow);
             $.data(replacementRow[0], 'top', newTop);
             replacementRow.css('transform', 'translateY(' + newTop + 'px)');
@@ -227,7 +228,10 @@ var ListWithPooledRowsView = Marionette.ItemView.extend({
       var itemViewIndex = $.data(itemView[0], 'index');
       // var itemViewTop = parseInt($.data(itemView, 'top'));
       var invisible = false;
-      if (itemViewIndex != -1 && (itemViewIndex < index - 1 || itemViewIndex >= index + this.rowsPerPage)) {
+      if (
+        itemViewIndex != -1 &&
+        (itemViewIndex < index - 1 || itemViewIndex >= index + this.rowsPerPage)
+      ) {
         this.invisibleItemViews.push(itemView);
         $.data(itemView[0], 'top', -1000);
         $.data(itemView[0], 'index', -1);

@@ -20,15 +20,25 @@ class ModifierImmuneToDamageByGeneral extends ModifierImmuneToDamage {
   static type = 'ModifierImmuneToDamageByGeneral';
 
   getIsActionRelevant(a) {
-    return (this.getCard() != null) && a instanceof AttackAction && a.getIsValid() && (this.getCard() === a.getTarget()) && __guard__(a.getSource(), (x) => x.getIsGeneral());
+    return (
+      this.getCard() != null &&
+      a instanceof AttackAction &&
+      a.getIsValid() &&
+      this.getCard() === a.getTarget() &&
+      __guard__(a.getSource(), (x) => x.getIsGeneral())
+    );
   }
 }
 ModifierImmuneToDamageByGeneral.prototype.type = 'ModifierImmuneToDamageByGeneral';
-ModifierImmuneToDamageByGeneral.modifierName = i18next.t('modifiers.immune_to_damage_by_general_name');
-ModifierImmuneToDamageByGeneral.description = i18next.t('modifiers.immune_to_damage_by_general_def');
+ModifierImmuneToDamageByGeneral.modifierName = i18next.t(
+  'modifiers.immune_to_damage_by_general_name',
+);
+ModifierImmuneToDamageByGeneral.description = i18next.t(
+  'modifiers.immune_to_damage_by_general_def',
+);
 
 module.exports = ModifierImmuneToDamageByGeneral;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

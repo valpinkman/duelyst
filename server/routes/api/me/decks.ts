@@ -20,19 +20,23 @@ router.get('/', function (req, res, next) {
 
   return DecksModule.decksForUser(user_id)
     .then(function (decks) {
-    // for each deck
-    // map integer arrays to card objects for deck builder
+      // for each deck
+      // map integer arrays to card objects for deck builder
       for (var deckData of Array.from<any>(decks)) {
         deckData.cards = _.map(deckData.cards, (cardId) => ({
           id: cardId,
         }));
       }
       return res.status(200).json(DataAccessHelpers.restifyData(decks));
-    }).catch((error) => next(error));
+    })
+    .catch((error) => next(error));
 });
 
 router.get('/:deck_id', function (req, res, next) {
-  const result = t.validate(req.params.deck_id, t.subtype(t.Str, (s) => s.length <= 36));
+  const result = t.validate(
+    req.params.deck_id,
+    t.subtype(t.Str, (s) => s.length <= 36),
+  );
   if (!result.isValid()) {
     return next();
   }
@@ -40,9 +44,11 @@ router.get('/:deck_id', function (req, res, next) {
   const user_id = req.user.d.id;
   const deck_id = result.value;
 
-  return knex('user_decks').where({ user_id: user_id, id: deck_id }).first()
+  return knex('user_decks')
+    .where({ user_id: user_id, id: deck_id })
+    .first()
     .then(function (deckData) {
-    // map integer arrays to card objects for deck builder
+      // map integer arrays to card objects for deck builder
       deckData.cards = _.map(deckData.cards, (cardId) => ({
         id: cardId,
       }));
@@ -58,46 +64,44 @@ router.post('/', function (req, res, next) {
   }
 
   const user_id = req.user.d.id;
-  const {
-    faction_id,
-  } = deck_input.value;
-  const {
-    name,
-  } = deck_input.value;
-  let {
-    cards,
-  } = deck_input.value;
-  const {
-    spell_count,
-  } = deck_input.value;
-  const {
-    minion_count,
-  } = deck_input.value;
-  const {
-    artifact_count,
-  } = deck_input.value;
-  const {
-    color_code,
-  } = deck_input.value;
-  const {
-    card_back_id,
-  } = deck_input.value;
+  const { faction_id } = deck_input.value;
+  const { name } = deck_input.value;
+  let { cards } = deck_input.value;
+  const { spell_count } = deck_input.value;
+  const { minion_count } = deck_input.value;
+  const { artifact_count } = deck_input.value;
+  const { color_code } = deck_input.value;
+  const { card_back_id } = deck_input.value;
 
   // map card objects to integer arrays for the database
   cards = _.map(cards, (cardData) => cardData.id);
 
-  return DecksModule.addDeck(user_id, faction_id, name, cards, spell_count, minion_count, artifact_count, color_code, card_back_id)
+  return DecksModule.addDeck(
+    user_id,
+    faction_id,
+    name,
+    cards,
+    spell_count,
+    minion_count,
+    artifact_count,
+    color_code,
+    card_back_id,
+  )
     .then(function (deckData) {
-    // map integer arrays to card objects for deck builder
+      // map integer arrays to card objects for deck builder
       deckData.cards = _.map(deckData.cards, (cardId) => ({
         id: cardId,
       }));
       return res.status(200).json(DataAccessHelpers.restifyData(deckData));
-    }).catch((error) => next(error));
+    })
+    .catch((error) => next(error));
 });
 
 router.put('/:deck_id', function (req, res, next) {
-  let deck_id = t.validate(req.params.deck_id, t.subtype(t.Str, (s) => s.length <= 36));
+  let deck_id = t.validate(
+    req.params.deck_id,
+    t.subtype(t.Str, (s) => s.length <= 36),
+  );
   if (!deck_id.isValid()) {
     return next();
   }
@@ -108,46 +112,45 @@ router.put('/:deck_id', function (req, res, next) {
 
   const user_id = req.user.d.id;
   deck_id = deck_id.value;
-  const {
-    faction_id,
-  } = deck_input.value;
-  const {
-    name,
-  } = deck_input.value;
-  let {
-    cards,
-  } = deck_input.value;
-  const {
-    spell_count,
-  } = deck_input.value;
-  const {
-    minion_count,
-  } = deck_input.value;
-  const {
-    artifact_count,
-  } = deck_input.value;
-  const {
-    color_code,
-  } = deck_input.value;
-  const {
-    card_back_id,
-  } = deck_input.value;
+  const { faction_id } = deck_input.value;
+  const { name } = deck_input.value;
+  let { cards } = deck_input.value;
+  const { spell_count } = deck_input.value;
+  const { minion_count } = deck_input.value;
+  const { artifact_count } = deck_input.value;
+  const { color_code } = deck_input.value;
+  const { card_back_id } = deck_input.value;
 
   // map card objects to integer arrays for the database
   cards = _.map(cards, (cardData) => cardData.id);
 
-  return DecksModule.updateDeck(user_id, deck_id, faction_id, name, cards, spell_count, minion_count, artifact_count, color_code, card_back_id)
+  return DecksModule.updateDeck(
+    user_id,
+    deck_id,
+    faction_id,
+    name,
+    cards,
+    spell_count,
+    minion_count,
+    artifact_count,
+    color_code,
+    card_back_id,
+  )
     .then(function (deckData) {
-    // map integer arrays to card objects for deck builder
+      // map integer arrays to card objects for deck builder
       deckData.cards = _.map(deckData.cards, (cardId) => ({
         id: cardId,
       }));
       return res.status(200).json(DataAccessHelpers.restifyData(deckData));
-    }).catch((error) => next(error));
+    })
+    .catch((error) => next(error));
 });
 
 router.delete('/:deck_id', function (req, res, next) {
-  const result = t.validate(req.params.deck_id, t.subtype(t.Str, (s) => s.length <= 36));
+  const result = t.validate(
+    req.params.deck_id,
+    t.subtype(t.Str, (s) => s.length <= 36),
+  );
   if (!result.isValid()) {
     return next();
   }
@@ -155,7 +158,9 @@ router.delete('/:deck_id', function (req, res, next) {
   const user_id = req.user.d.id;
   const deck_id = result.value;
 
-  return knex('user_decks').where({ user_id: user_id, id: deck_id }).delete()
+  return knex('user_decks')
+    .where({ user_id: user_id, id: deck_id })
+    .delete()
     .then((deckData) => res.status(200).json({}))
     .catch((error) => next(error));
 });

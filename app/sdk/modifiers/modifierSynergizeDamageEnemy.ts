@@ -16,7 +16,9 @@ class ModifierSynergizeDamageEnemy extends ModifierSynergize {
   static description = 'Deal %X damage to a random enemy';
 
   static createContextObject(damageAmount, options) {
-    if (options == null) { options = undefined; }
+    if (options == null) {
+      options = undefined;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.damageAmount = damageAmount;
     return contextObject;
@@ -39,6 +41,9 @@ class ModifierSynergizeDamageEnemy extends ModifierSynergize {
   }
 }
 ModifierSynergizeDamageEnemy.prototype.type = 'ModifierSynergizeDamageEnemy';
-ModifierSynergizeDamageEnemy.prototype.fxResource = ['FX.Modifiers.ModifierSynergize', 'FX.Modifiers.ModifierGenericDamage'];
+ModifierSynergizeDamageEnemy.prototype.fxResource = [
+  'FX.Modifiers.ModifierSynergize',
+  'FX.Modifiers.ModifierGenericDamage',
+];
 
 module.exports = ModifierSynergizeDamageEnemy;

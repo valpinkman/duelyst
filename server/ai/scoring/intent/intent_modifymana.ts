@@ -41,7 +41,10 @@ const getScoreForModifyManaFromCardWithIntentToCard = function (card, intent, ta
 const ScoreForIntentModifyMana = function (card, targetPosition, cardIntents) {
   let score = 0;
   const cardId = card.getBaseCardId();
-  const validIntents = cardIntents != null ? CardIntent.filterIntentsByIntentType(cardIntents, CardIntentType.ManaCost) : CardIntent.getIntentsByIntentType(cardId, CardIntentType.ManaCost);
+  const validIntents =
+    cardIntents != null
+      ? CardIntent.filterIntentsByIntentType(cardIntents, CardIntentType.ManaCost)
+      : CardIntent.getIntentsByIntentType(cardId, CardIntentType.ManaCost);
 
   _.each(validIntents, (intent) => {
     const cards = CardIntent.getCardsTargetedByCardWithIntent(card, intent, targetPosition);

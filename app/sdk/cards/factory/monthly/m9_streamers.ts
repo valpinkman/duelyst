@@ -73,7 +73,15 @@ class CardFactory_Monthly_M9_Streamers {
       const buffContextObject = Modifier.createContextObjectWithAttributeBuffs(1);
       buffContextObject.appliedName = i18next.t('modifiers.neutral_shiro_puppydragon_modifier');
       card.setInherentModifiersContextObjects([
-        ModifierEndTurnWatchApplyModifiers.createContextObject([buffContextObject], false, true, false, 1, false, 'give each nearby friendly minion +1 Attack'),
+        ModifierEndTurnWatchApplyModifiers.createContextObject(
+          [buffContextObject],
+          false,
+          true,
+          false,
+          1,
+          false,
+          'give each nearby friendly minion +1 Attack',
+        ),
       ]);
     }
 
@@ -177,7 +185,9 @@ class CardFactory_Monthly_M9_Streamers {
       card.maxHP = 4;
       card.manaCost = 5;
       card.rarityId = Rarity.Rare;
-      card.setInherentModifiersContextObjects([ModifierOpeningGambitGrincher.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierOpeningGambitGrincher.createContextObject(),
+      ]);
     }
 
     return card;

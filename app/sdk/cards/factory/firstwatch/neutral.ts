@@ -158,7 +158,12 @@ class CardFactory_FirstWatchSet_Neutral {
       card.maxHP = 6;
       card.manaCost = 3;
       card.rarityId = Rarity.Common;
-      card.setInherentModifiersContextObjects([ModifierOpeningGambitSpawnEnemyMinionNearOpponent.createContextObject({ id: Cards.Neutral.KomodoCharger }, 2)]);
+      card.setInherentModifiersContextObjects([
+        ModifierOpeningGambitSpawnEnemyMinionNearOpponent.createContextObject(
+          { id: Cards.Neutral.KomodoCharger },
+          2,
+        ),
+      ]);
     }
 
     if (identifier === Cards.Neutral.Emberwyrm) {
@@ -225,7 +230,9 @@ class CardFactory_FirstWatchSet_Neutral {
       card.maxHP = 8;
       card.manaCost = 6;
       card.rarityId = Rarity.Legendary;
-      card.setInherentModifiersContextObjects([ModifierCannotCastSpellsByCost.createContextObject(2)]);
+      card.setInherentModifiersContextObjects([
+        ModifierCannotCastSpellsByCost.createContextObject(2),
+      ]);
     }
 
     if (identifier === Cards.Neutral.Rokadoptera) {
@@ -257,7 +264,9 @@ class CardFactory_FirstWatchSet_Neutral {
       card.maxHP = 3;
       card.manaCost = 3;
       card.rarityId = Rarity.Common;
-      card.setInherentModifiersContextObjects([ModifierOpeningGambitPutCardInHand.createContextObject({ id: Cards.Spell.BoulderHurl })]);
+      card.setInherentModifiersContextObjects([
+        ModifierOpeningGambitPutCardInHand.createContextObject({ id: Cards.Spell.BoulderHurl }),
+      ]);
     }
 
     if (identifier === Cards.Spell.BoulderHurl) {
@@ -344,7 +353,9 @@ class CardFactory_FirstWatchSet_Neutral {
         damage: RSX.neutralArtifactShaperHit.name,
         death: RSX.neutralArtifactShaperDeath.name,
       });
-      card.setInherentModifiersContextObjects([ModifierOpeningGambitRemoveArtifactToDrawArtifactFromFaction.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierOpeningGambitRemoveArtifactToDrawArtifactFromFaction.createContextObject(),
+      ]);
     }
 
     if (identifier === Cards.Neutral.WildTahr) {
@@ -430,7 +441,11 @@ class CardFactory_FirstWatchSet_Neutral {
       card.rarityId = Rarity.Legendary;
       card.setInherentModifiersContextObjects([
         ModifierRanged.createContextObject(),
-        ModifierMyGeneralAttackWatchSpawnEntity.createContextObject({ id: Cards.Neutral.TigerCub }, 1, CONFIG.PATTERN_3x3),
+        ModifierMyGeneralAttackWatchSpawnEntity.createContextObject(
+          { id: Cards.Neutral.TigerCub },
+          1,
+          CONFIG.PATTERN_3x3,
+        ),
       ]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
       card.setFXResource(['FX.Cards.Neutral.Letigress']);
@@ -467,9 +482,7 @@ class CardFactory_FirstWatchSet_Neutral {
       card.manaCost = 1;
       card.rarityId = Rarity.TokenUnit;
       card.setIsHiddenInCollection(true);
-      card.setInherentModifiersContextObjects([
-        ModifierFirstBlood.createContextObject(),
-      ]);
+      card.setInherentModifiersContextObjects([ModifierFirstBlood.createContextObject()]);
       card.addKeywordClassToInclude(ModifierToken);
       card.setFXResource(['FX.Cards.Neutral.GhostLynx']);
       card.setBaseSoundResource({
@@ -521,7 +534,9 @@ class CardFactory_FirstWatchSet_Neutral {
       card.maxHP = 6;
       card.manaCost = 5;
       card.rarityId = Rarity.Legendary;
-      card.setInherentModifiersContextObjects([ModifierOpeningGambitReplaceHand.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierOpeningGambitReplaceHand.createContextObject(),
+      ]);
     }
 
     if (identifier === Cards.Neutral.Thunderhorn) {
@@ -534,7 +549,9 @@ class CardFactory_FirstWatchSet_Neutral {
       card.maxHP = 4;
       card.manaCost = 4;
       card.rarityId = Rarity.Epic;
-      card.setInherentModifiersContextObjects([ModifierDealDamageWatchDamageJoinedEnemies.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierDealDamageWatchDamageJoinedEnemies.createContextObject(),
+      ]);
       card.setFXResource(['FX.Cards.Neutral.Unseven']);
       card.setBaseSoundResource({
         apply: RSX.sfx_unit_deploy.audio,
@@ -605,9 +622,7 @@ class CardFactory_FirstWatchSet_Neutral {
       card.manaCost = 1;
       card.rarityId = Rarity.TokenUnit;
       card.setIsHiddenInCollection(true);
-      card.setInherentModifiersContextObjects([
-        ModifierSprigginDiesBuffSelf.createContextObject(),
-      ]);
+      card.setInherentModifiersContextObjects([ModifierSprigginDiesBuffSelf.createContextObject()]);
       card.addKeywordClassToInclude(ModifierToken);
       card.setFXResource(['FX.Cards.Neutral.Spelljammer']);
       card.setBaseSoundResource({
@@ -680,9 +695,7 @@ class CardFactory_FirstWatchSet_Neutral {
       card.manaCost = 1;
       card.rarityId = Rarity.TokenUnit;
       card.setIsHiddenInCollection(true);
-      card.setInherentModifiersContextObjects([
-        ModifierFrenzy.createContextObject(),
-      ]);
+      card.setInherentModifiersContextObjects([ModifierFrenzy.createContextObject()]);
       card.addKeywordClassToInclude(ModifierToken);
       card.setFXResource(['FX.Cards.Neutral.Icy']);
       card.setBaseSoundResource({
@@ -748,7 +761,9 @@ class CardFactory_FirstWatchSet_Neutral {
       card.name = i18next.t('cards.neutral_dagona_name');
       card.setDescription(i18next.t('cards.neutral_dagona_desc'));
       card.setInherentModifiersContextObjects([
-        ModifierCustomSpawnOnOtherUnit.createContextObject(), ModifierOpeningGambitDagona.createContextObject(), ModifierDyingWishDagona.createContextObject(),
+        ModifierCustomSpawnOnOtherUnit.createContextObject(),
+        ModifierOpeningGambitDagona.createContextObject(),
+        ModifierDyingWishDagona.createContextObject(),
       ]);
       card.setFXResource(['FX.Cards.Neutral.DagonaFish']);
       card.setBoundingBoxWidth(70);
@@ -806,7 +821,10 @@ class CardFactory_FirstWatchSet_Neutral {
       card.maxHP = 3;
       card.manaCost = 4;
       card.rarityId = Rarity.Epic;
-      card.setInherentModifiersContextObjects([ModifierRanged.createContextObject(), ModifierMyAttackWatchGamble.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierRanged.createContextObject(),
+        ModifierMyAttackWatchGamble.createContextObject(),
+      ]);
     }
 
     return card;

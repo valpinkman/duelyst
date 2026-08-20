@@ -26,7 +26,10 @@ class ModifierIntensifyBuffSelf extends ModifierIntensify {
     const totalAttackBuff = this.getIntensifyAmount() * this.attackBuff;
     const totalHealthBuff = this.getIntensifyAmount() * this.healthBuff;
 
-    const statContextObject = Modifier.createContextObjectWithAttributeBuffs(totalAttackBuff, totalHealthBuff);
+    const statContextObject = Modifier.createContextObjectWithAttributeBuffs(
+      totalAttackBuff,
+      totalHealthBuff,
+    );
     statContextObject.appliedName = this.modifierName;
     return this.getGameSession().applyModifierContextObject(statContextObject, this.getCard());
   }

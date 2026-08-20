@@ -22,9 +22,7 @@ module.exports = function (job, done) {
   const _chainState: Record<string, any> = {};
   const token1 = job.data.token1 || null;
   const token2 = job.data.token2 || null;
-  const {
-    gameType,
-  } = job.data;
+  const { gameType } = job.data;
 
   if (!token1) {
     return done(new Error('Token 1 is not defined.'));
@@ -36,7 +34,9 @@ module.exports = function (job, done) {
     return done(new Error('gameType is not defined.'));
   }
 
-  Logger.module('JOB').debug(`[J:${job.id}] setup ${gameType.yellow} game (${token1.name} versus ${token2.name}) starting`);
+  Logger.module('JOB').debug(
+    `[J:${job.id}] setup ${gameType.yellow} game (${token1.name} versus ${token2.name}) starting`,
+  );
 
   return getGameServerAsync()
     .then(function (gameServer) {
@@ -47,16 +47,33 @@ module.exports = function (job, done) {
         job.log('Assigned to %s', gameServer);
       }
       return createGameAsync(gameType, token1, token2, gameServer);
-    }).then(function (gameId) {
-      Logger.module('JOB').debug(`[J:${job.id}] Setup ${gameType.toUpperCase()} Game ID:${gameId} SERVER:${_chainState.gameServer} (${token1.name} versus ${token2.name}) done()`);
+    })
+    .then(function (gameId) {
+      Logger.module('JOB').debug(
+        `[J:${job.id}] Setup ${gameType.toUpperCase()} Game ID:${gameId} SERVER:${_chainState.gameServer} (${token1.name} versus ${token2.name}) done()`,
+      );
       return done(null, { gameId });
     })
-    .catch((error) => // Note we are leaking a 'unsanitized' error message here
-    // write failed message to both players firebases
-      DuelystFirebaseModule.connect().getRootRef()
-        .then((rootRef) => Promise.all([
-          FirebasePromises.set(rootRef.child(`user-matchmaking-errors/${token1.userId}/${token1.id}`), error.message),
-          FirebasePromises.set(rootRef.child(`user-matchmaking-errors/${token2.userId}/${token2.id}`), error.message),
-        ])).finally(() => // Mark job as failed
-          done(error)));
+    .catch((error) =>
+      // Note we are leaking a 'unsanitized' error message here
+      // write failed message to both players firebases
+      DuelystFirebaseModule.connect()
+        .getRootRef()
+        .then((rootRef) =>
+          Promise.all([
+            FirebasePromises.set(
+              rootRef.child(`user-matchmaking-errors/${token1.userId}/${token1.id}`),
+              error.message,
+            ),
+            FirebasePromises.set(
+              rootRef.child(`user-matchmaking-errors/${token2.userId}/${token2.id}`),
+              error.message,
+            ),
+          ]),
+        )
+        .finally(() =>
+          // Mark job as failed
+          done(error),
+        ),
+    );
 };

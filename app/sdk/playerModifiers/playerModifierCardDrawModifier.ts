@@ -12,7 +12,9 @@ class PlayerModifierCardDrawModifier extends PlayerModifier {
   static type = 'PlayerModifierCardDrawModifier';
 
   static createContextObject(cardDrawChange, duration, options) {
-    if (duration == null) { duration = 0; }
+    if (duration == null) {
+      duration = 0;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.cardDrawChange = cardDrawChange;
     contextObject.durationStartTurn = duration;

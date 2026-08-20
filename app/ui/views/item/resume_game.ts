@@ -15,7 +15,6 @@ var NavigationManager = require('app/ui/managers/navigation_manager');
 var Animations = require('app/ui/views/animations');
 
 var ResumeGameItemView = Backbone.Marionette.ItemView.extend({
-
   id: 'app-resume-game',
   className: 'status game-vs',
   template: ResumeGameTmpl,
@@ -47,24 +46,40 @@ var ResumeGameItemView = Backbone.Marionette.ItemView.extend({
 
   onShow: function () {
     // change gradient color mapping
-    Scene.getInstance().getFX().showGradientColorMap(this._requestId, CONFIG.ANIMATE_FAST_DURATION, {
-      r: 194, g: 203, b: 240, a: 255,
-    }, {
-      r: 20, g: 25, b: 60, a: 255,
-    });
+    Scene.getInstance().getFX().showGradientColorMap(
+      this._requestId,
+      CONFIG.ANIMATE_FAST_DURATION,
+      {
+        r: 194,
+        g: 203,
+        b: 240,
+        a: 255,
+      },
+      {
+        r: 20,
+        g: 25,
+        b: 60,
+        a: 255,
+      },
+    );
 
     // start in resume mode
     this.ui.$resumeMode.show();
     this.ui.$continueMode.hide();
 
     // listen for click on continue to swap to continue mode
-    this.ui.$continueButton.one('click', function () {
-      this.ui.$cancelButton.remove();
-      this.ui.$resumeMode.remove();
-      this.ui.$continueMode.show();
-      audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
-      this.trigger('continue');
-    }.bind(this));
+    this.ui.$continueButton.one(
+      'click',
+      function () {
+        this.ui.$cancelButton.remove();
+        this.ui.$resumeMode.remove();
+        this.ui.$continueMode.show();
+        audio_engine
+          .current()
+          .play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
+        this.trigger('continue');
+      }.bind(this),
+    );
 
     // animate activation
     Animations.cssClassAnimation.call(this, 'active');
@@ -109,11 +124,19 @@ var ResumeGameItemView = Backbone.Marionette.ItemView.extend({
       // show player general animations
       if (this._displayedPlayer1SpriteData !== player1SpriteData) {
         this._displayedPlayer1SpriteData = player1SpriteData;
-        this._player1GLData = UtilsUI.showCocosSprite(this.ui.player1General, this._player1GLData, player1SpriteData);
+        this._player1GLData = UtilsUI.showCocosSprite(
+          this.ui.player1General,
+          this._player1GLData,
+          player1SpriteData,
+        );
       }
       if (this._displayedPlayer2SpriteData !== player2SpriteData) {
         this._displayedPlayer2SpriteData = player2SpriteData;
-        this._player2GLData = UtilsUI.showCocosSprite(this.ui.player2General, this._player2GLData, player2SpriteData);
+        this._player2GLData = UtilsUI.showCocosSprite(
+          this.ui.player2General,
+          this._player2GLData,
+          player2SpriteData,
+        );
       }
     } else {
       // remove player general visuals
@@ -128,14 +151,15 @@ var ResumeGameItemView = Backbone.Marionette.ItemView.extend({
 
   onPrepareForDestroy: function () {
     // reset gradient color mapping
-    Scene.getInstance().getFX().clearGradientColorMap(this._requestId, CONFIG.ANIMATE_MEDIUM_DURATION);
+    Scene.getInstance()
+      .getFX()
+      .clearGradientColorMap(this._requestId, CONFIG.ANIMATE_MEDIUM_DURATION);
   },
 
   onDestroy: function () {
     UtilsUI.releaseCocosSprite(this._player1GLData);
     UtilsUI.releaseCocosSprite(this._player2GLData);
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

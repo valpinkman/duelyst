@@ -18,12 +18,14 @@ class SpellIntensifyTeleportOwnSide extends SpellIntensify {
 
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
       const general = this.getGameSession().getGeneralForPlayerId(this.getOwnerId());
-      const enemies = this.getGameSession().getBoard().getEnemyEntitiesForEntity(general, CardType.Unit, false, false);
+      const enemies = this.getGameSession()
+        .getBoard()
+        .getEnemyEntitiesForEntity(general, CardType.Unit, false, false);
 
       if (enemies != null) {
         const potentialTargets = [];
         for (var enemy of Array.from<any>(enemies)) {
-          if ((enemy != null) && !enemy.getIsGeneral() && !this.isOnMySideOfBattlefield(enemy)) {
+          if (enemy != null && !enemy.getIsGeneral() && !this.isOnMySideOfBattlefield(enemy)) {
             potentialTargets.push(enemy);
           }
         }
@@ -31,8 +33,17 @@ class SpellIntensifyTeleportOwnSide extends SpellIntensify {
         if (potentialTargets.length > 0) {
           const enemiesToTeleport = [];
           const numberToTeleport = Math.min(this.getIntensifyAmount(), potentialTargets.length);
-          for (let i = 0, end = numberToTeleport, asc = end >= 0; asc ? i < end : i > end; asc ? i++ : i--) {
-            enemiesToTeleport.push(potentialTargets.splice(this.getGameSession().getRandomIntegerForExecution(potentialTargets.length), 1)[0]);
+          for (
+            let i = 0, end = numberToTeleport, asc = end >= 0;
+            asc ? i < end : i > end;
+            asc ? i++ : i--
+          ) {
+            enemiesToTeleport.push(
+              potentialTargets.splice(
+                this.getGameSession().getRandomIntegerForExecution(potentialTargets.length),
+                1,
+              )[0],
+            );
           }
 
           return (() => {
@@ -44,7 +55,10 @@ class SpellIntensifyTeleportOwnSide extends SpellIntensify {
               if (this.isOwnedByPlayer1()) {
                 randomTeleportAction.setPatternSourcePosition({ x: 0, y: 0 });
               } else {
-                randomTeleportAction.setPatternSourcePosition({ x: Math.ceil(CONFIG.BOARDCOL * 0.5), y: 0 });
+                randomTeleportAction.setPatternSourcePosition({
+                  x: Math.ceil(CONFIG.BOARDCOL * 0.5),
+                  y: 0,
+                });
               }
               randomTeleportAction.setTeleportPattern(CONFIG.PATTERN_HALF_BOARD);
               result.push(this.getGameSession().executeAction(randomTeleportAction));
@@ -60,12 +74,12 @@ class SpellIntensifyTeleportOwnSide extends SpellIntensify {
     let mySideStartX = 0;
     let mySideEndX = CONFIG.BOARDCOL;
     if (this.isOwnedByPlayer1()) {
-      mySideEndX = Math.floor(((mySideEndX - mySideStartX) * 0.5) - 1);
+      mySideEndX = Math.floor((mySideEndX - mySideStartX) * 0.5 - 1);
     } else {
-      mySideStartX = Math.floor(((mySideEndX - mySideStartX) * 0.5) + 1);
+      mySideStartX = Math.floor((mySideEndX - mySideStartX) * 0.5 + 1);
     }
 
-    if ((unit.getPosition().x >= mySideStartX) && (unit.getPosition().x <= mySideEndX)) {
+    if (unit.getPosition().x >= mySideStartX && unit.getPosition().x <= mySideEndX) {
       return true;
     }
     return false;

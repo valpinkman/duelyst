@@ -25,8 +25,13 @@ class SpellSilenceAndSpawnEntityNearby extends SpellSpawnEntityRandomlyAroundTar
       const result = [];
       for (var position of Array.from<any>(applyEffectPositions)) {
         var unit = board.getUnitAtPosition(position);
-        if ((unit != null) && (unit.getOwnerId() !== this.getOwnerId())) {
-          result.push(this.getGameSession().applyModifierContextObject(ModifierSilence.createContextObject(), unit));
+        if (unit != null && unit.getOwnerId() !== this.getOwnerId()) {
+          result.push(
+            this.getGameSession().applyModifierContextObject(
+              ModifierSilence.createContextObject(),
+              unit,
+            ),
+          );
         } else {
           result.push(undefined);
         }

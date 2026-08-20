@@ -37,14 +37,23 @@ class ModifierBackstab extends Modifier {
   }
 
   static createContextObject(backstabBonus, options) {
-    if (backstabBonus == null) { backstabBonus = 0; }
+    if (backstabBonus == null) {
+      backstabBonus = 0;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.backstabBonus = backstabBonus;
     return contextObject;
   }
 
   getIsActionRelevant(a) {
-    return a instanceof AttackAction && (a.getSource() === this.getCard()) && (this.getGameSession().getBoard().getIsPositionBehindEntity(a.getTarget(), this.getCard().getPosition(), 1, 0) || __guard__(a.getTarget(), (x) => x.hasActiveModifierClass(ModifierAlwaysBackstabbed)));
+    return (
+      a instanceof AttackAction &&
+      a.getSource() === this.getCard() &&
+      (this.getGameSession()
+        .getBoard()
+        .getIsPositionBehindEntity(a.getTarget(), this.getCard().getPosition(), 1, 0) ||
+        __guard__(a.getTarget(), (x) => x.hasActiveModifierClass(ModifierAlwaysBackstabbed)))
+    );
   }
 
   _modifyAction(a) {
@@ -84,5 +93,5 @@ ModifierBackstab.prototype.fxResource = ['FX.Modifiers.ModifierBackstab'];
 module.exports = ModifierBackstab;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

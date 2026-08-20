@@ -19,7 +19,6 @@ SdkNode
  *************************************************************************** */
 
 const SdkNode = cc.Node.extend({
-
   _animationActions: null,
   _cardResourceRequestId: null,
   _fxSprites: null,
@@ -46,7 +45,7 @@ const SdkNode = cc.Node.extend({
     this._super();
 
     // apply options
-    const nodeOptions = sdkCard && sdkCard.getNodeOptions() || {};
+    const nodeOptions = (sdkCard && sdkCard.getNodeOptions()) || {};
     if (_.isObject(nodeOptions)) {
       this.setOptions(nodeOptions);
     }
@@ -170,7 +169,9 @@ const SdkNode = cc.Node.extend({
   },
 
   getBoardPosition() {
-    return this.sdkCard != null ? this.sdkCard.getPosition() : cc.p(CONFIG.BOARDCENTER.x, CONFIG.BOARDCENTER.y);
+    return this.sdkCard != null
+      ? this.sdkCard.getPosition()
+      : cc.p(CONFIG.BOARDCENTER.x, CONFIG.BOARDCENTER.y);
   },
 
   getFXSprites() {
@@ -445,7 +446,10 @@ const SdkNode = cc.Node.extend({
       this.onChangeAnimationResource();
 
       // release previous
-      if (resource_prev != null && (this.sdkCard == null || resource_prev !== this.sdkCard.getBaseAnimResource())) {
+      if (
+        resource_prev != null &&
+        (this.sdkCard == null || resource_prev !== this.sdkCard.getBaseAnimResource())
+      ) {
         this._releaseResourceMap(resource_prev);
       }
     }
@@ -504,7 +508,10 @@ const SdkNode = cc.Node.extend({
       this.onChangeSoundResource();
 
       // release previous
-      if (resource_prev != null && (this.sdkCard == null || resource_prev !== this.sdkCard.getBaseSoundResource())) {
+      if (
+        resource_prev != null &&
+        (this.sdkCard == null || resource_prev !== this.sdkCard.getBaseSoundResource())
+      ) {
         this._releaseResourceMap(resource_prev);
       }
     }
@@ -549,7 +556,10 @@ const SdkNode = cc.Node.extend({
         for (let i = 0, il = keys.length; i < il; i++) {
           const key = keys[i];
           const resource = resource_map[key];
-          PackageManager.getInstance().removeStrongReferenceToResourcePath(resource, resource_map_id);
+          PackageManager.getInstance().removeStrongReferenceToResourcePath(
+            resource,
+            resource_map_id,
+          );
         }
       }
     }
@@ -679,11 +689,20 @@ const SdkNode = cc.Node.extend({
         this.whenResourcesReady(this.getCardResourceRequestId()),
       ]).then(([modifierLoadId, cardResourceRequestId]) => {
         // ensure that modifier load and resources are valid
-        if (!this.getAreModifierResourcesValid(modifierLoadId) || !this.getAreResourcesValid(cardResourceRequestId)) return;
+        if (
+          !this.getAreModifierResourcesValid(modifierLoadId) ||
+          !this.getAreResourcesValid(cardResourceRequestId)
+        )
+          return;
 
         // show one time applied fx for modifier
         if (!suppressChanges) {
-          this.showFX(DATA.dataForIdentifiersWithFilter(modifier.getFXResource(), SDK.FXType.ModifierAppliedFX));
+          this.showFX(
+            DATA.dataForIdentifiersWithFilter(
+              modifier.getFXResource(),
+              SDK.FXType.ModifierAppliedFX,
+            ),
+          );
         }
       });
     }
@@ -706,11 +725,16 @@ const SdkNode = cc.Node.extend({
       const sdkCard = this.getSdkCard();
 
       // show changes
-      if (!suppressChanges && this.canShowModifier(modifier, action)
+      if (
+        !suppressChanges &&
+        this.canShowModifier(modifier, action) &&
         // don't show changes if for removal
-        && (action == null || action.getMatchingAncestorAction(SDK.RemoveAction, null, sdkCard) == null)
+        (action == null ||
+          action.getMatchingAncestorAction(SDK.RemoveAction, null, sdkCard) == null) &&
         // don't show changes if for apply to board
-        && (action == null || action.getMatchingAncestorAction(SDK.ApplyCardToBoardAction, null, sdkCard) == null)) {
+        (action == null ||
+          action.getMatchingAncestorAction(SDK.ApplyCardToBoardAction, null, sdkCard) == null)
+      ) {
         showDuration += this.showModifierChanges(modifier, action);
       }
 
@@ -720,7 +744,11 @@ const SdkNode = cc.Node.extend({
         this.whenResourcesReady(this.getCardResourceRequestId()),
       ]).then(([modifierLoadId, cardResourceRequestId]) => {
         // ensure that modifier load and resources are valid
-        if (!this.getAreModifierResourcesValid(modifierLoadId) || !this.getAreResourcesValid(cardResourceRequestId)) return;
+        if (
+          !this.getAreModifierResourcesValid(modifierLoadId) ||
+          !this.getAreResourcesValid(cardResourceRequestId)
+        )
+          return;
 
         // update resources
         if (modifier.getAnimResource() != null) {
@@ -739,8 +767,15 @@ const SdkNode = cc.Node.extend({
         // show continuous fx for modifier
         const stackType = modifier.getStackType();
         if (!this.getChildByTag(stackType)) {
-          var continuousFXSprites = this.showContinuousFX(DATA.dataForIdentifiersWithFilter(modifier.getFXResource(), SDK.FXType.ModifierFX), stackType);
-          if (continuousFXSprites && _.isNumber(continuousFXFadeDuration) && continuousFXFadeDuration > 0.0) {
+          var continuousFXSprites = this.showContinuousFX(
+            DATA.dataForIdentifiersWithFilter(modifier.getFXResource(), SDK.FXType.ModifierFX),
+            stackType,
+          );
+          if (
+            continuousFXSprites &&
+            _.isNumber(continuousFXFadeDuration) &&
+            continuousFXFadeDuration > 0.0
+          ) {
             for (var i = 0, il = continuousFXSprites.length; i < il; i++) {
               var fxSprite = continuousFXSprites[i];
               var opacity = fxSprite.getOpacity();
@@ -755,8 +790,15 @@ const SdkNode = cc.Node.extend({
           const artifactStackType = modifier.getArtifactStackType();
 
           if (!this.getChildByTag(artifactStackType)) {
-            var continuousFXSprites = this.showContinuousFX(DATA.dataForIdentifiersWithFilter(modifier.getFXResource(), SDK.FXType.ArtifactFX), artifactStackType);
-            if (continuousFXSprites && _.isNumber(continuousFXFadeDuration) && continuousFXFadeDuration > 0.0) {
+            var continuousFXSprites = this.showContinuousFX(
+              DATA.dataForIdentifiersWithFilter(modifier.getFXResource(), SDK.FXType.ArtifactFX),
+              artifactStackType,
+            );
+            if (
+              continuousFXSprites &&
+              _.isNumber(continuousFXFadeDuration) &&
+              continuousFXFadeDuration > 0.0
+            ) {
               for (var i = 0, il = continuousFXSprites.length; i < il; i++) {
                 var fxSprite = continuousFXSprites[i];
                 var opacity = fxSprite.getOpacity();
@@ -798,7 +840,9 @@ const SdkNode = cc.Node.extend({
     let showDuration = 0.0;
 
     if (modifier != null) {
-      const notShowingForRemoval = action == null || action.getMatchingAncestorAction(SDK.RemoveAction, null, this.getSdkCard()) == null;
+      const notShowingForRemoval =
+        action == null ||
+        action.getMatchingAncestorAction(SDK.RemoveAction, null, this.getSdkCard()) == null;
 
       // show changes as long as not for removal
       if (notShowingForRemoval && this.canShowModifier(modifier, action)) {
@@ -863,7 +907,11 @@ const SdkNode = cc.Node.extend({
     if (modifier != null) {
       const modifierLoadId = this.getModifierLoadId(modifier);
       const modifierLoadData = this._modifierLoadDataByLoadId[modifierLoadId];
-      if (modifierLoadData == null || !modifierLoadData.valid || !modifierLoadData.promise.isFulfilled()) {
+      if (
+        modifierLoadData == null ||
+        !modifierLoadData.valid ||
+        !modifierLoadData.promise.isFulfilled()
+      ) {
         // invalidate modifier load immediately if removing before load completes
         this.invalidateAndUnloadModifierResources(modifierLoadId);
       } else {
@@ -873,14 +921,27 @@ const SdkNode = cc.Node.extend({
           this.whenResourcesReady(this.getCardResourceRequestId()),
         ]).then(([modifierLoadId, cardResourceRequestId]) => {
           // ensure that modifier load and resources are valid
-          if (!this.getAreModifierResourcesValid(modifierLoadId) || !this.getAreResourcesValid(cardResourceRequestId)) return;
+          if (
+            !this.getAreModifierResourcesValid(modifierLoadId) ||
+            !this.getAreResourcesValid(cardResourceRequestId)
+          )
+            return;
 
           // show one time removed fx for modifier
-          this.showFX(DATA.dataForIdentifiersWithFilter(modifier.getFXResource(), SDK.FXType.ModifierRemovedFX));
+          this.showFX(
+            DATA.dataForIdentifiersWithFilter(
+              modifier.getFXResource(),
+              SDK.FXType.ModifierRemovedFX,
+            ),
+          );
 
           // only invalidate and unload resources if we can still change state and this is not a result of a removal action
           // otherwise, this entity is in the process of removing itself and will clean up afterwards
-          if (this.canShowModifier(modifier, action) && (action == null || action.getMatchingAncestorAction(SDK.RemoveAction, null, this.getSdkCard()) == null)) {
+          if (
+            this.canShowModifier(modifier, action) &&
+            (action == null ||
+              action.getMatchingAncestorAction(SDK.RemoveAction, null, this.getSdkCard()) == null)
+          ) {
             // unload modifier resources
             this.invalidateAndUnloadModifierResources(modifierLoadId);
           }
@@ -900,8 +961,14 @@ const SdkNode = cc.Node.extend({
         // only show modifier attribute buffs if the modifier is not being removed due to entity removal from board
         let validChangeToShow = action == null;
         if (!validChangeToShow) {
-          const ancestorRemoveAction = action.getMatchingResolveAncestorAction(SDK.RemoveAction, null, this.sdkCard);
-          validChangeToShow = (!(action instanceof SDK.RemoveAction) || action.getTarget() !== this.sdkCard) && !ancestorRemoveAction;
+          const ancestorRemoveAction = action.getMatchingResolveAncestorAction(
+            SDK.RemoveAction,
+            null,
+            this.sdkCard,
+          );
+          validChangeToShow =
+            (!(action instanceof SDK.RemoveAction) || action.getTarget() !== this.sdkCard) &&
+            !ancestorRemoveAction;
         }
         if (validChangeToShow) {
           const { sdkCard } = this;
@@ -931,7 +998,10 @@ const SdkNode = cc.Node.extend({
           if (canShowChange('atk')) {
             atkValue = parseInt(attributeBuffs.atk);
             // add +/- when buff is not absolute
-            if (!modifier.getRebasesAttribute('atk') && !modifier.getBuffsAttributeAbsolutely('atk')) {
+            if (
+              !modifier.getRebasesAttribute('atk') &&
+              !modifier.getBuffsAttributeAbsolutely('atk')
+            ) {
               if (forRemove) {
                 // when removing, reverse +/-
                 atkValue = (atkValue > 0 ? '-' : '+') + Math.abs(atkValue);
@@ -945,7 +1015,10 @@ const SdkNode = cc.Node.extend({
           if (canShowChange('maxHP')) {
             hpValue = parseInt(attributeBuffs.maxHP);
             // add +/- when buff is not absolute
-            if (!modifier.getRebasesAttribute('maxHP') && !modifier.getBuffsAttributeAbsolutely('maxHP')) {
+            if (
+              !modifier.getRebasesAttribute('maxHP') &&
+              !modifier.getBuffsAttributeAbsolutely('maxHP')
+            ) {
               if (forRemove) {
                 // when removing, reverse +/-
                 hpValue = (hpValue > 0 ? '-' : '+') + Math.abs(hpValue);
@@ -956,7 +1029,11 @@ const SdkNode = cc.Node.extend({
           }
 
           // show changes
-          showDuration += this.showStatChanges(atkValue, hpValue, StatsChangeNode.HP_CHANGE_TYPE_MODIFIER);
+          showDuration += this.showStatChanges(
+            atkValue,
+            hpValue,
+            StatsChangeNode.HP_CHANGE_TYPE_MODIFIER,
+          );
         }
       }
     }
@@ -987,7 +1064,6 @@ const SdkNode = cc.Node.extend({
   },
 
   /* endregion INSTRUCTION */
-
 });
 
 SdkNode.create = function (sdkCard, node) {

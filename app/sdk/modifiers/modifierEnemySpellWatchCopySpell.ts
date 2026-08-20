@@ -18,7 +18,11 @@ class ModifierEnemySpellWatchCopySpell extends ModifierEnemySpellWatch {
   onEnemySpellWatch(action) {
     const spell = action.getTarget();
     if (spell != null) {
-      const putCardInHandAction = new PutCardInHandAction(this.getGameSession(), this.getCard().getOwnerId(), spell.createNewCardData());
+      const putCardInHandAction = new PutCardInHandAction(
+        this.getGameSession(),
+        this.getCard().getOwnerId(),
+        spell.createNewCardData(),
+      );
       return this.getGameSession().executeAction(putCardInHandAction);
     }
   }

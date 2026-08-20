@@ -18,7 +18,7 @@ class CloneEntityAction extends PlayCardSilentlyAction {
   }
 
   getCard() {
-    if ((this._private.cachedCard == null)) {
+    if (this._private.cachedCard == null) {
       if (this.getGameSession().getIsRunningAsAuthoritative()) {
         // get source entity and create clone card data from it
         // this way when card is created it'll be an exact copy of the source

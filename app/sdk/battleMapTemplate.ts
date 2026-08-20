@@ -28,7 +28,9 @@ class BattleMapTemplate extends SDKObject {
     // define public properties here that must be always be serialized
     // do not define properties here that should only serialize if different from the default
     // if no templateIndex provided, choose a map at random
-    if (templateIndex == null) { templateIndex = _.sample(CONFIG.BATTLEMAP_DEFAULT_INDICES); }
+    if (templateIndex == null) {
+      templateIndex = _.sample(CONFIG.BATTLEMAP_DEFAULT_INDICES);
+    }
     // get a random battlemap template from the list of available maps
     this.mapTemplate = CONFIG.BATTLEMAP_TEMPLATES[templateIndex];
 
@@ -45,15 +47,24 @@ class BattleMapTemplate extends SDKObject {
   }
 
   getMap() {
-    if (this.mapTemplate != null) { return this.mapTemplate.map; } return BattleMapTemplate.prototype.mapTemplate.map;
+    if (this.mapTemplate != null) {
+      return this.mapTemplate.map;
+    }
+    return BattleMapTemplate.prototype.mapTemplate.map;
   }
 
   getClouds() {
-    if (this.mapTemplate != null) { return this.mapTemplate.clouds; } return BattleMapTemplate.prototype.mapTemplate.clouds;
+    if (this.mapTemplate != null) {
+      return this.mapTemplate.clouds;
+    }
+    return BattleMapTemplate.prototype.mapTemplate.clouds;
   }
 
   getBlueDustColor() {
-    if (this.mapTemplate != null) { return this.mapTemplate.blueDustColor; } return BattleMapTemplate.prototype.mapTemplate.blueDustColor;
+    if (this.mapTemplate != null) {
+      return this.mapTemplate.blueDustColor;
+    }
+    return BattleMapTemplate.prototype.mapTemplate.blueDustColor;
   }
 
   getHasWeather() {
@@ -90,16 +101,27 @@ class BattleMapTemplate extends SDKObject {
 
     // setup map
     const mapTemplate = this.getMapTemplate();
-    const weatherChance = (mapTemplate.weatherChance != null) ? mapTemplate.weatherChance : BattleMapTemplate.prototype.mapTemplate.weatherChance;
-    let rainChance = mapTemplate.rainChance ? mapTemplate.rainChance : BattleMapTemplate.prototype.mapTemplate.rainChance;
-    let snowChance = mapTemplate.snowChance ? mapTemplate.snowChance : BattleMapTemplate.prototype.mapTemplate.snowChance;
-    const blueDustChance = mapTemplate.blueDustChance ? mapTemplate.blueDustChance : BattleMapTemplate.prototype.mapTemplate.blueDustChance;
-    const sunRaysChance = mapTemplate.sunRaysChance ? mapTemplate.sunRaysChance : BattleMapTemplate.prototype.mapTemplate.sunRaysChance;
+    const weatherChance =
+      mapTemplate.weatherChance != null
+        ? mapTemplate.weatherChance
+        : BattleMapTemplate.prototype.mapTemplate.weatherChance;
+    let rainChance = mapTemplate.rainChance
+      ? mapTemplate.rainChance
+      : BattleMapTemplate.prototype.mapTemplate.rainChance;
+    let snowChance = mapTemplate.snowChance
+      ? mapTemplate.snowChance
+      : BattleMapTemplate.prototype.mapTemplate.snowChance;
+    const blueDustChance = mapTemplate.blueDustChance
+      ? mapTemplate.blueDustChance
+      : BattleMapTemplate.prototype.mapTemplate.blueDustChance;
+    const sunRaysChance = mapTemplate.sunRaysChance
+      ? mapTemplate.sunRaysChance
+      : BattleMapTemplate.prototype.mapTemplate.sunRaysChance;
 
     // check the weather
     this.hasWeather = Math.random() <= weatherChance;
     if (this.hasWeather) {
-      let totalChances = ((snowChance * snowChance) + (rainChance * rainChance));
+      let totalChances = snowChance * snowChance + rainChance * rainChance;
       if (totalChances !== 0.0) {
         // all individual weather chances will be normalized to add up to 100%
         // ex: if we can have rain, snow, and storm, but rain and storm have 0% chance, snow will be 100%
@@ -109,14 +131,15 @@ class BattleMapTemplate extends SDKObject {
 
         const weatherTypeChance = Math.random();
         if (weatherTypeChance <= snowChance) {
-          return this.hasSnow = true;
-        } if (weatherTypeChance <= (snowChance + rainChance)) {
-          return this.hasRain = true;
+          return (this.hasSnow = true);
+        }
+        if (weatherTypeChance <= snowChance + rainChance) {
+          return (this.hasRain = true);
         }
       }
     } else {
       this.hasBlueDust = Math.random() <= blueDustChance;
-      return this.hasSunRays = Math.random() <= sunRaysChance;
+      return (this.hasSunRays = Math.random() <= sunRaysChance);
     }
   }
 

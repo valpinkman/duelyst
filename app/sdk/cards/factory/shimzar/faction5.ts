@@ -91,7 +91,10 @@ class CardFactory_ShimzarSet_Faction5 {
       card.maxHP = 4;
       card.manaCost = 2;
       card.rarityId = Rarity.Rare;
-      card.setInherentModifiersContextObjects([ModifierBattlePet.createContextObject(), ModifierGrow.createContextObject(1)]);
+      card.setInherentModifiersContextObjects([
+        ModifierBattlePet.createContextObject(),
+        ModifierGrow.createContextObject(1),
+      ]);
     }
 
     if (identifier === Cards.Faction5.Rex) {
@@ -124,7 +127,10 @@ class CardFactory_ShimzarSet_Faction5 {
       card.maxHP = 1;
       card.manaCost = 1;
       card.rarityId = Rarity.Common;
-      card.setInherentModifiersContextObjects([ModifierBattlePet.createContextObject(), ModifierRebirth.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierBattlePet.createContextObject(),
+        ModifierRebirth.createContextObject(),
+      ]);
     }
 
     if (identifier === Cards.Faction5.Kin) {
@@ -228,7 +234,16 @@ class CardFactory_ShimzarSet_Faction5 {
       card.maxHP = 2;
       card.manaCost = 3;
       card.rarityId = Rarity.Epic;
-      card.setInherentModifiersContextObjects([ModifierGrow.createContextObject(1), Modifier.createContextObjectWithAuraForAllAlliesAndSelf([ModifierGrowOnBothTurns.createContextObject()], null, null, null, 'Friendly minions grow at the start of BOTH player\'s turns')]);
+      card.setInherentModifiersContextObjects([
+        ModifierGrow.createContextObject(1),
+        Modifier.createContextObjectWithAuraForAllAlliesAndSelf(
+          [ModifierGrowOnBothTurns.createContextObject()],
+          null,
+          null,
+          null,
+          "Friendly minions grow at the start of BOTH player's turns",
+        ),
+      ]);
     }
 
     if (identifier === Cards.Faction5.Dreadnaught) {
@@ -262,7 +277,15 @@ class CardFactory_ShimzarSet_Faction5 {
       card.rarityId = Rarity.Legendary;
       buffContextObject = Modifier.createContextObjectWithAttributeBuffs(2, 2);
       buffContextObject.appliedName = i18next.t('modifiers.faction_5_dreadnought_buff_name');
-      card.setInherentModifiersContextObjects([ModifierRebirth.createContextObject(), ModifierSummonWatchDreadnaught.createContextObject([buffContextObject], [Cards.Faction5.Egg], 'Egg minions', 'gain +2/+2')]);
+      card.setInherentModifiersContextObjects([
+        ModifierRebirth.createContextObject(),
+        ModifierSummonWatchDreadnaught.createContextObject(
+          [buffContextObject],
+          [Cards.Faction5.Egg],
+          'Egg minions',
+          'gain +2/+2',
+        ),
+      ]);
     }
 
     if (identifier === Cards.Faction5.Mandrake) {
@@ -296,8 +319,12 @@ class CardFactory_ShimzarSet_Faction5 {
       card.rarityId = Rarity.Rare;
       buffContextObject = ModifierManaCostChange.createContextObject(-1);
       buffContextObject.appliedName = i18next.t('modifiers.faction_5_mandrake_buff_name');
-      const inherentModifier = ModifierAnySummonWatchFromActionBarApplyModifiersToSelf.createContextObject([buffContextObject], 'Costs 1 less');
-      inherentModifier.activeInHand = (inherentModifier.activeInDeck = true);
+      const inherentModifier =
+        ModifierAnySummonWatchFromActionBarApplyModifiersToSelf.createContextObject(
+          [buffContextObject],
+          'Costs 1 less',
+        );
+      inherentModifier.activeInHand = inherentModifier.activeInDeck = true;
       inherentModifier.activeOnBoard = false;
       card.setInherentModifiersContextObjects([inherentModifier]);
     }
@@ -331,7 +358,9 @@ class CardFactory_ShimzarSet_Faction5 {
       card.maxHP = 6;
       card.manaCost = 5;
       card.rarityId = Rarity.Epic;
-      card.setInherentModifiersContextObjects([ModifierAnyDrawCardWatchBuffSelf.createContextObject(1, 1)]);
+      card.setInherentModifiersContextObjects([
+        ModifierAnyDrawCardWatchBuffSelf.createContextObject(1, 1),
+      ]);
     }
 
     if (identifier === Cards.Spell.RazorSkin) {
@@ -346,9 +375,7 @@ class CardFactory_ShimzarSet_Faction5 {
       card.rarityId = Rarity.Common;
       buffContextObject = Modifier.createContextObjectWithAttributeBuffs(1, 0);
       buffContextObject.appliedName = i18next.t('cards.faction_5_spell_razor_skin_name');
-      card.setTargetModifiersContextObjects([
-        buffContextObject,
-      ]);
+      card.setTargetModifiersContextObjects([buffContextObject]);
       card.radius = CONFIG.WHOLE_BOARD_RADIUS;
       card.addKeywordClassToInclude(ModifierTokenCreator);
       card.setFXResource(['FX.Cards.Spell.RazorSkin']);
@@ -414,13 +441,13 @@ class CardFactory_ShimzarSet_Faction5 {
       card.spellFilterType = SpellFilterType.NeutralDirect;
       const atkBuff = Modifier.createContextObjectWithAttributeBuffs(5, 0);
       atkBuff.appliedName = i18next.t('modifiers.faction_5_spell_thumping_wave_1');
-      const removeAndReplaceContextObject = ModifierRemoveAndReplaceEntity.createContextObject({ id: Cards.Faction5.Kin });
+      const removeAndReplaceContextObject = ModifierRemoveAndReplaceEntity.createContextObject({
+        id: Cards.Faction5.Kin,
+      });
       removeAndReplaceContextObject.isHiddenToUI = true;
       removeAndReplaceContextObject.durationEndTurn = 1;
       removeAndReplaceContextObject.isRemovable = false;
-      card.setTargetModifiersContextObjects([
-        atkBuff, removeAndReplaceContextObject,
-      ]);
+      card.setTargetModifiersContextObjects([atkBuff, removeAndReplaceContextObject]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
       card.setFXResource(['FX.Cards.Spell.ThumpingWave']);
       card.setBaseSoundResource({

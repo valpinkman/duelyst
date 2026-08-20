@@ -53,7 +53,7 @@ class WartechGeneralFaction1Achievement extends Achievement {
   }
 
   static rewardUnlockMessage(progressMade) {
-    if ((progressMade == null)) {
+    if (progressMade == null) {
       progressMade = 0;
     }
 
@@ -62,12 +62,16 @@ class WartechGeneralFaction1Achievement extends Achievement {
     return `Win ${progressNeeded} more online matches with Lyonar to unlock.`;
   }
 }
-WartechGeneralFaction1Achievement.title = i18next.t('achievements.wartech_general_achievement_title', { faction_name: i18next.t('factions.faction_1_abbreviated_name') });
-WartechGeneralFaction1Achievement.description = i18next.t('achievements.wartech_general_achievement_desc', { faction_name: i18next.t('factions.faction_1_abbreviated_name') });
+WartechGeneralFaction1Achievement.title = i18next.t(
+  'achievements.wartech_general_achievement_title',
+  { faction_name: i18next.t('factions.faction_1_abbreviated_name') },
+);
+WartechGeneralFaction1Achievement.description = i18next.t(
+  'achievements.wartech_general_achievement_desc',
+  { faction_name: i18next.t('factions.faction_1_abbreviated_name') },
+);
 WartechGeneralFaction1Achievement.rewards = {
-  cards: [
-    Cards.Faction1.ThirdGeneral,
-  ],
+  cards: [Cards.Faction1.ThirdGeneral],
 };
 
 module.exports = WartechGeneralFaction1Achievement;

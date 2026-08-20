@@ -24,8 +24,14 @@ class ModifierFateVetruvianMovementQuest extends ModifierFate {
   static type = 'ModifierFateVetruvianMovementQuest';
 
   onActivate() {
-    const general = this.getCard().getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
-    if (((general != null) && general.hasActiveModifierClass(PlayerModifierEmblemSituationalVetQuestFrenzy)) || this.questRequirementMet()) {
+    const general = this.getCard()
+      .getGameSession()
+      .getGeneralForPlayerId(this.getCard().getOwnerId());
+    if (
+      (general != null &&
+        general.hasActiveModifierClass(PlayerModifierEmblemSituationalVetQuestFrenzy)) ||
+      this.questRequirementMet()
+    ) {
       this._private.fateFulfilled = true;
       this.unlockFateCard();
       if (!general.hasActiveModifierClass(ModifierQuestStatusVetruvian)) {
@@ -46,7 +52,9 @@ class ModifierFateVetruvianMovementQuest extends ModifierFate {
   }
 
   questRequirementMet(action) {
-    const general = this.getCard().getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
+    const general = this.getCard()
+      .getGameSession()
+      .getGeneralForPlayerId(this.getCard().getOwnerId());
     let columnToReach = 0;
     if (this.getCard().isOwnedByPlayer1()) {
       columnToReach = 8;
@@ -63,7 +71,13 @@ class ModifierFateVetruvianMovementQuest extends ModifierFate {
   }
 
   getIsActionRelevant(action) {
-    if (action instanceof ApplyCardToBoardAction || action instanceof MoveAction || action instanceof TeleportAction || action instanceof SwapGeneralAction || action instanceof SwapUnitsAction) {
+    if (
+      action instanceof ApplyCardToBoardAction ||
+      action instanceof MoveAction ||
+      action instanceof TeleportAction ||
+      action instanceof SwapGeneralAction ||
+      action instanceof SwapUnitsAction
+    ) {
       return true;
     }
     return false;
@@ -73,7 +87,8 @@ class ModifierFateVetruvianMovementQuest extends ModifierFate {
     const general = this.getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
     if (general.hasActiveModifierClass(ModifierQuestStatusVetruvian)) {
       return Array.from<any>(general.getModifiersByClass(ModifierQuestStatusVetruvian)).map((mod) =>
-        this.getGameSession().removeModifier(mod));
+        this.getGameSession().removeModifier(mod),
+      );
     }
   }
 

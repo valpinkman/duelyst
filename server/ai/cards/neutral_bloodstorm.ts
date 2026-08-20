@@ -1,7 +1,5 @@
 const Cards = require('app/sdk/cards/cardsLookupComplete');
 
-const NB = [
-  Cards.Neutral.Meltdown,
-];
+const NB = [Cards.Neutral.Meltdown];
 
 module.exports = NB;

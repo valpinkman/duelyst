@@ -16,7 +16,13 @@ class SpellApplyModifiersSummonTile extends SpellApplyModifiers {
 
     // always spawn a tile at position
     if (board.isOnBoard(applyEffectPosition)) {
-      const action = new PlayCardAction(this.getGameSession(), this.getOwnerId(), x, y, this.cardDataOrIndexToSpawn);
+      const action = new PlayCardAction(
+        this.getGameSession(),
+        this.getOwnerId(),
+        x,
+        y,
+        this.cardDataOrIndexToSpawn,
+      );
       action.setOwnerId(this.getOwnerId());
       return this.getGameSession().executeAction(action);
     }

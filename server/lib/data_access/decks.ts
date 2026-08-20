@@ -43,7 +43,17 @@ class DecksModule {
    * @param  {Number}      cardBackId    card back id
    * @return  {Promise}
    */
-  static addDeck(userId, factionId, name, cards, spellCount, minionCount, artifactCount, colorCode, cardBackId) {
+  static addDeck(
+    userId,
+    factionId,
+    name,
+    cards,
+    spellCount,
+    minionCount,
+    artifactCount,
+    colorCode,
+    cardBackId,
+  ) {
     let isAllowedToUseCardBackPromise;
     const MOMENT_NOW_UTC = moment().utc();
 
@@ -62,13 +72,19 @@ class DecksModule {
     };
 
     if (cardBackId != null) {
-      isAllowedToUseCardBackPromise = InventoryModule.isAllowedToUseCosmetic(Promise.resolve(), knex, userId, cardBackId);
+      isAllowedToUseCardBackPromise = InventoryModule.isAllowedToUseCosmetic(
+        Promise.resolve(),
+        knex,
+        userId,
+        cardBackId,
+      );
     } else {
       isAllowedToUseCardBackPromise = Promise.resolve();
     }
 
     return isAllowedToUseCardBackPromise
-      .then(() => knex('user_decks').insert(newDeckData)).then(() => newDeckData);
+      .then(() => knex('user_decks').insert(newDeckData))
+      .then(() => newDeckData);
   }
 
   /**
@@ -85,7 +101,18 @@ class DecksModule {
    * @param  {Number}      cardBackId    card back id
    * @return  {Promise}
    */
-  static updateDeck(userId, deckId, factionId, name, cards, spellCount, minionCount, artifactCount, colorCode, cardBackId) {
+  static updateDeck(
+    userId,
+    deckId,
+    factionId,
+    name,
+    cards,
+    spellCount,
+    minionCount,
+    artifactCount,
+    colorCode,
+    cardBackId,
+  ) {
     let isAllowedToUseCardBackPromise;
     const MOMENT_NOW_UTC = moment().utc();
 
@@ -102,13 +129,19 @@ class DecksModule {
     };
 
     if (cardBackId != null) {
-      isAllowedToUseCardBackPromise = InventoryModule.isAllowedToUseCosmetic(Promise.resolve(), knex, userId, cardBackId);
+      isAllowedToUseCardBackPromise = InventoryModule.isAllowedToUseCosmetic(
+        Promise.resolve(),
+        knex,
+        userId,
+        cardBackId,
+      );
     } else {
       isAllowedToUseCardBackPromise = Promise.resolve();
     }
 
     return isAllowedToUseCardBackPromise
-      .then(() => knex('user_decks').where({ user_id: userId, id: deckId }).update(newDeckData)).then(() => newDeckData);
+      .then(() => knex('user_decks').where({ user_id: userId, id: deckId }).update(newDeckData))
+      .then(() => newDeckData);
   }
 
   /**

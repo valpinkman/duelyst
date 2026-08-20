@@ -21,7 +21,9 @@ class ModifierSynergizeSummonMinionNearGeneral extends ModifierSynergize {
   static description = 'Blood Surge: Summon an entity nearby your General';
 
   static createContextObject(cardDataOrIndexToSpawn, spawnCount, options) {
-    if (spawnCount == null) { spawnCount = 1; }
+    if (spawnCount == null) {
+      spawnCount = 1;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.cardDataOrIndexToSpawn = cardDataOrIndexToSpawn;
     contextObject.spawnCount = spawnCount;
@@ -32,20 +34,46 @@ class ModifierSynergizeSummonMinionNearGeneral extends ModifierSynergize {
     super.onSynergize(action);
 
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
-      const card = this.getGameSession().getExistingCardFromIndexOrCachedCardFromData(this.cardDataOrIndexToSpawn);
-      const general = this.getCard().getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
+      const card = this.getGameSession().getExistingCardFromIndexOrCachedCardFromData(
+        this.cardDataOrIndexToSpawn,
+      );
+      const general = this.getCard()
+        .getGameSession()
+        .getGeneralForPlayerId(this.getCard().getOwnerId());
       const spawnLocations = [];
-      const validSpawnLocations = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(this.getGameSession(), general.getPosition(), CONFIG.PATTERN_3x3, card, this.getCard(), 8);
-      for (let i = 0, end = this.spawnCount, asc = end >= 0; asc ? i < end : i > end; asc ? i++ : i--) {
+      const validSpawnLocations = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(
+        this.getGameSession(),
+        general.getPosition(),
+        CONFIG.PATTERN_3x3,
+        card,
+        this.getCard(),
+        8,
+      );
+      for (
+        let i = 0, end = this.spawnCount, asc = end >= 0;
+        asc ? i < end : i > end;
+        asc ? i++ : i--
+      ) {
         if (validSpawnLocations.length > 0) {
-          spawnLocations.push(validSpawnLocations.splice(this.getGameSession().getRandomIntegerForExecution(validSpawnLocations.length), 1)[0]);
+          spawnLocations.push(
+            validSpawnLocations.splice(
+              this.getGameSession().getRandomIntegerForExecution(validSpawnLocations.length),
+              1,
+            )[0],
+          );
         }
       }
 
       return (() => {
         const result = [];
         for (var position of Array.from<any>(spawnLocations)) {
-          var playCardAction = new PlayCardSilentlyAction(this.getGameSession(), this.getOwnerId(), position.x, position.y, this.cardDataOrIndexToSpawn);
+          var playCardAction = new PlayCardSilentlyAction(
+            this.getGameSession(),
+            this.getOwnerId(),
+            position.x,
+            position.y,
+            this.cardDataOrIndexToSpawn,
+          );
           playCardAction.setSource(this.getCard());
           result.push(this.getGameSession().executeAction(playCardAction));
         }
@@ -54,7 +82,8 @@ class ModifierSynergizeSummonMinionNearGeneral extends ModifierSynergize {
     }
   }
 }
-ModifierSynergizeSummonMinionNearGeneral.prototype.type = 'ModifierSynergizeSummonMinionNearGeneral';
+ModifierSynergizeSummonMinionNearGeneral.prototype.type =
+  'ModifierSynergizeSummonMinionNearGeneral';
 ModifierSynergizeSummonMinionNearGeneral.prototype.cardDataOrIndexToSpawn = null;
 ModifierSynergizeSummonMinionNearGeneral.prototype.spawnCount = 1;
 

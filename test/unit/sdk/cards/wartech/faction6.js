@@ -15,13 +15,9 @@ Logger.enabled = false;
 describe('wartech', () => {
   describe('faction6', () => {
     beforeEach(() => {
-      const player1Deck = [
-        { id: SDK.Cards.Faction6.AltGeneral },
-      ];
+      const player1Deck = [{ id: SDK.Cards.Faction6.AltGeneral }];
 
-      const player2Deck = [
-        { id: SDK.Cards.Faction1.General },
-      ];
+      const player2Deck = [{ id: SDK.Cards.Faction1.General }];
 
       UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
     });
@@ -36,11 +32,25 @@ describe('wartech', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      const cryoblade = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.FrostbladeFiend }, 5, 1, gameSession.getPlayer1Id());
-      const blade = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.WhistlingBlade }, 6, 1, gameSession.getPlayer2Id());
+      const cryoblade = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.FrostbladeFiend },
+        5,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const blade = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.WhistlingBlade },
+        6,
+        1,
+        gameSession.getPlayer2Id(),
+      );
       cryoblade.refreshExhaustion();
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.FrigidCorona }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.FrigidCorona,
+        }),
+      );
       const playCardFromHandAction1 = player1.actionPlayCardFromHand(0, 6, 1);
       gameSession.executeAction(playCardFromHandAction1);
 
@@ -56,11 +66,25 @@ describe('wartech', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      const cryoblade = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.FrostbladeFiend }, 5, 1, gameSession.getPlayer1Id());
-      const blade = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.WhistlingBlade }, 6, 1, gameSession.getPlayer2Id());
+      const cryoblade = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.FrostbladeFiend },
+        5,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const blade = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.WhistlingBlade },
+        6,
+        1,
+        gameSession.getPlayer2Id(),
+      );
       cryoblade.refreshExhaustion();
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.AspectOfBear }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.AspectOfBear,
+        }),
+      );
       const playCardFromHandAction1 = player1.actionPlayCardFromHand(0, 6, 1);
       gameSession.executeAction(playCardFromHandAction1);
 
@@ -80,13 +104,26 @@ describe('wartech', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      const blade = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.WhistlingBlade }, 6, 1, gameSession.getPlayer2Id());
+      const blade = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.WhistlingBlade },
+        6,
+        1,
+        gameSession.getPlayer2Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.FrigidCorona }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.FrigidCorona,
+        }),
+      );
       var playCardFromHandAction1 = player1.actionPlayCardFromHand(0, 6, 1);
       gameSession.executeAction(playCardFromHandAction1);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.Shatter }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.Shatter,
+        }),
+      );
       var playCardFromHandAction1 = player1.actionPlayCardFromHand(0, 6, 1);
       gameSession.executeAction(playCardFromHandAction1);
 
@@ -99,13 +136,26 @@ describe('wartech', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      const echo = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.EchoDeliverant }, 5, 1, gameSession.getPlayer1Id());
+      const echo = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.EchoDeliverant },
+        5,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.AerialRift }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.AerialRift,
+        }),
+      );
       var playCardFromHandAction1 = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction1);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction5.Seismoid }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction5.Seismoid,
+        }),
+      );
       var playCardFromHandAction1 = player1.actionPlayCardFromHand(0, 3, 3);
       gameSession.executeAction(playCardFromHandAction1);
 
@@ -120,13 +170,26 @@ describe('wartech', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      const blade = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.WhistlingBlade }, 6, 1, gameSession.getPlayer2Id());
+      const blade = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.WhistlingBlade },
+        6,
+        1,
+        gameSession.getPlayer2Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.FrigidCorona }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.FrigidCorona,
+        }),
+      );
       var playCardFromHandAction1 = player1.actionPlayCardFromHand(0, 6, 1);
       gameSession.executeAction(playCardFromHandAction1);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.EssenceSculpt }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.EssenceSculpt,
+        }),
+      );
       var playCardFromHandAction1 = player1.actionPlayCardFromHand(0, 6, 1);
       gameSession.executeAction(playCardFromHandAction1);
 
@@ -141,15 +204,34 @@ describe('wartech', () => {
 
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Artifact.AnimusPlate }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Artifact.AnimusPlate,
+        }),
+      );
       const playCardFromHandAction1 = player1.actionPlayCardFromHand(0, 6, 1);
       gameSession.executeAction(playCardFromHandAction1);
 
       expect(gameSession.getGeneralForPlayer1().getATK()).to.equal(4);
 
-      const cloaker = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.CrystalCloaker }, 0, 0, gameSession.getPlayer1Id());
-      const circulus = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.Circulus }, 5, 1, gameSession.getPlayer1Id());
-      const golem = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.WhistlingBlade }, 1, 2, gameSession.getPlayer2Id());
+      const cloaker = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.CrystalCloaker },
+        0,
+        0,
+        gameSession.getPlayer1Id(),
+      );
+      const circulus = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.Circulus },
+        5,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const golem = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.WhistlingBlade },
+        1,
+        2,
+        gameSession.getPlayer2Id(),
+      );
 
       let action = gameSession.getGeneralForPlayer1().actionAttack(golem);
       gameSession.executeAction(action);
@@ -182,8 +264,18 @@ describe('wartech', () => {
       gameSession.executeAction(gameSession.actionEndTurn());
       gameSession.executeAction(gameSession.actionEndTurn());
 
-      const golem = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.BrightmossGolem }, 2, 3, gameSession.getPlayer2Id());
-      const hydrogarm = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.Hydrogarm }, 7, 3, gameSession.getPlayer1Id());
+      const golem = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.BrightmossGolem },
+        2,
+        3,
+        gameSession.getPlayer2Id(),
+      );
+      const hydrogarm = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.Hydrogarm },
+        7,
+        3,
+        gameSession.getPlayer1Id(),
+      );
 
       const action = player1.actionPlaySignatureCard(0, 1);
       gameSession.executeAction(action);
@@ -199,17 +291,46 @@ describe('wartech', () => {
 
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Artifact.AnimusPlate }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Artifact.AnimusPlate,
+        }),
+      );
       let playCardFromHandAction1 = player1.actionPlayCardFromHand(0, 6, 1);
       gameSession.executeAction(playCardFromHandAction1);
 
       expect(gameSession.getGeneralForPlayer1().getATK()).to.equal(4);
 
-      const cloaker = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.CrystalCloaker }, 0, 0, gameSession.getPlayer1Id());
-      const cloaker2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.CrystalCloaker }, 7, 0, gameSession.getPlayer1Id());
-      const circulus = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.Circulus }, 5, 1, gameSession.getPlayer1Id());
-      const blade = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.WhistlingBlade }, 3, 2, gameSession.getPlayer1Id());
-      const golem = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.WhistlingBlade }, 1, 2, gameSession.getPlayer2Id());
+      const cloaker = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.CrystalCloaker },
+        0,
+        0,
+        gameSession.getPlayer1Id(),
+      );
+      const cloaker2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.CrystalCloaker },
+        7,
+        0,
+        gameSession.getPlayer1Id(),
+      );
+      const circulus = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.Circulus },
+        5,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const blade = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.WhistlingBlade },
+        3,
+        2,
+        gameSession.getPlayer1Id(),
+      );
+      const golem = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.WhistlingBlade },
+        1,
+        2,
+        gameSession.getPlayer2Id(),
+      );
 
       const action = gameSession.getGeneralForPlayer1().actionAttack(golem);
       gameSession.executeAction(action);
@@ -221,13 +342,21 @@ describe('wartech', () => {
       expect(circulus.getATK()).to.equal(1);
       expect(circulus.getHP()).to.equal(1);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.LastingJudgement }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.LastingJudgement,
+        }),
+      );
       playCardFromHandAction1 = player1.actionPlayCardFromHand(0, 3, 2);
       gameSession.executeAction(playCardFromHandAction1);
 
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.CrystallineReinforcement }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.CrystallineReinforcement,
+        }),
+      );
       playCardFromHandAction1 = player1.actionPlayCardFromHand(1, 6, 1);
       gameSession.executeAction(playCardFromHandAction1);
 
@@ -247,7 +376,11 @@ describe('wartech', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.Wintertide }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.Wintertide,
+        }),
+      );
       const playCardFromHandAction1 = player1.actionPlayCardFromHand(0, 4, 2);
       gameSession.executeAction(playCardFromHandAction1);
 
@@ -267,15 +400,29 @@ describe('wartech', () => {
 
       player1.remainingMana = 9;
 
-      const cloaker = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.CrystalCloaker }, 0, 0, gameSession.getPlayer1Id());
-      const cloaker2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.CrystalCloaker }, 7, 0, gameSession.getPlayer1Id());
+      const cloaker = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.CrystalCloaker },
+        0,
+        0,
+        gameSession.getPlayer1Id(),
+      );
+      const cloaker2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.CrystalCloaker },
+        7,
+        0,
+        gameSession.getPlayer1Id(),
+      );
 
       expect(cloaker.getATK()).to.equal(2);
       expect(cloaker.getHP()).to.equal(3);
       expect(cloaker2.getATK()).to.equal(4);
       expect(cloaker2.getHP()).to.equal(3);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction6.InfiltrateMaster }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction6.InfiltrateMaster,
+        }),
+      );
       const playCardFromHandAction1 = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction1);
 
@@ -292,9 +439,18 @@ describe('wartech', () => {
 
       player1.remainingMana = 9;
 
-      const cloaker2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.CrystalCloaker }, 7, 0, gameSession.getPlayer2Id());
+      const cloaker2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.CrystalCloaker },
+        7,
+        0,
+        gameSession.getPlayer2Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction6.DraugarEyolith }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction6.DraugarEyolith,
+        }),
+      );
       const playCardFromHandAction1 = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction1);
 
@@ -314,7 +470,9 @@ describe('wartech', () => {
 
       action = cloaker2.actionMove({ x: 6, y: 0 });
       gameSession.executeAction(action);
-      expect(board.getUnitAtPosition({ x: 6, y: 0 }).getId()).to.equal(SDK.Cards.Faction6.CrystalCloaker);
+      expect(board.getUnitAtPosition({ x: 6, y: 0 }).getId()).to.equal(
+        SDK.Cards.Faction6.CrystalCloaker,
+      );
 
       gameSession.executeAction(gameSession.actionEndTurn());
       gameSession.executeAction(gameSession.actionEndTurn());
@@ -335,7 +493,9 @@ describe('wartech', () => {
 
       action = cloaker2.actionMove({ x: 5, y: 0 });
       gameSession.executeAction(action);
-      expect(board.getUnitAtPosition({ x: 5, y: 0 }).getId()).to.equal(SDK.Cards.Faction6.CrystalCloaker);
+      expect(board.getUnitAtPosition({ x: 5, y: 0 }).getId()).to.equal(
+        SDK.Cards.Faction6.CrystalCloaker,
+      );
     });
 
     it('expect auroraboros to give all friendly minions dying wish: respawn', () => {
@@ -345,23 +505,49 @@ describe('wartech', () => {
 
       player1.remainingMana = 9;
 
-      const cloaker = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.CrystalCloaker }, 3, 0, gameSession.getPlayer1Id());
-      const fenrir = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.FenrirWarmaster }, 7, 0, gameSession.getPlayer1Id());
+      const cloaker = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.CrystalCloaker },
+        3,
+        0,
+        gameSession.getPlayer1Id(),
+      );
+      const fenrir = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.FenrirWarmaster },
+        7,
+        0,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.Auroraboros }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.Auroraboros,
+        }),
+      );
       var playCardFromHandAction1 = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction1);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PhoenixFire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
       var playCardFromHandAction1 = player1.actionPlayCardFromHand(0, 7, 0);
       gameSession.executeAction(playCardFromHandAction1);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PhoenixFire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
       var playCardFromHandAction1 = player1.actionPlayCardFromHand(0, 3, 0);
       gameSession.executeAction(playCardFromHandAction1);
 
-      expect(board.getUnitAtPosition({ x: 3, y: 0 }).getId()).to.equal(SDK.Cards.Faction6.CrystalCloaker);
-      expect(board.getUnitAtPosition({ x: 7, y: 0 }).getId()).to.equal(SDK.Cards.Faction6.FenrirWarmaster);
+      expect(board.getUnitAtPosition({ x: 3, y: 0 }).getId()).to.equal(
+        SDK.Cards.Faction6.CrystalCloaker,
+      );
+      expect(board.getUnitAtPosition({ x: 7, y: 0 }).getId()).to.equal(
+        SDK.Cards.Faction6.FenrirWarmaster,
+      );
     });
   });
 });

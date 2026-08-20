@@ -32,13 +32,18 @@ class ModifierSynergizeDamageEnemyGeneral extends ModifierSynergize {
 
     const damageAction = new DamageAction(this.getCard().getGameSession());
     damageAction.setOwnerId(this.getCard().getOwnerId());
-    damageAction.setTarget(this.getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId()));
+    damageAction.setTarget(
+      this.getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId()),
+    );
     damageAction.setDamageAmount(this.damageAmount);
     return this.getGameSession().executeAction(damageAction);
   }
 }
 ModifierSynergizeDamageEnemyGeneral.prototype.type = 'ModifierSynergizeDamageEnemyGeneral';
 ModifierSynergizeDamageEnemyGeneral.prototype.damageAmount = 0;
-ModifierSynergizeDamageEnemyGeneral.prototype.fxResource = ['FX.Modifiers.ModifierSpellWatch', 'FX.Modifiers.ModifierGenericDamage'];
+ModifierSynergizeDamageEnemyGeneral.prototype.fxResource = [
+  'FX.Modifiers.ModifierSpellWatch',
+  'FX.Modifiers.ModifierGenericDamage',
+];
 
 module.exports = ModifierSynergizeDamageEnemyGeneral;

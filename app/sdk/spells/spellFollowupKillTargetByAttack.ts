@@ -27,5 +27,5 @@ SpellFollowupKillTargetByAttack.prototype.maxAttack = 0;
 module.exports = SpellFollowupKillTargetByAttack;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

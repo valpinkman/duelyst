@@ -13,7 +13,7 @@ class SpellWailingOverdrive extends SpellApplyModifiers {
 
     for (var position of Array.from<any>(validPositions)) {
       var unit = this.getGameSession().getBoard().getUnitAtPosition(position);
-      if ((unit != null) && this.getIsInfiltratedPosition(unit.getPosition())) {
+      if (unit != null && this.getIsInfiltratedPosition(unit.getPosition())) {
         infiltratedPositions.push(position);
       }
     }
@@ -29,15 +29,13 @@ class SpellWailingOverdrive extends SpellApplyModifiers {
     let enemySideEndX = CONFIG.BOARDCOL;
 
     if (this.isOwnedByPlayer1()) {
-      enemySideStartX = Math.floor(((enemySideEndX - enemySideStartX) * 0.5) + 1);
+      enemySideStartX = Math.floor((enemySideEndX - enemySideStartX) * 0.5 + 1);
     } else if (this.isOwnedByPlayer2()) {
-      enemySideEndX = Math.floor(((enemySideEndX - enemySideStartX) * 0.5) - 1);
+      enemySideEndX = Math.floor((enemySideEndX - enemySideStartX) * 0.5 - 1);
     }
 
-    const {
-      x,
-    } = position;
-    return (x >= enemySideStartX) && (x <= enemySideEndX);
+    const { x } = position;
+    return x >= enemySideStartX && x <= enemySideEndX;
   }
 }
 

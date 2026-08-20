@@ -28,11 +28,17 @@ const ANSI = new RegExp(`${String.fromCharCode(27)}\\[[0-9;]*m`, 'g');
 /** Run `fn` with console.* routed through winston, returning what was logged. */
 function captureThroughWinston(fn) {
   const originals = {
-    log: console.log, debug: console.debug, warn: console.warn, error: console.error,
+    log: console.log,
+    debug: console.debug,
+    warn: console.warn,
+    error: console.error,
   };
   const chunks = [];
   const sink = new Writable({
-    write(chunk, _enc, cb) { chunks.push(String(chunk)); cb(); },
+    write(chunk, _enc, cb) {
+      chunks.push(String(chunk));
+      cb();
+    },
   });
 
   try {
@@ -56,7 +62,9 @@ describe('winston console seam', () => {
   // the regression this file exists for
   it('keeps EVERY argument, not just the first', () => {
     const out = captureThroughWinston(() => console.log('multi', 'arg', 42));
-    expect(out, 'later arguments must not be swallowed as winston metadata').to.contain('multi arg 42');
+    expect(out, 'later arguments must not be swallowed as winston metadata').to.contain(
+      'multi arg 42',
+    );
   });
 
   it('applies printf-style formatting like console.* does', () => {

@@ -12,20 +12,27 @@ const CustomError = require('../server/lib/custom_errors');
 
 const isMatchmakingActiveAsync = function () {
   if (!config.get('consul.enabled')) {
-    Logger.module('GAME CREATE').debug('No need to check matchmaking stack status since no CONSUL in environment.'.cyan);
+    Logger.module('GAME CREATE').debug(
+      'No need to check matchmaking stack status since no CONSUL in environment.'.cyan,
+    );
     return Promise.resolve(true);
   }
 
-  return Consul.kv.get(`environments/${process.env.NODE_ENV}/matchmaking-status.json`)
+  return Consul.kv
+    .get(`environments/${process.env.NODE_ENV}/matchmaking-status.json`)
     .then(JSON.parse)
     .then(function (matchmakingStatus) {
-    // matchmakingEnabled is currently a string
+      // matchmakingEnabled is currently a string
       if (matchmakingStatus.enabled) {
         Logger.module('GAME CREATE').debug('Matchmaking status is active'.cyan);
         return true;
       } else {
         Logger.module('GAME CREATE').debug('Matchmaking status is inactive'.red);
-        return Promise.reject(new CustomError.MatchmakingOfflineError('Matchmaking is currently offline, please retry shortly.'));
+        return Promise.reject(
+          new CustomError.MatchmakingOfflineError(
+            'Matchmaking is currently offline, please retry shortly.',
+          ),
+        );
       }
     });
 };

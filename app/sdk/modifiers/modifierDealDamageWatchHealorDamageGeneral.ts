@@ -14,10 +14,13 @@ class ModifierDealDamageWatchHealorDamageGeneral extends ModifierDealDamageWatch
 
   static type = 'ModifierDealDamageWatchHealorDamageGeneral';
   static modifierName = 'Deal Damage Watch';
-  static description = 'Whenever this minion deals damage, either deal %X damage to the enemy General OR restore %X Health to your General';
+  static description =
+    'Whenever this minion deals damage, either deal %X damage to the enemy General OR restore %X Health to your General';
 
   static createContextObject(healDamageAmount, options) {
-    if (healDamageAmount == null) { healDamageAmount = 0; }
+    if (healDamageAmount == null) {
+      healDamageAmount = 0;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.healDamageAmount = healDamageAmount;
     return contextObject;
@@ -35,9 +38,14 @@ class ModifierDealDamageWatchHealorDamageGeneral extends ModifierDealDamageWatch
 
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
       const myGeneral = this.getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
-      const enemyGeneral = this.getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
+      const enemyGeneral = this.getGameSession().getGeneralForOpponentOfPlayerId(
+        this.getCard().getOwnerId(),
+      );
       const potentialTargets = [myGeneral, enemyGeneral];
-      const target = potentialTargets[this.getGameSession().getRandomIntegerForExecution(potentialTargets.length)];
+      const target =
+        potentialTargets[
+          this.getGameSession().getRandomIntegerForExecution(potentialTargets.length)
+        ];
 
       if (target === myGeneral) {
         const healAction = new HealAction(this.getGameSession());
@@ -45,7 +53,8 @@ class ModifierDealDamageWatchHealorDamageGeneral extends ModifierDealDamageWatch
         healAction.setTarget(myGeneral);
         healAction.setHealAmount(this.healDamageAmount);
         return this.getGameSession().executeAction(healAction);
-      } if (target === enemyGeneral) {
+      }
+      if (target === enemyGeneral) {
         const damageAction = new DamageAction(this.getGameSession());
         damageAction.setOwnerId(this.getCard().getOwnerId());
         damageAction.setTarget(enemyGeneral);
@@ -55,7 +64,10 @@ class ModifierDealDamageWatchHealorDamageGeneral extends ModifierDealDamageWatch
     }
   }
 }
-ModifierDealDamageWatchHealorDamageGeneral.prototype.type = 'ModifierDealDamageWatchHealorDamageGeneral';
-ModifierDealDamageWatchHealorDamageGeneral.prototype.fxResource = ['FX.Modifiers.ModifierDealDamageWatch'];
+ModifierDealDamageWatchHealorDamageGeneral.prototype.type =
+  'ModifierDealDamageWatchHealorDamageGeneral';
+ModifierDealDamageWatchHealorDamageGeneral.prototype.fxResource = [
+  'FX.Modifiers.ModifierDealDamageWatch',
+];
 
 module.exports = ModifierDealDamageWatchHealorDamageGeneral;

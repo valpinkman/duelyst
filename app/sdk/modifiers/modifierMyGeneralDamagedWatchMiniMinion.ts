@@ -18,22 +18,44 @@ class ModifierMyGeneralDamagedWatchMiniMinion extends ModifierMyGeneralDamagedWa
   static type = 'ModifierMyGeneralDamagedWatchMiniMinion';
 
   onDamageDealtToGeneral(action) {
-    const enemyGeneral = this.getCard().getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
+    const enemyGeneral = this.getCard()
+      .getGameSession()
+      .getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
     const board = this.getGameSession().getBoard();
 
     let playerOffset = 0;
-    if (this.getCard().isOwnedByPlayer1()) { playerOffset = 1; } else { playerOffset = -1; }
-    const behindPosition = { x: enemyGeneral.getPosition().x + playerOffset, y: enemyGeneral.getPosition().y };
+    if (this.getCard().isOwnedByPlayer1()) {
+      playerOffset = 1;
+    } else {
+      playerOffset = -1;
+    }
+    const behindPosition = {
+      x: enemyGeneral.getPosition().x + playerOffset,
+      y: enemyGeneral.getPosition().y,
+    };
 
-    if (board.isOnBoard(behindPosition) && !board.getObstructionAtPositionForEntity(behindPosition, this.getCard())) {
-      const playCardAction = new PlayCardSilentlyAction(this.getGameSession(), this.getCard().getOwnerId(), behindPosition.x, behindPosition.y, this.getCard().getIndex());
+    if (
+      board.isOnBoard(behindPosition) &&
+      !board.getObstructionAtPositionForEntity(behindPosition, this.getCard())
+    ) {
+      const playCardAction = new PlayCardSilentlyAction(
+        this.getGameSession(),
+        this.getCard().getOwnerId(),
+        behindPosition.x,
+        behindPosition.y,
+        this.getCard().getIndex(),
+      );
       this.getGameSession().executeAction(playCardAction);
-      return this.getGameSession().executeAction(new DrawCardAction(this.getGameSession(), this.getCard().getOwnerId()));
+      return this.getGameSession().executeAction(
+        new DrawCardAction(this.getGameSession(), this.getCard().getOwnerId()),
+      );
     }
   }
 }
 ModifierMyGeneralDamagedWatchMiniMinion.prototype.type = 'ModifierMyGeneralDamagedWatchMiniMinion';
-ModifierMyGeneralDamagedWatchMiniMinion.prototype.fxResource = ['FX.Modifiers.ModifierMyGeneralDamagedWatch'];
+ModifierMyGeneralDamagedWatchMiniMinion.prototype.fxResource = [
+  'FX.Modifiers.ModifierMyGeneralDamagedWatch',
+];
 ModifierMyGeneralDamagedWatchMiniMinion.prototype.activeInHand = true;
 ModifierMyGeneralDamagedWatchMiniMinion.prototype.activeInDeck = false;
 ModifierMyGeneralDamagedWatchMiniMinion.prototype.activeInSignatureCards = false;

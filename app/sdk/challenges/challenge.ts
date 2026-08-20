@@ -158,8 +158,16 @@ class Challenge {
    */
   setupSession(gameSession, player1Data, player2Data) {
     // set game session challenge
-    let player1DeckData; let player1Id; let player1Name; let player1StartingHandSize; let player1StartingMana; let player2DeckData; let player2Id; let player2Name; let player2StartingHandSize; let
-      player2StartingMana;
+    let player1DeckData;
+    let player1Id;
+    let player1Name;
+    let player1StartingHandSize;
+    let player1StartingMana;
+    let player2DeckData;
+    let player2Id;
+    let player2Name;
+    let player2StartingHandSize;
+    let player2StartingMana;
     gameSession.setChallenge(this);
 
     // set modes
@@ -167,7 +175,9 @@ class Challenge {
 
     // set battlemap template
     if (this.battleMapTemplateIndex != null) {
-      gameSession.setBattleMapTemplate(new BattleMapTemplate(gameSession, this.battleMapTemplateIndex));
+      gameSession.setBattleMapTemplate(
+        new BattleMapTemplate(gameSession, this.battleMapTemplateIndex),
+      );
     }
 
     // get ids and names
@@ -176,10 +186,24 @@ class Challenge {
       player2Name = i18next.t('battle.opponent_name_default_label');
       player1Id = gameSession.getUserId();
       player2Id = 'CPU';
-      player1StartingMana = (this.startingManaPlayer != null) ? this.startingManaPlayer : (this.startingMana != null) ? this.startingMana : null;
-      player2StartingMana = (this.startingManaOpponent != null) ? this.startingManaOpponent : (this.startingMana != null) ? (this.startingMana + 1) : null;
-      player1StartingHandSize = (this.startingHandSizePlayer != null) ? this.startingHandSizePlayer : this.startingHandSize;
-      player2StartingHandSize = (this.startingHandSizeOpponent != null) ? this.startingHandSizeOpponent : this.startingHandSize;
+      player1StartingMana =
+        this.startingManaPlayer != null
+          ? this.startingManaPlayer
+          : this.startingMana != null
+            ? this.startingMana
+            : null;
+      player2StartingMana =
+        this.startingManaOpponent != null
+          ? this.startingManaOpponent
+          : this.startingMana != null
+            ? this.startingMana + 1
+            : null;
+      player1StartingHandSize =
+        this.startingHandSizePlayer != null ? this.startingHandSizePlayer : this.startingHandSize;
+      player2StartingHandSize =
+        this.startingHandSizeOpponent != null
+          ? this.startingHandSizeOpponent
+          : this.startingHandSize;
       player1DeckData = this.getMyPlayerDeckData(gameSession);
       player2DeckData = this.getOpponentPlayerDeckData(gameSession);
     } else {
@@ -187,29 +211,49 @@ class Challenge {
       player2Name = i18next.t('battle.your_name_default_label');
       player1Id = 'CPU';
       player2Id = gameSession.getUserId();
-      player1StartingMana = (this.startingManaOpponent != null) ? this.startingManaOpponent : (this.startingMana != null) ? this.startingMana : null;
-      player2StartingMana = (this.startingManaPlayer != null) ? this.startingManaPlayer : (this.startingMana != null) ? (this.startingMana + 1) : null;
-      player1StartingHandSize = (this.startingHandSizeOpponent != null) ? this.startingHandSizeOpponent : this.startingHandSize;
-      player2StartingHandSize = (this.startingHandSizePlayer != null) ? this.startingHandSizePlayer : this.startingHandSize;
+      player1StartingMana =
+        this.startingManaOpponent != null
+          ? this.startingManaOpponent
+          : this.startingMana != null
+            ? this.startingMana
+            : null;
+      player2StartingMana =
+        this.startingManaPlayer != null
+          ? this.startingManaPlayer
+          : this.startingMana != null
+            ? this.startingMana + 1
+            : null;
+      player1StartingHandSize =
+        this.startingHandSizeOpponent != null
+          ? this.startingHandSizeOpponent
+          : this.startingHandSize;
+      player2StartingHandSize =
+        this.startingHandSizePlayer != null ? this.startingHandSizePlayer : this.startingHandSize;
       player1DeckData = this.getOpponentPlayerDeckData(gameSession);
       player2DeckData = this.getMyPlayerDeckData(gameSession);
     }
 
     // ensure basic player data
-    player1Data = UtilsJavascript.fastExtend({
-      userId: player1Id,
-      name: player1Name,
-      deck: player1DeckData,
-      startingHandSize: player1StartingHandSize,
-      startingMana: player1StartingMana,
-    }, player1Data);
-    player2Data = UtilsJavascript.fastExtend({
-      userId: player2Id,
-      name: player2Name,
-      deck: player2DeckData,
-      startingHandSize: player2StartingHandSize,
-      startingMana: player2StartingMana,
-    }, player2Data);
+    player1Data = UtilsJavascript.fastExtend(
+      {
+        userId: player1Id,
+        name: player1Name,
+        deck: player1DeckData,
+        startingHandSize: player1StartingHandSize,
+        startingMana: player1StartingMana,
+      },
+      player1Data,
+    );
+    player2Data = UtilsJavascript.fastExtend(
+      {
+        userId: player2Id,
+        name: player2Name,
+        deck: player2DeckData,
+        startingHandSize: player2StartingHandSize,
+        startingMana: player2StartingMana,
+      },
+      player2Data,
+    );
 
     // setup session
     GameSetup.setupNewSession(gameSession, player1Data, player2Data, this.customBoard);
@@ -260,8 +304,9 @@ class Challenge {
    */
   setupOpponentAgent(gameSession) {
     // get agent player id
-    let cpuGeneral; let cpuPlayer; let
-      cpuPlayerId;
+    let cpuGeneral;
+    let cpuPlayer;
+    let cpuPlayerId;
     if (this.userIsPlayer1) {
       cpuPlayer = gameSession.getPlayer2();
       cpuPlayerId = cpuPlayer.getPlayerId();
@@ -314,23 +359,29 @@ class Challenge {
     const playersTurnIndex = Math.floor(currentTurnIndex / 2); // represents the index of turn for this player
 
     // check for a new turn
-    if ((this._currentPlayerTurn == null) || (this._currentPlayerTurn !== playersTurnIndex)) {
+    if (this._currentPlayerTurn == null || this._currentPlayerTurn !== playersTurnIndex) {
       this._currentPlayerTurn = playersTurnIndex;
       this._nextInstructionIndex = 0;
     }
 
-    const nextInstruction = this._instructionsByTurnIndex[playersTurnIndex] != null ? this._instructionsByTurnIndex[playersTurnIndex][this._nextInstructionIndex] : undefined;
+    const nextInstruction =
+      this._instructionsByTurnIndex[playersTurnIndex] != null
+        ? this._instructionsByTurnIndex[playersTurnIndex][this._nextInstructionIndex]
+        : undefined;
 
     if (nextInstruction) {
       this._currentInstruction = nextInstruction;
-      this._eventBus.trigger(EVENTS.instruction_triggered, { type: EVENTS.instruction_triggered, instruction: nextInstruction });
+      this._eventBus.trigger(EVENTS.instruction_triggered, {
+        type: EVENTS.instruction_triggered,
+        instruction: nextInstruction,
+      });
       return this._nextInstructionIndex++;
     }
   }
 
   hasInstructionForGameTurn(gameTurnIndex) {
     const playersTurnIndex = Math.floor(gameTurnIndex / 2); // represents the index of turn for this player
-    return (this._instructionsByTurnIndex[playersTurnIndex] != null);
+    return this._instructionsByTurnIndex[playersTurnIndex] != null;
   }
 
   _onStartTurn(e) {
@@ -338,12 +389,15 @@ class Challenge {
   }
 
   _snapShotChallengeIfNeeded() {
-    if ((this.snapShotOnPlayerTurn != null) && (GameSession.current().getCurrentPlayerId() === GameSession.current().getMyPlayerId())) {
+    if (
+      this.snapShotOnPlayerTurn != null &&
+      GameSession.current().getCurrentPlayerId() === GameSession.current().getMyPlayerId()
+    ) {
       // Get the player turn index
       const currentTurnIndex = GameSession.current().getNumberOfTurns(); // current turn count calculation is ugly
       const playersTurnIndex = Math.floor(currentTurnIndex / 2); // represents the index of turn for this player
 
-      if ((playersTurnIndex === this.snapShotOnPlayerTurn) && !this._snapShotData) {
+      if (playersTurnIndex === this.snapShotOnPlayerTurn && !this._snapShotData) {
         const gameSession = GameSession.current();
         this._snapShotData = gameSession.serializeToJSON(gameSession);
         return this._eventBus.trigger(EVENTS.challenge_start, { type: EVENTS.challenge_start });
@@ -355,7 +409,7 @@ class Challenge {
     const gameSession = GameSession.current();
     const myGeneral = gameSession.getGeneralForPlayerId(gameSession.getMyPlayerId());
 
-    if ((this.snapShotOnPlayerTurn != null) && myGeneral.getIsRemoved()) {
+    if (this.snapShotOnPlayerTurn != null && myGeneral.getIsRemoved()) {
       // set general as not removed so that game does not end
       myGeneral.setIsRemoved(false);
 
@@ -370,7 +424,10 @@ class Challenge {
     this.isChallengeLost = true;
 
     // trigger challenge lost event
-    return this._eventBus.trigger(EVENTS.challenge_lost, { type: EVENTS.challenge_lost, needsRollback: true });
+    return this._eventBus.trigger(EVENTS.challenge_lost, {
+      type: EVENTS.challenge_lost,
+      needsRollback: true,
+    });
   }
 
   challengeReset() {
@@ -387,7 +444,7 @@ class Challenge {
     // Reset opponent agents action sequence
     this._opponentAgent.currentTurnIndex = undefined;
     this._opponentAgent.currentActionIndexInTurn = 0;
-    return this.isChallengeLost = false;
+    return (this.isChallengeLost = false);
   }
 
   applyCardToBoard(cardOrCardData, boardX, boardY, ownerId) {
@@ -400,7 +457,9 @@ class Challenge {
 
     // apply card
     if (cardOrCardData != null) {
-      if (ownerId != null) { cardOrCardData.setOwnerId(ownerId); }
+      if (ownerId != null) {
+        cardOrCardData.setOwnerId(ownerId);
+      }
 
       gameSession.applyCardToBoard(cardOrCardData, boardX, boardY);
 

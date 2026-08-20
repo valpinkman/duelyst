@@ -34,41 +34,53 @@ describe('gift codes module', () => {
       .then((userIdCreated) => {
         Logger.module('UNITTEST').log('created user ', userIdCreated);
         userId = userIdCreated;
-      }).catch(onType(Errors.AlreadyExistsError, (error) => {
-        Logger.module('UNITTEST').log('existing user');
-        return UsersModule.userIdForUsername('unittest').then((userIdExisting) => {
-          Logger.module('UNITTEST').log('existing user retrieved', userIdExisting);
-          userId = userIdExisting;
-          return SyncModule.wipeUserData(userIdExisting);
-        }).then(() => {
-          Logger.module('UNITTEST').log('existing user data wiped', userId);
-        });
-      })).catch((error) => {
+      })
+      .catch(
+        onType(Errors.AlreadyExistsError, (error) => {
+          Logger.module('UNITTEST').log('existing user');
+          return UsersModule.userIdForUsername('unittest')
+            .then((userIdExisting) => {
+              Logger.module('UNITTEST').log('existing user retrieved', userIdExisting);
+              userId = userIdExisting;
+              return SyncModule.wipeUserData(userIdExisting);
+            })
+            .then(() => {
+              Logger.module('UNITTEST').log('existing user data wiped', userId);
+            });
+        }),
+      )
+      .catch((error) => {
         Logger.module('UNITTEST').log('unexpected error: ', error);
         throw error;
       });
   });
 
   describe('redeemGiftCode()', () => {
-    it('throws an error for invalid gift code', () => GiftCodesModule.redeemGiftCode(userId, 'no-such-code')
-      .then((result) => {
-        expect(result).to.not.exist;
-      })
-      .catch((error) => {
-        expect(error).to.exist;
-        expect(error).to.be.an.instanceof(Errors.NotFoundError);
-      }));
+    it('throws an error for invalid gift code', () =>
+      GiftCodesModule.redeemGiftCode(userId, 'no-such-code')
+        .then((result) => {
+          expect(result).to.not.exist;
+        })
+        .catch((error) => {
+          expect(error).to.exist;
+          expect(error).to.be.an.instanceof(Errors.NotFoundError);
+        }));
 
     describe('kickstarter codes', () => {
       it('marks valid Kickstarter code as claimed and gives user cards', () => {
         const code = `unit-test-${generatePushId()}`;
-        return knex('gift_codes').insert({
-          code,
-          type: 'ks-1',
-        }).then(() => GiftCodesModule.redeemGiftCode(userId, code)).then(() => Promise.all([
-          knex('gift_codes').where('code', code).first(),
-          knex('user_card_collection').where('user_id', userId).first(),
-        ]))
+        return knex('gift_codes')
+          .insert({
+            code,
+            type: 'ks-1',
+          })
+          .then(() => GiftCodesModule.redeemGiftCode(userId, code))
+          .then(() =>
+            Promise.all([
+              knex('gift_codes').where('code', code).first(),
+              knex('user_card_collection').where('user_id', userId).first(),
+            ]),
+          )
           .then(([giftCodeRow, cardCollectionRow]) => {
             expect(giftCodeRow.claimed_at).to.exist;
             expect(giftCodeRow.claimed_by_user_id).to.equal(userId);
@@ -80,10 +92,13 @@ describe('gift codes module', () => {
 
       it('throws error if a user attempts to redeem a previously redeemed code', () => {
         const code = `unit-test-${generatePushId()}`;
-        return knex('gift_codes').insert({
-          code,
-          type: 'ks-1',
-        }).then(() => GiftCodesModule.redeemGiftCode(userId, code)).then(() => GiftCodesModule.redeemGiftCode(userId, code))
+        return knex('gift_codes')
+          .insert({
+            code,
+            type: 'ks-1',
+          })
+          .then(() => GiftCodesModule.redeemGiftCode(userId, code))
+          .then(() => GiftCodesModule.redeemGiftCode(userId, code))
           .then((result) => {
             expect(result).to.not.exist;
           })
@@ -97,16 +112,21 @@ describe('gift codes module', () => {
     describe('compound REWARD codes', () => {
       it('marks valid REWARD code as claimed and gives user GOLD', () => {
         const code = `unit-test-${generatePushId()}`;
-        return knex('gift_codes').insert({
-          code,
-          type: 'rewards',
-          rewards: {
-            gold: 50,
-          },
-        }).then(() => GiftCodesModule.redeemGiftCode(userId, code)).then((result) => Promise.all([
-          knex('users').where('id', userId).first('wallet_gold', 'wallet_spirit'),
-          knex('gift_codes').where('code', code).first(),
-        ]))
+        return knex('gift_codes')
+          .insert({
+            code,
+            type: 'rewards',
+            rewards: {
+              gold: 50,
+            },
+          })
+          .then(() => GiftCodesModule.redeemGiftCode(userId, code))
+          .then((result) =>
+            Promise.all([
+              knex('users').where('id', userId).first('wallet_gold', 'wallet_spirit'),
+              knex('gift_codes').where('code', code).first(),
+            ]),
+          )
           .then(([userRow, giftCodeRow]) => {
             expect(userRow.wallet_gold).to.equal(50);
             expect(userRow.wallet_spirit).to.equal(0);
@@ -117,16 +137,21 @@ describe('gift codes module', () => {
 
       it('marks valid REWARD code as claimed and gives user SPIRIT', () => {
         const code = `unit-test-${generatePushId()}`;
-        return knex('gift_codes').insert({
-          code,
-          type: 'rewards',
-          rewards: {
-            spirit: 20,
-          },
-        }).then(() => GiftCodesModule.redeemGiftCode(userId, code)).then((result) => Promise.all([
-          knex('users').where('id', userId).first('wallet_gold', 'wallet_spirit'),
-          knex('gift_codes').where('code', code).first(),
-        ]))
+        return knex('gift_codes')
+          .insert({
+            code,
+            type: 'rewards',
+            rewards: {
+              spirit: 20,
+            },
+          })
+          .then(() => GiftCodesModule.redeemGiftCode(userId, code))
+          .then((result) =>
+            Promise.all([
+              knex('users').where('id', userId).first('wallet_gold', 'wallet_spirit'),
+              knex('gift_codes').where('code', code).first(),
+            ]),
+          )
           .then(([userRow, giftCodeRow]) => {
             expect(userRow.wallet_gold).to.equal(50);
             expect(userRow.wallet_spirit).to.equal(20);
@@ -138,25 +163,41 @@ describe('gift codes module', () => {
       it('marks valid REWARD code as claimed and gives user CARDS', () => {
         const code = `unit-teeet-${generatePushId()}`;
         return SyncModule.wipeUserData(userId)
-          .then(() => knex('gift_codes').insert({
-            code,
-            type: 'rewards',
-            rewards: {
-              card_ids: [SDK.Cards.Neutral.EmeraldRejuvenator, SDK.Cards.Neutral.EmeraldRejuvenator, SDK.Cards.Neutral.RepulsionBeast],
-            },
-          })).then(() => GiftCodesModule.redeemGiftCode(userId, code)).then((result) => Promise.all([
-            knex('user_cards').where('user_id', userId).select(),
-            knex('gift_codes').where('code', code).first(),
-          ]))
+          .then(() =>
+            knex('gift_codes').insert({
+              code,
+              type: 'rewards',
+              rewards: {
+                card_ids: [
+                  SDK.Cards.Neutral.EmeraldRejuvenator,
+                  SDK.Cards.Neutral.EmeraldRejuvenator,
+                  SDK.Cards.Neutral.RepulsionBeast,
+                ],
+              },
+            }),
+          )
+          .then(() => GiftCodesModule.redeemGiftCode(userId, code))
+          .then((result) =>
+            Promise.all([
+              knex('user_cards').where('user_id', userId).select(),
+              knex('gift_codes').where('code', code).first(),
+            ]),
+          )
           .then(([userCardRows, giftCodeRow]) => {
             expect(userCardRows).to.exist;
             expect(giftCodeRow).to.exist;
 
             expect(userCardRows.length).to.equal(2);
-            const emeraldRow = _.find(userCardRows, (cardRow) => cardRow.card_id === SDK.Cards.Neutral.EmeraldRejuvenator);
+            const emeraldRow = _.find(
+              userCardRows,
+              (cardRow) => cardRow.card_id === SDK.Cards.Neutral.EmeraldRejuvenator,
+            );
             expect(emeraldRow).to.exist;
             expect(emeraldRow.count).to.equal(2);
-            const beastRow = _.find(userCardRows, (cardRow) => cardRow.card_id === SDK.Cards.Neutral.RepulsionBeast);
+            const beastRow = _.find(
+              userCardRows,
+              (cardRow) => cardRow.card_id === SDK.Cards.Neutral.RepulsionBeast,
+            );
             expect(beastRow).to.exist;
             expect(beastRow.count).to.equal(1);
             expect(giftCodeRow.claimed_at).to.exist;
@@ -166,21 +207,28 @@ describe('gift codes module', () => {
 
       it('marks valid compound REWARD code as claimed and gives correct rewards', () => {
         const code = `unit-test-${generatePushId()}`;
-        return SyncModule.wipeUserData(userId).then(() => knex('gift_codes').insert({
-          code,
-          type: 'rewards',
-          rewards: {
-            spirit: 25,
-            gold: 15,
-            orbs: 3,
-            gauntlet_tickets: 2,
-          },
-        })).then(() => GiftCodesModule.redeemGiftCode(userId, code)).then((result) => Promise.all([
-          knex('users').where('id', userId).first('wallet_gold', 'wallet_spirit'),
-          knex('user_spirit_orbs').where('user_id', userId).select(),
-          knex('user_gauntlet_tickets').where('user_id', userId).select(),
-          knex('gift_codes').where('code', code).first(),
-        ]))
+        return SyncModule.wipeUserData(userId)
+          .then(() =>
+            knex('gift_codes').insert({
+              code,
+              type: 'rewards',
+              rewards: {
+                spirit: 25,
+                gold: 15,
+                orbs: 3,
+                gauntlet_tickets: 2,
+              },
+            }),
+          )
+          .then(() => GiftCodesModule.redeemGiftCode(userId, code))
+          .then((result) =>
+            Promise.all([
+              knex('users').where('id', userId).first('wallet_gold', 'wallet_spirit'),
+              knex('user_spirit_orbs').where('user_id', userId).select(),
+              knex('user_gauntlet_tickets').where('user_id', userId).select(),
+              knex('gift_codes').where('code', code).first(),
+            ]),
+          )
           .then(([userRow, orbRows, gauntletTicketRows, giftCodeRow]) => {
             expect(userRow.wallet_gold).to.equal(15);
             expect(userRow.wallet_spirit).to.equal(25);
@@ -197,22 +245,33 @@ describe('gift codes module', () => {
 
       it('claims valid REWARD code containing cosmetics and gives cosmetics to user', () => {
         const code = `unit-test-${generatePushId()}`;
-        return knex('gift_codes').insert({
-          code,
-          type: 'rewards',
-          rewards: {
-            cosmetics: [
-              SDK.CosmeticsLookup.Emote.HealingMysticHappy,
-              SDK.CosmeticsLookup.CardBack.Agenor,
-            ],
-          },
-        }).then(() => GiftCodesModule.redeemGiftCode(userId, code)).then((result) => Promise.all([
-          knex('user_cosmetic_inventory').where('user_id', userId).select(),
-          knex('gift_codes').where('code', code).first(),
-        ]))
+        return knex('gift_codes')
+          .insert({
+            code,
+            type: 'rewards',
+            rewards: {
+              cosmetics: [
+                SDK.CosmeticsLookup.Emote.HealingMysticHappy,
+                SDK.CosmeticsLookup.CardBack.Agenor,
+              ],
+            },
+          })
+          .then(() => GiftCodesModule.redeemGiftCode(userId, code))
+          .then((result) =>
+            Promise.all([
+              knex('user_cosmetic_inventory').where('user_id', userId).select(),
+              knex('gift_codes').where('code', code).first(),
+            ]),
+          )
           .then(([userCosmeticRows, giftCodeRow]) => {
-            const healingMysticHappy = _.find(userCosmeticRows, (c) => parseInt(c.cosmetic_id, 10) === SDK.CosmeticsLookup.Emote.HealingMysticHappy);
-            const agenorCardBack = _.find(userCosmeticRows, (c) => parseInt(c.cosmetic_id, 10) === SDK.CosmeticsLookup.CardBack.Agenor);
+            const healingMysticHappy = _.find(
+              userCosmeticRows,
+              (c) => parseInt(c.cosmetic_id, 10) === SDK.CosmeticsLookup.Emote.HealingMysticHappy,
+            );
+            const agenorCardBack = _.find(
+              userCosmeticRows,
+              (c) => parseInt(c.cosmetic_id, 10) === SDK.CosmeticsLookup.CardBack.Agenor,
+            );
             expect(healingMysticHappy).to.exist;
             expect(agenorCardBack).to.exist;
             expect(giftCodeRow.claimed_at).to.exist;
@@ -222,10 +281,13 @@ describe('gift codes module', () => {
 
       it('throws error if a user attempts to redeem a previously redeemed REWARDS code', () => {
         const code = `unit-test-${generatePushId()}`;
-        return knex('gift_codes').insert({
-          code,
-          type: 'rewards',
-        }).then(() => GiftCodesModule.redeemGiftCode(userId, code)).then(() => GiftCodesModule.redeemGiftCode(userId, code))
+        return knex('gift_codes')
+          .insert({
+            code,
+            type: 'rewards',
+          })
+          .then(() => GiftCodesModule.redeemGiftCode(userId, code))
+          .then(() => GiftCodesModule.redeemGiftCode(userId, code))
           .then((result) => {
             expect(result).to.not.exist;
           })
@@ -239,16 +301,19 @@ describe('gift codes module', () => {
     describe('codes with expiration', () => {
       it('does not allow use of an expired code', () => {
         const code = `unit-test-${generatePushId()}`;
-        return knex('gift_codes').insert({
-          code,
-          type: 'rewards',
-          expires_at: moment.utc().subtract(1, 'days').toDate(),
-          rewards: {
-            gold: 50,
-          },
-        }).then(() => GiftCodesModule.redeemGiftCode(userId, code)).then((result) => {
-          expect(result).to.not.exist;
-        })
+        return knex('gift_codes')
+          .insert({
+            code,
+            type: 'rewards',
+            expires_at: moment.utc().subtract(1, 'days').toDate(),
+            rewards: {
+              gold: 50,
+            },
+          })
+          .then(() => GiftCodesModule.redeemGiftCode(userId, code))
+          .then((result) => {
+            expect(result).to.not.exist;
+          })
           .catch((error) => {
             expect(error).to.exist;
             expect(error).to.be.an.instanceof(Errors.BadRequestError);
@@ -257,16 +322,19 @@ describe('gift codes module', () => {
 
       it('allows use of a code before it expires', () => {
         const code = `unit-test-${generatePushId()}`;
-        return knex('gift_codes').insert({
-          code,
-          type: 'rewards',
-          expires_at: moment.utc().add(1, 'days').toDate(),
-          rewards: {
-            gold: 10,
-          },
-        }).then(() => GiftCodesModule.redeemGiftCode(userId, code)).then((result) => {
-          expect(result).to.exist;
-        });
+        return knex('gift_codes')
+          .insert({
+            code,
+            type: 'rewards',
+            expires_at: moment.utc().add(1, 'days').toDate(),
+            rewards: {
+              gold: 10,
+            },
+          })
+          .then(() => GiftCodesModule.redeemGiftCode(userId, code))
+          .then((result) => {
+            expect(result).to.exist;
+          });
       });
     });
 
@@ -285,12 +353,15 @@ describe('gift codes module', () => {
           knex('users').where('id', userId).update({
             created_at: moment.utc().toDate(),
           }),
-        ]).then(() => GiftCodesModule.redeemGiftCode(userId, code)).then((result) => {
-          expect(result).to.not.exist;
-        }).catch((error) => {
-          expect(error).to.exist;
-          expect(error).to.be.an.instanceof(Errors.BadRequestError);
-        });
+        ])
+          .then(() => GiftCodesModule.redeemGiftCode(userId, code))
+          .then((result) => {
+            expect(result).to.not.exist;
+          })
+          .catch((error) => {
+            expect(error).to.exist;
+            expect(error).to.be.an.instanceof(Errors.BadRequestError);
+          });
       });
 
       it('allows use of a code by a user that registered after the cutoff', () => {
@@ -307,9 +378,11 @@ describe('gift codes module', () => {
           knex('users').where('id', userId).update({
             created_at: moment.utc().toDate(),
           }),
-        ]).then(() => GiftCodesModule.redeemGiftCode(userId, code)).then((result) => {
-          expect(result).to.exist;
-        });
+        ])
+          .then(() => GiftCodesModule.redeemGiftCode(userId, code))
+          .then((result) => {
+            expect(result).to.exist;
+          });
       });
     });
 
@@ -326,11 +399,16 @@ describe('gift codes module', () => {
             },
           }),
           UsersModule.updateUserProgressionWithGameOutcome(userId, null, false, generatePushId()),
-        ]).then(() => knex('user_progression').where('user_id', userId).update({
-          game_count: 10,
-        })).then(() => GiftCodesModule.redeemGiftCode(userId, code)).then((result) => {
-          expect(result).to.not.exist;
-        })
+        ])
+          .then(() =>
+            knex('user_progression').where('user_id', userId).update({
+              game_count: 10,
+            }),
+          )
+          .then(() => GiftCodesModule.redeemGiftCode(userId, code))
+          .then((result) => {
+            expect(result).to.not.exist;
+          })
           .catch((error) => {
             expect(error).to.exist;
             expect(error).to.be.an.instanceof(Errors.BadRequestError);
@@ -349,16 +427,26 @@ describe('gift codes module', () => {
             },
           }),
           UsersModule.updateUserProgressionWithGameOutcome(userId, null, false, generatePushId()),
-        ]).then(() => knex('user_progression').where('user_id', userId).update({
-          game_count: 9,
-        })).then(() => GiftCodesModule.redeemGiftCode(userId, code)).then((result) => {
-          expect(result).to.exist;
-        });
+        ])
+          .then(() =>
+            knex('user_progression').where('user_id', userId).update({
+              game_count: 9,
+            }),
+          )
+          .then(() => GiftCodesModule.redeemGiftCode(userId, code))
+          .then((result) => {
+            expect(result).to.exist;
+          });
       });
     });
 
     describe('codes with one-use per customer limit', () => {
-      beforeAll(() => knex('gift_codes').where('exclusion_id', 'unit-test-1').andWhere('claimed_by_user_id', userId).delete());
+      beforeAll(() =>
+        knex('gift_codes')
+          .where('exclusion_id', 'unit-test-1')
+          .andWhere('claimed_by_user_id', userId)
+          .delete(),
+      );
 
       it('allows one use of a one-per-customer code by a user', () => {
         const code = `unit-test-${generatePushId()}`;
@@ -371,9 +459,11 @@ describe('gift codes module', () => {
               gold: 50,
             },
           }),
-        ]).then(() => GiftCodesModule.redeemGiftCode(userId, code)).then((result) => {
-          expect(result).to.exist;
-        });
+        ])
+          .then(() => GiftCodesModule.redeemGiftCode(userId, code))
+          .then((result) => {
+            expect(result).to.exist;
+          });
       });
 
       it('does NOT allow use of two of a one-per-customer code type by a user', () => {
@@ -387,14 +477,17 @@ describe('gift codes module', () => {
               gold: 50,
             },
           }),
-        ]).then(() => GiftCodesModule.redeemGiftCode(userId, code)).then((result) => {
-          expect(result).to.not.exist;
-        }).catch((error) => {
-          Logger.module('UNITTEST').log(error.message);
-          expect(error).to.exist;
-          expect(error).to.be.an.instanceof(Errors.BadRequestError);
-          expect(error.message).to.equal('Gift Code of this type has already been claimed.');
-        });
+        ])
+          .then(() => GiftCodesModule.redeemGiftCode(userId, code))
+          .then((result) => {
+            expect(result).to.not.exist;
+          })
+          .catch((error) => {
+            Logger.module('UNITTEST').log(error.message);
+            expect(error).to.exist;
+            expect(error).to.be.an.instanceof(Errors.BadRequestError);
+            expect(error.message).to.equal('Gift Code of this type has already been claimed.');
+          });
       });
     });
   });

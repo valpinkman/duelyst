@@ -21,7 +21,9 @@ class SpellApplyModifiersToGeneral extends Spell {
   _filterApplyPositions(validPositions) {
     const finalPositions = [];
     const ownGeneral = this.getGameSession().getGeneralForPlayerId(this.getOwnerId());
-    const opponentGeneral = this.getGameSession().getGeneralForOpponentOfPlayerId(this.getOwnerId());
+    const opponentGeneral = this.getGameSession().getGeneralForOpponentOfPlayerId(
+      this.getOwnerId(),
+    );
     if (this.applyToOwnGeneral) {
       finalPositions.push(ownGeneral.getPosition());
     }
@@ -43,18 +45,26 @@ class SpellApplyModifiersToGeneral extends Spell {
       const target = board.getUnitAtPosition({ x, y });
 
       // check for apply on own General
-      if (((target != null ? target.getOwnerId() : undefined) === ownerId) && this.applyToOwnGeneral) {
+      if (
+        (target != null ? target.getOwnerId() : undefined) === ownerId &&
+        this.applyToOwnGeneral
+      ) {
         for (modifierContextObject of Array.from<any>(this.targetModifiersContextObjects)) {
           this.getGameSession().applyModifierContextObject(modifierContextObject, target);
         }
       }
 
       // check for apply on opponent General
-      if (((target != null ? target.getOwnerId() : undefined) !== ownerId) && this.applyToOpponentGeneral) {
+      if (
+        (target != null ? target.getOwnerId() : undefined) !== ownerId &&
+        this.applyToOpponentGeneral
+      ) {
         return (() => {
           const result = [];
           for (modifierContextObject of Array.from<any>(this.targetModifiersContextObjects)) {
-            result.push(this.getGameSession().applyModifierContextObject(modifierContextObject, target));
+            result.push(
+              this.getGameSession().applyModifierContextObject(modifierContextObject, target),
+            );
           }
           return result;
         })();

@@ -35,7 +35,7 @@ class ModifierStackingShadowsBonusDamageEqualNumberTiles extends ModifierStackin
 
   onDeactivate() {
     // reset to default states when deactivated
-    this._private.currentCount = (this._private.previousCount = 0);
+    this._private.currentCount = this._private.previousCount = 0;
     return this.removeManagedModifiersFromCard(this.getCard());
   }
 
@@ -99,14 +99,22 @@ class ModifierStackingShadowsBonusDamageEqualNumberTiles extends ModifierStackin
 
   addSubModifiers(numModifiers) {
     return __range__(0, numModifiers - 1, true).map((i) =>
-      this.applyManagedModifiersFromModifiersContextObjects(this.modifiersContextObjects, this.getCard()));
+      this.applyManagedModifiersFromModifiersContextObjects(
+        this.modifiersContextObjects,
+        this.getCard(),
+      ),
+    );
   }
 
   getCurrentCount() {
     let allowUntargetable;
     let shadowTileCount = 0;
-    for (var card of Array.from<any>(this.getGameSession().getBoard().getCards(CardType.Tile, (allowUntargetable = true)))) {
-      if ((card.getBaseCardId() === Cards.Tile.Shadow) && card.isOwnedBy(this.getCard().getOwner())) {
+    for (var card of Array.from<any>(
+      this.getGameSession()
+        .getBoard()
+        .getCards(CardType.Tile, (allowUntargetable = true)),
+    )) {
+      if (card.getBaseCardId() === Cards.Tile.Shadow && card.isOwnedBy(this.getCard().getOwner())) {
         shadowTileCount++;
       }
     }
@@ -121,7 +129,8 @@ class ModifierStackingShadowsBonusDamageEqualNumberTiles extends ModifierStackin
     return 0;
   }
 }
-ModifierStackingShadowsBonusDamageEqualNumberTiles.prototype.type = 'ModifierStackingShadowsBonusDamageEqualNumberTiles';
+ModifierStackingShadowsBonusDamageEqualNumberTiles.prototype.type =
+  'ModifierStackingShadowsBonusDamageEqualNumberTiles';
 ModifierStackingShadowsBonusDamageEqualNumberTiles.prototype.activeInDeck = false;
 ModifierStackingShadowsBonusDamageEqualNumberTiles.prototype.activeInHand = false;
 ModifierStackingShadowsBonusDamageEqualNumberTiles.prototype.activeInSignatureCards = false;

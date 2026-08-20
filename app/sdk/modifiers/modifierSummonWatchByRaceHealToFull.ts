@@ -40,6 +40,9 @@ class ModifierSummonWatchByRaceHealToFull extends ModifierSummonWatch {
   }
 }
 ModifierSummonWatchByRaceHealToFull.prototype.type = 'ModifierSummonWatchByRaceHealToFull';
-ModifierSummonWatchByRaceHealToFull.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericHeal'];
+ModifierSummonWatchByRaceHealToFull.prototype.fxResource = [
+  'FX.Modifiers.ModifierSummonWatch',
+  'FX.Modifiers.ModifierGenericHeal',
+];
 
 module.exports = ModifierSummonWatchByRaceHealToFull;

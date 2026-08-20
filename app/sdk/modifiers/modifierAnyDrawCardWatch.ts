@@ -22,9 +22,7 @@ class ModifierAnyDrawCardWatch extends Modifier {
   onAction(e) {
     super.onAction(e);
 
-    const {
-      action,
-    } = e;
+    const { action } = e;
 
     // watch for my player drawing a card
     if (action instanceof DrawCardAction && !(action instanceof BurnCardAction)) {

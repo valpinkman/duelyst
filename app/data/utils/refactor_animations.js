@@ -65,7 +65,10 @@
 
     // remove line breaks to compress data
     resourcesJSON = resourcesJSON.replace(/([^\}]),\n[\s\t]*?(\w)/g, '$1, $2');
-    resourcesJSON = resourcesJSON.replace(/(.*?): \{[\r\n\s\t]*([\s\S]*?)[\r\n\s\t]*\}/g, '$1: {$2}');
+    resourcesJSON = resourcesJSON.replace(
+      /(.*?): \{[\r\n\s\t]*([\s\S]*?)[\r\n\s\t]*\}/g,
+      '$1: {$2}',
+    );
 
     // write resources
     let resourcesContent = '';
@@ -84,4 +87,4 @@
     console.log('Refactor Animations -> COMPLETED');
     process.exit(0);
   });
-}());
+})();

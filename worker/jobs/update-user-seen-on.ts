@@ -30,5 +30,6 @@ module.exports = function (job, done) {
     .then(function () {
       Logger.module('JOB').timeEnd(`[J:${job.id}] Update User (${userId}) Seen On`);
       return done();
-    }).catch((error) => done(error));
+    })
+    .catch((error) => done(error));
 };

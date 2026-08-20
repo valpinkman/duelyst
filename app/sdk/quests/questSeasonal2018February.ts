@@ -20,7 +20,9 @@ class QuestSeasonal2018February extends Quest {
   static Identifier = 30007;
 
   constructor() {
-    super(QuestSeasonal2018February.Identifier, i18next.t('quests.monthly_quest_title'), [QuestType.Seasonal]);
+    super(QuestSeasonal2018February.Identifier, i18next.t('quests.monthly_quest_title'), [
+      QuestType.Seasonal,
+    ]);
     this.params.completionProgress = 15;
   }
 
@@ -33,7 +35,9 @@ class QuestSeasonal2018February extends Quest {
   }
 
   isAvailableOn(momentUtc) {
-    return momentUtc.isAfter(moment.utc('2018-01-30')) && momentUtc.isBefore(moment.utc('2018-03-01'));
+    return (
+      momentUtc.isAfter(moment.utc('2018-01-30')) && momentUtc.isBefore(moment.utc('2018-03-01'))
+    );
   }
 }
 QuestSeasonal2018February.prototype.isReplaceable = false;

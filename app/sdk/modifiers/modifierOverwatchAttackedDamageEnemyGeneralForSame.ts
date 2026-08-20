@@ -15,7 +15,9 @@ class ModifierOverwatchAttackedDamageEnemyGeneralForSame extends ModifierOverwat
   static description = 'When this minion is attacked, deal the same damage to enemy general.';
 
   onOverwatch(action) {
-    const enemyGeneral = this.getCard().getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
+    const enemyGeneral = this.getCard()
+      .getGameSession()
+      .getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
 
     if (enemyGeneral != null) {
       const damageAction = new DamageAction(this.getGameSession());
@@ -27,6 +29,7 @@ class ModifierOverwatchAttackedDamageEnemyGeneralForSame extends ModifierOverwat
     }
   }
 }
-ModifierOverwatchAttackedDamageEnemyGeneralForSame.prototype.type = 'ModifierOverwatchAttackedDamageEnemyGeneralForSame';
+ModifierOverwatchAttackedDamageEnemyGeneralForSame.prototype.type =
+  'ModifierOverwatchAttackedDamageEnemyGeneralForSame';
 
 module.exports = ModifierOverwatchAttackedDamageEnemyGeneralForSame;

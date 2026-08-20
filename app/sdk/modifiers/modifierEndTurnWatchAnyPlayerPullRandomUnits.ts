@@ -24,24 +24,36 @@ class ModifierEndTurnWatchAnyPlayerPullRandomUnits extends ModifierEndTurnWatchA
       const entities = this.getGameSession().getBoard().getUnits(true);
       const potentialTargets = [];
       for (var entity of Array.from<any>(entities)) {
-        if ((entity != null) && !this.positionsAreNearby(entity.getPosition(), this.getCard().getPosition())) {
+        if (
+          entity != null &&
+          !this.positionsAreNearby(entity.getPosition(), this.getCard().getPosition())
+        ) {
           potentialTargets.push(entity);
         }
       }
 
       if (potentialTargets.length > 0) {
         let numTargets = 1;
-        while ((Math.random() > 0.5) && (numTargets < potentialTargets.length)) {
+        while (Math.random() > 0.5 && numTargets < potentialTargets.length) {
           numTargets++;
         }
         return (() => {
           const result = [];
-          for (let i = 0, end = numTargets, asc = end >= 0; asc ? i < end : i > end; asc ? i++ : i--) {
-            var unitToTeleport = potentialTargets.splice(this.getGameSession().getRandomIntegerForExecution(potentialTargets.length), 1)[0];
+          for (
+            let i = 0, end = numTargets, asc = end >= 0;
+            asc ? i < end : i > end;
+            asc ? i++ : i--
+          ) {
+            var unitToTeleport = potentialTargets.splice(
+              this.getGameSession().getRandomIntegerForExecution(potentialTargets.length),
+              1,
+            )[0];
             var randomTeleportAction = new RandomTeleportAction(this.getGameSession());
             randomTeleportAction.setOwnerId(this.getCard().getOwnerId());
             randomTeleportAction.setSource(unitToTeleport);
-            randomTeleportAction.setFXResource(_.union(randomTeleportAction.getFXResource(), this.getFXResource()));
+            randomTeleportAction.setFXResource(
+              _.union(randomTeleportAction.getFXResource(), this.getFXResource()),
+            );
             randomTeleportAction.setPatternSourcePosition(this.getCard().getPosition());
             randomTeleportAction.setTeleportPattern(CONFIG.PATTERN_3x3);
             result.push(this.getGameSession().executeAction(randomTeleportAction));
@@ -53,12 +65,13 @@ class ModifierEndTurnWatchAnyPlayerPullRandomUnits extends ModifierEndTurnWatchA
   }
 
   positionsAreNearby(position1, position2) {
-    if ((Math.abs(position1.x - position2.x) <= 1) && (Math.abs(position1.y - position2.y) <= 1)) {
+    if (Math.abs(position1.x - position2.x) <= 1 && Math.abs(position1.y - position2.y) <= 1) {
       return true;
     }
     return false;
   }
 }
-ModifierEndTurnWatchAnyPlayerPullRandomUnits.prototype.type = 'ModifierEndTurnWatchAnyPlayerPullRandomUnits';
+ModifierEndTurnWatchAnyPlayerPullRandomUnits.prototype.type =
+  'ModifierEndTurnWatchAnyPlayerPullRandomUnits';
 
 module.exports = ModifierEndTurnWatchAnyPlayerPullRandomUnits;

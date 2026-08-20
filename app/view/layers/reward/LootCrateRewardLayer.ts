@@ -27,9 +27,10 @@ const audio_engine = require('../../../audio/audio_engine');
  *************************************************************************** */
 
 const LootCrateRewardLayer = RewardLayer.extend({
-
   getRequiredResources() {
-    return RewardLayer.prototype.getRequiredResources.call(this).concat(PKGS.getPkgForIdentifier('loot_crate'));
+    return RewardLayer.prototype.getRequiredResources
+      .call(this)
+      .concat(PKGS.getPkgForIdentifier('loot_crate'));
   },
 
   showBackground() {
@@ -71,8 +72,14 @@ const LootCrateRewardLayer = RewardLayer.extend({
           offsetX = 0.0;
         }
         for (let i = 0; i < numRewards; i++) {
-          const disableCrateDescription = (i != (numRewards - 1));
-          showPromises.push(this._showRewardLootCrate(lootCrateTypes[i], cc.p(offsetX, offsetY), disableCrateDescription));
+          const disableCrateDescription = i != numRewards - 1;
+          showPromises.push(
+            this._showRewardLootCrate(
+              lootCrateTypes[i],
+              cc.p(offsetX, offsetY),
+              disableCrateDescription,
+            ),
+          );
           offsetX += offsetPerReward;
         }
       }
@@ -93,14 +100,18 @@ const LootCrateRewardLayer = RewardLayer.extend({
       if (lootCrateTypes[0] === SDK.CosmeticsChestTypeLookup.Boss) {
         subtitle = '';
       }
-      showPromises.push(new Promise((resolve) => {
-        this.runAction(cc.sequence(
-          cc.delayTime(1.0),
-          cc.callFunc(() => {
-            this.showTitles(CONFIG.ANIMATE_FAST_DURATION, title, subtitle).then(resolve);
-          }),
-        ));
-      }));
+      showPromises.push(
+        new Promise((resolve) => {
+          this.runAction(
+            cc.sequence(
+              cc.delayTime(1.0),
+              cc.callFunc(() => {
+                this.showTitles(CONFIG.ANIMATE_FAST_DURATION, title, subtitle).then(resolve);
+              }),
+            ),
+          );
+        }),
+      );
 
       return Promise.all(showPromises).then(() => {
         this.setIsContinueOnPressAnywhere(true);
@@ -158,20 +169,25 @@ const LootCrateRewardLayer = RewardLayer.extend({
       this.addChild(explosionParticles, -1);
 
       // run the wipe effect
-      wipeFlare.runAction(cc.sequence(
-        cc.fadeIn(0.01),
-        cc.actionTween(0.25, 'phase', 0.0, 0.5),
-        cc.actionTween(0.75, 'phase', 0.5, 1.5),
-        cc.fadeOut(0.1),
-      ));
+      wipeFlare.runAction(
+        cc.sequence(
+          cc.fadeIn(0.01),
+          cc.actionTween(0.25, 'phase', 0.0, 0.5),
+          cc.actionTween(0.75, 'phase', 0.5, 1.5),
+          cc.fadeOut(0.1),
+        ),
+      );
 
       // show reward
-      lootCrateNode.showReveal()
+      lootCrateNode
+        .showReveal()
         .then(() => {
           const allPromises = [];
           allPromises.push(lootCrateNode.showIdleState(CONFIG.ANIMATE_MEDIUM_DURATION));
           if (!disableCrateDescription) {
-            allPromises.push(lootCrateNode.showCrateDescriptionLabel(CONFIG.ANIMATE_MEDIUM_DURATION));
+            allPromises.push(
+              lootCrateNode.showCrateDescriptionLabel(CONFIG.ANIMATE_MEDIUM_DURATION),
+            );
           }
 
           return Promise.all([allPromises]);
@@ -182,7 +198,6 @@ const LootCrateRewardLayer = RewardLayer.extend({
         });
     });
   },
-
 });
 
 LootCrateRewardLayer.create = function (layer) {

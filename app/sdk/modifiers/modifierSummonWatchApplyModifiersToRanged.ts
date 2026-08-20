@@ -16,7 +16,11 @@ class ModifierSummonWatchApplyModifiersToRanged extends ModifierSummonWatchApply
     return card.hasActiveModifierClass(ModifierRanged);
   }
 }
-ModifierSummonWatchApplyModifiersToRanged.prototype.type = 'ModifierSummonWatchApplyModifiersToRanged';
-ModifierSummonWatchApplyModifiersToRanged.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierSummonWatchApplyModifiersToRanged.prototype.type =
+  'ModifierSummonWatchApplyModifiersToRanged';
+ModifierSummonWatchApplyModifiersToRanged.prototype.fxResource = [
+  'FX.Modifiers.ModifierSummonWatch',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 
 module.exports = ModifierSummonWatchApplyModifiersToRanged;

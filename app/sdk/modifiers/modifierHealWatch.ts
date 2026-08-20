@@ -22,11 +22,9 @@ class ModifierHealWatch extends Modifier {
   onAfterCleanupAction(e) {
     super.onAfterCleanupAction(e);
 
-    const {
-      action,
-    } = e;
+    const { action } = e;
     // watch for ANY  minion or General being healed (actually having HP increased by the heal, not just target of a healAction)
-    if (action instanceof HealAction && (action.getTotalHealApplied() > 0)) {
+    if (action instanceof HealAction && action.getTotalHealApplied() > 0) {
       return this.onHealWatch(action);
     }
   }

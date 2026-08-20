@@ -13,13 +13,14 @@ const MysteryCrateNode = require('./MysteryCrateNode');
 // TODO: Rewrite this
 
 var MysteryBossCrateNode = MysteryCrateNode.extend({
-
   getCrateType() {
     return MysteryBossCrateNode.crateType;
   },
 
   getCrateCount() {
-    return CrateManager.getInstance().getCosmeticChestCountForType(SDK.CosmeticsChestTypeLookup.Boss);
+    return CrateManager.getInstance().getCosmeticChestCountForType(
+      SDK.CosmeticsChestTypeLookup.Boss,
+    );
   },
 
   getRequiredResources() {
@@ -58,7 +59,6 @@ var MysteryBossCrateNode = MysteryCrateNode.extend({
     MysteryCrateNode.prototype.showCrateMaxCountLabel.apply(this, arguments);
     this._crateMaxCountLabel.setString('x');
   },
-
 });
 
 MysteryBossCrateNode.crateType = SDK.CosmeticsChestTypeLookup.Boss;

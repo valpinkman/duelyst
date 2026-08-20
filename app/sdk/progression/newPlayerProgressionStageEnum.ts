@@ -1,7 +1,6 @@
 const Enum = require('enum');
 
 const stages = new Enum([
-
   // # per concept progression
   // 'Inactive',
   // 'Unread',
@@ -22,7 +21,6 @@ const stages = new Enum([
 
   // skipped everything is always last
   'Skipped',
-
 ]);
 
 module.exports = stages;

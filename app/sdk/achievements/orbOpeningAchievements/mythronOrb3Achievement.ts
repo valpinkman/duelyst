@@ -9,7 +9,8 @@ const i18next = require('i18next');
 class MythronOrb3Achievement extends Achievement {
   static id = 'mythron3';
   static title = 'Third Trial';
-  static description = 'You\'ve opened 21 Mythron Orbs, here\'s a brand new Mythron card. You\'ll get another after opening 10 more orbs.';
+  static description =
+    "You've opened 21 Mythron Orbs, here's a brand new Mythron card. You'll get another after opening 10 more orbs.";
   static progressRequired = 21;
   static rewards = { mythronCard: 1 };
 

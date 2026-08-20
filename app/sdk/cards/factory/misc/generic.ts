@@ -96,9 +96,11 @@ class CardFactory_Generic {
       card.setDescription('Move a nearby enemy minion to any other space on the battlefield.');
       card.manaCost = 0;
       card.targetType = CardType.Unit;
-      card.setFollowups([{
-        id: Cards.Spell.FollowupTeleport,
-      }]);
+      card.setFollowups([
+        {
+          id: Cards.Spell.FollowupTeleport,
+        },
+      ]);
       card.setFXResource(['FX.Cards.Spell.Repulsion']);
       card.setBaseSoundResource({
         apply: RSX.sfx_spell_voidpulse.audio,
@@ -212,7 +214,9 @@ class CardFactory_Generic {
       card.targetModifiersContextObjects = [PlayerModifierMechazorSummoned.createContextObject()];
       card.manaCost = 0;
       card.cardDataOrIndexToSpawn = { id: Cards.Neutral.Mechaz0r };
-      card.setFollowupConditions([PlayerModifierMechazorBuildProgress.followupConditionIsMechazorComplete]);
+      card.setFollowupConditions([
+        PlayerModifierMechazorBuildProgress.followupConditionIsMechazorComplete,
+      ]);
       card.setFXResource(['FX.Factions.Neutral.SpawnSpecialFX', 'FX.Cards.Spell.DeployMechaz0r']);
       card.setBaseSoundResource({
         apply: RSX.sfx_neutral_jaxtruesight_attack_swing.audio,
@@ -255,9 +259,11 @@ class CardFactory_Generic {
       card.name = 'Clone Self';
       card.setDescription('Clone self into a nearby space.');
       card.manaCost = 0;
-      card.setFollowups([{
-        id: Cards.Spell.CloneSourceEntity,
-      }]);
+      card.setFollowups([
+        {
+          id: Cards.Spell.CloneSourceEntity,
+        },
+      ]);
       card.setFXResource(['FX.Factions.Neutral.UnitSpawnFX', 'FX.Cards.Spell.CloneSourceEntity2X']);
       card.setBaseSoundResource({
         apply: RSX.sfx_spell_voidwalk.audio,
@@ -272,9 +278,11 @@ class CardFactory_Generic {
       card.name = 'Clone Self';
       card.setDescription('Clone self into a nearby space.');
       card.manaCost = 0;
-      card.setFollowups([{
-        id: Cards.Spell.CloneSourceEntity2X,
-      }]);
+      card.setFollowups([
+        {
+          id: Cards.Spell.CloneSourceEntity2X,
+        },
+      ]);
       card.setFXResource(['FX.Factions.Neutral.UnitSpawnFX', 'FX.Cards.Spell.CloneSourceEntity3X']);
       card.setBaseSoundResource({
         apply: RSX.sfx_spell_voidwalk.audio,
@@ -289,9 +297,11 @@ class CardFactory_Generic {
       card.name = 'Clone Self';
       card.setDescription('Clone self into a nearby space.');
       card.manaCost = 0;
-      card.setFollowups([{
-        id: Cards.Spell.CloneSourceEntity3X,
-      }]);
+      card.setFollowups([
+        {
+          id: Cards.Spell.CloneSourceEntity3X,
+        },
+      ]);
       card.setFXResource(['FX.Factions.Neutral.UnitSpawnFX', 'FX.Cards.Spell.CloneSourceEntity3X']);
       card.setBaseSoundResource({
         apply: RSX.sfx_spell_voidwalk.audio,
@@ -320,9 +330,11 @@ class CardFactory_Generic {
       card.name = 'Clone Self';
       card.setDescription('Clone self nearby general.');
       card.manaCost = 0;
-      card.setFollowups([{
-        id: Cards.Spell.CloneSourceEntityNearbyGeneral,
-      }]);
+      card.setFollowups([
+        {
+          id: Cards.Spell.CloneSourceEntityNearbyGeneral,
+        },
+      ]);
       card.setFXResource(['FX.Factions.Neutral.UnitSpawnFX', 'FX.Cards.Spell.CloneSourceEntity2X']);
       card.setBaseSoundResource({
         apply: RSX.sfx_spell_voidwalk.audio,
@@ -473,7 +485,10 @@ class CardFactory_Generic {
       card.name = 'Assassinate';
       card.setDescription('Kill target minion.');
       card.manaCost = 0;
-      card.setFXResource(['FX.Factions.Neutral.UnitSpawnFX', 'FX.Cards.Spell.FollowupKillTargetByAttack']);
+      card.setFXResource([
+        'FX.Factions.Neutral.UnitSpawnFX',
+        'FX.Cards.Spell.FollowupKillTargetByAttack',
+      ]);
       card.setBaseSoundResource({
         apply: RSX.sfx_spell_voidwalk.audio,
       });
@@ -642,7 +657,9 @@ class CardFactory_Generic {
       card.name = 'Festive Spirit';
       card.setDescription('Snowchasers are on their way with Frostfire gifts!');
       card.applyToOwnGeneral = true;
-      card.setTargetModifiersContextObjects([GameSessionModifierFestiveSpirit.createContextObject()]);
+      card.setTargetModifiersContextObjects([
+        GameSessionModifierFestiveSpirit.createContextObject(),
+      ]);
       card.setFXResource(['FX.Cards.Spell.FestiveSpirit']);
       card.setBaseSoundResource({
         apply: RSX.sfx_spell_naturalselection.audio,

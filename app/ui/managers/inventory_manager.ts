@@ -37,7 +37,6 @@ var ProfileManager = require('./profile_manager');
 var Manager = require('./manager');
 
 var InventoryManager = Manager.extend({
-
   // backbone models / collections
   walletModel: null,
   boosterPacksCollection: null,
@@ -67,7 +66,8 @@ var InventoryManager = Manager.extend({
     const _self = this;
     Manager.prototype.onBeforeConnect.call(this);
 
-    ProfileManager.getInstance().onReady()
+    ProfileManager.getInstance()
+      .onReady()
       .then(function () {
         var userId = ProfileManager.getInstance().get('id');
 
@@ -115,51 +115,69 @@ var InventoryManager = Manager.extend({
           firebase: process.env.FIREBASE_URL + 'user-inventory/' + userId + '/spirit-orb-total',
         });
 
-        _self.onReady().then(function () {
-        // listen to changes immediately so we don't miss anything
-          this.listenTo(this.walletModel, 'change', this.onWalletChange);
-          this.listenTo(this.boosterPacksCollection, 'change add remove', this.onBoosterPackCollectionChange);
-          this.listenTo(this.cardsCollection, 'add', this.onCardsCollectionCardAdded);
-          this.listenTo(this.cardsCollection, 'remove', this.onCardsCollectionCardRemoved);
-          this.listenTo(this.cardsCollection, 'change', this.onCardsCollectionChange);
-          this.listenTo(this.cardLoreCollection, 'change add remove', this.onCardLoreCollectionChange);
-          this.listenTo(this.decksCollection, 'change add remove', this.onDecksCollectionChange);
-          this.listenTo(this.cosmeticsCollection, 'add remove', this.onCosmeticsCollectionChange);
-          this.listenTo(this.totalOrbCountModel, 'change', this.onOrbCountCollectionChange);
+        _self.onReady().then(
+          function () {
+            // listen to changes immediately so we don't miss anything
+            this.listenTo(this.walletModel, 'change', this.onWalletChange);
+            this.listenTo(
+              this.boosterPacksCollection,
+              'change add remove',
+              this.onBoosterPackCollectionChange,
+            );
+            this.listenTo(this.cardsCollection, 'add', this.onCardsCollectionCardAdded);
+            this.listenTo(this.cardsCollection, 'remove', this.onCardsCollectionCardRemoved);
+            this.listenTo(this.cardsCollection, 'change', this.onCardsCollectionChange);
+            this.listenTo(
+              this.cardLoreCollection,
+              'change add remove',
+              this.onCardLoreCollectionChange,
+            );
+            this.listenTo(this.decksCollection, 'change add remove', this.onDecksCollectionChange);
+            this.listenTo(this.cosmeticsCollection, 'add remove', this.onCosmeticsCollectionChange);
+            this.listenTo(this.totalOrbCountModel, 'change', this.onOrbCountCollectionChange);
 
-          // update decks when game data is ready
-          Promise.all([
-            GameDataManager.getInstance().onReady(),
-            ProgressionManager.getInstance().onReady(),
-            NewPlayerManager.getInstance().onReady(),
-          ]).then(function () {
-            // Check if player is missing codex chapters they should have earned once progression manager is ready
-            this.checkForMissingCodexChapters();
+            // update decks when game data is ready
+            Promise.all([
+              GameDataManager.getInstance().onReady(),
+              ProgressionManager.getInstance().onReady(),
+              NewPlayerManager.getInstance().onReady(),
+            ]).then(
+              function () {
+                // Check if player is missing codex chapters they should have earned once progression manager is ready
+                this.checkForMissingCodexChapters();
 
-            var invalidDeckModels = [];
-            this.decksCollection.each(function (deckModel) {
-              var deckFactionId = deckModel.get('faction_id');
-              if (deckFactionId == null
-              || !ProgressionManager.getInstance().isFactionUnlocked(deckModel.get('faction_id'))) {
-              // no faction or faction not unlocked
-                invalidDeckModels.push(deckModel);
-              } else {
-              // decks at this point have all properties
-              // except their card models (these are not serialized)
-              // so we need to update the card models from the list of card ids
-                deckModel.updateCardModelsFromCardsData();
+                var invalidDeckModels = [];
+                this.decksCollection.each(
+                  function (deckModel) {
+                    var deckFactionId = deckModel.get('faction_id');
+                    if (
+                      deckFactionId == null ||
+                      !ProgressionManager.getInstance().isFactionUnlocked(
+                        deckModel.get('faction_id'),
+                      )
+                    ) {
+                      // no faction or faction not unlocked
+                      invalidDeckModels.push(deckModel);
+                    } else {
+                      // decks at this point have all properties
+                      // except their card models (these are not serialized)
+                      // so we need to update the card models from the list of card ids
+                      deckModel.updateCardModelsFromCardsData();
 
-                // deck must have general
-                if (!deckModel.hasGeneral()) {
-                  invalidDeckModels.push(deckModel);
-                }
-              }
-            }.bind(this));
+                      // deck must have general
+                      if (!deckModel.hasGeneral()) {
+                        invalidDeckModels.push(deckModel);
+                      }
+                    }
+                  }.bind(this),
+                );
 
-            // remove all invalid decks
-            this.decksCollection.remove(invalidDeckModels);
-          }.bind(this));
-        }.bind(_self));
+                // remove all invalid decks
+                this.decksCollection.remove(invalidDeckModels);
+              }.bind(this),
+            );
+          }.bind(_self),
+        );
 
         _self._markAsReadyWhenModelsAndCollectionsSynced([
           _self.walletModel,
@@ -192,7 +210,9 @@ var InventoryManager = Manager.extend({
 
   onBoosterPackCollectionChange: function () {
     Logger.module('UI').log('InventoryManager::onBoosterPackCollectionChange()');
-    this.trigger(EVENTS.booster_pack_collection_change, { collection: this.boosterPacksCollection });
+    this.trigger(EVENTS.booster_pack_collection_change, {
+      collection: this.boosterPacksCollection,
+    });
   },
 
   onCardsCollectionCardAdded: function (addedCardModel) {
@@ -202,7 +222,10 @@ var InventoryManager = Manager.extend({
       this._updateLocalCardCacheWithCardInventoryCount(cardId, addedCardModel.get('count'));
     }
 
-    this.trigger(EVENTS.cards_collection_change, { model: addedCardModel, collection: this.cardsCollection });
+    this.trigger(EVENTS.cards_collection_change, {
+      model: addedCardModel,
+      collection: this.cardsCollection,
+    });
   },
 
   onCardsCollectionCardRemoved: function (removedCardModel) {
@@ -212,7 +235,10 @@ var InventoryManager = Manager.extend({
       this._updateLocalCardCacheWithCardInventoryCount(cardId, 0);
     }
 
-    this.trigger(EVENTS.cards_collection_change, { model: removedCardModel, collection: this.cardsCollection });
+    this.trigger(EVENTS.cards_collection_change, {
+      model: removedCardModel,
+      collection: this.cardsCollection,
+    });
   },
 
   onCardsCollectionChange: function (changedInventoryModel) {
@@ -229,26 +255,35 @@ var InventoryManager = Manager.extend({
       }
     } else {
       // because this could fire before game data is ready
-      GameDataManager.getInstance().onReady().then(function () {
-        // sync all cards
-        this.cardsCollection.each(function (inventoryCardModel) {
-          var gameDataCardModel = GameDataManager.getInstance().getVisibleCardModelById(inventoryCardModel.id);
-          if (gameDataCardModel != null) {
-            gameDataCardModel.set('inventoryCount', inventoryCardModel.get('count'));
-          }
-        });
+      GameDataManager.getInstance()
+        .onReady()
+        .then(
+          function () {
+            // sync all cards
+            this.cardsCollection.each(function (inventoryCardModel) {
+              var gameDataCardModel = GameDataManager.getInstance().getVisibleCardModelById(
+                inventoryCardModel.id,
+              );
+              if (gameDataCardModel != null) {
+                gameDataCardModel.set('inventoryCount', inventoryCardModel.get('count'));
+              }
+            });
 
-        // update unlocked/crafting state for all cards
-        GameDataManager.getInstance().getVisibleCardsCollection().updateCardsCount();
+            // update unlocked/crafting state for all cards
+            GameDataManager.getInstance().getVisibleCardsCollection().updateCardsCount();
 
-        // sync all decks
-        this.decksCollection.each(function (deckModel) {
-          deckModel.updatePropertiesFromCardModels();
-        });
-      }.bind(this));
+            // sync all decks
+            this.decksCollection.each(function (deckModel) {
+              deckModel.updatePropertiesFromCardModels();
+            });
+          }.bind(this),
+        );
     }
 
-    this.trigger(EVENTS.cards_collection_change, { model: changedInventoryModel, collection: this.cardsCollection });
+    this.trigger(EVENTS.cards_collection_change, {
+      model: changedInventoryModel,
+      collection: this.cardsCollection,
+    });
   },
 
   _updateLocalCardCacheWithCardInventoryCount: function (cardId, newInventoryCount) {
@@ -256,13 +291,23 @@ var InventoryManager = Manager.extend({
     if (GameDataManager.getInstance().getIsReady()) {
       this._updateLocalCardCacheWithCardInventoryCountWhenGameDataReady(cardId, newInventoryCount);
     } else {
-      GameDataManager.getInstance().onReady().then(function () {
-        this._updateLocalCardCacheWithCardInventoryCountWhenGameDataReady(cardId, newInventoryCount);
-      }.bind(this));
+      GameDataManager.getInstance()
+        .onReady()
+        .then(
+          function () {
+            this._updateLocalCardCacheWithCardInventoryCountWhenGameDataReady(
+              cardId,
+              newInventoryCount,
+            );
+          }.bind(this),
+        );
     }
   },
 
-  _updateLocalCardCacheWithCardInventoryCountWhenGameDataReady: function (cardId, newInventoryCount) {
+  _updateLocalCardCacheWithCardInventoryCountWhenGameDataReady: function (
+    cardId,
+    newInventoryCount,
+  ) {
     // update card and any decks it is in
     var gameDataCardModel = GameDataManager.getInstance().getVisibleCardModelById(cardId);
     if (gameDataCardModel != null) {
@@ -304,18 +349,30 @@ var InventoryManager = Manager.extend({
       }
 
       // trigger change event
-      this.trigger(EVENTS.card_lore_collection_change, { card_id: cardId, collection: this.cardLoreCollection });
+      this.trigger(EVENTS.card_lore_collection_change, {
+        card_id: cardId,
+        collection: this.cardLoreCollection,
+      });
     }
   },
 
   onDecksCollectionChange: function (deckModel) {
     Logger.module('UI').log('InventoryManager::onDecksCollectionChange');
-    this.trigger(EVENTS.decks_collection_change, { model: deckModel, collection: this.decksCollection });
+    this.trigger(EVENTS.decks_collection_change, {
+      model: deckModel,
+      collection: this.decksCollection,
+    });
   },
 
   onCosmeticsCollectionChange: function (cosmeticModel) {
     var cosmeticId = cosmeticModel && cosmeticModel.get('id');
-    Logger.module('UI').log('InventoryManager::onCosmeticsCollectionChange()', cosmeticId, this.hasCosmeticById(cosmeticId), SDK.CosmeticsFactory.isIdentifierForCardSkin(cosmeticId), cosmeticModel);
+    Logger.module('UI').log(
+      'InventoryManager::onCosmeticsCollectionChange()',
+      cosmeticId,
+      this.hasCosmeticById(cosmeticId),
+      SDK.CosmeticsFactory.isIdentifierForCardSkin(cosmeticId),
+      cosmeticModel,
+    );
     if (cosmeticId != null && SDK.CosmeticsFactory.isIdentifierForCardSkin(cosmeticId)) {
       var cardId = SDK.Cards.getCardIdForCardSkinId(cosmeticId);
       var newInventoryCount;
@@ -331,11 +388,17 @@ var InventoryManager = Manager.extend({
       this._updateLocalCardCacheWithCardInventoryCount(cardId, newInventoryCount);
     }
 
-    this.trigger(EVENTS.cosmetics_collection_change, { model: cosmeticModel, collection: this.cosmeticsCollection });
+    this.trigger(EVENTS.cosmetics_collection_change, {
+      model: cosmeticModel,
+      collection: this.cosmeticsCollection,
+    });
   },
 
   onOrbCountCollectionChange: function (orbCountModel) {
-    this.trigger(EVENTS.orb_count_collection_change, { model: orbCountModel, collection: this.totalOrbCountModel });
+    this.trigger(EVENTS.orb_count_collection_change, {
+      model: orbCountModel,
+      collection: this.totalOrbCountModel,
+    });
   },
 
   /* endregion EVENTS */
@@ -395,49 +458,63 @@ var InventoryManager = Manager.extend({
       }
       $.ajax({
         data: JSON.stringify({ read_at: moment().utc() }),
-        url: process.env.API_URL + '/api/me/inventory/card_lore_collection/' + cardId + '/read_lore_at',
+        url:
+          process.env.API_URL +
+          '/api/me/inventory/card_lore_collection/' +
+          cardId +
+          '/read_lore_at',
         type: 'PUT',
         contentType: 'application/json',
         dataType: 'json',
-      }).fail(function () {
-        // trigger change on failure to remove request and update ui
-        this.onCardLoreCollectionChangeForCardId(cardId);
-      }.bind(this));
+      }).fail(
+        function () {
+          // trigger change on failure to remove request and update ui
+          this.onCardLoreCollectionChangeForCardId(cardId);
+        }.bind(this),
+      );
     }
   },
 
   buyBoosterPacksWithGold: function (numBoosterPacks, cardSetId, sku) {
-    if (numBoosterPacks == null || isNaN(numBoosterPacks) || numBoosterPacks <= 0) { numBoosterPacks = 1; }
-    if (cardSetId == null) { cardSetId = SDK.CardSet.Core; }
+    if (numBoosterPacks == null || isNaN(numBoosterPacks) || numBoosterPacks <= 0) {
+      numBoosterPacks = 1;
+    }
+    if (cardSetId == null) {
+      cardSetId = SDK.CardSet.Core;
+    }
     if (this.walletModel.get('gold_amount') >= numBoosterPacks * ORB_GOLD_COST) {
       NewPlayerManager.getInstance().setHasPurchasedBoosterPack();
 
-      return new Promise(function (resolve, reject) {
-        var request = $.ajax({
-          data: JSON.stringify({
-            sku,
-            qty: numBoosterPacks,
-            card_set_id: cardSetId,
-            currency_type: 'soft',
-          }),
-          url: process.env.API_URL + '/api/me/inventory/spirit_orbs',
-          type: 'POST',
-          contentType: 'application/json',
-          dataType: 'json',
-        });
-
-        request.done(function (response) {
-          Analytics.track('spirit orb purchased with gold', {
-            category: Analytics.EventCategory.SpiritOrbs,
+      return new Promise(
+        function (resolve, reject) {
+          var request = $.ajax({
+            data: JSON.stringify({
+              sku,
+              qty: numBoosterPacks,
+              card_set_id: cardSetId,
+              currency_type: 'soft',
+            }),
+            url: process.env.API_URL + '/api/me/inventory/spirit_orbs',
+            type: 'POST',
+            contentType: 'application/json',
+            dataType: 'json',
           });
-          resolve(response);
-        });
 
-        request.fail(function (response) {
-          var errorMessage = response.responseJSON && response.responseJSON.message || 'Purchase failed. Please try again.';
-          reject(errorMessage);
-        });
-      }.bind(this));
+          request.done(function (response) {
+            Analytics.track('spirit orb purchased with gold', {
+              category: Analytics.EventCategory.SpiritOrbs,
+            });
+            resolve(response);
+          });
+
+          request.fail(function (response) {
+            var errorMessage =
+              (response.responseJSON && response.responseJSON.message) ||
+              'Purchase failed. Please try again.';
+            reject(errorMessage);
+          });
+        }.bind(this),
+      );
     } else {
       return Promise.reject('Not enough gold.');
     }
@@ -449,27 +526,31 @@ var InventoryManager = Manager.extend({
       if (saleData != null && saleData.saleId) {
         saleId = saleData.saleId;
       }
-      return new Promise(function (resolve, reject) {
-        var request = $.ajax({
-          data: JSON.stringify({
-            product_sku: sku,
-            sale_id: saleId,
-          }),
-          url: process.env.API_URL + '/api/me/shop/premium_purchase',
-          type: 'POST',
-          contentType: 'application/json',
-          dataType: 'json',
-        });
+      return new Promise(
+        function (resolve, reject) {
+          var request = $.ajax({
+            data: JSON.stringify({
+              product_sku: sku,
+              sale_id: saleId,
+            }),
+            url: process.env.API_URL + '/api/me/shop/premium_purchase',
+            type: 'POST',
+            contentType: 'application/json',
+            dataType: 'json',
+          });
 
-        request.done(function (response) {
-          resolve(response);
-        });
+          request.done(function (response) {
+            resolve(response);
+          });
 
-        request.fail(function (response) {
-          var errorMessage = response.responseJSON && response.responseJSON.message || 'Purchase failed. Please try again.';
-          reject(errorMessage);
-        });
-      }.bind(this));
+          request.fail(function (response) {
+            var errorMessage =
+              (response.responseJSON && response.responseJSON.message) ||
+              'Purchase failed. Please try again.';
+            reject(errorMessage);
+          });
+        }.bind(this),
+      );
     } else {
       return Promise.reject('No purchase method provided.');
     }
@@ -479,206 +560,240 @@ var InventoryManager = Manager.extend({
     if (this.walletModel.get('card_last_four_digits') || cardToken) {
       NewPlayerManager.getInstance().setHasPurchasedBoosterPack();
 
-      return new Promise(function (resolve, reject) {
-        var request = $.ajax({
-          data: JSON.stringify({ product_sku: sku, card_token: cardToken }),
-          url: process.env.API_URL + '/api/me/shop/purchase',
-          type: 'POST',
-          contentType: 'application/json',
-          dataType: 'json',
-        });
+      return new Promise(
+        function (resolve, reject) {
+          var request = $.ajax({
+            data: JSON.stringify({ product_sku: sku, card_token: cardToken }),
+            url: process.env.API_URL + '/api/me/shop/purchase',
+            type: 'POST',
+            contentType: 'application/json',
+            dataType: 'json',
+          });
 
-        request.done(function (response) {
-          resolve(response);
-        });
+          request.done(function (response) {
+            resolve(response);
+          });
 
-        request.fail(function (response) {
-          var errorMessage = response.responseJSON && response.responseJSON.message || 'Purchase failed. Please try again.';
-          reject(errorMessage);
-        });
-      }.bind(this));
+          request.fail(function (response) {
+            var errorMessage =
+              (response.responseJSON && response.responseJSON.message) ||
+              'Purchase failed. Please try again.';
+            reject(errorMessage);
+          });
+        }.bind(this),
+      );
     } else {
       return Promise.reject('No purchase method provided.');
     }
   },
 
   craftCosmetic: function (cosmeticId) {
-    return new Promise(function (resolve, reject) {
-      var request = $.ajax({
-        url: process.env.API_URL + '/api/me/inventory/cosmetics/' + cosmeticId,
-        type: 'POST',
-        contentType: 'application/json',
-        dataType: 'json',
-      });
-      request.done(function (response) {
-        resolve(response);
-      });
-      request.fail(function (response) {
-        var errorMessage = response.responseJSON && response.responseJSON.message || i18next.t('cosmetics.cosmetic_crafting_error_msg');
-        reject(errorMessage);
-      });
-    }.bind(this));
+    return new Promise(
+      function (resolve, reject) {
+        var request = $.ajax({
+          url: process.env.API_URL + '/api/me/inventory/cosmetics/' + cosmeticId,
+          type: 'POST',
+          contentType: 'application/json',
+          dataType: 'json',
+        });
+        request.done(function (response) {
+          resolve(response);
+        });
+        request.fail(function (response) {
+          var errorMessage =
+            (response.responseJSON && response.responseJSON.message) ||
+            i18next.t('cosmetics.cosmetic_crafting_error_msg');
+          reject(errorMessage);
+        });
+      }.bind(this),
+    );
   },
 
   unlockBoosterPack: function (boosterPackId) {
     if (this.boosterPacksCollection.length > 0) {
-      return new Promise(function (resolve, reject) {
-        if (!boosterPackId)
-          boosterPackId = this.boosterPacksCollection.at(0).get('id');
+      return new Promise(
+        function (resolve, reject) {
+          if (!boosterPackId) boosterPackId = this.boosterPacksCollection.at(0).get('id');
 
-        var request = $.ajax({
-          url: process.env.API_URL + '/api/me/inventory/spirit_orbs/opened/' + boosterPackId,
-          type: 'PUT',
-          contentType: 'application/json',
-          dataType: 'json',
-        });
+          var request = $.ajax({
+            url: process.env.API_URL + '/api/me/inventory/spirit_orbs/opened/' + boosterPackId,
+            type: 'PUT',
+            contentType: 'application/json',
+            dataType: 'json',
+          });
 
-        request.done(function (response) {
-          if (response && response.cards) {
-            var rarityIds = _.map(response.cards, function (cardId) {
-              var sdkCard = SDK.CardFactory.cardForIdentifier(cardId, SDK.GameSession.current());
-              return sdkCard.getRarityId();
-            });
-            rarityIds = rarityIds.sort();
-            var spiritValue = _.reduce(rarityIds, function (memo, rarityId) {
-              return memo + SDK.RarityFactory.rarityForIdentifier(rarityId).spiritCost;
-            }, 0);
-            var raritySplit = JSON.stringify(rarityIds);
+          request.done(function (response) {
+            if (response && response.cards) {
+              var rarityIds = _.map(response.cards, function (cardId) {
+                var sdkCard = SDK.CardFactory.cardForIdentifier(cardId, SDK.GameSession.current());
+                return sdkCard.getRarityId();
+              });
+              rarityIds = rarityIds.sort();
+              var spiritValue = _.reduce(
+                rarityIds,
+                function (memo, rarityId) {
+                  return memo + SDK.RarityFactory.rarityForIdentifier(rarityId).spiritCost;
+                },
+                0,
+              );
+              var raritySplit = JSON.stringify(rarityIds);
 
-            var isFirst = 0;
-            if (NewPlayerManager.getInstance().getHasOpenedSpiritOrb()) {
-              isFirst = 1;
+              var isFirst = 0;
+              if (NewPlayerManager.getInstance().getHasOpenedSpiritOrb()) {
+                isFirst = 1;
+              }
+
+              Analytics.track('opened spirit orb', {
+                category: Analytics.EventCategory.SpiritOrbs,
+                rarity_split: raritySplit,
+                spirit_value: spiritValue,
+                is_first: isFirst,
+              });
             }
 
-            Analytics.track('opened spirit orb', {
-              category: Analytics.EventCategory.SpiritOrbs,
-              rarity_split: raritySplit,
-              spirit_value: spiritValue,
-              is_first: isFirst,
-            });
-          }
+            NewPlayerManager.getInstance().setHasOpenedSpiritOrb(true);
+            resolve(response);
+          });
 
-          NewPlayerManager.getInstance().setHasOpenedSpiritOrb(true);
-          resolve(response);
-        });
-
-        request.fail(function (response) {
-          var errorMessage = response.responseJSON && response.responseJSON.message;
-          errorMessage = errorMessage || (response.responseJSON && response.responseJSON.error);
-          errorMessage = errorMessage || 'Booster pack unlock failed';
-          reject(errorMessage);
-        });
-      }.bind(this));
+          request.fail(function (response) {
+            var errorMessage = response.responseJSON && response.responseJSON.message;
+            errorMessage = errorMessage || (response.responseJSON && response.responseJSON.error);
+            errorMessage = errorMessage || 'Booster pack unlock failed';
+            reject(errorMessage);
+          });
+        }.bind(this),
+      );
     } else {
       return Promise.reject('No boosters to open.');
     }
   },
 
   craftCard: function (cardId) {
-    return new Promise(function (resolve, reject) {
-      var request = $.ajax({
-        url: process.env.API_URL + '/api/me/inventory/card_collection/' + cardId,
-        type: 'POST',
-        contentType: 'application/json',
-        dataType: 'json',
-      });
-
-      request.done(function (response) {
-        Logger.module('UI').log('InventoryManager::craftCard() ' + cardId);
-
-        var newPlayerManager = NewPlayerManager.getInstance();
-        if (!newPlayerManager.getHasCraftedCard()) {
-          newPlayerManager.setHasCraftedCard(cardId);
-        }
-
-        Analytics.track('crafted card', {
-          category: Analytics.EventCategory.Inventory,
-          card_id: cardId,
+    return new Promise(
+      function (resolve, reject) {
+        var request = $.ajax({
+          url: process.env.API_URL + '/api/me/inventory/card_collection/' + cardId,
+          type: 'POST',
+          contentType: 'application/json',
+          dataType: 'json',
         });
 
-        resolve(response);
-      });
+        request.done(function (response) {
+          Logger.module('UI').log('InventoryManager::craftCard() ' + cardId);
 
-      request.fail(function (response) {
-        var errorMessage = response.responseJSON != null ? response.responseJSON.message : 'Craft failed.';
-        reject(errorMessage);
-      });
-    }.bind(this));
+          var newPlayerManager = NewPlayerManager.getInstance();
+          if (!newPlayerManager.getHasCraftedCard()) {
+            newPlayerManager.setHasCraftedCard(cardId);
+          }
+
+          Analytics.track('crafted card', {
+            category: Analytics.EventCategory.Inventory,
+            card_id: cardId,
+          });
+
+          resolve(response);
+        });
+
+        request.fail(function (response) {
+          var errorMessage =
+            response.responseJSON != null ? response.responseJSON.message : 'Craft failed.';
+          reject(errorMessage);
+        });
+      }.bind(this),
+    );
   },
 
   disenchantCards: function (cardIds) {
-    return new Promise(function (resolve, reject) {
-      var group = _.groupBy(cardIds, function (o) { return o; });
-      var hasEnoughCards = true;
-      _.each(group, function (cardArray, cardId, list) {
-        var inventoryCardModel = this.cardsCollection.get(parseInt(cardId));
-        if (inventoryCardModel && inventoryCardModel.get('count') < cardArray.length) {
-          hasEnoughCards = false;
-        }
-      }.bind(this));
-
-      if (hasEnoughCards) {
-        var request = $.ajax({
-          data: JSON.stringify({ card_ids: cardIds }),
-          url: process.env.API_URL + '/api/me/inventory/card_collection',
-          type: 'DELETE',
-          contentType: 'application/json',
-          dataType: 'json',
+    return new Promise(
+      function (resolve, reject) {
+        var group = _.groupBy(cardIds, function (o) {
+          return o;
         });
+        var hasEnoughCards = true;
+        _.each(
+          group,
+          function (cardArray, cardId, list) {
+            var inventoryCardModel = this.cardsCollection.get(parseInt(cardId));
+            if (inventoryCardModel && inventoryCardModel.get('count') < cardArray.length) {
+              hasEnoughCards = false;
+            }
+          }.bind(this),
+        );
 
-        request.done(function (response) {
-          Logger.module('UI').log('InventoryManager::disenchantCards() -> ' + JSON.stringify(response));
+        if (hasEnoughCards) {
+          var request = $.ajax({
+            data: JSON.stringify({ card_ids: cardIds }),
+            url: process.env.API_URL + '/api/me/inventory/card_collection',
+            type: 'DELETE',
+            contentType: 'application/json',
+            dataType: 'json',
+          });
 
-          resolve(response);
-        });
+          request.done(function (response) {
+            Logger.module('UI').log(
+              'InventoryManager::disenchantCards() -> ' + JSON.stringify(response),
+            );
 
-        request.fail(function (response) {
-          var errorMessage = response.responseJSON != null ? response.responseJSON.message : 'Disenchant failed.';
+            resolve(response);
+          });
+
+          request.fail(function (response) {
+            var errorMessage =
+              response.responseJSON != null ? response.responseJSON.message : 'Disenchant failed.';
+            reject(errorMessage);
+          });
+        } else {
+          var errorMessage =
+            'You do not have enough copies of all the cards you are trying to disenchant.';
           reject(errorMessage);
-        });
-      } else {
-        var errorMessage = 'You do not have enough copies of all the cards you are trying to disenchant.';
-        reject(errorMessage);
-      }
-    }.bind(this));
+        }
+      }.bind(this),
+    );
   },
 
   disenchantDuplicateCards: function () {
-    return new Promise(function (resolve, reject) {
-      var cardIds = [];
-      this.cardsCollection.each(function (inventoryCardModel) {
-        if (inventoryCardModel.get('count') > 3) {
-          var gameDataCardModel = GameDataManager.getInstance().getVisibleCardModelById(inventoryCardModel.id);
-          if (gameDataCardModel != null && gameDataCardModel.get('isCraftable')) {
-            for (var i = 0; i < inventoryCardModel.get('count') - 3; i++) {
-              cardIds.push(inventoryCardModel.id);
+    return new Promise(
+      function (resolve, reject) {
+        var cardIds = [];
+        this.cardsCollection.each(function (inventoryCardModel) {
+          if (inventoryCardModel.get('count') > 3) {
+            var gameDataCardModel = GameDataManager.getInstance().getVisibleCardModelById(
+              inventoryCardModel.id,
+            );
+            if (gameDataCardModel != null && gameDataCardModel.get('isCraftable')) {
+              for (var i = 0; i < inventoryCardModel.get('count') - 3; i++) {
+                cardIds.push(inventoryCardModel.id);
+              }
             }
           }
+        });
+
+        if (cardIds.length > 0) {
+          var request = $.ajax({
+            url: process.env.API_URL + '/api/me/inventory/card_collection/duplicates',
+            type: 'DELETE',
+            contentType: 'application/json',
+            dataType: 'json',
+          });
+
+          request.done(function (response) {
+            Logger.module('UI').log(
+              'InventoryManager::disenchantCards() -> ' + JSON.stringify(response),
+            );
+
+            resolve(response);
+          });
+
+          request.fail(function (response) {
+            var errorMessage =
+              response.responseJSON != null ? response.responseJSON.message : 'Disenchant failed.';
+            reject(errorMessage);
+          });
+        } else {
+          reject('No duplicate cards to disenchant.');
         }
-      });
-
-      if (cardIds.length > 0) {
-        var request = $.ajax({
-          url: process.env.API_URL + '/api/me/inventory/card_collection/duplicates',
-          type: 'DELETE',
-          contentType: 'application/json',
-          dataType: 'json',
-        });
-
-        request.done(function (response) {
-          Logger.module('UI').log('InventoryManager::disenchantCards() -> ' + JSON.stringify(response));
-
-          resolve(response);
-        });
-
-        request.fail(function (response) {
-          var errorMessage = response.responseJSON != null ? response.responseJSON.message : 'Disenchant failed.';
-          reject(errorMessage);
-        });
-      } else {
-        reject('No duplicate cards to disenchant.');
-      }
-    }.bind(this));
+      }.bind(this),
+    );
   },
 
   /* endregion ACTIONS */
@@ -724,9 +839,13 @@ var InventoryManager = Manager.extend({
     if (this.boosterPacksCollection == null || this.boosterPacksCollection.models == null) {
       return 0;
     }
-    return this.boosterPacksCollection.filter(function (p) {
-      return p.get('card_set') === cardSetId || (!p.get('card_set') && cardSetId === SDK.CardSet.Core);
-    }.bind(this));
+    return this.boosterPacksCollection.filter(
+      function (p) {
+        return (
+          p.get('card_set') === cardSetId || (!p.get('card_set') && cardSetId === SDK.CardSet.Core)
+        );
+      }.bind(this),
+    );
   },
 
   getArenaTicketsCollection: function () {
@@ -745,7 +864,9 @@ var InventoryManager = Manager.extend({
     } else {
       // find first card from faction
       var cardOfFaction = this.cardsCollection.find(function (inventoryCardModel) {
-        var gameDataCardModel = GameDataManager.getInstance().getVisibleCardModelById(inventoryCardModel.get('id'));
+        var gameDataCardModel = GameDataManager.getInstance().getVisibleCardModelById(
+          inventoryCardModel.get('id'),
+        );
         return gameDataCardModel != null && gameDataCardModel.get('factionId') == factionId;
       });
 
@@ -754,14 +875,16 @@ var InventoryManager = Manager.extend({
         cardOfFaction = this.cosmeticsCollection.find(function (cosmeticModel) {
           var cosmeticId = cosmeticModel.get('id');
           if (SDK.CosmeticsFactory.isIdentifierForCardSkin(cosmeticId)) {
-            var gameDataCardModel = GameDataManager.getInstance().getVisibleCardModelById(SDK.Cards.getCardIdForCardSkinId(cosmeticId));
+            var gameDataCardModel = GameDataManager.getInstance().getVisibleCardModelById(
+              SDK.Cards.getCardIdForCardSkinId(cosmeticId),
+            );
             return gameDataCardModel != null && gameDataCardModel.get('factionId') == factionId;
           }
         });
       }
 
       // cache result
-      var hasAnyCards = this._cached_hasAnyCardsOfFaction[factionId] = cardOfFaction != null;
+      var hasAnyCards = (this._cached_hasAnyCardsOfFaction[factionId] = cardOfFaction != null);
 
       return hasAnyCards;
     }
@@ -779,7 +902,7 @@ var InventoryManager = Manager.extend({
   },
 
   canBuyBloodbornPacks: function () {
-    return (this.getRemainingBloodbornPacks() > 0);
+    return this.getRemainingBloodbornPacks() > 0;
   },
 
   canBuyPacksForCardSet: function (cardSetId) {
@@ -804,7 +927,7 @@ var InventoryManager = Manager.extend({
   },
 
   canBuyAncientBondsPacks: function () {
-    return (this.getRemainingAncientBondsPacks() > 0);
+    return this.getRemainingAncientBondsPacks() > 0;
   },
 
   getDecksCollection: function () {
@@ -812,7 +935,11 @@ var InventoryManager = Manager.extend({
   },
 
   hasValidCustomDecks: function () {
-    return this.decksCollection.filter(function (deckModel) { return deckModel.isValid(); }).length > 0;
+    return (
+      this.decksCollection.filter(function (deckModel) {
+        return deckModel.isValid();
+      }).length > 0
+    );
   },
 
   getCosmeticsCollection: function () {
@@ -844,7 +971,10 @@ var InventoryManager = Manager.extend({
       return false;
     }
 
-    return cosmeticData.enabled && ((!cosmeticData.purchasable && !cosmeticData.unlockable) || this.hasCosmeticById(cosmeticId));
+    return (
+      cosmeticData.enabled &&
+      ((!cosmeticData.purchasable && !cosmeticData.unlockable) || this.hasCosmeticById(cosmeticId))
+    );
   },
 
   getCanAlwaysUseCosmeticById: function (cosmeticId) {
@@ -872,10 +1002,16 @@ var InventoryManager = Manager.extend({
   },
 
   hasCollectionDuplicates: function () {
-    var duplicateCard = this.cardsCollection.find(function (card) {
-      var gameDataCardModel = GameDataManager.getInstance().getVisibleCardModelById(card.get('id'));
-      return gameDataCardModel != null && gameDataCardModel.get('isCraftable') && card.get('count') > 3;
-    }.bind(this));
+    var duplicateCard = this.cardsCollection.find(
+      function (card) {
+        var gameDataCardModel = GameDataManager.getInstance().getVisibleCardModelById(
+          card.get('id'),
+        );
+        return (
+          gameDataCardModel != null && gameDataCardModel.get('isCraftable') && card.get('count') > 3
+        );
+      }.bind(this),
+    );
 
     return duplicateCard != null;
   },
@@ -896,7 +1032,10 @@ var InventoryManager = Manager.extend({
   getTotalUnreadCardCount: function () {
     var unreadCount = 0;
     this.cardsCollection.each(function (inventoryCardModel) {
-      if (inventoryCardModel.get('is_unread') && GameDataManager.getInstance().getVisibleCardModelById(inventoryCardModel.id) != null) {
+      if (
+        inventoryCardModel.get('is_unread') &&
+        GameDataManager.getInstance().getVisibleCardModelById(inventoryCardModel.id) != null
+      ) {
         unreadCount += 1;
       }
     });
@@ -935,7 +1074,11 @@ var InventoryManager = Manager.extend({
   isCardLoreVisible: function (cardId) {
     // lore for cards that users don't own isn't visible
     var gameDataCardModel = GameDataManager.getInstance().getVisibleCardModelById(cardId);
-    return gameDataCardModel != null && gameDataCardModel.get('inventoryCount') > 0 && ProgressionManager.getInstance().isFactionUnlocked(gameDataCardModel.get('factionId'));
+    return (
+      gameDataCardModel != null &&
+      gameDataCardModel.get('inventoryCount') > 0 &&
+      ProgressionManager.getInstance().isFactionUnlocked(gameDataCardModel.get('factionId'))
+    );
   },
 
   hasUnreadCardLore: function () {
@@ -995,7 +1138,11 @@ var InventoryManager = Manager.extend({
   },
 
   getUnusedRiftTicketModels: function () {
-    if (this.riftTicketsCollection == null || this.riftTicketsCollection.models == null || this.riftTicketsCollection.models.length == 0) {
+    if (
+      this.riftTicketsCollection == null ||
+      this.riftTicketsCollection.models == null ||
+      this.riftTicketsCollection.models.length == 0
+    ) {
       return [];
     } else {
       return this.riftTicketsCollection.models;
@@ -1007,22 +1154,26 @@ var InventoryManager = Manager.extend({
   },
 
   claimFreeCardOfTheDay: function () {
-    return new Promise(function (resolve, reject) {
-      var request = $.ajax({
-        url: process.env.API_URL + '/api/me/inventory/free_card_of_the_day',
-        type: 'POST',
-        contentType: 'application/json',
-        dataType: 'json',
-      });
-      request.done(function (response) {
-        resolve(response);
-      }.bind(this));
-      request.fail(function (response) {
-        var error = 'There was an error processing your request';
-        EventBus.getInstance().trigger(EVENTS.ajax_error, error);
-        reject(new Error(error));
-      });
-    }.bind(this));
+    return new Promise(
+      function (resolve, reject) {
+        var request = $.ajax({
+          url: process.env.API_URL + '/api/me/inventory/free_card_of_the_day',
+          type: 'POST',
+          contentType: 'application/json',
+          dataType: 'json',
+        });
+        request.done(
+          function (response) {
+            resolve(response);
+          }.bind(this),
+        );
+        request.fail(function (response) {
+          var error = 'There was an error processing your request';
+          EventBus.getInstance().trigger(EVENTS.ajax_error, error);
+          reject(new Error(error));
+        });
+      }.bind(this),
+    );
   },
 
   /**
@@ -1030,7 +1181,11 @@ var InventoryManager = Manager.extend({
    * @return {Promise} $.ajax promise for the server call to acquire missing chapters
    */
   checkForMissingCodexChapters: function () {
-    if (!NewPlayerManager.getInstance().isReady || !ProgressionManager.getInstance().isReady || !this.isReady) {
+    if (
+      !NewPlayerManager.getInstance().isReady ||
+      !ProgressionManager.getInstance().isReady ||
+      !this.isReady
+    ) {
       // In case we try to fire this before any of the required managers are ready, ignore the request, it will get called on ready anyways
       return Promise.resolve();
     }
@@ -1041,7 +1196,9 @@ var InventoryManager = Manager.extend({
     }
 
     var missingACodexChapter = false;
-    var earnedCodexChapterIds = SDK.Codex.chapterIdsOwnedByGameCount(ProgressionManager.getInstance().getGameCount());
+    var earnedCodexChapterIds = SDK.Codex.chapterIdsOwnedByGameCount(
+      ProgressionManager.getInstance().getGameCount(),
+    );
 
     for (var i = 0; i < earnedCodexChapterIds.length; i++) {
       var earnedCodexChapterId = earnedCodexChapterIds[i];
@@ -1056,25 +1213,29 @@ var InventoryManager = Manager.extend({
       return Promise.resolve();
     } else {
       // Return a promise that resolves when  ajax request for getting missing codex chapter completes
-      return new Promise(function (resolve, reject) {
-        var request = $.ajax({
-          url: process.env.API_URL + '/api/me/inventory/codex/missing',
-          type: 'POST',
-          contentType: 'application/json',
-          dataType: 'json',
-        });
+      return new Promise(
+        function (resolve, reject) {
+          var request = $.ajax({
+            url: process.env.API_URL + '/api/me/inventory/codex/missing',
+            type: 'POST',
+            contentType: 'application/json',
+            dataType: 'json',
+          });
 
-        request.done(function (response) {
-          resolve(response);
-        }.bind(this));
+          request.done(
+            function (response) {
+              resolve(response);
+            }.bind(this),
+          );
 
-        request.fail(function (response) {
-          var error = 'Acquiring missing codex chapters request failed';
-          EventBus.getInstance().trigger(EVENTS.ajax_error, error);
+          request.fail(function (response) {
+            var error = 'Acquiring missing codex chapters request failed';
+            EventBus.getInstance().trigger(EVENTS.ajax_error, error);
 
-          reject(new Error(error));
-        });
-      }.bind(this));
+            reject(new Error(error));
+          });
+        }.bind(this),
+      );
     }
   },
 
@@ -1084,8 +1245,12 @@ var InventoryManager = Manager.extend({
 
   hasUnlockedCodexChapter: function (chapterId) {
     var codexChapterData = SDK.Codex.chapterForIdentifier(chapterId);
-    return (codexChapterData != null && (codexChapterData.gamesRequiredToUnlock == null || codexChapterData.gamesRequiredToUnlock == 0))
-            || this.getUnlockedCodexChapter(chapterId) != null;
+    return (
+      (codexChapterData != null &&
+        (codexChapterData.gamesRequiredToUnlock == null ||
+          codexChapterData.gamesRequiredToUnlock == 0)) ||
+      this.getUnlockedCodexChapter(chapterId) != null
+    );
   },
 
   /**
@@ -1115,5 +1280,4 @@ var InventoryManager = Manager.extend({
   },
 
   /* endregion GETTERS / SETTERS */
-
 });

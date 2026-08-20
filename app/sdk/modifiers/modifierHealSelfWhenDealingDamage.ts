@@ -20,10 +20,8 @@ class ModifierHealSelfWhenDealingDamage extends Modifier {
 
   onBeforeAction(event) {
     super.onBeforeAction(event);
-    const {
-      action,
-    } = event;
-    if (action instanceof DamageAction && (action.getSource() === this.getCard())) {
+    const { action } = event;
+    if (action instanceof DamageAction && action.getSource() === this.getCard()) {
       if (this.getCard().getHP() < this.getCard().getMaxHP()) {
         const healAction = this.getCard().getGameSession().createActionForType(HealAction.type);
         healAction.setTarget(this.getCard());

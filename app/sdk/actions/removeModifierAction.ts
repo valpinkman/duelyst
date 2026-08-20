@@ -33,7 +33,7 @@ class RemoveModifierAction extends Action {
   }
 
   setModifierIndex(val) {
-    return this.modifierIndex = val;
+    return (this.modifierIndex = val);
   }
 
   getModifierIndex() {
@@ -46,7 +46,9 @@ class RemoveModifierAction extends Action {
 
   getModifier() {
     if (this.modifierIndex != null) {
-      if (this._private.cachedModifier == null) { this._private.cachedModifier = this.getGameSession().getModifierByIndex(this.modifierIndex); }
+      if (this._private.cachedModifier == null) {
+        this._private.cachedModifier = this.getGameSession().getModifierByIndex(this.modifierIndex);
+      }
       return this._private.cachedModifier;
     }
   }
@@ -56,7 +58,7 @@ class RemoveModifierAction extends Action {
   }
 
   getTarget() {
-    if ((this._private.target == null) && (this.modifierIndex != null)) {
+    if (this._private.target == null && this.modifierIndex != null) {
       this._private.target = __guard__(this.getModifier(), (x) => x.getCardAffected());
     }
     return this._private.target;
@@ -83,5 +85,5 @@ RemoveModifierAction.prototype.getCard = RemoveModifierAction.prototype.getTarge
 module.exports = RemoveModifierAction;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

@@ -12,7 +12,7 @@ class SpellRequireUnoccupiedFriendlyCreep extends Spell {
     const board = this.getGameSession().getBoard();
 
     for (var tile of Array.from<any>(board.getTiles(true, false))) {
-      if ((tile.getOwnerId() === this.getOwnerId()) && (tile.getBaseCardId() === Cards.Tile.Shadow)) {
+      if (tile.getOwnerId() === this.getOwnerId() && tile.getBaseCardId() === Cards.Tile.Shadow) {
         var tilePosition = { x: tile.getPosition().x, y: tile.getPosition().y };
         if (!board.getCardAtPosition(tilePosition, CardType.Unit)) {
           // there is at least 1 unoccupied friendly creep tile

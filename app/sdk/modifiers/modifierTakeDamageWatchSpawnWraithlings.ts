@@ -27,18 +27,38 @@ class ModifierTakeDamageWatchSpawnWraithlings extends ModifierTakeDamageWatch {
 
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
       const spawnLocations = [];
-      const validSpawnLocations = UtilsGameSession.getSmartSpawnPositionsFromPattern(this.getGameSession(), this.getCard().getPosition(), CONFIG.PATTERN_3x3, this.getCard());
+      const validSpawnLocations = UtilsGameSession.getSmartSpawnPositionsFromPattern(
+        this.getGameSession(),
+        this.getCard().getPosition(),
+        CONFIG.PATTERN_3x3,
+        this.getCard(),
+      );
       const cardDataOrIndexToSpawn = { id: Cards.Faction4.Wraithling };
-      for (let i = 0, end = action.getTotalDamageAmount(), asc = end >= 0; asc ? i < end : i > end; asc ? i++ : i--) {
+      for (
+        let i = 0, end = action.getTotalDamageAmount(), asc = end >= 0;
+        asc ? i < end : i > end;
+        asc ? i++ : i--
+      ) {
         if (validSpawnLocations.length > 0) {
-          spawnLocations.push(validSpawnLocations.splice(this.getGameSession().getRandomIntegerForExecution(validSpawnLocations.length), 1)[0]);
+          spawnLocations.push(
+            validSpawnLocations.splice(
+              this.getGameSession().getRandomIntegerForExecution(validSpawnLocations.length),
+              1,
+            )[0],
+          );
         }
       }
 
       return (() => {
         const result = [];
         for (var position of Array.from<any>(spawnLocations)) {
-          var spawnAction = new PlayCardSilentlyAction(this.getGameSession(), this.getCard().getOwnerId(), position.x, position.y, cardDataOrIndexToSpawn);
+          var spawnAction = new PlayCardSilentlyAction(
+            this.getGameSession(),
+            this.getCard().getOwnerId(),
+            position.x,
+            position.y,
+            cardDataOrIndexToSpawn,
+          );
           spawnAction.setSource(this.getCard());
           result.push(this.getGameSession().executeAction(spawnAction));
         }
@@ -48,6 +68,9 @@ class ModifierTakeDamageWatchSpawnWraithlings extends ModifierTakeDamageWatch {
   }
 }
 ModifierTakeDamageWatchSpawnWraithlings.prototype.type = 'ModifierTakeDamageWatchSpawnWraithlings';
-ModifierTakeDamageWatchSpawnWraithlings.prototype.fxResource = ['FX.Modifiers.ModifierTakeDamageWatch', 'FX.Modifiers.ModifierGenericSpawn'];
+ModifierTakeDamageWatchSpawnWraithlings.prototype.fxResource = [
+  'FX.Modifiers.ModifierTakeDamageWatch',
+  'FX.Modifiers.ModifierGenericSpawn',
+];
 
 module.exports = ModifierTakeDamageWatchSpawnWraithlings;

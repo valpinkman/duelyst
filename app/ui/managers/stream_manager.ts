@@ -20,7 +20,6 @@ var DuelystBackbone = require('app/ui/extensions/duelyst_backbone');
 var Manager = require('./manager');
 
 var StreamManager = Manager.extend({
-
   streamerWhitelistCollection: null,
   liveStreamCollection: null,
   hasDismissedStreams: false,
@@ -47,7 +46,9 @@ var StreamManager = Manager.extend({
       firebase: new Firebase(process.env.FIREBASE_URL).child('streamer-whitelist'),
     });
 
-    this.streamerWhitelistCollection.onSyncOrReady().then(this.onStreamerWhitelistLoaded.bind(this));
+    this.streamerWhitelistCollection
+      .onSyncOrReady()
+      .then(this.onStreamerWhitelistLoaded.bind(this));
   },
 
   onBeforeDisconnect: function () {
@@ -65,36 +66,46 @@ var StreamManager = Manager.extend({
   loadStreamStatusFromTwitch: function () {
     this.liveStreamCollection.reset();
     var loadPromises = this.streamerWhitelistCollection.map(function (model) {
-      return Promise.resolve($.ajax({
-        url: 'https://api.twitch.tv/kraken/streams/' + model.get('slug') + '?client_id=8katw6xspie7gc9incpljy0xql7k3ls',
-        dataType: 'jsonp',
-        timeout: 5000,
-      }));
+      return Promise.resolve(
+        $.ajax({
+          url:
+            'https://api.twitch.tv/kraken/streams/' +
+            model.get('slug') +
+            '?client_id=8katw6xspie7gc9incpljy0xql7k3ls',
+          dataType: 'jsonp',
+          timeout: 5000,
+        }),
+      );
     });
-    return Promise.all(loadPromises).then(function (results) {
-      for (var i = 0; i < results.length; i++) {
-        if (results[i] && results[i].stream && results[i].stream.game.toLowerCase() === 'duelyst') {
-          var model = this.streamerWhitelistCollection.at(i);
-          var streamRecord = results[i].stream;
-          this.liveStreamCollection.push({
-            name: model.get('name'),
-            url: 'https://www.twitch.tv/' + model.get('slug'),
-            description: model.get('description'), // 'Noah streams DUELYST daily. Subscribe and submit your decks to the Deck Doctor.',
-            avatar_image_url: model.get('avatar_image_url'),
-            streamData: results[i],
-          });
+    return Promise.all(loadPromises).then(
+      function (results) {
+        for (var i = 0; i < results.length; i++) {
+          if (
+            results[i] &&
+            results[i].stream &&
+            results[i].stream.game.toLowerCase() === 'duelyst'
+          ) {
+            var model = this.streamerWhitelistCollection.at(i);
+            var streamRecord = results[i].stream;
+            this.liveStreamCollection.push({
+              name: model.get('name'),
+              url: 'https://www.twitch.tv/' + model.get('slug'),
+              description: model.get('description'), // 'Noah streams DUELYST daily. Subscribe and submit your decks to the Deck Doctor.',
+              avatar_image_url: model.get('avatar_image_url'),
+              streamData: results[i],
+            });
+          }
         }
-      }
-      this.liveStreamCollection.sort();
-      // mark self manager as ready
-      if (!this.getIsReady()) {
-        this.ready();
-      }
-    }.bind(this));
+        this.liveStreamCollection.sort();
+        // mark self manager as ready
+        if (!this.getIsReady()) {
+          this.ready();
+        }
+      }.bind(this),
+    );
   },
 
   onWhitelistChanged: function (model) {
     Logger.module('UI').log('StreamManager::onWhitelistChanged');
   },
-
 });

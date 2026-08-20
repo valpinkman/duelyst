@@ -28,8 +28,12 @@ class ModifierSpellWatchBloodLeech extends ModifierSpellWatch {
   onSpellWatch(action) {
     super.onSpellWatch(action);
 
-    const enemyGeneral = this.getCard().getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
-    const myGeneral = this.getCard().getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
+    const enemyGeneral = this.getCard()
+      .getGameSession()
+      .getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
+    const myGeneral = this.getCard()
+      .getGameSession()
+      .getGeneralForPlayerId(this.getCard().getOwnerId());
 
     // damage enemy general
     const damageAction = new DamageAction(this.getGameSession());
@@ -51,6 +55,9 @@ class ModifierSpellWatchBloodLeech extends ModifierSpellWatch {
 ModifierSpellWatchBloodLeech.prototype.type = 'ModifierSpellWatchBloodLeech';
 ModifierSpellWatchBloodLeech.prototype.damageAmount = 0;
 ModifierSpellWatchBloodLeech.prototype.healAmount = 0;
-ModifierSpellWatchBloodLeech.prototype.fxResource = ['FX.Modifiers.ModifierSpellWatch', 'FX.Modifiers.ModifierGenericChain'];
+ModifierSpellWatchBloodLeech.prototype.fxResource = [
+  'FX.Modifiers.ModifierSpellWatch',
+  'FX.Modifiers.ModifierGenericChain',
+];
 
 module.exports = ModifierSpellWatchBloodLeech;

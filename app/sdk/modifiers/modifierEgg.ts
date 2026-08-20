@@ -31,7 +31,9 @@ class ModifierEgg extends ModifierRemoveAndReplaceEntity {
 
   static getDescription(modifierContextObject) {
     if (modifierContextObject) {
-      const cardName = GameSession.getCardCaches().getCardById(modifierContextObject.cardDataOrIndexToSpawn.id).getName();
+      const cardName = GameSession.getCardCaches()
+        .getCardById(modifierContextObject.cardDataOrIndexToSpawn.id)
+        .getName();
       return i18next.t('modifiers.egg_text', { unit_name: cardName });
     }
   }
@@ -62,16 +64,24 @@ class ModifierEgg extends ModifierRemoveAndReplaceEntity {
   updateDurationForOwner() {
     if (!this.getCard().isOwnersTurn()) {
       // eggs placed during enemy turn will hatch at the end of that turn
-      return this.durationEndTurn = this.numEndTurnsElapsed + 1;
+      return (this.durationEndTurn = this.numEndTurnsElapsed + 1);
     }
     // eggs placed during owner's turn will hatch at end of enemy's next turn
-    return this.durationEndTurn = this.numEndTurnsElapsed + 2;
+    return (this.durationEndTurn = this.numEndTurnsElapsed + 2);
   }
 
   replace() {
-    if ((this.cardDataOrIndexToSpawn != null) && !_.isObject(this.cardDataOrIndexToSpawn)) { this.cardDataOrIndexToSpawn = this.getGameSession().getCardByIndex(this.cardDataOrIndexToSpawn).createNewCardData(); }
-    if (this.cardDataOrIndexToSpawn.additionalModifiersContextObjects == null) { this.cardDataOrIndexToSpawn.additionalModifiersContextObjects = []; }
-    this.cardDataOrIndexToSpawn.additionalModifiersContextObjects.push(ModifierSpawnedFromEgg.createContextObject());
+    if (this.cardDataOrIndexToSpawn != null && !_.isObject(this.cardDataOrIndexToSpawn)) {
+      this.cardDataOrIndexToSpawn = this.getGameSession()
+        .getCardByIndex(this.cardDataOrIndexToSpawn)
+        .createNewCardData();
+    }
+    if (this.cardDataOrIndexToSpawn.additionalModifiersContextObjects == null) {
+      this.cardDataOrIndexToSpawn.additionalModifiersContextObjects = [];
+    }
+    this.cardDataOrIndexToSpawn.additionalModifiersContextObjects.push(
+      ModifierSpawnedFromEgg.createContextObject(),
+    );
     return super.replace();
   }
 }

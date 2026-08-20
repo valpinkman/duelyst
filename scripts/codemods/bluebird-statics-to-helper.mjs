@@ -74,4 +74,6 @@ for (const file of files) {
   console.log(`${file}: ${sites} site(s)`);
 }
 
-console.log(`\n${totalSites} bluebird static(s) converted across ${totalFiles} file(s); ${bindingsAdded} binding(s) added`);
+console.log(
+  `\n${totalSites} bluebird static(s) converted across ${totalFiles} file(s); ${bindingsAdded} binding(s) added`,
+);

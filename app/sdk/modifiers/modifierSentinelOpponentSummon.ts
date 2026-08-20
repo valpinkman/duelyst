@@ -26,14 +26,27 @@ class ModifierSentinelOpponentSummon extends ModifierSentinel {
   }
 
   getCanReactToAction(action) {
-    return super.getCanReactToAction(action) && this.getGameSession().getCanCardBeScheduledForRemoval(this.getCard());
+    return (
+      super.getCanReactToAction(action) &&
+      this.getGameSession().getCanCardBeScheduledForRemoval(this.getCard())
+    );
   }
 
   getIsActionRelevant(action) {
     // watch for a unit being summoned in any way by the opponent of player who owns this entity
-    if (action instanceof ApplyCardToBoardAction && (action.getOwnerId() !== this.getCard().getOwnerId()) && (__guard__(action.getCard(), (x) => x.type) === CardType.Unit) && (action.getCard() !== this.getCard())) {
+    if (
+      action instanceof ApplyCardToBoardAction &&
+      action.getOwnerId() !== this.getCard().getOwnerId() &&
+      __guard__(action.getCard(), (x) => x.type) === CardType.Unit &&
+      action.getCard() !== this.getCard()
+    ) {
       // don't react to transforms
-      if (!(action instanceof PlayCardAsTransformAction || action instanceof CloneEntityAsTransformAction)) {
+      if (
+        !(
+          action instanceof PlayCardAsTransformAction ||
+          action instanceof CloneEntityAsTransformAction
+        )
+      ) {
         return true;
       }
     }
@@ -46,5 +59,5 @@ ModifierSentinelOpponentSummon.description = i18next.t('modifiers.sentinel_summo
 module.exports = ModifierSentinelOpponentSummon;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

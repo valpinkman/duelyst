@@ -7,7 +7,6 @@ var CardCompositeView = require('app/ui/views/composite/card');
 var CardTempl = require('app/ui/templates/composite/card.hbs');
 
 var DeckCardCompositeView = CardCompositeView.extend({
-
   _cardData: null,
   signatureSpriteScale: 0.75,
   signatureSpriteScaleDraggable: 0.75,
@@ -37,7 +36,12 @@ var DeckCardCompositeView = CardCompositeView.extend({
     if (htmlData) {
       this._cardData = '<div class="card' + cardClasses + '">' + htmlData + '</div>';
       this.$el.popover({
-        trigger: 'manual', container: CONFIG.COLLECTION_SELECTOR, viewport: CONFIG.COLLECTION_SELECTOR, placement: this._positionPopover.bind(this), html: true, content: this._cardData,
+        trigger: 'manual',
+        container: CONFIG.COLLECTION_SELECTOR,
+        viewport: CONFIG.COLLECTION_SELECTOR,
+        placement: this._positionPopover.bind(this),
+        html: true,
+        content: this._cardData,
       });
     }
   },
@@ -73,11 +77,30 @@ var DeckCardCompositeView = CardCompositeView.extend({
     this.$el.popover('show');
     var $popover = UtilsUI.getPopover(this.$el);
     var $popoverCardSprite = $popover.find('.card-sprite .sprite');
-    this._popoverSpriteGLData = UtilsUI.showCocosSprite($popoverCardSprite, this._popoverSpriteGLData, this._popoverSpriteData, null, true, this.model.get('card'), this._popoverStartingSpriteData, this._popoverStartingSound);
+    this._popoverSpriteGLData = UtilsUI.showCocosSprite(
+      $popoverCardSprite,
+      this._popoverSpriteGLData,
+      this._popoverSpriteData,
+      null,
+      true,
+      this.model.get('card'),
+      this._popoverStartingSpriteData,
+      this._popoverStartingSound,
+    );
 
     if (this._signatureSpriteData != null) {
       var $popoverSignatureCardSprite = $popover.find('.signature-card-sprite .sprite');
-      this._popoverSignatureSpriteGLData = UtilsUI.showCocosSprite($popoverSignatureCardSprite, this._popoverSignatureSpriteGLData, this._signatureSpriteData, null, this.animated, null, null, null, this.signatureSpriteScalePopover);
+      this._popoverSignatureSpriteGLData = UtilsUI.showCocosSprite(
+        $popoverSignatureCardSprite,
+        this._popoverSignatureSpriteGLData,
+        this._signatureSpriteData,
+        null,
+        this.animated,
+        null,
+        null,
+        null,
+        this.signatureSpriteScalePopover,
+      );
     }
   },
 
@@ -116,7 +139,6 @@ var DeckCardCompositeView = CardCompositeView.extend({
   getCardClasses: function () {
     return CardCompositeView.prototype.getCardClasses.apply(this, arguments) + ' deck-card';
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

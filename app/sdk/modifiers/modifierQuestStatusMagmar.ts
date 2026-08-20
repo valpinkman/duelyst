@@ -22,7 +22,9 @@ class ModifierQuestStatusMagmar extends ModifierQuestStatus {
       if (modifierContextObject.questCompleted) {
         return i18next.t('modifiers.quest_completed_applied_desc');
       }
-      return i18next.t('modifiers.magmarquest_counter_applied_desc', { spell_count: modifierContextObject.numBuffSpells });
+      return i18next.t('modifiers.magmarquest_counter_applied_desc', {
+        spell_count: modifierContextObject.numBuffSpells,
+      });
     }
   }
 

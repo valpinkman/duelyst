@@ -17,7 +17,9 @@ class ModifierStartTurnWatchDamageRandom extends ModifierStartTurnWatch {
   static description = 'At the start of your turn, deal %X damage to a random minion or General';
 
   static createContextObject(damageAmount, options) {
-    if (damageAmount == null) { damageAmount = 0; }
+    if (damageAmount == null) {
+      damageAmount = 0;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.damageAmount = damageAmount;
     return contextObject;
@@ -38,7 +40,8 @@ class ModifierStartTurnWatchDamageRandom extends ModifierStartTurnWatch {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
       const units = this.getGameSession().getBoard().getUnits();
       if (units.length > 0) {
-        const unitToDamage = units[this.getGameSession().getRandomIntegerForExecution(units.length)];
+        const unitToDamage =
+          units[this.getGameSession().getRandomIntegerForExecution(units.length)];
         const damageAction = new DamageAction(this.getGameSession());
         damageAction.setOwnerId(this.getCard().getOwnerId());
         damageAction.setSource(this.getCard());
@@ -50,6 +53,9 @@ class ModifierStartTurnWatchDamageRandom extends ModifierStartTurnWatch {
   }
 }
 ModifierStartTurnWatchDamageRandom.prototype.type = 'ModifierStartTurnWatchDamageRandom';
-ModifierStartTurnWatchDamageRandom.prototype.fxResource = ['FX.Modifiers.ModifierStartTurnWatch', 'FX.Modifiers.ModifierGenericChainLightning'];
+ModifierStartTurnWatchDamageRandom.prototype.fxResource = [
+  'FX.Modifiers.ModifierStartTurnWatch',
+  'FX.Modifiers.ModifierGenericChainLightning',
+];
 
 module.exports = ModifierStartTurnWatchDamageRandom;

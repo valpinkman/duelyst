@@ -3,12 +3,12 @@ const BOUNTY = require('../bounty');
 // const ScoreForUnit = require("./unit");
 
 /**
-* Returns the score for removing a unit.
-* @param {Unit} unit
-* @returns {Number}
-* @static
-* @public
-*/
+ * Returns the score for removing a unit.
+ * @param {Unit} unit
+ * @returns {Number}
+ * @static
+ * @public
+ */
 const ScoreForDraw = function (card, targetCard, amount) {
   let score = 0;
 
@@ -20,7 +20,7 @@ const ScoreForDraw = function (card, targetCard, amount) {
   // console.log("score: ", score);
   // points for each card you will draw.  more points given the lower amount of cards you have
   while (cardsToDraw > 0 && maxPotentialDraw > 0) {
-    score += (BOUNTY.DRAW_SUCCESS / numberOfCardsInHand);
+    score += BOUNTY.DRAW_SUCCESS / numberOfCardsInHand;
     numberOfCardsInHand++;
     maxPotentialDraw--;
     cardsToDraw--;

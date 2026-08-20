@@ -40,7 +40,9 @@ class Action extends SDKObject {
 
     // define public properties here that must be always be serialized
     // do not define properties here that should only serialize if different from the default
-    if (this.type == null) { this.type = this.constructor.type; }
+    if (this.type == null) {
+      this.type = this.constructor.type;
+    }
     this.setOwnerId(this.getGameSession().getCurrentPlayer().getPlayerId());
   }
 
@@ -96,7 +98,7 @@ class Action extends SDKObject {
   }
 
   setOwnerId(ownerId) {
-    return this.ownerId = ownerId;
+    return (this.ownerId = ownerId);
   }
 
   getOwnerId() {
@@ -112,7 +114,7 @@ class Action extends SDKObject {
    * @returns {Boolean}
    */
   isFirstTime() {
-    return (this.timestamp == null);
+    return this.timestamp == null;
   }
 
   /**
@@ -120,7 +122,7 @@ class Action extends SDKObject {
    */
   addSignature() {
     if (this.isFirstTime()) {
-      return this.timestamp = Date.now();
+      return (this.timestamp = Date.now());
     }
   }
 
@@ -129,7 +131,7 @@ class Action extends SDKObject {
    * @param {Number|String}
    */
   setIndex(val) {
-    return this.index = val;
+    return (this.index = val);
   }
 
   /**
@@ -153,11 +155,11 @@ class Action extends SDKObject {
   }
 
   setIsValid(val) {
-    return this._private.isValid = val;
+    return (this._private.isValid = val);
   }
 
   setValidationMessage(val) {
-    return this._private.validationMessage = val;
+    return (this._private.validationMessage = val);
   }
 
   getValidationMessage() {
@@ -165,7 +167,7 @@ class Action extends SDKObject {
   }
 
   setValidationMessagePosition(val) {
-    return this._private.validationMessagePosition = val;
+    return (this._private.validationMessagePosition = val);
   }
 
   getValidationMessagePosition() {
@@ -173,7 +175,7 @@ class Action extends SDKObject {
   }
 
   setValidatorType(val) {
-    return this._private.validatorType = val;
+    return (this._private.validatorType = val);
   }
 
   getValidatorType() {
@@ -185,11 +187,11 @@ class Action extends SDKObject {
   }
 
   setIsDepthFirst(val) {
-    return this.isDepthFirst = val;
+    return (this.isDepthFirst = val);
   }
 
   setIsAutomatic(val) {
-    return this.isAutomatic = val;
+    return (this.isAutomatic = val);
   }
 
   getIsAutomatic() {
@@ -201,7 +203,7 @@ class Action extends SDKObject {
   }
 
   setIncludedRandomness(val) {
-    return this._private.includedRandomness = val;
+    return (this._private.includedRandomness = val);
   }
 
   /**
@@ -210,7 +212,7 @@ class Action extends SDKObject {
    * @returns {Card}
    */
   getSource() {
-    if ((this._private.source == null)) {
+    if (this._private.source == null) {
       if (this.sourceIndex != null) {
         this._private.source = this.getGameSession().getCardByIndex(this.sourceIndex);
       } else {
@@ -239,7 +241,7 @@ class Action extends SDKObject {
    * @param {Vec2|Object}
    */
   setSourcePosition(sourcePosition) {
-    return this.sourcePosition = sourcePosition;
+    return (this.sourcePosition = sourcePosition);
   }
 
   /**
@@ -247,7 +249,7 @@ class Action extends SDKObject {
    * @returns {Vec2|Object}
    */
   getSourcePosition() {
-    if ((this.sourcePosition == null)) {
+    if (this.sourcePosition == null) {
       const source = this.getSource();
       if (source != null) {
         this.sourcePosition = source.getPosition();
@@ -261,7 +263,7 @@ class Action extends SDKObject {
    * @param {Number}
    */
   setSourceIndex(sourceIndex) {
-    return this.sourceIndex = sourceIndex;
+    return (this.sourceIndex = sourceIndex);
   }
 
   /**
@@ -270,7 +272,7 @@ class Action extends SDKObject {
    * @returns {Number}
    */
   getSourceIndex() {
-    if ((this.sourceIndex == null)) {
+    if (this.sourceIndex == null) {
       const source = this.getSource();
       if (source != null) {
         this.sourceIndex = source.getIndex();
@@ -285,7 +287,7 @@ class Action extends SDKObject {
    * @returns {Card}
    */
   getTarget() {
-    if ((this._private.target == null) && (this.targetIndex != null)) {
+    if (this._private.target == null && this.targetIndex != null) {
       this._private.target = this.getGameSession().getCardByIndex(this.targetIndex);
     }
     return this._private.target;
@@ -306,7 +308,7 @@ class Action extends SDKObject {
    * @param {Vec2|Object}
    */
   setTargetPosition(targetPosition) {
-    return this.targetPosition = targetPosition;
+    return (this.targetPosition = targetPosition);
   }
 
   /**
@@ -314,7 +316,7 @@ class Action extends SDKObject {
    * @returns {Vec2|Object}
    */
   getTargetPosition() {
-    if ((this.targetPosition == null)) {
+    if (this.targetPosition == null) {
       const target = this.getTarget();
       if (target != null) {
         this.targetPosition = target.getPosition();
@@ -328,7 +330,7 @@ class Action extends SDKObject {
    * @param {Number}
    */
   setTargetIndex(targetIndex) {
-    return this.targetIndex = targetIndex;
+    return (this.targetIndex = targetIndex);
   }
 
   /**
@@ -337,7 +339,7 @@ class Action extends SDKObject {
    * @returns {Number}
    */
   getTargetIndex() {
-    if ((this.targetIndex == null) && (this._private.target != null)) {
+    if (this.targetIndex == null && this._private.target != null) {
       const target = this.getTarget();
       if (target != null) {
         this.targetIndex = this._private.target.getIndex();
@@ -351,14 +353,14 @@ class Action extends SDKObject {
    * @returns {Boolean}
    */
   getIsImplicit() {
-    return (this.parentActionIndex != null);
+    return this.parentActionIndex != null;
   }
 
   setFXResource(fxResource) {
-    if ((fxResource == null) || (fxResource.length === 0)) {
-      return this.fxResource = null;
+    if (fxResource == null || fxResource.length === 0) {
+      return (this.fxResource = null);
     }
-    return this.fxResource = fxResource;
+    return (this.fxResource = fxResource);
   }
 
   getFXResource() {
@@ -384,7 +386,7 @@ class Action extends SDKObject {
   setParentAction(action) {
     if (action != null) {
       // record parent's index
-      return this.parentActionIndex = action.getIndex();
+      return (this.parentActionIndex = action.getIndex());
     }
   }
 
@@ -393,7 +395,9 @@ class Action extends SDKObject {
    * @returns {Action}
    */
   getParentAction() {
-    if (this.parentActionIndex != null) { return this.getGameSession().getActionByIndex(this.parentActionIndex); }
+    if (this.parentActionIndex != null) {
+      return this.getGameSession().getActionByIndex(this.parentActionIndex);
+    }
   }
 
   /**
@@ -409,7 +413,7 @@ class Action extends SDKObject {
    * @returns {Action}
    */
   getRootAction() {
-    if ((this._private.cachedRootAction == null)) {
+    if (this._private.cachedRootAction == null) {
       if (this.parentActionIndex != null) {
         // parent or higher is root
         const parentAction = this.getGameSession().getActionByIndex(this.parentActionIndex);
@@ -439,7 +443,13 @@ class Action extends SDKObject {
     if (this.parentActionIndex != null) {
       const parentAction = this.getGameSession().getActionByIndex(this.parentActionIndex);
       if (parentAction != null) {
-        if (((classOrType == null) || (_.isString(classOrType) && (parentAction.getType() === classOrType)) || parentAction instanceof classOrType) && ((source == null) || (parentAction.getSource() === source)) && ((target == null) || (parentAction.getTarget() === target))) {
+        if (
+          (classOrType == null ||
+            (_.isString(classOrType) && parentAction.getType() === classOrType) ||
+            parentAction instanceof classOrType) &&
+          (source == null || parentAction.getSource() === source) &&
+          (target == null || parentAction.getTarget() === target)
+        ) {
           return parentAction;
         }
         return parentAction.getMatchingAncestorAction(classOrType, source, target);
@@ -460,9 +470,17 @@ class Action extends SDKObject {
     // walk up parent action chain to find the first ancestor of action
     // that optionally matches an action class, source, and/or target
     if (this.resolveParentActionIndex != null) {
-      const resolveParentAction = this.getGameSession().getActionByIndex(this.resolveParentActionIndex);
+      const resolveParentAction = this.getGameSession().getActionByIndex(
+        this.resolveParentActionIndex,
+      );
       if (resolveParentAction != null) {
-        if (((classOrType == null) || (_.isString(classOrType) && (resolveParentAction.getType() === classOrType)) || resolveParentAction instanceof classOrType) && ((source == null) || (resolveParentAction.getSource() === source)) && ((target == null) || (resolveParentAction.getTarget() === target))) {
+        if (
+          (classOrType == null ||
+            (_.isString(classOrType) && resolveParentAction.getType() === classOrType) ||
+            resolveParentAction instanceof classOrType) &&
+          (source == null || resolveParentAction.getSource() === source) &&
+          (target == null || resolveParentAction.getTarget() === target)
+        ) {
           return resolveParentAction;
         }
         return resolveParentAction.getMatchingResolveAncestorAction(classOrType, source, target);
@@ -478,7 +496,9 @@ class Action extends SDKObject {
    */
   getIsActionMyAncestor(action) {
     const parentAction = this.getParentAction();
-    return (parentAction != null) || (parentAction === action) || parentAction.getIsActionMyAncestor(action);
+    return (
+      parentAction != null || parentAction === action || parentAction.getIsActionMyAncestor(action)
+    );
   }
 
   /**
@@ -490,10 +510,13 @@ class Action extends SDKObject {
       // add action to list sub actions data objects
       // each data object retains the event type and a list of events executed during that event
       // sub action data objects are always in order of execution
-      if (this.subActionsOrderedByEventType == null) { this.subActionsOrderedByEventType = []; }
-      const subActionsData = this.subActionsOrderedByEventType[this.subActionsOrderedByEventType.length - 1];
+      if (this.subActionsOrderedByEventType == null) {
+        this.subActionsOrderedByEventType = [];
+      }
+      const subActionsData =
+        this.subActionsOrderedByEventType[this.subActionsOrderedByEventType.length - 1];
       const eventType = this.getGameSession().getActionExecutionEventType();
-      if ((subActionsData == null) || (subActionsData.eventType !== eventType)) {
+      if (subActionsData == null || subActionsData.eventType !== eventType) {
         // add new sub actions map
         this.subActionsOrderedByEventType.push({ eventType, actions: [action] });
       } else {
@@ -522,11 +545,13 @@ class Action extends SDKObject {
    * @returns {Array}
    */
   getSubActions() {
-    if ((this._private.cachedSubActions == null)) {
+    if (this._private.cachedSubActions == null) {
       this._private.cachedSubActions = [];
       if (this.subActionsOrderedByEventType != null) {
         for (var subActionsData of Array.from<any>(this.subActionsOrderedByEventType)) {
-          this._private.cachedSubActions = this._private.cachedSubActions.concat(subActionsData.actions);
+          this._private.cachedSubActions = this._private.cachedSubActions.concat(
+            subActionsData.actions,
+          );
         }
       }
     }
@@ -544,7 +569,9 @@ class Action extends SDKObject {
   executeNextOfEventTypeFromAuthoritativeSubActionQueue(eventType) {
     if (this.subActionsOrderedByEventType != null) {
       // make a copy of the sub actions ordered by event type
-      if (this._private.cachedSubActionsQueue == null) { this._private.cachedSubActionsQueue = this.subActionsOrderedByEventType.slice(0); }
+      if (this._private.cachedSubActionsQueue == null) {
+        this._private.cachedSubActionsQueue = this.subActionsOrderedByEventType.slice(0);
+      }
 
       // check next sub actions data
       if (this._private.cachedSubActionsQueue.length > 0) {
@@ -555,7 +582,8 @@ class Action extends SDKObject {
 
           // execute all sub actions for this eventType
           return Array.from<any>(subActionsData.actions).map((action) =>
-            this.getGameSession().executeAction(action));
+            this.getGameSession().executeAction(action),
+          );
         }
       }
     }
@@ -583,7 +611,7 @@ class Action extends SDKObject {
           }
         }
 
-        if ((actionsProcessing.length === 0) && (actionsToProcess.length > 0)) {
+        if (actionsProcessing.length === 0 && actionsToProcess.length > 0) {
           actionsProcessing = actionsToProcess;
           actionsToProcess = [];
         }
@@ -612,7 +640,7 @@ class Action extends SDKObject {
   setResolveParentAction(action) {
     if (action != null) {
       // record parent's index
-      return this.resolveParentActionIndex = action.getIndex();
+      return (this.resolveParentActionIndex = action.getIndex());
     }
   }
 
@@ -622,7 +650,9 @@ class Action extends SDKObject {
    * @returns {Action}
    */
   getResolveParentAction() {
-    if (this.resolveParentActionIndex != null) { return this.getGameSession().getActionByIndex(this.resolveParentActionIndex); }
+    if (this.resolveParentActionIndex != null) {
+      return this.getGameSession().getActionByIndex(this.resolveParentActionIndex);
+    }
   }
 
   /**
@@ -644,9 +674,13 @@ class Action extends SDKObject {
       // add action index to list of sub actions
       const index = action.getIndex();
       if (_.indexOf(this.resolveSubActionIndices, index) === -1) {
-        if (this.resolveSubActionIndices == null) { this.resolveSubActionIndices = []; }
+        if (this.resolveSubActionIndices == null) {
+          this.resolveSubActionIndices = [];
+        }
         this.resolveSubActionIndices.push(index);
-        if (this._private.cachedResolveSubActions == null) { this._private.cachedResolveSubActions = []; }
+        if (this._private.cachedResolveSubActions == null) {
+          this._private.cachedResolveSubActions = [];
+        }
         return this._private.cachedResolveSubActions.push(action);
       }
     }
@@ -667,8 +701,14 @@ class Action extends SDKObject {
    * @returns {Array}
    */
   getResolveSubActions() {
-    if ((this.resolveSubActionIndices != null) && ((this._private.cachedResolveSubActions == null) || (this._private.cachedResolveSubActions.length !== this.resolveSubActionIndices.length))) {
-      this._private.cachedResolveSubActions = this.getGameSession().getActionsByIndices(this.resolveSubActionIndices);
+    if (
+      this.resolveSubActionIndices != null &&
+      (this._private.cachedResolveSubActions == null ||
+        this._private.cachedResolveSubActions.length !== this.resolveSubActionIndices.length)
+    ) {
+      this._private.cachedResolveSubActions = this.getGameSession().getActionsByIndices(
+        this.resolveSubActionIndices,
+      );
     }
     return this._private.cachedResolveSubActions || [];
   }
@@ -692,7 +732,7 @@ class Action extends SDKObject {
   setTriggeringModifier(modifier) {
     if (modifier != null) {
       // record parent's index
-      return this.triggeringModifierIndex = modifier.getIndex();
+      return (this.triggeringModifierIndex = modifier.getIndex());
     }
   }
 
@@ -701,7 +741,9 @@ class Action extends SDKObject {
    * @returns {Modifier}
    */
   getTriggeringModifier() {
-    if (this.triggeringModifierIndex != null) { return this.getGameSession().getModifierByIndex(this.triggeringModifierIndex); }
+    if (this.triggeringModifierIndex != null) {
+      return this.getGameSession().getModifierByIndex(this.triggeringModifierIndex);
+    }
   }
 
   /**
@@ -717,7 +759,10 @@ class Action extends SDKObject {
    * @returns {Boolean}
    */
   getCreatedByTriggeringModifier() {
-    return (this.getTriggeringModifierIndex() != null) || __guard__(this.getResolveParentAction(), (x) => x.getCreatedByTriggeringModifier());
+    return (
+      this.getTriggeringModifierIndex() != null ||
+      __guard__(this.getResolveParentAction(), (x) => x.getCreatedByTriggeringModifier())
+    );
   }
 
   _getModifierIndices(indicesData) {
@@ -728,7 +773,11 @@ class Action extends SDKObject {
         var dataModifierIndex = indicesData[i];
         var dataActionIndex = indicesData[i + 1];
         var dataResolveActionIndex = indicesData[i + 2];
-        if ((dataActionIndex === actionIndex) && ((dataActionIndex !== dataResolveActionIndex) || (dataModifierIndex !== lastDataModifierIndex))) {
+        if (
+          dataActionIndex === actionIndex &&
+          (dataActionIndex !== dataResolveActionIndex ||
+            dataModifierIndex !== lastDataModifierIndex)
+        ) {
           modifierIndices.push(dataModifierIndex);
         }
         var lastDataModifierIndex = dataModifierIndex;
@@ -745,7 +794,11 @@ class Action extends SDKObject {
         var dataModifierIndex = indicesData[i];
         var dataActionIndex = indicesData[i + 1];
         var dataResolveActionIndex = indicesData[i + 2];
-        if ((dataResolveActionIndex === actionIndex) && ((dataResolveActionIndex !== dataActionIndex) || (dataModifierIndex !== lastDataModifierIndex))) {
+        if (
+          dataResolveActionIndex === actionIndex &&
+          (dataResolveActionIndex !== dataActionIndex ||
+            dataModifierIndex !== lastDataModifierIndex)
+        ) {
           modifierIndices.push(dataModifierIndex);
         }
         var lastDataModifierIndex = dataModifierIndex;
@@ -765,8 +818,14 @@ class Action extends SDKObject {
       const modifierIndex = modifier.getIndex();
       const actionIndex = this.getIndex();
       const resolveActionIndex = resolveAction.getIndex();
-      if (this._private.triggeredModifiersData == null) { this._private.triggeredModifiersData = []; }
-      return this._private.triggeredModifiersData.push(modifierIndex, actionIndex, resolveActionIndex);
+      if (this._private.triggeredModifiersData == null) {
+        this._private.triggeredModifiersData = [];
+      }
+      return this._private.triggeredModifiersData.push(
+        modifierIndex,
+        actionIndex,
+        resolveActionIndex,
+      );
     }
   }
 
@@ -808,8 +867,14 @@ class Action extends SDKObject {
       const modifierIndex = modifier.getIndex();
       const actionIndex = action.getIndex();
       const resolveActionIndex = this.getIndex();
-      if (this._private.triggeredModifiersData == null) { this._private.triggeredModifiersData = []; }
-      return this._private.triggeredModifiersData.push(modifierIndex, actionIndex, resolveActionIndex);
+      if (this._private.triggeredModifiersData == null) {
+        this._private.triggeredModifiersData = [];
+      }
+      return this._private.triggeredModifiersData.push(
+        modifierIndex,
+        actionIndex,
+        resolveActionIndex,
+      );
     }
   }
 
@@ -840,8 +905,14 @@ class Action extends SDKObject {
       const modifierIndex = modifier.getIndex();
       const actionIndex = this.getIndex();
       const resolveActionIndex = resolveAction.getIndex();
-      if (this._private.activatedModifiersData == null) { this._private.activatedModifiersData = []; }
-      return this._private.activatedModifiersData.push(modifierIndex, actionIndex, resolveActionIndex);
+      if (this._private.activatedModifiersData == null) {
+        this._private.activatedModifiersData = [];
+      }
+      return this._private.activatedModifiersData.push(
+        modifierIndex,
+        actionIndex,
+        resolveActionIndex,
+      );
     }
   }
 
@@ -883,8 +954,14 @@ class Action extends SDKObject {
       const modifierIndex = modifier.getIndex();
       const actionIndex = action.getIndex();
       const resolveActionIndex = this.getIndex();
-      if (this._private.activatedModifiersData == null) { this._private.activatedModifiersData = []; }
-      return this._private.activatedModifiersData.push(modifierIndex, actionIndex, resolveActionIndex);
+      if (this._private.activatedModifiersData == null) {
+        this._private.activatedModifiersData = [];
+      }
+      return this._private.activatedModifiersData.push(
+        modifierIndex,
+        actionIndex,
+        resolveActionIndex,
+      );
     }
   }
 
@@ -915,8 +992,14 @@ class Action extends SDKObject {
       const modifierIndex = modifier.getIndex();
       const actionIndex = this.getIndex();
       const resolveActionIndex = resolveAction.getIndex();
-      if (this._private.deactivatedModifiersData == null) { this._private.deactivatedModifiersData = []; }
-      return this._private.deactivatedModifiersData.push(modifierIndex, actionIndex, resolveActionIndex);
+      if (this._private.deactivatedModifiersData == null) {
+        this._private.deactivatedModifiersData = [];
+      }
+      return this._private.deactivatedModifiersData.push(
+        modifierIndex,
+        actionIndex,
+        resolveActionIndex,
+      );
     }
   }
 
@@ -958,8 +1041,14 @@ class Action extends SDKObject {
       const modifierIndex = modifier.getIndex();
       const actionIndex = action.getIndex();
       const resolveActionIndex = this.getIndex();
-      if (this._private.deactivatedModifiersData == null) { this._private.deactivatedModifiersData = []; }
-      return this._private.deactivatedModifiersData.push(modifierIndex, actionIndex, resolveActionIndex);
+      if (this._private.deactivatedModifiersData == null) {
+        this._private.deactivatedModifiersData = [];
+      }
+      return this._private.deactivatedModifiersData.push(
+        modifierIndex,
+        actionIndex,
+        resolveActionIndex,
+      );
     }
   }
 
@@ -985,9 +1074,11 @@ class Action extends SDKObject {
    */
   setChangedByModifier(modifier) {
     // record modifier
-    if ((modifier != null) && !this.getChangedByModifier(modifier)) {
+    if (modifier != null && !this.getChangedByModifier(modifier)) {
       const index = modifier.getIndex();
-      if (this.changedByModifierIndices == null) { this.changedByModifierIndices = []; }
+      if (this.changedByModifierIndices == null) {
+        this.changedByModifierIndices = [];
+      }
       return this.changedByModifierIndices.push(index);
     }
   }
@@ -1047,7 +1138,7 @@ class Action extends SDKObject {
 
   /*
    * Resets action properties for execution on an authoritative session.
-  */
+   */
   resetForAuthoritativeExecution() {
     delete this.timestamp;
     delete this.subActionsOrderedByEventType;
@@ -1058,9 +1149,7 @@ class Action extends SDKObject {
     UtilsJavascript.fastExtend(this, data);
 
     // deserialize all sub actions
-    const {
-      subActionsOrderedByEventType,
-    } = this;
+    const { subActionsOrderedByEventType } = this;
     if (subActionsOrderedByEventType != null) {
       this.subActionsOrderedByEventType = [];
       return (() => {
@@ -1069,7 +1158,8 @@ class Action extends SDKObject {
           var subActionsToDeserialize = subActionsData.actions;
           subActionsData.actions = [];
           for (var subActionToDeserialize of Array.from<any>(subActionsToDeserialize)) {
-            var subAction = this.getGameSession().deserializeActionFromFirebase(subActionToDeserialize);
+            var subAction =
+              this.getGameSession().deserializeActionFromFirebase(subActionToDeserialize);
             subActionsData.actions.push(subAction);
           }
           result.push(this.subActionsOrderedByEventType.push(subActionsData));
@@ -1100,5 +1190,5 @@ Action.prototype.triggeringModifierIndex = null;
 module.exports = Action;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

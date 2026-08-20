@@ -29,10 +29,25 @@ class ModifierOnRemoveSpawnEntities extends Modifier {
 
   onRemoveFromCard(action) {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
-      const cardToSpawn = this.getGameSession().getExistingCardFromIndexOrCachedCardFromData(this.cardDataOrIndexToSpawn);
-      const spawnPositions = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(this.getGameSession(), this.getCard().getPosition(), CONFIG.PATTERN_3x3, cardToSpawn, this.getCard(), this.numSpawns);
+      const cardToSpawn = this.getGameSession().getExistingCardFromIndexOrCachedCardFromData(
+        this.cardDataOrIndexToSpawn,
+      );
+      const spawnPositions = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(
+        this.getGameSession(),
+        this.getCard().getPosition(),
+        CONFIG.PATTERN_3x3,
+        cardToSpawn,
+        this.getCard(),
+        this.numSpawns,
+      );
       for (var spawnPosition of Array.from<any>(spawnPositions)) {
-        var spawnAction = new PlayCardSilentlyAction(this.getGameSession(), this.getCard().getOwnerId(), spawnPosition.x, spawnPosition.y, this.cardDataOrIndexToSpawn);
+        var spawnAction = new PlayCardSilentlyAction(
+          this.getGameSession(),
+          this.getCard().getOwnerId(),
+          spawnPosition.x,
+          spawnPosition.y,
+          this.cardDataOrIndexToSpawn,
+        );
         spawnAction.setSource(this.getCard());
         this.getGameSession().executeAction(spawnAction);
       }

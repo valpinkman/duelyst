@@ -9,7 +9,6 @@ var DuelystBackbone = require('app/ui/extensions/duelyst_backbone');
 var RedeemGiftCodeModalView = require('app/ui/views/item/redeem_gift_code_modal');
 
 var BuddySelectionEmptyItemView = Backbone.Marionette.ItemView.extend({
-
   className: 'buddy-selection-empty',
   template: Template,
   events: {
@@ -22,15 +21,16 @@ var BuddySelectionEmptyItemView = Backbone.Marionette.ItemView.extend({
 
   templateHelpers: {
     canRedeemReferralCode: function () {
-      return ProfileManager.getInstance().get('referred_by_user_id') == null && ProgressionManager.getInstance().getGameCount() <= 0;
+      return (
+        ProfileManager.getInstance().get('referred_by_user_id') == null &&
+        ProgressionManager.getInstance().getGameCount() <= 0
+      );
     },
   },
 
-  initialize: function () {
-  },
+  initialize: function () {},
 
-  onRender: function () {
-  },
+  onRender: function () {},
 
   onOpenReferralProgram: function () {
     var model = new DuelystBackbone.Model();

@@ -25,7 +25,9 @@ class ModifierOverwatchHidden extends Modifier {
   static description = '%X';
 
   static createContextObject(manaCost, options) {
-    if (manaCost == null) { manaCost = 0; }
+    if (manaCost == null) {
+      manaCost = 0;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.manaCost = manaCost;
     return contextObject;
@@ -42,7 +44,7 @@ class ModifierOverwatchHidden extends Modifier {
     super.onCreatedToHide(source);
 
     // copy base mana cost of source modifier's source card
-    return this.contextObject.manaCost = source.getSourceCard().getBaseManaCost();
+    return (this.contextObject.manaCost = source.getSourceCard().getBaseManaCost());
   }
 }
 ModifierOverwatchHidden.prototype.type = 'ModifierOverwatchHidden';

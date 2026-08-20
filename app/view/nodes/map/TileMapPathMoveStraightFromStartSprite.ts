@@ -10,7 +10,6 @@ TileMapPathMoveStraightFromStartSprite.create()
  *************************************************************************** */
 
 const TileMapPathMoveStraightFromStartSprite = TileMapScaledSprite.extend({
-
   ctor() {
     this._super(RSX.tile_path_move_straight_from_start.frame);
   },
@@ -18,7 +17,9 @@ const TileMapPathMoveStraightFromStartSprite = TileMapScaledSprite.extend({
 
 TileMapPathMoveStraightFromStartSprite.create = function (sprite) {
   if (sprite == null) {
-    sprite = cc.pool.getFromPool(TileMapPathMoveStraightFromStartSprite) || TileMapScaledSprite.create(new TileMapPathMoveStraightFromStartSprite());
+    sprite =
+      cc.pool.getFromPool(TileMapPathMoveStraightFromStartSprite) ||
+      TileMapScaledSprite.create(new TileMapPathMoveStraightFromStartSprite());
   }
   return sprite;
 };

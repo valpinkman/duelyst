@@ -16,11 +16,16 @@ class ModifierDeathWatchDamageRandomMinionHealMyGeneral extends ModifierDeathWat
 
   static type = 'ModifierDeathWatchDamageRandomMinionHealMyGeneral';
   static modifierName = 'Deathwatch';
-  static description = 'When a friendly minion dies, deal %X damage to a random minion, and restore %Y Health to your General';
+  static description =
+    'When a friendly minion dies, deal %X damage to a random minion, and restore %Y Health to your General';
 
   static createContextObject(damageAmount, healAmount, options) {
-    if (damageAmount == null) { damageAmount = 3; }
-    if (healAmount == null) { healAmount = 3; }
+    if (damageAmount == null) {
+      damageAmount = 3;
+    }
+    if (healAmount == null) {
+      healAmount = 3;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.damageAmount = damageAmount;
     contextObject.healAmount = healAmount;
@@ -50,7 +55,8 @@ class ModifierDeathWatchDamageRandomMinionHealMyGeneral extends ModifierDeathWat
         }
 
         if (allMinions.length > 0) {
-          const unitToDamage = allMinions[this.getGameSession().getRandomIntegerForExecution(allMinions.length)];
+          const unitToDamage =
+            allMinions[this.getGameSession().getRandomIntegerForExecution(allMinions.length)];
           const damageAction = new DamageAction(this.getGameSession());
           damageAction.setOwnerId(this.getCard().getOwnerId());
           damageAction.setSource(this.getCard());
@@ -61,7 +67,9 @@ class ModifierDeathWatchDamageRandomMinionHealMyGeneral extends ModifierDeathWat
       }
 
       // heal my General
-      const myGeneral = this.getCard().getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
+      const myGeneral = this.getCard()
+        .getGameSession()
+        .getGeneralForPlayerId(this.getCard().getOwnerId());
       if (myGeneral != null) {
         const healAction = new HealAction(this.getGameSession());
         healAction.setOwnerId(this.getCard().getOwnerId());
@@ -72,8 +80,12 @@ class ModifierDeathWatchDamageRandomMinionHealMyGeneral extends ModifierDeathWat
     }
   }
 }
-ModifierDeathWatchDamageRandomMinionHealMyGeneral.prototype.type = 'ModifierDeathWatchDamageRandomMinionHealMyGeneral';
+ModifierDeathWatchDamageRandomMinionHealMyGeneral.prototype.type =
+  'ModifierDeathWatchDamageRandomMinionHealMyGeneral';
 ModifierDeathWatchDamageRandomMinionHealMyGeneral.prototype.damageAmount = 0;
-ModifierDeathWatchDamageRandomMinionHealMyGeneral.prototype.fxResource = ['FX.Modifiers.ModifierDeathwatch', 'FX.Modifiers.ModifierGenericChain'];
+ModifierDeathWatchDamageRandomMinionHealMyGeneral.prototype.fxResource = [
+  'FX.Modifiers.ModifierDeathwatch',
+  'FX.Modifiers.ModifierGenericChain',
+];
 
 module.exports = ModifierDeathWatchDamageRandomMinionHealMyGeneral;

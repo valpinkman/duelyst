@@ -14,7 +14,7 @@ class ModifierTamedBattlePet extends Modifier {
 
   static type = 'ModifierTamedBattlePet';
   static modifierName = 'Tamed Battle Pet';
-  static description = 'Listens to owner\'s commands';
+  static description = "Listens to owner's commands";
 }
 ModifierTamedBattlePet.prototype.type = 'ModifierTamedBattlePet';
 ModifierTamedBattlePet.prototype.activeInHand = false;

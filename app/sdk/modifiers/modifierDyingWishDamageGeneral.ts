@@ -42,8 +42,12 @@ class ModifierDyingWishDamageGeneral extends ModifierDyingWish {
 }
 ModifierDyingWishDamageGeneral.prototype.type = 'ModifierDyingWishDamageGeneral';
 ModifierDyingWishDamageGeneral.prototype.name = 'Dying Wish: Damage General';
-ModifierDyingWishDamageGeneral.prototype.description = 'When this minion dies, deal damage to its general';
+ModifierDyingWishDamageGeneral.prototype.description =
+  'When this minion dies, deal damage to its general';
 ModifierDyingWishDamageGeneral.prototype.damageAmount = null;
-ModifierDyingWishDamageGeneral.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericDamage'];
+ModifierDyingWishDamageGeneral.prototype.fxResource = [
+  'FX.Modifiers.ModifierDyingWish',
+  'FX.Modifiers.ModifierGenericDamage',
+];
 
 module.exports = ModifierDyingWishDamageGeneral;

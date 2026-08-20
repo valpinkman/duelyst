@@ -24,24 +24,50 @@ class ModifierOpeningGambitProgenitor extends ModifierOpeningGambit {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
       const friendlyMinions = [];
       for (var unit of Array.from<any>(this.getGameSession().getBoard().getUnits())) {
-        if (((unit != null ? unit.getOwnerId() : undefined) === ownerId) && (unit.getBaseCardId() !== Cards.Faction5.Egg) && !unit.getIsGeneral() && !((unit.getPosition().x === myPosition.x) && (unit.getPosition().y === myPosition.y))) {
+        if (
+          (unit != null ? unit.getOwnerId() : undefined) === ownerId &&
+          unit.getBaseCardId() !== Cards.Faction5.Egg &&
+          !unit.getIsGeneral() &&
+          !(unit.getPosition().x === myPosition.x && unit.getPosition().y === myPosition.y)
+        ) {
           friendlyMinions.push(unit);
         }
       }
 
       let playerOffset = 0;
-      if (this.getCard().isOwnedByPlayer1()) { playerOffset = -1; } else { playerOffset = 1; }
+      if (this.getCard().isOwnedByPlayer1()) {
+        playerOffset = -1;
+      } else {
+        playerOffset = 1;
+      }
 
       return (() => {
         const result = [];
         for (var minion of Array.from<any>(friendlyMinions)) {
-          var spawnPosition = { x: minion.getPosition().x + playerOffset, y: minion.getPosition().y };
-          if (!this.getGameSession().getBoard().getObstructionAtPositionForEntity(spawnPosition, minion)) {
+          var spawnPosition = {
+            x: minion.getPosition().x + playerOffset,
+            y: minion.getPosition().y,
+          };
+          if (
+            !this.getGameSession()
+              .getBoard()
+              .getObstructionAtPositionForEntity(spawnPosition, minion)
+          ) {
             var egg: Record<string, any> = { id: Cards.Faction5.Egg };
-            if (egg.additionalInherentModifiersContextObjects == null) { egg.additionalInherentModifiersContextObjects = []; }
-            egg.additionalInherentModifiersContextObjects.push(ModifierEgg.createContextObject(minion.createNewCardData(), minion.getName()));
+            if (egg.additionalInherentModifiersContextObjects == null) {
+              egg.additionalInherentModifiersContextObjects = [];
+            }
+            egg.additionalInherentModifiersContextObjects.push(
+              ModifierEgg.createContextObject(minion.createNewCardData(), minion.getName()),
+            );
 
-            var spawnAction = new PlayCardSilentlyAction(this.getGameSession(), ownerId, spawnPosition.x, spawnPosition.y, egg);
+            var spawnAction = new PlayCardSilentlyAction(
+              this.getGameSession(),
+              ownerId,
+              spawnPosition.x,
+              spawnPosition.y,
+              egg,
+            );
             spawnAction.setSource(this.getCard());
             result.push(this.getGameSession().executeAction(spawnAction));
           } else {

@@ -22,19 +22,26 @@ class SpellMindSteal extends SpellSpawnEntity {
   }
 
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
-    const opponentsDeck = this.getGameSession().getOpponentPlayerOfPlayerId(this.getOwnerId()).getDeck();
+    const opponentsDeck = this.getGameSession()
+      .getOpponentPlayerOfPlayerId(this.getOwnerId())
+      .getDeck();
     const drawPile = opponentsDeck.getDrawPile();
     const indexesOfMinions = [];
     const gameSession = this.getGameSession();
     for (let i = 0; i < drawPile.length; i++) {
       var cardIndex = drawPile[i];
-      if (__guard__(gameSession.getCardByIndex(cardIndex), (x1) => x1.getType()) === CardType.Unit) {
+      if (
+        __guard__(gameSession.getCardByIndex(cardIndex), (x1) => x1.getType()) === CardType.Unit
+      ) {
         indexesOfMinions.push(i);
       }
     }
 
     if (indexesOfMinions.length > 0) {
-      const indexOfCardInDeck = indexesOfMinions[this.getGameSession().getRandomIntegerForExecution(indexesOfMinions.length)];
+      const indexOfCardInDeck =
+        indexesOfMinions[
+          this.getGameSession().getRandomIntegerForExecution(indexesOfMinions.length)
+        ];
       this.cardDataOrIndexToSpawn = drawPile[indexOfCardInDeck];
 
       return super.onApplyEffectToBoardTile(board, x, y, sourceAction);
@@ -47,5 +54,5 @@ SpellMindSteal.prototype.spawnSilently = true;
 module.exports = SpellMindSteal;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

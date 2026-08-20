@@ -22,14 +22,22 @@ class ModifierGainAttackWatch extends Modifier {
   onAction(e) {
     super.onAction(e);
 
-    const {
-      action,
-    } = e;
+    const { action } = e;
 
     // watch for any of my minions gaining Attack
-    if (action instanceof ApplyModifierAction && (action.getTarget().getOwnerId() === this.getCard().getOwnerId()) && action.getModifier().getBuffsAttribute('atk') && !__guardMethod__(action.getTarget(), 'getIsGeneral', (o) => o.getIsGeneral())) {
+    if (
+      action instanceof ApplyModifierAction &&
+      action.getTarget().getOwnerId() === this.getCard().getOwnerId() &&
+      action.getModifier().getBuffsAttribute('atk') &&
+      !__guardMethod__(action.getTarget(), 'getIsGeneral', (o) => o.getIsGeneral())
+    ) {
       const modifier = action.getModifier();
-      if (modifier.getBuffsAttribute('atk') && (modifier.attributeBuffs.atk > 0) && !modifier.getRebasesAttribute('atk') && !modifier.getBuffsAttributeAbsolutely('atk')) {
+      if (
+        modifier.getBuffsAttribute('atk') &&
+        modifier.attributeBuffs.atk > 0 &&
+        !modifier.getRebasesAttribute('atk') &&
+        !modifier.getBuffsAttributeAbsolutely('atk')
+      ) {
         return this.onGainAttackWatch(action);
       }
     }

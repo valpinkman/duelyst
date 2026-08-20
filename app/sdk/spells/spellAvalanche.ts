@@ -21,13 +21,13 @@ class SpellAvalanche extends SpellStunAndDamage {
       filteredPositions = [];
 
       if (this.isOwnedByPlayer1()) {
-        mySideEndX = Math.floor(((mySideEndX - mySideStartX) * 0.5) - 1);
+        mySideEndX = Math.floor((mySideEndX - mySideStartX) * 0.5 - 1);
       } else if (this.isOwnedByPlayer2()) {
-        mySideStartX = Math.floor(((mySideEndX - mySideStartX) * 0.5) + 1);
+        mySideStartX = Math.floor((mySideEndX - mySideStartX) * 0.5 + 1);
       }
 
       for (var position of Array.from<any>(validPositions)) {
-        if ((position.x >= mySideStartX) && (position.x <= mySideEndX)) {
+        if (position.x >= mySideStartX && position.x <= mySideEndX) {
           filteredPositions.push(position);
         }
       }

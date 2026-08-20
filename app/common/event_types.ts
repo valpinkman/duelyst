@@ -2,7 +2,6 @@
  * Dictionary of Duelyst specific events. Do not add generic events here (ex: io connect).
  */
 const EVENTS = {
-
   /* region COMMON */
 
   // generic error

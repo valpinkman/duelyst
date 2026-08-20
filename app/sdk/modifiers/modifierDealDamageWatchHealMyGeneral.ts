@@ -16,7 +16,9 @@ class ModifierDealDamageWatchHealMyGeneral extends ModifierDealDamageWatch {
   static description = 'Whenever this minion deals damage, restore %X Health to your General';
 
   static createContextObject(healAmount, options) {
-    if (healAmount == null) { healAmount = 0; }
+    if (healAmount == null) {
+      healAmount = 0;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.healAmount = healAmount;
     return contextObject;
@@ -30,7 +32,9 @@ class ModifierDealDamageWatchHealMyGeneral extends ModifierDealDamageWatch {
   }
 
   onDealDamage(action) {
-    const general = this.getCard().getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
+    const general = this.getCard()
+      .getGameSession()
+      .getGeneralForPlayerId(this.getCard().getOwnerId());
 
     const healAction = new HealAction(this.getGameSession());
     healAction.setOwnerId(this.getCard().getOwnerId());
@@ -40,6 +44,9 @@ class ModifierDealDamageWatchHealMyGeneral extends ModifierDealDamageWatch {
   }
 }
 ModifierDealDamageWatchHealMyGeneral.prototype.type = 'ModifierDealDamageWatchHealMyGeneral';
-ModifierDealDamageWatchHealMyGeneral.prototype.fxResource = ['FX.Modifiers.ModifierDealDamageWatch', 'FX.Modifiers.ModifierGenericHeal'];
+ModifierDealDamageWatchHealMyGeneral.prototype.fxResource = [
+  'FX.Modifiers.ModifierDealDamageWatch',
+  'FX.Modifiers.ModifierGenericHeal',
+];
 
 module.exports = ModifierDealDamageWatchHealMyGeneral;

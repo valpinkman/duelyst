@@ -11,7 +11,6 @@ var NavigationManager = require('app/ui/managers/navigation_manager');
 var i18next = require('i18next');
 
 var ActivityDialogItemView = Backbone.Marionette.ItemView.extend({
-
   id: 'app-activity-dialog',
   className: 'dialog',
 
@@ -33,13 +32,14 @@ var ActivityDialogItemView = Backbone.Marionette.ItemView.extend({
   },
 
   hideDialog: function () {
-    audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_cancel.audio, CONFIG.CANCEL_SFX_PRIORITY);
+    audio_engine
+      .current()
+      .play_effect_for_interaction(RSX.sfx_ui_cancel.audio, CONFIG.CANCEL_SFX_PRIORITY);
     this.trigger('cancel');
 
     // destroy last to allow any events to occur
     NavigationManager.getInstance().destroyDialogView();
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

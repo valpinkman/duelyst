@@ -14,10 +14,14 @@ class SpellKillEnemyOnFriendlyCreep extends SpellKillTarget {
     const possibleTargetPositions = [];
 
     for (var tile of Array.from<any>(board.getTiles(true, false))) {
-      if ((tile.getOwnerId() === this.getOwnerId()) && (tile.getBaseCardId() === Cards.Tile.Shadow)) {
+      if (tile.getOwnerId() === this.getOwnerId() && tile.getBaseCardId() === Cards.Tile.Shadow) {
         var tilePosition = { x: tile.getPosition().x, y: tile.getPosition().y };
         var unitOnCreep = board.getCardAtPosition(tilePosition, CardType.Unit);
-        if ((unitOnCreep != null) && (unitOnCreep.getOwnerId() !== this.getOwnerId()) && !unitOnCreep.getIsGeneral()) {
+        if (
+          unitOnCreep != null &&
+          unitOnCreep.getOwnerId() !== this.getOwnerId() &&
+          !unitOnCreep.getIsGeneral()
+        ) {
           possibleTargetPositions.push(tilePosition);
         }
       }

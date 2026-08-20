@@ -15,7 +15,17 @@ class ModifierOpeningGambitApplyModifiersToWraithlings extends ModifierOpeningGa
   static description = '';
 
   static createContextObject(modifiersContextObjects, auraRadius, description, options) {
-    const contextObject = super.createContextObject(modifiersContextObjects, false, false, true, false, false, auraRadius, description, options);
+    const contextObject = super.createContextObject(
+      modifiersContextObjects,
+      false,
+      false,
+      true,
+      false,
+      false,
+      auraRadius,
+      description,
+      options,
+    );
     contextObject.cardId = Cards.Faction4.Wraithling;
     return contextObject;
   }
@@ -33,7 +43,11 @@ class ModifierOpeningGambitApplyModifiersToWraithlings extends ModifierOpeningGa
     return affectedEntities;
   }
 }
-ModifierOpeningGambitApplyModifiersToWraithlings.prototype.type = 'ModifierOpeningGambitApplyModifiersToWraithlings';
-ModifierOpeningGambitApplyModifiersToWraithlings.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierOpeningGambitApplyModifiersToWraithlings.prototype.type =
+  'ModifierOpeningGambitApplyModifiersToWraithlings';
+ModifierOpeningGambitApplyModifiersToWraithlings.prototype.fxResource = [
+  'FX.Modifiers.ModifierOpeningGambit',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 
 module.exports = ModifierOpeningGambitApplyModifiersToWraithlings;

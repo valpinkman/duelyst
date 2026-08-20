@@ -45,13 +45,15 @@ class ModifierAction extends Action {
   }
 
   getModifier() {
-    if (this._modifier == null) { this._modifier = this.getGameSession().getModifierByIndex(this.modifierIndex); }
+    if (this._modifier == null) {
+      this._modifier = this.getGameSession().getModifierByIndex(this.modifierIndex);
+    }
     return this._modifier;
   }
 
   setParentModifier(parentModifier) {
     if (parentModifier != null) {
-      return this.parentModifierIndex = parentModifier.getIndex();
+      return (this.parentModifierIndex = parentModifier.getIndex());
     }
   }
 
@@ -60,7 +62,9 @@ class ModifierAction extends Action {
   }
 
   getParentModifier() {
-    if (this._parentModifier == null) { this._parentModifier = this.getGameSession().getModifierByIndex(this.parentModifierIndex); }
+    if (this._parentModifier == null) {
+      this._parentModifier = this.getGameSession().getModifierByIndex(this.parentModifierIndex);
+    }
     return this._parentModifier;
   }
 }
@@ -73,5 +77,5 @@ ModifierAction.prototype.parentModifierIndex = null;
 module.exports = ModifierAction;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

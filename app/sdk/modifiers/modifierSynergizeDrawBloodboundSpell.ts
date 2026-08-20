@@ -14,9 +14,15 @@ class ModifierSynergizeDrawBloodboundSpell extends ModifierSynergize {
 
   onSynergize(action) {
     super.onSynergize(action);
-    const general = this.getCard().getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
+    const general = this.getCard()
+      .getGameSession()
+      .getGeneralForPlayerId(this.getCard().getOwnerId());
     const bloodboundSpell = general.getSignatureCardData();
-    const a = new PutCardInHandAction(this.getCard().getGameSession(), this.getCard().getOwnerId(), bloodboundSpell);
+    const a = new PutCardInHandAction(
+      this.getCard().getGameSession(),
+      this.getCard().getOwnerId(),
+      bloodboundSpell,
+    );
     return this.getGameSession().executeAction(a);
   }
 }

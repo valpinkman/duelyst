@@ -32,7 +32,9 @@ class ModifierDyingWishDamageNearbyEnemies extends ModifierDyingWish {
   }
 
   onDyingWish() {
-    const validEntities = this.getGameSession().getBoard().getEnemyEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
+    const validEntities = this.getGameSession()
+      .getBoard()
+      .getEnemyEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
 
     return (() => {
       const result = [];
@@ -50,6 +52,9 @@ class ModifierDyingWishDamageNearbyEnemies extends ModifierDyingWish {
 }
 ModifierDyingWishDamageNearbyEnemies.prototype.type = 'ModifierDyingWishDamageNearbyEnemies';
 ModifierDyingWishDamageNearbyEnemies.prototype.damageAmount = 0;
-ModifierDyingWishDamageNearbyEnemies.prototype.fxResource = ['FX.Modifiers.ModifierDyingWishDamageNearbyAllies', 'FX.Modifiers.ModifierGenericDamage'];
+ModifierDyingWishDamageNearbyEnemies.prototype.fxResource = [
+  'FX.Modifiers.ModifierDyingWishDamageNearbyAllies',
+  'FX.Modifiers.ModifierGenericDamage',
+];
 
 module.exports = ModifierDyingWishDamageNearbyEnemies;

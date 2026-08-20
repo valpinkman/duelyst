@@ -13,13 +13,18 @@ class ModifierKillWatchRefreshExhaustion extends ModifierKillWatch {
   static type = 'ModifierKillWatchRefreshExhaustion';
 
   onKillWatch(action) {
-    const refreshExhaustionAction = this.getGameSession().createActionForType(RefreshExhaustionAction.type);
+    const refreshExhaustionAction = this.getGameSession().createActionForType(
+      RefreshExhaustionAction.type,
+    );
     refreshExhaustionAction.setSource(this.getCard());
     refreshExhaustionAction.setTarget(this.getCard());
     return this.getGameSession().executeAction(refreshExhaustionAction);
   }
 }
 ModifierKillWatchRefreshExhaustion.prototype.type = 'ModifierKillWatchRefreshExhaustion';
-ModifierKillWatchRefreshExhaustion.prototype.fxResource = ['FX.Modifiers.ModifierKillWatch', 'FX.Modifiers.ModifierGenericHeal'];
+ModifierKillWatchRefreshExhaustion.prototype.fxResource = [
+  'FX.Modifiers.ModifierKillWatch',
+  'FX.Modifiers.ModifierGenericHeal',
+];
 
 module.exports = ModifierKillWatchRefreshExhaustion;

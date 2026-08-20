@@ -24,24 +24,32 @@ class CollectorSupremeAchievement extends Achievement {
   };
 
   static progressForCardCollection(cardCollection, allCards) {
-    if ((cardCollection == null)) {
+    if (cardCollection == null) {
       return 0;
     }
 
     // check if player owns one of every common card
-    const allCommonCards = _.filter(allCards, (card) => (card.getRarityId() === Rarity.Common)
-      && (card.getCardSetId() === CardSet.Core)
-      && !card.getIsHiddenInCollection()
-      && card.getIsAvailable()
-      && (card.factionId !== Factions.Tutorial)
-      && !Cards.getIsPrismaticCardId(card.getId()));
+    const allCommonCards = _.filter(
+      allCards,
+      (card) =>
+        card.getRarityId() === Rarity.Common &&
+        card.getCardSetId() === CardSet.Core &&
+        !card.getIsHiddenInCollection() &&
+        card.getIsAvailable() &&
+        card.factionId !== Factions.Tutorial &&
+        !Cards.getIsPrismaticCardId(card.getId()),
+    );
 
     for (var card of Array.from<any>(allCommonCards)) {
       var baseCardId = card.getBaseCardId();
       var prismaticCardId = Cards.getPrismaticCardId(baseCardId);
       var cardCollectionBase = cardCollection[baseCardId];
       var cardCollectionPrismatic = cardCollection[prismaticCardId];
-      if ((((cardCollectionBase != null ? cardCollectionBase.count : undefined) || 0) + ((cardCollectionPrismatic != null ? cardCollectionPrismatic.count : undefined) || 0)) === 0) {
+      if (
+        ((cardCollectionBase != null ? cardCollectionBase.count : undefined) || 0) +
+          ((cardCollectionPrismatic != null ? cardCollectionPrismatic.count : undefined) || 0) ===
+        0
+      ) {
         return 0;
       }
     }

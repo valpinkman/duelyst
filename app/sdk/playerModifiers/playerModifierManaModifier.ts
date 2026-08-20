@@ -22,9 +22,19 @@ class PlayerModifierManaModifier extends PlayerModifier {
 
   static type = 'PlayerModifierManaModifier';
 
-  static createContextObject(bonusMana, costChange, auraFilterByCardType, auraFilterByRaceIds, options) {
-    if (bonusMana == null) { bonusMana = 0; }
-    if (costChange == null) { costChange = 0; }
+  static createContextObject(
+    bonusMana,
+    costChange,
+    auraFilterByCardType,
+    auraFilterByRaceIds,
+    options,
+  ) {
+    if (bonusMana == null) {
+      bonusMana = 0;
+    }
+    if (costChange == null) {
+      costChange = 0;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.bonusMana = bonusMana;
     contextObject.costChange = costChange;
@@ -33,13 +43,26 @@ class PlayerModifierManaModifier extends PlayerModifier {
       contextObject.isAura = true;
       contextObject.auraFilterByCardType = auraFilterByCardType;
       contextObject.auraFilterByRaceIds = auraFilterByRaceIds;
-      contextObject.modifiersContextObjects = [ModifierManaCostChange.createContextObject(costChange)];
+      contextObject.modifiersContextObjects = [
+        ModifierManaCostChange.createContextObject(costChange),
+      ];
     }
     return contextObject;
   }
 
-  static createCostChangeContextObject(costChange, auraFilterByCardType, auraFilterByRaceIds, options) {
-    return this.createContextObject(0, costChange, auraFilterByCardType, auraFilterByRaceIds, options);
+  static createCostChangeContextObject(
+    costChange,
+    auraFilterByCardType,
+    auraFilterByRaceIds,
+    options,
+  ) {
+    return this.createContextObject(
+      0,
+      costChange,
+      auraFilterByCardType,
+      auraFilterByRaceIds,
+      options,
+    );
   }
 
   static createBonusManaContextObject(bonusMana, options) {
@@ -48,7 +71,7 @@ class PlayerModifierManaModifier extends PlayerModifier {
 
   _filterPotentialCardInAura(card) {
     let beingUsedForBonusMana = false;
-    if ((this.costChange === 0) && !this.isAura) {
+    if (this.costChange === 0 && !this.isAura) {
       beingUsedForBonusMana = true;
     }
     return beingUsedForBonusMana || super._filterPotentialCardInAura(card);

@@ -24,7 +24,7 @@ class ModifierTakeDamageWatchDestroy extends ModifierTakeDamageWatch {
     const sourceCard = __guard__(action.getSource(), (x) => x.getAncestorCardOfType(CardType.Unit));
 
     // kill any minion that damages this one
-    if ((sourceCard != null) && !sourceCard.getIsGeneral()) {
+    if (sourceCard != null && !sourceCard.getIsGeneral()) {
       const target = sourceCard;
       const killAction = new KillAction(this.getGameSession());
       killAction.setOwnerId(this.getCard().getOwnerId());
@@ -40,5 +40,5 @@ ModifierTakeDamageWatchDestroy.prototype.fxResource = ['FX.Modifiers.ModifierTak
 module.exports = ModifierTakeDamageWatchDestroy;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

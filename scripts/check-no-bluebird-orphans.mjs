@@ -16,14 +16,38 @@ import fs from 'node:fs';
 import cp from 'node:child_process';
 
 const BLUEBIRD_ONLY = [
-  'promisifyAll', 'promisify', 'defer', 'join', 'method', 'attempt', 'props',
-  'each', 'mapSeries', 'reduce', 'some', 'filter', 'map', 'delay', 'config',
-  'longStackTraces', 'onPossiblyUnhandledRejection', 'coroutine', 'spawn',
-  'using', 'disposer', 'settle', 'fromCallback', 'fromNode', 'bind',
-  'TimeoutError', 'CancellationError', 'OperationalError',
+  'promisifyAll',
+  'promisify',
+  'defer',
+  'join',
+  'method',
+  'attempt',
+  'props',
+  'each',
+  'mapSeries',
+  'reduce',
+  'some',
+  'filter',
+  'map',
+  'delay',
+  'config',
+  'longStackTraces',
+  'onPossiblyUnhandledRejection',
+  'coroutine',
+  'spawn',
+  'using',
+  'disposer',
+  'settle',
+  'fromCallback',
+  'fromNode',
+  'bind',
+  'TimeoutError',
+  'CancellationError',
+  'OperationalError',
 ];
 const STATIC = new RegExp(`\\bPromise\\s*\\.\\s*(${BLUEBIRD_ONLY.join('|')})\\b`);
-const CHAIN = /^[ \t]*\.(spread|tap|nodeify|asCallback|thenReturn|thenThrow|error|cancellable|timeout|delay|bind|return|throw)\s*\(/m;
+const CHAIN =
+  /^[ \t]*\.(spread|tap|nodeify|asCallback|thenReturn|thenThrow|error|cancellable|timeout|delay|bind|return|throw)\s*\(/m;
 
 /*
  * bluebird's SYNCHRONOUS INSPECTION api. Called on a stored promise rather than
@@ -55,17 +79,35 @@ const CALL_GET = /\)\s*\.(call|get)\s*\(\s*['"`]/;
 const INSPECT_OK = /inspectable|whenRequiredResourcesReady/;
 
 function strip(src) {
-  let out = ''; let i = 0; const n = src.length;
+  let out = '';
+  let i = 0;
+  const n = src.length;
   while (i < n) {
-    const c = src[i]; const d = src[i + 1];
-    if (c === '/' && d === '/') { while (i < n && src[i] !== '\n') i += 1; continue; }
-    if (c === '/' && d === '*') { i += 2; while (i < n && !(src[i] === '*' && src[i + 1] === '/')) i += 1; i += 2; continue; }
-    if (c === '"' || c === "'" || c === '`') {
-      const q = c; out += ' '; i += 1;
-      while (i < n && src[i] !== q) { if (src[i] === '\\') i += 1; i += 1; }
-      i += 1; continue;
+    const c = src[i];
+    const d = src[i + 1];
+    if (c === '/' && d === '/') {
+      while (i < n && src[i] !== '\n') i += 1;
+      continue;
     }
-    out += c; i += 1;
+    if (c === '/' && d === '*') {
+      i += 2;
+      while (i < n && !(src[i] === '*' && src[i + 1] === '/')) i += 1;
+      i += 2;
+      continue;
+    }
+    if (c === '"' || c === "'" || c === '`') {
+      const q = c;
+      out += ' ';
+      i += 1;
+      while (i < n && src[i] !== q) {
+        if (src[i] === '\\') i += 1;
+        i += 1;
+      }
+      i += 1;
+      continue;
+    }
+    out += c;
+    i += 1;
   }
   return out;
 }
@@ -78,15 +120,20 @@ function strip(src) {
  * failed to boot with "Cannot find module 'bluebird'" once the dependency was
  * removed. bin/* have no extension, hence the explicit paths.
  */
-const files = cp.execSync(
-  "{ grep -rl 'Promise' app server worker test scripts config --include='*.ts' --include='*.js' --include='*.mjs'; grep -rl 'Promise' bin cli 2>/dev/null; } 2>/dev/null || true",
-).toString().trim().split('\n').filter(Boolean)
+const files = cp
+  .execSync(
+    "{ grep -rl 'Promise' app server worker test scripts config --include='*.ts' --include='*.js' --include='*.mjs'; grep -rl 'Promise' bin cli 2>/dev/null; } 2>/dev/null || true",
+  )
+  .toString()
+  .trim()
+  .split('\n')
+  .filter(Boolean)
   .filter((f) => !f.startsWith('scripts/codemods/') && !f.startsWith('scripts/check-'));
 
 const orphans = [];
 for (const f of files) {
   const raw = fs.readFileSync(f, 'utf8');
-  if (/require\(['"]bluebird['"]\)/.test(raw)) continue;   // legitimately has bluebird
+  if (/require\(['"]bluebird['"]\)/.test(raw)) continue; // legitimately has bluebird
   const live = strip(raw);
   const hits = [];
   const m = live.match(STATIC);
@@ -99,7 +146,8 @@ for (const f of files) {
   // backoff were dead until it was found while measuring the kue replacement.
   if (c && !(c[1] === 'delay' && /Jobs\.create\(/.test(live))) hits.push(`.${c[1]}()`);
   const ins = live.match(INSPECT);
-  if (ins && !INSPECT_OK.test(live) && ins[1] !== 'value' && ins[1] !== 'reason') hits.push(`.${ins[1]}()`);
+  if (ins && !INSPECT_OK.test(live) && ins[1] !== 'value' && ins[1] !== 'reason')
+    hits.push(`.${ins[1]}()`);
   const cg = live.match(CALL_GET);
   if (cg) hits.push(`.${cg[1]}('...')`);
   if (hits.length) orphans.push([f, hits]);

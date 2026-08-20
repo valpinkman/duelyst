@@ -20,13 +20,12 @@ class PlayerModifierEmblemGainMinionOrLoseControlWatch extends PlayerModifierEmb
   onAction(e) {
     super.onAction(e);
 
-    const {
-      action,
-    } = e;
+    const { action } = e;
 
     if (this.getIsActionRelevantForGainMinion(action)) {
       return this.onGainMinionWatch(action);
-    } if (this.getIsActionRelevantForLoseControl(action)) {
+    }
+    if (this.getIsActionRelevantForLoseControl(action)) {
       return this.onLoseControlWatch(action);
     }
   }
@@ -35,7 +34,13 @@ class PlayerModifierEmblemGainMinionOrLoseControlWatch extends PlayerModifierEmb
     if (action != null) {
       const target = action.getTarget();
       if (target != null) {
-        if ((target.type === CardType.Unit) && ((action instanceof ApplyCardToBoardAction && (action.getOwnerId() === this.getCard().getOwnerId())) || (action instanceof SwapUnitAllegianceAction && (target.getOwnerId() === this.getCard().getOwnerId())))) {
+        if (
+          target.type === CardType.Unit &&
+          ((action instanceof ApplyCardToBoardAction &&
+            action.getOwnerId() === this.getCard().getOwnerId()) ||
+            (action instanceof SwapUnitAllegianceAction &&
+              target.getOwnerId() === this.getCard().getOwnerId()))
+        ) {
           return true;
         }
       }
@@ -47,7 +52,11 @@ class PlayerModifierEmblemGainMinionOrLoseControlWatch extends PlayerModifierEmb
     if (action != null) {
       const target = action.getTarget();
       if (target != null) {
-        if ((target.type === CardType.Unit) && action instanceof SwapUnitAllegianceAction && (target.getOwnerId() !== this.getCard().getOwnerId())) {
+        if (
+          target.type === CardType.Unit &&
+          action instanceof SwapUnitAllegianceAction &&
+          target.getOwnerId() !== this.getCard().getOwnerId()
+        ) {
           return true;
         }
       }
@@ -60,7 +69,8 @@ class PlayerModifierEmblemGainMinionOrLoseControlWatch extends PlayerModifierEmb
 
   onGainMinionWatch(action) {}
 }
-PlayerModifierEmblemGainMinionOrLoseControlWatch.prototype.type = 'PlayerModifierEmblemGainMinionOrLoseControlWatch';
+PlayerModifierEmblemGainMinionOrLoseControlWatch.prototype.type =
+  'PlayerModifierEmblemGainMinionOrLoseControlWatch';
 // override me in sub classes to implement special behavior
 
 module.exports = PlayerModifierEmblemGainMinionOrLoseControlWatch;

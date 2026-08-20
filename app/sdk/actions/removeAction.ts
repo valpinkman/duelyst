@@ -19,7 +19,12 @@ class RemoveAction extends Action {
     const target = this.getTarget();
     const targetPosition = this.getTargetPosition();
 
-    return this.getGameSession().removeCardFromBoard(target, targetPosition.x, targetPosition.y, this);
+    return this.getGameSession().removeCardFromBoard(
+      target,
+      targetPosition.x,
+      targetPosition.y,
+      this,
+    );
   }
 }
 

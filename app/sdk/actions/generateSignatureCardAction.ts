@@ -51,9 +51,13 @@ class GenerateSignatureCardAction extends Action {
    * NOTE: This card may or may not be indexed if this method is called before this action is executed.
    */
   getCard() {
-    if ((this._private.cachedCard == null)) {
-      this._private.cachedCard = this.getGameSession().getExistingCardFromIndexOrCreateCardFromData(this.cardDataOrIndex);
-      if (this._private.cachedCard != null) { this._private.cachedCard.setOwnerId(this.getOwnerId()); }
+    if (this._private.cachedCard == null) {
+      this._private.cachedCard = this.getGameSession().getExistingCardFromIndexOrCreateCardFromData(
+        this.cardDataOrIndex,
+      );
+      if (this._private.cachedCard != null) {
+        this._private.cachedCard.setOwnerId(this.getOwnerId());
+      }
     }
     return this._private.cachedCard;
   }
@@ -63,7 +67,7 @@ class GenerateSignatureCardAction extends Action {
    * NOTE: This card reference is not serialized and will not be preserved through deserialize/rollback.
    */
   setCard(card) {
-    return this._private.cachedCard = card;
+    return (this._private.cachedCard = card);
   }
 
   isRemovableDuringScrubbing() {
@@ -102,7 +106,9 @@ class GenerateSignatureCardAction extends Action {
       this.getGameSession().applyCardToSignatureCards(card, this.cardDataOrIndex, this);
 
       // get post apply card data
-      if (this.getGameSession().getIsRunningAsAuthoritative()) { return this.cardDataOrIndex = card.updateCardDataPostApply(this.cardDataOrIndex); }
+      if (this.getGameSession().getIsRunningAsAuthoritative()) {
+        return (this.cardDataOrIndex = card.updateCardDataPostApply(this.cardDataOrIndex));
+      }
     }
   }
 }

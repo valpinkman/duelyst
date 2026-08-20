@@ -33,7 +33,10 @@ class ModifierQuestStatusSonghai extends ModifierQuestStatus {
         }
         costsSummoned += cost;
       }
-      return i18next.t('modifiers.songhaiquest_counter_applied_desc', { summon_count: modifierContextObject.minionCostsSummoned.length, manacost_list: costsSummoned });
+      return i18next.t('modifiers.songhaiquest_counter_applied_desc', {
+        summon_count: modifierContextObject.minionCostsSummoned.length,
+        manacost_list: costsSummoned,
+      });
     }
   }
 

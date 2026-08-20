@@ -36,14 +36,19 @@ const GameSetup: Record<string, any> = {};
  *    deck: Array of [{ id: Integer }]
  */
 GameSetup.setupNewSession = function (gameSession, player1Data, player2Data, withoutManaTiles) {
-  if (withoutManaTiles == null) { withoutManaTiles = false; }
+  if (withoutManaTiles == null) {
+    withoutManaTiles = false;
+  }
   if (gameSession != null) {
     // Logger.module("SDK").debug("[G:#{gameSession.gameId}]", "GameSetup.setupNewSession", player1Data, player2Data)
     // Logger.module("SDK").debug("GameSetup: player 1 battlemap indexes -> #{player1Data.battleMapIndexes}")
 
     // get players
-    let battemapTemplateIndex; let general1X; let general1Y; let general2X; let
-      general2Y;
+    let battemapTemplateIndex;
+    let general1X;
+    let general1Y;
+    let general2X;
+    let general2Y;
     const player1 = gameSession.getPlayer1();
     const player2 = gameSession.getPlayer2();
 
@@ -61,11 +66,15 @@ GameSetup.setupNewSession = function (gameSession, player1Data, player2Data, wit
 
     if (general1.getBossBattleBattleMapIndex() != null) {
       battemapTemplateIndex = general1.getBossBattleBattleMapIndex();
-      Logger.module('SDK').debug(`GameSetup: player 1 boss battlemap index -> ${battemapTemplateIndex}`);
+      Logger.module('SDK').debug(
+        `GameSetup: player 1 boss battlemap index -> ${battemapTemplateIndex}`,
+      );
       gameSession.battleMapTemplate = new BattleMapTemplate(gameSession, battemapTemplateIndex);
     } else if (general2.getBossBattleBattleMapIndex() != null) {
       battemapTemplateIndex = general2.getBossBattleBattleMapIndex();
-      Logger.module('SDK').debug(`GameSetup: player 2 boss battlemap index -> ${battemapTemplateIndex}`);
+      Logger.module('SDK').debug(
+        `GameSetup: player 2 boss battlemap index -> ${battemapTemplateIndex}`,
+      );
       gameSession.battleMapTemplate = new BattleMapTemplate(gameSession, battemapTemplateIndex);
     } else if (player1Data.battleMapIndexes != null) {
       battemapTemplateIndex = _.sample(player1Data.battleMapIndexes);
@@ -84,8 +93,12 @@ GameSetup.setupNewSession = function (gameSession, player1Data, player2Data, wit
       general1X = general1Position.x;
       general1Y = general1Position.y;
     }
-    if ((general1X == null)) { general1X = 0; }
-    if ((general1Y == null)) { general1Y = 2; }
+    if (general1X == null) {
+      general1X = 0;
+    }
+    if (general1Y == null) {
+      general1Y = 2;
+    }
     GameSetup.addGeneral(gameSession, player1, general1, general1X, general1Y);
 
     const general2Position = player2Data.startingGeneralPosition;
@@ -93,8 +106,12 @@ GameSetup.setupNewSession = function (gameSession, player1Data, player2Data, wit
       general2X = general2Position.x;
       general2Y = general2Position.y;
     }
-    if ((general2X == null)) { general2X = 8; }
-    if ((general2Y == null)) { general2Y = 2; }
+    if (general2X == null) {
+      general2X = 8;
+    }
+    if (general2Y == null) {
+      general2Y = 2;
+    }
     GameSetup.addGeneral(gameSession, player2, general2, general2X, general2Y);
 
     // setup cards in decks and hands
@@ -103,9 +120,21 @@ GameSetup.setupNewSession = function (gameSession, player1Data, player2Data, wit
 
     if (!withoutManaTiles) {
       // create and apply special tiles
-      gameSession.applyCardToBoard(gameSession.getExistingCardFromIndexOrCreateCardFromData({ id: Cards.Tile.BonusMana }), 4, 0);
-      gameSession.applyCardToBoard(gameSession.getExistingCardFromIndexOrCreateCardFromData({ id: Cards.Tile.BonusMana }), 4, 4);
-      gameSession.applyCardToBoard(gameSession.getExistingCardFromIndexOrCreateCardFromData({ id: Cards.Tile.BonusMana }), 5, 2);
+      gameSession.applyCardToBoard(
+        gameSession.getExistingCardFromIndexOrCreateCardFromData({ id: Cards.Tile.BonusMana }),
+        4,
+        0,
+      );
+      gameSession.applyCardToBoard(
+        gameSession.getExistingCardFromIndexOrCreateCardFromData({ id: Cards.Tile.BonusMana }),
+        4,
+        4,
+      );
+      gameSession.applyCardToBoard(
+        gameSession.getExistingCardFromIndexOrCreateCardFromData({ id: Cards.Tile.BonusMana }),
+        5,
+        2,
+      );
     }
 
     GameSetup.addCardsToBoard(gameSession, player1Data.startingBoardCardsData, player1);
@@ -113,7 +142,11 @@ GameSetup.setupNewSession = function (gameSession, player1Data, player2Data, wit
 
     // store game setup data for things like replays
     // this way game can be re-setup exactly as it was after new setup
-    return gameSession.gameSetupData = GameSetup.createGameSetupData(gameSession, player1Data, player2Data);
+    return (gameSession.gameSetupData = GameSetup.createGameSetupData(
+      gameSession,
+      player1Data,
+      player2Data,
+    ));
   }
 };
 
@@ -125,7 +158,9 @@ GameSetup.setupPlayerBasics = function (gameSession, player, playerData) {
   if (player.getIsRanked()) {
     player.setRank(playerData.rank);
   }
-  if (playerData.startingMana != null) { return player.setStartingMana(playerData.startingMana); }
+  if (playerData.startingMana != null) {
+    return player.setStartingMana(playerData.startingMana);
+  }
 };
 
 GameSetup.createGeneral = function (gameSession, player, generalCardData) {
@@ -143,7 +178,8 @@ GameSetup.addGeneral = function (gameSession, player, general, generalX, general
   // add signature card
   const signatureCardData = player.getSignatureCardData();
   if (signatureCardData != null) {
-    const signatureCard = gameSession.getExistingCardFromIndexOrCreateCardFromData(signatureCardData);
+    const signatureCard =
+      gameSession.getExistingCardFromIndexOrCreateCardFromData(signatureCardData);
     if (signatureCard != null) {
       signatureCard.setOwner(player);
       gameSession.applyCardToSignatureCards(signatureCard, signatureCardData);
@@ -163,8 +199,10 @@ GameSetup.setupDeck = function (gameSession, player) {
 
 GameSetup.addCardsToDeck = function (gameSession, player, playerData, playerCardsData) {
   if (playerCardsData != null) {
-    let card; let cardData; let index; let
-      playerStartingHandSize;
+    let card;
+    let cardData;
+    let index;
+    let playerStartingHandSize;
     const playerDeck = player.getDeck();
 
     // copy cards data
@@ -184,7 +222,7 @@ GameSetup.addCardsToDeck = function (gameSession, player, playerData, playerCard
     for (index = 0; index < playerCardsData.length; index++) {
       cardData = playerCardsData[index];
       card = gameSession.getExistingCardFromIndexOrCreateCardFromData(cardData);
-      if ((card != null) && card.hasModifierClass(ModifierStartsInHand)) {
+      if (card != null && card.hasModifierClass(ModifierStartsInHand)) {
         playerCardsData.splice(index, 1);
         card.setOwner(player);
         gameSession.applyCardToHand(playerDeck, cardData, card, playerStartingHandSize);
@@ -193,7 +231,11 @@ GameSetup.addCardsToDeck = function (gameSession, player, playerData, playerCard
     }
 
     // add cards to hand
-    for (let i = 0, end = playerStartingHandSize, asc = end >= 0; asc ? i < end : i > end; asc ? i++ : i--) {
+    for (
+      let i = 0, end = playerStartingHandSize, asc = end >= 0;
+      asc ? i < end : i > end;
+      asc ? i++ : i--
+    ) {
       if (!gameSession.getAreDecksRandomized()) {
         index = playerCardsData.length - 1;
       } else {
@@ -236,9 +278,7 @@ GameSetup.addCardsToBoard = function (gameSession, boardCardsData, owner) {
         var card = gameSession.getExistingCardFromIndexOrCreateCardFromData(cardData);
         if (card != null) {
           // extract card data that should not be copied into card
-          var {
-            position,
-          } = cardData;
+          var { position } = cardData;
           delete cardData.position;
 
           // set owner as needed
@@ -271,9 +311,7 @@ GameSetup.addCardsToBoard = function (gameSession, boardCardsData, owner) {
 
 GameSetup.setupNewSessionFromExistingSessionData = function (gameSession, existingGameSessionData) {
   // store game setup data
-  const {
-    gameSetupData,
-  } = existingGameSessionData;
+  const { gameSetupData } = existingGameSessionData;
   gameSession.gameSetupData = gameSetupData;
 
   // apply battlemap data
@@ -308,7 +346,11 @@ GameSetup.addCardsToDeckFromData = function (gameSession, player, playerGameSetu
 
   // add cards to decks
   for (cardData of Array.from<any>(playerGameSetupData.startingDrawPile)) {
-    gameSession.applyCardToDeck(playerDeck, cardData, gameSession.getExistingCardFromIndexOrCreateCardFromData(cardData));
+    gameSession.applyCardToDeck(
+      playerDeck,
+      cardData,
+      gameSession.getExistingCardFromIndexOrCreateCardFromData(cardData),
+    );
   }
 
   // add cards to hand
@@ -316,7 +358,13 @@ GameSetup.addCardsToDeckFromData = function (gameSession, player, playerGameSetu
     const result = [];
     for (cardData of Array.from<any>(playerGameSetupData.startingHand)) {
       if (cardData != null) {
-        result.push(gameSession.applyCardToHand(playerDeck, cardData, gameSession.getExistingCardFromIndexOrCreateCardFromData(cardData)));
+        result.push(
+          gameSession.applyCardToHand(
+            playerDeck,
+            cardData,
+            gameSession.getExistingCardFromIndexOrCreateCardFromData(cardData),
+          ),
+        );
       } else {
         result.push(undefined);
       }
@@ -335,16 +383,26 @@ GameSetup.createGameSetupData = function (gameSession, player1Data, player2Data)
 
   // snapshot all cards on board
   gameSetupData.boardCardsData = [];
-  for (var card of Array.from<any>(gameSession.getBoard().getCards(null, (allowUntargetable = true)))) {
+  for (var card of Array.from<any>(
+    gameSession.getBoard().getCards(null, (allowUntargetable = true)),
+  )) {
     gameSetupData.boardCardsData.push(card.createGameSetupCardData());
   }
 
   // snapshot player data
   gameSetupData.players = [];
   const player1 = gameSession.getPlayer1();
-  gameSetupData.players[0] = GameSetup.createGameSetupDataForPlayer(gameSession, player1, player1Data);
+  gameSetupData.players[0] = GameSetup.createGameSetupDataForPlayer(
+    gameSession,
+    player1,
+    player1Data,
+  );
   const player2 = gameSession.getPlayer2();
-  gameSetupData.players[1] = GameSetup.createGameSetupDataForPlayer(gameSession, player2, player2Data);
+  gameSetupData.players[1] = GameSetup.createGameSetupDataForPlayer(
+    gameSession,
+    player2,
+    player2Data,
+  );
 
   return gameSetupData;
 };
@@ -375,7 +433,9 @@ GameSetup.createGameSetupDataForPlayer = function (gameSession, player, playerDa
   playerGameSetupData.deck = UtilsJavascript.deepCopy(playerData.deck);
 
   // store copies of starting cards in deck to preserve original data
-  playerGameSetupData.startingDrawPile = _.map(playerDeck.getCardsInDrawPile(), (card) => card.createGameSetupCardData());
+  playerGameSetupData.startingDrawPile = _.map(playerDeck.getCardsInDrawPile(), (card) =>
+    card.createGameSetupCardData(),
+  );
 
   // store copies of starting cards in hand to preserve original data
   playerGameSetupData.startingHand = _.map(playerDeck.getCardsInHand(), (card) => {

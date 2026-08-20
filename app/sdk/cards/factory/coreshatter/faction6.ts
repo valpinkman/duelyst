@@ -85,15 +85,19 @@ class CardFactory_CoreshatterSet_Faction6 {
       card.factionId = Factions.Faction6;
       card.setCardSetId(CardSet.Coreshatter);
       card.name = 'Oak in the Nemeton';
-      card.setDescription('Trial: Have 5 token minions with different names.\nDestiny: Friendly token minions have +4/+4.');
+      card.setDescription(
+        'Trial: Have 5 token minions with different names.\nDestiny: Friendly token minions have +4/+4.',
+      );
       card.atk = 6;
       card.maxHP = 6;
       card.manaCost = 6;
       card.rarityId = Rarity.Mythron;
       const statContextObject = ModifierQuestBuffVanar.createContextObjectWithAttributeBuffs(4, 4);
       statContextObject.appliedName = 'Might of the Oak';
-      const emblemModifier = PlayerModifierEmblemSummonWatchVanarTokenQuest.createContextObject([statContextObject]);
-      emblemModifier.appliedName = 'Nemeton\'s Protection';
+      const emblemModifier = PlayerModifierEmblemSummonWatchVanarTokenQuest.createContextObject([
+        statContextObject,
+      ]);
+      emblemModifier.appliedName = "Nemeton's Protection";
       emblemModifier.appliedDescription = 'Your token minions have +4/+4.';
       card.setInherentModifiersContextObjects([
         ModifierStartsInHand.createContextObject(),
@@ -130,14 +134,18 @@ class CardFactory_CoreshatterSet_Faction6 {
       card.setCardSetId(CardSet.Coreshatter);
       card.factionId = Factions.Faction6;
       card.name = 'Cloudcaller';
-      card.setDescription('Opening Gambit: Your Bloodbound Spell refreshes and is Lesser Waterball this turn.');
+      card.setDescription(
+        'Opening Gambit: Your Bloodbound Spell refreshes and is Lesser Waterball this turn.',
+      );
       card.atk = 4;
       card.maxHP = 5;
       card.manaCost = 5;
       card.rarityId = Rarity.Legendary;
       card.setInherentModifiersContextObjects([
         ModifierOpeningGambitRefreshSignatureCard.createContextObject(),
-        ModifierOpeningGambitChangeSignatureCardForThisTurn.createContextObject({ id: Cards.Spell.SnowballBBS }),
+        ModifierOpeningGambitChangeSignatureCardForThisTurn.createContextObject({
+          id: Cards.Spell.SnowballBBS,
+        }),
       ]);
       card.setFXResource(['FX.Cards.Neutral.ZenRui']);
       card.setBoundingBoxWidth(70);
@@ -189,7 +197,9 @@ class CardFactory_CoreshatterSet_Faction6 {
       card.setCardSetId(CardSet.Coreshatter);
       card.factionId = Factions.Faction6;
       card.name = 'Malicious Wisp';
-      card.setDescription('Opening Gambit: Take a mana crystal from your opponent.\nDying Wish: Give back the mana crystal.');
+      card.setDescription(
+        'Opening Gambit: Take a mana crystal from your opponent.\nDying Wish: Give back the mana crystal.',
+      );
       card.atk = 4;
       card.maxHP = 3;
       card.manaCost = 4;
@@ -290,7 +300,9 @@ class CardFactory_CoreshatterSet_Faction6 {
       card.maxHP = 3;
       card.manaCost = 5;
       card.rarityId = Rarity.Rare;
-      card.setInherentModifiersContextObjects([ModifierDyingWishSpawnEntity.createContextObject({ id: Cards.Faction6.FenrirWarmaster })]);
+      card.setInherentModifiersContextObjects([
+        ModifierDyingWishSpawnEntity.createContextObject({ id: Cards.Faction6.FenrirWarmaster }),
+      ]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
       card.setFXResource(['FX.Cards.Neutral.Shuffler']);
       card.setBaseSoundResource({
@@ -325,7 +337,9 @@ class CardFactory_CoreshatterSet_Faction6 {
       card.rarityId = Rarity.Common;
       card.raceId = Races.Vespyr;
       card.setInherentModifiersContextObjects([
-        ModifierEntersBattlefieldWatchApplyModifiers.createContextObject([ModifierStunnedVanar.createContextObject()]),
+        ModifierEntersBattlefieldWatchApplyModifiers.createContextObject([
+          ModifierStunnedVanar.createContextObject(),
+        ]),
       ]);
       card.addKeywordClassToInclude(ModifierStun);
       card.setFXResource(['FX.Cards.Neutral.DragoneboneGolem']);
@@ -364,9 +378,7 @@ class CardFactory_CoreshatterSet_Faction6 {
       card.canTargetGeneral = false;
       const buffContextObject = Modifier.createContextObjectWithAttributeBuffs(6, 6);
       buffContextObject.appliedName = 'Potential Realized';
-      card.setTargetModifiersContextObjects([
-        buffContextObject,
-      ]);
+      card.setTargetModifiersContextObjects([buffContextObject]);
       card.setFXResource(['FX.Cards.Spell.CryonicPotential']);
       card.setBaseAnimResource({
         idle: RSX.iconIceCapsuleIdle.name,
@@ -383,7 +395,9 @@ class CardFactory_CoreshatterSet_Faction6 {
       card.id = Cards.Spell.OwnSideTeleport;
       card.setCardSetId(CardSet.Coreshatter);
       card.name = 'Wanderlust';
-      card.setDescription('Intensify: Teleport 1 random enemy minion to a space on your starting side of the battlefield.');
+      card.setDescription(
+        'Intensify: Teleport 1 random enemy minion to a space on your starting side of the battlefield.',
+      );
       card.spellFilterType = SpellFilterType.None;
       card.manaCost = 1;
       card.rarityId = Rarity.Common;
@@ -404,7 +418,9 @@ class CardFactory_CoreshatterSet_Faction6 {
       card.setCardSetId(CardSet.Coreshatter);
       card.factionId = Factions.Faction6;
       card.name = 'Disciple of Yggdra';
-      card.setDescription('When an enemy is Stunned, transform this minion into Yggdra\'s Voracity.');
+      card.setDescription(
+        "When an enemy is Stunned, transform this minion into Yggdra's Voracity.",
+      );
       card.atk = 2;
       card.maxHP = 3;
       card.manaCost = 3;
@@ -442,7 +458,7 @@ class CardFactory_CoreshatterSet_Faction6 {
       card.setCardSetId(CardSet.Coreshatter);
       card.factionId = Factions.Faction6;
       card.setIsHiddenInCollection(true);
-      card.name = 'Yggdra\'s Voracity';
+      card.name = "Yggdra's Voracity";
       card.setDescription('Whenever an enemy is Stunned, fully heal this minion.');
       card.atk = 5;
       card.maxHP = 5;
@@ -482,7 +498,9 @@ class CardFactory_CoreshatterSet_Faction6 {
       card.id = Cards.Spell.InfiniteHowlers;
       card.setCardSetId(CardSet.Coreshatter);
       card.name = 'Endless Hunt';
-      card.setDescription('Summon a 3/3 Vespyr Night Howler.\nPut an Endless Hunt into your action bar.');
+      card.setDescription(
+        'Summon a 3/3 Vespyr Night Howler.\nPut an Endless Hunt into your action bar.',
+      );
       card.manaCost = 4;
       card.spellFilterType = SpellFilterType.SpawnSource;
       card.rarityId = Rarity.Rare;
@@ -504,7 +522,9 @@ class CardFactory_CoreshatterSet_Faction6 {
       card.factionId = Factions.Faction6;
       card.id = Cards.Artifact.SnowChipper;
       card.name = 'Resonance Scythe';
-      card.setDescription('Your General has +1 Attack.\nReactivate your General whenever they destroy a Stunned enemy.');
+      card.setDescription(
+        'Your General has +1 Attack.\nReactivate your General whenever they destroy a Stunned enemy.',
+      );
       card.manaCost = 2;
       card.rarityId = Rarity.Epic;
       card.durability = 3;

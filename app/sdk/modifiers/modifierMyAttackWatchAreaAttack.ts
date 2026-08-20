@@ -16,7 +16,9 @@ class ModifierMyAttackWatchAreaAttack extends ModifierMyAttackWatch {
   static type = 'ModifierMyAttackWatchAreaAttack';
 
   onMyAttackWatch(action) {
-    const entities = this.getGameSession().getBoard().getFriendlyEntitiesAroundEntity(action.getTarget(), CardType.Unit, 1);
+    const entities = this.getGameSession()
+      .getBoard()
+      .getFriendlyEntitiesAroundEntity(action.getTarget(), CardType.Unit, 1);
     if (entities != null) {
       return (() => {
         const result = [];

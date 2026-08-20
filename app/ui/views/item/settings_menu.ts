@@ -27,7 +27,6 @@ var AccountInventoryResetModalView = require('./account_inventory_reset_modal');
 var RedeemGiftCodeModalView = require('./redeem_gift_code_modal');
 
 var SettingsMenuView = Backbone.Marionette.ItemView.extend({
-
   className: 'modal duelyst-modal settings-menu',
 
   /* where are we appending the items views */
@@ -112,7 +111,11 @@ var SettingsMenuView = Backbone.Marionette.ItemView.extend({
     var $html = $('html');
     var screenWidth = $html.width();
     var screenHeight = $html.height();
-    var globalScaleExact = CONFIG.getGlobalScaleForResolution(CONFIG.RESOLUTION_EXACT, screenWidth, screenHeight);
+    var globalScaleExact = CONFIG.getGlobalScaleForResolution(
+      CONFIG.RESOLUTION_EXACT,
+      screenWidth,
+      screenHeight,
+    );
     if (globalScaleExact !== 1.0) {
       // check all resolutions and sort by whether they fit into user's current screen size
       var resolutions = UtilsJavascript.deepCopy(CONFIG.RESOLUTIONS);
@@ -120,7 +123,10 @@ var SettingsMenuView = Backbone.Marionette.ItemView.extend({
       var resolutionsThatDontFit = [];
       for (var i = 0, il = resolutions.length; i < il; i++) {
         var resolutionData = resolutions[i];
-        if (resolutionData.value === CONFIG.RESOLUTION_AUTO || resolutionData.value === CONFIG.RESOLUTION_PIXEL_PERFECT) {
+        if (
+          resolutionData.value === CONFIG.RESOLUTION_AUTO ||
+          resolutionData.value === CONFIG.RESOLUTION_PIXEL_PERFECT
+        ) {
           resolutionsThatFit.push(resolutionData);
         } else {
           var resolution = $.trim(resolutionData.description);
@@ -141,7 +147,7 @@ var SettingsMenuView = Backbone.Marionette.ItemView.extend({
   },
 
   onBeforeRender: function () {
-    this.$el.find('[data-toggle=\'tooltip\']').tooltip('destroy');
+    this.$el.find("[data-toggle='tooltip']").tooltip('destroy');
   },
 
   onRender: function () {
@@ -182,7 +188,7 @@ var SettingsMenuView = Backbone.Marionette.ItemView.extend({
 
     this.ui.$versionTag.text('v' + process.env.VERSION);
 
-    this.$el.find('[data-toggle=\'tooltip\']').tooltip();
+    this.$el.find("[data-toggle='tooltip']").tooltip();
   },
 
   onShow: function () {
@@ -198,13 +204,26 @@ var SettingsMenuView = Backbone.Marionette.ItemView.extend({
     this.listenTo(this.model, 'change:boardQuality', this._updateBoardQualityUI.bind(this));
 
     // change gradient color mapping
-    Scene.getInstance().getFX().showGradientColorMap(this._requestId, CONFIG.ANIMATE_FAST_DURATION, {
-      r: 194, g: 203, b: 220, a: 255,
-    }, {
-      r: 36, g: 51, b: 65, a: 255,
-    });
+    Scene.getInstance().getFX().showGradientColorMap(
+      this._requestId,
+      CONFIG.ANIMATE_FAST_DURATION,
+      {
+        r: 194,
+        g: 203,
+        b: 220,
+        a: 255,
+      },
+      {
+        r: 36,
+        g: 51,
+        b: 65,
+        a: 255,
+      },
+    );
 
-    audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_tab_in.audio, CONFIG.SHOW_SFX_PRIORITY);
+    audio_engine
+      .current()
+      .play_effect_for_interaction(RSX.sfx_ui_tab_in.audio, CONFIG.SHOW_SFX_PRIORITY);
   },
 
   onPrepareForDestroy: function () {
@@ -212,7 +231,9 @@ var SettingsMenuView = Backbone.Marionette.ItemView.extend({
     window.zE && window.zE.hide && window.zE.hide();
 
     // reset gradient color mapping
-    Scene.getInstance().getFX().clearGradientColorMap(this._requestId, CONFIG.ANIMATE_MEDIUM_DURATION);
+    Scene.getInstance()
+      .getFX()
+      .clearGradientColorMap(this._requestId, CONFIG.ANIMATE_MEDIUM_DURATION);
   },
 
   onResize: function () {
@@ -223,7 +244,9 @@ var SettingsMenuView = Backbone.Marionette.ItemView.extend({
   /* event handlers */
 
   onChangeUsernameClicked: function (e) {
-    NavigationManager.getInstance().showDialogView(new ChangeUsernameItemView({ model: ProfileManager.getInstance().profile }));
+    NavigationManager.getInstance().showDialogView(
+      new ChangeUsernameItemView({ model: ProfileManager.getInstance().profile }),
+    );
   },
 
   onResetAccountInventoryPressed: function () {
@@ -235,25 +258,45 @@ var SettingsMenuView = Backbone.Marionette.ItemView.extend({
   },
 
   onLogoutClicked: function () {
-    var confirmDialogItemView = new ConfirmDialogItemView({ title: 'Are you sure you want to logout?' });
-    this.listenToOnce(confirmDialogItemView, 'confirm', function () {
-      Session.logout();
-    }.bind(this));
-    this.listenToOnce(confirmDialogItemView, 'cancel', function () {
-      this.stopListening(confirmDialogItemView);
-    }.bind(this));
+    var confirmDialogItemView = new ConfirmDialogItemView({
+      title: 'Are you sure you want to logout?',
+    });
+    this.listenToOnce(
+      confirmDialogItemView,
+      'confirm',
+      function () {
+        Session.logout();
+      }.bind(this),
+    );
+    this.listenToOnce(
+      confirmDialogItemView,
+      'cancel',
+      function () {
+        this.stopListening(confirmDialogItemView);
+      }.bind(this),
+    );
     NavigationManager.getInstance().showDialogView(confirmDialogItemView);
   },
 
   onDesktopQuitClicked: function () {
     if (window.isDesktop) {
-      var confirmDialogItemView = new ConfirmDialogItemView({ title: 'Are you sure you want to quit?' });
-      this.listenToOnce(confirmDialogItemView, 'confirm', function () {
-        window.quitDesktop();
-      }.bind(this));
-      this.listenToOnce(confirmDialogItemView, 'cancel', function () {
-        this.stopListening(confirmDialogItemView);
-      }.bind(this));
+      var confirmDialogItemView = new ConfirmDialogItemView({
+        title: 'Are you sure you want to quit?',
+      });
+      this.listenToOnce(
+        confirmDialogItemView,
+        'confirm',
+        function () {
+          window.quitDesktop();
+        }.bind(this),
+      );
+      this.listenToOnce(
+        confirmDialogItemView,
+        'cancel',
+        function () {
+          this.stopListening(confirmDialogItemView);
+        }.bind(this),
+      );
       NavigationManager.getInstance().showDialogView(confirmDialogItemView);
     }
   },
@@ -272,7 +315,10 @@ var SettingsMenuView = Backbone.Marionette.ItemView.extend({
     var currentLanguageKey = Storage.get('preferredLanguageKey') || 'en';
     if (currentLanguageKey != languageKey) {
       Storage.set('preferredLanguageKey', languageKey);
-      EventBus.getInstance().trigger(EVENTS.request_reload, { id: 'language_changed', message: 'Language Changed.  Please restart.' });
+      EventBus.getInstance().trigger(EVENTS.request_reload, {
+        id: 'language_changed',
+        message: 'Language Changed.  Please restart.',
+      });
     }
   },
 
@@ -421,7 +467,6 @@ var SettingsMenuView = Backbone.Marionette.ItemView.extend({
       this.ui.$buttonBoardQualityHigh.removeClass('active');
     }
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

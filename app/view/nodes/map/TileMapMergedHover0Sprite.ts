@@ -10,7 +10,6 @@ TileMapMergedHover0Sprite.create()
  *************************************************************************** */
 
 const TileMapMergedHover0Sprite = TileMapScaledSprite.extend({
-
   ctor() {
     this._super(RSX.tile_merged_hover_0.frame);
   },
@@ -18,7 +17,9 @@ const TileMapMergedHover0Sprite = TileMapScaledSprite.extend({
 
 TileMapMergedHover0Sprite.create = function (sprite) {
   if (sprite == null) {
-    sprite = cc.pool.getFromPool(TileMapMergedHover0Sprite) || TileMapScaledSprite.create(new TileMapMergedHover0Sprite());
+    sprite =
+      cc.pool.getFromPool(TileMapMergedHover0Sprite) ||
+      TileMapScaledSprite.create(new TileMapMergedHover0Sprite());
   }
   return sprite;
 };

@@ -20,9 +20,11 @@ class ModifierDamageAreaAttack extends Modifier {
     super.onBeforeAction(actionEvent);
 
     const a = actionEvent.action;
-    if (a instanceof AttackAction && (a.getSource() === this.getCard())) {
+    if (a instanceof AttackAction && a.getSource() === this.getCard()) {
       // damage the area too
-      const entities = this.getGameSession().getBoard().getFriendlyEntitiesAroundEntity(a.getTarget(), CardType.Unit, 1);
+      const entities = this.getGameSession()
+        .getBoard()
+        .getFriendlyEntitiesAroundEntity(a.getTarget(), CardType.Unit, 1);
       return (() => {
         const result = [];
         for (var entity of Array.from<any>(entities)) {

@@ -13,7 +13,9 @@ const PlayCardSilentlyAction = require('app/sdk/actions/playCardSilentlyAction')
 
 var SpellFollowupSpawnEntityFromDeck = (function () {
   let hasSearchedForCardOnSendingSide;
-  SpellFollowupSpawnEntityFromDeck = class SpellFollowupSpawnEntityFromDeck extends SpellSpawnEntity {
+  SpellFollowupSpawnEntityFromDeck = class SpellFollowupSpawnEntityFromDeck extends (
+    SpellSpawnEntity
+  ) {
     declare canBeAppliedAnywhere: any;
     declare spawnSilently: any;
     declare cardDataOrIndexToSpawn: any;
@@ -36,7 +38,11 @@ var SpellFollowupSpawnEntityFromDeck = (function () {
 
     getCardDataOrIndexToSpawn() {
       // if we haven't yet checked if the target card is in the deck
-      if ((this.getGameSession().getIsRunningAsAuthoritative() && !this._private.hasSearchedForCard) || !this.hasSearchedForCardOnSendingSide) {
+      if (
+        (this.getGameSession().getIsRunningAsAuthoritative() &&
+          !this._private.hasSearchedForCard) ||
+        !this.hasSearchedForCardOnSendingSide
+      ) {
         // find the card in the deck
         const drawPile = this.getOwner().getDeck().getDrawPile();
         const indexesOfDraw = [];
@@ -49,7 +55,9 @@ var SpellFollowupSpawnEntityFromDeck = (function () {
         }
 
         if (indexesOfDraw.length > 0) {
-          const minionIndexToPlay = this.getGameSession().getRandomIntegerForExecution(indexesOfDraw.length);
+          const minionIndexToPlay = this.getGameSession().getRandomIntegerForExecution(
+            indexesOfDraw.length,
+          );
           const indexOfCardInDeck = indexesOfDraw[minionIndexToPlay];
           this.cardDataOrIndexToSpawn = drawPile[indexOfCardInDeck];
         }
@@ -69,6 +77,6 @@ var SpellFollowupSpawnEntityFromDeck = (function () {
   };
   SpellFollowupSpawnEntityFromDeck.initClass();
   return SpellFollowupSpawnEntityFromDeck;
-}());
+})();
 
 module.exports = SpellFollowupSpawnEntityFromDeck;

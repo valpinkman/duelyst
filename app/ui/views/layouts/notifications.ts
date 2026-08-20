@@ -10,15 +10,23 @@ var MessageNotificationsCompositeView = require('app/ui/views/composite/message_
 var QuestNotificationsCompositeView = require('app/ui/views/composite/quest_notifications');
 
 var NotificationsLayout = Backbone.Marionette.LayoutView.extend({
-
   id: 'app-notifications',
 
   template: NotificationsTmpl,
 
   regions: {
-    mainNotificationsRegion: { selector: '#app-main-notifications-region', regionClass: TransitionRegion },
-    messageNotificationsRegion: { selector: '#app-message-notifications-region', regionClass: TransitionRegion },
-    questNotificationsRegion: { selector: '#app-quest-notifications-region', regionClass: TransitionRegion },
+    mainNotificationsRegion: {
+      selector: '#app-main-notifications-region',
+      regionClass: TransitionRegion,
+    },
+    messageNotificationsRegion: {
+      selector: '#app-message-notifications-region',
+      regionClass: TransitionRegion,
+    },
+    questNotificationsRegion: {
+      selector: '#app-quest-notifications-region',
+      regionClass: TransitionRegion,
+    },
   },
 
   _mergedMainAndBuddyInviteNotificationsCollection: null,
@@ -44,13 +52,29 @@ var NotificationsLayout = Backbone.Marionette.LayoutView.extend({
 
   onShow: function () {
     var mainNotificationsCollection = NotificationsManager.getInstance().getMainNotifications();
-    var buddyInviteNotificationsCollection = NotificationsManager.getInstance().getBuddyInviteNotifications();
-    var mergedNotificationModels = [].concat(mainNotificationsCollection.models, buddyInviteNotificationsCollection.models);
+    var buddyInviteNotificationsCollection =
+      NotificationsManager.getInstance().getBuddyInviteNotifications();
+    var mergedNotificationModels = [].concat(
+      mainNotificationsCollection.models,
+      buddyInviteNotificationsCollection.models,
+    );
     this._mergedMainAndBuddyInviteNotificationsCollection.add(mergedNotificationModels);
     this.listenTo(mainNotificationsCollection, 'add', this.onMainOrBuddyInviteNotificationAdded);
-    this.listenTo(mainNotificationsCollection, 'remove', this.onMainOrBuddyInviteNotificationRemoved);
-    this.listenTo(buddyInviteNotificationsCollection, 'add', this.onMainOrBuddyInviteNotificationAdded);
-    this.listenTo(buddyInviteNotificationsCollection, 'remove', this.onMainOrBuddyInviteNotificationRemoved);
+    this.listenTo(
+      mainNotificationsCollection,
+      'remove',
+      this.onMainOrBuddyInviteNotificationRemoved,
+    );
+    this.listenTo(
+      buddyInviteNotificationsCollection,
+      'add',
+      this.onMainOrBuddyInviteNotificationAdded,
+    );
+    this.listenTo(
+      buddyInviteNotificationsCollection,
+      'remove',
+      this.onMainOrBuddyInviteNotificationRemoved,
+    );
   },
 
   onDestroy: function () {
@@ -59,9 +83,21 @@ var NotificationsLayout = Backbone.Marionette.LayoutView.extend({
   },
 
   onRender: function () {
-    this.mainNotificationsRegion.show(new MainNotificationsCompositeView({ collection: this._mergedMainAndBuddyInviteNotificationsCollection }));
-    this.messageNotificationsRegion.show(new MessageNotificationsCompositeView({ collection: NotificationsManager.getInstance().getBuddyMessageNotifications() }));
-    this.questNotificationsRegion.show(new QuestNotificationsCompositeView({ collection: NotificationsManager.getInstance().getQuestProgressNotifications() }));
+    this.mainNotificationsRegion.show(
+      new MainNotificationsCompositeView({
+        collection: this._mergedMainAndBuddyInviteNotificationsCollection,
+      }),
+    );
+    this.messageNotificationsRegion.show(
+      new MessageNotificationsCompositeView({
+        collection: NotificationsManager.getInstance().getBuddyMessageNotifications(),
+      }),
+    );
+    this.questNotificationsRegion.show(
+      new QuestNotificationsCompositeView({
+        collection: NotificationsManager.getInstance().getQuestProgressNotifications(),
+      }),
+    );
   },
 
   onMainOrBuddyInviteNotificationAdded: function (model) {
@@ -71,7 +107,6 @@ var NotificationsLayout = Backbone.Marionette.LayoutView.extend({
   onMainOrBuddyInviteNotificationRemoved: function (model) {
     this._mergedMainAndBuddyInviteNotificationsCollection.remove(model);
   },
-
 });
 
 module.exports = NotificationsLayout;

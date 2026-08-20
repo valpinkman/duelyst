@@ -20,9 +20,23 @@ class ModifierCannotBeReplaced extends ModifierCannot {
   onValidateAction(actionEvent) {
     const a = actionEvent.action;
 
-    if (a instanceof ReplaceCardFromHandAction && a.getIsValid() && this.getCard().getIsLocatedInHand() && (a.getOwner() === this.getCard().getOwner())) {
-      if (__guard__(this.getCard().getOwner().getDeck().getCardInHandAtIndex(a.indexOfCardInHand), (x) => x.getIndex()) === this.getCard().getIndex()) {
-        return this.invalidateAction(a, this.getCard().getPosition(), i18next.t('modifiers.cannot_replace_error'));
+    if (
+      a instanceof ReplaceCardFromHandAction &&
+      a.getIsValid() &&
+      this.getCard().getIsLocatedInHand() &&
+      a.getOwner() === this.getCard().getOwner()
+    ) {
+      if (
+        __guard__(
+          this.getCard().getOwner().getDeck().getCardInHandAtIndex(a.indexOfCardInHand),
+          (x) => x.getIndex(),
+        ) === this.getCard().getIndex()
+      ) {
+        return this.invalidateAction(
+          a,
+          this.getCard().getPosition(),
+          i18next.t('modifiers.cannot_replace_error'),
+        );
       }
     }
   }
@@ -36,5 +50,5 @@ ModifierCannotBeReplaced.prototype.fxResource = ['FX.Modifiers.ModifierCannotBeR
 module.exports = ModifierCannotBeReplaced;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

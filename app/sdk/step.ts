@@ -46,7 +46,7 @@ class Step extends SDKObject {
    * @returns {Boolean}
    */
   isFirstTime() {
-    return (this.timestamp == null);
+    return this.timestamp == null;
   }
 
   /**
@@ -54,7 +54,7 @@ class Step extends SDKObject {
    */
   addSignature() {
     if (this.isFirstTime()) {
-      return this.timestamp = Date.now();
+      return (this.timestamp = Date.now());
     }
   }
 
@@ -63,7 +63,7 @@ class Step extends SDKObject {
    * @param {Number|String}
    */
   setIndex(val) {
-    return this.index = val;
+    return (this.index = val);
   }
 
   /**
@@ -79,7 +79,7 @@ class Step extends SDKObject {
    * @param {Step}
    */
   setParentStep(step) {
-    return this.parentStepIndex = step.getIndex();
+    return (this.parentStepIndex = step.getIndex());
   }
 
   /**
@@ -105,7 +105,7 @@ class Step extends SDKObject {
    * @param {Step}
    */
   setChildStep(step) {
-    return this.childStepIndex = step.getIndex();
+    return (this.childStepIndex = step.getIndex());
   }
 
   /**
@@ -131,7 +131,7 @@ class Step extends SDKObject {
    * @param {Action} action
    */
   setAction(action) {
-    return this.action = action;
+    return (this.action = action);
   }
 
   /**
@@ -148,7 +148,7 @@ class Step extends SDKObject {
    * @param {Boolean} val
    */
   setIncludedRandomness(val) {
-    return this._private.includedRandomness = val;
+    return (this._private.includedRandomness = val);
   }
 
   /**
@@ -165,7 +165,7 @@ class Step extends SDKObject {
    * @param {Boolean} transmitted
    */
   setTransmitted(transmitted) {
-    return this.transmitted = transmitted;
+    return (this.transmitted = transmitted);
   }
 
   /**

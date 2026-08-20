@@ -35,7 +35,7 @@ class ModifierFateLyonarSmallMinionQuest extends ModifierFate {
   }
 
   getMinionsSummonedIds() {
-    if ((this._private.minionsSummonIds == null)) {
+    if (this._private.minionsSummonIds == null) {
       this._private.minionsSummonIds = [];
       this.checkFate(this.getGameSession().filterActions(this.getIsActionRelevant.bind(this)));
     }
@@ -64,7 +64,15 @@ class ModifierFateLyonarSmallMinionQuest extends ModifierFate {
   getIsActionRelevant(action) {
     if (action.getOwnerId() === this.getOwnerId()) {
       const target = action.getTarget();
-      if ((target != null) && action instanceof ApplyCardToBoardAction && (__guard__(action.getCard(), (x) => x.type) === CardType.Unit) && !(action instanceof PlayCardAsTransformAction || action instanceof CloneEntityAsTransformAction)) {
+      if (
+        target != null &&
+        action instanceof ApplyCardToBoardAction &&
+        __guard__(action.getCard(), (x) => x.type) === CardType.Unit &&
+        !(
+          action instanceof PlayCardAsTransformAction ||
+          action instanceof CloneEntityAsTransformAction
+        )
+      ) {
         if (target.getBaseATK() <= 1) {
           return true;
         }
@@ -85,13 +93,17 @@ class ModifierFateLyonarSmallMinionQuest extends ModifierFate {
     const general = this.getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
     if (general.hasActiveModifierClass(ModifierQuestStatusLyonar)) {
       return Array.from<any>(general.getModifiersByClass(ModifierQuestStatusLyonar)).map((mod) =>
-        this.getGameSession().removeModifier(mod));
+        this.getGameSession().removeModifier(mod),
+      );
     }
   }
 
   applyQuestStatusModifier(questCompleted) {
     const general = this.getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
-    const countModifier = ModifierQuestStatusLyonar.createContextObject(questCompleted, this.getMinionsSummonedIds().length);
+    const countModifier = ModifierQuestStatusLyonar.createContextObject(
+      questCompleted,
+      this.getMinionsSummonedIds().length,
+    );
     return this.getGameSession().applyModifierContextObject(countModifier, general);
   }
 }
@@ -101,5 +113,5 @@ ModifierFateLyonarSmallMinionQuest.prototype.numMinionsRequired = 1;
 module.exports = ModifierFateLyonarSmallMinionQuest;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

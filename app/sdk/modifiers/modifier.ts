@@ -105,15 +105,36 @@ class Modifier extends SDKObject {
     this.subModifierIndices = [];
 
     // copy prototype values down as needed
-    if (this.auraFilterByCardIds != null) { this.auraFilterByCardIds = UtilsJavascript.fastExtend([], this.auraFilterByCardIds); }
-    if (this.auraFilterByRaceIds != null) { this.auraFilterByRaceIds = UtilsJavascript.fastExtend([], this.auraFilterByRaceIds); }
-    if (this.auraFilterByModifierTypes != null) { this.auraFilterByModifierTypes = UtilsJavascript.fastExtend([], this.auraFilterByModifierTypes); }
-    if (this.attributeBuffs != null) { this.attributeBuffs = UtilsJavascript.fastExtend({}, this.attributeBuffs); }
-    if (this.attributeBuffsAbsolute != null) { this.attributeBuffsAbsolute = UtilsJavascript.fastExtend([], this.attributeBuffsAbsolute); }
-    if (this.attributeBuffsRebased != null) { this.attributeBuffsRebased = UtilsJavascript.fastExtend([], this.attributeBuffsRebased); }
-    if (this.attributeBuffsFixed != null) { this.attributeBuffsFixed = UtilsJavascript.fastExtend([], this.attributeBuffsFixed); }
-    if (this.modifiersContextObjects != null) { this.modifiersContextObjects = UtilsJavascript.fastExtend([], this.modifiersContextObjects); }
-    if (this.fxResource != null) { this.fxResource = UtilsJavascript.fastExtend([], this.fxResource); }
+    if (this.auraFilterByCardIds != null) {
+      this.auraFilterByCardIds = UtilsJavascript.fastExtend([], this.auraFilterByCardIds);
+    }
+    if (this.auraFilterByRaceIds != null) {
+      this.auraFilterByRaceIds = UtilsJavascript.fastExtend([], this.auraFilterByRaceIds);
+    }
+    if (this.auraFilterByModifierTypes != null) {
+      this.auraFilterByModifierTypes = UtilsJavascript.fastExtend(
+        [],
+        this.auraFilterByModifierTypes,
+      );
+    }
+    if (this.attributeBuffs != null) {
+      this.attributeBuffs = UtilsJavascript.fastExtend({}, this.attributeBuffs);
+    }
+    if (this.attributeBuffsAbsolute != null) {
+      this.attributeBuffsAbsolute = UtilsJavascript.fastExtend([], this.attributeBuffsAbsolute);
+    }
+    if (this.attributeBuffsRebased != null) {
+      this.attributeBuffsRebased = UtilsJavascript.fastExtend([], this.attributeBuffsRebased);
+    }
+    if (this.attributeBuffsFixed != null) {
+      this.attributeBuffsFixed = UtilsJavascript.fastExtend([], this.attributeBuffsFixed);
+    }
+    if (this.modifiersContextObjects != null) {
+      this.modifiersContextObjects = UtilsJavascript.fastExtend([], this.modifiersContextObjects);
+    }
+    if (this.fxResource != null) {
+      this.fxResource = UtilsJavascript.fastExtend([], this.fxResource);
+    }
   }
 
   getPrivateDefaults(gameSession) {
@@ -181,8 +202,12 @@ class Modifier extends SDKObject {
   }
 
   static createAttributeBuffsObject(attackBuff?, maxHPBuff?) {
-    if (attackBuff == null) { attackBuff = 0; }
-    if (maxHPBuff == null) { maxHPBuff = 0; }
+    if (attackBuff == null) {
+      attackBuff = 0;
+    }
+    if (maxHPBuff == null) {
+      maxHPBuff = 0;
+    }
     const attributeBuffs: Record<string, any> = {};
     if (attackBuff) {
       attributeBuffs.atk = attackBuff;
@@ -196,45 +221,107 @@ class Modifier extends SDKObject {
   // helper method to create a context object with attribute buffs
   // NOTE: only safe to use when setting a stat to non-zero (0s are ignored when creating the buff object)
   static createContextObjectWithAttributeBuffs(attack, maxHP, options) {
-    if (attack == null) { attack = 0; }
-    if (maxHP == null) { maxHP = 0; }
+    if (attack == null) {
+      attack = 0;
+    }
+    if (maxHP == null) {
+      maxHP = 0;
+    }
     const contextObject = this.createContextObject(options);
     contextObject.attributeBuffs = Modifier.createAttributeBuffsObject(attack, maxHP);
     return contextObject;
   }
 
-  static createContextObjectWithAbsoluteAttributeBuffs(attack, maxHP, attackIsAbsolute, maxHPIsAbsolute, options) {
-    if (attack == null) { attack = 0; }
-    if (maxHP == null) { maxHP = 0; }
-    if (attackIsAbsolute == null) { attackIsAbsolute = true; }
-    if (maxHPIsAbsolute == null) { maxHPIsAbsolute = true; }
+  static createContextObjectWithAbsoluteAttributeBuffs(
+    attack,
+    maxHP,
+    attackIsAbsolute,
+    maxHPIsAbsolute,
+    options,
+  ) {
+    if (attack == null) {
+      attack = 0;
+    }
+    if (maxHP == null) {
+      maxHP = 0;
+    }
+    if (attackIsAbsolute == null) {
+      attackIsAbsolute = true;
+    }
+    if (maxHPIsAbsolute == null) {
+      maxHPIsAbsolute = true;
+    }
     const contextObject = this.createContextObject(options);
     contextObject.attributeBuffs = Modifier.createAttributeBuffsObject(attack, maxHP);
     contextObject.attributeBuffsAbsolute = [];
-    if (attackIsAbsolute) { contextObject.attributeBuffsAbsolute.push('atk'); }
-    if (maxHPIsAbsolute) { contextObject.attributeBuffsAbsolute.push('maxHP'); }
+    if (attackIsAbsolute) {
+      contextObject.attributeBuffsAbsolute.push('atk');
+    }
+    if (maxHPIsAbsolute) {
+      contextObject.attributeBuffsAbsolute.push('maxHP');
+    }
     return contextObject;
   }
 
-  static createContextObjectWithRebasedAttributeBuffs(attack, maxHP, attackIsRebased, maxHPIsRebased, options) {
-    if (attack == null) { attack = 0; }
-    if (maxHP == null) { maxHP = 0; }
-    if (attackIsRebased == null) { attackIsRebased = true; }
-    if (maxHPIsRebased == null) { maxHPIsRebased = true; }
+  static createContextObjectWithRebasedAttributeBuffs(
+    attack,
+    maxHP,
+    attackIsRebased,
+    maxHPIsRebased,
+    options,
+  ) {
+    if (attack == null) {
+      attack = 0;
+    }
+    if (maxHP == null) {
+      maxHP = 0;
+    }
+    if (attackIsRebased == null) {
+      attackIsRebased = true;
+    }
+    if (maxHPIsRebased == null) {
+      maxHPIsRebased = true;
+    }
     const contextObject = this.createContextObject(options);
     contextObject.attributeBuffs = Modifier.createAttributeBuffsObject(attack, maxHP);
     contextObject.attributeBuffsRebased = [];
-    if (attackIsRebased) { contextObject.attributeBuffsRebased.push('atk'); }
-    if (maxHPIsRebased) { contextObject.attributeBuffsRebased.push('maxHP'); }
+    if (attackIsRebased) {
+      contextObject.attributeBuffsRebased.push('atk');
+    }
+    if (maxHPIsRebased) {
+      contextObject.attributeBuffsRebased.push('maxHP');
+    }
     return contextObject;
   }
 
-  static createContextObjectWithAura(modifiersContextObjects, auraIncludeSelf, auraIncludeAlly, auraIncludeEnemy, auraIncludeGeneral, auraRadius, raceIds = null, cardIds = null, modifierTypes = null, description, options) {
-    if (auraIncludeSelf == null) { auraIncludeSelf = true; }
-    if (auraIncludeAlly == null) { auraIncludeAlly = true; }
-    if (auraIncludeEnemy == null) { auraIncludeEnemy = true; }
-    if (auraIncludeGeneral == null) { auraIncludeGeneral = true; }
-    if (auraRadius == null) { auraRadius = 1; }
+  static createContextObjectWithAura(
+    modifiersContextObjects,
+    auraIncludeSelf,
+    auraIncludeAlly,
+    auraIncludeEnemy,
+    auraIncludeGeneral,
+    auraRadius,
+    raceIds = null,
+    cardIds = null,
+    modifierTypes = null,
+    description,
+    options,
+  ) {
+    if (auraIncludeSelf == null) {
+      auraIncludeSelf = true;
+    }
+    if (auraIncludeAlly == null) {
+      auraIncludeAlly = true;
+    }
+    if (auraIncludeEnemy == null) {
+      auraIncludeEnemy = true;
+    }
+    if (auraIncludeGeneral == null) {
+      auraIncludeGeneral = true;
+    }
+    if (auraRadius == null) {
+      auraRadius = 1;
+    }
     const contextObject = this.createContextObjectOnBoard(options);
     contextObject.modifiersContextObjects = modifiersContextObjects;
     contextObject.isAura = true;
@@ -250,44 +337,234 @@ class Modifier extends SDKObject {
     return contextObject;
   }
 
-  static createContextObjectWithAuraForNearbyAllies(modifiersContextObjects, raceIds, cardIds, modifierTypes, description, options) {
-    return this.createContextObjectWithAura(modifiersContextObjects, false, true, false, false, 1, raceIds, cardIds, modifierTypes, description, options);
+  static createContextObjectWithAuraForNearbyAllies(
+    modifiersContextObjects,
+    raceIds,
+    cardIds,
+    modifierTypes,
+    description,
+    options,
+  ) {
+    return this.createContextObjectWithAura(
+      modifiersContextObjects,
+      false,
+      true,
+      false,
+      false,
+      1,
+      raceIds,
+      cardIds,
+      modifierTypes,
+      description,
+      options,
+    );
   }
 
-  static createContextObjectWithAuraForAllAllies(modifiersContextObjects, raceIds, cardIds, modifierTypes, description, options) {
-    return this.createContextObjectWithAura(modifiersContextObjects, false, true, false, false, CONFIG.WHOLE_BOARD_RADIUS, raceIds, cardIds, modifierTypes, description, options);
+  static createContextObjectWithAuraForAllAllies(
+    modifiersContextObjects,
+    raceIds,
+    cardIds,
+    modifierTypes,
+    description,
+    options,
+  ) {
+    return this.createContextObjectWithAura(
+      modifiersContextObjects,
+      false,
+      true,
+      false,
+      false,
+      CONFIG.WHOLE_BOARD_RADIUS,
+      raceIds,
+      cardIds,
+      modifierTypes,
+      description,
+      options,
+    );
   }
 
-  static createContextObjectWithAuraForAllAlliesAndSelf(modifiersContextObjects, raceIds, cardIds, modifierTypes, description, options) {
-    return this.createContextObjectWithAura(modifiersContextObjects, true, true, false, false, CONFIG.WHOLE_BOARD_RADIUS, raceIds, cardIds, modifierTypes, description, options);
+  static createContextObjectWithAuraForAllAlliesAndSelf(
+    modifiersContextObjects,
+    raceIds,
+    cardIds,
+    modifierTypes,
+    description,
+    options,
+  ) {
+    return this.createContextObjectWithAura(
+      modifiersContextObjects,
+      true,
+      true,
+      false,
+      false,
+      CONFIG.WHOLE_BOARD_RADIUS,
+      raceIds,
+      cardIds,
+      modifierTypes,
+      description,
+      options,
+    );
   }
 
-  static createContextObjectWithOnBoardAuraForAllAlliesAndSelf(modifiersContextObjects, raceIds, cardIds, modifierTypes, description, options) {
-    return this.createContextObjectWithAura(modifiersContextObjects, true, true, false, false, CONFIG.WHOLE_BOARD_RADIUS, raceIds, cardIds, modifierTypes, description, options);
+  static createContextObjectWithOnBoardAuraForAllAlliesAndSelf(
+    modifiersContextObjects,
+    raceIds,
+    cardIds,
+    modifierTypes,
+    description,
+    options,
+  ) {
+    return this.createContextObjectWithAura(
+      modifiersContextObjects,
+      true,
+      true,
+      false,
+      false,
+      CONFIG.WHOLE_BOARD_RADIUS,
+      raceIds,
+      cardIds,
+      modifierTypes,
+      description,
+      options,
+    );
   }
 
-  static createContextObjectWithAuraForAllAlliesAndSelfAndGeneral(modifiersContextObjects, raceIds, cardIds, modifierTypes, description, options) {
-    return this.createContextObjectWithAura(modifiersContextObjects, true, true, false, true, CONFIG.WHOLE_BOARD_RADIUS, raceIds, cardIds, modifierTypes, description, options);
+  static createContextObjectWithAuraForAllAlliesAndSelfAndGeneral(
+    modifiersContextObjects,
+    raceIds,
+    cardIds,
+    modifierTypes,
+    description,
+    options,
+  ) {
+    return this.createContextObjectWithAura(
+      modifiersContextObjects,
+      true,
+      true,
+      false,
+      true,
+      CONFIG.WHOLE_BOARD_RADIUS,
+      raceIds,
+      cardIds,
+      modifierTypes,
+      description,
+      options,
+    );
   }
 
-  static createContextObjectWithOnBoardAuraForAllAlliesAndSelfAndGeneral(modifiersContextObjects, raceIds, cardIds, modifierTypes, description, options) {
-    return this.createContextObjectWithAura(modifiersContextObjects, true, true, false, true, CONFIG.WHOLE_BOARD_RADIUS, raceIds, cardIds, modifierTypes, description, options);
+  static createContextObjectWithOnBoardAuraForAllAlliesAndSelfAndGeneral(
+    modifiersContextObjects,
+    raceIds,
+    cardIds,
+    modifierTypes,
+    description,
+    options,
+  ) {
+    return this.createContextObjectWithAura(
+      modifiersContextObjects,
+      true,
+      true,
+      false,
+      true,
+      CONFIG.WHOLE_BOARD_RADIUS,
+      raceIds,
+      cardIds,
+      modifierTypes,
+      description,
+      options,
+    );
   }
 
-  static createContextObjectWithAuraForNearbyEnemies(modifiersContextObjects, raceIds, cardIds, modifierTypes, description, options) {
-    return this.createContextObjectWithAura(modifiersContextObjects, false, false, true, false, 1, raceIds, cardIds, modifierTypes, description, options);
+  static createContextObjectWithAuraForNearbyEnemies(
+    modifiersContextObjects,
+    raceIds,
+    cardIds,
+    modifierTypes,
+    description,
+    options,
+  ) {
+    return this.createContextObjectWithAura(
+      modifiersContextObjects,
+      false,
+      false,
+      true,
+      false,
+      1,
+      raceIds,
+      cardIds,
+      modifierTypes,
+      description,
+      options,
+    );
   }
 
-  static createContextObjectWithOnBoardAuraForNearbyEnemies(modifiersContextObjects, raceIds, cardIds, modifierTypes, description, options) {
-    return this.createContextObjectWithAura(modifiersContextObjects, false, false, true, false, 1, raceIds, cardIds, modifierTypes, description, options);
+  static createContextObjectWithOnBoardAuraForNearbyEnemies(
+    modifiersContextObjects,
+    raceIds,
+    cardIds,
+    modifierTypes,
+    description,
+    options,
+  ) {
+    return this.createContextObjectWithAura(
+      modifiersContextObjects,
+      false,
+      false,
+      true,
+      false,
+      1,
+      raceIds,
+      cardIds,
+      modifierTypes,
+      description,
+      options,
+    );
   }
 
-  static createContextObjectWithAuraForAllEnemies(modifiersContextObjects, raceIds, cardIds, modifierTypes, description, options) {
-    return this.createContextObjectWithAura(modifiersContextObjects, false, false, true, false, CONFIG.WHOLE_BOARD_RADIUS, raceIds, cardIds, modifierTypes, description, options);
+  static createContextObjectWithAuraForAllEnemies(
+    modifiersContextObjects,
+    raceIds,
+    cardIds,
+    modifierTypes,
+    description,
+    options,
+  ) {
+    return this.createContextObjectWithAura(
+      modifiersContextObjects,
+      false,
+      false,
+      true,
+      false,
+      CONFIG.WHOLE_BOARD_RADIUS,
+      raceIds,
+      cardIds,
+      modifierTypes,
+      description,
+      options,
+    );
   }
 
-  static createContextObjectWithOnBoardAuraForAllEnemies(modifiersContextObjects, raceIds, cardIds, modifierTypes, description, options) {
-    return this.createContextObjectWithAura(modifiersContextObjects, false, false, true, false, CONFIG.WHOLE_BOARD_RADIUS, raceIds, cardIds, modifierTypes, description, options);
+  static createContextObjectWithOnBoardAuraForAllEnemies(
+    modifiersContextObjects,
+    raceIds,
+    cardIds,
+    modifierTypes,
+    description,
+    options,
+  ) {
+    return this.createContextObjectWithAura(
+      modifiersContextObjects,
+      false,
+      false,
+      true,
+      false,
+      CONFIG.WHOLE_BOARD_RADIUS,
+      raceIds,
+      cardIds,
+      modifierTypes,
+      description,
+      options,
+    );
   }
 
   // endregion CONTEXT OBJECTS
@@ -300,35 +577,49 @@ class Modifier extends SDKObject {
   onEvent(event) {
     if (this._private.listeningToEvents) {
       const eventType = event.type;
-      if ((eventType === EVENTS.terminate) || (eventType === EVENTS.before_deserialize)) {
+      if (eventType === EVENTS.terminate || eventType === EVENTS.before_deserialize) {
         return this._onTerminate(event);
-      } if (eventType === EVENTS.modify_action_for_validation) {
+      }
+      if (eventType === EVENTS.modify_action_for_validation) {
         return this._onModifyActionForValidation(event);
-      } if (eventType === EVENTS.validate_action) {
+      }
+      if (eventType === EVENTS.validate_action) {
         return this._onValidateAction(event);
-      } if (eventType === EVENTS.modify_action_for_execution) {
+      }
+      if (eventType === EVENTS.modify_action_for_execution) {
         return this._onModifyActionForExecution(event);
-      } if (eventType === EVENTS.before_action) {
+      }
+      if (eventType === EVENTS.before_action) {
         return this._onBeforeAction(event);
-      } if (eventType === EVENTS.action) {
+      }
+      if (eventType === EVENTS.action) {
         return this._onAction(event);
-      } if (eventType === EVENTS.after_action) {
+      }
+      if (eventType === EVENTS.after_action) {
         return this._onAfterAction(event);
-      } if (eventType === EVENTS.modifier_end_turn_duration_change) {
+      }
+      if (eventType === EVENTS.modifier_end_turn_duration_change) {
         return this._onEndTurnDurationChange(event);
-      } if (eventType === EVENTS.modifier_start_turn_duration_change) {
+      }
+      if (eventType === EVENTS.modifier_start_turn_duration_change) {
         return this._onStartTurnDurationChange(event);
-      } if (eventType === EVENTS.after_cleanup_action) {
+      }
+      if (eventType === EVENTS.after_cleanup_action) {
         return this._onAfterCleanupAction(event);
-      } if (eventType === EVENTS.modifier_active_change) {
+      }
+      if (eventType === EVENTS.modifier_active_change) {
         return this._onActiveChange(event);
-      } if (eventType === EVENTS.modifier_remove_aura) {
+      }
+      if (eventType === EVENTS.modifier_remove_aura) {
         return this._onRemoveAura(event);
-      } if (eventType === EVENTS.modifier_add_aura) {
+      }
+      if (eventType === EVENTS.modifier_add_aura) {
         return this._onAddAura(event);
-      } if (eventType === EVENTS.start_turn) {
+      }
+      if (eventType === EVENTS.start_turn) {
         return this._onStartTurn(event);
-      } if (eventType === EVENTS.end_turn) {
+      }
+      if (eventType === EVENTS.end_turn) {
         return this._onEndTurn(event);
       }
     }
@@ -396,10 +687,19 @@ class Modifier extends SDKObject {
     // set triggering relationship
     const executingAction = this.getGameSession().getExecutingAction();
     const executingResolveAction = this.getGameSession().getExecutingResolveAction();
-    if ((executingAction != null) && (executingResolveAction != null)) {
+    if (executingAction != null && executingResolveAction != null) {
       const triggeringModifier = this.getGameSession().getTriggeringModifier();
-      if (triggeringModifier instanceof Modifier && !(executingAction instanceof ApplyModifierAction) && (!(executingAction instanceof ApplyCardToBoardAction) || (executingAction.getCard() !== this.getCard()))) {
-        triggeringModifier.onTriggerActivatedModifier(this, executingAction, executingResolveAction);
+      if (
+        triggeringModifier instanceof Modifier &&
+        !(executingAction instanceof ApplyModifierAction) &&
+        (!(executingAction instanceof ApplyCardToBoardAction) ||
+          executingAction.getCard() !== this.getCard())
+      ) {
+        triggeringModifier.onTriggerActivatedModifier(
+          this,
+          executingAction,
+          executingResolveAction,
+        );
       } else {
         // set modifier as activated by this action
         executingAction.onActivatedModifier(this, executingResolveAction);
@@ -412,12 +712,16 @@ class Modifier extends SDKObject {
     }
 
     // change for attribute buffs
-    if ((this.attributeBuffs != null) && (this.getCard() != null) && CardType.getIsEntityCardType(this.getCard().getType())) {
+    if (
+      this.attributeBuffs != null &&
+      this.getCard() != null &&
+      CardType.getIsEntityCardType(this.getCard().getType())
+    ) {
       // update attributes
       return (() => {
         const result = [];
         for (var buffKey in this.attributeBuffs) {
-        // flush cached attribute
+          // flush cached attribute
           var buffValue = this.attributeBuffs[buffKey];
           this.getCard().flushCachedAttribute(buffKey);
 
@@ -426,7 +730,13 @@ class Modifier extends SDKObject {
             result.push(this.getCard().flushCachedMovementPattern());
           } else if (buffKey === 'reach') {
             result.push(this.getCard().flushCachedAttackPattern());
-          } else if ((buffKey === 'maxHP') && this.getCard().getIsActive() && (this.getGameSession().getActiveCard() !== this.getCard()) && (this.getCard().getHP() <= 0) && this.getGameSession().getCanCardBeScheduledForRemoval(this.getCard())) {
+          } else if (
+            buffKey === 'maxHP' &&
+            this.getCard().getIsActive() &&
+            this.getGameSession().getActiveCard() !== this.getCard() &&
+            this.getCard().getHP() <= 0 &&
+            this.getGameSession().getCanCardBeScheduledForRemoval(this.getCard())
+          ) {
             // when this buffs hp to 0, kill entity
             result.push(this.getGameSession().executeAction(this.getCard().actionDie()));
           } else {
@@ -442,10 +752,19 @@ class Modifier extends SDKObject {
     // set triggering relationship
     const executingAction = this.getGameSession().getExecutingAction();
     const executingResolveAction = this.getGameSession().getExecutingResolveAction();
-    if ((executingAction != null) && (executingResolveAction != null)) {
+    if (executingAction != null && executingResolveAction != null) {
       const triggeringModifier = this.getGameSession().getTriggeringModifier();
-      if (triggeringModifier instanceof Modifier && !(executingAction instanceof RemoveModifierAction) && (!(executingAction instanceof ApplyCardToBoardAction) || (executingAction.getCard() !== this.getCard()))) {
-        triggeringModifier.onTriggerDeactivatedModifier(this, executingAction, executingResolveAction);
+      if (
+        triggeringModifier instanceof Modifier &&
+        !(executingAction instanceof RemoveModifierAction) &&
+        (!(executingAction instanceof ApplyCardToBoardAction) ||
+          executingAction.getCard() !== this.getCard())
+      ) {
+        triggeringModifier.onTriggerDeactivatedModifier(
+          this,
+          executingAction,
+          executingResolveAction,
+        );
       } else {
         // set modifier as deactivated by this action
         executingAction.onDeactivatedModifier(this, executingResolveAction);
@@ -454,11 +773,15 @@ class Modifier extends SDKObject {
     }
 
     // change for attribute buffs
-    if ((this.attributeBuffs != null) && (this.getCard() != null) && CardType.getIsEntityCardType(this.getCard().getType())) {
+    if (
+      this.attributeBuffs != null &&
+      this.getCard() != null &&
+      CardType.getIsEntityCardType(this.getCard().getType())
+    ) {
       return (() => {
         const result = [];
         for (var buffKey in this.attributeBuffs) {
-        // flush cached attribute
+          // flush cached attribute
           var buffValue = this.attributeBuffs[buffKey];
           this.getCard().flushCachedAttribute(buffKey);
 
@@ -467,7 +790,13 @@ class Modifier extends SDKObject {
             result.push(this.getCard().flushCachedMovementPattern());
           } else if (buffKey === 'reach') {
             result.push(this.getCard().flushCachedAttackPattern());
-          } else if ((buffKey === 'maxHP') && this.getCard().getIsActive() && (this.getGameSession().getActiveCard() !== this.getCard()) && (this.getCard().getHP() <= 0) && this.getGameSession().getCanCardBeScheduledForRemoval(this.getCard())) {
+          } else if (
+            buffKey === 'maxHP' &&
+            this.getCard().getIsActive() &&
+            this.getGameSession().getActiveCard() !== this.getCard() &&
+            this.getCard().getHP() <= 0 &&
+            this.getGameSession().getCanCardBeScheduledForRemoval(this.getCard())
+          ) {
             // when max hp buff is removed and entity is at 0 hp, kill it
             result.push(this.getGameSession().executeAction(this.getCard().actionDie()));
           } else {
@@ -488,7 +817,7 @@ class Modifier extends SDKObject {
       for (var subModifier of Array.from<any>(this.getSubModifiers())) {
         if (!subModifier.getIsManagedByAura()) {
           var card = subModifier.getCard();
-          if ((card != null) && CardType.getIsEntityCardType(card.getType()) && card.getIsGeneral()) {
+          if (card != null && CardType.getIsEntityCardType(card.getType()) && card.getIsGeneral()) {
             var playerId = card.getOwnerId();
             if (playerId != null) {
               // the owner id we're changing to is the same as the card
@@ -542,8 +871,10 @@ class Modifier extends SDKObject {
   }
 
   getCardAffected() {
-    if ((this._private.cachedCardAffected == null) && (this.cardAffectedIndex != null)) {
-      this._private.cachedCardAffected = this.getGameSession().getCardByIndex(this.cardAffectedIndex);
+    if (this._private.cachedCardAffected == null && this.cardAffectedIndex != null) {
+      this._private.cachedCardAffected = this.getGameSession().getCardByIndex(
+        this.cardAffectedIndex,
+      );
     }
     return this._private.cachedCardAffected;
   }
@@ -565,7 +896,7 @@ class Modifier extends SDKObject {
   }
 
   setIndex(index) {
-    return this.index = index;
+    return (this.index = index);
   }
 
   getOwner() {
@@ -577,7 +908,7 @@ class Modifier extends SDKObject {
   }
 
   setModifiersContextObjects(val) {
-    return this.modifiersContextObjects = val;
+    return (this.modifiersContextObjects = val);
   }
 
   getModifiersContextObjects() {
@@ -585,30 +916,37 @@ class Modifier extends SDKObject {
   }
 
   /*
-  * Get all other modifiers that a modifier must coordinate with
-  * these include all modifiers:
-  * - applied to cards owned by the same player
-  * - of the same class
-  * - that are active
-  * - applied after this modifier
-  * @param {Modifier} [modifierClass=own class]
-  * @returns {Array}
-  */
+   * Get all other modifiers that a modifier must coordinate with
+   * these include all modifiers:
+   * - applied to cards owned by the same player
+   * - of the same class
+   * - that are active
+   * - applied after this modifier
+   * @param {Modifier} [modifierClass=own class]
+   * @returns {Array}
+   */
   getModifiersToCoordinateWith(modifierClass) {
     const modifiers = [];
     const card = this.getCard();
     if (card != null) {
       let allowUntargetable;
       const board = this.getGameSession().getBoard();
-      if (modifierClass == null) { modifierClass = this.constructor; }
+      if (modifierClass == null) {
+        modifierClass = this.constructor;
+      }
       const ownerId = card.getOwnerId();
       const appliedByActionIndex = this.getAppliedByActionIndex();
       for (var c of Array.from<any>(board.getCards(null, (allowUntargetable = true)))) {
         if (c.getOwnerId() === ownerId) {
           for (var m of Array.from<any>(c.getModifiers())) {
-            if (m instanceof modifierClass && m.getIsActive() && (m !== this)) {
+            if (m instanceof modifierClass && m.getIsActive() && m !== this) {
               var modifierAppliedByActionIndex = m.getAppliedByActionIndex();
-              if ((modifierAppliedByActionIndex > appliedByActionIndex) || ((appliedByActionIndex === -1) && (modifierAppliedByActionIndex === -1) && (m.getIndex() > this.getIndex()))) {
+              if (
+                modifierAppliedByActionIndex > appliedByActionIndex ||
+                (appliedByActionIndex === -1 &&
+                  modifierAppliedByActionIndex === -1 &&
+                  m.getIndex() > this.getIndex())
+              ) {
                 modifiers.push(m);
               }
             }
@@ -622,7 +960,7 @@ class Modifier extends SDKObject {
   /**
    * Creates a context object to make a new/fresh copy of an existing modifier.
    * @returns {Object} contextObject
-  */
+   */
   createNewContextObject() {
     const contextObject: Record<string, any> = {};
 
@@ -649,7 +987,7 @@ class Modifier extends SDKObject {
   /**
    * Returns a list of keys of properties that should be copied from this modifier when creating a context object for copying this modifier.
    * @returns {Array} keys
-  */
+   */
   getContextObjectKeysForCopy() {
     return [
       'index',
@@ -669,11 +1007,11 @@ class Modifier extends SDKObject {
    * Creates a context object to exactly replicate this modifier, optionally from existing context object.
    * @param {Object} existingContextObject
    * @returns {Object} contextObject
-  */
+   */
   createContextObject(existingContextObject) {
     const contextObject = this.createNewContextObject();
 
-    if ((existingContextObject != null) && _.isObject(existingContextObject)) {
+    if (existingContextObject != null && _.isObject(existingContextObject)) {
       UtilsJavascript.fastExtend(contextObject, existingContextObject);
     }
 
@@ -697,7 +1035,7 @@ class Modifier extends SDKObject {
 
     // add all sub modifier context objects
     const subModifiers = this.getSubModifiers();
-    if ((subModifiers != null) && (subModifiers.length > 0)) {
+    if (subModifiers != null && subModifiers.length > 0) {
       contextObject.subModifierIndices = this.subModifierIndices.slice(0);
       contextObject.subModifiersContextObjects = [];
       for (var modifier of Array.from<any>(subModifiers)) {
@@ -714,7 +1052,7 @@ class Modifier extends SDKObject {
    * Updates context object from this modifier after being applied to deck/hand/board.
    * @param {Object} contextObject
    * @returns {Object} contextObject
-  */
+   */
   updateContextObjectPostApply(contextObject) {
     if (contextObject != null) {
       contextObject.index = this.getIndex();
@@ -726,7 +1064,7 @@ class Modifier extends SDKObject {
   /**
    * Returns a list of keys of properties that should be deleted from a context object created for a clone of this modifier.
    * @returns {Array} keys
-  */
+   */
   getContextObjectKeysToDeleteForClone() {
     return [
       'index',
@@ -743,7 +1081,7 @@ class Modifier extends SDKObject {
    * Creates a context object to clone an existing modifier.
    * @param {Object} [contextObject=null]
    * @returns {Object} contextObject
-  */
+   */
   createContextObjectForClone(contextObject) {
     contextObject = this.createContextObject(contextObject);
 
@@ -757,12 +1095,12 @@ class Modifier extends SDKObject {
   /**
    * Copies context object into this modifier
    * @param {Object} contextObject
-  */
+   */
   applyContextObject(contextObject) {
-    if ((contextObject != null) && _.isObject(contextObject) && !contextObject._hasBeenApplied) {
+    if (contextObject != null && _.isObject(contextObject) && !contextObject._hasBeenApplied) {
       // copy properties from context object
-      let key; let
-        subModifierIndices;
+      let key;
+      let subModifierIndices;
       const keys = Object.keys(contextObject);
       for (key of Array.from<any>(keys)) {
         var property = contextObject[key];
@@ -796,14 +1134,25 @@ class Modifier extends SDKObject {
         if (subModifierIndices.length > 0) {
           for (var subModifierIndex of Array.from<any>(subModifierIndices.slice(0))) {
             var subModifier = this.getGameSession().getModifierByIndex(subModifierIndex);
-            if ((subModifier == null)) {
+            if (subModifier == null) {
               // sub modifier index present but no modifier found
-              for (var subModifierContextObject of Array.from<any>(contextObject.subModifiersContextObjects)) {
+              for (var subModifierContextObject of Array.from<any>(
+                contextObject.subModifiersContextObjects,
+              )) {
                 // use context object with matching index to regenerate sub modifier
-                if ((subModifierContextObject.index != null) && (subModifierContextObject.index === subModifierIndex)) {
-                  var cardAffected = this.getGameSession().getCardByIndex(subModifierContextObject.cardAffectedIndex);
+                if (
+                  subModifierContextObject.index != null &&
+                  subModifierContextObject.index === subModifierIndex
+                ) {
+                  var cardAffected = this.getGameSession().getCardByIndex(
+                    subModifierContextObject.cardAffectedIndex,
+                  );
                   if (cardAffected != null) {
-                    this.getGameSession().applyModifierContextObject(subModifierContextObject, cardAffected, this);
+                    this.getGameSession().applyModifierContextObject(
+                      subModifierContextObject,
+                      cardAffected,
+                      this,
+                    );
                   }
                 }
               }
@@ -842,7 +1191,7 @@ class Modifier extends SDKObject {
   getIsRemovable() {
     // modifiers with parent modifiers are non-removable
     // removing their parent modifier will remove them
-    return this.isRemovable && (this.getParentModifierIndex() == null);
+    return this.isRemovable && this.getParentModifierIndex() == null;
   }
 
   getType() {
@@ -854,15 +1203,15 @@ class Modifier extends SDKObject {
   }
 
   setIsRemoved(val) {
-    return this.isRemoved = val;
+    return (this.isRemoved = val);
   }
 
   setNumEndTurnsElapsed(val) {
-    return this.numEndTurnsElapsed = val;
+    return (this.numEndTurnsElapsed = val);
   }
 
   setNumStartTurnsElapsed(val) {
-    return this.numStartTurnsElapsed = val;
+    return (this.numStartTurnsElapsed = val);
   }
 
   /*
@@ -904,10 +1253,18 @@ class Modifier extends SDKObject {
 
   static getName(contextObject) {
     if (contextObject && contextObject.modifierName) {
-      if (i18next.exists(contextObject.modifierName)) { return i18next.t(contextObject.modifierName); } return contextObject.modifierName;
-    } if (this.modifierName != null) {
-      if (i18next.exists(this.modifierName)) { return i18next.t(this.modifierName); } return this.modifierName;
-    } return this.modifierName;
+      if (i18next.exists(contextObject.modifierName)) {
+        return i18next.t(contextObject.modifierName);
+      }
+      return contextObject.modifierName;
+    }
+    if (this.modifierName != null) {
+      if (i18next.exists(this.modifierName)) {
+        return i18next.t(this.modifierName);
+      }
+      return this.modifierName;
+    }
+    return this.modifierName;
   }
 
   // This either gives the modifier's name, or if that doesn't exist, the source played cards name
@@ -918,12 +1275,12 @@ class Modifier extends SDKObject {
     // 1. Class level name
     // 2. Source cards name (used for spell applied modifiers)
     if (contextObject == null) {
-      ({
-        contextObject,
-      } = this);
+      ({ contextObject } = this);
     }
-    if ((this._private.cachedName == null) || (contextObject !== this.contextObject)) {
-      this._private.cachedName = this.constructor.getName(contextObject) || __guard__(this.getSourceCard(), (x) => x.getName());
+    if (this._private.cachedName == null || contextObject !== this.contextObject) {
+      this._private.cachedName =
+        this.constructor.getName(contextObject) ||
+        __guard__(this.getSourceCard(), (x) => x.getName());
     }
     return this._private.cachedName;
   }
@@ -937,15 +1294,21 @@ class Modifier extends SDKObject {
     let description;
     if (contextObject) {
       if (contextObject.description != null) {
-        if (i18next.exists(contextObject.description)) { return i18next.t(contextObject.description); } return contextObject.description;
-      } if (contextObject.modifiersContextObjects != null) {
+        if (i18next.exists(contextObject.description)) {
+          return i18next.t(contextObject.description);
+        }
+        return contextObject.description;
+      }
+      if (contextObject.modifiersContextObjects != null) {
         // return a description generated from the descriptions of all sub-context objects
         description = '';
         for (contextObject of Array.from<any>(contextObject.modifiersContextObjects)) {
           var modifierClass = ModifierFactory.modifierClassForType(contextObject.type);
           description += `${modifierClass.getDescription(contextObject, ModifierFactory)}, `;
         }
-        if (description.length > 0) { description = description.substring(0, description.length - 2); }
+        if (description.length > 0) {
+          description = description.substring(0, description.length - 2);
+        }
         return description;
       }
     }
@@ -960,12 +1323,14 @@ class Modifier extends SDKObject {
     // 1. Class level description
     // 2. Using the source cards description (used for spells atm)
     if (contextObject == null) {
-      ({
-        contextObject,
-      } = this);
+      ({ contextObject } = this);
     }
-    if ((this._private.cachedDescription == null) || (contextObject !== this.contextObject)) {
-      this._private.cachedDescription = this.constructor.getDescription(contextObject, this.getGameSession().getModifierFactory()) || __guard__(this.getSourceCard(), (x) => x.getDescription());
+    if (this._private.cachedDescription == null || contextObject !== this.contextObject) {
+      this._private.cachedDescription =
+        this.constructor.getDescription(
+          contextObject,
+          this.getGameSession().getModifierFactory(),
+        ) || __guard__(this.getSourceCard(), (x) => x.getDescription());
     }
     return this._private.cachedDescription;
   }
@@ -974,13 +1339,15 @@ class Modifier extends SDKObject {
   static getAppliedName(contextObject) {
     let appliedName;
     if (contextObject && contextObject.appliedName) {
-      appliedName = i18next.exists(contextObject.appliedName) ? i18next.t(contextObject.appliedName) : contextObject.appliedName;
+      appliedName = i18next.exists(contextObject.appliedName)
+        ? i18next.t(contextObject.appliedName)
+        : contextObject.appliedName;
     } else if (this.appliedName != null) {
-      appliedName = i18next.exists(this.appliedName) ? i18next.t(this.appliedName) : this.appliedName;
+      appliedName = i18next.exists(this.appliedName)
+        ? i18next.t(this.appliedName)
+        : this.appliedName;
     } else {
-      ({
-        appliedName,
-      } = this);
+      ({ appliedName } = this);
     }
     // if there is no applied name, default to modifierName
     if (appliedName) {
@@ -992,12 +1359,11 @@ class Modifier extends SDKObject {
   // get the name shown for this modifier when it is applied to a unit
   getAppliedName(contextObject?) {
     if (contextObject == null) {
-      ({
-        contextObject,
-      } = this);
+      ({ contextObject } = this);
     }
-    if ((this._private.cachedAppliedName == null) || (contextObject !== this.contextObject)) {
-      this._private.cachedAppliedName = this.constructor.getAppliedName(contextObject) || this.appliedName || this.getType();
+    if (this._private.cachedAppliedName == null || contextObject !== this.contextObject) {
+      this._private.cachedAppliedName =
+        this.constructor.getAppliedName(contextObject) || this.appliedName || this.getType();
     }
     return this._private.cachedAppliedName;
   }
@@ -1006,18 +1372,28 @@ class Modifier extends SDKObject {
   static getAppliedDescription(contextObject, ModifierFactory) {
     let appliedDescription;
     if (contextObject && contextObject.appliedDescription) {
-      appliedDescription = i18next.exists(contextObject.appliedDescription) ? i18next.t(contextObject.appliedDescription) : contextObject.appliedDescription;
+      appliedDescription = i18next.exists(contextObject.appliedDescription)
+        ? i18next.t(contextObject.appliedDescription)
+        : contextObject.appliedDescription;
     } else if (this.appliedDescription != null) {
-      appliedDescription = i18next.exists(this.appliedDescription) ? i18next.t(this.appliedDescription) : this.appliedDescription;
+      appliedDescription = i18next.exists(this.appliedDescription)
+        ? i18next.t(this.appliedDescription)
+        : this.appliedDescription;
     } else {
-      ({
-        appliedDescription,
-      } = this);
+      ({ appliedDescription } = this);
     }
 
     // if there is no applied description and there is an attributes buff, assume it is a simple stat buff
-    if ((appliedDescription == null) && contextObject && contextObject.attributeBuffs && ((contextObject.attributeBuffs.atk != null) || (contextObject.attributeBuffs.maxHP != null))) {
-      return Stringifiers.stringifyAttackHealthBuff(contextObject.attributeBuffs.atk, contextObject.attributeBuffs.maxHP);
+    if (
+      appliedDescription == null &&
+      contextObject &&
+      contextObject.attributeBuffs &&
+      (contextObject.attributeBuffs.atk != null || contextObject.attributeBuffs.maxHP != null)
+    ) {
+      return Stringifiers.stringifyAttackHealthBuff(
+        contextObject.attributeBuffs.atk,
+        contextObject.attributeBuffs.maxHP,
+      );
     }
 
     // default to modifier description if no applied description
@@ -1029,12 +1405,14 @@ class Modifier extends SDKObject {
 
   getAppliedDescription(contextObject?) {
     if (contextObject == null) {
-      ({
-        contextObject,
-      } = this);
+      ({ contextObject } = this);
     }
-    if ((this._private.cachedAppliedDescription == null) || (contextObject !== this.contextObject)) {
-      this._private.cachedAppliedDescription = this.constructor.getAppliedDescription(contextObject, this.getGameSession().getModifierFactory()) || this.appliedDescription;
+    if (this._private.cachedAppliedDescription == null || contextObject !== this.contextObject) {
+      this._private.cachedAppliedDescription =
+        this.constructor.getAppliedDescription(
+          contextObject,
+          this.getGameSession().getModifierFactory(),
+        ) || this.appliedDescription;
     }
     return this._private.cachedAppliedDescription;
   }
@@ -1052,20 +1430,25 @@ class Modifier extends SDKObject {
   }
 
   setFXResource(fxResource) {
-    return this.fxResource = fxResource;
+    return (this.fxResource = fxResource);
   }
 
   getFXResource() {
-    if ((this._private.mergedFXResource == null)) {
+    if (this._private.mergedFXResource == null) {
       this._private.mergedFXResource = this.fxResource || [];
 
       // try to merge with source card's fx resource if this is not an inherent modifier
       if (!this.isInherent) {
         // this should not be a modifier applied by an action that was created by a triggering modifier
         const appliedByAction = this.getAppliedByAction();
-        if (!appliedByAction || (appliedByAction.getTriggeringModifierIndex() == null)) {
+        if (!appliedByAction || appliedByAction.getTriggeringModifierIndex() == null) {
           const sourceCard = this.getSourceCard();
-          if (sourceCard != null) { this._private.mergedFXResource = _.union(sourceCard.getFXResource(), this._private.mergedFXResource); }
+          if (sourceCard != null) {
+            this._private.mergedFXResource = _.union(
+              sourceCard.getFXResource(),
+              this._private.mergedFXResource,
+            );
+          }
         }
       }
     }
@@ -1105,7 +1488,7 @@ class Modifier extends SDKObject {
     for (var modifier of Array.from<any>(this.getCard().getActiveModifiers())) {
       if (modifier === this) {
         break;
-      } else if (modifier.getIsStacking() && (modifier.getStackType() === stackType)) {
+      } else if (modifier.getIsStacking() && modifier.getStackType() === stackType) {
         stacks++;
       }
     }
@@ -1114,14 +1497,17 @@ class Modifier extends SDKObject {
   }
 
   getStackType() {
-    if ((this._private.cachedStackType == null)) {
+    if (this._private.cachedStackType == null) {
       let stackType = this.getType();
 
       // get description for this modifier only from modifier class
       // get description from this modifier attempts to use source card
       // which is not always set or valid, and can cause stacking issues
-      const description = this.constructor.getDescription(this.contextObject, this.getGameSession().getModifierFactory());
-      if ((description != null) && (description.length > 0)) {
+      const description = this.constructor.getDescription(
+        this.contextObject,
+        this.getGameSession().getModifierFactory(),
+      );
+      if (description != null && description.length > 0) {
         stackType += description;
       } else if (this.attributeBuffs != null) {
         // get names of all attributes buffed
@@ -1181,7 +1567,7 @@ class Modifier extends SDKObject {
     this.updateCachedStateBeforeActive();
     this._private.cachedWasActive = this._private.cachedIsActive;
     this._private.cachedIsActive = this.getIsActiveForCache();
-    if ((this._private.cachedWasActive !== this._private.cachedIsActive) && (this.getCard() != null)) {
+    if (this._private.cachedWasActive !== this._private.cachedIsActive && this.getCard() != null) {
       this.getCard().flushCachedVisibleModifierStacks();
     }
     return this.updateCachedStateAfterActive();
@@ -1197,9 +1583,19 @@ class Modifier extends SDKObject {
       this._private.cachedIsActiveInHand = this.getIsInHandAndActiveForCache();
       this._private.cachedIsActiveInDeck = this.getIsInDeckAndActiveForCache();
       this._private.cachedIsActiveInSignatureCards = this.getIsInSignatureCardsAndActiveForCache();
-      return this._private.cachedIsActiveInLocation = this._private.cachedIsActiveOnBoard || this._private.cachedIsActiveInHand || this._private.cachedIsActiveInDeck || this._private.cachedIsActiveInSignatureCards;
+      return (this._private.cachedIsActiveInLocation =
+        this._private.cachedIsActiveOnBoard ||
+        this._private.cachedIsActiveInHand ||
+        this._private.cachedIsActiveInDeck ||
+        this._private.cachedIsActiveInSignatureCards);
     }
-    return this.isStacking = (this._private.cardsInAuraDirty = (this._private.cachedIsActiveOnBoard = (this._private.cachedIsActiveInHand = (this._private.cachedIsActiveInDeck = (this._private.cachedIsActiveInLocation = false)))));
+    return (this.isStacking =
+      this._private.cardsInAuraDirty =
+      this._private.cachedIsActiveOnBoard =
+      this._private.cachedIsActiveInHand =
+      this._private.cachedIsActiveInDeck =
+      this._private.cachedIsActiveInLocation =
+        false);
   }
 
   updateCachedStateAfterActive() {}
@@ -1215,7 +1611,7 @@ class Modifier extends SDKObject {
     // only allow this modifier to become active if we haven't found max stacks worth of active modifiers
     const maxStacks = this.getMaxStacks();
     const numStacksPreceding = this._getNumStacksPreceding();
-    if ((maxStacks !== CONFIG.INFINITY) && (numStacksPreceding >= maxStacks)) {
+    if (maxStacks !== CONFIG.INFINITY && numStacksPreceding >= maxStacks) {
       isStacking = false;
     }
 
@@ -1223,7 +1619,14 @@ class Modifier extends SDKObject {
   }
 
   getIsActiveForCache() {
-    return (this.getCard() != null) && this.getGameSession().isActive() && this.getIsAllowedToBeActiveForCache() && !this.getIsRemoved() && this._private.cachedIsActiveInLocation && this.getIsStacking();
+    return (
+      this.getCard() != null &&
+      this.getGameSession().isActive() &&
+      this.getIsAllowedToBeActiveForCache() &&
+      !this.getIsRemoved() &&
+      this._private.cachedIsActiveInLocation &&
+      this.getIsStacking()
+    );
   }
 
   getIsAllowedToBeActiveForCache() {
@@ -1265,7 +1668,7 @@ class Modifier extends SDKObject {
     this._private.cachedDescription = null;
     this._private.cachedAppliedName = null;
     this._private.cachedAppliedDescription = null;
-    return this._private.cachedStackType = null;
+    return (this._private.cachedStackType = null);
   }
 
   //= ==== / ======
@@ -1282,7 +1685,7 @@ class Modifier extends SDKObject {
   }
 
   getSourceCard() {
-    if ((this._private.cachedSourceCard == null)) {
+    if (this._private.cachedSourceCard == null) {
       const sourceCardIndex = this.getSourceCardIndex();
       if (sourceCardIndex != null) {
         this._private.cachedSourceCard = this.getGameSession().getCardByIndex(sourceCardIndex);
@@ -1297,12 +1700,14 @@ class Modifier extends SDKObject {
 
   setParentModifier(modifier) {
     if (!this.isRemoved) {
-      return this.parentModifierIndex = modifier != null ? modifier.getIndex() : undefined;
+      return (this.parentModifierIndex = modifier != null ? modifier.getIndex() : undefined);
     }
   }
 
   getParentModifier() {
-    if (this.parentModifierIndex != null) { return this.getGameSession().getModifierByIndex(this.parentModifierIndex); }
+    if (this.parentModifierIndex != null) {
+      return this.getGameSession().getModifierByIndex(this.parentModifierIndex);
+    }
   }
 
   getParentModifierIndex() {
@@ -1310,7 +1715,7 @@ class Modifier extends SDKObject {
   }
 
   setAppliedByModifier(modifier) {
-    return this.appliedByModifierIndex = modifier.getIndex();
+    return (this.appliedByModifierIndex = modifier.getIndex());
   }
 
   getAppliedByModifier() {
@@ -1324,7 +1729,7 @@ class Modifier extends SDKObject {
   }
 
   setRemovedByModifier(modifier) {
-    return this.removedByModifierIndex = modifier.getIndex();
+    return (this.removedByModifierIndex = modifier.getIndex());
   }
 
   getRemovedByModifier() {
@@ -1351,7 +1756,7 @@ class Modifier extends SDKObject {
       modifier.setAppliedByModifier(this);
 
       // reset cached sub modifiers
-      return this._private.cachedSubModifiers = null;
+      return (this._private.cachedSubModifiers = null);
     }
   }
 
@@ -1370,7 +1775,7 @@ class Modifier extends SDKObject {
       modifier.setParentModifier(null);
 
       // reset cached sub modifiers
-      return this._private.cachedSubModifiers = null;
+      return (this._private.cachedSubModifiers = null);
     }
   }
 
@@ -1389,12 +1794,16 @@ class Modifier extends SDKObject {
   }
 
   getSubModifiers() {
-    if (this._private.cachedSubModifiers == null) { this._private.cachedSubModifiers = this.getGameSession().getModifiersByIndices(this.subModifierIndices); }
+    if (this._private.cachedSubModifiers == null) {
+      this._private.cachedSubModifiers = this.getGameSession().getModifiersByIndices(
+        this.subModifierIndices,
+      );
+    }
     return this._private.cachedSubModifiers;
   }
 
   setIsCloneable(val) {
-    return this.isCloneable = val;
+    return (this.isCloneable = val);
   }
 
   getIsCloneable() {
@@ -1407,7 +1816,7 @@ class Modifier extends SDKObject {
    * @param {Action} action
    */
   static belongsToKeywordClass(keywordClass) {
-    return (this === keywordClass) || (keywordClass.prototype.isPrototypeOf(this.prototype));
+    return this === keywordClass || keywordClass.prototype.isPrototypeOf(this.prototype);
   }
 
   /**
@@ -1416,7 +1825,7 @@ class Modifier extends SDKObject {
    */
   setAppliedByAction(action) {
     if (action != null) {
-      return this.appliedByActionIndex = action.getIndex();
+      return (this.appliedByActionIndex = action.getIndex());
     }
   }
 
@@ -1444,7 +1853,7 @@ class Modifier extends SDKObject {
    */
   setRemovedByAction(action) {
     if (action != null) {
-      return this.removedByActionIndex = action.getIndex();
+      return (this.removedByActionIndex = action.getIndex());
     }
   }
 
@@ -1480,7 +1889,9 @@ class Modifier extends SDKObject {
         const resolveParentActionIndex = parentResolveAction.getIndex();
 
         // add action to list of triggered actions
-        if (this.triggerActionsData == null) { this.triggerActionsData = []; }
+        if (this.triggerActionsData == null) {
+          this.triggerActionsData = [];
+        }
         this.triggerActionsData.push({ actionIndex, parentActionIndex, resolveParentActionIndex });
 
         // ensure triggering modifier is set correctly
@@ -1513,20 +1924,25 @@ class Modifier extends SDKObject {
    * @param {Action} resolveAction
    */
   onTriggerAppliedModifier(modifier, action, resolveAction) {
-    if ((modifier != null) && (action != null) && (resolveAction != null)) {
+    if (modifier != null && action != null && resolveAction != null) {
       const modifierIndex = modifier.getIndex();
       const actionIndex = action.getIndex();
       const resolveActionIndex = resolveAction.getIndex();
 
       // add modifier to list of triggered applied modifiers indices
-      if (this.triggerAppliedModifiersData == null) { this.triggerAppliedModifiersData = []; }
+      if (this.triggerAppliedModifiersData == null) {
+        this.triggerAppliedModifiersData = [];
+      }
       this.triggerAppliedModifiersData.push({ modifierIndex, actionIndex, resolveActionIndex });
 
       // set modifier as applied by this modifier
       modifier.setAppliedByModifier(this);
 
       // record action index that triggered this as long as this triggering did not create the action
-      if ((action.getTriggeringModifierIndex() !== this.getIndex()) && (resolveAction.getTriggeringModifierIndex() !== this.getIndex())) {
+      if (
+        action.getTriggeringModifierIndex() !== this.getIndex() &&
+        resolveAction.getTriggeringModifierIndex() !== this.getIndex()
+      ) {
         return this._setTriggeredByAction(action, resolveAction);
       }
     }
@@ -1539,13 +1955,15 @@ class Modifier extends SDKObject {
    * @param {Action} resolveAction
    */
   onTriggerActivatedModifier(modifier, action, resolveAction) {
-    if ((modifier != null) && (action != null) && (resolveAction != null)) {
+    if (modifier != null && action != null && resolveAction != null) {
       const modifierIndex = modifier.getIndex();
       const actionIndex = action.getIndex();
       const resolveActionIndex = resolveAction.getIndex();
 
       // add modifier to list of triggered activated modifiers indices
-      if (this.triggerActivatedModifiersData == null) { this.triggerActivatedModifiersData = []; }
+      if (this.triggerActivatedModifiersData == null) {
+        this.triggerActivatedModifiersData = [];
+      }
       this.triggerActivatedModifiersData.push({ modifierIndex, actionIndex, resolveActionIndex });
 
       // always record action index that triggered this
@@ -1560,13 +1978,15 @@ class Modifier extends SDKObject {
    * @param {Action} resolveAction
    */
   onTriggerDeactivatedModifier(modifier, action, resolveAction) {
-    if ((modifier != null) && (action != null) && (resolveAction != null)) {
+    if (modifier != null && action != null && resolveAction != null) {
       const modifierIndex = modifier.getIndex();
       const actionIndex = action.getIndex();
       const resolveActionIndex = resolveAction.getIndex();
 
       // add modifier to list of triggered deactivated modifiers indices
-      if (this.triggerDeactivatedModifiersData == null) { this.triggerDeactivatedModifiersData = []; }
+      if (this.triggerDeactivatedModifiersData == null) {
+        this.triggerDeactivatedModifiersData = [];
+      }
       this.triggerDeactivatedModifiersData.push({ modifierIndex, actionIndex, resolveActionIndex });
 
       // always record action index that triggered this
@@ -1580,20 +2000,25 @@ class Modifier extends SDKObject {
    * @param {Action} action
    */
   onTriggerRemovedModifier(modifier, action, resolveAction) {
-    if ((modifier != null) && (action != null) && (resolveAction != null)) {
+    if (modifier != null && action != null && resolveAction != null) {
       const modifierIndex = modifier.getIndex();
       const actionIndex = action.getIndex();
       const resolveActionIndex = resolveAction.getIndex();
 
       // add modifier to list of triggered removed modifiers indices by action index
-      if (this.triggerRemovedModifiersData == null) { this.triggerRemovedModifiersData = []; }
+      if (this.triggerRemovedModifiersData == null) {
+        this.triggerRemovedModifiersData = [];
+      }
       this.triggerRemovedModifiersData.push({ modifierIndex, actionIndex, resolveActionIndex });
 
       // set modifier as removed by this modifier
       modifier.setRemovedByModifier(this);
 
       // record action index that triggered this as long as this triggering did not create the action
-      if ((action.getTriggeringModifierIndex() !== this.getIndex()) && (resolveAction.getTriggeringModifierIndex() !== this.getIndex())) {
+      if (
+        action.getTriggeringModifierIndex() !== this.getIndex() &&
+        resolveAction.getTriggeringModifierIndex() !== this.getIndex()
+      ) {
         return this._setTriggeredByAction(action, resolveAction);
       }
     }
@@ -1604,12 +2029,16 @@ class Modifier extends SDKObject {
 
     // check for valid indices
     const actionIndex = action.getIndex();
-    if ((actionIndex == null)) {
-      Logger.module('SDK').error(`[G:${this.getGameSession().getGameId()}] _setTriggeredByAction for modifier ${this.getType()} but action ${action.getType()} has no index!`);
+    if (actionIndex == null) {
+      Logger.module('SDK').error(
+        `[G:${this.getGameSession().getGameId()}] _setTriggeredByAction for modifier ${this.getType()} but action ${action.getType()} has no index!`,
+      );
     }
     const resolveActionIndex = resolveAction.getIndex();
-    if ((resolveActionIndex == null)) {
-      Logger.module('SDK').error(`[G:${this.getGameSession().getGameId()}] _setTriggeredByAction for modifier ${this.getType()} but resolve action ${resolveAction.getType()} has no index!`);
+    if (resolveActionIndex == null) {
+      Logger.module('SDK').error(
+        `[G:${this.getGameSession().getGameId()}] _setTriggeredByAction for modifier ${this.getType()} but resolve action ${resolveAction.getType()} has no index!`,
+      );
     }
 
     // action
@@ -1617,7 +2046,9 @@ class Modifier extends SDKObject {
     resolveAction.onResolveTriggeredModifier(this, action);
 
     // store indices
-    if (this.triggeredByActionsData == null) { this.triggeredByActionsData = []; }
+    if (this.triggeredByActionsData == null) {
+      this.triggeredByActionsData = [];
+    }
     return this.triggeredByActionsData.push({ actionIndex, resolveActionIndex });
   }
 
@@ -1692,7 +2123,9 @@ class Modifier extends SDKObject {
    * @returns {Array}
    */
   getTriggerActionsForAction(action) {
-    return this.getGameSession().getActionsByIndices(this.getTriggerActionIndicesForActionIndex(action.getIndex()));
+    return this.getGameSession().getActionsByIndices(
+      this.getTriggerActionIndicesForActionIndex(action.getIndex()),
+    );
   }
 
   /**
@@ -1716,7 +2149,9 @@ class Modifier extends SDKObject {
    * @returns {Array}
    */
   getTriggerActionsForResolveAction(action) {
-    return this.getGameSession().getActionsByIndices(this.getTriggerActionIndicesForResolveActionIndex(action.getIndex()));
+    return this.getGameSession().getActionsByIndices(
+      this.getTriggerActionIndicesForResolveActionIndex(action.getIndex()),
+    );
   }
 
   /**
@@ -1727,7 +2162,10 @@ class Modifier extends SDKObject {
     const actionIndices = [];
     if (this.triggerActionsData != null) {
       for (var data of Array.from<any>(this.triggerActionsData)) {
-        if ((data.parentActionIndex === actionIndex) && (data.resolveParentActionIndex === resolveActionIndex)) {
+        if (
+          data.parentActionIndex === actionIndex &&
+          data.resolveParentActionIndex === resolveActionIndex
+        ) {
           actionIndices.push(data.actionIndex);
         }
       }
@@ -1740,7 +2178,9 @@ class Modifier extends SDKObject {
    * @returns {Array}
    */
   getTriggerActionsForActionAndResolveActionIndices(actionIndex, resolveActionIndex) {
-    return this.getGameSession().getActionsByIndices(this.getTriggerActionIndicesForActionAndResolveActionIndices(actionIndex, resolveActionIndex));
+    return this.getGameSession().getActionsByIndices(
+      this.getTriggerActionIndicesForActionAndResolveActionIndices(actionIndex, resolveActionIndex),
+    );
   }
 
   /**
@@ -1748,7 +2188,10 @@ class Modifier extends SDKObject {
    * @returns {Array}
    */
   getTriggerActionsForActionAndResolveAction(action, resolveAction) {
-    return this.getTriggerActionsForActionAndResolveActionIndices(action.getIndex(), resolveAction.getIndex());
+    return this.getTriggerActionsForActionAndResolveActionIndices(
+      action.getIndex(),
+      resolveAction.getIndex(),
+    );
   }
 
   /**
@@ -1781,7 +2224,9 @@ class Modifier extends SDKObject {
    * @returns {Array}
    */
   getTriggerAppliedModifiersForAction(action) {
-    return this.getGameSession().getModifiersByIndices(this.getTriggerAppliedModifierIndicesForAction(action));
+    return this.getGameSession().getModifiersByIndices(
+      this.getTriggerAppliedModifierIndicesForAction(action),
+    );
   }
 
   /**
@@ -1806,7 +2251,9 @@ class Modifier extends SDKObject {
    * @returns {Array}
    */
   getTriggerAppliedModifiersForResolveAction(action) {
-    return this.getGameSession().getModifiersByIndices(this.getTriggerAppliedModifierIndicesForResolveAction(action));
+    return this.getGameSession().getModifiersByIndices(
+      this.getTriggerAppliedModifierIndicesForResolveAction(action),
+    );
   }
 
   /**
@@ -1822,7 +2269,13 @@ class Modifier extends SDKObject {
         var dataModifierIndex = data.modifierIndex;
         var dataActionIndex = data.actionIndex;
         var dataResolveActionIndex = data.resolveActionIndex;
-        if ((dataActionIndex === actionIndex) && (dataResolveActionIndex === resolveActionIndex) && ((dataModifierIndex !== lastDataModifierIndex) || (lastDataActionIndex !== dataActionIndex) || (lastDataResolveActionIndex !== dataResolveActionIndex))) {
+        if (
+          dataActionIndex === actionIndex &&
+          dataResolveActionIndex === resolveActionIndex &&
+          (dataModifierIndex !== lastDataModifierIndex ||
+            lastDataActionIndex !== dataActionIndex ||
+            lastDataResolveActionIndex !== dataResolveActionIndex)
+        ) {
           modifierIndices.push(dataModifierIndex);
         }
         var lastDataModifierIndex = dataModifierIndex;
@@ -1838,7 +2291,9 @@ class Modifier extends SDKObject {
    * @returns {Array}
    */
   getTriggerAppliedModifiersForActionAndResolveAction(action, resolveAction) {
-    return this.getGameSession().getModifiersByIndices(this.getTriggerAppliedModifierIndicesForActionAndResolveAction(action, resolveAction));
+    return this.getGameSession().getModifiersByIndices(
+      this.getTriggerAppliedModifierIndicesForActionAndResolveAction(action, resolveAction),
+    );
   }
 
   /**
@@ -1871,7 +2326,9 @@ class Modifier extends SDKObject {
    * @returns {Array}
    */
   getTriggerActivatedModifiersForAction(action) {
-    return this.getGameSession().getModifiersByIndices(this.getTriggerActivatedModifierIndicesForAction(action));
+    return this.getGameSession().getModifiersByIndices(
+      this.getTriggerActivatedModifierIndicesForAction(action),
+    );
   }
 
   /**
@@ -1896,7 +2353,9 @@ class Modifier extends SDKObject {
    * @returns {Array}
    */
   getTriggerActivatedModifiersForResolveAction(action) {
-    return this.getGameSession().getModifiersByIndices(this.getTriggerActivatedModifierIndicesForResolveAction(action));
+    return this.getGameSession().getModifiersByIndices(
+      this.getTriggerActivatedModifierIndicesForResolveAction(action),
+    );
   }
 
   /**
@@ -1912,7 +2371,13 @@ class Modifier extends SDKObject {
         var dataModifierIndex = data.modifierIndex;
         var dataActionIndex = data.actionIndex;
         var dataResolveActionIndex = data.resolveActionIndex;
-        if ((dataActionIndex === actionIndex) && (dataResolveActionIndex === resolveActionIndex) && ((dataModifierIndex !== lastDataModifierIndex) || (lastDataActionIndex !== dataActionIndex) || (lastDataResolveActionIndex !== dataResolveActionIndex))) {
+        if (
+          dataActionIndex === actionIndex &&
+          dataResolveActionIndex === resolveActionIndex &&
+          (dataModifierIndex !== lastDataModifierIndex ||
+            lastDataActionIndex !== dataActionIndex ||
+            lastDataResolveActionIndex !== dataResolveActionIndex)
+        ) {
           modifierIndices.push(dataModifierIndex);
         }
         var lastDataModifierIndex = dataModifierIndex;
@@ -1928,7 +2393,9 @@ class Modifier extends SDKObject {
    * @returns {Array}
    */
   getTriggerActivatedModifiersForActionAndResolveAction(action, resolveAction) {
-    return this.getGameSession().getModifiersByIndices(this.getTriggerActivatedModifierIndicesForActionAndResolveAction(action, resolveAction));
+    return this.getGameSession().getModifiersByIndices(
+      this.getTriggerActivatedModifierIndicesForActionAndResolveAction(action, resolveAction),
+    );
   }
 
   /**
@@ -1961,7 +2428,9 @@ class Modifier extends SDKObject {
    * @returns {Array}
    */
   getTriggerRemovedModifiersForAction(action) {
-    return this.getGameSession().getModifiersByIndices(this.getTriggerRemovedModifierIndicesForAction(action));
+    return this.getGameSession().getModifiersByIndices(
+      this.getTriggerRemovedModifierIndicesForAction(action),
+    );
   }
 
   /**
@@ -1986,7 +2455,9 @@ class Modifier extends SDKObject {
    * @returns {Array}
    */
   getTriggerRemovedModifiersForResolveAction(action) {
-    return this.getGameSession().getModifiersByIndices(this.getTriggerRemovedModifierIndicesForResolveAction(action));
+    return this.getGameSession().getModifiersByIndices(
+      this.getTriggerRemovedModifierIndicesForResolveAction(action),
+    );
   }
 
   /**
@@ -2002,7 +2473,13 @@ class Modifier extends SDKObject {
         var dataModifierIndex = data.modifierIndex;
         var dataActionIndex = data.actionIndex;
         var dataResolveActionIndex = data.resolveActionIndex;
-        if ((dataActionIndex === actionIndex) && (dataResolveActionIndex === resolveActionIndex) && ((dataModifierIndex !== lastDataModifierIndex) || (lastDataActionIndex !== dataActionIndex) || (lastDataResolveActionIndex !== dataResolveActionIndex))) {
+        if (
+          dataActionIndex === actionIndex &&
+          dataResolveActionIndex === resolveActionIndex &&
+          (dataModifierIndex !== lastDataModifierIndex ||
+            lastDataActionIndex !== dataActionIndex ||
+            lastDataResolveActionIndex !== dataResolveActionIndex)
+        ) {
           modifierIndices.push(dataModifierIndex);
         }
         var lastDataModifierIndex = dataModifierIndex;
@@ -2018,7 +2495,9 @@ class Modifier extends SDKObject {
    * @returns {Array}
    */
   getTriggerRemovedModifiersForActionAndResolveAction(action, resolveAction) {
-    return this.getGameSession().getModifiersByIndices(this.getTriggerRemovedModifierIndicesForActionAndResolveAction(action, resolveAction));
+    return this.getGameSession().getModifiersByIndices(
+      this.getTriggerRemovedModifierIndicesForActionAndResolveAction(action, resolveAction),
+    );
   }
 
   /**
@@ -2051,7 +2530,9 @@ class Modifier extends SDKObject {
    * @returns {Array}
    */
   getTriggerDeactivatedModifiersForAction(action) {
-    return this.getGameSession().getModifiersByIndices(this.getTriggerDeactivatedModifierIndicesForAction(action));
+    return this.getGameSession().getModifiersByIndices(
+      this.getTriggerDeactivatedModifierIndicesForAction(action),
+    );
   }
 
   /**
@@ -2076,7 +2557,9 @@ class Modifier extends SDKObject {
    * @returns {Array}
    */
   getTriggerDeactivatedModifiersForResolveAction(action) {
-    return this.getGameSession().getModifiersByIndices(this.getTriggerDeactivatedModifierIndicesForResolveAction(action));
+    return this.getGameSession().getModifiersByIndices(
+      this.getTriggerDeactivatedModifierIndicesForResolveAction(action),
+    );
   }
 
   /**
@@ -2092,7 +2575,13 @@ class Modifier extends SDKObject {
         var dataModifierIndex = data.modifierIndex;
         var dataActionIndex = data.actionIndex;
         var dataResolveActionIndex = data.resolveActionIndex;
-        if ((dataActionIndex === actionIndex) && (dataResolveActionIndex === resolveActionIndex) && ((dataModifierIndex !== lastDataModifierIndex) || (lastDataActionIndex !== dataActionIndex) || (lastDataResolveActionIndex !== dataResolveActionIndex))) {
+        if (
+          dataActionIndex === actionIndex &&
+          dataResolveActionIndex === resolveActionIndex &&
+          (dataModifierIndex !== lastDataModifierIndex ||
+            lastDataActionIndex !== dataActionIndex ||
+            lastDataResolveActionIndex !== dataResolveActionIndex)
+        ) {
           modifierIndices.push(dataModifierIndex);
         }
         var lastDataModifierIndex = dataModifierIndex;
@@ -2108,7 +2597,9 @@ class Modifier extends SDKObject {
    * @returns {Array}
    */
   getTriggerDeactivatedModifiersForActionAndResolveAction(action, resolveAction) {
-    return this.getGameSession().getModifiersByIndices(this.getTriggerDeactivatedModifierIndicesForActionAndResolveAction(action, resolveAction));
+    return this.getGameSession().getModifiersByIndices(
+      this.getTriggerDeactivatedModifierIndicesForActionAndResolveAction(action, resolveAction),
+    );
   }
 
   /**
@@ -2134,8 +2625,8 @@ class Modifier extends SDKObject {
    */
   getCanReactToAction(action) {
     const appliedByAction = this.getAppliedByAction();
-    if ((appliedByAction != null) && (appliedByAction.getTarget() !== this.getCard())) {
-      return (appliedByAction.getIndex() < action.getIndex()) && !this.getIsAncestorForAction(action);
+    if (appliedByAction != null && appliedByAction.getTarget() !== this.getCard()) {
+      return appliedByAction.getIndex() < action.getIndex() && !this.getIsAncestorForAction(action);
     }
     return !this.getIsAncestorForAction(action);
   }
@@ -2146,10 +2637,11 @@ class Modifier extends SDKObject {
    * @param {Card} card
    */
   applyManagedModifiersFromModifiersContextObjects(modifiersContextObjects, card) {
-    if ((modifiersContextObjects != null) && (card != null)) {
+    if (modifiersContextObjects != null && card != null) {
       return Array.from<any>(modifiersContextObjects).map((modifierContextObject) =>
         // NOTE: do not modify context object as it may be shared or reused to add future modifiers
-        this.getGameSession().applyModifierContextObject(modifierContextObject, card, this));
+        this.getGameSession().applyModifierContextObject(modifierContextObject, card, this),
+      );
     }
   }
 
@@ -2159,17 +2651,20 @@ class Modifier extends SDKObject {
    * @param {Card} card
    */
   applyManagedModifiersFromModifiersContextObjectsOnce(modifiersContextObjects, card) {
-    if ((modifiersContextObjects != null) && (modifiersContextObjects.length > 0) && (card != null)) {
+    if (modifiersContextObjects != null && modifiersContextObjects.length > 0 && card != null) {
       // apply new sub modifiers
 
       return (() => {
         const result = [];
         for (let i = 0; i < modifiersContextObjects.length; i++) {
-        // search through existing modifiers for a modifier that is managed by this modifier and has the same stack type
+          // search through existing modifiers for a modifier that is managed by this modifier and has the same stack type
           var modifierContextObject = modifiersContextObjects[i];
           var hasModifier = false;
           for (var existingModifier of Array.from<any>(card.getModifiers())) {
-            if ((existingModifier != null) && (existingModifier.getParentModifierIndex() === this.getIndex())) {
+            if (
+              existingModifier != null &&
+              existingModifier.getParentModifierIndex() === this.getIndex()
+            ) {
               var auraModifierId = existingModifier.getAuraModifierId();
               if (auraModifierId === i) {
                 hasModifier = true;
@@ -2181,7 +2676,14 @@ class Modifier extends SDKObject {
           // card does not yet have this modifier
           if (!hasModifier) {
             // NOTE: do not modify context object as it may be shared or reused to add future modifiers
-            result.push(this.getGameSession().applyModifierContextObject(modifierContextObject, card, this, i));
+            result.push(
+              this.getGameSession().applyModifierContextObject(
+                modifierContextObject,
+                card,
+                this,
+                i,
+              ),
+            );
           } else {
             result.push(undefined);
           }
@@ -2196,8 +2698,7 @@ class Modifier extends SDKObject {
    * @param {Array} cards
    */
   removeManagedModifiersFromCards(cards) {
-    return Array.from<any>(cards).map((card) =>
-      this.removeManagedModifiersFromCard(card));
+    return Array.from<any>(cards).map((card) => this.removeManagedModifiersFromCard(card));
   }
 
   /**
@@ -2210,7 +2711,7 @@ class Modifier extends SDKObject {
       const iterable = this.getSubModifiers();
       for (let i = iterable.length - 1; i >= 0; i--) {
         var modifier = iterable[i];
-        if ((modifier != null) && (modifier.getCard() === card)) {
+        if (modifier != null && modifier.getCard() === card) {
           result.push(this.getGameSession().removeModifier(modifier));
         } else {
           result.push(undefined);
@@ -2268,43 +2769,55 @@ class Modifier extends SDKObject {
   }
 
   getBuffsAttribute(buffKey) {
-    return (this.attributeBuffs != null) && (this.attributeBuffs[buffKey] != null);
+    return this.attributeBuffs != null && this.attributeBuffs[buffKey] != null;
   }
 
   getBuffsAttributes() {
-    return (this.attributeBuffs != null) && (Object.keys(this.attributeBuffs).length > 0);
+    return this.attributeBuffs != null && Object.keys(this.attributeBuffs).length > 0;
   }
 
   getRebasesAttribute(buffKey) {
-    return (this.attributeBuffsRebased != null) && Array.from<any>(this.attributeBuffsRebased).includes(buffKey);
+    return (
+      this.attributeBuffsRebased != null &&
+      Array.from<any>(this.attributeBuffsRebased).includes(buffKey)
+    );
   }
 
   getRebasesAttributes() {
-    return (this.attributeBuffsRebased != null) && (this.attributeBuffsRebased.length > 0);
+    return this.attributeBuffsRebased != null && this.attributeBuffsRebased.length > 0;
   }
 
   getBuffsAttributeAbsolutely(buffKey) {
-    return (this.attributeBuffsAbsolute != null) && Array.from<any>(this.attributeBuffsAbsolute).includes(buffKey);
+    return (
+      this.attributeBuffsAbsolute != null &&
+      Array.from<any>(this.attributeBuffsAbsolute).includes(buffKey)
+    );
   }
 
   getBuffsAttributesAbsolutely() {
-    return (this.attributeBuffsAbsolute != null) && (this.attributeBuffsAbsolute.length > 0);
+    return this.attributeBuffsAbsolute != null && this.attributeBuffsAbsolute.length > 0;
   }
 
   getIsAttributeFixed(buffKey) {
-    return (this.attributeBuffsFixed != null) && Array.from<any>(this.attributeBuffsFixed).includes(buffKey);
+    return (
+      this.attributeBuffsFixed != null &&
+      Array.from<any>(this.attributeBuffsFixed).includes(buffKey)
+    );
   }
 
   getAreAttributesFixed() {
-    return (this.attributeBuffsFixed != null) && (this.attributeBuffsFixed.length > 0);
+    return this.attributeBuffsFixed != null && this.attributeBuffsFixed.length > 0;
   }
 
   setResetsDamage(val) {
-    return this.resetsDamage = val;
+    return (this.resetsDamage = val);
   }
 
   getResetsDamage() {
-    return this.resetsDamage || ((this.attributeBuffsRebased != null) && _.contains(this.attributeBuffsRebased, 'maxHP'));
+    return (
+      this.resetsDamage ||
+      (this.attributeBuffsRebased != null && _.contains(this.attributeBuffsRebased, 'maxHP'))
+    );
   }
 
   getCanConvertCardToPrismatic() {
@@ -2324,7 +2837,7 @@ class Modifier extends SDKObject {
   }
 
   setDurability(durability) {
-    return this.durability = Math.max(Math.min(durability, this.getMaxDurability()), 0.0);
+    return (this.durability = Math.max(Math.min(durability, this.getMaxDurability()), 0.0));
   }
 
   getDurability() {
@@ -2332,7 +2845,7 @@ class Modifier extends SDKObject {
   }
 
   setMaxDurability(durability) {
-    return this.maxDurability = durability;
+    return (this.maxDurability = durability);
   }
 
   getMaxDurability() {
@@ -2340,16 +2853,17 @@ class Modifier extends SDKObject {
   }
 
   applyDamage(dmg) {
-    if (dmg > 0) { // if damage amount was reduced to 0, do not reduce artifact durability
+    if (dmg > 0) {
+      // if damage amount was reduced to 0, do not reduce artifact durability
       // Logger.module("SDK").debug("[G:#{@.getGameSession().gameId}]", "#{@getLogName()}.applyDamage -> durability #{@getDurability()} -> #{@getDurability()-1}")
       const durability = this.getDurability();
       this.setDurability(durability - 1); // we apply 1 dmg to modifier durability no matter what damage it takes
-      return this.lastDmg = this.getDurability() - durability;
+      return (this.lastDmg = this.getDurability() - durability);
     }
   }
 
   getIsDestroyed() {
-    return this.getIsFromArtifact() && (this.durability <= 0);
+    return this.getIsFromArtifact() && this.durability <= 0;
   }
 
   //= ==== / ======
@@ -2371,14 +2885,18 @@ class Modifier extends SDKObject {
       this._private.cardsInAuraDirty = false;
       const lastCardsInAura = this._private.cachedCardsInAura;
       this._private.cachedCardsInAura = this._findNewCardsInAura();
-      return this._private.cachedCardsLeavingAura = _.difference(lastCardsInAura, this._private.cachedCardsInAura);
+      return (this._private.cachedCardsLeavingAura = _.difference(
+        lastCardsInAura,
+        this._private.cachedCardsInAura,
+      ));
     }
   }
 
   _addAuraToCards() {
     // add any sub modifiers to cards in aura that don't already have aura modifiers
     return Array.from<any>(this._private.cachedCardsInAura).map((card) =>
-      this.applyManagedModifiersFromModifiersContextObjectsOnce(this.modifiersContextObjects, card));
+      this.applyManagedModifiersFromModifiersContextObjectsOnce(this.modifiersContextObjects, card),
+    );
   }
 
   _removeAuraFromCardsLeaving() {
@@ -2393,7 +2911,15 @@ class Modifier extends SDKObject {
 
     if (this.getCard() != null) {
       // get targets
-      if (this.auraIncludeSelf && !this.auraIncludeAlly && !this.auraIncludeEnemy && (this.auraFilterByCardType == null) && !((this.auraFilterByCardIds != null) && (this.auraFilterByCardIds.length > 0)) && !((this.auraFilterByRaceIds != null) && (this.auraFilterByRaceIds.length > 0)) && !((this.auraFilterByModifierTypes != null) && (this.auraFilterByModifierTypes.length > 0))) {
+      if (
+        this.auraIncludeSelf &&
+        !this.auraIncludeAlly &&
+        !this.auraIncludeEnemy &&
+        this.auraFilterByCardType == null &&
+        !(this.auraFilterByCardIds != null && this.auraFilterByCardIds.length > 0) &&
+        !(this.auraFilterByRaceIds != null && this.auraFilterByRaceIds.length > 0) &&
+        !(this.auraFilterByModifierTypes != null && this.auraFilterByModifierTypes.length > 0)
+      ) {
         // special case: aura only affects self
         auraEntities.push(this.getCard());
       } else {
@@ -2407,17 +2933,34 @@ class Modifier extends SDKObject {
         let seenSelf = false;
         for (var target of Array.from<any>(potentialCardsInAura)) {
           if (target != null) {
-            if ((this.auraIncludeBoard && target.getIsActive()) || (this.auraIncludeHand && target.getIsLocatedInHand()) || (this.auraIncludeSignatureCards && target.getIsLocatedInSignatureCards()) || (this.auraIncludeSelf && (target === this.getCard()))) {
+            if (
+              (this.auraIncludeBoard && target.getIsActive()) ||
+              (this.auraIncludeHand && target.getIsLocatedInHand()) ||
+              (this.auraIncludeSignatureCards && target.getIsLocatedInSignatureCards()) ||
+              (this.auraIncludeSelf && target === this.getCard())
+            ) {
               var targetOwnerId = target.getOwnerId();
               if (target === this.getCard()) {
-                if (this.auraIncludeSelf && !seenSelf && (!target.getIsGeneral() || (this.auraIncludeGeneral && target.getIsGeneral())) && this._filterPotentialCardInAura(target)) {
+                if (
+                  this.auraIncludeSelf &&
+                  !seenSelf &&
+                  (!target.getIsGeneral() || (this.auraIncludeGeneral && target.getIsGeneral())) &&
+                  this._filterPotentialCardInAura(target)
+                ) {
                   auraEntities.push(target);
                 }
                 seenSelf = true;
-              } else if ((this.auraIncludeAlly && (targetOwnerId === ownerId)) || (this.auraIncludeEnemy && (targetOwnerId !== ownerId))) {
+              } else if (
+                (this.auraIncludeAlly && targetOwnerId === ownerId) ||
+                (this.auraIncludeEnemy && targetOwnerId !== ownerId)
+              ) {
                 if (CardType.getIsEntityCardType(target.getType())) {
                   // if target is an entity, filter for General as needed based on aura properties
-                  if ((!target.getIsGeneral() || (this.auraIncludeGeneral && target.getIsGeneral())) && this._filterPotentialCardInAura(target)) {
+                  if (
+                    (!target.getIsGeneral() ||
+                      (this.auraIncludeGeneral && target.getIsGeneral())) &&
+                    this._filterPotentialCardInAura(target)
+                  ) {
                     auraEntities.push(target);
                   }
                 } else if (this._filterPotentialCardInAura(target)) {
@@ -2458,15 +3001,32 @@ class Modifier extends SDKObject {
        * so the code says what it does.
        */
       const allowUntargetable = true;
-      potentialCards = potentialCards.concat(this.getGameSession().getBoard().getCardsWithinRadiusOfPosition(this.getCard().position, this.auraFilterByCardType, this.auraRadius, true, allowUntargetable, false));
+      potentialCards = potentialCards.concat(
+        this.getGameSession()
+          .getBoard()
+          .getCardsWithinRadiusOfPosition(
+            this.getCard().position,
+            this.auraFilterByCardType,
+            this.auraRadius,
+            true,
+            allowUntargetable,
+            false,
+          ),
+      );
     }
 
     if (this.auraIncludeHand) {
-      potentialCards = potentialCards.concat(this.getGameSession().getPlayer1().getDeck().getCardsInHandExcludingMissing(), this.getGameSession().getPlayer2().getDeck().getCardsInHandExcludingMissing());
+      potentialCards = potentialCards.concat(
+        this.getGameSession().getPlayer1().getDeck().getCardsInHandExcludingMissing(),
+        this.getGameSession().getPlayer2().getDeck().getCardsInHandExcludingMissing(),
+      );
     }
 
     if (this.auraIncludeSignatureCards) {
-      potentialCards = potentialCards.concat(this.getGameSession().getPlayer1().getCurrentSignatureCard(), this.getGameSession().getPlayer2().getCurrentSignatureCard());
+      potentialCards = potentialCards.concat(
+        this.getGameSession().getPlayer1().getCurrentSignatureCard(),
+        this.getGameSession().getPlayer2().getCurrentSignatureCard(),
+      );
     }
 
     return potentialCards;
@@ -2499,11 +3059,15 @@ class Modifier extends SDKObject {
       }
     }
 
-    if ((this.auraFilterByCardIds != null) && (this.auraFilterByCardIds.length > 0) && !((needle = card.getBaseCardId(), Array.from<any>(this.auraFilterByCardIds).includes(needle)))) {
+    if (
+      this.auraFilterByCardIds != null &&
+      this.auraFilterByCardIds.length > 0 &&
+      !((needle = card.getBaseCardId()), Array.from<any>(this.auraFilterByCardIds).includes(needle))
+    ) {
       return false;
     }
 
-    if ((this.auraFilterByRaceIds != null) && (this.auraFilterByRaceIds.length > 0)) {
+    if (this.auraFilterByRaceIds != null && this.auraFilterByRaceIds.length > 0) {
       let passesRaceFilter = false;
       for (var raceId of Array.from<any>(this.auraFilterByRaceIds)) {
         if (card.getBelongsToTribe(raceId)) {
@@ -2516,7 +3080,7 @@ class Modifier extends SDKObject {
       }
     }
 
-    if ((this.auraFilterByModifierTypes != null) && (this.auraFilterByModifierTypes.length > 0)) {
+    if (this.auraFilterByModifierTypes != null && this.auraFilterByModifierTypes.length > 0) {
       let passesModifierFilter = false;
       for (var modType of Array.from<any>(this.auraFilterByModifierTypes)) {
         if (card.getActiveModifierByType(modType)) {
@@ -2541,7 +3105,7 @@ class Modifier extends SDKObject {
   }
 
   setAuraModifierId(val) {
-    return this.auraModifierId = val;
+    return (this.auraModifierId = val);
   }
 
   getAuraModifierId() {
@@ -2562,11 +3126,11 @@ class Modifier extends SDKObject {
   }
 
   startListeningToEvents() {
-    return this._private.listeningToEvents = true;
+    return (this._private.listeningToEvents = true);
   }
 
   stopListeningToEvents() {
-    return this._private.listeningToEvents = false;
+    return (this._private.listeningToEvents = false);
   }
 
   _onTerminate() {
@@ -2582,9 +3146,7 @@ class Modifier extends SDKObject {
 
   _onValidateAction(event) {
     // only validate the action if it is valid
-    const {
-      action,
-    } = event;
+    const { action } = event;
     if ((action != null ? action.getIsValid() : undefined) && this._private.cachedIsActive) {
       return this.onValidateAction(event);
     }
@@ -2599,9 +3161,7 @@ class Modifier extends SDKObject {
   }
 
   _onBeforeAction(event) {
-    const {
-      action,
-    } = event;
+    const { action } = event;
     if (this._private.cachedIsActive && this.getCanReactToAction(action)) {
       this.getGameSession().pushTriggeringModifierOntoStack(this);
       this.onBeforeAction(event);
@@ -2610,12 +3170,14 @@ class Modifier extends SDKObject {
   }
 
   _onAction(event) {
-    const {
-      action,
-    } = event;
+    const { action } = event;
 
     // take durability damage when our unit takes damage
-    if ((this.maxDurability > 0) && action instanceof DamageAction && (action.getTarget() === this.getCard())) {
+    if (
+      this.maxDurability > 0 &&
+      action instanceof DamageAction &&
+      action.getTarget() === this.getCard()
+    ) {
       this.applyDamage(action.getTotalDamageAmount());
     }
     // Logger.module("SDK").debug("[G:#{@.getGameSession().gameId}]", "Modifier._onAction -> #{@getLogName()} card #{@getCard()?.getLogName()}")
@@ -2627,9 +3189,7 @@ class Modifier extends SDKObject {
   }
 
   _onAfterAction(event) {
-    const {
-      action,
-    } = event;
+    const { action } = event;
     if (this._private.cachedIsActive && this.getCanReactToAction(action)) {
       this.getGameSession().pushTriggeringModifierOntoStack(this);
       this.onAfterAction(event);
@@ -2638,9 +3198,7 @@ class Modifier extends SDKObject {
   }
 
   _onAfterCleanupAction(event) {
-    const {
-      action,
-    } = event;
+    const { action } = event;
     if (this._private.cachedIsActive && this.getCanReactToAction(action)) {
       this.getGameSession().pushTriggeringModifierOntoStack(this);
       this.onAfterCleanupAction(event);
@@ -2657,11 +3215,14 @@ class Modifier extends SDKObject {
     // increase elapsed
     this.setNumEndTurnsElapsed(this.numEndTurnsElapsed + 1);
 
-    if (this._private.cachedIsActive) { // if active, modifier can respond to this duration change
+    if (this._private.cachedIsActive) {
+      // if active, modifier can respond to this duration change
       this.getGameSession().pushTriggeringModifierOntoStack(this);
       this.onEndTurnDurationChange(event);
       if (this.durationEndTurn > 0) {
-        this.durationEndTurn = this._getModifierDurationChangeInCaseOfBonusTurn(this.durationEndTurn);
+        this.durationEndTurn = this._getModifierDurationChangeInCaseOfBonusTurn(
+          this.durationEndTurn,
+        );
         if (this.numEndTurnsElapsed >= this.durationEndTurn) {
           this.onExpire(event);
           this.getGameSession().removeModifier(this);
@@ -2686,11 +3247,14 @@ class Modifier extends SDKObject {
     // increase elapsed
     this.setNumStartTurnsElapsed(this.numStartTurnsElapsed + 1);
 
-    if (this._private.cachedIsActive) { // if active, modifier can respond to this duration change
+    if (this._private.cachedIsActive) {
+      // if active, modifier can respond to this duration change
       this.getGameSession().pushTriggeringModifierOntoStack(this);
       this.onStartTurnDurationChange(event);
       if (this.durationStartTurn > 0) {
-        this.durationStartTurn = this._getModifierDurationChangeInCaseOfBonusTurn(this.durationStartTurn);
+        this.durationStartTurn = this._getModifierDurationChangeInCaseOfBonusTurn(
+          this.durationStartTurn,
+        );
         if (this.numStartTurnsElapsed >= this.durationStartTurn) {
           this.onExpire(event);
           this.getGameSession().removeModifier(this);
@@ -2699,7 +3263,9 @@ class Modifier extends SDKObject {
       return this.getGameSession().popTriggeringModifierFromStack();
     } // if inactive, modifier may still run out of duration but cannot respond
     if (this.durationStartTurn > 0) {
-      this.durationStartTurn = this._getModifierDurationChangeInCaseOfBonusTurn(this.durationStartTurn);
+      this.durationStartTurn = this._getModifierDurationChangeInCaseOfBonusTurn(
+        this.durationStartTurn,
+      );
       if (this.numStartTurnsElapsed >= this.durationStartTurn) {
         return this.getGameSession().removeModifier(this);
       }
@@ -2711,7 +3277,8 @@ class Modifier extends SDKObject {
     if (this.durationRespectsBonusTurns && !this.getGameSession().willSwapCurrentPlayerNextTurn()) {
       if (this.getGameSession().getCurrentPlayerId() === this.getCard().getOwnerId()) {
         // caster is taking a bonus turn, so modifier should expire next end turn
-        if (duration > 1) { // make sure we don't make modifier infinite
+        if (duration > 1) {
+          // make sure we don't make modifier infinite
           duration--;
         }
       } else {
@@ -2734,11 +3301,13 @@ class Modifier extends SDKObject {
     const isDestroyed = this.getIsDestroyed();
     if (isDestroyed && !this.getIsRemoved()) {
       return this.getGameSession().removeModifier(this);
-    } if (this._private.cachedIsActive && !this._private.cachedWasActive) {
+    }
+    if (this._private.cachedIsActive && !this._private.cachedWasActive) {
       this.getGameSession().pushTriggeringModifierOntoStack(this);
       this.onActivate();
       return this.getGameSession().popTriggeringModifierFromStack();
-    } if (!this._private.cachedIsActive && this._private.cachedWasActive) {
+    }
+    if (!this._private.cachedIsActive && this._private.cachedWasActive) {
       this.getGameSession().pushTriggeringModifierOntoStack(this);
       this.onDeactivate();
       return this.getGameSession().popTriggeringModifierFromStack();
@@ -2752,7 +3321,8 @@ class Modifier extends SDKObject {
         this._refreshAuraCardsAsNeeded();
         this._removeAuraFromCardsLeaving();
         return this.getGameSession().popTriggeringModifierFromStack();
-      } if (this._private.cachedWasActive) {
+      }
+      if (this._private.cachedWasActive) {
         this.getGameSession().pushTriggeringModifierOntoStack(this);
         this._removeAura();
         return this.getGameSession().popTriggeringModifierFromStack();
@@ -2794,7 +3364,9 @@ class Modifier extends SDKObject {
 
   invalidateAction(action, position, message?) {
     // helper method for invalidating an action at a position with a message
-    if (message == null) { message = 'Invalid Action!'; }
+    if (message == null) {
+      message = 'Invalid Action!';
+    }
     action.setIsValid(false);
     action.setValidationMessage(message);
     action.setValidationMessagePosition(position);
@@ -2863,7 +3435,7 @@ class Modifier extends SDKObject {
    * @param {String} modifierType.
    */
   setTransformModifierTypeForScrubbing(modifierType) {
-    return this.hideAsModifierType = modifierType;
+    return (this.hideAsModifierType = modifierType);
   }
 
   /**
@@ -2883,7 +3455,7 @@ class Modifier extends SDKObject {
   isHideable(scrubFromPerspectiveOfPlayerId, forSpectator) {
     if (this.hideAsModifierType != null) {
       const card = this.getCard();
-      if ((card != null) && (card.getOwnerId() !== scrubFromPerspectiveOfPlayerId)) {
+      if (card != null && card.getOwnerId() !== scrubFromPerspectiveOfPlayerId) {
         return true;
       }
     }
@@ -2896,9 +3468,7 @@ class Modifier extends SDKObject {
    * @return  {Modifier}
    */
   createModifierToHideAs() {
-    const {
-      hideAsModifierType,
-    } = this;
+    const { hideAsModifierType } = this;
 
     // create modifier this modifier will transform into
     const hiddenModifierClass = this.getGameSession().getModifierClassForType(hideAsModifierType);
@@ -2909,11 +3479,11 @@ class Modifier extends SDKObject {
 
     // copy properties from modifier
     for (var key of Array.from<any>(this.getContextObjectKeysForCopy())) {
-      hiddenModifier[key] = (hiddenModifier.contextObject[key] = this[key]);
+      hiddenModifier[key] = hiddenModifier.contextObject[key] = this[key];
     }
 
     // ensure modifier type is correct
-    hiddenModifier.type = (hiddenModifier.contextObject.type = hideAsModifierType);
+    hiddenModifier.type = hiddenModifier.contextObject.type = hideAsModifierType;
 
     // notify transformed modifier it was transformed from this modifier
     hiddenModifier.onCreatedToHide(this);
@@ -2994,5 +3564,5 @@ Modifier.prototype.triggerRemovedModifiersData = null;
 module.exports = Modifier;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

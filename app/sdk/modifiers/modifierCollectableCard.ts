@@ -24,7 +24,11 @@ class ModifierCollectableCard extends ModifierCollectable {
   onCollect(entity) {
     super.onCollect(entity);
 
-    const a = new PutCardInHandAction(this.getGameSession(), entity.getOwnerId(), this.cardDataOrIndex);
+    const a = new PutCardInHandAction(
+      this.getGameSession(),
+      entity.getOwnerId(),
+      this.cardDataOrIndex,
+    );
     return this.getGameSession().executeAction(a);
   }
 }

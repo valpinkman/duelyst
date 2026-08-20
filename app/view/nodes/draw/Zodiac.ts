@@ -1,5 +1,4 @@
 const ZodiacNode = cc.DrawNode.extend({
-
   timestamp: null,
   juncturePoints: null,
   juncturePointsStart: null,
@@ -74,7 +73,12 @@ const ZodiacNode = cc.DrawNode.extend({
           // var alpha = Math.random();
           const alpha = (nextPoint.z / 40) * 255;
           // this.setDrawColor(new cc.Color(255,255,255,50));
-          this.drawSegment(circleNode.getPosition(), nextCircleNode.getPosition(), this.lineWidth, new cc.Color(255, 255, 255, alpha));
+          this.drawSegment(
+            circleNode.getPosition(),
+            nextCircleNode.getPosition(),
+            this.lineWidth,
+            new cc.Color(255, 255, 255, alpha),
+          );
         }
       }
     }
@@ -122,7 +126,9 @@ const ZodiacNode = cc.DrawNode.extend({
       z,
     };
     for (let j = i - 1; j >= 0; j--) {
-      if (cc.pDistance(this.juncturePointsDestination[j], this.juncturePointsDestination[i]) < 2.0) {
+      if (
+        cc.pDistance(this.juncturePointsDestination[j], this.juncturePointsDestination[i]) < 2.0
+      ) {
         this.generateDestinationPoint(i, z);
       }
     }
@@ -175,7 +181,6 @@ const ZodiacNode = cc.DrawNode.extend({
       }
     }
   },
-
 });
 
 ZodiacNode.create = function (node) {

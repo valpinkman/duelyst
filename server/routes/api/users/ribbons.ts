@@ -12,11 +12,11 @@ const router = express.Router();
 
 router.get('/', function (req, res, next) {
   // user id is set by a middleware
-  const {
-    user_id,
-  } = req;
+  const { user_id } = req;
 
-  return knex('user_ribbons').where('user_id', user_id).select()
+  return knex('user_ribbons')
+    .where('user_id', user_id)
+    .select()
     .then(function (rows) {
       rows = DataAccessHelpers.restifyData(rows);
       return res.status(200).json(rows);

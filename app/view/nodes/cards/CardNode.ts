@@ -38,7 +38,6 @@ const SdkNode = require('./SdkNode');
  *************************************************************************** */
 
 var CardNode = SdkNode.extend({
-
   _actionToShowStateFor: null,
   _actionEventTypeToShowStateFor: null,
   _atkInstructionalLabel: null,
@@ -153,7 +152,13 @@ var CardNode = SdkNode.extend({
     this._modifiersNode.addChild(this._modifiersContainerNode);
 
     // render pass
-    this._renderPass = RenderPass.create(cc.Texture2D.PIXEL_FORMAT_RGBA8888, contentSize.width, contentSize.height, 1, false);
+    this._renderPass = RenderPass.create(
+      cc.Texture2D.PIXEL_FORMAT_RGBA8888,
+      contentSize.width,
+      contentSize.height,
+      1,
+      false,
+    );
     this._renderPassStackId = RenderPass.get_new_reset_stack_id();
     this._snapshotSprite = GlowSprite.create(this._renderPass.getTexture());
     this._snapshotSprite.setVisible(false);
@@ -184,42 +189,84 @@ var CardNode = SdkNode.extend({
     this._snapshotSprite.setHighlightBlurStrength('strong');
 
     // mana label
-    this.manaLabel = new cc.LabelTTF('', RSX.font_bold.name, 24, cc.size(48, 24), cc.TEXT_ALIGNMENT_CENTER);
+    this.manaLabel = new cc.LabelTTF(
+      '',
+      RSX.font_bold.name,
+      24,
+      cc.size(48, 24),
+      cc.TEXT_ALIGNMENT_CENTER,
+    );
     this.manaLabel.setFontFillColor({ r: 0, g: 33, b: 159 });
     this.manaLabel.setAnchorPoint(0.51, 0.65);
     this.manaLabel.setVisible(false);
     this._staticContainerNodeFront.addChild(this.manaLabel, 2);
 
     // card name
-    this.cardNameLabel = new cc.LabelTTF('', RSX.font_regular.name, 14, cc.size(0, 0), cc.TEXT_ALIGNMENT_CENTER);
+    this.cardNameLabel = new cc.LabelTTF(
+      '',
+      RSX.font_regular.name,
+      14,
+      cc.size(0, 0),
+      cc.TEXT_ALIGNMENT_CENTER,
+    );
     this.cardNameLabel.setFontFillColor(cc.color.WHITE);
     this._staticContainerNodeFront.addChild(this.cardNameLabel, 2);
 
     // type
-    this.cardTypeLabel = new cc.LabelTTF('', RSX.font_regular.name, 12, cc.size(cardBackgroundContentSize.width, 16), cc.TEXT_ALIGNMENT_CENTER);
+    this.cardTypeLabel = new cc.LabelTTF(
+      '',
+      RSX.font_regular.name,
+      12,
+      cc.size(cardBackgroundContentSize.width, 16),
+      cc.TEXT_ALIGNMENT_CENTER,
+    );
     this.cardTypeLabel.setFontFillColor(cc.color(144, 202, 207));
     this._staticContainerNodeFront.addChild(this.cardTypeLabel, 2);
 
     // faction name
-    this.factionNameLabel = new cc.LabelTTF('', RSX.font_bold.name, 14, cc.size(cardBackgroundContentSize.width, 30), cc.TEXT_ALIGNMENT_CENTER);
+    this.factionNameLabel = new cc.LabelTTF(
+      '',
+      RSX.font_bold.name,
+      14,
+      cc.size(cardBackgroundContentSize.width, 30),
+      cc.TEXT_ALIGNMENT_CENTER,
+    );
     this.factionNameLabel.setFontFillColor(cc.color(200, 200, 200, 255));
     this.factionNameLabel.enableStroke(cc.color(0, 0, 0, 255), 2, false);
     this.factionNameLabel.setVisible(false);
     this._staticContainerNodeFront.addChild(this.factionNameLabel, 2);
 
     // stats
-    this.atkLabel = new cc.LabelTTF('', RSX.font_bold.name, 24, cc.size(48, 26), cc.TEXT_ALIGNMENT_CENTER);
+    this.atkLabel = new cc.LabelTTF(
+      '',
+      RSX.font_bold.name,
+      24,
+      cc.size(48, 26),
+      cc.TEXT_ALIGNMENT_CENTER,
+    );
     this.atkLabel.setFontFillColor(CONFIG.ATK_COLOR);
     this.atkLabel.setVisible(false);
     this._staticContainerNodeFront.addChild(this.atkLabel, 2);
 
-    this.hpLabel = new cc.LabelTTF('', RSX.font_bold.name, 24, cc.size(48, 26), cc.TEXT_ALIGNMENT_CENTER);
+    this.hpLabel = new cc.LabelTTF(
+      '',
+      RSX.font_bold.name,
+      24,
+      cc.size(48, 26),
+      cc.TEXT_ALIGNMENT_CENTER,
+    );
     this.hpLabel.setFontFillColor(CONFIG.HP_COLOR);
     this.hpLabel.setVisible(false);
     this._staticContainerNodeFront.addChild(this.hpLabel, 2);
 
     // description
-    this.cardDescriptionLabel = new BaseLabel('', RSX.font_light.name, 13, cc.size(cardBackgroundContentSize.width - 20, 0), cc.TEXT_ALIGNMENT_CENTER);
+    this.cardDescriptionLabel = new BaseLabel(
+      '',
+      RSX.font_light.name,
+      13,
+      cc.size(cardBackgroundContentSize.width - 20, 0),
+      cc.TEXT_ALIGNMENT_CENTER,
+    );
     const fontNamesByFormattingTag = {};
     fontNamesByFormattingTag[CONFIG.FORMATTING_ENGINE.boldStart] = RSX.font_bold.name;
     this.cardDescriptionLabel.setFontNamesByFormattingTag(fontNamesByFormattingTag);
@@ -315,7 +362,9 @@ var CardNode = SdkNode.extend({
       this._outlineGlowArtifactAlt = BaseSprite.create(RSX.card_reveal_glow_artifact.img);
       this._outlineGlowArtifactAlt.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
       this._outlineGlowArtifactAlt.setVisible(false);
-      this._outlineGlowArtifactBlurred = BaseSprite.create(RSX.card_reveal_glow_artifact_blurred.img);
+      this._outlineGlowArtifactBlurred = BaseSprite.create(
+        RSX.card_reveal_glow_artifact_blurred.img,
+      );
       this._outlineGlowArtifactBlurred.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
       this._outlineGlowArtifactBlurred.setVisible(false);
 
@@ -390,7 +439,9 @@ var CardNode = SdkNode.extend({
   },
 
   getRequiredResources() {
-    return SdkNode.prototype.getRequiredResources.call(this).concat(PKGS.getPkgForIdentifier('card'));
+    return SdkNode.prototype.getRequiredResources
+      .call(this)
+      .concat(PKGS.getPkgForIdentifier('card'));
   },
 
   _createRenderCmd() {
@@ -487,7 +538,9 @@ var CardNode = SdkNode.extend({
       this._containerNode.setVisible(false);
 
       if (sdkCard != null) {
-        if (showBaseState == null) { showBaseState = true; }
+        if (showBaseState == null) {
+          showBaseState = true;
+        }
         this.setShowBaseState(showBaseState);
         this.setActionToShowStateFor(actionToShowStateFor);
         this.setActionEventTypeToShowStateFor(actionEventTypeToShowStateFor);
@@ -497,12 +550,15 @@ var CardNode = SdkNode.extend({
         Promise.all([
           this.whenRequiredResourcesReady(),
           this.whenResourcesReady(this.getCardResourceRequestId()),
-        ])
-          .then(([requiredRequestId, cardResourceRequestId]) => {
-            if (!this.getAreResourcesValid(requiredRequestId) || !this.getAreResourcesValid(cardResourceRequestId)) return; // load invalidated or resources changed
+        ]).then(([requiredRequestId, cardResourceRequestId]) => {
+          if (
+            !this.getAreResourcesValid(requiredRequestId) ||
+            !this.getAreResourcesValid(cardResourceRequestId)
+          )
+            return; // load invalidated or resources changed
 
-            this._containerNode.setVisible(true);
-            /*
+          this._containerNode.setVisible(true);
+          /*
            // TODO: per faction card backgrounds
            var factionBgIdentifier = sdkCard.factionId == SDK.Factions.Neutral ? "neutral" : "f"+sdkCard.factionId;
            var bgSpriteIdentifier;
@@ -514,100 +570,116 @@ var CardNode = SdkNode.extend({
            bgSpriteIdentifier = RSX["card_" + factionBgIdentifier + "_spell"].img;
            }
            */
-            // neutral card background
-            let bgSpriteIdentifier;
-            if (sdkCard instanceof SDK.Entity) {
-              bgSpriteIdentifier = isPrismatic ? RSX.card_neutral_prismatic_unit.img : RSX.card_neutral_unit.img;
-            } else if (sdkCard instanceof SDK.Artifact) {
-              bgSpriteIdentifier = isPrismatic ? RSX.card_neutral_prismatic_artifact.img : RSX.card_neutral_artifact.img;
-            } else {
-              bgSpriteIdentifier = isPrismatic ? RSX.card_neutral_prismatic_spell.img : RSX.card_neutral_spell.img;
+          // neutral card background
+          let bgSpriteIdentifier;
+          if (sdkCard instanceof SDK.Entity) {
+            bgSpriteIdentifier = isPrismatic
+              ? RSX.card_neutral_prismatic_unit.img
+              : RSX.card_neutral_unit.img;
+          } else if (sdkCard instanceof SDK.Artifact) {
+            bgSpriteIdentifier = isPrismatic
+              ? RSX.card_neutral_prismatic_artifact.img
+              : RSX.card_neutral_artifact.img;
+          } else {
+            bgSpriteIdentifier = isPrismatic
+              ? RSX.card_neutral_prismatic_spell.img
+              : RSX.card_neutral_spell.img;
+          }
+          this.cardBackgroundSpriteIdentifier = bgSpriteIdentifier;
+          this.cardBackgroundSprite.setTexture(
+            cc.textureCache.getTextureForKey(bgSpriteIdentifier),
+          );
+
+          // card options
+          const cardOptions = _.extend({}, sdkCard.getCardOptions());
+          cardOptions.spriteIdentifier =
+            sdkCard.getAnimResource() && sdkCard.getAnimResource().idle;
+          cardOptions.antiAlias = false;
+
+          // card sprite
+          this.cardSprite = GlowSprite.create(cardOptions);
+          if (cardOptions.scale == null) {
+            this.cardSprite.setScale(CONFIG.SCALE);
+          }
+          this._containerNodeFront.addChild(this.cardSprite, 0);
+
+          let cardSpritePosition;
+          if (sdkCard instanceof SDK.Unit) {
+            if (sdkCard.isOwnedByPlayer2()) {
+              this.cardSprite.setFlippedX(true);
             }
-            this.cardBackgroundSpriteIdentifier = bgSpriteIdentifier;
-            this.cardBackgroundSprite.setTexture(cc.textureCache.getTextureForKey(bgSpriteIdentifier));
 
-            // card options
-            const cardOptions = _.extend({}, sdkCard.getCardOptions());
-            cardOptions.spriteIdentifier = sdkCard.getAnimResource() && sdkCard.getAnimResource().idle;
-            cardOptions.antiAlias = false;
+            this.cardSprite.setAnchorPoint(cc.p(0.5, 0));
+            cardSpritePosition = cc.p(0.0, 8);
+          } else {
+            cardSpritePosition = cc.p(0.0, 75);
+          }
 
-            // card sprite
-            this.cardSprite = GlowSprite.create(cardOptions);
-            if (cardOptions.scale == null) {
-              this.cardSprite.setScale(CONFIG.SCALE);
-            }
-            this._containerNodeFront.addChild(this.cardSprite, 0);
+          const cardSpriteOffset = cardOptions.offset;
+          if (cardSpriteOffset != null) {
+            cardSpritePosition.x += cardSpriteOffset.x;
+            cardSpritePosition.y += cardSpriteOffset.y;
+          }
+          this.cardSprite.setPosition(cardSpritePosition);
 
-            let cardSpritePosition;
+          // shadow
+          if (!(sdkCard instanceof SDK.Tile)) {
+            this._unitShadow.fadeTo(
+              0.0,
+              SDK.Cards.getIsPrismaticCardId(sdkCard.getId()) ? 200.0 : 150.0,
+            );
             if (sdkCard instanceof SDK.Unit) {
-              if (sdkCard.isOwnedByPlayer2()) {
-                this.cardSprite.setFlippedX(true);
-              }
-
-              this.cardSprite.setAnchorPoint(cc.p(0.5, 0));
-              cardSpritePosition = cc.p(0.0, 8);
+              this._unitShadow.setPosition(0.0, 43);
             } else {
-              cardSpritePosition = cc.p(0.0, 75);
+              this._unitShadow.setPosition(0.0, 45);
             }
+          }
 
-            const cardSpriteOffset = cardOptions.offset;
-            if (cardSpriteOffset != null) {
-              cardSpritePosition.x += cardSpriteOffset.x;
-              cardSpritePosition.y += cardSpriteOffset.y;
+          if (sdkCard instanceof SDK.Entity && sdkCard.getWasGeneral()) {
+            // hide mana sprites
+            this._manaGemSprite.setVisible(false);
+
+            const referenceSignatureCard = sdkCard.getReferenceSignatureCard();
+            if (referenceSignatureCard != null) {
+              const signatureCardPosition = this._manaGemSprite.getPosition();
+              signatureCardPosition.x += 3.0;
+              signatureCardPosition.y -= 3.0;
+
+              // signature card ring
+              this._signatureCardRing = BaseSprite.create(RSX.signature_card_ring_small.img);
+              this._signatureCardRing.setPosition(signatureCardPosition);
+              this._staticContainerNodeFront.addChild(this._signatureCardRing);
+
+              // signature card sprite
+              const signatureCardOptions = _.extend({}, referenceSignatureCard.getCardOptions());
+              signatureCardOptions.spriteIdentifier =
+                referenceSignatureCard.getAnimResource() &&
+                referenceSignatureCard.getAnimResource().idle;
+              signatureCardOptions.antiAlias = false;
+              this._signatureCardSprite = BaseSprite.create(signatureCardOptions);
+              this._signatureCardSprite.setPosition(signatureCardPosition);
+              this._staticContainerNodeFront.addChild(this._signatureCardSprite);
             }
-            this.cardSprite.setPosition(cardSpritePosition);
+          } else {
+            // show mana sprites
+            this._manaGemSprite.setVisible(true);
+          }
 
-            // shadow
-            if (!(sdkCard instanceof SDK.Tile)) {
-              this._unitShadow.fadeTo(0.0, (SDK.Cards.getIsPrismaticCardId(sdkCard.getId()) ? 200.0 : 150.0));
-              if (sdkCard instanceof SDK.Unit) {
-                this._unitShadow.setPosition(0.0, 43);
-              } else {
-                this._unitShadow.setPosition(0.0, 45);
-              }
-            }
+          if (
+            !CONFIG.SHOW_PRISMATIC_ONLY_ON_INSPECT &&
+            !(sdkCard instanceof SDK.Tile) &&
+            SDK.Cards.getIsPrismaticCardId(sdkCard.getId())
+          ) {
+            this.showPrismatic();
+          }
 
-            if (sdkCard instanceof SDK.Entity && sdkCard.getWasGeneral()) {
-              // hide mana sprites
-              this._manaGemSprite.setVisible(false);
+          // rarity
+          if (this.raritySprite != null) {
+            this.raritySprite.setVisible(false);
+            this.raritySprite = null;
+          }
 
-              const referenceSignatureCard = sdkCard.getReferenceSignatureCard();
-              if (referenceSignatureCard != null) {
-                const signatureCardPosition = this._manaGemSprite.getPosition();
-                signatureCardPosition.x += 3.0;
-                signatureCardPosition.y -= 3.0;
-
-                // signature card ring
-                this._signatureCardRing = BaseSprite.create(RSX.signature_card_ring_small.img);
-                this._signatureCardRing.setPosition(signatureCardPosition);
-                this._staticContainerNodeFront.addChild(this._signatureCardRing);
-
-                // signature card sprite
-                const signatureCardOptions = _.extend({}, referenceSignatureCard.getCardOptions());
-                signatureCardOptions.spriteIdentifier = referenceSignatureCard.getAnimResource() && referenceSignatureCard.getAnimResource().idle;
-                signatureCardOptions.antiAlias = false;
-                this._signatureCardSprite = BaseSprite.create(signatureCardOptions);
-                this._signatureCardSprite.setPosition(signatureCardPosition);
-                this._staticContainerNodeFront.addChild(this._signatureCardSprite);
-              }
-            } else {
-              // show mana sprites
-              this._manaGemSprite.setVisible(true);
-            }
-
-            if (!CONFIG.SHOW_PRISMATIC_ONLY_ON_INSPECT
-            && !(sdkCard instanceof SDK.Tile)
-            && SDK.Cards.getIsPrismaticCardId(sdkCard.getId())) {
-              this.showPrismatic();
-            }
-
-            // rarity
-            if (this.raritySprite != null) {
-              this.raritySprite.setVisible(false);
-              this.raritySprite = null;
-            }
-
-            switch (sdkCard.rarityId) {
+          switch (sdkCard.rarityId) {
             case SDK.Rarity.Common:
               this.raritySprite = this._raritySpriteCommon;
               break;
@@ -623,37 +695,37 @@ var CardNode = SdkNode.extend({
             case SDK.Rarity.Mythron:
               this.raritySprite = this._raritySpriteMythron;
               break;
-            }
+          }
 
-            if (this.raritySprite != null) {
-              this.raritySprite.setVisible(true);
-            }
+          if (this.raritySprite != null) {
+            this.raritySprite.setVisible(true);
+          }
 
-            // glow for select reveal
-            if (this._outlineGlow != null) {
-              this._outlineGlow.setVisible(false);
-            }
-            if (this._outlineGlowAlt != null) {
-              this._outlineGlowAlt.setVisible(false);
-            }
+          // glow for select reveal
+          if (this._outlineGlow != null) {
+            this._outlineGlow.setVisible(false);
+          }
+          if (this._outlineGlowAlt != null) {
+            this._outlineGlowAlt.setVisible(false);
+          }
 
-            if (sdkCard instanceof SDK.Entity) {
-              this._outlineGlow = this._outlineGlowUnit;
-              this._outlineGlowAlt = this._outlineGlowUnitAlt;
-              this._outlineGlowBlurred = this._outlineGlowUnitBlurred;
-            } else if (sdkCard instanceof SDK.Artifact) {
-              this._outlineGlow = this._outlineGlowArtifact;
-              this._outlineGlowAlt = this._outlineGlowArtifactAlt;
-              this._outlineGlowBlurred = this._outlineGlowArtifactBlurred;
-            } else {
-              this._outlineGlow = this._outlineGlowSpell;
-              this._outlineGlowAlt = this._outlineGlowSpellAlt;
-              this._outlineGlowBlurred = this._outlineGlowSpellBlurred;
-            }
+          if (sdkCard instanceof SDK.Entity) {
+            this._outlineGlow = this._outlineGlowUnit;
+            this._outlineGlowAlt = this._outlineGlowUnitAlt;
+            this._outlineGlowBlurred = this._outlineGlowUnitBlurred;
+          } else if (sdkCard instanceof SDK.Artifact) {
+            this._outlineGlow = this._outlineGlowArtifact;
+            this._outlineGlowAlt = this._outlineGlowArtifactAlt;
+            this._outlineGlowBlurred = this._outlineGlowArtifactBlurred;
+          } else {
+            this._outlineGlow = this._outlineGlowSpell;
+            this._outlineGlowAlt = this._outlineGlowSpellAlt;
+            this._outlineGlowBlurred = this._outlineGlowSpellBlurred;
+          }
 
-            // start animated elements
-            this.showInactiveAnimState();
-          });
+          // start animated elements
+          this.showInactiveAnimState();
+        });
 
         if (sdkCard instanceof SDK.Entity && sdkCard.getWasGeneral()) {
           // hide mana label
@@ -724,7 +796,10 @@ var CardNode = SdkNode.extend({
 
   updateStats() {
     const stateAtAction = this.getStateForActionToShowStateFor();
-    const manaCost = (stateAtAction != null && stateAtAction.manaCost != null ? stateAtAction.manaCost : (this.sdkCard && this.sdkCard.manaCost)) || 0;
+    const manaCost =
+      (stateAtAction != null && stateAtAction.manaCost != null
+        ? stateAtAction.manaCost
+        : this.sdkCard && this.sdkCard.manaCost) || 0;
 
     if (`${manaCost}` !== this.manaLabel.getString()) {
       this.manaLabel.setString(manaCost, true);
@@ -785,7 +860,11 @@ var CardNode = SdkNode.extend({
         if (this.hpLabel.isVisible()) {
           if (stateAtAction.damage != null && stateAtAction.damage !== 0) {
             this.hpLabel.setFontFillColor(CONFIG.NERF_COLOR);
-          } else if (stateAtAction.maxHP != null && stateAtAction.baseMaxHP != null && stateAtAction.maxHP > stateAtAction.baseMaxHP) {
+          } else if (
+            stateAtAction.maxHP != null &&
+            stateAtAction.baseMaxHP != null &&
+            stateAtAction.maxHP > stateAtAction.baseMaxHP
+          ) {
             this.hpLabel.setFontFillColor(CONFIG.BUFF_COLOR);
           } else {
             this.hpLabel.setFontFillColor(cc.color.WHITE);
@@ -822,12 +901,14 @@ var CardNode = SdkNode.extend({
           } else {
             if (!this.getGlowing()) {
               this._glowMapNode.stopAllActions();
-              this._glowMapNode.runAction(cc.sequence(
-                cc.fadeOut(0.1),
-                cc.callFunc(() => {
-                  this._glowMapNode.setVisible(false);
-                }),
-              ));
+              this._glowMapNode.runAction(
+                cc.sequence(
+                  cc.fadeOut(0.1),
+                  cc.callFunc(() => {
+                    this._glowMapNode.setVisible(false);
+                  }),
+                ),
+              );
             }
             this.showInactiveAnimState();
           }
@@ -855,12 +936,14 @@ var CardNode = SdkNode.extend({
             this._glowMapNode.runAction(cc.fadeIn(duration));
           } else {
             this._glowMapNode.stopAllActions();
-            this._glowMapNode.runAction(cc.sequence(
-              cc.fadeOut(duration),
-              cc.callFunc(() => {
-                this._glowMapNode.setVisible(false);
-              }),
-            ));
+            this._glowMapNode.runAction(
+              cc.sequence(
+                cc.fadeOut(duration),
+                cc.callFunc(() => {
+                  this._glowMapNode.setVisible(false);
+                }),
+              ),
+            );
           }
         }
       });
@@ -939,7 +1022,10 @@ var CardNode = SdkNode.extend({
     const cardContentSize = this.getCardContentSize();
     const modifiersContentSize = this.getModifiersContentSize();
     const keywordsContentSize = this.getKeywordsContentSize();
-    return cc.size(cardContentSize.width + keywordsContentSize.width, cardContentSize.height + modifiersContentSize.height);
+    return cc.size(
+      cardContentSize.width + keywordsContentSize.width,
+      cardContentSize.height + modifiersContentSize.height,
+    );
   },
 
   /**
@@ -949,7 +1035,10 @@ var CardNode = SdkNode.extend({
     const cardContentSize = this.getCardBackgroundContentSize();
     const modifiersContentSize = this.getModifiersContentSize();
     const keywordsContentSize = this.getKeywordsContentSize();
-    return cc.size(cardContentSize.width + keywordsContentSize.width, cardContentSize.height + modifiersContentSize.height);
+    return cc.size(
+      cardContentSize.width + keywordsContentSize.width,
+      cardContentSize.height + modifiersContentSize.height,
+    );
   },
 
   /**
@@ -971,7 +1060,10 @@ var CardNode = SdkNode.extend({
    */
   getCardContentSize() {
     const cardBackgroundContentSize = this.getCardBackgroundContentSize();
-    return cc.size(cardBackgroundContentSize.width + CONFIG.CARD_PADDING, cardBackgroundContentSize.height + CONFIG.CARD_PADDING);
+    return cc.size(
+      cardBackgroundContentSize.width + CONFIG.CARD_PADDING,
+      cardBackgroundContentSize.height + CONFIG.CARD_PADDING,
+    );
   },
 
   /**
@@ -1076,7 +1168,12 @@ var CardNode = SdkNode.extend({
    */
   getStateForActionToShowStateFor() {
     if (!this.getShowBaseState()) {
-      return this.sdkCard.getActionStateRecord().getStateAtActionForEventType(this.getActionToShowStateFor(), this.getActionEventTypeToShowStateFor());
+      return this.sdkCard
+        .getActionStateRecord()
+        .getStateAtActionForEventType(
+          this.getActionToShowStateFor(),
+          this.getActionEventTypeToShowStateFor(),
+        );
     }
   },
 
@@ -1096,7 +1193,8 @@ var CardNode = SdkNode.extend({
     // attempt to use this card's owner's card back
     let cardBackId;
     const ownerId = this.sdkCard && this.sdkCard.getOwnerId();
-    const ownerSetupData = ownerId && SDK.GameSession.getInstance().getPlayerSetupDataForPlayerId(ownerId);
+    const ownerSetupData =
+      ownerId && SDK.GameSession.getInstance().getPlayerSetupDataForPlayerId(ownerId);
     if (ownerSetupData != null) {
       cardBackId = ownerSetupData.cardBackId;
     }
@@ -1135,11 +1233,12 @@ var CardNode = SdkNode.extend({
       if (this._cardBackId != null) {
         // load new
         const cardBackPkgId = PKGS.getCardBackPkgIdentifier(this._cardBackId);
-        const cardBackResourceRequestId = this._cardBackResourceRequestId = `${cardBackPkgId}_${UtilsJavascript.generateIncrementalId()}`;
+        const cardBackResourceRequestId =
+          (this._cardBackResourceRequestId = `${cardBackPkgId}_${UtilsJavascript.generateIncrementalId()}`);
 
         // setup promise to wait for resources
-        this.addResourceRequest(cardBackResourceRequestId, cardBackPkgId)
-          .then((cardBackResourceRequestId) => {
+        this.addResourceRequest(cardBackResourceRequestId, cardBackPkgId).then(
+          (cardBackResourceRequestId) => {
             if (!this.getAreResourcesValid(cardBackResourceRequestId)) return; // card back has changed
 
             // initialize card back sprites
@@ -1156,7 +1255,8 @@ var CardNode = SdkNode.extend({
             this.cardBackGlowOutlineSprite.setFlippedX(true);
             this.cardBackGlowOutlineSprite.setVisible(false);
             this._containerNodeBack.addChild(this.cardBackGlowOutlineSprite, -2.0);
-          });
+          },
+        );
       }
     }
   },
@@ -1199,10 +1299,15 @@ var CardNode = SdkNode.extend({
 
       // get base size
       const cardBackgroundContentSize = this.getCardBackgroundContentSize();
-      var modifiersWidth = cardBackgroundContentSize.width - CONFIG.CARD_MODIFIER_PADDING_HORIZONTAL * 3.0 - 16.0;
+      var modifiersWidth =
+        cardBackgroundContentSize.width - CONFIG.CARD_MODIFIER_PADDING_HORIZONTAL * 3.0 - 16.0;
 
       // show modifiers
-      modifiersHeight += this._buildModifiers(stateAtAction.modifierStacks, modifiersWidth, modifiersHeight);
+      modifiersHeight += this._buildModifiers(
+        stateAtAction.modifierStacks,
+        modifiersWidth,
+        modifiersHeight,
+      );
     }
 
     // one or more modifiers are showing
@@ -1255,29 +1360,50 @@ var CardNode = SdkNode.extend({
           if (numModifiersOfStackType > 1) {
             modifierNameText += ` (x${numModifiersOfStackType})`;
           }
-          const modifierNameLabel = new cc.LabelTTF(modifierNameText, RSX.font_bold.name, 14, cc.size(currentModifiersWidth, 0), cc.TEXT_ALIGNMENT_LEFT);
+          const modifierNameLabel = new cc.LabelTTF(
+            modifierNameText,
+            RSX.font_bold.name,
+            14,
+            cc.size(currentModifiersWidth, 0),
+            cc.TEXT_ALIGNMENT_LEFT,
+          );
           modifierNameLabel.setFontFillColor(color);
           modifierNameLabel.setOpacity(opacity);
           modifierNameLabel.setAnchorPoint(0.5, 1);
-          modifierNameLabel.setPosition(CONFIG.CARD_MODIFIER_PADDING_HORIZONTAL, -(currentModifiersHeight + modifiersHeight));
+          modifierNameLabel.setPosition(
+            CONFIG.CARD_MODIFIER_PADDING_HORIZONTAL,
+            -(currentModifiersHeight + modifiersHeight),
+          );
           this._modifiersContainerNode.addChild(modifierNameLabel);
           const modifierLabelContentSize = modifierNameLabel.getContentSize();
-          modifiersHeight += modifierLabelContentSize.height + CONFIG.CARD_MODIFIER_PADDING_VERTICAL;
+          modifiersHeight +=
+            modifierLabelContentSize.height + CONFIG.CARD_MODIFIER_PADDING_VERTICAL;
 
           // uncomment below to ignore sub-modifier descriptions for non-inherent modifiers on the same card
           // var parentModifier = modifier.getParentModifier();
           // if (parentModifier == null || parentModifier.getIsInherent() || modifier.getCardAffected() !== parentModifier.getCardAffected()) {
           const modifierDescription = modifier.getAppliedDescription();
           if (modifierDescription != null) {
-            const modifierDescriptionLabel = new cc.LabelTTF(modifierDescription, RSX.font_light.name, 12, cc.size(currentModifiersWidth, 0), cc.TEXT_ALIGNMENT_LEFT);
+            const modifierDescriptionLabel = new cc.LabelTTF(
+              modifierDescription,
+              RSX.font_light.name,
+              12,
+              cc.size(currentModifiersWidth, 0),
+              cc.TEXT_ALIGNMENT_LEFT,
+            );
             modifierDescriptionLabel.setFontFillColor(color);
             modifierDescriptionLabel.setOpacity(opacity);
             modifierDescriptionLabel.setAnchorPoint(0.5, 1);
             modifierDescriptionLabel.setLineHeight(14);
-            modifierDescriptionLabel.setPosition(CONFIG.CARD_MODIFIER_PADDING_HORIZONTAL, -(currentModifiersHeight + modifiersHeight));
+            modifierDescriptionLabel.setPosition(
+              CONFIG.CARD_MODIFIER_PADDING_HORIZONTAL,
+              -(currentModifiersHeight + modifiersHeight),
+            );
             this._modifiersContainerNode.addChild(modifierDescriptionLabel);
             const modifierDescriptionLabelContentSize = modifierDescriptionLabel.getContentSize();
-            modifiersHeight += modifierDescriptionLabelContentSize.height + CONFIG.CARD_MODIFIER_PADDING_VERTICAL * 2.0;
+            modifiersHeight +=
+              modifierDescriptionLabelContentSize.height +
+              CONFIG.CARD_MODIFIER_PADDING_VERTICAL * 2.0;
           }
           // }
         }
@@ -1294,7 +1420,10 @@ var CardNode = SdkNode.extend({
 
     if (this._hasModifers) {
       const contentSize = this.getContentSize();
-      this._modifiersNode.setPosition(this.getCenterPosition().x - contentSize.width * 0.5, this.getCardBottom() - contentSize.height * 0.5);
+      this._modifiersNode.setPosition(
+        this.getCenterPosition().x - contentSize.width * 0.5,
+        this.getCardBottom() - contentSize.height * 0.5,
+      );
       this._modifiersNode.setVisible(true);
     } else {
       this.hideModifiers();
@@ -1354,7 +1483,13 @@ var CardNode = SdkNode.extend({
         if (!keyword.isHiddenToUI) {
           const keywordName = keyword.getName();
           if (keywordName != null) {
-            const keywordNameLabel = new cc.LabelTTF(keywordName, RSX.font_bold.name, 14, cc.size(CONFIG.CARD_KEYWORDS_WIDTH, 0), cc.TEXT_ALIGNMENT_LEFT);
+            const keywordNameLabel = new cc.LabelTTF(
+              keywordName,
+              RSX.font_bold.name,
+              14,
+              cc.size(CONFIG.CARD_KEYWORDS_WIDTH, 0),
+              cc.TEXT_ALIGNMENT_LEFT,
+            );
             keywordNameLabel.setFontFillColor(cc.color.WHITE);
             keywordNameLabel.setAnchorPoint(0, 1);
             keywordNameLabel.setPosition(paddingLeft, -keywordsHeight);
@@ -1362,15 +1497,27 @@ var CardNode = SdkNode.extend({
             const keywordLabelContentSize = keywordNameLabel.getContentSize();
             keywordsHeight += keywordLabelContentSize.height + CONFIG.CARD_KEYWORD_PADDING_VERTICAL;
 
-            const keywordDescriptionLabel = new cc.LabelTTF(keyword.getKeywordDefinition(), RSX.font_light.name, 12, cc.size(CONFIG.CARD_KEYWORDS_WIDTH, 0), cc.TEXT_ALIGNMENT_LEFT);
+            const keywordDescriptionLabel = new cc.LabelTTF(
+              keyword.getKeywordDefinition(),
+              RSX.font_light.name,
+              12,
+              cc.size(CONFIG.CARD_KEYWORDS_WIDTH, 0),
+              cc.TEXT_ALIGNMENT_LEFT,
+            );
             keywordDescriptionLabel.setFontFillColor(cc.color.WHITE);
             keywordDescriptionLabel.setAnchorPoint(0, 1);
             keywordDescriptionLabel.setLineHeight(14);
             keywordDescriptionLabel.setPosition(paddingLeft, -keywordsHeight);
             this._keywordsContainerNode.addChild(keywordDescriptionLabel);
             const keywordDescriptionLabelContentSize = keywordDescriptionLabel.getContentSize();
-            keywordsHeight += keywordDescriptionLabelContentSize.height + CONFIG.CARD_KEYWORD_PADDING_VERTICAL * 2.0;
-            maxWidth = Math.max(maxWidth, keywordLabelContentSize.width, keywordDescriptionLabelContentSize.width);
+            keywordsHeight +=
+              keywordDescriptionLabelContentSize.height +
+              CONFIG.CARD_KEYWORD_PADDING_VERTICAL * 2.0;
+            maxWidth = Math.max(
+              maxWidth,
+              keywordLabelContentSize.width,
+              keywordDescriptionLabelContentSize.width,
+            );
           }
         }
       }
@@ -1380,7 +1527,12 @@ var CardNode = SdkNode.extend({
       const bgHeight = keywordsHeight + CONFIG.CARD_KEYWORD_PADDING_VERTICAL;
       const bgBL = cc.p(0, CONFIG.CARD_KEYWORD_PADDING_VERTICAL);
       const bgTR = cc.p(bgBL.x + bgWidth, -(bgBL.y + bgHeight));
-      const bgColor = cc.color(CONFIG.CARD_METADATA_BARS_COLOR.r, CONFIG.CARD_METADATA_BARS_COLOR.g, CONFIG.CARD_METADATA_BARS_COLOR.b, CONFIG.CARD_METADATA_BARS_COLOR.a);
+      const bgColor = cc.color(
+        CONFIG.CARD_METADATA_BARS_COLOR.r,
+        CONFIG.CARD_METADATA_BARS_COLOR.g,
+        CONFIG.CARD_METADATA_BARS_COLOR.b,
+        CONFIG.CARD_METADATA_BARS_COLOR.a,
+      );
       this._keywordsBG.drawRect(bgBL, bgTR, bgColor, 0, bgColor);
 
       // set content size
@@ -1409,7 +1561,10 @@ var CardNode = SdkNode.extend({
     if (this._hasKeywords) {
       this._keywordsNode.setAnchorPoint(1, 0);
       const contentSize = this.getContentSize();
-      this._keywordsNode.setPosition(this.getCardLeft() - contentSize.width * 0.5, this.getCardTop() - contentSize.height * 0.5 - 10);
+      this._keywordsNode.setPosition(
+        this.getCardLeft() - contentSize.width * 0.5,
+        this.getCardTop() - contentSize.height * 0.5 - 10,
+      );
 
       this._keywordsNode.setVisible(true);
     } else {
@@ -1427,7 +1582,10 @@ var CardNode = SdkNode.extend({
     if (this._hasKeywords) {
       this._keywordsNode.setAnchorPoint(0, 0);
       const contentSize = this.getContentSize();
-      this._keywordsNode.setPosition(this.getCardRight() - contentSize.width * 0.5, this.getCardTop() - contentSize.height * 0.5 - 10);
+      this._keywordsNode.setPosition(
+        this.getCardRight() - contentSize.width * 0.5,
+        this.getCardTop() - contentSize.height * 0.5 - 10,
+      );
 
       this._keywordsNode.setVisible(true);
     } else {
@@ -1591,10 +1749,7 @@ var CardNode = SdkNode.extend({
 
   fadeOutSnapshot(duration) {
     duration = duration || 0.2;
-    this._snapshotSprite.runAction(cc.sequence(
-      cc.fadeOut(duration),
-      cc.hide(),
-    ));
+    this._snapshotSprite.runAction(cc.sequence(cc.fadeOut(duration), cc.hide()));
     this._containerNode.setVisible(this.sdkCard != null);
   },
 
@@ -1602,7 +1757,15 @@ var CardNode = SdkNode.extend({
 
   /* region INSPECT */
 
-  showInspect(sdkCard, showBaseState, actionToShowStateFor, actionEventTypeToShowStateFor, keywordsOnLeft, highlighted, showInstructionals) {
+  showInspect(
+    sdkCard,
+    showBaseState,
+    actionToShowStateFor,
+    actionEventTypeToShowStateFor,
+    keywordsOnLeft,
+    highlighted,
+    showInstructionals,
+  ) {
     // reset
     if (sdkCard != null) {
       this.setSdkCard(sdkCard, showBaseState, actionToShowStateFor, actionEventTypeToShowStateFor);
@@ -1632,7 +1795,13 @@ var CardNode = SdkNode.extend({
 
         // show silenced state unless card is general, sentinel (hidden state), or building
         // generals must always show signature card description, and sentinel and building cannot be dispelled off the card text
-        if (stateAtAction != null && (!(this.sdkCard instanceof SDK.Entity) || !this.sdkCard.getWasGeneral()) && (this.sdkCard instanceof SDK.Entity && !this.sdkCard.hasActiveModifierClass(SDK.ModifierSentinel) && !this.sdkCard.hasActiveModifierClass(SDK.ModifierBuilding))) {
+        if (
+          stateAtAction != null &&
+          (!(this.sdkCard instanceof SDK.Entity) || !this.sdkCard.getWasGeneral()) &&
+          this.sdkCard instanceof SDK.Entity &&
+          !this.sdkCard.hasActiveModifierClass(SDK.ModifierSentinel) &&
+          !this.sdkCard.hasActiveModifierClass(SDK.ModifierBuilding)
+        ) {
           this._silencedSprite.setVisible(stateAtAction.isSilenced);
         } else {
           this._silencedSprite.setVisible(false);
@@ -1644,9 +1813,11 @@ var CardNode = SdkNode.extend({
       }
 
       // show prismatic fx
-      if (CONFIG.SHOW_PRISMATIC_ONLY_ON_INSPECT
-        && !(this.sdkCard instanceof SDK.Tile)
-        && SDK.Cards.getIsPrismaticCardId(this.sdkCard.getId())) {
+      if (
+        CONFIG.SHOW_PRISMATIC_ONLY_ON_INSPECT &&
+        !(this.sdkCard instanceof SDK.Tile) &&
+        SDK.Cards.getIsPrismaticCardId(this.sdkCard.getId())
+      ) {
         this.showPrismatic();
       }
 
@@ -1675,25 +1846,47 @@ var CardNode = SdkNode.extend({
 
   showInstructionals() {
     if (this._atkInstructionalLabel == null) {
-      this._atkInstructionalLabel = new cc.LabelTTF(i18next.t('battle.card_instructions_attack'), RSX.font_bold.name, 14, cc.size(48, 16), cc.TEXT_ALIGNMENT_CENTER);
+      this._atkInstructionalLabel = new cc.LabelTTF(
+        i18next.t('battle.card_instructions_attack'),
+        RSX.font_bold.name,
+        14,
+        cc.size(48, 16),
+        cc.TEXT_ALIGNMENT_CENTER,
+      );
       this._atkInstructionalLabel.setFontFillColor(CONFIG.ATK_COLOR);
       this._atkInstructionalLabel.setPositionX(this.atkLabel.getPositionX());
-      this._atkInstructionalLabel.setPositionY(this.atkLabel.getPositionY() - this.atkLabel.getContentSize().height - 10.0);
+      this._atkInstructionalLabel.setPositionY(
+        this.atkLabel.getPositionY() - this.atkLabel.getContentSize().height - 10.0,
+      );
       this._staticContainerNodeFront.addChild(this._atkInstructionalLabel, 3);
     }
     this._atkInstructionalLabel.setVisible(false);
 
     if (this._hpInstructionalLabel == null) {
-      this._hpInstructionalLabel = new cc.LabelTTF(i18next.t('battle.card_instructions_health'), RSX.font_bold.name, 14, cc.size(48, 16), cc.TEXT_ALIGNMENT_CENTER);
+      this._hpInstructionalLabel = new cc.LabelTTF(
+        i18next.t('battle.card_instructions_health'),
+        RSX.font_bold.name,
+        14,
+        cc.size(48, 16),
+        cc.TEXT_ALIGNMENT_CENTER,
+      );
       this._hpInstructionalLabel.setFontFillColor(CONFIG.HP_COLOR);
       this._hpInstructionalLabel.setPositionX(this.hpLabel.getPositionX());
-      this._hpInstructionalLabel.setPositionY(this.hpLabel.getPositionY() - this.hpLabel.getContentSize().height - 10.0);
+      this._hpInstructionalLabel.setPositionY(
+        this.hpLabel.getPositionY() - this.hpLabel.getContentSize().height - 10.0,
+      );
       this._staticContainerNodeFront.addChild(this._hpInstructionalLabel, 3);
     }
     this._hpInstructionalLabel.setVisible(false);
 
     if (this._manaInstructionalLabel == null) {
-      this._manaInstructionalLabel = new cc.LabelTTF(i18next.t('battle.card_instructions_health'), RSX.font_bold.name, 14, cc.size(48, 16), cc.TEXT_ALIGNMENT_CENTER);
+      this._manaInstructionalLabel = new cc.LabelTTF(
+        i18next.t('battle.card_instructions_health'),
+        RSX.font_bold.name,
+        14,
+        cc.size(48, 16),
+        cc.TEXT_ALIGNMENT_CENTER,
+      );
       this._manaInstructionalLabel.setFontFillColor({ r: 0, g: 243, b: 255 });
       this._manaInstructionalLabel.setPositionAboveSprite(this._manaGemSprite);
       this._staticContainerNodeFront.addChild(this._manaInstructionalLabel, 3);
@@ -1703,57 +1896,77 @@ var CardNode = SdkNode.extend({
     Promise.all([
       this.whenRequiredResourcesReady(),
       this.whenResourcesReady(this.getCardResourceRequestId()),
-    ])
-      .then(([requiredRequestId, cardResourceRequestId]) => {
-        if (!this.getAreResourcesValid(requiredRequestId) || !this.getAreResourcesValid(cardResourceRequestId)) return; // load invalidated or resources changed
+    ]).then(([requiredRequestId, cardResourceRequestId]) => {
+      if (
+        !this.getAreResourcesValid(requiredRequestId) ||
+        !this.getAreResourcesValid(cardResourceRequestId)
+      )
+        return; // load invalidated or resources changed
 
-        if (this._manaInstructionalBg == null) {
-          this._manaInstructionalBg = BaseSprite.create(RSX.unit_stats_instructional_bg.img);
-          this._manaInstructionalBg.setColor(cc.color(4, 1, 39));
-          this._manaInstructionalBg.setPositionCenterOfSprite(this._manaInstructionalLabel);
-          this._manaInstructionalBg.setOpacity(CONFIG.OVERLAY_STATS_BG_ALPHA);
-          this._staticContainerNodeFront.addChild(this._manaInstructionalBg, 2);
-        }
-        this._manaInstructionalBg.setVisible(false);
+      if (this._manaInstructionalBg == null) {
+        this._manaInstructionalBg = BaseSprite.create(RSX.unit_stats_instructional_bg.img);
+        this._manaInstructionalBg.setColor(cc.color(4, 1, 39));
+        this._manaInstructionalBg.setPositionCenterOfSprite(this._manaInstructionalLabel);
+        this._manaInstructionalBg.setOpacity(CONFIG.OVERLAY_STATS_BG_ALPHA);
+        this._staticContainerNodeFront.addChild(this._manaInstructionalBg, 2);
+      }
+      this._manaInstructionalBg.setVisible(false);
 
-        this._atkInstructionalLabel.setVisible(this.atkLabel.isVisible());
-        this._hpInstructionalLabel.setVisible(this.hpLabel.isVisible());
-        this._manaInstructionalLabel.setVisible(this.manaLabel.isVisible());
-        this._manaInstructionalBg.setVisible(this.manaLabel.isVisible());
-      });
+      this._atkInstructionalLabel.setVisible(this.atkLabel.isVisible());
+      this._hpInstructionalLabel.setVisible(this.hpLabel.isVisible());
+      this._manaInstructionalLabel.setVisible(this.manaLabel.isVisible());
+      this._manaInstructionalBg.setVisible(this.manaLabel.isVisible());
+    });
   },
 
   hideInstructionals() {
     Promise.all([
       this.whenRequiredResourcesReady(),
       this.whenResourcesReady(this.getCardResourceRequestId()),
-    ])
-      .then(([requiredRequestId, cardResourceRequestId]) => {
-        if (!this.getAreResourcesValid(requiredRequestId) || !this.getAreResourcesValid(cardResourceRequestId)) return; // load invalidated or resources changed
+    ]).then(([requiredRequestId, cardResourceRequestId]) => {
+      if (
+        !this.getAreResourcesValid(requiredRequestId) ||
+        !this.getAreResourcesValid(cardResourceRequestId)
+      )
+        return; // load invalidated or resources changed
 
-        if (this._atkInstructionalLabel != null) {
-          this._atkInstructionalLabel.setVisible(false);
-        }
-        if (this._hpInstructionalLabel != null) {
-          this._hpInstructionalLabel.setVisible(false);
-        }
-        if (this._manaInstructionalLabel != null) {
-          this._manaInstructionalLabel.setVisible(false);
-        }
-        if (this._manaInstructionalBg != null) {
-          this._manaInstructionalBg.setVisible(false);
-        }
-      });
+      if (this._atkInstructionalLabel != null) {
+        this._atkInstructionalLabel.setVisible(false);
+      }
+      if (this._hpInstructionalLabel != null) {
+        this._hpInstructionalLabel.setVisible(false);
+      }
+      if (this._manaInstructionalLabel != null) {
+        this._manaInstructionalLabel.setVisible(false);
+      }
+      if (this._manaInstructionalBg != null) {
+        this._manaInstructionalBg.setVisible(false);
+      }
+    });
   },
 
   /* endregion INSPECT */
 
   /* region PLAY */
 
-  showPlay(sdkCard, actionToShowStateFor, actionEventTypeToShowStateFor, sourceScreenPosition, targetScreenPosition, animateDuration, showDuration, noFlip, showInstructionals) {
+  showPlay(
+    sdkCard,
+    actionToShowStateFor,
+    actionEventTypeToShowStateFor,
+    sourceScreenPosition,
+    targetScreenPosition,
+    animateDuration,
+    showDuration,
+    noFlip,
+    showInstructionals,
+  ) {
     return new Promise<void>((resolve, reject) => {
-      if (animateDuration == null) { animateDuration = 0.0; }
-      if (showDuration == null) { showDuration = 0.0; }
+      if (animateDuration == null) {
+        animateDuration = 0.0;
+      }
+      if (showDuration == null) {
+        showDuration = 0.0;
+      }
 
       // reset
       if (sdkCard != null) {
@@ -1781,9 +1994,11 @@ var CardNode = SdkNode.extend({
         this.showModifiers();
 
         // show prismatic fx
-        if (CONFIG.SHOW_PRISMATIC_ONLY_ON_INSPECT
-          && !(this.sdkCard instanceof SDK.Tile)
-          && SDK.Cards.getIsPrismaticCardId(this.sdkCard.getId())) {
+        if (
+          CONFIG.SHOW_PRISMATIC_ONLY_ON_INSPECT &&
+          !(this.sdkCard instanceof SDK.Tile) &&
+          SDK.Cards.getIsPrismaticCardId(this.sdkCard.getId())
+        ) {
           this.showPrismatic();
         }
 
@@ -1800,12 +2015,18 @@ var CardNode = SdkNode.extend({
         const dy = targetScreenPosition.y - sourceScreenPosition.y;
         const anchorX = dx < 0.0 ? 0.0 : 1.0;
         const offsetX = contentSize.width * (dx < 0.0 ? 0.5 : -0.5) * (noFlip ? -1.0 : 1.0);
-        const anchorY = 0.0;// dy < 0.0 ? 0.0 : 1.0;
-        const angRotX = 30;// * (dy < 0.0 ? -1 : 1);
+        const anchorY = 0.0; // dy < 0.0 ? 0.0 : 1.0;
+        const angRotX = 30; // * (dy < 0.0 ? -1 : 1);
         const angRotY = 60.0 * (dx < 0.0 ? -1 : 1);
         const angRotZ = 0;
-        const sourceScreenPositionWithAnchor = cc.p(sourceScreenPosition.x + offsetX * 0.5, sourceScreenPosition.y + (anchorY - 0.5) * contentSize.height * 0.5);
-        const targetScreenPositionWithAnchor = cc.p(targetScreenPosition.x + offsetX, targetScreenPosition.y + (anchorY - 0.5) * contentSize.height);
+        const sourceScreenPositionWithAnchor = cc.p(
+          sourceScreenPosition.x + offsetX * 0.5,
+          sourceScreenPosition.y + (anchorY - 0.5) * contentSize.height * 0.5,
+        );
+        const targetScreenPositionWithAnchor = cc.p(
+          targetScreenPosition.x + offsetX,
+          targetScreenPosition.y + (anchorY - 0.5) * contentSize.height,
+        );
 
         // set starting properties
         this.setAnchorPoint(anchorX, anchorY);
@@ -1820,14 +2041,18 @@ var CardNode = SdkNode.extend({
           this.resetFlip(0.0);
           const showPlayAction = cc.spawn(
             cc.sequence(
-              cc.moveTo(animateDuration, targetScreenPositionWithAnchor).easing(cc.easeExponentialOut()),
+              cc
+                .moveTo(animateDuration, targetScreenPositionWithAnchor)
+                .easing(cc.easeExponentialOut()),
               cc.callFunc(() => {
                 this.setAnchorPoint(0.5, 0.5);
                 this.setPosition(targetScreenPosition);
               }),
             ),
             cc.scaleTo(animateDuration, 1.0).easing(cc.easeExponentialOut()),
-            SecondaryXYZRotateBy.create(animateDuration, -angRotX, -angRotY, -angRotZ).easing(cc.easeExponentialOut()),
+            SecondaryXYZRotateBy.create(animateDuration, -angRotX, -angRotY, -angRotZ).easing(
+              cc.easeExponentialOut(),
+            ),
           );
           this.addAnimationAction(showPlayAction);
           this.runAction(showPlayAction);
@@ -1840,55 +2065,72 @@ var CardNode = SdkNode.extend({
             this.whenRequiredResourcesReady(),
             this.whenResourcesReady(this.getCardResourceRequestId()),
             this.whenResourcesReady(this.getCardBackResourceRequestId()),
-          ])
-            .then(([requiredRequestId, cardResourceRequestId, cardBackResourceRequestId]) => {
-              if (!this.getAreResourcesValid(requiredRequestId)
-              || !this.getAreResourcesValid(cardResourceRequestId)
-              || !this.getAreResourcesValid(cardBackResourceRequestId)) return; // load invalidated or resources changed
+          ]).then(([requiredRequestId, cardResourceRequestId, cardBackResourceRequestId]) => {
+            if (
+              !this.getAreResourcesValid(requiredRequestId) ||
+              !this.getAreResourcesValid(cardResourceRequestId) ||
+              !this.getAreResourcesValid(cardBackResourceRequestId)
+            )
+              return; // load invalidated or resources changed
 
-              this.cardBackSprite.setLeveled(true);
-              this.cardBackSprite.setLevelsInWhite(180);
-              this.cardBackSprite.setLevelsInBlack(30);
-              this.cardBackSprite.setHighlighted(true);
-              this.cardBackSprite.setTint(new cc.Color(255, 255, 255, 255));
-              this.cardBackSprite.setOpacity(255.0);
-              this.cardBackSprite.setVisible(true);
-              this.cardBackGlowOutlineSprite.setOpacity(255.0);
-              this.cardBackGlowOutlineSprite.setVisible(true);
+            this.cardBackSprite.setLeveled(true);
+            this.cardBackSprite.setLevelsInWhite(180);
+            this.cardBackSprite.setLevelsInBlack(30);
+            this.cardBackSprite.setHighlighted(true);
+            this.cardBackSprite.setTint(new cc.Color(255, 255, 255, 255));
+            this.cardBackSprite.setOpacity(255.0);
+            this.cardBackSprite.setVisible(true);
+            this.cardBackGlowOutlineSprite.setOpacity(255.0);
+            this.cardBackGlowOutlineSprite.setVisible(true);
 
-              const showPlayAction = cc.spawn(
+            const showPlayAction = cc.spawn(
+              cc.sequence(
+                cc
+                  .moveTo(animateDuration * 0.2, targetScreenPositionWithAnchor)
+                  .easing(cc.easeExponentialOut()),
+                cc.callFunc(() => {
+                  this.setAnchorPoint(0.5, 0.5);
+                  this.setPosition(targetScreenPosition);
+                }),
+              ),
+              cc.scaleTo(animateDuration * 0.2, 1.0).easing(cc.easeExponentialOut()),
+              SecondaryXYZRotateBy.create(
+                animateDuration * 0.2,
+                -angRotX,
+                -angRotY,
+                -angRotZ,
+              ).easing(cc.easeExponentialOut()),
+              cc.targetedAction(
+                this.cardBackSprite,
                 cc.sequence(
-                  cc.moveTo(animateDuration * 0.2, targetScreenPositionWithAnchor).easing(cc.easeExponentialOut()),
-                  cc.callFunc(() => {
-                    this.setAnchorPoint(0.5, 0.5);
-                    this.setPosition(targetScreenPosition);
-                  }),
-                ),
-                cc.scaleTo(animateDuration * 0.2, 1.0).easing(cc.easeExponentialOut()),
-                SecondaryXYZRotateBy.create(animateDuration * 0.2, -angRotX, -angRotY, -angRotZ).easing(cc.easeExponentialOut()),
-                cc.targetedAction(this.cardBackSprite, cc.sequence(
-                  cc.actionTween(animateDuration * 0.1, TweenTypes.TINT_FADE, 255.0, 0.0).easing(cc.easeOut(2.0)),
+                  cc
+                    .actionTween(animateDuration * 0.1, TweenTypes.TINT_FADE, 255.0, 0.0)
+                    .easing(cc.easeOut(2.0)),
                   cc.spawn(
                     cc.callFunc(() => {
                       this.cardBackSprite.fadeOutHighlight(animateDuration * 0.1);
                     }),
                     cc.actionTween(animateDuration * 0.1, 'levelsInWhite', 180.0, 255.0),
                     cc.actionTween(animateDuration * 0.1, 'levelsInBlack', 30.0, 0.0),
-                    cc.targetedAction(this.cardBackGlowOutlineSprite, cc.sequence(
-                      cc.delayTime(animateDuration * 0.05),
-                      cc.fadeOut(animateDuration * 0.1),
-                      cc.hide(),
-                    )),
+                    cc.targetedAction(
+                      this.cardBackGlowOutlineSprite,
+                      cc.sequence(
+                        cc.delayTime(animateDuration * 0.05),
+                        cc.fadeOut(animateDuration * 0.1),
+                        cc.hide(),
+                      ),
+                    ),
                   ),
                   cc.delayTime(animateDuration * 0.1),
                   cc.callFunc(() => {
                     this.showFlip(animateDuration * 0.3);
                   }),
-                )),
-              );
-              this.addAnimationAction(showPlayAction);
-              this.runAction(showPlayAction);
-            });
+                ),
+              ),
+            );
+            this.addAnimationAction(showPlayAction);
+            this.runAction(showPlayAction);
+          });
         }
 
         // delay for show and resolve
@@ -1901,13 +2143,16 @@ var CardNode = SdkNode.extend({
         this.addAnimationAction(showDurationAction);
         this.runAction(showDurationAction);
       }
-    })
-      .catch((error) => { EventBus.getInstance().trigger(EVENTS.error, error); });
+    }).catch((error) => {
+      EventBus.getInstance().trigger(EVENTS.error, error);
+    });
   },
 
   stopShowingPlay(animateDuration) {
     return new Promise<void>((resolve, reject) => {
-      if (animateDuration == null) { animateDuration = 0.0; }
+      if (animateDuration == null) {
+        animateDuration = 0.0;
+      }
       this.stopAnimations();
 
       if (animateDuration > 0.0) {
@@ -1927,13 +2172,16 @@ var CardNode = SdkNode.extend({
             resolve();
           }.bind(this);
           const stopShowingPlayAction = cc.spawn(
-            cc.targetedAction(this._outlineGlow, cc.sequence(
-              cc.show(),
-              cc.fadeIn(0.1 * animateDuration).easing(cc.easeIn(1.0)),
-              cc.delayTime(0.4 * animateDuration),
-              cc.fadeOut(0.4 * animateDuration).easing(cc.easeOut(1.0)),
-              cc.hide(),
-            )),
+            cc.targetedAction(
+              this._outlineGlow,
+              cc.sequence(
+                cc.show(),
+                cc.fadeIn(0.1 * animateDuration).easing(cc.easeIn(1.0)),
+                cc.delayTime(0.4 * animateDuration),
+                cc.fadeOut(0.4 * animateDuration).easing(cc.easeOut(1.0)),
+                cc.hide(),
+              ),
+            ),
             cc.sequence(
               cc.delayTime(animateDuration * 0.4),
               cc.fadeTo(animateDuration * 0.5, 0.0),
@@ -1948,8 +2196,9 @@ var CardNode = SdkNode.extend({
         this.setSdkCard(null);
         resolve();
       }
-    })
-      .catch((error) => { EventBus.getInstance().trigger(EVENTS.error, error); });
+    }).catch((error) => {
+      EventBus.getInstance().trigger(EVENTS.error, error);
+    });
   },
 
   /* endregion PLAY */
@@ -1969,14 +2218,16 @@ var CardNode = SdkNode.extend({
 
         // show card shine
         if (CONFIG.SHOW_PRISMATIC_CARD_SHINE && this._showPrismaticShineAction == null) {
-          this._showPrismaticShineAction = cc.sequence(
-            cc.delayTime(CONFIG.SHOW_PRISMATIC_CARD_SHINE_DELAY * 0.1),
-            cc.callFunc(() => {
-              this.stopShowingShine();
-              this.showShine();
-            }),
-            cc.delayTime(CONFIG.SHOW_PRISMATIC_CARD_SHINE_DELAY * 0.9),
-          ).repeatForever();
+          this._showPrismaticShineAction = cc
+            .sequence(
+              cc.delayTime(CONFIG.SHOW_PRISMATIC_CARD_SHINE_DELAY * 0.1),
+              cc.callFunc(() => {
+                this.stopShowingShine();
+                this.showShine();
+              }),
+              cc.delayTime(CONFIG.SHOW_PRISMATIC_CARD_SHINE_DELAY * 0.9),
+            )
+            .repeatForever();
           this.runAction(this._showPrismaticShineAction);
         }
 
@@ -2046,14 +2297,23 @@ var CardNode = SdkNode.extend({
       this.whenRequiredResourcesReady().then((requestId) => {
         if (!this.getAreResourcesValid(requestId)) return; // load invalidated or resources changed
 
-        if (duration == null) { duration = 0.5; }
-        if (intensity == null) { intensity = 0.5; }
+        if (duration == null) {
+          duration = 0.5;
+        }
+        if (intensity == null) {
+          intensity = 0.5;
+        }
         if (this.shineNode == null) {
           this.shineNode = new FXCardShineSprite(this.cardBackgroundSpriteIdentifier);
           this.shineNode.setPosition(this.cardBackgroundSprite.getPosition());
-          this._containerNodeFront.addChild(this.shineNode, this.cardBackgroundSprite.getLocalZOrder());
+          this._containerNodeFront.addChild(
+            this.shineNode,
+            this.cardBackgroundSprite.getLocalZOrder(),
+          );
         } else if (this.shineNode.getTexture().url !== this.cardBackgroundSpriteIdentifier) {
-          this.shineNode.setTexture(cc.textureCache.getTextureForKey(this.cardBackgroundSpriteIdentifier));
+          this.shineNode.setTexture(
+            cc.textureCache.getTextureForKey(this.cardBackgroundSpriteIdentifier),
+          );
         }
 
         this.shineNode.setPhase(-1.0);
@@ -2095,10 +2355,18 @@ var CardNode = SdkNode.extend({
    * @returns {Promise}
    */
   showStack(duration, stackCount, fanToLeft, stackLabelOffset, fanScale) {
-    if (duration == null) { duration = CONFIG.ANIMATE_FAST_DURATION; }
-    if (stackCount == null) { stackCount = 2; }
-    if (stackLabelOffset == null) { stackLabelOffset = cc.p(0, 0); }
-    if (fanScale == null) { fanScale = 5; }
+    if (duration == null) {
+      duration = CONFIG.ANIMATE_FAST_DURATION;
+    }
+    if (stackCount == null) {
+      stackCount = 2;
+    }
+    if (stackLabelOffset == null) {
+      stackLabelOffset = cc.p(0, 0);
+    }
+    if (fanScale == null) {
+      fanScale = 5;
+    }
 
     const contentSize = this.getContentSize();
     const centerPosition = this.getCenterPosition();
@@ -2120,11 +2388,23 @@ var CardNode = SdkNode.extend({
 
           // create label
           if (this._cardStackLabel == null) {
-            this._cardStackLabel = new cc.LabelTTF(`X${stackCount + 1}`, RSX.font_bold.name, 14, cc.size(100, 30), cc.TEXT_ALIGNMENT_CENTER);
+            this._cardStackLabel = new cc.LabelTTF(
+              `X${stackCount + 1}`,
+              RSX.font_bold.name,
+              14,
+              cc.size(100, 30),
+              cc.TEXT_ALIGNMENT_CENTER,
+            );
             this._cardStackLabel.setFontFillColor(cc.color(200, 200, 200, 255));
             this._cardStackLabel.enableStroke(cc.color(0, 0, 0, 255), 2, false);
-            this._cardStackLabel.setPosition(centerPosition.x - contentSize.width * 0.5 + stackLabelOffset.x, this.getCardBottom() - contentSize.height * 0.5 + stackLabelOffset.y);
-            this._containerNodeFront.addChild(this._cardStackLabel, this.cardBackgroundSprite.getLocalZOrder() + 1.0);
+            this._cardStackLabel.setPosition(
+              centerPosition.x - contentSize.width * 0.5 + stackLabelOffset.x,
+              this.getCardBottom() - contentSize.height * 0.5 + stackLabelOffset.y,
+            );
+            this._containerNodeFront.addChild(
+              this._cardStackLabel,
+              this.cardBackgroundSprite.getLocalZOrder() + 1.0,
+            );
           }
 
           // animate out stack
@@ -2149,11 +2429,13 @@ var CardNode = SdkNode.extend({
           // delay, show label, then resolve
           this._cardStackLabel.setOpacity(0);
           this._cardStackLabel.setVisible(true);
-          this._cardStackLabel.runAction(cc.sequence(
-            cc.delayTime(duration),
-            cc.fadeIn(CONFIG.ANIMATE_FAST_DURATION),
-            cc.callFunc(resolve),
-          ));
+          this._cardStackLabel.runAction(
+            cc.sequence(
+              cc.delayTime(duration),
+              cc.fadeIn(CONFIG.ANIMATE_FAST_DURATION),
+              cc.callFunc(resolve),
+            ),
+          );
         });
       });
     }
@@ -2203,7 +2485,9 @@ var CardNode = SdkNode.extend({
    * @param {Boolean} [rotateInPlace=false] whether to rotate in place or with movement and relative angular rotation
    */
   showFlip(duration, rotateInPlace) {
-    if (duration == null) { duration = 0.5; }
+    if (duration == null) {
+      duration = 0.5;
+    }
 
     // stop any running flip
     if (this._flipAction != null) {
@@ -2231,7 +2515,9 @@ var CardNode = SdkNode.extend({
       this.setXYZRotation(targetXYZRotation);
     } else if (rotateInPlace) {
       this._flipAction = cc.sequence(
-        XYZRotateBy.create(duration, xyzRotation.x, xyzRotation.y, xyzRotation.z).easing(cc.easeBackInOut(2.0)),
+        XYZRotateBy.create(duration, xyzRotation.x, xyzRotation.y, xyzRotation.z).easing(
+          cc.easeBackInOut(2.0),
+        ),
         cc.callFunc(() => {
           this._flipAction = null;
         }),
@@ -2269,7 +2555,9 @@ var CardNode = SdkNode.extend({
       this._flipAction = cc.sequence(
         cc.spawn(
           // rotate to other side
-          XYZRotateBy.create(duration, xyzRotation.x, xyzRotation.y, xyzRotation.z).easing(cc.easeCubicActionInOut()),
+          XYZRotateBy.create(duration, xyzRotation.x, xyzRotation.y, xyzRotation.z).easing(
+            cc.easeCubicActionInOut(),
+          ),
           // // rotate relative to motion
           // cc.sequence(
           //   SecondaryXYZRotateBy.create(duration * 0.5, angRotX, angRotY, angRotZ).easing(cc.easeInOut(3.0)),
@@ -2286,10 +2574,9 @@ var CardNode = SdkNode.extend({
             }),
           ),
           // move towards camera
-          cc.sequence(
-            cc.scaleTo(duration * 0.5, 0.8),
-            cc.scaleTo(duration * 0.5, 1.0),
-          ).easing(cc.easeCubicActionInOut()),
+          cc
+            .sequence(cc.scaleTo(duration * 0.5, 0.8), cc.scaleTo(duration * 0.5, 1.0))
+            .easing(cc.easeCubicActionInOut()),
         ),
         cc.callFunc(() => {
           this._flipAction = null;
@@ -2306,7 +2593,9 @@ var CardNode = SdkNode.extend({
    * Convenience method to reset card flip state back to front.
    */
   resetFlip(duration, rotateInPlace) {
-    if (duration == null) { duration = 0.0; }
+    if (duration == null) {
+      duration = 0.0;
+    }
     if (this._flippingToFront) {
       this.showFlip(duration, rotateInPlace);
     }
@@ -2327,7 +2616,15 @@ var CardNode = SdkNode.extend({
    * @param targetScreenPosition
    * @returns {Promise}
    */
-  showBurn(sdkCard, startDelay, animateDuration, dissolveDelay, dissolveDuration, sourceScreenPosition, targetScreenPosition) {
+  showBurn(
+    sdkCard,
+    startDelay,
+    animateDuration,
+    dissolveDelay,
+    dissolveDuration,
+    sourceScreenPosition,
+    targetScreenPosition,
+  ) {
     // reset
     if (sdkCard != null) {
       this.setSdkCard(sdkCard);
@@ -2341,7 +2638,9 @@ var CardNode = SdkNode.extend({
         this.stopAnimations();
 
         // set default delay
-        if (startDelay == null) { startDelay = 0.0; }
+        if (startDelay == null) {
+          startDelay = 0.0;
+        }
 
         // hide by scaling to 0
         this.setScale(0.0);
@@ -2350,47 +2649,71 @@ var CardNode = SdkNode.extend({
         Promise.all([
           this.whenRequiredResourcesReady(),
           this.whenResourcesReady(this.getCardResourceRequestId()),
-        ])
-          .then(([requiredRequestId, cardResourceRequestId]) => {
-            if (!this.getAreResourcesValid(requiredRequestId) || !this.getAreResourcesValid(cardResourceRequestId)) return; // load invalidated or resources changed
+        ]).then(([requiredRequestId, cardResourceRequestId]) => {
+          if (
+            !this.getAreResourcesValid(requiredRequestId) ||
+            !this.getAreResourcesValid(cardResourceRequestId)
+          )
+            return; // load invalidated or resources changed
 
-            const centerPosition = this.getCenterPosition();
-            const cardBackgroundContentSize = this.getCardBackgroundContentSize();
+          const centerPosition = this.getCenterPosition();
+          const cardBackgroundContentSize = this.getCardBackgroundContentSize();
 
-            // get movement and rotation
-            const dx = targetScreenPosition.x - sourceScreenPosition.x;
-            const dy = targetScreenPosition.y - sourceScreenPosition.y;
-            let anchorX;
-            if (dx < 0.0) { anchorX = 0.0; } else if (dx > 0.0) { anchorX = 1.0; } else { anchorX = 0.5; }
-            let anchorY;
-            if (dy < 0.0) { anchorY = 0.0; } else if (dy > 0.0) { anchorY = 1.0; } else { anchorY = 0.5; }
-            const angRotX = 30;// * (dy < 0.0 ? -1 : 1);
-            const angRotY = 60 * (dx < 0.0 ? -1 : 1);
-            const angRotZ = 0;
-            const contentSize = this.getContentSize();
-            const sourceScreenPositionWithAnchor = cc.p(sourceScreenPosition.x + (anchorX - 0.5) * contentSize.width, sourceScreenPosition.y + (anchorY - 0.5) * contentSize.height);
-            const targetScreenPositionWithAnchor = cc.p(targetScreenPosition.x + (anchorX - 0.5) * contentSize.width, targetScreenPosition.y + (anchorY - 0.5) * contentSize.height);
+          // get movement and rotation
+          const dx = targetScreenPosition.x - sourceScreenPosition.x;
+          const dy = targetScreenPosition.y - sourceScreenPosition.y;
+          let anchorX;
+          if (dx < 0.0) {
+            anchorX = 0.0;
+          } else if (dx > 0.0) {
+            anchorX = 1.0;
+          } else {
+            anchorX = 0.5;
+          }
+          let anchorY;
+          if (dy < 0.0) {
+            anchorY = 0.0;
+          } else if (dy > 0.0) {
+            anchorY = 1.0;
+          } else {
+            anchorY = 0.5;
+          }
+          const angRotX = 30; // * (dy < 0.0 ? -1 : 1);
+          const angRotY = 60 * (dx < 0.0 ? -1 : 1);
+          const angRotZ = 0;
+          const contentSize = this.getContentSize();
+          const sourceScreenPositionWithAnchor = cc.p(
+            sourceScreenPosition.x + (anchorX - 0.5) * contentSize.width,
+            sourceScreenPosition.y + (anchorY - 0.5) * contentSize.height,
+          );
+          const targetScreenPositionWithAnchor = cc.p(
+            targetScreenPosition.x + (anchorX - 0.5) * contentSize.width,
+            targetScreenPosition.y + (anchorY - 0.5) * contentSize.height,
+          );
 
-            // set starting properties
-            this.setAnchorPoint(anchorX, anchorY);
-            this.setPosition(sourceScreenPositionWithAnchor);
-            this.setSecondaryXYZRotation(new cc.kmVec3(angRotX, angRotY, angRotZ));
+          // set starting properties
+          this.setAnchorPoint(anchorX, anchorY);
+          this.setPosition(sourceScreenPositionWithAnchor);
+          this.setSecondaryXYZRotation(new cc.kmVec3(angRotX, angRotY, angRotZ));
 
-            // set starting position
-            this.setPosition(sourceScreenPosition);
+          // set starting position
+          this.setPosition(sourceScreenPosition);
 
-            // show burn animation
-            const burnAction = cc.sequence(
-              cc.delayTime(startDelay),
-              cc.spawn(
-                cc.sequence(
-                  cc.moveTo(animateDuration, targetScreenPositionWithAnchor).easing(cc.easeExponentialOut()),
-                  cc.callFunc(() => {
-                    this.setAnchorPoint(0.5, 0.5);
-                    this.setPosition(targetScreenPosition);
-                  }),
-                ),
-                cc.targetedAction(
+          // show burn animation
+          const burnAction = cc.sequence(
+            cc.delayTime(startDelay),
+            cc.spawn(
+              cc.sequence(
+                cc
+                  .moveTo(animateDuration, targetScreenPositionWithAnchor)
+                  .easing(cc.easeExponentialOut()),
+                cc.callFunc(() => {
+                  this.setAnchorPoint(0.5, 0.5);
+                  this.setPosition(targetScreenPosition);
+                }),
+              ),
+              cc
+                .targetedAction(
                   this._outlineGlow,
                   cc.sequence(
                     cc.show(),
@@ -2399,37 +2722,51 @@ var CardNode = SdkNode.extend({
                     cc.fadeOut(0.2 * animateDuration).easing(cc.easeOut(1.0)),
                     cc.hide(),
                   ),
-                ).easing(cc.easeExponentialOut()),
-                SecondaryXYZRotateBy.create(animateDuration, -angRotX, -angRotY, -angRotZ).easing(cc.easeExponentialOut()),
-                cc.scaleTo(animateDuration, 1.0).easing(cc.easeExponentialOut()),
+                )
+                .easing(cc.easeExponentialOut()),
+              SecondaryXYZRotateBy.create(animateDuration, -angRotX, -angRotY, -angRotZ).easing(
+                cc.easeExponentialOut(),
               ),
-              cc.delayTime(dissolveDelay),
-              cc.spawn(
-                cc.callFunc(() => {
-                  // snapshot self
-                  this.recordSnapshot();
-
-                  // set snapshot as dissolving
-                  this._snapshotSprite.setDissolving(true);
-
-                  // particles
-                  const particles = new cc.ParticleSystem(RSX.ptcl_card_appear.plist);
-                  particles.setPosVar(cc.p(cardBackgroundContentSize.width * 0.5, cardBackgroundContentSize.height * 0.5));
-                  particles.setPosition(centerPosition);
-                  this.addChild(particles, -1);
-                }),
-                cc.targetedAction(this._snapshotSprite, cc.actionTween(dissolveDuration, TweenTypes.DISSOLVE, 0.0, 1.0).easing(cc.easeIn(3.0))),
-              ),
+              cc.scaleTo(animateDuration, 1.0).easing(cc.easeExponentialOut()),
+            ),
+            cc.delayTime(dissolveDelay),
+            cc.spawn(
               cc.callFunc(() => {
-                this.setSdkCard(null);
-                resolve();
+                // snapshot self
+                this.recordSnapshot();
+
+                // set snapshot as dissolving
+                this._snapshotSprite.setDissolving(true);
+
+                // particles
+                const particles = new cc.ParticleSystem(RSX.ptcl_card_appear.plist);
+                particles.setPosVar(
+                  cc.p(
+                    cardBackgroundContentSize.width * 0.5,
+                    cardBackgroundContentSize.height * 0.5,
+                  ),
+                );
+                particles.setPosition(centerPosition);
+                this.addChild(particles, -1);
               }),
-            );
-            this.addAnimationAction(burnAction);
-            this.runAction(burnAction);
-          });
-      })
-        .catch((error) => { EventBus.getInstance().trigger(EVENTS.error, error); });
+              cc.targetedAction(
+                this._snapshotSprite,
+                cc
+                  .actionTween(dissolveDuration, TweenTypes.DISSOLVE, 0.0, 1.0)
+                  .easing(cc.easeIn(3.0)),
+              ),
+            ),
+            cc.callFunc(() => {
+              this.setSdkCard(null);
+              resolve();
+            }),
+          );
+          this.addAnimationAction(burnAction);
+          this.runAction(burnAction);
+        });
+      }).catch((error) => {
+        EventBus.getInstance().trigger(EVENTS.error, error);
+      });
     }
     return Promise.resolve();
   },
@@ -2447,7 +2784,9 @@ var CardNode = SdkNode.extend({
    * @returns {Promise}
    */
   showReveal(sdkCard, sourceScreenPosition, targetScreenPosition, moveDelay) {
-    if (moveDelay == null) { moveDelay = 0.0; }
+    if (moveDelay == null) {
+      moveDelay = 0.0;
+    }
 
     // reset
     if (sdkCard != null) {
@@ -2470,296 +2809,333 @@ var CardNode = SdkNode.extend({
         Promise.all([
           this.whenRequiredResourcesReady(),
           this.whenResourcesReady(this.getCardResourceRequestId()),
-        ])
-          .then(([requiredRequestId, cardResourceRequestId]) => {
-            if (!this.getAreResourcesValid(requiredRequestId) || !this.getAreResourcesValid(cardResourceRequestId)) return; // load invalidated or resources changed
+        ]).then(([requiredRequestId, cardResourceRequestId]) => {
+          if (
+            !this.getAreResourcesValid(requiredRequestId) ||
+            !this.getAreResourcesValid(cardResourceRequestId)
+          )
+            return; // load invalidated or resources changed
 
-            this._outlineGlow.setVisible(true);
-            this._outlineGlowBlurred.setVisible(true);
+          this._outlineGlow.setVisible(true);
+          this._outlineGlowBlurred.setVisible(true);
 
-            // snapshot self
-            this.recordSnapshot();
+          // snapshot self
+          this.recordSnapshot();
 
-            const centerPosition = this.getCenterPosition();
-            const cardBackgroundContentSize = this.getCardBackgroundContentSize();
-            const moveDuration = (targetScreenPosition == null || cc.pSameAs(sourceScreenPosition, targetScreenPosition)) ? 0 : CONFIG.MOVE_MEDIUM_DURATION;
-            const delayBeforeSetVisible = 0.0; // (moveDuration > 0) ? 0 : CONFIG.MOVE_MEDIUM_DURATION;
-            const revealDuration = CONFIG.FADE_MEDIUM_DURATION * 2.0;
+          const centerPosition = this.getCenterPosition();
+          const cardBackgroundContentSize = this.getCardBackgroundContentSize();
+          const moveDuration =
+            targetScreenPosition == null || cc.pSameAs(sourceScreenPosition, targetScreenPosition)
+              ? 0
+              : CONFIG.MOVE_MEDIUM_DURATION;
+          const delayBeforeSetVisible = 0.0; // (moveDuration > 0) ? 0 : CONFIG.MOVE_MEDIUM_DURATION;
+          const revealDuration = CONFIG.FADE_MEDIUM_DURATION * 2.0;
 
-            // bg shadow
-            this.bg_shadow = new BaseSprite(RSX.card_shadow_map.img);
-            this.bg_shadow.setOpacity(0);
-            this.bg_shadow.setPosition(centerPosition);
-            this.addChild(this.bg_shadow, -9999);
+          // bg shadow
+          this.bg_shadow = new BaseSprite(RSX.card_shadow_map.img);
+          this.bg_shadow.setOpacity(0);
+          this.bg_shadow.setPosition(centerPosition);
+          this.addChild(this.bg_shadow, -9999);
 
-            // particles
-            var fxFluidPuff = BaseSprite.create({
-              spriteIdentifier: RSX.fxFluidCardShapePuff.name,
-              color: new cc.Color(100, 200, 255, 255),
-              scale: 9.0,
-              blendSrc: cc.SRC_ALPHA,
-              blendDst: cc.ONE,
-            });
-            fxFluidPuff.setPosition(centerPosition);
-            const fluidPuffAction = cc.sequence(
-              UtilsEngine.getAnimationAction(RSX.fxFluidCardShapePuff.name, false),
-              cc.fadeOut(0.1),
-              cc.removeSelf(),
-            );
-            this.addAnimationAction(fluidPuffAction);
-            fxFluidPuff.runAction(fluidPuffAction);
-            this.addChild(fxFluidPuff, -1);
+          // particles
+          var fxFluidPuff = BaseSprite.create({
+            spriteIdentifier: RSX.fxFluidCardShapePuff.name,
+            color: new cc.Color(100, 200, 255, 255),
+            scale: 9.0,
+            blendSrc: cc.SRC_ALPHA,
+            blendDst: cc.ONE,
+          });
+          fxFluidPuff.setPosition(centerPosition);
+          const fluidPuffAction = cc.sequence(
+            UtilsEngine.getAnimationAction(RSX.fxFluidCardShapePuff.name, false),
+            cc.fadeOut(0.1),
+            cc.removeSelf(),
+          );
+          this.addAnimationAction(fluidPuffAction);
+          fxFluidPuff.runAction(fluidPuffAction);
+          this.addChild(fxFluidPuff, -1);
 
-            const fxFluidPuff2 = BaseSprite.create({
-              spriteIdentifier: RSX.fxFluidCardShapePuff.name,
-              color: new cc.Color(0, 100, 255, 255),
-              scale: 8.0,
-              flippedX: true,
-              blendSrc: cc.SRC_ALPHA,
-              blendDst: cc.ONE,
-            });
-            fxFluidPuff2.setPosition(centerPosition);
-            const fluidPuff2Action = cc.sequence(
-              cc.delayTime(0.15),
-              UtilsEngine.getAnimationAction(RSX.fxFluidCardShapePuff.name, false),
-              cc.fadeOut(0.1),
-              cc.removeSelf(),
-            );
-            this.addAnimationAction(fluidPuff2Action);
-            fxFluidPuff2.runAction(fluidPuff2Action);
-            this.addChild(fxFluidPuff2, -1);
+          const fxFluidPuff2 = BaseSprite.create({
+            spriteIdentifier: RSX.fxFluidCardShapePuff.name,
+            color: new cc.Color(0, 100, 255, 255),
+            scale: 8.0,
+            flippedX: true,
+            blendSrc: cc.SRC_ALPHA,
+            blendDst: cc.ONE,
+          });
+          fxFluidPuff2.setPosition(centerPosition);
+          const fluidPuff2Action = cc.sequence(
+            cc.delayTime(0.15),
+            UtilsEngine.getAnimationAction(RSX.fxFluidCardShapePuff.name, false),
+            cc.fadeOut(0.1),
+            cc.removeSelf(),
+          );
+          this.addAnimationAction(fluidPuff2Action);
+          fxFluidPuff2.runAction(fluidPuff2Action);
+          this.addChild(fxFluidPuff2, -1);
 
-            const particles = new cc.ParticleSystem(RSX.ptcl_card_appear.plist);
-            particles.setPosVar(cc.p(cardBackgroundContentSize.width * 0.5, cardBackgroundContentSize.height * 0.5));
-            particles.setPosition(centerPosition);
-            particles.setAutoRemoveOnFinish(true);
-            this.addChild(particles, 1);
+          const particles = new cc.ParticleSystem(RSX.ptcl_card_appear.plist);
+          particles.setPosVar(
+            cc.p(cardBackgroundContentSize.width * 0.5, cardBackgroundContentSize.height * 0.5),
+          );
+          particles.setPosition(centerPosition);
+          particles.setAutoRemoveOnFinish(true);
+          this.addChild(particles, 1);
 
-            // glow
-            this._glowMapNode.setVisible(true);
-            this._glowMapNode.setOpacity(255.0);
-            this._glowMapNode.stopAllActions();
+          // glow
+          this._glowMapNode.setVisible(true);
+          this._glowMapNode.setOpacity(255.0);
+          this._glowMapNode.stopAllActions();
 
-            // // highlight
-            // this._snapshotSprite.setLeveled(true);
-            // this._snapshotSprite.setLevelsInWhite(180);
-            // this._snapshotSprite.setLevelsInBlack(30);
-            // this._snapshotSprite.setHighlighted(true);
-            // this._snapshotSprite.setHighlightIntensity(6.0);
-            this._snapshotSprite.setTint(new cc.Color(255, 255, 255, 255));
+          // // highlight
+          // this._snapshotSprite.setLeveled(true);
+          // this._snapshotSprite.setLevelsInWhite(180);
+          // this._snapshotSprite.setLevelsInBlack(30);
+          // this._snapshotSprite.setHighlighted(true);
+          // this._snapshotSprite.setHighlightIntensity(6.0);
+          this._snapshotSprite.setTint(new cc.Color(255, 255, 255, 255));
 
-            // fade out glow map
-            const glowMapFadeAction = cc.fadeOut(0.4).easing(cc.easeIn(3.0));
-            this.addAnimationAction(glowMapFadeAction);
-            this._glowMapNode.runAction(glowMapFadeAction);
+          // fade out glow map
+          const glowMapFadeAction = cc.fadeOut(0.4).easing(cc.easeIn(3.0));
+          this.addAnimationAction(glowMapFadeAction);
+          this._glowMapNode.runAction(glowMapFadeAction);
 
-            this._outlineGlowBlurred.setLeveled(true);
-            this._outlineGlowBlurred.setLevelsInWhite(20);
+          this._outlineGlowBlurred.setLeveled(true);
+          this._outlineGlowBlurred.setLevelsInWhite(20);
 
-            // tint and animate
-            const tintAction = cc.sequence(
-              cc.delayTime(revealDuration),
-              cc.actionTween(revealDuration / 2.0, TweenTypes.TINT_FADE, 255.0, 0.0).easing(cc.easeOut(3.0)),
-              cc.targetedAction(this._outlineGlowBlurred, cc.spawn(
+          // tint and animate
+          const tintAction = cc.sequence(
+            cc.delayTime(revealDuration),
+            cc
+              .actionTween(revealDuration / 2.0, TweenTypes.TINT_FADE, 255.0, 0.0)
+              .easing(cc.easeOut(3.0)),
+            cc.targetedAction(
+              this._outlineGlowBlurred,
+              cc.spawn(
                 cc.actionTween(0.5, 'levelsInWhite', 20, 255),
                 cc.actionTween(0.5, 'levelsInBlack', 0, 20),
                 cc.targetedAction(this._outlineGlowBlurred, cc.fadeOut(0.6)),
-              )),
+              ),
+            ),
 
-              // cc.callFunc(function () {
-              //   this._snapshotSprite.fadeOutHighlight(revealDuration);
-              //   var levelsAction = cc.sequence(
-              //     cc.spawn(
-              //       cc.actionTween(revealDuration, "levelsInWhite", 180.0, 255.0),
-              //       cc.actionTween(revealDuration, "levelsInBlack", 30.0, 0.0)
-              //     ),
-              //     cc.callFunc(function () {
-              //       this._snapshotSprite.setLeveled(false);
-              //     }.bind(this))
-              //   );
-              //   this.addAnimationAction(levelsAction);
-              //   this._snapshotSprite.runAction(levelsAction);
-              // }.bind(this))
-            );
-            this.addAnimationAction(tintAction);
-            this._snapshotSprite.runAction(tintAction);
+            // cc.callFunc(function () {
+            //   this._snapshotSprite.fadeOutHighlight(revealDuration);
+            //   var levelsAction = cc.sequence(
+            //     cc.spawn(
+            //       cc.actionTween(revealDuration, "levelsInWhite", 180.0, 255.0),
+            //       cc.actionTween(revealDuration, "levelsInBlack", 30.0, 0.0)
+            //     ),
+            //     cc.callFunc(function () {
+            //       this._snapshotSprite.setLeveled(false);
+            //     }.bind(this))
+            //   );
+            //   this.addAnimationAction(levelsAction);
+            //   this._snapshotSprite.runAction(levelsAction);
+            // }.bind(this))
+          );
+          this.addAnimationAction(tintAction);
+          this._snapshotSprite.runAction(tintAction);
 
-            // show shadow
-            const shadowAction = cc.sequence(
-              cc.delayTime(revealDuration),
-              cc.fadeTo(CONFIG.FADE_FAST_DURATION, 150.0),
-            );
-            this.addAnimationAction(shadowAction);
-            this.bg_shadow.runAction(shadowAction);
+          // show shadow
+          const shadowAction = cc.sequence(
+            cc.delayTime(revealDuration),
+            cc.fadeTo(CONFIG.FADE_FAST_DURATION, 150.0),
+          );
+          this.addAnimationAction(shadowAction);
+          this.bg_shadow.runAction(shadowAction);
 
-            // assemble show reveal sequence
-            const showRevealSequence = [];
+          // assemble show reveal sequence
+          const showRevealSequence = [];
 
-            if (sourceScreenPosition != null) {
-              this.setPosition(sourceScreenPosition);
-            }
+          if (sourceScreenPosition != null) {
+            this.setPosition(sourceScreenPosition);
+          }
 
-            if (this.sdkCard.rarityId > SDK.Rarity.Common) {
-              // Show rarity flare
-              var fxFluidPuff = BaseSprite.create(RSX.fx_fluid_sphere.name);
-              fxFluidPuff.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
-              fxFluidPuff.setScale(1.0);
-              fxFluidPuff.setPosition(this.getCenterPosition());
-              fxFluidPuff.setVisible(false);
-              fxFluidPuff.setShaderProgram(cc.shaderCache.programForKey('Colorize'));
-              this.addChild(fxFluidPuff, 0);
+          if (this.sdkCard.rarityId > SDK.Rarity.Common) {
+            // Show rarity flare
+            var fxFluidPuff = BaseSprite.create(RSX.fx_fluid_sphere.name);
+            fxFluidPuff.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
+            fxFluidPuff.setScale(1.0);
+            fxFluidPuff.setPosition(this.getCenterPosition());
+            fxFluidPuff.setVisible(false);
+            fxFluidPuff.setShaderProgram(cc.shaderCache.programForKey('Colorize'));
+            this.addChild(fxFluidPuff, 0);
 
-              const rarityFlare = new FXRarityFlareSprite();
-              rarityFlare.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
-              rarityFlare.setPosition(this.getCenterPosition().x, this.getCenterPosition().y + 50);
-              rarityFlare.setVisible(false);
-              rarityFlare.setScale(10.0);
-              this.addChild(rarityFlare, 10);
+            const rarityFlare = new FXRarityFlareSprite();
+            rarityFlare.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
+            rarityFlare.setPosition(this.getCenterPosition().x, this.getCenterPosition().y + 50);
+            rarityFlare.setVisible(false);
+            rarityFlare.setScale(10.0);
+            this.addChild(rarityFlare, 10);
 
-              // Run rarity flare action
-              const rarityColor = SDK.RarityFactory.rarityForIdentifier(this.sdkCard.rarityId).color;
+            // Run rarity flare action
+            const rarityColor = SDK.RarityFactory.rarityForIdentifier(this.sdkCard.rarityId).color;
 
-              const fluidSpriteAnimation = UtilsEngine.getAnimationAction(RSX.fx_fluid_sphere.name);
+            const fluidSpriteAnimation = UtilsEngine.getAnimationAction(RSX.fx_fluid_sphere.name);
 
-              rarityFlare.setColor(rarityColor);
-              rarityFlare.setVisible(false);
+            rarityFlare.setColor(rarityColor);
+            rarityFlare.setVisible(false);
 
-              fxFluidPuff.setColor(rarityColor);
-              fxFluidPuff.setVisible(false);
-              fxFluidPuff.setFlippedX(Math.random() > 0.5);
-              fxFluidPuff.setFlippedY(Math.random() > 0.5);
+            fxFluidPuff.setColor(rarityColor);
+            fxFluidPuff.setVisible(false);
+            fxFluidPuff.setFlippedX(Math.random() > 0.5);
+            fxFluidPuff.setFlippedY(Math.random() > 0.5);
 
-              // Begin the rarity effect (this happens outside the main sequence so it doesn't stall resolving the returned promise)
-              this.runAction(cc.targetedAction(fxFluidPuff, cc.sequence(
-                cc.spawn(
-                  cc.callFunc(((rarityFlare, fxFluidPuff) => {
-                    rarityFlare.setVisible(true);
-                    rarityFlare.setOpacity(0);
-                    rarityFlare.setPhase(1.0);
-                    rarityFlare.runAction(
+            // Begin the rarity effect (this happens outside the main sequence so it doesn't stall resolving the returned promise)
+            this.runAction(
+              cc.targetedAction(
+                fxFluidPuff,
+                cc.sequence(
+                  cc.spawn(
+                    cc.callFunc(
+                      ((rarityFlare, fxFluidPuff) => {
+                        rarityFlare.setVisible(true);
+                        rarityFlare.setOpacity(0);
+                        rarityFlare.setPhase(1.0);
+                        rarityFlare.runAction(
+                          cc.sequence(
+                            cc.fadeIn(0.5),
+                            cc.delayTime(1.0 + Math.random() * 0.6),
+                            cc.spawn(cc.actionTween(1.0, 'phase', 1.0, 0.25)),
+                            cc.removeSelf(),
+                          ),
+                        );
+
+                        fxFluidPuff.setVisible(true);
+                        fxFluidPuff.setOpacity(0);
+                      }).bind(this, rarityFlare, fxFluidPuff),
+                    ),
+                    cc.spawn(
+                      cc.fadeIn(1.0),
+                      fluidSpriteAnimation,
                       cc.sequence(
-                        cc.fadeIn(0.5),
-                        cc.delayTime(1.0 + Math.random() * 0.6),
-                        cc.spawn(
-                          cc.actionTween(1.0, 'phase', 1.0, 0.25),
+                        cc.delayTime(
+                          fluidSpriteAnimation.getDuration() - CONFIG.ANIMATE_FAST_DURATION,
                         ),
+                        cc.fadeOut(CONFIG.ANIMATE_FAST_DURATION),
+                      ),
+                    ),
+                  ),
+                  cc.callFunc(() => {
+                    // explosion particles
+                    const particles = cc.ParticleSystem.create(RSX.core_gem_particles.plist);
+                    particles.setStartColor(rarityColor);
+                    particles.setEndColor(rarityColor);
+                    particles.setPosition(
+                      this.getCenterPosition().x,
+                      this.getCenterPosition().y - 25,
+                    );
+                    this.addChild(particles, 10);
+
+                    // gem quick rarity polar flare
+                    const polarFlare = FXFbmPolarFlareSprite.create();
+                    polarFlare.phase = 1.0;
+                    polarFlare.timeScale = 1.0;
+                    polarFlare.setScale(0.75);
+                    polarFlare.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
+                    polarFlare.setTextureRect(cc.rect(0, 0, 100, 100));
+                    polarFlare.flareColor = rarityColor;
+                    polarFlare.setPosition(
+                      this.getCenterPosition().x,
+                      this.getCenterPosition().y - 25,
+                    );
+                    this.addChild(polarFlare, 10);
+                    polarFlare.runAction(
+                      cc.sequence(
+                        cc.actionTween(1.0, 'phase', 0.01, 1.0).easing(cc.easeExponentialIn()),
+                        cc.callFunc(() => {
+                          particles.stopSystem();
+                        }),
+                        cc.actionTween(1.0, 'phase', 1.0, 0.01).easing(cc.easeExponentialOut()),
+                        cc.fadeOut(0.1),
+                        cc.delayTime(1.0), // let particles die out
+                        cc.callFunc(() => {
+                          particles.destroy();
+                        }),
                         cc.removeSelf(),
                       ),
                     );
 
-                    fxFluidPuff.setVisible(true);
-                    fxFluidPuff.setOpacity(0);
-                  }).bind(this, rarityFlare, fxFluidPuff)),
-                  cc.spawn(
-                    cc.fadeIn(1.0),
-                    fluidSpriteAnimation,
-                    cc.sequence(
-                      cc.delayTime(fluidSpriteAnimation.getDuration() - CONFIG.ANIMATE_FAST_DURATION),
-                      cc.fadeOut(CONFIG.ANIMATE_FAST_DURATION),
-                    ),
-                  ),
+                    // this._voronoiEffectSprite = new VoronoiPrismaticSprite();
+                    // this._voronoiEffectSprite.setVisible(false);
+                    // this._voronoiEffectSprite.setPosition(this.getCenterPosition().x, this.getCenterPosition().y);
+                    // this._voronoiEffectSprite.setTextureRect(cc.rect(0, 0, 200, 200));
+                    // this.addChild(this._voronoiEffectSprite, 10);
+                    // // this._voronoiPrismaticSprite.setScale(0.5);
+                    //
+                    // // start voronoi at half phase to show it exploding out
+                    // var voronoiPhase = 0.0;
+                    // this._voronoiEffectSprite.setPhase(voronoiPhase);
+                    // this._voronoiEffectSprite.runAction(cc.sequence(
+                    //   cc.delayTime(0.5),
+                    //   cc.show(),
+                    //   cc.spawn(
+                    //     cc.fadeTo(0.2, 255.0).easing(cc.easeCubicActionOut()),
+                    //     cc.actionTween(0.5, voronoiPhase, 1.0)
+                    //   ),
+                    //   cc.hide(),
+                    //   cc.removeSelf(),
+                    //   cc.callFunc(function(){
+                    //     this._voronoiEffectSprite.destroy()
+                    //   }.bind(this))
+                    // ))
+                    //
+                  }),
+                  cc.removeSelf(),
                 ),
-                cc.callFunc(() => {
-                  // explosion particles
-                  const particles = cc.ParticleSystem.create(RSX.core_gem_particles.plist);
-                  particles.setStartColor(rarityColor);
-                  particles.setEndColor(rarityColor);
-                  particles.setPosition(this.getCenterPosition().x, this.getCenterPosition().y - 25);
-                  this.addChild(particles, 10);
+              ),
+            );
+          }
 
-                  // gem quick rarity polar flare
-                  const polarFlare = FXFbmPolarFlareSprite.create();
-                  polarFlare.phase = 1.0;
-                  polarFlare.timeScale = 1.0;
-                  polarFlare.setScale(0.75);
-                  polarFlare.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
-                  polarFlare.setTextureRect(cc.rect(0, 0, 100, 100));
-                  polarFlare.flareColor = rarityColor;
-                  polarFlare.setPosition(this.getCenterPosition().x, this.getCenterPosition().y - 25);
-                  this.addChild(polarFlare, 10);
-                  polarFlare.runAction(cc.sequence(
-                    cc.actionTween(1.0, 'phase', 0.01, 1.0).easing(cc.easeExponentialIn()),
-                    cc.callFunc(() => {
-                      particles.stopSystem();
-                    }),
-                    cc.actionTween(1.0, 'phase', 1.00, 0.01).easing(cc.easeExponentialOut()),
-                    cc.fadeOut(0.1),
-                    cc.delayTime(1.0), // let particles die out
-                    cc.callFunc(() => {
-                      particles.destroy();
-                    }),
-                    cc.removeSelf(),
-                  ));
+          // Add a delay to account for movement to reveal sequence
+          showRevealSequence.push(
+            cc.delayTime(revealDuration * 1.5 + moveDelay + delayBeforeSetVisible),
+          );
 
-                  // this._voronoiEffectSprite = new VoronoiPrismaticSprite();
-                  // this._voronoiEffectSprite.setVisible(false);
-                  // this._voronoiEffectSprite.setPosition(this.getCenterPosition().x, this.getCenterPosition().y);
-                  // this._voronoiEffectSprite.setTextureRect(cc.rect(0, 0, 200, 200));
-                  // this.addChild(this._voronoiEffectSprite, 10);
-                  // // this._voronoiPrismaticSprite.setScale(0.5);
-                  //
-                  // // start voronoi at half phase to show it exploding out
-                  // var voronoiPhase = 0.0;
-                  // this._voronoiEffectSprite.setPhase(voronoiPhase);
-                  // this._voronoiEffectSprite.runAction(cc.sequence(
-                  //   cc.delayTime(0.5),
-                  //   cc.show(),
-                  //   cc.spawn(
-                  //     cc.fadeTo(0.2, 255.0).easing(cc.easeCubicActionOut()),
-                  //     cc.actionTween(0.5, voronoiPhase, 1.0)
-                  //   ),
-                  //   cc.hide(),
-                  //   cc.removeSelf(),
-                  //   cc.callFunc(function(){
-                  //     this._voronoiEffectSprite.destroy()
-                  //   }.bind(this))
-                  // ))
-                  //
-                }),
-                cc.removeSelf(),
-              )));
-            }
+          if (targetScreenPosition != null) {
+            showRevealSequence.push(
+              cc.moveTo(moveDuration, targetScreenPosition).easing(cc.easeOut(2.0)),
+            );
+          }
 
-            // Add a delay to account for movement to reveal sequence
-            showRevealSequence.push(cc.delayTime(revealDuration * 1.5 + moveDelay + delayBeforeSetVisible));
-
-            if (targetScreenPosition != null) {
-              showRevealSequence.push(cc.moveTo(moveDuration, targetScreenPosition).easing(cc.easeOut(2.0)));
-            }
-
-            // Final clean up in reveal sequence
-            showRevealSequence.push(cc.callFunc(() => {
+          // Final clean up in reveal sequence
+          showRevealSequence.push(
+            cc.callFunc(() => {
               this.factionNameLabel.setVisible(true);
               // this._glowMapNode.setVisible(false);
               // hide snapshot and show animated card
               this.fadeOutSnapshot(0.1);
-            }));
+            }),
+          );
 
-            // fade out outline
-            const outlineDelay = (this.sdkCard.rarityId > SDK.Rarity.Common) ? 0.25 : 0.0;
-            const outlineGlowAction = cc.sequence(
-              cc.delayTime(outlineDelay),
-              cc.fadeOut(0.8 + outlineDelay).easing(cc.easeExponentialOut()),
-              cc.hide(),
-            );
-            showRevealSequence.push(cc.targetedAction(this._outlineGlow, outlineGlowAction));
-            this.addAnimationAction(outlineGlowAction);
+          // fade out outline
+          const outlineDelay = this.sdkCard.rarityId > SDK.Rarity.Common ? 0.25 : 0.0;
+          const outlineGlowAction = cc.sequence(
+            cc.delayTime(outlineDelay),
+            cc.fadeOut(0.8 + outlineDelay).easing(cc.easeExponentialOut()),
+            cc.hide(),
+          );
+          showRevealSequence.push(cc.targetedAction(this._outlineGlow, outlineGlowAction));
+          this.addAnimationAction(outlineGlowAction);
 
-            // add slight extra delay
-            // showRevealSequence.push(cc.delayTime(revealDuration));
+          // add slight extra delay
+          // showRevealSequence.push(cc.delayTime(revealDuration));
 
-            // animations complete
-            showRevealSequence.push(cc.callFunc(() => {
+          // animations complete
+          showRevealSequence.push(
+            cc.callFunc(() => {
               resolve();
               this._isAnimationInProgress = false;
-            }));
+            }),
+          );
 
-            const showRevealAction = cc.sequence(showRevealSequence);
-            this.addAnimationAction(showRevealAction);
-            this.runAction(showRevealAction);
-          });
-      })
-        .catch((error) => { EventBus.getInstance().trigger(EVENTS.error, error); });
+          const showRevealAction = cc.sequence(showRevealSequence);
+          this.addAnimationAction(showRevealAction);
+          this.runAction(showRevealAction);
+        });
+      }).catch((error) => {
+        EventBus.getInstance().trigger(EVENTS.error, error);
+      });
     }
     return Promise.resolve();
   },
@@ -2810,104 +3186,75 @@ var CardNode = SdkNode.extend({
         Promise.all([
           this.whenRequiredResourcesReady(),
           this.whenResourcesReady(this.getCardResourceRequestId()),
-        ])
-          .then(([requiredRequestId, cardResourceRequestId]) => {
-            if (!this.getAreResourcesValid(requiredRequestId) || !this.getAreResourcesValid(cardResourceRequestId)) return; // load invalidated or resources changed
+        ]).then(([requiredRequestId, cardResourceRequestId]) => {
+          if (
+            !this.getAreResourcesValid(requiredRequestId) ||
+            !this.getAreResourcesValid(cardResourceRequestId)
+          )
+            return; // load invalidated or resources changed
 
-            // begin: animation base states
-            this.cardBackgroundSprite.setOpacity(0.0);
-            this._outlineGlow.setOpacity(0.0);
-            this._outlineGlowAlt.setOpacity(0.0);
-            this._unitShadow.setOpacity(0);
-            this.cardNameLabel.setOpacity(0);
-            this.cardTypeLabel.setOpacity(0);
-            if (this.raritySprite != null) {
-              this.raritySprite.setOpacity(0);
+          // begin: animation base states
+          this.cardBackgroundSprite.setOpacity(0.0);
+          this._outlineGlow.setOpacity(0.0);
+          this._outlineGlowAlt.setOpacity(0.0);
+          this._unitShadow.setOpacity(0);
+          this.cardNameLabel.setOpacity(0);
+          this.cardTypeLabel.setOpacity(0);
+          if (this.raritySprite != null) {
+            this.raritySprite.setOpacity(0);
+          }
+          this.hpLabel.setOpacity(0);
+          this.atkLabel.setOpacity(0);
+          this.cardDescriptionLabel.setOpacity(0);
+
+          this.cardSprite.setOpacity(0);
+          if (this.sdkCard instanceof SDK.Entity && this.sdkCard.getWasGeneral()) {
+            if (this._signatureCardRing != null) {
+              this._signatureCardRing.setOpacity(0);
             }
-            this.hpLabel.setOpacity(0);
-            this.atkLabel.setOpacity(0);
-            this.cardDescriptionLabel.setOpacity(0);
-
-            this.cardSprite.setOpacity(0);
-            if (this.sdkCard instanceof SDK.Entity && this.sdkCard.getWasGeneral()) {
-              if (this._signatureCardRing != null) {
-                this._signatureCardRing.setOpacity(0);
-              }
-              if (this._signatureCardSprite != null) {
-                this._signatureCardSprite.setOpacity(0);
-              }
-            } else {
-              this._manaGemSprite.setOpacity(0);
-              this.manaLabel.setOpacity(0);
+            if (this._signatureCardSprite != null) {
+              this._signatureCardSprite.setOpacity(0);
             }
-            this._containerNode.setVisible(true);
-            // end: animation base states
+          } else {
+            this._manaGemSprite.setOpacity(0);
+            this.manaLabel.setOpacity(0);
+          }
+          this._containerNode.setVisible(true);
+          // end: animation base states
 
-            // animation order: cardback, managem, spriteshadow, sprite, name, type, rarity sprite, description text
+          // animation order: cardback, managem, spriteshadow, sprite, name, type, rarity sprite, description text
 
-            const cardBackAction = cc.sequence(
-              cc.delayTime(0.6 * rotationSpeed),
-              cc.fadeIn(0.3 * rotationSpeed).easing(cc.easeIn(1.0)),
-            );
-            this.addAnimationAction(cardBackAction);
-            this.cardBackgroundSprite.runAction(cardBackAction);
+          const cardBackAction = cc.sequence(
+            cc.delayTime(0.6 * rotationSpeed),
+            cc.fadeIn(0.3 * rotationSpeed).easing(cc.easeIn(1.0)),
+          );
+          this.addAnimationAction(cardBackAction);
+          this.cardBackgroundSprite.runAction(cardBackAction);
 
-            const glowAction = cc.sequence(
-              cc.show(),
-              cc.fadeIn(0.3 * rotationSpeed).easing(cc.easeIn(1.0)),
-              cc.delayTime(0.5 * rotationSpeed),
-              cc.fadeOut(0.3 * rotationSpeed).easing(cc.easeOut(1.0)),
-              cc.hide(),
-            );
-            this.addAnimationAction(glowAction);
-            this._outlineGlow.runAction(glowAction);
+          const glowAction = cc.sequence(
+            cc.show(),
+            cc.fadeIn(0.3 * rotationSpeed).easing(cc.easeIn(1.0)),
+            cc.delayTime(0.5 * rotationSpeed),
+            cc.fadeOut(0.3 * rotationSpeed).easing(cc.easeOut(1.0)),
+            cc.hide(),
+          );
+          this.addAnimationAction(glowAction);
+          this._outlineGlow.runAction(glowAction);
 
-            const glowActionTwo = cc.sequence(
-              cc.show(),
-              cc.delayTime(0.3 * rotationSpeed),
-              cc.fadeIn(0.3 * rotationSpeed).easing(cc.easeIn(1.0)),
-              cc.fadeOut(0.3 * rotationSpeed).easing(cc.easeOut(1.0)),
-              cc.hide(),
-            );
-            this.addAnimationAction(glowActionTwo);
-            this._outlineGlowAlt.runAction(glowActionTwo);
+          const glowActionTwo = cc.sequence(
+            cc.show(),
+            cc.delayTime(0.3 * rotationSpeed),
+            cc.fadeIn(0.3 * rotationSpeed).easing(cc.easeIn(1.0)),
+            cc.fadeOut(0.3 * rotationSpeed).easing(cc.easeOut(1.0)),
+            cc.hide(),
+          );
+          this.addAnimationAction(glowActionTwo);
+          this._outlineGlowAlt.runAction(glowActionTwo);
 
-            if (this.sdkCard instanceof SDK.Entity && this.sdkCard.getWasGeneral()) {
-              if (this._signatureCardRing != null) {
-                this._signatureCardRing.setVisible(true);
-                const signatureCardRingAction = cc.spawn(
-                  cc.sequence(
-                    cc.delayTime(baseTime * animationSpeed),
-                    cc.fadeIn(0.1 * animationSpeed),
-                  ),
-                  cc.sequence(
-                    cc.scaleTo(0, 1.1, 1.1),
-                    cc.delayTime(baseTime * animationSpeed),
-                    cc.scaleTo(0.2 * animationSpeed, 1, 1).easing(cc.easeOut(1.0)),
-                  ),
-                );
-                this.addAnimationAction(signatureCardRingAction);
-                this._signatureCardRing.runAction(signatureCardRingAction);
-              }
-
-              if (this._signatureCardSprite != null) {
-                this._signatureCardSprite.setVisible(true);
-                const signatureCardSpriteAction = cc.spawn(
-                  cc.sequence(
-                    cc.delayTime(baseTime * animationSpeed),
-                    cc.fadeIn(0.1 * animationSpeed),
-                  ),
-                  cc.sequence(
-                    cc.scaleTo(0, 1.1, 1.1),
-                    cc.delayTime(baseTime * animationSpeed),
-                    cc.scaleTo(0.2 * animationSpeed, 1, 1).easing(cc.easeOut(1.0)),
-                  ),
-                );
-                this.addAnimationAction(signatureCardSpriteAction);
-                this._signatureCardSprite.runAction(signatureCardSpriteAction);
-              }
-            } else {
-              const manaGemAction = cc.spawn(
+          if (this.sdkCard instanceof SDK.Entity && this.sdkCard.getWasGeneral()) {
+            if (this._signatureCardRing != null) {
+              this._signatureCardRing.setVisible(true);
+              const signatureCardRingAction = cc.spawn(
                 cc.sequence(
                   cc.delayTime(baseTime * animationSpeed),
                   cc.fadeIn(0.1 * animationSpeed),
@@ -2918,151 +3265,184 @@ var CardNode = SdkNode.extend({
                   cc.scaleTo(0.2 * animationSpeed, 1, 1).easing(cc.easeOut(1.0)),
                 ),
               );
-              this.addAnimationAction(manaGemAction);
-              this._manaGemSprite.runAction(manaGemAction);
-
-              const manaLabelAction = cc.sequence(
-                cc.delayTime((baseTime + 0.08) * animationSpeed),
-                cc.fadeIn(0.1 * rotationSpeed).easing(cc.easeOut(1.0)),
-              );
-              this.addAnimationAction(manaLabelAction);
-              this.manaLabel.runAction(manaLabelAction);
+              this.addAnimationAction(signatureCardRingAction);
+              this._signatureCardRing.runAction(signatureCardRingAction);
             }
 
-            if (!(this.sdkCard instanceof SDK.Tile)) {
-              const unitShadowAction = cc.sequence(
-                cc.delayTime((baseTime - 0.05) * animationSpeed),
-                cc.fadeTo(0.1 * animationSpeed, 150.0).easing(cc.easeOut(1.0)),
+            if (this._signatureCardSprite != null) {
+              this._signatureCardSprite.setVisible(true);
+              const signatureCardSpriteAction = cc.spawn(
+                cc.sequence(
+                  cc.delayTime(baseTime * animationSpeed),
+                  cc.fadeIn(0.1 * animationSpeed),
+                ),
+                cc.sequence(
+                  cc.scaleTo(0, 1.1, 1.1),
+                  cc.delayTime(baseTime * animationSpeed),
+                  cc.scaleTo(0.2 * animationSpeed, 1, 1).easing(cc.easeOut(1.0)),
+                ),
               );
-              this.addAnimationAction(unitShadowAction);
-              this._unitShadow.runAction(unitShadowAction);
+              this.addAnimationAction(signatureCardSpriteAction);
+              this._signatureCardSprite.runAction(signatureCardSpriteAction);
             }
-
-            this.cardSprite.setTint(new cc.Color(255, 255, 255, 255));
-            const cardSpriteAction = cc.spawn(
+          } else {
+            const manaGemAction = cc.spawn(
+              cc.sequence(cc.delayTime(baseTime * animationSpeed), cc.fadeIn(0.1 * animationSpeed)),
               cc.sequence(
-                cc.delayTime((baseTime + 0.1) * animationSpeed),
-                cc.fadeIn(0.1 * animationSpeed).easing(cc.easeOut(1.0)),
-              ),
-              cc.sequence(
-                cc.delayTime((baseTime + 0.2) * animationSpeed),
-                cc.actionTween(0.1 * animationSpeed, TweenTypes.TINT_FADE, 255.0, 0.0).easing(cc.easeIn(1.0)),
-              ),
-            );
-            this.addAnimationAction(cardSpriteAction);
-            this.cardSprite.runAction(cardSpriteAction);
-
-            const cardNameLabelAction = cc.spawn(
-              cc.sequence(
-                cc.delayTime((baseTime + 0.2) * animationSpeed),
-                cc.fadeIn(0.1 * animationSpeed).easing(cc.easeOut(1.0)),
-              ),
-              cc.sequence(
-                cc.scaleTo(0, 1.2, 1.2),
-                cc.delayTime((baseTime + 0.2) * animationSpeed),
+                cc.scaleTo(0, 1.1, 1.1),
+                cc.delayTime(baseTime * animationSpeed),
                 cc.scaleTo(0.2 * animationSpeed, 1, 1).easing(cc.easeOut(1.0)),
               ),
             );
-            this.addAnimationAction(cardNameLabelAction);
-            this.cardNameLabel.runAction(cardNameLabelAction);
+            this.addAnimationAction(manaGemAction);
+            this._manaGemSprite.runAction(manaGemAction);
 
-            const cardTypeLabelAction = cc.spawn(
+            const manaLabelAction = cc.sequence(
+              cc.delayTime((baseTime + 0.08) * animationSpeed),
+              cc.fadeIn(0.1 * rotationSpeed).easing(cc.easeOut(1.0)),
+            );
+            this.addAnimationAction(manaLabelAction);
+            this.manaLabel.runAction(manaLabelAction);
+          }
+
+          if (!(this.sdkCard instanceof SDK.Tile)) {
+            const unitShadowAction = cc.sequence(
+              cc.delayTime((baseTime - 0.05) * animationSpeed),
+              cc.fadeTo(0.1 * animationSpeed, 150.0).easing(cc.easeOut(1.0)),
+            );
+            this.addAnimationAction(unitShadowAction);
+            this._unitShadow.runAction(unitShadowAction);
+          }
+
+          this.cardSprite.setTint(new cc.Color(255, 255, 255, 255));
+          const cardSpriteAction = cc.spawn(
+            cc.sequence(
+              cc.delayTime((baseTime + 0.1) * animationSpeed),
+              cc.fadeIn(0.1 * animationSpeed).easing(cc.easeOut(1.0)),
+            ),
+            cc.sequence(
+              cc.delayTime((baseTime + 0.2) * animationSpeed),
+              cc
+                .actionTween(0.1 * animationSpeed, TweenTypes.TINT_FADE, 255.0, 0.0)
+                .easing(cc.easeIn(1.0)),
+            ),
+          );
+          this.addAnimationAction(cardSpriteAction);
+          this.cardSprite.runAction(cardSpriteAction);
+
+          const cardNameLabelAction = cc.spawn(
+            cc.sequence(
+              cc.delayTime((baseTime + 0.2) * animationSpeed),
+              cc.fadeIn(0.1 * animationSpeed).easing(cc.easeOut(1.0)),
+            ),
+            cc.sequence(
+              cc.scaleTo(0, 1.2, 1.2),
+              cc.delayTime((baseTime + 0.2) * animationSpeed),
+              cc.scaleTo(0.2 * animationSpeed, 1, 1).easing(cc.easeOut(1.0)),
+            ),
+          );
+          this.addAnimationAction(cardNameLabelAction);
+          this.cardNameLabel.runAction(cardNameLabelAction);
+
+          const cardTypeLabelAction = cc.spawn(
+            cc.sequence(
+              cc.delayTime((baseTime + 0.3) * animationSpeed),
+              cc.fadeIn(0.1 * animationSpeed).easing(cc.easeOut(1.0)),
+            ),
+            cc.sequence(
+              cc.scaleTo(0, 1.2, 1.2),
+              cc.delayTime((baseTime + 0.3) * animationSpeed),
+              cc.scaleTo(0.2 * animationSpeed, 1, 1).easing(cc.easeOut(1.0)),
+            ),
+          );
+          this.addAnimationAction(cardTypeLabelAction);
+          this.cardTypeLabel.runAction(cardTypeLabelAction);
+
+          if (this.raritySprite != null) {
+            const raritySpriteAction = cc.spawn(
               cc.sequence(
-                cc.delayTime((baseTime + 0.3) * animationSpeed),
+                cc.delayTime((baseTime + 0.5) * animationSpeed),
                 cc.fadeIn(0.1 * animationSpeed).easing(cc.easeOut(1.0)),
               ),
               cc.sequence(
-                cc.scaleTo(0, 1.2, 1.2),
-                cc.delayTime((baseTime + 0.3) * animationSpeed),
+                cc.scaleTo(0, 1.35, 1.35),
+                cc.delayTime((baseTime + 0.5) * animationSpeed),
                 cc.scaleTo(0.2 * animationSpeed, 1, 1).easing(cc.easeOut(1.0)),
               ),
             );
-            this.addAnimationAction(cardTypeLabelAction);
-            this.cardTypeLabel.runAction(cardTypeLabelAction);
+            this.addAnimationAction(raritySpriteAction);
+            this.raritySprite.runAction(raritySpriteAction);
+          }
 
-            if (this.raritySprite != null) {
-              const raritySpriteAction = cc.spawn(
-                cc.sequence(
-                  cc.delayTime((baseTime + 0.5) * animationSpeed),
-                  cc.fadeIn(0.1 * animationSpeed).easing(cc.easeOut(1.0)),
-                ),
-                cc.sequence(
-                  cc.scaleTo(0, 1.35, 1.35),
-                  cc.delayTime((baseTime + 0.5) * animationSpeed),
-                  cc.scaleTo(0.2 * animationSpeed, 1, 1).easing(cc.easeOut(1.0)),
-                ),
-              );
-              this.addAnimationAction(raritySpriteAction);
-              this.raritySprite.runAction(raritySpriteAction);
-            }
-
-            if (this.sdkCard instanceof SDK.Entity) {
-              const hpLabelAction = cc.spawn(
-                cc.sequence(
-                  cc.delayTime((baseTime + 0.7) * animationSpeed),
-                  cc.fadeIn(0.1 * animationSpeed).easing(cc.easeOut(1.0)),
-                ),
-                cc.sequence(
-                  cc.scaleTo(0, 1.5, 1.5),
-                  cc.delayTime((baseTime + 0.7) * animationSpeed),
-                  cc.scaleTo(0.2 * animationSpeed, 1, 1).easing(cc.easeOut(1.0)),
-                ),
-              );
-              this.addAnimationAction(hpLabelAction);
-              this.hpLabel.runAction(hpLabelAction);
-
-              const atkLabelAction = cc.spawn(
-                cc.sequence(
-                  cc.delayTime((baseTime + 0.7) * animationSpeed),
-                  cc.fadeIn(0.1 * animationSpeed).easing(cc.easeOut(1.0)),
-                ),
-                cc.sequence(
-                  cc.scaleTo(0, 1.5, 1.5),
-                  cc.delayTime((baseTime + 0.7) * animationSpeed),
-                  cc.scaleTo(0.2 * animationSpeed, 1, 1).easing(cc.easeOut(1.0)),
-                ),
-              );
-              this.addAnimationAction(atkLabelAction);
-              this.atkLabel.runAction(atkLabelAction);
-
-              var cardDescriptionLabelAction = cc.sequence(
-                cc.delayTime((baseTime + 0.9) * animationSpeed),
-                cc.fadeIn(0.1 * animationSpeed).easing(cc.easeOut(1.0)),
-              );
-              this.addAnimationAction(cardDescriptionLabelAction);
-              this.cardDescriptionLabel.runAction(cardDescriptionLabelAction);
-            } else {
-              var cardDescriptionLabelAction = cc.sequence(
+          if (this.sdkCard instanceof SDK.Entity) {
+            const hpLabelAction = cc.spawn(
+              cc.sequence(
                 cc.delayTime((baseTime + 0.7) * animationSpeed),
                 cc.fadeIn(0.1 * animationSpeed).easing(cc.easeOut(1.0)),
-              );
-              this.addAnimationAction(cardDescriptionLabelAction);
-              this.cardDescriptionLabel.runAction(cardDescriptionLabelAction);
-            }
-
-            this.setSecondaryXYZRotation(new cc.kmVec3(-45, 35, 0));
-            this.setScale(0.8);
-            const revealAction = cc.spawn(
-              SecondaryXYZRotateBy.create(rotateTime * rotationSpeed, 45, -35, 0).easing(customEaseBackOut),
-              cc.scaleTo(rotateTime * rotationSpeed, 1, 1).easing(customEaseBackOut),
+              ),
               cc.sequence(
-                cc.delayTime(rotateTime * rotationSpeed),
-                cc.callFunc(() => {
-                  resolve();
-                }),
+                cc.scaleTo(0, 1.5, 1.5),
+                cc.delayTime((baseTime + 0.7) * animationSpeed),
+                cc.scaleTo(0.2 * animationSpeed, 1, 1).easing(cc.easeOut(1.0)),
               ),
             );
-            this.addAnimationAction(revealAction);
-            this.runAction(revealAction);
-          });
-      })
-        .catch((error) => { EventBus.getInstance().trigger(EVENTS.error, error); });
+            this.addAnimationAction(hpLabelAction);
+            this.hpLabel.runAction(hpLabelAction);
+
+            const atkLabelAction = cc.spawn(
+              cc.sequence(
+                cc.delayTime((baseTime + 0.7) * animationSpeed),
+                cc.fadeIn(0.1 * animationSpeed).easing(cc.easeOut(1.0)),
+              ),
+              cc.sequence(
+                cc.scaleTo(0, 1.5, 1.5),
+                cc.delayTime((baseTime + 0.7) * animationSpeed),
+                cc.scaleTo(0.2 * animationSpeed, 1, 1).easing(cc.easeOut(1.0)),
+              ),
+            );
+            this.addAnimationAction(atkLabelAction);
+            this.atkLabel.runAction(atkLabelAction);
+
+            var cardDescriptionLabelAction = cc.sequence(
+              cc.delayTime((baseTime + 0.9) * animationSpeed),
+              cc.fadeIn(0.1 * animationSpeed).easing(cc.easeOut(1.0)),
+            );
+            this.addAnimationAction(cardDescriptionLabelAction);
+            this.cardDescriptionLabel.runAction(cardDescriptionLabelAction);
+          } else {
+            var cardDescriptionLabelAction = cc.sequence(
+              cc.delayTime((baseTime + 0.7) * animationSpeed),
+              cc.fadeIn(0.1 * animationSpeed).easing(cc.easeOut(1.0)),
+            );
+            this.addAnimationAction(cardDescriptionLabelAction);
+            this.cardDescriptionLabel.runAction(cardDescriptionLabelAction);
+          }
+
+          this.setSecondaryXYZRotation(new cc.kmVec3(-45, 35, 0));
+          this.setScale(0.8);
+          const revealAction = cc.spawn(
+            SecondaryXYZRotateBy.create(rotateTime * rotationSpeed, 45, -35, 0).easing(
+              customEaseBackOut,
+            ),
+            cc.scaleTo(rotateTime * rotationSpeed, 1, 1).easing(customEaseBackOut),
+            cc.sequence(
+              cc.delayTime(rotateTime * rotationSpeed),
+              cc.callFunc(() => {
+                resolve();
+              }),
+            ),
+          );
+          this.addAnimationAction(revealAction);
+          this.runAction(revealAction);
+        });
+      }).catch((error) => {
+        EventBus.getInstance().trigger(EVENTS.error, error);
+      });
     }
     return Promise.resolve();
   },
 
   /* endregion SELECTREVEAL */
-
 });
 
 CardNode.create = function (sdkCard, node) {
@@ -3072,7 +3452,7 @@ CardNode.create = function (sdkCard, node) {
 CardNode.WebGLRenderCmd = function (renderable) {
   cc.Node.WebGLRenderCmd.call(this, renderable);
 };
-const proto = CardNode.WebGLRenderCmd.prototype = Object.create(cc.Node.WebGLRenderCmd.prototype);
+const proto = (CardNode.WebGLRenderCmd.prototype = Object.create(cc.Node.WebGLRenderCmd.prototype));
 proto.constructor = CardNode.WebGLRenderCmd;
 
 proto.transform = function (parentCmd, recursive) {

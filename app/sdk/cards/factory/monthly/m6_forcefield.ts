@@ -178,7 +178,9 @@ class CardFactory_Monthly_M6_Forcefield {
       card.maxHP = 2;
       card.manaCost = 5;
       card.rarityId = Rarity.Epic;
-      card.setInherentModifiersContextObjects([ModifierOpeningGambitDamageNearbyForAttack.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierOpeningGambitDamageNearbyForAttack.createContextObject(),
+      ]);
     }
 
     return card;

@@ -82,16 +82,23 @@ UtilsSDK.executeTutorialUntilOTK = function () {
             const movingUnit = gameSession.getBoard().getUnitAtPosition(instruction.sourcePosition);
             action = movingUnit.actionMove(instruction.targetPosition);
           } else if (instruction.expectedActionType === SDK.AttackAction.type) {
-            const attackingUnit = gameSession.getBoard().getUnitAtPosition(instruction.sourcePosition);
+            const attackingUnit = gameSession
+              .getBoard()
+              .getUnitAtPosition(instruction.sourcePosition);
             action = attackingUnit.actionAttackEntityAtPosition(instruction.targetPosition);
           } else if (instruction.expectedActionType === SDK.PlayCardFromHandAction.type) {
             let { targetPosition } = instruction;
             if (targetPosition == null) {
               const card = myPlayer.getDeck().getCardInHandAtIndex(instruction.handIndex);
               const validTargetPositions = card.getValidTargetPositions();
-              targetPosition = validTargetPositions[Math.floor(Math.random() * validTargetPositions.length)];
+              targetPosition =
+                validTargetPositions[Math.floor(Math.random() * validTargetPositions.length)];
             }
-            action = myPlayer.actionPlayCardFromHand(instruction.handIndex, targetPosition.x, targetPosition.y);
+            action = myPlayer.actionPlayCardFromHand(
+              instruction.handIndex,
+              targetPosition.x,
+              targetPosition.y,
+            );
           } else if (instruction.expectedActionType === SDK.ReplaceCardFromHandAction.type) {
             action = myPlayer.actionReplaceCardFromHand(instruction.handIndex);
           } else if (instruction.expectedActionType === SDK.PlaySignatureCardAction.type) {
@@ -99,7 +106,8 @@ UtilsSDK.executeTutorialUntilOTK = function () {
             if (targetPosition == null) {
               const card = myPlayer.getDeck().getCardInHandAtIndex(instruction.handIndex);
               const validTargetPositions = card.getValidTargetPositions();
-              targetPosition = validTargetPositions[Math.floor(Math.random() * validTargetPositions.length)];
+              targetPosition =
+                validTargetPositions[Math.floor(Math.random() * validTargetPositions.length)];
             }
             action = myPlayer.actionPlaySignatureCard(targetPosition.x, targetPosition.y);
           }
@@ -107,10 +115,14 @@ UtilsSDK.executeTutorialUntilOTK = function () {
           if (action != null) {
             gameSession.executeAction(action);
             if (!action.getIsValid()) {
-              throw new Error(`Invalid action in tutorial: ${instruction.expectedActionType} (${action.getValidationMessage()})`);
+              throw new Error(
+                `Invalid action in tutorial: ${instruction.expectedActionType} (${action.getValidationMessage()})`,
+              );
             }
           } else {
-            throw new Error(`Unexpected action type in tutorial: ${instruction.expectedActionType}`);
+            throw new Error(
+              `Unexpected action type in tutorial: ${instruction.expectedActionType}`,
+            );
           }
         } else {
           // no more instructions, move to OTK
@@ -143,11 +155,16 @@ UtilsSDK.executeTutorialOpponentTurn = function () {
       opponentAgentActions = null;
       break;
     } else {
-      const opponentAction = AgentActions.createSDKActionFromAgentAction(opponentAgent, finalAgentAction);
+      const opponentAction = AgentActions.createSDKActionFromAgentAction(
+        opponentAgent,
+        finalAgentAction,
+      );
       if (opponentAction instanceof SDK.Action) {
         gameSession.executeAction(opponentAction);
         if (!opponentAction.getIsValid()) {
-          throw new Error(`Invalid opponent action in tutorial: ${opponentAction.getType()} (${opponentAction.getValidationMessage()})`);
+          throw new Error(
+            `Invalid opponent action in tutorial: ${opponentAction.getType()} (${opponentAction.getValidationMessage()})`,
+          );
         }
       }
     }
@@ -179,7 +196,13 @@ UtilsSDK.applyCardToBoard = function (cardOrCardData, boardX, boardY, ownerId) {
   }
 
   // apply card
-  const action = new SDK.PlayCardAction(SDK.GameSession.getInstance(), ownerId, boardX, boardY, cardOrCardData);
+  const action = new SDK.PlayCardAction(
+    SDK.GameSession.getInstance(),
+    ownerId,
+    boardX,
+    boardY,
+    cardOrCardData,
+  );
   UtilsSDK.executeActionWithoutValidation(action);
 
   // return card
@@ -193,7 +216,9 @@ UtilsSDK.applyCardToBoard = function (cardOrCardData, boardX, boardY, ownerId) {
  * @returns {Card}
  */
 UtilsSDK.removeCardFromBoard = function (boardX, boardY) {
-  const card = SDK.GameSession.getInstance().getBoard().getEntityAtPosition({ x: boardX, y: boardY }, true);
+  const card = SDK.GameSession.getInstance()
+    .getBoard()
+    .getEntityAtPosition({ x: boardX, y: boardY }, true);
 
   if (card != null) {
     // remove card

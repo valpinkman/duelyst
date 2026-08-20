@@ -27,9 +27,11 @@ class MoveAction extends Action {
   }
 
   getPath() {
-    if ((this._private.cachedPath == null)) {
+    if (this._private.cachedPath == null) {
       const entity = this.getTarget();
-      this._private.cachedPath = entity.getMovementRange().getPathTo(this.getGameSession().getBoard(), entity, this.getTargetPosition());
+      this._private.cachedPath = entity
+        .getMovementRange()
+        .getPathTo(this.getGameSession().getBoard(), entity, this.getTargetPosition());
     }
     return this._private.cachedPath;
   }

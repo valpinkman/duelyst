@@ -33,13 +33,14 @@ const ScoreForUnitTeleportTarget = function (card, targetPosition) {
   const currentPlayerId = card.getGameSession().getCurrentPlayerId();
   const cardOwnerId = card.getOwnerId();
   // console.log("1 ScoreForUnitTeleportTarget -> score = " + score)
-  score += (ScoreForUnit(card) / 10);
+  score += ScoreForUnit(card) / 10;
   // console.log("2 ScoreForUnitTeleportTarget -> score = " + score)
   // we soften unit scores by 10. The unit is important, but position is more important - this also normalizes the two scores
   // as positioning only ranges from -7 to -0.5 while unit scores can be much larger. Dividing by 10 places unit score
   // in an appropriate place relative to unit score
   positionScore = ScoreForCardAtTargetPosition(card, targetPosition, card);
-  score += currentPlayerId == cardOwnerId ? positionScore * -1 : positionScore + magicNumberTeleport;
+  score +=
+    currentPlayerId == cardOwnerId ? positionScore * -1 : positionScore + magicNumberTeleport;
   // console.log("3 ScoreForUnitTeleportTarget -> score = " + score)
 
   return score;

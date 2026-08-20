@@ -34,11 +34,12 @@ class ModifierSummonWatchFromActionBarAnyPlayerApplyModifiers extends ModifierSu
   onSummonWatch(action) {
     const summonedUnitPosition = __guard__(action.getTarget(), (x) => x.getPosition());
 
-    if ((this.modifiersContextObjects != null) && this.getIsValidBuffPosition(summonedUnitPosition)) {
+    if (this.modifiersContextObjects != null && this.getIsValidBuffPosition(summonedUnitPosition)) {
       const entity = action.getTarget();
       if (entity != null) {
         return Array.from<any>(this.modifiersContextObjects).map((modifierContextObject) =>
-          this.getGameSession().applyModifierContextObject(modifierContextObject, entity));
+          this.getGameSession().applyModifierContextObject(modifierContextObject, entity),
+        );
       }
     }
   }
@@ -48,11 +49,15 @@ class ModifierSummonWatchFromActionBarAnyPlayerApplyModifiers extends ModifierSu
     return true;
   }
 }
-ModifierSummonWatchFromActionBarAnyPlayerApplyModifiers.prototype.type = 'ModifierSummonWatchFromActionBarAnyPlayerApplyModifiers';
-ModifierSummonWatchFromActionBarAnyPlayerApplyModifiers.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierSummonWatchFromActionBarAnyPlayerApplyModifiers.prototype.type =
+  'ModifierSummonWatchFromActionBarAnyPlayerApplyModifiers';
+ModifierSummonWatchFromActionBarAnyPlayerApplyModifiers.prototype.fxResource = [
+  'FX.Modifiers.ModifierSummonWatch',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 
 module.exports = ModifierSummonWatchFromActionBarAnyPlayerApplyModifiers;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

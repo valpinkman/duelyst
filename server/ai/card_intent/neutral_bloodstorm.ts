@@ -4,9 +4,7 @@ const CardTargetType = require('./card_target_type');
 const CardPhaseType = require('./card_phase_type');
 const CardImmunity = require('./card_immunity');
 
-const NB = {
-
-};
+const NB = {};
 
 // NEUTRAL RISE OF THE BLOODBORN CARD INTENTS
 

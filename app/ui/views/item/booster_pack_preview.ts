@@ -5,7 +5,6 @@ var SDK = require('app/sdk');
 var BoosterPackPreviewTmpl = require('app/ui/templates/item/booster_pack_preview.hbs');
 
 var BoosterPackPreviewItemView = Backbone.Marionette.ItemView.extend({
-
   initialize: function () {
     Logger.module('UI').log('initialize a BoosterPackPreviewItemView');
   },

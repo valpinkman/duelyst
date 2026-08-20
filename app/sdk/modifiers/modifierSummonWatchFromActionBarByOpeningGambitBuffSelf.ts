@@ -17,12 +17,19 @@ class ModifierSummonWatchFromActionBarByOpeningGambitBuffSelf extends ModifierSu
 
   static type = 'ModifierSummonWatchFromActionBarByOpeningGambitBuffSelf';
   static modifierName = 'Summon Watch from action bar (buff by Opening Gambit)';
-  static description = 'Whenever you summon a minion with Opening Gambit from your action bar, gain %Y';
+  static description =
+    'Whenever you summon a minion with Opening Gambit from your action bar, gain %Y';
 
   static createContextObject(attackBuff, maxHPBuff, options) {
-    if (attackBuff == null) { attackBuff = 0; }
-    if (maxHPBuff == null) { maxHPBuff = 0; }
-    if (options == null) { options = undefined; }
+    if (attackBuff == null) {
+      attackBuff = 0;
+    }
+    if (maxHPBuff == null) {
+      maxHPBuff = 0;
+    }
+    if (options == null) {
+      options = undefined;
+    }
     const contextObject = super.createContextObject(options);
     const modContextObject = Modifier.createContextObjectWithAttributeBuffs(attackBuff, maxHPBuff);
     modContextObject.appliedName = 'Hunter';
@@ -33,19 +40,32 @@ class ModifierSummonWatchFromActionBarByOpeningGambitBuffSelf extends ModifierSu
   static getDescription(modifierContextObject) {
     if (modifierContextObject) {
       const subContextObject = modifierContextObject.modifiersContextObjects[0];
-      return this.description.replace(/%Y/, Stringifiers.stringifyAttackHealthBuff(subContextObject.attributeBuffs.atk, subContextObject.attributeBuffs.maxHP));
+      return this.description.replace(
+        /%Y/,
+        Stringifiers.stringifyAttackHealthBuff(
+          subContextObject.attributeBuffs.atk,
+          subContextObject.attributeBuffs.maxHP,
+        ),
+      );
     }
     return this.description;
   }
 
   getIsActionRelevant(action) {
     // watch for a unit being summoned from action bar by the player who owns this entity, don't trigger on summon of this unit
-    return action instanceof PlayCardFromHandAction && (action.getCard() !== this.getCard()) && super.getIsActionRelevant(action);
+    return (
+      action instanceof PlayCardFromHandAction &&
+      action.getCard() !== this.getCard() &&
+      super.getIsActionRelevant(action)
+    );
   }
 
   onSummonWatch(action) {
     // apply modifiers once
-    return this.applyManagedModifiersFromModifiersContextObjects(this.modifiersContextObjects, this.getCard());
+    return this.applyManagedModifiersFromModifiersContextObjects(
+      this.modifiersContextObjects,
+      this.getCard(),
+    );
   }
 
   getIsCardRelevantToWatcher(card) {
@@ -59,8 +79,12 @@ class ModifierSummonWatchFromActionBarByOpeningGambitBuffSelf extends ModifierSu
     return false;
   }
 }
-ModifierSummonWatchFromActionBarByOpeningGambitBuffSelf.prototype.type = 'ModifierSummonWatchFromActionBarByOpeningGambitBuffSelf';
-ModifierSummonWatchFromActionBarByOpeningGambitBuffSelf.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierSummonWatchFromActionBarByOpeningGambitBuffSelf.prototype.type =
+  'ModifierSummonWatchFromActionBarByOpeningGambitBuffSelf';
+ModifierSummonWatchFromActionBarByOpeningGambitBuffSelf.prototype.fxResource = [
+  'FX.Modifiers.ModifierSummonWatch',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 // fallback to false if no opening gambit keywords found
 
 module.exports = ModifierSummonWatchFromActionBarByOpeningGambitBuffSelf;

@@ -67,32 +67,50 @@ router.get('/:player_id', function (req, res, next) {
   });
 
   if (config.get('consul.enabled')) {
-    systemStatusPromise = Consul.kv.get(`environments/${process.env.NODE_ENV}/runtime-system-configuration.json`)
+    systemStatusPromise = Consul.kv
+      .get(`environments/${process.env.NODE_ENV}/runtime-system-configuration.json`)
       .then(JSON.parse);
   }
 
   return systemStatusPromise
     .then(function (consulSystemRuntimeParams) {
-      if (!__guard__(consulSystemRuntimeParams != null ? consulSystemRuntimeParams.spectate : undefined, (x) => x.enabled)) {
+      if (
+        !__guard__(
+          consulSystemRuntimeParams != null ? consulSystemRuntimeParams.spectate : undefined,
+          (x) => x.enabled,
+        )
+      ) {
         throw new Errors.SystemDisabledError('The spectate system is temporarily disabled.');
       }
-    }).then(() => knex('users').first('username').where('id', user_id))
-    .then(function (userRow) { return _chainState.username = userRow.username; })
+    })
+    .then(() => knex('users').first('username').where('id', user_id))
+    .then(function (userRow) {
+      return (_chainState.username = userRow.username);
+    })
     .then(() => knex('users').first('username').where('id', player_id))
-    .then(function (userRow) { return _chainState.buddyName = userRow.buddyName; })
-    .then(() => knex('user_games').where('user_id', player_id).orderBy('created_at', 'desc').first())
+    .then(function (userRow) {
+      return (_chainState.buddyName = userRow.buddyName);
+    })
+    .then(() =>
+      knex('user_games').where('user_id', player_id).orderBy('created_at', 'desc').first(),
+    )
     .then(function (gameRow) {
       if (gameRow.ended_at != null) {
-        throw new Errors.NotFoundError('The player\'s last game is over.');
+        throw new Errors.NotFoundError("The player's last game is over.");
       } else {
-        return _chainState.gameRow = gameRow;
+        return (_chainState.gameRow = gameRow);
       }
     })
     .then(() => DuelystFirebase.connect().getRootRef())
-    .then((rootRef) => Promise.all([
-      FirebasePromises.once(rootRef.child('users').child(user_id).child('buddies'), 'value'),
-      FirebasePromises.once(rootRef.child('users').child(player_id).child('blockSpectators'), 'value'),
-    ]))
+    .then((rootRef) =>
+      Promise.all([
+        FirebasePromises.once(rootRef.child('users').child(user_id).child('buddies'), 'value'),
+        FirebasePromises.once(
+          rootRef.child('users').child(player_id).child('blockSpectators'),
+          'value',
+        ),
+      ]),
+    )
     .then(function ([buddiesSnapshot, blockSpectatorsSnapshot]) {
       const buddies = buddiesSnapshot.val();
       const buddyIds = _.keys(buddies);
@@ -102,7 +120,9 @@ router.get('/:player_id', function (req, res, next) {
       }
 
       if (!_.contains(buddyIds, player_id)) {
-        throw new Errors.NotFoundError(`You must be buddies with ${_chainState.buddyName} to spectate this game.`);
+        throw new Errors.NotFoundError(
+          `You must be buddies with ${_chainState.buddyName} to spectate this game.`,
+        );
       }
 
       const payload = {
@@ -117,7 +137,7 @@ router.get('/:player_id', function (req, res, next) {
       };
 
       // We are encoding the payload inside the token
-      return _chainState.token = jwt.sign(payload, config.get('firebase.legacyToken'), options);
+      return (_chainState.token = jwt.sign(payload, config.get('firebase.legacyToken'), options));
     })
     .then(function () {
       const responseData = {
@@ -126,13 +146,19 @@ router.get('/:player_id', function (req, res, next) {
       };
       return res.status(200).json(responseData);
     })
-    .catch(onType(Errors.UnauthorizedError, (error) => res.status(500).json({ message: error.message })))
-    .catch(onType(Errors.SystemDisabledError, (error) => res.status(400).json({ message: error.message })))
+    .catch(
+      onType(Errors.UnauthorizedError, (error) => res.status(500).json({ message: error.message })),
+    )
+    .catch(
+      onType(Errors.SystemDisabledError, (error) =>
+        res.status(400).json({ message: error.message }),
+      ),
+    )
     .catch((error) => next(error));
 });
 
 module.exports = router;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

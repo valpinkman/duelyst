@@ -15,13 +15,9 @@ Logger.enabled = false;
 describe('monthlies', () => {
   describe('month 2', () => {
     beforeEach(() => {
-      const player1Deck = [
-        { id: SDK.Cards.Faction6.General },
-      ];
+      const player1Deck = [{ id: SDK.Cards.Faction6.General }];
 
-      const player2Deck = [
-        { id: SDK.Cards.Faction1.General },
-      ];
+      const player2Deck = [{ id: SDK.Cards.Faction1.General }];
 
       UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
     });
@@ -36,27 +32,60 @@ describe('monthlies', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      const grailmaster = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Grailmaster }, 1, 2, gameSession.getPlayer1Id());
+      const grailmaster = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.Grailmaster },
+        1,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
       var action = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(action);
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
       var action = player1.actionPlayCardFromHand(0, 2, 1);
       gameSession.executeAction(action);
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
       var action = player1.actionPlayCardFromHand(0, 3, 1);
       gameSession.executeAction(action);
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
       var action = player1.actionPlayCardFromHand(0, 4, 1);
       gameSession.executeAction(action);
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
       var action = player1.actionPlayCardFromHand(0, 5, 1);
       gameSession.executeAction(action);
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
       var action = player1.actionPlayCardFromHand(0, 6, 1);
       gameSession.executeAction(action);
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
       var action = player1.actionPlayCardFromHand(0, 7, 1);
       gameSession.executeAction(action);
 
@@ -73,14 +102,27 @@ describe('monthlies', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const firestarter = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Firestarter }, 2, 2, gameSession.getPlayer1Id());
+      const firestarter = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.Firestarter },
+        2,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PhoenixFire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 8, 2);
       gameSession.executeAction(playCardFromHandAction);
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PhoenixFire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 8, 2);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -95,17 +137,34 @@ describe('monthlies', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const khymera = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Khymera }, 0, 0, gameSession.getPlayer1Id());
+      const khymera = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.Khymera },
+        0,
+        0,
+        gameSession.getPlayer1Id(),
+      );
 
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PhoenixFire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 0, 0);
       gameSession.executeAction(playCardFromHandAction);
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PhoenixFire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 0, 0);
       gameSession.executeAction(playCardFromHandAction);
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PhoenixFire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 0, 0);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -116,22 +175,55 @@ describe('monthlies', () => {
       let token1check = false;
       let token2check = false;
       let token3check = false;
-      if (token1.getId() === SDK.Cards.Faction5.MiniMagmar || token1.getId() === SDK.Cards.Neutral.MiniJax || token1.getId() === SDK.Cards.Faction6.Treant || token1.getId() === SDK.Cards.Faction6.GhostWolf
-      || token1.getId() === SDK.Cards.Faction6.AzureDrake || token1.getId() === SDK.Cards.Neutral.ArcaneIllusion || token1.getId() === SDK.Cards.Faction6.WaterBear || token1.getId() === SDK.Cards.Faction4.Wraithling
-      || token1.getId() === SDK.Cards.Faction2.OnyxBear || token1.getId() === SDK.Cards.Neutral.Mechaz0r || token1.getId() === SDK.Cards.Faction6.SeismicElemental
-      || token1.getId() === SDK.Cards.Faction6.IceDrake || token1.getId() === SDK.Cards.Neutral.Spellspark) {
+      if (
+        token1.getId() === SDK.Cards.Faction5.MiniMagmar ||
+        token1.getId() === SDK.Cards.Neutral.MiniJax ||
+        token1.getId() === SDK.Cards.Faction6.Treant ||
+        token1.getId() === SDK.Cards.Faction6.GhostWolf ||
+        token1.getId() === SDK.Cards.Faction6.AzureDrake ||
+        token1.getId() === SDK.Cards.Neutral.ArcaneIllusion ||
+        token1.getId() === SDK.Cards.Faction6.WaterBear ||
+        token1.getId() === SDK.Cards.Faction4.Wraithling ||
+        token1.getId() === SDK.Cards.Faction2.OnyxBear ||
+        token1.getId() === SDK.Cards.Neutral.Mechaz0r ||
+        token1.getId() === SDK.Cards.Faction6.SeismicElemental ||
+        token1.getId() === SDK.Cards.Faction6.IceDrake ||
+        token1.getId() === SDK.Cards.Neutral.Spellspark
+      ) {
         token1check = true;
       }
-      if (token2.getId() === SDK.Cards.Faction5.MiniMagmar || token2.getId() === SDK.Cards.Neutral.MiniJax || token2.getId() === SDK.Cards.Faction6.Treant || token2.getId() === SDK.Cards.Faction6.GhostWolf
-      || token2.getId() === SDK.Cards.Faction6.AzureDrake || token2.getId() === SDK.Cards.Neutral.ArcaneIllusion || token2.getId() === SDK.Cards.Faction6.WaterBear || token2.getId() === SDK.Cards.Faction4.Wraithling
-      || token2.getId() === SDK.Cards.Faction2.OnyxBear || token2.getId() === SDK.Cards.Neutral.Mechaz0r || token2.getId() === SDK.Cards.Faction6.SeismicElemental
-      || token2.getId() === SDK.Cards.Faction6.IceDrake || token2.getId() === SDK.Cards.Neutral.Spellspark) {
+      if (
+        token2.getId() === SDK.Cards.Faction5.MiniMagmar ||
+        token2.getId() === SDK.Cards.Neutral.MiniJax ||
+        token2.getId() === SDK.Cards.Faction6.Treant ||
+        token2.getId() === SDK.Cards.Faction6.GhostWolf ||
+        token2.getId() === SDK.Cards.Faction6.AzureDrake ||
+        token2.getId() === SDK.Cards.Neutral.ArcaneIllusion ||
+        token2.getId() === SDK.Cards.Faction6.WaterBear ||
+        token2.getId() === SDK.Cards.Faction4.Wraithling ||
+        token2.getId() === SDK.Cards.Faction2.OnyxBear ||
+        token2.getId() === SDK.Cards.Neutral.Mechaz0r ||
+        token2.getId() === SDK.Cards.Faction6.SeismicElemental ||
+        token2.getId() === SDK.Cards.Faction6.IceDrake ||
+        token2.getId() === SDK.Cards.Neutral.Spellspark
+      ) {
         token2check = true;
       }
-      if (token3.getId() === SDK.Cards.Faction5.MiniMagmar || token3.getId() === SDK.Cards.Neutral.MiniJax || token3.getId() === SDK.Cards.Faction6.Treant || token3.getId() === SDK.Cards.Faction6.GhostWolf
-      || token3.getId() === SDK.Cards.Faction6.AzureDrake || token3.getId() === SDK.Cards.Neutral.ArcaneIllusion || token3.getId() === SDK.Cards.Faction6.WaterBear || token3.getId() === SDK.Cards.Faction4.Wraithling
-      || token3.getId() === SDK.Cards.Faction2.OnyxBear || token3.getId() === SDK.Cards.Neutral.Mechaz0r || token3.getId() === SDK.Cards.Faction6.SeismicElemental
-      || token3.getId() === SDK.Cards.Faction6.IceDrake || token3.getId() === SDK.Cards.Neutral.Spellspark) {
+      if (
+        token3.getId() === SDK.Cards.Faction5.MiniMagmar ||
+        token3.getId() === SDK.Cards.Neutral.MiniJax ||
+        token3.getId() === SDK.Cards.Faction6.Treant ||
+        token3.getId() === SDK.Cards.Faction6.GhostWolf ||
+        token3.getId() === SDK.Cards.Faction6.AzureDrake ||
+        token3.getId() === SDK.Cards.Neutral.ArcaneIllusion ||
+        token3.getId() === SDK.Cards.Faction6.WaterBear ||
+        token3.getId() === SDK.Cards.Faction4.Wraithling ||
+        token3.getId() === SDK.Cards.Faction2.OnyxBear ||
+        token3.getId() === SDK.Cards.Neutral.Mechaz0r ||
+        token3.getId() === SDK.Cards.Faction6.SeismicElemental ||
+        token3.getId() === SDK.Cards.Faction6.IceDrake ||
+        token3.getId() === SDK.Cards.Neutral.Spellspark
+      ) {
         token3check = true;
       }
       expect(token1check).to.equal(true);
@@ -144,11 +236,20 @@ describe('monthlies', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const jaxi = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Jaxi }, 2, 2, gameSession.getPlayer1Id());
+      const jaxi = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.Jaxi },
+        2,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PhoenixFire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 2, 2);
       gameSession.executeAction(playCardFromHandAction);
 

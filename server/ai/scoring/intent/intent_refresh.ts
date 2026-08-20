@@ -34,7 +34,10 @@ const getScoreForRefreshFromCardWithIntentToCard = function (card, intent, targe
 const ScoreForIntentRefresh = function (card, targetPosition, cardIntents) {
   let score = 0;
   const cardId = card.getBaseCardId();
-  const validIntents = cardIntents != null ? CardIntent.filterIntentsByIntentType(cardIntents, CardIntentType.Refresh) : CardIntent.getIntentsByIntentType(cardId, CardIntentType.Refresh);
+  const validIntents =
+    cardIntents != null
+      ? CardIntent.filterIntentsByIntentType(cardIntents, CardIntentType.Refresh)
+      : CardIntent.getIntentsByIntentType(cardId, CardIntentType.Refresh);
 
   _.each(validIntents, (intent) => {
     const cards = CardIntent.getCardsTargetedByCardWithIntent(card, intent, targetPosition);

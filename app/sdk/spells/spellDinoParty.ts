@@ -18,8 +18,8 @@ class SpellDinoParty extends Spell {
     super.onApplyEffectToBoardTile(board, x, y, sourceAction);
 
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
-      let isLockedFateCard; let
-        mod;
+      let isLockedFateCard;
+      let mod;
       const ownerId = this.getOwnerId();
       const general = this.getGameSession().getGeneralForPlayerId(ownerId);
       const cardsInHand = this.getOwner().getDeck().getCardsInHandExcludingMissing();
@@ -43,7 +43,10 @@ class SpellDinoParty extends Spell {
 
       const enemyGeneral = this.getGameSession().getGeneralForOpponentOfPlayerId(ownerId);
       const enemyId = enemyGeneral.getOwnerId();
-      const enemyCardsInHand = this.getGameSession().getOpponentPlayerOfPlayerId(ownerId).getDeck().getCardsInHandExcludingMissing();
+      const enemyCardsInHand = this.getGameSession()
+        .getOpponentPlayerOfPlayerId(ownerId)
+        .getDeck()
+        .getCardsInHandExcludingMissing();
       const enemyPossibleCardsToSummon = [];
       for (var enemyCard of Array.from<any>(enemyCardsInHand)) {
         if ((enemyCard != null ? enemyCard.getType() : undefined) === CardType.Unit) {
@@ -72,7 +75,13 @@ class SpellDinoParty extends Spell {
             minionsLeftToSummon = this.summonMinion(possibleCardsToSummon, general, ownerId);
           }
           if (enemyMinionsLeftToSummon) {
-            result.push(enemyMinionsLeftToSummon = this.summonMinion(enemyPossibleCardsToSummon, enemyGeneral, enemyId));
+            result.push(
+              (enemyMinionsLeftToSummon = this.summonMinion(
+                enemyPossibleCardsToSummon,
+                enemyGeneral,
+                enemyId,
+              )),
+            );
           } else {
             result.push(undefined);
           }
@@ -85,12 +94,31 @@ class SpellDinoParty extends Spell {
   summonMinion(possibleCardsToSummon, general, ownerId) {
     if (possibleCardsToSummon.length > 0) {
       const generalPosition = general.getPosition();
-      const cardToSummon = possibleCardsToSummon.splice(this.getGameSession().getRandomIntegerForExecution(possibleCardsToSummon.length), 1)[0];
-      const spawnLocations = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(this.getGameSession(), generalPosition, CONFIG.PATTERN_3x3, cardToSummon, general, 1);
+      const cardToSummon = possibleCardsToSummon.splice(
+        this.getGameSession().getRandomIntegerForExecution(possibleCardsToSummon.length),
+        1,
+      )[0];
+      const spawnLocations = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(
+        this.getGameSession(),
+        generalPosition,
+        CONFIG.PATTERN_3x3,
+        cardToSummon,
+        general,
+        1,
+      );
 
-      if ((spawnLocations != null) && (spawnLocations.length > 0)) {
-        const locationToSummon = spawnLocations.splice(this.getGameSession().getRandomIntegerForExecution(spawnLocations.length), 1)[0];
-        const playCardAction = new PlayCardSilentlyAction(this.getGameSession(), ownerId, locationToSummon.x, locationToSummon.y, cardToSummon.getIndex());
+      if (spawnLocations != null && spawnLocations.length > 0) {
+        const locationToSummon = spawnLocations.splice(
+          this.getGameSession().getRandomIntegerForExecution(spawnLocations.length),
+          1,
+        )[0];
+        const playCardAction = new PlayCardSilentlyAction(
+          this.getGameSession(),
+          ownerId,
+          locationToSummon.x,
+          locationToSummon.y,
+          cardToSummon.getIndex(),
+        );
         playCardAction.setSource(general);
         this.getGameSession().executeAction(playCardAction);
         return true;

@@ -15,7 +15,8 @@ Boss[Cards.BossSpell.LaceratingFrost] = [
   },
   {
     type: CardIntentType.Stun,
-    targets: CardTargetType.Minion | CardTargetType.Enemy | CardTargetType.Nearby | CardTargetType.General,
+    targets:
+      CardTargetType.Minion | CardTargetType.Enemy | CardTargetType.Nearby | CardTargetType.General,
   },
 ];
 

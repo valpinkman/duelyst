@@ -84,7 +84,14 @@ UtilsResources.getPathIsForFont = function (resourcePath) {
  * @return {Boolean}
  */
 UtilsResources.getExtIsForFont = function (ext) {
-  return ext === 'ttf' || ext === 'fnt' || ext === 'font' || ext === 'eot' || ext === 'woff' || ext === 'svg';
+  return (
+    ext === 'ttf' ||
+    ext === 'fnt' ||
+    ext === 'font' ||
+    ext === 'eot' ||
+    ext === 'woff' ||
+    ext === 'svg'
+  );
 };
 
 /**
@@ -191,10 +198,18 @@ UtilsResources.getResourcePathsFromResources = function (resources) {
   let resourcePaths = [];
   for (let i = 0, il = resources.length; i < il; i++) {
     const resource = resources[i];
-    if (resource.img != null) { resourcePaths.push(resource.img); }
-    if (resource.plist != null) { resourcePaths.push(resource.plist); }
-    if (resource.audio != null) { resourcePaths.push(resource.audio); }
-    if (resource.font != null) { resourcePaths.push(resource.font); }
+    if (resource.img != null) {
+      resourcePaths.push(resource.img);
+    }
+    if (resource.plist != null) {
+      resourcePaths.push(resource.plist);
+    }
+    if (resource.audio != null) {
+      resourcePaths.push(resource.audio);
+    }
+    if (resource.font != null) {
+      resourcePaths.push(resource.font);
+    }
   }
   resourcePaths = _.uniq(resourcePaths);
   return resourcePaths;
@@ -216,7 +231,7 @@ UtilsResources.getSpriteFramesUsingTexture = function (texture) {
       const spriteFrameKey = spriteFramesKeys[i];
       const spriteFrame = spriteFrames[spriteFrameKey];
       // matching spriteFrame
-      if (spriteFrame && (spriteFrame.getTexture() === texture)) {
+      if (spriteFrame && spriteFrame.getTexture() === texture) {
         spriteFramesUsingTexture.push(spriteFrame);
       }
     }

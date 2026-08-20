@@ -22,7 +22,9 @@ class PlayerModifierEndTurnWatchRevertBBS extends PlayerModifier {
     super.onEndTurn(action);
     if (this.bbsToRevertTo != null) {
       this.getCard().setSignatureCardData(this.bbsToRevertTo);
-      return this.getGameSession().executeAction(this.getCard().getOwner().actionGenerateSignatureCard());
+      return this.getGameSession().executeAction(
+        this.getCard().getOwner().actionGenerateSignatureCard(),
+      );
     }
   }
 }

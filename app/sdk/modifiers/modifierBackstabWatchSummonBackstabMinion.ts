@@ -29,12 +29,16 @@ class ModifierBackstabWatchSummonBackstabMinion extends ModifierBackstabWatch {
   }
 
   onBackstabWatch(action) {
-    let card; let
-      i;
-    let asc; let
-      end;
+    let card;
+    let i;
+    let asc;
+    let end;
     for (i = 0, end = this.numToAdd, asc = end >= 0; asc ? i < end : i > end; asc ? i++ : i--) {
-      var putCardInHandAction = new PutCardInHandAction(this.getGameSession(), this.getOwnerId(), this.cardToAdd);
+      var putCardInHandAction = new PutCardInHandAction(
+        this.getGameSession(),
+        this.getOwnerId(),
+        this.cardToAdd,
+      );
       this.getGameSession().executeAction(putCardInHandAction);
     }
 
@@ -45,23 +49,45 @@ class ModifierBackstabWatchSummonBackstabMinion extends ModifierBackstabWatch {
       // find only frost minions
       var cardIndex = drawPile[i];
       card = this.getGameSession().getCardByIndex(cardIndex);
-      if ((card != null) && (card.getType() === CardType.Unit) && (card.getManaCost() <= this.backstabManaCost) && card.hasModifierClass(ModifierBackstab)) {
+      if (
+        card != null &&
+        card.getType() === CardType.Unit &&
+        card.getManaCost() <= this.backstabManaCost &&
+        card.hasModifierClass(ModifierBackstab)
+      ) {
         indexesOfMinions.push(i);
       }
     }
 
     if (indexesOfMinions.length > 0) {
-      const indexOfCardInDeck = indexesOfMinions[this.getGameSession().getRandomIntegerForExecution(indexesOfMinions.length)];
+      const indexOfCardInDeck =
+        indexesOfMinions[
+          this.getGameSession().getRandomIntegerForExecution(indexesOfMinions.length)
+        ];
       const cardIndexToDraw = drawPile[indexOfCardInDeck];
       card = this.getGameSession().getCardByIndex(cardIndexToDraw);
 
       let spawnLocation = null;
-      const validSpawnLocations = UtilsGameSession.getSmartSpawnPositionsFromPattern(this.getGameSession(), this.getCard().getPosition(), CONFIG.PATTERN_3x3, card);
+      const validSpawnLocations = UtilsGameSession.getSmartSpawnPositionsFromPattern(
+        this.getGameSession(),
+        this.getCard().getPosition(),
+        CONFIG.PATTERN_3x3,
+        card,
+      );
       if ((validSpawnLocations != null ? validSpawnLocations.length : undefined) > 0) {
-        spawnLocation = validSpawnLocations[this.getGameSession().getRandomIntegerForExecution(validSpawnLocations.length)];
+        spawnLocation =
+          validSpawnLocations[
+            this.getGameSession().getRandomIntegerForExecution(validSpawnLocations.length)
+          ];
 
         if (spawnLocation != null) {
-          const playCardAction = new PlayCardSilentlyAction(this.getGameSession(), this.getCard().getOwnerId(), spawnLocation.x, spawnLocation.y, card);
+          const playCardAction = new PlayCardSilentlyAction(
+            this.getGameSession(),
+            this.getCard().getOwnerId(),
+            spawnLocation.x,
+            spawnLocation.y,
+            card,
+          );
           playCardAction.setSource(this.getCard());
           return this.getGameSession().executeAction(playCardAction);
         }
@@ -69,7 +95,8 @@ class ModifierBackstabWatchSummonBackstabMinion extends ModifierBackstabWatch {
     }
   }
 }
-ModifierBackstabWatchSummonBackstabMinion.prototype.type = 'ModifierBackstabWatchSummonBackstabMinion';
+ModifierBackstabWatchSummonBackstabMinion.prototype.type =
+  'ModifierBackstabWatchSummonBackstabMinion';
 ModifierBackstabWatchSummonBackstabMinion.prototype.cardToAdd = null;
 ModifierBackstabWatchSummonBackstabMinion.prototype.numToAdd = 0;
 

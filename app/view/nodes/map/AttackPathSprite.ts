@@ -93,17 +93,34 @@ var AttackPathSprite = BaseSprite.extend({
       const movePct = this._currentDistance / this._maxDistance;
       const arcPct = Math.min(this._currentDistance / this._distance, 1.0);
       const arcModifier = Math.sin(arcPct * Math.PI);
-      const nextPosition = cc.p(this._sourceScreenPosition.x + dx * movePct, this._sourceScreenPosition.y + dy * movePct + this.arcDistance * arcModifier);
+      const nextPosition = cc.p(
+        this._sourceScreenPosition.x + dx * movePct,
+        this._sourceScreenPosition.y + dy * movePct + this.arcDistance * arcModifier,
+      );
       this.setDepthOffset(-this.arcDistance * (arcModifier - 0.5) * 2.0);
       this.setAutoZOrderOffset((this.arcDistance / CONFIG.TILESIZE) * arcModifier * 1.5);
       this.setPosition(nextPosition);
 
       // update rotation
-      this.setRotation(cc.radiansToDegrees(-Math.atan2(this._delta.y - this.arcDistance * (arcPct - 0.5) * 2.0 * CONFIG.PATH_ARC_ROTATION_MODIFIER, this._delta.x)));
+      this.setRotation(
+        cc.radiansToDegrees(
+          -Math.atan2(
+            this._delta.y -
+              this.arcDistance * (arcPct - 0.5) * 2.0 * CONFIG.PATH_ARC_ROTATION_MODIFIER,
+            this._delta.x,
+          ),
+        ),
+      );
 
       // update opacity
       const fadeIn = Math.min(this._currentDistance / this.fadeDistance, 1.0);
-      const fadeOut = 1.0 - Math.min(Math.max(this._currentDistance - (this._distance - this.fadeDistance), 0.0) / this.fadeDistance, 1.0);
+      const fadeOut =
+        1.0 -
+        Math.min(
+          Math.max(this._currentDistance - (this._distance - this.fadeDistance), 0.0) /
+            this.fadeDistance,
+          1.0,
+        );
       this._pathOpacityModifier = fadeIn * fadeOut;
       this._renderCmd.setDirtyFlag(cc.Node._dirtyFlags.opacityDirty);
 
@@ -118,7 +135,9 @@ var AttackPathSprite = BaseSprite.extend({
 AttackPathSprite.WebGLRenderCmd = function (renderable) {
   BaseSprite.WebGLRenderCmd.call(this, renderable);
 };
-const proto = AttackPathSprite.WebGLRenderCmd.prototype = Object.create(BaseSprite.WebGLRenderCmd.prototype);
+const proto = (AttackPathSprite.WebGLRenderCmd.prototype = Object.create(
+  BaseSprite.WebGLRenderCmd.prototype,
+));
 proto.constructor = AttackPathSprite.WebGLRenderCmd;
 
 proto._syncDisplayOpacity = function () {
@@ -132,7 +151,8 @@ proto._updateDisplayOpacity = function () {
 
 AttackPathSprite.create = function (sprite) {
   if (sprite == null) {
-    sprite = cc.pool.getFromPool(AttackPathSprite) || BaseSprite.create(null, new AttackPathSprite());
+    sprite =
+      cc.pool.getFromPool(AttackPathSprite) || BaseSprite.create(null, new AttackPathSprite());
   }
   return sprite;
 };

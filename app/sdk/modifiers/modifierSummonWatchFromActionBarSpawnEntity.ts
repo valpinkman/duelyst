@@ -13,10 +13,15 @@ class ModifierSummonWatchFromActionBarSpawnEntity extends ModifierSummonWatchSpa
   static description = 'Whenever you summon a minion from your action bar, summon %X';
 
   getIsActionRelevant(action) {
-    return action instanceof PlayCardFromHandAction && (action.getCard() !== this.getCard()) && super.getIsActionRelevant(action);
+    return (
+      action instanceof PlayCardFromHandAction &&
+      action.getCard() !== this.getCard() &&
+      super.getIsActionRelevant(action)
+    );
   }
 }
-ModifierSummonWatchFromActionBarSpawnEntity.prototype.type = 'ModifierSummonWatchFromActionBarSpawnEntity';
+ModifierSummonWatchFromActionBarSpawnEntity.prototype.type =
+  'ModifierSummonWatchFromActionBarSpawnEntity';
 // watch for a unit being summoned from action bar by the player who owns this entity, don't trigger on summon of this unit
 
 module.exports = ModifierSummonWatchFromActionBarSpawnEntity;

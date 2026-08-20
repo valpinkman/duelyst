@@ -19,7 +19,7 @@ class SpellToothAndTrial extends SpellSilence {
 
     const applyEffectPosition = { x, y };
     const unit = board.getUnitAtPosition(applyEffectPosition);
-    if ((unit != null) && !unit.getIsGeneral()) {
+    if (unit != null && !unit.getIsGeneral()) {
       const modifierContextObject = Modifier.createContextObjectWithAttributeBuffs(2, 2);
       modifierContextObject.appliedName = 'Primitive Strength';
       return this.getGameSession().applyModifierContextObject(modifierContextObject, unit);

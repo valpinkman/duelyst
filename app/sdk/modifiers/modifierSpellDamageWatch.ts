@@ -27,12 +27,15 @@ class ModifierSpellDamageWatch extends Modifier {
   onAction(e) {
     super.onAction(e);
 
-    const {
-      action,
-    } = e;
+    const { action } = e;
 
     // watch for a spell (but not a followup) being cast by player who owns this entity
-    if ((action instanceof PlayCardFromHandAction || action instanceof PlaySignatureCardAction) && (action.getOwnerId() === this.getCard().getOwnerId()) && (__guard__(action.getCard(), (x) => x.type) === CardType.Spell) && this.createdDamageSubaction(action)) {
+    if (
+      (action instanceof PlayCardFromHandAction || action instanceof PlaySignatureCardAction) &&
+      action.getOwnerId() === this.getCard().getOwnerId() &&
+      __guard__(action.getCard(), (x) => x.type) === CardType.Spell &&
+      this.createdDamageSubaction(action)
+    ) {
       return this.onDamagingSpellcast(action);
     }
   }
@@ -43,7 +46,10 @@ class ModifierSpellDamageWatch extends Modifier {
   createdDamageSubaction(action) {
     // did the spell cast action create a damage subaction directly?
     for (var subAction of Array.from<any>(action.getSubActions())) {
-      if ((subAction.getType() === DamageAction.type) && !subAction.getCreatedByTriggeringModifier()) {
+      if (
+        subAction.getType() === DamageAction.type &&
+        !subAction.getCreatedByTriggeringModifier()
+      ) {
         return true;
       }
     }
@@ -60,5 +66,5 @@ ModifierSpellDamageWatch.prototype.fxResource = ['FX.Modifiers.ModifierSpellWatc
 module.exports = ModifierSpellDamageWatch;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

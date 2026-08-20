@@ -31,9 +31,14 @@ class ModifierRook extends ModifierEndTurnWatch {
     contextObject.allModifierContextObjects = [
       ModifierBlastAttack.createContextObject(),
       ModifierBackstab.createContextObject(5),
-      ModifierInfiltrate.createContextObject([
-        Modifier.createContextObjectWithAttributeBuffs(5, 0, { appliedName: i18next.t('modifiers.rook_infiltrate_name') }),
-      ], i18next.t('modifiers.rook_infiltrate_def')),
+      ModifierInfiltrate.createContextObject(
+        [
+          Modifier.createContextObjectWithAttributeBuffs(5, 0, {
+            appliedName: i18next.t('modifiers.rook_infiltrate_name'),
+          }),
+        ],
+        i18next.t('modifiers.rook_infiltrate_def'),
+      ),
       ModifierGrow.createContextObject(5),
       ModifierBandingHealSelfAndGeneral.createContextObject(5),
       ModifierDeathWatchDrawToXCards.createContextObject(5),
@@ -44,10 +49,19 @@ class ModifierRook extends ModifierEndTurnWatch {
   onTurnWatch(action) {
     super.onTurnWatch(action);
 
-    if (this.getGameSession().getIsRunningAsAuthoritative() && (this.allModifierContextObjects.length > 0)) {
+    if (
+      this.getGameSession().getIsRunningAsAuthoritative() &&
+      this.allModifierContextObjects.length > 0
+    ) {
       // pick one modifier from the remaining list and splice it out of the set of choices
-      const modifierContextObject = this.allModifierContextObjects.splice(this.getGameSession().getRandomIntegerForExecution(this.allModifierContextObjects.length), 1)[0];
-      return this.getGameSession().applyModifierContextObject(modifierContextObject, this.getCard());
+      const modifierContextObject = this.allModifierContextObjects.splice(
+        this.getGameSession().getRandomIntegerForExecution(this.allModifierContextObjects.length),
+        1,
+      )[0];
+      return this.getGameSession().applyModifierContextObject(
+        modifierContextObject,
+        this.getCard(),
+      );
     }
   }
 }

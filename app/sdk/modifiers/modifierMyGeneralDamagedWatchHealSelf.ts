@@ -18,7 +18,9 @@ class ModifierMyGeneralDamagedWatchHealSelf extends ModifierMyGeneralDamagedWatc
   static description = 'Whenever your General takes damage, %X';
 
   static createContextObject(healAmount, options) {
-    if (healAmount == null) { healAmount = 0; }
+    if (healAmount == null) {
+      healAmount = 0;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.healAmount = healAmount;
     return contextObject;
@@ -26,7 +28,10 @@ class ModifierMyGeneralDamagedWatchHealSelf extends ModifierMyGeneralDamagedWatc
 
   static getDescription(modifierContextObject) {
     if (modifierContextObject.healAmount > 0) {
-      return this.description.replace(/%X/, `restore ${modifierContextObject.healAmount} Health to this minion`);
+      return this.description.replace(
+        /%X/,
+        `restore ${modifierContextObject.healAmount} Health to this minion`,
+      );
     }
     return this.description.replace(/%X/, 'fully heal this minion');
   }
@@ -35,7 +40,8 @@ class ModifierMyGeneralDamagedWatchHealSelf extends ModifierMyGeneralDamagedWatc
     if (this.getCard().getHP() < this.getCard().getMaxHP()) {
       const healAction = this.getCard().getGameSession().createActionForType(HealAction.type);
       healAction.setTarget(this.getCard());
-      if (this.healAmount === 0) { // default, heal to full
+      if (this.healAmount === 0) {
+        // default, heal to full
         healAction.setHealAmount(this.getCard().getMaxHP() - this.getCard().getHP());
       } else {
         healAction.setHealAmount(this.healAmount);
@@ -46,6 +52,9 @@ class ModifierMyGeneralDamagedWatchHealSelf extends ModifierMyGeneralDamagedWatc
 }
 ModifierMyGeneralDamagedWatchHealSelf.prototype.type = 'ModifierMyGeneralDamagedWatchHealSelf';
 ModifierMyGeneralDamagedWatchHealSelf.prototype.healAmount = 0;
-ModifierMyGeneralDamagedWatchHealSelf.prototype.fxResource = ['FX.Modifiers.ModifierMyGeneralDamagedWatch', 'FX.Modifiers.ModifierGenericHeal'];
+ModifierMyGeneralDamagedWatchHealSelf.prototype.fxResource = [
+  'FX.Modifiers.ModifierMyGeneralDamagedWatch',
+  'FX.Modifiers.ModifierGenericHeal',
+];
 
 module.exports = ModifierMyGeneralDamagedWatchHealSelf;

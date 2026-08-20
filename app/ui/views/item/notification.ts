@@ -10,7 +10,6 @@ var NotificationTmpl = require('app/ui/templates/item/notification.hbs');
  */
 
 var NotificationItemView = Backbone.Marionette.ItemView.extend({
-
   className: 'notification',
 
   template: NotificationTmpl,
@@ -36,7 +35,6 @@ var NotificationItemView = Backbone.Marionette.ItemView.extend({
   onAcceptCTA: function () {
     NotificationsManager.getInstance().acceptCTAForNotification(this.model);
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

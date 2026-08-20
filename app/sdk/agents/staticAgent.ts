@@ -89,7 +89,7 @@ class StaticAgent extends BaseAgent {
       keepScanningForSoftActions = false;
 
       // check that we're not out of actions
-      if (actionsForThisTurn && (this.currentActionIndexInTurn < actionsForThisTurn.length)) {
+      if (actionsForThisTurn && this.currentActionIndexInTurn < actionsForThisTurn.length) {
         var currentAction = actionsForThisTurn[this.currentActionIndexInTurn];
         if (currentAction.isSoft) {
           AgentActions.executeSoftActionForAgent(this, currentAction);
@@ -101,7 +101,7 @@ class StaticAgent extends BaseAgent {
     }
 
     // if there are no actions for this turn or we have done all actions in this turn go ahead and end the turn
-    if (!actionsForThisTurn || (this.currentActionIndexInTurn >= actionsForThisTurn.length)) {
+    if (!actionsForThisTurn || this.currentActionIndexInTurn >= actionsForThisTurn.length) {
       // end turn is assumed if there is no hard action at the end of action list
       return;
     }

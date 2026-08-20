@@ -15,7 +15,9 @@ const NodeInjections = {};
 cc.Node.prototype._autoFadeEasing = null;
 
 cc.Node.prototype.fadeTo = function (duration, opacity, callback) {
-  if (opacity == null) { opacity = 255.0; }
+  if (opacity == null) {
+    opacity = 255.0;
+  }
   this.stopFadeTo();
   this.setVisible(true);
   if (typeof duration === 'number' && duration > 0.0) {
@@ -24,10 +26,7 @@ cc.Node.prototype.fadeTo = function (duration, opacity, callback) {
       fadeAction = this._autoFadeEasing.create(fadeAction);
     }
     if (_.isFunction(callback)) {
-      fadeAction = cc.sequence(
-        fadeAction,
-        cc.callFunc(callback),
-      );
+      fadeAction = cc.sequence(fadeAction, cc.callFunc(callback));
     }
     fadeAction.setTag(CONFIG.FADE_TAG);
     this.runAction(fadeAction);
@@ -49,10 +48,7 @@ cc.Node.prototype.fadeToInvisible = function (duration, callback) {
       if (this._autoFadeEasing != null) {
         fadeAction = this._autoFadeEasing.create(fadeAction);
       }
-      const sequenceActions = [
-        fadeAction,
-        cc.hide(),
-      ];
+      const sequenceActions = [fadeAction, cc.hide()];
       if (_.isFunction(callback)) {
         sequenceActions.push(cc.callFunc(callback));
       }
@@ -73,7 +69,10 @@ cc.Node.prototype.fadeToInvisible = function (duration, callback) {
 
 cc.Node.prototype._runAction = cc.Node.prototype.runAction;
 cc.Node.prototype.runAction = function (action) {
-  if (CONFIG.replayActionSpeedModifier !== 1.0 && SDK.GameSession.getInstance().getIsSpectateMode()) {
+  if (
+    CONFIG.replayActionSpeedModifier !== 1.0 &&
+    SDK.GameSession.getInstance().getIsSpectateMode()
+  ) {
     action.setSpeedModifier(CONFIG.replayActionSpeedModifier);
   }
   return cc.Node.prototype._runAction.call(this, action);
@@ -82,7 +81,9 @@ cc.Node.prototype.runAction = function (action) {
 cc.Node.prototype.startPulsingOpacity = function (duration, opacityMin, opacityMax) {
   this.stopPulsingOpacity();
 
-  if (duration == null) { duration = CONFIG.PULSE_MEDIUM_DURATION; }
+  if (duration == null) {
+    duration = CONFIG.PULSE_MEDIUM_DURATION;
+  }
 
   this.setVisible(true);
 
@@ -104,8 +105,12 @@ cc.Node.prototype.stopPulsingOpacity = function () {
 cc.Node.prototype.startPulsingScale = function (duration, scale) {
   this.stopPulsingScale();
 
-  if (duration == null) { duration = CONFIG.PULSE_MEDIUM_DURATION; }
-  if (scale == null) { scale = 0.85; }
+  if (duration == null) {
+    duration = CONFIG.PULSE_MEDIUM_DURATION;
+  }
+  if (scale == null) {
+    scale = 0.85;
+  }
 
   let scaleActionA = cc.EaseSineIn.create(cc.scaleBy(duration, scale));
   let scaleActionB = cc.EaseSineOut.create(cc.scaleTo(duration, 1.0));
@@ -125,8 +130,12 @@ cc.Node.prototype.stopPulsingScale = function () {
 cc.Node.prototype.startRotating = function (duration, rotation, easing) {
   this.stopRotating();
 
-  if (duration == null) { duration = CONFIG.PULSE_SLOW_DURATION; }
-  if (rotation == null) { rotation = 360.0; }
+  if (duration == null) {
+    duration = CONFIG.PULSE_SLOW_DURATION;
+  }
+  if (rotation == null) {
+    rotation = 360.0;
+  }
 
   let rotateAction = cc.rotateBy(duration, rotation);
   if (easing != null) {
@@ -167,7 +176,10 @@ cc.Node.prototype._positionChanged = false;
 
 cc.Node.prototype.centerOffset = cc.p();
 cc.Node.prototype.getCenterPosition = function () {
-  return cc.p(this._contentSize.width * 0.5 + this.centerOffset.x, this._contentSize.height * 0.5 + this.centerOffset.y);
+  return cc.p(
+    this._contentSize.width * 0.5 + this.centerOffset.x,
+    this._contentSize.height * 0.5 + this.centerOffset.y,
+  );
 };
 cc.Node.prototype.getCenterPositionForExternal = function () {
   return cc.p(this._position.x + this.centerOffset.x, this._position.y + this.centerOffset.y);
@@ -201,7 +213,9 @@ cc.Node.prototype.getAutoZOrder = function () {
   return this.autoZOrder;
 };
 cc.Node.prototype.getAutoZOrderIndex = function () {
-  return Math.floor((this._position.y - UtilsEngine._boardCenterY + CONFIG.TILESIZE * 0.5) / CONFIG.TILESIZE);
+  return Math.floor(
+    (this._position.y - UtilsEngine._boardCenterY + CONFIG.TILESIZE * 0.5) / CONFIG.TILESIZE,
+  );
 };
 cc.Node.prototype.setAutoZOrderOffset = function (autoZOrderOffset) {
   this.autoZOrderOffset = autoZOrderOffset;
@@ -229,18 +243,42 @@ cc.Node.prototype.updateAutoZOrder = function () {
 cc.Node.prototype.setOptions = function (options) {
   // TODO: use underscore extend and only set options that need special handling
   if (_.isObject(options)) {
-    if (options.size != null) { this.setTextureRect(cc.rect(0, 0, options.size, options.size)); }
-    if (options.layerName != null) { this.setLayerName(options.layerName); }
-    if (options.autoZOrder != null) { this.setAutoZOrder(options.autoZOrder); }
-    if (options.autoZOrderOffset != null) { this.setAutoZOrderOffset(options.autoZOrderOffset); }
-    if (options.zOrder != null) { this.setLocalZOrder(options.zOrder); }
-    if (options.opacity != null) { this.setOpacity(options.opacity); }
-    if (options.color != null) { this.setColor(options.color); }
-    if (options.scale != null) { this.setScale(options.scale); }
-    if (options.rotation != null) { this.setRotation(options.rotation); }
-    if (options._xyzRotation != null) { this.setXYZRotation(options._xyzRotation); }
-    if (options.flippedX != null) { this.setFlippedX(options.flippedX); }
-    if (options.flippedY != null) { this.setFlippedY(options.flippedY); }
+    if (options.size != null) {
+      this.setTextureRect(cc.rect(0, 0, options.size, options.size));
+    }
+    if (options.layerName != null) {
+      this.setLayerName(options.layerName);
+    }
+    if (options.autoZOrder != null) {
+      this.setAutoZOrder(options.autoZOrder);
+    }
+    if (options.autoZOrderOffset != null) {
+      this.setAutoZOrderOffset(options.autoZOrderOffset);
+    }
+    if (options.zOrder != null) {
+      this.setLocalZOrder(options.zOrder);
+    }
+    if (options.opacity != null) {
+      this.setOpacity(options.opacity);
+    }
+    if (options.color != null) {
+      this.setColor(options.color);
+    }
+    if (options.scale != null) {
+      this.setScale(options.scale);
+    }
+    if (options.rotation != null) {
+      this.setRotation(options.rotation);
+    }
+    if (options._xyzRotation != null) {
+      this.setXYZRotation(options._xyzRotation);
+    }
+    if (options.flippedX != null) {
+      this.setFlippedX(options.flippedX);
+    }
+    if (options.flippedY != null) {
+      this.setFlippedY(options.flippedY);
+    }
     if (options.blendSrc && options.blendDst) {
       this.setBlendFunc(options.blendSrc, options.blendDst);
     } else if (options.blendSrc) {
@@ -272,7 +310,9 @@ cc.Node.prototype.ctor = function () {
   this.setCascadeOpacityEnabled(cascadeOpacityEnabled);
 
   // store prototype rotation and set as starting rotation
-  if (this._xyzRotation) { this.setXYZRotation(this._xyzRotation); }
+  if (this._xyzRotation) {
+    this.setXYZRotation(this._xyzRotation);
+  }
 };
 
 /* region Node Visual State tagging */
@@ -315,7 +355,10 @@ cc.Node.prototype.addInjectedVisualStateTagWithId = function (newVisualStateTag,
 
   for (let i = 0, il = this.injectedVisualStateTags.length; i < il; i++) {
     const currentTag = this.injectedVisualStateTags[i];
-    if (currentTag.tagType == newVisualStateTag.tagType && currentTag.injectedId == newVisualStateTag.injectedId) {
+    if (
+      currentTag.tagType == newVisualStateTag.tagType &&
+      currentTag.injectedId == newVisualStateTag.injectedId
+    ) {
       // if a tag already exists of the same type, replace only if new tag has higher priority
       if (newVisualStateTag.priority < currentTag.priority) {
         // activate new tag if the one being updated was active
@@ -356,7 +399,9 @@ cc.Node.prototype.removeInjectedVisualStateTagById = function (id) {
 
 // Removes all injected visual state tags
 cc.Node.prototype.removeInjectedVisualStateTags = function () {
-  this._visualStateTagsToBeDeactivated = this._visualStateTagsToBeDeactivated.concat(this.injectedVisualStateTags);
+  this._visualStateTagsToBeDeactivated = this._visualStateTagsToBeDeactivated.concat(
+    this.injectedVisualStateTags,
+  );
   this._updateVisualStateTags();
   this.injectedVisualStateTags = [];
 };
@@ -468,7 +513,11 @@ cc.Node.prototype.setXYZRotation = function (rotation) {
   const rotX = (rotation.x || 0.0) % 360.0;
   const rotY = (rotation.y || 0.0) % 360.0;
   const rotZ = (rotation.z || 0.0) % 360.0;
-  if (this._xyzRotation.x !== rotX || this._xyzRotation.y !== rotY || this._xyzRotation.z !== rotZ) {
+  if (
+    this._xyzRotation.x !== rotX ||
+    this._xyzRotation.y !== rotY ||
+    this._xyzRotation.z !== rotZ
+  ) {
     this._xyzRotation.x = rotX;
     this._xyzRotation.y = rotY;
     this._xyzRotation.z = rotZ;
@@ -501,7 +550,11 @@ cc.Node.prototype.setSecondaryXYZRotation = function (rotation) {
   const rotX = (rotation.x || 0.0) % 360.0;
   const rotY = (rotation.y || 0.0) % 360.0;
   const rotZ = (rotation.z || 0.0) % 360.0;
-  if (this._secondaryXYZRotation.x !== rotX || this._secondaryXYZRotation.y !== rotY || this._secondaryXYZRotation.z !== rotZ) {
+  if (
+    this._secondaryXYZRotation.x !== rotX ||
+    this._secondaryXYZRotation.y !== rotY ||
+    this._secondaryXYZRotation.z !== rotZ
+  ) {
     this._secondaryXYZRotation.x = rotX;
     this._secondaryXYZRotation.y = rotY;
     this._secondaryXYZRotation.z = rotZ;
@@ -510,7 +563,11 @@ cc.Node.prototype.setSecondaryXYZRotation = function (rotation) {
 };
 
 cc.Node.prototype.getSecondaryXYZRotation = function () {
-  return new cc.kmVec3(this.getSecondaryXYZRotationX(), this.getSecondaryXYZRotationY(), this.getSecondaryXYZRotationZ());
+  return new cc.kmVec3(
+    this.getSecondaryXYZRotationX(),
+    this.getSecondaryXYZRotationY(),
+    this.getSecondaryXYZRotationZ(),
+  );
 };
 cc.Node.prototype.getSecondaryXYZRotationX = function () {
   return this._secondaryXYZRotation != null ? this._secondaryXYZRotation.x : 0.0;
@@ -528,7 +585,11 @@ cc.Node.prototype.setXYZRotationDirty = function () {
 };
 
 cc.Node.prototype.getCompositeXYZRotation = function () {
-  return new cc.kmVec3(this.getCompositeXYZRotationX(), this.getCompositeXYZRotationY(), this.getCompositeXYZRotationZ());
+  return new cc.kmVec3(
+    this.getCompositeXYZRotationX(),
+    this.getCompositeXYZRotationY(),
+    this.getCompositeXYZRotationZ(),
+  );
 };
 cc.Node.prototype.getCompositeXYZRotationX = function () {
   return this.getXYZRotationX() + this.getSecondaryXYZRotationX();
@@ -609,11 +670,12 @@ cc.Node.WebGLRenderCmd.prototype.getNodeToParentTransform = function () {
   const node = this._node;
   const camera = node._camera;
   const cameraDirty = camera && camera._dirty;
-  const transformDirty = (this._dirtyFlag & cc.Node._dirtyFlags.transformDirty) || cameraDirty;
+  const transformDirty = this._dirtyFlag & cc.Node._dirtyFlags.transformDirty || cameraDirty;
   const t4x4 = this._transform4x4;
   const t4x4Mat = t4x4.mat;
 
-  if (node._usingNormalizedPosition && node._parent) { // TODO need refactor
+  if (node._usingNormalizedPosition && node._parent) {
+    // TODO need refactor
     const conSize = node._parent._contentSize;
     node._position.x = node._normalizedPosition.x * conSize.width;
     node._position.y = node._normalizedPosition.y * conSize.height;
@@ -623,12 +685,12 @@ cc.Node.WebGLRenderCmd.prototype.getNodeToParentTransform = function () {
     // Translate values
     let { x } = node._position;
     let { y } = node._position;
-    const apx = this._anchorPointInPoints.x; const
-      napx = -apx;
-    const apy = this._anchorPointInPoints.y; const
-      napy = -apy;
-    const scx = node._scaleX; const
-      scy = node._scaleY;
+    const apx = this._anchorPointInPoints.x;
+    const napx = -apx;
+    const apy = this._anchorPointInPoints.y;
+    const napy = -apy;
+    const scx = node._scaleX;
+    const scy = node._scaleY;
     const rotationRadiansX = node._rotationX * 0.017453292519943295; // 0.017453292519943295 = (Math.PI / 180);   for performance
     const rotationRadiansY = node._rotationY * 0.017453292519943295;
 
@@ -640,15 +702,17 @@ cc.Node.WebGLRenderCmd.prototype.getNodeToParentTransform = function () {
     // Rotation values
     // Change rotation code to handle X and Y
     // If we skew with the exact same value for both x and y then we're simply just rotating
-    let cx = 1; let sx = 0; let cy = 1; let
-      sy = 0;
+    let cx = 1;
+    let sx = 0;
+    let cy = 1;
+    let sy = 0;
     if (node._rotationX !== 0 || node._rotationY !== 0) {
       cx = Math.cos(-rotationRadiansX);
       sx = Math.sin(-rotationRadiansX);
       cy = Math.cos(-rotationRadiansY);
       sy = Math.sin(-rotationRadiansY);
     }
-    const needsSkewMatrix = (node._skewX || node._skewY);
+    const needsSkewMatrix = node._skewX || node._skewY;
 
     // optimization:
     // inline anchor point calculation if skew is not needed
@@ -671,14 +735,17 @@ cc.Node.WebGLRenderCmd.prototype.getNodeToParentTransform = function () {
     // XXX: Try to inline skew
     // If skew is needed, apply skew and then anchor point
     if (needsSkewMatrix) {
-      t = cc.affineTransformConcat({
-        a: 1.0,
-        b: Math.tan(cc.degreesToRadians(node._skewY)),
-        c: Math.tan(cc.degreesToRadians(node._skewX)),
-        d: 1.0,
-        tx: 0.0,
-        ty: 0.0,
-      }, t);
+      t = cc.affineTransformConcat(
+        {
+          a: 1.0,
+          b: Math.tan(cc.degreesToRadians(node._skewY)),
+          c: Math.tan(cc.degreesToRadians(node._skewX)),
+          d: 1.0,
+          tx: 0.0,
+          ty: 0.0,
+        },
+        t,
+      );
 
       // adjust anchor point
       if (apx !== 0 || apy !== 0) t = cc.affineTransformTranslate(t, napx, napy);
@@ -785,7 +852,10 @@ cc.Node.prototype.setPositionAboveSprite = function (relativeSprite, offset, sca
 
   this.setPosition(
     relativeSprite.getPositionX() + totalOffset.x,
-    relativeSprite.getPositionY() + relativeSprite.getBoundingBox().height * 0.5 + boundingBox.height * 0.5 + totalOffset.y,
+    relativeSprite.getPositionY() +
+      relativeSprite.getBoundingBox().height * 0.5 +
+      boundingBox.height * 0.5 +
+      totalOffset.y,
   );
 };
 
@@ -811,7 +881,10 @@ cc.Node.prototype.setPositionBelowSprite = function (relativeSprite, offset, sca
 
   this.setPosition(
     relativeSprite.getPositionX() + totalOffset.x,
-    relativeSprite.getPositionY() - relativeSprite.getBoundingBox().height * 0.5 - boundingBox.height * 0.5 + totalOffset.y,
+    relativeSprite.getPositionY() -
+      relativeSprite.getBoundingBox().height * 0.5 -
+      boundingBox.height * 0.5 +
+      totalOffset.y,
   );
 };
 
@@ -836,7 +909,10 @@ cc.Node.prototype.setPositionLeftOfSprite = function (relativeSprite, offset, sc
   }
 
   this.setPosition(
-    relativeSprite.getPositionX() - relativeSprite.getBoundingBox().width * 0.5 - boundingBox.height * 0.5 + totalOffset.x,
+    relativeSprite.getPositionX() -
+      relativeSprite.getBoundingBox().width * 0.5 -
+      boundingBox.height * 0.5 +
+      totalOffset.x,
     relativeSprite.getPositionY() + totalOffset.y,
   );
 };
@@ -862,7 +938,10 @@ cc.Node.prototype.setPositionRightOfSprite = function (relativeSprite, offset, s
   }
 
   this.setPosition(
-    relativeSprite.getPositionX() + relativeSprite.getBoundingBox().width * 0.5 + boundingBox.height * 0.5 + totalOffset.x,
+    relativeSprite.getPositionX() +
+      relativeSprite.getBoundingBox().width * 0.5 +
+      boundingBox.height * 0.5 +
+      totalOffset.x,
     relativeSprite.getPositionY() + totalOffset.y,
   );
 };

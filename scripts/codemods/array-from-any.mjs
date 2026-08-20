@@ -27,7 +27,10 @@ let sites = 0;
 for (const file of process.argv.slice(2)) {
   const src = readFileSync(file, 'utf8');
   let n = 0;
-  const out = src.replace(/\bArray\.from\(/g, (m) => { n += 1; return 'Array.from<any>('; });
+  const out = src.replace(/\bArray\.from\(/g, (m) => {
+    n += 1;
+    return 'Array.from<any>(';
+  });
   if (n) {
     writeFileSync(file, out);
     changed += 1;

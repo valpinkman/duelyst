@@ -13,13 +13,9 @@ Logger.enabled = false;
 describe('shimzar', () => {
   describe('faction4', () => {
     beforeEach(() => {
-      const player1Deck = [
-        { id: SDK.Cards.Faction4.General },
-      ];
+      const player1Deck = [{ id: SDK.Cards.Faction4.General }];
 
-      const player2Deck = [
-        { id: SDK.Cards.Faction1.General },
-      ];
+      const player2Deck = [{ id: SDK.Cards.Faction1.General }];
 
       UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
     });
@@ -35,13 +31,26 @@ describe('shimzar', () => {
 
       player1.remainingMana = 9;
 
-      const brightmossGolem = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.BrightmossGolem }, 8, 0, gameSession.getPlayer2Id());
+      const brightmossGolem = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.BrightmossGolem },
+        8,
+        0,
+        gameSession.getPlayer2Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.ShadowNova }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.ShadowNova,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 7, 0);
       gameSession.executeAction(playCardFromHandAction);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction4.NightFiend }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction4.NightFiend,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -54,11 +63,20 @@ describe('shimzar', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      var gor = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.Gor }, 2, 2, gameSession.getPlayer1Id());
+      var gor = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.Gor },
+        2,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PhoenixFire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 2, 2);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -73,11 +91,20 @@ describe('shimzar', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const brightmossGolem = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.BrightmossGolem }, 2, 2, gameSession.getPlayer2Id());
+      const brightmossGolem = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.BrightmossGolem },
+        2,
+        2,
+        gameSession.getPlayer2Id(),
+      );
 
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.InkhornGaze }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.InkhornGaze,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 2, 2);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -86,13 +113,9 @@ describe('shimzar', () => {
 
     it('expect inkhorn gaze to draw a random f4/neutral battlepet if the minion it targeted died this turn', () => {
       for (let i = 0; i < 50; i++) {
-        const player1Deck = [
-          { id: SDK.Cards.Faction1.General },
-        ];
+        const player1Deck = [{ id: SDK.Cards.Faction1.General }];
 
-        const player2Deck = [
-          { id: SDK.Cards.Faction3.General },
-        ];
+        const player2Deck = [{ id: SDK.Cards.Faction3.General }];
 
         // setup test session
         UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
@@ -101,17 +124,29 @@ describe('shimzar', () => {
         const board = gameSession.getBoard();
         const player1 = gameSession.getPlayer1();
 
-        const valeHunter = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.ValeHunter }, 2, 2, gameSession.getPlayer2Id());
+        const valeHunter = UtilsSDK.applyCardToBoard(
+          { id: SDK.Cards.Neutral.ValeHunter },
+          2,
+          2,
+          gameSession.getPlayer2Id(),
+        );
 
         player1.remainingMana = 9;
 
-        UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.InkhornGaze }));
+        UtilsSDK.executeActionWithoutValidation(
+          new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+            id: SDK.Cards.Spell.InkhornGaze,
+          }),
+        );
         const playCardFromHandAction = player1.actionPlayCardFromHand(0, 2, 2);
         gameSession.executeAction(playCardFromHandAction);
         const hand = player1.getDeck().getCardsInHand();
         expect(hand[0]).to.exist;
         expect(hand[0].getRaceId()).to.equal(SDK.Races.BattlePet);
-        expect(hand[0].getFactionId() === SDK.Factions.Faction4 || hand[0].getFactionId() === SDK.Factions.Neutral).to.equal(true);
+        expect(
+          hand[0].getFactionId() === SDK.Factions.Faction4 ||
+            hand[0].getFactionId() === SDK.Factions.Neutral,
+        ).to.equal(true);
         expect(hand[0].getBaseCardId()).to.not.equal(SDK.Cards.Faction5.Kin);
 
         SDK.GameSession.reset();
@@ -143,8 +178,16 @@ describe('shimzar', () => {
 
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.SphereOfDarkness }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.SphereOfDarkness }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.SphereOfDarkness,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.SphereOfDarkness,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 7, 0);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -160,11 +203,20 @@ describe('shimzar', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const ooz = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.Ooz }, 2, 2, gameSession.getPlayer2Id());
+      const ooz = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.Ooz },
+        2,
+        2,
+        gameSession.getPlayer2Id(),
+      );
 
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.InkhornGaze }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.InkhornGaze,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 2, 2);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -180,16 +232,29 @@ describe('shimzar', () => {
 
       player1.remainingMana = 9;
 
-      const wraithling = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.Wraithling }, 1, 1, gameSession.getPlayer1Id());
+      const wraithling = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.Wraithling },
+        1,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.AbyssianStrength }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.AbyssianStrength,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
 
       expect(wraithling.getATK()).to.equal(5);
       expect(wraithling.getHP()).to.equal(5);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction4.BloodBaronette }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction4.BloodBaronette,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 0, 1);
       gameSession.executeAction(playCardFromHandAction);
       const followupCard = playCardFromHandAction.getCard().getCurrentFollowupCard();
@@ -205,15 +270,44 @@ describe('shimzar', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const golem = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.BrightmossGolem }, 5, 2, gameSession.getPlayer2Id());
-      const wraithling1 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.Wraithling }, 5, 3, gameSession.getPlayer1Id());
-      const wraithling2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.Wraithling }, 4, 3, gameSession.getPlayer1Id());
-      const wraithling3 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.Wraithling }, 6, 3, gameSession.getPlayer1Id());
-      const wraithling4 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.Wraithling }, 5, 1, gameSession.getPlayer1Id());
+      const golem = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.BrightmossGolem },
+        5,
+        2,
+        gameSession.getPlayer2Id(),
+      );
+      const wraithling1 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.Wraithling },
+        5,
+        3,
+        gameSession.getPlayer1Id(),
+      );
+      const wraithling2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.Wraithling },
+        4,
+        3,
+        gameSession.getPlayer1Id(),
+      );
+      const wraithling3 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.Wraithling },
+        6,
+        3,
+        gameSession.getPlayer1Id(),
+      );
+      const wraithling4 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.Wraithling },
+        5,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.VoidSteal }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.VoidSteal,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 5, 2);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -229,14 +323,38 @@ describe('shimzar', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      var golem = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.BrightmossGolem }, 5, 2, gameSession.getPlayer2Id());
-      var wraithling1 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction2.ChakriAvatar }, 5, 3, gameSession.getPlayer2Id());
-      var golem2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.BrightmossGolem }, 4, 3, gameSession.getPlayer1Id());
-      var wraithling3 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.ValeHunter }, 6, 3, gameSession.getPlayer1Id());
+      var golem = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.BrightmossGolem },
+        5,
+        2,
+        gameSession.getPlayer2Id(),
+      );
+      var wraithling1 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction2.ChakriAvatar },
+        5,
+        3,
+        gameSession.getPlayer2Id(),
+      );
+      var golem2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.BrightmossGolem },
+        4,
+        3,
+        gameSession.getPlayer1Id(),
+      );
+      var wraithling3 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.ValeHunter },
+        6,
+        3,
+        gameSession.getPlayer1Id(),
+      );
 
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.EchoingShriek }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.EchoingShriek,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 5, 2);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -258,8 +376,16 @@ describe('shimzar', () => {
 
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction4.ArcaneDevourer }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction4.VorpalReaver }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction4.ArcaneDevourer,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction4.VorpalReaver,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -319,10 +445,26 @@ describe('shimzar', () => {
 
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.LurkingFear }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction4.ReaperNineMoons }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction4.ReaperNineMoons }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction4.ReaperNineMoons }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.LurkingFear,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction4.ReaperNineMoons,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction4.ReaperNineMoons,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction4.ReaperNineMoons,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 8, 2);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -340,11 +482,19 @@ describe('shimzar', () => {
 
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.ShadowNova }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.ShadowNova,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 7, 0);
       gameSession.executeAction(playCardFromHandAction);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Artifact.GhostAzalea }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Artifact.GhostAzalea,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -358,15 +508,28 @@ describe('shimzar', () => {
 
       player1.remainingMana = 9;
 
-      const golem = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.BrightmossGolem }, 5, 2, gameSession.getPlayer2Id());
+      const golem = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.BrightmossGolem },
+        5,
+        2,
+        gameSession.getPlayer2Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.ShadowNova }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.ShadowNova,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 7, 0);
       gameSession.executeAction(playCardFromHandAction);
 
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.VeilOfUnraveling }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.VeilOfUnraveling,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -389,11 +552,20 @@ describe('shimzar', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const klaxon = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.Klaxon }, 2, 2, gameSession.getPlayer2Id());
+      const klaxon = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.Klaxon },
+        2,
+        2,
+        gameSession.getPlayer2Id(),
+      );
 
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.SpiralTechnique }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.SpiralTechnique,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 2, 2);
       gameSession.executeAction(playCardFromHandAction);
 

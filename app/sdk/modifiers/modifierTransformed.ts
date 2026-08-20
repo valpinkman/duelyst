@@ -36,7 +36,9 @@ class ModifierTransformed extends Modifier {
     // update exhaustion state of transformed card
     // only do this when this modifier is initially applied to the card
     if (this._private.cachedIsActive) {
-      const setExhaustionAction = this.getGameSession().createActionForType(SetExhaustionAction.type);
+      const setExhaustionAction = this.getGameSession().createActionForType(
+        SetExhaustionAction.type,
+      );
       setExhaustionAction.setExhausted(this.exhausted);
       setExhaustionAction.setMovesMade(this.movesMade);
       setExhaustionAction.setAttacksMade(this.attacksMade);

@@ -10,7 +10,6 @@ var ProgressionManager = require('app/ui/managers/progression_manager');
 var i18next = require('i18next');
 
 var CardsCollection = Backbone.Collection.extend({
-
   model: CardModel,
 
   initialize: function () {
@@ -69,9 +68,13 @@ var CardsCollection = Backbone.Collection.extend({
 
     _.each(SDK.FactionFactory.getAllPlayableFactions(), function (factionData) {
       var factionId = factionData.id;
-      var factionProgressionStatsModel = ProgressionManager.getInstance().getFactionProgressionStatsModel(factionId);
+      var factionProgressionStatsModel =
+        ProgressionManager.getInstance().getFactionProgressionStatsModel(factionId);
       var factionXp = (factionProgressionStatsModel && factionProgressionStatsModel.get('xp')) || 0;
-      factionProgressionCardIds = _.union(factionProgressionCardIds, SDK.FactionProgression.unlockedCardsUpToXP(factionXp, factionId));
+      factionProgressionCardIds = _.union(
+        factionProgressionCardIds,
+        SDK.FactionProgression.unlockedCardsUpToXP(factionXp, factionId),
+      );
     });
 
     var cardModels = [];
@@ -104,7 +107,13 @@ var CardsCollection = Backbone.Collection.extend({
       var isUnlockablePrismaticWithSpiritOrbs;
       var unlockMessage;
       if (!isAvailable || isHiddenInCollection || cardFactionId === SDK.Factions.Tutorial) {
-        isUnlockable = isUnlockableThroughProgression = isUnlockableBasic = isUnlockablePrismaticBasic = isUnlockableWithAchievement = isUnlockablePrismaticWithAchievement = false;
+        isUnlockable =
+          isUnlockableThroughProgression =
+          isUnlockableBasic =
+          isUnlockablePrismaticBasic =
+          isUnlockableWithAchievement =
+          isUnlockablePrismaticWithAchievement =
+            false;
       } else {
         isUnlockable = card.getIsUnlockable();
         isUnlockableThroughProgression = card.getIsUnlockableThroughProgression();
@@ -130,7 +139,10 @@ var CardsCollection = Backbone.Collection.extend({
       }
 
       if (unlockedWithAchievementId != null) {
-        unlockMessage = AchievementsManager.getInstance().getUnlockMessageForAchievementId(unlockedWithAchievementId);
+        unlockMessage =
+          AchievementsManager.getInstance().getUnlockMessageForAchievementId(
+            unlockedWithAchievementId,
+          );
       }
 
       var modelData: Record<string, any> = {
@@ -212,15 +224,22 @@ var CardsCollection = Backbone.Collection.extend({
       factionProgressionCardIds = [];
       _.each(SDK.FactionFactory.getAllPlayableFactions(), function (factionData) {
         var factionId = factionData.id;
-        var factionProgressionStatsModel = ProgressionManager.getInstance().getFactionProgressionStatsModel(factionId);
-        var factionXp = (factionProgressionStatsModel && factionProgressionStatsModel.get('xp')) || 0;
-        factionProgressionCardIds = _.union(factionProgressionCardIds, SDK.FactionProgression.unlockedCardsUpToXP(factionXp, factionId));
+        var factionProgressionStatsModel =
+          ProgressionManager.getInstance().getFactionProgressionStatsModel(factionId);
+        var factionXp =
+          (factionProgressionStatsModel && factionProgressionStatsModel.get('xp')) || 0;
+        factionProgressionCardIds = _.union(
+          factionProgressionCardIds,
+          SDK.FactionProgression.unlockedCardsUpToXP(factionXp, factionId),
+        );
       });
     }
 
     if (cardIdOrCardModels != null) {
       if (_.isArray(cardIdOrCardModels)) {
-        cardIdOrCardModels = _.sortBy(cardIdOrCardModels, function (cardModel) { return cardModel.get('id'); });
+        cardIdOrCardModels = _.sortBy(cardIdOrCardModels, function (cardModel) {
+          return cardModel.get('id');
+        });
         for (var i = 0, il = cardIdOrCardModels.length; i < il; i++) {
           var cardModel = cardIdOrCardModels[i];
           this._updateCardCount(cardModel, cardIdOrCardModels, factionProgressionCardIds);
@@ -249,19 +268,26 @@ var CardsCollection = Backbone.Collection.extend({
       if (skinNum > 0) {
         var skinId = SDK.Cards.getCardSkinIdForCardId(cardId);
         // must own skin to see it
-        if (InventoryManager.getInstance().hasCosmeticById(skinId) || InventoryManager.getInstance().getCanAlwaysUseCosmeticById(skinId)) {
+        if (
+          InventoryManager.getInstance().hasCosmeticById(skinId) ||
+          InventoryManager.getInstance().getCanAlwaysUseCosmeticById(skinId)
+        ) {
           canShowSkin = true;
 
           if (cardModel.get('isPrismatic')) {
             // must own prismatic card to use skin on prismatic card
             var prismaticCardId = SDK.Cards.getPrismaticCardId(baseCardId);
-            var prismaticCardModel = _.find(cardModels, function (otherCardModel) { return otherCardModel.get('id') === prismaticCardId; });
+            var prismaticCardModel = _.find(cardModels, function (otherCardModel) {
+              return otherCardModel.get('id') === prismaticCardId;
+            });
             if (prismaticCardModel != null && prismaticCardModel.get('inventoryCount') > 0) {
               inventoryCount = prismaticCardModel.get('inventoryCount');
             }
           } else {
             // must own base card to use skin on base card
-            var baseCardModel = _.find(cardModels, function (otherCardModel) { return otherCardModel.get('id') === baseCardId; });
+            var baseCardModel = _.find(cardModels, function (otherCardModel) {
+              return otherCardModel.get('id') === baseCardId;
+            });
             if (baseCardModel != null && baseCardModel.get('inventoryCount') > 0) {
               inventoryCount = baseCardModel.get('inventoryCount');
             }
@@ -279,13 +305,21 @@ var CardsCollection = Backbone.Collection.extend({
             inventoryCount = CONFIG.MAX_DECK_DUPLICATES;
           }
         }
-      // } else if (SDK.CardType.getIsEntityCardType(cardModel.get("type")) && cardModel.get("isGeneral")) {
-      //  // generals only have 1 copy
-      //  inventoryCount = 1;
-      } else if (SDK.CardType.getIsEntityCardType(cardModel.get('type')) && cardModel.get('isGeneral') && !cardModel.get('isUnlockableWithAchievement')) {
+        // } else if (SDK.CardType.getIsEntityCardType(cardModel.get("type")) && cardModel.get("isGeneral")) {
+        //  // generals only have 1 copy
+        //  inventoryCount = 1;
+      } else if (
+        SDK.CardType.getIsEntityCardType(cardModel.get('type')) &&
+        cardModel.get('isGeneral') &&
+        !cardModel.get('isUnlockableWithAchievement')
+      ) {
         // generals only have 1 copy
         inventoryCount = 1;
-      } else if (SDK.CardType.getIsEntityCardType(cardModel.get('type')) && cardModel.get('isGeneral') && cardModel.get('isUnlockableWithAchievement')) {
+      } else if (
+        SDK.CardType.getIsEntityCardType(cardModel.get('type')) &&
+        cardModel.get('isGeneral') &&
+        cardModel.get('isUnlockableWithAchievement')
+      ) {
         // Inventory count is based on inventory
       } else if (!cardModel.get('rarityIsCraftable')) {
         // basic non-unlockable cards start at 3 copies
@@ -307,11 +341,15 @@ var CardsCollection = Backbone.Collection.extend({
         var inventoryCardModel = InventoryManager.getInstance().cardsCollection.get(cardId);
         // uncraftable prism sisters problem: Generals need to be unlocked by this
         // if (cardModel.get("isUnlockableWithAchievement")) {
-        if (cardModel.get('isUnlockableWithAchievement') && !cardModel.get('isUnlockablePrismaticWithAchievement')) {
+        if (
+          cardModel.get('isUnlockableWithAchievement') &&
+          !cardModel.get('isUnlockablePrismaticWithAchievement')
+        ) {
           if (inventoryCardModel != null && inventoryCardModel.get('count') > 0) {
             isUnlocked = true;
           } else if (cardModel.get('isSkinned')) {
-            var baseInventoryCardModel = InventoryManager.getInstance().cardsCollection.get(baseCardId);
+            var baseInventoryCardModel =
+              InventoryManager.getInstance().cardsCollection.get(baseCardId);
             if (baseInventoryCardModel != null && baseInventoryCardModel.get('count') > 0) {
               isUnlocked = true;
             }
@@ -320,23 +358,25 @@ var CardsCollection = Backbone.Collection.extend({
           isUnlocked = true;
         } else if (cardModel.get('isUnlockablePrismaticWithAchievement')) {
           // Here
-          var baseInventoryCardModel = InventoryManager.getInstance().cardsCollection.get(baseCardId);
+          var baseInventoryCardModel =
+            InventoryManager.getInstance().cardsCollection.get(baseCardId);
           if (baseInventoryCardModel != null && baseInventoryCardModel.get('count') > 0) {
             isUnlocked = true;
           }
         } else if (cardModel.get('isUnlockablePrismaticWithSpiritOrbs')) {
-          var baseInventoryCardModel = InventoryManager.getInstance().cardsCollection.get(baseCardId);
+          var baseInventoryCardModel =
+            InventoryManager.getInstance().cardsCollection.get(baseCardId);
           if (baseInventoryCardModel != null && baseInventoryCardModel.get('count') > 0) {
             isUnlocked = true;
           }
-        // TODO: this is where 3rd general prism unlock will probably go
-        // } else if (cardModel.get("unlockedWithAchievementId") != null) {
-        //  var baseInventoryCardModel = InventoryManager.getInstance().cardsCollection.get(baseCardId);
-        //  if (baseInventoryCardModel != null && baseInventoryCardModel.get("count") > 0) {
-        //    isUnlocked = true;
-        //  } else {
-        //    achievementUnlockMessage = AchievementsManager.getInstance().getUnlockMessageForAchievementId(cardModel.get("unlockedWithAchievementId"));
-        //  }
+          // TODO: this is where 3rd general prism unlock will probably go
+          // } else if (cardModel.get("unlockedWithAchievementId") != null) {
+          //  var baseInventoryCardModel = InventoryManager.getInstance().cardsCollection.get(baseCardId);
+          //  if (baseInventoryCardModel != null && baseInventoryCardModel.get("count") > 0) {
+          //    isUnlocked = true;
+          //  } else {
+          //    achievementUnlockMessage = AchievementsManager.getInstance().getUnlockMessageForAchievementId(cardModel.get("unlockedWithAchievementId"));
+          //  }
         }
       } else {
         isUnlocked = true;
@@ -345,7 +385,10 @@ var CardsCollection = Backbone.Collection.extend({
       // update any achievement unlock messages
       var achievementUnlockMessage;
       if (cardModel.get('unlockedWithAchievementId') != null) {
-        achievementUnlockMessage = AchievementsManager.getInstance().getUnlockMessageForAchievementId(cardModel.get('unlockedWithAchievementId'));
+        achievementUnlockMessage =
+          AchievementsManager.getInstance().getUnlockMessageForAchievementId(
+            cardModel.get('unlockedWithAchievementId'),
+          );
       }
 
       // set new values
@@ -353,14 +396,15 @@ var CardsCollection = Backbone.Collection.extend({
         inventoryCount: inventoryCount,
         canShowSkin: canShowSkin,
         isUnlocked: isUnlocked,
-        isCraftable: cardModel.get('rarityIsCraftable')
-          && !cardModel.get('isGeneral')
-          && skinNum === 0
-          && isUnlocked
-          && (!cardModel.get('isUnlockableWithAchievement')
-            || cardModel.get('isUnlockablePrismaticWithAchievement'))
-          && (!cardModel.get('isUnlockableWithSpiritOrbs')
-            || cardModel.get('isUnlockablePrismaticWithSpiritOrbs')),
+        isCraftable:
+          cardModel.get('rarityIsCraftable') &&
+          !cardModel.get('isGeneral') &&
+          skinNum === 0 &&
+          isUnlocked &&
+          (!cardModel.get('isUnlockableWithAchievement') ||
+            cardModel.get('isUnlockablePrismaticWithAchievement')) &&
+          (!cardModel.get('isUnlockableWithSpiritOrbs') ||
+            cardModel.get('isUnlockablePrismaticWithSpiritOrbs')),
         unlockMessage: achievementUnlockMessage || cardModel.get('unlockMessage'),
       });
     }
@@ -368,11 +412,13 @@ var CardsCollection = Backbone.Collection.extend({
 
   comparator: function (a, b) {
     // sort by general, mana cost
-    var comparison = (b.get('isGeneral') - a.get('isGeneral')) || (a.get('manaCost') - b.get('manaCost'));
+    var comparison =
+      b.get('isGeneral') - a.get('isGeneral') || a.get('manaCost') - b.get('manaCost');
     if (comparison === 0) {
       var aName = a.get('name').toLowerCase();
       var bName = b.get('name').toLowerCase();
-      if (aName === bName) return a.get('skinNum') - b.get('skinNum') || a.get('isPrismatic') - b.get('isPrismatic');
+      if (aName === bName)
+        return a.get('skinNum') - b.get('skinNum') || a.get('isPrismatic') - b.get('isPrismatic');
       else if (aName > bName) return 1;
       else if (aName < bName) return -1;
     }

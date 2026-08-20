@@ -81,7 +81,9 @@ class CardFactory_UnitySet_Faction2 {
       card.maxHP = 3;
       card.manaCost = 3;
       card.rarityId = Rarity.Common;
-      card.setInherentModifiersContextObjects([ModifierBondPutCardsInHand.createContextObject([Cards.Spell.MistDragonSeal])]);
+      card.setInherentModifiersContextObjects([
+        ModifierBondPutCardsInHand.createContextObject([Cards.Spell.MistDragonSeal]),
+      ]);
     }
 
     if (identifier === Cards.Faction2.Kindling) {
@@ -116,7 +118,9 @@ class CardFactory_UnitySet_Faction2 {
       card.maxHP = 5;
       card.manaCost = 4;
       card.rarityId = Rarity.Epic;
-      card.setInherentModifiersContextObjects([ModifierSpellWatchBuffAlliesByRace.createContextObject(1, 0, Races.Arcanyst)]);
+      card.setInherentModifiersContextObjects([
+        ModifierSpellWatchBuffAlliesByRace.createContextObject(1, 0, Races.Arcanyst),
+      ]);
     }
 
     if (identifier === Cards.Faction2.Calligrapher) {
@@ -151,9 +155,10 @@ class CardFactory_UnitySet_Faction2 {
       card.maxHP = 7;
       card.manaCost = 7;
       card.rarityId = Rarity.Legendary;
-      card.setInherentModifiersContextObjects(
-        [ModifierFirstBlood.createContextObject(), ModifierMyAttackWatchGetSonghaiSpells.createContextObject(3)],
-      );
+      card.setInherentModifiersContextObjects([
+        ModifierFirstBlood.createContextObject(),
+        ModifierMyAttackWatchGetSonghaiSpells.createContextObject(3),
+      ]);
     }
 
     if (identifier === Cards.Artifact.MaskOfCelerity) {
@@ -162,7 +167,9 @@ class CardFactory_UnitySet_Faction2 {
       card.factionId = Factions.Faction2;
       card.id = Cards.Artifact.MaskOfCelerity;
       card.name = i18next.t('cards.faction_2_artifact_bangle_of_blinding_strike_name');
-      card.setDescription(i18next.t('cards.faction_2_artifact_bangle_of_blinding_strike_description'));
+      card.setDescription(
+        i18next.t('cards.faction_2_artifact_bangle_of_blinding_strike_description'),
+      );
       card.addKeywordClassToInclude(ModifierTranscendance);
       card.manaCost = 3;
       card.rarityId = Rarity.Rare;

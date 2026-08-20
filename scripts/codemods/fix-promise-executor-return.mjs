@@ -58,12 +58,18 @@ const ownReturns = (fn) => {
   return out;
 };
 
-let files = 0; let fixed = 0;
+let files = 0;
+let fixed = 0;
 
 for (const file of process.argv.slice(2)) {
   const src = fs.readFileSync(file, 'utf8');
   let ast;
-  try { ast = parse(src, { range: true, loc: true, jsx: false }); } catch (e) { console.error(`  parse failed ${file}: ${e.message}`); continue; }
+  try {
+    ast = parse(src, { range: true, loc: true, jsx: false });
+  } catch (e) {
+    console.error(`  parse failed ${file}: ${e.message}`);
+    continue;
+  }
 
   const edits = [];
   collect(ast, (node) => {
@@ -96,16 +102,19 @@ for (const file of process.argv.slice(2)) {
   });
 
   if (!edits.length) continue;
-  edits.sort((a, b) => b[0] - a[0]);           // apply back-to-front so ranges stay valid
+  edits.sort((a, b) => b[0] - a[0]); // apply back-to-front so ranges stay valid
   let out = src;
   for (const [s, e, text] of edits) out = out.slice(0, s) + text + out.slice(e);
 
-  try { parse(out, { range: true }); } catch (e) {
+  try {
+    parse(out, { range: true });
+  } catch (e) {
     console.error(`  !! ${file}: output does not parse, skipping (${e.message})`);
     continue;
   }
   fs.writeFileSync(file, out);
-  files += 1; fixed += edits.length;
+  files += 1;
+  fixed += edits.length;
   console.log(`  ${file}: ${edits.length} fixed`);
 }
 console.log(`\n${fixed} executor return(s) fixed across ${files} file(s)`);

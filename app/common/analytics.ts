@@ -100,7 +100,10 @@ class Analytics {
       for (const module of Array.from<any>(this._getAnalyticsModules())) {
         if (module.track !== undefined) {
           // Check priority filter
-          if (_.isUndefined(module.minPriorityToReportEvent) || (priority >= module.minPriorityToReportEvent)) {
+          if (
+            _.isUndefined(module.minPriorityToReportEvent) ||
+            priority >= module.minPriorityToReportEvent
+          ) {
             result.push(module.track(eventName, params, trackOptions));
           } else {
             result.push(undefined);
@@ -127,7 +130,10 @@ class Analytics {
       for (const module of Array.from<any>(this._getAnalyticsModules())) {
         if (module.trackMonetizationEvent !== undefined) {
           // Check priority filter
-          if (_.isUndefined(module.minPriorityToReportEvent) || (priority >= module.minPriorityToReportEvent)) {
+          if (
+            _.isUndefined(module.minPriorityToReportEvent) ||
+            priority >= module.minPriorityToReportEvent
+          ) {
             result.push(module.trackMonetizationEvent(productSku, price));
           } else {
             result.push(undefined);
@@ -155,11 +161,11 @@ class Analytics {
   }
 
   static setGroupPriority(groupPriority) {
-    return this._groupPriority = groupPriority;
+    return (this._groupPriority = groupPriority);
   }
 
   static clearGroupPriority() {
-    return this._groupPriority = undefined;
+    return (this._groupPriority = undefined);
   }
 
   // Toggles each modules logging if logging is enableable

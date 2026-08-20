@@ -17,7 +17,8 @@ class ModifierDealDamageWatchKillTargetAndSelf extends ModifierDealDamageWatch {
 
   static type = 'ModifierDealDamageWatchKillTargetAndSelf';
   static modifierName = 'Clumsy Assassin';
-  static description = 'Whenever this unit deals damage to an enemy minion, destroy itself and the enemy minion';
+  static description =
+    'Whenever this unit deals damage to an enemy minion, destroy itself and the enemy minion';
 
   onEvent(event) {
     super.onEvent(event);
@@ -31,7 +32,7 @@ class ModifierDealDamageWatchKillTargetAndSelf extends ModifierDealDamageWatch {
 
   getIsActionRelevant(a) {
     // kill the target as long as it isn't a general
-    return super.getIsActionRelevant(a) && !(__guard__(a.getTarget(), (x) => x.getIsGeneral()));
+    return super.getIsActionRelevant(a) && !__guard__(a.getTarget(), (x) => x.getIsGeneral());
   }
 
   onDealDamage(action) {
@@ -73,11 +74,15 @@ class ModifierDealDamageWatchKillTargetAndSelf extends ModifierDealDamageWatch {
     }
   }
 }
-ModifierDealDamageWatchKillTargetAndSelf.prototype.type = 'ModifierDealDamageWatchKillTargetAndSelf';
-ModifierDealDamageWatchKillTargetAndSelf.prototype.fxResource = ['FX.Modifiers.ModifierDealDamageWatch', 'FX.Modifiers.ModifierGenericKill'];
+ModifierDealDamageWatchKillTargetAndSelf.prototype.type =
+  'ModifierDealDamageWatchKillTargetAndSelf';
+ModifierDealDamageWatchKillTargetAndSelf.prototype.fxResource = [
+  'FX.Modifiers.ModifierDealDamageWatch',
+  'FX.Modifiers.ModifierGenericKill',
+];
 
 module.exports = ModifierDealDamageWatchKillTargetAndSelf;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

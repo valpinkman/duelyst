@@ -262,7 +262,10 @@ class ActionFactory {
       return new BurnCardAction(gameSession);
     }
 
-    Logger.module('SDK').debug(`[G:${gameSession.gameId}]`, `Error: ActionFactory:actionForType - Unknown Action Type: ${actionType}`);
+    Logger.module('SDK').debug(
+      `[G:${gameSession.gameId}]`,
+      `Error: ActionFactory:actionForType - Unknown Action Type: ${actionType}`,
+    );
     return console.error(`ActionFactory:actionForType - Unknown Action Type: ${actionType}`.red);
   }
 }

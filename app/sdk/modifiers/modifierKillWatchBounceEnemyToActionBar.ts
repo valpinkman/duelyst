@@ -19,10 +19,14 @@ class ModifierKillWatchBounceEnemyToActionBar extends ModifierKillWatch {
     super.onKillWatch(action);
 
     const enemyEntity = action.getTarget();
-    if ((enemyEntity != null) && !enemyEntity.getIsGeneral()) {
+    if (enemyEntity != null && !enemyEntity.getIsGeneral()) {
       const cardToAddToHand = enemyEntity.createNewCardData();
       const opponentId = enemyEntity.getOwnerId();
-      const putCardInHandAction = new PutCardInHandAction(this.getGameSession(), opponentId, cardToAddToHand);
+      const putCardInHandAction = new PutCardInHandAction(
+        this.getGameSession(),
+        opponentId,
+        cardToAddToHand,
+      );
       return this.getGameSession().executeAction(putCardInHandAction);
     }
   }

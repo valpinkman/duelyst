@@ -24,8 +24,12 @@ var FXCardShineSprite = BaseSprite.extend({
 
   setOptions(options) {
     this._super(options);
-    if (options.phase != null) { this.setPhase(options.phase); }
-    if (options.intensity != null) { this.setIntensity(options.intensity); }
+    if (options.phase != null) {
+      this.setPhase(options.phase);
+    }
+    if (options.intensity != null) {
+      this.setIntensity(options.intensity);
+    }
   },
 
   getPhase() {
@@ -44,15 +48,15 @@ var FXCardShineSprite = BaseSprite.extend({
 
   updateTweenAction(value, key) {
     switch (key) {
-    case 'phase':
-      this.setPhase(value);
-      break;
-    case 'intensity':
-      this.setIntensity(value);
-      break;
-    default:
-      BaseSprite.prototype.updateTweenAction.call(this, value, key);
-      break;
+      case 'phase':
+        this.setPhase(value);
+        break;
+      case 'intensity':
+        this.setIntensity(value);
+        break;
+      default:
+        BaseSprite.prototype.updateTweenAction.call(this, value, key);
+        break;
     }
   },
 });
@@ -60,7 +64,9 @@ var FXCardShineSprite = BaseSprite.extend({
 FXCardShineSprite.WebGLRenderCmd = function (renderable) {
   BaseSprite.WebGLRenderCmd.call(this, renderable);
 };
-const proto = FXCardShineSprite.WebGLRenderCmd.prototype = Object.create(BaseSprite.WebGLRenderCmd.prototype);
+const proto = (FXCardShineSprite.WebGLRenderCmd.prototype = Object.create(
+  BaseSprite.WebGLRenderCmd.prototype,
+));
 proto.constructor = FXCardShineSprite.WebGLRenderCmd;
 
 proto.rendering = function () {
@@ -73,7 +79,11 @@ proto.rendering = function () {
   const shaderProgram = this._shaderProgram;
   shaderProgram.use();
   shaderProgram._setUniformForMVPMatrixWithMat4(this._stackMatrix);
-  shaderProgram.setUniformLocationWith2f(shaderProgram.loc_texResolution, node._texture.getPixelsWide(), node._texture.getPixelsHigh());
+  shaderProgram.setUniformLocationWith2f(
+    shaderProgram.loc_texResolution,
+    node._texture.getPixelsWide(),
+    node._texture.getPixelsHigh(),
+  );
   shaderProgram.setUniformLocationWith1f(shaderProgram.loc_phase, node.phase);
   shaderProgram.setUniformLocationWith1f(shaderProgram.loc_intensity, node.intensity);
 

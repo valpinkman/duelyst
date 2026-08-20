@@ -7,9 +7,7 @@
 const express = require('express');
 
 const router = express.Router();
-const {
-  compose,
-} = require('compose-middleware');
+const { compose } = require('compose-middleware');
 const config = require('../../config/config');
 const DuelystFirebase = require('../lib/duelyst_firebase_module');
 const FirebasePromises = require('../lib/firebase_promises');
@@ -35,17 +33,23 @@ module.exports = function (req, res, next) {
     return next();
   }
 
-  return DuelystFirebase.connect().getRootRef()
+  return DuelystFirebase.connect()
+    .getRootRef()
     .then(function (fbRootRef) {
       _chainState.fbRootRef = fbRootRef;
-      return FirebasePromises.once(_chainState.fbRootRef.child('users').child(requrester_id).child('buddies').child(user_id), 'value');
+      return FirebasePromises.once(
+        _chainState.fbRootRef.child('users').child(requrester_id).child('buddies').child(user_id),
+        'value',
+      );
     })
     .then(function (snapshot) {
       if (snapshot.val() != null) {
         req.user_id = user_id;
         return next();
       } else {
-        return res.status(401).json({ message: 'You are not authorized to view this player\'s data.' });
+        return res
+          .status(401)
+          .json({ message: "You are not authorized to view this player's data." });
       }
     });
 };

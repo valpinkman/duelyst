@@ -19,7 +19,10 @@ import { execSync } from 'node:child_process';
 const files = execSync(
   "grep -rlE '(PromiseUtils\\.|catch\\(onType\\()' app server worker test --include='*.ts' --include='*.js' | grep -v app/vendor",
   { encoding: 'utf8' },
-).trim().split('\n').filter(Boolean)
+)
+  .trim()
+  .split('\n')
+  .filter(Boolean)
   // the module that DEFINES these shows them in its own doc comments
   .filter((f) => !f.endsWith('app/common/utils/utils_promise.ts'));
 
@@ -29,9 +32,11 @@ for (const file of files) {
   if (/PromiseUtils\./.test(src) && !/(?:const|var|let)\s+PromiseUtils\s*=/.test(src)) {
     problems.push(`${file}: uses PromiseUtils.* without binding it`);
   }
-  if (/catch\(onType\(/.test(src)
-    && !/(?:const|var|let)\s*\{[^}]*\bonType\b[^}]*\}\s*=/.test(src)
-    && !/PromiseUtils\.onType/.test(src)) {
+  if (
+    /catch\(onType\(/.test(src) &&
+    !/(?:const|var|let)\s*\{[^}]*\bonType\b[^}]*\}\s*=/.test(src) &&
+    !/PromiseUtils\.onType/.test(src)
+  ) {
     problems.push(`${file}: uses onType() without binding it`);
   }
 }

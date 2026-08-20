@@ -18,7 +18,6 @@ var _ = require('underscore');
 var i18next = require('i18next');
 
 var BuddyListView = ListWithPooledRowsView.extend({
-
   className: 'buddy-list',
   template: BuddyListTemplate,
   rowTemplate: BuddyPreviewTemplate,
@@ -30,7 +29,7 @@ var BuddyListView = ListWithPooledRowsView.extend({
     $listContainer: '.buddy-list-container',
     $list: '.buddy-list-items',
     $buddyControls: '.buddy-controls',
-    $searchInput: 'input[type=\'search\']',
+    $searchInput: "input[type='search']",
     $lastPlayed: '.last-played',
     $lastPlayedUsername: '.last-played .username',
     $addBuddyPrompt: '.add-buddy-prompt',
@@ -43,7 +42,7 @@ var BuddyListView = ListWithPooledRowsView.extend({
   events: {
     'click .buddy': 'onBuddySelected',
     'click .btn-add-last-played': 'onAddLastOpponent',
-    'keyup input[type=\'search\']': 'onSearchInputChanged',
+    "keyup input[type='search']": 'onSearchInputChanged',
     'click .add-buddy': 'openAddBuddyPrompt',
     'keyup .add-buddy-input': 'onBuddyInputKeyPressed',
     'click .add-buddy-cancel': 'onCancelAddBuddyClick',
@@ -53,21 +52,35 @@ var BuddyListView = ListWithPooledRowsView.extend({
 
   initialize: function (opts) {
     // set the internal model/collection
-    var presenceCollection = ChatManager.getInstance().getBuddiesCollection().getPresenceCollection();
+    var presenceCollection = ChatManager.getInstance()
+      .getBuddiesCollection()
+      .getPresenceCollection();
     this.collection = new VirtualCollection(presenceCollection, {
       destroy_with: this,
     });
-    this.previouslySelectedBuddy = this.collection.find(function (model) { return model.get('_active'); });
+    this.previouslySelectedBuddy = this.collection.find(function (model) {
+      return model.get('_active');
+    });
 
     // start listening then check for unread messages
-    this.listenTo(ChatManager.getInstance().conversations, 'change:unread', this.onUpdateUnreadMessages);
-    ChatManager.getInstance().conversations.each(function (conversationModel) {
-      this.onUpdateUnreadMessages(conversationModel);
-    }.bind(this));
+    this.listenTo(
+      ChatManager.getInstance().conversations,
+      'change:unread',
+      this.onUpdateUnreadMessages,
+    );
+    ChatManager.getInstance().conversations.each(
+      function (conversationModel) {
+        this.onUpdateUnreadMessages(conversationModel);
+      }.bind(this),
+    );
 
-    this.listenTo(this.collection, 'change:status change:_lastUnreadMessageAt', function () {
-      this.listenToOnce(this.collection, 'sort', this.bindItemViewsAfterSort);
-    }.bind(this));
+    this.listenTo(
+      this.collection,
+      'change:status change:_lastUnreadMessageAt',
+      function () {
+        this.listenToOnce(this.collection, 'sort', this.bindItemViewsAfterSort);
+      }.bind(this),
+    );
 
     ListWithPooledRowsView.prototype.initialize.call(this, opts);
   },
@@ -119,7 +132,10 @@ var BuddyListView = ListWithPooledRowsView.extend({
   },
 
   onDoNotDisturbClick: function () {
-    ProfileManager.getInstance().profile.set('doNotDisturb', !ProfileManager.getInstance().profile.get('doNotDisturb'));
+    ProfileManager.getInstance().profile.set(
+      'doNotDisturb',
+      !ProfileManager.getInstance().profile.get('doNotDisturb'),
+    );
     this._updateDoNotDisturbStatus();
   },
 
@@ -144,9 +160,11 @@ var BuddyListView = ListWithPooledRowsView.extend({
 
       // find whether opponent already exists as buddy
       var lastOpponentId = lastGame.get('opponent_id');
-      lastOpponentBuddy = ChatManager.getInstance().getBuddiesCollection().find(function (buddy) {
-        return buddy.get('id') == lastOpponentId;
-      });
+      lastOpponentBuddy = ChatManager.getInstance()
+        .getBuddiesCollection()
+        .find(function (buddy) {
+          return buddy.get('id') == lastOpponentId;
+        });
     }
 
     var wasShowingLastOpponent = this._showingLastOpponent;
@@ -194,8 +212,7 @@ var BuddyListView = ListWithPooledRowsView.extend({
 
   bindModelToItemView: function (model, itemView) {
     // skip any binding if this view is in the process/done getting destroyed
-    if (this.isDestroyed)
-      return;
+    if (this.isDestroyed) return;
 
     Logger.module('UI').log('BuddyListView.bindModelToItemView() -> ' + model.get('username'));
 
@@ -203,8 +220,7 @@ var BuddyListView = ListWithPooledRowsView.extend({
 
     // content
     var rankText = model.get('rank');
-    if (_.isUndefined(rankText) || _.isNull(rankText))
-      rankText = '?';
+    if (_.isUndefined(rankText) || _.isNull(rankText)) rankText = '?';
     $('.username-block', itemView).text(model.get('username'));
     var localizedCurrentStatus = i18next.t('buddy_list.status_' + model.getStatus());
     $('.status-label', itemView).text(localizedCurrentStatus);
@@ -224,7 +240,9 @@ var BuddyListView = ListWithPooledRowsView.extend({
     if (_.isNumber(model.get('rank'))) {
       // division
       var divisionName = SDK.RankFactory.rankedDivisionNameForRank(model.get('rank')).toLowerCase();
-      var divisionClassName = SDK.RankFactory.rankedDivisionAssetNameForRank(model.get('rank')).toLowerCase();
+      var divisionClassName = SDK.RankFactory.rankedDivisionAssetNameForRank(
+        model.get('rank'),
+      ).toLowerCase();
       if ($.data(itemView, 'division') != divisionName) {
         // Update the class name
         $(itemView).removeClass($.data(itemView, 'divisionClassName'));
@@ -257,13 +275,17 @@ var BuddyListView = ListWithPooledRowsView.extend({
     var index = this.collection.indexOf(model);
 
     if (!itemView) {
-      itemView = _.find(this.itemViewPool, function (itemView) { return $.data(itemView[0], 'index') == index; });
+      itemView = _.find(this.itemViewPool, function (itemView) {
+        return $.data(itemView[0], 'index') == index;
+      });
     }
 
     if (this.previouslySelectedBuddy) {
       this.previouslySelectedBuddy.set('_active', false);
       var previousModelIndex = this.collection.indexOf(this.previouslySelectedBuddy);
-      var previouslySelectedItemView = _.find(this.itemViewPool, function (itemView) { return $.data(itemView[0], 'index') == previousModelIndex; });
+      var previouslySelectedItemView = _.find(this.itemViewPool, function (itemView) {
+        return $.data(itemView[0], 'index') == previousModelIndex;
+      });
       if (previouslySelectedItemView) {
         $(previouslySelectedItemView).removeClass('active');
       }
@@ -271,8 +293,7 @@ var BuddyListView = ListWithPooledRowsView.extend({
 
     model.set({ _active: true, _unread: false });
 
-    if (itemView)
-      itemView.addClass('active').removeClass('unread');
+    if (itemView) itemView.addClass('active').removeClass('unread');
 
     ChatManager.getInstance().setConversationAsRead(model.userId);
     this.trigger('buddy_selected', model);
@@ -280,15 +301,14 @@ var BuddyListView = ListWithPooledRowsView.extend({
     this.previouslySelectedBuddy = model;
 
     // scroll the list to this item
-    if (!dontScroll)
-      this.scrollToIndex(index);
+    if (!dontScroll) this.scrollToIndex(index);
   },
 
   onUpdateUnreadMessages: function (unreadConversationModel) {
     if (unreadConversationModel.get('unread')) {
       // get the buddy presence model for the active conversation
       var unreadBuddyModel = this.collection.find(function (buddyPresenceModel) {
-        return (unreadConversationModel.get('id').indexOf(buddyPresenceModel.userId) >= 0);
+        return unreadConversationModel.get('id').indexOf(buddyPresenceModel.userId) >= 0;
       });
 
       if (unreadBuddyModel != null) {
@@ -308,8 +328,7 @@ var BuddyListView = ListWithPooledRowsView.extend({
     //   this.previouslySelectedBuddy.set("_active",false);
 
     this.collection.each(function (model) {
-      if (!model.get('_unread'))
-        model.unset('_lastUnreadMessageAt');
+      if (!model.get('_unread')) model.unset('_lastUnreadMessageAt');
     });
   },
 
@@ -336,42 +355,50 @@ var BuddyListView = ListWithPooledRowsView.extend({
     if (this._addBuddyPromise == null) {
       var buddyInput = $.trim(this.ui.$addBuddyInput.val());
       if (buddyInput) {
-        this._addBuddyPromise = PromiseUtils.inspectable(ChatManager.getInstance().inviteBuddy(buddyInput));
-        this._addBuddyPromise.then(
-          function () {
-            this.ui.$addBuddySubmit.addClass('done');
-            this.ui.$addBuddyInput.addClass('done');
-            this.ui.$addBuddySubmit.button('done');
-          }.bind(this),
-          function (error) {
-            this.ui.$addBuddySubmit.data('fail-text', error.message);
-            this.ui.$addBuddySubmit.addClass('fail');
-            this.ui.$addBuddyInput.addClass('fail');
-            this.ui.$addBuddySubmit.button('fail');
-          }.bind(this),
-          function () {
-            this.ui.$addBuddySubmit.addClass('disabled');
-            this.ui.$addBuddyInput.addClass('disabled');
-            this.ui.$addBuddySubmit.button('progress');
-          }.bind(this),
-        ).finally(function () {
-          setTimeout(function () {
-            // reset everything
-            if (this._addBuddyPromise.isFulfilled()) {
-              this.ui.$addBuddyInput.val('');
-            }
-            this.ui.$addBuddySubmit.removeClass('done fail disabled');
-            this.ui.$addBuddyInput.removeClass('done fail disabled');
-            this.ui.$addBuddySubmit.button('reset');
-            this._addBuddyPromise = null;
+        this._addBuddyPromise = PromiseUtils.inspectable(
+          ChatManager.getInstance().inviteBuddy(buddyInput),
+        );
+        this._addBuddyPromise
+          .then(
+            function () {
+              this.ui.$addBuddySubmit.addClass('done');
+              this.ui.$addBuddyInput.addClass('done');
+              this.ui.$addBuddySubmit.button('done');
+            }.bind(this),
+            function (error) {
+              this.ui.$addBuddySubmit.data('fail-text', error.message);
+              this.ui.$addBuddySubmit.addClass('fail');
+              this.ui.$addBuddyInput.addClass('fail');
+              this.ui.$addBuddySubmit.button('fail');
+            }.bind(this),
+            function () {
+              this.ui.$addBuddySubmit.addClass('disabled');
+              this.ui.$addBuddyInput.addClass('disabled');
+              this.ui.$addBuddySubmit.button('progress');
+            }.bind(this),
+          )
+          .finally(
+            function () {
+              setTimeout(
+                function () {
+                  // reset everything
+                  if (this._addBuddyPromise.isFulfilled()) {
+                    this.ui.$addBuddyInput.val('');
+                  }
+                  this.ui.$addBuddySubmit.removeClass('done fail disabled');
+                  this.ui.$addBuddyInput.removeClass('done fail disabled');
+                  this.ui.$addBuddySubmit.button('reset');
+                  this._addBuddyPromise = null;
 
-            this.ui.$addBuddyPrompt.fadeOut();
-          }.bind(this), 1000);
-        }.bind(this));
+                  this.ui.$addBuddyPrompt.fadeOut();
+                }.bind(this),
+                1000,
+              );
+            }.bind(this),
+          );
       }
     }
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

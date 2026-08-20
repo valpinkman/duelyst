@@ -31,7 +31,22 @@
       "test/*": ["./test/*"]
     }
   },
-  "include": ["app/types/*.d.ts", "app/**/*.ts", "server/**/*.ts", "worker/**/*.ts", "test/**/*.ts", "scripts/**/*.ts"],
-  "exclude": ["node_modules", "dist", "app/vendor", "app/resources", "app/original_resources", "packages/chroma-js", "desktop",
-    "app/tools/FileSaver.min.ts"]
+  "include": [
+    "app/types/*.d.ts",
+    "app/**/*.ts",
+    "server/**/*.ts",
+    "worker/**/*.ts",
+    "test/**/*.ts",
+    "scripts/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "app/vendor",
+    "app/resources",
+    "app/original_resources",
+    "packages/chroma-js",
+    "desktop",
+    "app/tools/FileSaver.min.ts"
+  ]
 }

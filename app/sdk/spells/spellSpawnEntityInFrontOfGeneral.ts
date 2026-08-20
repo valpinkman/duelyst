@@ -16,8 +16,15 @@ class SpellSpawnEntityInFrontOfGeneral extends SpellSpawnEntity {
     let applyEffectPositions = [];
     if (general != null) {
       let playerOffset = 0;
-      if (this.isOwnedByPlayer1()) { playerOffset = 1; } else { playerOffset = -1; }
-      const frontPosition = { x: general.getPosition().x + playerOffset, y: general.getPosition().y };
+      if (this.isOwnedByPlayer1()) {
+        playerOffset = 1;
+      } else {
+        playerOffset = -1;
+      }
+      const frontPosition = {
+        x: general.getPosition().x + playerOffset,
+        y: general.getPosition().y,
+      };
       if (this.getGameSession().getBoard().isOnBoard(frontPosition)) {
         applyEffectPositions = [frontPosition];
       }

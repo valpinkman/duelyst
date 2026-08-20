@@ -44,10 +44,7 @@ class BeginnerFlyingChallenge1 extends Challenge {
   }
 
   getOpponentPlayerDeckData(gameSession) {
-    return [
-      { id: Cards.Faction4.General },
-      { id: Cards.TutorialSpell.TutorialFireOrb },
-    ];
+    return [{ id: Cards.Faction4.General }, { id: Cards.TutorialSpell.TutorialFireOrb }];
   }
 
   setupBoard(gameSession) {
@@ -78,24 +75,37 @@ class BeginnerFlyingChallenge1 extends Challenge {
   setupOpponentAgent(gameSession) {
     super.setupOpponentAgent(gameSession);
 
-    this._opponentAgent.addActionForTurn(0, AgentActions.createAgentSoftActionShowInstructionLabels([{
-      label: i18next.t('challenges.beginner_flying_challenge_taunt'),
-      isSpeech: true,
-      isPersistent: true,
-      yPosition: 0.7,
-      isOpponent: true,
-    },
-    ]));
-    return this._opponentAgent.addActionForTurn(0, AgentActions.createAgentActionPlayCardFindPosition(0, () => [GameSession.getInstance().getGeneralForPlayer1().getPosition()]));
+    this._opponentAgent.addActionForTurn(
+      0,
+      AgentActions.createAgentSoftActionShowInstructionLabels([
+        {
+          label: i18next.t('challenges.beginner_flying_challenge_taunt'),
+          isSpeech: true,
+          isPersistent: true,
+          yPosition: 0.7,
+          isOpponent: true,
+        },
+      ]),
+    );
+    return this._opponentAgent.addActionForTurn(
+      0,
+      AgentActions.createAgentActionPlayCardFindPosition(0, () => [
+        GameSession.getInstance().getGeneralForPlayer1().getPosition(),
+      ]),
+    );
   }
 }
 BeginnerFlyingChallenge1.prototype.type = 'BeginnerFlyingChallenge1';
 BeginnerFlyingChallenge1.prototype.categoryType = ChallengeCategory.keywords.type;
 BeginnerFlyingChallenge1.prototype.name = i18next.t('challenges.beginner_flying_challenge_title');
-BeginnerFlyingChallenge1.prototype.description = i18next.t('challenges.beginner_flying_challenge_description');
+BeginnerFlyingChallenge1.prototype.description = i18next.t(
+  'challenges.beginner_flying_challenge_description',
+);
 BeginnerFlyingChallenge1.prototype.iconUrl = RSX.speech_portrait_lyonar_side.img;
 BeginnerFlyingChallenge1.prototype._musicOverride = RSX.music_battlemap_vetruv.audio;
-BeginnerFlyingChallenge1.prototype.otkChallengeStartMessage = i18next.t('challenges.beginner_flying_challenge_start');
+BeginnerFlyingChallenge1.prototype.otkChallengeStartMessage = i18next.t(
+  'challenges.beginner_flying_challenge_start',
+);
 BeginnerFlyingChallenge1.prototype.otkChallengeFailureMessages = [
   i18next.t('challenges.beginner_flying_challenge_fail'),
 ];

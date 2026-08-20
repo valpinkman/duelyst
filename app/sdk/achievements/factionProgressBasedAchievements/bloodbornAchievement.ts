@@ -19,7 +19,7 @@ class BloodbornAchievement extends Achievement {
     // 9 is the faction level at which players have unlocked all cards for a faction
     for (var factionId in factionProgressionData) {
       var factionData = factionProgressionData[factionId];
-      if (factionData && factionData.stats && (factionData.stats.level === 9)) {
+      if (factionData && factionData.stats && factionData.stats.level === 9) {
         return 1;
       }
     }

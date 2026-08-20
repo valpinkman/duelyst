@@ -37,7 +37,12 @@ const ScoreForCardAtTargetPosition = function (unit, positiontoEvaluate, bestObj
   // Logger.module("AI").debug("[G:" + gameSession.gameId + "] 4 ScoreForCardAtTargetPosition() => score for " + unit.getLogName() + " at " + positiontoEvaluate.x + "," + positiontoEvaluate.y + " = " + score);
   score += position_objective_provoke(gameSession, unit, positiontoEvaluate, bestObjective);
   // Logger.module("AI").debug("[G:" + gameSession.gameId + "] 5 ScoreForCardAtTargetPosition() => score for " + unit.getLogName() + " at " + positiontoEvaluate.x + "," + positiontoEvaluate.y + " = " + score);
-  score += position_objective_distanceFromBestObjective(gameSession, unit, positiontoEvaluate, bestObjective);
+  score += position_objective_distanceFromBestObjective(
+    gameSession,
+    unit,
+    positiontoEvaluate,
+    bestObjective,
+  );
   // Logger.module("AI").debug("[G:" + gameSession.gameId + "] 6 ScoreForCardAtTargetPosition() => score for " + unit.getLogName() + " at " + positiontoEvaluate.x + "," + positiontoEvaluate.y + " = " + score);
   score += position_backstabAvoidance(gameSession, unit, positiontoEvaluate, bestObjective);
   // Logger.module("AI").debug("[G:" + gameSession.gameId + "] RETURN (7) ScoreForCardAtTargetPosition() => score for " + unit.getLogName() + " at " + positiontoEvaluate.x + "," + positiontoEvaluate.y + " = " + score);

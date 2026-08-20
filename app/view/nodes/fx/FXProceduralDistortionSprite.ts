@@ -40,7 +40,9 @@ var FXProceduralDistortionSprite = FXDistortionSprite.extend({
 FXProceduralDistortionSprite.WebGLRenderCmd = function (renderable) {
   FXDistortionSprite.WebGLRenderCmd.call(this, renderable);
 };
-const proto = FXProceduralDistortionSprite.WebGLRenderCmd.prototype = Object.create(FXDistortionSprite.WebGLRenderCmd.prototype);
+const proto = (FXProceduralDistortionSprite.WebGLRenderCmd.prototype = Object.create(
+  FXDistortionSprite.WebGLRenderCmd.prototype,
+));
 proto.constructor = FXProceduralDistortionSprite.WebGLRenderCmd;
 
 proto.rebuildQuad = function () {
@@ -107,13 +109,27 @@ proto.renderingDistortion = function () {
   shaderProgram._setUniformForMVPMatrixWithMat4(this._stackMatrix);
   shaderProgram.setUniformLocationWith1f(shaderProgram.loc_depthOffset, node.depthOffset);
   shaderProgram.setUniformLocationWith1f(shaderProgram.loc_depthModifier, node.depthModifier);
-  if (shaderProgram.loc_radius) { shaderProgram.setUniformLocationWith1f(shaderProgram.loc_radius, node.radius); }
-  if (shaderProgram.loc_refraction) { shaderProgram.setUniformLocationWith1f(shaderProgram.loc_refraction, node.refraction); }
-  if (shaderProgram.loc_reflection) { shaderProgram.setUniformLocationWith1f(shaderProgram.loc_reflection, node.reflection); }
-  if (shaderProgram.loc_fresnelBias) { shaderProgram.setUniformLocationWith1f(shaderProgram.loc_fresnelBias, node.fresnelBias); }
-  if (shaderProgram.loc_frequency) { shaderProgram.setUniformLocationWith1f(shaderProgram.loc_frequency, node.frequency); }
-  if (shaderProgram.loc_amplitude) { shaderProgram.setUniformLocationWith1f(shaderProgram.loc_amplitude, node.amplitude); }
-  if (shaderProgram.loc_time) { shaderProgram.setUniformLocationWith1f(shaderProgram.loc_time, node.time); }
+  if (shaderProgram.loc_radius) {
+    shaderProgram.setUniformLocationWith1f(shaderProgram.loc_radius, node.radius);
+  }
+  if (shaderProgram.loc_refraction) {
+    shaderProgram.setUniformLocationWith1f(shaderProgram.loc_refraction, node.refraction);
+  }
+  if (shaderProgram.loc_reflection) {
+    shaderProgram.setUniformLocationWith1f(shaderProgram.loc_reflection, node.reflection);
+  }
+  if (shaderProgram.loc_fresnelBias) {
+    shaderProgram.setUniformLocationWith1f(shaderProgram.loc_fresnelBias, node.fresnelBias);
+  }
+  if (shaderProgram.loc_frequency) {
+    shaderProgram.setUniformLocationWith1f(shaderProgram.loc_frequency, node.frequency);
+  }
+  if (shaderProgram.loc_amplitude) {
+    shaderProgram.setUniformLocationWith1f(shaderProgram.loc_amplitude, node.amplitude);
+  }
+  if (shaderProgram.loc_time) {
+    shaderProgram.setUniformLocationWith1f(shaderProgram.loc_time, node.time);
+  }
   cc.glBindTexture2DN(0, depthMap);
   cc.glBindTexture2DN(1, refractMap);
   cc.glBlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);

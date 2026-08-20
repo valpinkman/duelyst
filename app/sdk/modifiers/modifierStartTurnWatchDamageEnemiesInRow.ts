@@ -19,8 +19,12 @@ class ModifierStartTurnWatchDamageEnemiesInRow extends ModifierStartTurnWatch {
   static description = 'At the start of your turn, deal %X damage to enemies in row';
 
   static createContextObject(damageAmount, damageGeneral, options) {
-    if (damageAmount == null) { damageAmount = 0; }
-    if (damageGeneral == null) { damageGeneral = false; }
+    if (damageAmount == null) {
+      damageAmount = 0;
+    }
+    if (damageGeneral == null) {
+      damageGeneral = false;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.damageAmount = damageAmount;
     contextObject.damageGenerals = damageGeneral;
@@ -28,15 +32,20 @@ class ModifierStartTurnWatchDamageEnemiesInRow extends ModifierStartTurnWatch {
   }
 
   onTurnWatch(action) {
-    let damageAction; let previousOffset; let
-      target;
+    let damageAction;
+    let previousOffset;
+    let target;
     const board = this.getCard().getGameSession().getBoard();
 
     let offset = 1;
-    let offsetPosition = { x: this.getCard().getPosition().x + offset, y: this.getCard().getPosition().y };
+    let offsetPosition = {
+      x: this.getCard().getPosition().x + offset,
+      y: this.getCard().getPosition().y,
+    };
     while (board.isOnBoard(offsetPosition)) {
       target = board.getUnitAtPosition(offsetPosition);
-      if ((target != null) && (target.getOwner() !== this.getCard().getOwner())) { // damage any enemy found
+      if (target != null && target.getOwner() !== this.getCard().getOwner()) {
+        // damage any enemy found
         if (this.damageGeneral || !target.getIsGeneral()) {
           damageAction = new DamageAction(this.getCard().getGameSession());
           damageAction.setOwnerId(this.getCard().getOwnerId());
@@ -50,12 +59,16 @@ class ModifierStartTurnWatchDamageEnemiesInRow extends ModifierStartTurnWatch {
     }
 
     offset = -1;
-    offsetPosition = { x: this.getCard().getPosition().x + offset, y: this.getCard().getPosition().y };
+    offsetPosition = {
+      x: this.getCard().getPosition().x + offset,
+      y: this.getCard().getPosition().y,
+    };
     return (() => {
       const result = [];
       while (board.isOnBoard(offsetPosition)) {
         target = board.getUnitAtPosition(offsetPosition);
-        if ((target != null) && (target.getOwner() !== this.getCard().getOwner())) { // damage any enemy found
+        if (target != null && target.getOwner() !== this.getCard().getOwner()) {
+          // damage any enemy found
           if (this.damageGeneral || !target.getIsGeneral()) {
             damageAction = new DamageAction(this.getCard().getGameSession());
             damageAction.setOwnerId(this.getCard().getOwnerId());
@@ -65,15 +78,19 @@ class ModifierStartTurnWatchDamageEnemiesInRow extends ModifierStartTurnWatch {
           }
         }
         previousOffset = offsetPosition;
-        result.push(offsetPosition = { x: previousOffset.x + offset, y: previousOffset.y });
+        result.push((offsetPosition = { x: previousOffset.x + offset, y: previousOffset.y }));
       }
       return result;
     })();
   }
 }
-ModifierStartTurnWatchDamageEnemiesInRow.prototype.type = 'ModifierStartTurnWatchDamageEnemiesInRow';
+ModifierStartTurnWatchDamageEnemiesInRow.prototype.type =
+  'ModifierStartTurnWatchDamageEnemiesInRow';
 ModifierStartTurnWatchDamageEnemiesInRow.prototype.damageAmount = 0;
 ModifierStartTurnWatchDamageEnemiesInRow.prototype.damageGeneral = false;
-ModifierStartTurnWatchDamageEnemiesInRow.prototype.fxResource = ['FX.Modifiers.ModifierStartTurnWatch', 'FX.Modifiers.ModifierGenericDamageFire'];
+ModifierStartTurnWatchDamageEnemiesInRow.prototype.fxResource = [
+  'FX.Modifiers.ModifierStartTurnWatch',
+  'FX.Modifiers.ModifierGenericDamageFire',
+];
 
 module.exports = ModifierStartTurnWatchDamageEnemiesInRow;

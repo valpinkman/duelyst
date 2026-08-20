@@ -5,7 +5,6 @@ var Animations = require('app/ui/views/animations');
 var GameFollowupTemplate = require('app/ui/templates/item/game_followup.hbs');
 
 var GameFollowupItemView = Backbone.Marionette.ItemView.extend({
-
   id: 'app-followup',
   className: 'modal duelyst-modal',
 
@@ -27,7 +26,6 @@ var GameFollowupItemView = Backbone.Marionette.ItemView.extend({
       this.$el.find('button.btn-user-skip').remove();
     }
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

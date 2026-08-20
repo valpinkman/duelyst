@@ -52,11 +52,18 @@ for (const file of process.argv.slice(2)) {
   const edits = [];
   const visit = (node) => {
     if (!node || typeof node.type !== 'string') return;
-    if (node.type === 'CallExpression' && node.callee.type === 'Identifier'
-      && ['it', 'test'].includes(node.callee.name) && node.arguments.length === 2) {
+    if (
+      node.type === 'CallExpression' &&
+      node.callee.type === 'Identifier' &&
+      ['it', 'test'].includes(node.callee.name) &&
+      node.arguments.length === 2
+    ) {
       const fn = node.arguments[1];
-      const isDoneCb = (fn.type === 'ArrowFunctionExpression' || fn.type === 'FunctionExpression')
-        && fn.params.length === 1 && fn.params[0].type === 'Identifier' && fn.params[0].name === 'done';
+      const isDoneCb =
+        (fn.type === 'ArrowFunctionExpression' || fn.type === 'FunctionExpression') &&
+        fn.params.length === 1 &&
+        fn.params[0].type === 'Identifier' &&
+        fn.params[0].name === 'done';
       if (isDoneCb && fn.body.type === 'BlockStatement') {
         const bodyStart = fn.body.range[0];
         const bodyEnd = fn.body.range[1];
@@ -82,5 +89,7 @@ for (const file of process.argv.slice(2)) {
   }
 }
 
-console.log(`${changedFiles} file(s): ${timeouts} this.timeout() calls removed, ${dones} done-callbacks promise-wrapped`);
+console.log(
+  `${changedFiles} file(s): ${timeouts} this.timeout() calls removed, ${dones} done-callbacks promise-wrapped`,
+);
 if (skipped.length) skipped.forEach((s) => console.log(`  SKIPPED ${s}`));

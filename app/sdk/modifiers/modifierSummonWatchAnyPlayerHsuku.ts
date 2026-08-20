@@ -54,18 +54,24 @@ class ModifierSummonWatchAnyPlayerHsuku extends ModifierSummonWatchAnyPlayer {
   onSummonWatch(action) {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
       const unit = action.getTarget();
-      if ((unit != null) && this.isNearbyAnyGeneral(unit.getPosition())) {
+      if (unit != null && this.isNearbyAnyGeneral(unit.getPosition())) {
         // First try to find an ability neither Hsuku nor the unit have
         let ability;
         const mutualAbilitiesToGain = [];
         let abilityToGain = null;
         for (ability of Array.from<any>(this.abilitiesToGain)) {
-          if (!unit.hasActiveModifierType(ability) && !this.getCard().hasActiveModifierType(ability)) {
+          if (
+            !unit.hasActiveModifierType(ability) &&
+            !this.getCard().hasActiveModifierType(ability)
+          ) {
             mutualAbilitiesToGain.push(ability);
           }
         }
         if (mutualAbilitiesToGain.length > 0) {
-          abilityToGain = mutualAbilitiesToGain[this.getGameSession().getRandomIntegerForExecution(mutualAbilitiesToGain.length)];
+          abilityToGain =
+            mutualAbilitiesToGain[
+              this.getGameSession().getRandomIntegerForExecution(mutualAbilitiesToGain.length)
+            ];
           this.abilitiesToGain.splice(this.abilitiesToGain.indexOf(abilityToGain), 1);
         } else {
           // No abilities both units need, instead give them one the unit needs
@@ -76,7 +82,10 @@ class ModifierSummonWatchAnyPlayerHsuku extends ModifierSummonWatchAnyPlayer {
             }
           }
           if (unitAbilitiesToGain.length > 0) {
-            abilityToGain = unitAbilitiesToGain[this.getGameSession().getRandomIntegerForExecution(unitAbilitiesToGain.length)];
+            abilityToGain =
+              unitAbilitiesToGain[
+                this.getGameSession().getRandomIntegerForExecution(unitAbilitiesToGain.length)
+              ];
           } else if (this.abilitiesToGain.length > 0) {
             // somehow new unit doesn't need any abilities, give them one Hsuku needs if possible
             const hsukuAbilitiesToGain = [];
@@ -87,29 +96,51 @@ class ModifierSummonWatchAnyPlayerHsuku extends ModifierSummonWatchAnyPlayer {
             }
             if (hsukuAbilitiesToGain.length > 0) {
               // gain one that Hsuku didn't gain from elsewhere
-              abilityToGain = hsukuAbilitiesToGain[this.getGameSession().getRandomIntegerForExecution(hsukuAbilitiesToGain.length)];
+              abilityToGain =
+                hsukuAbilitiesToGain[
+                  this.getGameSession().getRandomIntegerForExecution(hsukuAbilitiesToGain.length)
+                ];
               this.abilitiesToGain.splice(this.abilitiesToGain.indexOf(abilityToGain), 1);
             } else {
               // Hsuku gained all his remaining abilities elsewhere, just give him a random one
-              abilityToGain = this.abilitiesToGain.splice(this.getGameSession().getRandomIntegerForExecution(this.abilitiesToGain.length), 1)[0];
+              abilityToGain = this.abilitiesToGain.splice(
+                this.getGameSession().getRandomIntegerForExecution(this.abilitiesToGain.length),
+                1,
+              )[0];
             }
           } else {
             // neither unit needs an ability, just give them a random ability in case one they have is temporary
-            abilityToGain = this.abilityMasterList[this.getGameSession().getRandomIntegerForExecution(this.abilityMasterList.length)];
+            abilityToGain =
+              this.abilityMasterList[
+                this.getGameSession().getRandomIntegerForExecution(this.abilityMasterList.length)
+              ];
           }
         }
 
-        this.getGameSession().applyModifierContextObject(this.getGameSession().getModifierClassForType(abilityToGain).createContextObject(), unit);
-        return this.getGameSession().applyModifierContextObject(this.getGameSession().getModifierClassForType(abilityToGain).createContextObject(), this.getCard());
+        this.getGameSession().applyModifierContextObject(
+          this.getGameSession().getModifierClassForType(abilityToGain).createContextObject(),
+          unit,
+        );
+        return this.getGameSession().applyModifierContextObject(
+          this.getGameSession().getModifierClassForType(abilityToGain).createContextObject(),
+          this.getCard(),
+        );
       }
     }
   }
 
   isNearbyAnyGeneral(position) {
     if (position != null) {
-      const general = this.getCard().getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
-      const enemyGeneral = this.getCard().getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
-      if (this.positionsAreNearbyEachOther(position, general.getPosition()) || this.positionsAreNearbyEachOther(position, enemyGeneral.getPosition())) {
+      const general = this.getCard()
+        .getGameSession()
+        .getGeneralForPlayerId(this.getCard().getOwnerId());
+      const enemyGeneral = this.getCard()
+        .getGameSession()
+        .getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
+      if (
+        this.positionsAreNearbyEachOther(position, general.getPosition()) ||
+        this.positionsAreNearbyEachOther(position, enemyGeneral.getPosition())
+      ) {
         return true;
       }
     }
@@ -117,14 +148,17 @@ class ModifierSummonWatchAnyPlayerHsuku extends ModifierSummonWatchAnyPlayer {
   }
 
   positionsAreNearbyEachOther(position1, position2) {
-    if ((Math.abs(position1.x - position2.x) <= 1) && (Math.abs(position1.y - position2.y) <= 1)) {
+    if (Math.abs(position1.x - position2.x) <= 1 && Math.abs(position1.y - position2.y) <= 1) {
       return true;
     }
     return false;
   }
 }
 ModifierSummonWatchAnyPlayerHsuku.prototype.type = 'ModifierSummonWatchAnyPlayerHsuku';
-ModifierSummonWatchAnyPlayerHsuku.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierSummonWatchAnyPlayerHsuku.prototype.fxResource = [
+  'FX.Modifiers.ModifierSummonWatch',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 ModifierSummonWatchAnyPlayerHsuku.prototype.abilitiesToGain = null;
 ModifierSummonWatchAnyPlayerHsuku.prototype.abilityMasterList = null;
 

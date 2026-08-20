@@ -14,13 +14,9 @@ Logger.enabled = false;
 describe('battle pets', () => {
   beforeEach(() => {
     // define test decks.
-    const player1Deck = [
-      { id: SDK.Cards.Faction1.General },
-    ];
+    const player1Deck = [{ id: SDK.Cards.Faction1.General }];
 
-    const player2Deck = [
-      { id: SDK.Cards.Faction2.General },
-    ];
+    const player2Deck = [{ id: SDK.Cards.Faction2.General }];
 
     // setup test session
     UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
@@ -36,7 +32,12 @@ describe('battle pets', () => {
     const player1 = gameSession.getPlayer1();
     player1.remainingMana = 9;
 
-    const yun = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Yun }, 3, 2, gameSession.getPlayer2Id());
+    const yun = UtilsSDK.applyCardToBoard(
+      { id: SDK.Cards.Neutral.Yun },
+      3,
+      2,
+      gameSession.getPlayer2Id(),
+    );
 
     gameSession.executeAction(gameSession.actionEndTurn());
 
@@ -52,9 +53,18 @@ describe('battle pets', () => {
     const player1 = gameSession.getPlayer1();
     player1.remainingMana = 9;
 
-    const yun = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Yun }, 3, 2, gameSession.getPlayer2Id());
+    const yun = UtilsSDK.applyCardToBoard(
+      { id: SDK.Cards.Neutral.Yun },
+      3,
+      2,
+      gameSession.getPlayer2Id(),
+    );
 
-    UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.DrainMorale }));
+    UtilsSDK.executeActionWithoutValidation(
+      new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+        id: SDK.Cards.Spell.DrainMorale,
+      }),
+    );
     const playCardFromHandAction = player1.actionPlayCardFromHand(0, 3, 2);
     gameSession.executeAction(playCardFromHandAction);
 
@@ -74,9 +84,18 @@ describe('battle pets', () => {
     const player1 = gameSession.getPlayer1();
     player1.remainingMana = 9;
 
-    const amu = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Amu }, 1, 1, gameSession.getPlayer2Id());
+    const amu = UtilsSDK.applyCardToBoard(
+      { id: SDK.Cards.Neutral.Amu },
+      1,
+      1,
+      gameSession.getPlayer2Id(),
+    );
 
-    UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.VoidSteal }));
+    UtilsSDK.executeActionWithoutValidation(
+      new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+        id: SDK.Cards.Spell.VoidSteal,
+      }),
+    );
     const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
     gameSession.executeAction(playCardFromHandAction);
 
@@ -97,9 +116,24 @@ describe('battle pets', () => {
     const player1 = gameSession.getPlayer1();
     player1.remainingMana = 9;
 
-    let yun = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Yun }, 4, 0, gameSession.getPlayer2Id());
-    const golem1 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.BrightmossGolem }, 8, 0, gameSession.getPlayer1Id());
-    const golem2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.BrightmossGolem }, 0, 4, gameSession.getPlayer1Id());
+    let yun = UtilsSDK.applyCardToBoard(
+      { id: SDK.Cards.Neutral.Yun },
+      4,
+      0,
+      gameSession.getPlayer2Id(),
+    );
+    const golem1 = UtilsSDK.applyCardToBoard(
+      { id: SDK.Cards.Neutral.BrightmossGolem },
+      8,
+      0,
+      gameSession.getPlayer1Id(),
+    );
+    const golem2 = UtilsSDK.applyCardToBoard(
+      { id: SDK.Cards.Neutral.BrightmossGolem },
+      0,
+      4,
+      gameSession.getPlayer1Id(),
+    );
 
     gameSession.executeAction(gameSession.actionEndTurn());
 
@@ -114,8 +148,18 @@ describe('battle pets', () => {
     const player1 = gameSession.getPlayer1();
     player1.remainingMana = 9;
 
-    let yun = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Yun }, 4, 0, gameSession.getPlayer2Id());
-    const kiri = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.DaggerKiri }, 5, 0, gameSession.getPlayer1Id());
+    let yun = UtilsSDK.applyCardToBoard(
+      { id: SDK.Cards.Neutral.Yun },
+      4,
+      0,
+      gameSession.getPlayer2Id(),
+    );
+    const kiri = UtilsSDK.applyCardToBoard(
+      { id: SDK.Cards.Neutral.DaggerKiri },
+      5,
+      0,
+      gameSession.getPlayer1Id(),
+    );
 
     gameSession.executeAction(gameSession.actionEndTurn());
 
@@ -136,10 +180,25 @@ describe('battle pets', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      const yun = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Yun }, 5, 0, gameSession.getPlayer2Id());
+      const yun = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.Yun },
+        5,
+        0,
+        gameSession.getPlayer2Id(),
+      );
       const damage = yun.getATK();
-      const golem1 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.BrightmossGolem }, 8, 0, gameSession.getPlayer1Id());
-      const golem2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.BrightmossGolem }, 0, 0, gameSession.getPlayer1Id());
+      const golem1 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.BrightmossGolem },
+        8,
+        0,
+        gameSession.getPlayer1Id(),
+      );
+      const golem2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.BrightmossGolem },
+        0,
+        0,
+        gameSession.getPlayer1Id(),
+      );
 
       gameSession.executeAction(gameSession.actionEndTurn());
 
@@ -186,13 +245,37 @@ describe('battle pets', () => {
 
       player2.remainingMana = 9;
 
-      const ubo = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Ubo }, 8, 0, gameSession.getPlayer2Id());
+      const ubo = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.Ubo },
+        8,
+        0,
+        gameSession.getPlayer2Id(),
+      );
       const damage = ubo.getATK();
-      const golem1 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.BrightmossGolem }, 2, 0, gameSession.getPlayer1Id());
-      const golem2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.BrightmossGolem }, 1, 1, gameSession.getPlayer1Id());
-      const golem3 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.BrightmossGolem }, 1, 2, gameSession.getPlayer1Id());
+      const golem1 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.BrightmossGolem },
+        2,
+        0,
+        gameSession.getPlayer1Id(),
+      );
+      const golem2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.BrightmossGolem },
+        1,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const golem3 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.BrightmossGolem },
+        1,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.AstralPhasing }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.AstralPhasing,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 8, 0);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -214,12 +297,37 @@ describe('battle pets', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      const yun = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Yun }, 5, 0, gameSession.getPlayer2Id());
+      const yun = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.Yun },
+        5,
+        0,
+        gameSession.getPlayer2Id(),
+      );
       const damage = yun.getATK();
-      const golem1 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.BrightmossGolem }, 7, 0, gameSession.getPlayer1Id());
-      const golem2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.BrightmossGolem }, 6, 0, gameSession.getPlayer2Id());
-      const golem3 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.BrightmossGolem }, 6, 1, gameSession.getPlayer2Id());
-      const golem4 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.BrightmossGolem }, 2, 0, gameSession.getPlayer1Id());
+      const golem1 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.BrightmossGolem },
+        7,
+        0,
+        gameSession.getPlayer1Id(),
+      );
+      const golem2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.BrightmossGolem },
+        6,
+        0,
+        gameSession.getPlayer2Id(),
+      );
+      const golem3 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.BrightmossGolem },
+        6,
+        1,
+        gameSession.getPlayer2Id(),
+      );
+      const golem4 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.BrightmossGolem },
+        2,
+        0,
+        gameSession.getPlayer1Id(),
+      );
 
       gameSession.executeAction(gameSession.actionEndTurn());
 
@@ -233,13 +341,43 @@ describe('battle pets', () => {
     const player1 = gameSession.getPlayer1();
     player1.remainingMana = 9;
 
-    const yun = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Yun }, 5, 0, gameSession.getPlayer2Id());
+    const yun = UtilsSDK.applyCardToBoard(
+      { id: SDK.Cards.Neutral.Yun },
+      5,
+      0,
+      gameSession.getPlayer2Id(),
+    );
     const damage = yun.getATK();
-    const heartseeker1 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction2.Heartseeker }, 5, 1, gameSession.getPlayer1Id());
-    const heartseeker2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction2.Heartseeker }, 6, 0, gameSession.getPlayer1Id());
-    const provoke = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.PrimusShieldmaster }, 6, 1, gameSession.getPlayer1Id());
-    const heartseeker3 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction2.Heartseeker }, 4, 0, gameSession.getPlayer1Id());
-    const heartseeker4 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction2.Heartseeker }, 4, 1, gameSession.getPlayer1Id());
+    const heartseeker1 = UtilsSDK.applyCardToBoard(
+      { id: SDK.Cards.Faction2.Heartseeker },
+      5,
+      1,
+      gameSession.getPlayer1Id(),
+    );
+    const heartseeker2 = UtilsSDK.applyCardToBoard(
+      { id: SDK.Cards.Faction2.Heartseeker },
+      6,
+      0,
+      gameSession.getPlayer1Id(),
+    );
+    const provoke = UtilsSDK.applyCardToBoard(
+      { id: SDK.Cards.Neutral.PrimusShieldmaster },
+      6,
+      1,
+      gameSession.getPlayer1Id(),
+    );
+    const heartseeker3 = UtilsSDK.applyCardToBoard(
+      { id: SDK.Cards.Faction2.Heartseeker },
+      4,
+      0,
+      gameSession.getPlayer1Id(),
+    );
+    const heartseeker4 = UtilsSDK.applyCardToBoard(
+      { id: SDK.Cards.Faction2.Heartseeker },
+      4,
+      1,
+      gameSession.getPlayer1Id(),
+    );
 
     gameSession.executeAction(gameSession.actionEndTurn());
 
@@ -252,11 +390,31 @@ describe('battle pets', () => {
     const player1 = gameSession.getPlayer1();
     player1.remainingMana = 9;
 
-    const yun = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Yun }, 4, 1, gameSession.getPlayer2Id());
+    const yun = UtilsSDK.applyCardToBoard(
+      { id: SDK.Cards.Neutral.Yun },
+      4,
+      1,
+      gameSession.getPlayer2Id(),
+    );
     const damage = yun.getATK();
-    const provoke = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.PrimusShieldmaster }, 6, 0, gameSession.getPlayer1Id());
-    const heartseeker1 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction2.Heartseeker }, 6, 1, gameSession.getPlayer1Id());
-    const heartseeker2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction2.Heartseeker }, 6, 2, gameSession.getPlayer1Id());
+    const provoke = UtilsSDK.applyCardToBoard(
+      { id: SDK.Cards.Neutral.PrimusShieldmaster },
+      6,
+      0,
+      gameSession.getPlayer1Id(),
+    );
+    const heartseeker1 = UtilsSDK.applyCardToBoard(
+      { id: SDK.Cards.Faction2.Heartseeker },
+      6,
+      1,
+      gameSession.getPlayer1Id(),
+    );
+    const heartseeker2 = UtilsSDK.applyCardToBoard(
+      { id: SDK.Cards.Faction2.Heartseeker },
+      6,
+      2,
+      gameSession.getPlayer1Id(),
+    );
 
     gameSession.executeAction(gameSession.actionEndTurn());
 
@@ -269,11 +427,31 @@ describe('battle pets', () => {
     const player1 = gameSession.getPlayer1();
     player1.remainingMana = 9;
 
-    const ion = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Ion }, 3, 0, gameSession.getPlayer2Id());
+    const ion = UtilsSDK.applyCardToBoard(
+      { id: SDK.Cards.Neutral.Ion },
+      3,
+      0,
+      gameSession.getPlayer2Id(),
+    );
     const damage = ion.getATK();
-    const golem1 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.BrightmossGolem }, 4, 0, gameSession.getPlayer1Id());
-    const provoke = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.PrimusShieldmaster }, 3, 1, gameSession.getPlayer1Id());
-    const windstopper = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.WindStopper }, 8, 0, gameSession.getPlayer1Id());
+    const golem1 = UtilsSDK.applyCardToBoard(
+      { id: SDK.Cards.Neutral.BrightmossGolem },
+      4,
+      0,
+      gameSession.getPlayer1Id(),
+    );
+    const provoke = UtilsSDK.applyCardToBoard(
+      { id: SDK.Cards.Neutral.PrimusShieldmaster },
+      3,
+      1,
+      gameSession.getPlayer1Id(),
+    );
+    const windstopper = UtilsSDK.applyCardToBoard(
+      { id: SDK.Cards.Neutral.WindStopper },
+      8,
+      0,
+      gameSession.getPlayer1Id(),
+    );
 
     gameSession.executeAction(gameSession.actionEndTurn());
 
@@ -291,10 +469,25 @@ describe('battle pets', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      const ion = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Ion }, 8, 0, gameSession.getPlayer2Id());
+      const ion = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.Ion },
+        8,
+        0,
+        gameSession.getPlayer2Id(),
+      );
       const damage = ion.getATK();
-      const provoke = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.PrimusShieldmaster }, 2, 0, gameSession.getPlayer1Id());
-      const golem1 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.BrightmossGolem }, 4, 0, gameSession.getPlayer1Id());
+      const provoke = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.PrimusShieldmaster },
+        2,
+        0,
+        gameSession.getPlayer1Id(),
+      );
+      const golem1 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.BrightmossGolem },
+        4,
+        0,
+        gameSession.getPlayer1Id(),
+      );
 
       gameSession.executeAction(gameSession.actionEndTurn());
       expect(golem1.getDamage()).to.equal(damage);
@@ -307,14 +500,27 @@ describe('battle pets', () => {
     const player1 = gameSession.getPlayer1();
     player1.remainingMana = 9;
 
-    UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.Yun }));
+    UtilsSDK.executeActionWithoutValidation(
+      new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+        id: SDK.Cards.Neutral.Yun,
+      }),
+    );
     var playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
     gameSession.executeAction(playCardFromHandAction);
-    UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.Yun }));
+    UtilsSDK.executeActionWithoutValidation(
+      new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+        id: SDK.Cards.Neutral.Yun,
+      }),
+    );
     var playCardFromHandAction = player1.actionPlayCardFromHand(0, 2, 1);
     gameSession.executeAction(playCardFromHandAction);
 
-    const golem1 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.HailstoneHowler }, 2, 2, gameSession.getPlayer2Id());
+    const golem1 = UtilsSDK.applyCardToBoard(
+      { id: SDK.Cards.Neutral.HailstoneHowler },
+      2,
+      2,
+      gameSession.getPlayer2Id(),
+    );
     const yun1 = board.getUnitAtPosition({ x: 1, y: 1 });
     const yun2 = board.getUnitAtPosition({ x: 2, y: 1 });
 
@@ -334,10 +540,25 @@ describe('battle pets', () => {
     const player1 = gameSession.getPlayer1();
     player1.remainingMana = 9;
 
-    const yun = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Yun }, 5, 0, gameSession.getPlayer2Id());
+    const yun = UtilsSDK.applyCardToBoard(
+      { id: SDK.Cards.Neutral.Yun },
+      5,
+      0,
+      gameSession.getPlayer2Id(),
+    );
     const damage = yun.getATK();
-    const golem1 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.BrightmossGolem }, 7, 0, gameSession.getPlayer1Id());
-    const panddo = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction2.OnyxBear }, 6, 0, gameSession.getPlayer1Id());
+    const golem1 = UtilsSDK.applyCardToBoard(
+      { id: SDK.Cards.Neutral.BrightmossGolem },
+      7,
+      0,
+      gameSession.getPlayer1Id(),
+    );
+    const panddo = UtilsSDK.applyCardToBoard(
+      { id: SDK.Cards.Faction2.OnyxBear },
+      6,
+      0,
+      gameSession.getPlayer1Id(),
+    );
 
     gameSession.executeAction(gameSession.actionEndTurn());
 
@@ -350,8 +571,18 @@ describe('battle pets', () => {
     const player1 = gameSession.getPlayer1();
     player1.remainingMana = 9;
 
-    const yun = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Yun }, 6, 0, gameSession.getPlayer2Id());
-    const oni = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Oni }, 5, 0, gameSession.getPlayer1Id());
+    const yun = UtilsSDK.applyCardToBoard(
+      { id: SDK.Cards.Neutral.Yun },
+      6,
+      0,
+      gameSession.getPlayer2Id(),
+    );
+    const oni = UtilsSDK.applyCardToBoard(
+      { id: SDK.Cards.Neutral.Oni },
+      5,
+      0,
+      gameSession.getPlayer1Id(),
+    );
     expect(oni.hasActiveModifierClass(ModifierForcefieldAbsorb)).to.equal(true);
 
     gameSession.executeAction(gameSession.actionEndTurn());

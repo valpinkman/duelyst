@@ -87,15 +87,22 @@ workers.push(worker.process('matchmaking-search-casual', 1, matchmakingSearchCas
 workers.push(worker.process('matchmaking-search-arena', 1, matchmakingSearchArena));
 workers.push(worker.process('matchmaking-search-rift', 1, matchmakingSearchRift));
 workers.push(worker.process('data-sync-user-buddy-list', 1, dataSyncUserBuddyList));
-workers.push(worker.process('process-user-referral-event', 1, processUserReferralEvent, { ttl: 15000 }));
+workers.push(
+  worker.process('process-user-referral-event', 1, processUserReferralEvent, { ttl: 15000 }),
+);
 workers.push(worker.process('update-users-ratings', 1, updateUsersRatings));
 workers.push(worker.process('update-user-seen-on', 1, updateUserSeenOn));
 
 // Run the rotateBosses job once on startup.
 // TODO: Find another way to trigger this hourly.
 workers.push(worker.process('rotate-bosses', 1, rotateBosses));
-const runRotateBossesJob = () => Jobs.enqueue('rotate-bosses', {
-  name: 'Rotate Bosses',
-  title: 'Rotating Boss Event',
-}, { removeOnComplete: true });
+const runRotateBossesJob = () =>
+  Jobs.enqueue(
+    'rotate-bosses',
+    {
+      name: 'Rotate Bosses',
+      title: 'Rotating Boss Event',
+    },
+    { removeOnComplete: true },
+  );
 setTimeout(runRotateBossesJob, 1000);

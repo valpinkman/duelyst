@@ -18,6 +18,9 @@ class ModifierBandedRanged extends ModifierRanged {
 ModifierBandedRanged.prototype.type = 'ModifierBandedRanged';
 ModifierBandedRanged.modifierName = i18next.t('modifiers.banded_ranged_name');
 ModifierBandedRanged.description = i18next.t('modifiers.banded_ranged_def');
-ModifierBandedRanged.prototype.fxResource = ['FX.Modifiers.ModifierZealed', 'FX.Modifiers.ModifierZealedRanged'];
+ModifierBandedRanged.prototype.fxResource = [
+  'FX.Modifiers.ModifierZealed',
+  'FX.Modifiers.ModifierZealedRanged',
+];
 
 module.exports = ModifierBandedRanged;

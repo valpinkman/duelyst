@@ -18,7 +18,6 @@ var ChallengeSelectTmpl = require('app/ui/templates/composite/challenge_select.h
 var DuelystFirebase = require('app/ui/extensions/duelyst_firebase');
 
 var ChallengeSelectCompositeView = Backbone.Marionette.CompositeView.extend({
-
   className: 'sliding-panel challenge-select',
 
   template: ChallengeSelectTmpl,
@@ -55,7 +54,11 @@ var ChallengeSelectCompositeView = Backbone.Marionette.CompositeView.extend({
         var challengeOptions = {
           name: challenge.name,
           description: challenge.description,
-          rewards: _.extend({}, challenge.rewards, SDK.ChallengeFactory.getRewardsObjectForChallengeType(challengeType)),
+          rewards: _.extend(
+            {},
+            challenge.rewards,
+            SDK.ChallengeFactory.getRewardsObjectForChallengeType(challengeType),
+          ),
           type: challengeType,
           playMode: challenge.playMode,
           iconUrl: challenge.iconUrl,
@@ -63,7 +66,8 @@ var ChallengeSelectCompositeView = Backbone.Marionette.CompositeView.extend({
         };
 
         // merge progression
-        var challengeProgressionModel = ProgressionManager.getInstance().challengeProgressionCollection.get(challengeType);
+        var challengeProgressionModel =
+          ProgressionManager.getInstance().challengeProgressionCollection.get(challengeType);
         if (challengeProgressionModel != null) {
           challengeOptions = _.extend(challengeOptions, challengeProgressionModel.attributes);
         }
@@ -77,7 +81,9 @@ var ChallengeSelectCompositeView = Backbone.Marionette.CompositeView.extend({
         // check user challenge progression and disable challenge if prerequisite challenge hasn't been completed
         if (challenge.prerequisiteChallengeTypes) {
           _.each(challenge.prerequisiteChallengeTypes, function (prereqChallengeType) {
-            enabled = enabled && ProgressionManager.getInstance().hasAttemptedChallengeOfType(prereqChallengeType);
+            enabled =
+              enabled &&
+              ProgressionManager.getInstance().hasAttemptedChallengeOfType(prereqChallengeType);
           });
         }
         challengeModel.set('enabled', enabled);
@@ -117,16 +123,29 @@ var ChallengeSelectCompositeView = Backbone.Marionette.CompositeView.extend({
     this.listenTo(this, 'childview:select', this.onSelectChildView);
 
     // change fx
-    Scene.getInstance().getFX().showGradientColorMap(this._requestId, CONFIG.ANIMATE_FAST_DURATION, {
-      r: 194, g: 243, b: 200, a: 255,
-    }, {
-      r: 26, g: 31, b: 50, a: 255,
-    });
+    Scene.getInstance().getFX().showGradientColorMap(
+      this._requestId,
+      CONFIG.ANIMATE_FAST_DURATION,
+      {
+        r: 194,
+        g: 243,
+        b: 200,
+        a: 255,
+      },
+      {
+        r: 26,
+        g: 31,
+        b: 50,
+        a: 255,
+      },
+    );
   },
 
   onPrepareForDestroy: function () {
     // reset fx
-    Scene.getInstance().getFX().clearGradientColorMap(this._requestId, CONFIG.ANIMATE_MEDIUM_DURATION);
+    Scene.getInstance()
+      .getFX()
+      .clearGradientColorMap(this._requestId, CONFIG.ANIMATE_MEDIUM_DURATION);
   },
 
   onSelectChildView: function (childView) {
@@ -134,7 +153,9 @@ var ChallengeSelectCompositeView = Backbone.Marionette.CompositeView.extend({
     if (model != null) {
       if (model.get('playMode') != null) {
         // play select sound
-        audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
+        audio_engine
+          .current()
+          .play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
 
         // trigger play event with play mode
         EventBus.getInstance().trigger(EVENTS.show_play, model.get('playMode'));
@@ -142,7 +163,9 @@ var ChallengeSelectCompositeView = Backbone.Marionette.CompositeView.extend({
         var challenge = SDK.ChallengeFactory.challengeForType(model.get('type'));
         if (challenge != null) {
           // play select sound
-          audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
+          audio_engine
+            .current()
+            .play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
 
           // trigger challenge event
           EventBus.getInstance().trigger(EVENTS.start_challenge, challenge);
@@ -162,7 +185,6 @@ var ChallengeSelectCompositeView = Backbone.Marionette.CompositeView.extend({
   },
 
   /* endregion EVENTS */
-
 });
 
 module.exports = ChallengeSelectCompositeView;

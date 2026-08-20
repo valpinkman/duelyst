@@ -39,11 +39,16 @@ const walk = (node, fn) => {
   }
 };
 
-let files = 0; let marked = 0;
+let files = 0;
+let marked = 0;
 for (const file of process.argv.slice(2)) {
   const src = readFileSync(file, 'utf8');
   let ast;
-  try { ast = parse(src, { range: true }); } catch { continue; }
+  try {
+    ast = parse(src, { range: true });
+  } catch {
+    continue;
+  }
 
   const edits = [];
   walk(ast, (node) => {
@@ -52,25 +57,37 @@ for (const file of process.argv.slice(2)) {
     const last = fn.params[fn.params.length - 1];
     if (!last || last.type !== 'Identifier' || last.optional) return;
 
-    let uses = 0; let passThrough = 0;
+    let uses = 0;
+    let passThrough = 0;
     walk(fn.body, (n) => {
       if (n.type === 'Identifier' && n.name === last.name) uses += 1;
-      if (n.type === 'CallExpression' && n.callee.type === 'MemberExpression'
-          && n.callee.property && SINKS.has(n.callee.property.name)) {
+      if (
+        n.type === 'CallExpression' &&
+        n.callee.type === 'MemberExpression' &&
+        n.callee.property &&
+        SINKS.has(n.callee.property.name)
+      ) {
         n.arguments.forEach((a, idx) => {
           if (a.type === 'Identifier' && a.name === last.name && idx >= 2) passThrough += 1;
         });
       }
     });
     // every mention of the parameter is one of the pass-through arguments
-    if (passThrough > 0 && uses === passThrough) { edits.push(last.range[1]); marked += 1; }
+    if (passThrough > 0 && uses === passThrough) {
+      edits.push(last.range[1]);
+      marked += 1;
+    }
   });
 
   if (!edits.length) continue;
   let out = src;
-  for (const at of [...new Set(edits)].sort((a, b) => b - a)) out = `${out.slice(0, at)}?${out.slice(at)}`;
-  try { parse(out, { range: true }); } catch (e) {
-    console.error(`  !! ${file}: output does not parse (${e.message})`); continue;
+  for (const at of [...new Set(edits)].sort((a, b) => b - a))
+    out = `${out.slice(0, at)}?${out.slice(at)}`;
+  try {
+    parse(out, { range: true });
+  } catch (e) {
+    console.error(`  !! ${file}: output does not parse (${e.message})`);
+    continue;
   }
   writeFileSync(file, out);
   files += 1;

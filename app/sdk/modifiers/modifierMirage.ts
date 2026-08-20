@@ -25,17 +25,23 @@ class ModifierMirage extends Modifier {
 
   onBeforeAction(event) {
     super.onBeforeAction(event);
-    const {
-      action,
-    } = event;
+    const { action } = event;
 
     // supress strikeback on this minion since it must vanish immediately when attacked
-    if (action instanceof AttackAction && (action.getTarget() === this.getCard()) && action.getIsStrikebackAllowed()) {
+    if (
+      action instanceof AttackAction &&
+      action.getTarget() === this.getCard() &&
+      action.getIsStrikebackAllowed()
+    ) {
       action.setIsStrikebackAllowed(false);
     }
 
     // when attacked, remove self immediately
-    if (action instanceof AttackAction && (action.getTarget() === this.getCard()) && !action.getIsImplicit()) {
+    if (
+      action instanceof AttackAction &&
+      action.getTarget() === this.getCard() &&
+      !action.getIsImplicit()
+    ) {
       const thisEntity = this.getCard();
       if (__guard__(this.getCard(), (x) => x.getIsActive())) {
         const removeOriginalEntityAction = new RemoveAction(this.getGameSession());
@@ -60,5 +66,5 @@ ModifierMirage.prototype.fxResource = ['FX.Modifiers.ModifierMirage'];
 module.exports = ModifierMirage;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

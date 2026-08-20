@@ -7,7 +7,6 @@ const _ = require('underscore');
  * @see cc.LabelTTF
  */
 var BaseLabel = cc.LabelTTF.extend({
-
   /**
    * Map of fonts to use by formatting tag
    * @example
@@ -48,14 +47,15 @@ var BaseLabel = cc.LabelTTF.extend({
     }
     return new BaseLabel.WebGLRenderCmd(this);
   },
-
 });
 
 BaseLabel.WebGLRenderCmd = function (renderable) {
   cc.LabelTTF.WebGLRenderCmd.call(this, renderable);
 };
 
-const proto = BaseLabel.WebGLRenderCmd.prototype = Object.create(cc.LabelTTF.WebGLRenderCmd.prototype);
+const proto = (BaseLabel.WebGLRenderCmd.prototype = Object.create(
+  cc.LabelTTF.WebGLRenderCmd.prototype,
+));
 proto.constructor = BaseLabel.WebGLRenderCmd;
 
 proto._updateTTF = function () {
@@ -86,7 +86,10 @@ proto._updateTTF = function () {
       const numWordsInChunk = words.length;
       for (let j = 0; j < numWordsInChunk; j++) {
         const word = words[j];
-        const formattedString = new FormattedString(node, word + (((numWordsInChunk === 1 || j === numWordsInChunk - 1) && i < il - 1) ? ' ' : ''));
+        const formattedString = new FormattedString(
+          node,
+          word + ((numWordsInChunk === 1 || j === numWordsInChunk - 1) && i < il - 1 ? ' ' : ''),
+        );
 
         // merge formatting from top of formatting stack
         if (formattingStack.length > 0) {
@@ -111,7 +114,9 @@ proto._updateTTF = function () {
           // end line and start new
           this._strings.push(line);
           this._lineWidths.push(lineWidth);
-          if (lineWidth > maxLineWidth) { maxLineWidth = lineWidth; }
+          if (lineWidth > maxLineWidth) {
+            maxLineWidth = lineWidth;
+          }
           line = [];
           lineWidth = 0;
           if (j > 0) {
@@ -131,7 +136,11 @@ proto._updateTTF = function () {
             const bullet = word.match(/(^-|^\*|^\d\.|^\d\))/);
             if (bullet != null) {
               lineBeginsWithBullet = `${bullet[0]} `;
-              lineIndent = BaseLabel.measureString(context, formattedString.getFont(), lineBeginsWithBullet);
+              lineIndent = BaseLabel.measureString(
+                context,
+                formattedString.getFont(),
+                lineBeginsWithBullet,
+              );
             }
           }
         }
@@ -145,12 +154,15 @@ proto._updateTTF = function () {
   // add last line
   this._strings.push(line);
   this._lineWidths.push(lineWidth);
-  if (lineWidth > maxLineWidth) { maxLineWidth = lineWidth; }
+  if (lineWidth > maxLineWidth) {
+    maxLineWidth = lineWidth;
+  }
   this._isMultiLine = this._strings.length > 0;
 
   // text shadow
-  let locSize; let locStrokeShadowOffsetX = 0; let
-    locStrokeShadowOffsetY = 0;
+  let locSize;
+  let locStrokeShadowOffsetX = 0;
+  let locStrokeShadowOffsetY = 0;
   if (node._strokeEnabled) locStrokeShadowOffsetX = locStrokeShadowOffsetY = node._strokeSize * 2;
   if (node._shadowEnabled) {
     const locOffsetSize = node._shadowOffset;
@@ -160,8 +172,12 @@ proto._updateTTF = function () {
 
   // get content size
   locSize = cc.size(
-    (locDimensionsWidth > 0 ? Math.ceil(locDimensionsWidth + locStrokeShadowOffsetX) : Math.ceil(maxLineWidth + locStrokeShadowOffsetX)),
-    (locDimensionsHeight > 0 ? Math.ceil(locDimensionsHeight + locStrokeShadowOffsetY) : Math.ceil(node.getLineHeight() * this._strings.length + locStrokeShadowOffsetY)),
+    locDimensionsWidth > 0
+      ? Math.ceil(locDimensionsWidth + locStrokeShadowOffsetX)
+      : Math.ceil(maxLineWidth + locStrokeShadowOffsetX),
+    locDimensionsHeight > 0
+      ? Math.ceil(locDimensionsHeight + locStrokeShadowOffsetY)
+      : Math.ceil(node.getLineHeight() * this._strings.length + locStrokeShadowOffsetY),
   );
 
   // add width for 'italic' and 'oblique'
@@ -176,27 +192,37 @@ proto._updateTTF = function () {
 
   // need computing _anchorPointInPoints
   const locAP = node._anchorPoint;
-  this._anchorPointInPoints.x = (locStrokeShadowOffsetX * 0.5) + ((locSize.width - locStrokeShadowOffsetX) * locAP.x);
-  this._anchorPointInPoints.y = (locStrokeShadowOffsetY * 0.5) + ((locSize.height - locStrokeShadowOffsetY) * locAP.y);
+  this._anchorPointInPoints.x =
+    locStrokeShadowOffsetX * 0.5 + (locSize.width - locStrokeShadowOffsetX) * locAP.x;
+  this._anchorPointInPoints.y =
+    locStrokeShadowOffsetY * 0.5 + (locSize.height - locStrokeShadowOffsetY) * locAP.y;
 };
 
 proto._drawTTFInCanvas = function (context) {
   if (!context) return;
   const node = this._node;
-  const locStrokeShadowOffsetX = node._strokeShadowOffsetX; const
-    locStrokeShadowOffsetY = node._strokeShadowOffsetY;
-  const locContentSizeHeight = node._contentSize.height - locStrokeShadowOffsetY; const locVAlignment = node._vAlignment;
-  const locHAlignment = node._hAlignment; const
-    locStrokeSize = node._strokeSize;
+  const locStrokeShadowOffsetX = node._strokeShadowOffsetX;
+  const locStrokeShadowOffsetY = node._strokeShadowOffsetY;
+  const locContentSizeHeight = node._contentSize.height - locStrokeShadowOffsetY;
+  const locVAlignment = node._vAlignment;
+  const locHAlignment = node._hAlignment;
+  const locStrokeSize = node._strokeSize;
 
   // transform canvas to account for pixel scale
-  context.setTransform(CONFIG.pixelScaleEngine, 0, 0, CONFIG.pixelScaleEngine, Math.ceil((locStrokeShadowOffsetX * 0.5) * CONFIG.pixelScaleEngine), Math.ceil((locContentSizeHeight + locStrokeShadowOffsetY * 0.5) * CONFIG.pixelScaleEngine));
+  context.setTransform(
+    CONFIG.pixelScaleEngine,
+    0,
+    0,
+    CONFIG.pixelScaleEngine,
+    Math.ceil(locStrokeShadowOffsetX * 0.5 * CONFIG.pixelScaleEngine),
+    Math.ceil((locContentSizeHeight + locStrokeShadowOffsetY * 0.5) * CONFIG.pixelScaleEngine),
+  );
 
   // fill style setup
   context.fillStyle = this._fillColorStr;
 
-  let xOffset = 0; let
-    yOffset = 0;
+  let xOffset = 0;
+  let yOffset = 0;
   // stroke style setup
   const locStrokeEnabled = node._strokeEnabled;
   if (locStrokeEnabled) {
@@ -238,7 +264,8 @@ proto._drawTTFInCanvas = function (context) {
   if (locVAlignment === cc.VERTICAL_TEXT_ALIGNMENT_BOTTOM) {
     yOffset = lineHeight - transformTop * 2 + locContentSizeHeight - lineHeight * locStrLen;
   } else if (locVAlignment === cc.VERTICAL_TEXT_ALIGNMENT_CENTER) {
-    yOffset = (lineHeight - transformTop * 2) / 2 + (locContentSizeHeight - lineHeight * locStrLen) / 2;
+    yOffset =
+      (lineHeight - transformTop * 2) / 2 + (locContentSizeHeight - lineHeight * locStrLen) / 2;
   }
 
   for (let i = 0; i < locStrLen; i++) {
@@ -266,7 +293,13 @@ proto._drawTTFLineInCanvas = function (context, line, xOffset, yOffset, stroke) 
     const fillColor = formattedString.getFillColor();
     context.font = font;
     context.fillStyle = fillColor;
-    this._drawTTFStringInCanvas(context, formattedString.getString(), xOffset + indent, yOffset, stroke);
+    this._drawTTFStringInCanvas(
+      context,
+      formattedString.getString(),
+      xOffset + indent,
+      yOffset,
+      stroke,
+    );
     xOffset += width;
   }
 };
@@ -296,24 +329,36 @@ BaseLabel.measureString = function (context, font, string) {
   }
   let measurement = measurements[string];
   if (measurement == null) {
-    if (context.font != font) { context.font = font; }
-    measurement = measurements[string] = context.measureText(string).width * measurements.widthModifier;
+    if (context.font != font) {
+      context.font = font;
+    }
+    measurement = measurements[string] =
+      context.measureText(string).width * measurements.widthModifier;
   }
   return measurement;
 };
 
 // TODO: make this automatically process CONFIG.FORMATTING_ENGINE to convert into regexes instead of hardcoding
-BaseLabel.FORMATTING_BOLD_START = UtilsJavascript.escapeStringForRegexSearch(CONFIG.FORMATTING_ENGINE.boldStart);
-BaseLabel.FORMATTING_BOLD_END = UtilsJavascript.escapeStringForRegexSearch(CONFIG.FORMATTING_ENGINE.boldEnd);
-BaseLabel.FORMATTING_EMPHASIS_START = UtilsJavascript.escapeStringForRegexSearch(CONFIG.FORMATTING_ENGINE.emphasisStart);
-BaseLabel.FORMATTING_EMPHASIS_END = UtilsJavascript.escapeStringForRegexSearch(CONFIG.FORMATTING_ENGINE.emphasisEnd);
-BaseLabel.FORMATTING_ALL_START = `${BaseLabel.FORMATTING_BOLD_START
+BaseLabel.FORMATTING_BOLD_START = UtilsJavascript.escapeStringForRegexSearch(
+  CONFIG.FORMATTING_ENGINE.boldStart,
+);
+BaseLabel.FORMATTING_BOLD_END = UtilsJavascript.escapeStringForRegexSearch(
+  CONFIG.FORMATTING_ENGINE.boldEnd,
+);
+BaseLabel.FORMATTING_EMPHASIS_START = UtilsJavascript.escapeStringForRegexSearch(
+  CONFIG.FORMATTING_ENGINE.emphasisStart,
+);
+BaseLabel.FORMATTING_EMPHASIS_END = UtilsJavascript.escapeStringForRegexSearch(
+  CONFIG.FORMATTING_ENGINE.emphasisEnd,
+);
+BaseLabel.FORMATTING_ALL_START = `${
+  BaseLabel.FORMATTING_BOLD_START
 }|${BaseLabel.FORMATTING_EMPHASIS_START}`;
-BaseLabel.FORMATTING_ALL_END = `${BaseLabel.FORMATTING_BOLD_END
+BaseLabel.FORMATTING_ALL_END = `${
+  BaseLabel.FORMATTING_BOLD_END
 }|${BaseLabel.FORMATTING_EMPHASIS_END}`;
-BaseLabel.FORMATTING_ALL = `${BaseLabel.FORMATTING_BOLD_START
-}|${BaseLabel.FORMATTING_BOLD_END
-}|${BaseLabel.FORMATTING_EMPHASIS_START
+BaseLabel.FORMATTING_ALL = `${BaseLabel.FORMATTING_BOLD_START}|${BaseLabel.FORMATTING_BOLD_END}|${
+  BaseLabel.FORMATTING_EMPHASIS_START
 }|${BaseLabel.FORMATTING_EMPHASIS_END}`;
 BaseLabel.getFormatsFromString = function (string) {
   return string.match(new RegExp(BaseLabel.FORMATTING_ALL_START, 'g'));
@@ -367,7 +412,10 @@ var FormattedString = cc.Class.extend({
     let fontName;
     let fontWeight;
     let color;
-    if (this.getHasMergedSpecialFormatting() && (fontNamesByFormattingTag != null || colorsByFormattingTag != null)) {
+    if (
+      this.getHasMergedSpecialFormatting() &&
+      (fontNamesByFormattingTag != null || colorsByFormattingTag != null)
+    ) {
       for (let i = 0, il = this._mergedFormats.length; i < il; i++) {
         const format = this._mergedFormats[i];
 
@@ -414,7 +462,7 @@ var FormattedString = cc.Class.extend({
       this._fillColor = labelRenderCmd._fillColorStr;
     } else {
       const displayedColor = labelRenderCmd._displayedColor;
-      this._fillColor = `rgba(${0 | (displayedColor.r / 255 * color.r)}, ${0 | (displayedColor.g / 255 * color.g)}, ${0 | (displayedColor.b / 255 * color.b)}, 1)`;
+      this._fillColor = `rgba(${0 | ((displayedColor.r / 255) * color.r)}, ${0 | ((displayedColor.g / 255) * color.g)}, ${0 | ((displayedColor.b / 255) * color.b)}, 1)`;
     }
 
     // calculate width
@@ -449,15 +497,21 @@ var FormattedString = cc.Class.extend({
     return this._string;
   },
   getWidth() {
-    if (this._needsRebuild) { this.rebuild(); }
+    if (this._needsRebuild) {
+      this.rebuild();
+    }
     return this._width;
   },
   getFillColor() {
-    if (this._needsRebuild) { this.rebuild(); }
+    if (this._needsRebuild) {
+      this.rebuild();
+    }
     return this._fillColor;
   },
   getFont() {
-    if (this._needsRebuild) { this.rebuild(); }
+    if (this._needsRebuild) {
+      this.rebuild();
+    }
     return this._font;
   },
   getFontStyle() {

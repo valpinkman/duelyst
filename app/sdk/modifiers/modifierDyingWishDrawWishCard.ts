@@ -16,9 +16,18 @@ class ModifierDyingWishDrawWishCard extends ModifierDyingWish {
 
   onDyingWish() {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
-      const wishCards = [{ id: Cards.Spell.ScionsFirstWish }, { id: Cards.Spell.ScionsSecondWish }, { id: Cards.Spell.ScionsThirdWish }];
-      const wishCard = wishCards[this.getGameSession().getRandomIntegerForExecution(wishCards.length)];
-      const a = new PutCardInHandAction(this.getGameSession(), this.getCard().getOwnerId(), wishCard);
+      const wishCards = [
+        { id: Cards.Spell.ScionsFirstWish },
+        { id: Cards.Spell.ScionsSecondWish },
+        { id: Cards.Spell.ScionsThirdWish },
+      ];
+      const wishCard =
+        wishCards[this.getGameSession().getRandomIntegerForExecution(wishCards.length)];
+      const a = new PutCardInHandAction(
+        this.getGameSession(),
+        this.getCard().getOwnerId(),
+        wishCard,
+      );
       return this.getGameSession().executeAction(a);
     }
   }

@@ -36,8 +36,11 @@ class ModifierOpeningGambitChangeSignatureCardForThisTurn extends ModifierOpenin
     return this.getGameSession().executeAction(general.getOwner().actionGenerateSignatureCard());
   }
 }
-ModifierOpeningGambitChangeSignatureCardForThisTurn.prototype.type = 'ModifierOpeningGambitChangeSignatureCardForThisTurn';
-ModifierOpeningGambitChangeSignatureCardForThisTurn.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
+ModifierOpeningGambitChangeSignatureCardForThisTurn.prototype.type =
+  'ModifierOpeningGambitChangeSignatureCardForThisTurn';
+ModifierOpeningGambitChangeSignatureCardForThisTurn.prototype.fxResource = [
+  'FX.Modifiers.ModifierOpeningGambit',
+];
 ModifierOpeningGambitChangeSignatureCardForThisTurn.prototype.cardData = null;
 
 module.exports = ModifierOpeningGambitChangeSignatureCardForThisTurn;

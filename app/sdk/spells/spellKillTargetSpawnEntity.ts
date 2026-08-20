@@ -14,7 +14,13 @@ class SpellKillTargetSpawnEntity extends SpellKillTarget {
     super.onApplyEffectToBoardTile(board, x, y, sourceAction);
 
     if (this.cardDataOrIndexToSpawn) {
-      const spawnEntityAction = new PlayCardSilentlyAction(this.getGameSession(), this.getOwnerId(), x, y, this.cardDataOrIndexToSpawn);
+      const spawnEntityAction = new PlayCardSilentlyAction(
+        this.getGameSession(),
+        this.getOwnerId(),
+        x,
+        y,
+        this.cardDataOrIndexToSpawn,
+      );
       return this.getGameSession().executeAction(spawnEntityAction);
     }
   }

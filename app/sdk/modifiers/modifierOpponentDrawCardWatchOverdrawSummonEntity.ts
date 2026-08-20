@@ -22,11 +22,26 @@ class ModifierOpponentDrawCardWatchOverdrawSummonEntity extends ModifierOpponent
   static modifierName = 'ModifierOpponentDrawCardWatchOverdrawSummonEntity';
   static description = 'Whenever your opponent overdraws, summon %X';
 
-  static createContextObject(cardDataOrIndexToSpawn, spawnDescription, spawnCount, spawnPattern, spawnSilently, options) {
-    if (spawnDescription == null) { spawnDescription = ''; }
-    if (spawnCount == null) { spawnCount = 1; }
-    if (spawnPattern == null) { spawnPattern = CONFIG.PATTERN_3x3; }
-    if (spawnSilently == null) { spawnSilently = false; }
+  static createContextObject(
+    cardDataOrIndexToSpawn,
+    spawnDescription,
+    spawnCount,
+    spawnPattern,
+    spawnSilently,
+    options,
+  ) {
+    if (spawnDescription == null) {
+      spawnDescription = '';
+    }
+    if (spawnCount == null) {
+      spawnCount = 1;
+    }
+    if (spawnPattern == null) {
+      spawnPattern = CONFIG.PATTERN_3x3;
+    }
+    if (spawnSilently == null) {
+      spawnSilently = false;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.cardDataOrIndexToSpawn = cardDataOrIndexToSpawn;
     contextObject.spawnDescription = spawnDescription;
@@ -38,14 +53,14 @@ class ModifierOpponentDrawCardWatchOverdrawSummonEntity extends ModifierOpponent
 
   static getDescription(modifierContextObject) {
     if (modifierContextObject) {
-    //  if UtilsPosition.getArraysOfPositionsAreEqual(modifierContextObject.spawnPattern, CONFIG.PATTERN_1x1)
-    //    replaceText = "a "+modifierContextObject.spawnDescription+" in the same space"
-    //  else if modifierContextObject.spawnCount == 1
-    //    replaceText = "a "+modifierContextObject.spawnDescription+" into a nearby space"
-    //  else if modifierContextObject.spawnCount == 8
-    //    replaceText = ""+modifierContextObject.spawnDescription+"s in all nearby spaces"
-    //  else
-    //    replaceText = ""+modifierContextObject.spawnDescription+"s into "+modifierContextObject.spawnCount+" nearby spaces"
+      //  if UtilsPosition.getArraysOfPositionsAreEqual(modifierContextObject.spawnPattern, CONFIG.PATTERN_1x1)
+      //    replaceText = "a "+modifierContextObject.spawnDescription+" in the same space"
+      //  else if modifierContextObject.spawnCount == 1
+      //    replaceText = "a "+modifierContextObject.spawnDescription+" into a nearby space"
+      //  else if modifierContextObject.spawnCount == 8
+      //    replaceText = ""+modifierContextObject.spawnDescription+"s in all nearby spaces"
+      //  else
+      //    replaceText = ""+modifierContextObject.spawnDescription+"s into "+modifierContextObject.spawnCount+" nearby spaces"
       return this.description.replace(/%X/, modifierContextObject.spawnDescription);
     }
     return this.description;
@@ -55,16 +70,32 @@ class ModifierOpponentDrawCardWatchOverdrawSummonEntity extends ModifierOpponent
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
       if (action.getIsBurnedCard()) {
         const ownerId = this.getSpawnOwnerId(action);
-        const spawnPositions = UtilsGameSession.getRandomNonConflictingSmartSpawnPositionsForModifier(this, ModifierOpponentDrawCardWatchOverdrawSummonEntity);
+        const spawnPositions =
+          UtilsGameSession.getRandomNonConflictingSmartSpawnPositionsForModifier(
+            this,
+            ModifierOpponentDrawCardWatchOverdrawSummonEntity,
+          );
         return (() => {
           const result = [];
           for (var spawnPosition of Array.from<any>(spawnPositions)) {
             var spawnAction;
             var cardDataOrIndexToSpawn = this.getCardDataOrIndexToSpawn();
             if (this.spawnSilently) {
-              spawnAction = new PlayCardSilentlyAction(this.getGameSession(), ownerId, spawnPosition.x, spawnPosition.y, cardDataOrIndexToSpawn);
+              spawnAction = new PlayCardSilentlyAction(
+                this.getGameSession(),
+                ownerId,
+                spawnPosition.x,
+                spawnPosition.y,
+                cardDataOrIndexToSpawn,
+              );
             } else {
-              spawnAction = new PlayCardAction(this.getGameSession(), ownerId, spawnPosition.x, spawnPosition.y, cardDataOrIndexToSpawn);
+              spawnAction = new PlayCardAction(
+                this.getGameSession(),
+                ownerId,
+                spawnPosition.x,
+                spawnPosition.y,
+                cardDataOrIndexToSpawn,
+              );
             }
             spawnAction.setSource(this.getCard());
             result.push(this.getGameSession().executeAction(spawnAction));
@@ -83,7 +114,11 @@ class ModifierOpponentDrawCardWatchOverdrawSummonEntity extends ModifierOpponent
     return this.getCard().getOwnerId();
   }
 }
-ModifierOpponentDrawCardWatchOverdrawSummonEntity.prototype.type = 'ModifierOpponentDrawCardWatchOverdrawSummonEntity';
-ModifierOpponentDrawCardWatchOverdrawSummonEntity.prototype.fxResource = ['FX.Modifiers.ModifierOpponentDrawCardWatchBuffSelf', 'FX.Modifiers.ModifierGenericDamage'];
+ModifierOpponentDrawCardWatchOverdrawSummonEntity.prototype.type =
+  'ModifierOpponentDrawCardWatchOverdrawSummonEntity';
+ModifierOpponentDrawCardWatchOverdrawSummonEntity.prototype.fxResource = [
+  'FX.Modifiers.ModifierOpponentDrawCardWatchBuffSelf',
+  'FX.Modifiers.ModifierGenericDamage',
+];
 
 module.exports = ModifierOpponentDrawCardWatchOverdrawSummonEntity;

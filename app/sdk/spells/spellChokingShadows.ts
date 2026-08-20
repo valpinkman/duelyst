@@ -25,7 +25,13 @@ class SpellChokingShadows extends Spell {
 
     // always spawn a shadow tile at each position
     if (board.isOnBoard(applyEffectPosition)) {
-      const action = new PlayCardAction(this.getGameSession(), this.getOwnerId(), x, y, this.cardDataOrIndexToSpawn);
+      const action = new PlayCardAction(
+        this.getGameSession(),
+        this.getOwnerId(),
+        x,
+        y,
+        this.cardDataOrIndexToSpawn,
+      );
       action.setOwnerId(this.getOwnerId());
       return this.getGameSession().executeAction(action);
     }

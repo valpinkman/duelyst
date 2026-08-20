@@ -32,15 +32,23 @@ class ModifierOpeningGambitDamageInFrontRow extends ModifierOpeningGambit {
 
   onOpeningGambit() {
     let playerOffset = 0;
-    if (this.getCard().isOwnedByPlayer1()) { playerOffset = 1; } else { playerOffset = -1; }
+    if (this.getCard().isOwnedByPlayer1()) {
+      playerOffset = 1;
+    } else {
+      playerOffset = -1;
+    }
     const board = this.getCard().getGameSession().getBoard();
-    let offsetPosition = { x: this.getCard().getPosition().x + playerOffset, y: this.getCard().getPosition().y };
+    let offsetPosition = {
+      x: this.getCard().getPosition().x + playerOffset,
+      y: this.getCard().getPosition().y,
+    };
     return (() => {
       const result = [];
       while (board.isOnBoard(offsetPosition)) {
         var target = board.getUnitAtPosition(offsetPosition);
 
-        if ((target != null) && (target.getOwner() !== this.getCard().getOwner())) { // damage any enemy found
+        if (target != null && target.getOwner() !== this.getCard().getOwner()) {
+          // damage any enemy found
           var damageAction = new DamageAction(this.getCard().getGameSession());
           damageAction.setOwnerId(this.getCard().getOwnerId());
           damageAction.setTarget(target);
@@ -48,7 +56,7 @@ class ModifierOpeningGambitDamageInFrontRow extends ModifierOpeningGambit {
           this.getGameSession().executeAction(damageAction);
         }
         var previousOffset = offsetPosition;
-        result.push(offsetPosition = { x: previousOffset.x + playerOffset, y: previousOffset.y });
+        result.push((offsetPosition = { x: previousOffset.x + playerOffset, y: previousOffset.y }));
       }
       return result;
     })();

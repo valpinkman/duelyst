@@ -222,11 +222,17 @@ class CardFactory_WartechSet_Faction4 {
       card.manaCost = 3;
       card.rarityId = Rarity.Common;
       buildData = { id: Cards.Faction4.VoidTalonBuilding };
-      if (buildData.additionalInherentModifiersContextObjects == null) { buildData.additionalInherentModifiersContextObjects = []; }
-      buildData.additionalInherentModifiersContextObjects.push(ModifierBuilding.createContextObject('Builds into Void Talon after 1 turn (this cannot be dispelled).', { id: Cards.Faction4.VoidTalon }, 1));
-      card.setInherentModifiersContextObjects([
-        ModifierBuild.createContextObject(buildData),
-      ]);
+      if (buildData.additionalInherentModifiersContextObjects == null) {
+        buildData.additionalInherentModifiersContextObjects = [];
+      }
+      buildData.additionalInherentModifiersContextObjects.push(
+        ModifierBuilding.createContextObject(
+          'Builds into Void Talon after 1 turn (this cannot be dispelled).',
+          { id: Cards.Faction4.VoidTalon },
+          1,
+        ),
+      );
+      card.setInherentModifiersContextObjects([ModifierBuild.createContextObject(buildData)]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
       card.setFXResource(['FX.Cards.Neutral.BluetipScorpion']);
       card.setBaseSoundResource({
@@ -299,9 +305,7 @@ class CardFactory_WartechSet_Faction4 {
       const infestModifier = ModifierOnDyingInfest.createContextObject();
       infestModifier.appliedName = i18next.t('modifiers.faction_4_spell_infest_1');
       infestModifier.appliedDescription = i18next.t('modifiers.faction_4_spell_infest_2');
-      card.setTargetModifiersContextObjects([
-        infestModifier,
-      ]);
+      card.setTargetModifiersContextObjects([infestModifier]);
       card.setFXResource(['FX.Cards.Spell.Infest']);
       card.setBaseSoundResource({
         apply: RSX.sfx_f6_voiceofthewind_attack_impact.audio,
@@ -361,8 +365,16 @@ class CardFactory_WartechSet_Faction4 {
       card.manaCost = 4;
       card.rarityId = Rarity.Legendary;
       buildData = { id: Cards.Faction4.GateBuilding };
-      if (buildData.additionalInherentModifiersContextObjects == null) { buildData.additionalInherentModifiersContextObjects = []; }
-      buildData.additionalInherentModifiersContextObjects.push(ModifierBuilding.createContextObject('Builds into Gate to the Undervault after 3 turns (this cannot be dispelled).', { id: Cards.Faction4.GateToUndervault }, 3));
+      if (buildData.additionalInherentModifiersContextObjects == null) {
+        buildData.additionalInherentModifiersContextObjects = [];
+      }
+      buildData.additionalInherentModifiersContextObjects.push(
+        ModifierBuilding.createContextObject(
+          'Builds into Gate to the Undervault after 3 turns (this cannot be dispelled).',
+          { id: Cards.Faction4.GateToUndervault },
+          3,
+        ),
+      );
       card.setInherentModifiersContextObjects([
         ModifierBuild.createContextObject(buildData),
         ModifierPortal.createContextObject(),
@@ -429,9 +441,7 @@ class CardFactory_WartechSet_Faction4 {
       whenAttackedModifier.isRemovable = false;
       whenAttackedModifier.appliedName = i18next.t('modifiers.faction_4_spell_deathmark_1');
       whenAttackedModifier.appliedDescription = i18next.t('modifiers.faction_4_spell_deathmark_2');
-      card.setTargetModifiersContextObjects([
-        whenAttackedModifier,
-      ]);
+      card.setTargetModifiersContextObjects([whenAttackedModifier]);
       card.setFXResource(['FX.Cards.Spell.Deathmark']);
       card.setBaseSoundResource({
         apply: RSX.sfx_spell_manavortex.audio,
@@ -477,7 +487,13 @@ class CardFactory_WartechSet_Faction4 {
       const attackModifier = Modifier.createContextObjectWithAttributeBuffs(2, 0);
       attackModifier.appliedName = i18next.t('modifiers.faction_4_artifact_furor_chakram_1');
       card.setTargetModifiersContextObjects([
-        Modifier.createContextObjectWithAuraForAllAllies([ModifierFrenzy.createContextObject(), attackModifier], null, null, null, i18next.t('modifiers.faction_4_artifact_furor_chakram_2')),
+        Modifier.createContextObjectWithAuraForAllAllies(
+          [ModifierFrenzy.createContextObject(), attackModifier],
+          null,
+          null,
+          null,
+          i18next.t('modifiers.faction_4_artifact_furor_chakram_2'),
+        ),
       ]);
       card.setFXResource(['FX.Cards.Artifact.FurorChakram']);
       card.setBaseAnimResource({

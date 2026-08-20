@@ -14,7 +14,6 @@ var DeckSelectFriendlyTmpl = require('app/ui/templates/composite/deck_select_fri
 var DeckSelectCompositeView = require('./deck_select');
 
 var DeckSelectFriendlyCompositeView = DeckSelectCompositeView.extend({
-
   className: 'sliding-panel-select deck-select deck-select-friendly',
 
   template: DeckSelectFriendlyTmpl,
@@ -25,17 +24,23 @@ var DeckSelectFriendlyCompositeView = DeckSelectCompositeView.extend({
   onConfirmSelection: function (event) {
     if (this._selectedDeckModel != null) {
       this.ui.$deckSelectConfirm.addClass('disabled');
-      audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
+      audio_engine
+        .current()
+        .play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
       var generalId = null;
       var deck = null;
       var ticketId = null;
       if (this._selectedDeckModel.get('isRift')) {
         generalId = this._selectedDeckModel.get('general_id');
-        deck = _.map(this._selectedDeckModel.get('deck'), function (cardId) { return { id: cardId }; });
+        deck = _.map(this._selectedDeckModel.get('deck'), function (cardId) {
+          return { id: cardId };
+        });
         ticketId = this._selectedDeckModel.get('ticket_id');
       } else if (this._selectedDeckModel.get('isGauntlet')) {
         generalId = this._selectedDeckModel.get('general_id');
-        deck = _.map(this._selectedDeckModel.get('deck'), function (cardId) { return { id: cardId }; });
+        deck = _.map(this._selectedDeckModel.get('deck'), function (cardId) {
+          return { id: cardId };
+        });
         ticketId = this._selectedDeckModel.get('ticket_id');
         if (ticketId == null) {
           ticketId = this._selectedDeckModel.get('id');
@@ -54,11 +59,12 @@ var DeckSelectFriendlyCompositeView = DeckSelectCompositeView.extend({
         ticketId,
       );
     } else {
-      audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_error.audio, CONFIG.ERROR_SFX_PRIORITY);
+      audio_engine
+        .current()
+        .play_effect_for_interaction(RSX.sfx_ui_error.audio, CONFIG.ERROR_SFX_PRIORITY);
       this._showSelectDeckWarningPopover(this.ui.$deckSelectConfirm);
     }
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

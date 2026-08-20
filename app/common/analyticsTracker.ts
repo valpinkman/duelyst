@@ -32,11 +32,11 @@ class AnalyticsTracker {
 
     // general analytics data
     const playerSetupData = gameSession.getPlayerSetupDataForPlayerId(myPlayerId);
-    const {
-      factionId,
-    } = playerSetupData;
+    const { factionId } = playerSetupData;
     const factionName = SDK.FactionFactory.factionForIdentifier(factionId).name;
-    const opponentSetupData = gameSession.getPlayerSetupDataForPlayerId(gameSession.getOpponentPlayerId());
+    const opponentSetupData = gameSession.getPlayerSetupDataForPlayerId(
+      gameSession.getOpponentPlayerId(),
+    );
     const opponentFactionId = opponentSetupData.factionId;
     const opponentFactionName = SDK.FactionFactory.factionForIdentifier(opponentFactionId).name;
 
@@ -46,9 +46,9 @@ class AnalyticsTracker {
     const wasDraw = !(myPlayer.getIsWinner() || opponentPlayer.getIsWinner());
 
     // Prep of transmitted data
-    const isFirstMover = (myPlayer.playerId === gameSession.getPlayer1().playerId) ? 1 : 0;
-    const gameOutcome = (wasDraw) ? 0 : wasVictory ? 1 : -1;
-    const isScored = (gameOverData.get('is_scored')) ? 1 : 0;
+    const isFirstMover = myPlayer.playerId === gameSession.getPlayer1().playerId ? 1 : 0;
+    const gameOutcome = wasDraw ? 0 : wasVictory ? 1 : -1;
+    const isScored = gameOverData.get('is_scored') ? 1 : 0;
     const didConcede = myPlayer.hasResigned ? 1 : 0;
     const generalId = SDK.Cards.getBaseCardId(playerSetupData.generalId);
     const opponentGeneralId = SDK.Cards.getBaseCardId(opponentSetupData.generalId);
@@ -71,24 +71,28 @@ class AnalyticsTracker {
 
     Analytics.setGroupPriority(Analytics.EventPriority.Optional);
 
-    Analytics.track('played game', {
-      category: Analytics.EventCategory.Game,
-      duration: Math.floor(duration.asSeconds()),
-      turn_count: gameSession.getNumberOfTurns(),
-      game_type: gameSession.gameType,
-      game_id: gameSession.getGameId(),
-      game_outcome: gameOutcome,
-      is_first_mover: isFirstMover,
-      is_scored: isScored,
-      did_concede: didConcede,
-      deck_spirit_cost: deckSpiritCost,
-      faction_id: factionId,
-      general_id: generalId,
-      opponent_faction_id: opponentFactionId,
-      opponent_general_id: opponentGeneralId,
-    }, {
-      nonInteraction: 1,
-    });
+    Analytics.track(
+      'played game',
+      {
+        category: Analytics.EventCategory.Game,
+        duration: Math.floor(duration.asSeconds()),
+        turn_count: gameSession.getNumberOfTurns(),
+        game_type: gameSession.gameType,
+        game_id: gameSession.getGameId(),
+        game_outcome: gameOutcome,
+        is_first_mover: isFirstMover,
+        is_scored: isScored,
+        did_concede: didConcede,
+        deck_spirit_cost: deckSpiritCost,
+        faction_id: factionId,
+        general_id: generalId,
+        opponent_faction_id: opponentFactionId,
+        opponent_general_id: opponentGeneralId,
+      },
+      {
+        nonInteraction: 1,
+      },
+    );
 
     return Analytics.clearGroupPriority();
   }
@@ -102,7 +106,10 @@ class AnalyticsTracker {
     const gameSession = SDK.GameSession.current();
 
     Analytics.setGroupPriority(Analytics.EventPriority.Optional);
-    if ((action.getType() === SDK.PlayCardFromHandAction.type) && (action.getOwnerId() === gameSession.getMyPlayerId())) {
+    if (
+      action.getType() === SDK.PlayCardFromHandAction.type &&
+      action.getOwnerId() === gameSession.getMyPlayerId()
+    ) {
       card = action.getCard();
       const cardType = card.getType();
       Analytics.track('played card', {
@@ -111,7 +118,10 @@ class AnalyticsTracker {
         card_id: card.getBaseCardId(),
         turn_index: gameSession.getNumberOfTurns(),
       });
-    } else if (action instanceof SDK.ReplaceCardFromHandAction && (action.getOwnerId() === gameSession.getMyPlayerId())) {
+    } else if (
+      action instanceof SDK.ReplaceCardFromHandAction &&
+      action.getOwnerId() === gameSession.getMyPlayerId()
+    ) {
       // track analytics for valid replace when coming from my player
       const replacedCard = action.getCard();
       if (replacedCard) {
@@ -122,7 +132,10 @@ class AnalyticsTracker {
           turn_index: gameSession.getNumberOfTurns(),
         });
       }
-    } else if (action instanceof SDK.DrawStartingHandAction && (action.getOwnerId() === gameSession.getMyPlayerId())) {
+    } else if (
+      action instanceof SDK.DrawStartingHandAction &&
+      action.getOwnerId() === gameSession.getMyPlayerId()
+    ) {
       const mulliganedCardData = action.mulliganedHandCardsData;
       if (mulliganedCardData != null) {
         for (const cardData of Array.from<any>(mulliganedCardData)) {
@@ -156,14 +169,21 @@ class AnalyticsTracker {
 
   static _sendAnalyticsForCurrentGameSession(gameSession?) {
     // Check for conditions where we don't want to send game over analytics
-    if ((gameSession == null)) {
+    if (gameSession == null) {
       gameSession = SDK.GameSession.getInstance();
     }
 
     if (gameSession.getIsSpectateMode()) {
       return false;
     }
-    return gameSession.isRanked() || gameSession.isGauntlet() || gameSession.isSinglePlayer() || gameSession.isCasual() || gameSession.isBossBattle() || gameSession.isRift();
+    return (
+      gameSession.isRanked() ||
+      gameSession.isGauntlet() ||
+      gameSession.isSinglePlayer() ||
+      gameSession.isCasual() ||
+      gameSession.isBossBattle() ||
+      gameSession.isRift()
+    );
   }
 }
 

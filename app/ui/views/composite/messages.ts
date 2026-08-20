@@ -5,7 +5,6 @@ var MessagesTmpl = require('app/ui/templates/composite/messages.hbs');
 var ProfileManager = require('app/ui/managers/profile_manager');
 
 var MessagesView = Backbone.Marionette.CompositeView.extend({
-
   initialize: function () {
     Logger.module('UI').log('initialize a Messages CompositeView');
   },
@@ -68,7 +67,6 @@ var MessagesView = Backbone.Marionette.CompositeView.extend({
     $wbox.hide(100);
     */
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

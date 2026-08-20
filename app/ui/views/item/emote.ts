@@ -5,7 +5,6 @@ var Animations = require('app/ui/views/animations');
 var InventoryManager = require('app/ui/managers/inventory_manager');
 
 var EmoteItemView = Backbone.Marionette.ItemView.extend({
-
   className: 'btn emote',
 
   template: EmotesLayoutTempl,
@@ -22,7 +21,11 @@ var EmoteItemView = Backbone.Marionette.ItemView.extend({
   /* region MARIONETTE EVENTS */
 
   onShow: function () {
-    this.listenTo(InventoryManager.getInstance().getCosmeticsCollection(), 'add remove', this.onCosmeticsCollectionChange);
+    this.listenTo(
+      InventoryManager.getInstance().getCosmeticsCollection(),
+      'add remove',
+      this.onCosmeticsCollectionChange,
+    );
   },
 
   onRender: function () {
@@ -51,7 +54,10 @@ var EmoteItemView = Backbone.Marionette.ItemView.extend({
     var emoteId = this.model.get('id');
     if (cosmeticModel != null && cosmeticModel.get('cosmetic_id') === emoteId) {
       this.model.set('_canUse', InventoryManager.getInstance().getCanUseCosmeticById(emoteId));
-      this.model.set('_canPurchase', InventoryManager.getInstance().getCanPurchaseCosmeticById(emoteId));
+      this.model.set(
+        '_canPurchase',
+        InventoryManager.getInstance().getCanPurchaseCosmeticById(emoteId),
+      );
       this._bindUsability();
     }
   },
@@ -76,7 +82,6 @@ var EmoteItemView = Backbone.Marionette.ItemView.extend({
   },
 
   /* endregion EVENTS */
-
 });
 
 // Expose the class either via CommonJS or the global object

@@ -18,8 +18,12 @@ class ModifierDyingWishBonusManaCrystal extends ModifierDyingWish {
   static description = 'Permanently gain 1 mana crystal';
 
   static createContextObject(giveToOwner, amountToGain, options) {
-    if (giveToOwner == null) { giveToOwner = true; }
-    if (amountToGain == null) { amountToGain = 1; }
+    if (giveToOwner == null) {
+      giveToOwner = true;
+    }
+    if (amountToGain == null) {
+      amountToGain = 1;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.giveToOwner = giveToOwner;
     contextObject.amountToGain = amountToGain;
@@ -37,7 +41,9 @@ class ModifierDyingWishBonusManaCrystal extends ModifierDyingWish {
           if (this.giveToOwner) {
             bonusManaCoreAction.setOwnerId(this.getCard().getOwnerId());
           } else {
-            bonusManaCoreAction.setOwnerId(this.getGameSession().getOpponentPlayerIdOfPlayerId(this.getCard().getOwnerId()));
+            bonusManaCoreAction.setOwnerId(
+              this.getGameSession().getOpponentPlayerIdOfPlayerId(this.getCard().getOwnerId()),
+            );
           }
           result.push(this.getGameSession().executeAction(bonusManaCoreAction));
         }

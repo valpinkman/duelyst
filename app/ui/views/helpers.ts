@@ -22,10 +22,8 @@ Handlebars.registerHelper('localize', function (opts) {
 
 Handlebars.registerHelper('localizedMonth', function (item) {
   var localizedMonthKey = 'common.month_';
-  if (item)
-    localizedMonthKey += moment.utc(item).month();
-  else
-    localizedMonthKey += moment.utc().month();
+  if (item) localizedMonthKey += moment.utc(item).month();
+  else localizedMonthKey += moment.utc().month();
 
   return i18next.t(localizedMonthKey);
 });
@@ -102,10 +100,8 @@ Handlebars.registerHelper('dateFormat', function (context, block) {
 });
 
 Handlebars.registerHelper('timeAgo', function (context) {
-  if (moment)
-    return moment(context).fromNow();
-  else
-    return context; // moment plugin not available. return data as is.
+  if (moment) return moment(context).fromNow();
+  else return context; // moment plugin not available. return data as is.
 });
 
 Handlebars.registerHelper('ifUTCDayPassedSince', function (valueIn, options) {
@@ -123,15 +119,13 @@ Handlebars.registerHelper('ifUTCDayPassedSince', function (valueIn, options) {
 
 Handlebars.registerHelper('times', function (n, block) {
   var accum = '';
-  for (var i = 0; i < n; ++i)
-    accum += block.fn(i);
+  for (var i = 0; i < n; ++i) accum += block.fn(i);
   return accum;
 });
 
 Handlebars.registerHelper('fromTo', function (n1, n2, block) {
   var accum = '';
-  for (var i = n1; i < n2; ++i)
-    accum += block.fn(i);
+  for (var i = n1; i < n2; ++i) accum += block.fn(i);
   return accum;
 });
 
@@ -143,10 +137,11 @@ Handlebars.registerHelper('fromTo', function (n1, n2, block) {
 // });
 
 Handlebars.registerHelper('compare', function (lvalue, operator, rvalue, options) {
-  var operators; var result;
+  var operators;
+  var result;
 
   if (arguments.length < 3) {
-    throw new Error('Handlerbars Helper \'compare\' needs 2 parameters');
+    throw new Error("Handlerbars Helper 'compare' needs 2 parameters");
   }
 
   if (options === undefined) {
@@ -156,21 +151,43 @@ Handlebars.registerHelper('compare', function (lvalue, operator, rvalue, options
   }
 
   operators = {
-    '==': function (l, r) { return l == r; },
-    '===': function (l, r) { return l === r; },
-    '!=': function (l, r) { return l != r; },
-    '!==': function (l, r) { return l !== r; },
-    '<': function (l, r) { return l < r; },
-    '>': function (l, r) { return l > r; },
-    '<=': function (l, r) { return l <= r; },
-    '>=': function (l, r) { return l >= r; },
-    '||': function (l, r) { return l || r; },
-    '&&': function (l, r) { return l && r; },
-    typeof: function (l, r) { return typeof l == r; },
+    '==': function (l, r) {
+      return l == r;
+    },
+    '===': function (l, r) {
+      return l === r;
+    },
+    '!=': function (l, r) {
+      return l != r;
+    },
+    '!==': function (l, r) {
+      return l !== r;
+    },
+    '<': function (l, r) {
+      return l < r;
+    },
+    '>': function (l, r) {
+      return l > r;
+    },
+    '<=': function (l, r) {
+      return l <= r;
+    },
+    '>=': function (l, r) {
+      return l >= r;
+    },
+    '||': function (l, r) {
+      return l || r;
+    },
+    '&&': function (l, r) {
+      return l && r;
+    },
+    typeof: function (l, r) {
+      return typeof l == r;
+    },
   };
 
   if (!operators[operator]) {
-    throw new Error('Handlerbars Helper \'compare\' doesn\'t know the operator ' + operator);
+    throw new Error("Handlerbars Helper 'compare' doesn't know the operator " + operator);
   }
 
   result = operators[operator](lvalue, rvalue);
@@ -276,10 +293,8 @@ Handlebars.registerHelper('classForColorCode', function (colorCode) {
 });
 
 Handlebars.registerHelper('ifNotNull', function (n, block) {
-  if (_.isNull(n) || _.isUndefined(n) || _.isNaN(n))
-    return block.inverse(this);
-  else
-    return block.fn(this);
+  if (_.isNull(n) || _.isUndefined(n) || _.isNaN(n)) return block.inverse(this);
+  else return block.fn(this);
 });
 
 Handlebars.registerHelper('formatGold', function (value) {

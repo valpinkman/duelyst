@@ -27,12 +27,24 @@ class ModifierStunWhenAttacked extends Modifier {
     super.onAction(actionEvent);
     const a = actionEvent.action;
     // when this wall is directly attacked
-    if (a instanceof AttackAction && (a.getTarget() === this.getCard()) && !a.getIsImplicit()) {
+    if (a instanceof AttackAction && a.getTarget() === this.getCard() && !a.getIsImplicit()) {
       // by a nearby minion
       let needle;
-      if (!a.getSource().getIsGeneral() && (needle = a.getSource(), Array.from<any>(this.getCard().getGameSession().getBoard().getEntitiesAroundEntity(this.getCard(), CardType.Unit, 1)).includes(needle))) {
+      if (
+        !a.getSource().getIsGeneral() &&
+        ((needle = a.getSource()),
+        Array.from<any>(
+          this.getCard()
+            .getGameSession()
+            .getBoard()
+            .getEntitiesAroundEntity(this.getCard(), CardType.Unit, 1),
+        ).includes(needle))
+      ) {
         // stun the attacker
-        return this.getGameSession().applyModifierContextObject(ModifierStunnedVanar.createContextObject(), a.getSource());
+        return this.getGameSession().applyModifierContextObject(
+          ModifierStunnedVanar.createContextObject(),
+          a.getSource(),
+        );
       }
     }
   }

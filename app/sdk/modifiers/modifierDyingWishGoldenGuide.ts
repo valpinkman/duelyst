@@ -21,13 +21,22 @@ class ModifierDyingWishGoldenGuide extends ModifierDyingWish {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
       const friendlyDervishes = [];
       for (var unit of Array.from<any>(this.getGameSession().getBoard().getUnits())) {
-        if ((unit != null) && unit.getIsSameTeamAs(this.getCard()) && !unit.getIsGeneral() && this.getGameSession().getCanCardBeScheduledForRemoval(unit) && unit.getBelongsToTribe(Races.Dervish)) {
+        if (
+          unit != null &&
+          unit.getIsSameTeamAs(this.getCard()) &&
+          !unit.getIsGeneral() &&
+          this.getGameSession().getCanCardBeScheduledForRemoval(unit) &&
+          unit.getBelongsToTribe(Races.Dervish)
+        ) {
           friendlyDervishes.push(unit);
         }
       }
 
       if (friendlyDervishes.length > 0) {
-        const unitToRemove = friendlyDervishes[this.getGameSession().getRandomIntegerForExecution(friendlyDervishes.length)];
+        const unitToRemove =
+          friendlyDervishes[
+            this.getGameSession().getRandomIntegerForExecution(friendlyDervishes.length)
+          ];
         const position = unitToRemove.getPosition();
 
         const removeAction = new RemoveAction(this.getGameSession());
@@ -35,7 +44,13 @@ class ModifierDyingWishGoldenGuide extends ModifierDyingWish {
         removeAction.setTarget(unitToRemove);
         this.getGameSession().executeAction(removeAction);
 
-        const spawnAction = new PlayCardSilentlyAction(this.getGameSession(), this.getCard().getOwnerId(), position.x, position.y, { id: Cards.Faction3.GoldenGuide });
+        const spawnAction = new PlayCardSilentlyAction(
+          this.getGameSession(),
+          this.getCard().getOwnerId(),
+          position.x,
+          position.y,
+          { id: Cards.Faction3.GoldenGuide },
+        );
         spawnAction.setSource(this.getCard());
         return this.getGameSession().executeAction(spawnAction);
       }

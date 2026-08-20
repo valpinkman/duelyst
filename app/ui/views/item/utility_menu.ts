@@ -23,7 +23,6 @@ var SettingsMenuView = require('./settings_menu');
  * Basic utility menu that shows buttons for settings and buddies/chat.
  */
 var UtilityMenuItemView = Backbone.Marionette.CompositeView.extend({
-
   id: 'app-utility-menu',
   className: 'utility-menu',
 
@@ -41,8 +40,8 @@ var UtilityMenuItemView = Backbone.Marionette.CompositeView.extend({
   /* endregion LAYOUT */
 
   onBeforeRender: function () {
-    this.$el.find('[data-toggle=\'tooltip\']').tooltip('destroy');
-    this.$el.find('[data-toggle=\'popover\']').popover('destroy');
+    this.$el.find("[data-toggle='tooltip']").tooltip('destroy');
+    this.$el.find("[data-toggle='popover']").popover('destroy');
   },
 
   onRender: function () {
@@ -53,7 +52,9 @@ var UtilityMenuItemView = Backbone.Marionette.CompositeView.extend({
       this.onLoggedOutRender();
     }
 
-    this.$el.find('[data-toggle=\'tooltip\']').tooltip({ container: CONFIG.OVERLAY_SELECTOR, trigger: 'hover' });
+    this.$el
+      .find("[data-toggle='tooltip']")
+      .tooltip({ container: CONFIG.OVERLAY_SELECTOR, trigger: 'hover' });
 
     this.onResize();
   },
@@ -82,22 +83,25 @@ var UtilityMenuItemView = Backbone.Marionette.CompositeView.extend({
     var delay = 400;
     for (var i = 0; i < buttons.length; i++) {
       $(buttons[i]).css('opacity', 0);
-      buttons[i].animate([
-        { opacity: 0.0, transform: 'translateY(10px)' },
-        { opacity: 1.0, transform: 'translateY(0px)' },
-      ], {
-        duration: 200,
-        delay: delay,
-        easing: 'cubic-bezier(0.39, 0.575, 0.565, 1)',
-        fill: 'forwards',
-      });
+      buttons[i].animate(
+        [
+          { opacity: 0.0, transform: 'translateY(10px)' },
+          { opacity: 1.0, transform: 'translateY(0px)' },
+        ],
+        {
+          duration: 200,
+          delay: delay,
+          easing: 'cubic-bezier(0.39, 0.575, 0.565, 1)',
+          fill: 'forwards',
+        },
+      );
       delay += 100;
     }
   },
 
   onDestroy: function () {
-    this.$el.find('[data-toggle=\'tooltip\']').tooltip('destroy');
-    this.$el.find('[data-toggle=\'popover\']').popover('destroy');
+    this.$el.find("[data-toggle='tooltip']").tooltip('destroy');
+    this.$el.find("[data-toggle='popover']").popover('destroy');
   },
 
   onLoggedIn: function () {
@@ -111,19 +115,29 @@ var UtilityMenuItemView = Backbone.Marionette.CompositeView.extend({
   },
 
   onLoggedInShow: function () {
-    ChatManager.getInstance().onReady(function () {
-      if (this.isDestroyed) return; // this view was destroyed
+    ChatManager.getInstance().onReady(
+      function () {
+        if (this.isDestroyed) return; // this view was destroyed
 
-      // listen for unread messages
-      this.listenTo(ChatManager.getInstance().conversations, 'change:unread remove', this.onUpdateUnreadConversations);
-      this.listenTo(ChatManager.getInstance().getBuddiesCollection(), 'presence_change', this.onUpdateFriendCount);
+        // listen for unread messages
+        this.listenTo(
+          ChatManager.getInstance().conversations,
+          'change:unread remove',
+          this.onUpdateUnreadConversations,
+        );
+        this.listenTo(
+          ChatManager.getInstance().getBuddiesCollection(),
+          'presence_change',
+          this.onUpdateFriendCount,
+        );
 
-      // listen for chat manager disconnect
-      this.listenToOnce(ChatManager.getInstance(), 'before_disconnect', function () {
-        this.stopListening(ChatManager.getInstance().conversations);
-        this.stopListening(ChatManager.getInstance().getBuddiesCollection());
-      });
-    }.bind(this));
+        // listen for chat manager disconnect
+        this.listenToOnce(ChatManager.getInstance(), 'before_disconnect', function () {
+          this.stopListening(ChatManager.getInstance().conversations);
+          this.stopListening(ChatManager.getInstance().getBuddiesCollection());
+        });
+      }.bind(this),
+    );
   },
 
   onLoggedOutShow: function () {
@@ -132,14 +146,16 @@ var UtilityMenuItemView = Backbone.Marionette.CompositeView.extend({
   },
 
   onLoggedInRender: function () {
-    ChatManager.getInstance().onReady(function () {
-      if (this.isDestroyed) return; // this view was destroyed
+    ChatManager.getInstance().onReady(
+      function () {
+        if (this.isDestroyed) return; // this view was destroyed
 
-      if (ChatManager.getInstance().getConnected()) {
-        this.onUpdateUnreadConversations();
-        this.onUpdateFriendCount();
-      }
-    }.bind(this));
+        if (ChatManager.getInstance().getConnected()) {
+          this.onUpdateUnreadConversations();
+          this.onUpdateFriendCount();
+        }
+      }.bind(this),
+    );
     this.$el.find('.buddy-list').on('click', this.toggleBuddyList.bind(this));
     this.$el.find('.settings').on('click', this.toggleSettingsMenu.bind(this));
   },
@@ -152,11 +168,15 @@ var UtilityMenuItemView = Backbone.Marionette.CompositeView.extend({
   },
 
   onUpdateUnreadConversations: function () {
-    this.updateUnreadConversations(ChatManager.getInstance().conversations.getUnreadConversationCount());
+    this.updateUnreadConversations(
+      ChatManager.getInstance().conversations.getUnreadConversationCount(),
+    );
   },
 
   updateUnreadConversations: function (unreadConversationsCount) {
-    if (unreadConversationsCount == null) { unreadConversationsCount = 0; }
+    if (unreadConversationsCount == null) {
+      unreadConversationsCount = 0;
+    }
     this.$el.find('.unread-conversation-count').text(unreadConversationsCount);
     if (unreadConversationsCount > 0) {
       this.$el.find('.unread-conversation-block').removeClass('hide');
@@ -178,9 +198,10 @@ var UtilityMenuItemView = Backbone.Marionette.CompositeView.extend({
   },
 
   toggleSettingsMenu: function () {
-    NavigationManager.getInstance().toggleModalViewByClass(SettingsMenuView, { model: ProfileManager.getInstance().profile });
+    NavigationManager.getInstance().toggleModalViewByClass(SettingsMenuView, {
+      model: ProfileManager.getInstance().profile,
+    });
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

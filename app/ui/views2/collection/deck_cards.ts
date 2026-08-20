@@ -8,7 +8,6 @@ var DeckCardCompositeView = require('./deck_card');
 var DeckCardsTmpl = require('./templates/deck_cards.hbs');
 
 var DeckCardsCompositeView = Backbone.Marionette.CompositeView.extend({
-
   className: 'deck-cards',
   childView: DeckCardCompositeView,
   childViewContainer: '.cards',
@@ -23,7 +22,9 @@ var DeckCardsCompositeView = Backbone.Marionette.CompositeView.extend({
   /* BACKBONE Events */
 
   onRender: function () {
-    this.$el.find('[data-toggle=\'tooltip\']').tooltip({ container: CONFIG.OVERLAY_SELECTOR, trigger: 'hover' });
+    this.$el
+      .find("[data-toggle='tooltip']")
+      .tooltip({ container: CONFIG.OVERLAY_SELECTOR, trigger: 'hover' });
   },
 
   onAddChild: function () {
@@ -44,11 +45,11 @@ var DeckCardsCompositeView = Backbone.Marionette.CompositeView.extend({
   },
 
   onDestroy: function () {
-    this.$el.find('[data-toggle=\'tooltip\']').tooltip('destroy');
+    this.$el.find("[data-toggle='tooltip']").tooltip('destroy');
   },
 
   onBeforeRender: function () {
-    this.$el.find('[data-toggle=\'tooltip\']').tooltip('destroy');
+    this.$el.find("[data-toggle='tooltip']").tooltip('destroy');
   },
 });
 

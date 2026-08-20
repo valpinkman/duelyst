@@ -32,7 +32,11 @@ class SpellLaceratingFrost extends Spell {
 
     const entities = board.getFriendlyEntitiesAroundEntity(targetEntity, CardType.Unit, 1);
     return Array.from<any>(entities).map((entity) =>
-      this.getGameSession().applyModifierContextObject(ModifierStunnedVanar.createContextObject(), entity));
+      this.getGameSession().applyModifierContextObject(
+        ModifierStunnedVanar.createContextObject(),
+        entity,
+      ),
+    );
   }
 
   _postFilterPlayPositions(validPositions) {

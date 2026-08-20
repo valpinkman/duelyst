@@ -19,7 +19,9 @@ class ModifierBackstabWatchStealSpellFromDeck extends ModifierBackstabWatch {
   static type = 'ModifierBackstabWatchStealSpellFromDeck';
 
   static createContextObject(options) {
-    if (options == null) { options = undefined; }
+    if (options == null) {
+      options = undefined;
+    }
     const contextObject = super.createContextObject(options);
     return contextObject;
   }
@@ -33,30 +35,45 @@ class ModifierBackstabWatchStealSpellFromDeck extends ModifierBackstabWatch {
     for (let i = 0; i < opponentsDrawPile.length; i++) {
       var cardIndex = opponentsDrawPile[i];
       var card = this.getGameSession().getCardByIndex(cardIndex);
-      if ((card != null) && (card.getType() === CardType.Spell)) {
+      if (card != null && card.getType() === CardType.Spell) {
         indicesOfOpponentSpellsInDeck.push(i);
       }
     }
 
     // get random spell from opponent's deck
     if (indicesOfOpponentSpellsInDeck.length > 0) {
-      const indexOfCardInDeck = indicesOfOpponentSpellsInDeck[this.getGameSession().getRandomIntegerForExecution(indicesOfOpponentSpellsInDeck.length)];
+      const indexOfCardInDeck =
+        indicesOfOpponentSpellsInDeck[
+          this.getGameSession().getRandomIntegerForExecution(indicesOfOpponentSpellsInDeck.length)
+        ];
       const opponentCardIndex = opponentsDrawPile[indexOfCardInDeck];
       const opponentCard = this.getGameSession().getCardByIndex(opponentCardIndex);
 
       if (opponentCard != null) {
         const myNewCardData = opponentCard.createCardData();
         myNewCardData.ownerId = this.getOwnerId(); // reset owner id to player who will receive this card
-        const removeCardFromDeckAction = new RemoveCardFromDeckAction(this.getGameSession(), opponentCard.getIndex(), opponentPlayer.getPlayerId());
+        const removeCardFromDeckAction = new RemoveCardFromDeckAction(
+          this.getGameSession(),
+          opponentCard.getIndex(),
+          opponentPlayer.getPlayerId(),
+        );
         this.getGameSession().executeAction(removeCardFromDeckAction);
-        const putCardInHandAction = new PutCardInHandAction(this.getGameSession(), this.getOwnerId(), myNewCardData);
+        const putCardInHandAction = new PutCardInHandAction(
+          this.getGameSession(),
+          this.getOwnerId(),
+          myNewCardData,
+        );
         return this.getGameSession().executeAction(putCardInHandAction);
       }
     }
   }
 }
 ModifierBackstabWatchStealSpellFromDeck.prototype.type = 'ModifierBackstabWatchStealSpellFromDeck';
-ModifierBackstabWatchStealSpellFromDeck.modifierName = i18next.t('modifiers.backstab_watch_steal_spell_from_deck_name');
-ModifierBackstabWatchStealSpellFromDeck.description = i18next.t('modifiers.backstab_watch_steal_spell_from_deck_def');
+ModifierBackstabWatchStealSpellFromDeck.modifierName = i18next.t(
+  'modifiers.backstab_watch_steal_spell_from_deck_name',
+);
+ModifierBackstabWatchStealSpellFromDeck.description = i18next.t(
+  'modifiers.backstab_watch_steal_spell_from_deck_def',
+);
 
 module.exports = ModifierBackstabWatchStealSpellFromDeck;

@@ -31,8 +31,13 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { parse } from '@typescript-eslint/parser';
 
-const FN = new Set(['FunctionDeclaration', 'FunctionExpression', 'ArrowFunctionExpression',
-  'MethodDefinition', 'TSDeclareFunction']);
+const FN = new Set([
+  'FunctionDeclaration',
+  'FunctionExpression',
+  'ArrowFunctionExpression',
+  'MethodDefinition',
+  'TSDeclareFunction',
+]);
 
 const walk = (node, fn, parent = null) => {
   if (!node || typeof node.type !== 'string') return;
@@ -87,9 +92,10 @@ const defaultsParam = (body, name) => {
     if (stmt.type !== 'IfStatement') continue;
     const t = stmt.test;
     if (t.type !== 'BinaryExpression') continue;
-    if (!['==', '===' ].includes(t.operator)) continue;
-    const isNullish = (n) => (n.type === 'Literal' && n.value === null)
-      || (n.type === 'Identifier' && n.name === 'undefined');
+    if (!['==', '==='].includes(t.operator)) continue;
+    const isNullish = (n) =>
+      (n.type === 'Literal' && n.value === null) ||
+      (n.type === 'Identifier' && n.name === 'undefined');
     const named = (n) => n.type === 'Identifier' && n.name === name;
     if (!((named(t.left) && isNullish(t.right)) || (named(t.right) && isNullish(t.left)))) continue;
     return true;
@@ -97,19 +103,30 @@ const defaultsParam = (body, name) => {
   return false;
 };
 
-let files = 0; let marked = 0; const blocked = [];
+let files = 0;
+let marked = 0;
+const blocked = [];
 for (const file of process.argv.slice(2)) {
   const src = readFileSync(file, 'utf8');
   let ast;
-  try { ast = parse(src, { range: true }); } catch { continue; }
+  try {
+    ast = parse(src, { range: true });
+  } catch {
+    continue;
+  }
 
   const edits = [];
   walk(ast, (node, parent) => {
     const fn = node.type === 'MethodDefinition' ? node.value : node;
     if (!FN.has(node.type) && node.type !== 'MethodDefinition') return;
     // a callback handed straight to something else: not our call site
-    if (node.type === 'ArrowFunctionExpression' && parent
-        && parent.type === 'CallExpression' && parent.arguments.includes(node)) return;
+    if (
+      node.type === 'ArrowFunctionExpression' &&
+      parent &&
+      parent.type === 'CallExpression' &&
+      parent.arguments.includes(node)
+    )
+      return;
     if (!fn || !fn.params || !fn.params.length || !fn.body) return;
 
     // longest trailing run of self-defaulted, plain identifier params
@@ -132,8 +149,11 @@ for (const file of process.argv.slice(2)) {
 
   if (!edits.length) continue;
   let out = src;
-  for (const at of [...new Set(edits)].sort((a, b) => b - a)) out = `${out.slice(0, at)}?${out.slice(at)}`;
-  try { parse(out, { range: true }); } catch (e) {
+  for (const at of [...new Set(edits)].sort((a, b) => b - a))
+    out = `${out.slice(0, at)}?${out.slice(at)}`;
+  try {
+    parse(out, { range: true });
+  } catch (e) {
     console.error(`  !! ${file}: output does not parse (${e.message})`);
     continue;
   }

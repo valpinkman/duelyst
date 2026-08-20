@@ -18,11 +18,15 @@ class ModifierMyMinionOrGeneralDamagedWatchBuffSelf extends ModifierMyMinionOrGe
   static description = 'Each time a friendly minion or your General takes damage, gain %X';
 
   static createContextObject(attackBuff, maxHPBuff, options) {
-    if (attackBuff == null) { attackBuff = 0; }
-    if (maxHPBuff == null) { maxHPBuff = 0; }
+    if (attackBuff == null) {
+      attackBuff = 0;
+    }
+    if (maxHPBuff == null) {
+      maxHPBuff = 0;
+    }
     const contextObject = super.createContextObject(options);
     const statContextObject = Modifier.createContextObjectWithAttributeBuffs(attackBuff, maxHPBuff);
-    statContextObject.appliedName = 'Protector\'s Rage';
+    statContextObject.appliedName = "Protector's Rage";
     contextObject.modifiersContextObjects = [statContextObject];
     return contextObject;
   }
@@ -30,15 +34,25 @@ class ModifierMyMinionOrGeneralDamagedWatchBuffSelf extends ModifierMyMinionOrGe
   static getDescription(modifierContextObject) {
     if (modifierContextObject) {
       const subContextObject = modifierContextObject.modifiersContextObjects[0];
-      return this.description.replace(/%X/, Stringifiers.stringifyAttackHealthBuff(subContextObject.attributeBuffs.atk, subContextObject.attributeBuffs.maxHP));
+      return this.description.replace(
+        /%X/,
+        Stringifiers.stringifyAttackHealthBuff(
+          subContextObject.attributeBuffs.atk,
+          subContextObject.attributeBuffs.maxHP,
+        ),
+      );
     }
     return this.description;
   }
 
   onDamageDealtToMinionOrGeneral(action) {
-    return this.applyManagedModifiersFromModifiersContextObjects(this.modifiersContextObjects, this.getCard());
+    return this.applyManagedModifiersFromModifiersContextObjects(
+      this.modifiersContextObjects,
+      this.getCard(),
+    );
   }
 }
-ModifierMyMinionOrGeneralDamagedWatchBuffSelf.prototype.type = 'ModifierMyMinionOrGeneralDamagedWatchBuffSelf';
+ModifierMyMinionOrGeneralDamagedWatchBuffSelf.prototype.type =
+  'ModifierMyMinionOrGeneralDamagedWatchBuffSelf';
 
 module.exports = ModifierMyMinionOrGeneralDamagedWatchBuffSelf;

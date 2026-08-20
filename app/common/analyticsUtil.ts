@@ -18,7 +18,7 @@ class AnalyticsUtil {
    * @return  {Object}  Either dataTarget passed in or a new object with days seen on recorded as named key values
    */
   static convertDaysSeenOnFromArrayToObject(daysSeenOn, dataTarget) {
-    if ((dataTarget == null)) {
+    if (dataTarget == null) {
       dataTarget = {};
     }
 

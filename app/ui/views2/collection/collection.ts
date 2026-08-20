@@ -36,7 +36,6 @@ var DeckCardBackSelectView = require('./deck_card_back_select');
 var SelectedCardLayout = require('./selected_card');
 
 var CollectionLayout = Backbone.Marionette.LayoutView.extend({
-
   _deck: null,
   _scrollLast: 0,
   _browsingMode: false,
@@ -59,7 +58,7 @@ var CollectionLayout = Backbone.Marionette.LayoutView.extend({
     $stopCraftingModeButton: '.crafting-mode-stop',
     $searchSubmit: '.search-submit',
     $searchClear: '.search-clear',
-    $searchInput: '.search input[type=\'search\']',
+    $searchInput: ".search input[type='search']",
     $dismissNew: '.dismiss-new',
     $togglePrismatics: '.toggle-prismatics',
     $togglePrismaticsCrafting: '.toggle-prismatics-crafting',
@@ -80,7 +79,7 @@ var CollectionLayout = Backbone.Marionette.LayoutView.extend({
     'click .crafting-mode-stop': 'onStopCraftingMode',
     'click .browsing-mode': 'onBrowsingMode',
     'click .search-clear': 'onSearchClear',
-    'input .search input[type=\'search\']': 'onSearch',
+    "input .search input[type='search']": 'onSearch',
     'click .dismiss-new': 'onDismissNew',
     'click .toggle-prismatics': 'onToggleShowPrismatics',
     'click .toggle-prismatics-crafting': 'onToggleShowPrismaticsCrafting',
@@ -106,7 +105,10 @@ var CollectionLayout = Backbone.Marionette.LayoutView.extend({
   },
 
   onRender: function () {
-    if (this.cardsCollectionCompositeView != null && this.cardsCollectionCompositeView.getCurrentSearchQuery()) {
+    if (
+      this.cardsCollectionCompositeView != null &&
+      this.cardsCollectionCompositeView.getCurrentSearchQuery()
+    ) {
       this.ui.$searchSubmit.removeClass('active');
       this.ui.$searchClear.addClass('active');
     } else {
@@ -131,28 +133,65 @@ var CollectionLayout = Backbone.Marionette.LayoutView.extend({
     ProfileManager.getInstance().profile.set('filterCollectionCardSet', 0);
 
     // create cards collection view
-    this.cardsCollectionCompositeView = new CardsCollectionCompositeView({ model: new Backbone.Model(), collection: new Backbone.Collection() });
+    this.cardsCollectionCompositeView = new CardsCollectionCompositeView({
+      model: new Backbone.Model(),
+      collection: new Backbone.Collection(),
+    });
     this.listenTo(this.cardsCollectionCompositeView, 'childview:select', this.onSelectCard);
     this.listenTo(this.cardsCollectionCompositeView, 'change_page', this.onChangePage);
     this.cardsRegion.show(this.cardsCollectionCompositeView);
 
     // bind counts of new/unread cards
-    GameDataManager.getInstance().visibleFactionsCollection.each(function (faction) {
-      this.bindFactionUnreadCounts(faction.id);
-    }.bind(this));
+    GameDataManager.getInstance().visibleFactionsCollection.each(
+      function (faction) {
+        this.bindFactionUnreadCounts(faction.id);
+      }.bind(this),
+    );
 
     // bind settings
     this.bindCanDismissNew();
     this.bindToggles();
 
-    this.listenTo(ProfileManager.getInstance().profile, 'change:showPrismaticsInCollection', this.onShowPrismaticsInCollectionChanged);
-    this.listenTo(ProfileManager.getInstance().profile, 'change:showPrismaticsWhileCrafting', this.onShowPrismaticsWhileCraftingChanged);
-    this.listenTo(ProfileManager.getInstance().profile, 'change:showSkinsInCollection', this.onShowSkinsInCollectionChanged);
-    this.listenTo(ProfileManager.getInstance().profile, 'change:showLoreNotifications', this.onShowLoreNotificationsChanged);
-    this.listenTo(ProfileManager.getInstance().profile, 'change:filterCollectionCardSet', this.onFilterCollectionCardSetChanged);
-    this.listenTo(InventoryManager.getInstance(), EVENTS.cards_collection_change, this.onCardCollectionChanged);
-    this.listenTo(InventoryManager.getInstance(), EVENTS.card_lore_collection_change, this.onCardLoreCollectionChanged);
-    this.listenTo(InventoryManager.getInstance(), EVENTS.cosmetics_collection_change, this.onCosmeticsCollectionChanged);
+    this.listenTo(
+      ProfileManager.getInstance().profile,
+      'change:showPrismaticsInCollection',
+      this.onShowPrismaticsInCollectionChanged,
+    );
+    this.listenTo(
+      ProfileManager.getInstance().profile,
+      'change:showPrismaticsWhileCrafting',
+      this.onShowPrismaticsWhileCraftingChanged,
+    );
+    this.listenTo(
+      ProfileManager.getInstance().profile,
+      'change:showSkinsInCollection',
+      this.onShowSkinsInCollectionChanged,
+    );
+    this.listenTo(
+      ProfileManager.getInstance().profile,
+      'change:showLoreNotifications',
+      this.onShowLoreNotificationsChanged,
+    );
+    this.listenTo(
+      ProfileManager.getInstance().profile,
+      'change:filterCollectionCardSet',
+      this.onFilterCollectionCardSetChanged,
+    );
+    this.listenTo(
+      InventoryManager.getInstance(),
+      EVENTS.cards_collection_change,
+      this.onCardCollectionChanged,
+    );
+    this.listenTo(
+      InventoryManager.getInstance(),
+      EVENTS.card_lore_collection_change,
+      this.onCardLoreCollectionChanged,
+    );
+    this.listenTo(
+      InventoryManager.getInstance(),
+      EVENTS.cosmetics_collection_change,
+      this.onCosmeticsCollectionChanged,
+    );
 
     audio_engine.current().play_music(RSX.music_collection.audio);
 
@@ -177,7 +216,8 @@ var CollectionLayout = Backbone.Marionette.LayoutView.extend({
     var model = event && event.model;
 
     // update faction tabs based on what changed
-    var gameDataCardModel = model && GameDataManager.getInstance().getVisibleCardModelById(model.get('id'));
+    var gameDataCardModel =
+      model && GameDataManager.getInstance().getVisibleCardModelById(model.get('id'));
     if (gameDataCardModel != null) {
       this.bindFactionUnreadCounts(gameDataCardModel.get('factionId'));
     }
@@ -233,7 +273,8 @@ var CollectionLayout = Backbone.Marionette.LayoutView.extend({
   },
 
   bindFactionUnreadCardCount: function (factionId) {
-    var count = this._numUnreadCardsByFactionId[factionId] = InventoryManager.getInstance().getUnreadCardCountForFaction(factionId);
+    var count = (this._numUnreadCardsByFactionId[factionId] =
+      InventoryManager.getInstance().getUnreadCardCountForFaction(factionId));
     var $badge = $('.faction-tab[data-factionid=' + factionId + '] .badge-unread-cards');
     if (count > 0) {
       $badge.text(count).addClass('active');
@@ -243,7 +284,9 @@ var CollectionLayout = Backbone.Marionette.LayoutView.extend({
   },
 
   bindFactionUnreadLoreCount: function (factionId) {
-    var count = ProfileManager.getInstance().profile.get('showLoreNotifications') ? InventoryManager.getInstance().getUnreadCardLoreCountForFaction(factionId) : 0;
+    var count = ProfileManager.getInstance().profile.get('showLoreNotifications')
+      ? InventoryManager.getInstance().getUnreadCardLoreCountForFaction(factionId)
+      : 0;
     var $badge = $('.faction-tab[data-factionid=' + factionId + '] .badge-unread-lore');
     if (count > 0) {
       $badge.addClass('active');
@@ -285,8 +328,11 @@ var CollectionLayout = Backbone.Marionette.LayoutView.extend({
   },
 
   bindTogglePrismaticsWhileCrafting: function () {
-    if (ProfileManager.getInstance().profile.get('showPrismaticsWhileCrafting')
-      && (!this._browsingMode && this._deck == null)) {
+    if (
+      ProfileManager.getInstance().profile.get('showPrismaticsWhileCrafting') &&
+      !this._browsingMode &&
+      this._deck == null
+    ) {
       this.ui.$togglePrismaticsCrafting.addClass('active');
     } else {
       this.ui.$togglePrismaticsCrafting.removeClass('active');
@@ -347,7 +393,9 @@ var CollectionLayout = Backbone.Marionette.LayoutView.extend({
 
     // set all showing card views as read
     if (this.cardsCollectionCompositeView != null) {
-      this.cardsCollectionCompositeView.children.each(function (view) { view.setRead(true); });
+      this.cardsCollectionCompositeView.children.each(function (view) {
+        view.setRead(true);
+      });
     }
   },
 
@@ -355,9 +403,11 @@ var CollectionLayout = Backbone.Marionette.LayoutView.extend({
     this.bindToggleLoreNotifications();
 
     // bind faction unread lore counts for all factions
-    GameDataManager.getInstance().visibleFactionsCollection.each(function (faction) {
-      this.bindFactionUnreadLoreCount(faction.id);
-    }.bind(this));
+    GameDataManager.getInstance().visibleFactionsCollection.each(
+      function (faction) {
+        this.bindFactionUnreadLoreCount(faction.id);
+      }.bind(this),
+    );
 
     // set lore read state of any showing card view
     if (this.cardsCollectionCompositeView != null && this._browsingMode) {
@@ -395,19 +445,31 @@ var CollectionLayout = Backbone.Marionette.LayoutView.extend({
   },
 
   onToggleShowPrismatics: function (event) {
-    ProfileManager.getInstance().profile.set('showPrismaticsInCollection', !ProfileManager.getInstance().profile.get('showPrismaticsInCollection'));
+    ProfileManager.getInstance().profile.set(
+      'showPrismaticsInCollection',
+      !ProfileManager.getInstance().profile.get('showPrismaticsInCollection'),
+    );
   },
 
   onToggleShowPrismaticsCrafting: function (event) {
-    ProfileManager.getInstance().profile.set('showPrismaticsWhileCrafting', !ProfileManager.getInstance().profile.get('showPrismaticsWhileCrafting'));
+    ProfileManager.getInstance().profile.set(
+      'showPrismaticsWhileCrafting',
+      !ProfileManager.getInstance().profile.get('showPrismaticsWhileCrafting'),
+    );
   },
 
   onToggleShowSkins: function (event) {
-    ProfileManager.getInstance().profile.set('showSkinsInCollection', !ProfileManager.getInstance().profile.get('showSkinsInCollection'));
+    ProfileManager.getInstance().profile.set(
+      'showSkinsInCollection',
+      !ProfileManager.getInstance().profile.get('showSkinsInCollection'),
+    );
   },
 
   onToggleShowLoreNotifications: function (event) {
-    ProfileManager.getInstance().profile.set('showLoreNotifications', !ProfileManager.getInstance().profile.get('showLoreNotifications'));
+    ProfileManager.getInstance().profile.set(
+      'showLoreNotifications',
+      !ProfileManager.getInstance().profile.get('showLoreNotifications'),
+    );
   },
 
   onToggleFilterCollectionCardSet: function (event) {
@@ -432,25 +494,27 @@ var CollectionLayout = Backbone.Marionette.LayoutView.extend({
   onChangePage: function () {
     var currentFaction = this.cardsCollectionCompositeView.getCurrentFaction();
     var enabledFactions = this.cardsCollectionCompositeView.getEnabledFactions();
-    GameDataManager.getInstance().visibleFactionsCollection.each(function (faction) {
-      var factionId = faction.get('id');
-      var $factionTab = this.$el.find('[data-factionid=' + factionId + ']');
-      if ($factionTab.length > 0) {
-        // check whether enabled
-        if (enabledFactions != null && enabledFactions.get(factionId) != null) {
-          $factionTab.removeClass('disabled');
-        } else {
-          $factionTab.addClass('disabled');
-        }
+    GameDataManager.getInstance().visibleFactionsCollection.each(
+      function (faction) {
+        var factionId = faction.get('id');
+        var $factionTab = this.$el.find('[data-factionid=' + factionId + ']');
+        if ($factionTab.length > 0) {
+          // check whether enabled
+          if (enabledFactions != null && enabledFactions.get(factionId) != null) {
+            $factionTab.removeClass('disabled');
+          } else {
+            $factionTab.addClass('disabled');
+          }
 
-        // check if is current faction
-        if (currentFaction != null && currentFaction.get('id') === factionId) {
-          $factionTab.addClass('active');
-        } else {
-          $factionTab.removeClass('active');
+          // check if is current faction
+          if (currentFaction != null && currentFaction.get('id') === factionId) {
+            $factionTab.addClass('active');
+          } else {
+            $factionTab.removeClass('active');
+          }
         }
-      }
-    }.bind(this));
+      }.bind(this),
+    );
   },
 
   /* DECK MANIPULATION */
@@ -466,7 +530,7 @@ var CollectionLayout = Backbone.Marionette.LayoutView.extend({
 
       // if currently selected filter isn't "all cards" or "standard cards"
       var currentSetSelected = ProfileManager.getInstance().profile.get('filterCollectionCardSet');
-      if ((currentSetSelected != 0) && (currentSetSelected != 9)) {
+      if (currentSetSelected != 0 && currentSetSelected != 9) {
         // reset card set filters upon starting a new deck (to make sure all Generals and owned cards are visible)
         ProfileManager.getInstance().profile.set('filterCollectionCardSet', 0);
       }
@@ -474,7 +538,9 @@ var CollectionLayout = Backbone.Marionette.LayoutView.extend({
       this.bindToggles();
 
       // play confirm
-      audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
+      audio_engine
+        .current()
+        .play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
 
       // start building
       this.startDeckBuildingMode(model);
@@ -493,24 +559,34 @@ var CollectionLayout = Backbone.Marionette.LayoutView.extend({
           NavigationManager.getInstance().showLastRoute();
         } else {
           var deckName = deckModel.get('name');
-          var confirmDialogItemView = new ConfirmDialogItemView({ title: i18next.t('collection.deck_change_cancel_msg', { deckName: deckName }) });
-          this.listenToOnce(confirmDialogItemView, 'confirm', function () {
-            // cancel current deck then submit user exit
-            var deckModel = this._deck;
-            if (deckModel != null) {
-              this._deck = null;
-              if (this._decks != null && !deckModel.id) {
-                this._decks.remove(deckModel);
-              } else {
-                deckModel.fetch();
+          var confirmDialogItemView = new ConfirmDialogItemView({
+            title: i18next.t('collection.deck_change_cancel_msg', { deckName: deckName }),
+          });
+          this.listenToOnce(
+            confirmDialogItemView,
+            'confirm',
+            function () {
+              // cancel current deck then submit user exit
+              var deckModel = this._deck;
+              if (deckModel != null) {
+                this._deck = null;
+                if (this._decks != null && !deckModel.id) {
+                  this._decks.remove(deckModel);
+                } else {
+                  deckModel.fetch();
+                }
               }
-            }
 
-            NavigationManager.getInstance().showLastRoute();
-          }.bind(this));
-          this.listenToOnce(confirmDialogItemView, 'cancel', function () {
-            this.stopListening(confirmDialogItemView);
-          }.bind(this));
+              NavigationManager.getInstance().showLastRoute();
+            }.bind(this),
+          );
+          this.listenToOnce(
+            confirmDialogItemView,
+            'cancel',
+            function () {
+              this.stopListening(confirmDialogItemView);
+            }.bind(this),
+          );
           NavigationManager.getInstance().showDialogView(confirmDialogItemView);
         }
       }
@@ -522,11 +598,14 @@ var CollectionLayout = Backbone.Marionette.LayoutView.extend({
           this._decks.remove(deckModel);
         } else if (deckModel.hasChanged()) {
           deckModel.fetch();
-        }1;
+        }
+        1;
       }
       NavigationManager.getInstance().showLastRoute();
     }
-    audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_cancel.audio, CONFIG.CANCEL_SFX_PRIORITY);
+    audio_engine
+      .current()
+      .play_effect_for_interaction(RSX.sfx_ui_cancel.audio, CONFIG.CANCEL_SFX_PRIORITY);
   },
 
   onSaveDeck: function (deckModel) {
@@ -543,23 +622,37 @@ var CollectionLayout = Backbone.Marionette.LayoutView.extend({
       }
       this.saveDeck(deckModel);
 
-      audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
+      audio_engine
+        .current()
+        .play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
       NavigationManager.getInstance().showLastRoute();
     }
   },
 
   onDeleteDeck: function (deckView) {
-    var deckName = (deckView && deckView.model && deckView.model.get('name')) || i18next.t('collection.default_deck_desc');
-    var confirmDialogItemView = new ConfirmDialogItemView({ title: i18next.t('collection.deck_delete_confirm_msg', { deckName: deckName }) });
-    this.listenToOnce(confirmDialogItemView, 'confirm', function () {
-      this.deleteDeck(deckView);
-      if (!this._browsingMode) {
-        NavigationManager.getInstance().showLastRoute();
-      }
-    }.bind(this));
-    this.listenToOnce(confirmDialogItemView, 'cancel', function () {
-      this.stopListening(confirmDialogItemView);
-    }.bind(this));
+    var deckName =
+      (deckView && deckView.model && deckView.model.get('name')) ||
+      i18next.t('collection.default_deck_desc');
+    var confirmDialogItemView = new ConfirmDialogItemView({
+      title: i18next.t('collection.deck_delete_confirm_msg', { deckName: deckName }),
+    });
+    this.listenToOnce(
+      confirmDialogItemView,
+      'confirm',
+      function () {
+        this.deleteDeck(deckView);
+        if (!this._browsingMode) {
+          NavigationManager.getInstance().showLastRoute();
+        }
+      }.bind(this),
+    );
+    this.listenToOnce(
+      confirmDialogItemView,
+      'cancel',
+      function () {
+        this.stopListening(confirmDialogItemView);
+      }.bind(this),
+    );
     NavigationManager.getInstance().showDialogView(confirmDialogItemView);
   },
 
@@ -567,9 +660,14 @@ var CollectionLayout = Backbone.Marionette.LayoutView.extend({
     if (!this._browsingMode) {
       this.sidebarRegion.currentView.selectCardView(cardView);
     } else {
-      NavigationManager.getInstance().addMinorRoute('select_card', this.onSelectCard, this, [cardView]);
+      NavigationManager.getInstance().addMinorRoute('select_card', this.onSelectCard, this, [
+        cardView,
+      ]);
 
-      var selectedView = new SelectedCardLayout({ model: cardView.model, startOffset: cardView.$el.position() });
+      var selectedView = new SelectedCardLayout({
+        model: cardView.model,
+        startOffset: cardView.$el.position(),
+      });
       this.selectedCardRegion.show(selectedView);
       this.listenToOnce(selectedView, 'close', function () {
         NavigationManager.getInstance().showLastRoute();
@@ -587,14 +685,18 @@ var CollectionLayout = Backbone.Marionette.LayoutView.extend({
 
       // set default name when none chosen
       var deckName = deckModel.get('name');
-      var isValidName = deckName && deckName !== i18next.t('' + CONFIG.DEFAULT_DECK_NAME) && deckName.length < 21;
+      var isValidName =
+        deckName && deckName !== i18next.t('' + CONFIG.DEFAULT_DECK_NAME) && deckName.length < 21;
       if (!isValidName) {
         var deckFactionId = deckModel.get('faction_id');
         var factionData = SDK.FactionFactory.factionForIdentifier(deckFactionId);
-        var deckName = factionData && factionData.short_name || i18next.t('' + CONFIG.DEFAULT_DECK_NAME);
-        var deckModelsOfSameFaction = InventoryManager.getInstance().getDecksCollection().filter(function (existingDeckModel) {
-          return existingDeckModel.get('faction_id') === deckFactionId;
-        });
+        var deckName =
+          (factionData && factionData.short_name) || i18next.t('' + CONFIG.DEFAULT_DECK_NAME);
+        var deckModelsOfSameFaction = InventoryManager.getInstance()
+          .getDecksCollection()
+          .filter(function (existingDeckModel) {
+            return existingDeckModel.get('faction_id') === deckFactionId;
+          });
         deckName += ' ' + deckModelsOfSameFaction.length;
         deckModel.set('name', deckName);
       }
@@ -605,7 +707,9 @@ var CollectionLayout = Backbone.Marionette.LayoutView.extend({
       // save deck
       var request = deckModel.save();
       request.fail(function (jqXHR, textStatus, errorThrown) {
-        NavigationManager.getInstance().showDialogView(new ErrorDialogItemView({ title: i18next.t('collection.deck_save_error_msg') }));
+        NavigationManager.getInstance().showDialogView(
+          new ErrorDialogItemView({ title: i18next.t('collection.deck_save_error_msg') }),
+        );
         deckModel.fetch();
       });
 
@@ -616,7 +720,9 @@ var CollectionLayout = Backbone.Marionette.LayoutView.extend({
       // reset last selected deck data
       CONFIG.resetLastSelectedDeckData();
     } else if (deckModel != null && !deckModel.hasGeneral()) {
-      NavigationManager.getInstance().showDialogView(new ErrorDialogItemView({ title: i18next.t('collection.deck_save_no_general_error_msg') }));
+      NavigationManager.getInstance().showDialogView(
+        new ErrorDialogItemView({ title: i18next.t('collection.deck_save_no_general_error_msg') }),
+      );
       return;
     }
   },
@@ -644,7 +750,12 @@ var CollectionLayout = Backbone.Marionette.LayoutView.extend({
   },
 
   fetchDeck: function (deckModel) {
-    if (deckModel != null && deckModel.hasChanged() && this._decks && this._decks.contains(deckModel)) {
+    if (
+      deckModel != null &&
+      deckModel.hasChanged() &&
+      this._decks &&
+      this._decks.contains(deckModel)
+    ) {
       deckModel.fetch();
     }
   },
@@ -723,32 +834,49 @@ var CollectionLayout = Backbone.Marionette.LayoutView.extend({
     if (InventoryManager.getInstance().hasCollectionDuplicates()) {
       this.ui.$startCraftingModeButton.addClass('highlight');
       // show a popover 1 sec in
-      this._craftingDuplicatesTimeout = setTimeout(function () {
-        if (this.ui.$startCraftingModeButton.popover)
-          this.ui.$startCraftingModeButton.popover({
-            animation: true,
-            content: i18next.t('collection.duplicate_cards_msg'),
-            template: '<div class="popover disenchant-duplicates-popover" role="tooltip"><div class="arrow"></div><div class="popover-content"></div></div>',
-          }).popover('show');
+      this._craftingDuplicatesTimeout = setTimeout(
+        function () {
+          if (this.ui.$startCraftingModeButton.popover)
+            this.ui.$startCraftingModeButton
+              .popover({
+                animation: true,
+                content: i18next.t('collection.duplicate_cards_msg'),
+                template:
+                  '<div class="popover disenchant-duplicates-popover" role="tooltip"><div class="arrow"></div><div class="popover-content"></div></div>',
+              })
+              .popover('show');
 
-        // hide popover after 4
-        this._craftingDuplicatesTimeout = setTimeout(function () {
-          if (this.ui.$startCraftingModeButton.popover) {
-            this.ui.$startCraftingModeButton.popover('destroy');
-          }
-        }.bind(this), 4000);
-      }.bind(this), 1000);
+          // hide popover after 4
+          this._craftingDuplicatesTimeout = setTimeout(
+            function () {
+              if (this.ui.$startCraftingModeButton.popover) {
+                this.ui.$startCraftingModeButton.popover('destroy');
+              }
+            }.bind(this),
+            4000,
+          );
+        }.bind(this),
+        1000,
+      );
     } else {
       this.ui.$startCraftingModeButton.removeClass('highlight');
       this.ui.$startCraftingModeButton.popover('destroy');
     }
 
     // show decks list in sidebar
-    var decksCollectionCompositeView = new DecksCollectionCompositeView({ collection: this._decks });
-    this.listenTo(decksCollectionCompositeView, 'childview:select', function (event) {
-      audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
-      this.startDeckBuildingMode(event.model);
-    }.bind(this));
+    var decksCollectionCompositeView = new DecksCollectionCompositeView({
+      collection: this._decks,
+    });
+    this.listenTo(
+      decksCollectionCompositeView,
+      'childview:select',
+      function (event) {
+        audio_engine
+          .current()
+          .play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
+        this.startDeckBuildingMode(event.model);
+      }.bind(this),
+    );
     this.listenTo(decksCollectionCompositeView, 'childview:delete', this.onDeleteDeck);
     this.sidebarRegion.show(decksCollectionCompositeView);
 
@@ -765,7 +893,12 @@ var CollectionLayout = Backbone.Marionette.LayoutView.extend({
       this._cleanupCurrentMode();
 
       // add mode to route
-      NavigationManager.getInstance().addMinorRoute('deck_building', this.startDeckBuildingMode, this, [deck]);
+      NavigationManager.getInstance().addMinorRoute(
+        'deck_building',
+        this.startDeckBuildingMode,
+        this,
+        [deck],
+      );
 
       // get deck
       this._deck = deck;
@@ -773,9 +906,13 @@ var CollectionLayout = Backbone.Marionette.LayoutView.extend({
       // show deck in sidebar
       this.cardsCollectionCompositeView.startDeckBuildingMode(this._deck);
       var deckLayout = new DeckLayout({ model: this._deck });
-      deckLayout.listenTo(deckLayout, 'deck_card_back_selecting', function () {
-        this.startDeckCardBackSelectingMode(this._deck);
-      }.bind(this));
+      deckLayout.listenTo(
+        deckLayout,
+        'deck_card_back_selecting',
+        function () {
+          this.startDeckCardBackSelectingMode(this._deck);
+        }.bind(this),
+      );
       this.sidebarRegion.show(deckLayout);
 
       this.$el.addClass('deck-building');
@@ -804,7 +941,10 @@ var CollectionLayout = Backbone.Marionette.LayoutView.extend({
 
     // show crafting in sidebar
     var walletDataClone = _.clone(InventoryManager.getInstance().walletModel.attributes);
-    var craftingCompositeView = new CraftingCompositeView({ model: new Backbone.Model(walletDataClone), collection: new Backbone.Collection() });
+    var craftingCompositeView = new CraftingCompositeView({
+      model: new Backbone.Model(walletDataClone),
+      collection: new Backbone.Collection(),
+    });
     this.sidebarRegion.show(craftingCompositeView);
 
     this.$el.addClass('crafting');
@@ -821,7 +961,12 @@ var CollectionLayout = Backbone.Marionette.LayoutView.extend({
       this._cleanupCurrentMode();
 
       // add mode to route
-      NavigationManager.getInstance().addMinorRoute('deck_card_back_selecting', this.startDeckCardBackSelectingMode, this, [deck]);
+      NavigationManager.getInstance().addMinorRoute(
+        'deck_card_back_selecting',
+        this.startDeckCardBackSelectingMode,
+        this,
+        [deck],
+      );
 
       // set mode flag
       this._deckCardBackSelectingMode = true;
@@ -835,7 +980,11 @@ var CollectionLayout = Backbone.Marionette.LayoutView.extend({
       // show deck card back select in sidebar
       var deckCardBackSelectView = new DeckCardBackSelectView({ model: this._deck });
       deckCardBackSelectView.listenTo(deckCardBackSelectView, 'select', this.onSaveDeck.bind(this));
-      deckCardBackSelectView.listenTo(deckCardBackSelectView, 'cancel', this.onStopDeckCardBackSelectingMode.bind(this));
+      deckCardBackSelectView.listenTo(
+        deckCardBackSelectView,
+        'cancel',
+        this.onStopDeckCardBackSelectingMode.bind(this),
+      );
       this.sidebarRegion.show(deckCardBackSelectView);
 
       this.$el.addClass('deck-card-back-selecting');
@@ -848,7 +997,6 @@ var CollectionLayout = Backbone.Marionette.LayoutView.extend({
   onStopDeckCardBackSelectingMode: function (event) {
     NavigationManager.getInstance().showLastRoute();
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

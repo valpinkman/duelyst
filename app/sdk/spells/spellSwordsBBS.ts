@@ -27,9 +27,14 @@ var SpellSwordsBBS = (function () {
 
       if (this.getGameSession().getIsRunningAsAuthoritative()) {
         const cardData: Record<string, any> = {};
-        cardData.id = spellsToGet[this.getGameSession().getRandomIntegerForExecution(spellsToGet.length)].id;
-        if (cardData.additionalModifiersContextObjects == null) { cardData.additionalModifiersContextObjects = []; }
-        cardData.additionalModifiersContextObjects.push(ModifierCannotBeReplaced.createContextObject());
+        cardData.id =
+          spellsToGet[this.getGameSession().getRandomIntegerForExecution(spellsToGet.length)].id;
+        if (cardData.additionalModifiersContextObjects == null) {
+          cardData.additionalModifiersContextObjects = [];
+        }
+        cardData.additionalModifiersContextObjects.push(
+          ModifierCannotBeReplaced.createContextObject(),
+        );
         const a = new PutCardInHandAction(this.getGameSession(), this.getOwnerId(), cardData);
         return this.getGameSession().executeAction(a);
       }
@@ -37,6 +42,6 @@ var SpellSwordsBBS = (function () {
   };
   SpellSwordsBBS.initClass();
   return SpellSwordsBBS;
-}());
+})();
 
 module.exports = SpellSwordsBBS;

@@ -32,7 +32,10 @@ class ModifierEnemySpellWatchHealMyGeneral extends ModifierEnemySpellWatch {
   }
 }
 ModifierEnemySpellWatchHealMyGeneral.prototype.type = 'ModifierEnemySpellWatchHealMyGeneral';
-ModifierEnemySpellWatchHealMyGeneral.prototype.fxResource = ['FX.Modifiers.ModifierSpellWatch', 'FX.Modifiers.ModifierGenericHeal'];
+ModifierEnemySpellWatchHealMyGeneral.prototype.fxResource = [
+  'FX.Modifiers.ModifierSpellWatch',
+  'FX.Modifiers.ModifierGenericHeal',
+];
 ModifierEnemySpellWatchHealMyGeneral.prototype.healAmount = 0;
 
 module.exports = ModifierEnemySpellWatchHealMyGeneral;

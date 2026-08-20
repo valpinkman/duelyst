@@ -28,7 +28,9 @@ class SpellSummonHighestCostMinion extends SpellSpawnEntity {
 
     // first grab indices of all minions in the deck
     for (cardIndex of Array.from<any>(drawPile)) {
-      if (__guard__(gameSession.getCardByIndex(cardIndex), (x1) => x1.getType()) === CardType.Unit) {
+      if (
+        __guard__(gameSession.getCardByIndex(cardIndex), (x1) => x1.getType()) === CardType.Unit
+      ) {
         if (this.neutralOnly) {
           if (gameSession.getCardByIndex(cardIndex).factionId === Factions.Neutral) {
             possibleCardsToSummon.push(cardIndex);
@@ -41,8 +43,8 @@ class SpellSummonHighestCostMinion extends SpellSpawnEntity {
 
     if (possibleCardsToSummon.length > 0) {
       // then grab the cards those indexes are pointing to
-      let cardToSummon; let
-        cardToSummonIndex;
+      let cardToSummon;
+      let cardToSummonIndex;
       const minionList = [];
       for (cardIndex of Array.from<any>(possibleCardsToSummon)) {
         minionList.push(gameSession.getCardByIndex(cardIndex));
@@ -62,7 +64,9 @@ class SpellSummonHighestCostMinion extends SpellSpawnEntity {
 
       // then choose a random one from the list of those high cost minions
       if (highestManaCostMinions.length > 0) {
-        const randomIndex = this.getGameSession().getRandomIntegerForExecution(highestManaCostMinions.length);
+        const randomIndex = this.getGameSession().getRandomIntegerForExecution(
+          highestManaCostMinions.length,
+        );
         cardToSummon = highestManaCostMinions[randomIndex];
       }
 
@@ -88,5 +92,5 @@ SpellSummonHighestCostMinion.prototype.neutralOnly = true;
 module.exports = SpellSummonHighestCostMinion;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

@@ -25,7 +25,6 @@ var Manager = require('./manager');
 var ProfileManager = require('./profile_manager');
 
 var NewsManager = Manager.extend({
-
   newsItemsIndexCollection: null,
   readNewsItemsCollection: null,
   unreadNewsItemsCollection: null,
@@ -37,33 +36,47 @@ var NewsManager = Manager.extend({
     const _self = this;
     Manager.prototype.onBeforeConnect.call(this);
 
-    ProfileManager.getInstance().onReady()
+    ProfileManager.getInstance()
+      .onReady()
       .then(function () {
         var userId = ProfileManager.getInstance().get('id');
 
         _self.newsItemsIndexCollection = new DuelystFirebase.Collection(null, {
-          firebase: new Firebase(process.env.FIREBASE_URL).child('news').child('index').limitToLast(10),
+          firebase: new Firebase(process.env.FIREBASE_URL)
+            .child('news')
+            .child('index')
+            .limitToLast(10),
         });
 
         _self.readNewsItemsCollection = new DuelystFirebase.Collection(null, {
-          firebase: new Firebase(process.env.FIREBASE_URL).child('user-news').child(userId).child('read')
+          firebase: new Firebase(process.env.FIREBASE_URL)
+            .child('user-news')
+            .child(userId)
+            .child('read')
             .limitToLast(20),
         });
 
         // what to do when we're ready
-        _self.onReady().then(function () {
-          if (this.readNewsItemsCollection.last()) {
-            this.lastReadItemAt = this.readNewsItemsCollection.last().get('read_at');
-          }
+        _self.onReady().then(
+          function () {
+            if (this.readNewsItemsCollection.last()) {
+              this.lastReadItemAt = this.readNewsItemsCollection.last().get('read_at');
+            }
 
-          var unreadItems = this.newsItemsIndexCollection.filter(function (newsItem) {
-            return !this.readNewsItemsCollection.get(newsItem.get('id'));
-          }.bind(this));
+            var unreadItems = this.newsItemsIndexCollection.filter(
+              function (newsItem) {
+                return !this.readNewsItemsCollection.get(newsItem.get('id'));
+              }.bind(this),
+            );
 
-          this.unreadNewsItems = new Backbone.Collection(unreadItems);
-        }.bind(_self));
+            this.unreadNewsItems = new Backbone.Collection(unreadItems);
+          }.bind(_self),
+        );
 
-        _self._markAsReadyWhenModelsAndCollectionsSynced([_self.newsItemsIndexCollection, _self.readNewsItemsCollection]);
+        _self._markAsReadyWhenModelsAndCollectionsSynced([
+          _self.newsItemsIndexCollection,
+          _self.readNewsItemsCollection,
+        ]);
       });
   },
 
@@ -92,24 +105,32 @@ var NewsManager = Manager.extend({
   },
 
   getFirstUnreadAnnouncement: function () {
-    var unread = this.unreadNewsItems.filter(function (newsItem) {
-      return (newsItem.get('type') == 'announcement' && newsItem.get('created_at') > this.lastReadItemAt);
-    }.bind(this));
+    var unread = this.unreadNewsItems.filter(
+      function (newsItem) {
+        return (
+          newsItem.get('type') == 'announcement' && newsItem.get('created_at') > this.lastReadItemAt
+        );
+      }.bind(this),
+    );
 
     var announcement = _.last(unread);
 
     // only show announcements from AFTER the user registered
-    if (announcement && announcement.get('created_at') > ProfileManager.getInstance().profile.get('created_at'))
+    if (
+      announcement &&
+      announcement.get('created_at') > ProfileManager.getInstance().profile.get('created_at')
+    )
       return announcement;
-    else
-      return null;
+    else return null;
   },
 
   getFirstUnreadAnnouncementContentAsync: function (callback) {
     var announcement = this.getFirstUnreadAnnouncement();
 
     if (announcement) {
-      var fbRef = new Firebase(process.env.FIREBASE_URL).child('news/content/' + announcement.get('id'));
+      var fbRef = new Firebase(process.env.FIREBASE_URL).child(
+        'news/content/' + announcement.get('id'),
+      );
       var content = new DuelystFirebase.Model(null, {
         firebase: fbRef,
       });
@@ -118,5 +139,4 @@ var NewsManager = Manager.extend({
       return Promise.reject(new Error('no unread announcements'));
     }
   },
-
 });

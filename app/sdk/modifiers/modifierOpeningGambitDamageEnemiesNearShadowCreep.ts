@@ -20,8 +20,12 @@ class ModifierOpeningGambitDamageEnemiesNearShadowCreep extends ModifierOpeningG
   static description = 'Deal %X damage to each enemy on or near friendly Shadow Creep';
 
   static createContextObject(damageAmount, options) {
-    if (damageAmount == null) { damageAmount = 0; }
-    if (options == null) { options = undefined; }
+    if (damageAmount == null) {
+      damageAmount = 0;
+    }
+    if (options == null) {
+      options = undefined;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.damageAmount = damageAmount;
     return contextObject;
@@ -41,10 +45,16 @@ class ModifierOpeningGambitDamageEnemiesNearShadowCreep extends ModifierOpeningG
     const board = this.getGameSession().getBoard();
     for (unit of Array.from<any>(board.getEnemyEntitiesForEntity(this.getCard()))) {
       var tileAtPosition = board.getTileAtPosition(unit.getPosition(), true);
-      if ((tileAtPosition != null) && (tileAtPosition.getBaseCardId() === Cards.Tile.Shadow) && (tileAtPosition.getOwnerId() === this.getCard().getOwnerId())) {
+      if (
+        tileAtPosition != null &&
+        tileAtPosition.getBaseCardId() === Cards.Tile.Shadow &&
+        tileAtPosition.getOwnerId() === this.getCard().getOwnerId()
+      ) {
         unitsToDamage.push(unit);
       } else {
-        for (var cardAroundUnit of Array.from<any>(board.getEnemyEntitiesAroundEntity(unit, CardType.Tile, 1, true))) {
+        for (var cardAroundUnit of Array.from<any>(
+          board.getEnemyEntitiesAroundEntity(unit, CardType.Tile, 1, true),
+        )) {
           if (cardAroundUnit.getBaseCardId() === Cards.Tile.Shadow) {
             unitsToDamage.push(unit);
             break;
@@ -66,7 +76,11 @@ class ModifierOpeningGambitDamageEnemiesNearShadowCreep extends ModifierOpeningG
     })();
   }
 }
-ModifierOpeningGambitDamageEnemiesNearShadowCreep.prototype.type = 'ModifierOpeningGambitDamageEnemiesNearShadowCreep';
-ModifierOpeningGambitDamageEnemiesNearShadowCreep.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericDamage'];
+ModifierOpeningGambitDamageEnemiesNearShadowCreep.prototype.type =
+  'ModifierOpeningGambitDamageEnemiesNearShadowCreep';
+ModifierOpeningGambitDamageEnemiesNearShadowCreep.prototype.fxResource = [
+  'FX.Modifiers.ModifierOpeningGambit',
+  'FX.Modifiers.ModifierGenericDamage',
+];
 
 module.exports = ModifierOpeningGambitDamageEnemiesNearShadowCreep;

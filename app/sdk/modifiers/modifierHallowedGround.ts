@@ -58,7 +58,7 @@ class ModifierHallowedGround extends ModifierEndTurnWatch {
 
     // at end of my turn, if there is a friendly unit on this hallowed ground
     const unit = this.getGameSession().getBoard().getUnitAtPosition(this.getCard().getPosition());
-    if ((unit != null) && this.getCard().getIsSameTeamAs(unit)) {
+    if (unit != null && this.getCard().getIsSameTeamAs(unit)) {
       const healAction = new HealAction(this.getGameSession());
       healAction.setSource(this.getCard());
       healAction.setTarget(unit);

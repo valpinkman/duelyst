@@ -23,7 +23,10 @@ class SpellDropLift extends Spell {
       const modifiersByArtifact = enemyGeneral.getArtifactModifiersGroupedByArtifactCard();
       if (modifiersByArtifact.length > 0) {
         // pick an artifact to remove (modifiers grouped by artifact card)
-        const modifiersToRemove = modifiersByArtifact[this.getGameSession().getRandomIntegerForExecution(modifiersByArtifact.length)];
+        const modifiersToRemove =
+          modifiersByArtifact[
+            this.getGameSession().getRandomIntegerForExecution(modifiersByArtifact.length)
+          ];
         const artifactCard = modifiersToRemove[0].getSourceCard(); // store original artifact card
         // remove modifiers from artifact on enemy
         for (let i = modifiersToRemove.length - 1; i >= 0; i--) {
@@ -35,19 +38,28 @@ class SpellDropLift extends Spell {
 
         // copy over any custom artifact data
         if (artifactCard.targetModifiersContextObjects != null) {
-          newArtifactCardData.targetModifiersContextObjects = artifactCard.targetModifiersContextObjects;
+          newArtifactCardData.targetModifiersContextObjects =
+            artifactCard.targetModifiersContextObjects;
         }
         if (artifactCard.modifiersContextObjects) {
           for (var contextObject of Array.from<any>(artifactCard.modifiersContextObjects)) {
             if (contextObject.isAdditionalInherent) {
-              if (newArtifactCardData.additionalInherentModifiersContextObjects == null) { newArtifactCardData.additionalInherentModifiersContextObjects = []; }
+              if (newArtifactCardData.additionalInherentModifiersContextObjects == null) {
+                newArtifactCardData.additionalInherentModifiersContextObjects = [];
+              }
               newArtifactCardData.additionalInherentModifiersContextObjects.push(contextObject);
             }
           }
         }
 
         // apply artifact to my general
-        const playCardAction = new PlayCardSilentlyAction(this.getGameSession(), this.getOwnerId(), myGeneral.getPosition().x, myGeneral.getPosition().y, newArtifactCardData);
+        const playCardAction = new PlayCardSilentlyAction(
+          this.getGameSession(),
+          this.getOwnerId(),
+          myGeneral.getPosition().x,
+          myGeneral.getPosition().y,
+          newArtifactCardData,
+        );
         playCardAction.setSource(this);
         return this.getGameSession().executeAction(playCardAction);
       }
@@ -59,9 +71,13 @@ class SpellDropLift extends Spell {
 
     // only affects generals
     const enemyGeneral = this.getGameSession().getGeneralForOpponentOfPlayerId(this.getOwnerId());
-    if (enemyGeneral != null) { applyEffectPositions.push(enemyGeneral.getPosition()); }
+    if (enemyGeneral != null) {
+      applyEffectPositions.push(enemyGeneral.getPosition());
+    }
     const myGeneral = this.getGameSession().getGeneralForPlayerId(this.getOwnerId());
-    if (myGeneral != null) { applyEffectPositions.push(myGeneral.getPosition()); }
+    if (myGeneral != null) {
+      applyEffectPositions.push(myGeneral.getPosition());
+    }
 
     return applyEffectPositions;
   }

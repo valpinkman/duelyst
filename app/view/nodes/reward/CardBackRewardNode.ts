@@ -20,7 +20,6 @@ const GlowSprite = require('../GlowSprite');
  *************************************************************************** */
 
 const CardBackRewardNode = RewardNode.extend({
-
   _cardBackId: null,
 
   ctor(cardBackId) {
@@ -57,8 +56,8 @@ const CardBackRewardNode = RewardNode.extend({
   /* region ANIMATION */
 
   getRewardAnimationPromise(looping, showLabel) {
-    return (looping ? this.showLoopingRewardFlare() : this.showRewardFlare())
-      .then(() => new Promise<void>((resolve) => {
+    return (looping ? this.showLoopingRewardFlare() : this.showRewardFlare()).then(() =>
+      new Promise<void>((resolve) => {
         // card back data
         const cardBackData = SDK.CosmeticsFactory.cosmeticForIdentifier(this._cardBackId);
 
@@ -85,8 +84,16 @@ const CardBackRewardNode = RewardNode.extend({
 
         if (showLabel) {
           // primary label
-          const labelText = _.isString(showLabel) ? showLabel : i18next.t('cosmetics.cosmetic_type_card_back').toLocaleUpperCase();
-          var label = new cc.LabelTTF(labelText, RSX.font_regular.name, 22, cc.size(200, 24), cc.TEXT_ALIGNMENT_CENTER);
+          const labelText = _.isString(showLabel)
+            ? showLabel
+            : i18next.t('cosmetics.cosmetic_type_card_back').toLocaleUpperCase();
+          var label = new cc.LabelTTF(
+            labelText,
+            RSX.font_regular.name,
+            22,
+            cc.size(200, 24),
+            cc.TEXT_ALIGNMENT_CENTER,
+          );
           label.setPosition(0, -200);
           label.setOpacity(0.0);
           this.addChild(label, 3);
@@ -95,7 +102,13 @@ const CardBackRewardNode = RewardNode.extend({
           const { rarityId } = cardBackData;
           if (rarityId != null) {
             const rarityData = SDK.RarityFactory.rarityForIdentifier(rarityId);
-            var sublabel = new cc.LabelTTF(rarityData.name.toLocaleUpperCase(), RSX.font_regular.name, 16, cc.size(200, 24), cc.TEXT_ALIGNMENT_CENTER);
+            var sublabel = new cc.LabelTTF(
+              rarityData.name.toLocaleUpperCase(),
+              RSX.font_regular.name,
+              16,
+              cc.size(200, 24),
+              cc.TEXT_ALIGNMENT_CENTER,
+            );
             sublabel.setFontFillColor(rarityData.color);
             sublabel.setPosition(0, -180);
             sublabel.setOpacity(0.0);
@@ -117,60 +130,86 @@ const CardBackRewardNode = RewardNode.extend({
         cardBackGlowOutlineSprite.setVisible(true);
 
         // show card back
-        this.runAction(cc.sequence(
-          cc.targetedAction(cardBackSprite, cc.sequence(
-            cc.spawn(
-              cc.scaleTo(CONFIG.ANIMATE_FAST_DURATION, 1.0).easing(cc.easeExponentialOut()),
-              cc.actionTween(CONFIG.ANIMATE_MEDIUM_DURATION, TweenTypes.TINT_FADE, 255.0, 0.0).easing(cc.easeOut(2.0)),
-              cc.targetedAction(cardBackGlowOutlineSprite, cc.scaleTo(CONFIG.ANIMATE_FAST_DURATION, 1.0).easing(cc.easeExponentialOut())),
+        this.runAction(
+          cc.sequence(
+            cc.targetedAction(
+              cardBackSprite,
+              cc.sequence(
+                cc.spawn(
+                  cc.scaleTo(CONFIG.ANIMATE_FAST_DURATION, 1.0).easing(cc.easeExponentialOut()),
+                  cc
+                    .actionTween(CONFIG.ANIMATE_MEDIUM_DURATION, TweenTypes.TINT_FADE, 255.0, 0.0)
+                    .easing(cc.easeOut(2.0)),
+                  cc.targetedAction(
+                    cardBackGlowOutlineSprite,
+                    cc.scaleTo(CONFIG.ANIMATE_FAST_DURATION, 1.0).easing(cc.easeExponentialOut()),
+                  ),
+                ),
+                cc.spawn(
+                  cc.callFunc(() => {
+                    const particles = new BaseParticleSystem(RSX.ptcl_card_appear.plist);
+                    particles.setPosVar(
+                      cc.p(
+                        cardBackgroundContentSize.width * 0.5,
+                        cardBackgroundContentSize.height * 0.5,
+                      ),
+                    );
+                    particles.setAnchorPoint(0.5, 0.5);
+                    particles.setAutoRemoveOnFinish(true);
+                    this.addChild(particles, 1);
+
+                    cardBackSprite.fadeOutHighlight(CONFIG.ANIMATE_FAST_DURATION);
+                  }),
+                  cc.actionTween(CONFIG.ANIMATE_FAST_DURATION, 'levelsInWhite', 180.0, 255.0),
+                  cc.actionTween(CONFIG.ANIMATE_FAST_DURATION, 'levelsInBlack', 30.0, 0.0),
+                  cc.targetedAction(
+                    cardShadow,
+                    cc.spawn(cc.show(), cc.fadeTo(CONFIG.FADE_FAST_DURATION, 150.0)),
+                  ),
+                  cc.targetedAction(
+                    cardBackGlowOutlineSprite,
+                    cc.sequence(
+                      cc.delayTime(CONFIG.ANIMATE_FAST_DURATION),
+                      cc.fadeOut(CONFIG.ANIMATE_FAST_DURATION),
+                      cc.hide(),
+                    ),
+                  ),
+                ),
+              ),
             ),
-            cc.spawn(
-              cc.callFunc(() => {
-                const particles = new BaseParticleSystem(RSX.ptcl_card_appear.plist);
-                particles.setPosVar(cc.p(cardBackgroundContentSize.width * 0.5, cardBackgroundContentSize.height * 0.5));
-                particles.setAnchorPoint(0.5, 0.5);
-                particles.setAutoRemoveOnFinish(true);
-                this.addChild(particles, 1);
+            cc.callFunc(() => {
+              // show labels
+              if (label != null) {
+                label.fadeTo(CONFIG.ANIMATE_FAST_DURATION, 255.0);
+              }
+              if (sublabel != null) {
+                sublabel.fadeTo(CONFIG.ANIMATE_FAST_DURATION, 255.0);
+              }
 
-                cardBackSprite.fadeOutHighlight(CONFIG.ANIMATE_FAST_DURATION);
-              }),
-              cc.actionTween(CONFIG.ANIMATE_FAST_DURATION, 'levelsInWhite', 180.0, 255.0),
-              cc.actionTween(CONFIG.ANIMATE_FAST_DURATION, 'levelsInBlack', 30.0, 0.0),
-              cc.targetedAction(cardShadow, cc.spawn(
-                cc.show(),
-                cc.fadeTo(CONFIG.FADE_FAST_DURATION, 150.0),
-              )),
-              cc.targetedAction(cardBackGlowOutlineSprite, cc.sequence(
-                cc.delayTime(CONFIG.ANIMATE_FAST_DURATION),
-                cc.fadeOut(CONFIG.ANIMATE_FAST_DURATION),
-                cc.hide(),
-              )),
-            ),
-          )),
-          cc.callFunc(() => {
-            // show labels
-            if (label != null) {
-              label.fadeTo(CONFIG.ANIMATE_FAST_DURATION, 255.0);
-            }
-            if (sublabel != null) {
-              sublabel.fadeTo(CONFIG.ANIMATE_FAST_DURATION, 255.0);
-            }
+              // float card to make it appear more dynamic
+              if (!looping) {
+                cardContainerNode.runAction(
+                  FigureEight.create(
+                    4.0 + Math.random(),
+                    2,
+                    5,
+                    cardContainerNode.getPosition(),
+                  ).repeatForever(),
+                );
+              }
 
-            // float card to make it appear more dynamic
-            if (!looping) {
-              cardContainerNode.runAction(FigureEight.create(4.0 + Math.random(), 2, 5, cardContainerNode.getPosition()).repeatForever());
-            }
-
-            // finish
-            resolve();
-          }),
-        ));
-      })
-        .catch((error) => { EventBus.getInstance().trigger(EVENTS.error, error); }));
+              // finish
+              resolve();
+            }),
+          ),
+        );
+      }).catch((error) => {
+        EventBus.getInstance().trigger(EVENTS.error, error);
+      }),
+    );
   },
 
   /* endregion ANIMATION */
-
 });
 
 CardBackRewardNode.create = function (options, node) {

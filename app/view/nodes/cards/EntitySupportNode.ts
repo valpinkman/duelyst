@@ -7,7 +7,6 @@ EntitySupportNode
  *************************************************************************** */
 
 const EntitySupportNode = cc.Node.extend({
-
   entityNode: null,
 
   /* region INITIALIZE */
@@ -31,7 +30,6 @@ const EntitySupportNode = cc.Node.extend({
   },
 
   /* endregion GETTERS / SETTERS */
-
 });
 
 EntitySupportNode.create = function (entityNode, node) {

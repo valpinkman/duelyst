@@ -14,7 +14,7 @@ class SpellActivateFriendlyShadowCreep extends Spell {
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     super.onApplyEffectToBoardTile(board, x, y, sourceAction);
     const creepTile = this.getGameSession().getBoard().getTileAtPosition({ x, y }, true, false);
-    if ((creepTile != null) && (creepTile.getBaseCardId() === Cards.Tile.Shadow)) {
+    if (creepTile != null && creepTile.getBaseCardId() === Cards.Tile.Shadow) {
       const modifiers = creepTile.getModifiers();
       if (modifiers != null) {
         return (() => {
@@ -37,7 +37,11 @@ class SpellActivateFriendlyShadowCreep extends Spell {
     const board = this.getGameSession().getBoard();
     const friendlyCreepPositions = [];
     for (var tile of Array.from<any>(board.getTiles(true, false))) {
-      if ((tile != null) && (tile.getOwnerId() === this.getOwnerId()) && (tile.getBaseCardId() === Cards.Tile.Shadow)) {
+      if (
+        tile != null &&
+        tile.getOwnerId() === this.getOwnerId() &&
+        tile.getBaseCardId() === Cards.Tile.Shadow
+      ) {
         friendlyCreepPositions.push({ x: tile.getPosition().x, y: tile.getPosition().y });
       }
     }

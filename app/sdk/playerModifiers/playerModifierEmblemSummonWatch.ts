@@ -18,9 +18,7 @@ class PlayerModifierEmblemSummonWatch extends PlayerModifierEmblem {
   onAction(e) {
     super.onAction(e);
 
-    const {
-      action,
-    } = e;
+    const { action } = e;
 
     if (this.getIsActionRelevant(action)) {
       return this.onSummonWatch(action);
@@ -29,7 +27,15 @@ class PlayerModifierEmblemSummonWatch extends PlayerModifierEmblem {
 
   getIsActionRelevant(action) {
     // watch for a unit being summoned in any way by the player who owns this entity
-    if (action instanceof ApplyCardToBoardAction && (action.getOwnerId() === this.getCard().getOwnerId()) && (__guard__(action.getCard(), (x) => x.type) === CardType.Unit) && !(action instanceof PlayCardAsTransformAction || action instanceof CloneEntityAsTransformAction)) {
+    if (
+      action instanceof ApplyCardToBoardAction &&
+      action.getOwnerId() === this.getCard().getOwnerId() &&
+      __guard__(action.getCard(), (x) => x.type) === CardType.Unit &&
+      !(
+        action instanceof PlayCardAsTransformAction ||
+        action instanceof CloneEntityAsTransformAction
+      )
+    ) {
       return true;
     }
     return false;
@@ -43,5 +49,5 @@ PlayerModifierEmblemSummonWatch.prototype.type = 'PlayerModifierEmblemSummonWatc
 module.exports = PlayerModifierEmblemSummonWatch;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

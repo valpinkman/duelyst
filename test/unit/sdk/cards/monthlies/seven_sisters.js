@@ -13,13 +13,9 @@ Logger.enabled = false;
 describe('special events', () => {
   describe('seven sisters', () => {
     beforeEach(() => {
-      const player1Deck = [
-        { id: SDK.Cards.Faction6.General },
-      ];
+      const player1Deck = [{ id: SDK.Cards.Faction6.General }];
 
-      const player2Deck = [
-        { id: SDK.Cards.Faction3.General },
-      ];
+      const player2Deck = [{ id: SDK.Cards.Faction3.General }];
 
       // setup test session
       UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
@@ -35,14 +31,27 @@ describe('special events', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      const lyonarSister = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.SunSister }, 0, 1, gameSession.getPlayer1Id());
+      const lyonarSister = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.SunSister },
+        0,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
       gameSession.getGeneralForPlayer1().setDamage(2);
       lyonarSister.setDamage(1);
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.SundropElixir }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.SundropElixir,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 0, 2);
       gameSession.executeAction(playCardFromHandAction);
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.SundropElixir }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.SundropElixir,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(1, 0, 1);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -57,20 +66,38 @@ describe('special events', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      const lyonarSister = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.SunSister }, 5, 1, gameSession.getPlayer1Id());
-      const ironcliffe = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.IroncliffeGuardian }, 2, 3, gameSession.getPlayer2Id());
+      const lyonarSister = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.SunSister },
+        5,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const ironcliffe = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.IroncliffeGuardian },
+        2,
+        3,
+        gameSession.getPlayer2Id(),
+      );
 
       gameSession.getGeneralForPlayer2().setDamage(2);
       ironcliffe.setDamage(1);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.HealingMystic }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.HealingMystic,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
       var followupCard = playCardFromHandAction.getCard().getCurrentFollowupCard();
       var followupAction = player1.actionPlayFollowup(followupCard, 8, 2);
       gameSession.executeAction(followupAction);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.HealingMystic }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.HealingMystic,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(1, 2, 1);
       gameSession.executeAction(playCardFromHandAction);
       var followupCard = playCardFromHandAction.getCard().getCurrentFollowupCard();
@@ -89,9 +116,18 @@ describe('special events', () => {
 
       player1.remainingMana = 9;
 
-      const songhaiSister = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction2.LightningSister }, 5, 1, gameSession.getPlayer1Id());
+      const songhaiSister = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction2.LightningSister },
+        5,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PhoenixFire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 8, 2);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -105,7 +141,12 @@ describe('special events', () => {
 
       player1.remainingMana = 9;
 
-      const vetruvianSister = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.SandSister }, 5, 1, gameSession.getPlayer1Id());
+      const vetruvianSister = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.SandSister },
+        5,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
       expect(gameSession.getGeneralForPlayer1().getATK()).to.equal(3);
     });
@@ -116,15 +157,33 @@ describe('special events', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      const abyssianSister = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.ShadowSister }, 5, 1, gameSession.getPlayer1Id());
-      const ironcliffe = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.IroncliffeGuardian }, 2, 1, gameSession.getPlayer2Id());
+      const abyssianSister = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.ShadowSister },
+        5,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const ironcliffe = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.IroncliffeGuardian },
+        2,
+        1,
+        gameSession.getPlayer2Id(),
+      );
 
       gameSession.getGeneralForPlayer1().setDamage(5);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PhoenixFire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 8, 2);
       gameSession.executeAction(playCardFromHandAction);
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PhoenixFire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 2, 1);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -137,8 +196,18 @@ describe('special events', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      const magmarSister = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction5.EarthSister }, 7, 2, gameSession.getPlayer1Id());
-      const secondSun = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.WindbladeCommander }, 8, 3, gameSession.getPlayer2Id());
+      const magmarSister = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction5.EarthSister },
+        7,
+        2,
+        gameSession.getPlayer1Id(),
+      );
+      const secondSun = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.WindbladeCommander },
+        8,
+        3,
+        gameSession.getPlayer2Id(),
+      );
 
       magmarSister.refreshExhaustion();
       const action = magmarSister.actionAttack(gameSession.getGeneralForPlayer2());
@@ -147,7 +216,11 @@ describe('special events', () => {
       expect(secondSun.getDamage()).to.equal(2);
       expect(gameSession.getGeneralForPlayer2().getDamage()).to.equal(5);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PhoenixFire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 7, 2);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -161,9 +234,18 @@ describe('special events', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      const vanarSister = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.WindSister }, 7, 2, gameSession.getPlayer1Id());
+      const vanarSister = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.WindSister },
+        7,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction6.CrystalCloaker }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction6.CrystalCloaker,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -178,9 +260,18 @@ describe('special events', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      const vanarSister = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.WindSister }, 7, 2, gameSession.getPlayer1Id());
+      const vanarSister = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.WindSister },
+        7,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction6.WindSister }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction6.WindSister,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
 

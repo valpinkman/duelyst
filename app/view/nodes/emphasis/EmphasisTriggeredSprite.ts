@@ -20,7 +20,9 @@ const EmphasisTriggeredSprite = BaseSprite.extend({
 
 EmphasisTriggeredSprite.create = function (sprite) {
   if (sprite == null) {
-    sprite = cc.pool.getFromPool(EmphasisTriggeredSprite) || BaseSprite.create(null, new EmphasisTriggeredSprite());
+    sprite =
+      cc.pool.getFromPool(EmphasisTriggeredSprite) ||
+      BaseSprite.create(null, new EmphasisTriggeredSprite());
   }
   return sprite;
 };

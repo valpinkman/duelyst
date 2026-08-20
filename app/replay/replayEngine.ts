@@ -32,13 +32,15 @@ var ReplayEngine = (function () {
     }
 
     static reset() {
-      if (instance != null) { instance.terminate(); }
-      return instance = null;
+      if (instance != null) {
+        instance.terminate();
+      }
+      return (instance = null);
     }
   };
   ReplayEngine.initClass();
   return ReplayEngine;
-}());
+})();
 
 module.exports = ReplayEngine;
 
@@ -106,7 +108,7 @@ class _ReplayEngine {
 
   /**
    * Returns the event bus where all events are piped through.
-    */
+   */
   getEventBus() {
     return this._eventBus;
   }
@@ -125,7 +127,7 @@ class _ReplayEngine {
       throw new Error('Cannot replay game during existing replay!');
     }
 
-    if ((gameSessionData == null)) {
+    if (gameSessionData == null) {
       throw new Error('Cannot replay game without game data!');
     }
 
@@ -143,9 +145,7 @@ class _ReplayEngine {
 
     // the current turn may already have been added to the list of turns
     // in the case of when the game ended as the turn ended
-    const {
-      currentTurn,
-    } = this._gameSessionData;
+    const { currentTurn } = this._gameSessionData;
     let needsCurrentTurn = true;
     for (const turn of Array.from<any>(this._turns)) {
       if (currentTurn.createdAt === turn.createdAt) {
@@ -181,7 +181,7 @@ class _ReplayEngine {
     this._eventBus.trigger(EVENTS.replay_started);
 
     // short delay then start
-    return this._startTimeoutId = setTimeout(() => {
+    return (this._startTimeoutId = setTimeout(() => {
       this._startTimeoutId = null;
 
       // start replaying steps
@@ -189,7 +189,7 @@ class _ReplayEngine {
 
       // schedule first UI event
       return this._startReplayingUIEvents();
-    }, 2000.0);
+    }, 2000.0));
   }
 
   stopCurrentReplay() {
@@ -230,7 +230,7 @@ class _ReplayEngine {
   }
 
   pause() {
-    if ((this._replayGameId != null) && (this._gameSessionData != null) && this._isPlaying) {
+    if (this._replayGameId != null && this._gameSessionData != null && this._isPlaying) {
       Logger.module('REPLAY').log('pause replay');
       // pause replay
       this._isPlaying = false;
@@ -246,7 +246,7 @@ class _ReplayEngine {
   }
 
   resume() {
-    if ((this._replayGameId != null) && (this._gameSessionData != null) && !this._isPlaying) {
+    if (this._replayGameId != null && this._gameSessionData != null && !this._isPlaying) {
       Logger.module('REPLAY').log('resume replay');
 
       // adjust step time if deadtime culling has changed
@@ -284,7 +284,7 @@ class _ReplayEngine {
       this._startReplayingUIEvents();
 
       // clear pause data
-      return this._pausedAt = null;
+      return (this._pausedAt = null);
     }
   }
 
@@ -293,10 +293,14 @@ class _ReplayEngine {
       if (!CONFIG.replaysCullDeadtime) {
         this._currentStepDelayClamped = this._currentStepDelayBase;
       } else {
-        this._currentStepDelayClamped = Math.min(this._currentStepDelayCulled, this._currentStepDelayBase);
+        this._currentStepDelayClamped = Math.min(
+          this._currentStepDelayCulled,
+          this._currentStepDelayBase,
+        );
       }
       this._currentStepDelayScale = this._currentStepDelayClamped / this._currentStepDelayBase;
-      return this._currentStepDelay = this._currentStepDelayClamped / CONFIG.replayActionSpeedModifier;
+      return (this._currentStepDelay =
+        this._currentStepDelayClamped / CONFIG.replayActionSpeedModifier);
     }
   }
 
@@ -313,35 +317,35 @@ class _ReplayEngine {
   _clearStartTimeout() {
     if (this._startTimeoutId != null) {
       clearTimeout(this._startTimeoutId);
-      return this._startTimeoutId = null;
+      return (this._startTimeoutId = null);
     }
   }
 
   _clearStepTimeout() {
     if (this._currentStepTimeoutId != null) {
       clearTimeout(this._currentStepTimeoutId);
-      return this._currentStepTimeoutId = null;
+      return (this._currentStepTimeoutId = null);
     }
   }
 
   _clearUIEventTimeout() {
     if (this._currentUIEventTimeoutId != null) {
       clearTimeout(this._currentUIEventTimeoutId);
-      return this._currentUIEventTimeoutId = null;
+      return (this._currentUIEventTimeoutId = null);
     }
   }
 
   _startReplayingSteps() {
-    if ((this._replayGameId == null) || !this._isPlaying || (this._gameSessionData == null)) {
+    if (this._replayGameId == null || !this._isPlaying || this._gameSessionData == null) {
       return;
     }
 
     const currentTurn = this._turns[this._currentTurnIndex];
     const currentStep = currentTurn != null ? currentTurn.steps[this._currentStepIndex] : undefined;
     if (currentStep != null) {
-      let delay; let
-        delayBase;
-      if ((this._pausedAt != null) && (this._currentStepStartedAt != null)) {
+      let delay;
+      let delayBase;
+      if (this._pausedAt != null && this._currentStepStartedAt != null) {
         delay = this._currentStepDelay - (this._pausedAt - this._currentStepStartedAt);
         delayBase = delay;
         // Logger.module("REPLAY").log("_startReplayingSteps -> resume paused at", @_pausedAt, "timestamp", @_currentStepStartedAt, "original delay", @_currentStepDelay, "delay", delay)
@@ -357,8 +361,15 @@ class _ReplayEngine {
         this._currentStepStartedAt = Date.now();
 
         // skip any delays on opponent mulligan and execute immediately
-        if (SDK.GameSession.getInstance().isNew() && (currentStep.playerId === SDK.GameSession.getInstance().getOpponentPlayerId())) {
-          this._currentStepDelayBase = (this._currentStepDelayCulled = (this._currentStepDelayClamped = (this._currentStepDelay = 0.0)));
+        if (
+          SDK.GameSession.getInstance().isNew() &&
+          currentStep.playerId === SDK.GameSession.getInstance().getOpponentPlayerId()
+        ) {
+          this._currentStepDelayBase =
+            this._currentStepDelayCulled =
+            this._currentStepDelayClamped =
+            this._currentStepDelay =
+              0.0;
           this._currentStepDelayScale = 1.0;
           return this._replayNextStep();
         }
@@ -367,17 +378,23 @@ class _ReplayEngine {
         if (!CONFIG.replaysCullDeadtime) {
           this._currentStepDelayClamped = this._currentStepDelayBase;
         } else {
-          this._currentStepDelayClamped = Math.min(this._currentStepDelayCulled, this._currentStepDelayBase);
+          this._currentStepDelayClamped = Math.min(
+            this._currentStepDelayCulled,
+            this._currentStepDelayBase,
+          );
         }
         this._currentStepDelayScale = this._currentStepDelayClamped / this._currentStepDelayBase;
         this._currentStepDelay = this._currentStepDelayClamped / CONFIG.replayActionSpeedModifier;
-        return this._currentStepTimeoutId = setTimeout(this._replayNextStep.bind(this), this._currentStepDelay);
+        return (this._currentStepTimeoutId = setTimeout(
+          this._replayNextStep.bind(this),
+          this._currentStepDelay,
+        ));
       }
     }
   }
 
   _replayNextStep() {
-    if ((this._replayGameId == null) || !this._isPlaying || (this._gameSessionData == null)) {
+    if (this._replayGameId == null || !this._isPlaying || this._gameSessionData == null) {
       return;
     }
 
@@ -388,8 +405,9 @@ class _ReplayEngine {
     const currentStepIndex = this._currentStepIndex;
     const currentTurn = this._turns[currentTurnIndex];
     const currentStep = currentTurn != null ? currentTurn.steps[currentStepIndex] : undefined;
-    if ((this._currentDeserializedStep == null) && (currentStep != null)) {
-      this._currentDeserializedStep = SDK.GameSession.getInstance().deserializeStepFromFirebase(currentStep);
+    if (this._currentDeserializedStep == null && currentStep != null) {
+      this._currentDeserializedStep =
+        SDK.GameSession.getInstance().deserializeStepFromFirebase(currentStep);
     }
     const currentDeserializedStep = this._currentDeserializedStep;
     if (currentDeserializedStep != null) {
@@ -416,8 +434,15 @@ class _ReplayEngine {
 
       // buffer steps in opponent followup chain until final step
       const currentAction = currentDeserializedStep.action;
-      const canBuffer = (nextAction != null) && (currentDeserializedStep.playerId === SDK.GameSession.getInstance().getOpponentPlayerId()) && !(nextAction instanceof SDK.PlayCardFromHandAction) && nextAction instanceof SDK.ApplyCardToBoardAction;
-      const shouldBuffer = canBuffer && currentAction instanceof SDK.ApplyCardToBoardAction && (__guard__(currentAction.getCard(), (x) => x.getCurrentFollowup()) != null);
+      const canBuffer =
+        nextAction != null &&
+        currentDeserializedStep.playerId === SDK.GameSession.getInstance().getOpponentPlayerId() &&
+        !(nextAction instanceof SDK.PlayCardFromHandAction) &&
+        nextAction instanceof SDK.ApplyCardToBoardAction;
+      const shouldBuffer =
+        canBuffer &&
+        currentAction instanceof SDK.ApplyCardToBoardAction &&
+        __guard__(currentAction.getCard(), (x) => x.getCurrentFollowup()) != null;
       if (shouldBuffer) {
         this._opponentStepBuffer.push(currentDeserializedStep);
       } else {
@@ -439,8 +464,15 @@ class _ReplayEngine {
         this._currentDeserializedStep = nextDeserializedStep;
 
         // skip any delays on opponent mulligan and execute immediately
-        if (SDK.GameSession.getInstance().isNew() && (nextStep.playerId === SDK.GameSession.getInstance().getOpponentPlayerId())) {
-          this._currentStepDelayBase = (this._currentStepDelayCulled = (this._currentStepDelayClamped = (this._currentStepDelay = 0.0)));
+        if (
+          SDK.GameSession.getInstance().isNew() &&
+          nextStep.playerId === SDK.GameSession.getInstance().getOpponentPlayerId()
+        ) {
+          this._currentStepDelayBase =
+            this._currentStepDelayCulled =
+            this._currentStepDelayClamped =
+            this._currentStepDelay =
+              0.0;
           this._currentStepDelayScale = 1.0;
           return this._replayNextStep();
         }
@@ -455,16 +487,25 @@ class _ReplayEngine {
         if (!CONFIG.replaysCullDeadtime) {
           this._currentStepDelayClamped = this._currentStepDelayBase;
         } else {
-          this._currentStepDelayClamped = Math.min(this._currentStepDelayBase, this._currentStepDelayCulled);
+          this._currentStepDelayClamped = Math.min(
+            this._currentStepDelayBase,
+            this._currentStepDelayCulled,
+          );
         }
-        if ((this._currentStepDelayClamped > 0.0) && (this._currentStepDelayClamped < this._currentStepDelayBase)) {
+        if (
+          this._currentStepDelayClamped > 0.0 &&
+          this._currentStepDelayClamped < this._currentStepDelayBase
+        ) {
           this._currentStepDelayScale = this._currentStepDelayClamped / this._currentStepDelayBase;
         } else {
           this._currentStepDelayScale = 1.0;
         }
         this._currentStepDelay = this._currentStepDelayClamped / CONFIG.replayActionSpeedModifier;
         // Logger.module("REPLAY").log("_replayNextStep -> next #{nextAction.type} delay #{@_currentStepDelay} base #{@_currentStepDelayBase} clamped #{@_currentStepDelayClamped} scale #{@_currentStepDelayScale}")
-        return this._currentStepTimeoutId = setTimeout(this._replayNextStep.bind(this), this._currentStepDelayClamped);
+        return (this._currentStepTimeoutId = setTimeout(
+          this._replayNextStep.bind(this),
+          this._currentStepDelayClamped,
+        ));
       }
       return this.stopCurrentReplay();
     }
@@ -473,7 +514,12 @@ class _ReplayEngine {
 
   _startReplayingUIEvents() {
     let delay;
-    if ((this._replayGameId == null) || !this._isPlaying || (this._gameUIEventData == null) || (this._gameUIEventData.length === 0)) {
+    if (
+      this._replayGameId == null ||
+      !this._isPlaying ||
+      this._gameUIEventData == null ||
+      this._gameUIEventData.length === 0
+    ) {
       return;
     }
 
@@ -487,11 +533,11 @@ class _ReplayEngine {
       const timeSinceStep = now - this._currentStepStartedAt;
       if (this._currentStepTimestamp > eventData.timestamp) {
         const timeToStep = this._currentStepTimestamp - eventData.timestamp;
-        delay = this._currentStepDelay - timeSinceStep - (timeToStep * this._currentStepDelayScale);
+        delay = this._currentStepDelay - timeSinceStep - timeToStep * this._currentStepDelayScale;
         // Logger.module("REPLAY").log("_startReplayingUIEvents -> #{eventData.type} before step delay", delay)
       } else {
         const timeFromStep = eventData.timestamp - this._currentStepTimestamp;
-        delay = (timeFromStep * this._currentStepDelayScale) - timeSinceStep;
+        delay = timeFromStep * this._currentStepDelayScale - timeSinceStep;
       }
     }
     // Logger.module("REPLAY").log("_startReplayingUIEvents -> #{eventData.type} from step delay", delay)
@@ -503,12 +549,20 @@ class _ReplayEngine {
         return this._replayNextUIEvent();
       }
       this._currentUIEventDelay = delay;
-      return this._currentUIEventTimeoutId = setTimeout(this._replayNextUIEvent.bind(this), this._currentUIEventDelay);
+      return (this._currentUIEventTimeoutId = setTimeout(
+        this._replayNextUIEvent.bind(this),
+        this._currentUIEventDelay,
+      ));
     }
   }
 
   _replayNextUIEvent() {
-    if ((this._replayGameId == null) || !this._isPlaying || (this._gameUIEventData == null) || (this._gameUIEventData.length === 0)) {
+    if (
+      this._replayGameId == null ||
+      !this._isPlaying ||
+      this._gameUIEventData == null ||
+      this._gameUIEventData.length === 0
+    ) {
       return;
     }
 
@@ -543,11 +597,12 @@ class _ReplayEngine {
           const timeSinceStep = this._currentUIEventStartedAt - this._currentStepStartedAt;
           if (this._currentStepTimestamp > nextEventData.timestamp) {
             const timeToStep = this._currentStepTimestamp - nextEventData.timestamp;
-            delay = this._currentStepDelay - timeSinceStep - (timeToStep * this._currentStepDelayScale);
+            delay =
+              this._currentStepDelay - timeSinceStep - timeToStep * this._currentStepDelayScale;
             // Logger.module("REPLAY").log("_replayNextUIEvent -> next #{nextEventData.type} before step delay", delay)
           } else {
             const timeFromStep = nextEventData.timestamp - this._currentStepTimestamp;
-            delay = (timeFromStep * this._currentStepDelayScale) - timeSinceStep;
+            delay = timeFromStep * this._currentStepDelayScale - timeSinceStep;
           }
           // Logger.module("REPLAY").log("_replayNextUIEvent -> next #{nextEventData.type} from step delay", delay)
           if (delay <= 0.0) {
@@ -557,7 +612,10 @@ class _ReplayEngine {
           }
           this._currentUIEventDelay = delay / CONFIG.replayActionSpeedModifier;
           // Logger.module("REPLAY").log("_replayNextUIEvent -> next #{nextEventData.type} delay #{@_currentUIEventDelay}")
-          return this._currentUIEventTimeoutId = setTimeout(this._replayNextUIEvent.bind(this), this._currentUIEventDelay);
+          return (this._currentUIEventTimeoutId = setTimeout(
+            this._replayNextUIEvent.bind(this),
+            this._currentUIEventDelay,
+          ));
         }
       }
     }
@@ -568,5 +626,5 @@ _ReplayEngine.initClass();
 // endregion REPLAY
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

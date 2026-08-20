@@ -44,19 +44,24 @@ var ReferralDialogView = Backbone.Marionette.ItemView.extend({
       data.percent_silver = 0;
       data.percent_gold = 0;
     }
-    if (data.unclaimed_rewards && (data.unclaimed_rewards.gold || data.unclaimed_rewards.spirit_orbs)) {
+    if (
+      data.unclaimed_rewards &&
+      (data.unclaimed_rewards.gold || data.unclaimed_rewards.spirit_orbs)
+    ) {
       data.rewards_available = true;
     }
     return data;
   },
 
   onRender: function () {
-    $('.pie-chart-canvas').each(function (i, canvas) {
-      var percent = $(canvas).data('percent-complete');
-      var color = $(canvas).data('color');
-      var shadowColor = $(canvas).data('shadow-color');
-      this.drawPieChart(canvas, percent, 15, color, shadowColor);
-    }.bind(this));
+    $('.pie-chart-canvas').each(
+      function (i, canvas) {
+        var percent = $(canvas).data('percent-complete');
+        var color = $(canvas).data('color');
+        var shadowColor = $(canvas).data('shadow-color');
+        this.drawPieChart(canvas, percent, 15, color, shadowColor);
+      }.bind(this),
+    );
 
     $('a', this.$el).each(function (i) {
       if ($(this).attr('target') == '_blank') {
@@ -73,22 +78,27 @@ var ReferralDialogView = Backbone.Marionette.ItemView.extend({
     this.ui.$claimRewardsSuccess.removeClass('hide').addClass('animate');
     this.ui.$claimRewardsRegion.addClass('hide');
 
-    Promise.resolve($.ajax({
-      url: process.env.API_URL + '/api/me/referrals/rewards/claim',
-      type: 'POST',
-      contentType: 'application/json',
-      dataType: 'json',
-    })).then(function (response) {
-    }).catch(function (error) {
-      NavigationManager.getInstance().showDialogViewByClass(ErrorDialogItemView, { title: 'Oops... there was a problem claiming your rewards.', message: error.message });
-      this.ui.$claimRewardsSuccess.addClass('hide');
-      this.ui.$claimRewardsRegion.removeClass('hide');
-    });
+    Promise.resolve(
+      $.ajax({
+        url: process.env.API_URL + '/api/me/referrals/rewards/claim',
+        type: 'POST',
+        contentType: 'application/json',
+        dataType: 'json',
+      }),
+    )
+      .then(function (response) {})
+      .catch(function (error) {
+        NavigationManager.getInstance().showDialogViewByClass(ErrorDialogItemView, {
+          title: 'Oops... there was a problem claiming your rewards.',
+          message: error.message,
+        });
+        this.ui.$claimRewardsSuccess.addClass('hide');
+        this.ui.$claimRewardsRegion.removeClass('hide');
+      });
   },
 
   drawPieChart: function (canvas, percent, segmentStrokeWidth, color, shadowColor) {
-    if (!percent)
-      return;
+    if (!percent) return;
 
     var context = canvas.getContext('2d');
     context.save();
@@ -99,7 +109,7 @@ var ReferralDialogView = Backbone.Marionette.ItemView.extend({
     // percent = percent || 25.0
 
     var startingAngle = -Math.PI / 2.0;
-    var arcSize = (2.0 * Math.PI * percent / 100.0);
+    var arcSize = (2.0 * Math.PI * percent) / 100.0;
     var endingAngle = startingAngle + arcSize;
 
     // draw the pie chart segment
@@ -113,7 +123,14 @@ var ReferralDialogView = Backbone.Marionette.ItemView.extend({
     // add a circle with an outer shadow to the inside of the cutout area
     context.beginPath();
     context.moveTo(centerX, centerY);
-    context.arc(centerX, centerY, radius - segmentStrokeWidth - 4, startingAngle, Math.PI * 2.0, false);
+    context.arc(
+      centerX,
+      centerY,
+      radius - segmentStrokeWidth - 4,
+      startingAngle,
+      Math.PI * 2.0,
+      false,
+    );
     context.shadowBlur = 10;
     context.shadowColor = shadowColor || '#ff47bf';
     context.lineWidth = 6;
@@ -175,14 +192,17 @@ var ReferralDialogView = Backbone.Marionette.ItemView.extend({
     eventCollection.url = process.env.API_URL + '/api/me/referrals';
     eventCollection.fetch();
 
-    eventCollection.onSyncOrReady().then(function () {
-      var model = new Backbone.Model({
-        eventHistory: eventCollection.toJSON(),
-      });
-      NavigationManager.getInstance().toggleModalViewByClass(ReferralEventHistoryView, { model: model });
-    }.bind(this));
+    eventCollection.onSyncOrReady().then(
+      function () {
+        var model = new Backbone.Model({
+          eventHistory: eventCollection.toJSON(),
+        });
+        NavigationManager.getInstance().toggleModalViewByClass(ReferralEventHistoryView, {
+          model: model,
+        });
+      }.bind(this),
+    );
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

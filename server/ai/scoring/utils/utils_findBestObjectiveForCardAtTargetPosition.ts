@@ -3,8 +3,13 @@ const findAttackObjectivesAndScoresForUnit = require('server/ai/scoring/utils/ut
 const SDK = require('app/sdk');
 
 const findBestObjectiveForCardAtTargetPosition = function (gameSession, card, targetPosition) {
-  const unitToSend = card instanceof SDK.Spell ? gameSession.getGeneralForPlayerId(card.getOwnerId()) : card;
-  const attackObjectivesAndScores = findAttackObjectivesAndScoresForUnit(gameSession, unitToSend, targetPosition);
+  const unitToSend =
+    card instanceof SDK.Spell ? gameSession.getGeneralForPlayerId(card.getOwnerId()) : card;
+  const attackObjectivesAndScores = findAttackObjectivesAndScoresForUnit(
+    gameSession,
+    unitToSend,
+    targetPosition,
+  );
 
   let objective;
   if (attackObjectivesAndScores.length === 0) {

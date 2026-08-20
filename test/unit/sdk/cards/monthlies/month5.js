@@ -13,13 +13,9 @@ Logger.enabled = false;
 describe('monthlies', () => {
   describe('month 5', () => {
     beforeEach(() => {
-      const player1Deck = [
-        { id: SDK.Cards.Faction6.General },
-      ];
+      const player1Deck = [{ id: SDK.Cards.Faction6.General }];
 
-      const player2Deck = [
-        { id: SDK.Cards.Faction1.General },
-      ];
+      const player2Deck = [{ id: SDK.Cards.Faction1.General }];
 
       UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
     });
@@ -33,8 +29,18 @@ describe('monthlies', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const boneReaper = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Bonereaper }, 7, 2, gameSession.getPlayer1Id());
-      const brightmossGolem = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.BrightmossGolem }, 7, 3, gameSession.getPlayer2Id());
+      const boneReaper = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.Bonereaper },
+        7,
+        2,
+        gameSession.getPlayer1Id(),
+      );
+      const brightmossGolem = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.BrightmossGolem },
+        7,
+        3,
+        gameSession.getPlayer2Id(),
+      );
 
       gameSession.executeAction(gameSession.actionEndTurn());
 
@@ -49,9 +55,18 @@ describe('monthlies', () => {
 
       player1.remainingMana = 9;
 
-      const rockPulverizer = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.RockPulverizer }, 0, 0, gameSession.getPlayer2Id());
+      const rockPulverizer = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.RockPulverizer },
+        0,
+        0,
+        gameSession.getPlayer2Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.HollowGrovekeeper }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.HollowGrovekeeper,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
       const followupCard = playCardFromHandAction.getCard().getCurrentFollowupCard();
@@ -72,9 +87,18 @@ describe('monthlies', () => {
 
       player1.remainingMana = 9;
 
-      const serpenti = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Serpenti }, 0, 0, gameSession.getPlayer2Id());
+      const serpenti = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.Serpenti },
+        0,
+        0,
+        gameSession.getPlayer2Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.HollowGrovekeeper }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.HollowGrovekeeper,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
       const followupCard = playCardFromHandAction.getCard().getCurrentFollowupCard();
@@ -95,8 +119,18 @@ describe('monthlies', () => {
 
       player1.remainingMana = 9;
 
-      const valeHunter = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.ValeHunter }, 0, 0, gameSession.getPlayer2Id());
-      const tethermancer = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Tethermancer }, 6, 2, gameSession.getPlayer1Id());
+      const valeHunter = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.ValeHunter },
+        0,
+        0,
+        gameSession.getPlayer2Id(),
+      );
+      const tethermancer = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.Tethermancer },
+        6,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
       valeHunter.refreshExhaustion();
 

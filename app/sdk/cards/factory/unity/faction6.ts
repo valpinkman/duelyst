@@ -86,7 +86,14 @@ class CardFactory_UnitySet_Faction6 {
       card.maxHP = 3;
       card.manaCost = 3;
       card.rarityId = Rarity.Common;
-      card.setInherentModifiersContextObjects([ModifierBondSpawnEntity.createContextObject({ id: Cards.Faction6.ShadowVespyr }, '3/3 Night Howler', 1, CONFIG.PATTERN_3x3)]);
+      card.setInherentModifiersContextObjects([
+        ModifierBondSpawnEntity.createContextObject(
+          { id: Cards.Faction6.ShadowVespyr },
+          '3/3 Night Howler',
+          1,
+          CONFIG.PATTERN_3x3,
+        ),
+      ]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
     }
 
@@ -122,7 +129,9 @@ class CardFactory_UnitySet_Faction6 {
       card.maxHP = 1;
       card.manaCost = 2;
       card.rarityId = Rarity.Epic;
-      card.setInherentModifiersContextObjects([ModifierSpellWatchPutCardInHand.createContextObject({ id: Cards.Neutral.ArcaneIllusion })]);
+      card.setInherentModifiersContextObjects([
+        ModifierSpellWatchPutCardInHand.createContextObject({ id: Cards.Neutral.ArcaneIllusion }),
+      ]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
     }
 
@@ -157,12 +166,19 @@ class CardFactory_UnitySet_Faction6 {
       card.maxHP = 9;
       card.manaCost = 7;
       card.rarityId = Rarity.Legendary;
-      const customContextObject = PlayerModifierManaModifierOncePerTurn.createCostChangeContextObject(-5, CardType.Spell);
-      customContextObject.activeInHand = (customContextObject.activeInDeck = (customContextObject.activeInSignatureCards = false));
+      const customContextObject =
+        PlayerModifierManaModifierOncePerTurn.createCostChangeContextObject(-5, CardType.Spell);
+      customContextObject.activeInHand =
+        customContextObject.activeInDeck =
+        customContextObject.activeInSignatureCards =
+          false;
       customContextObject.activeOnBoard = true;
       customContextObject.auraIncludeSignatureCards = true;
       card.setInherentModifiersContextObjects([
-        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetOwnPlayer([customContextObject], 'The first spell you cast each turn costs 5 less.'),
+        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetOwnPlayer(
+          [customContextObject],
+          'The first spell you cast each turn costs 5 less.',
+        ),
       ]);
     }
 

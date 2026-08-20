@@ -16,7 +16,9 @@ class PlayerModifierAncestralPact extends PlayerModifier {
   static type = 'PlayerModifierAncestralPact';
 
   static createContextObject(duration, options) {
-    if (duration == null) { duration = 1; }
+    if (duration == null) {
+      duration = 1;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.durationEndTurn = duration;
     return contextObject;
@@ -25,11 +27,13 @@ class PlayerModifierAncestralPact extends PlayerModifier {
   onAction(e) {
     super.onAction(e);
 
-    const {
-      action,
-    } = e;
+    const { action } = e;
     // watch for this player playing a unit from hand
-    if (action instanceof PlayCardFromHandAction && (action.getOwnerId() === this.getPlayerId()) && (__guard__(action.getCard(), (x) => x.type) === CardType.Unit)) {
+    if (
+      action instanceof PlayCardFromHandAction &&
+      action.getOwnerId() === this.getPlayerId() &&
+      __guard__(action.getCard(), (x) => x.type) === CardType.Unit
+    ) {
       // draw a card
       const deck = this.getGameSession().getPlayerById(this.getPlayerId()).getDeck();
       return this.getGameSession().executeAction(deck.actionDrawCard());
@@ -41,5 +45,5 @@ PlayerModifierAncestralPact.prototype.type = 'PlayerModifierAncestralPact';
 module.exports = PlayerModifierAncestralPact;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

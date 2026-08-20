@@ -16,7 +16,7 @@ class SpellKillTargetWithModifierRanged extends SpellKillTarget {
 
     for (var position of Array.from<any>(validPositions)) {
       var unit = this.getGameSession().getBoard().getUnitAtPosition(position);
-      if ((unit != null) && unit.hasActiveModifierClass(ModifierRanged)) {
+      if (unit != null && unit.hasActiveModifierClass(ModifierRanged)) {
         filteredValidPositions.push(position);
       }
     }

@@ -32,7 +32,9 @@ class ModifierBond extends Modifier {
       // check for any friendly minion on the board that has same tribe as this card
       return (() => {
         const result = [];
-        for (var friendlyMinion of Array.from<any>(this.getGameSession().getBoard().getFriendlyEntitiesForEntity(this.getCard()))) {
+        for (var friendlyMinion of Array.from<any>(
+          this.getGameSession().getBoard().getFriendlyEntitiesForEntity(this.getCard()),
+        )) {
           if (friendlyMinion.getBelongsToTribe(thisCardTribe)) {
             // if we find a friendly minion with same tribe, activate bond effect once
             this.onBond();

@@ -15,7 +15,6 @@ const i18next = require('i18next');
  *************************************************************************** */
 
 const RewardsLayer = BaseLayer.extend({
-
   delegate: null,
 
   // ui elements
@@ -33,20 +32,36 @@ const RewardsLayer = BaseLayer.extend({
     // do super ctor
     this._super();
 
-    this.runDetailsLabel = new cc.LabelTTF('', RSX.font_light.name, 24, cc.size(500, 32), cc.TEXT_ALIGNMENT_CENTER);
+    this.runDetailsLabel = new cc.LabelTTF(
+      '',
+      RSX.font_light.name,
+      24,
+      cc.size(500, 32),
+      cc.TEXT_ALIGNMENT_CENTER,
+    );
     this.runDetailsLabel.setPosition(0, 80);
     this.runDetailsLabel.setVisible(false);
     this.addChild(this.runDetailsLabel);
 
     const confirmButtonSprite = new ccui.Scale9Sprite(RSX.button_confirm.img);
     const confirmButtonGlowSprite = new ccui.Scale9Sprite(RSX.button_confirm_glow.img);
-    this.claimRewardsButton = new cc.ControlButton(i18next.t('gauntlet.claim_rewards_button_label').toUpperCase(), confirmButtonSprite, 24);
+    this.claimRewardsButton = new cc.ControlButton(
+      i18next.t('gauntlet.claim_rewards_button_label').toUpperCase(),
+      confirmButtonSprite,
+      24,
+    );
     this.claimRewardsButton.setPreferredSize(confirmButtonSprite.getContentSize());
     this.claimRewardsButton.setAdjustBackgroundImage(false);
     this.claimRewardsButton.setZoomOnTouchDown(false);
     this.claimRewardsButton.setTitleTTFForState(RSX.font_light.name, cc.CONTROL_STATE_NORMAL);
-    this.claimRewardsButton.setBackgroundSpriteForState(confirmButtonSprite, cc.CONTROL_STATE_NORMAL);
-    this.claimRewardsButton.setBackgroundSpriteForState(confirmButtonGlowSprite, cc.CONTROL_STATE_HIGHLIGHTED);
+    this.claimRewardsButton.setBackgroundSpriteForState(
+      confirmButtonSprite,
+      cc.CONTROL_STATE_NORMAL,
+    );
+    this.claimRewardsButton.setBackgroundSpriteForState(
+      confirmButtonGlowSprite,
+      cc.CONTROL_STATE_HIGHLIGHTED,
+    );
     this.claimRewardsButton.setTitleColorForState(cc.color(255, 255, 255), cc.CONTROL_STATE_NORMAL);
     this.claimRewardsButton.setPosition(0, -90);
     this.claimRewardsButton.setEnabled(false);
@@ -55,7 +70,11 @@ const RewardsLayer = BaseLayer.extend({
 
     const doneButtonSprite = new ccui.Scale9Sprite(RSX.button_confirm.img);
     const doneButtonGlowSprite = new ccui.Scale9Sprite(RSX.button_confirm_glow.img);
-    this.doneButton = new cc.ControlButton(i18next.t('common.default_confirm_dialog_button_continue_label'), doneButtonSprite, 24);
+    this.doneButton = new cc.ControlButton(
+      i18next.t('common.default_confirm_dialog_button_continue_label'),
+      doneButtonSprite,
+      24,
+    );
     this.doneButton.setPreferredSize(confirmButtonSprite.getContentSize());
     this.doneButton.setAdjustBackgroundImage(false);
     this.doneButton.setZoomOnTouchDown(false);
@@ -108,9 +127,17 @@ const RewardsLayer = BaseLayer.extend({
     let mouseOverButton;
     const location = event && event.getLocation();
     if (location) {
-      if (this.claimRewardsButton instanceof cc.ControlButton && this.claimRewardsButton.isEnabled() && UtilsEngine.getNodeUnderMouse(this.claimRewardsButton, location.x, location.y)) {
+      if (
+        this.claimRewardsButton instanceof cc.ControlButton &&
+        this.claimRewardsButton.isEnabled() &&
+        UtilsEngine.getNodeUnderMouse(this.claimRewardsButton, location.x, location.y)
+      ) {
         mouseOverButton = this.claimRewardsButton;
-      } else if (this.doneButton instanceof cc.ControlButton && this.doneButton.isEnabled() && UtilsEngine.getNodeUnderMouse(this.doneButton, location.x, location.y)) {
+      } else if (
+        this.doneButton instanceof cc.ControlButton &&
+        this.doneButton.isEnabled() &&
+        UtilsEngine.getNodeUnderMouse(this.doneButton, location.x, location.y)
+      ) {
         mouseOverButton = this.doneButton;
       }
     }
@@ -133,9 +160,17 @@ const RewardsLayer = BaseLayer.extend({
 
     const location = event && event.getLocation();
     if (location) {
-      if (this.claimRewardsButton instanceof cc.ControlButton && this.claimRewardsButton.isEnabled() && UtilsEngine.getNodeUnderMouse(this.claimRewardsButton, location.x, location.y)) {
+      if (
+        this.claimRewardsButton instanceof cc.ControlButton &&
+        this.claimRewardsButton.isEnabled() &&
+        UtilsEngine.getNodeUnderMouse(this.claimRewardsButton, location.x, location.y)
+      ) {
         this.onClaimRewardsPressed();
-      } else if (this.doneButton instanceof cc.ControlButton && this.doneButton.isEnabled() && UtilsEngine.getNodeUnderMouse(this.doneButton, location.x, location.y)) {
+      } else if (
+        this.doneButton instanceof cc.ControlButton &&
+        this.doneButton.isEnabled() &&
+        UtilsEngine.getNodeUnderMouse(this.doneButton, location.x, location.y)
+      ) {
         this.onDonePressed();
       }
     }
@@ -153,7 +188,9 @@ const RewardsLayer = BaseLayer.extend({
     this.hideClaimButton();
 
     // play confirm audio
-    audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
+    audio_engine
+      .current()
+      .play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
 
     // claim rewards
     this.delegate.claimArenaRewards().catch(() => {
@@ -167,7 +204,9 @@ const RewardsLayer = BaseLayer.extend({
     this.hideDoneButton();
 
     // play confirm audio
-    audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
+    audio_engine
+      .current()
+      .play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
 
     // mark rewards as seen
     this.delegate.markArenaRewardsAsSeen().catch(() => {
@@ -215,7 +254,9 @@ const RewardsLayer = BaseLayer.extend({
   showRewards(arenaData) {
     // show results and claim or rewards
     if (arenaData.rewards == null) {
-      const labelStr = i18next.t('gauntlet.claim_rewards_win_count_label', { count: arenaData.win_count }).toUpperCase();
+      const labelStr = i18next
+        .t('gauntlet.claim_rewards_win_count_label', { count: arenaData.win_count })
+        .toUpperCase();
       this.runDetailsLabel.setString(labelStr, true);
       this.showClaimButton();
     } else {
@@ -237,8 +278,11 @@ const RewardsLayer = BaseLayer.extend({
       lootCrateNode.setVisible(false);
       this.addChild(lootCrateNode);
 
-      lootCrateNode.showReveal()
-        .then(() => lootCrateNode.showIdleState(CONFIG.ANIMATE_MEDIUM_DURATION)).then(() => lootCrateNode.showOpeningAndRewards()).then(() => {
+      lootCrateNode
+        .showReveal()
+        .then(() => lootCrateNode.showIdleState(CONFIG.ANIMATE_MEDIUM_DURATION))
+        .then(() => lootCrateNode.showOpeningAndRewards())
+        .then(() => {
           this.doneButton.runAction(doneShowAction);
         });
     }
@@ -251,29 +295,32 @@ const RewardsLayer = BaseLayer.extend({
   transitionIn() {
     return new Promise<void>((resolve, reject) => {
       this.setOpacity(0.0);
-      this.runAction(cc.sequence(
-        cc.fadeIn(CONFIG.FADE_FAST_DURATION),
-        cc.callFunc(() => {
-          resolve();
-        }),
-      ));
+      this.runAction(
+        cc.sequence(
+          cc.fadeIn(CONFIG.FADE_FAST_DURATION),
+          cc.callFunc(() => {
+            resolve();
+          }),
+        ),
+      );
     });
   },
 
   transitionOut() {
     return new Promise<void>((resolve, reject) => {
-      this.runAction(cc.sequence(
-        cc.delayTime(0),
-        cc.fadeOut(CONFIG.FADE_FAST_DURATION),
-        cc.callFunc(() => {
-          resolve();
-        }),
-      ));
+      this.runAction(
+        cc.sequence(
+          cc.delayTime(0),
+          cc.fadeOut(CONFIG.FADE_FAST_DURATION),
+          cc.callFunc(() => {
+            resolve();
+          }),
+        ),
+      );
     });
   },
 
   /* endregion TRANSITION */
-
 });
 
 RewardsLayer.create = function (layer) {

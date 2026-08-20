@@ -29,23 +29,43 @@ class ModifierTakeDamageWatchJuggernaut extends ModifierTakeDamageWatch {
 
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
       const spawnLocations = [];
-      const validSpawnLocations = UtilsGameSession.getSmartSpawnPositionsFromPattern(this.getGameSession(), this.getCard().getPosition(), CONFIG.PATTERN_3x3, this.getCard());
-      for (let i = 0, end = action.getTotalDamageAmount(), asc = end >= 0; asc ? i < end : i > end; asc ? i++ : i--) {
+      const validSpawnLocations = UtilsGameSession.getSmartSpawnPositionsFromPattern(
+        this.getGameSession(),
+        this.getCard().getPosition(),
+        CONFIG.PATTERN_3x3,
+        this.getCard(),
+      );
+      for (
+        let i = 0, end = action.getTotalDamageAmount(), asc = end >= 0;
+        asc ? i < end : i > end;
+        asc ? i++ : i--
+      ) {
         if (validSpawnLocations.length > 0) {
-          spawnLocations.push(validSpawnLocations.splice(this.getGameSession().getRandomIntegerForExecution(validSpawnLocations.length), 1)[0]);
+          spawnLocations.push(
+            validSpawnLocations.splice(
+              this.getGameSession().getRandomIntegerForExecution(validSpawnLocations.length),
+              1,
+            )[0],
+          );
         }
       }
 
       let golemCards = [];
       if (this.getGameSession().getGameFormat() === GameFormat.Standard) {
-        golemCards = this.getGameSession().getCardCaches().getIsLegacy(false).getRace(Races.Golem)
+        golemCards = this.getGameSession()
+          .getCardCaches()
+          .getIsLegacy(false)
+          .getRace(Races.Golem)
           .getIsHiddenInCollection(false)
           .getIsToken(false)
           .getIsPrismatic(false)
           .getIsSkinned(false)
           .getCards();
       } else {
-        golemCards = this.getGameSession().getCardCaches().getRace(Races.Golem).getIsHiddenInCollection(false)
+        golemCards = this.getGameSession()
+          .getCardCaches()
+          .getRace(Races.Golem)
+          .getIsHiddenInCollection(false)
           .getIsToken(false)
           .getIsPrismatic(false)
           .getIsSkinned(false)
@@ -58,10 +78,21 @@ class ModifierTakeDamageWatchJuggernaut extends ModifierTakeDamageWatch {
           for (var position of Array.from<any>(spawnLocations)) {
             var cardDataOrIndexToSpawn: Record<string, any> = { id: Cards.Faction5.Egg };
             // add modifiers to card data
-            var card = golemCards[this.getGameSession().getRandomIntegerForExecution(golemCards.length)];
-            if (cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects == null) { cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects = []; }
-            cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects.push(ModifierEgg.createContextObject(card.createNewCardData(), card.getName()));
-            var spawnAction = new PlayCardSilentlyAction(this.getGameSession(), this.getCard().getOwnerId(), position.x, position.y, cardDataOrIndexToSpawn);
+            var card =
+              golemCards[this.getGameSession().getRandomIntegerForExecution(golemCards.length)];
+            if (cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects == null) {
+              cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects = [];
+            }
+            cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects.push(
+              ModifierEgg.createContextObject(card.createNewCardData(), card.getName()),
+            );
+            var spawnAction = new PlayCardSilentlyAction(
+              this.getGameSession(),
+              this.getCard().getOwnerId(),
+              position.x,
+              position.y,
+              cardDataOrIndexToSpawn,
+            );
             spawnAction.setSource(this.getCard());
             result.push(this.getGameSession().executeAction(spawnAction));
           }
@@ -72,6 +103,9 @@ class ModifierTakeDamageWatchJuggernaut extends ModifierTakeDamageWatch {
   }
 }
 ModifierTakeDamageWatchJuggernaut.prototype.type = 'ModifierTakeDamageWatchJuggernaut';
-ModifierTakeDamageWatchJuggernaut.prototype.fxResource = ['FX.Modifiers.ModifierTakeDamageWatch', 'FX.Modifiers.ModifierGenericSpawn'];
+ModifierTakeDamageWatchJuggernaut.prototype.fxResource = [
+  'FX.Modifiers.ModifierTakeDamageWatch',
+  'FX.Modifiers.ModifierGenericSpawn',
+];
 
 module.exports = ModifierTakeDamageWatchJuggernaut;

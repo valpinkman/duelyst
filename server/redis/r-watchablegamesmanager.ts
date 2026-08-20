@@ -29,7 +29,9 @@ class RedisWatchableGamesManager {
    */
   constructor(redis, opts) {
     // TODO: add check to ensure Redis client is already promisified
-    if (opts == null) { opts = {}; }
+    if (opts == null) {
+      opts = {};
+    }
     this.redis = redis;
   }
 
@@ -44,7 +46,9 @@ class RedisWatchableGamesManager {
     divisionName = divisionName.toLowerCase();
     const dateKey = moment.utc().startOf('day').format('YYYY-MM-DD');
     const key = `${keyPrefix()}${divisionName}:${dateKey}`;
-    Logger.module('REDIS').debug(`saveGamesDataForDivision() -> saving watchable game data for ${divisionName}`);
+    Logger.module('REDIS').debug(
+      `saveGamesDataForDivision() -> saving watchable game data for ${divisionName}`,
+    );
 
     const multi = this.redis.multi(); // start a multi command
     multi.set(key, dataJson);
@@ -65,8 +69,7 @@ class RedisWatchableGamesManager {
     const key = `${keyPrefix()}${divisionName}:${dateKey}`;
     Logger.module('REDIS').debug(`loadGamesDataForDivision() -> ${divisionName}`);
 
-    return PromiseUtils.nodeify(this.redis.get(key)
-      .then(JSON.parse), callback);
+    return PromiseUtils.nodeify(this.redis.get(key).then(JSON.parse), callback);
   }
 }
 
@@ -77,9 +80,9 @@ class RedisWatchableGamesManager {
 // instance on first call (so a second factory call would have crashed);
 // kept as a proper memoized singleton with the same result.
 let watchableGamesManagerSingleton = null;
-module.exports = (exports = function (redis, opts) {
+module.exports = exports = function (redis, opts) {
   if (watchableGamesManagerSingleton == null) {
     watchableGamesManagerSingleton = new RedisWatchableGamesManager(redis, opts);
   }
   return watchableGamesManagerSingleton;
-});
+};

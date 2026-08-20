@@ -229,7 +229,11 @@ var _Scene = cc.Scene.extend({
   },
 
   getIsContentCachable() {
-    return this.getGameLayer() == null && (this._overlayPromise == null || this._overlayPromise.isFulfilled()) && (this._contentOnlyPromise == null || this._contentOnlyPromise.isFulfilled());
+    return (
+      this.getGameLayer() == null &&
+      (this._overlayPromise == null || this._overlayPromise.isFulfilled()) &&
+      (this._contentOnlyPromise == null || this._contentOnlyPromise.isFulfilled())
+    );
   },
 
   /* endregion GETTERS / SETTERS */
@@ -251,7 +255,10 @@ var _Scene = cc.Scene.extend({
       const resourceScale = CONFIG.RESOURCE_SCALES[i];
       const scaleDiff = Math.abs(CONFIG.pixelScaleEngine - resourceScale);
       const currentScaleDiff = Math.abs(CONFIG.pixelScaleEngine - CONFIG.resourceScaleEngine);
-      if (scaleDiff < currentScaleDiff || (scaleDiff === currentScaleDiff && resourceScale > CONFIG.resourceScaleEngine)) {
+      if (
+        scaleDiff < currentScaleDiff ||
+        (scaleDiff === currentScaleDiff && resourceScale > CONFIG.resourceScaleEngine)
+      ) {
         CONFIG.resourceScaleEngine = resourceScale;
       }
     }
@@ -278,8 +285,13 @@ var _Scene = cc.Scene.extend({
    */
   showContent(layer, withoutOverlay) {
     this._beforeShowOrEmptyLayer();
-    this._contentPromise = this._contentOnlyPromise = PromiseUtils.inspectable(this._contentContainer.show(layer));
-    this._contentOnlyPromise.then((v) => this._afterShowOrEmptyLayer(null, v), (e) => this._afterShowOrEmptyLayer(e));
+    this._contentPromise = this._contentOnlyPromise = PromiseUtils.inspectable(
+      this._contentContainer.show(layer),
+    );
+    this._contentOnlyPromise.then(
+      (v) => this._afterShowOrEmptyLayer(null, v),
+      (e) => this._afterShowOrEmptyLayer(e),
+    );
 
     if (withoutOverlay && this._overlay.getCurrentLayer() != null) {
       this._contentPromise = Promise.all([this._contentOnlyPromise, this.destroyOverlay()]);
@@ -311,7 +323,10 @@ var _Scene = cc.Scene.extend({
   destroyContent() {
     this._beforeShowOrEmptyLayer();
     const destroyPromise = this._contentContainer.empty();
-    destroyPromise.then((v) => this._afterShowOrEmptyLayer(null, v), (e) => this._afterShowOrEmptyLayer(e));
+    destroyPromise.then(
+      (v) => this._afterShowOrEmptyLayer(null, v),
+      (e) => this._afterShowOrEmptyLayer(e),
+    );
     return destroyPromise;
   },
 
@@ -338,7 +353,10 @@ var _Scene = cc.Scene.extend({
   showOverlay(layer) {
     this._beforeShowOrEmptyLayer();
     this._overlayPromise = PromiseUtils.inspectable(this._overlay.show(layer));
-    this._overlayPromise.then((v) => this._afterShowOrEmptyLayer(null, v), (e) => this._afterShowOrEmptyLayer(e));
+    this._overlayPromise.then(
+      (v) => this._afterShowOrEmptyLayer(null, v),
+      (e) => this._afterShowOrEmptyLayer(e),
+    );
     return this._overlayPromise;
   },
 
@@ -361,7 +379,10 @@ var _Scene = cc.Scene.extend({
   destroyOverlay() {
     this._beforeShowOrEmptyLayer();
     const destroyPromise = this._overlay.empty();
-    destroyPromise.then((v) => this._afterShowOrEmptyLayer(null, v), (e) => this._afterShowOrEmptyLayer(e));
+    destroyPromise.then(
+      (v) => this._afterShowOrEmptyLayer(null, v),
+      (e) => this._afterShowOrEmptyLayer(e),
+    );
     return destroyPromise;
   },
 
@@ -443,12 +464,27 @@ var _Scene = cc.Scene.extend({
       matchmakingLayer && matchmakingLayer.showFindingGame(myPlayerFactionId, myPlayerGeneralId),
     ]);
   },
-  showVsForGame(myPlayerFactionId, opponentPlayerFactionId, myPlayerIsPlayer1, animationDuration, myPlayerGeneralId, opponentGeneralFactionId) {
+  showVsForGame(
+    myPlayerFactionId,
+    opponentPlayerFactionId,
+    myPlayerIsPlayer1,
+    animationDuration,
+    myPlayerGeneralId,
+    opponentGeneralFactionId,
+  ) {
     const showMatchmakingPromise = this.showMatchmaking();
     const matchmakingLayer = this.getMatchmakingLayer();
     return Promise.all([
       showMatchmakingPromise,
-      matchmakingLayer && matchmakingLayer.showVsForGame(myPlayerFactionId, opponentPlayerFactionId, myPlayerIsPlayer1, animationDuration, myPlayerGeneralId, opponentGeneralFactionId),
+      matchmakingLayer &&
+        matchmakingLayer.showVsForGame(
+          myPlayerFactionId,
+          opponentPlayerFactionId,
+          myPlayerIsPlayer1,
+          animationDuration,
+          myPlayerGeneralId,
+          opponentGeneralFactionId,
+        ),
     ]);
   },
   showNewGame(player1GeneralId, player2GeneralId) {

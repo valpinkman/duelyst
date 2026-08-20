@@ -42,7 +42,6 @@ const audio_object = function (options) {
 };
 
 audio_object.prototype = {
-
   constructor: audio_object,
 
   _id: null,
@@ -202,7 +201,12 @@ audio_object.prototype = {
   _on_error(error) {
     const { src } = this;
     const state = this._state;
-    if (src != null && src !== '' && this._erroredForSrc !== src && state === audio_object.STATE_PLAYING) {
+    if (
+      src != null &&
+      src !== '' &&
+      this._erroredForSrc !== src &&
+      state === audio_object.STATE_PLAYING
+    ) {
       // retain resolves to pass back into play on retry
       const whenPlayingPromise = this._when_playing_promise;
       const whenPlayingResolve = this._when_playing_resolve;
@@ -232,14 +236,20 @@ audio_object.prototype = {
           // wait a bit and retry once
           setTimeout(resolve, 1000);
         }
-      })
-        .then(() => {
-          if (this.src === src && this._state === audio_object.STATE_ERROR) {
-            this._state = null;
-            return this.play(this._fadeDuration, this._targetVolume, whenPlayingPromise, whenPlayingResolve, whenEndedPromise, whenEndedResolve);
-          }
-          return null;
-        });
+      }).then(() => {
+        if (this.src === src && this._state === audio_object.STATE_ERROR) {
+          this._state = null;
+          return this.play(
+            this._fadeDuration,
+            this._targetVolume,
+            whenPlayingPromise,
+            whenPlayingResolve,
+            whenEndedPromise,
+            whenEndedResolve,
+          );
+        }
+        return null;
+      });
     }
 
     return this._errorPromise;
@@ -262,7 +272,14 @@ audio_object.prototype = {
    * @param [volume=1]
    * @returns {Promise}
    */
-  play(fadeDuration, volume, whenPlayingPromise, whenPlayingResolve, whenEndedPromise, whenEndedResolve) {
+  play(
+    fadeDuration,
+    volume,
+    whenPlayingPromise,
+    whenPlayingResolve,
+    whenEndedPromise,
+    whenEndedResolve,
+  ) {
     const state = this._state;
     if (state === audio_object.STATE_ERROR) {
       this._playingPromise = this._playingAndFadedInPromise = this._errorPromise;
@@ -337,21 +354,23 @@ audio_object.prototype = {
         }
       });
     } else if (state === audio_object.STATE_PLAYING) {
-      this._stoppedPromise = this.fade_out(fadeDuration).then(() => {
-        // ensure still stopped in case of promise race conditions
-        if (this._state === audio_object.STATE_STOPPED) {
-          // end previous
-          this._on_playing();
-          this._on_ended();
+      this._stoppedPromise = this.fade_out(fadeDuration)
+        .then(() => {
+          // ensure still stopped in case of promise race conditions
+          if (this._state === audio_object.STATE_STOPPED) {
+            // end previous
+            this._on_playing();
+            this._on_ended();
 
-          // pause element (returns a promise)
-          return this._element.pause();
-        }
-        return null;
-      }).then(() => {
-        // clear the src to stop streaming
-        this._element.src = '';
-      });
+            // pause element (returns a promise)
+            return this._element.pause();
+          }
+          return null;
+        })
+        .then(() => {
+          // clear the src to stop streaming
+          this._element.src = '';
+        });
     }
 
     // set state as stopped
@@ -399,8 +418,12 @@ audio_object.prototype = {
   },
 
   fade_to(duration, volume) {
-    if (duration == null) { duration = 0.0; }
-    if (volume == null) { volume = 1.0; }
+    if (duration == null) {
+      duration = 0.0;
+    }
+    if (volume == null) {
+      volume = 1.0;
+    }
 
     // stop current running fade
     this.stop_fade();
@@ -413,23 +436,26 @@ audio_object.prototype = {
     this._targetVolume = volume;
 
     // return a promise for new fade once started playing
-    return this._playingPromise.then(() => new Promise<void>((resolve, reject) => {
-      // fade has changed
-      if (fadeId !== this._fadeId) {
-        resolve();
-      } else if (this.volume !== volume && _.isNumber(duration) && duration > 0) {
-        // fade over duration
-        this._fadeAction = cc.sequence(
-          cc.actionTween(duration, 'volume', this.volume, volume).easing(cc.EaseInOut(3.0)),
-          cc.callFunc(resolve),
-        );
-        cc.director.getActionManager().addAction(this._fadeAction, this);
-      } else {
-        // instant fade
-        this.set_volume(volume);
-        resolve();
-      }
-    }));
+    return this._playingPromise.then(
+      () =>
+        new Promise<void>((resolve, reject) => {
+          // fade has changed
+          if (fadeId !== this._fadeId) {
+            resolve();
+          } else if (this.volume !== volume && _.isNumber(duration) && duration > 0) {
+            // fade over duration
+            this._fadeAction = cc.sequence(
+              cc.actionTween(duration, 'volume', this.volume, volume).easing(cc.EaseInOut(3.0)),
+              cc.callFunc(resolve),
+            );
+            cc.director.getActionManager().addAction(this._fadeAction, this);
+          } else {
+            // instant fade
+            this.set_volume(volume);
+            resolve();
+          }
+        }),
+    );
   },
 
   stop_fade() {
@@ -454,7 +480,6 @@ audio_object.prototype = {
   },
 
   /* endregion FADE */
-
 };
 
 audio_object.STATE_STOPPED = 1;

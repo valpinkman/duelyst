@@ -46,9 +46,18 @@ const ScoreForBoard = function (gameSession, playerId) {
     scoreBuffer += position_seekManaGlobes(gameSession, unit, positiontoEvaluate);
     // Logger.module("AI").debug("[G:" + gameSession.gameId + "] scoreForBoard() 8 = " + scoreBuffer);
     // positioning/distance using best target
-    const bestObjective = findBestObjectiveForCardAtTargetPosition(gameSession, unit, positiontoEvaluate);
+    const bestObjective = findBestObjectiveForCardAtTargetPosition(
+      gameSession,
+      unit,
+      positiontoEvaluate,
+    );
     // Logger.module("AI").debug("[G:" + gameSession.gameId + "] scoreForBoard() 10 = " + scoreBuffer);
-    scoreBuffer += position_objective_backstab(gameSession, unit, positiontoEvaluate, bestObjective);
+    scoreBuffer += position_objective_backstab(
+      gameSession,
+      unit,
+      positiontoEvaluate,
+      bestObjective,
+    );
     // Logger.module("AI").debug("[G:" + gameSession.gameId + "] scoreForBoard() 11 = " + scoreBuffer);
     scoreBuffer += position_objective_frenzy(gameSession, unit, positiontoEvaluate, bestObjective);
     // Logger.module("AI").debug("[G:" + gameSession.gameId + "] scoreForBoard() 12 = " + scoreBuffer);
@@ -66,7 +75,13 @@ const ScoreForBoard = function (gameSession, playerId) {
     // if we have buffs or heals in-deck or in-hand, really the evasion logic should apply to "regular" units as well.
     // if they drop below a threshold where we think they are at-risk, they become evasive until we heal/buff them?
     const scoringMode = true; // true = scoring mode, softens the evasion trigger penalty
-    scoreBuffer += position_objective_distanceFromBestObjective(gameSession, unit, positiontoEvaluate, bestObjective, scoringMode);
+    scoreBuffer += position_objective_distanceFromBestObjective(
+      gameSession,
+      unit,
+      positiontoEvaluate,
+      bestObjective,
+      scoringMode,
+    );
 
     // Logger.module("AI").debug("[G:" + gameSession.gameId + "] scoreForBoard() 15 = " + scoreBuffer);
     scoreBuffer += position_backstabAvoidance(gameSession, unit, positiontoEvaluate, bestObjective);

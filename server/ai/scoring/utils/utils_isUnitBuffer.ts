@@ -14,7 +14,10 @@ const isUnitBuffer = function (unit) {
       // in 99% of cases, a unit buffs self or others when:
       // 1. it is not an aura, opening gambit, or dying wish
       // 2. it has modifiersContextObjects
-      if (!modifier.getIsAura() && !(modifier instanceof ModifierOpeningGambit || modifier instanceof ModifierDyingWish)) {
+      if (
+        !modifier.getIsAura() &&
+        !(modifier instanceof ModifierOpeningGambit || modifier instanceof ModifierDyingWish)
+      ) {
         const modifiersContextObjects = modifier.getModifiersContextObjects();
         if (modifiersContextObjects != null && modifiersContextObjects.length > 0) {
           return true;

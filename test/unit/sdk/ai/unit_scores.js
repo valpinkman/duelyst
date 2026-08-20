@@ -15,13 +15,9 @@ Logger.enabled = false;
 describe('starter ai scoring', () => {
   describe('unit score tests', () => {
     beforeEach(() => {
-      const player1Deck = [
-        { id: SDK.Cards.Faction1.General },
-      ];
+      const player1Deck = [{ id: SDK.Cards.Faction1.General }];
 
-      const player2Deck = [
-        { id: SDK.Cards.Faction2.General },
-      ];
+      const player2Deck = [{ id: SDK.Cards.Faction2.General }];
 
       UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
     });
@@ -38,15 +34,60 @@ describe('starter ai scoring', () => {
       const useThreshold = 0.0;
       player1.remainingMana = 9;
 
-      const golem1 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.SkyrockGolem }, 0, 0, gameSession.getPlayer2Id());
-      const grow2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction5.EarthWalker }, 1, 0, gameSession.getPlayer2Id());
-      const ranged2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.FireSpitter }, 2, 0, gameSession.getPlayer2Id());
-      const deathwatch2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.ShadowWatcher }, 3, 0, gameSession.getPlayer2Id());
-      const blast2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.Pyromancer }, 4, 0, gameSession.getPlayer2Id());
-      const spellwatch2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction2.ChakriAvatar }, 5, 0, gameSession.getPlayer2Id());
-      const provoke2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.PrimusShieldmaster }, 6, 0, gameSession.getPlayer2Id());
-      const frenzy2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.PiercingMantis }, 7, 0, gameSession.getPlayer2Id());
-      const flying2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.FlameWing }, 8, 0, gameSession.getPlayer2Id());
+      const golem1 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.SkyrockGolem },
+        0,
+        0,
+        gameSession.getPlayer2Id(),
+      );
+      const grow2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction5.EarthWalker },
+        1,
+        0,
+        gameSession.getPlayer2Id(),
+      );
+      const ranged2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.FireSpitter },
+        2,
+        0,
+        gameSession.getPlayer2Id(),
+      );
+      const deathwatch2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.ShadowWatcher },
+        3,
+        0,
+        gameSession.getPlayer2Id(),
+      );
+      const blast2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.Pyromancer },
+        4,
+        0,
+        gameSession.getPlayer2Id(),
+      );
+      const spellwatch2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction2.ChakriAvatar },
+        5,
+        0,
+        gameSession.getPlayer2Id(),
+      );
+      const provoke2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.PrimusShieldmaster },
+        6,
+        0,
+        gameSession.getPlayer2Id(),
+      );
+      const frenzy2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.PiercingMantis },
+        7,
+        0,
+        gameSession.getPlayer2Id(),
+      );
+      const flying2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.FlameWing },
+        8,
+        0,
+        gameSession.getPlayer2Id(),
+      );
 
       UtilsSDK.modifyUnitStats(golem1.getPosition(), 2, 2);
       console.log('Unit score for vanilla 2/2 = ', ScoreForUnit(golem1));
@@ -120,19 +161,40 @@ describe('starter ai scoring', () => {
       console.log('Unit score for flying 4/9 = ', ScoreForUnit(flying2));
       UtilsSDK.modifyUnitStats(flying2.getPosition(), 7, 7);
       console.log('Unit score for flying 7/7 = ', ScoreForUnit(flying2));
-      console.log('Unit score for general at 25 HP = ', ScoreForUnit(gameSession.getGeneralForPlayer1()));
+      console.log(
+        'Unit score for general at 25 HP = ',
+        ScoreForUnit(gameSession.getGeneralForPlayer1()),
+      );
       gameSession.getGeneralForPlayer1().setDamage(5);
-      console.log('Unit score for general at 20 HP = ', ScoreForUnit(gameSession.getGeneralForPlayer1()));
+      console.log(
+        'Unit score for general at 20 HP = ',
+        ScoreForUnit(gameSession.getGeneralForPlayer1()),
+      );
       gameSession.getGeneralForPlayer1().setDamage(10);
-      console.log('Unit score for general at 15 HP = ', ScoreForUnit(gameSession.getGeneralForPlayer1()));
+      console.log(
+        'Unit score for general at 15 HP = ',
+        ScoreForUnit(gameSession.getGeneralForPlayer1()),
+      );
       gameSession.getGeneralForPlayer1().setDamage(15);
-      console.log('Unit score for general at 10 HP = ', ScoreForUnit(gameSession.getGeneralForPlayer1()));
+      console.log(
+        'Unit score for general at 10 HP = ',
+        ScoreForUnit(gameSession.getGeneralForPlayer1()),
+      );
       gameSession.getGeneralForPlayer1().setDamage(20);
-      console.log('Unit score for general at 5 HP = ', ScoreForUnit(gameSession.getGeneralForPlayer1()));
+      console.log(
+        'Unit score for general at 5 HP = ',
+        ScoreForUnit(gameSession.getGeneralForPlayer1()),
+      );
       gameSession.getGeneralForPlayer1().setDamage(22);
-      console.log('Unit score for general at 3 HP = ', ScoreForUnit(gameSession.getGeneralForPlayer1()));
+      console.log(
+        'Unit score for general at 3 HP = ',
+        ScoreForUnit(gameSession.getGeneralForPlayer1()),
+      );
       gameSession.getGeneralForPlayer1().setDamage(24);
-      console.log('Unit score for general at 1 HP = ', ScoreForUnit(gameSession.getGeneralForPlayer1()));
+      console.log(
+        'Unit score for general at 1 HP = ',
+        ScoreForUnit(gameSession.getGeneralForPlayer1()),
+      );
     });
   });
 });

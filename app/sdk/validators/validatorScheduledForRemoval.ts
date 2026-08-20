@@ -17,16 +17,31 @@ class ValidatorScheduledForRemoval extends Validator {
 
   onValidateAction(event) {
     super.onValidateAction(event);
-    const {
-      action,
-    } = event;
-    if ((action != null) && action.getIsValid() && action.getIsImplicit() && !(action instanceof RemoveModifierAction || action instanceof RevealHiddenCardAction)) {
+    const { action } = event;
+    if (
+      action != null &&
+      action.getIsValid() &&
+      action.getIsImplicit() &&
+      !(action instanceof RemoveModifierAction || action instanceof RevealHiddenCardAction)
+    ) {
       const target = action.getTarget();
       if (target instanceof Card && target.getIsPlayed()) {
         if (target.getIsRemoved()) {
-          return this.invalidateAction(action, action.getTargetPosition(), i18next.t('validators.card_has_been_removed_message'));
-        } if (!action.getIsDepthFirst() && !this.getGameSession().getCanCardBeScheduledForRemoval(target)) {
-          return this.invalidateAction(action, action.getTargetPosition(), i18next.t('validators.card_will_be_removed_message'));
+          return this.invalidateAction(
+            action,
+            action.getTargetPosition(),
+            i18next.t('validators.card_has_been_removed_message'),
+          );
+        }
+        if (
+          !action.getIsDepthFirst() &&
+          !this.getGameSession().getCanCardBeScheduledForRemoval(target)
+        ) {
+          return this.invalidateAction(
+            action,
+            action.getTargetPosition(),
+            i18next.t('validators.card_will_be_removed_message'),
+          );
         }
       }
     }

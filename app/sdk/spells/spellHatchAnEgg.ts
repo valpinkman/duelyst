@@ -26,7 +26,7 @@ class SpellHatchAnEgg extends Spell {
     const filteredPositions = [];
     for (var position of Array.from<any>(validPositions)) {
       var entityAtPosition = this.getGameSession().getBoard().getEntityAtPosition(position);
-      if ((entityAtPosition != null) && entityAtPosition.hasModifierClass(ModifierEgg)) {
+      if (entityAtPosition != null && entityAtPosition.hasModifierClass(ModifierEgg)) {
         filteredPositions.push(position);
       }
     }

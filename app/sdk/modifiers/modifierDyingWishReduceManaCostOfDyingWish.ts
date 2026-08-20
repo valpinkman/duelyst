@@ -30,24 +30,28 @@ class ModifierDyingWishReduceManaCostOfDyingWish extends ModifierDyingWish {
       return (() => {
         const result = [];
         for (var card of Array.from<any>(cards)) {
-        // search for Dying Wish modifier and keyword class Dying Wish
-        // searching by keyword class because some units have "dying wishes" that are not specified as Dying Wish keyword
-        // (ex - Snow Chaser 'replicate')
-        // but don't want to catch minions that grant others Dying Wish (ex - Ancient Grove)
+          // search for Dying Wish modifier and keyword class Dying Wish
+          // searching by keyword class because some units have "dying wishes" that are not specified as Dying Wish keyword
+          // (ex - Snow Chaser 'replicate')
+          // but don't want to catch minions that grant others Dying Wish (ex - Ancient Grove)
           if (card.hasModifierClass(ModifierDyingWish)) {
-            result.push((() => {
-              const result1 = [];
-              for (var kwClass of Array.from<any>(card.getKeywordClasses())) {
-                if (kwClass.belongsToKeywordClass(ModifierDyingWish)) {
-                  var manaModifier = ModifierManaCostChange.createContextObject(this.reduceAmount * -1);
-                  this.getGameSession().applyModifierContextObject(manaModifier, card);
-                  break;
-                } else {
-                  result1.push(undefined);
+            result.push(
+              (() => {
+                const result1 = [];
+                for (var kwClass of Array.from<any>(card.getKeywordClasses())) {
+                  if (kwClass.belongsToKeywordClass(ModifierDyingWish)) {
+                    var manaModifier = ModifierManaCostChange.createContextObject(
+                      this.reduceAmount * -1,
+                    );
+                    this.getGameSession().applyModifierContextObject(manaModifier, card);
+                    break;
+                  } else {
+                    result1.push(undefined);
+                  }
                 }
-              }
-              return result1;
-            })());
+                return result1;
+              })(),
+            );
           } else {
             result.push(undefined);
           }
@@ -57,8 +61,11 @@ class ModifierDyingWishReduceManaCostOfDyingWish extends ModifierDyingWish {
     }
   }
 }
-ModifierDyingWishReduceManaCostOfDyingWish.prototype.type = 'ModifierDyingWishReduceManaCostOfDyingWish';
-ModifierDyingWishReduceManaCostOfDyingWish.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish'];
+ModifierDyingWishReduceManaCostOfDyingWish.prototype.type =
+  'ModifierDyingWishReduceManaCostOfDyingWish';
+ModifierDyingWishReduceManaCostOfDyingWish.prototype.fxResource = [
+  'FX.Modifiers.ModifierDyingWish',
+];
 ModifierDyingWishReduceManaCostOfDyingWish.prototype.reduceAmount = 0;
 
 module.exports = ModifierDyingWishReduceManaCostOfDyingWish;

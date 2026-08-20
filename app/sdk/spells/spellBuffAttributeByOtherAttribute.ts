@@ -28,9 +28,15 @@ class SpellBuffAttributeByOtherAttribute extends Spell {
     let attributeTargetAmount = 0;
 
     switch (this.attributeSource) {
-    case 'hp': attributeTargetAmount = entity.getHP(); break;
-    case 'maxHP': attributeTargetAmount = entity.getMaxHP(); break;
-    case 'atk': attributeTargetAmount = entity.getATK(); break;
+      case 'hp':
+        attributeTargetAmount = entity.getHP();
+        break;
+      case 'maxHP':
+        attributeTargetAmount = entity.getMaxHP();
+        break;
+      case 'atk':
+        attributeTargetAmount = entity.getATK();
+        break;
     }
 
     const attributeBuffs = {};
@@ -40,10 +46,18 @@ class SpellBuffAttributeByOtherAttribute extends Spell {
     // apply modifier to buff attributes
     const contextObject = Modifier.createContextObject();
     contextObject.attributeBuffs = attributeBuffs;
-    if (this.appliedName != null) { contextObject.appliedName = this.appliedName; }
-    if (this.appliedDescription != null) { contextObject.appliedDescription = this.appliedDescription; }
-    if (this.durationEndTurn != null) { contextObject.durationEndTurn = this.durationEndTurn; }
-    if (this.durationStartTurn != null) { contextObject.durationStartTurn = this.durationStartTurn; }
+    if (this.appliedName != null) {
+      contextObject.appliedName = this.appliedName;
+    }
+    if (this.appliedDescription != null) {
+      contextObject.appliedDescription = this.appliedDescription;
+    }
+    if (this.durationEndTurn != null) {
+      contextObject.durationEndTurn = this.durationEndTurn;
+    }
+    if (this.durationStartTurn != null) {
+      contextObject.durationStartTurn = this.durationStartTurn;
+    }
     return this.getGameSession().applyModifierContextObject(contextObject, entity);
   }
 }

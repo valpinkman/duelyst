@@ -15,14 +15,26 @@ class QuestBeginnerWinThreeQuickMatches extends QuestBeginner {
 
   // TODO: needs to unlock codex somehow
   constructor() {
-    super(QuestBeginnerWinThreeQuickMatches.Identifier, 'Lore master', [QuestType.Beginner], QuestBeginnerWinThreeQuickMatches.prototype.goldReward);
+    super(
+      QuestBeginnerWinThreeQuickMatches.Identifier,
+      'Lore master',
+      [QuestType.Beginner],
+      QuestBeginnerWinThreeQuickMatches.prototype.goldReward,
+    );
     this.params.completionProgress = 3;
   }
 
   _progressForGameDataForPlayerId(gameData, playerId) {
     for (var player of Array.from<any>(gameData.players)) {
-      var playerSetupData = UtilsGameSession.getPlayerSetupDataForPlayerId(gameData, player.playerId);
-      if ((player.playerId === playerId) && player.isWinner && (gameData.gameType === GameType.Casual)) {
+      var playerSetupData = UtilsGameSession.getPlayerSetupDataForPlayerId(
+        gameData,
+        player.playerId,
+      );
+      if (
+        player.playerId === playerId &&
+        player.isWinner &&
+        gameData.gameType === GameType.Casual
+      ) {
         return 1;
       }
     }

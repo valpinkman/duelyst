@@ -90,7 +90,9 @@ class CardFactory_FirstWatchSet_Faction3 {
       card.maxHP = 3;
       card.manaCost = 3;
       card.rarityId = Rarity.Common;
-      card.setInherentModifiersContextObjects([ModifierOpponentDrawCardWatchGainKeyword.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierOpponentDrawCardWatchGainKeyword.createContextObject(),
+      ]);
     }
 
     if (identifier === Cards.Faction3.TrygonObelysk) {
@@ -354,9 +356,7 @@ class CardFactory_FirstWatchSet_Faction3 {
       const manaChangeContextObject = ModifierManaCostChange.createContextObject(0);
       manaChangeContextObject.attributeBuffsAbsolute = ['manaCost'];
       manaChangeContextObject.attributeBuffsFixed = ['manaCost'];
-      card.setTargetModifiersContextObjects([
-        manaChangeContextObject,
-      ]);
+      card.setTargetModifiersContextObjects([manaChangeContextObject]);
       card.setFXResource(['FX.Cards.Spell.Reassemble']);
       card.setBaseAnimResource({
         idle: RSX.iconReassembleIdle.name,
@@ -379,7 +379,8 @@ class CardFactory_FirstWatchSet_Faction3 {
       card.spellFilterType = SpellFilterType.None;
       card.applyToOwnGeneral = true;
       card.addKeywordClassToInclude(ModifierFlying);
-      const drawFlyingMinionsModifier = PlayerModifierSummonWatchIfFlyingDrawFlyingMinion.createContextObject();
+      const drawFlyingMinionsModifier =
+        PlayerModifierSummonWatchIfFlyingDrawFlyingMinion.createContextObject();
       drawFlyingMinionsModifier.durationEndTurn = 1;
       card.setTargetModifiersContextObjects([drawFlyingMinionsModifier]);
       card.setFXResource(['FX.Cards.Spell.AzureSummoning']);
@@ -405,7 +406,11 @@ class CardFactory_FirstWatchSet_Faction3 {
       card.addKeywordClassToInclude(ModifierSandPortal);
       card.addKeywordClassToInclude(ModifierTokenCreator);
       card.setTargetModifiersContextObjects([
-        ModifierKillWatchSpawnEntity.createContextObject({ id: Cards.Tile.SandPortal }, false, true),
+        ModifierKillWatchSpawnEntity.createContextObject(
+          { id: Cards.Tile.SandPortal },
+          false,
+          true,
+        ),
       ]);
       card.setFXResource(['FX.Cards.Artifact.OblivionSickle']);
       card.setBaseAnimResource({

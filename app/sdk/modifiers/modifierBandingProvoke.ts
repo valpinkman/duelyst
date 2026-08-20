@@ -13,7 +13,9 @@ class ModifierBandingProvoke extends ModifierBanding {
   static type = 'ModifierBandingProvoke';
 
   static createContextObject(options) {
-    if (options == null) { options = undefined; }
+    if (options == null) {
+      options = undefined;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.modifiersContextObjects = [ModifierBandedProvoke.createContextObject()];
     return contextObject;

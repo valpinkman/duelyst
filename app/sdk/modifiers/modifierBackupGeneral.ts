@@ -35,12 +35,19 @@ class ModifierBackupGeneral extends Modifier {
     if (this.getGameSession().getIsRunningAsAuthoritative() && this._private.cachedIsActive) {
       // find general
       const general = this.getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
-      if ((general != null) && general.getIsRemoved()) {
+      if (general != null && general.getIsRemoved()) {
         // check for backup generals
-        const activeUnits = this.getGameSession().getBoard().getFriendlyEntitiesForEntity(general, CardType.Unit);
+        const activeUnits = this.getGameSession()
+          .getBoard()
+          .getFriendlyEntitiesForEntity(general, CardType.Unit);
         const backupGenerals = [];
         for (var unit of Array.from<any>(activeUnits)) {
-          if (!unit.getIsGeneral() && unit.getIsActive() && unit.getIsSameTeamAs(general) && unit.hasActiveModifierClass(ModifierBackupGeneral)) {
+          if (
+            !unit.getIsGeneral() &&
+            unit.getIsActive() &&
+            unit.getIsSameTeamAs(general) &&
+            unit.hasActiveModifierClass(ModifierBackupGeneral)
+          ) {
             backupGenerals.push(unit);
           }
         }
@@ -48,21 +55,30 @@ class ModifierBackupGeneral extends Modifier {
         if (backupGenerals.length > 0) {
           // choose one backup general at random
           let modifier;
-          const backupGeneral = backupGenerals[this.getGameSession().getRandomIntegerForExecution(backupGenerals.length)];
+          const backupGeneral =
+            backupGenerals[
+              this.getGameSession().getRandomIntegerForExecution(backupGenerals.length)
+            ];
           const backupGeneralModifier = backupGeneral.getModifierByClass(ModifierBackupGeneral);
 
           // set backup general modifier as triggering
           this.getGameSession().pushTriggeringModifierOntoStack(backupGeneralModifier);
 
           // remove backup general modifiers from new general
-          for (modifier of Array.from<any>(backupGeneral.getModifiersByClass(ModifierBackupGeneral))) {
+          for (modifier of Array.from<any>(
+            backupGeneral.getModifiersByClass(ModifierBackupGeneral),
+          )) {
             this.getGameSession().removeModifier(modifier);
           }
 
           // remove modifiers applied from existing emblems
           for (modifier of Array.from<any>(backupGeneral.getModifiers())) {
             if (modifier != null) {
-              if (modifier instanceof ModifierQuestBuffAbyssian || modifier instanceof ModifierQuestBuffNeutral || modifier instanceof ModifierQuestBuffVanar) {
+              if (
+                modifier instanceof ModifierQuestBuffAbyssian ||
+                modifier instanceof ModifierQuestBuffNeutral ||
+                modifier instanceof ModifierQuestBuffVanar
+              ) {
                 this.getGameSession().removeModifier(modifier);
               }
             }

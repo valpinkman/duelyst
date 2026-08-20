@@ -17,7 +17,9 @@ class ModifierEndTurnWatchHealSelf extends ModifierEndTurnWatch {
   static description = 'Restore %X Health to this minion at the end of your turn';
 
   static createContextObject(healAmount, options) {
-    if (healAmount == null) { healAmount = 0; }
+    if (healAmount == null) {
+      healAmount = 0;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.healAmount = healAmount;
     return contextObject;
@@ -40,6 +42,9 @@ class ModifierEndTurnWatchHealSelf extends ModifierEndTurnWatch {
   }
 }
 ModifierEndTurnWatchHealSelf.prototype.type = 'ModifierEndTurnWatchHealSelf';
-ModifierEndTurnWatchHealSelf.prototype.fxResource = ['FX.Modifiers.ModifierEndTurnWatch', 'FX.Modifiers.ModifierGenericHeal'];
+ModifierEndTurnWatchHealSelf.prototype.fxResource = [
+  'FX.Modifiers.ModifierEndTurnWatch',
+  'FX.Modifiers.ModifierGenericHeal',
+];
 
 module.exports = ModifierEndTurnWatchHealSelf;

@@ -14,7 +14,11 @@ class SpellIntensify extends Spell {
 
   getIsActionRelevant(action) {
     // watch for instances of playing this card from hand
-    if (action instanceof PlayCardAction && (action.getOwnerId() === this.getOwnerId()) && (action.getCard().getBaseCardId() === this.getBaseCardId())) {
+    if (
+      action instanceof PlayCardAction &&
+      action.getOwnerId() === this.getOwnerId() &&
+      action.getCard().getBaseCardId() === this.getBaseCardId()
+    ) {
       return true;
     }
     return false;
@@ -22,7 +26,9 @@ class SpellIntensify extends Spell {
 
   getIntensifyAmount() {
     let amount = 0;
-    const relevantActions = this.getGameSession().filterActions(this.getIsActionRelevant.bind(this));
+    const relevantActions = this.getGameSession().filterActions(
+      this.getIsActionRelevant.bind(this),
+    );
     if (relevantActions != null) {
       amount = relevantActions.length;
     }

@@ -88,8 +88,10 @@ class CardFactory_CoreSet_Faction6 {
    * @returns {Card}
    */
   static cardForIdentifier(identifier, gameSession) {
-    let attackBuff; let attackBuffContextObject; let customContextObject; let
-      statContextObject;
+    let attackBuff;
+    let attackBuffContextObject;
+    let customContextObject;
+    let statContextObject;
     let card = null;
 
     if (identifier === Cards.Faction6.General) {
@@ -137,7 +139,7 @@ class CardFactory_CoreSet_Faction6 {
 
     if (identifier === Cards.Faction6.AltGeneral) {
       card = new Unit(gameSession);
-      if ((process.env.ALL_CARDS_AVAILABLE == null)) {
+      if (process.env.ALL_CARDS_AVAILABLE == null) {
         card.setIsUnlockableBasic(true);
       }
       card.setIsGeneral(true);
@@ -184,7 +186,7 @@ class CardFactory_CoreSet_Faction6 {
     if (identifier === Cards.Faction6.ThirdGeneral) {
       card = new Unit(gameSession);
       card.setIsGeneral(true);
-      if ((process.env.ALL_CARDS_AVAILABLE == null)) {
+      if (process.env.ALL_CARDS_AVAILABLE == null) {
         card.setIsUnlockableWithAchievement(true);
         card.setIsUnlockedWithAchievementId(WartechGeneralFaction6Achievement.id);
       }
@@ -232,7 +234,7 @@ class CardFactory_CoreSet_Faction6 {
     if (identifier === Cards.Faction6.FenrirWarmaster) {
       card = new Unit(gameSession);
       card.factionId = Factions.Faction6;
-      if ((process.env.ALL_CARDS_AVAILABLE == null)) {
+      if (process.env.ALL_CARDS_AVAILABLE == null) {
         card.setIsUnlockableBasic(true);
       }
       card.name = i18next.t('cards.faction_6_unit_fenrir_warmaster_name');
@@ -260,7 +262,12 @@ class CardFactory_CoreSet_Faction6 {
       card.maxHP = 2;
       card.manaCost = 3;
       card.rarityId = Rarity.Fixed;
-      card.setInherentModifiersContextObjects([ModifierDyingWishSpawnEntity.createContextObject({ id: Cards.Faction6.GhostWolf }, '3/2 Ghost Wolf')]);
+      card.setInherentModifiersContextObjects([
+        ModifierDyingWishSpawnEntity.createContextObject(
+          { id: Cards.Faction6.GhostWolf },
+          '3/2 Ghost Wolf',
+        ),
+      ]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
     }
 
@@ -329,8 +336,12 @@ class CardFactory_CoreSet_Faction6 {
       card.manaCost = 2;
       card.rarityId = Rarity.Fixed;
       attackBuffContextObject = Modifier.createContextObjectWithAttributeBuffs(2);
-      attackBuffContextObject.appliedName = i18next.t('modifiers.faction_6_infiltrated_attack_buff_name');
-      card.setInherentModifiersContextObjects([ModifierInfiltrate.createContextObject([attackBuffContextObject], 'Gains +2 Attack')]);
+      attackBuffContextObject.appliedName = i18next.t(
+        'modifiers.faction_6_infiltrated_attack_buff_name',
+      );
+      card.setInherentModifiersContextObjects([
+        ModifierInfiltrate.createContextObject([attackBuffContextObject], 'Gains +2 Attack'),
+      ]);
     }
 
     if (identifier === Cards.Faction6.ArcticDisplacer) {
@@ -398,11 +409,18 @@ class CardFactory_CoreSet_Faction6 {
       card.manaCost = 5;
       card.rarityId = Rarity.Epic;
       attackBuffContextObject = Modifier.createContextObjectWithAttributeBuffs(1);
-      attackBuffContextObject.appliedName = i18next.t('modifiers.faction_6_infiltrated_attack_buff_name');
+      attackBuffContextObject.appliedName = i18next.t(
+        'modifiers.faction_6_infiltrated_attack_buff_name',
+      );
       const celerityContextObject = ModifierTranscendance.createContextObject();
-      celerityContextObject.appliedName = i18next.t('modifiers.faction_6_infiltrated_celerity_buff_name');
+      celerityContextObject.appliedName = i18next.t(
+        'modifiers.faction_6_infiltrated_celerity_buff_name',
+      );
       card.setInherentModifiersContextObjects([
-        ModifierInfiltrate.createContextObject([attackBuffContextObject, celerityContextObject], 'Gains +1 Attack and Celerity'),
+        ModifierInfiltrate.createContextObject(
+          [attackBuffContextObject, celerityContextObject],
+          'Gains +1 Attack and Celerity',
+        ),
       ]);
       card.addKeywordClassToInclude(ModifierTranscendance);
     }
@@ -439,7 +457,10 @@ class CardFactory_CoreSet_Faction6 {
       card.manaCost = 6;
       card.rarityId = Rarity.Epic;
       card.setInherentModifiersContextObjects([
-        ModifierDyingWishSpawnEntity.createContextObject({ id: Cards.Faction6.IceDrake }, '4/8 Ice Drake'),
+        ModifierDyingWishSpawnEntity.createContextObject(
+          { id: Cards.Faction6.IceDrake },
+          '4/8 Ice Drake',
+        ),
       ]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
     }
@@ -506,9 +527,19 @@ class CardFactory_CoreSet_Faction6 {
       card.maxHP = 1;
       card.manaCost = 1;
       card.rarityId = Rarity.Rare;
-      const returnContextObject = ModifierDyingWishPutCardInHandClean.createContextObject({ id: Cards.Faction6.WyrBeast }, 'a Snow Chaser');
-      returnContextObject.appliedName = i18next.t('modifiers.faction_6_infiltrated_replicate_buff_name');
-      card.setInherentModifiersContextObjects([ModifierInfiltrate.createContextObject([returnContextObject], 'When this minion dies, return it to your action bar')]);
+      const returnContextObject = ModifierDyingWishPutCardInHandClean.createContextObject(
+        { id: Cards.Faction6.WyrBeast },
+        'a Snow Chaser',
+      );
+      returnContextObject.appliedName = i18next.t(
+        'modifiers.faction_6_infiltrated_replicate_buff_name',
+      );
+      card.setInherentModifiersContextObjects([
+        ModifierInfiltrate.createContextObject(
+          [returnContextObject],
+          'When this minion dies, return it to your action bar',
+        ),
+      ]);
     }
 
     if (identifier === Cards.Faction6.WolfRaven) {
@@ -542,8 +573,13 @@ class CardFactory_CoreSet_Faction6 {
       card.manaCost = 3;
       card.rarityId = Rarity.Common;
       attackBuffContextObject = Modifier.createContextObjectWithAttributeBuffs(3);
-      attackBuffContextObject.appliedName = i18next.t('modifiers.faction_6_infiltrated_attack_buff_name');
-      card.setInherentModifiersContextObjects([ModifierFlying.createContextObject(), ModifierInfiltrate.createContextObject([attackBuffContextObject], 'Gains +3 Attack')]);
+      attackBuffContextObject.appliedName = i18next.t(
+        'modifiers.faction_6_infiltrated_attack_buff_name',
+      );
+      card.setInherentModifiersContextObjects([
+        ModifierFlying.createContextObject(),
+        ModifierInfiltrate.createContextObject([attackBuffContextObject], 'Gains +3 Attack'),
+      ]);
     }
 
     if (identifier === Cards.Faction6.BoreanBear) {
@@ -576,7 +612,14 @@ class CardFactory_CoreSet_Faction6 {
       card.atk = 1;
       card.maxHP = 3;
       card.manaCost = 2;
-      card.setInherentModifiersContextObjects([ModifierSummonWatchByRaceBuffSelf.createContextObject(1, 0, Races.Vespyr, 'Gathering Courage')]);
+      card.setInherentModifiersContextObjects([
+        ModifierSummonWatchByRaceBuffSelf.createContextObject(
+          1,
+          0,
+          Races.Vespyr,
+          'Gathering Courage',
+        ),
+      ]);
       card.rarityId = Rarity.Common;
     }
 
@@ -611,9 +654,11 @@ class CardFactory_CoreSet_Faction6 {
       card.manaCost = 2;
       card.rarityId = Rarity.Common;
       card.addKeywordClassToInclude(ModifierOpeningGambit);
-      card.setFollowups([{
-        id: Cards.Spell.FollowupSwapPositions,
-      }]);
+      card.setFollowups([
+        {
+          id: Cards.Spell.FollowupSwapPositions,
+        },
+      ]);
     }
 
     if (identifier === Cards.Faction6.Razorback) {
@@ -650,7 +695,12 @@ class CardFactory_CoreSet_Faction6 {
       statContextObject.durationEndTurn = 1;
       statContextObject.appliedName = i18next.t('modifiers.faction_6_razorback_buff_name');
       card.setInherentModifiersContextObjects([
-        ModifierOpeningGambitApplyModifiers.createContextObjectForAllies([statContextObject], false, CONFIG.WHOLE_BOARD_RADIUS, 'Give all friendly minions +2 Attack this turn'),
+        ModifierOpeningGambitApplyModifiers.createContextObjectForAllies(
+          [statContextObject],
+          false,
+          CONFIG.WHOLE_BOARD_RADIUS,
+          'Give all friendly minions +2 Attack this turn',
+        ),
       ]);
     }
 
@@ -687,7 +737,12 @@ class CardFactory_CoreSet_Faction6 {
       card.setInherentModifiersContextObjects([
         ModifierProvoke.createContextObject(),
         ModifierOpeningGambitApplyModifiers.createContextObjectForAllAllies(
-          [ModifierDyingWishSpawnEntity.createContextObject({ id: Cards.Faction6.Treant }, '1/1 Treant with Provoke')],
+          [
+            ModifierDyingWishSpawnEntity.createContextObject(
+              { id: Cards.Faction6.Treant },
+              '1/1 Treant with Provoke',
+            ),
+          ],
           false,
           'Your minions gain "Dying Wish: Summon a 1/1 Treant with Provoke"',
         ),
@@ -725,9 +780,7 @@ class CardFactory_CoreSet_Faction6 {
       card.atk = 1;
       card.maxHP = 1;
       card.manaCost = 1;
-      card.setInherentModifiersContextObjects([
-        ModifierProvoke.createContextObject(),
-      ]);
+      card.setInherentModifiersContextObjects([ModifierProvoke.createContextObject()]);
       card.rarityId = Rarity.TokenUnit;
       card.addKeywordClassToInclude(ModifierToken);
     }
@@ -762,7 +815,12 @@ class CardFactory_CoreSet_Faction6 {
       card.maxHP = 4;
       card.manaCost = 4;
       card.rarityId = Rarity.Legendary;
-      card.setInherentModifiersContextObjects([ModifierSummonWatchFromActionBarSpawnEntity.createContextObject({ id: Cards.Faction6.WaterBear }, '2/2 Vespyr Winter Maerid')]);
+      card.setInherentModifiersContextObjects([
+        ModifierSummonWatchFromActionBarSpawnEntity.createContextObject(
+          { id: Cards.Faction6.WaterBear },
+          '2/2 Vespyr Winter Maerid',
+        ),
+      ]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
     }
 
@@ -831,7 +889,13 @@ class CardFactory_CoreSet_Faction6 {
       card.maxHP = 3;
       card.manaCost = 3;
       card.rarityId = Rarity.Rare;
-      card.setInherentModifiersContextObjects([ModifierSummonWatchByRaceDamageEnemyMinion.createContextObject(2, Races.Vespyr, 'a Vespyr minion')]);
+      card.setInherentModifiersContextObjects([
+        ModifierSummonWatchByRaceDamageEnemyMinion.createContextObject(
+          2,
+          Races.Vespyr,
+          'a Vespyr minion',
+        ),
+      ]);
     }
 
     if (identifier === Cards.Faction6.WolfAspect) {
@@ -962,7 +1026,10 @@ class CardFactory_CoreSet_Faction6 {
       card.maxHP = 1;
       card.manaCost = 1;
       card.rarityId = Rarity.TokenUnit;
-      card.setInherentModifiersContextObjects([ModifierWall.createContextObject(), ModifierProvoke.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierWall.createContextObject(),
+        ModifierProvoke.createContextObject(),
+      ]);
       card.addKeywordClassToInclude(ModifierToken);
     }
 
@@ -1029,7 +1096,10 @@ class CardFactory_CoreSet_Faction6 {
       card.maxHP = 2;
       card.manaCost = 1;
       card.rarityId = Rarity.TokenUnit;
-      card.setInherentModifiersContextObjects([ModifierWall.createContextObject(), ModifierStunWhenAttacked.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierWall.createContextObject(),
+        ModifierStunWhenAttacked.createContextObject(),
+      ]);
       card.addKeywordClassToInclude(ModifierStunned);
       card.addKeywordClassToInclude(ModifierToken);
     }
@@ -1064,7 +1134,9 @@ class CardFactory_CoreSet_Faction6 {
       card.maxHP = 1;
       card.manaCost = 2;
       card.rarityId = Rarity.Common;
-      card.setInherentModifiersContextObjects([ModifierDyingWishBonusManaCrystal.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierDyingWishBonusManaCrystal.createContextObject(),
+      ]);
     }
 
     if (identifier === Cards.Spell.KineticSurge) {
@@ -1079,7 +1151,10 @@ class CardFactory_CoreSet_Faction6 {
       card.spellFilterType = SpellFilterType.None;
       attackBuff = Modifier.createContextObjectWithAttributeBuffs(1, 1);
       attackBuff.appliedName = i18next.t('modifiers.faction_6_spell_kinetic_surge_1');
-      customContextObject = PlayerModifierSummonWatchApplyModifiers.createContextObject([attackBuff], i18next.t('modifiers.faction_6_spell_kinetic_surge_2'));
+      customContextObject = PlayerModifierSummonWatchApplyModifiers.createContextObject(
+        [attackBuff],
+        i18next.t('modifiers.faction_6_spell_kinetic_surge_2'),
+      );
       customContextObject.durationEndTurn = 1;
       card.setTargetModifiersContextObjects([customContextObject]);
       card.setFXResource(['FX.Cards.Spell.KineticSurge']);
@@ -1147,9 +1222,11 @@ class CardFactory_CoreSet_Faction6 {
       card.addKeywordClassToInclude(ModifierProvoke);
       card.setFXResource(['FX.Spell.FireTornado', 'FX.Cards.Spell.GravityWell']);
       card.spellFilterType = SpellFilterType.SpawnSource;
-      card.setFollowups([{
-        id: Cards.Spell.CloneSourceEntity3X,
-      }]);
+      card.setFollowups([
+        {
+          id: Cards.Spell.CloneSourceEntity3X,
+        },
+      ]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
       card.setBaseSoundResource({
         apply: RSX.sfx_spell_manavortex.audio,
@@ -1172,9 +1249,11 @@ class CardFactory_CoreSet_Faction6 {
       card.setFXResource(['FX.Spell.FireTornado', 'FX.Cards.Spell.BonechillBarrier']);
       card.spellFilterType = SpellFilterType.SpawnSource;
       card.addKeywordClassToInclude(ModifierStunned);
-      card.setFollowups([{
-        id: Cards.Spell.CloneSourceEntity2X,
-      }]);
+      card.setFollowups([
+        {
+          id: Cards.Spell.CloneSourceEntity2X,
+        },
+      ]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
       card.setBaseSoundResource({
         apply: RSX.sfx_neutral_spelljammer_attack_swing.audio,
@@ -1196,9 +1275,11 @@ class CardFactory_CoreSet_Faction6 {
       card.cardDataOrIndexToSpawn = { id: Cards.Faction6.BlazingSpines };
       card.setFXResource(['FX.Spell.FireTornado', 'FX.Cards.Spell.BlazingSpines']);
       card.spellFilterType = SpellFilterType.SpawnSource;
-      card.setFollowups([{
-        id: Cards.Spell.CloneSourceEntity,
-      }]);
+      card.setFollowups([
+        {
+          id: Cards.Spell.CloneSourceEntity,
+        },
+      ]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
       card.setBaseSoundResource({
         apply: RSX.sfx_f6_ancientgrove_attack_impact.audio,
@@ -1212,7 +1293,7 @@ class CardFactory_CoreSet_Faction6 {
     if (identifier === Cards.Spell.ChromaticCold) {
       card = new SpellChromaticCold(gameSession);
       card.factionId = Factions.Faction6;
-      if ((process.env.ALL_CARDS_AVAILABLE == null)) {
+      if (process.env.ALL_CARDS_AVAILABLE == null) {
         card.setIsUnlockableBasic(true);
       }
       card.id = Cards.Spell.ChromaticCold;
@@ -1278,7 +1359,7 @@ class CardFactory_CoreSet_Faction6 {
     if (identifier === Cards.Spell.Avalanche) {
       card = new SpellAvalanche(gameSession);
       card.factionId = Factions.Faction6;
-      if ((process.env.ALL_CARDS_AVAILABLE == null)) {
+      if (process.env.ALL_CARDS_AVAILABLE == null) {
         card.setIsUnlockableBasic(true);
       }
       card.id = Cards.Spell.Avalanche;
@@ -1315,9 +1396,7 @@ class CardFactory_CoreSet_Faction6 {
       statContextObject.appliedName = i18next.t('modifiers.faction_6_spell_boundless_courage_1');
       const immunityContextObject = ModifierImmuneToDamage.createContextObject();
       immunityContextObject.durationEndTurn = 1;
-      card.setTargetModifiersContextObjects([
-        statContextObject, immunityContextObject,
-      ]);
+      card.setTargetModifiersContextObjects([statContextObject, immunityContextObject]);
       card.setFXResource(['FX.Cards.Spell.ElementalFury']);
       card.setBaseSoundResource({
         apply: RSX.sfx_neutral_dancingblades_death.audio,
@@ -1371,8 +1450,13 @@ class CardFactory_CoreSet_Faction6 {
       customContextObject.resetsDamage = true;
       customContextObject.isRemovable = false;
       customContextObject.appliedName = i18next.t('modifiers.faction_6_spell_mark_of_solitude_1');
-      customContextObject.appliedDescription = i18next.t('modifiers.faction_6_spell_mark_of_solitude_2');
-      card.setTargetModifiersContextObjects([customContextObject, ModifierCannotAttackGeneral.createContextObject()]);
+      customContextObject.appliedDescription = i18next.t(
+        'modifiers.faction_6_spell_mark_of_solitude_2',
+      );
+      card.setTargetModifiersContextObjects([
+        customContextObject,
+        ModifierCannotAttackGeneral.createContextObject(),
+      ]);
       card.setFXResource(['FX.Cards.Spell.MarkOfSolitude']);
       card.setBaseSoundResource({
         apply: RSX.sfx_f6_voiceofthewind_attack_impact.audio,
@@ -1386,7 +1470,7 @@ class CardFactory_CoreSet_Faction6 {
     if (identifier === Cards.Spell.AspectOfTheWolf) {
       card = new SpellAspectBase(gameSession);
       card.factionId = Factions.Faction6;
-      if ((process.env.ALL_CARDS_AVAILABLE == null)) {
+      if (process.env.ALL_CARDS_AVAILABLE == null) {
         card.setIsUnlockableBasic(true);
       }
       card.id = Cards.Spell.AspectOfTheWolf;
@@ -1593,10 +1677,14 @@ class CardFactory_CoreSet_Faction6 {
           name: i18next.t('cards.faction_6_artifact_winterblade_name'),
           description: i18next.t('modifiers.plus_attack_key', { amount: 2 }),
         }),
-        ModifierDealDamageWatchModifyTarget.createContextObject([ModifierStunnedVanar.createContextObject()], i18next.t('modifiers.faction_6_artifact_winterblade_2'), {
-          name: i18next.t('cards.faction_6_artifact_winterblade_name'),
-          description: i18next.t('modifiers.faction_6_artifact_winterblade_1'),
-        }),
+        ModifierDealDamageWatchModifyTarget.createContextObject(
+          [ModifierStunnedVanar.createContextObject()],
+          i18next.t('modifiers.faction_6_artifact_winterblade_2'),
+          {
+            name: i18next.t('cards.faction_6_artifact_winterblade_name'),
+            description: i18next.t('modifiers.faction_6_artifact_winterblade_1'),
+          },
+        ),
       ]);
       card.setFXResource(['FX.Cards.Artifact.Winterblade']);
       card.setBaseAnimResource({

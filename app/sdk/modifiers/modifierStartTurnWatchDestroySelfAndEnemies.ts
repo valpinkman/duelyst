@@ -16,7 +16,9 @@ class ModifierStartTurnWatchDestroySelfAndEnemies extends ModifierStartTurnWatch
 
   onTurnWatch(action) {
     let killAction;
-    for (var enemyUnit of Array.from<any>(this.getGameSession().getBoard().getEnemyEntitiesForEntity(this.getCard(), CardType.Unit))) {
+    for (var enemyUnit of Array.from<any>(
+      this.getGameSession().getBoard().getEnemyEntitiesForEntity(this.getCard(), CardType.Unit),
+    )) {
       if (!enemyUnit.getIsGeneral()) {
         killAction = new KillAction(this.getGameSession());
         killAction.setOwnerId(this.getCard().getOwnerId());
@@ -33,6 +35,7 @@ class ModifierStartTurnWatchDestroySelfAndEnemies extends ModifierStartTurnWatch
     return this.getGameSession().executeAction(killAction);
   }
 }
-ModifierStartTurnWatchDestroySelfAndEnemies.prototype.type = 'ModifierStartTurnWatchDestroySelfAndEnemies';
+ModifierStartTurnWatchDestroySelfAndEnemies.prototype.type =
+  'ModifierStartTurnWatchDestroySelfAndEnemies';
 
 module.exports = ModifierStartTurnWatchDestroySelfAndEnemies;

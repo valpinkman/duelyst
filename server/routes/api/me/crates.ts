@@ -19,7 +19,10 @@ const moment = require('moment');
 const router = express.Router();
 
 router.put('/cosmetic_chest/:chest_id/unlock', function (req, res, next) {
-  const chestIdResult = t.validate(req.params.chest_id, t.subtype(t.Str, (s) => s.length === 20));
+  const chestIdResult = t.validate(
+    req.params.chest_id,
+    t.subtype(t.Str, (s) => s.length === 20),
+  );
   if (!chestIdResult.isValid()) {
     return res.status(400).json(chestIdResult.errors);
   }
@@ -37,15 +40,20 @@ router.put('/cosmetic_chest/:chest_id/unlock', function (req, res, next) {
     .then(function (rewardData) {
       Logger.module('API').debug(`Opened Cosmetic Chest ${chest_id} for user ${user_id.blue}`.cyan);
       return res.status(200).json(rewardData);
-    }).catch(function (error) {
-      Logger.module('API').error(`ERROR Opening Cosmetic Chest ${chest_id} for user ${user_id.blue}`.red);
+    })
+    .catch(function (error) {
+      Logger.module('API').error(
+        `ERROR Opening Cosmetic Chest ${chest_id} for user ${user_id.blue}`.red,
+      );
       return next(error);
     });
 });
 
 router.get('/gift_crates', function (req, res, next) {
   const user_id = req.user.d.id;
-  return knex('user_gift_crates').where('user_id', user_id).select()
+  return knex('user_gift_crates')
+    .where('user_id', user_id)
+    .select()
     .then(function (giftCrateRows) {
       giftCrateRows = DataAccessHelpers.restifyData(giftCrateRows);
       return res.status(200).json(giftCrateRows);
@@ -54,7 +62,10 @@ router.get('/gift_crates', function (req, res, next) {
 });
 
 router.put('/gift_crate/:crate_id/unlock', function (req, res, next) {
-  const result = t.validate(req.params.crate_id, t.subtype(t.Str, (s) => s.length <= 36));
+  const result = t.validate(
+    req.params.crate_id,
+    t.subtype(t.Str, (s) => s.length <= 36),
+  );
   if (!result.isValid()) {
     return next();
   }
@@ -66,8 +77,12 @@ router.put('/gift_crate/:crate_id/unlock', function (req, res, next) {
     .then(function (rewardData) {
       Logger.module('API').debug(`Gift crate ${crate_id} unlocked for user ${user_id.blue}`.cyan);
       return res.status(200).json(rewardData);
-    }).catch(function (error) {
-      Logger.module('API').error(`ERROR claiming gift crate ${crate_id} rewards for user ${user_id.blue}`.red, util.inspect(error));
+    })
+    .catch(function (error) {
+      Logger.module('API').error(
+        `ERROR claiming gift crate ${crate_id} rewards for user ${user_id.blue}`.red,
+        util.inspect(error),
+      );
       return next(error);
     });
 });

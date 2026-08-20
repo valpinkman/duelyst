@@ -33,7 +33,12 @@ class SpellSpawnEntityAndApplyPlayerModifiers extends SpellSpawnEntity {
         return (() => {
           const result = [];
           for (modifierContextObject of Array.from<any>(this.targetModifiersContextObjects)) {
-            result.push(this.getGameSession().applyModifierContextObject(modifierContextObject, opponentGeneral));
+            result.push(
+              this.getGameSession().applyModifierContextObject(
+                modifierContextObject,
+                opponentGeneral,
+              ),
+            );
           }
           return result;
         })();

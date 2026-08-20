@@ -10,7 +10,6 @@ TileMapPathMoveCornerFlippedSprite.create()
  *************************************************************************** */
 
 const TileMapPathMoveCornerFlippedSprite = TileMapScaledSprite.extend({
-
   ctor() {
     this._super(RSX.tile_path_move_corner.frame);
     this.setFlippedY(true);
@@ -19,7 +18,9 @@ const TileMapPathMoveCornerFlippedSprite = TileMapScaledSprite.extend({
 
 TileMapPathMoveCornerFlippedSprite.create = function (sprite) {
   if (sprite == null) {
-    sprite = cc.pool.getFromPool(TileMapPathMoveCornerFlippedSprite) || TileMapScaledSprite.create(new TileMapPathMoveCornerFlippedSprite());
+    sprite =
+      cc.pool.getFromPool(TileMapPathMoveCornerFlippedSprite) ||
+      TileMapScaledSprite.create(new TileMapPathMoveCornerFlippedSprite());
   }
   return sprite;
 };

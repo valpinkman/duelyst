@@ -42,7 +42,10 @@ const getScoreForStunFromCardWithIntentToCard = function (card, intent, targetCa
 const ScoreForIntentStun = function (card, targetPosition, cardIntents) {
   let score = 0;
   const cardId = card.getBaseCardId();
-  const validIntents = cardIntents != null ? CardIntent.filterIntentsByIntentType(cardIntents, CardIntentType.Stun) : CardIntent.getIntentsByIntentType(cardId, CardIntentType.Stun);
+  const validIntents =
+    cardIntents != null
+      ? CardIntent.filterIntentsByIntentType(cardIntents, CardIntentType.Stun)
+      : CardIntent.getIntentsByIntentType(cardId, CardIntentType.Stun);
 
   _.each(validIntents, (intent) => {
     const cards = CardIntent.getCardsTargetedByCardWithIntent(card, intent, targetPosition);

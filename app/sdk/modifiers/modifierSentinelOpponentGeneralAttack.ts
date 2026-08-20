@@ -25,7 +25,11 @@ class ModifierSentinelOpponentGeneralAttack extends ModifierSentinel {
 
   getIsActionRelevant(action) {
     // watch for opponent General attacking
-    if (action instanceof AttackAction && (action.getSource() === this.getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId()))) {
+    if (
+      action instanceof AttackAction &&
+      action.getSource() ===
+        this.getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId())
+    ) {
       return true;
     }
     return false;
@@ -33,7 +37,7 @@ class ModifierSentinelOpponentGeneralAttack extends ModifierSentinel {
 
   onOverwatch(action) {
     const newUnit = super.onOverwatch(action);
-    if (this.getIsActionRelevant(action) && (action.getTarget() === this.getCard())) {
+    if (this.getIsActionRelevant(action) && action.getTarget() === this.getCard()) {
       return action.setTarget(newUnit);
     }
   }

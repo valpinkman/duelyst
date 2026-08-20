@@ -18,9 +18,7 @@ class PlayerModifierSummonWatch extends PlayerModifier {
   onAction(e) {
     super.onAction(e);
 
-    const {
-      action,
-    } = e;
+    const { action } = e;
 
     if (this.getIsActionRelevant(action)) {
       return this.onSummonWatch(action);
@@ -29,9 +27,20 @@ class PlayerModifierSummonWatch extends PlayerModifier {
 
   getIsActionRelevant(action) {
     // watch for a unit being summoned in any way by the player who owns this entity
-    if (action instanceof ApplyCardToBoardAction && (action.getOwnerId() === this.getCard().getOwnerId()) && (__guard__(action.getCard(), (x) => x.type) === CardType.Unit) && (action.getCard() !== this.getCard()) && (action.getCard() !== this.getSourceCard())) {
+    if (
+      action instanceof ApplyCardToBoardAction &&
+      action.getOwnerId() === this.getCard().getOwnerId() &&
+      __guard__(action.getCard(), (x) => x.type) === CardType.Unit &&
+      action.getCard() !== this.getCard() &&
+      action.getCard() !== this.getSourceCard()
+    ) {
       // don't react to transforms
-      if (!(action instanceof PlayCardAsTransformAction || action instanceof CloneEntityAsTransformAction)) {
+      if (
+        !(
+          action instanceof PlayCardAsTransformAction ||
+          action instanceof CloneEntityAsTransformAction
+        )
+      ) {
         return true;
       }
     }
@@ -46,5 +55,5 @@ PlayerModifierSummonWatch.prototype.type = 'PlayerModifierSummonWatch';
 module.exports = PlayerModifierSummonWatch;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

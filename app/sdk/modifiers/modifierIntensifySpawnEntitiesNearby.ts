@@ -19,7 +19,9 @@ class ModifierIntensifySpawnEntitiesNearby extends ModifierIntensify {
   static type = 'ModifierIntensifySpawnEntitiesNearby';
 
   static createContextObject(cardDataOrIndexToSpawn, numToSpawn, options) {
-    if (numToSpawn == null) { numToSpawn = 1; }
+    if (numToSpawn == null) {
+      numToSpawn = 1;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.cardDataOrIndexToSpawn = cardDataOrIndexToSpawn;
     contextObject.numToSpawn = numToSpawn;
@@ -27,15 +29,33 @@ class ModifierIntensifySpawnEntitiesNearby extends ModifierIntensify {
   }
 
   onIntensify() {
-    if (this.getGameSession().getIsRunningAsAuthoritative() && (this.cardDataOrIndexToSpawn != null)) {
+    if (
+      this.getGameSession().getIsRunningAsAuthoritative() &&
+      this.cardDataOrIndexToSpawn != null
+    ) {
       const totalNumberToSpawn = this.numToSpawn * this.getIntensifyAmount();
-      const card = this.getGameSession().getExistingCardFromIndexOrCreateCardFromData(this.cardDataOrIndexToSpawn);
-      const spawnLocations = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(this.getGameSession(), this.getCard().getPosition(), CONFIG.PATTERN_3x3, card, this, totalNumberToSpawn);
+      const card = this.getGameSession().getExistingCardFromIndexOrCreateCardFromData(
+        this.cardDataOrIndexToSpawn,
+      );
+      const spawnLocations = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(
+        this.getGameSession(),
+        this.getCard().getPosition(),
+        CONFIG.PATTERN_3x3,
+        card,
+        this,
+        totalNumberToSpawn,
+      );
 
       return (() => {
         const result = [];
         for (var location of Array.from<any>(spawnLocations)) {
-          var spawnAction = new PlayCardSilentlyAction(this.getGameSession(), this.getOwnerId(), location.x, location.y, this.cardDataOrIndexToSpawn);
+          var spawnAction = new PlayCardSilentlyAction(
+            this.getGameSession(),
+            this.getOwnerId(),
+            location.x,
+            location.y,
+            this.cardDataOrIndexToSpawn,
+          );
           spawnAction.setSource(this.getCard());
           result.push(this.getGameSession().executeAction(spawnAction));
         }

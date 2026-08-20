@@ -22,10 +22,11 @@ class ModifierStartOpponentsTurnWatchRemoveEntity extends ModifierStartOpponents
     }
   }
 }
-ModifierStartOpponentsTurnWatchRemoveEntity.prototype.type = 'ModifierStartOpponentsTurnWatchRemoveEntity';
+ModifierStartOpponentsTurnWatchRemoveEntity.prototype.type =
+  'ModifierStartOpponentsTurnWatchRemoveEntity';
 
 module.exports = ModifierStartOpponentsTurnWatchRemoveEntity;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

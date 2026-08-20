@@ -36,7 +36,9 @@ class ModifierSummonWatchApplyModifiersToBoth extends ModifierSummonWatch {
           return (() => {
             const result = [];
             for (modifierContextObject of Array.from<any>(this.modifiersContextObjects)) {
-              result.push(this.getGameSession().applyModifierContextObject(modifierContextObject, entity));
+              result.push(
+                this.getGameSession().applyModifierContextObject(modifierContextObject, entity),
+              );
             }
             return result;
           })();
@@ -51,10 +53,13 @@ class ModifierSummonWatchApplyModifiersToBoth extends ModifierSummonWatch {
   }
 }
 ModifierSummonWatchApplyModifiersToBoth.prototype.type = 'ModifierSummonWatchApplyModifiersToBoth';
-ModifierSummonWatchApplyModifiersToBoth.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierSummonWatchApplyModifiersToBoth.prototype.fxResource = [
+  'FX.Modifiers.ModifierSummonWatch',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 
 module.exports = ModifierSummonWatchApplyModifiersToBoth;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

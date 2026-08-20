@@ -7,7 +7,6 @@ const BaseSprite = require('../../nodes/BaseSprite');
  *************************************************************************** */
 
 const CodexLayer = FXCompositeLayer.extend({
-
   _bg: null,
 
   /* region INITIALIZE */
@@ -39,7 +38,9 @@ const CodexLayer = FXCompositeLayer.extend({
    * @returns {Promise}
    */
   showChapter(background, duration) {
-    if (duration == null) { duration = 0.0; }
+    if (duration == null) {
+      duration = 0.0;
+    }
 
     this.stopShowingChapter(duration);
 
@@ -60,7 +61,9 @@ const CodexLayer = FXCompositeLayer.extend({
    * @returns {Promise}
    */
   stopShowingChapter(duration) {
-    if (duration == null) { duration = 0.0; }
+    if (duration == null) {
+      duration = 0.0;
+    }
 
     if (this._bg != null) {
       this._bg.destroy(duration);
@@ -69,7 +72,6 @@ const CodexLayer = FXCompositeLayer.extend({
 
     return Promise.resolve();
   },
-
 });
 
 CodexLayer.create = function (layer) {

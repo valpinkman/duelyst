@@ -20,12 +20,18 @@ class ModifierSynergizeRazorArchitect extends ModifierSynergize {
     super.onSynergize(action);
     const minionPosition = this.getCard().getPosition();
 
-    const entities = this.getGameSession().getBoard().getEntitiesInRow(minionPosition.y, CardType.Unit);
+    const entities = this.getGameSession()
+      .getBoard()
+      .getEntitiesInRow(minionPosition.y, CardType.Unit);
     if (entities != null) {
       return (() => {
         const result = [];
         for (var entity of Array.from<any>(entities)) {
-          if ((entity != null) && (entity.getOwnerId() !== this.getCard().getOwnerId()) && !entity.getIsGeneral()) {
+          if (
+            entity != null &&
+            entity.getOwnerId() !== this.getCard().getOwnerId() &&
+            !entity.getIsGeneral()
+          ) {
             var damageAction = new DamageAction(this.getGameSession());
             damageAction.setOwnerId(this.getCard().getOwnerId());
             damageAction.setSource(this.getCard());

@@ -17,12 +17,14 @@ class SpellIllusoryIce extends Spell {
     super.onApplyEffectToBoardTile(board, x, y, sourceAction);
 
     const originalEntity = this.getGameSession().getBoard().getEntityAtPosition({ x, y });
-    const entities = this.getGameSession().getBoard().getEntitiesAroundEntity(originalEntity, CardType.Unit, 1);
+    const entities = this.getGameSession()
+      .getBoard()
+      .getEntitiesAroundEntity(originalEntity, CardType.Unit, 1);
 
     return (() => {
       const result = [];
       for (var entity of Array.from<any>(entities)) {
-        if ((entity != null) && !entity.getIsGeneral()) {
+        if (entity != null && !entity.getIsGeneral()) {
           var position = entity.getPosition();
           var ownerId = entity.getOwnerId();
 
@@ -31,12 +33,33 @@ class SpellIllusoryIce extends Spell {
           removeEntityAction.setTarget(entity);
           this.getGameSession().executeAction(removeEntityAction);
 
-          var existingEntity = this.getGameSession().getBoard().getCardAtPosition({ x, y }, CardType.Unit);
-          if ((existingEntity != null) && !this.getGameSession().getBoard().getObstructionAtPositionForEntity(position, existingEntity)) {
+          var existingEntity = this.getGameSession()
+            .getBoard()
+            .getCardAtPosition({ x, y }, CardType.Unit);
+          if (
+            existingEntity != null &&
+            !this.getGameSession()
+              .getBoard()
+              .getObstructionAtPositionForEntity(position, existingEntity)
+          ) {
             var cardDataOrIndexToSpawn = existingEntity.createCloneCardData();
-            if (cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects == null) { cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects = []; }
-            cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects.push(ModifierTransformed.createContextObject(entity.getExhausted(), entity.getMovesMade(), entity.getAttacksMade()));
-            var spawnEntityAction = new PlayCardAsTransformAction(this.getGameSession(), ownerId, position.x, position.y, cardDataOrIndexToSpawn);
+            if (cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects == null) {
+              cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects = [];
+            }
+            cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects.push(
+              ModifierTransformed.createContextObject(
+                entity.getExhausted(),
+                entity.getMovesMade(),
+                entity.getAttacksMade(),
+              ),
+            );
+            var spawnEntityAction = new PlayCardAsTransformAction(
+              this.getGameSession(),
+              ownerId,
+              position.x,
+              position.y,
+              cardDataOrIndexToSpawn,
+            );
             result.push(this.getGameSession().executeAction(spawnEntityAction));
           } else {
             result.push(undefined);

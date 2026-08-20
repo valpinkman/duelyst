@@ -19,6 +19,8 @@ class ModifierDyingWishPutCardInHandClean extends ModifierDyingWishPutCardInHand
 }
 ModifierDyingWishPutCardInHandClean.prototype.type = 'ModifierDyingWishPutCardInHandClean';
 ModifierDyingWishPutCardInHandClean.modifierName = undefined;
-ModifierDyingWishPutCardInHandClean.description = i18next.t('modifiers.faction_6_infiltrated_replicate_buff_desc');
+ModifierDyingWishPutCardInHandClean.description = i18next.t(
+  'modifiers.faction_6_infiltrated_replicate_buff_desc',
+);
 
 module.exports = ModifierDyingWishPutCardInHandClean;

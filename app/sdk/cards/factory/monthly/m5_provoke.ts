@@ -70,7 +70,10 @@ class CardFactory_Monthly_M5_Provoke {
         damage: RSX.neutralBonereaperHit.name,
         death: RSX.neutralBonereaperDeath.name,
       });
-      card.setInherentModifiersContextObjects([ModifierProvoke.createContextObject(), ModifierEndTurnWatchDamageNearbyEnemy.createContextObject(2, false)]);
+      card.setInherentModifiersContextObjects([
+        ModifierProvoke.createContextObject(),
+        ModifierEndTurnWatchDamageNearbyEnemy.createContextObject(2, false),
+      ]);
       card.atk = 2;
       card.maxHP = 9;
       card.manaCost = 6;
@@ -152,7 +155,10 @@ class CardFactory_Monthly_M5_Provoke {
       card.maxHP = 6;
       card.manaCost = 4;
       card.rarityId = Rarity.Rare;
-      card.setInherentModifiersContextObjects([ModifierProvoke.createContextObject(), ModifierTakeDamageWatchDispel.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierProvoke.createContextObject(),
+        ModifierTakeDamageWatchDispel.createContextObject(),
+      ]);
     }
 
     if (identifier === Cards.Neutral.WarTalon) {
@@ -185,7 +191,10 @@ class CardFactory_Monthly_M5_Provoke {
       card.atk = 4;
       card.maxHP = 9;
       card.manaCost = 7;
-      card.setInherentModifiersContextObjects([ModifierProvoke.createContextObject(), ModifierFrenzy.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierProvoke.createContextObject(),
+        ModifierFrenzy.createContextObject(),
+      ]);
       card.rarityId = Rarity.Common;
     }
 

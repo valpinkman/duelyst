@@ -16,7 +16,9 @@ class SpellSpawnNeutralEntity extends SpellSpawnEntity {
       return super.getEntityToSpawn();
     }
     // return a unit instead of a tile so positioning methods will treat existing units as obstructing
-    const entity = this.getGameSession().getExistingCardFromIndexOrCreateCardFromData({ id: Cards.Neutral.KomodoCharger });
+    const entity = this.getGameSession().getExistingCardFromIndexOrCreateCardFromData({
+      id: Cards.Neutral.KomodoCharger,
+    });
     if (entity != null) {
       entity.setOwnerId(this.getOwnerId());
       return entity;
@@ -26,13 +28,32 @@ class SpellSpawnNeutralEntity extends SpellSpawnEntity {
   getSpawnAction(x, y, cardDataOrIndexToSpawn?) {
     let spawnEntityAction;
     const targetPosition = { x, y };
-    if ((cardDataOrIndexToSpawn == null)) { cardDataOrIndexToSpawn = this.getCardDataOrIndexToSpawn(x, y); }
+    if (cardDataOrIndexToSpawn == null) {
+      cardDataOrIndexToSpawn = this.getCardDataOrIndexToSpawn(x, y);
+    }
     const entity = this.getEntityToSpawn(cardDataOrIndexToSpawn);
-    if (entity && !this.getGameSession().getBoard().getObstructionAtPositionForEntity(targetPosition, entity)) {
+    if (
+      entity &&
+      !this.getGameSession().getBoard().getObstructionAtPositionForEntity(targetPosition, entity)
+    ) {
       if (this.spawnSilently) {
-        spawnEntityAction = new PlayCardSilentlyAction(this.getGameSession(), this.getOwnerId(), x, y, cardDataOrIndexToSpawn, true);
+        spawnEntityAction = new PlayCardSilentlyAction(
+          this.getGameSession(),
+          this.getOwnerId(),
+          x,
+          y,
+          cardDataOrIndexToSpawn,
+          true,
+        );
       } else {
-        spawnEntityAction = new PlayCardAction(this.getGameSession(), this.getOwnerId(), x, y, cardDataOrIndexToSpawn, true);
+        spawnEntityAction = new PlayCardAction(
+          this.getGameSession(),
+          this.getOwnerId(),
+          x,
+          y,
+          cardDataOrIndexToSpawn,
+          true,
+        );
       }
     }
     return spawnEntityAction;

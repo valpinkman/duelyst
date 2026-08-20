@@ -14,9 +14,15 @@ class ModifierKillWatchHealSelf extends ModifierKillWatch {
   static type = 'ModifierKillWatchHealSelf';
 
   static createContextObject(healAmount, includeAllies, includeGenerals, options) {
-    if (healAmount == null) { healAmount = 0; }
-    if (includeAllies == null) { includeAllies = true; }
-    if (includeGenerals == null) { includeGenerals = true; }
+    if (healAmount == null) {
+      healAmount = 0;
+    }
+    if (includeAllies == null) {
+      includeAllies = true;
+    }
+    if (includeGenerals == null) {
+      includeGenerals = true;
+    }
     const contextObject = super.createContextObject(includeAllies, includeGenerals, options);
     contextObject.healAmount = healAmount;
     return contextObject;
@@ -30,6 +36,9 @@ class ModifierKillWatchHealSelf extends ModifierKillWatch {
   }
 }
 ModifierKillWatchHealSelf.prototype.type = 'ModifierKillWatchHealSelf';
-ModifierKillWatchHealSelf.prototype.fxResource = ['FX.Modifiers.ModifierKillWatch', 'FX.Modifiers.ModifierGenericHeal'];
+ModifierKillWatchHealSelf.prototype.fxResource = [
+  'FX.Modifiers.ModifierKillWatch',
+  'FX.Modifiers.ModifierGenericHeal',
+];
 
 module.exports = ModifierKillWatchHealSelf;

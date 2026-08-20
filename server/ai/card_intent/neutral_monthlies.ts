@@ -66,9 +66,7 @@ NM[Cards.Neutral.WoodWen] = [
     followups: [
       {
         type: CardIntentType.ApplyModifiers,
-        modifiers: [
-          ModifierProvoke.type,
-        ],
+        modifiers: [ModifierProvoke.type],
         targets: CardTargetType.Minion | CardTargetType.Friendly,
       },
     ],

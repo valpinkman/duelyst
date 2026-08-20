@@ -10,7 +10,6 @@ var ProfileManager = require('app/ui/managers/profile_manager');
 var FormPromptDialogItemView = require('./form_prompt_dialog');
 
 var ChangeUsernameItemView = FormPromptDialogItemView.extend({
-
   template: ChangeUsernameTmpl,
 
   id: 'app-change-username',
@@ -28,7 +27,6 @@ var ChangeUsernameItemView = FormPromptDialogItemView.extend({
   _hasModifiedUsername: false,
 
   templateHelpers: {
-
     canChangeUsernameThisMonth: function () {
       var updatedAt = this.model.get('username_updated_at') || 0;
       var then = moment(updatedAt);
@@ -57,12 +55,13 @@ var ChangeUsernameItemView = FormPromptDialogItemView.extend({
     FormPromptDialogItemView.prototype.onSubmit.apply(this, arguments);
 
     var username = this.ui.$username.val();
-    Session.changeUsername(username).bind(this)
+    Session.changeUsername(username)
+      .bind(this)
       .then(function (res) {
         this.onSuccess(res);
       })
       .catch(function (e) {
-      // onError expects a string not an actual error
+        // onError expects a string not an actual error
         this.onError(e.innerMessage || e.message);
       });
   },
@@ -95,7 +94,6 @@ var ChangeUsernameItemView = FormPromptDialogItemView.extend({
   },
 
   /* endregion STATE */
-
 });
 
 // Expose the class either via CommonJS or the global object

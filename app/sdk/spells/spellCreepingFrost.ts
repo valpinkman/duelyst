@@ -17,27 +17,49 @@ class SpellCreepingFrost extends Spell {
     const applyEffectPosition = { x, y };
     const entity = board.getUnitAtPosition(applyEffectPosition);
     if (entity != null) {
-      this.getGameSession().applyModifierContextObject(ModifierStunnedVanar.createContextObject(), entity);
+      this.getGameSession().applyModifierContextObject(
+        ModifierStunnedVanar.createContextObject(),
+        entity,
+      );
     }
 
     const general = this.getGameSession().getGeneralForPlayerId(this.getOwnerId());
     const enemyUnits = board.getEnemyEntitiesForEntity(general, CardType.Unit, false, false);
     const additionalUnitsToStun = [];
     for (var unit of Array.from<any>(enemyUnits)) {
-      if (!unit.getIsGeneral() && (unit.hasActiveModifierClass(ModifierStunnedVanar) || unit.hasActiveModifierClass(ModifierStunned))) {
-        var adjacentEnemies = board.getFriendlyEntitiesAroundEntity(unit, CardType.Unit, 1, true, false);
+      if (
+        !unit.getIsGeneral() &&
+        (unit.hasActiveModifierClass(ModifierStunnedVanar) ||
+          unit.hasActiveModifierClass(ModifierStunned))
+      ) {
+        var adjacentEnemies = board.getFriendlyEntitiesAroundEntity(
+          unit,
+          CardType.Unit,
+          1,
+          true,
+          false,
+        );
         var enemyToAdd = [];
         for (var enemy of Array.from<any>(adjacentEnemies)) {
-          if (!enemy.hasActiveModifierClass(ModifierStunnedVanar) && !enemy.hasActiveModifierClass(ModifierStunned)) {
+          if (
+            !enemy.hasActiveModifierClass(ModifierStunnedVanar) &&
+            !enemy.hasActiveModifierClass(ModifierStunned)
+          ) {
             enemyToAdd.push(enemy);
           }
         }
-        additionalUnitsToStun.push(enemyToAdd[this.getGameSession().getRandomIntegerForExecution(enemyToAdd.length)]);
+        additionalUnitsToStun.push(
+          enemyToAdd[this.getGameSession().getRandomIntegerForExecution(enemyToAdd.length)],
+        );
       }
     }
 
     return Array.from<any>(additionalUnitsToStun).map((unitToStun) =>
-      this.getGameSession().applyModifierContextObject(ModifierStunnedVanar.createContextObject(), unitToStun));
+      this.getGameSession().applyModifierContextObject(
+        ModifierStunnedVanar.createContextObject(),
+        unitToStun,
+      ),
+    );
   }
 }
 

@@ -225,11 +225,17 @@ class CardFactory_WartechSet_Faction5 {
       card.manaCost = 2;
       card.rarityId = Rarity.Common;
       buildData = { id: Cards.Faction5.HulkBuilding };
-      if (buildData.additionalInherentModifiersContextObjects == null) { buildData.additionalInherentModifiersContextObjects = []; }
-      buildData.additionalInherentModifiersContextObjects.push(ModifierBuilding.createContextObject('Builds into Biomimetic Hulk after 3 turns (this cannot be dispelled).', { id: Cards.Faction5.BioHulk }, 3));
-      card.setInherentModifiersContextObjects([
-        ModifierBuild.createContextObject(buildData),
-      ]);
+      if (buildData.additionalInherentModifiersContextObjects == null) {
+        buildData.additionalInherentModifiersContextObjects = [];
+      }
+      buildData.additionalInherentModifiersContextObjects.push(
+        ModifierBuilding.createContextObject(
+          'Builds into Biomimetic Hulk after 3 turns (this cannot be dispelled).',
+          { id: Cards.Faction5.BioHulk },
+          3,
+        ),
+      );
+      card.setInherentModifiersContextObjects([ModifierBuild.createContextObject(buildData)]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
       card.setFXResource(['FX.Cards.Neutral.WhistlingBlade']);
       card.setBoundingBoxWidth(90);
@@ -265,8 +271,16 @@ class CardFactory_WartechSet_Faction5 {
       card.manaCost = 4;
       card.rarityId = Rarity.Legendary;
       buildData = { id: Cards.Faction5.GigalothBuilding };
-      if (buildData.additionalInherentModifiersContextObjects == null) { buildData.additionalInherentModifiersContextObjects = []; }
-      buildData.additionalInherentModifiersContextObjects.push(ModifierBuilding.createContextObject('Builds into Gigaloth after 2 turns (this cannot be dispelled).', { id: Cards.Faction5.Gigaloth }, 2));
+      if (buildData.additionalInherentModifiersContextObjects == null) {
+        buildData.additionalInherentModifiersContextObjects = [];
+      }
+      buildData.additionalInherentModifiersContextObjects.push(
+        ModifierBuilding.createContextObject(
+          'Builds into Gigaloth after 2 turns (this cannot be dispelled).',
+          { id: Cards.Faction5.Gigaloth },
+          2,
+        ),
+      );
       const statsBuff = Modifier.createContextObjectWithAttributeBuffs(3, 3);
       statsBuff.appliedName = i18next.t('modifiers.faction_5_gigaloth_buff');
       card.setInherentModifiersContextObjects([
@@ -505,7 +519,14 @@ class CardFactory_WartechSet_Faction5 {
           name: i18next.t('cards.faction_5_artifact_rage_reactor_name'),
           description: i18next.t('modifiers.plus_attack_key', { amount: 1 }),
         }),
-        ModifierKillWatchSpawnEgg.createContextObject(false, true, { id: Cards.Faction5.Gibblegup }, 'Ripper', 1, CONFIG.PATTERN_1x1),
+        ModifierKillWatchSpawnEgg.createContextObject(
+          false,
+          true,
+          { id: Cards.Faction5.Gibblegup },
+          'Ripper',
+          1,
+          CONFIG.PATTERN_1x1,
+        ),
       ]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
       card.setFXResource(['FX.Cards.Artifact.RageReactor']);

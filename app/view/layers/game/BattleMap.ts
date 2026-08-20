@@ -24,7 +24,6 @@ const PromiseUtils = require('../../../common/utils/utils_promise');
  *************************************************************************** */
 
 var BattleMap = cc.Class.extend({
-
   _isDisplayingParticles: false,
   _isDisplayingTiles: false,
   _isDisplayingLights: false,
@@ -233,14 +232,18 @@ var BattleMap = cc.Class.extend({
     // position and resize all elements
     const winCenterPosition = UtilsEngine.getGSIWinCenterPosition();
     const winRect = UtilsEngine.getGSIWinRect();
-    const scaleDiff = Math.max(winRect.width / CONFIG.REF_WINDOW_SIZE.width, winRect.height / CONFIG.REF_WINDOW_SIZE.height);
+    const scaleDiff = Math.max(
+      winRect.width / CONFIG.REF_WINDOW_SIZE.width,
+      winRect.height / CONFIG.REF_WINDOW_SIZE.height,
+    );
 
     // ground sprites
     const groundSprites = this._groundSprites;
     for (var i = 0, il = groundSprites.length; i < il; i++) {
       const groundSprite = groundSprites[i];
       var groundScale;
-      const scaleModifier = (groundSprite._scaleModifier != null ? groundSprite._scaleModifier * scaleDiff : 1.0);
+      const scaleModifier =
+        groundSprite._scaleModifier != null ? groundSprite._scaleModifier * scaleDiff : 1.0;
       const scaleRelativeToSprite = groundSprite._scaleRelativeToSprite;
       if (scaleRelativeToSprite) {
         groundScale = UtilsEngine.getWindowAtLeastCoverNodeScale(scaleRelativeToSprite);
@@ -254,7 +257,10 @@ var BattleMap = cc.Class.extend({
       groundSprite.setScale(groundScale * scaleModifier);
       var screenRelativePosition = groundSprite._screenRelativePositionPct;
       if (screenRelativePosition) {
-        groundSprite.setPosition(Math.round(winRect.x + winRect.width * screenRelativePosition.x), Math.round(winRect.y + winRect.height * screenRelativePosition.y));
+        groundSprite.setPosition(
+          Math.round(winRect.x + winRect.width * screenRelativePosition.x),
+          Math.round(winRect.y + winRect.height * screenRelativePosition.y),
+        );
       }
     }
 
@@ -264,7 +270,9 @@ var BattleMap = cc.Class.extend({
       for (var i = 0, il = floorTileMap.length; i < il; i++) {
         const tileSprite = floorTileMap[i];
         const { boardPosition } = tileSprite;
-        tileSprite.setPosition(UtilsEngine.transformBoardToScreen(cc.p(boardPosition.x, boardPosition.y)));
+        tileSprite.setPosition(
+          UtilsEngine.transformBoardToScreen(cc.p(boardPosition.x, boardPosition.y)),
+        );
       }
     }
 
@@ -288,7 +296,10 @@ var BattleMap = cc.Class.extend({
       const particleSystem = particleSystems[i];
       var screenRelativePosition = particleSystem._screenRelativePositionPct;
       if (screenRelativePosition) {
-        particleSystem.setPosition(winRect.x + winRect.width * screenRelativePosition.x, winRect.y + winRect.height * screenRelativePosition.y);
+        particleSystem.setPosition(
+          winRect.x + winRect.width * screenRelativePosition.x,
+          winRect.y + winRect.height * screenRelativePosition.y,
+        );
       }
       var battlemapOffset = particleSystem._battlemapOffset;
       if (battlemapOffset) {
@@ -300,8 +311,18 @@ var BattleMap = cc.Class.extend({
       const screenRelativeSourcePositionPct = particleSystem._screenRelativeSourcePositionPct;
       const screenRelativeTargetPositionPct = particleSystem._screenRelativeTargetPositionPct;
       if (screenRelativeSourcePositionPct && screenRelativeTargetPositionPct) {
-        particleSystem.setSourceScreenPosition(cc.p(winRect.x + winRect.width * screenRelativeSourcePositionPct.x, winRect.y + winRect.height * screenRelativeSourcePositionPct.y));
-        particleSystem.setTargetScreenPosition(cc.p(winRect.x + winRect.width * screenRelativeTargetPositionPct.x, winRect.y + winRect.height * screenRelativeTargetPositionPct.y));
+        particleSystem.setSourceScreenPosition(
+          cc.p(
+            winRect.x + winRect.width * screenRelativeSourcePositionPct.x,
+            winRect.y + winRect.height * screenRelativeSourcePositionPct.y,
+          ),
+        );
+        particleSystem.setTargetScreenPosition(
+          cc.p(
+            winRect.x + winRect.width * screenRelativeTargetPositionPct.x,
+            winRect.y + winRect.height * screenRelativeTargetPositionPct.y,
+          ),
+        );
       }
     }
 
@@ -344,21 +365,29 @@ var BattleMap = cc.Class.extend({
       } else {
         audio_engine.current().play_music(RSX.music_battle_tutorial.audio);
       }
-    } else if (battleMapTemplate.getMap() === CONFIG.BATTLEMAP0) { // LYONAR
+    } else if (battleMapTemplate.getMap() === CONFIG.BATTLEMAP0) {
+      // LYONAR
       audio_engine.current().play_music(RSX.music_battlemap_firesofvictory.audio);
-    } else if (battleMapTemplate.getMap() === CONFIG.BATTLEMAP1) { // SONGHAI GREEN MOTHBALLS
+    } else if (battleMapTemplate.getMap() === CONFIG.BATTLEMAP1) {
+      // SONGHAI GREEN MOTHBALLS
       audio_engine.current().play_music(RSX.music_battlemap_morinkhur.audio);
-    } else if (battleMapTemplate.getMap() === CONFIG.BATTLEMAP2) { // DESERT ORANGE VETRUV
+    } else if (battleMapTemplate.getMap() === CONFIG.BATTLEMAP2) {
+      // DESERT ORANGE VETRUV
       audio_engine.current().play_music(RSX.music_battlemap01.audio);
-    } else if (battleMapTemplate.getMap() === CONFIG.BATTLEMAP3) { // ICE BRIDGE VANAR
+    } else if (battleMapTemplate.getMap() === CONFIG.BATTLEMAP3) {
+      // ICE BRIDGE VANAR
       audio_engine.current().play_music(RSX.music_battlemap02.audio);
-    } else if (battleMapTemplate.getMap() === CONFIG.BATTLEMAP4) { // ICE CAVERN BLUE YELLOW
+    } else if (battleMapTemplate.getMap() === CONFIG.BATTLEMAP4) {
+      // ICE CAVERN BLUE YELLOW
       audio_engine.current().play_music(RSX.music_battlemap_vanar.audio);
-    } else if (battleMapTemplate.getMap() === CONFIG.BATTLEMAP5) { // SONGHAI SKY ARENA
+    } else if (battleMapTemplate.getMap() === CONFIG.BATTLEMAP5) {
+      // SONGHAI SKY ARENA
       audio_engine.current().play_music(RSX.music_battlemap_risensun2.audio);
-    } else if (battleMapTemplate.getMap() === CONFIG.BATTLEMAP6) { // BLUE MONOLITH UNDERGROUND
+    } else if (battleMapTemplate.getMap() === CONFIG.BATTLEMAP6) {
+      // BLUE MONOLITH UNDERGROUND
       audio_engine.current().play_music(RSX.music_battlemap_bluemonolith.audio);
-    } else if (battleMapTemplate.getMap() === CONFIG.BATTLEMAP7) { // VETRUVIAN PALACE
+    } else if (battleMapTemplate.getMap() === CONFIG.BATTLEMAP7) {
+      // VETRUVIAN PALACE
       audio_engine.current().play_music(RSX.music_battlemap_duskfall.audio);
     } else if (battleMapTemplate.getMap() === CONFIG.BATTLEMAP_ABYSSIAN) {
       audio_engine.current().play_music(RSX.music_battlemap_bluemonolith.audio);
@@ -393,7 +422,10 @@ var BattleMap = cc.Class.extend({
       this.middlegroundSprite = GroundSprite.create(RSX.battlemap0_middleground.img);
       this.middlegroundSprite._screenRelativePositionPct = { x: 0.5, y: 0.5 };
       this._groundSprites.push(this.middlegroundSprite);
-      this._targetLayer.addNode(this.middlegroundSprite, { layerName: 'backgroundLayer', zOrder: 1 });
+      this._targetLayer.addNode(this.middlegroundSprite, {
+        layerName: 'backgroundLayer',
+        zOrder: 1,
+      });
 
       // this middleground needs a higher ambient light level than normal
       // so we'll set the final and add it to a list of sprites to be set when the lights fade in
@@ -405,7 +437,10 @@ var BattleMap = cc.Class.extend({
       this.backgroundSprite._screenRelativePositionPct = { x: 0.5, y: 1.0 };
       this.backgroundSprite.setAnchorPoint(cc.p(0.5, 1.0));
       this._groundSprites.push(this.backgroundSprite);
-      this._targetLayer.addNode(this.backgroundSprite, { layerName: 'backgroundLayer', zOrder: -9999 });
+      this._targetLayer.addNode(this.backgroundSprite, {
+        layerName: 'backgroundLayer',
+        zOrder: -9999,
+      });
 
       // foreground
       this.foregroundSprite1 = GroundSprite.create(RSX.battlemap0_foreground_001.img);
@@ -432,7 +467,10 @@ var BattleMap = cc.Class.extend({
       this.middlegroundSprite = GroundSprite.create(RSX.battlemap1_middleground.img);
       this.middlegroundSprite._screenRelativePositionPct = { x: 0.5, y: 0.5 };
       this._groundSprites.push(this.middlegroundSprite);
-      this._targetLayer.addNode(this.middlegroundSprite, { layerName: 'backgroundLayer', zOrder: 1 });
+      this._targetLayer.addNode(this.middlegroundSprite, {
+        layerName: 'backgroundLayer',
+        zOrder: 1,
+      });
 
       // this middleground needs a higher ambient light level than normal
       // so we'll set the final and add it to a list of sprites to be set when the lights fade in
@@ -445,7 +483,10 @@ var BattleMap = cc.Class.extend({
       this.backgroundSprite._screenRelativePositionPct = { x: 0.5, y: 1.0 };
       this.backgroundSprite.setAnchorPoint(cc.p(0.5, 1.0));
       this._groundSprites.push(this.backgroundSprite);
-      this._targetLayer.addNode(this.backgroundSprite, { layerName: 'backgroundLayer', zOrder: -9999 });
+      this._targetLayer.addNode(this.backgroundSprite, {
+        layerName: 'backgroundLayer',
+        zOrder: -9999,
+      });
 
       // this background may need a higher ambient light level than normal
       // so we'll set the final and add it to a list of sprites to be set when the lights fade in
@@ -462,7 +503,10 @@ var BattleMap = cc.Class.extend({
       this.middlegroundSprite = GroundSprite.create(RSX.battlemap2_middleground.img);
       this.middlegroundSprite._screenRelativePositionPct = { x: 0.5, y: 0.5 };
       this._groundSprites.push(this.middlegroundSprite);
-      this._targetLayer.addNode(this.middlegroundSprite, { layerName: 'backgroundLayer', zOrder: 1 });
+      this._targetLayer.addNode(this.middlegroundSprite, {
+        layerName: 'backgroundLayer',
+        zOrder: 1,
+      });
 
       // this middleground needs a higher ambient light level than normal
       // so we'll set the final and add it to a list of sprites to be set when the lights fade in
@@ -475,7 +519,10 @@ var BattleMap = cc.Class.extend({
       this.backgroundSprite._screenRelativePositionPct = { x: 0.5, y: 1.0 };
       this.backgroundSprite.setAnchorPoint(cc.p(0.5, 1.0));
       this._groundSprites.push(this.backgroundSprite);
-      this._targetLayer.addNode(this.backgroundSprite, { layerName: 'backgroundLayer', zOrder: -9999 });
+      this._targetLayer.addNode(this.backgroundSprite, {
+        layerName: 'backgroundLayer',
+        zOrder: -9999,
+      });
 
       // this background may need a higher ambient light level than normal
       // so we'll set the final and add it to a list of sprites to be set when the lights fade in
@@ -510,7 +557,10 @@ var BattleMap = cc.Class.extend({
       this.middlegroundSprite = GroundSprite.create(RSX.battlemap3_middleground.img);
       this.middlegroundSprite._screenRelativePositionPct = { x: 0.5, y: 0.5 };
       this._groundSprites.push(this.middlegroundSprite);
-      this._targetLayer.addNode(this.middlegroundSprite, { layerName: 'backgroundLayer', zOrder: 1 });
+      this._targetLayer.addNode(this.middlegroundSprite, {
+        layerName: 'backgroundLayer',
+        zOrder: 1,
+      });
 
       // this middleground needs a higher ambient light level than normal
       // so we'll set the final and add it to a list of sprites to be set when the lights fade in
@@ -522,7 +572,10 @@ var BattleMap = cc.Class.extend({
       this.backgroundSprite = GroundSprite.create(RSX.battlemap3_background.img);
       this.backgroundSprite._screenRelativePositionPct = { x: 0.5, y: 0.5 };
       this._groundSprites.push(this.backgroundSprite);
-      this._targetLayer.addNode(this.backgroundSprite, { layerName: 'backgroundLayer', zOrder: -9999 });
+      this._targetLayer.addNode(this.backgroundSprite, {
+        layerName: 'backgroundLayer',
+        zOrder: -9999,
+      });
 
       // this background may need a higher ambient light level than normal
       // so we'll set the final and add it to a list of sprites to be set when the lights fade in
@@ -547,7 +600,10 @@ var BattleMap = cc.Class.extend({
       this.middlegroundSprite = GroundSprite.create(RSX.battlemap4_middleground.img);
       this.middlegroundSprite._screenRelativePositionPct = { x: 0.5, y: 0.5 };
       this._groundSprites.push(this.middlegroundSprite);
-      this._targetLayer.addNode(this.middlegroundSprite, { layerName: 'backgroundLayer', zOrder: 1 });
+      this._targetLayer.addNode(this.middlegroundSprite, {
+        layerName: 'backgroundLayer',
+        zOrder: 1,
+      });
 
       // this middleground needs a higher ambient light level than normal
       // so we'll set the final and add it to a list of sprites to be set when the lights fade in
@@ -561,7 +617,10 @@ var BattleMap = cc.Class.extend({
       this.backgroundSprite._screenRelativePositionPct = { x: 0.0, y: 1.0 };
       this.backgroundSprite.setAnchorPoint(cc.p(0.0, 1.0));
       this._groundSprites.push(this.backgroundSprite);
-      this._targetLayer.addNode(this.backgroundSprite, { layerName: 'backgroundLayer', zOrder: -9999 });
+      this._targetLayer.addNode(this.backgroundSprite, {
+        layerName: 'backgroundLayer',
+        zOrder: -9999,
+      });
 
       // this background may need a higher ambient light level than normal
       // so we'll set the final and add it to a list of sprites to be set when the lights fade in
@@ -591,7 +650,10 @@ var BattleMap = cc.Class.extend({
       this.middlegroundSprite = GroundSprite.create(RSX.battlemap5_middleground.img);
       this.middlegroundSprite._screenRelativePositionPct = { x: 0.5, y: 0.5 };
       this._groundSprites.push(this.middlegroundSprite);
-      this._targetLayer.addNode(this.middlegroundSprite, { layerName: 'backgroundLayer', zOrder: 1 });
+      this._targetLayer.addNode(this.middlegroundSprite, {
+        layerName: 'backgroundLayer',
+        zOrder: 1,
+      });
 
       // this middleground needs a higher ambient light level than normal
       // so we'll set the final and add it to a list of sprites to be set when the lights fade in
@@ -604,7 +666,10 @@ var BattleMap = cc.Class.extend({
       this.backgroundSprite.setAnchorPoint(cc.p(0.5, 1.0));
       this.backgroundSprite.setAmbientLightColor({ r: -5, g: -95, b: -95 });
       this._groundSprites.push(this.backgroundSprite);
-      this._targetLayer.addNode(this.backgroundSprite, { layerName: 'backgroundLayer', zOrder: -9999 });
+      this._targetLayer.addNode(this.backgroundSprite, {
+        layerName: 'backgroundLayer',
+        zOrder: -9999,
+      });
 
       // foreground
       this.foregroundSprite1 = GroundSprite.create(RSX.battlemap5_foreground_001.img);
@@ -632,7 +697,10 @@ var BattleMap = cc.Class.extend({
       this.middlegroundSprite = GroundSprite.create(RSX.battlemap6_middleground.img);
       this.middlegroundSprite._screenRelativePositionPct = { x: 0.5, y: 0.5 };
       this._groundSprites.push(this.middlegroundSprite);
-      this._targetLayer.addNode(this.middlegroundSprite, { layerName: 'backgroundLayer', zOrder: 1 });
+      this._targetLayer.addNode(this.middlegroundSprite, {
+        layerName: 'backgroundLayer',
+        zOrder: 1,
+      });
     } else if (battleMapTemplate.getMap() === CONFIG.BATTLEMAP7) {
       /*
       BATTLEMAP7
@@ -643,7 +711,10 @@ var BattleMap = cc.Class.extend({
       this.middlegroundSprite = GroundSprite.create(RSX.battlemap7_middleground.img);
       this.middlegroundSprite._screenRelativePositionPct = { x: 0.5, y: 0.5 };
       this._groundSprites.push(this.middlegroundSprite);
-      this._targetLayer.addNode(this.middlegroundSprite, { layerName: 'backgroundLayer', zOrder: 1 });
+      this._targetLayer.addNode(this.middlegroundSprite, {
+        layerName: 'backgroundLayer',
+        zOrder: 1,
+      });
 
       // // this middleground needs a higher ambient light level than normal
       // // so we'll set the final and add it to a list of sprites to be set when the lights fade in
@@ -656,7 +727,10 @@ var BattleMap = cc.Class.extend({
       this.backgroundSprite._screenRelativePositionPct = { x: 0.5, y: 1.0 };
       this.backgroundSprite.setAnchorPoint(cc.p(0.5, 1.0));
       this._groundSprites.push(this.backgroundSprite);
-      this._targetLayer.addNode(this.backgroundSprite, { layerName: 'backgroundLayer', zOrder: -9999 });
+      this._targetLayer.addNode(this.backgroundSprite, {
+        layerName: 'backgroundLayer',
+        zOrder: -9999,
+      });
 
       // // this background may need a higher ambient light level than normal
       // // so we'll set the final and add it to a list of sprites to be set when the lights fade in
@@ -681,7 +755,10 @@ var BattleMap = cc.Class.extend({
       this.middlegroundSprite.setAmbientLightColor({ r: -50, g: -50, b: -50 });
       this.middlegroundSprite._finalAmbientLightColor = { r: -50, g: -50, b: -50 };
       this._groundSprites.push(this.middlegroundSprite);
-      this._targetLayer.addNode(this.middlegroundSprite, { layerName: 'backgroundLayer', zOrder: 1 });
+      this._targetLayer.addNode(this.middlegroundSprite, {
+        layerName: 'backgroundLayer',
+        zOrder: 1,
+      });
 
       // background
       this.backgroundSprite = GroundSprite.create(RSX.battlemap_shimzar_background.img);
@@ -690,7 +767,10 @@ var BattleMap = cc.Class.extend({
       this.backgroundSprite._finalAmbientLightColor = { r: -50, g: -50, b: -50 };
       this.backgroundSprite.setAnchorPoint(cc.p(0.5, 1.0));
       this._groundSprites.push(this.backgroundSprite);
-      this._targetLayer.addNode(this.backgroundSprite, { layerName: 'backgroundLayer', zOrder: -9999 });
+      this._targetLayer.addNode(this.backgroundSprite, {
+        layerName: 'backgroundLayer',
+        zOrder: -9999,
+      });
 
       // foreground
       this.foregroundSprite1 = GroundSprite.create(RSX.battlemap_shimzar_foreground.img);
@@ -709,7 +789,10 @@ var BattleMap = cc.Class.extend({
       this.middlegroundSprite.setAmbientLightColor({ r: -20, g: -20, b: -20 });
       this.middlegroundSprite._finalAmbientLightColor = { r: -20, g: -20, b: -20 };
       this._groundSprites.push(this.middlegroundSprite);
-      this._targetLayer.addNode(this.middlegroundSprite, { layerName: 'backgroundLayer', zOrder: 1 });
+      this._targetLayer.addNode(this.middlegroundSprite, {
+        layerName: 'backgroundLayer',
+        zOrder: 1,
+      });
 
       // background
       this.backgroundSprite = GroundSprite.create(RSX.battlemap_abyssian_background.img);
@@ -718,25 +801,38 @@ var BattleMap = cc.Class.extend({
       this.backgroundSprite._finalAmbientLightColor = { r: -50, g: -50, b: -50 };
       this.backgroundSprite.setAnchorPoint(cc.p(0.5, 1.0));
       this._groundSprites.push(this.backgroundSprite);
-      this._targetLayer.addNode(this.backgroundSprite, { layerName: 'backgroundLayer', zOrder: -9999 });
+      this._targetLayer.addNode(this.backgroundSprite, {
+        layerName: 'backgroundLayer',
+        zOrder: -9999,
+      });
 
       // foreground
       this.foregroundSprite1 = GroundSprite.create(RSX.battlemap_abyssian_cracks.img);
       this.foregroundSprite1._screenRelativePositionPct = { x: 0.5, y: 0.5 };
       this._groundSprites.push(this.foregroundSprite1);
-      this._targetLayer.addNode(this.foregroundSprite1, { layerName: 'backgroundLayer', zOrder: 2 });
+      this._targetLayer.addNode(this.foregroundSprite1, {
+        layerName: 'backgroundLayer',
+        zOrder: 2,
+      });
 
-      this.foregroundSprite1.runAction(cc.sequence(
-        cc.fadeTo(3.0, 170).easing(cc.easeQuadraticActionInOut()),
-        cc.delayTime(1.0),
-        cc.fadeTo(1.0, 255).easing(cc.easeQuadraticActionInOut()),
-      ).repeatForever());
+      this.foregroundSprite1.runAction(
+        cc
+          .sequence(
+            cc.fadeTo(3.0, 170).easing(cc.easeQuadraticActionInOut()),
+            cc.delayTime(1.0),
+            cc.fadeTo(1.0, 255).easing(cc.easeQuadraticActionInOut()),
+          )
+          .repeatForever(),
+      );
 
       // foreground
       this.foregroundSprite2 = GroundSprite.create(RSX.battlemap_abyssian_river.img);
       this.foregroundSprite2._screenRelativePositionPct = { x: 0.5, y: 0.5 };
       this._groundSprites.push(this.foregroundSprite2);
-      this._targetLayer.addNode(this.foregroundSprite2, { layerName: 'backgroundLayer', zOrder: 2 });
+      this._targetLayer.addNode(this.foregroundSprite2, {
+        layerName: 'backgroundLayer',
+        zOrder: 2,
+      });
     } else if (battleMapTemplate.getMap() === CONFIG.BATTLEMAP_REDROCK) {
       this._targetLayer.getFX().setWindDirection(cc.p(0.0, 1.0));
 
@@ -746,7 +842,10 @@ var BattleMap = cc.Class.extend({
       this.middlegroundSprite.setAmbientLightColor({ r: -30, g: -30, b: -30 });
       this.middlegroundSprite._finalAmbientLightColor = { r: -30, g: -30, b: -30 };
       this._groundSprites.push(this.middlegroundSprite);
-      this._targetLayer.addNode(this.middlegroundSprite, { layerName: 'backgroundLayer', zOrder: 1 });
+      this._targetLayer.addNode(this.middlegroundSprite, {
+        layerName: 'backgroundLayer',
+        zOrder: 1,
+      });
 
       // background
       this.backgroundSprite = GroundSprite.create(RSX.battlemap_redrock_background.img);
@@ -755,21 +854,31 @@ var BattleMap = cc.Class.extend({
       this.backgroundSprite._finalAmbientLightColor = { r: -50, g: -50, b: -50 };
       this.backgroundSprite.setAnchorPoint(cc.p(0.5, 1.0));
       this._groundSprites.push(this.backgroundSprite);
-      this._targetLayer.addNode(this.backgroundSprite, { layerName: 'backgroundLayer', zOrder: -9999 });
+      this._targetLayer.addNode(this.backgroundSprite, {
+        layerName: 'backgroundLayer',
+        zOrder: -9999,
+      });
 
       // foreground
       this.foregroundSprite1 = GroundSprite.create(RSX.battlemap_redrock_midground_glow.img);
       this.foregroundSprite1._screenRelativePositionPct = { x: 0.5, y: 0.5 };
       this.foregroundSprite1.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
       this._groundSprites.push(this.foregroundSprite1);
-      this._targetLayer.addNode(this.foregroundSprite1, { layerName: 'backgroundLayer', zOrder: 2 });
+      this._targetLayer.addNode(this.foregroundSprite1, {
+        layerName: 'backgroundLayer',
+        zOrder: 2,
+      });
 
       this.foregroundSprite1.setOpacity(127);
-      this.foregroundSprite1.runAction(cc.sequence(
-        cc.fadeTo(3.0, 50).easing(cc.easeQuadraticActionInOut()),
-        cc.delayTime(1.0),
-        cc.fadeTo(3.0, 127).easing(cc.easeQuadraticActionInOut()),
-      ).repeatForever());
+      this.foregroundSprite1.runAction(
+        cc
+          .sequence(
+            cc.fadeTo(3.0, 50).easing(cc.easeQuadraticActionInOut()),
+            cc.delayTime(1.0),
+            cc.fadeTo(3.0, 127).easing(cc.easeQuadraticActionInOut()),
+          )
+          .repeatForever(),
+      );
 
       // foreground
       this.foregroundSprite2 = GroundSprite.create(RSX.battlemap_redrock_foreground.img);
@@ -787,7 +896,10 @@ var BattleMap = cc.Class.extend({
       this.middlegroundSprite.setAmbientLightColor({ r: -20, g: -20, b: -20 });
       this.middlegroundSprite._finalAmbientLightColor = { r: -20, g: -20, b: -20 };
       this._groundSprites.push(this.middlegroundSprite);
-      this._targetLayer.addNode(this.middlegroundSprite, { layerName: 'backgroundLayer', zOrder: 1 });
+      this._targetLayer.addNode(this.middlegroundSprite, {
+        layerName: 'backgroundLayer',
+        zOrder: 1,
+      });
 
       // background
       this.backgroundSprite = GroundSprite.create(RSX.battlemap_vanar_background.img);
@@ -796,7 +908,10 @@ var BattleMap = cc.Class.extend({
       this.backgroundSprite._finalAmbientLightColor = { r: -50, g: -50, b: -50 };
       this.backgroundSprite.setAnchorPoint(cc.p(0.5, 1.0));
       this._groundSprites.push(this.backgroundSprite);
-      this._targetLayer.addNode(this.backgroundSprite, { layerName: 'backgroundLayer', zOrder: -9999 });
+      this._targetLayer.addNode(this.backgroundSprite, {
+        layerName: 'backgroundLayer',
+        zOrder: -9999,
+      });
     }
   },
   _setupTiles() {
@@ -828,7 +943,7 @@ var BattleMap = cc.Class.extend({
       /*
       BATTLEMAP0
       */
-      fx.setBloomThreshold(0.50);
+      fx.setBloomThreshold(0.5);
       fx.setBloomIntensity(2.76);
       fx.setAmbientLightColor({ r: 95, g: 95, b: 95 });
       fx.setFalloffModifier(2.0);
@@ -838,7 +953,7 @@ var BattleMap = cc.Class.extend({
       /*
       BATTLEMAP1
       */
-      fx.setBloomThreshold(0.50);
+      fx.setBloomThreshold(0.5);
       fx.setBloomIntensity(2.76);
       fx.setAmbientLightColor({ r: 89, g: 89, b: 89 });
       fx.setFalloffModifier(2.0);
@@ -848,7 +963,7 @@ var BattleMap = cc.Class.extend({
       /*
       BATTLEMAP2
       */
-      fx.setBloomThreshold(0.50);
+      fx.setBloomThreshold(0.5);
       fx.setBloomIntensity(2.55);
       fx.setAmbientLightColor({ r: 90, g: 90, b: 90 });
       fx.setFalloffModifier(2.0);
@@ -878,7 +993,7 @@ var BattleMap = cc.Class.extend({
       /*
       BATTLEMAP5
       */
-      fx.setBloomThreshold(0.50);
+      fx.setBloomThreshold(0.5);
       fx.setBloomIntensity(2.76);
       fx.setAmbientLightColor({ r: 95, g: 95, b: 95 });
       fx.setFalloffModifier(2.0);
@@ -888,7 +1003,7 @@ var BattleMap = cc.Class.extend({
       /*
       BATTLEMAP6
       */
-      fx.setBloomThreshold(0.50);
+      fx.setBloomThreshold(0.5);
       fx.setBloomIntensity(2.76);
       fx.setAmbientLightColor({ r: 95, g: 95, b: 95 });
       fx.setFalloffModifier(2.0);
@@ -898,7 +1013,7 @@ var BattleMap = cc.Class.extend({
       /*
       BATTLEMAP7
       */
-      fx.setBloomThreshold(0.50);
+      fx.setBloomThreshold(0.5);
       fx.setBloomIntensity(2.5);
       fx.setAmbientLightColor({ r: 89, g: 89, b: 89 });
       fx.setFalloffModifier(2.0);
@@ -908,7 +1023,7 @@ var BattleMap = cc.Class.extend({
       /*
       BATTLEMAP_SHIMZAR
       */
-      fx.setBloomThreshold(0.50);
+      fx.setBloomThreshold(0.5);
       fx.setBloomIntensity(2.76);
       fx.setAmbientLightColor({ r: 95, g: 95, b: 95 });
       fx.setFalloffModifier(2.0);
@@ -918,7 +1033,7 @@ var BattleMap = cc.Class.extend({
       /*
       BATTLEMAP_ABYSSIAN
       */
-      fx.setBloomThreshold(0.50);
+      fx.setBloomThreshold(0.5);
       fx.setBloomIntensity(2.76);
       fx.setAmbientLightColor({ r: 95, g: 95, b: 95 });
       fx.setFalloffModifier(2.0);
@@ -1352,7 +1467,10 @@ var BattleMap = cc.Class.extend({
     if (clouds != null && clouds.length > 0) {
       for (let i = 0; i < clouds.length; i++) {
         const cloudsData = clouds[i];
-        const cloudIndex = cloudsData.index != null && cloudsData.index >= 1 && cloudsData.index <= 7 ? cloudsData.index : _.random(1, 7);
+        const cloudIndex =
+          cloudsData.index != null && cloudsData.index >= 1 && cloudsData.index <= 7
+            ? cloudsData.index
+            : _.random(1, 7);
         cloudOptions.plistFile = RSX[`ptcl_cloud_00${cloudIndex}`].plist;
         const cloudSystem = BaseParticleSystem.create(cloudOptions);
         cloudSystem._screenRelativeSourcePositionPct = cloudsData.sourcePosition;
@@ -1509,8 +1627,9 @@ var BattleMap = cc.Class.extend({
           const x = rayCenterX + rayMinX + xr;
           const xp = xr / rayRangeX;
           const xpn = (xp - 0.5) * 2.0;
-          const xm = Math.max(0.25, Math.abs(xpn < 0.0 ? xpn * rayWeightLeft : xpn * rayWeightRight)) ** 3.0;
-          const y = winRect.y + winRect.height * 0.75 + (xm * Math.random() * -rayRangeY) * 2.0;
+          const xm =
+            Math.max(0.25, Math.abs(xpn < 0.0 ? xpn * rayWeightLeft : xpn * rayWeightRight)) ** 3.0;
+          const y = winRect.y + winRect.height * 0.75 + xm * Math.random() * -rayRangeY * 2.0;
           raySprite.setPosition(x, y);
 
           // setup for show
@@ -1531,10 +1650,21 @@ var BattleMap = cc.Class.extend({
   activate() {
     Logger.module('ENGINE').log('BattleMap::activate');
     // activates and shows all battle map elements
-    this.showEnvironmentEffects().then(() => this.showTiles(SDK.GameSession.getInstance().getIsDeveloperMode() ? 0.0 : CONFIG.FADE_SLOW_DURATION)).then(() => this.showLights(SDK.GameSession.getInstance().getIsDeveloperMode() ? 0.0 : CONFIG.FADE_SLOW_DURATION)).then(() => {
-      // when all resolve set as active
-      this.setStatus(BattleMap.STATUS.ACTIVE);
-    });
+    this.showEnvironmentEffects()
+      .then(() =>
+        this.showTiles(
+          SDK.GameSession.getInstance().getIsDeveloperMode() ? 0.0 : CONFIG.FADE_SLOW_DURATION,
+        ),
+      )
+      .then(() =>
+        this.showLights(
+          SDK.GameSession.getInstance().getIsDeveloperMode() ? 0.0 : CONFIG.FADE_SLOW_DURATION,
+        ),
+      )
+      .then(() => {
+        // when all resolve set as active
+        this.setStatus(BattleMap.STATUS.ACTIVE);
+      });
   },
 
   showTiles(duration) {
@@ -1546,19 +1676,32 @@ var BattleMap = cc.Class.extend({
         const floorTileMap = this._floorTileMap;
 
         if (floorTileMap != null) {
-          if (duration == null) { duration = 0.0; }
+          if (duration == null) {
+            duration = 0.0;
+          }
 
           // animate showing of tiles
           const floorTilesShown = [];
           let startTile;
           let forPlayer2;
-          if (SDK.GameSession.getInstance().getMyPlayer() === SDK.GameSession.getInstance().getPlayer2()) {
+          if (
+            SDK.GameSession.getInstance().getMyPlayer() ===
+            SDK.GameSession.getInstance().getPlayer2()
+          ) {
             // player 2 starts showing tiles from bottom right
-            startTile = floorTileMap[UtilsPosition.getMapIndexFromPosition(board.getColumnCount(), board.getColumnCount() - 1, 0)];
+            startTile =
+              floorTileMap[
+                UtilsPosition.getMapIndexFromPosition(
+                  board.getColumnCount(),
+                  board.getColumnCount() - 1,
+                  0,
+                )
+              ];
             forPlayer2 = true;
           } else {
             // player 1 starts showing tiles from bottom left
-            startTile = floorTileMap[UtilsPosition.getMapIndexFromPosition(board.getColumnCount(), 0, 0)];
+            startTile =
+              floorTileMap[UtilsPosition.getMapIndexFromPosition(board.getColumnCount(), 0, 0)];
             forPlayer2 = false;
           }
           let floorTilesShowing = [startTile];
@@ -1576,33 +1719,49 @@ var BattleMap = cc.Class.extend({
 
               // fade in staggered
               tileSprite.setOpacity(0.0);
-              tileSprite.runAction(cc.sequence(
-                cc.delayTime(showDelay),
-                cc.EaseExponentialIn.create(cc.fadeTo(duration * 0.3, CONFIG.FLOOR_TILE_OPACITY)),
-              ));
+              tileSprite.runAction(
+                cc.sequence(
+                  cc.delayTime(showDelay),
+                  cc.EaseExponentialIn.create(cc.fadeTo(duration * 0.3, CONFIG.FLOOR_TILE_OPACITY)),
+                ),
+              );
 
               // scale in staggered
               const scale = tileSprite.getScale();
               tileSprite.setScale(0.0);
-              tileSprite.runAction(cc.sequence(
-                cc.delayTime(showDelay),
-                cc.EaseBackOut.create(cc.scaleTo(duration, scale)),
-              ));
+              tileSprite.runAction(
+                cc.sequence(
+                  cc.delayTime(showDelay),
+                  cc.EaseBackOut.create(cc.scaleTo(duration, scale)),
+                ),
+              );
 
               // get tiles around and add to end of show queue
-              const mapIndexUp = UtilsPosition.getMapIndexFromPosition(board.getColumnCount(), col, row + 1);
+              const mapIndexUp = UtilsPosition.getMapIndexFromPosition(
+                board.getColumnCount(),
+                col,
+                row + 1,
+              );
               const tileSpriteUp = floorTileMap[mapIndexUp];
               if (tileSpriteUp != null) {
                 floorTilesToShowNext.push(tileSpriteUp);
               }
               if (forPlayer2) {
-                const mapIndexLeft = UtilsPosition.getMapIndexFromPosition(board.getColumnCount(), col - 1, row);
+                const mapIndexLeft = UtilsPosition.getMapIndexFromPosition(
+                  board.getColumnCount(),
+                  col - 1,
+                  row,
+                );
                 const tileSpriteLeft = floorTileMap[mapIndexLeft];
                 if (tileSpriteLeft != null) {
                   floorTilesToShowNext.push(tileSpriteLeft);
                 }
               } else {
-                const mapIndexRight = UtilsPosition.getMapIndexFromPosition(board.getColumnCount(), col + 1, row);
+                const mapIndexRight = UtilsPosition.getMapIndexFromPosition(
+                  board.getColumnCount(),
+                  col + 1,
+                  row,
+                );
                 const tileSpriteRight = floorTileMap[mapIndexRight];
                 if (tileSpriteRight != null) {
                   floorTilesToShowNext.push(tileSpriteRight);
@@ -1622,12 +1781,14 @@ var BattleMap = cc.Class.extend({
         }
 
         // delay then set as displayed
-        this._targetLayer.runAction(cc.sequence(
-          cc.delayTime(showDelay),
-          cc.callFunc(() => {
-            resolve();
-          }),
-        ));
+        this._targetLayer.runAction(
+          cc.sequence(
+            cc.delayTime(showDelay),
+            cc.callFunc(() => {
+              resolve();
+            }),
+          ),
+        );
       });
     }
 
@@ -1642,7 +1803,9 @@ var BattleMap = cc.Class.extend({
         const floorTileMap = this._floorTileMap;
 
         if (floorTileMap != null) {
-          if (duration == null) { duration = 0.0; }
+          if (duration == null) {
+            duration = 0.0;
+          }
           showDelay += duration;
           for (let i = 0, il = floorTileMap.length; i < il; i++) {
             const tileSprite = floorTileMap[i];
@@ -1653,12 +1816,14 @@ var BattleMap = cc.Class.extend({
         }
 
         // delay then resolve
-        this._targetLayer.runAction(cc.sequence(
-          cc.delayTime(showDelay),
-          cc.callFunc(() => {
-            resolve();
-          }),
-        ));
+        this._targetLayer.runAction(
+          cc.sequence(
+            cc.delayTime(showDelay),
+            cc.callFunc(() => {
+              resolve();
+            }),
+          ),
+        );
       });
     }
 
@@ -1674,7 +1839,9 @@ var BattleMap = cc.Class.extend({
         const ambientLightColorChangingSprites = this._ambientLightColorChangingSprites;
 
         if (lights != null) {
-          if (duration == null) { duration = 0.0; }
+          if (duration == null) {
+            duration = 0.0;
+          }
 
           // show lights all at once
           showDelay += duration * 0.75;
@@ -1686,19 +1853,26 @@ var BattleMap = cc.Class.extend({
           for (var i = 0, il = ambientLightColorChangingSprites.length; i < il; i++) {
             const sprite = ambientLightColorChangingSprites[i];
             if (sprite._finalAmbientLightColor) {
-              const ambientLightColorAction = new AmbientLightColorTo(duration, sprite._finalAmbientLightColor.r, sprite._finalAmbientLightColor.g, sprite._finalAmbientLightColor.b);
+              const ambientLightColorAction = new AmbientLightColorTo(
+                duration,
+                sprite._finalAmbientLightColor.r,
+                sprite._finalAmbientLightColor.g,
+                sprite._finalAmbientLightColor.b,
+              );
               sprite.runAction(ambientLightColorAction);
             }
           }
         }
 
         // delay then set as displayed
-        this._targetLayer.runAction(cc.sequence(
-          cc.delayTime(showDelay),
-          cc.callFunc(() => {
-            resolve();
-          }),
-        ));
+        this._targetLayer.runAction(
+          cc.sequence(
+            cc.delayTime(showDelay),
+            cc.callFunc(() => {
+              resolve();
+            }),
+          ),
+        );
       });
     }
 
@@ -1714,7 +1888,9 @@ var BattleMap = cc.Class.extend({
         const ambientLightColorChangingSprites = this._ambientLightColorChangingSprites;
 
         if (lights != null) {
-          if (duration == null) { duration = 0.0; }
+          if (duration == null) {
+            duration = 0.0;
+          }
           // hide lights all at once
           showDelay += duration * 0.75;
           for (var i = 0, il = lights.length; i < il; i++) {
@@ -1735,12 +1911,14 @@ var BattleMap = cc.Class.extend({
         }
 
         // delay then resolve
-        this._targetLayer.runAction(cc.sequence(
-          cc.delayTime(showDelay),
-          cc.callFunc(() => {
-            resolve();
-          }),
-        ));
+        this._targetLayer.runAction(
+          cc.sequence(
+            cc.delayTime(showDelay),
+            cc.callFunc(() => {
+              resolve();
+            }),
+          ),
+        );
       });
     }
 
@@ -1765,14 +1943,27 @@ var BattleMap = cc.Class.extend({
         if (raySprites != null) {
           for (var i = 0, il = raySprites.length; i < il; i++) {
             const raySprite = raySprites[i];
-            const frequency = this.sunRayFrequencyMin + Math.random() * (this.sunRayFrequencyMax - this.sunRayFrequencyMin);
-            raySprite.runAction(cc.sequence(
-              cc.delayTime(frequency * 0.5),
-              cc.fadeTo(this.sunRayFadeDurationMin + Math.random() * (this.sunRayFadeDurationMax - this.sunRayFadeDurationMin), this.sunRayOpacity),
-              cc.delayTime(Math.random() * this.sunRayDuration),
-              cc.fadeOut(this.sunRayFadeDurationMin + Math.random() * (this.sunRayFadeDurationMax - this.sunRayFadeDurationMin)),
-              cc.delayTime(frequency * 0.5),
-            ).repeatForever());
+            const frequency =
+              this.sunRayFrequencyMin +
+              Math.random() * (this.sunRayFrequencyMax - this.sunRayFrequencyMin);
+            raySprite.runAction(
+              cc
+                .sequence(
+                  cc.delayTime(frequency * 0.5),
+                  cc.fadeTo(
+                    this.sunRayFadeDurationMin +
+                      Math.random() * (this.sunRayFadeDurationMax - this.sunRayFadeDurationMin),
+                    this.sunRayOpacity,
+                  ),
+                  cc.delayTime(Math.random() * this.sunRayDuration),
+                  cc.fadeOut(
+                    this.sunRayFadeDurationMin +
+                      Math.random() * (this.sunRayFadeDurationMax - this.sunRayFadeDurationMin),
+                  ),
+                  cc.delayTime(frequency * 0.5),
+                )
+                .repeatForever(),
+            );
           }
         }
 
@@ -1813,7 +2004,6 @@ var BattleMap = cc.Class.extend({
   },
 
   /* endregion ACTIVATE */
-
 });
 
 BattleMap.STATUS = {

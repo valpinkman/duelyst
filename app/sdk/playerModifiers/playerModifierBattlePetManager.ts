@@ -31,22 +31,29 @@ class PlayerModifierBattlePetManager extends PlayerModifier {
     super.onEvent(event);
 
     if (this._private.listeningToEvents) {
-      if (this.getGameSession().getIsRunningAsAuthoritative() && (event.type === EVENTS.after_step)) {
-        const {
-          action,
-        } = event.step;
-        if (action instanceof StartTurnAction && (action.getOwnerId() === this.getCard().getOwnerId())) {
+      if (this.getGameSession().getIsRunningAsAuthoritative() && event.type === EVENTS.after_step) {
+        const { action } = event.step;
+        if (
+          action instanceof StartTurnAction &&
+          action.getOwnerId() === this.getCard().getOwnerId()
+        ) {
           // watch for my turn to trigger my battle pets
           return this.startBattlePetActions();
-        } if (!this.getGameSession().getIsBufferingEvents() && (this._private.queuedBattlePets.length > 0)) {
+        }
+        if (
+          !this.getGameSession().getIsBufferingEvents() &&
+          this._private.queuedBattlePets.length > 0
+        ) {
           // manually trigger individual battle pets
           return this.startBattlePetActions();
-        } if (action.getIsAutomatic()) {
+        }
+        if (action.getIsAutomatic()) {
           // if battle pets are currently acting, try to execute next battle pet action
           // otherwise, find next battle pet that needs to act and generate a new set of actions
           if (this._private.battlePetActions.length > 0) {
             return this.executeNextBattlePetAction();
-          } if (this._private.battlePetsToAct.length > 0) {
+          }
+          if (this._private.battlePetsToAct.length > 0) {
             this.generateNextBattlePetActions();
             return this.executeNextBattlePetAction();
           }
@@ -65,18 +72,24 @@ class PlayerModifierBattlePetManager extends PlayerModifier {
     if (this._private.queuedBattlePets.length > 0) {
       for (var battlePet of Array.from<any>(this._private.queuedBattlePets)) {
         this._private.battlePetsToAct.push(battlePet); // add it to the list of battle pets to generate actions for
-        if (battlePet.hasModifierType(ModifierTranscendance.type)) { // if battle pet has celerity, give it 2 chances to act
+        if (battlePet.hasModifierType(ModifierTranscendance.type)) {
+          // if battle pet has celerity, give it 2 chances to act
           this._private.battlePetsToAct.push(battlePet);
         }
       }
       this._private.queuedBattlePets = []; // reset any individually queued up battle pets
-    // if there are no manually queued battle pets, then we'll activate all battle pets for this player
+      // if there are no manually queued battle pets, then we'll activate all battle pets for this player
     } else {
       for (var unit of Array.from<any>(this.getGameSession().getBoard().getUnits())) {
         // check for my uncontrollable battle pets - but ignore "tamed" battle pets as those can be manually controlled
-        if ((myOwnerId != null) && (unit.getOwnerId() === myOwnerId) && unit.getIsUncontrollableBattlePet()) {
+        if (
+          myOwnerId != null &&
+          unit.getOwnerId() === myOwnerId &&
+          unit.getIsUncontrollableBattlePet()
+        ) {
           this._private.battlePetsToAct.push(unit); // add it to the list of battle pets to generate actions for
-          if (unit.hasActiveModifierType(ModifierTranscendance.type)) { // if battle pet has celerity, give it 2 chances to act
+          if (unit.hasActiveModifierType(ModifierTranscendance.type)) {
+            // if battle pet has celerity, give it 2 chances to act
             this._private.battlePetsToAct.push(unit);
           }
         }
@@ -112,8 +125,11 @@ class PlayerModifierBattlePetManager extends PlayerModifier {
     // keep trimming battle pets list until we find one that generates actions (or no more pets left to act)
     return (() => {
       const result = [];
-      while ((this._private.battlePetsToAct.length > 0) && (this._private.battlePetActions.length === 0)) {
-      // extract next battle pet from list
+      while (
+        this._private.battlePetsToAct.length > 0 &&
+        this._private.battlePetActions.length === 0
+      ) {
+        // extract next battle pet from list
         var battlePet = this._private.battlePetsToAct[0];
         this._private.battlePetsToAct.shift();
 
@@ -121,7 +137,7 @@ class PlayerModifierBattlePetManager extends PlayerModifier {
         if (battlePet.getIsActive()) {
           var battlePetModifier = battlePet.getModifierByClass(ModifierBattlePet);
           if (battlePetModifier != null) {
-            result.push(this._private.battlePetActions = battlePetModifier.generateActions());
+            result.push((this._private.battlePetActions = battlePetModifier.generateActions()));
           } else {
             result.push(undefined);
           }
@@ -134,7 +150,7 @@ class PlayerModifierBattlePetManager extends PlayerModifier {
   }
 
   triggerBattlePet(battlePet) {
-    if (this.getGameSession().getIsRunningAsAuthoritative() && (battlePet != null)) {
+    if (this.getGameSession().getIsRunningAsAuthoritative() && battlePet != null) {
       if (battlePet.getIsUncontrollableBattlePet()) {
         return this._private.queuedBattlePets.push(battlePet);
       }

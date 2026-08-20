@@ -8,8 +8,12 @@
   NOTE: in any case where you might need prismatics or card skins, you should require this file instead of cardsLookup.coffee!
 */
 
-let cardId; let cardName; let group; let groupName; let PRISMATIC_OFFSET; let
-  SKIN_OFFSET;
+let cardId;
+let cardName;
+let group;
+let groupName;
+let PRISMATIC_OFFSET;
+let SKIN_OFFSET;
 const _ = require('underscore');
 const CardsLookup = require('app/sdk/cards/cardsLookup');
 const CosmeticsLookup = require('app/sdk/cosmetics/cosmeticsLookup');
@@ -19,14 +23,19 @@ const CardsLookupComplete = _.extend({}, CardsLookup);
 const SKIN_IDS_BY_CARD_ID = {};
 const CARD_IDS_BY_SKIN_ID = {};
 
-CardsLookupComplete.Prismatic = (PRISMATIC_OFFSET = 1000000);
-CardsLookupComplete.Skin = (SKIN_OFFSET = PRISMATIC_OFFSET + 1000000);
+CardsLookupComplete.Prismatic = PRISMATIC_OFFSET = 1000000;
+CardsLookupComplete.Skin = SKIN_OFFSET = PRISMATIC_OFFSET + 1000000;
 
-CardsLookupComplete.getBaseCardId = (cardId) => CardsLookupComplete.getNonSkinnedCardId(cardId) % PRISMATIC_OFFSET;
+CardsLookupComplete.getBaseCardId = (cardId) =>
+  CardsLookupComplete.getNonSkinnedCardId(cardId) % PRISMATIC_OFFSET;
 
 CardsLookupComplete.getSkinnedCardId = function (cardId, skinNum) {
-  const skinnedCardId = CardsLookupComplete.getBaseCardId(cardId) + (Math.max(skinNum, 0) * SKIN_OFFSET);
-  if (CardsLookupComplete.getIsPrismaticCardId(cardId)) { return skinnedCardId + PRISMATIC_OFFSET; } return skinnedCardId;
+  const skinnedCardId =
+    CardsLookupComplete.getBaseCardId(cardId) + Math.max(skinNum, 0) * SKIN_OFFSET;
+  if (CardsLookupComplete.getIsPrismaticCardId(cardId)) {
+    return skinnedCardId + PRISMATIC_OFFSET;
+  }
+  return skinnedCardId;
 };
 
 CardsLookupComplete.getCardSkinNum = (cardId) => Math.floor(cardId / SKIN_OFFSET);
@@ -37,14 +46,21 @@ CardsLookupComplete.getNonSkinnedCardId = (cardId) => cardId % SKIN_OFFSET;
 
 CardsLookupComplete.getNonPrismaticCardId = function (cardId) {
   const nonSkinnedCardId = CardsLookupComplete.getNonSkinnedCardId(cardId);
-  if (CardsLookupComplete.getIsPrismaticCardId(nonSkinnedCardId)) { return cardId - PRISMATIC_OFFSET; } return cardId;
+  if (CardsLookupComplete.getIsPrismaticCardId(nonSkinnedCardId)) {
+    return cardId - PRISMATIC_OFFSET;
+  }
+  return cardId;
 };
 
-CardsLookupComplete.getIsPrismaticCardId = (cardId) => CardsLookupComplete.getNonSkinnedCardId(cardId) > PRISMATIC_OFFSET;
+CardsLookupComplete.getIsPrismaticCardId = (cardId) =>
+  CardsLookupComplete.getNonSkinnedCardId(cardId) > PRISMATIC_OFFSET;
 
 CardsLookupComplete.getPrismaticCardId = function (cardId) {
   const nonSkinnedCardId = CardsLookupComplete.getNonSkinnedCardId(cardId);
-  if (CardsLookupComplete.getIsPrismaticCardId(nonSkinnedCardId)) { return cardId; } return cardId + PRISMATIC_OFFSET;
+  if (CardsLookupComplete.getIsPrismaticCardId(nonSkinnedCardId)) {
+    return cardId;
+  }
+  return cardId + PRISMATIC_OFFSET;
 };
 
 CardsLookupComplete.getCardSkinIdForCardId = function (cardId) {
@@ -72,13 +88,9 @@ for (groupName in CardsLookupComplete) {
 for (const skinIdKey in CosmeticsLookup.CardSkin) {
   const skinId = CosmeticsLookup.CardSkin[skinIdKey];
   const cosmeticData = CosmeticsFactory.cosmeticForIdentifier(skinId);
-  ({
-    cardId,
-  } = cosmeticData);
+  ({ cardId } = cosmeticData);
   cardName = NAME_FOR_CARD_ID[cardId];
-  const {
-    skinNum,
-  } = cosmeticData;
+  const { skinNum } = cosmeticData;
   group = GROUP_FOR_CARD_ID[cardId];
   const skinnedCardId = CardsLookupComplete.getSkinnedCardId(cardId, skinNum);
   group[`${cardName}Skin${skinNum}`] = skinnedCardId;

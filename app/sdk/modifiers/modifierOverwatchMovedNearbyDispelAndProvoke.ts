@@ -18,9 +18,13 @@ class ModifierOverwatchMovedNearbyDispelAndProvoke extends ModifierOverwatchMove
     this.getGameSession().applyModifierContextObject(ModifierSilence.createContextObject(), source);
 
     // give provoke to self
-    return this.getGameSession().applyModifierContextObject(ModifierProvoke.createContextObject(), this.getCard());
+    return this.getGameSession().applyModifierContextObject(
+      ModifierProvoke.createContextObject(),
+      this.getCard(),
+    );
   }
 }
-ModifierOverwatchMovedNearbyDispelAndProvoke.prototype.type = 'ModifierOverwatchMovedNearbyDispelAndProvoke';
+ModifierOverwatchMovedNearbyDispelAndProvoke.prototype.type =
+  'ModifierOverwatchMovedNearbyDispelAndProvoke';
 
 module.exports = ModifierOverwatchMovedNearbyDispelAndProvoke;

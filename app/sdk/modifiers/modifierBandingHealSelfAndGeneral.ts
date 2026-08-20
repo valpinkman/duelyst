@@ -17,11 +17,14 @@ class ModifierBandingHealSelfAndGeneral extends ModifierBanding {
   static description = '';
 
   static createContextObject(healAmount, options) {
-    if (healAmount == null) { healAmount = 0; }
+    if (healAmount == null) {
+      healAmount = 0;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.appliedName = i18next.t('modifiers.banding_heal_self_and_general_name');
     contextObject.healAmount = healAmount;
-    const bandedContextObject = ModifierEndTurnWatchHealSelfAndGeneral.createContextObject(healAmount);
+    const bandedContextObject =
+      ModifierEndTurnWatchHealSelfAndGeneral.createContextObject(healAmount);
     bandedContextObject.appliedName = i18next.t('modifiers.banding_heal_self_and_general_name');
     contextObject.modifiersContextObjects = [bandedContextObject];
     return contextObject;
@@ -35,6 +38,9 @@ class ModifierBandingHealSelfAndGeneral extends ModifierBanding {
   }
 }
 ModifierBandingHealSelfAndGeneral.prototype.type = 'ModifierBandingHealSelfAndGeneral';
-ModifierBandingHealSelfAndGeneral.prototype.fxResource = ['FX.Modifiers.ModifierZeal', 'FX.Modifiers.ModifierZealHeal'];
+ModifierBandingHealSelfAndGeneral.prototype.fxResource = [
+  'FX.Modifiers.ModifierZeal',
+  'FX.Modifiers.ModifierZealHeal',
+];
 
 module.exports = ModifierBandingHealSelfAndGeneral;

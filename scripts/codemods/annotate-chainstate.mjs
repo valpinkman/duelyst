@@ -19,7 +19,10 @@ import { readFileSync, writeFileSync } from 'node:fs';
 let changed = 0;
 for (const file of process.argv.slice(2)) {
   const src = readFileSync(file, 'utf8');
-  const out = src.replaceAll('const _chainState = {};', 'const _chainState: Record<string, any> = {};');
+  const out = src.replaceAll(
+    'const _chainState = {};',
+    'const _chainState: Record<string, any> = {};',
+  );
   if (out !== src) {
     writeFileSync(file, out);
     changed += 1;

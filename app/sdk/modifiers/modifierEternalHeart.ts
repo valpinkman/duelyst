@@ -20,7 +20,7 @@ class ModifierEternalHeart extends Modifier {
 
   static type = 'ModifierEternalHeart';
   static modifierName = 'Eternal Heart';
-  static description = 'Can\'t die';
+  static description = "Can't die";
 
   getPrivateDefaults(gameSession) {
     const p = super.getPrivateDefaults(gameSession);
@@ -33,10 +33,11 @@ class ModifierEternalHeart extends Modifier {
   onAfterCleanupAction(event) {
     super.onAfterCleanupAction(event);
 
-    const {
-      action,
-    } = event;
-    if (this.getGameSession().getIsRunningAsAuthoritative() && (this._private.eternalHeartAtActionIndexActionIndex === action.getIndex())) {
+    const { action } = event;
+    if (
+      this.getGameSession().getIsRunningAsAuthoritative() &&
+      this._private.eternalHeartAtActionIndexActionIndex === action.getIndex()
+    ) {
       // after cleaning up action, set HP to 1
       const setDamageAction = new SetDamageAction(this.getGameSession());
       setDamageAction.setOwnerId(this.getOwnerId());
@@ -49,19 +50,21 @@ class ModifierEternalHeart extends Modifier {
   onValidateAction(event) {
     super.onValidateAction(event);
 
-    const {
-      action,
-    } = event;
+    const { action } = event;
 
     // when this would die, invalidate the death
-    if (action instanceof DieAction && (action.getTarget() === this.getCard())) {
+    if (action instanceof DieAction && action.getTarget() === this.getCard()) {
       // record index of parent action of die action, so we know when to trigger eternal heart
       if (action.getParentAction() != null) {
         this._private.eternalHeartAtActionIndexActionIndex = action.getParentActionIndex();
       } else {
         this._private.eternalHeartAtActionIndexActionIndex = action.getIndex();
       }
-      return this.invalidateAction(action, this.getCard().getPosition(), i18next.t('modifiers.eternal_heart_error'));
+      return this.invalidateAction(
+        action,
+        this.getCard().getPosition(),
+        i18next.t('modifiers.eternal_heart_error'),
+      );
     }
   }
 }

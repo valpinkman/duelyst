@@ -24,23 +24,30 @@ class ModifierCounterMechazorBuildProgress extends ModifierCounter {
   }
 
   getModifierContextObjectToApply() {
-    const modContextObject = ModifierCounterMechazorBuildProgressDescription.createContextObject(this.getCurrentCount());
+    const modContextObject = ModifierCounterMechazorBuildProgressDescription.createContextObject(
+      this.getCurrentCount(),
+    );
     modContextObject.appliedName = i18next.t('modifiers.mechazor_counter_applied_name');
 
     return modContextObject;
   }
 
   getCurrentCount() {
-    const modifierMechazorProgress = this.getGameSession().getModifierClassForType(this.mechazorProgressType);
-    const modifierMechazorsSummoned = this.getGameSession().getModifierClassForType(this.mechazorsBuiltType);
+    const modifierMechazorProgress = this.getGameSession().getModifierClassForType(
+      this.mechazorProgressType,
+    );
+    const modifierMechazorsSummoned = this.getGameSession().getModifierClassForType(
+      this.mechazorsBuiltType,
+    );
 
     const mechazorProgressMods = this.getCard().getActiveModifiersByClass(modifierMechazorProgress);
-    const numMechazorsSummoned = this.getCard().getActiveModifiersByClass(modifierMechazorsSummoned).length;
+    const numMechazorsSummoned =
+      this.getCard().getActiveModifiersByClass(modifierMechazorsSummoned).length;
     let mechazorProgress = 0;
     for (var mod of Array.from<any>(mechazorProgressMods)) {
       mechazorProgress += mod.getProgressContribution();
     }
-    return (mechazorProgress - (numMechazorsSummoned * 5)) * 20;
+    return (mechazorProgress - numMechazorsSummoned * 5) * 20;
   }
 }
 ModifierCounterMechazorBuildProgress.prototype.type = 'ModifierCounterMechazorBuildProgress';

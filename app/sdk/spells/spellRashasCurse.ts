@@ -27,13 +27,20 @@ class SpellRashasCurse extends Spell {
     const dervish = this.getGameSession().getCardCaches().getCardById(Cards.Faction3.Dervish);
 
     const validFollowupPositions = [];
-    for (var position of Array.from<any>(UtilsGameSession.getValidBoardPositionsFromPattern(board, applyEffectPosition, CONFIG.PATTERN_3x3))) {
+    for (var position of Array.from<any>(
+      UtilsGameSession.getValidBoardPositionsFromPattern(
+        board,
+        applyEffectPosition,
+        CONFIG.PATTERN_3x3,
+      ),
+    )) {
       if (!board.getObstructionAtPositionForEntity(position, dervish)) {
         validFollowupPositions.push(position);
       }
     }
 
-    if (validFollowupPositions.length === 0) { // if there is nowhere to summon a dervish, still DO remove artifacts from General
+    if (validFollowupPositions.length === 0) {
+      // if there is nowhere to summon a dervish, still DO remove artifacts from General
       // Logger.module("SDK").debug "[G:#{@.getGameSession().gameId}]", "RemoveArtifactsAction::onApplyEffectToBoardTile"
       const removeArtifactAction = new RemoveRandomArtifactAction(this.getGameSession());
       removeArtifactAction.setTarget(target);
@@ -49,7 +56,9 @@ class SpellRashasCurse extends Spell {
 
     // can only target enemy general
     const general = this.getGameSession().getGeneralForOpponentOfPlayerId(this.getOwnerId());
-    if (general != null) { applyEffectPositions.push(general.getPosition()); }
+    if (general != null) {
+      applyEffectPositions.push(general.getPosition());
+    }
 
     return applyEffectPositions;
   }

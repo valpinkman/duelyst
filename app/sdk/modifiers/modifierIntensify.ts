@@ -22,7 +22,11 @@ class ModifierIntensify extends Modifier {
 
   getIsActionRelevant(action) {
     // watch for instances of playing this card
-    if (action instanceof ApplyCardToBoardAction && (action.getOwnerId() === this.getOwnerId()) && (action.getCard().getBaseCardId() === this.getCard().getBaseCardId())) {
+    if (
+      action instanceof ApplyCardToBoardAction &&
+      action.getOwnerId() === this.getOwnerId() &&
+      action.getCard().getBaseCardId() === this.getCard().getBaseCardId()
+    ) {
       return true;
     }
     return false;
@@ -30,7 +34,9 @@ class ModifierIntensify extends Modifier {
 
   getIntensifyAmount() {
     let amount = 0;
-    const relevantActions = this.getGameSession().filterActions(this.getIsActionRelevant.bind(this));
+    const relevantActions = this.getGameSession().filterActions(
+      this.getIsActionRelevant.bind(this),
+    );
     if (relevantActions != null) {
       amount = relevantActions.length;
     }

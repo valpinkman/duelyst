@@ -70,7 +70,14 @@ var NetworkManager = (function () {
 
         // connect to a specific game
         // TODO: modify to opts and pass in jwt token for auth
-        connect(gameType, gameId, playerId, gameServerAddress, spectatorId = null, spectateToken = null) {
+        connect(
+          gameType,
+          gameId,
+          playerId,
+          gameServerAddress,
+          spectatorId = null,
+          spectateToken = null,
+        ) {
           if (this.connected) {
             Logger.module('SDK').warn('NetworkManager already connected.');
             return;
@@ -95,7 +102,7 @@ var NetworkManager = (function () {
 
           // Determine which WebSocket host to use.
           // Use the assigned game server if one was provided.
-          const host = (gameServerAddress != null) ? gameServerAddress : window.location.hostname;
+          const host = gameServerAddress != null ? gameServerAddress : window.location.hostname;
 
           // Determine which WebSocket port to use.
           // SP modes use port 8000; MP modes use port 8001.
@@ -130,7 +137,8 @@ var NetworkManager = (function () {
           // @emit('authenticate', {token: token})
 
           // when you receive a message that the connection is ready (happens after authentication)
-          this.socket.on('connected', (response) => { // fat arrow to bind this
+          this.socket.on('connected', (response) => {
+            // fat arrow to bind this
             Logger.module('IO').log('NetworkManager::IO:connected -> SUCCESS');
             Logger.module('IO').log(`NetworkManager::IO:connected -> ${response.message}`);
             NetworkManager.getInstance().connected = true;
@@ -141,11 +149,15 @@ var NetworkManager = (function () {
             return NetworkManager.getInstance().joinGameRoom();
           });
 
-          this.socket.on('connect_error', (error) => Logger.module('IO').error('NetworkManager::IO:connect_error', error));
+          this.socket.on('connect_error', (error) =>
+            Logger.module('IO').error('NetworkManager::IO:connect_error', error),
+          );
 
           this.socket.on('reconnecting', (attempts) => {
             Logger.module('IO').log(`NetworkManager::IO:reconnecting attempt number ${attempts}`);
-            return NetworkManager.getInstance().getEventBus().trigger(EVENTS.reconnect_to_game, NetworkManager.getInstance().gameId);
+            return NetworkManager.getInstance()
+              .getEventBus()
+              .trigger(EVENTS.reconnect_to_game, NetworkManager.getInstance().gameId);
           });
 
           // BUG (socket.io) ? : This event may get triggered twice
@@ -157,15 +169,25 @@ var NetworkManager = (function () {
           this.socket.on('join_game_response', (response) => {
             NetworkManager.getInstance().getEventBus().trigger(EVENTS.join_game, response);
             if (response.error) {
-              Logger.module('IO').warn(`NetworkManager::IO:join_game_response ERROR -> ${response.error}`);
+              Logger.module('IO').warn(
+                `NetworkManager::IO:join_game_response ERROR -> ${response.error}`,
+              );
               return NetworkManager.getInstance().disconnect();
             }
             // FIXME: `response` has type `object`; log a property instead.
             Logger.module('IO').log(`NetworkManager::IO:join_game_response -> ${response}`);
-            const isOpponentAlreadyConnected = _.find(response.connectedPlayers, (playerId) => playerId !== NetworkManager.getInstance().playerId);
+            const isOpponentAlreadyConnected = _.find(
+              response.connectedPlayers,
+              (playerId) => playerId !== NetworkManager.getInstance().playerId,
+            );
             if (isOpponentAlreadyConnected != null) {
               NetworkManager.getInstance().isOpponentConnected = true;
-              NetworkManager.getInstance().getEventBus().trigger(EVENTS.opponent_connection_status_changed, { playerId, isConnected: true });
+              NetworkManager.getInstance()
+                .getEventBus()
+                .trigger(EVENTS.opponent_connection_status_changed, {
+                  playerId,
+                  isConnected: true,
+                });
             }
 
             NetworkManager.getInstance().spectators.add(response.connectedSpectators);
@@ -177,14 +199,18 @@ var NetworkManager = (function () {
           this.socket.on('spectate_game_response', (response) => {
             NetworkManager.getInstance().getEventBus().trigger(EVENTS.spectate_game, response);
             if (response.error) {
-              Logger.module('IO').warn(`NetworkManager::IO:join_game_response ERROR -> ${response.error}`);
+              Logger.module('IO').warn(
+                `NetworkManager::IO:join_game_response ERROR -> ${response.error}`,
+              );
               return NetworkManager.getInstance().disconnect();
             }
             // FIXME: `response` has type `object`; log a property instead.
             Logger.module('IO').log(`NetworkManager::IO:join_game_response -> ${response}`);
 
             NetworkManager.getInstance().isOpponentConnected = true;
-            NetworkManager.getInstance().getEventBus().trigger(EVENTS.opponent_connection_status_changed, { playerId, isConnected: true });
+            NetworkManager.getInstance()
+              .getEventBus()
+              .trigger(EVENTS.opponent_connection_status_changed, { playerId, isConnected: true });
 
             TelemetryManager.getInstance().clearSignal('game', 'connecting');
             return TelemetryManager.getInstance().setSignal('game', 'in-net-game');
@@ -192,55 +218,89 @@ var NetworkManager = (function () {
 
           //  when a game event is received
           this.socket.on(EVENTS.network_game_event, (eventData, callback) => {
-            Logger.module('IO').log(`NetworkManager::IO:network_game_event -> ${eventData.type}; step count ${eventData.stepCount}`);
+            Logger.module('IO').log(
+              `NetworkManager::IO:network_game_event -> ${eventData.type}; step count ${eventData.stepCount}`,
+            );
 
             // defer the execution of the network step until the next stack call so that socket.io does not gobble up the error
-            return _.defer(() => NetworkManager.getInstance().getEventBus().trigger(EVENTS.network_game_event, eventData));
+            return _.defer(() =>
+              NetworkManager.getInstance()
+                .getEventBus()
+                .trigger(EVENTS.network_game_event, eventData),
+            );
           });
 
           //  when a player joins the game
           this.socket.on('player_joined', (playerId, callback) => {
             Logger.module('IO').log(`NetworkManager::IO:player_joined -> ${playerId}`);
-            if ((playerId !== NetworkManager.getInstance().playerId) && !NetworkManager.getInstance().isOpponentConnected) {
+            if (
+              playerId !== NetworkManager.getInstance().playerId &&
+              !NetworkManager.getInstance().isOpponentConnected
+            ) {
               NetworkManager.getInstance().isOpponentConnected = true;
-              return NetworkManager.getInstance().getEventBus().trigger(EVENTS.opponent_connection_status_changed, { playerId, isConnected: true });
+              return NetworkManager.getInstance()
+                .getEventBus()
+                .trigger(EVENTS.opponent_connection_status_changed, {
+                  playerId,
+                  isConnected: true,
+                });
             }
           });
 
           //  when a player joins the game
           this.socket.on('player_left', (playerId, callback) => {
             Logger.module('IO').log(`NetworkManager::IO:player_left -> ${playerId}`);
-            if ((playerId !== NetworkManager.getInstance().playerId) && NetworkManager.getInstance().isOpponentConnected) {
+            if (
+              playerId !== NetworkManager.getInstance().playerId &&
+              NetworkManager.getInstance().isOpponentConnected
+            ) {
               NetworkManager.getInstance().isOpponentConnected = false;
-              return NetworkManager.getInstance().getEventBus().trigger(EVENTS.opponent_connection_status_changed, { playerId, isConnected: false });
+              return NetworkManager.getInstance()
+                .getEventBus()
+                .trigger(EVENTS.opponent_connection_status_changed, {
+                  playerId,
+                  isConnected: false,
+                });
             }
           });
 
           //  when a spectator joins the game
           this.socket.on('spectator_joined', (spectatorData, callback) => {
-            Logger.module('IO').log(`NetworkManager::IO:spectator_joined -> ${spectatorData.username}`);
+            Logger.module('IO').log(
+              `NetworkManager::IO:spectator_joined -> ${spectatorData.username}`,
+            );
             NetworkManager.getInstance().spectators.add(spectatorData);
-            return NetworkManager.getInstance().getEventBus().trigger(EVENTS.spectator_joined, spectatorData);
+            return NetworkManager.getInstance()
+              .getEventBus()
+              .trigger(EVENTS.spectator_joined, spectatorData);
           });
 
           //  when a spectator joins the game
           this.socket.on('spectator_left', (spectatorData, callback) => {
-            Logger.module('IO').log(`NetworkManager::IO:spectator_left -> ${spectatorData.username}`);
+            Logger.module('IO').log(
+              `NetworkManager::IO:spectator_left -> ${spectatorData.username}`,
+            );
             NetworkManager.getInstance().spectators.remove(spectatorData.id);
-            return NetworkManager.getInstance().getEventBus().trigger(EVENTS.spectator_left, spectatorData);
+            return NetworkManager.getInstance()
+              .getEventBus()
+              .trigger(EVENTS.spectator_left, spectatorData);
           });
 
           // when a game error is received
           this.socket.on(EVENTS.network_game_error, (errorData, callback) => {
             Logger.module('IO').warn(`NetworkManager::IO:network_game_error -> ${errorData}`);
             NetworkManager.getInstance().disconnect();
-            return NetworkManager.getInstance().getEventBus().trigger(EVENTS.network_game_error, errorData);
+            return NetworkManager.getInstance()
+              .getEventBus()
+              .trigger(EVENTS.network_game_error, errorData);
           });
 
           // when a game server error is received
           this.socket.on('game_server_shutdown', (errorData, callback) => {
             Logger.module('IO').warn(`NetworkManager::IO:game_server_shutdown -> ${errorData.msg}`);
-            return NetworkManager.getInstance().getEventBus().trigger(EVENTS.game_server_shutdown, errorData);
+            return NetworkManager.getInstance()
+              .getEventBus()
+              .trigger(EVENTS.game_server_shutdown, errorData);
           });
 
           // when a game close event is received, usually after an error
@@ -282,7 +342,9 @@ var NetworkManager = (function () {
               gameId: this.gameId,
             });
           }
-          return Logger.module('SDK').warn('NetworkManager:joinGameSpectatorRoom: No socket to emit event!');
+          return Logger.module('SDK').warn(
+            'NetworkManager:joinGameSpectatorRoom: No socket to emit event!',
+          );
         }
 
         // Reconnect helper, call with new address
@@ -290,10 +352,7 @@ var NetworkManager = (function () {
           Logger.module('SDK').debug('NetworkManager:reconnect');
           this.socket.io.reconnection(false);
           this.socket.disconnect();
-          return setTimeout(
-            () => this.connect(this.gameId, this.playerId, newServerAddress),
-            1000,
-          );
+          return setTimeout(() => this.connect(this.gameId, this.playerId, newServerAddress), 1000);
         }
 
         disconnect() {
@@ -313,26 +372,31 @@ var NetworkManager = (function () {
           const gameSession = GameSession.getInstance();
 
           // don't broadcast anything if we're a specator or running locally
-          if (this.spectatorId || gameSession.getIsSpectateMode() || gameSession.getIsRunningAsAuthoritative()) {
+          if (
+            this.spectatorId ||
+            gameSession.getIsSpectateMode() ||
+            gameSession.getIsRunningAsAuthoritative()
+          ) {
             return false;
           }
 
-          let validForBroadcast = (eventData != null) && (this.socket != null) && this.socket.connected && !gameSession.getIsRunningAsAuthoritative();
+          let validForBroadcast =
+            eventData != null &&
+            this.socket != null &&
+            this.socket.connected &&
+            !gameSession.getIsRunningAsAuthoritative();
           if (validForBroadcast) {
             // Logger.module("APPLICATION").log("NetworkManager.broadcastGameEvent", eventData)
             // process data by event type
-            const {
-              type,
-            } = eventData;
+            const { type } = eventData;
             if (type === EVENTS.step) {
-              const {
-                step,
-              } = eventData;
+              const { step } = eventData;
               // always flag step as transmitted
               const transmitted = step.getTransmitted();
               step.setTransmitted(true);
               // steps are only valid when they belong to my player and haven't been transmitted
-              validForBroadcast = (step != null) && (step.playerId === gameSession.getMyPlayerId()) && !transmitted;
+              validForBroadcast =
+                step != null && step.playerId === gameSession.getMyPlayerId() && !transmitted;
               if (validForBroadcast) {
                 // serialize step in the event data being broadcast
                 eventData.step = JSON.parse(gameSession.serializeToJSON(step));
@@ -340,8 +404,12 @@ var NetworkManager = (function () {
             }
 
             if (validForBroadcast) {
-              this.socket.emit(EVENTS.network_game_event, eventData, (data) => // TODO: implement the validation on the server
-                Logger.module('SDK').debug('NetworkManager.broadcastGameEvent -> validated server got the message'));
+              this.socket.emit(EVENTS.network_game_event, eventData, (data) =>
+                // TODO: implement the validation on the server
+                Logger.module('SDK').debug(
+                  'NetworkManager.broadcastGameEvent -> validated server got the message',
+                ),
+              );
             }
           }
 
@@ -357,6 +425,6 @@ var NetworkManager = (function () {
   };
   NetworkManager.initClass();
   return NetworkManager;
-}());
+})();
 
 module.exports = NetworkManager;

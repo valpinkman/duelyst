@@ -22,11 +22,9 @@ class ModifierForcefieldAbsorb extends ModifierImmuneToDamage {
   onModifyActionForExecution(event) {
     super.onModifyActionForExecution(event);
 
-    const {
-      action,
-    } = event;
+    const { action } = event;
     if (this.getIsActionRelevant(action)) {
-      return this.absorbedActionIndex = action.getIndex();
+      return (this.absorbedActionIndex = action.getIndex());
     }
   }
 
@@ -34,10 +32,11 @@ class ModifierForcefieldAbsorb extends ModifierImmuneToDamage {
     super.onAfterCleanupAction(event);
 
     // when cleaning up an action, check if this modifier absorbed damage and remove
-    const {
-      action,
-    } = event;
-    if (!this.getCanAbsorb() && ((action != null ? action.getIndex() : undefined) === this.absorbedActionIndex)) {
+    const { action } = event;
+    if (
+      !this.getCanAbsorb() &&
+      (action != null ? action.getIndex() : undefined) === this.absorbedActionIndex
+    ) {
       return this.getGameSession().removeModifier(this);
     }
   }

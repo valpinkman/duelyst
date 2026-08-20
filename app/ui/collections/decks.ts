@@ -4,7 +4,10 @@ var DecksCollection = Backbone.Collection.extend({
   comparator: function (a, b) {
     // put starters and AI after all others
     if (a.get('isStarter') || b.get('isStarter')) {
-      return ((Number(b.get('isStarter')) - Number(a.get('isStarter')))) || (a.get('faction_id') - b.get('faction_id'));
+      return (
+        Number(b.get('isStarter')) - Number(a.get('isStarter')) ||
+        a.get('faction_id') - b.get('faction_id')
+      );
     }
 
     // sort by most recently touched

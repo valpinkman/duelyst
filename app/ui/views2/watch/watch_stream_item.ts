@@ -7,7 +7,6 @@ var openUrl = require('app/common/openUrl');
 var Template = require('./templates/watch_stream_item.hbs');
 
 var WatchStreamItemView = Backbone.Marionette.ItemView.extend({
-
   className: 'watch-stream-item',
   template: Template,
 
@@ -16,15 +15,14 @@ var WatchStreamItemView = Backbone.Marionette.ItemView.extend({
     'click button': 'onOpenStream',
   },
 
-  init: function () {
-  },
+  init: function () {},
 
   onRender: function () {
-    this.$el.find('[data-toggle=\'tooltip\']').tooltip();
+    this.$el.find("[data-toggle='tooltip']").tooltip();
   },
 
   onDestroy: function () {
-    this.$el.find('[data-toggle=\'tooltip\']').tooltip('destroy');
+    this.$el.find("[data-toggle='tooltip']").tooltip('destroy');
   },
 
   animateReveal: function (duration, delay) {
@@ -38,17 +36,20 @@ var WatchStreamItemView = Backbone.Marionette.ItemView.extend({
     if (this.model != null && this.model.get('name') != null) {
       streamerName = this.model.get('name');
     }
-    Analytics.track('watch stream', {
-      category: Analytics.EventCategory.Watch,
-      streamer_name: streamerName,
-    }, {
-      labelKey: 'streamer_name',
-    });
+    Analytics.track(
+      'watch stream',
+      {
+        category: Analytics.EventCategory.Watch,
+        streamer_name: streamerName,
+      },
+      {
+        labelKey: 'streamer_name',
+      },
+    );
 
     e.preventDefault();
     return false;
   },
-
 });
 
 module.exports = WatchStreamItemView;

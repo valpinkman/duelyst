@@ -25,9 +25,13 @@ class SpellIntensifyIncreasingDominance extends SpellIntensify {
     if (myGeneral != null) {
       return (() => {
         const result = [];
-        for (var entity of Array.from<any>(board.getFriendlyEntitiesForEntity(myGeneral, CardType.Unit))) {
+        for (var entity of Array.from<any>(
+          board.getFriendlyEntitiesForEntity(myGeneral, CardType.Unit),
+        )) {
           if (entity != null) {
-            result.push(this.getGameSession().applyModifierContextObject(statContextObject, entity));
+            result.push(
+              this.getGameSession().applyModifierContextObject(statContextObject, entity),
+            );
           } else {
             result.push(undefined);
           }

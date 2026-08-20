@@ -21,7 +21,8 @@ const FXEnergyBeamSprite = FXProjectileSprite.extend({
     if (rotation > 0.0) {
       // when beam facing downwards, display it above everything
       return 0.0;
-    } if (rotation < 0.0 && this.sourceBoardPosition != null) {
+    }
+    if (rotation < 0.0 && this.sourceBoardPosition != null) {
       // when beam facing upwards, use the source position
       return this.sourceBoardPosition.y;
     }
@@ -36,20 +37,29 @@ const FXEnergyBeamSprite = FXProjectileSprite.extend({
     if (sourceScreenPosition && targetScreenPosition) {
       this.setPosition(sourceScreenPosition);
       this.setAnchorPoint(cc.p(0.0, 0.5));
-      this.setRotation(-Math.atan2(targetScreenPosition.y - sourceScreenPosition.y, targetScreenPosition.x - sourceScreenPosition.x) * 180 / Math.PI);
+      this.setRotation(
+        (-Math.atan2(
+          targetScreenPosition.y - sourceScreenPosition.y,
+          targetScreenPosition.x - sourceScreenPosition.x,
+        ) *
+          180) /
+          Math.PI,
+      );
       // handles own facing
       this.setFlippedX(false);
     }
   },
 
   startAnimation() {
-    this.runAction(cc.sequence(
-      UtilsEngine.getAnimationAction(this.getSpriteIdentifier()),
-      cc.callFunc(function () {
-        this.end();
-        this.destroy(CONFIG.FADE_FAST_DURATION);
-      }, this),
-    ));
+    this.runAction(
+      cc.sequence(
+        UtilsEngine.getAnimationAction(this.getSpriteIdentifier()),
+        cc.callFunc(function () {
+          this.end();
+          this.destroy(CONFIG.FADE_FAST_DURATION);
+        }, this),
+      ),
+    );
   },
   end() {
     // Logger.module("ENGINE").log("FXEnergyBeamSprite:end -> at " + JSON.stringify( this.getPosition() ) );

@@ -17,7 +17,11 @@ const env = config.get('env');
 const keyPrefix = () => `${env}:ts:`;
 
 // Helper returns a random string of specified length
-const randomString = (length) => crypto.randomBytes(Math.ceil(length / 2)).toString('hex').slice(0, length);
+const randomString = (length) =>
+  crypto
+    .randomBytes(Math.ceil(length / 2))
+    .toString('hex')
+    .slice(0, length);
 
 // Helper returns a random key
 const randomKey = () => randomString(8);
@@ -34,7 +38,7 @@ const defaults = { name: randomKey() };
  * Time series are sorted sets, sorted by a UTC timestamp
  * Since values must be unique, we also prefix the value w/ the timestamp
  */
-module.exports = (RedisTimeSeries = class RedisTimeSeries {
+module.exports = RedisTimeSeries = class RedisTimeSeries {
   declare createdAt: any;
   declare name: any;
   declare redis: any;
@@ -47,7 +51,9 @@ module.exports = (RedisTimeSeries = class RedisTimeSeries {
    */
   constructor(redis, opts) {
     // TODO: add check to ensure Redis client is already promisified
-    if (opts == null) { opts = {}; }
+    if (opts == null) {
+      opts = {};
+    }
     this.redis = redis;
     this.name = opts.name || defaults.name;
     this.ts = keyPrefix() + this.name;
@@ -67,7 +73,9 @@ module.exports = (RedisTimeSeries = class RedisTimeSeries {
   hit(value) {
     // Logger.module("REDIS-TS").log("hit(#{value})")
 
-    if (value == null) { value = randomValue(); }
+    if (value == null) {
+      value = randomValue();
+    }
     const timestamp = moment.utc().valueOf();
     const score = timestamp;
     // we add a timestamp to the value also to ensure some uniqueness
@@ -93,7 +101,9 @@ module.exports = (RedisTimeSeries = class RedisTimeSeries {
    */
   query(opts) {
     let args;
-    if (opts == null) { opts = {}; }
+    if (opts == null) {
+      opts = {};
+    }
     const range = opts.range || 1;
     const limit = opts.limit || 1000;
     const withScores = opts.withScores || true;
@@ -109,20 +119,19 @@ module.exports = (RedisTimeSeries = class RedisTimeSeries {
       // TODO : fix without scores option
       args = [this.ts, previous, now, 'WITHSCORES', 'LIMIT', 0, limit];
     }
-    return this.redis.zrangebyscore(args)
-      .then((scores) => {
+    return this.redis.zrangebyscore(args).then((scores) => {
       // TODO : this only works WITHSCORES = true
-        const values = [];
-        // scores is an array [] where even/odd pairs are the value, score
-        // zip up the array into an object keyed by score
-        while (scores.length > 0) {
-          const value = scores.shift();
-          const score = scores.shift();
-          // remove the timestamp added to the value
-          values.push(value.split(':')[1]);
-        }
-        return values;
-      });
+      const values = [];
+      // scores is an array [] where even/odd pairs are the value, score
+      // zip up the array into an object keyed by score
+      while (scores.length > 0) {
+        const value = scores.shift();
+        const score = scores.shift();
+        // remove the timestamp added to the value
+        values.push(value.split(':')[1]);
+      }
+      return values;
+    });
   }
 
   /**
@@ -131,9 +140,11 @@ module.exports = (RedisTimeSeries = class RedisTimeSeries {
    * @return {Promise} number of hits in time series query
    */
   countHits(range) {
-    if (range == null) { range = 1; }
+    if (range == null) {
+      range = 1;
+    }
     // was `.then(_).call('size')` -- bluebird's .call(), which invoked a method
     // on the resolved value. Native promises have no such method.
     return this.query({ range }).then((results) => _.size(results));
   }
-});
+};

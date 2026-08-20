@@ -16,7 +16,9 @@ class ModifierOpponentDrawCardWatchDamageEnemyGeneral extends ModifierOpponentDr
   static description = 'Whenever your opponent draws a card, deal %X damage to the enemy General';
 
   static createContextObject(damageAmount, options) {
-    if (damageAmount == null) { damageAmount = 0; }
+    if (damageAmount == null) {
+      damageAmount = 0;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.damageAmount = damageAmount;
     return contextObject;
@@ -30,7 +32,9 @@ class ModifierOpponentDrawCardWatchDamageEnemyGeneral extends ModifierOpponentDr
   }
 
   onDrawCardWatch(action) {
-    const general = this.getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
+    const general = this.getGameSession().getGeneralForOpponentOfPlayerId(
+      this.getCard().getOwnerId(),
+    );
     if (general != null) {
       const damageAction = new DamageAction(this.getGameSession());
       damageAction.setOwnerId(this.getCard().getOwnerId());
@@ -44,7 +48,11 @@ class ModifierOpponentDrawCardWatchDamageEnemyGeneral extends ModifierOpponentDr
     }
   }
 }
-ModifierOpponentDrawCardWatchDamageEnemyGeneral.prototype.type = 'ModifierOpponentDrawCardWatchDamageEnemyGeneral';
-ModifierOpponentDrawCardWatchDamageEnemyGeneral.prototype.fxResource = ['FX.Modifiers.ModifierOpponentDrawCardWatchBuffSelf', 'FX.Modifiers.ModifierGenericDamage'];
+ModifierOpponentDrawCardWatchDamageEnemyGeneral.prototype.type =
+  'ModifierOpponentDrawCardWatchDamageEnemyGeneral';
+ModifierOpponentDrawCardWatchDamageEnemyGeneral.prototype.fxResource = [
+  'FX.Modifiers.ModifierOpponentDrawCardWatchBuffSelf',
+  'FX.Modifiers.ModifierGenericDamage',
+];
 
 module.exports = ModifierOpponentDrawCardWatchDamageEnemyGeneral;

@@ -29,9 +29,7 @@ class ModifierSpellWatchAnywhereApplyModifiers extends Modifier {
   onAfterAction(e) {
     super.onAfterAction(e);
 
-    const {
-      action,
-    } = e;
+    const { action } = e;
 
     // watch for a spell (but not a followup) being cast by player who owns this entity
     if (this.getIsActionRelevant(action)) {
@@ -40,22 +38,29 @@ class ModifierSpellWatchAnywhereApplyModifiers extends Modifier {
   }
 
   getIsActionRelevant(action) {
-    return (action instanceof PlayCardFromHandAction || action instanceof PlaySignatureCardAction) && (action.getOwnerId() === this.getCard().getOwnerId()) && (__guard__(action.getCard(), (x) => x.type) === CardType.Spell);
+    return (
+      (action instanceof PlayCardFromHandAction || action instanceof PlaySignatureCardAction) &&
+      action.getOwnerId() === this.getCard().getOwnerId() &&
+      __guard__(action.getCard(), (x) => x.type) === CardType.Spell
+    );
   }
 
   onSpellWatch(action) {
-    return this.applyManagedModifiersFromModifiersContextObjects(this.modifiersContextObjects, this.getCard());
+    return this.applyManagedModifiersFromModifiersContextObjects(
+      this.modifiersContextObjects,
+      this.getCard(),
+    );
   }
 
   onActivate() {
     // special check on activation in case this card is created mid-game
     // need to check all actions that occured this gamesession for triggers
     const spellActions = this.getGameSession().filterActions(this.getIsActionRelevant.bind(this));
-    return Array.from<any>(spellActions).map((action) =>
-      this.onSpellWatch(action));
+    return Array.from<any>(spellActions).map((action) => this.onSpellWatch(action));
   }
 }
-ModifierSpellWatchAnywhereApplyModifiers.prototype.type = 'ModifierSpellWatchAnywhereApplyModifiers';
+ModifierSpellWatchAnywhereApplyModifiers.prototype.type =
+  'ModifierSpellWatchAnywhereApplyModifiers';
 ModifierSpellWatchAnywhereApplyModifiers.prototype.activeInHand = true;
 ModifierSpellWatchAnywhereApplyModifiers.prototype.activeInDeck = true;
 ModifierSpellWatchAnywhereApplyModifiers.prototype.activeInSignatureCards = true;
@@ -65,5 +70,5 @@ ModifierSpellWatchAnywhereApplyModifiers.prototype.fxResource = ['FX.Modifiers.M
 module.exports = ModifierSpellWatchAnywhereApplyModifiers;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

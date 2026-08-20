@@ -11,7 +11,6 @@ const InstancedSprite = require('../InstancedSprite');
  *************************************************************************** */
 
 var CausticPrismaticGlowSprite = InstancedSprite.extend({
-
   _instancingId: 'CausticPrismaticGlow',
 
   _createRenderCmd() {
@@ -25,7 +24,9 @@ var CausticPrismaticGlowSprite = InstancedSprite.extend({
 CausticPrismaticGlowSprite.WebGLRenderCmd = function (renderable) {
   InstancedSprite.WebGLRenderCmd.call(this, renderable);
 };
-const proto = CausticPrismaticGlowSprite.WebGLRenderCmd.prototype = Object.create(InstancedSprite.WebGLRenderCmd.prototype);
+const proto = (CausticPrismaticGlowSprite.WebGLRenderCmd.prototype = Object.create(
+  InstancedSprite.WebGLRenderCmd.prototype,
+));
 proto.constructor = CausticPrismaticGlowSprite.WebGLRenderCmd;
 
 proto.renderingForInstancing = function (fx, instancingId, instancedRenderPass, instances) {
@@ -52,7 +53,9 @@ proto.renderingForInstancing = function (fx, instancingId, instancedRenderPass, 
 
 CausticPrismaticGlowSprite.create = function (options, node) {
   if (node == null) {
-    node = cc.pool.getFromPool(CausticPrismaticGlowSprite, options) || new CausticPrismaticGlowSprite(options);
+    node =
+      cc.pool.getFromPool(CausticPrismaticGlowSprite, options) ||
+      new CausticPrismaticGlowSprite(options);
   }
   return node;
 };

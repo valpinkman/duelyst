@@ -13,7 +13,8 @@ const ScoreForPosition = require('../position/position_ScoreForCardAtTargetPosit
 const ScoreForUnitRefresh = function (unit) {
   let score = 0;
 
-  if (unit.getIsExhausted() === true) { // only include score for units that are exhausted
+  if (unit.getIsExhausted() === true) {
+    // only include score for units that are exhausted
     score += ScoreForUnit(unit) * BOUNTY.REFRESH_PER_UNIT_SCORE;
   }
   // score += ScoreForPosition(unit, unit.getPosition());

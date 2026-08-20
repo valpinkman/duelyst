@@ -13,14 +13,22 @@ class QuestBeginnerPlayPracticeGames extends QuestBeginner {
   static Identifier = 9902;
 
   constructor() {
-    super(QuestBeginnerPlayPracticeGames.Identifier, 'Play 3 Practice Games', [QuestType.Beginner], QuestBeginnerPlayPracticeGames.prototype.goldReward);
+    super(
+      QuestBeginnerPlayPracticeGames.Identifier,
+      'Play 3 Practice Games',
+      [QuestType.Beginner],
+      QuestBeginnerPlayPracticeGames.prototype.goldReward,
+    );
     this.params.completionProgress = 3;
   }
 
   _progressForGameDataForPlayerId(gameData, playerId) {
     for (var player of Array.from<any>(gameData.players)) {
-      var playerSetupData = UtilsGameSession.getPlayerSetupDataForPlayerId(gameData, player.playerId);
-      if ((player.playerId === playerId) && (gameData.gameType === GameType.SinglePlayer)) {
+      var playerSetupData = UtilsGameSession.getPlayerSetupDataForPlayerId(
+        gameData,
+        player.playerId,
+      );
+      if (player.playerId === playerId && gameData.gameType === GameType.SinglePlayer) {
         return 1;
       }
     }

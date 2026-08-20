@@ -61,7 +61,9 @@ describe('challenges', () => {
       gameSession.executeAction(playCardFromHandAction);
       let action = gameSession.getGeneralForPlayer1().actionMove({ x: 3, y: 2 });
       gameSession.executeAction(action);
-      action = gameSession.getGeneralForPlayer1().actionAttack(board.getUnitAtPosition({ x: 4, y: 2 })); // kill silverguard knight
+      action = gameSession
+        .getGeneralForPlayer1()
+        .actionAttack(board.getUnitAtPosition({ x: 4, y: 2 })); // kill silverguard knight
       gameSession.executeAction(action);
 
       playCardFromHandAction = myPlayer.actionPlayCardFromHand(1, 4, 2); // summon tiger
@@ -112,19 +114,29 @@ describe('challenges', () => {
 
       let playCardFromHandAction = myPlayer.actionPlayCardFromHand(1, 5, 2);
       gameSession.executeAction(playCardFromHandAction);
-      let action = gameSession.getGeneralForPlayer1().actionAttack(gameSession.getGeneralForPlayer2());
+      let action = gameSession
+        .getGeneralForPlayer1()
+        .actionAttack(gameSession.getGeneralForPlayer2());
       gameSession.executeAction(action);
 
       playCardFromHandAction = myPlayer.actionPlayCardFromHand(0, 5, 2);
       gameSession.executeAction(playCardFromHandAction);
 
-      action = board.getUnitAtPosition({ x: 5, y: 1 }).actionAttack(gameSession.getGeneralForPlayer2());
+      action = board
+        .getUnitAtPosition({ x: 5, y: 1 })
+        .actionAttack(gameSession.getGeneralForPlayer2());
       gameSession.executeAction(action);
-      action = board.getUnitAtPosition({ x: 5, y: 2 }).actionAttack(gameSession.getGeneralForPlayer2());
+      action = board
+        .getUnitAtPosition({ x: 5, y: 2 })
+        .actionAttack(gameSession.getGeneralForPlayer2());
       gameSession.executeAction(action);
-      action = board.getUnitAtPosition({ x: 5, y: 3 }).actionAttack(gameSession.getGeneralForPlayer2());
+      action = board
+        .getUnitAtPosition({ x: 5, y: 3 })
+        .actionAttack(gameSession.getGeneralForPlayer2());
       gameSession.executeAction(action);
-      action = board.getUnitAtPosition({ x: 7, y: 2 }).actionAttack(gameSession.getGeneralForPlayer2());
+      action = board
+        .getUnitAtPosition({ x: 7, y: 2 })
+        .actionAttack(gameSession.getGeneralForPlayer2());
       gameSession.executeAction(action);
 
       action = portalGuardian.actionMove({ x: 5, y: 2 });
@@ -153,7 +165,9 @@ describe('challenges', () => {
 
       let action = gameSession.getGeneralForPlayer1().actionMove({ x: 4, y: 2 });
       gameSession.executeAction(action);
-      action = gameSession.getGeneralForPlayer1().actionAttack(board.getUnitAtPosition({ x: 5, y: 2 }));
+      action = gameSession
+        .getGeneralForPlayer1()
+        .actionAttack(board.getUnitAtPosition({ x: 5, y: 2 }));
       gameSession.executeAction(action);
       action = windbladeAdept.actionAttack(board.getUnitAtPosition({ x: 5, y: 2 }));
       gameSession.executeAction(action);

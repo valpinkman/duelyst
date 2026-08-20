@@ -12,7 +12,8 @@ class ModifierSentinelHidden extends ModifierOverwatchHidden {
 
   static type = 'ModifierSentinelHidden';
   static isKeyworded = true;
-  static keywordDefinition = 'Hidden condition is one of: the opponent summons a minion, casts a spell, or attacks with General.';
+  static keywordDefinition =
+    'Hidden condition is one of: the opponent summons a minion, casts a spell, or attacks with General.';
   static modifierName = 'Sentinel';
   static description = '%X';
 }

@@ -1,5 +1,4 @@
 const GameUIModule = cc.Class.extend({
-
   start() {
     // override in subclass to do setup behavior
   },
@@ -7,7 +6,6 @@ const GameUIModule = cc.Class.extend({
   terminate() {
     // override in subclass to do termination behavior
   },
-
 });
 
 module.exports = GameUIModule;

@@ -32,7 +32,9 @@ class SpellMistWalking extends Spell {
 
   _filterPlayPositions(spellPositions) {
     const validPositions = [];
-    const generalPosition = this.getGameSession().getGeneralForPlayerId(this.getOwnerId()).getPosition();
+    const generalPosition = this.getGameSession()
+      .getGeneralForPlayerId(this.getOwnerId())
+      .getPosition();
     const board = this.getGameSession().getBoard();
     for (var position of Array.from<any>(CONFIG.PATTERN_2SPACES)) {
       var pos = { x: generalPosition.x + position.x, y: generalPosition.y + position.y };

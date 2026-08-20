@@ -19,8 +19,10 @@ class SpellFountainOfYouth extends Spell {
 
     const position = { x, y };
     const unit = board.getCardAtPosition(position, this.targetType);
-    if (!unit.getIsGeneral()) { // heal my units, but not my General
-      if (unit.getDamage() > 0) { // only heal if unit is damaged
+    if (!unit.getIsGeneral()) {
+      // heal my units, but not my General
+      if (unit.getDamage() > 0) {
+        // only heal if unit is damaged
         const healAction = new HealAction(this.getGameSession());
         healAction.setOwnerId(this.getOwnerId());
         healAction.setTarget(unit);

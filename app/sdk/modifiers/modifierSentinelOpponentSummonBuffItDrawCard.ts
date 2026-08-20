@@ -14,8 +14,12 @@ class ModifierSentinelOpponentSummonBuffItDrawCard extends ModifierSentinelOppon
   static type = 'ModifierSentinelOpponentSummonBuffItDrawCard';
 
   static createContextObject(description, transformCardId, attackBuff, maxHPBuff, options) {
-    if (attackBuff == null) { attackBuff = 2; }
-    if (maxHPBuff == null) { maxHPBuff = 2; }
+    if (attackBuff == null) {
+      attackBuff = 2;
+    }
+    if (maxHPBuff == null) {
+      maxHPBuff = 2;
+    }
     const contextObject = super.createContextObject(description, transformCardId, options);
     contextObject.attackBuff = attackBuff;
     contextObject.maxHPBuff = maxHPBuff;
@@ -26,15 +30,23 @@ class ModifierSentinelOpponentSummonBuffItDrawCard extends ModifierSentinelOppon
     super.onOverwatch(action); // transform unit
     // buff unit that was just summoned by enemy
     if (action.getTarget() != null) {
-      const statContextObject = Modifier.createContextObjectWithAttributeBuffs(this.attackBuff, this.maxHPBuff);
+      const statContextObject = Modifier.createContextObjectWithAttributeBuffs(
+        this.attackBuff,
+        this.maxHPBuff,
+      );
       statContextObject.appliedName = 'Spooky Strength';
       this.getGameSession().applyModifierContextObject(statContextObject, action.getTarget());
 
-      const enemyGeneral = this.getCard().getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
-      return this.getGameSession().executeAction(new DrawCardAction(this.getGameSession(), enemyGeneral.getOwnerId()));
+      const enemyGeneral = this.getCard()
+        .getGameSession()
+        .getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
+      return this.getGameSession().executeAction(
+        new DrawCardAction(this.getGameSession(), enemyGeneral.getOwnerId()),
+      );
     }
   }
 }
-ModifierSentinelOpponentSummonBuffItDrawCard.prototype.type = 'ModifierSentinelOpponentSummonBuffItDrawCard';
+ModifierSentinelOpponentSummonBuffItDrawCard.prototype.type =
+  'ModifierSentinelOpponentSummonBuffItDrawCard';
 
 module.exports = ModifierSentinelOpponentSummonBuffItDrawCard;

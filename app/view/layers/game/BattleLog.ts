@@ -16,7 +16,6 @@ const BattleLogNode = require('../../nodes/cards/BattleLogNode');
  *************************************************************************** */
 
 const BattleLog = BaseLayer.extend({
-
   _battleLogEntriesContainer: null,
 
   _battleLogNodes: null,
@@ -118,7 +117,9 @@ const BattleLog = BaseLayer.extend({
    * @returns {Number}
    */
   getBattleLogX() {
-    return UtilsEngine.getGSIWinLeft() + (!this._expanded ? -87.0 : 0.0) + CONFIG.BATTLELOG_OFFSET.x;
+    return (
+      UtilsEngine.getGSIWinLeft() + (!this._expanded ? -87.0 : 0.0) + CONFIG.BATTLELOG_OFFSET.x
+    );
   },
 
   /**
@@ -135,7 +136,10 @@ const BattleLog = BaseLayer.extend({
    */
   getBattleLogBottom() {
     // TODO: remove this top/bottom code when player frames are migrated into engine
-    return this._battleLogEntriesContainer.getPositionY() - this._battleLogEntriesContainer._contentSize.height * 0.5;
+    return (
+      this._battleLogEntriesContainer.getPositionY() -
+      this._battleLogEntriesContainer._contentSize.height * 0.5
+    );
   },
 
   /**
@@ -144,7 +148,10 @@ const BattleLog = BaseLayer.extend({
    */
   getBattleLogTop() {
     // TODO: remove this top/bottom code when player frames are migrated into engine
-    return this._battleLogEntriesContainer.getPositionY() + this._battleLogEntriesContainer._contentSize.height * 0.5;
+    return (
+      this._battleLogEntriesContainer.getPositionY() +
+      this._battleLogEntriesContainer._contentSize.height * 0.5
+    );
   },
 
   /**
@@ -156,7 +163,10 @@ const BattleLog = BaseLayer.extend({
     if (step != null) {
       if (!_.contains(this._stepsProcessed, step)) {
         const action = step.getAction();
-        return action instanceof SDK.PlayCardFromHandAction || action instanceof SDK.PlaySignatureCardAction;
+        return (
+          action instanceof SDK.PlayCardFromHandAction ||
+          action instanceof SDK.PlaySignatureCardAction
+        );
       }
     }
     return false;
@@ -174,7 +184,10 @@ const BattleLog = BaseLayer.extend({
     this._battleLogNodePositions = [];
     let y = totalEntriesHeight;
     for (let i = 0; i < CONFIG.MAX_BATTLELOG_ENTRIES; i++) {
-      this._battleLogNodePositions[i] = cc.p(CONFIG.BATTLELOG_ENTRY_SIZE * 0.5 + CONFIG.BATTLELOG_ENTRY_OFFSET.x, y + CONFIG.BATTLELOG_ENTRY_OFFSET.y);
+      this._battleLogNodePositions[i] = cc.p(
+        CONFIG.BATTLELOG_ENTRY_SIZE * 0.5 + CONFIG.BATTLELOG_ENTRY_OFFSET.x,
+        y + CONFIG.BATTLELOG_ENTRY_OFFSET.y,
+      );
       y -= CONFIG.BATTLELOG_ENTRY_SIZE;
     }
 
@@ -187,7 +200,11 @@ const BattleLog = BaseLayer.extend({
 
   _updateBattleLogNodesPositions() {
     const battleLogNodes = this._battleLogNodesInUse;
-    for (let i = 0, il = Math.min(battleLogNodes.length, CONFIG.MAX_BATTLELOG_ENTRIES); i < il; i++) {
+    for (
+      let i = 0, il = Math.min(battleLogNodes.length, CONFIG.MAX_BATTLELOG_ENTRIES);
+      i < il;
+      i++
+    ) {
       battleLogNodes[i].setPosition(this._battleLogNodePositions[i]);
     }
   },
@@ -197,9 +214,13 @@ const BattleLog = BaseLayer.extend({
   /* region EXPAND / COLLAPSE */
 
   collapse(animationDuration) {
-    if (animationDuration == null || !this._expanded) { animationDuration = 0.0; }
+    if (animationDuration == null || !this._expanded) {
+      animationDuration = 0.0;
+    }
     if (this._expanded) {
-      audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_battlelog_close.audio, CONFIG.SELECT_SFX_PRIORITY);
+      audio_engine
+        .current()
+        .play_effect_for_interaction(RSX.sfx_ui_battlelog_close.audio, CONFIG.SELECT_SFX_PRIORITY);
     }
     this._expanded = false;
 
@@ -221,9 +242,13 @@ const BattleLog = BaseLayer.extend({
   },
 
   expand(animationDuration) {
-    if (animationDuration == null || this._expanded) { animationDuration = 0.0; }
+    if (animationDuration == null || this._expanded) {
+      animationDuration = 0.0;
+    }
     if (!this._expanded) {
-      audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_battlelog_open.audio, CONFIG.SELECT_SFX_PRIORITY);
+      audio_engine
+        .current()
+        .play_effect_for_interaction(RSX.sfx_ui_battlelog_open.audio, CONFIG.SELECT_SFX_PRIORITY);
     }
     this._expanded = true;
 
@@ -282,9 +307,13 @@ const BattleLog = BaseLayer.extend({
         if (this.getIsValidEntry(step)) {
           stepsForLog.unshift(step);
         }
-        if (stepsForLog.length >= CONFIG.MAX_BATTLELOG_ENTRIES) { break; }
+        if (stepsForLog.length >= CONFIG.MAX_BATTLELOG_ENTRIES) {
+          break;
+        }
       }
-      if (stepsForLog.length >= CONFIG.MAX_BATTLELOG_ENTRIES) { break; }
+      if (stepsForLog.length >= CONFIG.MAX_BATTLELOG_ENTRIES) {
+        break;
+      }
     }
 
     // add all steps as entries
@@ -320,9 +349,13 @@ const BattleLog = BaseLayer.extend({
         if (battleLogNodes.length > CONFIG.MAX_BATTLELOG_ENTRIES) {
           oldestBattleLogNode = battleLogNodes[battleLogNodes.length - 1];
           if (oldestBattleLogNode != null && !oldestBattleLogNode.getIsEmpty()) {
-            animateNextPromises.push(oldestBattleLogNode.showOut(battleLogNodesPositions[battleLogNodesPositions.length - 1]).then(() => {
-              oldestBattleLogNode.setVisible(false);
-            }));
+            animateNextPromises.push(
+              oldestBattleLogNode
+                .showOut(battleLogNodesPositions[battleLogNodesPositions.length - 1])
+                .then(() => {
+                  oldestBattleLogNode.setVisible(false);
+                }),
+            );
           }
         }
 
@@ -421,7 +454,9 @@ const BattleLog = BaseLayer.extend({
         const myPlayer = gameLayer != null && gameLayer.getMyPlayer();
         if (myPlayer != null && !myPlayer.getFollowupCard()) {
           // hover self
-          if (UtilsEngine.getNodeUnderMouse(this._battleLogEntriesContainer, location.x, location.y)) {
+          if (
+            UtilsEngine.getNodeUnderMouse(this._battleLogEntriesContainer, location.x, location.y)
+          ) {
             // hover battle log nodes
             if (this._expanded) {
               for (let i = 0, il = this._battleLogNodes.length; i < il; i++) {
@@ -454,7 +489,9 @@ const BattleLog = BaseLayer.extend({
           this._mouseOverBattleLogNode.setHighlighted(false);
           this._mouseOverBattleLogNode = null;
           if (battleLogNode == null) {
-            gameLayer.getEventBus().trigger(EVENTS.game_hover_changed, { type: EVENTS.game_hover_changed, hover: null });
+            gameLayer
+              .getEventBus()
+              .trigger(EVENTS.game_hover_changed, { type: EVENTS.game_hover_changed, hover: null });
           }
         }
 
@@ -467,7 +504,10 @@ const BattleLog = BaseLayer.extend({
           // highlight
           this._mouseOverBattleLogNode.setHighlighted(true);
 
-          gameLayer.getEventBus().trigger(EVENTS.game_hover_changed, { type: EVENTS.game_hover_changed, hover: this._mouseOverBattleLogNode });
+          gameLayer.getEventBus().trigger(EVENTS.game_hover_changed, {
+            type: EVENTS.game_hover_changed,
+            hover: this._mouseOverBattleLogNode,
+          });
         }
       }
     }
@@ -489,7 +529,9 @@ const BattleLog = BaseLayer.extend({
           this.setMouseOverBattleLogNode(null);
 
           // click self to toggle
-          if (UtilsEngine.getNodeUnderMouse(this._battleLogEntriesContainer, location.x, location.y)) {
+          if (
+            UtilsEngine.getNodeUnderMouse(this._battleLogEntriesContainer, location.x, location.y)
+          ) {
             this.toggle(CONFIG.ANIMATE_FAST_DURATION);
             event.stopPropagation();
           }
@@ -499,7 +541,6 @@ const BattleLog = BaseLayer.extend({
   },
 
   /* endregion EVENTS */
-
 });
 
 BattleLog.create = function (layer) {

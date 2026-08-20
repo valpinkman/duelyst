@@ -19,7 +19,6 @@ describe('bloodborn spells', () => {
   */
     // setup test session
     // UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
-
     /* // USE THIS TO GET THE CURRENT CARDS IN YOUR HAND
   var deck = player1.getDeck();
   console.log(deck.getCardsInHand(1));
@@ -31,13 +30,9 @@ describe('bloodborn spells', () => {
   });
 
   it('expect argeon highmaynes roar to give a friendly minion +2 attack', () => {
-    const player1Deck = [
-      { id: SDK.Cards.Faction1.General },
-    ];
+    const player1Deck = [{ id: SDK.Cards.Faction1.General }];
 
-    const player2Deck = [
-      { id: SDK.Cards.Faction2.General },
-    ];
+    const player2Deck = [{ id: SDK.Cards.Faction2.General }];
 
     UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
 
@@ -51,8 +46,18 @@ describe('bloodborn spells', () => {
     gameSession.executeAction(gameSession.actionEndTurn());
     gameSession.executeAction(gameSession.actionEndTurn());
 
-    const silverguardSquire = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.SilverguardSquire }, 1, 1, gameSession.getPlayer1Id());
-    const silverguardSquire2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.SilverguardSquire }, 4, 4, gameSession.getPlayer1Id());
+    const silverguardSquire = UtilsSDK.applyCardToBoard(
+      { id: SDK.Cards.Faction1.SilverguardSquire },
+      1,
+      1,
+      gameSession.getPlayer1Id(),
+    );
+    const silverguardSquire2 = UtilsSDK.applyCardToBoard(
+      { id: SDK.Cards.Faction1.SilverguardSquire },
+      4,
+      4,
+      gameSession.getPlayer1Id(),
+    );
 
     var action = player1.actionPlaySignatureCard(4, 4);
     gameSession.executeAction(action);
@@ -66,13 +71,9 @@ describe('bloodborn spells', () => {
   });
 
   it('expect ziran sunforges afterglow to restore 3 health to a minion', () => {
-    const player1Deck = [
-      { id: SDK.Cards.Faction1.AltGeneral },
-    ];
+    const player1Deck = [{ id: SDK.Cards.Faction1.AltGeneral }];
 
-    const player2Deck = [
-      { id: SDK.Cards.Faction2.General },
-    ];
+    const player2Deck = [{ id: SDK.Cards.Faction2.General }];
 
     UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
 
@@ -86,7 +87,12 @@ describe('bloodborn spells', () => {
     gameSession.executeAction(gameSession.actionEndTurn());
     gameSession.executeAction(gameSession.actionEndTurn());
 
-    const silverguardKnight = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.SilverguardKnight }, 1, 1, gameSession.getPlayer1Id());
+    const silverguardKnight = UtilsSDK.applyCardToBoard(
+      { id: SDK.Cards.Faction1.SilverguardKnight },
+      1,
+      1,
+      gameSession.getPlayer1Id(),
+    );
     silverguardKnight.setDamage(4);
     expect(silverguardKnight.getHP()).to.equal(1);
 
@@ -97,13 +103,9 @@ describe('bloodborn spells', () => {
   });
 
   it('expect brome to summon a crestfallen in front of him', () => {
-    const player1Deck = [
-      { id: SDK.Cards.Faction1.ThirdGeneral },
-    ];
+    const player1Deck = [{ id: SDK.Cards.Faction1.ThirdGeneral }];
 
-    const player2Deck = [
-      { id: SDK.Cards.Faction2.General },
-    ];
+    const player2Deck = [{ id: SDK.Cards.Faction2.General }];
 
     UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
 
@@ -125,13 +127,9 @@ describe('bloodborn spells', () => {
   });
 
   it('expect kaelos xaans blink to teleport a friendly minion up to 2 spaces', () => {
-    const player1Deck = [
-      { id: SDK.Cards.Faction2.General },
-    ];
+    const player1Deck = [{ id: SDK.Cards.Faction2.General }];
 
-    const player2Deck = [
-      { id: SDK.Cards.Faction2.General },
-    ];
+    const player2Deck = [{ id: SDK.Cards.Faction2.General }];
 
     UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
 
@@ -145,7 +143,12 @@ describe('bloodborn spells', () => {
     gameSession.executeAction(gameSession.actionEndTurn());
     gameSession.executeAction(gameSession.actionEndTurn());
 
-    var silverguardSquire = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.SilverguardSquire }, 1, 1, gameSession.getPlayer1Id());
+    var silverguardSquire = UtilsSDK.applyCardToBoard(
+      { id: SDK.Cards.Faction1.SilverguardSquire },
+      1,
+      1,
+      gameSession.getPlayer1Id(),
+    );
 
     const action = player1.actionPlaySignatureCard(1, 1);
     gameSession.executeAction(action);
@@ -158,13 +161,9 @@ describe('bloodborn spells', () => {
   });
 
   it('expect reva eventides crimson heart to summon a heartseeker', () => {
-    const player1Deck = [
-      { id: SDK.Cards.Faction2.AltGeneral },
-    ];
+    const player1Deck = [{ id: SDK.Cards.Faction2.AltGeneral }];
 
-    const player2Deck = [
-      { id: SDK.Cards.Faction2.General },
-    ];
+    const player2Deck = [{ id: SDK.Cards.Faction2.General }];
 
     UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
 
@@ -189,13 +188,9 @@ describe('bloodborn spells', () => {
   });
 
   it('expect shidai to put a random spellsword into the action bar that cannot be replaced', () => {
-    const player1Deck = [
-      { id: SDK.Cards.Faction2.ThirdGeneral },
-    ];
+    const player1Deck = [{ id: SDK.Cards.Faction2.ThirdGeneral }];
 
-    const player2Deck = [
-      { id: SDK.Cards.Faction2.General },
-    ];
+    const player2Deck = [{ id: SDK.Cards.Faction2.General }];
 
     UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
 
@@ -212,8 +207,16 @@ describe('bloodborn spells', () => {
     let action = player1.actionPlaySignatureCard(1, 1);
     gameSession.executeAction(action);
 
-    UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.Maw }));
-    UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.Maw }));
+    UtilsSDK.executeActionWithoutValidation(
+      new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+        id: SDK.Cards.Neutral.Maw,
+      }),
+    );
+    UtilsSDK.executeActionWithoutValidation(
+      new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+        id: SDK.Cards.Neutral.Maw,
+      }),
+    );
 
     action = player1.actionReplaceCardFromHand(0);
     // expect(action.getIsValid()).to.equal(false);
@@ -230,13 +233,9 @@ describe('bloodborn spells', () => {
   });
 
   it('expect shidais first spellsword to draw a card at end of turn', () => {
-    const player1Deck = [
-      { id: SDK.Cards.Faction2.ThirdGeneral },
-    ];
+    const player1Deck = [{ id: SDK.Cards.Faction2.ThirdGeneral }];
 
-    const player2Deck = [
-      { id: SDK.Cards.Faction2.General },
-    ];
+    const player2Deck = [{ id: SDK.Cards.Faction2.General }];
 
     UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
 
@@ -244,9 +243,21 @@ describe('bloodborn spells', () => {
     const board = gameSession.getBoard();
     const player1 = gameSession.getPlayer1();
 
-    UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.Maw }));
-    UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.Maw }));
-    UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.SpellSword1 }));
+    UtilsSDK.executeActionWithoutValidation(
+      new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+        id: SDK.Cards.Neutral.Maw,
+      }),
+    );
+    UtilsSDK.executeActionWithoutValidation(
+      new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+        id: SDK.Cards.Neutral.Maw,
+      }),
+    );
+    UtilsSDK.executeActionWithoutValidation(
+      new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+        id: SDK.Cards.Spell.SpellSword1,
+      }),
+    );
     const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 2);
     gameSession.executeAction(playCardFromHandAction);
 
@@ -258,13 +269,9 @@ describe('bloodborn spells', () => {
   });
 
   it('expect shidais second spellsword to allow you to move one more space this turn', () => {
-    const player1Deck = [
-      { id: SDK.Cards.Faction2.ThirdGeneral },
-    ];
+    const player1Deck = [{ id: SDK.Cards.Faction2.ThirdGeneral }];
 
-    const player2Deck = [
-      { id: SDK.Cards.Faction2.General },
-    ];
+    const player2Deck = [{ id: SDK.Cards.Faction2.General }];
 
     UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
 
@@ -272,7 +279,11 @@ describe('bloodborn spells', () => {
     const board = gameSession.getBoard();
     const player1 = gameSession.getPlayer1();
 
-    UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.SpellSword2 }));
+    UtilsSDK.executeActionWithoutValidation(
+      new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+        id: SDK.Cards.Spell.SpellSword2,
+      }),
+    );
     const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 2);
     gameSession.executeAction(playCardFromHandAction);
 
@@ -285,13 +296,9 @@ describe('bloodborn spells', () => {
   });
 
   it('expect shidais third spellsword to move an enemy minion one space', () => {
-    const player1Deck = [
-      { id: SDK.Cards.Faction2.ThirdGeneral },
-    ];
+    const player1Deck = [{ id: SDK.Cards.Faction2.ThirdGeneral }];
 
-    const player2Deck = [
-      { id: SDK.Cards.Faction2.General },
-    ];
+    const player2Deck = [{ id: SDK.Cards.Faction2.General }];
 
     UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
 
@@ -299,9 +306,18 @@ describe('bloodborn spells', () => {
     const board = gameSession.getBoard();
     const player1 = gameSession.getPlayer1();
 
-    const silverguardSquire = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.SilverguardSquire }, 1, 1, gameSession.getPlayer2Id());
+    const silverguardSquire = UtilsSDK.applyCardToBoard(
+      { id: SDK.Cards.Faction1.SilverguardSquire },
+      1,
+      1,
+      gameSession.getPlayer2Id(),
+    );
 
-    UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.SpellSword3 }));
+    UtilsSDK.executeActionWithoutValidation(
+      new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+        id: SDK.Cards.Spell.SpellSword3,
+      }),
+    );
     const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
     gameSession.executeAction(playCardFromHandAction);
     const followupCard = playCardFromHandAction.getCard().getCurrentFollowupCard();
@@ -313,13 +329,9 @@ describe('bloodborn spells', () => {
   });
 
   it('expect shidais fourth spellsword to give a friendly minion or general backstab(2) until end of turn', () => {
-    const player1Deck = [
-      { id: SDK.Cards.Faction2.ThirdGeneral },
-    ];
+    const player1Deck = [{ id: SDK.Cards.Faction2.ThirdGeneral }];
 
-    const player2Deck = [
-      { id: SDK.Cards.Faction2.General },
-    ];
+    const player2Deck = [{ id: SDK.Cards.Faction2.General }];
 
     UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
 
@@ -327,12 +339,26 @@ describe('bloodborn spells', () => {
     const board = gameSession.getBoard();
     const player1 = gameSession.getPlayer1();
 
-    const silverguardSquire = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.SilverguardSquire }, 2, 1, gameSession.getPlayer1Id());
-    const silverguardSquire2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.SilverguardSquire }, 1, 1, gameSession.getPlayer2Id());
+    const silverguardSquire = UtilsSDK.applyCardToBoard(
+      { id: SDK.Cards.Faction1.SilverguardSquire },
+      2,
+      1,
+      gameSession.getPlayer1Id(),
+    );
+    const silverguardSquire2 = UtilsSDK.applyCardToBoard(
+      { id: SDK.Cards.Faction1.SilverguardSquire },
+      1,
+      1,
+      gameSession.getPlayer2Id(),
+    );
 
     silverguardSquire.refreshExhaustion();
 
-    UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.SpellSword4 }));
+    UtilsSDK.executeActionWithoutValidation(
+      new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+        id: SDK.Cards.Spell.SpellSword4,
+      }),
+    );
     const playCardFromHandAction = player1.actionPlayCardFromHand(0, 2, 1);
     gameSession.executeAction(playCardFromHandAction);
 
@@ -344,13 +370,9 @@ describe('bloodborn spells', () => {
   });
 
   it('expect zirix starstriders wind shroud to summon a 2/2 iron dervish with rush on a random nearby tile next to your general', () => {
-    const player1Deck = [
-      { id: SDK.Cards.Faction3.General },
-    ];
+    const player1Deck = [{ id: SDK.Cards.Faction3.General }];
 
-    const player2Deck = [
-      { id: SDK.Cards.Faction2.General },
-    ];
+    const player2Deck = [{ id: SDK.Cards.Faction2.General }];
 
     UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
 
@@ -372,13 +394,9 @@ describe('bloodborn spells', () => {
   });
 
   it('expect scioness sajs psionic recall to deal double damage to minions', () => {
-    const player1Deck = [
-      { id: SDK.Cards.Faction3.AltGeneral },
-    ];
+    const player1Deck = [{ id: SDK.Cards.Faction3.AltGeneral }];
 
-    const player2Deck = [
-      { id: SDK.Cards.Faction2.General },
-    ];
+    const player2Deck = [{ id: SDK.Cards.Faction2.General }];
 
     UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
 
@@ -395,7 +413,12 @@ describe('bloodborn spells', () => {
     var action = player1.actionPlaySignatureCard(1, 1);
     gameSession.executeAction(action);
 
-    const silverguardKnight = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.SilverguardKnight }, 1, 1, gameSession.getPlayer2Id());
+    const silverguardKnight = UtilsSDK.applyCardToBoard(
+      { id: SDK.Cards.Faction1.SilverguardKnight },
+      1,
+      1,
+      gameSession.getPlayer2Id(),
+    );
     var action = gameSession.getGeneralForPlayer1().actionAttack(silverguardKnight);
     gameSession.executeAction(action);
 
@@ -403,13 +426,9 @@ describe('bloodborn spells', () => {
   });
 
   it('expect ciphyron to lower a minions attack by 2 until their next turn', () => {
-    const player1Deck = [
-      { id: SDK.Cards.Faction3.ThirdGeneral },
-    ];
+    const player1Deck = [{ id: SDK.Cards.Faction3.ThirdGeneral }];
 
-    const player2Deck = [
-      { id: SDK.Cards.Faction2.General },
-    ];
+    const player2Deck = [{ id: SDK.Cards.Faction2.General }];
 
     UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
 
@@ -423,7 +442,12 @@ describe('bloodborn spells', () => {
     gameSession.executeAction(gameSession.actionEndTurn());
     gameSession.executeAction(gameSession.actionEndTurn());
 
-    const ironcliffe = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.IroncliffeGuardian }, 1, 1, gameSession.getPlayer2Id());
+    const ironcliffe = UtilsSDK.applyCardToBoard(
+      { id: SDK.Cards.Faction1.IroncliffeGuardian },
+      1,
+      1,
+      gameSession.getPlayer2Id(),
+    );
 
     const action = player1.actionPlaySignatureCard(1, 1);
     gameSession.executeAction(action);
@@ -436,13 +460,9 @@ describe('bloodborn spells', () => {
   });
 
   it('expect lilithe blightchasers shadowspawn to summon two 1/1 wraithlings near your general', () => {
-    const player1Deck = [
-      { id: SDK.Cards.Faction4.General },
-    ];
+    const player1Deck = [{ id: SDK.Cards.Faction4.General }];
 
-    const player2Deck = [
-      { id: SDK.Cards.Faction2.General },
-    ];
+    const player2Deck = [{ id: SDK.Cards.Faction2.General }];
 
     UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
 
@@ -466,13 +486,9 @@ describe('bloodborn spells', () => {
   });
 
   it('expect cassyva soulreapers abyssal scar to deal 1 damage to a minion and make it summon a shadowcreep if it dies', () => {
-    const player1Deck = [
-      { id: SDK.Cards.Faction4.AltGeneral },
-    ];
+    const player1Deck = [{ id: SDK.Cards.Faction4.AltGeneral }];
 
-    const player2Deck = [
-      { id: SDK.Cards.Faction2.General },
-    ];
+    const player2Deck = [{ id: SDK.Cards.Faction2.General }];
 
     UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
 
@@ -486,7 +502,12 @@ describe('bloodborn spells', () => {
     gameSession.executeAction(gameSession.actionEndTurn());
     gameSession.executeAction(gameSession.actionEndTurn());
 
-    const silverguardKnight = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.SilverguardKnight }, 1, 1, gameSession.getPlayer2Id());
+    const silverguardKnight = UtilsSDK.applyCardToBoard(
+      { id: SDK.Cards.Faction1.SilverguardKnight },
+      1,
+      1,
+      gameSession.getPlayer2Id(),
+    );
     silverguardKnight.setDamage(4);
 
     const action = player1.actionPlaySignatureCard(1, 1);
@@ -534,13 +555,9 @@ it('expect maehv to kill a friendly minion to summon a 4/4 husk on its space and
 */
 
   it('expect starhorn the seekers ability to make both players draw a card', () => {
-    const player1Deck = [
-      { id: SDK.Cards.Faction5.AltGeneral },
-    ];
+    const player1Deck = [{ id: SDK.Cards.Faction5.AltGeneral }];
 
-    const player2Deck = [
-      { id: SDK.Cards.Faction2.General },
-    ];
+    const player2Deck = [{ id: SDK.Cards.Faction2.General }];
 
     UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
 
@@ -555,8 +572,16 @@ it('expect maehv to kill a friendly minion to summon a 4/4 husk on its space and
     gameSession.executeAction(gameSession.actionEndTurn());
     gameSession.executeAction(gameSession.actionEndTurn());
 
-    UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.Maw }));
-    UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer2Id(), { id: SDK.Cards.Neutral.Maw }));
+    UtilsSDK.executeActionWithoutValidation(
+      new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+        id: SDK.Cards.Neutral.Maw,
+      }),
+    );
+    UtilsSDK.executeActionWithoutValidation(
+      new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer2Id(), {
+        id: SDK.Cards.Neutral.Maw,
+      }),
+    );
 
     const action = player1.actionPlaySignatureCard(1, 1);
     gameSession.executeAction(action);
@@ -568,13 +593,9 @@ it('expect maehv to kill a friendly minion to summon a 4/4 husk on its space and
   });
 
   it('expect vaath the immortals overload to give your general +1 attack permanently', () => {
-    const player1Deck = [
-      { id: SDK.Cards.Faction5.General },
-    ];
+    const player1Deck = [{ id: SDK.Cards.Faction5.General }];
 
-    const player2Deck = [
-      { id: SDK.Cards.Faction2.General },
-    ];
+    const player2Deck = [{ id: SDK.Cards.Faction2.General }];
 
     UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
 
@@ -596,13 +617,9 @@ it('expect maehv to kill a friendly minion to summon a 4/4 husk on its space and
   });
 
   it('expect ragnora to summon a 3/1 celerity egg', () => {
-    const player1Deck = [
-      { id: SDK.Cards.Faction5.ThirdGeneral },
-    ];
+    const player1Deck = [{ id: SDK.Cards.Faction5.ThirdGeneral }];
 
-    const player2Deck = [
-      { id: SDK.Cards.Faction2.General },
-    ];
+    const player2Deck = [{ id: SDK.Cards.Faction2.General }];
 
     UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
 
@@ -631,13 +648,9 @@ it('expect maehv to kill a friendly minion to summon a 4/4 husk on its space and
   });
 
   it('expect faie bloodwings warbird to deal 2 damage to all minions and generals in the generals column', () => {
-    const player1Deck = [
-      { id: SDK.Cards.Faction6.General },
-    ];
+    const player1Deck = [{ id: SDK.Cards.Faction6.General }];
 
-    const player2Deck = [
-      { id: SDK.Cards.Faction2.General },
-    ];
+    const player2Deck = [{ id: SDK.Cards.Faction2.General }];
 
     UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
 
@@ -651,8 +664,18 @@ it('expect maehv to kill a friendly minion to summon a 4/4 husk on its space and
     gameSession.executeAction(gameSession.actionEndTurn());
     gameSession.executeAction(gameSession.actionEndTurn());
 
-    const silverguardSquire = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.SilverguardSquire }, 8, 1, gameSession.getPlayer1Id());
-    const silverguardSquire2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.SilverguardSquire }, 8, 3, gameSession.getPlayer2Id());
+    const silverguardSquire = UtilsSDK.applyCardToBoard(
+      { id: SDK.Cards.Faction1.SilverguardSquire },
+      8,
+      1,
+      gameSession.getPlayer1Id(),
+    );
+    const silverguardSquire2 = UtilsSDK.applyCardToBoard(
+      { id: SDK.Cards.Faction1.SilverguardSquire },
+      8,
+      3,
+      gameSession.getPlayer2Id(),
+    );
 
     const action = player1.actionPlaySignatureCard(8, 2);
     gameSession.executeAction(action);
@@ -664,13 +687,9 @@ it('expect maehv to kill a friendly minion to summon a 4/4 husk on its space and
   });
 
   it('expect kara winterblades kinetic coil to give minions in your hand +1/+1', () => {
-    const player1Deck = [
-      { id: SDK.Cards.Faction6.AltGeneral },
-    ];
+    const player1Deck = [{ id: SDK.Cards.Faction6.AltGeneral }];
 
-    const player2Deck = [
-      { id: SDK.Cards.Faction2.General },
-    ];
+    const player2Deck = [{ id: SDK.Cards.Faction2.General }];
 
     UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
 
@@ -684,7 +703,11 @@ it('expect maehv to kill a friendly minion to summon a 4/4 husk on its space and
     gameSession.executeAction(gameSession.actionEndTurn());
     gameSession.executeAction(gameSession.actionEndTurn());
 
-    UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
+    UtilsSDK.executeActionWithoutValidation(
+      new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+        id: SDK.Cards.Faction1.SilverguardSquire,
+      }),
+    );
 
     var action = player1.actionPlaySignatureCard(1, 1);
     gameSession.executeAction(action);
@@ -699,13 +722,9 @@ it('expect maehv to kill a friendly minion to summon a 4/4 husk on its space and
   });
 
   it('expect grandmaster zir to continue drawing bloodborn spells', () => {
-    const player1Deck = [
-      { id: SDK.Cards.Faction1.General },
-    ];
+    const player1Deck = [{ id: SDK.Cards.Faction1.General }];
 
-    const player2Deck = [
-      { id: SDK.Cards.Faction2.General },
-    ];
+    const player2Deck = [{ id: SDK.Cards.Faction2.General }];
 
     UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
 
@@ -713,7 +732,12 @@ it('expect maehv to kill a friendly minion to summon a 4/4 husk on its space and
     const board = gameSession.getBoard();
     const player1 = gameSession.getPlayer1();
 
-    const grandmasterZir = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.GrandmasterZir }, 0, 1, gameSession.getPlayer1Id());
+    const grandmasterZir = UtilsSDK.applyCardToBoard(
+      { id: SDK.Cards.Faction1.GrandmasterZir },
+      0,
+      1,
+      gameSession.getPlayer1Id(),
+    );
 
     const damageAction = new SDK.DamageAction(gameSession);
     damageAction.setTarget(gameSession.getGeneralForPlayer1());
@@ -726,8 +750,18 @@ it('expect maehv to kill a friendly minion to summon a 4/4 husk on its space and
     gameSession.executeAction(gameSession.actionEndTurn());
     gameSession.executeAction(gameSession.actionEndTurn());
 
-    const silverguardSquire = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.SilverguardSquire }, 1, 1, gameSession.getPlayer1Id());
-    const silverguardSquire2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.SilverguardSquire }, 4, 4, gameSession.getPlayer1Id());
+    const silverguardSquire = UtilsSDK.applyCardToBoard(
+      { id: SDK.Cards.Faction1.SilverguardSquire },
+      1,
+      1,
+      gameSession.getPlayer1Id(),
+    );
+    const silverguardSquire2 = UtilsSDK.applyCardToBoard(
+      { id: SDK.Cards.Faction1.SilverguardSquire },
+      4,
+      4,
+      gameSession.getPlayer1Id(),
+    );
 
     var action = player1.actionPlaySignatureCard(4, 4);
     gameSession.executeAction(action);
@@ -741,13 +775,9 @@ it('expect maehv to kill a friendly minion to summon a 4/4 husk on its space and
   });
 
   it('expect kara winterblades kinetic coil to give ash mephyt and all copies +1/+1', () => {
-    const player1Deck = [
-      { id: SDK.Cards.Faction6.AltGeneral },
-    ];
+    const player1Deck = [{ id: SDK.Cards.Faction6.AltGeneral }];
 
-    const player2Deck = [
-      { id: SDK.Cards.Faction2.General },
-    ];
+    const player2Deck = [{ id: SDK.Cards.Faction2.General }];
 
     UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
 
@@ -761,7 +791,11 @@ it('expect maehv to kill a friendly minion to summon a 4/4 husk on its space and
     gameSession.executeAction(gameSession.actionEndTurn());
     gameSession.executeAction(gameSession.actionEndTurn());
 
-    UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.AshMephyt }));
+    UtilsSDK.executeActionWithoutValidation(
+      new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+        id: SDK.Cards.Neutral.AshMephyt,
+      }),
+    );
 
     player1.remainingMana = 9;
 
@@ -782,13 +816,9 @@ it('expect maehv to kill a friendly minion to summon a 4/4 husk on its space and
   });
 
   it('expect ilena to stun a nearby enemy minion', () => {
-    const player1Deck = [
-      { id: SDK.Cards.Faction6.ThirdGeneral },
-    ];
+    const player1Deck = [{ id: SDK.Cards.Faction6.ThirdGeneral }];
 
-    const player2Deck = [
-      { id: SDK.Cards.Faction2.General },
-    ];
+    const player2Deck = [{ id: SDK.Cards.Faction2.General }];
 
     UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
 
@@ -802,7 +832,12 @@ it('expect maehv to kill a friendly minion to summon a 4/4 husk on its space and
     gameSession.executeAction(gameSession.actionEndTurn());
     gameSession.executeAction(gameSession.actionEndTurn());
 
-    const silverguardSquire2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.SilverguardSquire }, 1, 2, gameSession.getPlayer2Id());
+    const silverguardSquire2 = UtilsSDK.applyCardToBoard(
+      { id: SDK.Cards.Faction1.SilverguardSquire },
+      1,
+      2,
+      gameSession.getPlayer2Id(),
+    );
 
     const action = player1.actionPlaySignatureCard(1, 2);
     gameSession.executeAction(action);
@@ -811,13 +846,9 @@ it('expect maehv to kill a friendly minion to summon a 4/4 husk on its space and
   });
 
   it('expect mana vortex to reduce bloodborn spell costs', () => {
-    const player1Deck = [
-      { id: SDK.Cards.Faction6.General },
-    ];
+    const player1Deck = [{ id: SDK.Cards.Faction6.General }];
 
-    const player2Deck = [
-      { id: SDK.Cards.Faction2.General },
-    ];
+    const player2Deck = [{ id: SDK.Cards.Faction2.General }];
 
     UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
 
@@ -831,7 +862,11 @@ it('expect maehv to kill a friendly minion to summon a 4/4 husk on its space and
     gameSession.executeAction(gameSession.actionEndTurn());
     gameSession.executeAction(gameSession.actionEndTurn());
 
-    UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.ManaVortex }));
+    UtilsSDK.executeActionWithoutValidation(
+      new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+        id: SDK.Cards.Spell.ManaVortex,
+      }),
+    );
     const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
     gameSession.executeAction(playCardFromHandAction);
 
@@ -845,13 +880,9 @@ it('expect maehv to kill a friendly minion to summon a 4/4 husk on its space and
   });
 
   it('expect keshrai fanblade to increase bloodborn spell costs', () => {
-    const player1Deck = [
-      { id: SDK.Cards.Faction6.General },
-    ];
+    const player1Deck = [{ id: SDK.Cards.Faction6.General }];
 
-    const player2Deck = [
-      { id: SDK.Cards.Faction2.General },
-    ];
+    const player2Deck = [{ id: SDK.Cards.Faction2.General }];
 
     UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
 
@@ -867,7 +898,11 @@ it('expect maehv to kill a friendly minion to summon a 4/4 husk on its space and
 
     player2.remainingMana = 9;
 
-    UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer2Id(), { id: SDK.Cards.Faction2.KeshraiFanblade }));
+    UtilsSDK.executeActionWithoutValidation(
+      new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer2Id(), {
+        id: SDK.Cards.Faction2.KeshraiFanblade,
+      }),
+    );
     var action = player2.actionPlayCardFromHand(0, 8, 1);
     gameSession.executeAction(action);
 
@@ -884,13 +919,9 @@ it('expect maehv to kill a friendly minion to summon a 4/4 husk on its space and
   });
 
   it('expect archon spellbinder to not increase bloodborn spell costs', () => {
-    const player1Deck = [
-      { id: SDK.Cards.Faction6.General },
-    ];
+    const player1Deck = [{ id: SDK.Cards.Faction6.General }];
 
-    const player2Deck = [
-      { id: SDK.Cards.Faction2.General },
-    ];
+    const player2Deck = [{ id: SDK.Cards.Faction2.General }];
 
     UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
 
@@ -906,7 +937,11 @@ it('expect maehv to kill a friendly minion to summon a 4/4 husk on its space and
 
     player2.remainingMana = 9;
 
-    UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer2Id(), { id: SDK.Cards.Neutral.ArchonSpellbinder }));
+    UtilsSDK.executeActionWithoutValidation(
+      new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer2Id(), {
+        id: SDK.Cards.Neutral.ArchonSpellbinder,
+      }),
+    );
     var action = player2.actionPlayCardFromHand(0, 8, 1);
     gameSession.executeAction(action);
 
@@ -923,13 +958,9 @@ it('expect maehv to kill a friendly minion to summon a 4/4 husk on its space and
   });
 
   it('expect manaforger to not decrease bloodborn spell costs', () => {
-    const player1Deck = [
-      { id: SDK.Cards.Faction6.General },
-    ];
+    const player1Deck = [{ id: SDK.Cards.Faction6.General }];
 
-    const player2Deck = [
-      { id: SDK.Cards.Faction2.General },
-    ];
+    const player2Deck = [{ id: SDK.Cards.Faction2.General }];
 
     UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
 
@@ -944,7 +975,11 @@ it('expect maehv to kill a friendly minion to summon a 4/4 husk on its space and
 
     gameSession.executeAction(gameSession.actionEndTurn());
 
-    UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.Manaforger }));
+    UtilsSDK.executeActionWithoutValidation(
+      new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+        id: SDK.Cards.Neutral.Manaforger,
+      }),
+    );
     var action = player1.actionPlayCardFromHand(0, 1, 1);
     gameSession.executeAction(action);
 
@@ -959,13 +994,9 @@ it('expect maehv to kill a friendly minion to summon a 4/4 husk on its space and
   });
 
   it('expect spell watch cards to be affected by bloodborn spells', () => {
-    const player1Deck = [
-      { id: SDK.Cards.Faction6.General },
-    ];
+    const player1Deck = [{ id: SDK.Cards.Faction6.General }];
 
-    const player2Deck = [
-      { id: SDK.Cards.Faction2.General },
-    ];
+    const player2Deck = [{ id: SDK.Cards.Faction2.General }];
 
     UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
 
@@ -979,7 +1010,12 @@ it('expect maehv to kill a friendly minion to summon a 4/4 husk on its space and
     gameSession.executeAction(gameSession.actionEndTurn());
     gameSession.executeAction(gameSession.actionEndTurn());
 
-    const chakriAvatar = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction2.ChakriAvatar }, 0, 1, gameSession.getPlayer1Id());
+    const chakriAvatar = UtilsSDK.applyCardToBoard(
+      { id: SDK.Cards.Faction2.ChakriAvatar },
+      0,
+      1,
+      gameSession.getPlayer1Id(),
+    );
 
     const action = player1.actionPlaySignatureCard(8, 2);
     gameSession.executeAction(action);
@@ -991,13 +1027,9 @@ it('expect maehv to kill a friendly minion to summon a 4/4 husk on its space and
   });
 
   it('expect alcuin loremaster to return bloodborn spells', () => {
-    const player1Deck = [
-      { id: SDK.Cards.Faction6.General },
-    ];
+    const player1Deck = [{ id: SDK.Cards.Faction6.General }];
 
-    const player2Deck = [
-      { id: SDK.Cards.Faction2.General },
-    ];
+    const player2Deck = [{ id: SDK.Cards.Faction2.General }];
 
     UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
 
@@ -1017,7 +1049,11 @@ it('expect maehv to kill a friendly minion to summon a 4/4 husk on its space and
     gameSession.executeAction(action);
     expect(action.getIsValid()).to.equal(true);
 
-    UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.AlcuinLoremaster }));
+    UtilsSDK.executeActionWithoutValidation(
+      new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+        id: SDK.Cards.Neutral.AlcuinLoremaster,
+      }),
+    );
     var action = player1.actionPlayCardFromHand(0, 1, 1);
     gameSession.executeAction(action);
     var action = player1.actionPlayCardFromHand(0, 8, 2);
@@ -1027,13 +1063,9 @@ it('expect maehv to kill a friendly minion to summon a 4/4 husk on its space and
   });
 
   it('expect twilight sorcerer to return bloodborn spells', () => {
-    const player1Deck = [
-      { id: SDK.Cards.Faction6.General },
-    ];
+    const player1Deck = [{ id: SDK.Cards.Faction6.General }];
 
-    const player2Deck = [
-      { id: SDK.Cards.Faction2.General },
-    ];
+    const player2Deck = [{ id: SDK.Cards.Faction2.General }];
 
     UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
 
@@ -1053,7 +1085,11 @@ it('expect maehv to kill a friendly minion to summon a 4/4 husk on its space and
     gameSession.executeAction(action);
     expect(action.getIsValid()).to.equal(true);
 
-    UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.TwilightMage }));
+    UtilsSDK.executeActionWithoutValidation(
+      new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+        id: SDK.Cards.Neutral.TwilightMage,
+      }),
+    );
     var action = player1.actionPlayCardFromHand(0, 1, 1);
     gameSession.executeAction(action);
     var action = player1.actionPlayCardFromHand(0, 8, 2);
@@ -1063,13 +1099,9 @@ it('expect maehv to kill a friendly minion to summon a 4/4 husk on its space and
   });
 
   it('expect bloodborn spells to be replaceable', () => {
-    const player1Deck = [
-      { id: SDK.Cards.Faction6.General },
-    ];
+    const player1Deck = [{ id: SDK.Cards.Faction6.General }];
 
-    const player2Deck = [
-      { id: SDK.Cards.Faction2.General },
-    ];
+    const player2Deck = [{ id: SDK.Cards.Faction2.General }];
 
     UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
 
@@ -1089,9 +1121,17 @@ it('expect maehv to kill a friendly minion to summon a 4/4 husk on its space and
     gameSession.executeAction(action);
     expect(action.getIsValid()).to.equal(true);
 
-    UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PhoenixFire }));
+    UtilsSDK.executeActionWithoutValidation(
+      new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+        id: SDK.Cards.Spell.PhoenixFire,
+      }),
+    );
 
-    UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.AlcuinLoremaster }));
+    UtilsSDK.executeActionWithoutValidation(
+      new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+        id: SDK.Cards.Neutral.AlcuinLoremaster,
+      }),
+    );
     var action = player1.actionPlayCardFromHand(0, 1, 1);
     gameSession.executeAction(action);
 

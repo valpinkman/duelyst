@@ -22,7 +22,6 @@ var MyPlayerPopoverLayout = require('./game_my_player_popover');
  */
 
 var GamePlayerLayout = Backbone.Marionette.LayoutView.extend({
-
   // region Properties
 
   template: GamePlayerTmpl,
@@ -67,7 +66,9 @@ var GamePlayerLayout = Backbone.Marionette.LayoutView.extend({
       if (general != null && general.getPortraitHexResource() != null) {
         return general.getId();
       } else {
-        var playerSetupData = SDK.GameSession.getInstance().getPlayerSetupDataForPlayerId(this.model.get('playerId'));
+        var playerSetupData = SDK.GameSession.getInstance().getPlayerSetupDataForPlayerId(
+          this.model.get('playerId'),
+        );
         return playerSetupData.generalId;
       }
     },
@@ -75,8 +76,7 @@ var GamePlayerLayout = Backbone.Marionette.LayoutView.extend({
 
   // endregion Properties
 
-  initialize: function () {
-  },
+  initialize: function () {},
 
   // region Getters/Setters
 
@@ -135,7 +135,10 @@ var GamePlayerLayout = Backbone.Marionette.LayoutView.extend({
     if (!UtilsPosition.getPositionsAreEqual(this._position, position)) {
       this._position = position;
       if (position != null) {
-        this.$el.css('transform', 'translate(' + position.x / 10.0 + 'rem, ' + position.y / 10.0 + 'rem)');
+        this.$el.css(
+          'transform',
+          'translate(' + position.x / 10.0 + 'rem, ' + position.y / 10.0 + 'rem)',
+        );
       } else {
         this.$el.css('transform', '');
       }
@@ -157,10 +160,18 @@ var GamePlayerLayout = Backbone.Marionette.LayoutView.extend({
   onShow: function () {
     if (!SDK.GameSession.getInstance().isChallenge()) {
       // setup player popover
-      if ((!SDK.GameSession.getInstance().getIsSpectateMode() && this.model.get('playerId') === SDK.GameSession.getInstance().getMyPlayerId()) || SDK.GameSession.getInstance().isSandbox()) {
-        this.popoverView = new MyPlayerPopoverLayout({ model: new Backbone.Model({ playerId: this.model.get('playerId') }) });
+      if (
+        (!SDK.GameSession.getInstance().getIsSpectateMode() &&
+          this.model.get('playerId') === SDK.GameSession.getInstance().getMyPlayerId()) ||
+        SDK.GameSession.getInstance().isSandbox()
+      ) {
+        this.popoverView = new MyPlayerPopoverLayout({
+          model: new Backbone.Model({ playerId: this.model.get('playerId') }),
+        });
       } else {
-        this.popoverView = new OpponentPlayerPopoverLayout({ model: new Backbone.Model({ playerId: this.model.get('playerId') }) });
+        this.popoverView = new OpponentPlayerPopoverLayout({
+          model: new Backbone.Model({ playerId: this.model.get('playerId') }),
+        });
       }
       this.popoverRegion.show(this.popoverView);
     }
@@ -175,13 +186,21 @@ var GamePlayerLayout = Backbone.Marionette.LayoutView.extend({
       this.listenTo(gameLayer.getEventBus(), EVENTS.after_show_action, this.onAfterShowAction);
       this.listenTo(gameLayer.getEventBus(), EVENTS.inspect_card_start, this.onInspectCardStart);
       this.listenTo(gameLayer.getEventBus(), EVENTS.inspect_card_stop, this.onInspectCardStop);
-      this.listenTo(gameLayer.getEventBus(), EVENTS.game_selection_changed, this.onSelectionChanged);
+      this.listenTo(
+        gameLayer.getEventBus(),
+        EVENTS.game_selection_changed,
+        this.onSelectionChanged,
+      );
     }
 
     // listen to global events
     this.listenTo(ProfileManager.getInstance().profile, 'change:showPlayerDetails', this.bindUser);
     this.listenTo(EventBus.getInstance(), EVENTS.resize, this.onResize);
-    this.listenTo(NetworkManager.getInstance().getEventBus(), EVENTS.opponent_connection_status_changed, this.bindConnectionStatus);
+    this.listenTo(
+      NetworkManager.getInstance().getEventBus(),
+      EVENTS.opponent_connection_status_changed,
+      this.bindConnectionStatus,
+    );
 
     // rebind player properties that do not require action state
     this.bindPlayerNonActionProperties();
@@ -330,10 +349,8 @@ var GamePlayerLayout = Backbone.Marionette.LayoutView.extend({
   },
 
   bindIsCurrentPlayer: function () {
-    if (this.getSdkPlayer().getIsCurrentPlayer())
-      this.$el.addClass('current-player');
-    else
-      this.$el.removeClass('current-player');
+    if (this.getSdkPlayer().getIsCurrentPlayer()) this.$el.addClass('current-player');
+    else this.$el.removeClass('current-player');
   },
 
   /**
@@ -342,7 +359,8 @@ var GamePlayerLayout = Backbone.Marionette.LayoutView.extend({
   bindUser: function () {
     var player = this.getSdkPlayer();
     // pull username from player or from my player
-    var username = player.getUsername() || SDK.GameSession.getInstance().getMyPlayer().getUsername();
+    var username =
+      player.getUsername() || SDK.GameSession.getInstance().getMyPlayer().getUsername();
     this.ui.$username.text(username);
 
     // update my player or opponent player
@@ -376,16 +394,22 @@ var GamePlayerLayout = Backbone.Marionette.LayoutView.extend({
 
     if (SDK.GameSession.getInstance().isRanked()) {
       // show rank for ranked games
-      this._firebase_rank_model = new Firebase(process.env.FIREBASE_URL).child('user-ranking').child(this.model.get('playerId')).child('current')
+      this._firebase_rank_model = new Firebase(process.env.FIREBASE_URL)
+        .child('user-ranking')
+        .child(this.model.get('playerId'))
+        .child('current')
         .child('rank')
-        .once('value', function (snapshot) {
-          try {
-            this.ui.$rank.text(snapshot.val());
-          } catch (error) {
-          //
-            console.error('There was an error binding user ranking in-game.', error);
-          }
-        }.bind(this));
+        .once(
+          'value',
+          function (snapshot) {
+            try {
+              this.ui.$rank.text(snapshot.val());
+            } catch (error) {
+              //
+              console.error('There was an error binding user ranking in-game.', error);
+            }
+          }.bind(this),
+        );
     } else {
       // remove rank
       this.ui.$rank.remove();
@@ -394,7 +418,11 @@ var GamePlayerLayout = Backbone.Marionette.LayoutView.extend({
 
   bindConnectionStatus: function () {
     // in non-multiplayer games or for my player, connection status is not relevant
-    if (!SDK.GameType.isMultiplayerGameType(SDK.GameSession.getInstance().getGameType()) || SDK.GameSession.getInstance().getIsSpectateMode() || this.getSdkPlayer().getPlayerId() == SDK.GameSession.getInstance().getMyPlayerId()) {
+    if (
+      !SDK.GameType.isMultiplayerGameType(SDK.GameSession.getInstance().getGameType()) ||
+      SDK.GameSession.getInstance().getIsSpectateMode() ||
+      this.getSdkPlayer().getPlayerId() == SDK.GameSession.getInstance().getMyPlayerId()
+    ) {
       this.ui.$connectionStatus.remove();
     } else if (NetworkManager.getInstance().isOpponentConnected) {
       this.ui.$connectionStatus.addClass('connected');
@@ -417,7 +445,9 @@ var GamePlayerLayout = Backbone.Marionette.LayoutView.extend({
     var currDeckSize = stateAtAction.numCards;
     var currHandSize = stateAtAction.numCardsInHand;
     var maxHandSize = CONFIG.MAX_HAND_SIZE;
-    var maxDeckSize = SDK.GameSession.getInstance().isGauntlet() ? CONFIG.MAX_DECK_SIZE_GAUNTLET : CONFIG.MAX_DECK_SIZE;
+    var maxDeckSize = SDK.GameSession.getInstance().isGauntlet()
+      ? CONFIG.MAX_DECK_SIZE_GAUNTLET
+      : CONFIG.MAX_DECK_SIZE;
 
     this.ui.$deckCountCurrent.text(currDeckSize);
     this.ui.$deckCountMax.text(maxDeckSize);
@@ -461,9 +491,9 @@ var GamePlayerLayout = Backbone.Marionette.LayoutView.extend({
         $icons.empty();
         for (var i = 0; i < maxMana; i++) {
           if (i < currMana) {
-            $icons.append('<div class=\'mana-icon\'></div>');
+            $icons.append("<div class='mana-icon'></div>");
           } else {
-            $icons.append('<div class=\'mana-icon inactive\'></div>');
+            $icons.append("<div class='mana-icon inactive'></div>");
           }
         }
       }
@@ -565,7 +595,6 @@ var GamePlayerLayout = Backbone.Marionette.LayoutView.extend({
       this.$el.removeClass('show-player-details');
     }
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

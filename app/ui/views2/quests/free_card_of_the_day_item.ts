@@ -13,7 +13,6 @@ var i18next = require('i18next');
 var Template = require('./templates/free_card_of_the_day_item.hbs');
 
 var FreeCardOfTheDayItemView = Backbone.Marionette.ItemView.extend({
-
   tagName: 'li',
   className: 'quest free-card-of-the-day',
   template: Template,
@@ -30,7 +29,7 @@ var FreeCardOfTheDayItemView = Backbone.Marionette.ItemView.extend({
     var data = model.toJSON.apply(model, _.rest(arguments));
     if (data) {
       data.is_available = InventoryManager.getInstance().isFreeCardOfTheDayAvailable();
-      data.progress = (data.is_available) ? 0 : 1;
+      data.progress = data.is_available ? 0 : 1;
     }
     return data;
   },
@@ -55,13 +54,17 @@ var FreeCardOfTheDayItemView = Backbone.Marionette.ItemView.extend({
   },
 
   onClaimPressed: _.throttle(function () {
-    InventoryManager.getInstance().claimFreeCardOfTheDay().then(function (response) {
-      EventBus.getInstance().trigger(EVENTS.show_free_card_of_the_day, { cardId: response.card_id });
-      Analytics.track('free card of the day claimed', {
-        category: Analytics.EventCategory.Quest,
-        cardId: response.card_id,
+    InventoryManager.getInstance()
+      .claimFreeCardOfTheDay()
+      .then(function (response) {
+        EventBus.getInstance().trigger(EVENTS.show_free_card_of_the_day, {
+          cardId: response.card_id,
+        });
+        Analytics.track('free card of the day claimed', {
+          category: Analytics.EventCategory.Quest,
+          cardId: response.card_id,
+        });
       });
-    });
     this.ui.claimButton.attr('disabled', true);
   }, 3000),
 
@@ -72,17 +75,14 @@ var FreeCardOfTheDayItemView = Backbone.Marionette.ItemView.extend({
     var duration = moment.duration(time);
     var durationStr = i18next.t('common.available_in_duration_label') + '<br/>';
 
-    if (duration.hours())
-      durationStr += duration.hours() + 'hr ';
+    if (duration.hours()) durationStr += duration.hours() + 'hr ';
 
-    if (duration.minutes())
-      durationStr += duration.minutes() + 'min ';
+    if (duration.minutes()) durationStr += duration.minutes() + 'min ';
 
     durationStr += duration.seconds() + 's';
 
     this.ui.instructions.html(durationStr);
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

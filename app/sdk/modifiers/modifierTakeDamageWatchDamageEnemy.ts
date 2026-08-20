@@ -29,6 +29,9 @@ class ModifierTakeDamageWatchDamageEnemy extends ModifierTakeDamageWatch {
   }
 }
 ModifierTakeDamageWatchDamageEnemy.prototype.type = 'ModifierTakeDamageWatchDamageEnemy';
-ModifierTakeDamageWatchDamageEnemy.prototype.fxResource = ['FX.Modifiers.ModifierTakeDamageWatch', 'FX.Modifiers.ModifierGenericDamage'];
+ModifierTakeDamageWatchDamageEnemy.prototype.fxResource = [
+  'FX.Modifiers.ModifierTakeDamageWatch',
+  'FX.Modifiers.ModifierGenericDamage',
+];
 
 module.exports = ModifierTakeDamageWatchDamageEnemy;

@@ -14,13 +14,9 @@ Logger.enabled = false;
 describe('unity', () => {
   describe('faction2', () => {
     beforeEach(() => {
-      const player1Deck = [
-        { id: SDK.Cards.Faction2.AltGeneral },
-      ];
+      const player1Deck = [{ id: SDK.Cards.Faction2.AltGeneral }];
 
-      const player2Deck = [
-        { id: SDK.Cards.Faction1.General },
-      ];
+      const player2Deck = [{ id: SDK.Cards.Faction1.General }];
 
       UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
     });
@@ -35,13 +31,21 @@ describe('unity', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction2.Sparrowhawk }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction2.Sparrowhawk,
+        }),
+      );
       const playCardFromHandAction1 = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction1);
       var hand1 = player1.getDeck().getCardsInHand();
       expect(hand1[0]).to.not.exist;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction2.Sparrowhawk }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction2.Sparrowhawk,
+        }),
+      );
       const playCardFromHandAction2 = player1.actionPlayCardFromHand(0, 1, 2);
       gameSession.executeAction(playCardFromHandAction2);
       var hand1 = player1.getDeck().getCardsInHand();
@@ -56,10 +60,22 @@ describe('unity', () => {
       const player2 = gameSession.getPlayer2();
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.InnerFocus }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer2Id(), { id: SDK.Cards.Spell.Tempest }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.InnerFocus,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer2Id(), {
+          id: SDK.Cards.Spell.Tempest,
+        }),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.Joseki }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.Joseki,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 0, 0));
 
       const hand1 = player1.getDeck().getCardsInHand();
@@ -75,7 +91,11 @@ describe('unity', () => {
       const player2 = gameSession.getPlayer2();
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.Joseki }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.Joseki,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 0, 0));
 
       const hand1 = player1.getDeck().getCardsInHand();
@@ -89,12 +109,22 @@ describe('unity', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Artifact.MaskOfTranscendance }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Artifact.MaskOfCelerity }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Artifact.MaskOfTranscendance,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Artifact.MaskOfCelerity,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 8, 2));
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(1, 8, 2));
 
-      const action = gameSession.getGeneralForPlayer1().actionAttack(gameSession.getGeneralForPlayer2());
+      const action = gameSession
+        .getGeneralForPlayer1()
+        .actionAttack(gameSession.getGeneralForPlayer2());
       gameSession.executeAction(action);
       gameSession.executeAction(action);
 
@@ -107,15 +137,43 @@ describe('unity', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      const kindling = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction2.Kindling }, 2, 2, gameSession.getPlayer1Id());
-      const manaforger = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Manaforger }, 3, 2, gameSession.getPlayer1Id());
-      const aethermaster = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Aethermaster }, 4, 2, gameSession.getPlayer1Id());
-      const brightmossGolem = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.BrightmossGolem }, 5, 2, gameSession.getPlayer1Id());
+      const kindling = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction2.Kindling },
+        2,
+        2,
+        gameSession.getPlayer1Id(),
+      );
+      const manaforger = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.Manaforger },
+        3,
+        2,
+        gameSession.getPlayer1Id(),
+      );
+      const aethermaster = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.Aethermaster },
+        4,
+        2,
+        gameSession.getPlayer1Id(),
+      );
+      const brightmossGolem = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.BrightmossGolem },
+        5,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PhoenixFire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 8, 2);
       gameSession.executeAction(playCardFromHandAction);
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PhoenixFire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 8, 2);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -130,8 +188,18 @@ describe('unity', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
       // make calligrapher, attack
-      const calligrapher1 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction2.Calligrapher }, 1, 1, gameSession.getPlayer1Id());
-      const brightmossGolem1 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.BrightmossGolem }, 0, 1, gameSession.getPlayer2Id());
+      const calligrapher1 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction2.Calligrapher },
+        1,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const brightmossGolem1 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.BrightmossGolem },
+        0,
+        1,
+        gameSession.getPlayer2Id(),
+      );
       const action = calligrapher1.actionAttack(brightmossGolem1);
       gameSession.executeAction(action);
       // end the turn, check hand

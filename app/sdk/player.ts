@@ -111,18 +111,17 @@ class Player extends SDKObject {
    */
   onEvent(event) {
     const eventType = event.type;
-    if ((eventType === EVENTS.terminate) || (eventType === EVENTS.before_deserialize)) {
+    if (eventType === EVENTS.terminate || eventType === EVENTS.before_deserialize) {
       this._onTerminate(event);
     } else if (eventType === EVENTS.end_turn) {
       this._onEndTurn(event);
-    } else if ((eventType === EVENTS.update_cache_action) || (eventType === EVENTS.update_cache_step)) {
+    } else if (eventType === EVENTS.update_cache_action || eventType === EVENTS.update_cache_step) {
       __guard__(this.getActionStateRecord(), (x) => x.onStateRecordingActionEvent(event));
     }
 
     // send to my cards
     const cards = this.getEventReceivingCards();
-    return Array.from<any>(cards).map((card) =>
-      card.onEvent(event));
+    return Array.from<any>(cards).map((card) => card.onEvent(event));
   }
   // if @getGameSession().getIsBufferingEvents() and event.isBufferable then break
 
@@ -131,7 +130,7 @@ class Player extends SDKObject {
    */
   getEventReceivingCards() {
     // this has to be its own array so that it cannot be modified mid event loop
-    if ((this._private.cachedEventReceivingCards == null)) {
+    if (this._private.cachedEventReceivingCards == null) {
       this._private.cachedEventReceivingCards = [].concat(
         this.getEventReceivingCardsOnBoard(),
         this.getDeck().getCardsInHandExcludingMissing(),
@@ -151,7 +150,7 @@ class Player extends SDKObject {
    * Flushes the cached event receiving cards.
    */
   flushCachedEventReceivingCards() {
-    return this._private.cachedEventReceivingCards = null;
+    return (this._private.cachedEventReceivingCards = null);
   }
 
   addEventReceivingCardOnBoard(card) {
@@ -191,7 +190,7 @@ class Player extends SDKObject {
   }
 
   setUsername(val) {
-    return this.username = val;
+    return (this.username = val);
   }
 
   getUsername() {
@@ -200,7 +199,9 @@ class Player extends SDKObject {
 
   setPlayerId(val) {
     this.playerId = `${val}`;
-    if (this.deck != null) { return this.deck.setOwnerId(this.getPlayerId()); }
+    if (this.deck != null) {
+      return this.deck.setOwnerId(this.getPlayerId());
+    }
   }
 
   getPlayerId() {
@@ -209,7 +210,9 @@ class Player extends SDKObject {
 
   setDeck(val) {
     this.deck = val;
-    if (this.deck != null) { return this.deck.setOwnerId(this.getPlayerId()); }
+    if (this.deck != null) {
+      return this.deck.setOwnerId(this.getPlayerId());
+    }
   }
 
   getDeck() {
@@ -217,7 +220,7 @@ class Player extends SDKObject {
   }
 
   setLastActionTakenAt(val) {
-    return this.lastActionTakenAt = val;
+    return (this.lastActionTakenAt = val);
   }
 
   getLastActionTakenAt() {
@@ -225,7 +228,7 @@ class Player extends SDKObject {
   }
 
   setIsCurrentPlayer(isCurrentPlayer) {
-    return this.isCurrentPlayer = isCurrentPlayer;
+    return (this.isCurrentPlayer = isCurrentPlayer);
   }
 
   getIsCurrentPlayer() {
@@ -233,7 +236,7 @@ class Player extends SDKObject {
   }
 
   setIsRanked(val) {
-    return this.isRanked = val;
+    return (this.isRanked = val);
   }
 
   getIsRanked() {
@@ -241,11 +244,11 @@ class Player extends SDKObject {
   }
 
   setRank(val) {
-    return this.rank = val;
+    return (this.rank = val);
   }
 
   setIsWinner(val) {
-    return this.isWinner = val;
+    return (this.isWinner = val);
   }
 
   getIsWinner() {
@@ -253,7 +256,7 @@ class Player extends SDKObject {
   }
 
   setHasStartingHand(hasStartingHand) {
-    return this.hasStartingHand = hasStartingHand;
+    return (this.hasStartingHand = hasStartingHand);
   }
 
   getHasStartingHand() {
@@ -269,7 +272,12 @@ class Player extends SDKObject {
   }
 
   setStartingMana(val) {
-    return this.startingMana = (this.remainingMana = (this.maximumMana = (this.lastRemainingMana = (this.lastMaximumMana = val))));
+    return (this.startingMana =
+      this.remainingMana =
+      this.maximumMana =
+      this.lastRemainingMana =
+      this.lastMaximumMana =
+        val);
   }
 
   getRemainingMana() {
@@ -346,7 +354,9 @@ class Player extends SDKObject {
   getPlayerModifiersByType(type) {
     const modifiers = [];
     for (var m of Array.from<any>(this.getPlayerModifiers())) {
-      if (m.getType() === type) { modifiers.push(m); }
+      if (m.getType() === type) {
+        modifiers.push(m);
+      }
     }
     return modifiers;
   }
@@ -354,7 +364,9 @@ class Player extends SDKObject {
   getActivePlayerModifiersByType(type) {
     const modifiers = [];
     for (var m of Array.from<any>(this.getPlayerModifiers())) {
-      if ((m.getType() === type) && m.getIsActive()) { modifiers.push(m); }
+      if (m.getType() === type && m.getIsActive()) {
+        modifiers.push(m);
+      }
     }
     return modifiers;
   }
@@ -362,7 +374,9 @@ class Player extends SDKObject {
   getPlayerModifiersByClass(cls) {
     const modifiers = [];
     for (var m of Array.from<any>(this.getPlayerModifiers())) {
-      if (m instanceof cls) { modifiers.push(m); }
+      if (m instanceof cls) {
+        modifiers.push(m);
+      }
     }
     return modifiers;
   }
@@ -370,7 +384,9 @@ class Player extends SDKObject {
   getActivePlayerModifiersByClass(cls) {
     const modifiers = [];
     for (var m of Array.from<any>(this.getPlayerModifiers())) {
-      if (m instanceof cls && m.getIsActive()) { modifiers.push(m); }
+      if (m instanceof cls && m.getIsActive()) {
+        modifiers.push(m);
+      }
     }
     return modifiers;
   }
@@ -385,7 +401,7 @@ class Player extends SDKObject {
    */
   getSignatureCardData() {
     const general = this.getGameSession().getGeneralForPlayerId(this.getPlayerId());
-    return (general != null ? general.getSignatureCardData() : undefined);
+    return general != null ? general.getSignatureCardData() : undefined;
   }
 
   /**
@@ -394,8 +410,11 @@ class Player extends SDKObject {
    * @returns {Card}
    */
   getReferenceSignatureCard() {
-    if ((this._private.cachedReferenceSignatureCard == null)) {
-      this._private.cachedReferenceSignatureCard = this.getGameSession().getExistingCardFromIndexOrCreateCardFromData(this.getSignatureCardData());
+    if (this._private.cachedReferenceSignatureCard == null) {
+      this._private.cachedReferenceSignatureCard =
+        this.getGameSession().getExistingCardFromIndexOrCreateCardFromData(
+          this.getSignatureCardData(),
+        );
       if (this._private.cachedReferenceSignatureCard != null) {
         this._private.cachedReferenceSignatureCard.setOwnerId(this.getPlayerId());
       }
@@ -408,14 +427,14 @@ class Player extends SDKObject {
   }
 
   setIsSignatureCardActive(isActive) {
-    return this.signatureCardActive = isActive;
+    return (this.signatureCardActive = isActive);
   }
 
   /**
    * Flushes the cached reference card for signature so that the next call will regenerate the card.
    */
   flushCachedReferenceSignatureCard() {
-    return this._private.cachedReferenceSignatureCard = null;
+    return (this._private.cachedReferenceSignatureCard = null);
   }
 
   /**
@@ -424,8 +443,11 @@ class Player extends SDKObject {
    */
   addSignatureCard(card) {
     const cardIndex = card.getIndex();
-    if ((cardIndex == null)) {
-      Logger.module('SDK').error(this.getGameSession().gameId, `Player.addSignatureCard ${card.getName()} must be added through game session and not directly to player!`);
+    if (cardIndex == null) {
+      Logger.module('SDK').error(
+        this.getGameSession().gameId,
+        `Player.addSignatureCard ${card.getName()} must be added through game session and not directly to player!`,
+      );
     }
 
     // store card index
@@ -436,7 +458,11 @@ class Player extends SDKObject {
     // flush reference card as needed
     const currentSignatureCard = this.getCurrentSignatureCard();
     const referenceSignatureCard = this.getReferenceSignatureCard();
-    if ((currentSignatureCard != null) && (referenceSignatureCard != null) && (currentSignatureCard.getId() !== referenceSignatureCard.getId())) {
+    if (
+      currentSignatureCard != null &&
+      referenceSignatureCard != null &&
+      currentSignatureCard.getId() !== referenceSignatureCard.getId()
+    ) {
       return this.flushCachedReferenceSignatureCard();
     }
   }
@@ -448,8 +474,11 @@ class Player extends SDKObject {
    */
   removeSignatureCard(card) {
     const cardIndex = card.getIndex();
-    if ((cardIndex == null)) {
-      Logger.module('SDK').error(this.getGameSession().gameId, `Player.removeSignatureCard ${card.getName()} must be removed through game session and not directly to player!`);
+    if (cardIndex == null) {
+      Logger.module('SDK').error(
+        this.getGameSession().gameId,
+        `Player.removeSignatureCard ${card.getName()} must be removed through game session and not directly to player!`,
+      );
     }
 
     // store card index
@@ -498,7 +527,12 @@ class Player extends SDKObject {
    * @returns {Boolean}
    */
   getIsSignatureCardAlwaysReady() {
-    return this.getGameSession().getIsSignatureCardAlwaysReady() || this.getGameSession().getGeneralForPlayerId(this.getPlayerId()).hasModifierClass(PlayerModifierSignatureCardAlwaysReady);
+    return (
+      this.getGameSession().getIsSignatureCardAlwaysReady() ||
+      this.getGameSession()
+        .getGeneralForPlayerId(this.getPlayerId())
+        .hasModifierClass(PlayerModifierSignatureCardAlwaysReady)
+    );
   }
 
   // end region SIGNATURE CARD
@@ -506,25 +540,47 @@ class Player extends SDKObject {
   // region ACTIONS
 
   actionDrawStartingHand(mulliganIndices) {
-    const drawStartingHandAction = new DrawStartingHandAction(this.getGameSession(), this.getPlayerId(), mulliganIndices);
+    const drawStartingHandAction = new DrawStartingHandAction(
+      this.getGameSession(),
+      this.getPlayerId(),
+      mulliganIndices,
+    );
     return drawStartingHandAction;
   }
 
   actionPlayCardFromHand(indexOfCardInHand, tileX, tileY) {
-    const playCardAction = new PlayCardFromHandAction(this.getGameSession(), this.getPlayerId(), tileX, tileY, indexOfCardInHand);
+    const playCardAction = new PlayCardFromHandAction(
+      this.getGameSession(),
+      this.getPlayerId(),
+      tileX,
+      tileY,
+      indexOfCardInHand,
+    );
     return playCardAction;
   }
 
   actionPlaySignatureCard(tileX, tileY) {
     const signatureCard = this.getCurrentSignatureCard();
     if (signatureCard != null) {
-      const playCardAction = new PlaySignatureCardAction(this.getGameSession(), this.getPlayerId(), tileX, tileY, signatureCard.getIndex());
+      const playCardAction = new PlaySignatureCardAction(
+        this.getGameSession(),
+        this.getPlayerId(),
+        tileX,
+        tileY,
+        signatureCard.getIndex(),
+      );
       return playCardAction;
     }
   }
 
   actionPlayFollowup(followupCard, tileX, tileY) {
-    const playCardAction = new PlayCardAction(this.getGameSession(), this.getPlayerId(), tileX, tileY, followupCard.createNewCardData());
+    const playCardAction = new PlayCardAction(
+      this.getGameSession(),
+      this.getPlayerId(),
+      tileX,
+      tileY,
+      followupCard.createNewCardData(),
+    );
     playCardAction.setSource(followupCard.getParentCard());
     playCardAction.setSourcePosition(followupCard.getFollowupSourcePosition());
     return playCardAction;
@@ -536,14 +592,22 @@ class Player extends SDKObject {
   }
 
   actionReplaceCardFromHand(indexOfCardInHand) {
-    const replaceCardAction = new ReplaceCardFromHandAction(this.getGameSession(), this.getPlayerId(), indexOfCardInHand);
+    const replaceCardAction = new ReplaceCardFromHandAction(
+      this.getGameSession(),
+      this.getPlayerId(),
+      indexOfCardInHand,
+    );
     return replaceCardAction;
   }
 
   actionGenerateSignatureCard() {
     const signatureCardData = this.getSignatureCardData();
     if (signatureCardData != null) {
-      const generateSignatureCardAction = new GenerateSignatureCardAction(this.getGameSession(), this.getPlayerId(), signatureCardData);
+      const generateSignatureCardAction = new GenerateSignatureCardAction(
+        this.getGameSession(),
+        this.getPlayerId(),
+        signatureCardData,
+      );
       return generateSignatureCardAction;
     }
   }
@@ -551,7 +615,10 @@ class Player extends SDKObject {
   actionActivateSignatureCard() {
     const signatureCardData = this.getSignatureCardData();
     if (signatureCardData != null) {
-      const activateSignatureCardAction = new ActivateSignatureCardAction(this.getGameSession(), this.getPlayerId());
+      const activateSignatureCardAction = new ActivateSignatureCardAction(
+        this.getGameSession(),
+        this.getPlayerId(),
+      );
       return activateSignatureCardAction;
     }
   }
@@ -577,7 +644,7 @@ class Player extends SDKObject {
   }
 
   getActionStateRecord() {
-    if ((this._private.actionStateRecord == null) && this.getGameSession().getIsRunningOnClient()) {
+    if (this._private.actionStateRecord == null && this.getGameSession().getIsRunningOnClient()) {
       this._private.actionStateRecord = new ActionStateRecord();
       this.startActionStateRecord();
     }
@@ -589,10 +656,13 @@ class Player extends SDKObject {
     if (actionStateRecord != null) {
       // get properties to record
       const propertiesToRecord = this.propertiesForActionStateRecord();
-      if ((propertiesToRecord != null) && (Object.keys(propertiesToRecord).length > 0)) {
+      if (propertiesToRecord != null && Object.keys(propertiesToRecord).length > 0) {
         // start recording if at least 1 property
         actionStateRecord.setupToRecordStateOnEvent(EVENTS.update_cache_action, propertiesToRecord);
-        return actionStateRecord.setupToRecordStateOnEvent(EVENTS.update_cache_step, propertiesToRecord);
+        return actionStateRecord.setupToRecordStateOnEvent(
+          EVENTS.update_cache_step,
+          propertiesToRecord,
+        );
       }
     }
   }
@@ -676,5 +746,5 @@ Player.prototype.username = null;
 module.exports = Player;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

@@ -16,7 +16,7 @@ class PlayerModifierSummonWatchIfFlyingDrawFlyingMinion extends PlayerModifierSu
   onSummonWatch(action) {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
       const cardSummoned = action.getTarget();
-      if ((cardSummoned != null) && cardSummoned.hasModifierClass(ModifierFlying)) {
+      if (cardSummoned != null && cardSummoned.hasModifierClass(ModifierFlying)) {
         let cardIndexToDraw = null;
 
         // find all flying minions in the deck
@@ -33,14 +33,19 @@ class PlayerModifierSummonWatchIfFlyingDrawFlyingMinion extends PlayerModifierSu
         }
 
         if (indexOfFlyingMinions.length > 0) {
-          const minionIndexToRemove = this.getGameSession().getRandomIntegerForExecution(indexOfFlyingMinions.length);
+          const minionIndexToRemove = this.getGameSession().getRandomIntegerForExecution(
+            indexOfFlyingMinions.length,
+          );
           const indexOfCardInDeck = indexOfFlyingMinions[minionIndexToRemove];
           cardIndexToDraw = drawPile[indexOfCardInDeck];
 
           // create put card in hand action
           if (cardIndexToDraw != null) {
             const card = this.getGameSession().getCardByIndex(cardIndexToDraw);
-            const drawCardAction = this.getGameSession().getPlayerById(this.getOwner().getPlayerId()).getDeck().actionDrawCard(cardIndexToDraw);
+            const drawCardAction = this.getGameSession()
+              .getPlayerById(this.getOwner().getPlayerId())
+              .getDeck()
+              .actionDrawCard(cardIndexToDraw);
             drawCardAction.isDepthFirst = true;
             return this.getGameSession().executeAction(drawCardAction);
           }
@@ -49,6 +54,7 @@ class PlayerModifierSummonWatchIfFlyingDrawFlyingMinion extends PlayerModifierSu
     }
   }
 }
-PlayerModifierSummonWatchIfFlyingDrawFlyingMinion.prototype.type = 'PlayerModifierSummonWatchIfFlyingDrawFlyingMinion';
+PlayerModifierSummonWatchIfFlyingDrawFlyingMinion.prototype.type =
+  'PlayerModifierSummonWatchIfFlyingDrawFlyingMinion';
 
 module.exports = PlayerModifierSummonWatchIfFlyingDrawFlyingMinion;

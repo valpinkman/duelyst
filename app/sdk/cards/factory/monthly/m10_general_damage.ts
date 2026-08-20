@@ -74,7 +74,12 @@ class CardFactory_Monthly_M10_GeneralDamage {
       card.rarityId = Rarity.Legendary;
       const buffContextObject = Modifier.createContextObjectWithAttributeBuffs(2);
       buffContextObject.appliedName = i18next.t('modifiers.neutral_ruby_rifter_modifier');
-      card.setInherentModifiersContextObjects([ModifierMyGeneralDamagedWatchBuffSelfAndDrawACard.createContextObject([buffContextObject], '+2 Attack')]);
+      card.setInherentModifiersContextObjects([
+        ModifierMyGeneralDamagedWatchBuffSelfAndDrawACard.createContextObject(
+          [buffContextObject],
+          '+2 Attack',
+        ),
+      ]);
     }
 
     if (identifier === Cards.Neutral.BloodTaura) {
@@ -106,7 +111,10 @@ class CardFactory_Monthly_M10_GeneralDamage {
       card.maxHP = 12;
       card.manaCost = 25;
       card.rarityId = Rarity.Epic;
-      card.setInherentModifiersContextObjects([ModifierProvoke.createContextObject(), ModifierCostEqualGeneralHealth.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierProvoke.createContextObject(),
+        ModifierCostEqualGeneralHealth.createContextObject(),
+      ]);
     }
 
     if (identifier === Cards.Neutral.BlisteringSkorn) {
@@ -139,7 +147,9 @@ class CardFactory_Monthly_M10_GeneralDamage {
       card.maxHP = 5;
       card.manaCost = 4;
       card.rarityId = Rarity.Common;
-      card.setInherentModifiersContextObjects([ModifierOpeningGambitDamageEverything.createContextObject(1, true)]);
+      card.setInherentModifiersContextObjects([
+        ModifierOpeningGambitDamageEverything.createContextObject(1, true),
+      ]);
     }
 
     if (identifier === Cards.Neutral.Chakkram) {
@@ -172,7 +182,12 @@ class CardFactory_Monthly_M10_GeneralDamage {
       card.maxHP = 5;
       card.manaCost = 5;
       card.rarityId = Rarity.Rare;
-      card.setInherentModifiersContextObjects([ModifierCostChangeIfMyGeneralDamagedLastTurn.createContextObject(-2, i18next.t('modifiers.cost_change_if_my_general_damaged_last_turn_name_mod'))]);
+      card.setInherentModifiersContextObjects([
+        ModifierCostChangeIfMyGeneralDamagedLastTurn.createContextObject(
+          -2,
+          i18next.t('modifiers.cost_change_if_my_general_damaged_last_turn_name_mod'),
+        ),
+      ]);
     }
 
     return card;

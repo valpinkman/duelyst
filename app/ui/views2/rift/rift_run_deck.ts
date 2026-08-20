@@ -6,7 +6,6 @@ var RiftHelper = require('app/sdk/rift/riftHelper');
 var Templ = require('./templates/rift_run_deck.hbs');
 
 var RiftRunDeck = SlidingPanelItemView.extend({
-
   className: 'sliding-panel deck-preview rift-run-deck',
 
   template: Templ,
@@ -39,7 +38,6 @@ var RiftRunDeck = SlidingPanelItemView.extend({
   getIsEnabled: function () {
     return true;
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

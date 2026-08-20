@@ -18,7 +18,7 @@ class ModifierBeforeMyAttackWatch extends Modifier {
 
   onBeforeAction(event) {
     const a = event.action;
-    if (a instanceof AttackAction && (a.getSource() === this.getCard())) {
+    if (a instanceof AttackAction && a.getSource() === this.getCard()) {
       return this.onBeforeMyAttackWatch(a);
     }
   }

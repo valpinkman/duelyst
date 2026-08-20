@@ -43,7 +43,10 @@ const ScoreForIntentBurn = function (card, targetPosition, cardIntents) {
   let score = 0;
   const cardId = card.getBaseCardId();
 
-  const validIntents = cardIntents != null ? CardIntent.filterIntentsByIntentType(cardIntents, CardIntentType.Burn) : CardIntent.getIntentsByIntentType(cardId, CardIntentType.Burn);
+  const validIntents =
+    cardIntents != null
+      ? CardIntent.filterIntentsByIntentType(cardIntents, CardIntentType.Burn)
+      : CardIntent.getIntentsByIntentType(cardId, CardIntentType.Burn);
 
   _.each(validIntents, (intent) => {
     const cards = CardIntent.getCardsTargetedByCardWithIntent(card, intent, targetPosition);

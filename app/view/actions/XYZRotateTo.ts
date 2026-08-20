@@ -11,7 +11,6 @@
  * var action = XYZRotateTo.create(2, 180, 180, 180);
  */
 var XYZRotateTo = cc.ActionInterval.extend({
-
   _originalRotation: null,
   _rotateTo: null,
   _rotation: null,
@@ -43,7 +42,12 @@ var XYZRotateTo = cc.ActionInterval.extend({
   },
 
   reverse() {
-    return XYZRotateTo.create(this._duration, -this._rotateTo.x, -this._rotateTo.y, -this._rotateTo.z);
+    return XYZRotateTo.create(
+      this._duration,
+      -this._rotateTo.x,
+      -this._rotateTo.y,
+      -this._rotateTo.z,
+    );
   },
 
   clone() {

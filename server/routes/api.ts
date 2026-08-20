@@ -82,9 +82,7 @@ router.post('/api/me/report_player', function (req, res, next) {
 
   const user_id = req.user.d.id;
   const other_user_id = result.value.user_id;
-  const {
-    message,
-  } = result.value;
+  const { message } = result.value;
   return res.status(404).send('Player reporting is not currently implemented.');
 });
 

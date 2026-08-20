@@ -23,7 +23,8 @@ class ModifierOpeningGambitLifeGive extends ModifierOpeningGambit {
 
   static type = 'ModifierOpeningGambitLifeGive';
   static modifierName = 'Opening Gambit';
-  static description = 'Summon all friendly non-token minions destroyed on your opponent\'s last turn on random spaces';
+  static description =
+    "Summon all friendly non-token minions destroyed on your opponent's last turn on random spaces";
 
   getPrivateDefaults(gameSession) {
     const p = super.getPrivateDefaults(gameSession);
@@ -37,7 +38,7 @@ class ModifierOpeningGambitLifeGive extends ModifierOpeningGambit {
     let actions = [action];
 
     const subActions = action.getSubActions();
-    if ((subActions != null) && (subActions.length > 0)) {
+    if (subActions != null && subActions.length > 0) {
       for (let i = 0; i < subActions.length; i++) {
         action = subActions[i];
         actions = actions.concat(this.getAllActionsFromParentAction(subActions[i]));
@@ -48,7 +49,7 @@ class ModifierOpeningGambitLifeGive extends ModifierOpeningGambit {
 
   getdeadUnitIds() {
     let deadUnitIds;
-    if ((this._private.deadUnitIds == null)) {
+    if (this._private.deadUnitIds == null) {
       let turn;
       deadUnitIds = [];
       const turnsToCheck = [];
@@ -73,7 +74,13 @@ class ModifierOpeningGambitLifeGive extends ModifierOpeningGambit {
         if (action.type === DieAction.type) {
           var card = action.getTarget();
           // find all friendly non-token units that died
-          if (((card != null ? card.getOwnerId() : undefined) === this.getCard().getOwnerId()) && ((card != null ? card.getType() : undefined) === CardType.Unit) && card.getIsRemoved() && !(card.getRarityId() === Rarity.TokenUnit) && !card.getWasGeneral()) {
+          if (
+            (card != null ? card.getOwnerId() : undefined) === this.getCard().getOwnerId() &&
+            (card != null ? card.getType() : undefined) === CardType.Unit &&
+            card.getIsRemoved() &&
+            !(card.getRarityId() === Rarity.TokenUnit) &&
+            !card.getWasGeneral()
+          ) {
             deadUnitIds.push(card.getId());
           }
         }
@@ -91,29 +98,51 @@ class ModifierOpeningGambitLifeGive extends ModifierOpeningGambit {
       const deadUnitIds = this.getdeadUnitIds();
       if (deadUnitIds.length > 0) {
         let i;
-        let asc; let
-          end;
+        let asc;
+        let end;
         const wholeBoardPattern = CONFIG.ALL_BOARD_POSITIONS;
         // use first dead unit as entity to test valid positions for spawns
         const cardId = deadUnitIds[0];
 
         // create one random spawn location per dead unit
         const spawnLocations = [];
-        const card = this.getGameSession().getExistingCardFromIndexOrCachedCardFromData({ id: this.getCard().getId() });
-        const validSpawnLocations = UtilsGameSession.getSmartSpawnPositionsFromPattern(this.getGameSession(), { x: 0, y: 0 }, wholeBoardPattern, card);
+        const card = this.getGameSession().getExistingCardFromIndexOrCachedCardFromData({
+          id: this.getCard().getId(),
+        });
+        const validSpawnLocations = UtilsGameSession.getSmartSpawnPositionsFromPattern(
+          this.getGameSession(),
+          { x: 0, y: 0 },
+          wholeBoardPattern,
+          card,
+        );
         _.shuffle(deadUnitIds);
-        for (i = 0, end = deadUnitIds.length, asc = end >= 0; asc ? i < end : i > end; asc ? i++ : i--) {
+        for (
+          i = 0, end = deadUnitIds.length, asc = end >= 0;
+          asc ? i < end : i > end;
+          asc ? i++ : i--
+        ) {
           if (validSpawnLocations.length > 0) {
-            spawnLocations.push(validSpawnLocations.splice(this.getGameSession().getRandomIntegerForExecution(validSpawnLocations.length), 1)[0]);
+            spawnLocations.push(
+              validSpawnLocations.splice(
+                this.getGameSession().getRandomIntegerForExecution(validSpawnLocations.length),
+                1,
+              )[0],
+            );
           }
         }
 
         return (() => {
           const result = [];
           for (i = 0; i < spawnLocations.length; i++) {
-          // respawn each dead unit as a fresh copy
+            // respawn each dead unit as a fresh copy
             var position = spawnLocations[i];
-            var playCardAction = new PlayCardSilentlyAction(this.getGameSession(), this.getCard().getOwnerId(), position.x, position.y, { id: deadUnitIds[i] });
+            var playCardAction = new PlayCardSilentlyAction(
+              this.getGameSession(),
+              this.getCard().getOwnerId(),
+              position.x,
+              position.y,
+              { id: deadUnitIds[i] },
+            );
             playCardAction.setSource(this.getCard());
             result.push(this.getGameSession().executeAction(playCardAction));
           }
@@ -124,6 +153,9 @@ class ModifierOpeningGambitLifeGive extends ModifierOpeningGambit {
   }
 }
 ModifierOpeningGambitLifeGive.prototype.type = 'ModifierOpeningGambitLifeGive';
-ModifierOpeningGambitLifeGive.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericSpawn'];
+ModifierOpeningGambitLifeGive.prototype.fxResource = [
+  'FX.Modifiers.ModifierOpeningGambit',
+  'FX.Modifiers.ModifierGenericSpawn',
+];
 
 module.exports = ModifierOpeningGambitLifeGive;

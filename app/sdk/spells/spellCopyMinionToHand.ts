@@ -19,7 +19,11 @@ class SpellCopyMinionToHand extends Spell {
       newCardData.damage = 0;
     }
 
-    const putCardInHandAction = new PutCardInHandAction(this.getGameSession(), entity.getOwnerId(), newCardData);
+    const putCardInHandAction = new PutCardInHandAction(
+      this.getGameSession(),
+      entity.getOwnerId(),
+      newCardData,
+    );
     return this.getGameSession().executeAction(putCardInHandAction);
   }
 }

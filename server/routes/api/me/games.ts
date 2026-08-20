@@ -57,15 +57,18 @@ const router = express.Router();
 
 router.get('/', function (req, res, next) {
   const user_id = req.user.d.id;
-  let {
-    page,
-  } = req.query;
+  let { page } = req.query;
 
-  if (page == null) { page = 0; }
+  if (page == null) {
+    page = 0;
+  }
 
   Logger.module('API').debug(`loading games for page: ${page}`);
 
-  return knex('user_games').where('user_id', user_id).orderBy('game_id', 'desc').offset(page * 10)
+  return knex('user_games')
+    .where('user_id', user_id)
+    .orderBy('game_id', 'desc')
+    .offset(page * 10)
     .limit(10)
     .select()
     .then(function (rows) {
@@ -84,15 +87,17 @@ router.get('/watchable/:division_name', function (req, res, next) {
   if (!division_name.isValid()) {
     return res.status(400).json(division_name.errors);
   }
-  ({
-    division_name,
-  } = req.params);
+  ({ division_name } = req.params);
   division_name = division_name.charAt(0).toUpperCase() + division_name.slice(1);
 
   const divisionRankMaxValue = RankDivisionLookup[division_name];
   let divisionRankMinValue = -1;
 
-  for (let i = divisionRankMaxValue, asc = divisionRankMaxValue <= 0; asc ? i <= 0 : i >= 0; asc ? i++ : i--) {
+  for (
+    let i = divisionRankMaxValue, asc = divisionRankMaxValue <= 0;
+    asc ? i <= 0 : i >= 0;
+    asc ? i++ : i--
+  ) {
     if (RankFactory.rankedDivisionKeyForRank(i) !== division_name) {
       divisionRankMinValue = i;
       break;
@@ -114,16 +119,30 @@ router.get('/watchable/:division_name', function (req, res, next) {
 
         const requiredGameCount = config.get('watchSectionMinCurrentVersionGameCount') || 1000;
 
-        Logger.module('API').debug(`GENERATING watchable games data from rank ${divisionRankMaxValue} to ${divisionRankMinValue}`);
+        Logger.module('API').debug(
+          `GENERATING watchable games data from rank ${divisionRankMaxValue} to ${divisionRankMinValue}`,
+        );
         // first write an empty array into redis while the query is running so other servers don't step on the process toes
         return WatchableGamesManager.saveGamesDataForDivision(division_name, JSON.stringify([]))
-          .then(() => knex.raw(`\
+          .then(() =>
+            knex.raw(
+              `\
 select count(id) as game_count
 from (select * from games order by created_at DESC LIMIT ?) as games
 where version LIKE ?\
-`, [requiredGameCount, gameVersion])).then(function (result) {
-            const gameCount = __guard__(__guard__(result != null ? result.rows : undefined, (x1) => x1[0]), (x) => x.game_count) || 0;
-            Logger.module('API').debug(`Found ${gameCount} potential watchable games within version ${version}. Need ${requiredGameCount}`);
+`,
+              [requiredGameCount, gameVersion],
+            ),
+          )
+          .then(function (result) {
+            const gameCount =
+              __guard__(
+                __guard__(result != null ? result.rows : undefined, (x1) => x1[0]),
+                (x) => x.game_count,
+              ) || 0;
+            Logger.module('API').debug(
+              `Found ${gameCount} potential watchable games within version ${version}. Need ${requiredGameCount}`,
+            );
             if (gameCount < requiredGameCount) {
               _chainState.gamesData = [];
               return Promise.resolve(null);
@@ -161,27 +180,46 @@ from
 JOIN users AS player_1 ON player_1.id = games.player_1_id
 JOIN users AS player_2 ON player_2.id = games.player_2_id;\
 `,
-                [divisionRankMinValue, divisionRankMaxValue, divisionRankMinValue, divisionRankMaxValue, gameVersion],
+                [
+                  divisionRankMinValue,
+                  divisionRankMaxValue,
+                  divisionRankMinValue,
+                  divisionRankMaxValue,
+                  gameVersion,
+                ],
               );
             }
           })
           .then(function (result) {
             if (result != null) {
-              const {
-                rows,
-              } = result;
+              const { rows } = result;
 
               // TODO: This seems broken, validate and handle here: https://trello.com/c/yiWKXGlI/2187
-              const allCollectibleUnitsCache = GameSession.getCardCaches().getType(CardType.Unit).getIsCollectible(true).getIsHiddenInCollection(false)
+              const allCollectibleUnitsCache = GameSession.getCardCaches()
+                .getType(CardType.Unit)
+                .getIsCollectible(true)
+                .getIsHiddenInCollection(false)
                 .getIsPrismatic(false);
               const allCollectibleUnits = allCollectibleUnitsCache.getCards();
               const allCollectibleUnitsIds = allCollectibleUnitsCache.getCardIds();
 
               _chainState.gamesData = _.map(rows, function (row) {
-                row.player_1_deck = _.intersection(allCollectibleUnitsIds, _.uniq(row.player_1_deck));
-                row.player_2_deck = _.intersection(allCollectibleUnitsIds, _.uniq(row.player_2_deck));
-                row.player_1_deck = _.sortBy(row.player_1_deck, (cId) => _.find(allCollectibleUnits, (u) => u.id === cId).rarityId);
-                row.player_2_deck = _.sortBy(row.player_2_deck, (cId) => _.find(allCollectibleUnits, (u) => u.id === cId).rarityId);
+                row.player_1_deck = _.intersection(
+                  allCollectibleUnitsIds,
+                  _.uniq(row.player_1_deck),
+                );
+                row.player_2_deck = _.intersection(
+                  allCollectibleUnitsIds,
+                  _.uniq(row.player_2_deck),
+                );
+                row.player_1_deck = _.sortBy(
+                  row.player_1_deck,
+                  (cId) => _.find(allCollectibleUnits, (u) => u.id === cId).rarityId,
+                );
+                row.player_2_deck = _.sortBy(
+                  row.player_2_deck,
+                  (cId) => _.find(allCollectibleUnits, (u) => u.id === cId).rarityId,
+                );
 
                 return {
                   id: row.id,
@@ -207,20 +245,28 @@ JOIN users AS player_2 ON player_2.id = games.player_2_id;\
 
               return PromiseUtils.map(_chainState.gamesData, function (gameRow) {
                 const gameDataUrl = `https://s3.${awsRegion}.amazonaws.com/${awsReplaysBucket}/${config.get('env')}/${gameRow.id}.json`;
-                Logger.module('API').debug(`downloading game ${gameRow.id} replay data from ${gameDataUrl}`);
-                return new Promise((resolve, reject) => request.get(gameDataUrl).end(function (err, res) {
-                  if ((res != null) && (res.status >= 400)) {
-                    // Network failure, we should probably return a more intuitive error object
-                    Logger.module('API').error(`ERROR! Failed to connect to games data: ${res.status} `.red);
-                    return reject(new Error('Failed to connect to games data.'));
-                  } else if (err) {
-                    // Internal failure
-                    Logger.module('API').error(`ERROR! _retrieveGameSessionData() failed: ${err.message} `.red);
-                    return reject(err);
-                  } else {
-                    return resolve(res.text);
-                  }
-                })).then(function (gameSessionDataString) {
+                Logger.module('API').debug(
+                  `downloading game ${gameRow.id} replay data from ${gameDataUrl}`,
+                );
+                return new Promise((resolve, reject) =>
+                  request.get(gameDataUrl).end(function (err, res) {
+                    if (res != null && res.status >= 400) {
+                      // Network failure, we should probably return a more intuitive error object
+                      Logger.module('API').error(
+                        `ERROR! Failed to connect to games data: ${res.status} `.red,
+                      );
+                      return reject(new Error('Failed to connect to games data.'));
+                    } else if (err) {
+                      // Internal failure
+                      Logger.module('API').error(
+                        `ERROR! _retrieveGameSessionData() failed: ${err.message} `.red,
+                      );
+                      return reject(err);
+                    } else {
+                      return resolve(res.text);
+                    }
+                  }),
+                ).then(function (gameSessionDataString) {
                   // scrub the data here
                   Logger.module('API').debug(`deserializing game ${gameRow.id} replay data`);
                   const gameSession = GameSession.create();
@@ -231,16 +277,27 @@ JOIN users AS player_2 ON player_2.id = games.player_2_id;\
                     (() => {
                       const result1 = [];
                       for (var step of Array.from<any>(turn.steps)) {
-                        if ((step.action.type === 'PlayCardFromHandAction') && (step.action.getCard().getType() === CardType.Unit)) {
+                        if (
+                          step.action.type === 'PlayCardFromHandAction' &&
+                          step.action.getCard().getType() === CardType.Unit
+                        ) {
                           var playerId = step.getPlayerId();
                           var cardId = step.action.getCard().getId();
-                          Logger.module('API').debug(`adding key card ${cardId} for game ${gameRow.id} player ${playerId}`);
+                          Logger.module('API').debug(
+                            `adding key card ${cardId} for game ${gameRow.id} player ${playerId}`,
+                          );
                           //
-                          if ((gameRow.player_1_id === playerId) && (gameRow.player_1_key_cards.length < 4)) {
+                          if (
+                            gameRow.player_1_id === playerId &&
+                            gameRow.player_1_key_cards.length < 4
+                          ) {
                             gameRow.player_1_key_cards.push(cardId);
                           }
                           //
-                          if ((gameRow.player_2_id === playerId) && (gameRow.player_2_key_cards.length < 4)) {
+                          if (
+                            gameRow.player_2_id === playerId &&
+                            gameRow.player_2_key_cards.length < 4
+                          ) {
                             result1.push(gameRow.player_2_key_cards.push(cardId));
                           } else {
                             result1.push(undefined);
@@ -250,19 +307,24 @@ JOIN users AS player_2 ON player_2.id = games.player_2_id;\
                         }
                       }
                       return result1;
-                    })());
+                    })(),
+                  );
                 });
               });
             }
           })
           .then(function () {
-            return WatchableGamesManager.saveGamesDataForDivision(division_name, JSON.stringify(_chainState.gamesData));
+            return WatchableGamesManager.saveGamesDataForDivision(
+              division_name,
+              JSON.stringify(_chainState.gamesData),
+            );
           })
           .then(function () {
             return res.status(200).json(_chainState.gamesData);
           });
       }
-    }).catch((error) => next(error));
+    })
+    .catch((error) => next(error));
 });
 
 router.get('/watchable/:division_name/:game_id/replay_data', function (req, res, next) {
@@ -273,21 +335,20 @@ router.get('/watchable/:division_name/:game_id/replay_data', function (req, res,
     return res.status(400).json(division_name.errors);
   }
 
-  const result = t.validate(req.params.game_id, t.subtype(t.Str, (s) => s.length <= 36));
+  const result = t.validate(
+    req.params.game_id,
+    t.subtype(t.Str, (s) => s.length <= 36),
+  );
   if (!result.isValid()) {
     return res.status(400).json(result.errors);
   }
 
   // user id is set by a middleware
-  const {
-    user_id,
-  } = req;
+  const { user_id } = req;
   const game_id = result.value;
   const player_id = req.query.playerId;
 
-  ({
-    division_name,
-  } = req.params);
+  ({ division_name } = req.params);
   division_name = division_name.charAt(0).toUpperCase() + division_name.slice(1);
 
   Logger.module('API').debug('loading watchable game metadata for division from REDIS');
@@ -295,52 +356,66 @@ router.get('/watchable/:division_name/:game_id/replay_data', function (req, res,
   return WatchableGamesManager.loadGamesDataForDivision(division_name)
     .then(function (data) {
       Logger.module('API').debug(`checking that ${game_id} is in list of promoted games`);
-      if (!(_.find(data, (g) => g.id === game_id))) {
+      if (!_.find(data, (g) => g.id === game_id)) {
         throw new Errors.NotFoundError();
       }
       return knex('games').where('id', game_id).first();
-    }).then(function (row) {
+    })
+    .then(function (row) {
       if (row != null) {
         const gameDataUrl = `https://s3.${awsRegion}.amazonaws.com/${awsReplaysBucket}/${config.get('env')}/${game_id}.json`;
         const mouseUIDataUrl = `https://s3.${awsRegion}.amazonaws.com/${awsReplaysBucket}/${config.get('env')}/ui_events/${game_id}.json`;
-        Logger.module('API').debug(`starting download of game ${game_id} replay data from ${gameDataUrl}`);
-        const downloadGameSessionDataAsync = new Promise((resolve, reject) => request.get(gameDataUrl).end(function (err, res) {
-          if ((res != null) && (res.status >= 400)) {
-          // Network failure, we should probably return a more intuitive error object
-            Logger.module('API').error(`ERROR! Failed to connect to games data: ${res.status} `.red);
-            return reject(new Error('Failed to connect to games data.'));
-          } else if (err) {
-          // Internal failure
-            Logger.module('API').error(`ERROR! _retrieveGameSessionData() failed: ${err.message} `.red);
-            return reject(err);
-          } else {
-            return resolve(res.text);
-          }
-        }));
-        const downloadMouseUIDataAsync = new Promise((resolve, reject) => request.get(mouseUIDataUrl).end(function (err, res) {
-          if ((res != null) && (res.status >= 400)) {
-          // Network failure, we should probably return a more intuitive error object
-            Logger.module('API').error(`ERROR! Failed to connect to ui event data: ${res.status} `.red);
-            return reject(new Error('Failed to connect to ui event data.'));
-          } else if (err) {
-          // Internal failure
-            Logger.module('API').error(`ERROR! _retrieveGameUIEventData() failed: ${err.message} `.red);
-            return reject(err);
-          } else {
-            return resolve(res.text);
-          }
-        }));
-        return Promise.all([
-          downloadGameSessionDataAsync,
-          downloadMouseUIDataAsync,
-        ]);
+        Logger.module('API').debug(
+          `starting download of game ${game_id} replay data from ${gameDataUrl}`,
+        );
+        const downloadGameSessionDataAsync = new Promise((resolve, reject) =>
+          request.get(gameDataUrl).end(function (err, res) {
+            if (res != null && res.status >= 400) {
+              // Network failure, we should probably return a more intuitive error object
+              Logger.module('API').error(
+                `ERROR! Failed to connect to games data: ${res.status} `.red,
+              );
+              return reject(new Error('Failed to connect to games data.'));
+            } else if (err) {
+              // Internal failure
+              Logger.module('API').error(
+                `ERROR! _retrieveGameSessionData() failed: ${err.message} `.red,
+              );
+              return reject(err);
+            } else {
+              return resolve(res.text);
+            }
+          }),
+        );
+        const downloadMouseUIDataAsync = new Promise((resolve, reject) =>
+          request.get(mouseUIDataUrl).end(function (err, res) {
+            if (res != null && res.status >= 400) {
+              // Network failure, we should probably return a more intuitive error object
+              Logger.module('API').error(
+                `ERROR! Failed to connect to ui event data: ${res.status} `.red,
+              );
+              return reject(new Error('Failed to connect to ui event data.'));
+            } else if (err) {
+              // Internal failure
+              Logger.module('API').error(
+                `ERROR! _retrieveGameUIEventData() failed: ${err.message} `.red,
+              );
+              return reject(err);
+            } else {
+              return resolve(res.text);
+            }
+          }),
+        );
+        return Promise.all([downloadGameSessionDataAsync, downloadMouseUIDataAsync]);
       } else {
         return [null, null];
       }
     })
     .then(function ([gameDataString, mouseUIDataString]) {
-      Logger.module('API').debug(`downloaded game ${game_id} replay data. size:${(gameDataString != null ? gameDataString.length : undefined) || 0}`);
-      if ((gameDataString == null) || (mouseUIDataString == null)) {
+      Logger.module('API').debug(
+        `downloaded game ${game_id} replay data. size:${(gameDataString != null ? gameDataString.length : undefined) || 0}`,
+      );
+      if (gameDataString == null || mouseUIDataString == null) {
         return res.status(404).json({});
       } else {
         let gameSessionData = JSON.parse(gameDataString);
@@ -354,7 +429,12 @@ router.get('/watchable/:division_name/:game_id/replay_data', function (req, res,
         const fromPerspectiveOfPlayerId = player_id || gameSession.getWinnerId();
 
         // scrub data
-        gameSessionData = UtilsGameSession.scrubGameSessionData(gameSession, gameSessionData, fromPerspectiveOfPlayerId, true);
+        gameSessionData = UtilsGameSession.scrubGameSessionData(
+          gameSession,
+          gameSessionData,
+          fromPerspectiveOfPlayerId,
+          true,
+        );
 
         return res.status(200).json({ gameSessionData, mouseUIData });
       }
@@ -363,11 +443,17 @@ router.get('/watchable/:division_name/:game_id/replay_data', function (req, res,
 });
 
 router.put('/:game_id/gold_tip_amount', function (req, res, next) {
-  let game_id = t.validate(req.params.game_id, t.subtype(t.Str, (s) => s.length <= 36));
+  let game_id = t.validate(
+    req.params.game_id,
+    t.subtype(t.Str, (s) => s.length <= 36),
+  );
   if (!game_id.isValid()) {
     return next();
   }
-  let amount = t.validate(req.body.amount, t.subtype(t.Number, (n) => n === 5));
+  let amount = t.validate(
+    req.body.amount,
+    t.subtype(t.Number, (n) => n === 5),
+  );
   if (!amount.isValid()) {
     return res.status(400).json(amount.errors);
   }
@@ -389,23 +475,15 @@ router.post('/single_player', function (req, res, next) {
   }
 
   const userId = req.user.d.id;
-  let {
-    deck,
-  } = result.value;
+  let { deck } = result.value;
   const aiGeneralId = result.value.ai_general_id;
-  const {
-    cardBackId,
-  } = result.value;
-  const {
-    battleMapId,
-  } = result.value;
+  const { cardBackId } = result.value;
+  const { battleMapId } = result.value;
   const hasPremiumBattleMaps = result.value.hasPremiumBattleMaps || false;
   let battleMapIndexesToSampleFrom = null; // will be configured later based on inputs
-  const {
-    ai_username,
-  } = result.value;
+  const { ai_username } = result.value;
 
-  if (hasPremiumBattleMaps && (battleMapId == null)) {
+  if (hasPremiumBattleMaps && battleMapId == null) {
     Logger.module('SINGLE PLAYER').debug(`${userId} wants RANDOM battlemap`);
   } else if (battleMapId != null) {
     Logger.module('SINGLE PLAYER').debug(`${userId} wants battlemap ${battleMapId}`);
@@ -428,75 +506,134 @@ router.post('/single_player', function (req, res, next) {
   // validate deck
   return Promise.all([
     // if no selected battlemap, but user wants a random battlemap from their set, grab the battlemaps they own and add them to the list
-    (hasPremiumBattleMaps && (battleMapId == null) ? knex('user_cosmetic_inventory').select('cosmetic_id').where('cosmetic_id', '>', 50000).andWhere('cosmetic_id', '<', 60000)
-      .andWhere('user_id', userId) : Promise.resolve()),
+    hasPremiumBattleMaps && battleMapId == null
+      ? knex('user_cosmetic_inventory')
+          .select('cosmetic_id')
+          .where('cosmetic_id', '>', 50000)
+          .andWhere('cosmetic_id', '<', 60000)
+          .andWhere('user_id', userId)
+      : Promise.resolve(),
     // check whether user is allowed to use this deck
     UsersModule.isAllowedToUseDeck(userId, deck, GameType.SinglePlayer, null),
     // check whether user is allowed to use this card back
-    ((cardBackId != null) ? InventoryModule.isAllowedToUseCosmetic(Promise.resolve(), knex, userId, cardBackId) : Promise.resolve()),
-    ((battleMapId != null) ? InventoryModule.isAllowedToUseCosmetic(Promise.resolve(), knex, userId, battleMapId) : Promise.resolve()),
+    cardBackId != null
+      ? InventoryModule.isAllowedToUseCosmetic(Promise.resolve(), knex, userId, cardBackId)
+      : Promise.resolve(),
+    battleMapId != null
+      ? InventoryModule.isAllowedToUseCosmetic(Promise.resolve(), knex, userId, battleMapId)
+      : Promise.resolve(),
   ])
     .then(function ([ownedBattleMapCosmeticRows]) {
       if (battleMapId != null) {
         Logger.module('SINGLE PLAYER').debug(`${userId} selected battlemap: ${battleMapId}`);
-        if (battleMapIndexesToSampleFrom == null) { battleMapIndexesToSampleFrom = [CosmeticsFactory.cosmeticForIdentifier(battleMapId).battleMapTemplateIndex]; }
-      } else if ((ownedBattleMapCosmeticRows != null ? ownedBattleMapCosmeticRows.length : undefined) > 0) {
-        Logger.module('SINGLE PLAYER').debug(`${userId} owns following battlemaps: ${ownedBattleMapCosmeticRows}`);
-        const ownedIndexes = _.map(ownedBattleMapCosmeticRows, (r) => CosmeticsFactory.cosmeticForIdentifier(r.cosmetic_id).battleMapTemplateIndex);
-        if (battleMapIndexesToSampleFrom == null) { battleMapIndexesToSampleFrom = _.union(CONFIG.BATTLEMAP_DEFAULT_INDICES, ownedIndexes); }
+        if (battleMapIndexesToSampleFrom == null) {
+          battleMapIndexesToSampleFrom = [
+            CosmeticsFactory.cosmeticForIdentifier(battleMapId).battleMapTemplateIndex,
+          ];
+        }
+      } else if (
+        (ownedBattleMapCosmeticRows != null ? ownedBattleMapCosmeticRows.length : undefined) > 0
+      ) {
+        Logger.module('SINGLE PLAYER').debug(
+          `${userId} owns following battlemaps: ${ownedBattleMapCosmeticRows}`,
+        );
+        const ownedIndexes = _.map(
+          ownedBattleMapCosmeticRows,
+          (r) => CosmeticsFactory.cosmeticForIdentifier(r.cosmetic_id).battleMapTemplateIndex,
+        );
+        if (battleMapIndexesToSampleFrom == null) {
+          battleMapIndexesToSampleFrom = _.union(CONFIG.BATTLEMAP_DEFAULT_INDICES, ownedIndexes);
+        }
       }
 
-      return knex('user_faction_progression').where({ user_id: userId, faction_id: userFactionId }).first('win_count');
-    }).then(function (progressionRow) {
-    // setup ai username from general name
-      let aiDifficulty,
-        aiNumRandomCards;
+      return knex('user_faction_progression')
+        .where({ user_id: userId, faction_id: userFactionId })
+        .first('win_count');
+    })
+    .then(function (progressionRow) {
+      // setup ai username from general name
+      let aiDifficulty, aiNumRandomCards;
       const aiPlayerId = CONFIG.AI_PLAYER_ID;
       const aiGeneralCard = GameSession.getCardCaches().getCardById(aiGeneralId);
-      const aiUsername = ai_username || (aiGeneralCard != null ? aiGeneralCard.getName() : undefined) || 'Opponent';
+      const aiUsername =
+        ai_username || (aiGeneralCard != null ? aiGeneralCard.getName() : undefined) || 'Opponent';
 
       // allow customization of single player games when ai tools are enabled
       if (config.get('aiToolsEnabled')) {
         aiDifficulty = result.value.ai_difficulty;
         aiNumRandomCards = result.value.ai_num_random_cards;
-        Logger.module('SINGLE PLAYER').debug(`Custom request ${userId} : AI difficulty: ${aiDifficulty} : num random cards: ${aiNumRandomCards}`);
+        Logger.module('SINGLE PLAYER').debug(
+          `Custom request ${userId} : AI difficulty: ${aiDifficulty} : num random cards: ${aiNumRandomCards}`,
+        );
       }
 
-      if ((aiDifficulty == null)) {
-      // ai difficulty ramps up from 0% to max based on faction win count
+      if (aiDifficulty == null) {
+        // ai difficulty ramps up from 0% to max based on faction win count
         const win_count = (progressionRow != null ? progressionRow.win_count : undefined) || 0;
         aiDifficulty = Math.min(1.0, win_count / 10);
-        Logger.module('SINGLE PLAYER').debug(`Request ${userId} : AI difficulty: ${aiDifficulty} : Win count: ${win_count}`);
+        Logger.module('SINGLE PLAYER').debug(
+          `Request ${userId} : AI difficulty: ${aiDifficulty} : Win count: ${win_count}`,
+        );
       }
 
-      if ((aiNumRandomCards == null)) {
-      // ai in single player should never use random cards
+      if (aiNumRandomCards == null) {
+        // ai in single player should never use random cards
         aiNumRandomCards = 0;
       }
 
       // custom game setup options
       const gameSetupOptions = {
         ai: {
-        // set ai starting hand size based on difficulty
-          startingHandSize: Math.min(CONFIG.STARTING_HAND_SIZE, Math.max(1, Math.floor(CONFIG.STARTING_HAND_SIZE * Math.min(1.0, aiDifficulty / 0.2)))),
+          // set ai starting hand size based on difficulty
+          startingHandSize: Math.min(
+            CONFIG.STARTING_HAND_SIZE,
+            Math.max(1, Math.floor(CONFIG.STARTING_HAND_SIZE * Math.min(1.0, aiDifficulty / 0.2))),
+          ),
         },
       };
 
       // create game
-      return createSinglePlayerGame(userId, 'You', GameType.SinglePlayer, deck, cardBackId, battleMapIndexesToSampleFrom, aiPlayerId, aiUsername, aiGeneralId, null, aiDifficulty, aiNumRandomCards, null, gameSetupOptions);
+      return createSinglePlayerGame(
+        userId,
+        'You',
+        GameType.SinglePlayer,
+        deck,
+        cardBackId,
+        battleMapIndexesToSampleFrom,
+        aiPlayerId,
+        aiUsername,
+        aiGeneralId,
+        null,
+        aiDifficulty,
+        aiNumRandomCards,
+        null,
+        gameSetupOptions,
+      );
     })
-    .then((responseData) => // send data back to the player
-      res.status(200).json(responseData))
-    .catch(onType(Errors.InvalidDeckError, function (error) {
-      Logger.module('SINGLE PLAYER').debug(`Request ${userId} : attempting to use invalid deck!`.red);
-      return res.status(400).json({ error: error.message });
-    }))
-    .catch(onType(Errors.SinglePlayerModeDisabledError, function (error) {
-      Logger.module('SINGLE PLAYER').debug(`Request ${userId} : attempting to use invalid deck!`.red);
-      return res.status(400).json({ error: error.message });
-    }))
+    .then((responseData) =>
+      // send data back to the player
+      res.status(200).json(responseData),
+    )
+    .catch(
+      onType(Errors.InvalidDeckError, function (error) {
+        Logger.module('SINGLE PLAYER').debug(
+          `Request ${userId} : attempting to use invalid deck!`.red,
+        );
+        return res.status(400).json({ error: error.message });
+      }),
+    )
+    .catch(
+      onType(Errors.SinglePlayerModeDisabledError, function (error) {
+        Logger.module('SINGLE PLAYER').debug(
+          `Request ${userId} : attempting to use invalid deck!`.red,
+        );
+        return res.status(400).json({ error: error.message });
+      }),
+    )
     .catch(function (error) {
-      Logger.module('SINGLE PLAYER').error(`ERROR: Request.post /single_player ${userId} failed!`.red);
+      Logger.module('SINGLE PLAYER').error(
+        `ERROR: Request.post /single_player ${userId} failed!`.red,
+      );
       return next(error);
     });
 });
@@ -508,18 +645,10 @@ router.post('/boss_battle', function (req, res, next) {
   }
 
   const userId = req.user.d.id;
-  let {
-    deck,
-  } = result.value;
-  const {
-    cardBackId,
-  } = result.value;
-  const {
-    battleMapId,
-  } = result.value;
-  const {
-    ai_username,
-  } = result.value;
+  let { deck } = result.value;
+  const { cardBackId } = result.value;
+  const { battleMapId } = result.value;
+  const { ai_username } = result.value;
 
   // re-map deck for correct formatting and anti-cheat
   deck = _.map(deck, function (card) {
@@ -535,34 +664,65 @@ router.post('/boss_battle', function (req, res, next) {
     // check whether user is allowed to use this deck
     UsersModule.isAllowedToUseDeck(userId, deck, GameType.BossBattle, null),
     // check whether user is allowed to use this card back
-    ((cardBackId != null) ? InventoryModule.isAllowedToUseCosmetic(Promise.resolve(), knex, userId, cardBackId) : Promise.resolve()),
-    ((battleMapId != null) ? InventoryModule.isAllowedToUseCosmetic(Promise.resolve(), knex, userId, battleMapId) : Promise.resolve()),
+    cardBackId != null
+      ? InventoryModule.isAllowedToUseCosmetic(Promise.resolve(), knex, userId, cardBackId)
+      : Promise.resolve(),
+    battleMapId != null
+      ? InventoryModule.isAllowedToUseCosmetic(Promise.resolve(), knex, userId, battleMapId)
+      : Promise.resolve(),
   ])
     .then(function () {
-    // TODO: get current boss general id and deck id from firebase
+      // TODO: get current boss general id and deck id from firebase
       const aiGeneralId = result.value.ai_general_id;
       const aiDeckId = aiGeneralId;
 
       // setup ai username from general name
       const aiPlayerId = CONFIG.AI_PLAYER_ID;
       const aiGeneralCard = GameSession.getCardCaches().getCardById(aiGeneralId);
-      const aiUsername = ai_username || (aiGeneralCard != null ? aiGeneralCard.getName() : undefined) || 'Opponent';
+      const aiUsername =
+        ai_username || (aiGeneralCard != null ? aiGeneralCard.getName() : undefined) || 'Opponent';
 
       // get custom game setup options for boss
       const gameSetupOptions = GameSetups[aiGeneralId];
 
       // create game
-      return createSinglePlayerGame(userId, 'You', GameType.BossBattle, deck, cardBackId, battleMapId, aiPlayerId, aiUsername, aiGeneralId, aiDeckId, 1.0, 0, null, gameSetupOptions);
-    }).then((responseData) => // send data back to the player
-      res.status(200).json(responseData))
-    .catch(onType(Errors.InvalidDeckError, function (error) {
-      Logger.module('BOSS BATTLE').debug(`Request ${userId} : attempting to use invalid deck!`.red);
-      return res.status(400).json({ error: error.message });
-    }))
-    .catch(onType(Errors.SinglePlayerModeDisabledError, function (error) {
-      Logger.module('BOSS BATTLE').debug(`Request ${userId} : attempting to use invalid deck!`.red);
-      return res.status(400).json({ error: error.message });
-    }))
+      return createSinglePlayerGame(
+        userId,
+        'You',
+        GameType.BossBattle,
+        deck,
+        cardBackId,
+        battleMapId,
+        aiPlayerId,
+        aiUsername,
+        aiGeneralId,
+        aiDeckId,
+        1.0,
+        0,
+        null,
+        gameSetupOptions,
+      );
+    })
+    .then((responseData) =>
+      // send data back to the player
+      res.status(200).json(responseData),
+    )
+    .catch(
+      onType(Errors.InvalidDeckError, function (error) {
+        Logger.module('BOSS BATTLE').debug(
+          `Request ${userId} : attempting to use invalid deck!`.red,
+        );
+        return res.status(400).json({ error: error.message });
+      }),
+    )
+    .catch(
+      onType(Errors.SinglePlayerModeDisabledError, function (error) {
+        Logger.module('BOSS BATTLE').debug(
+          `Request ${userId} : attempting to use invalid deck!`.red,
+        );
+        return res.status(400).json({ error: error.message });
+      }),
+    )
     .catch(function (error) {
       Logger.module('BOSS BATTLE').error(`ERROR: Request.post /boss_battle ${userId} failed!`.red);
       return next(error);
@@ -570,7 +730,10 @@ router.post('/boss_battle', function (req, res, next) {
 });
 
 router.post('/share_replay', function (req, res, next) {
-  let game_id = t.validate(req.body.game_id, t.subtype(t.Str, (s) => s.length <= 36));
+  let game_id = t.validate(
+    req.body.game_id,
+    t.subtype(t.Str, (s) => s.length <= 36),
+  );
   if (!game_id.isValid()) {
     return next();
   }
@@ -588,5 +751,5 @@ router.post('/share_replay', function (req, res, next) {
 module.exports = router;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

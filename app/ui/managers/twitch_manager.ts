@@ -29,7 +29,6 @@ var NotificationsManager = require('./notifications_manager');
 var Manager = require('./manager');
 
 var TwitchManager = Manager.extend({
-
   unreadTwitchRewardsQueue: null, // Queue of unclaimed twitch rewards to be displayed next time we reach main menu
   _twitchStatusModel: null, // Tracks any global status about this user's twitch rewards e.g. last_claimed_earned_at
 
@@ -43,21 +42,26 @@ var TwitchManager = Manager.extend({
   onBeforeConnect: function () {
     const _self = this;
     Manager.prototype.onBeforeConnect.call(this);
-    ProfileManager.getInstance().onReady()
+    ProfileManager.getInstance()
+      .onReady()
       .then(function () {
         var userId = ProfileManager.getInstance().get('id');
         var username = ProfileManager.getInstance().get('username');
         _self._twitchStatusModel = new DuelystFirebase.Model(null, {
-          firebase: new Firebase(process.env.FIREBASE_URL + '/user-twitch-rewards/' + userId + '/status'),
+          firebase: new Firebase(
+            process.env.FIREBASE_URL + '/user-twitch-rewards/' + userId + '/status',
+          ),
         });
 
         _self._markAsReadyWhenModelsAndCollectionsSynced([_self._twitchStatusModel]);
 
-        _self.onReady().then(function () {
-          this._twitchStatusModel.on('change', this.onTwitchStatusChange, this);
+        _self.onReady().then(
+          function () {
+            this._twitchStatusModel.on('change', this.onTwitchStatusChange, this);
 
-          return this.onTwitchStatusChange();
-        }.bind(_self));
+            return this.onTwitchStatusChange();
+          }.bind(_self),
+        );
       });
   },
 
@@ -76,42 +80,51 @@ var TwitchManager = Manager.extend({
     var lastClaimedAt = this._twitchStatusModel.get('last_claimed_earned_at');
     if (lastRewardEarnedAt != null) {
       if (lastClaimedAt == null || lastRewardEarnedAt > lastClaimedAt) {
-        return new Promise(function (resolve, reject) {
-          var request = $.ajax({
-            url: process.env.API_URL + '/api/me/rewards/twitch_rewards/unread',
-            type: 'GET',
-            contentType: 'application/json',
-            dataType: 'json',
-          });
-
-          // var request = $.ajax({
-          //  data: JSON.stringify({
-          //    qty: numBoosterPacks,
-          //    card_set_id: cardSetId,
-          //    currency_type:"soft"
-          //  }),
-          //  url: process.env.API_URL + '/api/me/inventory/spirit_orbs',
-          //  type: 'POST',
-          //  contentType: 'application/json',
-          //  dataType: 'json'
-          // });
-
-          request.done(function (response) {
-            var allPromises = [];
-
-            _.each(response, function (twitchRewardData) {
-              allPromises.push(this._addTwitchRewardToQueue(twitchRewardData));
-            }.bind(this));
-
-            return Promise.all(allPromises).then(function () {
-              resolve();
+        return new Promise(
+          function (resolve, reject) {
+            var request = $.ajax({
+              url: process.env.API_URL + '/api/me/rewards/twitch_rewards/unread',
+              type: 'GET',
+              contentType: 'application/json',
+              dataType: 'json',
             });
-          }.bind(this));
 
-          request.fail(function (response) {
-            var errorMessage = response.responseJSON && response.responseJSON.message || 'Retrieving Twitch Rewards Failed';
-          });
-        }.bind(this));
+            // var request = $.ajax({
+            //  data: JSON.stringify({
+            //    qty: numBoosterPacks,
+            //    card_set_id: cardSetId,
+            //    currency_type:"soft"
+            //  }),
+            //  url: process.env.API_URL + '/api/me/inventory/spirit_orbs',
+            //  type: 'POST',
+            //  contentType: 'application/json',
+            //  dataType: 'json'
+            // });
+
+            request.done(
+              function (response) {
+                var allPromises = [];
+
+                _.each(
+                  response,
+                  function (twitchRewardData) {
+                    allPromises.push(this._addTwitchRewardToQueue(twitchRewardData));
+                  }.bind(this),
+                );
+
+                return Promise.all(allPromises).then(function () {
+                  resolve();
+                });
+              }.bind(this),
+            );
+
+            request.fail(function (response) {
+              var errorMessage =
+                (response.responseJSON && response.responseJSON.message) ||
+                'Retrieving Twitch Rewards Failed';
+            });
+          }.bind(this),
+        );
       }
     }
 
@@ -141,25 +154,31 @@ var TwitchManager = Manager.extend({
     var allRewardPromises = [];
     if (twitchRewardData && twitchRewardData.reward_ids) {
       _.each(twitchRewardData.reward_ids, function (rewardId) {
-        allRewardPromises.push(new Promise(function (resolve, reject) {
-          var rewardModel = new DuelystBackbone.Model();
-          rewardModel.url = process.env.API_URL + '/api/me/rewards/' + rewardId;
-          rewardModel.fetch();
+        allRewardPromises.push(
+          new Promise(function (resolve, reject) {
+            var rewardModel = new DuelystBackbone.Model();
+            rewardModel.url = process.env.API_URL + '/api/me/rewards/' + rewardId;
+            rewardModel.fetch();
 
-          rewardModel.onSyncOrReady()
-            .then(function () {
-              resolve(rewardModel.attributes);
-            }).catch(function (error) {
-              reject(error);
-            });
-        }));
+            rewardModel
+              .onSyncOrReady()
+              .then(function () {
+                resolve(rewardModel.attributes);
+              })
+              .catch(function (error) {
+                reject(error);
+              });
+          }),
+        );
       });
 
       // when all the rewards are loaded, push the twitch reward onto the unread queue
-      return Promise.all(allRewardPromises).then(function (rewards) {
-        twitchRewardData.rewards = rewards;
-        this.unreadTwitchRewardsQueue.push(twitchRewardData);
-      }.bind(this));
+      return Promise.all(allRewardPromises).then(
+        function (rewards) {
+          twitchRewardData.rewards = rewards;
+          this.unreadTwitchRewardsQueue.push(twitchRewardData);
+        }.bind(this),
+      );
     }
   },
 
@@ -171,7 +190,10 @@ var TwitchManager = Manager.extend({
     var reward = nextUnread.rewards[0];
     if (reward.reward_category && reward.reward_category == 'TWITCH_DROP') {
       twitchRewardModel.set('_title', 'Thanks for participating in Twitch Drops for Duelyst!');
-      twitchRewardModel.set('_subTitle', 'Your reward has been automatically been added to your account.');
+      twitchRewardModel.set(
+        '_subTitle',
+        'Your reward has been automatically been added to your account.',
+      );
     } else if (reward.reward_category && reward.reward_category == 'TWITCH_COMMERCE') {
       twitchRewardModel.set('_title', 'Thanks for your Twitch Commerce purchase!');
       twitchRewardModel.set('_subTitle', 'Your items have been added to your account.');
@@ -200,11 +222,15 @@ var TwitchManager = Manager.extend({
   },
 
   _setTwitchRewardAsClaimed: function (twitchReward) {
-    this._twitchStatusModel.set('last_claimed_earned_at', moment.utc(twitchReward.earned_at).valueOf());
+    this._twitchStatusModel.set(
+      'last_claimed_earned_at',
+      moment.utc(twitchReward.earned_at).valueOf(),
+    );
 
     if (twitchReward.claimed_at == null) {
       var request = $.ajax({
-        url: process.env.API_URL + '/api/me/rewards/twitch_rewards/' + twitchReward.twitch_reward_id,
+        url:
+          process.env.API_URL + '/api/me/rewards/twitch_rewards/' + twitchReward.twitch_reward_id,
         type: 'PUT',
         contentType: 'application/json',
         dataType: 'json',
@@ -215,5 +241,4 @@ var TwitchManager = Manager.extend({
   getTwitchRewardsLastClaimedAt: function () {
     return this._twitchStatusModel.get('last_claimed_earned_at') || 0;
   },
-
 });

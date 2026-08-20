@@ -10,7 +10,6 @@ TileMapLargeSprite.create()
  *************************************************************************** */
 
 const TileMapLargeSprite = TileMapScaledSprite.extend({
-
   ctor() {
     this._super(RSX.tile_large.frame);
   },
@@ -18,7 +17,9 @@ const TileMapLargeSprite = TileMapScaledSprite.extend({
 
 TileMapLargeSprite.create = function (sprite) {
   if (sprite == null) {
-    sprite = cc.pool.getFromPool(TileMapLargeSprite) || TileMapScaledSprite.create(new TileMapLargeSprite());
+    sprite =
+      cc.pool.getFromPool(TileMapLargeSprite) ||
+      TileMapScaledSprite.create(new TileMapLargeSprite());
   }
   return sprite;
 };

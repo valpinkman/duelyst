@@ -16,8 +16,20 @@ class ModifierBuildCompleteApplyModifiersToNearbyAllies extends ModifierBuilding
 
   static type = 'ModifierBuildCompleteApplyModifiersToNearbyAllies';
 
-  static createContextObject(modifiers, includeGeneral, description, transformCardData, turnsToBuild, options) {
-    const contextObject = super.createContextObject(description, transformCardData, turnsToBuild, options);
+  static createContextObject(
+    modifiers,
+    includeGeneral,
+    description,
+    transformCardData,
+    turnsToBuild,
+    options,
+  ) {
+    const contextObject = super.createContextObject(
+      description,
+      transformCardData,
+      turnsToBuild,
+      options,
+    );
     contextObject.modifiers = modifiers;
     contextObject.includeGeneral = includeGeneral;
     return contextObject;
@@ -26,14 +38,19 @@ class ModifierBuildCompleteApplyModifiersToNearbyAllies extends ModifierBuilding
   onBuildComplete() {
     super.onBuildComplete();
 
-    const allies = this.getGameSession().getBoard().getFriendlyEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
-    if ((allies != null) && (this.modifiers != null)) {
+    const allies = this.getGameSession()
+      .getBoard()
+      .getFriendlyEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
+    if (allies != null && this.modifiers != null) {
       return (() => {
         const result = [];
         for (var entity of Array.from<any>(allies)) {
-          if ((entity != null) && (this.includeGeneral || !entity.getIsGeneral())) {
-            result.push(Array.from<any>(this.modifiers).map((modifier) =>
-              this.getGameSession().applyModifierContextObject(modifier, entity)));
+          if (entity != null && (this.includeGeneral || !entity.getIsGeneral())) {
+            result.push(
+              Array.from<any>(this.modifiers).map((modifier) =>
+                this.getGameSession().applyModifierContextObject(modifier, entity),
+              ),
+            );
           } else {
             result.push(undefined);
           }
@@ -43,7 +60,8 @@ class ModifierBuildCompleteApplyModifiersToNearbyAllies extends ModifierBuilding
     }
   }
 }
-ModifierBuildCompleteApplyModifiersToNearbyAllies.prototype.type = 'ModifierBuildCompleteApplyModifiersToNearbyAllies';
+ModifierBuildCompleteApplyModifiersToNearbyAllies.prototype.type =
+  'ModifierBuildCompleteApplyModifiersToNearbyAllies';
 ModifierBuildCompleteApplyModifiersToNearbyAllies.prototype.modifiers = null;
 ModifierBuildCompleteApplyModifiersToNearbyAllies.prototype.includeGeneral = false;
 

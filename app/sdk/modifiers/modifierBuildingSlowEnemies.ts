@@ -23,12 +23,18 @@ class ModifierBuildingSlowEnemies extends ModifierBuilding {
     speedBuffContextObject.attributeBuffsFixed = ['speed'];
     speedBuffContextObject.appliedName = this.speedChangeAppliedName;
     speedBuffContextObject.appliedDescription = this.speedChangeAppliedDescription;
-    const auraContextObject = Modifier.createContextObjectWithOnBoardAuraForAllEnemies([speedBuffContextObject]);
+    const auraContextObject = Modifier.createContextObjectWithOnBoardAuraForAllEnemies([
+      speedBuffContextObject,
+    ]);
     auraContextObject.auraIncludeGeneral = true;
     auraContextObject.appliedName = this.auraAppliedName;
     auraContextObject.appliedDescription = this.auraAppliedDescription;
     auraContextObject.isRemovable = false;
-    return this.getGameSession().applyModifierContextObject(auraContextObject, this.getCard(), this);
+    return this.getGameSession().applyModifierContextObject(
+      auraContextObject,
+      this.getCard(),
+      this,
+    );
   }
 }
 ModifierBuildingSlowEnemies.prototype.type = 'ModifierBuildingSlowEnemies';

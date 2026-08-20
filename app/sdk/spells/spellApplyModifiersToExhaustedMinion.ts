@@ -12,7 +12,7 @@ class SpellApplyModifiersToExhaustedMinion extends SpellApplyModifiers {
 
     for (var position of Array.from<any>(validPositions)) {
       var unit = this.getGameSession().getBoard().getUnitAtPosition(position);
-      if ((unit != null) && (unit.getIsExhausted() === true)) {
+      if (unit != null && unit.getIsExhausted() === true) {
         exhaustedMinionsPositions.push(position);
       }
     }

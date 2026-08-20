@@ -19,7 +19,13 @@ class ModifierImmuneToAttacksByRanged extends ModifierImmuneToAttacks {
   static description = 'Cannot be attacked by ranged minions';
 
   getIsActionRelevant(a) {
-    return (this.getCard() != null) && a instanceof AttackAction && a.getIsValid() && (this.getCard() === a.getTarget()) && __guard__(a.getSource(), (x) => x.isRanged());
+    return (
+      this.getCard() != null &&
+      a instanceof AttackAction &&
+      a.getIsValid() &&
+      this.getCard() === a.getTarget() &&
+      __guard__(a.getSource(), (x) => x.isRanged())
+    );
   }
 }
 ModifierImmuneToAttacksByRanged.prototype.type = 'ModifierImmuneToAttacksByRanged';
@@ -27,5 +33,5 @@ ModifierImmuneToAttacksByRanged.prototype.type = 'ModifierImmuneToAttacksByRange
 module.exports = ModifierImmuneToAttacksByRanged;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

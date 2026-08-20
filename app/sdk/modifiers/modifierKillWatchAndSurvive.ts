@@ -22,8 +22,12 @@ class ModifierKillWatchAndSurvive extends Modifier {
   static type = 'ModifierKillWatchAndSurvive';
 
   static createContextObject(includeAllies, includeGenerals, options) {
-    if (includeAllies == null) { includeAllies = true; }
-    if (includeGenerals == null) { includeGenerals = true; }
+    if (includeAllies == null) {
+      includeAllies = true;
+    }
+    if (includeGenerals == null) {
+      includeGenerals = true;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.includeAllies = includeAllies;
     contextObject.includeGenerals = includeGenerals;
@@ -33,9 +37,7 @@ class ModifierKillWatchAndSurvive extends Modifier {
   onAfterCleanupAction(e) {
     super.onAfterCleanupAction(e);
 
-    const {
-      action,
-    } = e;
+    const { action } = e;
 
     // when we kill any unit or general
     if (this.getIsActionRelevant(action)) {
@@ -44,8 +46,13 @@ class ModifierKillWatchAndSurvive extends Modifier {
   }
 
   getIsActionRelevant(action) {
-    if (action instanceof DieAction && (action.getTarget() !== this.getCard()) && (__guard__(action.getTarget(), (x) => x.type) === CardType.Unit) && (action.getSource() === this.getCard())) {
-      if (this.includeAllies || (action.getTarget().getOwnerId() !== this.getCard().getOwnerId())) {
+    if (
+      action instanceof DieAction &&
+      action.getTarget() !== this.getCard() &&
+      __guard__(action.getTarget(), (x) => x.type) === CardType.Unit &&
+      action.getSource() === this.getCard()
+    ) {
+      if (this.includeAllies || action.getTarget().getOwnerId() !== this.getCard().getOwnerId()) {
         if (this.includeGenerals || !action.getTarget().getIsGeneral()) {
           return true;
         }
@@ -69,5 +76,5 @@ ModifierKillWatchAndSurvive.prototype.includeGenerals = true;
 module.exports = ModifierKillWatchAndSurvive;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

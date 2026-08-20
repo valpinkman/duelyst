@@ -19,7 +19,7 @@ class ModifierSurviveDamageWatchBur extends ModifierSurviveDamageWatch {
   static description = 'When this minion survives damage, transform it into a different Battle Pet';
 
   onSurviveDamage(action) {
-    if (this.getGameSession().getIsRunningAsAuthoritative() && (this.triggeredOnActionIndex === -1)) {
+    if (this.getGameSession().getIsRunningAsAuthoritative() && this.triggeredOnActionIndex === -1) {
       this.triggeredOnActionIndex = action.getIndex();
       const originalEntityId = this.getCard().getBaseCardId();
 
@@ -30,21 +30,37 @@ class ModifierSurviveDamageWatchBur extends ModifierSurviveDamageWatch {
       this.getGameSession().executeAction(removeOriginalEntityAction);
 
       // pull faction battle pets + neutral token battle pets
-      const factionBattlePetCards = this.getGameSession().getCardCaches().getFaction(Factions.Faction6).getRace(Races.BattlePet)
+      const factionBattlePetCards = this.getGameSession()
+        .getCardCaches()
+        .getFaction(Factions.Faction6)
+        .getRace(Races.BattlePet)
         .getIsToken(false)
         .getIsPrismatic(false)
         .getIsSkinned(false)
         .getCards();
-      const neutralBattlePetCards = this.getGameSession().getCardCaches().getFaction(Factions.Neutral).getRace(Races.BattlePet)
+      const neutralBattlePetCards = this.getGameSession()
+        .getCardCaches()
+        .getFaction(Factions.Neutral)
+        .getRace(Races.BattlePet)
         .getIsToken(true)
         .getIsPrismatic(false)
         .getIsSkinned(false)
         .getCards();
-      const battlePetCards = _.reject([].concat(factionBattlePetCards, neutralBattlePetCards), (card) => card.getBaseCardId() === originalEntityId);
-      const battlePetCard = battlePetCards[this.getGameSession().getRandomIntegerForExecution(battlePetCards.length)];
+      const battlePetCards = _.reject(
+        [].concat(factionBattlePetCards, neutralBattlePetCards),
+        (card) => card.getBaseCardId() === originalEntityId,
+      );
+      const battlePetCard =
+        battlePetCards[this.getGameSession().getRandomIntegerForExecution(battlePetCards.length)];
 
       // transform into a new minion
-      const playCardAction = new PlayCardAsTransformAction(this.getGameSession(), this.getCard().getOwnerId(), this.getCard().getPosition().x, this.getCard().getPosition().y, battlePetCard.createNewCardData());
+      const playCardAction = new PlayCardAsTransformAction(
+        this.getGameSession(),
+        this.getCard().getOwnerId(),
+        this.getCard().getPosition().x,
+        this.getCard().getPosition().y,
+        battlePetCard.createNewCardData(),
+      );
       return this.getGameSession().executeAction(playCardAction);
     }
   }

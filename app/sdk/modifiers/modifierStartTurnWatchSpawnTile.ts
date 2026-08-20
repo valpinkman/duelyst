@@ -17,7 +17,12 @@ class ModifierStartTurnWatchSpawnTile extends ModifierStartTurnWatchSpawnEntity 
   static getDescription(modifierContextObject) {
     if (modifierContextObject) {
       let replaceText = '';
-      if (UtilsPosition.getArraysOfPositionsAreEqual(modifierContextObject.spawnPattern, CONFIG.PATTERN_1x1)) {
+      if (
+        UtilsPosition.getArraysOfPositionsAreEqual(
+          modifierContextObject.spawnPattern,
+          CONFIG.PATTERN_1x1,
+        )
+      ) {
         replaceText = `its space into ${modifierContextObject.spawnDescription}`;
       } else if (modifierContextObject.spawnCount === 1) {
         replaceText = `a nearby space into ${modifierContextObject.spawnDescription}`;
@@ -32,6 +37,9 @@ class ModifierStartTurnWatchSpawnTile extends ModifierStartTurnWatchSpawnEntity 
   }
 }
 ModifierStartTurnWatchSpawnTile.prototype.type = 'ModifierStartTurnWatchSpawnTile';
-ModifierStartTurnWatchSpawnTile.prototype.fxResource = ['FX.Modifiers.ModifierStartTurnWatch', 'FX.Modifiers.ModifierGenericSpawn'];
+ModifierStartTurnWatchSpawnTile.prototype.fxResource = [
+  'FX.Modifiers.ModifierStartTurnWatch',
+  'FX.Modifiers.ModifierGenericSpawn',
+];
 
 module.exports = ModifierStartTurnWatchSpawnTile;

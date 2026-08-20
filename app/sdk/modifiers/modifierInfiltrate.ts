@@ -43,7 +43,9 @@ class ModifierInfiltrate extends ModifierSituationalBuffSelf {
     if (this.getCard().hasModifierType(ModifierAlwaysInfiltrated.type)) {
       return true;
     }
-    for (var unit of Array.from<any>(this.getGameSession().getBoard().getFriendlyEntitiesForEntity(this.getCard()))) {
+    for (var unit of Array.from<any>(
+      this.getGameSession().getBoard().getFriendlyEntitiesForEntity(this.getCard()),
+    )) {
       if (unit.hasActiveModifierClass(ModifierProvidesAlwaysInfiltrated)) {
         return true;
       }
@@ -55,15 +57,13 @@ class ModifierInfiltrate extends ModifierSituationalBuffSelf {
     let enemySideEndX = CONFIG.BOARDCOL;
 
     if (this.getCard().isOwnedByPlayer1()) {
-      enemySideStartX = Math.floor(((enemySideEndX - enemySideStartX) * 0.5) + 1);
+      enemySideStartX = Math.floor((enemySideEndX - enemySideStartX) * 0.5 + 1);
     } else if (this.getCard().isOwnedByPlayer2()) {
-      enemySideEndX = Math.floor(((enemySideEndX - enemySideStartX) * 0.5) - 1);
+      enemySideEndX = Math.floor((enemySideEndX - enemySideStartX) * 0.5 - 1);
     }
 
-    const {
-      x,
-    } = this.getCard().getPosition();
-    return (x >= enemySideStartX) && (x <= enemySideEndX);
+    const { x } = this.getCard().getPosition();
+    return x >= enemySideStartX && x <= enemySideEndX;
   }
 }
 ModifierInfiltrate.prototype.type = 'ModifierInfiltrate';

@@ -34,8 +34,18 @@ class SpellCloneSourceEntity extends SpellApplyEntityToBoard {
   getSpawnAction(x, y) {
     const targetPosition = { x, y };
     const cloningEntity = this.getEntityToSpawn();
-    if ((cloningEntity != null) && !this.getGameSession().getBoard().getObstructionAtPositionForEntity(targetPosition, cloningEntity)) {
-      const spawnEntityAction = new CloneEntityAction(this.getGameSession(), this.getOwnerId(), x, y);
+    if (
+      cloningEntity != null &&
+      !this.getGameSession()
+        .getBoard()
+        .getObstructionAtPositionForEntity(targetPosition, cloningEntity)
+    ) {
+      const spawnEntityAction = new CloneEntityAction(
+        this.getGameSession(),
+        this.getOwnerId(),
+        x,
+        y,
+      );
       spawnEntityAction.setOwnerId(this.getOwnerId());
       spawnEntityAction.setSource(cloningEntity);
       return spawnEntityAction;

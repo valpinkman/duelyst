@@ -20,11 +20,22 @@ class ModifierImmuneToDamageFromMinionsAndGenerals extends ModifierImmuneToDamag
   static type = 'ModifierImmuneToDamageFromMinionsAndGenerals';
 
   getIsActionRelevant(a) {
-    return (this.getCard() != null) && a instanceof DamageAction && a.getIsValid() && (this.getCard() === a.getTarget()) && (a.getSource().getRootCard().getType() === CardType.Unit);
+    return (
+      this.getCard() != null &&
+      a instanceof DamageAction &&
+      a.getIsValid() &&
+      this.getCard() === a.getTarget() &&
+      a.getSource().getRootCard().getType() === CardType.Unit
+    );
   }
 }
-ModifierImmuneToDamageFromMinionsAndGenerals.prototype.type = 'ModifierImmuneToDamageFromMinionsAndGenerals';
-ModifierImmuneToDamageFromMinionsAndGenerals.modifierName = i18next.t('modifiers.immune_to_damage_from_minions_and_generals_name');
-ModifierImmuneToDamageFromMinionsAndGenerals.description = i18next.t('modifiers.immune_to_damage_from_minions_and_generals_def');
+ModifierImmuneToDamageFromMinionsAndGenerals.prototype.type =
+  'ModifierImmuneToDamageFromMinionsAndGenerals';
+ModifierImmuneToDamageFromMinionsAndGenerals.modifierName = i18next.t(
+  'modifiers.immune_to_damage_from_minions_and_generals_name',
+);
+ModifierImmuneToDamageFromMinionsAndGenerals.description = i18next.t(
+  'modifiers.immune_to_damage_from_minions_and_generals_def',
+);
 
 module.exports = ModifierImmuneToDamageFromMinionsAndGenerals;

@@ -23,7 +23,7 @@ class ModifierCustomSpawnOnOtherUnit extends ModifierCustomSpawn {
     const validSpawnLocations = [];
     const board = this.getGameSession().getBoard();
     for (var entity of Array.from<any>(board.getEntities())) {
-      if ((entity.getType() === CardType.Unit) && !entity.getIsGeneral()) {
+      if (entity.getType() === CardType.Unit && !entity.getIsGeneral()) {
         validSpawnLocations.push(entity.getPosition());
       }
     }

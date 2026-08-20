@@ -14,13 +14,9 @@ Logger.enabled = false;
 describe('bloodstorm', () => {
   describe('faction1', () => {
     beforeEach(() => {
-      const player1Deck = [
-        { id: SDK.Cards.Faction1.General },
-      ];
+      const player1Deck = [{ id: SDK.Cards.Faction1.General }];
 
-      const player2Deck = [
-        { id: SDK.Cards.Faction1.General },
-      ];
+      const player2Deck = [{ id: SDK.Cards.Faction1.General }];
 
       UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
     });
@@ -42,8 +38,18 @@ describe('bloodstorm', () => {
 
       gameSession.getGeneralForPlayer1().setDamage(10);
 
-      const silverguardSquire = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.SilverguardSquire }, 1, 1, gameSession.getPlayer1Id());
-      const scintilla = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.Scintilla }, 4, 3, gameSession.getPlayer1Id());
+      const silverguardSquire = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.SilverguardSquire },
+        1,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const scintilla = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.Scintilla },
+        4,
+        3,
+        gameSession.getPlayer1Id(),
+      );
 
       const action = player1.actionPlaySignatureCard(1, 1);
       gameSession.executeAction(action);
@@ -60,9 +66,18 @@ describe('bloodstorm', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      const ironcliffe = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.IroncliffeGuardian }, 3, 1, gameSession.getPlayer2Id());
+      const ironcliffe = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.IroncliffeGuardian },
+        3,
+        1,
+        gameSession.getPlayer2Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.DrainingWave }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.DrainingWave,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 3, 1));
 
       expect(ironcliffe.getDamage()).to.equal(4);
@@ -79,7 +94,12 @@ describe('bloodstorm', () => {
       expect(signatureCardBefore).to.exist;
       expect(signatureCardBefore.getBaseCardId()).to.not.equal(SDK.Cards.Spell.TempestBBS);
 
-      const sunbreaker = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.Sunbreaker }, 4, 3, gameSession.getPlayer1Id());
+      const sunbreaker = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.Sunbreaker },
+        4,
+        3,
+        gameSession.getPlayer1Id(),
+      );
 
       const signatureCardAfter = player1.getCurrentSignatureCard();
       expect(signatureCardAfter).to.exist;
@@ -97,14 +117,24 @@ describe('bloodstorm', () => {
       expect(signatureCardBefore).to.exist;
       expect(signatureCardBefore.getBaseCardId()).to.not.equal(SDK.Cards.Spell.TempestBBS);
 
-      const sunbreaker = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.Sunbreaker }, 4, 3, gameSession.getPlayer1Id());
+      const sunbreaker = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.Sunbreaker },
+        4,
+        3,
+        gameSession.getPlayer1Id(),
+      );
 
       var signatureCardAfter = player1.getCurrentSignatureCard();
       expect(signatureCardAfter).to.exist;
       expect(signatureCardAfter.getBaseCardId()).to.not.equal(signatureCardBefore.getBaseCardId());
       expect(signatureCardAfter.getBaseCardId()).to.equal(SDK.Cards.Spell.TempestBBS);
 
-      const grandmasterZir = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.GrandmasterZir }, 0, 1, gameSession.getPlayer1Id());
+      const grandmasterZir = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.GrandmasterZir },
+        0,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
       var damageAction = new SDK.DamageAction(gameSession);
       damageAction.setTarget(gameSession.getGeneralForPlayer1());
@@ -138,9 +168,18 @@ describe('bloodstorm', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      const ironcliffe = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.IroncliffeGuardian }, 3, 1, gameSession.getPlayer1Id());
+      const ironcliffe = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.IroncliffeGuardian },
+        3,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PrismBarrier }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PrismBarrier,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 3, 1));
 
       expect(ironcliffe.hasActiveModifierClass(ModifierForcefield)).to.equal(true);
@@ -152,15 +191,39 @@ describe('bloodstorm', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.TrinityOath }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.TrinityOath }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.TrinityOath }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.TrinityOath }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.TrinityOath }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.TrinityOath,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.TrinityOath,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.TrinityOath,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.TrinityOath,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.TrinityOath,
+        }),
+      );
 
       gameSession.getGeneralForPlayer1().setDamage(5);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.TrinityOath }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.TrinityOath,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 3, 1));
 
       expect(gameSession.getGeneralForPlayer1().getDamage()).to.equal(2);
@@ -178,15 +241,32 @@ describe('bloodstorm', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.Excelsious }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.Excelsious,
+        }),
+      );
 
-      const ironcliffe = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.IroncliffeGuardian }, 3, 1, gameSession.getPlayer1Id());
+      const ironcliffe = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.IroncliffeGuardian },
+        3,
+        1,
+        gameSession.getPlayer1Id(),
+      );
       ironcliffe.setDamage(5);
       gameSession.getGeneralForPlayer1().setDamage(5);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.SundropElixir }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.SundropElixir,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 3, 1));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.SundropElixir }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.SundropElixir,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 0, 2));
 
       gameSession.executeAction(gameSession.actionEndTurn());
@@ -203,15 +283,32 @@ describe('bloodstorm', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.Excelsious }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.Excelsious,
+        }),
+      );
 
-      const ironcliffe = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.IroncliffeGuardian }, 3, 1, gameSession.getPlayer1Id());
+      const ironcliffe = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.IroncliffeGuardian },
+        3,
+        1,
+        gameSession.getPlayer1Id(),
+      );
       ironcliffe.setDamage(5);
       gameSession.getGeneralForPlayer1().setDamage(5);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.SundropElixir }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.SundropElixir,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(1, 3, 1));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.SundropElixir }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.SundropElixir,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(1, 0, 2));
 
       const hand = player1.getDeck().getCardsInHand();
@@ -226,14 +323,32 @@ describe('bloodstorm', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      const excelsious = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.Excelsious }, 2, 1, gameSession.getPlayer1Id());
-      const ironcliffe = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.IroncliffeGuardian }, 3, 1, gameSession.getPlayer1Id());
+      const excelsious = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.Excelsious },
+        2,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const ironcliffe = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.IroncliffeGuardian },
+        3,
+        1,
+        gameSession.getPlayer1Id(),
+      );
       ironcliffe.setDamage(5);
       gameSession.getGeneralForPlayer1().setDamage(5);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.SundropElixir }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.SundropElixir,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 3, 1));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.SundropElixir }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.SundropElixir,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 0, 2));
 
       expect(excelsious.getATK()).to.equal(8);

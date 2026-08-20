@@ -25,8 +25,16 @@ class ModifierBackstabWatchAddCardToHand extends ModifierBackstabWatch {
   onBackstabWatch(action) {
     return (() => {
       const result = [];
-      for (let i = 0, end = this.numToAdd, asc = end >= 0; asc ? i < end : i > end; asc ? i++ : i--) {
-        var putCardInHandAction = new PutCardInHandAction(this.getGameSession(), this.getOwnerId(), this.cardToAdd);
+      for (
+        let i = 0, end = this.numToAdd, asc = end >= 0;
+        asc ? i < end : i > end;
+        asc ? i++ : i--
+      ) {
+        var putCardInHandAction = new PutCardInHandAction(
+          this.getGameSession(),
+          this.getOwnerId(),
+          this.cardToAdd,
+        );
         result.push(this.getGameSession().executeAction(putCardInHandAction));
       }
       return result;

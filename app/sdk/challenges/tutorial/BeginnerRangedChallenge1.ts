@@ -44,10 +44,7 @@ class BeginnerRangedChallenge1 extends Challenge {
   }
 
   getOpponentPlayerDeckData(gameSession) {
-    return [
-      { id: Cards.Faction6.General },
-      { id: Cards.TutorialSpell.TutorialFrozenFinisher },
-    ];
+    return [{ id: Cards.Faction6.General }, { id: Cards.TutorialSpell.TutorialFrozenFinisher }];
   }
 
   setupBoard(gameSession) {
@@ -82,23 +79,36 @@ class BeginnerRangedChallenge1 extends Challenge {
   setupOpponentAgent(gameSession) {
     super.setupOpponentAgent(gameSession);
 
-    this._opponentAgent.addActionForTurn(0, AgentActions.createAgentSoftActionShowInstructionLabels([{
-      label: i18next.t('challenges.beginner_ranged_challenge_taunt'),
-      isSpeech: true,
-      yPosition: 0.7,
-      isOpponent: true,
-    },
-    ]));
-    return this._opponentAgent.addActionForTurn(0, AgentActions.createAgentActionPlayCardFindPosition(0, () => [GameSession.getInstance().getGeneralForPlayer1().getPosition()]));
+    this._opponentAgent.addActionForTurn(
+      0,
+      AgentActions.createAgentSoftActionShowInstructionLabels([
+        {
+          label: i18next.t('challenges.beginner_ranged_challenge_taunt'),
+          isSpeech: true,
+          yPosition: 0.7,
+          isOpponent: true,
+        },
+      ]),
+    );
+    return this._opponentAgent.addActionForTurn(
+      0,
+      AgentActions.createAgentActionPlayCardFindPosition(0, () => [
+        GameSession.getInstance().getGeneralForPlayer1().getPosition(),
+      ]),
+    );
   }
 }
 BeginnerRangedChallenge1.prototype.type = 'BeginnerRangedChallenge1';
 BeginnerRangedChallenge1.prototype.categoryType = ChallengeCategory.advanced.type;
 BeginnerRangedChallenge1.prototype.name = i18next.t('challenges.beginner_ranged_challenge_title');
-BeginnerRangedChallenge1.prototype.description = i18next.t('challenges.beginner_ranged_challenge_description');
+BeginnerRangedChallenge1.prototype.description = i18next.t(
+  'challenges.beginner_ranged_challenge_description',
+);
 BeginnerRangedChallenge1.prototype.iconUrl = RSX.speech_portrait_lyonar_side.img;
 BeginnerRangedChallenge1.prototype._musicOverride = RSX.music_battlemap_vanar.audio;
-BeginnerRangedChallenge1.prototype.otkChallengeStartMessage = i18next.t('challenges.beginner_ranged_challenge_start');
+BeginnerRangedChallenge1.prototype.otkChallengeStartMessage = i18next.t(
+  'challenges.beginner_ranged_challenge_start',
+);
 BeginnerRangedChallenge1.prototype.otkChallengeFailureMessages = [
   i18next.t('challenges.beginner_ranged_challenge_fail'),
 ];

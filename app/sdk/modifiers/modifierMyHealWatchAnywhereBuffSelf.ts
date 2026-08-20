@@ -16,8 +16,12 @@ class ModifierMyHealWatchAnywhereBuffSelf extends ModifierMyHealWatchAnywhere {
   static description = 'This minion gains %X for each time you healed anything this game';
 
   static createContextObject(attackBuff, maxHPBuff, options) {
-    if (attackBuff == null) { attackBuff = 0; }
-    if (maxHPBuff == null) { maxHPBuff = 0; }
+    if (attackBuff == null) {
+      attackBuff = 0;
+    }
+    if (maxHPBuff == null) {
+      maxHPBuff = 0;
+    }
     const contextObject = super.createContextObject(options);
     const statContextObject = Modifier.createContextObjectWithAttributeBuffs(attackBuff, maxHPBuff);
     statContextObject.appliedName = 'Excelsior!';
@@ -28,13 +32,22 @@ class ModifierMyHealWatchAnywhereBuffSelf extends ModifierMyHealWatchAnywhere {
   static getDescription(modifierContextObject) {
     if (modifierContextObject) {
       const subContextObject = modifierContextObject.modifiersContextObjects[0];
-      return this.description.replace(/%X/, Stringifiers.stringifyAttackHealthBuff(subContextObject.attributeBuffs.atk, subContextObject.attributeBuffs.maxHP));
+      return this.description.replace(
+        /%X/,
+        Stringifiers.stringifyAttackHealthBuff(
+          subContextObject.attributeBuffs.atk,
+          subContextObject.attributeBuffs.maxHP,
+        ),
+      );
     }
     return this.description;
   }
 
   onHealWatch(action) {
-    return this.applyManagedModifiersFromModifiersContextObjects(this.modifiersContextObjects, this.getCard());
+    return this.applyManagedModifiersFromModifiersContextObjects(
+      this.modifiersContextObjects,
+      this.getCard(),
+    );
   }
 }
 ModifierMyHealWatchAnywhereBuffSelf.prototype.type = 'ModifierMyHealWatchAnywhereBuffSelf';

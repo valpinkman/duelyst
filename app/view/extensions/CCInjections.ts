@@ -83,8 +83,9 @@ cc.ActionInterval.prototype.step = function (dt) {
 
   // this.update((1 > (this._elapsed / this._duration)) ? this._elapsed / this._duration : 1);
   // this.update(Math.max(0, Math.min(1, this._elapsed / Math.max(this._duration, cc.FLT_EPSILON))));
-  let t = this._elapsed / (this._duration > 0.0000001192092896 ? this._duration : 0.0000001192092896);
-  t = (t < 1 ? t : 1);
+  let t =
+    this._elapsed / (this._duration > 0.0000001192092896 ? this._duration : 0.0000001192092896);
+  t = t < 1 ? t : 1;
   this.update(t > 0 ? t : 0);
 
   // Compatible with repeat class, Discard after can be deleted (this._repeatMethod)
@@ -115,15 +116,17 @@ cc.ActionInterval.prototype.setSpeedModifier = function (val) {
 };
 
 cc.Sequence.prototype.update = function (dt) {
-  let new_t; let
-    found = 0;
-  const locSplit = this._split; const locActions = this._actions; const locLast = this._last; let
-    actionFound;
+  let new_t;
+  let found = 0;
+  const locSplit = this._split;
+  const locActions = this._actions;
+  const locLast = this._last;
+  let actionFound;
 
   dt = this._computeEaseTime(dt);
   if (dt < locSplit) {
     // action[0]
-    new_t = (locSplit !== 0) ? dt / locSplit : 1;
+    new_t = locSplit !== 0 ? dt / locSplit : 1;
     if (locLast === -1) {
       if (locActions[1].getActive()) {
         // every time a sequence loops, it resets locLast to -1
@@ -141,7 +144,7 @@ cc.Sequence.prototype.update = function (dt) {
   } else {
     // action[1]
     found = 1;
-    new_t = (locSplit === 1) ? 1 : (dt - locSplit) / (1 - locSplit);
+    new_t = locSplit === 1 ? 1 : (dt - locSplit) / (1 - locSplit);
 
     if (locLast === -1) {
       // action[0] was skipped, execute it.
@@ -382,10 +385,10 @@ cc.ControlButton.prototype.ctor = function () {
 cc.inputManager.registerSystemEvent = function (element) {
   if (this._isRegisterEvent) return;
 
-  const locView = this._glView = cc.view;
+  const locView = (this._glView = cc.view);
   const selfPointer = this;
-  const supportMouse = ('mouse' in cc.sys.capabilities); const
-    supportTouches = ('touches' in cc.sys.capabilities);
+  const supportMouse = 'mouse' in cc.sys.capabilities;
+  const supportTouches = 'touches' in cc.sys.capabilities;
 
   // HACK
   //  - At the same time to trigger the ontouch event and onmouse event
@@ -425,69 +428,94 @@ cc.inputManager.registerSystemEvent = function (element) {
     }, false);
     */
     // register canvas mouse event
-    cc._addEventListener(element, 'mousedown', (event) => {
-      if (prohibition) return;
-      selfPointer._mousePressed = true;
+    cc._addEventListener(
+      element,
+      'mousedown',
+      (event) => {
+        if (prohibition) return;
+        selfPointer._mousePressed = true;
 
-      const pos = selfPointer.getHTMLElementPosition(element);
-      const location = selfPointer.getPointByEvent(event, pos);
+        const pos = selfPointer.getHTMLElementPosition(element);
+        const location = selfPointer.getPointByEvent(event, pos);
 
-      selfPointer.handleTouchesBegin([selfPointer.getTouchByXY(location.x, location.y, pos)]);
+        selfPointer.handleTouchesBegin([selfPointer.getTouchByXY(location.x, location.y, pos)]);
 
-      const mouseEvent = selfPointer.getMouseEvent(location, pos, cc.EventMouse.DOWN);
-      mouseEvent.setButton(event.button);
-      cc.eventManager.dispatchEvent(mouseEvent);
-      element.focus();
-    }, false);
+        const mouseEvent = selfPointer.getMouseEvent(location, pos, cc.EventMouse.DOWN);
+        mouseEvent.setButton(event.button);
+        cc.eventManager.dispatchEvent(mouseEvent);
+        element.focus();
+      },
+      false,
+    );
 
-    cc._addEventListener(element, 'mouseup', (event) => {
-      if (prohibition) return;
-      selfPointer._mousePressed = false;
+    cc._addEventListener(
+      element,
+      'mouseup',
+      (event) => {
+        if (prohibition) return;
+        selfPointer._mousePressed = false;
 
-      const pos = selfPointer.getHTMLElementPosition(element);
-      const location = selfPointer.getPointByEvent(event, pos);
+        const pos = selfPointer.getHTMLElementPosition(element);
+        const location = selfPointer.getPointByEvent(event, pos);
 
-      selfPointer.handleTouchesEnd([selfPointer.getTouchByXY(location.x, location.y, pos)]);
+        selfPointer.handleTouchesEnd([selfPointer.getTouchByXY(location.x, location.y, pos)]);
 
-      const mouseEvent = selfPointer.getMouseEvent(location, pos, cc.EventMouse.UP);
-      mouseEvent.setButton(event.button);
-      cc.eventManager.dispatchEvent(mouseEvent);
-    }, false);
+        const mouseEvent = selfPointer.getMouseEvent(location, pos, cc.EventMouse.UP);
+        mouseEvent.setButton(event.button);
+        cc.eventManager.dispatchEvent(mouseEvent);
+      },
+      false,
+    );
 
-    cc._addEventListener(element, 'mousemove', (event) => {
-      if (prohibition) return;
+    cc._addEventListener(
+      element,
+      'mousemove',
+      (event) => {
+        if (prohibition) return;
 
-      const pos = selfPointer.getHTMLElementPosition(element);
-      const location = selfPointer.getPointByEvent(event, pos);
+        const pos = selfPointer.getHTMLElementPosition(element);
+        const location = selfPointer.getPointByEvent(event, pos);
 
-      selfPointer.handleTouchesMove([selfPointer.getTouchByXY(location.x, location.y, pos)]);
+        selfPointer.handleTouchesMove([selfPointer.getTouchByXY(location.x, location.y, pos)]);
 
-      const mouseEvent = selfPointer.getMouseEvent(location, pos, cc.EventMouse.MOVE);
-      if (selfPointer._mousePressed) mouseEvent.setButton(event.button);
-      else mouseEvent.setButton(null);
-      cc.eventManager.dispatchEvent(mouseEvent);
-    }, false);
+        const mouseEvent = selfPointer.getMouseEvent(location, pos, cc.EventMouse.MOVE);
+        if (selfPointer._mousePressed) mouseEvent.setButton(event.button);
+        else mouseEvent.setButton(null);
+        cc.eventManager.dispatchEvent(mouseEvent);
+      },
+      false,
+    );
 
-    cc._addEventListener(element, 'mousewheel', (event) => {
-      const pos = selfPointer.getHTMLElementPosition(element);
-      const location = selfPointer.getPointByEvent(event, pos);
+    cc._addEventListener(
+      element,
+      'mousewheel',
+      (event) => {
+        const pos = selfPointer.getHTMLElementPosition(element);
+        const location = selfPointer.getPointByEvent(event, pos);
 
-      const mouseEvent = selfPointer.getMouseEvent(location, pos, cc.EventMouse.SCROLL);
-      mouseEvent.setButton(event.button);
-      mouseEvent.setScrollData(0, event.wheelDelta);
-      cc.eventManager.dispatchEvent(mouseEvent);
-    }, false);
+        const mouseEvent = selfPointer.getMouseEvent(location, pos, cc.EventMouse.SCROLL);
+        mouseEvent.setButton(event.button);
+        mouseEvent.setScrollData(0, event.wheelDelta);
+        cc.eventManager.dispatchEvent(mouseEvent);
+      },
+      false,
+    );
 
     /* firefox fix */
-    cc._addEventListener(element, 'DOMMouseScroll', (event) => {
-      const pos = selfPointer.getHTMLElementPosition(element);
-      const location = selfPointer.getPointByEvent(event, pos);
+    cc._addEventListener(
+      element,
+      'DOMMouseScroll',
+      (event) => {
+        const pos = selfPointer.getHTMLElementPosition(element);
+        const location = selfPointer.getPointByEvent(event, pos);
 
-      const mouseEvent = selfPointer.getMouseEvent(location, pos, cc.EventMouse.SCROLL);
-      mouseEvent.setButton(event.button);
-      mouseEvent.setScrollData(0, event.detail * -120);
-      cc.eventManager.dispatchEvent(mouseEvent);
-    }, false);
+        const mouseEvent = selfPointer.getMouseEvent(location, pos, cc.EventMouse.SCROLL);
+        mouseEvent.setButton(event.button);
+        mouseEvent.setScrollData(0, event.detail * -120);
+        cc.eventManager.dispatchEvent(mouseEvent);
+      },
+      false,
+    );
   }
 
   if (window.navigator.msPointerEnabled) {
@@ -500,55 +528,82 @@ cc.inputManager.registerSystemEvent = function (element) {
 
     for (const eventName in _pointerEventsMap) {
       (function (_pointerEvent, _touchEvent) {
-        cc._addEventListener(element, _pointerEvent, (event) => {
-          const pos = selfPointer.getHTMLElementPosition(element);
-          pos.left -= document.documentElement.scrollLeft;
-          pos.top -= document.documentElement.scrollTop;
+        cc._addEventListener(
+          element,
+          _pointerEvent,
+          (event) => {
+            const pos = selfPointer.getHTMLElementPosition(element);
+            pos.left -= document.documentElement.scrollLeft;
+            pos.top -= document.documentElement.scrollTop;
 
-          _touchEvent.call(selfPointer, [selfPointer.getTouchByXY(event.clientX, event.clientY, pos)]);
-        }, false);
-      }(eventName, _pointerEventsMap[eventName]));
+            _touchEvent.call(selfPointer, [
+              selfPointer.getTouchByXY(event.clientX, event.clientY, pos),
+            ]);
+          },
+          false,
+        );
+      })(eventName, _pointerEventsMap[eventName]);
     }
   }
 
   if (supportTouches) {
     // register canvas touch event
-    cc._addEventListener(element, 'touchstart', (event) => {
-      if (!event.changedTouches) return;
+    cc._addEventListener(
+      element,
+      'touchstart',
+      (event) => {
+        if (!event.changedTouches) return;
 
-      const pos = selfPointer.getHTMLElementPosition(element);
-      pos.left -= document.body.scrollLeft;
-      pos.top -= document.body.scrollTop;
-      selfPointer.handleTouchesBegin(selfPointer.getTouchesByEvent(event, pos));
-      element.focus();
-    }, false);
+        const pos = selfPointer.getHTMLElementPosition(element);
+        pos.left -= document.body.scrollLeft;
+        pos.top -= document.body.scrollTop;
+        selfPointer.handleTouchesBegin(selfPointer.getTouchesByEvent(event, pos));
+        element.focus();
+      },
+      false,
+    );
 
-    cc._addEventListener(element, 'touchmove', (event) => {
-      if (!event.changedTouches) return;
+    cc._addEventListener(
+      element,
+      'touchmove',
+      (event) => {
+        if (!event.changedTouches) return;
 
-      const pos = selfPointer.getHTMLElementPosition(element);
-      pos.left -= document.body.scrollLeft;
-      pos.top -= document.body.scrollTop;
-      selfPointer.handleTouchesMove(selfPointer.getTouchesByEvent(event, pos));
-    }, false);
+        const pos = selfPointer.getHTMLElementPosition(element);
+        pos.left -= document.body.scrollLeft;
+        pos.top -= document.body.scrollTop;
+        selfPointer.handleTouchesMove(selfPointer.getTouchesByEvent(event, pos));
+      },
+      false,
+    );
 
-    cc._addEventListener(element, 'touchend', (event) => {
-      if (!event.changedTouches) return;
+    cc._addEventListener(
+      element,
+      'touchend',
+      (event) => {
+        if (!event.changedTouches) return;
 
-      const pos = selfPointer.getHTMLElementPosition(element);
-      pos.left -= document.body.scrollLeft;
-      pos.top -= document.body.scrollTop;
-      selfPointer.handleTouchesEnd(selfPointer.getTouchesByEvent(event, pos));
-    }, false);
+        const pos = selfPointer.getHTMLElementPosition(element);
+        pos.left -= document.body.scrollLeft;
+        pos.top -= document.body.scrollTop;
+        selfPointer.handleTouchesEnd(selfPointer.getTouchesByEvent(event, pos));
+      },
+      false,
+    );
 
-    cc._addEventListener(element, 'touchcancel', (event) => {
-      if (!event.changedTouches) return;
+    cc._addEventListener(
+      element,
+      'touchcancel',
+      (event) => {
+        if (!event.changedTouches) return;
 
-      const pos = selfPointer.getHTMLElementPosition(element);
-      pos.left -= document.body.scrollLeft;
-      pos.top -= document.body.scrollTop;
-      selfPointer.handleTouchesCancel(selfPointer.getTouchesByEvent(event, pos));
-    }, false);
+        const pos = selfPointer.getHTMLElementPosition(element);
+        pos.left -= document.body.scrollLeft;
+        pos.top -= document.body.scrollTop;
+        selfPointer.handleTouchesCancel(selfPointer.getTouchesByEvent(event, pos));
+      },
+      false,
+    );
   }
 
   // register keyboard event
@@ -561,12 +616,22 @@ cc.inputManager.registerSystemEvent = function (element) {
 };
 
 cc.inputManager._registerKeyboardEvent = function () {
-  cc._addEventListener(cc._canvas, 'keydown', (e) => {
-    cc.eventManager.dispatchEvent(new cc.EventKeyboard(e.keyCode, true));
-  }, false);
-  cc._addEventListener(cc._canvas, 'keyup', (e) => {
-    cc.eventManager.dispatchEvent(new cc.EventKeyboard(e.keyCode, false));
-  }, false);
+  cc._addEventListener(
+    cc._canvas,
+    'keydown',
+    (e) => {
+      cc.eventManager.dispatchEvent(new cc.EventKeyboard(e.keyCode, true));
+    },
+    false,
+  );
+  cc._addEventListener(
+    cc._canvas,
+    'keyup',
+    (e) => {
+      cc.eventManager.dispatchEvent(new cc.EventKeyboard(e.keyCode, false));
+    },
+    false,
+  );
 };
 
 /* endregion INPUT */
@@ -586,7 +651,10 @@ cc.ParallaxNode.prototype.setChildParallaxRatioAndOffset = function (child, rati
     if (point.getChild() == child) {
       point.setRatio(ratio);
       point.setOffset(offset);
-      child.setPosition(this._position.x * ratio.x + offset.x, this._position.y * ratio.y + offset.y);
+      child.setPosition(
+        this._position.x * ratio.x + offset.x,
+        this._position.y * ratio.y + offset.y,
+      );
       break;
     }
   }

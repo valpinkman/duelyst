@@ -26,8 +26,11 @@ class QuestAnniversary2017 extends Quest {
 
   _progressForGameDataForPlayerId(gameData, playerId) {
     for (var player of Array.from<any>(gameData.players)) {
-      var playerSetupData = UtilsGameSession.getPlayerSetupDataForPlayerId(gameData, player.playerId);
-      if ((player.playerId === playerId) && player.isWinner && (gameData.gameType === GameType.Rift)) {
+      var playerSetupData = UtilsGameSession.getPlayerSetupDataForPlayerId(
+        gameData,
+        player.playerId,
+      );
+      if (player.playerId === playerId && player.isWinner && gameData.gameType === GameType.Rift) {
         return 1;
       }
     }
@@ -39,7 +42,9 @@ class QuestAnniversary2017 extends Quest {
   }
 
   isAvailableOn(momentUtc) {
-    return momentUtc.isAfter(moment.utc('2017-04-25')) && momentUtc.isBefore(moment.utc('2017-05-13'));
+    return (
+      momentUtc.isAfter(moment.utc('2017-04-25')) && momentUtc.isBefore(moment.utc('2017-05-13'))
+    );
   }
 
   expiresOn() {

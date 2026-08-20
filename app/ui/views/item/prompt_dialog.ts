@@ -10,7 +10,6 @@ var PromptDialogItemViewTempl = require('app/ui/templates/item/prompt_dialog.hbs
 var NavigationManager = require('app/ui/managers/navigation_manager');
 
 var PromptDialogItemView = Backbone.Marionette.ItemView.extend({
-
   id: 'app-prompt-dialog',
   className: 'modal prompt-modal',
 
@@ -35,13 +34,14 @@ var PromptDialogItemView = Backbone.Marionette.ItemView.extend({
   },
 
   onCancel: function () {
-    audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_cancel.audio, CONFIG.CANCEL_SFX_PRIORITY);
+    audio_engine
+      .current()
+      .play_effect_for_interaction(RSX.sfx_ui_cancel.audio, CONFIG.CANCEL_SFX_PRIORITY);
     this.trigger('cancel');
 
     // destroy last to allow any events to occur
     NavigationManager.getInstance().destroyDialogView();
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

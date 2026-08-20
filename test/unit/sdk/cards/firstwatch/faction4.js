@@ -14,13 +14,9 @@ Logger.enabled = false;
 describe('first watch', () => {
   describe('faction4', () => {
     beforeEach(() => {
-      const player1Deck = [
-        { id: SDK.Cards.Faction4.AltGeneral },
-      ];
+      const player1Deck = [{ id: SDK.Cards.Faction4.AltGeneral }];
 
-      const player2Deck = [
-        { id: SDK.Cards.Faction1.General },
-      ];
+      const player2Deck = [{ id: SDK.Cards.Faction1.General }];
 
       UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
     });
@@ -37,10 +33,23 @@ describe('first watch', () => {
       player1.remainingMana = 9;
       player2.remainingMana = 9;
 
-      const phantasm = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.Phantasm }, 3, 1, gameSession.getPlayer1Id());
+      const phantasm = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.Phantasm },
+        3,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction4.GloomChaser }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer2Id(), { id: SDK.Cards.Faction4.GloomChaser }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction4.GloomChaser,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer2Id(), {
+          id: SDK.Cards.Faction4.GloomChaser,
+        }),
+      );
 
       gameSession.executeAction(gameSession.actionEndTurn());
 
@@ -59,8 +68,16 @@ describe('first watch', () => {
       player1.remainingMana = 9;
       player2.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction4.BoundTormentor }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer2Id(), { id: SDK.Cards.Faction4.GloomChaser }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction4.BoundTormentor,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer2Id(), {
+          id: SDK.Cards.Faction4.GloomChaser,
+        }),
+      );
 
       var playCardFromHandAction1 = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction1);
@@ -83,13 +100,26 @@ describe('first watch', () => {
       player1.remainingMana = 9;
       player2.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.ShadowNova }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.ShadowNova,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 0, 0);
       gameSession.executeAction(playCardFromHandAction);
 
-      const phantasm = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.Phantasm }, 0, 0, gameSession.getPlayer2Id());
+      const phantasm = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.Phantasm },
+        0,
+        0,
+        gameSession.getPlayer2Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.ChokingTendrils }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.ChokingTendrils,
+        }),
+      );
       const playCardFromHandAction1 = player1.actionPlayCardFromHand(0, 0, 0);
       gameSession.executeAction(playCardFromHandAction1);
 
@@ -104,7 +134,11 @@ describe('first watch', () => {
       player1.remainingMana = 9;
       player2.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.InklingSurge }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.InklingSurge,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -120,14 +154,27 @@ describe('first watch', () => {
       player1.remainingMana = 9;
       player2.remainingMana = 9;
 
-      const wraithling = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.Wraithling }, 0, 0, gameSession.getPlayer1Id());
+      const wraithling = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.Wraithling },
+        0,
+        0,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.InklingSurge }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.InklingSurge,
+        }),
+      );
 
       var hand = player1.getDeck().getCardsInHand();
       expect(hand[0]).to.not.exist;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.InklingSurge }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.InklingSurge,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -143,12 +190,21 @@ describe('first watch', () => {
       player1.remainingMana = 9;
       player2.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction4.SkullProphet }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction4.SkullProphet,
+        }),
+      );
       const playCardFromHandAction1 = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction1);
 
       gameSession.executeAction(gameSession.actionEndTurn());
-      const wraithling = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.Wraithling }, 8, 1, gameSession.getPlayer1Id());
+      const wraithling = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.Wraithling },
+        8,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
       const action = gameSession.getGeneralForPlayer2().actionAttack(wraithling);
       gameSession.executeAction(action);
@@ -164,8 +220,16 @@ describe('first watch', () => {
       player1.remainingMana = 9;
       player2.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction4.Xerroloth }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer2Id(), { id: SDK.Cards.Spell.InklingSurge }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction4.Xerroloth,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer2Id(), {
+          id: SDK.Cards.Spell.InklingSurge,
+        }),
+      );
 
       var playCardFromHandAction1 = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction1);
@@ -194,10 +258,24 @@ describe('first watch', () => {
 
       gameSession.executeAction(gameSession.actionEndTurn());
 
-      const enemy1 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.GloomChaser }, 6, 3, gameSession.getPlayer2Id());
-      const enemy2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.GloomChaser }, 6, 1, gameSession.getPlayer2Id());
+      const enemy1 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.GloomChaser },
+        6,
+        3,
+        gameSession.getPlayer2Id(),
+      );
+      const enemy2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.GloomChaser },
+        6,
+        1,
+        gameSession.getPlayer2Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.Shadowstalk }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.Shadowstalk,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -217,13 +295,26 @@ describe('first watch', () => {
       player1.remainingMana = 9;
       player2.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.ShadowNova }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.ShadowNova,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 0, 0);
       gameSession.executeAction(playCardFromHandAction);
 
-      const phantasm = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.Phantasm }, 8, 0, gameSession.getPlayer2Id());
+      const phantasm = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.Phantasm },
+        8,
+        0,
+        gameSession.getPlayer2Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.Nethermeld }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.Nethermeld,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 8, 0);
       gameSession.executeAction(playCardFromHandAction);
       const followupCard = playCardFromHandAction.getCard().getCurrentFollowupCard();
@@ -241,20 +332,57 @@ describe('first watch', () => {
       player1.remainingMana = 9;
       player2.remainingMana = 9;
 
-      const nekomata = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.Nekomata }, 0, 0, gameSession.getPlayer1Id());
+      const nekomata = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.Nekomata },
+        0,
+        0,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.InklingSurge }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction4.Nekomata }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.InklingSurge }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction4.Nekomata }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.InklingSurge }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.InklingSurge }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.InklingSurge }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.InklingSurge,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction4.Nekomata,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.InklingSurge,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction4.Nekomata,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.InklingSurge,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.InklingSurge,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.InklingSurge,
+        }),
+      );
 
       var hand = player1.getDeck().getCardsInHand();
       expect(hand[0]).to.not.exist;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PhoenixFire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 0, 0);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -272,9 +400,18 @@ describe('first watch', () => {
       player1.remainingMana = 9;
       player2.remainingMana = 9;
 
-      const rev = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.SpectralRevenant }, 6, 3, gameSession.getPlayer1Id());
+      const rev = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.SpectralRevenant },
+        6,
+        3,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.CorporealCadence }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.CorporealCadence,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 6, 3);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -289,10 +426,24 @@ describe('first watch', () => {
       player1.remainingMana = 9;
       player2.remainingMana = 9;
 
-      const vorpal = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.VorpalReaver }, 1, 1, gameSession.getPlayer2Id());
-      const pandora = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Pandora }, 2, 1, gameSession.getPlayer2Id());
+      const vorpal = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.VorpalReaver },
+        1,
+        1,
+        gameSession.getPlayer2Id(),
+      );
+      const pandora = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.Pandora },
+        2,
+        1,
+        gameSession.getPlayer2Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Artifact.Mindlathe }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Artifact.Mindlathe,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 6, 3);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -317,7 +468,11 @@ describe('first watch', () => {
       player1.remainingMana = 9;
       player2.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.Doom }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.Doom,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 8, 2);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -341,14 +496,22 @@ describe('first watch', () => {
 
       gameSession.getGeneralForPlayer1().setDamage(5);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction4.Desolator }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction4.Desolator,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
 
       expect(gameSession.getGeneralForPlayer1().getDamage()).to.equal(3);
       expect(gameSession.getGeneralForPlayer2().getDamage()).to.equal(2);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PhoenixFire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
 

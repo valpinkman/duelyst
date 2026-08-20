@@ -25,13 +25,16 @@ class SpellTwoForMe extends Spell {
         for (let i = 0; i < opponentsDrawPile.length; i++) {
           var cardIndex = opponentsDrawPile[i];
           var card = this.getGameSession().getCardByIndex(cardIndex);
-          if ((card != null) && (card.getType() === CardType.Unit)) {
+          if (card != null && card.getType() === CardType.Unit) {
             indexesOfMinions.push(i);
           }
         }
 
         if (indexesOfMinions.length > 0) {
-          const randomIndex = indexesOfMinions[this.getGameSession().getRandomIntegerForExecution(indexesOfMinions.length)];
+          const randomIndex =
+            indexesOfMinions[
+              this.getGameSession().getRandomIntegerForExecution(indexesOfMinions.length)
+            ];
           const cardToSteal = this.getGameSession().getCardByIndex(opponentsDrawPile[randomIndex]);
 
           if (cardToSteal != null) {
@@ -39,12 +42,22 @@ class SpellTwoForMe extends Spell {
             newCardData.ownerId = this.getOwnerId(); // reset owner id to player who will recieve this card
             const statContextObject = Modifier.createContextObjectWithAttributeBuffs(1, 1);
             statContextObject.appliedName = this.buffName;
-            if (newCardData.additionalModifiersContextObjects == null) { newCardData.additionalModifiersContextObjects = []; }
+            if (newCardData.additionalModifiersContextObjects == null) {
+              newCardData.additionalModifiersContextObjects = [];
+            }
             newCardData.additionalModifiersContextObjects.push(statContextObject);
 
-            const removeCardFromDeckAction = new RemoveCardFromDeckAction(this.getGameSession(), cardToSteal.getIndex(), opponentPlayer.getPlayerId());
+            const removeCardFromDeckAction = new RemoveCardFromDeckAction(
+              this.getGameSession(),
+              cardToSteal.getIndex(),
+              opponentPlayer.getPlayerId(),
+            );
             this.getGameSession().executeAction(removeCardFromDeckAction);
-            const putCardInHandAction = new PutCardInHandAction(this.getGameSession(), this.getOwnerId(), newCardData);
+            const putCardInHandAction = new PutCardInHandAction(
+              this.getGameSession(),
+              this.getOwnerId(),
+              newCardData,
+            );
             return this.getGameSession().executeAction(putCardInHandAction);
           }
         }

@@ -41,7 +41,6 @@ var ProfileManager = require('./profile_manager');
 var Manager = require('./manager');
 
 var ChatManager = Manager.extend({
-
   // firebase refs
   userConversationsIndexRef: null,
   conversations: null,
@@ -66,49 +65,64 @@ var ChatManager = Manager.extend({
     const _self = this;
     Manager.prototype.onBeforeConnect.call(this);
 
-    ProfileManager.getInstance().onReady()
+    ProfileManager.getInstance()
+      .onReady()
       .then(function () {
         var userId = ProfileManager.getInstance().get('id');
         var username = ProfileManager.getInstance().get('username');
         // configure presence
         _self.conversations = new Conversations();
-        _self._presenceRef = new Firebase(process.env.FIREBASE_URL + '/users/' + userId).child('presence');
+        _self._presenceRef = new Firebase(process.env.FIREBASE_URL + '/users/' + userId).child(
+          'presence',
+        );
         _self._connectionRef = new Firebase(process.env.FIREBASE_URL + '/.info/connected');
-        _self._connectionRef.on('value', function (snapshot) {
-          if (snapshot.val()) {
-          // var sessionRef = this._presenceRef.push();
-            this._presenceRef.child('status').set(this._status);
-            this._presenceRef.child('username').set(username);
+        _self._connectionRef.on(
+          'value',
+          function (snapshot) {
+            if (snapshot.val()) {
+              // var sessionRef = this._presenceRef.push();
+              this._presenceRef.child('status').set(this._status);
+              this._presenceRef.child('username').set(username);
 
-            this._presenceRef.onDisconnect().update({
-              ended: Firebase.ServerValue.TIMESTAMP,
-              status: 'offline',
-            });
+              this._presenceRef.onDisconnect().update({
+                ended: Firebase.ServerValue.TIMESTAMP,
+                status: 'offline',
+              });
 
-            this._presenceRef.child('began').set(Firebase.ServerValue.TIMESTAMP);
-          }
-        }, _self);
-        _self.userConversationsIndexRef = new Firebase(process.env.FIREBASE_URL + 'chat/users/' + userId + '/conversations');
-        _self.invitesListRef = new Firebase(process.env.FIREBASE_URL + 'chat/users/' + userId + '/buddy-invites');
+              this._presenceRef.child('began').set(Firebase.ServerValue.TIMESTAMP);
+            }
+          },
+          _self,
+        );
+        _self.userConversationsIndexRef = new Firebase(
+          process.env.FIREBASE_URL + 'chat/users/' + userId + '/conversations',
+        );
+        _self.invitesListRef = new Firebase(
+          process.env.FIREBASE_URL + 'chat/users/' + userId + '/buddy-invites',
+        );
 
-        _self.buddiesCollection = new BuddiesCollection(null, { firebase: process.env.FIREBASE_URL + 'users/' + userId + '/buddies' });
+        _self.buddiesCollection = new BuddiesCollection(null, {
+          firebase: process.env.FIREBASE_URL + 'users/' + userId + '/buddies',
+        });
 
         _self.invitesListRef.on('child_added', _self._onBuddyInviteReceived.bind(_self));
 
-        _self.onReady().then(function () {
-          Logger.module('UI').log('ChatManager::onReady');
-          this.buddiesCollection.each(this._onBuddyAdded.bind(this));
-          this.listenTo(this.buddiesCollection, 'add', this._onBuddyAdded);
-          this.listenTo(this.buddiesCollection, 'remove', this._onBuddyRemoved);
-          this.listenTo(this.conversations, 'message', this.onReceivedMessage);
-          this.listenTo(EventBus.getInstance(), EVENTS.pointer_down, this.onResetAwayStatus);
-          this.listenTo(EventBus.getInstance(), EVENTS.pointer_up, this.onResetAwayStatus);
-          this.listenTo(EventBus.getInstance(), EVENTS.pointer_move, this.onResetAwayStatus);
-        }.bind(_self));
+        _self.onReady().then(
+          function () {
+            Logger.module('UI').log('ChatManager::onReady');
+            this.buddiesCollection.each(this._onBuddyAdded.bind(this));
+            this.listenTo(this.buddiesCollection, 'add', this._onBuddyAdded);
+            this.listenTo(this.buddiesCollection, 'remove', this._onBuddyRemoved);
+            this.listenTo(this.conversations, 'message', this.onReceivedMessage);
+            this.listenTo(EventBus.getInstance(), EVENTS.pointer_down, this.onResetAwayStatus);
+            this.listenTo(EventBus.getInstance(), EVENTS.pointer_up, this.onResetAwayStatus);
+            this.listenTo(EventBus.getInstance(), EVENTS.pointer_move, this.onResetAwayStatus);
+          }.bind(_self),
+        );
 
         _self._markAsReadyWhenModelsAndCollectionsSynced([_self.buddiesCollection]);
 
-      /*
+        /*
       this.userConversationsIndexRef.startAt(Date.now()).on("child_added",function(snapshot) { // startAt(Firebase.ServerValue.TIMESTAMP)
       Logger.module("UI").log("chat conversation started");
       this.onConversationStarted(snapshot.val());
@@ -148,68 +162,86 @@ var ChatManager = Manager.extend({
   /* region BUDDIES */
 
   inviteBuddy: function (buddyUsername) {
-    var promise = new Promise(function (resolve, reject) {
-      buddyUsername = buddyUsername.toLowerCase();
-      var indexRef = new Firebase(process.env.FIREBASE_URL).child('username-index').child(buddyUsername).once('value', function (snapshot) {
-        // check if users exists in some global username based index by using "value" check
-        var buddyId = snapshot.val();
+    var promise = new Promise(
+      function (resolve, reject) {
+        buddyUsername = buddyUsername.toLowerCase();
+        var indexRef = new Firebase(process.env.FIREBASE_URL)
+          .child('username-index')
+          .child(buddyUsername)
+          .once(
+            'value',
+            function (snapshot) {
+              // check if users exists in some global username based index by using "value" check
+              var buddyId = snapshot.val();
 
-        // null values mean no user exists for that username, so reject
-        if (buddyId === null) {
-          reject(new Error('User not found!'));
-          return;
-        }
+              // null values mean no user exists for that username, so reject
+              if (buddyId === null) {
+                reject(new Error('User not found!'));
+                return;
+              }
 
-        if (ProfileManager.getInstance().get('id') == buddyId) {
-          reject(new Error('Can\'t add yourself!'));
-          return;
-        }
+              if (ProfileManager.getInstance().get('id') == buddyId) {
+                reject(new Error("Can't add yourself!"));
+                return;
+              }
 
-        if (this.buddiesCollection.get(buddyId)) {
-          reject(new Error('Buddy already in list!'));
-          return;
-        }
+              if (this.buddiesCollection.get(buddyId)) {
+                reject(new Error('Buddy already in list!'));
+                return;
+              }
 
-        var inviteData = {
-          fromUserId: ProfileManager.getInstance().get('id'),
-          fromName: ProfileManager.getInstance().get('username'),
-          sentAt: new Date(),
-        };
+              var inviteData = {
+                fromUserId: ProfileManager.getInstance().get('id'),
+                fromName: ProfileManager.getInstance().get('username'),
+                sentAt: new Date(),
+              };
 
-        var buddyInvites = new Firebase(process.env.FIREBASE_URL + '/chat/users/' + buddyId + '/buddy-invites');
-        var inviteRef = buddyInvites.child(ProfileManager.getInstance().get('id'));
-        inviteRef.set(inviteData);
+              var buddyInvites = new Firebase(
+                process.env.FIREBASE_URL + '/chat/users/' + buddyId + '/buddy-invites',
+              );
+              var inviteRef = buddyInvites.child(ProfileManager.getInstance().get('id'));
+              inviteRef.set(inviteData);
 
-        // analytics call
-        Analytics.track('buddy invite sent', {
-          category: Analytics.EventCategory.Chat,
-        });
+              // analytics call
+              Analytics.track('buddy invite sent', {
+                category: Analytics.EventCategory.Chat,
+              });
 
-        // resolve successfully
-        resolve();
-      }.bind(this));
-    }.bind(this));
+              // resolve successfully
+              resolve();
+            }.bind(this),
+          );
+      }.bind(this),
+    );
 
     return promise;
   },
 
   removeBuddy: function (buddyModel) {
-    var myBuddiesRef = new Firebase(process.env.FIREBASE_URL + '/users/' + ProfileManager.getInstance().get('id') + '/buddies');
+    var myBuddiesRef = new Firebase(
+      process.env.FIREBASE_URL + '/users/' + ProfileManager.getInstance().get('id') + '/buddies',
+    );
     myBuddiesRef.child(buddyModel.userId).remove();
 
-    var theirBuddiesRef = new Firebase(process.env.FIREBASE_URL + '/users/' + buddyModel.userId + '/buddies');
+    var theirBuddiesRef = new Firebase(
+      process.env.FIREBASE_URL + '/users/' + buddyModel.userId + '/buddies',
+    );
     theirBuddiesRef.child(ProfileManager.getInstance().get('id')).remove();
   },
 
   acceptBuddyInvite: function (inviteData) {
     // TODO: this needs to be secured
-    var myBuddiesRef = new Firebase(process.env.FIREBASE_URL + '/users/' + ProfileManager.getInstance().get('id') + '/buddies');
+    var myBuddiesRef = new Firebase(
+      process.env.FIREBASE_URL + '/users/' + ProfileManager.getInstance().get('id') + '/buddies',
+    );
     myBuddiesRef.child(inviteData.fromUserId).set({
       createdAt: Firebase.ServerValue.TIMESTAMP,
     });
 
     // here
-    var theirBuddiesRef = new Firebase(process.env.FIREBASE_URL + '/users/' + inviteData.fromUserId + '/buddies');
+    var theirBuddiesRef = new Firebase(
+      process.env.FIREBASE_URL + '/users/' + inviteData.fromUserId + '/buddies',
+    );
     theirBuddiesRef.child(ProfileManager.getInstance().get('id')).set({
       createdAt: Firebase.ServerValue.TIMESTAMP,
     });
@@ -238,15 +270,25 @@ var ChatManager = Manager.extend({
       });
 
       // listen to changes to the notification, such as knowing that the CTA has been clicked or dismissed
-      this.listenTo(notification, 'cta_accept', function (model) {
-        this.acceptBuddyInvite(model.get('data'));
-        notification.get('firebaseRef').remove();
-        this.stopListening(notification);
-      }, this);
-      this.listenTo(notification, 'dismiss', function (model) {
-        notification.get('firebaseRef').remove();
-        this.stopListening(notification);
-      }, this);
+      this.listenTo(
+        notification,
+        'cta_accept',
+        function (model) {
+          this.acceptBuddyInvite(model.get('data'));
+          notification.get('firebaseRef').remove();
+          this.stopListening(notification);
+        },
+        this,
+      );
+      this.listenTo(
+        notification,
+        'dismiss',
+        function (model) {
+          notification.get('firebaseRef').remove();
+          this.stopListening(notification);
+        },
+        this,
+      );
 
       // show the notification
       NotificationsManager.getInstance().showNotification(notification);
@@ -281,9 +323,11 @@ var ChatManager = Manager.extend({
     // show latest message
     if (messageModel) {
       Logger.module('UI').log('ChatManager.onReceivedMessage', messageModel);
-      var notification = new NotificationModel(_.extend(_.clone(messageModel.attributes), {
-        type: NotificationsManager.NOTIFICATION_BUDDY_MESSAGE,
-      }));
+      var notification = new NotificationModel(
+        _.extend(_.clone(messageModel.attributes), {
+          type: NotificationsManager.NOTIFICATION_BUDDY_MESSAGE,
+        }),
+      );
 
       // show the notification
       NotificationsManager.getInstance().showNotification(notification);
@@ -332,7 +376,7 @@ var ChatManager = Manager.extend({
   },
 
   getConversationId: function (userId1, userId2) {
-    var id = (userId1 < userId2) ? userId1 + ':' + userId2 : userId2 + ':' + userId1;
+    var id = userId1 < userId2 ? userId1 + ':' + userId2 : userId2 + ':' + userId1;
     return id;
   },
 
@@ -412,12 +456,13 @@ var ChatManager = Manager.extend({
 
   startAwayStatusCheck: function () {
     if (!this._setAwayStatus) {
-      this._setAwayStatus = _.debounce(function () {
-        if (this.connected && this.getStatusOnline())
-          this.setStatus(_ChatManager.STATUS_AWAY);
-        else
-          this._setAwayStatus();
-      }.bind(this), 60000);
+      this._setAwayStatus = _.debounce(
+        function () {
+          if (this.connected && this.getStatusOnline()) this.setStatus(_ChatManager.STATUS_AWAY);
+          else this._setAwayStatus();
+        }.bind(this),
+        60000,
+      );
     }
     this._setAwayStatus();
   },
@@ -436,7 +481,6 @@ var ChatManager = Manager.extend({
   },
 
   setRankInStatus: function (rank) {
-    if (this._presenceRef)
-      this._presenceRef.child('rank').set(rank);
+    if (this._presenceRef) this._presenceRef.child('rank').set(rank);
   },
 });

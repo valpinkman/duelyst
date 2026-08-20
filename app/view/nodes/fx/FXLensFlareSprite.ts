@@ -42,12 +42,24 @@ var FXLensFlareSprite = FXSprite.extend({
 
   setOptions(options) {
     this._super(options);
-    if (options.speed != null) { this.setSpeed(options.speed); }
-    if (options.pulseRate != null) { this.setPulseRate(options.pulseRate); }
-    if (options.armLength != null) { this.setArmLength(options.armLength); }
-    if (options.wispSize != null) { this.setWispSize(options.wispSize); }
-    if (options.flareSize != null) { this.setFlareSize(options.flareSize); }
-    if (options.rampThreshold != null) { this.setRampThreshold(options.rampThreshold); }
+    if (options.speed != null) {
+      this.setSpeed(options.speed);
+    }
+    if (options.pulseRate != null) {
+      this.setPulseRate(options.pulseRate);
+    }
+    if (options.armLength != null) {
+      this.setArmLength(options.armLength);
+    }
+    if (options.wispSize != null) {
+      this.setWispSize(options.wispSize);
+    }
+    if (options.flareSize != null) {
+      this.setFlareSize(options.flareSize);
+    }
+    if (options.rampThreshold != null) {
+      this.setRampThreshold(options.rampThreshold);
+    }
   },
 
   setSpeed(speed) {
@@ -71,18 +83,18 @@ var FXLensFlareSprite = FXSprite.extend({
 
   updateTweenAction(value, key) {
     switch (key) {
-    case 'armLength':
-      this.armLength = this._armLengthTarget * value;
-      break;
-    case 'wispSize':
-      this.wispSize = this._wispSizeTarget * value;
-      break;
-    case 'flareSize':
-      this.flareSize = this._flareSizeTarget * value;
-      break;
-    default:
-      FXSprite.prototype.updateTweenAction.call(this, value, key);
-      break;
+      case 'armLength':
+        this.armLength = this._armLengthTarget * value;
+        break;
+      case 'wispSize':
+        this.wispSize = this._wispSizeTarget * value;
+        break;
+      case 'flareSize':
+        this.flareSize = this._flareSizeTarget * value;
+        break;
+      default:
+        FXSprite.prototype.updateTweenAction.call(this, value, key);
+        break;
     }
   },
 });
@@ -90,7 +102,9 @@ var FXLensFlareSprite = FXSprite.extend({
 FXLensFlareSprite.WebGLRenderCmd = function (renderable) {
   FXSprite.WebGLRenderCmd.call(this, renderable);
 };
-const proto = FXLensFlareSprite.WebGLRenderCmd.prototype = Object.create(FXSprite.WebGLRenderCmd.prototype);
+const proto = (FXLensFlareSprite.WebGLRenderCmd.prototype = Object.create(
+  FXSprite.WebGLRenderCmd.prototype,
+));
 proto.constructor = FXLensFlareSprite.WebGLRenderCmd;
 
 proto.rendering = function () {
@@ -103,14 +117,26 @@ proto.rendering = function () {
   const shaderProgram = this._shaderProgram;
   shaderProgram.use();
   shaderProgram._setUniformForMVPMatrixWithMat4(this._stackMatrix);
-  shaderProgram.setUniformLocationWith2f(shaderProgram.loc_texResolution, node._texture.getPixelsWide(), node._texture.getPixelsHigh());
-  shaderProgram.setUniformLocationWith1f(shaderProgram.loc_time, node.getFX().getTime() * node.speed);
+  shaderProgram.setUniformLocationWith2f(
+    shaderProgram.loc_texResolution,
+    node._texture.getPixelsWide(),
+    node._texture.getPixelsHigh(),
+  );
+  shaderProgram.setUniformLocationWith1f(
+    shaderProgram.loc_time,
+    node.getFX().getTime() * node.speed,
+  );
 
-  if (shaderProgram.loc_rampThreshold) shaderProgram.setUniformLocationWith1f(shaderProgram.loc_rampThreshold, node.rampThreshold);
-  if (shaderProgram.loc_pulseRate) shaderProgram.setUniformLocationWith1f(shaderProgram.loc_pulseRate, node.pulseRate);
-  if (shaderProgram.loc_armLength) shaderProgram.setUniformLocationWith1f(shaderProgram.loc_armLength, node.armLength);
-  if (shaderProgram.loc_wispSize) shaderProgram.setUniformLocationWith1f(shaderProgram.loc_wispSize, node.wispSize);
-  if (shaderProgram.loc_flareSize) shaderProgram.setUniformLocationWith1f(shaderProgram.loc_flareSize, node.flareSize);
+  if (shaderProgram.loc_rampThreshold)
+    shaderProgram.setUniformLocationWith1f(shaderProgram.loc_rampThreshold, node.rampThreshold);
+  if (shaderProgram.loc_pulseRate)
+    shaderProgram.setUniformLocationWith1f(shaderProgram.loc_pulseRate, node.pulseRate);
+  if (shaderProgram.loc_armLength)
+    shaderProgram.setUniformLocationWith1f(shaderProgram.loc_armLength, node.armLength);
+  if (shaderProgram.loc_wispSize)
+    shaderProgram.setUniformLocationWith1f(shaderProgram.loc_wispSize, node.wispSize);
+  if (shaderProgram.loc_flareSize)
+    shaderProgram.setUniformLocationWith1f(shaderProgram.loc_flareSize, node.flareSize);
 
   cc.glBindTexture2DN(0, node._texture);
   cc.glBlendFunc(node._blendFunc.src, node._blendFunc.dst);

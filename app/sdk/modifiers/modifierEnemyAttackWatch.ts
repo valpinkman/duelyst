@@ -19,11 +19,13 @@ class ModifierEnemyAttackWatch extends Modifier {
 
   onAction(event) {
     super.onAction(event);
-    const {
-      action,
-    } = event;
+    const { action } = event;
     const source = action.getSource();
-    if (action instanceof AttackAction && (source.getOwner() !== this.getCard().getOwner()) && !action.getIsImplicit()) {
+    if (
+      action instanceof AttackAction &&
+      source.getOwner() !== this.getCard().getOwner() &&
+      !action.getIsImplicit()
+    ) {
       return this.onEnemyAttackWatch(action);
     }
   }

@@ -93,7 +93,9 @@ class CardFactory_ShimzarSet_Faction4 {
       card.manaCost = 5;
       card.rarityId = Rarity.Common;
       card.addKeywordClassToInclude(ModifierStackingShadows);
-      card.setInherentModifiersContextObjects([ModifierOpeningGambitDamageEnemiesNearShadowCreep.createContextObject(2)]);
+      card.setInherentModifiersContextObjects([
+        ModifierOpeningGambitDamageEnemiesNearShadowCreep.createContextObject(2),
+      ]);
     }
 
     if (identifier === Cards.Faction4.Gor) {
@@ -126,7 +128,13 @@ class CardFactory_ShimzarSet_Faction4 {
       card.maxHP = 1;
       card.manaCost = 2;
       card.rarityId = Rarity.Common;
-      card.setInherentModifiersContextObjects([ModifierBattlePet.createContextObject(), ModifierDyingWishSpawnEntityInCorner.createContextObject({ id: Cards.Faction4.Gor }, 'a copy of this minion')]);
+      card.setInherentModifiersContextObjects([
+        ModifierBattlePet.createContextObject(),
+        ModifierDyingWishSpawnEntityInCorner.createContextObject(
+          { id: Cards.Faction4.Gor },
+          'a copy of this minion',
+        ),
+      ]);
     }
 
     if (identifier === Cards.Faction4.Ooz) {
@@ -159,7 +167,10 @@ class CardFactory_ShimzarSet_Faction4 {
       card.maxHP = 3;
       card.manaCost = 2;
       card.rarityId = Rarity.Rare;
-      card.setInherentModifiersContextObjects([ModifierBattlePet.createContextObject(), ModifierTakeDamageWatchSpawnShadowCreep.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierBattlePet.createContextObject(),
+        ModifierTakeDamageWatchSpawnShadowCreep.createContextObject(),
+      ]);
       card.addKeywordClassToInclude(ModifierStackingShadows);
     }
 
@@ -234,12 +245,19 @@ class CardFactory_ShimzarSet_Faction4 {
       card.maxHP = 4;
       card.manaCost = 7;
       card.rarityId = Rarity.Epic;
-      const customContextObject = PlayerModifierManaModifierSingleUse.createCostChangeContextObject(1, CardType.Unit);
+      const customContextObject = PlayerModifierManaModifierSingleUse.createCostChangeContextObject(
+        1,
+        CardType.Unit,
+      );
       customContextObject.durationEndTurn = 1;
       customContextObject.modifiersContextObjects[0].attributeBuffsAbsolute = ['manaCost'];
       customContextObject.modifiersContextObjects[0].attributeBuffsFixed = ['manaCost'];
       card.setInherentModifiersContextObjects([
-        ModifierOpeningGambitApplyPlayerModifiers.createContextObjectToTargetOwnPlayer([customContextObject], false, 'The next minion you summon this turn costs 1'),
+        ModifierOpeningGambitApplyPlayerModifiers.createContextObjectToTargetOwnPlayer(
+          [customContextObject],
+          false,
+          'The next minion you summon this turn costs 1',
+        ),
       ]);
     }
 
@@ -272,7 +290,10 @@ class CardFactory_ShimzarSet_Faction4 {
       card.maxHP = 6;
       card.manaCost = 6;
       card.rarityId = Rarity.Legendary;
-      card.setInherentModifiersContextObjects([ModifierProvoke.createContextObject(), ModifierDyingWishSpawnTileAnywhere.createContextObject({ id: Cards.Tile.Shadow }, 6)]);
+      card.setInherentModifiersContextObjects([
+        ModifierProvoke.createContextObject(),
+        ModifierDyingWishSpawnTileAnywhere.createContextObject({ id: Cards.Tile.Shadow }, 6),
+      ]);
       card.addKeywordClassToInclude(ModifierStackingShadows);
     }
 
@@ -432,10 +453,16 @@ class CardFactory_ShimzarSet_Faction4 {
       card.rarityId = Rarity.Legendary;
       card.durability = 3;
       card.setTargetModifiersContextObjects([
-        ModifierDynamicCountModifySelfByShadowTilesOnBoard.createContextObject(1, 0, i18next.t('modifiers.plus_attack_key', { amount: 1 }), i18next.t('modifiers.faction_4_artifact_ghost_azalea_1'), {
-          name: i18next.t('cards.faction_4_artifact_ghost_azalea_name'),
-          description: i18next.t('cards.faction_4_artifact_ghost_azalea_description'),
-        }),
+        ModifierDynamicCountModifySelfByShadowTilesOnBoard.createContextObject(
+          1,
+          0,
+          i18next.t('modifiers.plus_attack_key', { amount: 1 }),
+          i18next.t('modifiers.faction_4_artifact_ghost_azalea_1'),
+          {
+            name: i18next.t('cards.faction_4_artifact_ghost_azalea_name'),
+            description: i18next.t('cards.faction_4_artifact_ghost_azalea_description'),
+          },
+        ),
       ]);
       card.setFXResource(['FX.Cards.Artifact.GhostAzalea']);
       card.setBaseAnimResource({

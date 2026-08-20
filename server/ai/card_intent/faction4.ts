@@ -210,7 +210,11 @@ F4[Cards.Spell.NetherSummoning] = [
     type: CardIntentType.Summon,
     numRandomTargets: 2,
     amount: 2,
-    targets: CardTargetType.Dead | CardTargetType.DeadUntilLastFriendlyTurn | CardTargetType.Minion | CardTargetType.Friendly,
+    targets:
+      CardTargetType.Dead |
+      CardTargetType.DeadUntilLastFriendlyTurn |
+      CardTargetType.Minion |
+      CardTargetType.Friendly,
   },
 ];
 
@@ -401,7 +405,8 @@ F4[Cards.Spell.VeilOfUnraveling] = [
   {
     type: CardIntentType.Burn,
     amount: 10,
-    targets: CardTargetType.All | CardTargetType.General | CardTargetType.Minion | CardTargetType.Enemy,
+    targets:
+      CardTargetType.All | CardTargetType.General | CardTargetType.Minion | CardTargetType.Enemy,
   },
 ];
 

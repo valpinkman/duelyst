@@ -22,11 +22,26 @@ class ModifierTakeDamageWatchSpawnEntity extends ModifierTakeDamageWatch {
   static modifierName = 'Take Damage Watch';
   static description = 'Whenever this minion takes damage, summon %X nearby';
 
-  static createContextObject(cardDataOrIndexToSpawn, spawnDescription, spawnCount, spawnPattern, spawnSilently, options) {
-    if (spawnDescription == null) { spawnDescription = ''; }
-    if (spawnCount == null) { spawnCount = 1; }
-    if (spawnPattern == null) { spawnPattern = CONFIG.PATTERN_3x3; }
-    if (spawnSilently == null) { spawnSilently = true; }
+  static createContextObject(
+    cardDataOrIndexToSpawn,
+    spawnDescription,
+    spawnCount,
+    spawnPattern,
+    spawnSilently,
+    options,
+  ) {
+    if (spawnDescription == null) {
+      spawnDescription = '';
+    }
+    if (spawnCount == null) {
+      spawnCount = 1;
+    }
+    if (spawnPattern == null) {
+      spawnPattern = CONFIG.PATTERN_3x3;
+    }
+    if (spawnSilently == null) {
+      spawnSilently = true;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.cardDataOrIndexToSpawn = cardDataOrIndexToSpawn;
     contextObject.spawnDescription = spawnDescription;
@@ -48,16 +63,31 @@ class ModifierTakeDamageWatchSpawnEntity extends ModifierTakeDamageWatch {
 
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
       const ownerId = this.getSpawnOwnerId(action);
-      const spawnPositions = UtilsGameSession.getRandomNonConflictingSmartSpawnPositionsForModifier(this, ModifierTakeDamageWatchSpawnEntity);
+      const spawnPositions = UtilsGameSession.getRandomNonConflictingSmartSpawnPositionsForModifier(
+        this,
+        ModifierTakeDamageWatchSpawnEntity,
+      );
       return (() => {
         const result = [];
         for (var spawnPosition of Array.from<any>(spawnPositions)) {
           var spawnAction;
           var cardDataOrIndexToSpawn = this.getCardDataOrIndexToSpawn();
           if (this.spawnSilently) {
-            spawnAction = new PlayCardSilentlyAction(this.getGameSession(), ownerId, spawnPosition.x, spawnPosition.y, cardDataOrIndexToSpawn);
+            spawnAction = new PlayCardSilentlyAction(
+              this.getGameSession(),
+              ownerId,
+              spawnPosition.x,
+              spawnPosition.y,
+              cardDataOrIndexToSpawn,
+            );
           } else {
-            spawnAction = new PlayCardAction(this.getGameSession(), ownerId, spawnPosition.x, spawnPosition.y, cardDataOrIndexToSpawn);
+            spawnAction = new PlayCardAction(
+              this.getGameSession(),
+              ownerId,
+              spawnPosition.x,
+              spawnPosition.y,
+              cardDataOrIndexToSpawn,
+            );
           }
           spawnAction.setSource(this.getCard());
           result.push(this.getGameSession().executeAction(spawnAction));
@@ -76,7 +106,10 @@ class ModifierTakeDamageWatchSpawnEntity extends ModifierTakeDamageWatch {
   }
 }
 ModifierTakeDamageWatchSpawnEntity.prototype.type = 'ModifierTakeDamageWatchSpawnEntity';
-ModifierTakeDamageWatchSpawnEntity.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericSpawn'];
+ModifierTakeDamageWatchSpawnEntity.prototype.fxResource = [
+  'FX.Modifiers.ModifierDyingWish',
+  'FX.Modifiers.ModifierGenericSpawn',
+];
 ModifierTakeDamageWatchSpawnEntity.prototype.cardDataOrIndexToSpawn = null;
 
 module.exports = ModifierTakeDamageWatchSpawnEntity;

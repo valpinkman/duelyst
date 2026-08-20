@@ -52,26 +52,30 @@ const dnsHealthCheck = function () {
     return Promise.resolve({ healthy: true });
   }
   const nodename = `${config.get('env')}-${os.hostname().split('.')[0]}`;
-  return Consul.kv.get(`nodes/${nodename}/dns_name`)
-    .then((dnsName) => new Promise((resolve, reject) => request.get(`https://${dnsName}/health`)
-      .end(function (err, res) {
-        if (err) {
-          return resolve({ dnsName, healthy: false });
-        }
-        if ((res != null) && (res.status === 200)) {
-          return resolve({ dnsName, healthy: true });
-        }
-        return { dnsName, healthy: false };
-      }))).catch((e) => ({
+  return Consul.kv
+    .get(`nodes/${nodename}/dns_name`)
+    .then(
+      (dnsName) =>
+        new Promise((resolve, reject) =>
+          request.get(`https://${dnsName}/health`).end(function (err, res) {
+            if (err) {
+              return resolve({ dnsName, healthy: false });
+            }
+            if (res != null && res.status === 200) {
+              return resolve({ dnsName, healthy: true });
+            }
+            return { dnsName, healthy: false };
+          }),
+        ),
+    )
+    .catch((e) => ({
       healthy: false,
     }));
 };
 
 // create http server and respond to /health requests
 const server = http.createServer(function (req, res) {
-  const {
-    pathname,
-  } = url.parse(req.url);
+  const { pathname } = url.parse(req.url);
   if (pathname === '/health') {
     // Logger.module("GAME SERVER").debug "HTTP Health Ping"
     res.statusCode = 200;
@@ -116,19 +120,20 @@ var gameCount = 0;
 
 // turn times
 const MAX_TURN_TIME = (CONFIG.TURN_DURATION + CONFIG.TURN_DURATION_LATENCY_BUFFER) * 1000.0;
-const MAX_TURN_TIME_INACTIVE = (CONFIG.TURN_DURATION_INACTIVE + CONFIG.TURN_DURATION_LATENCY_BUFFER) * 1000.0;
+const MAX_TURN_TIME_INACTIVE =
+  (CONFIG.TURN_DURATION_INACTIVE + CONFIG.TURN_DURATION_LATENCY_BUFFER) * 1000.0;
 
 const savePlayerCount = (playerCount) => Redis.hset(`servers:${serverId}`, 'players', playerCount);
 
 const saveGameCount = (gameCount) => Redis.hset(`servers:${serverId}`, 'games', gameCount);
 
 // health ping on socket namespace /health
-const healthPing = io
-  .of('/health')
-  .on('connection', (socket) => socket.on('ping', function () {
+const healthPing = io.of('/health').on('connection', (socket) =>
+  socket.on('ping', function () {
     Logger.module('GAME SERVER').debug('socket.io Health Ping');
     return socket.emit('pong');
-  }));
+  }),
+);
 
 io.sockets.on('connection', function (socket) {
   // Socket is now authenticated, continue to bind other handlers
@@ -138,8 +143,7 @@ io.sockets.on('connection', function (socket) {
   savePlayerCount(++playerCount);
 
   // Send message to user that connection is succesful
-  socket.emit('connected',
-    { message: 'Successfully connected to server' });
+  socket.emit('connected', { message: 'Successfully connected to server' });
 
   // Bind socket event handlers
   socket.on(EVENTS.join_game, onGamePlayerJoin);
@@ -151,16 +155,18 @@ io.sockets.on('connection', function (socket) {
 
 const getConnectedSpectatorsDataForGamePlayer = function (gameId, playerId) {
   const spectators = [];
-  __guard__(io.sockets.adapter.rooms.get(`spectate-${gameId}`), (x) => x.forEach(function (socketId) {
-    const socket = io.sockets.sockets.get(socketId);
-    if (socket.playerId === playerId) {
-      return spectators.push({
-        id: socket.spectatorId,
-        playerId: socket.playerId,
-        username: (socket.spectateToken != null ? socket.spectateToken.u : undefined),
-      });
-    }
-  }));
+  __guard__(io.sockets.adapter.rooms.get(`spectate-${gameId}`), (x) =>
+    x.forEach(function (socketId) {
+      const socket = io.sockets.sockets.get(socketId);
+      if (socket.playerId === playerId) {
+        return spectators.push({
+          id: socket.spectatorId,
+          playerId: socket.playerId,
+          username: socket.spectateToken != null ? socket.spectateToken.u : undefined,
+        });
+      }
+    }),
+  );
   return spectators;
 };
 
@@ -172,36 +178,48 @@ const getConnectedSpectatorsDataForGamePlayer = function (gameId, playerId) {
 var onGamePlayerJoin = function (requestData) {
   const _self = this;
   // request parameters
-  const {
-    gameId,
-  } = requestData;
-  const {
-    playerId,
-  } = requestData;
+  const { gameId } = requestData;
+  const { playerId } = requestData;
 
-  Logger.module('IO').log(`[G:${gameId}]`, `join_game -> player:${requestData.playerId} is joining game:${requestData.gameId}`.cyan);
+  Logger.module('IO').log(
+    `[G:${gameId}]`,
+    `join_game -> player:${requestData.playerId} is joining game:${requestData.gameId}`.cyan,
+  );
 
   // you must have a playerId
   if (!playerId) {
-    Logger.module('IO').log(`[G:${gameId}]`, `join_game -> REFUSING JOIN: A player ${playerId.blue} is not valid`.red);
-    this.emit('join_game_response',
-      { error: 'Your player id seems to be blank (has your login expired?), so we can\'t join you to the game.' });
+    Logger.module('IO').log(
+      `[G:${gameId}]`,
+      `join_game -> REFUSING JOIN: A player ${playerId.blue} is not valid`.red,
+    );
+    this.emit('join_game_response', {
+      error:
+        "Your player id seems to be blank (has your login expired?), so we can't join you to the game.",
+    });
     return;
   }
 
   // must have a gameId
   if (!gameId) {
-    Logger.module('IO').log(`[G:${gameId}]`, `join_game -> REFUSING JOIN: A gameId ${gameId.blue} is not valid`.red);
-    this.emit('join_game_response',
-      { error: 'Invalid Game ID.' });
+    Logger.module('IO').log(
+      `[G:${gameId}]`,
+      `join_game -> REFUSING JOIN: A gameId ${gameId.blue} is not valid`.red,
+    );
+    this.emit('join_game_response', { error: 'Invalid Game ID.' });
     return;
   }
 
   // if someone is trying to join a game they don't belong to as a player they are not authenticated as
   if (this.decodedToken.d.id !== playerId) {
-    Logger.module('IO').log(`[G:${gameId}]`, `join_game -> REFUSING JOIN: A player ${this.decodedToken.d.id.blue} is attempting to join a game as ${playerId.blue}`.red);
-    this.emit('join_game_response',
-      { error: 'Your player id does not match the one you requested to join a game with. Are you sure you\'re joining the right game?' });
+    Logger.module('IO').log(
+      `[G:${gameId}]`,
+      `join_game -> REFUSING JOIN: A player ${this.decodedToken.d.id.blue} is attempting to join a game as ${playerId.blue}`
+        .red,
+    );
+    this.emit('join_game_response', {
+      error:
+        "Your player id does not match the one you requested to join a game with. Are you sure you're joining the right game?",
+    });
     return;
   }
 
@@ -209,19 +227,25 @@ var onGamePlayerJoin = function (requestData) {
   playerLeaveGameIfNeeded(this);
 
   // if this client already exists in this game, disconnect duplicate client
-  __guard__(io.sockets.adapter.rooms.get(gameId), (x) => x.forEach(function (socketId) {
-    const socket = io.sockets.sockets.get(socketId);
-    if ((socket != null) && (socket.playerId === playerId)) {
-      let silent;
-      Logger.module('IO').log(`[G:${gameId}]`, `join_game -> detected duplicate connection to ${gameId} GameSession for ${playerId.blue}. Disconnecting duplicate...`.cyan);
-      return playerLeaveGameIfNeeded(socket, (silent = true));
-    }
-  }));
+  __guard__(io.sockets.adapter.rooms.get(gameId), (x) =>
+    x.forEach(function (socketId) {
+      const socket = io.sockets.sockets.get(socketId);
+      if (socket != null && socket.playerId === playerId) {
+        let silent;
+        Logger.module('IO').log(
+          `[G:${gameId}]`,
+          `join_game -> detected duplicate connection to ${gameId} GameSession for ${playerId.blue}. Disconnecting duplicate...`
+            .cyan,
+        );
+        return playerLeaveGameIfNeeded(socket, (silent = true));
+      }
+    }),
+  );
 
   // initialize a server-side game session and join it
   return initGameSession(gameId)
     .then(function ([gameSession]) {
-    // Logger.module("IO").debug "[G:#{gameId}]", "join_game -> players in data: ", gameSession.players
+      // Logger.module("IO").debug "[G:#{gameId}]", "join_game -> players in data: ", gameSession.players
 
       // player
       const player = _.find(gameSession.players, (p) => p.playerId === playerId);
@@ -229,35 +253,51 @@ var onGamePlayerJoin = function (requestData) {
       // get the opponent based on the game session data
       const opponent = _.find(gameSession.players, (p) => p.playerId !== playerId);
 
-      Logger.module('IO').log(`[G:${gameId}]`, `join_game -> Got ${gameId} GameSession data ${playerId.blue}.`.cyan);
+      Logger.module('IO').log(
+        `[G:${gameId}]`,
+        `join_game -> Got ${gameId} GameSession data ${playerId.blue}.`.cyan,
+      );
 
-      if (!player) { // oops looks like this player does not exist in the requested game
-      // let the socket know we had an error
-        _self.emit('join_game_response',
-          { error: 'could not join game because your player id could not be found' });
+      if (!player) {
+        // oops looks like this player does not exist in the requested game
+        // let the socket know we had an error
+        _self.emit('join_game_response', {
+          error: 'could not join game because your player id could not be found',
+        });
 
         // destroy the game data loaded so far if the opponent can't be defined and no one else is connected
-        Logger.module('IO').log(`[G:${gameId}]`, 'onGameJoin -> DESTROYING local game cache due to join error'.red);
+        Logger.module('IO').log(
+          `[G:${gameId}]`,
+          'onGameJoin -> DESTROYING local game cache due to join error'.red,
+        );
         destroyGameSessionIfNoConnectionsLeft(gameId);
 
         // stop any further processing
-      } else if ((opponent == null)) { // oops, looks like we can'f find an opponent in the game session?
-        Logger.module('IO').log(`[G:${gameId}]`, `join_game -> game ${gameId} ERROR: could not find opponent for ${playerId.blue}.`.red);
+      } else if (opponent == null) {
+        // oops, looks like we can'f find an opponent in the game session?
+        Logger.module('IO').log(
+          `[G:${gameId}]`,
+          `join_game -> game ${gameId} ERROR: could not find opponent for ${playerId.blue}.`.red,
+        );
 
         // let the socket know we had an error
-        _self.emit('join_game_response',
-          { error: 'could not join game because the opponent could not be found' });
+        _self.emit('join_game_response', {
+          error: 'could not join game because the opponent could not be found',
+        });
 
         // destroy the game data loaded so far if the opponent can't be defined and no one else is connected
-        Logger.module('IO').log(`[G:${gameId}]`, 'onGameJoin -> DESTROYING local game cache due to join error'.red);
+        Logger.module('IO').log(
+          `[G:${gameId}]`,
+          'onGameJoin -> DESTROYING local game cache due to join error'.red,
+        );
         destroyGameSessionIfNoConnectionsLeft(gameId);
 
         // stop any further processing
       } else {
-      // rollback if it is this player's followup
-      // this can happen if a player reconnects without properly disconnecting
+        // rollback if it is this player's followup
+        // this can happen if a player reconnects without properly disconnecting
         let gameSessionData;
-        if (gameSession.getIsFollowupActive() && (gameSession.getCurrentPlayerId() === playerId)) {
+        if (gameSession.getIsFollowupActive() && gameSession.getCurrentPlayerId() === playerId) {
           gameSession.executeAction(gameSession.actionRollbackSnapshot());
         }
 
@@ -271,20 +311,23 @@ var onGamePlayerJoin = function (requestData) {
         // update user count for game room
         games[gameId].connectedPlayers.push(playerId);
 
-        Logger.module('IO').log(`[G:${gameId}]`, `join_game -> Game ${gameId} connected players so far: ${games[gameId].connectedPlayers.length}.`);
+        Logger.module('IO').log(
+          `[G:${gameId}]`,
+          `join_game -> Game ${gameId} connected players so far: ${games[gameId].connectedPlayers.length}.`,
+        );
 
         // if only one player is in so far, start the disconnection timer
         if (games[gameId].connectedPlayers.length === 1) {
-        // start disconnected player timeout for game
+          // start disconnected player timeout for game
           startDisconnectedPlayerTimeout(gameId, opponent.playerId);
         } else if (games[gameId].connectedPlayers.length === 2) {
-        // clear timeout when we get two players
+          // clear timeout when we get two players
           clearDisconnectedPlayerTimeout(gameId);
         }
 
         // prepare and scrub game session data for this player
         // if a followup is active and it isn't this player's followup, send them the rollback snapshot
-        if (gameSession.getIsFollowupActive() && (gameSession.getCurrentPlayerId() !== playerId)) {
+        if (gameSession.getIsFollowupActive() && gameSession.getCurrentPlayerId() !== playerId) {
           gameSessionData = JSON.parse(gameSession.getRollbackSnapshotData());
         } else {
           gameSessionData = JSON.parse(gameSession.serializeToJSON(gameSession));
@@ -297,8 +340,7 @@ var onGamePlayerJoin = function (requestData) {
           gameSessionData,
           connectedPlayers: games[gameId].connectedPlayers,
           connectedSpectators: getConnectedSpectatorsDataForGamePlayer(gameId, playerId),
-        },
-        );
+        });
 
         // broadcast join to any other connected players
         _self.broadcast.to(gameId).emit('player_joined', playerId);
@@ -308,11 +350,16 @@ var onGamePlayerJoin = function (requestData) {
           return ai_updateTurn(gameId);
         }
       }
-    }).catch(function (e) {
-      Logger.module('IO').error(`[G:${gameId}]`, `join_game -> player:${playerId} failed to join game. ERROR: ${e.message}`.red);
+    })
+    .catch(function (e) {
+      Logger.module('IO').error(
+        `[G:${gameId}]`,
+        `join_game -> player:${playerId} failed to join game. ERROR: ${e.message}`.red,
+      );
       // if we didn't join a game, broadcast a failure
-      return _self.emit('join_game_response',
-        { error: 'Could not join game: ' + (e != null ? e.message : undefined) });
+      return _self.emit('join_game_response', {
+        error: 'Could not join game: ' + (e != null ? e.message : undefined),
+      });
     });
 };
 
@@ -325,28 +372,32 @@ var onGameSpectatorJoin = function (requestData) {
   const _self = this;
   // request parameters
   // TODO : Sanitize these parameters to prevent crash if gameId = null
-  const {
-    gameId,
-  } = requestData;
-  const {
-    spectatorId,
-  } = requestData;
-  const {
-    playerId,
-  } = requestData;
+  const { gameId } = requestData;
+  const { spectatorId } = requestData;
+  const { playerId } = requestData;
   let spectateToken = null;
 
   // verify - synchronous
   try {
-    spectateToken = jwt.verify(requestData.spectateToken, config.get('firebase.legacyToken'), { algorithms: ['HS256'] });
+    spectateToken = jwt.verify(requestData.spectateToken, config.get('firebase.legacyToken'), {
+      algorithms: ['HS256'],
+    });
   } catch (error) {
-    Logger.module('IO').error(`[G:${gameId}]`, `spectate_game -> ERROR decoding spectate token: ${(error != null ? error.message : undefined)}`.red);
+    Logger.module('IO').error(
+      `[G:${gameId}]`,
+      `spectate_game -> ERROR decoding spectate token: ${error != null ? error.message : undefined}`
+        .red,
+    );
   }
 
-  if (!spectateToken || ((spectateToken.b != null ? spectateToken.b.length : undefined) === 0)) {
-    Logger.module('IO').log(`[G:${gameId}]`, `spectate_game -> REFUSING JOIN: A specate token ${spectateToken} is not valid`.red);
-    this.emit('spectate_game_response',
-      { error: 'Your spectate token is invalid, so we can\'t join you to the game.' });
+  if (!spectateToken || (spectateToken.b != null ? spectateToken.b.length : undefined) === 0) {
+    Logger.module('IO').log(
+      `[G:${gameId}]`,
+      `spectate_game -> REFUSING JOIN: A specate token ${spectateToken} is not valid`.red,
+    );
+    this.emit('spectate_game_response', {
+      error: "Your spectate token is invalid, so we can't join you to the game.",
+    });
     return;
   }
 
@@ -354,78 +405,106 @@ var onGameSpectatorJoin = function (requestData) {
   Logger.module('IO').log(`[G:${gameId}]`, 'spectate_game -> playerId: ', playerId);
 
   if (!_.contains(spectateToken.b, playerId)) {
-    Logger.module('IO').log(`[G:${gameId}]`, 'spectate_game -> REFUSING JOIN: You do not have permission to specate this game'.red);
-    this.emit('spectate_game_response',
-      { error: 'You do not have permission to specate this game.' });
+    Logger.module('IO').log(
+      `[G:${gameId}]`,
+      'spectate_game -> REFUSING JOIN: You do not have permission to specate this game'.red,
+    );
+    this.emit('spectate_game_response', {
+      error: 'You do not have permission to specate this game.',
+    });
     return;
   }
 
   // must have a spectatorId
   if (!spectatorId) {
-    Logger.module('IO').log(`[G:${gameId}]`, `spectate_game -> REFUSING JOIN: A spectator ${spectatorId.blue} is not valid`.red);
-    this.emit('spectate_game_response',
-      { error: 'Your login ID is blank (expired?), so we can\'t join you to the game.' });
+    Logger.module('IO').log(
+      `[G:${gameId}]`,
+      `spectate_game -> REFUSING JOIN: A spectator ${spectatorId.blue} is not valid`.red,
+    );
+    this.emit('spectate_game_response', {
+      error: "Your login ID is blank (expired?), so we can't join you to the game.",
+    });
     return;
   }
 
   // must have a playerId
   if (!playerId) {
-    Logger.module('IO').log(`[G:${gameId}]`, `spectate_game -> REFUSING JOIN: A player ${playerId.blue} is not valid`.red);
-    this.emit('spectate_game_response',
-      { error: 'Invalid player ID.' });
+    Logger.module('IO').log(
+      `[G:${gameId}]`,
+      `spectate_game -> REFUSING JOIN: A player ${playerId.blue} is not valid`.red,
+    );
+    this.emit('spectate_game_response', { error: 'Invalid player ID.' });
     return;
   }
 
   // must have a gameId
   if (!gameId) {
-    Logger.module('IO').log(`[G:${gameId}]`, `spectate_game -> REFUSING JOIN: A gameId ${gameId.blue} is not valid`.red);
-    this.emit('spectate_game_response',
-      { error: 'Invalid Game ID.' });
+    Logger.module('IO').log(
+      `[G:${gameId}]`,
+      `spectate_game -> REFUSING JOIN: A gameId ${gameId.blue} is not valid`.red,
+    );
+    this.emit('spectate_game_response', { error: 'Invalid Game ID.' });
     return;
   }
 
   // if someone is trying to join a game they don't belong to as a player they are not authenticated as
   if (this.decodedToken.d.id !== spectatorId) {
-    Logger.module('IO').log(`[G:${gameId}]`, `spectate_game -> REFUSING JOIN: A player ${this.decodedToken.d.id.blue} is attempting to join a game as ${playerId.blue}`.red);
-    this.emit('spectate_game_response',
-      { error: 'Your login ID does not match the one you requested to spectate the game with.' });
+    Logger.module('IO').log(
+      `[G:${gameId}]`,
+      `spectate_game -> REFUSING JOIN: A player ${this.decodedToken.d.id.blue} is attempting to join a game as ${playerId.blue}`
+        .red,
+    );
+    this.emit('spectate_game_response', {
+      error: 'Your login ID does not match the one you requested to spectate the game with.',
+    });
     return;
   }
 
-  Logger.module('IO').log(`[G:${gameId}]`, `spectate_game -> spectator:${spectatorId} is joining game:${gameId}`.cyan);
+  Logger.module('IO').log(
+    `[G:${gameId}]`,
+    `spectate_game -> spectator:${spectatorId} is joining game:${gameId}`.cyan,
+  );
 
   // if a client is already in another game, leave it
   spectatorLeaveGameIfNeeded(this);
 
   if ((games[gameId] != null ? games[gameId].connectedSpectators.length : undefined) >= 10) {
     // max out at 10 spectators
-    this.emit('spectate_game_response',
-      { error: 'Maximum number of spectators already watching.' });
+    this.emit('spectate_game_response', {
+      error: 'Maximum number of spectators already watching.',
+    });
     return;
   }
 
   // initialize a server-side game session and join it
   return initSpectatorGameSession(gameId)
     .then(function (spectatorGameSession) {
-    // for spectators, use the delayed in-memory game session
+      // for spectators, use the delayed in-memory game session
       const gameSession = spectatorGameSession;
 
-      Logger.module('IO').log(`[G:${gameId}]`, `spectate_game -> Got ${gameId} GameSession data.`.cyan);
+      Logger.module('IO').log(
+        `[G:${gameId}]`,
+        `spectate_game -> Got ${gameId} GameSession data.`.cyan,
+      );
       const player = _.find(gameSession.players, (p) => p.playerId === playerId);
       const opponent = _.find(gameSession.players, (p) => p.playerId !== playerId);
 
       if (!player) {
-      // let the socket know we had an error
-        _self.emit('spectate_game_response',
-          { error: 'could not join game because the player id you requested could not be found' });
+        // let the socket know we had an error
+        _self.emit('spectate_game_response', {
+          error: 'could not join game because the player id you requested could not be found',
+        });
 
         // destroy the game data loaded so far if the opponent can't be defined and no one else is connected
-        Logger.module('IO').log(`[G:${gameId}]`, 'onGameSpectatorJoin -> DESTROYING local game cache due to join error'.red);
+        Logger.module('IO').log(
+          `[G:${gameId}]`,
+          'onGameSpectatorJoin -> DESTROYING local game cache due to join error'.red,
+        );
         destroyGameSessionIfNoConnectionsLeft(gameId);
 
         // stop any further processing
       } else {
-      // set some parameters for the socket
+        // set some parameters for the socket
         let gameSessionData;
         _self.gameId = gameId;
         _self.spectatorId = spectatorId;
@@ -440,7 +519,7 @@ var onGameSpectatorJoin = function (requestData) {
 
         // prepare and scrub game session data for this player
         // if a followup is active and it isn't this player's followup, send them the rollback snapshot
-        if (gameSession.getIsFollowupActive() && (gameSession.getCurrentPlayerId() !== playerId)) {
+        if (gameSession.getIsFollowupActive() && gameSession.getCurrentPlayerId() !== playerId) {
           gameSessionData = JSON.parse(gameSession.getRollbackSnapshotData());
         } else {
           gameSessionData = JSON.parse(gameSession.serializeToJSON(gameSession));
@@ -462,8 +541,7 @@ var onGameSpectatorJoin = function (requestData) {
         _self.emit('spectate_game_response', {
           message: 'successfully joined game',
           gameSessionData,
-        },
-        );
+        });
 
         // broadcast to the game room that a spectator has joined
         return _self.broadcast.to(gameId).emit('spectator_joined', {
@@ -472,10 +550,10 @@ var onGameSpectatorJoin = function (requestData) {
           username: spectateToken.u,
         });
       }
-    }).catch(function (e) {
-    // if we didn't join a game, broadcast a failure
-      return _self.emit('spectate_game_response',
-        { error: `could not join game: ${e.message}` });
+    })
+    .catch(function (e) {
+      // if we didn't join a game, broadcast a failure
+      return _self.emit('spectate_game_response', { error: `could not join game: ${e.message}` });
     });
 };
 
@@ -486,10 +564,16 @@ var onGameSpectatorJoin = function (requestData) {
  */
 var onGameLeave = function (requestData) {
   if (this.spectatorId) {
-    Logger.module('IO').log(`[G:${this.gameId}]`, `leave_game -> spectator ${this.spectatorId} leaving ${this.gameId}`);
+    Logger.module('IO').log(
+      `[G:${this.gameId}]`,
+      `leave_game -> spectator ${this.spectatorId} leaving ${this.gameId}`,
+    );
     return spectatorLeaveGameIfNeeded(this);
   } else {
-    Logger.module('IO').log(`[G:${this.gameId}]`, `leave_game -> player ${this.playerId} leaving ${this.gameId}`);
+    Logger.module('IO').log(
+      `[G:${this.gameId}]`,
+      `leave_game -> player ${this.playerId} leaving ${this.gameId}`,
+    );
     return playerLeaveGameIfNeeded(this);
   }
 };
@@ -502,7 +586,11 @@ var onGameLeave = function (requestData) {
 var onGameEvent = function (eventData) {
   // if for some reason spectator sockets start broadcasting game events
   if (this.spectatorId) {
-    Logger.module('IO').log(`[G:${this.gameId}]`, `onGameEvent :: ERROR: spectator sockets can't submit game events. (type: ${eventData.type})`.red);
+    Logger.module('IO').log(
+      `[G:${this.gameId}]`,
+      `onGameEvent :: ERROR: spectator sockets can't submit game events. (type: ${eventData.type})`
+        .red,
+    );
     return;
   }
 
@@ -512,8 +600,7 @@ var onGameEvent = function (eventData) {
     this.emit(EVENTS.network_game_error, {
       code: 500,
       message: 'could not broadcast game event because you are not currently in a game',
-    },
-    );
+    });
 
     return;
   }
@@ -525,16 +612,17 @@ var onGameEvent = function (eventData) {
     // Logger.module("IO").log "[G:#{@.gameId}]", "game_step -> #{JSON.stringify(eventData.step)}".green
     // Logger.module("IO").log "[G:#{@.gameId}]", "game_step -> #{eventData.step?.playerId} #{eventData.step?.action?.type}".green
 
-    const player = _.find(gameSession.players, (p) => p.playerId === (eventData.step != null ? eventData.step.playerId : undefined));
+    const player = _.find(
+      gameSession.players,
+      (p) => p.playerId === (eventData.step != null ? eventData.step.playerId : undefined),
+    );
     if (player != null) {
       player.setLastActionTakenAt(Date.now());
     }
 
     try {
       const step = gameSession.deserializeStepFromFirebase(eventData.step);
-      const {
-        action,
-      } = step;
+      const { action } = step;
       if (action != null) {
         // clear out any implicit actions sent over the network and re-execute this as a fresh explicit action on the server
         // the reason is that we want to re-generate and re-validate all the game logic that happens as a result of this FIRST explicit action in the step
@@ -544,7 +632,10 @@ var onGameEvent = function (eventData) {
         return gameSession.executeAction(action);
       }
     } catch (error) {
-      Logger.module('IO').log(`[G:${this.gameId}]`, `onGameStep:: error: ${JSON.stringify(error.message)}`.red);
+      Logger.module('IO').log(
+        `[G:${this.gameId}]`,
+        `onGameStep:: error: ${JSON.stringify(error.message)}`.red,
+      );
       Logger.module('IO').log(`[G:${this.gameId}]`, `onGameStep:: error stack: ${error.stack}`.red);
 
       // delete but don't destroy game
@@ -570,28 +661,38 @@ var onGameDisconnect = function () {
     return spectatorLeaveGameIfNeeded(this);
   } else {
     try {
-      __guard__(io.sockets.adapter.rooms.get(this.gameId), (x) => x.forEach(function (socketId) {
-        const socket = io.sockets.sockets.get(socketId);
-        if (socket.playerId === this.playerId) {
-          Logger.module('IO').log(`onGameDisconnect:: looks like the player ${this.playerId} we are trying to disconnect is still in the game ${this.gameId} room. ABORTING`.red);
-        }
-      }));
+      __guard__(io.sockets.adapter.rooms.get(this.gameId), (x) =>
+        x.forEach(function (socketId) {
+          const socket = io.sockets.sockets.get(socketId);
+          if (socket.playerId === this.playerId) {
+            Logger.module('IO').log(
+              `onGameDisconnect:: looks like the player ${this.playerId} we are trying to disconnect is still in the game ${this.gameId} room. ABORTING`
+                .red,
+            );
+          }
+        }),
+      );
 
       for (var clientId in io.sockets.sockets) {
         var socket = io.sockets.sockets[clientId];
-        if ((socket.playerId === this.playerId) && !socket.spectatorId) {
-          Logger.module('IO').log(`onGameDisconnect:: looks like the player ${this.playerId} that allegedly disconnected is still alive and well.`.red);
+        if (socket.playerId === this.playerId && !socket.spectatorId) {
+          Logger.module('IO').log(
+            `onGameDisconnect:: looks like the player ${this.playerId} that allegedly disconnected is still alive and well.`
+              .red,
+          );
           return;
         }
       }
     } catch (error) {
-      Logger.module('IO').log(`onGameDisconnect:: Error ${(error != null ? error.message : undefined)}.`.red);
+      Logger.module('IO').log(
+        `onGameDisconnect:: Error ${error != null ? error.message : undefined}.`.red,
+      );
     }
 
     // if we are in a buffering state
     // and the disconnecting player is in the middle of a followup
     const gs = games[this.gameId] != null ? games[this.gameId].session : undefined;
-    if ((gs != null) && gs.getIsBufferingEvents() && (gs.getCurrentPlayerId() === this.playerId)) {
+    if (gs != null && gs.getIsBufferingEvents() && gs.getCurrentPlayerId() === this.playerId) {
       // execute a rollback to reset server state
       // but do not send this action to the still connected player
       // because they do not care about rollbacks for the other player
@@ -614,18 +715,19 @@ var onGameDisconnect = function () {
  * @param {Boolean} [silent=false] whether to disconnect silently, as in the case of duplicate connections for same player
  */
 var playerLeaveGameIfNeeded = function (socket, silent?) {
-  if (silent == null) { silent = false; }
+  if (silent == null) {
+    silent = false;
+  }
   if (socket != null) {
-    const {
-      gameId,
-    } = socket;
-    const {
-      playerId,
-    } = socket;
+    const { gameId } = socket;
+    const { playerId } = socket;
 
     // if a player is in a game
-    if ((gameId != null) && (playerId != null)) {
-      Logger.module('...').log(`[G:${gameId}]`, `playerLeaveGame -> ${playerId} has left game ${gameId}`.red);
+    if (gameId != null && playerId != null) {
+      Logger.module('...').log(
+        `[G:${gameId}]`,
+        `playerLeaveGame -> ${playerId} has left game ${gameId}`.red,
+      );
 
       if (!silent) {
         // broadcast that player left
@@ -651,7 +753,7 @@ var playerLeaveGameIfNeeded = function (socket, silent?) {
       }
 
       // finally clear the existing gameId
-      return socket.gameId = null;
+      return (socket.gameId = null);
     }
   }
 };
@@ -664,25 +766,37 @@ var playerLeaveGameIfNeeded = function (socket, silent?) {
 var spectatorLeaveGameIfNeeded = function (socket) {
   // if a client is already in another game
   if (socket.gameId) {
-    Logger.module('...').debug(`[G:${socket.gameId}]`, `spectatorLeaveGameIfNeeded -> ${socket.spectatorId} leaving game ${socket.gameId}.`);
+    Logger.module('...').debug(
+      `[G:${socket.gameId}]`,
+      `spectatorLeaveGameIfNeeded -> ${socket.spectatorId} leaving game ${socket.gameId}.`,
+    );
 
     // broadcast that you left
     socket.broadcast.to(socket.gameId).emit('spectator_left', {
       id: socket.spectatorId,
       playerId: socket.playerId,
-      username: (socket.spectateToken != null ? socket.spectateToken.u : undefined),
+      username: socket.spectateToken != null ? socket.spectateToken.u : undefined,
     });
 
     // leave specator game room
     socket.leave(`spectate-${socket.gameId}`);
 
-    Logger.module('...').debug(`[G:${socket.gameId}]`, `spectatorLeaveGameIfNeeded -> ${socket.spectatorId} left room for game ${socket.gameId}.`);
+    Logger.module('...').debug(
+      `[G:${socket.gameId}]`,
+      `spectatorLeaveGameIfNeeded -> ${socket.spectatorId} left room for game ${socket.gameId}.`,
+    );
 
     // update spectator count for game room
     if (games[socket.gameId]) {
-      games[socket.gameId].connectedSpectators = _.without(games[socket.gameId].connectedSpectators, socket.spectatorId);
+      games[socket.gameId].connectedSpectators = _.without(
+        games[socket.gameId].connectedSpectators,
+        socket.spectatorId,
+      );
 
-      Logger.module('...').debug(`[G:${socket.gameId}]`, `spectatorLeaveGameIfNeeded -> ${socket.spectatorId} removed from list of spectators ${socket.gameId}.`);
+      Logger.module('...').debug(
+        `[G:${socket.gameId}]`,
+        `spectatorLeaveGameIfNeeded -> ${socket.spectatorId} removed from list of spectators ${socket.gameId}.`,
+      );
 
       // if no spectators left, stop the delayed game interval and destroy spectator delayed game session
       tearDownSpectateSystemsIfNoSpectatorsLeft(socket.gameId);
@@ -691,11 +805,18 @@ var spectatorLeaveGameIfNeeded = function (socket) {
       destroyGameSessionIfNoConnectionsLeft(socket.gameId, true);
     }
 
-    const remainingSpectators = __guard__(games[socket.gameId] != null ? games[socket.gameId].connectedSpectators : undefined, (x) => x.length) || 0;
-    Logger.module('...').log(`[G:${socket.gameId}]`, `spectatorLeaveGameIfNeeded -> ${socket.spectatorId} has left game ${socket.gameId}. remaining spectators ${remainingSpectators}`);
+    const remainingSpectators =
+      __guard__(
+        games[socket.gameId] != null ? games[socket.gameId].connectedSpectators : undefined,
+        (x) => x.length,
+      ) || 0;
+    Logger.module('...').log(
+      `[G:${socket.gameId}]`,
+      `spectatorLeaveGameIfNeeded -> ${socket.spectatorId} has left game ${socket.gameId}. remaining spectators ${remainingSpectators}`,
+    );
 
     // finally clear the existing gameId
-    return socket.gameId = null;
+    return (socket.gameId = null);
   }
 };
 
@@ -706,30 +827,60 @@ var spectatorLeaveGameIfNeeded = function (socket) {
  * @param  {Boolean}  persist    Do we need to save/archive this game?
  */
 var destroyGameSessionIfNoConnectionsLeft = function (gameId, persist?) {
-  if (persist == null) { persist = false; }
-  if ((games[gameId].connectedPlayers.length === 1) && (games[gameId].connectedSpectators.length === 0)) {
+  if (persist == null) {
+    persist = false;
+  }
+  if (
+    games[gameId].connectedPlayers.length === 1 &&
+    games[gameId].connectedSpectators.length === 0
+  ) {
     clearDisconnectedPlayerTimeout(gameId);
     stopTurnTimer(gameId);
     tearDownSpectateSystemsIfNoSpectatorsLeft(gameId);
-    Logger.module('...').log(`[G:${gameId}]`, 'destroyGameSessionIfNoConnectionsLeft() -> no players left DESTROYING local game cache'.red);
+    Logger.module('...').log(
+      `[G:${gameId}]`,
+      'destroyGameSessionIfNoConnectionsLeft() -> no players left DESTROYING local game cache'.red,
+    );
     unsubscribeFromGameSessionEvents(gameId);
     ai_terminate(gameId);
 
     // TEMP: a way to upload unfinished game data to AWS S3 Archive. For example: errored out games.
-    if (persist && (__guard__(__guard__(games != null ? games[gameId] : undefined, (x1) => x1.session), (x) => x.status) !== SDK.GameStatus.over)) {
+    if (
+      persist &&
+      __guard__(
+        __guard__(games != null ? games[gameId] : undefined, (x1) => x1.session),
+        (x) => x.status,
+      ) !== SDK.GameStatus.over
+    ) {
       const data = games[gameId].session.serializeToJSON(games[gameId].session);
       const mouseAndUIEventsData = JSON.stringify(games[gameId].mouseAndUIEvents);
       Promise.all([
         GameManager.saveGameSession(gameId, data),
         GameManager.saveGameMouseUIData(gameId, mouseAndUIEventsData),
       ])
-        .then((results) => Logger.module('...').log(`[G:${gameId}]`, `destroyGameSessionIfNoConnectionsLeft -> unfinished Game Archived to S3: ${results[1]}`.green)).catch((error) => Logger.module('...').log(`[G:${gameId}]`, `destroyGameSessionIfNoConnectionsLeft -> ERROR: failed to archive unfinished game to S3 due to error ${error.message}`.red));
+        .then((results) =>
+          Logger.module('...').log(
+            `[G:${gameId}]`,
+            `destroyGameSessionIfNoConnectionsLeft -> unfinished Game Archived to S3: ${results[1]}`
+              .green,
+          ),
+        )
+        .catch((error) =>
+          Logger.module('...').log(
+            `[G:${gameId}]`,
+            `destroyGameSessionIfNoConnectionsLeft -> ERROR: failed to archive unfinished game to S3 due to error ${error.message}`
+              .red,
+          ),
+        );
     }
 
     delete games[gameId];
     return saveGameCount(--gameCount);
   } else {
-    return Logger.module('...').debug(`[G:${gameId}]`, `destroyGameSessionIfNoConnectionsLeft() -> players left: ${games[gameId].connectedPlayers.length} spectators left: ${games[gameId].connectedSpectators.length}`);
+    return Logger.module('...').debug(
+      `[G:${gameId}]`,
+      `destroyGameSessionIfNoConnectionsLeft() -> players left: ${games[gameId].connectedPlayers.length} spectators left: ${games[gameId].connectedSpectators.length}`,
+    );
   }
 };
 
@@ -741,12 +892,15 @@ var destroyGameSessionIfNoConnectionsLeft = function (gameId, persist?) {
 var tearDownSpectateSystemsIfNoSpectatorsLeft = function (gameId) {
   // if no spectators left, stop the delayed game interval and destroy spectator delayed game session
   if ((games[gameId] != null ? games[gameId].connectedSpectators.length : undefined) === 0) {
-    Logger.module('IO').debug(`[G:${gameId}]`, 'tearDownSpectateSystemsIfNoSpectatorsLeft() -> no spectators left, stopping spectate systems');
+    Logger.module('IO').debug(
+      `[G:${gameId}]`,
+      'tearDownSpectateSystemsIfNoSpectatorsLeft() -> no spectators left, stopping spectate systems',
+    );
     stopSpectatorDelayedGameInterval(gameId);
     games[gameId].spectatorDelayedGameSession = null;
     games[gameId].spectateIsRunning = false;
     games[gameId].spectatorOpponentEventDataBuffer.length = 0;
-    return games[gameId].spectatorGameEventBuffer.length = 0;
+    return (games[gameId].spectatorGameEventBuffer.length = 0);
   }
 };
 
@@ -756,9 +910,12 @@ var tearDownSpectateSystemsIfNoSpectatorsLeft = function (gameId) {
  * @param  {String}  gameId      The ID of the game to clear disconnected timeout for.
  */
 var clearDisconnectedPlayerTimeout = function (gameId) {
-  Logger.module('IO').log(`[G:${gameId}]`, `clearDisconnectedPlayerTimeout:: for game: ${gameId}`.yellow);
+  Logger.module('IO').log(
+    `[G:${gameId}]`,
+    `clearDisconnectedPlayerTimeout:: for game: ${gameId}`.yellow,
+  );
   clearTimeout(games[gameId] != null ? games[gameId].disconnectedPlayerTimeout : undefined);
-  return (games[gameId] != null ? games[gameId].disconnectedPlayerTimeout = null : undefined);
+  return games[gameId] != null ? (games[gameId].disconnectedPlayerTimeout = null) : undefined;
 };
 
 /*
@@ -771,10 +928,17 @@ var startDisconnectedPlayerTimeout = function (gameId, playerId) {
   if ((games[gameId] != null ? games[gameId].disconnectedPlayerTimeout : undefined) != null) {
     clearDisconnectedPlayerTimeout(gameId);
   }
-  Logger.module('IO').log(`[G:${gameId}]`, `startDisconnectedPlayerTimeout:: for ${playerId} in game: ${gameId}`.yellow);
+  Logger.module('IO').log(
+    `[G:${gameId}]`,
+    `startDisconnectedPlayerTimeout:: for ${playerId} in game: ${gameId}`.yellow,
+  );
 
-  return games[gameId] != null ? games[gameId].disconnectedPlayerTimeout = setTimeout(() => onDisconnectedPlayerTimeout(gameId, playerId),
-    60000) : undefined;
+  return games[gameId] != null
+    ? (games[gameId].disconnectedPlayerTimeout = setTimeout(
+        () => onDisconnectedPlayerTimeout(gameId, playerId),
+        60000,
+      ))
+    : undefined;
 };
 
 /*
@@ -784,19 +948,32 @@ var startDisconnectedPlayerTimeout = function (gameId, playerId) {
  * @param  {String}  playerId    The player ID who is resigning.
  */
 var onDisconnectedPlayerTimeout = function (gameId, playerId) {
-  Logger.module('IO').log(`[G:${gameId}]`, `onDisconnectedPlayerTimeout:: ${playerId} for game: ${gameId}`);
+  Logger.module('IO').log(
+    `[G:${gameId}]`,
+    `onDisconnectedPlayerTimeout:: ${playerId} for game: ${gameId}`,
+  );
 
-  __guard__(io.sockets.adapter.rooms.get(gameId), (x) => x.forEach(function (socketId) {
-    const socket = io.sockets.sockets.get(socketId);
-    if (socket.playerId === playerId) {
-      Logger.module('IO').log(`[G:${gameId}]`, `onDisconnectedPlayerTimeout:: looks like the player ${playerId} we are trying to dis-connect is still in the game ${gameId} room. ABORTING`.red);
-    }
-  }));
+  __guard__(io.sockets.adapter.rooms.get(gameId), (x) =>
+    x.forEach(function (socketId) {
+      const socket = io.sockets.sockets.get(socketId);
+      if (socket.playerId === playerId) {
+        Logger.module('IO').log(
+          `[G:${gameId}]`,
+          `onDisconnectedPlayerTimeout:: looks like the player ${playerId} we are trying to dis-connect is still in the game ${gameId} room. ABORTING`
+            .red,
+        );
+      }
+    }),
+  );
 
   for (var clientId in io.sockets.sockets) {
     var socket = io.sockets.sockets[clientId];
-    if ((socket.playerId === playerId) && !socket.spectatorId) {
-      Logger.module('IO').log(`[G:${gameId}]`, `onDisconnectedPlayerTimeout:: looks like the player ${playerId} we are trying to disconnect is still connected but not in the game ${gameId} room.`.red);
+    if (socket.playerId === playerId && !socket.spectatorId) {
+      Logger.module('IO').log(
+        `[G:${gameId}]`,
+        `onDisconnectedPlayerTimeout:: looks like the player ${playerId} we are trying to disconnect is still connected but not in the game ${gameId} room.`
+          .red,
+      );
       return;
     }
   }
@@ -805,10 +982,17 @@ var onDisconnectedPlayerTimeout = function (gameId, playerId) {
   const gs = games[gameId] != null ? games[gameId].session : undefined;
 
   // looks like we timed out for a game that's since ended
-  if (!gs || ((gs != null ? gs.status : undefined) === SDK.GameStatus.over)) {
-    Logger.module('IO').log(`[G:${gameId}]`, `onDisconnectedPlayerTimeout:: ${playerId} timed out for FINISHED or NULL game: ${gameId}`.yellow);
+  if (!gs || (gs != null ? gs.status : undefined) === SDK.GameStatus.over) {
+    Logger.module('IO').log(
+      `[G:${gameId}]`,
+      `onDisconnectedPlayerTimeout:: ${playerId} timed out for FINISHED or NULL game: ${gameId}`
+        .yellow,
+    );
   } else {
-    Logger.module('IO').log(`[G:${gameId}]`, `onDisconnectedPlayerTimeout:: ${playerId} auto-resigning game: ${gameId}`.yellow);
+    Logger.module('IO').log(
+      `[G:${gameId}]`,
+      `onDisconnectedPlayerTimeout:: ${playerId} auto-resigning game: ${gameId}`.yellow,
+    );
 
     // resign the player
     const player = gs.getPlayerById(playerId);
@@ -827,14 +1011,14 @@ const restartTurnTimer = function (gameId) {
 
   const game = games[gameId];
   if (game.session != null) {
-    game.turnTimerStartedAt = (game.turnTimeTickAt = Date.now());
+    game.turnTimerStartedAt = game.turnTimeTickAt = Date.now();
     if (game.session.isBossBattle()) {
       // boss battles turns have infinite time
       // so we'll just tick once and wait
       return onGameTimeTick(gameId);
     } else {
       // set turn timer on a 1 second interval
-      return game.turnTimer = setInterval((() => onGameTimeTick(gameId)), 1000);
+      return (game.turnTimer = setInterval(() => onGameTimeTick(gameId), 1000));
     }
   }
 };
@@ -846,9 +1030,9 @@ const restartTurnTimer = function (gameId) {
  */
 var stopTurnTimer = function (gameId) {
   const game = games[gameId];
-  if ((game != null) && (game.turnTimer != null)) {
+  if (game != null && game.turnTimer != null) {
     clearInterval(game.turnTimer);
-    return game.turnTimer = null;
+    return (game.turnTimer = null);
   }
 };
 
@@ -869,7 +1053,7 @@ var onGameTimeTick = function (gameId) {
     let player = gameSession.getCurrentPlayer();
 
     // if we're past the 2nd turn, we can start checking backwards to see how long the PREVIOUS turn for this player took
-    if (player && (gameSession.getTurns().length > 2)) {
+    if (player && gameSession.getTurns().length > 2) {
       // find the current player's previous turn
       const allTurns = gameSession.getTurns();
       let playersPreviousTurn = null;
@@ -884,7 +1068,10 @@ var onGameTimeTick = function (gameId) {
       // Logger.module("IO").log "[G:#{gameId}]", "onGameTimeTick:: last action at #{player.getLastActionTakenAt()} / last turn delta #{playersPreviousTurn?.createdAt - player.getLastActionTakenAt()}".red
 
       // if this player's previous action was on a turn older than the last one
-      if (playersPreviousTurn && ((playersPreviousTurn.createdAt - player.getLastActionTakenAt()) > 0)) {
+      if (
+        playersPreviousTurn &&
+        playersPreviousTurn.createdAt - player.getLastActionTakenAt() > 0
+      ) {
         // you're only allowed 15 seconds + 3 second buffer that clients don't see
         allowed_turn_time = MAX_TURN_TIME_INACTIVE;
       }
@@ -894,7 +1081,10 @@ var onGameTimeTick = function (gameId) {
     game.turnTimeTickAt = Date.now();
     const delta_turn_time_tick = game.turnTimeTickAt - lastTurnTimeTickAt;
     const delta_since_timer_began = game.turnTimeTickAt - game.turnTimerStartedAt;
-    game.turnTimeRemaining = Math.max(0.0, (allowed_turn_time - delta_since_timer_began) + game.turnTimeBonus);
+    game.turnTimeRemaining = Math.max(
+      0.0,
+      allowed_turn_time - delta_since_timer_began + game.turnTimeBonus,
+    );
     game.turnTimeBonus = Math.max(0.0, game.turnTimeBonus - delta_turn_time_tick);
     // Logger.module("IO").log "[G:#{gameId}]", "onGameTimeTick:: delta #{delta_turn_time_tick/1000}, #{game.turnTimeRemaining/1000} time remaining, #{game.turnTimeBonus/1000} bonus remaining"
 
@@ -911,7 +1101,11 @@ var onGameTimeTick = function (gameId) {
           const result = [];
           for (player of Array.from<any>(gameSession.players)) {
             if (!player.getHasStartingHand()) {
-              Logger.module('IO').log(`[G:${gameId}]`, `onGameTimeTick:: mulligan timer up, submitting player ${player.playerId.blue} mulligan`.red);
+              Logger.module('IO').log(
+                `[G:${gameId}]`,
+                `onGameTimeTick:: mulligan timer up, submitting player ${player.playerId.blue} mulligan`
+                  .red,
+              );
               var drawStartingHandAction = player.actionDrawStartingHand([]);
               result.push(gameSession.executeAction(drawStartingHandAction));
             } else {
@@ -922,15 +1116,23 @@ var onGameTimeTick = function (gameId) {
         })();
       } else if (gameSession.status === SDK.GameStatus.active) {
         // force end turn
-        Logger.module('IO').log(`[G:${gameId}]`, `onGameTimeTick:: turn timer up, submitting player ${gameSession.getCurrentPlayerId().blue} turn`.red);
+        Logger.module('IO').log(
+          `[G:${gameId}]`,
+          `onGameTimeTick:: turn timer up, submitting player ${gameSession.getCurrentPlayerId().blue} turn`
+            .red,
+        );
         const endTurnAction = gameSession.actionEndTurn();
         return gameSession.executeAction(endTurnAction);
       }
     } else {
       // if the turn timer has not expired, just send the time tick over to all clients
-      const totalStepCount = gameSession.getStepCount() - games[gameId].opponentEventDataBuffer.length;
+      const totalStepCount =
+        gameSession.getStepCount() - games[gameId].opponentEventDataBuffer.length;
       return emitGameEvent(null, gameId, {
-        type: EVENTS.turn_time, time: turnTimeRemainingInSeconds, timestamp: Date.now(), stepCount: totalStepCount,
+        type: EVENTS.turn_time,
+        time: turnTimeRemainingInSeconds,
+        timestamp: Date.now(),
+        stepCount: totalStepCount,
       });
     }
   }
@@ -945,7 +1147,10 @@ const restartSpectatorDelayedGameInterval = function (gameId) {
   stopSpectatorDelayedGameInterval(gameId);
   Logger.module('IO').debug(`[G:${gameId}]`, 'restartSpectatorDelayedGameInterval');
   if (games[gameId].spectateIsDelayed) {
-    return games[gameId].spectatorDelayTimer = setInterval((() => onSpectatorDelayedGameTick(gameId)), 500);
+    return (games[gameId].spectatorDelayTimer = setInterval(
+      () => onSpectatorDelayedGameTick(gameId),
+      500,
+    ));
   }
 };
 
@@ -966,7 +1171,9 @@ var stopSpectatorDelayedGameInterval = function (gameId) {
  */
 var onSpectatorDelayedGameTick = function (gameId) {
   if (!games[gameId]) {
-    Logger.module('Game').debug(`onSpectatorDelayedGameTick() -> game [G:${gameId}] seems to be destroyed. Stopping ticks.`);
+    Logger.module('Game').debug(
+      `onSpectatorDelayedGameTick() -> game [G:${gameId}] seems to be destroyed. Stopping ticks.`,
+    );
     stopSpectatorDelayedGameInterval(gameId);
     return;
   }
@@ -993,31 +1200,50 @@ var flushSpectatorNetworkEventBuffer = function (gameId) {
     // loop through the actions in order
     for (let i = 0; i < games[gameId].spectatorGameEventBuffer.length; i++) {
       var eventData = games[gameId].spectatorGameEventBuffer[i];
-      var timestamp = eventData.timestamp || (eventData.step != null ? eventData.step.timestamp : undefined);
+      var timestamp =
+        eventData.timestamp || (eventData.step != null ? eventData.step.timestamp : undefined);
       // if we are not delaying events or if the event time exceeds the delay show it to spectators
-      if (!games[gameId].spectateIsDelayed || (timestamp && ((moment().utc().valueOf() - timestamp) > games[gameId].spectateDelay))) {
+      if (
+        !games[gameId].spectateIsDelayed ||
+        (timestamp && moment().utc().valueOf() - timestamp > games[gameId].spectateDelay)
+      ) {
         // null out the event that is about to be broadcast so it can be compacted later
         games[gameId].spectatorGameEventBuffer[i] = null;
         if (eventData.step) {
           var step;
-          Logger.module('IO').debug(`[G:${gameId}]`, `flushSpectatorNetworkEventBuffer() -> broadcasting spectator step ${eventData.type} - ${__guard__(eventData.step != null ? eventData.step.action : undefined, (x) => x.type)}`);
+          Logger.module('IO').debug(
+            `[G:${gameId}]`,
+            `flushSpectatorNetworkEventBuffer() -> broadcasting spectator step ${eventData.type} - ${__guard__(eventData.step != null ? eventData.step.action : undefined, (x) => x.type)}`,
+          );
 
           if (games[gameId].spectateIsDelayed) {
-            step = games[gameId].spectatorDelayedGameSession.deserializeStepFromFirebase(eventData.step);
+            step = games[gameId].spectatorDelayedGameSession.deserializeStepFromFirebase(
+              eventData.step,
+            );
             games[gameId].spectatorDelayedGameSession.executeAuthoritativeStep(step);
           }
 
           // send events over to spectators of current player
-          __guard__(io.sockets.adapter.rooms.get(`spectate-${gameId}`), (x1) => x1.forEach(function (socketId) {
-            Logger.module('IO').debug(`[G:${gameId}]`, `flushSpectatorNetworkEventBuffer() -> transmitting step ${__guard__(eventData.step != null ? eventData.step.index : undefined, (x2) => x2.toString().yellow)} with action ${(eventData.step.action != null ? eventData.step.action.name : undefined)} to player's spectators`);
-            const socket = io.sockets.sockets.get(socketId);
-            if ((socket != null) && (socket.playerId === eventData.step.playerId)) {
-              // scrub the action data. this should not be skipped since some actions include entire deck that needs to be scrubbed because we don't want spectators deck sniping
-              const eventDataCopy = JSON.parse(JSON.stringify(eventData));
-              UtilsGameSession.scrubSensitiveActionData(games[gameId].session, eventDataCopy.step.action, socket.playerId, true);
-              return socket.emit(EVENTS.network_game_event, eventDataCopy);
-            }
-          }));
+          __guard__(io.sockets.adapter.rooms.get(`spectate-${gameId}`), (x1) =>
+            x1.forEach(function (socketId) {
+              Logger.module('IO').debug(
+                `[G:${gameId}]`,
+                `flushSpectatorNetworkEventBuffer() -> transmitting step ${__guard__(eventData.step != null ? eventData.step.index : undefined, (x2) => x2.toString().yellow)} with action ${eventData.step.action != null ? eventData.step.action.name : undefined} to player's spectators`,
+              );
+              const socket = io.sockets.sockets.get(socketId);
+              if (socket != null && socket.playerId === eventData.step.playerId) {
+                // scrub the action data. this should not be skipped since some actions include entire deck that needs to be scrubbed because we don't want spectators deck sniping
+                const eventDataCopy = JSON.parse(JSON.stringify(eventData));
+                UtilsGameSession.scrubSensitiveActionData(
+                  games[gameId].session,
+                  eventDataCopy.step.action,
+                  socket.playerId,
+                  true,
+                );
+                return socket.emit(EVENTS.network_game_event, eventDataCopy);
+              }
+            }),
+          );
 
           // skip processing anything for the opponent if this is a RollbackToSnapshotAction since only the sender cares about that one
           if (eventData.step.action.type === SDK.RollbackToSnapshotAction.type) {
@@ -1028,28 +1254,49 @@ var flushSpectatorNetworkEventBuffer = function (gameId) {
           games[gameId].spectatorOpponentEventDataBuffer.push(eventData);
 
           // if we are delayed then check the delayed game session for if we are buffering, otherwise use the primary
-          var isSpectatorGameSessionBufferingFollowups = (games[gameId].spectateIsDelayed && (games[gameId].spectatorDelayedGameSession != null ? games[gameId].spectatorDelayedGameSession.getIsBufferingEvents() : undefined)) || games[gameId].session.getIsBufferingEvents();
+          var isSpectatorGameSessionBufferingFollowups =
+            (games[gameId].spectateIsDelayed &&
+              (games[gameId].spectatorDelayedGameSession != null
+                ? games[gameId].spectatorDelayedGameSession.getIsBufferingEvents()
+                : undefined)) ||
+            games[gameId].session.getIsBufferingEvents();
 
-          Logger.module('IO').debug(`[G:${gameId}]`, `flushSpectatorNetworkEventBuffer() -> opponentEventDataBuffer at ${games[gameId].spectatorOpponentEventDataBuffer.length} ... buffering: ${isSpectatorGameSessionBufferingFollowups}`);
+          Logger.module('IO').debug(
+            `[G:${gameId}]`,
+            `flushSpectatorNetworkEventBuffer() -> opponentEventDataBuffer at ${games[gameId].spectatorOpponentEventDataBuffer.length} ... buffering: ${isSpectatorGameSessionBufferingFollowups}`,
+          );
 
           // if we have anything in the buffer and we are currently not buffering, flush the buffer over to your opponent's spectators
-          if ((games[gameId].spectatorOpponentEventDataBuffer.length > 0) && !isSpectatorGameSessionBufferingFollowups) {
+          if (
+            games[gameId].spectatorOpponentEventDataBuffer.length > 0 &&
+            !isSpectatorGameSessionBufferingFollowups
+          ) {
             // copy buffer and reset
             var opponentEventDataBuffer = games[gameId].spectatorOpponentEventDataBuffer.slice(0);
             games[gameId].spectatorOpponentEventDataBuffer.length = 0;
 
             // broadcast whatever's in the buffer to the opponent
             _.each(opponentEventDataBuffer, function (eventData) {
-              Logger.module('IO').debug(`[G:${gameId}]`, `flushSpectatorNetworkEventBuffer() -> transmitting step ${__guard__(eventData.step != null ? eventData.step.index : undefined, (x2) => x2.toString().yellow)} with action ${(eventData.step.action != null ? eventData.step.action.name : undefined)} to opponent's spectators`);
-              return __guard__(io.sockets.adapter.rooms.get(`spectate-${gameId}`), (x3) => x3.forEach(function (socketId) {
-                const socket = io.sockets.sockets.get(socketId);
-                if ((socket != null) && (socket.playerId !== eventData.step.playerId)) {
-                  const eventDataCopy = JSON.parse(JSON.stringify(eventData));
-                  // always scrub steps for sensitive data from opponent's spectator perspective
-                  UtilsGameSession.scrubSensitiveActionData(games[gameId].session, eventDataCopy.step.action, socket.playerId, true);
-                  return socket.emit(EVENTS.network_game_event, eventDataCopy);
-                }
-              }));
+              Logger.module('IO').debug(
+                `[G:${gameId}]`,
+                `flushSpectatorNetworkEventBuffer() -> transmitting step ${__guard__(eventData.step != null ? eventData.step.index : undefined, (x2) => x2.toString().yellow)} with action ${eventData.step.action != null ? eventData.step.action.name : undefined} to opponent's spectators`,
+              );
+              return __guard__(io.sockets.adapter.rooms.get(`spectate-${gameId}`), (x3) =>
+                x3.forEach(function (socketId) {
+                  const socket = io.sockets.sockets.get(socketId);
+                  if (socket != null && socket.playerId !== eventData.step.playerId) {
+                    const eventDataCopy = JSON.parse(JSON.stringify(eventData));
+                    // always scrub steps for sensitive data from opponent's spectator perspective
+                    UtilsGameSession.scrubSensitiveActionData(
+                      games[gameId].session,
+                      eventDataCopy.step.action,
+                      socket.playerId,
+                      true,
+                    );
+                    return socket.emit(EVENTS.network_game_event, eventDataCopy);
+                  }
+                }),
+              );
             });
           }
         } else {
@@ -1061,13 +1308,17 @@ var flushSpectatorNetworkEventBuffer = function (gameId) {
 };
 
 var _logSpectatorTickInfo = _.debounce(function (gameId) {
-  Logger.module('Game').debug(`onSpectatorDelayedGameTick() ... ${__guard__(games[gameId] != null ? games[gameId].spectatorGameEventBuffer : undefined, (x) => x.length)} buffered`);
+  Logger.module('Game').debug(
+    `onSpectatorDelayedGameTick() ... ${__guard__(games[gameId] != null ? games[gameId].spectatorGameEventBuffer : undefined, (x) => x.length)} buffered`,
+  );
   if (games[gameId] != null ? games[gameId].spectatorGameEventBuffer : undefined) {
-    return Array.from<any>((games[gameId] != null ? games[gameId].spectatorGameEventBuffer : undefined)).map((eventData, i) =>
-      Logger.module('Game').debug('onSpectatorDelayedGameTick() eventData: ', eventData));
+    return Array.from<any>(
+      games[gameId] != null ? games[gameId].spectatorGameEventBuffer : undefined,
+    ).map((eventData, i) =>
+      Logger.module('Game').debug('onSpectatorDelayedGameTick() eventData: ', eventData),
+    );
   }
-},
-1000);
+}, 1000);
 
 /**
  * Emit/Broadcast game event to appropriate destination.
@@ -1079,24 +1330,40 @@ var _logSpectatorTickInfo = _.debounce(function (gameId) {
 var emitGameEvent = function (fromSocket, gameId, eventData) {
   if (games[gameId] != null) {
     if (eventData.type === EVENTS.step) {
-      Logger.module('IO').log(`[G:${gameId}]`, `emitGameEvent -> step ${__guard__(eventData.step != null ? eventData.step.index : undefined, (x) => x.toString().yellow)} with timestamp ${(eventData.step != null ? eventData.step.timestamp : undefined)} and action ${__guard__(eventData.step != null ? eventData.step.action : undefined, (x1) => x1.type)}`);
+      Logger.module('IO').log(
+        `[G:${gameId}]`,
+        `emitGameEvent -> step ${__guard__(eventData.step != null ? eventData.step.index : undefined, (x) => x.toString().yellow)} with timestamp ${eventData.step != null ? eventData.step.timestamp : undefined} and action ${__guard__(eventData.step != null ? eventData.step.action : undefined, (x1) => x1.type)}`,
+      );
       // only broadcast valid steps
-      if ((eventData.step != null) && (eventData.step.timestamp != null) && (eventData.step.action != null)) {
+      if (
+        eventData.step != null &&
+        eventData.step.timestamp != null &&
+        eventData.step.action != null
+      ) {
         // send the step to the owner
-        __guard__(io.sockets.adapter.rooms.get(gameId), (x2) => x2.forEach(function (socketId) {
-          const socket = io.sockets.sockets.get(socketId);
-          if ((socket != null) && (socket.playerId === eventData.step.playerId)) {
-            const eventDataCopy = JSON.parse(JSON.stringify(eventData));
-            // always scrub steps for sensitive data from player perspective
-            UtilsGameSession.scrubSensitiveActionData(games[gameId].session, eventDataCopy.step.action, socket.playerId);
-            Logger.module('IO').log(`[G:${gameId}]`, `emitGameEvent -> transmitting step ${__guard__(eventData.step != null ? eventData.step.index : undefined, (x3) => x3.toString().yellow)} with action ${(eventData.step.action != null ? eventData.step.action.type : undefined)} to origin`);
-            return socket.emit(EVENTS.network_game_event, eventDataCopy);
-          }
-          // NOTE: don't BREAK here because there is a potential case that during reconnection 3 sockets are connected:
-          // 2 for this current reconnecting player and 1 for the opponent
-          // breaking here would essentially result in only the DEAD socket in process of disconnecting receiving the event
-          // break
-        }));
+        __guard__(io.sockets.adapter.rooms.get(gameId), (x2) =>
+          x2.forEach(function (socketId) {
+            const socket = io.sockets.sockets.get(socketId);
+            if (socket != null && socket.playerId === eventData.step.playerId) {
+              const eventDataCopy = JSON.parse(JSON.stringify(eventData));
+              // always scrub steps for sensitive data from player perspective
+              UtilsGameSession.scrubSensitiveActionData(
+                games[gameId].session,
+                eventDataCopy.step.action,
+                socket.playerId,
+              );
+              Logger.module('IO').log(
+                `[G:${gameId}]`,
+                `emitGameEvent -> transmitting step ${__guard__(eventData.step != null ? eventData.step.index : undefined, (x3) => x3.toString().yellow)} with action ${eventData.step.action != null ? eventData.step.action.type : undefined} to origin`,
+              );
+              return socket.emit(EVENTS.network_game_event, eventDataCopy);
+            }
+            // NOTE: don't BREAK here because there is a potential case that during reconnection 3 sockets are connected:
+            // 2 for this current reconnecting player and 1 for the opponent
+            // breaking here would essentially result in only the DEAD socket in process of disconnecting receiving the event
+            // break
+          }),
+        );
 
         // buffer actions for the opponent other than a rollback action since that should clear the buffer during followups and there's no need to be sent to the opponent
         // essentially: skip processing anything for the opponent if this is a RollbackToSnapshotAction since only the sender cares about that one
@@ -1105,45 +1372,70 @@ var emitGameEvent = function (fromSocket, gameId, eventData) {
           games[gameId].opponentEventDataBuffer.push(eventData);
 
           // if we have anything in the buffer and we are currently not buffering, flush the buffer over to your opponent
-          if ((games[gameId].opponentEventDataBuffer.length > 0) && !games[gameId].session.getIsBufferingEvents()) {
+          if (
+            games[gameId].opponentEventDataBuffer.length > 0 &&
+            !games[gameId].session.getIsBufferingEvents()
+          ) {
             // copy buffer and reset
             const opponentEventDataBuffer = games[gameId].opponentEventDataBuffer.slice(0);
             games[gameId].opponentEventDataBuffer.length = 0;
 
             // broadcast whatever's in the buffer to the opponent
-            _.each(opponentEventDataBuffer, (eventData) => __guard__(io.sockets.adapter.rooms.get(gameId), (x3) => x3.forEach(function (socketId) {
-              const socket = io.sockets.sockets.get(socketId);
-              if ((socket != null) && (socket.playerId !== eventData.step.playerId)) {
-                const eventDataCopy = JSON.parse(JSON.stringify(eventData));
-                // always scrub steps for sensitive data from player perspective
-                UtilsGameSession.scrubSensitiveActionData(games[gameId].session, eventDataCopy.step.action, socket.playerId);
-                Logger.module('IO').log(`[G:${gameId}]`, `emitGameEvent -> transmitting step ${__guard__(eventData.step != null ? eventData.step.index : undefined, (x4) => x4.toString().yellow)} with action ${(eventData.step.action != null ? eventData.step.action.type : undefined)} to opponent`);
-                return socket.emit(EVENTS.network_game_event, eventDataCopy);
-              }
-            })));
+            _.each(opponentEventDataBuffer, (eventData) =>
+              __guard__(io.sockets.adapter.rooms.get(gameId), (x3) =>
+                x3.forEach(function (socketId) {
+                  const socket = io.sockets.sockets.get(socketId);
+                  if (socket != null && socket.playerId !== eventData.step.playerId) {
+                    const eventDataCopy = JSON.parse(JSON.stringify(eventData));
+                    // always scrub steps for sensitive data from player perspective
+                    UtilsGameSession.scrubSensitiveActionData(
+                      games[gameId].session,
+                      eventDataCopy.step.action,
+                      socket.playerId,
+                    );
+                    Logger.module('IO').log(
+                      `[G:${gameId}]`,
+                      `emitGameEvent -> transmitting step ${__guard__(eventData.step != null ? eventData.step.index : undefined, (x4) => x4.toString().yellow)} with action ${eventData.step.action != null ? eventData.step.action.type : undefined} to opponent`,
+                    );
+                    return socket.emit(EVENTS.network_game_event, eventDataCopy);
+                  }
+                }),
+              ),
+            );
           }
         }
       }
     } else if (eventData.type === EVENTS.invalid_action) {
       // send the invalid action notification to the owner
-      __guard__(io.sockets.adapter.rooms.get(gameId), (x3) => x3.forEach(function (socketId) {
-        const socket = io.sockets.sockets.get(socketId);
-        if ((socket != null) && (socket.playerId === eventData.playerId)) {
-          const eventDataCopy = JSON.parse(JSON.stringify(eventData));
-          return socket.emit(EVENTS.network_game_event, eventDataCopy);
-        }
-        // NOTE: don't BREAK here because there is a potential case that during reconnection 3 sockets are connected:
-        // 2 for this current reconnecting player and 1 for the opponent
-        // breaking here would essentially result in only the DEAD socket in process of disconnecting receiving the event
-      }));
+      __guard__(io.sockets.adapter.rooms.get(gameId), (x3) =>
+        x3.forEach(function (socketId) {
+          const socket = io.sockets.sockets.get(socketId);
+          if (socket != null && socket.playerId === eventData.playerId) {
+            const eventDataCopy = JSON.parse(JSON.stringify(eventData));
+            return socket.emit(EVENTS.network_game_event, eventDataCopy);
+          }
+          // NOTE: don't BREAK here because there is a potential case that during reconnection 3 sockets are connected:
+          // 2 for this current reconnecting player and 1 for the opponent
+          // breaking here would essentially result in only the DEAD socket in process of disconnecting receiving the event
+        }),
+      );
     } else {
-      if ((eventData.type === EVENTS.network_game_hover) || (eventData.type === EVENTS.network_game_select) || (eventData.type === EVENTS.network_game_mouse_clear) || (eventData.type === EVENTS.show_emote)) {
+      if (
+        eventData.type === EVENTS.network_game_hover ||
+        eventData.type === EVENTS.network_game_select ||
+        eventData.type === EVENTS.network_game_mouse_clear ||
+        eventData.type === EVENTS.show_emote
+      ) {
         // save the player id of this event
-        if (eventData.playerId == null) { eventData.playerId = fromSocket != null ? fromSocket.playerId : undefined; }
+        if (eventData.playerId == null) {
+          eventData.playerId = fromSocket != null ? fromSocket.playerId : undefined;
+        }
         eventData.timestamp = moment().utc().valueOf();
 
         // mouse events, emotes, etc should be saved and persisted to S3 for replays
-        if (games[gameId].mouseAndUIEvents == null) { games[gameId].mouseAndUIEvents = []; }
+        if (games[gameId].mouseAndUIEvents == null) {
+          games[gameId].mouseAndUIEvents = [];
+        }
         games[gameId].mouseAndUIEvents.push(eventData);
       }
 
@@ -1201,16 +1493,16 @@ var initGameSession = function (gameId, onComplete) {
   }
 
   // return game session from redis
-  return games[gameId].loadingPromise = Promise.all([
+  return (games[gameId].loadingPromise = Promise.all([
     GameManager.loadGameSession(gameId),
     GameManager.loadGameMouseUIData(gameId),
   ])
-    .then(([gameData, mouseData]) => [
-      JSON.parse(gameData),
-      JSON.parse(mouseData),
-    ])
+    .then(([gameData, mouseData]) => [JSON.parse(gameData), JSON.parse(mouseData)])
     .then(function ([gameDataIn, mouseData]) {
-      Logger.module('IO').log(`[G:${gameId}]`, `initGameSession -> loaded game data for game:${gameId}`);
+      Logger.module('IO').log(
+        `[G:${gameId}]`,
+        `initGameSession -> loaded game data for game:${gameId}`,
+      );
 
       // deserialize game session
       const gameSession = SDK.GameSession.create();
@@ -1242,15 +1534,17 @@ var initGameSession = function (gameId, onComplete) {
       // start the turn timer
       restartTurnTimer(gameId);
 
-      return Promise.resolve([
-        games[gameId].session,
-      ]);
-    }).catch(function (error) {
-      Logger.module('IO').log(`[G:${gameId}]`, `initGameSession:: error: ${JSON.stringify(error.message)}`.red);
+      return Promise.resolve([games[gameId].session]);
+    })
+    .catch(function (error) {
+      Logger.module('IO').log(
+        `[G:${gameId}]`,
+        `initGameSession:: error: ${JSON.stringify(error.message)}`.red,
+      );
       Logger.module('IO').log(`[G:${gameId}]`, `initGameSession:: error stack: ${error.stack}`.red);
 
       throw error;
-    });
+    }));
 };
 
 /*
@@ -1264,40 +1558,45 @@ var initSpectatorGameSession = function (gameId) {
     return Promise.reject(new Error('This game is no longer in progress'));
   }
 
-  return Promise.resolve()
-    .then(function () {
+  return Promise.resolve().then(function () {
     // if we're not already running spectate systems
-      if (!games[gameId].spectateIsRunning) {
+    if (!games[gameId].spectateIsRunning) {
       // mark that we are running spectate systems
-        games[gameId].spectateIsRunning = true;
-        // if we're in the middle of a followup and we have some buffered events, we need to copy them over to the spectate buffer
-        if (games[gameId].session.getIsBufferingEvents() && (games[gameId].opponentEventDataBuffer.length > 0)) {
-          games[gameId].spectatorOpponentEventDataBuffer.length = 0;
-          for (var eventData of Array.from<any>(games[gameId].opponentEventDataBuffer)) {
-            var eventDataCopy = JSON.parse(JSON.stringify(eventData));
-            games[gameId].spectatorOpponentEventDataBuffer.push(eventDataCopy);
-          }
+      games[gameId].spectateIsRunning = true;
+      // if we're in the middle of a followup and we have some buffered events, we need to copy them over to the spectate buffer
+      if (
+        games[gameId].session.getIsBufferingEvents() &&
+        games[gameId].opponentEventDataBuffer.length > 0
+      ) {
+        games[gameId].spectatorOpponentEventDataBuffer.length = 0;
+        for (var eventData of Array.from<any>(games[gameId].opponentEventDataBuffer)) {
+          var eventDataCopy = JSON.parse(JSON.stringify(eventData));
+          games[gameId].spectatorOpponentEventDataBuffer.push(eventDataCopy);
         }
       }
+    }
 
-      if (games[gameId].spectateIsDelayed && !games[gameId].spectatorDelayedGameSession) {
-        Logger.module('...').log(`[G:${gameId}]`, 'initSpectatorDelayedGameSession() -> creating delayed game session');
+    if (games[gameId].spectateIsDelayed && !games[gameId].spectatorDelayedGameSession) {
+      Logger.module('...').log(
+        `[G:${gameId}]`,
+        'initSpectatorDelayedGameSession() -> creating delayed game session',
+      );
 
-        // create
-        const delayedGameDataIn = games[gameId].session.serializeToJSON(games[gameId].session);
-        const delayedGameSession = SDK.GameSession.create();
-        delayedGameSession.setIsRunningAsAuthoritative(false);
-        delayedGameSession.deserializeSessionFromFirebase(JSON.parse(delayedGameDataIn));
-        delayedGameSession.gameId = `SPECTATE:${delayedGameSession.gameId}`;
-        games[gameId].spectatorDelayedGameSession = delayedGameSession;
-        // start timer to execute delayed / buffered spectator game events
-        restartSpectatorDelayedGameInterval(gameId);
+      // create
+      const delayedGameDataIn = games[gameId].session.serializeToJSON(games[gameId].session);
+      const delayedGameSession = SDK.GameSession.create();
+      delayedGameSession.setIsRunningAsAuthoritative(false);
+      delayedGameSession.deserializeSessionFromFirebase(JSON.parse(delayedGameDataIn));
+      delayedGameSession.gameId = `SPECTATE:${delayedGameSession.gameId}`;
+      games[gameId].spectatorDelayedGameSession = delayedGameSession;
+      // start timer to execute delayed / buffered spectator game events
+      restartSpectatorDelayedGameInterval(gameId);
 
-        return Promise.resolve(games[gameId].spectatorDelayedGameSession);
-      } else {
-        return Promise.resolve(games[gameId].session);
-      }
-    });
+      return Promise.resolve(games[gameId].spectatorDelayedGameSession);
+    } else {
+      return Promise.resolve(games[gameId].session);
+    }
+  });
 };
 
 /**
@@ -1305,16 +1604,12 @@ var initSpectatorGameSession = function (gameId) {
  */
 const onBeforeRollbackToSnapshot = function (event) {
   // clear the buffer just before rolling back
-  const {
-    gameSession,
-  } = event;
-  const {
-    gameId,
-  } = gameSession;
+  const { gameSession } = event;
+  const { gameId } = gameSession;
   const game = games[gameId];
   if (game != null) {
     game.opponentEventDataBuffer.length = 0;
-    return game.spectatorOpponentEventDataBuffer.length = 0;
+    return (game.spectatorOpponentEventDataBuffer.length = 0);
   }
 };
 
@@ -1322,40 +1617,42 @@ const onBeforeRollbackToSnapshot = function (event) {
  * Handler for a game session step.
  */
 const onStep = function (event) {
-  const {
-    gameSession,
-  } = event;
-  const {
-    gameId,
-  } = gameSession;
+  const { gameSession } = event;
+  const { gameId } = gameSession;
   const game = games[gameId];
   if (game != null) {
-    const {
-      step,
-    } = event;
-    if ((step != null) && (step.timestamp != null) && (step.action != null)) {
+    const { step } = event;
+    if (step != null && step.timestamp != null && step.action != null) {
       // send out step events
-      const stepEventData = { type: EVENTS.step, step: JSON.parse(game.session.serializeToJSON(step)) };
+      const stepEventData = {
+        type: EVENTS.step,
+        step: JSON.parse(game.session.serializeToJSON(step)),
+      };
       emitGameEvent(null, gameId, stepEventData);
 
       // special action cases
-      const {
-        action,
-      } = step;
+      const { action } = step;
       if (action instanceof SDK.EndTurnAction) {
         // save game on end turn
         // delay so that we don't block sending the step back to the players
-        _.delay((function () {
-          if ((games[gameId] != null) && (games[gameId].session != null)) {
-            return GameManager.saveGameSession(gameId, games[gameId].session.serializeToJSON(games[gameId].session));
+        _.delay(function () {
+          if (games[gameId] != null && games[gameId].session != null) {
+            return GameManager.saveGameSession(
+              gameId,
+              games[gameId].session.serializeToJSON(games[gameId].session),
+            );
           }
-        }), 500);
+        }, 500);
       } else if (action instanceof SDK.StartTurnAction) {
         // restart the turn timer whenever a turn starts
         restartTurnTimer(gameId);
       } else if (action instanceof SDK.DrawStartingHandAction) {
         // restart turn timer if both players have a starting hand and this step is for a DrawStartingHandAction
-        const bothPlayersHaveStartingHand = _.reduce(game.session.players, ((memo, player) => memo && player.getHasStartingHand()), true);
+        const bothPlayersHaveStartingHand = _.reduce(
+          game.session.players,
+          (memo, player) => memo && player.getHasStartingHand(),
+          true,
+        );
         if (bothPlayersHaveStartingHand) {
           restartTurnTimer(gameId);
         }
@@ -1378,7 +1675,7 @@ const onStep = function (event) {
     if (game.session.status === SDK.GameStatus.over) {
       // stop any turn timers
       stopTurnTimer(gameId);
-      if ((game.isArchived == null)) {
+      if (game.isArchived == null) {
         game.isArchived = true;
         return afterGameOver(gameId, game.session, game.mouseAndUIEvents);
       }
@@ -1391,17 +1688,11 @@ const onStep = function (event) {
  */
 const onInvalidAction = function (event) {
   // safety fallback: if player attempts to make an invalid explicit action, notify that player only
-  const {
-    gameSession,
-  } = event;
-  const {
-    gameId,
-  } = gameSession;
+  const { gameSession } = event;
+  const { gameId } = gameSession;
   const game = games[gameId];
   if (game != null) {
-    const {
-      action,
-    } = event;
+    const { action } = event;
     if (!action.getIsImplicit()) {
       // Logger.module("...").log "[G:#{gameId}]", "onInvalidAction -> INVALID ACTION: #{action.getLogName()} / VALIDATED BY: #{action.getValidatorType()} / MESSAGE: #{action.getValidationMessage()}"
       const invalidActionEventData = {
@@ -1411,9 +1702,10 @@ const onInvalidAction = function (event) {
         validatorType: event.validatorType,
         validationMessage: event.validationMessage,
         validationMessagePosition: event.validationMessagePosition,
-        desync: gameSession.isActive()
-          && (gameSession.getCurrentPlayerId() === action.getOwnerId())
-          && (gameSession.getTurnTimeRemaining() > CONFIG.TURN_DURATION_LATENCY_BUFFER),
+        desync:
+          gameSession.isActive() &&
+          gameSession.getCurrentPlayerId() === action.getOwnerId() &&
+          gameSession.getTurnTimeRemaining() > CONFIG.TURN_DURATION_LATENCY_BUFFER,
       };
       return emitGameEvent(null, gameId, invalidActionEventData);
     }
@@ -1427,7 +1719,10 @@ const onInvalidAction = function (event) {
  * @param  {Object}    gameId      The game ID to subscribe for.
  */
 var subscribeToGameSessionEvents = function (gameId) {
-  Logger.module('...').log(`[G:${gameId}]`, 'subscribeToGameSessionEvents -> subscribing to GameSession events');
+  Logger.module('...').log(
+    `[G:${gameId}]`,
+    'subscribeToGameSessionEvents -> subscribing to GameSession events',
+  );
   const game = games[gameId];
   if (game != null) {
     // unsubscribe from previous
@@ -1449,7 +1744,10 @@ var subscribeToGameSessionEvents = function (gameId) {
  * @param  {String}    gameId      The game ID that needs to be unsubscribed.
  */
 var unsubscribeFromGameSessionEvents = function (gameId) {
-  Logger.module('...').log(`[G:${gameId}]`, 'unsubscribeFromGameSessionEvents -> un-subscribing from GameSession events');
+  Logger.module('...').log(
+    `[G:${gameId}]`,
+    'unsubscribeFromGameSessionEvents -> un-subscribing from GameSession events',
+  );
   const game = games[gameId];
   if (game != null) {
     game.session.getEventBus().off(EVENTS.before_rollback_to_snapshot, onBeforeRollbackToSnapshot);
@@ -1469,11 +1767,26 @@ var unsubscribeFromGameSessionEvents = function (gameId) {
  * @param  {Array}      mouseAndUIEvents  The mouse and UI events for this game.
  */
 var afterGameOver = function (gameId, gameSession, mouseAndUIEvents) {
-  Logger.module('GAME-OVER').log(`[G:${gameId}]`, `---------- ======= GAME ${gameId} OVER ======= ---------`.green);
+  Logger.module('GAME-OVER').log(
+    `[G:${gameId}]`,
+    `---------- ======= GAME ${gameId} OVER ======= ---------`.green,
+  );
 
   // Update User Ranking, Progression, Quests, Stats
-  const updateUser = function (userId, opponentId, gameId, factionId, generalId, isWinner, isDraw, ticketId) {
-    Logger.module('GAME-OVER').log(`[G:${gameId}]`, `UPDATING user ${userId}. (winner:${isWinner})`);
+  const updateUser = function (
+    userId,
+    opponentId,
+    gameId,
+    factionId,
+    generalId,
+    isWinner,
+    isDraw,
+    ticketId,
+  ) {
+    Logger.module('GAME-OVER').log(
+      `[G:${gameId}]`,
+      `UPDATING user ${userId}. (winner:${isWinner})`,
+    );
 
     // check for isFriendly
     // check for isUnscored
@@ -1485,8 +1798,11 @@ var afterGameOver = function (gameId, gameSession, mouseAndUIEvents) {
       // calculate based on number of resign status and number of actions
       const lastStep = gameSession.getLastStep();
       // if the game didn't have a single turn, mark the game as unscored
-      if (gameSession.getPlayerById(userId).hasResigned && (gameSession.getTurns().length === 0)) {
-        Logger.module('GAME-OVER').log(`[G:${gameId}]`, `User: ${userId} CONCEDED a game with 0 turns. Marking as UNSCORED`.yellow);
+      if (gameSession.getPlayerById(userId).hasResigned && gameSession.getTurns().length === 0) {
+        Logger.module('GAME-OVER').log(
+          `[G:${gameId}]`,
+          `User: ${userId} CONCEDED a game with 0 turns. Marking as UNSCORED`.yellow,
+        );
         isUnscored = true;
       } else if (!isWinner && !isDraw) {
         // otherwise check how many actions the player took
@@ -1495,7 +1811,7 @@ var afterGameOver = function (gameId, gameSession, mouseAndUIEvents) {
         let moveActionCount = 0;
         for (var a of Array.from<any>(gameSession.getActions())) {
           // explicit actions
-          if ((a.getOwnerId() === userId) && (a.getIsImplicit() === false)) {
+          if (a.getOwnerId() === userId && a.getIsImplicit() === false) {
             playerActionCount++;
 
             // meaningful actions
@@ -1506,7 +1822,10 @@ var afterGameOver = function (gameId, gameSession, mouseAndUIEvents) {
                 meaningfulActionCount += 1;
               }
             }
-            if (a instanceof SDK.PlayCardFromHandAction || a instanceof SDK.PlaySignatureCardAction) {
+            if (
+              a instanceof SDK.PlayCardFromHandAction ||
+              a instanceof SDK.PlaySignatureCardAction
+            ) {
               meaningfulActionCount += 1;
             }
             if (a instanceof SDK.BonusManaAction) {
@@ -1522,7 +1841,7 @@ var afterGameOver = function (gameId, gameSession, mouseAndUIEvents) {
           // more than 9 explicit actions
           // more than 1 move action
           // more than 5 meaningful actions
-          if ((playerActionCount > 9) && (moveActionCount > 1) && (meaningfulActionCount > 4)) {
+          if (playerActionCount > 9 && moveActionCount > 1 && meaningfulActionCount > 4) {
             break;
           }
         }
@@ -1535,47 +1854,60 @@ var afterGameOver = function (gameId, gameSession, mouseAndUIEvents) {
         ... otherwise mark the game as unscored
         */
         // Logger.module("GAME-OVER").log "[G:#{gameId}]", "User: #{userId} #{playerActionCount}, #{moveActionCount}, #{meaningfulActionCount}".cyan
-        if ((playerActionCount <= 9) || (moveActionCount <= 1) || (meaningfulActionCount <= 4)) {
-          Logger.module('GAME-OVER').log(`[G:${gameId}]`, `User: ${userId} CONCEDED a game with too few meaningful actions. Marking as UNSCORED`.yellow);
+        if (playerActionCount <= 9 || moveActionCount <= 1 || meaningfulActionCount <= 4) {
+          Logger.module('GAME-OVER').log(
+            `[G:${gameId}]`,
+            `User: ${userId} CONCEDED a game with too few meaningful actions. Marking as UNSCORED`
+              .yellow,
+          );
           isUnscored = true;
         }
       }
     }
 
     // start the job to process the game for a user
-    return Jobs.enqueue('update-user-post-game', {
-      name: 'Update User Ranking',
-      title: util.format('User %s :: Game %s', userId, gameId),
-      userId,
-      opponentId,
-      gameId,
-      gameType: gameSession.gameType,
-      factionId,
-      generalId,
-      isWinner,
-      isDraw,
-      isUnscored,
-      isBotGame: true,
-      ticketId,
-    }, { removeOnComplete: true });
+    return Jobs.enqueue(
+      'update-user-post-game',
+      {
+        name: 'Update User Ranking',
+        title: util.format('User %s :: Game %s', userId, gameId),
+        userId,
+        opponentId,
+        gameId,
+        gameType: gameSession.gameType,
+        factionId,
+        generalId,
+        isWinner,
+        isDraw,
+        isUnscored,
+        isBotGame: true,
+        ticketId,
+      },
+      { removeOnComplete: true },
+    );
   };
 
   // Save then archive game session
-  const archiveGame = (gameId, gameSession, mouseAndUIEvents) => Promise.all([
-    GameManager.saveGameMouseUIData(gameId, JSON.stringify(mouseAndUIEvents)),
-    GameManager.saveGameSession(gameId, gameSession.serializeToJSON(gameSession)),
-  ]).then(() => // Job: Archive Game
-    Jobs.enqueue('archive-game', {
-      name: 'Archive Game',
-      title: util.format('Archiving Game %s', gameId),
-      gameId,
-      gameType: gameSession.gameType,
-    }, { removeOnComplete: true }));
+  const archiveGame = (gameId, gameSession, mouseAndUIEvents) =>
+    Promise.all([
+      GameManager.saveGameMouseUIData(gameId, JSON.stringify(mouseAndUIEvents)),
+      GameManager.saveGameSession(gameId, gameSession.serializeToJSON(gameSession)),
+    ]).then(() =>
+      // Job: Archive Game
+      Jobs.enqueue(
+        'archive-game',
+        {
+          name: 'Archive Game',
+          title: util.format('Archiving Game %s', gameId),
+          gameId,
+          gameType: gameSession.gameType,
+        },
+        { removeOnComplete: true },
+      ),
+    );
 
   // update promises
-  const promises = [
-    archiveGame(gameId, gameSession, mouseAndUIEvents),
-  ];
+  const promises = [archiveGame(gameId, gameSession, mouseAndUIEvents)];
 
   for (var player of Array.from<any>(gameSession.players)) {
     var playerId = player.getPlayerId();
@@ -1583,23 +1915,38 @@ var afterGameOver = function (gameId, gameSession, mouseAndUIEvents) {
     if (playerId !== CONFIG.AI_PLAYER_ID) {
       // find player data
       var winnerId = gameSession.getWinnerId();
-      var isWinner = (playerId === winnerId);
-      var isDraw = (winnerId == null);
+      var isWinner = playerId === winnerId;
+      var isDraw = winnerId == null;
       var playerSetupData = gameSession.getPlayerSetupDataForPlayerId(playerId);
       var playerFactionId = playerSetupData.factionId;
-      var {
-        generalId,
-      } = playerSetupData;
-      var {
-        ticketId,
-      } = playerSetupData;
-      promises.push(updateUser(playerId, CONFIG.AI_PLAYER_ID, gameId, playerFactionId, generalId, isWinner, isDraw, ticketId));
+      var { generalId } = playerSetupData;
+      var { ticketId } = playerSetupData;
+      promises.push(
+        updateUser(
+          playerId,
+          CONFIG.AI_PLAYER_ID,
+          gameId,
+          playerFactionId,
+          generalId,
+          isWinner,
+          isDraw,
+          ticketId,
+        ),
+      );
     }
   }
 
   // execute promises
   return Promise.all(promises)
-    .then(() => Logger.module('GAME-OVER').log(`[G:${gameId}]`, 'afterGameOver done, game has been archived'.green)).catch((error) => Logger.module('GAME-OVER').error(`[G:${gameId}]`, `ERROR: afterGameOver failed ${error}`.red));
+    .then(() =>
+      Logger.module('GAME-OVER').log(
+        `[G:${gameId}]`,
+        'afterGameOver done, game has been archived'.green,
+      ),
+    )
+    .catch((error) =>
+      Logger.module('GAME-OVER').error(`[G:${gameId}]`, `ERROR: afterGameOver failed ${error}`.red),
+    );
 };
 
 /* Shutdown Handler */
@@ -1612,24 +1959,28 @@ const shutdownHandler = function () {
     process.exit(0);
   }
 
-  return Consul.getReassignmentStatus()
-    .then(function (reassign) {
-      if (reassign === false) {
-        Logger.module('SERVER').log('Reassignment disabled - exiting.');
-        process.exit(0);
-      }
+  return Consul.getReassignmentStatus().then(function (reassign) {
+    if (reassign === false) {
+      Logger.module('SERVER').log('Reassignment disabled - exiting.');
+      process.exit(0);
+    }
 
-      // Build an array of game IDs
-      const ids = [];
-      _.each(games, (game, id) => ids.push(id));
+    // Build an array of game IDs
+    const ids = [];
+    _.each(games, (game, id) => ids.push(id));
 
-      // Map to save each game to Redis before shutdown
-      return PromiseUtils.map(ids, function (id) {
-        const serializedData = games[id].session.serializeToJSON(games[id].session);
-        return GameManager.saveGameSession(id, serializedData);
-      }).then(() => Consul.getHealthyServers()).then(function (servers) {
-      // Filter 'yourself' from list of nodes
-        const filtered = _.reject(servers, (server) => (server.Node != null ? server.Node.Node : undefined) === os.hostname());
+    // Map to save each game to Redis before shutdown
+    return PromiseUtils.map(ids, function (id) {
+      const serializedData = games[id].session.serializeToJSON(games[id].session);
+      return GameManager.saveGameSession(id, serializedData);
+    })
+      .then(() => Consul.getHealthyServers())
+      .then(function (servers) {
+        // Filter 'yourself' from list of nodes
+        const filtered = _.reject(
+          servers,
+          (server) => (server.Node != null ? server.Node.Node : undefined) === os.hostname(),
+        );
 
         if (filtered.length === 0) {
           Logger.module('SERVER').log('No servers available - exiting without re-assignment.');
@@ -1639,11 +1990,16 @@ const shutdownHandler = function () {
         const random_node = _.sample(filtered);
         const node_name = random_node.Node != null ? random_node.Node.Node : undefined;
         return Consul.kv.get(`nodes/${node_name}/public_ip`);
-      }).then(function (newServerIp) {
-      // Development override for testing, bounces between port 9000 & 9001
+      })
+      .then(function (newServerIp) {
+        // Development override for testing, bounces between port 9000 & 9001
         if (config.isDevelopment()) {
-          if (config.get('port') === 9000) { port = 9001; }
-          if (config.get('port') === 9001) { port = 9000; }
+          if (config.get('port') === 9000) {
+            port = 9001;
+          }
+          if (config.get('port') === 9001) {
+            port = 9000;
+          }
           newServerIp = `127.0.0.1:${port}`;
         }
         const msg = 'Server is shutting down. You will be reconnected automatically.';
@@ -1652,11 +2008,11 @@ const shutdownHandler = function () {
         Logger.module('SERVER').log('Re-assignment complete. Exiting.');
         return process.exit(0);
       })
-        .catch(function (err) {
-          Logger.module('SERVER').log(`Re-assignment failed: ${err.message}. Exiting.`);
-          return process.exit(1);
-        });
-    });
+      .catch(function (err) {
+        Logger.module('SERVER').log(`Re-assignment failed: ${err.message}. Exiting.`);
+        return process.exit(1);
+      });
+  });
 };
 
 process.on('SIGTERM', shutdownHandler);
@@ -1669,54 +2025,76 @@ process.on('SIGQUIT', shutdownHandler);
 /**
  * Returns whether a session is valid for AI usage.
  * @param  {String}    gameId
-*/
-const ai_isValidSession = (gameId) => ((games[gameId] != null ? games[gameId].session : undefined) != null) && !games[gameId].session.isOver() && (games[gameId].ai != null);
+ */
+const ai_isValidSession = (gameId) =>
+  (games[gameId] != null ? games[gameId].session : undefined) != null &&
+  !games[gameId].session.isOver() &&
+  games[gameId].ai != null;
 
 /**
  * Returns whether a session and turn is valid for AI usage.
  * @param  {String}    gameId
-*/
-const ai_isValidTurn = (gameId) => ai_isValidSession(gameId) && games[gameId].session.isActive() && (games[gameId].session.getCurrentPlayerId() === games[gameId].ai.getMyPlayerId());
+ */
+const ai_isValidTurn = (gameId) =>
+  ai_isValidSession(gameId) &&
+  games[gameId].session.isActive() &&
+  games[gameId].session.getCurrentPlayerId() === games[gameId].ai.getMyPlayerId();
 
 /**
  * Returns whether AI can start turn.
  * @param  {String}    gameId
-*/
-const ai_canStartTurn = (gameId) => ai_isValidTurn(gameId) && !ai_isExecutingTurn(gameId) && !games[gameId].session.hasStepsInQueue();
+ */
+const ai_canStartTurn = (gameId) =>
+  ai_isValidTurn(gameId) && !ai_isExecutingTurn(gameId) && !games[gameId].session.hasStepsInQueue();
 
 /**
  * Returns whether ai is currently executing turn.
  * @param  {String}    gameId
-*/
+ */
 var ai_isExecutingTurn = (gameId) => games[gameId].executingAITurn;
 
 /**
  * Returns whether ai can progress turn.
  * @param  {String}    gameId
-*/
-const ai_canProgressTurn = (gameId) => ai_isValidTurn(gameId) && ai_isExecutingTurn(gameId) && (games[gameId].aiStartTurnTimeoutId == null);
+ */
+const ai_canProgressTurn = (gameId) =>
+  ai_isValidTurn(gameId) &&
+  ai_isExecutingTurn(gameId) &&
+  games[gameId].aiStartTurnTimeoutId == null;
 
 /**
  * Returns whether ai can taunt.
  * @param  {String}    gameId
-*/
-const ai_canEmote = (gameId) => ai_isValidSession(gameId) && !ai_isBot(gameId) && !games[gameId].session.getIsBufferingEvents() && (Math.random() < 0.05);
+ */
+const ai_canEmote = (gameId) =>
+  ai_isValidSession(gameId) &&
+  !ai_isBot(gameId) &&
+  !games[gameId].session.getIsBufferingEvents() &&
+  Math.random() < 0.05;
 
 /**
  * Returns whether ai is normal ai or bot.
  * @param  {String}    gameId
-*/
-var ai_isBot = (gameId) => ((games[gameId] != null ? games[gameId].session : undefined) != null) && (games[gameId].session.getAiPlayerId() !== CONFIG.AI_PLAYER_ID);
+ */
+var ai_isBot = (gameId) =>
+  (games[gameId] != null ? games[gameId].session : undefined) != null &&
+  games[gameId].session.getAiPlayerId() !== CONFIG.AI_PLAYER_ID;
 
 /**
  * Initializes AI for a game session.
  * @param  {String}    gameId
-*/
+ */
 var ai_setup = function (gameId) {
-  if (((games[gameId] != null ? games[gameId].session : undefined) != null) && (games[gameId].ai == null)) {
+  if (
+    (games[gameId] != null ? games[gameId].session : undefined) != null &&
+    games[gameId].ai == null
+  ) {
     const aiPlayerId = games[gameId].session.getAiPlayerId();
     const aiDifficulty = games[gameId].session.getAiDifficulty();
-    Logger.module('AI').debug(`[G:${gameId}]`, `Setup AI -> aiPlayerId ${aiPlayerId} - aiDifficulty ${aiDifficulty}`);
+    Logger.module('AI').debug(
+      `[G:${gameId}]`,
+      `Setup AI -> aiPlayerId ${aiPlayerId} - aiDifficulty ${aiDifficulty}`,
+    );
     games[gameId].ai = new StarterAI(games[gameId].session, aiPlayerId, aiDifficulty);
 
     // add AI as a connected player
@@ -1735,7 +2113,7 @@ var ai_setup = function (gameId) {
 /**
  * Terminates AI for a game session.
  * @param  {String}    gameId
-*/
+ */
 var ai_terminate = function (gameId) {
   ai_unsubscribeFromGameSessionEvents(gameId);
   ai_stopTurn(gameId);
@@ -1743,12 +2121,8 @@ var ai_terminate = function (gameId) {
 };
 
 const ai_onStep = function (event) {
-  const {
-    gameSession,
-  } = event;
-  const {
-    gameId,
-  } = gameSession;
+  const { gameSession } = event;
+  const { gameId } = gameSession;
   // emote after step
   ai_emoteForLastStep(gameId);
 
@@ -1759,16 +2133,15 @@ const ai_onStep = function (event) {
 const ai_onInvalidAction = function (event) {
   // safety fallback: if AI attempts to make an invalid explicit action, end AI turn immediately
   if (event != null) {
-    const {
-      gameSession,
-    } = event;
-    const {
-      gameId,
-    } = gameSession;
-    const {
-      action,
-    } = event;
-    if ((action != null) && !action.getIsImplicit() && ai_isExecutingTurn(gameId) && (action.getOwnerId() === games[gameId].ai.getMyPlayerId())) {
+    const { gameSession } = event;
+    const { gameId } = gameSession;
+    const { action } = event;
+    if (
+      action != null &&
+      !action.getIsImplicit() &&
+      ai_isExecutingTurn(gameId) &&
+      action.getOwnerId() === games[gameId].ai.getMyPlayerId()
+    ) {
       return ai_endTurn(gameId);
     }
   }
@@ -1797,7 +2170,7 @@ var ai_unsubscribeFromGameSessionEvents = function (gameId) {
 /**
  * Updates AI turn for a game session.
  * @param  {String}    gameId
-*/
+ */
 var ai_updateTurn = function (gameId) {
   Logger.module('AI').debug(`[G:${gameId}]`, 'ai_updateTurn');
   if (ai_canStartTurn(gameId)) {
@@ -1812,7 +2185,7 @@ var ai_updateTurn = function (gameId) {
 /**
  * Progresses AI turn for a game session.
  * @param  {String}    gameId
-*/
+ */
 var ai_progressTurn = function (gameId) {
   let nextAction;
   if (ai_canProgressTurn(gameId)) {
@@ -1821,7 +2194,10 @@ var ai_progressTurn = function (gameId) {
     try {
       nextAction = games[gameId].ai.nextAction();
     } catch (error) {
-      Logger.module('IO').log(`[G:${gameId}]`, `ai.nextAction:: error: ${JSON.stringify(error.message)}`.red);
+      Logger.module('IO').log(
+        `[G:${gameId}]`,
+        `ai.nextAction:: error: ${JSON.stringify(error.message)}`.red,
+      );
       Logger.module('IO').log(`[G:${gameId}]`, `ai.nextAction:: error stack: ${error.stack}`.red);
 
       // retain player id
@@ -1840,15 +2216,15 @@ var ai_progressTurn = function (gameId) {
   if (games[gameId] != null) {
     if (nextAction != null) {
       // always delay AI actions slightly
-      if ((games[gameId].aiExecuteActionTimeoutId == null)) {
+      if (games[gameId].aiExecuteActionTimeoutId == null) {
         let actionDelayTime;
         if (ai_isBot(gameId)) {
           if (games[gameId].session.getIsFollowupActive()) {
-            actionDelayTime = 1.0 + (Math.random() * 3.0);
+            actionDelayTime = 1.0 + Math.random() * 3.0;
           } else if (nextAction instanceof SDK.EndTurnAction) {
-            actionDelayTime = 1.0 + (Math.random() * 2.0);
+            actionDelayTime = 1.0 + Math.random() * 2.0;
           } else {
-            actionDelayTime = 1.0 + (Math.random() * 8.0);
+            actionDelayTime = 1.0 + Math.random() * 8.0;
           }
         } else {
           if (games[gameId].session.getIsFollowupActive()) {
@@ -1860,7 +2236,10 @@ var ai_progressTurn = function (gameId) {
 
         // action delay time can never be more than a quarter of remaining turn time
         if (games[gameId].turnTimeRemaining != null) {
-          actionDelayTime = Math.min((games[gameId].turnTimeRemaining * 0.25) / 1000.0, actionDelayTime);
+          actionDelayTime = Math.min(
+            (games[gameId].turnTimeRemaining * 0.25) / 1000.0,
+            actionDelayTime,
+          );
         }
 
         // show UI as needed
@@ -1868,11 +2247,14 @@ var ai_progressTurn = function (gameId) {
 
         // delay and then execute action
         // delay must be at least 1 ms to ensure current call stack completes
-        return games[gameId].aiExecuteActionTimeoutId = setTimeout((function () {
-          games[gameId].aiExecuteActionTimeoutId = null;
-          ai_showClearUI(gameId);
-          return ai_executeAction(gameId, nextAction);
-        }), Math.max(1.0, actionDelayTime * 1000.0));
+        return (games[gameId].aiExecuteActionTimeoutId = setTimeout(
+          function () {
+            games[gameId].aiExecuteActionTimeoutId = null;
+            ai_showClearUI(gameId);
+            return ai_executeAction(gameId, nextAction);
+          },
+          Math.max(1.0, actionDelayTime * 1000.0),
+        ));
       }
     } else if (ai_isExecutingTurn(gameId)) {
       // end turn as needed
@@ -1884,18 +2266,18 @@ var ai_progressTurn = function (gameId) {
 /**
  * Starts AI turn for a game session.
  * @param  {String}    gameId
-*/
+ */
 var ai_startTurn = function (gameId) {
   if (ai_canStartTurn(gameId)) {
     Logger.module('AI').debug(`[G:${gameId}]`, 'ai_startTurn'.cyan);
     // set as executing AI turn
     games[gameId].executingAITurn = true;
 
-    if ((games[gameId].aiStartTurnTimeoutId == null)) {
+    if (games[gameId].aiStartTurnTimeoutId == null) {
       // delay initial turn progress
       let delayTime;
       if (ai_isBot(gameId)) {
-        delayTime = 2.0 + (Math.random() * 2.0);
+        delayTime = 2.0 + Math.random() * 2.0;
       } else {
         delayTime = 2.0;
       }
@@ -1905,13 +2287,20 @@ var ai_startTurn = function (gameId) {
         x: Math.floor(Math.random() * CONFIG.BOARDCOL),
         y: Math.floor(Math.random() * CONFIG.BOARDROW),
       };
-      Logger.module('AI').debug(`[G:${gameId}]`, `ai_startTurn init aiPointer at ${games[gameId].aiPointer.x}, ${games[gameId].aiPointer.y}`.cyan);
+      Logger.module('AI').debug(
+        `[G:${gameId}]`,
+        `ai_startTurn init aiPointer at ${games[gameId].aiPointer.x}, ${games[gameId].aiPointer.y}`
+          .cyan,
+      );
 
       // delay must be at least 1 ms to ensure current call stack completes
-      return games[gameId].aiStartTurnTimeoutId = setTimeout((function () {
-        games[gameId].aiStartTurnTimeoutId = null;
-        return ai_progressTurn(gameId);
-      }), Math.max(1.0, delayTime * 1000.0));
+      return (games[gameId].aiStartTurnTimeoutId = setTimeout(
+        function () {
+          games[gameId].aiStartTurnTimeoutId = null;
+          return ai_progressTurn(gameId);
+        },
+        Math.max(1.0, delayTime * 1000.0),
+      ));
     }
   }
 };
@@ -1919,7 +2308,7 @@ var ai_startTurn = function (gameId) {
 /**
  * Stops AI turn for a game session, and ends it if necessary.
  * @param  {String}    gameId
-*/
+ */
 var ai_endTurn = function (gameId) {
   // stop turn
   ai_stopTurn(gameId);
@@ -1934,7 +2323,7 @@ var ai_endTurn = function (gameId) {
 /**
  * Stops AI turn for a game session. Does not end AI turn.
  * @param  {String}    gameId
-*/
+ */
 var ai_stopTurn = function (gameId) {
   if (games[gameId].executingAITurn) {
     Logger.module('AI').debug(`[G:${gameId}]`, 'ai_stopTurn'.cyan);
@@ -1947,7 +2336,7 @@ var ai_stopTurn = function (gameId) {
 /**
  * Stops AI timeouts for a game session.
  * @param  {String}    gameId
-*/
+ */
 var ai_stopTimeouts = function (gameId) {
   ai_stopTurnTimeouts(gameId);
   ai_stopEmoteTimeouts(gameId);
@@ -1957,7 +2346,7 @@ var ai_stopTimeouts = function (gameId) {
 /**
  * Stops AI timeouts for turn actions.
  * @param  {String}    gameId
-*/
+ */
 var ai_stopTurnTimeouts = function (gameId) {
   if (games[gameId].aiStartTurnTimeoutId != null) {
     clearTimeout(games[gameId].aiStartTurnTimeoutId);
@@ -1966,7 +2355,7 @@ var ai_stopTurnTimeouts = function (gameId) {
 
   if (games[gameId].aiExecuteActionTimeoutId != null) {
     clearTimeout(games[gameId].aiExecuteActionTimeoutId);
-    return games[gameId].aiExecuteActionTimeoutId = null;
+    return (games[gameId].aiExecuteActionTimeoutId = null);
   }
 };
 
@@ -1974,7 +2363,7 @@ var ai_stopTurnTimeouts = function (gameId) {
  * Executes an AI action for a game session.
  * @param  {String}    gameId
  * @param  {Action}    action
-*/
+ */
 var ai_executeAction = function (gameId, action) {
   if (ai_canProgressTurn(gameId)) {
     Logger.module('AI').debug(`[G:${gameId}]`, `ai_executeAction -> ${action.getLogName()}`.cyan);
@@ -1982,39 +2371,47 @@ var ai_executeAction = function (gameId, action) {
     const step = new SDK.Step(games[gameId].session, action.getOwnerId());
     step.setAction(action);
     const opponentPlayerId = games[gameId].ai.getOpponentPlayerId();
-    return __guard__(io.sockets.adapter.rooms.get(gameId), (x) => x.forEach(function (socketId) {
-      const socket = io.sockets.sockets.get(socketId);
-      if ((socket.playerId === opponentPlayerId) && !socket.spectatorId) {
-        return onGameEvent.call(socket, {
-          type: EVENTS.step,
-          step: JSON.parse(games[gameId].session.serializeToJSON(step)),
-        });
-      }
-    }));
+    return __guard__(io.sockets.adapter.rooms.get(gameId), (x) =>
+      x.forEach(function (socketId) {
+        const socket = io.sockets.sockets.get(socketId);
+        if (socket.playerId === opponentPlayerId && !socket.spectatorId) {
+          return onGameEvent.call(socket, {
+            type: EVENTS.step,
+            step: JSON.parse(games[gameId].session.serializeToJSON(step)),
+          });
+        }
+      }),
+    );
   }
 };
 
 /**
-* Returns whether an action is valid for showing UI.
-* @param {String} gameId
-* @param {Action} action
-* @return {Boolean}
-*/
-const ai_isValidActionForUI = (gameId, action) => (games[gameId].session.getIsFollowupActive() && !(action instanceof SDK.EndFollowupAction))
-  || action instanceof SDK.ReplaceCardFromHandAction
-  || action instanceof SDK.PlayCardFromHandAction
-  || action instanceof SDK.PlaySignatureCardAction
-  || action instanceof SDK.MoveAction
-  || action instanceof SDK.AttackAction;
+ * Returns whether an action is valid for showing UI.
+ * @param {String} gameId
+ * @param {Action} action
+ * @return {Boolean}
+ */
+const ai_isValidActionForUI = (gameId, action) =>
+  (games[gameId].session.getIsFollowupActive() && !(action instanceof SDK.EndFollowupAction)) ||
+  action instanceof SDK.ReplaceCardFromHandAction ||
+  action instanceof SDK.PlayCardFromHandAction ||
+  action instanceof SDK.PlaySignatureCardAction ||
+  action instanceof SDK.MoveAction ||
+  action instanceof SDK.AttackAction;
 
 /**
-* Shows UI for an action that will be taken by AI.
-* @param  {String}    gameId
-* @param  {Action}    action
-* @param  {Number}    actionDelayTime must be at least 0.25s or greater
-*/
+ * Shows UI for an action that will be taken by AI.
+ * @param  {String}    gameId
+ * @param  {Action}    action
+ * @param  {Number}    actionDelayTime must be at least 0.25s or greater
+ */
 var ai_showUIForAction = function (gameId, action, actionDelayTime) {
-  if (ai_isValidTurn(gameId) && ai_isValidActionForUI(gameId, action) && _.isNumber(actionDelayTime) && (actionDelayTime > 0.25)) {
+  if (
+    ai_isValidTurn(gameId) &&
+    ai_isValidActionForUI(gameId, action) &&
+    _.isNumber(actionDelayTime) &&
+    actionDelayTime > 0.25
+  ) {
     let card,
       cardIndex,
       handIndex,
@@ -2037,19 +2434,23 @@ var ai_showUIForAction = function (gameId, action, actionDelayTime) {
     // get ui animation times
     if (ai_isBot(gameId)) {
       if (games[gameId].session.getIsFollowupActive()) {
-        uiDelayTime = actionDelayTime * (0.7 + (Math.random() * 0.1));
+        uiDelayTime = actionDelayTime * (0.7 + Math.random() * 0.1);
         uiAnimationDuration = actionDelayTime - uiDelayTime;
         moveToSelectDuration = 0.0;
         pauseAtSelectDuration = 0.0;
-        pauseAtTargetDuration = (0.1 + (Math.random() * 0.25)) * uiAnimationDuration;
+        pauseAtTargetDuration = (0.1 + Math.random() * 0.25) * uiAnimationDuration;
         moveToTargetDuration = uiAnimationDuration - pauseAtTargetDuration;
       } else {
-        uiDelayTime = actionDelayTime * (0.4 + (Math.random() * 0.4));
+        uiDelayTime = actionDelayTime * (0.4 + Math.random() * 0.4);
         uiAnimationDuration = actionDelayTime - uiDelayTime;
-        pauseAtTargetDuration = Math.min(1.0, (0.1 + (Math.random() * 0.25)) * uiAnimationDuration);
-        moveToSelectDuration = (0.2 + (Math.random() * 0.4)) * (uiAnimationDuration - pauseAtTargetDuration);
-        moveToTargetDuration = (0.4 + (Math.random() * 0.5)) * (uiAnimationDuration - pauseAtTargetDuration - moveToSelectDuration);
-        pauseAtSelectDuration = uiAnimationDuration - pauseAtTargetDuration - moveToSelectDuration - moveToTargetDuration;
+        pauseAtTargetDuration = Math.min(1.0, (0.1 + Math.random() * 0.25) * uiAnimationDuration);
+        moveToSelectDuration =
+          (0.2 + Math.random() * 0.4) * (uiAnimationDuration - pauseAtTargetDuration);
+        moveToTargetDuration =
+          (0.4 + Math.random() * 0.5) *
+          (uiAnimationDuration - pauseAtTargetDuration - moveToSelectDuration);
+        pauseAtSelectDuration =
+          uiAnimationDuration - pauseAtTargetDuration - moveToSelectDuration - moveToTargetDuration;
       }
     } else {
       uiDelayTime = actionDelayTime * 0.7;
@@ -2066,17 +2467,23 @@ var ai_showUIForAction = function (gameId, action, actionDelayTime) {
       playerId: aiPlayerId,
     };
     if (action instanceof SDK.ReplaceCardFromHandAction) {
-      intent = (selectEventData.intentType = SDK.IntentType.DeckIntent);
-      handIndex = (selectEventData.handIndex = action.getIndexOfCardInHand());
-      selectPosition = { x: Math.round((handIndex + 0.5) * (CONFIG.BOARDCOL / CONFIG.MAX_HAND_SIZE)), y: -1 };
+      intent = selectEventData.intentType = SDK.IntentType.DeckIntent;
+      handIndex = selectEventData.handIndex = action.getIndexOfCardInHand();
+      selectPosition = {
+        x: Math.round((handIndex + 0.5) * (CONFIG.BOARDCOL / CONFIG.MAX_HAND_SIZE)),
+        y: -1,
+      };
     } else if (action instanceof SDK.ApplyCardToBoardAction) {
       if (action instanceof SDK.PlayCardFromHandAction) {
-        intent = (selectEventData.intentType = SDK.IntentType.DeckIntent);
-        handIndex = (selectEventData.handIndex = action.getIndexOfCardInHand());
-        selectPosition = { x: Math.round((handIndex + 0.5) * (CONFIG.BOARDCOL / CONFIG.MAX_HAND_SIZE)), y: -1 };
+        intent = selectEventData.intentType = SDK.IntentType.DeckIntent;
+        handIndex = selectEventData.handIndex = action.getIndexOfCardInHand();
+        selectPosition = {
+          x: Math.round((handIndex + 0.5) * (CONFIG.BOARDCOL / CONFIG.MAX_HAND_SIZE)),
+          y: -1,
+        };
         targetPosition = action.getTargetPosition();
       } else if (action instanceof SDK.PlaySignatureCardAction) {
-        intent = (selectEventData.intentType = SDK.IntentType.DeckIntent);
+        intent = selectEventData.intentType = SDK.IntentType.DeckIntent;
         isSignatureCard = true;
         if (action.getCard().isOwnedByPlayer2()) {
           selectEventData.player2SignatureCard = true;
@@ -2084,27 +2491,33 @@ var ai_showUIForAction = function (gameId, action, actionDelayTime) {
           selectEventData.player1SignatureCard = true;
         }
         if (aiPlayerId === games[gameId].session.getPlayer2Id()) {
-          selectPosition = { x: CONFIG.BOARDCOL, y: Math.floor((CONFIG.BOARDROW * 0.5) + (Math.random() * CONFIG.BOARDROW * 0.5)) };
+          selectPosition = {
+            x: CONFIG.BOARDCOL,
+            y: Math.floor(CONFIG.BOARDROW * 0.5 + Math.random() * CONFIG.BOARDROW * 0.5),
+          };
         } else {
-          selectPosition = { x: -1, y: Math.floor((CONFIG.BOARDROW * 0.5) + (Math.random() * CONFIG.BOARDROW * 0.5)) };
+          selectPosition = {
+            x: -1,
+            y: Math.floor(CONFIG.BOARDROW * 0.5 + Math.random() * CONFIG.BOARDROW * 0.5),
+          };
         }
         targetPosition = action.getTargetPosition();
       } else {
         // followup has no selection
-        intent = (selectEventData.intentType = SDK.IntentType.DeckIntent);
+        intent = selectEventData.intentType = SDK.IntentType.DeckIntent;
         selectEventData = null;
         selectPosition = action.getSourcePosition();
         targetPosition = action.getTargetPosition();
       }
     } else if (action instanceof SDK.MoveAction) {
-      intent = (selectEventData.intentType = SDK.IntentType.MoveIntent);
-      cardIndex = (selectEventData.cardIndex = action.getSourceIndex());
+      intent = selectEventData.intentType = SDK.IntentType.MoveIntent;
+      cardIndex = selectEventData.cardIndex = action.getSourceIndex();
       card = games[gameId].session.getCardByIndex(cardIndex);
       selectPosition = card.getPosition();
       targetPosition = action.getTargetPosition();
     } else if (action instanceof SDK.AttackAction) {
-      intent = (selectEventData.intentType = SDK.IntentType.DamageIntent);
-      cardIndex = (selectEventData.cardIndex = action.getSourceIndex());
+      intent = selectEventData.intentType = SDK.IntentType.DamageIntent;
+      cardIndex = selectEventData.cardIndex = action.getSourceIndex();
       card = games[gameId].session.getCardByIndex(cardIndex);
       selectPosition = card.getPosition();
       targetPosition = action.getTargetPosition();
@@ -2112,17 +2525,27 @@ var ai_showUIForAction = function (gameId, action, actionDelayTime) {
 
     // failsafe in case action doesn't have a select position
     // (actions should always have a select position)
-    if ((selectPosition == null)) {
+    if (selectPosition == null) {
       if (action instanceof SDK.ApplyCardToBoardAction) {
-        Logger.module('AI').log(`[G:${gameId}]`, `ai_showUIForAction -> no sel pos ${action.getLogName()} w/ card ${__guard__(action.getCard(), (x) => x.getName())} w/ root ${__guard__(__guard__(action.getCard(), (x2) => x2.getRootCard()), (x1) => x1.getName())}`.cyan);
+        Logger.module('AI').log(
+          `[G:${gameId}]`,
+          `ai_showUIForAction -> no sel pos ${action.getLogName()} w/ card ${__guard__(action.getCard(), (x) => x.getName())} w/ root ${__guard__(
+            __guard__(action.getCard(), (x2) => x2.getRootCard()),
+            (x1) => x1.getName(),
+          )}`.cyan,
+        );
       } else {
-        Logger.module('AI').log(`[G:${gameId}]`, `ai_showUIForAction -> no sel pos ${action.getLogName()}`.cyan);
+        Logger.module('AI').log(
+          `[G:${gameId}]`,
+          `ai_showUIForAction -> no sel pos ${action.getLogName()}`.cyan,
+        );
       }
       return;
     }
 
     // setup sequence
-    const actionPointerSequence = () => // move to select
+    const actionPointerSequence = () =>
+      // move to select
       ai_animatePointer(
         gameId,
         moveToSelectDuration,
@@ -2133,7 +2556,7 @@ var ai_showUIForAction = function (gameId, action, actionDelayTime) {
         function () {
           if (selectEventData != null) {
             if (action instanceof SDK.MoveAction || action instanceof SDK.AttackAction) {
-            // clear pointer before select
+              // clear pointer before select
               emitGameEvent(null, gameId, {
                 type: EVENTS.network_game_mouse_clear,
                 playerId: aiPlayerId,
@@ -2146,16 +2569,27 @@ var ai_showUIForAction = function (gameId, action, actionDelayTime) {
           }
 
           if (targetPosition != null) {
-          // pause at select
-            return ai_animatePointer(gameId, pauseAtSelectDuration, selectPosition, intent, isSignatureCard, false, () => // move to target
-              ai_animatePointer(gameId, moveToTargetDuration, targetPosition, intent));
+            // pause at select
+            return ai_animatePointer(
+              gameId,
+              pauseAtSelectDuration,
+              selectPosition,
+              intent,
+              isSignatureCard,
+              false,
+              () =>
+                // move to target
+                ai_animatePointer(gameId, moveToTargetDuration, targetPosition, intent),
+            );
           }
         },
       );
 
     // random chance to hover enemy unit on the board
-    if (ai_isBot(gameId) && (uiDelayTime >= 5.0) && (Math.random() < 0.05)) {
-      const opponentGeneral = games[gameId].session.getGeneralForOpponentOfPlayerId(games[gameId].session.getAiPlayerId());
+    if (ai_isBot(gameId) && uiDelayTime >= 5.0 && Math.random() < 0.05) {
+      const opponentGeneral = games[gameId].session.getGeneralForOpponentOfPlayerId(
+        games[gameId].session.getAiPlayerId(),
+      );
       const units = games[gameId].session.getBoard().getFriendlyEntitiesForEntity(opponentGeneral);
       if (units.length > 0) {
         unitToHover = units[Math.floor(Math.random() * units.length)];
@@ -2166,28 +2600,34 @@ var ai_showUIForAction = function (gameId, action, actionDelayTime) {
       // hover unit before showing action UI
       const unitPosition = unitToHover.getPosition();
       const moveToUnitDuration = Math.random() * 1.0;
-      const pauseAtUnitDuration = 2.0 + (Math.random() * 2.0);
+      const pauseAtUnitDuration = 2.0 + Math.random() * 2.0;
       uiDelayTime = uiDelayTime - moveToUnitDuration - pauseAtUnitDuration;
 
       // delay for remaining time
-      return games[gameId].aiShowUITimeoutId = setTimeout(function () {
+      return (games[gameId].aiShowUITimeoutId = setTimeout(function () {
         games[gameId].aiShowUITimeoutId = null;
         // move to random unit
-        return ai_animatePointer(gameId, moveToUnitDuration, unitPosition, SDK.IntentType.NeutralIntent, false, false, () => // pause at random unit and then show action pointer sequence
-          games[gameId].aiShowUITimeoutId = setTimeout(function () {
-            games[gameId].aiShowUITimeoutId = null;
-            return actionPointerSequence();
-          },
-          pauseAtUnitDuration * 1000.0));
-      },
-      uiDelayTime * 1000.0);
+        return ai_animatePointer(
+          gameId,
+          moveToUnitDuration,
+          unitPosition,
+          SDK.IntentType.NeutralIntent,
+          false,
+          false,
+          () =>
+            // pause at random unit and then show action pointer sequence
+            (games[gameId].aiShowUITimeoutId = setTimeout(function () {
+              games[gameId].aiShowUITimeoutId = null;
+              return actionPointerSequence();
+            }, pauseAtUnitDuration * 1000.0)),
+        );
+      }, uiDelayTime * 1000.0));
     } else {
       // delay and then show action pointer sequence
-      return games[gameId].aiShowUITimeoutId = setTimeout(function () {
+      return (games[gameId].aiShowUITimeoutId = setTimeout(function () {
         games[gameId].aiShowUITimeoutId = null;
         return actionPointerSequence();
-      },
-      uiDelayTime * 1000.0);
+      }, uiDelayTime * 1000.0));
     }
   }
 };
@@ -2220,18 +2660,22 @@ var ai_stopUITimeouts = function (gameId) {
 
 /**
  * Shows AI pointer hover at a board position if it is different from the current position.
-* @param  {String}    gameId
-* @param  {Number}    boardX
-* @param  {Number}    boardY
-* @param  {Number}    [intent]
-* @param  {Number}    [isSignatureCard=false]
+ * @param  {String}    gameId
+ * @param  {Number}    boardX
+ * @param  {Number}    boardY
+ * @param  {Number}    [intent]
+ * @param  {Number}    [isSignatureCard=false]
  */
 const ai_showHover = function (gameId, boardX, boardY, intent?, isSignatureCard?) {
-  if (intent == null) { intent = SDK.IntentType.NeutralIntent; }
-  if (isSignatureCard == null) { isSignatureCard = false; }
+  if (intent == null) {
+    intent = SDK.IntentType.NeutralIntent;
+  }
+  if (isSignatureCard == null) {
+    isSignatureCard = false;
+  }
   if (ai_isValidTurn(gameId)) {
     const pointer = games[gameId].aiPointer;
-    if ((pointer.x !== boardX) || (pointer.y !== boardY)) {
+    if (pointer.x !== boardX || pointer.y !== boardY) {
       // set pointer to position
       pointer.x = boardX;
       pointer.y = boardY;
@@ -2265,16 +2709,24 @@ const ai_showHover = function (gameId, boardX, boardY, intent?, isSignatureCard?
 };
 
 /**
-* Animates AI pointer movement.
-* @param  {String}    gameId
-* @param  {Number}    duration in seconds
-* @param  {Vec2}    [targetBoardPosition]
-* @param  {Number}    [intent]
-* @param  {Number}    [isSignatureCardAtSource]
-* @param  {Number}    [isSignatureCardAtTarget]
-* @param  {Function}    [callback]
-*/
-var ai_animatePointer = function (gameId, duration, targetBoardPosition, intent, isSignatureCardAtSource, isSignatureCardAtTarget, callback) {
+ * Animates AI pointer movement.
+ * @param  {String}    gameId
+ * @param  {Number}    duration in seconds
+ * @param  {Vec2}    [targetBoardPosition]
+ * @param  {Number}    [intent]
+ * @param  {Number}    [isSignatureCardAtSource]
+ * @param  {Number}    [isSignatureCardAtTarget]
+ * @param  {Function}    [callback]
+ */
+var ai_animatePointer = function (
+  gameId,
+  duration,
+  targetBoardPosition,
+  intent,
+  isSignatureCardAtSource,
+  isSignatureCardAtTarget,
+  callback,
+) {
   if (ai_isValidTurn(gameId)) {
     // stop current animation
     ai_stopAnimatingPointer(gameId);
@@ -2294,28 +2746,31 @@ var ai_animatePointer = function (gameId, duration, targetBoardPosition, intent,
       // animate to target
       const dms = duration * 1000.0;
       const startTime = Date.now();
-      return games[gameId].aiPointerIntervalId = setInterval(function () {
+      return (games[gameId].aiPointerIntervalId = setInterval(function () {
         // cubic ease out
         const currentTime = Date.now();
         const dt = currentTime - startTime;
         const val = Math.min(1.0, dt / dms);
         const e = val - 1;
-        const ee = (e * e * e) + 1;
-        const cx = (dx * ee) + sx;
-        const cy = (dy * ee) + sy;
+        const ee = e * e * e + 1;
+        const cx = dx * ee + sx;
+        const cy = dy * ee + sy;
         ai_showHover(gameId, Math.round(cx), Math.round(cy), intent, isSignatureCardAtTarget);
         if (val === 1.0) {
           ai_stopAnimatingPointer(gameId);
-          if (callback) { return callback(); }
+          if (callback) {
+            return callback();
+          }
         }
-      },
-      dms / 10);
+      }, dms / 10));
     } else {
       // show pointer at target
       ai_showHover(gameId, tx, ty, intent, isSignatureCardAtTarget);
 
       // no animation needed
-      if (callback) { return callback(); }
+      if (callback) {
+        return callback();
+      }
     }
   }
 };
@@ -2324,21 +2779,21 @@ var ai_animatePointer = function (gameId, duration, targetBoardPosition, intent,
  * Stops showing AI pointer movement.
  */
 var ai_stopAnimatingPointer = function (gameId) {
-  if ((games[gameId] != null) && (games[gameId].aiPointerIntervalId !== null)) {
+  if (games[gameId] != null && games[gameId].aiPointerIntervalId !== null) {
     clearInterval(games[gameId].aiPointerIntervalId);
-    return games[gameId].aiPointerIntervalId = null;
+    return (games[gameId].aiPointerIntervalId = null);
   }
 };
 
 /**
  * Prompts AI to emote to opponent based on last step.
  * @param {String} gameId
-*/
+ */
 var ai_emoteForLastStep = function (gameId) {
   if (ai_canEmote(gameId)) {
     const step = games[gameId].session.getLastStep();
     const action = step != null ? step.action : undefined;
-    if ((action != null) && !(action instanceof SDK.EndTurnAction)) {
+    if (action != null && !(action instanceof SDK.EndTurnAction)) {
       let emoteId;
       const aiPlayerId = games[gameId].ai.getMyPlayerId();
       const isMyAction = action.getOwnerId() === aiPlayerId;
@@ -2351,18 +2806,33 @@ var ai_emoteForLastStep = function (gameId) {
       while (actionsToSearch.length > 0) {
         var searchAction = actionsToSearch.shift();
         if (searchAction instanceof SDK.RemoveAction) {
-          if (!isMyAction && (__guard__(searchAction.getTarget(), (x) => x.getOwnerId()) === aiPlayerId)) {
+          if (
+            !isMyAction &&
+            __guard__(searchAction.getTarget(), (x) => x.getOwnerId()) === aiPlayerId
+          ) {
             numAngryActions += 2;
-          } else if (isMyAction && (__guard__(searchAction.getTarget(), (x1) => x1.getOwnerId()) !== aiPlayerId)) {
+          } else if (
+            isMyAction &&
+            __guard__(searchAction.getTarget(), (x1) => x1.getOwnerId()) !== aiPlayerId
+          ) {
             numTauntingActions += 1;
           }
         } else if (searchAction instanceof SDK.HealAction) {
-          if (isMyAction && (__guard__(searchAction.getTarget(), (x2) => x2.getOwnerId()) === aiPlayerId)) {
+          if (
+            isMyAction &&
+            __guard__(searchAction.getTarget(), (x2) => x2.getOwnerId()) === aiPlayerId
+          ) {
             numTauntingActions += 1;
-          } else if (!isMyAction && (__guard__(searchAction.getTarget(), (x3) => x3.getOwnerId()) !== aiPlayerId)) {
+          } else if (
+            !isMyAction &&
+            __guard__(searchAction.getTarget(), (x3) => x3.getOwnerId()) !== aiPlayerId
+          ) {
             numAngryActions += 1;
           }
-        } else if (searchAction instanceof SDK.PlayCardFromHandAction || searchAction instanceof SDK.PlaySignatureCardAction) {
+        } else if (
+          searchAction instanceof SDK.PlayCardFromHandAction ||
+          searchAction instanceof SDK.PlaySignatureCardAction
+        ) {
           if (isMyAction && searchAction.getCard() instanceof SDK.Unit) {
             numHappyActions += 1;
           }
@@ -2378,24 +2848,43 @@ var ai_emoteForLastStep = function (gameId) {
         const emoteIds = [];
         const myGeneral = games[gameId].ai.getMyGeneral();
         const myGeneralId = myGeneral.getId();
-        const factionEmotesData = SDK.CosmeticsFactory.cosmeticsForTypeAndFaction(SDK.CosmeticsTypeLookup.Emote, myGeneral.getFactionId());
+        const factionEmotesData = SDK.CosmeticsFactory.cosmeticsForTypeAndFaction(
+          SDK.CosmeticsTypeLookup.Emote,
+          myGeneral.getFactionId(),
+        );
 
         // use ai faction emote that were most present in last step
         if (maxEmotion === numAngryActions) {
           for (emoteData of Array.from<any>(factionEmotesData)) {
-            if (emoteData.enabled && ((emoteData.title === 'Angry') || (emoteData.title === 'Sad') || (emoteData.title === 'Frustrated')) && (emoteData.generalId === myGeneralId)) {
+            if (
+              emoteData.enabled &&
+              (emoteData.title === 'Angry' ||
+                emoteData.title === 'Sad' ||
+                emoteData.title === 'Frustrated') &&
+              emoteData.generalId === myGeneralId
+            ) {
               emoteIds.push(emoteData.id);
             }
           }
         } else if (maxEmotion === numHappyActions) {
           for (emoteData of Array.from<any>(factionEmotesData)) {
-            if (emoteData.enabled && (emoteData.title === 'Happy') && (emoteData.generalId === myGeneralId)) {
+            if (
+              emoteData.enabled &&
+              emoteData.title === 'Happy' &&
+              emoteData.generalId === myGeneralId
+            ) {
               emoteIds.push(emoteData.id);
             }
           }
         } else if (maxEmotion === numTauntingActions) {
           for (emoteData of Array.from<any>(factionEmotesData)) {
-            if (emoteData.enabled && ((emoteData.title === 'Taunt') || (emoteData.title === 'Sunglasses') || (emoteData.title === 'Kiss')) && (emoteData.generalId === myGeneralId)) {
+            if (
+              emoteData.enabled &&
+              (emoteData.title === 'Taunt' ||
+                emoteData.title === 'Sunglasses' ||
+                emoteData.title === 'Kiss') &&
+              emoteData.generalId === myGeneralId
+            ) {
               emoteIds.push(emoteData.id);
             }
           }
@@ -2410,7 +2899,7 @@ var ai_emoteForLastStep = function (gameId) {
         ai_stopEmoteTimeouts(gameId);
 
         // delay must be at least 1 ms to ensure current call stack completes
-        return games[gameId].aiEmoteTimeoutId = setTimeout((function () {
+        return (games[gameId].aiEmoteTimeoutId = setTimeout(function () {
           games[gameId].aiEmoteTimeoutId = null;
           // Logger.module("AI").debug "[G:#{gameId}]", "ai_showEmote -> #{emoteId}".cyan
           return emitGameEvent(null, gameId, {
@@ -2418,7 +2907,7 @@ var ai_emoteForLastStep = function (gameId) {
             id: emoteId,
             playerId: games[gameId].ai.getMyPlayerId(),
           });
-        }), 4000.0);
+        }, 4000.0));
       }
     }
   }
@@ -2427,16 +2916,16 @@ var ai_emoteForLastStep = function (gameId) {
 /**
  * Stops AI timeouts for emotes.
  * @param  {String}    gameId
-*/
+ */
 var ai_stopEmoteTimeouts = function (gameId) {
   if (games[gameId].aiEmoteTimeoutId != null) {
     clearTimeout(games[gameId].aiEmoteTimeoutId);
-    return games[gameId].aiEmoteTimeoutId = null;
+    return (games[gameId].aiEmoteTimeoutId = null);
   }
 };
 
 // endregion AI
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

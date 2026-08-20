@@ -17,7 +17,6 @@ var DeckCardsCompositeView = require('./deck_cards');
 var DeckMetadataItemView = require('./deck_metadata');
 
 var DeckLayout = Backbone.Marionette.LayoutView.extend({
-
   id: 'app-deck',
   className: 'deck',
   template: DeckTmpl,
@@ -67,11 +66,23 @@ var DeckLayout = Backbone.Marionette.LayoutView.extend({
 
   bindDeckModel: function () {
     this.metadataItemView = new DeckMetadataItemView({ model: this.model });
-    this.metadataItemView.listenTo(this.metadataItemView, 'deck_card_back_selecting', function () { this.trigger('deck_card_back_selecting'); }.bind(this));
+    this.metadataItemView.listenTo(
+      this.metadataItemView,
+      'deck_card_back_selecting',
+      function () {
+        this.trigger('deck_card_back_selecting');
+      }.bind(this),
+    );
     this.metadataRegion.show(this.metadataItemView);
 
-    this.cardsCompositeView = new DeckCardsCompositeView({ collection: this.model.getCardModels() });
-    this.cardsCompositeView.listenTo(this.cardsCompositeView, 'childview:select', this.deselectCardView.bind(this));
+    this.cardsCompositeView = new DeckCardsCompositeView({
+      collection: this.model.getCardModels(),
+    });
+    this.cardsCompositeView.listenTo(
+      this.cardsCompositeView,
+      'childview:select',
+      this.deselectCardView.bind(this),
+    );
     this.cardsRegion.show(this.cardsCompositeView);
   },
 
@@ -101,9 +112,13 @@ var DeckLayout = Backbone.Marionette.LayoutView.extend({
         // flash card in collection
         Animations.cssClassAnimation.call(cardView, 'flash-brightness');
 
-        audio_engine.current().play_effect_for_interaction(RSX.sfx_collection_next.audio, CONFIG.SELECT_SFX_PRIORITY);
+        audio_engine
+          .current()
+          .play_effect_for_interaction(RSX.sfx_collection_next.audio, CONFIG.SELECT_SFX_PRIORITY);
       } else {
-        audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_error.audio, CONFIG.ERROR_SFX_PRIORITY);
+        audio_engine
+          .current()
+          .play_effect_for_interaction(RSX.sfx_ui_error.audio, CONFIG.ERROR_SFX_PRIORITY);
       }
     }
     return changed;
@@ -121,7 +136,9 @@ var DeckLayout = Backbone.Marionette.LayoutView.extend({
       changed = this.deselectCard(cardModel);
       if (changed) {
         this._scrollToAndFlashCardInDeck(cardModel);
-        audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_cardburn.audio, CONFIG.SELECT_SFX_PRIORITY);
+        audio_engine
+          .current()
+          .play_effect_for_interaction(RSX.sfx_ui_cardburn.audio, CONFIG.SELECT_SFX_PRIORITY);
       }
     }
     return changed;
@@ -187,11 +204,17 @@ var DeckLayout = Backbone.Marionette.LayoutView.extend({
         // account for prismatics
         var countBaseCard = 0;
         if (GameDataManager.getInstance().getVisibleCardModelById(cardId)) {
-          countBaseCard = GameDataManager.getInstance().getVisibleCardModelById(cardId).get('inventoryCount');
+          countBaseCard = GameDataManager.getInstance()
+            .getVisibleCardModelById(cardId)
+            .get('inventoryCount');
         }
         var countPrismaticCard = 0;
-        if (GameDataManager.getInstance().getVisibleCardModelById(Cards.getPrismaticCardId(cardId))) {
-          countPrismaticCard = GameDataManager.getInstance().getVisibleCardModelById(Cards.getPrismaticCardId(cardId)).get('inventoryCount');
+        if (
+          GameDataManager.getInstance().getVisibleCardModelById(Cards.getPrismaticCardId(cardId))
+        ) {
+          countPrismaticCard = GameDataManager.getInstance()
+            .getVisibleCardModelById(Cards.getPrismaticCardId(cardId))
+            .get('inventoryCount');
         }
         for (var j = 0; j < count; j++) {
           if (countPrismaticCard > 0) {
@@ -212,19 +235,37 @@ var DeckLayout = Backbone.Marionette.LayoutView.extend({
       }
       if (phantomCardIdsToAdd.length > 0) {
         var phantomCardsString = '';
-        if (SDK.CardFactory.cardForIdentifier(phantomCardIdsToAdd[0], SDK.GameSession.getInstance())) {
-          phantomCardsString = SDK.CardFactory.cardForIdentifier(phantomCardIdsToAdd[0], SDK.GameSession.getInstance()).getName();
+        if (
+          SDK.CardFactory.cardForIdentifier(phantomCardIdsToAdd[0], SDK.GameSession.getInstance())
+        ) {
+          phantomCardsString = SDK.CardFactory.cardForIdentifier(
+            phantomCardIdsToAdd[0],
+            SDK.GameSession.getInstance(),
+          ).getName();
         } else {
           phantomCardsString = 'unknown card';
         }
         for (var i = 1; i < phantomCardIdsToAdd.length; i++) {
-          if (SDK.CardFactory.cardForIdentifier(phantomCardIdsToAdd[i], SDK.GameSession.getInstance())) {
-            phantomCardsString = phantomCardsString + ', ' + SDK.CardFactory.cardForIdentifier(phantomCardIdsToAdd[i], SDK.GameSession.getInstance()).getName();
+          if (
+            SDK.CardFactory.cardForIdentifier(phantomCardIdsToAdd[i], SDK.GameSession.getInstance())
+          ) {
+            phantomCardsString =
+              phantomCardsString +
+              ', ' +
+              SDK.CardFactory.cardForIdentifier(
+                phantomCardIdsToAdd[i],
+                SDK.GameSession.getInstance(),
+              ).getName();
           } else {
             phantomCardsString = phantomCardsString + ', unknown card';
           }
         }
-        NavigationManager.getInstance().showDialogView(new ErrorDialogItemView({ title: 'Deck imported but missing cards:', message: '' + phantomCardsString }));
+        NavigationManager.getInstance().showDialogView(
+          new ErrorDialogItemView({
+            title: 'Deck imported but missing cards:',
+            message: '' + phantomCardsString,
+          }),
+        );
       }
     }
   },
@@ -265,12 +306,15 @@ var DeckLayout = Backbone.Marionette.LayoutView.extend({
       // base 64 hash the deck string
       var cardsEncoded = btoa(cardString);
       // add deck name as plain text in brackets, set hash as value, show popover, then select it
-      this.ui.$deckCardIds.val('[' + this.model.get('name') + ']' + cardsEncoded).popover({ trigger: 'focus' }).focus().select();
+      this.ui.$deckCardIds
+        .val('[' + this.model.get('name') + ']' + cardsEncoded)
+        .popover({ trigger: 'focus' })
+        .focus()
+        .select();
     }
   },
 
   /* endregion IMPORT / EXPORT */
-
 });
 
 // Expose the class either via CommonJS or the global object

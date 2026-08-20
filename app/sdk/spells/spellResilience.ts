@@ -28,7 +28,9 @@ class SpellResilience extends Spell {
     for (let i = 0; i < drawPile.length; i++) {
       var cardIndex = drawPile[i];
       var cardAtIndex = this.getGameSession().getCardByIndex(cardIndex);
-      if ((cardAtIndex != null ? cardAtIndex.getBaseCardId() : undefined) === unit.getBaseCardId()) {
+      if (
+        (cardAtIndex != null ? cardAtIndex.getBaseCardId() : undefined) === unit.getBaseCardId()
+      ) {
         indexOfCard = i;
         cardFound = true;
         break;
@@ -39,7 +41,10 @@ class SpellResilience extends Spell {
       const cardIndexToDraw = drawPile[indexOfCard];
       if (cardIndexToDraw != null) {
         const card = this.getGameSession().getCardByIndex(cardIndexToDraw);
-        const drawCardAction = this.getGameSession().getPlayerById(this.getOwner().getPlayerId()).getDeck().actionDrawCard(cardIndexToDraw);
+        const drawCardAction = this.getGameSession()
+          .getPlayerById(this.getOwner().getPlayerId())
+          .getDeck()
+          .actionDrawCard(cardIndexToDraw);
         return this.getGameSession().executeAction(drawCardAction);
       }
     }

@@ -30,8 +30,11 @@ class ModifierDeathWatchBuffMinionsInHand extends ModifierDeathWatch {
         const result = [];
         for (var card of Array.from<any>(cardsInHand)) {
           if ((card != null ? card.getType() : undefined) === CardType.Unit) {
-            result.push(Array.from<any>(this.modifiersContextObjects).map((modifierContextObject) =>
-              this.getGameSession().applyModifierContextObject(modifierContextObject, card)));
+            result.push(
+              Array.from<any>(this.modifiersContextObjects).map((modifierContextObject) =>
+                this.getGameSession().applyModifierContextObject(modifierContextObject, card),
+              ),
+            );
           } else {
             result.push(undefined);
           }
@@ -42,7 +45,10 @@ class ModifierDeathWatchBuffMinionsInHand extends ModifierDeathWatch {
   }
 }
 ModifierDeathWatchBuffMinionsInHand.prototype.type = 'ModifierDeathWatchBuffMinionsInHand';
-ModifierDeathWatchBuffMinionsInHand.prototype.fxResource = ['FX.Modifiers.ModifierDeathwatch', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierDeathWatchBuffMinionsInHand.prototype.fxResource = [
+  'FX.Modifiers.ModifierDeathwatch',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 ModifierDeathWatchBuffMinionsInHand.prototype.modifiersContextObjects = null;
 
 module.exports = ModifierDeathWatchBuffMinionsInHand;

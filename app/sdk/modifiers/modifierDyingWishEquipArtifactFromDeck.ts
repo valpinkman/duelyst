@@ -22,7 +22,9 @@ class ModifierDyingWishEquipArtifactFromDeck extends ModifierDyingWish {
   static description = 'Equip %X from your deck';
 
   static createContextObject(numArtifacts) {
-    if (numArtifacts == null) { numArtifacts = 1; }
+    if (numArtifacts == null) {
+      numArtifacts = 1;
+    }
     const contextObject = super.createContextObject();
     contextObject.numArtifacts = numArtifacts;
     return contextObject;
@@ -33,7 +35,10 @@ class ModifierDyingWishEquipArtifactFromDeck extends ModifierDyingWish {
       if (modifierContextObject.numArtifacts <= 1) {
         return this.description.replace(/%X/, 'a random artifact');
       }
-      return this.description.replace(/%X/, `${modifierContextObject.numArtifacts} random artifacts`);
+      return this.description.replace(
+        /%X/,
+        `${modifierContextObject.numArtifacts} random artifacts`,
+      );
     }
     return this.description;
   }
@@ -59,7 +64,9 @@ class ModifierDyingWishEquipArtifactFromDeck extends ModifierDyingWish {
       const indexOfArtifacts = [];
       for (let i = 0; i < drawPile.length; i++) {
         cardIndex = drawPile[i];
-        if (__guard__(gameSession.getCardByIndex(cardIndex), (x) => x.getType()) === CardType.Artifact) {
+        if (
+          __guard__(gameSession.getCardByIndex(cardIndex), (x) => x.getType()) === CardType.Artifact
+        ) {
           indexOfArtifacts.push(i);
         }
       }
@@ -70,14 +77,20 @@ class ModifierDyingWishEquipArtifactFromDeck extends ModifierDyingWish {
 
       // make sure we don't try to equip more than 3 artifacts
       let numArtifactsToEquip = this.numArtifacts;
-      if ((modifiersByArtifact.length + numArtifactsToEquip) > CONFIG.MAX_ARTIFACTS) {
+      if (modifiersByArtifact.length + numArtifactsToEquip > CONFIG.MAX_ARTIFACTS) {
         numArtifactsToEquip = CONFIG.MAX_ARTIFACTS - modifiersByArtifact.length;
       }
 
       // find X random artifacts
-      for (let j = 0, end = numArtifactsToEquip, asc = end >= 0; asc ? j < end : j > end; asc ? j++ : j--) {
+      for (
+        let j = 0, end = numArtifactsToEquip, asc = end >= 0;
+        asc ? j < end : j > end;
+        asc ? j++ : j--
+      ) {
         if (indexOfArtifacts.length > 0) {
-          var artifactIndexToRemove = this.getGameSession().getRandomIntegerForExecution(indexOfArtifacts.length);
+          var artifactIndexToRemove = this.getGameSession().getRandomIntegerForExecution(
+            indexOfArtifacts.length,
+          );
           var indexOfCardInDeck = indexOfArtifacts[artifactIndexToRemove];
           indexOfArtifacts.splice(artifactIndexToRemove, 1);
           cardIndicesToPlay.push(drawPile[indexOfCardInDeck]);
@@ -85,11 +98,17 @@ class ModifierDyingWishEquipArtifactFromDeck extends ModifierDyingWish {
       }
 
       // equip the random artifacts from deck
-      if ((cardIndicesToPlay != null) && (cardIndicesToPlay.length > 0)) {
+      if (cardIndicesToPlay != null && cardIndicesToPlay.length > 0) {
         return (() => {
           const result = [];
           for (cardIndex of Array.from<any>(cardIndicesToPlay)) {
-            var playCardAction = new PlayCardSilentlyAction(gameSession, this.getCard().getOwnerId(), this.getCard().getPosition().x, this.getCard().getPosition().y, cardIndex);
+            var playCardAction = new PlayCardSilentlyAction(
+              gameSession,
+              this.getCard().getOwnerId(),
+              this.getCard().getPosition().x,
+              this.getCard().getPosition().y,
+              cardIndex,
+            );
             playCardAction.setSource(this.getCard());
             result.push(gameSession.executeAction(playCardAction));
           }
@@ -104,5 +123,5 @@ ModifierDyingWishEquipArtifactFromDeck.prototype.type = 'ModifierDyingWishEquipA
 module.exports = ModifierDyingWishEquipArtifactFromDeck;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

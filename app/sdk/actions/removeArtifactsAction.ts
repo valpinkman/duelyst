@@ -19,7 +19,8 @@ class RemoveArtifactsAction extends Action {
     super._execute();
     const target = this.getTarget();
     if (target != null) {
-      if (!target.getIsGeneral()) { // artifacts are only on the general
+      if (!target.getIsGeneral()) {
+        // artifacts are only on the general
         return;
       }
 

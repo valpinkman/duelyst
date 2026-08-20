@@ -80,7 +80,10 @@ class CardFactory_FirstWatchSet_Faction6 {
       card.manaCost = 8;
       card.rarityId = Rarity.Legendary;
       card.setInherentModifiersContextObjects([
-        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetOwnPlayer([ModifierImmuneToAttacksByMinions.createContextObject()], i18next.t('modifiers.faction_6_matron_elveiti')),
+        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetOwnPlayer(
+          [ModifierImmuneToAttacksByMinions.createContextObject()],
+          i18next.t('modifiers.faction_6_matron_elveiti'),
+        ),
       ]);
       card.setFXResource(['FX.Cards.Neutral.EXun']);
       card.setBoundingBoxWidth(75);
@@ -126,9 +129,11 @@ class CardFactory_FirstWatchSet_Faction6 {
       card.setBaseSoundResource({
         apply: RSX.sfx_spell_kineticequilibrium.audio,
       });
-      card.setFollowups([{
-        id: Cards.Spell.CloneSourceEntity4X,
-      }]);
+      card.setFollowups([
+        {
+          id: Cards.Spell.CloneSourceEntity4X,
+        },
+      ]);
     }
 
     if (identifier === Cards.Faction6.FrostBomb) {
@@ -160,7 +165,10 @@ class CardFactory_FirstWatchSet_Faction6 {
       card.maxHP = 1;
       card.manaCost = 1;
       card.rarityId = Rarity.TokenUnit;
-      card.setInherentModifiersContextObjects([ModifierWall.createContextObject(), ModifierDyingWishDamageNearbyEnemies.createContextObject(2)]);
+      card.setInherentModifiersContextObjects([
+        ModifierWall.createContextObject(),
+        ModifierDyingWishDamageNearbyEnemies.createContextObject(2),
+      ]);
       card.addKeywordClassToInclude(ModifierToken);
     }
 
@@ -313,9 +321,17 @@ class CardFactory_FirstWatchSet_Faction6 {
       card.manaCost = 3;
       card.rarityId = Rarity.Common;
       sentinelData = { id: Cards.Faction6.VanarSentinel };
-      if (sentinelData.additionalModifiersContextObjects == null) { sentinelData.additionalModifiersContextObjects = []; }
-      sentinelData.additionalModifiersContextObjects.push(ModifierSentinelOpponentSummonSwapPlaces.createContextObject('transform.', { id: Cards.Faction6.Freeblade }));
-      card.setInherentModifiersContextObjects([ModifierSentinelSetup.createContextObject(sentinelData)]);
+      if (sentinelData.additionalModifiersContextObjects == null) {
+        sentinelData.additionalModifiersContextObjects = [];
+      }
+      sentinelData.additionalModifiersContextObjects.push(
+        ModifierSentinelOpponentSummonSwapPlaces.createContextObject('transform.', {
+          id: Cards.Faction6.Freeblade,
+        }),
+      );
+      card.setInherentModifiersContextObjects([
+        ModifierSentinelSetup.createContextObject(sentinelData),
+      ]);
       card.addKeywordClassToInclude(ModifierSentinel);
       card.addKeywordClassToInclude(ModifierTokenCreator);
     }
@@ -352,9 +368,21 @@ class CardFactory_FirstWatchSet_Faction6 {
       card.manaCost = 3;
       card.rarityId = Rarity.Rare;
       sentinelData = { id: Cards.Faction6.VanarSentinel };
-      if (sentinelData.additionalModifiersContextObjects == null) { sentinelData.additionalModifiersContextObjects = []; }
-      sentinelData.additionalModifiersContextObjects.push(ModifierSentinelOpponentGeneralAttack.createContextObject('transform.', { id: Cards.Faction6.DrakeDowager }));
-      card.setInherentModifiersContextObjects([ModifierRanged.createContextObject(), ModifierMyAttackWatchSpawnMinionNearby.createContextObject({ id: Cards.Faction6.AzureDrake }), ModifierSentinelSetup.createContextObject(sentinelData)]);
+      if (sentinelData.additionalModifiersContextObjects == null) {
+        sentinelData.additionalModifiersContextObjects = [];
+      }
+      sentinelData.additionalModifiersContextObjects.push(
+        ModifierSentinelOpponentGeneralAttack.createContextObject('transform.', {
+          id: Cards.Faction6.DrakeDowager,
+        }),
+      );
+      card.setInherentModifiersContextObjects([
+        ModifierRanged.createContextObject(),
+        ModifierMyAttackWatchSpawnMinionNearby.createContextObject({
+          id: Cards.Faction6.AzureDrake,
+        }),
+        ModifierSentinelSetup.createContextObject(sentinelData),
+      ]);
       card.addKeywordClassToInclude(ModifierSentinel);
       card.addKeywordClassToInclude(ModifierTokenCreator);
     }
@@ -390,9 +418,22 @@ class CardFactory_FirstWatchSet_Faction6 {
       card.maxHP = 2;
       card.manaCost = 3;
       sentinelData = { id: Cards.Faction6.VanarSentinel };
-      if (sentinelData.additionalModifiersContextObjects == null) { sentinelData.additionalModifiersContextObjects = []; }
-      sentinelData.additionalModifiersContextObjects.push(ModifierSentinelOpponentSpellCast.createContextObject('transform.', { id: Cards.Faction6.MoonlitBasilysk }));
-      card.setInherentModifiersContextObjects([ModifierEnemySpellWatchBuffSelf.createContextObject(3, 3, i18next.t('modifiers.faction_6_moonlit_basilysk')), ModifierSentinelSetup.createContextObject(sentinelData)]);
+      if (sentinelData.additionalModifiersContextObjects == null) {
+        sentinelData.additionalModifiersContextObjects = [];
+      }
+      sentinelData.additionalModifiersContextObjects.push(
+        ModifierSentinelOpponentSpellCast.createContextObject('transform.', {
+          id: Cards.Faction6.MoonlitBasilysk,
+        }),
+      );
+      card.setInherentModifiersContextObjects([
+        ModifierEnemySpellWatchBuffSelf.createContextObject(
+          3,
+          3,
+          i18next.t('modifiers.faction_6_moonlit_basilysk'),
+        ),
+        ModifierSentinelSetup.createContextObject(sentinelData),
+      ]);
       card.rarityId = Rarity.Rare;
       card.addKeywordClassToInclude(ModifierSentinel);
       card.addKeywordClassToInclude(ModifierTokenCreator);
@@ -431,7 +472,11 @@ class CardFactory_FirstWatchSet_Faction6 {
       card.rarityId = Rarity.Common;
       card.raceId = Races.Vespyr;
       card.setInherentModifiersContextObjects([
-        ModifierEndTurnWatchGainTempBuff.createContextObject(3, 0, i18next.t('modifiers.faction_6_crystal_arbiter')),
+        ModifierEndTurnWatchGainTempBuff.createContextObject(
+          3,
+          0,
+          i18next.t('modifiers.faction_6_crystal_arbiter'),
+        ),
       ]);
       card.setFXResource(['FX.Cards.Neutral.Amu']);
       card.setBaseSoundResource({
@@ -512,7 +557,9 @@ class CardFactory_FirstWatchSet_Faction6 {
       speedBuffContextObject.attributeBuffsAbsolute = ['speed'];
       speedBuffContextObject.attributeBuffsFixed = ['speed'];
       speedBuffContextObject.durationEndTurn = 2;
-      speedBuffContextObject.appliedName = i18next.t('modifiers.faction_6_spell_blinding_snowstorm_1');
+      speedBuffContextObject.appliedName = i18next.t(
+        'modifiers.faction_6_spell_blinding_snowstorm_1',
+      );
       card.setTargetModifiersContextObjects([speedBuffContextObject]);
       card.applyToEnemy = true;
       card.setFXResource(['FX.Cards.Spell.BlindingSnowstorm']);

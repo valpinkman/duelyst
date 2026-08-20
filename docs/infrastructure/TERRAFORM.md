@@ -54,6 +54,7 @@ initialize and use Terraform.
 To do this, create two configuration files:
 
 `staging/config.aws.tfbackend`:
+
 ```
 region = "your-preferred-aws-region"
 access_key = "your-access-key"
@@ -61,6 +62,7 @@ secret_key = "your-secret-key"
 ```
 
 `staging/config.s3.tfbackend`:
+
 ```
 region = "your-preferred-aws-region"
 bucket = "your-globally-unique-bucket-name"

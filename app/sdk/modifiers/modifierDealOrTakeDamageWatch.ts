@@ -30,7 +30,11 @@ class ModifierDealOrTakeDamageWatch extends Modifier {
 
   getIsActionRelevant(a) {
     // check if this action will deal damage or take damage
-    return a instanceof DamageAction && ((a.getSource() === this.getCard()) || (a.getTarget() === this.getCard())) && this.willDealDamage(a);
+    return (
+      a instanceof DamageAction &&
+      (a.getSource() === this.getCard() || a.getTarget() === this.getCard()) &&
+      this.willDealDamage(a)
+    );
   }
 
   willDealDamage(action) {

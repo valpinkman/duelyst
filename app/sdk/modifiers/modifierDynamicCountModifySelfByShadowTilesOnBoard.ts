@@ -20,11 +20,20 @@ class ModifierDynamicCountModifySelfByShadowTilesOnBoard extends ModifierDynamic
   static description = 'This minion has %X for each friendly Shadow Creep';
 
   static createContextObject(attackBuff, maxHPBuff, description, appliedName, options) {
-    if (attackBuff == null) { attackBuff = 0; }
-    if (maxHPBuff == null) { maxHPBuff = 0; }
-    if (options == null) { options = undefined; }
+    if (attackBuff == null) {
+      attackBuff = 0;
+    }
+    if (maxHPBuff == null) {
+      maxHPBuff = 0;
+    }
+    if (options == null) {
+      options = undefined;
+    }
     const contextObject = super.createContextObject(options);
-    const perTileStatBuffContextObject = Modifier.createContextObjectWithAttributeBuffs(attackBuff, maxHPBuff);
+    const perTileStatBuffContextObject = Modifier.createContextObjectWithAttributeBuffs(
+      attackBuff,
+      maxHPBuff,
+    );
     if (appliedName) {
       perTileStatBuffContextObject.appliedName = appliedName;
     }
@@ -40,15 +49,20 @@ class ModifierDynamicCountModifySelfByShadowTilesOnBoard extends ModifierDynamic
   getCurrentCount() {
     let allowUntargetable;
     let shadowTileCount = 0;
-    for (var card of Array.from<any>(this.getGameSession().getBoard().getCards(CardType.Tile, (allowUntargetable = true)))) {
-      if ((card.getBaseCardId() === Cards.Tile.Shadow) && card.isOwnedBy(this.getCard().getOwner())) {
+    for (var card of Array.from<any>(
+      this.getGameSession()
+        .getBoard()
+        .getCards(CardType.Tile, (allowUntargetable = true)),
+    )) {
+      if (card.getBaseCardId() === Cards.Tile.Shadow && card.isOwnedBy(this.getCard().getOwner())) {
         shadowTileCount++;
       }
     }
     return shadowTileCount;
   }
 }
-ModifierDynamicCountModifySelfByShadowTilesOnBoard.prototype.type = 'ModifierDynamicCountModifySelfByShadowTilesOnBoard';
+ModifierDynamicCountModifySelfByShadowTilesOnBoard.prototype.type =
+  'ModifierDynamicCountModifySelfByShadowTilesOnBoard';
 ModifierDynamicCountModifySelfByShadowTilesOnBoard.prototype.activeInDeck = false;
 ModifierDynamicCountModifySelfByShadowTilesOnBoard.prototype.activeInHand = false;
 ModifierDynamicCountModifySelfByShadowTilesOnBoard.prototype.activeInSignatureCards = false;

@@ -25,7 +25,21 @@ import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const espree = require(require.resolve('espree', { paths: [require.resolve('eslint')] }));
 
-const COMBINATORS = new Set(['then', 'catch', 'finally', 'tap', 'spread', 'map', 'each', 'reduce', 'filter', 'nodeify', 'done', 'caught', 'error']);
+const COMBINATORS = new Set([
+  'then',
+  'catch',
+  'finally',
+  'tap',
+  'spread',
+  'map',
+  'each',
+  'reduce',
+  'filter',
+  'nodeify',
+  'done',
+  'caught',
+  'error',
+]);
 
 function walk(node, visit, parents = []) {
   if (!node || typeof node.type !== 'string') return;
@@ -48,15 +62,25 @@ function isPromiseCallback(fnNode, parents) {
   if (!parent || parent.type !== 'CallExpression') return false;
   if (!parent.arguments.includes(fnNode)) return false;
   const callee = parent.callee;
-  return callee && callee.type === 'MemberExpression' && !callee.computed
-    && callee.property.type === 'Identifier' && COMBINATORS.has(callee.property.name);
+  return (
+    callee &&
+    callee.type === 'MemberExpression' &&
+    !callee.computed &&
+    callee.property.type === 'Identifier' &&
+    COMBINATORS.has(callee.property.name)
+  );
 }
 
 let totalFiles = 0;
 let totalRewrites = 0;
 for (const file of process.argv.slice(2)) {
   const src = fs.readFileSync(file, 'utf8');
-  const ast = espree.parse(src, { ecmaVersion: 2022, sourceType: 'script', loc: true, range: true });
+  const ast = espree.parse(src, {
+    ecmaVersion: 2022,
+    sourceType: 'script',
+    loc: true,
+    range: true,
+  });
 
   // collect: for every ThisExpression, its chain of enclosing functions
   const edits = []; // {start, end, text}
@@ -69,7 +93,11 @@ for (const file of process.argv.slice(2)) {
     let fnIdx = -1;
     for (let i = parents.length - 1; i >= 0; i--) {
       const p = parents[i];
-      if (p.type === 'FunctionExpression' || p.type === 'FunctionDeclaration') { fn = p; fnIdx = i; break; }
+      if (p.type === 'FunctionExpression' || p.type === 'FunctionDeclaration') {
+        fn = p;
+        fnIdx = i;
+        break;
+      }
       if (p.type === 'ArrowFunctionExpression') continue;
     }
     if (!fn || fn.type !== 'FunctionExpression') return;
@@ -79,8 +107,15 @@ for (const file of process.argv.slice(2)) {
     let host = null;
     for (let i = fnIdx - 1; i >= 0; i--) {
       const p = parents[i];
-      if ((p.type === 'FunctionExpression' && parents[i - 1] && (parents[i - 1].type === 'MethodDefinition' || parents[i - 1].type === 'Property'))
-        || p.type === 'FunctionDeclaration') { host = p; break; }
+      if (
+        (p.type === 'FunctionExpression' &&
+          parents[i - 1] &&
+          (parents[i - 1].type === 'MethodDefinition' || parents[i - 1].type === 'Property')) ||
+        p.type === 'FunctionDeclaration'
+      ) {
+        host = p;
+        break;
+      }
     }
     if (!host) host = fn; // fall back: declare inside the callback's own body? avoid - use file top-level function
     const bodyStart = host.body.range[0] + 1; // after '{'
@@ -100,6 +135,8 @@ for (const file of process.argv.slice(2)) {
   fs.writeFileSync(file, out);
   totalFiles += 1;
   totalRewrites += edits.length - methodsNeedingDecl.size;
-  console.log(`${file}: ${edits.length - methodsNeedingDecl.size} this-refs scoped in ${methodsNeedingDecl.size} function(s)`);
+  console.log(
+    `${file}: ${edits.length - methodsNeedingDecl.size} this-refs scoped in ${methodsNeedingDecl.size} function(s)`,
+  );
 }
 console.log(`\n${totalRewrites} rewrites across ${totalFiles} file(s)`);

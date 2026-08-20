@@ -71,7 +71,12 @@ class CardFactory_Monthly_M13_NovemberMonthlies {
       card.maxHP = 2;
       card.manaCost = 2;
       card.rarityId = Rarity.Rare;
-      card.setInherentModifiersContextObjects([ModifierOpeningGambitSpawnCopiesOfEntityNearby.createContextObject('a copy of this minion', 1)]);
+      card.setInherentModifiersContextObjects([
+        ModifierOpeningGambitSpawnCopiesOfEntityNearby.createContextObject(
+          'a copy of this minion',
+          1,
+        ),
+      ]);
     }
 
     if (identifier === Cards.Neutral.AzureHerald) {
@@ -103,7 +108,9 @@ class CardFactory_Monthly_M13_NovemberMonthlies {
       card.maxHP = 4;
       card.manaCost = 2;
       card.rarityId = Rarity.Common;
-      card.setInherentModifiersContextObjects([ModifierOpeningGambitHealMyGeneral.createContextObject(3)]);
+      card.setInherentModifiersContextObjects([
+        ModifierOpeningGambitHealMyGeneral.createContextObject(3),
+      ]);
     }
 
     if (identifier === Cards.Neutral.Ironclad) {
@@ -136,7 +143,9 @@ class CardFactory_Monthly_M13_NovemberMonthlies {
       card.atk = 4;
       card.maxHP = 3;
       card.manaCost = 5;
-      card.setInherentModifiersContextObjects([ModifierDyingWishDispelAllEnemyMinions.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierDyingWishDispelAllEnemyMinions.createContextObject(),
+      ]);
       card.rarityId = Rarity.Epic;
     }
 
@@ -169,7 +178,9 @@ class CardFactory_Monthly_M13_NovemberMonthlies {
       card.maxHP = 4;
       card.manaCost = 4;
       card.rarityId = Rarity.Legendary;
-      card.setInherentModifiersContextObjects([ModifierOpponentDrawCardWatchDamageEnemyGeneral.createContextObject(2)]);
+      card.setInherentModifiersContextObjects([
+        ModifierOpponentDrawCardWatchDamageEnemyGeneral.createContextObject(2),
+      ]);
     }
 
     return card;

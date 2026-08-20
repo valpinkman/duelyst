@@ -28,9 +28,9 @@ var FXFbmNoiseGradientMaskedSprite = FXSprite.extend({
 
   updateTweenAction(value, key) {
     switch (key) {
-    default:
-      FXSprite.prototype.updateTweenAction.call(this, value, key);
-      break;
+      default:
+        FXSprite.prototype.updateTweenAction.call(this, value, key);
+        break;
     }
   },
 });
@@ -38,7 +38,9 @@ var FXFbmNoiseGradientMaskedSprite = FXSprite.extend({
 FXFbmNoiseGradientMaskedSprite.WebGLRenderCmd = function (renderable) {
   FXSprite.WebGLRenderCmd.call(this, renderable);
 };
-const proto = FXFbmNoiseGradientMaskedSprite.WebGLRenderCmd.prototype = Object.create(FXSprite.WebGLRenderCmd.prototype);
+const proto = (FXFbmNoiseGradientMaskedSprite.WebGLRenderCmd.prototype = Object.create(
+  FXSprite.WebGLRenderCmd.prototype,
+));
 proto.constructor = FXFbmNoiseGradientMaskedSprite.WebGLRenderCmd;
 
 proto.rendering = function () {
@@ -51,8 +53,15 @@ proto.rendering = function () {
   const shaderProgram = this._shaderProgram;
   shaderProgram.use();
   shaderProgram._setUniformForMVPMatrixWithMat4(this._stackMatrix);
-  shaderProgram.setUniformLocationWith2f(shaderProgram.loc_texResolution, node._texture.getPixelsWide(), node._texture.getPixelsHigh());
-  shaderProgram.setUniformLocationWith1f(shaderProgram.loc_time, node.getFX().getTime() * node.speed);
+  shaderProgram.setUniformLocationWith2f(
+    shaderProgram.loc_texResolution,
+    node._texture.getPixelsWide(),
+    node._texture.getPixelsHigh(),
+  );
+  shaderProgram.setUniformLocationWith1f(
+    shaderProgram.loc_time,
+    node.getFX().getTime() * node.speed,
+  );
   cc.glBindTexture2DN(0, node._texture);
   cc.glBlendFunc(node._blendFunc.src, node._blendFunc.dst);
 

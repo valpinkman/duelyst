@@ -30,7 +30,6 @@ const audio_engine = require('../../../audio/audio_engine');
  *************************************************************************** */
 
 const RunLayer = BaseLayer.extend({
-
   delegate: null,
   riftData: null,
 
@@ -82,7 +81,13 @@ const RunLayer = BaseLayer.extend({
     this.addChild(this.bgPlateSprite);
 
     // label
-    this.runDetailsLabel = new cc.LabelTTF(i18next.t('rift.rift_level_label', { level: riftData.rift_level }), RSX.font_bold.name, 20, cc.size(500, 24), cc.TEXT_ALIGNMENT_CENTER);
+    this.runDetailsLabel = new cc.LabelTTF(
+      i18next.t('rift.rift_level_label', { level: riftData.rift_level }),
+      RSX.font_bold.name,
+      20,
+      cc.size(500, 24),
+      cc.TEXT_ALIGNMENT_CENTER,
+    );
     this.runDetailsLabel.setPosition(0, 60);
     this.runDetailsLabel.setFontFillColor(cc.color(255, 255, 255));
 
@@ -94,13 +99,25 @@ const RunLayer = BaseLayer.extend({
     if (riftRating == null) {
       riftRating = 400;
     }
-    this.runRatingDetailsLabel = new cc.LabelTTF(i18next.t('rift.rift_rating_label', { rating: riftRating }), RSX.font_regular.name, 16, cc.size(500, 20), cc.TEXT_ALIGNMENT_CENTER);
+    this.runRatingDetailsLabel = new cc.LabelTTF(
+      i18next.t('rift.rift_rating_label', { rating: riftRating }),
+      RSX.font_regular.name,
+      16,
+      cc.size(500, 20),
+      cc.TEXT_ALIGNMENT_CENTER,
+    );
     this.runRatingDetailsLabel.setPositionBelowSprite(this.runDetailsLabel);
     this.runRatingDetailsLabel.setFontFillColor(cc.color(255, 255, 255));
     this.addChild(this.runRatingDetailsLabel);
 
     // progress label
-    this.runProgressLabel = new cc.LabelTTF(i18next.t('rift.progress_to_next_level_message'), RSX.font_regular.name, 14, cc.size(500, 32), cc.TEXT_ALIGNMENT_CENTER);
+    this.runProgressLabel = new cc.LabelTTF(
+      i18next.t('rift.progress_to_next_level_message'),
+      RSX.font_regular.name,
+      14,
+      cc.size(500, 32),
+      cc.TEXT_ALIGNMENT_CENTER,
+    );
     this.runProgressLabel.setPosition(0, -60);
     this.runProgressLabel.setFontFillColor(cc.color(255, 255, 255));
 
@@ -111,7 +128,16 @@ const RunLayer = BaseLayer.extend({
     const pointsSoFar = riftData.rift_points - RiftHelper.totalPointsForLevel(riftData.rift_level);
 
     // progress label
-    this.runProgressAmountLabel = new cc.LabelTTF(i18next.t('rift.progress_over_required_xp_message', { current: pointsSoFar, required: levelUpRequirement }), RSX.font_regular.name, 20, cc.size(500, 32), cc.TEXT_ALIGNMENT_CENTER);
+    this.runProgressAmountLabel = new cc.LabelTTF(
+      i18next.t('rift.progress_over_required_xp_message', {
+        current: pointsSoFar,
+        required: levelUpRequirement,
+      }),
+      RSX.font_regular.name,
+      20,
+      cc.size(500, 32),
+      cc.TEXT_ALIGNMENT_CENTER,
+    );
     this.runProgressAmountLabel.setPosition(0, -80);
     this.runProgressAmountLabel.setFontFillColor(cc.color(255, 255, 255));
 
@@ -132,7 +158,10 @@ const RunLayer = BaseLayer.extend({
     const riftLine = new FXRiftLineSprite();
     riftLine.setPosition(0, 0);
     // riftLine.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
-    riftLine.setScale(this.runDetailsLabel.getTextureRect().width / 48, this.runDetailsLabel.getTextureRect().height / 12);
+    riftLine.setScale(
+      this.runDetailsLabel.getTextureRect().width / 48,
+      this.runDetailsLabel.getTextureRect().height / 12,
+    );
     riftLine.progress = pointsSoFar / levelUpRequirement;
     this.addChild(riftLine);
 
@@ -160,7 +189,13 @@ const RunLayer = BaseLayer.extend({
 
     const buttonSprite = new ccui.Scale9Sprite(RSX.button_secondary.img);
     const buttonGlowSprite = new ccui.Scale9Sprite(RSX.button_secondary_glow.img);
-    this.upgradeButton = new cc.ControlButton(i18next.t('rift.upgrade_count_button_label', { upgradesAvailableCount: riftData.upgrades_available_count }), buttonSprite, 48);
+    this.upgradeButton = new cc.ControlButton(
+      i18next.t('rift.upgrade_count_button_label', {
+        upgradesAvailableCount: riftData.upgrades_available_count,
+      }),
+      buttonSprite,
+      48,
+    );
     this.upgradeButton.setPreferredSize(buttonSprite.getContentSize());
     this.upgradeButton.setAdjustBackgroundImage(false);
     this.upgradeButton.setOpacity(riftData.upgrades_available_count > 0 ? 255 : 100);
@@ -173,22 +208,36 @@ const RunLayer = BaseLayer.extend({
     this.addChild(this.upgradeButton);
 
     // If a player has deck upgrades and has never used one show a tooltip
-    if (!NewPlayerManager.getInstance().getHasUsedRiftUpgrade() && riftData.upgrades_available_count != null && riftData.upgrades_available_count > 0) {
+    if (
+      !NewPlayerManager.getInstance().getHasUsedRiftUpgrade() &&
+      riftData.upgrades_available_count != null &&
+      riftData.upgrades_available_count > 0
+    ) {
       this.upgradeButtonTooltip = new TooltipNode();
-      this.upgradeButtonTooltip.showText(i18next.t('rift.improve_deck_message'), TooltipNode.DIRECTION_RIGHT);
+      this.upgradeButtonTooltip.showText(
+        i18next.t('rift.improve_deck_message'),
+        TooltipNode.DIRECTION_RIGHT,
+      );
       this.upgradeButtonTooltip.setPositionLeftOfSprite(this.upgradeButton);
       this.addChild(this.upgradeButtonTooltip);
     }
 
     const confirmButtonSprite = new ccui.Scale9Sprite(RSX.button_confirm.img);
     const confirmButtonGlowSprite = new ccui.Scale9Sprite(RSX.button_confirm_glow.img);
-    this.playButton = new cc.ControlButton(i18next.t('common.play_button_label'), confirmButtonSprite, 48);
+    this.playButton = new cc.ControlButton(
+      i18next.t('common.play_button_label'),
+      confirmButtonSprite,
+      48,
+    );
     this.playButton.setPreferredSize(confirmButtonSprite.getContentSize());
     this.playButton.setAdjustBackgroundImage(false);
     this.playButton.setZoomOnTouchDown(false);
     this.playButton.setTitleTTFForState(RSX.font_bold.name, cc.CONTROL_STATE_NORMAL);
     this.playButton.setBackgroundSpriteForState(confirmButtonSprite, cc.CONTROL_STATE_NORMAL);
-    this.playButton.setBackgroundSpriteForState(confirmButtonGlowSprite, cc.CONTROL_STATE_HIGHLIGHTED);
+    this.playButton.setBackgroundSpriteForState(
+      confirmButtonGlowSprite,
+      cc.CONTROL_STATE_HIGHLIGHTED,
+    );
     this.playButton.setTitleColorForState(cc.color(255, 255, 255), cc.CONTROL_STATE_NORMAL);
     this.playButton.setPosition(100, -165);
     this.addChild(this.playButton);
@@ -256,10 +305,18 @@ const RunLayer = BaseLayer.extend({
     let mouseOverButton;
     const location = event && event.getLocation();
     if (location) {
-      if (this.playButton instanceof cc.ControlButton && this.playButton.isEnabled() && UtilsEngine.getNodeUnderMouse(this.playButton, location.x, location.y)) {
+      if (
+        this.playButton instanceof cc.ControlButton &&
+        this.playButton.isEnabled() &&
+        UtilsEngine.getNodeUnderMouse(this.playButton, location.x, location.y)
+      ) {
         mouseOverButton = this.playButton;
       }
-      if (this.upgradeButton instanceof cc.ControlButton && this.upgradeButton.isEnabled() && UtilsEngine.getNodeUnderMouse(this.upgradeButton, location.x, location.y)) {
+      if (
+        this.upgradeButton instanceof cc.ControlButton &&
+        this.upgradeButton.isEnabled() &&
+        UtilsEngine.getNodeUnderMouse(this.upgradeButton, location.x, location.y)
+      ) {
         mouseOverButton = this.upgradeButton;
       }
     }
@@ -282,10 +339,18 @@ const RunLayer = BaseLayer.extend({
 
     const location = event && event.getLocation();
     if (location) {
-      if (this.playButton instanceof cc.ControlButton && this.playButton.isEnabled() && UtilsEngine.getNodeUnderMouse(this.playButton, location.x, location.y)) {
+      if (
+        this.playButton instanceof cc.ControlButton &&
+        this.playButton.isEnabled() &&
+        UtilsEngine.getNodeUnderMouse(this.playButton, location.x, location.y)
+      ) {
         this.onPlayPressed();
       }
-      if (this.upgradeButton instanceof cc.ControlButton && this.upgradeButton.isEnabled() && UtilsEngine.getNodeUnderMouse(this.upgradeButton, location.x, location.y)) {
+      if (
+        this.upgradeButton instanceof cc.ControlButton &&
+        this.upgradeButton.isEnabled() &&
+        UtilsEngine.getNodeUnderMouse(this.upgradeButton, location.x, location.y)
+      ) {
         this.onUpgradePressed();
       }
     }
@@ -313,28 +378,31 @@ const RunLayer = BaseLayer.extend({
   transitionIn() {
     return new Promise<void>((resolve, reject) => {
       this.setOpacity(0.0);
-      this.runAction(cc.sequence(
-        cc.fadeIn(CONFIG.FADE_FAST_DURATION),
-        cc.callFunc(() => {
-          resolve();
-        }),
-      ));
+      this.runAction(
+        cc.sequence(
+          cc.fadeIn(CONFIG.FADE_FAST_DURATION),
+          cc.callFunc(() => {
+            resolve();
+          }),
+        ),
+      );
     });
   },
 
   transitionOut() {
     return new Promise<void>((resolve, reject) => {
-      this.runAction(cc.sequence(
-        cc.fadeOut(CONFIG.FADE_FAST_DURATION),
-        cc.callFunc(() => {
-          resolve();
-        }),
-      ));
+      this.runAction(
+        cc.sequence(
+          cc.fadeOut(CONFIG.FADE_FAST_DURATION),
+          cc.callFunc(() => {
+            resolve();
+          }),
+        ),
+      );
     });
   },
 
   /* endregion TRANSITION */
-
 });
 
 RunLayer.create = function (layer) {

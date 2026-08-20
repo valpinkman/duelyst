@@ -23,10 +23,11 @@ class ModifierEnemyCannotHeal extends Modifier {
   onModifyActionForExecution(e) {
     super.onModifyActionForExecution(e);
 
-    const {
-      action,
-    } = e;
-    if (action instanceof HealAction && (__guard__(action.getTarget(), (x) => x.getOwnerId()) !== this.getCard().getOwnerId())) {
+    const { action } = e;
+    if (
+      action instanceof HealAction &&
+      __guard__(action.getTarget(), (x) => x.getOwnerId()) !== this.getCard().getOwnerId()
+    ) {
       action.setChangedByModifier(this);
       return action.setHealMultiplier(0);
     }
@@ -42,5 +43,5 @@ ModifierEnemyCannotHeal.prototype.fxResource = ['FX.Modifiers.ModifierEnemyCanno
 module.exports = ModifierEnemyCannotHeal;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

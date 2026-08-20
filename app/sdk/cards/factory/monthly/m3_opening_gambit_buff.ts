@@ -124,7 +124,11 @@ class CardFactory_Monthly_M3_OpeningGambitBuff {
       const immunityContextObject = PlayerModifierPreventSpellDamage.createContextObject();
       immunityContextObject.durationEndTurn = 2;
       card.setInherentModifiersContextObjects([
-        ModifierOpeningGambitApplyPlayerModifiers.createContextObjectToTargetOwnPlayer([immunityContextObject], false, 'Prevent ALL spell damage until your next turn'),
+        ModifierOpeningGambitApplyPlayerModifiers.createContextObjectToTargetOwnPlayer(
+          [immunityContextObject],
+          false,
+          'Prevent ALL spell damage until your next turn',
+        ),
       ]);
       card.rarityId = Rarity.Rare;
     }
@@ -158,7 +162,9 @@ class CardFactory_Monthly_M3_OpeningGambitBuff {
       card.maxHP = 3;
       card.manaCost = 2;
       card.rarityId = Rarity.Epic;
-      card.setInherentModifiersContextObjects([ModifierSummonWatchFromActionBarByOpeningGambitBuffSelf.createContextObject(2)]);
+      card.setInherentModifiersContextObjects([
+        ModifierSummonWatchFromActionBarByOpeningGambitBuffSelf.createContextObject(2),
+      ]);
     }
 
     if (identifier === Cards.Neutral.KeeperOfTheVale) {

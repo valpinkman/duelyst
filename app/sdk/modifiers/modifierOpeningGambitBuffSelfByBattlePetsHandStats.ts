@@ -19,18 +19,27 @@ class ModifierOpeningGambitBuffSelfByBattlePetsHandStats extends ModifierOpening
     super.onOpeningGambit();
     let healthBuff = 0;
     let attackBuff = 0;
-    for (var card of Array.from<any>(this.getCard().getOwner().getDeck().getCardsInHandExcludingMissing())) {
+    for (var card of Array.from<any>(
+      this.getCard().getOwner().getDeck().getCardsInHandExcludingMissing(),
+    )) {
       if (card.getBelongsToTribe(Races.BattlePet)) {
         healthBuff += card.getMaxHP();
         attackBuff += card.getATK();
       }
     }
-    const buffContextObject = Modifier.createContextObjectWithAttributeBuffs(attackBuff, healthBuff);
+    const buffContextObject = Modifier.createContextObjectWithAttributeBuffs(
+      attackBuff,
+      healthBuff,
+    );
     buffContextObject.appliedName = 'Calculated Power';
     return this.getGameSession().applyModifierContextObject(buffContextObject, this.getCard());
   }
 }
-ModifierOpeningGambitBuffSelfByBattlePetsHandStats.prototype.type = 'ModifierOpeningGambitBuffSelfByBattlePetsHandStats';
-ModifierOpeningGambitBuffSelfByBattlePetsHandStats.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierOpeningGambitBuffSelfByBattlePetsHandStats.prototype.type =
+  'ModifierOpeningGambitBuffSelfByBattlePetsHandStats';
+ModifierOpeningGambitBuffSelfByBattlePetsHandStats.prototype.fxResource = [
+  'FX.Modifiers.ModifierOpeningGambit',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 
 module.exports = ModifierOpeningGambitBuffSelfByBattlePetsHandStats;

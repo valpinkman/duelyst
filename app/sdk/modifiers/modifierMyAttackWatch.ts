@@ -24,10 +24,12 @@ class ModifierMyAttackWatch extends Modifier {
 
   onAction(event) {
     super.onAction(event);
-    const {
-      action,
-    } = event;
-    if ((action.getSource() === this.getCard()) && ((action instanceof AttackAction && (!action.getIsImplicit() || action.getIsAutomatic())) || action instanceof ForcedAttackAction)) {
+    const { action } = event;
+    if (
+      action.getSource() === this.getCard() &&
+      ((action instanceof AttackAction && (!action.getIsImplicit() || action.getIsAutomatic())) ||
+        action instanceof ForcedAttackAction)
+    ) {
       return this.onMyAttackWatch(action);
     }
   }

@@ -9,7 +9,7 @@ const i18next = require('i18next');
 class MythronOrb7Achievement extends Achievement {
   static id = 'mythron7';
   static title = 'Seventh Trial';
-  static description = 'You\'ve opened 61 Mythron Orbs, here\'s a brand new Mythron card.';
+  static description = "You've opened 61 Mythron Orbs, here's a brand new Mythron card.";
   static progressRequired = 61;
   static rewards = { mythronCard: 1 };
 

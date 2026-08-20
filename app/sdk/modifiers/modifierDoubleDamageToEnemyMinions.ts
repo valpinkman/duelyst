@@ -33,7 +33,12 @@ class ModifierDoubleDamageToEnemyMinions extends Modifier {
   }
 
   getIsActionRelevant(a) {
-    return a instanceof DamageAction && (a.getSource() === this.getCard()) && !__guard__(a.getTarget(), (x) => x.getIsGeneral()) && (__guard__(a.getTarget(), (x1) => x1.getOwnerId()) !== this.getCard().getOwnerId());
+    return (
+      a instanceof DamageAction &&
+      a.getSource() === this.getCard() &&
+      !__guard__(a.getTarget(), (x) => x.getIsGeneral()) &&
+      __guard__(a.getTarget(), (x1) => x1.getOwnerId()) !== this.getCard().getOwnerId()
+    );
   }
 
   _modifyAction(a) {
@@ -62,10 +67,12 @@ ModifierDoubleDamageToEnemyMinions.prototype.activeInDeck = false;
 ModifierDoubleDamageToEnemyMinions.prototype.activeInSignatureCards = false;
 ModifierDoubleDamageToEnemyMinions.prototype.activeOnBoard = true;
 ModifierDoubleDamageToEnemyMinions.prototype.damageBonus = 2;
-ModifierDoubleDamageToEnemyMinions.prototype.fxResource = ['FX.Modifiers.ModifierDoubleDamageToEnemyMinions'];
+ModifierDoubleDamageToEnemyMinions.prototype.fxResource = [
+  'FX.Modifiers.ModifierDoubleDamageToEnemyMinions',
+];
 
 module.exports = ModifierDoubleDamageToEnemyMinions;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

@@ -8,7 +8,6 @@ var NavigationManager = require('app/ui/managers/navigation_manager');
 var FormPromptModalItemView = require('./form_prompt_modal');
 
 var AccountInventoryResetModalView = FormPromptModalItemView.extend({
-
   id: 'app-account-wipe',
   template: Template,
 
@@ -70,23 +69,26 @@ var AccountInventoryResetModalView = FormPromptModalItemView.extend({
     // execute
     var password = this.ui.$password.val();
 
-    Promise.resolve($.ajax({
-      url: process.env.API_URL + '/api/me/inventory/card_collection/soft_wipe',
-      type: 'POST',
-      data: JSON.stringify({
-        password: password,
+    Promise.resolve(
+      $.ajax({
+        url: process.env.API_URL + '/api/me/inventory/card_collection/soft_wipe',
+        type: 'POST',
+        data: JSON.stringify({
+          password: password,
+        }),
+        contentType: 'application/json',
+        dataType: 'json',
       }),
-      contentType: 'application/json',
-      dataType: 'json',
-    }))
+    )
       .then(this.onSuccess.bind(this))
-      .catch(function (response) {
-        var message;
-        if (response && response.responseJSON)
-          message = response.responseJSON.message;
-        message = message || 'unknown error';
-        this.onError(message);
-      }.bind(this));
+      .catch(
+        function (response) {
+          var message;
+          if (response && response.responseJSON) message = response.responseJSON.message;
+          message = message || 'unknown error';
+          this.onError(message);
+        }.bind(this),
+      );
   },
 
   onSuccessComplete: function (registration) {
@@ -103,7 +105,6 @@ var AccountInventoryResetModalView = FormPromptModalItemView.extend({
   },
 
   /* endregion EVENTS */
-
 });
 
 // Expose the class either via CommonJS or the global object

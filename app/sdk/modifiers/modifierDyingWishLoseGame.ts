@@ -31,6 +31,9 @@ class ModifierDyingWishLoseGame extends ModifierDyingWish {
 ModifierDyingWishLoseGame.prototype.type = 'ModifierDyingWishLoseGame';
 ModifierDyingWishLoseGame.prototype.name = 'Dying Wish: Kill General';
 ModifierDyingWishLoseGame.prototype.description = 'When this minion dies, your general dies';
-ModifierDyingWishLoseGame.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericDamage'];
+ModifierDyingWishLoseGame.prototype.fxResource = [
+  'FX.Modifiers.ModifierDyingWish',
+  'FX.Modifiers.ModifierGenericDamage',
+];
 
 module.exports = ModifierDyingWishLoseGame;

@@ -19,7 +19,9 @@ class ModifierCounterBuildProgressDescription extends Modifier {
 
   static getDescription(modifierContextObject) {
     if (modifierContextObject) {
-      return i18next.t('modifiers.building_counter_applied_desc', { turns_until_complete: modifierContextObject.turnsLeft });
+      return i18next.t('modifiers.building_counter_applied_desc', {
+        turns_until_complete: modifierContextObject.turnsLeft,
+      });
     }
   }
 }

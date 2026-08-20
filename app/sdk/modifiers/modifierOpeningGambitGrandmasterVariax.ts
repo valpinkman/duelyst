@@ -16,17 +16,26 @@ class ModifierOpeningGambitGrandmasterVariax extends ModifierOpeningGambitChange
 
   onOpeningGambit(action) {
     // choose signature spell to replace based on General
-    if (this.getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId()).getBaseCardId() === Cards.Faction4.AltGeneral) {
+    if (
+      this.getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId()).getBaseCardId() ===
+      Cards.Faction4.AltGeneral
+    ) {
       this.cardData = { id: Cards.Spell.SummonFiends };
-    } else if (this.getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId()).getBaseCardId() === Cards.Faction4.ThirdGeneral) {
+    } else if (
+      this.getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId()).getBaseCardId() ===
+      Cards.Faction4.ThirdGeneral
+    ) {
       this.cardData = { id: Cards.Spell.SummonHusks };
-    } else { // Lilithe's spell is more widely useful so make it default
+    } else {
+      // Lilithe's spell is more widely useful so make it default
       this.cardData = { id: Cards.Spell.FuriousLings };
     }
     return super.onOpeningGambit(action);
   }
 }
 ModifierOpeningGambitGrandmasterVariax.prototype.type = 'ModifierOpeningGambitGrandmasterVariax';
-ModifierOpeningGambitGrandmasterVariax.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
+ModifierOpeningGambitGrandmasterVariax.prototype.fxResource = [
+  'FX.Modifiers.ModifierOpeningGambit',
+];
 
 module.exports = ModifierOpeningGambitGrandmasterVariax;

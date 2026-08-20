@@ -25,14 +25,22 @@ class ModifierOpponentSummonWatch extends Modifier {
   onAfterCleanupAction(e) {
     super.onAfterCleanupAction(e);
 
-    const {
-      action,
-    } = e;
+    const { action } = e;
 
     // watch for a unit being summoned in any way by the opponent of player who owns this entity
-    if (action instanceof ApplyCardToBoardAction && (action.getOwnerId() !== this.getCard().getOwnerId()) && (__guard__(action.getCard(), (x) => x.type) === CardType.Unit) && (action.getCard() !== this.getCard())) {
+    if (
+      action instanceof ApplyCardToBoardAction &&
+      action.getOwnerId() !== this.getCard().getOwnerId() &&
+      __guard__(action.getCard(), (x) => x.type) === CardType.Unit &&
+      action.getCard() !== this.getCard()
+    ) {
       // don't react to transforms
-      if (!(action instanceof PlayCardAsTransformAction || action instanceof CloneEntityAsTransformAction)) {
+      if (
+        !(
+          action instanceof PlayCardAsTransformAction ||
+          action instanceof CloneEntityAsTransformAction
+        )
+      ) {
         return this.onSummonWatch(action);
       }
     }
@@ -51,5 +59,5 @@ ModifierOpponentSummonWatch.prototype.fxResource = ['FX.Modifiers.ModifierOppone
 module.exports = ModifierOpponentSummonWatch;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

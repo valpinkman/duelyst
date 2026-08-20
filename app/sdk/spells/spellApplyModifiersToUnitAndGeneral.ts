@@ -5,7 +5,9 @@ class SpellApplyModifiersToUnitAndGeneral extends SpellApplyModifiers {
     const applyEffectPositions = super._findApplyEffectPositions(position, sourceAction);
 
     // also affects General
-    applyEffectPositions.push(this.getGameSession().getGeneralForPlayerId(this.getOwnerId()).getPosition());
+    applyEffectPositions.push(
+      this.getGameSession().getGeneralForPlayerId(this.getOwnerId()).getPosition(),
+    );
 
     return applyEffectPositions;
   }

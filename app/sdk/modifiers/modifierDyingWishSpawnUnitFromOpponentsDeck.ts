@@ -22,10 +22,18 @@ class ModifierDyingWishSpawnUnitFromOpponentsDeck extends ModifierDyingWish {
   static description = 'Summon %X';
 
   static createContextObject(spawnDescription, spawnCount, spawnPattern, spawnSilently, options) {
-    if (spawnDescription == null) { spawnDescription = 'random minion'; }
-    if (spawnCount == null) { spawnCount = 1; }
-    if (spawnPattern == null) { spawnPattern = CONFIG.PATTERN_1x1; }
-    if (spawnSilently == null) { spawnSilently = true; }
+    if (spawnDescription == null) {
+      spawnDescription = 'random minion';
+    }
+    if (spawnCount == null) {
+      spawnCount = 1;
+    }
+    if (spawnPattern == null) {
+      spawnPattern = CONFIG.PATTERN_1x1;
+    }
+    if (spawnSilently == null) {
+      spawnSilently = true;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.spawnDescription = spawnDescription;
     contextObject.spawnCount = spawnCount;
@@ -37,7 +45,12 @@ class ModifierDyingWishSpawnUnitFromOpponentsDeck extends ModifierDyingWish {
   static getDescription(modifierContextObject) {
     if (modifierContextObject) {
       let replaceText = '';
-      if (UtilsPosition.getArraysOfPositionsAreEqual(modifierContextObject.spawnPattern, CONFIG.PATTERN_1x1)) {
+      if (
+        UtilsPosition.getArraysOfPositionsAreEqual(
+          modifierContextObject.spawnPattern,
+          CONFIG.PATTERN_1x1,
+        )
+      ) {
         replaceText = `a ${modifierContextObject.spawnDescription} from the opponent\'s deck on this space`;
       } else if (modifierContextObject.spawnCount === 1) {
         replaceText = `a ${modifierContextObject.spawnDescription} from the opponent\'s deck in a random nearby space`;
@@ -63,59 +76,93 @@ class ModifierDyingWishSpawnUnitFromOpponentsDeck extends ModifierDyingWish {
     super.onDyingWish(action);
 
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
-      let card; let cardIndex; let
-        spawnCount;
-      const opponentsDeck = this.getGameSession().getOpponentPlayerOfPlayerId(this.getCard().getOwnerId()).getDeck();
+      let card;
+      let cardIndex;
+      let spawnCount;
+      const opponentsDeck = this.getGameSession()
+        .getOpponentPlayerOfPlayerId(this.getCard().getOwnerId())
+        .getDeck();
       const indexesOfMinions = [];
       const gameSession = this.getGameSession();
       const drawPile = opponentsDeck.getDrawPile();
       for (let i = 0; i < drawPile.length; i++) {
         cardIndex = drawPile[i];
         card = gameSession.getCardByIndex(cardIndex);
-        if ((card != null) && (card.getType() === CardType.Unit)) {
+        if (card != null && card.getType() === CardType.Unit) {
           indexesOfMinions.push(i);
         }
       }
 
-      if (UtilsPosition.getArraysOfPositionsAreEqual(this.contextObject != null ? this.contextObject.spawnPattern : undefined, CONFIG.PATTERN_1x1)) {
+      if (
+        UtilsPosition.getArraysOfPositionsAreEqual(
+          this.contextObject != null ? this.contextObject.spawnPattern : undefined,
+          CONFIG.PATTERN_1x1,
+        )
+      ) {
         spawnCount = 1;
       } else {
-        ({
-          spawnCount,
-        } = this);
+        ({ spawnCount } = this);
       }
 
       let numSpawned = 0;
       return (() => {
         const result = [];
-        while ((indexesOfMinions.length > 0) && (numSpawned < spawnCount)) {
+        while (indexesOfMinions.length > 0 && numSpawned < spawnCount) {
           numSpawned++;
-          var indexOfCardInDeck = indexesOfMinions.splice(this.getGameSession().getRandomIntegerForExecution(indexesOfMinions.length), 1)[0];
+          var indexOfCardInDeck = indexesOfMinions.splice(
+            this.getGameSession().getRandomIntegerForExecution(indexesOfMinions.length),
+            1,
+          )[0];
           cardIndex = drawPile[indexOfCardInDeck];
           card = this.getGameSession().getCardByIndex(cardIndex);
-          var spawnLocations = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(this.getGameSession(), action.getTargetPosition(), this.spawnPattern, card, this.getCard(), 1);
+          var spawnLocations = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(
+            this.getGameSession(),
+            action.getTargetPosition(),
+            this.spawnPattern,
+            card,
+            this.getCard(),
+            1,
+          );
 
-          result.push((() => {
-            const result1 = [];
-            for (var position of Array.from<any>(spawnLocations)) {
-              var playCardAction;
-              if (!this.spawnSilently) {
-                playCardAction = new PlayCardAction(this.getGameSession(), this.getCard().getOwnerId(), position.x, position.y, cardIndex);
-              } else {
-                playCardAction = new PlayCardSilentlyAction(this.getGameSession(), this.getCard().getOwnerId(), position.x, position.y, cardIndex);
+          result.push(
+            (() => {
+              const result1 = [];
+              for (var position of Array.from<any>(spawnLocations)) {
+                var playCardAction;
+                if (!this.spawnSilently) {
+                  playCardAction = new PlayCardAction(
+                    this.getGameSession(),
+                    this.getCard().getOwnerId(),
+                    position.x,
+                    position.y,
+                    cardIndex,
+                  );
+                } else {
+                  playCardAction = new PlayCardSilentlyAction(
+                    this.getGameSession(),
+                    this.getCard().getOwnerId(),
+                    position.x,
+                    position.y,
+                    cardIndex,
+                  );
+                }
+                playCardAction.setSource(this.getCard());
+                result1.push(this.getGameSession().executeAction(playCardAction));
               }
-              playCardAction.setSource(this.getCard());
-              result1.push(this.getGameSession().executeAction(playCardAction));
-            }
-            return result1;
-          })());
+              return result1;
+            })(),
+          );
         }
         return result;
       })();
     }
   }
 }
-ModifierDyingWishSpawnUnitFromOpponentsDeck.prototype.type = 'ModifierDyingWishSpawnUnitFromOpponentsDeck';
-ModifierDyingWishSpawnUnitFromOpponentsDeck.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericSpawn'];
+ModifierDyingWishSpawnUnitFromOpponentsDeck.prototype.type =
+  'ModifierDyingWishSpawnUnitFromOpponentsDeck';
+ModifierDyingWishSpawnUnitFromOpponentsDeck.prototype.fxResource = [
+  'FX.Modifiers.ModifierDyingWish',
+  'FX.Modifiers.ModifierGenericSpawn',
+];
 
 module.exports = ModifierDyingWishSpawnUnitFromOpponentsDeck;

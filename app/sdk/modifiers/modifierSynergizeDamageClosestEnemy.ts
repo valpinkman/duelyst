@@ -17,7 +17,9 @@ class ModifierSynergizeDamageClosestEnemy extends ModifierSynergize {
   static type = 'ModifierSynergizeDamageClosestEnemy';
 
   static createContextObject(damageAmount, options) {
-    if (options == null) { options = undefined; }
+    if (options == null) {
+      options = undefined;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.damageAmount = damageAmount;
     return contextObject;
@@ -27,9 +29,13 @@ class ModifierSynergizeDamageClosestEnemy extends ModifierSynergize {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
       let bestAbsoluteDistance = 9999;
       let potentialTargets = [];
-      for (var potentialTarget of Array.from<any>(this.getGameSession().getBoard().getEnemyEntitiesForEntity(this.getCard(), CardType.Unit))) {
+      for (var potentialTarget of Array.from<any>(
+        this.getGameSession().getBoard().getEnemyEntitiesForEntity(this.getCard(), CardType.Unit),
+      )) {
         if (potentialTarget != null ? potentialTarget.getIsActive() : undefined) {
-          var absoluteDistance = Math.abs(this.getCard().position.x - potentialTarget.position.x) + Math.abs(this.getCard().position.y - potentialTarget.position.y);
+          var absoluteDistance =
+            Math.abs(this.getCard().position.x - potentialTarget.position.x) +
+            Math.abs(this.getCard().position.y - potentialTarget.position.y);
           // found a new best target
           if (absoluteDistance < bestAbsoluteDistance) {
             bestAbsoluteDistance = absoluteDistance;
@@ -44,7 +50,10 @@ class ModifierSynergizeDamageClosestEnemy extends ModifierSynergize {
 
       if (potentialTargets.length > 0) {
         // choose randomly between all equally close enemies
-        const target = potentialTargets[this.getGameSession().getRandomIntegerForExecution(potentialTargets.length)];
+        const target =
+          potentialTargets[
+            this.getGameSession().getRandomIntegerForExecution(potentialTargets.length)
+          ];
         const damageAction = new DamageAction(this.getGameSession());
         damageAction.setOwnerId(this.getCard().getOwnerId());
         damageAction.setSource(this.getCard());
@@ -56,7 +65,10 @@ class ModifierSynergizeDamageClosestEnemy extends ModifierSynergize {
   }
 }
 ModifierSynergizeDamageClosestEnemy.prototype.type = 'ModifierSynergizeDamageClosestEnemy';
-ModifierSynergizeDamageClosestEnemy.prototype.fxResource = ['FX.Modifiers.ModifierSynergize', 'FX.Modifiers.ModifierGenericDamage'];
+ModifierSynergizeDamageClosestEnemy.prototype.fxResource = [
+  'FX.Modifiers.ModifierSynergize',
+  'FX.Modifiers.ModifierGenericDamage',
+];
 ModifierSynergizeDamageClosestEnemy.prototype.damageAmount = 0;
 
 module.exports = ModifierSynergizeDamageClosestEnemy;

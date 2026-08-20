@@ -18,18 +18,27 @@ class SpellNoshRakSpell extends Spell {
     const deck = this.getGameSession().getPlayerById(this.getOwnerId()).getDeck();
 
     const numCardsNeeded = deck.getHand().length - deck.getHandExcludingMissing().length;
-    if (numCardsNeeded > 0) { // how many cards needed to fill hand?
+    if (numCardsNeeded > 0) {
+      // how many cards needed to fill hand?
       return (() => {
         const result = [];
-        for (let i = 0, end = numCardsNeeded, asc = end >= 0; asc ? i < end : i > end; asc ? i++ : i--) {
-        // create a random vetruvian card
-          var vetCards = this.getGameSession().getCardCaches().getFaction(Factions.Faction3).getIsHiddenInCollection(false)
+        for (
+          let i = 0, end = numCardsNeeded, asc = end >= 0;
+          asc ? i < end : i > end;
+          asc ? i++ : i--
+        ) {
+          // create a random vetruvian card
+          var vetCards = this.getGameSession()
+            .getCardCaches()
+            .getFaction(Factions.Faction3)
+            .getIsHiddenInCollection(false)
             .getIsToken(false)
             .getIsGeneral(false)
             .getIsPrismatic(false)
             .getIsSkinned(false)
             .getCards();
-          var cardToDraw = vetCards[this.getGameSession().getRandomIntegerForExecution(vetCards.length)];
+          var cardToDraw =
+            vetCards[this.getGameSession().getRandomIntegerForExecution(vetCards.length)];
           var cardDataOrIndexToDraw = cardToDraw.createNewCardData();
           // reduce its cost to 0
           var manaCostChangeContextObject = ModifierManaCostChange.createContextObject(0);
@@ -37,7 +46,11 @@ class SpellNoshRakSpell extends Spell {
           manaCostChangeContextObject.attributeBuffsFixed = ['manaCost'];
           cardDataOrIndexToDraw.additionalModifiersContextObjects = [manaCostChangeContextObject];
           // put it in hand
-          var a = new PutCardInHandAction(this.getGameSession(), this.getOwnerId(), cardDataOrIndexToDraw);
+          var a = new PutCardInHandAction(
+            this.getGameSession(),
+            this.getOwnerId(),
+            cardDataOrIndexToDraw,
+          );
           result.push(this.getGameSession().executeAction(a));
         }
         return result;

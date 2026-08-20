@@ -15,13 +15,9 @@ Logger.enabled = false;
 describe('monthlies', () => {
   describe('month 12', () => {
     beforeEach(() => {
-      const player1Deck = [
-        { id: SDK.Cards.Faction6.General },
-      ];
+      const player1Deck = [{ id: SDK.Cards.Faction6.General }];
 
-      const player2Deck = [
-        { id: SDK.Cards.Faction1.General },
-      ];
+      const player2Deck = [{ id: SDK.Cards.Faction1.General }];
 
       UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
     });
@@ -37,16 +33,36 @@ describe('monthlies', () => {
 
       player1.remainingMana = 9;
 
-      const daywatcher = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.DayWatcher }, 1, 1, gameSession.getPlayer1Id());
+      const daywatcher = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.DayWatcher },
+        1,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
       const damageAction = new SDK.DamageAction(gameSession);
       damageAction.setTarget(gameSession.getGeneralForPlayer1());
       damageAction.setDamageAmount(15);
       UtilsSDK.executeActionWithoutValidation(damageAction);
 
-      const wraithling1 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.Wraithling }, 8, 1, gameSession.getPlayer1Id());
-      const wraithling2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.Wraithling }, 8, 3, gameSession.getPlayer1Id());
-      const wraithling3 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.Wraithling }, 7, 1, gameSession.getPlayer1Id());
+      const wraithling1 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.Wraithling },
+        8,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const wraithling2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.Wraithling },
+        8,
+        3,
+        gameSession.getPlayer1Id(),
+      );
+      const wraithling3 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.Wraithling },
+        7,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
       wraithling1.refreshExhaustion();
       wraithling2.refreshExhaustion();
@@ -69,12 +85,36 @@ describe('monthlies', () => {
 
       player1.remainingMana = 9;
 
-      const daywatcher = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.DayWatcher }, 6, 2, gameSession.getPlayer1Id());
-      const reaver1 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.VorpalReaver }, 8, 1, gameSession.getPlayer2Id());
-      const reaver2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.VorpalReaver }, 7, 2, gameSession.getPlayer2Id());
-      const reaver3 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.VorpalReaver }, 4, 2, gameSession.getPlayer2Id());
+      const daywatcher = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.DayWatcher },
+        6,
+        2,
+        gameSession.getPlayer1Id(),
+      );
+      const reaver1 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.VorpalReaver },
+        8,
+        1,
+        gameSession.getPlayer2Id(),
+      );
+      const reaver2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.VorpalReaver },
+        7,
+        2,
+        gameSession.getPlayer2Id(),
+      );
+      const reaver3 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.VorpalReaver },
+        4,
+        2,
+        gameSession.getPlayer2Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.DustWailer }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.DustWailer,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 5, 2);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -94,9 +134,18 @@ describe('monthlies', () => {
 
       player1.remainingMana = 9;
 
-      const nightwatcher = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.NightWatcher }, 6, 2, gameSession.getPlayer1Id());
+      const nightwatcher = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.NightWatcher },
+        6,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.SaberspineTiger }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.SaberspineTiger,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 5, 2);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -110,7 +159,11 @@ describe('monthlies', () => {
 
       player2.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer2Id(), { id: SDK.Cards.Neutral.SaberspineTiger }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer2Id(), {
+          id: SDK.Cards.Neutral.SaberspineTiger,
+        }),
+      );
       var playCardFromHandAction = player2.actionPlayCardFromHand(0, 7, 2);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -128,7 +181,12 @@ describe('monthlies', () => {
 
       player1.remainingMana = 9;
 
-      const gauj = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.QuartermasterGauj }, 7, 2, gameSession.getPlayer1Id());
+      const gauj = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.QuartermasterGauj },
+        7,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
       gauj.refreshExhaustion();
 
@@ -146,8 +204,18 @@ describe('monthlies', () => {
 
       player1.remainingMana = 9;
 
-      const gauj = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.QuartermasterGauj }, 7, 2, gameSession.getPlayer1Id());
-      const brightmossGolem = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.BrightmossGolem }, 6, 2, gameSession.getPlayer2Id());
+      const gauj = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.QuartermasterGauj },
+        7,
+        2,
+        gameSession.getPlayer1Id(),
+      );
+      const brightmossGolem = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.BrightmossGolem },
+        6,
+        2,
+        gameSession.getPlayer2Id(),
+      );
 
       gauj.refreshExhaustion();
 
@@ -165,9 +233,18 @@ describe('monthlies', () => {
 
       player1.remainingMana = 9;
 
-      const gauj = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.QuartermasterGauj }, 7, 2, gameSession.getPlayer2Id());
+      const gauj = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.QuartermasterGauj },
+        7,
+        2,
+        gameSession.getPlayer2Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.DustWailer }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.DustWailer,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 2);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -181,9 +258,18 @@ describe('monthlies', () => {
 
       player1.remainingMana = 9;
 
-      const gauj = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.QuartermasterGauj }, 7, 2, gameSession.getPlayer2Id());
+      const gauj = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.QuartermasterGauj },
+        7,
+        2,
+        gameSession.getPlayer2Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.GhostLightning }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.GhostLightning,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 2);
       gameSession.executeAction(playCardFromHandAction);
 

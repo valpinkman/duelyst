@@ -32,7 +32,9 @@ class ModifierOpeningGambitDamageMyGeneral extends ModifierOpeningGambit {
   }
 
   onOpeningGambit() {
-    const general = this.getCard().getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
+    const general = this.getCard()
+      .getGameSession()
+      .getGeneralForPlayerId(this.getCard().getOwnerId());
 
     const damageAction = new DamageAction(this.getGameSession());
     damageAction.setOwnerId(this.getCard().getOwnerId());
@@ -44,6 +46,9 @@ class ModifierOpeningGambitDamageMyGeneral extends ModifierOpeningGambit {
 }
 ModifierOpeningGambitDamageMyGeneral.prototype.type = 'ModifierOpeningGambitDamageMyGeneral';
 ModifierOpeningGambitDamageMyGeneral.prototype.damageAmount = 0;
-ModifierOpeningGambitDamageMyGeneral.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericChainLightning'];
+ModifierOpeningGambitDamageMyGeneral.prototype.fxResource = [
+  'FX.Modifiers.ModifierOpeningGambit',
+  'FX.Modifiers.ModifierGenericChainLightning',
+];
 
 module.exports = ModifierOpeningGambitDamageMyGeneral;

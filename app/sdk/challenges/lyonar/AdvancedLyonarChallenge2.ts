@@ -55,10 +55,7 @@ class AdvancedLyonarChallenge2 extends Challenge {
   }
 
   getOpponentPlayerDeckData(gameSession) {
-    return [
-      { id: Cards.Faction2.General },
-      { id: Cards.TutorialSpell.TutorialFireOrb },
-    ];
+    return [{ id: Cards.Faction2.General }, { id: Cards.TutorialSpell.TutorialFireOrb }];
   }
 
   setupBoard(gameSession) {
@@ -98,24 +95,37 @@ class AdvancedLyonarChallenge2 extends Challenge {
   setupOpponentAgent(gameSession) {
     super.setupOpponentAgent(gameSession);
 
-    this._opponentAgent.addActionForTurn(0, AgentActions.createAgentSoftActionShowInstructionLabels([{
-      label: i18next.t('challenges.advanced_lyonar_2_taunt'),
-      isSpeech: true,
-      yPosition: 0.7,
-      isPersistent: true,
-      isOpponent: true,
-    },
-    ]));
-    return this._opponentAgent.addActionForTurn(0, AgentActions.createAgentActionPlayCardFindPosition(0, () => [GameSession.getInstance().getGeneralForPlayer1().getPosition()]));
+    this._opponentAgent.addActionForTurn(
+      0,
+      AgentActions.createAgentSoftActionShowInstructionLabels([
+        {
+          label: i18next.t('challenges.advanced_lyonar_2_taunt'),
+          isSpeech: true,
+          yPosition: 0.7,
+          isPersistent: true,
+          isOpponent: true,
+        },
+      ]),
+    );
+    return this._opponentAgent.addActionForTurn(
+      0,
+      AgentActions.createAgentActionPlayCardFindPosition(0, () => [
+        GameSession.getInstance().getGeneralForPlayer1().getPosition(),
+      ]),
+    );
   }
 }
 AdvancedLyonarChallenge2.prototype.type = 'AdvancedLyonarChallenge2';
 AdvancedLyonarChallenge2.prototype.categoryType = ChallengeCategory.expert.type;
 AdvancedLyonarChallenge2.prototype.name = i18next.t('challenges.advanced_lyonar_2_title');
-AdvancedLyonarChallenge2.prototype.description = i18next.t('challenges.advanced_lyonar_2_description');
+AdvancedLyonarChallenge2.prototype.description = i18next.t(
+  'challenges.advanced_lyonar_2_description',
+);
 AdvancedLyonarChallenge2.prototype.iconUrl = RSX.speech_portrait_lyonar_side.img;
 AdvancedLyonarChallenge2.prototype._musicOverride = RSX.music_battlemap_songhai.audio;
-AdvancedLyonarChallenge2.prototype.otkChallengeStartMessage = i18next.t('challenges.advanced_lyonar_2_start');
+AdvancedLyonarChallenge2.prototype.otkChallengeStartMessage = i18next.t(
+  'challenges.advanced_lyonar_2_start',
+);
 AdvancedLyonarChallenge2.prototype.otkChallengeFailureMessages = [
   i18next.t('challenges.advanced_lyonar_2_fail'),
 ];

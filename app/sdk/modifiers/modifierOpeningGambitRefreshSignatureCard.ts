@@ -17,7 +17,10 @@ class ModifierOpeningGambitRefreshSignatureCard extends ModifierOpeningGambit {
     return this.getGameSession().executeAction(this.getOwner().actionActivateSignatureCard());
   }
 }
-ModifierOpeningGambitRefreshSignatureCard.prototype.type = 'ModifierOpeningGambitRefreshSignatureCard';
-ModifierOpeningGambitRefreshSignatureCard.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
+ModifierOpeningGambitRefreshSignatureCard.prototype.type =
+  'ModifierOpeningGambitRefreshSignatureCard';
+ModifierOpeningGambitRefreshSignatureCard.prototype.fxResource = [
+  'FX.Modifiers.ModifierOpeningGambit',
+];
 
 module.exports = ModifierOpeningGambitRefreshSignatureCard;

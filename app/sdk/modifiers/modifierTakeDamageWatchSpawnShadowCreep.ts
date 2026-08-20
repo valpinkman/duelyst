@@ -13,21 +13,32 @@ class ModifierTakeDamageWatchSpawnShadowCreep extends ModifierTakeDamageWatch {
 
   static type = 'ModifierTakeDamageWatchSpawnShadowCreep';
   static modifierName = 'Take Damage Watch';
-  static description = 'Whenever this minion takes damage, turn a space occupied by an enemy into Shadow Creep';
+  static description =
+    'Whenever this minion takes damage, turn a space occupied by an enemy into Shadow Creep';
 
   onDamageTaken(action) {
     super.onDamageTaken(action);
 
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
       const allEnemies = this.getGameSession().getBoard().getEnemyEntitiesForEntity(this.getCard());
-      const enemyToSpawnUnder = allEnemies[this.getGameSession().getRandomIntegerForExecution(allEnemies.length)];
-      const playCardAction = new PlayCardSilentlyAction(this.getGameSession(), this.getCard().getOwnerId(), enemyToSpawnUnder.getPosition().x, enemyToSpawnUnder.getPosition().y, { id: Cards.Tile.Shadow });
+      const enemyToSpawnUnder =
+        allEnemies[this.getGameSession().getRandomIntegerForExecution(allEnemies.length)];
+      const playCardAction = new PlayCardSilentlyAction(
+        this.getGameSession(),
+        this.getCard().getOwnerId(),
+        enemyToSpawnUnder.getPosition().x,
+        enemyToSpawnUnder.getPosition().y,
+        { id: Cards.Tile.Shadow },
+      );
       playCardAction.setSource(this.getCard());
       return this.getGameSession().executeAction(playCardAction);
     }
   }
 }
 ModifierTakeDamageWatchSpawnShadowCreep.prototype.type = 'ModifierTakeDamageWatchSpawnShadowCreep';
-ModifierTakeDamageWatchSpawnShadowCreep.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericSpawn'];
+ModifierTakeDamageWatchSpawnShadowCreep.prototype.fxResource = [
+  'FX.Modifiers.ModifierDyingWish',
+  'FX.Modifiers.ModifierGenericSpawn',
+];
 
 module.exports = ModifierTakeDamageWatchSpawnShadowCreep;

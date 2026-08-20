@@ -28,9 +28,18 @@ class ModifierShadowScar extends ModifierDyingWish {
   onDyingWish(action) {
     super.onDyingWish(action);
 
-    if (this.getGameSession().getIsRunningAsAuthoritative() && (this.cardDataOrIndexToSpawn != null)) {
+    if (
+      this.getGameSession().getIsRunningAsAuthoritative() &&
+      this.cardDataOrIndexToSpawn != null
+    ) {
       if (this.spawnOwnerId != null) {
-        const playCardAction = new PlayCardSilentlyAction(this.getGameSession(), this.spawnOwnerId, this.getCard().getPositionX(), this.getCard().getPositionY(), this.cardDataOrIndexToSpawn);
+        const playCardAction = new PlayCardSilentlyAction(
+          this.getGameSession(),
+          this.spawnOwnerId,
+          this.getCard().getPositionX(),
+          this.getCard().getPositionY(),
+          this.cardDataOrIndexToSpawn,
+        );
         playCardAction.setSource(this.getCard());
         return this.getGameSession().executeAction(playCardAction);
       }
@@ -40,7 +49,10 @@ class ModifierShadowScar extends ModifierDyingWish {
 ModifierShadowScar.prototype.type = 'ModifierShadowScar';
 ModifierShadowScar.modifierName = i18next.t('modifiers.shadow_scar_name');
 ModifierShadowScar.description = i18next.t('modifiers.shadow_scar_def');
-ModifierShadowScar.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericSpawn'];
+ModifierShadowScar.prototype.fxResource = [
+  'FX.Modifiers.ModifierDyingWish',
+  'FX.Modifiers.ModifierGenericSpawn',
+];
 ModifierShadowScar.prototype.cardDataOrIndexToSpawn = null;
 ModifierShadowScar.prototype.spawnOwnerId = null;
 

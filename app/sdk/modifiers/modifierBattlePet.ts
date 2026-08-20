@@ -39,8 +39,9 @@ class ModifierBattlePet extends Modifier {
   static isHiddenToUI = true;
 
   generateActions() {
-    let attackAction; let target; let
-      validAttackTargets;
+    let attackAction;
+    let target;
+    let validAttackTargets;
     const battlePetDesiredActions = [];
 
     // if battle pet is stunned, don't try to act
@@ -60,8 +61,11 @@ class ModifierBattlePet extends Modifier {
     }
 
     // if any enemies can be attacked within melee range without moving, pick one and attack
-    if ((validAttackTargets != null) && (validAttackTargets.length > 0)) {
-      target = validAttackTargets[this.getGameSession().getRandomIntegerForExecution(validAttackTargets.length)];
+    if (validAttackTargets != null && validAttackTargets.length > 0) {
+      target =
+        validAttackTargets[
+          this.getGameSession().getRandomIntegerForExecution(validAttackTargets.length)
+        ];
       attackAction = this.getCard().actionAttack(target);
       attackAction.setIsAutomatic(true);
       battlePetDesiredActions.push(attackAction);
@@ -70,7 +74,11 @@ class ModifierBattlePet extends Modifier {
       if (this.getCard().getCanMove()) {
         // move towards closest attackable target
         let validMovePositions = [];
-        for (var movePath of Array.from<any>(this.getCard().getMovementRange().getValidPositions(this.getGameSession().getBoard(), this.getCard()))) {
+        for (var movePath of Array.from<any>(
+          this.getCard()
+            .getMovementRange()
+            .getValidPositions(this.getGameSession().getBoard(), this.getCard()),
+        )) {
           for (var moveLocation of Array.from<any>(movePath)) {
             validMovePositions.push(moveLocation);
           }
@@ -90,7 +98,10 @@ class ModifierBattlePet extends Modifier {
 
         // if we found any enemies to attack, pick one and attack now
         if (validAttackTargets.length > 0) {
-          target = validAttackTargets[this.getGameSession().getRandomIntegerForExecution(validAttackTargets.length)];
+          target =
+            validAttackTargets[
+              this.getGameSession().getRandomIntegerForExecution(validAttackTargets.length)
+            ];
           attackAction = this.getCard().actionAttack(target);
           // this attack will actually happen from where this unit is about to move to NOT where the unit is located when the attack action is created
           attackAction.setSourcePosition(attackFromPosition);
@@ -112,12 +123,19 @@ class ModifierBattlePet extends Modifier {
     if (forRanged) {
       potentialAttackTargets = this.getGameSession().getBoard().getUnits();
     } else {
-      potentialAttackTargets = this.getGameSession().getBoard().getCardsAroundPosition(position, CardType.Unit, 1);
+      potentialAttackTargets = this.getGameSession()
+        .getBoard()
+        .getCardsAroundPosition(position, CardType.Unit, 1);
     }
 
-    if (forBlast) { // finally we'll add targets that can be hit by blast to the previously found potential targets
-      const unitsInRow = this.getGameSession().getBoard().getEntitiesInRow(position.y, CardType.Unit);
-      const unitsInCol = this.getGameSession().getBoard().getEntitiesInColumn(position.x, CardType.Unit);
+    if (forBlast) {
+      // finally we'll add targets that can be hit by blast to the previously found potential targets
+      const unitsInRow = this.getGameSession()
+        .getBoard()
+        .getEntitiesInRow(position.y, CardType.Unit);
+      const unitsInCol = this.getGameSession()
+        .getBoard()
+        .getEntitiesInColumn(position.x, CardType.Unit);
       potentialAttackTargets = potentialAttackTargets.concat(unitsInRow);
       potentialAttackTargets = potentialAttackTargets.concat(unitsInCol);
       potentialAttackTargets = _.uniq(potentialAttackTargets);
@@ -131,14 +149,28 @@ class ModifierBattlePet extends Modifier {
       if (this.getIsTargetAttackable(unit, forRanged, forGeneral)) {
         // check for provokers
         if (forRanged && unit.getIsRangedProvoker()) {
-          if (!foundRangedProvoker) { validAttackTargets.length = 0; }
+          if (!foundRangedProvoker) {
+            validAttackTargets.length = 0;
+          }
           foundRangedProvoker = true;
           validAttackTargets.push(unit);
-        } else if (unit.getIsProvoker() && ((Math.abs(unit.getPositionX() - position.x) <= 1) && (Math.abs(unit.getPositionY() - position.y) <= 1))) {
-          if (!foundProvoker) { validAttackTargets.length = 0; }
+        } else if (
+          unit.getIsProvoker() &&
+          Math.abs(unit.getPositionX() - position.x) <= 1 &&
+          Math.abs(unit.getPositionY() - position.y) <= 1
+        ) {
+          if (!foundProvoker) {
+            validAttackTargets.length = 0;
+          }
           foundProvoker = true;
           validAttackTargets.push(unit);
-        } else if (!foundProvoker && !foundRangedProvoker && (!meleeOnly || ((Math.abs(unit.getPositionX() - position.x) <= 1) && (Math.abs(unit.getPositionY() - position.y) <= 1)))) {
+        } else if (
+          !foundProvoker &&
+          !foundRangedProvoker &&
+          (!meleeOnly ||
+            (Math.abs(unit.getPositionX() - position.x) <= 1 &&
+              Math.abs(unit.getPositionY() - position.y) <= 1))
+        ) {
           validAttackTargets.push(unit);
         }
       }
@@ -149,10 +181,11 @@ class ModifierBattlePet extends Modifier {
   }
 
   getIsTargetAttackable(target, forRanged, forGeneral) {
-    let attackable = !target.getIsSameTeamAs(this.getCard())
-      && (target.getHP() > 0)
-      && (!target.getIsGeneral()
-        || !this.getCard().hasActiveModifierClass(ModifierCannotAttackGeneral));
+    let attackable =
+      !target.getIsSameTeamAs(this.getCard()) &&
+      target.getHP() > 0 &&
+      (!target.getIsGeneral() ||
+        !this.getCard().hasActiveModifierClass(ModifierCannotAttackGeneral));
     if (attackable) {
       // immunity
       for (var modifier of Array.from<any>(target.getModifiers())) {
@@ -187,13 +220,14 @@ class ModifierBattlePet extends Modifier {
     let bestAbsoluteDistance = 9999;
     for (var unit of Array.from<any>(validTargets)) {
       var targetPosition = unit.getPosition();
-      var absoluteDistance = Math.abs(targetPosition.x - position.x) + Math.abs(targetPosition.y - position.y);
+      var absoluteDistance =
+        Math.abs(targetPosition.x - position.x) + Math.abs(targetPosition.y - position.y);
       // found a new best target position
       if (absoluteDistance < bestAbsoluteDistance) {
         bestAbsoluteDistance = absoluteDistance;
         closestUnits = []; // reset potential targets
         closestUnits.push(unit);
-      // found an equally good target position
+        // found an equally good target position
       } else if (absoluteDistance === bestAbsoluteDistance) {
         closestUnits.push(unit);
       }
@@ -202,28 +236,34 @@ class ModifierBattlePet extends Modifier {
   }
 
   chooseAggressivePosition(positions) {
-    let absoluteDistance; let
-      position;
+    let absoluteDistance;
+    let position;
     const closestPositions = [];
     const forRanged = this.getCard().hasActiveModifierClass(ModifierRanged);
     const forGeneral = this.getCard().getIsGeneral();
 
     // find the closest enemy this minion can move to and melee
     let bestAbsoluteDistance = 9999;
-    for (position of Array.from<any>(positions)) { // check each position this unit could move to
-      if (!this.getGameSession().getBoard().getUnitAtPosition(position)) { // if position is not obstructed
+    for (position of Array.from<any>(positions)) {
+      // check each position this unit could move to
+      if (!this.getGameSession().getBoard().getUnitAtPosition(position)) {
+        // if position is not obstructed
         // check for enemies within melee range of this position
         var enemyFound = false;
-        for (var card of Array.from<any>(this.getGameSession().getBoard().getCardsAroundPosition(position, CardType.Unit, 1))) {
+        for (var card of Array.from<any>(
+          this.getGameSession().getBoard().getCardsAroundPosition(position, CardType.Unit, 1),
+        )) {
           if (this.getIsTargetAttackable(card, forRanged, forGeneral)) {
             enemyFound = true;
-            absoluteDistance = Math.abs(this.getCard().position.x - position.x) + Math.abs(this.getCard().position.y - position.y);
+            absoluteDistance =
+              Math.abs(this.getCard().position.x - position.x) +
+              Math.abs(this.getCard().position.y - position.y);
             // found a new best target position
             if (absoluteDistance < bestAbsoluteDistance) {
               bestAbsoluteDistance = absoluteDistance;
               closestPositions.length = 0; // reset potential target positions
               closestPositions.push(position);
-            // found an equally good target position
+              // found an equally good target position
             } else if (absoluteDistance === bestAbsoluteDistance) {
               closestPositions.push(position);
             }
@@ -232,11 +272,19 @@ class ModifierBattlePet extends Modifier {
       }
     }
 
-    if (closestPositions.length === 0) { // haven't found any enemies we can move towards and melee, then just move towards the closest enemy
+    if (closestPositions.length === 0) {
+      // haven't found any enemies we can move towards and melee, then just move towards the closest enemy
       for (position of Array.from<any>(positions)) {
-        if (!this.getGameSession().getBoard().getUnitAtPosition(position)) { // if position is not obstructed
-          for (var potentialTarget of Array.from<any>(this.getGameSession().getBoard().getEnemyEntitiesForEntity(this.getCard(), CardType.Unit))) {
-            absoluteDistance = Math.abs(potentialTarget.position.x - position.x) + Math.abs(potentialTarget.position.y - position.y);
+        if (!this.getGameSession().getBoard().getUnitAtPosition(position)) {
+          // if position is not obstructed
+          for (var potentialTarget of Array.from<any>(
+            this.getGameSession()
+              .getBoard()
+              .getEnemyEntitiesForEntity(this.getCard(), CardType.Unit),
+          )) {
+            absoluteDistance =
+              Math.abs(potentialTarget.position.x - position.x) +
+              Math.abs(potentialTarget.position.y - position.y);
             // found a new best target position
             if (absoluteDistance < bestAbsoluteDistance) {
               bestAbsoluteDistance = absoluteDistance;
@@ -252,7 +300,9 @@ class ModifierBattlePet extends Modifier {
     }
 
     // pick a random position
-    return closestPositions[this.getGameSession().getRandomIntegerForExecution(closestPositions.length)];
+    return closestPositions[
+      this.getGameSession().getRandomIntegerForExecution(closestPositions.length)
+    ];
   }
 
   onValidateAction(actionEvent) {
@@ -260,8 +310,19 @@ class ModifierBattlePet extends Modifier {
     if (a.getIsValid()) {
       const card = this.getCard();
       // cannot explicitly move or attack with battle pets UNLESS they are being modified to be player controllable
-      if ((card != null) && (card === a.getSource()) && card.getIsUncontrollableBattlePet() && (a instanceof MoveAction || a instanceof AttackAction) && !a.getIsAutomatic() && !a.getIsImplicit()) {
-        return this.invalidateAction(a, card.getPosition(), i18next.t('modifiers.battle_pet_error'));
+      if (
+        card != null &&
+        card === a.getSource() &&
+        card.getIsUncontrollableBattlePet() &&
+        (a instanceof MoveAction || a instanceof AttackAction) &&
+        !a.getIsAutomatic() &&
+        !a.getIsImplicit()
+      ) {
+        return this.invalidateAction(
+          a,
+          card.getPosition(),
+          i18next.t('modifiers.battle_pet_error'),
+        );
       }
     }
   }

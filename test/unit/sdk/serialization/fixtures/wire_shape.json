@@ -15,11 +15,7 @@
     "turns",
     "updatedAt"
   ],
-  "board": [
-    "cardIndices",
-    "columnCount",
-    "rowCount"
-  ],
+  "board": ["cardIndices", "columnCount", "rowCount"],
   "player": [
     "deck",
     "hasStartingHand",
@@ -42,12 +38,7 @@
     "totalSpellsPlayedFromHand",
     "username"
   ],
-  "deck": [
-    "drawPile",
-    "hand",
-    "numCardsReplacedThisTurn",
-    "ownerId"
-  ],
+  "deck": ["drawPile", "hand", "numCardsReplacedThisTurn", "ownerId"],
   "general": [
     "atk",
     "attacksMade",
@@ -87,19 +78,8 @@
     "ownerId",
     "rarityId"
   ],
-  "turn": [
-    "createdAt",
-    "ended",
-    "playerId",
-    "steps",
-    "updatedAt"
-  ],
-  "step": [
-    "action",
-    "index",
-    "playerId",
-    "timestamp"
-  ],
+  "turn": ["createdAt", "ended", "playerId", "steps", "updatedAt"],
+  "step": ["action", "index", "playerId", "timestamp"],
   "attackAction": [
     "index",
     "ownerId",

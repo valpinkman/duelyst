@@ -15,7 +15,7 @@ class SpellLifeDrain extends SpellKillTarget {
     if (!entity.isGeneral) {
       return super.onApplyEffectToBoardTile(board, x, y, sourceAction);
 
-    // heal your general
+      // heal your general
     }
     const general = this.getGameSession().getGeneralForPlayerId(this.getOwnerId());
     const healAction = new HealAction(this.getGameSession());

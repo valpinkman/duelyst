@@ -29,7 +29,6 @@ var NotificationsManager = require('./notifications_manager');
 var Manager = require('./manager');
 
 var AchievementsManager = Manager.extend({
-
   _unreadAchievementsQueue: null, // Queue of achievements to be displayed next time we reach main menu
   _achievementsStatusModel: null, // Tracks any global status about this user's achievements e.g. last_read_at
 
@@ -49,13 +48,16 @@ var AchievementsManager = Manager.extend({
   onBeforeConnect: function () {
     const _self = this;
     Manager.prototype.onBeforeConnect.call(this);
-    ProfileManager.getInstance().onReady()
+    ProfileManager.getInstance()
+      .onReady()
       .then(function () {
         var userId = ProfileManager.getInstance().get('id');
         var username = ProfileManager.getInstance().get('username');
 
         _self._achievementsStatusModel = new DuelystFirebase.Model(null, {
-          firebase: new Firebase(process.env.FIREBASE_URL + '/user-achievements/' + userId + '/status'),
+          firebase: new Firebase(
+            process.env.FIREBASE_URL + '/user-achievements/' + userId + '/status',
+          ),
         });
 
         _self._completedAchievementsCollection = new DuelystFirebase.Collection(null, {
@@ -66,16 +68,27 @@ var AchievementsManager = Manager.extend({
           firebase: process.env.FIREBASE_URL + 'user-achievements/' + userId + '/progress',
         });
 
-        _self.onReady().then(function () {
-        // listen to changes immediately so we don't miss anything
-        // this.listenTo(this._achievementsModel, "change",this._onNewPlayerChange);
-          this._completedAchievementsRef = new Firebase(process.env.FIREBASE_URL + '/user-achievements/' + userId).child('completed');
-          this._completedAchievementsRef.orderByChild('completed_at').startAt(this.getAchievementsLastReadAt()).on('child_added', this._onNewCompletedAchievement.bind(this));
+        _self.onReady().then(
+          function () {
+            // listen to changes immediately so we don't miss anything
+            // this.listenTo(this._achievementsModel, "change",this._onNewPlayerChange);
+            this._completedAchievementsRef = new Firebase(
+              process.env.FIREBASE_URL + '/user-achievements/' + userId,
+            ).child('completed');
+            this._completedAchievementsRef
+              .orderByChild('completed_at')
+              .startAt(this.getAchievementsLastReadAt())
+              .on('child_added', this._onNewCompletedAchievement.bind(this));
 
-          return this._scheduleOrRequestLoginAchievements();
-        }.bind(_self));
+            return this._scheduleOrRequestLoginAchievements();
+          }.bind(_self),
+        );
 
-        _self._markAsReadyWhenModelsAndCollectionsSynced([_self._achievementsStatusModel, _self._completedAchievementsCollection, _self._progressedAchievementsCollection]);
+        _self._markAsReadyWhenModelsAndCollectionsSynced([
+          _self._achievementsStatusModel,
+          _self._completedAchievementsCollection,
+          _self._progressedAchievementsCollection,
+        ]);
       });
   },
 
@@ -99,7 +112,10 @@ var AchievementsManager = Manager.extend({
     // Build out the unread achievement model
     var achievement = AchievementsFactory.achievementForIdentifier(nextUnread.achievement_id);
     var achievementRewardModel = new Backbone.Model();
-    achievementRewardModel.set('_title', i18next.t('rewards.achievement_complete_title') + ' ' + achievement.title);
+    achievementRewardModel.set(
+      '_title',
+      i18next.t('rewards.achievement_complete_title') + ' ' + achievement.title,
+    );
     achievementRewardModel.set('_subTitle', achievement.description);
     achievementRewardModel.set('_achievementId', nextUnread.achievement_id);
 
@@ -134,7 +150,11 @@ var AchievementsManager = Manager.extend({
 
     if (completedAchievement.is_unread != false) {
       var request = $.ajax({
-        url: process.env.API_URL + '/api/me/achievements/' + completedAchievement.achievement_id + '/read_at',
+        url:
+          process.env.API_URL +
+          '/api/me/achievements/' +
+          completedAchievement.achievement_id +
+          '/read_at',
         type: 'PUT',
         contentType: 'application/json',
         dataType: 'json',
@@ -149,8 +169,7 @@ var AchievementsManager = Manager.extend({
   getUnlockMessageForAchievementId: function (achievementId) {
     var sdkAchievement = AchievementsFactory.achievementForIdentifier(achievementId);
 
-    if (achievementId == null || sdkAchievement == null)
-      return '';
+    if (achievementId == null || sdkAchievement == null) return '';
 
     var progressMade = 0;
     var achievementProgressModel = this._progressedAchievementsCollection.get(achievementId);
@@ -181,8 +200,14 @@ var AchievementsManager = Manager.extend({
       // var bufferAchievementCheck = 1000 * 60 * 5; // 5 minutes
       var bufferAchievementCheck = 1000; // 5 minutes
       var maxScheduleTime = 1000 * 60 * 60 * 2; // 2 hours
-      var scheduleWaitTime = Math.min(maxScheduleTime, timeUntilNeedsLoginAchievementCheck + bufferAchievementCheck);
-      this._checkLoginAchievementsTimeout = setTimeout(this._scheduleOrRequestLoginAchievements.bind(this), scheduleWaitTime);
+      var scheduleWaitTime = Math.min(
+        maxScheduleTime,
+        timeUntilNeedsLoginAchievementCheck + bufferAchievementCheck,
+      );
+      this._checkLoginAchievementsTimeout = setTimeout(
+        this._scheduleOrRequestLoginAchievements.bind(this),
+        scheduleWaitTime,
+      );
       return Promise.resolve();
     }
   },
@@ -190,23 +215,28 @@ var AchievementsManager = Manager.extend({
   requestLoginAchievements: function () {
     this._clearLoginAchievementsTimeout();
 
-    return new Promise(function (resolve, reject) {
-      var request = $.ajax({
-        url: process.env.API_URL + '/api/me/achievements/login',
-        type: 'POST',
-        contentType: 'application/json',
-        dataType: 'json',
-      });
+    return new Promise(
+      function (resolve, reject) {
+        var request = $.ajax({
+          url: process.env.API_URL + '/api/me/achievements/login',
+          type: 'POST',
+          contentType: 'application/json',
+          dataType: 'json',
+        });
 
-      request.done(function (response) {
-        resolve(response);
-      });
+        request.done(function (response) {
+          resolve(response);
+        });
 
-      request.fail(function (response) {
-        var errorMessage = response.responseJSON != null ? response.responseJSON.message : 'Login Achievement check failed.';
-        reject(errorMessage);
-      });
-    }.bind(this));
+        request.fail(function (response) {
+          var errorMessage =
+            response.responseJSON != null
+              ? response.responseJSON.message
+              : 'Login Achievement check failed.';
+          reject(errorMessage);
+        });
+      }.bind(this),
+    );
   },
 
   timeUntilNeedsLoginAchievementCheck: function () {
@@ -218,11 +248,21 @@ var AchievementsManager = Manager.extend({
       if (!this._getHasCompletedAchievement(achievementId)) {
         // if (sdkAchievement.getLoginAchievementStartsMoment() != null && sdkAchievement.getLoginAchievementStartsMoment().valueOf() > momentNowUtc.valueOf()) {
         if (sdkAchievement.getLoginAchievementStartsMoment() != null) {
-          var upcomingLoginAchievementStartMoment = sdkAchievement.getLoginAchievementStartsMoment();
-          if (sdkAchievement.progressForLoggingIn(upcomingLoginAchievementStartMoment.clone().add(1, 'minute')) >= 1) {
-            if (closestLoginAchievmentMs == null || closestLoginAchievmentMs > (upcomingLoginAchievementStartMoment.valueOf() - momentNowUtc.valueOf())) {
+          var upcomingLoginAchievementStartMoment =
+            sdkAchievement.getLoginAchievementStartsMoment();
+          if (
+            sdkAchievement.progressForLoggingIn(
+              upcomingLoginAchievementStartMoment.clone().add(1, 'minute'),
+            ) >= 1
+          ) {
+            if (
+              closestLoginAchievmentMs == null ||
+              closestLoginAchievmentMs >
+                upcomingLoginAchievementStartMoment.valueOf() - momentNowUtc.valueOf()
+            ) {
               // Note: this may be negative or 0, meaning the login achievement has started
-              closestLoginAchievmentMs = upcomingLoginAchievementStartMoment.valueOf() - momentNowUtc.valueOf();
+              closestLoginAchievmentMs =
+                upcomingLoginAchievementStartMoment.valueOf() - momentNowUtc.valueOf();
             }
           }
         }
@@ -233,7 +273,10 @@ var AchievementsManager = Manager.extend({
   },
 
   _getHasCompletedAchievement: function (achievementId) {
-    if (this._completedAchievementsCollection != null && this._completedAchievementsCollection.models != null) {
+    if (
+      this._completedAchievementsCollection != null &&
+      this._completedAchievementsCollection.models != null
+    ) {
       for (var i = 0; i < this._completedAchievementsCollection.models.length; i++) {
         var model = this._completedAchievementsCollection.models[i];
         if (model.get('achievement_id') == achievementId) {
@@ -264,26 +307,32 @@ var AchievementsManager = Manager.extend({
     var allRewardPromises = [];
     if (achievement && achievement.reward_ids) {
       _.each(achievement.reward_ids, function (rewardId) {
-        allRewardPromises.push(new Promise(function (resolve, reject) {
-          var rewardModel = new DuelystBackbone.Model();
-          rewardModel.url = process.env.API_URL + '/api/me/rewards/' + rewardId;
-          rewardModel.fetch();
-          rewardModel.onSyncOrReady().then(function () {
-            resolve(rewardModel.attributes);
-          }).catch(function (error) {
-            reject(error);
-          });
-        }));
+        allRewardPromises.push(
+          new Promise(function (resolve, reject) {
+            var rewardModel = new DuelystBackbone.Model();
+            rewardModel.url = process.env.API_URL + '/api/me/rewards/' + rewardId;
+            rewardModel.fetch();
+            rewardModel
+              .onSyncOrReady()
+              .then(function () {
+                resolve(rewardModel.attributes);
+              })
+              .catch(function (error) {
+                reject(error);
+              });
+          }),
+        );
       });
     }
 
     // when all the rewards are loaded, push the achievent onto the unread queue
-    Promise.all(allRewardPromises).then(function (rewards) {
-      achievement.rewards = rewards;
-      this._unreadAchievementsQueue.push(achievement);
-    }.bind(this));
+    Promise.all(allRewardPromises).then(
+      function (rewards) {
+        achievement.rewards = rewards;
+        this._unreadAchievementsQueue.push(achievement);
+      }.bind(this),
+    );
   },
 
   /* endregion EVENT HANDLERS */
-
 });

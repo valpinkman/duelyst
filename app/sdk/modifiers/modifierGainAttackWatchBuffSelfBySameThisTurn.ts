@@ -18,13 +18,25 @@ class ModifierGainAttackWatchBuffSelfBySameThisTurn extends ModifierGainAttackWa
   onGainAttackWatch(action) {
     const attackBuff = action.getModifier().attributeBuffs.atk;
     const modifierContextObject = Modifier.createContextObjectWithAttributeBuffs(attackBuff);
-    modifierContextObject.appliedName = i18next.t('modifiers.gain_attack_watch_buff_self_by_same_this_turn_name');
+    modifierContextObject.appliedName = i18next.t(
+      'modifiers.gain_attack_watch_buff_self_by_same_this_turn_name',
+    );
     modifierContextObject.durationEndTurn = 1;
-    return this.getGameSession().applyModifierContextObject(modifierContextObject, this.getCard(), this);
+    return this.getGameSession().applyModifierContextObject(
+      modifierContextObject,
+      this.getCard(),
+      this,
+    );
   }
 }
-ModifierGainAttackWatchBuffSelfBySameThisTurn.prototype.type = 'ModifierGainAttackWatchBuffSelfBySameThisTurn';
-ModifierGainAttackWatchBuffSelfBySameThisTurn.description = i18next.t('modifiers.gain_attack_watch_buff_self_by_same_this_turn_def');
-ModifierGainAttackWatchBuffSelfBySameThisTurn.prototype.fxResource = ['FX.Modifiers.ModifierDrawCardWatch', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierGainAttackWatchBuffSelfBySameThisTurn.prototype.type =
+  'ModifierGainAttackWatchBuffSelfBySameThisTurn';
+ModifierGainAttackWatchBuffSelfBySameThisTurn.description = i18next.t(
+  'modifiers.gain_attack_watch_buff_self_by_same_this_turn_def',
+);
+ModifierGainAttackWatchBuffSelfBySameThisTurn.prototype.fxResource = [
+  'FX.Modifiers.ModifierDrawCardWatch',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 
 module.exports = ModifierGainAttackWatchBuffSelfBySameThisTurn;

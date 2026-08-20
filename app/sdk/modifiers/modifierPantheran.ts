@@ -23,8 +23,8 @@ class ModifierPantheran extends Modifier {
   declare fxResource: any;
 
   static type = 'ModifierPantheran';
-  static modifierName = 'Scion\'s Watch';
-  static description = 'Costs 0 if you\'ve cast all three Scion\'s Wish spells this game';
+  static modifierName = "Scion's Watch";
+  static description = "Costs 0 if you've cast all three Scion's Wish spells this game";
 
   onAction(e) {
     super.onAction(e);
@@ -38,14 +38,20 @@ class ModifierPantheran extends Modifier {
   onActivate() {
     // special check on activation in case this card is created mid-game
     // need to check all actions that occured this gamesession for triggers
-    if (!this.getHasPlayedScionsWishes() && (this.getGameSession().findAction(this.checkForScionsWishes.bind(this)) != null)) {
+    if (
+      !this.getHasPlayedScionsWishes() &&
+      this.getGameSession().findAction(this.checkForScionsWishes.bind(this)) != null
+    ) {
       return this.onHasPlayedScionsWishes();
     }
   }
 
   checkForScionsWishes(action) {
     // we're watching for a spell (but not a followup) being cast by this modifier's owner
-    if ((action instanceof PlayCardFromHandAction || action instanceof PlaySignatureCardAction) && (action.getOwnerId() === this.getCard().getOwnerId())) {
+    if (
+      (action instanceof PlayCardFromHandAction || action instanceof PlaySignatureCardAction) &&
+      action.getOwnerId() === this.getCard().getOwnerId()
+    ) {
       const card = action.getCard();
       if ((card != null ? card.type : undefined) === CardType.Spell) {
         const baseCardId = card.getBaseCardId();

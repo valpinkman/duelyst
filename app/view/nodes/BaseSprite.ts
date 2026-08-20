@@ -149,45 +149,115 @@ var BaseSprite = cc.Sprite.extend({
     this.setAnchorPoint(0.5, 0.5);
 
     // copy prototype values down into this instance
-    if (this.ambientLightColor) { this.setAmbientLightColor(this.ambientLightColor); }
-    if (this.depthRotation) { this.setDepthRotation(this.depthRotation); }
-    if (this.normal) { this.setNormal(this.normal); }
-    if (this.tint) { this.setTint(this.tint); }
-    if (this.shaderKey) { this.setShaderKey(this.shaderKey); }
+    if (this.ambientLightColor) {
+      this.setAmbientLightColor(this.ambientLightColor);
+    }
+    if (this.depthRotation) {
+      this.setDepthRotation(this.depthRotation);
+    }
+    if (this.normal) {
+      this.setNormal(this.normal);
+    }
+    if (this.tint) {
+      this.setTint(this.tint);
+    }
+    if (this.shaderKey) {
+      this.setShaderKey(this.shaderKey);
+    }
   },
 
   setOptions(options) {
     this._super(options);
-    if (options.shaderKey != null) { this.setShaderKey(options.shaderKey); }
-    if (options.antiAlias != null) { this.setAntiAlias(options.antiAlias); }
-    if (options.tint != null) { this.setTint(options.tint); }
-    if (options.needsDepthDraw != null) { this.setNeedsDepthDraw(options.needsDepthDraw); }
-    if (options.needsDepthTest != null) { this.setNeedsDepthTest(options.needsDepthTest); }
-    if (options.depthOffset != null) { this.setDepthOffset(options.depthOffset); }
-    if (options.depthModifier != null) { this.setDepthModifier(options.depthModifier); }
-    if (options.occludes != null) { this.setOccludes(options.occludes); }
-    if (options.ambientLightColor != null) { this.setAmbientLightColor(options.ambientLightColor); }
-    if (options.castsShadows != null) { this.setCastsShadows(options.castsShadows); }
-    if (options.shadowOffset != null) { this.setShadowOffset(options.shadowOffset); }
-    if (options.staticShadow != null) { this.setStaticShadow(options.staticShadow); }
-    if (options.staticShadowOpacity != null) { this.setStaticShadowOpacity(options.staticShadowOpacity); }
-    if (options.staticShadowOffset != null) { this.setStaticShadowOffset(options.staticShadowOffset); }
-    if (options.lightMapScale != null) { this.setLightMapScale(options.lightMapScale); }
-    if (options.normal) { this.setNormal(options.normal); }
-    if (options.depthRotation) { this.setDepthRotation(options.depthRotation); }
-    if (options.colorByOwner != null) { this.setColorByOwner(options.colorByOwner); }
-    if (options.dissolving != null) { this.setDissolving(options.dissolving); }
-    if (options.dissolveSeed != null) { this.setDissolveSeed(options.dissolveSeed); }
-    if (options.dissolveFrequency != null) { this.setDissolveFrequency(options.dissolveFrequency); }
-    if (options.dissolveAmplitude != null) { this.setDissolveAmplitude(options.dissolveAmplitude); }
-    if (options.dissolveVignetteStrength != null) { this.setDissolveVignetteStrength(options.dissolveVignetteStrength); }
-    if (options.dissolveEdgeFalloff != null) { this.setDissolveEdgeFalloff(options.dissolveEdgeFalloff); }
-    if (options.leveled != null) { this.setLeveled(options.leveled); }
-    if (options.levelsInGamma != null) { this.setLevelsInGamma(options.levelsInGamma); }
-    if (options.levelsInBlack != null) { this.setLevelsInBlack(options.levelsInBlack); }
-    if (options.levelsOutBlack != null) { this.setLevelsOutBlack(options.levelsOutBlack); }
-    if (options.levelsInWhite != null) { this.setLevelsInWhite(options.levelsInWhite); }
-    if (options.levelsOutWhite != null) { this.setLevelsOutWhite(options.levelsOutWhite); }
+    if (options.shaderKey != null) {
+      this.setShaderKey(options.shaderKey);
+    }
+    if (options.antiAlias != null) {
+      this.setAntiAlias(options.antiAlias);
+    }
+    if (options.tint != null) {
+      this.setTint(options.tint);
+    }
+    if (options.needsDepthDraw != null) {
+      this.setNeedsDepthDraw(options.needsDepthDraw);
+    }
+    if (options.needsDepthTest != null) {
+      this.setNeedsDepthTest(options.needsDepthTest);
+    }
+    if (options.depthOffset != null) {
+      this.setDepthOffset(options.depthOffset);
+    }
+    if (options.depthModifier != null) {
+      this.setDepthModifier(options.depthModifier);
+    }
+    if (options.occludes != null) {
+      this.setOccludes(options.occludes);
+    }
+    if (options.ambientLightColor != null) {
+      this.setAmbientLightColor(options.ambientLightColor);
+    }
+    if (options.castsShadows != null) {
+      this.setCastsShadows(options.castsShadows);
+    }
+    if (options.shadowOffset != null) {
+      this.setShadowOffset(options.shadowOffset);
+    }
+    if (options.staticShadow != null) {
+      this.setStaticShadow(options.staticShadow);
+    }
+    if (options.staticShadowOpacity != null) {
+      this.setStaticShadowOpacity(options.staticShadowOpacity);
+    }
+    if (options.staticShadowOffset != null) {
+      this.setStaticShadowOffset(options.staticShadowOffset);
+    }
+    if (options.lightMapScale != null) {
+      this.setLightMapScale(options.lightMapScale);
+    }
+    if (options.normal) {
+      this.setNormal(options.normal);
+    }
+    if (options.depthRotation) {
+      this.setDepthRotation(options.depthRotation);
+    }
+    if (options.colorByOwner != null) {
+      this.setColorByOwner(options.colorByOwner);
+    }
+    if (options.dissolving != null) {
+      this.setDissolving(options.dissolving);
+    }
+    if (options.dissolveSeed != null) {
+      this.setDissolveSeed(options.dissolveSeed);
+    }
+    if (options.dissolveFrequency != null) {
+      this.setDissolveFrequency(options.dissolveFrequency);
+    }
+    if (options.dissolveAmplitude != null) {
+      this.setDissolveAmplitude(options.dissolveAmplitude);
+    }
+    if (options.dissolveVignetteStrength != null) {
+      this.setDissolveVignetteStrength(options.dissolveVignetteStrength);
+    }
+    if (options.dissolveEdgeFalloff != null) {
+      this.setDissolveEdgeFalloff(options.dissolveEdgeFalloff);
+    }
+    if (options.leveled != null) {
+      this.setLeveled(options.leveled);
+    }
+    if (options.levelsInGamma != null) {
+      this.setLevelsInGamma(options.levelsInGamma);
+    }
+    if (options.levelsInBlack != null) {
+      this.setLevelsInBlack(options.levelsInBlack);
+    }
+    if (options.levelsOutBlack != null) {
+      this.setLevelsOutBlack(options.levelsOutBlack);
+    }
+    if (options.levelsInWhite != null) {
+      this.setLevelsInWhite(options.levelsInWhite);
+    }
+    if (options.levelsOutWhite != null) {
+      this.setLevelsOutWhite(options.levelsOutWhite);
+    }
   },
 
   _updateAliasing() {
@@ -206,12 +276,20 @@ var BaseSprite = cc.Sprite.extend({
 
     this._renderCmd.onEnter();
 
-    if (this.getOccludes()) { this.setupOcclusion(); }
-    if (this.getCastsShadows()) { this.setupShadowCasting(); }
-    if (this.staticShadow) { this.setupStaticShadow(); }
+    if (this.getOccludes()) {
+      this.setupOcclusion();
+    }
+    if (this.getCastsShadows()) {
+      this.setupShadowCasting();
+    }
+    if (this.staticShadow) {
+      this.setupStaticShadow();
+    }
   },
   onExit() {
-    if (this.staticShadow) { this.teardownStaticShadow(); }
+    if (this.staticShadow) {
+      this.teardownStaticShadow();
+    }
     if (this.getCastsShadows()) this.teardownShadowCasting();
     if (this.getOccludes()) this.teardownOcclusion();
 
@@ -255,7 +333,8 @@ var BaseSprite = cc.Sprite.extend({
     // store random choice for animation so it is always the same
     if (this._cachedSpriteIdentifier == null && this.spriteIdentifier != null) {
       if (_.isArray(this.spriteIdentifier)) {
-        this._cachedSpriteIdentifier = this.spriteIdentifier[_.random(0, this.spriteIdentifier.length - 1)];
+        this._cachedSpriteIdentifier =
+          this.spriteIdentifier[_.random(0, this.spriteIdentifier.length - 1)];
       } else {
         this._cachedSpriteIdentifier = this.spriteIdentifier;
       }
@@ -295,7 +374,11 @@ var BaseSprite = cc.Sprite.extend({
     this.setMaskRect(rect);
   },
   createMaskComponent() {
-    return new CompositeHorizontalPass(this, cc.shaderCache.programForKey('Mask'), this.setupMaskRender.bind(this));
+    return new CompositeHorizontalPass(
+      this,
+      cc.shaderCache.programForKey('Mask'),
+      this.setupMaskRender.bind(this),
+    );
   },
   setupMaskRender(shaderProgram) {
     this._renderCmd.setDefaultMatricesAndBlendModesForDraw(shaderProgram);
@@ -305,7 +388,13 @@ var BaseSprite = cc.Sprite.extend({
       // use texture rect as fallback
       maskRect = this._rect;
     }
-    shaderProgram.setUniformLocationWith4f(shaderProgram.loc_maskRect, maskRect.x, maskRect.y, maskRect.width, maskRect.height);
+    shaderProgram.setUniformLocationWith4f(
+      shaderProgram.loc_maskRect,
+      maskRect.x,
+      maskRect.y,
+      maskRect.width,
+      maskRect.height,
+    );
   },
   getMask() {
     return this.mask;
@@ -328,21 +417,35 @@ var BaseSprite = cc.Sprite.extend({
    * @param {cc.Color} tint
    */
   setTint(tint) {
-    const a = tint.a != null ? tint.a : (this.tint && this.tint.a || 0);
-    if (this.tint == null || !cc.colorEqual(this.tint, tint) || (this.tint.a != a)) {
+    const a = tint.a != null ? tint.a : (this.tint && this.tint.a) || 0;
+    if (this.tint == null || !cc.colorEqual(this.tint, tint) || this.tint.a != a) {
       this.tint = cc.color(tint.r, tint.g, tint.b, a);
 
       // auto manage tinting component
-      this.autoManageComponentById(this.getTinted(), 'Tinting', this.createTintingComponent.bind(this));
+      this.autoManageComponentById(
+        this.getTinted(),
+        'Tinting',
+        this.createTintingComponent.bind(this),
+      );
     }
   },
   createTintingComponent() {
-    return new CompositeHorizontalPass(this, cc.shaderCache.programForKey('Tinting'), this.setupTintingRender.bind(this));
+    return new CompositeHorizontalPass(
+      this,
+      cc.shaderCache.programForKey('Tinting'),
+      this.setupTintingRender.bind(this),
+    );
   },
   setupTintingRender(shaderProgram) {
     this._renderCmd.setDefaultMatricesAndBlendModesForDraw(shaderProgram);
     const tint = this.getTint();
-    shaderProgram.setUniformLocationWith4f(shaderProgram.loc_tint, tint.r / 255.0, tint.g / 255.0, tint.b / 255.0, tint.a / 255.0);
+    shaderProgram.setUniformLocationWith4f(
+      shaderProgram.loc_tint,
+      tint.r / 255.0,
+      tint.g / 255.0,
+      tint.b / 255.0,
+      tint.a / 255.0,
+    );
   },
   getTint() {
     return this.tint;
@@ -414,10 +517,12 @@ var BaseSprite = cc.Sprite.extend({
   },
   setAmbientLightColor(val) {
     const { ambientLightColor } = this;
-    if (ambientLightColor
-        && (ambientLightColor.r !== val.r
-        || ambientLightColor.g !== val.g
-        || ambientLightColor.b !== val.b)) {
+    if (
+      ambientLightColor &&
+      (ambientLightColor.r !== val.r ||
+        ambientLightColor.g !== val.g ||
+        ambientLightColor.b !== val.b)
+    ) {
       // use a plain object so that the values can go negative
       // cocos doesn't allow negative color values
       this.ambientLightColor = { r: val.r, g: val.g, b: val.b };
@@ -498,7 +603,9 @@ var BaseSprite = cc.Sprite.extend({
   setupStaticShadow() {
     this.staticShadowSprite = BaseSprite.create(this.staticShadow);
     this.staticShadowSprite.setOpacity(this.staticShadowOpacity);
-    this.staticShadowSprite.setPosition(cc.p(this._contentSize.width * 0.5, this.staticShadowOffset));
+    this.staticShadowSprite.setPosition(
+      cc.p(this._contentSize.width * 0.5, this.staticShadowOffset),
+    );
     this.staticShadowSprite.setScale(1.0);
     this.addChild(this.staticShadowSprite, -9999);
   },
@@ -544,7 +651,10 @@ var BaseSprite = cc.Sprite.extend({
 
     cc.Sprite.prototype.setContentSize.call(this, size, height);
 
-    if (this._running && (previousWidth !== this._contentSize.width || previousHeight !== this._contentSize.height)) {
+    if (
+      this._running &&
+      (previousWidth !== this._contentSize.width || previousHeight !== this._contentSize.height)
+    ) {
       this.onContentSizeChanged();
     }
   },
@@ -583,21 +693,32 @@ var BaseSprite = cc.Sprite.extend({
       this.resetDissolve();
 
       // auto manage dissolving component
-      this.autoManageComponentById(this.getDissolving(), 'Dissolve', this.createDissolvingComponent.bind(this));
+      this.autoManageComponentById(
+        this.getDissolving(),
+        'Dissolve',
+        this.createDissolvingComponent.bind(this),
+      );
     }
   },
   getDissolving() {
     return this.dissolving;
   },
   createDissolvingComponent() {
-    return new CompositeHorizontalPass(this, cc.shaderCache.programForKey('Dissolve'), this.setupDissolvingRender.bind(this));
+    return new CompositeHorizontalPass(
+      this,
+      cc.shaderCache.programForKey('Dissolve'),
+      this.setupDissolvingRender.bind(this),
+    );
   },
   setupDissolvingRender(shaderProgram) {
     this._renderCmd.setDefaultMatricesAndBlendModesForDraw(shaderProgram);
     shaderProgram.setUniformLocationWith1f(shaderProgram.loc_seed, this.dissolveSeed);
     shaderProgram.setUniformLocationWith1f(shaderProgram.loc_frequency, this.dissolveFrequency);
     shaderProgram.setUniformLocationWith1f(shaderProgram.loc_amplitude, this.dissolveAmplitude);
-    shaderProgram.setUniformLocationWith1f(shaderProgram.loc_vignetteStrength, this.dissolveVignetteStrength);
+    shaderProgram.setUniformLocationWith1f(
+      shaderProgram.loc_vignetteStrength,
+      this.dissolveVignetteStrength,
+    );
     shaderProgram.setUniformLocationWith1f(shaderProgram.loc_edgeFalloff, this.dissolveEdgeFalloff);
     shaderProgram.setUniformLocationWith1f(shaderProgram.loc_time, this._dissolveTime);
   },
@@ -640,14 +761,22 @@ var BaseSprite = cc.Sprite.extend({
       this.leveled = leveled;
 
       // auto manage leveled component
-      this.autoManageComponentById(this.getLeveled(), 'Levels', this.createLeveledComponent.bind(this));
+      this.autoManageComponentById(
+        this.getLeveled(),
+        'Levels',
+        this.createLeveledComponent.bind(this),
+      );
     }
   },
   getLeveled() {
     return this.leveled;
   },
   createLeveledComponent() {
-    return new CompositeHorizontalPass(this, cc.shaderCache.programForKey('Levels'), this.setupLeveledRender.bind(this));
+    return new CompositeHorizontalPass(
+      this,
+      cc.shaderCache.programForKey('Levels'),
+      this.setupLeveledRender.bind(this),
+    );
   },
   setupLeveledRender(shaderProgram) {
     this._renderCmd.setDefaultMatricesAndBlendModesForDraw(shaderProgram);
@@ -805,7 +934,9 @@ BaseSprite.WebGLRenderCmd = function (renderable) {
   // composited effects on sprite
   this._renderPassStackId = RenderPass.get_new_reset_stack_id();
 };
-const proto = BaseSprite.WebGLRenderCmd.prototype = Object.create(cc.Sprite.WebGLRenderCmd.prototype);
+const proto = (BaseSprite.WebGLRenderCmd.prototype = Object.create(
+  cc.Sprite.WebGLRenderCmd.prototype,
+));
 proto.constructor = BaseSprite.WebGLRenderCmd;
 
 proto._compositeNeedsRebuild = false;
@@ -836,12 +967,19 @@ proto._setTexture = function () {
     node._updateAliasing();
 
     // cocos resets properties when a texture swap occurs
-    if (shaderProgram != null && (texture != null || shaderProgram !== cc.shaderCache.programForKey(cc.SHADER_POSITION_COLOR)) && this.getShaderProgram() !== shaderProgram) {
+    if (
+      shaderProgram != null &&
+      (texture != null ||
+        shaderProgram !== cc.shaderCache.programForKey(cc.SHADER_POSITION_COLOR)) &&
+      this.getShaderProgram() !== shaderProgram
+    ) {
       this.setShaderProgram(shaderProgram);
     }
     const updatedBlendFunc = node.getBlendFunc();
-    if (blendSrc !== cc.BLEND_SRC && updatedBlendFunc.src === cc.BLEND_SRC
-      || blendDst !== cc.BLEND_DST && updatedBlendFunc.dst === cc.BLEND_DST) {
+    if (
+      (blendSrc !== cc.BLEND_SRC && updatedBlendFunc.src === cc.BLEND_SRC) ||
+      (blendDst !== cc.BLEND_DST && updatedBlendFunc.dst === cc.BLEND_DST)
+    ) {
       node.setBlendFunc(blendSrc, blendDst);
     }
   }
@@ -849,9 +987,9 @@ proto._setTexture = function () {
 
 proto._syncStatus = function (parentCmd) {
   if (this.getIsOccluding()) {
-    const flags = cc.Node._dirtyFlags; let
-      locFlag = this._dirtyFlag;
-    if (parentCmd && (parentCmd._dirtyFlag & flags.transformDirty)) {
+    const flags = cc.Node._dirtyFlags;
+    let locFlag = this._dirtyFlag;
+    if (parentCmd && parentCmd._dirtyFlag & flags.transformDirty) {
       locFlag |= flags.transformDirty;
     }
     const transformDirty = locFlag & flags.transformDirty;
@@ -867,8 +1005,8 @@ proto._syncStatus = function (parentCmd) {
 };
 proto.updateStatus = function () {
   if (this.getIsOccluding()) {
-    const flags = cc.Node._dirtyFlags; const
-      locFlag = this._dirtyFlag;
+    const flags = cc.Node._dirtyFlags;
+    const locFlag = this._dirtyFlag;
     const transformDirty = locFlag & flags.transformDirty;
 
     cc.Sprite.WebGLRenderCmd.prototype.updateStatus.call(this);
@@ -882,7 +1020,10 @@ proto.updateStatus = function () {
 };
 
 proto.getNeedsPerspectiveProjectionForCache = function () {
-  return cc.Sprite.WebGLRenderCmd.prototype.getNeedsPerspectiveProjectionForCache.call(this) || this.getNeedsOcclusion();
+  return (
+    cc.Sprite.WebGLRenderCmd.prototype.getNeedsPerspectiveProjectionForCache.call(this) ||
+    this.getNeedsOcclusion()
+  );
 };
 
 proto.rendering = function () {
@@ -909,7 +1050,12 @@ proto.rendering = function () {
 
   if (isOccluding) {
     // check if lights should be dirty
-    if (!this._lightingDirty && (this._batchLighting && this._batchLighting.getDirty()) && node.getFX().batchLights.getBatchSize() > 0) {
+    if (
+      !this._lightingDirty &&
+      this._batchLighting &&
+      this._batchLighting.getDirty() &&
+      node.getFX().batchLights.getBatchSize() > 0
+    ) {
       this.setLightsDirty();
     }
 
@@ -960,12 +1106,20 @@ proto.rebuild = function () {
   const isOccluding = this.getIsOccluding();
 
   // rebuild composite as needed
-  if (this._compositeNeedsRebuild || (needsComposite && !isCompositing) || (!needsComposite && isCompositing)) {
+  if (
+    this._compositeNeedsRebuild ||
+    (needsComposite && !isCompositing) ||
+    (!needsComposite && isCompositing)
+  ) {
     this.rebuildCompositePasses();
   }
 
   // rebuild lighting as needed
-  if (this._occlusionNeedsRebuild || (needsOcclusion && !isOccluding) || (!needsOcclusion && isOccluding)) {
+  if (
+    this._occlusionNeedsRebuild ||
+    (needsOcclusion && !isOccluding) ||
+    (!needsOcclusion && isOccluding)
+  ) {
     this.rebuildOcclusion();
   }
 
@@ -976,9 +1130,21 @@ proto.rebuild = function () {
   if (!this.getNeedsDepthTest() || width == null || width <= 0 || height == null || height <= 0) {
     this.releaseDepthTestPasses();
   } else if (this._depthTestPass == null) {
-    this._depthTestPass = RenderPass.create(cc.Texture2D.PIXEL_FORMAT_RGBA8888, width, height, 1, this.antiAlias);
+    this._depthTestPass = RenderPass.create(
+      cc.Texture2D.PIXEL_FORMAT_RGBA8888,
+      width,
+      height,
+      1,
+      this.antiAlias,
+    );
   } else if (this._depthTestPass.getWidth() != width || this._depthTestPass.getHeight() != height) {
-    this._depthTestPass.rebuild(cc.Texture2D.PIXEL_FORMAT_RGBA8888, width, height, 1, this.antiAlias);
+    this._depthTestPass.rebuild(
+      cc.Texture2D.PIXEL_FORMAT_RGBA8888,
+      width,
+      height,
+      1,
+      this.antiAlias,
+    );
   }
 };
 
@@ -1020,7 +1186,9 @@ proto.drawComposite = function () {
   const gl = cc._renderContext;
   const needsOcclusion = this.getNeedsOcclusion();
 
-  const shaderProgram = needsOcclusion ? cc.shaderCache.programForKey('MultipliedLighting') : cc.shaderCache.programForKey(cc.SHADER_POSITION_TEXTURECOLOR);
+  const shaderProgram = needsOcclusion
+    ? cc.shaderCache.programForKey('MultipliedLighting')
+    : cc.shaderCache.programForKey(cc.SHADER_POSITION_TEXTURECOLOR);
   shaderProgram.use();
 
   // setup for composite render
@@ -1031,7 +1199,12 @@ proto.drawComposite = function () {
   if (needsOcclusion) {
     const globalAmbientLightColor = node.getFX().getAmbientLightColor();
     const { ambientLightColor } = node;
-    shaderProgram.setUniformLocationWith3f(shaderProgram.loc_ambientColor, (globalAmbientLightColor.r + ambientLightColor.r) / 255, (globalAmbientLightColor.g + ambientLightColor.g) / 255, (globalAmbientLightColor.b + ambientLightColor.b) / 255);
+    shaderProgram.setUniformLocationWith3f(
+      shaderProgram.loc_ambientColor,
+      (globalAmbientLightColor.r + ambientLightColor.r) / 255,
+      (globalAmbientLightColor.g + ambientLightColor.g) / 255,
+      (globalAmbientLightColor.b + ambientLightColor.b) / 255,
+    );
     cc.glBindTexture2DN(1, this._lightingPass.texture);
   }
 
@@ -1149,7 +1322,8 @@ proto.getIsDepthTesting = function () {
 proto.getDepthTestSize = function () {
   if (this.getIsCompositing()) {
     return cc.size(this._compositePass.getWidth(), this._compositePass.getHeight());
-  } if (this._node != null) {
+  }
+  if (this._node != null) {
     return this._node._contentSize;
   }
   return cc.size(0, 0);
@@ -1248,8 +1422,12 @@ proto.drawDebug = function () {
   // draw texture box
   const drawRectG2 = node.getTextureRect();
   const offsetPixG2 = node.getOffsetPosition();
-  const verticesG2 = [cc.p(offsetPixG2.x, offsetPixG2.y), cc.p(offsetPixG2.x + drawRectG2.width, offsetPixG2.y),
-    cc.p(offsetPixG2.x + drawRectG2.width, offsetPixG2.y + drawRectG2.height), cc.p(offsetPixG2.x, offsetPixG2.y + drawRectG2.height)];
+  const verticesG2 = [
+    cc.p(offsetPixG2.x, offsetPixG2.y),
+    cc.p(offsetPixG2.x + drawRectG2.width, offsetPixG2.y),
+    cc.p(offsetPixG2.x + drawRectG2.width, offsetPixG2.y + drawRectG2.height),
+    cc.p(offsetPixG2.x, offsetPixG2.y + drawRectG2.height),
+  ];
   cc._drawingUtil.drawPoly(verticesG2, 4, true);
 
   cc.current_stack.top = cc.current_stack.stack.pop();
@@ -1268,7 +1446,12 @@ proto.cacheDrawLighting = function () {
 
     if (this._depthRotationDirty || this._depthRotationMatrix == null) {
       this._depthRotationDirty = false;
-      this._depthRotationMatrix = cc.kmMat4RotationPitchYawRoll(new cc.kmMat4(), node.depthRotation.x, node.depthRotation.y, node.depthRotation.z);
+      this._depthRotationMatrix = cc.kmMat4RotationPitchYawRoll(
+        new cc.kmMat4(),
+        node.depthRotation.x,
+        node.depthRotation.y,
+        node.depthRotation.z,
+      );
     }
 
     const lightingProgram = cc.shaderCache.programForKey('Lighting');
@@ -1276,8 +1459,17 @@ proto.cacheDrawLighting = function () {
     lightingProgram._setUniformForMVPMatrixWithMat4(this._stackMatrix);
     lightingProgram.setUniformLocationWith1f(lightingProgram.loc_depthOffset, node.depthOffset);
     lightingProgram.setUniformLocationWith1f(lightingProgram.loc_lightMapScale, node.lightMapScale);
-    lightingProgram.setUniformLocationWithMatrix4fv(lightingProgram.loc_depthRotationMatrix, this._depthRotationMatrix.mat, 1);
-    lightingProgram.setUniformLocationWith3f(lightingProgram.loc_normal, node.normal.x, node.normal.y, node.normal.z);
+    lightingProgram.setUniformLocationWithMatrix4fv(
+      lightingProgram.loc_depthRotationMatrix,
+      this._depthRotationMatrix.mat,
+      1,
+    );
+    lightingProgram.setUniformLocationWith3f(
+      lightingProgram.loc_normal,
+      node.normal.x,
+      node.normal.y,
+      node.normal.z,
+    );
     // lighting accumulation doesn't need a texture
     cc.glBlendFunc(gl.SRC_ALPHA, gl.ONE);
 
@@ -1317,7 +1509,11 @@ proto.drawShadows = function () {
     }
 
     shadowProgram.setUniformLocationWith2f(shadowProgram.loc_size, width, height);
-    shadowProgram.setUniformLocationWith2f(shadowProgram.loc_anchor, node._anchorPoint.x * width, offset);
+    shadowProgram.setUniformLocationWith2f(
+      shadowProgram.loc_anchor,
+      node._anchorPoint.x * width,
+      offset,
+    );
     cc.glBlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
     this._batchLighting.renderWithShadowCastingLights();
@@ -1404,17 +1600,25 @@ proto._compositeVerticalAfterPasses = null;
 
 proto.addCompositePass = function (compositePass) {
   if (compositePass instanceof CompositePass) {
-    if (this._compositePasses == null) { this._compositePasses = []; }
+    if (this._compositePasses == null) {
+      this._compositePasses = [];
+    }
     this._compositePasses.push(compositePass);
 
     if (compositePass instanceof CompositeHorizontalPass) {
-      if (this._compositeHorizontalPasses == null) { this._compositeHorizontalPasses = []; }
+      if (this._compositeHorizontalPasses == null) {
+        this._compositeHorizontalPasses = [];
+      }
       this._compositeHorizontalPasses.push(compositePass);
     } else if (compositePass instanceof CompositeVerticalBeforePass) {
-      if (this._compositeVerticalBeforePasses == null) { this._compositeVerticalBeforePasses = []; }
+      if (this._compositeVerticalBeforePasses == null) {
+        this._compositeVerticalBeforePasses = [];
+      }
       this._compositeVerticalBeforePasses.push(compositePass);
     } else if (compositePass instanceof CompositeVerticalAfterPass) {
-      if (this._compositeVerticalAfterPasses == null) { this._compositeVerticalAfterPasses = []; }
+      if (this._compositeVerticalAfterPasses == null) {
+        this._compositeVerticalAfterPasses = [];
+      }
       this._compositeVerticalAfterPasses.push(compositePass);
     }
 
@@ -1424,7 +1628,11 @@ proto.addCompositePass = function (compositePass) {
 };
 
 proto.removeCompositePass = function (compositePass) {
-  if (compositePass instanceof CompositePass && this._compositePasses != null && this._compositePasses.length > 0) {
+  if (
+    compositePass instanceof CompositePass &&
+    this._compositePasses != null &&
+    this._compositePasses.length > 0
+  ) {
     this._compositePasses = _.without(this._compositePasses, compositePass);
 
     if (compositePass instanceof CompositeHorizontalPass) {
@@ -1432,12 +1640,24 @@ proto.removeCompositePass = function (compositePass) {
         this._compositeHorizontalPasses = _.without(this._compositeHorizontalPasses, compositePass);
       }
     } else if (compositePass instanceof CompositeVerticalBeforePass) {
-      if (this._compositeVerticalBeforePasses != null && this._compositeVerticalBeforePasses.length > 0) {
-        this._compositeVerticalBeforePasses = _.without(this._compositeVerticalBeforePasses, compositePass);
+      if (
+        this._compositeVerticalBeforePasses != null &&
+        this._compositeVerticalBeforePasses.length > 0
+      ) {
+        this._compositeVerticalBeforePasses = _.without(
+          this._compositeVerticalBeforePasses,
+          compositePass,
+        );
       }
     } else if (compositePass instanceof CompositeVerticalAfterPass) {
-      if (this._compositeVerticalAfterPasses != null && this._compositeVerticalAfterPasses.length > 0) {
-        this._compositeVerticalAfterPasses = _.without(this._compositeVerticalAfterPasses, compositePass);
+      if (
+        this._compositeVerticalAfterPasses != null &&
+        this._compositeVerticalAfterPasses.length > 0
+      ) {
+        this._compositeVerticalAfterPasses = _.without(
+          this._compositeVerticalAfterPasses,
+          compositePass,
+        );
       }
     }
 
@@ -1472,9 +1692,21 @@ proto.rebuildCompositePasses = function () {
     this.releaseCompositePasses();
   } else {
     if (this._compositePass != null) {
-      this._compositePass.rebuild(cc.Texture2D.PIXEL_FORMAT_RGBA8888, width, height, 1.0, node.antiAlias);
+      this._compositePass.rebuild(
+        cc.Texture2D.PIXEL_FORMAT_RGBA8888,
+        width,
+        height,
+        1.0,
+        node.antiAlias,
+      );
     } else {
-      this._compositePass = RenderPass.create(cc.Texture2D.PIXEL_FORMAT_RGBA8888, width, height, 1.0, node.antiAlias);
+      this._compositePass = RenderPass.create(
+        cc.Texture2D.PIXEL_FORMAT_RGBA8888,
+        width,
+        height,
+        1.0,
+        node.antiAlias,
+      );
     }
 
     // flag all composite effects to rebuild on next draw
@@ -1533,9 +1765,7 @@ proto.setDepthRotationDirty = function () {
   this.setLightsDirty();
 };
 
-proto.setShadowCastingLightsDirty = function () {
-
-};
+proto.setShadowCastingLightsDirty = function () {};
 
 proto.rebuildOcclusion = function () {
   const node = this._node;
@@ -1569,10 +1799,22 @@ proto.rebuildOcclusion = function () {
 
     if (this._lightingPass) this._lightingPass.release();
     if (isCompositing) {
-      this._lightingPass = RenderPass.create(cc.Texture2D.PIXEL_FORMAT_RGBA8888, width, height, node.lightMapScale, node.antiAlias);
+      this._lightingPass = RenderPass.create(
+        cc.Texture2D.PIXEL_FORMAT_RGBA8888,
+        width,
+        height,
+        node.lightMapScale,
+        node.antiAlias,
+      );
       this._batchLighting.setOccluder(this._compositePass);
     } else {
-      this._lightingPass = RenderPass.create(cc.Texture2D.PIXEL_FORMAT_RGBA8888, width, height, node.lightMapScale, node.antiAlias);
+      this._lightingPass = RenderPass.create(
+        cc.Texture2D.PIXEL_FORMAT_RGBA8888,
+        width,
+        height,
+        node.lightMapScale,
+        node.antiAlias,
+      );
       this._batchLighting.setOccluder(node);
     }
   }

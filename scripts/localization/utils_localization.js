@@ -33,110 +33,146 @@ UtilsLocalization.createBlankJsonForKeys = function (keys, defaultTo) {
   _.each(keys, (key) => {
     const splitKeyVals = key.split('.');
     jsonData[splitKeyVals[0]] = jsonData[splitKeyVals[0]] || {};
-    if (__guard__(defaultTo != null ? defaultTo[splitKeyVals[0]] : undefined, (x) => x[splitKeyVals[1]]) != null) {
-      return jsonData[splitKeyVals[0]][splitKeyVals[1]] = defaultTo[splitKeyVals[0]][splitKeyVals[1]];
+    if (
+      __guard__(
+        defaultTo != null ? defaultTo[splitKeyVals[0]] : undefined,
+        (x) => x[splitKeyVals[1]],
+      ) != null
+    ) {
+      return (jsonData[splitKeyVals[0]][splitKeyVals[1]] =
+        defaultTo[splitKeyVals[0]][splitKeyVals[1]]);
     }
-    return jsonData[splitKeyVals[0]][splitKeyVals[1]] = '';
+    return (jsonData[splitKeyVals[0]][splitKeyVals[1]] = '');
   });
 
   return jsonData;
 };
 
-UtilsLocalization.getAllKeysFromLocalizationJsonData = (jsonData) => _.reduce(
-  jsonData,
-  (memo, val, key) => memo.concat(_.reduce(
-    val,
-    (innerMemo, innerVal, innerKey) => {
-      innerMemo.push(`${key}.${innerKey}`);
-      return innerMemo;
-    },
+UtilsLocalization.getAllKeysFromLocalizationJsonData = (jsonData) =>
+  _.reduce(
+    jsonData,
+    (memo, val, key) =>
+      memo.concat(
+        _.reduce(
+          val,
+          (innerMemo, innerVal, innerKey) => {
+            innerMemo.push(`${key}.${innerKey}`);
+            return innerMemo;
+          },
+          [],
+        ),
+      ),
     [],
-  )),
-  [],
-);
+  );
 
-UtilsLocalization.readFileToJsonData = (fileName) => new Promise((resolve, reject) => {
-  fs.readFile(fileName, (err, contents) => {
-    if (err) {
-      reject(err);
-    }
-    return resolve(contents);
-  });
-}).then((fileContents) => Promise.resolve(JSON.parse(fileContents)));
+UtilsLocalization.readFileToJsonData = (fileName) =>
+  new Promise((resolve, reject) => {
+    fs.readFile(fileName, (err, contents) => {
+      if (err) {
+        reject(err);
+      }
+      return resolve(contents);
+    });
+  }).then((fileContents) => Promise.resolve(JSON.parse(fileContents)));
 
-UtilsLocalization.writeMissingTranslationFiles = function (languageKey, englishData, translationData) {
+UtilsLocalization.writeMissingTranslationFiles = function (
+  languageKey,
+  englishData,
+  translationData,
+) {
   const englishKeys = UtilsLocalization.getAllKeysFromLocalizationJsonData(englishData);
   const translationKeys = UtilsLocalization.getAllKeysFromLocalizationJsonData(translationData);
 
   const missingKeysFromTranslation = _.difference(englishKeys, translationKeys);
 
-  const emptyJsonForMissingTranslationKeys = UtilsLocalization.createBlankJsonForKeys(missingKeysFromTranslation);
+  const emptyJsonForMissingTranslationKeys = UtilsLocalization.createBlankJsonForKeys(
+    missingKeysFromTranslation,
+  );
   const missingTranslationKeysStr = JSON.stringify(emptyJsonForMissingTranslationKeys, null, 2);
 
-  const defaultedJsonForMissingTranslationKeys = UtilsLocalization.createBlankJsonForKeys(missingKeysFromTranslation, englishData);
-  const missingGermanKeysDefaultedStr = JSON.stringify(defaultedJsonForMissingTranslationKeys, null, 2);
+  const defaultedJsonForMissingTranslationKeys = UtilsLocalization.createBlankJsonForKeys(
+    missingKeysFromTranslation,
+    englishData,
+  );
+  const missingGermanKeysDefaultedStr = JSON.stringify(
+    defaultedJsonForMissingTranslationKeys,
+    null,
+    2,
+  );
 
   return Promise.all([
-    helpers.writeFile(`./localization_output/missing_${languageKey}_translations_empty.json`, missingTranslationKeysStr),
-    helpers.writeFile(`./localization_output/missing_${languageKey}_translations_with_english.json`, missingGermanKeysDefaultedStr),
+    helpers.writeFile(
+      `./localization_output/missing_${languageKey}_translations_empty.json`,
+      missingTranslationKeysStr,
+    ),
+    helpers.writeFile(
+      `./localization_output/missing_${languageKey}_translations_with_english.json`,
+      missingGermanKeysDefaultedStr,
+    ),
   ]);
 };
 
 UtilsLocalization.generateLastUpdatedDataForKeys = function (languageKey, translationKeys) {
-//  return PromiseUtils.map(translationKeys.slice(0,15),(key)->
-  const bar = new ProgressBar(`processing ${languageKey} [:bar] :current/:total :percent :etas :elapsed`, {
-    complete: '=',
-    incomplete: ' ',
-    width: 20,
-    total: translationKeys.length,
-  });
+  //  return PromiseUtils.map(translationKeys.slice(0,15),(key)->
+  const bar = new ProgressBar(
+    `processing ${languageKey} [:bar] :current/:total :percent :etas :elapsed`,
+    {
+      complete: '=',
+      incomplete: ' ',
+      width: 20,
+      total: translationKeys.length,
+    },
+  );
   return PromiseUtils.map(
     translationKeys,
-    (key) => UtilsLocalization.getLastUpdatedCommitForTranslation(languageKey, key)
-      .then((lastUpdatedCommitMsg) => {
-        const splitMsg = lastUpdatedCommitMsg.split(',');
-        const lastUpdateData = {
-          committed_at: parseInt(splitMsg[0]) * 1000,
-          commit_hash: splitMsg[1],
-        };
-        bar.tick();
-        return Promise.resolve([key, lastUpdateData]);
-      }),
-    { concurrency: 10 },
-  )
-    .then((keyValuePairsOfLastUpdates) => {
-      //  console.log("here #{JSON.stringify(keyValuePairsOfLastUpdates,null,2)}")
-      const lastUpdatedData = _.reduce(
-        keyValuePairsOfLastUpdates,
-        (memo, pair) => {
-          memo[pair[0]] = pair[1];
-          return memo;
+    (key) =>
+      UtilsLocalization.getLastUpdatedCommitForTranslation(languageKey, key).then(
+        (lastUpdatedCommitMsg) => {
+          const splitMsg = lastUpdatedCommitMsg.split(',');
+          const lastUpdateData = {
+            committed_at: parseInt(splitMsg[0]) * 1000,
+            commit_hash: splitMsg[1],
+          };
+          bar.tick();
+          return Promise.resolve([key, lastUpdateData]);
         },
-        {},
-      );
-      //    console.log("here #{JSON.stringify(lastUpdatedData,null,2)}")
-      return Promise.resolve(lastUpdatedData);
-    });
+      ),
+    { concurrency: 10 },
+  ).then((keyValuePairsOfLastUpdates) => {
+    //  console.log("here #{JSON.stringify(keyValuePairsOfLastUpdates,null,2)}")
+    const lastUpdatedData = _.reduce(
+      keyValuePairsOfLastUpdates,
+      (memo, pair) => {
+        memo[pair[0]] = pair[1];
+        return memo;
+      },
+      {},
+    );
+    //    console.log("here #{JSON.stringify(lastUpdatedData,null,2)}")
+    return Promise.resolve(lastUpdatedData);
+  });
 };
 
-UtilsLocalization.getLastUpdatedCommitForTranslation = (languageKey, translationKey) => //  git log -G "win_streak_message" --pretty=oneline --max-count=1 ./rank.json
-  runCommand(buildLastCommitCommandStrForTranslation(languageKey, translationKey))
-    .then(
-      (result) => //    console.log("here last time #{translationKey} was update is: " + result)
-        Promise.resolve(result),
-    );
+UtilsLocalization.getLastUpdatedCommitForTranslation = (languageKey, translationKey) =>
+  //  git log -G "win_streak_message" --pretty=oneline --max-count=1 ./rank.json
+  runCommand(buildLastCommitCommandStrForTranslation(languageKey, translationKey)).then((result) =>
+    //    console.log("here last time #{translationKey} was update is: " + result)
+    Promise.resolve(result),
+  );
 
-UtilsLocalization.getTranslationFromFullKey = (translationData, fullTranslationKey) => translationData[fullTranslationKey.split('.')[0]][fullTranslationKey.split('.')[1]];
+UtilsLocalization.getTranslationFromFullKey = (translationData, fullTranslationKey) =>
+  translationData[fullTranslationKey.split('.')[0]][fullTranslationKey.split('.')[1]];
 
 // Sub helpers
-var runCommand = (commandStr) => new Promise((resolve, reject) => {
-  npmRun(commandStr, {}, (err, stdOut, stdErr) => {
-    if (err != null) {
-      return reject(err);
-    }
-    return resolve(stdOut);
+var runCommand = (commandStr) =>
+  new Promise((resolve, reject) => {
+    npmRun(commandStr, {}, (err, stdOut, stdErr) => {
+      if (err != null) {
+        return reject(err);
+      }
+      return resolve(stdOut);
+    });
   });
-});
 
 var buildLastCommitCommandStrForTranslation = function (languageKey, translationKey) {
   const splitTranslationKey = translationKey.split('.');
@@ -155,5 +191,5 @@ var buildLastCommitCommandStrForTranslation = function (languageKey, translation
 // end sub helpers
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

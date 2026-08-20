@@ -24,7 +24,9 @@ class ApplyCardToBoardAction extends Action {
   static type = 'ApplyCardToBoardAction';
 
   constructor(gameSession, ownerId, x, y, cardDataOrIndex, cardOwnedByGameSession) {
-    if (cardOwnedByGameSession == null) { cardOwnedByGameSession = false; }
+    if (cardOwnedByGameSession == null) {
+      cardOwnedByGameSession = false;
+    }
     super(gameSession);
     this.targetPosition = { x, y };
 
@@ -62,7 +64,7 @@ class ApplyCardToBoardAction extends Action {
    * Sets the card data or index used to create a card.
    */
   setCardDataOrIndex(val) {
-    return this.cardDataOrIndex = val;
+    return (this.cardDataOrIndex = val);
   }
 
   /**
@@ -77,8 +79,10 @@ class ApplyCardToBoardAction extends Action {
    * NOTE: This card may or may not be indexed if this method is called before this action is executed.
    */
   getCard() {
-    if ((this._private.cachedCard == null)) {
-      this._private.cachedCard = this.getGameSession().getExistingCardFromIndexOrCreateCardFromData(this.cardDataOrIndex);
+    if (this._private.cachedCard == null) {
+      this._private.cachedCard = this.getGameSession().getExistingCardFromIndexOrCreateCardFromData(
+        this.cardDataOrIndex,
+      );
       if (this._private.cachedCard != null) {
         if (!this.cardOwnedByGameSession) {
           this._private.cachedCard.setOwnerId(this.getOwnerId());
@@ -93,12 +97,12 @@ class ApplyCardToBoardAction extends Action {
    * NOTE: This card reference is not serialized and will not be preserved through deserialize/rollback.
    */
   setCard(card) {
-    return this._private.cachedCard = card;
+    return (this._private.cachedCard = card);
   }
 
   getSource() {
     const source = super.getSource();
-    if ((source == null)) {
+    if (source == null) {
       // check parent actions
       const parentAction = this.getResolveParentAction();
       if (parentAction != null) {
@@ -141,16 +145,25 @@ class ApplyCardToBoardAction extends Action {
     }
 
     // apply the card through the game session
-    this.isValidApplication = this.getGameSession().applyCardToBoard(card, this.targetPosition.x, this.targetPosition.y, this.cardDataOrIndex, this);
+    this.isValidApplication = this.getGameSession().applyCardToBoard(
+      card,
+      this.targetPosition.x,
+      this.targetPosition.y,
+      this.cardDataOrIndex,
+      this,
+    );
 
     // add post apply card data so we transmit the correct values to the clients
-    if (this.getGameSession().getIsRunningAsAuthoritative()) { this.cardDataOrIndex = card.updateCardDataPostApply(this.cardDataOrIndex); }
+    if (this.getGameSession().getIsRunningAsAuthoritative()) {
+      this.cardDataOrIndex = card.updateCardDataPostApply(this.cardDataOrIndex);
+    }
 
     // increment played cards for the player
     if (this.isValidApplication && !card.isOwnedByGameSession()) {
       if (CardType.getIsUnitCardType(card.getType())) {
         return card.getOwner().totalMinionsSpawned++;
-      } if (CardType.getIsSpellCardType(card.getType())) {
+      }
+      if (CardType.getIsSpellCardType(card.getType())) {
         return card.getOwner().totalSpellsCast++;
       }
     }
@@ -159,7 +172,7 @@ class ApplyCardToBoardAction extends Action {
   scrubSensitiveData(actionData, scrubFromPerspectiveOfPlayerId, forSpectator) {
     // transform card as needed
     const card = this.getCard();
-    if ((card != null) && card.isHideable(scrubFromPerspectiveOfPlayerId, forSpectator)) {
+    if (card != null && card.isHideable(scrubFromPerspectiveOfPlayerId, forSpectator)) {
       const hiddenCard = card.createCardToHideAs();
       actionData.cardDataOrIndex = hiddenCard.createCardData();
     }

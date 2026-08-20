@@ -44,14 +44,19 @@ class ModifierBuilding extends ModifierStartTurnWatch {
 
   static getDescription(modifierContextObject) {
     if (modifierContextObject) {
-      const cardName = GameSession.getCardCaches().getCardById(modifierContextObject.transformCardData.id).getName();
+      const cardName = GameSession.getCardCaches()
+        .getCardById(modifierContextObject.transformCardData.id)
+        .getName();
       return i18next.t('modifiers.building_text', { unit_name: cardName });
     }
   }
 
   onApplyToCardBeforeSyncState() {
     this.getCard().setReferencedCardData(this.transformCardData);
-    return this.getGameSession().applyModifierContextObject(ModifierCounterBuildProgress.createContextObject('ModifierBuilding'), this.getCard());
+    return this.getGameSession().applyModifierContextObject(
+      ModifierCounterBuildProgress.createContextObject('ModifierBuilding'),
+      this.getCard(),
+    );
   }
 
   onActivate() {
@@ -61,7 +66,7 @@ class ModifierBuilding extends ModifierStartTurnWatch {
     // ex: played from hand to board
     if (!this._private.cachedWasActiveInLocation && this._private.cachedIsActiveInLocation) {
       this.setNumEndTurnsElapsed(0);
-      return this.turnsRemaining = this.turnsToBuild;
+      return (this.turnsRemaining = this.turnsToBuild);
     }
   }
 
@@ -86,12 +91,24 @@ class ModifierBuilding extends ModifierStartTurnWatch {
   transformSelf() {
     // create the action to spawn the new entity before the existing entity is removed
     // because we may need information about the existing entity being replaced
-    if (this.transformCardData.additionalModifiersContextObjects == null) { this.transformCardData.additionalModifiersContextObjects = []; }
-    this.transformCardData.additionalModifiersContextObjects.push(ModifierTransformed.createContextObject(false, 0, 0));
-    const spawnAction = new PlayCardAsTransformAction(this.getGameSession(), this.getCard().getOwnerId(), this.getCard().getPositionX(), this.getCard().getPositionY(), this.transformCardData);
+    if (this.transformCardData.additionalModifiersContextObjects == null) {
+      this.transformCardData.additionalModifiersContextObjects = [];
+    }
+    this.transformCardData.additionalModifiersContextObjects.push(
+      ModifierTransformed.createContextObject(false, 0, 0),
+    );
+    const spawnAction = new PlayCardAsTransformAction(
+      this.getGameSession(),
+      this.getCard().getOwnerId(),
+      this.getCard().getPositionX(),
+      this.getCard().getPositionY(),
+      this.transformCardData,
+    );
 
     // remove the existing entity
-    const removingEntity = this.getGameSession().getBoard().getCardAtPosition(this.getCard().getPosition(), CardType.Unit);
+    const removingEntity = this.getGameSession()
+      .getBoard()
+      .getCardAtPosition(this.getCard().getPosition(), CardType.Unit);
     if (removingEntity != null) {
       const removeOriginalEntityAction = new RemoveAction(this.getGameSession());
       removeOriginalEntityAction.setOwnerId(this.getCard().getOwnerId());

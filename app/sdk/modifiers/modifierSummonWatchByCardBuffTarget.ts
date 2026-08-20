@@ -19,8 +19,16 @@ class ModifierSummonWatchByCardBuffTarget extends ModifierSummonWatch {
   static modifierName = 'Summon Watch (buff by card Id)';
   static description = 'Whenever you summon %X, %Y';
 
-  static createContextObject(modContextObject, validCardIds, cardDescription, buffDescription, options) {
-    if (options == null) { options = undefined; }
+  static createContextObject(
+    modContextObject,
+    validCardIds,
+    cardDescription,
+    buffDescription,
+    options,
+  ) {
+    if (options == null) {
+      options = undefined;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.modifiersContextObjects = modContextObject;
     contextObject.validCardIds = validCardIds;
@@ -41,18 +49,22 @@ class ModifierSummonWatchByCardBuffTarget extends ModifierSummonWatch {
     const entity = action.getCard();
     if (entity != null) {
       return Array.from<any>(this.modifiersContextObjects).map((modifierContextObject) =>
-        this.getGameSession().applyModifierContextObject(modifierContextObject, entity));
+        this.getGameSession().applyModifierContextObject(modifierContextObject, entity),
+      );
     }
   }
 
   getIsCardRelevantToWatcher(card) {
     let needle;
-    return (needle = card.getBaseCardId(), Array.from<any>(this.validCardIds).includes(needle));
+    return ((needle = card.getBaseCardId()), Array.from<any>(this.validCardIds).includes(needle));
   }
 }
 ModifierSummonWatchByCardBuffTarget.prototype.type = 'ModifierSummonWatchByCardBuffTarget';
 ModifierSummonWatchByCardBuffTarget.prototype.validCardIds = null;
-ModifierSummonWatchByCardBuffTarget.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierSummonWatchByCardBuffTarget.prototype.fxResource = [
+  'FX.Modifiers.ModifierSummonWatch',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 // card is in list of cards we want to buff
 
 module.exports = ModifierSummonWatchByCardBuffTarget;

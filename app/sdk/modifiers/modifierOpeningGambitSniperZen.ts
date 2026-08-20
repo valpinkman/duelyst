@@ -23,7 +23,12 @@ class ModifierOpeningGambitSniperZen extends ModifierOpeningGambit {
       return (() => {
         const result = [];
         for (var unit of Array.from<any>(units)) {
-          if ((unit != null) && !unit.getIsGeneral() && (unit.getOwnerId() !== this.getCard().getOwnerId()) && (unit.getATK() <= 2)) {
+          if (
+            unit != null &&
+            !unit.getIsGeneral() &&
+            unit.getOwnerId() !== this.getCard().getOwnerId() &&
+            unit.getATK() <= 2
+          ) {
             var a = new SwapUnitAllegianceAction(this.getGameSession());
             a.setTarget(unit);
             result.push(this.getGameSession().executeAction(a));

@@ -22,8 +22,12 @@ class ModifierEnemyDealDamageWatch extends Modifier {
     super.onAction(actionEvent);
 
     const a = actionEvent.action;
-    if (a instanceof DamageAction && (__guard__(a.getTarget(), (x) => x.getOwnerId()) === this.getCard().getOwnerId())) {
-      if (this.willDealDamage(a)) { // check if anything is preventing this action from dealing its damage
+    if (
+      a instanceof DamageAction &&
+      __guard__(a.getTarget(), (x) => x.getOwnerId()) === this.getCard().getOwnerId()
+    ) {
+      if (this.willDealDamage(a)) {
+        // check if anything is preventing this action from dealing its damage
         return this.onEnemyDamageDealt(a);
       }
     }
@@ -49,5 +53,5 @@ ModifierEnemyDealDamageWatch.prototype.activeOnBoard = true;
 module.exports = ModifierEnemyDealDamageWatch;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

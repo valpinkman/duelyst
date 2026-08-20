@@ -18,10 +18,13 @@ let changed = 0;
 for (const file of walk('test')) {
   const src = fs.readFileSync(file, 'utf8');
   // only remove the import when the identifier is otherwise unused
-  const out = src.replace(/^(const|var|let)\s+(\w+)\s*=\s*require\('sinon'\);\r?\n/m, (m, _kw, id) => {
-    const rest = src.replace(m, '');
-    return new RegExp(`\\b${id}\\b`).test(rest) ? m : '';
-  });
+  const out = src.replace(
+    /^(const|var|let)\s+(\w+)\s*=\s*require\('sinon'\);\r?\n/m,
+    (m, _kw, id) => {
+      const rest = src.replace(m, '');
+      return new RegExp(`\\b${id}\\b`).test(rest) ? m : '';
+    },
+  );
   if (out !== src) {
     fs.writeFileSync(file, out);
     changed += 1;

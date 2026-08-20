@@ -7,7 +7,6 @@ FXRaySprite.create()
  *************************************************************************** */
 
 const FXRaySprite = BaseSprite.extend({
-
   ctor(options) {
     this._super(options);
     this.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
@@ -20,7 +19,9 @@ const FXRaySprite = BaseSprite.extend({
 
 FXRaySprite.create = function (options, sprite) {
   if (sprite == null) {
-    sprite = cc.pool.getFromPool(FXRaySprite, options) || BaseSprite.create(options, new FXRaySprite(options));
+    sprite =
+      cc.pool.getFromPool(FXRaySprite, options) ||
+      BaseSprite.create(options, new FXRaySprite(options));
   }
   return sprite;
 };

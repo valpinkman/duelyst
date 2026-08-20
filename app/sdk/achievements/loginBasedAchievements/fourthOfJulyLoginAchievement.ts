@@ -12,12 +12,16 @@ class FourthOfJulyLoginAchievement extends Achievement {
 
   static id = 'fourthOfJulyLoginAchievement';
   static title = '4TH OF JULY CELEBRATION';
-  static description = 'HERE\'S 3 ANCIENT ORBS TO CELEBRATE';
+  static description = "HERE'S 3 ANCIENT ORBS TO CELEBRATE";
   static progressRequired = 1;
   static enabled = true;
 
   static progressForLoggingIn(currentLoginMoment) {
-    if ((currentLoginMoment !== null) && currentLoginMoment.isAfter(moment.utc('2018-06-29T11:00-07:00')) && currentLoginMoment.isBefore(moment.utc('2018-07-06T11:00-07:00'))) {
+    if (
+      currentLoginMoment !== null &&
+      currentLoginMoment.isAfter(moment.utc('2018-06-29T11:00-07:00')) &&
+      currentLoginMoment.isBefore(moment.utc('2018-07-06T11:00-07:00'))
+    ) {
       return 1;
     }
     return 0;

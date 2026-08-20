@@ -5,7 +5,6 @@ var CONFIG = require('app/common/config');
 
 */
 var ZodiacSymbolModel = Backbone.Model.extend({
-
   timestamp: null,
   juncturePoints: null,
   juncturePointsStart: null,
@@ -44,7 +43,9 @@ var ZodiacSymbolModel = Backbone.Model.extend({
       width: width,
       height: height,
     });
-    $canvas.attr('width', Math.ceil(width * devicePixelRatio)).attr('height', Math.ceil(height * devicePixelRatio));
+    $canvas
+      .attr('width', Math.ceil(width * devicePixelRatio))
+      .attr('height', Math.ceil(height * devicePixelRatio));
 
     // fix for HiDPI screens
     var ctx = canvas.getContext('2d');
@@ -102,13 +103,15 @@ var ZodiacSymbolModel = Backbone.Model.extend({
   },
 
   generatePointPosition: function (array, i, z, attempt) {
-    if (attempt == null) { attempt = 0; }
+    if (attempt == null) {
+      attempt = 0;
+    }
     var scale = CONFIG.globalScale;
-    var point = array[i] = {
+    var point = (array[i] = {
       x: (this.paddingX + Math.random() * this.width) * scale,
       y: (this.paddingY + Math.random() * this.height) * scale,
       z: z * scale,
-    };
+    });
     if (attempt < 10) {
       for (var j = i - 1; j >= 0; j--) {
         var otherPoint = array[j];
@@ -224,8 +227,8 @@ var ZodiacSymbolModel = Backbone.Model.extend({
          p.x += cos;
          p.y += sin;
          */
-        var deltaX = (dp.x - p.x) / (dt);
-        var deltaY = (dp.y - p.y) / (dt);
+        var deltaX = (dp.x - p.x) / dt;
+        var deltaY = (dp.y - p.y) / dt;
         if (Math.abs(deltaX) > 0.05) {
           p.x += deltaX;
           p.y += deltaY;

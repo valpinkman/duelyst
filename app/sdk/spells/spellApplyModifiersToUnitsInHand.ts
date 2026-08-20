@@ -24,7 +24,9 @@ class SpellApplyModifiersToUnitsInHand extends Spell {
 
     return Array.from<any>(this.getCardsAffected()).map((card) =>
       Array.from<any>(this.targetModifiersContextObjects).map((modifierContextObject) =>
-        this.getGameSession().applyModifierContextObject(modifierContextObject, card)));
+        this.getGameSession().applyModifierContextObject(modifierContextObject, card),
+      ),
+    );
   }
 
   getCardsAffected() {
@@ -43,7 +45,13 @@ class SpellApplyModifiersToUnitsInHand extends Spell {
       cards = deck.getCardsInHand();
     }
 
-    return _.filter(cards, (card) => (card != null) && (!cardType || (card.getType() === cardType)) && (!raceId || card.getBelongsToTribe(raceId)));
+    return _.filter(
+      cards,
+      (card) =>
+        card != null &&
+        (!cardType || card.getType() === cardType) &&
+        (!raceId || card.getBelongsToTribe(raceId)),
+    );
   }
 }
 SpellApplyModifiersToUnitsInHand.prototype.targetType = CardType.Unit;

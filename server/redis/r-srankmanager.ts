@@ -51,7 +51,9 @@ class RedisSRankManager {
    * @param {Object} redis, a promisified redis connection
    */
   constructor(redis, opts) {
-    if (opts == null) { opts = {}; }
+    if (opts == null) {
+      opts = {};
+    }
     this.redis = redis;
   }
 
@@ -63,7 +65,9 @@ class RedisSRankManager {
    * @return {Promise}
    */
   updateUserLadderRating(userId, seasonStartMoment, ladderRating) {
-    Logger.module('REDIS').debug(`updateUserLadderRating() -> updating Ladder Rating for player ${userId} to ${ladderRating}`);
+    Logger.module('REDIS').debug(
+      `updateUserLadderRating() -> updating Ladder Rating for player ${userId} to ${ladderRating}`,
+    );
     const redisSeasonKey = keyPrefix() + seasonKey(seasonStartMoment);
     const multi = this.redis.multi(); // start a multi command
     multi.zadd(redisSeasonKey, ladderRating, userId);
@@ -79,17 +83,18 @@ class RedisSRankManager {
    * @return {Promise} Resolves to a integer for players ladder position
    */
   getUserLadderPosition(userId, seasonStartMoment) {
-    Logger.module('REDIS').debug(`updateUserLadderRating() -> getting Ladder Position for ${userId}`);
+    Logger.module('REDIS').debug(
+      `updateUserLadderRating() -> getting Ladder Position for ${userId}`,
+    );
 
     const redisSeasonKey = keyPrefix() + seasonKey(seasonStartMoment);
 
-    return this.redis.zrevrank(redisSeasonKey, userId)
-      .then((ladderPosition) => {
-        if (ladderPosition != null) {
-          return Promise.resolve(parseInt(ladderPosition) + 1);
-        }
-        return Promise.resolve(null);
-      });
+    return this.redis.zrevrank(redisSeasonKey, userId).then((ladderPosition) => {
+      if (ladderPosition != null) {
+        return Promise.resolve(parseInt(ladderPosition) + 1);
+      }
+      return Promise.resolve(null);
+    });
   }
 
   /**
@@ -99,7 +104,9 @@ class RedisSRankManager {
    * @return {Promise} An array of user ids in order of top players
    */
   getTopLadderUserIds(seasonStartMoment, numPlayers) {
-    Logger.module('REDIS').debug(`getTopLadderUserIds() -> retrieving top ${numPlayers} s-rank players for season ${seasonKey(seasonStartMoment)}`);
+    Logger.module('REDIS').debug(
+      `getTopLadderUserIds() -> retrieving top ${numPlayers} s-rank players for season ${seasonKey(seasonStartMoment)}`,
+    );
 
     const redisSeasonKey = keyPrefix() + seasonKey(seasonStartMoment);
 
@@ -124,7 +131,9 @@ class RedisSRankManager {
    * @return {Promise} Promise that returns on operation completion, no value
    */
   _removeUserFromLadder(userId, seasonStartMoment) {
-    Logger.module('REDIS').debug(`updateUserLadderRating() -> getting Ladder Position for ${userId}`);
+    Logger.module('REDIS').debug(
+      `updateUserLadderRating() -> getting Ladder Position for ${userId}`,
+    );
 
     const redisSeasonKey = keyPrefix() + seasonKey(seasonStartMoment);
 
@@ -135,7 +144,7 @@ class RedisSRankManager {
 /**
  * Export a factory
  */
-module.exports = (exports = function (redis, opts) {
+module.exports = exports = function (redis, opts) {
   const SRankManager = new RedisSRankManager(redis, opts);
   return SRankManager;
-});
+};

@@ -13,7 +13,6 @@ const FXFbmPolarFlareSprite = require('app/view/nodes/fx/FXFbmPolarFlareSprite')
  *************************************************************************** */
 
 const CoreGemNode = cc.Node.extend({
-
   gemSprite: null,
   polarFlare: null,
   innerDarkRingSprite: null,
@@ -77,7 +76,9 @@ const CoreGemNode = cc.Node.extend({
   },
 
   getRequiredResources() {
-    return cc.Node.prototype.getRequiredResources.call(this).concat(PKGS.getPkgForIdentifier('core_gem_node'));
+    return cc.Node.prototype.getRequiredResources
+      .call(this)
+      .concat(PKGS.getPkgForIdentifier('core_gem_node'));
   },
 
   setColor(color) {
@@ -88,11 +89,7 @@ const CoreGemNode = cc.Node.extend({
 
       this.polarFlare.flareColor = color;
       this.gemSprite.midColor = color;
-      this.gemSprite.blackColor = cc.color(
-        color.r * 0.05,
-        color.g * 0.05,
-        color.b * 0.05,
-      );
+      this.gemSprite.blackColor = cc.color(color.r * 0.05, color.g * 0.05, color.b * 0.05);
 
       const brighterColor = cc.color(
         Math.min(255, color.r + 100),
@@ -119,10 +116,9 @@ const CoreGemNode = cc.Node.extend({
       audio_engine.current().play_effect(RSX.sfx_loot_crate_reward_disappear.audio, false);
 
       this.polarFlare.runAction(cc.actionTween(1.0, 'phase', 0.01, 1.0).easing(cc.easeBackOut()));
-      this.gemSprite.runAction(cc.spawn(
-        cc.fadeIn(0.05),
-        cc.scaleTo(0.2, 1.0).easing(cc.easeBackOut()),
-      ));
+      this.gemSprite.runAction(
+        cc.spawn(cc.fadeIn(0.05), cc.scaleTo(0.2, 1.0).easing(cc.easeBackOut())),
+      );
 
       // start particles
       this.particles.resetSystem();
@@ -156,7 +152,10 @@ const CoreGemNode = cc.Node.extend({
     this.whenRequiredResourcesReady().then((requestId) => {
       if (!this.getAreResourcesValid(requestId)) return; // resources invalidated/unloaded
 
-      const rarityId = SDK.CardFactory.cardForIdentifier(this._cardId, SDK.GameSession.current()).getRarityId();
+      const rarityId = SDK.CardFactory.cardForIdentifier(
+        this._cardId,
+        SDK.GameSession.current(),
+      ).getRarityId();
       if (rarityId == SDK.Rarity.Common) {
         this.setColor(cc.color(150, 150, 150));
         this.polarFlare.setOpacity(200);
@@ -209,43 +208,50 @@ const CoreGemNode = cc.Node.extend({
       this.dotsRingSprite.setOpacity(0);
       this.dotsRingSprite.setScale(0.5);
 
-      this.innerRingSprite.runAction(cc.sequence(
-        cc.delayTime(0.1),
-        cc.spawn(
-          cc.fadeIn(duration * 0.6),
-          cc.scaleTo(duration * 0.6, 1.0).easing(cc.easeBackOut()),
+      this.innerRingSprite.runAction(
+        cc.sequence(
+          cc.delayTime(0.1),
+          cc.spawn(
+            cc.fadeIn(duration * 0.6),
+            cc.scaleTo(duration * 0.6, 1.0).easing(cc.easeBackOut()),
+          ),
+          cc.fadeTo(duration * 0.4, this.reticleAlphaWeak),
         ),
-        cc.fadeTo(duration * 0.4, this.reticleAlphaWeak),
-      ));
+      );
 
-      this.dotsRingSprite.runAction(cc.sequence(
-        cc.delayTime(0.2),
-        cc.spawn(
-          cc.fadeIn(duration * 0.6),
-          cc.scaleTo(duration * 0.6, 1.0).easing(cc.easeBackOut()),
+      this.dotsRingSprite.runAction(
+        cc.sequence(
+          cc.delayTime(0.2),
+          cc.spawn(
+            cc.fadeIn(duration * 0.6),
+            cc.scaleTo(duration * 0.6, 1.0).easing(cc.easeBackOut()),
+          ),
+          cc.fadeTo(duration * 0.4, this.reticleAlphaWeak),
         ),
-        cc.fadeTo(duration * 0.4, this.reticleAlphaWeak),
-      ));
+      );
 
-      this.outerRingSprite.runAction(cc.sequence(
-        cc.delayTime(0.3),
-        cc.spawn(
-          cc.fadeIn(duration * 0.6),
-          cc.scaleTo(duration * 0.6, 1.0).easing(cc.easeBackOut()),
+      this.outerRingSprite.runAction(
+        cc.sequence(
+          cc.delayTime(0.3),
+          cc.spawn(
+            cc.fadeIn(duration * 0.6),
+            cc.scaleTo(duration * 0.6, 1.0).easing(cc.easeBackOut()),
+          ),
+          cc.fadeTo(duration * 0.4, this.reticleAlphaWeak),
         ),
-        cc.fadeTo(duration * 0.4, this.reticleAlphaWeak),
-      ));
+      );
 
-      this.innerDarkRingSprite.runAction(cc.sequence(
-        cc.delayTime(0.4),
-        cc.spawn(
-          cc.fadeIn(duration * 2.0),
-          cc.scaleTo(duration * 2.0, 1.0).easing(cc.easeBackOut()),
+      this.innerDarkRingSprite.runAction(
+        cc.sequence(
+          cc.delayTime(0.4),
+          cc.spawn(
+            cc.fadeIn(duration * 2.0),
+            cc.scaleTo(duration * 2.0, 1.0).easing(cc.easeBackOut()),
+          ),
         ),
-      ));
+      );
     });
   },
-
 });
 
 CoreGemNode.create = function (cardId, node) {

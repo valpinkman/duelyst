@@ -23,9 +23,12 @@ class SpellBreathOfTheUnborn extends Spell {
     const applyEffectPosition = { x, y };
     const unit = board.getCardAtPosition(applyEffectPosition, this.targetType);
     if (unit != null) {
-      if (!unit.getIsGeneral()) { // never affect Generals
-        if (unit.getOwnerId() === this.getOwnerId()) { // friendly unit
-          if (unit.getDamage() > 0) { // only heal if unit is damaged
+      if (!unit.getIsGeneral()) {
+        // never affect Generals
+        if (unit.getOwnerId() === this.getOwnerId()) {
+          // friendly unit
+          if (unit.getDamage() > 0) {
+            // only heal if unit is damaged
             const healAction = new HealAction(this.getGameSession());
             healAction.setOwnerId(this.getOwnerId());
             healAction.setTarget(unit);

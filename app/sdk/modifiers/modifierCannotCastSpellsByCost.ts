@@ -16,7 +16,7 @@ class ModifierCannotCastSpellsByCost extends ModifierCannot {
 
   static type = 'ModifierCannotCastSpellsByCost';
   static modifierName = 'Cannot Cast Spells';
-  static description = 'Players can\'t cast spells.';
+  static description = "Players can't cast spells.";
 
   static createContextObject(manaCostPrevented) {
     const contextObject = super.createContextObject();
@@ -28,17 +28,25 @@ class ModifierCannotCastSpellsByCost extends ModifierCannot {
     const a = actionEvent.action;
 
     // minion prevents players from casting spells at certain mana costs
-    if (((a instanceof PlayCardFromHandAction) || (a instanceof PlaySignatureCardAction)) && a.getIsValid() && !a.getIsImplicit() && (__guard__(a.getCard(), (x) => x.getType()) === CardType.Spell) && (a.getManaCost() <= this.manaCostPrevented)) {
-      return this.invalidateAction(a, this.getCard().getPosition(), 'You can\'t cast that!');
+    if (
+      (a instanceof PlayCardFromHandAction || a instanceof PlaySignatureCardAction) &&
+      a.getIsValid() &&
+      !a.getIsImplicit() &&
+      __guard__(a.getCard(), (x) => x.getType()) === CardType.Spell &&
+      a.getManaCost() <= this.manaCostPrevented
+    ) {
+      return this.invalidateAction(a, this.getCard().getPosition(), "You can't cast that!");
     }
   }
 }
 ModifierCannotCastSpellsByCost.prototype.type = 'ModifierCannotCastSpellsByCost';
 ModifierCannotCastSpellsByCost.prototype.manaCostPrevented = 0;
-ModifierCannotCastSpellsByCost.prototype.fxResource = ['FX.Modifiers.ModifierCannotCastSpellsByCost'];
+ModifierCannotCastSpellsByCost.prototype.fxResource = [
+  'FX.Modifiers.ModifierCannotCastSpellsByCost',
+];
 
 module.exports = ModifierCannotCastSpellsByCost;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

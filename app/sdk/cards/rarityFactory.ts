@@ -137,11 +137,13 @@ class RarityFactory {
     if (rarity) {
       return rarity;
     }
-    return console.error(`RarityFactory.rarityForIdentifier - Unknown rarity identifier: ${identifier}`.red);
+    return console.error(
+      `RarityFactory.rarityForIdentifier - Unknown rarity identifier: ${identifier}`.red,
+    );
   }
 
   static getIsRarityTypeCraftable(rarityType) {
-    return (rarityType !== Rarity.Fixed) && (rarityType !== Rarity.TokenUnit);
+    return rarityType !== Rarity.Fixed && rarityType !== Rarity.TokenUnit;
   }
 
   static getAllRarities() {

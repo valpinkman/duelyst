@@ -17,7 +17,11 @@ class ModifierStartTurnWatchApplyTempArtifactModifier extends ModifierStartTurnW
     // when activated on owner's turn, immediately apply modifier for this turn
     if (this.getCard().isOwnersTurn()) {
       const general = this.getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
-      return this.getGameSession().applyModifierContextObject(this.modifierContextObject, general, this);
+      return this.getGameSession().applyModifierContextObject(
+        this.modifierContextObject,
+        general,
+        this,
+      );
     }
   }
 
@@ -33,10 +37,15 @@ class ModifierStartTurnWatchApplyTempArtifactModifier extends ModifierStartTurnW
     super.onTurnWatch();
 
     const general = this.getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
-    return this.getGameSession().applyModifierContextObject(this.modifierContextObject, general, this);
+    return this.getGameSession().applyModifierContextObject(
+      this.modifierContextObject,
+      general,
+      this,
+    );
   }
 }
-ModifierStartTurnWatchApplyTempArtifactModifier.prototype.type = 'ModifierStartTurnWatchApplyTempArtifactModifier';
+ModifierStartTurnWatchApplyTempArtifactModifier.prototype.type =
+  'ModifierStartTurnWatchApplyTempArtifactModifier';
 ModifierStartTurnWatchApplyTempArtifactModifier.prototype.modifierContextObject = null;
 
 module.exports = ModifierStartTurnWatchApplyTempArtifactModifier;

@@ -15,7 +15,6 @@ const BaseSprite = require('../BaseSprite');
  *************************************************************************** */
 
 const ArenaDeckCardNode = SdkNode.extend({
-
   background: null,
   cardSprite: null,
   titleLabel: null,
@@ -30,17 +29,31 @@ const ArenaDeckCardNode = SdkNode.extend({
     // initialize properties that may be required in init
 
     // background
-    const bgSpriteIdentifier = SDK.Cards.getIsPrismaticCardId(sdkCard.getId()) ? RSX.deck_builder_prismatic_card_bg.img : RSX.deck_builder_card_bg.img;
+    const bgSpriteIdentifier = SDK.Cards.getIsPrismaticCardId(sdkCard.getId())
+      ? RSX.deck_builder_prismatic_card_bg.img
+      : RSX.deck_builder_card_bg.img;
     this.background = new BaseSprite(bgSpriteIdentifier);
     this.background.setAnchorPoint(0, 0);
     const contentSize = this.background.getContentSize();
 
     // title
-    this.titleLabel = new cc.LabelTTF('', RSX.font_light.name, 14, cc.size(500, 30), cc.TEXT_ALIGNMENT_LEFT);
+    this.titleLabel = new cc.LabelTTF(
+      '',
+      RSX.font_light.name,
+      14,
+      cc.size(500, 30),
+      cc.TEXT_ALIGNMENT_LEFT,
+    );
     this.titleLabel.setAnchorPoint(0, 0);
 
     // mana cost
-    this.manaCostLabel = new cc.LabelTTF('', RSX.font_bold.name, 14, cc.size(500, 28), cc.TEXT_ALIGNMENT_LEFT);
+    this.manaCostLabel = new cc.LabelTTF(
+      '',
+      RSX.font_bold.name,
+      14,
+      cc.size(500, 28),
+      cc.TEXT_ALIGNMENT_LEFT,
+    );
     this.manaCostLabel.setAnchorPoint(0, 0);
     this.manaCostLabel.setFontFillColor({ r: 0, g: 33, b: 159 });
 
@@ -98,9 +111,13 @@ const ArenaDeckCardNode = SdkNode.extend({
 
         // card options
         const cardOptions = _.extend({}, sdkCard.getCardOptions());
-        cardOptions.spriteIdentifier = sdkCard.getBaseAnimResource() && (sdkCard.getBaseAnimResource().breathing || sdkCard.getBaseAnimResource().idle);
+        cardOptions.spriteIdentifier =
+          sdkCard.getBaseAnimResource() &&
+          (sdkCard.getBaseAnimResource().breathing || sdkCard.getBaseAnimResource().idle);
         cardOptions.antiAlias = false;
-        if (cardOptions.scale == null) { cardOptions.scale = 1.0; }
+        if (cardOptions.scale == null) {
+          cardOptions.scale = 1.0;
+        }
 
         this.whenResourcesReady(this.getCardResourceRequestId()).then((cardResourceRequestId) => {
           if (!this.getAreResourcesValid(cardResourceRequestId)) return; // card has changed
@@ -162,7 +179,9 @@ const ArenaDeckCardNode = SdkNode.extend({
 
   setCount(count) {
     // check count
-    if (count == null) { count = 1; }
+    if (count == null) {
+      count = 1;
+    }
     if (this.count !== count) {
       this.count = count;
       if (this.sdkCard != null) {
@@ -198,26 +217,34 @@ const ArenaDeckCardNode = SdkNode.extend({
 
           const bgPosition = this.background.getPosition();
           this.background.setPosition(bgPosition.x + moveAmount, bgPosition.y);
-          var moveAction = cc.moveBy(CONFIG.ANIMATE_FAST_DURATION, -moveAmount, 0.0).easing(cc.easeExponentialOut());
+          var moveAction = cc
+            .moveBy(CONFIG.ANIMATE_FAST_DURATION, -moveAmount, 0.0)
+            .easing(cc.easeExponentialOut());
           this.addAnimationAction(moveAction);
           this.background.runAction(moveAction);
 
           const titlePosition = this.titleLabel.getPosition();
           this.titleLabel.setPosition(titlePosition.x + moveAmount, titlePosition.y);
-          var moveAction = cc.moveBy(CONFIG.ANIMATE_FAST_DURATION, -moveAmount, 0.0).easing(cc.easeExponentialOut());
+          var moveAction = cc
+            .moveBy(CONFIG.ANIMATE_FAST_DURATION, -moveAmount, 0.0)
+            .easing(cc.easeExponentialOut());
           this.addAnimationAction(moveAction);
           this.titleLabel.runAction(moveAction);
 
           const manaCostPosition = this.manaCostLabel.getPosition();
           this.manaCostLabel.setPosition(manaCostPosition.x + moveAmount, manaCostPosition.y);
-          var moveAction = cc.moveBy(CONFIG.ANIMATE_FAST_DURATION, -moveAmount, 0.0).easing(cc.easeExponentialOut());
+          var moveAction = cc
+            .moveBy(CONFIG.ANIMATE_FAST_DURATION, -moveAmount, 0.0)
+            .easing(cc.easeExponentialOut());
           this.addAnimationAction(moveAction);
           this.manaCostLabel.runAction(moveAction);
 
           const cardPosition = this.cardSprite.getPosition();
           this.cardSprite.setPosition(cardPosition.x + moveAmount, cardPosition.y);
           var moveAction = cc.sequence(
-            cc.moveBy(CONFIG.ANIMATE_FAST_DURATION, -moveAmount, 0.0).easing(cc.easeExponentialOut()),
+            cc
+              .moveBy(CONFIG.ANIMATE_FAST_DURATION, -moveAmount, 0.0)
+              .easing(cc.easeExponentialOut()),
             cc.callFunc(() => {
               resolve();
             }),
@@ -244,19 +271,25 @@ const ArenaDeckCardNode = SdkNode.extend({
 
         const bgPosition = this.background.getPosition();
         this.background.setPosition(bgPosition.x + moveAmount, bgPosition.y);
-        var moveAction = cc.moveBy(CONFIG.ANIMATE_FAST_DURATION, -moveAmount, 0.0).easing(cc.easeExponentialOut());
+        var moveAction = cc
+          .moveBy(CONFIG.ANIMATE_FAST_DURATION, -moveAmount, 0.0)
+          .easing(cc.easeExponentialOut());
         this.addAnimationAction(moveAction);
         this.background.runAction(moveAction);
 
         const titlePosition = this.titleLabel.getPosition();
         this.titleLabel.setPosition(titlePosition.x + moveAmount, titlePosition.y);
-        var moveAction = cc.moveBy(CONFIG.ANIMATE_FAST_DURATION, -moveAmount, 0.0).easing(cc.easeExponentialOut());
+        var moveAction = cc
+          .moveBy(CONFIG.ANIMATE_FAST_DURATION, -moveAmount, 0.0)
+          .easing(cc.easeExponentialOut());
         this.addAnimationAction(moveAction);
         this.titleLabel.runAction(moveAction);
 
         const manaCostPosition = this.manaCostLabel.getPosition();
         this.manaCostLabel.setPosition(manaCostPosition.x + moveAmount, manaCostPosition.y);
-        var moveAction = cc.moveBy(CONFIG.ANIMATE_FAST_DURATION, -moveAmount, 0.0).easing(cc.easeExponentialOut());
+        var moveAction = cc
+          .moveBy(CONFIG.ANIMATE_FAST_DURATION, -moveAmount, 0.0)
+          .easing(cc.easeExponentialOut());
         this.addAnimationAction(moveAction);
         this.manaCostLabel.runAction(moveAction);
 
@@ -280,7 +313,6 @@ const ArenaDeckCardNode = SdkNode.extend({
   },
 
   /* endregion ANIMATION */
-
 });
 
 ArenaDeckCardNode.create = function (sdkCard, count, node) {

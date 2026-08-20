@@ -26,10 +26,25 @@ class ModifierOpeningGambitApplyModifiersToDeckAndHand extends ModifierOpeningGa
 
   static type = 'ModifierOpeningGambitApplyModifiersToDeckAndHand';
 
-  static createContextObject(modifiersContextObjects, managedByCard, applyToOwnPlayer, applyToEnemyPlayer, cardType = null, raceId = null, description, options) {
-    if (managedByCard == null) { managedByCard = false; }
-    if (applyToOwnPlayer == null) { applyToOwnPlayer = false; }
-    if (applyToEnemyPlayer == null) { applyToEnemyPlayer = false; }
+  static createContextObject(
+    modifiersContextObjects,
+    managedByCard,
+    applyToOwnPlayer,
+    applyToEnemyPlayer,
+    cardType = null,
+    raceId = null,
+    description,
+    options,
+  ) {
+    if (managedByCard == null) {
+      managedByCard = false;
+    }
+    if (applyToOwnPlayer == null) {
+      applyToOwnPlayer = false;
+    }
+    if (applyToEnemyPlayer == null) {
+      applyToEnemyPlayer = false;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.modifiersContextObjects = modifiersContextObjects;
     contextObject.managedByCard = managedByCard;
@@ -41,32 +56,62 @@ class ModifierOpeningGambitApplyModifiersToDeckAndHand extends ModifierOpeningGa
     return contextObject;
   }
 
-  static createContextObjectToTargetOwnPlayer(modifiersContextObjects, managedByCard, cardType, raceId, description, options) {
-    return this.createContextObject(modifiersContextObjects, managedByCard, true, false, cardType, raceId, description, options);
+  static createContextObjectToTargetOwnPlayer(
+    modifiersContextObjects,
+    managedByCard,
+    cardType,
+    raceId,
+    description,
+    options,
+  ) {
+    return this.createContextObject(
+      modifiersContextObjects,
+      managedByCard,
+      true,
+      false,
+      cardType,
+      raceId,
+      description,
+      options,
+    );
   }
 
-  static createContextObjectToTargetEnemyPlayer(modifiersContextObjects, managedByCard, cardType, raceId, description, options) {
-    return this.createContextObject(modifiersContextObjects, managedByCard, false, true, cardType, raceId, description, options);
+  static createContextObjectToTargetEnemyPlayer(
+    modifiersContextObjects,
+    managedByCard,
+    cardType,
+    raceId,
+    description,
+    options,
+  ) {
+    return this.createContextObject(
+      modifiersContextObjects,
+      managedByCard,
+      false,
+      true,
+      cardType,
+      raceId,
+      description,
+      options,
+    );
   }
 
   onOpeningGambit() {
     if (this.modifiersContextObjects != null) {
       return Array.from<any>(this.getCardsAffected()).map((card) =>
         Array.from<any>(this.modifiersContextObjects).map((modifierContextObject) =>
-          (this.managedByCard
+          this.managedByCard
             ? this.getGameSession().applyModifierContextObject(modifierContextObject, card, this)
-            : this.getGameSession().applyModifierContextObject(modifierContextObject, card))));
+            : this.getGameSession().applyModifierContextObject(modifierContextObject, card),
+        ),
+      );
     }
   }
 
   getCardsAffected() {
     let deck;
-    const {
-      cardType,
-    } = this;
-    const {
-      raceId,
-    } = this;
+    const { cardType } = this;
+    const { raceId } = this;
     let cards = [];
 
     if (this.applyToOwnPlayer) {
@@ -75,20 +120,32 @@ class ModifierOpeningGambitApplyModifiersToDeckAndHand extends ModifierOpeningGa
     }
 
     if (this.applyToEnemyPlayer) {
-      deck = this.getGameSession().getOpponentPlayerOfPlayerId(this.getCard().getOwnerId()).getDeck();
+      deck = this.getGameSession()
+        .getOpponentPlayerOfPlayerId(this.getCard().getOwnerId())
+        .getDeck();
       cards = cards.concat(deck.getCardsInHand(), deck.getCardsInDrawPile());
     }
 
-    return _.filter(cards, (card) => (card != null) && (!cardType || (card.getType() === cardType)) && (!raceId || card.getBelongsToTribe(raceId)));
+    return _.filter(
+      cards,
+      (card) =>
+        card != null &&
+        (!cardType || card.getType() === cardType) &&
+        (!raceId || card.getBelongsToTribe(raceId)),
+    );
   }
 }
-ModifierOpeningGambitApplyModifiersToDeckAndHand.prototype.type = 'ModifierOpeningGambitApplyModifiersToDeckAndHand';
+ModifierOpeningGambitApplyModifiersToDeckAndHand.prototype.type =
+  'ModifierOpeningGambitApplyModifiersToDeckAndHand';
 ModifierOpeningGambitApplyModifiersToDeckAndHand.prototype.modifiersContextObjects = null;
 ModifierOpeningGambitApplyModifiersToDeckAndHand.prototype.managedByCard = false;
 ModifierOpeningGambitApplyModifiersToDeckAndHand.prototype.applyToOwnPlayer = false;
 ModifierOpeningGambitApplyModifiersToDeckAndHand.prototype.applyToEnemyPlayer = false;
 ModifierOpeningGambitApplyModifiersToDeckAndHand.prototype.cardType = null;
 ModifierOpeningGambitApplyModifiersToDeckAndHand.prototype.raceId = null;
-ModifierOpeningGambitApplyModifiersToDeckAndHand.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierOpeningGambitApplyModifiersToDeckAndHand.prototype.fxResource = [
+  'FX.Modifiers.ModifierOpeningGambit',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 
 module.exports = ModifierOpeningGambitApplyModifiersToDeckAndHand;

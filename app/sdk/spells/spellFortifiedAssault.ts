@@ -14,8 +14,11 @@ class SpellFortifiedAssault extends SpellDamage {
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     let numTiles = 1;
     for (var tile of Array.from<any>(board.getTiles(true, false))) {
-      if (((tile != null ? tile.getOwnerId() : undefined) === this.getOwnerId()) && (tile.getBaseCardId() === Cards.Tile.Hallowed)) {
-        if (!((tile.getPosition().x === x) && (tile.getPosition().y === y))) {
+      if (
+        (tile != null ? tile.getOwnerId() : undefined) === this.getOwnerId() &&
+        tile.getBaseCardId() === Cards.Tile.Hallowed
+      ) {
+        if (!(tile.getPosition().x === x && tile.getPosition().y === y)) {
           numTiles++;
         }
       }
@@ -23,14 +26,18 @@ class SpellFortifiedAssault extends SpellDamage {
 
     const statContextObject = Modifier.createContextObjectWithAttributeBuffs(0, numTiles);
     statContextObject.appliedName = 'Fortification';
-    this.setTargetModifiersContextObjects([
-      statContextObject,
-    ]);
+    this.setTargetModifiersContextObjects([statContextObject]);
 
     this.damageAmount = numTiles;
     super.onApplyEffectToBoardTile(board, x, y, sourceAction);
 
-    const playCardAction = new PlayCardSilentlyAction(this.getGameSession(), this.getOwnerId(), x, y, { id: Cards.Tile.Hallowed });
+    const playCardAction = new PlayCardSilentlyAction(
+      this.getGameSession(),
+      this.getOwnerId(),
+      x,
+      y,
+      { id: Cards.Tile.Hallowed },
+    );
     playCardAction.setSource(this);
     return this.getGameSession().executeAction(playCardAction);
   }

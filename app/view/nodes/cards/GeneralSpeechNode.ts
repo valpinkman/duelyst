@@ -66,11 +66,15 @@ const GeneralSpeechNode = SpeechNode.extend({
       // get the general for this player
       const playerId = this._sdkPlayer.getPlayerId();
       const playerSetupData = SDK.GameSession.getInstance().getPlayerSetupDataForPlayerId(playerId);
-      const originalGeneral = SDK.GameSession.getCardCaches().getCardById(playerSetupData.generalId);
-      const general = SDK.GameSession.getInstance().getGeneralForPlayerId(playerId) || originalGeneral;
+      const originalGeneral = SDK.GameSession.getCardCaches().getCardById(
+        playerSetupData.generalId,
+      );
+      const general =
+        SDK.GameSession.getInstance().getGeneralForPlayerId(playerId) || originalGeneral;
       const portraitCenterPosition = cc.p(-159, 0);
 
-      const generalSpeechResource = general.getSpeechResource() || originalGeneral.getSpeechResource();
+      const generalSpeechResource =
+        general.getSpeechResource() || originalGeneral.getSpeechResource();
       this.generalSprite = new BaseSprite(generalSpeechResource.img);
       this.generalSprite.setAntiAlias(false);
       this.generalSprite.setPosition(portraitCenterPosition);
@@ -98,7 +102,12 @@ const GeneralSpeechNode = SpeechNode.extend({
       this.addChild(this._proceedCarrotSprite, 0);
 
       // speaker label
-      this.speakerLabel = new cc.LabelTTF('', RSX.font_bold.name, 16, cc.size(CONFIG.GENERAL_SPEECH_WIDTH, 0.0));
+      this.speakerLabel = new cc.LabelTTF(
+        '',
+        RSX.font_bold.name,
+        16,
+        cc.size(CONFIG.GENERAL_SPEECH_WIDTH, 0.0),
+      );
       this.speakerLabel.setAnchorPoint(0, 1);
       this.speakerLabel.setFontFillColor(CONFIG.DIALOGUE_HEADER_TITLE_COLOR);
       this.speakerLabel.setString(general.getName(), true);
@@ -125,8 +134,10 @@ const GeneralSpeechNode = SpeechNode.extend({
     const playerId = this._sdkPlayer.getPlayerId();
     const playerSetupData = SDK.GameSession.getInstance().getPlayerSetupDataForPlayerId(playerId);
     const originalGeneral = SDK.GameSession.getCardCaches().getCardById(playerSetupData.generalId);
-    const general = SDK.GameSession.getInstance().getGeneralForPlayerId(playerId) || originalGeneral;
-    const generalSpeechResource = general.getSpeechResource() || originalGeneral.getSpeechResource();
+    const general =
+      SDK.GameSession.getInstance().getGeneralForPlayerId(playerId) || originalGeneral;
+    const generalSpeechResource =
+      general.getSpeechResource() || originalGeneral.getSpeechResource();
     if (generalSpeechResource != null) {
       resources.push(generalSpeechResource);
     }
@@ -146,10 +157,17 @@ const GeneralSpeechNode = SpeechNode.extend({
     const location = event.getLocation();
     const scene = this.getScene();
     const gameLayer = scene && scene.getGameLayer();
-    if (gameLayer && this.isVisible() && this.getDisplayedOpacity() > 0.0
-      && (this._isPressedOnPressAnywhere || UtilsEngine.getNodeUnderMouse(this.bgSprite, location.x, location.y))) {
+    if (
+      gameLayer &&
+      this.isVisible() &&
+      this.getDisplayedOpacity() > 0.0 &&
+      (this._isPressedOnPressAnywhere ||
+        UtilsEngine.getNodeUnderMouse(this.bgSprite, location.x, location.y))
+    ) {
       // play sound for click
-      audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_click.audio, CONFIG.CLICK_SFX_PRIORITY);
+      audio_engine
+        .current()
+        .play_effect_for_interaction(RSX.sfx_ui_click.audio, CONFIG.CLICK_SFX_PRIORITY);
 
       if (this._isDismissable && !this._stoppingShowText) {
         // stop showing
@@ -176,7 +194,11 @@ const GeneralSpeechNode = SpeechNode.extend({
       this.speakerLabel.setPosition(-80, 40);
       if (this.label != null) {
         this.label.setPositionX(this.speakerLabel.getPositionX());
-        this.label.setPositionY(this.speakerLabel.getPositionY() - this.speakerLabel.height - verticalGapBetweenLabels / this._rawBGSize.y);
+        this.label.setPositionY(
+          this.speakerLabel.getPositionY() -
+            this.speakerLabel.height -
+            verticalGapBetweenLabels / this._rawBGSize.y,
+        );
       }
     }
   },
@@ -189,7 +211,15 @@ const GeneralSpeechNode = SpeechNode.extend({
     }
   },
 
-  showTextWithSoundForDuration(text, sound, duration, removeFromParentOnComplete, isNotDismissable, atYPosition, willPersist) {
+  showTextWithSoundForDuration(
+    text,
+    sound,
+    duration,
+    removeFromParentOnComplete,
+    isNotDismissable,
+    atYPosition,
+    willPersist,
+  ) {
     let showDuration = 0.0;
 
     // stop any showing text
@@ -203,7 +233,8 @@ const GeneralSpeechNode = SpeechNode.extend({
     showDuration += duration + CONFIG.DIALOGUE_ENTER_DURATION + CONFIG.FADE_SLOW_DURATION;
 
     this.setIsDismissable(!isNotDismissable);
-    this._removeFromParentOnComplete = removeFromParentOnComplete != null ? removeFromParentOnComplete : false;
+    this._removeFromParentOnComplete =
+      removeFromParentOnComplete != null ? removeFromParentOnComplete : false;
     this._entryYPosition = atYPosition = atYPosition != null ? atYPosition : 0.66;
     this._isPersistent = willPersist;
 
@@ -215,16 +246,23 @@ const GeneralSpeechNode = SpeechNode.extend({
 
       this._proceedCarrotSprite.setVisible(willPersist);
 
-      const isPlayerOne = SDK.GameSession.current().getPlayer1().playerId == this._sdkPlayer.playerId;
+      const isPlayerOne =
+        SDK.GameSession.current().getPlayer1().playerId == this._sdkPlayer.playerId;
 
       const winRect = UtilsEngine.getGSIWinRect();
       let xMovement;
       if (isPlayerOne) {
         xMovement = this.bgSprite.width + 25;
-        this.setPosition(winRect.x - this.bgSprite.width * 0.5, winRect.y + winRect.height * atYPosition);
+        this.setPosition(
+          winRect.x - this.bgSprite.width * 0.5,
+          winRect.y + winRect.height * atYPosition,
+        );
       } else {
         xMovement = -this.bgSprite.width - 25;
-        this.setPosition(winRect.x + winRect.width + this.bgSprite.width * 0.5, winRect.y + winRect.height * atYPosition);
+        this.setPosition(
+          winRect.x + winRect.width + this.bgSprite.width * 0.5,
+          winRect.y + winRect.height * atYPosition,
+        );
       }
       xMovement = Math.round(xMovement);
 
@@ -310,16 +348,20 @@ const GeneralSpeechNode = SpeechNode.extend({
         ];
         if (fromPress) {
           showDuration = CONFIG.FADE_FAST_DURATION;
-          sequence.unshift(cc.spawn(
-            cc.fadeTo(showDuration, 0),
-            cc.scaleTo(showDuration, 1.05).easing(cc.easeCubicActionOut()),
-          ));
+          sequence.unshift(
+            cc.spawn(
+              cc.fadeTo(showDuration, 0),
+              cc.scaleTo(showDuration, 1.05).easing(cc.easeCubicActionOut()),
+            ),
+          );
         } else {
           showDuration = CONFIG.FADE_MEDIUM_DURATION;
-          sequence.unshift(cc.spawn(
-            cc.fadeTo(showDuration, 0),
-            cc.scaleTo(showDuration, 0.8).easing(cc.easeCubicActionIn()),
-          ));
+          sequence.unshift(
+            cc.spawn(
+              cc.fadeTo(showDuration, 0),
+              cc.scaleTo(showDuration, 0.8).easing(cc.easeCubicActionIn()),
+            ),
+          );
         }
         this._stopShowingAction = cc.sequence(sequence);
         this.runAction(this._stopShowingAction);
@@ -348,7 +390,6 @@ const GeneralSpeechNode = SpeechNode.extend({
   },
 
   /* endregion TEXT */
-
 });
 
 GeneralSpeechNode.create = function (sdkPlayer, node) {

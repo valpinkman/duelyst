@@ -21,7 +21,6 @@ const UtilsEngine = require('app/common/utils/utils_engine');
  *************************************************************************** */
 
 const RiftProgressLayer = RewardLayer.extend({
-
   // Cocos elements
   _motionStreakRing: null,
   _currentLevelLabel: null,
@@ -43,7 +42,9 @@ const RiftProgressLayer = RewardLayer.extend({
   _riftLevelAfter: null,
 
   getRequiredResources() {
-    return RewardLayer.prototype.getRequiredResources.call(this).concat(PKGS.getPkgForIdentifier('rift_progress'));
+    return RewardLayer.prototype.getRequiredResources
+      .call(this)
+      .concat(PKGS.getPkgForIdentifier('rift_progress'));
   },
 
   showContinueNode() {
@@ -76,100 +77,143 @@ const RiftProgressLayer = RewardLayer.extend({
     this._riftLevelBefore = RiftHelper.levelForPoints(this._riftPointsBefore);
     this._riftLevelAfter = RiftHelper.levelForPoints(this._riftPointsAfter);
 
-    this.whenRequiredResourcesReady()
-      .then((requiredRequestId) => {
-        if (!this.getAreResourcesValid(requiredRequestId)) return; // load invalidated or resources changed
+    this.whenRequiredResourcesReady().then((requiredRequestId) => {
+      if (!this.getAreResourcesValid(requiredRequestId)) return; // load invalidated or resources changed
 
-        // disable and reset continue
-        this.disablePressToContinueAndHitboxesAndCallback();
+      // disable and reset continue
+      this.disablePressToContinueAndHitboxesAndCallback();
 
-        const winHeight = UtilsEngine.getGSIWinHeight();
+      const winHeight = UtilsEngine.getGSIWinHeight();
 
-        this._riftLevelRingSprite = new BaseSprite(RSX.rift_level_ring.img);
-        this._riftLevelRingSprite.setOpacity(0);
-        this._riftLevelRingSprite.setAntiAlias(true);
-        this._riftLevelRingSprite.setScale(1.2);
+      this._riftLevelRingSprite = new BaseSprite(RSX.rift_level_ring.img);
+      this._riftLevelRingSprite.setOpacity(0);
+      this._riftLevelRingSprite.setAntiAlias(true);
+      this._riftLevelRingSprite.setScale(1.2);
 
-        this.addChild(this._riftLevelRingSprite);
+      this.addChild(this._riftLevelRingSprite);
 
-        this._motionStreakRing = new MotionStreakRingNode();
-        this._motionStreakRing.setScale(0.8);
-        this._motionStreakRing.setOpacity(0);
-        this.addChild(this._motionStreakRing);
+      this._motionStreakRing = new MotionStreakRingNode();
+      this._motionStreakRing.setScale(0.8);
+      this._motionStreakRing.setOpacity(0);
+      this.addChild(this._motionStreakRing);
 
-        // Region: stuff in center of plate
-        this._currentLevelLabel = new cc.LabelTTF(`${this._riftLevelBefore}`, RSX.font_bold.name, 50, cc.size(200, 50), cc.TEXT_ALIGNMENT_CENTER);
-        this._currentLevelLabel.setFontFillColor(CONFIG.POST_GAME_RANK_PRIMARY_COLOR);
-        this._currentLevelLabel.setOpacity(0);
-        this.addChild(this._currentLevelLabel);
-        this._currentLevelLabel.setPositionCenterOfSprite(this._riftLevelRingSprite);
+      // Region: stuff in center of plate
+      this._currentLevelLabel = new cc.LabelTTF(
+        `${this._riftLevelBefore}`,
+        RSX.font_bold.name,
+        50,
+        cc.size(200, 50),
+        cc.TEXT_ALIGNMENT_CENTER,
+      );
+      this._currentLevelLabel.setFontFillColor(CONFIG.POST_GAME_RANK_PRIMARY_COLOR);
+      this._currentLevelLabel.setOpacity(0);
+      this.addChild(this._currentLevelLabel);
+      this._currentLevelLabel.setPositionCenterOfSprite(this._riftLevelRingSprite);
 
-        this._levelHeaderStaticLabel = new cc.LabelTTF('LEVEL', RSX.font_regular.name, 20, cc.size(200, 22), cc.TEXT_ALIGNMENT_CENTER);
-        this._levelHeaderStaticLabel.setFontFillColor(CONFIG.POST_GAME_RANK_SECONDARY_COLOR);
-        this._levelHeaderStaticLabel.setOpacity(0);
-        this.addChild(this._levelHeaderStaticLabel);
-        this._levelHeaderStaticLabel.setPositionAboveSprite(this._currentLevelLabel, cc.p(0, -5));
+      this._levelHeaderStaticLabel = new cc.LabelTTF(
+        'LEVEL',
+        RSX.font_regular.name,
+        20,
+        cc.size(200, 22),
+        cc.TEXT_ALIGNMENT_CENTER,
+      );
+      this._levelHeaderStaticLabel.setFontFillColor(CONFIG.POST_GAME_RANK_SECONDARY_COLOR);
+      this._levelHeaderStaticLabel.setOpacity(0);
+      this.addChild(this._levelHeaderStaticLabel);
+      this._levelHeaderStaticLabel.setPositionAboveSprite(this._currentLevelLabel, cc.p(0, -5));
 
-        // Endregion: stuff in center of plate
+      // Endregion: stuff in center of plate
 
-        // Region: Header
+      // Region: Header
 
-        this._headerLabel = new cc.LabelTTF('RIFT PROGRESS', RSX.font_bold.name, 64, cc.size(600, 80), cc.TEXT_ALIGNMENT_CENTER);
-        this._headerLabel.setFontFillColor(CONFIG.POST_GAME_RANK_PRIMARY_COLOR);
-        this._headerLabel.setOpacity(0);
-        this.addChild(this._headerLabel);
-        this._headerLabel.setPositionAboveSprite(this._riftLevelRingSprite, cc.p(0, 20));
+      this._headerLabel = new cc.LabelTTF(
+        'RIFT PROGRESS',
+        RSX.font_bold.name,
+        64,
+        cc.size(600, 80),
+        cc.TEXT_ALIGNMENT_CENTER,
+      );
+      this._headerLabel.setFontFillColor(CONFIG.POST_GAME_RANK_PRIMARY_COLOR);
+      this._headerLabel.setOpacity(0);
+      this.addChild(this._headerLabel);
+      this._headerLabel.setPositionAboveSprite(this._riftLevelRingSprite, cc.p(0, 20));
 
-        // Endregion: header
+      // Endregion: header
 
-        // Region: stuff below plate
+      // Region: stuff below plate
 
-        this._ratingStaticLabel = new cc.LabelTTF('Rift Run Rating: ', RSX.font_bold.name, 14, cc.size(120, 18), cc.TEXT_ALIGNMENT_CENTER);
-        this._ratingStaticLabel.setFontFillColor(CONFIG.POST_GAME_RANK_PRIMARY_COLOR);
-        this.addChild(this._ratingStaticLabel);
-        this._ratingStaticLabel.setOpacity(0);
-        this._ratingStaticLabel.setPositionBelowSprite(this._riftLevelRingSprite, cc.p(-10, 20));
+      this._ratingStaticLabel = new cc.LabelTTF(
+        'Rift Run Rating: ',
+        RSX.font_bold.name,
+        14,
+        cc.size(120, 18),
+        cc.TEXT_ALIGNMENT_CENTER,
+      );
+      this._ratingStaticLabel.setFontFillColor(CONFIG.POST_GAME_RANK_PRIMARY_COLOR);
+      this.addChild(this._ratingStaticLabel);
+      this._ratingStaticLabel.setOpacity(0);
+      this._ratingStaticLabel.setPositionBelowSprite(this._riftLevelRingSprite, cc.p(-10, 20));
 
-        this._previousRatingLabel = new cc.LabelTTF(this._riftRatingBefore, RSX.font_bold.name, 14, cc.size(100, 18), cc.TEXT_ALIGNMENT_CENTER);
-        this._previousRatingLabel.setFontFillColor(CONFIG.POST_GAME_RANK_PRIMARY_COLOR);
-        this.addChild(this._previousRatingLabel);
-        this._previousRatingLabel.setOpacity(0);
-        var offset = cc.p(-5, 0);
-        if (this._riftRatingBefore >= 1000) offset = cc.p(0, 0);
-        this._previousRatingLabel.setPositionRightOfSprite(this._ratingStaticLabel, offset);
+      this._previousRatingLabel = new cc.LabelTTF(
+        this._riftRatingBefore,
+        RSX.font_bold.name,
+        14,
+        cc.size(100, 18),
+        cc.TEXT_ALIGNMENT_CENTER,
+      );
+      this._previousRatingLabel.setFontFillColor(CONFIG.POST_GAME_RANK_PRIMARY_COLOR);
+      this.addChild(this._previousRatingLabel);
+      this._previousRatingLabel.setOpacity(0);
+      var offset = cc.p(-5, 0);
+      if (this._riftRatingBefore >= 1000) offset = cc.p(0, 0);
+      this._previousRatingLabel.setPositionRightOfSprite(this._ratingStaticLabel, offset);
 
-        this._newRatingLabel = new cc.LabelTTF(this._riftRatingAfter, RSX.font_bold.name, 14, cc.size(100, 18), cc.TEXT_ALIGNMENT_CENTER);
-        this._newRatingLabel.setFontFillColor(CONFIG.POST_GAME_RANK_PRIMARY_COLOR);
-        this.addChild(this._newRatingLabel);
-        this._newRatingLabel.setOpacity(0);
-        var offset = cc.p(-5, 0);
-        if (this._riftRatingAfter >= 1000) offset = cc.p(0, 0);
-        this._newRatingLabel.setPositionRightOfSprite(this._ratingStaticLabel, offset);
+      this._newRatingLabel = new cc.LabelTTF(
+        this._riftRatingAfter,
+        RSX.font_bold.name,
+        14,
+        cc.size(100, 18),
+        cc.TEXT_ALIGNMENT_CENTER,
+      );
+      this._newRatingLabel.setFontFillColor(CONFIG.POST_GAME_RANK_PRIMARY_COLOR);
+      this.addChild(this._newRatingLabel);
+      this._newRatingLabel.setOpacity(0);
+      var offset = cc.p(-5, 0);
+      if (this._riftRatingAfter >= 1000) offset = cc.p(0, 0);
+      this._newRatingLabel.setPositionRightOfSprite(this._ratingStaticLabel, offset);
 
-        const currentLevelPointsProgress = this._riftPointsBefore - RiftHelper.totalPointsForLevel(this._riftLevelBefore);
-        const currentLevelPointsNeeded = RiftHelper.pointsRequiredForLevel(this._riftLevelBefore + 1);
-        this._progressLineSprite = new FXRiftLineSprite();
-        this._progressLineSprite.setScale(10.5, 2.5);
-        this._progressLineSprite.setProgress(currentLevelPointsProgress / currentLevelPointsNeeded);
-        this._progressLineSprite.setPositionBelowSprite(this._ratingStaticLabel, cc.p(10, 0));
-        this.addChild(this._progressLineSprite);
+      const currentLevelPointsProgress =
+        this._riftPointsBefore - RiftHelper.totalPointsForLevel(this._riftLevelBefore);
+      const currentLevelPointsNeeded = RiftHelper.pointsRequiredForLevel(this._riftLevelBefore + 1);
+      this._progressLineSprite = new FXRiftLineSprite();
+      this._progressLineSprite.setScale(10.5, 2.5);
+      this._progressLineSprite.setProgress(currentLevelPointsProgress / currentLevelPointsNeeded);
+      this._progressLineSprite.setPositionBelowSprite(this._ratingStaticLabel, cc.p(10, 0));
+      this.addChild(this._progressLineSprite);
 
-        this._progressDynamicLabel = new cc.LabelTTF('', RSX.font_regular.name, 14, cc.size(100, 16), cc.TEXT_ALIGNMENT_CENTER);
-        this._progressDynamicLabel.setFontFillColor(CONFIG.POST_GAME_RANK_PRIMARY_COLOR);
-        this.addChild(this._progressDynamicLabel);
-        this._progressDynamicLabel.setOpacity(0);
-        this._progressDynamicLabel.setPositionBelowSprite(this._progressLineSprite, cc.p(0, 30));
-        this._setProgressUpdateTweenMethod(currentLevelPointsProgress, currentLevelPointsNeeded);
+      this._progressDynamicLabel = new cc.LabelTTF(
+        '',
+        RSX.font_regular.name,
+        14,
+        cc.size(100, 16),
+        cc.TEXT_ALIGNMENT_CENTER,
+      );
+      this._progressDynamicLabel.setFontFillColor(CONFIG.POST_GAME_RANK_PRIMARY_COLOR);
+      this.addChild(this._progressDynamicLabel);
+      this._progressDynamicLabel.setOpacity(0);
+      this._progressDynamicLabel.setPositionBelowSprite(this._progressLineSprite, cc.p(0, 30));
+      this._setProgressUpdateTweenMethod(currentLevelPointsProgress, currentLevelPointsNeeded);
 
-        // Endregion: stuff below plate
+      // Endregion: stuff below plate
 
-        this._animateInBaseState()
-          .then(() => this._animateLevelProgress())
-          .then(() => this._animateRatingChange()).then(() => {
-            this.setIsContinueOnPressAnywhere(true);
-            this.setIsInteractionEnabled(true);
-          });
-      });
+      this._animateInBaseState()
+        .then(() => this._animateLevelProgress())
+        .then(() => this._animateRatingChange())
+        .then(() => {
+          this.setIsContinueOnPressAnywhere(true);
+          this.setIsInteractionEnabled(true);
+        });
+    });
   },
 
   _setProgressUpdateTweenMethod(currentLevelProgress, currentLevelProgressNeeded) {
@@ -192,49 +236,78 @@ const RiftProgressLayer = RewardLayer.extend({
       const headerPlateYMovement = -20;
 
       this._headerLabel.setPositionY(this._headerLabel.getPositionY() - headerPlateYMovement);
-      this._riftLevelRingSprite.setPositionY(this._riftLevelRingSprite.getPositionY() - levelRingYMovement);
+      this._riftLevelRingSprite.setPositionY(
+        this._riftLevelRingSprite.getPositionY() - levelRingYMovement,
+      );
 
       this._currentLevelLabel.setScale(0.8);
       this._levelHeaderStaticLabel.setScale(0.8);
       this._ratingStaticLabel.setScale(0.8);
       this._previousRatingLabel.setScale(0.8);
 
-      this.runAction(cc.sequence(
-        cc.targetedAction(this._headerLabel, cc.spawn(
-          cc.fadeIn(CONFIG.ANIMATE_MEDIUM_DURATION),
-          cc.moveBy(CONFIG.ANIMATE_MEDIUM_DURATION, 0, headerPlateYMovement).easing(cc.easeExponentialOut()),
-        )),
-        cc.targetedAction(this._riftLevelRingSprite, cc.spawn(
-          cc.fadeIn(CONFIG.ANIMATE_MEDIUM_DURATION),
-          cc.moveBy(CONFIG.ANIMATE_MEDIUM_DURATION, 0, levelRingYMovement).easing(cc.easeExponentialOut()),
-        )),
-        // Show the initial labels
-        cc.spawn(
-          cc.targetedAction(this._currentLevelLabel, cc.spawn(
-            cc.fadeIn(CONFIG.ANIMATE_MEDIUM_DURATION),
-            cc.scaleTo(CONFIG.ANIMATE_MEDIUM_DURATION, 1.0).easing(cc.easeBackOut()),
-          )),
-          cc.targetedAction(this._levelHeaderStaticLabel, cc.spawn(
-            cc.fadeIn(CONFIG.ANIMATE_MEDIUM_DURATION),
-            cc.scaleTo(CONFIG.ANIMATE_MEDIUM_DURATION, 1.0).easing(cc.easeBackOut()),
-          )),
-          cc.targetedAction(this._ratingStaticLabel, cc.spawn(
-            cc.fadeIn(CONFIG.ANIMATE_MEDIUM_DURATION),
-            cc.scaleTo(CONFIG.ANIMATE_MEDIUM_DURATION, 1.0).easing(cc.easeBackOut()),
-          )),
-          cc.targetedAction(this._previousRatingLabel, cc.spawn(
-            cc.fadeIn(CONFIG.ANIMATE_MEDIUM_DURATION),
-            cc.scaleTo(CONFIG.ANIMATE_MEDIUM_DURATION, 1.0).easing(cc.easeBackOut()),
-          )),
-          cc.targetedAction(this._progressDynamicLabel, cc.spawn(
-            cc.fadeIn(CONFIG.ANIMATE_MEDIUM_DURATION),
-            cc.scaleTo(CONFIG.ANIMATE_MEDIUM_DURATION, 1.0).easing(cc.easeBackOut()),
-          )),
+      this.runAction(
+        cc.sequence(
+          cc.targetedAction(
+            this._headerLabel,
+            cc.spawn(
+              cc.fadeIn(CONFIG.ANIMATE_MEDIUM_DURATION),
+              cc
+                .moveBy(CONFIG.ANIMATE_MEDIUM_DURATION, 0, headerPlateYMovement)
+                .easing(cc.easeExponentialOut()),
+            ),
+          ),
+          cc.targetedAction(
+            this._riftLevelRingSprite,
+            cc.spawn(
+              cc.fadeIn(CONFIG.ANIMATE_MEDIUM_DURATION),
+              cc
+                .moveBy(CONFIG.ANIMATE_MEDIUM_DURATION, 0, levelRingYMovement)
+                .easing(cc.easeExponentialOut()),
+            ),
+          ),
+          // Show the initial labels
+          cc.spawn(
+            cc.targetedAction(
+              this._currentLevelLabel,
+              cc.spawn(
+                cc.fadeIn(CONFIG.ANIMATE_MEDIUM_DURATION),
+                cc.scaleTo(CONFIG.ANIMATE_MEDIUM_DURATION, 1.0).easing(cc.easeBackOut()),
+              ),
+            ),
+            cc.targetedAction(
+              this._levelHeaderStaticLabel,
+              cc.spawn(
+                cc.fadeIn(CONFIG.ANIMATE_MEDIUM_DURATION),
+                cc.scaleTo(CONFIG.ANIMATE_MEDIUM_DURATION, 1.0).easing(cc.easeBackOut()),
+              ),
+            ),
+            cc.targetedAction(
+              this._ratingStaticLabel,
+              cc.spawn(
+                cc.fadeIn(CONFIG.ANIMATE_MEDIUM_DURATION),
+                cc.scaleTo(CONFIG.ANIMATE_MEDIUM_DURATION, 1.0).easing(cc.easeBackOut()),
+              ),
+            ),
+            cc.targetedAction(
+              this._previousRatingLabel,
+              cc.spawn(
+                cc.fadeIn(CONFIG.ANIMATE_MEDIUM_DURATION),
+                cc.scaleTo(CONFIG.ANIMATE_MEDIUM_DURATION, 1.0).easing(cc.easeBackOut()),
+              ),
+            ),
+            cc.targetedAction(
+              this._progressDynamicLabel,
+              cc.spawn(
+                cc.fadeIn(CONFIG.ANIMATE_MEDIUM_DURATION),
+                cc.scaleTo(CONFIG.ANIMATE_MEDIUM_DURATION, 1.0).easing(cc.easeBackOut()),
+              ),
+            ),
+          ),
+          cc.callFunc(() => {
+            resolve();
+          }),
         ),
-        cc.callFunc(() => {
-          resolve();
-        }),
-      ));
+      );
     });
   },
 
@@ -269,26 +342,45 @@ const RiftProgressLayer = RewardLayer.extend({
     const initialProgress = initialLevelPointsProgress / currentLevelPointsNeeded;
     const newProgress = afterLevelPointsProgress / currentLevelPointsNeeded;
 
-    const progressAnimationSpeed = this._getLevelProgressAnimationSpeed(afterPoints - initialPoints, newProgress - initialProgress);
+    const progressAnimationSpeed = this._getLevelProgressAnimationSpeed(
+      afterPoints - initialPoints,
+      newProgress - initialProgress,
+    );
 
     return new Promise<void>((resolve) => {
-      this.runAction(cc.sequence(
-        // Show the plate
-        cc.spawn(
-          cc.targetedAction(this._progressLineSprite, cc.actionTween(progressAnimationSpeed, 'progress', initialProgress, newProgress).easing(cc.easeExponentialInOut())),
-          cc.targetedAction(this._progressDynamicLabel, cc.actionTween(progressAnimationSpeed, 'string', initialLevelPointsProgress, afterLevelPointsProgress)),
+      this.runAction(
+        cc.sequence(
+          // Show the plate
+          cc.spawn(
+            cc.targetedAction(
+              this._progressLineSprite,
+              cc
+                .actionTween(progressAnimationSpeed, 'progress', initialProgress, newProgress)
+                .easing(cc.easeExponentialInOut()),
+            ),
+            cc.targetedAction(
+              this._progressDynamicLabel,
+              cc.actionTween(
+                progressAnimationSpeed,
+                'string',
+                initialLevelPointsProgress,
+                afterLevelPointsProgress,
+              ),
+            ),
+          ),
+          cc.callFunc(() => {
+            if (!levelsInTransition) {
+              resolve();
+            } else {
+              return this._animateLevelUp(afterPoints)
+                .then(() => this._animateLevelProgress(afterPoints, finalPoints))
+                .then(() => {
+                  resolve();
+                });
+            }
+          }),
         ),
-        cc.callFunc(() => {
-          if (!levelsInTransition) {
-            resolve();
-          } else {
-            return this._animateLevelUp(afterPoints)
-              .then(() => this._animateLevelProgress(afterPoints, finalPoints)).then(() => {
-                resolve();
-              });
-          }
-        }),
-      ));
+      );
     });
   },
 
@@ -300,35 +392,56 @@ const RiftProgressLayer = RewardLayer.extend({
   _animateLevelUp(currentRiftPoints) {
     return new Promise<void>((resolve) => {
       const newLevelValue = RiftHelper.levelForPoints(currentRiftPoints);
-      const newLevelLabel = new cc.LabelTTF(`${newLevelValue}`, RSX.font_bold.name, 50, cc.size(200, 50), cc.TEXT_ALIGNMENT_CENTER);
+      const newLevelLabel = new cc.LabelTTF(
+        `${newLevelValue}`,
+        RSX.font_bold.name,
+        50,
+        cc.size(200, 50),
+        cc.TEXT_ALIGNMENT_CENTER,
+      );
       newLevelLabel.setFontFillColor(CONFIG.POST_GAME_RANK_PRIMARY_COLOR);
       newLevelLabel.setOpacity(0);
       this.addChild(newLevelLabel);
       newLevelLabel.setPositionAboveSprite(this._currentLevelLabel);
 
       const yMovement = this._currentLevelLabel.getPositionY() - newLevelLabel.getPositionY();
-      this.runAction(cc.sequence(
-        // Animate in new label and out old label
-        cc.spawn(
-          cc.targetedAction(newLevelLabel, cc.spawn(
-            cc.fadeIn(CONFIG.ANIMATE_SLOW_DURATION),
-            cc.moveBy(CONFIG.ANIMATE_SLOW_DURATION, 0, yMovement).easing(cc.easeExponentialOut()),
-          )),
-          cc.targetedAction(this._currentLevelLabel, cc.spawn(
-            cc.fadeOut(CONFIG.ANIMATE_SLOW_DURATION),
-            cc.moveBy(CONFIG.ANIMATE_SLOW_DURATION, 0, yMovement).easing(cc.easeExponentialOut()),
-          )),
+      this.runAction(
+        cc.sequence(
+          // Animate in new label and out old label
+          cc.spawn(
+            cc.targetedAction(
+              newLevelLabel,
+              cc.spawn(
+                cc.fadeIn(CONFIG.ANIMATE_SLOW_DURATION),
+                cc
+                  .moveBy(CONFIG.ANIMATE_SLOW_DURATION, 0, yMovement)
+                  .easing(cc.easeExponentialOut()),
+              ),
+            ),
+            cc.targetedAction(
+              this._currentLevelLabel,
+              cc.spawn(
+                cc.fadeOut(CONFIG.ANIMATE_SLOW_DURATION),
+                cc
+                  .moveBy(CONFIG.ANIMATE_SLOW_DURATION, 0, yMovement)
+                  .easing(cc.easeExponentialOut()),
+              ),
+            ),
+            cc.callFunc(() => {
+              audio_engine.current().play_effect(RSX.sfx_ui_tab_in.audio, false);
+              this._motionStreakRing.animate();
+            }),
+          ),
           cc.callFunc(() => {
-            audio_engine.current().play_effect(RSX.sfx_ui_tab_in.audio, false);
-            this._motionStreakRing.animate();
+            this._currentLevelLabel = newLevelLabel;
+            this._setProgressUpdateTweenMethod(
+              0,
+              RiftHelper.pointsRequiredForLevel(newLevelValue + 1),
+            );
+            resolve();
           }),
         ),
-        cc.callFunc(() => {
-          this._currentLevelLabel = newLevelLabel;
-          this._setProgressUpdateTweenMethod(0, RiftHelper.pointsRequiredForLevel(newLevelValue + 1));
-          resolve();
-        }),
-      ));
+      );
     });
   },
 
@@ -344,27 +457,39 @@ const RiftProgressLayer = RewardLayer.extend({
       } else {
         this._newRatingLabel.setPositionAboveSprite(this._previousRatingLabel);
       }
-      const yMovement = this._previousRatingLabel.getPositionY() - this._newRatingLabel.getPositionY();
+      const yMovement =
+        this._previousRatingLabel.getPositionY() - this._newRatingLabel.getPositionY();
       audio_engine.current().play_effect(RSX.sfx_ui_dialogue_enter.audio, false);
-      this.runAction(cc.sequence(
-        // Animate in new label and out old label
-        cc.spawn(
-          cc.targetedAction(this._newRatingLabel, cc.spawn(
-            cc.fadeIn(CONFIG.ANIMATE_MEDIUM_DURATION),
-            cc.moveBy(CONFIG.ANIMATE_MEDIUM_DURATION, 0, yMovement).easing(cc.easeExponentialOut()),
-          )),
-          cc.targetedAction(this._previousRatingLabel, cc.spawn(
-            cc.fadeOut(CONFIG.ANIMATE_MEDIUM_DURATION),
-            cc.moveBy(CONFIG.ANIMATE_MEDIUM_DURATION, 0, yMovement).easing(cc.easeExponentialOut()),
-          )),
+      this.runAction(
+        cc.sequence(
+          // Animate in new label and out old label
+          cc.spawn(
+            cc.targetedAction(
+              this._newRatingLabel,
+              cc.spawn(
+                cc.fadeIn(CONFIG.ANIMATE_MEDIUM_DURATION),
+                cc
+                  .moveBy(CONFIG.ANIMATE_MEDIUM_DURATION, 0, yMovement)
+                  .easing(cc.easeExponentialOut()),
+              ),
+            ),
+            cc.targetedAction(
+              this._previousRatingLabel,
+              cc.spawn(
+                cc.fadeOut(CONFIG.ANIMATE_MEDIUM_DURATION),
+                cc
+                  .moveBy(CONFIG.ANIMATE_MEDIUM_DURATION, 0, yMovement)
+                  .easing(cc.easeExponentialOut()),
+              ),
+            ),
+          ),
+          cc.callFunc(() => {
+            resolve();
+          }),
         ),
-        cc.callFunc(() => {
-          resolve();
-        }),
-      ));
+      );
     });
   },
-
 });
 
 RiftProgressLayer.create = function (layer) {

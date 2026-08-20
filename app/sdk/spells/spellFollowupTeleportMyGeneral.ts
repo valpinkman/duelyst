@@ -10,7 +10,9 @@ class SpellFollowupTeleportMyGeneral extends SpellFollowupTeleport {
   getFollowupSourcePattern() {
     // since this spells teleports the General, we need to recenter the followup
     // source pattern on top of the General
-    const generalPosition = this.getGameSession().getGeneralForPlayerId(this.getOwnerId()).getPosition();
+    const generalPosition = this.getGameSession()
+      .getGeneralForPlayerId(this.getOwnerId())
+      .getPosition();
     const xDif = this.getFollowupSourcePosition().x - generalPosition.x;
     const yDif = this.getFollowupSourcePosition().y - generalPosition.y;
     const patternAroundGeneral = [];

@@ -32,7 +32,11 @@ class ModifierDoubleDamageToGenerals extends Modifier {
   }
 
   getIsActionRelevant(a) {
-    return a instanceof DamageAction && (a.getSource() === this.getCard()) && __guard__(a.getTarget(), (x) => x.getIsGeneral());
+    return (
+      a instanceof DamageAction &&
+      a.getSource() === this.getCard() &&
+      __guard__(a.getTarget(), (x) => x.getIsGeneral())
+    );
   }
 
   _modifyAction(a) {
@@ -60,10 +64,12 @@ ModifierDoubleDamageToGenerals.prototype.activeInHand = false;
 ModifierDoubleDamageToGenerals.prototype.activeInDeck = false;
 ModifierDoubleDamageToGenerals.prototype.activeOnBoard = true;
 ModifierDoubleDamageToGenerals.prototype.damageBonus = 2;
-ModifierDoubleDamageToGenerals.prototype.fxResource = ['FX.Modifiers.ModifierDoubleDamageToGenerals'];
+ModifierDoubleDamageToGenerals.prototype.fxResource = [
+  'FX.Modifiers.ModifierDoubleDamageToGenerals',
+];
 
 module.exports = ModifierDoubleDamageToGenerals;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

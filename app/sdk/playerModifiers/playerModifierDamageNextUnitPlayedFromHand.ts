@@ -16,7 +16,9 @@ class PlayerModifierDamageNextUnitPlayedFromHand extends PlayerModifier {
   static type = 'PlayerModifierDamageNextUnitPlayedFromHand';
 
   static createContextObject(damageAmount, duration, options) {
-    if (duration == null) { duration = 0; }
+    if (duration == null) {
+      duration = 0;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.damageAmount = damageAmount;
     contextObject.durationEndTurn = duration;
@@ -26,12 +28,13 @@ class PlayerModifierDamageNextUnitPlayedFromHand extends PlayerModifier {
   onAction(e) {
     super.onAction(e);
 
-    const {
-      action,
-    } = e;
+    const { action } = e;
     // watch for this player playing a card from hand
     if (action instanceof PlayCardFromHandAction) {
-      if ((action.getOwnerId() === this.getPlayerId()) && (__guard__(action.getCard(), (x) => x.type) === CardType.Unit)) {
+      if (
+        action.getOwnerId() === this.getPlayerId() &&
+        __guard__(action.getCard(), (x) => x.type) === CardType.Unit
+      ) {
         // damage that unit
         const unitToDamage = action.getTarget();
         if (unitToDamage != null) {
@@ -39,7 +42,11 @@ class PlayerModifierDamageNextUnitPlayedFromHand extends PlayerModifier {
           damageAction.setOwnerId(this.getCard().getOwnerId());
           const appliedByAction = this.getAppliedByAction();
           if (appliedByAction != null) {
-            damageAction.setSource(__guardMethod__(appliedByAction.getRootAction(), 'getCard', (o) => o.getCard().getRootCard()));
+            damageAction.setSource(
+              __guardMethod__(appliedByAction.getRootAction(), 'getCard', (o) =>
+                o.getCard().getRootCard(),
+              ),
+            );
           }
           damageAction.setTarget(unitToDamage);
           damageAction.setDamageAmount(this.damageAmount);
@@ -52,12 +59,13 @@ class PlayerModifierDamageNextUnitPlayedFromHand extends PlayerModifier {
     }
   }
 }
-PlayerModifierDamageNextUnitPlayedFromHand.prototype.type = 'PlayerModifierDamageNextUnitPlayedFromHand';
+PlayerModifierDamageNextUnitPlayedFromHand.prototype.type =
+  'PlayerModifierDamageNextUnitPlayedFromHand';
 
 module.exports = PlayerModifierDamageNextUnitPlayedFromHand;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }
 function __guardMethod__(obj, methodName, transform) {
   if (typeof obj !== 'undefined' && obj !== null && typeof obj[methodName] === 'function') {

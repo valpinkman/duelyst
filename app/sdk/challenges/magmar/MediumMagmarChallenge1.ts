@@ -48,10 +48,7 @@ class MediumMagmarChallenge1 extends Challenge {
   }
 
   getOpponentPlayerDeckData(gameSession) {
-    return [
-      { id: Cards.Faction6.General },
-      { id: Cards.TutorialSpell.TutorialFrozenFinisher },
-    ];
+    return [{ id: Cards.Faction6.General }, { id: Cards.TutorialSpell.TutorialFrozenFinisher }];
   }
 
   setupBoard(gameSession) {
@@ -85,15 +82,24 @@ class MediumMagmarChallenge1 extends Challenge {
   setupOpponentAgent(gameSession) {
     super.setupOpponentAgent(gameSession);
 
-    this._opponentAgent.addActionForTurn(0, AgentActions.createAgentSoftActionShowInstructionLabels([{
-      label: i18next.t('challenges.medium_magmar_1_taunt'),
-      isSpeech: true,
-      yPosition: 0.6,
-      isPersistent: true,
-      isOpponent: true,
-    },
-    ]));
-    return this._opponentAgent.addActionForTurn(0, AgentActions.createAgentActionPlayCardFindPosition(0, () => [GameSession.getInstance().getGeneralForPlayer1().getPosition()]));
+    this._opponentAgent.addActionForTurn(
+      0,
+      AgentActions.createAgentSoftActionShowInstructionLabels([
+        {
+          label: i18next.t('challenges.medium_magmar_1_taunt'),
+          isSpeech: true,
+          yPosition: 0.6,
+          isPersistent: true,
+          isOpponent: true,
+        },
+      ]),
+    );
+    return this._opponentAgent.addActionForTurn(
+      0,
+      AgentActions.createAgentActionPlayCardFindPosition(0, () => [
+        GameSession.getInstance().getGeneralForPlayer1().getPosition(),
+      ]),
+    );
   }
 }
 MediumMagmarChallenge1.prototype.type = 'MediumMagmarChallenge1';
@@ -102,7 +108,9 @@ MediumMagmarChallenge1.prototype.name = i18next.t('challenges.medium_magmar_1_ti
 MediumMagmarChallenge1.prototype.description = i18next.t('challenges.medium_magmar_1_description');
 MediumMagmarChallenge1.prototype.iconUrl = RSX.speech_portrait_magmar.img;
 MediumMagmarChallenge1.prototype._musicOverride = RSX.music_training.audio;
-MediumMagmarChallenge1.prototype.otkChallengeStartMessage = i18next.t('challenges.medium_magmar_1_start');
+MediumMagmarChallenge1.prototype.otkChallengeStartMessage = i18next.t(
+  'challenges.medium_magmar_1_start',
+);
 MediumMagmarChallenge1.prototype.otkChallengeFailureMessages = [
   i18next.t('challenges.medium_magmar_1_fail'),
 ];

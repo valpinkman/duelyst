@@ -11,7 +11,11 @@ class SpellDamageAndPutCardInHand extends SpellDamage {
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     const applyEffectPosition = { x, y };
 
-    const a = new PutCardInHandAction(this.getGameSession(), this.getOwnerId(), this.cardDataOrIndexToPutInHand);
+    const a = new PutCardInHandAction(
+      this.getGameSession(),
+      this.getOwnerId(),
+      this.cardDataOrIndexToPutInHand,
+    );
     this.getGameSession().executeAction(a);
 
     return super.onApplyEffectToBoardTile(board, x, y, sourceAction);

@@ -20,10 +20,14 @@ class ModifierMyAttackOrCounterattackWatch extends Modifier {
 
   onAction(event) {
     super.onAction(event);
-    const {
-      action,
-    } = event;
-    if ((action.getSource() === this.getCard()) && ((action instanceof AttackAction && (!action.getIsImplicit() || action.getTriggeringModifier() instanceof ModifierStrikeback)) || action instanceof ForcedAttackAction)) {
+    const { action } = event;
+    if (
+      action.getSource() === this.getCard() &&
+      ((action instanceof AttackAction &&
+        (!action.getIsImplicit() ||
+          action.getTriggeringModifier() instanceof ModifierStrikeback)) ||
+        action instanceof ForcedAttackAction)
+    ) {
       return this.onMyAttackOrCounterattackWatch(action);
     }
   }

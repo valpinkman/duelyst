@@ -70,7 +70,10 @@ PointerEvent.prototype = {
   },
   getLocation() {
     return {
-      x: this.x, y: this.y, top: this.top, left: this.left,
+      x: this.x,
+      y: this.y,
+      top: this.top,
+      left: this.left,
     };
   },
   getLocationInView() {
@@ -90,7 +93,10 @@ PointerEvent.prototype = {
   },
   getDelta() {
     return {
-      x: this.deltaX, y: this.deltaY, top: this.deltaTop, left: this.deltaLeft,
+      x: this.deltaX,
+      y: this.deltaY,
+      top: this.deltaTop,
+      left: this.deltaLeft,
     };
   },
   getDeltaX() {
@@ -132,8 +138,12 @@ UtilsPointer.getPointerEvent = function () {
  * @param {Number} [offsetTop=0]
  */
 UtilsPointer.setPointerFromMoveEvent = function (event, documentHeight, offsetLeft, offsetTop) {
-  if (offsetLeft == null) { offsetLeft = 0; }
-  if (offsetTop == null) { offsetTop = 0; }
+  if (offsetLeft == null) {
+    offsetLeft = 0;
+  }
+  if (offsetTop == null) {
+    offsetTop = 0;
+  }
   const left = event.pageX - offsetLeft;
   const top = event.pageY - offsetTop;
   const x = left;

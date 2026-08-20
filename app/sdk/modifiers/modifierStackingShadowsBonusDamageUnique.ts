@@ -10,7 +10,8 @@ class ModifierStackingShadowsBonusDamageUnique extends ModifierStackingShadowsBo
 
   static type = 'ModifierStackingShadowsBonusDamageUnique';
 }
-ModifierStackingShadowsBonusDamageUnique.prototype.type = 'ModifierStackingShadowsBonusDamageUnique';
+ModifierStackingShadowsBonusDamageUnique.prototype.type =
+  'ModifierStackingShadowsBonusDamageUnique';
 ModifierStackingShadowsBonusDamageUnique.prototype.maxStacks = 1;
 
 module.exports = ModifierStackingShadowsBonusDamageUnique;

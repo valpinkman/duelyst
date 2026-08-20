@@ -11,7 +11,6 @@ var ConfirmDialogItemViewTempl = require('app/ui/templates/item/confirm_dialog.h
 var NavigationManager = require('app/ui/managers/navigation_manager');
 
 var ConfirmDialogItemView = Backbone.Marionette.ItemView.extend({
-
   id: 'app-confirm-dialog',
   className: 'modal prompt-modal',
 
@@ -45,7 +44,9 @@ var ConfirmDialogItemView = Backbone.Marionette.ItemView.extend({
   },
 
   onCancel: function () {
-    audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_cancel.audio, CONFIG.CANCEL_SFX_PRIORITY);
+    audio_engine
+      .current()
+      .play_effect_for_interaction(RSX.sfx_ui_cancel.audio, CONFIG.CANCEL_SFX_PRIORITY);
     this.trigger('cancel');
 
     // destroy last to allow any events to occur
@@ -53,13 +54,14 @@ var ConfirmDialogItemView = Backbone.Marionette.ItemView.extend({
   },
 
   onConfirm: function () {
-    audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
+    audio_engine
+      .current()
+      .play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
     this.trigger('confirm');
 
     // destroy last to allow any events to occur
     NavigationManager.getInstance().destroyDialogView();
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

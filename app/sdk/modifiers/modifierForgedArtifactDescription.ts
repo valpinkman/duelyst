@@ -26,19 +26,38 @@ class ModifierForgedArtifactDescription extends Modifier {
   static getDescription(modifierContextObject) {
     if (modifierContextObject) {
       if (modifierContextObject.factionId === 1) {
-        return i18next.t('modifiers.forged_artifact_lyonar', { numericValue: modifierContextObject.attack });
-      } if (modifierContextObject.factionId === 2) {
-        return i18next.t('modifiers.forged_artifact_songhai', { numericValue: modifierContextObject.attack });
-      } if (modifierContextObject.factionId === 3) {
-        return i18next.t('modifiers.forged_artifact_vetruvian', { numericValue: modifierContextObject.attack });
-      } if (modifierContextObject.factionId === 4) {
-        return i18next.t('modifiers.forged_artifact_abyssian', { numericValue: modifierContextObject.attack });
-      } if (modifierContextObject.factionId === 5) {
-        return i18next.t('modifiers.forged_artifact_magmar', { numericValue: modifierContextObject.attack });
-      } if (modifierContextObject.factionId === 6) {
-        return i18next.t('modifiers.forged_artifact_vanar', { numericValue: modifierContextObject.attack });
+        return i18next.t('modifiers.forged_artifact_lyonar', {
+          numericValue: modifierContextObject.attack,
+        });
       }
-      return i18next.t('modifiers.forged_artifact_neutral', { numericValue: modifierContextObject.attack });
+      if (modifierContextObject.factionId === 2) {
+        return i18next.t('modifiers.forged_artifact_songhai', {
+          numericValue: modifierContextObject.attack,
+        });
+      }
+      if (modifierContextObject.factionId === 3) {
+        return i18next.t('modifiers.forged_artifact_vetruvian', {
+          numericValue: modifierContextObject.attack,
+        });
+      }
+      if (modifierContextObject.factionId === 4) {
+        return i18next.t('modifiers.forged_artifact_abyssian', {
+          numericValue: modifierContextObject.attack,
+        });
+      }
+      if (modifierContextObject.factionId === 5) {
+        return i18next.t('modifiers.forged_artifact_magmar', {
+          numericValue: modifierContextObject.attack,
+        });
+      }
+      if (modifierContextObject.factionId === 6) {
+        return i18next.t('modifiers.forged_artifact_vanar', {
+          numericValue: modifierContextObject.attack,
+        });
+      }
+      return i18next.t('modifiers.forged_artifact_neutral', {
+        numericValue: modifierContextObject.attack,
+      });
     }
   }
 }

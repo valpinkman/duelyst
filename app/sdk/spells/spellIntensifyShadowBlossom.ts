@@ -24,9 +24,13 @@ class SpellIntensifyShadowBlossom extends SpellIntensify {
       const possiblePositions = [];
       board = this.getGameSession().getBoard();
       for (var unit of Array.from<any>(board.getUnits())) {
-        if ((unit != null) && !unit.getIsGeneral() && (unit.getOwnerId() !== this.getOwnerId())) {
+        if (unit != null && !unit.getIsGeneral() && unit.getOwnerId() !== this.getOwnerId()) {
           var tileAtPosition = board.getTileAtPosition(unit.getPosition(), true);
-          if ((tileAtPosition == null) || (tileAtPosition.getBaseCardId() !== Cards.Tile.Shadow) || (tileAtPosition.getOwnerId() !== this.getOwnerId())) {
+          if (
+            tileAtPosition == null ||
+            tileAtPosition.getBaseCardId() !== Cards.Tile.Shadow ||
+            tileAtPosition.getOwnerId() !== this.getOwnerId()
+          ) {
             possiblePositions.push(unit.getPosition());
           }
         }
@@ -36,19 +40,47 @@ class SpellIntensifyShadowBlossom extends SpellIntensify {
       const numToSpawnUnderEnemies = Math.min(totalSpawnAmount, possiblePositions.length);
       const remainderToSpawn = totalSpawnAmount - numToSpawnUnderEnemies;
 
-      for (let i = 0, end = numToSpawnUnderEnemies, asc = end >= 0; asc ? i < end : i > end; asc ? i++ : i--) {
-        spawnPosition = possiblePositions.splice(this.getGameSession().getRandomIntegerForExecution(possiblePositions.length), 1)[0];
-        var playCardAction = new PlayCardSilentlyAction(this.getGameSession(), this.getOwnerId(), spawnPosition.x, spawnPosition.y, { id: Cards.Tile.Shadow });
+      for (
+        let i = 0, end = numToSpawnUnderEnemies, asc = end >= 0;
+        asc ? i < end : i > end;
+        asc ? i++ : i--
+      ) {
+        spawnPosition = possiblePositions.splice(
+          this.getGameSession().getRandomIntegerForExecution(possiblePositions.length),
+          1,
+        )[0];
+        var playCardAction = new PlayCardSilentlyAction(
+          this.getGameSession(),
+          this.getOwnerId(),
+          spawnPosition.x,
+          spawnPosition.y,
+          { id: Cards.Tile.Shadow },
+        );
         this.getGameSession().executeAction(playCardAction);
       }
 
       if (remainderToSpawn > 0) {
-        const tileCard = this.getGameSession().getExistingCardFromIndexOrCachedCardFromData({ id: Cards.Tile.Shadow });
-        const spawnPositions = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(this.getGameSession(), { x: 0, y: 0 }, CONFIG.PATTERN_WHOLE_BOARD, tileCard, this, remainderToSpawn);
+        const tileCard = this.getGameSession().getExistingCardFromIndexOrCachedCardFromData({
+          id: Cards.Tile.Shadow,
+        });
+        const spawnPositions = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(
+          this.getGameSession(),
+          { x: 0, y: 0 },
+          CONFIG.PATTERN_WHOLE_BOARD,
+          tileCard,
+          this,
+          remainderToSpawn,
+        );
         return (() => {
           const result = [];
           for (spawnPosition of Array.from<any>(spawnPositions)) {
-            var spawnAction = new PlayCardSilentlyAction(this.getGameSession(), this.getOwnerId(), spawnPosition.x, spawnPosition.y, { id: Cards.Tile.Shadow });
+            var spawnAction = new PlayCardSilentlyAction(
+              this.getGameSession(),
+              this.getOwnerId(),
+              spawnPosition.x,
+              spawnPosition.y,
+              { id: Cards.Tile.Shadow },
+            );
             spawnAction.setSource(this);
             result.push(this.getGameSession().executeAction(spawnAction));
           }

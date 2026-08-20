@@ -15,7 +15,9 @@ class ModifierOpeningGambitDrawCard extends ModifierOpeningGambit {
   static type = 'ModifierOpeningGambitDrawCard';
 
   static createContextObject(numCards, options) {
-    if (numCards == null) { numCards = 1; }
+    if (numCards == null) {
+      numCards = 1;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.numCards = numCards;
     return contextObject;
@@ -23,7 +25,10 @@ class ModifierOpeningGambitDrawCard extends ModifierOpeningGambit {
 
   onOpeningGambit() {
     return __range__(0, this.numCards, false).map((i) =>
-      this.getGameSession().executeAction(new DrawCardAction(this.getGameSession(), this.getCard().getOwnerId())));
+      this.getGameSession().executeAction(
+        new DrawCardAction(this.getGameSession(), this.getCard().getOwnerId()),
+      ),
+    );
   }
 }
 ModifierOpeningGambitDrawCard.prototype.type = 'ModifierOpeningGambitDrawCard';

@@ -13,9 +13,7 @@
  * cutover are dropped, which is acceptable here: every producer sets
  * removeOnComplete, so the queue only ever holds transient work.
  */
-const {
-  Queue, Worker, QueueEvents, Job,
-} = require('bullmq');
+const { Queue, Worker, QueueEvents, Job } = require('bullmq');
 
 const Logger = require('../../app/common/logger');
 const config = require('../../config/config');
@@ -40,7 +38,9 @@ const queueEvents = new Map();
 const queueFor = function (name) {
   if (!queues.has(name)) {
     const queue = new Queue(name, { connection, prefix });
-    queue.on('error', (err) => Logger.module('JOBS').error(`queue ${name} error: ${err && err.message}`));
+    queue.on('error', (err) =>
+      Logger.module('JOBS').error(`queue ${name} error: ${err && err.message}`),
+    );
     queues.set(name, queue);
   }
   return queues.get(name);
@@ -49,7 +49,9 @@ const queueFor = function (name) {
 const eventsFor = function (name) {
   if (!queueEvents.has(name)) {
     const events = new QueueEvents(name, { connection, prefix });
-    events.on('error', (err) => Logger.module('JOBS').error(`queue events ${name} error: ${err && err.message}`));
+    events.on('error', (err) =>
+      Logger.module('JOBS').error(`queue events ${name} error: ${err && err.message}`),
+    );
     queueEvents.set(name, events);
   }
   return queueEvents.get(name);
@@ -112,15 +114,18 @@ const pollUntilFinished = function (queue, jobId, signal) {
   return new Promise((resolve, reject) => {
     const tick = function () {
       if (signal.done) return;
-      Job.fromId(queue, jobId).then((fresh) => {
-        if (signal.done) return;
-        if (fresh && fresh.finishedOn) {
-          if (fresh.failedReason) reject(new Error(fresh.failedReason));
-          else resolve(fresh.returnvalue);
-          return;
-        }
-        setTimeout(tick, POLL_INTERVAL_MS);
-      }, () => setTimeout(tick, POLL_INTERVAL_MS));
+      Job.fromId(queue, jobId).then(
+        (fresh) => {
+          if (signal.done) return;
+          if (fresh && fresh.finishedOn) {
+            if (fresh.failedReason) reject(new Error(fresh.failedReason));
+            else resolve(fresh.returnvalue);
+            return;
+          }
+          setTimeout(tick, POLL_INTERVAL_MS);
+        },
+        () => setTimeout(tick, POLL_INTERVAL_MS),
+      );
     };
     setTimeout(tick, POLL_INTERVAL_MS);
   });
@@ -137,14 +142,20 @@ exports.waitFor = function (job) {
    * Racing the event-based wait against a state poll covers the remaining
    * window where both the event and the state check can miss.
    */
-  return events.waitUntilReady()
-    .then(() => Promise.race([
-      job.waitUntilFinished(events),
-      pollUntilFinished(queue, job.id, signal),
-    ]))
+  return events
+    .waitUntilReady()
+    .then(() =>
+      Promise.race([job.waitUntilFinished(events), pollUntilFinished(queue, job.id, signal)]),
+    )
     .then(
-      (value) => { signal.done = true; return value; },
-      (err) => { signal.done = true; throw err; },
+      (value) => {
+        signal.done = true;
+        return value;
+      },
+      (err) => {
+        signal.done = true;
+        throw err;
+      },
     );
 };
 
@@ -168,12 +179,18 @@ exports.process = function (name, concurrency, handler, opts) {
     // kue's .ttl(ms) failed a job that had not finished in time. BullMQ has no
     // equivalent -- its stalled-job detection covers a worker that DIES, not a
     // handler that hangs -- so the timeout is applied here instead.
-    return o.ttl ? PromiseUtils.withTimeout(result, o.ttl, `job ${name} exceeded ttl ${o.ttl}ms`) : result;
+    return o.ttl
+      ? PromiseUtils.withTimeout(result, o.ttl, `job ${name} exceeded ttl ${o.ttl}ms`)
+      : result;
   };
 
   const worker = new Worker(name, run, { connection, prefix, concurrency });
-  worker.on('failed', (job, err) => Logger.module('JOBS').error(`[J:${job && job.id}] ${name} failed: ${err && err.message}`));
-  worker.on('error', (err) => Logger.module('JOBS').error(`worker ${name} error: ${err && err.message}`));
+  worker.on('failed', (job, err) =>
+    Logger.module('JOBS').error(`[J:${job && job.id}] ${name} failed: ${err && err.message}`),
+  );
+  worker.on('error', (err) =>
+    Logger.module('JOBS').error(`worker ${name} error: ${err && err.message}`),
+  );
   return worker;
 };
 

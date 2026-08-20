@@ -17,7 +17,7 @@ class SpellAncestralDivination extends Spell {
     return (() => {
       const result = [];
       for (var unit of Array.from<any>(this.getGameSession().getBoard().getUnits())) {
-        if ((unit.getOwnerId() === this.getOwnerId()) && !unit.getIsGeneral()) {
+        if (unit.getOwnerId() === this.getOwnerId() && !unit.getIsGeneral()) {
           var action = player.getDeck().actionDrawCard();
           result.push(this.getGameSession().executeAction(action));
         } else {

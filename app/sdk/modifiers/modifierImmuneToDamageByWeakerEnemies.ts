@@ -21,7 +21,15 @@ class ModifierImmuneToDamageByWeakerEnemies extends ModifierImmuneToDamage {
   }
 
   getIsActionRelevant(a) {
-    return (this.getCard() != null) && a instanceof DamageAction && a.getIsValid() && (this.getCard() === a.getTarget()) && (__guard__(a.getSource(), (x) => x.getType()) === CardType.Unit) && (this.includeGenerals || !a.getSource().getIsGeneral()) && (a.getSource().getATK() < a.getTarget().getATK());
+    return (
+      this.getCard() != null &&
+      a instanceof DamageAction &&
+      a.getIsValid() &&
+      this.getCard() === a.getTarget() &&
+      __guard__(a.getSource(), (x) => x.getType()) === CardType.Unit &&
+      (this.includeGenerals || !a.getSource().getIsGeneral()) &&
+      a.getSource().getATK() < a.getTarget().getATK()
+    );
   }
 }
 ModifierImmuneToDamageByWeakerEnemies.prototype.type = 'ModifierImmuneToDamageByWeakerEnemies';
@@ -30,5 +38,5 @@ ModifierImmuneToDamageByWeakerEnemies.prototype.includeGenerals = false;
 module.exports = ModifierImmuneToDamageByWeakerEnemies;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

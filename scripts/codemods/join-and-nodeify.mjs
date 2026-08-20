@@ -35,28 +35,43 @@ function walk(node, visit, parents = []) {
   }
 }
 
-let files = 0; let joins = 0; let nodeifies = 0;
+let files = 0;
+let joins = 0;
+let nodeifies = 0;
 
 for (const file of process.argv.slice(2)) {
   const src = fs.readFileSync(file, 'utf8');
   let ast;
-  try { ast = tsParser.parse(src, { ecmaVersion: 2022, sourceType: 'script', range: true }); }
-  catch (e) { console.log(`skipped ${file}: parse error`); continue; }
+  try {
+    ast = tsParser.parse(src, { ecmaVersion: 2022, sourceType: 'script', range: true });
+  } catch (e) {
+    console.log(`skipped ${file}: parse error`);
+    continue;
+  }
 
   const edits = [];
 
   walk(ast, (node) => {
     if (node.type !== 'CallExpression') return;
     const c = node.callee;
-    if (!c || c.type !== 'MemberExpression' || c.computed || c.property.type !== 'Identifier') return;
+    if (!c || c.type !== 'MemberExpression' || c.computed || c.property.type !== 'Identifier')
+      return;
 
     // Promise.join(p1, ..., handler)
-    if (c.property.name === 'join' && c.object.type === 'Identifier' && c.object.name === 'Promise'
-      && node.arguments.length >= 2) {
+    if (
+      c.property.name === 'join' &&
+      c.object.type === 'Identifier' &&
+      c.object.name === 'Promise' &&
+      node.arguments.length >= 2
+    ) {
       const args = node.arguments;
       const handler = args[args.length - 1];
-      if (handler.type !== 'FunctionExpression' && handler.type !== 'ArrowFunctionExpression') return;
-      const promises = args.slice(0, -1).map((a) => src.slice(a.range[0], a.range[1])).join(', ');
+      if (handler.type !== 'FunctionExpression' && handler.type !== 'ArrowFunctionExpression')
+        return;
+      const promises = args
+        .slice(0, -1)
+        .map((a) => src.slice(a.range[0], a.range[1]))
+        .join(', ');
       const params = handler.params.length
         ? src.slice(handler.params[0].range[0], handler.params[handler.params.length - 1].range[1])
         : '';
@@ -91,8 +106,12 @@ for (const file of process.argv.slice(2)) {
   let out = src;
   for (const e of edits) out = out.slice(0, e.start) + e.text + out.slice(e.end);
 
-  try { tsParser.parse(out, { ecmaVersion: 2022, sourceType: 'script' }); }
-  catch (e) { console.log(`SKIPPED ${file}: output would not parse`); continue; }
+  try {
+    tsParser.parse(out, { ecmaVersion: 2022, sourceType: 'script' });
+  } catch (e) {
+    console.log(`SKIPPED ${file}: output would not parse`);
+    continue;
+  }
 
   fs.writeFileSync(file, out);
   files += 1;

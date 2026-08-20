@@ -13,7 +13,6 @@ var openUrl = require('app/common/openUrl');
  * Abstract form prompt modal. Do not use this class directly.
  */
 var FormPromptModalItemView = Backbone.Marionette.ItemView.extend({
-
   className: 'modal prompt-modal',
 
   /* ui selector cache */
@@ -55,7 +54,10 @@ var FormPromptModalItemView = Backbone.Marionette.ItemView.extend({
 
   initialize: function () {
     this.updateValidStateBound = this.updateValidState.bind(this);
-    this.updateValidStateDebounced = _.debounce(this.updateValidStateBound, this.updateValidStateDelay * 1000.0);
+    this.updateValidStateDebounced = _.debounce(
+      this.updateValidStateBound,
+      this.updateValidStateDelay * 1000.0,
+    );
   },
 
   /* endregion INITIALIZE */
@@ -63,11 +65,11 @@ var FormPromptModalItemView = Backbone.Marionette.ItemView.extend({
   /* region EVENTS */
 
   onBeforeRender: function () {
-    this.$el.find('[data-toggle=\'tooltip\']').tooltip('destroy');
+    this.$el.find("[data-toggle='tooltip']").tooltip('destroy');
   },
 
   onRender: function () {
-    this.$el.find('[data-toggle=\'tooltip\']').tooltip();
+    this.$el.find("[data-toggle='tooltip']").tooltip();
     this.ui.$form.addClass('active');
     this.updateValidState();
 
@@ -84,7 +86,11 @@ var FormPromptModalItemView = Backbone.Marionette.ItemView.extend({
   },
 
   onShow: function () {
-    this.listenTo(NavigationManager.getInstance(), EVENTS.user_triggered_confirm, this.onClickSubmit);
+    this.listenTo(
+      NavigationManager.getInstance(),
+      EVENTS.user_triggered_confirm,
+      this.onClickSubmit,
+    );
     this.updateValidState();
   },
 
@@ -114,9 +120,13 @@ var FormPromptModalItemView = Backbone.Marionette.ItemView.extend({
     this.updateValidState();
     if (this.isValid && !this.submitting) {
       this.onSubmit();
-      audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
+      audio_engine
+        .current()
+        .play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
     } else {
-      audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_error.audio, CONFIG.ERROR_SFX_PRIORITY);
+      audio_engine
+        .current()
+        .play_effect_for_interaction(RSX.sfx_ui_error.audio, CONFIG.ERROR_SFX_PRIORITY);
     }
   },
 
@@ -133,7 +143,9 @@ var FormPromptModalItemView = Backbone.Marionette.ItemView.extend({
   },
 
   onCancel: function () {
-    audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_cancel.audio, CONFIG.CANCEL_SFX_PRIORITY);
+    audio_engine
+      .current()
+      .play_effect_for_interaction(RSX.sfx_ui_cancel.audio, CONFIG.CANCEL_SFX_PRIORITY);
     NavigationManager.getInstance().destroyModalView();
   },
 
@@ -148,9 +160,12 @@ var FormPromptModalItemView = Backbone.Marionette.ItemView.extend({
     this.ui.$submitted.removeClass('active');
     this.ui.$success.addClass('active');
 
-    this._successTimeoutId = setTimeout(function () {
-      this.onSuccessComplete.apply(this, successArgs);
-    }.bind(this), this.successMessageDuration * 1000.0);
+    this._successTimeoutId = setTimeout(
+      function () {
+        this.onSuccessComplete.apply(this, successArgs);
+      }.bind(this),
+      this.successMessageDuration * 1000.0,
+    );
   },
 
   /**
@@ -180,9 +195,12 @@ var FormPromptModalItemView = Backbone.Marionette.ItemView.extend({
       errorDuration = 10.0;
     }
 
-    this._errorTimeoutId = setTimeout(function () {
-      this.onErrorComplete.apply(this, errorArgs);
-    }.bind(this), errorDuration * 1000.0);
+    this._errorTimeoutId = setTimeout(
+      function () {
+        this.onErrorComplete.apply(this, errorArgs);
+      }.bind(this),
+      errorDuration * 1000.0,
+    );
   },
 
   /**
@@ -218,7 +236,12 @@ var FormPromptModalItemView = Backbone.Marionette.ItemView.extend({
   showInvalidFormControl: function ($formControl, helpMessage) {
     $formControl.closest('.form-group').addClass('has-error');
     $formControl.off('input');
-    $formControl.one('input', function () { this.showValidFormControl($formControl); }.bind(this));
+    $formControl.one(
+      'input',
+      function () {
+        this.showValidFormControl($formControl);
+      }.bind(this),
+    );
     this.showInvalidTooltip($formControl, helpMessage);
   },
 
@@ -231,7 +254,10 @@ var FormPromptModalItemView = Backbone.Marionette.ItemView.extend({
   showInvalidTooltip: function ($formControl, helpMessage) {
     var tooltipData = $formControl.data('bs.tooltip');
     if (tooltipData == null || tooltipData.options.title !== helpMessage) {
-      $formControl.tooltip('destroy').tooltip({ title: helpMessage || 'Invalid input', placement: 'right', trigger: 'manual' }).tooltip('show');
+      $formControl
+        .tooltip('destroy')
+        .tooltip({ title: helpMessage || 'Invalid input', placement: 'right', trigger: 'manual' })
+        .tooltip('show');
     }
   },
 
@@ -246,7 +272,6 @@ var FormPromptModalItemView = Backbone.Marionette.ItemView.extend({
   },
 
   /* endregion STATE */
-
 });
 
 // Expose the class either via CommonJS or the global object

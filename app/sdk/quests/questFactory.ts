@@ -87,8 +87,8 @@ class QuestFactory {
 
   // Building out quests from here: https://docs.google.com/spreadsheets/d/1-PBRo9BeaJF8DeZ3Qdin305g5KurNxe0qNnyP48UvDw/edit#gid=2126045548
   static _generateQuestCache() {
-    let faction; let
-      id;
+    let faction;
+    let id;
     Logger.module('SDK').debug('QuestFactory::_generateQuestCache - starting');
 
     const allFactions = FactionFactory.getAllPlayableFactions();
@@ -99,7 +99,14 @@ class QuestFactory {
     // create partipation quests for each faction
     for (faction of Array.from<any>(allFactions)) {
       id = this._FACTION_CHALLENGER_BASE_ID + faction.id;
-      this._questCache.push(new QuestParticipationWithFaction(id, [QuestType.ShortQuest], this.SHORT_QUEST_GOLD, faction.id));
+      this._questCache.push(
+        new QuestParticipationWithFaction(
+          id,
+          [QuestType.ShortQuest],
+          this.SHORT_QUEST_GOLD,
+          faction.id,
+        ),
+      );
     }
     // endregion Participation Quests
 
@@ -108,112 +115,134 @@ class QuestFactory {
     for (faction of Array.from<any>(allFactions)) {
       id = this._FACTION_DOMINANCE_BASE_ID + faction.id;
       var shortenedFactionName = faction.name != null ? faction.name.split(' ')[0] : undefined; // Pulls "Lyonar" out of the factionName "Lyonar Kingdom"
-      this._questCache.push(new QuestWinWithFaction(id, `${shortenedFactionName} Dominance`, [QuestType.ExcludeFromSystem], this.SHORT_QUEST_GOLD, faction.id, shortenedFactionName));
+      this._questCache.push(
+        new QuestWinWithFaction(
+          id,
+          `${shortenedFactionName} Dominance`,
+          [QuestType.ExcludeFromSystem],
+          this.SHORT_QUEST_GOLD,
+          faction.id,
+          shortenedFactionName,
+        ),
+      );
     }
 
     // Kumite Initiate Quest
-    this._questCache.push(new QuestGameGoal(
-      this._KUMITE_INITIATE_ID,
-      'Kumite Initiate',
-      [QuestType.ExcludeFromSystem],
-      30,
-      4,
-      'Win 4 games with any Faction.',
-      ((gameSessionData, playerId) => {
-        const playerData = UtilsGameSession.getPlayerDataForId(gameSessionData, playerId);
+    this._questCache.push(
+      new QuestGameGoal(
+        this._KUMITE_INITIATE_ID,
+        'Kumite Initiate',
+        [QuestType.ExcludeFromSystem],
+        30,
+        4,
+        'Win 4 games with any Faction.',
+        (gameSessionData, playerId) => {
+          const playerData = UtilsGameSession.getPlayerDataForId(gameSessionData, playerId);
 
-        // Player has to win to make progress
-        if (playerData.isWinner) {
-          return 1;
-        }
-        return 0;
-      }),
-    ));
+          // Player has to win to make progress
+          if (playerData.isWinner) {
+            return 1;
+          }
+          return 0;
+        },
+      ),
+    );
     // endregion Win Quests
 
     // region Challenge Quests
     // Assassin quest
-    this._questCache.push(new QuestGameGoal(
-      this._ASSASIN_MASTER_ID,
-      'Assassin Master',
-      [QuestType.ExcludeFromSystem],
-      20,
-      2,
-      'Destroy at least 5 minions in one game. Twice.',
-      ((gameSessionData, playerId) => {
-        const playerData = UtilsGameSession.getPlayerDataForId(gameSessionData, playerId);
+    this._questCache.push(
+      new QuestGameGoal(
+        this._ASSASIN_MASTER_ID,
+        'Assassin Master',
+        [QuestType.ExcludeFromSystem],
+        20,
+        2,
+        'Destroy at least 5 minions in one game. Twice.',
+        (gameSessionData, playerId) => {
+          const playerData = UtilsGameSession.getPlayerDataForId(gameSessionData, playerId);
 
-        if (playerData.totalMinionsKilled >= 5) {
-          return 1;
-        }
-        return 0;
-      }),
-    ));
+          if (playerData.totalMinionsKilled >= 5) {
+            return 1;
+          }
+          return 0;
+        },
+      ),
+    );
 
-    this._questCache.push(new QuestGameGoal(
-      this._ASSASIN_ID,
-      'Assassin',
-      [QuestType.ExcludeFromSystem],
-      20,
-      1,
-      'Destroy at least 5 minions in one game.',
-      ((gameSessionData, playerId) => {
-        const playerData = UtilsGameSession.getPlayerDataForId(gameSessionData, playerId);
+    this._questCache.push(
+      new QuestGameGoal(
+        this._ASSASIN_ID,
+        'Assassin',
+        [QuestType.ExcludeFromSystem],
+        20,
+        1,
+        'Destroy at least 5 minions in one game.',
+        (gameSessionData, playerId) => {
+          const playerData = UtilsGameSession.getPlayerDataForId(gameSessionData, playerId);
 
-        if (playerData.totalMinionsKilled >= 5) {
-          return 1;
-        }
-        return 0;
-      }),
-    ));
+          if (playerData.totalMinionsKilled >= 5) {
+            return 1;
+          }
+          return 0;
+        },
+      ),
+    );
 
     // Ultimate Agressor quest
-    this._questCache.push(new QuestGameGoal(
-      this._ULTIMATE_AGRESSOR_ID,
-      'Ultimate Aggressor',
-      [QuestType.ExcludeFromSystem],
-      30,
-      1,
-      'Deal 40 damage in a single game.',
-      ((gameSessionData, playerId) => {
-        const playerData = UtilsGameSession.getPlayerDataForId(gameSessionData, playerId);
+    this._questCache.push(
+      new QuestGameGoal(
+        this._ULTIMATE_AGRESSOR_ID,
+        'Ultimate Aggressor',
+        [QuestType.ExcludeFromSystem],
+        30,
+        1,
+        'Deal 40 damage in a single game.',
+        (gameSessionData, playerId) => {
+          const playerData = UtilsGameSession.getPlayerDataForId(gameSessionData, playerId);
 
-        if (playerData.totalDamageDealt >= 40) {
-          return 1;
-        }
-        return 0;
-      }),
-    ));
+          if (playerData.totalDamageDealt >= 40) {
+            return 1;
+          }
+          return 0;
+        },
+      ),
+    );
 
     // Small World quest
-    this._questCache.push(new QuestGameGoal(
-      this._SMALL_WORLD_ID,
-      'Small World',
-      [QuestType.ExcludeFromSystem],
-      20,
-      2,
-      'Win two games using only cards costing 3 or less.',
-      ((gameSessionData, playerId) => {
-        const playerData = UtilsGameSession.getPlayerDataForId(gameSessionData, playerId);
+    this._questCache.push(
+      new QuestGameGoal(
+        this._SMALL_WORLD_ID,
+        'Small World',
+        [QuestType.ExcludeFromSystem],
+        20,
+        2,
+        'Win two games using only cards costing 3 or less.',
+        (gameSessionData, playerId) => {
+          const playerData = UtilsGameSession.getPlayerDataForId(gameSessionData, playerId);
 
-        // Player has to win to make progress
-        if (!playerData.isWinner) {
-          return 0;
-        }
-
-        // Player can't use any cards with cost greater than 3 to make progress
-        const playerGameSetupData = UtilsGameSession.getPlayerSetupDataForPlayerId(gameSessionData, playerId);
-        for (var cardData of Array.from<any>(playerGameSetupData.deck)) {
-          var card = GameSession.getInstance().getOrCreateCardFromDataOrIndex(cardData);
-          if ((card != null ? card.getBaseManaCost() : undefined) > 3) {
+          // Player has to win to make progress
+          if (!playerData.isWinner) {
             return 0;
           }
-        }
 
-        // If above conditions are met, player makes 1 progress
-        return 1;
-      }),
-    ));
+          // Player can't use any cards with cost greater than 3 to make progress
+          const playerGameSetupData = UtilsGameSession.getPlayerSetupDataForPlayerId(
+            gameSessionData,
+            playerId,
+          );
+          for (var cardData of Array.from<any>(playerGameSetupData.deck)) {
+            var card = GameSession.getInstance().getOrCreateCardFromDataOrIndex(cardData);
+            if ((card != null ? card.getBaseManaCost() : undefined) > 3) {
+              return 0;
+            }
+          }
+
+          // If above conditions are met, player makes 1 progress
+          return 1;
+        },
+      ),
+    );
 
     // Dominator quest
     const dominatorQuest = new QuestGameGoal(
@@ -223,7 +252,7 @@ class QuestFactory {
       30,
       2,
       'Win 2 games of any type in a row.',
-      ((gameSessionData, playerId) => {
+      (gameSessionData, playerId) => {
         const playerData = UtilsGameSession.getPlayerDataForId(gameSessionData, playerId);
 
         // Player has to win to make progress
@@ -231,89 +260,108 @@ class QuestFactory {
           return 1;
         }
         return 0;
-      }),
+      },
     );
     dominatorQuest.setRequiresStreak();
     this._questCache.push(dominatorQuest);
 
     // Arcanyst Bane quest
-    this._questCache.push(new QuestGameGoal(
-      this._ARCANYST_BANE_ID,
-      'Arcanyst Bane',
-      [QuestType.ExcludeFromSystem],
-      30,
-      2,
-      'Win 2 games with a deck containing less than 5 spells.',
-      ((gameSessionData, playerId) => {
-        const playerData = UtilsGameSession.getPlayerDataForId(gameSessionData, playerId);
+    this._questCache.push(
+      new QuestGameGoal(
+        this._ARCANYST_BANE_ID,
+        'Arcanyst Bane',
+        [QuestType.ExcludeFromSystem],
+        30,
+        2,
+        'Win 2 games with a deck containing less than 5 spells.',
+        (gameSessionData, playerId) => {
+          const playerData = UtilsGameSession.getPlayerDataForId(gameSessionData, playerId);
 
-        // Player has to win to make progress
-        if (!playerData.isWinner) {
-          return 0;
-        }
-
-        // Player can't use 5 or more spells and make progress
-        const playerGameSetupData = UtilsGameSession.getPlayerSetupDataForPlayerId(gameSessionData, playerId);
-        let numSpells = 0;
-        for (var cardData of Array.from<any>(playerGameSetupData.deck)) {
-          var card = GameSession.getInstance().getOrCreateCardFromDataOrIndex(cardData);
-          if (CardType.getIsSpellCardType(card != null ? card.getType() : undefined)) {
-            numSpells++;
+          // Player has to win to make progress
+          if (!playerData.isWinner) {
+            return 0;
           }
-        }
 
-        // If player used less than desired number of spells makes 1 progress
-        /*
-         * Upstream wrote `(numSpells < 5) ? 1 : 0` intending a JS ternary, but
-         * CoffeeScript's `?` is the EXISTENTIAL operator, so it parsed as
-         * `(numSpells < 5) ? {1: 0}` -- and a boolean is never null, so the
-         * object was dead and it returned true/false. Those coerce to 1/0, so the
-         * behaviour was accidentally right; every sibling goal returns 1 or 0.
-         */
-        return numSpells < 5 ? 1 : 0;
-      }),
-    ));
+          // Player can't use 5 or more spells and make progress
+          const playerGameSetupData = UtilsGameSession.getPlayerSetupDataForPlayerId(
+            gameSessionData,
+            playerId,
+          );
+          let numSpells = 0;
+          for (var cardData of Array.from<any>(playerGameSetupData.deck)) {
+            var card = GameSession.getInstance().getOrCreateCardFromDataOrIndex(cardData);
+            if (CardType.getIsSpellCardType(card != null ? card.getType() : undefined)) {
+              numSpells++;
+            }
+          }
+
+          // If player used less than desired number of spells makes 1 progress
+          /*
+           * Upstream wrote `(numSpells < 5) ? 1 : 0` intending a JS ternary, but
+           * CoffeeScript's `?` is the EXISTENTIAL operator, so it parsed as
+           * `(numSpells < 5) ? {1: 0}` -- and a boolean is never null, so the
+           * object was dead and it returned true/false. Those coerce to 1/0, so the
+           * behaviour was accidentally right; every sibling goal returns 1 or 0.
+           */
+          return numSpells < 5 ? 1 : 0;
+        },
+      ),
+    );
 
     // Conserver's Challenge quest
-    this._questCache.push(new QuestGameGoal(this._CONSERVERS_CHALLENGE_ID, 'Conserver\'s Challenge', [QuestType.ExcludeFromSystem], 25, 1, 'Win a game with a deck containing only Basic cards.', ((gameSessionData, playerId) => {
-      const playerData = UtilsGameSession.getPlayerDataForId(gameSessionData, playerId);
+    this._questCache.push(
+      new QuestGameGoal(
+        this._CONSERVERS_CHALLENGE_ID,
+        "Conserver's Challenge",
+        [QuestType.ExcludeFromSystem],
+        25,
+        1,
+        'Win a game with a deck containing only Basic cards.',
+        (gameSessionData, playerId) => {
+          const playerData = UtilsGameSession.getPlayerDataForId(gameSessionData, playerId);
 
-      // Player has to win to make progress
-      if (!playerData.isWinner) {
-        return 0;
-      }
+          // Player has to win to make progress
+          if (!playerData.isWinner) {
+            return 0;
+          }
 
-      // Player can't use any cards with cost greater than 3 to make progress
-      const playerGameSetupData = UtilsGameSession.getPlayerSetupDataForPlayerId(gameSessionData, playerId);
-      for (var cardData of Array.from<any>(playerGameSetupData.deck)) {
-        var cardId = cardData.id;
-        var card = GameSession.getInstance().createCardForIdentifier(cardId);
-        if (card.getRarityId() !== Rarity.Fixed) { // Fixed is basic rarity
-          return 0;
-        }
-      }
+          // Player can't use any cards with cost greater than 3 to make progress
+          const playerGameSetupData = UtilsGameSession.getPlayerSetupDataForPlayerId(
+            gameSessionData,
+            playerId,
+          );
+          for (var cardData of Array.from<any>(playerGameSetupData.deck)) {
+            var cardId = cardData.id;
+            var card = GameSession.getInstance().createCardForIdentifier(cardId);
+            if (card.getRarityId() !== Rarity.Fixed) {
+              // Fixed is basic rarity
+              return 0;
+            }
+          }
 
-      // If we reached here, no basic cards were found and game was won, 1 progress made
-      return 1;
-    })));
+          // If we reached here, no basic cards were found and game was won, 1 progress made
+          return 1;
+        },
+      ),
+    );
     // endregion Challenge Quests
 
     // # region Social Quests
     // Patron's Duty Quest
     const patronsQuest = new QuestGameGoal(
       this._PATRONS_DUTY_ID,
-      'Patron\'s Duty',
+      "Patron's Duty",
       [QuestType.ExcludeFromSystem],
       30,
       4,
       'Play 4 games against a friend.',
-      ((gameSessionData, playerId) => {
+      (gameSessionData, playerId) => {
         // redundant check with friendly matches count, but will leave in for readability
         if (gameSessionData.gameType === GameType.Friendly) {
           return 1;
         }
         return 0;
-      }),
+      },
     );
     patronsQuest.setFriendlyMatchesCount();
     this._questCache.push(patronsQuest);
@@ -321,19 +369,19 @@ class QuestFactory {
     // Mentor's Teaching Quest
     const mentorsQuest = new QuestGameGoal(
       this._MENTORS_TEACHING_ID,
-      'Mentor\'s Teaching',
+      "Mentor's Teaching",
       [QuestType.ExcludeFromSystem],
       20,
       2,
       'Win two games against a friend.',
-      ((gameSessionData, playerId) => {
+      (gameSessionData, playerId) => {
         const playerData = UtilsGameSession.getPlayerDataForId(gameSessionData, playerId);
         // redundant check for isfriendly but will leave in for readability
-        if (playerData.isWinner && (gameSessionData.gameType === GameType.Friendly)) {
+        if (playerData.isWinner && gameSessionData.gameType === GameType.Friendly) {
           return 1;
         }
         return 0;
-      }),
+      },
     );
     mentorsQuest.setFriendlyMatchesCount();
     this._questCache.push(mentorsQuest);
@@ -342,99 +390,113 @@ class QuestFactory {
 
     // region Quests for Econ Update
 
-    this._questCache.push(new QuestGameGoal(
-      this._SHORT_PARTICIPATION_ID,
-      'Conquerer',
-      [QuestType.ExcludeFromSystem],
-      this.SHORT_QUEST_GOLD,
-      5,
-      'Play 5 games.',
-      (gameSessionData, playerId) => // Each game is always 1 progress
-        1,
-    ));
+    this._questCache.push(
+      new QuestGameGoal(
+        this._SHORT_PARTICIPATION_ID,
+        'Conquerer',
+        [QuestType.ExcludeFromSystem],
+        this.SHORT_QUEST_GOLD,
+        5,
+        'Play 5 games.',
+        (gameSessionData, playerId) =>
+          // Each game is always 1 progress
+          1,
+      ),
+    );
 
     // TODO: Before activating, requires adding check for whether player can play Gauntlet
-    this._questCache.push(new QuestGameGoal(
-      this._SHORT_GAUNTLET_PARTICIPATION_ID,
-      'Gauntlet Initiate',
-      [QuestType.ExcludeFromSystem],
-      this.SHORT_QUEST_GOLD,
-      3,
-      'Play 3 Gauntlet games.',
-      ((gameSessionData, playerId) => {
-        // Each gauntlet game is 1 progress
-        if (gameSessionData.gameType === GameType.Gauntlet) {
-          return 1;
-        }
-        return 0;
-      }),
-    ));
-
-    this._questCache.push(new QuestGameGoal(
-      this._LONG_PARTICIPATION_ID,
-      i18next.t('quests.quest_adventurer_title'),
-      [QuestType.LongQuest],
-      this.LONG_QUEST_GOLD,
-      8,
-      i18next.t('quests.quest_adventurer_desc', { count: 8 }),
-      (gameSessionData, playerId) => // Each game is always 1 progress
-        1,
-    ));
-
-    this._questCache.push(new QuestGameGoal(
-      this._LONG_GENERAL_DESTROYER_ID,
-      i18next.t('quests.quest_ultimate_aggressor_title'),
-      [QuestType.LongQuest],
-      this.LONG_QUEST_GOLD,
-      150,
-      i18next.t('quests.quest_ultimate_aggressor_desc', { count: 150 }),
-      ((gameSessionData, playerId) => {
-        const playerData = UtilsGameSession.getPlayerDataForId(gameSessionData, playerId);
-
-        if (playerData.totalDamageDealtToGeneral > 0) {
-          // If a player won, and they did less than 25 damage to enemy general, give them 25 credit
-          if (playerData.isWinner && (playerData.totalDamageDealtToGeneral < 25)) {
-            return 25;
+    this._questCache.push(
+      new QuestGameGoal(
+        this._SHORT_GAUNTLET_PARTICIPATION_ID,
+        'Gauntlet Initiate',
+        [QuestType.ExcludeFromSystem],
+        this.SHORT_QUEST_GOLD,
+        3,
+        'Play 3 Gauntlet games.',
+        (gameSessionData, playerId) => {
+          // Each gauntlet game is 1 progress
+          if (gameSessionData.gameType === GameType.Gauntlet) {
+            return 1;
           }
-          return playerData.totalDamageDealtToGeneral;
-        }
-        return 0;
-      }),
-    ));
+          return 0;
+        },
+      ),
+    );
 
-    this._questCache.push(new QuestGameGoal(
-      this._LONG_MINION_SUMMON_ID,
-      'Minion Master',
-      [QuestType.ExcludeFromSystem],
-      this.LONG_QUEST_GOLD,
-      50,
-      'Play 50 Minion cards.',
-      ((gameSessionData, playerId) => {
-        const playerData = UtilsGameSession.getPlayerDataForId(gameSessionData, playerId);
+    this._questCache.push(
+      new QuestGameGoal(
+        this._LONG_PARTICIPATION_ID,
+        i18next.t('quests.quest_adventurer_title'),
+        [QuestType.LongQuest],
+        this.LONG_QUEST_GOLD,
+        8,
+        i18next.t('quests.quest_adventurer_desc', { count: 8 }),
+        (gameSessionData, playerId) =>
+          // Each game is always 1 progress
+          1,
+      ),
+    );
 
-        if (playerData.totalMinionsPlayedFromHand > 0) {
-          return playerData.totalMinionsPlayedFromHand;
-        }
-        return 0;
-      }),
-    ));
+    this._questCache.push(
+      new QuestGameGoal(
+        this._LONG_GENERAL_DESTROYER_ID,
+        i18next.t('quests.quest_ultimate_aggressor_title'),
+        [QuestType.LongQuest],
+        this.LONG_QUEST_GOLD,
+        150,
+        i18next.t('quests.quest_ultimate_aggressor_desc', { count: 150 }),
+        (gameSessionData, playerId) => {
+          const playerData = UtilsGameSession.getPlayerDataForId(gameSessionData, playerId);
 
-    this._questCache.push(new QuestGameGoal(
-      this._LONG_MINION_DESTROYER_ID,
-      i18next.t('quests.quest_assassin_title'),
-      [QuestType.LongQuest],
-      this.LONG_QUEST_GOLD,
-      50,
-      i18next.t('quests.quest_assassin_desc', { count: 50 }),
-      ((gameSessionData, playerId) => {
-        const playerData = UtilsGameSession.getPlayerDataForId(gameSessionData, playerId);
+          if (playerData.totalDamageDealtToGeneral > 0) {
+            // If a player won, and they did less than 25 damage to enemy general, give them 25 credit
+            if (playerData.isWinner && playerData.totalDamageDealtToGeneral < 25) {
+              return 25;
+            }
+            return playerData.totalDamageDealtToGeneral;
+          }
+          return 0;
+        },
+      ),
+    );
 
-        if (playerData.totalMinionsKilled > 0) {
-          return playerData.totalMinionsKilled;
-        }
-        return 0;
-      }),
-    ));
+    this._questCache.push(
+      new QuestGameGoal(
+        this._LONG_MINION_SUMMON_ID,
+        'Minion Master',
+        [QuestType.ExcludeFromSystem],
+        this.LONG_QUEST_GOLD,
+        50,
+        'Play 50 Minion cards.',
+        (gameSessionData, playerId) => {
+          const playerData = UtilsGameSession.getPlayerDataForId(gameSessionData, playerId);
+
+          if (playerData.totalMinionsPlayedFromHand > 0) {
+            return playerData.totalMinionsPlayedFromHand;
+          }
+          return 0;
+        },
+      ),
+    );
+
+    this._questCache.push(
+      new QuestGameGoal(
+        this._LONG_MINION_DESTROYER_ID,
+        i18next.t('quests.quest_assassin_title'),
+        [QuestType.LongQuest],
+        this.LONG_QUEST_GOLD,
+        50,
+        i18next.t('quests.quest_assassin_desc', { count: 50 }),
+        (gameSessionData, playerId) => {
+          const playerData = UtilsGameSession.getPlayerDataForId(gameSessionData, playerId);
+
+          if (playerData.totalMinionsKilled > 0) {
+            return playerData.totalMinionsKilled;
+          }
+          return 0;
+        },
+      ),
+    );
 
     // beginner Quests
     this._questCache.push(new QuestBeginnerWinPracticeGames());
@@ -502,7 +564,9 @@ class QuestFactory {
 
       if (_.contains(sdkQuest.getTypes(), QuestType.ExcludeFromSystem)) {
         // Quests should primarily be blocked by generation by their existence in _questChancesForSlot
-        console.warn(`QuestFactory.randomQuestForSlotExcludingIds - quest with id ${sdkQuest.getId()} blocked from generation by type`);
+        console.warn(
+          `QuestFactory.randomQuestForSlotExcludingIds - quest with id ${sdkQuest.getId()} blocked from generation by type`,
+        );
         continue;
       }
 
@@ -515,14 +579,13 @@ class QuestFactory {
       return this.questForIdentifier(this._SHORT_PARTICIPATION_ID);
     }
 
-    const chanceSum = _.reduce(
-      validQuestChanceTuples,
-      (memo, tuple) => memo + tuple[1],
-      0,
-    );
+    const chanceSum = _.reduce(validQuestChanceTuples, (memo, tuple) => memo + tuple[1], 0);
     const inverseChanceSum = 1.0 / chanceSum;
 
-    const normalizedQuestChanceTuples = _.map(validQuestChanceTuples, (tuple) => [tuple[0], tuple[1] * inverseChanceSum]);
+    const normalizedQuestChanceTuples = _.map(validQuestChanceTuples, (tuple) => [
+      tuple[0],
+      tuple[1] * inverseChanceSum,
+    ]);
 
     const questSeed = Math.random();
     let currentPercentage = 0;
@@ -550,7 +613,8 @@ class QuestFactory {
         [this.questForIdentifier(this._FACTION_CHALLENGER_BASE_ID + FactionsLookup.Faction5), 0.13],
         [this.questForIdentifier(this._FACTION_CHALLENGER_BASE_ID + FactionsLookup.Faction6), 0.13],
       ];
-    } if (slotIndex === 1) {
+    }
+    if (slotIndex === 1) {
       return [
         [this.questForIdentifier(this._LONG_PARTICIPATION_ID), 0.33],
         [this.questForIdentifier(this._LONG_GENERAL_DESTROYER_ID), 0.33],
@@ -571,7 +635,9 @@ class QuestFactory {
     if (!this._questCache) {
       this._generateQuestCache();
     }
-    const seasonalQuests = _.filter(this._questCache, (q) => _.contains(q.types, QuestType.Seasonal));
+    const seasonalQuests = _.filter(this._questCache, (q) =>
+      _.contains(q.types, QuestType.Seasonal),
+    );
     for (var q of Array.from<any>(seasonalQuests)) {
       if (q.isAvailableOn && q.isAvailableOn(momentUtc)) {
         return q;
@@ -589,7 +655,9 @@ class QuestFactory {
     if (!this._questCache) {
       this._generateQuestCache();
     }
-    const promoQuests = _.filter(this._questCache, (q) => _.contains(q.types, QuestType.Promotional));
+    const promoQuests = _.filter(this._questCache, (q) =>
+      _.contains(q.types, QuestType.Promotional),
+    );
     for (var q of Array.from<any>(promoQuests)) {
       if (q.isAvailableOn && q.isAvailableOn(momentUtc)) {
         return q;

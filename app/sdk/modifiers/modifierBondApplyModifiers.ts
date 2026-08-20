@@ -29,13 +29,35 @@ class ModifierBondApplyModifiers extends ModifierBond {
   static type = 'ModifierBondApplyModifiers';
   static description = '';
 
-  static createContextObject(modifiersContextObjects, managedByCard, auraIncludeSelf, auraIncludeAlly, auraIncludeEnemy, auraIncludeGeneral, auraRadius, description, options) {
-    if (managedByCard == null) { managedByCard = false; }
-    if (auraIncludeSelf == null) { auraIncludeSelf = true; }
-    if (auraIncludeAlly == null) { auraIncludeAlly = true; }
-    if (auraIncludeEnemy == null) { auraIncludeEnemy = true; }
-    if (auraIncludeGeneral == null) { auraIncludeGeneral = true; }
-    if (auraRadius == null) { auraRadius = 1; }
+  static createContextObject(
+    modifiersContextObjects,
+    managedByCard,
+    auraIncludeSelf,
+    auraIncludeAlly,
+    auraIncludeEnemy,
+    auraIncludeGeneral,
+    auraRadius,
+    description,
+    options,
+  ) {
+    if (managedByCard == null) {
+      managedByCard = false;
+    }
+    if (auraIncludeSelf == null) {
+      auraIncludeSelf = true;
+    }
+    if (auraIncludeAlly == null) {
+      auraIncludeAlly = true;
+    }
+    if (auraIncludeEnemy == null) {
+      auraIncludeEnemy = true;
+    }
+    if (auraIncludeGeneral == null) {
+      auraIncludeGeneral = true;
+    }
+    if (auraRadius == null) {
+      auraRadius = 1;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.modifiersContextObjects = modifiersContextObjects;
     contextObject.managedByCard = managedByCard;
@@ -48,53 +70,187 @@ class ModifierBondApplyModifiers extends ModifierBond {
     return contextObject;
   }
 
-  static createContextObjectForAllUnitsAndGenerals(modifiersContextObjects, managedByCard, description, options) {
-    return this.createContextObject(modifiersContextObjects, managedByCard, true, true, true, true, CONFIG.WHOLE_BOARD_RADIUS, description, options);
+  static createContextObjectForAllUnitsAndGenerals(
+    modifiersContextObjects,
+    managedByCard,
+    description,
+    options,
+  ) {
+    return this.createContextObject(
+      modifiersContextObjects,
+      managedByCard,
+      true,
+      true,
+      true,
+      true,
+      CONFIG.WHOLE_BOARD_RADIUS,
+      description,
+      options,
+    );
   }
 
-  static createContextObjectForAllies(modifiersContextObjects, managedByCard, auraRadius, description, options) {
-    return this.createContextObject(modifiersContextObjects, managedByCard, false, true, false, false, auraRadius, description, options);
+  static createContextObjectForAllies(
+    modifiersContextObjects,
+    managedByCard,
+    auraRadius,
+    description,
+    options,
+  ) {
+    return this.createContextObject(
+      modifiersContextObjects,
+      managedByCard,
+      false,
+      true,
+      false,
+      false,
+      auraRadius,
+      description,
+      options,
+    );
   }
 
-  static createContextObjectForNearbyAllies(modifiersContextObjects, managedByCard, description, options) {
-    return this.createContextObject(modifiersContextObjects, managedByCard, false, true, false, false, 1, description, options);
+  static createContextObjectForNearbyAllies(
+    modifiersContextObjects,
+    managedByCard,
+    description,
+    options,
+  ) {
+    return this.createContextObject(
+      modifiersContextObjects,
+      managedByCard,
+      false,
+      true,
+      false,
+      false,
+      1,
+      description,
+      options,
+    );
   }
 
-  static createContextObjectForAllAllies(modifiersContextObjects, managedByCard, description, options) {
-    return this.createContextObject(modifiersContextObjects, managedByCard, false, true, false, false, CONFIG.WHOLE_BOARD_RADIUS, description, options);
+  static createContextObjectForAllAllies(
+    modifiersContextObjects,
+    managedByCard,
+    description,
+    options,
+  ) {
+    return this.createContextObject(
+      modifiersContextObjects,
+      managedByCard,
+      false,
+      true,
+      false,
+      false,
+      CONFIG.WHOLE_BOARD_RADIUS,
+      description,
+      options,
+    );
   }
 
-  static createContextObjectForEnemies(modifiersContextObjects, managedByCard, auraRadius, description, options) {
-    return this.createContextObject(modifiersContextObjects, managedByCard, false, false, true, false, auraRadius, description, options);
+  static createContextObjectForEnemies(
+    modifiersContextObjects,
+    managedByCard,
+    auraRadius,
+    description,
+    options,
+  ) {
+    return this.createContextObject(
+      modifiersContextObjects,
+      managedByCard,
+      false,
+      false,
+      true,
+      false,
+      auraRadius,
+      description,
+      options,
+    );
   }
 
-  static createContextObjectForNearbyEnemies(modifiersContextObjects, managedByCard, description, options) {
-    return this.createContextObject(modifiersContextObjects, managedByCard, false, false, true, false, 1, description, options);
+  static createContextObjectForNearbyEnemies(
+    modifiersContextObjects,
+    managedByCard,
+    description,
+    options,
+  ) {
+    return this.createContextObject(
+      modifiersContextObjects,
+      managedByCard,
+      false,
+      false,
+      true,
+      false,
+      1,
+      description,
+      options,
+    );
   }
 
-  static createContextObjectForAllEnemies(modifiersContextObjects, managedByCard, description, options) {
-    return this.createContextObject(modifiersContextObjects, managedByCard, false, false, true, false, CONFIG.WHOLE_BOARD_RADIUS, description, options);
+  static createContextObjectForAllEnemies(
+    modifiersContextObjects,
+    managedByCard,
+    description,
+    options,
+  ) {
+    return this.createContextObject(
+      modifiersContextObjects,
+      managedByCard,
+      false,
+      false,
+      true,
+      false,
+      CONFIG.WHOLE_BOARD_RADIUS,
+      description,
+      options,
+    );
   }
 
-  static createContextObjectForAllEnemyUnitsAndGenerals(modifiersContextObjects, managedByCard, description, options) {
-    return this.createContextObject(modifiersContextObjects, managedByCard, false, false, true, true, CONFIG.WHOLE_BOARD_RADIUS, description, options);
+  static createContextObjectForAllEnemyUnitsAndGenerals(
+    modifiersContextObjects,
+    managedByCard,
+    description,
+    options,
+  ) {
+    return this.createContextObject(
+      modifiersContextObjects,
+      managedByCard,
+      false,
+      false,
+      true,
+      true,
+      CONFIG.WHOLE_BOARD_RADIUS,
+      description,
+      options,
+    );
   }
 
   onBond() {
     if (this.modifiersContextObjects != null) {
       return Array.from<any>(this.getAffectedEntities()).map((entity) =>
         Array.from<any>(this.modifiersContextObjects).map((modifierContextObject) =>
-          (this.managedByCard
+          this.managedByCard
             ? this.getGameSession().applyModifierContextObject(modifierContextObject, entity, this)
-            : this.getGameSession().applyModifierContextObject(modifierContextObject, entity))));
+            : this.getGameSession().applyModifierContextObject(modifierContextObject, entity),
+        ),
+      );
     }
   }
 
   getAffectedEntities() {
-    const entityList = this.getGameSession().getBoard().getCardsWithinRadiusOfPosition(this.getCard().position, this.auraFilterByCardType, this.auraRadius, this.auraIncludeSelf);
+    const entityList = this.getGameSession()
+      .getBoard()
+      .getCardsWithinRadiusOfPosition(
+        this.getCard().position,
+        this.auraFilterByCardType,
+        this.auraRadius,
+        this.auraIncludeSelf,
+      );
     const affectedEntities = [];
     for (var entity of Array.from<any>(entityList)) {
-      if ((this.auraIncludeAlly && entity.getIsSameTeamAs(this.getCard())) || (this.auraIncludeEnemy && !entity.getIsSameTeamAs(this.getCard()))) {
+      if (
+        (this.auraIncludeAlly && entity.getIsSameTeamAs(this.getCard())) ||
+        (this.auraIncludeEnemy && !entity.getIsSameTeamAs(this.getCard()))
+      ) {
         if (this.auraIncludeGeneral || !entity.getIsGeneral()) {
           affectedEntities.push(entity);
         }
@@ -111,6 +267,9 @@ ModifierBondApplyModifiers.prototype.auraIncludeAlly = true;
 ModifierBondApplyModifiers.prototype.auraIncludeEnemy = true;
 ModifierBondApplyModifiers.prototype.auraIncludeGeneral = true;
 ModifierBondApplyModifiers.prototype.auraRadius = 1;
-ModifierBondApplyModifiers.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierBondApplyModifiers.prototype.fxResource = [
+  'FX.Modifiers.ModifierOpeningGambit',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 
 module.exports = ModifierBondApplyModifiers;

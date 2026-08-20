@@ -17,9 +17,13 @@ class ModifierOpeningGambitRefreshArtifacts extends ModifierOpeningGambit {
   static description = 'Repair all of your artifacts to full durability';
 
   onOpeningGambit() {
-    const refreshArtifactChargesAction = new RefreshArtifactChargesAction(this.getCard().getGameSession());
+    const refreshArtifactChargesAction = new RefreshArtifactChargesAction(
+      this.getCard().getGameSession(),
+    );
     // target is your General
-    refreshArtifactChargesAction.setTarget(this.getCard().getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId()));
+    refreshArtifactChargesAction.setTarget(
+      this.getCard().getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId()),
+    );
     refreshArtifactChargesAction.setSource(this.getCard());
     refreshArtifactChargesAction.setOwnerId(this.getCard().getOwnerId());
     return this.getCard().getGameSession().executeAction(refreshArtifactChargesAction);

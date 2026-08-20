@@ -30,7 +30,6 @@ SdkStepInterface.prototype = {
   getSdkStep() {
     return this._sdkStep;
   },
-
 };
 
 module.exports = SdkStepInterface;

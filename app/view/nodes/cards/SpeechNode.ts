@@ -16,7 +16,6 @@ SpeechNode
  *************************************************************************** */
 
 const SpeechNode = cc.Node.extend({
-
   entityNode: null,
   _isPressedOnPressAnywhere: false,
   _isDismissable: true,
@@ -36,9 +35,15 @@ const SpeechNode = cc.Node.extend({
       if (!this.getAreResourcesValid(requestId)) return; // resources have been invalidated
 
       // text label
-      this.label = new BaseLabel('', RSX.font_bold.name, 16, cc.size(CONFIG.GENERAL_SPEECH_WIDTH, 0.0));
+      this.label = new BaseLabel(
+        '',
+        RSX.font_bold.name,
+        16,
+        cc.size(CONFIG.GENERAL_SPEECH_WIDTH, 0.0),
+      );
       const colorsByFormattingTag = {};
-      colorsByFormattingTag[CONFIG.FORMATTING_ENGINE.emphasisStart] = CONFIG.DIALOGUE_HIGHLIGHT_TEXT_COLOR;
+      colorsByFormattingTag[CONFIG.FORMATTING_ENGINE.emphasisStart] =
+        CONFIG.DIALOGUE_HIGHLIGHT_TEXT_COLOR;
       this.label.setColorsByFormattingTag(colorsByFormattingTag);
       this.label.setFontFillColor(CONFIG.DIALOGUE_TEXT_COLOR);
       this.label.setAnchorPoint(0, 1);
@@ -121,10 +126,17 @@ const SpeechNode = cc.Node.extend({
     const location = event.getLocation();
     const scene = this.getScene();
     const gameLayer = scene && scene.getGameLayer();
-    if (gameLayer && this.isVisible() && this.getDisplayedOpacity() > 0.0
-      && (this._isPressedOnPressAnywhere || UtilsEngine.getNodeUnderMouse(this.bgSprite, location.x, location.y))) {
+    if (
+      gameLayer &&
+      this.isVisible() &&
+      this.getDisplayedOpacity() > 0.0 &&
+      (this._isPressedOnPressAnywhere ||
+        UtilsEngine.getNodeUnderMouse(this.bgSprite, location.x, location.y))
+    ) {
       // play sound for click
-      audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_click.audio, CONFIG.CLICK_SFX_PRIORITY);
+      audio_engine
+        .current()
+        .play_effect_for_interaction(RSX.sfx_ui_click.audio, CONFIG.CLICK_SFX_PRIORITY);
 
       if (this._isDismissable && !this._stoppingShowText) {
         // stop showing
@@ -176,7 +188,13 @@ const SpeechNode = cc.Node.extend({
     }
   },
 
-  showTextWithSoundForDuration(text, sound, duration, removeFromParentOnComplete, isNotDismissable) {
+  showTextWithSoundForDuration(
+    text,
+    sound,
+    duration,
+    removeFromParentOnComplete,
+    isNotDismissable,
+  ) {
     let showDuration = 0.0;
 
     // stop running animations
@@ -193,7 +211,8 @@ const SpeechNode = cc.Node.extend({
     this._showingText = true;
     this.setOpacity(0.0);
     this.setIsDismissable(!isNotDismissable);
-    this._removeFromParentOnComplete = removeFromParentOnComplete != null ? removeFromParentOnComplete : false;
+    this._removeFromParentOnComplete =
+      removeFromParentOnComplete != null ? removeFromParentOnComplete : false;
 
     this.whenRequiredResourcesReady().then((requestId) => {
       if (!this.getAreResourcesValid(requestId) && !this._showingText) return; // resources have been invalidated
@@ -266,16 +285,20 @@ const SpeechNode = cc.Node.extend({
         ];
         if (fromPress) {
           showDuration = CONFIG.FADE_FAST_DURATION;
-          sequence.unshift(cc.spawn(
-            cc.fadeTo(showDuration, 0),
-            cc.scaleTo(showDuration, 1.05).easing(cc.easeCubicActionOut()),
-          ));
+          sequence.unshift(
+            cc.spawn(
+              cc.fadeTo(showDuration, 0),
+              cc.scaleTo(showDuration, 1.05).easing(cc.easeCubicActionOut()),
+            ),
+          );
         } else {
           showDuration = CONFIG.FADE_MEDIUM_DURATION;
-          sequence.unshift(cc.spawn(
-            cc.fadeTo(showDuration, 0),
-            cc.scaleTo(showDuration, 0.8).easing(cc.easeCubicActionIn()),
-          ));
+          sequence.unshift(
+            cc.spawn(
+              cc.fadeTo(showDuration, 0),
+              cc.scaleTo(showDuration, 0.8).easing(cc.easeCubicActionIn()),
+            ),
+          );
         }
         this._stopShowingAction = cc.sequence(sequence);
         this.runAction(this._stopShowingAction);
@@ -304,7 +327,6 @@ const SpeechNode = cc.Node.extend({
   },
 
   /* endregion TEXT */
-
 });
 
 SpeechNode.create = function (node) {

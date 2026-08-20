@@ -10,7 +10,6 @@ var i18next = require('i18next');
 var FormPromptModalItemView = require('./form_prompt_modal');
 
 var RegistrationItemView = FormPromptModalItemView.extend({
-
   id: 'app-registration',
   template: RegistrationItemViewTempl,
 
@@ -39,8 +38,12 @@ var RegistrationItemView = FormPromptModalItemView.extend({
   },
 
   templateHelpers: {
-    areInviteCodesActive: function () { return process.env.INVITE_CODES_ACTIVE; },
-    isRecaptchaActive: function () { return process.env.RECAPTCHA_ACTIVE; },
+    areInviteCodesActive: function () {
+      return process.env.INVITE_CODES_ACTIVE;
+    },
+    isRecaptchaActive: function () {
+      return process.env.RECAPTCHA_ACTIVE;
+    },
   },
 
   isValid: false,
@@ -56,7 +59,9 @@ var RegistrationItemView = FormPromptModalItemView.extend({
   onRender: function () {
     FormPromptModalItemView.prototype.onRender.apply(this, arguments);
     if (process.env.RECAPTCHA_ACTIVE) {
-      $.getScript('https://www.google.com/recaptcha/api.js?onload=onRecaptchaReady&render=explicit');
+      $.getScript(
+        'https://www.google.com/recaptcha/api.js?onload=onRecaptchaReady&render=explicit',
+      );
       window.onRecaptchaReady = function () {
         grecaptcha.render('recaptcha', {
           sitekey: process.env.RECAPTCHA_SITE_KEY,
@@ -100,30 +105,47 @@ var RegistrationItemView = FormPromptModalItemView.extend({
     // check username
     if (isValid && this._hasModifiedUsername && !this._usernameUnavailable) {
       if (!validator.isLength(username, 3, 18) || !validator.isAlphanumeric(username)) {
-        this.showInvalidFormControl(this.ui.$username, i18next.t('registration.registration_validation_username_instructions'));
+        this.showInvalidFormControl(
+          this.ui.$username,
+          i18next.t('registration.registration_validation_username_instructions'),
+        );
         isValid = false;
       } else {
         this.showValidFormControl(this.ui.$username);
 
         // attempt to check whether username is available, but don't block registration for it
-        Session.isUsernameAvailable(username)
-          .then(function (available) {
+        Session.isUsernameAvailable(username).then(
+          function (available) {
             if (!available) {
               this._usernameUnavailable = true;
-              this.showInvalidFormControl(this.ui.$username, i18next.t('registration.registration_validation_username_exists'));
+              this.showInvalidFormControl(
+                this.ui.$username,
+                i18next.t('registration.registration_validation_username_exists'),
+              );
             }
-          }.bind(this));
+          }.bind(this),
+        );
       }
     }
 
     // check password
     if (isValid && this._hasModifiedPassword && !validator.isLength(password, 8)) {
       // password is not long enough
-      this.showInvalidFormControl(this.ui.$password, i18next.t('registration.registration_validation_password_instructions'));
+      this.showInvalidFormControl(
+        this.ui.$password,
+        i18next.t('registration.registration_validation_password_instructions'),
+      );
       isValid = false;
-    } else if (isValid && this._hasModifiedPasswordConfirm && !validator.equals(password, passwordConfirm)) {
+    } else if (
+      isValid &&
+      this._hasModifiedPasswordConfirm &&
+      !validator.equals(password, passwordConfirm)
+    ) {
       // passwords don't match
-      this.showInvalidFormControl(this.ui.$passwordConfirm, i18next.t('registration.registration_validation_passwords_dont_match'));
+      this.showInvalidFormControl(
+        this.ui.$passwordConfirm,
+        i18next.t('registration.registration_validation_passwords_dont_match'),
+      );
       isValid = false;
     } else {
       this.showValidFormControl(this.ui.$password);
@@ -132,17 +154,23 @@ var RegistrationItemView = FormPromptModalItemView.extend({
 
     // check invite code
     if (isValid && this._hasModifiedInviteCode && !validator.isLength(inviteCode, 8)) {
-      this.showInvalidFormControl(this.ui.$inviteCode, i18next.t('registration.registration_validation_invite_code_invalid'));
+      this.showInvalidFormControl(
+        this.ui.$inviteCode,
+        i18next.t('registration.registration_validation_invite_code_invalid'),
+      );
       isValid = false;
     } else {
       this.showValidFormControl(this.ui.$inviteCode);
     }
 
     // ...
-    isValid = isValid && this._hasModifiedUsername && this._hasModifiedPassword && this._hasModifiedPasswordConfirm;
+    isValid =
+      isValid &&
+      this._hasModifiedUsername &&
+      this._hasModifiedPassword &&
+      this._hasModifiedPasswordConfirm;
 
-    if (process.env.INVITE_CODES_ACTIVE)
-      isValid = isValid && this._hasModifiedInviteCode;
+    if (process.env.INVITE_CODES_ACTIVE) isValid = isValid && this._hasModifiedInviteCode;
 
     // set final valid state
     this.isValid = isValid;
@@ -170,7 +198,7 @@ var RegistrationItemView = FormPromptModalItemView.extend({
         _self.onSuccess(res);
       })
       .catch(function (e) {
-      // onError expects a string not an actual error
+        // onError expects a string not an actual error
         _self.onError(e.innerMessage || e.message);
       });
   },
@@ -182,11 +210,12 @@ var RegistrationItemView = FormPromptModalItemView.extend({
     NavigationManager.getInstance().requestUserTriggeredNavigationLocked(this._userNavLockId);
 
     // log user in
-    Session.login(registration.username, registration.password)
-      .finally(function () {
-      // unlock user triggered navigation
+    Session.login(registration.username, registration.password).finally(
+      function () {
+        // unlock user triggered navigation
         NavigationManager.getInstance().requestUserTriggeredNavigationUnlocked(this._userNavLockId);
-      }.bind(this));
+      }.bind(this),
+    );
   },
 
   onErrorComplete: function (errorMessage) {
@@ -208,7 +237,6 @@ var RegistrationItemView = FormPromptModalItemView.extend({
   },
 
   /* endregion EVENTS */
-
 });
 
 // Expose the class either via CommonJS or the global object

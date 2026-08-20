@@ -19,21 +19,33 @@ class ModifierSnowRippler extends ModifierDealDamageWatch {
 
   onDealDamage(action) {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
-      if (action.getTarget().getIsGeneral()) { // if damaging a general
+      if (action.getTarget().getIsGeneral()) {
+        // if damaging a general
         // pull faction battle pets + neutral token battle pets
-        const factionBattlePetCards = this.getGameSession().getCardCaches().getFaction(Factions.Faction6).getRace(Races.BattlePet)
+        const factionBattlePetCards = this.getGameSession()
+          .getCardCaches()
+          .getFaction(Factions.Faction6)
+          .getRace(Races.BattlePet)
           .getIsToken(false)
           .getIsPrismatic(false)
           .getIsSkinned(false)
           .getCards();
-        const neutralBattlePetCards = this.getGameSession().getCardCaches().getFaction(Factions.Neutral).getRace(Races.BattlePet)
+        const neutralBattlePetCards = this.getGameSession()
+          .getCardCaches()
+          .getFaction(Factions.Neutral)
+          .getRace(Races.BattlePet)
           .getIsToken(true)
           .getIsPrismatic(false)
           .getIsSkinned(false)
           .getCards();
         const battlePetCards = [].concat(factionBattlePetCards, neutralBattlePetCards);
-        const battlePetCard = battlePetCards[this.getGameSession().getRandomIntegerForExecution(battlePetCards.length)];
-        const a = new PutCardInHandAction(this.getGameSession(), this.getCard().getOwnerId(), battlePetCard.createNewCardData());
+        const battlePetCard =
+          battlePetCards[this.getGameSession().getRandomIntegerForExecution(battlePetCards.length)];
+        const a = new PutCardInHandAction(
+          this.getGameSession(),
+          this.getCard().getOwnerId(),
+          battlePetCard.createNewCardData(),
+        );
         return this.getGameSession().executeAction(a);
       }
     }

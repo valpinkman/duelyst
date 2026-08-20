@@ -12,7 +12,8 @@ class SpellAfterblaze extends SpellApplyModifiers {
     // draw a card if target had Zeal
     const applyEffectPosition = { x, y };
     const entity = board.getCardAtPosition(applyEffectPosition, this.targetType);
-    if (entity.hasModifierClass(ModifierBanding)) { // if unit has Zeal
+    if (entity.hasModifierClass(ModifierBanding)) {
+      // if unit has Zeal
       return this.getGameSession().executeAction(this.getOwner().getDeck().actionDrawCard());
     }
   }

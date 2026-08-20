@@ -6,12 +6,11 @@ var DuelystFirebase = require('app/ui/extensions/duelyst_firebase');
 var moment = require('moment');
 
 var PresenceModel = DuelystFirebase.Model.extend({
-
   /**
-  * Get the reliable status of this buddy presence. Using get('status') is not enough as it doesn't check if that status is REALLY old.
-  * @public
-  * @returns {string} presence status of this buddy
-  */
+   * Get the reliable status of this buddy presence. Using get('status') is not enough as it doesn't check if that status is REALLY old.
+   * @public
+   * @returns {string} presence status of this buddy
+   */
   getStatus: function () {
     if (this.get('began') && this.get('status') != 'offline') {
       var began = parseInt(this.get('began'));
@@ -27,7 +26,6 @@ var PresenceModel = DuelystFirebase.Model.extend({
     // by default return status
     return this.get('status');
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

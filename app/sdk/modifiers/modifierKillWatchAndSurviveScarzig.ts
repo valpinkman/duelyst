@@ -34,21 +34,37 @@ class ModifierKillWatchAndSurviveScarzig extends ModifierKillWatchAndSurvive {
     const iterable = deck.getCardsInHand();
     for (let i = 0; i < iterable.length; i++) {
       var cardInHand = iterable[i];
-      if ((cardInHand != null) && (cardInHand.getBaseCardId() === Cards.Neutral.Scarzig)) {
-        var removeCardFromHandAction = new RemoveCardFromHandAction(this.getGameSession(), i, this.getOwnerId());
+      if (cardInHand != null && cardInHand.getBaseCardId() === Cards.Neutral.Scarzig) {
+        var removeCardFromHandAction = new RemoveCardFromHandAction(
+          this.getGameSession(),
+          i,
+          this.getOwnerId(),
+        );
         this.getGameSession().executeAction(removeCardFromHandAction);
 
-        var putCardInHandAction = new PutCardInHandAction(this.getGameSession(), this.getOwnerId(), { id: Cards.Neutral.BigScarzig });
+        var putCardInHandAction = new PutCardInHandAction(
+          this.getGameSession(),
+          this.getOwnerId(),
+          { id: Cards.Neutral.BigScarzig },
+        );
         this.getGameSession().executeAction(putCardInHandAction);
       }
     }
 
     for (var cardInDeck of Array.from<any>(deck.getCardsInDrawPile())) {
-      if ((cardInDeck != null) && (cardInDeck.getBaseCardId() === Cards.Neutral.Scarzig)) {
-        var removeCardFromDeckAction = new RemoveCardFromDeckAction(this.getGameSession(), cardInDeck.getIndex(), this.getOwnerId());
+      if (cardInDeck != null && cardInDeck.getBaseCardId() === Cards.Neutral.Scarzig) {
+        var removeCardFromDeckAction = new RemoveCardFromDeckAction(
+          this.getGameSession(),
+          cardInDeck.getIndex(),
+          this.getOwnerId(),
+        );
         this.getGameSession().executeAction(removeCardFromDeckAction);
 
-        var putCardInDeckAction = new PutCardInDeckAction(this.getGameSession(), this.getOwnerId(), { id: Cards.Neutral.BigScarzig });
+        var putCardInDeckAction = new PutCardInDeckAction(
+          this.getGameSession(),
+          this.getOwnerId(),
+          { id: Cards.Neutral.BigScarzig },
+        );
         this.getGameSession().executeAction(putCardInDeckAction);
       }
     }
@@ -56,16 +72,36 @@ class ModifierKillWatchAndSurviveScarzig extends ModifierKillWatchAndSurvive {
     return (() => {
       const result = [];
       for (var unit of Array.from<any>(this.getGameSession().getBoard().getUnits())) {
-        if ((unit != null) && unit.getIsSameTeamAs(this.getCard()) && !unit.getIsGeneral() && this.getGameSession().getCanCardBeScheduledForRemoval(unit) && (unit.getBaseCardId() === Cards.Neutral.Scarzig)) {
+        if (
+          unit != null &&
+          unit.getIsSameTeamAs(this.getCard()) &&
+          !unit.getIsGeneral() &&
+          this.getGameSession().getCanCardBeScheduledForRemoval(unit) &&
+          unit.getBaseCardId() === Cards.Neutral.Scarzig
+        ) {
           var removeOriginalEntityAction = new RemoveAction(this.getGameSession());
           removeOriginalEntityAction.setOwnerId(this.getCard().getOwnerId());
           removeOriginalEntityAction.setTarget(unit);
           this.getGameSession().executeAction(removeOriginalEntityAction);
 
           var cardData: Record<string, any> = { id: Cards.Neutral.BigScarzig };
-          if (cardData.additionalInherentModifiersContextObjects == null) { cardData.additionalInherentModifiersContextObjects = []; }
-          cardData.additionalInherentModifiersContextObjects.push(ModifierTransformed.createContextObject(unit.getExhausted(), unit.getMovesMade(), unit.getAttacksMade()));
-          var spawnEntityAction = new PlayCardAsTransformAction(this.getCard().getGameSession(), this.getCard().getOwnerId(), unit.getPosition().x, unit.getPosition().y, cardData);
+          if (cardData.additionalInherentModifiersContextObjects == null) {
+            cardData.additionalInherentModifiersContextObjects = [];
+          }
+          cardData.additionalInherentModifiersContextObjects.push(
+            ModifierTransformed.createContextObject(
+              unit.getExhausted(),
+              unit.getMovesMade(),
+              unit.getAttacksMade(),
+            ),
+          );
+          var spawnEntityAction = new PlayCardAsTransformAction(
+            this.getCard().getGameSession(),
+            this.getCard().getOwnerId(),
+            unit.getPosition().x,
+            unit.getPosition().y,
+            cardData,
+          );
           result.push(this.getGameSession().executeAction(spawnEntityAction));
         } else {
           result.push(undefined);

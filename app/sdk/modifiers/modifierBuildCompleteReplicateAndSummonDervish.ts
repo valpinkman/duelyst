@@ -21,32 +21,64 @@ class ModifierBuildCompleteReplicateAndSummonDervish extends ModifierBuilding {
 
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
       // and create another replicator obelysk
-      const card = this.getGameSession().getExistingCardFromIndexOrCachedCardFromData(this.buildingMinion);
-      const spawnPositions = UtilsGameSession.getSmartSpawnPositionsFromPattern(this.getGameSession(), this.getCard().getPosition(), CONFIG.PATTERN_3x3, card);
+      const card = this.getGameSession().getExistingCardFromIndexOrCachedCardFromData(
+        this.buildingMinion,
+      );
+      const spawnPositions = UtilsGameSession.getSmartSpawnPositionsFromPattern(
+        this.getGameSession(),
+        this.getCard().getPosition(),
+        CONFIG.PATTERN_3x3,
+        card,
+      );
       if ((spawnPositions != null ? spawnPositions.length : undefined) > 0) {
-        const obelyskSpawnPosition = spawnPositions.splice(this.getGameSession().getRandomIntegerForExecution(spawnPositions.length), 1)[0];
+        const obelyskSpawnPosition = spawnPositions.splice(
+          this.getGameSession().getRandomIntegerForExecution(spawnPositions.length),
+          1,
+        )[0];
         const cardDataOrIndexToSpawn = this.buildingMinion;
-        const buildingModifier = ModifierBuildCompleteReplicateAndSummonDervish.createContextObject(this.description, { id: Cards.Faction3.SimulacraObelysk }, 2);
+        const buildingModifier = ModifierBuildCompleteReplicateAndSummonDervish.createContextObject(
+          this.description,
+          { id: Cards.Faction3.SimulacraObelysk },
+          2,
+        );
         buildingModifier.buildingMinion = { id: Cards.Faction3.SimulacraBuilding };
-        if (cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects == null) { cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects = []; }
+        if (cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects == null) {
+          cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects = [];
+        }
         cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects.push(buildingModifier);
-        const spawnAction1 = new PlayCardSilentlyAction(this.getGameSession(), this.getCard().getOwnerId(), obelyskSpawnPosition.x, obelyskSpawnPosition.y, cardDataOrIndexToSpawn);
+        const spawnAction1 = new PlayCardSilentlyAction(
+          this.getGameSession(),
+          this.getCard().getOwnerId(),
+          obelyskSpawnPosition.x,
+          obelyskSpawnPosition.y,
+          cardDataOrIndexToSpawn,
+        );
         spawnAction1.setSource(this.getCard());
         this.getGameSession().executeAction(spawnAction1);
       }
 
       // and summon a dervish
       if ((spawnPositions != null ? spawnPositions.length : undefined) > 0) {
-        const dervish = this.getGameSession().getExistingCardFromIndexOrCachedCardFromData({ id: Cards.Faction3.Dervish });
-        const dervishSpawnPosition = spawnPositions[this.getGameSession().getRandomIntegerForExecution(spawnPositions.length)];
-        const spawnAction2 = new PlayCardSilentlyAction(this.getGameSession(), this.getCard().getOwnerId(), dervishSpawnPosition.x, dervishSpawnPosition.y, { id: Cards.Faction3.Dervish });
+        const dervish = this.getGameSession().getExistingCardFromIndexOrCachedCardFromData({
+          id: Cards.Faction3.Dervish,
+        });
+        const dervishSpawnPosition =
+          spawnPositions[this.getGameSession().getRandomIntegerForExecution(spawnPositions.length)];
+        const spawnAction2 = new PlayCardSilentlyAction(
+          this.getGameSession(),
+          this.getCard().getOwnerId(),
+          dervishSpawnPosition.x,
+          dervishSpawnPosition.y,
+          { id: Cards.Faction3.Dervish },
+        );
         spawnAction2.setSource(this.getCard());
         return this.getGameSession().executeAction(spawnAction2);
       }
     }
   }
 }
-ModifierBuildCompleteReplicateAndSummonDervish.prototype.type = 'ModifierBuildCompleteReplicateAndSummonDervish';
+ModifierBuildCompleteReplicateAndSummonDervish.prototype.type =
+  'ModifierBuildCompleteReplicateAndSummonDervish';
 ModifierBuildCompleteReplicateAndSummonDervish.prototype.buildingMinion = null;
 
 module.exports = ModifierBuildCompleteReplicateAndSummonDervish;

@@ -38,12 +38,24 @@ var FXGlowImageMap = BaseSprite.extend({
 
   setOptions(options) {
     this._super(options);
-    if (options.timeScale != null) { this.setTimeScale(options.timeScale); }
-    if (options.intensity != null) { this.setIntensity(options.intensity); }
-    if (options.gamma != null) { this.setGamma(options.gamma); }
-    if (options.levelsInWhite != null) { this.setLevelsInWhite(options.levelsInWhite); }
-    if (options.levelsInBlack != null) { this.setLevelsInBlack(options.levelsInBlack); }
-    if (options.glowColor != null) { this.setGlowColor(options.glowColor); }
+    if (options.timeScale != null) {
+      this.setTimeScale(options.timeScale);
+    }
+    if (options.intensity != null) {
+      this.setIntensity(options.intensity);
+    }
+    if (options.gamma != null) {
+      this.setGamma(options.gamma);
+    }
+    if (options.levelsInWhite != null) {
+      this.setLevelsInWhite(options.levelsInWhite);
+    }
+    if (options.levelsInBlack != null) {
+      this.setLevelsInBlack(options.levelsInBlack);
+    }
+    if (options.glowColor != null) {
+      this.setGlowColor(options.glowColor);
+    }
   },
 
   getTimeScale() {
@@ -108,23 +120,23 @@ var FXGlowImageMap = BaseSprite.extend({
 
   updateTweenAction(value, key) {
     switch (key) {
-    case 'timeScale':
-      this.setTimeScale(value);
-      break;
-    case 'glowColor':
-      var invValue = 1.0 - value;
-      var src = this._sourceGlowColor;
-      var tgt = this._targetGlowColor;
-      var glowColor = {
-        r: src.r * invValue + tgt.r * value,
-        g: src.g * invValue + tgt.g * value,
-        b: src.b * invValue + tgt.b * value,
-      };
-      this.setGlowColor(glowColor);
-      break;
-    default:
-      BaseSprite.prototype.updateTweenAction.call(this, value, key);
-      break;
+      case 'timeScale':
+        this.setTimeScale(value);
+        break;
+      case 'glowColor':
+        var invValue = 1.0 - value;
+        var src = this._sourceGlowColor;
+        var tgt = this._targetGlowColor;
+        var glowColor = {
+          r: src.r * invValue + tgt.r * value,
+          g: src.g * invValue + tgt.g * value,
+          b: src.b * invValue + tgt.b * value,
+        };
+        this.setGlowColor(glowColor);
+        break;
+      default:
+        BaseSprite.prototype.updateTweenAction.call(this, value, key);
+        break;
     }
   },
 });
@@ -132,7 +144,9 @@ var FXGlowImageMap = BaseSprite.extend({
 FXGlowImageMap.WebGLRenderCmd = function (renderable) {
   BaseSprite.WebGLRenderCmd.call(this, renderable);
 };
-const proto = FXGlowImageMap.WebGLRenderCmd.prototype = Object.create(BaseSprite.WebGLRenderCmd.prototype);
+const proto = (FXGlowImageMap.WebGLRenderCmd.prototype = Object.create(
+  BaseSprite.WebGLRenderCmd.prototype,
+));
 proto.constructor = FXGlowImageMap.WebGLRenderCmd;
 
 proto.rendering = function () {
@@ -145,13 +159,31 @@ proto.rendering = function () {
   const shaderProgram = this._shaderProgram;
   shaderProgram.use();
   shaderProgram._setUniformForMVPMatrixWithMat4(this._stackMatrix);
-  shaderProgram.setUniformLocationWith2f(shaderProgram.loc_texResolution, node._texture.getPixelsWide(), node._texture.getPixelsHigh());
-  shaderProgram.setUniformLocationWith1f(shaderProgram.loc_time, (node.getFX().getTime() + node.seed) * node.timeScale);
+  shaderProgram.setUniformLocationWith2f(
+    shaderProgram.loc_texResolution,
+    node._texture.getPixelsWide(),
+    node._texture.getPixelsHigh(),
+  );
+  shaderProgram.setUniformLocationWith1f(
+    shaderProgram.loc_time,
+    (node.getFX().getTime() + node.seed) * node.timeScale,
+  );
   shaderProgram.setUniformLocationWith1f(shaderProgram.loc_intensity, node.intensity);
   shaderProgram.setUniformLocationWith1f(shaderProgram.loc_gamma, node.gamma);
-  shaderProgram.setUniformLocationWith1f(shaderProgram.loc_levelsInWhite, node.levelsInWhite / 255.0);
-  shaderProgram.setUniformLocationWith1f(shaderProgram.loc_levelsInBlack, node.levelsInBlack / 255.0);
-  shaderProgram.setUniformLocationWith3f(shaderProgram.loc_color, node.glowColor.r / 255.0, node.glowColor.g / 255.0, node.glowColor.b / 255.0);
+  shaderProgram.setUniformLocationWith1f(
+    shaderProgram.loc_levelsInWhite,
+    node.levelsInWhite / 255.0,
+  );
+  shaderProgram.setUniformLocationWith1f(
+    shaderProgram.loc_levelsInBlack,
+    node.levelsInBlack / 255.0,
+  );
+  shaderProgram.setUniformLocationWith3f(
+    shaderProgram.loc_color,
+    node.glowColor.r / 255.0,
+    node.glowColor.g / 255.0,
+    node.glowColor.b / 255.0,
+  );
 
   cc.glBindTexture2DN(0, node._texture);
   cc.glBlendFunc(node._blendFunc.src, node._blendFunc.dst);

@@ -12,7 +12,11 @@ class ModifierSummonWatchFromActionBar extends ModifierSummonWatch {
   static description = 'Whenever you summon a minion from your action bar, do something';
 
   getIsActionRelevant(action) {
-    return action instanceof PlayCardFromHandAction && (action.getCard() !== this.getCard()) && super.getIsActionRelevant(action);
+    return (
+      action instanceof PlayCardFromHandAction &&
+      action.getCard() !== this.getCard() &&
+      super.getIsActionRelevant(action)
+    );
   }
 }
 ModifierSummonWatchFromActionBar.prototype.type = 'ModifierSummonWatchFromActionBar';

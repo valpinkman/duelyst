@@ -52,72 +52,120 @@ describe('UtilsGameSession', () => {
       SDK.GameSession.reset();
     });
 
-    it('expect that player 1 can see their own deck/hand but not player 2\'s hand or deck', () => new Promise((done) => {
-      let data = JSON.parse(SDK.GameSession.current().serializeToJSON(SDK.GameSession.current()));
-      data = UtilsGameSession.scrubGameSessionData(SDK.GameSession.current(), data, SDK.GameSession.current().getPlayer1Id(), false);
-      const newSession = SDK.GameSession.create();
-      newSession.deserializeSessionFromFirebase(data);
+    it("expect that player 1 can see their own deck/hand but not player 2's hand or deck", () =>
+      new Promise((done) => {
+        let data = JSON.parse(SDK.GameSession.current().serializeToJSON(SDK.GameSession.current()));
+        data = UtilsGameSession.scrubGameSessionData(
+          SDK.GameSession.current(),
+          data,
+          SDK.GameSession.current().getPlayer1Id(),
+          false,
+        );
+        const newSession = SDK.GameSession.create();
+        newSession.deserializeSessionFromFirebase(data);
 
-      expect(newSession.gameSetupData.players[0].deck[0].id).to.be.above(0);
-      expect(newSession.gameSetupData.players[0].startingDrawPile[0].id).to.be.above(0);
-      expect(newSession.gameSetupData.players[0].startingHand[0].id).to.be.above(0);
+        expect(newSession.gameSetupData.players[0].deck[0].id).to.be.above(0);
+        expect(newSession.gameSetupData.players[0].startingDrawPile[0].id).to.be.above(0);
+        expect(newSession.gameSetupData.players[0].startingHand[0].id).to.be.above(0);
 
-      expect(newSession.gameSetupData.players[1].deck[0].id).to.equal(-1);
-      expect(newSession.gameSetupData.players[1].startingDrawPile[0].id).to.equal(-1);
-      expect(newSession.gameSetupData.players[1].startingHand[0].id).to.equal(-1);
+        expect(newSession.gameSetupData.players[1].deck[0].id).to.equal(-1);
+        expect(newSession.gameSetupData.players[1].startingDrawPile[0].id).to.equal(-1);
+        expect(newSession.gameSetupData.players[1].startingHand[0].id).to.equal(-1);
 
-      expect(newSession.getPlayer1().getDeck().getCardsInHandExcludingMissing().length).to.equal(5);
-      expect(newSession.getPlayer2().getDeck().getCardsInHandExcludingMissing().length).to.equal(0);
-      expect(newSession.getPlayer1().getDeck().getCardsInDrawPileExcludingMissing().length).to.equal(4);
-      expect(newSession.getPlayer2().getDeck().getCardsInDrawPileExcludingMissing().length).to.equal(0);
+        expect(newSession.getPlayer1().getDeck().getCardsInHandExcludingMissing().length).to.equal(
+          5,
+        );
+        expect(newSession.getPlayer2().getDeck().getCardsInHandExcludingMissing().length).to.equal(
+          0,
+        );
+        expect(
+          newSession.getPlayer1().getDeck().getCardsInDrawPileExcludingMissing().length,
+        ).to.equal(4);
+        expect(
+          newSession.getPlayer2().getDeck().getCardsInDrawPileExcludingMissing().length,
+        ).to.equal(0);
 
-      done();
-    }));
+        done();
+      }));
 
-    it('expect that a spectator of player 1 can see only the hand of player 1 but not player 2\'s hand or deck', () => new Promise((done) => {
-      let data = JSON.parse(SDK.GameSession.current().serializeToJSON(SDK.GameSession.current()));
-      data = UtilsGameSession.scrubGameSessionData(SDK.GameSession.current(), data, SDK.GameSession.current().getPlayer1Id(), true);
-      const newSession = SDK.GameSession.create();
-      newSession.deserializeSessionFromFirebase(data);
+    it("expect that a spectator of player 1 can see only the hand of player 1 but not player 2's hand or deck", () =>
+      new Promise((done) => {
+        let data = JSON.parse(SDK.GameSession.current().serializeToJSON(SDK.GameSession.current()));
+        data = UtilsGameSession.scrubGameSessionData(
+          SDK.GameSession.current(),
+          data,
+          SDK.GameSession.current().getPlayer1Id(),
+          true,
+        );
+        const newSession = SDK.GameSession.create();
+        newSession.deserializeSessionFromFirebase(data);
 
-      expect(newSession.gameSetupData.players[0].deck[0].id).to.equal(-1);
-      expect(newSession.gameSetupData.players[0].startingDrawPile[0].id).to.equal(-1);
-      expect(newSession.gameSetupData.players[0].startingHand[0].id).to.be.above(0);
+        expect(newSession.gameSetupData.players[0].deck[0].id).to.equal(-1);
+        expect(newSession.gameSetupData.players[0].startingDrawPile[0].id).to.equal(-1);
+        expect(newSession.gameSetupData.players[0].startingHand[0].id).to.be.above(0);
 
-      expect(newSession.gameSetupData.players[1].deck[0].id).to.equal(-1);
-      expect(newSession.gameSetupData.players[1].startingDrawPile[0].id).to.equal(-1);
-      expect(newSession.gameSetupData.players[1].startingHand[0].id).to.equal(-1);
+        expect(newSession.gameSetupData.players[1].deck[0].id).to.equal(-1);
+        expect(newSession.gameSetupData.players[1].startingDrawPile[0].id).to.equal(-1);
+        expect(newSession.gameSetupData.players[1].startingHand[0].id).to.equal(-1);
 
-      expect(newSession.getPlayer1().getDeck().getCardsInHandExcludingMissing().length).to.equal(5);
-      expect(newSession.getPlayer2().getDeck().getCardsInHandExcludingMissing().length).to.equal(0);
-      expect(newSession.getPlayer1().getDeck().getCardsInDrawPileExcludingMissing().length).to.equal(0);
-      expect(newSession.getPlayer2().getDeck().getCardsInDrawPileExcludingMissing().length).to.equal(0);
+        expect(newSession.getPlayer1().getDeck().getCardsInHandExcludingMissing().length).to.equal(
+          5,
+        );
+        expect(newSession.getPlayer2().getDeck().getCardsInHandExcludingMissing().length).to.equal(
+          0,
+        );
+        expect(
+          newSession.getPlayer1().getDeck().getCardsInDrawPileExcludingMissing().length,
+        ).to.equal(0);
+        expect(
+          newSession.getPlayer2().getDeck().getCardsInDrawPileExcludingMissing().length,
+        ).to.equal(0);
 
-      done();
-    }));
+        done();
+      }));
 
-    it('expect Card to not be scrubbable if it\'s for the player you are spectating and in the hand', () => new Promise((done) => {
-      const isScrubbable = SDK.GameSession.current().getPlayer1().getDeck().getCardsInHandExcludingMissing()[0].isScrubbable(SDK.GameSession.current().getPlayer1Id(), true);
-      expect(isScrubbable).to.equal(false);
-      done();
-    }));
+    it("expect Card to not be scrubbable if it's for the player you are spectating and in the hand", () =>
+      new Promise((done) => {
+        const isScrubbable = SDK.GameSession.current()
+          .getPlayer1()
+          .getDeck()
+          .getCardsInHandExcludingMissing()[0]
+          .isScrubbable(SDK.GameSession.current().getPlayer1Id(), true);
+        expect(isScrubbable).to.equal(false);
+        done();
+      }));
 
-    it('expect Card to be scrubbable if it\'s for the player you are spectating but not in the hand', () => new Promise((done) => {
-      const isScrubbable = SDK.GameSession.current().getPlayer1().getDeck().getCardsInDrawPileExcludingMissing()[0].isScrubbable(SDK.GameSession.current().getPlayer1Id(), true);
-      expect(isScrubbable).to.equal(true);
-      done();
-    }));
+    it("expect Card to be scrubbable if it's for the player you are spectating but not in the hand", () =>
+      new Promise((done) => {
+        const isScrubbable = SDK.GameSession.current()
+          .getPlayer1()
+          .getDeck()
+          .getCardsInDrawPileExcludingMissing()[0]
+          .isScrubbable(SDK.GameSession.current().getPlayer1Id(), true);
+        expect(isScrubbable).to.equal(true);
+        done();
+      }));
 
-    it('expect Card to be scrubbable if it\'s for the opponent', () => new Promise((done) => {
-      const isScrubbable = SDK.GameSession.current().getPlayer2().getDeck().getCardsInDrawPileExcludingMissing()[0].isScrubbable(SDK.GameSession.current().getPlayer1Id(), false);
-      expect(isScrubbable).to.equal(true);
-      done();
-    }));
+    it("expect Card to be scrubbable if it's for the opponent", () =>
+      new Promise((done) => {
+        const isScrubbable = SDK.GameSession.current()
+          .getPlayer2()
+          .getDeck()
+          .getCardsInDrawPileExcludingMissing()[0]
+          .isScrubbable(SDK.GameSession.current().getPlayer1Id(), false);
+        expect(isScrubbable).to.equal(true);
+        done();
+      }));
 
-    it('expect Card to not be scrubbable if it\'s for you', () => new Promise((done) => {
-      const isScrubbable = SDK.GameSession.current().getPlayer1().getDeck().getCardsInDrawPileExcludingMissing()[0].isScrubbable(SDK.GameSession.current().getPlayer1Id(), false);
-      expect(isScrubbable).to.equal(false);
-      done();
-    }));
+    it("expect Card to not be scrubbable if it's for you", () =>
+      new Promise((done) => {
+        const isScrubbable = SDK.GameSession.current()
+          .getPlayer1()
+          .getDeck()
+          .getCardsInDrawPileExcludingMissing()[0]
+          .isScrubbable(SDK.GameSession.current().getPlayer1Id(), false);
+        expect(isScrubbable).to.equal(false);
+        done();
+      }));
   });
 });

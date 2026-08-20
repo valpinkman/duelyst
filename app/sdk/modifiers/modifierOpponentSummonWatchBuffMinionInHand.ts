@@ -19,10 +19,18 @@ class ModifierOpponentSummonWatchDamageBuffMinionInHand extends ModifierOpponent
   static description = 'Whenever your opponent summons a minion, buff a minion in hand';
 
   static createContextObject(attackBuff, maxHPBuff, buffName, options) {
-    if (attackBuff == null) { attackBuff = 0; }
-    if (maxHPBuff == null) { maxHPBuff = 0; }
+    if (attackBuff == null) {
+      attackBuff = 0;
+    }
+    if (maxHPBuff == null) {
+      maxHPBuff = 0;
+    }
     const contextObject = super.createContextObject(options);
-    contextObject.statsBuff = Modifier.createContextObjectWithAttributeBuffs(attackBuff, maxHPBuff, { modifierName: buffName });
+    contextObject.statsBuff = Modifier.createContextObjectWithAttributeBuffs(
+      attackBuff,
+      maxHPBuff,
+      { modifierName: buffName },
+    );
     return contextObject;
   }
 
@@ -32,20 +40,24 @@ class ModifierOpponentSummonWatchDamageBuffMinionInHand extends ModifierOpponent
       const cards = deck.getCardsInHand();
       let possibleCards = [];
       for (var card of Array.from<any>(cards)) {
-        if ((card != null) && (card.getType() === CardType.Unit)) {
+        if (card != null && card.getType() === CardType.Unit) {
           possibleCards = possibleCards.concat(card);
         }
       }
 
       if (possibleCards.length > 0) {
-        const cardToBuff = possibleCards[this.getGameSession().getRandomIntegerForExecution(possibleCards.length)];
+        const cardToBuff =
+          possibleCards[this.getGameSession().getRandomIntegerForExecution(possibleCards.length)];
         return this.getGameSession().applyModifierContextObject(this.statsBuff, cardToBuff);
       }
     }
   }
 }
-ModifierOpponentSummonWatchDamageBuffMinionInHand.prototype.type = 'ModifierOpponentSummonWatchDamageBuffMinionInHand';
-ModifierOpponentSummonWatchDamageBuffMinionInHand.prototype.fxResource = ['FX.Modifiers.ModifierOpponentSummonWatch'];
+ModifierOpponentSummonWatchDamageBuffMinionInHand.prototype.type =
+  'ModifierOpponentSummonWatchDamageBuffMinionInHand';
+ModifierOpponentSummonWatchDamageBuffMinionInHand.prototype.fxResource = [
+  'FX.Modifiers.ModifierOpponentSummonWatch',
+];
 ModifierOpponentSummonWatchDamageBuffMinionInHand.prototype.statsBuff = null;
 
 module.exports = ModifierOpponentSummonWatchDamageBuffMinionInHand;

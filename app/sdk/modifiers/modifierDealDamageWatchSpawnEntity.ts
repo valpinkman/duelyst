@@ -20,11 +20,26 @@ class ModifierDealDamageWatchSpawnEntity extends ModifierDealDamageWatch {
   static modifierName = 'Deal Damage Watch';
   static description = 'Whenever this minion damages an enemy, summon %X';
 
-  static createContextObject(cardDataOrIndexToSpawn, spawnDescription, spawnCount, spawnPattern, spawnSilently, options) {
-    if (spawnDescription == null) { spawnDescription = ''; }
-    if (spawnCount == null) { spawnCount = 1; }
-    if (spawnPattern == null) { spawnPattern = CONFIG.PATTERN_3x3; }
-    if (spawnSilently == null) { spawnSilently = true; }
+  static createContextObject(
+    cardDataOrIndexToSpawn,
+    spawnDescription,
+    spawnCount,
+    spawnPattern,
+    spawnSilently,
+    options,
+  ) {
+    if (spawnDescription == null) {
+      spawnDescription = '';
+    }
+    if (spawnCount == null) {
+      spawnCount = 1;
+    }
+    if (spawnPattern == null) {
+      spawnPattern = CONFIG.PATTERN_3x3;
+    }
+    if (spawnSilently == null) {
+      spawnSilently = true;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.cardDataOrIndexToSpawn = cardDataOrIndexToSpawn;
     contextObject.spawnDescription = spawnDescription;
@@ -54,16 +69,31 @@ class ModifierDealDamageWatchSpawnEntity extends ModifierDealDamageWatch {
 
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
       const ownerId = this.getSpawnOwnerId(action);
-      const spawnPositions = UtilsGameSession.getRandomNonConflictingSmartSpawnPositionsForModifier(this, ModifierDealDamageWatchSpawnEntity);
+      const spawnPositions = UtilsGameSession.getRandomNonConflictingSmartSpawnPositionsForModifier(
+        this,
+        ModifierDealDamageWatchSpawnEntity,
+      );
       return (() => {
         const result = [];
         for (var spawnPosition of Array.from<any>(spawnPositions)) {
           var spawnAction;
           var cardDataOrIndexToSpawn = this.getCardDataOrIndexToSpawn();
           if (this.spawnSilently) {
-            spawnAction = new PlayCardSilentlyAction(this.getGameSession(), ownerId, spawnPosition.x, spawnPosition.y, cardDataOrIndexToSpawn);
+            spawnAction = new PlayCardSilentlyAction(
+              this.getGameSession(),
+              ownerId,
+              spawnPosition.x,
+              spawnPosition.y,
+              cardDataOrIndexToSpawn,
+            );
           } else {
-            spawnAction = new PlayCardAction(this.getGameSession(), ownerId, spawnPosition.x, spawnPosition.y, cardDataOrIndexToSpawn);
+            spawnAction = new PlayCardAction(
+              this.getGameSession(),
+              ownerId,
+              spawnPosition.x,
+              spawnPosition.y,
+              cardDataOrIndexToSpawn,
+            );
           }
           spawnAction.setSource(this.getCard());
           result.push(this.getGameSession().executeAction(spawnAction));
@@ -82,6 +112,9 @@ class ModifierDealDamageWatchSpawnEntity extends ModifierDealDamageWatch {
   }
 }
 ModifierDealDamageWatchSpawnEntity.prototype.type = 'ModifierDealDamageWatchSpawnEntity';
-ModifierDealDamageWatchSpawnEntity.prototype.fxResource = ['FX.Modifiers.ModifierDealDamageWatch', 'FX.Modifiers.ModifierGenericSpawn'];
+ModifierDealDamageWatchSpawnEntity.prototype.fxResource = [
+  'FX.Modifiers.ModifierDealDamageWatch',
+  'FX.Modifiers.ModifierGenericSpawn',
+];
 
 module.exports = ModifierDealDamageWatchSpawnEntity;

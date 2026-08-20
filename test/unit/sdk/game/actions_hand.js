@@ -13,19 +13,44 @@ Logger.enabled = false;
 describe('actions: hand', () => {
   beforeEach(() => {
     // get all cards
-    const allCards = SDK.GameSession.getCardCaches().getType(SDK.CardType.Unit).getIsGeneral(false).getCards();
-    const cardsThatCost1 = _.filter(allCards, (card) => card.getManaCost() === 1
-        && (card.getFactionId() === SDK.Factions.Neutral || card.getFactionId() === SDK.Factions.Faction1)
-        && !card.getHasFollowups()
-        && (card.modifiersContextObjects == null || card.modifiersContextObjects.length === 0));
-    const cardsThatCost4Plus = _.filter(allCards, (card) => card.getManaCost() >= 4 && (card.getFactionId() === SDK.Factions.Neutral || card.getFactionId() === SDK.Factions.Faction1));
-    const cardsWithAirdrop = _.filter(allCards, (card) => card.modifiersContextObjects != null
-        && _.find(card.modifiersContextObjects, (contextObject) => contextObject.type === SDK.ModifierAirdrop.type) != null
-        && !card.getHasFollowups()
-        && (card.getFactionId() === SDK.Factions.Neutral || card.getFactionId() === SDK.Factions.Faction1));
+    const allCards = SDK.GameSession.getCardCaches()
+      .getType(SDK.CardType.Unit)
+      .getIsGeneral(false)
+      .getCards();
+    const cardsThatCost1 = _.filter(
+      allCards,
+      (card) =>
+        card.getManaCost() === 1 &&
+        (card.getFactionId() === SDK.Factions.Neutral ||
+          card.getFactionId() === SDK.Factions.Faction1) &&
+        !card.getHasFollowups() &&
+        (card.modifiersContextObjects == null || card.modifiersContextObjects.length === 0),
+    );
+    const cardsThatCost4Plus = _.filter(
+      allCards,
+      (card) =>
+        card.getManaCost() >= 4 &&
+        (card.getFactionId() === SDK.Factions.Neutral ||
+          card.getFactionId() === SDK.Factions.Faction1),
+    );
+    const cardsWithAirdrop = _.filter(
+      allCards,
+      (card) =>
+        card.modifiersContextObjects != null &&
+        _.find(
+          card.modifiersContextObjects,
+          (contextObject) => contextObject.type === SDK.ModifierAirdrop.type,
+        ) != null &&
+        !card.getHasFollowups() &&
+        (card.getFactionId() === SDK.Factions.Neutral ||
+          card.getFactionId() === SDK.Factions.Faction1),
+    );
 
     // define test decks
-    const player1CardInDeck = cardsThatCost1.splice(Math.floor(Math.random() * cardsThatCost1.length), 1)[0];
+    const player1CardInDeck = cardsThatCost1.splice(
+      Math.floor(Math.random() * cardsThatCost1.length),
+      1,
+    )[0];
     const player1Deck = [
       { id: SDK.Cards.Faction1.General },
       { id: player1CardInDeck.getId() },
@@ -84,7 +109,11 @@ describe('actions: hand', () => {
         invalidTargetPosition = boardPosition;
       }
     }
-    const playCardFromHandAction = player.actionPlayCardFromHand(indexToPlay, invalidTargetPosition.x, invalidTargetPosition.y);
+    const playCardFromHandAction = player.actionPlayCardFromHand(
+      indexToPlay,
+      invalidTargetPosition.x,
+      invalidTargetPosition.y,
+    );
     SDK.GameSession.getInstance().executeAction(playCardFromHandAction);
 
     expect(playCardFromHandAction.getIsValid()).to.equal(false);
@@ -193,7 +222,11 @@ describe('actions: hand', () => {
     }
     const general = SDK.GameSession.getInstance().getGeneralForPlayerId(player.getPlayerId());
     const generalPosition = general.getPosition();
-    const playCardFromHandAction = player.actionPlayCardFromHand(indexToPlay, generalPosition.x + 1, generalPosition.y);
+    const playCardFromHandAction = player.actionPlayCardFromHand(
+      indexToPlay,
+      generalPosition.x + 1,
+      generalPosition.y,
+    );
     SDK.GameSession.getInstance().executeAction(playCardFromHandAction);
 
     expect(player.getDeck().getHand()[indexToPlay]).to.equal(null);

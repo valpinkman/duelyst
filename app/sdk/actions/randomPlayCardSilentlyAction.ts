@@ -33,18 +33,18 @@ class RandomPlayCardSilentlyAction extends PlayCardSilentlyAction {
   }
 
   setSpawnPattern(spawnPattern) {
-    return this.spawnPattern = spawnPattern;
+    return (this.spawnPattern = spawnPattern);
   }
 
   getPatternSource() {
-    if ((this._private.patternSource == null) && (this.patternSourceIndex != null)) {
+    if (this._private.patternSource == null && this.patternSourceIndex != null) {
       this._private.patternSource = this.getGameSession().getCardByIndex(this.patternSourceIndex);
     }
     return this._private.patternSource;
   }
 
   setPatternSource(patternSource) {
-    return this.patternSourceIndex = patternSource.getIndex();
+    return (this.patternSourceIndex = patternSource.getIndex());
   }
 
   getPatternSourcePosition() {
@@ -52,7 +52,7 @@ class RandomPlayCardSilentlyAction extends PlayCardSilentlyAction {
   }
 
   setPatternSourcePosition(patternSourcePosition) {
-    return this.patternSourcePosition = patternSourcePosition;
+    return (this.patternSourcePosition = patternSourcePosition);
   }
 
   _modifyForExecution() {
@@ -63,28 +63,54 @@ class RandomPlayCardSilentlyAction extends PlayCardSilentlyAction {
       let spawnLocations;
       const card = this.getCard();
       const sourcePosition = this.getSourcePosition();
-      if ((card != null) && (sourcePosition != null)) {
-        if (!this.getSpawnPattern()) { // if no spawn pattern defined, use whole board
+      if (card != null && sourcePosition != null) {
+        if (!this.getSpawnPattern()) {
+          // if no spawn pattern defined, use whole board
           // pick a random spawn location
-          spawnLocations = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(this.getGameSession(), { x: 0, y: 0 }, CONFIG.ALL_BOARD_POSITIONS, card, card, 1);
-        } else { // pick target position from spawn pattern
+          spawnLocations = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(
+            this.getGameSession(),
+            { x: 0, y: 0 },
+            CONFIG.ALL_BOARD_POSITIONS,
+            card,
+            card,
+            1,
+          );
+        } else {
+          // pick target position from spawn pattern
           let patternSourcePosition;
           const patternSource = this.getPatternSource();
-          if (patternSource != null) { // around pattern source entity
+          if (patternSource != null) {
+            // around pattern source entity
             patternSourcePosition = patternSource.getPosition();
-          } else { // around pattern source position
+          } else {
+            // around pattern source position
             patternSourcePosition = this.getPatternSourcePosition();
           }
 
           if (patternSourcePosition != null) {
-            spawnLocations = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(this.getGameSession(), patternSourcePosition, this.getSpawnPattern(), card, card, 1);
-          } else { // use whole board
-            spawnLocations = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(this.getGameSession(), { x: 0, y: 0 }, this.getSpawnPattern(), card, card, 1);
+            spawnLocations = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(
+              this.getGameSession(),
+              patternSourcePosition,
+              this.getSpawnPattern(),
+              card,
+              card,
+              1,
+            );
+          } else {
+            // use whole board
+            spawnLocations = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(
+              this.getGameSession(),
+              { x: 0, y: 0 },
+              this.getSpawnPattern(),
+              card,
+              card,
+              1,
+            );
           }
         }
       }
 
-      if ((spawnLocations != null) && (spawnLocations.length > 0)) {
+      if (spawnLocations != null && spawnLocations.length > 0) {
         const position = spawnLocations[0];
         return this.setTargetPosition(position);
       }

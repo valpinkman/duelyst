@@ -15,7 +15,9 @@ class ModifierOverwatchSpellTargetDamageEnemies extends ModifierOverwatchSpellTa
   static type = 'ModifierOverwatchSpellTargetDamageEnemies';
 
   static createContextObject(damageAmount, options) {
-    if (damageAmount == null) { damageAmount = 0; }
+    if (damageAmount == null) {
+      damageAmount = 0;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.damageAmount = damageAmount;
     return contextObject;
@@ -25,7 +27,9 @@ class ModifierOverwatchSpellTargetDamageEnemies extends ModifierOverwatchSpellTa
     // damage enemy units around this unit
     return (() => {
       const result = [];
-      for (var entity of Array.from<any>(this.getGameSession().getBoard().getEnemyEntitiesForEntity(this.getCard()))) {
+      for (var entity of Array.from<any>(
+        this.getGameSession().getBoard().getEnemyEntitiesForEntity(this.getCard()),
+      )) {
         var damageAction = new DamageAction(this.getGameSession());
         damageAction.setOwnerId(this.getCard().getOwnerId());
         damageAction.setSource(this.getCard());
@@ -37,6 +41,7 @@ class ModifierOverwatchSpellTargetDamageEnemies extends ModifierOverwatchSpellTa
     })();
   }
 }
-ModifierOverwatchSpellTargetDamageEnemies.prototype.type = 'ModifierOverwatchSpellTargetDamageEnemies';
+ModifierOverwatchSpellTargetDamageEnemies.prototype.type =
+  'ModifierOverwatchSpellTargetDamageEnemies';
 
 module.exports = ModifierOverwatchSpellTargetDamageEnemies;

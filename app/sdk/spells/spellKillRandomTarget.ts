@@ -45,16 +45,26 @@ class SpellKillRandomTarget extends Spell {
       // pick up to number to kill random positions from reapply positions
       for (var applyEffectPosition of Array.from<any>(applyEffectPositionsBase)) {
         var entity = board.getCardAtPosition(applyEffectPosition, this.targetType);
-        if ((entity != null) && (!entity.getIsGeneral() || this.canTargetGeneral) && (this.getTargetsNeutral() || (this.getTargetsAllies() && (entity.getOwnerId() === this.getOwnerId())) || (this.getTargetsEnemies() && (entity.getOwnerId() !== this.getOwnerId())))) {
+        if (
+          entity != null &&
+          (!entity.getIsGeneral() || this.canTargetGeneral) &&
+          (this.getTargetsNeutral() ||
+            (this.getTargetsAllies() && entity.getOwnerId() === this.getOwnerId()) ||
+            (this.getTargetsEnemies() && entity.getOwnerId() !== this.getOwnerId()))
+        ) {
           applyEffectPositionsWithEntity.push(applyEffectPosition);
         }
       }
 
       let killCount = 0;
       while (applyEffectPositionsWithEntity.length > 0) {
-        var index = this.getGameSession().getRandomIntegerForExecution(applyEffectPositionsWithEntity.length);
+        var index = this.getGameSession().getRandomIntegerForExecution(
+          applyEffectPositionsWithEntity.length,
+        );
         randomApplyEffectPositions.push(applyEffectPositionsWithEntity.splice(index, 1)[0]);
-        if (++killCount >= this.numberToKill) { break; }
+        if (++killCount >= this.numberToKill) {
+          break;
+        }
       }
     }
 

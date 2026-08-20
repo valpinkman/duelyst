@@ -8,7 +8,6 @@
  * @return {FigureEight}
  */
 var FigureEight = cc.ActionInterval.extend({
-
   _strength: null,
   _originalPosition: null,
   _inverseDuration: undefined,
@@ -36,13 +35,16 @@ var FigureEight = cc.ActionInterval.extend({
       this.target.setPosition(this._originalPosition);
     } else if (delta < 0.5) {
       // Left circle
-      var x = this._originalPosition.x + (1.0 + Math.cos(Math.PI - delta * 4 * Math.PI)) * this._xStrength;
+      var x =
+        this._originalPosition.x +
+        (1.0 + Math.cos(Math.PI - delta * 4 * Math.PI)) * this._xStrength;
       var y = this._originalPosition.y + Math.sin(Math.PI - delta * 4 * Math.PI) * this._yStrength;
       this.target.setPosition(x, y);
     } else {
       // Right circle
       const subDelta = delta - 0.5;
-      var x = this._originalPosition.x + (-1.0 + Math.cos(subDelta * 4 * Math.PI)) * this._xStrength;
+      var x =
+        this._originalPosition.x + (-1.0 + Math.cos(subDelta * 4 * Math.PI)) * this._xStrength;
       var y = this._originalPosition.y + Math.sin(subDelta * 4 * Math.PI) * this._yStrength;
       this.target.setPosition(x, y);
     }

@@ -24,10 +24,12 @@ class ModifierSituationalBuffSelfIfHaveMech extends ModifierSituationalBuffSelf 
   }
 
   getIsSituationActiveForCache() {
-    const friendlyMinions = this.getGameSession().getBoard().getFriendlyEntitiesForEntity(this.getCard(), CardType.Unit, true, false);
+    const friendlyMinions = this.getGameSession()
+      .getBoard()
+      .getFriendlyEntitiesForEntity(this.getCard(), CardType.Unit, true, false);
     if (friendlyMinions != null) {
       for (var minion of Array.from<any>(friendlyMinions)) {
-        if ((minion != null) && minion.getBelongsToTribe(Races.Mech)) {
+        if (minion != null && minion.getBelongsToTribe(Races.Mech)) {
           return true;
         }
       }

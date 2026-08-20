@@ -26,7 +26,12 @@ class ModifierEntersBattlefieldWatchApplyModifiers extends ModifierEntersBattlef
         const result = [];
         for (var modifiersContextObject of Array.from<any>(this.modifiersContextObjects)) {
           if (modifiersContextObject != null) {
-            result.push(this.getGameSession().applyModifierContextObject(modifiersContextObject, this.getCard()));
+            result.push(
+              this.getGameSession().applyModifierContextObject(
+                modifiersContextObject,
+                this.getCard(),
+              ),
+            );
           } else {
             result.push(undefined);
           }
@@ -36,7 +41,8 @@ class ModifierEntersBattlefieldWatchApplyModifiers extends ModifierEntersBattlef
     }
   }
 }
-ModifierEntersBattlefieldWatchApplyModifiers.prototype.type = 'ModifierEntersBattlefieldWatchApplyModifiers';
+ModifierEntersBattlefieldWatchApplyModifiers.prototype.type =
+  'ModifierEntersBattlefieldWatchApplyModifiers';
 ModifierEntersBattlefieldWatchApplyModifiers.prototype.modifiersContextObjects = null;
 
 module.exports = ModifierEntersBattlefieldWatchApplyModifiers;

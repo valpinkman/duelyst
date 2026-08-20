@@ -39,7 +39,10 @@ class PlayerModifierSpellWatchHollowVortex extends PlayerModifierSpellWatch {
       let neutralMinions = [];
       let factionMinions = [];
       if (this.getGameSession().getGameFormat() === GameFormat.Standard) {
-        neutralMinions = this.getGameSession().getCardCaches().getIsLegacy(false).getFaction(Factions.Neutral)
+        neutralMinions = this.getGameSession()
+          .getCardCaches()
+          .getIsLegacy(false)
+          .getFaction(Factions.Neutral)
           .getType(CardType.Unit)
           .getIsHiddenInCollection(false)
           .getIsToken(false)
@@ -47,7 +50,10 @@ class PlayerModifierSpellWatchHollowVortex extends PlayerModifierSpellWatch {
           .getIsPrismatic(false)
           .getIsSkinned(false)
           .getCards();
-        factionMinions = this.getGameSession().getCardCaches().getIsLegacy(false).getFaction(this.getCard().getFactionId())
+        factionMinions = this.getGameSession()
+          .getCardCaches()
+          .getIsLegacy(false)
+          .getFaction(this.getCard().getFactionId())
           .getType(CardType.Unit)
           .getIsHiddenInCollection(false)
           .getIsToken(false)
@@ -56,14 +62,20 @@ class PlayerModifierSpellWatchHollowVortex extends PlayerModifierSpellWatch {
           .getIsSkinned(false)
           .getCards();
       } else {
-        neutralMinions = this.getGameSession().getCardCaches().getFaction(Factions.Neutral).getType(CardType.Unit)
+        neutralMinions = this.getGameSession()
+          .getCardCaches()
+          .getFaction(Factions.Neutral)
+          .getType(CardType.Unit)
           .getIsHiddenInCollection(false)
           .getIsToken(false)
           .getIsGeneral(false)
           .getIsPrismatic(false)
           .getIsSkinned(false)
           .getCards();
-        factionMinions = this.getGameSession().getCardCaches().getFaction(this.getCard().getFactionId()).getType(CardType.Unit)
+        factionMinions = this.getGameSession()
+          .getCardCaches()
+          .getFaction(this.getCard().getFactionId())
+          .getType(CardType.Unit)
           .getIsHiddenInCollection(false)
           .getIsToken(false)
           .getIsGeneral(false)
@@ -77,7 +89,7 @@ class PlayerModifierSpellWatchHollowVortex extends PlayerModifierSpellWatch {
       if (allMinions.length > 0) {
         let availableMinionAtCost = false;
         let possibleCards = [];
-        while (!availableMinionAtCost && (newCost >= 0)) {
+        while (!availableMinionAtCost && newCost >= 0) {
           var tempPossibilities = [];
           for (var minion of Array.from<any>(allMinions)) {
             if ((minion != null ? minion.getManaCost() : undefined) === newCost) {
@@ -97,14 +109,30 @@ class PlayerModifierSpellWatchHollowVortex extends PlayerModifierSpellWatch {
         }
 
         if (possibleCards.length > 0) {
-          const newUnit = possibleCards[this.getGameSession().getRandomIntegerForExecution(possibleCards.length)];
+          const newUnit =
+            possibleCards[this.getGameSession().getRandomIntegerForExecution(possibleCards.length)];
           const ownerId = this.getPlayerId();
-          const generalPosition = this.getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId()).getPosition();
-          const spawnPositions = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(this.getGameSession(), generalPosition, CONFIG.PATTERN_3x3, newUnit, this.getCard(), 1);
+          const generalPosition = this.getGameSession()
+            .getGeneralForPlayerId(this.getCard().getOwnerId())
+            .getPosition();
+          const spawnPositions = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(
+            this.getGameSession(),
+            generalPosition,
+            CONFIG.PATTERN_3x3,
+            newUnit,
+            this.getCard(),
+            1,
+          );
           return (() => {
             const result = [];
             for (var spawnPosition of Array.from<any>(spawnPositions)) {
-              var spawnAction = new PlayCardSilentlyAction(this.getGameSession(), ownerId, spawnPosition.x, spawnPosition.y, newUnit);
+              var spawnAction = new PlayCardSilentlyAction(
+                this.getGameSession(),
+                ownerId,
+                spawnPosition.x,
+                spawnPosition.y,
+                newUnit,
+              );
               spawnAction.setSource(this.getCard());
               result.push(this.getGameSession().executeAction(spawnAction));
             }

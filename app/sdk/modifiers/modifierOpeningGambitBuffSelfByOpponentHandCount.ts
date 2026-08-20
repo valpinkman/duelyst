@@ -13,7 +13,7 @@ class ModifierOpeningGambitBuffSelfByOpponentHandCount extends ModifierOpeningGa
   declare fxResource: any;
 
   static type = 'ModifierOpeningGambitBuffSelfByOpponentHandCount';
-  static description = 'Gains %X for each card in your opponent\'s action bar';
+  static description = "Gains %X for each card in your opponent's action bar";
 
   getPrivateDefaults(gameSession) {
     const p = super.getPrivateDefaults(gameSession);
@@ -24,9 +24,15 @@ class ModifierOpeningGambitBuffSelfByOpponentHandCount extends ModifierOpeningGa
   }
 
   static createContextObject(attackBuff, maxHPBuff, options) {
-    if (attackBuff == null) { attackBuff = 0; }
-    if (maxHPBuff == null) { maxHPBuff = 0; }
-    if (options == null) { options = undefined; }
+    if (attackBuff == null) {
+      attackBuff = 0;
+    }
+    if (maxHPBuff == null) {
+      maxHPBuff = 0;
+    }
+    if (options == null) {
+      options = undefined;
+    }
     const contextObject = super.createContextObject(options);
     const buffContextObject = Modifier.createContextObjectWithAttributeBuffs(attackBuff, maxHPBuff);
     buffContextObject.appliedName = 'Power of The Hand';
@@ -37,7 +43,13 @@ class ModifierOpeningGambitBuffSelfByOpponentHandCount extends ModifierOpeningGa
   static getDescription(modifierContextObject) {
     if (modifierContextObject) {
       const subContextObject = modifierContextObject.modifiersContextObjects[0];
-      return this.description.replace(/%X/, Stringifiers.stringifyAttackHealthBuff(subContextObject.attributeBuffs.atk, subContextObject.attributeBuffs.maxHP));
+      return this.description.replace(
+        /%X/,
+        Stringifiers.stringifyAttackHealthBuff(
+          subContextObject.attributeBuffs.atk,
+          subContextObject.attributeBuffs.maxHP,
+        ),
+      );
     }
     return this.description;
   }
@@ -45,19 +57,30 @@ class ModifierOpeningGambitBuffSelfByOpponentHandCount extends ModifierOpeningGa
   applyManagedModifiersFromModifiersContextObjects(modifiersContextObjects, card) {
     // apply once per card in opponent's hand
     return __range__(0, this._private.numCardsInHand, false).map((i) =>
-      super.applyManagedModifiersFromModifiersContextObjects(modifiersContextObjects, card));
+      super.applyManagedModifiersFromModifiersContextObjects(modifiersContextObjects, card),
+    );
   }
 
   onOpeningGambit() {
     super.onOpeningGambit();
 
-    this._private.numCardsInHand = this.getCard().getGameSession().getOpponentPlayerOfPlayerId(this.getCard().getOwnerId()).getDeck()
+    this._private.numCardsInHand = this.getCard()
+      .getGameSession()
+      .getOpponentPlayerOfPlayerId(this.getCard().getOwnerId())
+      .getDeck()
       .getNumCardsInHand();
-    return this.applyManagedModifiersFromModifiersContextObjects(this.modifiersContextObjects, this.getCard());
+    return this.applyManagedModifiersFromModifiersContextObjects(
+      this.modifiersContextObjects,
+      this.getCard(),
+    );
   }
 }
-ModifierOpeningGambitBuffSelfByOpponentHandCount.prototype.type = 'ModifierOpeningGambitBuffSelfByOpponentHandCount';
-ModifierOpeningGambitBuffSelfByOpponentHandCount.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierOpeningGambitBuffSelfByOpponentHandCount.prototype.type =
+  'ModifierOpeningGambitBuffSelfByOpponentHandCount';
+ModifierOpeningGambitBuffSelfByOpponentHandCount.prototype.fxResource = [
+  'FX.Modifiers.ModifierOpeningGambit',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 
 module.exports = ModifierOpeningGambitBuffSelfByOpponentHandCount;
 

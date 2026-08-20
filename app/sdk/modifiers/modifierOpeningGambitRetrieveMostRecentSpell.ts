@@ -29,12 +29,17 @@ class ModifierOpeningGambitRetrieveMostRecentSpell extends ModifierOpeningGambit
 
       if (spellToCopy != null) {
         // put fresh copy of spell into hand
-        const a = new PutCardInHandAction(this.getGameSession(), this.getCard().getOwnerId(), spellToCopy.createNewCardData());
+        const a = new PutCardInHandAction(
+          this.getGameSession(),
+          this.getCard().getOwnerId(),
+          spellToCopy.createNewCardData(),
+        );
         return this.getGameSession().executeAction(a);
       }
     }
   }
 }
-ModifierOpeningGambitRetrieveMostRecentSpell.prototype.type = 'ModifierOpeningGambitRetrieveMostRecentSpell';
+ModifierOpeningGambitRetrieveMostRecentSpell.prototype.type =
+  'ModifierOpeningGambitRetrieveMostRecentSpell';
 
 module.exports = ModifierOpeningGambitRetrieveMostRecentSpell;

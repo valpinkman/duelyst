@@ -22,9 +22,15 @@ class ModifierKillWatchRespawnEntity extends ModifierKillWatch {
   static description = 'Whenever Monolith Guardian destroys an enemy, it assimilates them';
 
   static createContextObject(spawnCount, spawnPattern, spawnSilently, options) {
-    if (spawnCount == null) { spawnCount = 1; }
-    if (spawnPattern == null) { spawnPattern = CONFIG.PATTERN_1x1; }
-    if (spawnSilently == null) { spawnSilently = true; }
+    if (spawnCount == null) {
+      spawnCount = 1;
+    }
+    if (spawnPattern == null) {
+      spawnPattern = CONFIG.PATTERN_1x1;
+    }
+    if (spawnSilently == null) {
+      spawnSilently = true;
+    }
     const contextObject = super.createContextObject(false, false, options);
     contextObject.spawnCount = spawnCount;
     contextObject.spawnPattern = spawnPattern;
@@ -42,16 +48,36 @@ class ModifierKillWatchRespawnEntity extends ModifierKillWatch {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
       const ownerId = this.getSpawnOwnerId(action);
       const cardDataOrIndexToSpawn = action.getTarget().createNewCardData();
-      const cardToSpawn = this.getGameSession().getExistingCardFromIndexOrCachedCardFromData(cardDataOrIndexToSpawn);
-      const spawnPositions = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(this.getGameSession(), action.getTargetPosition(), this.spawnPattern, cardToSpawn, this.getCard(), this.spawnCount);
+      const cardToSpawn =
+        this.getGameSession().getExistingCardFromIndexOrCachedCardFromData(cardDataOrIndexToSpawn);
+      const spawnPositions = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(
+        this.getGameSession(),
+        action.getTargetPosition(),
+        this.spawnPattern,
+        cardToSpawn,
+        this.getCard(),
+        this.spawnCount,
+      );
       return (() => {
         const result = [];
         for (var spawnPosition of Array.from<any>(spawnPositions)) {
           var spawnAction;
           if (this.spawnSilently) {
-            spawnAction = new PlayCardSilentlyAction(this.getGameSession(), ownerId, spawnPosition.x, spawnPosition.y, cardDataOrIndexToSpawn);
+            spawnAction = new PlayCardSilentlyAction(
+              this.getGameSession(),
+              ownerId,
+              spawnPosition.x,
+              spawnPosition.y,
+              cardDataOrIndexToSpawn,
+            );
           } else {
-            spawnAction = new PlayCardAction(this.getGameSession(), ownerId, spawnPosition.x, spawnPosition.y, cardDataOrIndexToSpawn);
+            spawnAction = new PlayCardAction(
+              this.getGameSession(),
+              ownerId,
+              spawnPosition.x,
+              spawnPosition.y,
+              cardDataOrIndexToSpawn,
+            );
           }
           spawnAction.setSource(this.getCard());
           result.push(this.getGameSession().executeAction(spawnAction));
@@ -66,7 +92,10 @@ class ModifierKillWatchRespawnEntity extends ModifierKillWatch {
   }
 }
 ModifierKillWatchRespawnEntity.prototype.type = 'ModifierKillWatchRespawnEntity';
-ModifierKillWatchRespawnEntity.prototype.fxResource = ['FX.Modifiers.ModifierKillWatch', 'FX.Modifiers.ModifierGenericSpawn'];
+ModifierKillWatchRespawnEntity.prototype.fxResource = [
+  'FX.Modifiers.ModifierKillWatch',
+  'FX.Modifiers.ModifierGenericSpawn',
+];
 ModifierKillWatchRespawnEntity.prototype.cardDataOrIndexToSpawn = null;
 
 module.exports = ModifierKillWatchRespawnEntity;

@@ -14,10 +14,13 @@ class ModifierOpponentSummonWatchDamageEnemyGeneral extends ModifierOpponentSumm
 
   static type = 'ModifierOpponentSummonWatchDamageEnemyGeneral';
   static modifierName = 'Opponent Summon Watch';
-  static description = 'Whenever your opponent summons a minion, deal %X damage to the enemy General';
+  static description =
+    'Whenever your opponent summons a minion, deal %X damage to the enemy General';
 
   static createContextObject(damageAmount, options) {
-    if (damageAmount == null) { damageAmount = 0; }
+    if (damageAmount == null) {
+      damageAmount = 0;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.damageAmount = damageAmount;
     return contextObject;
@@ -31,7 +34,9 @@ class ModifierOpponentSummonWatchDamageEnemyGeneral extends ModifierOpponentSumm
   }
 
   onSummonWatch(action) {
-    const general = this.getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
+    const general = this.getGameSession().getGeneralForOpponentOfPlayerId(
+      this.getCard().getOwnerId(),
+    );
     if (general != null) {
       const damageAction = new DamageAction(this.getGameSession());
       damageAction.setOwnerId(this.getCard().getOwnerId());
@@ -45,8 +50,12 @@ class ModifierOpponentSummonWatchDamageEnemyGeneral extends ModifierOpponentSumm
     }
   }
 }
-ModifierOpponentSummonWatchDamageEnemyGeneral.prototype.type = 'ModifierOpponentSummonWatchDamageEnemyGeneral';
+ModifierOpponentSummonWatchDamageEnemyGeneral.prototype.type =
+  'ModifierOpponentSummonWatchDamageEnemyGeneral';
 ModifierOpponentSummonWatchDamageEnemyGeneral.prototype.damageAmount = 0;
-ModifierOpponentSummonWatchDamageEnemyGeneral.prototype.fxResource = ['FX.Modifiers.ModifierOpponentSummonWatch', 'FX.Modifiers.ModifierGenericDamage'];
+ModifierOpponentSummonWatchDamageEnemyGeneral.prototype.fxResource = [
+  'FX.Modifiers.ModifierOpponentSummonWatch',
+  'FX.Modifiers.ModifierGenericDamage',
+];
 
 module.exports = ModifierOpponentSummonWatchDamageEnemyGeneral;

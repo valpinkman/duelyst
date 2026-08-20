@@ -15,12 +15,14 @@ class PlayerModifierFriendlyAttackWatch extends PlayerModifier {
 
   onAction(event) {
     super.onAction(event);
-    const {
-      action,
-    } = event;
+    const { action } = event;
     const source = action.getSource();
 
-    if (action instanceof AttackAction && (source.getOwnerId() === this.getOwnerId()) && !action.getIsImplicit()) {
+    if (
+      action instanceof AttackAction &&
+      source.getOwnerId() === this.getOwnerId() &&
+      !action.getIsImplicit()
+    ) {
       return this.onFriendlyAttackWatch(action);
     }
   }

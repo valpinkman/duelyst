@@ -51,14 +51,12 @@ describe('auth tokens', () => {
 
     it('expect an expired token to be rejected', () => {
       const token = jwt.sign(PAYLOAD, SECRET, { expiresIn: -10, algorithm: 'HS256' });
-      expect(() => jwt.verify(token, SECRET, { algorithms: ['HS256'] }))
-        .to.throw(/expired/i);
+      expect(() => jwt.verify(token, SECRET, { algorithms: ['HS256'] })).to.throw(/expired/i);
     });
 
     it('expect a token signed with a different secret to be rejected', () => {
       const token = jwt.sign(PAYLOAD, 'some-other-secret', { algorithm: 'HS256' });
-      expect(() => jwt.verify(token, SECRET, { algorithms: ['HS256'] }))
-        .to.throw(/signature/i);
+      expect(() => jwt.verify(token, SECRET, { algorithms: ['HS256'] })).to.throw(/signature/i);
     });
   });
 
@@ -73,14 +71,16 @@ describe('auth tokens', () => {
       const header = Buffer.from(JSON.stringify({ alg: 'none', typ: 'JWT' })).toString('base64url');
       const body = Buffer.from(JSON.stringify(PAYLOAD)).toString('base64url');
       const forged = `${header}.${body}.`;
-      expect(() => jwt.verify(forged, SECRET, { algorithms: ['HS256'] }))
-        .to.throw(/signature is required/i);
+      expect(() => jwt.verify(forged, SECRET, { algorithms: ['HS256'] })).to.throw(
+        /signature is required/i,
+      );
     });
 
     it('expect a token signed with an algorithm outside the allow-list to be rejected', () => {
       const token = jwt.sign(PAYLOAD, SECRET, { algorithm: 'HS512' });
-      expect(() => jwt.verify(token, SECRET, { algorithms: ['HS256'] }))
-        .to.throw(/invalid algorithm/i);
+      expect(() => jwt.verify(token, SECRET, { algorithms: ['HS256'] })).to.throw(
+        /invalid algorithm/i,
+      );
     });
   });
 

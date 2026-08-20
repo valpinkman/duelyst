@@ -29,10 +29,22 @@ class SpellKoanOfHorns extends Spell {
     const iterable = this.getOwner().getDeck().getCardsInHand();
     for (let i = 0; i < iterable.length; i++) {
       card = iterable[i];
-      if ((card != null) && (card.getType() === CardType.Unit) && !card.hasActiveModifierClass(ModifierCannotBeRemovedFromHand)) {
-        var removeCardFromHandAction = new RemoveCardFromHandAction(this.getGameSession(), i, this.getOwnerId());
+      if (
+        card != null &&
+        card.getType() === CardType.Unit &&
+        !card.hasActiveModifierClass(ModifierCannotBeRemovedFromHand)
+      ) {
+        var removeCardFromHandAction = new RemoveCardFromHandAction(
+          this.getGameSession(),
+          i,
+          this.getOwnerId(),
+        );
         this.getGameSession().executeAction(removeCardFromHandAction);
-        var putCardInHandAction = new PutCardInHandAction(this.getGameSession(), this.getOwnerId(), cardData);
+        var putCardInHandAction = new PutCardInHandAction(
+          this.getGameSession(),
+          this.getOwnerId(),
+          cardData,
+        );
         this.getGameSession().executeAction(putCardInHandAction);
       }
     }
@@ -41,10 +53,18 @@ class SpellKoanOfHorns extends Spell {
     return (() => {
       const result = [];
       for (card of Array.from<any>(this.getOwner().getDeck().getCardsInDrawPile())) {
-        if ((card != null) && (card.getType() === CardType.Unit)) {
-          var removeCardFromDeckAction = new RemoveCardFromDeckAction(this.getGameSession(), card.getIndex(), this.getOwnerId());
+        if (card != null && card.getType() === CardType.Unit) {
+          var removeCardFromDeckAction = new RemoveCardFromDeckAction(
+            this.getGameSession(),
+            card.getIndex(),
+            this.getOwnerId(),
+          );
           this.getGameSession().executeAction(removeCardFromDeckAction);
-          var putCardInDeckAction = new PutCardInDeckAction(this.getGameSession(), this.getOwnerId(), cardData);
+          var putCardInDeckAction = new PutCardInDeckAction(
+            this.getGameSession(),
+            this.getOwnerId(),
+            cardData,
+          );
           result.push(this.getGameSession().executeAction(putCardInDeckAction));
         } else {
           result.push(undefined);

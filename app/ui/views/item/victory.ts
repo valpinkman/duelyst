@@ -20,7 +20,6 @@ var i18next = require('i18next');
 var ConfirmDialogItemView = require('./confirm_dialog');
 
 var VictoryItemView = Backbone.Marionette.ItemView.extend({
-
   id: 'app-victory',
   className: 'status',
 
@@ -55,7 +54,6 @@ var VictoryItemView = Backbone.Marionette.ItemView.extend({
   _userNavLockId: 'VictoryUserNavLockId',
 
   templateHelpers: {
-
     havePlayRewardsBeenMaxed: function () {
       return this.model.get('has_maxed_play_count_rewards');
       // var last_maxed = this.model.get("play_awards_last_maxed_at")
@@ -89,7 +87,10 @@ var VictoryItemView = Backbone.Marionette.ItemView.extend({
     },
 
     shouldShowGameCounterRewards: function () {
-      return SDK.GameType.isCompetitiveGameType(SDK.GameSession.getInstance().getGameType()) && SDK.GameSession.getInstance().getGameType() != SDK.GameType.Rift;
+      return (
+        SDK.GameType.isCompetitiveGameType(SDK.GameSession.getInstance().getGameType()) &&
+        SDK.GameSession.getInstance().getGameType() != SDK.GameType.Rift
+      );
     },
 
     winsToReward: function () {
@@ -123,13 +124,17 @@ var VictoryItemView = Backbone.Marionette.ItemView.extend({
     },
 
     hasMaxedSinglePlayerXp: function () {
-      return this.model.get('is_scored') && (SDK.GameSession.getInstance().getGameType() == SDK.GameType.SinglePlayer || SDK.GameSession.getInstance().getGameType() == SDK.GameType.BossBattle || SDK.GameSession.getInstance().getGameType() == SDK.GameType.Friendly) && this.model.get('faction_xp_earned') == null;
+      return (
+        this.model.get('is_scored') &&
+        (SDK.GameSession.getInstance().getGameType() == SDK.GameType.SinglePlayer ||
+          SDK.GameSession.getInstance().getGameType() == SDK.GameType.BossBattle ||
+          SDK.GameSession.getInstance().getGameType() == SDK.GameType.Friendly) &&
+        this.model.get('faction_xp_earned') == null
+      );
     },
-
   },
 
-  initialize: function () {
-  },
+  initialize: function () {},
 
   /* region MODEL to VIEW DATA */
 
@@ -151,11 +156,15 @@ var VictoryItemView = Backbone.Marionette.ItemView.extend({
       myPlayerWon = myPlayer === winningPlayer;
     }
 
-    data.is_network_game = SDK.GameType.isNetworkGameType(SDK.GameSession.getInstance().getGameType());
+    data.is_network_game = SDK.GameType.isNetworkGameType(
+      SDK.GameSession.getInstance().getGameType(),
+    );
     data.is_spectate_or_replay = SDK.GameSession.getInstance().getIsSpectateMode();
     data.has_won = myPlayerWon;
 
-    var playerSetupData = SDK.GameSession.getInstance().getPlayerSetupDataForPlayerId(myPlayer.getPlayerId());
+    var playerSetupData = SDK.GameSession.getInstance().getPlayerSetupDataForPlayerId(
+      myPlayer.getPlayerId(),
+    );
     var factionData = SDK.FactionFactory.factionForIdentifier(playerSetupData.factionId);
     data.faction_name = factionData.name;
 
@@ -173,9 +182,11 @@ var VictoryItemView = Backbone.Marionette.ItemView.extend({
     // figure out last opponent name / id
     if (data.opponent_id) {
       if (SDK.GameType.isCompetitiveGameType(SDK.GameSession.getInstance().getGameType())) {
-        var buddyExists = ChatManager.getInstance().getBuddiesCollection().find(function (buddy) {
-          return (buddy.get('id') == data.opponent_id);
-        });
+        var buddyExists = ChatManager.getInstance()
+          .getBuddiesCollection()
+          .find(function (buddy) {
+            return buddy.get('id') == data.opponent_id;
+          });
         data.show_add_buddy = !buddyExists;
 
         if (data.is_winner && !isFriendly) {
@@ -214,7 +225,7 @@ var VictoryItemView = Backbone.Marionette.ItemView.extend({
     var winningPlayer = SDK.GameSession.getInstance().getWinner();
     var myPlayer = SDK.GameSession.getInstance().getMyPlayer();
 
-    this.$el.find('[data-toggle=\'tooltip\']').tooltip();
+    this.$el.find("[data-toggle='tooltip']").tooltip();
 
     if (SDK.GameSession.getInstance().isSandbox()) {
       this.ui.result.addClass('friendly');
@@ -235,7 +246,7 @@ var VictoryItemView = Backbone.Marionette.ItemView.extend({
     // unlock user triggered navigation
     NavigationManager.getInstance().requestUserTriggeredNavigationUnlocked(this._userNavLockId);
 
-    this.$el.find('[data-toggle=\'tooltip\']').tooltip('destroy');
+    this.$el.find("[data-toggle='tooltip']").tooltip('destroy');
   },
 
   onAnimatedIn: function () {
@@ -254,7 +265,10 @@ var VictoryItemView = Backbone.Marionette.ItemView.extend({
       lastGame = GamesManager.getInstance().playerGames.last();
     }
     if (lastGame && SDK.GameSession.getInstance().getGameId() === lastGame.get('game_id')) {
-      if (lastGame.get('is_scored') && SDK.GameType.isFactionXPGameType(SDK.GameSession.getInstance().getGameType())) {
+      if (
+        lastGame.get('is_scored') &&
+        SDK.GameType.isFactionXPGameType(SDK.GameSession.getInstance().getGameType())
+      ) {
         var data = this.model.attributes;
         var factionName = SDK.FactionFactory.factionForIdentifier(data.faction_id).name;
 
@@ -272,49 +286,78 @@ var VictoryItemView = Backbone.Marionette.ItemView.extend({
           // Lock while we show level up animation
           NavigationManager.getInstance().requestUserTriggeredNavigationLocked(this._userNavLockId);
 
-          var xp_current_percent = Math.min(100, 100 * levelXPProgress / levelUpXPRequired);
-          var xp_earned_percent = Math.min(100, 100 * (levelUpXPRequired - levelXPProgress) / levelUpXPRequired);
+          var xp_current_percent = Math.min(100, (100 * levelXPProgress) / levelUpXPRequired);
+          var xp_earned_percent = Math.min(
+            100,
+            (100 * (levelUpXPRequired - levelXPProgress)) / levelUpXPRequired,
+          );
 
-          this.animateFactionProgress(xp_current_percent, xp_earned_percent, function () {
-            this.showLevelUpAnimation(function () {
-              var nextLevel = SDK.FactionProgression.levelForXP(xp);
-              var nextLevelXPCost = SDK.FactionProgression.totalXPForLevel(nextLevel);
-              var nextLevelXPProgress = xp - nextLevelXPCost;
-              var nextLevelXPRequired = SDK.FactionProgression.deltaXPForLevel(nextLevel + 1);
+          this.animateFactionProgress(
+            xp_current_percent,
+            xp_earned_percent,
+            function () {
+              this.showLevelUpAnimation(
+                function () {
+                  var nextLevel = SDK.FactionProgression.levelForXP(xp);
+                  var nextLevelXPCost = SDK.FactionProgression.totalXPForLevel(nextLevel);
+                  var nextLevelXPProgress = xp - nextLevelXPCost;
+                  var nextLevelXPRequired = SDK.FactionProgression.deltaXPForLevel(nextLevel + 1);
 
-              var xp_next_earned_percent = 100 * nextLevelXPProgress / nextLevelXPRequired;
+                  var xp_next_earned_percent = (100 * nextLevelXPProgress) / nextLevelXPRequired;
 
-              this.animateFactionProgress(0, xp_next_earned_percent);
+                  this.animateFactionProgress(0, xp_next_earned_percent);
 
-              this.ui.factionLevel.velocity({
-                opacity: [0, 'easeOutCubic', 1],
-              }, {
-                duration: 800,
-                complete: function () {
-                  // show level indexed off of 1
-                  this.ui.factionLevel.text(factionName + ' - ' + i18next.t('common.xp_level').toUpperCase() + ' ' + (nextLevel + 1));
-                  this.ui.factionLevel.velocity({
-                    opacity: [1, 'easeOutCubic', 0],
-                  }, {
-                    duration: 400,
-                    complete: function () {
-                      NavigationManager.getInstance().requestUserTriggeredNavigationUnlocked(this._userNavLockId);
-                    }.bind(this),
-                  });
+                  this.ui.factionLevel.velocity(
+                    {
+                      opacity: [0, 'easeOutCubic', 1],
+                    },
+                    {
+                      duration: 800,
+                      complete: function () {
+                        // show level indexed off of 1
+                        this.ui.factionLevel.text(
+                          factionName +
+                            ' - ' +
+                            i18next.t('common.xp_level').toUpperCase() +
+                            ' ' +
+                            (nextLevel + 1),
+                        );
+                        this.ui.factionLevel.velocity(
+                          {
+                            opacity: [1, 'easeOutCubic', 0],
+                          },
+                          {
+                            duration: 400,
+                            complete: function () {
+                              NavigationManager.getInstance().requestUserTriggeredNavigationUnlocked(
+                                this._userNavLockId,
+                              );
+                            }.bind(this),
+                          },
+                        );
+                      }.bind(this),
+                    },
+                  );
                 }.bind(this),
-              });
-            }.bind(this));
-          }.bind(this));
+              );
+            }.bind(this),
+          );
         } else if (xp_earned) {
           // Lock while we show xp gained animation
           NavigationManager.getInstance().requestUserTriggeredNavigationLocked(this._userNavLockId);
 
-          var xp_current_percent = Math.min(100, 100 * levelXPProgress / levelUpXPRequired);
-          var xp_earned_percent = Math.min(100, 100 * xp_earned / levelUpXPRequired);
+          var xp_current_percent = Math.min(100, (100 * levelXPProgress) / levelUpXPRequired);
+          var xp_earned_percent = Math.min(100, (100 * xp_earned) / levelUpXPRequired);
 
-          this.animateFactionProgress(xp_current_percent, xp_earned_percent, function () {
-            NavigationManager.getInstance().requestUserTriggeredNavigationUnlocked(this._userNavLockId);
-          }.bind(this));
+          this.animateFactionProgress(
+            xp_current_percent,
+            xp_earned_percent,
+            function () {
+              NavigationManager.getInstance().requestUserTriggeredNavigationUnlocked(
+                this._userNavLockId,
+              );
+            }.bind(this),
+          );
         }
       }
     }
@@ -326,10 +369,13 @@ var VictoryItemView = Backbone.Marionette.ItemView.extend({
       victoryLayer.showLevelUpEffect();
     }
 
-    this.ui.levelUpNotice.velocity({
-      opacity: [1, 'easeOutCubic', 0],
-      translateY: ['0px', 'easeOutCubic', '100px'],
-    }, { duration: 800, complete: onComplete });
+    this.ui.levelUpNotice.velocity(
+      {
+        opacity: [1, 'easeOutCubic', 0],
+        translateY: ['0px', 'easeOutCubic', '100px'],
+      },
+      { duration: 800, complete: onComplete },
+    );
   },
 
   animateFactionProgress: function (percentCurrent, percentEarned, onComplete) {
@@ -339,15 +385,21 @@ var VictoryItemView = Backbone.Marionette.ItemView.extend({
     this.ui.progressBarEarned.width(0);
 
     this.ui.progressBarEarned.css('backgroundColor', '#6dcff6');
-    this.ui.progressBarEarned.velocity({ width: [percentEarned + '%', 'none', '0%'] }, {
-      duration: 1000,
-      complete: function () {
-        // this.ui.progressBarEarned.velocity({ width: [ "0%", "none", percentEarned+"%" ] }, { duration: 1000 });
-        // this.ui.progressBarComplete.velocity({ width: [ totalWidth+"%", "none", percentCurrent+"%" ] }, { duration: 1000, complete:onComplete });
+    this.ui.progressBarEarned.velocity(
+      { width: [percentEarned + '%', 'none', '0%'] },
+      {
+        duration: 1000,
+        complete: function () {
+          // this.ui.progressBarEarned.velocity({ width: [ "0%", "none", percentEarned+"%" ] }, { duration: 1000 });
+          // this.ui.progressBarComplete.velocity({ width: [ totalWidth+"%", "none", percentCurrent+"%" ] }, { duration: 1000, complete:onComplete });
 
-        this.ui.progressBarEarned.velocity({ backgroundColor: '#ffffff' }, { duration: 400, complete: onComplete });
-      }.bind(this),
-    });
+          this.ui.progressBarEarned.velocity(
+            { backgroundColor: '#ffffff' },
+            { duration: 400, complete: onComplete },
+          );
+        }.bind(this),
+      },
+    );
   },
 
   onAddOpponentToBuddiesPress: function (e) {
@@ -355,8 +407,7 @@ var VictoryItemView = Backbone.Marionette.ItemView.extend({
     this.ui.opponentInfo.find('.btn').addClass('hide');
 
     var lastOpponentName = this.model.get('opponent_username');
-    if (lastOpponentName)
-      ChatManager.getInstance().inviteBuddy(lastOpponentName);
+    if (lastOpponentName) ChatManager.getInstance().inviteBuddy(lastOpponentName);
 
     // e.isStopped = true;
     e.preventDefault();
@@ -379,18 +430,20 @@ var VictoryItemView = Backbone.Marionette.ItemView.extend({
       var dialog = new ConfirmDialogItemView({
         title: i18next.t('battle.gold_tip_confirm_message'),
       });
-      this.listenToOnce(dialog, 'confirm', function () {
-        NewPlayerManager.getInstance().setHasSeenGameGoldTipConfirmation(true);
-        this.onTipPress(e);
-      }.bind(this));
+      this.listenToOnce(
+        dialog,
+        'confirm',
+        function () {
+          NewPlayerManager.getInstance().setHasSeenGameGoldTipConfirmation(true);
+          this.onTipPress(e);
+        }.bind(this),
+      );
       NavigationManager.getInstance().showDialogView(dialog);
       return;
     }
 
-    if (this._hasTipped)
-      return;
-    else
-      this._hasTipped = true;
+    if (this._hasTipped) return;
+    else this._hasTipped = true;
 
     var lastGame = GamesManager.getInstance().playerGames.last();
     var lastOpponentId = lastGame ? lastGame.get('opponent_id') : null;
@@ -413,14 +466,13 @@ var VictoryItemView = Backbone.Marionette.ItemView.extend({
     p.x = p.left - cc.winSize.width / 2 + $(e.currentTarget).width() / 2;
     p.y = cc.winSize.height - p.top - cc.winSize.height / 2;
 
-    $(e.currentTarget).get(0).animate([
-      { opacity: 1.0 },
-      { opacity: 0.0 },
-    ], {
-      duration: 100,
-      delay: 0,
-      fill: 'forwards',
-    });
+    $(e.currentTarget)
+      .get(0)
+      .animate([{ opacity: 1.0 }, { opacity: 0.0 }], {
+        duration: 100,
+        delay: 0,
+        fill: 'forwards',
+      });
 
     var victoryLayer = Scene.getInstance().getOverlay();
     if (victoryLayer instanceof VictoryLayer) {

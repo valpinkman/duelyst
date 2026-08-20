@@ -53,7 +53,7 @@ class WartechGeneralFaction2Achievement extends Achievement {
   }
 
   static rewardUnlockMessage(progressMade) {
-    if ((progressMade == null)) {
+    if (progressMade == null) {
       progressMade = 0;
     }
 
@@ -62,12 +62,16 @@ class WartechGeneralFaction2Achievement extends Achievement {
     return `Win ${progressNeeded} more online matches with Songhai to unlock.`;
   }
 }
-WartechGeneralFaction2Achievement.title = i18next.t('achievements.wartech_general_achievement_title', { faction_name: i18next.t('factions.faction_2_abbreviated_name') });
-WartechGeneralFaction2Achievement.description = i18next.t('achievements.wartech_general_achievement_desc', { faction_name: i18next.t('factions.faction_2_abbreviated_name') });
+WartechGeneralFaction2Achievement.title = i18next.t(
+  'achievements.wartech_general_achievement_title',
+  { faction_name: i18next.t('factions.faction_2_abbreviated_name') },
+);
+WartechGeneralFaction2Achievement.description = i18next.t(
+  'achievements.wartech_general_achievement_desc',
+  { faction_name: i18next.t('factions.faction_2_abbreviated_name') },
+);
 WartechGeneralFaction2Achievement.rewards = {
-  cards: [
-    Cards.Faction2.ThirdGeneral,
-  ],
+  cards: [Cards.Faction2.ThirdGeneral],
 };
 
 module.exports = WartechGeneralFaction2Achievement;

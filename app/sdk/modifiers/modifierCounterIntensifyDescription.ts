@@ -19,7 +19,9 @@ class ModifierCounterIntensifyDescription extends Modifier {
 
   static getDescription(modifierContextObject) {
     if (modifierContextObject) {
-      return i18next.t('modifiers.intensify_counter_applied_desc', { intensify_effect_level: modifierContextObject.intensifyLevel });
+      return i18next.t('modifiers.intensify_counter_applied_desc', {
+        intensify_effect_level: modifierContextObject.intensifyLevel,
+      });
     }
   }
 }

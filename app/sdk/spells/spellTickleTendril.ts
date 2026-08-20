@@ -20,8 +20,10 @@ class SpellTickleTendril extends Spell {
 
     if (entity != null) {
       let maxDamageAmount = 0;
-      for (var card of Array.from<any>(this.getGameSession().getBoard().getCards(CardType.Tile, true))) {
-        if ((card.getBaseCardId() === Cards.Tile.Shadow) && card.isOwnedBy(this.getOwner())) {
+      for (var card of Array.from<any>(
+        this.getGameSession().getBoard().getCards(CardType.Tile, true),
+      )) {
+        if (card.getBaseCardId() === Cards.Tile.Shadow && card.isOwnedBy(this.getOwner())) {
           maxDamageAmount++; // increase damage of spell
         }
       }

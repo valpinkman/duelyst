@@ -19,7 +19,9 @@ class ModifierDyingWishDamageEnemyGeneralHealGeneral extends ModifierDyingWish {
   static description = 'Deal %X damage to the enemy General. Restore %X Health to your General';
 
   static createContextObject(healthChangeAmount) {
-    if (healthChangeAmount == null) { healthChangeAmount = 0; }
+    if (healthChangeAmount == null) {
+      healthChangeAmount = 0;
+    }
     const contextObject = super.createContextObject();
     contextObject.healthChangeAmount = healthChangeAmount;
     return contextObject;
@@ -33,7 +35,9 @@ class ModifierDyingWishDamageEnemyGeneralHealGeneral extends ModifierDyingWish {
   }
 
   onDyingWish() {
-    const enemyGeneral = this.getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
+    const enemyGeneral = this.getGameSession().getGeneralForOpponentOfPlayerId(
+      this.getCard().getOwnerId(),
+    );
     const myGeneral = this.getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
 
     if (enemyGeneral != null) {
@@ -53,8 +57,12 @@ class ModifierDyingWishDamageEnemyGeneralHealGeneral extends ModifierDyingWish {
     }
   }
 }
-ModifierDyingWishDamageEnemyGeneralHealGeneral.prototype.type = 'ModifierDyingWishDamageEnemyGeneralHealGeneral';
+ModifierDyingWishDamageEnemyGeneralHealGeneral.prototype.type =
+  'ModifierDyingWishDamageEnemyGeneralHealGeneral';
 ModifierDyingWishDamageEnemyGeneralHealGeneral.prototype.healthChangeAmount = 0;
-ModifierDyingWishDamageEnemyGeneralHealGeneral.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericChain'];
+ModifierDyingWishDamageEnemyGeneralHealGeneral.prototype.fxResource = [
+  'FX.Modifiers.ModifierDyingWish',
+  'FX.Modifiers.ModifierGenericChain',
+];
 
 module.exports = ModifierDyingWishDamageEnemyGeneralHealGeneral;

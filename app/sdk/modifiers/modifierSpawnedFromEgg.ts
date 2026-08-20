@@ -28,13 +28,15 @@ class ModifierSpawnedFromEgg extends Modifier {
     if (this._private.cachedIsActive) {
       // if General ended up in an Egg and is respawning, make sure it is not set as General
       card = this.getCard();
-      if ((card.getType() === CardType.Unit) && card.getIsGeneral()) {
+      if (card.getType() === CardType.Unit && card.getIsGeneral()) {
         card.setIsGeneral(false);
       }
 
       // set exhaustion state of hatched card to not exhausted
       // only do this when this modifier is initially applied to the card
-      const setExhaustionAction = this.getGameSession().createActionForType(SetExhaustionAction.type);
+      const setExhaustionAction = this.getGameSession().createActionForType(
+        SetExhaustionAction.type,
+      );
       setExhaustionAction.setExhausted(false);
       setExhaustionAction.setMovesMade(0);
       setExhaustionAction.setAttacksMade(0);

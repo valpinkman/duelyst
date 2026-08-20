@@ -21,10 +21,16 @@ class ModifierSpellWatchApplyModifiers extends ModifierSpellWatch {
   }
 
   onSpellWatch(action) {
-    return this.applyManagedModifiersFromModifiersContextObjects(this.modifiersContextObjects, this.getCard());
+    return this.applyManagedModifiersFromModifiersContextObjects(
+      this.modifiersContextObjects,
+      this.getCard(),
+    );
   }
 }
 ModifierSpellWatchApplyModifiers.prototype.type = 'ModifierSpellWatchApplyModifiers';
-ModifierSpellWatchApplyModifiers.prototype.fxResource = ['FX.Modifiers.ModifierSpellWatch', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierSpellWatchApplyModifiers.prototype.fxResource = [
+  'FX.Modifiers.ModifierSpellWatch',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 
 module.exports = ModifierSpellWatchApplyModifiers;

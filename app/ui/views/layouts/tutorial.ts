@@ -27,7 +27,6 @@ var Analytics = require('app/common/analytics');
 var GameLayout = require('./game');
 
 var TutorialLayout = GameLayout.extend({
-
   _playerIntroduced: false,
   _playerReady: false,
 
@@ -71,53 +70,66 @@ var TutorialLayout = GameLayout.extend({
 
     if (this._lesson.getSkipMulligan()) {
       // skip mulligan
-      gameLayer.whenStatus(GameLayer.STATUS.ACTIVE).then(function () {
-        // unlock player selection
-        Scene.getInstance().getGameLayer().requestPlayerSelectionUnlocked(this.playerSelectionLockedId);
+      gameLayer.whenStatus(GameLayer.STATUS.ACTIVE).then(
+        function () {
+          // unlock player selection
+          Scene.getInstance()
+            .getGameLayer()
+            .requestPlayerSelectionUnlocked(this.playerSelectionLockedId);
 
-        // activate first instruction
-        this._lesson.activateNextInstruction();
+          // activate first instruction
+          this._lesson.activateNextInstruction();
 
-        // trigger the agents first action
-        var opponentAgent = this._lesson.getOpponentAgent();
-        if (opponentAgent && !this._lesson.userIsPlayer1) {
-          opponentAgent.gatherAgentActionSequenceAfterStep(null);
-          this.executeAgentActions();
-        }
-      }.bind(this));
+          // trigger the agents first action
+          var opponentAgent = this._lesson.getOpponentAgent();
+          if (opponentAgent && !this._lesson.userIsPlayer1) {
+            opponentAgent.gatherAgentActionSequenceAfterStep(null);
+            this.executeAgentActions();
+          }
+        }.bind(this),
+      );
     } else {
       // start at mulligan
-      gameLayer.whenStatus(GameLayer.STATUS.CHOOSE_HAND).then(function () {
-        // unlock player selection
-        Scene.getInstance().getGameLayer().requestPlayerSelectionUnlocked(this.playerSelectionLockedId);
+      gameLayer.whenStatus(GameLayer.STATUS.CHOOSE_HAND).then(
+        function () {
+          // unlock player selection
+          Scene.getInstance()
+            .getGameLayer()
+            .requestPlayerSelectionUnlocked(this.playerSelectionLockedId);
 
-        // show mulligan ui
-        if (this._lesson.mulliganInstructionLabel) {
-          this._currentInstructionLabels = [this._lesson.mulliganInstructionLabel];
-          this._instructionNodesForCurrentInstruction = {};
-          this._showNextInstructionLabel();
-        }
-
-        if (this._lesson.requiredMulliganHandIndices) {
-          for (var i = 0; i < this._lesson.requiredMulliganHandIndices.length; i++) {
-            var currentMulliganIndex = this._lesson.requiredMulliganHandIndices[i];
-            var cardNode = gameLayer.getBottomDeckLayer().getCardNodes()[currentMulliganIndex];
-            cardNode.addInjectedVisualStateTagWithId(CardNodeVisualStateTag.createShowGlowForPlayerTag(true, 3), this._cardToPlayInjectedId);
+          // show mulligan ui
+          if (this._lesson.mulliganInstructionLabel) {
+            this._currentInstructionLabels = [this._lesson.mulliganInstructionLabel];
+            this._instructionNodesForCurrentInstruction = {};
+            this._showNextInstructionLabel();
           }
-        }
-      }.bind(this));
 
-      gameLayer.whenStatus(GameLayer.STATUS.ACTIVE).then(function () {
-        // activate first instruction
-        this._lesson.activateNextInstruction();
+          if (this._lesson.requiredMulliganHandIndices) {
+            for (var i = 0; i < this._lesson.requiredMulliganHandIndices.length; i++) {
+              var currentMulliganIndex = this._lesson.requiredMulliganHandIndices[i];
+              var cardNode = gameLayer.getBottomDeckLayer().getCardNodes()[currentMulliganIndex];
+              cardNode.addInjectedVisualStateTagWithId(
+                CardNodeVisualStateTag.createShowGlowForPlayerTag(true, 3),
+                this._cardToPlayInjectedId,
+              );
+            }
+          }
+        }.bind(this),
+      );
 
-        // trigger the agents first action
-        var opponentAgent = this._lesson.getOpponentAgent();
-        if (opponentAgent && !this._lesson.userIsPlayer1) {
-          opponentAgent.gatherAgentActionSequenceAfterStep(null);
-          this.executeAgentActions();
-        }
-      }.bind(this));
+      gameLayer.whenStatus(GameLayer.STATUS.ACTIVE).then(
+        function () {
+          // activate first instruction
+          this._lesson.activateNextInstruction();
+
+          // trigger the agents first action
+          var opponentAgent = this._lesson.getOpponentAgent();
+          if (opponentAgent && !this._lesson.userIsPlayer1) {
+            opponentAgent.gatherAgentActionSequenceAfterStep(null);
+            this.executeAgentActions();
+          }
+        }.bind(this),
+      );
     }
   },
 
@@ -131,23 +143,29 @@ var TutorialLayout = GameLayout.extend({
     if (!this._playerIntroduced) {
       // show tutorial intro screen
       this._playerIntroduced = true;
-      var tutorialIntroView = new TutorialIntroView({ model: new Backbone.Model({ challenge: this._lesson }) });
-      var tutorialIntroPromise = new Promise(function (resolve, reject) {
-        tutorialIntroView.listenToOnce(tutorialIntroView, 'start_tutorial', resolve);
-      }.bind(this));
+      var tutorialIntroView = new TutorialIntroView({
+        model: new Backbone.Model({ challenge: this._lesson }),
+      });
+      var tutorialIntroPromise = new Promise(
+        function (resolve, reject) {
+          tutorialIntroView.listenToOnce(tutorialIntroView, 'start_tutorial', resolve);
+        }.bind(this),
+      );
       nextStepPromise = Promise.all([
         this.customOverlayRegion.show(tutorialIntroView),
         tutorialIntroPromise,
-      ]).then(function () {
-        // flag tutorial as ready to start
-        this._playerReady = true;
+      ]).then(
+        function () {
+          // flag tutorial as ready to start
+          this._playerReady = true;
 
-        // remove tutorial intro screen
-        this.customOverlayRegion.empty();
+          // remove tutorial intro screen
+          this.customOverlayRegion.empty();
 
-        // show next step
-        return this.showNextStepInGameSetup();
-      }.bind(this));
+          // show next step
+          return this.showNextStepInGameSetup();
+        }.bind(this),
+      );
     } else if (this._playerReady) {
       nextStepPromise = GameLayout.prototype.showNextStepInGameSetup.apply(this, arguments);
     } else {
@@ -161,7 +179,10 @@ var TutorialLayout = GameLayout.extend({
     var showChooseHandPromise = GameLayout.prototype.showChooseHand.apply(this, arguments);
 
     // hide confirm button for choosing hand immediately
-    if (this._lesson.requiredMulliganHandIndices && this._lesson.requiredMulliganHandIndices.length > 0) {
+    if (
+      this._lesson.requiredMulliganHandIndices &&
+      this._lesson.requiredMulliganHandIndices.length > 0
+    ) {
       if (this.chooseHandView) {
         this.chooseHandView.setConfirmButtonVisibility(false);
       }
@@ -220,21 +241,61 @@ var TutorialLayout = GameLayout.extend({
         gameLayer.middlegroundLayer.addChild(this._targetEnemySprite);
 
         // listen to game events
-        this.listenTo(SDK.GameSession.getInstance().getEventBus(), EVENTS.start_step, this.onStartStep);
-        this.listenTo(SDK.GameSession.getInstance().getEventBus(), EVENTS.invalid_action, this.onInvalidAction);
-        this.listenTo(SDK.GameSession.getInstance().getEventBus(), EVENTS.start_turn, this._onStartTurn);
+        this.listenTo(
+          SDK.GameSession.getInstance().getEventBus(),
+          EVENTS.start_step,
+          this.onStartStep,
+        );
+        this.listenTo(
+          SDK.GameSession.getInstance().getEventBus(),
+          EVENTS.invalid_action,
+          this.onInvalidAction,
+        );
+        this.listenTo(
+          SDK.GameSession.getInstance().getEventBus(),
+          EVENTS.start_turn,
+          this._onStartTurn,
+        );
 
-        this.listenTo(gameLayer.getEventBus(), EVENTS.game_selection_changed, this.onSelectionChanged);
+        this.listenTo(
+          gameLayer.getEventBus(),
+          EVENTS.game_selection_changed,
+          this.onSelectionChanged,
+        );
         this.listenTo(gameLayer.getEventBus(), EVENTS.game_hover_changed, this.onHoverChanged);
         this.listenTo(gameLayer.getEventBus(), EVENTS.after_show_action, this.onAfterShowAction);
-        this.listenTo(gameLayer.getEventBus(), EVENTS.mulligan_card_selected, this.onMulliganCardSelected);
-        this.listenTo(gameLayer.getEventBus(), EVENTS.mulligan_card_deselected, this.onMulliganCardDeselected);
-        this.listenTo(gameLayer.getEventBus(), EVENTS.instruction_node_pressed, this.onInstructionNodePressed);
-        this.listenTo(gameLayer.getEventBus(), EVENTS.general_speech_done_showing, this.onUIDoneShowing);
-        this.listenTo(gameLayer.getEventBus(), EVENTS.instruction_node_done_showing, this.onUIDoneShowing);
+        this.listenTo(
+          gameLayer.getEventBus(),
+          EVENTS.mulligan_card_selected,
+          this.onMulliganCardSelected,
+        );
+        this.listenTo(
+          gameLayer.getEventBus(),
+          EVENTS.mulligan_card_deselected,
+          this.onMulliganCardDeselected,
+        );
+        this.listenTo(
+          gameLayer.getEventBus(),
+          EVENTS.instruction_node_pressed,
+          this.onInstructionNodePressed,
+        );
+        this.listenTo(
+          gameLayer.getEventBus(),
+          EVENTS.general_speech_done_showing,
+          this.onUIDoneShowing,
+        );
+        this.listenTo(
+          gameLayer.getEventBus(),
+          EVENTS.instruction_node_done_showing,
+          this.onUIDoneShowing,
+        );
 
         // listen to challenge events
-        this.listenTo(this._lesson.getEventBus(), EVENTS.instruction_triggered, this.onInstructionTriggered);
+        this.listenTo(
+          this._lesson.getEventBus(),
+          EVENTS.instruction_triggered,
+          this.onInstructionTriggered,
+        );
         this.listenTo(this._lesson.getEventBus(), EVENTS.challenge_reset, this.onChallengeReset);
         this.listenTo(this._lesson.getEventBus(), EVENTS.challenge_start, this._showChallengeStart);
 
@@ -287,7 +348,11 @@ var TutorialLayout = GameLayout.extend({
     var action = event.action;
     if (action instanceof SDK.RemoveAction) {
       var actionTarget = action.getTarget();
-      if (actionTarget != null && actionTarget.getIsGeneral() && actionTarget.getOwnerId() == SDK.GameSession.current().getMyPlayerId()) {
+      if (
+        actionTarget != null &&
+        actionTarget.getIsGeneral() &&
+        actionTarget.getOwnerId() == SDK.GameSession.current().getMyPlayerId()
+      ) {
         this._showChallengeLost();
       }
     }
@@ -301,7 +366,10 @@ var TutorialLayout = GameLayout.extend({
     } else {
       // Reveal confirm mulligan button if all required mulligan cards have been mulliganned
       if (this._lesson && this._lesson.requiredMulliganHandIndices) {
-        if (_.difference(this._lesson.requiredMulliganHandIndices, gameLayer.getMulliganIndices()).length == 0) {
+        if (
+          _.difference(this._lesson.requiredMulliganHandIndices, gameLayer.getMulliganIndices())
+            .length == 0
+        ) {
           if (this.chooseHandView) {
             this.chooseHandView.setConfirmButtonVisibility(true);
           }
@@ -315,7 +383,10 @@ var TutorialLayout = GameLayout.extend({
     var gameLayer = scene && scene.getGameLayer();
     // hide confirm mulligan button if any required mulligan cards have not been mulliganned
     if (this._lesson && this._lesson.requiredMulliganHandIndices) {
-      if (_.difference(this._lesson.requiredMulliganHandIndices, gameLayer.getMulliganIndices()).length != 0) {
+      if (
+        _.difference(this._lesson.requiredMulliganHandIndices, gameLayer.getMulliganIndices())
+          .length != 0
+      ) {
         if (this.chooseHandView) {
           this.chooseHandView.setConfirmButtonVisibility(false);
         }
@@ -325,18 +396,33 @@ var TutorialLayout = GameLayout.extend({
 
   onHoverChanged: function (event) {
     var hovered = event && event.hovered;
-    if (this._currentInstructionShowing && hovered != null && hovered.x != null && hovered.y != null) {
+    if (
+      this._currentInstructionShowing &&
+      hovered != null &&
+      hovered.x != null &&
+      hovered.y != null
+    ) {
       var scene = Scene.getInstance();
       var gameLayer = scene && scene.getGameLayer();
       // reinforce correct play by increasing or decreasing opacity of chevrons
-      var hoveringCorrectPosition = UtilsPosition.getPositionsAreEqual(hovered, this._currentInstructionShowing.targetPosition);
+      var hoveringCorrectPosition = UtilsPosition.getPositionsAreEqual(
+        hovered,
+        this._currentInstructionShowing.targetPosition,
+      );
 
       if (this._currentInstructionShowing.handIndex != null) {
         // Player is supposed to be playing a card from hand
-        if (hoveringCorrectPosition && this._currentInstructionShowing.handIndex == gameLayer.getMyPlayer().getSelectedCardIndexInHand()) {
+        if (
+          hoveringCorrectPosition &&
+          this._currentInstructionShowing.handIndex ==
+            gameLayer.getMyPlayer().getSelectedCardIndexInHand()
+        ) {
           // Increase fade
           _.each(gameLayer.getAltPlayer().pathTiles, function (tile) {
-            tile.fadeTo(CONFIG.FADE_MEDIUM_DURATION, CONFIG.INSTRUCTIONAL_UI_CORRECT_TARGET_OPACITY);
+            tile.fadeTo(
+              CONFIG.FADE_MEDIUM_DURATION,
+              CONFIG.INSTRUCTIONAL_UI_CORRECT_TARGET_OPACITY,
+            );
           });
 
           // decrease opacity on highlighted tiles
@@ -349,7 +435,16 @@ var TutorialLayout = GameLayout.extend({
           } else {
             targetTileSpriteIdentifier = RSX.tile_spawn.frame;
           }
-          gameLayer.getAltPlayer().showTargetTile(gameLayer.getMyPlayer().getMouseScreenBoardPosition(), true, CONFIG.INSTRUCTIONAL_UI_HIGHLIGHTED_OPACITY, CONFIG.FADE_FAST_DURATION, CONFIG.PATH_COLOR, targetTileSpriteIdentifier);
+          gameLayer
+            .getAltPlayer()
+            .showTargetTile(
+              gameLayer.getMyPlayer().getMouseScreenBoardPosition(),
+              true,
+              CONFIG.INSTRUCTIONAL_UI_HIGHLIGHTED_OPACITY,
+              CONFIG.FADE_FAST_DURATION,
+              CONFIG.PATH_COLOR,
+              targetTileSpriteIdentifier,
+            );
         } else {
           // Decrease fade
           _.each(gameLayer.getAltPlayer().pathTiles, function (tile) {
@@ -362,14 +457,25 @@ var TutorialLayout = GameLayout.extend({
           // remove target tile
           gameLayer.getAltPlayer().removeTargetTile();
         }
-      } else if (this._currentInstructionShowing.targetPosition && this._currentInstructionShowing.sourcePosition) {
+      } else if (
+        this._currentInstructionShowing.targetPosition &&
+        this._currentInstructionShowing.sourcePosition
+      ) {
         if (this._currentInstructionShowing.expectedActionType == SDK.MoveAction.type) {
           // Player is supposed to be moving
-          var correctEntitySelected = gameLayer.getMyPlayer().getSelectedEntityNode() && UtilsPosition.getPositionsAreEqual(gameLayer.getMyPlayer().getSelectedEntityNode().getBoardPosition(), this._currentInstructionShowing.sourcePosition);
+          var correctEntitySelected =
+            gameLayer.getMyPlayer().getSelectedEntityNode() &&
+            UtilsPosition.getPositionsAreEqual(
+              gameLayer.getMyPlayer().getSelectedEntityNode().getBoardPosition(),
+              this._currentInstructionShowing.sourcePosition,
+            );
           if (hoveringCorrectPosition && correctEntitySelected) {
             // increase move path fade
             _.each(gameLayer.getAltPlayer().pathTiles, function (tile) {
-              tile.fadeTo(CONFIG.FADE_MEDIUM_DURATION, CONFIG.INSTRUCTIONAL_UI_CORRECT_TARGET_OPACITY);
+              tile.fadeTo(
+                CONFIG.FADE_MEDIUM_DURATION,
+                CONFIG.INSTRUCTIONAL_UI_CORRECT_TARGET_OPACITY,
+              );
             });
           } else {
             // decrease move path fade
@@ -380,7 +486,13 @@ var TutorialLayout = GameLayout.extend({
 
           // adjust highlighted tiles
           if (this._currentHighlightedTiles != null && this._currentHighlightedTiles.length > 0) {
-            var correctEntityHovered = correctEntitySelected || (gameLayer.getMyPlayer().getMouseOverEntityNode() && UtilsPosition.getPositionsAreEqual(gameLayer.getMyPlayer().getMouseOverEntityNode().getBoardPosition(), this._currentInstructionShowing.sourcePosition));
+            var correctEntityHovered =
+              correctEntitySelected ||
+              (gameLayer.getMyPlayer().getMouseOverEntityNode() &&
+                UtilsPosition.getPositionsAreEqual(
+                  gameLayer.getMyPlayer().getMouseOverEntityNode().getBoardPosition(),
+                  this._currentInstructionShowing.sourcePosition,
+                ));
             if (correctEntityHovered) {
               this._updateHighlightedTilesToOpacity(CONFIG.INSTRUCTIONAL_UI_OVERLAP_OPACITY);
             } else {
@@ -389,15 +501,32 @@ var TutorialLayout = GameLayout.extend({
           }
         } else {
           // Either an attack or a followup
-          var correctEntitySelected = gameLayer.getMyPlayer().getSelectedEntityNode() && UtilsPosition.getPositionsAreEqual(gameLayer.getMyPlayer().getSelectedEntityNode().getBoardPosition(), this._currentInstructionShowing.sourcePosition);
+          var correctEntitySelected =
+            gameLayer.getMyPlayer().getSelectedEntityNode() &&
+            UtilsPosition.getPositionsAreEqual(
+              gameLayer.getMyPlayer().getSelectedEntityNode().getBoardPosition(),
+              this._currentInstructionShowing.sourcePosition,
+            );
           if (hoveringCorrectPosition && correctEntitySelected) {
             // increase chevron fade
             _.each(gameLayer.getAltPlayer().pathTiles, function (tile) {
-              tile.fadeTo(CONFIG.FADE_MEDIUM_DURATION, CONFIG.INSTRUCTIONAL_UI_CORRECT_TARGET_OPACITY);
+              tile.fadeTo(
+                CONFIG.FADE_MEDIUM_DURATION,
+                CONFIG.INSTRUCTIONAL_UI_CORRECT_TARGET_OPACITY,
+              );
             });
 
             // show target tile
-            gameLayer.getAltPlayer().showTargetTile(gameLayer.getMyPlayer().getMouseScreenBoardPosition(), true, CONFIG.INSTRUCTIONAL_UI_HIGHLIGHTED_OPACITY, CONFIG.FADE_FAST_DURATION, CONFIG.PATH_COLOR, RSX.tile_attack.frame);
+            gameLayer
+              .getAltPlayer()
+              .showTargetTile(
+                gameLayer.getMyPlayer().getMouseScreenBoardPosition(),
+                true,
+                CONFIG.INSTRUCTIONAL_UI_HIGHLIGHTED_OPACITY,
+                CONFIG.FADE_FAST_DURATION,
+                CONFIG.PATH_COLOR,
+                RSX.tile_attack.frame,
+              );
           } else {
             // decrease chevron fade
             _.each(gameLayer.getAltPlayer().pathTiles, function (tile) {
@@ -418,7 +547,10 @@ var TutorialLayout = GameLayout.extend({
 
     // Then restore it to show again after a normal delay
     if (this._currentInstructionLabel) {
-      this._currentInstructionLabelDelayTimeoutId = setTimeout(this._showInstructionLabel.bind(this, this._currentInstructionLabel), (.5 + CONFIG.SPEECH_DURATION) * 1000.0);
+      this._currentInstructionLabelDelayTimeoutId = setTimeout(
+        this._showInstructionLabel.bind(this, this._currentInstructionLabel),
+        (0.5 + CONFIG.SPEECH_DURATION) * 1000.0,
+      );
     }
   },
 
@@ -473,46 +605,54 @@ var TutorialLayout = GameLayout.extend({
         statusPromise = gameLayer.whenStatus(GameLayer.STATUS.CHOOSE_HAND);
       }
 
-      statusPromise.then(function () {
-        // make sure the currently showing instruction matches this one
-        if (this._currentInstructionShowing === instruction) {
-          if (instruction.preventSelectionUntilLabelIndex != null) {
-            gameLayer.requestPlayerSelectionLocked(this.playerSelectionLockedId);
-            var instructionLabelToUnfreeze = this._currentInstructionLabels[instruction.preventSelectionUntilLabelIndex];
-            instructionLabelToUnfreeze._unfreezeSelectection = true;
-          }
-
-          // Any visual state tags that need to be applied (just readiness for now)
-          if (instruction.disableReadiness) {
-            gameLayer.addTagWithIdToAllEntities(EntityNodeVisualStateTag.createShowReadinessForPlayerTag(false, 4), this._removeReadinessInjectedId);
-          }
-
-          // Handle sticky targeting already having already selected current entity prior to start of instruction
-          var selectedEntityNode = gameLayer.getMyPlayer().getSelectedEntityNode();
-          if (selectedEntityNode != null) {
-            this._onSelectEntityNodeStart(selectedEntityNode);
-          }
-
-          // show instruction after start turn shown
-          gameLayer.whenStartTurnShown().then(function () {
-            // make sure the currently showing instruction matches this one
-            if (this._currentInstructionShowing === instruction) {
-              // show instruction fx
-              this._showFXForInstruction(instruction);
-
-              // show instruction ui
-              if (instruction.preventSelectionUntilLabelIndex == null) {
-                this._showUIForInstruction(instruction);
-              }
-
-              // show instruction label
-              if (instruction.instructionLabels) {
-                this._showNextInstructionLabel();
-              }
+      statusPromise.then(
+        function () {
+          // make sure the currently showing instruction matches this one
+          if (this._currentInstructionShowing === instruction) {
+            if (instruction.preventSelectionUntilLabelIndex != null) {
+              gameLayer.requestPlayerSelectionLocked(this.playerSelectionLockedId);
+              var instructionLabelToUnfreeze =
+                this._currentInstructionLabels[instruction.preventSelectionUntilLabelIndex];
+              instructionLabelToUnfreeze._unfreezeSelectection = true;
             }
-          }.bind(this));
-        }
-      }.bind(this));
+
+            // Any visual state tags that need to be applied (just readiness for now)
+            if (instruction.disableReadiness) {
+              gameLayer.addTagWithIdToAllEntities(
+                EntityNodeVisualStateTag.createShowReadinessForPlayerTag(false, 4),
+                this._removeReadinessInjectedId,
+              );
+            }
+
+            // Handle sticky targeting already having already selected current entity prior to start of instruction
+            var selectedEntityNode = gameLayer.getMyPlayer().getSelectedEntityNode();
+            if (selectedEntityNode != null) {
+              this._onSelectEntityNodeStart(selectedEntityNode);
+            }
+
+            // show instruction after start turn shown
+            gameLayer.whenStartTurnShown().then(
+              function () {
+                // make sure the currently showing instruction matches this one
+                if (this._currentInstructionShowing === instruction) {
+                  // show instruction fx
+                  this._showFXForInstruction(instruction);
+
+                  // show instruction ui
+                  if (instruction.preventSelectionUntilLabelIndex == null) {
+                    this._showUIForInstruction(instruction);
+                  }
+
+                  // show instruction label
+                  if (instruction.instructionLabels) {
+                    this._showNextInstructionLabel();
+                  }
+                }
+              }.bind(this),
+            );
+          }
+        }.bind(this),
+      );
     }
   },
 
@@ -523,15 +663,22 @@ var TutorialLayout = GameLayout.extend({
       // source fx
       var sourceBoardPosition = instruction.sourcePosition;
       if (sourceBoardPosition != null) {
-        var sourceFX = NodeFactory.createFX(CONFIG.TUTORIAL_INSTRUCTION_FX_TEMPLATE, { targetBoardPosition: sourceBoardPosition });
+        var sourceFX = NodeFactory.createFX(CONFIG.TUTORIAL_INSTRUCTION_FX_TEMPLATE, {
+          targetBoardPosition: sourceBoardPosition,
+        });
         gameLayer.addNodes(sourceFX);
         this._fxNodesForCurrentInstruction = this._fxNodesForCurrentInstruction.concat(sourceFX);
       }
 
       // target fx
       var targetBoardPosition = instruction.targetPosition;
-      if (targetBoardPosition != null && !UtilsPosition.getPositionsAreEqual(sourceBoardPosition, targetBoardPosition)) {
-        var targetFX = NodeFactory.createFX(CONFIG.TUTORIAL_INSTRUCTION_FX_TEMPLATE, { targetBoardPosition: targetBoardPosition });
+      if (
+        targetBoardPosition != null &&
+        !UtilsPosition.getPositionsAreEqual(sourceBoardPosition, targetBoardPosition)
+      ) {
+        var targetFX = NodeFactory.createFX(CONFIG.TUTORIAL_INSTRUCTION_FX_TEMPLATE, {
+          targetBoardPosition: targetBoardPosition,
+        });
         gameLayer.addNodes(targetFX);
         this._fxNodesForCurrentInstruction = this._fxNodesForCurrentInstruction.concat(targetFX);
       }
@@ -545,7 +692,10 @@ var TutorialLayout = GameLayout.extend({
       } else {
         lightRadius = CONFIG.TILESIZE * CONFIG.TUTORIAL_INSTRUCTION_FX_LIGHT_RADIUS;
       }
-      lightRadius = Math.min(CONFIG.TILESIZE * CONFIG.TUTORIAL_INSTRUCTION_FX_LIGHT_RADIUS, Math.max(CONFIG.TILESIZE, lightRadius));
+      lightRadius = Math.min(
+        CONFIG.TILESIZE * CONFIG.TUTORIAL_INSTRUCTION_FX_LIGHT_RADIUS,
+        Math.max(CONFIG.TILESIZE, lightRadius),
+      );
 
       if (this._fxNodesForCurrentInstruction.length > 0) {
         for (var i = 0, il = this._fxNodesForCurrentInstruction.length; i < il; i++) {
@@ -578,14 +728,24 @@ var TutorialLayout = GameLayout.extend({
       var sourceScreenPosition;
       if (sourceBoardPosition != null) {
         sourceScreenPosition = UtilsEngine.transformBoardToTileMap(sourceBoardPosition);
-        sourceEntityNode = gameLayer.getUnitNodeAtBoardPosition(sourceBoardPosition.x, sourceBoardPosition.y, true, true);
+        sourceEntityNode = gameLayer.getUnitNodeAtBoardPosition(
+          sourceBoardPosition.x,
+          sourceBoardPosition.y,
+          true,
+          true,
+        );
       }
       var targetEntityNode;
       var targetBoardPosition = instruction.targetPosition;
       var targetScreenPosition;
       if (targetBoardPosition != null) {
         targetScreenPosition = UtilsEngine.transformBoardToTileMap(targetBoardPosition);
-        targetEntityNode = gameLayer.getUnitNodeAtBoardPosition(targetBoardPosition.x, targetBoardPosition.y, true, true);
+        targetEntityNode = gameLayer.getUnitNodeAtBoardPosition(
+          targetBoardPosition.x,
+          targetBoardPosition.y,
+          true,
+          true,
+        );
       }
 
       gameLayer.getAltPlayer().removePath(); // TODO: Is this still needed it's in a couple places
@@ -594,20 +754,30 @@ var TutorialLayout = GameLayout.extend({
       // Highlight a card in hand if one is required for this instruction
       if (instruction.handIndex != null) {
         var cardNode = gameLayer.getBottomDeckLayer().getCardNodes()[instruction.handIndex];
-        cardNode.addInjectedVisualStateTagWithId(CardNodeVisualStateTag.createShowGlowForPlayerTag(true, 2), this._cardToPlayInjectedId);
+        cardNode.addInjectedVisualStateTagWithId(
+          CardNodeVisualStateTag.createShowGlowForPlayerTag(true, 2),
+          this._cardToPlayInjectedId,
+        );
       }
 
       // Show movement path if we want to execute a move action
       if (instruction.expectedActionType == SDK.MoveAction.type) {
         var board = SDK.GameSession.current().getBoard();
         var sourceEntity = board.getEntityAtPosition(sourceBoardPosition);
-        var path = sourceEntity.getMovementRange().getPathTo(board, sourceEntity, targetBoardPosition);
-        gameLayer.getAltPlayer().showPath(path, true, false, CONFIG.INSTRUCTIONAL_UI_INITIAL_OPACITY);
+        var path = sourceEntity
+          .getMovementRange()
+          .getPathTo(board, sourceEntity, targetBoardPosition);
+        gameLayer
+          .getAltPlayer()
+          .showPath(path, true, false, CONFIG.INSTRUCTIONAL_UI_INITIAL_OPACITY);
         gameLayer.getMyPlayer().requestShowPathsLocked(this.showPathsLockId);
       }
 
       if (sourceEntityNode) {
-        sourceEntityNode.addInjectedVisualStateTagWithId(EntityNodeVisualStateTag.createShowInstructionalGlowTag(true, 1), this.instructionalGlowTagId);
+        sourceEntityNode.addInjectedVisualStateTagWithId(
+          EntityNodeVisualStateTag.createShowInstructionalGlowTag(true, 1),
+          this.instructionalGlowTagId,
+        );
       }
 
       // Highlight the target tile the player should focus on
@@ -617,10 +787,33 @@ var TutorialLayout = GameLayout.extend({
           var locs = [this._currentInstructionShowing.targetPosition];
           gameLayer.getTileLayer().removeTilesWithFade(this._currentHighlightedTiles);
           this._currentHighlightedTiles = [];
-          this._currentHighlightedTiles = gameLayer.getTileLayer().displayMergedTiles(locs, null, null, RSX.tile_merged_hover.frame, 1, CONFIG.INSTRUCTIONAL_UI_HIGHLIGHTED_OPACITY, CONFIG.FADE_FAST_DURATION, CONFIG.INSTRUCTIONAL_TARGET_COLOR, this._currentHighlightedTiles);
+          this._currentHighlightedTiles = gameLayer
+            .getTileLayer()
+            .displayMergedTiles(
+              locs,
+              null,
+              null,
+              RSX.tile_merged_hover.frame,
+              1,
+              CONFIG.INSTRUCTIONAL_UI_HIGHLIGHTED_OPACITY,
+              CONFIG.FADE_FAST_DURATION,
+              CONFIG.INSTRUCTIONAL_TARGET_COLOR,
+              this._currentHighlightedTiles,
+            );
 
-          var correctEntitySelected = gameLayer.getMyPlayer().getSelectedEntityNode() && UtilsPosition.getPositionsAreEqual(gameLayer.getMyPlayer().getSelectedEntityNode().getBoardPosition(), this._currentInstructionShowing.sourcePosition);
-          var correctEntityHovered = correctEntitySelected || (gameLayer.getMyPlayer().getMouseOverEntityNode() && UtilsPosition.getPositionsAreEqual(gameLayer.getMyPlayer().getMouseOverEntityNode().getBoardPosition(), this._currentInstructionShowing.sourcePosition));
+          var correctEntitySelected =
+            gameLayer.getMyPlayer().getSelectedEntityNode() &&
+            UtilsPosition.getPositionsAreEqual(
+              gameLayer.getMyPlayer().getSelectedEntityNode().getBoardPosition(),
+              this._currentInstructionShowing.sourcePosition,
+            );
+          var correctEntityHovered =
+            correctEntitySelected ||
+            (gameLayer.getMyPlayer().getMouseOverEntityNode() &&
+              UtilsPosition.getPositionsAreEqual(
+                gameLayer.getMyPlayer().getMouseOverEntityNode().getBoardPosition(),
+                this._currentInstructionShowing.sourcePosition,
+              ));
           if (correctEntityHovered) {
             this._updateHighlightedTilesToOpacity(CONFIG.INSTRUCTIONAL_UI_OVERLAP_OPACITY);
           } else {
@@ -630,15 +823,21 @@ var TutorialLayout = GameLayout.extend({
           // There is an entity at target position
           if (sourceEntityNode != null) {
             // If there an entity at source and target positions show a chevron path between them
-            gameLayer.getAltPlayer().showPath([sourceScreenPosition, targetScreenPosition], true, true, CONFIG.INSTRUCTIONAL_UI_INITIAL_OPACITY);
+            gameLayer
+              .getAltPlayer()
+              .showPath(
+                [sourceScreenPosition, targetScreenPosition],
+                true,
+                true,
+                CONFIG.INSTRUCTIONAL_UI_INITIAL_OPACITY,
+              );
             gameLayer.getMyPlayer().requestShowPathsLocked(this.showPathsLockId);
           } else {
             // If there is an entity at target position but no source position/entity show the friendly reticle
             this._targetFriendlySprite.runAction(cc.fadeIn(0.2));
-            this._targetFriendlySprite.setPosition(cc.p(
-              targetEntityNode.getPosition().x,
-              targetEntityNode.getPosition().y + 15,
-            ));
+            this._targetFriendlySprite.setPosition(
+              cc.p(targetEntityNode.getPosition().x, targetEntityNode.getPosition().y + 15),
+            );
           }
         }
       }
@@ -647,7 +846,12 @@ var TutorialLayout = GameLayout.extend({
       if (instruction.instructionArrowPositions) {
         for (var i = 0; i < instruction.instructionArrowPositions.length; i++) {
           var instructionArrowPosition = instruction.instructionArrowPositions[i];
-          var targetEntityNode = gameLayer.getEntityNodeAtBoardPosition(instructionArrowPosition.x, instructionArrowPosition.y, true, true);
+          var targetEntityNode = gameLayer.getEntityNodeAtBoardPosition(
+            instructionArrowPosition.x,
+            instructionArrowPosition.y,
+            true,
+            true,
+          );
           if (targetEntityNode) {
             gameLayer.showInstructionalArrowForEntityNode(targetEntityNode);
           } else {
@@ -657,7 +861,9 @@ var TutorialLayout = GameLayout.extend({
       }
 
       if (instruction.persistentInstructionArrowPosition) {
-        var arrowPosition = UtilsEngine.transformBoardToScreen(instruction.persistentInstructionArrowPosition);
+        var arrowPosition = UtilsEngine.transformBoardToScreen(
+          instruction.persistentInstructionArrowPosition,
+        );
         this._instructionalArrows.push(gameLayer.showPersistentInstructionalArrow(arrowPosition));
       }
 
@@ -669,23 +875,42 @@ var TutorialLayout = GameLayout.extend({
           x: cardsInHandEndPosition.x + 110.0,
           y: cardsInHandEndPosition.y + 70.0,
         };
-        this._instructionalArrows.push(gameLayer.showPersistentInstructionalArrow(submitTurnScreenTCPosition));
+        this._instructionalArrows.push(
+          gameLayer.showPersistentInstructionalArrow(submitTurnScreenTCPosition),
+        );
       }
 
       // If playing a card, show a instructional ray from that card
       if (instruction.handIndex != null && targetBoardPosition != null) {
         var cardNode = gameLayer.getBottomDeckLayer().cardNodes[instruction.handIndex];
 
-        gameLayer.getAltPlayer().showPath([cardNode.getPosition(), targetScreenPosition], true, true, CONFIG.INSTRUCTIONAL_UI_INITIAL_OPACITY);
+        gameLayer
+          .getAltPlayer()
+          .showPath(
+            [cardNode.getPosition(), targetScreenPosition],
+            true,
+            true,
+            CONFIG.INSTRUCTIONAL_UI_INITIAL_OPACITY,
+          );
         gameLayer.getMyPlayer().requestShowPathsLocked(this.showPathsLockId);
       }
 
       // If replacing a card, show an instructional ray to the replace node
-      if (instruction.handIndex != null && instruction.expectedActionType == SDK.ReplaceCardFromHandAction.type) {
+      if (
+        instruction.handIndex != null &&
+        instruction.expectedActionType == SDK.ReplaceCardFromHandAction.type
+      ) {
         var cardNode = gameLayer.getBottomDeckLayer().cardNodes[instruction.handIndex];
         var replaceNode = gameLayer.getBottomDeckLayer().getReplaceNode();
 
-        gameLayer.getAltPlayer().showPath([cardNode.getPosition(), replaceNode.getPosition()], true, true, CONFIG.INSTRUCTIONAL_UI_INITIAL_OPACITY);
+        gameLayer
+          .getAltPlayer()
+          .showPath(
+            [cardNode.getPosition(), replaceNode.getPosition()],
+            true,
+            true,
+            CONFIG.INSTRUCTIONAL_UI_INITIAL_OPACITY,
+          );
         gameLayer.getMyPlayer().requestShowPathsLocked(this.showPathsLockId);
       }
     }
@@ -697,14 +922,10 @@ var TutorialLayout = GameLayout.extend({
       _.each(highlightedTiles, function (tile) {
         tile.stopAllActions();
 
-        var pulsateAction = cc.repeatForever(cc.sequence(
-          cc.fadeTo(1.0, opacity),
-          cc.fadeTo(1.0, 150),
-        ));
-        var fadeToPulsateAction = cc.sequence(
-          cc.fadeTo(0.1, opacity),
-          pulsateAction,
+        var pulsateAction = cc.repeatForever(
+          cc.sequence(cc.fadeTo(1.0, opacity), cc.fadeTo(1.0, 150)),
         );
+        var fadeToPulsateAction = cc.sequence(cc.fadeTo(0.1, opacity), pulsateAction);
         fadeToPulsateAction.setTag(CONFIG.FADE_TAG);
         tile.runAction(fadeToPulsateAction);
       });
@@ -736,7 +957,10 @@ var TutorialLayout = GameLayout.extend({
     var gameLayer = scene && scene.getGameLayer();
     if (gameLayer != null) {
       // remove any fx for instruction
-      if (this._fxNodesForCurrentInstruction != null && this._fxNodesForCurrentInstruction.length > 0) {
+      if (
+        this._fxNodesForCurrentInstruction != null &&
+        this._fxNodesForCurrentInstruction.length > 0
+      ) {
         var fxForCurrentInstruction = this._fxNodesForCurrentInstruction;
         this._fxNodesForCurrentInstruction = [];
         for (var i = 0, il = fxForCurrentInstruction.length; i < il; i++) {
@@ -768,8 +992,13 @@ var TutorialLayout = GameLayout.extend({
       gameLayer.getMyPlayer().requestShowPathsUnlocked(this.showPathsLockId);
 
       // remove highlighting a card in hand if one is required for this instruction
-      if (this._currentInstructionShowing != null && this._currentInstructionShowing.handIndex != null) {
-        var cardNode = gameLayer.getBottomDeckLayer().getCardNodes()[this._currentInstructionShowing.handIndex];
+      if (
+        this._currentInstructionShowing != null &&
+        this._currentInstructionShowing.handIndex != null
+      ) {
+        var cardNode = gameLayer.getBottomDeckLayer().getCardNodes()[
+          this._currentInstructionShowing.handIndex
+        ];
         cardNode.removeInjectedVisualStateTagById(this._cardToPlayInjectedId);
       }
 
@@ -836,7 +1065,9 @@ var TutorialLayout = GameLayout.extend({
     if (this._currentInstructionLabel == null) {
       return false;
     }
-    var currentInstructionLabelIndex = this._currentInstructionLabels.indexOf(this._currentInstructionLabel);
+    var currentInstructionLabelIndex = this._currentInstructionLabels.indexOf(
+      this._currentInstructionLabel,
+    );
     return this._currentInstructionLabel.triggersInstructionIndex == currentInstructionLabelIndex;
   },
 
@@ -854,7 +1085,8 @@ var TutorialLayout = GameLayout.extend({
           // Show the first instruction label
           nextInstructionLabel = this._currentInstructionLabels[0];
         } else {
-          nextInstructionLabel = this._currentInstructionLabels[this._currentInstructionLabel.triggersInstructionIndex];
+          nextInstructionLabel =
+            this._currentInstructionLabels[this._currentInstructionLabel.triggersInstructionIndex];
         }
       }
 
@@ -900,7 +1132,10 @@ var TutorialLayout = GameLayout.extend({
           nextInstructionLabelDelay += CONFIG.INSTRUCTIONAL_DISMISSED_LOOP_DELAY * 1000.0;
         }
         this._delayNextInstructionLabel = false;
-        this._currentInstructionLabelDelayTimeoutId = setTimeout(this._showInstructionLabel.bind(this, this._currentInstructionLabel), nextInstructionLabelDelay);
+        this._currentInstructionLabelDelayTimeoutId = setTimeout(
+          this._showInstructionLabel.bind(this, this._currentInstructionLabel),
+          nextInstructionLabelDelay,
+        );
 
         if (nextInstructionLabel._unfreezeSelectection && gameLayer.getPlayerSelectionLocked()) {
           gameLayer.requestPlayerSelectionUnlocked(this.playerSelectionLockedId);
@@ -932,7 +1167,9 @@ var TutorialLayout = GameLayout.extend({
     }
     if (this._opponentPlayerDetailsHidden) {
       this._opponentPlayerDetailsHidden = false;
-      $('.opponent-player .mana, .opponent-player .user-details').fadeIn(CONFIG.FADE_FAST_DURATION * 1000.0);
+      $('.opponent-player .mana, .opponent-player .user-details').fadeIn(
+        CONFIG.FADE_FAST_DURATION * 1000.0,
+      );
     }
 
     if (!instructionLabel || !this._currentInstructionLabels || !gameLayer) {
@@ -942,7 +1179,9 @@ var TutorialLayout = GameLayout.extend({
     var instructionLabelIndex = this._currentInstructionLabels.indexOf(instructionLabel);
     var label = instructionLabel.label;
     if (!label) {
-      throw new Error('Tutorial:onInstructionTriggered - Attempt to display instruction label without label text');
+      throw new Error(
+        'Tutorial:onInstructionTriggered - Attempt to display instruction label without label text',
+      );
     }
     //
     if (instructionLabel.duration == null) {
@@ -970,8 +1209,18 @@ var TutorialLayout = GameLayout.extend({
       } else {
         player = gameLayer.getMyPlayer();
       }
-      gameLayer.showSpeechForPlayer(player, instructionLabel.label, null, instructionLabel.duration, false, instructionLabel.yPosition, instructionLabel.isPersistent);
-      var generalCard = SDK.GameSession.getInstance().getGeneralForPlayerId(player.getSdkPlayer().getPlayerId());
+      gameLayer.showSpeechForPlayer(
+        player,
+        instructionLabel.label,
+        null,
+        instructionLabel.duration,
+        false,
+        instructionLabel.yPosition,
+        instructionLabel.isPersistent,
+      );
+      var generalCard = SDK.GameSession.getInstance().getGeneralForPlayerId(
+        player.getSdkPlayer().getPlayerId(),
+      );
       var generalNode = gameLayer.getNodeForSdkCard(generalCard);
       var generalSpeechNode = gameLayer.getOrCreateSpeechNodeForSdkCard(generalCard);
       this._instructionNodesForCurrentInstruction[instructionLabelIndex] = generalSpeechNode;
@@ -979,10 +1228,20 @@ var TutorialLayout = GameLayout.extend({
       // Show an instruction node
       var position = instructionLabel.position;
       var instructionEntityNode = instructionLabel.entityNode;
-      if (position && !instructionEntityNode && Number.isInteger(position.x) && Number.isInteger(position.y)) {
+      if (
+        position &&
+        !instructionEntityNode &&
+        Number.isInteger(position.x) &&
+        Number.isInteger(position.y)
+      ) {
         // If we have a position and no entity node, get one and store it on the instruction (if one exists)
         // - this allows the isntruction to stick to a unit
-        instructionEntityNode = gameLayer.getEntityNodeAtBoardPosition(position.x, position.y, true, true);
+        instructionEntityNode = gameLayer.getEntityNodeAtBoardPosition(
+          position.x,
+          position.y,
+          true,
+          true,
+        );
         instructionLabel.entityNode = instructionEntityNode;
       }
 
@@ -1004,12 +1263,26 @@ var TutorialLayout = GameLayout.extend({
         isNotDismissable = instructionLabel.isNotDismissable;
       }
       if (instructionEntityNode) {
-        instructionNode = gameLayer.showInstructionForSdkNode(instructionEntityNode, label, null, instructionLabel.duration, isNotDismissable, carrotDirection);
+        instructionNode = gameLayer.showInstructionForSdkNode(
+          instructionEntityNode,
+          label,
+          null,
+          instructionLabel.duration,
+          isNotDismissable,
+          carrotDirection,
+        );
       } else if (instructionLabel.positionAtReplace) {
         var replaceNode = gameLayer.getBottomDeckLayer().getReplaceNode();
         var replacePosition = replaceNode.getPosition();
         replacePosition.y += replaceNode.height * 0.55;
-        instructionNode = gameLayer.showInstructionAtPosition(replacePosition, label, null, instructionLabel.duration, isNotDismissable, carrotDirection);
+        instructionNode = gameLayer.showInstructionAtPosition(
+          replacePosition,
+          label,
+          null,
+          instructionLabel.duration,
+          isNotDismissable,
+          carrotDirection,
+        );
       } else if (instructionLabel.positionAtSignatureSpell) {
         var signatureCardNode;
         var instructionDirection;
@@ -1020,7 +1293,14 @@ var TutorialLayout = GameLayout.extend({
           signatureCardNode = gameLayer.getPlayer2Layer().getSignatureCardNode();
           instructionDirection = InstructionNode.DIRECTION_RIGHT;
         }
-        instructionNode = gameLayer.showInstructionForSdkNode(signatureCardNode, label, null, instructionLabel.duration, isNotDismissable, instructionDirection);
+        instructionNode = gameLayer.showInstructionForSdkNode(
+          signatureCardNode,
+          label,
+          null,
+          instructionLabel.duration,
+          isNotDismissable,
+          instructionDirection,
+        );
       } else if (instructionLabel.positionAtPlayerArtifactIndex != null) {
         var artifactNodes;
         if (this._lesson.userIsPlayer1) {
@@ -1028,9 +1308,13 @@ var TutorialLayout = GameLayout.extend({
         } else {
           artifactNodes = gameLayer.getPlayer2ArtifactNodes();
         }
-        var artifactNode = artifactNodes && artifactNodes[instructionLabel.positionAtPlayerArtifactIndex];
+        var artifactNode =
+          artifactNodes && artifactNodes[instructionLabel.positionAtPlayerArtifactIndex];
         if (artifactNode == null) {
-          throw new Error('TutorialLayout._showInstructionLabel: Attempt to position at nonexistent artifact index ' + instructionLabel.positionAtPlayerArtifactIndex);
+          throw new Error(
+            'TutorialLayout._showInstructionLabel: Attempt to position at nonexistent artifact index ' +
+              instructionLabel.positionAtPlayerArtifactIndex,
+          );
         }
         var artifactPosition = artifactNode.getPosition();
         var artifactContentSize = artifactNode.getContentSize();
@@ -1044,40 +1328,72 @@ var TutorialLayout = GameLayout.extend({
         } else {
           carrotDirection = InstructionNode.DIRECTION_RIGHT;
         }
-        instructionNode = gameLayer.showInstructionAtPosition(artifactInstructionPosition, label, null, instructionLabel.duration, false, carrotDirection);
+        instructionNode = gameLayer.showInstructionAtPosition(
+          artifactInstructionPosition,
+          label,
+          null,
+          instructionLabel.duration,
+          false,
+          carrotDirection,
+        );
       } else if (instructionLabel.positionAtHandIndex != null) {
-        var bottomDeckCardNode = gameLayer.getBottomDeckLayer().getCardNodes()[instructionLabel.positionAtHandIndex];
-        instructionNode = gameLayer.showInstructionForSdkNode(bottomDeckCardNode, label, null, instructionLabel.duration, isNotDismissable, InstructionNode.DIRECTION_DOWN);
+        var bottomDeckCardNode = gameLayer.getBottomDeckLayer().getCardNodes()[
+          instructionLabel.positionAtHandIndex
+        ];
+        instructionNode = gameLayer.showInstructionForSdkNode(
+          bottomDeckCardNode,
+          label,
+          null,
+          instructionLabel.duration,
+          isNotDismissable,
+          InstructionNode.DIRECTION_DOWN,
+        );
       } else if (instructionLabel.positionAtManaIndex != null) {
         var playerFramePosition;
         var manaScreenPosition;
         if (this._lesson.userIsPlayer1) {
           playerFramePosition = UtilsEngine.getPlayer1FramePosition();
           manaScreenPosition = {
-            x: playerFramePosition.x + 170.0 + (instructionLabel.positionAtManaIndex * 32.0),
-            y: playerFramePosition.y - 130.0 + (instructionLabel.positionAtManaIndex * 7.0),
+            x: playerFramePosition.x + 170.0 + instructionLabel.positionAtManaIndex * 32.0,
+            y: playerFramePosition.y - 130.0 + instructionLabel.positionAtManaIndex * 7.0,
           };
         } else {
           playerFramePosition = UtilsEngine.getPlayer2FramePosition();
           manaScreenPosition = {
-            x: playerFramePosition.x - 170.0 - (instructionLabel.positionAtManaIndex * 32.0),
-            y: playerFramePosition.y - 130.0 + (instructionLabel.positionAtManaIndex * 7.0),
+            x: playerFramePosition.x - 170.0 - instructionLabel.positionAtManaIndex * 32.0,
+            y: playerFramePosition.y - 130.0 + instructionLabel.positionAtManaIndex * 7.0,
           };
         }
 
-        instructionNode = gameLayer.showInstructionAtPosition(manaScreenPosition, label, null, instructionLabel.duration, isNotDismissable, InstructionNode.DIRECTION_UP);
+        instructionNode = gameLayer.showInstructionAtPosition(
+          manaScreenPosition,
+          label,
+          null,
+          instructionLabel.duration,
+          isNotDismissable,
+          InstructionNode.DIRECTION_UP,
+        );
       } else if (instructionLabel.positionAtEndTurn) {
         var cardsInHandEndPosition = UtilsEngine.getCardsInHandEndPosition();
         var submitTurnScreenTCPosition = {
           x: cardsInHandEndPosition.x + 105.0,
           y: cardsInHandEndPosition.y + 70.0,
         };
-        instructionNode = gameLayer.showInstructionAtPosition(submitTurnScreenTCPosition, label, null, instructionLabel.duration, isNotDismissable, InstructionNode.DIRECTION_DOWN);
+        instructionNode = gameLayer.showInstructionAtPosition(
+          submitTurnScreenTCPosition,
+          label,
+          null,
+          instructionLabel.duration,
+          isNotDismissable,
+          InstructionNode.DIRECTION_DOWN,
+        );
       } else if (instructionLabel.positionAtMyHealth) {
         if (!this._myPlayerDetailsHidden) {
           // fade my player details out so it doesn't overlap
           this._myPlayerDetailsHidden = true;
-          $('.my-player .mana, .my-player .user-details').fadeOut(CONFIG.FADE_FAST_DURATION * 1000.0);
+          $('.my-player .mana, .my-player .user-details').fadeOut(
+            CONFIG.FADE_FAST_DURATION * 1000.0,
+          );
         }
 
         var playerFramePosition;
@@ -1098,12 +1414,21 @@ var TutorialLayout = GameLayout.extend({
             y: playerFramePosition.y - 130.0,
           };
         }
-        instructionNode = gameLayer.showInstructionAtPosition(generalHealthScreenPosition, label, null, instructionLabel.duration, isNotDismissable, instructionDirection);
+        instructionNode = gameLayer.showInstructionAtPosition(
+          generalHealthScreenPosition,
+          label,
+          null,
+          instructionLabel.duration,
+          isNotDismissable,
+          instructionDirection,
+        );
       } else if (instructionLabel.positionAtEnemyHealth) {
         if (!this._opponentPlayerDetailsHidden) {
           // fade opponent player details out so it doesn't overlap
           this._opponentPlayerDetailsHidden = true;
-          $('.opponent-player .mana, .opponent-player .user-details').fadeOut(CONFIG.FADE_FAST_DURATION * 1000.0);
+          $('.opponent-player .mana, .opponent-player .user-details').fadeOut(
+            CONFIG.FADE_FAST_DURATION * 1000.0,
+          );
         }
 
         var playerFramePosition;
@@ -1124,10 +1449,24 @@ var TutorialLayout = GameLayout.extend({
             y: playerFramePosition.y - 130.0,
           };
         }
-        instructionNode = gameLayer.showInstructionAtPosition(generalHealthScreenPosition, label, null, instructionLabel.duration, isNotDismissable, instructionDirection);
+        instructionNode = gameLayer.showInstructionAtPosition(
+          generalHealthScreenPosition,
+          label,
+          null,
+          instructionLabel.duration,
+          isNotDismissable,
+          instructionDirection,
+        );
       } else {
         var adjustedPosition = position;
-        instructionNode = gameLayer.showInstructionOverTile(adjustedPosition, label, null, instructionLabel.duration, isNotDismissable, carrotDirection);
+        instructionNode = gameLayer.showInstructionOverTile(
+          adjustedPosition,
+          label,
+          null,
+          instructionLabel.duration,
+          isNotDismissable,
+          carrotDirection,
+        );
       }
       if (instructionNode) {
         // Store the speech node in case we want to tear it down early
@@ -1143,7 +1482,12 @@ var TutorialLayout = GameLayout.extend({
     if (instructionLabel.instructionArrowPositions) {
       for (var i = 0; i < instructionLabel.instructionArrowPositions.length; i++) {
         var instructionArrowPosition = instructionLabel.instructionArrowPositions[i];
-        var targetEntityNode = gameLayer.getEntityNodeAtBoardPosition(instructionArrowPosition.x, instructionArrowPosition.y, true, true);
+        var targetEntityNode = gameLayer.getEntityNodeAtBoardPosition(
+          instructionArrowPosition.x,
+          instructionArrowPosition.y,
+          true,
+          true,
+        );
         if (targetEntityNode) {
           gameLayer.showInstructionalArrowForEntityNode(targetEntityNode);
         } else {
@@ -1169,19 +1513,34 @@ var TutorialLayout = GameLayout.extend({
     var scene = Scene.getInstance();
     var gameLayer = scene && scene.getGameLayer();
 
-    if (entityNodeSelected != null && this._currentInstructionShowing && this._currentInstructionShowing.sourcePosition) {
+    if (
+      entityNodeSelected != null &&
+      this._currentInstructionShowing &&
+      this._currentInstructionShowing.sourcePosition
+    ) {
       // Check if they have selected the card that is the source of current instruction
-      if (entityNodeSelected.getBoardPosition().x == this._currentInstructionShowing.sourcePosition.x && entityNodeSelected.getBoardPosition().y == this._currentInstructionShowing.sourcePosition.y) {
+      if (
+        entityNodeSelected.getBoardPosition().x ==
+          this._currentInstructionShowing.sourcePosition.x &&
+        entityNodeSelected.getBoardPosition().y == this._currentInstructionShowing.sourcePosition.y
+      ) {
         // We have selected the source entity node
         // Show an instructional arrow on target if there is one
         if (this._currentInstructionShowing.targetPosition) {
-          var targetEntityNode = gameLayer.getEntityNodeAtBoardPosition(this._currentInstructionShowing.targetPosition.x, this._currentInstructionShowing.targetPosition.y, true, true);
+          var targetEntityNode = gameLayer.getEntityNodeAtBoardPosition(
+            this._currentInstructionShowing.targetPosition.x,
+            this._currentInstructionShowing.targetPosition.y,
+            true,
+            true,
+          );
           if (targetEntityNode) {
             gameLayer.showInstructionalArrowForEntityNode(targetEntityNode);
           } else {
             // Highlight the target tile the player should focus on
             if (this._currentInstructionShowing.targetPosition) {
-              gameLayer.showInstructionalArrowForBoardPosition(this._currentInstructionShowing.targetPosition);
+              gameLayer.showInstructionalArrowForBoardPosition(
+                this._currentInstructionShowing.targetPosition,
+              );
             }
           }
         }
@@ -1193,12 +1552,24 @@ var TutorialLayout = GameLayout.extend({
     var scene = Scene.getInstance();
     var gameLayer = scene && scene.getGameLayer();
 
-    if (selectedCard != null && this._currentInstructionShowing && this._currentInstructionShowing.handIndex != null && this._currentInstructionShowing.targetPosition) {
-      var targetEntityNode = gameLayer.getEntityNodeAtBoardPosition(this._currentInstructionShowing.targetPosition.x, this._currentInstructionShowing.targetPosition.y, true, true);
+    if (
+      selectedCard != null &&
+      this._currentInstructionShowing &&
+      this._currentInstructionShowing.handIndex != null &&
+      this._currentInstructionShowing.targetPosition
+    ) {
+      var targetEntityNode = gameLayer.getEntityNodeAtBoardPosition(
+        this._currentInstructionShowing.targetPosition.x,
+        this._currentInstructionShowing.targetPosition.y,
+        true,
+        true,
+      );
       if (targetEntityNode) {
         gameLayer.showInstructionalArrowForEntityNode(targetEntityNode);
       } else {
-        gameLayer.showInstructionalArrowForBoardPosition(this._currentInstructionShowing.targetPosition);
+        gameLayer.showInstructionalArrowForBoardPosition(
+          this._currentInstructionShowing.targetPosition,
+        );
       }
     }
   },
@@ -1208,18 +1579,28 @@ var TutorialLayout = GameLayout.extend({
   },
 
   _showChallengeLost: function () {
-    var challengeLostView = new TutorialChallengeLostView({ model: new Backbone.Model({ challenge: this._lesson }) });
-    challengeLostView.listenToOnce(challengeLostView, 'retry_challenge', this.onChallengeRetry.bind(this));
+    var challengeLostView = new TutorialChallengeLostView({
+      model: new Backbone.Model({ challenge: this._lesson }),
+    });
+    challengeLostView.listenToOnce(
+      challengeLostView,
+      'retry_challenge',
+      this.onChallengeRetry.bind(this),
+    );
     this.customOverlayRegion.show(challengeLostView);
   },
 
   onChallengeRetry: function () {
-    Analytics.track('challenge restart', {
-      category: 'Challenge',
-      challenge_type: this._lesson.type,
-    }, {
-      label_key: 'challenge_type',
-    });
+    Analytics.track(
+      'challenge restart',
+      {
+        category: 'Challenge',
+        challenge_type: this._lesson.type,
+      },
+      {
+        label_key: 'challenge_type',
+      },
+    );
 
     this.customOverlayRegion.empty();
 
@@ -1229,8 +1610,14 @@ var TutorialLayout = GameLayout.extend({
   },
 
   _showChallengeStart: function () {
-    var challengeStartView = new TutorialChallengeStartView({ model: new Backbone.Model({ challenge: this._lesson }) });
-    challengeStartView.listenToOnce(challengeStartView, 'start_challenge', this.onChallengeStart.bind(this));
+    var challengeStartView = new TutorialChallengeStartView({
+      model: new Backbone.Model({ challenge: this._lesson }),
+    });
+    challengeStartView.listenToOnce(
+      challengeStartView,
+      'start_challenge',
+      this.onChallengeStart.bind(this),
+    );
     this.customOverlayRegion.show(challengeStartView);
   },
 
@@ -1239,7 +1626,11 @@ var TutorialLayout = GameLayout.extend({
   },
 
   onInstructionNodePressed: function (e) {
-    if (this._currentInstructionLabels && this._currentInstructionLabel && this._getIsCurrentInstructionLooping()) {
+    if (
+      this._currentInstructionLabels &&
+      this._currentInstructionLabel &&
+      this._getIsCurrentInstructionLooping()
+    ) {
       this._delayNextInstructionLabel = true;
     }
   },
@@ -1283,12 +1674,19 @@ var TutorialLayout = GameLayout.extend({
     var finalAgentAction = opponentAgent.currentActions[opponentAgent.currentActions.length - 1];
     if (!finalAgentAction || finalAgentAction.isSoft) {
       this._opponentAgentTimeoutId = setTimeout(function () {
-        SDK.GameSession.getInstance().submitExplicitAction(SDK.GameSession.getInstance().actionEndTurn());
+        SDK.GameSession.getInstance().submitExplicitAction(
+          SDK.GameSession.getInstance().actionEndTurn(),
+        );
       }, opponentAgent.delayBetweenActions);
     } else {
-      this._opponentAgentTimeoutId = setTimeout(function (finalAgentAction) {
-        SDK.GameSession.current().executeAction(AgentActions.createSDKActionFromAgentAction(opponentAgent, finalAgentAction));
-      }.bind(this, finalAgentAction), opponentAgent.delayBetweenActions);
+      this._opponentAgentTimeoutId = setTimeout(
+        function (finalAgentAction) {
+          SDK.GameSession.current().executeAction(
+            AgentActions.createSDKActionFromAgentAction(opponentAgent, finalAgentAction),
+          );
+        }.bind(this, finalAgentAction),
+        opponentAgent.delayBetweenActions,
+      );
     }
   },
 
@@ -1300,7 +1698,6 @@ var TutorialLayout = GameLayout.extend({
   },
 
   /* endregion EVENTS */
-
 });
 
 module.exports = TutorialLayout;

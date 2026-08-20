@@ -42,6 +42,9 @@ class ModifierStartTurnWatchDamageMyGeneral extends ModifierStartTurnWatch {
 }
 ModifierStartTurnWatchDamageMyGeneral.prototype.type = 'ModifierStartTurnWatchDamageMyGeneral';
 ModifierStartTurnWatchDamageMyGeneral.prototype.damageAmount = 0;
-ModifierStartTurnWatchDamageMyGeneral.prototype.fxResource = ['FX.Modifiers.ModifierStartTurnWatch', 'FX.Modifiers.ModifierGenericChainLightningRed'];
+ModifierStartTurnWatchDamageMyGeneral.prototype.fxResource = [
+  'FX.Modifiers.ModifierStartTurnWatch',
+  'FX.Modifiers.ModifierGenericChainLightningRed',
+];
 
 module.exports = ModifierStartTurnWatchDamageMyGeneral;

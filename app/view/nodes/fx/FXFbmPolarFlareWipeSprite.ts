@@ -36,17 +36,19 @@ var FXFbmPolarFlareWipeSprite = FXSprite.extend({
 
   setOptions(options) {
     this._super(options);
-    if (options.phase != null) { this.phase = options.phase; }
+    if (options.phase != null) {
+      this.phase = options.phase;
+    }
   },
 
   updateTweenAction(value, key) {
     switch (key) {
-    case 'phase':
-      this.phase = value;
-      break;
-    default:
-      FXSprite.prototype.updateTweenAction.call(this, value, key);
-      break;
+      case 'phase':
+        this.phase = value;
+        break;
+      default:
+        FXSprite.prototype.updateTweenAction.call(this, value, key);
+        break;
     }
   },
 });
@@ -54,7 +56,9 @@ var FXFbmPolarFlareWipeSprite = FXSprite.extend({
 FXFbmPolarFlareWipeSprite.WebGLRenderCmd = function (renderable) {
   FXSprite.WebGLRenderCmd.call(this, renderable);
 };
-const proto = FXFbmPolarFlareWipeSprite.WebGLRenderCmd.prototype = Object.create(FXSprite.WebGLRenderCmd.prototype);
+const proto = (FXFbmPolarFlareWipeSprite.WebGLRenderCmd.prototype = Object.create(
+  FXSprite.WebGLRenderCmd.prototype,
+));
 proto.constructor = FXFbmPolarFlareWipeSprite.WebGLRenderCmd;
 
 proto.rendering = function () {
@@ -66,8 +70,15 @@ proto.rendering = function () {
   const shaderProgram = this._shaderProgram;
   shaderProgram.use();
   shaderProgram._setUniformForMVPMatrixWithMat4(this._stackMatrix);
-  shaderProgram.setUniformLocationWith2f(shaderProgram.loc_size, node._rect.width, node._rect.height);
-  shaderProgram.setUniformLocationWith1f(shaderProgram.loc_time, node.getFX().getTime() * node.timeScale);
+  shaderProgram.setUniformLocationWith2f(
+    shaderProgram.loc_size,
+    node._rect.width,
+    node._rect.height,
+  );
+  shaderProgram.setUniformLocationWith1f(
+    shaderProgram.loc_time,
+    node.getFX().getTime() * node.timeScale,
+  );
   shaderProgram.setUniformLocationWith1f(shaderProgram.loc_phase, node.phase);
   cc.glBlendFunc(node._blendFunc.src, node._blendFunc.dst);
 

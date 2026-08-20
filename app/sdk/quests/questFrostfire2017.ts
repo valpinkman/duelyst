@@ -25,7 +25,10 @@ class QuestFrostfire2017 extends Quest {
 
   _progressForGameDataForPlayerId(gameData, playerId) {
     for (var player of Array.from<any>(gameData.players)) {
-      var playerSetupData = UtilsGameSession.getPlayerSetupDataForPlayerId(gameData, player.playerId);
+      var playerSetupData = UtilsGameSession.getPlayerSetupDataForPlayerId(
+        gameData,
+        player.playerId,
+      );
       if (gameData.gameType === GameType.Casual) {
         return 1;
       }
@@ -38,7 +41,9 @@ class QuestFrostfire2017 extends Quest {
   }
 
   isAvailableOn(momentUtc) {
-    return momentUtc.isAfter(moment.utc('2017-12-05')) && momentUtc.isBefore(moment.utc('2018-01-05'));
+    return (
+      momentUtc.isAfter(moment.utc('2017-12-05')) && momentUtc.isBefore(moment.utc('2018-01-05'))
+    );
   }
 
   expiresOn() {

@@ -23,7 +23,6 @@ const UnitSprite = EntitySprite.extend({
   // by default entities are facing screen
   normal: new cc.kmVec3(0.0, 0.0, -1.0),
   depthRotation: new cc.kmVec3(0.0, 0.0, 0.0),
-
 });
 
 UnitSprite.create = function (options, sprite) {

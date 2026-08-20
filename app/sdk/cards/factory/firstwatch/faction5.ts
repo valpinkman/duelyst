@@ -93,7 +93,12 @@ class CardFactory_FirstWatchSet_Faction5 {
       card.maxHP = 2;
       card.manaCost = 4;
       card.rarityId = Rarity.Epic;
-      card.setInherentModifiersContextObjects([ModifierOpponentSummonWatchSummonEgg.createContextObject({ id: Cards.Faction5.Rizen }, 'Rizen')]);
+      card.setInherentModifiersContextObjects([
+        ModifierOpponentSummonWatchSummonEgg.createContextObject(
+          { id: Cards.Faction5.Rizen },
+          'Rizen',
+        ),
+      ]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
     }
 
@@ -107,7 +112,9 @@ class CardFactory_FirstWatchSet_Faction5 {
       card.maxHP = 4;
       card.manaCost = 3;
       card.rarityId = Rarity.Common;
-      card.setInherentModifiersContextObjects([ModifierSpellWatchDamageAllMinions.createContextObject(1)]);
+      card.setInherentModifiersContextObjects([
+        ModifierSpellWatchDamageAllMinions.createContextObject(1),
+      ]);
       card.setFXResource(['FX.Cards.Neutral.BlisteringSkorn']);
       card.setBaseSoundResource({
         apply: RSX.sfx_summonlegendary.audio,
@@ -190,7 +197,10 @@ class CardFactory_FirstWatchSet_Faction5 {
       card.maxHP = 1;
       card.manaCost = 2;
       card.rarityId = Rarity.Rare;
-      card.setInherentModifiersContextObjects([ModifierForcefield.createContextObject(), ModifierFrenzy.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierForcefield.createContextObject(),
+        ModifierFrenzy.createContextObject(),
+      ]);
     }
 
     if (identifier === Cards.Faction5.GrandmasterKraigon) {
@@ -228,11 +238,14 @@ class CardFactory_FirstWatchSet_Faction5 {
         ModifierForcefield.createContextObject(),
         ModifierGrow.createContextObject(7),
         ModifierFrenzy.createContextObject(),
-        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetOwnPlayer([
-          ModifierForcefield.createContextObject(),
-          ModifierGrowPermanent.createContextObject(7),
-          ModifierFrenzy.createContextObject(),
-        ], 'Your General has: Forcefield, Frenzy, Grow: +7/+7.'),
+        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetOwnPlayer(
+          [
+            ModifierForcefield.createContextObject(),
+            ModifierGrowPermanent.createContextObject(7),
+            ModifierFrenzy.createContextObject(),
+          ],
+          'Your General has: Forcefield, Frenzy, Grow: +7/+7.',
+        ),
       ]);
     }
 

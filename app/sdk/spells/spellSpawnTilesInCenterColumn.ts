@@ -15,9 +15,18 @@ class SpellSpawnTilesInCenterColumn extends SpellSpawnEntity {
     const board = this.getGameSession().getBoard();
     const centerPosition = { x: 4, y: 2 };
     const applyEffectPositions = [];
-    const validSpawnLocations = UtilsGameSession.getValidBoardPositionsFromPattern(board, centerPosition, CONFIG.PATTERN_WHOLE_COLUMN, true);
+    const validSpawnLocations = UtilsGameSession.getValidBoardPositionsFromPattern(
+      board,
+      centerPosition,
+      CONFIG.PATTERN_WHOLE_COLUMN,
+      true,
+    );
     if ((validSpawnLocations != null ? validSpawnLocations.length : undefined) > 0) {
-      for (let i = 0, end = validSpawnLocations.length, asc = end >= 0; asc ? i < end : i > end; asc ? i++ : i--) {
+      for (
+        let i = 0, end = validSpawnLocations.length, asc = end >= 0;
+        asc ? i < end : i > end;
+        asc ? i++ : i--
+      ) {
         applyEffectPositions.push(validSpawnLocations[i]);
       }
     }

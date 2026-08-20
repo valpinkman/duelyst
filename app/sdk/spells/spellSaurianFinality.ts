@@ -20,15 +20,29 @@ class SpellSaurianFinality extends Spell {
     const position = { x, y };
     const entity = board.getCardAtPosition(position, this.targetType);
 
-    if ((entity != null) && (entity === this.getGameSession().getGeneralForOpponentOfPlayerId(this.getOwnerId()))) { // enemy general
+    if (
+      entity != null &&
+      entity === this.getGameSession().getGeneralForOpponentOfPlayerId(this.getOwnerId())
+    ) {
+      // enemy general
       removeManaCoreAction = new RemoveManaCoreAction(this.getGameSession(), 3);
       removeManaCoreAction.setSource(this);
-      removeManaCoreAction.setOwnerId(this.getGameSession().getOpponentPlayerIdOfPlayerId(this.getOwnerId()));
+      removeManaCoreAction.setOwnerId(
+        this.getGameSession().getOpponentPlayerIdOfPlayerId(this.getOwnerId()),
+      );
       this.getGameSession().executeAction(removeManaCoreAction);
 
       const stunnedObject = ModifierStunned.createContextObject();
-      return this.getGameSession().applyModifierContextObject(stunnedObject, this.getGameSession().getGeneralForOpponentOfPlayerId(this.getOwnerId()));
-    } if ((entity != null) && (entity === this.getGameSession().getGeneralForPlayerId(this.getOwnerId()))) { // my general
+      return this.getGameSession().applyModifierContextObject(
+        stunnedObject,
+        this.getGameSession().getGeneralForOpponentOfPlayerId(this.getOwnerId()),
+      );
+    }
+    if (
+      entity != null &&
+      entity === this.getGameSession().getGeneralForPlayerId(this.getOwnerId())
+    ) {
+      // my general
       removeManaCoreAction = new RemoveManaCoreAction(this.getGameSession(), 3);
       removeManaCoreAction.setSource(this);
       removeManaCoreAction.setOwnerId(this.getOwnerId());
@@ -52,9 +66,13 @@ class SpellSaurianFinality extends Spell {
 
     // affects both generals
     const enemyGeneral = this.getGameSession().getGeneralForOpponentOfPlayerId(this.getOwnerId());
-    if (enemyGeneral != null) { applyEffectPositions.push(enemyGeneral.getPosition()); }
+    if (enemyGeneral != null) {
+      applyEffectPositions.push(enemyGeneral.getPosition());
+    }
     const myGeneral = this.getGameSession().getGeneralForPlayerId(this.getOwnerId());
-    if (myGeneral != null) { applyEffectPositions.push(myGeneral.getPosition()); }
+    if (myGeneral != null) {
+      applyEffectPositions.push(myGeneral.getPosition());
+    }
 
     return applyEffectPositions;
   }

@@ -34,8 +34,12 @@ class ModifierNoshRak extends Modifier {
   }
 
   static createContextObject(attackBuff, maxHPBuff, options) {
-    if (attackBuff == null) { attackBuff = 4; }
-    if (maxHPBuff == null) { maxHPBuff = 9; }
+    if (attackBuff == null) {
+      attackBuff = 4;
+    }
+    if (maxHPBuff == null) {
+      maxHPBuff = 9;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.attributeBuffs = {
       atk: attackBuff,
@@ -50,7 +54,7 @@ class ModifierNoshRak extends Modifier {
   onApplyToCardBeforeSyncState() {
     // treating this as a 'fake' transform so we're going to store damage done to originalDamage
     // unit before we rebase their HP
-    return this._private.originalDamage = this.getCard().getDamage();
+    return (this._private.originalDamage = this.getCard().getDamage());
   }
 
   onRemoveFromCardBeforeSyncState() {

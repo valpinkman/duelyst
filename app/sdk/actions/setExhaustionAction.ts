@@ -18,7 +18,7 @@ class SetExhaustionAction extends Action {
   }
 
   setExhausted(val) {
-    return this.exhausted = val;
+    return (this.exhausted = val);
   }
 
   getExhausted() {
@@ -26,7 +26,7 @@ class SetExhaustionAction extends Action {
   }
 
   setMovesMade(val) {
-    return this.movesMade = val;
+    return (this.movesMade = val);
   }
 
   getMovesMade() {
@@ -34,7 +34,7 @@ class SetExhaustionAction extends Action {
   }
 
   setAttacksMade(val) {
-    return this.attacksMade = val;
+    return (this.attacksMade = val);
   }
 
   getAttacksMade() {
@@ -46,9 +46,15 @@ class SetExhaustionAction extends Action {
     const target = this.getTarget();
     if (target != null) {
       // match new target's readiness state to that of original unit
-      if (this.exhausted != null) { target.setExhausted(this.exhausted); }
-      if (this.movesMade != null) { target.setMovesMade(this.movesMade); }
-      if (this.attacksMade != null) { return target.setAttacksMade(this.attacksMade); }
+      if (this.exhausted != null) {
+        target.setExhausted(this.exhausted);
+      }
+      if (this.movesMade != null) {
+        target.setMovesMade(this.movesMade);
+      }
+      if (this.attacksMade != null) {
+        return target.setAttacksMade(this.attacksMade);
+      }
     }
   }
 }

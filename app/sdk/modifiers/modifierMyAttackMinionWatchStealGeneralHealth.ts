@@ -15,14 +15,18 @@ class ModifierMyAttackMinionWatchStealGeneralHealth extends ModifierMyAttackMini
   static type = 'ModifierMyAttackMinionWatchStealGeneralHealth';
 
   static createContextObject(stealAmount, options) {
-    if (stealAmount == null) { stealAmount = 0; }
+    if (stealAmount == null) {
+      stealAmount = 0;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.stealAmount = stealAmount;
     return contextObject;
   }
 
   onMyAttackMinionWatch(action) {
-    const general = this.getCard().getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
+    const general = this.getCard()
+      .getGameSession()
+      .getGeneralForPlayerId(this.getCard().getOwnerId());
 
     const healAction = new HealAction(this.getGameSession());
     healAction.setOwnerId(this.getOwnerId());
@@ -30,7 +34,11 @@ class ModifierMyAttackMinionWatchStealGeneralHealth extends ModifierMyAttackMini
     healAction.setHealAmount(this.stealAmount);
     this.getGameSession().executeAction(healAction);
 
-    const enemyGeneral = this.getCard().getGameSession().getGeneralForPlayerId(this.getGameSession().getOpponentPlayerIdOfPlayerId(this.getCard().getOwnerId()));
+    const enemyGeneral = this.getCard()
+      .getGameSession()
+      .getGeneralForPlayerId(
+        this.getGameSession().getOpponentPlayerIdOfPlayerId(this.getCard().getOwnerId()),
+      );
 
     const damageAction = new DamageAction(this.getGameSession());
     damageAction.setOwnerId(this.getOwnerId());
@@ -39,7 +47,8 @@ class ModifierMyAttackMinionWatchStealGeneralHealth extends ModifierMyAttackMini
     return this.getGameSession().executeAction(damageAction);
   }
 }
-ModifierMyAttackMinionWatchStealGeneralHealth.prototype.type = 'ModifierMyAttackMinionWatchStealGeneralHealth';
+ModifierMyAttackMinionWatchStealGeneralHealth.prototype.type =
+  'ModifierMyAttackMinionWatchStealGeneralHealth';
 ModifierMyAttackMinionWatchStealGeneralHealth.prototype.stealAmount = 0;
 
 module.exports = ModifierMyAttackMinionWatchStealGeneralHealth;

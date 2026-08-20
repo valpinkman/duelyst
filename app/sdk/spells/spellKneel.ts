@@ -36,7 +36,11 @@ class SpellKneel extends Spell {
       // set x offset based on which direction the target General faces
       let offset;
       const targetGeneralPosition = targetGeneral.getPosition();
-      if (targetGeneral.isOwnedByPlayer1()) { offset = 1; } else { offset = -1; }
+      if (targetGeneral.isOwnedByPlayer1()) {
+        offset = 1;
+      } else {
+        offset = -1;
+      }
       return { x: targetGeneralPosition.x + offset, y: targetGeneralPosition.y };
     }
   }
@@ -45,9 +49,9 @@ class SpellKneel extends Spell {
     // if there is a valid unit to teleport, and the position we want to teleport to is empty and on the board
     const board = this.getGameSession().getBoard();
     if (
-      (validPositions.length > 0)
-      && (!board.getCardAtPosition(this.getTeleportTargetPosition(), this.targetType))
-      && (board.isOnBoard(this.getTeleportTargetPosition()))
+      validPositions.length > 0 &&
+      !board.getCardAtPosition(this.getTeleportTargetPosition(), this.targetType) &&
+      board.isOnBoard(this.getTeleportTargetPosition())
     ) {
       // allow the spell to be cast
       return super._postFilterPlayPositions(validPositions);

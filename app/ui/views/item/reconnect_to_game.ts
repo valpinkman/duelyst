@@ -4,7 +4,6 @@ var EventBus = require('app/common/eventbus');
 var ReconnectToGameTemplate = require('app/ui/templates/item/reconnect_to_game.hbs');
 
 var ReconnectToGameItemView = Backbone.Marionette.ItemView.extend({
-
   id: 'app-reconnect-to-game',
   className: 'status',
 
@@ -20,12 +19,10 @@ var ReconnectToGameItemView = Backbone.Marionette.ItemView.extend({
     'click .exit': 'onClickExit',
   },
 
-  initialize: function () {
-  },
+  initialize: function () {},
 
   /* on render callback */
-  onRender: function () {
-  },
+  onRender: function () {},
 
   onClickExit: function () {
     EventBus.getInstance().trigger('APP:cancelConnection');

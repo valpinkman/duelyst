@@ -21,7 +21,8 @@ const TileOpponentSprite = BaseSprite.extend({
 
 TileOpponentSprite.create = function (sprite) {
   if (sprite == null) {
-    sprite = cc.pool.getFromPool(TileOpponentSprite) || BaseSprite.create(null, new TileOpponentSprite());
+    sprite =
+      cc.pool.getFromPool(TileOpponentSprite) || BaseSprite.create(null, new TileOpponentSprite());
   }
   return sprite;
 };

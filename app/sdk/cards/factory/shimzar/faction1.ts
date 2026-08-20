@@ -130,7 +130,10 @@ class CardFactory_ShimzarSet_Faction1 {
       card.maxHP = 4;
       card.manaCost = 1;
       card.rarityId = Rarity.Common;
-      card.setInherentModifiersContextObjects([ModifierBattlePet.createContextObject(), ModifierProvoke.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierBattlePet.createContextObject(),
+        ModifierProvoke.createContextObject(),
+      ]);
     }
 
     if (identifier === Cards.Faction1.SunWisp) {
@@ -162,7 +165,9 @@ class CardFactory_ShimzarSet_Faction1 {
       card.maxHP = 1;
       card.manaCost = 2;
       card.rarityId = Rarity.Common;
-      card.setInherentModifiersContextObjects([ModifierOpeningGambitDrawCard.createContextObject(1)]);
+      card.setInherentModifiersContextObjects([
+        ModifierOpeningGambitDrawCard.createContextObject(1),
+      ]);
     }
 
     if (identifier === Cards.Faction1.RadiantDragoon) {
@@ -240,8 +245,12 @@ class CardFactory_ShimzarSet_Faction1 {
       card.manaCost = 3;
       card.rarityId = Rarity.Epic;
       const statBuffContextObject = Modifier.createContextObjectWithAttributeBuffs(1, 0);
-      statBuffContextObject.appliedName = i18next.t('modifiers.faction_1_sunforged_lancer_applied_name');
-      card.setInherentModifiersContextObjects([ModifierHealWatchBuffGeneral.createContextObject([statBuffContextObject], '+1 Attack')]);
+      statBuffContextObject.appliedName = i18next.t(
+        'modifiers.faction_1_sunforged_lancer_applied_name',
+      );
+      card.setInherentModifiersContextObjects([
+        ModifierHealWatchBuffGeneral.createContextObject([statBuffContextObject], '+1 Attack'),
+      ]);
     }
 
     if (identifier === Cards.Faction1.Solarius) {
@@ -273,7 +282,9 @@ class CardFactory_ShimzarSet_Faction1 {
       card.maxHP = 2;
       card.manaCost = 5;
       card.rarityId = Rarity.Legendary;
-      card.setInherentModifiersContextObjects([ModifierBandingChangeCardDraw.createContextObject(2)]);
+      card.setInherentModifiersContextObjects([
+        ModifierBandingChangeCardDraw.createContextObject(2),
+      ]);
     }
 
     if (identifier === Cards.Spell.IroncliffeHeart) {
@@ -353,9 +364,7 @@ class CardFactory_ShimzarSet_Faction1 {
       card.rarityId = Rarity.Epic;
       buffContextObject = Modifier.createContextObjectWithAttributeBuffs(0, 1);
       buffContextObject.appliedName = i18next.t('cards.faction_1_spell_fighting_spirit_name');
-      card.setTargetModifiersContextObjects([
-        buffContextObject,
-      ]);
+      card.setTargetModifiersContextObjects([buffContextObject]);
       card.radius = CONFIG.WHOLE_BOARD_RADIUS;
       card.addKeywordClassToInclude(ModifierTokenCreator);
       card.setFXResource(['FX.Cards.Spell.LionheartBlessing']);
@@ -400,9 +409,11 @@ class CardFactory_ShimzarSet_Faction1 {
       card.manaCost = 8;
       card.rarityId = Rarity.Legendary;
       card.cardDataOrIndexToSpawn = { id: Cards.Faction1.SilverguardKnight };
-      card.setFollowups([{
-        id: Cards.Spell.CloneSourceEntityNearbyGeneral2X,
-      }]);
+      card.setFollowups([
+        {
+          id: Cards.Spell.CloneSourceEntityNearbyGeneral2X,
+        },
+      ]);
       card.setFXResource(['FX.Cards.Spell.SkyPhalanx']);
       card.setBaseSoundResource({
         apply: RSX.sfx_f1tank_attack_swing.audio,

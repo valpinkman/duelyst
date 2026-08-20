@@ -20,11 +20,14 @@ class ModifierEnemyMinionAttackWatch extends Modifier {
 
   onAction(event) {
     super.onAction(event);
-    const {
-      action,
-    } = event;
+    const { action } = event;
     const source = action.getSource();
-    if (action instanceof AttackAction && (source.getOwner() !== this.getCard().getOwner()) && !source.getIsGeneral() && !action.getIsImplicit()) {
+    if (
+      action instanceof AttackAction &&
+      source.getOwner() !== this.getCard().getOwner() &&
+      !source.getIsGeneral() &&
+      !action.getIsImplicit()
+    ) {
       return this.onEnemyMinionAttackWatch(action);
     }
   }
@@ -36,7 +39,9 @@ ModifierEnemyMinionAttackWatch.prototype.activeInHand = false;
 ModifierEnemyMinionAttackWatch.prototype.activeInDeck = false;
 ModifierEnemyMinionAttackWatch.prototype.activeInSignatureCards = false;
 ModifierEnemyMinionAttackWatch.prototype.activeOnBoard = true;
-ModifierEnemyMinionAttackWatch.prototype.fxResource = ['FX.Modifiers.ModifierEnemyMinionAttackWatch'];
+ModifierEnemyMinionAttackWatch.prototype.fxResource = [
+  'FX.Modifiers.ModifierEnemyMinionAttackWatch',
+];
 // override me in sub classes to implement special behavior
 
 module.exports = ModifierEnemyMinionAttackWatch;

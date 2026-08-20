@@ -33,59 +33,59 @@ class ModifierEndTurnWatchHsuku extends ModifierEndTurnWatch {
       return (() => {
         const result = [];
         for (var unit of Array.from<any>(units)) {
-          if ((unit != null) && !unit.getIsGeneral()) {
+          if (unit != null && !unit.getIsGeneral()) {
             var randomNum = this.getGameSession().getRandomIntegerForExecution(6);
             var statModifier = null;
             var abilityModifier = null;
             if (unit.getOwnerId() === this.getCard().getOwnerId()) {
               switch (randomNum) {
-              case 0:
-                statModifier = Modifier.createContextObjectWithAttributeBuffs(1, 0);
-                abilityModifier = ModifierTranscendance.createContextObject();
-                break;
-              case 1:
-                statModifier = Modifier.createContextObjectWithAttributeBuffs(1, 0);
-                abilityModifier = ModifierRanged.createContextObject();
-                break;
-              case 2:
-                statModifier = Modifier.createContextObjectWithAttributeBuffs(1, 0);
-                abilityModifier = ModifierFrenzy.createContextObject();
-                break;
-              case 3:
-                statModifier = Modifier.createContextObjectWithAttributeBuffs(1, 3);
-                break;
-              case 4:
-                statModifier = Modifier.createContextObjectWithAttributeBuffs(2, 2);
-                break;
-              case 5:
-                abilityModifier = ModifierForcefield.createContextObject();
-                break;
+                case 0:
+                  statModifier = Modifier.createContextObjectWithAttributeBuffs(1, 0);
+                  abilityModifier = ModifierTranscendance.createContextObject();
+                  break;
+                case 1:
+                  statModifier = Modifier.createContextObjectWithAttributeBuffs(1, 0);
+                  abilityModifier = ModifierRanged.createContextObject();
+                  break;
+                case 2:
+                  statModifier = Modifier.createContextObjectWithAttributeBuffs(1, 0);
+                  abilityModifier = ModifierFrenzy.createContextObject();
+                  break;
+                case 3:
+                  statModifier = Modifier.createContextObjectWithAttributeBuffs(1, 3);
+                  break;
+                case 4:
+                  statModifier = Modifier.createContextObjectWithAttributeBuffs(2, 2);
+                  break;
+                case 5:
+                  abilityModifier = ModifierForcefield.createContextObject();
+                  break;
               }
               if (statModifier != null) {
                 statModifier.appliedName = this.buffName;
               }
             } else {
               switch (randomNum) {
-              case 0:
-                statModifier = Modifier.createContextObjectWithAttributeBuffs(-1, 0);
-                abilityModifier = ModifierCannotMove.createContextObject();
-                break;
-              case 1:
-                statModifier = Modifier.createContextObjectWithAttributeBuffs(-1, 0);
-                abilityModifier = ModifierCannotStrikeback.createContextObject();
-                break;
-              case 2:
-                statModifier = Modifier.createContextObjectWithAttributeBuffs(2, -2);
-                break;
-              case 3:
-                statModifier = Modifier.createContextObjectWithAttributeBuffs(-2, 0);
-                break;
-              case 4:
-                statModifier = Modifier.createContextObjectWithAttributeBuffs(-1, -1);
-                break;
-              case 5:
-                abilityModifier = ModifierStunned.createContextObject();
-                break;
+                case 0:
+                  statModifier = Modifier.createContextObjectWithAttributeBuffs(-1, 0);
+                  abilityModifier = ModifierCannotMove.createContextObject();
+                  break;
+                case 1:
+                  statModifier = Modifier.createContextObjectWithAttributeBuffs(-1, 0);
+                  abilityModifier = ModifierCannotStrikeback.createContextObject();
+                  break;
+                case 2:
+                  statModifier = Modifier.createContextObjectWithAttributeBuffs(2, -2);
+                  break;
+                case 3:
+                  statModifier = Modifier.createContextObjectWithAttributeBuffs(-2, 0);
+                  break;
+                case 4:
+                  statModifier = Modifier.createContextObjectWithAttributeBuffs(-1, -1);
+                  break;
+                case 5:
+                  abilityModifier = ModifierStunned.createContextObject();
+                  break;
               }
               if (statModifier != null) {
                 statModifier.appliedName = this.debuffName;

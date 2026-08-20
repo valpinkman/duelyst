@@ -21,8 +21,12 @@ class ModifierSpellWatchBuffAllies extends ModifierSpellWatch {
   static description = 'Whenever you cast a spell, friendly minions gain %X.';
 
   static createContextObject(attackBuff, maxHPBuff, options) {
-    if (attackBuff == null) { attackBuff = 0; }
-    if (maxHPBuff == null) { maxHPBuff = 0; }
+    if (attackBuff == null) {
+      attackBuff = 0;
+    }
+    if (maxHPBuff == null) {
+      maxHPBuff = 0;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.atkBuffVal = attackBuff;
     contextObject.maxHPBuffVal = maxHPBuff;
@@ -31,25 +35,43 @@ class ModifierSpellWatchBuffAllies extends ModifierSpellWatch {
 
   static getDescription(modifierContextObject) {
     if (modifierContextObject) {
-      return this.description.replace(/%X/, Stringifiers.stringifyAttackHealthBuff(modifierContextObject.atkBuffVal, modifierContextObject.maxHPBuffVal));
+      return this.description.replace(
+        /%X/,
+        Stringifiers.stringifyAttackHealthBuff(
+          modifierContextObject.atkBuffVal,
+          modifierContextObject.maxHPBuffVal,
+        ),
+      );
     }
     return this.description;
   }
 
   onSpellWatch(action) {
     // buff self
-    let statContextObject = Modifier.createContextObjectWithAttributeBuffs(this.atkBuffVal, this.maxHPBuffVal);
-    if (this.appliedName) { statContextObject.appliedName = this.appliedName; }
+    let statContextObject = Modifier.createContextObjectWithAttributeBuffs(
+      this.atkBuffVal,
+      this.maxHPBuffVal,
+    );
+    if (this.appliedName) {
+      statContextObject.appliedName = this.appliedName;
+    }
     this.getGameSession().applyModifierContextObject(statContextObject, this.getCard());
 
     // buff friendly minions
-    const friendlyEntities = this.getGameSession().getBoard().getFriendlyEntitiesForEntity(this.getCard());
+    const friendlyEntities = this.getGameSession()
+      .getBoard()
+      .getFriendlyEntitiesForEntity(this.getCard());
     return (() => {
       const result = [];
       for (var entity of Array.from<any>(friendlyEntities)) {
         if (!entity.getIsGeneral()) {
-          statContextObject = Modifier.createContextObjectWithAttributeBuffs(this.atkBuffVal, this.maxHPBuffVal);
-          if (this.appliedName) { statContextObject.appliedName = this.appliedName; }
+          statContextObject = Modifier.createContextObjectWithAttributeBuffs(
+            this.atkBuffVal,
+            this.maxHPBuffVal,
+          );
+          if (this.appliedName) {
+            statContextObject.appliedName = this.appliedName;
+          }
           result.push(this.getGameSession().applyModifierContextObject(statContextObject, entity));
         } else {
           result.push(undefined);
@@ -60,6 +82,9 @@ class ModifierSpellWatchBuffAllies extends ModifierSpellWatch {
   }
 }
 ModifierSpellWatchBuffAllies.prototype.type = 'ModifierSpellWatchBuffAllies';
-ModifierSpellWatchBuffAllies.prototype.fxResource = ['FX.Modifiers.ModifierSpellWatch', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierSpellWatchBuffAllies.prototype.fxResource = [
+  'FX.Modifiers.ModifierSpellWatch',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 
 module.exports = ModifierSpellWatchBuffAllies;

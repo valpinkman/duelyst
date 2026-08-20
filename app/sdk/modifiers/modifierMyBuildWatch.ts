@@ -13,7 +13,7 @@ class ModifierMyBuildWatch extends ModifierBuildWatch {
   static type = 'ModifierMyBuildWatch';
 
   getIsActionRelevant(action) {
-    return super.getIsActionRelevant(action) && (action.getOwnerId() === this.getCard().getOwnerId());
+    return super.getIsActionRelevant(action) && action.getOwnerId() === this.getCard().getOwnerId();
   }
 }
 ModifierMyBuildWatch.prototype.type = 'ModifierMyBuildWatch';

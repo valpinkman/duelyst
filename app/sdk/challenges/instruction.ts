@@ -48,7 +48,10 @@ class Instruction extends Validator {
    * @public
    */
   isValidSourcePosition(p) {
-    return (this.sourcePosition == null) || ((p.x === this.sourcePosition.x) && (p.y === this.sourcePosition.y));
+    return (
+      this.sourcePosition == null ||
+      (p.x === this.sourcePosition.x && p.y === this.sourcePosition.y)
+    );
   }
 
   /**
@@ -57,7 +60,10 @@ class Instruction extends Validator {
    * @public
    */
   isValidTargetPosition(p) {
-    return (this.targetPosition == null) || ((p.x === this.targetPosition.x) && (p.y === this.targetPosition.y));
+    return (
+      this.targetPosition == null ||
+      (p.x === this.targetPosition.x && p.y === this.targetPosition.y)
+    );
   }
 
   /**
@@ -66,7 +72,7 @@ class Instruction extends Validator {
    * @public
    */
   isValidHandIndex(handIndex) {
-    return (this.handIndex == null) || (this.handIndex === handIndex);
+    return this.handIndex == null || this.handIndex === handIndex;
   }
 
   /**
@@ -76,11 +82,19 @@ class Instruction extends Validator {
    */
   onValidateAction(e) {
     super.onValidateAction(e);
-    const {
-      action,
-    } = e;
-    if ((action != null) && action.getIsValid() && !action.getIsImplicit() && !action.getIsAutomatic()) {
-      if ((action.type === this.expectedActionType) && this.isValidTargetPosition(action.targetPosition) && this.isValidSourcePosition(action.sourcePosition) && this.isValidHandIndex(action.indexOfCardInHand)) {
+    const { action } = e;
+    if (
+      action != null &&
+      action.getIsValid() &&
+      !action.getIsImplicit() &&
+      !action.getIsAutomatic()
+    ) {
+      if (
+        action.type === this.expectedActionType &&
+        this.isValidTargetPosition(action.targetPosition) &&
+        this.isValidSourcePosition(action.sourcePosition) &&
+        this.isValidHandIndex(action.indexOfCardInHand)
+      ) {
         return action.setIsValid(true);
       }
       return this.invalidateAction(action, this._getFailureMessagePosition(), this.failedLabel);
@@ -104,13 +118,14 @@ class Instruction extends Validator {
       //      failedLabel:"Click Here."
       failedLabel: i18next.t('tutorial.end_your_turn_message'),
       expectedActionType: EndTurnAction.type,
-      instructionLabels: [{
-        label: i18next.t('tutorial.end_your_turn_message'),
-        positionAtEndTurn: true,
-        triggersInstructionIndex: 0,
-        delay: CONFIG.INSTRUCTIONAL_ULTRAFAST_DURATION,
-        duration: CONFIG.INSTRUCTIONAL_SHORT_DURATION,
-      },
+      instructionLabels: [
+        {
+          label: i18next.t('tutorial.end_your_turn_message'),
+          positionAtEndTurn: true,
+          triggersInstructionIndex: 0,
+          delay: CONFIG.INSTRUCTIONAL_ULTRAFAST_DURATION,
+          duration: CONFIG.INSTRUCTIONAL_SHORT_DURATION,
+        },
       ],
     });
 
@@ -132,7 +147,7 @@ class Instruction extends Validator {
   // TODO: either tie to cardnode or use real pixel values
   static getPositionForHandIndex(index) {
     //    return {x:index*7/5,y:-1}
-    return { x: (-0.1 + ((index * 7) / 5)), y: -0.25 };
+    return { x: -0.1 + (index * 7) / 5, y: -0.25 };
   }
 }
 Instruction.prototype.type = 'Instruction';

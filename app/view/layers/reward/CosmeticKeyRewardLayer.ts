@@ -12,9 +12,10 @@ const KeyRewardNode = require('../../nodes/reward/KeyRewardNode');
  *************************************************************************** */
 
 const CosmeticKeyRewardLayer = RewardLayer.extend({
-
   getRequiredResources() {
-    return RewardLayer.prototype.getRequiredResources.call(this).concat(PKGS.getPkgForIdentifier('cosmetic_key_reward'));
+    return RewardLayer.prototype.getRequiredResources
+      .call(this)
+      .concat(PKGS.getPkgForIdentifier('cosmetic_key_reward'));
   },
 
   showBackground() {
@@ -63,14 +64,18 @@ const CosmeticKeyRewardLayer = RewardLayer.extend({
       }
 
       // show titles
-      showPromises.push(new Promise((resolve) => {
-        this.runAction(cc.sequence(
-          cc.delayTime(1.0),
-          cc.callFunc(() => {
-            this.showTitles(CONFIG.ANIMATE_FAST_DURATION, title, subtitle).then(resolve);
-          }),
-        ));
-      }));
+      showPromises.push(
+        new Promise((resolve) => {
+          this.runAction(
+            cc.sequence(
+              cc.delayTime(1.0),
+              cc.callFunc(() => {
+                this.showTitles(CONFIG.ANIMATE_FAST_DURATION, title, subtitle).then(resolve);
+              }),
+            ),
+          );
+        }),
+      );
 
       return Promise.all(showPromises).then(() => {
         this.setIsContinueOnPressAnywhere(true);

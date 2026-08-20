@@ -21,7 +21,11 @@ class ModifierStartTurnWatchPutCardInHand extends ModifierStartTurnWatch {
   }
 
   onTurnWatch(action) {
-    const putCardInHandAction = new PutCardInHandAction(this.getGameSession(), this.getCard().getOwnerId(), this.cardData);
+    const putCardInHandAction = new PutCardInHandAction(
+      this.getGameSession(),
+      this.getCard().getOwnerId(),
+      this.cardData,
+    );
     return this.getGameSession().executeAction(putCardInHandAction);
   }
 }

@@ -25,9 +25,19 @@ class ModifierSynergizeApplyModifiersToGeneral extends ModifierSynergize {
   static type = 'ModifierSynergizeApplyModifiersToGeneral';
   static description = '';
 
-  static createContextObject(modifiersContextObjects, applyToOwnGeneral, applyToEnemyGeneral, description, options) {
-    if (applyToOwnGeneral == null) { applyToOwnGeneral = false; }
-    if (applyToEnemyGeneral == null) { applyToEnemyGeneral = false; }
+  static createContextObject(
+    modifiersContextObjects,
+    applyToOwnGeneral,
+    applyToEnemyGeneral,
+    description,
+    options,
+  ) {
+    if (applyToOwnGeneral == null) {
+      applyToOwnGeneral = false;
+    }
+    if (applyToEnemyGeneral == null) {
+      applyToEnemyGeneral = false;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.modifiersContextObjects = modifiersContextObjects;
     contextObject.applyToOwnGeneral = applyToOwnGeneral;
@@ -40,23 +50,33 @@ class ModifierSynergizeApplyModifiersToGeneral extends ModifierSynergize {
     if (this.modifiersContextObjects != null) {
       return Array.from<any>(this.getAffectedEntities()).map((entity) =>
         Array.from<any>(this.modifiersContextObjects).map((modifierContextObject) =>
-          this.getGameSession().applyModifierContextObject(modifierContextObject, entity)));
+          this.getGameSession().applyModifierContextObject(modifierContextObject, entity),
+        ),
+      );
     }
   }
 
   getAffectedEntities() {
     const affectedEntities = [];
     if (this.applyToOwnGeneral) {
-      affectedEntities.push(this.getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId()));
+      affectedEntities.push(
+        this.getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId()),
+      );
     }
     if (this.applyToEnemyGeneral) {
-      affectedEntities.push(this.getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId()));
+      affectedEntities.push(
+        this.getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId()),
+      );
     }
     return affectedEntities;
   }
 }
-ModifierSynergizeApplyModifiersToGeneral.prototype.type = 'ModifierSynergizeApplyModifiersToGeneral';
+ModifierSynergizeApplyModifiersToGeneral.prototype.type =
+  'ModifierSynergizeApplyModifiersToGeneral';
 ModifierSynergizeApplyModifiersToGeneral.prototype.modifiersContextObjects = null;
-ModifierSynergizeApplyModifiersToGeneral.prototype.fxResource = ['FX.Modifiers.ModifierSynergize', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierSynergizeApplyModifiersToGeneral.prototype.fxResource = [
+  'FX.Modifiers.ModifierSynergize',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 
 module.exports = ModifierSynergizeApplyModifiersToGeneral;

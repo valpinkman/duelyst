@@ -87,8 +87,8 @@ class CardFactory_CoreSet_Faction4 {
    * @returns {Card}
    */
   static cardForIdentifier(identifier, gameSession) {
-    let customContextObject; let
-      dyingWishContextObject;
+    let customContextObject;
+    let dyingWishContextObject;
     let card = null;
 
     if (identifier === Cards.Faction4.General) {
@@ -136,7 +136,7 @@ class CardFactory_CoreSet_Faction4 {
 
     if (identifier === Cards.Faction4.AltGeneral) {
       card = new Unit(gameSession);
-      if ((process.env.ALL_CARDS_AVAILABLE == null)) {
+      if (process.env.ALL_CARDS_AVAILABLE == null) {
         card.setIsUnlockableBasic(true);
       }
       card.setIsGeneral(true);
@@ -183,7 +183,7 @@ class CardFactory_CoreSet_Faction4 {
     if (identifier === Cards.Faction4.ThirdGeneral) {
       card = new Unit(gameSession);
       card.setIsGeneral(true);
-      if ((process.env.ALL_CARDS_AVAILABLE == null)) {
+      if (process.env.ALL_CARDS_AVAILABLE == null) {
         card.setIsUnlockableWithAchievement(true);
         card.setIsUnlockedWithAchievementId(WartechGeneralFaction4Achievement.id);
       }
@@ -230,7 +230,7 @@ class CardFactory_CoreSet_Faction4 {
     if (identifier === Cards.Faction4.AbyssalCrawler) {
       card = new Unit(gameSession);
       card.factionId = Factions.Faction4;
-      if ((process.env.ALL_CARDS_AVAILABLE == null)) {
+      if (process.env.ALL_CARDS_AVAILABLE == null) {
         card.setIsUnlockableBasic(true);
       }
       card.name = i18next.t('cards.faction_4_unit_abyssal_crawler_name');
@@ -258,7 +258,12 @@ class CardFactory_CoreSet_Faction4 {
       card.atk = 2;
       card.manaCost = 1;
       card.rarityId = Rarity.Fixed;
-      card.setInherentModifiersContextObjects([ModifierEndTurnWatchSpawnTile.createContextObject({ id: Cards.Tile.Shadow }, 'Shadow Creep')]);
+      card.setInherentModifiersContextObjects([
+        ModifierEndTurnWatchSpawnTile.createContextObject(
+          { id: Cards.Tile.Shadow },
+          'Shadow Creep',
+        ),
+      ]);
       card.addKeywordClassToInclude(ModifierStackingShadows);
     }
 
@@ -292,7 +297,14 @@ class CardFactory_CoreSet_Faction4 {
       card.maxHP = 3;
       card.manaCost = 4;
       card.rarityId = Rarity.Common;
-      card.setInherentModifiersContextObjects([ModifierDynamicCountModifySelfByShadowTilesOnBoard.createContextObject(1, 1, '+1/+1', 'Juggernaut')]);
+      card.setInherentModifiersContextObjects([
+        ModifierDynamicCountModifySelfByShadowTilesOnBoard.createContextObject(
+          1,
+          1,
+          '+1/+1',
+          'Juggernaut',
+        ),
+      ]);
       card.addKeywordClassToInclude(ModifierStackingShadows);
     }
 
@@ -325,7 +337,10 @@ class CardFactory_CoreSet_Faction4 {
       card.manaCost = 4;
       card.rarityId = Rarity.Rare;
       card.setInherentModifiersContextObjects([
-        ModifierDeathWatchSpawnEntity.createContextObject({ id: Cards.Faction4.Wraithling }, 'Wraithling'),
+        ModifierDeathWatchSpawnEntity.createContextObject(
+          { id: Cards.Faction4.Wraithling },
+          'Wraithling',
+        ),
       ]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
     }
@@ -361,9 +376,7 @@ class CardFactory_CoreSet_Faction4 {
       card.manaCost = 3;
       card.rarityId = Rarity.Fixed;
       const deathWatchBuffSelf = ModifierDeathWatchBuffSelf.createContextObject(1, 1);
-      card.setInherentModifiersContextObjects([
-        deathWatchBuffSelf,
-      ]);
+      card.setInherentModifiersContextObjects([deathWatchBuffSelf]);
     }
 
     if (identifier === Cards.Faction4.DeepfireDevourer) {
@@ -439,9 +452,7 @@ class CardFactory_CoreSet_Faction4 {
           id: Cards.Spell.ApplyModifiers,
           spellFilterType: SpellFilterType.EnemyDirect,
           canTargetGeneral: true,
-          targetModifiersContextObjects: [
-            statContextObject,
-          ],
+          targetModifiersContextObjects: [statContextObject],
           _private: {
             followupSourcePattern: CONFIG.PATTERN_3x3,
           },
@@ -479,7 +490,13 @@ class CardFactory_CoreSet_Faction4 {
       card.maxHP = 6;
       card.manaCost = 6;
       card.rarityId = Rarity.Legendary;
-      card.setInherentModifiersContextObjects([ModifierTranscendance.createContextObject(), ModifierDyingWishSpawnEntityAnywhere.createContextObject({ id: Cards.Faction4.Wraithling }, 6)]);
+      card.setInherentModifiersContextObjects([
+        ModifierTranscendance.createContextObject(),
+        ModifierDyingWishSpawnEntityAnywhere.createContextObject(
+          { id: Cards.Faction4.Wraithling },
+          6,
+        ),
+      ]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
     }
 
@@ -546,7 +563,13 @@ class CardFactory_CoreSet_Faction4 {
       card.maxHP = 4;
       card.manaCost = 2;
       card.rarityId = Rarity.Rare;
-      const auraContextObject = Modifier.createContextObjectWithAuraForAllAllies([ModifierStackingShadowsBonusDamage.createContextObject(0, 2)], null, [Cards.Tile.Shadow], null, 'Double the damage dealt by friendly Shadow Creep');
+      const auraContextObject = Modifier.createContextObjectWithAuraForAllAllies(
+        [ModifierStackingShadowsBonusDamage.createContextObject(0, 2)],
+        null,
+        [Cards.Tile.Shadow],
+        null,
+        'Double the damage dealt by friendly Shadow Creep',
+      );
       auraContextObject.auraFilterByCardType = CardType.Tile;
       card.setInherentModifiersContextObjects([auraContextObject]);
       card.addKeywordClassToInclude(ModifierStackingShadows);
@@ -580,7 +603,14 @@ class CardFactory_CoreSet_Faction4 {
       card.maxHP = 2;
       card.manaCost = 2;
       card.rarityId = Rarity.Fixed;
-      card.setInherentModifiersContextObjects([ModifierOpeningGambitSpawnEntity.createContextObject({ id: Cards.Faction4.Wraithling }, '1/1 Wraithling', 1, CONFIG.PATTERN_3x3)]);
+      card.setInherentModifiersContextObjects([
+        ModifierOpeningGambitSpawnEntity.createContextObject(
+          { id: Cards.Faction4.Wraithling },
+          '1/1 Wraithling',
+          1,
+          CONFIG.PATTERN_3x3,
+        ),
+      ]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
     }
 
@@ -614,7 +644,10 @@ class CardFactory_CoreSet_Faction4 {
       card.maxHP = 3;
       card.manaCost = 5;
       card.rarityId = Rarity.Epic;
-      card.setInherentModifiersContextObjects([ModifierFlying.createContextObject(), ModifierDyingWishSpawnUnitFromOpponentsDeck.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierFlying.createContextObject(),
+        ModifierDyingWishSpawnUnitFromOpponentsDeck.createContextObject(),
+      ]);
     }
 
     if (identifier === Cards.Faction4.SharianShadowdancer) {
@@ -723,7 +756,10 @@ class CardFactory_CoreSet_Faction4 {
       card.maxHP = 6;
       card.manaCost = 8;
       card.rarityId = Rarity.Legendary;
-      card.setInherentModifiersContextObjects([ModifierFirstBlood.createContextObject(), ModifierDamageGeneralOnAttack.createContextObject(4)]);
+      card.setInherentModifiersContextObjects([
+        ModifierFirstBlood.createContextObject(),
+        ModifierDamageGeneralOnAttack.createContextObject(4),
+      ]);
     }
 
     if (identifier === Cards.Faction4.BlackSolus) {
@@ -756,10 +792,13 @@ class CardFactory_CoreSet_Faction4 {
       card.maxHP = 7;
       card.manaCost = 5;
       card.rarityId = Rarity.Epic;
-      customContextObject = ModifierSummonWatchByEntityBuffSelf.createContextObject(2, 0, Cards.Faction4.Wraithling, 'Wraithling');
-      card.setInherentModifiersContextObjects([
-        customContextObject,
-      ]);
+      customContextObject = ModifierSummonWatchByEntityBuffSelf.createContextObject(
+        2,
+        0,
+        Cards.Faction4.Wraithling,
+        'Wraithling',
+      );
+      card.setInherentModifiersContextObjects([customContextObject]);
     }
 
     if (identifier === Cards.Spell.Shadowspawn) {
@@ -816,13 +855,15 @@ class CardFactory_CoreSet_Faction4 {
       card.name = i18next.t('cards.faction_4_spell_malice_name');
       card.setDescription(i18next.t('cards.faction_4_spell_malice_desc'));
       card.manaCost = 1;
-      card.setFollowups([{
-        id: Cards.Spell.SpawnEntity,
-        cardDataOrIndexToSpawn: { id: Cards.Faction4.Husk },
-        _private: {
-          followupSourcePattern: CONFIG.PATTERN_3x3,
+      card.setFollowups([
+        {
+          id: Cards.Spell.SpawnEntity,
+          cardDataOrIndexToSpawn: { id: Cards.Faction4.Husk },
+          _private: {
+            followupSourcePattern: CONFIG.PATTERN_3x3,
+          },
         },
-      }]);
+      ]);
       card.setFXResource(['FX.Cards.Spell.Malice']);
       card.setBaseSoundResource({
         apply: RSX.sfx_spell_darkfiresacrifice.audio,
@@ -875,9 +916,7 @@ class CardFactory_CoreSet_Faction4 {
       card.spellFilterType = SpellFilterType.AllyDirect;
       card.manaCost = 3;
       card.rarityId = Rarity.Epic;
-      card.setTargetModifiersContextObjects([
-        ModifierWraithlingFury.createContextObject(),
-      ]);
+      card.setTargetModifiersContextObjects([ModifierWraithlingFury.createContextObject()]);
       card.filterCardIds = [Cards.Faction4.Wraithling];
       card.setFXResource(['FX.Cards.Spell.AbyssianStrength']);
       card.setBaseSoundResource({
@@ -892,7 +931,7 @@ class CardFactory_CoreSet_Faction4 {
     if (identifier === Cards.Spell.DaemonicLure) {
       card = new SpellDamage(gameSession);
       card.factionId = Factions.Faction4;
-      if ((process.env.ALL_CARDS_AVAILABLE == null)) {
+      if (process.env.ALL_CARDS_AVAILABLE == null) {
         card.setIsUnlockableBasic(true);
       }
       card.id = Cards.Spell.DaemonicLure;
@@ -902,9 +941,11 @@ class CardFactory_CoreSet_Faction4 {
       card.spellFilterType = SpellFilterType.EnemyDirect;
       card.rarityId = Rarity.Fixed;
       card.damageAmount = 1;
-      card.setFollowups([{
-        id: Cards.Spell.FollowupTeleport,
-      }]);
+      card.setFollowups([
+        {
+          id: Cards.Spell.FollowupTeleport,
+        },
+      ]);
       card.setFXResource(['FX.Cards.Spell.DaemonicLure']);
       card.setBaseAnimResource({
         idle: RSX.iconDaemonicLureIdle.name,
@@ -936,7 +977,7 @@ class CardFactory_CoreSet_Faction4 {
     if (identifier === Cards.Spell.ShadowNova) {
       card = new SpellChokingShadows(gameSession);
       card.factionId = Factions.Faction4;
-      if ((process.env.ALL_CARDS_AVAILABLE == null)) {
+      if (process.env.ALL_CARDS_AVAILABLE == null) {
         card.setIsUnlockableBasic(true);
       }
       card.id = Cards.Spell.ShadowNova;
@@ -1167,7 +1208,7 @@ class CardFactory_CoreSet_Faction4 {
     if (identifier === Cards.Spell.SoulshatterPact) {
       card = new SpellApplyModifiers(gameSession);
       card.factionId = Factions.Faction4;
-      if ((process.env.ALL_CARDS_AVAILABLE == null)) {
+      if (process.env.ALL_CARDS_AVAILABLE == null) {
         card.setIsUnlockableBasic(true);
       }
       card.id = Cards.Spell.SoulshatterPact;
@@ -1202,9 +1243,11 @@ class CardFactory_CoreSet_Faction4 {
       card.rarityId = Rarity.Fixed;
       card.cardDataOrIndexToSpawn = { id: Cards.Faction4.Wraithling };
       card.spellFilterType = SpellFilterType.SpawnSource;
-      card.setFollowups([{
-        id: Cards.Spell.CloneSourceEntity2X,
-      }]);
+      card.setFollowups([
+        {
+          id: Cards.Spell.CloneSourceEntity2X,
+        },
+      ]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
       card.setFXResource(['FX.Cards.Spell.WraithlingSwarm']);
       card.setBaseSoundResource({
@@ -1271,11 +1314,18 @@ class CardFactory_CoreSet_Faction4 {
       card.rarityId = Rarity.Fixed;
       card.durability = 3;
       card.setTargetModifiersContextObjects([
-        ModifierDealDamageWatchSpawnEntity.createContextObject({ id: Cards.Faction4.Wraithling }, '1/1 Wraithling', 1, CONFIG.PATTERN_3x3, true, {
-          type: 'ModifierDealDamageWatchSpawnEntity',
-          name: i18next.t('cards.faction_4_artifact_horn_of_the_forsaken_name'),
-          description: i18next.t('cards.faction_4_artifact_horn_of_the_forsaken_description'),
-        }),
+        ModifierDealDamageWatchSpawnEntity.createContextObject(
+          { id: Cards.Faction4.Wraithling },
+          '1/1 Wraithling',
+          1,
+          CONFIG.PATTERN_3x3,
+          true,
+          {
+            type: 'ModifierDealDamageWatchSpawnEntity',
+            name: i18next.t('cards.faction_4_artifact_horn_of_the_forsaken_name'),
+            description: i18next.t('cards.faction_4_artifact_horn_of_the_forsaken_description'),
+          },
+        ),
       ]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
       card.setFXResource(['FX.Cards.Artifact.HornOfTheForsaken']);
@@ -1298,15 +1348,10 @@ class CardFactory_CoreSet_Faction4 {
       card.rarityId = Rarity.Epic;
       card.durability = 3;
       card.setTargetModifiersContextObjects([
-        ModifierKillWatchHealSelf.createContextObject(
-          2,
-          false,
-          true,
-          {
-            name: i18next.t('cards.faction_4_artifact_spectral_blade_name'),
-            description: i18next.t('modifiers.faction_4_artifact_spectral_blade_1'),
-          },
-        ),
+        ModifierKillWatchHealSelf.createContextObject(2, false, true, {
+          name: i18next.t('cards.faction_4_artifact_spectral_blade_name'),
+          description: i18next.t('modifiers.faction_4_artifact_spectral_blade_1'),
+        }),
         Modifier.createContextObjectWithAttributeBuffs(2, 0, {
           name: i18next.t('cards.faction_4_artifact_spectral_blade_name'),
           description: i18next.t('modifiers.plus_attack_key', { amount: 2 }),

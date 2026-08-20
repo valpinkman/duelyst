@@ -7,7 +7,6 @@ var Animations = require('app/ui/views/animations');
 var GameChooseHandTemplate = require('app/ui/templates/item/game_choose_hand.hbs');
 
 var GameChooseHandItemView = Backbone.Marionette.ItemView.extend({
-
   id: 'app-game-choose-hand',
   className: 'modal duelyst-modal',
 
@@ -27,7 +26,10 @@ var GameChooseHandItemView = Backbone.Marionette.ItemView.extend({
   animateOut: Animations.fadeOut,
 
   onRender: function () {
-    if (!SDK.GameType.isMultiplayerGameType(SDK.GameSession.getInstance().getGameType()) || SDK.GameSession.getInstance().getIsSpectateMode()) {
+    if (
+      !SDK.GameType.isMultiplayerGameType(SDK.GameSession.getInstance().getGameType()) ||
+      SDK.GameSession.getInstance().getIsSpectateMode()
+    ) {
       // in non-multiplayer game, no need to show opponent connection status
       this.ui.$opponentConnecting.hide();
       this.ui.$opponentConnected.hide();
@@ -39,7 +41,11 @@ var GameChooseHandItemView = Backbone.Marionette.ItemView.extend({
   },
 
   onShow: function () {
-    this.listenTo(NetworkManager.getInstance().getEventBus(), EVENTS.opponent_connection_status_changed, this._updateOpponentConnection);
+    this.listenTo(
+      NetworkManager.getInstance().getEventBus(),
+      EVENTS.opponent_connection_status_changed,
+      this._updateOpponentConnection,
+    );
   },
 
   _updateOpponentConnection: function () {

@@ -12,7 +12,10 @@ class SpellGotatsu extends SpellDamage {
 
     const ownerId = this.getOwnerId();
     const general = this.getGameSession().getGeneralForPlayerId(ownerId);
-    return this.getGameSession().applyModifierContextObject(PlayerModifierCardDrawModifier.createContextObject(1, 1), general);
+    return this.getGameSession().applyModifierContextObject(
+      PlayerModifierCardDrawModifier.createContextObject(1, 1),
+      general,
+    );
   }
 }
 

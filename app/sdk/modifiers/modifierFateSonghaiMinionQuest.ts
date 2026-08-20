@@ -32,7 +32,7 @@ class ModifierFateSonghaiMinionQuest extends ModifierFate {
   }
 
   getMinionCostsSummoned() {
-    if ((this._private.minionCostsSummoned == null)) {
+    if (this._private.minionCostsSummoned == null) {
       this._private.minionCostsSummoned = [];
       this.checkFate(this.getGameSession().filterActions(this.getIsActionRelevant.bind(this)));
     }
@@ -46,7 +46,7 @@ class ModifierFateSonghaiMinionQuest extends ModifierFate {
         const manaCost = target.getBaseManaCost();
         let costAlreadyPlayed = false;
         for (var cost of Array.from<any>(this.getMinionCostsSummoned())) {
-          if ((manaCost != null) && (manaCost === cost)) {
+          if (manaCost != null && manaCost === cost) {
             costAlreadyPlayed = true;
             break;
           }
@@ -72,7 +72,10 @@ class ModifierFateSonghaiMinionQuest extends ModifierFate {
   getIsActionRelevant(action) {
     if (action.getOwnerId() === this.getOwnerId()) {
       const target = action.getTarget();
-      if (action instanceof PlayCardFromHandAction && ((target != null ? target.getType() : undefined) === CardType.Unit)) {
+      if (
+        action instanceof PlayCardFromHandAction &&
+        (target != null ? target.getType() : undefined) === CardType.Unit
+      ) {
         return true;
       }
     }
@@ -91,13 +94,17 @@ class ModifierFateSonghaiMinionQuest extends ModifierFate {
     const general = this.getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
     if (general.hasActiveModifierClass(ModifierQuestStatusSonghai)) {
       return Array.from<any>(general.getModifiersByClass(ModifierQuestStatusSonghai)).map((mod) =>
-        this.getGameSession().removeModifier(mod));
+        this.getGameSession().removeModifier(mod),
+      );
     }
   }
 
   applyQuestStatusModifier(questCompleted) {
     const general = this.getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
-    const countModifier = ModifierQuestStatusSonghai.createContextObject(questCompleted, this.getMinionCostsSummoned());
+    const countModifier = ModifierQuestStatusSonghai.createContextObject(
+      questCompleted,
+      this.getMinionCostsSummoned(),
+    );
     return this.getGameSession().applyModifierContextObject(countModifier, general);
   }
 

@@ -18,10 +18,14 @@ class ModifierStartTurnWatchBuffSelf extends ModifierStartTurnWatch {
   static description = 'At the start of your turn, this minion gets %X';
 
   static createContextObject(attackBuff, maxHPBuff, options) {
-    if (attackBuff == null) { attackBuff = 0; }
-    if (maxHPBuff == null) { maxHPBuff = 0; }
+    if (attackBuff == null) {
+      attackBuff = 0;
+    }
+    if (maxHPBuff == null) {
+      maxHPBuff = 0;
+    }
     const contextObject = super.createContextObject(options);
-    if ((attackBuff !== 0) || (maxHPBuff !== 0)) {
+    if (attackBuff !== 0 || maxHPBuff !== 0) {
       contextObject.modifiersContextObjects = [
         Modifier.createContextObjectWithAttributeBuffs(attackBuff, maxHPBuff, {
           modifierName: this.modifierName,
@@ -38,17 +42,29 @@ class ModifierStartTurnWatchBuffSelf extends ModifierStartTurnWatch {
   static getDescription(modifierContextObject) {
     if (modifierContextObject) {
       const subContextObject = modifierContextObject.modifiersContextObjects[0];
-      return this.description.replace(/%X/, Stringifiers.stringifyAttackHealthBuff(subContextObject.attributeBuffs.atk, subContextObject.attributeBuffs.maxHP));
+      return this.description.replace(
+        /%X/,
+        Stringifiers.stringifyAttackHealthBuff(
+          subContextObject.attributeBuffs.atk,
+          subContextObject.attributeBuffs.maxHP,
+        ),
+      );
     }
     return this.description;
   }
 
   onTurnWatch(action) {
     // override me in sub classes to implement special behavior
-    return this.applyManagedModifiersFromModifiersContextObjects(this.modifiersContextObjects, this.getCard());
+    return this.applyManagedModifiersFromModifiersContextObjects(
+      this.modifiersContextObjects,
+      this.getCard(),
+    );
   }
 }
 ModifierStartTurnWatchBuffSelf.prototype.type = 'ModifierStartTurnWatchBuffSelf';
-ModifierStartTurnWatchBuffSelf.prototype.fxResource = ['FX.Modifiers.ModifierStartTurnWatch', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierStartTurnWatchBuffSelf.prototype.fxResource = [
+  'FX.Modifiers.ModifierStartTurnWatch',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 
 module.exports = ModifierStartTurnWatchBuffSelf;

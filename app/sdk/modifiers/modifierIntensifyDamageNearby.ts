@@ -25,7 +25,9 @@ class ModifierIntensifyDamageNearby extends ModifierIntensify {
   onIntensify() {
     const totalDamageAmount = this.getIntensifyAmount() * this.damageAmount;
 
-    const entities = this.getGameSession().getBoard().getEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
+    const entities = this.getGameSession()
+      .getBoard()
+      .getEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
     return (() => {
       const result = [];
       for (var entity of Array.from<any>(entities)) {

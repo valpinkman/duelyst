@@ -26,7 +26,9 @@ class ModifierRemoveAndReplaceEntity extends Modifier {
   static isHiddenToUI = false;
 
   static createContextObject(cardDataOrIndexToSpawn, originalCardId) {
-    if (originalCardId == null) { originalCardId = undefined; }
+    if (originalCardId == null) {
+      originalCardId = undefined;
+    }
     const contextObject = super.createContextObject();
     contextObject.cardDataOrIndexToSpawn = cardDataOrIndexToSpawn;
     contextObject.originalCardId = originalCardId;
@@ -35,7 +37,9 @@ class ModifierRemoveAndReplaceEntity extends Modifier {
 
   static getDescription(modifierContextObject) {
     if (modifierContextObject && modifierContextObject.originalCardId) {
-      const cardName = GameSession.getCardCaches().getCardById(modifierContextObject.originalCardId).getName();
+      const cardName = GameSession.getCardCaches()
+        .getCardById(modifierContextObject.originalCardId)
+        .getName();
       return i18next.t('modifiers.temp_transformed', { unit_name: cardName });
     }
   }
@@ -58,7 +62,13 @@ class ModifierRemoveAndReplaceEntity extends Modifier {
   }
 
   replace() {
-    const spawnEntityAction = new PlayCardAsTransformAction(this.getCard().getGameSession(), this.getCard().getOwnerId(), this.getCard().getPosition().x, this.getCard().getPosition().y, this.cardDataOrIndexToSpawn);
+    const spawnEntityAction = new PlayCardAsTransformAction(
+      this.getCard().getGameSession(),
+      this.getCard().getOwnerId(),
+      this.getCard().getPosition().x,
+      this.getCard().getPosition().y,
+      this.cardDataOrIndexToSpawn,
+    );
     return this.getGameSession().executeAction(spawnEntityAction);
   }
 }

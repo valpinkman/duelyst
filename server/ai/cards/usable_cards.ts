@@ -21,7 +21,21 @@ const UsableCards: Record<string, any> = {
 };
 
 // all cards
-UsableCards._cardIds = UsableCards._cardIds.concat(F1, F2, F3, F4, F5, F6, NC, NM, NS, NU, NB, NF, NW);
+UsableCards._cardIds = UsableCards._cardIds.concat(
+  F1,
+  F2,
+  F3,
+  F4,
+  F5,
+  F6,
+  NC,
+  NM,
+  NS,
+  NU,
+  NB,
+  NF,
+  NW,
+);
 
 // usable state by cards id
 for (let i = 0, il = UsableCards._cardIds.length; i < il; i++) {

@@ -19,10 +19,13 @@ class ModifierMyAttackMinionWatch extends Modifier {
 
   onAction(event) {
     super.onAction(event);
-    const {
-      action,
-    } = event;
-    if (action instanceof AttackAction && (action.getSource() === this.getCard()) && (!action.getIsImplicit() || action.getIsAutomatic()) && !action.getTarget().getIsGeneral()) {
+    const { action } = event;
+    if (
+      action instanceof AttackAction &&
+      action.getSource() === this.getCard() &&
+      (!action.getIsImplicit() || action.getIsAutomatic()) &&
+      !action.getTarget().getIsGeneral()
+    ) {
       return this.onMyAttackMinionWatch(action);
     }
   }

@@ -40,12 +40,12 @@ const arePositionsEqualOrAdjacent = require('./scoring/utils/utils_arePositionsE
 const StarterAI = function (gameSession, playerId, difficulty) {
   this._gameSession = gameSession;
   this._playerId = playerId;
-  this._difficulty = _.isNumber(difficulty) && !isNaN(difficulty) ? Math.max(0.0, Math.min(1.0, difficulty)) : 1.0;
+  this._difficulty =
+    _.isNumber(difficulty) && !isNaN(difficulty) ? Math.max(0.0, Math.min(1.0, difficulty)) : 1.0;
   this._resetForNextTurn();
 };
 
 StarterAI.prototype = {
-
   constructor: StarterAI,
 
   // region PROPERTIES
@@ -177,7 +177,11 @@ StarterAI.prototype = {
     // find next action
     if (this.getGameSession().isNew()) {
       return this.nextActionForNewGame();
-    } if (this.getGameSession().isActive() && this.getGameSession().getCurrentPlayerId() === this.getMyPlayerId()) {
+    }
+    if (
+      this.getGameSession().isActive() &&
+      this.getGameSession().getCurrentPlayerId() === this.getMyPlayerId()
+    ) {
       return this.nextActionForActiveGame();
     }
   },
@@ -197,14 +201,16 @@ StarterAI.prototype = {
         const cardsInHand = myPlayer.getDeck().getCardsInHand();
         for (let i = 0, il = cardsInHand.length; i < il; i++) {
           const card = cardsInHand[i];
-          if (mulliganIndices.length < CONFIG.STARTING_HAND_REPLACE_COUNT
-            && card != null
-            && (card instanceof SDK.Artifact
-            || card.getManaCost() > myPlayer.getRemainingMana() + 1
-            || (card instanceof SDK.Spell
-            && (!CardIntent.getHasIntentType(card.getId(), CardIntentType.Summon, true)
-            || CARD_INTENT[card.getId()] == null
-            || CARD_INTENT[card.getId()].indexOf('summon') === -1)))) {
+          if (
+            mulliganIndices.length < CONFIG.STARTING_HAND_REPLACE_COUNT &&
+            card != null &&
+            (card instanceof SDK.Artifact ||
+              card.getManaCost() > myPlayer.getRemainingMana() + 1 ||
+              (card instanceof SDK.Spell &&
+                (!CardIntent.getHasIntentType(card.getId(), CardIntentType.Summon, true) ||
+                  CARD_INTENT[card.getId()] == null ||
+                  CARD_INTENT[card.getId()].indexOf('summon') === -1)))
+          ) {
             // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] _nextActionForNewGame -> mulligan " + card.getLogName() + "because it is a non summon spell, artifact, or costs too much mana");
             mulliganIndices.push(i);
           }
@@ -222,17 +228,24 @@ StarterAI.prototype = {
   nextActionForActiveGame() {
     let nextAction;
 
-    if (this.getGameSession().isActive() && this.getGameSession().getCurrentPlayerId() === this.getMyPlayerId()) {
+    if (
+      this.getGameSession().isActive() &&
+      this.getGameSession().getCurrentPlayerId() === this.getMyPlayerId()
+    ) {
       // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] finding next actions!");
       // attempt to find next actions
       this._findNextActions();
 
       // use next action in queue
       nextAction = this._nextActions.shift();
-      if (nextAction != null
-        && !(nextAction instanceof SDK.EndTurnAction
-          || nextAction instanceof SDK.EndFollowupAction
-          || nextAction instanceof SDK.ResignAction)) {
+      if (
+        nextAction != null &&
+        !(
+          nextAction instanceof SDK.EndTurnAction ||
+          nextAction instanceof SDK.EndFollowupAction ||
+          nextAction instanceof SDK.ResignAction
+        )
+      ) {
         // validate the current action and reset the queue if invalid
         // resetting queue is safest as we don't want to execute queued actions that expected a specific sequence
         // do not emit event when invalid as we don't want anything reacting to this validation
@@ -244,12 +257,20 @@ StarterAI.prototype = {
           this._nextActions = [];
 
           // check whether action is same as last invalid action
-          if (this._lastInvalidAction != null
-            && this._lastInvalidAction.getType() === nextAction.getType()
-            && (this._lastInvalidAction.getSourceIndex() == null || this._lastInvalidAction.getSourceIndex() === nextAction.getSourceIndex())
-            && (this._lastInvalidAction.getSourcePosition() == null || this._lastInvalidAction.getSourcePosition().x === nextAction.getSourcePosition().x && this._lastInvalidAction.getSourcePosition().y === nextAction.getSourcePosition().y)
-            && (this._lastInvalidAction.getTargetIndex() == null || this._lastInvalidAction.getTargetIndex() === nextAction.getTargetIndex())
-            && (this._lastInvalidAction.getTargetPosition() == null || this._lastInvalidAction.getTargetPosition().x === nextAction.getTargetPosition().x && this._lastInvalidAction.getTargetPosition().y === nextAction.getTargetPosition().y)
+          if (
+            this._lastInvalidAction != null &&
+            this._lastInvalidAction.getType() === nextAction.getType() &&
+            (this._lastInvalidAction.getSourceIndex() == null ||
+              this._lastInvalidAction.getSourceIndex() === nextAction.getSourceIndex()) &&
+            (this._lastInvalidAction.getSourcePosition() == null ||
+              (this._lastInvalidAction.getSourcePosition().x === nextAction.getSourcePosition().x &&
+                this._lastInvalidAction.getSourcePosition().y ===
+                  nextAction.getSourcePosition().y)) &&
+            (this._lastInvalidAction.getTargetIndex() == null ||
+              this._lastInvalidAction.getTargetIndex() === nextAction.getTargetIndex()) &&
+            (this._lastInvalidAction.getTargetPosition() == null ||
+              (this._lastInvalidAction.getTargetPosition().x === nextAction.getTargetPosition().x &&
+                this._lastInvalidAction.getTargetPosition().y === nextAction.getTargetPosition().y))
           ) {
             // end turn immediately
             nextAction = this.getGameSession().actionEndTurn();
@@ -290,25 +311,34 @@ StarterAI.prototype = {
     if (this.getGameSession().getIsFollowupActive()) {
       // we are being called from inside of a followup action. call playcard to continue to resolve current followup
       // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] followup detected");
-      const cardWaitingForFollowups = this.getGameSession().getValidatorFollowup().getCardWaitingForFollowups();
+      const cardWaitingForFollowups = this.getGameSession()
+        .getValidatorFollowup()
+        .getCardWaitingForFollowups();
       const currentFollowupCard = cardWaitingForFollowups.getCurrentFollowupCard();
       // check for globally-set followup target
       let targetPosition;
-      if (this._followupTargets.length > 0) { // && currentFollowupCard.id != SDK.Cards.Spell.FollowupTeleport) {
+      if (this._followupTargets.length > 0) {
+        // && currentFollowupCard.id != SDK.Cards.Spell.FollowupTeleport) {
         targetPosition = this._followupTargets.shift();
       }
       this._findPlayCardActionsForCard(currentFollowupCard, targetPosition);
 
-      if (this._nextActions.length === 0 || !cardWaitingForFollowups.getIsActionForCurrentFollowup(this._nextActions[0])) {
+      if (
+        this._nextActions.length === 0 ||
+        !cardWaitingForFollowups.getIsActionForCurrentFollowup(this._nextActions[0])
+      ) {
         this._nextActions.unshift(this.getMyPlayer().actionEndFollowup());
       }
 
       return;
-    } if (this._wantsToKillEggAtPosition != null) {
+    }
+    if (this._wantsToKillEggAtPosition != null) {
       // try to find and kill egg at position if we just killed a rebirth unit
       const attackObjectivePosition = this._wantsToKillEggAtPosition;
       this._wantsToKillEggAtPosition = null;
-      const eggToAttack = this.getGameSession().getBoard().getUnitAtPosition(attackObjectivePosition);
+      const eggToAttack = this.getGameSession()
+        .getBoard()
+        .getUnitAtPosition(attackObjectivePosition);
       if (eggToAttack != null && eggToAttack.hasActiveModifierClass(SDK.ModifierEgg)) {
         this._forceAttackOnTargetIfPossible(eggToAttack);
       }
@@ -320,9 +350,14 @@ StarterAI.prototype = {
 
     // get enemy unit count
     const opponentGeneral = this.getOpponentGeneral();
-    const opponentUnits = this.getGameSession().getBoard().getFriendlyEntitiesForEntity(opponentGeneral);
+    const opponentUnits = this.getGameSession()
+      .getBoard()
+      .getFriendlyEntitiesForEntity(opponentGeneral);
     const numOpponentUnits = opponentUnits.length;
-    this._numUnitsRemovedThisTurn += Math.max(0, this._numEnemyUnitsBeforeAction - numOpponentUnits);
+    this._numUnitsRemovedThisTurn += Math.max(
+      0,
+      this._numEnemyUnitsBeforeAction - numOpponentUnits,
+    );
     this._numEnemyUnitsBeforeAction = numOpponentUnits;
 
     // 1, replace cards
@@ -389,13 +424,21 @@ StarterAI.prototype = {
     const numUnitsThatCanMissAttacks = myUsableUnits.length - DIFFICULTY_MIN_UNITS_THAT_ATTACK;
     if (this._difficulty < 1.0 && numUnitsThatCanMissAttacks > 0) {
       const unitsThatCanMissAttacks = _.difference(myUsableUnits, this._unitsMissingAttacks);
-      const numMissedAttacks = Math.floor(DIFFICULTY_MAX_MISSED_ATTACKS_PCT * numUnitsThatCanMissAttacks * (1.0 - this._difficulty));
+      const numMissedAttacks = Math.floor(
+        DIFFICULTY_MAX_MISSED_ATTACKS_PCT * numUnitsThatCanMissAttacks * (1.0 - this._difficulty),
+      );
       for (let i = unitsThatCanMissAttacks.length - 1; i >= 0; i--) {
         if (this._unitsMissingAttacks.length >= numMissedAttacks) {
           break;
         } else {
-          const unitMissingAttack = unitsThatCanMissAttacks.splice(Math.floor(Math.random() * unitsThatCanMissAttacks.length), 1)[0];
-          if (!unitMissingAttack.getIsGeneral() && !unitMissingAttack.hasModifierClass(SDK.ModifierEphemeral)) {
+          const unitMissingAttack = unitsThatCanMissAttacks.splice(
+            Math.floor(Math.random() * unitsThatCanMissAttacks.length),
+            1,
+          )[0];
+          if (
+            !unitMissingAttack.getIsGeneral() &&
+            !unitMissingAttack.hasModifierClass(SDK.ModifierEphemeral)
+          ) {
             // never miss attacks with general or ephemeral units
             this._unitsMissingAttacks.push(unitMissingAttack);
           }
@@ -403,7 +446,10 @@ StarterAI.prototype = {
       }
     }
 
-    const maxUnitsRemovedPerTurn = Math.max(1, Math.floor(this._difficulty * DIFFICULTY_MAX_UNITS_REMOVED_PER_TURN));
+    const maxUnitsRemovedPerTurn = Math.max(
+      1,
+      Math.floor(this._difficulty * DIFFICULTY_MAX_UNITS_REMOVED_PER_TURN),
+    );
 
     // start by allowing only lethal
     let allowOnlyLethalAttacks = true;
@@ -411,8 +457,13 @@ StarterAI.prototype = {
     // 4, move and attack with units that have lethal on an objective
     // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] moving");
     _.each(myUsableUnits, (unit) => {
-      if (this._nextActions.length > 0
-        || (this._difficulty < 1.0 && !unit.getIsGeneral() && this._numUnitsRemovedThisTurn >= maxUnitsRemovedPerTurn)) return;
+      if (
+        this._nextActions.length > 0 ||
+        (this._difficulty < 1.0 &&
+          !unit.getIsGeneral() &&
+          this._numUnitsRemovedThisTurn >= maxUnitsRemovedPerTurn)
+      )
+        return;
       // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] attempting movement for " + unit.getLogName());
       this._findMoveActionsForUnit(unit, allowOnlyLethalAttacks);
       if (this._nextActions.length > 0) return;
@@ -436,8 +487,13 @@ StarterAI.prototype = {
     // 7, attack & cast buff/debuff cards with units that don't have lethal attacks
     // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] attacking - nonlethal allowed", this._unitsMissingAttacks.slice(0));
     _.each(myUsableUnits, (unit) => {
-      if (this._nextActions.length > 0
-        || (this._difficulty < 1.0 && !unit.getIsGeneral() && this._numUnitsRemovedThisTurn >= maxUnitsRemovedPerTurn)) return;
+      if (
+        this._nextActions.length > 0 ||
+        (this._difficulty < 1.0 &&
+          !unit.getIsGeneral() &&
+          this._numUnitsRemovedThisTurn >= maxUnitsRemovedPerTurn)
+      )
+        return;
       // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] attempting attack for " + unit.getLogName());
       this._findAttackActionsForUnit(unit, allowOnlyLethalAttacks);
     });
@@ -477,7 +533,9 @@ StarterAI.prototype = {
     // the idea here is that my units with higher bounty (i.e. more atk/hp/abilities)
     // will have a better chance of making favorable trades than my lower bounty units
     const myGeneral = this.getMyGeneral();
-    const friendlyUnits = this.getGameSession().getBoard().getFriendlyEntitiesForEntity(myGeneral, SDK.CardType.Unit);
+    const friendlyUnits = this.getGameSession()
+      .getBoard()
+      .getFriendlyEntitiesForEntity(myGeneral, SDK.CardType.Unit);
     friendlyUnits.push(myGeneral);
     const myUsableUnits = [];
     _.each(friendlyUnits, (unit) => {
@@ -496,18 +554,36 @@ StarterAI.prototype = {
       let cardsInHand = myPlayer.getDeck().getCardsInHand();
       cardsInHand = _.reject(cardsInHand, (card) => card == null);
       // first, find first card that costs at least 2 more than our max mana
-      var cardToReplace = _.find(cardsInHand, (card) => (myPlayer.getDeck().getNumCardsReplacedThisTurn() == 0 && card.getManaCost() >= (myPlayer.getMaximumMana() + 2)));
+      var cardToReplace = _.find(
+        cardsInHand,
+        (card) =>
+          myPlayer.getDeck().getNumCardsReplacedThisTurn() == 0 &&
+          card.getManaCost() >= myPlayer.getMaximumMana() + 2,
+      );
       if (cardToReplace != null) {
         // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] _replaceCard -> " + cardToReplace.getLogName() + "because it costs 2 or more than our max mana");
-        this._nextActions.push(myPlayer.actionReplaceCardFromHand(myPlayer.getDeck().getCardsInHand().indexOf(cardToReplace)));
+        this._nextActions.push(
+          myPlayer.actionReplaceCardFromHand(
+            myPlayer.getDeck().getCardsInHand().indexOf(cardToReplace),
+          ),
+        );
         return;
       }
 
       // then, if we didn't replace yet try to replace anything with more than 1 copy in hand
-      var cardToReplace = _.find(cardsInHand, (card) => (myPlayer.getDeck().getNumCardsReplacedThisTurn() == 0 && _.where(cardsInHand, { id: card.getBaseCardId() }).length > 1));
+      var cardToReplace = _.find(
+        cardsInHand,
+        (card) =>
+          myPlayer.getDeck().getNumCardsReplacedThisTurn() == 0 &&
+          _.where(cardsInHand, { id: card.getBaseCardId() }).length > 1,
+      );
       if (cardToReplace != null) {
         // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] _replaceCard -> " + cardToReplace.getLogName() + "because we have more than 1 copy in hand.");
-        this._nextActions.push(myPlayer.actionReplaceCardFromHand(myPlayer.getDeck().getCardsInHand().indexOf(cardToReplace)));
+        this._nextActions.push(
+          myPlayer.actionReplaceCardFromHand(
+            myPlayer.getDeck().getCardsInHand().indexOf(cardToReplace),
+          ),
+        );
         return;
       }
 
@@ -518,7 +594,11 @@ StarterAI.prototype = {
         var cardToReplace = _.sample(spells);
         if (cardToReplace != null) {
           // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] _replaceCard -> " + cardToReplace.getLogName() + "because we have more than 2 spells in hand.");
-          this._nextActions.push(myPlayer.actionReplaceCardFromHand(myPlayer.getDeck().getCardsInHand().indexOf(cardToReplace)));
+          this._nextActions.push(
+            myPlayer.actionReplaceCardFromHand(
+              myPlayer.getDeck().getCardsInHand().indexOf(cardToReplace),
+            ),
+          );
           return;
         }
       }
@@ -530,7 +610,11 @@ StarterAI.prototype = {
         var cardToReplace = _.sample(artifacts);
         if (cardToReplace != null) {
           // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] _replaceCard -> " + cardToReplace.getLogName() + "because we have more than 1 artifact in hand.");
-          this._nextActions.push(myPlayer.actionReplaceCardFromHand(myPlayer.getDeck().getCardsInHand().indexOf(cardToReplace)));
+          this._nextActions.push(
+            myPlayer.actionReplaceCardFromHand(
+              myPlayer.getDeck().getCardsInHand().indexOf(cardToReplace),
+            ),
+          );
           return;
         }
       }
@@ -542,7 +626,11 @@ StarterAI.prototype = {
         var cardToReplace = _.sample(cardsInHand);
         if (cardToReplace != null) {
           // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] _replaceCard -> " + cardToReplace.getLogName() + "because we have no units in hand.");
-          this._nextActions.push(myPlayer.actionReplaceCardFromHand(myPlayer.getDeck().getCardsInHand().indexOf(cardToReplace)));
+          this._nextActions.push(
+            myPlayer.actionReplaceCardFromHand(
+              myPlayer.getDeck().getCardsInHand().indexOf(cardToReplace),
+            ),
+          );
         }
       }
 
@@ -556,7 +644,13 @@ StarterAI.prototype = {
     if (!this._checkedForLethalOnEnemyGeneral) {
       this._checkedForLethalOnEnemyGeneral = true;
 
-      if (this._difficulty < Math.max(DIFFICULTY_WHEN_GENERAL_CAN_ATTACK_ENEMY_GENERAL, DIFFICULTY_WHEN_UNITS_CAN_ATTACK_ENEMY_GENERAL)) {
+      if (
+        this._difficulty <
+        Math.max(
+          DIFFICULTY_WHEN_GENERAL_CAN_ATTACK_ENEMY_GENERAL,
+          DIFFICULTY_WHEN_UNITS_CAN_ATTACK_ENEMY_GENERAL,
+        )
+      ) {
         this._hasLethalOnEnemyGeneral = false;
       } else {
         this._checkingLethalOnEnemyGeneral = true;
@@ -575,11 +669,21 @@ StarterAI.prototype = {
         const returnBuffedAtkValueOnly_noCast = true;
         _.each(myUsableUnits, (unit) => {
           // units that can move and attack and within approximate range of opponent general
-          if (unit.getCanAttack() && !this._isUnitPreventedFromAttacking(unit)
-            && (arePositionsEqualOrAdjacent(unit.getPosition(), opponentGeneralPosition)
-            || (unit.getCanMove() && !this._isUnitPreventedFromMoving(unit) && distanceBetweenBoardPositions(unit.getPosition(), opponentGeneralPosition) <= unit.getSpeed() + 1))) {
+          if (
+            unit.getCanAttack() &&
+            !this._isUnitPreventedFromAttacking(unit) &&
+            (arePositionsEqualOrAdjacent(unit.getPosition(), opponentGeneralPosition) ||
+              (unit.getCanMove() &&
+                !this._isUnitPreventedFromMoving(unit) &&
+                distanceBetweenBoardPositions(unit.getPosition(), opponentGeneralPosition) <=
+                  unit.getSpeed() + 1))
+          ) {
             // add buffed atk
-            const buffedAtk = this._findAtkBuffAndBuffedAtkValue(unit, [opponentGeneral], returnBuffedAtkValueOnly_noCast);
+            const buffedAtk = this._findAtkBuffAndBuffedAtkValue(
+              unit,
+              [opponentGeneral],
+              returnBuffedAtkValueOnly_noCast,
+            );
             totalDamage += buffedAtk;
 
             // temporarily set opponent general's damage (will reset at end of check)
@@ -593,21 +697,32 @@ StarterAI.prototype = {
         // find all burn spells
         let currentMana = myPlayer.getRemainingMana();
         _.each(this._getCardsInHandAndSignatureSpell(), (card) => {
-          if (this._getCanPlayCard(card, currentMana) && this._getCardIsBurn(card, opponentGeneral)) {
-            _.each(CardIntent.getIntentsByIntentTypeWithPartialTargetType(card.getBaseCardId(), CardIntentType.Burn, CardTargetType.General, true), (intentObj) => {
-              // add spell damage
-              const damage = intentObj.amount || 0;
-              totalDamage += damage;
+          if (
+            this._getCanPlayCard(card, currentMana) &&
+            this._getCardIsBurn(card, opponentGeneral)
+          ) {
+            _.each(
+              CardIntent.getIntentsByIntentTypeWithPartialTargetType(
+                card.getBaseCardId(),
+                CardIntentType.Burn,
+                CardTargetType.General,
+                true,
+              ),
+              (intentObj) => {
+                // add spell damage
+                const damage = intentObj.amount || 0;
+                totalDamage += damage;
 
-              // temporarily set remaining mana
-              currentMana -= card.getManaCost();
+                // temporarily set remaining mana
+                currentMana -= card.getManaCost();
 
-              // temporarily set opponent general's damage (will reset at end of check)
-              // ideally we'd keep a local counter, but we don't deal this damage until later
-              // this way, damage has been "dealt" and further damage calculations will know if they cause lethal
-              opponentGeneral.setDamage(totalDamage);
-              // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] _generalLethalCheck => burn spell " + card.getLogName() + " can deal damage = " + damage + ", total damage = " + totalDamage + " of " + opponentGeneralMaxHP);
-            });
+                // temporarily set opponent general's damage (will reset at end of check)
+                // ideally we'd keep a local counter, but we don't deal this damage until later
+                // this way, damage has been "dealt" and further damage calculations will know if they cause lethal
+                opponentGeneral.setDamage(totalDamage);
+                // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] _generalLethalCheck => burn spell " + card.getLogName() + " can deal damage = " + damage + ", total damage = " + totalDamage + " of " + opponentGeneralMaxHP);
+              },
+            );
           }
         });
 
@@ -655,7 +770,12 @@ StarterAI.prototype = {
       for (let i = 0, il = playableCards.length; i < il; i++) {
         const card = playableCards[i];
         // don't allow artifacts that are buffs unless we have more than 1 in hand or hand is full
-        if (!(card instanceof SDK.Artifact) || numBuffingArtifacts > 1 || hasFullHand || this._getIsCardNotBuffOrAllowableBuff(card)) {
+        if (
+          !(card instanceof SDK.Artifact) ||
+          numBuffingArtifacts > 1 ||
+          hasFullHand ||
+          this._getIsCardNotBuffOrAllowableBuff(card)
+        ) {
           // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] _findPlayCardActionsByType() -> card ", card.getLogName());
           this._findPlayCardActionsForCard(card);
           // end when we have actions because we know card was played
@@ -668,11 +788,12 @@ StarterAI.prototype = {
   _getIsCardNotBuffOrAllowableBuff(card) {
     if (card != null) {
       const cardId = card.getBaseCardId();
-      if (CardIntent.getHasIntentType(cardId, CardIntentType.ModifyATK, true)
-        || CardIntent.getHasIntentType(cardId, CardIntentType.ModifyHP, true)
-        || (CARD_INTENT[cardId] != null && CARD_INTENT[cardId].indexOf('buff') !== -1)) {
-        return cardId === SDK.Cards.Spell.Roar
-          || cardId === SDK.Cards.Spell.Overload;
+      if (
+        CardIntent.getHasIntentType(cardId, CardIntentType.ModifyATK, true) ||
+        CardIntent.getHasIntentType(cardId, CardIntentType.ModifyHP, true) ||
+        (CARD_INTENT[cardId] != null && CARD_INTENT[cardId].indexOf('buff') !== -1)
+      ) {
+        return cardId === SDK.Cards.Spell.Roar || cardId === SDK.Cards.Spell.Overload;
       }
     }
     return true;
@@ -692,12 +813,12 @@ StarterAI.prototype = {
   },
 
   _getCanPlayCard(card, currentMana) {
-    return card != null
-      && (
-        (currentMana == null && card.getDoesOwnerHaveEnoughManaToPlay())
-        || (currentMana != null && card.getManaCost() <= currentMana)
-      )
-      && !_.contains(this._invalidPlayedCards, card);
+    return (
+      card != null &&
+      ((currentMana == null && card.getDoesOwnerHaveEnoughManaToPlay()) ||
+        (currentMana != null && card.getManaCost() <= currentMana)) &&
+      !_.contains(this._invalidPlayedCards, card)
+    );
   },
 
   _findPlayCardActionsByIntent(oldIntentString) {
@@ -707,9 +828,11 @@ StarterAI.prototype = {
 
     // find all playable cards
     let playableCards = _.filter(cardsInHand, (card) => {
-      if (this._getCanPlayCard(card)
-        && CARD_INTENT[card.getBaseCardId()] != null
-        && CARD_INTENT[card.getBaseCardId()].indexOf(oldIntentString) > -1) {
+      if (
+        this._getCanPlayCard(card) &&
+        CARD_INTENT[card.getBaseCardId()] != null &&
+        CARD_INTENT[card.getBaseCardId()].indexOf(oldIntentString) > -1
+      ) {
         return true;
       }
     });
@@ -754,12 +877,22 @@ StarterAI.prototype = {
       for (let i = 0, il = playableCards.length; i < il; i++) {
         const card = playableCards[i];
         const validTargetPositions = card.getValidTargetPositions();
-        const filteredValidTargetPositionsScoresAndFollowups = this._findFilteredTargetPositionsScoresAndFollowupsForCardByIntent(card, validTargetPositions, useThreshold);
+        const filteredValidTargetPositionsScoresAndFollowups =
+          this._findFilteredTargetPositionsScoresAndFollowupsForCardByIntent(
+            card,
+            validTargetPositions,
+            useThreshold,
+          );
         if (filteredValidTargetPositionsScoresAndFollowups.positionsAndScores.length > 0) {
-          const nextTargetPositionAndScore = filteredValidTargetPositionsScoresAndFollowups.positionsAndScores[0];
-          if (bestTargetPositionAndScore == null || nextTargetPositionAndScore.score > bestTargetPositionAndScore.score) {
+          const nextTargetPositionAndScore =
+            filteredValidTargetPositionsScoresAndFollowups.positionsAndScores[0];
+          if (
+            bestTargetPositionAndScore == null ||
+            nextTargetPositionAndScore.score > bestTargetPositionAndScore.score
+          ) {
             bestTargetPositionAndScore = nextTargetPositionAndScore;
-            bestFollowupPositions = filteredValidTargetPositionsScoresAndFollowups.followupPositions[0];
+            bestFollowupPositions =
+              filteredValidTargetPositionsScoresAndFollowups.followupPositions[0];
             cardWithBestScore = card;
           }
         }
@@ -778,17 +911,30 @@ StarterAI.prototype = {
         const cardIsSignatureSpell = cardWithBestScore.isSignatureCard();
         if (cardIsFollowup) {
           // followups always get played first
-          this._nextActions.unshift(player.actionPlayFollowup(cardWithBestScore, position.x, position.y));
+          this._nextActions.unshift(
+            player.actionPlayFollowup(cardWithBestScore, position.x, position.y),
+          );
         } else if (cardIsSignatureSpell) {
           this._nextActions.push(player.actionPlaySignatureCard(position.x, position.y));
         } else {
-          this._nextActions.push(player.actionPlayCardFromHand(player.getDeck().getCardsInHand().indexOf(cardWithBestScore), position.x, position.y));
+          this._nextActions.push(
+            player.actionPlayCardFromHand(
+              player.getDeck().getCardsInHand().indexOf(cardWithBestScore),
+              position.x,
+              position.y,
+            ),
+          );
         }
       }
     }
   },
 
-  _findFilteredTargetPositionsScoresAndFollowupsForCardByIntent(card, validTargetPositions, useThreshold, withoutCache) {
+  _findFilteredTargetPositionsScoresAndFollowupsForCardByIntent(
+    card,
+    validTargetPositions,
+    useThreshold,
+    withoutCache,
+  ) {
     const gameSession = this.getGameSession();
     const board = gameSession.getBoard();
     const cardId = card.getBaseCardId();
@@ -803,9 +949,12 @@ StarterAI.prototype = {
     }
 
     // attempt to use cached filtered positions, scores, and followups
-    let filteredPositionsScoresAndFollowups = cacheForCard.filteredPositionsScoresAndFollowups[useThreshold];
+    let filteredPositionsScoresAndFollowups =
+      cacheForCard.filteredPositionsScoresAndFollowups[useThreshold];
     if (filteredPositionsScoresAndFollowups == null) {
-      filteredPositionsScoresAndFollowups = cacheForCard.filteredPositionsScoresAndFollowups[useThreshold] = {
+      filteredPositionsScoresAndFollowups = cacheForCard.filteredPositionsScoresAndFollowups[
+        useThreshold
+      ] = {
         positionsAndScores: [],
         followupPositions: [],
       };
@@ -834,11 +983,15 @@ StarterAI.prototype = {
         }
       } else {
         // reject invalid positions
-        validTargetPositions = _.reject(validTargetPositions, (validPos) =>
-        // reject positions that:
-        // - contain immune units
-        // - do not ensure area of effect is fully on board
-          this._isTargetImmuneToSource(board.getUnitAtPosition(validPos), card) || !card.isAreaOfEffectOnBoard(validPos));
+        validTargetPositions = _.reject(
+          validTargetPositions,
+          (validPos) =>
+            // reject positions that:
+            // - contain immune units
+            // - do not ensure area of effect is fully on board
+            this._isTargetImmuneToSource(board.getUnitAtPosition(validPos), card) ||
+            !card.isAreaOfEffectOnBoard(validPos),
+        );
       }
 
       if (validTargetPositions.length > 0) {
@@ -852,7 +1005,11 @@ StarterAI.prototype = {
         const scoreAndFollowupPositionsCache = cacheForCard.scoreAndFollowupPositions;
         const columnCount = board.getColumnCount();
         _.each(validTargetPositions, (validTargetPosition) => {
-          const scoreIndex = UtilsPosition.getMapIndexFromPosition(columnCount, validTargetPosition.x, validTargetPosition.y);
+          const scoreIndex = UtilsPosition.getMapIndexFromPosition(
+            columnCount,
+            validTargetPosition.x,
+            validTargetPosition.y,
+          );
           const scoreAndFollowupPositions = scoreAndFollowupPositionsCache[scoreIndex];
           let score;
           let followupPositions;
@@ -871,7 +1028,10 @@ StarterAI.prototype = {
             score += ScoreForIntents(card, validTargetPosition);
 
             // score followups
-            const followupScoreAndFollowupPositions = ScoreForIntentFollowup(card, validTargetPosition);
+            const followupScoreAndFollowupPositions = ScoreForIntentFollowup(
+              card,
+              validTargetPosition,
+            );
             score += followupScoreAndFollowupPositions.score;
             followupPositions = followupScoreAndFollowupPositions.followupPositions;
             // Logger.module("AI").debug(" > score for", card.getLogName(), "at", validTargetPosition, "=", score);
@@ -886,7 +1046,11 @@ StarterAI.prototype = {
           if (score >= useThreshold) {
             // sorted insert of target position based on score
             const positionAndScore = { position: validTargetPosition, score };
-            const insertIndex = UtilsJavascript.arraySortedInsertByProperty(filteredPositionsScoresAndFollowups.positionsAndScores, positionAndScore, 'score');
+            const insertIndex = UtilsJavascript.arraySortedInsertByProperty(
+              filteredPositionsScoresAndFollowups.positionsAndScores,
+              positionAndScore,
+              'score',
+            );
             filteredPositionsScoresAndFollowups.followupPositions[insertIndex] = followupPositions;
           }
         });
@@ -913,19 +1077,31 @@ StarterAI.prototype = {
       if (!hasFullHand) {
         // summon that is not followup
         if (!card.getIsFollowup() && this._getCardIsSpawn(card)) {
-          if (this._numSpawnedUnitsThisTurn >= Math.max(1, Math.floor(this._difficulty * DIFFICULTY_MAX_SPAWNS_PER_TURN))) {
+          if (
+            this._numSpawnedUnitsThisTurn >=
+            Math.max(1, Math.floor(this._difficulty * DIFFICULTY_MAX_SPAWNS_PER_TURN))
+          ) {
             // skip card when it's a spawn and already played max this turn
             return true;
           }
-          const numFriendlyUnits = this.getGameSession().getBoard().getFriendlyEntitiesForEntity(this.getMyGeneral()).length;
-          if (numFriendlyUnits >= Math.max(1, Math.floor(this._difficulty * DIFFICULTY_MAX_SPAWNED))) {
+          const numFriendlyUnits = this.getGameSession()
+            .getBoard()
+            .getFriendlyEntitiesForEntity(this.getMyGeneral()).length;
+          if (
+            numFriendlyUnits >= Math.max(1, Math.floor(this._difficulty * DIFFICULTY_MAX_SPAWNED))
+          ) {
             // skip card when it's a spawn and already at max spawned
             return true;
           }
         }
 
         // burn or removal that is not followup
-        if (!card.getIsFollowup() && (this._getCardIsBurn(card) || this._getCardIsRemoval(card)) && this._numUnitsRemovedThisTurn >= Math.max(1, Math.floor(this._difficulty * DIFFICULTY_MAX_UNITS_REMOVED_PER_TURN))) {
+        if (
+          !card.getIsFollowup() &&
+          (this._getCardIsBurn(card) || this._getCardIsRemoval(card)) &&
+          this._numUnitsRemovedThisTurn >=
+            Math.max(1, Math.floor(this._difficulty * DIFFICULTY_MAX_UNITS_REMOVED_PER_TURN))
+        ) {
           // skip card when it's a burn or removal and already removed max
           return true;
         }
@@ -948,10 +1124,24 @@ StarterAI.prototype = {
     const cardId = card.getBaseCardId();
     if (target instanceof SDK.Unit) {
       if (target.getIsGeneral()) {
-        if (CardIntent.getHasIntentTypeWithPartialTargetType(cardId, CardIntentType.Burn, CardTargetType.General, true)) {
+        if (
+          CardIntent.getHasIntentTypeWithPartialTargetType(
+            cardId,
+            CardIntentType.Burn,
+            CardTargetType.General,
+            true,
+          )
+        ) {
           return true;
         }
-      } else if (CardIntent.getHasIntentTypeWithPartialTargetType(cardId, CardIntentType.Burn, CardTargetType.Minion, true)) {
+      } else if (
+        CardIntent.getHasIntentTypeWithPartialTargetType(
+          cardId,
+          CardIntentType.Burn,
+          CardTargetType.Minion,
+          true,
+        )
+      ) {
         return true;
       }
     } else if (CardIntent.getHasIntentType(cardId, CardIntentType.Burn, true)) {
@@ -975,9 +1165,19 @@ StarterAI.prototype = {
     let isBuff = false;
     let intents;
     if (unit.getIsGeneral()) {
-      intents = CardIntent.getIntentsByIntentTypeWithPartialTargetType(cardId, CardIntentType.ModifyATK, CardTargetType.General, true);
+      intents = CardIntent.getIntentsByIntentTypeWithPartialTargetType(
+        cardId,
+        CardIntentType.ModifyATK,
+        CardTargetType.General,
+        true,
+      );
     } else {
-      intents = CardIntent.getIntentsByIntentTypeWithPartialTargetType(cardId, CardIntentType.ModifyATK, CardTargetType.Minion, true);
+      intents = CardIntent.getIntentsByIntentTypeWithPartialTargetType(
+        cardId,
+        CardIntentType.ModifyATK,
+        CardTargetType.Minion,
+        true,
+      );
     }
     for (let i = 0, il = intents.length; i < il; i++) {
       const intentObj = intents[i];
@@ -989,17 +1189,23 @@ StarterAI.prototype = {
 
     // TODO: remove me
     if (!isBuff) {
-      isBuff = (CARD_INTENT[cardId] != null
-        && CARD_INTENT[cardId].indexOf('buff') > -1
-        && CARD_INTENT[cardId].indexOf('debuff') == -1
-        && (!unit.getIsGeneral() || CARD_INTENT[cardId].indexOf('general') != -1));
+      isBuff =
+        CARD_INTENT[cardId] != null &&
+        CARD_INTENT[cardId].indexOf('buff') > -1 &&
+        CARD_INTENT[cardId].indexOf('debuff') == -1 &&
+        (!unit.getIsGeneral() || CARD_INTENT[cardId].indexOf('general') != -1);
     }
 
     // card must ensure that:
     // - this unit's position is a valid target
     // - this unit is NOT immune to
     // - does NOT deal lethal damage to this unit
-    return isBuff && card.getIsPositionValidTarget(unit.getPosition()) && !this._isTargetImmuneToSource(unit, card) && willUnitSurviveCard(unit, card);
+    return (
+      isBuff &&
+      card.getIsPositionValidTarget(unit.getPosition()) &&
+      !this._isTargetImmuneToSource(unit, card) &&
+      willUnitSurviveCard(unit, card)
+    );
   },
 
   _getCardIsAtkDebuffFor(card, unit) {
@@ -1007,9 +1213,19 @@ StarterAI.prototype = {
     let isDebuff = false;
     let intents;
     if (unit.getIsGeneral()) {
-      intents = CardIntent.getIntentsByIntentTypeWithPartialTargetType(cardId, CardIntentType.ModifyATK, CardTargetType.General, true);
+      intents = CardIntent.getIntentsByIntentTypeWithPartialTargetType(
+        cardId,
+        CardIntentType.ModifyATK,
+        CardTargetType.General,
+        true,
+      );
     } else {
-      intents = CardIntent.getIntentsByIntentTypeWithPartialTargetType(cardId, CardIntentType.ModifyATK, CardTargetType.Minion, true);
+      intents = CardIntent.getIntentsByIntentTypeWithPartialTargetType(
+        cardId,
+        CardIntentType.ModifyATK,
+        CardTargetType.Minion,
+        true,
+      );
     }
     for (let i = 0, il = intents.length; i < il; i++) {
       const intentObj = intents[i];
@@ -1021,31 +1237,48 @@ StarterAI.prototype = {
 
     // TODO: remove me
     if (!isDebuff) {
-      isDebuff = (CARD_INTENT[cardId] != null
-        && CARD_INTENT[cardId].indexOf('debuff') > -1
-        && (!unit.getIsGeneral() || CARD_INTENT[cardId].indexOf('general') != -1));
+      isDebuff =
+        CARD_INTENT[cardId] != null &&
+        CARD_INTENT[cardId].indexOf('debuff') > -1 &&
+        (!unit.getIsGeneral() || CARD_INTENT[cardId].indexOf('general') != -1);
     }
 
     // card must ensure that:
     // - this unit's position is a valid target
     // - this unit is NOT immune to
     // - does NOT deal lethal damage to this unit
-    return isDebuff && card.getIsPositionValidTarget(unit.getPosition()) && !this._isTargetImmuneToSource(unit, card) && willUnitSurviveCard(unit, card);
+    return (
+      isDebuff &&
+      card.getIsPositionValidTarget(unit.getPosition()) &&
+      !this._isTargetImmuneToSource(unit, card) &&
+      willUnitSurviveCard(unit, card)
+    );
   },
 
   _getCardIsRemoval(card) {
     const cardId = card.getBaseCardId();
     if (CardIntent.getHasIntentType(cardId, CardIntentType.Remove, true)) return true;
     // TODO: remove me
-    if (CARD_INTENT[cardId] != null && (CARD_INTENT[cardId].indexOf('removal') !== -1 || CARD_INTENT[cardId].indexOf('shadownova') !== -1)) return true;
+    if (
+      CARD_INTENT[cardId] != null &&
+      (CARD_INTENT[cardId].indexOf('removal') !== -1 ||
+        CARD_INTENT[cardId].indexOf('shadownova') !== -1)
+    )
+      return true;
     return false;
   },
 
   _getCardIsMass(card) {
     const cardId = card.getBaseCardId();
-    if (CardIntent.getAnyIntentsMatchPartialTargetType(cardId, CardTargetType.All, true)) return true;
+    if (CardIntent.getAnyIntentsMatchPartialTargetType(cardId, CardTargetType.All, true))
+      return true;
     // TODO: remove me
-    if (CARD_INTENT[cardId] != null && (CARD_INTENT[cardId].indexOf('mass') !== -1 || CARD_INTENT[cardId].indexOf('shadownova') !== -1)) return true;
+    if (
+      CARD_INTENT[cardId] != null &&
+      (CARD_INTENT[cardId].indexOf('mass') !== -1 ||
+        CARD_INTENT[cardId].indexOf('shadownova') !== -1)
+    )
+      return true;
     return false;
   },
 
@@ -1080,15 +1313,26 @@ StarterAI.prototype = {
               // use play card threshold and modulate based on player's remaining mana
               // this should encourage AI to play units with lower value at the start of the game
               // or when the AI is low on mana during a turn
-              useThreshold = Math.max(THRESHOLD.PLAY_CARD_MINIMUM, THRESHOLD.PLAY_CARD * Math.min(1.0, (player.getRemainingMana() / (CONFIG.MAX_MANA * 0.6))));
+              useThreshold = Math.max(
+                THRESHOLD.PLAY_CARD_MINIMUM,
+                THRESHOLD.PLAY_CARD *
+                  Math.min(1.0, player.getRemainingMana() / (CONFIG.MAX_MANA * 0.6)),
+              );
             } else {
               useThreshold = THRESHOLD.PLAY_CARD;
             }
 
-            const filteredValidTargetPositionsScoresAndFollowups = this._findFilteredTargetPositionsScoresAndFollowupsForCardByIntent(card, validTargetPositions, useThreshold);
+            const filteredValidTargetPositionsScoresAndFollowups =
+              this._findFilteredTargetPositionsScoresAndFollowupsForCardByIntent(
+                card,
+                validTargetPositions,
+                useThreshold,
+              );
             if (filteredValidTargetPositionsScoresAndFollowups.positionsAndScores.length > 0) {
-              const bestPositionsAndScore = filteredValidTargetPositionsScoresAndFollowups.positionsAndScores[0];
-              const followupPositions = filteredValidTargetPositionsScoresAndFollowups.followupPositions[0];
+              const bestPositionsAndScore =
+                filteredValidTargetPositionsScoresAndFollowups.positionsAndScores[0];
+              const followupPositions =
+                filteredValidTargetPositionsScoresAndFollowups.followupPositions[0];
               validTargetPositions = [bestPositionsAndScore.position];
               this._followupTargets = followupPositions;
             } else {
@@ -1098,17 +1342,25 @@ StarterAI.prototype = {
           }
 
           if (needsOldBehavior) {
-            const filteredValidTargetPositions = this._findFilteredTargetPositionsForCardByOldIntent(card, validTargetPositions);
+            const filteredValidTargetPositions =
+              this._findFilteredTargetPositionsForCardByOldIntent(card, validTargetPositions);
 
-            if (filteredValidTargetPositions.length > 0 && filteredValidTargetPositions[0] == null) {
+            if (
+              filteredValidTargetPositions.length > 0 &&
+              filteredValidTargetPositions[0] == null
+            ) {
               // filtered valid target positions ended in bad state
               validTargetPositions = [];
-            } else if (filteredValidTargetPositions.length === validTargetPositions.length
-              && filteredValidTargetPositions[0].x === validTargetPositions[0].x
-              && filteredValidTargetPositions[0].y === validTargetPositions[0].y
-              && card.getCanBeAppliedAnywhere()) {
+            } else if (
+              filteredValidTargetPositions.length === validTargetPositions.length &&
+              filteredValidTargetPositions[0].x === validTargetPositions[0].x &&
+              filteredValidTargetPositions[0].y === validTargetPositions[0].y &&
+              card.getCanBeAppliedAnywhere()
+            ) {
               // pick random position from valid targets when card can be applied anywhere
-              validTargetPositions = [validTargetPositions[Math.floor(Math.random() * validTargetPositions.length)]];
+              validTargetPositions = [
+                validTargetPositions[Math.floor(Math.random() * validTargetPositions.length)],
+              ];
             } else {
               validTargetPositions = filteredValidTargetPositions;
             }
@@ -1123,18 +1375,27 @@ StarterAI.prototype = {
           let playCardAction;
           if (cardIsFollowup) {
             // we must always resolve followups before any possibly loaded subsequent actions (i.e. primordial gazer and repulsor beast)
-            playCardAction = player.actionPlayFollowup(card, validTargetPosition.x, validTargetPosition.y);
+            playCardAction = player.actionPlayFollowup(
+              card,
+              validTargetPosition.x,
+              validTargetPosition.y,
+            );
             this._nextActions.unshift(playCardAction);
           } else if (cardIsSignatureSpell) {
-            this._nextActions.push(player.actionPlaySignatureCard(validTargetPosition.x, validTargetPosition.y));
+            this._nextActions.push(
+              player.actionPlaySignatureCard(validTargetPosition.x, validTargetPosition.y),
+            );
 
             // add count for spawns
             if (this._getCardIsSpawn(card)) {
               this._numSpawnedUnitsThisTurn++;
             }
           } else {
-            playCardAction = player.actionPlayCardFromHand(this.getGameSession().getCurrentPlayer().getDeck().getCardsInHand()
-              .indexOf(card), validTargetPosition.x, validTargetPosition.y);
+            playCardAction = player.actionPlayCardFromHand(
+              this.getGameSession().getCurrentPlayer().getDeck().getCardsInHand().indexOf(card),
+              validTargetPosition.x,
+              validTargetPosition.y,
+            );
             this._nextActions.push(playCardAction);
             // add count for spawns
             if (this._getCardIsSpawn(card)) {
@@ -1153,514 +1414,699 @@ StarterAI.prototype = {
       // pre-filter valid positions for spells
       if (card instanceof SDK.Spell) {
         validTargetPositions = _.reject(validTargetPositions, (validPos) =>
-        // reject immune units
-          this._isTargetImmuneToSource(this.getGameSession().getBoard().getUnitAtPosition(validPos), card));
+          // reject immune units
+          this._isTargetImmuneToSource(
+            this.getGameSession().getBoard().getUnitAtPosition(validPos),
+            card,
+          ),
+        );
       }
       // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] _findFilteredTargetPositionsForCardByOldIntent -> target positions length after immunity filter = " + validTargetPositions.length + " for card ID =" + cardId);
       // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] _findFilteredTargetPositionsForCardByOldIntent -> card intent = " + CARD_INTENT[cardId] + " for card ID =" + cardId);
       switch (CARD_INTENT[cardId]) {
-      case 'draw':
-      case 'draw_bbs':
-        var cardsInHand = this.getGameSession().getCurrentPlayer().getDeck().getNumCardsInHand();
-        if (CARD_INTENT[cardId].indexOf('bbs') !== -1) {
-          if (cardsInHand > CONFIG.MAX_HAND_SIZE - CONFIG.CARD_DRAW_PER_TURN) { // don't cast if we have full hand or will after end-turn draw
+        case 'draw':
+        case 'draw_bbs':
+          var cardsInHand = this.getGameSession().getCurrentPlayer().getDeck().getNumCardsInHand();
+          if (CARD_INTENT[cardId].indexOf('bbs') !== -1) {
+            if (cardsInHand > CONFIG.MAX_HAND_SIZE - CONFIG.CARD_DRAW_PER_TURN) {
+              // don't cast if we have full hand or will after end-turn draw
+              validTargetPositions = [];
+            }
+          } else if (cardsInHand > CONFIG.MAX_HAND_SIZE - (CONFIG.CARD_DRAW_PER_TURN + 1)) {
+            // don't cast if we have full hand -2 (4) or more cards
             validTargetPositions = [];
           }
-        } else if (cardsInHand > (CONFIG.MAX_HAND_SIZE - (CONFIG.CARD_DRAW_PER_TURN + 1))) { // don't cast if we have full hand -2 (4) or more cards
-          validTargetPositions = [];
-        }
-        break;
-      case 'hand_improve_minion_mass':
-      case 'hand_improve_minion_mass_bbs':
-        // cast as long as we have at least one minion in hand
-        var cardsInHand = this.getGameSession().getCurrentPlayer().getDeck().getCardsInHand();
-        var minionsInHand = _.filter(cardsInHand, (card) => card instanceof SDK.Unit);
-        if (minionsInHand.length < 1) {
-          validTargetPositions = [];
-        }
-        break;
-      case 'stun':
-        var myGeneral = this.getMyGeneral();
-        validTargetPositions = _.reject(validTargetPositions, (validPos) => {
-          // reject empty positions
-          const unitAtPosition = this.getGameSession().getBoard().getUnitAtPosition(validPos);
-          if (unitAtPosition == null) return true;
-          // reject friendly units
-          if (unitAtPosition.getIsSameTeamAs(myGeneral)) return true;
-          return false;
-        });
-
-        // beam shock.  only use it to stun high value minions and not generals (but don't stun a minion that's already stunned)
-        validTargetPositions = _.filter(validTargetPositions, (validPos) => {
-          const unitAtPos = this.getGameSession().getBoard().getUnitAtPosition(validPos);
-          return unitAtPos.getATK() > THRESHOLD_HIGH_ATTACK_UNIT && !unitAtPos.getIsGeneral() && !unitAtPos.hasActiveModifierClass(SDK.ModifierStunned);
-        });
-
-        if (validTargetPositions.length > 0) {
-          validTargetPositions = _.sortBy(validTargetPositions, (validPos) => ScoreForUnit(this.getGameSession().getBoard().getUnitAtPosition(validPos))).reverse();
-        }
-        break;
-      case 'burn_stun_minion':
-        var myGeneral = this.getMyGeneral();
-        validTargetPositions = _.reject(validTargetPositions, (validPos) => {
-          // reject empty positions
-          const unitAtPosition = this.getGameSession().getBoard().getUnitAtPosition(validPos);
-          if (unitAtPosition == null) return true;
-          // reject friendly units
-          if (unitAtPosition.getIsSameTeamAs(myGeneral)) return true;
-          return false;
-        });
-
-        // flash freeze. we prefer to use as stun on high bounty units that are not already stunned and are not generals, but will use for lethal burn in some cases
-        validTargetPositions = _.filter(validTargetPositions, (validPos) => {
-          const unitAtPos = this.getGameSession().getBoard().getUnitAtPosition(validPos);
-          return unitAtPos.getHP() <= card.damageAmount || (unitAtPos.getATK() > THRESHOLD_HIGH_ATTACK_UNIT && !unitAtPos.hasActiveModifierClass(SDK.ModifierStunned) && !unitAtPos.getIsGeneral());
-        });
-
-        if (validTargetPositions.length > 0) {
-          validTargetPositions = _.sortBy(validTargetPositions, (validPos) => ScoreForUnit(this.getGameSession().getBoard().getUnitAtPosition(validPos))).reverse();
-        }
-        break;
-      case 'burn':
-      case 'burn_minion':
-      case 'burn_dispel':
-        var myGeneral = this.getMyGeneral();
-        validTargetPositions = _.reject(validTargetPositions, (validPos) => {
-          // reject empty positions
-          const unitAtPosition = this.getGameSession().getBoard().getUnitAtPosition(validPos);
-          if (unitAtPosition == null) return true;
-          // reject friendly units
-          if (unitAtPosition.getIsSameTeamAs(myGeneral)) return true;
-          return false;
-        });
-
-        // chromatic cold. we prefer to use as dispel on high bounty, buffed units, but will use for lethal burn in some cases
-        if (!card.getIsFollowup()) {
-          validTargetPositions = _.filter(validTargetPositions, (validPos) => {
-            const unitAtPos = this.getGameSession().getBoard().getUnitAtPosition(validPos);
-            return unitAtPos.getHP() <= card.damageAmount || ((!unitAtPos.getIsGeneral() && ScoreForModifiers(unitAtPos) >= THRESHOLD_DISPEL));
-          });
-        }
-
-        if (validTargetPositions.length > 0) {
-          validTargetPositions = _.sortBy(validTargetPositions, (validPos) => ScoreForUnitDamage(this.getGameSession().getBoard().getUnitAtPosition(validPos), card.damageAmount)).reverse();
-        }
-        break;
-      case 'burn_move_enemy_minion':
-        var myGeneral = this.getMyGeneral();
-        var validTargetPositions_copy = validTargetPositions.slice(0);
-        validTargetPositions = _.reject(validTargetPositions, (validPos) => {
-          // reject empty positions
-          const unitAtPosition = this.getGameSession().getBoard().getUnitAtPosition(validPos);
-          if (unitAtPosition == null) return true;
-          // reject friendly units
-          if (unitAtPosition.getIsSameTeamAs(myGeneral)) return true;
-          return false;
-        });
-        if (cardId == SDK.Cards.Spell.DaemonicLure) {
-          // daemonic lure. we prefer to use as relocate on high bounty units, but will use for lethal burn in some cases
-          validTargetPositions = _.reject(validTargetPositions, (validPos) => {
-            const unitAtPos = this.getGameSession().getBoard().getUnitAtPosition(validPos);
-            return (unitAtPos.getHP() - (card.damageAmount || 0) > 0) || unitAtPos.hasModifierClass(SDK.ModifierRanged);
-          });
-        }
-        if (!this._hasLethalOnEnemyGeneral) {
-          // allow burn spell targeting for non-lethal damage when generalLethal is triggered
-          validTargetPositions = _.filter(validTargetPositions, (validPos) => {
-            const potentialTarget = this.getGameSession().getBoard().getUnitAtPosition(validPos);
-            return potentialTarget.getHP() <= card.damageAmount;
-          });
-        }
-        if (validTargetPositions.length > 0) {
-          validTargetPositions = _.sortBy(validTargetPositions, (validPos) => ScoreForUnit(this.getGameSession().getBoard().getUnitAtPosition(validPos))).reverse();
-          const generalLethal = _.find(validTargetPositions, (validPos) => {
-            const unitAtPos = this.getGameSession().getBoard().getUnitAtPosition(validPos);
-            return unitAtPos instanceof SDK.Unit && unitAtPos.getIsGeneral();
-          });
-          if (generalLethal != null) {
-            validTargetPositions[0] = generalLethal;
+          break;
+        case 'hand_improve_minion_mass':
+        case 'hand_improve_minion_mass_bbs':
+          // cast as long as we have at least one minion in hand
+          var cardsInHand = this.getGameSession().getCurrentPlayer().getDeck().getCardsInHand();
+          var minionsInHand = _.filter(cardsInHand, (card) => card instanceof SDK.Unit);
+          if (minionsInHand.length < 1) {
+            validTargetPositions = [];
           }
-        } else if (CARD_INTENT[cardId].indexOf('move') > -1) {
+          break;
+        case 'stun':
+          var myGeneral = this.getMyGeneral();
+          validTargetPositions = _.reject(validTargetPositions, (validPos) => {
+            // reject empty positions
+            const unitAtPosition = this.getGameSession().getBoard().getUnitAtPosition(validPos);
+            if (unitAtPosition == null) return true;
+            // reject friendly units
+            if (unitAtPosition.getIsSameTeamAs(myGeneral)) return true;
+            return false;
+          });
+
+          // beam shock.  only use it to stun high value minions and not generals (but don't stun a minion that's already stunned)
+          validTargetPositions = _.filter(validTargetPositions, (validPos) => {
+            const unitAtPos = this.getGameSession().getBoard().getUnitAtPosition(validPos);
+            return (
+              unitAtPos.getATK() > THRESHOLD_HIGH_ATTACK_UNIT &&
+              !unitAtPos.getIsGeneral() &&
+              !unitAtPos.hasActiveModifierClass(SDK.ModifierStunned)
+            );
+          });
+
+          if (validTargetPositions.length > 0) {
+            validTargetPositions = _.sortBy(validTargetPositions, (validPos) =>
+              ScoreForUnit(this.getGameSession().getBoard().getUnitAtPosition(validPos)),
+            ).reverse();
+          }
+          break;
+        case 'burn_stun_minion':
+          var myGeneral = this.getMyGeneral();
+          validTargetPositions = _.reject(validTargetPositions, (validPos) => {
+            // reject empty positions
+            const unitAtPosition = this.getGameSession().getBoard().getUnitAtPosition(validPos);
+            if (unitAtPosition == null) return true;
+            // reject friendly units
+            if (unitAtPosition.getIsSameTeamAs(myGeneral)) return true;
+            return false;
+          });
+
+          // flash freeze. we prefer to use as stun on high bounty units that are not already stunned and are not generals, but will use for lethal burn in some cases
+          validTargetPositions = _.filter(validTargetPositions, (validPos) => {
+            const unitAtPos = this.getGameSession().getBoard().getUnitAtPosition(validPos);
+            return (
+              unitAtPos.getHP() <= card.damageAmount ||
+              (unitAtPos.getATK() > THRESHOLD_HIGH_ATTACK_UNIT &&
+                !unitAtPos.hasActiveModifierClass(SDK.ModifierStunned) &&
+                !unitAtPos.getIsGeneral())
+            );
+          });
+
+          if (validTargetPositions.length > 0) {
+            validTargetPositions = _.sortBy(validTargetPositions, (validPos) =>
+              ScoreForUnit(this.getGameSession().getBoard().getUnitAtPosition(validPos)),
+            ).reverse();
+          }
+          break;
+        case 'burn':
+        case 'burn_minion':
+        case 'burn_dispel':
+          var myGeneral = this.getMyGeneral();
+          validTargetPositions = _.reject(validTargetPositions, (validPos) => {
+            // reject empty positions
+            const unitAtPosition = this.getGameSession().getBoard().getUnitAtPosition(validPos);
+            if (unitAtPosition == null) return true;
+            // reject friendly units
+            if (unitAtPosition.getIsSameTeamAs(myGeneral)) return true;
+            return false;
+          });
+
+          // chromatic cold. we prefer to use as dispel on high bounty, buffed units, but will use for lethal burn in some cases
+          if (!card.getIsFollowup()) {
+            validTargetPositions = _.filter(validTargetPositions, (validPos) => {
+              const unitAtPos = this.getGameSession().getBoard().getUnitAtPosition(validPos);
+              return (
+                unitAtPos.getHP() <= card.damageAmount ||
+                (!unitAtPos.getIsGeneral() && ScoreForModifiers(unitAtPos) >= THRESHOLD_DISPEL)
+              );
+            });
+          }
+
+          if (validTargetPositions.length > 0) {
+            validTargetPositions = _.sortBy(validTargetPositions, (validPos) =>
+              ScoreForUnitDamage(
+                this.getGameSession().getBoard().getUnitAtPosition(validPos),
+                card.damageAmount,
+              ),
+            ).reverse();
+          }
+          break;
+        case 'burn_move_enemy_minion':
+          var myGeneral = this.getMyGeneral();
+          var validTargetPositions_copy = validTargetPositions.slice(0);
+          validTargetPositions = _.reject(validTargetPositions, (validPos) => {
+            // reject empty positions
+            const unitAtPosition = this.getGameSession().getBoard().getUnitAtPosition(validPos);
+            if (unitAtPosition == null) return true;
+            // reject friendly units
+            if (unitAtPosition.getIsSameTeamAs(myGeneral)) return true;
+            return false;
+          });
+          if (cardId == SDK.Cards.Spell.DaemonicLure) {
+            // daemonic lure. we prefer to use as relocate on high bounty units, but will use for lethal burn in some cases
+            validTargetPositions = _.reject(validTargetPositions, (validPos) => {
+              const unitAtPos = this.getGameSession().getBoard().getUnitAtPosition(validPos);
+              return (
+                unitAtPos.getHP() - (card.damageAmount || 0) > 0 ||
+                unitAtPos.hasModifierClass(SDK.ModifierRanged)
+              );
+            });
+          }
+          if (!this._hasLethalOnEnemyGeneral) {
+            // allow burn spell targeting for non-lethal damage when generalLethal is triggered
+            validTargetPositions = _.filter(validTargetPositions, (validPos) => {
+              const potentialTarget = this.getGameSession().getBoard().getUnitAtPosition(validPos);
+              return potentialTarget.getHP() <= card.damageAmount;
+            });
+          }
+          if (validTargetPositions.length > 0) {
+            validTargetPositions = _.sortBy(validTargetPositions, (validPos) =>
+              ScoreForUnit(this.getGameSession().getBoard().getUnitAtPosition(validPos)),
+            ).reverse();
+            const generalLethal = _.find(validTargetPositions, (validPos) => {
+              const unitAtPos = this.getGameSession().getBoard().getUnitAtPosition(validPos);
+              return unitAtPos instanceof SDK.Unit && unitAtPos.getIsGeneral();
+            });
+            if (generalLethal != null) {
+              validTargetPositions[0] = generalLethal;
+            }
+          } else if (CARD_INTENT[cardId].indexOf('move') > -1) {
+            // only move units with ATK of at least 4 or provokers or ranged units
+            validTargetPositions = _.reject(validTargetPositions_copy, (validPos) => {
+              const enemy = this.getGameSession().getBoard().getUnitAtPosition(validPos);
+              return (
+                enemy.getATK() < THRESHOLD.HIGH_ATK &&
+                !enemy.hasModifierClass(SDK.ModifierProvoke) &&
+                !enemy.hasModifierClass(SDK.ModifierRanged)
+              );
+            });
+            // if a high value move target exists, choose the one with the highest distance bounty
+            if (validTargetPositions.length > 0) {
+              validTargetPositions[0] = this._highestPositionObjectiveAndScoreFromPositions(
+                card,
+                validTargetPositions,
+              ).targetPosition;
+            }
+          }
+          break;
+        case 'removal':
+        case 'removal_buff_minion':
+          if (
+            cardId == SDK.Cards.Spell.Martyrdom &&
+            this._hasLethalOnEnemyGeneral
+          ) // dont cast martyrdom when enemy general within lethal
+          {
+            return [];
+          } // NOTE: the expected response is an ARRAY so don't return NULL
+          var myGeneral = this.getMyGeneral();
+          // reject friendly units
+          validTargetPositions = _.reject(validTargetPositions, (validPos) =>
+            this.getGameSession().getBoard().getUnitAtPosition(validPos).getIsSameTeamAs(myGeneral),
+          );
+          validTargetPositions = _.sortBy(validTargetPositions, (validPos) =>
+            ScoreForUnit(this.getGameSession().getBoard().getUnitAtPosition(validPos)),
+          ).reverse();
+          // drawback considerations
+          if (cardId == SDK.Cards.Spell.AspectOfTheWolf) // aspect of the fox replace with 3/3
+          {
+            validTargetPositions = _.reject(
+              validTargetPositions,
+              (validPos) =>
+                ScoreForUnit(this.getGameSession().getBoard().getUnitAtPosition(validPos)) < 14,
+            );
+          } else if (cardId == SDK.Cards.Spell.Martyrdom) // heal enemy general by unit's hp
+          {
+            validTargetPositions = _.reject(
+              validTargetPositions,
+              (validPos) =>
+                ScoreForUnit(this.getGameSession().getBoard().getUnitAtPosition(validPos)) < 12,
+            );
+          } else
+            validTargetPositions = _.reject(
+              validTargetPositions,
+              (validPos) =>
+                ScoreForUnit(this.getGameSession().getBoard().getUnitAtPosition(validPos)) < 10,
+            );
+          break;
+
+        case 'shadownova':
+          // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] shadownova 1");
+          var myGeneral = this.getMyGeneral();
+          var enemies = this.getGameSession()
+            .getBoard()
+            .getEnemyEntitiesForEntity(myGeneral, SDK.CardType.Unit);
+          var shadownovaDamage = 1;
+          var shadowTiles = _.filter(this.getGameSession().getBoard().getTiles(true), (tile) =>
+            tile.hasModifierClass(SDK.ModifierStackingShadows),
+          );
+          // target enemies not already standing on shadow creep
+          // this means we never intentionally use shadownova to amplify damage to enemies already standing on shadow creep...
+          enemies = _.reject(
+            enemies,
+            (enemy) => _.intersection([enemy.getPosition()], shadowTiles) > 0,
+          );
+          // reject immune units
+          enemies = _.reject(enemies, (enemy) => this._isTargetImmuneToSource(enemy, card));
+          // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] shadownova 2 enemies.length = " + enemies.length + ". shadownovadamage = " + shadownovaDamage);
+          if (_.some(enemies, (enemy) => enemy.getHP() <= shadownovaDamage)) {
+            // if we can kill something with shadownova, pick highest bounty target
+            // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] shadownova 3 enemy can be killed");
+            const enemiesWithinLethalRange = _.filter(
+              enemies,
+              (enemy) => enemy.getHP() <= shadownovaDamage,
+            );
+            const primaryTarget = _.max(enemiesWithinLethalRange, (enemy) =>
+              ScoreForUnitDamage(enemy, shadownovaDamage),
+            );
+            enemies = _.without(enemies, primaryTarget); // remove primary target from remaining enemies
+            // get enemies adjacent to primary target and select one with highest damage bounty
+            // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] shadownova 3.5 primary target = " + primaryTarget.getLogName());
+            let secondaryTargetsArray = this.getGameSession()
+              .getBoard()
+              .getFriendlyEntitiesAroundEntity(primaryTarget, SDK.CardType.Unit);
+            // reject enemies already standing on shadow creep...?
+            secondaryTargetsArray = _.reject(
+              secondaryTargetsArray,
+              (enemy) => _.intersection([enemy.getPosition()], shadowTiles) > 0,
+            );
+            if (
+              secondaryTargetsArray.length == 0 &&
+              ScoreForUnitDamage(primaryTarget, shadownovaDamage) < 99
+            ) {
+              // overrides secondry target requirement when general lethal possible
+              //* **TODO - SELECT ALTERNATIVE PRIMARY TARGET
+              // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] shadownova - no SECONDARY lethal targets. not casting.");
+              validTargetPositions = []; // do not cast if we can't affect at least 2 enemies or we're not killing general
+            } else {
+              let secondaryTarget;
+              if (ScoreForUnitDamage(primaryTarget, shadownovaDamage) >= 99) {
+                // overrides secondary target requirement when general lethal possible
+                secondaryTarget = primaryTarget;
+              } else {
+                secondaryTarget = _.max(secondaryTargetsArray, (secondaryTarget) =>
+                  ScoreForUnitDamage(secondaryTarget, shadownovaDamage),
+                );
+              }
+              // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] shadownova 4 enemy can be killed, secondary target affected. primary = " + primaryTarget.getLogName() + ". secondary = " + secondaryTarget.getLogName());
+
+              // allow 3rd "auxiliary" target
+              // get enemies adjacent to primary AND secondary targets and select one with highest damage bounty
+              // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] shadownova 4.1 seeking 3rd target");
+              let unitsAroundPrimaryTarget = this.getGameSession()
+                .getBoard()
+                .getFriendlyEntitiesAroundEntity(primaryTarget, SDK.CardType.Unit);
+              // exclude secondary
+              unitsAroundPrimaryTarget = _.reject(
+                unitsAroundPrimaryTarget,
+                (target) => target == secondaryTarget,
+              );
+              let unitsAroundSecondaryTarget = this.getGameSession()
+                .getBoard()
+                .getFriendlyEntitiesAroundEntity(secondaryTarget, SDK.CardType.Unit);
+              // exclude primary
+              unitsAroundSecondaryTarget = _.reject(
+                unitsAroundSecondaryTarget,
+                (target) => target == primaryTarget,
+              );
+              // find new units who are adjacent to both our primary and secondary targets by intersecting the adjacent arrays
+              let auxiliaryTargetsArray = _.intersection(
+                unitsAroundPrimaryTarget,
+                unitsAroundSecondaryTarget,
+              );
+              // reject enemies already standing on shadow creep...?
+              auxiliaryTargetsArray = _.reject(
+                auxiliaryTargetsArray,
+                (enemy) => _.intersection([enemy.getPosition()], shadowTiles) > 0,
+              );
+              if (auxiliaryTargetsArray.length > 0) {
+                var auxiliaryTarget = _.max(auxiliaryTargetsArray, (auxTarget) =>
+                  ScoreForUnitDamage(auxTarget, shadownovaDamage),
+                );
+                // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] shadownova 4.2 3rd target acquired: " + auxiliaryTarget.name);
+              } else {
+                auxiliaryTarget = primaryTarget;
+              }
+
+              // position to affect all targets - if no auxiliaryTarget, auxiliaryTarget will be same as primary target and will simply be redundant targeting
+              const affectPattern = card.getAffectPattern();
+              const positionsToMatch = [primaryTarget.getPosition()];
+              if (primaryTarget !== secondaryTarget) {
+                positionsToMatch.push(secondaryTarget.getPosition());
+              }
+              if (primaryTarget !== auxiliaryTarget) {
+                positionsToMatch.push(auxiliaryTarget.getPosition());
+              }
+              const positionThatAffectsAllTargets = _.find(validTargetPositions, (pos) => {
+                // find position that contains all targets
+                const bx = pos.x;
+                const by = pos.y;
+                let numMatches = 0;
+                for (let a = 0, al = affectPattern.length; a < al; a++) {
+                  const offset = affectPattern[a];
+                  if (
+                    UtilsPosition.getIsPositionInPositions(positionsToMatch, {
+                      x: bx + offset.x,
+                      y: by + offset.y,
+                    })
+                  ) {
+                    numMatches++;
+                    if (numMatches === positionsToMatch.length) {
+                      break;
+                    }
+                  }
+                }
+
+                // position must also ensure that area of effect remains on board
+                return numMatches === positionsToMatch.length && card.isAreaOfEffectOnBoard(pos);
+              });
+              // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] done finding target pos.");
+              validTargetPositions = [positionThatAffectsAllTargets];
+              // flag targets as marked for death - do not allow targets or attacks against them
+              // TODO: any other incidental deaths?
+              this._markedForDeath.push(primaryTarget);
+              this._markedForDeath.push(secondaryTarget);
+              this._markedForDeath.push(auxiliaryTarget);
+              // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] shadownova 5 position to affect both targets = " + positionThatAffectsAllTargets.x + ", " + positionThatAffectsAllTargets.y);
+              // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] shadownova 6 primary = " + this._markedForDeath[0].getLogName() + " secondary = " + this._markedForDeath[1].getLogName() + " auxiliary = " + this._markedForDeath[2].getLogName());
+              /// /DEBUGGING START
+              /// /disable cast
+              // validTargetPositions = [];
+              /// /DEBUGGING END
+            }
+          } else {
+            // no lethal targets - don't cast.
+            // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] shadownova - no lethal targets. not casting.");
+            validTargetPositions = [];
+          }
+          break;
+        case 'burn_mass_minion':
+        case 'burn_mass_enemy_minion':
+        case 'burn_mass':
+        case 'removal_mass_minion':
+        case 'burn_mass_enemy':
+          // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] burn mass detected.");
+          var damageAmount = 0;
+          if (CARD_INTENT[cardId].indexOf('burn') > -1) damageAmount = card.damageAmount;
+          else damageAmount = 999;
+          var enemyDamageBounty = 0;
+          var myDamageBounty = 0;
+          var enemiesKilled = 0;
+          // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] cardid = " + cardId);
+          if (cardId == SDK.Cards.Spell.Warbird) {
+            // threshold for casting - 23.3 is base dmg to general, so at 3+ cards in hand, requires dmg to at least something else to cast, otherwise we hold. this threshold declines as number of cards in hand declines because saving cards has value
+            myDamageBounty += 20 + this.getMyPlayer().getDeck().getNumCardsInHand() * 1.5;
+            enemiesKilled++; // allows warbird to be cast without lethal
+            // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] warbird detected. mybounty = " + myDamageBounty);
+          }
+          var myGeneral = this.getMyGeneral();
+          _.each(this.getGameSession().getBoard().getUnits(), (unit) => {
+            if (this._isTargetImmuneToSource(unit, card)) return; // don't count immune units
+            if (CARD_INTENT[cardId].indexOf('minion') > -1 && unit.getIsGeneral()) return; // don't count generals if spell effects only minions (i.e. burn_mass_minion)
+            if (
+              cardId == SDK.Cards.Spell.Avalanche &&
+              this._isOnMySideOfBoard(card, unit.getPosition()) == false
+            )
+              return; // avalanche only deal dmg to units on starting side of field
+            if (
+              cardId == SDK.Cards.Spell.Warbird &&
+              unit.getPosition().x !== this.getOpponentGeneral().getPosition().x
+            )
+              return; // warbird only deals damage in column of
+            if (cardId == SDK.Cards.Spell.PlasmaStorm && unit.getATK() > 3) return; // plasma storm only minions with 3 or less attack
+            if (unit.getIsSameTeamAs(myGeneral) && CARD_INTENT[cardId].indexOf('enemy') == -1) {
+              myDamageBounty += ScoreForUnitDamage(unit, damageAmount);
+            } else if (!unit.getIsSameTeamAs(myGeneral)) {
+              enemyDamageBounty += ScoreForUnitDamage(unit, damageAmount);
+              if (damageAmount >= unit.getHP()) {
+                enemiesKilled++;
+              }
+            }
+          });
+          // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] enemydamagebounty = " + enemyDamageBounty + ". myDamageBounty = " + myDamageBounty);
+          if (enemyDamageBounty < myDamageBounty || enemiesKilled == 0) {
+            // clear targets (don't cast) as burn spell doesn't meet criteria
+            // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] criteria not met. clearing targets.");
+            validTargetPositions = [];
+          }
+          break;
+        case 'burn_mass_column':
+          // warbird - DEPRECATED. old design, no longer used
+          // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] burn_mass_column warbird entered.");
+          validTargetPositions = [];
+          var { damageAmount } = card;
+          var enemiesKilled = 0;
+          var score = 0;
+          var myGeneral = this.getMyGeneral();
+          var columnCount = this.getGameSession().getBoard().getColumnCount();
+          var bestColumn = { columnNumber: null, score: 1, enemiesKilled: 0 };
+          // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] looping through " + columnCount + " columns.");
+          for (let i = 0; i < columnCount; i++) {
+            // loop through each column
+            enemiesKilled = 0;
+            score = 0;
+            const unitsInColumn = this.getGameSession()
+              .getBoard()
+              .getEntitiesInColumn(i, SDK.CardType.Unit);
+            // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] " + unitsInColumn.length + " units in column " + i);
+            // for each column, loop through each affected unit
+            if (unitsInColumn.length > 0) {
+              _.each(unitsInColumn, (unit) => {
+                if (this._isTargetImmuneToSource(unit, card)) return; // don't count immune units
+                // if (CARD_INTENT[cardId].indexOf("minion") > -1 && unit.getIsGeneral()) return; //don't count generals if spell effects only minions (i.e. burn_mass_minion)
+                if (unit.getIsSameTeamAs(myGeneral) && CARD_INTENT[cardId].indexOf('enemy') == -1) {
+                  score -= ScoreForUnitDamage(unit, damageAmount);
+                } else if (!unit.getIsSameTeamAs(myGeneral)) {
+                  score += ScoreForUnitDamage(unit, damageAmount);
+                  if (damageAmount >= unit.getHP()) {
+                    enemiesKilled++;
+                  }
+                }
+                // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] score for column " + i + " = " + score + ". enemiesKilled= " + enemiesKilled);
+                if (score > bestColumn.score && enemiesKilled > bestColumn.enemiesKilled) {
+                  // check if best column
+                  // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] +++++++++++ best column is now column " + i);
+                  bestColumn.score = score;
+                  bestColumn.enemiesKilled = enemiesKilled;
+                  bestColumn.columnNumber = i;
+                }
+              });
+            }
+          }
+
+          if (bestColumn.columnNumber != null) {
+            // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] ==========best column is column " + bestColumn.columnNumber);
+            validTargetPositions[0] = { x: bestColumn.columnNumber, y: 1 };
+          }
+          break;
+        case 'move':
+          if (validTargetPositions.length > 0) {
+            var bestTargetPosition =
+              this._highestOrLowestPositionObjectiveAndScoreForUnitFromPositions(
+                card,
+                validTargetPositions,
+              ).targetPosition;
+            if (bestTargetPosition != null) {
+              validTargetPositions[0] = bestTargetPosition;
+            } else {
+              validTargetPositions = [];
+            }
+          }
+          break;
+        case 'move_enemy_minion':
           // only move units with ATK of at least 4 or provokers or ranged units
-          validTargetPositions = _.reject(validTargetPositions_copy, (validPos) => {
+          validTargetPositions = _.reject(validTargetPositions, (validPos) => {
             const enemy = this.getGameSession().getBoard().getUnitAtPosition(validPos);
-            return (enemy.getATK() < THRESHOLD.HIGH_ATK && !enemy.hasModifierClass(SDK.ModifierProvoke) && !enemy.hasModifierClass(SDK.ModifierRanged));
+            return (
+              enemy.getATK() < THRESHOLD.HIGH_ATK &&
+              !enemy.hasModifierClass(SDK.ModifierProvoke) &&
+              !enemy.hasModifierClass(SDK.ModifierRanged)
+            );
           });
           // if a high value move target exists, choose the one with the highest distance bounty
           if (validTargetPositions.length > 0) {
-            validTargetPositions[0] = this._highestPositionObjectiveAndScoreFromPositions(card, validTargetPositions).targetPosition;
-          }
-        }
-        break;
-      case 'removal':
-      case 'removal_buff_minion':
-        if (cardId == SDK.Cards.Spell.Martyrdom && this._hasLethalOnEnemyGeneral) // dont cast martyrdom when enemy general within lethal
-        { return []; } // NOTE: the expected response is an ARRAY so don't return NULL
-        var myGeneral = this.getMyGeneral();
-        // reject friendly units
-        validTargetPositions = _.reject(validTargetPositions, (validPos) => this.getGameSession().getBoard().getUnitAtPosition(validPos).getIsSameTeamAs(myGeneral));
-        validTargetPositions = _.sortBy(validTargetPositions, (validPos) => ScoreForUnit(this.getGameSession().getBoard().getUnitAtPosition(validPos))).reverse();
-        // drawback considerations
-        if (cardId == SDK.Cards.Spell.AspectOfTheWolf) // aspect of the fox replace with 3/3
-        { validTargetPositions = _.reject(validTargetPositions, (validPos) => ScoreForUnit(this.getGameSession().getBoard().getUnitAtPosition(validPos)) < 14); } else if (cardId == SDK.Cards.Spell.Martyrdom) // heal enemy general by unit's hp
-        { validTargetPositions = _.reject(validTargetPositions, (validPos) => ScoreForUnit(this.getGameSession().getBoard().getUnitAtPosition(validPos)) < 12); } else validTargetPositions = _.reject(validTargetPositions, (validPos) => (ScoreForUnit(this.getGameSession().getBoard().getUnitAtPosition(validPos)) < 10));
-        break;
-
-      case 'shadownova':
-        // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] shadownova 1");
-        var myGeneral = this.getMyGeneral();
-        var enemies = this.getGameSession().getBoard().getEnemyEntitiesForEntity(myGeneral, SDK.CardType.Unit);
-        var shadownovaDamage = 1;
-        var shadowTiles = _.filter(this.getGameSession().getBoard().getTiles(true), (tile) => tile.hasModifierClass(SDK.ModifierStackingShadows));
-        // target enemies not already standing on shadow creep
-        // this means we never intentionally use shadownova to amplify damage to enemies already standing on shadow creep...
-        enemies = _.reject(enemies, (enemy) => _.intersection([enemy.getPosition()], shadowTiles) > 0);
-        // reject immune units
-        enemies = _.reject(enemies, (enemy) => this._isTargetImmuneToSource(enemy, card));
-        // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] shadownova 2 enemies.length = " + enemies.length + ". shadownovadamage = " + shadownovaDamage);
-        if (_.some(enemies, (enemy) => enemy.getHP() <= shadownovaDamage)) {
-          // if we can kill something with shadownova, pick highest bounty target
-          // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] shadownova 3 enemy can be killed");
-          const enemiesWithinLethalRange = _.filter(enemies, (enemy) => enemy.getHP() <= shadownovaDamage);
-          const primaryTarget = _.max(enemiesWithinLethalRange, (enemy) => ScoreForUnitDamage(enemy, shadownovaDamage));
-          enemies = _.without(enemies, primaryTarget); // remove primary target from remaining enemies
-          // get enemies adjacent to primary target and select one with highest damage bounty
-          // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] shadownova 3.5 primary target = " + primaryTarget.getLogName());
-          let secondaryTargetsArray = this.getGameSession().getBoard().getFriendlyEntitiesAroundEntity(primaryTarget, SDK.CardType.Unit);
-          // reject enemies already standing on shadow creep...?
-          secondaryTargetsArray = _.reject(secondaryTargetsArray, (enemy) => _.intersection([enemy.getPosition()], shadowTiles) > 0);
-          if (secondaryTargetsArray.length == 0 && ScoreForUnitDamage(primaryTarget, shadownovaDamage) < 99) {
-            // overrides secondry target requirement when general lethal possible
-            //* **TODO - SELECT ALTERNATIVE PRIMARY TARGET
-            // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] shadownova - no SECONDARY lethal targets. not casting.");
-            validTargetPositions = []; // do not cast if we can't affect at least 2 enemies or we're not killing general
-          } else {
-            let secondaryTarget;
-            if (ScoreForUnitDamage(primaryTarget, shadownovaDamage) >= 99) {
-              // overrides secondary target requirement when general lethal possible
-              secondaryTarget = primaryTarget;
+            var bestTargetPosition =
+              this._highestOrLowestPositionObjectiveAndScoreForUnitFromPositions(
+                card,
+                validTargetPositions,
+              ).targetPosition;
+            if (bestTargetPosition != null) {
+              validTargetPositions[0] = bestTargetPosition;
             } else {
-              secondaryTarget = _.max(secondaryTargetsArray, (secondaryTarget) => ScoreForUnitDamage(secondaryTarget, shadownovaDamage));
+              validTargetPositions = [];
             }
-            // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] shadownova 4 enemy can be killed, secondary target affected. primary = " + primaryTarget.getLogName() + ". secondary = " + secondaryTarget.getLogName());
-
-            // allow 3rd "auxiliary" target
-            // get enemies adjacent to primary AND secondary targets and select one with highest damage bounty
-            // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] shadownova 4.1 seeking 3rd target");
-            let unitsAroundPrimaryTarget = this.getGameSession().getBoard().getFriendlyEntitiesAroundEntity(primaryTarget, SDK.CardType.Unit);
-            // exclude secondary
-            unitsAroundPrimaryTarget = _.reject(unitsAroundPrimaryTarget, (target) => target == secondaryTarget);
-            let unitsAroundSecondaryTarget = this.getGameSession().getBoard().getFriendlyEntitiesAroundEntity(secondaryTarget, SDK.CardType.Unit);
-            // exclude primary
-            unitsAroundSecondaryTarget = _.reject(unitsAroundSecondaryTarget, (target) => target == primaryTarget);
-            // find new units who are adjacent to both our primary and secondary targets by intersecting the adjacent arrays
-            let auxiliaryTargetsArray = _.intersection(unitsAroundPrimaryTarget, unitsAroundSecondaryTarget);
-            // reject enemies already standing on shadow creep...?
-            auxiliaryTargetsArray = _.reject(auxiliaryTargetsArray, (enemy) => _.intersection([enemy.getPosition()], shadowTiles) > 0);
-            if (auxiliaryTargetsArray.length > 0) {
-              var auxiliaryTarget = _.max(auxiliaryTargetsArray, (auxTarget) => ScoreForUnitDamage(auxTarget, shadownovaDamage));
-              // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] shadownova 4.2 3rd target acquired: " + auxiliaryTarget.name);
-            } else {
-              auxiliaryTarget = primaryTarget;
-            }
-
-            // position to affect all targets - if no auxiliaryTarget, auxiliaryTarget will be same as primary target and will simply be redundant targeting
-            const affectPattern = card.getAffectPattern();
-            const positionsToMatch = [primaryTarget.getPosition()];
-            if (primaryTarget !== secondaryTarget) { positionsToMatch.push(secondaryTarget.getPosition()); }
-            if (primaryTarget !== auxiliaryTarget) { positionsToMatch.push(auxiliaryTarget.getPosition()); }
-            const positionThatAffectsAllTargets = _.find(validTargetPositions, (pos) => {
-              // find position that contains all targets
-              const bx = pos.x;
-              const by = pos.y;
-              let numMatches = 0;
-              for (let a = 0, al = affectPattern.length; a < al; a++) {
-                const offset = affectPattern[a];
-                if (UtilsPosition.getIsPositionInPositions(positionsToMatch, { x: bx + offset.x, y: by + offset.y })) {
-                  numMatches++;
-                  if (numMatches === positionsToMatch.length) {
-                    break;
-                  }
-                }
-              }
-
-              // position must also ensure that area of effect remains on board
-              return numMatches === positionsToMatch.length && card.isAreaOfEffectOnBoard(pos);
-            });
-              // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] done finding target pos.");
-            validTargetPositions = [positionThatAffectsAllTargets];
-            // flag targets as marked for death - do not allow targets or attacks against them
-            // TODO: any other incidental deaths?
-            this._markedForDeath.push(primaryTarget);
-            this._markedForDeath.push(secondaryTarget);
-            this._markedForDeath.push(auxiliaryTarget);
-            // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] shadownova 5 position to affect both targets = " + positionThatAffectsAllTargets.x + ", " + positionThatAffectsAllTargets.y);
-            // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] shadownova 6 primary = " + this._markedForDeath[0].getLogName() + " secondary = " + this._markedForDeath[1].getLogName() + " auxiliary = " + this._markedForDeath[2].getLogName());
-            /// /DEBUGGING START
-            /// /disable cast
-            // validTargetPositions = [];
-            /// /DEBUGGING END
           }
-        } else { // no lethal targets - don't cast.
-          // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] shadownova - no lethal targets. not casting.");
+          break;
+        case 'summon_move_enemy_minion':
+          // GOAL: move high atk enemies away or move ranged units close or provokers away
+          // find all enemies adjacent to potential spawn locations
+          var potentialEnemiesToMove = [];
+          var unitsAroundPos = [];
+          var enemiesAroundPos = [];
+          var original_validTargetPositions = validTargetPositions;
           validTargetPositions = [];
-        }
-        break;
-      case 'burn_mass_minion':
-      case 'burn_mass_enemy_minion':
-      case 'burn_mass':
-      case 'removal_mass_minion':
-      case 'burn_mass_enemy':
-        // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] burn mass detected.");
-        var damageAmount = 0;
-        if (CARD_INTENT[cardId].indexOf('burn') > -1) damageAmount = card.damageAmount;
-        else damageAmount = 999;
-        var enemyDamageBounty = 0;
-        var myDamageBounty = 0;
-        var enemiesKilled = 0;
-        // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] cardid = " + cardId);
-        if (cardId == SDK.Cards.Spell.Warbird) {
-          // threshold for casting - 23.3 is base dmg to general, so at 3+ cards in hand, requires dmg to at least something else to cast, otherwise we hold. this threshold declines as number of cards in hand declines because saving cards has value
-          myDamageBounty += 20 + (this.getMyPlayer().getDeck().getNumCardsInHand() * 1.5);
-          enemiesKilled++; // allows warbird to be cast without lethal
-          // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] warbird detected. mybounty = " + myDamageBounty);
-        }
-        var myGeneral = this.getMyGeneral();
-        _.each(this.getGameSession().getBoard().getUnits(), (unit) => {
-          if (this._isTargetImmuneToSource(unit, card)) return; // don't count immune units
-          if (CARD_INTENT[cardId].indexOf('minion') > -1 && unit.getIsGeneral()) return; // don't count generals if spell effects only minions (i.e. burn_mass_minion)
-          if (cardId == SDK.Cards.Spell.Avalanche && this._isOnMySideOfBoard(card, unit.getPosition()) == false) return; // avalanche only deal dmg to units on starting side of field
-          if (cardId == SDK.Cards.Spell.Warbird && unit.getPosition().x !== this.getOpponentGeneral().getPosition().x) return; // warbird only deals damage in column of
-          if (cardId == SDK.Cards.Spell.PlasmaStorm && unit.getATK() > 3) return; // plasma storm only minions with 3 or less attack
-          if (unit.getIsSameTeamAs(myGeneral) && CARD_INTENT[cardId].indexOf('enemy') == -1) {
-            myDamageBounty += ScoreForUnitDamage(unit, damageAmount);
-          } else if (!unit.getIsSameTeamAs(myGeneral)) {
-            enemyDamageBounty += ScoreForUnitDamage(unit, damageAmount);
-            if (damageAmount >= unit.getHP()) {
-              enemiesKilled++;
+          _.each(original_validTargetPositions, (pos) => {
+            unitsAroundPos = this.getGameSession()
+              .getBoard()
+              .getCardsAroundPosition(pos, SDK.CardType.Unit);
+            if (unitsAroundPos.length > 0) {
+              const myGeneral = this.getMyGeneral();
+              enemiesAroundPos = _.reject(unitsAroundPos, (unit) =>
+                unit.getIsSameTeamAs(myGeneral),
+              );
+              potentialEnemiesToMove = _.union(potentialEnemiesToMove, enemiesAroundPos); // returns array of unique items in one or more arrays, no duplicates
             }
-          }
-        });
-        // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] enemydamagebounty = " + enemyDamageBounty + ". myDamageBounty = " + myDamageBounty);
-        if (enemyDamageBounty < myDamageBounty || enemiesKilled == 0) {
-          // clear targets (don't cast) as burn spell doesn't meet criteria
-          // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] criteria not met. clearing targets.");
-          validTargetPositions = [];
-        }
-        break;
-      case 'burn_mass_column':
-        // warbird - DEPRECATED. old design, no longer used
-        // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] burn_mass_column warbird entered.");
-        validTargetPositions = [];
-        var { damageAmount } = card;
-        var enemiesKilled = 0;
-        var score = 0;
-        var myGeneral = this.getMyGeneral();
-        var columnCount = this.getGameSession().getBoard().getColumnCount();
-        var bestColumn = { columnNumber: null, score: 1, enemiesKilled: 0 };
-        // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] looping through " + columnCount + " columns.");
-        for (let i = 0; i < columnCount; i++) {
-          // loop through each column
-          enemiesKilled = 0;
-          score = 0;
-          const unitsInColumn = this.getGameSession().getBoard().getEntitiesInColumn(i, SDK.CardType.Unit);
-          // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] " + unitsInColumn.length + " units in column " + i);
-          // for each column, loop through each affected unit
-          if (unitsInColumn.length > 0) {
-            _.each(unitsInColumn, (unit) => {
-              if (this._isTargetImmuneToSource(unit, card)) return; // don't count immune units
-              // if (CARD_INTENT[cardId].indexOf("minion") > -1 && unit.getIsGeneral()) return; //don't count generals if spell effects only minions (i.e. burn_mass_minion)
-              if (unit.getIsSameTeamAs(myGeneral) && CARD_INTENT[cardId].indexOf('enemy') == -1) {
-                score -= ScoreForUnitDamage(unit, damageAmount);
-              } else if (!unit.getIsSameTeamAs(myGeneral)) {
-                score += ScoreForUnitDamage(unit, damageAmount);
-                if (damageAmount >= unit.getHP()) {
-                  enemiesKilled++;
-                }
-              }
-              // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] score for column " + i + " = " + score + ". enemiesKilled= " + enemiesKilled);
-              if (score > bestColumn.score && enemiesKilled > bestColumn.enemiesKilled) {
-                // check if best column
-                // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] +++++++++++ best column is now column " + i);
-                bestColumn.score = score;
-                bestColumn.enemiesKilled = enemiesKilled;
-                bestColumn.columnNumber = i;
-              }
-            });
-          }
-        }
-
-        if (bestColumn.columnNumber != null) {
-          // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] ==========best column is column " + bestColumn.columnNumber);
-          validTargetPositions[0] = { x: bestColumn.columnNumber, y: 1 };
-        }
-        break;
-      case 'move':
-        if (validTargetPositions.length > 0) {
-          var bestTargetPosition = this._highestOrLowestPositionObjectiveAndScoreForUnitFromPositions(card, validTargetPositions).targetPosition;
-          if (bestTargetPosition != null) {
-            validTargetPositions[0] = bestTargetPosition;
-          } else {
-            validTargetPositions = [];
-          }
-        }
-        break;
-      case 'move_enemy_minion':
-        // only move units with ATK of at least 4 or provokers or ranged units
-        validTargetPositions = _.reject(validTargetPositions, (validPos) => {
-          const enemy = this.getGameSession().getBoard().getUnitAtPosition(validPos);
-          return (enemy.getATK() < THRESHOLD.HIGH_ATK && !enemy.hasModifierClass(SDK.ModifierProvoke) && !enemy.hasModifierClass(SDK.ModifierRanged));
-        });
-        // if a high value move target exists, choose the one with the highest distance bounty
-        if (validTargetPositions.length > 0) {
-          var bestTargetPosition = this._highestOrLowestPositionObjectiveAndScoreForUnitFromPositions(card, validTargetPositions).targetPosition;
-          if (bestTargetPosition != null) {
-            validTargetPositions[0] = bestTargetPosition;
-          } else {
-            validTargetPositions = [];
-          }
-        }
-        break;
-      case 'summon_move_enemy_minion':
-        // GOAL: move high atk enemies away or move ranged units close or provokers away
-        // find all enemies adjacent to potential spawn locations
-        var potentialEnemiesToMove = [];
-        var unitsAroundPos = [];
-        var enemiesAroundPos = [];
-        var original_validTargetPositions = validTargetPositions;
-        validTargetPositions = [];
-        _.each(original_validTargetPositions, (pos) => {
-          unitsAroundPos = this.getGameSession().getBoard().getCardsAroundPosition(pos, SDK.CardType.Unit);
-          if (unitsAroundPos.length > 0) {
-            const myGeneral = this.getMyGeneral();
-            enemiesAroundPos = _.reject(unitsAroundPos, (unit) => unit.getIsSameTeamAs(myGeneral));
-            potentialEnemiesToMove = _.union(potentialEnemiesToMove, enemiesAroundPos); // returns array of unique items in one or more arrays, no duplicates
-          }
-        });
-        // can't move generals
-        potentialEnemiesToMove = _.reject(potentialEnemiesToMove, (enemy) => enemy.getIsGeneral());
-        // reject immune units
-        potentialEnemiesToMove = _.reject(potentialEnemiesToMove, (enemy) => this._isTargetImmuneToSource(enemy, card));
-        if (potentialEnemiesToMove.length > 0) {
-          // then reject if atk < THRESHOLD.HIGH_ATK && not provoke (this means atk > 4 and provokers pass)
-          potentialEnemiesToMove = _.reject(potentialEnemiesToMove, (enemy) => (enemy.getATK() < THRESHOLD.HIGH_ATK && !enemy.hasModifierClass(SDK.ModifierProvoke)));
+          });
+          // can't move generals
+          potentialEnemiesToMove = _.reject(potentialEnemiesToMove, (enemy) =>
+            enemy.getIsGeneral(),
+          );
+          // reject immune units
+          potentialEnemiesToMove = _.reject(potentialEnemiesToMove, (enemy) =>
+            this._isTargetImmuneToSource(enemy, card),
+          );
           if (potentialEnemiesToMove.length > 0) {
-            // sort by bounty
-            potentialEnemiesToMove = _.sortBy(potentialEnemiesToMove, (enemy) => ScoreForUnit(enemy)).reverse();
-            // take top enemy on list
-            const targetEnemyToMove = potentialEnemiesToMove[0];
-            // find available spawn location adjacent to it
-            const validTargetPositionsAdjacentToTargetEnemyToMove = _.filter(original_validTargetPositions, (pos) => arePositionsEqualOrAdjacent(pos, targetEnemyToMove.position));
-            // if more than one available, sort it by bounty
-            if (validTargetPositionsAdjacentToTargetEnemyToMove.length > 0) {
-              var bestTargetPosition = this._highestOrLowestPositionObjectiveAndScoreForUnitFromPositions(card, validTargetPositionsAdjacentToTargetEnemyToMove).targetPosition;
-              if (bestTargetPosition != null) {
-                validTargetPositionsAdjacentToTargetEnemyToMove[0] = bestTargetPosition;
-                // we now have spawn location, followup target (the enemy to move), and a way to quickly get the target destination
-                // add followup_followTarget as optional paramete to _findPlayCardActionsForCard() for this as it's a triple-target spell.
-                // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] _findFilteredTargetPositionsForCardByOldIntent() => about to play repulsor beast to " + validTargetPositionsAdjacentToTargetEnemyToMove[0].x + ", " + validTargetPositionsAdjacentToTargetEnemyToMove[0].y + " and then target this enemy to teleport away: " + targetEnemyToMove.getLogName() + " at " + targetEnemyToMove.position.x + ", " + targetEnemyToMove.position.y);
-                // since we already calculated it, we can save some time and save it here
-                this._followupTargets.unshift(targetEnemyToMove.position); // The unshift() method adds a new element to an array (at the beginning), and "unshifts" older elements:
-                validTargetPositions[0] = validTargetPositionsAdjacentToTargetEnemyToMove[0];
-              } else {
-                validTargetPositions = [];
+            // then reject if atk < THRESHOLD.HIGH_ATK && not provoke (this means atk > 4 and provokers pass)
+            potentialEnemiesToMove = _.reject(
+              potentialEnemiesToMove,
+              (enemy) =>
+                enemy.getATK() < THRESHOLD.HIGH_ATK && !enemy.hasModifierClass(SDK.ModifierProvoke),
+            );
+            if (potentialEnemiesToMove.length > 0) {
+              // sort by bounty
+              potentialEnemiesToMove = _.sortBy(potentialEnemiesToMove, (enemy) =>
+                ScoreForUnit(enemy),
+              ).reverse();
+              // take top enemy on list
+              const targetEnemyToMove = potentialEnemiesToMove[0];
+              // find available spawn location adjacent to it
+              const validTargetPositionsAdjacentToTargetEnemyToMove = _.filter(
+                original_validTargetPositions,
+                (pos) => arePositionsEqualOrAdjacent(pos, targetEnemyToMove.position),
+              );
+              // if more than one available, sort it by bounty
+              if (validTargetPositionsAdjacentToTargetEnemyToMove.length > 0) {
+                var bestTargetPosition =
+                  this._highestOrLowestPositionObjectiveAndScoreForUnitFromPositions(
+                    card,
+                    validTargetPositionsAdjacentToTargetEnemyToMove,
+                  ).targetPosition;
+                if (bestTargetPosition != null) {
+                  validTargetPositionsAdjacentToTargetEnemyToMove[0] = bestTargetPosition;
+                  // we now have spawn location, followup target (the enemy to move), and a way to quickly get the target destination
+                  // add followup_followTarget as optional paramete to _findPlayCardActionsForCard() for this as it's a triple-target spell.
+                  // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] _findFilteredTargetPositionsForCardByOldIntent() => about to play repulsor beast to " + validTargetPositionsAdjacentToTargetEnemyToMove[0].x + ", " + validTargetPositionsAdjacentToTargetEnemyToMove[0].y + " and then target this enemy to teleport away: " + targetEnemyToMove.getLogName() + " at " + targetEnemyToMove.position.x + ", " + targetEnemyToMove.position.y);
+                  // since we already calculated it, we can save some time and save it here
+                  this._followupTargets.unshift(targetEnemyToMove.position); // The unshift() method adds a new element to an array (at the beginning), and "unshifts" older elements:
+                  validTargetPositions[0] = validTargetPositionsAdjacentToTargetEnemyToMove[0];
+                } else {
+                  validTargetPositions = [];
+                }
               }
             }
           }
-        }
-        break;
-      case 'summon':
-      case 'summon_heal':
-      case 'summon_burn':
-      case 'summon_grow':
-      case 'summon_watcher':
-      case 'summon_ranged_bbs':
-        // just find best spawn location for unit
-        if (validTargetPositions.length > 0) {
-          var bestTargetPosition = this._highestOrLowestPositionObjectiveAndScoreForUnitFromPositions(card, validTargetPositions).targetPosition;
-          if (bestTargetPosition != null) {
-            validTargetPositions[0] = bestTargetPosition;
+          break;
+        case 'summon':
+        case 'summon_heal':
+        case 'summon_burn':
+        case 'summon_grow':
+        case 'summon_watcher':
+        case 'summon_ranged_bbs':
+          // just find best spawn location for unit
+          if (validTargetPositions.length > 0) {
+            var bestTargetPosition =
+              this._highestOrLowestPositionObjectiveAndScoreForUnitFromPositions(
+                card,
+                validTargetPositions,
+              ).targetPosition;
+            if (bestTargetPosition != null) {
+              validTargetPositions[0] = bestTargetPosition;
+            } else {
+              validTargetPositions = [];
+            }
+          }
+          break;
+        case 'refresh':
+          validTargetPositions = _.filter(
+            validTargetPositions,
+            (validPos) =>
+              this.getGameSession().getBoard().getUnitAtPosition(validPos).attacksMade > 0,
+          );
+          break;
+        case 'teleport_destination':
+          // determine source pos
+          // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] _findFilteredTargetPositionsForCardByOldIntent() => teleport destination being selected");
+          var followupSourcePos = card.getFollowupSourcePosition();
+          // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] _findFilteredTargetPositionsForCardByOldIntent() => teleport destination. source pos = " + followupSourcePos.x + ", " + followupSourcePos.y);
+          var cardBeingTeleported = this.getGameSession()
+            .getBoard()
+            .getUnitAtPosition(followupSourcePos);
+          // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] _findFilteredTargetPositionsForCardByOldIntent() => teleport destination. card @ source pos = " + cardBeingTeleported.getLogName());
+          if (validTargetPositions.length > 0) {
+            var bestTargetPosition =
+              this._highestOrLowestPositionObjectiveAndScoreForUnitFromPositions(
+                cardBeingTeleported,
+                validTargetPositions,
+              ).targetPosition;
+            if (bestTargetPosition != null) {
+              validTargetPositions[0] = bestTargetPosition;
+            } else {
+              validTargetPositions = [];
+            }
+          }
+          // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] _findFilteredTargetPositionsForCardByOldIntent() => teleport destination = " + validTargetPositions[0].x + ", " + validTargetPositions[0].y);
+          break;
+        case 'heal_bbs':
+        case 'heal_followup':
+          // find most damaged friendly unit
+          var myGeneral = this.getMyGeneral();
+          var board = this.getGameSession().getBoard();
+          var mostDamagedUnit;
+          _.each(validTargetPositions, (pos) => {
+            const unit = board.getUnitAtPosition(pos);
+            if (
+              unit != null &&
+              unit.getIsSameTeamAs(myGeneral) &&
+              (mostDamagedUnit == null || unit.getDamage() > mostDamagedUnit.getDamage())
+            ) {
+              mostDamagedUnit = unit;
+            }
+          });
+          if (
+            CARD_INTENT[cardId].indexOf('followup') == -1 &&
+            (mostDamagedUnit == null || mostDamagedUnit.getDamage() < (card.healModifier || 0) - 1)
+          ) {
+            // if it's not a followup, save the heal until we have a target that will be healed for at least most of the heal value
+            validTargetPositions = [];
           } else {
+            validTargetPositions = [mostDamagedUnit.getPosition()];
+          }
+          break;
+        case 'buff':
+        case 'buff_endOfTurn':
+        case 'buff_mass_minion_endOfTurn':
+        case 'debuff':
+        case 'debuff_minion':
+        case 'debuff_mass_minion':
+        case 'summon_buff_minion':
+        case 'buff_general_endOfTurn':
+          validTargetPositions = []; // don't cast buffs/debuffs here - save for attack()
+          break;
+        case 'buff_minion':
+          // normally, don't cast buffs/debuffs here - save for attacks.
+          if (!card.isSignatureCard() || !this._getCanUseSignatureCard()) {
             validTargetPositions = [];
           }
-        }
-        break;
-      case 'refresh':
-        validTargetPositions = _.filter(validTargetPositions, (validPos) => this.getGameSession().getBoard().getUnitAtPosition(validPos).attacksMade > 0);
-        break;
-      case 'teleport_destination':
-        // determine source pos
-        // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] _findFilteredTargetPositionsForCardByOldIntent() => teleport destination being selected");
-        var followupSourcePos = card.getFollowupSourcePosition();
-        // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] _findFilteredTargetPositionsForCardByOldIntent() => teleport destination. source pos = " + followupSourcePos.x + ", " + followupSourcePos.y);
-        var cardBeingTeleported = this.getGameSession().getBoard().getUnitAtPosition(followupSourcePos);
-        // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] _findFilteredTargetPositionsForCardByOldIntent() => teleport destination. card @ source pos = " + cardBeingTeleported.getLogName());
-        if (validTargetPositions.length > 0) {
-          var bestTargetPosition = this._highestOrLowestPositionObjectiveAndScoreForUnitFromPositions(cardBeingTeleported, validTargetPositions).targetPosition;
-          if (bestTargetPosition != null) {
-            validTargetPositions[0] = bestTargetPosition;
-          } else {
-            validTargetPositions = [];
-          }
-        }
-        // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] _findFilteredTargetPositionsForCardByOldIntent() => teleport destination = " + validTargetPositions[0].x + ", " + validTargetPositions[0].y);
-        break;
-      case 'heal_bbs':
-      case 'heal_followup':
-        // find most damaged friendly unit
-        var myGeneral = this.getMyGeneral();
-        var board = this.getGameSession().getBoard();
-        var mostDamagedUnit;
-        _.each(validTargetPositions, (pos) => {
-          const unit = board.getUnitAtPosition(pos);
-          if (unit != null && unit.getIsSameTeamAs(myGeneral) && (mostDamagedUnit == null || unit.getDamage() > mostDamagedUnit.getDamage())) {
-            mostDamagedUnit = unit;
-          }
-        });
-        if (CARD_INTENT[cardId].indexOf('followup') == -1
-            && (mostDamagedUnit == null || (mostDamagedUnit.getDamage() < ((card.healModifier || 0) - 1)))) {
-          // if it's not a followup, save the heal until we have a target that will be healed for at least most of the heal value
-          validTargetPositions = [];
-        } else {
-          validTargetPositions = [mostDamagedUnit.getPosition()];
-        }
-        break;
-      case 'buff':
-      case 'buff_endOfTurn':
-      case 'buff_mass_minion_endOfTurn':
-      case 'debuff':
-      case 'debuff_minion':
-      case 'debuff_mass_minion':
-      case 'summon_buff_minion':
-      case 'buff_general_endOfTurn':
-        validTargetPositions = []; // don't cast buffs/debuffs here - save for attack()
-        break;
-      case 'buff_minion':
-        // normally, don't cast buffs/debuffs here - save for attacks.
-        if (!card.isSignatureCard() || !this._getCanUseSignatureCard()) {
-          validTargetPositions = [];
-        }
 
-        break;
-      case 'buff_mass':
-      case 'buff_mass_minion':
-        var myGeneral = this.getMyGeneral();
-        if (this.getGameSession().getBoard().getFriendlyEntitiesForEntity(myGeneral, SDK.CardType.Unit).length < 3) {
-          validTargetPositions = [];
-        }
-        break;
-      case 'buff_general':
-        // normally, don't cast buffs/debuffs here - save for attacks
-        if (!card.isSignatureCard() || !this._getCanUseSignatureCard()) {
-          validTargetPositions = [];
-        }
-        break;
+          break;
+        case 'buff_mass':
+        case 'buff_mass_minion':
+          var myGeneral = this.getMyGeneral();
+          if (
+            this.getGameSession()
+              .getBoard()
+              .getFriendlyEntitiesForEntity(myGeneral, SDK.CardType.Unit).length < 3
+          ) {
+            validTargetPositions = [];
+          }
+          break;
+        case 'buff_general':
+          // normally, don't cast buffs/debuffs here - save for attacks
+          if (!card.isSignatureCard() || !this._getCanUseSignatureCard()) {
+            validTargetPositions = [];
+          }
+          break;
       } // end switch
     } // end spell intent definition check
     else if (card.getType() == SDK.CardType.Unit) {
       // spawning a unit
       if (validTargetPositions.length > 0) {
-        var bestTargetPosition = this._highestOrLowestPositionObjectiveAndScoreForUnitFromPositions(card, validTargetPositions).targetPosition;
+        var bestTargetPosition = this._highestOrLowestPositionObjectiveAndScoreForUnitFromPositions(
+          card,
+          validTargetPositions,
+        ).targetPosition;
         if (bestTargetPosition != null) {
           validTargetPositions[0] = bestTargetPosition;
         } else {
@@ -1682,7 +2128,10 @@ StarterAI.prototype = {
 
       // check for playable attack buffs first
       const cardsInHand = this._getCardsInHandAndSignatureSpell();
-      let playableBuffs = _.filter(cardsInHand, (card) => this._getCanPlayCard(card) && this._getCardIsAtkBuffFor(card, unit));
+      let playableBuffs = _.filter(
+        cardsInHand,
+        (card) => this._getCanPlayCard(card) && this._getCardIsAtkBuffFor(card, unit),
+      );
 
       // if we have playable buffs, check for any enemy targets with more hp than unit atk
       if (playableBuffs.length > 0 && _.some(targets, (enemy) => enemy.getHP() > baseAtk)) {
@@ -1692,8 +2141,18 @@ StarterAI.prototype = {
         if (playableBuffs.length > 0 && unit.hasModifierClass(SDK.ModifierEphemeral)) {
           playableBuffs = _.filter(playableBuffs, (buffCard) => {
             const buffCardId = buffCard.getBaseCardId();
-            if (CardIntent.getHasIntentTypeWithPartialPhaseType(buffCardId, CardIntentType.ModifyATK, CardPhaseType.EndTurn, true)) return true;
-            return CARD_INTENT[buffCardId] != null && CARD_INTENT[buffCardId].indexOf('endOfTurn') !== -1;
+            if (
+              CardIntent.getHasIntentTypeWithPartialPhaseType(
+                buffCardId,
+                CardIntentType.ModifyATK,
+                CardPhaseType.EndTurn,
+                true,
+              )
+            )
+              return true;
+            return (
+              CARD_INTENT[buffCardId] != null && CARD_INTENT[buffCardId].indexOf('endOfTurn') !== -1
+            );
           });
         }
 
@@ -1704,27 +2163,37 @@ StarterAI.prototype = {
           // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] _findAtkBuffAndBuffedAtkValue() => check playable buff for lethal " + buffCard.getLogName());
 
           // find value of atk buff
-          const hasIntentTypeModifyAtk = CardIntent.getHasIntentType(buffCardId, CardIntentType.ModifyATK, true);
+          const hasIntentTypeModifyAtk = CardIntent.getHasIntentType(
+            buffCardId,
+            CardIntentType.ModifyATK,
+            true,
+          );
           if (hasIntentTypeModifyAtk) {
-            _.each(CardIntent.getIntentsByIntentType(buffCardId, CardIntentType.ModifyATK, true), (intentObj) => {
-              if (intentObj.amountIsRebase) {
-                atkBuff = intentObj.amount - baseAtk;
-              } else {
-                atkBuff += intentObj.amount;
-              }
-            });
-          } else if (buffCard.constructor.name == 'SpellBuffAttributeByOtherAttribute' && buffCard.attributeTarget == 'atk') {
+            _.each(
+              CardIntent.getIntentsByIntentType(buffCardId, CardIntentType.ModifyATK, true),
+              (intentObj) => {
+                if (intentObj.amountIsRebase) {
+                  atkBuff = intentObj.amount - baseAtk;
+                } else {
+                  atkBuff += intentObj.amount;
+                }
+              },
+            );
+          } else if (
+            buffCard.constructor.name == 'SpellBuffAttributeByOtherAttribute' &&
+            buffCard.attributeTarget == 'atk'
+          ) {
             // special case: swap atk and hp
             switch (buffCard.attributeSource) {
-            case 'hp':
-              atkBuff = unit.getHP();
-              break;
-            case 'maxHP':
-              atkBuff = unit.getMaxHP();
-              break;
-            case 'atk':
-              atkBuff = baseAtk;
-              break;
+              case 'hp':
+                atkBuff = unit.getHP();
+                break;
+              case 'maxHP':
+                atkBuff = unit.getMaxHP();
+                break;
+              case 'atk':
+                atkBuff = baseAtk;
+                break;
             }
           } else if (buffCardId == SDK.Cards.Spell.Amplification) {
             // hardcoded: amplification
@@ -1742,16 +2211,26 @@ StarterAI.prototype = {
             atkBuff = buffCard.attackBuff;
           } else {
             // fallback to looking at target modifiers
-            const modifiersContextObjects = _.filter(buffCard.targetModifiersContextObjects, (modifierContextObject) => modifierContextObject.attributeBuffs != null && modifierContextObject.attributeBuffs.atk != null);
+            const modifiersContextObjects = _.filter(
+              buffCard.targetModifiersContextObjects,
+              (modifierContextObject) =>
+                modifierContextObject.attributeBuffs != null &&
+                modifierContextObject.attributeBuffs.atk != null,
+            );
             if (modifiersContextObjects.length > 0) {
-              atkBuff = _.max(modifiersContextObjects, (modifierContextObject) => modifierContextObject.attributeBuffs.atk).attributeBuffs.atk;
+              atkBuff = _.max(
+                modifiersContextObjects,
+                (modifierContextObject) => modifierContextObject.attributeBuffs.atk,
+              ).attributeBuffs.atk;
             }
           }
 
           // check if atk buff will result in lethal on a target that we didn't have lethal on
           let hasTargetLethalWithBuff = false;
-          if (buffCardId == SDK.Cards.Spell.PsionicStrike
-            || buffCardId === SDK.Cards.Spell.MarkOfSolitude) {
+          if (
+            buffCardId == SDK.Cards.Spell.PsionicStrike ||
+            buffCardId === SDK.Cards.Spell.MarkOfSolitude
+          ) {
             // vetruvian bbs - conditional buff: double dmg to minions only
             // mark of solitude - conditional buff: cannot attack general
             hasTargetLethalWithBuff = _.some(targets, (enemy) => {
@@ -1760,12 +2239,12 @@ StarterAI.prototype = {
               }
               const enemyHP = enemy.getHP();
               atkBuff = baseAtk * 2;
-              return enemyHP > baseAtk && enemyHP <= (baseAtk + atkBuff);
+              return enemyHP > baseAtk && enemyHP <= baseAtk + atkBuff;
             });
           } else {
             hasTargetLethalWithBuff = _.some(targets, (enemy) => {
               const enemyHP = enemy.getHP();
-              return enemyHP > baseAtk && enemyHP <= (baseAtk + atkBuff);
+              return enemyHP > baseAtk && enemyHP <= baseAtk + atkBuff;
             });
           }
 
@@ -1779,14 +2258,23 @@ StarterAI.prototype = {
             // we know the buff is a followup when:
             // - buff card is a unit
             // - buff card has intent type modify atk only when including followups
-            if (hasIntentTypeModifyAtk !== CardIntent.getHasIntentType(buffCardId, CardIntentType.ModifyATK)) {
+            if (
+              hasIntentTypeModifyAtk !==
+              CardIntent.getHasIntentType(buffCardId, CardIntentType.ModifyATK)
+            ) {
               // find best spawn location for unit with followup buff among the adjacent spaces
               if (buffCard instanceof SDK.Unit) {
                 // determine if adjacent space available and set followup target & target
-                const validSpawnLocations = this.getGameSession().getBoard().getUnobstructedPositionsForEntityAroundEntity(buffCard, unit);
+                const validSpawnLocations = this.getGameSession()
+                  .getBoard()
+                  .getUnobstructedPositionsForEntityAroundEntity(buffCard, unit);
                 // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] _findAtkBuffAndBuffedAtkValue() => unit with followup buff detected, validSpawnLocations:", validSpawnLocations.length);
                 if (validSpawnLocations.length > 0) {
-                  const initialPosition = this._highestOrLowestPositionObjectiveAndScoreForUnitFromPositions(buffCard, validSpawnLocations).targetPosition;
+                  const initialPosition =
+                    this._highestOrLowestPositionObjectiveAndScoreForUnitFromPositions(
+                      buffCard,
+                      validSpawnLocations,
+                    ).targetPosition;
                   this._findPlayCardActionsForCard(buffCard, initialPosition);
                 }
               } else {
@@ -1830,8 +2318,22 @@ StarterAI.prototype = {
     const isBlast = unit.hasModifierClass(SDK.ModifierBlastAttack);
     // if blast and target isn't next to blaster, find enemy next to unit or ranged unit in blast path and swap for target
     if (isBlast && distanceBetweenBoardPositions(unit.getPosition(), target.getPosition()) > 1) {
-      const enemiesInAttack = this.getGameSession().getBoard().getEnemyEntitiesOnCardinalAxisFromEntityToPosition(unit, target.getPosition(), SDK.CardType.Unit, false, false);
-      const swapEnemy = _.find(enemiesInAttack, (enemy) => enemy.getATK() >= unitHP && (distanceBetweenBoardPositions(unit.getPosition(), enemy.getPosition()) <= 1 || enemy.hasModifierClass(SDK.ModifierRanged)));
+      const enemiesInAttack = this.getGameSession()
+        .getBoard()
+        .getEnemyEntitiesOnCardinalAxisFromEntityToPosition(
+          unit,
+          target.getPosition(),
+          SDK.CardType.Unit,
+          false,
+          false,
+        );
+      const swapEnemy = _.find(
+        enemiesInAttack,
+        (enemy) =>
+          enemy.getATK() >= unitHP &&
+          (distanceBetweenBoardPositions(unit.getPosition(), enemy.getPosition()) <= 1 ||
+            enemy.hasModifierClass(SDK.ModifierRanged)),
+      );
       if (swapEnemy != null) {
         target = swapEnemy;
       }
@@ -1841,13 +2343,19 @@ StarterAI.prototype = {
     if (target.getATK() < unitHP) return;
 
     // don't debuff target if this unit is ranged/blast and target isn't next to unit or isn't ranged
-    if ((unit.hasModifierClass(SDK.ModifierRanged) || isBlast)
-      && distanceBetweenBoardPositions(unit.getPosition(), target.getPosition()) > 1
-      && !target.hasModifierClass(SDK.ModifierRanged)) return;
+    if (
+      (unit.hasModifierClass(SDK.ModifierRanged) || isBlast) &&
+      distanceBetweenBoardPositions(unit.getPosition(), target.getPosition()) > 1 &&
+      !target.hasModifierClass(SDK.ModifierRanged)
+    )
+      return;
 
     // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] checkFordeBuff() => 1 counterattack lethal for unit " + unit.getLogName() + " against " + target.getLogName());
     const cardsInHand = this._getCardsInHandAndSignatureSpell();
-    const debuffsInHand = _.filter(cardsInHand, (card) => this._getCanPlayCard(card) && this._getCardIsAtkDebuffFor(card, unit));
+    const debuffsInHand = _.filter(
+      cardsInHand,
+      (card) => this._getCanPlayCard(card) && this._getCardIsAtkDebuffFor(card, unit),
+    );
     if (typeof debuffsInHand !== 'undefined' && debuffsInHand.length > 0) {
       // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] checkFordeBuff() => 2 debuff in hand and counterattack is lethal. checking if we have enough mana");
       _.each(debuffsInHand, (debuffCard) => {
@@ -1856,9 +2364,16 @@ StarterAI.prototype = {
         const debuffCardId = debuffCard.getBaseCardId();
 
         // check if it can target general or not
-        if (target.getIsGeneral()
-          && (!CardIntent.getHasIntentTypeWithPartialTargetType(debuffCardId, CardIntentType.ModifyATK, CardTargetType.General, true)
-            || (CARD_INTENT[debuffCardId] != null && CARD_INTENT[debuffCardId].indexOf('minion') > -1))) {
+        if (
+          target.getIsGeneral() &&
+          (!CardIntent.getHasIntentTypeWithPartialTargetType(
+            debuffCardId,
+            CardIntentType.ModifyATK,
+            CardTargetType.General,
+            true,
+          ) ||
+            (CARD_INTENT[debuffCardId] != null && CARD_INTENT[debuffCardId].indexOf('minion') > -1))
+        ) {
           // can't target general with this debuff.
           return;
         }
@@ -1870,19 +2385,33 @@ StarterAI.prototype = {
 
         // Check to see if the debuff is a follow-up
         const targetPosition = target.getPosition();
-        const hasIntentTypeModifyAtk = CardIntent.getHasIntentType(debuffCardId, CardIntentType.ModifyATK, true);
-        if (hasIntentTypeModifyAtk !== CardIntent.getHasIntentType(debuffCardId, CardIntentType.ModifyATK)) {
+        const hasIntentTypeModifyAtk = CardIntent.getHasIntentType(
+          debuffCardId,
+          CardIntentType.ModifyATK,
+          true,
+        );
+        if (
+          hasIntentTypeModifyAtk !==
+          CardIntent.getHasIntentType(debuffCardId, CardIntentType.ModifyATK)
+        ) {
           // find best spawn location for unit with followup buff among the adjacent spaces
           if (debuffCard instanceof SDK.Unit) {
             // determine if adjacent space available and set followup target & target
-            const validSpawnLocations = this.getGameSession().getBoard().getUnobstructedPositionsForEntityAroundEntity(debuffCard, target);
-            const validSummonLocations = this.getGameSession().getBoard().getValidSpawnPositions(debuffCard);
+            const validSpawnLocations = this.getGameSession()
+              .getBoard()
+              .getUnobstructedPositionsForEntityAroundEntity(debuffCard, target);
+            const validSummonLocations = this.getGameSession()
+              .getBoard()
+              .getValidSpawnPositions(debuffCard);
             const actualSummonLocations = [];
 
             // need to make sure the valid spawn location is actually a location that we can summon
             for (let i = 0; i < validSpawnLocations.length; i++) {
               for (let j = 0; j < validSummonLocations.length; j++) {
-                if (validSpawnLocations[i].x === validSummonLocations[j].x && validSpawnLocations[i].y === validSummonLocations[j].y) {
+                if (
+                  validSpawnLocations[i].x === validSummonLocations[j].x &&
+                  validSpawnLocations[i].y === validSummonLocations[j].y
+                ) {
                   actualSummonLocations.push(validSpawnLocations[i]);
                 }
               }
@@ -1890,7 +2419,11 @@ StarterAI.prototype = {
 
             // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] _findAtkBuffAndBuffedAtkValue() => unit with followup buff detected, validSpawnLocations:", validSpawnLocations.length);
             if (actualSummonLocations.length > 0) {
-              const initialPosition = this._highestOrLowestPositionObjectiveAndScoreForUnitFromPositions(debuffCard, actualSummonLocations).targetPosition;
+              const initialPosition =
+                this._highestOrLowestPositionObjectiveAndScoreForUnitFromPositions(
+                  debuffCard,
+                  actualSummonLocations,
+                ).targetPosition;
               this._findPlayCardActionsForCard(debuffCard, initialPosition);
             }
           } else {
@@ -1916,8 +2449,13 @@ StarterAI.prototype = {
   },
 
   _isUnitPreventedFromAttackingTarget(unit, target) {
-    return _.find(this._invalidAttackActions, (invalidAttackAction) => invalidAttackAction.getSource() === unit
-          && invalidAttackAction.getTarget() === target) != null;
+    return (
+      _.find(
+        this._invalidAttackActions,
+        (invalidAttackAction) =>
+          invalidAttackAction.getSource() === unit && invalidAttackAction.getTarget() === target,
+      ) != null
+    );
   },
 
   _isTargetImmuneToSource(target, source) {
@@ -1994,16 +2532,28 @@ StarterAI.prototype = {
   },
 
   _isUnitIgnorableForAttacks(unit) {
-    return (unit.hasActiveModifierClass(ModifierDyingWishReSpawnEntityAnywhere)
-        || unit.getBaseCardId() === SDK.Cards.Faction4.Gor) // Have to use direct base card id because Jaxi uses same modifier
-      && unit.getHP() < 3 && unit.getATK() < 3;
+    return (
+      (unit.hasActiveModifierClass(ModifierDyingWishReSpawnEntityAnywhere) ||
+        unit.getBaseCardId() === SDK.Cards.Faction4.Gor) && // Have to use direct base card id because Jaxi uses same modifier
+      unit.getHP() < 3 &&
+      unit.getATK() < 3
+    );
   },
 
   _findAttackActionsForUnit(unit, allowOnlyLethalAttacks) {
-    if (unit.getCanAttack() && !_.contains(this._unitsMissingAttacks, unit) && !this._isUnitPreventedFromAttacking(unit)) {
+    if (
+      unit.getCanAttack() &&
+      !_.contains(this._unitsMissingAttacks, unit) &&
+      !this._isUnitPreventedFromAttacking(unit)
+    ) {
       const unitPosition = unit.getPosition();
       const returnBuffedAtkValueOnly_noCast = false; // allow buff casts for attack actions
-      const attackObjectivesAndScores = this._findSortedFilteredAttackObjectivesAndScoresForUnit(unit, unitPosition, allowOnlyLethalAttacks, returnBuffedAtkValueOnly_noCast);
+      const attackObjectivesAndScores = this._findSortedFilteredAttackObjectivesAndScoresForUnit(
+        unit,
+        unitPosition,
+        allowOnlyLethalAttacks,
+        returnBuffedAtkValueOnly_noCast,
+      );
       // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] _findSortedFilteredAttackObjectivesAndScoresForUnit() => potentialAttackTargets 1 - " + attackObjectivesAndScores.length);
 
       // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] _findSortedFilteredAttackObjectivesAndScoresForUnit() => potentialAttackTargets 2 - " + attackObjectivesAndScores.length);
@@ -2032,7 +2582,11 @@ StarterAI.prototype = {
         }
 
         // * Special case to not attack rebirth unit unless we can kill off the egg that turn too *
-        if (attackTarget && unit.getATK() > attackObjective.getHP() && attackObjective.hasActiveModifierClass(SDK.ModifierRebirth)) {
+        if (
+          attackTarget &&
+          unit.getATK() > attackObjective.getHP() &&
+          attackObjective.hasActiveModifierClass(SDK.ModifierRebirth)
+        ) {
           unitInRangeToKillEgg = this._isUnitNearbyThatCanAttackTarget(attackObjective, unit);
           attackTarget = unitInRangeToKillEgg;
           // if we don't have a unit nearby to also attack the egg, find the next best target to attack
@@ -2064,7 +2618,7 @@ StarterAI.prototype = {
             this._wantsToKillEggAtPosition = attackObjectivePosition;
           }
         }
-      }/* else {
+      } /* else {
         Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] _findAttackActionsForUnit() => No enemies in range or meeting attack parameters. returning");
       } */
     }
@@ -2077,11 +2631,15 @@ StarterAI.prototype = {
     let bestMovePosition = null;
 
     const attackerUnit = _.find(myUsableUnits, (unit) => {
-      if (unit !== ignoreUnit
-        && unit.getCanAttack() && !unit.getIsProvoked()
-        && (!unit.getIsGeneral() || this._isUnitSafeAttackTargetForGeneralUnit(unit, attackTarget))) {
+      if (
+        unit !== ignoreUnit &&
+        unit.getCanAttack() &&
+        !unit.getIsProvoked() &&
+        (!unit.getIsGeneral() || this._isUnitSafeAttackTargetForGeneralUnit(unit, attackTarget))
+      ) {
         // check to see if the unit is already next to the unit its trying to attack
-        let nearTarget = distanceBetweenBoardPositions(attackTarget.getPosition(), unit.getPosition()) <= 1;
+        let nearTarget =
+          distanceBetweenBoardPositions(attackTarget.getPosition(), unit.getPosition()) <= 1;
 
         // find the best place to move the unit if not nearby
         if (!nearTarget && unit.getCanMove() && !this._isUnitPreventedFromMoving(unit)) {
@@ -2110,13 +2668,16 @@ StarterAI.prototype = {
     let bestMovePosition = null;
 
     const attackerUnit = _.find(myUsableUnits, (unit) => {
-      if (unit !== ignoreUnit
-        && unit.getCanAttack()
-        && !this._isUnitPreventedFromAttacking(unit)
-        && !this._isUnitPreventedFromAttackingTarget(unit, forcedTarget)
-        && (!unit.getIsGeneral() || this._isUnitSafeAttackTargetForGeneralUnit(unit, forcedTarget))) {
+      if (
+        unit !== ignoreUnit &&
+        unit.getCanAttack() &&
+        !this._isUnitPreventedFromAttacking(unit) &&
+        !this._isUnitPreventedFromAttackingTarget(unit, forcedTarget) &&
+        (!unit.getIsGeneral() || this._isUnitSafeAttackTargetForGeneralUnit(unit, forcedTarget))
+      ) {
         // check to see if the unit is already next to the unit its trying to attack
-        let nearTarget = distanceBetweenBoardPositions(forcedTarget.getPosition(), unit.getPosition()) <= 1;
+        let nearTarget =
+          distanceBetweenBoardPositions(forcedTarget.getPosition(), unit.getPosition()) <= 1;
 
         // find the best place to move the unit if not nearby
         if (!nearTarget && unit.getCanMove() && !this._isUnitPreventedFromMoving(unit)) {
@@ -2154,7 +2715,10 @@ StarterAI.prototype = {
     const board = this.getGameSession().getBoard();
     const potentialMoves = this._findPotentialMovePositionsForUnit(unitToSend); // get potential move spaces
     if (potentialMoves.length > 0) {
-      const locationsNearTarget = board.getUnobstructedPositionsForEntityAroundEntity(unitToSend, objective); // get spaces near the objective
+      const locationsNearTarget = board.getUnobstructedPositionsForEntityAroundEntity(
+        unitToSend,
+        objective,
+      ); // get spaces near the objective
       if (locationsNearTarget.length > 0) {
         // check for provokers near any spaces we might want to move to, unless objective is a provoker
         // and remove all locations near target that are nearby enemy provokers
@@ -2189,8 +2753,16 @@ StarterAI.prototype = {
               if (bestPosition == null) {
                 bestPosition = potentialMovePos;
               } else {
-                const scoreForNewPosition = ScoreForCardAtTargetPosition(unitToSend, potentialMovePos, objective);
-                const scoreForCurrentBestPosition = ScoreForCardAtTargetPosition(unitToSend, bestPosition, objective);
+                const scoreForNewPosition = ScoreForCardAtTargetPosition(
+                  unitToSend,
+                  potentialMovePos,
+                  objective,
+                );
+                const scoreForCurrentBestPosition = ScoreForCardAtTargetPosition(
+                  unitToSend,
+                  bestPosition,
+                  objective,
+                );
                 if (scoreForNewPosition > scoreForCurrentBestPosition) {
                   bestPosition = potentialMovePos;
                 }
@@ -2204,23 +2776,56 @@ StarterAI.prototype = {
     return bestPosition;
   },
 
-  _findSortedFilteredAttackObjectivesAndScoresForUnit(unit, targetPosition, allowOnlyLethalAttacks, returnBuffedAtkValueOnly_noCast) {
-    const sourceUnit = unit.getIsPlayed() ? unit : this.getGameSession().getGeneralForPlayerId(unit.getOwnerId());
+  _findSortedFilteredAttackObjectivesAndScoresForUnit(
+    unit,
+    targetPosition,
+    allowOnlyLethalAttacks,
+    returnBuffedAtkValueOnly_noCast,
+  ) {
+    const sourceUnit = unit.getIsPlayed()
+      ? unit
+      : this.getGameSession().getGeneralForPlayerId(unit.getOwnerId());
     // get potential attack targets at target position
-    const potentialAttackTargets = sourceUnit.getAttackRange().getValidTargets(this.getGameSession().getBoard(), sourceUnit, targetPosition);
-    const filteredPotentialAttackTargets = this._filterOutBadTargets(potentialAttackTargets, sourceUnit);
-    return this._scoreAndSortAttackTargetsForUnit(unit, filteredPotentialAttackTargets, targetPosition, allowOnlyLethalAttacks, returnBuffedAtkValueOnly_noCast);
+    const potentialAttackTargets = sourceUnit
+      .getAttackRange()
+      .getValidTargets(this.getGameSession().getBoard(), sourceUnit, targetPosition);
+    const filteredPotentialAttackTargets = this._filterOutBadTargets(
+      potentialAttackTargets,
+      sourceUnit,
+    );
+    return this._scoreAndSortAttackTargetsForUnit(
+      unit,
+      filteredPotentialAttackTargets,
+      targetPosition,
+      allowOnlyLethalAttacks,
+      returnBuffedAtkValueOnly_noCast,
+    );
   },
 
-  _scoreAndSortAttackTargetsForUnit(unit, attackTargets, targetPosition, allowOnlyLethalAttacks, returnBuffedAtkValueOnly_noCast) {
+  _scoreAndSortAttackTargetsForUnit(
+    unit,
+    attackTargets,
+    targetPosition,
+    allowOnlyLethalAttacks,
+    returnBuffedAtkValueOnly_noCast,
+  ) {
     // sort and filter targets
     let filteredAttackTargets = this._findFilteredAttackTargetsForUnit(unit, attackTargets);
     // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] _findSortedFilteredAttackObjectivesAndScoresForUnit() => filteredAttackTargets " + filteredAttackTargets.length);
 
     // get and cast attack buffs that result in lethal unless we've found lethal on enemy general
     let unitATK;
-    if ((allowOnlyLethalAttacks || this._hasLethalOnEnemyGeneral) && unit.getIsPlayed() && unit.getCanAttack() && !this._isUnitPreventedFromAttacking(unit)) {
-      unitATK = this._findAtkBuffAndBuffedAtkValue(unit, filteredAttackTargets, returnBuffedAtkValueOnly_noCast);
+    if (
+      (allowOnlyLethalAttacks || this._hasLethalOnEnemyGeneral) &&
+      unit.getIsPlayed() &&
+      unit.getCanAttack() &&
+      !this._isUnitPreventedFromAttacking(unit)
+    ) {
+      unitATK = this._findAtkBuffAndBuffedAtkValue(
+        unit,
+        filteredAttackTargets,
+        returnBuffedAtkValueOnly_noCast,
+      );
     } else {
       unitATK = unit.getATK();
     }
@@ -2240,38 +2845,74 @@ StarterAI.prototype = {
       let attackScore = ScoreForUnitDamage(enemy, unitATK);
       attackScore += this._scoreAttackTargetForUnit(unit, unitATK, enemy, targetPosition); // redundant with above. to remove.
       const objectiveAndScore = { objective: enemy, score: attackScore };
-      UtilsJavascript.arraySortedInsertByProperty(filteredAttackTargetsAndScores, objectiveAndScore, 'score');
+      UtilsJavascript.arraySortedInsertByProperty(
+        filteredAttackTargetsAndScores,
+        objectiveAndScore,
+        'score',
+      );
     });
     return filteredAttackTargetsAndScores;
   },
 
-  _scoreAttackTargetForUnit(unit, unitATK, enemy, targetPosition) { // todo: remove. redudnant with scoreforunitdamage
+  _scoreAttackTargetForUnit(unit, unitATK, enemy, targetPosition) {
+    // todo: remove. redudnant with scoreforunitdamage
     let score = 0;
 
     // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] _findSortedFilteredAttackObjectivesAndScoresForUnit() => unit " + unit.getLogName() + "'s enemy " + enemy.getLogName() + " score for damage = " + score);
-    if (this._difficulty >= DIFFICULTY_WHEN_UNITS_CARE_ABOUT_COUNTERATTACKS && !unit.hasModifierClass(SDK.ModifierRanged) && !unit.hasModifierClass(SDK.ModifierBlastAttack)) {
+    if (
+      this._difficulty >= DIFFICULTY_WHEN_UNITS_CARE_ABOUT_COUNTERATTACKS &&
+      !unit.hasModifierClass(SDK.ModifierRanged) &&
+      !unit.hasModifierClass(SDK.ModifierBlastAttack)
+    ) {
       score += unit.getHP() >= enemy.getATK() ? BOUNTY.TARGET_COUNTERATTACK_NOT_LETHAL : 0;
     }
 
-    if (enemy.getIsGeneral() && arePositionsEqualOrAdjacent(enemy.getPosition(), targetPosition) && unit.hasModifierClass(SDK.ModifierProvoke)) {
+    if (
+      enemy.getIsGeneral() &&
+      arePositionsEqualOrAdjacent(enemy.getPosition(), targetPosition) &&
+      unit.hasModifierClass(SDK.ModifierProvoke)
+    ) {
       score += BOUNTY.PROVOKE_ENEMY_GENERAL;
     }
     if (unit.getIsPlayed()) {
-      if (unit.hasModifierClass(SDK.ModifierRanged) || unit.hasModifierClass(SDK.ModifierBlastAttack)) {
+      if (
+        unit.hasModifierClass(SDK.ModifierRanged) ||
+        unit.hasModifierClass(SDK.ModifierBlastAttack)
+      ) {
         // ranged prefer to attack units at range
-        score += distanceBetweenBoardPositions(targetPosition, enemy.getPosition()) <= 1 ? 0 : BOUNTY.TARGET_AT_RANGE;
+        score +=
+          distanceBetweenBoardPositions(targetPosition, enemy.getPosition()) <= 1
+            ? 0
+            : BOUNTY.TARGET_AT_RANGE;
       }
       if (unit.hasModifierClass(SDK.ModifierBackstab)) {
         // backstab prefer to attack units from behind
-        score += this.getGameSession().getBoard().getIsPositionBehindEntity(enemy, targetPosition, 1, 0) ? BOUNTY.TARGET_BACKSTAB_PROC : 0;
+        score += this.getGameSession()
+          .getBoard()
+          .getIsPositionBehindEntity(enemy, targetPosition, 1, 0)
+          ? BOUNTY.TARGET_BACKSTAB_PROC
+          : 0;
       }
       if (unit.hasModifierClass(SDK.ModifierBlastAttack)) {
-        score += _.reject(this.getGameSession().getBoard().getEntitiesInRow(enemy.getPosition().y, SDK.CardType.Unit), (entity) => entity.getIsSameTeamAs(unit)).length * BOUNTY.TARGET_ENEMIES_IN_SAME_ROW;
+        score +=
+          _.reject(
+            this.getGameSession()
+              .getBoard()
+              .getEntitiesInRow(enemy.getPosition().y, SDK.CardType.Unit),
+            (entity) => entity.getIsSameTeamAs(unit),
+          ).length * BOUNTY.TARGET_ENEMIES_IN_SAME_ROW;
       }
-    } else { // unit not played, but we still want ranged/blastAttackers to spawn at distance.
-      if (unit.hasModifierClass(SDK.ModifierRanged) || unit.hasModifierClass(SDK.ModifierBlastAttack)) {
+    } else {
+      // unit not played, but we still want ranged/blastAttackers to spawn at distance.
+      if (
+        unit.hasModifierClass(SDK.ModifierRanged) ||
+        unit.hasModifierClass(SDK.ModifierBlastAttack)
+      ) {
         // ranged prefer to attack units at range
-        score += distanceBetweenBoardPositions(targetPosition, enemy.getPosition()) <= 1 ? 0 : BOUNTY.TARGET_AT_RANGE;
+        score +=
+          distanceBetweenBoardPositions(targetPosition, enemy.getPosition()) <= 1
+            ? 0
+            : BOUNTY.TARGET_AT_RANGE;
       }
     }
 
@@ -2283,12 +2924,15 @@ StarterAI.prototype = {
     potentialTargets = this._findFilteredAttackTargetsForGeneralUnit(unit, potentialTargets);
     potentialTargets = this._findFilteredAttackTargetsForProvokedUnit(unit, potentialTargets);
     potentialTargets = this._findFilteredAttackTargetsForRangedProvokedUnit(unit, potentialTargets);
-    potentialTargets = _.reject(potentialTargets, (target) => this._isTargetImmuneToSource(target, unit));
+    potentialTargets = _.reject(potentialTargets, (target) =>
+      this._isTargetImmuneToSource(target, unit),
+    );
     return potentialTargets;
   },
 
   _findFilteredAttackTargetsForProvokedUnit(unit, potentialTargets) {
-    if (unit.getIsProvoked()) { // may only attack provoker(s)
+    if (unit.getIsProvoked()) {
+      // may only attack provoker(s)
       potentialTargets = _.filter(potentialTargets, (target) => {
         if (unit.getIsRangedProvoked() && target.getIsRangedProvoker()) {
           return true;
@@ -2308,7 +2952,8 @@ StarterAI.prototype = {
   },
 
   _findFilteredAttackTargetsForRangedProvokedUnit(unit, potentialTargets) {
-    if (unit.getIsRangedProvoked()) { // may only attack provoker(s)
+    if (unit.getIsRangedProvoked()) {
+      // may only attack provoker(s)
       potentialTargets = _.filter(potentialTargets, (target) => {
         if (unit.getIsProvoked() && target.getIsProvoker()) {
           return true;
@@ -2321,7 +2966,10 @@ StarterAI.prototype = {
           return true; // we will further evaluate these targets in the actual provoke filter. don't eliminate them here, though
         }
 
-        return _.contains(target.getModifierByType(SDK.ModifierRangedProvoke.type).getEntitiesInAura(), unit);
+        return _.contains(
+          target.getModifierByType(SDK.ModifierRangedProvoke.type).getEntitiesInAura(),
+          unit,
+        );
       });
     }
     return potentialTargets;
@@ -2329,7 +2977,9 @@ StarterAI.prototype = {
 
   _findFilteredAttackTargetsForGeneralUnit(unit, potentialTargets) {
     if (unit.getIsGeneral()) {
-      potentialTargets = _.filter(potentialTargets, (enemy) => this._isUnitSafeAttackTargetForGeneralUnit(unit, enemy));
+      potentialTargets = _.filter(potentialTargets, (enemy) =>
+        this._isUnitSafeAttackTargetForGeneralUnit(unit, enemy),
+      );
     }
     return potentialTargets;
   },
@@ -2337,8 +2987,11 @@ StarterAI.prototype = {
   _isUnitSafeAttackTargetForGeneralUnit(unit, enemy) {
     let safe = true;
 
-    if (this._difficulty >= DIFFICULTY_WHEN_GENERAL_CARES_ABOUT_COUNTERATTACKS
-      && !this._checkingLethalOnEnemyGeneral && !this._hasLethalOnEnemyGeneral) {
+    if (
+      this._difficulty >= DIFFICULTY_WHEN_GENERAL_CARES_ABOUT_COUNTERATTACKS &&
+      !this._checkingLethalOnEnemyGeneral &&
+      !this._hasLethalOnEnemyGeneral
+    ) {
       // only attack units that will counterattack for less than threshold unless checking lethal
       // prevents generals trading damage with high-attack units, i.e. generals attacking into 10 damage units
       // generals also become increasingly wary of costly trades the lower their HP goes. General's current HP
@@ -2360,9 +3013,15 @@ StarterAI.prototype = {
   },
 
   _isUnitPreventedFromMovingTo(unit, targetPosition) {
-    return _.find(this._invalidMoveActions, (invalidMoveAction) => invalidMoveAction.getSource() === unit
-        && invalidMoveAction.getTargetPosition().x === targetPosition.x
-        && invalidMoveAction.getTargetPosition().y === targetPosition.y) != null;
+    return (
+      _.find(
+        this._invalidMoveActions,
+        (invalidMoveAction) =>
+          invalidMoveAction.getSource() === unit &&
+          invalidMoveAction.getTargetPosition().x === targetPosition.x &&
+          invalidMoveAction.getTargetPosition().y === targetPosition.y,
+      ) != null
+    );
   },
 
   _findMoveActionsForUnit(unit, allowOnlyLethalAttacks) {
@@ -2372,17 +3031,35 @@ StarterAI.prototype = {
       if (potentialMoves.length > 0) {
         const unitPosition = unit.getPosition();
         const returnBuffedAtkValueOnly_noCast = true; // do not cast buffs during movement+attack lethal calculations. Buffs will cast during attack actions.
-        const currentScoreAndObjective = this._positionObjectiveAndScoreForUnitFromSourceToTargetPosition(unit, unitPosition, unitPosition, allowOnlyLethalAttacks, returnBuffedAtkValueOnly_noCast);
-        const bestMoveScoreAndObjective = this._highestOrLowestPositionObjectiveAndScoreForUnitFromPositions(unit, potentialMoves, allowOnlyLethalAttacks);
+        const currentScoreAndObjective =
+          this._positionObjectiveAndScoreForUnitFromSourceToTargetPosition(
+            unit,
+            unitPosition,
+            unitPosition,
+            allowOnlyLethalAttacks,
+            returnBuffedAtkValueOnly_noCast,
+          );
+        const bestMoveScoreAndObjective =
+          this._highestOrLowestPositionObjectiveAndScoreForUnitFromPositions(
+            unit,
+            potentialMoves,
+            allowOnlyLethalAttacks,
+          );
         // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] _findMoveActionsForUnit() => " + unit.getLogName() + " best move returned with score " + bestMoveScoreAndObjective.score + " at " + bestMoveScoreAndObjective.targetPosition.x + ", " + bestMoveScoreAndObjective.targetPosition.y + " with objective " + bestMoveScoreAndObjective.objective.getLogName());
         // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] _findMoveActionsForUnit() => " + unit.getLogName() + " current move returned with score " + currentScoreAndObjective.score + " at " + currentScoreAndObjective.targetPosition.x + ", " + currentScoreAndObjective.targetPosition.y + " with objective " + currentScoreAndObjective.objective.getLogName());
-        if (currentScoreAndObjective.score < bestMoveScoreAndObjective.score
+        if (
+          currentScoreAndObjective.score < bestMoveScoreAndObjective.score &&
           // only allow ephemeral units to be moved if they can reach target
-          && (!unit.hasModifierClass(SDK.ModifierEphemeral)
-            || distanceBetweenBoardPositions(bestMoveScoreAndObjective.objective.getPosition(), bestMoveScoreAndObjective.targetPosition) <= 1)
-          && (!allowOnlyLethalAttacks
-            || distanceBetweenBoardPositions(unitPosition, bestMoveScoreAndObjective.targetPosition) <= 1
-            || isUnitEvasive(unit))) {
+          (!unit.hasModifierClass(SDK.ModifierEphemeral) ||
+            distanceBetweenBoardPositions(
+              bestMoveScoreAndObjective.objective.getPosition(),
+              bestMoveScoreAndObjective.targetPosition,
+            ) <= 1) &&
+          (!allowOnlyLethalAttacks ||
+            distanceBetweenBoardPositions(unitPosition, bestMoveScoreAndObjective.targetPosition) <=
+              1 ||
+            isUnitEvasive(unit))
+        ) {
           // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] _findMoveActionsForUnit() => " + unit.getLogName() + " making move with score " + bestMoveScoreAndObjective.score + " to " + bestMoveScoreAndObjective.targetPosition.x + ", " + bestMoveScoreAndObjective.targetPosition.y + " with objective " + bestMoveScoreAndObjective.objective.getLogName());
           const moveAction = unit.actionMove(bestMoveScoreAndObjective.targetPosition);
           this._nextActions.push(moveAction);
@@ -2393,7 +3070,9 @@ StarterAI.prototype = {
 
   _findPotentialMovePositionsForUnit(unit) {
     const potentialMoves = [];
-    const traversalPath = unit.getMovementRange().getValidPositions(this.getGameSession().getBoard(), unit);
+    const traversalPath = unit
+      .getMovementRange()
+      .getValidPositions(this.getGameSession().getBoard(), unit);
     _.each(traversalPath, (validMoveNodes) => {
       const movePosition = _.last(validMoveNodes);
       if (!this._isUnitPreventedFromMovingTo(unit, movePosition)) {
@@ -2416,21 +3095,41 @@ StarterAI.prototype = {
     return position.x >= mySideStartX && position.x <= mySideEndX;
   },
 
-  _highestOrLowestPositionObjectiveAndScoreForUnitFromPositions(sourceUnit, positions, allowOnlyLethalAttacks) {
-    const sourcePosition = sourceUnit.getIsPlayed() ? sourceUnit.getPosition() : this.getGameSession().getGeneralForPlayerId(sourceUnit.getOwnerId()).getPosition();
+  _highestOrLowestPositionObjectiveAndScoreForUnitFromPositions(
+    sourceUnit,
+    positions,
+    allowOnlyLethalAttacks,
+  ) {
+    const sourcePosition = sourceUnit.getIsPlayed()
+      ? sourceUnit.getPosition()
+      : this.getGameSession().getGeneralForPlayerId(sourceUnit.getOwnerId()).getPosition();
     const myGeneral = this.getMyGeneral();
     let bestScoreAndObjective;
 
     // get scores and best objectives for each position
     const returnBuffedAtkValueOnly_noCast = true; // don't cast buffs. they will cast during attacks
-    const scoresAndObjectives = _.map(positions, (currentPotentialLocation) => this._positionObjectiveAndScoreForUnitFromSourceToTargetPosition(sourceUnit, sourcePosition, currentPotentialLocation, allowOnlyLethalAttacks, returnBuffedAtkValueOnly_noCast));
+    const scoresAndObjectives = _.map(positions, (currentPotentialLocation) =>
+      this._positionObjectiveAndScoreForUnitFromSourceToTargetPosition(
+        sourceUnit,
+        sourcePosition,
+        currentPotentialLocation,
+        allowOnlyLethalAttacks,
+        returnBuffedAtkValueOnly_noCast,
+      ),
+    );
 
     // get score and objective with highest or lowest score
     // depending on whether this is my unit or enemy unit
     if (sourceUnit.getIsSameTeamAs(myGeneral)) {
-      bestScoreAndObjective = _.max(scoresAndObjectives, (scoreAndObjective) => scoreAndObjective.score);
+      bestScoreAndObjective = _.max(
+        scoresAndObjectives,
+        (scoreAndObjective) => scoreAndObjective.score,
+      );
     } else {
-      bestScoreAndObjective = _.min(scoresAndObjectives, (scoreAndObjective) => scoreAndObjective.score);
+      bestScoreAndObjective = _.min(
+        scoresAndObjectives,
+        (scoreAndObjective) => scoreAndObjective.score,
+      );
     }
     // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] _highestOrLowestPositionObjectiveAndScoreForUnitFromPositions() => position with highest/lowest bounty of " + bestScoreAndObjective.score + " is " + bestScoreAndObjective.targetPosition.x + ", " + bestScoreAndObjective.targetPosition.y + " with objective " + bestScoreAndObjective.objective.getLogName());
     return bestScoreAndObjective;
@@ -2441,8 +3140,17 @@ StarterAI.prototype = {
     const allowOnlyLethalAttacks = false;
     const returnBuffedAtkValueOnly_noCast = true;
     const scoresAndObjectives = _.map(positions, (position) => {
-      const unitAtPosition = card instanceof SDK.Entity ? card : this.getGameSession().getBoard().getUnitAtPosition(position);
-      return this._positionObjectiveAndScoreForUnitFromSourceToTargetPosition(unitAtPosition, position, position, allowOnlyLethalAttacks, returnBuffedAtkValueOnly_noCast);
+      const unitAtPosition =
+        card instanceof SDK.Entity
+          ? card
+          : this.getGameSession().getBoard().getUnitAtPosition(position);
+      return this._positionObjectiveAndScoreForUnitFromSourceToTargetPosition(
+        unitAtPosition,
+        position,
+        position,
+        allowOnlyLethalAttacks,
+        returnBuffedAtkValueOnly_noCast,
+      );
     });
 
     // return lowest score and objective
@@ -2454,8 +3162,17 @@ StarterAI.prototype = {
     const allowOnlyLethalAttacks = false;
     const returnBuffedAtkValueOnly_noCast = true;
     const scoresAndObjectives = _.map(positions, (position) => {
-      const unitAtPosition = card instanceof SDK.Entity ? card : this.getGameSession().getBoard().getUnitAtPosition(position);
-      return this._positionObjectiveAndScoreForUnitFromSourceToTargetPosition(unitAtPosition, position, position, allowOnlyLethalAttacks, returnBuffedAtkValueOnly_noCast);
+      const unitAtPosition =
+        card instanceof SDK.Entity
+          ? card
+          : this.getGameSession().getBoard().getUnitAtPosition(position);
+      return this._positionObjectiveAndScoreForUnitFromSourceToTargetPosition(
+        unitAtPosition,
+        position,
+        position,
+        allowOnlyLethalAttacks,
+        returnBuffedAtkValueOnly_noCast,
+      );
     });
 
     // return highest score and objective
@@ -2468,16 +3185,16 @@ StarterAI.prototype = {
 
   _getIsScoredModifier(modifier) {
     return !(
-      modifier instanceof SDK.ModifierAirdrop
-      || modifier instanceof SDK.ModifierProvoked
-      || modifier instanceof SDK.ModifierDyingWish
-      || modifier instanceof SDK.ModifierEphemeral
-      || modifier instanceof SDK.ModifierOpeningGambit
-      || modifier instanceof SDK.ModifierStunned
-      || modifier instanceof SDK.ModifierTransformed
-      || modifier instanceof SDK.ModifierWall
-      || modifier instanceof SDK.ModifierFirstBlood
-      || modifier instanceof SDK.ModifierStrikeback
+      modifier instanceof SDK.ModifierAirdrop ||
+      modifier instanceof SDK.ModifierProvoked ||
+      modifier instanceof SDK.ModifierDyingWish ||
+      modifier instanceof SDK.ModifierEphemeral ||
+      modifier instanceof SDK.ModifierOpeningGambit ||
+      modifier instanceof SDK.ModifierStunned ||
+      modifier instanceof SDK.ModifierTransformed ||
+      modifier instanceof SDK.ModifierWall ||
+      modifier instanceof SDK.ModifierFirstBlood ||
+      modifier instanceof SDK.ModifierStrikeback
     );
   },
 
@@ -2496,9 +3213,14 @@ StarterAI.prototype = {
       }
 
       // never attack player general at lowest difficulty
-      if (target.getIsGeneral()
-        && ((this._difficulty < DIFFICULTY_WHEN_GENERAL_CAN_ATTACK_ENEMY_GENERAL && unit.getIsGeneral())
-        || (this._difficulty < DIFFICULTY_WHEN_UNITS_CAN_ATTACK_ENEMY_GENERAL && !unit.getIsGeneral() && !unit.hasModifierClass(SDK.ModifierEphemeral)))) {
+      if (
+        target.getIsGeneral() &&
+        ((this._difficulty < DIFFICULTY_WHEN_GENERAL_CAN_ATTACK_ENEMY_GENERAL &&
+          unit.getIsGeneral()) ||
+          (this._difficulty < DIFFICULTY_WHEN_UNITS_CAN_ATTACK_ENEMY_GENERAL &&
+            !unit.getIsGeneral() &&
+            !unit.hasModifierClass(SDK.ModifierEphemeral)))
+      ) {
         return true;
       }
 
@@ -2535,7 +3257,13 @@ StarterAI.prototype = {
     return filteredTargets;
   },
 
-  _positionObjectiveAndScoreForUnitFromSourceToTargetPosition(card, sourcePosition, targetPosition, allowOnlyLethalAttacks, returnBuffedAtkValueOnly_noCast) {
+  _positionObjectiveAndScoreForUnitFromSourceToTargetPosition(
+    card,
+    sourcePosition,
+    targetPosition,
+    allowOnlyLethalAttacks,
+    returnBuffedAtkValueOnly_noCast,
+  ) {
     // --PARAMETERS--
     // targetPosition = target position to evaluate for bounty
     // sourcePosition = starting position for selecting best/nearest objective
@@ -2547,13 +3275,20 @@ StarterAI.prototype = {
     } else {
       unitToSend = card;
     }
-    const attackObjectivesAndScores = this._findSortedFilteredAttackObjectivesAndScoresForUnit(unitToSend, targetPosition, allowOnlyLethalAttacks, returnBuffedAtkValueOnly_noCast);
+    const attackObjectivesAndScores = this._findSortedFilteredAttackObjectivesAndScoresForUnit(
+      unitToSend,
+      targetPosition,
+      allowOnlyLethalAttacks,
+      returnBuffedAtkValueOnly_noCast,
+    );
 
     let objective;
     let score = 0;
     if (attackObjectivesAndScores.length === 0) {
       // use nearest if nothing in range
-      const enemies = this.getGameSession().getBoard().getEnemyEntitiesForEntity(unitToSend, SDK.CardType.Unit);
+      const enemies = this.getGameSession()
+        .getBoard()
+        .getEnemyEntitiesForEntity(unitToSend, SDK.CardType.Unit);
       const filteredEnemies = this._filterOutBadTargets(enemies, unitToSend);
       if (filteredEnemies.length === 0) {
         // if no filtered enemies are found (instance of difficulty being too low, find the nearest objective with no filter)
@@ -2566,9 +3301,9 @@ StarterAI.prototype = {
       const objectiveAndScore = attackObjectivesAndScores[0];
       objective = objectiveAndScore.objective;
       if (
-        (unitToSend.getIsActive() || unitToSend.hasModifierClass(SDK.ModifierFirstBlood))
-        && !unitToSend.hasModifierClass(SDK.ModifierRanged)
-        && !unitToSend.hasModifierClass(SDK.ModifierBlastAttack)
+        (unitToSend.getIsActive() || unitToSend.hasModifierClass(SDK.ModifierFirstBlood)) &&
+        !unitToSend.hasModifierClass(SDK.ModifierRanged) &&
+        !unitToSend.hasModifierClass(SDK.ModifierBlastAttack)
       ) {
         // add in objective score for played melee units so they always move towards best objective
         // unplayed units without rush or ranged/blast units should not care about moving towards their best objective
@@ -2580,11 +3315,22 @@ StarterAI.prototype = {
     score += ScoreForCardAtTargetPosition(unitToSend, targetPosition, objective);
 
     // AI should never retreat when below certain difficulty
-    if (unitToSend.getIsGeneral() && this._difficulty < DIFFICULTY_WHEN_GENERAL_CAN_RETREAT && unitToSend.getHP() < THRESHOLD_HP_GENERAL_RETREAT) {
+    if (
+      unitToSend.getIsGeneral() &&
+      this._difficulty < DIFFICULTY_WHEN_GENERAL_CAN_RETREAT &&
+      unitToSend.getHP() < THRESHOLD_HP_GENERAL_RETREAT
+    ) {
       // reverse evasive score
-      const distanceFromBestEnemyTarget = distanceBetweenBoardPositions(targetPosition, objective.getPosition());
-      const maxDistance = distanceBetweenBoardPositions({ x: 0, y: 0 }, { x: CONFIG.BOARDROW, y: CONFIG.BOARDCOL });
-      score -= (distanceFromBestEnemyTarget * BOUNTY.DISTANCE_FROM_BEST_ENEMY_TARGET_EVASIVE) - maxDistance;
+      const distanceFromBestEnemyTarget = distanceBetweenBoardPositions(
+        targetPosition,
+        objective.getPosition(),
+      );
+      const maxDistance = distanceBetweenBoardPositions(
+        { x: 0, y: 0 },
+        { x: CONFIG.BOARDROW, y: CONFIG.BOARDCOL },
+      );
+      score -=
+        distanceFromBestEnemyTarget * BOUNTY.DISTANCE_FROM_BEST_ENEMY_TARGET_EVASIVE - maxDistance;
       // add normal aggresive score
       score += distanceFromBestEnemyTarget * BOUNTY.DISTANCE_FROM_BEST_ENEMY_TARGET;
     }
@@ -2598,7 +3344,6 @@ StarterAI.prototype = {
   },
 
   // endregion BOARD SCORE
-
 };
 
 module.exports = StarterAI;

@@ -27,9 +27,7 @@ class ModifierHealWatchDamageRandomEnemy extends ModifierHealWatch {
     if (!this.damageAmount) {
       damageAmount = action.getTotalHealApplied();
     } else {
-      ({
-        damageAmount,
-      } = this);
+      ({ damageAmount } = this);
     }
 
     if (damageAmount > 0) {
@@ -43,6 +41,9 @@ class ModifierHealWatchDamageRandomEnemy extends ModifierHealWatch {
   }
 }
 ModifierHealWatchDamageRandomEnemy.prototype.type = 'ModifierHealWatchDamageRandomEnemy';
-ModifierHealWatchDamageRandomEnemy.prototype.fxResource = ['FX.Modifiers.ModifierHealWatch', 'FX.Modifiers.ModifierGenericDamageSmall'];
+ModifierHealWatchDamageRandomEnemy.prototype.fxResource = [
+  'FX.Modifiers.ModifierHealWatch',
+  'FX.Modifiers.ModifierGenericDamageSmall',
+];
 
 module.exports = ModifierHealWatchDamageRandomEnemy;

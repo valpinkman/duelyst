@@ -28,20 +28,31 @@ class ModifierInkhornGaze extends ModifierDyingWish {
   onDyingWish() {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
       // pull faction battle pets + neutral token battle pets
-      const factionBattlePetCards = this.getGameSession().getCardCaches().getFaction(Factions.Faction4).getRace(Races.BattlePet)
+      const factionBattlePetCards = this.getGameSession()
+        .getCardCaches()
+        .getFaction(Factions.Faction4)
+        .getRace(Races.BattlePet)
         .getIsToken(false)
         .getIsPrismatic(false)
         .getIsSkinned(false)
         .getCards();
-      const neutralBattlePetCards = this.getGameSession().getCardCaches().getFaction(Factions.Neutral).getRace(Races.BattlePet)
+      const neutralBattlePetCards = this.getGameSession()
+        .getCardCaches()
+        .getFaction(Factions.Neutral)
+        .getRace(Races.BattlePet)
         .getIsToken(true)
         .getIsPrismatic(false)
         .getIsSkinned(false)
         .getCards();
       const battlePetCards = [].concat(factionBattlePetCards, neutralBattlePetCards);
 
-      const card = battlePetCards[this.getGameSession().getRandomIntegerForExecution(battlePetCards.length)];
-      const a = new PutCardInHandAction(this.getGameSession(), this.spawnOwnerId, card.createNewCardData());
+      const card =
+        battlePetCards[this.getGameSession().getRandomIntegerForExecution(battlePetCards.length)];
+      const a = new PutCardInHandAction(
+        this.getGameSession(),
+        this.spawnOwnerId,
+        card.createNewCardData(),
+      );
       return this.getGameSession().executeAction(a);
     }
   }
@@ -49,7 +60,10 @@ class ModifierInkhornGaze extends ModifierDyingWish {
 ModifierInkhornGaze.prototype.type = 'ModifierInkhornGaze';
 ModifierInkhornGaze.modifierName = i18next.t('modifiers.inkhorn_gaze_name');
 ModifierInkhornGaze.description = i18next.t('modifiers.inkhorn_gaze_def');
-ModifierInkhornGaze.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericSpawn'];
+ModifierInkhornGaze.prototype.fxResource = [
+  'FX.Modifiers.ModifierDyingWish',
+  'FX.Modifiers.ModifierGenericSpawn',
+];
 ModifierInkhornGaze.prototype.spawnOwnerId = null;
 
 module.exports = ModifierInkhornGaze;

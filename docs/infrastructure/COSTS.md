@@ -12,7 +12,7 @@ The following table summarizes our resource utilization estimations for 500
 concurrent users:
 
 | Service  | vCPU | RAM   | Network Out | Storage |
-|----------|------|-------|-------------|---------|
+| -------- | ---- | ----- | ----------- | ------- |
 | API      | 2.50 | 500MB | 200 KBps    | 5GB     |
 | Game     | 1.00 | 300MB | 100 KBps    | 5GB     |
 | SP       | 1.00 | 300MB | 100 KBps    | 5GB     |
@@ -135,16 +135,16 @@ S3:
 - Each 2,500 GET requests cost $0.01/month.
 - Like EC2, the first 100GB of data transfer is free.
 - Both GET requests and data transfer are reduced by CDN caching with
-	CloudFront.
+  CloudFront.
 - In total, serving 1GB of static assets via CDN costs pennies per month.
 
 CloudFront:
 
 - CloudFront provides CDN functionality and caching, with support for S3
-	origins.
+  origins.
 - The first 1TB of data transfer and 10 million requests are free.
 - The first 1,000 cache invalidation requests are also free (we use one per
-	deployment).
+  deployment).
 
 ### Secrets: KMS and SSM Parameter Store ($1/month)
 

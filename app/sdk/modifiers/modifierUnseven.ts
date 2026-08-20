@@ -28,7 +28,10 @@ class ModifierUnseven extends ModifierDyingWish {
         // (ex - Snow Chaser 'replicate')
         // but don't want to catch minions that grant others Dying Wish (ex - Ancient Grove)
         for (var kwClass of Array.from<any>(card.getKeywordClasses())) {
-          if ((kwClass.belongsToKeywordClass(ModifierDyingWish)) && (card.hasModifierClass(ModifierDyingWish))) {
+          if (
+            kwClass.belongsToKeywordClass(ModifierDyingWish) &&
+            card.hasModifierClass(ModifierDyingWish)
+          ) {
             // if we find an "Dying Wish"
             possibleCardsToSummon.push(card);
           }
@@ -36,8 +39,17 @@ class ModifierUnseven extends ModifierDyingWish {
       }
 
       if (possibleCardsToSummon.length > 0) {
-        const cardToSummon = possibleCardsToSummon.splice(this.getGameSession().getRandomIntegerForExecution(possibleCardsToSummon.length), 1)[0];
-        const playCardAction = new PlayCardSilentlyAction(this.getGameSession(), this.getCard().getOwnerId(), this.getCard().getPositionX(), this.getCard().getPositionY(), cardToSummon.getIndex());
+        const cardToSummon = possibleCardsToSummon.splice(
+          this.getGameSession().getRandomIntegerForExecution(possibleCardsToSummon.length),
+          1,
+        )[0];
+        const playCardAction = new PlayCardSilentlyAction(
+          this.getGameSession(),
+          this.getCard().getOwnerId(),
+          this.getCard().getPositionX(),
+          this.getCard().getPositionY(),
+          cardToSummon.getIndex(),
+        );
         playCardAction.setSource(this.getCard());
         return this.getGameSession().executeAction(playCardAction);
       }

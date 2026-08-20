@@ -31,14 +31,14 @@ class PlayCardFromHandAction extends PlayCardAction {
   }
 
   /**
-  * Explicitly sets the card to be played.
-  * This can be used to swap a card being played from hand with another arbritrary card at execution time
-  */
+   * Explicitly sets the card to be played.
+   * This can be used to swap a card being played from hand with another arbritrary card at execution time
+   */
   overrideCard(card) {
     this._private.originalCard = this.getCard();
     this.overridenManaCost = this.getCard().getManaCost(); // store original mana cost of this card
     this.setCard(card);
-    return this.overrideCardData = true; // card to be played to board is NOT card being played from hand
+    return (this.overrideCardData = true); // card to be played to board is NOT card being played from hand
   }
 
   getLogName() {
@@ -52,7 +52,10 @@ class PlayCardFromHandAction extends PlayCardAction {
       return this.overridenManaCost;
     }
     const card = this.getCard();
-    if (card != null) { return card.getManaCost(); } return super.getManaCost();
+    if (card != null) {
+      return card.getManaCost();
+    }
+    return super.getManaCost();
   }
 
   /**
@@ -63,13 +66,20 @@ class PlayCardFromHandAction extends PlayCardAction {
   }
 
   getCard() {
-    if ((this._private.cachedCard == null)) {
+    if (this._private.cachedCard == null) {
       if (this.getGameSession().getIsRunningAsAuthoritative()) {
         // playing a card from hand should never use existing card data
-        this.cardDataOrIndex = this.getOwner().getDeck().getCardIndexInHandAtIndex(this.indexOfCardInHand);
-      } else if ((this.getOwnerId() === this.getGameSession().getMyPlayerId()) && (this.cardDataOrIndex == null)) {
+        this.cardDataOrIndex = this.getOwner()
+          .getDeck()
+          .getCardIndexInHandAtIndex(this.indexOfCardInHand);
+      } else if (
+        this.getOwnerId() === this.getGameSession().getMyPlayerId() &&
+        this.cardDataOrIndex == null
+      ) {
         // when my action, try to grab card from hand unless we have card data provided by server
-        this._private.cachedCard = this.getOwner().getDeck().getCardInHandAtIndex(this.indexOfCardInHand);
+        this._private.cachedCard = this.getOwner()
+          .getDeck()
+          .getCardInHandAtIndex(this.indexOfCardInHand);
       }
     }
 
@@ -80,12 +90,19 @@ class PlayCardFromHandAction extends PlayCardAction {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
       if (!this.overrideCardData) {
         // playing a card from hand should never use existing card data (unless explicitly being overridden)
-        this.cardDataOrIndex = this.getOwner().getDeck().getCardIndexInHandAtIndex(this.indexOfCardInHand);
+        this.cardDataOrIndex = this.getOwner()
+          .getDeck()
+          .getCardIndexInHandAtIndex(this.indexOfCardInHand);
       }
     }
 
-    if (this.overrideCardData) { // explicitly changing the card as it is played, so remove the old card from hand - not only when running as authoritative, must happen on client as well
-      this.getGameSession()._removeCardFromCurrentLocation(this.getOwner().getDeck().getCardInHandAtIndex(this.indexOfCardInHand), this.getOwner().getDeck().getCardIndexInHandAtIndex(this.indexOfCardInHand), this);
+    if (this.overrideCardData) {
+      // explicitly changing the card as it is played, so remove the old card from hand - not only when running as authoritative, must happen on client as well
+      this.getGameSession()._removeCardFromCurrentLocation(
+        this.getOwner().getDeck().getCardInHandAtIndex(this.indexOfCardInHand),
+        this.getOwner().getDeck().getCardIndexInHandAtIndex(this.indexOfCardInHand),
+        this,
+      );
     }
     // prototype method will handle applying the card to the board
     super._execute();
@@ -96,7 +113,8 @@ class PlayCardFromHandAction extends PlayCardAction {
       const cardType = card.getType();
       if (CardType.getIsUnitCardType(cardType)) {
         return this.getGameSession().getPlayerById(this.getOwnerId()).totalMinionsPlayedFromHand++;
-      } if (CardType.getIsSpellCardType(cardType)) {
+      }
+      if (CardType.getIsSpellCardType(cardType)) {
         return this.getGameSession().getPlayerById(this.getOwnerId()).totalSpellsPlayedFromHand++;
       }
     }

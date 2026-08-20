@@ -24,12 +24,14 @@ class ModifierApplyMinionToBoardWatch extends Modifier {
   onAction(e) {
     super.onAction(e);
 
-    const {
-      action,
-    } = e;
+    const { action } = e;
 
     // watch for a unit being applied to board in any way by any player (except transforms)
-    if (action instanceof ApplyCardToBoardAction && (__guard__(action.getCard(), (x) => x.type) === CardType.Unit) && (action.getCard() !== this.getCard())) {
+    if (
+      action instanceof ApplyCardToBoardAction &&
+      __guard__(action.getCard(), (x) => x.type) === CardType.Unit &&
+      action.getCard() !== this.getCard()
+    ) {
       if (!(action instanceof PlayCardAsTransformAction)) {
         return this.onApplyToBoardWatch(action);
       }
@@ -43,11 +45,13 @@ ModifierApplyMinionToBoardWatch.prototype.activeInHand = false;
 ModifierApplyMinionToBoardWatch.prototype.activeInDeck = false;
 ModifierApplyMinionToBoardWatch.prototype.activeInSignatureCards = false;
 ModifierApplyMinionToBoardWatch.prototype.activeOnBoard = true;
-ModifierApplyMinionToBoardWatch.prototype.fxResource = ['FX.Modifiers.ModifierApplyMinionToBoardWatch'];
+ModifierApplyMinionToBoardWatch.prototype.fxResource = [
+  'FX.Modifiers.ModifierApplyMinionToBoardWatch',
+];
 // override me in sub classes to implement special behavior
 
 module.exports = ModifierApplyMinionToBoardWatch;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

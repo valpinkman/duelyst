@@ -26,7 +26,15 @@
 
   helpers.getIsFileReadable = function (file) {
     const ext = helpers.getContentAfterLastDot(file).toLowerCase();
-    return ext === 'ts' || ext === 'js' || ext === 'coffee' || ext === 'json' || ext === 'css' || ext === 'scss' || ext === 'hbs';
+    return (
+      ext === 'ts' ||
+      ext === 'js' ||
+      ext === 'coffee' ||
+      ext === 'json' ||
+      ext === 'css' ||
+      ext === 'scss' ||
+      ext === 'hbs'
+    );
   };
 
   /**
@@ -35,7 +43,11 @@
    * @returns {string}
    */
   helpers.stripComments = function (content) {
-    return content.replace(/\/\/[\s\S]*?(\r|\n)/g, '$1').replace(/\/\*[\s\S]*?\*\//g, '').replace(/<!--[\s\S]*?-->/g, '').replace(/###[\s\S]*?###/g, '')
+    return content
+      .replace(/\/\/[\s\S]*?(\r|\n)/g, '$1')
+      .replace(/\/\*[\s\S]*?\*\//g, '')
+      .replace(/<!--[\s\S]*?-->/g, '')
+      .replace(/###[\s\S]*?###/g, '')
       .replace(/[^#]{1}#[^#][\s\S]*?(\r|\n)/g, '$1');
   };
 
@@ -81,20 +93,35 @@
      */
     return new Promise((resolve, reject) => {
       fs.readdir(dir, (err, list) => {
-        if (err) { reject(err); return; }
-        if (list == null || list.length === 0) { resolve([]); return; }
+        if (err) {
+          reject(err);
+          return;
+        }
+        if (list == null || list.length === 0) {
+          resolve([]);
+          return;
+        }
 
-        const perEntry = list.slice().sort().map((name) => new Promise((res, rej) => {
-          const file = path.resolve(dir, name);
-          fs.stat(file, (statErr, stat) => {
-            if (statErr) { rej(statErr); return; }
-            if (stat && stat.isDirectory()) {
-              helpers.recursivelyGetFilesStartingFrom(file).then(res, rej);
-            } else {
-              res([file]);
-            }
-          });
-        }));
+        const perEntry = list
+          .slice()
+          .sort()
+          .map(
+            (name) =>
+              new Promise((res, rej) => {
+                const file = path.resolve(dir, name);
+                fs.stat(file, (statErr, stat) => {
+                  if (statErr) {
+                    rej(statErr);
+                    return;
+                  }
+                  if (stat && stat.isDirectory()) {
+                    helpers.recursivelyGetFilesStartingFrom(file).then(res, rej);
+                  } else {
+                    res([file]);
+                  }
+                });
+              }),
+          );
 
         Promise.all(perEntry).then((groups) => resolve(groups.flat()), reject);
       });
@@ -110,20 +137,32 @@
    * @param {Number} [concurrency=100] max number of files to open at once
    * @returns {Promise}
    */
-  helpers.recursivelyReadDirectoryAndFiles = function (dir, fileHandler, fileNameFilter, concurrency) {
+  helpers.recursivelyReadDirectoryAndFiles = function (
+    dir,
+    fileHandler,
+    fileNameFilter,
+    concurrency,
+  ) {
     return new Promise((resolve, reject) => {
       if (concurrency == null) {
         concurrency = 100;
       }
 
-      helpers.recursivelyGetFilesStartingFrom(dir)
-        .then((files) => PromiseUtils.map(files, (file) => {
-          if (fileNameFilter == null || !fileNameFilter.test(file)) {
-            // console.log("READ", file);
-            return helpers.readFile(file, fileHandler);
-          }
-          return Promise.resolve();
-        }, { concurrency }))
+      helpers
+        .recursivelyGetFilesStartingFrom(dir)
+        .then((files) =>
+          PromiseUtils.map(
+            files,
+            (file) => {
+              if (fileNameFilter == null || !fileNameFilter.test(file)) {
+                // console.log("READ", file);
+                return helpers.readFile(file, fileHandler);
+              }
+              return Promise.resolve();
+            },
+            { concurrency },
+          ),
+        )
         .then(resolve);
     });
   };
@@ -157,7 +196,7 @@
           } else {
             resolve();
           }
-        }());
+        })();
       });
     });
   };
@@ -236,10 +275,10 @@
           } else {
             resolve();
           }
-        }());
+        })();
       });
     });
   };
 
   module.exports = helpers;
-}());
+})();

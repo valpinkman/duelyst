@@ -16,14 +16,17 @@ class ModifierEndTurnWatchGainTempBuff extends ModifierEndTurnWatch {
 
   static type = 'ModifierEndTurnWatchGainTempBuff';
   static modifierName = 'End Turn Watch Temp Buff';
-  static description = 'Gain a buff on your opponent\'s turn';
+  static description = "Gain a buff on your opponent's turn";
 
   onActivate() {
     super.onActivate();
 
     // when activated on opponent's turn, immediately activate buff for this turn
     if (!this.getCard().isOwnersTurn()) {
-      const statContextObject = Modifier.createContextObjectWithAttributeBuffs(this.attackBuff, this.healthBuff);
+      const statContextObject = Modifier.createContextObjectWithAttributeBuffs(
+        this.attackBuff,
+        this.healthBuff,
+      );
       statContextObject.appliedName = this.modifierName;
       statContextObject.durationEndTurn = 1;
       return this.getGameSession().applyModifierContextObject(statContextObject, this.getCard());
@@ -31,8 +34,12 @@ class ModifierEndTurnWatchGainTempBuff extends ModifierEndTurnWatch {
   }
 
   static createContextObject(attackBuff, healthBuff, modifierName, options) {
-    if (attackBuff == null) { attackBuff = 0; }
-    if (healthBuff == null) { healthBuff = 0; }
+    if (attackBuff == null) {
+      attackBuff = 0;
+    }
+    if (healthBuff == null) {
+      healthBuff = 0;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.attackBuff = attackBuff;
     contextObject.healthBuff = healthBuff;
@@ -43,7 +50,10 @@ class ModifierEndTurnWatchGainTempBuff extends ModifierEndTurnWatch {
   onTurnWatch() {
     super.onTurnWatch();
     // at end of my turn, activate buff (so it will be active on opponent's turn)
-    const statContextObject = Modifier.createContextObjectWithAttributeBuffs(this.attackBuff, this.healthBuff);
+    const statContextObject = Modifier.createContextObjectWithAttributeBuffs(
+      this.attackBuff,
+      this.healthBuff,
+    );
     statContextObject.appliedName = this.modifierName;
     statContextObject.durationEndTurn = 2;
     return this.getGameSession().applyModifierContextObject(statContextObject, this.getCard());

@@ -21,13 +21,24 @@ class ModifierOverwatchDestroyedResummonAndDestroyOther extends ModifierOverwatc
 
       // destroy other friendly minion
       const potentialUnitsToDestroy = [];
-      for (var unit of Array.from<any>(this.getGameSession().getBoard().getFriendlyEntitiesForEntity(this.getCard(), CardType.Unit))) {
-        if ((unit !== card) && !unit.getIsGeneral() && this.getGameSession().getCanCardBeScheduledForRemoval(unit)) {
+      for (var unit of Array.from<any>(
+        this.getGameSession()
+          .getBoard()
+          .getFriendlyEntitiesForEntity(this.getCard(), CardType.Unit),
+      )) {
+        if (
+          unit !== card &&
+          !unit.getIsGeneral() &&
+          this.getGameSession().getCanCardBeScheduledForRemoval(unit)
+        ) {
           potentialUnitsToDestroy.push(unit);
         }
       }
       if (potentialUnitsToDestroy.length > 0) {
-        const unitToDestroy = potentialUnitsToDestroy[this.getGameSession().getRandomIntegerForExecution(potentialUnitsToDestroy.length)];
+        const unitToDestroy =
+          potentialUnitsToDestroy[
+            this.getGameSession().getRandomIntegerForExecution(potentialUnitsToDestroy.length)
+          ];
         if (unitToDestroy != null) {
           const killAction = new KillAction(this.getGameSession());
           killAction.setOwnerId(this.getCard().getOwnerId());
@@ -39,12 +50,19 @@ class ModifierOverwatchDestroyedResummonAndDestroyOther extends ModifierOverwatc
 
       // resummon self
       const respawnPosition = card.getPosition();
-      const playCardAction = new PlayCardSilentlyAction(this.getGameSession(), this.getCard().getOwnerId(), respawnPosition.x, respawnPosition.y, card.createNewCardData());
+      const playCardAction = new PlayCardSilentlyAction(
+        this.getGameSession(),
+        this.getCard().getOwnerId(),
+        respawnPosition.x,
+        respawnPosition.y,
+        card.createNewCardData(),
+      );
       playCardAction.setSource(this.getCard());
       return this.getGameSession().executeAction(playCardAction);
     }
   }
 }
-ModifierOverwatchDestroyedResummonAndDestroyOther.prototype.type = 'ModifierOverwatchDestroyedResummonAndDestroyOther';
+ModifierOverwatchDestroyedResummonAndDestroyOther.prototype.type =
+  'ModifierOverwatchDestroyedResummonAndDestroyOther';
 
 module.exports = ModifierOverwatchDestroyedResummonAndDestroyOther;

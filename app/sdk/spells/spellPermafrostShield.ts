@@ -20,9 +20,13 @@ class SpellPermafrostShield extends SpellApplyModifiers {
     const applyEffectPosition = { x, y };
     const entity = board.getCardAtPosition(applyEffectPosition, this.targetType);
     if (entity.getBelongsToTribe(Races.Vespyr)) {
-      this.targetModifiersContextObjects = [Modifier.createContextObjectWithAttributeBuffs(this.attackBuff, this.healthBuff)];
+      this.targetModifiersContextObjects = [
+        Modifier.createContextObjectWithAttributeBuffs(this.attackBuff, this.healthBuff),
+      ];
     } else {
-      this.targetModifiersContextObjects = [Modifier.createContextObjectWithAttributeBuffs(this.attackBuff)];
+      this.targetModifiersContextObjects = [
+        Modifier.createContextObjectWithAttributeBuffs(this.attackBuff),
+      ];
     }
     this.targetModifiersContextObjects[0].appliedName = 'Frozen Resolve';
     return super.onApplyEffectToBoardTile(board, x, y, sourceAction);

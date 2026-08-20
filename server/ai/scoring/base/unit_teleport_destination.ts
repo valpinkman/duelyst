@@ -13,7 +13,11 @@ const ScoreForUnitTeleportDestination = function (targetPosition, teleportDestin
   let score = 0;
 
   score += ScoreForUnit(teleportDestinationCard);
-  score += ScoreForCardAtTargetPosition(teleportDestinationCard, targetPosition, teleportDestinationCard);
+  score += ScoreForCardAtTargetPosition(
+    teleportDestinationCard,
+    targetPosition,
+    teleportDestinationCard,
+  );
 
   return score;
 };

@@ -22,10 +22,15 @@ class SpellKineticSurge extends SpellApplyPlayerModifiers {
       const summonActions = [];
       let actions = [];
       for (var step of Array.from<any>(this.getGameSession().getCurrentTurn().getSteps())) {
-        if (step !== this.getGameSession().getExecutingStep()) { // don't need to check current step since player modifier will catch summons on this step
+        if (step !== this.getGameSession().getExecutingStep()) {
+          // don't need to check current step since player modifier will catch summons on this step
           actions = step.getAction().getFlattenedActionTree();
           for (action of Array.from<any>(actions)) {
-            if (action instanceof ApplyCardToBoardAction && (action.getTarget().getType() === CardType.Unit) && (action.getTarget().getOwnerId() === this.getOwnerId())) {
+            if (
+              action instanceof ApplyCardToBoardAction &&
+              action.getTarget().getType() === CardType.Unit &&
+              action.getTarget().getOwnerId() === this.getOwnerId()
+            ) {
               summonActions.push(action);
             }
           }
@@ -36,12 +41,24 @@ class SpellKineticSurge extends SpellApplyPlayerModifiers {
       return (() => {
         const result = [];
         for (action of Array.from<any>(summonActions)) {
-        // but ignore transforms
-          if (!(action instanceof PlayCardAsTransformAction || action instanceof CloneEntityAsTransformAction)) {
+          // but ignore transforms
+          if (
+            !(
+              action instanceof PlayCardAsTransformAction ||
+              action instanceof CloneEntityAsTransformAction
+            )
+          ) {
             var targetUnit = action.getTarget();
             if (targetUnit != null) {
-              result.push(Array.from<any>(this.targetModifiersContextObjects[0].modifiersContextObjects).map((modifierContextObject) =>
-                this.getGameSession().applyModifierContextObject(modifierContextObject, targetUnit)));
+              result.push(
+                Array.from<any>(this.targetModifiersContextObjects[0].modifiersContextObjects).map(
+                  (modifierContextObject) =>
+                    this.getGameSession().applyModifierContextObject(
+                      modifierContextObject,
+                      targetUnit,
+                    ),
+                ),
+              );
             } else {
               result.push(undefined);
             }

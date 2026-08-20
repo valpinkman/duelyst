@@ -16,7 +16,6 @@ const SignatureCardNode = require('../../nodes/cards/SignatureCardNode');
  *************************************************************************** */
 
 const PlayerLayer = BaseLayer.extend({
-
   _playerId: null,
   _signatureCardNode: null,
   _canShowSignatureCardNode: false,
@@ -135,11 +134,19 @@ const PlayerLayer = BaseLayer.extend({
       if (modifier != null && modifier.getIsFromArtifact()) {
         target = modifier.getCardAffected();
       }
-    } else if (action instanceof SDK.DamageAction || action instanceof SDK.RefreshArtifactChargesAction || action instanceof SDK.RestoreChargeToAllArtifactsAction) {
+    } else if (
+      action instanceof SDK.DamageAction ||
+      action instanceof SDK.RefreshArtifactChargesAction ||
+      action instanceof SDK.RestoreChargeToAllArtifactsAction
+    ) {
       target = action.getTarget();
     }
 
-    return target instanceof SDK.Entity && (target.getIsGeneral() || target.getWasGeneral()) && target.getOwnerId() == this.getPlayerId();
+    return (
+      target instanceof SDK.Entity &&
+      (target.getIsGeneral() || target.getWasGeneral()) &&
+      target.getOwnerId() == this.getPlayerId()
+    );
   },
 
   getSignatureCardNode() {
@@ -185,7 +192,10 @@ const PlayerLayer = BaseLayer.extend({
         const artifactData = this.getArtifactDataFromModifier(modifier);
         if (artifactData != null) {
           var artifactCard = artifactData.card;
-          const matchingArtifactData = _.find(artifactsData, (existingArtifactData) => existingArtifactData.card === artifactCard);
+          const matchingArtifactData = _.find(
+            artifactsData,
+            (existingArtifactData) => existingArtifactData.card === artifactCard,
+          );
           if (matchingArtifactData == null) {
             artifactsData.push(artifactData);
           }
@@ -222,7 +232,9 @@ const PlayerLayer = BaseLayer.extend({
     }
 
     // iterate over each artifact node and set artifact data
-    if (artifactsData == null) { artifactsData = []; }
+    if (artifactsData == null) {
+      artifactsData = [];
+    }
     for (let i = 0, il = this._artifactNodes.length; i < il; i++) {
       const artifactNode = this._artifactNodes[i];
       const artifactData = artifactsData[i];
@@ -257,7 +269,11 @@ const PlayerLayer = BaseLayer.extend({
       currentCard = sdkPlayer.getCurrentSignatureCard();
     }
 
-    if (this._canShowSignatureCardNode && !this._signatureCardNode.getIsDisabled() && (currentCard != null || referenceCard != null)) {
+    if (
+      this._canShowSignatureCardNode &&
+      !this._signatureCardNode.getIsDisabled() &&
+      (currentCard != null || referenceCard != null)
+    ) {
       this._signatureCardNode.setVisible(true);
       this._signatureCardNode.setSdkCard(currentCard || referenceCard);
       this._signatureCardNode.resetHighlightAndSelection();
@@ -342,7 +358,10 @@ const PlayerLayer = BaseLayer.extend({
           }
 
           // show application
-          showDuration = Math.max(showDuration, artifactNode.showApply(modifier.getSourceCard(), showDelay));
+          showDuration = Math.max(
+            showDuration,
+            artifactNode.showApply(modifier.getSourceCard(), showDelay),
+          );
 
           // update artifact nodes layout immediately
           this._updateArtifactNodesLayout();
@@ -355,13 +374,20 @@ const PlayerLayer = BaseLayer.extend({
         var artifactNode = this.getArtifactNodeFromModifier(modifier);
         if (artifactNode != null) {
           // show removal
-          const removeDuration = artifactNode.showRemove(showDelay, this._updateArtifactNodesLayout.bind(this));
+          const removeDuration = artifactNode.showRemove(
+            showDelay,
+            this._updateArtifactNodesLayout.bind(this),
+          );
           showDuration = Math.max(showDuration, removeDuration);
         }
       }
 
       // update artifacts durability
-      if (action instanceof SDK.DamageAction || action instanceof SDK.RefreshArtifactChargesAction || action instanceof SDK.RestoreChargeToAllArtifactsAction) {
+      if (
+        action instanceof SDK.DamageAction ||
+        action instanceof SDK.RefreshArtifactChargesAction ||
+        action instanceof SDK.RestoreChargeToAllArtifactsAction
+      ) {
         var artifactNodes = this._artifactNodes;
 
         // show durability change
@@ -376,7 +402,14 @@ const PlayerLayer = BaseLayer.extend({
           durabilityChange = 1;
         }
         for (var i = 0, il = artifactNodes.length; i < il; i++) {
-          showDuration = Math.max(showDuration, artifactNodes[i].showDurabilityChange(durabilityChange, showDelay, this._updateArtifactNodesLayout.bind(this)));
+          showDuration = Math.max(
+            showDuration,
+            artifactNodes[i].showDurabilityChange(
+              durabilityChange,
+              showDelay,
+              this._updateArtifactNodesLayout.bind(this),
+            ),
+          );
         }
       }
     }
@@ -426,7 +459,6 @@ const PlayerLayer = BaseLayer.extend({
   },
 
   /* endregion ACTIONS */
-
 });
 
 PlayerLayer.create = function (playerId, layer) {

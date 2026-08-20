@@ -28,7 +28,7 @@ class GameTurn extends SDKObject {
   }
 
   setPlayerId(val) {
-    return this.playerId = val;
+    return (this.playerId = val);
   }
 
   getPlayerId() {
@@ -44,7 +44,7 @@ class GameTurn extends SDKObject {
   }
 
   setEnded(val) {
-    return this.ended = val;
+    return (this.ended = val);
   }
 
   getEnded() {

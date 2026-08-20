@@ -20,8 +20,12 @@ class ModifierAnyDrawCardWatchBuffSelf extends ModifierAnyDrawCardWatch {
   static type = 'ModifierAnyDrawCardWatchBuffSelf';
 
   static createContextObject(attackBuff, maxHPBuff, options) {
-    if (attackBuff == null) { attackBuff = 0; }
-    if (maxHPBuff == null) { maxHPBuff = 0; }
+    if (attackBuff == null) {
+      attackBuff = 0;
+    }
+    if (maxHPBuff == null) {
+      maxHPBuff = 0;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.modifiersContextObjects = [
       Modifier.createContextObjectWithAttributeBuffs(attackBuff, maxHPBuff, {
@@ -36,19 +40,34 @@ class ModifierAnyDrawCardWatchBuffSelf extends ModifierAnyDrawCardWatch {
   static getDescription(modifierContextObject) {
     if (modifierContextObject) {
       const subContextObject = modifierContextObject.modifiersContextObjects[0];
-      return i18next.t('modifiers.any_draw_card_watch_buff_self_def', { amount: Stringifiers.stringifyAttackHealthBuff(subContextObject.attributeBuffs.atk, subContextObject.attributeBuffs.maxHP) });
+      return i18next.t('modifiers.any_draw_card_watch_buff_self_def', {
+        amount: Stringifiers.stringifyAttackHealthBuff(
+          subContextObject.attributeBuffs.atk,
+          subContextObject.attributeBuffs.maxHP,
+        ),
+      });
       // return @description.replace /%X/, Stringifiers.stringifyAttackHealthBuff(subContextObject.attributeBuffs.atk,subContextObject.attributeBuffs.maxHP)
     }
     return this.description;
   }
 
   onDrawCardWatch(action) {
-    return this.applyManagedModifiersFromModifiersContextObjects(this.modifiersContextObjects, this.getCard());
+    return this.applyManagedModifiersFromModifiersContextObjects(
+      this.modifiersContextObjects,
+      this.getCard(),
+    );
   }
 }
 ModifierAnyDrawCardWatchBuffSelf.prototype.type = 'ModifierAnyDrawCardWatchBuffSelf';
-ModifierAnyDrawCardWatchBuffSelf.modifierName = i18next.t('modifiers.any_draw_card_watch_buff_self_name');
-ModifierAnyDrawCardWatchBuffSelf.description = i18next.t('modifiers.any_draw_card_watch_buff_self_def');
-ModifierAnyDrawCardWatchBuffSelf.prototype.fxResource = ['FX.Modifiers.ModifierDrawCardWatch', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierAnyDrawCardWatchBuffSelf.modifierName = i18next.t(
+  'modifiers.any_draw_card_watch_buff_self_name',
+);
+ModifierAnyDrawCardWatchBuffSelf.description = i18next.t(
+  'modifiers.any_draw_card_watch_buff_self_def',
+);
+ModifierAnyDrawCardWatchBuffSelf.prototype.fxResource = [
+  'FX.Modifiers.ModifierDrawCardWatch',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 
 module.exports = ModifierAnyDrawCardWatchBuffSelf;

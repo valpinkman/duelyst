@@ -17,7 +17,9 @@ class ModifierOverwatchMovedNearbyMiniImmolation extends ModifierOverwatchMovedN
   static type = 'ModifierOverwatchMovedNearbyMiniImmolation';
 
   static createContextObject(damageAmount, options) {
-    if (damageAmount == null) { damageAmount = 0; }
+    if (damageAmount == null) {
+      damageAmount = 0;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.damageAmount = damageAmount;
     return contextObject;
@@ -32,7 +34,9 @@ class ModifierOverwatchMovedNearbyMiniImmolation extends ModifierOverwatchMovedN
     this.getGameSession().executeAction(healAction);
 
     // damage enemy units around this unit
-    const entities = this.getGameSession().getBoard().getEnemyEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
+    const entities = this.getGameSession()
+      .getBoard()
+      .getEnemyEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
     return (() => {
       const result = [];
       for (var entity of Array.from<any>(entities)) {
@@ -47,6 +51,7 @@ class ModifierOverwatchMovedNearbyMiniImmolation extends ModifierOverwatchMovedN
     })();
   }
 }
-ModifierOverwatchMovedNearbyMiniImmolation.prototype.type = 'ModifierOverwatchMovedNearbyMiniImmolation';
+ModifierOverwatchMovedNearbyMiniImmolation.prototype.type =
+  'ModifierOverwatchMovedNearbyMiniImmolation';
 
 module.exports = ModifierOverwatchMovedNearbyMiniImmolation;

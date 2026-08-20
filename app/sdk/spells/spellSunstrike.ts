@@ -11,7 +11,9 @@ const DamageAction = require('app/sdk/actions/damageAction');
 class SpellSunstrike extends Spell {
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     const applyEffectPosition = { x, y };
-    const entityAtPosition = this.getGameSession().getBoard().getEntityAtPosition(applyEffectPosition);
+    const entityAtPosition = this.getGameSession()
+      .getBoard()
+      .getEntityAtPosition(applyEffectPosition);
 
     if (entityAtPosition != null) {
       if (entityAtPosition.getOwnerId() === this.getOwnerId()) {

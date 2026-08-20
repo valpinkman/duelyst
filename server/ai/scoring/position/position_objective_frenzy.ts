@@ -9,10 +9,17 @@ const position_objective_frenzy = function (gameSession, unit, position, bestObj
   // does not award bounty if space is not adjacent to bestObjective since we don't
   // want frenzy to override positioning logic for seeking best objective adjacency for attacks
   let score = 0;
-  if (unit.hasModifierClass(ModifierFrenzy)) { // the more enemies nearby the better
+  if (unit.hasModifierClass(ModifierFrenzy)) {
+    // the more enemies nearby the better
     /// /Logger.module("AI").debug("[G:" + gameSession.gameId + "] scoreForUnit_module_frenzy() => unit " + unit.getLogName() + ". score = " + score);
     if (distanceBetweenBoardPositions(position, bestObjective.getPosition()) <= 1) {
-      score += (_.reject(gameSession.getBoard().getCardsAroundPosition(position, CardType.Unit, 1), (card) => card.getIsSameTeamAs(unit)).length - 1) * BOUNTY.FRENZY_PER_UNIT; // minus 1 for objective itself. frenzy doesn't trigger on just 1 adjacent unit.
+      score +=
+        (_.reject(
+          gameSession.getBoard().getCardsAroundPosition(position, CardType.Unit, 1),
+          (card) => card.getIsSameTeamAs(unit),
+        ).length -
+          1) *
+        BOUNTY.FRENZY_PER_UNIT; // minus 1 for objective itself. frenzy doesn't trigger on just 1 adjacent unit.
     }
     /// /Logger.module("AI").debug("[G:" + gameSession.gameId + "] scoreForUnit_module_frenzy() => unit " + unit.getLogName() + ". score = " + score);
   }

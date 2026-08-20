@@ -22,13 +22,28 @@ class ModifierOnDyingResummonAnywhere extends ModifierOnDying {
       const wholeBoardPattern = CONFIG.ALL_BOARD_POSITIONS;
       const cardData = this.getCard().createNewCardData();
       const thisEntityPosition = this.getCard().getPosition();
-      const validPositions = _.reject(wholeBoardPattern, (position) => UtilsPosition.getPositionsAreEqual(position, thisEntityPosition));
-      const spawnLocations = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(this.getGameSession(), { x: 0, y: 0 }, validPositions, this.getCard(), this.getCard(), 1);
+      const validPositions = _.reject(wholeBoardPattern, (position) =>
+        UtilsPosition.getPositionsAreEqual(position, thisEntityPosition),
+      );
+      const spawnLocations = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(
+        this.getGameSession(),
+        { x: 0, y: 0 },
+        validPositions,
+        this.getCard(),
+        this.getCard(),
+        1,
+      );
 
       return (() => {
         const result = [];
         for (var position of Array.from<any>(spawnLocations)) {
-          var playCardAction = new PlayCardSilentlyAction(this.getGameSession(), this.getCard().getOwnerId(), position.x, position.y, cardData);
+          var playCardAction = new PlayCardSilentlyAction(
+            this.getGameSession(),
+            this.getCard().getOwnerId(),
+            position.x,
+            position.y,
+            cardData,
+          );
           playCardAction.setSource(this.getCard());
           result.push(this.getGameSession().executeAction(playCardAction));
         }

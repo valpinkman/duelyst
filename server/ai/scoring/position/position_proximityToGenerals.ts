@@ -14,8 +14,12 @@ const position_proximityToGenerals = function (gameSession, unit, position) {
     const opponentGeneral = gameSession.getGeneralForOpponentOfPlayerId(myPlayerId);
     /// /Logger.module("AI").debug("[G:" + gameSession.gameId + "] scoreForUnit_module_proximityToGenerals() => 1unit " + myGeneral.getLogName() + ". score = " + score + " pos = " + myGeneral.getPosition());
     /// /Logger.module("AI").debug("[G:" + gameSession.gameId + "] scoreForUnit_module_proximityToGenerals() => 2unit " + opponentGeneral.getLogName() + ". score = " + score + " pos = " + opponentGeneral.getPosition());
-    score += distanceBetweenBoardPositions(position, myGeneral.getPosition()) * getBountyForDistanceFromMyGeneral(gameSession, myPlayerId);
-    score += distanceBetweenBoardPositions(position, opponentGeneral.getPosition()) * BOUNTY.DISTANCE_FROM_OPPONENT_GENERAL;
+    score +=
+      distanceBetweenBoardPositions(position, myGeneral.getPosition()) *
+      getBountyForDistanceFromMyGeneral(gameSession, myPlayerId);
+    score +=
+      distanceBetweenBoardPositions(position, opponentGeneral.getPosition()) *
+      BOUNTY.DISTANCE_FROM_OPPONENT_GENERAL;
     /// /Logger.module("AI").debug("[G:" + gameSession.gameId + "] scoreForUnit_module_proximityToGenerals() => unit " + unit.getLogName() + ". score = " + score);
   }
 

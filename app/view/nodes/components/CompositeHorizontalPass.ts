@@ -6,7 +6,6 @@ const RenderPass = require('../../fx/RenderPass');
  * @see CompositePass
  */
 const CompositeHorizontalPass = CompositePass.extend({
-
   // size of pass
   _fixedWidth: null,
   _width: 0,
@@ -98,9 +97,21 @@ const CompositeHorizontalPass = CompositePass.extend({
       this._scale = this._fixedScale != null ? this._fixedScale : 1;
       this._antiAlias = this._fixedAntiAlias != null ? this._fixedAntiAlias : antiAlias;
       if (this._renderPass != null) {
-        this._renderPass.rebuild(cc.Texture2D.PIXEL_FORMAT_RGBA8888, this._width, this._height, this._scale, this._antiAlias);
+        this._renderPass.rebuild(
+          cc.Texture2D.PIXEL_FORMAT_RGBA8888,
+          this._width,
+          this._height,
+          this._scale,
+          this._antiAlias,
+        );
       } else {
-        this._renderPass = new RenderPass(cc.Texture2D.PIXEL_FORMAT_RGBA8888, this._width, this._height, this._scale, this._antiAlias);
+        this._renderPass = new RenderPass(
+          cc.Texture2D.PIXEL_FORMAT_RGBA8888,
+          this._width,
+          this._height,
+          this._scale,
+          this._antiAlias,
+        );
       }
     }
   },
@@ -144,7 +155,6 @@ const CompositeHorizontalPass = CompositePass.extend({
   },
 
   /* endregion RENDERING */
-
 });
 
 module.exports = CompositeHorizontalPass;

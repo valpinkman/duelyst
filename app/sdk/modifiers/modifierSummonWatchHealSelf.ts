@@ -19,7 +19,9 @@ class ModifierSummonWatchHealSelf extends ModifierSummonWatch {
   static type = 'ModifierSummonWatchHealSelf';
 
   static createContextObject(healAmount, options) {
-    if (healAmount == null) { healAmount = 0; }
+    if (healAmount == null) {
+      healAmount = 0;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.healAmount = healAmount;
     return contextObject;
@@ -41,7 +43,10 @@ ModifierSummonWatchHealSelf.prototype.type = 'ModifierSummonWatchHealSelf';
 ModifierSummonWatchHealSelf.prototype.name = 'Summon Watch Heal Self';
 ModifierSummonWatchHealSelf.prototype.description = 'Whenever you summon a minion, heal this unit';
 ModifierSummonWatchHealSelf.prototype.healAmount = 0;
-ModifierSummonWatchHealSelf.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericHeal'];
+ModifierSummonWatchHealSelf.prototype.fxResource = [
+  'FX.Modifiers.ModifierSummonWatch',
+  'FX.Modifiers.ModifierGenericHeal',
+];
 // only heal if unit is currently damaged
 
 module.exports = ModifierSummonWatchHealSelf;

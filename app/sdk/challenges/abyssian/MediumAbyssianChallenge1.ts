@@ -50,10 +50,7 @@ class MediumAbyssianChallenge1 extends Challenge {
   }
 
   getOpponentPlayerDeckData(gameSession) {
-    return [
-      { id: Cards.Faction1.General },
-      { id: Cards.TutorialSpell.TutorialFireOrb },
-    ];
+    return [{ id: Cards.Faction1.General }, { id: Cards.TutorialSpell.TutorialFireOrb }];
   }
 
   setupBoard(gameSession) {
@@ -88,15 +85,24 @@ class MediumAbyssianChallenge1 extends Challenge {
   setupOpponentAgent(gameSession) {
     super.setupOpponentAgent(gameSession);
 
-    this._opponentAgent.addActionForTurn(0, AgentActions.createAgentSoftActionShowInstructionLabels([{
-      label: i18next.t('challenges.medium_abyss_1_taunt'),
-      isSpeech: true,
-      yPosition: 0.6,
-      isPersistent: true,
-      isOpponent: true,
-    },
-    ]));
-    return this._opponentAgent.addActionForTurn(0, AgentActions.createAgentActionPlayCardFindPosition(0, () => [GameSession.getInstance().getGeneralForPlayer1().getPosition()]));
+    this._opponentAgent.addActionForTurn(
+      0,
+      AgentActions.createAgentSoftActionShowInstructionLabels([
+        {
+          label: i18next.t('challenges.medium_abyss_1_taunt'),
+          isSpeech: true,
+          yPosition: 0.6,
+          isPersistent: true,
+          isOpponent: true,
+        },
+      ]),
+    );
+    return this._opponentAgent.addActionForTurn(
+      0,
+      AgentActions.createAgentActionPlayCardFindPosition(0, () => [
+        GameSession.getInstance().getGeneralForPlayer1().getPosition(),
+      ]),
+    );
   }
 }
 MediumAbyssianChallenge1.prototype.type = 'MediumAbyssianChallenge1';
@@ -105,7 +111,9 @@ MediumAbyssianChallenge1.prototype.name = i18next.t('challenges.medium_abyss_1_t
 MediumAbyssianChallenge1.prototype.description = i18next.t('challenges.medium_abyss_1_description');
 MediumAbyssianChallenge1.prototype.iconUrl = RSX.speech_portrait_abyssian.img;
 MediumAbyssianChallenge1.prototype._musicOverride = RSX.music_battlemap_abyssian.audio;
-MediumAbyssianChallenge1.prototype.otkChallengeStartMessage = i18next.t('challenges.medium_abyss_1_start');
+MediumAbyssianChallenge1.prototype.otkChallengeStartMessage = i18next.t(
+  'challenges.medium_abyss_1_start',
+);
 MediumAbyssianChallenge1.prototype.otkChallengeFailureMessages = [
   i18next.t('challenges.medium_abyss_1_fail'),
 ];

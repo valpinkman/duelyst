@@ -143,9 +143,7 @@ F3[Cards.Spell.CosmicFlesh] = [
   },
   {
     type: CardIntentType.ApplyModifiers,
-    modifiers: [
-      ModifierProvoke.type,
-    ],
+    modifiers: [ModifierProvoke.type],
     targets: CardTargetType.Minion | CardTargetType.Friendly,
   },
 ];
@@ -178,13 +176,13 @@ F3[Cards.Spell.ScionsSecondWish] = [
     amount: 2,
     amountIsRebase: false,
     targets: CardTargetType.Minion | CardTargetType.Friendly,
-  }, /* ,
+  } /* ,
   // TODO: apply immune to general
    {
    type: CardIntentType.ApplyModifiers,
    targets: CardTargetType.Minion | CardTargetType.Friendly
    }
-   */
+   */,
 ];
 
 F3[Cards.Spell.ScionsThirdWish] = [
@@ -202,9 +200,7 @@ F3[Cards.Spell.ScionsThirdWish] = [
   },
   {
     type: CardIntentType.ApplyModifiers,
-    modifiers: [
-      ModifierFlying.type,
-    ],
+    modifiers: [ModifierFlying.type],
     targets: CardTargetType.Minion | CardTargetType.Friendly,
   },
 ];
@@ -218,9 +214,7 @@ F3[Cards.Spell.AstralPhasing] = [
   },
   {
     type: CardIntentType.ApplyModifiers,
-    modifiers: [
-      ModifierFlying.type,
-    ],
+    modifiers: [ModifierFlying.type],
     targets: CardTargetType.Minion | CardTargetType.Friendly,
   },
 ];
@@ -235,9 +229,7 @@ F3[Cards.Spell.Maelstrom] = [
 F3[Cards.Artifact.AnkhFireNova] = [
   {
     type: CardIntentType.ApplyModifiers,
-    modifiers: [
-      ModifierBlastAttack.type,
-    ],
+    modifiers: [ModifierBlastAttack.type],
     targets: CardTargetType.General | CardTargetType.Friendly,
   },
 ];
@@ -290,7 +282,8 @@ F3[Cards.Artifact.Spinecleaver] = [
 F3[Cards.Spell.CircleOfDesiccation] = [
   {
     type: CardIntentType.Remove,
-    targets: CardTargetType.All | CardTargetType.Minion | CardTargetType.Friendly | CardTargetType.Enemy,
+    targets:
+      CardTargetType.All | CardTargetType.Minion | CardTargetType.Friendly | CardTargetType.Enemy,
   },
 ];
 
@@ -328,7 +321,11 @@ F3[Cards.Faction3.SandswirlReader] = [
     followups: [
       {
         type: CardIntentType.Remove,
-        targets: CardTargetType.Minion | CardTargetType.Enemy | CardTargetType.Friendly | CardTargetType.Nearby,
+        targets:
+          CardTargetType.Minion |
+          CardTargetType.Enemy |
+          CardTargetType.Friendly |
+          CardTargetType.Nearby,
       },
     ],
   },

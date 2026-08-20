@@ -77,23 +77,31 @@ class CardFactory_CoreshatterSet_Faction3 {
       card.factionId = Factions.Faction3;
       card.setCardSetId(CardSet.Coreshatter);
       card.name = 'Notion of Starless Eternity';
-      card.setDescription('Trial: General reaches the other edge of the battlefield with an equipped artifact.\nDestiny: Each equipped artifact gives your General a tier of ascension.');
+      card.setDescription(
+        'Trial: General reaches the other edge of the battlefield with an equipped artifact.\nDestiny: Each equipped artifact gives your General a tier of ascension.',
+      );
       card.atk = 3;
       card.maxHP = 3;
       card.manaCost = 6;
       card.rarityId = Rarity.Mythron;
       const emblemModifier1 = PlayerModifierEmblemSituationalVetQuestFrenzy.createContextObject(1);
       emblemModifier1.appliedName = 'Overcome Eternity';
-      emblemModifier1.appliedDescription = 'Each equipped artifact gives your General a tier of ascension: Frenzy, Flying, Celerity.';
+      emblemModifier1.appliedDescription =
+        'Each equipped artifact gives your General a tier of ascension: Frenzy, Flying, Celerity.';
       const emblemModifier2 = PlayerModifierEmblemSituationalVetQuestFlying.createContextObject(2);
       emblemModifier2.isHiddenToUI = true;
-      const emblemModifier3 = PlayerModifierEmblemSituationalVetQuestCelerity.createContextObject(3);
+      const emblemModifier3 =
+        PlayerModifierEmblemSituationalVetQuestCelerity.createContextObject(3);
       emblemModifier3.isHiddenToUI = true;
       card.setInherentModifiersContextObjects([
         ModifierStartsInHand.createContextObject(),
         ModifierCannotBeReplaced.createContextObject(),
         ModifierFateVetruvianMovementQuest.createContextObject(),
-        ModifierOnSummonFromHandApplyEmblems.createContextObject([emblemModifier1, emblemModifier2, emblemModifier3], true, false),
+        ModifierOnSummonFromHandApplyEmblems.createContextObject(
+          [emblemModifier1, emblemModifier2, emblemModifier3],
+          true,
+          false,
+        ),
         ModifierCannotBeRemovedFromHand.createContextObject(),
       ]);
       card.setFXResource(['FX.Cards.Neutral.SwornDefender']);
@@ -194,13 +202,12 @@ class CardFactory_CoreshatterSet_Faction3 {
       card.setDescription('An enemy minion disappears at the start of your next turn.');
       card.manaCost = 3;
       card.rarityId = Rarity.Rare;
-      const removeEntityContextObject = ModifierStartOpponentsTurnWatchRemoveEntity.createContextObject();
+      const removeEntityContextObject =
+        ModifierStartOpponentsTurnWatchRemoveEntity.createContextObject();
       removeEntityContextObject.appliedName = 'Withering';
       removeEntityContextObject.appliedDescription = 'Disappears when you end your turn.';
       removeEntityContextObject.isRemovable = false;
-      card.setTargetModifiersContextObjects([
-        removeEntityContextObject,
-      ]);
+      card.setTargetModifiersContextObjects([removeEntityContextObject]);
       card.spellFilterType = SpellFilterType.EnemyDirect;
       card.canTargetGeneral = false;
       card.setFXResource(['FX.Cards.Spell.Wither']);
@@ -273,7 +280,9 @@ class CardFactory_CoreshatterSet_Faction3 {
       card.factionId = Factions.Faction3;
       card.id = Cards.Artifact.RepairSword;
       card.name = 'Obdurator';
-      card.setDescription('Your General gains +1 Attack.\nAt the start of your turn, repair all of your artifacts by 1 durability.');
+      card.setDescription(
+        'Your General gains +1 Attack.\nAt the start of your turn, repair all of your artifacts by 1 durability.',
+      );
       card.manaCost = 2;
       card.rarityId = Rarity.Epic;
       card.durability = 3;
@@ -297,7 +306,9 @@ class CardFactory_CoreshatterSet_Faction3 {
       card.factionId = Factions.Faction3;
       card.name = 'Dustdrinker';
       card.raceId = Races.Dervish;
-      card.setDescription('Intensify: Deal 1 damage to the enemy General and this minion gains +1 Health.');
+      card.setDescription(
+        'Intensify: Deal 1 damage to the enemy General and this minion gains +1 Health.',
+      );
       card.atk = 2;
       card.maxHP = 1;
       card.manaCost = 2;
@@ -356,7 +367,9 @@ class CardFactory_CoreshatterSet_Faction3 {
       card.setCardSetId(CardSet.Coreshatter);
       card.id = Cards.Spell.ThoughtExchange;
       card.name = 'Synaptic Arbitrage';
-      card.setDescription('Give your opponent a minion to take control of nearby enemy minions with less Attack.');
+      card.setDescription(
+        'Give your opponent a minion to take control of nearby enemy minions with less Attack.',
+      );
       card.manaCost = 4;
       card.rarityId = Rarity.Epic;
       card.spellFilterType = SpellFilterType.AllyDirect;
@@ -397,7 +410,9 @@ class CardFactory_CoreshatterSet_Faction3 {
       card.factionId = Factions.Faction3;
       card.name = 'Khanuum-ka';
       card.raceId = Races.Dervish;
-      card.setDescription('Flying, Rush\nDying Wish: A random friendly Dervish disappears, summoning a Khanuum-ka in its place.');
+      card.setDescription(
+        'Flying, Rush\nDying Wish: A random friendly Dervish disappears, summoning a Khanuum-ka in its place.',
+      );
       card.atk = 3;
       card.maxHP = 3;
       card.manaCost = 5;
@@ -433,7 +448,9 @@ class CardFactory_CoreshatterSet_Faction3 {
       card.setCardSetId(CardSet.Coreshatter);
       card.factionId = Factions.Faction3;
       card.name = 'Swarmking Scarab';
-      card.setDescription('Blast\nWhenever this minion blasts, summon 1/1 Scarabyte with Flying and Rush in those spaces.');
+      card.setDescription(
+        'Blast\nWhenever this minion blasts, summon 1/1 Scarabyte with Flying and Rush in those spaces.',
+      );
       card.atk = 5;
       card.maxHP = 7;
       card.manaCost = 6;
@@ -510,13 +527,17 @@ class CardFactory_CoreshatterSet_Faction3 {
       card.setCardSetId(CardSet.Coreshatter);
       card.factionId = Factions.Faction3;
       card.name = 'Atom Klinger';
-      card.setDescription('Whenever you equip an artifact, this minion gains +Attack equal to the artifact\'s cost.');
+      card.setDescription(
+        "Whenever you equip an artifact, this minion gains +Attack equal to the artifact's cost.",
+      );
       card.atk = 1;
       card.maxHP = 5;
       card.manaCost = 3;
       card.rarityId = Rarity.Rare;
       const buffName = 'Atomized';
-      card.setInherentModifiersContextObjects([ModifierEquipFriendlyArtifactWatchGainAttackEqualToCost.createContextObject(buffName)]);
+      card.setInherentModifiersContextObjects([
+        ModifierEquipFriendlyArtifactWatchGainAttackEqualToCost.createContextObject(buffName),
+      ]);
       card.setFXResource(['FX.Cards.Neutral.ArakiHeadhunter']);
       card.setBaseSoundResource({
         apply: RSX.sfx_neutral_fog_attack_swing.audio,

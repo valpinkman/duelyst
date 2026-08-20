@@ -16,13 +16,19 @@ class ModifierBandingAttackAndHealth extends ModifierBanding {
   static description = 'Gains %X / %Y';
 
   static createContextObject(attackBuff, healthBuff, options) {
-    if (attackBuff == null) { attackBuff = 0; }
-    if (healthBuff == null) { healthBuff = 0; }
-    if (options == null) { options = undefined; }
+    if (attackBuff == null) {
+      attackBuff = 0;
+    }
+    if (healthBuff == null) {
+      healthBuff = 0;
+    }
+    if (options == null) {
+      options = undefined;
+    }
     const contextObject = super.createContextObject(options);
-    contextObject.appliedName = 'Zeal: Lion\'s Fortitude';
+    contextObject.appliedName = "Zeal: Lion's Fortitude";
     const buffContextObject = ModifierBanded.createContextObject(attackBuff, healthBuff);
-    buffContextObject.appliedName = 'Zealed: Lion\'s Fortitude';
+    buffContextObject.appliedName = "Zealed: Lion's Fortitude";
     contextObject.modifiersContextObjects = [buffContextObject];
     return contextObject;
   }
@@ -30,13 +36,22 @@ class ModifierBandingAttackAndHealth extends ModifierBanding {
   static getDescription(modifierContextObject) {
     if (modifierContextObject) {
       const subContextObject = modifierContextObject.modifiersContextObjects[0];
-      let replaceText = this.description.replace(/%X/, Stringifiers.stringifyStatBuff(subContextObject.attributeBuffs.atk));
-      return replaceText = replaceText.replace(/%Y/, Stringifiers.stringifyStatBuff(subContextObject.attributeBuffs.maxHP));
+      let replaceText = this.description.replace(
+        /%X/,
+        Stringifiers.stringifyStatBuff(subContextObject.attributeBuffs.atk),
+      );
+      return (replaceText = replaceText.replace(
+        /%Y/,
+        Stringifiers.stringifyStatBuff(subContextObject.attributeBuffs.maxHP),
+      ));
     }
     return this.description;
   }
 }
 ModifierBandingAttackAndHealth.prototype.type = 'ModifierBandingAttackAndHealth';
-ModifierBandingAttackAndHealth.prototype.fxResource = ['FX.Modifiers.ModifierZeal', 'FX.Modifiers.ModifierZealAttackAndHealth'];
+ModifierBandingAttackAndHealth.prototype.fxResource = [
+  'FX.Modifiers.ModifierZeal',
+  'FX.Modifiers.ModifierZealAttackAndHealth',
+];
 
 module.exports = ModifierBandingAttackAndHealth;

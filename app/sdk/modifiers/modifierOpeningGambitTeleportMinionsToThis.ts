@@ -22,11 +22,13 @@ class ModifierOpeningGambitTeleportMinionsToThis extends ModifierOpeningGambit {
     return (() => {
       const result = [];
       for (var entity of Array.from<any>(entities)) {
-        if (!entity.getIsGeneral() && (entity !== this.getCard())) {
+        if (!entity.getIsGeneral() && entity !== this.getCard()) {
           var randomTeleportAction = new RandomTeleportAction(this.getGameSession());
           randomTeleportAction.setOwnerId(this.getCard().getOwnerId());
           randomTeleportAction.setSource(entity);
-          randomTeleportAction.setFXResource(_.union(randomTeleportAction.getFXResource(), this.getFXResource()));
+          randomTeleportAction.setFXResource(
+            _.union(randomTeleportAction.getFXResource(), this.getFXResource()),
+          );
           randomTeleportAction.setPatternSourcePosition(this.getCard().getPosition());
           randomTeleportAction.setTeleportPattern(CONFIG.PATTERN_3x3);
           result.push(this.getGameSession().executeAction(randomTeleportAction));
@@ -38,7 +40,10 @@ class ModifierOpeningGambitTeleportMinionsToThis extends ModifierOpeningGambit {
     })();
   }
 }
-ModifierOpeningGambitTeleportMinionsToThis.prototype.type = 'ModifierOpeningGambitTeleportMinionsToThis';
-ModifierOpeningGambitTeleportMinionsToThis.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
+ModifierOpeningGambitTeleportMinionsToThis.prototype.type =
+  'ModifierOpeningGambitTeleportMinionsToThis';
+ModifierOpeningGambitTeleportMinionsToThis.prototype.fxResource = [
+  'FX.Modifiers.ModifierOpeningGambit',
+];
 
 module.exports = ModifierOpeningGambitTeleportMinionsToThis;

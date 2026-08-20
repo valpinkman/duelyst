@@ -86,9 +86,7 @@ class CardFactory_UnitySet_Neutral {
       card.maxHP = 4;
       card.manaCost = 3;
       card.rarityId = Rarity.Common;
-      card.setInherentModifiersContextObjects([
-        ModifierBelongsToAllRaces.createContextObject(),
-      ]);
+      card.setInherentModifiersContextObjects([ModifierBelongsToAllRaces.createContextObject()]);
     }
 
     if (identifier === Cards.Neutral.Feralu) {
@@ -124,7 +122,15 @@ class CardFactory_UnitySet_Neutral {
       card.rarityId = Rarity.Rare;
       const buffContextObject = Modifier.createContextObjectWithAttributeBuffs(1, 1);
       buffContextObject.appliedName = i18next.t('modifiers.neutral_feralu_modifier');
-      card.setInherentModifiersContextObjects([ModifierFeralu.createContextObjectWithAuraForAllAllies([buffContextObject], null, null, null, 'Minions with a tribe have +1/+1')]);
+      card.setInherentModifiersContextObjects([
+        ModifierFeralu.createContextObjectWithAuraForAllAllies(
+          [buffContextObject],
+          null,
+          null,
+          null,
+          'Minions with a tribe have +1/+1',
+        ),
+      ]);
     }
 
     if (identifier === Cards.Neutral.BoulderBreacher) {
@@ -161,9 +167,15 @@ class CardFactory_UnitySet_Neutral {
       const customContextObject = ModifierCannotStrikeback.createContextObject();
       customContextObject.durationEndTurn = 1;
       customContextObject.appliedName = i18next.t('modifiers.neutral_boulder_breacher_modifier');
-      customContextObject.appliedDescription = i18next.t('modifiers.neutral_boulder_breacher_modifier_2');
+      customContextObject.appliedDescription = i18next.t(
+        'modifiers.neutral_boulder_breacher_modifier_2',
+      );
       card.setInherentModifiersContextObjects([
-        ModifierBondApplyModifiers.createContextObjectForAllEnemyUnitsAndGenerals([customContextObject], false, 'Enemies can\'t counterattack this turn'),
+        ModifierBondApplyModifiers.createContextObjectForAllEnemyUnitsAndGenerals(
+          [customContextObject],
+          false,
+          "Enemies can't counterattack this turn",
+        ),
       ]);
       card.rarityId = Rarity.Rare;
     }
@@ -199,7 +211,9 @@ class CardFactory_UnitySet_Neutral {
       card.atk = 7;
       card.maxHP = 7;
       card.manaCost = 7;
-      card.setInherentModifiersContextObjects([ModifierOpeningGambitGoleminate.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierOpeningGambitGoleminate.createContextObject(),
+      ]);
       card.rarityId = Rarity.Rare;
     }
 
@@ -235,7 +249,9 @@ class CardFactory_UnitySet_Neutral {
       card.maxHP = 6;
       card.manaCost = 5;
       card.rarityId = Rarity.Rare;
-      card.setInherentModifiersContextObjects([ModifierSpellWatchDrawRandomArcanyst.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierSpellWatchDrawRandomArcanyst.createContextObject(),
+      ]);
     }
 
     if (identifier === Cards.Neutral.Grimes) {
@@ -267,7 +283,10 @@ class CardFactory_UnitySet_Neutral {
       card.maxHP = 3;
       card.manaCost = 6;
       card.rarityId = Rarity.Rare;
-      card.setInherentModifiersContextObjects([ModifierOpeningGambitSpawnTribal.createContextObject(), ModifierDyingWishSpawnTribal.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierOpeningGambitSpawnTribal.createContextObject(),
+        ModifierDyingWishSpawnTribal.createContextObject(),
+      ]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
     }
 
@@ -301,7 +320,9 @@ class CardFactory_UnitySet_Neutral {
       card.maxHP = 5;
       card.manaCost = 4;
       card.rarityId = Rarity.Rare;
-      card.setInherentModifiersContextObjects([ModifierDrawCardWatchCopySpell.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierDrawCardWatchCopySpell.createContextObject(),
+      ]);
     }
 
     if (identifier === Cards.Neutral.TrinityWing) {
@@ -334,7 +355,14 @@ class CardFactory_UnitySet_Neutral {
       card.maxHP = 4;
       card.manaCost = 5;
       card.rarityId = Rarity.Legendary;
-      card.setInherentModifiersContextObjects([ModifierFlying.createContextObject(), ModifierBondPutCardsInHand.createContextObject([Cards.Spell.DragonBreath, Cards.Spell.DragonGrace, Cards.Spell.DragonHeart])]);
+      card.setInherentModifiersContextObjects([
+        ModifierFlying.createContextObject(),
+        ModifierBondPutCardsInHand.createContextObject([
+          Cards.Spell.DragonBreath,
+          Cards.Spell.DragonGrace,
+          Cards.Spell.DragonHeart,
+        ]),
+      ]);
       card.addKeywordClassToInclude(ModifierFlying);
     }
 
@@ -395,9 +423,7 @@ class CardFactory_UnitySet_Neutral {
       card.applyToOwnGeneral = true;
       const statContextObject = Modifier.createContextObjectWithAttributeBuffs(1);
       statContextObject.appliedName = i18next.t('modifiers.neutral_lesson_of_courage_modifier');
-      card.setTargetModifiersContextObjects([
-        statContextObject,
-      ]);
+      card.setTargetModifiersContextObjects([statContextObject]);
       card.setFXResource(['FX.Cards.Spell.LessonOfCourage']);
       card.setBaseSoundResource({
         apply: RSX.sfx_division_crest_outline_reveal.audio,

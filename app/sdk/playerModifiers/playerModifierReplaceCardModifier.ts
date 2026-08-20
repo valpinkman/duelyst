@@ -12,7 +12,9 @@ class PlayerModifierReplaceCardModifier extends PlayerModifier {
   static type = 'PlayerModifierReplaceCardModifier';
 
   static createContextObject(replaceCardChange, duration, options) {
-    if (duration == null) { duration = 0; }
+    if (duration == null) {
+      duration = 0;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.replaceCardChange = replaceCardChange;
     contextObject.durationEndTurn = duration;

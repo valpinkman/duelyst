@@ -23,9 +23,14 @@ class ModifierStartTurnWatchDispelAllEnemyMinionsDrawCard extends ModifierStartT
 
   onTurnWatch(action) {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
-      for (var enemyUnit of Array.from<any>(this.getGameSession().getBoard().getEnemyEntitiesForEntity(this.getCard(), CardType.Unit))) {
+      for (var enemyUnit of Array.from<any>(
+        this.getGameSession().getBoard().getEnemyEntitiesForEntity(this.getCard(), CardType.Unit),
+      )) {
         if (!enemyUnit.getIsGeneral()) {
-          this.getGameSession().applyModifierContextObject(ModifierSilence.createContextObject(), enemyUnit);
+          this.getGameSession().applyModifierContextObject(
+            ModifierSilence.createContextObject(),
+            enemyUnit,
+          );
         }
       }
       const a = new DrawCardAction(this.getGameSession(), this.getCard().getOwnerId());
@@ -33,6 +38,7 @@ class ModifierStartTurnWatchDispelAllEnemyMinionsDrawCard extends ModifierStartT
     }
   }
 }
-ModifierStartTurnWatchDispelAllEnemyMinionsDrawCard.prototype.type = 'ModifierStartTurnWatchDispelAllEnemyMinionsDrawCard';
+ModifierStartTurnWatchDispelAllEnemyMinionsDrawCard.prototype.type =
+  'ModifierStartTurnWatchDispelAllEnemyMinionsDrawCard';
 
 module.exports = ModifierStartTurnWatchDispelAllEnemyMinionsDrawCard;

@@ -23,7 +23,13 @@ class ModifierOpeningGambitEquipArtifact extends ModifierOpeningGambit {
     super.onOpeningGambit(action);
 
     const gameSession = this.getGameSession();
-    const playCardAction = new PlayCardSilentlyAction(gameSession, this.getCard().getOwnerId(), this.getCard().getPosition().x, this.getCard().getPosition().y, this.cardDataOrIndexToEquip);
+    const playCardAction = new PlayCardSilentlyAction(
+      gameSession,
+      this.getCard().getOwnerId(),
+      this.getCard().getPosition().x,
+      this.getCard().getPosition().y,
+      this.cardDataOrIndexToEquip,
+    );
     playCardAction.setSource(this.getCard());
     return gameSession.executeAction(playCardAction);
   }

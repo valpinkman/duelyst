@@ -120,16 +120,19 @@ class MigrationsModule {
   static checkIfUserNeedsMigrateEmotes20160708(userRow) {
     const migrationDeadlineMoment = moment.utc('2016-07-22 03:30');
     let userLastSessionMoment = moment.utc(userRow.last_session_at);
-    if ((userRow.last_session_at == null)) {
+    if (userRow.last_session_at == null) {
       userLastSessionMoment = moment.utc(userRow.created_at);
     }
 
     if (!userLastSessionMoment.isBefore(migrationDeadlineMoment)) {
       return Promise.resolve(false);
     } else {
-      return knex('user_cosmetic_inventory').first().where('user_id', userRow.id).andWhere('transaction_id', 'migration 20160708')
+      return knex('user_cosmetic_inventory')
+        .first()
+        .where('user_id', userRow.id)
+        .andWhere('transaction_id', 'migration 20160708')
         .then(function (userCosmeticRow) {
-        // Presence of any cosmetic rows means they don't need a migration
+          // Presence of any cosmetic rows means they don't need a migration
           if (userCosmeticRow != null) {
             return Promise.resolve(false);
           } else {
@@ -147,45 +150,87 @@ class MigrationsModule {
    */
   static userMigrateEmotes20160708(userId, systemTime) {
     if (!userId) {
-      Logger.module('MigrationsModule').debug(`userMigrateEmotes20160708() -> invalid user ID - ${userId}.`.red);
-      return Promise.reject(new Error(`Can not migrate emotes for user: invalid user ID - ${userId}`));
+      Logger.module('MigrationsModule').debug(
+        `userMigrateEmotes20160708() -> invalid user ID - ${userId}.`.red,
+      );
+      return Promise.reject(
+        new Error(`Can not migrate emotes for user: invalid user ID - ${userId}`),
+      );
     }
 
     const MOMENT_NOW_UTC = systemTime || moment().utc();
 
-    Logger.module('MigrationsModule').debug(`userMigrateEmotes20160708() -> migrating emotes for user ${userId}`.green);
+    Logger.module('MigrationsModule').debug(
+      `userMigrateEmotes20160708() -> migrating emotes for user ${userId}`.green,
+    );
 
     Logger.module('MigrationsModule').time(`userMigrateEmotes20160708() -> ${userId} done`.green);
 
     // Giving players all pre cosmetics emotes if they played before cosmetics patch
     const emoteIdsToGive = EMOTE_IDS_PRE_COSMETICS_20160708;
 
-    var txPromise = knex.transaction(function (tx) {
-      tx('users').first('id').where('id', userId).forUpdate()
-        .then(() => PromiseUtils.map(emoteIdsToGive, function (emoteId) {
-          const transactionType = 'migration gift';
-          const transactionId = 'migration 20160708';
+    var txPromise = knex
+      .transaction(function (tx) {
+        tx('users')
+          .first('id')
+          .where('id', userId)
+          .forUpdate()
+          .then(() =>
+            PromiseUtils.map(emoteIdsToGive, function (emoteId) {
+              const transactionType = 'migration gift';
+              const transactionId = 'migration 20160708';
 
-          return InventoryModule.giveUserCosmeticId(txPromise, tx, userId, emoteId, transactionType, transactionId, null, MOMENT_NOW_UTC);
-        }))
-        .then(() => tx('user_emotes').where('user_id', userId).select())
-        .then(function (userEmoteRows) {
-          let ownedUserEmotes = _.map(userEmoteRows, (userEmoteRow) => userEmoteRow.emote_id);
-          // To be safe that no duplicates are given
-          ownedUserEmotes = _.filter(ownedUserEmotes, (ownedUserEmoteId) => !_.contains(emoteIdsToGive, ownedUserEmoteId));
-          return PromiseUtils.map(ownedUserEmotes, function (emoteId) {
-            const transactionType = 'migrated emote';
-            const transactionId = 'migration 20160708';
+              return InventoryModule.giveUserCosmeticId(
+                txPromise,
+                tx,
+                userId,
+                emoteId,
+                transactionType,
+                transactionId,
+                null,
+                MOMENT_NOW_UTC,
+              );
+            }),
+          )
+          .then(() => tx('user_emotes').where('user_id', userId).select())
+          .then(function (userEmoteRows) {
+            let ownedUserEmotes = _.map(userEmoteRows, (userEmoteRow) => userEmoteRow.emote_id);
+            // To be safe that no duplicates are given
+            ownedUserEmotes = _.filter(
+              ownedUserEmotes,
+              (ownedUserEmoteId) => !_.contains(emoteIdsToGive, ownedUserEmoteId),
+            );
+            return PromiseUtils.map(ownedUserEmotes, function (emoteId) {
+              const transactionType = 'migrated emote';
+              const transactionId = 'migration 20160708';
 
-            return InventoryModule.giveUserCosmeticId(txPromise, tx, userId, emoteId, transactionType, transactionId, null, MOMENT_NOW_UTC);
-          });
-        })
-        .then(() => tx('user_emotes').where('user_id', userId).delete())
-        .then(() => DuelystFirebase.connect().getRootRef())
-        .then((fbRootRef) => FirebasePromises.remove(fbRootRef.child('user-inventory').child(userId).child('emotes')))
-        .then(tx.commit)
-        .catch(tx.rollback);
-    }).then(() => Logger.module('MigrationsModule').timeEnd(`userMigrateEmotes20160708() -> ${userId} done`.green));
+              return InventoryModule.giveUserCosmeticId(
+                txPromise,
+                tx,
+                userId,
+                emoteId,
+                transactionType,
+                transactionId,
+                null,
+                MOMENT_NOW_UTC,
+              );
+            });
+          })
+          .then(() => tx('user_emotes').where('user_id', userId).delete())
+          .then(() => DuelystFirebase.connect().getRootRef())
+          .then((fbRootRef) =>
+            FirebasePromises.remove(
+              fbRootRef.child('user-inventory').child(userId).child('emotes'),
+            ),
+          )
+          .then(tx.commit)
+          .catch(tx.rollback);
+      })
+      .then(() =>
+        Logger.module('MigrationsModule').timeEnd(
+          `userMigrateEmotes20160708() -> ${userId} done`.green,
+        ),
+      );
     return txPromise;
   }
 
@@ -200,7 +245,7 @@ class MigrationsModule {
 
     let userLastSessionVersion = userRow.last_session_version;
 
-    if ((userLastSessionVersion == null)) {
+    if (userLastSessionVersion == null) {
       userLastSessionVersion = '0.0.0';
     }
 
@@ -208,9 +253,12 @@ class MigrationsModule {
       return Promise.resolve(false);
     } else {
       // Safety check to make sure no user will get rewards even if version check fails
-      return knex('user_card_log').first('source_type').where('user_id', userRow.id).andWhere('source_type', 'prismatic backfill')
+      return knex('user_card_log')
+        .first('source_type')
+        .where('user_id', userRow.id)
+        .andWhere('source_type', 'prismatic backfill')
         .then(function (userCardLogRow) {
-        // Presence of any card log rows with 'prismatic backfill' means they don't need a migration
+          // Presence of any card log rows with 'prismatic backfill' means they don't need a migration
           if (userCardLogRow != null) {
             return Promise.resolve(false);
           } else {
@@ -228,8 +276,12 @@ class MigrationsModule {
    */
   static userBackfillPrismaticRewards(userId, systemTime) {
     if (!userId) {
-      Logger.module('MigrationsModule').debug(`userBackfillPrismaticRewards() -> invalid user ID - ${userId}.`.red);
-      return Promise.reject(new Error(`Can not backfill prismatic for user: invalid user ID - ${userId}`));
+      Logger.module('MigrationsModule').debug(
+        `userBackfillPrismaticRewards() -> invalid user ID - ${userId}.`.red,
+      );
+      return Promise.reject(
+        new Error(`Can not backfill prismatic for user: invalid user ID - ${userId}`),
+      );
     }
 
     const MOMENT_NOW_UTC = systemTime || moment().utc();
@@ -241,89 +293,143 @@ class MigrationsModule {
     // Prismatics were added around Thursday, 21 July 2016 at 6:00:00 PM UTC
     const prismaticFeatureAddedMoment = moment.utc('2016-07-21 20:00'); // 2 Hours extra time just in case
 
-    Logger.module('MigrationsModule').debug(`userBackfillPrismaticRewards() -> backfilling prismatics for user ${userId}`.green);
+    Logger.module('MigrationsModule').debug(
+      `userBackfillPrismaticRewards() -> backfilling prismatics for user ${userId}`.green,
+    );
 
-    Logger.module('MigrationsModule').time(`userBackfillPrismaticRewards() -> ${userId} done`.green);
+    Logger.module('MigrationsModule').time(
+      `userBackfillPrismaticRewards() -> ${userId} done`.green,
+    );
 
-    var txPromise = knex.transaction(function (tx) {
-      tx('users').first('id').where('id', userId).forUpdate()
-        .then(() => tx('user_spirit_orbs_opened').count().where('user_id', userId).andWhere('opened_at', '<', prismaticFeatureAddedMoment.toDate()))
-        .then(function (countData) {
-          let commonCards,
-            epicCards,
-            rareCards;
-          const numSpiritOrbsOpened = parseInt(countData[0].count);
+    var txPromise = knex
+      .transaction(function (tx) {
+        tx('users')
+          .first('id')
+          .where('id', userId)
+          .forUpdate()
+          .then(() =>
+            tx('user_spirit_orbs_opened')
+              .count()
+              .where('user_id', userId)
+              .andWhere('opened_at', '<', prismaticFeatureAddedMoment.toDate()),
+          )
+          .then(function (countData) {
+            let commonCards, epicCards, rareCards;
+            const numSpiritOrbsOpened = parseInt(countData[0].count);
 
-          Logger.module('MigrationsModule').debug(`userBackfillPrismaticRewards() -> user ${userId} opened ${numSpiritOrbsOpened} before prismatics`.green);
+            Logger.module('MigrationsModule').debug(
+              `userBackfillPrismaticRewards() -> user ${userId} opened ${numSpiritOrbsOpened} before prismatics`
+                .green,
+            );
 
-          const cardsRewarded = [];
+            const cardsRewarded = [];
 
-          if (numSpiritOrbsOpened < 20) {
-          // Do nothing, there is no reward for less than 20
-          } else if (numSpiritOrbsOpened < 50) {
-            commonCards = SDK.GameSession.getCardCaches().getRarity(SDK.Rarity.Common).getIsUnlockable(false).getIsCollectible(true)
-              .getIsPrismatic(false)
-              .getCards();
-            rareCards = SDK.GameSession.getCardCaches().getRarity(SDK.Rarity.Rare).getIsUnlockable(false).getIsCollectible(true)
-              .getIsPrismatic(false)
-              .getCards();
-            epicCards = SDK.GameSession.getCardCaches().getRarity(SDK.Rarity.Epic).getIsUnlockable(false).getIsCollectible(true)
-              .getIsPrismatic(false)
-              .getCards();
-            // 2 common prismatics
-            cardsRewarded.push(_.sample(commonCards));
-            cardsRewarded.push(_.sample(commonCards));
-            // 2 rare prismatics
-            cardsRewarded.push(_.sample(rareCards));
-            cardsRewarded.push(_.sample(rareCards));
-            // 2 epic prismatics
-            cardsRewarded.push(_.sample(epicCards));
-            cardsRewarded.push(_.sample(epicCards));
-          } else {
-            const numRewardBlocks = Math.floor(numSpiritOrbsOpened / 50);
-            commonCards = SDK.GameSession.getCardCaches().getRarity(SDK.Rarity.Common).getIsUnlockable(false).getIsCollectible(true)
-              .getIsPrismatic(false)
-              .getCards();
-            rareCards = SDK.GameSession.getCardCaches().getRarity(SDK.Rarity.Rare).getIsUnlockable(false).getIsCollectible(true)
-              .getIsPrismatic(false)
-              .getCards();
-            epicCards = SDK.GameSession.getCardCaches().getRarity(SDK.Rarity.Epic).getIsUnlockable(false).getIsCollectible(true)
-              .getIsPrismatic(false)
-              .getCards();
-            const legendaryCards = SDK.GameSession.getCardCaches().getRarity(SDK.Rarity.Legendary).getIsUnlockable(false).getIsCollectible(true)
-              .getIsPrismatic(false)
-              .getCards();
-            for (let i = 1, end = numRewardBlocks, asc = end >= 1; asc ? i <= end : i >= end; asc ? i++ : i--) {
-            // 4 common prismatics
+            if (numSpiritOrbsOpened < 20) {
+              // Do nothing, there is no reward for less than 20
+            } else if (numSpiritOrbsOpened < 50) {
+              commonCards = SDK.GameSession.getCardCaches()
+                .getRarity(SDK.Rarity.Common)
+                .getIsUnlockable(false)
+                .getIsCollectible(true)
+                .getIsPrismatic(false)
+                .getCards();
+              rareCards = SDK.GameSession.getCardCaches()
+                .getRarity(SDK.Rarity.Rare)
+                .getIsUnlockable(false)
+                .getIsCollectible(true)
+                .getIsPrismatic(false)
+                .getCards();
+              epicCards = SDK.GameSession.getCardCaches()
+                .getRarity(SDK.Rarity.Epic)
+                .getIsUnlockable(false)
+                .getIsCollectible(true)
+                .getIsPrismatic(false)
+                .getCards();
+              // 2 common prismatics
               cardsRewarded.push(_.sample(commonCards));
               cardsRewarded.push(_.sample(commonCards));
-              cardsRewarded.push(_.sample(commonCards));
-              cardsRewarded.push(_.sample(commonCards));
-              // 3 rare prismatics
-              cardsRewarded.push(_.sample(rareCards));
+              // 2 rare prismatics
               cardsRewarded.push(_.sample(rareCards));
               cardsRewarded.push(_.sample(rareCards));
               // 2 epic prismatics
               cardsRewarded.push(_.sample(epicCards));
               cardsRewarded.push(_.sample(epicCards));
-              // 1 legendary prismatic
-              cardsRewarded.push(_.sample(legendaryCards));
+            } else {
+              const numRewardBlocks = Math.floor(numSpiritOrbsOpened / 50);
+              commonCards = SDK.GameSession.getCardCaches()
+                .getRarity(SDK.Rarity.Common)
+                .getIsUnlockable(false)
+                .getIsCollectible(true)
+                .getIsPrismatic(false)
+                .getCards();
+              rareCards = SDK.GameSession.getCardCaches()
+                .getRarity(SDK.Rarity.Rare)
+                .getIsUnlockable(false)
+                .getIsCollectible(true)
+                .getIsPrismatic(false)
+                .getCards();
+              epicCards = SDK.GameSession.getCardCaches()
+                .getRarity(SDK.Rarity.Epic)
+                .getIsUnlockable(false)
+                .getIsCollectible(true)
+                .getIsPrismatic(false)
+                .getCards();
+              const legendaryCards = SDK.GameSession.getCardCaches()
+                .getRarity(SDK.Rarity.Legendary)
+                .getIsUnlockable(false)
+                .getIsCollectible(true)
+                .getIsPrismatic(false)
+                .getCards();
+              for (
+                let i = 1, end = numRewardBlocks, asc = end >= 1;
+                asc ? i <= end : i >= end;
+                asc ? i++ : i--
+              ) {
+                // 4 common prismatics
+                cardsRewarded.push(_.sample(commonCards));
+                cardsRewarded.push(_.sample(commonCards));
+                cardsRewarded.push(_.sample(commonCards));
+                cardsRewarded.push(_.sample(commonCards));
+                // 3 rare prismatics
+                cardsRewarded.push(_.sample(rareCards));
+                cardsRewarded.push(_.sample(rareCards));
+                cardsRewarded.push(_.sample(rareCards));
+                // 2 epic prismatics
+                cardsRewarded.push(_.sample(epicCards));
+                cardsRewarded.push(_.sample(epicCards));
+                // 1 legendary prismatic
+                cardsRewarded.push(_.sample(legendaryCards));
+              }
             }
-          }
 
-          const prismaticCardIdsRewarded = _.map(cardsRewarded, function (cardRewarded) {
-            const baseCardId = cardRewarded.getBaseCardId();
-            const prismaticCardId = SDK.Cards.getPrismaticCardId(baseCardId);
-            return prismaticCardId;
-          });
+            const prismaticCardIdsRewarded = _.map(cardsRewarded, function (cardRewarded) {
+              const baseCardId = cardRewarded.getBaseCardId();
+              const prismaticCardId = SDK.Cards.getPrismaticCardId(baseCardId);
+              return prismaticCardId;
+            });
 
-          Logger.module('MigrationsModule').debug(`userBackfillPrismaticRewards() -> user ${userId} received ${prismaticCardIdsRewarded.length} cards in prismatic backfill`.green);
+            Logger.module('MigrationsModule').debug(
+              `userBackfillPrismaticRewards() -> user ${userId} received ${prismaticCardIdsRewarded.length} cards in prismatic backfill`
+                .green,
+            );
 
-          return InventoryModule.giveUserCards(txPromise, tx, userId, prismaticCardIdsRewarded, sourceType, sourceId);
-        })
-        .then(tx.commit)
-        .catch(tx.rollback);
-    }).then(() => Logger.module('MigrationsModule').timeEnd(`userBackfillPrismaticRewards() -> ${userId} done`.green));
+            return InventoryModule.giveUserCards(
+              txPromise,
+              tx,
+              userId,
+              prismaticCardIdsRewarded,
+              sourceType,
+              sourceId,
+            );
+          })
+          .then(tx.commit)
+          .catch(tx.rollback);
+      })
+      .then(() =>
+        Logger.module('MigrationsModule').timeEnd(
+          `userBackfillPrismaticRewards() -> ${userId} done`.green,
+        ),
+      );
     return txPromise;
   }
 
@@ -340,7 +446,9 @@ class MigrationsModule {
     if (semver.gte(userLastSessionVersion, versionFeatureIntroduced)) {
       return Promise.resolve(false);
     } else {
-      return knex('users').first('purchase_count').where('id', userRow.id)
+      return knex('users')
+        .first('purchase_count')
+        .where('id', userRow.id)
         .then(function (user) {
           const requiresMigration = user.purchase_count > 0;
           return Promise.resolve(requiresMigration);
@@ -356,39 +464,56 @@ class MigrationsModule {
    */
   static userCreateChargeCountsMigration(userId, systemTime) {
     if (!userId) {
-      Logger.module('MigrationsModule').debug(`userCreateChargeCountsMigration() -> invalid user ID - ${userId}.`.red);
-      return Promise.reject(new Error(`Can not backfill charge counts for user: invalid user ID - ${userId}`));
+      Logger.module('MigrationsModule').debug(
+        `userCreateChargeCountsMigration() -> invalid user ID - ${userId}.`.red,
+      );
+      return Promise.reject(
+        new Error(`Can not backfill charge counts for user: invalid user ID - ${userId}`),
+      );
     }
 
     const MOMENT_NOW_UTC = systemTime || moment().utc();
-    Logger.module('MigrationsModule').time(`userCreateChargeCountsMigration() -> ${userId} done`.green);
+    Logger.module('MigrationsModule').time(
+      `userCreateChargeCountsMigration() -> ${userId} done`.green,
+    );
 
-    const txPromise = knex.transaction((tx) => // NOTE: because we don't have sku data for old products, we can't migrate anything other than starter bundle purchase count
+    const txPromise = knex
+      .transaction((tx) =>
+        // NOTE: because we don't have sku data for old products, we can't migrate anything other than starter bundle purchase count
 
-    // return tx("user_charges").where("user_id",userId)
-    // .bind {}
-    // .then (chargeRows) ->
-    //   allPromises = []
-    //   @.purchaseCounts = {}
-    //   for row in chargeRows
-    //     if not row.sku
-    //       row.sku = row.charge_json[""]
-    //       allPromises.push tx("user_charges").where('charge_id',row.charge_id).update({ sku:row.sku })
-    //     @.purchaseCounts[row.sku] ?= {}
-    //     @.purchaseCounts[row.sku].count ?= 0
-    //     @.purchaseCounts[row.sku].count += 1
-    //   return Promise.all(allPromises)
-    // .then ()-> return DuelystFirebase.connect().getRootRef()
-    // .then (rootRef) -> return FirebasePromises.set(rootRef.child("user-purchase-counts").child(userId), @.purchaseCounts)
+        // return tx("user_charges").where("user_id",userId)
+        // .bind {}
+        // .then (chargeRows) ->
+        //   allPromises = []
+        //   @.purchaseCounts = {}
+        //   for row in chargeRows
+        //     if not row.sku
+        //       row.sku = row.charge_json[""]
+        //       allPromises.push tx("user_charges").where('charge_id',row.charge_id).update({ sku:row.sku })
+        //     @.purchaseCounts[row.sku] ?= {}
+        //     @.purchaseCounts[row.sku].count ?= 0
+        //     @.purchaseCounts[row.sku].count += 1
+        //   return Promise.all(allPromises)
+        // .then ()-> return DuelystFirebase.connect().getRootRef()
+        // .then (rootRef) -> return FirebasePromises.set(rootRef.child("user-purchase-counts").child(userId), @.purchaseCounts)
 
-      Promise.all([
-        tx('users').where('id', userId).first('has_purchased_starter_bundle'),
-        DuelystFirebase.connect().getRootRef(),
-      ]).then(function ([userRow, rootRef]) {
-        if (userRow.has_purchased_starter_bundle) {
-          return FirebasePromises.set(rootRef.child('user-purchase-counts').child(userId).child('STARTERBUNDLE_201604'), { count: 1 });
-        }
-      })).then(() => Logger.module('MigrationsModule').timeEnd(`userCreateChargeCountsMigration() -> ${userId} done`.green));
+        Promise.all([
+          tx('users').where('id', userId).first('has_purchased_starter_bundle'),
+          DuelystFirebase.connect().getRootRef(),
+        ]).then(function ([userRow, rootRef]) {
+          if (userRow.has_purchased_starter_bundle) {
+            return FirebasePromises.set(
+              rootRef.child('user-purchase-counts').child(userId).child('STARTERBUNDLE_201604'),
+              { count: 1 },
+            );
+          }
+        }),
+      )
+      .then(() =>
+        Logger.module('MigrationsModule').timeEnd(
+          `userCreateChargeCountsMigration() -> ${userId} done`.green,
+        ),
+      );
     return txPromise;
   }
 
@@ -405,9 +530,11 @@ class MigrationsModule {
     if (semver.gte(userLastSessionVersion, versionFeatureIntroduced)) {
       return Promise.resolve(false);
     } else {
-      return knex('user_gauntlet_run').first('is_complete', 'created_at', 'faction_choices').where('user_id', userRow.id)
+      return knex('user_gauntlet_run')
+        .first('is_complete', 'created_at', 'faction_choices')
+        .where('user_id', userRow.id)
         .then(function (currentRunRow) {
-          if ((currentRunRow == null)) {
+          if (currentRunRow == null) {
             return Promise.resolve(false);
           }
 
@@ -442,17 +569,39 @@ class MigrationsModule {
    */
   static userIncompleteGauntletRefund(userId, systemTime) {
     if (!userId) {
-      Logger.module('MigrationsModule').debug(`userIncompleteGauntletRefund() -> invalid user ID - ${userId}.`.red);
-      return Promise.reject(new Error(`Can not check for incomplete Gauntlet Run: invalid user ID - ${userId}`));
+      Logger.module('MigrationsModule').debug(
+        `userIncompleteGauntletRefund() -> invalid user ID - ${userId}.`.red,
+      );
+      return Promise.reject(
+        new Error(`Can not check for incomplete Gauntlet Run: invalid user ID - ${userId}`),
+      );
     }
 
     const MOMENT_NOW_UTC = systemTime || moment().utc();
-    Logger.module('MigrationsModule').time(`userIncompleteGauntletRefund() -> ${userId} done`.green);
+    Logger.module('MigrationsModule').time(
+      `userIncompleteGauntletRefund() -> ${userId} done`.green,
+    );
 
-    var txPromise = knex.transaction((tx) => tx('user_gauntlet_run').where('user_id', userId).delete()
-      .then(() => InventoryModule.addArenaTicketToUser(txPromise, tx, userId, 'migration refund'))
-      .then(() => DuelystFirebase.connect().getRootRef())
-      .then((fbRootRef) => FirebasePromises.remove(fbRootRef.child('user-gauntlet-run').child(userId).child('current')))).then(() => Logger.module('MigrationsModule').timeEnd(`userIncompleteGauntletRefund() -> ${userId} done`.green));
+    var txPromise = knex
+      .transaction((tx) =>
+        tx('user_gauntlet_run')
+          .where('user_id', userId)
+          .delete()
+          .then(() =>
+            InventoryModule.addArenaTicketToUser(txPromise, tx, userId, 'migration refund'),
+          )
+          .then(() => DuelystFirebase.connect().getRootRef())
+          .then((fbRootRef) =>
+            FirebasePromises.remove(
+              fbRootRef.child('user-gauntlet-run').child(userId).child('current'),
+            ),
+          ),
+      )
+      .then(() =>
+        Logger.module('MigrationsModule').timeEnd(
+          `userIncompleteGauntletRefund() -> ${userId} done`.green,
+        ),
+      );
     return txPromise;
   }
 
@@ -469,7 +618,10 @@ class MigrationsModule {
     if (semver.gte(userLastSessionVersion, versionFeatureIntroduced)) {
       return Promise.resolve(false);
     } else {
-      return knex('user_spirit_orbs').first('user_id', 'card_set').whereIn('card_set', [SDK.CardSet.Bloodborn, SDK.CardSet.Unity]).andWhere('user_id', userRow.id)
+      return knex('user_spirit_orbs')
+        .first('user_id', 'card_set')
+        .whereIn('card_set', [SDK.CardSet.Bloodborn, SDK.CardSet.Unity])
+        .andWhere('user_id', userRow.id)
         .then(function (unlockableOrbRow) {
           if (unlockableOrbRow != null) {
             return Promise.resolve(true);
@@ -492,26 +644,60 @@ class MigrationsModule {
     const unlockableOrbGoldRefundAmount = 300;
 
     if (!userId) {
-      Logger.module('MigrationsModule').debug(`userUnlockableOrbsRefund() -> invalid user ID - ${userId}.`.red);
-      return Promise.reject(new Error(`Can not check for incomplete Gauntlet Run: invalid user ID - ${userId}`));
+      Logger.module('MigrationsModule').debug(
+        `userUnlockableOrbsRefund() -> invalid user ID - ${userId}.`.red,
+      );
+      return Promise.reject(
+        new Error(`Can not check for incomplete Gauntlet Run: invalid user ID - ${userId}`),
+      );
     }
 
     const MOMENT_NOW_UTC = systemTime || moment().utc();
     Logger.module('MigrationsModule').time(`userUnlockableOrbsRefund() -> ${userId} done`.green);
 
-    return txPromise = knex.transaction((tx) => tx('user_spirit_orbs').select('id', 'user_id', 'card_set').whereIn('card_set', [SDK.CardSet.Bloodborn, SDK.CardSet.Unity]).andWhere('user_id', userId)
-      .then(function (userUnlockableSpiritOrbRows) {
-        _chainState.userUnlockableSpiritOrbRows = userUnlockableSpiritOrbRows;
-        return PromiseUtils.map(_chainState.userUnlockableSpiritOrbRows, (unlockableOrbRow) => Promise.all([
-          tx('user_spirit_orbs').where('id', unlockableOrbRow.id).delete(),
-          InventoryModule.giveUserGold(txPromise, tx, userId, unlockableOrbGoldRefundAmount, 'unlockable orb refund', unlockableOrbRow.id),
-        ]));
-      })
-      .then(() => DuelystFirebase.connect().getRootRef())
-      .then(function (fbRootRef) {
-        return PromiseUtils.map(_chainState.userUnlockableSpiritOrbRows, (unlockableOrbRow) => FirebasePromises.remove(fbRootRef.child('user-inventory').child(userId).child('spirit-orbs').child(unlockableOrbRow.id)));
-        return FirebasePromises.remove(fbRootRef.child('user-gauntlet-run').child(userId).child('current'));
-      })).then(() => Logger.module('MigrationsModule').timeEnd(`userUnlockableOrbsRefund() -> ${userId} done`.green));
+    return (txPromise = knex
+      .transaction((tx) =>
+        tx('user_spirit_orbs')
+          .select('id', 'user_id', 'card_set')
+          .whereIn('card_set', [SDK.CardSet.Bloodborn, SDK.CardSet.Unity])
+          .andWhere('user_id', userId)
+          .then(function (userUnlockableSpiritOrbRows) {
+            _chainState.userUnlockableSpiritOrbRows = userUnlockableSpiritOrbRows;
+            return PromiseUtils.map(_chainState.userUnlockableSpiritOrbRows, (unlockableOrbRow) =>
+              Promise.all([
+                tx('user_spirit_orbs').where('id', unlockableOrbRow.id).delete(),
+                InventoryModule.giveUserGold(
+                  txPromise,
+                  tx,
+                  userId,
+                  unlockableOrbGoldRefundAmount,
+                  'unlockable orb refund',
+                  unlockableOrbRow.id,
+                ),
+              ]),
+            );
+          })
+          .then(() => DuelystFirebase.connect().getRootRef())
+          .then(function (fbRootRef) {
+            return PromiseUtils.map(_chainState.userUnlockableSpiritOrbRows, (unlockableOrbRow) =>
+              FirebasePromises.remove(
+                fbRootRef
+                  .child('user-inventory')
+                  .child(userId)
+                  .child('spirit-orbs')
+                  .child(unlockableOrbRow.id),
+              ),
+            );
+            return FirebasePromises.remove(
+              fbRootRef.child('user-gauntlet-run').child(userId).child('current'),
+            );
+          }),
+      )
+      .then(() =>
+        Logger.module('MigrationsModule').timeEnd(
+          `userUnlockableOrbsRefund() -> ${userId} done`.green,
+        ),
+      ));
   }
 }
 

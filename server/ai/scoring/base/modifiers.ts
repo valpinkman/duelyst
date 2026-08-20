@@ -38,21 +38,20 @@ const getIsScoredModifierForCard = function (card, modifier) {
 
   if (card.getIsActive()) {
     isScored = !(
-      modifier instanceof ModifierOpeningGambit
-      || modifier instanceof ModifierFirstBlood
+      modifier instanceof ModifierOpeningGambit || modifier instanceof ModifierFirstBlood
     );
   }
 
   if (isScored) {
     isScored = !(
-      modifier instanceof ModifierAirdrop
-      || modifier instanceof ModifierProvoked
-      || modifier instanceof ModifierDyingWish
-      || modifier instanceof ModifierEphemeral
-      || modifier instanceof ModifierStunned
-      || modifier instanceof ModifierTransformed
-      || modifier instanceof ModifierWall
-      || modifier instanceof ModifierStrikeback
+      modifier instanceof ModifierAirdrop ||
+      modifier instanceof ModifierProvoked ||
+      modifier instanceof ModifierDyingWish ||
+      modifier instanceof ModifierEphemeral ||
+      modifier instanceof ModifierStunned ||
+      modifier instanceof ModifierTransformed ||
+      modifier instanceof ModifierWall ||
+      modifier instanceof ModifierStrikeback
     );
   }
 
@@ -69,7 +68,13 @@ const getIsScoredModifierForCard = function (card, modifier) {
  * @returns {Number}
  * @private
  */
-const getAttributeScoreForModifierForCard = function (card, modifier, buffKey, buffBounty, fixedAttributeBuffScores) {
+const getAttributeScoreForModifierForCard = function (
+  card,
+  modifier,
+  buffKey,
+  buffBounty,
+  fixedAttributeBuffScores,
+) {
   let score = 0;
 
   if (modifier.getBuffsAttribute(buffKey)) {
@@ -118,18 +123,43 @@ const ScoreForModifiers = function (card, onlyRemovable) {
   let score = 0;
 
   const modifiers = card.getModifiers();
-  const fixedAttributeBuffScores = { atk: CONFIG.INFINITY, maxHP: CONFIG.INFINITY, manaCost: CONFIG.INFINITY }; // TODO: speed
+  const fixedAttributeBuffScores = {
+    atk: CONFIG.INFINITY,
+    maxHP: CONFIG.INFINITY,
+    manaCost: CONFIG.INFINITY,
+  }; // TODO: speed
   for (let i = 0, il = modifiers.length; i < il; i++) {
     const modifier = modifiers[i];
-    if ((!onlyRemovable || modifier.getIsRemovable()) && getIsScoredModifierForCard(card, modifier)) {
+    if (
+      (!onlyRemovable || modifier.getIsRemovable()) &&
+      getIsScoredModifierForCard(card, modifier)
+    ) {
       // generic modifier score
       score += BOUNTY.MODIFIER;
 
       // add scores for stat changes
       if (modifier.getBuffsAttributes()) {
-        score += getAttributeScoreForModifierForCard(card, modifier, 'atk', BOUNTY.UNIT_ATK, fixedAttributeBuffScores);
-        score += getAttributeScoreForModifierForCard(card, modifier, 'maxHP', BOUNTY.UNIT_HP, fixedAttributeBuffScores);
-        score += getAttributeScoreForModifierForCard(card, modifier, 'manaCost', -BOUNTY.MANA_COST, fixedAttributeBuffScores);
+        score += getAttributeScoreForModifierForCard(
+          card,
+          modifier,
+          'atk',
+          BOUNTY.UNIT_ATK,
+          fixedAttributeBuffScores,
+        );
+        score += getAttributeScoreForModifierForCard(
+          card,
+          modifier,
+          'maxHP',
+          BOUNTY.UNIT_HP,
+          fixedAttributeBuffScores,
+        );
+        score += getAttributeScoreForModifierForCard(
+          card,
+          modifier,
+          'manaCost',
+          -BOUNTY.MANA_COST,
+          fixedAttributeBuffScores,
+        );
       }
 
       // add score for artifact durability
@@ -147,7 +177,8 @@ const ScoreForModifiers = function (card, onlyRemovable) {
   else if (card.hasModifierClass(ModifierRanged)) score += BOUNTY.MODIFIER_RANGED;
   else if (card.hasModifierClass(ModifierBlastAttack)) score += BOUNTY.MODIFIER_BLAST;
   else if (card.hasModifierClass(ModifierDeathWatch)) {
-    if (card.hasModifierClass(ModifierDeathWatchSpawnEntity)) score += BOUNTY.MODIFIER_DEATHWATCHSPAWNENTITY;
+    if (card.hasModifierClass(ModifierDeathWatchSpawnEntity))
+      score += BOUNTY.MODIFIER_DEATHWATCHSPAWNENTITY;
     else {
       score += BOUNTY.MODIFIER_DEATHWATCH;
     }
@@ -159,7 +190,8 @@ const ScoreForModifiers = function (card, onlyRemovable) {
   else if (card.hasModifierClass(ModifierRebirth)) score += BOUNTY.MODIFIER_REBIRTH;
   else if (card.hasModifierClass(ModifierFlying)) score += BOUNTY.MODIFIER_FLYING;
   else if (card.hasModifierClass(ModifierHealWatch)) {
-    if (card.hasModifierClass(ModifierHealWatchBuffSelf)) score += BOUNTY.MODIFIER_HEALWATCHBUFFSELF;
+    if (card.hasModifierClass(ModifierHealWatchBuffSelf))
+      score += BOUNTY.MODIFIER_HEALWATCHBUFFSELF;
     else {
       score += BOUNTY.MODIFIER_HEALWATCH;
     }

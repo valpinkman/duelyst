@@ -25,31 +25,52 @@ class ModifierRebirth extends ModifierOnDyingSpawnEntity {
   static isKeyworded = true;
 
   static createContextObject(options) {
-    let spawnCount; let spawnPattern; let
-      spawnSilently;
-    const contextObject = super.createContextObject({ id: Cards.Faction5.Egg }, (spawnCount = 1), (spawnPattern = CONFIG.PATTERN_1x1), (spawnSilently = true), options);
+    let spawnCount;
+    let spawnPattern;
+    let spawnSilently;
+    const contextObject = super.createContextObject(
+      { id: Cards.Faction5.Egg },
+      (spawnCount = 1),
+      (spawnPattern = CONFIG.PATTERN_1x1),
+      (spawnSilently = true),
+      options,
+    );
     return contextObject;
   }
 
   onDying(action) {
     // when this unit dies, if there isn't already a new unit queued to be spawned on the same tile where this unit died
-    if (!this.getGameSession().getBoard().getCardAtPosition(this.getCard().getPosition(), CardType.Unit, false, true)) {
+    if (
+      !this.getGameSession()
+        .getBoard()
+        .getCardAtPosition(this.getCard().getPosition(), CardType.Unit, false, true)
+    ) {
       // add modifier so egg will hatch correct unit
-      let {
-        cardDataOrIndexToSpawn,
-      } = this;
+      let { cardDataOrIndexToSpawn } = this;
       if (cardDataOrIndexToSpawn != null) {
         if (_.isObject(cardDataOrIndexToSpawn)) {
           cardDataOrIndexToSpawn = UtilsJavascript.fastExtend({}, cardDataOrIndexToSpawn);
         } else {
-          cardDataOrIndexToSpawn = this.getGameSession().getCardByIndex(cardDataOrIndexToSpawn).createNewCardData();
+          cardDataOrIndexToSpawn = this.getGameSession()
+            .getCardByIndex(cardDataOrIndexToSpawn)
+            .createNewCardData();
         }
 
-        if (cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects == null) { cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects = []; }
-        cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects.push(ModifierEgg.createContextObject(this.getCard().createNewCardData(), null));
+        if (cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects == null) {
+          cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects = [];
+        }
+        cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects.push(
+          ModifierEgg.createContextObject(this.getCard().createNewCardData(), null),
+        );
 
         // spawn an egg
-        const playCardAction = new PlayCardSilentlyAction(this.getGameSession(), this.getCard().getOwnerId(), this.getCard().getPosition().x, this.getCard().getPosition().y, cardDataOrIndexToSpawn);
+        const playCardAction = new PlayCardSilentlyAction(
+          this.getGameSession(),
+          this.getCard().getOwnerId(),
+          this.getCard().getPosition().x,
+          this.getCard().getPosition().y,
+          cardDataOrIndexToSpawn,
+        );
         return this.getGameSession().executeAction(playCardAction);
       }
     }

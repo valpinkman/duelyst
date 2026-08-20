@@ -32,8 +32,13 @@ router.put('/:achievement_id/read_at', function (req, res, next) {
   const achievement_id = result.value;
 
   return AchievementsModule.markAchievementAsRead(user_id, achievement_id)
-    .then((value) => res.status(200).json(value)).catch(function (error) {
-      Logger.module('API').error(`Failed to mark achievement ${achievement_id} as read for ${user_id.blue}`.red + ' ERROR: ' + error.message);
+    .then((value) => res.status(200).json(value))
+    .catch(function (error) {
+      Logger.module('API').error(
+        `Failed to mark achievement ${achievement_id} as read for ${user_id.blue}`.red +
+          ' ERROR: ' +
+          error.message,
+      );
       return next(error);
     });
 });
@@ -42,8 +47,11 @@ router.post('/login/', function (req, res, next) {
   const user_id = req.user.d.id;
 
   return AchievementsModule.updateAchievementsProgressWithLogin(user_id, moment.utc())
-    .then((value) => res.status(200).json(value)).catch(function (error) {
-      Logger.module('API').error(`Failed to update login achievements for ${user_id.blue}`.red + ' ERROR: ' + error.message);
+    .then((value) => res.status(200).json(value))
+    .catch(function (error) {
+      Logger.module('API').error(
+        `Failed to update login achievements for ${user_id.blue}`.red + ' ERROR: ' + error.message,
+      );
       return next(error);
     });
 });
@@ -54,19 +62,43 @@ router.get('/wartech_generals/progress', function (req, res, next) {
   const userAchievementsColumns = ['user_id', 'achievement_id', 'progress', 'progress_required'];
 
   return Promise.all([
-    knex('user_achievements').first(userAchievementsColumns).where('user_id', user_id).andWhere('achievement_id', WartechGeneralFaction1Achievement.id),
-    knex('user_achievements').first(userAchievementsColumns).where('user_id', user_id).andWhere('achievement_id', WartechGeneralFaction2Achievement.id),
-    knex('user_achievements').first(userAchievementsColumns).where('user_id', user_id).andWhere('achievement_id', WartechGeneralFaction3Achievement.id),
-    knex('user_achievements').first(userAchievementsColumns).where('user_id', user_id).andWhere('achievement_id', WartechGeneralFaction4Achievement.id),
-    knex('user_achievements').first(userAchievementsColumns).where('user_id', user_id).andWhere('achievement_id', WartechGeneralFaction5Achievement.id),
-    knex('user_achievements').first(userAchievementsColumns).where('user_id', user_id).andWhere('achievement_id', WartechGeneralFaction6Achievement.id),
-  ]).then(function ([userWartechAchievementRows]) {
-    userWartechAchievementRows = DataAccessHelpers.restifyData(userWartechAchievementRows);
-    return res.status(200).json(userWartechAchievementRows);
-  }).catch(function (error) {
-    Logger.module('API').error(`Failed to retrieve general achievement progress for ${user_id.blue}`.red + ' ERROR: ' + error.message);
-    return next(error);
-  });
+    knex('user_achievements')
+      .first(userAchievementsColumns)
+      .where('user_id', user_id)
+      .andWhere('achievement_id', WartechGeneralFaction1Achievement.id),
+    knex('user_achievements')
+      .first(userAchievementsColumns)
+      .where('user_id', user_id)
+      .andWhere('achievement_id', WartechGeneralFaction2Achievement.id),
+    knex('user_achievements')
+      .first(userAchievementsColumns)
+      .where('user_id', user_id)
+      .andWhere('achievement_id', WartechGeneralFaction3Achievement.id),
+    knex('user_achievements')
+      .first(userAchievementsColumns)
+      .where('user_id', user_id)
+      .andWhere('achievement_id', WartechGeneralFaction4Achievement.id),
+    knex('user_achievements')
+      .first(userAchievementsColumns)
+      .where('user_id', user_id)
+      .andWhere('achievement_id', WartechGeneralFaction5Achievement.id),
+    knex('user_achievements')
+      .first(userAchievementsColumns)
+      .where('user_id', user_id)
+      .andWhere('achievement_id', WartechGeneralFaction6Achievement.id),
+  ])
+    .then(function ([userWartechAchievementRows]) {
+      userWartechAchievementRows = DataAccessHelpers.restifyData(userWartechAchievementRows);
+      return res.status(200).json(userWartechAchievementRows);
+    })
+    .catch(function (error) {
+      Logger.module('API').error(
+        `Failed to retrieve general achievement progress for ${user_id.blue}`.red +
+          ' ERROR: ' +
+          error.message,
+      );
+      return next(error);
+    });
 });
 
 module.exports = router;

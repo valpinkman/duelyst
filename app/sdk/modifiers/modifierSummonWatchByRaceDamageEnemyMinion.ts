@@ -45,7 +45,11 @@ class ModifierSummonWatchByRaceDamageEnemyMinion extends ModifierSummonWatch {
     return card.getBelongsToTribe(this.targetRaceId);
   }
 }
-ModifierSummonWatchByRaceDamageEnemyMinion.prototype.type = 'ModifierSummonWatchByRaceDamageEnemyMinion';
-ModifierSummonWatchByRaceDamageEnemyMinion.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericDamageIce'];
+ModifierSummonWatchByRaceDamageEnemyMinion.prototype.type =
+  'ModifierSummonWatchByRaceDamageEnemyMinion';
+ModifierSummonWatchByRaceDamageEnemyMinion.prototype.fxResource = [
+  'FX.Modifiers.ModifierSummonWatch',
+  'FX.Modifiers.ModifierGenericDamageIce',
+];
 
 module.exports = ModifierSummonWatchByRaceDamageEnemyMinion;

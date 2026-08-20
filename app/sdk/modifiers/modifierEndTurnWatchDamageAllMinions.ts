@@ -20,8 +20,12 @@ class ModifierEndTurnWatchDamageAllMinions extends ModifierEndTurnWatch {
   static description = 'At the end of your turn, deal %X damage to ALL other minions';
 
   static createContextObject(damageAmount, auraRadius, options) {
-    if (damageAmount == null) { damageAmount = 0; }
-    if (auraRadius == null) { auraRadius = CONFIG.WHOLE_BOARD_RADIUS; }
+    if (damageAmount == null) {
+      damageAmount = 0;
+    }
+    if (auraRadius == null) {
+      auraRadius = CONFIG.WHOLE_BOARD_RADIUS;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.damageAmount = damageAmount;
     contextObject.auraRadius = auraRadius;
@@ -40,7 +44,9 @@ class ModifierEndTurnWatchDamageAllMinions extends ModifierEndTurnWatch {
   onTurnWatch(action) {
     super.onTurnWatch(action);
 
-    const entities = this.getGameSession().getBoard().getEntitiesAroundEntity(this.getCard(), CardType.Unit, this.auraRadius);
+    const entities = this.getGameSession()
+      .getBoard()
+      .getEntitiesAroundEntity(this.getCard(), CardType.Unit, this.auraRadius);
     return (() => {
       const result = [];
       for (var entity of Array.from<any>(entities)) {
@@ -60,6 +66,9 @@ class ModifierEndTurnWatchDamageAllMinions extends ModifierEndTurnWatch {
   }
 }
 ModifierEndTurnWatchDamageAllMinions.prototype.type = 'ModifierEndTurnWatchDamageAllMinions';
-ModifierEndTurnWatchDamageAllMinions.prototype.fxResource = ['FX.Modifiers.ModifierEndTurnWatch', 'FX.Modifiers.ModifierGenericChainLightning'];
+ModifierEndTurnWatchDamageAllMinions.prototype.fxResource = [
+  'FX.Modifiers.ModifierEndTurnWatch',
+  'FX.Modifiers.ModifierGenericChainLightning',
+];
 
 module.exports = ModifierEndTurnWatchDamageAllMinions;

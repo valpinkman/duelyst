@@ -20,7 +20,8 @@ describe('cards: location', () => {
 
   it('expect card to be located in deck when applied and not when removed', () => {
     const cardData = { id: SDK.Cards.Faction1.General };
-    const card = SDK.GameSession.getInstance().getExistingCardFromIndexOrCreateCardFromData(cardData);
+    const card =
+      SDK.GameSession.getInstance().getExistingCardFromIndexOrCreateCardFromData(cardData);
     const player = SDK.GameSession.getInstance().getPlayer1();
     card.setOwner(player);
     const deck = player.getDeck();
@@ -32,7 +33,8 @@ describe('cards: location', () => {
 
   it('expect card to be located in hand when applied and not when removed', () => {
     const cardData = { id: SDK.Cards.Faction1.General };
-    const card = SDK.GameSession.getInstance().getExistingCardFromIndexOrCreateCardFromData(cardData);
+    const card =
+      SDK.GameSession.getInstance().getExistingCardFromIndexOrCreateCardFromData(cardData);
     const player = SDK.GameSession.getInstance().getPlayer1();
     card.setOwner(player);
     const deck = player.getDeck();
@@ -44,7 +46,8 @@ describe('cards: location', () => {
 
   it('expect card to be located in signature cards when applied and not when removed', () => {
     const cardData = { id: SDK.Cards.Faction1.General };
-    const card = SDK.GameSession.getInstance().getExistingCardFromIndexOrCreateCardFromData(cardData);
+    const card =
+      SDK.GameSession.getInstance().getExistingCardFromIndexOrCreateCardFromData(cardData);
     const player = SDK.GameSession.getInstance().getPlayer1();
     card.setOwner(player);
     SDK.GameSession.getInstance().applyCardToSignatureCards(card, card.getIndex());
@@ -55,7 +58,8 @@ describe('cards: location', () => {
 
   it('expect card to be located on board when applied and not when removed', () => {
     const cardData = { id: SDK.Cards.Faction1.General };
-    const card = SDK.GameSession.getInstance().getExistingCardFromIndexOrCreateCardFromData(cardData);
+    const card =
+      SDK.GameSession.getInstance().getExistingCardFromIndexOrCreateCardFromData(cardData);
     const player = SDK.GameSession.getInstance().getPlayer1();
     card.setOwner(player);
     SDK.GameSession.getInstance().applyCardToBoard(card, 0, 0);
@@ -66,7 +70,8 @@ describe('cards: location', () => {
 
   it('expect card to be played when applied and removed when removed', () => {
     const cardData = { id: SDK.Cards.Faction1.General };
-    const card = SDK.GameSession.getInstance().getExistingCardFromIndexOrCreateCardFromData(cardData);
+    const card =
+      SDK.GameSession.getInstance().getExistingCardFromIndexOrCreateCardFromData(cardData);
     const player = SDK.GameSession.getInstance().getPlayer1();
     card.setOwner(player);
     SDK.GameSession.getInstance().applyCardToBoard(card, 0, 0);
@@ -79,7 +84,8 @@ describe('cards: location', () => {
 
   it('expect card moved from deck to hand to be only in hand', () => {
     const cardData = { id: SDK.Cards.Faction1.General };
-    const card = SDK.GameSession.getInstance().getExistingCardFromIndexOrCreateCardFromData(cardData);
+    const card =
+      SDK.GameSession.getInstance().getExistingCardFromIndexOrCreateCardFromData(cardData);
     const player = SDK.GameSession.getInstance().getPlayer1();
     card.setOwner(player);
     const deck = player.getDeck();
@@ -93,7 +99,8 @@ describe('cards: location', () => {
 
   it('expect card moved from hand to deck to be only in deck', () => {
     const cardData = { id: SDK.Cards.Faction1.General };
-    const card = SDK.GameSession.getInstance().getExistingCardFromIndexOrCreateCardFromData(cardData);
+    const card =
+      SDK.GameSession.getInstance().getExistingCardFromIndexOrCreateCardFromData(cardData);
     const player = SDK.GameSession.getInstance().getPlayer1();
     card.setOwner(player);
     const deck = player.getDeck();
@@ -107,7 +114,8 @@ describe('cards: location', () => {
 
   it('expect card moved from hand to board to be only on board', () => {
     const cardData = { id: SDK.Cards.Faction1.General };
-    const card = SDK.GameSession.getInstance().getExistingCardFromIndexOrCreateCardFromData(cardData);
+    const card =
+      SDK.GameSession.getInstance().getExistingCardFromIndexOrCreateCardFromData(cardData);
     const player = SDK.GameSession.getInstance().getPlayer1();
     card.setOwner(player);
     const deck = player.getDeck();
@@ -121,7 +129,8 @@ describe('cards: location', () => {
 
   it('expect card moved from signature cards to board to be only on board', () => {
     const cardData = { id: SDK.Cards.Faction1.General };
-    const card = SDK.GameSession.getInstance().getExistingCardFromIndexOrCreateCardFromData(cardData);
+    const card =
+      SDK.GameSession.getInstance().getExistingCardFromIndexOrCreateCardFromData(cardData);
     const player = SDK.GameSession.getInstance().getPlayer1();
     card.setOwner(player);
     SDK.GameSession.getInstance().applyCardToSignatureCards(card, card.getIndex());
@@ -134,7 +143,8 @@ describe('cards: location', () => {
 
   it('expect card moved from signature cards to hand to be only in hand', () => {
     const cardData = { id: SDK.Cards.Faction1.General };
-    const card = SDK.GameSession.getInstance().getExistingCardFromIndexOrCreateCardFromData(cardData);
+    const card =
+      SDK.GameSession.getInstance().getExistingCardFromIndexOrCreateCardFromData(cardData);
     const player = SDK.GameSession.getInstance().getPlayer1();
     card.setOwner(player);
     const deck = player.getDeck();
@@ -148,7 +158,8 @@ describe('cards: location', () => {
 
   it('expect card moved from deck to board to be only on board', () => {
     const cardData = { id: SDK.Cards.Faction1.General };
-    const card = SDK.GameSession.getInstance().getExistingCardFromIndexOrCreateCardFromData(cardData);
+    const card =
+      SDK.GameSession.getInstance().getExistingCardFromIndexOrCreateCardFromData(cardData);
     const player = SDK.GameSession.getInstance().getPlayer1();
     card.setOwner(player);
     const deck = player.getDeck();

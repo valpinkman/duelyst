@@ -13,13 +13,9 @@ Logger.enabled = false;
 describe('monthlies', () => {
   describe('month 10', () => {
     beforeEach(() => {
-      const player1Deck = [
-        { id: SDK.Cards.Faction6.General },
-      ];
+      const player1Deck = [{ id: SDK.Cards.Faction6.General }];
 
-      const player2Deck = [
-        { id: SDK.Cards.Faction1.General },
-      ];
+      const player2Deck = [{ id: SDK.Cards.Faction1.General }];
 
       UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
     });
@@ -35,10 +31,24 @@ describe('monthlies', () => {
 
       player1.remainingMana = 9;
 
-      const shiro = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Shiro }, 1, 2, gameSession.getPlayer2Id());
-      const maw1 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Maw }, 1, 1, gameSession.getPlayer1Id());
+      const shiro = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.Shiro },
+        1,
+        2,
+        gameSession.getPlayer2Id(),
+      );
+      const maw1 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.Maw },
+        1,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.BlisteringSkorn }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.BlisteringSkorn,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 0, 3);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -58,13 +68,21 @@ describe('monthlies', () => {
       player1.remainingMana = 9;
       player2.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.Chakkram }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.Chakkram,
+        }),
+      );
       var hand = player1.getDeck().getCardsInHand();
       expect(hand[0].getManaCost()).to.equal(5);
 
       gameSession.executeAction(gameSession.actionEndTurn());
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer2Id(), { id: SDK.Cards.Spell.PhoenixFire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer2Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
       const playCardFromHandAction = player2.actionPlayCardFromHand(0, 0, 2);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -81,7 +99,11 @@ describe('monthlies', () => {
 
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.BloodTaura }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.BloodTaura,
+        }),
+      );
       var hand = player1.getDeck().getCardsInHand();
       expect(hand[0].getManaCost()).to.equal(25);
 
@@ -105,7 +127,11 @@ describe('monthlies', () => {
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 0, 3);
       gameSession.executeAction(playCardFromHandAction);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.IceCage }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.IceCage,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 0, 3);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -120,7 +146,11 @@ describe('monthlies', () => {
 
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.RubyRifter }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.RubyRifter,
+        }),
+      );
       var hand = player1.getDeck().getCardsInHand();
       expect(hand[0].getATK()).to.equal(4);
 
@@ -150,13 +180,29 @@ describe('monthlies', () => {
 
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.RubyRifter }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.RubyRifter,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 0, 3);
       gameSession.executeAction(playCardFromHandAction);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PhoenixFire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PhoenixFire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PhoenixFire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
 
       var damageAction = new SDK.DamageAction(gameSession);
       damageAction.setTarget(gameSession.getGeneralForPlayer1());

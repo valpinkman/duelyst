@@ -25,13 +25,26 @@ const ScoreForPhaseDeath = function (card, targetPosition, cardIntents) {
   const cardId = card.getBaseCardId();
   const gameSession = GameSession.getInstance();
   const board = gameSession.getBoard();
-  const validIntents = cardIntents != null ? cardIntents : CardIntent.getIntentsByPartialPhaseType(cardId, CardPhaseType.Death);
+  const validIntents =
+    cardIntents != null
+      ? cardIntents
+      : CardIntent.getIntentsByPartialPhaseType(cardId, CardPhaseType.Death);
 
   _.each(validIntents, (intent) => {
     let bonus = 0;
 
     // first we get a baseline score of what 1 creature dying would look like
-    if (intent.type === CardIntentType.Burn) { bonus += ScoreForIntentBurn(card, targetPosition); } else if (intent.type === CardIntentType.Heal) { bonus += ScoreForIntentHeal(card, targetPosition); } else if (intent.type === CardIntentType.ModifyATK) { bonus += ScoreForIntentModifyATK(card, targetPosition); } else if (intent.type === CardIntentType.ModifyHP) { bonus += ScoreForIntentModifyHP(card, targetPosition); } else if (intent.type === CardIntentType.Summon) { bonus += ScoreForIntentSummon(card, targetPosition); }
+    if (intent.type === CardIntentType.Burn) {
+      bonus += ScoreForIntentBurn(card, targetPosition);
+    } else if (intent.type === CardIntentType.Heal) {
+      bonus += ScoreForIntentHeal(card, targetPosition);
+    } else if (intent.type === CardIntentType.ModifyATK) {
+      bonus += ScoreForIntentModifyATK(card, targetPosition);
+    } else if (intent.type === CardIntentType.ModifyHP) {
+      bonus += ScoreForIntentModifyHP(card, targetPosition);
+    } else if (intent.type === CardIntentType.Summon) {
+      bonus += ScoreForIntentSummon(card, targetPosition);
+    }
 
     // second we grab all the minions on the board with 1 or 2 health (minions that could potentially die this turn)
     let lowHPMinions = 0;
@@ -44,7 +57,7 @@ const ScoreForPhaseDeath = function (card, targetPosition, cardIntents) {
     }
 
     // finally we multiply the score for a single unit dying by the number of low HP minions on the field and then tone down the score since not all minions will likely die this turn
-    score += (bonus * lowHPMinions) * BOUNTY.LOW_HP_MINIONS;
+    score += bonus * lowHPMinions * BOUNTY.LOW_HP_MINIONS;
   });
 
   return score;

@@ -16,7 +16,7 @@ class ModifierCostEqualGeneralHealth extends Modifier {
 
   static type = 'ModifierCostEqualGeneralHealth';
   static modifierName = 'Raging Taura';
-  static description = 'This minion\'s cost is equal to your General\'s Health';
+  static description = "This minion's cost is equal to your General's Health";
 
   constructor(gameSession) {
     super(gameSession);
@@ -44,7 +44,7 @@ class ModifierCostEqualGeneralHealth extends Modifier {
   }
 
   getBuffsAttribute(buffKey) {
-    return (buffKey === 'manaCost') || super.getBuffsAttribute(buffKey);
+    return buffKey === 'manaCost' || super.getBuffsAttribute(buffKey);
   }
 
   updateCachedStateAfterActive() {

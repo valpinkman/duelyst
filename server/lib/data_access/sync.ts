@@ -45,15 +45,24 @@ class SyncModule {
   static _bumpUserTransactionCounter(tx, userId) {
     return Promise.all([
       knex('users').increment('tx_count', 1).where('id', userId).transacting(tx),
-      DuelystFirebase.connect().getRootRef().then(function (rootRef) {
-        const updateVersion = function (counter) {
-          if (counter == null) { counter = {}; }
-          if (counter.count == null) { counter.count = 0; }
-          counter.count += 1;
-          return counter;
-        };
-        return FirebasePromises.safeTransaction(rootRef.child('users').child(userId).child('tx_counter'), updateVersion);
-      }),
+      DuelystFirebase.connect()
+        .getRootRef()
+        .then(function (rootRef) {
+          const updateVersion = function (counter) {
+            if (counter == null) {
+              counter = {};
+            }
+            if (counter.count == null) {
+              counter.count = 0;
+            }
+            counter.count += 1;
+            return counter;
+          };
+          return FirebasePromises.safeTransaction(
+            rootRef.child('users').child(userId).child('tx_counter'),
+            updateVersion,
+          );
+        }),
     ]);
   }
 
@@ -65,12 +74,16 @@ class SyncModule {
    */
   static syncUserDataIfTrasactionCountMismatched(userId) {
     const _chainState: Record<string, any> = {};
-    return DuelystFirebase.connect().getRootRef()
+    return DuelystFirebase.connect()
+      .getRootRef()
       .then(function (fbRootRef) {
         _chainState.fbRootRef = fbRootRef;
         return Promise.all([
           knex.first('tx_count').from('users').where('id', userId),
-          FirebasePromises.once(_chainState.fbRootRef.child('users').child(userId).child('tx_counter').child('count'), 'value'),
+          FirebasePromises.once(
+            _chainState.fbRootRef.child('users').child(userId).child('tx_counter').child('count'),
+            'value',
+          ),
         ]);
       })
       .then(function ([userRow, txCountSnapshot]) {
@@ -79,7 +92,7 @@ class SyncModule {
 
         // if there is NO transaction count value, sync the buddy list to the one last known in the DB
         // the assumption is that the user record is missing all together and needs a buddy list sync
-        if ((_chainState.firebaseTxCount == null)) {
+        if (_chainState.firebaseTxCount == null) {
           shouldSyncBuddyList = true;
         }
 
@@ -91,12 +104,15 @@ class SyncModule {
           _chainState.needsSync = true;
           return SyncModule._syncUserFromSQLToFirebase(userId, shouldSyncBuddyList);
         } else {
-          return _chainState.needsSync = false;
+          return (_chainState.needsSync = false);
         }
       })
       .then(function () {
         if (_chainState.needsSync) {
-          Logger.module('SyncModule').log(`syncUserDataIfTrasactionCountMismatched() -> ${userId} syncing: ${_chainState.needsSync}`.green);
+          Logger.module('SyncModule').log(
+            `syncUserDataIfTrasactionCountMismatched() -> ${userId} syncing: ${_chainState.needsSync}`
+              .green,
+          );
         }
 
         return _chainState.needsSync;
@@ -113,21 +129,22 @@ class SyncModule {
     const _chainState: Record<string, any> = {};
     Logger.module('SyncModule').time(`wipeUserData() -> ${userId.blue} wiped`);
 
-    return DuelystFirebase.connect().getRootRef()
+    return DuelystFirebase.connect()
+      .getRootRef()
       .then(function (fbRootRef) {
         _chainState.fbRootRef = fbRootRef;
 
         return knex('user_rank_ratings').where('user_id', userId).select('season_starting_at');
       })
-      .then((userRatingsRows) => // User needs to be removed from redis for each season they have a rating for
+      .then((userRatingsRows) =>
+        // User needs to be removed from redis for each season they have a rating for
         PromiseUtils.map(userRatingsRows, function (ratingRow) {
           const startOfSeasonMoment = moment.utc(ratingRow.season_starting_at);
           return SRankManager._removeUserFromLadder(userId, startOfSeasonMoment);
-        }))
+        }),
+      )
       .then(function () {
-        const {
-          fbRootRef,
-        } = _chainState;
+        const { fbRootRef } = _chainState;
 
         const allPromises = [
           FirebasePromises.remove(fbRootRef.child('user-transactions').child(userId)),
@@ -349,40 +366,55 @@ class SyncModule {
 
     const MOMENT_NOW_UTC = moment().utc();
 
-    return DuelystFirebase.connect().getRootRef()
+    return DuelystFirebase.connect()
+      .getRootRef()
       .then(function (fbRootRef) {
         Logger.module('SyncModule').time('syncBuddyListFromFirebaseToSQL() -> loading...');
-        return FirebasePromises.once(fbRootRef.child('users').child(userId).child('buddies'), 'value');
-      }).then((buddiesSnapshot) => Promise.all([
-        knex('user_buddies').where('user_id', userId).select(),
-        buddiesSnapshot.val(),
-      ]))
+        return FirebasePromises.once(
+          fbRootRef.child('users').child(userId).child('buddies'),
+          'value',
+        );
+      })
+      .then((buddiesSnapshot) =>
+        Promise.all([
+          knex('user_buddies').where('user_id', userId).select(),
+          buddiesSnapshot.val(),
+        ]),
+      )
       .then(function ([buddyRows, buddies]) {
-        if (((buddyRows != null ? buddyRows.length : undefined) > 0) || (buddies != null)) {
+        if ((buddyRows != null ? buddyRows.length : undefined) > 0 || buddies != null) {
           let buddy;
           const allPromises = [];
           for (buddy in buddies) {
             var obj = buddies[buddy];
             if (!_.find(buddyRows, (row) => row.buddy_id === buddy)) {
-              allPromises.push(knex('user_buddies').insert({
-                user_id: userId,
-                buddy_id: buddy,
-                created_at: moment.utc(obj.createdAt).toDate() || MOMENT_NOW_UTC.toDate(),
-              }),
+              allPromises.push(
+                knex('user_buddies').insert({
+                  user_id: userId,
+                  buddy_id: buddy,
+                  created_at: moment.utc(obj.createdAt).toDate() || MOMENT_NOW_UTC.toDate(),
+                }),
               );
             }
           }
           for (var row of Array.from<any>(buddyRows)) {
             if (!_.find(_.keys(buddies), (buddy) => buddy === row.buddy_id)) {
-              allPromises.push(knex('user_buddies').where({
-                user_id: userId,
-                buddy_id: buddy,
-              }).delete(),
+              allPromises.push(
+                knex('user_buddies')
+                  .where({
+                    user_id: userId,
+                    buddy_id: buddy,
+                  })
+                  .delete(),
               );
             }
           }
 
-          allPromises.push(knex('users').where('id', 'userId').update({ buddy_count: _.keys(buddies).length }));
+          allPromises.push(
+            knex('users')
+              .where('id', 'userId')
+              .update({ buddy_count: _.keys(buddies).length }),
+          );
 
           return Promise.all(allPromises);
         }
@@ -398,10 +430,15 @@ class SyncModule {
    */
   static _syncUserFromSQLToFirebase(userId, shouldSyncBuddyList) {
     const _chainState: Record<string, any> = {};
-    if (shouldSyncBuddyList == null) { shouldSyncBuddyList = false; }
-    Logger.module('UsersModule').time(`_syncUserFromSQLToFirebase() -> ${userId} + buddies:${shouldSyncBuddyList}`.green);
+    if (shouldSyncBuddyList == null) {
+      shouldSyncBuddyList = false;
+    }
+    Logger.module('UsersModule').time(
+      `_syncUserFromSQLToFirebase() -> ${userId} + buddies:${shouldSyncBuddyList}`.green,
+    );
 
-    return DuelystFirebase.connect().getRootRef()
+    return DuelystFirebase.connect()
+      .getRootRef()
       .then(function (fbRootRef) {
         _chainState.fbRootRef = fbRootRef;
         return knex.first().from('users').where('id', userId);
@@ -413,37 +450,73 @@ class SyncModule {
 
         _chainState.userData = userRow;
 
-        return Logger.module('UsersModule').time(`_syncUserFromSQLToFirebase() -> ${userId} `, _chainState.userData);
+        return Logger.module('UsersModule').time(
+          `_syncUserFromSQLToFirebase() -> ${userId} `,
+          _chainState.userData,
+        );
       })
-      .then(() => Promise.all([
-        knex.select().from('user_cards').where('user_id', userId),
-        knex.first().from('user_card_collection').where('user_id', userId),
-        knex.select().from('user_rank_history').where('user_id', userId),
-        knex.select().from('user_charges').where('user_id', userId),
-        knex.first().from('user_gauntlet_run').where('user_id', userId),
-        knex.select().from('user_gauntlet_tickets').where('user_id', userId),
-        knex.select().from('user_spirit_orbs').where('user_id', userId),
-        knex.select().from('user_decks').where('user_id', userId),
-        knex.first().from('user_progression').where('user_id', userId),
-        knex.select().from('user_faction_progression').where('user_id', userId),
-        knex.select().from('user_quests').where('user_id', userId),
-        knex.select().from('user_rewards').where('user_id', userId),
-        knex.select().from('user_challenges').where('user_id', userId),
-        knex.select().from('user_new_player_progression').where('user_id', userId),
-        knex.select().from('user_achievements').whereNotNull('completed_at').andWhere('user_id', userId),
-        knex.select().from('user_buddies').where('user_id', userId),
-        knex.select().from('user_game_counters').where('user_id', userId),
-        knex.select().from('user_game_faction_counters').where('user_id', userId),
-        knex.select().from('user_ribbons').where('user_id', userId),
-        knex.select().from('user_rank_ratings').where('user_id', userId),
-        knex.select().from('user_codex_inventory').where('user_id', userId),
-        knex.select().from('user_cosmetic_chests').where('user_id', userId),
-        knex.select().from('user_cosmetic_chest_keys').where('user_id', userId),
-        knex.select().from('user_cosmetic_inventory').where('user_id', userId),
-        knex.select().from('user_bosses_defeated').where('user_id', userId),
-        knex.select().from('user_rift_runs').where('user_id', userId),
-      ]))
-      .then(function ([cardRows, cardCollection, rankHistoryRows, chargeRows, gauntletRun, gauntletTicketRows, spiritOrbRows, decks, progression, factionProgressionRows, questRows, rewardRows, challengeRows, newPlayerModules, completedAchievements, buddyRows, gameCounterRows, factionGameCounterRows, userRibbonRows, userRankRatings, userCodexRows, userCosmeticChests, userCosmeticChestKeys, userCosmeticInventory, userBossesDefeated, userRiftRuns]) {
+      .then(() =>
+        Promise.all([
+          knex.select().from('user_cards').where('user_id', userId),
+          knex.first().from('user_card_collection').where('user_id', userId),
+          knex.select().from('user_rank_history').where('user_id', userId),
+          knex.select().from('user_charges').where('user_id', userId),
+          knex.first().from('user_gauntlet_run').where('user_id', userId),
+          knex.select().from('user_gauntlet_tickets').where('user_id', userId),
+          knex.select().from('user_spirit_orbs').where('user_id', userId),
+          knex.select().from('user_decks').where('user_id', userId),
+          knex.first().from('user_progression').where('user_id', userId),
+          knex.select().from('user_faction_progression').where('user_id', userId),
+          knex.select().from('user_quests').where('user_id', userId),
+          knex.select().from('user_rewards').where('user_id', userId),
+          knex.select().from('user_challenges').where('user_id', userId),
+          knex.select().from('user_new_player_progression').where('user_id', userId),
+          knex
+            .select()
+            .from('user_achievements')
+            .whereNotNull('completed_at')
+            .andWhere('user_id', userId),
+          knex.select().from('user_buddies').where('user_id', userId),
+          knex.select().from('user_game_counters').where('user_id', userId),
+          knex.select().from('user_game_faction_counters').where('user_id', userId),
+          knex.select().from('user_ribbons').where('user_id', userId),
+          knex.select().from('user_rank_ratings').where('user_id', userId),
+          knex.select().from('user_codex_inventory').where('user_id', userId),
+          knex.select().from('user_cosmetic_chests').where('user_id', userId),
+          knex.select().from('user_cosmetic_chest_keys').where('user_id', userId),
+          knex.select().from('user_cosmetic_inventory').where('user_id', userId),
+          knex.select().from('user_bosses_defeated').where('user_id', userId),
+          knex.select().from('user_rift_runs').where('user_id', userId),
+        ]),
+      )
+      .then(function ([
+        cardRows,
+        cardCollection,
+        rankHistoryRows,
+        chargeRows,
+        gauntletRun,
+        gauntletTicketRows,
+        spiritOrbRows,
+        decks,
+        progression,
+        factionProgressionRows,
+        questRows,
+        rewardRows,
+        challengeRows,
+        newPlayerModules,
+        completedAchievements,
+        buddyRows,
+        gameCounterRows,
+        factionGameCounterRows,
+        userRibbonRows,
+        userRankRatings,
+        userCodexRows,
+        userCosmeticChests,
+        userCosmeticChestKeys,
+        userCosmeticInventory,
+        userBossesDefeated,
+        userRiftRuns,
+      ]) {
         let row;
         const allPromises = [];
 
@@ -453,7 +526,9 @@ class SyncModule {
           created_at: moment.utc(_chainState.userData.created_at).valueOf(),
           has_purchased_starter_bundle: _chainState.userData.has_purchased_starter_bundle,
           rift_stored_upgrade_count: _chainState.userData.rift_stored_upgrade_count,
-          free_card_of_the_day_claimed_at: moment.utc(_chainState.userData.free_card_of_the_day_claimed_at || 0).valueOf(),
+          free_card_of_the_day_claimed_at: moment
+            .utc(_chainState.userData.free_card_of_the_day_claimed_at || 0)
+            .valueOf(),
         };
 
         if (shouldSyncBuddyList) {
@@ -464,32 +539,59 @@ class SyncModule {
         }
 
         // user profile
-        allPromises.push(FirebasePromises.update(_chainState.fbRootRef.child('users').child(userId), userData));
+        allPromises.push(
+          FirebasePromises.update(_chainState.fbRootRef.child('users').child(userId), userData),
+        );
 
         // indexes
-        allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('username-index').child(_chainState.userData.username), userId));
+        allPromises.push(
+          FirebasePromises.set(
+            _chainState.fbRootRef.child('username-index').child(_chainState.userData.username),
+            userId,
+          ),
+        );
 
         // Inventory
         if (cardRows.length > 0) {
-          const allCardsJson = _.reduce(cardRows, function (memo, row) {
-            if (memo[row.card_id] == null) { memo[row.card_id] = {}; }
-            memo[row.card_id].count = row.count;
-            memo[row.card_id].is_unread = row.is_unread;
-            memo[row.card_id].is_new = row.is_new;
-            return memo;
-          }, {});
+          const allCardsJson = _.reduce(
+            cardRows,
+            function (memo, row) {
+              if (memo[row.card_id] == null) {
+                memo[row.card_id] = {};
+              }
+              memo[row.card_id].count = row.count;
+              memo[row.card_id].is_unread = row.is_unread;
+              memo[row.card_id].is_new = row.is_new;
+              return memo;
+            },
+            {},
+          );
           console.log(allCardsJson);
-          allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-inventory').child(userId).child('card-collection'), allCardsJson));
+          allPromises.push(
+            FirebasePromises.set(
+              _chainState.fbRootRef.child('user-inventory').child(userId).child('card-collection'),
+              allCardsJson,
+            ),
+          );
         } else {
-          allPromises.push(FirebasePromises.remove(_chainState.fbRootRef.child('user-inventory').child(userId).child('card-collection')));
+          allPromises.push(
+            FirebasePromises.remove(
+              _chainState.fbRootRef.child('user-inventory').child(userId).child('card-collection'),
+            ),
+          );
         }
 
-        allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-inventory').child(userId).child('wallet'), {
-          gold_amount: _chainState.userData.wallet_gold,
-          spirit_amount: _chainState.userData.wallet_spirit,
-          updated_at: moment.utc(_chainState.userData.wallet_updated_at).valueOf() || null,
-          card_last_four_digits: _chainState.userData.card_last_four_digits,
-        }));
+        allPromises.push(
+          FirebasePromises.set(
+            _chainState.fbRootRef.child('user-inventory').child(userId).child('wallet'),
+            {
+              gold_amount: _chainState.userData.wallet_gold,
+              spirit_amount: _chainState.userData.wallet_spirit,
+              updated_at: moment.utc(_chainState.userData.wallet_updated_at).valueOf() || null,
+              card_last_four_digits: _chainState.userData.card_last_four_digits,
+            },
+          ),
+        );
 
         const fbOrbs = {};
         for (var orb of Array.from<any>(spiritOrbRows)) {
@@ -498,7 +600,12 @@ class SyncModule {
           delete orb.id;
           fbOrbs[orbId] = DataAccessHelpers.restifyData(orb);
         }
-        allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-inventory').child(userId).child('spirit-orbs'), fbOrbs));
+        allPromises.push(
+          FirebasePromises.set(
+            _chainState.fbRootRef.child('user-inventory').child(userId).child('spirit-orbs'),
+            fbOrbs,
+          ),
+        );
 
         const fbTickets = {};
         for (var ticket of Array.from<any>(gauntletTicketRows)) {
@@ -507,27 +614,62 @@ class SyncModule {
           delete ticket.id;
           fbTickets[ticketId] = DataAccessHelpers.restifyData(ticket);
         }
-        allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-inventory').child(userId).child('gauntlet-tickets'), fbTickets));
+        allPromises.push(
+          FirebasePromises.set(
+            _chainState.fbRootRef.child('user-inventory').child(userId).child('gauntlet-tickets'),
+            fbTickets,
+          ),
+        );
 
         // Gauntlet
         if (gauntletRun) {
-          allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-gauntlet-run').child(userId).child('current'), DataAccessHelpers.restifyData(gauntletRun)));
+          allPromises.push(
+            FirebasePromises.set(
+              _chainState.fbRootRef.child('user-gauntlet-run').child(userId).child('current'),
+              DataAccessHelpers.restifyData(gauntletRun),
+            ),
+          );
         }
 
         // Progression
         if (progression) {
-          allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-progression').child(userId).child('game-counter'), DataAccessHelpers.restifyData(progression)));
+          allPromises.push(
+            FirebasePromises.set(
+              _chainState.fbRootRef.child('user-progression').child(userId).child('game-counter'),
+              DataAccessHelpers.restifyData(progression),
+            ),
+          );
         }
         for (var factionProgression of Array.from<any>(factionProgressionRows)) {
           delete factionProgression.user_id;
-          allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-faction-progression').child(userId).child(factionProgression.faction_id).child('stats'), DataAccessHelpers.restifyData(factionProgression)));
+          allPromises.push(
+            FirebasePromises.set(
+              _chainState.fbRootRef
+                .child('user-faction-progression')
+                .child(userId)
+                .child(factionProgression.faction_id)
+                .child('stats'),
+              DataAccessHelpers.restifyData(factionProgression),
+            ),
+          );
         }
 
         // Quests
-        allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-quests').child(userId).child('daily').child('current'), {
-          updated_at: moment.utc(_chainState.userData.daily_quests_updated_at).valueOf() || null,
-          generated_at: moment.utc(_chainState.userData.daily_quests_generated_at).valueOf() || null,
-        }));
+        allPromises.push(
+          FirebasePromises.set(
+            _chainState.fbRootRef
+              .child('user-quests')
+              .child(userId)
+              .child('daily')
+              .child('current'),
+            {
+              updated_at:
+                moment.utc(_chainState.userData.daily_quests_updated_at).valueOf() || null,
+              generated_at:
+                moment.utc(_chainState.userData.daily_quests_generated_at).valueOf() || null,
+            },
+          ),
+        );
 
         const fbQuests = {};
         for (var quest of Array.from<any>(questRows)) {
@@ -536,27 +678,46 @@ class SyncModule {
           delete quest.quest_slot_index;
           fbQuests[slotIndex] = DataAccessHelpers.restifyData(quest);
         }
-        allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-quests').child(userId).child('daily').child('current')
-          .child('quests'), fbQuests));
+        allPromises.push(
+          FirebasePromises.set(
+            _chainState.fbRootRef
+              .child('user-quests')
+              .child(userId)
+              .child('daily')
+              .child('current')
+              .child('quests'),
+            fbQuests,
+          ),
+        );
 
         // Rank
         if (_chainState.userData.rank_starting_at != null) {
-          allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-ranking').child(userId).child('current'), {
-            rank: _chainState.userData.rank,
-            stars: _chainState.userData.rank_stars,
-            stars_required: _chainState.userData.rank_stars_required,
-            updated_at: moment.utc(_chainState.userData.rank_updated_at).valueOf() || null,
-            created_at: moment.utc(_chainState.userData.rank_created_at).valueOf(),
-            starting_at: moment.utc(_chainState.userData.rank_starting_at).valueOf(),
-          }));
+          allPromises.push(
+            FirebasePromises.set(
+              _chainState.fbRootRef.child('user-ranking').child(userId).child('current'),
+              {
+                rank: _chainState.userData.rank,
+                stars: _chainState.userData.rank_stars,
+                stars_required: _chainState.userData.rank_stars_required,
+                updated_at: moment.utc(_chainState.userData.rank_updated_at).valueOf() || null,
+                created_at: moment.utc(_chainState.userData.rank_created_at).valueOf(),
+                starting_at: moment.utc(_chainState.userData.rank_starting_at).valueOf(),
+              },
+            ),
+          );
         }
 
         if (_chainState.userData.top_rank_starting_at != null) {
-          allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-ranking').child(userId).child('top'), {
-            rank: _chainState.userData.top_rank,
-            updated_at: moment.utc(_chainState.userData.top_rank_updated_at).valueOf() || null,
-            starting_at: moment.utc(_chainState.userData.top_rank_starting_at).valueOf(),
-          }));
+          allPromises.push(
+            FirebasePromises.set(
+              _chainState.fbRootRef.child('user-ranking').child(userId).child('top'),
+              {
+                rank: _chainState.userData.top_rank,
+                updated_at: moment.utc(_chainState.userData.top_rank_updated_at).valueOf() || null,
+                starting_at: moment.utc(_chainState.userData.top_rank_starting_at).valueOf(),
+              },
+            ),
+          );
         }
 
         // # Challenges
@@ -584,7 +745,16 @@ class SyncModule {
         for (row of Array.from<any>(completedAchievements)) {
           if (row.completed_at > lastCompletedAt) {
             lastCompletedAt = row.completed_at;
-            allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-achievements').child(userId).child('status').child('last_read_at'), lastCompletedAt));
+            allPromises.push(
+              FirebasePromises.set(
+                _chainState.fbRootRef
+                  .child('user-achievements')
+                  .child(userId)
+                  .child('status')
+                  .child('last_read_at'),
+                lastCompletedAt,
+              ),
+            );
           }
 
           delete row.user_id;
@@ -594,54 +764,103 @@ class SyncModule {
           fbAchievements[row.achievement_id] = DataAccessHelpers.restifyData(row);
         }
 
-        allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-achievements').child(userId).child('completed'), fbAchievements));
+        allPromises.push(
+          FirebasePromises.set(
+            _chainState.fbRootRef.child('user-achievements').child(userId).child('completed'),
+            fbAchievements,
+          ),
+        );
 
         // Codex inventory
         for (row of Array.from<any>(userCodexRows)) {
-        // Place data in fb for storage after the transaction has completed
+          // Place data in fb for storage after the transaction has completed
           var fbCodexInventoryChapterData = {
             chapter_id: row.chapter_id,
             is_unread: false,
             updated_at: moment.utc(row.updated_at).valueOf(),
             created_at: moment.utc(row.created_at).valueOf(),
           };
-          allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-inventory').child(userId).child('codex').child(row.chapter_id), fbCodexInventoryChapterData));
+          allPromises.push(
+            FirebasePromises.set(
+              _chainState.fbRootRef
+                .child('user-inventory')
+                .child(userId)
+                .child('codex')
+                .child(row.chapter_id),
+              fbCodexInventoryChapterData,
+            ),
+          );
         }
 
         // Cosmetic chests
         const fbUserCosmeticChestData = {};
         for (row of Array.from<any>(userCosmeticChests)) {
-        // Place data in fb for storage after the transaction has completed
+          // Place data in fb for storage after the transaction has completed
           var fbCosmeticChestData = DataAccessHelpers.restifyData(row);
           fbUserCosmeticChestData[row.chest_id] = fbCosmeticChestData;
         }
         if (userCosmeticChests.length > 0) {
-          allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-inventory').child(userId).child('cosmetic-chests'), fbUserCosmeticChestData));
+          allPromises.push(
+            FirebasePromises.set(
+              _chainState.fbRootRef.child('user-inventory').child(userId).child('cosmetic-chests'),
+              fbUserCosmeticChestData,
+            ),
+          );
         } else {
-          allPromises.push(FirebasePromises.remove(_chainState.fbRootRef.child('user-inventory').child(userId).child('cosmetic-chests'), fbUserCosmeticChestData));
+          allPromises.push(
+            FirebasePromises.remove(
+              _chainState.fbRootRef.child('user-inventory').child(userId).child('cosmetic-chests'),
+              fbUserCosmeticChestData,
+            ),
+          );
         }
 
         // Cosmetic chest keys
         const fbUserCosmeticChestKeyData = {};
         for (row of Array.from<any>(userCosmeticChestKeys)) {
-        // Place data in fb for storage after the transaction has completed
+          // Place data in fb for storage after the transaction has completed
           var fbCosmeticChestKeyData = DataAccessHelpers.restifyData(row);
           fbUserCosmeticChestKeyData[row.key_id] = fbCosmeticChestKeyData;
         }
         if (userCosmeticChestKeys.length > 0) {
-          allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-inventory').child(userId).child('cosmetic-chest-keys'), fbUserCosmeticChestKeyData));
+          allPromises.push(
+            FirebasePromises.set(
+              _chainState.fbRootRef
+                .child('user-inventory')
+                .child(userId)
+                .child('cosmetic-chest-keys'),
+              fbUserCosmeticChestKeyData,
+            ),
+          );
         } else {
-          allPromises.push(FirebasePromises.remove(_chainState.fbRootRef.child('user-inventory').child(userId).child('cosmetic-chest-keys'), fbUserCosmeticChestKeyData));
+          allPromises.push(
+            FirebasePromises.remove(
+              _chainState.fbRootRef
+                .child('user-inventory')
+                .child(userId)
+                .child('cosmetic-chest-keys'),
+              fbUserCosmeticChestKeyData,
+            ),
+          );
         }
 
         // Cosmetic inventory
         for (row of Array.from<any>(userCosmeticInventory)) {
-        // Place data in fb for storage after the transaction has completed
+          // Place data in fb for storage after the transaction has completed
           var fbCosmeticData = {
             cosmetic_id: row.cosmetic_id,
             created_at: moment.utc(row.created_at).valueOf(),
           };
-          allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-inventory').child(userId).child('cosmetic-inventory').child(row.cosmetic_id), fbCosmeticData));
+          allPromises.push(
+            FirebasePromises.set(
+              _chainState.fbRootRef
+                .child('user-inventory')
+                .child(userId)
+                .child('cosmetic-inventory')
+                .child(row.cosmetic_id),
+              fbCosmeticData,
+            ),
+          );
         }
 
         // for row in gameCounterRows
@@ -661,10 +880,21 @@ class SyncModule {
         // sync ribbons
         const fbRibbonData = {};
         for (var ribbon of Array.from<any>(userRibbonRows)) {
-          if (fbRibbonData[ribbon.ribbon_id] == null) { fbRibbonData[ribbon.ribbon_id] = { ribbon_id: ribbon.ribbon_id, count: 0, updated_at: moment.utc(ribbon.created_at).valueOf() }; }
+          if (fbRibbonData[ribbon.ribbon_id] == null) {
+            fbRibbonData[ribbon.ribbon_id] = {
+              ribbon_id: ribbon.ribbon_id,
+              count: 0,
+              updated_at: moment.utc(ribbon.created_at).valueOf(),
+            };
+          }
           fbRibbonData[ribbon.ribbon_id].count += 1;
         }
-        allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-ribbons').child(userId), fbRibbonData));
+        allPromises.push(
+          FirebasePromises.set(
+            _chainState.fbRootRef.child('user-ribbons').child(userId),
+            fbRibbonData,
+          ),
+        );
 
         // sync ladder positions
         if (userRankRatings) {
@@ -674,22 +904,53 @@ class SyncModule {
               ladder_position: seasonRankRating.ladder_position,
               updated_at: moment.utc(seasonRankRating.updated_at).valueOf(),
             };
-            allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-ladder-position').child(fbSeasonStartAt).child(userId), fbUserRatingData));
+            allPromises.push(
+              FirebasePromises.set(
+                _chainState.fbRootRef
+                  .child('user-ladder-position')
+                  .child(fbSeasonStartAt)
+                  .child(userId),
+                fbUserRatingData,
+              ),
+            );
           }
         }
 
-        allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-inventory').child(userId).child('spirit-orb-total').child(SDK.CardSet.Bloodborn), _chainState.userData.total_orb_count_set_3));
-        allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-inventory').child(userId).child('spirit-orb-total').child(SDK.CardSet.Unity), _chainState.userData.total_orb_count_set_4));
+        allPromises.push(
+          FirebasePromises.set(
+            _chainState.fbRootRef
+              .child('user-inventory')
+              .child(userId)
+              .child('spirit-orb-total')
+              .child(SDK.CardSet.Bloodborn),
+            _chainState.userData.total_orb_count_set_3,
+          ),
+        );
+        allPromises.push(
+          FirebasePromises.set(
+            _chainState.fbRootRef
+              .child('user-inventory')
+              .child(userId)
+              .child('spirit-orb-total')
+              .child(SDK.CardSet.Unity),
+            _chainState.userData.total_orb_count_set_4,
+          ),
+        );
 
         // Codex inventory
         for (row of Array.from<any>(userBossesDefeated)) {
-        // Place data in fb for storage after the transaction has completed
+          // Place data in fb for storage after the transaction has completed
           var fbDefeatedBossData = {
             boss_id: row.boss_id,
             boss_event_id: row.boss_event_id,
             defeated_at: moment.utc(row.defeated_at).valueOf(),
           };
-          allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-bosses-defeated').child(userId).child(row.boss_id), fbDefeatedBossData));
+          allPromises.push(
+            FirebasePromises.set(
+              _chainState.fbRootRef.child('user-bosses-defeated').child(userId).child(row.boss_id),
+              fbDefeatedBossData,
+            ),
+          );
         }
 
         const userRiftRunsFBData = {};
@@ -698,34 +959,52 @@ class SyncModule {
           // TODO: any data need to be trimmed here?
           userRiftRunsFBData[fbRiftRunData.ticket_id] = fbRiftRunData;
         }
-        if ((userRiftRuns != null) && (userRiftRuns.length !== 0)) {
-          allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-rift-runs').child(userId), userRiftRunsFBData));
+        if (userRiftRuns != null && userRiftRuns.length !== 0) {
+          allPromises.push(
+            FirebasePromises.set(
+              _chainState.fbRootRef.child('user-rift-runs').child(userId),
+              userRiftRunsFBData,
+            ),
+          );
         } else {
-          allPromises.push(FirebasePromises.remove(_chainState.fbRootRef.child('user-rift-runs').child(userId)));
+          allPromises.push(
+            FirebasePromises.remove(_chainState.fbRootRef.child('user-rift-runs').child(userId)),
+          );
         }
 
         return Promise.all(allPromises);
       })
       .then(function () {
-        Logger.module('UsersModule').timeEnd(`_syncUserFromSQLToFirebase() -> ${userId} + buddies:${shouldSyncBuddyList}`.green);
+        Logger.module('UsersModule').timeEnd(
+          `_syncUserFromSQLToFirebase() -> ${userId} + buddies:${shouldSyncBuddyList}`.green,
+        );
         return Promise.all([
           knex('users').where('id', userId).update({ synced_firebase_at: moment().utc().toDate() }),
-          FirebasePromises.set(_chainState.fbRootRef.child('users').child(userId).child('tx_counter').child('count'), _chainState.userData.tx_count),
+          FirebasePromises.set(
+            _chainState.fbRootRef.child('users').child(userId).child('tx_counter').child('count'),
+            _chainState.userData.tx_count,
+          ),
         ]);
       });
   }
 
   static _syncUserFromFirebaseToSQL(srcRootRef, userId, forceResync) {
     const _chainState: Record<string, any> = {};
-    if (forceResync == null) { forceResync = false; }
+    if (forceResync == null) {
+      forceResync = false;
+    }
     Logger.module('UsersModule').time(`_syncUserFromFirebaseToSQL() -> ${userId} done`.green);
 
-    return knex.first('id').from('users').where('id', userId)
+    return knex
+      .first('id')
+      .from('users')
+      .where('id', userId)
       .then(function (userRow) {
         if (userRow) {
           if (!forceResync) {
             throw new Errors.AlreadyExistsError('This user has already been synced');
-          } else {}
+          } else {
+          }
         }
         // TODO: delete old user data
 
@@ -742,20 +1021,46 @@ class SyncModule {
           FirebasePromises.once(fbRootRef.child('user-games').child(userId), 'value'),
           FirebasePromises.once(fbRootRef.child('user-progression').child(userId), 'value'),
           FirebasePromises.once(fbRootRef.child('user-faction-progression').child(userId), 'value'),
-          FirebasePromises.once(fbRootRef.child('user-challenge-progression').child(userId), 'value'),
+          FirebasePromises.once(
+            fbRootRef.child('user-challenge-progression').child(userId),
+            'value',
+          ),
           FirebasePromises.once(fbRootRef.child('user-arena-run').child(userId), 'value'),
           FirebasePromises.once(fbRootRef.child('user-news').child(userId), 'value'),
           FirebasePromises.once(fbRootRef.child('user-matchmaking-errors').child(userId), 'value'),
           FirebasePromises.once(fbRootRef.child('user-stats').child(userId), 'value'),
           FirebasePromises.once(fbRootRef.child('user-rewards').child(userId), 'value'),
           FirebasePromises.once(fbRootRef.child('user-receipts').child(userId), 'value'),
-          FirebasePromises.once(fbRootRef.child('user-new-player-progression').child(userId).child('modules'), 'value'),
+          FirebasePromises.once(
+            fbRootRef.child('user-new-player-progression').child(userId).child('modules'),
+            'value',
+          ),
           FirebasePromises.once(fbRootRef.child('user-achievements').child(userId), 'value'),
-        // FirebasePromises.once(fbRootRef.child('user-logs').child(userId),"value"),
-        // FirebasePromises.once(fbRootRef.child('user-aggregates').child(userId),"value"),
+          // FirebasePromises.once(fbRootRef.child('user-logs').child(userId),"value"),
+          // FirebasePromises.once(fbRootRef.child('user-aggregates').child(userId),"value"),
         ]);
       })
-      .then(function ([user, inventory, quests, ranking, decks, games, progression, factionProgression, challengeProgression, arenaRun, news, matchmakingErrors, stats, rewards, receipts, newPlayerProgression, achievements, logs, aggregates]) {
+      .then(function ([
+        user,
+        inventory,
+        quests,
+        ranking,
+        decks,
+        games,
+        progression,
+        factionProgression,
+        challengeProgression,
+        arenaRun,
+        news,
+        matchmakingErrors,
+        stats,
+        rewards,
+        receipts,
+        newPlayerProgression,
+        achievements,
+        logs,
+        aggregates,
+      ]) {
         let i;
         _chainState.user = user.val();
         _chainState.buddies = __guard__(user.val(), (x) => x.buddies);
@@ -765,17 +1070,21 @@ class SyncModule {
         _chainState.decks = decks != null ? decks.val() : undefined;
         _chainState.games = games != null ? games.val() : undefined;
         _chainState.progression = progression != null ? progression.val() : undefined;
-        _chainState.factionProgression = factionProgression != null ? factionProgression.val() : undefined;
-        _chainState.challengeProgression = challengeProgression != null ? challengeProgression.val() : undefined;
+        _chainState.factionProgression =
+          factionProgression != null ? factionProgression.val() : undefined;
+        _chainState.challengeProgression =
+          challengeProgression != null ? challengeProgression.val() : undefined;
         _chainState.arenaRun = arenaRun != null ? arenaRun.val() : undefined;
         _chainState.news = news != null ? news.val() : undefined;
-        _chainState.matchmakingErrors = matchmakingErrors != null ? matchmakingErrors.val() : undefined;
+        _chainState.matchmakingErrors =
+          matchmakingErrors != null ? matchmakingErrors.val() : undefined;
         _chainState.stats = stats != null ? stats.val() : undefined;
         _chainState.rewards = rewards != null ? rewards.val() : undefined;
         _chainState.receipts = receipts != null ? receipts.val() : undefined;
         // @.logs = logs?.val()
         // @.aggregates = aggregates?.val()
-        _chainState.newPlayerProgression = newPlayerProgression != null ? newPlayerProgression.val() : undefined;
+        _chainState.newPlayerProgression =
+          newPlayerProgression != null ? newPlayerProgression.val() : undefined;
         _chainState.achievements = achievements != null ? achievements.val() : undefined;
 
         _chainState.currencyLogGold = 0;
@@ -792,7 +1101,9 @@ class SyncModule {
           _chainState.factionProgression = map;
         }
 
-        Logger.module('UsersModule').timeEnd('_syncUserFromFirebaseToSQL() -> firebase data loaded');
+        Logger.module('UsersModule').timeEnd(
+          '_syncUserFromFirebaseToSQL() -> firebase data loaded',
+        );
 
         // Logger.module("UsersModule").log "_syncUserFromFirebaseToSQL() -> inventory", @.inventory
         // Logger.module("UsersModule").log "_syncUserFromFirebaseToSQL() -> arenaRun", @.arenaRun
@@ -806,8 +1117,7 @@ class SyncModule {
         };
 
         return knex.transaction((trx) => {
-          let key,
-            run;
+          let key, run;
           const userData: Record<string, any> = {
             id: userId,
             username: _chainState.user.username.toLowerCase(),
@@ -824,10 +1134,16 @@ class SyncModule {
             invite_code: _chainState.user.inviteCode || null,
             created_at: toPgDate(_chainState.user.createdAt),
             updated_at: toPgDate(_chainState.user.updatedAt),
-            last_session_at: toPgDate(_chainState.user.presence != null ? _chainState.user.presence.began : undefined),
+            last_session_at: toPgDate(
+              _chainState.user.presence != null ? _chainState.user.presence.began : undefined,
+            ),
             ltv: _chainState.user.ltv || 0,
-            portrait_id: (_chainState.user.presence != null ? _chainState.user.presence.portrait_id : undefined),
-            card_back_id: (_chainState.user.presence != null ? _chainState.user.presence.card_back_id : undefined),
+            portrait_id:
+              _chainState.user.presence != null ? _chainState.user.presence.portrait_id : undefined,
+            card_back_id:
+              _chainState.user.presence != null
+                ? _chainState.user.presence.card_back_id
+                : undefined,
           };
 
           if (_chainState.buddies) {
@@ -844,37 +1160,88 @@ class SyncModule {
             userData.rank_win_streak = _chainState.ranking.current.win_streak;
             userData.rank_top_rank = _chainState.ranking.current.top_rank;
             userData.rank_is_unread = _chainState.ranking.current.is_unread || false;
-            userData.top_rank = _chainState.ranking.top != null ? _chainState.ranking.top.rank : undefined;
-            userData.top_rank_starting_at = toPgDate(_chainState.ranking.top != null ? _chainState.ranking.top.starting_at : undefined);
-            userData.top_rank_updated_at = toPgDate(_chainState.ranking.top != null ? _chainState.ranking.top.updated_at : undefined);
+            userData.top_rank =
+              _chainState.ranking.top != null ? _chainState.ranking.top.rank : undefined;
+            userData.top_rank_starting_at = toPgDate(
+              _chainState.ranking.top != null ? _chainState.ranking.top.starting_at : undefined,
+            );
+            userData.top_rank_updated_at = toPgDate(
+              _chainState.ranking.top != null ? _chainState.ranking.top.updated_at : undefined,
+            );
           }
 
           if (_chainState.inventory != null ? _chainState.inventory.wallet : undefined) {
-            const total_pack_count = _.keys(_chainState.inventory != null ? _chainState.inventory['booster-packs'] : undefined).length + _.keys(_chainState.inventory != null ? _chainState.inventory['used-booster-packs'] : undefined).length;
-            const total_ticket_count = _.keys(_chainState.inventory != null ? _chainState.inventory['arena-tickets'] : undefined).length + _.keys(_chainState.inventory != null ? _chainState.inventory['arena-tickets-used'] : undefined).length;
-            const total_gold_spent = (total_pack_count * 100) + (total_ticket_count * 150);
+            const total_pack_count =
+              _.keys(
+                _chainState.inventory != null ? _chainState.inventory['booster-packs'] : undefined,
+              ).length +
+              _.keys(
+                _chainState.inventory != null
+                  ? _chainState.inventory['used-booster-packs']
+                  : undefined,
+              ).length;
+            const total_ticket_count =
+              _.keys(
+                _chainState.inventory != null ? _chainState.inventory['arena-tickets'] : undefined,
+              ).length +
+              _.keys(
+                _chainState.inventory != null
+                  ? _chainState.inventory['arena-tickets-used']
+                  : undefined,
+              ).length;
+            const total_gold_spent = total_pack_count * 100 + total_ticket_count * 150;
 
-            userData.wallet_gold = (_chainState.inventory != null ? _chainState.inventory.wallet.gold_amount : undefined) || 0;
-            userData.wallet_spirit = (_chainState.inventory != null ? _chainState.inventory.wallet.spirit_amount : undefined) || 0;
-            userData.wallet_updated_at = toPgDate(_chainState.inventory != null ? _chainState.inventory.wallet.updated_at : undefined) || null;
+            userData.wallet_gold =
+              (_chainState.inventory != null
+                ? _chainState.inventory.wallet.gold_amount
+                : undefined) || 0;
+            userData.wallet_spirit =
+              (_chainState.inventory != null
+                ? _chainState.inventory.wallet.spirit_amount
+                : undefined) || 0;
+            userData.wallet_updated_at =
+              toPgDate(
+                _chainState.inventory != null ? _chainState.inventory.wallet.updated_at : undefined,
+              ) || null;
             userData.total_gold_earned = userData.wallet_gold + total_gold_spent;
           }
 
-          if (__guard__(_chainState.quests != null ? _chainState.quests.daily : undefined, (x1) => x1.current)) {
-            userData.daily_quests_generated_at = toPgDate(__guard__(__guard__(_chainState.quests != null ? _chainState.quests.daily : undefined, (x3) => x3.current), (x2) => x2.generated_at));
-            userData.daily_quests_updated_at = toPgDate(__guard__(__guard__(_chainState.quests != null ? _chainState.quests.daily : undefined, (x5) => x5.current), (x4) => x4.updated_at));
+          if (
+            __guard__(
+              _chainState.quests != null ? _chainState.quests.daily : undefined,
+              (x1) => x1.current,
+            )
+          ) {
+            userData.daily_quests_generated_at = toPgDate(
+              __guard__(
+                __guard__(
+                  _chainState.quests != null ? _chainState.quests.daily : undefined,
+                  (x3) => x3.current,
+                ),
+                (x2) => x2.generated_at,
+              ),
+            );
+            userData.daily_quests_updated_at = toPgDate(
+              __guard__(
+                __guard__(
+                  _chainState.quests != null ? _chainState.quests.daily : undefined,
+                  (x5) => x5.current,
+                ),
+                (x4) => x4.updated_at,
+              ),
+            );
           }
 
           userData.top_gauntlet_win_count = null;
 
           // top arena win count
           if ((_chainState.arenaRun != null ? _chainState.arenaRun.history : undefined) != null) {
-          // console.log("history")
-            for (key in (_chainState.arenaRun != null ? _chainState.arenaRun.history : undefined)) {
-            // console.log("run #{run.win_count}")
+            // console.log("history")
+            for (key in _chainState.arenaRun != null ? _chainState.arenaRun.history : undefined) {
+              // console.log("run #{run.win_count}")
               run = (_chainState.arenaRun != null ? _chainState.arenaRun.history : undefined)[key];
               if (run.win_count > userData.top_gauntlet_win_count) {
-              // console.log("run set")
+                // console.log("run set")
                 userData.top_gauntlet_win_count = run.win_count;
               }
             }
@@ -882,17 +1249,28 @@ class SyncModule {
 
           // top arena win count
           // console.log("current run #{@.arenaRun?.current?.win_count}")
-          if (__guard__(_chainState.arenaRun != null ? _chainState.arenaRun.current : undefined, (x6) => x6.win_count) > userData.top_gauntlet_win_count) {
-          // console.log("run set")
-            userData.top_gauntlet_win_count = __guard__(_chainState.arenaRun != null ? _chainState.arenaRun.current : undefined, (x7) => x7.win_count);
+          if (
+            __guard__(
+              _chainState.arenaRun != null ? _chainState.arenaRun.current : undefined,
+              (x6) => x6.win_count,
+            ) > userData.top_gauntlet_win_count
+          ) {
+            // console.log("run set")
+            userData.top_gauntlet_win_count = __guard__(
+              _chainState.arenaRun != null ? _chainState.arenaRun.current : undefined,
+              (x7) => x7.win_count,
+            );
           }
 
           // Logger.module("UsersModule").log "_syncUserFromFirebaseToSQL() -> #{userId} saving user data."
 
           _chainState.userData = userData;
 
-          return trx.insert(userData).into('users')
-            .then(function () { // buddies
+          return trx
+            .insert(userData)
+            .into('users')
+            .then(function () {
+              // buddies
               const inserts = [];
 
               if (_chainState.buddies) {
@@ -900,30 +1278,37 @@ class SyncModule {
 
                 for (key in _chainState.buddies) {
                   var obj = _chainState.buddies[key];
-                  inserts.push(trx.insert({
-                    user_id: userId,
-                    buddy_id: key,
-                    created_at: toPgDate(obj.createdAt || moment().utc().valueOf()),
-                  }).into('user_buddies'),
+                  inserts.push(
+                    trx
+                      .insert({
+                        user_id: userId,
+                        buddy_id: key,
+                        created_at: toPgDate(obj.createdAt || moment().utc().valueOf()),
+                      })
+                      .into('user_buddies'),
                   );
                 }
               }
 
               return Promise.all(inserts);
             })
-            .then(function () { // rank
+            .then(function () {
+              // rank
               // Logger.module("UsersModule").log "_syncUserFromFirebaseToSQL() -> #{userId} saving rank data."
 
               const inserts = [];
 
               // Mark seasons older than this as read, newer are marked as unread
-              const beginUnreadSeasonsTimestamp = moment('9-1-2015 +0000', 'MM-DD-YYYY Z').utc().valueOf();
+              const beginUnreadSeasonsTimestamp = moment('9-1-2015 +0000', 'MM-DD-YYYY Z')
+                .utc()
+                .valueOf();
 
               if ((_chainState.ranking != null ? _chainState.ranking.history : undefined) != null) {
-                for (key in (_chainState.ranking != null ? _chainState.ranking.history : undefined)) {
-                  var rewardIds,
-                    rewardsClaimedAt;
-                  var historyRank = (_chainState.ranking != null ? _chainState.ranking.history : undefined)[key];
+                for (key in _chainState.ranking != null ? _chainState.ranking.history : undefined) {
+                  var rewardIds, rewardsClaimedAt;
+                  var historyRank = (
+                    _chainState.ranking != null ? _chainState.ranking.history : undefined
+                  )[key];
                   var isUnread = historyRank.starting_at >= beginUnreadSeasonsTimestamp;
 
                   if (isUnread) {
@@ -936,101 +1321,149 @@ class SyncModule {
 
                   // Logger.module("UsersModule").log "_syncUserFromFirebaseToSQL() -> #{userId} saving history rank ${moment.utc(historyRank.starting_at).format()}."
 
-                  inserts.push(trx.insert({
-                    user_id: userId,
-                    created_at: toPgDate(historyRank.created_at),
-                    updated_at: toPgDate(historyRank.updated_at),
-                    starting_at: toPgDate(historyRank.starting_at),
-                    rank: historyRank.rank,
-                    stars: historyRank.stars,
-                    stars_required: historyRank.stars_required,
-                    win_streak: historyRank.win_streak,
-                    top_rank: (historyRank.top_rank != null) ? historyRank.top_rank : historyRank.rank,
-                    reward_ids: rewardIds,
-                    rewards_claimed_at: rewardsClaimedAt,
-                    is_unread: isUnread,
-                  }).into('user_rank_history'),
+                  inserts.push(
+                    trx
+                      .insert({
+                        user_id: userId,
+                        created_at: toPgDate(historyRank.created_at),
+                        updated_at: toPgDate(historyRank.updated_at),
+                        starting_at: toPgDate(historyRank.starting_at),
+                        rank: historyRank.rank,
+                        stars: historyRank.stars,
+                        stars_required: historyRank.stars_required,
+                        win_streak: historyRank.win_streak,
+                        top_rank:
+                          historyRank.top_rank != null ? historyRank.top_rank : historyRank.rank,
+                        reward_ids: rewardIds,
+                        rewards_claimed_at: rewardsClaimedAt,
+                        is_unread: isUnread,
+                      })
+                      .into('user_rank_history'),
                   );
                 }
               }
 
               return Promise.all(inserts);
             })
-            .then(function () { // quests
+            .then(function () {
+              // quests
               // Logger.module("UsersModule").log "_syncUserFromFirebaseToSQL() -> #{userId} saving quest data."
 
               let quest;
               const inserts = [];
 
-              if (__guard__(__guard__(_chainState.quests != null ? _chainState.quests.daily : undefined, (x9) => x9.current), (x8) => x8.quests) != null) {
-                for (key in __guard__(__guard__(_chainState.quests != null ? _chainState.quests.daily : undefined, (x11) => x11.current), (x10) => x10.quests)) {
+              if (
+                __guard__(
+                  __guard__(
+                    _chainState.quests != null ? _chainState.quests.daily : undefined,
+                    (x9) => x9.current,
+                  ),
+                  (x8) => x8.quests,
+                ) != null
+              ) {
+                for (key in __guard__(
+                  __guard__(
+                    _chainState.quests != null ? _chainState.quests.daily : undefined,
+                    (x11) => x11.current,
+                  ),
+                  (x10) => x10.quests,
+                )) {
                   // Logger.module("UsersModule").log "_syncUserFromFirebaseToSQL() -> #{userId} saving CURRENT quest at slot #{key}."
 
-                  quest = __guard__(__guard__(_chainState.quests != null ? _chainState.quests.daily : undefined, (x11) => x11.current), (x10) => x10.quests)[key];
-                  inserts.push(trx.insert({
-                    user_id: userId,
-                    quest_slot_index: key,
-                    quest_type_id: quest.q_id,
-                    begin_at: toPgDate(quest.begin_at),
-                    created_at: toPgDate(quest.created_at),
-                    updated_at: toPgDate(quest.updated_at),
-                    mulliganed_at: toPgDate(quest.mulliganed_at),
-                    progressed_by_game_ids: quest.progressedBy,
-                    // completion_count:  quest.completion_count
-                    gold: quest.gold,
-                    progress: quest.progress,
-                    params: quest.params,
-                    is_unread: quest.is_unread,
-                    read_at: quest.is_unread ? moment().utc().toDate() : null,
-                  }).into('user_quests'),
+                  quest = __guard__(
+                    __guard__(
+                      _chainState.quests != null ? _chainState.quests.daily : undefined,
+                      (x11) => x11.current,
+                    ),
+                    (x10) => x10.quests,
+                  )[key];
+                  inserts.push(
+                    trx
+                      .insert({
+                        user_id: userId,
+                        quest_slot_index: key,
+                        quest_type_id: quest.q_id,
+                        begin_at: toPgDate(quest.begin_at),
+                        created_at: toPgDate(quest.created_at),
+                        updated_at: toPgDate(quest.updated_at),
+                        mulliganed_at: toPgDate(quest.mulliganed_at),
+                        progressed_by_game_ids: quest.progressedBy,
+                        // completion_count:  quest.completion_count
+                        gold: quest.gold,
+                        progress: quest.progress,
+                        params: quest.params,
+                        is_unread: quest.is_unread,
+                        read_at: quest.is_unread ? moment().utc().toDate() : null,
+                      })
+                      .into('user_quests'),
                   );
                 }
               }
 
-              if (__guard__(_chainState.quests != null ? _chainState.quests.daily : undefined, (x12) => x12.completed) != null) {
-                for (key in __guard__(_chainState.quests != null ? _chainState.quests.daily : undefined, (x13) => x13.completed)) {
+              if (
+                __guard__(
+                  _chainState.quests != null ? _chainState.quests.daily : undefined,
+                  (x12) => x12.completed,
+                ) != null
+              ) {
+                for (key in __guard__(
+                  _chainState.quests != null ? _chainState.quests.daily : undefined,
+                  (x13) => x13.completed,
+                )) {
                   // Logger.module("UsersModule").log "_syncUserFromFirebaseToSQL() -> #{userId} saving completed quest #{key}."
 
-                  quest = __guard__(_chainState.quests != null ? _chainState.quests.daily : undefined, (x13) => x13.completed)[key];
-                  inserts.push(trx.insert({
-                    id: key,
-                    user_id: userId,
-                    quest_type_id: quest.q_id,
-                    begin_at: toPgDate(quest.begin_at),
-                    created_at: toPgDate(quest.created_at),
-                    updated_at: toPgDate(quest.updated_at),
-                    completed_at: toPgDate(quest.completed_at),
-                    mulliganed_at: toPgDate(quest.mulliganed_at),
-                    progressed_by_game_ids: quest.progressedBy,
-                    // completion_count:  quest.completion_count
-                    gold: quest.gold,
-                    progress: quest.progress,
-                    params: quest.params,
-                    is_unread: quest.is_unread,
-                    read_at: quest.is_unread ? moment().utc().toDate() : null,
-                  }).into('user_quests_complete'),
+                  quest = __guard__(
+                    _chainState.quests != null ? _chainState.quests.daily : undefined,
+                    (x13) => x13.completed,
+                  )[key];
+                  inserts.push(
+                    trx
+                      .insert({
+                        id: key,
+                        user_id: userId,
+                        quest_type_id: quest.q_id,
+                        begin_at: toPgDate(quest.begin_at),
+                        created_at: toPgDate(quest.created_at),
+                        updated_at: toPgDate(quest.updated_at),
+                        completed_at: toPgDate(quest.completed_at),
+                        mulliganed_at: toPgDate(quest.mulliganed_at),
+                        progressed_by_game_ids: quest.progressedBy,
+                        // completion_count:  quest.completion_count
+                        gold: quest.gold,
+                        progress: quest.progress,
+                        params: quest.params,
+                        is_unread: quest.is_unread,
+                        read_at: quest.is_unread ? moment().utc().toDate() : null,
+                      })
+                      .into('user_quests_complete'),
                   );
 
-                  inserts.push(trx.insert({
-                    id: generatePushId(),
-                    user_id: userId,
-                    reward_category: 'quest',
-                    source_id: key,
-                    quest_type_id: quest.q_id,
-                    gold: quest.gold,
-                    created_at: toPgDate(quest.completed_at),
-                    is_unread: false,
-                    read_at: toPgDate(quest.completed_at),
-                  }).into('user_rewards'),
+                  inserts.push(
+                    trx
+                      .insert({
+                        id: generatePushId(),
+                        user_id: userId,
+                        reward_category: 'quest',
+                        source_id: key,
+                        quest_type_id: quest.q_id,
+                        gold: quest.gold,
+                        created_at: toPgDate(quest.completed_at),
+                        is_unread: false,
+                        read_at: toPgDate(quest.completed_at),
+                      })
+                      .into('user_rewards'),
                   );
 
-                  inserts.push(trx.insert({
-                    id: generatePushId(),
-                    user_id: userId,
-                    gold: quest.gold,
-                    memo: 'quest',
-                    created_at: toPgDate(quest.completed_at),
-                  }).into('user_currency_log'),
+                  inserts.push(
+                    trx
+                      .insert({
+                        id: generatePushId(),
+                        user_id: userId,
+                        gold: quest.gold,
+                        memo: 'quest',
+                        created_at: toPgDate(quest.completed_at),
+                      })
+                      .into('user_currency_log'),
                   );
 
                   _chainState.currencyLogGold += quest.gold;
@@ -1039,12 +1472,11 @@ class SyncModule {
 
               return Promise.all(inserts);
             })
-            .then(function () { // arena runs
+            .then(function () {
+              // arena runs
               // Logger.module("UsersModule").log "_syncUserFromFirebaseToSQL() -> #{userId} saving gauntlet data."
 
-              let reward,
-                rewardId,
-                rewardIds;
+              let reward, rewardId, rewardIds;
               const inserts = [];
 
               if (_chainState.arenaRun != null ? _chainState.arenaRun.current : undefined) {
@@ -1055,49 +1487,57 @@ class SyncModule {
                   rewardIds = [];
                   for (reward of Array.from<any>(run.rewards)) {
                     rewardId = generatePushId();
-                    inserts.push(trx.insert({
-                      id: rewardId,
-                      user_id: userId,
-                      reward_category: 'gauntlet run',
-                      source_id: run.ticket_id,
-                      gold: reward.gold,
-                      spirit: reward.spirit,
-                      spirit_orbs: reward.booster_packs,
-                      cards: reward.cards,
-                      gauntlet_tickets: reward.arena_tickets,
-                      created_at: toPgDate(run.ended_at),
-                      is_unread: false,
-                      read_at: toPgDate(run.ended_at),
-                    }).into('user_rewards'),
+                    inserts.push(
+                      trx
+                        .insert({
+                          id: rewardId,
+                          user_id: userId,
+                          reward_category: 'gauntlet run',
+                          source_id: run.ticket_id,
+                          gold: reward.gold,
+                          spirit: reward.spirit,
+                          spirit_orbs: reward.booster_packs,
+                          cards: reward.cards,
+                          gauntlet_tickets: reward.arena_tickets,
+                          created_at: toPgDate(run.ended_at),
+                          is_unread: false,
+                          read_at: toPgDate(run.ended_at),
+                        })
+                        .into('user_rewards'),
                     );
                     rewardIds.push(rewardId);
                   }
                 }
 
-                inserts.push(trx.insert({
-                  user_id: userId,
-                  ticket_id: run.ticket_id,
-                  win_count: run.win_count || 0,
-                  loss_count: run.loss_count || 0,
-                  draw_count: run.draw_count || 0,
-                  is_complete: run.is_complete || false,
-                  created_at: toPgDate(run.created_at),
-                  updated_at: toPgDate(run.updated_at),
-                  started_at: toPgDate(run.started_at),
-                  completed_at: toPgDate(run.completed_at),
-                  ended_at: toPgDate(run.ended_at),
-                  rewards_claimed_at: toPgDate(run.rewards_claimed_at),
-                  faction_choices: run.faction_choices,
-                  faction_id: run.faction_id,
-                  deck: run.deck,
-                  card_choices: run.card_choices,
-                  reward_ids: rewardIds,
-                }).into('user_gauntlet_run'),
+                inserts.push(
+                  trx
+                    .insert({
+                      user_id: userId,
+                      ticket_id: run.ticket_id,
+                      win_count: run.win_count || 0,
+                      loss_count: run.loss_count || 0,
+                      draw_count: run.draw_count || 0,
+                      is_complete: run.is_complete || false,
+                      created_at: toPgDate(run.created_at),
+                      updated_at: toPgDate(run.updated_at),
+                      started_at: toPgDate(run.started_at),
+                      completed_at: toPgDate(run.completed_at),
+                      ended_at: toPgDate(run.ended_at),
+                      rewards_claimed_at: toPgDate(run.rewards_claimed_at),
+                      faction_choices: run.faction_choices,
+                      faction_id: run.faction_id,
+                      deck: run.deck,
+                      card_choices: run.card_choices,
+                      reward_ids: rewardIds,
+                    })
+                    .into('user_gauntlet_run'),
                 );
               }
 
-              for (key in (_chainState.arenaRun != null ? _chainState.arenaRun.history : undefined)) {
-                run = (_chainState.arenaRun != null ? _chainState.arenaRun.history : undefined)[key];
+              for (key in _chainState.arenaRun != null ? _chainState.arenaRun.history : undefined) {
+                run = (_chainState.arenaRun != null ? _chainState.arenaRun.history : undefined)[
+                  key
+                ];
                 rewardIds = [];
 
                 for (reward of Array.from<any>(run.rewards)) {
@@ -1107,32 +1547,38 @@ class SyncModule {
                   }
 
                   rewardId = generatePushId();
-                  inserts.push(trx.insert({
-                    id: rewardId,
-                    user_id: userId,
-                    reward_category: 'gauntlet run',
-                    source_id: run.ticket_id,
-                    gold: reward.gold,
-                    spirit: reward.spirit,
-                    spirit_orbs: reward.booster_packs,
-                    cards,
-                    gauntlet_tickets: reward.arena_tickets,
-                    created_at: toPgDate(run.rewards_claimed_at),
-                    is_unread: false,
-                    read_at: toPgDate(run.rewards_claimed_at),
-                  }).into('user_rewards'),
+                  inserts.push(
+                    trx
+                      .insert({
+                        id: rewardId,
+                        user_id: userId,
+                        reward_category: 'gauntlet run',
+                        source_id: run.ticket_id,
+                        gold: reward.gold,
+                        spirit: reward.spirit,
+                        spirit_orbs: reward.booster_packs,
+                        cards,
+                        gauntlet_tickets: reward.arena_tickets,
+                        created_at: toPgDate(run.rewards_claimed_at),
+                        is_unread: false,
+                        read_at: toPgDate(run.rewards_claimed_at),
+                      })
+                      .into('user_rewards'),
                   );
                   rewardIds.push(rewardId);
 
                   if (reward.gold || reward.spirit) {
-                    inserts.push(trx.insert({
-                      id: generatePushId(),
-                      user_id: userId,
-                      gold: reward.gold || 0,
-                      spirit: reward.spirit || 0,
-                      memo: 'gauntlet',
-                      created_at: toPgDate(run.rewards_claimed_at),
-                    }).into('user_currency_log'),
+                    inserts.push(
+                      trx
+                        .insert({
+                          id: generatePushId(),
+                          user_id: userId,
+                          gold: reward.gold || 0,
+                          spirit: reward.spirit || 0,
+                          memo: 'gauntlet',
+                          created_at: toPgDate(run.rewards_claimed_at),
+                        })
+                        .into('user_currency_log'),
                     );
 
                     _chainState.currencyLogGold += reward.gold || 0;
@@ -1140,139 +1586,186 @@ class SyncModule {
                   }
                 }
 
-                inserts.push(trx.insert({
-                  id: run.ticket_id,
-                  user_id: userId,
-                  win_count: run.win_count || 0,
-                  loss_count: run.loss_count || 0,
-                  draw_count: run.draw_count || 0,
-                  is_complete: run.is_complete || false,
-                  created_at: toPgDate(run.created_at),
-                  updated_at: toPgDate(run.updated_at),
-                  started_at: toPgDate(run.started_at),
-                  completed_at: toPgDate(run.completed_at),
-                  ended_at: toPgDate(run.ended_at),
-                  rewards_claimed_at: toPgDate(run.rewards_claimed_at),
-                  faction_choices: run.faction_choices,
-                  faction_id: run.faction_id,
-                  deck: run.deck,
-                  card_choices: run.card_choices,
-                  reward_ids: rewardIds,
-                }).into('user_gauntlet_run_complete'),
+                inserts.push(
+                  trx
+                    .insert({
+                      id: run.ticket_id,
+                      user_id: userId,
+                      win_count: run.win_count || 0,
+                      loss_count: run.loss_count || 0,
+                      draw_count: run.draw_count || 0,
+                      is_complete: run.is_complete || false,
+                      created_at: toPgDate(run.created_at),
+                      updated_at: toPgDate(run.updated_at),
+                      started_at: toPgDate(run.started_at),
+                      completed_at: toPgDate(run.completed_at),
+                      ended_at: toPgDate(run.ended_at),
+                      rewards_claimed_at: toPgDate(run.rewards_claimed_at),
+                      faction_choices: run.faction_choices,
+                      faction_id: run.faction_id,
+                      deck: run.deck,
+                      card_choices: run.card_choices,
+                      reward_ids: rewardIds,
+                    })
+                    .into('user_gauntlet_run_complete'),
                 );
               }
 
               return Promise.all(inserts);
             })
-            .then(function () { // inventory packs/tickets
+            .then(function () {
+              // inventory packs/tickets
               // Logger.module("UsersModule").log "_syncUserFromFirebaseToSQL() -> #{userId} saving inventory data."
 
-              let pack,
-                ticket;
+              let pack, ticket;
               const inserts = [];
 
               const boosterPackGoldDelta = -100;
               const gauntletTicketGoldDelta = -150;
 
-              for (key in (_chainState.inventory != null ? _chainState.inventory['booster-packs'] : undefined)) {
-                pack = (_chainState.inventory != null ? _chainState.inventory['booster-packs'] : undefined)[key];
-                inserts.push(trx.insert({
-                  id: key,
-                  user_id: userId,
-                  transaction_type: pack.transaction_type,
-                  transaction_id: pack.charge_id || pack.ticket_id,
-                  created_at: toPgDate(pack.created_at),
-                  is_unread: false,
-                }).into('user_spirit_orbs'),
+              for (key in _chainState.inventory != null
+                ? _chainState.inventory['booster-packs']
+                : undefined) {
+                pack = (
+                  _chainState.inventory != null ? _chainState.inventory['booster-packs'] : undefined
+                )[key];
+                inserts.push(
+                  trx
+                    .insert({
+                      id: key,
+                      user_id: userId,
+                      transaction_type: pack.transaction_type,
+                      transaction_id: pack.charge_id || pack.ticket_id,
+                      created_at: toPgDate(pack.created_at),
+                      is_unread: false,
+                    })
+                    .into('user_spirit_orbs'),
                 );
 
                 if (pack.transaction_type === 'soft') {
-                  inserts.push(trx.insert({
-                    id: generatePushId(),
-                    user_id: userId,
-                    gold: boosterPackGoldDelta,
-                    memo: `spirit orb ${key}`,
-                    created_at: toPgDate(pack.created_at),
-                  }).into('user_currency_log'),
+                  inserts.push(
+                    trx
+                      .insert({
+                        id: generatePushId(),
+                        user_id: userId,
+                        gold: boosterPackGoldDelta,
+                        memo: `spirit orb ${key}`,
+                        created_at: toPgDate(pack.created_at),
+                      })
+                      .into('user_currency_log'),
                   );
 
                   _chainState.currencyLogGold += boosterPackGoldDelta;
                 }
               }
 
-              for (key in (_chainState.inventory != null ? _chainState.inventory['used-booster-packs'] : undefined)) {
-                pack = (_chainState.inventory != null ? _chainState.inventory['used-booster-packs'] : undefined)[key];
-                inserts.push(trx.insert({
-                  id: key,
-                  user_id: userId,
-                  transaction_type: pack.transaction_type,
-                  transaction_id: pack.charge_id || pack.ticket_id,
-                  created_at: toPgDate(pack.created_at),
-                  opened_at: toPgDate(pack.opened_at),
-                  cards: pack.cards,
-                }).into('user_spirit_orbs_opened'),
+              for (key in _chainState.inventory != null
+                ? _chainState.inventory['used-booster-packs']
+                : undefined) {
+                pack = (
+                  _chainState.inventory != null
+                    ? _chainState.inventory['used-booster-packs']
+                    : undefined
+                )[key];
+                inserts.push(
+                  trx
+                    .insert({
+                      id: key,
+                      user_id: userId,
+                      transaction_type: pack.transaction_type,
+                      transaction_id: pack.charge_id || pack.ticket_id,
+                      created_at: toPgDate(pack.created_at),
+                      opened_at: toPgDate(pack.opened_at),
+                      cards: pack.cards,
+                    })
+                    .into('user_spirit_orbs_opened'),
                 );
 
                 if (pack.transaction_type === 'soft') {
-                  inserts.push(trx.insert({
-                    id: generatePushId(),
-                    user_id: userId,
-                    gold: boosterPackGoldDelta,
-                    memo: `spirit orb ${key}`,
-                    created_at: toPgDate(pack.created_at),
-                  }).into('user_currency_log'),
+                  inserts.push(
+                    trx
+                      .insert({
+                        id: generatePushId(),
+                        user_id: userId,
+                        gold: boosterPackGoldDelta,
+                        memo: `spirit orb ${key}`,
+                        created_at: toPgDate(pack.created_at),
+                      })
+                      .into('user_currency_log'),
                   );
 
                   _chainState.currencyLogGold += boosterPackGoldDelta;
                 }
               }
 
-              for (key in (_chainState.inventory != null ? _chainState.inventory['arena-tickets'] : undefined)) {
-                ticket = (_chainState.inventory != null ? _chainState.inventory['arena-tickets'] : undefined)[key];
-                inserts.push(trx.insert({
-                  id: key,
-                  user_id: userId,
-                  transaction_type: ticket.transaction_type,
-                  transaction_id: ticket.transaction_id,
-                  created_at: toPgDate(ticket.created_at),
-                  is_unread: ticket.is_unread || false,
-                }).into('user_gauntlet_tickets'),
+              for (key in _chainState.inventory != null
+                ? _chainState.inventory['arena-tickets']
+                : undefined) {
+                ticket = (
+                  _chainState.inventory != null ? _chainState.inventory['arena-tickets'] : undefined
+                )[key];
+                inserts.push(
+                  trx
+                    .insert({
+                      id: key,
+                      user_id: userId,
+                      transaction_type: ticket.transaction_type,
+                      transaction_id: ticket.transaction_id,
+                      created_at: toPgDate(ticket.created_at),
+                      is_unread: ticket.is_unread || false,
+                    })
+                    .into('user_gauntlet_tickets'),
                 );
 
                 if (ticket.transaction_type === 'soft') {
-                  inserts.push(trx.insert({
-                    id: generatePushId(),
-                    user_id: userId,
-                    gold: gauntletTicketGoldDelta,
-                    memo: `gauntlet ticket ${key}`,
-                    created_at: toPgDate(ticket.created_at),
-                  }).into('user_currency_log'),
+                  inserts.push(
+                    trx
+                      .insert({
+                        id: generatePushId(),
+                        user_id: userId,
+                        gold: gauntletTicketGoldDelta,
+                        memo: `gauntlet ticket ${key}`,
+                        created_at: toPgDate(ticket.created_at),
+                      })
+                      .into('user_currency_log'),
                   );
 
                   _chainState.currencyLogGold += gauntletTicketGoldDelta;
                 }
               }
 
-              for (key in (_chainState.inventory != null ? _chainState.inventory['used-arena-tickets'] : undefined)) {
-                ticket = (_chainState.inventory != null ? _chainState.inventory['used-arena-tickets'] : undefined)[key];
-                inserts.push(trx.insert({
-                  id: key,
-                  user_id: userId,
-                  transaction_type: ticket.transaction_type,
-                  transaction_id: ticket.transaction_id,
-                  created_at: toPgDate(ticket.created_at),
-                  used_at: toPgDate(ticket.used_at),
-                }).into('user_gauntlet_tickets_used'),
+              for (key in _chainState.inventory != null
+                ? _chainState.inventory['used-arena-tickets']
+                : undefined) {
+                ticket = (
+                  _chainState.inventory != null
+                    ? _chainState.inventory['used-arena-tickets']
+                    : undefined
+                )[key];
+                inserts.push(
+                  trx
+                    .insert({
+                      id: key,
+                      user_id: userId,
+                      transaction_type: ticket.transaction_type,
+                      transaction_id: ticket.transaction_id,
+                      created_at: toPgDate(ticket.created_at),
+                      used_at: toPgDate(ticket.used_at),
+                    })
+                    .into('user_gauntlet_tickets_used'),
                 );
 
                 if (ticket.transaction_type === 'soft') {
-                  inserts.push(trx.insert({
-                    id: generatePushId(),
-                    user_id: userId,
-                    gold: gauntletTicketGoldDelta,
-                    memo: `gauntlet ticket ${key}`,
-                    created_at: toPgDate(ticket.created_at),
-                  }).into('user_currency_log'),
+                  inserts.push(
+                    trx
+                      .insert({
+                        id: generatePushId(),
+                        user_id: userId,
+                        gold: gauntletTicketGoldDelta,
+                        memo: `gauntlet ticket ${key}`,
+                        created_at: toPgDate(ticket.created_at),
+                      })
+                      .into('user_currency_log'),
                   );
 
                   _chainState.currencyLogGold += gauntletTicketGoldDelta;
@@ -1281,7 +1774,8 @@ class SyncModule {
 
               return Promise.all(inserts);
             })
-            .then(function () { // receipts
+            .then(function () {
+              // receipts
               // Logger.module("UsersModule").log "_syncUserFromFirebaseToSQL() -> #{userId} saving receipt data."
 
               const inserts = [];
@@ -1294,66 +1788,74 @@ class SyncModule {
                 if (charge.payment_gross || charge.mc_gross) {
                   var gross = charge.payment_gross || charge.mc_gross;
                   amount = Math.round(parseFloat(gross) * 100);
-                  currency = charge.mc_currency != null ? charge.mc_currency.toLowerCase() : undefined;
+                  currency =
+                    charge.mc_currency != null ? charge.mc_currency.toLowerCase() : undefined;
                 } else {
-                  ({
-                    amount,
-                  } = charge);
-                  ({
-                    currency,
-                  } = charge);
+                  ({ amount } = charge);
+                  ({ currency } = charge);
                 }
 
                 var chargeCreated = charge.created;
-                if ((charge.created == null) && (charge.payment_date != null)) {
+                if (charge.created == null && charge.payment_date != null) {
                   chargeCreated = Date.parse(charge.payment_date) / 1000;
                 }
 
-                inserts.push(trx.insert({
-                  charge_id: key,
-                  user_id: userId,
-                  amount,
-                  currency,
-                  charge_json: charge,
-                  created_at: toPgDate(chargeCreated * 1000),
-                }).into('user_charges'),
+                inserts.push(
+                  trx
+                    .insert({
+                      charge_id: key,
+                      user_id: userId,
+                      amount,
+                      currency,
+                      charge_json: charge,
+                      created_at: toPgDate(chargeCreated * 1000),
+                    })
+                    .into('user_charges'),
                 );
               }
 
               return Promise.all(inserts);
             })
-            .then(function () { // decks
+            .then(function () {
+              // decks
               // Logger.module("UsersModule").log "_syncUserFromFirebaseToSQL() -> #{userId} saving decks data."
 
               const inserts = [];
 
               for (key in _chainState.decks) {
                 var deck = _chainState.decks[key];
-                if ((deck.factionId == null)) {
-                  Logger.module('UsersModule').log(`_syncUserFromFirebaseToSQL() -> ${userId} skipping deck ${key} due to no faction id.`.red);
+                if (deck.factionId == null) {
+                  Logger.module('UsersModule').log(
+                    `_syncUserFromFirebaseToSQL() -> ${userId} skipping deck ${key} due to no faction id.`
+                      .red,
+                  );
                   continue;
                 }
 
-                inserts.push(trx.insert({
-                  id: key,
-                  user_id: userId,
-                  name: deck.name,
-                  faction_id: deck.factionId,
-                  spell_count: deck.spell_count,
-                  minion_count: deck.minion_count,
-                  artifact_count: deck.artifact_count,
-                  color_code: deck.color_code,
-                  card_back_id: deck.card_back_id,
-                  cards: deck.cards,
-                  created_at: toPgDate(deck.created_at),
-                  updated_at: toPgDate(deck.last_edited_at),
-                }).into('user_decks'),
+                inserts.push(
+                  trx
+                    .insert({
+                      id: key,
+                      user_id: userId,
+                      name: deck.name,
+                      faction_id: deck.factionId,
+                      spell_count: deck.spell_count,
+                      minion_count: deck.minion_count,
+                      artifact_count: deck.artifact_count,
+                      color_code: deck.color_code,
+                      card_back_id: deck.card_back_id,
+                      cards: deck.cards,
+                      created_at: toPgDate(deck.created_at),
+                      updated_at: toPgDate(deck.last_edited_at),
+                    })
+                    .into('user_decks'),
                 );
               }
 
               return Promise.all(inserts);
             })
-            .then(function () { // games
+            .then(function () {
+              // games
               // Logger.module("UsersModule").log "_syncUserFromFirebaseToSQL() -> #{userId} saving games data.".cyan
 
               let counter;
@@ -1369,43 +1871,58 @@ class SyncModule {
                   game.gameType = SDK.GameType.Gauntlet;
                 }
 
-                inserts.push(trx.insert({
-                  user_id: userId,
-                  game_id: key,
-                  game_type: game.gameType,
-                  game_server: game.gameServer,
-                  is_player_1: game.isPlayer1,
-                  is_scored: !game.isUnscored,
-                  is_winner: game.isWinner || false,
-                  is_draw: (game.isWinner == null),
-                  faction_id: game.factionId,
-                  general_id: game.generalId,
-                  opponent_id: game.opponentId,
-                  opponent_faction_id: game.opponentFactionId,
-                  opponent_general_id: game.opponentGeneralId,
-                  opponent_username: game.opponentName,
-                  // deck_cards:      game.
-                  deck_id: game.deckId,
-                  game_version: game.gameVersion,
-                  // rewards:        game.
-                  status: game.status,
-                  created_at: toPgDate(game.createdAt),
-                  ended_at: toPgDate(game.updatedAt),
-                  updated_at: toPgDate(game.updatedAt),
-                }).into('user_games'),
+                inserts.push(
+                  trx
+                    .insert({
+                      user_id: userId,
+                      game_id: key,
+                      game_type: game.gameType,
+                      game_server: game.gameServer,
+                      is_player_1: game.isPlayer1,
+                      is_scored: !game.isUnscored,
+                      is_winner: game.isWinner || false,
+                      is_draw: game.isWinner == null,
+                      faction_id: game.factionId,
+                      general_id: game.generalId,
+                      opponent_id: game.opponentId,
+                      opponent_faction_id: game.opponentFactionId,
+                      opponent_general_id: game.opponentGeneralId,
+                      opponent_username: game.opponentName,
+                      // deck_cards:      game.
+                      deck_id: game.deckId,
+                      game_version: game.gameVersion,
+                      // rewards:        game.
+                      status: game.status,
+                      created_at: toPgDate(game.createdAt),
+                      ended_at: toPgDate(game.updatedAt),
+                      updated_at: toPgDate(game.updatedAt),
+                    })
+                    .into('user_games'),
                 );
 
-                if ((game.gameType != null) && (game.factionId != null)) {
+                if (game.gameType != null && game.factionId != null) {
                   //
-                  counter = DataAccessHelpers.updateCounterWithGameOutcome(gameCounters[game.gameType], game.isWinner, game.isWinner === null, game.isUnscored);
+                  counter = DataAccessHelpers.updateCounterWithGameOutcome(
+                    gameCounters[game.gameType],
+                    game.isWinner,
+                    game.isWinner === null,
+                    game.isUnscored,
+                  );
                   counter.user_id = userId;
                   counter.game_type = game.gameType;
                   counter.updated_at = toPgDate(game.createdAt);
                   gameCounters[game.gameType] = counter;
 
                   //
-                  if (factionGameCounters[game.gameType] == null) { factionGameCounters[game.gameType] = {}; }
-                  var factionCounter = DataAccessHelpers.updateCounterWithGameOutcome(factionGameCounters[game.gameType][game.factionId], game.isWinner, game.isWinner === null, game.isUnscored);
+                  if (factionGameCounters[game.gameType] == null) {
+                    factionGameCounters[game.gameType] = {};
+                  }
+                  var factionCounter = DataAccessHelpers.updateCounterWithGameOutcome(
+                    factionGameCounters[game.gameType][game.factionId],
+                    game.isWinner,
+                    game.isWinner === null,
+                    game.isUnscored,
+                  );
                   factionCounter.user_id = userId;
                   factionCounter.faction_id = game.factionId;
                   factionCounter.game_type = game.gameType;
@@ -1413,9 +1930,16 @@ class SyncModule {
                   factionGameCounters[game.gameType][game.factionId] = factionCounter;
 
                   //
-                  if (seasonGameCounters[game.gameType] == null) { seasonGameCounters[game.gameType] = {}; }
+                  if (seasonGameCounters[game.gameType] == null) {
+                    seasonGameCounters[game.gameType] = {};
+                  }
                   var seasonStartingAt = moment.utc(game.createdAt).startOf('month');
-                  var seasonCounter = DataAccessHelpers.updateCounterWithGameOutcome(seasonGameCounters[game.gameType][seasonStartingAt.valueOf()], game.isWinner, game.isWinner === null, game.isUnscored);
+                  var seasonCounter = DataAccessHelpers.updateCounterWithGameOutcome(
+                    seasonGameCounters[game.gameType][seasonStartingAt.valueOf()],
+                    game.isWinner,
+                    game.isWinner === null,
+                    game.isUnscored,
+                  );
                   seasonCounter.user_id = userId;
                   seasonCounter.season_starting_at = seasonStartingAt.toDate();
                   seasonCounter.game_type = game.gameType;
@@ -1447,7 +1971,8 @@ class SyncModule {
 
               return Promise.all(inserts);
             })
-            .then(function () { // faction progression
+            .then(function () {
+              // faction progression
               // Logger.module("UsersModule").log "_syncUserFromFirebaseToSQL() -> #{userId} saving faction progression data.".cyan
 
               const inserts = [];
@@ -1461,98 +1986,111 @@ class SyncModule {
 
                 progression = _chainState.factionProgression[factionId];
                 if (progression != null ? progression.stats : undefined) {
-                  ({
-                    stats,
-                  } = progression);
-                  inserts.push(trx.insert({
-                    user_id: userId,
-                    faction_id: factionId,
-                    xp: stats.xp || 0,
-                    xp_earned: stats.xp_earned,
-                    level: stats.level || 0,
-                    game_count: stats.game_count || 0,
-                    win_count: stats.win_count || 0,
-                    draw_count: stats.draw_count || 0,
-                    loss_count: stats.loss_count || (stats.game_count - stats.win_count) || 0,
-                    unscored_count: stats.unscored_count || 0,
-                    created_at: toPgDate(stats.updated_at),
-                    updated_at: toPgDate(stats.updated_at),
-                    last_game_id: stats.game_id,
-                  }).into('user_faction_progression'),
+                  ({ stats } = progression);
+                  inserts.push(
+                    trx
+                      .insert({
+                        user_id: userId,
+                        faction_id: factionId,
+                        xp: stats.xp || 0,
+                        xp_earned: stats.xp_earned,
+                        level: stats.level || 0,
+                        game_count: stats.game_count || 0,
+                        win_count: stats.win_count || 0,
+                        draw_count: stats.draw_count || 0,
+                        loss_count: stats.loss_count || stats.game_count - stats.win_count || 0,
+                        unscored_count: stats.unscored_count || 0,
+                        created_at: toPgDate(stats.updated_at),
+                        updated_at: toPgDate(stats.updated_at),
+                        last_game_id: stats.game_id,
+                      })
+                      .into('user_faction_progression'),
                   );
                 }
 
                 var xpSoFar = 0;
 
-                for (key in (progression != null ? progression.progress : undefined)) {
+                for (key in progression != null ? progression.progress : undefined) {
                   var progress = (progression != null ? progression.progress : undefined)[key];
-                  inserts.push(trx.insert({
-                    user_id: userId,
-                    faction_id: factionId,
-                    game_id: key,
-                    xp_earned: progress.xp_earned,
-                    is_winner: progress.is_winner || false,
-                    is_draw: (progress.is_winner == null),
-                    is_scored: !progress.is_unscored,
-                    created_at: toPgDate(progress.created_at),
-                  }).into('user_faction_progression_events'),
+                  inserts.push(
+                    trx
+                      .insert({
+                        user_id: userId,
+                        faction_id: factionId,
+                        game_id: key,
+                        xp_earned: progress.xp_earned,
+                        is_winner: progress.is_winner || false,
+                        is_draw: progress.is_winner == null,
+                        is_scored: !progress.is_unscored,
+                        created_at: toPgDate(progress.created_at),
+                      })
+                      .into('user_faction_progression_events'),
                   );
 
-                  inserts.push(trx('user_games').where({ user_id: userId, game_id: key }).update({
-                    faction_xp: xpSoFar,
-                    faction_xp_earned: progress.xp_earned,
-                  }),
+                  inserts.push(
+                    trx('user_games').where({ user_id: userId, game_id: key }).update({
+                      faction_xp: xpSoFar,
+                      faction_xp_earned: progress.xp_earned,
+                    }),
                   );
 
                   xpSoFar += progress.xp_earned;
                 }
 
                 // faction progression rewards
-                for (key in (progression != null ? progression.rewards : undefined)) {
+                for (key in progression != null ? progression.rewards : undefined) {
                   var reward = (progression != null ? progression.rewards : undefined)[key];
                   var cards = null;
                   if (reward.cards) {
-                    cards = _.reduce(reward.cards, function (memo, card) {
-                      let asc,
-                        end;
-                      for (i = 1, end = card.count, asc = end >= 1; asc ? i <= end : i >= end; asc ? i++ : i--) {
-                        memo.push(card.id);
-                      }
-                      return memo;
-                    }, []);
+                    cards = _.reduce(
+                      reward.cards,
+                      function (memo, card) {
+                        let asc, end;
+                        for (
+                          i = 1, end = card.count, asc = end >= 1;
+                          asc ? i <= end : i >= end;
+                          asc ? i++ : i--
+                        ) {
+                          memo.push(card.id);
+                        }
+                        return memo;
+                      },
+                      [],
+                    );
                   }
 
                   // Logger.module("UsersModule").log "_syncUserFromFirebaseToSQL() -> saving reward..."
                   var factionName = SDK.FactionFactory.factionForIdentifier(factionId).devName;
 
-                  inserts.push(trx.insert({
-                    id: generatePushId(),
-                    game_id: key,
-                    user_id: userId,
-                    reward_category: 'faction xp',
-                    reward_type: `${factionName} L${reward.level}`,
-                    gold: reward.gold,
-                    spirit: reward.spirit,
-                    spirit_orbs: reward.booster_packs,
-                    created_at: toPgDate(reward.created_at),
-                    cards,
-                    cosmetics: reward.emotes,
-                    is_unread: false,
-                    read_at: moment().utc().toDate(),
-                  }).into('user_rewards'),
+                  inserts.push(
+                    trx
+                      .insert({
+                        id: generatePushId(),
+                        game_id: key,
+                        user_id: userId,
+                        reward_category: 'faction xp',
+                        reward_type: `${factionName} L${reward.level}`,
+                        gold: reward.gold,
+                        spirit: reward.spirit,
+                        spirit_orbs: reward.booster_packs,
+                        created_at: toPgDate(reward.created_at),
+                        cards,
+                        cosmetics: reward.emotes,
+                        is_unread: false,
+                        read_at: moment().utc().toDate(),
+                      })
+                      .into('user_rewards'),
                   );
                 }
               }
 
               return Promise.all(inserts);
             })
-            .then(function () { // cards collection
+            .then(function () {
+              // cards collection
               // Logger.module("UsersModule").log "_syncUserFromFirebaseToSQL() -> #{userId} saving card collection data.".cyan
 
-              let card,
-                cardId,
-                cards,
-                reward;
+              let card, cardId, cards, reward;
               const inserts = [];
 
               const cardLog = [];
@@ -1567,17 +2105,24 @@ class SyncModule {
                     var factionName = SDK.FactionFactory.factionForIdentifier(factionId).devName;
 
                     // faction progression rewards
-                    for (key in (progression != null ? progression.rewards : undefined)) {
+                    for (key in progression != null ? progression.rewards : undefined) {
                       reward = (progression != null ? progression.rewards : undefined)[key];
                       if (reward.cards) {
-                        cards = _.reduce(reward.cards, function (memo, card) {
-                          let asc,
-                            end;
-                          for (i = 1, end = card.count, asc = end >= 1; asc ? i <= end : i >= end; asc ? i++ : i--) {
-                            memo.push(card.id);
-                          }
-                          return memo;
-                        }, []);
+                        cards = _.reduce(
+                          reward.cards,
+                          function (memo, card) {
+                            let asc, end;
+                            for (
+                              i = 1, end = card.count, asc = end >= 1;
+                              asc ? i <= end : i >= end;
+                              asc ? i++ : i--
+                            ) {
+                              memo.push(card.id);
+                            }
+                            return memo;
+                          },
+                          [],
+                        );
 
                         for (cardId of Array.from<any>(cards)) {
                           // Logger.module("UsersModule").log "_syncUserFromFirebaseToSQL() -> earned #{cardId} via faction XP."
@@ -1612,9 +2157,18 @@ class SyncModule {
               }
 
               // gauntlet reward cards
-              const allRuns = _.values(_chainState.arenaRun != null ? _chainState.arenaRun.history : undefined) || [];
-              if (__guard__(_chainState.arenaRun != null ? _chainState.arenaRun.current : undefined, (x8) => x8.rewards)) {
-                allRuns.push(_chainState.arenaRun != null ? _chainState.arenaRun.current : undefined);
+              const allRuns =
+                _.values(_chainState.arenaRun != null ? _chainState.arenaRun.history : undefined) ||
+                [];
+              if (
+                __guard__(
+                  _chainState.arenaRun != null ? _chainState.arenaRun.current : undefined,
+                  (x8) => x8.rewards,
+                )
+              ) {
+                allRuns.push(
+                  _chainState.arenaRun != null ? _chainState.arenaRun.current : undefined,
+                );
               }
 
               for (run of Array.from<any>(allRuns)) {
@@ -1651,7 +2205,9 @@ class SyncModule {
               }
 
               // achievement reward cards
-              if (_chainState.achievements != null ? _chainState.achievements.completed : undefined) {
+              if (
+                _chainState.achievements != null ? _chainState.achievements.completed : undefined
+              ) {
                 for (var achievementId in _chainState.achievements.completed) {
                   var achievementData = _chainState.achievements.completed[achievementId];
                   if (achievementData.rewards.card_ids) {
@@ -1686,14 +2242,18 @@ class SyncModule {
               }
 
               // booster cards
-              for (var packId in (_chainState.inventory != null ? _chainState.inventory['used-booster-packs'] : undefined)) {
+              for (var packId in _chainState.inventory != null
+                ? _chainState.inventory['used-booster-packs']
+                : undefined) {
                 // console.log "PACK: #{packId}".red
                 // console.log "CARDS: #{packId}",pack.cards
 
-                var pack = (_chainState.inventory != null ? _chainState.inventory['used-booster-packs'] : undefined)[packId];
-                ({
-                  cards,
-                } = pack);
+                var pack = (
+                  _chainState.inventory != null
+                    ? _chainState.inventory['used-booster-packs']
+                    : undefined
+                )[packId];
+                ({ cards } = pack);
                 for (cardId of Array.from<any>(cards)) {
                   // Logger.module("UsersModule").log "_syncUserFromFirebaseToSQL() -> earned #{cardId} via packs."
 
@@ -1723,7 +2283,9 @@ class SyncModule {
               }
 
               // all other cards
-              if (_chainState.inventory != null ? _chainState.inventory['card-collection'] : undefined) {
+              if (
+                _chainState.inventory != null ? _chainState.inventory['card-collection'] : undefined
+              ) {
                 if (_chainState.inventory != null) {
                   delete _chainState.inventory['card-collection'].tx_id;
                 }
@@ -1732,12 +2294,21 @@ class SyncModule {
               // before going through actual collection, mark all cards earned so far but missing from collection as disenchanted, and update its card count
               for (cardId in cardCounts) {
                 card = cardCounts[cardId];
-                if (!(_chainState.inventory != null ? _chainState.inventory['card-collection'][cardId] : undefined)) {
-                  var asc,
-                    end;
-                  Logger.module('UsersModule').log(`_syncUserFromFirebaseToSQL() -> missing card ${cardId} - marking as disenchanted.`);
+                if (
+                  !(_chainState.inventory != null
+                    ? _chainState.inventory['card-collection'][cardId]
+                    : undefined)
+                ) {
+                  var asc, end;
+                  Logger.module('UsersModule').log(
+                    `_syncUserFromFirebaseToSQL() -> missing card ${cardId} - marking as disenchanted.`,
+                  );
 
-                  for (i = 1, end = card.count, asc = end >= 1; asc ? i <= end : i >= end; asc ? i++ : i--) {
+                  for (
+                    i = 1, end = card.count, asc = end >= 1;
+                    asc ? i <= end : i >= end;
+                    asc ? i++ : i--
+                  ) {
                     cardLog.push({
                       id: generatePushId(),
                       user_id: userId,
@@ -1754,10 +2325,16 @@ class SyncModule {
               }
 
               // ... ok process actual collection
-              for (cardId in (_chainState.inventory != null ? _chainState.inventory['card-collection'] : undefined)) {
+              for (cardId in _chainState.inventory != null
+                ? _chainState.inventory['card-collection']
+                : undefined) {
                 // if there is an "undefined" in the card count, just feel free to skip
-                card = (_chainState.inventory != null ? _chainState.inventory['card-collection'] : undefined)[cardId];
-                if ((card.count == null)) {
+                card = (
+                  _chainState.inventory != null
+                    ? _chainState.inventory['card-collection']
+                    : undefined
+                )[cardId];
+                if (card.count == null) {
                   continue;
                 }
 
@@ -1770,15 +2347,19 @@ class SyncModule {
                   };
                 }
 
-                var countSoFar = (cardCounts[cardId] != null ? cardCounts[cardId].count : undefined) || 0;
+                var countSoFar =
+                  (cardCounts[cardId] != null ? cardCounts[cardId].count : undefined) || 0;
                 var countDelta = card.count - countSoFar;
 
                 // Logger.module("UsersModule").log "_syncUserFromFirebaseToSQL() -> card #{cardId}. count = #{countSoFar}. collection count = #{card.count}".blue
 
                 if (countDelta > 0) {
-                  var asc1,
-                    end1;
-                  for (i = 1, end1 = countDelta, asc1 = end1 >= 1; asc1 ? i <= end1 : i >= end1; asc1 ? i++ : i--) {
+                  var asc1, end1;
+                  for (
+                    i = 1, end1 = countDelta, asc1 = end1 >= 1;
+                    asc1 ? i <= end1 : i >= end1;
+                    asc1 ? i++ : i--
+                  ) {
                     // Logger.module("UsersModule").log "_syncUserFromFirebaseToSQL() -> un-accounted for card #{cardId} - marking as crafted."
 
                     cardLog.push({
@@ -1791,9 +2372,12 @@ class SyncModule {
                     });
                   }
                 } else if (countDelta < 0) {
-                  var asc2,
-                    end2;
-                  for (i = 1, end2 = Math.abs(countDelta), asc2 = end2 >= 1; asc2 ? i <= end2 : i >= end2; asc2 ? i++ : i--) {
+                  var asc2, end2;
+                  for (
+                    i = 1, end2 = Math.abs(countDelta), asc2 = end2 >= 1;
+                    asc2 ? i <= end2 : i >= end2;
+                    asc2 ? i++ : i--
+                  ) {
                     // Logger.module("UsersModule").log "_syncUserFromFirebaseToSQL() -> missing card #{cardId} - marking as disenchanted."
 
                     cardLog.push({
@@ -1824,84 +2408,124 @@ class SyncModule {
                 }
               }
 
-              if (_chainState.inventory != null ? _chainState.inventory['card-collection'] : undefined) {
-                inserts.push(trx.insert({
-                  user_id: userId,
-                  cards: (_chainState.inventory != null ? _chainState.inventory['card-collection'] : undefined),
-                  created_at: moment().utc().toDate(),
-                }).into('user_card_collection'),
+              if (
+                _chainState.inventory != null ? _chainState.inventory['card-collection'] : undefined
+              ) {
+                inserts.push(
+                  trx
+                    .insert({
+                      user_id: userId,
+                      cards:
+                        _chainState.inventory != null
+                          ? _chainState.inventory['card-collection']
+                          : undefined,
+                      created_at: moment().utc().toDate(),
+                    })
+                    .into('user_card_collection'),
                 );
               }
 
               return Promise.all(inserts);
             })
-            .then(function () { // progression
+            .then(function () {
+              // progression
               // Logger.module("UsersModule").log "_syncUserFromFirebaseToSQL() -> #{userId} progression data.".cyan
 
               const inserts = [];
 
-              if (_chainState.progression != null ? _chainState.progression['game-counter'] : undefined) {
-                stats = _chainState.progression != null ? _chainState.progression['game-counter'] : undefined;
-                inserts.push(trx.insert({
-                  user_id: userId,
-                  game_count: stats.game_count || 0,
-                  win_count: stats.win_count || 0,
-                  win_streak: stats.win_streak || 0,
-                  loss_count: stats.loss_count || 0,
-                  draw_count: stats.draw_count || 0,
-                  unscored_count: stats.unscored_count || 0,
-                  updated_at: toPgDate(stats.updated_at),
-                  last_game_id: stats.last_game_id,
-                  last_awarded_game_count: stats.last_awarded_game_count,
-                  last_awarded_win_count: stats.last_awarded_win_count,
-                  last_awarded_win_count_at: toPgDate(stats.last_awarded_win_count_at),
-                  last_daily_win_at: toPgDate(stats.last_daily_win_at),
-                  last_win_at: toPgDate(stats.last_win_at),
-                  win_awards_last_maxed_at: toPgDate(stats.win_awards_last_maxed_at),
-                  play_awards_last_maxed_at: toPgDate(stats.play_awards_last_maxed_at),
-                }).into('user_progression'),
+              if (
+                _chainState.progression != null
+                  ? _chainState.progression['game-counter']
+                  : undefined
+              ) {
+                stats =
+                  _chainState.progression != null
+                    ? _chainState.progression['game-counter']
+                    : undefined;
+                inserts.push(
+                  trx
+                    .insert({
+                      user_id: userId,
+                      game_count: stats.game_count || 0,
+                      win_count: stats.win_count || 0,
+                      win_streak: stats.win_streak || 0,
+                      loss_count: stats.loss_count || 0,
+                      draw_count: stats.draw_count || 0,
+                      unscored_count: stats.unscored_count || 0,
+                      updated_at: toPgDate(stats.updated_at),
+                      last_game_id: stats.last_game_id,
+                      last_awarded_game_count: stats.last_awarded_game_count,
+                      last_awarded_win_count: stats.last_awarded_win_count,
+                      last_awarded_win_count_at: toPgDate(stats.last_awarded_win_count_at),
+                      last_daily_win_at: toPgDate(stats.last_daily_win_at),
+                      last_win_at: toPgDate(stats.last_win_at),
+                      win_awards_last_maxed_at: toPgDate(stats.win_awards_last_maxed_at),
+                      play_awards_last_maxed_at: toPgDate(stats.play_awards_last_maxed_at),
+                    })
+                    .into('user_progression'),
                 );
               }
 
-              for (key in (_chainState.progression != null ? _chainState.progression['game-counter-days'] : undefined)) {
-                var day = (_chainState.progression != null ? _chainState.progression['game-counter-days'] : undefined)[key];
-                inserts.push(trx.insert({
-                  user_id: userId,
-                  date: key,
-                  game_count: day.game_count || 0,
-                  win_count: day.win_count || 0,
-                  win_streak: day.win_streak || 0,
-                  loss_count: day.loss_count || 0,
-                  draw_count: day.draw_count || 0,
-                  unscored_count: day.unscored_count || 0,
-                }).into('user_progression_days'),
+              for (key in _chainState.progression != null
+                ? _chainState.progression['game-counter-days']
+                : undefined) {
+                var day = (
+                  _chainState.progression != null
+                    ? _chainState.progression['game-counter-days']
+                    : undefined
+                )[key];
+                inserts.push(
+                  trx
+                    .insert({
+                      user_id: userId,
+                      date: key,
+                      game_count: day.game_count || 0,
+                      win_count: day.win_count || 0,
+                      win_streak: day.win_streak || 0,
+                      loss_count: day.loss_count || 0,
+                      draw_count: day.draw_count || 0,
+                      unscored_count: day.unscored_count || 0,
+                    })
+                    .into('user_progression_days'),
                 );
               }
 
               // daily win / 4-game count / etc.
-              for (key in (_chainState.progression != null ? _chainState.progression['game-counter-rewards'] : undefined)) {
-                var reward = (_chainState.progression != null ? _chainState.progression['game-counter-rewards'] : undefined)[key];
-                inserts.push(trx.insert({
-                  id: key,
-                  user_id: userId,
-                  reward_category: 'game counter',
-                  reward_type: reward.type,
-                  gold: reward.gold_amount,
-                  spirit: reward.spirit_amount,
-                  cores: reward.cores_amount,
-                  created_at: toPgDate(reward.created_at),
-                  is_unread: reward.is_unread,
-                  read_at: moment().utc().toDate(),
-                }).into('user_rewards'),
+              for (key in _chainState.progression != null
+                ? _chainState.progression['game-counter-rewards']
+                : undefined) {
+                var reward = (
+                  _chainState.progression != null
+                    ? _chainState.progression['game-counter-rewards']
+                    : undefined
+                )[key];
+                inserts.push(
+                  trx
+                    .insert({
+                      id: key,
+                      user_id: userId,
+                      reward_category: 'game counter',
+                      reward_type: reward.type,
+                      gold: reward.gold_amount,
+                      spirit: reward.spirit_amount,
+                      cores: reward.cores_amount,
+                      created_at: toPgDate(reward.created_at),
+                      is_unread: reward.is_unread,
+                      read_at: moment().utc().toDate(),
+                    })
+                    .into('user_rewards'),
                 );
 
-                inserts.push(trx.insert({
-                  id: generatePushId(),
-                  user_id: userId,
-                  gold: reward.gold_amount,
-                  memo: reward.type,
-                  created_at: toPgDate(reward.created_at),
-                }).into('user_currency_log'),
+                inserts.push(
+                  trx
+                    .insert({
+                      id: generatePushId(),
+                      user_id: userId,
+                      gold: reward.gold_amount,
+                      memo: reward.type,
+                      created_at: toPgDate(reward.created_at),
+                    })
+                    .into('user_currency_log'),
                 );
 
                 _chainState.currencyLogGold += reward.gold_amount;
@@ -1909,7 +2533,8 @@ class SyncModule {
 
               return Promise.all(inserts);
             })
-            .then(function () { // challenges
+            .then(function () {
+              // challenges
               // Logger.module("UsersModule").log "_syncUserFromFirebaseToSQL() -> #{userId} saving challenges data.".cyan
 
               const inserts = [];
@@ -1917,7 +2542,8 @@ class SyncModule {
               // daily quest rewards
               for (var challengeType in _chainState.challengeProgression) {
                 var challenge = _chainState.challengeProgression[challengeType];
-                var goldReward = SDK.ChallengeFactory.getGoldRewardedForChallengeType(challengeType);
+                var goldReward =
+                  SDK.ChallengeFactory.getGoldRewardedForChallengeType(challengeType);
 
                 var allPromises = [];
                 var rewardIds = null;
@@ -1941,32 +2567,41 @@ class SyncModule {
                   // add the promise to our list of reward promises
                   inserts.push(trx('user_rewards').insert(rewardData));
 
-                  inserts.push(trx.insert({
-                    id: generatePushId(),
-                    user_id: userId,
-                    gold: goldReward,
-                    memo: 'challenge',
-                    created_at: toPgDate(challenge.completed_at),
-                  }).into('user_currency_log'),
+                  inserts.push(
+                    trx
+                      .insert({
+                        id: generatePushId(),
+                        user_id: userId,
+                        gold: goldReward,
+                        memo: 'challenge',
+                        created_at: toPgDate(challenge.completed_at),
+                      })
+                      .into('user_currency_log'),
                   );
 
                   _chainState.currencyLogGold += goldReward;
                 }
 
-                inserts.push(trx.insert({
-                  user_id: userId,
-                  challenge_id: challengeType,
-                  completed_at: challenge.completed_at ? toPgDate(challenge.completed_at) : null,
-                  last_attempted_at: toPgDate(challenge.last_attempted_at),
-                  is_unread: false,
-                  reward_ids: rewardIds,
-                }).into('user_challenges'),
+                inserts.push(
+                  trx
+                    .insert({
+                      user_id: userId,
+                      challenge_id: challengeType,
+                      completed_at: challenge.completed_at
+                        ? toPgDate(challenge.completed_at)
+                        : null,
+                      last_attempted_at: toPgDate(challenge.last_attempted_at),
+                      is_unread: false,
+                      reward_ids: rewardIds,
+                    })
+                    .into('user_challenges'),
                 );
               }
 
               return Promise.all(inserts);
             })
-            .then(function () { // new player progression
+            .then(function () {
+              // new player progression
               // Logger.module("UsersModule").log "_syncUserFromFirebaseToSQL() -> #{userId} saving new player progression data.".cyan
 
               const inserts = [];
@@ -1974,19 +2609,23 @@ class SyncModule {
               // daily quest rewards
               for (var moduleName in _chainState.newPlayerProgression) {
                 var data = _chainState.newPlayerProgression[moduleName];
-                inserts.push(trx.insert({
-                  user_id: userId,
-                  module_name: moduleName,
-                  stage: data.stage,
-                  updated_at: toPgDate(data.updated_at),
-                  is_unread: false,
-                }).into('user_new_player_progression'),
+                inserts.push(
+                  trx
+                    .insert({
+                      user_id: userId,
+                      module_name: moduleName,
+                      stage: data.stage,
+                      updated_at: toPgDate(data.updated_at),
+                      is_unread: false,
+                    })
+                    .into('user_new_player_progression'),
                 );
               }
 
               return Promise.all(inserts);
             })
-            .then(function () { // emotes
+            .then(function () {
+              // emotes
               // Logger.module("UsersModule").log "_syncUserFromFirebaseToSQL() -> #{userId} saving emotes.".cyan
 
               const inserts = [];
@@ -2005,31 +2644,35 @@ class SyncModule {
 
               return Promise.all(inserts);
             })
-            .then(function () { // achievements
+            .then(function () {
+              // achievements
               // Logger.module("UsersModule").log "_syncUserFromFirebaseToSQL() -> #{userId} saving achievements.".cyan
 
-              let achievement,
-                data,
-                id;
+              let achievement, data, id;
               const inserts = [];
 
               // ...
-              if (_chainState.achievements != null ? _chainState.achievements.completed : undefined) {
+              if (
+                _chainState.achievements != null ? _chainState.achievements.completed : undefined
+              ) {
                 for (id in _chainState.achievements.completed) {
                   data = _chainState.achievements.completed[id];
                   achievement = SDK.AchievementsFactory.achievementForIdentifier(id);
                   var rewardId = generatePushId();
 
-                  inserts.push(trx.insert({
-                    user_id: userId,
-                    achievement_id: id,
-                    created_at: toPgDate(data.completed_at),
-                    completed_at: toPgDate(data.completed_at),
-                    progress: achievement.progressRequired,
-                    progress_required: achievement.progressRequired,
-                    reward_ids: [rewardId],
-                    is_unread: false,
-                  }).into('user_achievements'),
+                  inserts.push(
+                    trx
+                      .insert({
+                        user_id: userId,
+                        achievement_id: id,
+                        created_at: toPgDate(data.completed_at),
+                        completed_at: toPgDate(data.completed_at),
+                        progress: achievement.progressRequired,
+                        progress_required: achievement.progressRequired,
+                        reward_ids: [rewardId],
+                        is_unread: false,
+                      })
+                      .into('user_achievements'),
                   );
 
                   // set up reward data
@@ -2052,14 +2695,17 @@ class SyncModule {
                   inserts.push(trx('user_rewards').insert(rewardData));
 
                   if (data.rewards.gold || data.rewards.spirit) {
-                    inserts.push(trx.insert({
-                      id: generatePushId(),
-                      user_id: userId,
-                      gold: data.rewards.gold || 0,
-                      spirit: data.rewards.spirit || 0,
-                      memo: 'achievement',
-                      created_at: toPgDate(data.completed_at),
-                    }).into('user_currency_log'),
+                    inserts.push(
+                      trx
+                        .insert({
+                          id: generatePushId(),
+                          user_id: userId,
+                          gold: data.rewards.gold || 0,
+                          spirit: data.rewards.spirit || 0,
+                          memo: 'achievement',
+                          created_at: toPgDate(data.completed_at),
+                        })
+                        .into('user_currency_log'),
                     );
 
                     _chainState.currencyLogGold += data.rewards.gold || 0;
@@ -2069,31 +2715,44 @@ class SyncModule {
               }
 
               // ...
-              if (_chainState.achievements != null ? _chainState.achievements.progress : undefined) {
+              if (
+                _chainState.achievements != null ? _chainState.achievements.progress : undefined
+              ) {
                 for (id in _chainState.achievements.progress) {
                   data = _chainState.achievements.progress[id];
-                  if (__guard__(_chainState.achievements != null ? _chainState.achievements.completed : undefined, (x8) => x8[id])) {
+                  if (
+                    __guard__(
+                      _chainState.achievements != null
+                        ? _chainState.achievements.completed
+                        : undefined,
+                      (x8) => x8[id],
+                    )
+                  ) {
                     continue;
                   }
 
                   achievement = SDK.AchievementsFactory.achievementForIdentifier(id);
 
-                  inserts.push(trx.insert({
-                    user_id: userId,
-                    achievement_id: id,
-                    created_at: toPgDate(data.updated_at),
-                    updated_at: toPgDate(data.updated_at),
-                    progress: data.progress,
-                    progress_required: achievement.progressRequired,
-                    is_unread: false,
-                  }).into('user_achievements'),
+                  inserts.push(
+                    trx
+                      .insert({
+                        user_id: userId,
+                        achievement_id: id,
+                        created_at: toPgDate(data.updated_at),
+                        updated_at: toPgDate(data.updated_at),
+                        progress: data.progress,
+                        progress_required: achievement.progressRequired,
+                        is_unread: false,
+                      })
+                      .into('user_achievements'),
                   );
                 }
               }
 
               return Promise.all(inserts);
             })
-            .then(function () { // rebuild LTV
+            .then(function () {
+              // rebuild LTV
               let amount = 0;
               let purchase_count = 0;
               let last_purchase_at = 0;
@@ -2102,7 +2761,7 @@ class SyncModule {
                 var charge = _chainState.receipts[key];
                 purchase_count += 1;
 
-                if (charge.created && (charge.created > last_purchase_at)) {
+                if (charge.created && charge.created > last_purchase_at) {
                   last_purchase_at = charge.created;
                 }
 
@@ -2122,26 +2781,40 @@ class SyncModule {
               }
 
               // set correct LTV based on all transactions
-              return trx('users').where('id', userId).update({
-                ltv: amount,
-                purchase_count: purchase_count,
-                last_purchase_at: moment(last_purchase_at).utc().toDate(),
-              });
+              return trx('users')
+                .where('id', userId)
+                .update({
+                  ltv: amount,
+                  purchase_count: purchase_count,
+                  last_purchase_at: moment(last_purchase_at).utc().toDate(),
+                });
             })
-            .then(function () { // Handle currency log mismatch
-              const userWalletGold = (_chainState.inventory != null ? _chainState.inventory.wallet.gold_amount : undefined) || 0;
-              const userWalletSpirit = (_chainState.inventory != null ? _chainState.inventory.wallet.spirit_amount : undefined) || 0;
-              if ((userWalletGold !== _chainState.currencyLogGold) || (userWalletSpirit !== _chainState.currencyLogSpirit)) {
+            .then(function () {
+              // Handle currency log mismatch
+              const userWalletGold =
+                (_chainState.inventory != null
+                  ? _chainState.inventory.wallet.gold_amount
+                  : undefined) || 0;
+              const userWalletSpirit =
+                (_chainState.inventory != null
+                  ? _chainState.inventory.wallet.spirit_amount
+                  : undefined) || 0;
+              if (
+                userWalletGold !== _chainState.currencyLogGold ||
+                userWalletSpirit !== _chainState.currencyLogSpirit
+              ) {
                 const goldDelta = userWalletGold - _chainState.currencyLogGold;
                 const spiritDelta = userWalletSpirit - _chainState.currencyLogSpirit;
-                return trx.insert({
-                  id: generatePushId(),
-                  user_id: userId,
-                  gold: goldDelta || null,
-                  spirit: spiritDelta || null,
-                  memo: 'sql migration mismatch',
-                  created_at: toPgDate(moment().utc().valueOf()),
-                }).into('user_currency_log');
+                return trx
+                  .insert({
+                    id: generatePushId(),
+                    user_id: userId,
+                    gold: goldDelta || null,
+                    spirit: spiritDelta || null,
+                    memo: 'sql migration mismatch',
+                    created_at: toPgDate(moment().utc().valueOf()),
+                  })
+                  .into('user_currency_log');
               } else {
                 return Promise.resolve();
               }
@@ -2149,10 +2822,17 @@ class SyncModule {
         });
       })
       .then(function () {
-        Logger.module('UsersModule').timeEnd(`_syncUserFromFirebaseToSQL() -> ${userId} done`.green);
+        Logger.module('UsersModule').timeEnd(
+          `_syncUserFromFirebaseToSQL() -> ${userId} done`.green,
+        );
 
-        _chainState.userData.portrait_id = (_chainState.user.presence != null ? _chainState.user.presence.portrait_id : undefined) || null;
-        _chainState.userData.card_back_id = (_chainState.user.presence != null ? _chainState.user.presence.card_back_id : undefined) || null;
+        _chainState.userData.portrait_id =
+          (_chainState.user.presence != null ? _chainState.user.presence.portrait_id : undefined) ||
+          null;
+        _chainState.userData.card_back_id =
+          (_chainState.user.presence != null
+            ? _chainState.user.presence.card_back_id
+            : undefined) || null;
 
         return _chainState.userData;
       });
@@ -2162,5 +2842,5 @@ class SyncModule {
 module.exports = SyncModule;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

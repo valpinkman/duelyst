@@ -17,7 +17,6 @@ const FXFlockSprite = require('../../nodes/fx/FXFlockSprite');
  *************************************************************************** */
 
 const MainFrostfireLayer = FXCompositeLayer.extend({
-
   /* region INITIALIZE */
 
   ctor() {
@@ -68,8 +67,8 @@ const MainFrostfireLayer = FXCompositeLayer.extend({
 
       this.stars = new BaseParticleSystem({
         plistFile: RSX.scene_frostfire_stars_particles.plist,
-        fadeInAtLifePct: 0.10,
-        fadeOutAtLifePct: 0.90,
+        fadeInAtLifePct: 0.1,
+        fadeOutAtLifePct: 0.9,
       });
 
       // cloud elements
@@ -122,7 +121,9 @@ const MainFrostfireLayer = FXCompositeLayer.extend({
   /* region RESOURCES */
 
   getRequiredResources() {
-    return FXCompositeLayer.prototype.getRequiredResources.call(this).concat(PKGS.getPkgForIdentifier('FrostfireMainMenu'));
+    return FXCompositeLayer.prototype.getRequiredResources
+      .call(this)
+      .concat(PKGS.getPkgForIdentifier('FrostfireMainMenu'));
   },
 
   /* endregion RESOURCES */
@@ -187,7 +188,7 @@ const MainFrostfireLayer = FXCompositeLayer.extend({
 
       // bg
       this.bg.setScale(parallaxScale);
-      ratio = cc.p(0.00, 0.00);
+      ratio = cc.p(0.0, 0.0);
       offset = cc.p(0.0, 0.0);
       this.parallaxLayer.addOrUpdateParallaxedNode(this.bg, 0, ratio, offset);
 
@@ -195,48 +196,109 @@ const MainFrostfireLayer = FXCompositeLayer.extend({
       this.pillar1.setScale(parallaxScale);
       this.pillar1.setAnchorPoint(0, 0.5);
       ratio = cc.p(0.0025, 0.0025);
-      offset = cc.p(-winWidth * 0.55, -winHeight * 0.5 + this.pillar1.getContentSize().height * (0.475 - ratio.y) * this.pillar1.getScale());
+      offset = cc.p(
+        -winWidth * 0.55,
+        -winHeight * 0.5 +
+          this.pillar1.getContentSize().height * (0.475 - ratio.y) * this.pillar1.getScale(),
+      );
       this.parallaxLayer.addOrUpdateParallaxedNode(this.pillar1, 2, ratio, offset);
 
       // middleground 2
       this.pillar2.setScale(parallaxScale);
       this.pillar2.setAnchorPoint(0, 0.5);
       ratio = cc.p(0.0045, 0.00125);
-      offset = cc.p(-winWidth * 0.55, -winHeight * 0.5 + this.pillar2.getContentSize().height * (0.475 - ratio.y) * this.pillar2.getScale());
+      offset = cc.p(
+        -winWidth * 0.55,
+        -winHeight * 0.5 +
+          this.pillar2.getContentSize().height * (0.475 - ratio.y) * this.pillar2.getScale(),
+      );
       this.parallaxLayer.addOrUpdateParallaxedNode(this.pillar2, 2, ratio, offset);
 
       //
-      this.parallaxLayer.addOrUpdateParallaxedNode(this.stars, 0, cc.p(), cc.p(winWidth / 3, winHeight * 0.3));
+      this.parallaxLayer.addOrUpdateParallaxedNode(
+        this.stars,
+        0,
+        cc.p(),
+        cc.p(winWidth / 3, winHeight * 0.3),
+      );
 
       // lanterns
-      this.parallaxLayer.addOrUpdateParallaxedNode(this.lanternsSmall1, 1, cc.p(), cc.p(0, winHeight * 0.3));
-      this.parallaxLayer.addOrUpdateParallaxedNode(this.lanternsSmall2, 1, cc.p(), cc.p(200, winHeight * 0.3 - 50));
-      this.parallaxLayer.addOrUpdateParallaxedNode(this.lanternsLarge1, 1, cc.p(), cc.p(0, winHeight * 0.3));
-      this.parallaxLayer.addOrUpdateParallaxedNode(this.lanternsLarge2, 1, cc.p(), cc.p(-200, winHeight * 0.3 + 50));
-      this.parallaxLayer.addOrUpdateParallaxedNode(this.lanternsLarge3, 1, cc.p(), cc.p(100, winHeight * 0.3));
+      this.parallaxLayer.addOrUpdateParallaxedNode(
+        this.lanternsSmall1,
+        1,
+        cc.p(),
+        cc.p(0, winHeight * 0.3),
+      );
+      this.parallaxLayer.addOrUpdateParallaxedNode(
+        this.lanternsSmall2,
+        1,
+        cc.p(),
+        cc.p(200, winHeight * 0.3 - 50),
+      );
+      this.parallaxLayer.addOrUpdateParallaxedNode(
+        this.lanternsLarge1,
+        1,
+        cc.p(),
+        cc.p(0, winHeight * 0.3),
+      );
+      this.parallaxLayer.addOrUpdateParallaxedNode(
+        this.lanternsLarge2,
+        1,
+        cc.p(),
+        cc.p(-200, winHeight * 0.3 + 50),
+      );
+      this.parallaxLayer.addOrUpdateParallaxedNode(
+        this.lanternsLarge3,
+        1,
+        cc.p(),
+        cc.p(100, winHeight * 0.3),
+      );
 
       // clouds
       this.clouds1.setSourceScreenPosition(cc.p(winWidth * 0.1, -winHeight * 0.4));
       this.clouds1.setTargetScreenPosition(cc.p(-winWidth * 0.5, -winHeight * 0.45));
-      this.parallaxLayer.addOrUpdateParallaxedNode(this.clouds1, 3, cc.p(), this.clouds1.getSourceScreenOffsetPosition());
+      this.parallaxLayer.addOrUpdateParallaxedNode(
+        this.clouds1,
+        3,
+        cc.p(),
+        this.clouds1.getSourceScreenOffsetPosition(),
+      );
 
       this.clouds2.setSourceScreenPosition(cc.p(winWidth * 0.1, -winHeight * 0.4));
       this.clouds2.setTargetScreenPosition(cc.p(-winWidth * 0.5, -winHeight * 0.45));
-      this.parallaxLayer.addOrUpdateParallaxedNode(this.clouds2, 3, cc.p(), this.clouds2.getSourceScreenOffsetPosition());
+      this.parallaxLayer.addOrUpdateParallaxedNode(
+        this.clouds2,
+        3,
+        cc.p(),
+        this.clouds2.getSourceScreenOffsetPosition(),
+      );
 
       this.clouds3.setSourceScreenPosition(cc.p(winWidth * 0.1, -winHeight * 0.4));
       this.clouds3.setTargetScreenPosition(cc.p(-winWidth * 0.5, -winHeight * 0.45));
-      this.parallaxLayer.addOrUpdateParallaxedNode(this.clouds3, 3, cc.p(), this.clouds3.getSourceScreenOffsetPosition());
+      this.parallaxLayer.addOrUpdateParallaxedNode(
+        this.clouds3,
+        3,
+        cc.p(),
+        this.clouds3.getSourceScreenOffsetPosition(),
+      );
 
       this.clouds4.setSourceScreenPosition(cc.p(winWidth * 0.1, -winHeight * 0.4));
       this.clouds4.setTargetScreenPosition(cc.p(-winWidth * 0.5, -winHeight * 0.45));
-      this.parallaxLayer.addOrUpdateParallaxedNode(this.clouds4, 3, cc.p(), this.clouds4.getSourceScreenOffsetPosition());
+      this.parallaxLayer.addOrUpdateParallaxedNode(
+        this.clouds4,
+        3,
+        cc.p(),
+        this.clouds4.getSourceScreenOffsetPosition(),
+      );
 
       // foreground
       this.fg.setScale(parallaxScale);
       this.fg.setAnchorPoint(1.0, 0.5);
       ratio = cc.p(0.02, 0.01);
-      offset = cc.p(winWidth * 0.55, -winHeight * 0.55 + this.fg.getContentSize().height * (0.5 - ratio.y) * this.fg.getScale());
+      offset = cc.p(
+        winWidth * 0.55,
+        -winHeight * 0.55 + this.fg.getContentSize().height * (0.5 - ratio.y) * this.fg.getScale(),
+      );
       this.parallaxLayer.addOrUpdateParallaxedNode(this.fg, 4, ratio, offset);
 
       // reset parallax

@@ -19,8 +19,12 @@ class ModifierDyingWishBuffEnemyGeneral extends ModifierDyingWish {
   static appliedDescription = '';
 
   static createContextObject(atkBuff, healthBuff, options) {
-    if (atkBuff == null) { atkBuff = 2; }
-    if (healthBuff == null) { healthBuff = 10; }
+    if (atkBuff == null) {
+      atkBuff = 2;
+    }
+    if (healthBuff == null) {
+      healthBuff = 10;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.atkBuff = atkBuff;
     contextObject.healthBuff = healthBuff;
@@ -28,9 +32,14 @@ class ModifierDyingWishBuffEnemyGeneral extends ModifierDyingWish {
   }
 
   onDyingWish() {
-    const enemyGeneral = this.getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
+    const enemyGeneral = this.getGameSession().getGeneralForOpponentOfPlayerId(
+      this.getCard().getOwnerId(),
+    );
     if (enemyGeneral != null) {
-      const statContextObject = Modifier.createContextObjectWithAttributeBuffs(this.atkBuff, this.healthBuff);
+      const statContextObject = Modifier.createContextObjectWithAttributeBuffs(
+        this.atkBuff,
+        this.healthBuff,
+      );
       statContextObject.appliedName = i18next.t('modifiers.boss_36_applied_name');
       return this.getGameSession().applyModifierContextObject(statContextObject, enemyGeneral);
     }
@@ -38,7 +47,11 @@ class ModifierDyingWishBuffEnemyGeneral extends ModifierDyingWish {
 }
 ModifierDyingWishBuffEnemyGeneral.prototype.type = 'ModifierDyingWishBuffEnemyGeneral';
 ModifierDyingWishBuffEnemyGeneral.prototype.name = 'ModifierDyingWishBuffEnemyGeneral';
-ModifierDyingWishBuffEnemyGeneral.prototype.description = 'When this minion dies, buff the enemy general';
-ModifierDyingWishBuffEnemyGeneral.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericDamage'];
+ModifierDyingWishBuffEnemyGeneral.prototype.description =
+  'When this minion dies, buff the enemy general';
+ModifierDyingWishBuffEnemyGeneral.prototype.fxResource = [
+  'FX.Modifiers.ModifierDyingWish',
+  'FX.Modifiers.ModifierGenericDamage',
+];
 
 module.exports = ModifierDyingWishBuffEnemyGeneral;

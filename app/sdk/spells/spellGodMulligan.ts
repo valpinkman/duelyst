@@ -27,7 +27,11 @@ class SpellGodMulligan extends Spell {
         var card = iterable[i];
         if (card != null) {
           if (!card.hasActiveModifierClass(ModifierCannotBeRemovedFromHand)) {
-            var removeCardFromHandAction = new RemoveCardFromHandAction(this.getGameSession(), i, this.getOwnerId());
+            var removeCardFromHandAction = new RemoveCardFromHandAction(
+              this.getGameSession(),
+              i,
+              this.getOwnerId(),
+            );
             this.getGameSession().executeAction(removeCardFromHandAction);
           } else {
             numUnremovableCards++;
@@ -36,7 +40,10 @@ class SpellGodMulligan extends Spell {
       }
 
       if (this.getGameSession().getGameFormat() === GameFormat.Standard) {
-        factionCards = this.getGameSession().getCardCaches().getIsLegacy(false).getFaction(Factions.Vetruvian)
+        factionCards = this.getGameSession()
+          .getCardCaches()
+          .getIsLegacy(false)
+          .getFaction(Factions.Vetruvian)
           .getIsHiddenInCollection(false)
           .getIsToken(false)
           .getIsGeneral(false)
@@ -44,7 +51,10 @@ class SpellGodMulligan extends Spell {
           .getIsSkinned(false)
           .getCards();
       } else {
-        factionCards = this.getGameSession().getCardCaches().getFaction(Factions.Vetruvian).getIsHiddenInCollection(false)
+        factionCards = this.getGameSession()
+          .getCardCaches()
+          .getFaction(Factions.Vetruvian)
+          .getIsHiddenInCollection(false)
           .getIsToken(false)
           .getIsGeneral(false)
           .getIsPrismatic(false)
@@ -60,16 +70,29 @@ class SpellGodMulligan extends Spell {
       if (factionCards.length > 0) {
         const numCardsToAdd = 5 - numUnremovableCards;
         return (() => {
-          let asc; let
-            end;
+          let asc;
+          let end;
           const result = [];
-          for (x = 0, end = numCardsToAdd, asc = end >= 0; asc ? x <= end : x >= end; asc ? x++ : x--) {
-            var cardToPutInHand = factionCards[this.getGameSession().getRandomIntegerForExecution(factionCards.length)].createNewCardData();
+          for (
+            x = 0, end = numCardsToAdd, asc = end >= 0;
+            asc ? x <= end : x >= end;
+            asc ? x++ : x--
+          ) {
+            var cardToPutInHand =
+              factionCards[
+                this.getGameSession().getRandomIntegerForExecution(factionCards.length)
+              ].createNewCardData();
             var manaModifierContextObject = ModifierManaCostChange.createContextObject(-4);
-            if (cardToPutInHand.additionalModifiersContextObjects == null) { cardToPutInHand.additionalModifiersContextObjects = []; }
+            if (cardToPutInHand.additionalModifiersContextObjects == null) {
+              cardToPutInHand.additionalModifiersContextObjects = [];
+            }
             cardToPutInHand.additionalModifiersContextObjects.push(manaModifierContextObject);
 
-            var putCardInHandAction = new PutCardInHandAction(this.getGameSession(), this.getOwnerId(), cardToPutInHand);
+            var putCardInHandAction = new PutCardInHandAction(
+              this.getGameSession(),
+              this.getOwnerId(),
+              cardToPutInHand,
+            );
             result.push(this.getGameSession().executeAction(putCardInHandAction));
           }
           return result;

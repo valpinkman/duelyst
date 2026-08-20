@@ -21,10 +21,15 @@ class ModifierOpeningGambitDrawFactionCards extends ModifierOpeningGambit {
     super.onOpeningGambit(action);
 
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
-      const factionId = this.getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId()).getFactionId();
+      const factionId = this.getGameSession()
+        .getGeneralForPlayerId(this.getCard().getOwnerId())
+        .getFactionId();
       let factionCards = [];
       if (this.getGameSession().getGameFormat() === GameFormat.Standard) {
-        factionCards = this.getGameSession().getCardCaches().getIsLegacy(false).getFaction(factionId)
+        factionCards = this.getGameSession()
+          .getCardCaches()
+          .getIsLegacy(false)
+          .getFaction(factionId)
           .getIsHiddenInCollection(false)
           .getIsToken(false)
           .getIsGeneral(false)
@@ -32,7 +37,10 @@ class ModifierOpeningGambitDrawFactionCards extends ModifierOpeningGambit {
           .getIsSkinned(false)
           .getCards();
       } else {
-        factionCards = this.getGameSession().getCardCaches().getFaction(factionId).getIsHiddenInCollection(false)
+        factionCards = this.getGameSession()
+          .getCardCaches()
+          .getFaction(factionId)
+          .getIsHiddenInCollection(false)
           .getIsToken(false)
           .getIsGeneral(false)
           .getIsPrismatic(false)
@@ -46,11 +54,21 @@ class ModifierOpeningGambitDrawFactionCards extends ModifierOpeningGambit {
       }
 
       if (factionCards.length > 0) {
-        let cardToPutInHand = factionCards[this.getGameSession().getRandomIntegerForExecution(factionCards.length)];
-        const a = new PutCardInHandAction(this.getGameSession(), this.getCard().getOwnerId(), cardToPutInHand.createNewCardData());
+        let cardToPutInHand =
+          factionCards[this.getGameSession().getRandomIntegerForExecution(factionCards.length)];
+        const a = new PutCardInHandAction(
+          this.getGameSession(),
+          this.getCard().getOwnerId(),
+          cardToPutInHand.createNewCardData(),
+        );
 
-        cardToPutInHand = factionCards[this.getGameSession().getRandomIntegerForExecution(factionCards.length)];
-        const a2 = new PutCardInHandAction(this.getGameSession(), this.getCard().getOwnerId(), cardToPutInHand.createNewCardData());
+        cardToPutInHand =
+          factionCards[this.getGameSession().getRandomIntegerForExecution(factionCards.length)];
+        const a2 = new PutCardInHandAction(
+          this.getGameSession(),
+          this.getCard().getOwnerId(),
+          cardToPutInHand.createNewCardData(),
+        );
 
         this.getGameSession().executeAction(a);
         return this.getGameSession().executeAction(a2);

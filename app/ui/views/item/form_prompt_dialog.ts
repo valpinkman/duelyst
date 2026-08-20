@@ -10,13 +10,16 @@ var FormPromptModalItemView = require('./form_prompt_modal');
  * Dialog version of form prompt modal. Do not use this class directly.
  */
 var FormPromptDialogItemView = FormPromptModalItemView.extend({
-
   onShow: function () {
     FormPromptModalItemView.prototype.onShow.apply(this, arguments);
 
     // because this is a dialog and dialogs lock user triggered actions
     // we can't listen to user triggered actions
-    this.stopListening(NavigationManager.getInstance(), EVENTS.user_triggered_confirm, this.onClickSubmit);
+    this.stopListening(
+      NavigationManager.getInstance(),
+      EVENTS.user_triggered_confirm,
+      this.onClickSubmit,
+    );
 
     // listen to user attempted actions
     this.listenTo(NavigationManager.getInstance(), EVENTS.user_attempt_cancel, this.onCancel);
@@ -27,7 +30,9 @@ var FormPromptDialogItemView = FormPromptModalItemView.extend({
 
   onCancel: function () {
     if (!this.getSubmitting()) {
-      audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_cancel.audio, CONFIG.CANCEL_SFX_PRIORITY);
+      audio_engine
+        .current()
+        .play_effect_for_interaction(RSX.sfx_ui_cancel.audio, CONFIG.CANCEL_SFX_PRIORITY);
       NavigationManager.getInstance().destroyDialogView();
     }
   },
@@ -49,7 +54,6 @@ var FormPromptDialogItemView = FormPromptModalItemView.extend({
 
     this.$el.find('.btn-user-cancel').show();
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

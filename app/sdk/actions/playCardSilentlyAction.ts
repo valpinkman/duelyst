@@ -20,7 +20,7 @@ class PlayCardSilentlyAction extends ApplyCardToBoardAction {
   }
 
   getCard() {
-    if ((this._private.cachedCard == null)) {
+    if (this._private.cachedCard == null) {
       // create and cache card
       super.getCard();
 

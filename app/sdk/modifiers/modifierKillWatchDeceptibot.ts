@@ -26,25 +26,45 @@ class ModifierKillWatchDeceptibot extends ModifierKillWatch {
       for (let i = 0; i < drawPile.length; i++) {
         var cardIndex = drawPile[i];
         var cardAtIndex = this.getGameSession().getCardByIndex(cardIndex);
-        if (((cardAtIndex != null ? cardAtIndex.getType() : undefined) === CardType.Unit) && (cardAtIndex.getRaceId() === Races.Mech) && (cardAtIndex.getBaseCardId() !== Cards.Neutral.Deceptibot)) {
+        if (
+          (cardAtIndex != null ? cardAtIndex.getType() : undefined) === CardType.Unit &&
+          cardAtIndex.getRaceId() === Races.Mech &&
+          cardAtIndex.getBaseCardId() !== Cards.Neutral.Deceptibot
+        ) {
           indexesOfMechs.push(i);
         }
       }
 
       if (indexesOfMechs.length > 0) {
-        const minionIndexToRemove = this.getGameSession().getRandomIntegerForExecution(indexesOfMechs.length);
+        const minionIndexToRemove = this.getGameSession().getRandomIntegerForExecution(
+          indexesOfMechs.length,
+        );
         const indexOfCardInDeck = indexesOfMechs[minionIndexToRemove];
         const cardIndexToDraw = drawPile[indexOfCardInDeck];
 
         const card = this.getGameSession().getCardByIndex(cardIndexToDraw);
 
         let spawnLocation = null;
-        const validSpawnLocations = UtilsGameSession.getSmartSpawnPositionsFromPattern(this.getGameSession(), this.getCard().getPosition(), CONFIG.PATTERN_3x3, card);
+        const validSpawnLocations = UtilsGameSession.getSmartSpawnPositionsFromPattern(
+          this.getGameSession(),
+          this.getCard().getPosition(),
+          CONFIG.PATTERN_3x3,
+          card,
+        );
         if ((validSpawnLocations != null ? validSpawnLocations.length : undefined) > 0) {
-          spawnLocation = validSpawnLocations[this.getGameSession().getRandomIntegerForExecution(validSpawnLocations.length)];
+          spawnLocation =
+            validSpawnLocations[
+              this.getGameSession().getRandomIntegerForExecution(validSpawnLocations.length)
+            ];
 
           if (spawnLocation != null) {
-            const playCardAction = new PlayCardSilentlyAction(this.getGameSession(), this.getCard().getOwnerId(), spawnLocation.x, spawnLocation.y, card);
+            const playCardAction = new PlayCardSilentlyAction(
+              this.getGameSession(),
+              this.getCard().getOwnerId(),
+              spawnLocation.x,
+              spawnLocation.y,
+              card,
+            );
             playCardAction.setSource(this.getCard());
             return this.getGameSession().executeAction(playCardAction);
           }

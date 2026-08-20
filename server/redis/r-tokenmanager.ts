@@ -54,7 +54,9 @@ class RedisTokenManager {
    * @return {Object} matchmaking token object
    */
   create(opts?) {
-    if (opts == null) { opts = {}; }
+    if (opts == null) {
+      opts = {};
+    }
     const token: Record<string, any> = {};
     token.id = createTokenId();
     token.createdAt = Date.now();
@@ -85,8 +87,12 @@ class RedisTokenManager {
   add(token) {
     const playerId = token.userId;
     const tokenKey = keyPrefix() + playerId;
-    if (token.deck != null) { token.deck = JSON.stringify(token.deck); }
-    if (token.battleMapIndexes != null) { token.battleMapIndexes = JSON.stringify(token.battleMapIndexes); }
+    if (token.deck != null) {
+      token.deck = JSON.stringify(token.deck);
+    }
+    if (token.battleMapIndexes != null) {
+      token.battleMapIndexes = JSON.stringify(token.battleMapIndexes);
+    }
     return this.redis.hmset(tokenKey, token);
   }
 
@@ -127,9 +133,10 @@ class RedisTokenManager {
    */
   get(playerId) {
     const tokenKey = keyPrefix() + playerId;
-    return this.redis.hgetall(tokenKey) // return entire token object
+    return this.redis
+      .hgetall(tokenKey) // return entire token object
       .then((token) => {
-      // TODO: There might be other data that we want to convert to correct format here
+        // TODO: There might be other data that we want to convert to correct format here
         if (token != null) {
           if (token.deck != null) {
             token.deck = JSON.parse(token.deck);
@@ -171,7 +178,9 @@ class RedisTokenManager {
    * @return {Promise} unlock function if lock acquired
    */
   lock(playerId, ttl?) {
-    if (ttl == null) { ttl = 5000; }
+    if (ttl == null) {
+      ttl = 5000;
+    }
     return this.locker.lock(playerId, ttl);
   }
 
@@ -188,7 +197,7 @@ class RedisTokenManager {
 /**
  * Export a factory
  */
-module.exports = (exports = function (redis, opts) {
+module.exports = exports = function (redis, opts) {
   const TokenManager = new RedisTokenManager(redis, opts);
   return TokenManager;
-});
+};

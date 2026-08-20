@@ -20,7 +20,10 @@ class ModifierBandedHeal extends ModifierBanded {
   onEndTurn() {
     super.onEndTurn();
 
-    if ((this.getGameSession().getCurrentPlayer() === this.getCard().getOwner()) && (this.getCard().getHP() < this.getCard().getMaxHP())) {
+    if (
+      this.getGameSession().getCurrentPlayer() === this.getCard().getOwner() &&
+      this.getCard().getHP() < this.getCard().getMaxHP()
+    ) {
       const healAction = this.getCard().getGameSession().createActionForType(HealAction.type);
       healAction.setTarget(this.getCard());
       healAction.setHealAmount(this.getCard().getMaxHP() - this.getCard().getHP());
@@ -31,6 +34,9 @@ class ModifierBandedHeal extends ModifierBanded {
 ModifierBandedHeal.prototype.type = 'ModifierBandedHeal';
 ModifierBandedHeal.modifierName = i18next.t('modifiers.banded_heal_name');
 ModifierBandedHeal.description = i18next.t('modifiers.banded_heal_desc');
-ModifierBandedHeal.prototype.fxResource = ['FX.Modifiers.ModifierZealed', 'FX.Modifiers.ModifierZealedHeal'];
+ModifierBandedHeal.prototype.fxResource = [
+  'FX.Modifiers.ModifierZealed',
+  'FX.Modifiers.ModifierZealedHeal',
+];
 
 module.exports = ModifierBandedHeal;

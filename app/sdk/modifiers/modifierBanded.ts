@@ -20,9 +20,15 @@ class ModifierBanded extends Modifier {
   static type = 'ModifierBanded';
 
   static createContextObject(attack, maxHP, options) {
-    if (attack == null) { attack = 0; }
-    if (maxHP == null) { maxHP = 0; }
-    if (options == null) { options = undefined; }
+    if (attack == null) {
+      attack = 0;
+    }
+    if (maxHP == null) {
+      maxHP = 0;
+    }
+    if (options == null) {
+      options = undefined;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.attributeBuffs = Modifier.createAttributeBuffsObject(attack, maxHP);
     return contextObject;

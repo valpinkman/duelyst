@@ -24,8 +24,11 @@ class ModifierTakeDamageWatchDispel extends ModifierTakeDamageWatch {
     const sourceCard = __guard__(action.getSource(), (x) => x.getAncestorCardOfType(CardType.Unit));
 
     // dispel any minion that damages this one
-    if ((sourceCard != null) && !sourceCard.getIsGeneral()) {
-      return this.getGameSession().applyModifierContextObject(ModifierSilence.createContextObject(), sourceCard);
+    if (sourceCard != null && !sourceCard.getIsGeneral()) {
+      return this.getGameSession().applyModifierContextObject(
+        ModifierSilence.createContextObject(),
+        sourceCard,
+      );
     }
   }
 }
@@ -35,5 +38,5 @@ ModifierTakeDamageWatchDispel.prototype.fxResource = ['FX.Modifiers.ModifierTake
 module.exports = ModifierTakeDamageWatchDispel;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

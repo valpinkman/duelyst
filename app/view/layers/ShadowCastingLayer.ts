@@ -7,13 +7,11 @@ const BaseLayer = require('./BaseLayer');
  *************************************************************************** */
 
 var ShadowCastingLayer = BaseLayer.extend({
-
   _createRenderCmd() {
     if (cc._renderType === cc._RENDER_TYPE_CANVAS) return this._super();
 
     return new ShadowCastingLayer.WebGLRenderCmd(this);
   },
-
 });
 
 ShadowCastingLayer.WebGLRenderCmd = function (renderable) {
@@ -23,7 +21,9 @@ ShadowCastingLayer.WebGLRenderCmd = function (renderable) {
   // so that the renderer calls its rendering method
   this._needDraw = true;
 };
-const proto = ShadowCastingLayer.WebGLRenderCmd.prototype = Object.create(cc.Layer.WebGLRenderCmd.prototype);
+const proto = (ShadowCastingLayer.WebGLRenderCmd.prototype = Object.create(
+  cc.Layer.WebGLRenderCmd.prototype,
+));
 proto.constructor = ShadowCastingLayer.WebGLRenderCmd;
 
 proto.rendering = function (ctx) {

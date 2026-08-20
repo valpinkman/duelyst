@@ -21,27 +21,58 @@ class ValidatorPlayCard extends Validator {
   onValidateAction(event) {
     super.onValidateAction(event);
     const gameSession = this.getGameSession();
-    const {
-      action,
-    } = event;
-    if ((action != null) && action.getIsValid() && !action.getIsImplicit() && (action instanceof PlayCardFromHandAction || action instanceof PlaySignatureCardAction)) {
+    const { action } = event;
+    if (
+      action != null &&
+      action.getIsValid() &&
+      !action.getIsImplicit() &&
+      (action instanceof PlayCardFromHandAction || action instanceof PlaySignatureCardAction)
+    ) {
       const card = action.getCard();
       const targetPosition = action.getTargetPosition();
       const owner = action.getOwner();
-      if ((card == null)) {
+      if (card == null) {
         // playing nothing
-        return this.invalidateAction(action, targetPosition, i18next.t('validators.invalid_card_message'));
-      } if (gameSession.getIsRunningAsAuthoritative() && (action.cardDataOrIndex != null) && _.isObject(action.cardDataOrIndex)) {
+        return this.invalidateAction(
+          action,
+          targetPosition,
+          i18next.t('validators.invalid_card_message'),
+        );
+      }
+      if (
+        gameSession.getIsRunningAsAuthoritative() &&
+        action.cardDataOrIndex != null &&
+        _.isObject(action.cardDataOrIndex)
+      ) {
         // playing card data instead of index
-        return this.invalidateAction(action, targetPosition, i18next.t('validators.invalid_card_message'));
-      } if (!card.getIsPositionValidTarget(targetPosition)) {
+        return this.invalidateAction(
+          action,
+          targetPosition,
+          i18next.t('validators.invalid_card_message'),
+        );
+      }
+      if (!card.getIsPositionValidTarget(targetPosition)) {
         // playing card to board at an invalid position
-        return this.invalidateAction(action, targetPosition, i18next.t('validators.invalid_card_target_message'));
-      } if (gameSession.getIsRunningAsAuthoritative() || (owner.getPlayerId() === gameSession.getMyPlayerId())) {
+        return this.invalidateAction(
+          action,
+          targetPosition,
+          i18next.t('validators.invalid_card_target_message'),
+        );
+      }
+      if (
+        gameSession.getIsRunningAsAuthoritative() ||
+        owner.getPlayerId() === gameSession.getMyPlayerId()
+      ) {
         if (action instanceof PlayCardFromHandAction) {
-          if (card.getIndex() !== owner.getDeck().getCardIndexInHandAtIndex(action.indexOfCardInHand)) {
+          if (
+            card.getIndex() !== owner.getDeck().getCardIndexInHandAtIndex(action.indexOfCardInHand)
+          ) {
             // playing a card that does not match the index in hand
-            return this.invalidateAction(action, targetPosition, i18next.t('validators.invalid_card_message'));
+            return this.invalidateAction(
+              action,
+              targetPosition,
+              i18next.t('validators.invalid_card_message'),
+            );
           } // validate that player is not simply stalling out the game
           let actions = [];
           const currentTurn = this.getGameSession().getCurrentTurn();
@@ -63,16 +94,29 @@ class ValidatorPlayCard extends Validator {
               break;
             }
           }
-          if ((numCardsPlayedFromHand >= 10) && !hasFoundMeaningfulAction) {
-            return this.invalidateAction(action, targetPosition, 'Too many cards played without advancing board state.');
+          if (numCardsPlayedFromHand >= 10 && !hasFoundMeaningfulAction) {
+            return this.invalidateAction(
+              action,
+              targetPosition,
+              'Too many cards played without advancing board state.',
+            );
           }
         } else if (action instanceof PlaySignatureCardAction) {
           if (!card.getOwner().getIsSignatureCardActive()) {
             // trying to play signature card when it should not be active
-            return this.invalidateAction(action, targetPosition, i18next.t('validators.card_isnt_ready_message'));
-          } if (card.getIndex() !== owner.getCurrentSignatureCardIndex()) {
+            return this.invalidateAction(
+              action,
+              targetPosition,
+              i18next.t('validators.card_isnt_ready_message'),
+            );
+          }
+          if (card.getIndex() !== owner.getCurrentSignatureCardIndex()) {
             // playing a card that does not match the index of the current signature card
-            return this.invalidateAction(action, targetPosition, i18next.t('validators.invalid_card_message'));
+            return this.invalidateAction(
+              action,
+              targetPosition,
+              i18next.t('validators.invalid_card_message'),
+            );
           }
         }
       }

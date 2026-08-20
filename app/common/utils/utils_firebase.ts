@@ -11,7 +11,11 @@ exports.pathName = function (ref) {
 };
 
 exports.getNumChildren = function (ref, callback) {
-  ref.once('value', (snapshot) => {
-    callback(snapshot.numChildren());
-  }, callback);
+  ref.once(
+    'value',
+    (snapshot) => {
+      callback(snapshot.numChildren());
+    },
+    callback,
+  );
 };

@@ -20,11 +20,15 @@ class SpellDrawCardsIfHaveFriendlyTiles extends Spell {
     return (() => {
       const result = [];
       for (var tile of Array.from<any>(board.getTiles(true, false))) {
-        if ((tile.getOwnerId() === this.getOwnerId()) && (tile.getBaseCardId() === this.tileId)) {
+        if (tile.getOwnerId() === this.getOwnerId() && tile.getBaseCardId() === this.tileId) {
           numTiles++;
           if (numTiles >= this.numTilesRequired) {
             var player = this.getGameSession().getPlayerById(this.getOwnerId());
-            for (var i = 0, end = this.numCardsToDraw, asc = end >= 0; asc ? i < end : i > end; asc ? i++ : i--) {
+            for (
+              var i = 0, end = this.numCardsToDraw, asc = end >= 0;
+              asc ? i < end : i > end;
+              asc ? i++ : i--
+            ) {
               var drawAction = player.getDeck().actionDrawCard();
               this.getGameSession().executeAction(drawAction);
             }

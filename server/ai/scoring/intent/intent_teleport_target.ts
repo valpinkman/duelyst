@@ -38,7 +38,10 @@ const getScoreForTeleportTargetFromCardWithIntentToCard = function (card, intent
 const ScoreForIntentTeleportTarget = function (card, targetPosition, cardIntents) {
   let score = 0;
   const cardId = card.getBaseCardId();
-  const validIntents = cardIntents != null ? CardIntent.filterIntentsByIntentType(cardIntents, CardIntentType.TeleportTarget) : CardIntent.getIntentsByIntentType(cardId, CardIntentType.TeleportTarget);
+  const validIntents =
+    cardIntents != null
+      ? CardIntent.filterIntentsByIntentType(cardIntents, CardIntentType.TeleportTarget)
+      : CardIntent.getIntentsByIntentType(cardId, CardIntentType.TeleportTarget);
 
   _.each(validIntents, (intent) => {
     const cards = CardIntent.getCardsTargetedByCardWithIntent(card, intent, targetPosition);

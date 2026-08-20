@@ -33,10 +33,14 @@ class ModifierHealWatchBuffGeneral extends ModifierHealWatch {
   onHealWatch(action) {
     const general = this.getGameSession().getGeneralForPlayer(this.getCard().getOwner());
     return Array.from<any>(this.modifiersContextObjects).map((modifierContextObject) =>
-      this.getGameSession().applyModifierContextObject(modifierContextObject, general));
+      this.getGameSession().applyModifierContextObject(modifierContextObject, general),
+    );
   }
 }
 ModifierHealWatchBuffGeneral.prototype.type = 'ModifierHealWatchBuffGeneral';
-ModifierHealWatchBuffGeneral.prototype.fxResource = ['FX.Modifiers.ModifierHealWatch', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierHealWatchBuffGeneral.prototype.fxResource = [
+  'FX.Modifiers.ModifierHealWatch',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 
 module.exports = ModifierHealWatchBuffGeneral;

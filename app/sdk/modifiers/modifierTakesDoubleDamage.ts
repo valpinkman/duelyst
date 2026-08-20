@@ -32,7 +32,7 @@ class ModifierTakesDoubleDamage extends Modifier {
   }
 
   getIsActionRelevant(a) {
-    return a instanceof DamageAction && (a.getTarget() === this.getCard());
+    return a instanceof DamageAction && a.getTarget() === this.getCard();
   }
 
   _modifyAction(a) {
@@ -61,6 +61,8 @@ ModifierTakesDoubleDamage.prototype.activeInDeck = false;
 ModifierTakesDoubleDamage.prototype.activeInSignatureCards = false;
 ModifierTakesDoubleDamage.prototype.activeOnBoard = true;
 ModifierTakesDoubleDamage.prototype.damageBonus = 2;
-ModifierTakesDoubleDamage.prototype.fxResource = ['FX.Modifiers.ModifierDoubleDamageToEnemyMinions'];
+ModifierTakesDoubleDamage.prototype.fxResource = [
+  'FX.Modifiers.ModifierDoubleDamageToEnemyMinions',
+];
 
 module.exports = ModifierTakesDoubleDamage;

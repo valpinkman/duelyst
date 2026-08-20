@@ -17,7 +17,17 @@ class ModifierOpeningGambitRazorback extends ModifierOpeningGambitApplyModifiers
   static type = 'ModifierOpeningGambitRazorback';
 
   static createContextObject(modifiersContextObjects, managedByCard, description, options) {
-    const contextObject = super.createContextObject(modifiersContextObjects, managedByCard, false, true, false, false, CONFIG.WHOLE_BOARD_RADIUS, description, options);
+    const contextObject = super.createContextObject(
+      modifiersContextObjects,
+      managedByCard,
+      false,
+      true,
+      false,
+      false,
+      CONFIG.WHOLE_BOARD_RADIUS,
+      description,
+      options,
+    );
     return contextObject;
   }
 

@@ -107,8 +107,10 @@ class CardFactory_CoreSet_Neutral {
    * @returns {Card}
    */
   static cardForIdentifier(identifier, gameSession) {
-    let contextObject; let customContextObject; let statBuffContextObject; let
-      statContextObject;
+    let contextObject;
+    let customContextObject;
+    let statBuffContextObject;
+    let statContextObject;
     let card = null;
 
     if (identifier === Cards.Neutral.FireSpitter) {
@@ -309,7 +311,9 @@ class CardFactory_CoreSet_Neutral {
       card.maxHP = 4;
       card.manaCost = 3;
       card.rarityId = Rarity.Common;
-      card.setInherentModifiersContextObjects([ModifierDealDamageWatchHealMyGeneral.createContextObject(2)]);
+      card.setInherentModifiersContextObjects([
+        ModifierDealDamageWatchHealMyGeneral.createContextObject(2),
+      ]);
     }
 
     if (identifier === Cards.Neutral.Manaforger) {
@@ -341,11 +345,20 @@ class CardFactory_CoreSet_Neutral {
       card.maxHP = 3;
       card.manaCost = 2;
       card.rarityId = Rarity.Rare;
-      contextObject = PlayerModifierManaModifierOncePerTurn.createCostChangeContextObject(-1, CardType.Spell);
-      contextObject.activeInHand = (contextObject.activeInDeck = (contextObject.activeInSignatureCards = false));
+      contextObject = PlayerModifierManaModifierOncePerTurn.createCostChangeContextObject(
+        -1,
+        CardType.Spell,
+      );
+      contextObject.activeInHand =
+        contextObject.activeInDeck =
+        contextObject.activeInSignatureCards =
+          false;
       contextObject.activeOnBoard = true;
       card.setInherentModifiersContextObjects([
-        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetOwnPlayer([contextObject], 'The first non-Bloodbound spell you cast each turn costs 1 less'),
+        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetOwnPlayer(
+          [contextObject],
+          'The first non-Bloodbound spell you cast each turn costs 1 less',
+        ),
       ]);
     }
 
@@ -379,7 +392,10 @@ class CardFactory_CoreSet_Neutral {
       card.manaCost = 3;
       card.rarityId = Rarity.Rare;
       card.setInherentModifiersContextObjects([
-        ModifierSpellWatchSpawnEntity.createContextObject({ id: Cards.Neutral.ArcaneIllusion }, '2/1 Illusion'),
+        ModifierSpellWatchSpawnEntity.createContextObject(
+          { id: Cards.Neutral.ArcaneIllusion },
+          '2/1 Illusion',
+        ),
       ]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
     }
@@ -446,7 +462,9 @@ class CardFactory_CoreSet_Neutral {
       card.atk = 3;
       card.maxHP = 1;
       card.manaCost = 3;
-      card.setInherentModifiersContextObjects([ModifierOpeningGambitRetrieveMostRecentSpell.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierOpeningGambitRetrieveMostRecentSpell.createContextObject(),
+      ]);
       card.rarityId = Rarity.Epic;
     }
 
@@ -480,7 +498,11 @@ class CardFactory_CoreSet_Neutral {
       card.atk = 4;
       card.maxHP = 4;
       card.manaCost = 4;
-      card.setInherentModifiersContextObjects([ModifierSpellWatchBuffAlliesByRace.createContextObject(0, 2, Races.Arcanyst, { appliedName: i18next.t('modifiers.neutral_owlbeast_sage_modifier') })]);
+      card.setInherentModifiersContextObjects([
+        ModifierSpellWatchBuffAlliesByRace.createContextObject(0, 2, Races.Arcanyst, {
+          appliedName: i18next.t('modifiers.neutral_owlbeast_sage_modifier'),
+        }),
+      ]);
       card.rarityId = Rarity.Rare;
     }
     //      card.setDescription("Whenever you cast a spell, all your [ARCANYST] minions gain +2 Health.")
@@ -767,7 +789,9 @@ class CardFactory_CoreSet_Neutral {
       card.maxHP = 1;
       card.manaCost = 2;
       card.rarityId = Rarity.Common;
-      card.setInherentModifiersContextObjects([ModifierDoubleDamageToMinions.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierDoubleDamageToMinions.createContextObject(),
+      ]);
     }
 
     if (identifier === Cards.Neutral.CrimsonOculus) {
@@ -893,7 +917,9 @@ class CardFactory_CoreSet_Neutral {
       card.maxHP = 3;
       card.manaCost = 3;
       card.rarityId = Rarity.Epic;
-      card.setInherentModifiersContextObjects([ModifierOpponentSummonWatchDamageEnemyGeneral.createContextObject(1)]);
+      card.setInherentModifiersContextObjects([
+        ModifierOpponentSummonWatchDamageEnemyGeneral.createContextObject(1),
+      ]);
     }
 
     if (identifier === Cards.Neutral.SkyrockGolem) {
@@ -1087,9 +1113,11 @@ class CardFactory_CoreSet_Neutral {
         ModifierOpeningGambitApplyMechazorPlayerModifiers.createContextObject(),
       ]);
       card.addKeywordClassToInclude(PlayerModifierMechazorBuildProgress);
-      card.setFollowups([{
-        id: Cards.Spell.DeployMechaz0r,
-      }]);
+      card.setFollowups([
+        {
+          id: Cards.Spell.DeployMechaz0r,
+        },
+      ]);
     }
 
     if (identifier === Cards.Neutral.Mechaz0rWings) {
@@ -1126,9 +1154,11 @@ class CardFactory_CoreSet_Neutral {
         ModifierOpeningGambitApplyMechazorPlayerModifiers.createContextObject(),
       ]);
       card.addKeywordClassToInclude(PlayerModifierMechazorBuildProgress);
-      card.setFollowups([{
-        id: Cards.Spell.DeployMechaz0r,
-      }]);
+      card.setFollowups([
+        {
+          id: Cards.Spell.DeployMechaz0r,
+        },
+      ]);
     }
     //      card.setDescription("MECHAZ0R progress +20%.")
 
@@ -1166,9 +1196,11 @@ class CardFactory_CoreSet_Neutral {
         ModifierOpeningGambitApplyMechazorPlayerModifiers.createContextObject(),
       ]);
       card.addKeywordClassToInclude(PlayerModifierMechazorBuildProgress);
-      card.setFollowups([{
-        id: Cards.Spell.DeployMechaz0r,
-      }]);
+      card.setFollowups([
+        {
+          id: Cards.Spell.DeployMechaz0r,
+        },
+      ]);
     }
     //      card.setDescription("MECHAZ0R progress +20%.")
 
@@ -1206,9 +1238,11 @@ class CardFactory_CoreSet_Neutral {
         ModifierOpeningGambitApplyMechazorPlayerModifiers.createContextObject(),
       ]);
       card.addKeywordClassToInclude(PlayerModifierMechazorBuildProgress);
-      card.setFollowups([{
-        id: Cards.Spell.DeployMechaz0r,
-      }]);
+      card.setFollowups([
+        {
+          id: Cards.Spell.DeployMechaz0r,
+        },
+      ]);
     }
     //      card.setDescription("MECHAZ0R progress +20%.")
 
@@ -1248,9 +1282,11 @@ class CardFactory_CoreSet_Neutral {
         ModifierOpeningGambitApplyMechazorPlayerModifiers.createContextObject(),
       ]);
       card.addKeywordClassToInclude(PlayerModifierMechazorBuildProgress);
-      card.setFollowups([{
-        id: Cards.Spell.DeployMechaz0r,
-      }]);
+      card.setFollowups([
+        {
+          id: Cards.Spell.DeployMechaz0r,
+        },
+      ]);
     }
     //      card.setDescription("MECHAZ0R progress +20%.")
 
@@ -1451,7 +1487,9 @@ class CardFactory_CoreSet_Neutral {
       card.maxHP = 3;
       card.manaCost = 3;
       card.rarityId = Rarity.Common;
-      card.setInherentModifiersContextObjects([ModifierOpeningGambitDrawCardBothPlayers.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierOpeningGambitDrawCardBothPlayers.createContextObject(),
+      ]);
     }
 
     if (identifier === Cards.Neutral.BlackSandBurrower) {
@@ -1483,7 +1521,9 @@ class CardFactory_CoreSet_Neutral {
       card.maxHP = 4;
       card.manaCost = 3;
       card.rarityId = Rarity.Common;
-      card.setInherentModifiersContextObjects([ModifierSurviveDamageWatchReturnToHand.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierSurviveDamageWatchReturnToHand.createContextObject(),
+      ]);
     }
 
     if (identifier === Cards.Neutral.MiniJax) {
@@ -1517,9 +1557,7 @@ class CardFactory_CoreSet_Neutral {
       card.maxHP = 1;
       card.manaCost = 1;
       card.rarityId = Rarity.TokenUnit;
-      card.setInherentModifiersContextObjects([
-        ModifierRanged.createContextObject(),
-      ]);
+      card.setInherentModifiersContextObjects([ModifierRanged.createContextObject()]);
       card.addKeywordClassToInclude(ModifierToken);
     }
 
@@ -1555,7 +1593,10 @@ class CardFactory_CoreSet_Neutral {
       card.rarityId = Rarity.Legendary;
       card.setInherentModifiersContextObjects([
         ModifierRanged.createContextObject(),
-        ModifierOpeningGambitSpawnEntityInEachCorner.createContextObject({ id: Cards.Neutral.MiniJax }, 'a 1/1 Ranged Mini-Jax'),
+        ModifierOpeningGambitSpawnEntityInEachCorner.createContextObject(
+          { id: Cards.Neutral.MiniJax },
+          'a 1/1 Ranged Mini-Jax',
+        ),
       ]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
     }
@@ -1630,7 +1671,9 @@ class CardFactory_CoreSet_Neutral {
       card.maxHP = 3;
       card.manaCost = 3;
       card.rarityId = Rarity.Rare;
-      card.setInherentModifiersContextObjects([ModifierImmuneToDamageByGeneral.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierImmuneToDamageByGeneral.createContextObject(),
+      ]);
     }
 
     if (identifier === Cards.Neutral.SaberspineTiger) {
@@ -1724,7 +1767,9 @@ class CardFactory_CoreSet_Neutral {
       card.atk = 3;
       card.maxHP = 6;
       card.manaCost = 5;
-      card.setInherentModifiersContextObjects([ModifierOpeningGambitRetrieveRandomSpell.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierOpeningGambitRetrieveRandomSpell.createContextObject(),
+      ]);
       card.rarityId = Rarity.Epic;
     }
 
@@ -1766,9 +1811,7 @@ class CardFactory_CoreSet_Neutral {
         {
           id: Cards.Spell.ApplyModifiers,
           spellFilterType: SpellFilterType.AllyDirect,
-          targetModifiersContextObjects: [
-            statContextObject,
-          ],
+          targetModifiersContextObjects: [statContextObject],
           _private: {
             followupSourcePattern: CONFIG.PATTERN_3x3,
           },
@@ -1807,11 +1850,21 @@ class CardFactory_CoreSet_Neutral {
       card.maxHP = 3;
       card.manaCost = 2;
       card.rarityId = Rarity.Rare;
-      contextObject = PlayerModifierManaModifierOncePerTurn.createCostChangeContextObject(-1, CardType.Unit, [Races.Golem]);
-      contextObject.activeInHand = (contextObject.activeInDeck = (contextObject.activeInSignatureCards = false));
+      contextObject = PlayerModifierManaModifierOncePerTurn.createCostChangeContextObject(
+        -1,
+        CardType.Unit,
+        [Races.Golem],
+      );
+      contextObject.activeInHand =
+        contextObject.activeInDeck =
+        contextObject.activeInSignatureCards =
+          false;
       contextObject.activeOnBoard = true;
       card.setInherentModifiersContextObjects([
-        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetOwnPlayer([contextObject], 'The first Golem you summon each turn costs 1 less'),
+        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetOwnPlayer(
+          [contextObject],
+          'The first Golem you summon each turn costs 1 less',
+        ),
       ]);
     }
 
@@ -1848,7 +1901,13 @@ class CardFactory_CoreSet_Neutral {
       card.rarityId = Rarity.Legendary;
       card.setInherentModifiersContextObjects([
         ModifierProvoke.createContextObject(),
-        Modifier.createContextObjectWithAuraForAllAllies([ModifierProvoke.createContextObject()], [Races.Golem], null, null, 'Your other Golem minions have Provoke'),
+        Modifier.createContextObjectWithAuraForAllAllies(
+          [ModifierProvoke.createContextObject()],
+          [Races.Golem],
+          null,
+          null,
+          'Your other Golem minions have Provoke',
+        ),
       ]);
     }
 
@@ -1882,7 +1941,9 @@ class CardFactory_CoreSet_Neutral {
       card.maxHP = 3;
       card.manaCost = 4;
       card.rarityId = Rarity.Common;
-      card.setInherentModifiersContextObjects([ModifierOpeningGambitDamageNearby.createContextObject(2)]);
+      card.setInherentModifiersContextObjects([
+        ModifierOpeningGambitDamageNearby.createContextObject(2),
+      ]);
     }
 
     if (identifier === Cards.Neutral.ArchonSpellbinder) {
@@ -1917,10 +1978,16 @@ class CardFactory_CoreSet_Neutral {
       card.manaCost = 6;
       card.rarityId = Rarity.Legendary;
       contextObject = PlayerModifierManaModifier.createCostChangeContextObject(1, CardType.Spell);
-      contextObject.activeInHand = (contextObject.activeInDeck = (contextObject.activeInSignatureCards = false));
+      contextObject.activeInHand =
+        contextObject.activeInDeck =
+        contextObject.activeInSignatureCards =
+          false;
       contextObject.activeOnBoard = true;
       card.setInherentModifiersContextObjects([
-        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetEnemyPlayer([contextObject], 'Your opponent\'s non-Bloodbound spells cost 1 more to cast'),
+        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetEnemyPlayer(
+          [contextObject],
+          "Your opponent's non-Bloodbound spells cost 1 more to cast",
+        ),
       ]);
     }
 
@@ -1991,7 +2058,9 @@ class CardFactory_CoreSet_Neutral {
       card.maxHP = 1;
       card.manaCost = 3;
       card.rarityId = Rarity.Legendary;
-      card.setInherentModifiersContextObjects([ModifierDyingWishReSpawnEntityAnywhere.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierDyingWishReSpawnEntityAnywhere.createContextObject(),
+      ]);
     }
 
     if (identifier === Cards.Neutral.DarkNemesis) {
@@ -2024,7 +2093,11 @@ class CardFactory_CoreSet_Neutral {
       card.maxHP = 10;
       card.manaCost = 7;
       card.rarityId = Rarity.Legendary;
-      card.setInherentModifiersContextObjects([ModifierStartTurnWatchDamageEnemyGeneralBuffSelf.createContextObject(4, 0, 4, { appliedName: i18next.t('modifiers.neutral_dark_nemesis_modifier') })]);
+      card.setInherentModifiersContextObjects([
+        ModifierStartTurnWatchDamageEnemyGeneralBuffSelf.createContextObject(4, 0, 4, {
+          appliedName: i18next.t('modifiers.neutral_dark_nemesis_modifier'),
+        }),
+      ]);
     }
 
     if (identifier === Cards.Neutral.MirkbloodDevourer) {
@@ -2057,7 +2130,12 @@ class CardFactory_CoreSet_Neutral {
       card.rarityId = Rarity.Legendary;
       statContextObject = Modifier.createContextObjectWithAttributeBuffs(1, 1);
       statContextObject.appliedName = i18next.t('modifiers.neutral_mirkblood_devourer_modifier');
-      card.setInherentModifiersContextObjects([ModifierSummonWatchNearbyApplyModifiers.createContextObject([statContextObject], 'gain +1/+1')]);
+      card.setInherentModifiersContextObjects([
+        ModifierSummonWatchNearbyApplyModifiers.createContextObject(
+          [statContextObject],
+          'gain +1/+1',
+        ),
+      ]);
     }
 
     if (identifier === Cards.Neutral.Sojourner) {
@@ -2087,7 +2165,9 @@ class CardFactory_CoreSet_Neutral {
       card.atk = 1;
       card.maxHP = 5;
       card.manaCost = 3;
-      card.setInherentModifiersContextObjects([ModifierDealDamageWatchDrawCard.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierDealDamageWatchDrawCard.createContextObject(),
+      ]);
       card.rarityId = Rarity.Rare;
     }
 
@@ -2122,7 +2202,15 @@ class CardFactory_CoreSet_Neutral {
       statContextObject = Modifier.createContextObjectWithAttributeBuffs(0, 4);
       statContextObject.appliedName = i18next.t('modifiers.neutral_azure_horn_shaman_modifier');
       card.setInherentModifiersContextObjects([
-        ModifierDyingWishApplyModifiers.createContextObject([statContextObject], false, true, false, 1, false, 'Give +4 Health to friendly minions around it'),
+        ModifierDyingWishApplyModifiers.createContextObject(
+          [statContextObject],
+          false,
+          true,
+          false,
+          1,
+          false,
+          'Give +4 Health to friendly minions around it',
+        ),
       ]);
     }
 
@@ -2154,7 +2242,9 @@ class CardFactory_CoreSet_Neutral {
       card.maxHP = 1;
       card.manaCost = 2;
       card.rarityId = Rarity.Rare;
-      card.setInherentModifiersContextObjects([ModifierOpeningGambitDamageBothGenerals.createContextObject(3)]);
+      card.setInherentModifiersContextObjects([
+        ModifierOpeningGambitDamageBothGenerals.createContextObject(3),
+      ]);
     }
 
     if (identifier === Cards.Neutral.BloodtearAlchemist) {
@@ -2296,8 +2386,14 @@ class CardFactory_CoreSet_Neutral {
       card.maxHP = 3;
       card.manaCost = 3;
       card.rarityId = Rarity.Epic;
-      const customModifierContextObject = ModifierMyGeneralDamagedWatchBuffSelf.createContextObject(1, 0);
-      card.setInherentModifiersContextObjects([ModifierRanged.createContextObject(), customModifierContextObject]);
+      const customModifierContextObject = ModifierMyGeneralDamagedWatchBuffSelf.createContextObject(
+        1,
+        0,
+      );
+      card.setInherentModifiersContextObjects([
+        ModifierRanged.createContextObject(),
+        customModifierContextObject,
+      ]);
     }
 
     if (identifier === Cards.Neutral.SwornDefender) {
@@ -2330,7 +2426,9 @@ class CardFactory_CoreSet_Neutral {
       card.maxHP = 7;
       card.manaCost = 5;
       card.rarityId = Rarity.Epic;
-      card.setInherentModifiersContextObjects([ModifierMyGeneralDamagedWatchHealSelf.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierMyGeneralDamagedWatchHealSelf.createContextObject(),
+      ]);
     }
 
     if (identifier === Cards.Neutral.RedSynja) {
@@ -2362,7 +2460,9 @@ class CardFactory_CoreSet_Neutral {
       card.atk = 7;
       card.maxHP = 7;
       card.manaCost = 7;
-      card.setInherentModifiersContextObjects([ModifierMyGeneralDamagedWatchDamageNearby.createContextObject(7)]);
+      card.setInherentModifiersContextObjects([
+        ModifierMyGeneralDamagedWatchDamageNearby.createContextObject(7),
+      ]);
       card.rarityId = Rarity.Legendary;
     }
 
@@ -2394,7 +2494,9 @@ class CardFactory_CoreSet_Neutral {
       card.maxHP = 3;
       card.manaCost = 2;
       card.rarityId = Rarity.Common;
-      card.setInherentModifiersContextObjects([ModifierOpeningGambitRemoveRandomArtifact.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierOpeningGambitRemoveRandomArtifact.createContextObject(),
+      ]);
     }
 
     if (identifier === Cards.Neutral.DaggerKiri) {
@@ -2456,7 +2558,9 @@ class CardFactory_CoreSet_Neutral {
       card.maxHP = 4;
       card.manaCost = 4;
       card.rarityId = Rarity.Epic;
-      card.setInherentModifiersContextObjects([ModifierOpeningGambitDrawArtifactFromDeck.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierOpeningGambitDrawArtifactFromDeck.createContextObject(),
+      ]);
     }
 
     if (identifier === Cards.Neutral.ChaosElemental) {
@@ -2523,7 +2627,9 @@ class CardFactory_CoreSet_Neutral {
       card.maxHP = 3;
       card.manaCost = 4;
       card.rarityId = Rarity.Rare;
-      card.setInherentModifiersContextObjects([ModifierOpeningGambitMindwarp.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierOpeningGambitMindwarp.createContextObject(),
+      ]);
     }
 
     if (identifier === Cards.Neutral.Pandora) {
@@ -2563,7 +2669,15 @@ class CardFactory_CoreSet_Neutral {
         { id: Cards.Neutral.PandoraMinion4 },
         { id: Cards.Neutral.PandoraMinion5 },
       ];
-      card.setInherentModifiersContextObjects([ModifierEndTurnWatchSpawnRandomEntity.createContextObject(cardDataToSpawn, '3/3 Spirit Wolf with a random ability', 1, CONFIG.PATTERN_3x3, true)]);
+      card.setInherentModifiersContextObjects([
+        ModifierEndTurnWatchSpawnRandomEntity.createContextObject(
+          cardDataToSpawn,
+          '3/3 Spirit Wolf with a random ability',
+          1,
+          CONFIG.PATTERN_3x3,
+          true,
+        ),
+      ]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
     }
 
@@ -2761,7 +2875,10 @@ class CardFactory_CoreSet_Neutral {
       card.maxHP = 5;
       card.manaCost = 5;
       card.rarityId = Rarity.Epic;
-      card.setInherentModifiersContextObjects([ModifierRanged.createContextObject(), ModifierEndTurnWatchHealNearby.createContextObject(2)]);
+      card.setInherentModifiersContextObjects([
+        ModifierRanged.createContextObject(),
+        ModifierEndTurnWatchHealNearby.createContextObject(2),
+      ]);
     }
 
     if (identifier === Cards.Neutral.SyvrelTheExile) {
@@ -2793,7 +2910,10 @@ class CardFactory_CoreSet_Neutral {
       card.maxHP = 4;
       card.manaCost = 3;
       card.rarityId = Rarity.Epic;
-      card.setInherentModifiersContextObjects([ModifierRanged.createContextObject(), ModifierDealDamageWatchTeleportToMe.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierRanged.createContextObject(),
+        ModifierDealDamageWatchTeleportToMe.createContextObject(),
+      ]);
     }
 
     if (identifier === Cards.Neutral.Spelljammer) {
@@ -2825,10 +2945,16 @@ class CardFactory_CoreSet_Neutral {
       card.manaCost = 4;
       card.rarityId = Rarity.Legendary;
       contextObject = PlayerModifierCardDrawModifier.createContextObject(1);
-      contextObject.activeInHand = (contextObject.activeInDeck = (contextObject.activeInSignatureCards = false));
+      contextObject.activeInHand =
+        contextObject.activeInDeck =
+        contextObject.activeInSignatureCards =
+          false;
       contextObject.activeOnBoard = true;
       card.setInherentModifiersContextObjects([
-        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetBothPlayers([contextObject], 'Each player draws an additional card at the end of their turns'),
+        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetBothPlayers(
+          [contextObject],
+          'Each player draws an additional card at the end of their turns',
+        ),
       ]);
     }
 
@@ -2861,7 +2987,12 @@ class CardFactory_CoreSet_Neutral {
       card.maxHP = 3;
       card.manaCost = 4;
       card.rarityId = Rarity.Epic;
-      card.setInherentModifiersContextObjects([ModifierDyingWishSpawnEntityNearbyGeneral.createContextObject({ id: Cards.Neutral.DilotasTombstone }, 'a 0/8 Tombstone minion with Provoke')]);
+      card.setInherentModifiersContextObjects([
+        ModifierDyingWishSpawnEntityNearbyGeneral.createContextObject(
+          { id: Cards.Neutral.DilotasTombstone },
+          'a 0/8 Tombstone minion with Provoke',
+        ),
+      ]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
     }
 
@@ -3004,7 +3135,9 @@ class CardFactory_CoreSet_Neutral {
       card.maxHP = 4;
       card.manaCost = 6;
       card.rarityId = Rarity.Common;
-      card.setInherentModifiersContextObjects([ModifierOpeningGambitDamageNearbyMinions.createContextObject(3, false)]);
+      card.setInherentModifiersContextObjects([
+        ModifierOpeningGambitDamageNearbyMinions.createContextObject(3, false),
+      ]);
     }
 
     if (identifier === Cards.Neutral.HealingMystic) {
@@ -3102,7 +3235,12 @@ class CardFactory_CoreSet_Neutral {
         damage: RSX.neutralAshMephytHit.name,
         death: RSX.neutralAshMephytDeath.name,
       });
-      card.setInherentModifiersContextObjects([ModifierOpeningGambitSpawnCopiesOfEntityAnywhere.createContextObject('two copies of this minion', 2)]);
+      card.setInherentModifiersContextObjects([
+        ModifierOpeningGambitSpawnCopiesOfEntityAnywhere.createContextObject(
+          'two copies of this minion',
+          2,
+        ),
+      ]);
       card.atk = 2;
       card.maxHP = 3;
       card.manaCost = 5;
@@ -3134,8 +3272,18 @@ class CardFactory_CoreSet_Neutral {
         death: RSX.neutralFirstSwordAkraneDeath.name,
       });
       customContextObject = Modifier.createContextObjectWithAttributeBuffs(1);
-      customContextObject.appliedName = i18next.t('modifiers.neutral_first_sword_of_akrane_modifier');
-      card.setInherentModifiersContextObjects([Modifier.createContextObjectWithAuraForAllAllies([customContextObject], null, null, null, 'Your other minions have +1 Attack')]);
+      customContextObject.appliedName = i18next.t(
+        'modifiers.neutral_first_sword_of_akrane_modifier',
+      );
+      card.setInherentModifiersContextObjects([
+        Modifier.createContextObjectWithAuraForAllAllies(
+          [customContextObject],
+          null,
+          null,
+          null,
+          'Your other minions have +1 Attack',
+        ),
+      ]);
       card.atk = 7;
       card.maxHP = 7;
       card.manaCost = 6;
@@ -3203,7 +3351,9 @@ class CardFactory_CoreSet_Neutral {
         damage: RSX.neutralEclipseHit.name,
         death: RSX.neutralEclipseDeath.name,
       });
-      card.setInherentModifiersContextObjects([ModifierTakeDamageWatchDamageEnemyGeneralForSame.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierTakeDamageWatchDamageEnemyGeneralForSame.createContextObject(),
+      ]);
       card.atk = 3;
       card.maxHP = 7;
       card.manaCost = 6;
@@ -3239,10 +3389,17 @@ class CardFactory_CoreSet_Neutral {
       card.manaCost = 3;
       statBuffContextObject = Modifier.createContextObjectWithAttributeBuffs(1, 1);
       statBuffContextObject.appliedName = i18next.t('modifiers.neutral_lady_locke_modifier');
-      customContextObject = PlayerModifierSummonWatchApplyModifiers.createContextObject([ModifierProvoke.createContextObject(), statBuffContextObject], 'gain +1/+1 and Provoke');
+      customContextObject = PlayerModifierSummonWatchApplyModifiers.createContextObject(
+        [ModifierProvoke.createContextObject(), statBuffContextObject],
+        'gain +1/+1 and Provoke',
+      );
       customContextObject.durationEndTurn = 1;
       card.setInherentModifiersContextObjects([
-        ModifierOpeningGambitApplyPlayerModifiers.createContextObjectToTargetOwnPlayer([customContextObject], false, 'Other minions you summon this turn gain +1/+1 and Provoke'),
+        ModifierOpeningGambitApplyPlayerModifiers.createContextObjectToTargetOwnPlayer(
+          [customContextObject],
+          false,
+          'Other minions you summon this turn gain +1/+1 and Provoke',
+        ),
         ModifierProvoke.createContextObject(),
       ]);
       card.rarityId = Rarity.Legendary;
@@ -3278,7 +3435,9 @@ class CardFactory_CoreSet_Neutral {
       card.atk = 3;
       card.maxHP = 5;
       card.manaCost = 4;
-      card.setInherentModifiersContextObjects([ModifierStartTurnWatchSwapStats.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierStartTurnWatchSwapStats.createContextObject(),
+      ]);
       card.rarityId = Rarity.Epic;
     }
 
@@ -3310,7 +3469,10 @@ class CardFactory_CoreSet_Neutral {
       card.atk = 2;
       card.maxHP = 4;
       card.manaCost = 4;
-      card.setInherentModifiersContextObjects([ModifierRanged.createContextObject(), ModifierHealSelfWhenDealingDamage.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierRanged.createContextObject(),
+        ModifierHealSelfWhenDealingDamage.createContextObject(),
+      ]);
       card.rarityId = Rarity.Epic;
     }
 
@@ -3377,7 +3539,9 @@ class CardFactory_CoreSet_Neutral {
       card.atk = 3;
       card.maxHP = 5;
       card.manaCost = 4;
-      card.setInherentModifiersContextObjects([ModifierDealDamageWatchHealorDamageGeneral.createContextObject(3)]);
+      card.setInherentModifiersContextObjects([
+        ModifierDealDamageWatchHealorDamageGeneral.createContextObject(3),
+      ]);
       card.rarityId = Rarity.Epic;
     }
 
@@ -3416,9 +3580,7 @@ class CardFactory_CoreSet_Neutral {
         {
           id: Cards.Spell.ApplyModifiers,
           spellFilterType: SpellFilterType.AllyDirect,
-          targetModifiersContextObjects: [
-            statBuffContextObject,
-          ],
+          targetModifiersContextObjects: [statBuffContextObject],
           _private: {
             followupSourcePattern: CONFIG.PATTERN_3x3,
           },
@@ -3458,10 +3620,16 @@ class CardFactory_CoreSet_Neutral {
       card.manaCost = 2;
       card.rarityId = Rarity.Epic;
       contextObject = PlayerModifierReplaceCardModifier.createContextObject(1);
-      contextObject.activeInHand = (contextObject.activeInDeck = (contextObject.activeInSignatureCards = false));
+      contextObject.activeInHand =
+        contextObject.activeInDeck =
+        contextObject.activeInSignatureCards =
+          false;
       contextObject.activeOnBoard = true;
       card.setInherentModifiersContextObjects([
-        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetOwnPlayer([contextObject], 'You may replace an additional card each turn'),
+        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetOwnPlayer(
+          [contextObject],
+          'You may replace an additional card each turn',
+        ),
       ]);
     }
 
@@ -3538,7 +3706,9 @@ class CardFactory_CoreSet_Neutral {
       card.maxHP = 4;
       card.manaCost = 4;
       card.rarityId = Rarity.Rare;
-      card.setInherentModifiersContextObjects([ModifierOpeningGambitHealBothGenerals.createContextObject(4)]);
+      card.setInherentModifiersContextObjects([
+        ModifierOpeningGambitHealBothGenerals.createContextObject(4),
+      ]);
     }
 
     if (identifier === Cards.Neutral.ZuraelTheLifegiver) {
@@ -3571,7 +3741,9 @@ class CardFactory_CoreSet_Neutral {
       card.maxHP = 7;
       card.manaCost = 7;
       card.rarityId = Rarity.Legendary;
-      card.setInherentModifiersContextObjects([ModifierOpeningGambitLifeGive.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierOpeningGambitLifeGive.createContextObject(),
+      ]);
     }
 
     if (identifier === Cards.Neutral.Paddo) {
@@ -3604,7 +3776,10 @@ class CardFactory_CoreSet_Neutral {
       card.maxHP = 6;
       card.manaCost = 7;
       card.rarityId = Rarity.Legendary;
-      card.setInherentModifiersContextObjects([ModifierAirdrop.createContextObject(), ModifierOpeningGambitTeleportAllNearby.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierAirdrop.createContextObject(),
+        ModifierOpeningGambitTeleportAllNearby.createContextObject(),
+      ]);
     }
 
     if (identifier === Cards.Neutral.Necroseer) {
@@ -3666,7 +3841,9 @@ class CardFactory_CoreSet_Neutral {
       card.maxHP = 6;
       card.manaCost = 6;
       card.rarityId = Rarity.Fixed;
-      card.setInherentModifiersContextObjects([ModifierDoubleDamageToGenerals.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierDoubleDamageToGenerals.createContextObject(),
+      ]);
     }
 
     return card;

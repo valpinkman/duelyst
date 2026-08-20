@@ -21,11 +21,13 @@ class ModifierSurviveDamageWatch extends Modifier {
   onAfterCleanupAction(e) {
     super.onAfterCleanupAction(e);
 
-    const {
-      action,
-    } = e;
+    const { action } = e;
     // watch for this card taking damage > 0 AND surviving the damage
-    if (action instanceof DamageAction && (action.getTarget() === this.getCard()) && (action.getTotalDamageAmount() > 0)) {
+    if (
+      action instanceof DamageAction &&
+      action.getTarget() === this.getCard() &&
+      action.getTotalDamageAmount() > 0
+    ) {
       return this.onSurviveDamage(action);
     }
   }

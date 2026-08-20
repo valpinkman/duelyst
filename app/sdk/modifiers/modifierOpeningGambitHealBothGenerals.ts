@@ -29,7 +29,9 @@ class ModifierOpeningGambitHealBothGenerals extends ModifierOpeningGambit {
   }
 
   onOpeningGambit() {
-    const general = this.getCard().getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
+    const general = this.getCard()
+      .getGameSession()
+      .getGeneralForPlayerId(this.getCard().getOwnerId());
 
     const healAction = new HealAction(this.getGameSession());
     healAction.setOwnerId(this.getCard().getOwnerId());
@@ -37,7 +39,11 @@ class ModifierOpeningGambitHealBothGenerals extends ModifierOpeningGambit {
     healAction.setHealAmount(this.healAmount);
     this.getGameSession().executeAction(healAction);
 
-    const enemyGeneral = this.getCard().getGameSession().getGeneralForPlayerId(this.getGameSession().getOpponentPlayerIdOfPlayerId(this.getCard().getOwnerId()));
+    const enemyGeneral = this.getCard()
+      .getGameSession()
+      .getGeneralForPlayerId(
+        this.getGameSession().getOpponentPlayerIdOfPlayerId(this.getCard().getOwnerId()),
+      );
 
     const healAction2 = new HealAction(this.getGameSession());
     healAction2.setOwnerId(this.getCard().getOwnerId());
@@ -48,6 +54,9 @@ class ModifierOpeningGambitHealBothGenerals extends ModifierOpeningGambit {
 }
 ModifierOpeningGambitHealBothGenerals.prototype.type = 'ModifierOpeningGambitHealBothGenerals';
 ModifierOpeningGambitHealBothGenerals.prototype.healAmount = 0;
-ModifierOpeningGambitHealBothGenerals.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericHeal'];
+ModifierOpeningGambitHealBothGenerals.prototype.fxResource = [
+  'FX.Modifiers.ModifierOpeningGambit',
+  'FX.Modifiers.ModifierGenericHeal',
+];
 
 module.exports = ModifierOpeningGambitHealBothGenerals;

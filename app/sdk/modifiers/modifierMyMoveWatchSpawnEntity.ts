@@ -21,11 +21,26 @@ class ModifierMyMoveWatchSpawnEntity extends ModifierMyMoveWatch {
   static type = 'ModifierMyMoveWatchSpawnEntity';
   static description = 'After this minion moves, summon %X';
 
-  static createContextObject(cardDataOrIndexToSpawn, spawnDescription, spawnCount, spawnPattern, spawnSilently, options) {
-    if (spawnDescription == null) { spawnDescription = ''; }
-    if (spawnCount == null) { spawnCount = 1; }
-    if (spawnPattern == null) { spawnPattern = CONFIG.PATTERN_3x3; }
-    if (spawnSilently == null) { spawnSilently = false; }
+  static createContextObject(
+    cardDataOrIndexToSpawn,
+    spawnDescription,
+    spawnCount,
+    spawnPattern,
+    spawnSilently,
+    options,
+  ) {
+    if (spawnDescription == null) {
+      spawnDescription = '';
+    }
+    if (spawnCount == null) {
+      spawnCount = 1;
+    }
+    if (spawnPattern == null) {
+      spawnPattern = CONFIG.PATTERN_3x3;
+    }
+    if (spawnSilently == null) {
+      spawnSilently = false;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.cardDataOrIndexToSpawn = cardDataOrIndexToSpawn;
     contextObject.spawnDescription = spawnDescription;
@@ -38,7 +53,12 @@ class ModifierMyMoveWatchSpawnEntity extends ModifierMyMoveWatch {
   static getDescription(modifierContextObject) {
     if (modifierContextObject) {
       let replaceText = '';
-      if (UtilsPosition.getArraysOfPositionsAreEqual(modifierContextObject.spawnPattern, CONFIG.PATTERN_1x1)) {
+      if (
+        UtilsPosition.getArraysOfPositionsAreEqual(
+          modifierContextObject.spawnPattern,
+          CONFIG.PATTERN_1x1,
+        )
+      ) {
         replaceText = `a ${modifierContextObject.spawnDescription} in the same space`;
       } else if (modifierContextObject.spawnCount === 1) {
         replaceText = `a ${modifierContextObject.spawnDescription} nearby`;
@@ -57,16 +77,31 @@ class ModifierMyMoveWatchSpawnEntity extends ModifierMyMoveWatch {
 
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
       const ownerId = this.getSpawnOwnerId(action);
-      const spawnPositions = UtilsGameSession.getRandomNonConflictingSmartSpawnPositionsForModifier(this, ModifierMyMoveWatchSpawnEntity);
+      const spawnPositions = UtilsGameSession.getRandomNonConflictingSmartSpawnPositionsForModifier(
+        this,
+        ModifierMyMoveWatchSpawnEntity,
+      );
       return (() => {
         const result = [];
         for (var spawnPosition of Array.from<any>(spawnPositions)) {
           var spawnAction;
           var cardDataOrIndexToSpawn = this.getCardDataOrIndexToSpawn();
           if (this.spawnSilently) {
-            spawnAction = new PlayCardSilentlyAction(this.getGameSession(), ownerId, spawnPosition.x, spawnPosition.y, cardDataOrIndexToSpawn);
+            spawnAction = new PlayCardSilentlyAction(
+              this.getGameSession(),
+              ownerId,
+              spawnPosition.x,
+              spawnPosition.y,
+              cardDataOrIndexToSpawn,
+            );
           } else {
-            spawnAction = new PlayCardAction(this.getGameSession(), ownerId, spawnPosition.x, spawnPosition.y, cardDataOrIndexToSpawn);
+            spawnAction = new PlayCardAction(
+              this.getGameSession(),
+              ownerId,
+              spawnPosition.x,
+              spawnPosition.y,
+              cardDataOrIndexToSpawn,
+            );
           }
           spawnAction.setSource(this.getCard());
           result.push(this.getGameSession().executeAction(spawnAction));

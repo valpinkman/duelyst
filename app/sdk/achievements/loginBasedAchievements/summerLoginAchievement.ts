@@ -12,12 +12,16 @@ class SummerLoginAchievement extends Achievement {
 
   static id = 'summerLoginAchievement';
   static title = 'SUMMER TIME CELEBRATION';
-  static description = 'HERE\'S 3 UNEARTHED ORBS TO CELEBRATE';
+  static description = "HERE'S 3 UNEARTHED ORBS TO CELEBRATE";
   static progressRequired = 1;
   static enabled = true;
 
   static progressForLoggingIn(currentLoginMoment) {
-    if ((currentLoginMoment !== null) && currentLoginMoment.isAfter(moment.utc('2018-08-03T11:00-07:00')) && currentLoginMoment.isBefore(moment.utc('2018-08-10T11:00-07:00'))) {
+    if (
+      currentLoginMoment !== null &&
+      currentLoginMoment.isAfter(moment.utc('2018-08-03T11:00-07:00')) &&
+      currentLoginMoment.isBefore(moment.utc('2018-08-10T11:00-07:00'))
+    ) {
       return 1;
     }
     return 0;

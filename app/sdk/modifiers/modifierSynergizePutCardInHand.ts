@@ -15,14 +15,20 @@ class ModifierSynergizePutCardInHand extends ModifierSynergize {
   static type = 'ModifierSynergizePutCardInHand';
 
   static createContextObject(cardDataOrIndexToPutInHand, options) {
-    if (options == null) { options = undefined; }
+    if (options == null) {
+      options = undefined;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.cardDataOrIndexToPutInHand = cardDataOrIndexToPutInHand;
     return contextObject;
   }
 
   onSynergize(action) {
-    const a = new PutCardInHandAction(this.getGameSession(), this.getCard().getOwnerId(), this.cardDataOrIndexToPutInHand);
+    const a = new PutCardInHandAction(
+      this.getGameSession(),
+      this.getCard().getOwnerId(),
+      this.cardDataOrIndexToPutInHand,
+    );
     return this.getGameSession().executeAction(a);
   }
 }

@@ -20,9 +20,10 @@ const TweenTypes = require('../../actions/TweenTypes');
  *************************************************************************** */
 
 const GauntletTicketRewardLayer = RewardLayer.extend({
-
   getRequiredResources() {
-    return RewardLayer.prototype.getRequiredResources.call(this).concat(PKGS.getPkgForIdentifier('gauntlet_ticket_reward'));
+    return RewardLayer.prototype.getRequiredResources
+      .call(this)
+      .concat(PKGS.getPkgForIdentifier('gauntlet_ticket_reward'));
   },
 
   showBackground() {
@@ -92,13 +93,25 @@ const GauntletTicketRewardLayer = RewardLayer.extend({
       this.addChild(polarFlare, 0);
 
       // white label below gold
-      const reward_label = new cc.LabelTTF('+1 GAUNTLET TICKET', RSX.font_light.name, 20, cc.size(300, 24), cc.TEXT_ALIGNMENT_CENTER);
+      const reward_label = new cc.LabelTTF(
+        '+1 GAUNTLET TICKET',
+        RSX.font_light.name,
+        20,
+        cc.size(300, 24),
+        cc.TEXT_ALIGNMENT_CENTER,
+      );
       reward_label.setFontFillColor({ r: 255, g: 255, b: 255 });
       reward_label.setPosition(labelPosition);
       this.addChild(reward_label);
 
       // white label below gold
-      const reward_description_label = new cc.LabelTTF('Use Gauntlet Tickets to compete in the Gauntlet', RSX.font_light.name, 15, cc.size(200, 92), cc.TEXT_ALIGNMENT_CENTER);
+      const reward_description_label = new cc.LabelTTF(
+        'Use Gauntlet Tickets to compete in the Gauntlet',
+        RSX.font_light.name,
+        15,
+        cc.size(200, 92),
+        cc.TEXT_ALIGNMENT_CENTER,
+      );
       reward_description_label.setFontFillColor({ r: 255, g: 255, b: 255 });
       reward_description_label.setPosition(cc.p(labelPosition.x, centerAnchorPosition.y - 210));
       this.addChild(reward_description_label);
@@ -121,61 +134,73 @@ const GauntletTicketRewardLayer = RewardLayer.extend({
       this.continueNode.setVisible(false);
 
       // animations
-      flare.runAction(cc.sequence(
-        cc.EaseCubicActionIn.create(cc.fadeIn(0.4)),
-        cc.EaseCubicActionOut.create(cc.fadeOut(0.8)),
-        cc.callFunc(() => {
-          flare.setVisible(false);
-          flare.destroy();
-        }),
-      ));
+      flare.runAction(
+        cc.sequence(
+          cc.EaseCubicActionIn.create(cc.fadeIn(0.4)),
+          cc.EaseCubicActionOut.create(cc.fadeOut(0.8)),
+          cc.callFunc(() => {
+            flare.setVisible(false);
+            flare.destroy();
+          }),
+        ),
+      );
 
       bg.runAction(cc.fadeIn(CONFIG.ANIMATE_FAST_DURATION));
-      bg.runAction(cc.sequence(
-        cc.EaseBackOut.create(cc.scaleTo(CONFIG.ANIMATE_FAST_DURATION, 1.0)),
-        cc.callFunc(() => {
-          polarFlare.setVisible(true);
-          polarFlare.runAction(cc.sequence(
-            cc.actionTween(0.5, 'phase', 0.01, 1.0),
-            cc.delayTime(0.5),
-            cc.callFunc(() => {
-              // fade text in
-              reward_label.runAction(cc.spawn(
-                cc.fadeIn(CONFIG.ANIMATE_FAST_DURATION),
-                cc.scaleTo(CONFIG.ANIMATE_FAST_DURATION, 1.0),
-              ));
+      bg.runAction(
+        cc.sequence(
+          cc.EaseBackOut.create(cc.scaleTo(CONFIG.ANIMATE_FAST_DURATION, 1.0)),
+          cc.callFunc(() => {
+            polarFlare.setVisible(true);
+            polarFlare.runAction(
+              cc.sequence(
+                cc.actionTween(0.5, 'phase', 0.01, 1.0),
+                cc.delayTime(0.5),
+                cc.callFunc(() => {
+                  // fade text in
+                  reward_label.runAction(
+                    cc.spawn(
+                      cc.fadeIn(CONFIG.ANIMATE_FAST_DURATION),
+                      cc.scaleTo(CONFIG.ANIMATE_FAST_DURATION, 1.0),
+                    ),
+                  );
 
-              reward_description_label.runAction(cc.sequence(
+                  reward_description_label.runAction(
+                    cc.sequence(
+                      cc.delayTime(0.1),
+                      cc.spawn(
+                        cc.fadeIn(CONFIG.ANIMATE_FAST_DURATION),
+                        cc.scaleTo(CONFIG.ANIMATE_FAST_DURATION, 1.0),
+                      ),
+                    ),
+                  );
+
+                  this.showTitles(CONFIG.ANIMATE_FAST_DURATION, title, subtitle).then(() => {
+                    this.setIsContinueOnPressAnywhere(true);
+                    this.setIsInteractionEnabled(true);
+                    this.continueNode.fadeTo(CONFIG.ANIMATE_FAST_DURATION, 255.0);
+                  });
+                }),
                 cc.delayTime(0.1),
-                cc.spawn(
-                  cc.fadeIn(CONFIG.ANIMATE_FAST_DURATION),
-                  cc.scaleTo(CONFIG.ANIMATE_FAST_DURATION, 1.0),
-                ),
-              ));
+                cc.actionTween(0.5, 'phase', 1.0, 0.01),
+                cc.callFunc(() => {
+                  polarFlare.destroy();
+                }),
+              ),
+            );
+          }),
+        ),
+      );
 
-              this.showTitles(CONFIG.ANIMATE_FAST_DURATION, title, subtitle).then(() => {
-                this.setIsContinueOnPressAnywhere(true);
-                this.setIsInteractionEnabled(true);
-                this.continueNode.fadeTo(CONFIG.ANIMATE_FAST_DURATION, 255.0);
-              });
-            }),
-            cc.delayTime(0.1),
-            cc.actionTween(0.5, 'phase', 1.0, 0.01),
-            cc.callFunc(() => {
-              polarFlare.destroy();
-            }),
-          ));
-        }),
-      ));
-
-      glow_ring.runAction(cc.sequence(
-        cc.delayTime(0.1),
-        cc.callFunc(() => {
-          glow_ring.setVisible(true);
-        }),
-        cc.EaseBackOut.create(cc.scaleTo(CONFIG.ANIMATE_FAST_DURATION, 1.0)),
-        cc.EaseBackOut.create(cc.actionTween(1.0, 'flareAmount', 0.0, 1.0)),
-      ));
+      glow_ring.runAction(
+        cc.sequence(
+          cc.delayTime(0.1),
+          cc.callFunc(() => {
+            glow_ring.setVisible(true);
+          }),
+          cc.EaseBackOut.create(cc.scaleTo(CONFIG.ANIMATE_FAST_DURATION, 1.0)),
+          cc.EaseBackOut.create(cc.actionTween(1.0, 'flareAmount', 0.0, 1.0)),
+        ),
+      );
 
       for (let i = 0; i < 4; i++) {
         var glyphSprite = new BaseSprite(RSX.gold_reward_glyph.img);
@@ -193,18 +218,19 @@ const GauntletTicketRewardLayer = RewardLayer.extend({
         }
 
         glyphSprite.setPosition(cc.p(centerAnchorPosition.x + offset, centerAnchorPosition.y));
-        glyphSprite.runAction(cc.spawn(
-          cc.fadeIn(0.4),
-          cc.scaleTo(0.8, 1.0).easing(cc.easeCubicActionOut()),
-          cc.moveBy(0.8, cc.p(moveByX, 0)).easing(cc.easeCubicActionOut()),
-          cc.callFunc(() => {
-            glyphSprite.getTexture().setAliasTexParametersWhenSafeScale();
-          }),
-        ));
+        glyphSprite.runAction(
+          cc.spawn(
+            cc.fadeIn(0.4),
+            cc.scaleTo(0.8, 1.0).easing(cc.easeCubicActionOut()),
+            cc.moveBy(0.8, cc.p(moveByX, 0)).easing(cc.easeCubicActionOut()),
+            cc.callFunc(() => {
+              glyphSprite.getTexture().setAliasTexParametersWhenSafeScale();
+            }),
+          ),
+        );
       }
     });
   },
-
 });
 
 GauntletTicketRewardLayer.create = function (layer) {

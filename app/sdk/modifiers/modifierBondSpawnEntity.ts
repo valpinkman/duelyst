@@ -23,11 +23,26 @@ class ModifierBondSpawnEntity extends ModifierBond {
   static type = 'ModifierBondSpawnEntity';
   static description = 'Summon %X';
 
-  static createContextObject(cardDataOrIndexToSpawn, spawnDescription, spawnCount, spawnPattern, spawnSilently, options) {
-    if (spawnDescription == null) { spawnDescription = ''; }
-    if (spawnCount == null) { spawnCount = 1; }
-    if (spawnPattern == null) { spawnPattern = CONFIG.PATTERN_1x1; }
-    if (spawnSilently == null) { spawnSilently = true; }
+  static createContextObject(
+    cardDataOrIndexToSpawn,
+    spawnDescription,
+    spawnCount,
+    spawnPattern,
+    spawnSilently,
+    options,
+  ) {
+    if (spawnDescription == null) {
+      spawnDescription = '';
+    }
+    if (spawnCount == null) {
+      spawnCount = 1;
+    }
+    if (spawnPattern == null) {
+      spawnPattern = CONFIG.PATTERN_1x1;
+    }
+    if (spawnSilently == null) {
+      spawnSilently = true;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.cardDataOrIndexToSpawn = cardDataOrIndexToSpawn;
     contextObject.spawnDescription = spawnDescription;
@@ -40,7 +55,12 @@ class ModifierBondSpawnEntity extends ModifierBond {
   static getDescription(modifierContextObject) {
     if (modifierContextObject) {
       let replaceText = '';
-      if (UtilsPosition.getArraysOfPositionsAreEqual(modifierContextObject.spawnPattern, CONFIG.PATTERN_1x1)) {
+      if (
+        UtilsPosition.getArraysOfPositionsAreEqual(
+          modifierContextObject.spawnPattern,
+          CONFIG.PATTERN_1x1,
+        )
+      ) {
         replaceText = `a ${modifierContextObject.spawnDescription} in its place`;
       } else if (modifierContextObject.spawnCount === 1) {
         replaceText = `a ${modifierContextObject.spawnDescription} in a random nearby space`;
@@ -56,12 +76,28 @@ class ModifierBondSpawnEntity extends ModifierBond {
 
   onBond() {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
-      const card = this.getGameSession().getExistingCardFromIndexOrCachedCardFromData(this.cardDataOrIndexToSpawn);
+      const card = this.getGameSession().getExistingCardFromIndexOrCachedCardFromData(
+        this.cardDataOrIndexToSpawn,
+      );
       const spawnLocations = [];
-      const validSpawnLocations = UtilsGameSession.getSmartSpawnPositionsFromPattern(this.getGameSession(), this.getCard().getPosition(), this.spawnPattern, card);
-      for (let i = 0, end = this.spawnCount, asc = end >= 0; asc ? i < end : i > end; asc ? i++ : i--) {
+      const validSpawnLocations = UtilsGameSession.getSmartSpawnPositionsFromPattern(
+        this.getGameSession(),
+        this.getCard().getPosition(),
+        this.spawnPattern,
+        card,
+      );
+      for (
+        let i = 0, end = this.spawnCount, asc = end >= 0;
+        asc ? i < end : i > end;
+        asc ? i++ : i--
+      ) {
         if (validSpawnLocations.length > 0) {
-          spawnLocations.push(validSpawnLocations.splice(this.getGameSession().getRandomIntegerForExecution(validSpawnLocations.length), 1)[0]);
+          spawnLocations.push(
+            validSpawnLocations.splice(
+              this.getGameSession().getRandomIntegerForExecution(validSpawnLocations.length),
+              1,
+            )[0],
+          );
         }
       }
 
@@ -70,9 +106,21 @@ class ModifierBondSpawnEntity extends ModifierBond {
         for (var position of Array.from<any>(spawnLocations)) {
           var playCardAction;
           if (!this.spawnSilently) {
-            playCardAction = new PlayCardAction(this.getGameSession(), this.getCard().getOwnerId(), position.x, position.y, this.cardDataOrIndexToSpawn);
+            playCardAction = new PlayCardAction(
+              this.getGameSession(),
+              this.getCard().getOwnerId(),
+              position.x,
+              position.y,
+              this.cardDataOrIndexToSpawn,
+            );
           } else {
-            playCardAction = new PlayCardSilentlyAction(this.getGameSession(), this.getCard().getOwnerId(), position.x, position.y, this.cardDataOrIndexToSpawn);
+            playCardAction = new PlayCardSilentlyAction(
+              this.getGameSession(),
+              this.getCard().getOwnerId(),
+              position.x,
+              position.y,
+              this.cardDataOrIndexToSpawn,
+            );
           }
           playCardAction.setSource(this.getCard());
           result.push(this.getGameSession().executeAction(playCardAction));

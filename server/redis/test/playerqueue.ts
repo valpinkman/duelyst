@@ -35,9 +35,10 @@ grab = player2.then(() => q.grab());
 const queueUp2 = Promise.all([count, search, grab]).then((results) => console.log(results));
 
 // mark a bunch of matches as made
-const markHits = Promise.all([queueUp1, queueUp2]).then(() => // mark 100 matches as 'hits' for random divisions
-  __range__(1, 100, true).map((i) =>
-    q.matchMade(_.sample(divisions), randomDurationMs())));
+const markHits = Promise.all([queueUp1, queueUp2]).then(() =>
+  // mark 100 matches as 'hits' for random divisions
+  __range__(1, 100, true).map((i) => q.matchMade(_.sample(divisions), randomDurationMs())),
+);
 
 markHits.then(() => {
   console.log('marking hits done');
@@ -47,7 +48,7 @@ markHits.then(() => {
   }).then((results) => {
     // console.log results
     let minutes;
-    return minutes = _.map(results, (value) => value / 60000);
+    return (minutes = _.map(results, (value) => value / 60000));
   });
 });
 // console.log minutes

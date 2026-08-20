@@ -18,12 +18,8 @@ const Logger = require('../../app/common/logger');
 module.exports = function (job, done) {
   const gameId = job.data.gameId || null;
   const userId = job.data.userId || null;
-  const {
-    isWinner,
-  } = job.data;
-  const {
-    isDraw,
-  } = job.data;
+  const { isWinner } = job.data;
+  const { isDraw } = job.data;
 
   if (!gameId) {
     return done(new Error('Game ID is not defined.'));
@@ -35,12 +31,17 @@ module.exports = function (job, done) {
     return done(new Error('isWinner is not defined.'));
   }
 
-  Logger.module('JOB').debug(`[J:${job.id}] Update User (${userId}) Arena Run for game ${gameId} starting`);
+  Logger.module('JOB').debug(
+    `[J:${job.id}] Update User (${userId}) Arena Run for game ${gameId} starting`,
+  );
   Logger.module('JOB').time(`[J:${job.id}] Update User (${userId}) Arena Run for game ${gameId}`);
 
   return GauntletModule.updateArenaRunWithGameOutcome(userId, isWinner, gameId, isDraw)
     .then(function () {
-      Logger.module('JOB').timeEnd(`[J:${job.id}] Update User (${userId}) Arena Run for game ${gameId}`);
+      Logger.module('JOB').timeEnd(
+        `[J:${job.id}] Update User (${userId}) Arena Run for game ${gameId}`,
+      );
       return done();
-    }).catch((error) => done(error));
+    })
+    .catch((error) => done(error));
 };

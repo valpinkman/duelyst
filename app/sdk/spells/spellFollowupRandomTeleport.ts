@@ -31,7 +31,9 @@ class SpellFollowupRandomTeleport extends Spell {
     if (this.patternSourceIsTarget) {
       randomTeleportAction.setPatternSource(target);
     }
-    randomTeleportAction.setFXResource(_.union(randomTeleportAction.getFXResource(), this.getFXResource()));
+    randomTeleportAction.setFXResource(
+      _.union(randomTeleportAction.getFXResource(), this.getFXResource()),
+    );
     return this.getGameSession().executeAction(randomTeleportAction);
   }
 }

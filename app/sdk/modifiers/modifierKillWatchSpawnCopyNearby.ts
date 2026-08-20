@@ -23,13 +23,27 @@ class ModifierKillWatchSpawnCopyNearby extends ModifierKillWatch {
 
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
       const cardDataOrIndexToSpawn = action.getTarget().createNewCardData();
-      const cardToSpawn = this.getGameSession().getExistingCardFromIndexOrCachedCardFromData(cardDataOrIndexToSpawn);
+      const cardToSpawn =
+        this.getGameSession().getExistingCardFromIndexOrCachedCardFromData(cardDataOrIndexToSpawn);
       if (!cardToSpawn.getWasGeneral()) {
-        const spawnPositions = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(this.getGameSession(), this.getCard().getPosition(), CONFIG.PATTERN_3x3, cardToSpawn, this.getCard(), 1);
+        const spawnPositions = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(
+          this.getGameSession(),
+          this.getCard().getPosition(),
+          CONFIG.PATTERN_3x3,
+          cardToSpawn,
+          this.getCard(),
+          1,
+        );
         return (() => {
           const result = [];
           for (var spawnPosition of Array.from<any>(spawnPositions)) {
-            var spawnAction = new PlayCardSilentlyAction(this.getGameSession(), this.getCard().getOwnerId(), spawnPosition.x, spawnPosition.y, cardDataOrIndexToSpawn);
+            var spawnAction = new PlayCardSilentlyAction(
+              this.getGameSession(),
+              this.getCard().getOwnerId(),
+              spawnPosition.x,
+              spawnPosition.y,
+              cardDataOrIndexToSpawn,
+            );
             spawnAction.setSource(this.getCard());
             result.push(this.getGameSession().executeAction(spawnAction));
           }
@@ -40,6 +54,9 @@ class ModifierKillWatchSpawnCopyNearby extends ModifierKillWatch {
   }
 }
 ModifierKillWatchSpawnCopyNearby.prototype.type = 'ModifierKillWatchSpawnCopyNearby';
-ModifierKillWatchSpawnCopyNearby.prototype.fxResource = ['FX.Modifiers.ModifierKillWatch', 'FX.Modifiers.ModifierGenericSpawn'];
+ModifierKillWatchSpawnCopyNearby.prototype.fxResource = [
+  'FX.Modifiers.ModifierKillWatch',
+  'FX.Modifiers.ModifierGenericSpawn',
+];
 
 module.exports = ModifierKillWatchSpawnCopyNearby;

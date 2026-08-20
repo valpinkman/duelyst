@@ -75,24 +75,37 @@ class BeginnerLyonarChallenge1 extends Challenge {
   setupOpponentAgent(gameSession) {
     super.setupOpponentAgent(gameSession);
 
-    this._opponentAgent.addActionForTurn(0, AgentActions.createAgentSoftActionShowInstructionLabels([{
-      label: i18next.t('challenges.beginner_lyonar_1_taunt'),
-      isSpeech: true,
-      yPosition: 0.7,
-      isPersistent: true,
-      isOpponent: true,
-    },
-    ]));
-    return this._opponentAgent.addActionForTurn(0, AgentActions.createAgentActionPlayCardFindPosition(0, () => [GameSession.getInstance().getGeneralForPlayer1().getPosition()]));
+    this._opponentAgent.addActionForTurn(
+      0,
+      AgentActions.createAgentSoftActionShowInstructionLabels([
+        {
+          label: i18next.t('challenges.beginner_lyonar_1_taunt'),
+          isSpeech: true,
+          yPosition: 0.7,
+          isPersistent: true,
+          isOpponent: true,
+        },
+      ]),
+    );
+    return this._opponentAgent.addActionForTurn(
+      0,
+      AgentActions.createAgentActionPlayCardFindPosition(0, () => [
+        GameSession.getInstance().getGeneralForPlayer1().getPosition(),
+      ]),
+    );
   }
 }
 BeginnerLyonarChallenge1.prototype.type = 'BeginnerLyonarChallenge1';
 BeginnerLyonarChallenge1.prototype.categoryType = ChallengeCategory.beginner.type;
 BeginnerLyonarChallenge1.prototype.name = i18next.t('challenges.beginner_lyonar_1_title');
-BeginnerLyonarChallenge1.prototype.description = i18next.t('challenges.beginner_lyonar_1_description');
+BeginnerLyonarChallenge1.prototype.description = i18next.t(
+  'challenges.beginner_lyonar_1_description',
+);
 BeginnerLyonarChallenge1.prototype.iconUrl = RSX.speech_portrait_lyonar_side.img;
 BeginnerLyonarChallenge1.prototype._musicOverride = RSX.music_mainmenu_lyonar.audio;
-BeginnerLyonarChallenge1.prototype.otkChallengeStartMessage = i18next.t('challenges.beginner_lyonar_1_start');
+BeginnerLyonarChallenge1.prototype.otkChallengeStartMessage = i18next.t(
+  'challenges.beginner_lyonar_1_start',
+);
 BeginnerLyonarChallenge1.prototype.otkChallengeFailureMessages = [
   i18next.t('challenges.beginner_lyonar_1_fail'),
 ];

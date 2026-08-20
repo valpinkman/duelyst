@@ -31,8 +31,12 @@ var FXRarityFlareSprite = FXSprite.extend({
 
   setOptions(options) {
     this._super(options);
-    if (options.phase != null) { this.setPhase(options.phase); }
-    if (options.speed != null) { this.setSpeed(options.speed); }
+    if (options.phase != null) {
+      this.setPhase(options.phase);
+    }
+    if (options.speed != null) {
+      this.setSpeed(options.speed);
+    }
   },
 
   setPhase(val) {
@@ -51,12 +55,12 @@ var FXRarityFlareSprite = FXSprite.extend({
 
   updateTweenAction(value, key) {
     switch (key) {
-    case 'phase':
-      this.setPhase(value);
-      break;
-    default:
-      FXSprite.prototype.updateTweenAction.call(this, value, key);
-      break;
+      case 'phase':
+        this.setPhase(value);
+        break;
+      default:
+        FXSprite.prototype.updateTweenAction.call(this, value, key);
+        break;
     }
   },
 });
@@ -64,7 +68,9 @@ var FXRarityFlareSprite = FXSprite.extend({
 FXRarityFlareSprite.WebGLRenderCmd = function (renderable) {
   FXSprite.WebGLRenderCmd.call(this, renderable);
 };
-const proto = FXRarityFlareSprite.WebGLRenderCmd.prototype = Object.create(FXSprite.WebGLRenderCmd.prototype);
+const proto = (FXRarityFlareSprite.WebGLRenderCmd.prototype = Object.create(
+  FXSprite.WebGLRenderCmd.prototype,
+));
 proto.constructor = FXRarityFlareSprite.WebGLRenderCmd;
 
 proto.rendering = function () {
@@ -77,8 +83,15 @@ proto.rendering = function () {
   const shaderProgram = this._shaderProgram;
   shaderProgram.use();
   shaderProgram._setUniformForMVPMatrixWithMat4(this._stackMatrix);
-  shaderProgram.setUniformLocationWith2f(shaderProgram.loc_texResolution, node._texture.getPixelsWide(), node._texture.getPixelsHigh());
-  shaderProgram.setUniformLocationWith1f(shaderProgram.loc_time, node.getFX().getTime() * node.speed);
+  shaderProgram.setUniformLocationWith2f(
+    shaderProgram.loc_texResolution,
+    node._texture.getPixelsWide(),
+    node._texture.getPixelsHigh(),
+  );
+  shaderProgram.setUniformLocationWith1f(
+    shaderProgram.loc_time,
+    node.getFX().getTime() * node.speed,
+  );
   shaderProgram.setUniformLocationWith1f(shaderProgram.loc_phase, node.phase);
   cc.glBindTexture2DN(0, node._texture);
   cc.glBlendFunc(node._blendFunc.src, node._blendFunc.dst);

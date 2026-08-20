@@ -14,15 +14,29 @@ class QuestBeginnerWinTwoPracticeGames extends QuestBeginner {
   static Identifier = 9909;
 
   constructor() {
-    super(QuestBeginnerWinTwoPracticeGames.Identifier, i18next.t('quests.quest_beginner_win_practice_games_title_plural', { count: 2 }), [QuestType.Beginner], QuestBeginnerWinTwoPracticeGames.prototype.goldReward);
+    super(
+      QuestBeginnerWinTwoPracticeGames.Identifier,
+      i18next.t('quests.quest_beginner_win_practice_games_title_plural', { count: 2 }),
+      [QuestType.Beginner],
+      QuestBeginnerWinTwoPracticeGames.prototype.goldReward,
+    );
     this.params.completionProgress = 2;
   }
 
   _progressForGameDataForPlayerId(gameData, playerId) {
     for (var player of Array.from<any>(gameData.players)) {
-      var playerSetupData = UtilsGameSession.getPlayerSetupDataForPlayerId(gameData, player.playerId);
-      Logger.module('Quests').debug(`QuestBeginnerWinTwoPracticeGames checking ${player.playerId} game type ${playerSetupData.gameType} winner: ${player.isWinner}`);
-      if ((player.playerId === playerId) && player.isWinner && (gameData.gameType === GameType.SinglePlayer)) {
+      var playerSetupData = UtilsGameSession.getPlayerSetupDataForPlayerId(
+        gameData,
+        player.playerId,
+      );
+      Logger.module('Quests').debug(
+        `QuestBeginnerWinTwoPracticeGames checking ${player.playerId} game type ${playerSetupData.gameType} winner: ${player.isWinner}`,
+      );
+      if (
+        player.playerId === playerId &&
+        player.isWinner &&
+        gameData.gameType === GameType.SinglePlayer
+      ) {
         return 1;
       }
     }
@@ -30,7 +44,9 @@ class QuestBeginnerWinTwoPracticeGames extends QuestBeginner {
   }
 
   getDescription() {
-    return i18next.t('quests.quest_beginner_win_practice_games_description_plural', { count: this.params.completionProgress });
+    return i18next.t('quests.quest_beginner_win_practice_games_description_plural', {
+      count: this.params.completionProgress,
+    });
   }
 }
 

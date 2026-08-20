@@ -17,7 +17,9 @@ class ModifierReplaceWatchDamageEnemy extends ModifierReplaceWatch {
   static description = 'Whenever you replace a card, deal %X damage to a random enemy';
 
   static createContextObject(damageAmount, options) {
-    if (options == null) { options = undefined; }
+    if (options == null) {
+      options = undefined;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.damageAmount = damageAmount;
     return contextObject;
@@ -40,6 +42,9 @@ class ModifierReplaceWatchDamageEnemy extends ModifierReplaceWatch {
   }
 }
 ModifierReplaceWatchDamageEnemy.prototype.type = 'ModifierReplaceWatchDamageEnemy';
-ModifierReplaceWatchDamageEnemy.prototype.fxResource = ['FX.Modifiers.ModifierReplaceWatch', 'FX.Modifiers.ModifierGenericDamageSmall'];
+ModifierReplaceWatchDamageEnemy.prototype.fxResource = [
+  'FX.Modifiers.ModifierReplaceWatch',
+  'FX.Modifiers.ModifierGenericDamageSmall',
+];
 
 module.exports = ModifierReplaceWatchDamageEnemy;

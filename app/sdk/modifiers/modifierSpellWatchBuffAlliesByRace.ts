@@ -22,9 +22,15 @@ class ModifierSpellWatchBuffAlliesByRace extends ModifierSpellWatch {
   static description = 'Whenever you cast a spell, your';
 
   static createContextObject(attackBuff, maxHPBuff, validRace, options) {
-    if (attackBuff == null) { attackBuff = 0; }
-    if (maxHPBuff == null) { maxHPBuff = 0; }
-    if (validRace == null) { validRace = 0; }
+    if (attackBuff == null) {
+      attackBuff = 0;
+    }
+    if (maxHPBuff == null) {
+      maxHPBuff = 0;
+    }
+    if (validRace == null) {
+      validRace = 0;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.atkBuffVal = attackBuff;
     contextObject.maxHPBuffVal = maxHPBuff;
@@ -35,25 +41,43 @@ class ModifierSpellWatchBuffAlliesByRace extends ModifierSpellWatch {
   static getDescription(modifierContextObject) {
     if (modifierContextObject) {
       const replaceText = `${this.description} ${RaceFactory.raceForIdentifier(modifierContextObject.validRaceId).name} minions gain %X`;
-      return replaceText.replace(/%X/, Stringifiers.stringifyAttackHealthBuff(modifierContextObject.atkBuffVal, modifierContextObject.maxHPBuffVal));
+      return replaceText.replace(
+        /%X/,
+        Stringifiers.stringifyAttackHealthBuff(
+          modifierContextObject.atkBuffVal,
+          modifierContextObject.maxHPBuffVal,
+        ),
+      );
     }
     return this.description;
   }
 
   onSpellWatch(action) {
     // buff self (he's always an arcanyst)
-    let statContextObject = Modifier.createContextObjectWithAttributeBuffs(this.atkBuffVal, this.maxHPBuffVal);
-    if (this.appliedName) { statContextObject.appliedName = this.appliedName; }
+    let statContextObject = Modifier.createContextObjectWithAttributeBuffs(
+      this.atkBuffVal,
+      this.maxHPBuffVal,
+    );
+    if (this.appliedName) {
+      statContextObject.appliedName = this.appliedName;
+    }
     this.getGameSession().applyModifierContextObject(statContextObject, this.getCard());
 
     // check for allied arcanysts, and buff them too
-    const friendlyEntities = this.getGameSession().getBoard().getFriendlyEntitiesForEntity(this.getCard());
+    const friendlyEntities = this.getGameSession()
+      .getBoard()
+      .getFriendlyEntitiesForEntity(this.getCard());
     return (() => {
       const result = [];
       for (var entity of Array.from<any>(friendlyEntities)) {
         if (entity.getBelongsToTribe(this.validRaceId)) {
-          statContextObject = Modifier.createContextObjectWithAttributeBuffs(this.atkBuffVal, this.maxHPBuffVal);
-          if (this.appliedName) { statContextObject.appliedName = this.appliedName; }
+          statContextObject = Modifier.createContextObjectWithAttributeBuffs(
+            this.atkBuffVal,
+            this.maxHPBuffVal,
+          );
+          if (this.appliedName) {
+            statContextObject.appliedName = this.appliedName;
+          }
           result.push(this.getGameSession().applyModifierContextObject(statContextObject, entity));
         } else {
           result.push(undefined);
@@ -64,6 +88,9 @@ class ModifierSpellWatchBuffAlliesByRace extends ModifierSpellWatch {
   }
 }
 ModifierSpellWatchBuffAlliesByRace.prototype.type = 'ModifierSpellWatchBuffAlliesByRace';
-ModifierSpellWatchBuffAlliesByRace.prototype.fxResource = ['FX.Modifiers.ModifierSpellWatch', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierSpellWatchBuffAlliesByRace.prototype.fxResource = [
+  'FX.Modifiers.ModifierSpellWatch',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 
 module.exports = ModifierSpellWatchBuffAlliesByRace;

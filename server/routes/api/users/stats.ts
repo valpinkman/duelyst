@@ -18,12 +18,12 @@ router.get('/games/:game_type', function (req, res, next) {
   }
 
   // user id is set by a middleware
-  const {
-    user_id,
-  } = req;
+  const { user_id } = req;
   const game_type = result.value;
 
-  return knex('user_game_counters').where({ user_id: user_id, game_type: game_type }).first()
+  return knex('user_game_counters')
+    .where({ user_id: user_id, game_type: game_type })
+    .first()
     .then(function (statsRow) {
       if (statsRow) {
         return res.status(200).json(DataAccessHelpers.restifyData(statsRow));
@@ -35,29 +35,28 @@ router.get('/games/:game_type', function (req, res, next) {
 });
 
 router.get('/games/:game_type/factions/:faction_id', function (req, res, next) {
-  const result = t.validate({
-    game_type: req.params.game_type,
-    faction_id: parseInt(req.params.faction_id, 10),
-  }, t.struct({
-    game_type: t.Str,
-    faction_id: t.Number,
-  }));
+  const result = t.validate(
+    {
+      game_type: req.params.game_type,
+      faction_id: parseInt(req.params.faction_id, 10),
+    },
+    t.struct({
+      game_type: t.Str,
+      faction_id: t.Number,
+    }),
+  );
   if (!result.isValid()) {
     return next();
   }
 
   // user id is set by a middleware
-  const {
-    user_id,
-  } = req;
-  const {
-    game_type,
-  } = result.value;
-  const {
-    faction_id,
-  } = result.value;
+  const { user_id } = req;
+  const { game_type } = result.value;
+  const { faction_id } = result.value;
 
-  return knex('user_game_faction_counters').where({ user_id: user_id, game_type: game_type, faction_id: faction_id }).first()
+  return knex('user_game_faction_counters')
+    .where({ user_id: user_id, game_type: game_type, faction_id: faction_id })
+    .first()
     .then(function (statsRow) {
       if (statsRow) {
         return res.status(200).json(DataAccessHelpers.restifyData(statsRow));
@@ -70,11 +69,11 @@ router.get('/games/:game_type/factions/:faction_id', function (req, res, next) {
 
 router.get('/gauntlet_runs/top/win_count', function (req, res, next) {
   // user id is set by a preprocessor
-  const {
-    user_id,
-  } = req;
+  const { user_id } = req;
 
-  return knex('users').where({ id: user_id }).first('top_gauntlet_win_count')
+  return knex('users')
+    .where({ id: user_id })
+    .first('top_gauntlet_win_count')
     .then(function (statsRow) {
       if (statsRow) {
         return res.status(200).json({

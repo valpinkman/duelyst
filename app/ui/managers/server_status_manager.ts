@@ -20,7 +20,6 @@ var Manager = require('./manager');
 var ChatManager = require('./chat_manager');
 
 var ServerStatusManager = Manager.extend({
-
   serverStatusModel: null,
 
   onBeforeConnect: function () {
@@ -34,9 +33,11 @@ var ServerStatusManager = Manager.extend({
     });
 
     // what to do when we're ready
-    this.onReady().then(function () {
-      this.listenTo(this.serverStatusModel, 'change', this.onSystemStatusChanged);
-    }.bind(this));
+    this.onReady().then(
+      function () {
+        this.listenTo(this.serverStatusModel, 'change', this.onSystemStatusChanged);
+      }.bind(this),
+    );
 
     this._markAsReadyWhenModelsAndCollectionsSynced([this.serverStatusModel]);
   },
@@ -54,12 +55,16 @@ var ServerStatusManager = Manager.extend({
       if (!ChatManager.getInstance().getStatusIsInBattle()) {
         this.requestReloadForGameUpdate();
       } else {
-        this.listenTo(ChatManager.getInstance(), EVENTS.status, function () {
-          if (!ChatManager.getInstance().getStatusIsInBattle()) {
-            this.requestReloadForGameUpdate();
-            this.stopListening(ChatManager.getInstance());
-          }
-        }.bind(this));
+        this.listenTo(
+          ChatManager.getInstance(),
+          EVENTS.status,
+          function () {
+            if (!ChatManager.getInstance().getStatusIsInBattle()) {
+              this.requestReloadForGameUpdate();
+              this.stopListening(ChatManager.getInstance());
+            }
+          }.bind(this),
+        );
       }
     }
   },
@@ -67,7 +72,8 @@ var ServerStatusManager = Manager.extend({
   requestReloadForGameUpdate: function () {
     var message;
     if (window.isDesktop) {
-      message = 'A new version of DUELYST has been deployed. Please quit and restart to avoid any issues.';
+      message =
+        'A new version of DUELYST has been deployed. Please quit and restart to avoid any issues.';
     } else {
       message = 'A new version of DUELYST has been deployed. Please reload to avoid any issues.';
     }

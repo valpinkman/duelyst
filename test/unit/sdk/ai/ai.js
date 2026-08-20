@@ -18,13 +18,9 @@ Logger.enabled = false;
 describe('starter ai', () => {
   describe('behavior', () => {
     beforeEach(() => {
-      const player1Deck = [
-        { id: SDK.Cards.Faction1.General },
-      ];
+      const player1Deck = [{ id: SDK.Cards.Faction1.General }];
 
-      const player2Deck = [
-        { id: SDK.Cards.Faction2.General },
-      ];
+      const player2Deck = [{ id: SDK.Cards.Faction2.General }];
 
       UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
     });
@@ -40,7 +36,12 @@ describe('starter ai', () => {
 
       const ai = new StarterAI(gameSession, player1.getPlayerId(), 0);
 
-      const dervish = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.Dervish }, 7, 2, gameSession.getPlayer1Id());
+      const dervish = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.Dervish },
+        7,
+        2,
+        gameSession.getPlayer1Id(),
+      );
       dervish.refreshExhaustion();
 
       let nextAction = ai.nextAction();
@@ -64,7 +65,12 @@ describe('starter ai', () => {
 
       const ai = new StarterAI(gameSession, player1.getPlayerId(), 0);
 
-      const dervish = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.Dervish }, 0, 0, gameSession.getPlayer1Id());
+      const dervish = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.Dervish },
+        0,
+        0,
+        gameSession.getPlayer1Id(),
+      );
       dervish.refreshExhaustion();
 
       let nextAction = ai.nextAction();
@@ -83,10 +89,30 @@ describe('starter ai', () => {
 
       const ai = new StarterAI(gameSession, player1.getPlayerId(), 1);
 
-      const corsair = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.SilvertongueCorsair }, 1, 4, gameSession.getPlayer2Id());
-      const sarlac = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.SarlacTheEternal }, 1, 0, gameSession.getPlayer2Id());
-      const panddo = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction2.OnyxBear }, 2, 0, gameSession.getPlayer2Id());
-      const dervish = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.IronDervish }, 3, 0, gameSession.getPlayer1Id());
+      const corsair = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.SilvertongueCorsair },
+        1,
+        4,
+        gameSession.getPlayer2Id(),
+      );
+      const sarlac = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.SarlacTheEternal },
+        1,
+        0,
+        gameSession.getPlayer2Id(),
+      );
+      const panddo = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction2.OnyxBear },
+        2,
+        0,
+        gameSession.getPlayer2Id(),
+      );
+      const dervish = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.IronDervish },
+        3,
+        0,
+        gameSession.getPlayer1Id(),
+      );
       dervish.refreshExhaustion();
       corsair.setDamage(1);
 
@@ -113,13 +139,9 @@ describe('starter ai', () => {
 
   describe('difficulty', () => {
     beforeEach(() => {
-      const player1Deck = [
-        { id: SDK.Cards.Faction1.General },
-      ];
+      const player1Deck = [{ id: SDK.Cards.Faction1.General }];
 
-      const player2Deck = [
-        { id: SDK.Cards.Faction2.General },
-      ];
+      const player2Deck = [{ id: SDK.Cards.Faction2.General }];
 
       UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
     });
@@ -137,11 +159,31 @@ describe('starter ai', () => {
 
       player1.remainingMana = 3;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
 
       expect(ai.getMyPlayerId()).to.equal(player1.getPlayerId());
       expect(ai._difficulty).to.equal(0);
@@ -174,15 +216,40 @@ describe('starter ai', () => {
 
       const ai = new StarterAI(gameSession, player1.getPlayerId(), 0);
 
-      UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.PrismaticGiant }, 7, 2, gameSession.getPlayer1Id());
+      UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.PrismaticGiant },
+        7,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
       player1.remainingMana = 3;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
 
       let nextAction = ai.nextAction();
 
@@ -204,16 +271,45 @@ describe('starter ai', () => {
 
       const ai = new StarterAI(gameSession, player1.getPlayerId(), 0);
 
-      UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.PrismaticGiant }, 0, 1, gameSession.getPlayer1Id());
+      UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.PrismaticGiant },
+        0,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
       player1.remainingMana = 3;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
 
       let nextAction = ai.nextAction();
       SDK.GameSession.getInstance().executeAction(nextAction);
@@ -236,16 +332,47 @@ describe('starter ai', () => {
 
       const ai = new StarterAI(gameSession, player1.getPlayerId(), 0);
 
-      const pyromancer1 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.Pyromancer }, 7, 0, gameSession.getPlayer2Id());
-      const pyromancer2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.Pyromancer }, 7, 1, gameSession.getPlayer2Id());
-      const pyromancer3 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.Pyromancer }, 7, 3, gameSession.getPlayer2Id());
+      const pyromancer1 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.Pyromancer },
+        7,
+        0,
+        gameSession.getPlayer2Id(),
+      );
+      const pyromancer2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.Pyromancer },
+        7,
+        1,
+        gameSession.getPlayer2Id(),
+      );
+      const pyromancer3 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.Pyromancer },
+        7,
+        3,
+        gameSession.getPlayer2Id(),
+      );
 
       player1.remainingMana = 3;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.TrueStrike }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.TrueStrike }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.TrueStrike }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.TrueStrike }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.TrueStrike,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.TrueStrike,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.TrueStrike,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.TrueStrike,
+        }),
+      );
 
       let nextAction = ai.nextAction();
       expect(nextAction.getType()).to.equal(SDK.PlayCardFromHandAction.type);
@@ -271,11 +398,26 @@ describe('starter ai', () => {
       // const weaver = UtilsSDK.applyCardToBoard({id: SDK.Cards.Faction3.OrbWeaver}, 5, 2, gameSession.getPlayer1Id());
       // const weaver2 = UtilsSDK.applyCardToBoard({id: SDK.Cards.Faction3.OrbWeaver}, 4, 0, gameSession.getPlayer1Id());
       // const weaver3 = UtilsSDK.applyCardToBoard({id: SDK.Cards.Faction3.OrbWeaver}, 4, 4, gameSession.getPlayer1Id());
-      const dervish = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.Dervish }, 7, 2, gameSession.getPlayer1Id());
+      const dervish = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.Dervish },
+        7,
+        2,
+        gameSession.getPlayer1Id(),
+      );
       dervish.refreshExhaustion();
-      const dervish2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.Dervish }, 7, 3, gameSession.getPlayer1Id());
+      const dervish2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.Dervish },
+        7,
+        3,
+        gameSession.getPlayer1Id(),
+      );
       dervish2.refreshExhaustion();
-      const dervish3 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.Dervish }, 7, 1, gameSession.getPlayer1Id());
+      const dervish3 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.Dervish },
+        7,
+        1,
+        gameSession.getPlayer1Id(),
+      );
       dervish3.refreshExhaustion();
 
       let nextAction = ai.nextAction();
@@ -305,7 +447,12 @@ describe('starter ai', () => {
 
       const ai = new StarterAI(gameSession, player1.getPlayerId(), 0);
 
-      const orbWeaver = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.AymaraHealer }, 8, 3, gameSession.getPlayer1Id());
+      const orbWeaver = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.AymaraHealer },
+        8,
+        3,
+        gameSession.getPlayer1Id(),
+      );
       orbWeaver.refreshExhaustion();
 
       gameSession.getGeneralForPlayer1().refreshExhaustion();
@@ -342,16 +489,46 @@ describe('starter ai', () => {
 
       const ai = new StarterAI(gameSession, player1.getPlayerId(), 0.1);
 
-      UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.PrismaticGiant }, 7, 2, gameSession.getPlayer1Id());
-      UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.PrismaticGiant }, 7, 3, gameSession.getPlayer1Id());
+      UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.PrismaticGiant },
+        7,
+        2,
+        gameSession.getPlayer1Id(),
+      );
+      UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.PrismaticGiant },
+        7,
+        3,
+        gameSession.getPlayer1Id(),
+      );
 
       player1.remainingMana = 3;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
 
       let nextAction = ai.nextAction();
 
@@ -373,17 +550,51 @@ describe('starter ai', () => {
 
       const ai = new StarterAI(gameSession, player1.getPlayerId(), 0.1);
 
-      UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.PrismaticGiant }, 0, 3, gameSession.getPlayer1Id());
-      UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.PrismaticGiant }, 0, 1, gameSession.getPlayer1Id());
+      UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.PrismaticGiant },
+        0,
+        3,
+        gameSession.getPlayer1Id(),
+      );
+      UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.PrismaticGiant },
+        0,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
       player1.remainingMana = 3;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
 
       let nextAction = ai.nextAction();
       SDK.GameSession.getInstance().executeAction(nextAction);
@@ -406,7 +617,12 @@ describe('starter ai', () => {
 
       const ai = new StarterAI(gameSession, player1.getPlayerId(), 0.1);
 
-      const aymaraHealer = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.AymaraHealer }, 8, 3, gameSession.getPlayer1Id());
+      const aymaraHealer = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.AymaraHealer },
+        8,
+        3,
+        gameSession.getPlayer1Id(),
+      );
       aymaraHealer.refreshExhaustion();
 
       gameSession.getGeneralForPlayer1().refreshExhaustion();
@@ -449,9 +665,24 @@ describe('starter ai', () => {
 
       const ai = new StarterAI(gameSession, player1.getPlayerId(), 0.1);
 
-      const orbWeaver = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.OrbWeaver }, 4, 0, gameSession.getPlayer1Id());
-      const orbWeaver2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.OrbWeaver }, 4, 4, gameSession.getPlayer1Id());
-      const orbWeaver3 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.OrbWeaver }, 5, 2, gameSession.getPlayer1Id());
+      const orbWeaver = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.OrbWeaver },
+        4,
+        0,
+        gameSession.getPlayer1Id(),
+      );
+      const orbWeaver2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.OrbWeaver },
+        4,
+        4,
+        gameSession.getPlayer1Id(),
+      );
+      const orbWeaver3 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.OrbWeaver },
+        5,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
       gameSession.getGeneralForPlayer1().setDamage(20);
 
@@ -484,9 +715,24 @@ describe('starter ai', () => {
 
       const ai = new StarterAI(gameSession, player1.getPlayerId(), 0.2);
 
-      const orbWeaver = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.OrbWeaver }, 4, 0, gameSession.getPlayer1Id());
-      const orbWeaver2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.OrbWeaver }, 4, 4, gameSession.getPlayer1Id());
-      const orbWeaver3 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.OrbWeaver }, 5, 2, gameSession.getPlayer1Id());
+      const orbWeaver = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.OrbWeaver },
+        4,
+        0,
+        gameSession.getPlayer1Id(),
+      );
+      const orbWeaver2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.OrbWeaver },
+        4,
+        4,
+        gameSession.getPlayer1Id(),
+      );
+      const orbWeaver3 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.OrbWeaver },
+        5,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
       gameSession.getGeneralForPlayer1().setDamage(20);
 
@@ -519,18 +765,58 @@ describe('starter ai', () => {
 
       const ai = new StarterAI(gameSession, player1.getPlayerId(), 0.2);
 
-      UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.PrismaticGiant }, 7, 2, gameSession.getPlayer1Id());
-      UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.PrismaticGiant }, 7, 3, gameSession.getPlayer1Id());
-      UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.PrismaticGiant }, 6, 3, gameSession.getPlayer1Id());
-      UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.PrismaticGiant }, 5, 3, gameSession.getPlayer1Id());
+      UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.PrismaticGiant },
+        7,
+        2,
+        gameSession.getPlayer1Id(),
+      );
+      UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.PrismaticGiant },
+        7,
+        3,
+        gameSession.getPlayer1Id(),
+      );
+      UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.PrismaticGiant },
+        6,
+        3,
+        gameSession.getPlayer1Id(),
+      );
+      UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.PrismaticGiant },
+        5,
+        3,
+        gameSession.getPlayer1Id(),
+      );
 
       player1.remainingMana = 3;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
 
       let nextAction = ai.nextAction();
 
@@ -552,19 +838,63 @@ describe('starter ai', () => {
 
       const ai = new StarterAI(gameSession, player1.getPlayerId(), 0.2);
 
-      UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.PrismaticGiant }, 0, 3, gameSession.getPlayer1Id());
-      UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.PrismaticGiant }, 0, 4, gameSession.getPlayer1Id());
-      UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.PrismaticGiant }, 0, 1, gameSession.getPlayer1Id());
-      UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.PrismaticGiant }, 0, 0, gameSession.getPlayer1Id());
+      UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.PrismaticGiant },
+        0,
+        3,
+        gameSession.getPlayer1Id(),
+      );
+      UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.PrismaticGiant },
+        0,
+        4,
+        gameSession.getPlayer1Id(),
+      );
+      UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.PrismaticGiant },
+        0,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.PrismaticGiant },
+        0,
+        0,
+        gameSession.getPlayer1Id(),
+      );
 
       player1.remainingMana = 3;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
 
       let nextAction = ai.nextAction();
       SDK.GameSession.getInstance().executeAction(nextAction);
@@ -589,11 +919,31 @@ describe('starter ai', () => {
 
       player1.remainingMana = 3;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
 
       let nextAction = ai.nextAction();
 
@@ -619,16 +969,47 @@ describe('starter ai', () => {
 
       const ai = new StarterAI(gameSession, player1.getPlayerId(), 0.2);
 
-      const pyromancer1 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.Pyromancer }, 7, 0, gameSession.getPlayer2Id());
-      const pyromancer2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.Pyromancer }, 7, 1, gameSession.getPlayer2Id());
-      const pyromancer3 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.Pyromancer }, 7, 3, gameSession.getPlayer2Id());
+      const pyromancer1 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.Pyromancer },
+        7,
+        0,
+        gameSession.getPlayer2Id(),
+      );
+      const pyromancer2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.Pyromancer },
+        7,
+        1,
+        gameSession.getPlayer2Id(),
+      );
+      const pyromancer3 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.Pyromancer },
+        7,
+        3,
+        gameSession.getPlayer2Id(),
+      );
 
       player1.remainingMana = 4;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.TrueStrike }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.TrueStrike }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.TrueStrike }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.TrueStrike }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.TrueStrike,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.TrueStrike,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.TrueStrike,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.TrueStrike,
+        }),
+      );
 
       let nextAction = ai.nextAction();
       expect(nextAction.getType()).to.equal(SDK.PlayCardFromHandAction.type);
@@ -658,11 +1039,31 @@ describe('starter ai', () => {
       player1.remainingMana = 3;
       player1.signatureCardIndices = [];
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
 
       let nextAction = ai.nextAction();
 
@@ -697,21 +1098,75 @@ describe('starter ai', () => {
 
       const ai = new StarterAI(gameSession, player1.getPlayerId(), 0.5);
 
-      const pyromancer1 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.Pyromancer }, 7, 0, gameSession.getPlayer2Id());
-      const pyromancer2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.Pyromancer }, 7, 1, gameSession.getPlayer2Id());
-      const pyromancer3 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.Pyromancer }, 7, 3, gameSession.getPlayer2Id());
-      const pyromancer4 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.Pyromancer }, 6, 3, gameSession.getPlayer2Id());
-      const pyromancer5 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.Pyromancer }, 7, 4, gameSession.getPlayer2Id());
-      const pyromancer6 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.Pyromancer }, 6, 2, gameSession.getPlayer2Id());
+      const pyromancer1 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.Pyromancer },
+        7,
+        0,
+        gameSession.getPlayer2Id(),
+      );
+      const pyromancer2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.Pyromancer },
+        7,
+        1,
+        gameSession.getPlayer2Id(),
+      );
+      const pyromancer3 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.Pyromancer },
+        7,
+        3,
+        gameSession.getPlayer2Id(),
+      );
+      const pyromancer4 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.Pyromancer },
+        6,
+        3,
+        gameSession.getPlayer2Id(),
+      );
+      const pyromancer5 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.Pyromancer },
+        7,
+        4,
+        gameSession.getPlayer2Id(),
+      );
+      const pyromancer6 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.Pyromancer },
+        6,
+        2,
+        gameSession.getPlayer2Id(),
+      );
 
       player1.remainingMana = 5;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.TrueStrike }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.TrueStrike }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.TrueStrike }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.TrueStrike }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.TrueStrike }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.TrueStrike }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.TrueStrike,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.TrueStrike,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.TrueStrike,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.TrueStrike,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.TrueStrike,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.TrueStrike,
+        }),
+      );
 
       let nextAction = ai.nextAction();
       expect(nextAction.getType()).to.equal(SDK.PlayCardFromHandAction.type);
@@ -750,24 +1205,94 @@ describe('starter ai', () => {
 
       const ai = new StarterAI(gameSession, player1.getPlayerId(), 0.5);
 
-      UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.PrismaticGiant }, 7, 2, gameSession.getPlayer1Id());
-      UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.PrismaticGiant }, 7, 3, gameSession.getPlayer1Id());
-      UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.PrismaticGiant }, 6, 3, gameSession.getPlayer1Id());
-      UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.PrismaticGiant }, 6, 1, gameSession.getPlayer1Id());
-      UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.PrismaticGiant }, 6, 2, gameSession.getPlayer1Id());
-      UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.PrismaticGiant }, 6, 0, gameSession.getPlayer1Id());
-      UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.PrismaticGiant }, 6, 4, gameSession.getPlayer1Id());
-      UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.PrismaticGiant }, 5, 3, gameSession.getPlayer1Id());
-      UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.PrismaticGiant }, 5, 2, gameSession.getPlayer1Id());
-      UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.PrismaticGiant }, 5, 1, gameSession.getPlayer1Id());
+      UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.PrismaticGiant },
+        7,
+        2,
+        gameSession.getPlayer1Id(),
+      );
+      UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.PrismaticGiant },
+        7,
+        3,
+        gameSession.getPlayer1Id(),
+      );
+      UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.PrismaticGiant },
+        6,
+        3,
+        gameSession.getPlayer1Id(),
+      );
+      UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.PrismaticGiant },
+        6,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.PrismaticGiant },
+        6,
+        2,
+        gameSession.getPlayer1Id(),
+      );
+      UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.PrismaticGiant },
+        6,
+        0,
+        gameSession.getPlayer1Id(),
+      );
+      UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.PrismaticGiant },
+        6,
+        4,
+        gameSession.getPlayer1Id(),
+      );
+      UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.PrismaticGiant },
+        5,
+        3,
+        gameSession.getPlayer1Id(),
+      );
+      UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.PrismaticGiant },
+        5,
+        2,
+        gameSession.getPlayer1Id(),
+      );
+      UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.PrismaticGiant },
+        5,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
       player1.remainingMana = 3;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
 
       let nextAction = ai.nextAction();
 
@@ -789,25 +1314,99 @@ describe('starter ai', () => {
 
       const ai = new StarterAI(gameSession, player1.getPlayerId(), 0.5);
 
-      UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.PrismaticGiant }, 7, 2, gameSession.getPlayer1Id());
-      UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.PrismaticGiant }, 7, 3, gameSession.getPlayer1Id());
-      UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.PrismaticGiant }, 6, 3, gameSession.getPlayer1Id());
-      UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.PrismaticGiant }, 6, 1, gameSession.getPlayer1Id());
-      UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.PrismaticGiant }, 6, 2, gameSession.getPlayer1Id());
-      UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.PrismaticGiant }, 6, 0, gameSession.getPlayer1Id());
-      UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.PrismaticGiant }, 6, 4, gameSession.getPlayer1Id());
-      UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.PrismaticGiant }, 5, 3, gameSession.getPlayer1Id());
-      UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.PrismaticGiant }, 5, 2, gameSession.getPlayer1Id());
-      UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.PrismaticGiant }, 5, 1, gameSession.getPlayer1Id());
+      UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.PrismaticGiant },
+        7,
+        2,
+        gameSession.getPlayer1Id(),
+      );
+      UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.PrismaticGiant },
+        7,
+        3,
+        gameSession.getPlayer1Id(),
+      );
+      UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.PrismaticGiant },
+        6,
+        3,
+        gameSession.getPlayer1Id(),
+      );
+      UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.PrismaticGiant },
+        6,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.PrismaticGiant },
+        6,
+        2,
+        gameSession.getPlayer1Id(),
+      );
+      UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.PrismaticGiant },
+        6,
+        0,
+        gameSession.getPlayer1Id(),
+      );
+      UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.PrismaticGiant },
+        6,
+        4,
+        gameSession.getPlayer1Id(),
+      );
+      UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.PrismaticGiant },
+        5,
+        3,
+        gameSession.getPlayer1Id(),
+      );
+      UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.PrismaticGiant },
+        5,
+        2,
+        gameSession.getPlayer1Id(),
+      );
+      UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.PrismaticGiant },
+        5,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
       player1.remainingMana = 3;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
 
       let nextAction = ai.nextAction();
 
@@ -832,7 +1431,8 @@ describe('starter ai', () => {
       for (let i = 0, il = factions.length; i < il; i++) {
         const factionData = factions[i];
         const factionId = factionData.id;
-        const generalId = factionData.generalIds[Math.floor(Math.random() * factionData.generalIds.length)];
+        const generalId =
+          factionData.generalIds[Math.floor(Math.random() * factionData.generalIds.length)];
         const deckData = UsableDecks.getAutomaticUsableDeck(generalId, difficulty);
         let numUnits = 0;
         for (let j = 0, jl = deckData.length; j < jl; j++) {
@@ -840,7 +1440,9 @@ describe('starter ai', () => {
           const card = SDK.GameSession.getCardCaches().getCardById(cardData.id);
           expect(card.getType()).to.equal(SDK.CardType.Unit);
           expect(_.contains(card.getCachedKeywordClasses(), SDK.ModifierRanged)).to.equal(false);
-          expect(_.contains(card.getCachedKeywordClasses(), SDK.ModifierBlastAttack)).to.equal(false);
+          expect(_.contains(card.getCachedKeywordClasses(), SDK.ModifierBlastAttack)).to.equal(
+            false,
+          );
           expect(card.getManaCost()).to.be.below(7);
           numUnits++;
         }
@@ -854,7 +1456,8 @@ describe('starter ai', () => {
       for (let i = 0, il = factions.length; i < il; i++) {
         const factionData = factions[i];
         const factionId = factionData.id;
-        const generalId = factionData.generalIds[Math.floor(Math.random() * factionData.generalIds.length)];
+        const generalId =
+          factionData.generalIds[Math.floor(Math.random() * factionData.generalIds.length)];
         const deckData = UsableDecks.getAutomaticUsableDeck(generalId, difficulty);
         let numUnits = 0;
         let numSpells = 0;
@@ -863,7 +1466,9 @@ describe('starter ai', () => {
           const card = SDK.GameSession.getCardCaches().getCardById(cardData.id);
           if (card.getType() === SDK.CardType.Unit) {
             expect(_.contains(card.getCachedKeywordClasses(), SDK.ModifierRanged)).to.equal(false);
-            expect(_.contains(card.getCachedKeywordClasses(), SDK.ModifierBlastAttack)).to.equal(false);
+            expect(_.contains(card.getCachedKeywordClasses(), SDK.ModifierBlastAttack)).to.equal(
+              false,
+            );
             expect(card.getManaCost()).to.be.below(7);
             numUnits++;
           } else if (card.getType() === SDK.CardType.Spell) {
@@ -882,7 +1487,8 @@ describe('starter ai', () => {
       for (let i = 0, il = factions.length; i < il; i++) {
         const factionData = factions[i];
         const factionId = factionData.id;
-        const generalId = factionData.generalIds[Math.floor(Math.random() * factionData.generalIds.length)];
+        const generalId =
+          factionData.generalIds[Math.floor(Math.random() * factionData.generalIds.length)];
         const deckData = UsableDecks.getAutomaticUsableDeck(generalId, difficulty);
         let numUnits = 0;
         let numSpells = 0;
@@ -913,7 +1519,8 @@ describe('starter ai', () => {
       for (let i = 0, il = factions.length; i < il; i++) {
         const factionData = factions[i];
         const factionId = factionData.id;
-        const generalId = factionData.generalIds[Math.floor(Math.random() * factionData.generalIds.length)];
+        const generalId =
+          factionData.generalIds[Math.floor(Math.random() * factionData.generalIds.length)];
         const deckData = UsableDecks.getAutomaticUsableDeck(generalId, difficulty);
         let numUnits = 0;
         let numHighCostUnits = 0;

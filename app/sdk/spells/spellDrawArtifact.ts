@@ -28,15 +28,24 @@ class SpellDrawArtifact extends Spell {
     const indexOfArtifacts = [];
     for (let i = 0; i < drawPile.length; i++) {
       cardIndex = drawPile[i];
-      if (__guard__(this.getGameSession().getCardByIndex(cardIndex), (x1) => x1.getType()) === CardType.Artifact) {
+      if (
+        __guard__(this.getGameSession().getCardByIndex(cardIndex), (x1) => x1.getType()) ===
+        CardType.Artifact
+      ) {
         indexOfArtifacts.push(i);
       }
     }
 
     // find X random artifacts
-    for (let j = 0, end = this.numArtifacts, asc = end >= 0; asc ? j < end : j > end; asc ? j++ : j--) {
+    for (
+      let j = 0, end = this.numArtifacts, asc = end >= 0;
+      asc ? j < end : j > end;
+      asc ? j++ : j--
+    ) {
       if (indexOfArtifacts.length > 0) {
-        var artifactIndexToRemove = this.getGameSession().getRandomIntegerForExecution(indexOfArtifacts.length);
+        var artifactIndexToRemove = this.getGameSession().getRandomIntegerForExecution(
+          indexOfArtifacts.length,
+        );
         var indexOfCardInDeck = indexOfArtifacts[artifactIndexToRemove];
         indexOfArtifacts.splice(artifactIndexToRemove, 1);
         cardIndicesToDraw.push(drawPile[indexOfCardInDeck]);
@@ -44,11 +53,14 @@ class SpellDrawArtifact extends Spell {
     }
 
     // create put card in hand action
-    if (cardIndicesToDraw && (cardIndicesToDraw.length > 0)) {
+    if (cardIndicesToDraw && cardIndicesToDraw.length > 0) {
       return (() => {
         const result = [];
         for (cardIndex of Array.from<any>(cardIndicesToDraw)) {
-          var drawCardAction = this.getGameSession().getPlayerById(this.getOwner().getPlayerId()).getDeck().actionDrawCard(cardIndex);
+          var drawCardAction = this.getGameSession()
+            .getPlayerById(this.getOwner().getPlayerId())
+            .getDeck()
+            .actionDrawCard(cardIndex);
           result.push(this.getGameSession().executeAction(drawCardAction));
         }
         return result;
@@ -61,5 +73,5 @@ SpellDrawArtifact.prototype.numArtifacts = 1;
 module.exports = SpellDrawArtifact;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

@@ -8,7 +8,6 @@ Node/sprite creation factory.
  *************************************************************************** */
 
 const NodeFactory = {
-
   entries: {},
   utilPositionA: cc.p(),
   utilPositionB: cc.p(),
@@ -110,7 +109,9 @@ const NodeFactory = {
     const fxSprites = [];
 
     if (fx) {
-      if (!_.isArray(fx)) { fx = [fx]; }
+      if (!_.isArray(fx)) {
+        fx = [fx];
+      }
       const numFX = fx.length;
       if (numFX > 0) {
         options || (options = {});
@@ -144,8 +145,12 @@ const NodeFactory = {
         let targetScreenPosition;
 
         if (needsConversion) {
-          if (!SDK.GameSession.current().getBoard().isOnBoard(sourceBoardPosition)) { sourceBoardPosition = targetBoardPosition; }
-          if (!SDK.GameSession.current().getBoard().isOnBoard(targetBoardPosition)) { targetBoardPosition = sourceBoardPosition; }
+          if (!SDK.GameSession.current().getBoard().isOnBoard(sourceBoardPosition)) {
+            sourceBoardPosition = targetBoardPosition;
+          }
+          if (!SDK.GameSession.current().getBoard().isOnBoard(targetBoardPosition)) {
+            targetBoardPosition = sourceBoardPosition;
+          }
 
           sourceScreenPosition = UtilsEngine.transformBoardToTileMap(sourceBoardPosition);
           targetScreenPosition = UtilsEngine.transformBoardToTileMap(targetBoardPosition);
@@ -155,14 +160,32 @@ const NodeFactory = {
         }
 
         for (let i = 0; i < numFX; i++) {
-          this._createFXSprites(fx[i], options, fxSprites, sourceBoardPosition, targetBoardPosition, sourceScreenPosition, targetScreenPosition, needsConversion);
+          this._createFXSprites(
+            fx[i],
+            options,
+            fxSprites,
+            sourceBoardPosition,
+            targetBoardPosition,
+            sourceScreenPosition,
+            targetScreenPosition,
+            needsConversion,
+          );
         }
       }
     }
 
     return fxSprites;
   },
-  _createFXSprites(fx, options, fxSprites, sourceBoardPosition, targetBoardPosition, sourceScreenPosition, targetScreenPosition, needsPositioning) {
+  _createFXSprites(
+    fx,
+    options,
+    fxSprites,
+    sourceBoardPosition,
+    targetBoardPosition,
+    sourceScreenPosition,
+    targetScreenPosition,
+    needsPositioning,
+  ) {
     let numSpritesToCreate;
 
     // when fx is not already created
@@ -204,16 +227,28 @@ const NodeFactory = {
         // base offsets are applied to both source and target
         const fxOffset = fx.offset;
         if (fxOffset) {
-          sourceScreenPosition = cc.p(sourceScreenPosition.x + fxOffset.x, sourceScreenPosition.y + fxOffset.y);
+          sourceScreenPosition = cc.p(
+            sourceScreenPosition.x + fxOffset.x,
+            sourceScreenPosition.y + fxOffset.y,
+          );
           if (targetScreenPosition !== sourceScreenPosition) {
-            targetScreenPosition = cc.p(targetScreenPosition.x + fxOffset.x, targetScreenPosition.y + fxOffset.y);
+            targetScreenPosition = cc.p(
+              targetScreenPosition.x + fxOffset.x,
+              targetScreenPosition.y + fxOffset.y,
+            );
           }
         }
         const optionsOffset = options.offset;
         if (optionsOffset) {
-          sourceScreenPosition = cc.p(sourceScreenPosition.x + optionsOffset.x, sourceScreenPosition.y + optionsOffset.y);
+          sourceScreenPosition = cc.p(
+            sourceScreenPosition.x + optionsOffset.x,
+            sourceScreenPosition.y + optionsOffset.y,
+          );
           if (targetScreenPosition !== sourceScreenPosition) {
-            targetScreenPosition = cc.p(targetScreenPosition.x + optionsOffset.x, targetScreenPosition.y + optionsOffset.y);
+            targetScreenPosition = cc.p(
+              targetScreenPosition.x + optionsOffset.x,
+              targetScreenPosition.y + optionsOffset.y,
+            );
           }
         }
 
@@ -281,16 +316,38 @@ const NodeFactory = {
 
     // create sprites
     for (let i = 0; i < numSpritesToCreate; i++) {
-      this._createFXSprite(fxSpriteClass, fx, options, fxSprites, startBoardPosition, endBoardPosition, startScreenPosition, endScreenPosition, startScreenOffset, endScreenOffset);
+      this._createFXSprite(
+        fxSpriteClass,
+        fx,
+        options,
+        fxSprites,
+        startBoardPosition,
+        endBoardPosition,
+        startScreenPosition,
+        endScreenPosition,
+        startScreenOffset,
+        endScreenOffset,
+      );
     }
   },
-  _createFXSprite(fxSpriteClass, fx, options, fxSprites, startBoardPosition, endBoardPosition, startScreenPosition, endScreenPosition, startScreenOffset, endScreenOffset) {
+  _createFXSprite(
+    fxSpriteClass,
+    fx,
+    options,
+    fxSprites,
+    startBoardPosition,
+    endBoardPosition,
+    startScreenPosition,
+    endScreenPosition,
+    startScreenOffset,
+    endScreenOffset,
+  ) {
     let fxSprite;
 
     if (fx instanceof cc.Node) {
       fxSprite = fx;
     } else if (fxSpriteClass) {
-      fxSprite = (fxSpriteClass).create(fx);
+      fxSprite = fxSpriteClass.create(fx);
 
       // set z order
       // this does not do anything unless the code adding the sprite respects the preset zOrder
@@ -306,14 +363,26 @@ const NodeFactory = {
       fxSprite.layerName = fx.layerName || options.layerName;
       fxSprite.destinationLayerName = fx.destinationLayerName || options.destinationLayerName;
       if (startScreenOffset) {
-        fxSprite.setPosition(startScreenPosition.x + startScreenOffset.x * (endScreenPosition.x - startScreenPosition.x > 0 ? -1 : 1), startScreenPosition.y + startScreenOffset.y);
+        fxSprite.setPosition(
+          startScreenPosition.x +
+            startScreenOffset.x * (endScreenPosition.x - startScreenPosition.x > 0 ? -1 : 1),
+          startScreenPosition.y + startScreenOffset.y,
+        );
       } else {
         fxSprite.setPosition(startScreenPosition);
       }
-      if (_.isFunction(fxSprite.setSourceBoardPosition)) { fxSprite.setSourceBoardPosition(startBoardPosition); }
-      if (_.isFunction(fxSprite.setTargetBoardPosition)) { fxSprite.setTargetBoardPosition(endBoardPosition); }
-      if (_.isFunction(fxSprite.setSourceScreenPosition)) { fxSprite.setSourceScreenPosition(startScreenPosition, startScreenOffset); }
-      if (_.isFunction(fxSprite.setTargetScreenPosition)) { fxSprite.setTargetScreenPosition(endScreenPosition, endScreenOffset); }
+      if (_.isFunction(fxSprite.setSourceBoardPosition)) {
+        fxSprite.setSourceBoardPosition(startBoardPosition);
+      }
+      if (_.isFunction(fxSprite.setTargetBoardPosition)) {
+        fxSprite.setTargetBoardPosition(endBoardPosition);
+      }
+      if (_.isFunction(fxSprite.setSourceScreenPosition)) {
+        fxSprite.setSourceScreenPosition(startScreenPosition, startScreenOffset);
+      }
+      if (_.isFunction(fxSprite.setTargetScreenPosition)) {
+        fxSprite.setTargetScreenPosition(endScreenPosition, endScreenOffset);
+      }
     }
 
     fxSprites.push(fxSprite);

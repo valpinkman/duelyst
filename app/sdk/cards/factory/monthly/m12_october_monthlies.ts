@@ -75,7 +75,9 @@ class CardFactory_Monthly_M12_OctoberMonthlies {
       card.maxHP = 3;
       card.manaCost = 3;
       card.rarityId = Rarity.Common;
-      card.setInherentModifiersContextObjects([ModifierMyMinionAttackWatchHealGeneral.createContextObject(1)]);
+      card.setInherentModifiersContextObjects([
+        ModifierMyMinionAttackWatchHealGeneral.createContextObject(1),
+      ]);
     }
 
     if (identifier === Cards.Neutral.NightWatcher) {
@@ -108,7 +110,10 @@ class CardFactory_Monthly_M12_OctoberMonthlies {
       card.maxHP = 4;
       card.manaCost = 4;
       card.rarityId = Rarity.Epic;
-      card.setInherentModifiersContextObjects([ModifierForcefield.createContextObject(), ModifierInvalidateRush.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierForcefield.createContextObject(),
+        ModifierInvalidateRush.createContextObject(),
+      ]);
       card.addKeywordClassToInclude(ModifierFirstBlood);
     }
 
@@ -141,7 +146,9 @@ class CardFactory_Monthly_M12_OctoberMonthlies {
       card.maxHP = 2;
       card.manaCost = 6;
       card.rarityId = Rarity.Legendary;
-      card.setInherentModifiersContextObjects([ModifierImmuneToDamageFromMinionsAndGenerals.createContextObject(1)]);
+      card.setInherentModifiersContextObjects([
+        ModifierImmuneToDamageFromMinionsAndGenerals.createContextObject(1),
+      ]);
     }
 
     if (identifier === Cards.Neutral.DustWailer) {
@@ -175,7 +182,10 @@ class CardFactory_Monthly_M12_OctoberMonthlies {
       card.maxHP = 4;
       card.manaCost = 6;
       card.rarityId = Rarity.Rare;
-      card.setInherentModifiersContextObjects([ModifierOpeningGambitDamageInFrontRow.createContextObject(3), ModifierFlying.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierOpeningGambitDamageInFrontRow.createContextObject(3),
+        ModifierFlying.createContextObject(),
+      ]);
     }
 
     return card;

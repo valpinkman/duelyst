@@ -72,7 +72,6 @@ const PromiseUtils = require('../../../common/utils/utils_promise');
  * GameLayer - controller for all visuals in a game.
  */
 var GameLayer = FXCompositeLayer.extend({
-
   _actionInterfacesByIndex: null,
   _afterShowStartTurnPromise: null,
   _afterShowStartTurnPromiseResolve: null,
@@ -175,8 +174,7 @@ var GameLayer = FXCompositeLayer.extend({
     this._speechNodes = {};
     this._burnCardNode = CardNode.create();
     this._inspectCardNode = CardNode.create();
-    this._referencedCardNode = CardNode.create(),
-    this._playCardNode = CardNode.create();
+    ((this._referencedCardNode = CardNode.create()), (this._playCardNode = CardNode.create()));
     this._particleContainer = [];
 
     // ui
@@ -185,21 +183,42 @@ var GameLayer = FXCompositeLayer.extend({
     this._customUIModules = [];
     this._notificationYourTurnSprite = new BaseSprite(RSX.notification_your_turn.img);
     this._notificationYourTurnSprite.setVisible(false);
-    var label = new cc.LabelTTF(i18next.t('game_ui.label_your_turn'), RSX.font_bold.name, 66, cc.size(1280, 280), cc.TEXT_ALIGNMENT_CENTER, cc.VERTICAL_TEXT_ALIGNMENT_CENTER);
+    var label = new cc.LabelTTF(
+      i18next.t('game_ui.label_your_turn'),
+      RSX.font_bold.name,
+      66,
+      cc.size(1280, 280),
+      cc.TEXT_ALIGNMENT_CENTER,
+      cc.VERTICAL_TEXT_ALIGNMENT_CENTER,
+    );
     label.enableStroke(cc.color(0, 0, 0, 0), 2);
     label.enableShadow(3, 0.5, 0.0);
     this._notificationYourTurnSprite.addChild(label, 1);
     label.setAnchorPoint(cc.p(0.0, -0.05));
     this._notificationEnemyTurnSprite = new BaseSprite(RSX.notification_enemy_turn.img);
     this._notificationEnemyTurnSprite.setVisible(false);
-    var label = new cc.LabelTTF(i18next.t('game_ui.label_enemy_turn'), RSX.font_bold.name, 66, cc.size(1280, 280), cc.TEXT_ALIGNMENT_CENTER, cc.VERTICAL_TEXT_ALIGNMENT_CENTER);
+    var label = new cc.LabelTTF(
+      i18next.t('game_ui.label_enemy_turn'),
+      RSX.font_bold.name,
+      66,
+      cc.size(1280, 280),
+      cc.TEXT_ALIGNMENT_CENTER,
+      cc.VERTICAL_TEXT_ALIGNMENT_CENTER,
+    );
     label.enableStroke(cc.color(0, 0, 0, 0), 2);
     label.enableShadow(3, 0.5, 0.0);
     this._notificationEnemyTurnSprite.addChild(label, 1);
     label.setAnchorPoint(cc.p(0.0, -0.05));
     this._notificationGoSprite = new BaseSprite(RSX.notification_go.img);
     this._notificationGoSprite.setVisible(false);
-    var label = new cc.LabelTTF(i18next.t('game_ui.label_automatic_moves'), RSX.font_bold.name, 66, cc.size(1280, 280), cc.TEXT_ALIGNMENT_CENTER, cc.VERTICAL_TEXT_ALIGNMENT_CENTER);
+    var label = new cc.LabelTTF(
+      i18next.t('game_ui.label_automatic_moves'),
+      RSX.font_bold.name,
+      66,
+      cc.size(1280, 280),
+      cc.TEXT_ALIGNMENT_CENTER,
+      cc.VERTICAL_TEXT_ALIGNMENT_CENTER,
+    );
     label.enableStroke(cc.color(0, 0, 0, 0), 2);
     label.enableShadow(3, 0.5, 0.0);
     this._notificationGoSprite.addChild(label, 1);
@@ -519,7 +538,9 @@ var GameLayer = FXCompositeLayer.extend({
    * @see GameLayer.STATUS
    */
   resetStatus(status?) {
-    if (status == null) { status = GameLayer.STATUS.NEW; }
+    if (status == null) {
+      status = GameLayer.STATUS.NEW;
+    }
     this._status = null;
     this.setStatus(status);
   },
@@ -659,7 +680,8 @@ var GameLayer = FXCompositeLayer.extend({
   getPlayerById(playerId) {
     if (this._player.getPlayerId() === playerId) {
       return this._player;
-    } if (this._opponent.getPlayerId() === playerId) {
+    }
+    if (this._opponent.getPlayerId() === playerId) {
       return this._opponent;
     }
   },
@@ -716,7 +738,12 @@ var GameLayer = FXCompositeLayer.extend({
   },
 
   getIsPlayerSelectionLocked() {
-    return !this.getIsGameActive() || !this._player.getIsCurrentPlayer() || this._playerSelectionLocked || SDK.GameSession.getInstance().getIsWaitingForSubmittedExplicitAction();
+    return (
+      !this.getIsGameActive() ||
+      !this._player.getIsCurrentPlayer() ||
+      this._playerSelectionLocked ||
+      SDK.GameSession.getInstance().getIsWaitingForSubmittedExplicitAction()
+    );
   },
 
   getCurrentSdkActionInterface() {
@@ -789,15 +816,30 @@ var GameLayer = FXCompositeLayer.extend({
   },
 
   getEntityNodeUnderMouse(screenX, screenY, allowInactive, allowUntargetable) {
-    return this.getUnitNodeUnderMouse(screenX, screenY, allowInactive, allowUntargetable) || this.getTileNodeUnderMouse(screenX, screenY, allowInactive, allowUntargetable);
+    return (
+      this.getUnitNodeUnderMouse(screenX, screenY, allowInactive, allowUntargetable) ||
+      this.getTileNodeUnderMouse(screenX, screenY, allowInactive, allowUntargetable)
+    );
   },
 
   getUnitNodeUnderMouse(screenX, screenY, allowInactive, allowUntargetable) {
-    return this.getNodeUnderMouse(this._unitNodes, screenX, screenY, allowInactive, allowUntargetable);
+    return this.getNodeUnderMouse(
+      this._unitNodes,
+      screenX,
+      screenY,
+      allowInactive,
+      allowUntargetable,
+    );
   },
 
   getTileNodeUnderMouse(screenX, screenY, allowInactive, allowUntargetable) {
-    return this.getNodeUnderMouse(this._tileNodes, screenX, screenY, allowInactive, allowUntargetable);
+    return this.getNodeUnderMouse(
+      this._tileNodes,
+      screenX,
+      screenY,
+      allowInactive,
+      allowUntargetable,
+    );
   },
 
   /**
@@ -819,11 +861,17 @@ var GameLayer = FXCompositeLayer.extend({
 
       for (let i = 0; i < nodes.length; i++) {
         const node = nodes[i];
-        if (node.isVisible() && node.getDisplayedOpacity() > 0.0 && (allowUntargetable || !(node instanceof EntityNode) || node.getIsTargetable()) && UtilsEngine.getNodeUnderMouse(node, screenX, screenY)) {
+        if (
+          node.isVisible() &&
+          node.getDisplayedOpacity() > 0.0 &&
+          (allowUntargetable || !(node instanceof EntityNode) || node.getIsTargetable()) &&
+          UtilsEngine.getNodeUnderMouse(node, screenX, screenY)
+        ) {
           // always return an active node first
           if (!(node instanceof EntityNode) || node.getIsActive()) {
             return node;
-          } if (inactiveNode == null) {
+          }
+          if (inactiveNode == null) {
             inactiveNode = node;
           }
         }
@@ -837,15 +885,30 @@ var GameLayer = FXCompositeLayer.extend({
   },
 
   getEntityNodeAtBoardPosition(boardX, boardY, allowInactive, allowUntargetable) {
-    return this.getUnitNodeAtBoardPosition(boardX, boardY, allowInactive, allowUntargetable) || this.getTileNodeAtBoardPosition(boardX, boardY, allowInactive, allowUntargetable);
+    return (
+      this.getUnitNodeAtBoardPosition(boardX, boardY, allowInactive, allowUntargetable) ||
+      this.getTileNodeAtBoardPosition(boardX, boardY, allowInactive, allowUntargetable)
+    );
   },
 
   getUnitNodeAtBoardPosition(boardX, boardY, allowInactive, allowUntargetable) {
-    return this.getNodeAtBoardPosition(this._unitNodes, boardX, boardY, allowInactive, allowUntargetable);
+    return this.getNodeAtBoardPosition(
+      this._unitNodes,
+      boardX,
+      boardY,
+      allowInactive,
+      allowUntargetable,
+    );
   },
 
   getTileNodeAtBoardPosition(boardX, boardY, allowInactive, allowUntargetable) {
-    return this.getNodeAtBoardPosition(this._tileNodes, boardX, boardY, allowInactive, allowUntargetable);
+    return this.getNodeAtBoardPosition(
+      this._tileNodes,
+      boardX,
+      boardY,
+      allowInactive,
+      allowUntargetable,
+    );
   },
 
   /**
@@ -878,7 +941,8 @@ var GameLayer = FXCompositeLayer.extend({
         const isExactX = dx <= 0.5 && dx >= -0.5;
         const isExactY = dy <= 0.5 && dy >= -0.5;
         const isExact = isExactX && isExactY;
-        const isApproximate = approximate && isExactX && !isExactY && dy < 0.5 + CONFIG.TILE_TARGET_PCT && dy > 0.5;
+        const isApproximate =
+          approximate && isExactX && !isExactY && dy < 0.5 + CONFIG.TILE_TARGET_PCT && dy > 0.5;
         const isTargetable = !_.isFunction(node.getIsTargetable) || node.getIsTargetable();
         if ((isExact || isApproximate) && (allowUntargetable || isTargetable)) {
           // always return an active node first
@@ -898,14 +962,24 @@ var GameLayer = FXCompositeLayer.extend({
         }
       }
 
-      return activeExactNode || activeApproximateNode || inactiveExactNode || inactiveApproximateNode;
+      return (
+        activeExactNode || activeApproximateNode || inactiveExactNode || inactiveApproximateNode
+      );
     }
   },
 
   getNodeForSdkCard(sdkCard) {
     if (sdkCard != null) {
-      function nodeHasSdkCard(node) { return node.getSdkCard() === sdkCard; }
-      return _.find(this._unitNodes, nodeHasSdkCard) || _.find(this.bottomDeckLayer.getCardNodes(), nodeHasSdkCard) || _.find(this._tileNodes, nodeHasSdkCard) || _.find(this.player1Layer.getArtifactNodes(), nodeHasSdkCard) || _.find(this.player2Layer.getArtifactNodes(), nodeHasSdkCard);
+      function nodeHasSdkCard(node) {
+        return node.getSdkCard() === sdkCard;
+      }
+      return (
+        _.find(this._unitNodes, nodeHasSdkCard) ||
+        _.find(this.bottomDeckLayer.getCardNodes(), nodeHasSdkCard) ||
+        _.find(this._tileNodes, nodeHasSdkCard) ||
+        _.find(this.player1Layer.getArtifactNodes(), nodeHasSdkCard) ||
+        _.find(this.player2Layer.getArtifactNodes(), nodeHasSdkCard)
+      );
     }
   },
 
@@ -989,18 +1063,33 @@ var GameLayer = FXCompositeLayer.extend({
     const sourceCard = action.getSource();
 
     // only show invalidation notification if we have a message for a non-implicit action
-    if (validationMessage && !action.getIsImplicit() && action.getOwnerId() === myPlayer.getPlayerId()) {
+    if (
+      validationMessage &&
+      !action.getIsImplicit() &&
+      action.getOwnerId() === myPlayer.getPlayerId()
+    ) {
       if (action instanceof SDK.DrawStartingHandAction) {
         // show message centered above cards for mulligan
         const winCenterPosition = UtilsEngine.getGSIWinCenterPosition();
-        const cardsStartPosition = cc.p(winCenterPosition.x, winCenterPosition.y + CONFIG.HAND_CARD_SIZE * 0.5);
+        const cardsStartPosition = cc.p(
+          winCenterPosition.x,
+          winCenterPosition.y + CONFIG.HAND_CARD_SIZE * 0.5,
+        );
         this.showInstructionAtPosition(cardsStartPosition, validationMessage);
       } else if (action instanceof SDK.ReplaceCardFromHandAction) {
-        this.showInstructionAtPosition(this.bottomDeckLayer.getReplaceNode().getPosition(), validationMessage);
+        this.showInstructionAtPosition(
+          this.bottomDeckLayer.getReplaceNode().getPosition(),
+          validationMessage,
+        );
       } else if (validationMessagePosition) {
         // show message at position
         var validationMessagePosition = validationMessagePosition;
-        const entityNode = this.getEntityNodeAtBoardPosition(validationMessagePosition.x, validationMessagePosition.y, true, true);
+        const entityNode = this.getEntityNodeAtBoardPosition(
+          validationMessagePosition.x,
+          validationMessagePosition.y,
+          true,
+          true,
+        );
         if (entityNode) {
           this.showInstructionForSdkNode(entityNode, validationMessage);
         } else {
@@ -1017,13 +1106,20 @@ var GameLayer = FXCompositeLayer.extend({
       }
 
       // error sound
-      audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_error.audio, CONFIG.ERROR_SFX_PRIORITY);
+      audio_engine
+        .current()
+        .play_effect_for_interaction(RSX.sfx_ui_error.audio, CONFIG.ERROR_SFX_PRIORITY);
 
       // rebind hand in case this action modified the hand
       // only allow binding when the player has no followup card
-      const playerActor = SDK.GameSession.getInstance().getIsSpectateMode() ? this._altPlayer : this._player;
+      const playerActor = SDK.GameSession.getInstance().getIsSpectateMode()
+        ? this._altPlayer
+        : this._player;
       if (!playerActor.getHasCardsWithFollowup()) {
-        if (action instanceof SDK.PlayCardFromHandAction || action instanceof SDK.ReplaceCardFromHandAction) {
+        if (
+          action instanceof SDK.PlayCardFromHandAction ||
+          action instanceof SDK.ReplaceCardFromHandAction
+        ) {
           this.bottomDeckLayer.bindHand();
         } else if (action instanceof SDK.PlaySignatureCardAction) {
           this.getMyPlayerLayer().bindAndResetSignatureCard();
@@ -1088,7 +1184,9 @@ var GameLayer = FXCompositeLayer.extend({
     const sdkStepIndex = sdkStep.getIndex();
     const action = sdkStep.getAction();
     const myAction = action.getOwnerId() === this._player.getPlayerId();
-    const sdkStepInterface = this._stepInterfacesByIndex[sdkStepIndex] = new SdkStepInterface(sdkStep);
+    const sdkStepInterface = (this._stepInterfacesByIndex[sdkStepIndex] = new SdkStepInterface(
+      sdkStep,
+    ));
 
     // flatten and rearrange step action graph
     this._parseStepActionGraph(sdkStepInterface);
@@ -1105,7 +1203,11 @@ var GameLayer = FXCompositeLayer.extend({
     if (action instanceof SDK.ResignAction && !SDK.GameSession.getInstance().getIsSpectateMode()) {
       // resign actions should immediately reset the step replay system and show themselves
       this.resetStepQueue();
-    } else if (myAction && (action instanceof SDK.PlayCardFromHandAction || action instanceof SDK.ReplaceCardFromHandAction)) {
+    } else if (
+      myAction &&
+      (action instanceof SDK.PlayCardFromHandAction ||
+        action instanceof SDK.ReplaceCardFromHandAction)
+    ) {
       // remove card played or replaced from hand
       this.bottomDeckLayer.unbindCardNodeAtIndex(action.getIndexOfCardInHand());
     } else if (action instanceof SDK.PlaySignatureCardAction) {
@@ -1123,13 +1225,21 @@ var GameLayer = FXCompositeLayer.extend({
     this.player2Layer.getSignatureCardNode().updateUsability();
 
     // update replace active state
-    this.bottomDeckLayer.getReplaceNode().setActive(this._player.getIsCurrentPlayer() && this._player.getSdkPlayer().getDeck().getCanReplaceCardThisTurn());
+    this.bottomDeckLayer
+      .getReplaceNode()
+      .setActive(
+        this._player.getIsCurrentPlayer() &&
+          this._player.getSdkPlayer().getDeck().getCanReplaceCardThisTurn(),
+      );
 
     // add all applied units as placeholders immediately
     for (let i = 0, il = sdkStepInterface.actionInterfaceSequence.length; i < il; i++) {
       const sdkActionInterface = sdkStepInterface.actionInterfaceSequence[i];
       const sequenceAction = sdkActionInterface.getSdkAction();
-      if (sequenceAction instanceof SDK.ApplyCardToBoardAction && sequenceAction.getIsValidApplication()) {
+      if (
+        sequenceAction instanceof SDK.ApplyCardToBoardAction &&
+        sequenceAction.getIsValidApplication()
+      ) {
         var card = sequenceAction.getCard();
         if (card instanceof SDK.Entity) {
           // create node for card
@@ -1172,12 +1282,21 @@ var GameLayer = FXCompositeLayer.extend({
         this.showPlayerNextFollowupCard();
 
         // try to reselect a unit that just moved if that unit is ready
-        if (!SDK.GameSession.getInstance().getIsSpectateMode()
-          && (action instanceof SDK.MoveAction || action instanceof SDK.AttackAction)
-          && this._player.getCurrentCardWithFollowup() == null) {
+        if (
+          !SDK.GameSession.getInstance().getIsSpectateMode() &&
+          (action instanceof SDK.MoveAction || action instanceof SDK.AttackAction) &&
+          this._player.getCurrentCardWithFollowup() == null
+        ) {
           const stickyTargetNode = this._player.getStickyTargetNode();
           this._player.setStickyTargetNode(null);
-          if (CONFIG.stickyTargeting && stickyTargetNode && myAction && this.getIsMyTurn() && this._player.getSelectedEntityNode() == null && stickyTargetNode.getIsReadyAtAction()) {
+          if (
+            CONFIG.stickyTargeting &&
+            stickyTargetNode &&
+            myAction &&
+            this.getIsMyTurn() &&
+            this._player.getSelectedEntityNode() == null &&
+            stickyTargetNode.getIsReadyAtAction()
+          ) {
             // reselect sticky target
             this._mouseSelectEntity(stickyTargetNode);
           }
@@ -1190,11 +1309,19 @@ var GameLayer = FXCompositeLayer.extend({
 
         // show my played card when step is done loading
         // but not if in spectate mode, as the played card will be instead shown in sequence
-        if (!SDK.GameSession.getInstance().getIsSpectateMode()
-          && (action instanceof SDK.PlayCardFromHandAction || action instanceof SDK.PlaySignatureCardAction)
-          && action.getCard().getHasFollowups()) {
+        if (
+          !SDK.GameSession.getInstance().getIsSpectateMode() &&
+          (action instanceof SDK.PlayCardFromHandAction ||
+            action instanceof SDK.PlaySignatureCardAction) &&
+          action.getCard().getHasFollowups()
+        ) {
           sdkStepInterface.loadPromise.then(() => {
-            this.showPlayCard(action, CONFIG.MY_PLAYED_CARD_TRANSITION_DURATION, CONFIG.MY_PLAYED_CARD_SHOW_DURATION, true);
+            this.showPlayCard(
+              action,
+              CONFIG.MY_PLAYED_CARD_TRANSITION_DURATION,
+              CONFIG.MY_PLAYED_CARD_SHOW_DURATION,
+              true,
+            );
           });
         }
       }
@@ -1398,7 +1525,9 @@ var GameLayer = FXCompositeLayer.extend({
               this.updateShowingSdkNodeStats();
               this.bottomDeckLayer.bindHandUsability();
 
-              this.getEventBus().trigger(EVENTS.show_active_game, { type: EVENTS.show_active_game });
+              this.getEventBus().trigger(EVENTS.show_active_game, {
+                type: EVENTS.show_active_game,
+              });
 
               resolve();
             });
@@ -1417,7 +1546,10 @@ var GameLayer = FXCompositeLayer.extend({
   resetActiveState() {
     Logger.module('ENGINE').log('GameLayer.resetActiveState');
     this.removeUnusedEntitiesTags();
-    if (!SDK.GameSession.current().getIsSpectateMode() && (this.getIsMyTurn() || !SDK.GameSession.getInstance().isActive())) {
+    if (
+      !SDK.GameSession.current().getIsSpectateMode() &&
+      (this.getIsMyTurn() || !SDK.GameSession.getInstance().isActive())
+    ) {
       this.stopMouseOverForPlayer(this._opponent);
       this.stopMouseDownForPlayer(this._opponent);
     }
@@ -1430,7 +1562,10 @@ var GameLayer = FXCompositeLayer.extend({
     this.skipShowActionCardSequence();
     this.stopShowingInspectCard();
     this.updateReadinessTagForAllEntities();
-    NetworkManager.getInstance().broadcastGameEvent({ type: EVENTS.network_game_mouse_clear, timestamp: Date.now() });
+    NetworkManager.getInstance().broadcastGameEvent({
+      type: EVENTS.network_game_mouse_clear,
+      timestamp: Date.now(),
+    });
   },
 
   updateCurrentPlayer() {
@@ -1453,7 +1588,9 @@ var GameLayer = FXCompositeLayer.extend({
   bindToGameSession() {
     if (SDK.GameSession.getInstance().getIsMyFollowupActiveAndCancellable()) {
       // cancel out of active followup (rollback will trigger this method)
-      SDK.GameSession.getInstance().submitExplicitAction(SDK.GameSession.getInstance().actionRollbackSnapshot());
+      SDK.GameSession.getInstance().submitExplicitAction(
+        SDK.GameSession.getInstance().actionRollbackSnapshot(),
+      );
     } else {
       // check if this is binding for new game
       const forNewGame = !this.getIsActive();
@@ -1519,7 +1656,11 @@ var GameLayer = FXCompositeLayer.extend({
         if (actions.length > 0) {
           for (var i = actions.length - 1; i >= 0; i--) {
             const action = actions[i];
-            if (action != null && !(action instanceof SDK.ApplyModifierAction) && !(action instanceof SDK.RemoveModifierAction)) {
+            if (
+              action != null &&
+              !(action instanceof SDK.ApplyModifierAction) &&
+              !(action instanceof SDK.RemoveModifierAction)
+            ) {
               this._lastShownSdkStateRecordingAction = action;
               break;
             }
@@ -1559,7 +1700,9 @@ var GameLayer = FXCompositeLayer.extend({
     const winningSdkPlayer = SDK.GameSession.getInstance().getWinner();
     Logger.module('ENGINE').log('GameLayer.showGameOver -> winningPlayer', winningSdkPlayer);
     // this event is pretty useful for notifying other parts of the engine/ui to fade out since game over animations are about to play
-    this.getEventBus().trigger(EVENTS.before_show_game_over, { type: EVENTS.before_show_game_over });
+    this.getEventBus().trigger(EVENTS.before_show_game_over, {
+      type: EVENTS.before_show_game_over,
+    });
 
     // immediately prep for terminate on non-active games
     if (!this.getIsActive() && !this.getIsTransitioningToActive()) {
@@ -1588,18 +1731,31 @@ var GameLayer = FXCompositeLayer.extend({
       );
     } else {
       let victoryFXDelay = 0.0;
-      const winningGeneral = SDK.GameSession.current().getGeneralForPlayerId(winningSdkPlayer.playerId);
+      const winningGeneral = SDK.GameSession.current().getGeneralForPlayerId(
+        winningSdkPlayer.playerId,
+      );
       const losingSdkPlayer = SDK.GameSession.getInstance().getLoser();
       const losingPlayerId = losingSdkPlayer.getPlayerId();
       const losingPlayer = this.getPlayerById(losingPlayerId);
       const losingGeneral = SDK.GameSession.getInstance().getGeneralForPlayerId(losingPlayerId);
 
       // when final step is resign, show speech from resigning player
-      if (SDK.GameSession.getInstance().getGameEndingStep().getAction() instanceof SDK.ResignAction) {
-        const losingPlayerSetupData = SDK.GameSession.getInstance().getPlayerSetupDataForPlayerId(losingPlayer.getPlayerId());
+      if (
+        SDK.GameSession.getInstance().getGameEndingStep().getAction() instanceof SDK.ResignAction
+      ) {
+        const losingPlayerSetupData = SDK.GameSession.getInstance().getPlayerSetupDataForPlayerId(
+          losingPlayer.getPlayerId(),
+        );
         const losingFactionId = losingPlayerSetupData.factionId;
         const losingFaction = SDK.FactionFactory.factionForIdentifier(losingFactionId);
-        victoryFXDelay += this.showSpeechForPlayer(losingPlayer, losingFaction.resignStatement, null, CONFIG.DIALOGUE_RESIGN_DURATION, false, 0.6);
+        victoryFXDelay += this.showSpeechForPlayer(
+          losingPlayer,
+          losingFaction.resignStatement,
+          null,
+          CONFIG.DIALOGUE_RESIGN_DURATION,
+          false,
+          0.6,
+        );
       }
 
       // show victory fx over winning general
@@ -1625,7 +1781,9 @@ var GameLayer = FXCompositeLayer.extend({
       winnerLight.setRadius(CONFIG.TILESIZE * 3.0);
       winnerLight.setFadeInDuration(0.5);
       winnerLight.setIntensity(CONFIG.LIGHT_HIGH_INTENSITY);
-      const winnerLightScreenPosition = UtilsEngine.transformBoardToTileMap(winningGeneral.getPosition());
+      const winnerLightScreenPosition = UtilsEngine.transformBoardToTileMap(
+        winningGeneral.getPosition(),
+      );
       winnerLightScreenPosition.y += -CONFIG.TILESIZE * 0.35;
       winnerLight.setPosition(winnerLightScreenPosition);
       lights.push(winnerLight);
@@ -1635,7 +1793,9 @@ var GameLayer = FXCompositeLayer.extend({
         loserLight.setRadius(CONFIG.TILESIZE * 3.0);
         loserLight.setFadeInDuration(0.5);
         loserLight.setIntensity(CONFIG.LIGHT_HIGH_INTENSITY);
-        const loserLightScreenPosition = UtilsEngine.transformBoardToTileMap(losingGeneral.getPosition());
+        const loserLightScreenPosition = UtilsEngine.transformBoardToTileMap(
+          losingGeneral.getPosition(),
+        );
         loserLightScreenPosition.y += -CONFIG.TILESIZE * 0.35;
         loserLight.setPosition(loserLightScreenPosition);
         lights.push(loserLight);
@@ -1720,8 +1880,7 @@ var GameLayer = FXCompositeLayer.extend({
     return showDuration;
   },
 
-  _cleanupShowingEndTurn() {
-  },
+  _cleanupShowingEndTurn() {},
 
   afterShowEndTurn() {
     if (this._showingEndTurn) {
@@ -1741,7 +1900,9 @@ var GameLayer = FXCompositeLayer.extend({
 
     if (!this._showingStartTurn) {
       Logger.module('ENGINE').log('GameLayer.showStartTurn');
-      if (delay == null) { delay = 0.0; }
+      if (delay == null) {
+        delay = 0.0;
+      }
 
       this._setupStartTurnPromises();
       this._showingStartTurn = true;
@@ -1753,7 +1914,12 @@ var GameLayer = FXCompositeLayer.extend({
       this.updateCurrentPlayer();
 
       // update replace active state
-      this.bottomDeckLayer.getReplaceNode().setActive(this._player.getIsCurrentPlayer() && this._player.getSdkPlayer().getDeck().getCanReplaceCardThisTurn());
+      this.bottomDeckLayer
+        .getReplaceNode()
+        .setActive(
+          this._player.getIsCurrentPlayer() &&
+            this._player.getSdkPlayer().getDeck().getCanReplaceCardThisTurn(),
+        );
 
       // when my player is switched
       if (SDK.GameSession.getInstance().isSandbox()) {
@@ -1775,16 +1941,23 @@ var GameLayer = FXCompositeLayer.extend({
 
       // update show duration
       const signatureCardCooldownDuration = CONFIG.ANIMATE_MEDIUM_DURATION;
-      showDuration += CONFIG.NOTIFICATION_DURATION + CONFIG.NOTIFICATION_TRANSITION_DURATION + signatureCardCooldownDuration;
+      showDuration +=
+        CONFIG.NOTIFICATION_DURATION +
+        CONFIG.NOTIFICATION_TRANSITION_DURATION +
+        signatureCardCooldownDuration;
 
       // play sound of turn change
       audio_engine.current().play_effect(RSX.sfx_ui_yourturn.audio, false);
 
       // show notification for start turn
-      const currentStep = this._currentSdkStepInterface && this._currentSdkStepInterface.getSdkStep();
+      const currentStep =
+        this._currentSdkStepInterface && this._currentSdkStepInterface.getSdkStep();
       const currentAction = currentStep && currentStep.getAction();
       const myPlayerIsCurrent = this.getMyPlayer() === this.getCurrentPlayer();
-      this._showingStartTurnWithAutomaticActions = myPlayerIsCurrent && currentAction instanceof SDK.StartTurnAction && currentStep.getChildStepIndex() != null;
+      this._showingStartTurnWithAutomaticActions =
+        myPlayerIsCurrent &&
+        currentAction instanceof SDK.StartTurnAction &&
+        currentStep.getChildStepIndex() != null;
       if (this._showingStartTurnWithAutomaticActions) {
         this._notificationStartTurnSprite = this._notificationGoSprite;
       } else if (myPlayerIsCurrent) {
@@ -1797,38 +1970,49 @@ var GameLayer = FXCompositeLayer.extend({
       this._notificationStartTurnSprite.setPosition(UtilsEngine.getGSIWinCenterPosition());
       this._notificationStartTurnSprite.setScale(0.0);
       this._notificationStartTurnSprite.setOpacity(255.0);
-      this._startTurnNotificationAction = this._notificationStartTurnSprite.runAction(cc.sequence(
-        cc.scaleTo(CONFIG.NOTIFICATION_TRANSITION_DURATION, 1.0).easing(cc.easeExponentialOut()),
-        cc.delayTime(CONFIG.NOTIFICATION_DURATION * (this._showingStartTurnWithAutomaticActions ? 0.75 : 1.0)),
-        cc.callFunc(() => {
-          // show signature card cooldown
-          this.player1Layer.getSignatureCardNode().showCooldown(signatureCardCooldownDuration);
-          this.player2Layer.getSignatureCardNode().showCooldown(signatureCardCooldownDuration);
+      this._startTurnNotificationAction = this._notificationStartTurnSprite.runAction(
+        cc.sequence(
+          cc.scaleTo(CONFIG.NOTIFICATION_TRANSITION_DURATION, 1.0).easing(cc.easeExponentialOut()),
+          cc.delayTime(
+            CONFIG.NOTIFICATION_DURATION *
+              (this._showingStartTurnWithAutomaticActions ? 0.75 : 1.0),
+          ),
+          cc.callFunc(() => {
+            // show signature card cooldown
+            this.player1Layer.getSignatureCardNode().showCooldown(signatureCardCooldownDuration);
+            this.player2Layer.getSignatureCardNode().showCooldown(signatureCardCooldownDuration);
 
-          // resolve
-          this._resolveBeginStartTurnPromise();
+            // resolve
+            this._resolveBeginStartTurnPromise();
 
-          // always try to execute after show start turn immediately
-          // this will fail if there are any automatic actions showing
-          if (this._showingStartTurn
-            && (this._stepQueue.length === 0
-            || currentAction == null
-            || (this._stepQueue[0].getSdkStep().getAction() === currentAction
-            && (this._stepQueue.length === 1 || !this._stepQueue[1].getSdkStep().getAction().getIsAutomatic())))) {
-            this.afterShowStartTurn();
-          }
-        }),
-        cc.spawn(
-          cc.moveBy(CONFIG.ANIMATE_FAST_DURATION, 30.0, 0.0).easing(cc.easeExponentialIn()),
-          cc.fadeOut(CONFIG.ANIMATE_FAST_DURATION),
+            // always try to execute after show start turn immediately
+            // this will fail if there are any automatic actions showing
+            if (
+              this._showingStartTurn &&
+              (this._stepQueue.length === 0 ||
+                currentAction == null ||
+                (this._stepQueue[0].getSdkStep().getAction() === currentAction &&
+                  (this._stepQueue.length === 1 ||
+                    !this._stepQueue[1].getSdkStep().getAction().getIsAutomatic())))
+            ) {
+              this.afterShowStartTurn();
+            }
+          }),
+          cc.spawn(
+            cc.moveBy(CONFIG.ANIMATE_FAST_DURATION, 30.0, 0.0).easing(cc.easeExponentialIn()),
+            cc.fadeOut(CONFIG.ANIMATE_FAST_DURATION),
+          ),
+          cc.callFunc(() => {
+            this._cleanupShowingStartTurn();
+          }),
         ),
-        cc.callFunc(() => {
-          this._cleanupShowingStartTurn();
-        }),
-      ));
+      );
 
       // trigger event
-      this.getEventBus().trigger(EVENTS.show_start_turn, { type: EVENTS.show_start_turn, showDuration });
+      this.getEventBus().trigger(EVENTS.show_start_turn, {
+        type: EVENTS.show_start_turn,
+        showDuration,
+      });
     }
 
     return showDuration;
@@ -1877,17 +2061,24 @@ var GameLayer = FXCompositeLayer.extend({
             this._notificationStartTurnSprite.setPosition(UtilsEngine.getGSIWinCenterPosition());
             this._notificationStartTurnSprite.setScale(0.0);
             this._notificationStartTurnSprite.setOpacity(255.0);
-            this._startTurnAfterAutomaticNotificationAction = this._notificationStartTurnSprite.runAction(cc.sequence(
-              cc.scaleTo(CONFIG.NOTIFICATION_TRANSITION_DURATION, 1.0).easing(cc.easeExponentialOut()),
-              cc.delayTime(CONFIG.NOTIFICATION_DURATION * 0.75),
-              cc.spawn(
-                cc.moveBy(CONFIG.ANIMATE_FAST_DURATION, 30.0, 0.0).easing(cc.easeExponentialIn()),
-                cc.fadeOut(CONFIG.ANIMATE_FAST_DURATION),
-              ),
-              cc.callFunc(() => {
-                this._finishShowingAfterStartTurn();
-              }),
-            ));
+            this._startTurnAfterAutomaticNotificationAction =
+              this._notificationStartTurnSprite.runAction(
+                cc.sequence(
+                  cc
+                    .scaleTo(CONFIG.NOTIFICATION_TRANSITION_DURATION, 1.0)
+                    .easing(cc.easeExponentialOut()),
+                  cc.delayTime(CONFIG.NOTIFICATION_DURATION * 0.75),
+                  cc.spawn(
+                    cc
+                      .moveBy(CONFIG.ANIMATE_FAST_DURATION, 30.0, 0.0)
+                      .easing(cc.easeExponentialIn()),
+                    cc.fadeOut(CONFIG.ANIMATE_FAST_DURATION),
+                  ),
+                  cc.callFunc(() => {
+                    this._finishShowingAfterStartTurn();
+                  }),
+                ),
+              );
           }
 
           // unlock ui
@@ -1897,7 +2088,9 @@ var GameLayer = FXCompositeLayer.extend({
             this._updateGameForPlayerSelectionLockedChange();
           }
 
-          this.getEventBus().trigger(EVENTS.after_show_start_turn, { type: EVENTS.after_show_start_turn });
+          this.getEventBus().trigger(EVENTS.after_show_start_turn, {
+            type: EVENTS.after_show_start_turn,
+          });
 
           // resolve
           this._resolveAfterStartTurnPromise();
@@ -1911,7 +2104,9 @@ var GameLayer = FXCompositeLayer.extend({
   _finishShowingAfterStartTurn() {
     if (this._notificationStartTurnSprite != null) {
       if (this._startTurnAfterAutomaticNotificationAction != null) {
-        this._notificationStartTurnSprite.stopAction(this._startTurnAfterAutomaticNotificationAction);
+        this._notificationStartTurnSprite.stopAction(
+          this._startTurnAfterAutomaticNotificationAction,
+        );
         this._startTurnAfterAutomaticNotificationAction = null;
       }
       if (this._showingStartTurnWithAutomaticActions) {
@@ -1941,10 +2136,9 @@ var GameLayer = FXCompositeLayer.extend({
       this._beginShowStartTurnPromise = new Promise((resolve) => {
         // store resolve so we can resolve even if showing start of turn is interrupted
         this._beginShowStartTurnPromiseResolve = resolve;
-      })
-        .then(() => {
-          this._beginShowStartTurnPromise = null;
-        });
+      }).then(() => {
+        this._beginShowStartTurnPromise = null;
+      });
     }
 
     // create promise for after start turn shows
@@ -1952,10 +2146,9 @@ var GameLayer = FXCompositeLayer.extend({
       this._afterShowStartTurnPromise = new Promise((resolve) => {
         // store resolve so we can resolve even if showing start of turn is interrupted
         this._afterShowStartTurnPromiseResolve = resolve;
-      })
-        .then(() => {
-          this._afterShowStartTurnPromise = null;
-        });
+      }).then(() => {
+        this._afterShowStartTurnPromise = null;
+      });
     }
 
     // create promise for when start turn is completely shown
@@ -2075,7 +2268,8 @@ var GameLayer = FXCompositeLayer.extend({
   skipShowActionCardSequence() {
     // skip showing card for action sequence
     if (this._showActionCardSequence != null) {
-      const showActionCardSequenceCompletedCallback = this._getShowActionCardSequenceCompletedCallback();
+      const showActionCardSequenceCompletedCallback =
+        this._getShowActionCardSequenceCompletedCallback();
       this._stopShowActionCardSequence();
       this.stopShowingPlayCard();
       showActionCardSequenceCompletedCallback();
@@ -2143,12 +2337,18 @@ var GameLayer = FXCompositeLayer.extend({
 
       // update readiness
       this.updateReadinessTagForAllEntities();
-    } else if ((this._showingEndTurn || this._showingStartTurn) && currentSdkStepInterface.getSdkStep().getAction() instanceof SDK.EndTurnAction) {
+    } else if (
+      (this._showingEndTurn || this._showingStartTurn) &&
+      currentSdkStepInterface.getSdkStep().getAction() instanceof SDK.EndTurnAction
+    ) {
       if (this._waitingToShowStep == null) {
         // always wait for turn change to finish showing
         this._waitingToShowStep = currentSdkStepInterface;
         this.whenStartTurnShown().then(() => {
-          if (this._currentSdkStepInterface == null && this._waitingToShowStep == currentSdkStepInterface) {
+          if (
+            this._currentSdkStepInterface == null &&
+            this._waitingToShowStep == currentSdkStepInterface
+          ) {
             this._waitingToShowStep = null;
             this.showNextStep();
           }
@@ -2177,16 +2377,36 @@ var GameLayer = FXCompositeLayer.extend({
           this._nextActionIndex = 0;
 
           // emit event that we're going to show this step
-          this.getEventBus().trigger(EVENTS.before_show_step, { type: EVENTS.before_show_step, step: currentSdkStep });
-          Logger.module('ENGINE').log(' -> showNextStep interface', currentSdkStepInterface, 'with action', currentAction);
+          this.getEventBus().trigger(EVENTS.before_show_step, {
+            type: EVENTS.before_show_step,
+            step: currentSdkStep,
+          });
+          Logger.module('ENGINE').log(
+            ' -> showNextStep interface',
+            currentSdkStepInterface,
+            'with action',
+            currentAction,
+          );
 
           // show general cast after explicit apply card to board as long as followup is complete
           let generalCastDelay = 0.0;
-          if (currentAction instanceof SDK.ApplyCardToBoardAction && !currentAction.getIsImplicit()) {
+          if (
+            currentAction instanceof SDK.ApplyCardToBoardAction &&
+            !currentAction.getIsImplicit()
+          ) {
             const owner = this.getPlayerById(currentAction.getOwnerId());
-            const playerActor = SDK.GameSession.getInstance().getIsSpectateMode() ? this._altPlayer : this._player;
-            if ((owner === this._player && !playerActor.getHasCardsWithFollowup()) || (owner === this._opponent && (currentAction instanceof SDK.PlayCardFromHandAction || currentAction instanceof SDK.PlaySignatureCardAction))) {
-              const general = SDK.GameSession.getInstance().getGeneralForPlayerId(currentAction.getOwnerId());
+            const playerActor = SDK.GameSession.getInstance().getIsSpectateMode()
+              ? this._altPlayer
+              : this._player;
+            if (
+              (owner === this._player && !playerActor.getHasCardsWithFollowup()) ||
+              (owner === this._opponent &&
+                (currentAction instanceof SDK.PlayCardFromHandAction ||
+                  currentAction instanceof SDK.PlaySignatureCardAction))
+            ) {
+              const general = SDK.GameSession.getInstance().getGeneralForPlayerId(
+                currentAction.getOwnerId(),
+              );
               const generalNode = general && this.getNodeForSdkCard(general);
               if (generalNode != null) {
                 generalCastDelay = generalNode.showCastState();
@@ -2196,13 +2416,15 @@ var GameLayer = FXCompositeLayer.extend({
 
           // start showing actions
           if (generalCastDelay > 0.0) {
-            this._setupActionForShowSequence = this.runAction(cc.sequence(
-              cc.delayTime(generalCastDelay),
-              cc.callFunc(function () {
-                this._setupActionForShowSequence = null;
-                this.showNextAction();
-              }, this),
-            ));
+            this._setupActionForShowSequence = this.runAction(
+              cc.sequence(
+                cc.delayTime(generalCastDelay),
+                cc.callFunc(function () {
+                  this._setupActionForShowSequence = null;
+                  this.showNextAction();
+                }, this),
+              ),
+            );
           } else {
             this.showNextAction();
           }
@@ -2220,10 +2442,12 @@ var GameLayer = FXCompositeLayer.extend({
     if (this._showingEndTurn) {
       this.afterShowEndTurn();
     }
-    if (this._showingStartTurn
-      && (this._stepQueue.length === 0
-      || action == null
-      || (!this._stepQueue[0].getSdkStep().getAction().getIsAutomatic()))) {
+    if (
+      this._showingStartTurn &&
+      (this._stepQueue.length === 0 ||
+        action == null ||
+        !this._stepQueue[0].getSdkStep().getAction().getIsAutomatic())
+    ) {
       this.afterShowStartTurn();
     }
 
@@ -2235,20 +2459,29 @@ var GameLayer = FXCompositeLayer.extend({
     // update stats
     this.updateShowingSdkNodeStats();
 
-    if (myAction
-      && (action instanceof SDK.MoveAction
-        || action instanceof SDK.AttackAction
-        || (action instanceof SDK.ApplyCardToBoardAction && !action.getIsImplicit()))) {
+    if (
+      myAction &&
+      (action instanceof SDK.MoveAction ||
+        action instanceof SDK.AttackAction ||
+        (action instanceof SDK.ApplyCardToBoardAction && !action.getIsImplicit()))
+    ) {
       // reset last mouse over immediately after move/attack/card
       this._resetLastMouseOverPropertiesForAction();
     }
 
     // emit event
-    this.getEventBus().trigger(EVENTS.after_show_step, { type: EVENTS.after_show_step, step: sdkStep });
+    this.getEventBus().trigger(EVENTS.after_show_step, {
+      type: EVENTS.after_show_step,
+      step: sdkStep,
+    });
 
     // show game over after showing game ending step
     const gameEndingSdkStep = SDK.GameSession.getInstance().getGameEndingStep();
-    if (sdkStep != null && gameEndingSdkStep != null && sdkStep.getIndex() === gameEndingSdkStep.getIndex()) {
+    if (
+      sdkStep != null &&
+      gameEndingSdkStep != null &&
+      sdkStep.getIndex() === gameEndingSdkStep.getIndex()
+    ) {
       this.showGameOver();
     }
   },
@@ -2279,7 +2512,9 @@ var GameLayer = FXCompositeLayer.extend({
           // but anything else using this same package will be preserved
           const unique_resource_package_id = `${id}_${UtilsJavascript.generateIncrementalId()}`;
           unique_resource_package_ids.push(unique_resource_package_id);
-          load_promises.push(PackageManager.getInstance().loadMinorPackage(unique_resource_package_id, pkg, 'game'));
+          load_promises.push(
+            PackageManager.getInstance().loadMinorPackage(unique_resource_package_id, pkg, 'game'),
+          );
         }
       }
     };
@@ -2300,7 +2535,11 @@ var GameLayer = FXCompositeLayer.extend({
       }
 
       // get resources for modifier
-      if (sequenceAction instanceof ModifierAction || sequenceAction instanceof SDK.ApplyModifierAction || sequenceAction instanceof SDK.RemoveModifierAction) {
+      if (
+        sequenceAction instanceof ModifierAction ||
+        sequenceAction instanceof SDK.ApplyModifierAction ||
+        sequenceAction instanceof SDK.RemoveModifierAction
+      ) {
         const modifier = sequenceAction.getModifier();
         if (modifier instanceof SDK.Modifier) {
           loadActionResourcePackage(modifier.getType());
@@ -2349,9 +2588,13 @@ var GameLayer = FXCompositeLayer.extend({
       // only process actions we've not yet processed
       // skip actions with no sub actions when they are targeting cards in deck
       var sdkActionInterface = this._actionInterfacesByIndex[currentActionIndex];
-      if (sdkActionInterface == null && (currentActionIndex === rootActionIndex || !this._getIsActionSkippable(currentAction))) {
+      if (
+        sdkActionInterface == null &&
+        (currentActionIndex === rootActionIndex || !this._getIsActionSkippable(currentAction))
+      ) {
         // create action interface for action and map to step
-        sdkActionInterface = this._actionInterfacesByIndex[currentActionIndex] = new SdkActionInterface(currentAction);
+        sdkActionInterface = this._actionInterfacesByIndex[currentActionIndex] =
+          new SdkActionInterface(currentAction);
         sdkActionInterface.setSdkStepInterface(sdkStepInterface);
 
         // get sub actions, but not resolve sub actions
@@ -2363,7 +2606,11 @@ var GameLayer = FXCompositeLayer.extend({
         this._createModifierActionInterfacesForActionInterface(sdkActionInterface);
 
         // add current action
-        if (currentAction.getCreatedByTriggeringModifier() || currentAction instanceof SDK.ApplyModifierAction || currentAction instanceof SDK.RemoveModifierAction) {
+        if (
+          currentAction.getCreatedByTriggeringModifier() ||
+          currentAction instanceof SDK.ApplyModifierAction ||
+          currentAction instanceof SDK.RemoveModifierAction
+        ) {
           // action is a modifier action when created by a triggering modifier and not forced to be in the first sequence of actions
           modifierActionInterfaces.push(sdkActionInterface);
         } else {
@@ -2373,13 +2620,21 @@ var GameLayer = FXCompositeLayer.extend({
 
         // add current action triggered modifier actions
         if (sdkActionInterface.cachedResolveTriggeredModifierActionInterfaces.length > 0) {
-          modifierActionInterfaces = modifierActionInterfaces.concat(sdkActionInterface.cachedResolveTriggeredModifierActionInterfaces);
+          modifierActionInterfaces = modifierActionInterfaces.concat(
+            sdkActionInterface.cachedResolveTriggeredModifierActionInterfaces,
+          );
         }
 
         // cache resolve sub actions and filter
         const resolveSubActions = currentAction.getResolveSubActions();
         if (currentAction instanceof SDK.StopBufferingEventsAction) {
-          sdkActionInterface.cachedResolveSubActions = _.union(subActions, _.filter(resolveSubActions, (resolveSubAction) => !this._getIsActionSkippable(resolveSubAction)));
+          sdkActionInterface.cachedResolveSubActions = _.union(
+            subActions,
+            _.filter(
+              resolveSubActions,
+              (resolveSubAction) => !this._getIsActionSkippable(resolveSubAction),
+            ),
+          );
         } else {
           sdkActionInterface.cachedResolveSubActions = [];
           for (var i = 0, il = resolveSubActions.length; i < il; i++) {
@@ -2450,15 +2705,27 @@ var GameLayer = FXCompositeLayer.extend({
       var sdkActionInterface = modifierActionInterfaces[i];
       var currentAction = sdkActionInterface.getSdkAction();
       var parentAction = currentAction.getParentAction();
-      var resolveParentAction = parentAction instanceof SDK.StopBufferingEventsAction ? parentAction : currentAction.getResolveParentAction();
+      var resolveParentAction =
+        parentAction instanceof SDK.StopBufferingEventsAction
+          ? parentAction
+          : currentAction.getResolveParentAction();
       if (resolveParentAction != null) {
-        var resolveParentActionInterface = this._actionInterfacesByIndex[resolveParentAction.getIndex()];
-        if (resolveParentActionInterface != null
-          && resolveParentActionInterface.rearrangedActionInterfaces == null && !resolveParentActionInterface.rearranging
-          && ((resolveParentActionInterface.cachedResolveTriggeredModifierActionInterfaces && resolveParentActionInterface.cachedResolveTriggeredModifierActionInterfaces.length > 0)
-            || currentAction instanceof SDK.ApplyModifierAction || currentAction instanceof SDK.RemoveModifierAction)) {
+        var resolveParentActionInterface =
+          this._actionInterfacesByIndex[resolveParentAction.getIndex()];
+        if (
+          resolveParentActionInterface != null &&
+          resolveParentActionInterface.rearrangedActionInterfaces == null &&
+          !resolveParentActionInterface.rearranging &&
+          ((resolveParentActionInterface.cachedResolveTriggeredModifierActionInterfaces &&
+            resolveParentActionInterface.cachedResolveTriggeredModifierActionInterfaces.length >
+              0) ||
+            currentAction instanceof SDK.ApplyModifierAction ||
+            currentAction instanceof SDK.RemoveModifierAction)
+        ) {
           // when the parent action triggers modifiers, get all of its actions depth first
-          var rearrangedActionInterfaces = this._getActionInterfacesDepthFirstForTriggeringSequence(resolveParentActionInterface);
+          var rearrangedActionInterfaces = this._getActionInterfacesDepthFirstForTriggeringSequence(
+            resolveParentActionInterface,
+          );
 
           // make parent action a new sequence root
           var sequenceRootSdkActionInterface;
@@ -2470,35 +2737,59 @@ var GameLayer = FXCompositeLayer.extend({
           const sequenceRootAction = sequenceRootSdkActionInterface.getSdkAction();
           sequenceRootSdkActionInterface.rearrangedActionInterfaces = rearrangedActionInterfaces;
           sequenceRootSdkActionInterface.isSequenceRoot = true;
-          sequenceRootSdkActionInterface.isSequencedAsOne = this._getIsActionSequencedAsOne(sequenceRootAction);
+          sequenceRootSdkActionInterface.isSequencedAsOne =
+            this._getIsActionSequencedAsOne(sequenceRootAction);
           sequenceRootSdkActionInterface.isSequenceSequencedAsOne = true;
 
-          if (resolveParentActionInterface.isFirstSequenceAndSequencedAsOne
-            && this.getIsActionRemoval(resolveParentAction)) {
+          if (
+            resolveParentActionInterface.isFirstSequenceAndSequencedAsOne &&
+            this.getIsActionRemoval(resolveParentAction)
+          ) {
             // parent action is part of first sequence as one and it is a removal action
             // remove parent action and any rearranged actions from flattened actions and first sequence actions
             // and move everything to the end of the first sequence
-            nonModifierActionInterfaces = _.difference(nonModifierActionInterfaces, rearrangedActionInterfaces);
-            nonModifierActionInterfaces = _.without(nonModifierActionInterfaces, resolveParentActionInterface);
-            firstSequenceActionInterfaces = _.difference(firstSequenceActionInterfaces, rearrangedActionInterfaces);
-            firstSequenceActionInterfaces = _.without(firstSequenceActionInterfaces, resolveParentActionInterface);
+            nonModifierActionInterfaces = _.difference(
+              nonModifierActionInterfaces,
+              rearrangedActionInterfaces,
+            );
+            nonModifierActionInterfaces = _.without(
+              nonModifierActionInterfaces,
+              resolveParentActionInterface,
+            );
+            firstSequenceActionInterfaces = _.difference(
+              firstSequenceActionInterfaces,
+              rearrangedActionInterfaces,
+            );
+            firstSequenceActionInterfaces = _.without(
+              firstSequenceActionInterfaces,
+              resolveParentActionInterface,
+            );
             nonModifierActionInterfaces.push(sequenceRootSdkActionInterface);
             firstSequenceActionInterfaces.push(sequenceRootSdkActionInterface);
           }
 
           // check that sequence root is valid
-          if (sequenceRootSdkActionInterface != null && !sequenceRootSdkActionInterface.isFirstSequenceRoot) {
+          if (
+            sequenceRootSdkActionInterface != null &&
+            !sequenceRootSdkActionInterface.isFirstSequenceRoot
+          ) {
             let isInvalidSequenceRoot = false;
             if (sequenceRootAction.getTriggeringModifierIndex() != null) {
               // actions created by a triggering modifier are not valid sequence roots
               isInvalidSequenceRoot = true;
-            } else if (sequenceRootAction instanceof SDK.ApplyCardToBoardAction && sequenceRootAction.getIsValidApplication()) {
+            } else if (
+              sequenceRootAction instanceof SDK.ApplyCardToBoardAction &&
+              sequenceRootAction.getIsValidApplication()
+            ) {
               // apply card to board actions that only trigger first blood are invalid sequence roots
               let hasValidTriggeringModifier = false;
               for (var j = 0, jl = rearrangedActionInterfaces.length; j < jl; j++) {
                 const rearrangedActionInterface = rearrangedActionInterfaces[j];
                 const rearrangedAction = rearrangedActionInterface.getSdkAction();
-                if (rearrangedAction instanceof ModifierTriggeredAction && !(rearrangedAction.getModifier() instanceof SDK.ModifierFirstBlood)) {
+                if (
+                  rearrangedAction instanceof ModifierTriggeredAction &&
+                  !(rearrangedAction.getModifier() instanceof SDK.ModifierFirstBlood)
+                ) {
                   hasValidTriggeringModifier = true;
                   break;
                 }
@@ -2507,20 +2798,35 @@ var GameLayer = FXCompositeLayer.extend({
             }
 
             if (isInvalidSequenceRoot) {
-              sequenceRootSdkActionInterface.isSequenceRoot = sequenceRootSdkActionInterface.isSequencedAsOne = sequenceRootSdkActionInterface.isSequenceSequencedAsOne = false;
+              sequenceRootSdkActionInterface.isSequenceRoot =
+                sequenceRootSdkActionInterface.isSequencedAsOne =
+                sequenceRootSdkActionInterface.isSequenceSequencedAsOne =
+                  false;
             }
           }
         } else if (!sdkActionInterface.rearranging) {
           // this modifier action has not yet been rearranged
           // if parent is rearranging, get root rearranged action
           if (resolveParentActionInterface.rearranging) {
-            resolveParentActionInterface = this._getRootDepthFirstRearrangedActionInterface(resolveParentActionInterface);
+            resolveParentActionInterface = this._getRootDepthFirstRearrangedActionInterface(
+              resolveParentActionInterface,
+            );
           }
 
           // add actions to the flattened actions (it must not exist there yet)
-          if (resolveParentActionInterface.isFirstSequenceAndSequencedAsOne && sdkActionInterface.isSequenceRoot) {
+          if (
+            resolveParentActionInterface.isFirstSequenceAndSequencedAsOne &&
+            sdkActionInterface.isSequenceRoot
+          ) {
             // parent is a part of the first sequence, add this new sequence to the end of first sequence
-            nonModifierActionInterfaces.splice(_.indexOf(nonModifierActionInterfaces, firstSequenceActionInterfaces[firstSequenceActionInterfaces.length - 1]) + 1, 0, sdkActionInterface);
+            nonModifierActionInterfaces.splice(
+              _.indexOf(
+                nonModifierActionInterfaces,
+                firstSequenceActionInterfaces[firstSequenceActionInterfaces.length - 1],
+              ) + 1,
+              0,
+              sdkActionInterface,
+            );
             firstSequenceActionInterfaces.push(sdkActionInterface);
           } else {
             const index = _.indexOf(nonModifierActionInterfaces, resolveParentActionInterface);
@@ -2541,7 +2847,12 @@ var GameLayer = FXCompositeLayer.extend({
       for (let i = actionInterfaces.length - 1; i >= 0; i--) {
         const sdkActionInterface = actionInterfaces[i];
         const { rearrangedActionInterfaces } = sdkActionInterface;
-        if ((!sdkActionInterface.rearranging || rearranged || (rearrangedActionInterfaces != null && rearrangedActionInterfaces.length > 0)) && !_.contains(actionInterfaceSequence, sdkActionInterface)) {
+        if (
+          (!sdkActionInterface.rearranging ||
+            rearranged ||
+            (rearrangedActionInterfaces != null && rearrangedActionInterfaces.length > 0)) &&
+          !_.contains(actionInterfaceSequence, sdkActionInterface)
+        ) {
           if (rearrangedActionInterfaces != null) {
             addSequencedActions(rearrangedActionInterfaces, true);
           }
@@ -2559,19 +2870,26 @@ var GameLayer = FXCompositeLayer.extend({
         const modifier = currentAction.getModifier();
         if (modifier instanceof SDK.Modifier) {
           var resolveParentAction = currentAction.getResolveParentAction();
-          var resolveParentActionInterface = this._actionInterfacesByIndex[resolveParentAction.getIndex()];
+          var resolveParentActionInterface =
+            this._actionInterfacesByIndex[resolveParentAction.getIndex()];
           let nextActionAfterTriggeringGroupIsSequenceRoot = false;
 
           // some triggering modifiers must always be followed by a new sequence
-          if (resolveParentAction instanceof SDK.AttackAction
-            || resolveParentAction instanceof SDK.DamageAsAttackAction
-            || (resolveParentActionInterface === rootActionInterface && resolveParentActionInterface.isFirstSequenceAndSequencedAsOne)) {
+          if (
+            resolveParentAction instanceof SDK.AttackAction ||
+            resolveParentAction instanceof SDK.DamageAsAttackAction ||
+            (resolveParentActionInterface === rootActionInterface &&
+              resolveParentActionInterface.isFirstSequenceAndSequencedAsOne)
+          ) {
             nextActionAfterTriggeringGroupIsSequenceRoot = true;
           }
 
           // some triggering modifiers must always be the root of a new sequence
-          if ((resolveParentAction instanceof SDK.AttackAction || resolveParentAction instanceof SDK.DamageAsAttackAction)
-            && !(modifier instanceof SDK.ModifierFrenzy || modifier instanceof SDK.ModifierBlastAttack)) {
+          if (
+            (resolveParentAction instanceof SDK.AttackAction ||
+              resolveParentAction instanceof SDK.DamageAsAttackAction) &&
+            !(modifier instanceof SDK.ModifierFrenzy || modifier instanceof SDK.ModifierBlastAttack)
+          ) {
             sdkActionInterface.isSequenceRoot = true;
             sdkActionInterface.isSequencedAsOne = this._getIsActionSequencedAsOne(currentAction);
             sdkActionInterface.isSequenceSequencedAsOne = true;
@@ -2585,11 +2903,18 @@ var GameLayer = FXCompositeLayer.extend({
               var nextAction = nextActionInterface.getSdkAction();
               let nextActionRootAction = nextAction;
               let nextActionResolveParentAction = nextAction.getResolveParentAction();
-              while (nextActionResolveParentAction != null && nextActionResolveParentAction != resolveParentAction) {
+              while (
+                nextActionResolveParentAction != null &&
+                nextActionResolveParentAction != resolveParentAction
+              ) {
                 nextActionRootAction = nextActionResolveParentAction;
-                nextActionResolveParentAction = nextActionResolveParentAction.getResolveParentAction();
+                nextActionResolveParentAction =
+                  nextActionResolveParentAction.getResolveParentAction();
               }
-              if (!(nextActionRootAction instanceof ModifierAction) && nextActionRootAction.getTriggeringModifierIndex() == null) {
+              if (
+                !(nextActionRootAction instanceof ModifierAction) &&
+                nextActionRootAction.getTriggeringModifierIndex() == null
+              ) {
                 nextActionInterface.isSequenceRoot = true;
                 nextActionInterface.isSequencedAsOne = this._getIsActionSequencedAsOne(nextAction);
                 nextActionInterface.isSequenceSequencedAsOne = true;
@@ -2609,21 +2934,30 @@ var GameLayer = FXCompositeLayer.extend({
       if (this._getActionAlwaysFollowsParent(currentAction)) {
         var resolveParentAction = currentAction.getResolveParentAction();
         if (resolveParentAction != null) {
-          var resolveParentActionInterface = this._actionInterfacesByIndex[resolveParentAction.getIndex()];
-          const indexOfResolveParentAction = _.indexOf(actionInterfaceSequence, resolveParentActionInterface);
+          var resolveParentActionInterface =
+            this._actionInterfacesByIndex[resolveParentAction.getIndex()];
+          const indexOfResolveParentAction = _.indexOf(
+            actionInterfaceSequence,
+            resolveParentActionInterface,
+          );
           if (i > indexOfResolveParentAction + 1) {
             actionInterfaceSequence.splice(i, 1);
             actionInterfaceSequence.splice(indexOfResolveParentAction + 1, 0, sdkActionInterface);
           }
 
           // don't allow this action to be a sequence root
-          sdkActionInterface.isSequenceRoot = sdkActionInterface.isSequencedAsOne = sdkActionInterface.isSequenceSequencedAsOne = false;
-          sdkActionInterface.isFirstSequence = sdkActionInterface.isFirstSequenceAndSequencedAsOne = false;
+          sdkActionInterface.isSequenceRoot =
+            sdkActionInterface.isSequencedAsOne =
+            sdkActionInterface.isSequenceSequencedAsOne =
+              false;
+          sdkActionInterface.isFirstSequence =
+            sdkActionInterface.isFirstSequenceAndSequencedAsOne = false;
 
           // resolve parent action should always be a sequence root
           if (!resolveParentActionInterface.isSequenceRoot) {
             resolveParentActionInterface.isSequenceRoot = true;
-            resolveParentActionInterface.isSequencedAsOne = this._getIsActionSequencedAsOne(resolveParentAction);
+            resolveParentActionInterface.isSequencedAsOne =
+              this._getIsActionSequencedAsOne(resolveParentAction);
             resolveParentActionInterface.isSequenceSequencedAsOne = true;
           }
         }
@@ -2637,12 +2971,18 @@ var GameLayer = FXCompositeLayer.extend({
       var { rearrangedActionInterfaces } = sdkActionInterface;
 
       // check following sequence root
-      if (sdkActionInterface.isSequenceRoot && rearrangedActionInterfaces != null && rearrangedActionInterfaces.length > 0) {
+      if (
+        sdkActionInterface.isSequenceRoot &&
+        rearrangedActionInterfaces != null &&
+        rearrangedActionInterfaces.length > 0
+      ) {
         const nextSequenceRootIndex = i + rearrangedActionInterfaces.length + 1;
         const nextSequenceRootActionInterface = actionInterfaceSequence[nextSequenceRootIndex];
         if (nextSequenceRootActionInterface && !nextSequenceRootActionInterface.isSequenceRoot) {
           nextSequenceRootActionInterface.isSequenceRoot = true;
-          nextSequenceRootActionInterface.isSequencedAsOne = this._getIsActionSequencedAsOne(nextSequenceRootActionInterface.getSdkAction());
+          nextSequenceRootActionInterface.isSequencedAsOne = this._getIsActionSequencedAsOne(
+            nextSequenceRootActionInterface.getSdkAction(),
+          );
           nextSequenceRootActionInterface.isSequenceSequencedAsOne = true;
         }
       }
@@ -2667,15 +3007,23 @@ var GameLayer = FXCompositeLayer.extend({
 
         // both triggering modifier action and this action should be sequence roots
         const { rearrangingParentActionInterface } = sdkActionInterface;
-        const rearrangingParentAction = rearrangingParentActionInterface && rearrangingParentActionInterface.getSdkAction();
-        if (rearrangingParentAction instanceof ModifierTriggeredAction && !rearrangingParentActionInterface.isSequenceRoot) {
+        const rearrangingParentAction =
+          rearrangingParentActionInterface && rearrangingParentActionInterface.getSdkAction();
+        if (
+          rearrangingParentAction instanceof ModifierTriggeredAction &&
+          !rearrangingParentActionInterface.isSequenceRoot
+        ) {
           rearrangingParentActionInterface.isSequenceRoot = true;
-          rearrangingParentActionInterface.isSequencedAsOne = this._getIsActionSequencedAsOne(rearrangingParentAction);
+          rearrangingParentActionInterface.isSequencedAsOne =
+            this._getIsActionSequencedAsOne(rearrangingParentAction);
           rearrangingParentActionInterface.isSequenceSequencedAsOne = true;
         }
 
         // when revealing a hidden card, the action following this one should be a sequence root
-        if (currentAction instanceof SDK.RevealHiddenCardAction && actionInterfaceSequence.length > i + 1) {
+        if (
+          currentAction instanceof SDK.RevealHiddenCardAction &&
+          actionInterfaceSequence.length > i + 1
+        ) {
           var nextActionInterface = actionInterfaceSequence[i + 1];
           var nextAction = nextActionInterface.getSdkAction();
           nextActionInterface.isSequenceRoot = true;
@@ -2704,9 +3052,14 @@ var GameLayer = FXCompositeLayer.extend({
         }
       }
 
-      if (sequenceRootSdkActionInterface != null && !sequenceRootSdkActionInterface.isSequenceRoot) {
+      if (
+        sequenceRootSdkActionInterface != null &&
+        !sequenceRootSdkActionInterface.isSequenceRoot
+      ) {
         sequenceRootSdkActionInterface.isSequenceRoot = true;
-        sequenceRootSdkActionInterface.isSequencedAsOne = this._getIsActionSequencedAsOne(sequenceRootSdkActionInterface.getSdkAction());
+        sequenceRootSdkActionInterface.isSequencedAsOne = this._getIsActionSequencedAsOne(
+          sequenceRootSdkActionInterface.getSdkAction(),
+        );
         sequenceRootSdkActionInterface.isSequenceSequencedAsOne = true;
       }
     }
@@ -2726,10 +3079,13 @@ var GameLayer = FXCompositeLayer.extend({
 
         // force sort index of sequence roots to be right before parent action when overwatch triggers
         // unless overwatch was triggered by a played card
-        if (currentAction instanceof ModifierTriggeredAction
-            && currentAction.getModifier() instanceof SDK.ModifierOverwatch
-            && !(currentAction.getResolveParentAction() instanceof SDK.ApplyCardToBoardAction)) {
-          sdkActionInterface.forcedSortIndex = forcedSortIndex = currentAction.getParentActionIndex() - 0.1;
+        if (
+          currentAction instanceof ModifierTriggeredAction &&
+          currentAction.getModifier() instanceof SDK.ModifierOverwatch &&
+          !(currentAction.getResolveParentAction() instanceof SDK.ApplyCardToBoardAction)
+        ) {
+          sdkActionInterface.forcedSortIndex = forcedSortIndex =
+            currentAction.getParentActionIndex() - 0.1;
         } else if (forcedSortIndex != null) {
           sdkActionInterface.forcedSortIndex = forcedSortIndex;
         }
@@ -2739,17 +3095,25 @@ var GameLayer = FXCompositeLayer.extend({
           forcedSortIndex = null;
         }
 
-        if (currentAction instanceof ModifierAction
-          || currentAction instanceof SDK.ApplyModifierAction
-          || currentAction instanceof SDK.RemoveModifierAction) {
+        if (
+          currentAction instanceof ModifierAction ||
+          currentAction instanceof SDK.ApplyModifierAction ||
+          currentAction instanceof SDK.RemoveModifierAction
+        ) {
           let parentSdkActionInterface = sdkActionInterface;
           var parentAction = currentAction;
-          while (parentAction instanceof ModifierAction
-          || parentAction instanceof SDK.ApplyModifierAction
-          || parentAction instanceof SDK.RemoveModifierAction) {
+          while (
+            parentAction instanceof ModifierAction ||
+            parentAction instanceof SDK.ApplyModifierAction ||
+            parentAction instanceof SDK.RemoveModifierAction
+          ) {
             const parentOfParentAction = parentAction.getParentAction();
-            const resolveParentOfParentAction = parentOfParentAction instanceof SDK.StopBufferingEventsAction ? parentOfParentAction : parentAction.getResolveParentAction();
-            parentSdkActionInterface = this._actionInterfacesByIndex[resolveParentOfParentAction.getIndex()];
+            const resolveParentOfParentAction =
+              parentOfParentAction instanceof SDK.StopBufferingEventsAction
+                ? parentOfParentAction
+                : parentAction.getResolveParentAction();
+            parentSdkActionInterface =
+              this._actionInterfacesByIndex[resolveParentOfParentAction.getIndex()];
             parentAction = parentSdkActionInterface && parentSdkActionInterface.getSdkAction();
           }
           if (parentSdkActionInterface != null && parentSdkActionInterface != sdkActionInterface) {
@@ -2759,7 +3123,8 @@ var GameLayer = FXCompositeLayer.extend({
             }
             parentSdkActionInterface.sequenceActionInterfaces.push(sdkActionInterface);
           } else {
-            sdkActionInterface.sequenceRootSdkActionInterface = currentSequenceRootSdkActionInterface;
+            sdkActionInterface.sequenceRootSdkActionInterface =
+              currentSequenceRootSdkActionInterface;
             currentSequenceActionInterfaces.push(sdkActionInterface);
           }
         } else {
@@ -2809,37 +3174,62 @@ var GameLayer = FXCompositeLayer.extend({
 
       // add all modifiers that were deactivated/activated just after the action they were removed/added by
       let afterActionModifierActionInterfaces = [];
-      if (sdkActionInterface.cachedResolveDeactivatedModifierActionInterfaces != null && sdkActionInterface.cachedResolveDeactivatedModifierActionInterfaces.length > 0) {
-        afterActionModifierActionInterfaces = afterActionModifierActionInterfaces.concat(sdkActionInterface.cachedResolveDeactivatedModifierActionInterfaces);
+      if (
+        sdkActionInterface.cachedResolveDeactivatedModifierActionInterfaces != null &&
+        sdkActionInterface.cachedResolveDeactivatedModifierActionInterfaces.length > 0
+      ) {
+        afterActionModifierActionInterfaces = afterActionModifierActionInterfaces.concat(
+          sdkActionInterface.cachedResolveDeactivatedModifierActionInterfaces,
+        );
       }
-      if (sdkActionInterface.cachedResolveActivatedModifierActionInterfaces != null && sdkActionInterface.cachedResolveActivatedModifierActionInterfaces.length > 0) {
-        afterActionModifierActionInterfaces = afterActionModifierActionInterfaces.concat(sdkActionInterface.cachedResolveActivatedModifierActionInterfaces);
+      if (
+        sdkActionInterface.cachedResolveActivatedModifierActionInterfaces != null &&
+        sdkActionInterface.cachedResolveActivatedModifierActionInterfaces.length > 0
+      ) {
+        afterActionModifierActionInterfaces = afterActionModifierActionInterfaces.concat(
+          sdkActionInterface.cachedResolveActivatedModifierActionInterfaces,
+        );
       }
       if (afterActionModifierActionInterfaces.length > 0) {
-        Array.prototype.splice.apply(actionInterfaceSequence, [i + 1, 0].concat(afterActionModifierActionInterfaces));
+        Array.prototype.splice.apply(
+          actionInterfaceSequence,
+          [i + 1, 0].concat(afterActionModifierActionInterfaces),
+        );
       }
 
       // add all modifiers that changed an action just before the action they changed
-      const triggeredModifierActionInterfacesForChanges = sdkActionInterface.cachedTriggeredModifierActionInterfacesForChanges;
-      if (triggeredModifierActionInterfacesForChanges && triggeredModifierActionInterfacesForChanges.length > 0) {
-        Array.prototype.splice.apply(actionInterfaceSequence, [i, 0].concat(triggeredModifierActionInterfacesForChanges));
+      const triggeredModifierActionInterfacesForChanges =
+        sdkActionInterface.cachedTriggeredModifierActionInterfacesForChanges;
+      if (
+        triggeredModifierActionInterfacesForChanges &&
+        triggeredModifierActionInterfacesForChanges.length > 0
+      ) {
+        Array.prototype.splice.apply(
+          actionInterfaceSequence,
+          [i, 0].concat(triggeredModifierActionInterfacesForChanges),
+        );
 
         // setup sequencing
         const firstChangeActionInterface = triggeredModifierActionInterfacesForChanges[0];
-        firstChangeActionInterface.isSequenceRoot = firstChangeActionInterface.isSequencedAsOne = firstChangeActionInterface.isSequenceSequencedAsOne = sdkActionInterface.isSequenceRoot;
+        firstChangeActionInterface.isSequenceRoot =
+          firstChangeActionInterface.isSequencedAsOne =
+          firstChangeActionInterface.isSequenceSequencedAsOne =
+            sdkActionInterface.isSequenceRoot;
       }
 
       // ensure some actions are never sequence roots
       // unless action caused modifiers to trigger
       // this is done after all sequence sorting to ensure correct ordering
-      if (sdkActionInterface.isSequenceRoot
-        && (!this._getActionIsAlwaysSequenceRoot(currentAction)
-          || this._getActionIsExceptionToSequenceRoot(currentAction))
-        && (sdkActionInterface.cachedResolveTriggeredModifierActionInterfaces == null
-          || sdkActionInterface.cachedResolveTriggeredModifierActionInterfaces.length === 0
-          || sdkActionInterface.sequenceActionInterfaces == null
-          || sdkActionInterface.sequenceActionInterfaces.length === 0
-          || sdkActionInterface.sequenceActionInterfacesAreOnlyForModifiers)) {
+      if (
+        sdkActionInterface.isSequenceRoot &&
+        (!this._getActionIsAlwaysSequenceRoot(currentAction) ||
+          this._getActionIsExceptionToSequenceRoot(currentAction)) &&
+        (sdkActionInterface.cachedResolveTriggeredModifierActionInterfaces == null ||
+          sdkActionInterface.cachedResolveTriggeredModifierActionInterfaces.length === 0 ||
+          sdkActionInterface.sequenceActionInterfaces == null ||
+          sdkActionInterface.sequenceActionInterfaces.length === 0 ||
+          sdkActionInterface.sequenceActionInterfacesAreOnlyForModifiers)
+      ) {
         var resolveParentAction = currentAction.getResolveParentAction();
         if (resolveParentAction != null) {
           // when current action has more than 1 sibling of the same class
@@ -2861,7 +3251,10 @@ var GameLayer = FXCompositeLayer.extend({
                 const subActions = action.getResolveSubActions();
                 for (let k = 0, kl = subActions.length; k < kl; k++) {
                   const subAction = subActions[k];
-                  if (subAction.getType() === currentActionType && !_.contains(siblingActions, subAction)) {
+                  if (
+                    subAction.getType() === currentActionType &&
+                    !_.contains(siblingActions, subAction)
+                  ) {
                     siblingActions.push(subAction);
                   }
                 }
@@ -2876,7 +3269,8 @@ var GameLayer = FXCompositeLayer.extend({
             // cache results with each sibling action
             for (var j = 0, jl = siblingActions.length; j < jl; j++) {
               const siblingAction = siblingActions[j];
-              const siblingActionInterface = this._actionInterfacesByIndex[siblingAction.getIndex()];
+              const siblingActionInterface =
+                this._actionInterfacesByIndex[siblingAction.getIndex()];
               // sibling action may not have action interface if it is a skippable action
               if (siblingActionInterface != null) {
                 siblingActionInterface.siblingActions = siblingActions;
@@ -2889,25 +3283,44 @@ var GameLayer = FXCompositeLayer.extend({
             const indexInSiblings = _.indexOf(siblingActions, currentAction);
             if (indexInSiblings === -1) {
               // don't allow this action to be a root if not in sibling actions
-              sdkActionInterface.isSequenceRoot = sdkActionInterface.isSequencedAsOne = sdkActionInterface.isSequenceSequencedAsOne = false;
+              sdkActionInterface.isSequenceRoot =
+                sdkActionInterface.isSequencedAsOne =
+                sdkActionInterface.isSequenceSequencedAsOne =
+                  false;
             } else if (siblingActions[0] === currentAction) {
               // don't allow this action to be a root if it is first and did not cause modifiers to trigger, unless it was caused by an attack
-              if ((sdkActionInterface.cachedResolveTriggeredModifierActionInterfaces == null
-                || sdkActionInterface.cachedResolveTriggeredModifierActionInterfaces.length === 0)
-                && !(resolveParentAction instanceof SDK.AttackAction || resolveParentAction instanceof SDK.DamageAsAttackAction)) {
-                sdkActionInterface.isSequenceRoot = sdkActionInterface.isSequencedAsOne = sdkActionInterface.isSequenceSequencedAsOne = false;
+              if (
+                (sdkActionInterface.cachedResolveTriggeredModifierActionInterfaces == null ||
+                  sdkActionInterface.cachedResolveTriggeredModifierActionInterfaces.length === 0) &&
+                !(
+                  resolveParentAction instanceof SDK.AttackAction ||
+                  resolveParentAction instanceof SDK.DamageAsAttackAction
+                )
+              ) {
+                sdkActionInterface.isSequenceRoot =
+                  sdkActionInterface.isSequencedAsOne =
+                  sdkActionInterface.isSequenceSequencedAsOne =
+                    false;
               }
             } else {
               // don't allow this action to be a root unless previous caused modifiers to trigger
               const previousSiblingAction = siblingActions[indexInSiblings - 1];
-              const previousSiblingActionInterface = this._actionInterfacesByIndex[previousSiblingAction.getIndex()];
-              if (previousSiblingActionInterface != null
-                && (previousSiblingActionInterface.cachedResolveTriggeredModifierActionInterfaces == null
-                  || previousSiblingActionInterface.cachedResolveTriggeredModifierActionInterfaces.length === 0
-                  || previousSiblingActionInterface.sequenceActionInterfaces == null
-                  || previousSiblingActionInterface.sequenceActionInterfaces.length === 0
-                  || previousSiblingActionInterface.sequenceActionInterfacesAreOnlyForModifiers)) {
-                sdkActionInterface.isSequenceRoot = sdkActionInterface.isSequencedAsOne = sdkActionInterface.isSequenceSequencedAsOne = false;
+              const previousSiblingActionInterface =
+                this._actionInterfacesByIndex[previousSiblingAction.getIndex()];
+              if (
+                previousSiblingActionInterface != null &&
+                (previousSiblingActionInterface.cachedResolveTriggeredModifierActionInterfaces ==
+                  null ||
+                  previousSiblingActionInterface.cachedResolveTriggeredModifierActionInterfaces
+                    .length === 0 ||
+                  previousSiblingActionInterface.sequenceActionInterfaces == null ||
+                  previousSiblingActionInterface.sequenceActionInterfaces.length === 0 ||
+                  previousSiblingActionInterface.sequenceActionInterfacesAreOnlyForModifiers)
+              ) {
+                sdkActionInterface.isSequenceRoot =
+                  sdkActionInterface.isSequencedAsOne =
+                  sdkActionInterface.isSequenceSequencedAsOne =
+                    false;
               }
             }
           }
@@ -2918,11 +3331,16 @@ var GameLayer = FXCompositeLayer.extend({
     // ensure if first action is play card from hand that next action is root of new sequence
     const firstActionInterface = actionInterfaceSequence[0];
     const firstAction = firstActionInterface.getSdkAction();
-    if (firstAction instanceof SDK.PlayCardFromHandAction || firstAction instanceof SDK.PlaySignatureCardAction) {
+    if (
+      firstAction instanceof SDK.PlayCardFromHandAction ||
+      firstAction instanceof SDK.PlaySignatureCardAction
+    ) {
       const secondActionInterface = actionInterfaceSequence[1];
       if (secondActionInterface != null && !secondActionInterface.isSequenceRoot) {
         secondActionInterface.isSequenceRoot = true;
-        secondActionInterface.isSequencedAsOne = this._getIsActionSequencedAsOne(secondActionInterface.getSdkAction());
+        secondActionInterface.isSequencedAsOne = this._getIsActionSequencedAsOne(
+          secondActionInterface.getSdkAction(),
+        );
         secondActionInterface.isSequenceSequencedAsOne = true;
       }
     }
@@ -2953,10 +3371,17 @@ var GameLayer = FXCompositeLayer.extend({
     skippable = false;
 
     // skip modifier actions that are targeting cards in deck
-    if ((action instanceof SDK.ApplyModifierAction || action instanceof SDK.RemoveModifierAction)
-        && (action.getTarget() == null || (action.getTarget().getIsLocatedInDeck() && this.getNodeForSdkCard(action.getTarget()) == null))) {
+    if (
+      (action instanceof SDK.ApplyModifierAction || action instanceof SDK.RemoveModifierAction) &&
+      (action.getTarget() == null ||
+        (action.getTarget().getIsLocatedInDeck() &&
+          this.getNodeForSdkCard(action.getTarget()) == null))
+    ) {
       const subActions = [].concat(action.getSubActions(), action.getResolveSubActions());
-      const unskippableSubAction = _.find(subActions, (subAction) => !this._getIsActionSkippable(subAction));
+      const unskippableSubAction = _.find(
+        subActions,
+        (subAction) => !this._getIsActionSkippable(subAction),
+      );
       if (unskippableSubAction == null) {
         skippable = true;
       }
@@ -2969,26 +3394,32 @@ var GameLayer = FXCompositeLayer.extend({
   },
 
   _getActionIsAlwaysSequenceRoot(action) {
-    return (action instanceof SDK.PutCardInHandAction && (action instanceof SDK.ReplaceCardFromHandAction || action.getOwnerId() === this.getMyPlayerId()))
-      || action instanceof SDK.BurnCardAction
-      || action instanceof SDK.PutCardInDeckAction
-      || action instanceof SDK.GenerateSignatureCardAction
-      || action instanceof SDK.RemoveCardFromHandAction
-      || action instanceof SDK.EndTurnAction
-      || action instanceof SDK.StartTurnAction
-      || action instanceof SDK.MoveAction
-      || (action instanceof SDK.TeleportAction && action.getIsValidTeleport())
-      || action instanceof SDK.SwapUnitsAction
-      || action instanceof SDK.BonusManaAction
-      || action instanceof SDK.DamageAsAttackAction
-      || action instanceof SDK.DieAction
-      || action instanceof SDK.RevealHiddenCardAction;
+    return (
+      (action instanceof SDK.PutCardInHandAction &&
+        (action instanceof SDK.ReplaceCardFromHandAction ||
+          action.getOwnerId() === this.getMyPlayerId())) ||
+      action instanceof SDK.BurnCardAction ||
+      action instanceof SDK.PutCardInDeckAction ||
+      action instanceof SDK.GenerateSignatureCardAction ||
+      action instanceof SDK.RemoveCardFromHandAction ||
+      action instanceof SDK.EndTurnAction ||
+      action instanceof SDK.StartTurnAction ||
+      action instanceof SDK.MoveAction ||
+      (action instanceof SDK.TeleportAction && action.getIsValidTeleport()) ||
+      action instanceof SDK.SwapUnitsAction ||
+      action instanceof SDK.BonusManaAction ||
+      action instanceof SDK.DamageAsAttackAction ||
+      action instanceof SDK.DieAction ||
+      action instanceof SDK.RevealHiddenCardAction
+    );
   },
 
   _getActionIsExceptionToSequenceRoot(action) {
-    return action instanceof SDK.DieAction
-      || (action instanceof SDK.TeleportAction && action.getIsValidTeleport())
-      || action instanceof SDK.SwapUnitsAction;
+    return (
+      action instanceof SDK.DieAction ||
+      (action instanceof SDK.TeleportAction && action.getIsValidTeleport()) ||
+      action instanceof SDK.SwapUnitsAction
+    );
   },
 
   _getActionAlwaysFollowsParent(action) {
@@ -3001,18 +3432,26 @@ var GameLayer = FXCompositeLayer.extend({
 
   _getRootDepthFirstRearrangedActionInterface(actionInterface) {
     if (actionInterface.rearrangingParentActionInterface) {
-      return this._getRootDepthFirstRearrangedActionInterface(actionInterface.rearrangingParentActionInterface);
+      return this._getRootDepthFirstRearrangedActionInterface(
+        actionInterface.rearrangingParentActionInterface,
+      );
     }
     return actionInterface;
   },
 
-  _getActionInterfacesDepthFirstForTriggeringSequence(sdkActionInterface?, depthFirstActionInterfaces?) {
-    if (depthFirstActionInterfaces == null) { depthFirstActionInterfaces = []; }
+  _getActionInterfacesDepthFirstForTriggeringSequence(
+    sdkActionInterface?,
+    depthFirstActionInterfaces?,
+  ) {
+    if (depthFirstActionInterfaces == null) {
+      depthFirstActionInterfaces = [];
+    }
     if (sdkActionInterface == null) {
       return depthFirstActionInterfaces;
     }
 
-    const triggeredModifierActionInterfaces = sdkActionInterface.cachedResolveTriggeredModifierActionInterfaces;
+    const triggeredModifierActionInterfaces =
+      sdkActionInterface.cachedResolveTriggeredModifierActionInterfaces;
 
     // trigger modifier actions
     if (triggeredModifierActionInterfaces != null && triggeredModifierActionInterfaces.length > 0) {
@@ -3025,12 +3464,17 @@ var GameLayer = FXCompositeLayer.extend({
           // cache actions caused by triggered modifier
           let { cachedResolveTriggerActionInterfaces } = triggeredModifierActionInterface;
           if (cachedResolveTriggerActionInterfaces == null) {
-            cachedResolveTriggerActionInterfaces = triggeredModifierActionInterface.cachedResolveTriggerActionInterfaces = [];
-            const triggerActions = modifier.getTriggerActionsForActionAndResolveActionIndices(triggeredModifierAction.getParentActionIndex(), triggeredModifierAction.getResolveParentActionIndex());
+            cachedResolveTriggerActionInterfaces =
+              triggeredModifierActionInterface.cachedResolveTriggerActionInterfaces = [];
+            const triggerActions = modifier.getTriggerActionsForActionAndResolveActionIndices(
+              triggeredModifierAction.getParentActionIndex(),
+              triggeredModifierAction.getResolveParentActionIndex(),
+            );
             for (var j = 0, jl = triggerActions.length; j < jl; j++) {
               var triggerAction = triggerActions[j];
               if (!this._getIsActionSkippable(triggerAction)) {
-                var triggerActionInterface = this._actionInterfacesByIndex[triggerAction.getIndex()];
+                var triggerActionInterface =
+                  this._actionInterfacesByIndex[triggerAction.getIndex()];
                 cachedResolveTriggerActionInterfaces.push(triggerActionInterface);
               }
             }
@@ -3039,7 +3483,8 @@ var GameLayer = FXCompositeLayer.extend({
           // cache depth first trigger actions
           let { cachedResolveDepthFirstTriggerActionInterfaces } = triggeredModifierActionInterface;
           if (cachedResolveDepthFirstTriggerActionInterfaces == null) {
-            cachedResolveDepthFirstTriggerActionInterfaces = triggeredModifierActionInterface.cachedResolveDepthFirstTriggerActionInterfaces = [];
+            cachedResolveDepthFirstTriggerActionInterfaces =
+              triggeredModifierActionInterface.cachedResolveDepthFirstTriggerActionInterfaces = [];
             for (var j = 0, jl = cachedResolveTriggerActionInterfaces.length; j < jl; j++) {
               var triggerActionInterface = cachedResolveTriggerActionInterfaces[j];
               var triggerAction = triggerActionInterface.getSdkAction();
@@ -3050,28 +3495,57 @@ var GameLayer = FXCompositeLayer.extend({
           }
 
           // add triggered modifier action
-          this._addActionInterfaceToDepthFirstForTriggeringSequence(triggeredModifierActionInterface, sdkActionInterface, depthFirstActionInterfaces);
+          this._addActionInterfaceToDepthFirstForTriggeringSequence(
+            triggeredModifierActionInterface,
+            sdkActionInterface,
+            depthFirstActionInterfaces,
+          );
 
           // add depth first trigger actions
           for (var j = 0, jl = cachedResolveDepthFirstTriggerActionInterfaces.length; j < jl; j++) {
             var triggerActionInterface = cachedResolveDepthFirstTriggerActionInterfaces[j];
-            this._addActionInterfaceToDepthFirstForTriggeringSequence(triggerActionInterface, triggeredModifierActionInterface, depthFirstActionInterfaces);
-            this._getActionInterfacesDepthFirstForTriggeringSequence(triggerActionInterface, depthFirstActionInterfaces);
+            this._addActionInterfaceToDepthFirstForTriggeringSequence(
+              triggerActionInterface,
+              triggeredModifierActionInterface,
+              depthFirstActionInterfaces,
+            );
+            this._getActionInterfacesDepthFirstForTriggeringSequence(
+              triggerActionInterface,
+              depthFirstActionInterfaces,
+            );
           }
 
           // remove depth first from trigger actions
-          const cachedResolveTriggerActionInterfacesWithoutDepthFirst = _.difference(cachedResolveTriggerActionInterfaces, cachedResolveDepthFirstTriggerActionInterfaces);
+          const cachedResolveTriggerActionInterfacesWithoutDepthFirst = _.difference(
+            cachedResolveTriggerActionInterfaces,
+            cachedResolveDepthFirstTriggerActionInterfaces,
+          );
 
           // add actions caused by triggered modifier
-          for (var j = 0, jl = cachedResolveTriggerActionInterfacesWithoutDepthFirst.length; j < jl; j++) {
+          for (
+            var j = 0, jl = cachedResolveTriggerActionInterfacesWithoutDepthFirst.length;
+            j < jl;
+            j++
+          ) {
             var triggerActionInterface = cachedResolveTriggerActionInterfacesWithoutDepthFirst[j];
-            this._addActionInterfaceToDepthFirstForTriggeringSequence(triggerActionInterface, triggeredModifierActionInterface, depthFirstActionInterfaces);
+            this._addActionInterfaceToDepthFirstForTriggeringSequence(
+              triggerActionInterface,
+              triggeredModifierActionInterface,
+              depthFirstActionInterfaces,
+            );
           }
 
           // continue depth first
-          for (var j = 0, jl = cachedResolveTriggerActionInterfacesWithoutDepthFirst.length; j < jl; j++) {
+          for (
+            var j = 0, jl = cachedResolveTriggerActionInterfacesWithoutDepthFirst.length;
+            j < jl;
+            j++
+          ) {
             var triggerActionInterface = cachedResolveTriggerActionInterfacesWithoutDepthFirst[j];
-            this._getActionInterfacesDepthFirstForTriggeringSequence(triggerActionInterface, depthFirstActionInterfaces);
+            this._getActionInterfacesDepthFirstForTriggeringSequence(
+              triggerActionInterface,
+              depthFirstActionInterfaces,
+            );
           }
         }
       }
@@ -3085,17 +3559,28 @@ var GameLayer = FXCompositeLayer.extend({
         const subActionInterface = this._actionInterfacesByIndex[subAction.getIndex()];
 
         // add the action itself
-        this._addActionInterfaceToDepthFirstForTriggeringSequence(subActionInterface, sdkActionInterface, depthFirstActionInterfaces);
+        this._addActionInterfaceToDepthFirstForTriggeringSequence(
+          subActionInterface,
+          sdkActionInterface,
+          depthFirstActionInterfaces,
+        );
 
         // add the action's sub actions
-        this._getActionInterfacesDepthFirstForTriggeringSequence(subActionInterface, depthFirstActionInterfaces);
+        this._getActionInterfacesDepthFirstForTriggeringSequence(
+          subActionInterface,
+          depthFirstActionInterfaces,
+        );
       }
     }
 
     return depthFirstActionInterfaces;
   },
 
-  _addActionInterfaceToDepthFirstForTriggeringSequence(actionInterface, rearrangingParentActionInterface, depthFirstActionInterfaces) {
+  _addActionInterfaceToDepthFirstForTriggeringSequence(
+    actionInterface,
+    rearrangingParentActionInterface,
+    depthFirstActionInterfaces,
+  ) {
     // only add this action interface once to the list of actions
     if (actionInterface && !_.contains(depthFirstActionInterfaces, actionInterface)) {
       actionInterface.rearranging = true;
@@ -3119,8 +3604,13 @@ var GameLayer = FXCompositeLayer.extend({
       var action = sdkActionInterface.getSdkAction();
 
       // keep a record of the most recent non modifier action we've shown with the highest index (later in the game state)
-      if ((!this._lastShownSdkStateRecordingAction || action.getIndex() > this._lastShownSdkStateRecordingAction.getIndex())
-        && !(action instanceof ModifierAction) && !(action instanceof SDK.ApplyModifierAction) && !(action instanceof SDK.RemoveModifierAction)) {
+      if (
+        (!this._lastShownSdkStateRecordingAction ||
+          action.getIndex() > this._lastShownSdkStateRecordingAction.getIndex()) &&
+        !(action instanceof ModifierAction) &&
+        !(action instanceof SDK.ApplyModifierAction) &&
+        !(action instanceof SDK.RemoveModifierAction)
+      ) {
         this._lastShownSdkStateRecordingAction = action;
         this.updateShowingSdkNodeStats();
       }
@@ -3137,9 +3627,15 @@ var GameLayer = FXCompositeLayer.extend({
       this._resetCurrentAction();
 
       // only show actions until we've shown all the actions that end the game
-      if (this._currentSdkStepInterface.getSdkStep() === SDK.GameSession.getInstance().getGameEndingStep()) {
+      if (
+        this._currentSdkStepInterface.getSdkStep() ===
+        SDK.GameSession.getInstance().getGameEndingStep()
+      ) {
         if (this._currentSdkStepInterface.actionsEndingGame != null) {
-          this._currentSdkStepInterface.actionsEndingGame = _.without(this._currentSdkStepInterface.actionsEndingGame, action);
+          this._currentSdkStepInterface.actionsEndingGame = _.without(
+            this._currentSdkStepInterface.actionsEndingGame,
+            action,
+          );
           if (this._currentSdkStepInterface.actionsEndingGame.length === 0) {
             this._currentActionSequence = [];
           }
@@ -3150,7 +3646,8 @@ var GameLayer = FXCompositeLayer.extend({
     const numActions = this._currentActionSequence.length;
     if (numActions > 0 && this._nextActionIndex < numActions) {
       // get next action and advance action index
-      sdkActionInterface = this._currentSdkActionInterface = this._currentActionSequence[this._nextActionIndex];
+      sdkActionInterface = this._currentSdkActionInterface =
+        this._currentActionSequence[this._nextActionIndex];
       this._nextActionIndex++;
     } else {
       sdkActionInterface = null;
@@ -3176,13 +3673,19 @@ var GameLayer = FXCompositeLayer.extend({
           this._lastCardWithAutomaticAction = card;
           if (action instanceof SDK.MoveAction) {
             // show emphasis moving with card node
-            actionShowDelay += this._showEmphasisSprite(EmphasisTriggeredSprite.create(), this.getNodeForSdkCard(card));
+            actionShowDelay += this._showEmphasisSprite(
+              EmphasisTriggeredSprite.create(),
+              this.getNodeForSdkCard(card),
+            );
           } else {
             // show emphasis at location of action
             const boardPosition = action.getSourcePosition();
             const tilePosition = UtilsEngine.transformBoardToTileMap(boardPosition);
             tilePosition.y += CONFIG.TILESIZE * 0.75;
-            actionShowDelay += this._showEmphasisSprite(EmphasisTriggeredSprite.create(), tilePosition);
+            actionShowDelay += this._showEmphasisSprite(
+              EmphasisTriggeredSprite.create(),
+              tilePosition,
+            );
           }
         }
       }
@@ -3199,9 +3702,12 @@ var GameLayer = FXCompositeLayer.extend({
       const myAction = action.getOwnerId() === this._player.getPlayerId();
 
       // show explicit play card and delay showing of action
-      if (!action.getIsImplicit()
-        && (action instanceof SDK.PlayCardFromHandAction || action instanceof SDK.PlaySignatureCardAction)
-        && (SDK.GameSession.getInstance().getIsSpectateMode() || !myAction)) {
+      if (
+        !action.getIsImplicit() &&
+        (action instanceof SDK.PlayCardFromHandAction ||
+          action instanceof SDK.PlaySignatureCardAction) &&
+        (SDK.GameSession.getInstance().getIsSpectateMode() || !myAction)
+      ) {
         let animateDuration;
         let showDuration;
         if (SDK.GameSession.getInstance().getIsSpectateMode()) {
@@ -3219,13 +3725,15 @@ var GameLayer = FXCompositeLayer.extend({
           this._showAction(sdkActionInterface);
         });
       } else if (actionShowDelay > 0.0) {
-        this._setupActionForShowSequence = this.runAction(cc.sequence(
-          cc.delayTime(actionShowDelay),
-          cc.callFunc(function () {
-            this._setupActionForShowSequence = null;
-            this._showAction(sdkActionInterface);
-          }, this),
-        ));
+        this._setupActionForShowSequence = this.runAction(
+          cc.sequence(
+            cc.delayTime(actionShowDelay),
+            cc.callFunc(function () {
+              this._setupActionForShowSequence = null;
+              this._showAction(sdkActionInterface);
+            }, this),
+          ),
+        );
       } else {
         // show action immediately
         this._showAction(sdkActionInterface);
@@ -3246,33 +3754,42 @@ var GameLayer = FXCompositeLayer.extend({
 
       const action = sdkActionInterface.getSdkAction();
       const resolveParentAction = action.getResolveParentAction();
-      if (!this._hasShownPlayCardActionSetup && resolveParentAction instanceof SDK.ApplyCardToBoardAction && !resolveParentAction.getIsImplicit() && action.getIsImplicit()) {
+      if (
+        !this._hasShownPlayCardActionSetup &&
+        resolveParentAction instanceof SDK.ApplyCardToBoardAction &&
+        !resolveParentAction.getIsImplicit() &&
+        action.getIsImplicit()
+      ) {
         // when the first sub-action of an explicit apply card to board action attempts to show
         // first show explicit apply card to board setup then shown this action
         this._hasShownPlayCardActionSetup = true;
 
         // show instructional arrow as needed
         const instructionalArrowDelay = this._showApplyCardInstructionalArrow(resolveParentAction);
-        this._setupActionForShowSequence = this.runAction(cc.sequence(
-          cc.delayTime(instructionalArrowDelay),
-          cc.callFunc(() => {
-            this._setupActionForShowSequence = null;
-            // show automatic fx
-            const autoFXDelay = this._showActionAutoFX(resolveParentAction);
-            const applyCardTargetFXDelay = this._showApplyCardTargetFX(resolveParentAction);
-            const maxFXDelay = Math.max(autoFXDelay, applyCardTargetFXDelay);
-            const maxFXDelayCorrection = Math.min(maxFXDelay * 0.25, 1.0);
-            const delayBeforeShowingActions = maxFXDelay - maxFXDelayCorrection;
-            this._setupActionForShowSequence = this.runAction(cc.sequence(
-              cc.delayTime(delayBeforeShowingActions),
-              cc.callFunc(() => {
-                this._setupActionForShowSequence = null;
-                // show action
-                this._showAction(sdkActionInterface);
-              }),
-            ));
-          }),
-        ));
+        this._setupActionForShowSequence = this.runAction(
+          cc.sequence(
+            cc.delayTime(instructionalArrowDelay),
+            cc.callFunc(() => {
+              this._setupActionForShowSequence = null;
+              // show automatic fx
+              const autoFXDelay = this._showActionAutoFX(resolveParentAction);
+              const applyCardTargetFXDelay = this._showApplyCardTargetFX(resolveParentAction);
+              const maxFXDelay = Math.max(autoFXDelay, applyCardTargetFXDelay);
+              const maxFXDelayCorrection = Math.min(maxFXDelay * 0.25, 1.0);
+              const delayBeforeShowingActions = maxFXDelay - maxFXDelayCorrection;
+              this._setupActionForShowSequence = this.runAction(
+                cc.sequence(
+                  cc.delayTime(delayBeforeShowingActions),
+                  cc.callFunc(() => {
+                    this._setupActionForShowSequence = null;
+                    // show action
+                    this._showAction(sdkActionInterface);
+                  }),
+                ),
+              );
+            }),
+          ),
+        );
       } else if (action instanceof SDK.RevealHiddenCardAction) {
         if (action.getIsValidReveal()) {
           // reset the card if it is showing in the battle log
@@ -3281,9 +3798,11 @@ var GameLayer = FXCompositeLayer.extend({
           for (let i = 0, il = battleLogNodes.length; i < il; i++) {
             const battleLogNode = battleLogNodes[i];
             const battleLogSdkCard = battleLogNode.getSdkCard();
-            if (battleLogSdkCard != null
-              && battleLogSdkCard.getIndex() === revealedCard.getIndex()
-              && battleLogSdkCard.getId() !== revealedCard.getId()) {
+            if (
+              battleLogSdkCard != null &&
+              battleLogSdkCard.getIndex() === revealedCard.getIndex() &&
+              battleLogSdkCard.getId() !== revealedCard.getId()
+            ) {
               battleLogNode.setSdkCard(revealedCard);
               break;
             }
@@ -3291,7 +3810,12 @@ var GameLayer = FXCompositeLayer.extend({
         }
 
         // reveal hidden card by showing it as a played card
-        this.showPlayCard(action, CONFIG.REVEAL_HIDDEN_CARD_TRANSITION_DURATION, CONFIG.REVEAL_HIDDEN_CARD_SHOW_DURATION, false);
+        this.showPlayCard(
+          action,
+          CONFIG.REVEAL_HIDDEN_CARD_TRANSITION_DURATION,
+          CONFIG.REVEAL_HIDDEN_CARD_SHOW_DURATION,
+          false,
+        );
 
         // setup sequence to show next action after reveal hidden card delay
         // this allows a user to skip the reveal if they wish
@@ -3300,10 +3824,9 @@ var GameLayer = FXCompositeLayer.extend({
           this.showNextAction();
         }.bind(this);
         this._showActionCardSequenceCompletedCallback = onShown;
-        this._showActionCardSequence = this.runAction(cc.sequence(
-          cc.delayTime(CONFIG.REVEAL_HIDDEN_CARD_DELAY),
-          cc.callFunc(onShown),
-        ));
+        this._showActionCardSequence = this.runAction(
+          cc.sequence(cc.delayTime(CONFIG.REVEAL_HIDDEN_CARD_DELAY), cc.callFunc(onShown)),
+        );
       } else {
         const myAction = action.getOwnerId() === this._player.getPlayerId();
         let actionDelay = 0.0;
@@ -3313,7 +3836,10 @@ var GameLayer = FXCompositeLayer.extend({
         const sourceBoardPosition = action.getSourcePosition();
         const targetBoardPosition = action.getTargetPosition();
         const sequenceRootSdkActionInterface = this._currentSequenceRootSdkActionInterface;
-        const isSequencedAsOne = sdkActionInterface === sequenceRootSdkActionInterface ? sdkActionInterface.isSequencedAsOne : sequenceRootSdkActionInterface.isSequenceSequencedAsOne;
+        const isSequencedAsOne =
+          sdkActionInterface === sequenceRootSdkActionInterface
+            ? sdkActionInterface.isSequencedAsOne
+            : sequenceRootSdkActionInterface.isSequenceSequencedAsOne;
         let isSequenced = !isSequencedAsOne;
         this._lastActionTime = this._actionTime || Date.now();
         this._actionTime = Date.now();
@@ -3333,10 +3859,14 @@ var GameLayer = FXCompositeLayer.extend({
 
         // wait to trigger before show action until just after action starts to show
         // this way, if the action created new nodes, they can be included in the event
-        const _currentActionSourceSdkCard = this._currentActionSourceSdkCard = action.getSource();
-        const _currentActionSourceNode = this._currentActionSourceNode = this.getNodeForSdkCard(_currentActionSourceSdkCard);
-        const _currentActionTargetSdkCard = this._currentActionTargetSdkCard = action.getTarget();
-        const _currentActionTargetNode = this._currentActionTargetNode = this.getNodeForSdkCard(_currentActionTargetSdkCard);
+        const _currentActionSourceSdkCard = (this._currentActionSourceSdkCard = action.getSource());
+        const _currentActionSourceNode = (this._currentActionSourceNode = this.getNodeForSdkCard(
+          _currentActionSourceSdkCard,
+        ));
+        const _currentActionTargetSdkCard = (this._currentActionTargetSdkCard = action.getTarget());
+        const _currentActionTargetNode = (this._currentActionTargetNode = this.getNodeForSdkCard(
+          _currentActionTargetSdkCard,
+        ));
         this.getEventBus().trigger(EVENTS.before_show_action, {
           type: EVENTS.before_show_action,
           action,
@@ -3352,7 +3882,8 @@ var GameLayer = FXCompositeLayer.extend({
         if (action instanceof SDK.ApplyCardToBoardAction && action.getIsValidApplication()) {
           const card = action.getCard();
           if (card instanceof SDK.Spell) {
-            gameFXSourceBoardPosition = gameFXTargetBoardPosition = card.getCenterPositionOfAppliedEffects();
+            gameFXSourceBoardPosition = gameFXTargetBoardPosition =
+              card.getCenterPositionOfAppliedEffects();
           } else if (card instanceof SDK.Artifact) {
             const general = SDK.GameSession.getInstance().getGeneralForPlayerId(card.getOwnerId());
             if (general != null) {
@@ -3369,7 +3900,10 @@ var GameLayer = FXCompositeLayer.extend({
         }
 
         // show special apply card fx
-        actionDelay = Math.max(actionDelay, this._showActionForApplyCard(action, gameFXTargetBoardPosition));
+        actionDelay = Math.max(
+          actionDelay,
+          this._showActionForApplyCard(action, gameFXTargetBoardPosition),
+        );
 
         // source reaction and fx when there is a source entity
         if (_currentActionSourceNode) {
@@ -3377,18 +3911,30 @@ var GameLayer = FXCompositeLayer.extend({
           const sourceFXSprites = NodeFactory.createFX(sourceFX);
           const sourceFXDelays = UtilsEngine.getDelaysFromFXSprites(sourceFXSprites);
           showDelay = Math.max(showDelay, sourceFXDelays.showDelay);
-          this._showCurrentActionForSourceSequence = this.runAction(cc.sequence(
-            cc.delayTime(actionDelay),
-            cc.callFunc(() => {
-              this._showCurrentActionForSourceSequence = null;
-              this._showActionForSource(action, _currentActionSourceSdkCard, _currentActionSourceNode, sourceFXSprites);
-            }),
-          ));
+          this._showCurrentActionForSourceSequence = this.runAction(
+            cc.sequence(
+              cc.delayTime(actionDelay),
+              cc.callFunc(() => {
+                this._showCurrentActionForSourceSequence = null;
+                this._showActionForSource(
+                  action,
+                  _currentActionSourceSdkCard,
+                  _currentActionSourceNode,
+                  sourceFXSprites,
+                );
+              }),
+            ),
+          );
 
           // add attack delay from source
-          if ((action instanceof SDK.AttackAction || action instanceof SDK.DamageAsAttackAction)
-            && _currentActionSourceNode != null && _currentActionSourceNode.getAnimResource() != null) {
-            const attackDelay = (_currentActionSourceNode.getAnimResource().attackDelay || 0.0) * CONFIG.ENTITY_ATTACK_DURATION_MODIFIER;
+          if (
+            (action instanceof SDK.AttackAction || action instanceof SDK.DamageAsAttackAction) &&
+            _currentActionSourceNode != null &&
+            _currentActionSourceNode.getAnimResource() != null
+          ) {
+            const attackDelay =
+              (_currentActionSourceNode.getAnimResource().attackDelay || 0.0) *
+              CONFIG.ENTITY_ATTACK_DURATION_MODIFIER;
             actionDelay += attackDelay;
             nextActionDelay = Math.max(nextActionDelay, attackDelay);
           }
@@ -3407,38 +3953,70 @@ var GameLayer = FXCompositeLayer.extend({
         const gameFXDelays = UtilsEngine.getDelaysFromFXSprites(gameFXSprites);
         showDelay = Math.max(showDelay, gameFXDelays.showDelay);
         impactDelay = Math.max(impactDelay, gameFXDelays.impactDelay);
-        this._showCurrentActionForGameSequence = this.runAction(cc.sequence(
-          cc.delayTime(actionDelay),
-          cc.callFunc(function () {
-            this._showCurrentActionForGameSequence = null;
-            this.addNodes(gameFXSprites, gameFXEvent);
-          }, this),
-        ));
+        this._showCurrentActionForGameSequence = this.runAction(
+          cc.sequence(
+            cc.delayTime(actionDelay),
+            cc.callFunc(function () {
+              this._showCurrentActionForGameSequence = null;
+              this.addNodes(gameFXSprites, gameFXEvent);
+            }, this),
+          ),
+        );
 
         // target reaction and fx when there is a target entity
         const targetReactionDelay = actionDelay + impactDelay;
-        this._currentSequenceMaxTargetReactionDelay = Math.max(this._currentSequenceMaxTargetReactionDelay, targetReactionDelay);
+        this._currentSequenceMaxTargetReactionDelay = Math.max(
+          this._currentSequenceMaxTargetReactionDelay,
+          targetReactionDelay,
+        );
         let targetDelays = 0.0;
         if (_currentActionTargetNode) {
           const targetFX = this._getActionFXData(action, SDK.FXType.TargetFX);
           const targetFXSprites = NodeFactory.createFX(targetFX);
           const targetFXDelays = UtilsEngine.getDelaysFromFXSprites(targetFXSprites);
           targetDelays = targetFXDelays.showDelay;
-          this._showCurrentActionForTargetSequence = this.runAction(cc.sequence(
-            cc.delayTime(isSequencedAsOne ? this._currentSequenceMaxTargetReactionDelay : targetReactionDelay),
-            cc.callFunc(function () {
-              this._showCurrentActionForTargetSequence = null;
-              this._showActionForTarget(action, _currentActionTargetSdkCard, _currentActionTargetNode, targetFXSprites);
-            }, this),
-          ));
+          this._showCurrentActionForTargetSequence = this.runAction(
+            cc.sequence(
+              cc.delayTime(
+                isSequencedAsOne
+                  ? this._currentSequenceMaxTargetReactionDelay
+                  : targetReactionDelay,
+              ),
+              cc.callFunc(function () {
+                this._showCurrentActionForTargetSequence = null;
+                this._showActionForTarget(
+                  action,
+                  _currentActionTargetSdkCard,
+                  _currentActionTargetNode,
+                  targetFXSprites,
+                );
+              }, this),
+            ),
+          );
         }
 
         // show action for artifact
-        nextActionDelay = Math.max(nextActionDelay, this.player1Layer.showActionForArtifact(action, this._currentSequenceMaxTargetReactionDelay));
-        nextActionDelay = Math.max(nextActionDelay, this.player2Layer.showActionForArtifact(action, this._currentSequenceMaxTargetReactionDelay));
+        nextActionDelay = Math.max(
+          nextActionDelay,
+          this.player1Layer.showActionForArtifact(
+            action,
+            this._currentSequenceMaxTargetReactionDelay,
+          ),
+        );
+        nextActionDelay = Math.max(
+          nextActionDelay,
+          this.player2Layer.showActionForArtifact(
+            action,
+            this._currentSequenceMaxTargetReactionDelay,
+          ),
+        );
 
         // special cases show delay
-        if (action instanceof SDK.DieAction && _currentActionTargetNode != null && _currentActionTargetNode.getAnimResource() != null) {
+        if (
+          action instanceof SDK.DieAction &&
+          _currentActionTargetNode != null &&
+          _currentActionTargetNode.getAnimResource() != null
+        ) {
           // special case for die actions
           showDelay = this.getDelayFromAnim(_currentActionTargetNode.getAnimResource().death);
         } else if (this.getIsActionSpawn(action) || action instanceof SDK.RemoveAction) {
@@ -3453,7 +4031,10 @@ var GameLayer = FXCompositeLayer.extend({
         if (!isSequenced) {
           const nextActionInterface = this.getNextActionInterfaceInActionSequence(true);
           // sequence the last action in the sequence and use the max delay
-          if (this._nextActionIndex === this._currentActionSequence.length || (nextActionInterface && nextActionInterface.isSequenceRoot)) {
+          if (
+            this._nextActionIndex === this._currentActionSequence.length ||
+            (nextActionInterface && nextActionInterface.isSequenceRoot)
+          ) {
             isSequenced = true;
             showDelay = Math.max(showDelay, this._currentSequenceMaxDelay);
             this._currentSequenceMaxDelay = 0.0;
@@ -3474,7 +4055,10 @@ var GameLayer = FXCompositeLayer.extend({
         }
 
         // reset max delays after root when root is not sequenced as one
-        if (sdkActionInterface === sequenceRootSdkActionInterface && !sdkActionInterface.isSequencedAsOne) {
+        if (
+          sdkActionInterface === sequenceRootSdkActionInterface &&
+          !sdkActionInterface.isSequencedAsOne
+        ) {
           this._currentSequenceMaxDelay = this._currentSequenceMaxTargetReactionDelay = 0.0;
         }
 
@@ -3505,12 +4089,24 @@ var GameLayer = FXCompositeLayer.extend({
   _getIsActionShowingAttackState(action) {
     if (action instanceof SDK.AttackAction || action instanceof SDK.DamageAsAttackAction) {
       return true;
-    } if (action.getTriggeringModifierIndex() != null && action.getTargetPosition() != null
-      && (action instanceof SDK.DamageAction
-        || action instanceof SDK.KillAction
-        || (action instanceof SDK.ApplyCardToBoardAction && !(action.getTriggeringModifier() instanceof SDK.GameSessionModifier) && action.getIsValidApplication()))) {
+    }
+    if (
+      action.getTriggeringModifierIndex() != null &&
+      action.getTargetPosition() != null &&
+      (action instanceof SDK.DamageAction ||
+        action instanceof SDK.KillAction ||
+        (action instanceof SDK.ApplyCardToBoardAction &&
+          !(action.getTriggeringModifier() instanceof SDK.GameSessionModifier) &&
+          action.getIsValidApplication()))
+    ) {
       const resolveParentAction = action.getResolveParentAction();
-      if (!(resolveParentAction instanceof SDK.AttackAction || resolveParentAction instanceof SDK.DamageAsAttackAction) || resolveParentAction.getSource() !== action.getSource()) {
+      if (
+        !(
+          resolveParentAction instanceof SDK.AttackAction ||
+          resolveParentAction instanceof SDK.DamageAsAttackAction
+        ) ||
+        resolveParentAction.getSource() !== action.getSource()
+      ) {
         return true;
       }
     }
@@ -3558,10 +4154,13 @@ var GameLayer = FXCompositeLayer.extend({
       } else if (action.type === SDK.MoveAction.type) {
         node = this.getNodeForSdkCard(source);
         if (this._getCanShowActionForNode(node)) {
-          showDuration += node.showMove(action, action.getSourcePosition(), action.getTargetPosition());
+          showDuration += node.showMove(
+            action,
+            action.getSourcePosition(),
+            action.getTargetPosition(),
+          );
         }
       } else if (action instanceof SDK.DieAction) {
-
       } else if (action instanceof SDK.TeleportAction && action.getIsValidTeleport()) {
         node = this.getNodeForSdkCard(source);
         if (this._getCanShowActionForNode(node)) {
@@ -3571,14 +4170,20 @@ var GameLayer = FXCompositeLayer.extend({
         if (source) {
           node = this.getNodeForSdkCard(source);
           if (this._getCanShowActionForNode(node)) {
-            showDuration = Math.max(showDuration, node.showTeleport(action, action.getTargetPosition()));
+            showDuration = Math.max(
+              showDuration,
+              node.showTeleport(action, action.getTargetPosition()),
+            );
           }
         }
 
         if (target) {
           node = this.getNodeForSdkCard(target);
           if (this._getCanShowActionForNode(node)) {
-            showDuration = Math.max(showDuration, node.showTeleport(action, action.getSourcePosition()));
+            showDuration = Math.max(
+              showDuration,
+              node.showTeleport(action, action.getSourcePosition()),
+            );
           }
         }
       } else if (action instanceof SDK.PutCardInHandAction) {
@@ -3587,15 +4192,35 @@ var GameLayer = FXCompositeLayer.extend({
           // show player out of cards dialogue
           if (!_.contains(this._currentSdkStepInterface.hasShownOutOfCardsForPlayerIds, playerId)) {
             this._currentSdkStepInterface.hasShownOutOfCardsForPlayerIds.push(playerId);
-            showDuration = Math.max(showDuration, this.showSpeechForPlayer(this.getPlayerById(playerId), i18next.t('game_ui.out_of_cards_message'), null, CONFIG.DIALOGUE_OUT_OF_CARDS_DURATION, false, 0.3));
+            showDuration = Math.max(
+              showDuration,
+              this.showSpeechForPlayer(
+                this.getPlayerById(playerId),
+                i18next.t('game_ui.out_of_cards_message'),
+                null,
+                CONFIG.DIALOGUE_OUT_OF_CARDS_DURATION,
+                false,
+                0.3,
+              ),
+            );
           }
         } else if (action.getIsBurnedCard()) {
-          if (action.getOwner().getDeck().getCardsInHandExcludingMissing().length == CONFIG.MAX_HAND_SIZE) {
+          if (
+            action.getOwner().getDeck().getCardsInHandExcludingMissing().length ==
+            CONFIG.MAX_HAND_SIZE
+          ) {
             // show hand too full dialogue
             var dialogDuration = 0.0;
             if (!_.contains(this._currentSdkStepInterface.hasShownHandFullForPlayerIds, playerId)) {
               this._currentSdkStepInterface.hasShownHandFullForPlayerIds.push(playerId);
-              dialogDuration = this.showSpeechForPlayer(this.getPlayerById(playerId), i18next.t('game_ui.hand_is_full_message'), null, CONFIG.DIALOGUE_HAND_FULL_DURATION, false, 0.3);
+              dialogDuration = this.showSpeechForPlayer(
+                this.getPlayerById(playerId),
+                i18next.t('game_ui.hand_is_full_message'),
+                null,
+                CONFIG.DIALOGUE_HAND_FULL_DURATION,
+                false,
+                0.3,
+              );
             }
           }
 
@@ -3606,11 +4231,20 @@ var GameLayer = FXCompositeLayer.extend({
           if (dialogDuration == undefined) {
             dialogDuration = 0.0;
           }
-          this.showBurnCard(action, dialogDuration * 0.1, burnShowDuration, dissolveDelay, dissolveDuration);
+          this.showBurnCard(
+            action,
+            dialogDuration * 0.1,
+            burnShowDuration,
+            dissolveDelay,
+            dissolveDuration,
+          );
 
           // set show duration
           if (playerId === this.getMyPlayerId()) {
-            showDuration = Math.max(showDuration, dialogDuration * 0.1 + burnShowDuration + dissolveDelay + dissolveDuration);
+            showDuration = Math.max(
+              showDuration,
+              dialogDuration * 0.1 + burnShowDuration + dissolveDelay + dissolveDuration,
+            );
           }
         } else {
           // show replace indicator over general
@@ -3621,7 +4255,10 @@ var GameLayer = FXCompositeLayer.extend({
             const generalSdkCard = SDK.GameSession.getInstance().getGeneralForPlayerId(playerId);
             const generalNode = this.getNodeForSdkCard(generalSdkCard);
             const generalNodePosition = generalNode.getPosition();
-            replaceIndicatorSprite.setPosition(generalNodePosition.x, generalNodePosition.y + CONFIG.TILESIZE * 0.75);
+            replaceIndicatorSprite.setPosition(
+              generalNodePosition.x,
+              generalNodePosition.y + CONFIG.TILESIZE * 0.75,
+            );
 
             this.uiLayer.addChild(replaceIndicatorSprite, this._ui_z_order_indicators);
 
@@ -3647,26 +4284,47 @@ var GameLayer = FXCompositeLayer.extend({
         }
       } else if (action instanceof SDK.RemoveCardFromHandAction) {
         if (action.getOwnerId() === this.getMyPlayerId()) {
-          showDuration = Math.max(showDuration, this.bottomDeckLayer.showRemoveCard(action.getIndexOfCardInHand()));
+          showDuration = Math.max(
+            showDuration,
+            this.bottomDeckLayer.showRemoveCard(action.getIndexOfCardInHand()),
+          );
         }
       } else if (action instanceof SDK.PutCardInDeckAction) {
         var playerId = action.getOwnerId();
-        this._currentSdkStepInterface.hasShownOutOfCardsForPlayerIds = _.without(this._currentSdkStepInterface.hasShownOutOfCardsForPlayerIds, playerId);
+        this._currentSdkStepInterface.hasShownOutOfCardsForPlayerIds = _.without(
+          this._currentSdkStepInterface.hasShownOutOfCardsForPlayerIds,
+          playerId,
+        );
       } else if (action instanceof SDK.GenerateSignatureCardAction) {
         if (action.getOwnerId() === SDK.GameSession.getInstance().getPlayer2Id()) {
-          showDuration = Math.max(showDuration, this.player2Layer.showGenerateSignatureCard(action) * 0.5);
+          showDuration = Math.max(
+            showDuration,
+            this.player2Layer.showGenerateSignatureCard(action) * 0.5,
+          );
         } else {
-          showDuration = Math.max(showDuration, this.player1Layer.showGenerateSignatureCard(action) * 0.5);
+          showDuration = Math.max(
+            showDuration,
+            this.player1Layer.showGenerateSignatureCard(action) * 0.5,
+          );
         }
       } else if (action instanceof SDK.ActivateSignatureCardAction) {
         if (action.getOwnerId() === SDK.GameSession.getInstance().getPlayer2Id()) {
-          showDuration = Math.max(showDuration, this.player2Layer.showActivateSignatureCard(action) * 0.5);
+          showDuration = Math.max(
+            showDuration,
+            this.player2Layer.showActivateSignatureCard(action) * 0.5,
+          );
         } else {
-          showDuration = Math.max(showDuration, this.player1Layer.showActivateSignatureCard(action) * 0.5);
+          showDuration = Math.max(
+            showDuration,
+            this.player1Layer.showActivateSignatureCard(action) * 0.5,
+          );
         }
       }
 
-      this.getEventBus().trigger(EVENTS.show_action_for_game, { type: EVENTS.show_action_for_game, action });
+      this.getEventBus().trigger(EVENTS.show_action_for_game, {
+        type: EVENTS.show_action_for_game,
+        action,
+      });
     }
 
     return showDuration;
@@ -3758,10 +4416,12 @@ var GameLayer = FXCompositeLayer.extend({
       cc.sequence(
         cc.delayTime(delay),
         cc.fadeIn(0.2),
-        cc.sequence(
-          cc.moveBy(0.3, cc.p(0, 10)).easing(cc.easeSineInOut()),
-          cc.moveBy(0.3, cc.p(0, -10)).easing(cc.easeSineInOut()),
-        ).repeat(Math.ceil(duration / 0.6)),
+        cc
+          .sequence(
+            cc.moveBy(0.3, cc.p(0, 10)).easing(cc.easeSineInOut()),
+            cc.moveBy(0.3, cc.p(0, -10)).easing(cc.easeSineInOut()),
+          )
+          .repeat(Math.ceil(duration / 0.6)),
         cc.callFunc(() => {
           emphasisSprite.destroy(0.2);
         }),
@@ -3803,7 +4463,8 @@ var GameLayer = FXCompositeLayer.extend({
       // prismatic
       if (SDK.Cards.getIsPrismaticCardId(card.getId())) {
         const prismaticPlayCardNode = PrismaticPlayCardNode.create();
-        const prismaticNodeScreenPosition = UtilsEngine.transformBoardToTileMap(targetBoardPosition);
+        const prismaticNodeScreenPosition =
+          UtilsEngine.transformBoardToTileMap(targetBoardPosition);
         prismaticPlayCardNode.setPosition(prismaticNodeScreenPosition);
         this.addNode(prismaticPlayCardNode);
         showDuration = Math.max(showDuration, prismaticPlayCardNode.getShowDelay());
@@ -3834,7 +4495,10 @@ var GameLayer = FXCompositeLayer.extend({
       sourceNode.showFX(fxSprites);
 
       this.getEventBus().trigger(EVENTS.show_action_for_source, {
-        type: EVENTS.show_action_for_source, action, sdkCard: sourceSdkCard, node: sourceNode,
+        type: EVENTS.show_action_for_source,
+        action,
+        sdkCard: sourceSdkCard,
+        node: sourceNode,
       });
     }
   },
@@ -3845,52 +4509,56 @@ var GameLayer = FXCompositeLayer.extend({
       if (targetSdkCard instanceof SDK.Entity) {
         if (action instanceof SDK.DamageAction) {
           if (CONFIG.razerChromaEnabled) {
-            Chroma.flashActionThrottled(new Chroma.Color('FF0000'), 100, action.getTotalDamageAmount())
-              .then(() => {
-                if (this.getIsMyTurn()) {
-                  Chroma.setAll(CONFIG.razerChromaIdleColor);
-                } else {
-                  Chroma.setAll(new Chroma.Color('FFFFFF'));
-                }
-              });
+            Chroma.flashActionThrottled(
+              new Chroma.Color('FF0000'),
+              100,
+              action.getTotalDamageAmount(),
+            ).then(() => {
+              if (this.getIsMyTurn()) {
+                Chroma.setAll(CONFIG.razerChromaIdleColor);
+              } else {
+                Chroma.setAll(new Chroma.Color('FFFFFF'));
+              }
+            });
           }
           targetNode.showAttackedState(action);
         } else if (action instanceof SDK.DieAction) {
           if (CONFIG.razerChromaEnabled) {
-            Chroma.flashActionThrottled(new Chroma.Color('FF0000'), 1000, 1)
-              .then(() => {
-                if (this.getIsMyTurn()) {
-                  Chroma.setAll(CONFIG.razerChromaIdleColor);
-                } else {
-                  Chroma.setAll(new Chroma.Color('FFFFFF'));
-                }
-              });
+            Chroma.flashActionThrottled(new Chroma.Color('FF0000'), 1000, 1).then(() => {
+              if (this.getIsMyTurn()) {
+                Chroma.setAll(CONFIG.razerChromaIdleColor);
+              } else {
+                Chroma.setAll(new Chroma.Color('FFFFFF'));
+              }
+            });
           }
           targetNode.showDeathState(action);
         } else if (action.type === SDK.HealAction.type) {
           if (CONFIG.razerChromaEnabled) {
-            Chroma.flashActionThrottled(new Chroma.Color('00FF00'), 100, action.getTotalHealAmount())
-              .then(() => {
-                if (this.getIsMyTurn()) {
-                  Chroma.setAll(CONFIG.razerChromaIdleColor);
-                } else {
-                  Chroma.setAll(new Chroma.Color('FFFFFF'));
-                }
-              });
+            Chroma.flashActionThrottled(
+              new Chroma.Color('00FF00'),
+              100,
+              action.getTotalHealAmount(),
+            ).then(() => {
+              if (this.getIsMyTurn()) {
+                Chroma.setAll(CONFIG.razerChromaIdleColor);
+              } else {
+                Chroma.setAll(new Chroma.Color('FFFFFF'));
+              }
+            });
           }
           targetNode.showHealedState(action);
         } else if (action instanceof SDK.RemoveAction) {
           targetNode.showDisappearState(action);
         } else if (action instanceof SDK.KillAction) {
           if (CONFIG.razerChromaEnabled) {
-            Chroma.flashActionThrottled(new Chroma.Color('FF0000'), 1000, 1)
-              .then(() => {
-                if (this.getIsMyTurn()) {
-                  Chroma.setAll(CONFIG.razerChromaIdleColor);
-                } else {
-                  Chroma.setAll(new Chroma.Color('FFFFFF'));
-                }
-              });
+            Chroma.flashActionThrottled(new Chroma.Color('FF0000'), 1000, 1).then(() => {
+              if (this.getIsMyTurn()) {
+                Chroma.setAll(CONFIG.razerChromaIdleColor);
+              } else {
+                Chroma.setAll(new Chroma.Color('FFFFFF'));
+              }
+            });
           }
           targetNode.showDestroyedState(action);
         } else if (action.type === SDK.RefreshExhaustionAction.type) {
@@ -3908,7 +4576,10 @@ var GameLayer = FXCompositeLayer.extend({
       targetNode.showFX(fxSprites);
 
       this.getEventBus().trigger(EVENTS.show_action_for_target, {
-        type: EVENTS.show_action_for_target, action, sdkCard: targetSdkCard, node: targetNode,
+        type: EVENTS.show_action_for_target,
+        action,
+        sdkCard: targetSdkCard,
+        node: targetNode,
       });
     }
   },
@@ -3937,12 +4608,19 @@ var GameLayer = FXCompositeLayer.extend({
         if (card instanceof SDK.Spell) {
           // spells
           if (fxType === SDK.FXType.GameFX) {
-            fxData = fxData.concat(DATA.dataForIdentifiersWithFilter(_.union(fxResource, card.getFXResource()), SDK.FXType.SpellCastFX));
+            fxData = fxData.concat(
+              DATA.dataForIdentifiersWithFilter(
+                _.union(fxResource, card.getFXResource()),
+                SDK.FXType.SpellCastFX,
+              ),
+            );
           } else if (fxType === SDK.FXType.TargetFX) {
             // spell target fx is trickier so we need to composite it from many sources
             var fxResources = _.union(fxResource, card.getFXResource());
             // always add applied fx
-            fxData = fxData.concat(DATA.dataForIdentifiersWithFilter(fxResources, SDK.FXType.SpellAppliedFX));
+            fxData = fxData.concat(
+              DATA.dataForIdentifiersWithFilter(fxResources, SDK.FXType.SpellAppliedFX),
+            );
             /* // fx by target team
             if (card.getIsSameTeamAs(target)) {
               fxData = fxData.concat(DATA.dataForIdentifiersWithFilter(fxResources, SDK.FXType.SpellAppliedFriendFX));
@@ -3959,39 +4637,74 @@ var GameLayer = FXCompositeLayer.extend({
         } else if (card instanceof SDK.Entity) {
           // entities
           if (fxType === SDK.FXType.GameFX) {
-            fxData = fxData.concat(DATA.dataForIdentifiersWithFilter(_.union(fxResource, card.getFXResource()), SDK.FXType.UnitSpawnFX));
+            fxData = fxData.concat(
+              DATA.dataForIdentifiersWithFilter(
+                _.union(fxResource, card.getFXResource()),
+                SDK.FXType.UnitSpawnFX,
+              ),
+            );
           }
         }
-      } else if (rootAction instanceof SDK.AttackAction || rootAction instanceof SDK.DamageAsAttackAction) {
+      } else if (
+        rootAction instanceof SDK.AttackAction ||
+        rootAction instanceof SDK.DamageAsAttackAction
+      ) {
         // attacks
         if (source && fxType === SDK.FXType.GameFX) {
           var fxResources = _.union(fxResource, source.getFXResource());
-          fxData = fxData.concat(DATA.dataForIdentifiersWithFilter(fxResources, SDK.FXType.UnitAttackedFX));
+          fxData = fxData.concat(
+            DATA.dataForIdentifiersWithFilter(fxResources, SDK.FXType.UnitAttackedFX),
+          );
           // show extra primary attacked fx for the explicit attack
           if (!rootAction.getIsImplicit()) {
-            fxData = fxData.concat(DATA.dataForIdentifiersWithFilter(fxResources, SDK.FXType.UnitPrimaryAttackedFX));
+            fxData = fxData.concat(
+              DATA.dataForIdentifiersWithFilter(fxResources, SDK.FXType.UnitPrimaryAttackedFX),
+            );
           }
         } else if (target && fxType === SDK.FXType.TargetFX) {
-          fxData = fxData.concat(DATA.dataForIdentifiersWithFilter(_.union(fxResource, target.getFXResource()), SDK.FXType.UnitDamagedFX));
+          fxData = fxData.concat(
+            DATA.dataForIdentifiersWithFilter(
+              _.union(fxResource, target.getFXResource()),
+              SDK.FXType.UnitDamagedFX,
+            ),
+          );
         }
       } else if (rootAction instanceof SDK.DamageAction || rootAction instanceof SDK.KillAction) {
         // damage
         if (target && fxType === SDK.FXType.TargetFX) {
-          fxData = fxData.concat(DATA.dataForIdentifiersWithFilter(_.union(fxResource, target.getFXResource()), SDK.FXType.UnitDamagedFX));
+          fxData = fxData.concat(
+            DATA.dataForIdentifiersWithFilter(
+              _.union(fxResource, target.getFXResource()),
+              SDK.FXType.UnitDamagedFX,
+            ),
+          );
         }
       } else if (rootAction instanceof SDK.DieAction) {
         // death
         if (target && target.getType() != SDK.CardType.Tile && fxType === SDK.FXType.GameFX) {
-          fxData = fxData.concat(DATA.dataForIdentifiersWithFilter(_.union(fxResource, target.getFXResource()), SDK.FXType.UnitDiedFX));
+          fxData = fxData.concat(
+            DATA.dataForIdentifiersWithFilter(
+              _.union(fxResource, target.getFXResource()),
+              SDK.FXType.UnitDiedFX,
+            ),
+          );
         }
       } else if (rootAction instanceof SDK.HealAction) {
         // heal
         if (target && fxType === SDK.FXType.TargetFX) {
-          fxData = fxData.concat(DATA.dataForIdentifiersWithFilter(_.union(fxResource, target.getFXResource()), SDK.FXType.UnitHealedFX));
+          fxData = fxData.concat(
+            DATA.dataForIdentifiersWithFilter(
+              _.union(fxResource, target.getFXResource()),
+              SDK.FXType.UnitHealedFX,
+            ),
+          );
         }
       }
 
-      if (!(action instanceof SDK.RemoveModifierAction) && (!(action instanceof SDK.ApplyModifierAction) || !action.getModifier().getIsHiddenToUI())) {
+      if (
+        !(action instanceof SDK.RemoveModifierAction) &&
+        (!(action instanceof SDK.ApplyModifierAction) || !action.getModifier().getIsHiddenToUI())
+      ) {
         const triggeringModifier = action.getTriggeringModifier();
         if (triggeringModifier && target) {
           fxData = this._getActionModifierFXData(triggeringModifier, fxType, fxData);
@@ -4008,11 +4721,23 @@ var GameLayer = FXCompositeLayer.extend({
 
   _getActionModifierFXData(modifier, fxType, fxData) {
     if (fxType === SDK.FXType.GameFX) {
-      fxData = fxData.concat(DATA.dataForIdentifiersWithFilter(modifier.getFXResource(), SDK.FXType.ModifierTriggeredFX));
+      fxData = fxData.concat(
+        DATA.dataForIdentifiersWithFilter(modifier.getFXResource(), SDK.FXType.ModifierTriggeredFX),
+      );
     } else if (fxType === SDK.FXType.SourceFX) {
-      fxData = fxData.concat(DATA.dataForIdentifiersWithFilter(modifier.getFXResource(), SDK.FXType.ModifierTriggeredSourceFX));
+      fxData = fxData.concat(
+        DATA.dataForIdentifiersWithFilter(
+          modifier.getFXResource(),
+          SDK.FXType.ModifierTriggeredSourceFX,
+        ),
+      );
     } else if (fxType === SDK.FXType.TargetFX) {
-      fxData = fxData.concat(DATA.dataForIdentifiersWithFilter(modifier.getFXResource(), SDK.FXType.ModifierTriggeredTargetFX));
+      fxData = fxData.concat(
+        DATA.dataForIdentifiersWithFilter(
+          modifier.getFXResource(),
+          SDK.FXType.ModifierTriggeredTargetFX,
+        ),
+      );
     }
 
     return fxData;
@@ -4020,7 +4745,10 @@ var GameLayer = FXCompositeLayer.extend({
 
   _showActionAutoFX(action) {
     let showDuration = 0.0;
-    if (action instanceof SDK.PlayCardFromHandAction || action instanceof SDK.PlaySignatureCardAction) {
+    if (
+      action instanceof SDK.PlayCardFromHandAction ||
+      action instanceof SDK.PlaySignatureCardAction
+    ) {
       const card = action.getCard();
 
       // get applied effect positions
@@ -4051,11 +4779,18 @@ var GameLayer = FXCompositeLayer.extend({
           let needsDelays = true;
           const factionId = card.getFactionId();
           const faction = SDK.FactionFactory.factionForIdentifier(factionId);
-          const factionSpellAutoFX = DATA.dataForIdentifiersWithFilter(faction.fxResource, SDK.FXType.SpellAutoFX);
+          const factionSpellAutoFX = DATA.dataForIdentifiersWithFilter(
+            faction.fxResource,
+            SDK.FXType.SpellAutoFX,
+          );
           const columnCount = SDK.GameSession.getInstance().getBoard().getColumnCount();
           for (let i = 0, il = applyEffectPositions.length; i < il; i++) {
             const boardPosition = applyEffectPositions[i];
-            const fxMapIndex = UtilsPosition.getMapIndexFromPosition(columnCount, boardPosition.x, boardPosition.y);
+            const fxMapIndex = UtilsPosition.getMapIndexFromPosition(
+              columnCount,
+              boardPosition.x,
+              boardPosition.y,
+            );
             if (this._currentStepAutoFXMap[fxMapIndex] == null) {
               const autoFXOptions = {
                 targetBoardPosition: boardPosition,
@@ -4098,7 +4833,13 @@ var GameLayer = FXCompositeLayer.extend({
 
   _showApplyCardTargetFX(action) {
     let showDuration = 0.0;
-    if (action instanceof SDK.ApplyCardToBoardAction && action.getIsValidApplication() && !action.getCreatedByTriggeringModifier() && (!(action instanceof ModifierAction) || (!(action instanceof ModifierTriggeredAction) && !action.getModifierParent()))) {
+    if (
+      action instanceof SDK.ApplyCardToBoardAction &&
+      action.getIsValidApplication() &&
+      !action.getCreatedByTriggeringModifier() &&
+      (!(action instanceof ModifierAction) ||
+        (!(action instanceof ModifierTriggeredAction) && !action.getModifierParent()))
+    ) {
       const card = action.getCard();
       if (card instanceof SDK.Spell) {
         // create target fx at each applied effect position
@@ -4131,7 +4872,10 @@ var GameLayer = FXCompositeLayer.extend({
         const general = SDK.GameSession.getInstance().getGeneralForPlayerId(card.getOwnerId());
         if (general != null) {
           var boardPosition = general.getPosition();
-          var applyFX = DATA.dataForIdentifiersWithFilter(card.getFXResource(), SDK.FXType.ArtifactAppliedFX);
+          var applyFX = DATA.dataForIdentifiersWithFilter(
+            card.getFXResource(),
+            SDK.FXType.ArtifactAppliedFX,
+          );
           var applyFXOptions = {
             targetBoardPosition: boardPosition,
             offset: { x: 0.0, y: CONFIG.TILESIZE * 0.5 },
@@ -4151,20 +4895,37 @@ var GameLayer = FXCompositeLayer.extend({
     let showDuration = 0.0;
     let myAction = action && action.getOwnerId() === this._player.getPlayerId();
     myAction = myAction && !SDK.GameSession.current().getIsSpectateMode();
-    if (action instanceof SDK.ApplyCardToBoardAction && action.getIsValidApplication() && !myAction && !action.getCreatedByTriggeringModifier() && (!(action instanceof ModifierAction) || (!(action instanceof ModifierTriggeredAction) && !action.getModifierParent()))) {
+    if (
+      action instanceof SDK.ApplyCardToBoardAction &&
+      action.getIsValidApplication() &&
+      !myAction &&
+      !action.getCreatedByTriggeringModifier() &&
+      (!(action instanceof ModifierAction) ||
+        (!(action instanceof ModifierTriggeredAction) && !action.getModifierParent()))
+    ) {
       const card = action.getCard();
       if (card instanceof SDK.Spell) {
         const applyEffectPositions = card.getApplyEffectPositions();
         const columnCount = SDK.GameSession.getInstance().getBoard().getColumnCount();
         for (let i = 0, il = applyEffectPositions.length; i < il; i++) {
           const boardPosition = applyEffectPositions[i];
-          const mapIndex = UtilsPosition.getMapIndexFromPosition(columnCount, boardPosition.x, boardPosition.y);
+          const mapIndex = UtilsPosition.getMapIndexFromPosition(
+            columnCount,
+            boardPosition.x,
+            boardPosition.y,
+          );
           if (this._currentStepTargetingMap[mapIndex] == null) {
             // mark location as used so we only show targeting arrow fx once at any position in a sequence
             this._currentStepTargetingMap[mapIndex] = action;
             const arrowPosition = UtilsEngine.transformBoardToTileMap(boardPosition);
             const randomDelay = il > 2 ? Math.random() * 0.15 : 0.0;
-            showDuration = Math.max(showDuration, this._showInstructionalArrow(cc.p(arrowPosition.x, arrowPosition.y + CONFIG.TILESIZE * 0.75), randomDelay));
+            showDuration = Math.max(
+              showDuration,
+              this._showInstructionalArrow(
+                cc.p(arrowPosition.x, arrowPosition.y + CONFIG.TILESIZE * 0.75),
+                randomDelay,
+              ),
+            );
           }
         }
       }
@@ -4175,17 +4936,27 @@ var GameLayer = FXCompositeLayer.extend({
 
   showInstructionalArrowForEntityNode(entityNode, delay, duration) {
     const arrowPosition = entityNode.getPosition();
-    this._showInstructionalArrow(cc.p(arrowPosition.x, arrowPosition.y + entityNode.entitySprite.height * 0.9));
+    this._showInstructionalArrow(
+      cc.p(arrowPosition.x, arrowPosition.y + entityNode.entitySprite.height * 0.9),
+    );
   },
 
   showInstructionalArrowForBoardPosition(boardPosition, delay, duration) {
     const arrowPosition = UtilsEngine.transformBoardToScreen(boardPosition);
-    return this._showInstructionalArrow(cc.p(arrowPosition.x, arrowPosition.y + CONFIG.TILESIZE * 0.25), delay, duration);
+    return this._showInstructionalArrow(
+      cc.p(arrowPosition.x, arrowPosition.y + CONFIG.TILESIZE * 0.25),
+      delay,
+      duration,
+    );
   },
 
   _showInstructionalArrow(position, delay?, duration?) {
-    if (delay == null) { delay = 0; }
-    if (duration == null) { duration = CONFIG.ACTION_INSTRUCTIONAL_ARROW_DURATION; }
+    if (delay == null) {
+      delay = 0;
+    }
+    if (duration == null) {
+      duration = CONFIG.ACTION_INSTRUCTIONAL_ARROW_DURATION;
+    }
     const showDuration = (delay + duration) * CONFIG.ACTION_INSTRUCTIONAL_ARROW_SHOW_PERCENT;
 
     // the instructional arrow focuses on units that your opponent is applying spells to
@@ -4196,7 +4967,9 @@ var GameLayer = FXCompositeLayer.extend({
       cc.sequence(
         cc.delayTime(delay),
         cc.fadeIn(CONFIG.FADE_FAST_DURATION),
-        cc.moveTo(duration * 0.6, cc.p(position.x, position.y + 10)).easing(cc.easeExponentialOut()),
+        cc
+          .moveTo(duration * 0.6, cc.p(position.x, position.y + 10))
+          .easing(cc.easeExponentialOut()),
         cc.delayTime(duration * 0.5),
         cc.callFunc(() => {
           instructionalArrowSprite.destroy(CONFIG.FADE_FAST_DURATION);
@@ -4211,8 +4984,12 @@ var GameLayer = FXCompositeLayer.extend({
 
   showPersistentInstructionalArrow(position, delay?, duration?) {
     // returns instructional arrow
-    if (delay == null) { delay = 0; }
-    if (duration == null) { duration = CONFIG.ACTION_INSTRUCTIONAL_ARROW_DURATION; }
+    if (delay == null) {
+      delay = 0;
+    }
+    if (duration == null) {
+      duration = CONFIG.ACTION_INSTRUCTIONAL_ARROW_DURATION;
+    }
 
     // TODO: The following code is being commented/uncommented to reenable glows for tutorial because we need them
     // - but these should be done better, details are documented here:
@@ -4238,7 +5015,9 @@ var GameLayer = FXCompositeLayer.extend({
       cc.sequence(
         cc.delayTime(delay),
         cc.fadeIn(CONFIG.FADE_FAST_DURATION),
-        cc.moveTo(duration * 0.6, cc.p(position.x, position.y + 10)).easing(cc.easeExponentialOut()),
+        cc
+          .moveTo(duration * 0.6, cc.p(position.x, position.y + 10))
+          .easing(cc.easeExponentialOut()),
       ),
     );
 
@@ -4258,8 +5037,10 @@ var GameLayer = FXCompositeLayer.extend({
     let radialBlurDeadZone;
     let radialBlurStrength;
 
-    if ((action instanceof SDK.AttackAction || action instanceof SDK.DamageAsAttackAction)
-      && action.getTotalDamageAmount() >= CONFIG.HIGH_DAMAGE) {
+    if (
+      (action instanceof SDK.AttackAction || action instanceof SDK.DamageAsAttackAction) &&
+      action.getTotalDamageAmount() >= CONFIG.HIGH_DAMAGE
+    ) {
       // high damage attack
       needsScreenFocus = true;
       sfDurationIn = CONFIG.HIGH_DAMAGE_SCREEN_FOCUS_IN_DURATION;
@@ -4270,7 +5051,10 @@ var GameLayer = FXCompositeLayer.extend({
       radialBlurSpread = CONFIG.HIGH_DAMAGE_RADIAL_BLUR_SPREAD;
       radialBlurDeadZone = CONFIG.HIGH_DAMAGE_RADIAL_BLUR_DEAD_ZONE;
       radialBlurStrength = CONFIG.HIGH_DAMAGE_RADIAL_BLUR_STRENGTH;
-    } else if (this.getIsActionSpawn(action) && action.getCard().getBaseManaCost() >= CONFIG.HIGH_COST) {
+    } else if (
+      this.getIsActionSpawn(action) &&
+      action.getCard().getBaseManaCost() >= CONFIG.HIGH_COST
+    ) {
       // high mana cost entity
       needsScreenFocus = true;
       sfDurationIn = CONFIG.HIGH_COST_SCREEN_FOCUS_IN_DURATION;
@@ -4292,25 +5076,43 @@ var GameLayer = FXCompositeLayer.extend({
       scene.stopActionByTag(CONFIG.FOCUS_TAG);
 
       const screenFocusPosition = UtilsEngine.transformBoardToTileMap(action.getTargetPosition());
-      sfDurationIn = Math.min(sfDurationIn, sfDurationIn / sfDurationTotal * safeDuration);
-      sfDelay = Math.min(sfDelay, sfDelay / sfDurationTotal * safeDuration);
-      sfDurationOut = Math.min(sfDurationOut, sfDurationTotal / sfDurationTotal * safeDuration);
+      sfDurationIn = Math.min(sfDurationIn, (sfDurationIn / sfDurationTotal) * safeDuration);
+      sfDelay = Math.min(sfDelay, (sfDelay / sfDurationTotal) * safeDuration);
+      sfDurationOut = Math.min(sfDurationOut, (sfDurationTotal / sfDurationTotal) * safeDuration);
 
       const screenFocusAction = cc.sequence(
         cc.delayTime(targetReactionDelay),
-        cc.EaseExponentialOut.create(RadialBlurTo.create(sfDurationIn, screenFocusPosition, radialBlurSpread, radialBlurDeadZone, radialBlurStrength)),
+        cc.EaseExponentialOut.create(
+          RadialBlurTo.create(
+            sfDurationIn,
+            screenFocusPosition,
+            radialBlurSpread,
+            radialBlurDeadZone,
+            radialBlurStrength,
+          ),
+        ),
         cc.delayTime(sfDelay),
-        cc.EaseExponentialIn.create(RadialBlurTo.create(sfDurationOut, screenFocusPosition, 0.0, radialBlurDeadZone, radialBlurStrength)),
+        cc.EaseExponentialIn.create(
+          RadialBlurTo.create(
+            sfDurationOut,
+            screenFocusPosition,
+            0.0,
+            radialBlurDeadZone,
+            radialBlurStrength,
+          ),
+        ),
       );
       screenFocusAction.setTag(CONFIG.FOCUS_TAG);
       scene.runAction(screenFocusAction);
 
       // shake screen
       const shakeOffset = Math.min(0.1, sfDurationIn * 0.5);
-      this.getFXLayer().runAction(cc.sequence(
-        cc.delayTime(targetReactionDelay + shakeOffset),
-        Shake.create(shakeDuration, shakeStrength, cc.p(0, 0)),
-      ));
+      this.getFXLayer().runAction(
+        cc.sequence(
+          cc.delayTime(targetReactionDelay + shakeOffset),
+          Shake.create(shakeDuration, shakeStrength, cc.p(0, 0)),
+        ),
+      );
     }
   },
 
@@ -4339,13 +5141,29 @@ var GameLayer = FXCompositeLayer.extend({
       var dataModifierIndex = deactivatedModifiersData[i];
       var dataActionIndex = deactivatedModifiersData[i + 1];
       var dataResolveActionIndex = deactivatedModifiersData[i + 2];
-      if (dataModifierIndex !== lastDataModifierIndex || dataActionIndex !== lastDataActionIndex || dataResolveActionIndex !== lastDataResolveActionIndex) {
+      if (
+        dataModifierIndex !== lastDataModifierIndex ||
+        dataActionIndex !== lastDataActionIndex ||
+        dataResolveActionIndex !== lastDataResolveActionIndex
+      ) {
         var parentAction = gameSession.getActionByIndex(dataActionIndex);
-        if (!(parentAction instanceof SDK.StopBufferingEventsAction) || action instanceof SDK.StopBufferingEventsAction) {
+        if (
+          !(parentAction instanceof SDK.StopBufferingEventsAction) ||
+          action instanceof SDK.StopBufferingEventsAction
+        ) {
           var resolveParentAction = gameSession.getActionByIndex(dataResolveActionIndex);
           var modifier = gameSession.getModifierByIndex(dataModifierIndex);
-          if (modifier != null && (!modifier.getCardAffected().getIsLocatedInDeck() || this.getNodeForSdkCard(modifier.getCardAffected()) != null)) {
-            var modifierActionInterface = this._createActionInterfaceForDeactivatedModifier(modifier, parentAction, resolveParentAction, sdkActionInterface);
+          if (
+            modifier != null &&
+            (!modifier.getCardAffected().getIsLocatedInDeck() ||
+              this.getNodeForSdkCard(modifier.getCardAffected()) != null)
+          ) {
+            var modifierActionInterface = this._createActionInterfaceForDeactivatedModifier(
+              modifier,
+              parentAction,
+              resolveParentAction,
+              sdkActionInterface,
+            );
             if (actionIndex === dataActionIndex && actionIndex === dataResolveActionIndex) {
               deactivatedModifierActionInterfaces.push(modifierActionInterface);
               resolveDeactivatedModifierActionInterfaces.push(modifierActionInterface);
@@ -4375,13 +5193,29 @@ var GameLayer = FXCompositeLayer.extend({
       var dataModifierIndex = activatedModifiersData[i];
       var dataActionIndex = activatedModifiersData[i + 1];
       var dataResolveActionIndex = activatedModifiersData[i + 2];
-      if (dataModifierIndex !== lastDataModifierIndex || dataActionIndex !== lastDataActionIndex || dataResolveActionIndex !== lastDataResolveActionIndex) {
+      if (
+        dataModifierIndex !== lastDataModifierIndex ||
+        dataActionIndex !== lastDataActionIndex ||
+        dataResolveActionIndex !== lastDataResolveActionIndex
+      ) {
         var parentAction = gameSession.getActionByIndex(dataActionIndex);
-        if (!(parentAction instanceof SDK.StopBufferingEventsAction) || action instanceof SDK.StopBufferingEventsAction) {
+        if (
+          !(parentAction instanceof SDK.StopBufferingEventsAction) ||
+          action instanceof SDK.StopBufferingEventsAction
+        ) {
           var resolveParentAction = gameSession.getActionByIndex(dataResolveActionIndex);
           var modifier = gameSession.getModifierByIndex(dataModifierIndex);
-          if (modifier != null && (!modifier.getCardAffected().getIsLocatedInDeck() || this.getNodeForSdkCard(modifier.getCardAffected()) != null)) {
-            var modifierActionInterface = this._createActionInterfaceForActivatedModifier(modifier, parentAction, resolveParentAction, sdkActionInterface);
+          if (
+            modifier != null &&
+            (!modifier.getCardAffected().getIsLocatedInDeck() ||
+              this.getNodeForSdkCard(modifier.getCardAffected()) != null)
+          ) {
+            var modifierActionInterface = this._createActionInterfaceForActivatedModifier(
+              modifier,
+              parentAction,
+              resolveParentAction,
+              sdkActionInterface,
+            );
             if (actionIndex === dataActionIndex && actionIndex === dataResolveActionIndex) {
               activatedModifierActionInterfaces.push(modifierActionInterface);
               resolveActivatedModifierActionInterfaces.push(modifierActionInterface);
@@ -4411,30 +5245,56 @@ var GameLayer = FXCompositeLayer.extend({
       var dataModifierIndex = triggeredModifiersData[i];
       var dataActionIndex = triggeredModifiersData[i + 1];
       var dataResolveActionIndex = triggeredModifiersData[i + 2];
-      if (dataModifierIndex !== lastDataModifierIndex || dataActionIndex !== lastDataActionIndex || dataResolveActionIndex !== lastDataResolveActionIndex) {
+      if (
+        dataModifierIndex !== lastDataModifierIndex ||
+        dataActionIndex !== lastDataActionIndex ||
+        dataResolveActionIndex !== lastDataResolveActionIndex
+      ) {
         var parentAction = gameSession.getActionByIndex(dataActionIndex);
-        if (!(parentAction instanceof SDK.StopBufferingEventsAction) || action instanceof SDK.StopBufferingEventsAction) {
+        if (
+          !(parentAction instanceof SDK.StopBufferingEventsAction) ||
+          action instanceof SDK.StopBufferingEventsAction
+        ) {
           var resolveParentAction = gameSession.getActionByIndex(dataResolveActionIndex);
           var modifier = gameSession.getModifierByIndex(dataModifierIndex);
-          if (modifier != null && (!modifier.getCardAffected().getIsLocatedInDeck() || this.getNodeForSdkCard(modifier.getCardAffected()) != null)) {
-            var modifierActionInterface = this._createActionInterfaceForTriggeredModifier(modifier, parentAction, resolveParentAction, sdkActionInterface);
+          if (
+            modifier != null &&
+            (!modifier.getCardAffected().getIsLocatedInDeck() ||
+              this.getNodeForSdkCard(modifier.getCardAffected()) != null)
+          ) {
+            var modifierActionInterface = this._createActionInterfaceForTriggeredModifier(
+              modifier,
+              parentAction,
+              resolveParentAction,
+              sdkActionInterface,
+            );
             if (this._getIsActionChangingTriggeringModifier(modifier, changedByModifiers)) {
               triggeredModifierActionInterfacesForChanges.push(modifierActionInterface);
             } else {
-              const modifierActionInterfaces = this._createTriggerModifierActionInterfacesForTriggeringModifier(modifier, parentAction, resolveParentAction, sdkActionInterface);
+              const modifierActionInterfaces =
+                this._createTriggerModifierActionInterfacesForTriggeringModifier(
+                  modifier,
+                  parentAction,
+                  resolveParentAction,
+                  sdkActionInterface,
+                );
               if (actionIndex === dataActionIndex && actionIndex === dataResolveActionIndex) {
                 triggeredModifierActionInterfaces.push(modifierActionInterface);
                 resolveTriggeredModifierActionInterfaces.push(modifierActionInterface);
-                triggeredModifierActionInterfaces = triggeredModifierActionInterfaces.concat(modifierActionInterfaces);
-                resolveTriggeredModifierActionInterfaces = resolveTriggeredModifierActionInterfaces.concat(modifierActionInterfaces);
+                triggeredModifierActionInterfaces =
+                  triggeredModifierActionInterfaces.concat(modifierActionInterfaces);
+                resolveTriggeredModifierActionInterfaces =
+                  resolveTriggeredModifierActionInterfaces.concat(modifierActionInterfaces);
               } else {
                 if (actionIndex === dataActionIndex) {
                   triggeredModifierActionInterfaces.push(modifierActionInterface);
-                  triggeredModifierActionInterfaces = triggeredModifierActionInterfaces.concat(modifierActionInterfaces);
+                  triggeredModifierActionInterfaces =
+                    triggeredModifierActionInterfaces.concat(modifierActionInterfaces);
                 }
                 if (actionIndex === dataResolveActionIndex) {
                   resolveTriggeredModifierActionInterfaces.push(modifierActionInterface);
-                  resolveTriggeredModifierActionInterfaces = resolveTriggeredModifierActionInterfaces.concat(modifierActionInterfaces);
+                  resolveTriggeredModifierActionInterfaces =
+                    resolveTriggeredModifierActionInterfaces.concat(modifierActionInterfaces);
                 }
               }
             }
@@ -4448,15 +5308,28 @@ var GameLayer = FXCompositeLayer.extend({
 
     // special case for stop buffering events actions: copy non resolve actions into resolve actions
     if (action instanceof SDK.StopBufferingEventsAction) {
-      resolveDeactivatedModifierActionInterfaces = _.union(deactivatedModifierActionInterfaces, resolveDeactivatedModifierActionInterfaces);
-      resolveActivatedModifierActionInterfaces = _.union(activatedModifierActionInterfaces, resolveActivatedModifierActionInterfaces);
-      resolveTriggeredModifierActionInterfaces = _.union(triggeredModifierActionInterfaces, resolveTriggeredModifierActionInterfaces);
+      resolveDeactivatedModifierActionInterfaces = _.union(
+        deactivatedModifierActionInterfaces,
+        resolveDeactivatedModifierActionInterfaces,
+      );
+      resolveActivatedModifierActionInterfaces = _.union(
+        activatedModifierActionInterfaces,
+        resolveActivatedModifierActionInterfaces,
+      );
+      resolveTriggeredModifierActionInterfaces = _.union(
+        triggeredModifierActionInterfaces,
+        resolveTriggeredModifierActionInterfaces,
+      );
     }
 
-    sdkActionInterface.cachedResolveDeactivatedModifierActionInterfaces = resolveDeactivatedModifierActionInterfaces;
-    sdkActionInterface.cachedResolveActivatedModifierActionInterfaces = resolveActivatedModifierActionInterfaces;
-    sdkActionInterface.cachedResolveTriggeredModifierActionInterfaces = resolveTriggeredModifierActionInterfaces;
-    sdkActionInterface.cachedTriggeredModifierActionInterfacesForChanges = triggeredModifierActionInterfacesForChanges;
+    sdkActionInterface.cachedResolveDeactivatedModifierActionInterfaces =
+      resolveDeactivatedModifierActionInterfaces;
+    sdkActionInterface.cachedResolveActivatedModifierActionInterfaces =
+      resolveActivatedModifierActionInterfaces;
+    sdkActionInterface.cachedResolveTriggeredModifierActionInterfaces =
+      resolveTriggeredModifierActionInterfaces;
+    sdkActionInterface.cachedTriggeredModifierActionInterfacesForChanges =
+      triggeredModifierActionInterfacesForChanges;
   },
 
   _getIsActionChangingTriggeringModifier(modifier, actionChangedByModifiers) {
@@ -4471,15 +5344,32 @@ var GameLayer = FXCompositeLayer.extend({
     return changedAction;
   },
 
-  _createTriggerModifierActionInterfacesForTriggeringModifier(modifier, parentAction, resolveParentAction, sdkActionInterface) {
+  _createTriggerModifierActionInterfacesForTriggeringModifier(
+    modifier,
+    parentAction,
+    resolveParentAction,
+    sdkActionInterface,
+  ) {
     const modifierActionInterfaces = [];
 
     // trigger deactivated modifiers
-    const deactivatedModifiers = modifier.getTriggerDeactivatedModifiersForActionAndResolveAction(parentAction, resolveParentAction);
+    const deactivatedModifiers = modifier.getTriggerDeactivatedModifiersForActionAndResolveAction(
+      parentAction,
+      resolveParentAction,
+    );
     for (var i = 0, il = deactivatedModifiers.length; i < il; i++) {
       const deactivatedModifier = deactivatedModifiers[i];
-      if (deactivatedModifier != null && (!deactivatedModifier.getCardAffected().getIsLocatedInDeck() || this.getNodeForSdkCard(deactivatedModifier.getCardAffected()) != null)) {
-        var modifierActionInterface = this._createActionInterfaceForDeactivatedModifier(deactivatedModifier, parentAction, resolveParentAction, sdkActionInterface);
+      if (
+        deactivatedModifier != null &&
+        (!deactivatedModifier.getCardAffected().getIsLocatedInDeck() ||
+          this.getNodeForSdkCard(deactivatedModifier.getCardAffected()) != null)
+      ) {
+        var modifierActionInterface = this._createActionInterfaceForDeactivatedModifier(
+          deactivatedModifier,
+          parentAction,
+          resolveParentAction,
+          sdkActionInterface,
+        );
         var modifierAction = modifierActionInterface.getSdkAction();
         modifierAction.setParentModifier(modifier);
         modifierActionInterfaces.push(modifierActionInterface);
@@ -4487,11 +5377,23 @@ var GameLayer = FXCompositeLayer.extend({
     }
 
     // trigger activated self
-    const activatedModifiers = modifier.getTriggerActivatedModifiersForActionAndResolveAction(parentAction, resolveParentAction);
+    const activatedModifiers = modifier.getTriggerActivatedModifiersForActionAndResolveAction(
+      parentAction,
+      resolveParentAction,
+    );
     for (var i = 0, il = activatedModifiers.length; i < il; i++) {
       var activatedModifier = activatedModifiers[i];
-      if (activatedModifier === modifier && (!activatedModifier.getCardAffected().getIsLocatedInDeck() || this.getNodeForSdkCard(activatedModifier.getCardAffected()) != null)) {
-        var modifierActionInterface = this._createActionInterfaceForActivatedModifier(activatedModifier, parentAction, resolveParentAction, sdkActionInterface);
+      if (
+        activatedModifier === modifier &&
+        (!activatedModifier.getCardAffected().getIsLocatedInDeck() ||
+          this.getNodeForSdkCard(activatedModifier.getCardAffected()) != null)
+      ) {
+        var modifierActionInterface = this._createActionInterfaceForActivatedModifier(
+          activatedModifier,
+          parentAction,
+          resolveParentAction,
+          sdkActionInterface,
+        );
         var modifierAction = modifierActionInterface.getSdkAction();
         modifierAction.setParentModifier(modifier);
         modifierActionInterfaces.push(modifierActionInterface);
@@ -4501,8 +5403,17 @@ var GameLayer = FXCompositeLayer.extend({
     // trigger activated modifiers
     for (var i = 0, il = activatedModifiers.length; i < il; i++) {
       var activatedModifier = activatedModifiers[i];
-      if (activatedModifier !== modifier && (!activatedModifier.getCardAffected().getIsLocatedInDeck() || this.getNodeForSdkCard(activatedModifier.getCardAffected()) != null)) {
-        var modifierActionInterface = this._createActionInterfaceForActivatedModifier(activatedModifier, parentAction, resolveParentAction, sdkActionInterface);
+      if (
+        activatedModifier !== modifier &&
+        (!activatedModifier.getCardAffected().getIsLocatedInDeck() ||
+          this.getNodeForSdkCard(activatedModifier.getCardAffected()) != null)
+      ) {
+        var modifierActionInterface = this._createActionInterfaceForActivatedModifier(
+          activatedModifier,
+          parentAction,
+          resolveParentAction,
+          sdkActionInterface,
+        );
         var modifierAction = modifierActionInterface.getSdkAction();
         modifierAction.setParentModifier(modifier);
         modifierActionInterfaces.push(modifierActionInterface);
@@ -4512,7 +5423,12 @@ var GameLayer = FXCompositeLayer.extend({
     return modifierActionInterfaces;
   },
 
-  _createActionInterfaceForDeactivatedModifier(modifier, parentAction, resolveParentAction, sdkActionInterface) {
+  _createActionInterfaceForDeactivatedModifier(
+    modifier,
+    parentAction,
+    resolveParentAction,
+    sdkActionInterface,
+  ) {
     const modifierIndex = modifier.getIndex();
     const parentActionIndex = parentAction.getIndex();
     const resolveParentActionIndex = resolveParentAction.getIndex();
@@ -4524,14 +5440,20 @@ var GameLayer = FXCompositeLayer.extend({
       modifierAction.setIndex(modifierActionIndex);
       modifierAction.setParentAction(parentAction);
       modifierAction.setResolveParentAction(resolveParentAction);
-      modifierActionInterface = this._actionInterfacesByIndex[modifierActionIndex] = new SdkActionInterface(modifierAction);
+      modifierActionInterface = this._actionInterfacesByIndex[modifierActionIndex] =
+        new SdkActionInterface(modifierAction);
       modifierActionInterface.setSdkStepInterface(sdkStepInterface);
       modifierActionInterface.isSequencedAsOne = true;
     }
     return modifierActionInterface;
   },
 
-  _createActionInterfaceForActivatedModifier(modifier, parentAction, resolveParentAction, sdkActionInterface) {
+  _createActionInterfaceForActivatedModifier(
+    modifier,
+    parentAction,
+    resolveParentAction,
+    sdkActionInterface,
+  ) {
     const modifierIndex = modifier.getIndex();
     const parentActionIndex = parentAction.getIndex();
     const resolveParentActionIndex = resolveParentAction.getIndex();
@@ -4543,14 +5465,20 @@ var GameLayer = FXCompositeLayer.extend({
       modifierAction.setIndex(modifierActionIndex);
       modifierAction.setParentAction(parentAction);
       modifierAction.setResolveParentAction(resolveParentAction);
-      modifierActionInterface = this._actionInterfacesByIndex[modifierActionIndex] = new SdkActionInterface(modifierAction);
+      modifierActionInterface = this._actionInterfacesByIndex[modifierActionIndex] =
+        new SdkActionInterface(modifierAction);
       modifierActionInterface.setSdkStepInterface(sdkStepInterface);
       modifierActionInterface.isSequencedAsOne = true;
     }
     return modifierActionInterface;
   },
 
-  _createActionInterfaceForTriggeredModifier(modifier, parentAction, resolveParentAction, sdkActionInterface) {
+  _createActionInterfaceForTriggeredModifier(
+    modifier,
+    parentAction,
+    resolveParentAction,
+    sdkActionInterface,
+  ) {
     const modifierIndex = modifier.getIndex();
     const parentActionIndex = parentAction.getIndex();
     const resolveParentActionIndex = resolveParentAction.getIndex();
@@ -4562,7 +5490,8 @@ var GameLayer = FXCompositeLayer.extend({
       modifierAction.setIndex(modifierActionIndex);
       modifierAction.setParentAction(parentAction);
       modifierAction.setResolveParentAction(resolveParentAction);
-      modifierActionInterface = this._actionInterfacesByIndex[modifierActionIndex] = new SdkActionInterface(modifierAction);
+      modifierActionInterface = this._actionInterfacesByIndex[modifierActionIndex] =
+        new SdkActionInterface(modifierAction);
       modifierActionInterface.setSdkStepInterface(sdkStepInterface);
       modifierActionInterface.isSequencedAsOne = true;
     }
@@ -4571,7 +5500,11 @@ var GameLayer = FXCompositeLayer.extend({
 
   _showActionForModifier(action) {
     let showDuration = 0.0;
-    if (action instanceof SDK.ApplyModifierAction || action instanceof SDK.RemoveModifierAction || action instanceof ModifierAction) {
+    if (
+      action instanceof SDK.ApplyModifierAction ||
+      action instanceof SDK.RemoveModifierAction ||
+      action instanceof ModifierAction
+    ) {
       // show modifier
       const modifier = action.getModifier();
       if (modifier instanceof SDK.Modifier) {
@@ -4629,7 +5562,9 @@ var GameLayer = FXCompositeLayer.extend({
 
   showPlayerNextFollowupCard() {
     // get the current card from the stack
-    const playerActor = SDK.GameSession.getInstance().getIsSpectateMode() ? this._altPlayer : this._player;
+    const playerActor = SDK.GameSession.getInstance().getIsSpectateMode()
+      ? this._altPlayer
+      : this._player;
     const card = playerActor.getCurrentCardWithFollowup();
     if (card) {
       const followupCard = card.getCurrentFollowupCard();
@@ -4658,7 +5593,9 @@ var GameLayer = FXCompositeLayer.extend({
   removePlayerCurrentCardWithFollowup() {
     this.removePlayerFollowupCardUI();
 
-    const playerActor = SDK.GameSession.getInstance().getIsSpectateMode() ? this._altPlayer : this._player;
+    const playerActor = SDK.GameSession.getInstance().getIsSpectateMode()
+      ? this._altPlayer
+      : this._player;
     playerActor.popCurrentCardWithFollowup();
     playerActor.setFollowupCard(null);
   },
@@ -4670,9 +5607,7 @@ var GameLayer = FXCompositeLayer.extend({
     */
   },
 
-  removePlayerFollowupCardUI() {
-
-  },
+  removePlayerFollowupCardUI() {},
 
   /* endregion FOLLOWUPS */
 
@@ -4732,7 +5667,13 @@ var GameLayer = FXCompositeLayer.extend({
           zOrder = options.zOrder;
         }
         // flip based on start/end difference
-        if (options.sourceBoardPosition && options.targetBoardPosition && options.targetBoardPosition.x - options.sourceBoardPosition.x < 0 && node.setFlippedX && node.isFlippedX) {
+        if (
+          options.sourceBoardPosition &&
+          options.targetBoardPosition &&
+          options.targetBoardPosition.x - options.sourceBoardPosition.x < 0 &&
+          node.setFlippedX &&
+          node.isFlippedX
+        ) {
           node.setFlippedX(!node.isFlippedX());
         }
         // auto fx
@@ -4765,7 +5706,11 @@ var GameLayer = FXCompositeLayer.extend({
         const allNodes = this.middlegroundLayer.getChildren();
         for (let i = 0; i < allNodes.length; i++) {
           const obstacleNode = allNodes[i];
-          if (obstacleNode instanceof UnitNode && obstacleNode.sdkCard !== source && obstacleNode.sdkCard !== target) {
+          if (
+            obstacleNode instanceof UnitNode &&
+            obstacleNode.sdkCard !== source &&
+            obstacleNode.sdkCard !== target
+          ) {
             obstacles.push(obstacleNode);
           }
         }
@@ -4784,8 +5729,15 @@ var GameLayer = FXCompositeLayer.extend({
 
       // update auto fx
       if (forAutoFX) {
-        const autoFXPosition = options.targetBoardPosition || options.sourceBoardPosition || UtilsEngine.transformTileMapToBoardIndex(node.getPosition());
-        const fxMapIndex = UtilsPosition.getMapIndexFromPosition(SDK.GameSession.getInstance().getBoard().getColumnCount(), autoFXPosition.x, autoFXPosition.y);
+        const autoFXPosition =
+          options.targetBoardPosition ||
+          options.sourceBoardPosition ||
+          UtilsEngine.transformTileMapToBoardIndex(node.getPosition());
+        const fxMapIndex = UtilsPosition.getMapIndexFromPosition(
+          SDK.GameSession.getInstance().getBoard().getColumnCount(),
+          autoFXPosition.x,
+          autoFXPosition.y,
+        );
         let fxNodes = this._currentStepAutoFXMap[fxMapIndex];
 
         if (!fxNodes) {
@@ -4811,13 +5763,15 @@ var GameLayer = FXCompositeLayer.extend({
       }
 
       if (sequenceSteps) {
-        sequenceSteps.push(cc.callFunc(function () {
-          if (layer === this.tileLayer) {
-            layer.addTile(node, zOrder);
-          } else {
-            layer.addChild(node, zOrder);
-          }
-        }, this));
+        sequenceSteps.push(
+          cc.callFunc(function () {
+            if (layer === this.tileLayer) {
+              layer.addTile(node, zOrder);
+            } else {
+              layer.addChild(node, zOrder);
+            }
+          }, this),
+        );
       } else if (layer === this.tileLayer) {
         layer.addTile(node, zOrder);
       } else {
@@ -4914,7 +5868,8 @@ var GameLayer = FXCompositeLayer.extend({
       entityNode.updateSupportNodePositions();
 
       return entityNode;
-    } if (sdkCard instanceof SDK.Spell) {
+    }
+    if (sdkCard instanceof SDK.Spell) {
       // for now don't add spells
     }
   },
@@ -4992,7 +5947,10 @@ var GameLayer = FXCompositeLayer.extend({
       const readyEntityNodes = this.getReadyEntityNodes();
       for (let i = 0, il = readyEntityNodes.length; i < il; i++) {
         const entityNode = readyEntityNodes[i];
-        entityNode.addInjectedVisualStateTagWithId(EntityNodeVisualStateTag.createShowHoverForPlayerTag(), this._unusedEntityTagId);
+        entityNode.addInjectedVisualStateTagWithId(
+          EntityNodeVisualStateTag.createShowHoverForPlayerTag(),
+          this._unusedEntityTagId,
+        );
       }
     }
   },
@@ -5017,7 +5975,10 @@ var GameLayer = FXCompositeLayer.extend({
   },
 
   displaySelectEntityParticles(boardX, boardY) {
-    const pEmitter = BaseParticleSystem.create({ plistFile: RSX.ptcl_dot_square_select.plist, pixelGridAligned: true });
+    const pEmitter = BaseParticleSystem.create({
+      plistFile: RSX.ptcl_dot_square_select.plist,
+      pixelGridAligned: true,
+    });
     const emitterPosition = UtilsEngine.transformBoardToTileMap(cc.p(boardX, boardY));
     pEmitter.setPosition(emitterPosition);
     pEmitter.setScale(0.8);
@@ -5028,7 +5989,15 @@ var GameLayer = FXCompositeLayer.extend({
 
   addEntityNodeHighlightTagsAtLocs(locs, color, freq, minAlpha, maxAlpha, tagId) {
     for (let i = 0; i < locs.length; i++) {
-      this.addEntityNodeHighlightTagsAtBoardPosition(locs[i].x, locs[i].y, color, freq, minAlpha, maxAlpha, tagId);
+      this.addEntityNodeHighlightTagsAtBoardPosition(
+        locs[i].x,
+        locs[i].y,
+        color,
+        freq,
+        minAlpha,
+        maxAlpha,
+        tagId,
+      );
     }
   },
 
@@ -5037,7 +6006,10 @@ var GameLayer = FXCompositeLayer.extend({
     for (let i = 0; i < sdkEntities.length; i++) {
       const entityNode = this.getNodeForSdkCard(sdkEntities[i]);
       if (entityNode && entityNode.getIsTargetable()) {
-        entityNode.addInjectedVisualStateTagWithId(EntityNodeVisualStateTag.createShowTargetableTag(), this._targetableTagId);
+        entityNode.addInjectedVisualStateTagWithId(
+          EntityNodeVisualStateTag.createShowTargetableTag(),
+          this._targetableTagId,
+        );
       }
     }
   },
@@ -5046,7 +6018,10 @@ var GameLayer = FXCompositeLayer.extend({
     for (let i = 0; i < sdkEntities.length; i++) {
       const entityNode = this.getNodeForSdkCard(sdkEntities[i]);
       if (entityNode && entityNode.getIsTargetable()) {
-        entityNode.addInjectedVisualStateTagWithId(EntityNodeVisualStateTag.createShowDeemphasisTag(), this._targetableTagId);
+        entityNode.addInjectedVisualStateTagWithId(
+          EntityNodeVisualStateTag.createShowDeemphasisTag(),
+          this._targetableTagId,
+        );
       }
     }
   },
@@ -5058,16 +6033,25 @@ var GameLayer = FXCompositeLayer.extend({
     }
   },
 
-  addEntityNodeHighlightTagsAtBoardPosition(boardX, boardY, color, freq, minAlpha, maxAlpha, tagId) {
+  addEntityNodeHighlightTagsAtBoardPosition(
+    boardX,
+    boardY,
+    color,
+    freq,
+    minAlpha,
+    maxAlpha,
+    tagId,
+  ) {
     const entityNode = this.getEntityNodeAtBoardPosition(boardX, boardY, true, true);
     if (entityNode) {
-      entityNode.addInjectedVisualStateTagWithId(EntityNodeVisualStateTag.createHighlightTag(true, 0, color, freq, minAlpha, maxAlpha), tagId);
+      entityNode.addInjectedVisualStateTagWithId(
+        EntityNodeVisualStateTag.createHighlightTag(true, 0, color, freq, minAlpha, maxAlpha),
+        tagId,
+      );
     }
   },
 
-  removeEntityNodeHighlights() {
-
-  },
+  removeEntityNodeHighlights() {},
 
   stopParticles() {
     for (let i = 0; i < this._particleContainer.length; i++) {
@@ -5085,16 +6069,24 @@ var GameLayer = FXCompositeLayer.extend({
    */
   updateShowingSdkNodeStats(force) {
     // show stats over units
-    if (this.getIsActive()
-      && ((CONFIG.alwaysShowStats && (this._currentSdkStepInterface == null || CONFIG.OVERLAY_STATS_DURING_STEPS))
-      || (this._player.getIsTakingInspectAction() && CONFIG.OVERLAY_STATS_DURING_HOVER)
-      || (this._player.getIsTakingSelectionAction() && CONFIG.OVERLAY_STATS_DURING_SELECT))) {
+    if (
+      this.getIsActive() &&
+      ((CONFIG.alwaysShowStats &&
+        (this._currentSdkStepInterface == null || CONFIG.OVERLAY_STATS_DURING_STEPS)) ||
+        (this._player.getIsTakingInspectAction() && CONFIG.OVERLAY_STATS_DURING_HOVER) ||
+        (this._player.getIsTakingSelectionAction() && CONFIG.OVERLAY_STATS_DURING_SELECT))
+    ) {
       const lastSdkStateRecordingAction = this._lastShownSdkStateRecordingAction;
-      const actionEventType = this._currentSdkStepInterface == null ? EVENTS.update_cache_step : EVENTS.update_cache_action;
-      if (!this._showingStats
-        || this._showingStatsForSdkStateRecordingAction !== lastSdkStateRecordingAction
-        || this._showingStatsForSdkStateRecordingActionEventType !== actionEventType
-        || force) {
+      const actionEventType =
+        this._currentSdkStepInterface == null
+          ? EVENTS.update_cache_step
+          : EVENTS.update_cache_action;
+      if (
+        !this._showingStats ||
+        this._showingStatsForSdkStateRecordingAction !== lastSdkStateRecordingAction ||
+        this._showingStatsForSdkStateRecordingActionEventType !== actionEventType ||
+        force
+      ) {
         this._showingStats = true;
         this._showingStatsForSdkStateRecordingAction = lastSdkStateRecordingAction;
         this._showingStatsForSdkStateRecordingActionEventType = actionEventType;
@@ -5132,11 +6124,16 @@ var GameLayer = FXCompositeLayer.extend({
   },
 
   showEntitiesKilledByAttack(attackingSdkEntity, defendingSdkEntity) {
-    if (!SDK.GameSession.getInstance().getIsSpectateMode()
-      && attackingSdkEntity != null && defendingSdkEntity != null
-      && (attackingSdkEntity !== this._showingAttackSourceSdkEntity || defendingSdkEntity !== this._showingAttackTargetSdkEntity)) {
+    if (
+      !SDK.GameSession.getInstance().getIsSpectateMode() &&
+      attackingSdkEntity != null &&
+      defendingSdkEntity != null &&
+      (attackingSdkEntity !== this._showingAttackSourceSdkEntity ||
+        defendingSdkEntity !== this._showingAttackTargetSdkEntity)
+    ) {
       // get entities killed
-      const sdkEntitiesKilledByAttack = attackingSdkEntity.getEntitiesKilledByAttackOn(defendingSdkEntity);
+      const sdkEntitiesKilledByAttack =
+        attackingSdkEntity.getEntitiesKilledByAttackOn(defendingSdkEntity);
 
       // stop previous
       this.stopShowingEntitiesKilledByAttack();
@@ -5156,7 +6153,10 @@ var GameLayer = FXCompositeLayer.extend({
             if (killPreviewNode != null) {
               // add symbol to ui layer
               if (killPreviewNode.getParent() != this.uiLayer) {
-                this.uiLayer.addChild(killPreviewNode, this._ui_z_order_high_priority_support_nodes);
+                this.uiLayer.addChild(
+                  killPreviewNode,
+                  this._ui_z_order_high_priority_support_nodes,
+                );
                 entityNode.updateSupportNodePositions();
               }
 
@@ -5166,7 +6166,9 @@ var GameLayer = FXCompositeLayer.extend({
               }
               killPreviewNode.setVisible(true);
               killPreviewNode.setScale(0.0);
-              killPreviewNode._showAction = cc.scaleTo(CONFIG.ANIMATE_FAST_DURATION, 1.0).easing(cc.easeBackOut());
+              killPreviewNode._showAction = cc
+                .scaleTo(CONFIG.ANIMATE_FAST_DURATION, 1.0)
+                .easing(cc.easeBackOut());
               killPreviewNode.runAction(killPreviewNode._showAction);
 
               // store entity as showing kill symbol
@@ -5236,7 +6238,8 @@ var GameLayer = FXCompositeLayer.extend({
       if (sdkCard != null) {
         const isInspectingNode = node instanceof cc.Node;
         const isInspectingEntityNode = isInspectingNode && node instanceof EntityNode;
-        const isInspectingBottomDeckCardNode = isInspectingNode && node instanceof BottomDeckCardNode;
+        const isInspectingBottomDeckCardNode =
+          isInspectingNode && node instanceof BottomDeckCardNode;
         const isInspectingArtifactNode = isInspectingNode && node instanceof ArtifactNode;
         const isInspectingBattleLogNode = isInspectingNode && node instanceof BattleLogNode;
         const isInspectingSignatureCardNode = isInspectingNode && node instanceof SignatureCardNode;
@@ -5271,11 +6274,29 @@ var GameLayer = FXCompositeLayer.extend({
 
         // show inspect
         // inspect triggers rebuild so it must be done before using content size
-        this._inspectCardNode.showInspect(sdkCard, showBaseState, actionToShowStateFor, actionEventTypeToShowStateFor, showAsIfOwnedByPlayer2, null, this.getShouldShowCardInstructionals());
+        this._inspectCardNode.showInspect(
+          sdkCard,
+          showBaseState,
+          actionToShowStateFor,
+          actionEventTypeToShowStateFor,
+          showAsIfOwnedByPlayer2,
+          null,
+          this.getShouldShowCardInstructionals(),
+        );
         if (sdkCard.getReferencedCardData()) {
-          const referencedCard = SDK.GameSession.getInstance().createCardForIdentifier(sdkCard.getReferencedCardData().id);
+          const referencedCard = SDK.GameSession.getInstance().createCardForIdentifier(
+            sdkCard.getReferencedCardData().id,
+          );
           referencedCard.setOwner(sdkCard.getOwner());
-          this._referencedCardNode.showInspect(referencedCard, true, actionToShowStateFor, actionEventTypeToShowStateFor, showAsIfOwnedByPlayer2, null, this.getShouldShowCardInstructionals());
+          this._referencedCardNode.showInspect(
+            referencedCard,
+            true,
+            actionToShowStateFor,
+            actionEventTypeToShowStateFor,
+            showAsIfOwnedByPlayer2,
+            null,
+            this.getShouldShowCardInstructionals(),
+          );
         }
 
         const cardContentSize = this._inspectCardNode.getCardContentSize();
@@ -5322,12 +6343,19 @@ var GameLayer = FXCompositeLayer.extend({
           // position at a node in hand
           const modifiersContentSize = this._inspectCardNode.getModifiersContentSize();
           inspectX = baseInspectPosition.x;
-          inspectY = baseInspectPosition.y + cardContentSize.height * 0.5 + modifiersContentSize.height;
+          inspectY =
+            baseInspectPosition.y + cardContentSize.height * 0.5 + modifiersContentSize.height;
         } else if (isInspectingBattleLogNode) {
           // position at battle log node
           inspectX = baseInspectPosition.x + cardContentSize.width * 0.5;
           // TODO: remove this top/bottom code when player frames are migrated into engine
-          inspectY = Math.min(this._battleLog.getBattleLogTop() - cardContentSize.height * 0.5, Math.max(this._battleLog.getBattleLogBottom() + cardContentSize.height * 0.5, baseInspectPosition.y));
+          inspectY = Math.min(
+            this._battleLog.getBattleLogTop() - cardContentSize.height * 0.5,
+            Math.max(
+              this._battleLog.getBattleLogBottom() + cardContentSize.height * 0.5,
+              baseInspectPosition.y,
+            ),
+          );
         } else {
           // position in fixed player inspect locations
           if (showAsIfOwnedByPlayer2) {
@@ -5342,19 +6370,31 @@ var GameLayer = FXCompositeLayer.extend({
         }
 
         // ensure card itself doesn't go outside screen
-        inspectX = Math.max(Math.min(inspectX, UtilsEngine.getGSIWinRight() - cardContentSize.width * 0.5), UtilsEngine.getGSIWinLeft() + cardContentSize.width * 0.5);
-        inspectY = Math.max(Math.min(inspectY, UtilsEngine.getGSIWinTop() - cardContentSize.height * 0.5), UtilsEngine.getGSIWinBottom() + cardContentSize.height * 0.5);
+        inspectX = Math.max(
+          Math.min(inspectX, UtilsEngine.getGSIWinRight() - cardContentSize.width * 0.5),
+          UtilsEngine.getGSIWinLeft() + cardContentSize.width * 0.5,
+        );
+        inspectY = Math.max(
+          Math.min(inspectY, UtilsEngine.getGSIWinTop() - cardContentSize.height * 0.5),
+          UtilsEngine.getGSIWinBottom() + cardContentSize.height * 0.5,
+        );
 
         // ensure meta content doesn't go outside screen
         if (this._inspectCardNode.getKeywordsShowing() && this._inspectCardNode.getHasKeywords()) {
           // keywords
           const cardKeywordsContentSize = this._inspectCardNode.getKeywordsContentSize();
           if (this._inspectCardNode.getKeywordsShowingOnLeft()) {
-            if (inspectX - cardContentSize.width * 0.5 - cardKeywordsContentSize.width < UtilsEngine.getGSIWinLeft()) {
+            if (
+              inspectX - cardContentSize.width * 0.5 - cardKeywordsContentSize.width <
+              UtilsEngine.getGSIWinLeft()
+            ) {
               // show to the right
               this._inspectCardNode.showKeywordsOnRight();
             }
-          } else if (inspectX + cardContentSize.width * 0.5 + cardKeywordsContentSize.width > UtilsEngine.getGSIWinRight()) {
+          } else if (
+            inspectX + cardContentSize.width * 0.5 + cardKeywordsContentSize.width >
+            UtilsEngine.getGSIWinRight()
+          ) {
             // show to the left
             this._inspectCardNode.showKeywordsOnLeft();
           }
@@ -5370,7 +6410,10 @@ var GameLayer = FXCompositeLayer.extend({
           this._referencedCardNode.setPosition(inspectX - spacing, inspectY);
         }
 
-        this.getEventBus().trigger(EVENTS.inspect_card_start, { type: EVENTS.inspect_card_start, card: sdkCard });
+        this.getEventBus().trigger(EVENTS.inspect_card_start, {
+          type: EVENTS.inspect_card_start,
+          card: sdkCard,
+        });
       }
     }
   },
@@ -5386,7 +6429,10 @@ var GameLayer = FXCompositeLayer.extend({
       this._inspectCardNode.stopShowingInspectAndClear();
       this._referencedCardNode.stopShowingInspectAndClear();
 
-      this.getEventBus().trigger(EVENTS.inspect_card_stop, { type: EVENTS.inspect_card_stop, card: sdkCard });
+      this.getEventBus().trigger(EVENTS.inspect_card_stop, {
+        type: EVENTS.inspect_card_stop,
+        card: sdkCard,
+      });
     }
   },
 
@@ -5409,9 +6455,10 @@ var GameLayer = FXCompositeLayer.extend({
       const cardContentSize = this._playCardNode.getCardContentSize();
       const ownerId = action.getOwnerId();
       const isOwnedByPlayer2 = ownerId === SDK.GameSession.getInstance().getPlayer2Id();
-      const isOwnedByMyPlayer = !SDK.GameSession.getInstance().getIsSpectateMode()
-        && ownerId === SDK.GameSession.getInstance().getMyPlayerId()
-        && !(action instanceof SDK.RevealHiddenCardAction);
+      const isOwnedByMyPlayer =
+        !SDK.GameSession.getInstance().getIsSpectateMode() &&
+        ownerId === SDK.GameSession.getInstance().getMyPlayerId() &&
+        !(action instanceof SDK.RevealHiddenCardAction);
 
       // calculate positions
       let sourceScreenPosition;
@@ -5440,19 +6487,44 @@ var GameLayer = FXCompositeLayer.extend({
       }
 
       // ensure card itself doesn't go outside screen
-      targetScreenPosition.x = Math.max(Math.min(targetScreenPosition.x, UtilsEngine.getGSIWinRight() - cardContentSize.width * 0.5), UtilsEngine.getGSIWinLeft() + cardContentSize.width * 0.5);
-      targetScreenPosition.y = Math.max(Math.min(targetScreenPosition.y, UtilsEngine.getGSIWinTop() - cardContentSize.height * 0.5), UtilsEngine.getGSIWinBottom() + cardContentSize.height * 0.5);
+      targetScreenPosition.x = Math.max(
+        Math.min(
+          targetScreenPosition.x,
+          UtilsEngine.getGSIWinRight() - cardContentSize.width * 0.5,
+        ),
+        UtilsEngine.getGSIWinLeft() + cardContentSize.width * 0.5,
+      );
+      targetScreenPosition.y = Math.max(
+        Math.min(targetScreenPosition.y, UtilsEngine.getGSIWinTop() - cardContentSize.height * 0.5),
+        UtilsEngine.getGSIWinBottom() + cardContentSize.height * 0.5,
+      );
 
       // show play
-      this._playCardNode.showPlay(null, action, EVENTS.update_cache_action, sourceScreenPosition, targetScreenPosition, animateDuration, showDuration, noFlip, this.getShouldShowCardInstructionals())
+      this._playCardNode
+        .showPlay(
+          null,
+          action,
+          EVENTS.update_cache_action,
+          sourceScreenPosition,
+          targetScreenPosition,
+          animateDuration,
+          showDuration,
+          noFlip,
+          this.getShouldShowCardInstructionals(),
+        )
         .then(() => {
-          const playerActor = SDK.GameSession.getInstance().getIsSpectateMode() ? this._altPlayer : this._player;
+          const playerActor = SDK.GameSession.getInstance().getIsSpectateMode()
+            ? this._altPlayer
+            : this._player;
           if (!isOwnedByMyPlayer || !playerActor.getHasCardsWithFollowup()) {
             this.stopShowingPlayCard(sdkCard, CONFIG.ANIMATE_MEDIUM_DURATION);
           }
         });
 
-      this.getEventBus().trigger(EVENTS.play_card_start, { type: EVENTS.play_card_start, card: sdkCard });
+      this.getEventBus().trigger(EVENTS.play_card_start, {
+        type: EVENTS.play_card_start,
+        card: sdkCard,
+      });
     }
   },
 
@@ -5467,7 +6539,10 @@ var GameLayer = FXCompositeLayer.extend({
     if (currentSdkCard != null && currentSdkCard === sdkCard) {
       this._playCardNode.stopShowingPlay(animateDuration);
 
-      this.getEventBus().trigger(EVENTS.play_card_stop, { type: EVENTS.play_card_stop, card: sdkCard });
+      this.getEventBus().trigger(EVENTS.play_card_stop, {
+        type: EVENTS.play_card_stop,
+        card: sdkCard,
+      });
     }
   },
 
@@ -5488,15 +6563,18 @@ var GameLayer = FXCompositeLayer.extend({
 
     // setup action to delay for showing played card and then show next action
     this._showActionCardSequenceCompletedCallback = onCardShown;
-    this._showActionCardSequence = this.runAction(cc.sequence(
-      cc.delayTime(nextActionShowDelay),
-      cc.callFunc(() => {
-        const showActionCardSequenceCompletedCallback = this._getShowActionCardSequenceCompletedCallback();
-        this._showActionCardSequence = null;
-        this._showActionCardSequenceCompletedCallback = null;
-        showActionCardSequenceCompletedCallback();
-      }, this),
-    ));
+    this._showActionCardSequence = this.runAction(
+      cc.sequence(
+        cc.delayTime(nextActionShowDelay),
+        cc.callFunc(() => {
+          const showActionCardSequenceCompletedCallback =
+            this._getShowActionCardSequenceCompletedCallback();
+          this._showActionCardSequence = null;
+          this._showActionCardSequenceCompletedCallback = null;
+          showActionCardSequenceCompletedCallback();
+        }, this),
+      ),
+    );
   },
 
   /**
@@ -5539,11 +6617,25 @@ var GameLayer = FXCompositeLayer.extend({
       }
 
       // ensure card itself doesn't go outside screen
-      targetScreenPosition.x = Math.max(Math.min(targetScreenPosition.x, cc.winSize.width - cardContentSize.width * 0.5), cardContentSize.width * 0.5);
-      targetScreenPosition.y = Math.max(Math.min(targetScreenPosition.y, cc.winSize.height - cardContentSize.height * 0.5), cardContentSize.height * 0.5);
+      targetScreenPosition.x = Math.max(
+        Math.min(targetScreenPosition.x, cc.winSize.width - cardContentSize.width * 0.5),
+        cardContentSize.width * 0.5,
+      );
+      targetScreenPosition.y = Math.max(
+        Math.min(targetScreenPosition.y, cc.winSize.height - cardContentSize.height * 0.5),
+        cardContentSize.height * 0.5,
+      );
 
       // show burn
-      this._burnCardNode.showBurn(null, startDelay, burnShowDuration, dissolveDelay, dissolveDuration, sourceScreenPosition, targetScreenPosition);
+      this._burnCardNode.showBurn(
+        null,
+        startDelay,
+        burnShowDuration,
+        dissolveDelay,
+        dissolveDuration,
+        sourceScreenPosition,
+        targetScreenPosition,
+      );
     }
   },
 
@@ -5580,7 +6672,10 @@ var GameLayer = FXCompositeLayer.extend({
    */
   highlightGenerals() {
     return this.whenStatus(GameLayer.STATUS.NEW).then(() => {
-      if (this._highlightingGeneralsPromise == null && !SDK.GameSession.getInstance().isChallenge()) {
+      if (
+        this._highlightingGeneralsPromise == null &&
+        !SDK.GameSession.getInstance().isChallenge()
+      ) {
         this._highlightingGeneralsPromise = new Promise<void>((resolve, reject) => {
           this.bindSdkPlayers();
 
@@ -5597,14 +6692,20 @@ var GameLayer = FXCompositeLayer.extend({
           let opponentPlayerTaunted = false;
           const opponentPlayer = this._opponent;
           const opponentPlayerId = opponentPlayer.getPlayerId();
-          const opponentGeneralCard = SDK.GameSession.getInstance().getGeneralForPlayerId(opponentPlayerId);
+          const opponentGeneralCard =
+            SDK.GameSession.getInstance().getGeneralForPlayerId(opponentPlayerId);
           const opponentGeneralId = opponentGeneralCard.getId();
           const opponentGeneralNode = this.getNodeForSdkCard(opponentGeneralCard);
-          const opponentFaction = SDK.FactionFactory.factionForIdentifier(opponentGeneralCard.getFactionId());
+          const opponentFaction = SDK.FactionFactory.factionForIdentifier(
+            opponentGeneralCard.getFactionId(),
+          );
 
           // taunts
           const myTauntText = SDK.FactionFactory.getTauntCallout(myGeneralId, opponentGeneralId);
-          const opponentTauntText = SDK.FactionFactory.getTauntResponse(opponentGeneralId, myGeneralId);
+          const opponentTauntText = SDK.FactionFactory.getTauntResponse(
+            opponentGeneralId,
+            myGeneralId,
+          );
 
           const tryToResolve = function () {
             if (myPlayerTaunted && opponentPlayerTaunted) {
@@ -5617,45 +6718,67 @@ var GameLayer = FXCompositeLayer.extend({
           opponentPlayer.unhighlightGeneral();
 
           // create sequence to show generals
-          this.runAction(cc.sequence(
-            cc.delayTime(CONFIG.HIGHLIGHT_MY_GENERAL_TAUNT_DELAY),
-            cc.callFunc(() => {
-              // show my general taunting
-              myPlayer.highlightGeneral(myGeneralNode);
-              this.showSpeechForEntityNode(myGeneralNode, myTauntText, null, CONFIG.HIGHLIGHT_GENERAL_TAUNT_DURATION, true, 0.275);
-            }),
-            cc.delayTime(CONFIG.DIALOGUE_ENTER_DURATION + CONFIG.HIGHLIGHT_GENERAL_TAUNT_DURATION),
-            cc.callFunc(() => {
-              // finish my general taunting
-              myPlayer.unhighlightGeneral();
-            }),
-            cc.delayTime(CONFIG.GENERAL_FX_FADE_DURATION),
-            cc.callFunc(() => {
-              // delay to let fx fade out, then try to resolve
-              myPlayerTaunted = true;
-              tryToResolve();
-            }),
-          ));
+          this.runAction(
+            cc.sequence(
+              cc.delayTime(CONFIG.HIGHLIGHT_MY_GENERAL_TAUNT_DELAY),
+              cc.callFunc(() => {
+                // show my general taunting
+                myPlayer.highlightGeneral(myGeneralNode);
+                this.showSpeechForEntityNode(
+                  myGeneralNode,
+                  myTauntText,
+                  null,
+                  CONFIG.HIGHLIGHT_GENERAL_TAUNT_DURATION,
+                  true,
+                  0.275,
+                );
+              }),
+              cc.delayTime(
+                CONFIG.DIALOGUE_ENTER_DURATION + CONFIG.HIGHLIGHT_GENERAL_TAUNT_DURATION,
+              ),
+              cc.callFunc(() => {
+                // finish my general taunting
+                myPlayer.unhighlightGeneral();
+              }),
+              cc.delayTime(CONFIG.GENERAL_FX_FADE_DURATION),
+              cc.callFunc(() => {
+                // delay to let fx fade out, then try to resolve
+                myPlayerTaunted = true;
+                tryToResolve();
+              }),
+            ),
+          );
 
-          this.runAction(cc.sequence(
-            cc.delayTime(CONFIG.HIGHLIGHT_OPPONENT_GENERAL_TAUNT_DELAY),
-            cc.callFunc(() => {
-              // show opponent general taunting
-              opponentPlayer.highlightGeneral(opponentGeneralNode);
-              this.showSpeechForEntityNode(opponentGeneralNode, opponentTauntText, null, CONFIG.HIGHLIGHT_GENERAL_TAUNT_DURATION, true, 0.275);
-            }),
-            cc.delayTime(CONFIG.DIALOGUE_ENTER_DURATION + CONFIG.HIGHLIGHT_GENERAL_TAUNT_DURATION),
-            cc.callFunc(() => {
-              // finish opponent general taunting
-              opponentPlayer.unhighlightGeneral();
-            }),
-            cc.delayTime(CONFIG.GENERAL_FX_FADE_DURATION),
-            cc.callFunc(() => {
-              // delay to let fx fade out, then try to resolve
-              opponentPlayerTaunted = true;
-              tryToResolve();
-            }),
-          ));
+          this.runAction(
+            cc.sequence(
+              cc.delayTime(CONFIG.HIGHLIGHT_OPPONENT_GENERAL_TAUNT_DELAY),
+              cc.callFunc(() => {
+                // show opponent general taunting
+                opponentPlayer.highlightGeneral(opponentGeneralNode);
+                this.showSpeechForEntityNode(
+                  opponentGeneralNode,
+                  opponentTauntText,
+                  null,
+                  CONFIG.HIGHLIGHT_GENERAL_TAUNT_DURATION,
+                  true,
+                  0.275,
+                );
+              }),
+              cc.delayTime(
+                CONFIG.DIALOGUE_ENTER_DURATION + CONFIG.HIGHLIGHT_GENERAL_TAUNT_DURATION,
+              ),
+              cc.callFunc(() => {
+                // finish opponent general taunting
+                opponentPlayer.unhighlightGeneral();
+              }),
+              cc.delayTime(CONFIG.GENERAL_FX_FADE_DURATION),
+              cc.callFunc(() => {
+                // delay to let fx fade out, then try to resolve
+                opponentPlayerTaunted = true;
+                tryToResolve();
+              }),
+            ),
+          );
         });
       }
       return this._highlightingGeneralsPromise;
@@ -5687,7 +6810,12 @@ var GameLayer = FXCompositeLayer.extend({
    * @returns {SpeechNode} - SpeechNode being added to screen
    */
   showSpeechOverTile(tileIndices, text, sound, duration) {
-    return this.showSpeechAtPosition(UtilsEngine.transformBoardToTileMap(tileIndices), text, sound, duration);
+    return this.showSpeechAtPosition(
+      UtilsEngine.transformBoardToTileMap(tileIndices),
+      text,
+      sound,
+      duration,
+    );
   },
 
   // TODO: Place in more organized section of code
@@ -5705,7 +6833,13 @@ var GameLayer = FXCompositeLayer.extend({
     const speechNode = SpeechNode.create();
     speechNode.setPosition(position);
     this.uiLayer.addChild(speechNode, this._ui_z_order_speech_nodes);
-    showDuration = speechNode.showTextWithSoundForDuration(text, sound, duration, true, isNotDismissable);
+    showDuration = speechNode.showTextWithSoundForDuration(
+      text,
+      sound,
+      duration,
+      true,
+      isNotDismissable,
+    );
     return showDuration;
   },
 
@@ -5754,32 +6888,94 @@ var GameLayer = FXCompositeLayer.extend({
     return speechNode;
   },
 
-  showSpeechForEntityNode(entityNode, text, sound, duration, isNotDismissable, speechYPosition, withProceedCarrot) {
+  showSpeechForEntityNode(
+    entityNode,
+    text,
+    sound,
+    duration,
+    isNotDismissable,
+    speechYPosition,
+    withProceedCarrot,
+  ) {
     let showDuration = 0.0;
     if (entityNode instanceof EntityNode) {
       const speechNode = this.getOrCreateSpeechNodeForEntityNode(entityNode);
-      showDuration = speechNode.showTextWithSoundForDuration(text, sound, duration, true, isNotDismissable, speechYPosition, withProceedCarrot);
+      showDuration = speechNode.showTextWithSoundForDuration(
+        text,
+        sound,
+        duration,
+        true,
+        isNotDismissable,
+        speechYPosition,
+        withProceedCarrot,
+      );
     }
     return showDuration;
   },
 
-  showSpeechForPlayer(player, text, sound, duration, isNotDismissable, speechYPosition, withProceedCarrot) {
+  showSpeechForPlayer(
+    player,
+    text,
+    sound,
+    duration,
+    isNotDismissable,
+    speechYPosition,
+    withProceedCarrot,
+  ) {
     let showDuration = 0.0;
     if (player instanceof Player) {
       const playerId = player.getPlayerId();
       const generalCard = SDK.GameSession.getInstance().getGeneralForPlayerId(playerId);
       const generalNode = this.getNodeForSdkCard(generalCard);
-      showDuration = this.showSpeechForEntityNode(generalNode, text, sound, duration, isNotDismissable, speechYPosition, withProceedCarrot);
+      showDuration = this.showSpeechForEntityNode(
+        generalNode,
+        text,
+        sound,
+        duration,
+        isNotDismissable,
+        speechYPosition,
+        withProceedCarrot,
+      );
     }
     return showDuration;
   },
 
-  showSpeechForPlayer1(text, sound, duration, isNotDismissable, speechYPosition, withProceedCarrot) {
-    return this.showSpeechForPlayer(this.getPlayer1(), text, sound, duration, isNotDismissable, speechYPosition, withProceedCarrot);
+  showSpeechForPlayer1(
+    text,
+    sound,
+    duration,
+    isNotDismissable,
+    speechYPosition,
+    withProceedCarrot,
+  ) {
+    return this.showSpeechForPlayer(
+      this.getPlayer1(),
+      text,
+      sound,
+      duration,
+      isNotDismissable,
+      speechYPosition,
+      withProceedCarrot,
+    );
   },
 
-  showSpeechForPlayer2(text, sound, duration, isNotDismissable, speechYPosition, withProceedCarrot) {
-    return this.showSpeechForPlayer(this.getPlayer2(), text, sound, duration, isNotDismissable, speechYPosition, withProceedCarrot);
+  showSpeechForPlayer2(
+    text,
+    sound,
+    duration,
+    isNotDismissable,
+    speechYPosition,
+    withProceedCarrot,
+  ) {
+    return this.showSpeechForPlayer(
+      this.getPlayer2(),
+      text,
+      sound,
+      duration,
+      isNotDismissable,
+      speechYPosition,
+      withProceedCarrot,
+    );
   },
 
   /* endregion UNIT SPEECH */
@@ -5865,11 +7061,25 @@ var GameLayer = FXCompositeLayer.extend({
    * @param {String} carrotDirection
    * @returns {InstructionNode} - InstructionNode being added to screen
    */
-  showInstructionAtPosition(screenPosition, text, sound, duration, isNotDismissable, carrotDirection) {
+  showInstructionAtPosition(
+    screenPosition,
+    text,
+    sound,
+    duration,
+    isNotDismissable,
+    carrotDirection,
+  ) {
     if (!this.getIsDisabled() && !this.getIsShowGameOver()) {
       const instructionNode = InstructionNode.create();
 
-      instructionNode.showTextWithSoundForDuration(text, sound, duration, true, isNotDismissable, carrotDirection);
+      instructionNode.showTextWithSoundForDuration(
+        text,
+        sound,
+        duration,
+        true,
+        isNotDismissable,
+        carrotDirection,
+      );
       instructionNode.setPosition(screenPosition);
 
       this.uiLayer.addChild(instructionNode, this._ui_z_order_instructional_nodes);
@@ -5880,7 +7090,14 @@ var GameLayer = FXCompositeLayer.extend({
 
   showInstructionOverTile(boardPosition, text, sound, duration, isNotDismissable, carrotDirection) {
     const position = UtilsEngine.transformBoardToTileMap(boardPosition);
-    return this.showInstructionAtPosition(position, text, sound, duration, isNotDismissable, carrotDirection);
+    return this.showInstructionAtPosition(
+      position,
+      text,
+      sound,
+      duration,
+      isNotDismissable,
+      carrotDirection,
+    );
   },
 
   /**
@@ -5898,7 +7115,14 @@ var GameLayer = FXCompositeLayer.extend({
       const instructionNode = sdkNode.getOrCreateInstructionNode();
       if (instructionNode != null) {
         // show instruction
-        instructionNode.showTextWithSoundForDuration(text, sound, duration, false, isNotDismissable, carrotDirection);
+        instructionNode.showTextWithSoundForDuration(
+          text,
+          sound,
+          duration,
+          false,
+          isNotDismissable,
+          carrotDirection,
+        );
 
         // add instruction to scene as needed
         if (instructionNode.getParent() != this.uiLayer) {
@@ -5916,16 +7140,37 @@ var GameLayer = FXCompositeLayer.extend({
       const playerId = player.getPlayerId();
       const generalCard = SDK.GameSession.getInstance().getGeneralForPlayerId(playerId);
       const generalNode = this.getNodeForSdkCard(generalCard);
-      return this.showInstructionForSdkNode(generalNode, text, sound, duration, isNotDismissable, carrotDirection);
+      return this.showInstructionForSdkNode(
+        generalNode,
+        text,
+        sound,
+        duration,
+        isNotDismissable,
+        carrotDirection,
+      );
     }
   },
 
   showInstructionForPlayer1(text, sound, duration, isNotDismissable, carrotDirection) {
-    return this.showInstructionForPlayer(this.getPlayer1(), text, sound, duration, isNotDismissable, carrotDirection);
+    return this.showInstructionForPlayer(
+      this.getPlayer1(),
+      text,
+      sound,
+      duration,
+      isNotDismissable,
+      carrotDirection,
+    );
   },
 
   showInstructionForPlayer2(text, sound, duration, isNotDismissable, carrotDirection) {
-    return this.showInstructionForPlayer(this.getPlayer2(), text, sound, duration, isNotDismissable, carrotDirection);
+    return this.showInstructionForPlayer(
+      this.getPlayer2(),
+      text,
+      sound,
+      duration,
+      isNotDismissable,
+      carrotDirection,
+    );
   },
 
   /* endregion INSTRUCTION */
@@ -5936,7 +7181,8 @@ var GameLayer = FXCompositeLayer.extend({
     if (this.getIsGameOver() || SDK.GameSession.current().getIsSpectateMode()) {
       // mouse should always be auto when game over or spectating
       return this.updateMouseCursorByState('auto');
-    } if (this.getPlayerSelectionLocked()) {
+    }
+    if (this.getPlayerSelectionLocked()) {
       // mouse should always be disabled when player selection is locked
       return this.updateMouseCursorByState('disabled');
     }
@@ -5955,7 +7201,13 @@ var GameLayer = FXCompositeLayer.extend({
       const followupCard = player.getFollowupCard();
       if (followupCard != null && mouseOverSdkEntity != null && mouseOverSdkEntity.getIsActive()) {
         const followupBoardPositions = followupCard.getValidTargetPositions();
-        if (followupBoardPositions && UtilsPosition.getIsPositionInPositions(followupBoardPositions, mouseOverSdkEntity.getPosition())) {
+        if (
+          followupBoardPositions &&
+          UtilsPosition.getIsPositionInPositions(
+            followupBoardPositions,
+            mouseOverSdkEntity.getPosition(),
+          )
+        ) {
           return this.updateMouseCursorByState('card');
         }
       }
@@ -5966,23 +7218,52 @@ var GameLayer = FXCompositeLayer.extend({
         if (!player.getMouseDragging()) {
           return this.updateMouseCursorByState('select');
         }
-      } else if (player.getMouseOverArtifactNode() == null
-          && player.getMouseOverReplaceNode() == null
-          && this._battleLog.getMouseOverBattleLogNode() == null) {
+      } else if (
+        player.getMouseOverArtifactNode() == null &&
+        player.getMouseOverReplaceNode() == null &&
+        this._battleLog.getMouseOverBattleLogNode() == null
+      ) {
         // check for selected entity actions
         const selectedSdkEntity = player.getSelectedSdkEntity();
         if (selectedSdkEntity != null) {
-          if (mouseOverSdkEntity && mouseOverSdkEntity.getIsActive() && selectedSdkEntity !== mouseOverSdkEntity) {
-            if (!selectedSdkEntity.getIsSameTeamAs(mouseOverSdkEntity) && selectedSdkEntity.getAttackRange().getIsValidTarget(SDK.GameSession.getInstance().getBoard(), selectedSdkEntity, mouseOverSdkEntity)) {
+          if (
+            mouseOverSdkEntity &&
+            mouseOverSdkEntity.getIsActive() &&
+            selectedSdkEntity !== mouseOverSdkEntity
+          ) {
+            if (
+              !selectedSdkEntity.getIsSameTeamAs(mouseOverSdkEntity) &&
+              selectedSdkEntity
+                .getAttackRange()
+                .getIsValidTarget(
+                  SDK.GameSession.getInstance().getBoard(),
+                  selectedSdkEntity,
+                  mouseOverSdkEntity,
+                )
+            ) {
               return this.updateMouseCursorByState('attack');
             }
-          } else if (selectedSdkEntity.getCanMove() && selectedSdkEntity.getMovementRange().getIsPositionValid(SDK.GameSession.getInstance().getBoard(), selectedSdkEntity, mouseBoardPosition)) {
+          } else if (
+            selectedSdkEntity.getCanMove() &&
+            selectedSdkEntity
+              .getMovementRange()
+              .getIsPositionValid(
+                SDK.GameSession.getInstance().getBoard(),
+                selectedSdkEntity,
+                mouseBoardPosition,
+              )
+          ) {
             return this.updateMouseCursorByState('move');
           }
         }
 
         // mouse over a entity
-        if (mouseOverSdkEntity != null && !player.getMouseDragging() && mouseOverSdkEntity.isOwnedByMyPlayer() && mouseOverSdkEntity.getCanAct()) {
+        if (
+          mouseOverSdkEntity != null &&
+          !player.getMouseDragging() &&
+          mouseOverSdkEntity.isOwnedByMyPlayer() &&
+          mouseOverSdkEntity.getCanAct()
+        ) {
           return this.updateMouseCursorByState('select');
         }
       }
@@ -5994,7 +7275,10 @@ var GameLayer = FXCompositeLayer.extend({
   updateMouseCursorByState(state) {
     if (this._mouseState !== state) {
       this._mouseState = state;
-      this.getEventBus().trigger(EVENTS.canvas_mouse_state, { type: EVENTS.canvas_mouse_state, state: this._mouseState });
+      this.getEventBus().trigger(EVENTS.canvas_mouse_state, {
+        type: EVENTS.canvas_mouse_state,
+        state: this._mouseState,
+      });
     }
   },
 
@@ -6075,15 +7359,26 @@ var GameLayer = FXCompositeLayer.extend({
     var mouseBoardPosition = this._player.getMouseBoardPosition();
 
     // when just starting drag, do mouse select from down position
-    if (this.getIsGameActive() && this._player.getMouseDragging() && mouseWasDragging !== this._player.getMouseDragging()) {
-      this._mouseSelectAtBoardOrScreenPosition(this._player.getMouseBoardUnroundedDownPosition(), this._player.getMouseScreenDownPosition());
+    if (
+      this.getIsGameActive() &&
+      this._player.getMouseDragging() &&
+      mouseWasDragging !== this._player.getMouseDragging()
+    ) {
+      this._mouseSelectAtBoardOrScreenPosition(
+        this._player.getMouseBoardUnroundedDownPosition(),
+        this._player.getMouseScreenDownPosition(),
+      );
     }
 
     // hover replace node
     let mouseOverReplaceNode;
     if (this._player.getSelectedCardIndexInHand() != null) {
       // hover replace
-      const replaceNode = this.getNodeUnderMouse(this.bottomDeckLayer.getReplaceNode(), mouseScreenPosition.x, mouseScreenPosition.y);
+      const replaceNode = this.getNodeUnderMouse(
+        this.bottomDeckLayer.getReplaceNode(),
+        mouseScreenPosition.x,
+        mouseScreenPosition.y,
+      );
       if (replaceNode != null && !replaceNode.getIsDisabled()) {
         event.stopPropagation();
         mouseOverActive = true;
@@ -6103,18 +7398,35 @@ var GameLayer = FXCompositeLayer.extend({
         // get signature card nodes and card nodes in hand
         cardNodes = [].concat(this.bottomDeckLayer.getCardNodes());
         const player1SignatureCardNode = this.getPlayer1Layer().getSignatureCardNode();
-        if (player1SignatureCardNode != null && !player1SignatureCardNode.getIsDisabled() && player1SignatureCardNode.getSdkCard() != null) {
+        if (
+          player1SignatureCardNode != null &&
+          !player1SignatureCardNode.getIsDisabled() &&
+          player1SignatureCardNode.getSdkCard() != null
+        ) {
           cardNodes.push(player1SignatureCardNode);
         }
         const player2SignatureCardNode = this.getPlayer2Layer().getSignatureCardNode();
-        if (player2SignatureCardNode != null && !player2SignatureCardNode.getIsDisabled() && player2SignatureCardNode.getSdkCard() != null) {
+        if (
+          player2SignatureCardNode != null &&
+          !player2SignatureCardNode.getIsDisabled() &&
+          player2SignatureCardNode.getSdkCard() != null
+        ) {
           cardNodes.push(player2SignatureCardNode);
         }
       }
 
-      const cardNode = this.getNodeUnderMouse(cardNodes, mouseScreenPosition.x, mouseScreenPosition.y);
+      const cardNode = this.getNodeUnderMouse(
+        cardNodes,
+        mouseScreenPosition.x,
+        mouseScreenPosition.y,
+      );
       const selectedCard = this._player.getSelectedCard();
-      if (cardNode != null && (selectedCard == null || (cardNode.getSdkCard() != null && cardNode.getSdkCard().getIndex() !== selectedCard.getIndex()))) {
+      if (
+        cardNode != null &&
+        (selectedCard == null ||
+          (cardNode.getSdkCard() != null &&
+            cardNode.getSdkCard().getIndex() !== selectedCard.getIndex()))
+      ) {
         event.stopPropagation();
         mouseOverActive = true;
         mouseOverCard = cardNode;
@@ -6125,7 +7437,17 @@ var GameLayer = FXCompositeLayer.extend({
     // hover artifact cards
     let mouseOverArtifact;
     if (isActive && !event.isStopped && !this._player.getFollowupCard()) {
-      const artifactNode = this.getNodeUnderMouse(this.player1Layer.getArtifactNodes(), mouseScreenPosition.x, mouseScreenPosition.y) || this.getNodeUnderMouse(this.player2Layer.getArtifactNodes(), mouseScreenPosition.x, mouseScreenPosition.y);
+      const artifactNode =
+        this.getNodeUnderMouse(
+          this.player1Layer.getArtifactNodes(),
+          mouseScreenPosition.x,
+          mouseScreenPosition.y,
+        ) ||
+        this.getNodeUnderMouse(
+          this.player2Layer.getArtifactNodes(),
+          mouseScreenPosition.x,
+          mouseScreenPosition.y,
+        );
       if (artifactNode != null) {
         event.stopPropagation();
         mouseOverActive = true;
@@ -6138,30 +7460,46 @@ var GameLayer = FXCompositeLayer.extend({
     if (isActive && !event.isStopped) {
       // check mouse board position against last played entity board positions
       // only allow hover on position if we've hovered a different position than any played entity position
-      const lastPlayedEntityBoardPosition = _.find(this._lastPlayedCardBoardPositions, (cardBoardPosition) => cardBoardPosition.x === mouseBoardPosition.x && cardBoardPosition.y === mouseBoardPosition.y);
+      const lastPlayedEntityBoardPosition = _.find(
+        this._lastPlayedCardBoardPositions,
+        (cardBoardPosition) =>
+          cardBoardPosition.x === mouseBoardPosition.x &&
+          cardBoardPosition.y === mouseBoardPosition.y,
+      );
       if (lastPlayedEntityBoardPosition == null) {
         // if player is in a tutorial and is selecting an entity or has no selection
         // use rounded board index to make targeting easier
         // otherwise use approximate board position
         var mouseBoardPosition;
-        if (SDK.GameSession.getInstance().isTutorial()
-          && (!this._player.getIsTakingSelectionAction()
-              || (this._player.getSelectedSdkEntity() != null
-                && (SDK.GameSession.getInstance().getChallenge().getCurrentInstruction() == null
-                  || SDK.GameSession.getInstance().getChallenge().getCurrentInstruction().expectedActionType === SDK.AttackAction.type))
-              || (this._player.getSelectedCard() instanceof SDK.Spell
-                && !this._player.getSelectedCard().getTargetsAnywhere())
-          )
+        if (
+          SDK.GameSession.getInstance().isTutorial() &&
+          (!this._player.getIsTakingSelectionAction() ||
+            (this._player.getSelectedSdkEntity() != null &&
+              (SDK.GameSession.getInstance().getChallenge().getCurrentInstruction() == null ||
+                SDK.GameSession.getInstance().getChallenge().getCurrentInstruction()
+                  .expectedActionType === SDK.AttackAction.type)) ||
+            (this._player.getSelectedCard() instanceof SDK.Spell &&
+              !this._player.getSelectedCard().getTargetsAnywhere()))
         ) {
           mouseBoardPosition = this._player.getMouseBoardUnroundedPosition();
         } else {
           mouseBoardPosition = this._player.getMouseBoardPosition();
         }
         // try to always get entity at the board position
-        let entityNode = this.getEntityNodeAtBoardPosition(mouseBoardPosition.x, mouseBoardPosition.y, true, true);
+        let entityNode = this.getEntityNodeAtBoardPosition(
+          mouseBoardPosition.x,
+          mouseBoardPosition.y,
+          true,
+          true,
+        );
         if (entityNode == null && !this._player.getIsTakingSelectionAction()) {
           // allow selection of a moving unit intersected by mouse as long as nothing else is selected
-          entityNode = this.getMovingUnitNodeUnderMouse(mouseScreenPosition.x, mouseScreenPosition.y, true, true);
+          entityNode = this.getMovingUnitNodeUnderMouse(
+            mouseScreenPosition.x,
+            mouseScreenPosition.y,
+            true,
+            true,
+          );
         }
         if (entityNode && entityNode.getIsSpawned()) {
           const selectedEntityNode = this._player.getSelectedEntityNode();
@@ -6171,14 +7509,20 @@ var GameLayer = FXCompositeLayer.extend({
 
             // no current entity or new and not same as last during selected action
             const mouseOverEntityNode = this._player.getMouseOverEntityNode();
-            if ((!mouseOverEntityNode || mouseOverEntityNode !== entityNode)
-              && (!this._lastSelectedEntityNodeForAction || entityNode !== this._lastSelectedEntityNodeForAction)
-              && (!this._lastMouseOverEntityNodesForAction || !_.contains(this._lastMouseOverEntityNodesForAction, entityNode))
+            if (
+              (!mouseOverEntityNode || mouseOverEntityNode !== entityNode) &&
+              (!this._lastSelectedEntityNodeForAction ||
+                entityNode !== this._lastSelectedEntityNodeForAction) &&
+              (!this._lastMouseOverEntityNodesForAction ||
+                !_.contains(this._lastMouseOverEntityNodesForAction, entityNode))
             ) {
               this.stopMouseOverButNotPlayer();
 
               // own mouse overrides _opponent's on our screen unless _opponent has selection intent
-              if (this._opponent.getMouseOverEntityNode() === entityNode && !this._opponent.getIntentTypeIsSelection()) {
+              if (
+                this._opponent.getMouseOverEntityNode() === entityNode &&
+                !this._opponent.getIntentTypeIsSelection()
+              ) {
                 this._opponent.removeHover();
                 this._opponent.setMouseOverEntityNode(null);
               }
@@ -6236,10 +7580,12 @@ var GameLayer = FXCompositeLayer.extend({
   },
 
   _updateMouseBoardPositionByCurrentHover(mouseBoardPositionLast) {
-    if (this._player.getMouseOverCardNode() != null
-      || this._player.getMouseOverArtifactNode() != null
-      || this._player.getMouseOverReplaceNode() != null
-      || this._battleLog.getMouseOverBattleLogNode() != null) {
+    if (
+      this._player.getMouseOverCardNode() != null ||
+      this._player.getMouseOverArtifactNode() != null ||
+      this._player.getMouseOverReplaceNode() != null ||
+      this._battleLog.getMouseOverBattleLogNode() != null
+    ) {
       // force mouse board position off board when hovering any cards outside board
       var forcedBoardPosition = { x: -1, y: -1 };
       this._player.setMouseBoardPosition(forcedBoardPosition);
@@ -6261,7 +7607,12 @@ var GameLayer = FXCompositeLayer.extend({
 
   onPointerDown(event) {
     // don't interact when disabled
-    if (SDK.GameSession.current().getIsSpectateMode() || this.getIsGameOver() || event == null || event.isStopped) {
+    if (
+      SDK.GameSession.current().getIsSpectateMode() ||
+      this.getIsGameOver() ||
+      event == null ||
+      event.isStopped
+    ) {
       return;
     }
 
@@ -6308,12 +7659,19 @@ var GameLayer = FXCompositeLayer.extend({
     // handle pointer by button
     if (event.getButton() === cc.EventMouse.BUTTON_RIGHT) {
       // Trigger a cancel if performing a cancellable followup or have a selection
-      if (SDK.GameSession.getInstance().getIsMyFollowupActiveAndCancellable() || !!(this._player.getSelectedCard() || this._player.getSelectedEntityNode())) {
+      if (
+        SDK.GameSession.getInstance().getIsMyFollowupActiveAndCancellable() ||
+        !!(this._player.getSelectedCard() || this._player.getSelectedEntityNode())
+      ) {
         NavigationManager.getInstance().requestUserTriggeredCancel();
       }
     } else if (this.getIsChooseHand()) {
       // toggle cards to be mulliganed from starting hand
-      const cardNode = this.getNodeUnderMouse(this.bottomDeckLayer.getCardNodes(), mouseScreenPosition.x, mouseScreenPosition.y);
+      const cardNode = this.getNodeUnderMouse(
+        this.bottomDeckLayer.getCardNodes(),
+        mouseScreenPosition.x,
+        mouseScreenPosition.y,
+      );
       if (cardNode) {
         // stop inspect of card
         this.stopShowingInspectCard(cardNode.getSdkCard());
@@ -6331,8 +7689,13 @@ var GameLayer = FXCompositeLayer.extend({
           } else {
             // show reminder of max mulligan count centered above card we're trying to mulligan
             const cardNodePosition = cardNode.getPosition();
-            const reminderPosition = cc.p(cardNodePosition.x, cardNodePosition.y + CONFIG.HAND_CARD_SIZE * 0.5);
-            const reminderMessage = i18next.t('game_ui.out_of_mulligan_message', { count: CONFIG.STARTING_HAND_REPLACE_COUNT });
+            const reminderPosition = cc.p(
+              cardNodePosition.x,
+              cardNodePosition.y + CONFIG.HAND_CARD_SIZE * 0.5,
+            );
+            const reminderMessage = i18next.t('game_ui.out_of_mulligan_message', {
+              count: CONFIG.STARTING_HAND_REPLACE_COUNT,
+            });
             this.showInstructionAtPosition(reminderPosition, reminderMessage);
           }
         }
@@ -6367,7 +7730,11 @@ var GameLayer = FXCompositeLayer.extend({
         this._updateMouseBoardPositionByCurrentHover(mouseBoardPositionLast);
 
         const mouseBoardPosition = this._player.getMouseBoardPosition();
-        if (followupCard == null || !SDK.GameSession.getInstance().getBoard().isOnBoard(mouseBoardPosition) || followupCard.getIsPositionValidTarget(mouseBoardPosition)) {
+        if (
+          followupCard == null ||
+          !SDK.GameSession.getInstance().getBoard().isOnBoard(mouseBoardPosition) ||
+          followupCard.getIsPositionValidTarget(mouseBoardPosition)
+        ) {
           // get player state
           const sdkPlayer = this._player.getSdkPlayer();
           const selectedSdkCard = player.getSelectedCard();
@@ -6391,17 +7758,25 @@ var GameLayer = FXCompositeLayer.extend({
             } else if (selectedHandIndex != null) {
               actionToExecute = this._actionSelectedCardFromHand(selectedHandIndex);
             } else if (selectedSdkCard != null && selectedSdkCard.isSignatureCard()) {
-              actionToExecute = this._actionSelectedSignatureCard(sdkPlayer.getCurrentSignatureCard());
+              actionToExecute = this._actionSelectedSignatureCard(
+                sdkPlayer.getCurrentSignatureCard(),
+              );
             } else if (selectedEntityNode != null) {
-              actionToExecute = this._actionSelectedCardOnBoard(selectedEntityNode, mouseOverEntityNode);
+              actionToExecute = this._actionSelectedCardOnBoard(
+                selectedEntityNode,
+                mouseOverEntityNode,
+              );
             }
           }
 
           // check if we should reselect this same entity after executing the action
           // do not do this when user was dragging and dropping as it does not feel right
-          if (CONFIG.stickyTargeting
-              && !mouseDragging
-              && (actionToExecute instanceof SDK.MoveAction || actionToExecute instanceof SDK.AttackAction)) {
+          if (
+            CONFIG.stickyTargeting &&
+            !mouseDragging &&
+            (actionToExecute instanceof SDK.MoveAction ||
+              actionToExecute instanceof SDK.AttackAction)
+          ) {
             this._player.setStickyTargetNode(selectedEntityNode);
           }
 
@@ -6410,7 +7785,10 @@ var GameLayer = FXCompositeLayer.extend({
             const submitted = SDK.GameSession.getInstance().submitExplicitAction(actionToExecute);
 
             if (submitted && !SDK.GameSession.getInstance().getIsRunningAsAuthoritative()) {
-              if (actionToExecute instanceof SDK.PlayCardFromHandAction || actionToExecute instanceof SDK.ReplaceCardFromHandAction) {
+              if (
+                actionToExecute instanceof SDK.PlayCardFromHandAction ||
+                actionToExecute instanceof SDK.ReplaceCardFromHandAction
+              ) {
                 // client prediction: unbind ui for played/replaced card from hand
                 this.bottomDeckLayer.unbindCardNodeAtIndex(actionToExecute.getIndexOfCardInHand());
               } else if (actionToExecute instanceof SDK.PlaySignatureCardAction) {
@@ -6428,10 +7806,29 @@ var GameLayer = FXCompositeLayer.extend({
             // node hovering may be blocked when the selected node is the same as the node being hovered
             const mouseBoardUnroundedUpPosition = this._player.getMouseBoardUnroundedUpPosition();
             const mouseScreenUpPosition = this._player.getMouseScreenUpPosition();
-            const entityNodeUnderMouse = this.getEntityNodeAtBoardPosition(mouseBoardUnroundedUpPosition.x, mouseBoardUnroundedUpPosition.y, true, true);
-            const cardNodeUnderMouse = this.getNodeUnderMouse(this.bottomDeckLayer.getCardNodes(), mouseScreenUpPosition.x, mouseScreenUpPosition.y);
-            if ((!selectedEntityNode || !entityNodeUnderMouse || selectedEntityNode !== entityNodeUnderMouse) && (!selectedSdkCard || !cardNodeUnderMouse || selectedSdkCard !== cardNodeUnderMouse.getSdkCard())) {
-              this._mouseSelectAtBoardOrScreenPosition(mouseBoardUnroundedUpPosition, mouseScreenUpPosition);
+            const entityNodeUnderMouse = this.getEntityNodeAtBoardPosition(
+              mouseBoardUnroundedUpPosition.x,
+              mouseBoardUnroundedUpPosition.y,
+              true,
+              true,
+            );
+            const cardNodeUnderMouse = this.getNodeUnderMouse(
+              this.bottomDeckLayer.getCardNodes(),
+              mouseScreenUpPosition.x,
+              mouseScreenUpPosition.y,
+            );
+            if (
+              (!selectedEntityNode ||
+                !entityNodeUnderMouse ||
+                selectedEntityNode !== entityNodeUnderMouse) &&
+              (!selectedSdkCard ||
+                !cardNodeUnderMouse ||
+                selectedSdkCard !== cardNodeUnderMouse.getSdkCard())
+            ) {
+              this._mouseSelectAtBoardOrScreenPosition(
+                mouseBoardUnroundedUpPosition,
+                mouseScreenUpPosition,
+              );
             }
           }
 
@@ -6512,7 +7909,12 @@ var GameLayer = FXCompositeLayer.extend({
     const cardNodes = [].concat(this.bottomDeckLayer.getCardNodes());
     const signatureCardNode = this.getMyPlayerLayer().getSignatureCardNode();
     const sdkPlayer = this._player.getSdkPlayer();
-    if (!signatureCardNode.getIsDisabled() && sdkPlayer != null && sdkPlayer.getCurrentSignatureCard() != null && sdkPlayer.getIsSignatureCardActive()) {
+    if (
+      !signatureCardNode.getIsDisabled() &&
+      sdkPlayer != null &&
+      sdkPlayer.getCurrentSignatureCard() != null &&
+      sdkPlayer.getIsSignatureCardActive()
+    ) {
       cardNodes.push(signatureCardNode);
     }
 
@@ -6532,7 +7934,10 @@ var GameLayer = FXCompositeLayer.extend({
 
   _mouseSelectNewCardFromBoardAtBoardOrScreenPosition(boardPosition, screenPosition) {
     // try to always get entity at the board position first, then a moving unit intersected by mouse
-    this._mouseSelectEntity(this.getEntityNodeAtBoardPosition(boardPosition.x, boardPosition.y) || this.getMovingUnitNodeUnderMouse(screenPosition.x, screenPosition.y));
+    this._mouseSelectEntity(
+      this.getEntityNodeAtBoardPosition(boardPosition.x, boardPosition.y) ||
+        this.getMovingUnitNodeUnderMouse(screenPosition.x, screenPosition.y),
+    );
   },
 
   _mouseSelectEntity(entityNode) {
@@ -6553,7 +7958,10 @@ var GameLayer = FXCompositeLayer.extend({
           this._player.setSelectedEntityNode(entityNode);
           const selectedSdkEntity = this._player.getSelectedSdkEntity();
 
-          this.displaySelectEntityParticles(selectedSdkEntity.position.x, selectedSdkEntity.position.y);
+          this.displaySelectEntityParticles(
+            selectedSdkEntity.position.x,
+            selectedSdkEntity.position.y,
+          );
 
           this.stopMouseOverButNotPlayer();
           this._player.removeHover();
@@ -6567,8 +7975,13 @@ var GameLayer = FXCompositeLayer.extend({
 
     // create the followup action
     const mouseBoardPosition = this._player.getMouseBoardPosition();
-    if (followupCard != null && SDK.GameSession.getInstance().getBoard().isOnBoard(mouseBoardPosition)) {
-      actionToExecute = this._player.getSdkPlayer().actionPlayFollowup(followupCard, mouseBoardPosition.x, mouseBoardPosition.y);
+    if (
+      followupCard != null &&
+      SDK.GameSession.getInstance().getBoard().isOnBoard(mouseBoardPosition)
+    ) {
+      actionToExecute = this._player
+        .getSdkPlayer()
+        .actionPlayFollowup(followupCard, mouseBoardPosition.x, mouseBoardPosition.y);
     } else if (SDK.GameSession.getInstance().getIsMyFollowupActiveAndCancellable()) {
       NavigationManager.getInstance().requestUserTriggeredCancel();
     }
@@ -6583,13 +7996,22 @@ var GameLayer = FXCompositeLayer.extend({
       const mouseBoardPosition = this._player.getMouseBoardPosition();
       if (SDK.GameSession.getInstance().getBoard().isOnBoard(mouseBoardPosition)) {
         // create play card action
-        actionToExecute = this._player.getSdkPlayer().actionPlaySignatureCard(mouseBoardPosition.x, mouseBoardPosition.y);
+        actionToExecute = this._player
+          .getSdkPlayer()
+          .actionPlaySignatureCard(mouseBoardPosition.x, mouseBoardPosition.y);
       } else {
         const mouseScreenPosition = this._player.getMouseScreenPosition();
-        const replaceNode = this.getNodeUnderMouse(this.bottomDeckLayer.getReplaceNode(), mouseScreenPosition.x, mouseScreenPosition.y);
+        const replaceNode = this.getNodeUnderMouse(
+          this.bottomDeckLayer.getReplaceNode(),
+          mouseScreenPosition.x,
+          mouseScreenPosition.y,
+        );
         if (replaceNode != null) {
           // remind player that signature card cannot be replaced
-          this.showInstructionAtPosition(this.bottomDeckLayer.getReplaceNode().getPosition(), i18next.t('game_ui.replace_bloodborn_message'));
+          this.showInstructionAtPosition(
+            this.bottomDeckLayer.getReplaceNode().getPosition(),
+            i18next.t('game_ui.replace_bloodborn_message'),
+          );
         }
       }
     }
@@ -6604,13 +8026,21 @@ var GameLayer = FXCompositeLayer.extend({
       const mouseBoardPosition = this._player.getMouseBoardPosition();
       if (SDK.GameSession.getInstance().getBoard().isOnBoard(mouseBoardPosition)) {
         // create play card action
-        actionToExecute = this._player.getSdkPlayer().actionPlayCardFromHand(selectedHandIndex, mouseBoardPosition.x, mouseBoardPosition.y);
+        actionToExecute = this._player
+          .getSdkPlayer()
+          .actionPlayCardFromHand(selectedHandIndex, mouseBoardPosition.x, mouseBoardPosition.y);
       } else {
         const mouseScreenPosition = this._player.getMouseScreenPosition();
-        const replaceNode = this.getNodeUnderMouse(this.bottomDeckLayer.getReplaceNode(), mouseScreenPosition.x, mouseScreenPosition.y);
+        const replaceNode = this.getNodeUnderMouse(
+          this.bottomDeckLayer.getReplaceNode(),
+          mouseScreenPosition.x,
+          mouseScreenPosition.y,
+        );
         if (replaceNode && !replaceNode.getIsDisabled()) {
           // create replace action
-          actionToExecute = this._player.getSdkPlayer().actionReplaceCardFromHand(selectedHandIndex);
+          actionToExecute = this._player
+            .getSdkPlayer()
+            .actionReplaceCardFromHand(selectedHandIndex);
         }
       }
     }
@@ -6627,12 +8057,34 @@ var GameLayer = FXCompositeLayer.extend({
       const mouseOverSdkEntity = mouseOverEntityNode && mouseOverEntityNode.getSdkCard();
 
       // entity node exists, try to do action on Board
-      if (mouseOverSdkEntity && !mouseOverSdkEntity.getIsSameTeamAs(selectedSdkEntity) && selectedSdkEntity.getAttackRange().getIsValidTarget(SDK.GameSession.getInstance().getBoard(), selectedSdkEntity, mouseOverSdkEntity)) {
+      if (
+        mouseOverSdkEntity &&
+        !mouseOverSdkEntity.getIsSameTeamAs(selectedSdkEntity) &&
+        selectedSdkEntity
+          .getAttackRange()
+          .getIsValidTarget(
+            SDK.GameSession.getInstance().getBoard(),
+            selectedSdkEntity,
+            mouseOverSdkEntity,
+          )
+      ) {
         // attack an enemy
         actionToExecute = selectedSdkEntity.actionAttack(mouseOverSdkEntity);
-      } else if (selectedSdkEntity.getCanMove() && selectedSdkEntity.getMovementRange().getIsPositionValid(SDK.GameSession.getInstance().getBoard(), selectedSdkEntity, mouseBoardPosition)) {
+      } else if (
+        selectedSdkEntity.getCanMove() &&
+        selectedSdkEntity
+          .getMovementRange()
+          .getIsPositionValid(
+            SDK.GameSession.getInstance().getBoard(),
+            selectedSdkEntity,
+            mouseBoardPosition,
+          )
+      ) {
         // move to location
-        actionToExecute = selectedSdkEntity.actionMove({ x: mouseBoardPosition.x, y: mouseBoardPosition.y });
+        actionToExecute = selectedSdkEntity.actionMove({
+          x: mouseBoardPosition.x,
+          y: mouseBoardPosition.y,
+        });
       }
     }
 
@@ -6652,7 +8104,10 @@ var GameLayer = FXCompositeLayer.extend({
       let playerActor = this._opponent;
       // if we're spectating and have a playerId on the event
       // use current player to show ui data
-      if (SDK.GameSession.current().getIsSpectateMode() && eventData.playerId === this._player.getPlayerId()) {
+      if (
+        SDK.GameSession.current().getIsSpectateMode() &&
+        eventData.playerId === this._player.getPlayerId()
+      ) {
         playerActor = this._altPlayer;
       }
       this.stopMouseOverForPlayer(playerActor);
@@ -6667,7 +8122,10 @@ var GameLayer = FXCompositeLayer.extend({
       const { playerId } = eventData;
       let playerActor;
       let canShowInHand;
-      if (SDK.GameSession.current().getIsSpectateMode() && playerId === this._player.getPlayerId()) {
+      if (
+        SDK.GameSession.current().getIsSpectateMode() &&
+        playerId === this._player.getPlayerId()
+      ) {
         playerActor = this._altPlayer;
         canShowInHand = true;
       } else {
@@ -6678,15 +8136,22 @@ var GameLayer = FXCompositeLayer.extend({
       // if we're in mulligan
       if (SDK.GameSession.current().getIsSpectateMode() && this.getIsSubmitHand()) {
         if (canShowInHand) {
-          playerActor.setMouseOverCard(this.bottomDeckLayer.getCardNodeByHandIndex(eventData.handIndex));
+          playerActor.setMouseOverCard(
+            this.bottomDeckLayer.getCardNodeByHandIndex(eventData.handIndex),
+          );
         }
-      } else if ((this.getIsGameActive() || this.getIsChooseHand()) && (!this.getIsMyTurn() || SDK.GameSession.current().getIsSpectateMode())) {
+      } else if (
+        (this.getIsGameActive() || this.getIsChooseHand()) &&
+        (!this.getIsMyTurn() || SDK.GameSession.current().getIsSpectateMode())
+      ) {
         // allow start/stop hover during opponent turn or spectate mode
 
         // hover over card off board
         if (eventData.handIndex != null) {
           if (canShowInHand) {
-            playerActor.setMouseOverCard(this.bottomDeckLayer.getCardNodeByHandIndex(eventData.handIndex));
+            playerActor.setMouseOverCard(
+              this.bottomDeckLayer.getCardNodeByHandIndex(eventData.handIndex),
+            );
           } else {
             playerActor.setMouseOverCard(eventData.handIndex);
           }
@@ -6700,7 +8165,10 @@ var GameLayer = FXCompositeLayer.extend({
 
         // hover over unit in play
         if (eventData.cardIndex != null) {
-          const entityNode = _.find(this._unitNodes, (n) => n.getSdkCard().getIndex() === eventData.cardIndex);
+          const entityNode = _.find(
+            this._unitNodes,
+            (n) => n.getSdkCard().getIndex() === eventData.cardIndex,
+          );
           if (entityNode) {
             playerActor.setMouseOverEntityNode(entityNode);
           }
@@ -6731,7 +8199,10 @@ var GameLayer = FXCompositeLayer.extend({
       const { playerId } = eventData;
       let playerActor;
       let canShowInHand;
-      if (SDK.GameSession.current().getIsSpectateMode() && playerId === this._player.getPlayerId()) {
+      if (
+        SDK.GameSession.current().getIsSpectateMode() &&
+        playerId === this._player.getPlayerId()
+      ) {
         playerActor = this._altPlayer;
         canShowInHand = true;
       } else {
@@ -6745,13 +8216,18 @@ var GameLayer = FXCompositeLayer.extend({
           const cardNode = this.bottomDeckLayer.getCardNodeByHandIndex(eventData.handIndex);
           cardNode.setSelected(!cardNode.getSelected());
         }
-      } else if (this.getIsGameActive() && (!this.getIsMyTurn() || SDK.GameSession.current().getIsSpectateMode())) {
+      } else if (
+        this.getIsGameActive() &&
+        (!this.getIsMyTurn() || SDK.GameSession.current().getIsSpectateMode())
+      ) {
         // allow start/stop select during opponent turn or while spectating
 
         // select card in hand
         if (eventData.handIndex != null) {
           if (canShowInHand) {
-            playerActor.setSelectedCard(this.bottomDeckLayer.getCardNodeByHandIndex(eventData.handIndex));
+            playerActor.setSelectedCard(
+              this.bottomDeckLayer.getCardNodeByHandIndex(eventData.handIndex),
+            );
           } else {
             playerActor.setSelectedCard(eventData.handIndex);
           }
@@ -6766,7 +8242,10 @@ var GameLayer = FXCompositeLayer.extend({
 
         // select unit in play
         if (eventData.cardIndex != null) {
-          const entityNode = _.find(this._unitNodes, (n) => n.getSdkCard().getIndex() === eventData.cardIndex);
+          const entityNode = _.find(
+            this._unitNodes,
+            (n) => n.getSdkCard().getIndex() === eventData.cardIndex,
+          );
           if (entityNode != null) {
             playerActor.setSelectedEntityNode(entityNode);
           } else {

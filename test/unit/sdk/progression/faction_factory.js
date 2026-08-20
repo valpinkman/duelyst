@@ -12,23 +12,33 @@ Logger.enabled = false;
 describe('faction progression', () => {
   describe('starterDeckForFactionLevel()', () => {
     it('expect 28 cards at level 0', () => {
-      expect(SDK.FactionFactory.starterDeckForFactionLevel(SDK.Factions.Faction1, 0).length).to.equal(28);
+      expect(
+        SDK.FactionFactory.starterDeckForFactionLevel(SDK.Factions.Faction1, 0).length,
+      ).to.equal(28);
     });
 
     it('expect 31 cards at level 1', () => {
-      expect(SDK.FactionFactory.starterDeckForFactionLevel(SDK.Factions.Faction1, 1).length).to.equal(31);
+      expect(
+        SDK.FactionFactory.starterDeckForFactionLevel(SDK.Factions.Faction1, 1).length,
+      ).to.equal(31);
     });
 
     it('expect 34 cards at level 3', () => {
-      expect(SDK.FactionFactory.starterDeckForFactionLevel(SDK.Factions.Faction1, 3).length).to.equal(34);
+      expect(
+        SDK.FactionFactory.starterDeckForFactionLevel(SDK.Factions.Faction1, 3).length,
+      ).to.equal(34);
     });
 
     it('expect 37 cards at level 6', () => {
-      expect(SDK.FactionFactory.starterDeckForFactionLevel(SDK.Factions.Faction1, 6).length).to.equal(37);
+      expect(
+        SDK.FactionFactory.starterDeckForFactionLevel(SDK.Factions.Faction1, 6).length,
+      ).to.equal(37);
     });
 
     it('expect 40 cards at level 9', () => {
-      expect(SDK.FactionFactory.starterDeckForFactionLevel(SDK.Factions.Faction1, 9).length).to.equal(40);
+      expect(
+        SDK.FactionFactory.starterDeckForFactionLevel(SDK.Factions.Faction1, 9).length,
+      ).to.equal(40);
     });
 
     /* Test disabled: Basics are no longer unlockable.

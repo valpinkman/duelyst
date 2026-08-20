@@ -18,7 +18,8 @@ class ModifierDyingWishDamageNearbyAllies extends ModifierDyingWish {
   static type = 'ModifierDyingWishDamageNearbyAllies';
   static modifierName = 'Curse of Agony';
   static keyworded = false;
-  static description = 'When this minion dies, deal %X damage to all nearby friendly minions and General';
+  static description =
+    'When this minion dies, deal %X damage to all nearby friendly minions and General';
 
   static createContextObject(damageAmount, options) {
     const contextObject = super.createContextObject(options);
@@ -34,7 +35,9 @@ class ModifierDyingWishDamageNearbyAllies extends ModifierDyingWish {
   }
 
   onDyingWish() {
-    const validEntities = this.getGameSession().getBoard().getFriendlyEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
+    const validEntities = this.getGameSession()
+      .getBoard()
+      .getFriendlyEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
 
     return (() => {
       const result = [];
@@ -52,6 +55,9 @@ class ModifierDyingWishDamageNearbyAllies extends ModifierDyingWish {
 }
 ModifierDyingWishDamageNearbyAllies.prototype.type = 'ModifierDyingWishDamageNearbyAllies';
 ModifierDyingWishDamageNearbyAllies.prototype.damageAmount = 0;
-ModifierDyingWishDamageNearbyAllies.prototype.fxResource = ['FX.Modifiers.ModifierDyingWishDamageNearbyAllies', 'FX.Modifiers.ModifierGenericDamageNearbyShadow'];
+ModifierDyingWishDamageNearbyAllies.prototype.fxResource = [
+  'FX.Modifiers.ModifierDyingWishDamageNearbyAllies',
+  'FX.Modifiers.ModifierGenericDamageNearbyShadow',
+];
 
 module.exports = ModifierDyingWishDamageNearbyAllies;

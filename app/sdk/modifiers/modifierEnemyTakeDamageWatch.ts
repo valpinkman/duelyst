@@ -24,8 +24,12 @@ class ModifierEnemyTakeDamageWatch extends Modifier {
     super.onAction(actionEvent);
 
     const a = actionEvent.action;
-    if (a instanceof DamageAction && (__guard__(a.getTarget(), (x) => x.getOwnerId()) !== this.getCard().getOwnerId())) {
-      if (this.willDealDamage(a)) { // check if anything is preventing this action from dealing its damage
+    if (
+      a instanceof DamageAction &&
+      __guard__(a.getTarget(), (x) => x.getOwnerId()) !== this.getCard().getOwnerId()
+    ) {
+      if (this.willDealDamage(a)) {
+        // check if anything is preventing this action from dealing its damage
         return this.onEnemyDamageTaken(a);
       }
     }
@@ -53,5 +57,5 @@ ModifierEnemyTakeDamageWatch.prototype.fxResource = ['FX.Modifiers.ModifierEnemy
 module.exports = ModifierEnemyTakeDamageWatch;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

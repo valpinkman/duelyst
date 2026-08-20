@@ -40,22 +40,30 @@ describe('challenges', () => {
 
       action = board.getUnitAtPosition({ x: 4, y: 2 }).actionMove({ x: 6, y: 2 });
       gameSession.executeAction(action);
-      action = board.getUnitAtPosition({ x: 6, y: 2 }).actionAttack(gameSession.getGeneralForPlayer2());
+      action = board
+        .getUnitAtPosition({ x: 6, y: 2 })
+        .actionAttack(gameSession.getGeneralForPlayer2());
       gameSession.executeAction(action);
 
       action = board.getUnitAtPosition({ x: 3, y: 0 }).actionMove({ x: 5, y: 0 });
       gameSession.executeAction(action);
-      action = board.getUnitAtPosition({ x: 5, y: 0 }).actionAttack(board.getUnitAtPosition({ x: 5, y: 1 }));
+      action = board
+        .getUnitAtPosition({ x: 5, y: 0 })
+        .actionAttack(board.getUnitAtPosition({ x: 5, y: 1 }));
       gameSession.executeAction(action);
 
       action = board.getUnitAtPosition({ x: 3, y: 4 }).actionMove({ x: 5, y: 4 });
       gameSession.executeAction(action);
-      action = board.getUnitAtPosition({ x: 5, y: 4 }).actionAttack(board.getUnitAtPosition({ x: 5, y: 3 }));
+      action = board
+        .getUnitAtPosition({ x: 5, y: 4 })
+        .actionAttack(board.getUnitAtPosition({ x: 5, y: 3 }));
       gameSession.executeAction(action);
 
       action = board.getUnitAtPosition({ x: 3, y: 2 }).actionMove({ x: 5, y: 2 });
       gameSession.executeAction(action);
-      action = board.getUnitAtPosition({ x: 5, y: 2 }).actionAttack(board.getUnitAtPosition({ x: 5, y: 1 }));
+      action = board
+        .getUnitAtPosition({ x: 5, y: 2 })
+        .actionAttack(board.getUnitAtPosition({ x: 5, y: 1 }));
       gameSession.executeAction(action);
 
       action = board.getUnitAtPosition({ x: 1, y: 0 }).actionMove({ x: 1, y: 2 });
@@ -222,7 +230,9 @@ describe('challenges', () => {
       playCardFromHandAction = myPlayer.actionPlayCardFromHand(0, 1, 3);
       gameSession.executeAction(playCardFromHandAction);
 
-      action = gameSession.getGeneralForPlayer1().actionAttack(board.getUnitAtPosition({ x: 3, y: 3 }));
+      action = gameSession
+        .getGeneralForPlayer1()
+        .actionAttack(board.getUnitAtPosition({ x: 3, y: 3 }));
       gameSession.executeAction(action);
 
       const windblade = board.getUnitAtPosition({ x: 3, y: 1 });

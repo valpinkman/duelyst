@@ -18,7 +18,11 @@
  * Run: pnpm test:rules   (wraps this in `firebase emulators:exec`)
  */
 import { readFileSync } from 'node:fs';
-import { initializeTestEnvironment, assertFails, assertSucceeds } from '@firebase/rules-unit-testing';
+import {
+  initializeTestEnvironment,
+  assertFails,
+  assertSucceeds,
+} from '@firebase/rules-unit-testing';
 import { ref, get, set } from 'firebase/database';
 import { beforeAll, afterAll, describe, it } from 'vitest';
 
@@ -57,7 +61,7 @@ describe('firebase security rules', () => {
     // wrong (or still `auth.id`, which is now always undefined) this READ would
     // be denied too, but this DENIAL is what proves the rule is discriminating
     // rather than just open
-    it('expect a user NOT to read another user\'s chat/users node', async () => {
+    it("expect a user NOT to read another user's chat/users node", async () => {
       await assertFails(get(ref(asUser(ME), `chat/users/${OTHER}`)));
     });
 
@@ -65,7 +69,7 @@ describe('firebase security rules', () => {
       await assertSucceeds(set(ref(asUser(ME), `chat/users/${ME}/portrait_id`), 42));
     });
 
-    it('expect a user NOT to write another user\'s portrait_id', async () => {
+    it("expect a user NOT to write another user's portrait_id", async () => {
       await assertFails(set(ref(asUser(ME), `chat/users/${OTHER}/portrait_id`), 42));
     });
   });

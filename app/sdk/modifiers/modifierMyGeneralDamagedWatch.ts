@@ -24,13 +24,16 @@ class ModifierMyGeneralDamagedWatch extends Modifier {
   onAfterCleanupAction(actionEvent) {
     super.onAfterCleanupAction(actionEvent);
 
-    const {
-      action,
-    } = actionEvent;
+    const { action } = actionEvent;
     // check if action is a damage action targeting my General
     if (action instanceof DamageAction) {
       const target = action.getTarget();
-      if ((target != null) && target.getIsSameTeamAs(this.getCard()) && target.getWasGeneral() && this.willDealDamage(action)) {
+      if (
+        target != null &&
+        target.getIsSameTeamAs(this.getCard()) &&
+        target.getWasGeneral() &&
+        this.willDealDamage(action)
+      ) {
         return this.onDamageDealtToGeneral(action);
       }
     }

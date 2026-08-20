@@ -46,7 +46,10 @@ UtilsEngine.getScreenBoardSize = function () {
  * @returns {Size}
  */
 UtilsEngine.getGSIWinSize = function () {
-  return cc.size(UtilsEngine._globalScaleInvertedWinRect.width, UtilsEngine._globalScaleInvertedWinRect.height);
+  return cc.size(
+    UtilsEngine._globalScaleInvertedWinRect.width,
+    UtilsEngine._globalScaleInvertedWinRect.height,
+  );
 };
 /**
  * Returns rect of the screen inverted to account for the global scale.
@@ -109,7 +112,9 @@ UtilsEngine.getGSIWinRight = function () {
  * @returns {Number}
  */
 UtilsEngine.getGSIWinCenterX = function () {
-  return UtilsEngine._globalScaleInvertedWinRect.x + UtilsEngine._globalScaleInvertedWinRect.width * 0.5;
+  return (
+    UtilsEngine._globalScaleInvertedWinRect.x + UtilsEngine._globalScaleInvertedWinRect.width * 0.5
+  );
 };
 
 /**
@@ -117,7 +122,9 @@ UtilsEngine.getGSIWinCenterX = function () {
  * @returns {Number}
  */
 UtilsEngine.getGSIWinCenterY = function () {
-  return UtilsEngine._globalScaleInvertedWinRect.y + UtilsEngine._globalScaleInvertedWinRect.height * 0.5;
+  return (
+    UtilsEngine._globalScaleInvertedWinRect.y + UtilsEngine._globalScaleInvertedWinRect.height * 0.5
+  );
 };
 
 /**
@@ -127,7 +134,8 @@ UtilsEngine.getGSIWinCenterY = function () {
 UtilsEngine.getGSIWinCenterPosition = function () {
   return cc.p(
     UtilsEngine._globalScaleInvertedWinRect.x + UtilsEngine._globalScaleInvertedWinRect.width * 0.5,
-    UtilsEngine._globalScaleInvertedWinRect.y + UtilsEngine._globalScaleInvertedWinRect.height * 0.5,
+    UtilsEngine._globalScaleInvertedWinRect.y +
+      UtilsEngine._globalScaleInvertedWinRect.height * 0.5,
   );
 };
 
@@ -144,7 +152,10 @@ UtilsEngine.getCardsInHandStartPosition = function () {
  * @returns {Vec2}
  */
 UtilsEngine.getCardsInHandStartPositionForCSS = function () {
-  return cc.p(UtilsEngine._cardsInHandStartPositionForCSS.x, UtilsEngine._cardsInHandStartPositionForCSS.y);
+  return cc.p(
+    UtilsEngine._cardsInHandStartPositionForCSS.x,
+    UtilsEngine._cardsInHandStartPositionForCSS.y,
+  );
 };
 
 /**
@@ -160,7 +171,10 @@ UtilsEngine.getCardsInHandEndPosition = function () {
  * @returns {Vec2}
  */
 UtilsEngine.getCardsInHandEndPositionForCSS = function () {
-  return cc.p(UtilsEngine._cardsInHandEndPositionForCSS.x, UtilsEngine._cardsInHandEndPositionForCSS.y);
+  return cc.p(
+    UtilsEngine._cardsInHandEndPositionForCSS.x,
+    UtilsEngine._cardsInHandEndPositionForCSS.y,
+  );
 };
 
 /**
@@ -200,7 +214,10 @@ UtilsEngine.getPlayer2FramePositionForCSS = function () {
  * @returns {Vec2}
  */
 UtilsEngine.getPlayer1InspectOffBoardCardPosition = function () {
-  return cc.p(UtilsEngine._player1InspectOffBoardCardPosition.x, UtilsEngine._player1InspectOffBoardCardPosition.y);
+  return cc.p(
+    UtilsEngine._player1InspectOffBoardCardPosition.x,
+    UtilsEngine._player1InspectOffBoardCardPosition.y,
+  );
 };
 
 /**
@@ -208,7 +225,10 @@ UtilsEngine.getPlayer1InspectOffBoardCardPosition = function () {
  * @returns {Vec2}
  */
 UtilsEngine.getPlayer2InspectOffBoardCardPosition = function () {
-  return cc.p(UtilsEngine._player2InspectOffBoardCardPosition.x, UtilsEngine._player2InspectOffBoardCardPosition.y);
+  return cc.p(
+    UtilsEngine._player2InspectOffBoardCardPosition.x,
+    UtilsEngine._player2InspectOffBoardCardPosition.y,
+  );
 };
 
 /**
@@ -283,9 +303,16 @@ UtilsEngine.getWindowSizeRelativeNodeScale = function (node, min, max) {
  * @returns {Number}
  */
 UtilsEngine.getWindowSizeRelativeScale = function (width, height, min, max) {
-  if (min == null) { min = 0.0; }
-  if (max == null) { max = CONFIG.INFINITY; }
-  return Math.min(max, Math.max(min, cc.winSize.width / width, cc.winSize.height / height)) / CONFIG.globalScale;
+  if (min == null) {
+    min = 0.0;
+  }
+  if (max == null) {
+    max = CONFIG.INFINITY;
+  }
+  return (
+    Math.min(max, Math.max(min, cc.winSize.width / width, cc.winSize.height / height)) /
+    CONFIG.globalScale
+  );
 };
 
 /**
@@ -311,8 +338,12 @@ UtilsEngine.getWindowWidthRelativeNodeScale = function (node, min, max) {
  * @returns {Number}
  */
 UtilsEngine.getWindowWidthRelativeScale = function (width, min, max) {
-  if (min == null) { min = 0.0; }
-  if (max == null) { max = CONFIG.INFINITY; }
+  if (min == null) {
+    min = 0.0;
+  }
+  if (max == null) {
+    max = CONFIG.INFINITY;
+  }
   return Math.min(max, Math.max(min, cc.winSize.width / width)) / CONFIG.globalScale;
 };
 
@@ -339,8 +370,12 @@ UtilsEngine.getWindowHeightRelativeNodeScale = function (node, min, max) {
  * @returns {Number}
  */
 UtilsEngine.getWindowHeightRelativeScale = function (height, min, max) {
-  if (min == null) { min = 0.0; }
-  if (max == null) { max = CONFIG.INFINITY; }
+  if (min == null) {
+    min = 0.0;
+  }
+  if (max == null) {
+    max = CONFIG.INFINITY;
+  }
   return Math.min(max, Math.max(min, cc.winSize.height / height)) / CONFIG.globalScale;
 };
 
@@ -352,13 +387,25 @@ UtilsEngine.getWindowHeightRelativeScale = function (height, min, max) {
  * @returns {Number}
  */
 UtilsEngine.getWindowAtLeastCoverNodeScale = function (node, min, max) {
-  if (min == null) { min = 0.0; }
-  if (max == null) { max = CONFIG.INFINITY; }
+  if (min == null) {
+    min = 0.0;
+  }
+  if (max == null) {
+    max = CONFIG.INFINITY;
+  }
   const contentSize = node.getContentSize();
   if (contentSize.width === 0 || contentSize.height === 0) {
     return 1.0;
   }
-  return Math.min(max, Math.max(min, 1.0, UtilsEngine.getGSIWinWidth() / contentSize.width, UtilsEngine.getGSIWinHeight() / contentSize.height));
+  return Math.min(
+    max,
+    Math.max(
+      min,
+      1.0,
+      UtilsEngine.getGSIWinWidth() / contentSize.width,
+      UtilsEngine.getGSIWinHeight() / contentSize.height,
+    ),
+  );
 };
 
 /**
@@ -422,7 +469,10 @@ UtilsEngine.transformYValueFromGlobalScale = function (yVal) {
  * @returns {Vec2}
  */
 UtilsEngine.transformPositionFromGlobalScale = function (position) {
-  return cc.p((position.x - UtilsEngine._globalScaledScreenOffset.x) / CONFIG.globalScale, (position.y - UtilsEngine._globalScaledScreenOffset.y) / CONFIG.globalScale);
+  return cc.p(
+    (position.x - UtilsEngine._globalScaledScreenOffset.x) / CONFIG.globalScale,
+    (position.y - UtilsEngine._globalScaledScreenOffset.y) / CONFIG.globalScale,
+  );
 };
 /**
  * Returns a size scaled from the global scale.
@@ -452,7 +502,10 @@ UtilsEngine.transformRectFromGlobalScale = function (rect) {
  * @returns {Vec2}
  */
 UtilsEngine.transformBoardToScreen = function (boardPoint) {
-  return cc.p(boardPoint.x * CONFIG.TILESIZE + UtilsEngine._screenBoardOrigin.x, boardPoint.y * CONFIG.TILESIZE + UtilsEngine._screenBoardOrigin.y);
+  return cc.p(
+    boardPoint.x * CONFIG.TILESIZE + UtilsEngine._screenBoardOrigin.x,
+    boardPoint.y * CONFIG.TILESIZE + UtilsEngine._screenBoardOrigin.y,
+  );
 };
 /**
  * Transform a point in screen space to board space.
@@ -460,7 +513,10 @@ UtilsEngine.transformBoardToScreen = function (boardPoint) {
  * @returns {Vec2}
  */
 UtilsEngine.transformScreenToBoard = function (screenPoint) {
-  return cc.p((screenPoint.x - UtilsEngine._screenBoardOrigin.x) / CONFIG.TILESIZE, (screenPoint.y - UtilsEngine._screenBoardOrigin.y) / CONFIG.TILESIZE);
+  return cc.p(
+    (screenPoint.x - UtilsEngine._screenBoardOrigin.x) / CONFIG.TILESIZE,
+    (screenPoint.y - UtilsEngine._screenBoardOrigin.y) / CONFIG.TILESIZE,
+  );
 };
 
 /**
@@ -486,7 +542,10 @@ UtilsEngine.transformBoardScaleToScreenScale = function (boardPoint) {
  * @returns {Vec2}
  */
 UtilsEngine.transformBoardIndexToScreen = function (boardPoint) {
-  return cc.p(Math.floor(boardPoint.x) * CONFIG.TILESIZE + UtilsEngine._screenBoardOrigin.x, Math.floor(boardPoint.y) * CONFIG.TILESIZE + UtilsEngine._screenBoardOrigin.y);
+  return cc.p(
+    Math.floor(boardPoint.x) * CONFIG.TILESIZE + UtilsEngine._screenBoardOrigin.x,
+    Math.floor(boardPoint.y) * CONFIG.TILESIZE + UtilsEngine._screenBoardOrigin.y,
+  );
 };
 /**
  * Transform a point in screen space to board space, floored.
@@ -494,7 +553,14 @@ UtilsEngine.transformBoardIndexToScreen = function (boardPoint) {
  * @returns {Vec2}
  */
 UtilsEngine.transformScreenToBoardIndex = function (screenPoint) {
-  return cc.p(Math.floor((screenPoint.x - UtilsEngine._screenBoardOrigin.x + CONFIG.TILESIZE * 0.5) / CONFIG.TILESIZE), Math.floor((screenPoint.y - UtilsEngine._screenBoardOrigin.y + CONFIG.TILESIZE * 0.5) / CONFIG.TILESIZE));
+  return cc.p(
+    Math.floor(
+      (screenPoint.x - UtilsEngine._screenBoardOrigin.x + CONFIG.TILESIZE * 0.5) / CONFIG.TILESIZE,
+    ),
+    Math.floor(
+      (screenPoint.y - UtilsEngine._screenBoardOrigin.y + CONFIG.TILESIZE * 0.5) / CONFIG.TILESIZE,
+    ),
+  );
 };
 /**
  * Transform a point in screen space to tile map space.
@@ -510,7 +576,11 @@ UtilsEngine.transformScreenToTileMap = function (screenPoint) {
  * @returns {Vec2}
  */
 UtilsEngine.transformTileMapToScreen = function (tileMapPoint) {
-  return UtilsEngine.projectPoint(tileMapPoint, UtilsEngine._tileMapProjectionMatrixInv, UtilsEngine._tileMapProjectionMatrix);
+  return UtilsEngine.projectPoint(
+    tileMapPoint,
+    UtilsEngine._tileMapProjectionMatrixInv,
+    UtilsEngine._tileMapProjectionMatrix,
+  );
 };
 /**
  * Transform a point in board space to tile map space.
@@ -738,7 +808,9 @@ UtilsEngine.getNodeCenterScreenPosition = function (node) {
  * @returns {cc.Point}
  */
 UtilsEngine.getGSINodeCenterScreenPosition = function (node) {
-  return UtilsEngine.transformPositionFromGlobalScale(UtilsEngine.getNodeCenterScreenPosition(node));
+  return UtilsEngine.transformPositionFromGlobalScale(
+    UtilsEngine.getNodeCenterScreenPosition(node),
+  );
 };
 
 /**
@@ -749,7 +821,9 @@ UtilsEngine.getGSINodeCenterScreenPosition = function (node) {
  */
 UtilsEngine.getGameSpeed = function () {
   let gameSpeed = parseFloat(CONFIG.gameSpeed);
-  if (Number.isNaN(gameSpeed)) { gameSpeed = 1.0; }
+  if (Number.isNaN(gameSpeed)) {
+    gameSpeed = 1.0;
+  }
   return Math.max(0.0, Math.min(1.0, 1.0 - gameSpeed));
 };
 
@@ -764,18 +838,34 @@ UtilsEngine.rebuild = function () {
   UtilsEngine.MAT4_IDENTITY = cc.kmMat4Identity(new cc.kmMat4());
 
   // create global scale matrix for use in cases where global scale is needed
-  UtilsEngine.MAT4_GLOBAL_SCALE = cc.kmMat4Scaling(new cc.kmMat4(), CONFIG.globalScale, CONFIG.globalScale, CONFIG.globalScale);
+  UtilsEngine.MAT4_GLOBAL_SCALE = cc.kmMat4Scaling(
+    new cc.kmMat4(),
+    CONFIG.globalScale,
+    CONFIG.globalScale,
+    CONFIG.globalScale,
+  );
   UtilsEngine._globalScaledScreenOffset = new cc.kmVec3(
     -Math.round(cc.winSize.width * (CONFIG.globalScale - 1.0) * 0.5),
     -Math.round(cc.winSize.height * (CONFIG.globalScale - 1.0) * 0.5),
     0.0,
   );
-  UtilsEngine._globalScaleInvertedWinRect = UtilsEngine.transformRectFromGlobalScale(cc.rect(0, 0, cc.winSize.width, cc.winSize.height));
+  UtilsEngine._globalScaleInvertedWinRect = UtilsEngine.transformRectFromGlobalScale(
+    cc.rect(0, 0, cc.winSize.width, cc.winSize.height),
+  );
   UtilsEngine._globalScaleInvertedWinRect.x = Math.round(UtilsEngine._globalScaleInvertedWinRect.x);
   UtilsEngine._globalScaleInvertedWinRect.y = Math.round(UtilsEngine._globalScaleInvertedWinRect.y);
-  UtilsEngine._globalScaleInvertedWinRect.width = Math.round(UtilsEngine._globalScaleInvertedWinRect.width);
-  UtilsEngine._globalScaleInvertedWinRect.height = Math.round(UtilsEngine._globalScaleInvertedWinRect.height);
-  UtilsEngine.MAT4_GLOBAL_OFFSET = cc.kmMat4Translation(new cc.kmMat4(), UtilsEngine._globalScaledScreenOffset.x, UtilsEngine._globalScaledScreenOffset.y, UtilsEngine._globalScaledScreenOffset.z);
+  UtilsEngine._globalScaleInvertedWinRect.width = Math.round(
+    UtilsEngine._globalScaleInvertedWinRect.width,
+  );
+  UtilsEngine._globalScaleInvertedWinRect.height = Math.round(
+    UtilsEngine._globalScaleInvertedWinRect.height,
+  );
+  UtilsEngine.MAT4_GLOBAL_OFFSET = cc.kmMat4Translation(
+    new cc.kmMat4(),
+    UtilsEngine._globalScaledScreenOffset.x,
+    UtilsEngine._globalScaledScreenOffset.y,
+    UtilsEngine._globalScaledScreenOffset.z,
+  );
   UtilsEngine.MAT4_GLOBAL_SCALE_OFFSET = cc.kmMat4Identity(new cc.kmMat4());
   UtilsEngine.MAT4_GLOBAL_SCALE_OFFSET.mat[0] = UtilsEngine.MAT4_GLOBAL_SCALE.mat[0];
   UtilsEngine.MAT4_GLOBAL_SCALE_OFFSET.mat[5] = UtilsEngine.MAT4_GLOBAL_SCALE.mat[5];
@@ -786,57 +876,120 @@ UtilsEngine.rebuild = function () {
 
   // create orthographic matrices
   UtilsEngine.MAT4_ORTHOGRAPHIC_PROJECTION = cc.kmMat4Identity(new cc.kmMat4());
-  cc.kmMat4OrthographicProjection(UtilsEngine.MAT4_ORTHOGRAPHIC_PROJECTION, 0, cc.winSize.width, 0, cc.winSize.height, -1024, 1024);
+  cc.kmMat4OrthographicProjection(
+    UtilsEngine.MAT4_ORTHOGRAPHIC_PROJECTION,
+    0,
+    cc.winSize.width,
+    0,
+    cc.winSize.height,
+    -1024,
+    1024,
+  );
 
   UtilsEngine.MAT4_ORTHOGRAPHIC_STACK = cc.kmMat4Identity(new cc.kmMat4());
-  UtilsEngine.MAT4_ORTHOGRAPHIC_STACK_SCALED = cc.kmMat4Multiply(new cc.kmMat4(), UtilsEngine.MAT4_ORTHOGRAPHIC_STACK, UtilsEngine.MAT4_GLOBAL_SCALE_OFFSET);
+  UtilsEngine.MAT4_ORTHOGRAPHIC_STACK_SCALED = cc.kmMat4Multiply(
+    new cc.kmMat4(),
+    UtilsEngine.MAT4_ORTHOGRAPHIC_STACK,
+    UtilsEngine.MAT4_GLOBAL_SCALE_OFFSET,
+  );
 
   // create perspective matrices
   UtilsEngine.MAT4_PERSPECTIVE_PROJECTION = cc.kmMat4Identity(new cc.kmMat4());
-  cc.kmMat4PerspectiveProjection(UtilsEngine.MAT4_PERSPECTIVE_PROJECTION, 60, cc.winSize.width / cc.winSize.height, 0.1, zeye * 2);
+  cc.kmMat4PerspectiveProjection(
+    UtilsEngine.MAT4_PERSPECTIVE_PROJECTION,
+    60,
+    cc.winSize.width / cc.winSize.height,
+    0.1,
+    zeye * 2,
+  );
 
   UtilsEngine.MAT4_PERSPECTIVE_STACK = cc.kmMat4Identity(new cc.kmMat4());
   const eye = cc.kmVec3Fill(null, cc.winSize.width / 2, cc.winSize.height / 2, zeye);
   const center = cc.kmVec3Fill(null, cc.winSize.width / 2, cc.winSize.height / 2, 0.0);
   const up = cc.kmVec3Fill(null, 0.0, 1.0, 0.0);
   cc.kmMat4LookAt(UtilsEngine.MAT4_PERSPECTIVE_STACK, eye, center, up);
-  UtilsEngine.MAT4_PERSPECTIVE_STACK_SCALED = cc.kmMat4Multiply(new cc.kmMat4(), UtilsEngine.MAT4_PERSPECTIVE_STACK, UtilsEngine.MAT4_GLOBAL_SCALE_OFFSET);
+  UtilsEngine.MAT4_PERSPECTIVE_STACK_SCALED = cc.kmMat4Multiply(
+    new cc.kmMat4(),
+    UtilsEngine.MAT4_PERSPECTIVE_STACK,
+    UtilsEngine.MAT4_GLOBAL_SCALE_OFFSET,
+  );
 
   // cache layout positions
   const winCenterPosition = UtilsEngine.getGSIWinCenterPosition();
-  UtilsEngine._refWindowOrigin = cc.p(cc.winSize.width - CONFIG.REF_WINDOW_SIZE.width, cc.winSize.height - CONFIG.REF_WINDOW_SIZE.height);
+  UtilsEngine._refWindowOrigin = cc.p(
+    cc.winSize.width - CONFIG.REF_WINDOW_SIZE.width,
+    cc.winSize.height - CONFIG.REF_WINDOW_SIZE.height,
+  );
   UtilsEngine._screenBoardSize = cc.size(
     CONFIG.BOARDCOL * CONFIG.TILESIZE,
     CONFIG.BOARDROW * CONFIG.TILESIZE,
   );
   UtilsEngine._screenBoardOrigin = cc.p(
-    Math.round((cc.winSize.width - UtilsEngine._screenBoardSize.width) * 0.5 + CONFIG.TILESIZE * 0.5 + CONFIG.TILEOFFSET_X),
-    Math.round((cc.winSize.height - UtilsEngine._screenBoardSize.height) * 0.5 + CONFIG.TILESIZE * 0.5 + CONFIG.TILEOFFSET_Y),
+    Math.round(
+      (cc.winSize.width - UtilsEngine._screenBoardSize.width) * 0.5 +
+        CONFIG.TILESIZE * 0.5 +
+        CONFIG.TILEOFFSET_X,
+    ),
+    Math.round(
+      (cc.winSize.height - UtilsEngine._screenBoardSize.height) * 0.5 +
+        CONFIG.TILESIZE * 0.5 +
+        CONFIG.TILEOFFSET_Y,
+    ),
   );
 
   // hand
-  const cardsExpandX = Math.min(100.0, (UtilsEngine.getGSIWinWidth() - CONFIG.REF_WINDOW_SIZE.width) * 0.125);
-  const cardsExpandY = Math.min(100.0, (UtilsEngine.getGSIWinHeight() - CONFIG.REF_WINDOW_SIZE.height) * 0.35);
+  const cardsExpandX = Math.min(
+    100.0,
+    (UtilsEngine.getGSIWinWidth() - CONFIG.REF_WINDOW_SIZE.width) * 0.125,
+  );
+  const cardsExpandY = Math.min(
+    100.0,
+    (UtilsEngine.getGSIWinHeight() - CONFIG.REF_WINDOW_SIZE.height) * 0.35,
+  );
   UtilsEngine._cardsInHandStartPosition = cc.p(
-    winCenterPosition.x - (CONFIG.HAND_CARD_SIZE * (CONFIG.MAX_HAND_SIZE - 1)) * 0.5 + CONFIG.HAND_OFFSET_X - cardsExpandX,
-    winCenterPosition.y - UtilsEngine._screenBoardSize.height * 0.5 - CONFIG.HAND_CARD_SIZE * 0.4 + CONFIG.HAND_OFFSET_Y - cardsExpandY,
+    winCenterPosition.x -
+      CONFIG.HAND_CARD_SIZE * (CONFIG.MAX_HAND_SIZE - 1) * 0.5 +
+      CONFIG.HAND_OFFSET_X -
+      cardsExpandX,
+    winCenterPosition.y -
+      UtilsEngine._screenBoardSize.height * 0.5 -
+      CONFIG.HAND_CARD_SIZE * 0.4 +
+      CONFIG.HAND_OFFSET_Y -
+      cardsExpandY,
   );
   UtilsEngine._cardsInHandEndPosition = cc.p(
-    UtilsEngine._cardsInHandStartPosition.x + (CONFIG.HAND_CARD_SIZE * CONFIG.MAX_HAND_SIZE - CONFIG.HAND_CARD_SIZE * 0.5) + cardsExpandX * 2,
+    UtilsEngine._cardsInHandStartPosition.x +
+      (CONFIG.HAND_CARD_SIZE * CONFIG.MAX_HAND_SIZE - CONFIG.HAND_CARD_SIZE * 0.5) +
+      cardsExpandX * 2,
     UtilsEngine._cardsInHandStartPosition.y,
   );
   UtilsEngine._cardsInHandStartPositionForCSS = cc.p(
-    UtilsEngine.getGSIWinWidth() * 0.5 - (CONFIG.HAND_CARD_SIZE * (CONFIG.MAX_HAND_SIZE - 1)) * 0.5 + CONFIG.HAND_OFFSET_X - cardsExpandX,
-    UtilsEngine.getGSIWinHeight() * 0.5 - UtilsEngine._screenBoardSize.height * 0.5 - CONFIG.HAND_CARD_SIZE * 0.4 + CONFIG.HAND_OFFSET_Y - cardsExpandY,
+    UtilsEngine.getGSIWinWidth() * 0.5 -
+      CONFIG.HAND_CARD_SIZE * (CONFIG.MAX_HAND_SIZE - 1) * 0.5 +
+      CONFIG.HAND_OFFSET_X -
+      cardsExpandX,
+    UtilsEngine.getGSIWinHeight() * 0.5 -
+      UtilsEngine._screenBoardSize.height * 0.5 -
+      CONFIG.HAND_CARD_SIZE * 0.4 +
+      CONFIG.HAND_OFFSET_Y -
+      cardsExpandY,
   );
   UtilsEngine._cardsInHandEndPositionForCSS = cc.p(
-    UtilsEngine._cardsInHandStartPositionForCSS.x + (CONFIG.HAND_CARD_SIZE * CONFIG.MAX_HAND_SIZE - CONFIG.HAND_CARD_SIZE * 0.5) + cardsExpandX * 2,
+    UtilsEngine._cardsInHandStartPositionForCSS.x +
+      (CONFIG.HAND_CARD_SIZE * CONFIG.MAX_HAND_SIZE - CONFIG.HAND_CARD_SIZE * 0.5) +
+      cardsExpandX * 2,
     UtilsEngine._cardsInHandStartPositionForCSS.y,
   );
 
   // player frames
-  const playerFramesExpandX = Math.min(100.0, (UtilsEngine.getGSIWinWidth() - CONFIG.REF_WINDOW_SIZE.width) * 0.25);
-  const playerFramesExpandY = Math.min(100.0, (UtilsEngine.getGSIWinHeight() - CONFIG.REF_WINDOW_SIZE.height) * 0.25);
+  const playerFramesExpandX = Math.min(
+    100.0,
+    (UtilsEngine.getGSIWinWidth() - CONFIG.REF_WINDOW_SIZE.width) * 0.25,
+  );
+  const playerFramesExpandY = Math.min(
+    100.0,
+    (UtilsEngine.getGSIWinHeight() - CONFIG.REF_WINDOW_SIZE.height) * 0.25,
+  );
   UtilsEngine._player1FramePosition = cc.p(
     winCenterPosition.x - UtilsEngine._screenBoardSize.width * 0.5 - 200.0 - playerFramesExpandX,
     winCenterPosition.y + UtilsEngine._screenBoardSize.height * 0.5 + 122.0 + playerFramesExpandY,
@@ -846,8 +999,14 @@ UtilsEngine.rebuild = function () {
     UtilsEngine._player1FramePosition.y,
   );
   UtilsEngine._player1FramePositionForCSS = cc.p(
-    UtilsEngine.getGSIWinWidth() * 0.5 - UtilsEngine._screenBoardSize.width * 0.5 - 200.0 - playerFramesExpandX,
-    UtilsEngine.getGSIWinHeight() * 0.5 - UtilsEngine._screenBoardSize.height * 0.5 - 122.0 - playerFramesExpandY,
+    UtilsEngine.getGSIWinWidth() * 0.5 -
+      UtilsEngine._screenBoardSize.width * 0.5 -
+      200.0 -
+      playerFramesExpandX,
+    UtilsEngine.getGSIWinHeight() * 0.5 -
+      UtilsEngine._screenBoardSize.height * 0.5 -
+      122.0 -
+      playerFramesExpandY,
   );
   UtilsEngine._player2FramePositionForCSS = cc.p(
     -UtilsEngine._player1FramePositionForCSS.x,
@@ -876,7 +1035,10 @@ UtilsEngine.rebuild = function () {
     let { y } = player1ArtifactsPosition;
     for (let i = 0, il = CONFIG.MAX_ARTIFACTS; i < il; i++) {
       UtilsEngine._player1ArtifactsPositions.push(cc.p(Math.round(x), Math.round(y)));
-      x = i % 2 !== 0 ? player1ArtifactsPosition.x : (player1ArtifactsPosition.x + artifactLayoutSize * 0.5);
+      x =
+        i % 2 !== 0
+          ? player1ArtifactsPosition.x
+          : player1ArtifactsPosition.x + artifactLayoutSize * 0.5;
       y -= artifactLayoutSize;
     }
   }
@@ -892,7 +1054,10 @@ UtilsEngine.rebuild = function () {
     let { y } = player2ArtifactsPosition;
     for (let i = 0, il = CONFIG.MAX_ARTIFACTS; i < il; i++) {
       UtilsEngine._player2ArtifactsPositions.push(cc.p(Math.round(x), Math.round(y)));
-      x = i % 2 !== 0 ? player2ArtifactsPosition.x : (player2ArtifactsPosition.x - artifactLayoutSize * 0.5);
+      x =
+        i % 2 !== 0
+          ? player2ArtifactsPosition.x
+          : player2ArtifactsPosition.x - artifactLayoutSize * 0.5;
       y -= artifactLayoutSize;
     }
   }
@@ -915,7 +1080,10 @@ UtilsEngine.rebuild = function () {
     UtilsEngine._player1InspectCardPosition.y,
   );
   for (let i = 0, il = UtilsEngine._player1ArtifactsPositions.length; i < il; i++) {
-    UtilsEngine._player1InspectOffBoardCardPosition.x = Math.max(UtilsEngine._player1InspectOffBoardCardPosition.x, UtilsEngine._player1ArtifactsPositions[i].x);
+    UtilsEngine._player1InspectOffBoardCardPosition.x = Math.max(
+      UtilsEngine._player1InspectOffBoardCardPosition.x,
+      UtilsEngine._player1ArtifactsPositions[i].x,
+    );
   }
   UtilsEngine._player1InspectOffBoardCardPosition.x += CONFIG.ARTIFACT_SIZE * 0.25;
 
@@ -925,12 +1093,19 @@ UtilsEngine.rebuild = function () {
     UtilsEngine._player2InspectCardPosition.y,
   );
   for (let i = 0, il = UtilsEngine._player2ArtifactsPositions.length; i < il; i++) {
-    UtilsEngine._player2InspectOffBoardCardPosition.x = Math.min(UtilsEngine._player2InspectOffBoardCardPosition.x, UtilsEngine._player2ArtifactsPositions[i].x);
+    UtilsEngine._player2InspectOffBoardCardPosition.x = Math.min(
+      UtilsEngine._player2InspectOffBoardCardPosition.x,
+      UtilsEngine._player2ArtifactsPositions[i].x,
+    );
   }
   UtilsEngine._player2InspectOffBoardCardPosition.x -= CONFIG.ARTIFACT_SIZE * 0.25;
 
   // tilemap projection matrices
-  if (CONFIG.XYZ_ROTATION.x !== 0.0 || CONFIG.XYZ_ROTATION.y !== 0.0 || CONFIG.XYZ_ROTATION.z !== 0.0) {
+  if (
+    CONFIG.XYZ_ROTATION.x !== 0.0 ||
+    CONFIG.XYZ_ROTATION.y !== 0.0 ||
+    CONFIG.XYZ_ROTATION.z !== 0.0
+  ) {
     // used to rotate points into 3D space
     // TODO: use actual 3D projection/unprojection
     const xyzRotationMatrix = cc.kmMat4RotationPitchYawRoll(
@@ -939,11 +1114,28 @@ UtilsEngine.rebuild = function () {
       cc.degreesToRadians(CONFIG.XYZ_ROTATION.y),
       cc.degreesToRadians(CONFIG.XYZ_ROTATION.z),
     );
-    const xyzRotationMatrixInv = cc.kmMat4Inverse(new cc.kmMat4(), xyzRotationMatrix) || UtilsEngine.MAT4_IDENTITY;
-    const transformMatrix = cc.kmMat4Multiply(new cc.kmMat4(), UtilsEngine.MAT4_PERSPECTIVE_STACK, xyzRotationMatrix);
-    const transformMatrixInv = cc.kmMat4Multiply(new cc.kmMat4(), UtilsEngine.MAT4_PERSPECTIVE_STACK, xyzRotationMatrixInv);
-    UtilsEngine._tileMapProjectionMatrix = cc.kmMat4Multiply(new cc.kmMat4(), UtilsEngine.MAT4_PERSPECTIVE_PROJECTION, transformMatrix);
-    UtilsEngine._tileMapProjectionMatrixInv = cc.kmMat4Multiply(new cc.kmMat4(), UtilsEngine.MAT4_PERSPECTIVE_PROJECTION, transformMatrixInv);
+    const xyzRotationMatrixInv =
+      cc.kmMat4Inverse(new cc.kmMat4(), xyzRotationMatrix) || UtilsEngine.MAT4_IDENTITY;
+    const transformMatrix = cc.kmMat4Multiply(
+      new cc.kmMat4(),
+      UtilsEngine.MAT4_PERSPECTIVE_STACK,
+      xyzRotationMatrix,
+    );
+    const transformMatrixInv = cc.kmMat4Multiply(
+      new cc.kmMat4(),
+      UtilsEngine.MAT4_PERSPECTIVE_STACK,
+      xyzRotationMatrixInv,
+    );
+    UtilsEngine._tileMapProjectionMatrix = cc.kmMat4Multiply(
+      new cc.kmMat4(),
+      UtilsEngine.MAT4_PERSPECTIVE_PROJECTION,
+      transformMatrix,
+    );
+    UtilsEngine._tileMapProjectionMatrixInv = cc.kmMat4Multiply(
+      new cc.kmMat4(),
+      UtilsEngine.MAT4_PERSPECTIVE_PROJECTION,
+      transformMatrixInv,
+    );
   } else {
     UtilsEngine._tileMapProjectionMatrix = UtilsEngine.MAT4_IDENTITY;
     UtilsEngine._tileMapProjectionMatrixInv = UtilsEngine.MAT4_IDENTITY;

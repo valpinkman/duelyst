@@ -34,7 +34,9 @@ class ModifierSpellWatchDamageGeneral extends ModifierSpellWatch {
   onSpellWatch(action) {
     super.onSpellWatch(action);
 
-    const general = this.getCard().getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
+    const general = this.getCard()
+      .getGameSession()
+      .getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
 
     const damageAction = new DamageAction(this.getGameSession());
     damageAction.setOwnerId(this.getCard().getOwnerId());
@@ -46,6 +48,9 @@ class ModifierSpellWatchDamageGeneral extends ModifierSpellWatch {
 }
 ModifierSpellWatchDamageGeneral.prototype.type = 'ModifierSpellWatchDamageGeneral';
 ModifierSpellWatchDamageGeneral.prototype.damageAmount = 0;
-ModifierSpellWatchDamageGeneral.prototype.fxResource = ['FX.Modifiers.ModifierSpellWatch', 'FX.Modifiers.ModifierGenericDamage'];
+ModifierSpellWatchDamageGeneral.prototype.fxResource = [
+  'FX.Modifiers.ModifierSpellWatch',
+  'FX.Modifiers.ModifierGenericDamage',
+];
 
 module.exports = ModifierSpellWatchDamageGeneral;

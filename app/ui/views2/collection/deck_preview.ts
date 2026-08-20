@@ -7,7 +7,6 @@ var audio_engine = require('app/audio/audio_engine');
 var DeckPreviewTmpl = require('./templates/deck_preview.hbs');
 
 var DeckPreviewItemView = Backbone.Marionette.ItemView.extend({
-
   tagName: 'li',
   className: 'deck-preview',
 
@@ -39,16 +38,22 @@ var DeckPreviewItemView = Backbone.Marionette.ItemView.extend({
     }
 
     if (this.model.get('_flash')) {
-      this.$el.find('>div').get(0).animate([
-        { 'background-color': '#243341' },
-        { 'background-color': '#00b9fd' },
-        { 'background-color': '#243341' },
-      ], {
-        duration: 800,
-        delay: 300,
-        easing: 'cubic-bezier(0.39, 0.575, 0.565, 1)',
-        fill: 'forwards',
-      });
+      this.$el
+        .find('>div')
+        .get(0)
+        .animate(
+          [
+            { 'background-color': '#243341' },
+            { 'background-color': '#00b9fd' },
+            { 'background-color': '#243341' },
+          ],
+          {
+            duration: 800,
+            delay: 300,
+            easing: 'cubic-bezier(0.39, 0.575, 0.565, 1)',
+            fill: 'forwards',
+          },
+        );
       this.model.set('_flash', false);
     }
 
@@ -73,7 +78,6 @@ var DeckPreviewItemView = Backbone.Marionette.ItemView.extend({
   onMouseEnter: function () {
     audio_engine.current().play_effect(RSX.sfx_ui_menu_hover.audio);
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

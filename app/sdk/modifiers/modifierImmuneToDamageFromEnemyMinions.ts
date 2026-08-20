@@ -19,7 +19,14 @@ class ModifierImmuneToDamageFromEnemyMinions extends ModifierImmuneToDamage {
   static description = 'Takes no damage from enemy minions';
 
   getIsActionRelevant(a) {
-    return (this.getCard() != null) && a instanceof DamageAction && a.getIsValid() && (this.getCard() === a.getTarget()) && !(__guard__(a.getSource(), (x) => x.getIsGeneral())) && (__guard__(a.getSource(), (x1) => x1.getOwnerId()) !== this.getCard().getOwnerId());
+    return (
+      this.getCard() != null &&
+      a instanceof DamageAction &&
+      a.getIsValid() &&
+      this.getCard() === a.getTarget() &&
+      !__guard__(a.getSource(), (x) => x.getIsGeneral()) &&
+      __guard__(a.getSource(), (x1) => x1.getOwnerId()) !== this.getCard().getOwnerId()
+    );
   }
 }
 ModifierImmuneToDamageFromEnemyMinions.prototype.type = 'ModifierImmuneToDamageFromEnemyMinions';
@@ -27,5 +34,5 @@ ModifierImmuneToDamageFromEnemyMinions.prototype.type = 'ModifierImmuneToDamageF
 module.exports = ModifierImmuneToDamageFromEnemyMinions;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

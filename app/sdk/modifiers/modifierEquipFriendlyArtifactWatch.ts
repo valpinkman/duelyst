@@ -22,10 +22,14 @@ class ModifierEquipFriendlyArtifactWatch extends Modifier {
 
   onAction(event) {
     super.onAction(event);
-    const {
-      action,
-    } = event;
-    if ((action instanceof PlayCardFromHandAction || action instanceof PlayCardAction || action instanceof PlayCardSilentlyAction) && (action.getOwnerId() === this.getCard().getOwnerId()) && (__guard__(action.getCard(), (x) => x.type) === CardType.Artifact)) {
+    const { action } = event;
+    if (
+      (action instanceof PlayCardFromHandAction ||
+        action instanceof PlayCardAction ||
+        action instanceof PlayCardSilentlyAction) &&
+      action.getOwnerId() === this.getCard().getOwnerId() &&
+      __guard__(action.getCard(), (x) => x.type) === CardType.Artifact
+    ) {
       return this.onEquipFriendlyArtifactWatch(action, action.getCard());
     }
   }
@@ -43,5 +47,5 @@ ModifierEquipFriendlyArtifactWatch.prototype.fxResource = ['FX.Modifiers.Modifie
 module.exports = ModifierEquipFriendlyArtifactWatch;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

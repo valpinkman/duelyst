@@ -16,7 +16,6 @@ const RewardNode = require('./RewardNode');
  *************************************************************************** */
 
 const KeyRewardNode = RewardNode.extend({
-
   _keyType: null,
 
   ctor(keyType) {
@@ -47,8 +46,8 @@ const KeyRewardNode = RewardNode.extend({
   /* region ANIMATION */
 
   getRewardAnimationPromise(looping, showLabel) {
-    return (looping ? this.showLoopingRewardFlare() : this.showRewardFlare())
-      .then(() => new Promise<void>((resolve) => {
+    return (looping ? this.showLoopingRewardFlare() : this.showRewardFlare()).then(() =>
+      new Promise<void>((resolve) => {
         // key sprite
         let spriteIdentifier;
         let chestType;
@@ -72,13 +71,25 @@ const KeyRewardNode = RewardNode.extend({
         if (showLabel) {
           // primary label
           const labelText = _.isString(showLabel) ? showLabel : 'KEY';
-          var label = new cc.LabelTTF(labelText, RSX.font_regular.name, 22, cc.size(200, 24), cc.TEXT_ALIGNMENT_CENTER);
+          var label = new cc.LabelTTF(
+            labelText,
+            RSX.font_regular.name,
+            22,
+            cc.size(200, 24),
+            cc.TEXT_ALIGNMENT_CENTER,
+          );
           label.setPosition(0, -120);
           label.setOpacity(0);
           this.addChild(label, 1);
 
           // secondary label
-          var sublabel = new cc.LabelTTF(chestType.toLocaleUpperCase(), RSX.font_regular.name, 16, cc.size(200, 24), cc.TEXT_ALIGNMENT_CENTER);
+          var sublabel = new cc.LabelTTF(
+            chestType.toLocaleUpperCase(),
+            RSX.font_regular.name,
+            16,
+            cc.size(200, 24),
+            cc.TEXT_ALIGNMENT_CENTER,
+          );
           sublabel.setFontFillColor({ r: 220, g: 220, b: 220 });
           sublabel.setPosition(0, -100);
           sublabel.setOpacity(0);
@@ -89,37 +100,50 @@ const KeyRewardNode = RewardNode.extend({
         this.showRewardWipeFlare();
 
         // show key
-        this.runAction(cc.sequence(
-          cc.targetedAction(keySprite, cc.sequence(
-            cc.show(),
-            cc.scaleTo(0.0, 0.0),
-            cc.scaleTo(CONFIG.ANIMATE_MEDIUM_DURATION, keyScale).easing(cc.easeBackOut()),
+        this.runAction(
+          cc.sequence(
+            cc.targetedAction(
+              keySprite,
+              cc.sequence(
+                cc.show(),
+                cc.scaleTo(0.0, 0.0),
+                cc.scaleTo(CONFIG.ANIMATE_MEDIUM_DURATION, keyScale).easing(cc.easeBackOut()),
+                cc.callFunc(() => {
+                  // show labels
+                  if (label != null) {
+                    label.fadeTo(CONFIG.ANIMATE_FAST_DURATION, 255.0);
+                  }
+                  if (sublabel != null) {
+                    sublabel.fadeTo(CONFIG.ANIMATE_FAST_DURATION, 255.0);
+                  }
+                }),
+              ),
+            ),
             cc.callFunc(() => {
-              // show labels
-              if (label != null) {
-                label.fadeTo(CONFIG.ANIMATE_FAST_DURATION, 255.0);
+              // float sprite to make it appear more dynamic
+              if (!looping) {
+                keySprite.runAction(
+                  FigureEight.create(
+                    4.0 + Math.random(),
+                    2,
+                    5,
+                    keySprite.getPosition(),
+                  ).repeatForever(),
+                );
               }
-              if (sublabel != null) {
-                sublabel.fadeTo(CONFIG.ANIMATE_FAST_DURATION, 255.0);
-              }
-            }),
-          )),
-          cc.callFunc(() => {
-            // float sprite to make it appear more dynamic
-            if (!looping) {
-              keySprite.runAction(FigureEight.create(4.0 + Math.random(), 2, 5, keySprite.getPosition()).repeatForever());
-            }
 
-            // finish
-            resolve();
-          }),
-        ));
-      })
-        .catch((error) => { EventBus.getInstance().trigger(EVENTS.error, error); }));
+              // finish
+              resolve();
+            }),
+          ),
+        );
+      }).catch((error) => {
+        EventBus.getInstance().trigger(EVENTS.error, error);
+      }),
+    );
   },
 
   /* endregion ANIMATION */
-
 });
 
 KeyRewardNode.create = function (options, node) {

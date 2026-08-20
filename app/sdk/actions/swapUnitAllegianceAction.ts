@@ -26,8 +26,8 @@ class SwapUnitAllegianceAction extends Action {
 
     if (unit != null) {
       // determine owners
-      let newOwner; let
-        originalOwner;
+      let newOwner;
+      let originalOwner;
       if (unit.isOwnedByPlayer1()) {
         originalOwner = this.getGameSession().getPlayer1();
         newOwner = this.getGameSession().getPlayer2();
@@ -50,7 +50,9 @@ class SwapUnitAllegianceAction extends Action {
 
       // if unit was a rush minion, undo exhaustion
       if (unit.hasActiveModifierClass(ModifierFirstBlood)) {
-        const refreshExhaustionAction = this.getGameSession().createActionForType(RefreshExhaustionAction.type);
+        const refreshExhaustionAction = this.getGameSession().createActionForType(
+          RefreshExhaustionAction.type,
+        );
         refreshExhaustionAction.setSource(unit);
         refreshExhaustionAction.setTarget(unit);
         this.getGameSession().executeAction(refreshExhaustionAction);
@@ -71,7 +73,7 @@ class SwapUnitAllegianceAction extends Action {
         }
       }
 
-      if (wasGeneral && (this.getGameSession().getGeneralForPlayer(originalOwner) == null)) {
+      if (wasGeneral && this.getGameSession().getGeneralForPlayer(originalOwner) == null) {
         // notify the game session this entity was a general and has changed allegiance
         // so the original owner no longer has a general and the game is over
         return this.getGameSession().p_requestGameOver();

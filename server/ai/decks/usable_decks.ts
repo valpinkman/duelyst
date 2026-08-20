@@ -58,7 +58,9 @@ UsableDecks.getUsableDeckForIdentifier = function (generalId, identifier) {
  * @returns {Array}
  */
 UsableDecks.getAutomaticUsableDeck = function (generalId, difficulty, numRandomCards) {
-  if (difficulty == null) { difficulty = 0.0; }
+  if (difficulty == null) {
+    difficulty = 0.0;
+  }
 
   let deck = [];
 
@@ -102,7 +104,11 @@ UsableDecks.splitUpDeck = function (deck, numCardsToRemove) {
   // select minions with cost 4 or less without grow, deathwatch, ranged, or blast
   const lowCostMinions = _.filter(deck.slice(1), (cardData) => {
     const card = SDK.GameSession.getCardCaches().getCardById(cardData.id);
-    return card.getManaCost() < 5 && SDK.CardType.getIsEntityCardType(card.getType()) && !card.getIsGeneral();
+    return (
+      card.getManaCost() < 5 &&
+      SDK.CardType.getIsEntityCardType(card.getType()) &&
+      !card.getIsGeneral()
+    );
     // && !(card.hasModifierClass(SDK.ModifierGrow) || card.hasModifierClass(SDK.ModifierRanged) || card.hasModifierClass(SDK.ModifierBlastAttack));
   });
 
@@ -115,45 +121,64 @@ UsableDecks.splitUpDeck = function (deck, numCardsToRemove) {
   // select other artifacts OR minions with cost 5 OR minions with grow, deathwatch, ranged, or blast
   const artifactsOtherMinions = _.filter(deck.slice(1), (cardData) => {
     const card = SDK.GameSession.getCardCaches().getCardById(cardData.id);
-    return card.getType() === SDK.CardType.Artifact || (SDK.CardType.getIsEntityCardType(card.getType()) && !card.getIsGeneral() && card.getManaCost() == 5);
+    return (
+      card.getType() === SDK.CardType.Artifact ||
+      (SDK.CardType.getIsEntityCardType(card.getType()) &&
+        !card.getIsGeneral() &&
+        card.getManaCost() == 5)
+    );
     // || (cardData.hasModifierClass(SDK.ModifierGrow) || cardData.hasModifierClass(SDK.ModifierRanged) || cardData.hasModifierClass(SDK.ModifierBlastAttack));
   });
 
   // select minions with cost 6 or higher
   const highCostMinions = _.filter(deck.slice(1), (cardData) => {
     const card = SDK.GameSession.getCardCaches().getCardById(cardData.id);
-    return card.getManaCost() > 5 && SDK.CardType.getIsEntityCardType(card.getType()) && !card.getIsGeneral();
+    return (
+      card.getManaCost() > 5 &&
+      SDK.CardType.getIsEntityCardType(card.getType()) &&
+      !card.getIsGeneral()
+    );
   });
 
   // now that the decks are split we need to get the number of cards we will be removing from each
-  const totalFilteredCards = lowCostMinions.length + spells.length + artifactsOtherMinions.length + highCostMinions.length;
+  const totalFilteredCards =
+    lowCostMinions.length + spells.length + artifactsOtherMinions.length + highCostMinions.length;
   const scaleBy = numCardsToRemove / totalFilteredCards;
-  const numLowCostMinions = Math.min(lowCostMinions.length, Math.round(lowCostMinions.length * scaleBy));
+  const numLowCostMinions = Math.min(
+    lowCostMinions.length,
+    Math.round(lowCostMinions.length * scaleBy),
+  );
   const numSpells = Math.min(spells.length, Math.round(spells.length * scaleBy));
-  const numArtifactsOtherMinions = Math.min(artifactsOtherMinions.length, Math.round(artifactsOtherMinions.length * scaleBy));
-  const numHighCostMinions = Math.min(highCostMinions.length, Math.round(highCostMinions.length * scaleBy));
+  const numArtifactsOtherMinions = Math.min(
+    artifactsOtherMinions.length,
+    Math.round(artifactsOtherMinions.length * scaleBy),
+  );
+  const numHighCostMinions = Math.min(
+    highCostMinions.length,
+    Math.round(highCostMinions.length * scaleBy),
+  );
 
   // now we go through and remove the cards from each of these decks
   for (let i = 0, il = numLowCostMinions; i < il; i++) {
-    const randomIndexToRemove = Math.floor(Math.random() * (lowCostMinions.length));
+    const randomIndexToRemove = Math.floor(Math.random() * lowCostMinions.length);
     // Logger.module("AI").debug("UsableDecks.splitUpDeck -> removed existing low cost minion card " + lowCostMinions[randomIndexToRemove].id + " from deck");
     lowCostMinions.splice(randomIndexToRemove, 1);
   }
 
   for (let i = 0, il = numSpells; i < il; i++) {
-    const randomIndexToRemove = Math.floor(Math.random() * (spells.length));
+    const randomIndexToRemove = Math.floor(Math.random() * spells.length);
     // Logger.module("AI").debug("UsableDecks.splitUpDeck ->  removed existing spell card " + spells[randomIndexToRemove].id + " from deck");
     spells.splice(randomIndexToRemove, 1);
   }
 
   for (let i = 0, il = numArtifactsOtherMinions; i < il; i++) {
-    const randomIndexToRemove = Math.floor(Math.random() * (artifactsOtherMinions.length));
+    const randomIndexToRemove = Math.floor(Math.random() * artifactsOtherMinions.length);
     // Logger.module("AI").debug("UsableDecks.splitUpDeck -> removed existing artifact/5 cost minion card " + artifactsOtherMinions[randomIndexToRemove].id + " from deck");
     artifactsOtherMinions.splice(randomIndexToRemove, 1);
   }
 
   for (let i = 0, il = numHighCostMinions; i < il; i++) {
-    const randomIndexToRemove = Math.floor(Math.random() * (highCostMinions.length));
+    const randomIndexToRemove = Math.floor(Math.random() * highCostMinions.length);
     // Logger.module("AI").debug("UsableDecks.splitUpDeck -> removed existing high cost minion card " + highCostMinions[randomIndexToRemove].id + " from deck");
     highCostMinions.splice(randomIndexToRemove, 1);
   }
@@ -166,12 +191,7 @@ UsableDecks.splitUpDeck = function (deck, numCardsToRemove) {
     numArtifactsOtherMinions,
     numHighCostMinions,
     general,
-  ].concat(
-    lowCostMinions,
-    spells,
-    artifactsOtherMinions,
-    highCostMinions,
-  );
+  ].concat(lowCostMinions, spells, artifactsOtherMinions, highCostMinions);
 };
 
 /**
@@ -182,7 +202,9 @@ UsableDecks.splitUpDeck = function (deck, numCardsToRemove) {
  * @returns {Array}
  */
 UsableDecks.randomizeDeck = function (deck, numRandomCards, difficulty) {
-  if (difficulty == null) { difficulty = 1.0; }
+  if (difficulty == null) {
+    difficulty = 1.0;
+  }
 
   let randomizedDeck = deck.slice(0);
 
@@ -202,8 +224,14 @@ UsableDecks.randomizeDeck = function (deck, numRandomCards, difficulty) {
     // Logger.module("AI").debug("UsableDecks.randomizeDeck -> faction id " + factionId + " / num random " + numRandomCards + "");
     if (usableFactionCardIds.length + usableNeutralCardIds.length > 0) {
       let numMissingCards = Math.max(0, CONFIG.MAX_DECK_SIZE - randomizedDeck.length);
-      const minNumRandomCards = Math.min(usableFactionCardIds.length + usableNeutralCardIds.length, numRandomCards);
-      const numCardsToRemove = Math.min(randomizedDeck.length - 1, Math.max(0, minNumRandomCards - numMissingCards));
+      const minNumRandomCards = Math.min(
+        usableFactionCardIds.length + usableNeutralCardIds.length,
+        numRandomCards,
+      );
+      const numCardsToRemove = Math.min(
+        randomizedDeck.length - 1,
+        Math.max(0, minNumRandomCards - numMissingCards),
+      );
       let numLowCostMinions;
       let numSpells;
       let numArtifactsOtherMinions;
@@ -221,10 +249,16 @@ UsableDecks.randomizeDeck = function (deck, numRandomCards, difficulty) {
         numMissingCards = Math.max(0, CONFIG.MAX_DECK_SIZE - randomizedDeck.length);
       }
       // Logger.module("AI").debug("Filling deck with " + numMissingCards + " random usable cards...");
-      while (randomizedDeck.length < CONFIG.MAX_DECK_SIZE && usableFactionCardIds.length + usableNeutralCardIds.length > 0) {
+      while (
+        randomizedDeck.length < CONFIG.MAX_DECK_SIZE &&
+        usableFactionCardIds.length + usableNeutralCardIds.length > 0
+      ) {
         // higher chance to pick faction card
         let cardIdsToPickFrom;
-        if (usableFactionCardIds.length > 0 && (usableNeutralCardIds.length === 0 || Math.random() < 0.4)) {
+        if (
+          usableFactionCardIds.length > 0 &&
+          (usableNeutralCardIds.length === 0 || Math.random() < 0.4)
+        ) {
           cardIdsToPickFrom = usableFactionCardIds;
         } else {
           cardIdsToPickFrom = usableNeutralCardIds;
@@ -250,12 +284,20 @@ UsableDecks.randomizeDeck = function (deck, numRandomCards, difficulty) {
         const card = SDK.GameSession.getCardCaches().getCardById(cardIdToAdd);
 
         let tooRareForDifficulty = false;
-        if (difficulty == 0.00) {
-          tooRareForDifficulty = card.getRarityId() != SDK.Rarity.Fixed && card.getRarityId() != SDK.Rarity.Common;
-        } else if (difficulty <= 0.20) {
-          tooRareForDifficulty = card.getRarityId() != SDK.Rarity.Fixed && card.getRarityId() != SDK.Rarity.Common && card.getRarityId() != SDK.Rarity.Rare;
-        } else if (difficulty <= 0.50) {
-          tooRareForDifficulty = card.getRarityId() != SDK.Rarity.Fixed && card.getRarityId() != SDK.Rarity.Common && card.getRarityId() != SDK.Rarity.Rare && card.getRarityId() != SDK.Rarity.Epic;
+        if (difficulty == 0.0) {
+          tooRareForDifficulty =
+            card.getRarityId() != SDK.Rarity.Fixed && card.getRarityId() != SDK.Rarity.Common;
+        } else if (difficulty <= 0.2) {
+          tooRareForDifficulty =
+            card.getRarityId() != SDK.Rarity.Fixed &&
+            card.getRarityId() != SDK.Rarity.Common &&
+            card.getRarityId() != SDK.Rarity.Rare;
+        } else if (difficulty <= 0.5) {
+          tooRareForDifficulty =
+            card.getRarityId() != SDK.Rarity.Fixed &&
+            card.getRarityId() != SDK.Rarity.Common &&
+            card.getRarityId() != SDK.Rarity.Rare &&
+            card.getRarityId() != SDK.Rarity.Epic;
         }
 
         if (countInDeck >= CONFIG.MAX_DECK_DUPLICATES) {
@@ -268,14 +310,30 @@ UsableDecks.randomizeDeck = function (deck, numRandomCards, difficulty) {
           // Logger.module("AI").debug("UsableDecks.randomizeDeck -> adding random card " + cardIdToAdd + " to deck");
           let neededCard = true;
           // if the card matches the right criteria, subtract it from the number of cards we've left to replace of the given category
-          if (numLowCostMinions > 0 && (card.getManaCost() < 5 && SDK.CardType.getIsEntityCardType(card.getType()) && !card.getIsGeneral())) {
+          if (
+            numLowCostMinions > 0 &&
+            card.getManaCost() < 5 &&
+            SDK.CardType.getIsEntityCardType(card.getType()) &&
+            !card.getIsGeneral()
+          ) {
             // && !(cardData.hasModifierClass(SDK.ModifierGrow) || cardData.hasModifierClass(SDK.ModifierRanged) || cardData.hasModifierClass(SDK.ModifierBlastAttack)))){
             numLowCostMinions--;
-          } else if (numSpells > 0 && (card.getType() === SDK.CardType.Spell)) {
+          } else if (numSpells > 0 && card.getType() === SDK.CardType.Spell) {
             numSpells--;
-          } else if (numArtifactsOtherMinions > 0 && (card.getType() === SDK.CardType.Artifact || (SDK.CardType.getIsEntityCardType(card.getType()) && !card.getIsGeneral() && (card.getManaCost() == 5)))) {
+          } else if (
+            numArtifactsOtherMinions > 0 &&
+            (card.getType() === SDK.CardType.Artifact ||
+              (SDK.CardType.getIsEntityCardType(card.getType()) &&
+                !card.getIsGeneral() &&
+                card.getManaCost() == 5))
+          ) {
             numArtifactsOtherMinions--;
-          } else if (numHighCostMinions > 0 && (card.getManaCost() > 5 && SDK.CardType.getIsEntityCardType(card.getType()) && !card.getIsGeneral())) {
+          } else if (
+            numHighCostMinions > 0 &&
+            card.getManaCost() > 5 &&
+            SDK.CardType.getIsEntityCardType(card.getType()) &&
+            !card.getIsGeneral()
+          ) {
             numHighCostMinions--;
           } else if (numUnusableCards > 0) {
             numUnusableCards--;

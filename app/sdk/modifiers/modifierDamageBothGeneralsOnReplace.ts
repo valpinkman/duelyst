@@ -20,8 +20,12 @@ class ModifierDamageBothGeneralsOnReplace extends Modifier {
   static type = 'ModifierDamageBothGeneralsOnReplace';
 
   static createContextObject(damageAmount, options) {
-    if (damageAmount == null) { damageAmount = 3; }
-    if (options == null) { options = undefined; }
+    if (damageAmount == null) {
+      damageAmount = 3;
+    }
+    if (options == null) {
+      options = undefined;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.damageAmount = damageAmount;
     return contextObject;
@@ -30,15 +34,20 @@ class ModifierDamageBothGeneralsOnReplace extends Modifier {
   onAction(e) {
     super.onAction(e);
 
-    const {
-      action,
-    } = e;
+    const { action } = e;
 
     // watch for my player replacing THIS card
-    if (action instanceof ReplaceCardFromHandAction && (action.getOwnerId() === this.getCard().getOwnerId())) {
-      const replacedCard = this.getGameSession().getExistingCardFromIndexOrCreateCardFromData(action.replacedCardIndex);
+    if (
+      action instanceof ReplaceCardFromHandAction &&
+      action.getOwnerId() === this.getCard().getOwnerId()
+    ) {
+      const replacedCard = this.getGameSession().getExistingCardFromIndexOrCreateCardFromData(
+        action.replacedCardIndex,
+      );
       if (replacedCard === this.getCard()) {
-        const opponentGeneral = this.getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
+        const opponentGeneral = this.getGameSession().getGeneralForOpponentOfPlayerId(
+          this.getCard().getOwnerId(),
+        );
         const myGeneral = this.getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
 
         const damageAction = this.getCard().getGameSession().createActionForType(DamageAction.type);
@@ -47,7 +56,9 @@ class ModifierDamageBothGeneralsOnReplace extends Modifier {
         damageAction.setDamageAmount(this.damageAmount);
         this.getCard().getGameSession().executeAction(damageAction);
 
-        const damageAction2 = this.getCard().getGameSession().createActionForType(DamageAction.type);
+        const damageAction2 = this.getCard()
+          .getGameSession()
+          .createActionForType(DamageAction.type);
         damageAction2.setSource(this.getCard());
         damageAction2.setTarget(myGeneral);
         damageAction2.setDamageAmount(this.damageAmount);
@@ -61,6 +72,8 @@ ModifierDamageBothGeneralsOnReplace.prototype.activeInHand = true;
 ModifierDamageBothGeneralsOnReplace.prototype.activeInDeck = true;
 ModifierDamageBothGeneralsOnReplace.prototype.activeInSignatureCards = false;
 ModifierDamageBothGeneralsOnReplace.prototype.activeOnBoard = false;
-ModifierDamageBothGeneralsOnReplace.prototype.fxResource = ['FX.Modifiers.ModifierBuffSelfOnReplace'];
+ModifierDamageBothGeneralsOnReplace.prototype.fxResource = [
+  'FX.Modifiers.ModifierBuffSelfOnReplace',
+];
 
 module.exports = ModifierDamageBothGeneralsOnReplace;

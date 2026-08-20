@@ -26,7 +26,7 @@ class SpellDamageAndSpawnEntitiesNearbyGeneral extends SpellSpawnEntity {
 
     const target = board.getCardAtPosition({ x, y }, this.targetType);
 
-    if ((target != null) && (target.getOwnerId() !== this.getOwnerId())) {
+    if (target != null && target.getOwnerId() !== this.getOwnerId()) {
       const damageAction = new DamageAction(this.getGameSession());
       damageAction.setOwnerId(this.ownerId);
       damageAction.setTarget(target);
@@ -42,7 +42,14 @@ class SpellDamageAndSpawnEntitiesNearbyGeneral extends SpellSpawnEntity {
     const numberOfApplyPositions = this.numUnits;
 
     if (numberOfApplyPositions > 0) {
-      applyEffectPositions = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(this.getGameSession(), generalPosition, CONFIG.PATTERN_3x3, card, this, numberOfApplyPositions);
+      applyEffectPositions = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(
+        this.getGameSession(),
+        generalPosition,
+        CONFIG.PATTERN_3x3,
+        card,
+        this,
+        numberOfApplyPositions,
+      );
     } else {
       applyEffectPositions = [];
     }
@@ -62,6 +69,8 @@ SpellDamageAndSpawnEntitiesNearbyGeneral.prototype.spellFilterType = SpellFilter
 SpellDamageAndSpawnEntitiesNearbyGeneral.prototype.damageAmount = 2;
 SpellDamageAndSpawnEntitiesNearbyGeneral.prototype.spawnSilently = true;
 SpellDamageAndSpawnEntitiesNearbyGeneral.prototype.numUnits = 2;
-SpellDamageAndSpawnEntitiesNearbyGeneral.prototype.cardDataOrIndexToSpawn = { id: Cards.Neutral.Spellspark };
+SpellDamageAndSpawnEntitiesNearbyGeneral.prototype.cardDataOrIndexToSpawn = {
+  id: Cards.Neutral.Spellspark,
+};
 
 module.exports = SpellDamageAndSpawnEntitiesNearbyGeneral;

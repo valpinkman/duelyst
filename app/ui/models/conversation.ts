@@ -7,7 +7,6 @@ var ChatManager = require('app/ui/managers/chat_manager');
 var ProfileManager = require('app/ui/managers/profile_manager');
 
 var Conversation = Backbone.Model.extend({
-
   messages: null, // chat messages
 
   initialize: function (firebase) {
@@ -63,9 +62,12 @@ var Conversation = Backbone.Model.extend({
       this.trigger('message', this.messages.last());
       this.trigger('message_received', this);
 
-      var buddyPresence = ChatManager.getInstance().getBuddiesCollection().getPresenceCollection().find(function (presence) {
-        return presence.userId == m.get('fromId');
-      });
+      var buddyPresence = ChatManager.getInstance()
+        .getBuddiesCollection()
+        .getPresenceCollection()
+        .find(function (presence) {
+          return presence.userId == m.get('fromId');
+        });
 
       if (buddyPresence) {
         buddyPresence.set('_lastUnreadMessageAt', Date.now());

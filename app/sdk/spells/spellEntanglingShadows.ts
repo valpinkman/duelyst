@@ -18,7 +18,9 @@ class SpellEntanglingShadows extends SpellSpawnEntity {
 
     // always spawn a shadow tile at each position
     if (board.isOnBoard(applyEffectPosition)) {
-      const action = new PlayCardAction(this.getGameSession(), this.getOwnerId(), x, y, { id: Cards.Tile.Shadow });
+      const action = new PlayCardAction(this.getGameSession(), this.getOwnerId(), x, y, {
+        id: Cards.Tile.Shadow,
+      });
       action.setOwnerId(this.getOwnerId());
       this.getGameSession().executeAction(action);
     }

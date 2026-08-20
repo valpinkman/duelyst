@@ -12,16 +12,15 @@ var PresenceCollection = Backbone.Collection.extend({
       var unreadB = b.get('_lastUnreadMessageAt') || 0;
 
       // sort by status
-      comparison = (
-        (Number(unreadB) - Number(unreadA))
-        || (Number(statusB === 'online') - Number(statusA === 'online'))
-        || (Number(statusB == 'loading') - Number(statusA == 'loading'))
-        || (Number(statusB === 'queue') - Number(statusA === 'queue'))
-        || (Number(statusB == 'game') - Number(statusA == 'game'))
-        || (Number(statusB == 'challenge') - Number(statusA == 'challenge'))
-        || (Number(statusB == 'watching') - Number(statusA == 'watching'))
-        || (Number(statusB === 'away') - Number(statusA === 'away'))
-      );
+      comparison =
+        Number(unreadB) - Number(unreadA) ||
+        Number(statusB === 'online') - Number(statusA === 'online') ||
+        Number(statusB == 'loading') - Number(statusA == 'loading') ||
+        Number(statusB === 'queue') - Number(statusA === 'queue') ||
+        Number(statusB == 'game') - Number(statusA == 'game') ||
+        Number(statusB == 'challenge') - Number(statusA == 'challenge') ||
+        Number(statusB == 'watching') - Number(statusA == 'watching') ||
+        Number(statusB === 'away') - Number(statusA === 'away');
 
       if (comparison === 0) {
         // sort alphabetically

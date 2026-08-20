@@ -38,7 +38,9 @@ class RedisGameManager {
    */
   constructor(redis, opts) {
     // TODO: add check to ensure Redis client is already promisified
-    if (opts == null) { opts = {}; }
+    if (opts == null) {
+      opts = {};
+    }
     this.redis = redis;
   }
 
@@ -63,14 +65,16 @@ class RedisGameManager {
   saveGameSession(gameId, serializedGameData, callback) {
     Logger.module('REDIS').debug(`saveGameSession() -> saving GameSession ${gameId}`);
     const gameKey = keyPrefix() + gameId;
-    return PromiseUtils.nodeify(gzipAsync(serializedGameData)
-      .then((gzipGameData) => {
-      // gzipGameData is a buffer
+    return PromiseUtils.nodeify(
+      gzipAsync(serializedGameData).then((gzipGameData) => {
+        // gzipGameData is a buffer
         const multi = this.redis.multi(); // start a multi command
         multi.set(gameKey, gzipGameData);
         multi.expire(gameKey, ttl); // mark to expire at ttl
         return multi.exec();
-      }), callback);
+      }),
+      callback,
+    );
   }
 
   /**
@@ -86,14 +90,16 @@ class RedisGameManager {
     // come back as a Buffer. Under redis@2 this was expressed by passing a
     // Buffer KEY, which the `detect_buffers: true` client option turned into a
     // Buffer reply. ioredis has no such option and an explicit variant instead.
-    return PromiseUtils.nodeify(this.redis.getBuffer(gameKey)
-      .then((buffer) => {
+    return PromiseUtils.nodeify(
+      this.redis.getBuffer(gameKey).then((buffer) => {
         if (buffer) {
           return gunzipAsync(buffer);
         }
         // just return the empty buffer (null)
         return buffer;
-      }), callback);
+      }),
+      callback,
+    );
   }
 
   /**
@@ -106,14 +112,16 @@ class RedisGameManager {
   saveGameMouseUIData(gameId, serializedData, callback) {
     Logger.module('REDIS').debug(`saveGameMouseUIData() -> saving data for game ${gameId}`);
     const key = keyPrefixForMouseUIData() + gameId;
-    return PromiseUtils.nodeify(gzipAsync(serializedData)
-      .then((gzipMouseData) => {
-      // gzipMouseData is a buffer
+    return PromiseUtils.nodeify(
+      gzipAsync(serializedData).then((gzipMouseData) => {
+        // gzipMouseData is a buffer
         const multi = this.redis.multi(); // start a multi command
         multi.set(key, gzipMouseData);
         multi.expire(key, ttl); // mark to expire at ttl
         return multi.exec();
-      }), callback);
+      }),
+      callback,
+    );
   }
 
   /**
@@ -125,21 +133,23 @@ class RedisGameManager {
   loadGameMouseUIData(gameId, callback) {
     Logger.module('REDIS').debug(`loadGameMouseUIData() -> loading data for game ${gameId}`);
     const key = keyPrefixForMouseUIData() + gameId;
-    return PromiseUtils.nodeify(this.redis.getBuffer(key)
-      .then((buffer) => {
+    return PromiseUtils.nodeify(
+      this.redis.getBuffer(key).then((buffer) => {
         if (buffer) {
           return gunzipAsync(buffer);
         }
         // just return the empty buffer (null)
         return buffer;
-      }), callback);
+      }),
+      callback,
+    );
   }
 }
 
 /**
  * Export a factory
  */
-module.exports = (exports = function (redis, opts) {
+module.exports = exports = function (redis, opts) {
   const GameManager = new RedisGameManager(redis, opts);
   return GameManager;
-});
+};

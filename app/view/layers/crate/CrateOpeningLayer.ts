@@ -38,7 +38,6 @@ const ShopData = require('app/data/shop.json');
  *************************************************************************** */
 
 const CrateOpeningLayer = RewardLayer.extend({
-
   _animationResolve: null,
   bgColor: CONFIG.SEASON_BG_COLOR,
   buyNode: null,
@@ -79,8 +78,12 @@ const CrateOpeningLayer = RewardLayer.extend({
     this._selectedCrateNodesByType = {};
 
     this._isShowingGiftCrates = CrateManager.getInstance().getGiftCrateCount() != 0;
-    this._isShowingFrostfireCrates = CrateManager.getInstance().getGiftCrateCount(GiftCrateLookup.FrostfirePurchasable2017) != 0;
-    this._isShowingFrostfirePremiumCrates = CrateManager.getInstance().getGiftCrateCount(GiftCrateLookup.FrostfirePremiumPurchasable2017) != 0;
+    this._isShowingFrostfireCrates =
+      CrateManager.getInstance().getGiftCrateCount(GiftCrateLookup.FrostfirePurchasable2017) != 0;
+    this._isShowingFrostfirePremiumCrates =
+      CrateManager.getInstance().getGiftCrateCount(
+        GiftCrateLookup.FrostfirePremiumPurchasable2017,
+      ) != 0;
 
     this._super();
   },
@@ -115,7 +118,9 @@ const CrateOpeningLayer = RewardLayer.extend({
   /* region RESOURCES */
 
   getRequiredResources() {
-    return RewardLayer.prototype.getRequiredResources.call(this).concat(PKGS.getPkgForIdentifier('crate_opening'));
+    return RewardLayer.prototype.getRequiredResources
+      .call(this)
+      .concat(PKGS.getPkgForIdentifier('crate_opening'));
   },
 
   /* endregion RESOURCES */
@@ -135,9 +140,21 @@ const CrateOpeningLayer = RewardLayer.extend({
     this.showSelectableCrates();
 
     // listen for chest/key count changes
-    EventBus.getInstance().on(EVENTS.cosmetic_chest_collection_change, this.onCrateCollectionsChanged, this);
-    EventBus.getInstance().on(EVENTS.cosmetic_chest_key_collection_change, this.onKeyCollectionsChanged, this);
-    EventBus.getInstance().on(EVENTS.gift_crate_collection_change, this.onCrateCollectionsChanged, this);
+    EventBus.getInstance().on(
+      EVENTS.cosmetic_chest_collection_change,
+      this.onCrateCollectionsChanged,
+      this,
+    );
+    EventBus.getInstance().on(
+      EVENTS.cosmetic_chest_key_collection_change,
+      this.onKeyCollectionsChanged,
+      this,
+    );
+    EventBus.getInstance().on(
+      EVENTS.gift_crate_collection_change,
+      this.onCrateCollectionsChanged,
+      this,
+    );
 
     // hide and animate all crates in after short delay
     const crateTypes = Object.keys(this._selectableCrateNodesByType);
@@ -159,9 +176,21 @@ const CrateOpeningLayer = RewardLayer.extend({
 
   onExit() {
     // stop listening for changes
-    EventBus.getInstance().off(EVENTS.cosmetic_chest_collection_change, this.onCrateCollectionsChanged, this);
-    EventBus.getInstance().off(EVENTS.gift_crate_collection_change, this.onCrateCollectionsChanged, this);
-    EventBus.getInstance().off(EVENTS.cosmetic_chest_key_collection_change, this.onKeyCollectionsChanged, this);
+    EventBus.getInstance().off(
+      EVENTS.cosmetic_chest_collection_change,
+      this.onCrateCollectionsChanged,
+      this,
+    );
+    EventBus.getInstance().off(
+      EVENTS.gift_crate_collection_change,
+      this.onCrateCollectionsChanged,
+      this,
+    );
+    EventBus.getInstance().off(
+      EVENTS.cosmetic_chest_key_collection_change,
+      this.onKeyCollectionsChanged,
+      this,
+    );
 
     this._super();
   },
@@ -179,12 +208,11 @@ const CrateOpeningLayer = RewardLayer.extend({
   /* region CONTINUE */
 
   showContinueNode() {
-    return this.showPressToContinueNode()
-      .then(() => {
-        // hide continue initially
-        this.continueNode.setVisible(false);
-        this.continueNode.setEnabled(false);
-      });
+    return this.showPressToContinueNode().then(() => {
+      // hide continue initially
+      this.continueNode.setVisible(false);
+      this.continueNode.setEnabled(false);
+    });
   },
 
   /* endregion CONTINUE */
@@ -194,15 +222,20 @@ const CrateOpeningLayer = RewardLayer.extend({
   createCrateNodeForType(lootCrateType) {
     if (lootCrateType === MysteryT3CrateNode.crateType) {
       return new MysteryT3CrateNode();
-    } if (lootCrateType === MysteryT2CrateNode.crateType) {
+    }
+    if (lootCrateType === MysteryT2CrateNode.crateType) {
       return new MysteryT2CrateNode();
-    } if (lootCrateType === MysteryT1CrateNode.crateType) {
+    }
+    if (lootCrateType === MysteryT1CrateNode.crateType) {
       return new MysteryT1CrateNode();
-    } if (lootCrateType === MysteryBossCrateNode.crateType) {
+    }
+    if (lootCrateType === MysteryBossCrateNode.crateType) {
       return new MysteryBossCrateNode();
-    } if (lootCrateType === FrostfireCrateNode.crateType) {
+    }
+    if (lootCrateType === FrostfireCrateNode.crateType) {
       return new FrostfireCrateNode();
-    } if (lootCrateType === FrostfirePremiumCrateNode.crateType) {
+    }
+    if (lootCrateType === FrostfirePremiumCrateNode.crateType) {
       return new FrostfirePremiumCrateNode();
     }
     return new GiftCrateNode();
@@ -228,17 +261,23 @@ const CrateOpeningLayer = RewardLayer.extend({
     }
     if (lootCrateType === MysteryT3CrateNode.crateType) {
       return 2 + offsetFromGiftCrate + offsetFromFrostfireCrate + offsetFromFrostfirePremiumCrate;
-    } if (lootCrateType === MysteryT2CrateNode.crateType) {
+    }
+    if (lootCrateType === MysteryT2CrateNode.crateType) {
       return 1 + offsetFromGiftCrate + offsetFromFrostfireCrate + offsetFromFrostfirePremiumCrate;
-    } if (lootCrateType === MysteryT1CrateNode.crateType) {
+    }
+    if (lootCrateType === MysteryT1CrateNode.crateType) {
       return 0 + offsetFromGiftCrate + offsetFromFrostfireCrate + offsetFromFrostfirePremiumCrate;
-    } if (lootCrateType === MysteryBossCrateNode.crateType) {
+    }
+    if (lootCrateType === MysteryBossCrateNode.crateType) {
       return 3 + offsetFromGiftCrate + offsetFromFrostfireCrate + offsetFromFrostfirePremiumCrate;
-    } if (lootCrateType === FrostfireCrateNode.crateType) {
+    }
+    if (lootCrateType === FrostfireCrateNode.crateType) {
       return 0 + offsetFromGiftCrate;
-    } if (lootCrateType === FrostfirePremiumCrateNode.crateType) {
+    }
+    if (lootCrateType === FrostfirePremiumCrateNode.crateType) {
       return 0 + offsetFromGiftCrate + offsetFromFrostfireCrate;
-    } if (lootCrateType === GiftCrateNode.crateType) {
+    }
+    if (lootCrateType === GiftCrateNode.crateType) {
       return 0;
     }
     return null;
@@ -269,7 +308,7 @@ const CrateOpeningLayer = RewardLayer.extend({
       this._slidingPanelLeftArrowNode.stopAllActions();
       this._slidingPanelLeftArrowNode.fadeTo(CONFIG.ANIMATE_FAST_DURATION);
     }
-    if (this._slidingPanelRightArrowNode != null && (this._currentPage != (this._numPages - 1))) {
+    if (this._slidingPanelRightArrowNode != null && this._currentPage != this._numPages - 1) {
       this._slidingPanelRightArrowNode.stopAllActions();
       this._slidingPanelRightArrowNode.fadeTo(CONFIG.ANIMATE_FAST_DURATION);
     }
@@ -424,7 +463,8 @@ const CrateOpeningLayer = RewardLayer.extend({
 
     if (crateNode == null) {
       // create crate as needed
-      crateNode = this._selectableCrateNodesByType[lootCrateType] = this.createCrateNodeForType(lootCrateType);
+      crateNode = this._selectableCrateNodesByType[lootCrateType] =
+        this.createCrateNodeForType(lootCrateType);
       crateNode.setPosition(this.getSelectableCrateNodePositionForType(lootCrateType));
       if (crateNode.getCrateCount() > 0) {
         crateNode.showIdleState();
@@ -450,13 +490,28 @@ const CrateOpeningLayer = RewardLayer.extend({
       const crateTypeLabel = crateNode.getCrateTypeLabel();
       const crateCountLabel = crateNode.getCrateCountLabel();
       const crateMaxCountLabel = crateNode.getCrateMaxCountLabel();
-      crateTypeLabel.setPosition(centerPosition.x, centerPosition.y - contentSize.height * 0.5 - 40.0);
+      crateTypeLabel.setPosition(
+        centerPosition.x,
+        centerPosition.y - contentSize.height * 0.5 - 40.0,
+      );
       if (crateNode instanceof MysteryCrateNode) {
-        crateCountLabel.setPosition(crateTypeLabel.getPositionX() - 15.0, crateTypeLabel.getPositionY() - 40.0);
-        crateMaxCountLabel.setPosition(crateCountLabel.getPositionX() + 31.0, crateCountLabel.getPositionY());
+        crateCountLabel.setPosition(
+          crateTypeLabel.getPositionX() - 15.0,
+          crateTypeLabel.getPositionY() - 40.0,
+        );
+        crateMaxCountLabel.setPosition(
+          crateCountLabel.getPositionX() + 31.0,
+          crateCountLabel.getPositionY(),
+        );
       } else {
-        crateCountLabel.setPosition(crateTypeLabel.getPositionX() + 10.0, crateTypeLabel.getPositionY() - 40.0);
-        crateMaxCountLabel.setPosition(crateCountLabel.getPositionX() - 26.0, crateCountLabel.getPositionY());
+        crateCountLabel.setPosition(
+          crateTypeLabel.getPositionX() + 10.0,
+          crateTypeLabel.getPositionY() - 40.0,
+        );
+        crateMaxCountLabel.setPosition(
+          crateCountLabel.getPositionX() - 26.0,
+          crateCountLabel.getPositionY(),
+        );
       }
     }
 
@@ -467,7 +522,8 @@ const CrateOpeningLayer = RewardLayer.extend({
     let crateNode = this._selectedCrateNodesByType[lootCrateType];
     if (crateNode == null) {
       // create crate as needed
-      crateNode = this._selectedCrateNodesByType[lootCrateType] = this.createCrateNodeForType(lootCrateType);
+      crateNode = this._selectedCrateNodesByType[lootCrateType] =
+        this.createCrateNodeForType(lootCrateType);
       crateNode.showStaticState();
       this.addChild(crateNode);
 
@@ -545,11 +601,21 @@ const CrateOpeningLayer = RewardLayer.extend({
    * @returns {Promise}
    */
   showBuyNode(duration, buttonText, font, fontSize, textColor) {
-    if (duration == null) { duration = 0.0; }
-    if (buttonText == null) { buttonText = this.buyButtonText; }
-    if (font == null) { font = this.buyButtonFont; }
-    if (fontSize == null) { fontSize = this.buyFontSize; }
-    if (textColor == null) { textColor = this.buyButtonTextColor; }
+    if (duration == null) {
+      duration = 0.0;
+    }
+    if (buttonText == null) {
+      buttonText = this.buyButtonText;
+    }
+    if (font == null) {
+      font = this.buyButtonFont;
+    }
+    if (fontSize == null) {
+      fontSize = this.buyFontSize;
+    }
+    if (textColor == null) {
+      textColor = this.buyButtonTextColor;
+    }
 
     return this.whenRequiredResourcesReady().then((requestId) => {
       if (!this.getAreResourcesValid(requestId)) return; // load invalidated or resources changed
@@ -564,7 +630,13 @@ const CrateOpeningLayer = RewardLayer.extend({
       const buyButtonSprite = new ccui.Scale9Sprite(RSX.button_secondary.img);
       const buyButtonGlowSprite = new ccui.Scale9Sprite(RSX.button_secondary_glow.img);
       const buyButtonSize = buyButtonSprite.getContentSize();
-      const buyButtonLabel = new cc.LabelTTF(this.buyButtonText, this.buyButtonFont, this.buyFontSize, null, cc.TEXT_ALIGNMENT_CENTER);
+      const buyButtonLabel = new cc.LabelTTF(
+        this.buyButtonText,
+        this.buyButtonFont,
+        this.buyFontSize,
+        null,
+        cc.TEXT_ALIGNMENT_CENTER,
+      );
       buyButtonLabel.setFontFillColor(this.buyButtonTextColor);
 
       this.buyNode = new cc.ControlButton(buyButtonLabel, buyButtonSprite);
@@ -597,7 +669,9 @@ const CrateOpeningLayer = RewardLayer.extend({
    */
   removeBuyNodes(duration) {
     if (this.buyNode != null) {
-      if (duration == null) { duration = 0.0; }
+      if (duration == null) {
+        duration = 0.0;
+      }
       this.removeInteractiveElement(this.buyNode);
       this.buyNode.destroy(duration);
       this.buyNode = null;
@@ -636,17 +710,26 @@ const CrateOpeningLayer = RewardLayer.extend({
       // intersect nodes
       const location = event && event.getLocation();
       if (location != null) {
-        if (this.getIsShowingScrolling()
-          && (UtilsEngine.getNodeUnderMouse(this._slidingPanelLeftArrowNode._hitNode, location.x, location.y)
-          || UtilsEngine.getNodeUnderMouse(this._slidingPanelRightArrowNode._hitNode, location.x, location.y))) {
+        if (
+          this.getIsShowingScrolling() &&
+          (UtilsEngine.getNodeUnderMouse(
+            this._slidingPanelLeftArrowNode._hitNode,
+            location.x,
+            location.y,
+          ) ||
+            UtilsEngine.getNodeUnderMouse(
+              this._slidingPanelRightArrowNode._hitNode,
+              location.x,
+              location.y,
+            ))
+        ) {
           // Do Nothing yet
         } else {
           const crateTypes = Object.keys(this._selectableCrateNodesByType);
           for (let i = 0, il = crateTypes.length; i < il; i++) {
             const crateType = crateTypes[i];
             const node = this._selectableCrateNodesByType[crateType];
-            if (node.isVisible()
-              && UtilsEngine.getNodeUnderMouse(node, location.x, location.y)) {
+            if (node.isVisible() && UtilsEngine.getNodeUnderMouse(node, location.x, location.y)) {
               mouseOverNode = node;
               event.stopPropagation();
               break;
@@ -669,17 +752,33 @@ const CrateOpeningLayer = RewardLayer.extend({
     if (location != null && this.getIsInteractionEnabled()) {
       if (this.hasSelection()) {
         // try buy
-        if (this.buyNode != null
-          && this.buyNode.isVisible()
-          && UtilsEngine.getNodeUnderMouse(this.buyNode, location.x, location.y)) {
+        if (
+          this.buyNode != null &&
+          this.buyNode.isVisible() &&
+          UtilsEngine.getNodeUnderMouse(this.buyNode, location.x, location.y)
+        ) {
           event.stopPropagation();
           this.onBuy();
         }
-      } else if (this.getIsShowingScrolling() && UtilsEngine.getNodeUnderMouse(this._slidingPanelLeftArrowNode._hitNode, location.x, location.y)) {
+      } else if (
+        this.getIsShowingScrolling() &&
+        UtilsEngine.getNodeUnderMouse(
+          this._slidingPanelLeftArrowNode._hitNode,
+          location.x,
+          location.y,
+        )
+      ) {
         // event.stopPropagation();
         this.slidePanel(-1);
         // this._slidingPanelNode.setPositionX(this._slidingPanelNode.getPositionX() - 20)
-      } else if (this.getIsShowingScrolling() && UtilsEngine.getNodeUnderMouse(this._slidingPanelRightArrowNode._hitNode, location.x, location.y)) {
+      } else if (
+        this.getIsShowingScrolling() &&
+        UtilsEngine.getNodeUnderMouse(
+          this._slidingPanelRightArrowNode._hitNode,
+          location.x,
+          location.y,
+        )
+      ) {
         // event.stopPropagation();
         this.slidePanel(1);
         // this._slidingPanelNode.setPositionX(this._slidingPanelNode.getPositionX() + 20)
@@ -691,8 +790,7 @@ const CrateOpeningLayer = RewardLayer.extend({
         for (let i = 0, il = crateTypes.length; i < il; i++) {
           const crateType = crateTypes[i];
           const node = this._selectableCrateNodesByType[crateType];
-          if (node.isVisible()
-            && UtilsEngine.getNodeUnderMouse(node, location.x, location.y)) {
+          if (node.isVisible() && UtilsEngine.getNodeUnderMouse(node, location.x, location.y)) {
             selectedCrateNode = node;
             event.stopPropagation();
             break;
@@ -736,7 +834,9 @@ const CrateOpeningLayer = RewardLayer.extend({
         this._showScrolling();
       } else {
         // add route
-        NavigationManager.getInstance().addMinorRoute('select_crate', this.selectCrateNode, this, [selectedNode]);
+        NavigationManager.getInstance().addMinorRoute('select_crate', this.selectCrateNode, this, [
+          selectedNode,
+        ]);
 
         // store selected
         this._selectedNode = selectedNode;
@@ -744,7 +844,9 @@ const CrateOpeningLayer = RewardLayer.extend({
         this._hideScrolling();
 
         // play select audio
-        audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.SELECT_SFX_PRIORITY);
+        audio_engine
+          .current()
+          .play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.SELECT_SFX_PRIORITY);
 
         // hide title
         // this.titleLabel.fadeToInvisible(CONFIG.FADE_FAST_DURATION);
@@ -788,7 +890,9 @@ const CrateOpeningLayer = RewardLayer.extend({
         }
       }
       // copy selected node
-      this._selectedCrateNode = this.getOrCreateSelectedCrateNodeForType(selectedNode.getCrateType());
+      this._selectedCrateNode = this.getOrCreateSelectedCrateNodeForType(
+        selectedNode.getCrateType(),
+      );
       const sourcePosition = selectedNode.getPosition();
       const slidingPanelNode = this._getOrCreateSlidingPanelNode();
       sourcePosition.x += slidingPanelNode.getPositionX();
@@ -808,24 +912,29 @@ const CrateOpeningLayer = RewardLayer.extend({
       this._selectedCrateNode.setVisible(true);
       this._selectedCrateNode.setOpacity(255.0);
       this._selectedCrateNode.setScale(1.0);
-      this._showSelectionAction = cc.targetedAction(this._selectedCrateNode, cc.sequence(
-        cc.delayTime(0.1),
-        cc.spawn(
-          cc.sequence(
-            cc.scaleTo(CONFIG.ANIMATE_SLOW_DURATION * 0.5, 1.1).easing(cc.easeOut(2.0)),
-            cc.scaleTo(CONFIG.ANIMATE_SLOW_DURATION * 0.5, 1.0).easing(cc.easeIn(2.0)),
+      this._showSelectionAction = cc.targetedAction(
+        this._selectedCrateNode,
+        cc.sequence(
+          cc.delayTime(0.1),
+          cc.spawn(
+            cc.sequence(
+              cc.scaleTo(CONFIG.ANIMATE_SLOW_DURATION * 0.5, 1.1).easing(cc.easeOut(2.0)),
+              cc.scaleTo(CONFIG.ANIMATE_SLOW_DURATION * 0.5, 1.0).easing(cc.easeIn(2.0)),
+            ),
+            cc.moveTo(CONFIG.ANIMATE_SLOW_DURATION, 0.0, 0.0).easing(cc.easeCubicActionInOut()),
           ),
-          cc.moveTo(CONFIG.ANIMATE_SLOW_DURATION, 0.0, 0.0).easing(cc.easeCubicActionInOut()),
+          cc.callFunc(() => {
+            // finish
+            resolve();
+          }),
         ),
-        cc.callFunc(() => {
-          // finish
-          resolve();
-        }),
-      ));
+      );
       this.runAction(this._showSelectionAction);
     })
       .then(() => this.showUnlockUIForSelectedNode())
-      .catch((error) => { EventBus.getInstance().trigger(EVENTS.error, error); });
+      .catch((error) => {
+        EventBus.getInstance().trigger(EVENTS.error, error);
+      });
   },
 
   showUnlockUIForSelectedNode() {
@@ -839,7 +948,9 @@ const CrateOpeningLayer = RewardLayer.extend({
       this._selectedCrateNode.getCrateTypeLabel().fadeTo(CONFIG.ANIMATE_FAST_DURATION, 255.0);
       this._selectedCrateNode.getCrateCountLabel().fadeTo(CONFIG.ANIMATE_FAST_DURATION, 255.0);
       this._selectedCrateNode.getCrateMaxCountLabel().fadeTo(CONFIG.ANIMATE_FAST_DURATION, 255.0);
-      this._selectedCrateNode.getCrateDescriptionLabel().fadeTo(CONFIG.ANIMATE_FAST_DURATION, 255.0);
+      this._selectedCrateNode
+        .getCrateDescriptionLabel()
+        .fadeTo(CONFIG.ANIMATE_FAST_DURATION, 255.0);
 
       // show unlock for crate
       const crateCount = this._selectedCrateNode.getCrateCount();
@@ -852,8 +963,14 @@ const CrateOpeningLayer = RewardLayer.extend({
           this.removeBuyNodes(CONFIG.ANIMATE_FAST_DURATION);
 
           // update continue button
-          this.continueNode.setTitleForState(i18next.t('mystery_crates.unlock_button_label').toUpperCase(), cc.CONTROL_STATE_NORMAL);
-          this.continueNode.setTitleForState(i18next.t('mystery_crates.unlock_button_label').toUpperCase(), cc.CONTROL_STATE_HIGHLIGHTED);
+          this.continueNode.setTitleForState(
+            i18next.t('mystery_crates.unlock_button_label').toUpperCase(),
+            cc.CONTROL_STATE_NORMAL,
+          );
+          this.continueNode.setTitleForState(
+            i18next.t('mystery_crates.unlock_button_label').toUpperCase(),
+            cc.CONTROL_STATE_HIGHLIGHTED,
+          );
           this.continueNode.setEnabled(true);
           this.continueNode.fadeTo(CONFIG.FADE_MEDIUM_DURATION, 255.0);
           this.setContinueCallback(this.onUnlock);
@@ -863,15 +980,26 @@ const CrateOpeningLayer = RewardLayer.extend({
 
           // show key count
           const keyCount = this._selectedCrateNode.getCrateKeyCount();
-          subtitle = i18next.t('mystery_crates.key_count_label', { count: keyCount, crate_type: SDK.CosmeticsFactory.nameForCosmeticChestType(this._selectedCrateNode.getCrateType()) });
+          subtitle = i18next.t('mystery_crates.key_count_label', {
+            count: keyCount,
+            crate_type: SDK.CosmeticsFactory.nameForCosmeticChestType(
+              this._selectedCrateNode.getCrateType(),
+            ),
+          });
           subtitlePosition = cc.p(0.0, -UtilsEngine.getGSIWinHeight() * 0.5 + 120);
           if (keyCount > 0) {
             // remove buy
             this.removeBuyNodes(CONFIG.ANIMATE_FAST_DURATION);
 
             // update continue button
-            this.continueNode.setTitleForState(i18next.t('mystery_crates.unlock_button_label').toUpperCase(), cc.CONTROL_STATE_NORMAL);
-            this.continueNode.setTitleForState(i18next.t('mystery_crates.unlock_button_label').toUpperCase(), cc.CONTROL_STATE_HIGHLIGHTED);
+            this.continueNode.setTitleForState(
+              i18next.t('mystery_crates.unlock_button_label').toUpperCase(),
+              cc.CONTROL_STATE_NORMAL,
+            );
+            this.continueNode.setTitleForState(
+              i18next.t('mystery_crates.unlock_button_label').toUpperCase(),
+              cc.CONTROL_STATE_HIGHLIGHTED,
+            );
             this.continueNode.setEnabled(true);
             this.continueNode.fadeTo(CONFIG.FADE_MEDIUM_DURATION, 255.0);
             this.setContinueCallback(this.onUnlock);
@@ -882,7 +1010,10 @@ const CrateOpeningLayer = RewardLayer.extend({
             this.resetContinueCallback();
 
             // show buy
-            this.showBuyNode(CONFIG.ANIMATE_FAST_DURATION, i18next.t('mystery_crates.get_keys_label').toUpperCase());
+            this.showBuyNode(
+              CONFIG.ANIMATE_FAST_DURATION,
+              i18next.t('mystery_crates.get_keys_label').toUpperCase(),
+            );
           }
         }
       } else {
@@ -898,7 +1029,11 @@ const CrateOpeningLayer = RewardLayer.extend({
         this.removeBuyNodes(CONFIG.ANIMATE_FAST_DURATION);
 
         // show warning that user doesn't have any of this crate
-        subtitle = i18next.t('mystery_crates.no_crates_of_type_warning', { crate_type: SDK.CosmeticsFactory.nameForCosmeticChestType(this._selectedCrateNode.getCrateType()) });
+        subtitle = i18next.t('mystery_crates.no_crates_of_type_warning', {
+          crate_type: SDK.CosmeticsFactory.nameForCosmeticChestType(
+            this._selectedCrateNode.getCrateType(),
+          ),
+        });
         subtitlePosition = cc.p(0.0, -UtilsEngine.getGSIWinHeight() * 0.5 + 120);
         /*
         var keyCount = this._selectedCrateNode.getCrateKeyCount();
@@ -911,7 +1046,13 @@ const CrateOpeningLayer = RewardLayer.extend({
       }
 
       // show crate titles
-      this.showTitles(CONFIG.ANIMATE_FAST_DURATION, title, subtitle, titlePosition, subtitlePosition);
+      this.showTitles(
+        CONFIG.ANIMATE_FAST_DURATION,
+        title,
+        subtitle,
+        titlePosition,
+        subtitlePosition,
+      );
     } else {
       this.stopShowingTitles(CONFIG.ANIMATE_FAST_DURATION);
       this.removeBuyNodes(CONFIG.ANIMATE_FAST_DURATION);
@@ -990,7 +1131,12 @@ const CrateOpeningLayer = RewardLayer.extend({
         const resetAction = cc.sequence(
           cc.delayTime(this.getCrateShowDelayForType(crateType)),
           cc.spawn(
-            cc.moveTo(CONFIG.ANIMATE_MEDIUM_DURATION, this.getSelectableCrateNodePositionForType(node.getCrateType())).easing(cc.easeCubicActionInOut()),
+            cc
+              .moveTo(
+                CONFIG.ANIMATE_MEDIUM_DURATION,
+                this.getSelectableCrateNodePositionForType(node.getCrateType()),
+              )
+              .easing(cc.easeCubicActionInOut()),
             cc.scaleTo(CONFIG.ANIMATE_MEDIUM_DURATION, 1.0).easing(cc.easeBackOut()),
             cc.fadeTo(CONFIG.ANIMATE_MEDIUM_DURATION, 255.0),
           ),
@@ -1006,7 +1152,9 @@ const CrateOpeningLayer = RewardLayer.extend({
       const crateType = this._selectedCrateNode.getCrateType();
 
       // play sfx
-      audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
+      audio_engine
+        .current()
+        .play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
 
       // open purchase dialog for crate type key
       const keySku = SDK.CosmeticsFactory.keySKUForCosmeticChestType(crateType);
@@ -1016,7 +1164,8 @@ const CrateOpeningLayer = RewardLayer.extend({
         description: i18next.t(`shop.${productData.description}`),
       });
 
-      return NavigationManager.getInstance().showDialogForConfirmPurchase(productData)
+      return NavigationManager.getInstance()
+        .showDialogForConfirmPurchase(productData)
         .catch(() => {
           // do nothing on cancel
         });
@@ -1036,7 +1185,9 @@ const CrateOpeningLayer = RewardLayer.extend({
       delete this._selectedCrateNodesByType[crateType];
 
       // play sfx
-      audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
+      audio_engine
+        .current()
+        .play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
 
       // disable and reset interaction
       this.disablePressToContinueAndHitboxesAndCallback();
@@ -1048,7 +1199,9 @@ const CrateOpeningLayer = RewardLayer.extend({
       this._selectedCrateNode.getCrateTypeLabel().fadeToInvisible(CONFIG.ANIMATE_FAST_DURATION);
       this._selectedCrateNode.getCrateCountLabel().fadeToInvisible(CONFIG.ANIMATE_FAST_DURATION);
       this._selectedCrateNode.getCrateMaxCountLabel().fadeToInvisible(CONFIG.ANIMATE_FAST_DURATION);
-      this._selectedCrateNode.getCrateDescriptionLabel().fadeToInvisible(CONFIG.ANIMATE_FAST_DURATION);
+      this._selectedCrateNode
+        .getCrateDescriptionLabel()
+        .fadeToInvisible(CONFIG.ANIMATE_FAST_DURATION);
 
       // unlock crate by type
       return new Promise((resolve, reject) => {
@@ -1077,31 +1230,42 @@ const CrateOpeningLayer = RewardLayer.extend({
           ]
         ]);
         */
-        if (crateType === MysteryT1CrateNode.crateType
-          || crateType === MysteryT2CrateNode.crateType
-          || crateType === MysteryT3CrateNode.crateType
-          || crateType === MysteryBossCrateNode.crateType) {
-          var crateId = CrateManager.getInstance().getNextAvailableCosmeticChestIdForType(crateType);
+        if (
+          crateType === MysteryT1CrateNode.crateType ||
+          crateType === MysteryT2CrateNode.crateType ||
+          crateType === MysteryT3CrateNode.crateType ||
+          crateType === MysteryBossCrateNode.crateType
+        ) {
+          var crateId =
+            CrateManager.getInstance().getNextAvailableCosmeticChestIdForType(crateType);
           // var keyId = CrateManager.getInstance().getNextAvailableCosmeticChestKeyIdForType(crateType);
-          CrateManager.getInstance().unlockCosmeticChestWithId(crateId)
+          CrateManager.getInstance()
+            .unlockCosmeticChestWithId(crateId)
             .then((rewardsData) => {
               resolve([crateId, rewardsData]);
             });
         } else if (crateType === GiftCrateNode.crateType) {
           var crateId = CrateManager.getInstance().getNextAvailableGiftCrateId();
-          CrateManager.getInstance().unlockGiftCrateWithId(crateId)
+          CrateManager.getInstance()
+            .unlockGiftCrateWithId(crateId)
             .then((rewardsData) => {
               resolve([crateId, rewardsData]);
             });
         } else if (crateType === FrostfireCrateNode.crateType) {
-          var crateId = CrateManager.getInstance().getNextAvailableGiftCrateId(GiftCrateLookup.FrostfirePurchasable2017);
-          CrateManager.getInstance().unlockGiftCrateWithId(crateId)
+          var crateId = CrateManager.getInstance().getNextAvailableGiftCrateId(
+            GiftCrateLookup.FrostfirePurchasable2017,
+          );
+          CrateManager.getInstance()
+            .unlockGiftCrateWithId(crateId)
             .then((rewardsData) => {
               resolve([crateId, rewardsData]);
             });
         } else if (crateType === FrostfirePremiumCrateNode.crateType) {
-          var crateId = CrateManager.getInstance().getNextAvailableGiftCrateId(GiftCrateLookup.FrostfirePremiumPurchasable2017);
-          CrateManager.getInstance().unlockGiftCrateWithId(crateId)
+          var crateId = CrateManager.getInstance().getNextAvailableGiftCrateId(
+            GiftCrateLookup.FrostfirePremiumPurchasable2017,
+          );
+          CrateManager.getInstance()
+            .unlockGiftCrateWithId(crateId)
             .then((rewardsData) => {
               resolve([crateId, rewardsData]);
             });
@@ -1119,12 +1283,13 @@ const CrateOpeningLayer = RewardLayer.extend({
           this.setIsContinueOnPressAnywhere(true);
           this.setIsInteractionEnabled(true);
         })
-        .catch((error) => { EventBus.getInstance().trigger(EVENTS.error, error); });
+        .catch((error) => {
+          EventBus.getInstance().trigger(EVENTS.error, error);
+        });
     }
   },
 
   /* endregion EVENTS */
-
 });
 
 CrateOpeningLayer.create = function (layer) {

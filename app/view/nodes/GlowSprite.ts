@@ -105,11 +105,36 @@ var GlowSprite = BaseSprite.extend({
   ctor(options) {
     this._super(options);
 
-    this.glowColorTo = cc.color(this.glowColorTo.r, this.glowColorTo.g, this.glowColorTo.b, this.glowColorTo.a);
-    this.glowRampFrom = cc.color(this.glowRampFrom.r, this.glowRampFrom.g, this.glowRampFrom.b, this.glowRampFrom.a);
-    this.glowRampTransition = cc.color(this.glowRampTransition.r, this.glowRampTransition.g, this.glowRampTransition.b, this.glowRampTransition.a);
-    this.glowNoiseColor = cc.color(this.glowNoiseColor.r, this.glowNoiseColor.g, this.glowNoiseColor.b, this.glowNoiseColor.a);
-    this.highlightColor = cc.color(this.highlightColor.r, this.highlightColor.g, this.highlightColor.b, this.highlightColor.a);
+    this.glowColorTo = cc.color(
+      this.glowColorTo.r,
+      this.glowColorTo.g,
+      this.glowColorTo.b,
+      this.glowColorTo.a,
+    );
+    this.glowRampFrom = cc.color(
+      this.glowRampFrom.r,
+      this.glowRampFrom.g,
+      this.glowRampFrom.b,
+      this.glowRampFrom.a,
+    );
+    this.glowRampTransition = cc.color(
+      this.glowRampTransition.r,
+      this.glowRampTransition.g,
+      this.glowRampTransition.b,
+      this.glowRampTransition.a,
+    );
+    this.glowNoiseColor = cc.color(
+      this.glowNoiseColor.r,
+      this.glowNoiseColor.g,
+      this.glowNoiseColor.b,
+      this.glowNoiseColor.a,
+    );
+    this.highlightColor = cc.color(
+      this.highlightColor.r,
+      this.highlightColor.g,
+      this.highlightColor.b,
+      this.highlightColor.a,
+    );
   },
 
   _createRenderCmd() {
@@ -138,7 +163,10 @@ var GlowSprite = BaseSprite.extend({
   },
 
   setIsLightSource(isLightSource, lightSourceOptions) {
-    if (this.isLightSource !== isLightSource || (lightSourceOptions && this.lightSourceOptions !== lightSourceOptions)) {
+    if (
+      this.isLightSource !== isLightSource ||
+      (lightSourceOptions && this.lightSourceOptions !== lightSourceOptions)
+    ) {
       // destroy previous
       if (this._light) {
         this._light.destroy(CONFIG.FADE_MEDIUM_DURATION);
@@ -471,7 +499,9 @@ var GlowSprite = BaseSprite.extend({
       this.setGlowing(true);
       this.glowMaxAlpha = 0;
       this.glowMinAlpha = 0;
-      if (duration == null) { duration = CONFIG.FADE_FAST_DURATION; }
+      if (duration == null) {
+        duration = CONFIG.FADE_FAST_DURATION;
+      }
       let tweenAction = cc.actionTween(duration, TweenTypes.GLOW_FADE, 0.0, 1.0);
       if (easing != null) {
         tweenAction = tweenAction.easing(easing);
@@ -496,7 +526,9 @@ var GlowSprite = BaseSprite.extend({
       needsFade = true;
     }
     if (needsFade) {
-      if (duration == null) { duration = CONFIG.FADE_FAST_DURATION; }
+      if (duration == null) {
+        duration = CONFIG.FADE_FAST_DURATION;
+      }
       let tweenAction = cc.actionTween(duration, TweenTypes.GLOW_FADE, 1.0, 0.0);
       if (easing != null) {
         tweenAction = tweenAction.easing(easing);
@@ -525,7 +557,9 @@ var GlowSprite = BaseSprite.extend({
       this.setHighlighted(true);
       this.highlightMaxAlpha = 0;
       this.highlightMinAlpha = 0;
-      if (duration == null) { duration = CONFIG.FADE_MEDIUM_DURATION; }
+      if (duration == null) {
+        duration = CONFIG.FADE_MEDIUM_DURATION;
+      }
       let tweenAction = cc.actionTween(duration, TweenTypes.HIGHLIGHT_FADE, 0.0, 1.0);
       if (easing != null) {
         tweenAction = tweenAction.easing(easing);
@@ -550,7 +584,9 @@ var GlowSprite = BaseSprite.extend({
       needsFade = true;
     }
     if (needsFade) {
-      if (duration == null) { duration = CONFIG.FADE_MEDIUM_DURATION; }
+      if (duration == null) {
+        duration = CONFIG.FADE_MEDIUM_DURATION;
+      }
       let tweenAction = cc.actionTween(duration, TweenTypes.HIGHLIGHT_FADE, 1.0, 0.0);
       if (easing != null) {
         tweenAction = tweenAction.easing(easing);
@@ -594,11 +630,15 @@ GlowSprite.WebGLRenderCmd = function (renderable) {
   this._glowPassMatrix = null;
   this._glowPaddingMatrix = null;
 };
-const proto = GlowSprite.WebGLRenderCmd.prototype = Object.create(BaseSprite.WebGLRenderCmd.prototype);
+const proto = (GlowSprite.WebGLRenderCmd.prototype = Object.create(
+  BaseSprite.WebGLRenderCmd.prototype,
+));
 proto.constructor = GlowSprite.WebGLRenderCmd;
 
 proto.getNeedsComposite = function () {
-  return BaseSprite.WebGLRenderCmd.prototype.getNeedsComposite.call(this) || this.getNeedsGlowHighlight();
+  return (
+    BaseSprite.WebGLRenderCmd.prototype.getNeedsComposite.call(this) || this.getNeedsGlowHighlight()
+  );
 };
 
 proto.setCompositeNeedsRebuild = function () {
@@ -656,7 +696,12 @@ proto.rebuildGlowHighlightPasses = function () {
 
     // glow matrices
     this._glowMVMatrix = cc.kmMat4Identity(new cc.kmMat4());
-    this._glowPaddingMatrix = cc.kmMat4Translation(new cc.kmMat4(), -padding * 0.5, -padding * 0.5, 0);
+    this._glowPaddingMatrix = cc.kmMat4Translation(
+      new cc.kmMat4(),
+      -padding * 0.5,
+      -padding * 0.5,
+      0,
+    );
     // glow pass matrix needs to offset for padding
     // glow pass matrix needs to scale the drawing down for the difference between the composite size and glow size
     this._glowPassMatrix = cc.kmMat4Translation(new cc.kmMat4(), padding * 0.5, padding * 0.5, 0);
@@ -665,19 +710,55 @@ proto.rebuildGlowHighlightPasses = function () {
 
     // render passes
     if (this._glowHighlightCompositePass != null) {
-      this._glowHighlightCompositePass.rebuild(cc.Texture2D.PIXEL_FORMAT_RGBA8888, this._glowWidth, this._glowHeight, 1.0, true);
+      this._glowHighlightCompositePass.rebuild(
+        cc.Texture2D.PIXEL_FORMAT_RGBA8888,
+        this._glowWidth,
+        this._glowHeight,
+        1.0,
+        true,
+      );
     } else {
-      this._glowHighlightCompositePass = RenderPass.create(cc.Texture2D.PIXEL_FORMAT_RGBA8888, this._glowWidth, this._glowHeight, 1.0, true);
+      this._glowHighlightCompositePass = RenderPass.create(
+        cc.Texture2D.PIXEL_FORMAT_RGBA8888,
+        this._glowWidth,
+        this._glowHeight,
+        1.0,
+        true,
+      );
     }
     if (this._blurAPass != null) {
-      this._blurAPass.rebuild(cc.Texture2D.PIXEL_FORMAT_RGBA8888, this._glowWidth, this._glowHeight, 1.0, true);
+      this._blurAPass.rebuild(
+        cc.Texture2D.PIXEL_FORMAT_RGBA8888,
+        this._glowWidth,
+        this._glowHeight,
+        1.0,
+        true,
+      );
     } else {
-      this._blurAPass = RenderPass.create(cc.Texture2D.PIXEL_FORMAT_RGBA8888, this._glowWidth, this._glowHeight, 1.0, true);
+      this._blurAPass = RenderPass.create(
+        cc.Texture2D.PIXEL_FORMAT_RGBA8888,
+        this._glowWidth,
+        this._glowHeight,
+        1.0,
+        true,
+      );
     }
     if (this._blurBPass != null) {
-      this._blurBPass.rebuild(cc.Texture2D.PIXEL_FORMAT_RGBA8888, this._glowWidth, this._glowHeight, 1.0, true);
+      this._blurBPass.rebuild(
+        cc.Texture2D.PIXEL_FORMAT_RGBA8888,
+        this._glowWidth,
+        this._glowHeight,
+        1.0,
+        true,
+      );
     } else {
-      this._blurBPass = RenderPass.create(cc.Texture2D.PIXEL_FORMAT_RGBA8888, this._glowWidth, this._glowHeight, 1.0, true);
+      this._blurBPass = RenderPass.create(
+        cc.Texture2D.PIXEL_FORMAT_RGBA8888,
+        this._glowWidth,
+        this._glowHeight,
+        1.0,
+        true,
+      );
     }
   }
 };
@@ -709,7 +790,11 @@ proto.rebuild = function () {
   const isGlowingHighlighting = this.getIsGlowingHighlighting();
 
   // rebuild glow highlight as needed
-  if (this._glowHighlightNeedsRebuild || (needsGlowHighlight && !isGlowingHighlighting) || (!needsGlowHighlight && isGlowingHighlighting)) {
+  if (
+    this._glowHighlightNeedsRebuild ||
+    (needsGlowHighlight && !isGlowingHighlighting) ||
+    (!needsGlowHighlight && isGlowingHighlighting)
+  ) {
     this.rebuildGlowHighlightPasses();
   }
 };
@@ -767,8 +852,17 @@ proto.drawGlow = function () {
     glowProgram.use();
     glowProgram.setUniformForModelViewAndProjectionMatrixWithMat4();
     glowProgram.setUniformLocationWith2f(glowProgram.loc_size, this._glowWidth, this._glowHeight);
-    glowProgram.setUniformLocationWith4f(glowProgram.loc_color, node.glowColorTo.r / 255, node.glowColorTo.g / 255, node.glowColorTo.b / 255, node.glowColorTo.a / 255);
-    glowProgram.setUniformLocationWith1f(glowProgram.loc_time, node.getFX().getLoopingTimeForFrequency(node.glowFrequency));
+    glowProgram.setUniformLocationWith4f(
+      glowProgram.loc_color,
+      node.glowColorTo.r / 255,
+      node.glowColorTo.g / 255,
+      node.glowColorTo.b / 255,
+      node.glowColorTo.a / 255,
+    );
+    glowProgram.setUniformLocationWith1f(
+      glowProgram.loc_time,
+      node.getFX().getLoopingTimeForFrequency(node.glowFrequency),
+    );
     glowProgram.setUniformLocationWith1f(glowProgram.loc_pulseMax, node.glowMaxAlpha / 255.0);
     glowProgram.setUniformLocationWith1f(glowProgram.loc_pulseMin, node.glowMinAlpha / 255.0);
     glowProgram.setUniformLocationWith1f(glowProgram.loc_thickness, node.glowThickness);
@@ -796,7 +890,10 @@ proto.drawGlow = function () {
     this._blurBPass.beginWithResetClear(this._renderPassStackId);
     blurProgram.use();
     blurProgram.setUniformForModelViewAndProjectionMatrixWithMat4();
-    blurProgram.setUniformLocationWith1f(blurProgram.loc_xStep, 1.0 / this._glowHighlightCompositePass.getWidth());
+    blurProgram.setUniformLocationWith1f(
+      blurProgram.loc_xStep,
+      1.0 / this._glowHighlightCompositePass.getWidth(),
+    );
     blurProgram.setUniformLocationWith1f(blurProgram.loc_yStep, 0.0);
     cc.glBlendFunc(gl.ONE, gl.ZERO);
     cc.glBindTexture2DN(0, this._glowHighlightCompositePass.getTexture());
@@ -807,7 +904,10 @@ proto.drawGlow = function () {
     // begin redirecting to the blur pass, but don't reset or clear
     this._blurAPass.beginWithResetClear(this._renderPassStackId);
     blurProgram.setUniformLocationWith1f(blurProgram.loc_xStep, 0.0);
-    blurProgram.setUniformLocationWith1f(blurProgram.loc_yStep, 1.0 / (this._blurBPass.getHeight() * this._blurBPass.getScale()));
+    blurProgram.setUniformLocationWith1f(
+      blurProgram.loc_yStep,
+      1.0 / (this._blurBPass.getHeight() * this._blurBPass.getScale()),
+    );
     cc.glBlendFunc(gl.ONE, gl.ZERO);
     cc.glBindTexture2DN(0, this._blurBPass.getTexture());
 
@@ -825,13 +925,43 @@ proto.drawGlow = function () {
     } else {
       glowNoiseProgram._setUniformForMVPMatrixWithMat4(this._glowMVMatrix);
     }
-    glowNoiseProgram.setUniformLocationWith4f(glowNoiseProgram.loc_color, (node.glowNoiseColor.r - node.glowColorTo.r) / 255, (node.glowNoiseColor.g - node.glowColorTo.g) / 255, (node.glowNoiseColor.b - node.glowColorTo.b) / 255, node.glowNoiseColor.a / 255);
-    glowNoiseProgram.setUniformLocationWith4f(glowNoiseProgram.loc_rampFrom, node.glowRampFrom.r / 255, node.glowRampFrom.g / 255, node.glowRampFrom.b / 255, node.glowRampFrom.a / 255);
-    glowNoiseProgram.setUniformLocationWith4f(glowNoiseProgram.loc_rampTransition, node.glowRampTransition.r / 255, node.glowRampTransition.g / 255, node.glowRampTransition.b / 255, node.glowRampTransition.a / 255);
-    glowNoiseProgram.setUniformLocationWith1f(glowNoiseProgram.loc_time, node.getFX().getTime() * 0.05);
-    glowNoiseProgram.setUniformLocationWith1f(glowNoiseProgram.loc_expandModifier, node.glowNoiseExpandModifier);
-    glowNoiseProgram.setUniformLocationWith1f(glowNoiseProgram.loc_verticalFadeFromTop, node.glowVerticalFadeFromTop);
-    glowNoiseProgram.setUniformLocationWith1f(glowNoiseProgram.loc_verticalFadeSpeed, node.glowVerticalFadeSpeed);
+    glowNoiseProgram.setUniformLocationWith4f(
+      glowNoiseProgram.loc_color,
+      (node.glowNoiseColor.r - node.glowColorTo.r) / 255,
+      (node.glowNoiseColor.g - node.glowColorTo.g) / 255,
+      (node.glowNoiseColor.b - node.glowColorTo.b) / 255,
+      node.glowNoiseColor.a / 255,
+    );
+    glowNoiseProgram.setUniformLocationWith4f(
+      glowNoiseProgram.loc_rampFrom,
+      node.glowRampFrom.r / 255,
+      node.glowRampFrom.g / 255,
+      node.glowRampFrom.b / 255,
+      node.glowRampFrom.a / 255,
+    );
+    glowNoiseProgram.setUniformLocationWith4f(
+      glowNoiseProgram.loc_rampTransition,
+      node.glowRampTransition.r / 255,
+      node.glowRampTransition.g / 255,
+      node.glowRampTransition.b / 255,
+      node.glowRampTransition.a / 255,
+    );
+    glowNoiseProgram.setUniformLocationWith1f(
+      glowNoiseProgram.loc_time,
+      node.getFX().getTime() * 0.05,
+    );
+    glowNoiseProgram.setUniformLocationWith1f(
+      glowNoiseProgram.loc_expandModifier,
+      node.glowNoiseExpandModifier,
+    );
+    glowNoiseProgram.setUniformLocationWith1f(
+      glowNoiseProgram.loc_verticalFadeFromTop,
+      node.glowVerticalFadeFromTop,
+    );
+    glowNoiseProgram.setUniformLocationWith1f(
+      glowNoiseProgram.loc_verticalFadeSpeed,
+      node.glowVerticalFadeSpeed,
+    );
     cc.glBindTexture2DN(0, this._blurAPass.getTexture());
     cc.glBlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA); // Emil: ADDITIVE GLOW SHOULD USE cc.glBlendFunc(gl.SRC_ALPHA, gl.ONE)
     this._glowHighlightCompositePass.render();
@@ -860,20 +990,65 @@ proto.drawHighlight = function () {
     const highlightProgram = cc.shaderCache.programForKey('Highlight');
     highlightProgram.use();
     highlightProgram.setUniformForModelViewAndProjectionMatrixWithMat4();
-    highlightProgram.setUniformLocationWith4f(highlightProgram.loc_color, node.highlightColor.r / 255, node.highlightColor.g / 255, node.highlightColor.b / 255, node.highlightColor.a / 255);
-    highlightProgram.setUniformLocationWith1f(highlightProgram.loc_time, node.getFX().getLoopingTimeForFrequency(node.highlightFrequency));
-    highlightProgram.setUniformLocationWith1f(highlightProgram.loc_pulseMax, node.highlightMaxAlpha / 255.0);
-    highlightProgram.setUniformLocationWith1f(highlightProgram.loc_pulseMin, node.highlightMinAlpha / 255.0);
-    highlightProgram.setUniformLocationWith1f(highlightProgram.loc_brightness, node.highlightBrightness);
-    highlightProgram.setUniformLocationWith1f(highlightProgram.loc_threshold, node.highlightThreshold);
-    highlightProgram.setUniformLocationWith1f(highlightProgram.loc_intensity, node.highlightIntensity);
-    highlightProgram.setUniformLocationWith1f(highlightProgram.loc_verticalFadeFromTop, node.highlightVerticalFadeFromTop);
-    highlightProgram.setUniformLocationWith1f(highlightProgram.loc_verticalFadeSpeed, node.highlightVerticalFadeSpeed);
-    highlightProgram.setUniformLocationWith1f(highlightProgram.loc_inBlack, node.highlightLevelsInBlack / 255.0);
-    highlightProgram.setUniformLocationWith1f(highlightProgram.loc_inWhite, node.highlightLevelsInWhite / 255.0);
-    highlightProgram.setUniformLocationWith1f(highlightProgram.loc_inGamma, node.highlightLevelsInGamma);
-    highlightProgram.setUniformLocationWith1f(highlightProgram.loc_outBlack, node.highlightLevelsOutBlack / 255.0);
-    highlightProgram.setUniformLocationWith1f(highlightProgram.loc_outWhite, node.highlightLevelsOutWhite / 255.0);
+    highlightProgram.setUniformLocationWith4f(
+      highlightProgram.loc_color,
+      node.highlightColor.r / 255,
+      node.highlightColor.g / 255,
+      node.highlightColor.b / 255,
+      node.highlightColor.a / 255,
+    );
+    highlightProgram.setUniformLocationWith1f(
+      highlightProgram.loc_time,
+      node.getFX().getLoopingTimeForFrequency(node.highlightFrequency),
+    );
+    highlightProgram.setUniformLocationWith1f(
+      highlightProgram.loc_pulseMax,
+      node.highlightMaxAlpha / 255.0,
+    );
+    highlightProgram.setUniformLocationWith1f(
+      highlightProgram.loc_pulseMin,
+      node.highlightMinAlpha / 255.0,
+    );
+    highlightProgram.setUniformLocationWith1f(
+      highlightProgram.loc_brightness,
+      node.highlightBrightness,
+    );
+    highlightProgram.setUniformLocationWith1f(
+      highlightProgram.loc_threshold,
+      node.highlightThreshold,
+    );
+    highlightProgram.setUniformLocationWith1f(
+      highlightProgram.loc_intensity,
+      node.highlightIntensity,
+    );
+    highlightProgram.setUniformLocationWith1f(
+      highlightProgram.loc_verticalFadeFromTop,
+      node.highlightVerticalFadeFromTop,
+    );
+    highlightProgram.setUniformLocationWith1f(
+      highlightProgram.loc_verticalFadeSpeed,
+      node.highlightVerticalFadeSpeed,
+    );
+    highlightProgram.setUniformLocationWith1f(
+      highlightProgram.loc_inBlack,
+      node.highlightLevelsInBlack / 255.0,
+    );
+    highlightProgram.setUniformLocationWith1f(
+      highlightProgram.loc_inWhite,
+      node.highlightLevelsInWhite / 255.0,
+    );
+    highlightProgram.setUniformLocationWith1f(
+      highlightProgram.loc_inGamma,
+      node.highlightLevelsInGamma,
+    );
+    highlightProgram.setUniformLocationWith1f(
+      highlightProgram.loc_outBlack,
+      node.highlightLevelsOutBlack / 255.0,
+    );
+    highlightProgram.setUniformLocationWith1f(
+      highlightProgram.loc_outWhite,
+      node.highlightLevelsOutWhite / 255.0,
+    );
     cc.glBlendFunc(gl.ONE, gl.ZERO);
     cc.glBindTexture2DN(0, this._compositePass.getTexture());
     this._glowHighlightCompositePass.render();
@@ -898,7 +1073,10 @@ proto.drawHighlight = function () {
     this._blurAPass.beginWithResetClear(this._renderPassStackId);
     blurProgram.use();
     blurProgram.setUniformForModelViewAndProjectionMatrixWithMat4();
-    blurProgram.setUniformLocationWith1f(blurProgram.loc_xStep, 1.0 / this._glowHighlightCompositePass.getWidth());
+    blurProgram.setUniformLocationWith1f(
+      blurProgram.loc_xStep,
+      1.0 / this._glowHighlightCompositePass.getWidth(),
+    );
     blurProgram.setUniformLocationWith1f(blurProgram.loc_yStep, 0.0);
     cc.glBlendFunc(gl.ONE, gl.ZERO);
     cc.glBindTexture2DN(0, this._glowHighlightCompositePass.getTexture());
@@ -915,7 +1093,10 @@ proto.drawHighlight = function () {
       blurProgram._setUniformForMVPMatrixWithMat4(this._glowMVMatrix);
     }
     blurProgram.setUniformLocationWith1f(blurProgram.loc_xStep, 0.0);
-    blurProgram.setUniformLocationWith1f(blurProgram.loc_yStep, 1.0 / (this._blurAPass.getHeight() * this._blurAPass.getScale()));
+    blurProgram.setUniformLocationWith1f(
+      blurProgram.loc_yStep,
+      1.0 / (this._blurAPass.getHeight() * this._blurAPass.getScale()),
+    );
     cc.glBlendFunc(gl.SRC_ALPHA, gl.ONE);
     cc.glBindTexture2DN(0, this._blurAPass.getTexture());
     this._blurBPass.render();
@@ -929,11 +1110,26 @@ proto.drawPrismatic = function () {
   const chromaticProgram = cc.shaderCache.programForKey('Chromatic');
   chromaticProgram.use();
   this.setDefaultMatricesForDraw(chromaticProgram, node);
-  chromaticProgram.setUniformLocationWith1f(chromaticProgram.loc_time, node.getFX().getTime() * node.getPrismaticSpeed());
-  chromaticProgram.setUniformLocationWith1f(chromaticProgram.loc_frequency, node.getPrismaticFrequency());
-  chromaticProgram.setUniformLocationWith1f(chromaticProgram.loc_amplitude, node.getPrismaticAmplitude());
-  chromaticProgram.setUniformLocationWith1f(chromaticProgram.loc_smoothstepMin, node.getPrismaticSmoothstepMin());
-  chromaticProgram.setUniformLocationWith1f(chromaticProgram.loc_smoothstepMax, node.getPrismaticSmoothstepMax());
+  chromaticProgram.setUniformLocationWith1f(
+    chromaticProgram.loc_time,
+    node.getFX().getTime() * node.getPrismaticSpeed(),
+  );
+  chromaticProgram.setUniformLocationWith1f(
+    chromaticProgram.loc_frequency,
+    node.getPrismaticFrequency(),
+  );
+  chromaticProgram.setUniformLocationWith1f(
+    chromaticProgram.loc_amplitude,
+    node.getPrismaticAmplitude(),
+  );
+  chromaticProgram.setUniformLocationWith1f(
+    chromaticProgram.loc_smoothstepMin,
+    node.getPrismaticSmoothstepMin(),
+  );
+  chromaticProgram.setUniformLocationWith1f(
+    chromaticProgram.loc_smoothstepMax,
+    node.getPrismaticSmoothstepMax(),
+  );
   cc.glBlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
   // uncomment if using noise map based chromatic shader
   // cc.glBindTexture2DN(1, cc.textureCache.getTextureForKey(RSX.noise.img));
@@ -942,7 +1138,11 @@ proto.drawPrismatic = function () {
     cc.glBindTexture2DN(0, this._compositePass.getTexture());
     this._compositePass.render();
   } else {
-    chromaticProgram.setUniformLocationWith2f(chromaticProgram.loc_aberrationScale, node._rect.width / node._texture._contentSize.width, node._rect.height / node._texture._contentSize.height);
+    chromaticProgram.setUniformLocationWith2f(
+      chromaticProgram.loc_aberrationScale,
+      node._rect.width / node._texture._contentSize.width,
+      node._rect.height / node._texture._contentSize.height,
+    );
     cc.glBindTexture2DN(0, node._texture);
 
     // bind quad buffer

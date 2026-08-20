@@ -21,9 +21,20 @@ class ModifierHPChangeSummonEntity extends ModifierHPChange {
   static modifierName = 'Modifier HP Change Summon Entity';
   static description = 'When this falls below %X health, summon %Y on a random space';
 
-  static createContextObject(cardDataOrIndexToSpawn, healthThreshold, spawnDescription, spawnCount, spawnSilently, options) {
-    if (spawnCount == null) { spawnCount = 1; }
-    if (spawnSilently == null) { spawnSilently = true; }
+  static createContextObject(
+    cardDataOrIndexToSpawn,
+    healthThreshold,
+    spawnDescription,
+    spawnCount,
+    spawnSilently,
+    options,
+  ) {
+    if (spawnCount == null) {
+      spawnCount = 1;
+    }
+    if (spawnSilently == null) {
+      spawnSilently = true;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.cardDataOrIndexToSpawn = cardDataOrIndexToSpawn;
     contextObject.healthThreshold = healthThreshold;
@@ -35,7 +46,10 @@ class ModifierHPChangeSummonEntity extends ModifierHPChange {
 
   static getDescription(modifierContextObject) {
     if (modifierContextObject) {
-      const descriptionText = this.description.replace(/%Y/, modifierContextObject.spawnDescription);
+      const descriptionText = this.description.replace(
+        /%Y/,
+        modifierContextObject.spawnDescription,
+      );
       return descriptionText.replace(/%X/, modifierContextObject.healthThreshold);
     }
     return this.description;
@@ -50,17 +64,40 @@ class ModifierHPChangeSummonEntity extends ModifierHPChange {
       if (this.getGameSession().getIsRunningAsAuthoritative()) {
         const ownerId = this.getSpawnOwnerId(action);
         const wholeBoardPattern = CONFIG.ALL_BOARD_POSITIONS;
-        const card = this.getGameSession().getExistingCardFromIndexOrCachedCardFromData(this.cardDataOrIndexToSpawn);
+        const card = this.getGameSession().getExistingCardFromIndexOrCachedCardFromData(
+          this.cardDataOrIndexToSpawn,
+        );
         const thisEntityPosition = this.getCard().getPosition();
-        const validPositions = _.reject(wholeBoardPattern, (position) => UtilsPosition.getPositionsAreEqual(position, thisEntityPosition));
-        const spawnLocations = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(this.getGameSession(), { x: 0, y: 0 }, validPositions, card, this.getCard(), this.spawnCount);
+        const validPositions = _.reject(wholeBoardPattern, (position) =>
+          UtilsPosition.getPositionsAreEqual(position, thisEntityPosition),
+        );
+        const spawnLocations = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(
+          this.getGameSession(),
+          { x: 0, y: 0 },
+          validPositions,
+          card,
+          this.getCard(),
+          this.spawnCount,
+        );
 
         for (var position of Array.from<any>(spawnLocations)) {
           var playCardAction;
           if (!this.spawnSilently) {
-            playCardAction = new PlayCardAction(this.getGameSession(), this.getCard().getOwnerId(), position.x, position.y, this.cardDataOrIndexToSpawn);
+            playCardAction = new PlayCardAction(
+              this.getGameSession(),
+              this.getCard().getOwnerId(),
+              position.x,
+              position.y,
+              this.cardDataOrIndexToSpawn,
+            );
           } else {
-            playCardAction = new PlayCardSilentlyAction(this.getGameSession(), this.getCard().getOwnerId(), position.x, position.y, this.cardDataOrIndexToSpawn);
+            playCardAction = new PlayCardSilentlyAction(
+              this.getGameSession(),
+              this.getCard().getOwnerId(),
+              position.x,
+              position.y,
+              this.cardDataOrIndexToSpawn,
+            );
           }
           playCardAction.setSource(this.getCard());
           this.getGameSession().executeAction(playCardAction);

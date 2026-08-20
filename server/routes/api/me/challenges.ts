@@ -19,7 +19,9 @@ const router = express.Router();
 router.get('/gated', function (req, res, next) {
   const user_id = req.user.d.id;
 
-  return knex('user_challenges').where('user_id', user_id).select()
+  return knex('user_challenges')
+    .where('user_id', user_id)
+    .select()
     .then(function (challengeRows) {
       challengeRows = DataAccessHelpers.restifyData(challengeRows);
       return res.status(200).json(challengeRows);
@@ -36,7 +38,9 @@ router.get('/gated/:challenge_type', function (req, res, next) {
   const user_id = req.user.d.id;
   const challenge_type = result.value;
 
-  return knex('user_challenges').where({ user_id: user_id, challenge_id: challenge_type }).select()
+  return knex('user_challenges')
+    .where({ user_id: user_id, challenge_id: challenge_type })
+    .select()
     .then((challengeRow) => res.status(200).json(challengeRow))
     .catch((error) => next(error));
 });
@@ -51,8 +55,13 @@ router.put('/gated/:challenge_type/last_attempted_at', function (req, res, next)
   const challenge_type = result.value;
 
   return ChallengesModule.markChallengeAsAttempted(user_id, challenge_type)
-    .then((value) => res.status(200).json(value)).catch(function (error) {
-      Logger.module('API').error(`Failed to set challenge ${challenge_type} as attempted for ${user_id.blue}`.red + ' ERROR: ' + util.inspect(error));
+    .then((value) => res.status(200).json(value))
+    .catch(function (error) {
+      Logger.module('API').error(
+        `Failed to set challenge ${challenge_type} as attempted for ${user_id.blue}`.red +
+          ' ERROR: ' +
+          util.inspect(error),
+      );
       return next(error);
     });
 });
@@ -77,14 +86,19 @@ router.put('/gated/:challenge_type/completed_at', function (req, res, next) {
   return ChallengesModule.completeChallengeWithType(user_id, challenge_type, process_quests)
     .then(function (challengeResult) {
       if (challengeResult) {
-      // First challenge completion
+        // First challenge completion
         return res.status(200).json(challengeResult);
       } else {
-      // Challenge was already completed
+        // Challenge was already completed
         return res.status(304).json({});
       }
-    }).catch(function (error) {
-      Logger.module('API').error(`Failed to set challenge ${challenge_type} as completed for ${user_id.blue}`.red + ' ERROR: ' + util.inspect(error));
+    })
+    .catch(function (error) {
+      Logger.module('API').error(
+        `Failed to set challenge ${challenge_type} as completed for ${user_id.blue}`.red +
+          ' ERROR: ' +
+          util.inspect(error),
+      );
       return next(error);
     });
 });
@@ -92,7 +106,9 @@ router.put('/gated/:challenge_type/completed_at', function (req, res, next) {
 router.get('/daily/completed_at', function (req, res, next) {
   const user_id = req.user.d.id;
 
-  return knex('users').where('id', user_id).first('daily_challenge_last_completed_at')
+  return knex('users')
+    .where('id', user_id)
+    .first('daily_challenge_last_completed_at')
     .then(function (userRow) {
       let lastCompletedData = {
         daily_challenge_last_completed_at: userRow.daily_challenge_last_completed_at,
@@ -119,24 +135,46 @@ router.put('/daily/:challenge_id/completed_at', function (req, res, next) {
   const challenge_id = result.value;
   const completed_at = result2.value;
 
-  return ChallengesModule.markDailyChallengeAsCompleted(user_id, challenge_id, null, moment.utc(completed_at))
+  return ChallengesModule.markDailyChallengeAsCompleted(
+    user_id,
+    challenge_id,
+    null,
+    moment.utc(completed_at),
+  )
     .then(function (challengeResult) {
       if (challengeResult) {
-      // First challenge completion
+        // First challenge completion
         return res.status(200).json(challengeResult);
       } else {
-      // Challenge was already completed
+        // Challenge was already completed
         return res.status(304).json({});
       }
-    }).catch(onType(Errors.AlreadyExistsError, function (error) {
-      Logger.module('API').error(`Challenge ID ${challenge_id} already completed for user ID ${user_id.blue}`);
-      return res.status(304).json({});
-    })).catch(onType(Errors.DailyChallengeTimeFrameError, function (error) {
-      Logger.module('API').error(`Daily challenge completed_at ${completed_at} outside allowable time frame for user ID ${user_id.blue}`);
-      return res.status(400).json({ message: 'Daily challenge completion outside allowable time frame. Local clock may be skewed.' });
-    }))
+    })
+    .catch(
+      onType(Errors.AlreadyExistsError, function (error) {
+        Logger.module('API').error(
+          `Challenge ID ${challenge_id} already completed for user ID ${user_id.blue}`,
+        );
+        return res.status(304).json({});
+      }),
+    )
+    .catch(
+      onType(Errors.DailyChallengeTimeFrameError, function (error) {
+        Logger.module('API').error(
+          `Daily challenge completed_at ${completed_at} outside allowable time frame for user ID ${user_id.blue}`,
+        );
+        return res.status(400).json({
+          message:
+            'Daily challenge completion outside allowable time frame. Local clock may be skewed.',
+        });
+      }),
+    )
     .catch(function (error) {
-      Logger.module('API').error(`Failed to set challenge ${challenge_id} as completed for ${user_id.blue}`.red + ' ERROR: ' + util.inspect(error));
+      Logger.module('API').error(
+        `Failed to set challenge ${challenge_id} as completed for ${user_id.blue}`.red +
+          ' ERROR: ' +
+          util.inspect(error),
+      );
       return next(error);
     });
 });

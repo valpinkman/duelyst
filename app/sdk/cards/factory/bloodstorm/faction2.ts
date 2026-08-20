@@ -78,7 +78,9 @@ class CardFactory_BloodstormSet_Faction2 {
       card.maxHP = 4;
       card.manaCost = 3;
       card.rarityId = Rarity.Legendary;
-      card.setInherentModifiersContextObjects([ModifierSynergizeTeleportRandomEnemy.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierSynergizeTeleportRandomEnemy.createContextObject(),
+      ]);
     }
 
     if (identifier === Cards.Faction2.Geomancer) {
@@ -110,7 +112,10 @@ class CardFactory_BloodstormSet_Faction2 {
       card.maxHP = 4;
       card.manaCost = 5;
       card.setInherentModifiersContextObjects([
-        ModifierOpeningGambitChangeSignatureCard.createContextObject({ id: Cards.Spell.PhoenixFireBBS }, 'Phoenix Fire'),
+        ModifierOpeningGambitChangeSignatureCard.createContextObject(
+          { id: Cards.Spell.PhoenixFireBBS },
+          'Phoenix Fire',
+        ),
       ]);
       card.rarityId = Rarity.Rare;
     }
@@ -144,7 +149,9 @@ class CardFactory_BloodstormSet_Faction2 {
       card.maxHP = 3;
       card.manaCost = 3;
       card.rarityId = Rarity.Common;
-      card.setInherentModifiersContextObjects([ModifierSynergizeDamageEnemyGeneral.createContextObject(2)]);
+      card.setInherentModifiersContextObjects([
+        ModifierSynergizeDamageEnemyGeneral.createContextObject(2),
+      ]);
     }
 
     if (identifier === Cards.Spell.EtherealBlades) {
@@ -161,9 +168,7 @@ class CardFactory_BloodstormSet_Faction2 {
       const buffContextObject = Modifier.createContextObjectWithAttributeBuffs(2);
       buffContextObject.durationEndTurn = 1;
       buffContextObject.appliedName = i18next.t('modifiers.faction_2_spell_ethereal_blades_1');
-      card.setTargetModifiersContextObjects([
-        buffContextObject,
-      ]);
+      card.setTargetModifiersContextObjects([buffContextObject]);
       card.setFXResource(['FX.Cards.Spell.EtherealBlades']);
       card.setBaseSoundResource({
         apply: RSX.sfx_spell_twinstrike.audio,
@@ -207,9 +212,7 @@ class CardFactory_BloodstormSet_Faction2 {
       card.spellFilterType = SpellFilterType.AllyDirect;
       card.canTargetGeneral = true;
       card.addKeywordClassToInclude(ModifierBackstab);
-      card.setTargetModifiersContextObjects([
-        ModifierBackstab.createContextObject(2),
-      ]);
+      card.setTargetModifiersContextObjects([ModifierBackstab.createContextObject(2)]);
       card.setFXResource(['FX.Cards.Spell.ObscuringBlow']);
       card.setBaseSoundResource({
         apply: RSX.sfx_neutral_khymera_death.audio,

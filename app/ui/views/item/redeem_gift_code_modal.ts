@@ -9,7 +9,6 @@ var i18next = require('i18next');
 var FormPromptModalItemView = require('./form_prompt_modal');
 
 var RedeemGiftCodeModalView = FormPromptModalItemView.extend({
-
   id: 'app-redeem-gift-code',
   template: Template,
 
@@ -52,7 +51,10 @@ var RedeemGiftCodeModalView = FormPromptModalItemView.extend({
     // check giftCode
     if (isValid && this._hasModifiedGiftCode && !validator.isLength(giftCode, 3)) {
       // giftCode is not long enough
-      this.showInvalidFormControl(this.ui.$giftCode, i18next.t('redeem_gift_code_modal.min_char_requirement_error'));
+      this.showInvalidFormControl(
+        this.ui.$giftCode,
+        i18next.t('redeem_gift_code_modal.min_char_requirement_error'),
+      );
       isValid = false;
     } else {
       this.showValidFormControl(this.ui.$giftCode);
@@ -71,19 +73,28 @@ var RedeemGiftCodeModalView = FormPromptModalItemView.extend({
     // execute
     var giftCode = this.ui.$giftCode.val();
 
-    Promise.resolve($.ajax({
-      url: process.env.API_URL + '/api/me/gift_codes',
-      type: 'POST',
-      data: JSON.stringify({
-        gift_code: giftCode,
+    Promise.resolve(
+      $.ajax({
+        url: process.env.API_URL + '/api/me/gift_codes',
+        type: 'POST',
+        data: JSON.stringify({
+          gift_code: giftCode,
+        }),
+        contentType: 'application/json',
+        dataType: 'json',
       }),
-      contentType: 'application/json',
-      dataType: 'json',
-    }))
+    )
       .then(this.onSuccess.bind(this))
-      .catch(function (response) {
-        this.onError(response && response.responseJSON && (response.responseJSON.message || response.responseJSON.error) || i18next.t('redeem_gift_code_modal.failed_to_redeem_error'));
-      }.bind(this));
+      .catch(
+        function (response) {
+          this.onError(
+            (response &&
+              response.responseJSON &&
+              (response.responseJSON.message || response.responseJSON.error)) ||
+              i18next.t('redeem_gift_code_modal.failed_to_redeem_error'),
+          );
+        }.bind(this),
+      );
   },
 
   onSuccessComplete: function (registration) {
@@ -96,7 +107,6 @@ var RedeemGiftCodeModalView = FormPromptModalItemView.extend({
   },
 
   /* endregion EVENTS */
-
 });
 
 // Expose the class either via CommonJS or the global object

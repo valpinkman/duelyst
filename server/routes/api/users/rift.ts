@@ -18,9 +18,7 @@ const router = express.Router();
 
 // Summary data
 router.get('/', function (req, res, next) {
-  const {
-    user_id,
-  } = req;
+  const { user_id } = req;
 
   const pruneRiftRunData = (riftRunData) => ({
     user_id: riftRunData.user_id,
@@ -36,7 +34,10 @@ router.get('/', function (req, res, next) {
     rift_rating: riftRunData.rift_rating,
   });
 
-  return knex('user_rift_runs').where('user_id', user_id).orderBy('rift_rating', 'desc').first()
+  return knex('user_rift_runs')
+    .where('user_id', user_id)
+    .orderBy('rift_rating', 'desc')
+    .first()
     .then(function (highestRatingRiftRunRow) {
       const responseData: Record<string, any> = {};
 

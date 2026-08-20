@@ -24,9 +24,7 @@ class ModifierAnySummonWatchFromActionBar extends Modifier {
   onAction(e) {
     super.onAction(e);
 
-    const {
-      action,
-    } = e;
+    const { action } = e;
 
     if (this.getIsActionRelevant(action)) {
       return this.onSummonWatch(action);
@@ -37,7 +35,7 @@ class ModifierAnySummonWatchFromActionBar extends Modifier {
     // watch for a unit being summoned from action bar by any player (except self)
     if (a instanceof PlayCardFromHandAction) {
       const card = a.getCard();
-      return (card != null) && (card.type === CardType.Unit) && (card !== this.getCard());
+      return card != null && card.type === CardType.Unit && card !== this.getCard();
     }
   }
 
@@ -48,8 +46,7 @@ class ModifierAnySummonWatchFromActionBar extends Modifier {
     // special check on activation in case this card is created mid-game
     // need to check all actions that occured this gamesession for triggers
     const summonActions = this.getGameSession().filterActions(this.getIsActionRelevant.bind(this));
-    return Array.from<any>(summonActions).map((action) =>
-      this.onSummonWatch(action));
+    return Array.from<any>(summonActions).map((action) => this.onSummonWatch(action));
   }
 }
 ModifierAnySummonWatchFromActionBar.prototype.type = 'ModifierAnySummonWatchFromActionBar';
@@ -57,6 +54,8 @@ ModifierAnySummonWatchFromActionBar.prototype.activeInHand = false;
 ModifierAnySummonWatchFromActionBar.prototype.activeInDeck = false;
 ModifierAnySummonWatchFromActionBar.prototype.activeInSignatureCards = false;
 ModifierAnySummonWatchFromActionBar.prototype.activeOnBoard = true;
-ModifierAnySummonWatchFromActionBar.prototype.fxResource = ['FX.Modifiers.ModifierAnySummonWatchFromActionBar'];
+ModifierAnySummonWatchFromActionBar.prototype.fxResource = [
+  'FX.Modifiers.ModifierAnySummonWatchFromActionBar',
+];
 
 module.exports = ModifierAnySummonWatchFromActionBar;

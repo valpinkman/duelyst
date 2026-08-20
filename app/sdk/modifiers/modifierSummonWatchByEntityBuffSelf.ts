@@ -18,14 +18,18 @@ class ModifierSummonWatchByEntityBuffSelf extends ModifierSummonWatch {
   static description = 'Whenever you summon a %X, this gains %Y';
 
   static createContextObject(attackBuff, maxHPBuff, targetEntityId, cardName, options) {
-    if (attackBuff == null) { attackBuff = 0; }
-    if (maxHPBuff == null) { maxHPBuff = 0; }
+    if (attackBuff == null) {
+      attackBuff = 0;
+    }
+    if (maxHPBuff == null) {
+      maxHPBuff = 0;
+    }
     this.targetEntityId = targetEntityId;
     const contextObject = super.createContextObject(options);
     contextObject.targetEntityId = this.targetEntityId;
     contextObject.cardName = cardName;
     const statBuff = Modifier.createContextObjectWithAttributeBuffs(attackBuff, maxHPBuff);
-    statBuff.appliedName = 'Overseer\'s Growth';
+    statBuff.appliedName = "Overseer's Growth";
     contextObject.modifiersContextObjects = [statBuff];
 
     return contextObject;
@@ -34,14 +38,23 @@ class ModifierSummonWatchByEntityBuffSelf extends ModifierSummonWatch {
   static getDescription(modifierContextObject) {
     if (modifierContextObject) {
       const subContextObject = modifierContextObject.modifiersContextObjects[0];
-      const replaceText = this.description.replace(/%Y/, Stringifiers.stringifyAttackHealthBuff(subContextObject.attributeBuffs.atk, subContextObject.attributeBuffs.maxHP));
+      const replaceText = this.description.replace(
+        /%Y/,
+        Stringifiers.stringifyAttackHealthBuff(
+          subContextObject.attributeBuffs.atk,
+          subContextObject.attributeBuffs.maxHP,
+        ),
+      );
       return replaceText.replace(/%X/, modifierContextObject.cardName);
     }
     return this.description;
   }
 
   onSummonWatch(action) {
-    return this.applyManagedModifiersFromModifiersContextObjects(this.modifiersContextObjects, this.getCard());
+    return this.applyManagedModifiersFromModifiersContextObjects(
+      this.modifiersContextObjects,
+      this.getCard(),
+    );
   }
 
   getIsCardRelevantToWatcher(card) {
@@ -50,6 +63,9 @@ class ModifierSummonWatchByEntityBuffSelf extends ModifierSummonWatch {
 }
 ModifierSummonWatchByEntityBuffSelf.prototype.type = 'ModifierSummonWatchByEntityBuffSelf';
 ModifierSummonWatchByEntityBuffSelf.prototype.cardName = null;
-ModifierSummonWatchByEntityBuffSelf.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierSummonWatchByEntityBuffSelf.prototype.fxResource = [
+  'FX.Modifiers.ModifierSummonWatch',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 
 module.exports = ModifierSummonWatchByEntityBuffSelf;

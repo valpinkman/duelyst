@@ -34,18 +34,22 @@ var FXFbmPolarFlareSprite = FXSprite.extend({
 
   setOptions(options) {
     this._super(options);
-    if (options.phase != null) { this.phase = options.phase; }
-    if (options.flareColor != null) { this.flareColor = options.flareColor; }
+    if (options.phase != null) {
+      this.phase = options.phase;
+    }
+    if (options.flareColor != null) {
+      this.flareColor = options.flareColor;
+    }
   },
 
   updateTweenAction(value, key) {
     switch (key) {
-    case 'phase':
-      this.phase = value;
-      break;
-    default:
-      FXSprite.prototype.updateTweenAction.call(this, value, key);
-      break;
+      case 'phase':
+        this.phase = value;
+        break;
+      default:
+        FXSprite.prototype.updateTweenAction.call(this, value, key);
+        break;
     }
   },
 });
@@ -53,7 +57,9 @@ var FXFbmPolarFlareSprite = FXSprite.extend({
 FXFbmPolarFlareSprite.WebGLRenderCmd = function (renderable) {
   FXSprite.WebGLRenderCmd.call(this, renderable);
 };
-const proto = FXFbmPolarFlareSprite.WebGLRenderCmd.prototype = Object.create(FXSprite.WebGLRenderCmd.prototype);
+const proto = (FXFbmPolarFlareSprite.WebGLRenderCmd.prototype = Object.create(
+  FXSprite.WebGLRenderCmd.prototype,
+));
 proto.constructor = FXFbmPolarFlareSprite.WebGLRenderCmd;
 
 proto.rendering = function () {
@@ -65,10 +71,22 @@ proto.rendering = function () {
   const shaderProgram = this._shaderProgram;
   shaderProgram.use();
   shaderProgram._setUniformForMVPMatrixWithMat4(this._stackMatrix);
-  shaderProgram.setUniformLocationWith2f(shaderProgram.loc_size, node._rect.width, node._rect.height);
-  shaderProgram.setUniformLocationWith1f(shaderProgram.loc_time, node.getFX().getTime() * node.timeScale);
+  shaderProgram.setUniformLocationWith2f(
+    shaderProgram.loc_size,
+    node._rect.width,
+    node._rect.height,
+  );
+  shaderProgram.setUniformLocationWith1f(
+    shaderProgram.loc_time,
+    node.getFX().getTime() * node.timeScale,
+  );
   shaderProgram.setUniformLocationWith1f(shaderProgram.loc_phase, node.phase);
-  shaderProgram.setUniformLocationWith3f(shaderProgram.loc_flareColor, node.flareColor.r / 255, node.flareColor.g / 255, node.flareColor.b / 255);
+  shaderProgram.setUniformLocationWith3f(
+    shaderProgram.loc_flareColor,
+    node.flareColor.r / 255,
+    node.flareColor.g / 255,
+    node.flareColor.b / 255,
+  );
   cc.glBlendFunc(node._blendFunc.src, node._blendFunc.dst);
 
   cc.glEnableVertexAttribs(cc.VERTEX_ATTRIB_FLAG_POS_COLOR_TEX);

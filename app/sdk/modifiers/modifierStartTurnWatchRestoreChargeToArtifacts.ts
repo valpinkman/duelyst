@@ -21,6 +21,7 @@ class ModifierStartTurnWatchRestoreChargeToArtifacts extends ModifierStartTurnWa
     return this.getCard().getGameSession().executeAction(restoreDurabilityAction);
   }
 }
-ModifierStartTurnWatchRestoreChargeToArtifacts.prototype.type = 'ModifierStartTurnWatchRestoreChargeToArtifacts';
+ModifierStartTurnWatchRestoreChargeToArtifacts.prototype.type =
+  'ModifierStartTurnWatchRestoreChargeToArtifacts';
 
 module.exports = ModifierStartTurnWatchRestoreChargeToArtifacts;

@@ -20,7 +20,9 @@ class ModifierDeathWatchDrawToXCards extends ModifierDeathWatch {
   static description = 'Draw until you have %X cards';
 
   static createContextObject(cardCount, options) {
-    if (cardCount == null) { cardCount = 0; }
+    if (cardCount == null) {
+      cardCount = 0;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.cardCount = cardCount;
     contextObject.triggeredOnActionIndices = [];
@@ -40,8 +42,14 @@ class ModifierDeathWatchDrawToXCards extends ModifierDeathWatch {
     // and we don't want to trigger multiple sets of card draws
     let needle;
     const rootAction = action.getRootAction();
-    if (!((needle = rootAction.getIndex(), Array.from<any>(this.triggeredOnActionIndices).includes(needle)))) {
-      const drawToXCardsAction = new DrawToXCardsAction(this.getGameSession(), this.getCard().getOwnerId());
+    if (
+      !((needle = rootAction.getIndex()),
+      Array.from<any>(this.triggeredOnActionIndices).includes(needle))
+    ) {
+      const drawToXCardsAction = new DrawToXCardsAction(
+        this.getGameSession(),
+        this.getCard().getOwnerId(),
+      );
       drawToXCardsAction.setCardCount(this.cardCount);
       this.getGameSession().executeAction(drawToXCardsAction);
       return this.triggeredOnActionIndices.push(rootAction.getIndex());

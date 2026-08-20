@@ -17,7 +17,7 @@ class ModifierSilence extends Modifier {
 
   onApplyToCard(card) {
     let allowableSilenceTarget = true;
-    if ((card.getType() === CardType.Unit) && !card.getIsTargetable()) {
+    if (card.getType() === CardType.Unit && !card.getIsTargetable()) {
       allowableSilenceTarget = false;
     }
 
@@ -35,7 +35,8 @@ class ModifierSilence extends Modifier {
     // restore removable state
     this.isRemovable = wasRemovable;
 
-    if (!allowableSilenceTarget) { // remove modifier immediately after attempting to slience
+    if (!allowableSilenceTarget) {
+      // remove modifier immediately after attempting to slience
       return this.getGameSession().removeModifier(this);
     }
   }

@@ -17,7 +17,7 @@ class SpellWrathOfGod extends SpellKillTarget {
 
     for (position of Array.from<any>(potentialApplyEffectPositions)) {
       var unit = board.getUnitAtPosition(position);
-      if ((unit != null) && !unit.getIsGeneral()) {
+      if (unit != null && !unit.getIsGeneral()) {
         applyEffectPositions.push(position);
       }
     }
@@ -28,8 +28,10 @@ class SpellWrathOfGod extends SpellKillTarget {
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     const applyEffectPosition = { x, y };
     const unit = board.getUnitAtPosition(applyEffectPosition);
-    if ((unit != null) && !unit.getIsGeneral()) {
-      const action = new PlayCardAction(this.getGameSession(), this.getOwnerId(), x, y, { id: Cards.Tile.Hallowed });
+    if (unit != null && !unit.getIsGeneral()) {
+      const action = new PlayCardAction(this.getGameSession(), this.getOwnerId(), x, y, {
+        id: Cards.Tile.Hallowed,
+      });
       action.setOwnerId(this.getOwnerId());
       this.getGameSession().executeAction(action);
     }

@@ -28,8 +28,12 @@ class ModifierEndTurnWatchTransformNearbyEnemies extends ModifierEndTurnWatch {
   }
 
   onTurnWatch(action) {
-    const opponentId = this.getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId()).getOwnerId();
-    const entities = this.getGameSession().getBoard().getEnemyEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
+    const opponentId = this.getGameSession()
+      .getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId())
+      .getOwnerId();
+    const entities = this.getGameSession()
+      .getBoard()
+      .getEnemyEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
     return (() => {
       const result = [];
       for (var entity of Array.from<any>(entities)) {
@@ -43,9 +47,23 @@ class ModifierEndTurnWatchTransformNearbyEnemies extends ModifierEndTurnWatch {
           // and turn it into a Panddo
           if (entity != null) {
             var cardData = this.cardToBecome;
-            if (cardData.additionalInherentModifiersContextObjects == null) { cardData.additionalInherentModifiersContextObjects = []; }
-            cardData.additionalInherentModifiersContextObjects.push(ModifierTransformed.createContextObject(entity.getExhausted(), entity.getMovesMade(), entity.getAttacksMade()));
-            var spawnEntityAction = new PlayCardAsTransformAction(this.getCard().getGameSession(), opponentId, entity.getPosition().x, entity.getPosition().y, cardData);
+            if (cardData.additionalInherentModifiersContextObjects == null) {
+              cardData.additionalInherentModifiersContextObjects = [];
+            }
+            cardData.additionalInherentModifiersContextObjects.push(
+              ModifierTransformed.createContextObject(
+                entity.getExhausted(),
+                entity.getMovesMade(),
+                entity.getAttacksMade(),
+              ),
+            );
+            var spawnEntityAction = new PlayCardAsTransformAction(
+              this.getCard().getGameSession(),
+              opponentId,
+              entity.getPosition().x,
+              entity.getPosition().y,
+              cardData,
+            );
             result.push(this.getGameSession().executeAction(spawnEntityAction));
           } else {
             result.push(undefined);
@@ -58,8 +76,11 @@ class ModifierEndTurnWatchTransformNearbyEnemies extends ModifierEndTurnWatch {
     })();
   }
 }
-ModifierEndTurnWatchTransformNearbyEnemies.prototype.type = 'ModifierEndTurnWatchTransformNearbyEnemies';
+ModifierEndTurnWatchTransformNearbyEnemies.prototype.type =
+  'ModifierEndTurnWatchTransformNearbyEnemies';
 ModifierEndTurnWatchTransformNearbyEnemies.prototype.cardToBecome = null;
-ModifierEndTurnWatchTransformNearbyEnemies.prototype.fxResource = ['FX.Modifiers.ModifierEndTurnWatch'];
+ModifierEndTurnWatchTransformNearbyEnemies.prototype.fxResource = [
+  'FX.Modifiers.ModifierEndTurnWatch',
+];
 
 module.exports = ModifierEndTurnWatchTransformNearbyEnemies;

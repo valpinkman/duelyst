@@ -14,13 +14,9 @@ Logger.enabled = false;
 describe('bloodstorm', () => {
   describe('faction4', () => {
     beforeEach(() => {
-      const player1Deck = [
-        { id: SDK.Cards.Faction4.General },
-      ];
+      const player1Deck = [{ id: SDK.Cards.Faction4.General }];
 
-      const player2Deck = [
-        { id: SDK.Cards.Faction4.AltGeneral },
-      ];
+      const player2Deck = [{ id: SDK.Cards.Faction4.AltGeneral }];
 
       UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
     });
@@ -40,8 +36,18 @@ describe('bloodstorm', () => {
       gameSession.executeAction(gameSession.actionEndTurn());
       gameSession.executeAction(gameSession.actionEndTurn());
 
-      const wraithling = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.Wraithling }, 6, 1, gameSession.getPlayer1Id());
-      const furosa = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.Furosa }, 4, 3, gameSession.getPlayer1Id());
+      const wraithling = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.Wraithling },
+        6,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const furosa = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.Furosa },
+        4,
+        3,
+        gameSession.getPlayer1Id(),
+      );
 
       const action = player1.actionPlaySignatureCard(1, 1);
       gameSession.executeAction(action);
@@ -63,9 +69,18 @@ describe('bloodstorm', () => {
 
       gameSession.getGeneralForPlayer1().setDamage(10);
 
-      const wraithling = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.Wraithling }, 6, 1, gameSession.getPlayer1Id());
+      const wraithling = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.Wraithling },
+        6,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.AphoticDrain }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.AphoticDrain,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 6, 1));
 
       expect(wraithling.getIsRemoved()).to.equal(true);
@@ -77,10 +92,24 @@ describe('bloodstorm', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const burster = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.HorrorBurster }, 6, 1, gameSession.getPlayer1Id());
-      const wraithling = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.Wraithling }, 5, 1, gameSession.getPlayer1Id());
+      const burster = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.HorrorBurster },
+        6,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const wraithling = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.Wraithling },
+        5,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.AphoticDrain }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.AphoticDrain,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 6, 1));
 
       const horror = board.getUnitAtPosition({ x: 5, y: 1 });
@@ -94,10 +123,24 @@ describe('bloodstorm', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const burster = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.HorrorBurster }, 6, 1, gameSession.getPlayer1Id());
-      const wraithling = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.Wraithling }, 5, 1, gameSession.getPlayer1Id());
+      const burster = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.HorrorBurster },
+        6,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const wraithling = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.Wraithling },
+        5,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.Tempest }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.Tempest,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 6, 1));
 
       const horror = board.getUnitAtPosition({ x: 5, y: 1 });
@@ -111,12 +154,26 @@ describe('bloodstorm', () => {
       const player1 = gameSession.getPlayer1();
       const player2 = gameSession.getPlayer2();
 
-      const burster = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.HorrorBurster }, 6, 1, gameSession.getPlayer1Id());
-      const wraithling = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.Wraithling }, 5, 1, gameSession.getPlayer1Id());
+      const burster = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.HorrorBurster },
+        6,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const wraithling = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.Wraithling },
+        5,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
       gameSession.executeAction(gameSession.actionEndTurn());
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer2Id(), { id: SDK.Cards.Spell.TwinStrike }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer2Id(), {
+          id: SDK.Cards.Spell.TwinStrike,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player2.actionPlayCardFromHand(0, 6, 1));
 
       const horror = board.getUnitAtPosition({ x: 5, y: 1 });
@@ -129,10 +186,24 @@ describe('bloodstorm', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const burster = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.HorrorBurster }, 6, 1, gameSession.getPlayer1Id());
-      const wraithling = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.Wraithling }, 5, 1, gameSession.getPlayer1Id());
+      const burster = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.HorrorBurster },
+        6,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const wraithling = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.Wraithling },
+        5,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.FrostboneNaga }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.FrostboneNaga,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 5, 2));
 
       const horror = board.getUnitAtPosition({ x: 5, y: 2 });
@@ -146,10 +217,24 @@ describe('bloodstorm', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const burster = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.HorrorBurster }, 6, 1, gameSession.getPlayer1Id());
-      const wraithling = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.Wraithling }, 5, 1, gameSession.getPlayer1Id());
+      const burster = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.HorrorBurster },
+        6,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const wraithling = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.Wraithling },
+        5,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.Decimate }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.Decimate,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 6, 1));
 
       const horror = board.getUnitAtPosition({ x: 5, y: 1 });
@@ -162,11 +247,20 @@ describe('bloodstorm', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const juggernaut = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.AbyssalJuggernaut }, 5, 1, gameSession.getPlayer2Id());
+      const juggernaut = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.AbyssalJuggernaut },
+        5,
+        1,
+        gameSession.getPlayer2Id(),
+      );
 
       juggernaut.setDamage(1);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.Punish }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.Punish,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 5, 1));
 
       expect(juggernaut.getIsRemoved()).to.equal(true);
@@ -177,10 +271,24 @@ describe('bloodstorm', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const juggernaut = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.AbyssalJuggernaut }, 1, 1, gameSession.getPlayer2Id());
-      const juggernaut2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.AbyssalJuggernaut }, 1, 2, gameSession.getPlayer1Id());
+      const juggernaut = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.AbyssalJuggernaut },
+        1,
+        1,
+        gameSession.getPlayer2Id(),
+      );
+      const juggernaut2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.AbyssalJuggernaut },
+        1,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.NecroticSphere }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.NecroticSphere,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 5, 1));
 
       const wraithling1 = board.getUnitAtPosition({ x: 1, y: 1 });
@@ -203,8 +311,17 @@ describe('bloodstorm', () => {
 
       player1.remainingMana = 9;
 
-      const wraithling = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.Wraithling }, 6, 1, gameSession.getPlayer1Id());
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction4.GrandmasterVariax }));
+      const wraithling = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.Wraithling },
+        6,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction4.GrandmasterVariax,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 1, 1));
       // var variax = UtilsSDK.applyCardToBoard({id: SDK.Cards.Faction4.GrandmasterVariax}, 4, 3, gameSession.getPlayer1Id());
 
@@ -241,13 +358,26 @@ describe('bloodstorm', () => {
 
       player2.remainingMana = 9;
 
-      const wraithling = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.Wraithling }, 6, 1, gameSession.getPlayer2Id());
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer2Id(), { id: SDK.Cards.Faction4.GrandmasterVariax }));
+      const wraithling = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.Wraithling },
+        6,
+        1,
+        gameSession.getPlayer2Id(),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer2Id(), {
+          id: SDK.Cards.Faction4.GrandmasterVariax,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player2.actionPlayCardFromHand(0, 5, 1));
 
       player2.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer2Id(), { id: SDK.Cards.Spell.ShadowNova }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer2Id(), {
+          id: SDK.Cards.Spell.ShadowNova,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player2.actionPlayCardFromHand(0, 0, 0));
 
       player2.remainingMana = 9;
@@ -282,9 +412,23 @@ describe('bloodstorm', () => {
 
       player1.remainingMana = 9;
 
-      const furosa = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.Furosa }, 6, 2, gameSession.getPlayer1Id());
-      const wraithling = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.Wraithling }, 6, 1, gameSession.getPlayer1Id());
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction4.GrandmasterVariax }));
+      const furosa = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.Furosa },
+        6,
+        2,
+        gameSession.getPlayer1Id(),
+      );
+      const wraithling = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.Wraithling },
+        6,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction4.GrandmasterVariax,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 1, 1));
       // var variax = UtilsSDK.applyCardToBoard({id: SDK.Cards.Faction4.GrandmasterVariax}, 4, 3, gameSession.getPlayer1Id());
 
@@ -320,13 +464,32 @@ describe('bloodstorm', () => {
 
       player1.remainingMana = 9;
 
-      const furosa = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.Furosa }, 6, 2, gameSession.getPlayer1Id());
-      const wraithling = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.Wraithling }, 6, 1, gameSession.getPlayer1Id());
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction4.GrandmasterVariax }));
+      const furosa = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.Furosa },
+        6,
+        2,
+        gameSession.getPlayer1Id(),
+      );
+      const wraithling = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.Wraithling },
+        6,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction4.GrandmasterVariax,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 1, 1));
       // var variax = UtilsSDK.applyCardToBoard({id: SDK.Cards.Faction4.GrandmasterVariax}, 4, 3, gameSession.getPlayer1Id());
 
-      const grandmasterZir = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.GrandmasterZir }, 5, 1, gameSession.getPlayer1Id());
+      const grandmasterZir = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.GrandmasterZir },
+        5,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
       const damageAction = new SDK.DamageAction(gameSession);
       damageAction.setTarget(gameSession.getGeneralForPlayer1());

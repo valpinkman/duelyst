@@ -206,9 +206,7 @@ F5[Cards.Faction5.SpiritHarvester] = [
 F5[Cards.Artifact.PristineScale] = [
   {
     type: CardIntentType.ApplyModifiers,
-    modifiers: [
-      ModifierFrenzy.type,
-    ],
+    modifiers: [ModifierFrenzy.type],
     targets: CardTargetType.General | CardTargetType.Friendly,
   },
 ];
@@ -250,9 +248,7 @@ F5[Cards.Spell.KineticEquilibrium] = [
 F5[Cards.Spell.DiretideFrenzy] = [
   {
     type: CardIntentType.ApplyModifiers,
-    modifiers: [
-      ModifierFrenzy.type,
-    ],
+    modifiers: [ModifierFrenzy.type],
     targets: CardTargetType.Minion | CardTargetType.Friendly,
   },
   {
@@ -322,7 +318,12 @@ F5[Cards.Spell.FlamingStampede] = [
   {
     type: CardIntentType.Burn,
     amount: 5,
-    targets: CardTargetType.All | CardTargetType.General | CardTargetType.Minion | CardTargetType.Friendly | CardTargetType.Enemy,
+    targets:
+      CardTargetType.All |
+      CardTargetType.General |
+      CardTargetType.Minion |
+      CardTargetType.Friendly |
+      CardTargetType.Enemy,
   },
 ];
 
@@ -369,9 +370,7 @@ F5[Cards.Spell.TectonicSpikes] = [
 F5[Cards.Artifact.GrowthBangle] = [
   {
     type: CardIntentType.ApplyModifiers,
-    modifiers: [
-      ModifierGrow.type,
-    ],
+    modifiers: [ModifierGrow.type],
     targets: CardTargetType.Minion | CardTargetType.Friendly | CardTargetType.All,
   },
 ];
@@ -434,7 +433,11 @@ F5[Cards.Spell.PrimalBallast] = [
   },
   {
     type: CardIntentType.Dispel,
-    targets: CardTargetType.Minion | CardTargetType.Enemy | CardTargetType.General | CardTargetType.Friendly,
+    targets:
+      CardTargetType.Minion |
+      CardTargetType.Enemy |
+      CardTargetType.General |
+      CardTargetType.Friendly,
   },
 ];
 

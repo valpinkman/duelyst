@@ -16,7 +16,9 @@ const config = require('../config/config.js');
  * have blocked this upgrade regardless.
  */
 const setup = function (systemName) {
-  if (systemName == null) { systemName = 'n/a'; }
+  if (systemName == null) {
+    systemName = 'n/a';
+  }
   console.log(`CONFIGURING WINSTON LOGS for ${config.get('env')}`);
 
   /*
@@ -39,9 +41,10 @@ const setup = function (systemName) {
    * argument after the first into metadata. Formatting here keeps the
    * overridden console.* behaving exactly like the real one.
    */
-  const forward = (level) => function (...args) {
-    logger[level](util.format(...args));
-  };
+  const forward = (level) =>
+    function (...args) {
+      logger[level](util.format(...args));
+    };
 
   console.log = forward('info');
   console.debug = forward('debug');

@@ -28,14 +28,20 @@ class SpellEquipVetArtifacts extends Spell {
 
     let vetArtifacts = [];
     if (this.getGameSession().getGameFormat() === GameFormat.Standard) {
-      vetArtifacts = this.getGameSession().getCardCaches().getIsLegacy(false).getFaction(Factions.Faction3)
+      vetArtifacts = this.getGameSession()
+        .getCardCaches()
+        .getIsLegacy(false)
+        .getFaction(Factions.Faction3)
         .getType(CardType.Artifact)
         .getIsToken(false)
         .getIsPrismatic(false)
         .getIsSkinned(false)
         .getCards();
     } else {
-      vetArtifacts = this.getGameSession().getCardCaches().getFaction(Factions.Faction3).getType(CardType.Artifact)
+      vetArtifacts = this.getGameSession()
+        .getCardCaches()
+        .getFaction(Factions.Faction3)
+        .getType(CardType.Artifact)
         .getIsToken(false)
         .getIsPrismatic(false)
         .getIsSkinned(false)
@@ -49,17 +55,29 @@ class SpellEquipVetArtifacts extends Spell {
       }
 
       const cardDataToPlay = [];
-      const artifact1 = artifactData.splice(this.getGameSession().getRandomIntegerForExecution(artifactData.length), 1)[0]; // random artifact
-      const artifact2 = artifactData.splice(this.getGameSession().getRandomIntegerForExecution(artifactData.length), 1)[0]; // random artifact
+      const artifact1 = artifactData.splice(
+        this.getGameSession().getRandomIntegerForExecution(artifactData.length),
+        1,
+      )[0]; // random artifact
+      const artifact2 = artifactData.splice(
+        this.getGameSession().getRandomIntegerForExecution(artifactData.length),
+        1,
+      )[0]; // random artifact
       cardDataToPlay.push(artifact1);
       cardDataToPlay.push(artifact2);
 
       // equip the random artifacts
-      if ((cardDataToPlay != null) && (cardDataToPlay.length > 0)) {
+      if (cardDataToPlay != null && cardDataToPlay.length > 0) {
         return (() => {
           const result = [];
           for (var cardData of Array.from<any>(cardDataToPlay)) {
-            var playCardAction = new PlayCardSilentlyAction(gameSession, this.getOwnerId(), x, y, cardData.createNewCardData());
+            var playCardAction = new PlayCardSilentlyAction(
+              gameSession,
+              this.getOwnerId(),
+              x,
+              y,
+              cardData.createNewCardData(),
+            );
             playCardAction.setSource(this);
             result.push(gameSession.executeAction(playCardAction));
           }

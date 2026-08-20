@@ -46,10 +46,7 @@ class BeginnerAbyssianChallenge6 extends Challenge {
   }
 
   getOpponentPlayerDeckData(gameSession) {
-    return [
-      { id: Cards.Faction3.General },
-      { id: Cards.TutorialSpell.TutorialFireOrb },
-    ];
+    return [{ id: Cards.Faction3.General }, { id: Cards.TutorialSpell.TutorialFireOrb }];
   }
 
   setupBoard(gameSession) {
@@ -76,24 +73,37 @@ class BeginnerAbyssianChallenge6 extends Challenge {
   setupOpponentAgent(gameSession) {
     super.setupOpponentAgent(gameSession);
 
-    this._opponentAgent.addActionForTurn(0, AgentActions.createAgentSoftActionShowInstructionLabels([{
-      label: i18next.t('challenges.beginner_abyss_6_taunt'),
-      isSpeech: true,
-      isPersistent: true,
-      yPosition: 0.6,
-      isOpponent: true,
-    },
-    ]));
-    return this._opponentAgent.addActionForTurn(0, AgentActions.createAgentActionPlayCardFindPosition(0, () => [GameSession.getInstance().getGeneralForPlayer1().getPosition()]));
+    this._opponentAgent.addActionForTurn(
+      0,
+      AgentActions.createAgentSoftActionShowInstructionLabels([
+        {
+          label: i18next.t('challenges.beginner_abyss_6_taunt'),
+          isSpeech: true,
+          isPersistent: true,
+          yPosition: 0.6,
+          isOpponent: true,
+        },
+      ]),
+    );
+    return this._opponentAgent.addActionForTurn(
+      0,
+      AgentActions.createAgentActionPlayCardFindPosition(0, () => [
+        GameSession.getInstance().getGeneralForPlayer1().getPosition(),
+      ]),
+    );
   }
 }
 BeginnerAbyssianChallenge6.prototype.type = 'BeginnerAbyssianChallenge6';
 BeginnerAbyssianChallenge6.prototype.categoryType = ChallengeCategory.starter.type;
 BeginnerAbyssianChallenge6.prototype.name = i18next.t('challenges.beginner_abyss_6_title');
-BeginnerAbyssianChallenge6.prototype.description = i18next.t('challenges.beginner_abyss_6_description');
+BeginnerAbyssianChallenge6.prototype.description = i18next.t(
+  'challenges.beginner_abyss_6_description',
+);
 BeginnerAbyssianChallenge6.prototype.iconUrl = RSX.speech_portrait_abyssian.img;
 BeginnerAbyssianChallenge6.prototype._musicOverride = RSX.music_battlemap_abyssian.audio;
-BeginnerAbyssianChallenge6.prototype.otkChallengeStartMessage = i18next.t('challenges.beginner_abyss_6_start');
+BeginnerAbyssianChallenge6.prototype.otkChallengeStartMessage = i18next.t(
+  'challenges.beginner_abyss_6_start',
+);
 BeginnerAbyssianChallenge6.prototype.otkChallengeFailureMessages = [
   i18next.t('challenges.beginner_abyss_6_fail'),
 ];

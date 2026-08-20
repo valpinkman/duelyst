@@ -17,20 +17,39 @@ class SpellTempTransform extends SpellRemoveAndReplaceEntity {
   getCardDataOrIndexToSpawn(x, y) {
     let cardDataOrIndexToSpawn = super.getCardDataOrIndexToSpawn(x, y);
 
-    const existingEntity = this.getGameSession().getBoard().getCardAtPosition({ x, y }, CardType.Entity);
+    const existingEntity = this.getGameSession()
+      .getBoard()
+      .getCardAtPosition({ x, y }, CardType.Entity);
     if (existingEntity != null) {
       // create modifier from existing entity
       const existingEntityCardData = existingEntity.createNewCardData();
 
       // create modifier to transform this entity back to its original form
-      const transformBackModifierContextObject = ModifierRemoveAndReplaceEntity.createContextObject(existingEntityCardData, existingEntity.getBaseCardId());
+      const transformBackModifierContextObject = ModifierRemoveAndReplaceEntity.createContextObject(
+        existingEntityCardData,
+        existingEntity.getBaseCardId(),
+      );
       transformBackModifierContextObject.durationEndTurn = this.durationEndTurn;
       transformBackModifierContextObject.durationStartTurn = this.durationStartTurn;
       transformBackModifierContextObject.isInherent = true;
-      if ((cardDataOrIndexToSpawn != null) && !_.isObject(cardDataOrIndexToSpawn)) { cardDataOrIndexToSpawn = this.getGameSession().getCardByIndex(cardDataOrIndexToSpawn).createNewCardData(); }
-      if (cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects == null) { cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects = []; }
-      cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects.push(ModifierTransformed.createContextObject(existingEntity.getExhausted(), existingEntity.getMovesMade(), existingEntity.getAttacksMade()));
-      cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects.push(transformBackModifierContextObject);
+      if (cardDataOrIndexToSpawn != null && !_.isObject(cardDataOrIndexToSpawn)) {
+        cardDataOrIndexToSpawn = this.getGameSession()
+          .getCardByIndex(cardDataOrIndexToSpawn)
+          .createNewCardData();
+      }
+      if (cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects == null) {
+        cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects = [];
+      }
+      cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects.push(
+        ModifierTransformed.createContextObject(
+          existingEntity.getExhausted(),
+          existingEntity.getMovesMade(),
+          existingEntity.getAttacksMade(),
+        ),
+      );
+      cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects.push(
+        transformBackModifierContextObject,
+      );
     }
 
     return cardDataOrIndexToSpawn;

@@ -28,9 +28,7 @@ class ModifierDeathWatch extends Modifier {
   onAfterCleanupAction(e) {
     super.onAfterCleanupAction(e);
 
-    const {
-      action,
-    } = e;
+    const { action } = e;
     // watch for a unit dying
     if (this.getIsActionRelevant(action)) {
       return this.onDeathWatch(action);
@@ -41,7 +39,12 @@ class ModifierDeathWatch extends Modifier {
   // override me in sub classes to implement special behavior
 
   getIsActionRelevant(action) {
-    return action instanceof DieAction && (action.getTarget() != null) && (action.getTarget().getType() === CardType.Unit) && (action.getTarget() !== this.getCard());
+    return (
+      action instanceof DieAction &&
+      action.getTarget() != null &&
+      action.getTarget().getType() === CardType.Unit &&
+      action.getTarget() !== this.getCard()
+    );
   }
 }
 ModifierDeathWatch.prototype.type = 'ModifierDeathWatch';

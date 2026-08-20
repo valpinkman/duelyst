@@ -28,7 +28,11 @@ class SpellSpiralCounter extends SpellDamage {
       for (var action of Array.from<any>(actions)) {
         if (action.type === AttackAction.type) {
           var attacker = action.getSource();
-          if ((attacker.getType() === CardType.Unit) && !(attacker.getOwnerId() === this.getOwnerId()) && !attacker.getIsGeneral()) {
+          if (
+            attacker.getType() === CardType.Unit &&
+            !(attacker.getOwnerId() === this.getOwnerId()) &&
+            !attacker.getIsGeneral()
+          ) {
             possibleTargets.push(attacker);
           }
         }

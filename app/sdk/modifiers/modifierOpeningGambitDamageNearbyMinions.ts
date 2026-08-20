@@ -22,7 +22,9 @@ class ModifierOpeningGambitDamageNearbyMinions extends ModifierOpeningGambit {
   static description = 'Deal %X damage to';
 
   static createContextObject(damageAmount, includeAllies, options) {
-    if (includeAllies == null) { includeAllies = true; }
+    if (includeAllies == null) {
+      includeAllies = true;
+    }
     const contextObject = super.createContextObject();
     contextObject.damageAmount = damageAmount;
     contextObject.includeAllies = includeAllies;
@@ -45,15 +47,20 @@ class ModifierOpeningGambitDamageNearbyMinions extends ModifierOpeningGambit {
   onOpeningGambit() {
     let entities;
     if (this.includeAllies) {
-      entities = this.getGameSession().getBoard().getEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
+      entities = this.getGameSession()
+        .getBoard()
+        .getEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
     } else {
-      entities = this.getGameSession().getBoard().getEnemyEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
+      entities = this.getGameSession()
+        .getBoard()
+        .getEnemyEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
     }
 
     return (() => {
       const result = [];
       for (var entity of Array.from<any>(entities)) {
-        if (!entity.getIsGeneral()) { // this ability only damages minions, not Generals
+        if (!entity.getIsGeneral()) {
+          // this ability only damages minions, not Generals
           var damageAction = new DamageAction(this.getGameSession());
           damageAction.setOwnerId(this.getCard().getOwnerId());
           damageAction.setSource(this.getCard());
@@ -68,8 +75,12 @@ class ModifierOpeningGambitDamageNearbyMinions extends ModifierOpeningGambit {
     })();
   }
 }
-ModifierOpeningGambitDamageNearbyMinions.prototype.type = 'ModifierOpeningGambitDamageNearbyMinions';
+ModifierOpeningGambitDamageNearbyMinions.prototype.type =
+  'ModifierOpeningGambitDamageNearbyMinions';
 ModifierOpeningGambitDamageNearbyMinions.prototype.damageAmount = 0;
-ModifierOpeningGambitDamageNearbyMinions.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericChainLightningRed'];
+ModifierOpeningGambitDamageNearbyMinions.prototype.fxResource = [
+  'FX.Modifiers.ModifierOpeningGambit',
+  'FX.Modifiers.ModifierGenericChainLightningRed',
+];
 
 module.exports = ModifierOpeningGambitDamageNearbyMinions;

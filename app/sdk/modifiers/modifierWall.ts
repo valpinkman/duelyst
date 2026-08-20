@@ -51,7 +51,8 @@ class ModifierWall extends Modifier {
   // if we ever want to allow this Wall to move, remove the cannot move hidden submodifier
   allowMove() {
     return Array.from<any>(this.getSubModifiers()).map((subMod) =>
-      this.getGameSession().removeModifier(subMod));
+      this.getGameSession().removeModifier(subMod),
+    );
   }
 }
 ModifierWall.prototype.type = 'ModifierWall';

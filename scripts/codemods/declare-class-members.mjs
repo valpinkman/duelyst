@@ -22,7 +22,8 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { parse } from '@typescript-eslint/parser';
 
 const log = readFileSync(process.argv[2], 'utf8');
-const RE = /^(.+?)\(\d+,\d+\): error TS2339: Property '([^']+)' does not exist on type '(typeof )?([A-Za-z_$][\w$]*)'\.$/gm;
+const RE =
+  /^(.+?)\(\d+,\d+\): error TS2339: Property '([^']+)' does not exist on type '(typeof )?([A-Za-z_$][\w$]*)'\.$/gm;
 
 // file -> class -> { instance:Set, static:Set }
 const want = new Map();
@@ -35,17 +36,26 @@ while ((m = RE.exec(log)) !== null) {
   byClass.get(cls)[isStatic ? 'static' : 'instance'].add(prop);
 }
 
-let files = 0; let declared = 0; const skipped = [];
+let files = 0;
+let declared = 0;
+const skipped = [];
 for (const [file, byClass] of want) {
   let src;
-  try { src = readFileSync(file, 'utf8'); } catch { continue; }
+  try {
+    src = readFileSync(file, 'utf8');
+  } catch {
+    continue;
+  }
   const before = src;
 
   for (const [cls, members] of byClass) {
     // find `class <cls>` and the opening brace of its body
     const decl = new RegExp(`\\bclass\\s+${cls}\\b[^{]*\\{`);
     const hit = decl.exec(src);
-    if (!hit) { skipped.push(`${file}: no class ${cls}`); continue; }
+    if (!hit) {
+      skipped.push(`${file}: no class ${cls}`);
+      continue;
+    }
 
     const insertAt = hit.index + hit[0].length;
     const indentMatch = src.slice(0, hit.index).match(/([ \t]*)$/);
@@ -67,7 +77,9 @@ for (const [file, byClass] of want) {
   }
 
   if (src === before) continue;
-  try { parse(src, { range: true }); } catch (e) {
+  try {
+    parse(src, { range: true });
+  } catch (e) {
     skipped.push(`${file}: output does not parse (${e.message})`);
     continue;
   }

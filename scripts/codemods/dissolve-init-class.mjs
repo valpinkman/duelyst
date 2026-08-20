@@ -46,7 +46,9 @@ function isLiteralish(node) {
     case 'ArrayExpression':
       return node.elements.every((e) => e === null || isLiteralish(e));
     case 'ObjectExpression':
-      return node.properties.every((p) => p.type === 'Property' && !p.computed && isLiteralish(p.value));
+      return node.properties.every(
+        (p) => p.type === 'Property' && !p.computed && isLiteralish(p.value),
+      );
     case 'TemplateLiteral':
       return node.expressions.length === 0;
     default:
@@ -102,8 +104,13 @@ for (const file of process.argv.slice(2)) {
   const visit = (node) => {
     if (!node || typeof node.type !== 'string') return;
     if ((node.type === 'ClassDeclaration' || node.type === 'ClassExpression') && node.id) {
-      const init = node.body.body.find((m) => m.type === 'MethodDefinition' && m.static
-        && m.key.type === 'Identifier' && m.key.name === 'initClass');
+      const init = node.body.body.find(
+        (m) =>
+          m.type === 'MethodDefinition' &&
+          m.static &&
+          m.key.type === 'Identifier' &&
+          m.key.name === 'initClass',
+      );
       if (init) classes.push({ node, init });
     }
     for (const key of Object.keys(node)) {
@@ -120,12 +127,15 @@ for (const file of process.argv.slice(2)) {
 
   for (const { node: klass, init } of classes) {
     const name = klass.id.name;
-    const statics = [];   // source text for class-body static fields
-    const after = [];     // source text for post-class assignments
+    const statics = []; // source text for class-body static fields
+    const after = []; // source text for post-class assignments
 
     for (const stmt of init.value.body.body) {
-      if (stmt.type !== 'ExpressionStatement' || stmt.expression.type !== 'AssignmentExpression'
-        || stmt.expression.operator !== '=') {
+      if (
+        stmt.type !== 'ExpressionStatement' ||
+        stmt.expression.type !== 'AssignmentExpression' ||
+        stmt.expression.operator !== '='
+      ) {
         bad = `unsupported statement (${stmt.type})`;
         break;
       }
@@ -135,15 +145,22 @@ for (const file of process.argv.slice(2)) {
       // statement moves outside the class body, `this` no longer means the
       // class, so rewrite those references to the class name as well.
       const rhs = renderWithThisAs(src, right, name);
-      if (left.type === 'MemberExpression' && !left.computed
-        && left.object.type === 'MemberExpression' && !left.object.computed
-        && left.object.object.type === 'ThisExpression'
-        && left.object.property.name === 'prototype') {
+      if (
+        left.type === 'MemberExpression' &&
+        !left.computed &&
+        left.object.type === 'MemberExpression' &&
+        !left.object.computed &&
+        left.object.object.type === 'ThisExpression' &&
+        left.object.property.name === 'prototype'
+      ) {
         // this.prototype.X = v  -> stays on the prototype
         after.push(`${name}.prototype.${left.property.name} = ${rhs};`);
         protoAssigns += 1;
-      } else if (left.type === 'MemberExpression' && !left.computed
-        && left.object.type === 'ThisExpression') {
+      } else if (
+        left.type === 'MemberExpression' &&
+        !left.computed &&
+        left.object.type === 'ThisExpression'
+      ) {
         if (isLiteralish(right)) {
           statics.push(`  static ${left.property.name} = ${rhs};`);
           staticFields += 1;
@@ -189,7 +206,9 @@ for (const file of process.argv.slice(2)) {
   changedFiles += 1;
 }
 
-console.log(`${changedFiles} file(s) rewritten: ${staticFields} static fields, ${deferredStatics} order-preserving statics, ${protoAssigns} prototype assignments`);
+console.log(
+  `${changedFiles} file(s) rewritten: ${staticFields} static fields, ${deferredStatics} order-preserving statics, ${protoAssigns} prototype assignments`,
+);
 if (skipped.length > 0) {
   console.log(`\n${skipped.length} file(s) skipped:`);
   skipped.slice(0, 20).forEach((s) => console.log(`  ${s}`));

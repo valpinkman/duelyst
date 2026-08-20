@@ -16,11 +16,15 @@ class ModifierBandingDealDamageWatchDrawCard extends ModifierBanding {
   static description = '';
 
   static createContextObject(options) {
-    if (options == null) { options = undefined; }
+    if (options == null) {
+      options = undefined;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.appliedName = i18next.t('modifiers.banding_deal_damage_watch_draw_card_name');
     const bandedContextObject = ModifierDealDamageWatchDrawCard.createContextObject();
-    bandedContextObject.appliedName = i18next.t('modifiers.banding_deal_damage_watch_draw_card_name');
+    bandedContextObject.appliedName = i18next.t(
+      'modifiers.banding_deal_damage_watch_draw_card_name',
+    );
     contextObject.modifiersContextObjects = [bandedContextObject];
     return contextObject;
   }

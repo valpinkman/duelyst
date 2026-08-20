@@ -36,15 +36,20 @@ class ModifierSprigginDiesBuffSelf extends Modifier {
   onAfterCleanupAction(e) {
     super.onAfterCleanupAction(e);
 
-    const {
-      action,
-    } = e;
+    const { action } = e;
     const target = action.getTarget();
     const entity = this.getCard();
     // watch for a unit dying
-    if (action instanceof DieAction && ((target != null ? target.type : undefined) === CardType.Unit) && (target !== entity)) {
+    if (
+      action instanceof DieAction &&
+      (target != null ? target.type : undefined) === CardType.Unit &&
+      target !== entity
+    ) {
       if (target.getBaseCardId() === Cards.Neutral.Spriggin) {
-        return this.applyManagedModifiersFromModifiersContextObjects(this.modifiersContextObjects, this.getCard());
+        return this.applyManagedModifiersFromModifiersContextObjects(
+          this.modifiersContextObjects,
+          this.getCard(),
+        );
       }
     }
   }

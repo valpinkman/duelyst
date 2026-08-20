@@ -36,8 +36,7 @@ class GiftCrateFactory {
     this._giftCrateTemplateCache[GiftCrateLookup.WinterHoliday2015] = {
       titleText: 'FROSTFIRE FESTIVAL GIFT BOX',
       subtitleText: 'A FRIENDLY SNOWCHASER LEFT THIS FOR YOU. HAPPY HOLIDAYS!',
-      availableAt: moment.utc(0).year(2015).month(11).date(20)
-        .valueOf(), // December 20th 2015
+      availableAt: moment.utc(0).year(2015).month(11).date(20).valueOf(), // December 20th 2015
       rewards: {
         spirit: 100,
         spirit_orbs: 1,
@@ -48,9 +47,9 @@ class GiftCrateFactory {
     // winter holiday 2015
     this._giftCrateTemplateCache[GiftCrateLookup.FebruaryLag2016] = {
       titleText: 'ONE TIME BONUS BOX',
-      subtitleText: 'Due to recent server performance issues, we\'re giving away a ONE TIME bonus box.',
-      availableAt: moment.utc(0).year(2016).month(1).date(0)
-        .valueOf(), // Jan 31st 2016 (i think that's what this means)
+      subtitleText:
+        "Due to recent server performance issues, we're giving away a ONE TIME bonus box.",
+      availableAt: moment.utc(0).year(2016).month(1).date(0).valueOf(), // Jan 31st 2016 (i think that's what this means)
       rewards: {
         gold: 100,
         gauntlet_tickets: 1,
@@ -102,7 +101,7 @@ class GiftCrateFactory {
     // MidAugust login crate
     this._giftCrateTemplateCache[GiftCrateLookup.MidAugust2017Login] = {
       titleText: 'Thanks for playing Duelyst',
-      subtitleText: 'Here\'s a FREE GIFT CRATE to celebrate our new partnership!',
+      subtitleText: "Here's a FREE GIFT CRATE to celebrate our new partnership!",
       rewards: {
         spirit_orbs: 3,
         spirit_orbs_set: CardSet.FirstWatch,
@@ -112,7 +111,8 @@ class GiftCrateFactory {
     // Mid November 2017 login crate
     this._giftCrateTemplateCache[GiftCrateLookup.MidNovember2017Login] = {
       titleText: 'Thanks for playing Duelyst',
-      subtitleText: 'Here\'s a FREE GIFT CRATE to celebrate the launch of the Immortal Vanguard expansion!',
+      subtitleText:
+        "Here's a FREE GIFT CRATE to celebrate the launch of the Immortal Vanguard expansion!",
       rewards: {
         spirit_orbs: 3,
         spirit_orbs_set: CardSet.Wartech,
@@ -145,7 +145,7 @@ class GiftCrateFactory {
 
     // Frostfire 2017 Premium Purchase crate
     this._giftCrateTemplateCache[GiftCrateLookup.EarlyFebruary2018Login] = {
-      titleText: 'Valentine\'s Gift',
+      titleText: "Valentine's Gift",
       subtitleText: '___',
       rewards: {
         spirit_orbs: 3,
@@ -250,13 +250,17 @@ class GiftCrateFactory {
       subtitleText: '___',
       rewards: {
         card_ids: [Cards.Neutral.PennyPacker],
-        crate_keys: [CosmeticsChestTypeLookup.Common, CosmeticsChestTypeLookup.Rare, CosmeticsChestTypeLookup.Epic],
+        crate_keys: [
+          CosmeticsChestTypeLookup.Common,
+          CosmeticsChestTypeLookup.Rare,
+          CosmeticsChestTypeLookup.Epic,
+        ],
         gold: 300,
       },
     };
 
     // QA crate that is unavailable until 2050
-    return this._giftCrateTemplateCache[GiftCrateLookup.Unavailable2050] = {
+    return (this._giftCrateTemplateCache[GiftCrateLookup.Unavailable2050] = {
       titleText: '__Unavailable2050 Title',
       subtitleText: '__Unavailable2050 Subtitle',
       availableAt: moment.utc().startOf('year').year(2050).valueOf(),
@@ -266,7 +270,7 @@ class GiftCrateFactory {
         gold: 100,
         cosmetics: [CosmeticsLookup.Emote.Faction1Taunt],
       },
-    };
+    });
   }
 
   static getIsCrateTypeAvailable(crateType, systemTime) {
@@ -274,11 +278,13 @@ class GiftCrateFactory {
     this._generateCache();
     const giftCrateTemplate = this.giftCrateTemplateForType(crateType);
 
-    if ((giftCrateTemplate == null)) { // No template, so consider unavailable
+    if (giftCrateTemplate == null) {
+      // No template, so consider unavailable
       return false;
     }
 
-    if ((giftCrateTemplate.availableAt == null)) { // If available at is not defined or 0 it is available
+    if (giftCrateTemplate.availableAt == null) {
+      // If available at is not defined or 0 it is available
       return true;
     }
 

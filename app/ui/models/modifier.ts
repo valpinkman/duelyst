@@ -3,8 +3,7 @@
 var Logger = require('app/common/logger');
 
 var ModifierModel = Backbone.Model.extend({
-  initialize: function () {
-  },
+  initialize: function () {},
 
   defaults: {
     name: 'TDB Name',

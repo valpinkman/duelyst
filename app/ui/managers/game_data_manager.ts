@@ -19,7 +19,6 @@ var InventoryManager = require('./inventory_manager');
 var ProgressionManager = require('./progression_manager');
 
 var GameDataManager = Manager.extend({
-
   cardsCollection: null,
   visibleCardsCollection: null,
   factionsCollection: null,
@@ -60,33 +59,38 @@ var GameDataManager = Manager.extend({
     this.factionsCollection.addAllFactionsToCollection();
 
     // modify factions to cache cards and check availability
-    this.factionsCollection.each(function (factionModel) {
-      var factionCards = this.cardsCollection.where({ factionId: factionModel.get('id') });
-      factionModel.set('cards', factionCards);
+    this.factionsCollection.each(
+      function (factionModel) {
+        var factionCards = this.cardsCollection.where({ factionId: factionModel.get('id') });
+        factionModel.set('cards', factionCards);
 
-      // record fully enabled faction
-      var isAvailable = !factionModel.get('isInDevelopment');
-      if (isAvailable) {
-        var visibleFactionModel = factionModel.clone();
-        var visibleCards = [];
-        _.each(factionCards, function (cardModel) {
-          // record visible card
-          if (!cardModel.get('isHiddenInCollection') && cardModel.get('isAvailable')) {
-            visibleCards.push(cardModel);
-          }
-          // record general in pseudo-faction
-          if (cardModel.get('isGeneral')) {
-            this.generalsFaction.get('cards').push(cardModel);
-          }
-        }.bind(this));
+        // record fully enabled faction
+        var isAvailable = !factionModel.get('isInDevelopment');
+        if (isAvailable) {
+          var visibleFactionModel = factionModel.clone();
+          var visibleCards = [];
+          _.each(
+            factionCards,
+            function (cardModel) {
+              // record visible card
+              if (!cardModel.get('isHiddenInCollection') && cardModel.get('isAvailable')) {
+                visibleCards.push(cardModel);
+              }
+              // record general in pseudo-faction
+              if (cardModel.get('isGeneral')) {
+                this.generalsFaction.get('cards').push(cardModel);
+              }
+            }.bind(this),
+          );
 
-        visibleFactionModel.set('cards', visibleCards);
-        this.visibleFactionsCollection.add(visibleFactionModel);
+          visibleFactionModel.set('cards', visibleCards);
+          this.visibleFactionsCollection.add(visibleFactionModel);
 
-        // record fully enabled cards as visible
-        this.visibleCardsCollection.add(visibleCards);
-      }
-    }.bind(this));
+          // record fully enabled cards as visible
+          this.visibleCardsCollection.add(visibleCards);
+        }
+      }.bind(this),
+    );
 
     // mark as ready
     this.ready();
@@ -121,7 +125,7 @@ var GameDataManager = Manager.extend({
    * @param {String|Number} factionId
    * @param {Object} [filters=null] optional, formatted as key/value map (ex: {type: SDK.CardType.Unit, rarityId: SDK.Rarity.Common})
    * @returns {Array}
-     */
+   */
   getFactionCardModels: function (factionId, filters) {
     var matchingCardModels = [];
 
@@ -152,5 +156,4 @@ var GameDataManager = Manager.extend({
 
     return matchingCardModels;
   },
-
 });

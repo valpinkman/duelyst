@@ -50,10 +50,7 @@ class AdvancedVanarChallenge2 extends Challenge {
   }
 
   getOpponentPlayerDeckData(gameSession) {
-    return [
-      { id: Cards.Faction2.General },
-      { id: Cards.TutorialSpell.TutorialFireOrb },
-    ];
+    return [{ id: Cards.Faction2.General }, { id: Cards.TutorialSpell.TutorialFireOrb }];
   }
 
   setupBoard(gameSession) {
@@ -85,24 +82,37 @@ class AdvancedVanarChallenge2 extends Challenge {
   setupOpponentAgent(gameSession) {
     super.setupOpponentAgent(gameSession);
 
-    this._opponentAgent.addActionForTurn(0, AgentActions.createAgentSoftActionShowInstructionLabels([{
-      label: i18next.t('challenges.advanced_vanar_2_taunt'),
-      isSpeech: true,
-      yPosition: 0.7,
-      isPersistent: true,
-      isOpponent: true,
-    },
-    ]));
-    return this._opponentAgent.addActionForTurn(0, AgentActions.createAgentActionPlayCardFindPosition(0, () => [GameSession.getInstance().getGeneralForPlayer1().getPosition()]));
+    this._opponentAgent.addActionForTurn(
+      0,
+      AgentActions.createAgentSoftActionShowInstructionLabels([
+        {
+          label: i18next.t('challenges.advanced_vanar_2_taunt'),
+          isSpeech: true,
+          yPosition: 0.7,
+          isPersistent: true,
+          isOpponent: true,
+        },
+      ]),
+    );
+    return this._opponentAgent.addActionForTurn(
+      0,
+      AgentActions.createAgentActionPlayCardFindPosition(0, () => [
+        GameSession.getInstance().getGeneralForPlayer1().getPosition(),
+      ]),
+    );
   }
 }
 AdvancedVanarChallenge2.prototype.type = 'AdvancedVanarChallenge2';
 AdvancedVanarChallenge2.prototype.categoryType = ChallengeCategory.vault2.type;
 AdvancedVanarChallenge2.prototype.name = i18next.t('challenges.advanced_vanar_2_title');
-AdvancedVanarChallenge2.prototype.description = i18next.t('challenges.advanced_vanar_2_description');
+AdvancedVanarChallenge2.prototype.description = i18next.t(
+  'challenges.advanced_vanar_2_description',
+);
 AdvancedVanarChallenge2.prototype.iconUrl = RSX.speech_portrait_vanar.img;
 AdvancedVanarChallenge2.prototype._musicOverride = RSX.music_battlemap_vanar.audio;
-AdvancedVanarChallenge2.prototype.otkChallengeStartMessage = i18next.t('challenges.advanced_vanar_2_start');
+AdvancedVanarChallenge2.prototype.otkChallengeStartMessage = i18next.t(
+  'challenges.advanced_vanar_2_start',
+);
 AdvancedVanarChallenge2.prototype.otkChallengeFailureMessages = [
   i18next.t('challenges.advanced_vanar_2_fail'),
 ];

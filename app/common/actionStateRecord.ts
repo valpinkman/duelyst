@@ -70,7 +70,7 @@ class ActionStateRecord {
    * @returns {Object} state object with all recorded properties
    */
   getCurrentStateForEventType(eventType) {
-    return ((eventType != null) && this._currentStateByType[eventType]) || this.getCurrentState();
+    return (eventType != null && this._currentStateByType[eventType]) || this.getCurrentState();
   }
 
   /**
@@ -79,7 +79,14 @@ class ActionStateRecord {
    * @returns {Object} state object with all recorded properties at action
    */
   getStateAtAction(action) {
-    return ((action != null) && (this._stateByActionIndex[action.getIndex()] || this._stateByActionIndex[this._getLastActionIndexRecordedAtOrBeforeActionIndex(action.getIndex())])) || this.getCurrentState();
+    return (
+      (action != null &&
+        (this._stateByActionIndex[action.getIndex()] ||
+          this._stateByActionIndex[
+            this._getLastActionIndexRecordedAtOrBeforeActionIndex(action.getIndex())
+          ])) ||
+      this.getCurrentState()
+    );
   }
 
   /**
@@ -89,7 +96,20 @@ class ActionStateRecord {
    * @returns {Object} state object with all recorded properties at action
    */
   getStateAtActionForEventType(action, eventType) {
-    return ((action != null) && (eventType != null) && this._stateByActionIndexAndEventType[this._getStateIndexForEventType(this._getLastActionIndexRecordedAtOrBeforeActionIndexForEventType(action.getIndex(), eventType), eventType)]) || this.getStateAtAction(action);
+    return (
+      (action != null &&
+        eventType != null &&
+        this._stateByActionIndexAndEventType[
+          this._getStateIndexForEventType(
+            this._getLastActionIndexRecordedAtOrBeforeActionIndexForEventType(
+              action.getIndex(),
+              eventType,
+            ),
+            eventType,
+          )
+        ]) ||
+      this.getStateAtAction(action)
+    );
   }
 
   _getStateIndexForEventType(actionIndex, eventType) {
@@ -114,13 +134,13 @@ class ActionStateRecord {
   _getLastActionIndexRecordedAtOrBeforeActionIndex(actionIndex) {
     // attempt to use cached index
     let lastIndex = this._lastActionIndicesRecordedCache[actionIndex];
-    if ((lastIndex == null)) {
+    if (lastIndex == null) {
       // find last index
       lastIndex = -1;
       for (let i = this._actionIndicesRecorded.length - 1; i >= 0; i--) {
         const index = this._actionIndicesRecorded[i];
         if (index <= actionIndex) {
-          lastIndex = (this._lastActionIndicesRecordedCache[actionIndex] = index);
+          lastIndex = this._lastActionIndicesRecordedCache[actionIndex] = index;
           break;
         }
       }
@@ -132,15 +152,15 @@ class ActionStateRecord {
     // attempt to use cached index
     const stateIndex = this._getStateIndexForEventType(actionIndex, eventType);
     let lastIndex = this._lastActionIndicesRecordedByEventTypeCache[stateIndex];
-    if ((lastIndex == null)) {
+    if (lastIndex == null) {
       // find last index
       lastIndex = -1;
       const actionIndicesRecorded = this._actionIndicesRecordedByEventType[eventType];
-      if ((actionIndicesRecorded != null) && (actionIndicesRecorded.length > 0)) {
+      if (actionIndicesRecorded != null && actionIndicesRecorded.length > 0) {
         for (let i = actionIndicesRecorded.length - 1; i >= 0; i--) {
           const index = actionIndicesRecorded[i];
           if (index <= actionIndex) {
-            lastIndex = (this._lastActionIndicesRecordedByEventTypeCache[stateIndex] = index);
+            lastIndex = this._lastActionIndicesRecordedByEventTypeCache[stateIndex] = index;
             break;
           }
         }
@@ -167,7 +187,7 @@ class ActionStateRecord {
       this.stopListeningToEvents();
     }
 
-    if (!this._listeningToEvents && (eventBus != null)) {
+    if (!this._listeningToEvents && eventBus != null) {
       this._listeningToEvents = true;
       this._eventBus = eventBus;
 
@@ -178,7 +198,8 @@ class ActionStateRecord {
       const eventTypes = Object.keys(this._propertyNamesToRecordByEventType);
       if (eventTypes.length > 0) {
         return Array.from<any>(eventTypes).map((eventType) =>
-          this._eventBus.on(eventType, this.onStateRecordingActionEvent, this));
+          this._eventBus.on(eventType, this.onStateRecordingActionEvent, this),
+        );
       }
     }
   }
@@ -199,7 +220,7 @@ class ActionStateRecord {
           }
         }
 
-        return this._eventBus = null;
+        return (this._eventBus = null);
       }
     }
   }
@@ -218,14 +239,14 @@ class ActionStateRecord {
    * actionStateRecord.setupToRecordStateOnEvent(EVENTS.action, { "remainingMana" : player.getRemainingMana.bind(player) })
    */
   setupToRecordStateOnEvent(eventType, propertiesToRecord) {
-    if ((eventType != null) && (this._propertyNamesToRecordByEventType[eventType] == null)) {
+    if (eventType != null && this._propertyNamesToRecordByEventType[eventType] == null) {
       // Logger.module("COMMON").log("ActionStateRecord.recordCurrentState", eventType)
       const propertyNamesToRecord = Object.keys(propertiesToRecord);
       const recordingMethods = {};
       for (const propertyName of Array.from<any>(propertyNamesToRecord)) {
         recordingMethods[propertyName] = propertiesToRecord[propertyName];
       }
-      if ((this._propertyNamesToRecordByEventType[eventType] == null)) {
+      if (this._propertyNamesToRecordByEventType[eventType] == null) {
         // new event type
         this._propertyNamesToRecordByEventType[eventType] = propertyNamesToRecord;
         this._recordingMethodsByEventType[eventType] = recordingMethods;
@@ -235,12 +256,21 @@ class ActionStateRecord {
         }
       } else {
         // merge properties into properties recorded for event type
-        this._propertyNamesToRecordByEventType[eventType] = _.union(this._propertyNamesToRecordByEventType[eventType], propertyNamesToRecord);
-        this._recordingMethodsByEventType[eventType] = _.extend(this._recordingMethodsByEventType[eventType], recordingMethods);
+        this._propertyNamesToRecordByEventType[eventType] = _.union(
+          this._propertyNamesToRecordByEventType[eventType],
+          propertyNamesToRecord,
+        );
+        this._recordingMethodsByEventType[eventType] = _.extend(
+          this._recordingMethodsByEventType[eventType],
+          recordingMethods,
+        );
       }
 
       // add properties to master list of properties recorded
-      this._currentPropertyNamesToRecord = _.union(this._currentPropertyNamesToRecord, propertyNamesToRecord);
+      this._currentPropertyNamesToRecord = _.union(
+        this._currentPropertyNamesToRecord,
+        propertyNamesToRecord,
+      );
       this._currentRecordingMethods = _.extend(this._currentRecordingMethods, recordingMethods);
 
       // reset list of action indices recorded for this event type
@@ -265,17 +295,19 @@ class ActionStateRecord {
         delete this._recordingMethodsByEventType[eventType];
       }
       this._currentPropertyNamesToRecord = {};
-      return this._currentRecordingMethods = {};
+      return (this._currentRecordingMethods = {});
     }
   }
 
   /*
    * Records action state for all event types at a given action index, or last action index recorded if none provided.
    * @param {String|Number} [actionIndex=last recorded] action index to record state at
-  */
+   */
   recordStateEvenIfNotChanged(actionIndex?) {
     // fallback to index of last action recorded
-    if (actionIndex == null) { actionIndex = this._getLastActionIndexRecorded(); }
+    if (actionIndex == null) {
+      actionIndex = this._getLastActionIndexRecorded();
+    }
 
     // ignore changed
     const ignoreChanged = true;
@@ -283,28 +315,32 @@ class ActionStateRecord {
     // record for each event type
     const eventTypes = Object.keys(this._propertyNamesToRecordByEventType);
     return Array.from<any>(eventTypes).map((eventType) =>
-      this._recordProperties(eventType, actionIndex, ignoreChanged));
+      this._recordProperties(eventType, actionIndex, ignoreChanged),
+    );
   }
 
   /*
    * Records action state for all event types at the last action index recorded.
-  */
+   */
   recordStateAtLastActionRecorded() {
     // record for each event type
     const actionIndex = this._getLastActionIndexRecorded();
     const eventTypes = Object.keys(this._propertyNamesToRecordByEventType);
     return Array.from<any>(eventTypes).map((eventType) =>
-      this._recordProperties(eventType, actionIndex));
+      this._recordProperties(eventType, actionIndex),
+    );
   }
 
   /*
    * Records all properties for a given event type at an action index, and optionally forces the record to ignore whether the values have changed.
    * @private
-  */
+   */
   _recordProperties(eventType, actionIndex, ignoreChanged?) {
-    let propertyNamesToRecord; let
-      recordingMethods;
-    if (ignoreChanged == null) { ignoreChanged = false; }
+    let propertyNamesToRecord;
+    let recordingMethods;
+    if (ignoreChanged == null) {
+      ignoreChanged = false;
+    }
     if (eventType != null) {
       propertyNamesToRecord = this._propertyNamesToRecordByEventType[eventType];
       recordingMethods = this._recordingMethodsByEventType[eventType];
@@ -342,7 +378,10 @@ class ActionStateRecord {
           if (actionIndex != null) {
             const stateIndex = this._getStateIndexForEventType(actionIndex, eventType);
             const actionIndicesRecorded = this._actionIndicesRecordedByEventType[eventType];
-            if ((actionIndicesRecorded.length === 0) || (actionIndicesRecorded[actionIndicesRecorded.length - 1] !== actionIndex)) {
+            if (
+              actionIndicesRecorded.length === 0 ||
+              actionIndicesRecorded[actionIndicesRecorded.length - 1] !== actionIndex
+            ) {
               actionIndicesRecorded.push(actionIndex);
             }
             this._stateByActionIndexAndEventType[stateIndex] = stateRecord;
@@ -354,10 +393,13 @@ class ActionStateRecord {
       if (changed) {
         if (actionIndex != null) {
           const newStateRecord = _.extend({}, this._currentState);
-          if ((this._actionIndicesRecorded.length === 0) || (this._actionIndicesRecorded[this._actionIndicesRecorded.length - 1] !== actionIndex)) {
+          if (
+            this._actionIndicesRecorded.length === 0 ||
+            this._actionIndicesRecorded[this._actionIndicesRecorded.length - 1] !== actionIndex
+          ) {
             this._actionIndicesRecorded.push(actionIndex);
           }
-          return this._stateByActionIndex[actionIndex] = newStateRecord;
+          return (this._stateByActionIndex[actionIndex] = newStateRecord);
         }
       }
     }
@@ -369,15 +411,17 @@ class ActionStateRecord {
 
   onStateRecordingActionEvent(event) {
     // use event action index
-    let actionIndex; let
-      eventType;
+    let actionIndex;
+    let eventType;
     if (event != null) {
       actionIndex = event.action != null ? event.action.getIndex() : undefined;
       eventType = event.type;
     }
 
     // fallback to index of last action recorded
-    if (actionIndex == null) { actionIndex = this._getLastActionIndexRecorded(); }
+    if (actionIndex == null) {
+      actionIndex = this._getLastActionIndexRecorded();
+    }
 
     if (actionIndex != null) {
       // Logger.module("COMMON").log("ActionStateRecord.onStateRecordingActionEvent", eventType, "with action", event?.action?.getLogName())

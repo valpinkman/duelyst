@@ -21,7 +21,9 @@ class ModifierMyGeneralDamagedWatchDamageNearby extends ModifierMyGeneralDamaged
   static description = 'Whenever your General takes damage, deal %X damage to %Y';
 
   static createContextObject(damageAmount, includeAllies, options) {
-    if (includeAllies == null) { includeAllies = false; }
+    if (includeAllies == null) {
+      includeAllies = false;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.damageAmount = damageAmount;
     contextObject.includeAllies = includeAllies;
@@ -47,9 +49,13 @@ class ModifierMyGeneralDamagedWatchDamageNearby extends ModifierMyGeneralDamaged
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
       let entities;
       if (this.includeAllies) {
-        entities = this.getGameSession().getBoard().getEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
+        entities = this.getGameSession()
+          .getBoard()
+          .getEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
       } else {
-        entities = this.getGameSession().getBoard().getEnemyEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
+        entities = this.getGameSession()
+          .getBoard()
+          .getEnemyEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
       }
 
       // don't damage the Generals with this counter-attack
@@ -61,7 +67,8 @@ class ModifierMyGeneralDamagedWatchDamageNearby extends ModifierMyGeneralDamaged
       }
 
       if (validEntities.length > 0) {
-        const unitToDamage = validEntities[this.getGameSession().getRandomIntegerForExecution(validEntities.length)];
+        const unitToDamage =
+          validEntities[this.getGameSession().getRandomIntegerForExecution(validEntities.length)];
         const damageAction = new DamageAction(this.getGameSession());
         damageAction.setOwnerId(this.getCard().getOwnerId());
         damageAction.setSource(this.getCard());
@@ -72,9 +79,13 @@ class ModifierMyGeneralDamagedWatchDamageNearby extends ModifierMyGeneralDamaged
     }
   }
 }
-ModifierMyGeneralDamagedWatchDamageNearby.prototype.type = 'ModifierMyGeneralDamagedWatchDamageNearby';
+ModifierMyGeneralDamagedWatchDamageNearby.prototype.type =
+  'ModifierMyGeneralDamagedWatchDamageNearby';
 ModifierMyGeneralDamagedWatchDamageNearby.prototype.damageAmount = 0;
 ModifierMyGeneralDamagedWatchDamageNearby.prototype.includeAllies = false;
-ModifierMyGeneralDamagedWatchDamageNearby.prototype.fxResource = ['FX.Modifiers.ModifierMyGeneralDamagedWatch', 'FX.Modifiers.ModifierGenericDamageNearby'];
+ModifierMyGeneralDamagedWatchDamageNearby.prototype.fxResource = [
+  'FX.Modifiers.ModifierMyGeneralDamagedWatch',
+  'FX.Modifiers.ModifierGenericDamageNearby',
+];
 
 module.exports = ModifierMyGeneralDamagedWatchDamageNearby;

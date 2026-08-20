@@ -71,7 +71,9 @@ if (!firebase.apps.length) {
 function withCallableRef(reference) {
   if (typeof reference.ref !== 'function') {
     Object.defineProperty(reference, 'ref', {
-      value: function () { return reference; },
+      value: function () {
+        return reference;
+      },
       configurable: true,
       writable: true,
     });

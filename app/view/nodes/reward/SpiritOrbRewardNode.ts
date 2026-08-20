@@ -18,7 +18,6 @@ const RewardNode = require('./RewardNode');
  *************************************************************************** */
 
 const SpiritOrbRewardNode = RewardNode.extend({
-
   _cardSet: SDK.CardSet.Core,
 
   ctor(orbCardSet) {
@@ -53,8 +52,8 @@ const SpiritOrbRewardNode = RewardNode.extend({
   /* region ANIMATION */
 
   getRewardAnimationPromise(looping, showLabel) {
-    return (looping ? this.showLoopingRewardFlare() : this.showRewardFlare())
-      .then(() => new Promise<void>((resolve) => {
+    return (looping ? this.showLoopingRewardFlare() : this.showRewardFlare()).then(() =>
+      new Promise<void>((resolve) => {
         // spirit orb
         const spiritOrbContainerNode = new cc.Node();
         spiritOrbContainerNode.setAnchorPoint(0.5, 0.5);
@@ -99,8 +98,16 @@ const SpiritOrbRewardNode = RewardNode.extend({
 
         if (showLabel) {
           // primary label
-          const labelText = _.isString(showLabel) ? showLabel : i18next.t('common.spirit_orb').toUpperCase();
-          var label = new cc.LabelTTF(labelText, RSX.font_regular.name, 22, cc.size(200, 24), cc.TEXT_ALIGNMENT_CENTER);
+          const labelText = _.isString(showLabel)
+            ? showLabel
+            : i18next.t('common.spirit_orb').toUpperCase();
+          var label = new cc.LabelTTF(
+            labelText,
+            RSX.font_regular.name,
+            22,
+            cc.size(200, 24),
+            cc.TEXT_ALIGNMENT_CENTER,
+          );
           label.setPosition(0, -120);
           label.setOpacity(0);
           this.addChild(label, 1);
@@ -110,45 +117,61 @@ const SpiritOrbRewardNode = RewardNode.extend({
         this.showRewardWipeFlare();
 
         // show orb
-        this.runAction(cc.sequence(
-          cc.targetedAction(orbDissolveSprite, cc.sequence(
-            cc.show(),
-            cc.actionTween(0.5, 'phase', 0.0, 1.0),
+        this.runAction(
+          cc.sequence(
+            cc.targetedAction(
+              orbDissolveSprite,
+              cc.sequence(
+                cc.show(),
+                cc.actionTween(0.5, 'phase', 0.0, 1.0),
+                cc.callFunc(() => {
+                  orbDissolveSprite.setVisible(false);
+                }),
+              ),
+            ),
+            cc.targetedAction(
+              orbSprite,
+              cc.sequence(
+                cc.show(),
+                cc.actionTween(0.3, TweenTypes.TINT_FADE, 255.0, 0.0).easing(cc.easeIn(3.0)),
+                cc.callFunc(() => {
+                  // show labels
+                  if (label != null) {
+                    label.fadeTo(CONFIG.ANIMATE_FAST_DURATION, 255.0);
+                  }
+                }),
+              ),
+            ),
             cc.callFunc(() => {
-              orbDissolveSprite.setVisible(false);
-            }),
-          )),
-          cc.targetedAction(orbSprite, cc.sequence(
-            cc.show(),
-            cc.actionTween(0.3, TweenTypes.TINT_FADE, 255.0, 0.0).easing(cc.easeIn(3.0)),
-            cc.callFunc(() => {
-              // show labels
-              if (label != null) {
-                label.fadeTo(CONFIG.ANIMATE_FAST_DURATION, 255.0);
+              // show shadow
+              bgShadowSprite.setVisible(true);
+              bgShadowSprite.setOpacity(0.0);
+              bgShadowSprite.fadeTo(0.2, 100.0);
+
+              // float sprite to make it appear more dynamic
+              if (!looping) {
+                spiritOrbContainerNode.runAction(
+                  FigureEight.create(
+                    4.0 + Math.random(),
+                    2,
+                    5,
+                    spiritOrbContainerNode.getPosition(),
+                  ).repeatForever(),
+                );
               }
+
+              // finish
+              resolve();
             }),
-          )),
-          cc.callFunc(() => {
-            // show shadow
-            bgShadowSprite.setVisible(true);
-            bgShadowSprite.setOpacity(0.0);
-            bgShadowSprite.fadeTo(0.2, 100.0);
-
-            // float sprite to make it appear more dynamic
-            if (!looping) {
-              spiritOrbContainerNode.runAction(FigureEight.create(4.0 + Math.random(), 2, 5, spiritOrbContainerNode.getPosition()).repeatForever());
-            }
-
-            // finish
-            resolve();
-          }),
-        ));
-      })
-        .catch((error) => { EventBus.getInstance().trigger(EVENTS.error, error); }));
+          ),
+        );
+      }).catch((error) => {
+        EventBus.getInstance().trigger(EVENTS.error, error);
+      }),
+    );
   },
 
   /* endregion ANIMATION */
-
 });
 
 SpiritOrbRewardNode.create = function (options, node) {

@@ -17,16 +17,16 @@ class SpellSpawnEntitiesOnGeneralsDiagonals extends SpellSpawnEntity {
     const upRightPosition = { x: generalPosition.x + 1, y: generalPosition.y + 1 };
     const downRightPosition = { x: generalPosition.x + 1, y: generalPosition.y - 1 };
 
-    if ((upLeftPosition.x >= 0) && (upLeftPosition.y <= 4)) {
+    if (upLeftPosition.x >= 0 && upLeftPosition.y <= 4) {
       applyEffectPositions.push(upLeftPosition);
     }
-    if ((downLeftPosition.x >= 0) && (downLeftPosition.y >= 0)) {
+    if (downLeftPosition.x >= 0 && downLeftPosition.y >= 0) {
       applyEffectPositions.push(downLeftPosition);
     }
-    if ((upRightPosition.x <= 8) && (upRightPosition.y <= 4)) {
+    if (upRightPosition.x <= 8 && upRightPosition.y <= 4) {
       applyEffectPositions.push(upRightPosition);
     }
-    if ((downRightPosition.x <= 8) && (downRightPosition.y >= 0)) {
+    if (downRightPosition.x <= 8 && downRightPosition.y >= 0) {
       applyEffectPositions.push(downRightPosition);
     }
 

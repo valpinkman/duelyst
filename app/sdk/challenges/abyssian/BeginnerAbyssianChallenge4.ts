@@ -46,10 +46,7 @@ class BeginnerAbyssianChallenge4 extends Challenge {
   }
 
   getOpponentPlayerDeckData(gameSession) {
-    return [
-      { id: Cards.Faction3.General },
-      { id: Cards.TutorialSpell.TutorialFireOrb },
-    ];
+    return [{ id: Cards.Faction3.General }, { id: Cards.TutorialSpell.TutorialFireOrb }];
   }
 
   setupBoard(gameSession) {
@@ -75,31 +72,49 @@ class BeginnerAbyssianChallenge4 extends Challenge {
     this.applyCardToBoard({ id: Cards.Faction3.Pyromancer }, 5, 3, opponentPlayerId);
     this.applyCardToBoard({ id: Cards.Faction3.Dervish }, 5, 2, opponentPlayerId);
     this.applyCardToBoard({ id: Cards.Faction3.Pyromancer }, 5, 1, opponentPlayerId);
-    const dunecasterUnit = this.applyCardToBoard({ id: Cards.Faction3.Dunecaster }, 7, 2, opponentPlayerId);
+    const dunecasterUnit = this.applyCardToBoard(
+      { id: Cards.Faction3.Dunecaster },
+      7,
+      2,
+      opponentPlayerId,
+    );
     return this.applyCardToBoard(dunecasterUnit.getCurrentFollowupCard(), 5, 2, opponentPlayerId);
   }
 
   setupOpponentAgent(gameSession) {
     super.setupOpponentAgent(gameSession);
 
-    this._opponentAgent.addActionForTurn(0, AgentActions.createAgentSoftActionShowInstructionLabels([{
-      label: i18next.t('challenges.beginner_abyss_4_taunt'),
-      isSpeech: true,
-      isPersistent: true,
-      yPosition: 0.6,
-      isOpponent: true,
-    },
-    ]));
-    return this._opponentAgent.addActionForTurn(0, AgentActions.createAgentActionPlayCardFindPosition(0, () => [GameSession.getInstance().getGeneralForPlayer1().getPosition()]));
+    this._opponentAgent.addActionForTurn(
+      0,
+      AgentActions.createAgentSoftActionShowInstructionLabels([
+        {
+          label: i18next.t('challenges.beginner_abyss_4_taunt'),
+          isSpeech: true,
+          isPersistent: true,
+          yPosition: 0.6,
+          isOpponent: true,
+        },
+      ]),
+    );
+    return this._opponentAgent.addActionForTurn(
+      0,
+      AgentActions.createAgentActionPlayCardFindPosition(0, () => [
+        GameSession.getInstance().getGeneralForPlayer1().getPosition(),
+      ]),
+    );
   }
 }
 BeginnerAbyssianChallenge4.prototype.type = 'BeginnerAbyssianChallenge4';
 BeginnerAbyssianChallenge4.prototype.categoryType = ChallengeCategory.keywords.type;
 BeginnerAbyssianChallenge4.prototype.name = i18next.t('challenges.beginner_abyss_4_title');
-BeginnerAbyssianChallenge4.prototype.description = i18next.t('challenges.beginner_abyss_4_description');
+BeginnerAbyssianChallenge4.prototype.description = i18next.t(
+  'challenges.beginner_abyss_4_description',
+);
 BeginnerAbyssianChallenge4.prototype.iconUrl = RSX.speech_portrait_abyssian.img;
 BeginnerAbyssianChallenge4.prototype._musicOverride = RSX.music_battlemap_abyssian.audio;
-BeginnerAbyssianChallenge4.prototype.otkChallengeStartMessage = i18next.t('challenges.beginner_abyss_4_start');
+BeginnerAbyssianChallenge4.prototype.otkChallengeStartMessage = i18next.t(
+  'challenges.beginner_abyss_4_start',
+);
 BeginnerAbyssianChallenge4.prototype.otkChallengeFailureMessages = [
   i18next.t('challenges.beginner_abyss_4_fail'),
 ];

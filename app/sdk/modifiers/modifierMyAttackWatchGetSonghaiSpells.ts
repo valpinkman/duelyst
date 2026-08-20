@@ -28,27 +28,42 @@ class ModifierMyAttackWatchGetSonghaiSpells extends ModifierMyAttackWatch {
 
     return (() => {
       const result = [];
-      for (let i = 0, end = this.numCards, asc = end >= 0; asc ? i < end : i > end; asc ? i++ : i--) {
+      for (
+        let i = 0, end = this.numCards, asc = end >= 0;
+        asc ? i < end : i > end;
+        asc ? i++ : i--
+      ) {
         if (this.getGameSession().getIsRunningAsAuthoritative()) {
           var f2SpellCards = [];
           if (this.getGameSession().getGameFormat() === GameFormat.Standard) {
-            f2SpellCards = this.getGameSession().getCardCaches().getIsLegacy(false).getFaction(Factions.Faction2)
+            f2SpellCards = this.getGameSession()
+              .getCardCaches()
+              .getIsLegacy(false)
+              .getFaction(Factions.Faction2)
               .getType(CardType.Spell)
               .getIsHiddenInCollection(false)
               .getIsPrismatic(false)
               .getIsSkinned(false)
               .getCards();
           } else {
-            f2SpellCards = this.getGameSession().getCardCaches().getFaction(Factions.Faction2).getType(CardType.Spell)
+            f2SpellCards = this.getGameSession()
+              .getCardCaches()
+              .getFaction(Factions.Faction2)
+              .getType(CardType.Spell)
               .getIsHiddenInCollection(false)
               .getIsPrismatic(false)
               .getIsSkinned(false)
               .getCards();
           }
           if (f2SpellCards.length > 0) {
-            var spellCard = f2SpellCards[this.getGameSession().getRandomIntegerForExecution(f2SpellCards.length)];
+            var spellCard =
+              f2SpellCards[this.getGameSession().getRandomIntegerForExecution(f2SpellCards.length)];
             var cardData = spellCard.createNewCardData();
-            var a = new PutCardInHandAction(this.getGameSession(), this.getCard().getOwnerId(), cardData);
+            var a = new PutCardInHandAction(
+              this.getGameSession(),
+              this.getCard().getOwnerId(),
+              cardData,
+            );
             result.push(this.getGameSession().executeAction(a));
           } else {
             result.push(undefined);

@@ -21,24 +21,35 @@ class ModifierOpeningGambitGrincher extends ModifierOpeningGambit {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
       let artifactCards = [];
       if (this.getGameSession().getGameFormat() === GameFormat.Standard) {
-        artifactCards = this.getGameSession().getCardCaches().getIsLegacy(false).getType(CardType.Artifact)
+        artifactCards = this.getGameSession()
+          .getCardCaches()
+          .getIsLegacy(false)
+          .getType(CardType.Artifact)
           .getIsHiddenInCollection(false)
           .getIsPrismatic(false)
           .getIsSkinned(false)
           .getCards();
       } else {
-        artifactCards = this.getGameSession().getCardCaches().getType(CardType.Artifact).getIsHiddenInCollection(false)
+        artifactCards = this.getGameSession()
+          .getCardCaches()
+          .getType(CardType.Artifact)
+          .getIsHiddenInCollection(false)
           .getIsPrismatic(false)
           .getIsSkinned(false)
           .getCards();
       }
       if (artifactCards.length > 0) {
-        const artifactCard = artifactCards[this.getGameSession().getRandomIntegerForExecution(artifactCards.length)]; // random artifact
+        const artifactCard =
+          artifactCards[this.getGameSession().getRandomIntegerForExecution(artifactCards.length)]; // random artifact
         const cardDataOrIndexToPutInHand = artifactCard.createNewCardData();
         const costChangeContextObject = ModifierManaCostChange.createContextObject(-3);
         costChangeContextObject.appliedName = 'Grinched';
         cardDataOrIndexToPutInHand.additionalModifiersContextObjects = [costChangeContextObject];
-        const a = new PutCardInHandAction(this.getGameSession(), this.getCard().getOwnerId(), cardDataOrIndexToPutInHand);
+        const a = new PutCardInHandAction(
+          this.getGameSession(),
+          this.getCard().getOwnerId(),
+          cardDataOrIndexToPutInHand,
+        );
         return this.getGameSession().executeAction(a);
       }
     }

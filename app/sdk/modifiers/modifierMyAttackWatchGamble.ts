@@ -19,19 +19,22 @@ class ModifierMyAttackWatchGamble extends ModifierMyAttackWatch {
 
   onMyAttackWatch(action) {
     // 50% chance to attack again
-    if (this.getGameSession().getIsRunningAsAuthoritative() && (Math.random() > 0.5)) {
+    if (this.getGameSession().getIsRunningAsAuthoritative() && Math.random() > 0.5) {
       const attackAction = new ForcedAttackAction(this.getGameSession());
       attackAction.setOwnerId(this.getCard().getOwnerId());
       attackAction.setSource(this.getCard());
       attackAction.setDamageAmount(this.getCard().getATK());
-      const entities = this.getGameSession().getBoard().getEnemyEntitiesAroundEntity(this.getCard(), CardType.Unit, CONFIG.WHOLE_BOARD_RADIUS);
+      const entities = this.getGameSession()
+        .getBoard()
+        .getEnemyEntitiesAroundEntity(this.getCard(), CardType.Unit, CONFIG.WHOLE_BOARD_RADIUS);
       const validEntities = [];
       for (var entity of Array.from<any>(entities)) {
         validEntities.push(entity);
       }
 
       if (validEntities.length > 0) {
-        const unitToDamage = validEntities[this.getGameSession().getRandomIntegerForExecution(validEntities.length)];
+        const unitToDamage =
+          validEntities[this.getGameSession().getRandomIntegerForExecution(validEntities.length)];
 
         attackAction.setTarget(unitToDamage);
         attackAction.setIsAutomatic(true); // act like an explict attack even though this is auto generated
@@ -42,7 +45,10 @@ class ModifierMyAttackWatchGamble extends ModifierMyAttackWatch {
 
   // special case - this needs to be able to react to attack actions that it creates (so it can keep chaining attacks)
   getCanReactToAction(action) {
-    return super.getCanReactToAction() || (action instanceof ForcedAttackAction && this.getIsAncestorForAction(action));
+    return (
+      super.getCanReactToAction() ||
+      (action instanceof ForcedAttackAction && this.getIsAncestorForAction(action))
+    );
   }
 }
 ModifierMyAttackWatchGamble.prototype.type = 'ModifierMyAttackWatchGamble';

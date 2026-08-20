@@ -6,7 +6,6 @@ var DuelystFirebase = require('app/ui/extensions/duelyst_firebase');
 var DuelystBackbone = require('app/ui/extensions/duelyst_backbone');
 
 var UserDecksCollection = DuelystBackbone.Collection.extend({
-
   model: DeckModel,
   url: process.env.API_URL + '/api/me/decks',
 
@@ -16,7 +15,6 @@ var UserDecksCollection = DuelystBackbone.Collection.extend({
     var lastTouchedTimestampB = Math.max(b.get('created_at') || 0, b.get('updated_at') || 0);
     return lastTouchedTimestampB - lastTouchedTimestampA;
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

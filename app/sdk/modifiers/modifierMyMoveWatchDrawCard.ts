@@ -17,7 +17,9 @@ class ModifierMyMoveWatchDrawCard extends ModifierMyMoveWatch {
   static description = 'After this moves, draw %X';
 
   static createContextObject(numCards) {
-    if (numCards == null) { numCards = 1; }
+    if (numCards == null) {
+      numCards = 1;
+    }
     const contextObject = super.createContextObject();
     contextObject.numCards = numCards;
     return contextObject;
@@ -38,7 +40,11 @@ class ModifierMyMoveWatchDrawCard extends ModifierMyMoveWatch {
 
     return (() => {
       const result = [];
-      for (let i = 0, end = this.numCards, asc = end >= 0; asc ? i < end : i > end; asc ? i++ : i--) {
+      for (
+        let i = 0, end = this.numCards, asc = end >= 0;
+        asc ? i < end : i > end;
+        asc ? i++ : i--
+      ) {
         var deck = this.getGameSession().getPlayerById(this.getCard().getOwnerId()).getDeck();
         result.push(this.getCard().getGameSession().executeAction(deck.actionDrawCard()));
       }

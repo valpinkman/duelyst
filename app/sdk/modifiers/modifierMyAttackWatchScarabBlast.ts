@@ -74,8 +74,17 @@ class ModifierMyAttackWatchScarabBlast extends ModifierMyAttackWatch {
         return (() => {
           const result = [];
           for (var position of Array.from<any>(spawnPositions)) {
-            if ((position != null) && !((position.x === targetPosition.x) && (position.y === targetPosition.y))) {
-              var playCardAction = new PlayCardSilentlyAction(this.getGameSession(), this.getCard().getOwnerId(), position.x, position.y, { id: Cards.Faction3.Scarab });
+            if (
+              position != null &&
+              !(position.x === targetPosition.x && position.y === targetPosition.y)
+            ) {
+              var playCardAction = new PlayCardSilentlyAction(
+                this.getGameSession(),
+                this.getCard().getOwnerId(),
+                position.x,
+                position.y,
+                { id: Cards.Faction3.Scarab },
+              );
               playCardAction.setSource(this.getCard());
               result.push(this.getGameSession().executeAction(playCardAction));
             } else {

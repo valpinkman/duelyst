@@ -14,9 +14,17 @@ const willUnitSurviveCard = function (unit, card) {
   const gameSession = card.getGameSession();
   const myGeneral = gameSession.getGeneralForPlayerId(unit.getOwnerId());
   const cardId = card.getBaseCardId();
-  const minionOrGeneralTargetType = unit.getIsGeneral() ? CardTargetType.General : CardTargetType.Minion;
-  const friendlyOrEnemyTargetType = !myGeneral.getIsSameTeamAs(unit) ? CardTargetType.Enemy : CardTargetType.Friendly;
-  const burnIntents = CardIntent.getIntentsByIntentTypeWithPartialTargetType(cardId, CardIntentType.Burn, minionOrGeneralTargetType | friendlyOrEnemyTargetType);
+  const minionOrGeneralTargetType = unit.getIsGeneral()
+    ? CardTargetType.General
+    : CardTargetType.Minion;
+  const friendlyOrEnemyTargetType = !myGeneral.getIsSameTeamAs(unit)
+    ? CardTargetType.Enemy
+    : CardTargetType.Friendly;
+  const burnIntents = CardIntent.getIntentsByIntentTypeWithPartialTargetType(
+    cardId,
+    CardIntentType.Burn,
+    minionOrGeneralTargetType | friendlyOrEnemyTargetType,
+  );
   if (burnIntents.length > 0) {
     const hp = unit.getHP();
     const lethalBurnIntentOnSelf = _.find(burnIntents, (intentObj) => intentObj.amount >= hp);

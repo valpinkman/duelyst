@@ -51,10 +51,7 @@ class BeginnerVanarChallenge3 extends Challenge {
   }
 
   getOpponentPlayerDeckData(gameSession) {
-    return [
-      { id: Cards.Faction4.General },
-      { id: Cards.TutorialSpell.TutorialFireOrb },
-    ];
+    return [{ id: Cards.Faction4.General }, { id: Cards.TutorialSpell.TutorialFireOrb }];
   }
 
   setupBoard(gameSession) {
@@ -87,24 +84,37 @@ class BeginnerVanarChallenge3 extends Challenge {
   setupOpponentAgent(gameSession) {
     super.setupOpponentAgent(gameSession);
 
-    this._opponentAgent.addActionForTurn(0, AgentActions.createAgentSoftActionShowInstructionLabels([{
-      label: i18next.t('challenges.beginner_vanar_3_taunt'),
-      isSpeech: true,
-      yPosition: 0.6,
-      isPersistent: true,
-      isOpponent: true,
-    },
-    ]));
-    return this._opponentAgent.addActionForTurn(0, AgentActions.createAgentActionPlayCardFindPosition(0, () => [GameSession.getInstance().getGeneralForPlayer1().getPosition()]));
+    this._opponentAgent.addActionForTurn(
+      0,
+      AgentActions.createAgentSoftActionShowInstructionLabels([
+        {
+          label: i18next.t('challenges.beginner_vanar_3_taunt'),
+          isSpeech: true,
+          yPosition: 0.6,
+          isPersistent: true,
+          isOpponent: true,
+        },
+      ]),
+    );
+    return this._opponentAgent.addActionForTurn(
+      0,
+      AgentActions.createAgentActionPlayCardFindPosition(0, () => [
+        GameSession.getInstance().getGeneralForPlayer1().getPosition(),
+      ]),
+    );
   }
 }
 BeginnerVanarChallenge3.prototype.type = 'BeginnerVanarChallenge3';
 BeginnerVanarChallenge3.prototype.categoryType = ChallengeCategory.expert.type;
 BeginnerVanarChallenge3.prototype.name = i18next.t('challenges.beginner_vanar_3_title');
-BeginnerVanarChallenge3.prototype.description = i18next.t('challenges.beginner_vanar_3_description');
+BeginnerVanarChallenge3.prototype.description = i18next.t(
+  'challenges.beginner_vanar_3_description',
+);
 BeginnerVanarChallenge3.prototype.iconUrl = RSX.speech_portrait_vanar.img;
 BeginnerVanarChallenge3.prototype._musicOverride = RSX.music_battlemap_vanar.audio;
-BeginnerVanarChallenge3.prototype.otkChallengeStartMessage = i18next.t('challenges.beginner_vanar_3_start');
+BeginnerVanarChallenge3.prototype.otkChallengeStartMessage = i18next.t(
+  'challenges.beginner_vanar_3_start',
+);
 BeginnerVanarChallenge3.prototype.otkChallengeFailureMessages = [
   i18next.t('challenges.beginner_vanar_3_fail'),
 ];

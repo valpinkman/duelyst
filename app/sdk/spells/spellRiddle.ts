@@ -20,7 +20,11 @@ class SpellRiddle extends Spell {
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
       // put a Riddle in opponent's hand
-      const putCardInHandAction = new PutCardInHandAction(this.getGameSession(), this.getGameSession().getOpponentPlayerIdOfPlayerId(this.getOwnerId()), { id: Cards.Spell.Riddle });
+      const putCardInHandAction = new PutCardInHandAction(
+        this.getGameSession(),
+        this.getGameSession().getOpponentPlayerIdOfPlayerId(this.getOwnerId()),
+        { id: Cards.Spell.Riddle },
+      );
       return this.getGameSession().executeAction(putCardInHandAction);
     }
   }

@@ -14,7 +14,8 @@ const arePositionsEqualOrAdjacent = require('server/ai/scoring/utils/utils_arePo
  */
 const position_zeal = function (gameSession, unit, position) {
   let score = 0;
-  if (unit.hasModifierClass(ModifierBanding)) { // bonus if adjacent to general
+  if (unit.hasModifierClass(ModifierBanding)) {
+    // bonus if adjacent to general
     /// /Logger.module("AI").debug("[G:" + gameSession.gameId + "] scoreForUnit_module_zeal() => unit " + unit.getLogName() + ". score = " + score);
     const general = gameSession.getGeneralForPlayerId(unit.getOwnerId());
     const generalPosition = general.getPosition();

@@ -31,7 +31,9 @@ var FXFireLinearWaveSprite = FXSprite.extend({
 
   setOptions(options) {
     this._super(options);
-    if (options.phase != null) { this.setPhase(options.phase); }
+    if (options.phase != null) {
+      this.setPhase(options.phase);
+    }
   },
 
   setPhase(phase) {
@@ -40,12 +42,12 @@ var FXFireLinearWaveSprite = FXSprite.extend({
 
   updateTweenAction(value, key) {
     switch (key) {
-    case 'phase':
-      this.phase = value;
-      break;
-    default:
-      FXSprite.prototype.updateTweenAction.call(this, value, key);
-      break;
+      case 'phase':
+        this.phase = value;
+        break;
+      default:
+        FXSprite.prototype.updateTweenAction.call(this, value, key);
+        break;
     }
   },
 });
@@ -53,7 +55,9 @@ var FXFireLinearWaveSprite = FXSprite.extend({
 FXFireLinearWaveSprite.WebGLRenderCmd = function (renderable) {
   FXSprite.WebGLRenderCmd.call(this, renderable);
 };
-const proto = FXFireLinearWaveSprite.WebGLRenderCmd.prototype = Object.create(FXSprite.WebGLRenderCmd.prototype);
+const proto = (FXFireLinearWaveSprite.WebGLRenderCmd.prototype = Object.create(
+  FXSprite.WebGLRenderCmd.prototype,
+));
 proto.constructor = FXFireLinearWaveSprite.WebGLRenderCmd;
 
 proto.rendering = function () {

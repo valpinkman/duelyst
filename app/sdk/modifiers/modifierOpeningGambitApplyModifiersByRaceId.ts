@@ -13,8 +13,29 @@ class ModifierOpeningGambitApplyModifiersByRaceId extends ModifierOpeningGambitA
   static type = 'ModifierOpeningGambitApplyModifiersByRaceId';
   static description = '';
 
-  static createContextObject(modifiersContextObjects, managedByCard, auraIncludeSelf, auraIncludeAlly, auraIncludeEnemy, auraIncludeGeneral, auraRadius, raceId, description, options) {
-    const contextObject = super.createContextObject(modifiersContextObjects, managedByCard, auraIncludeSelf, auraIncludeAlly, auraIncludeEnemy, auraIncludeGeneral, auraRadius, description, options);
+  static createContextObject(
+    modifiersContextObjects,
+    managedByCard,
+    auraIncludeSelf,
+    auraIncludeAlly,
+    auraIncludeEnemy,
+    auraIncludeGeneral,
+    auraRadius,
+    raceId,
+    description,
+    options,
+  ) {
+    const contextObject = super.createContextObject(
+      modifiersContextObjects,
+      managedByCard,
+      auraIncludeSelf,
+      auraIncludeAlly,
+      auraIncludeEnemy,
+      auraIncludeGeneral,
+      auraRadius,
+      description,
+      options,
+    );
     contextObject.raceId = raceId;
     return contextObject;
   }
@@ -32,7 +53,11 @@ class ModifierOpeningGambitApplyModifiersByRaceId extends ModifierOpeningGambitA
     return affectedEntities;
   }
 }
-ModifierOpeningGambitApplyModifiersByRaceId.prototype.type = 'ModifierOpeningGambitApplyModifiersByRaceId';
-ModifierOpeningGambitApplyModifiersByRaceId.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierOpeningGambitApplyModifiersByRaceId.prototype.type =
+  'ModifierOpeningGambitApplyModifiersByRaceId';
+ModifierOpeningGambitApplyModifiersByRaceId.prototype.fxResource = [
+  'FX.Modifiers.ModifierOpeningGambit',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 
 module.exports = ModifierOpeningGambitApplyModifiersByRaceId;

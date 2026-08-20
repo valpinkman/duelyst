@@ -35,9 +35,15 @@ var FXRipplingGlowImageMapSprite = BaseSprite.extend({
 
   setOptions(options) {
     this._super(options);
-    if (options.timeScale != null) { this.setTimeScale(options.timeScale); }
-    if (options.intensity != null) { this.setIntensity(options.intensity); }
-    if (options.glowColor != null) { this.setGlowColor(options.glowColor); }
+    if (options.timeScale != null) {
+      this.setTimeScale(options.timeScale);
+    }
+    if (options.intensity != null) {
+      this.setIntensity(options.intensity);
+    }
+    if (options.glowColor != null) {
+      this.setGlowColor(options.glowColor);
+    }
   },
 
   setTimeScale(timeScale) {
@@ -54,12 +60,12 @@ var FXRipplingGlowImageMapSprite = BaseSprite.extend({
 
   updateTweenAction(value, key) {
     switch (key) {
-    case 'timeScale':
-      this.setTimeScale(value);
-      break;
-    default:
-      BaseSprite.prototype.updateTweenAction.call(this, value, key);
-      break;
+      case 'timeScale':
+        this.setTimeScale(value);
+        break;
+      default:
+        BaseSprite.prototype.updateTweenAction.call(this, value, key);
+        break;
     }
   },
 });
@@ -67,7 +73,9 @@ var FXRipplingGlowImageMapSprite = BaseSprite.extend({
 FXRipplingGlowImageMapSprite.WebGLRenderCmd = function (renderable) {
   BaseSprite.WebGLRenderCmd.call(this, renderable);
 };
-const proto = FXRipplingGlowImageMapSprite.WebGLRenderCmd.prototype = Object.create(BaseSprite.WebGLRenderCmd.prototype);
+const proto = (FXRipplingGlowImageMapSprite.WebGLRenderCmd.prototype = Object.create(
+  BaseSprite.WebGLRenderCmd.prototype,
+));
 proto.constructor = FXRipplingGlowImageMapSprite.WebGLRenderCmd;
 
 proto.rendering = function () {
@@ -80,8 +88,15 @@ proto.rendering = function () {
   const shaderProgram = this._shaderProgram;
   shaderProgram.use();
   shaderProgram._setUniformForMVPMatrixWithMat4(this._stackMatrix);
-  shaderProgram.setUniformLocationWith2f(shaderProgram.loc_texResolution, node._texture.getPixelsWide(), node._texture.getPixelsHigh());
-  shaderProgram.setUniformLocationWith1f(shaderProgram.loc_time, (node.getFX().getTime() + node.seed) * node.timeScale);
+  shaderProgram.setUniformLocationWith2f(
+    shaderProgram.loc_texResolution,
+    node._texture.getPixelsWide(),
+    node._texture.getPixelsHigh(),
+  );
+  shaderProgram.setUniformLocationWith1f(
+    shaderProgram.loc_time,
+    (node.getFX().getTime() + node.seed) * node.timeScale,
+  );
   shaderProgram.setUniformLocationWith1f(shaderProgram.loc_intensity, node.intensity);
 
   // if (node.glowColor)

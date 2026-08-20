@@ -15,14 +15,19 @@ class ModifierTakeDamageWatchDamageNearbyEnemiesForSame extends ModifierTakeDama
 
   static type = 'ModifierTakeDamageWatchDamageNearbyEnemiesForSame';
   static modifierName = 'Take Damage Watch Damage Enemy For Same';
-  static description = 'Whenever this minion takes damage, deal that much damage to all nearby enemies';
+  static description =
+    'Whenever this minion takes damage, deal that much damage to all nearby enemies';
 
   onDamageTaken(action) {
     const damageAmount = action.getTotalDamageAmount();
     // deal same damage taken to all enemies
     return (() => {
       const result = [];
-      for (var unit of Array.from<any>(this.getGameSession().getBoard().getEnemyEntitiesAroundEntity(this.getCard(), CardType.Unit, 1))) {
+      for (var unit of Array.from<any>(
+        this.getGameSession()
+          .getBoard()
+          .getEnemyEntitiesAroundEntity(this.getCard(), CardType.Unit, 1),
+      )) {
         var damageAction = new DamageAction(this.getGameSession());
         damageAction.setOwnerId(this.getCard().getOwnerId());
         damageAction.setSource(this.getCard());
@@ -34,7 +39,11 @@ class ModifierTakeDamageWatchDamageNearbyEnemiesForSame extends ModifierTakeDama
     })();
   }
 }
-ModifierTakeDamageWatchDamageNearbyEnemiesForSame.prototype.type = 'ModifierTakeDamageWatchDamageNearbyEnemiesForSame';
-ModifierTakeDamageWatchDamageNearbyEnemiesForSame.prototype.fxResource = ['FX.Modifiers.ModifierTakeDamageWatch', 'FX.Modifiers.ModifierGenericDamage'];
+ModifierTakeDamageWatchDamageNearbyEnemiesForSame.prototype.type =
+  'ModifierTakeDamageWatchDamageNearbyEnemiesForSame';
+ModifierTakeDamageWatchDamageNearbyEnemiesForSame.prototype.fxResource = [
+  'FX.Modifiers.ModifierTakeDamageWatch',
+  'FX.Modifiers.ModifierGenericDamage',
+];
 
 module.exports = ModifierTakeDamageWatchDamageNearbyEnemiesForSame;

@@ -139,7 +139,8 @@ if (cluster.isMaster) {
       gameSession.setIsRunningAsAuthoritative(true);
       gameSession.deserializeSessionFromFirebase(gameSessionData);
 
-      const playerId = req.body.player_id != null ? req.body.player_id : gameSession.getCurrentPlayerId();
+      const playerId =
+        req.body.player_id != null ? req.body.player_id : gameSession.getCurrentPlayerId();
       const depthLimit = req.body.depth_limit != null ? req.body.depth_limit : 9999;
       const msTimeLimit = req.body.ms_time_limit != null ? req.body.ms_time_limit : 0;
       Logger.module('AI').debug(`AI v2 finding action sequence for ${playerId}`);
@@ -150,20 +151,22 @@ if (cluster.isMaster) {
           const { rootNode } = results;
 
           // log performance results
-          Logger.module('AI').debug(`[G:${getGameId(rootNode)}] ai_findActionSequence( ) -> \n`
-            + `Best action sequence length = ${sequence.actions.length}\n`
-            + `Current Board Score = ${rootNode.boardScore.toFixed(2)}\n`
-            + `Board Score After Best Sequence = ${sequence.score.toFixed(2)}\n`
-            + `Execution time = ${Math.round((Date.now() - rootNode.startTime))}ms\n`
-            + `Base # of Actions = ${rootNode.numberOfChildren}\n`
-            + `Est. # of Action Sequences = ${factorial(rootNode.numberOfChildren)}\n`
-            + `Sequences fully evaluated = ${rootNode.numSequencesEvaluated}\n`
-            + `Branches Pruned = ${rootNode.branchesPruned}\n`
-            + `Pruning Threshold = ${PRUNING_THRESHOLD}\n`
-            + `min. # of actions = ${preProc_minimumNumberOfActionsToEvaluate}\n`
-            + `% Eval. After Min. = ${preProc_percentOfActionsToEvaluateAfterMinimum}\n`
-            + `depthLimit = ${rootNode.depthLimit}\n`
-            + `msTimeLimit = ${rootNode.msTimeLimit}`);
+          Logger.module('AI').debug(
+            `[G:${getGameId(rootNode)}] ai_findActionSequence( ) -> \n` +
+              `Best action sequence length = ${sequence.actions.length}\n` +
+              `Current Board Score = ${rootNode.boardScore.toFixed(2)}\n` +
+              `Board Score After Best Sequence = ${sequence.score.toFixed(2)}\n` +
+              `Execution time = ${Math.round(Date.now() - rootNode.startTime)}ms\n` +
+              `Base # of Actions = ${rootNode.numberOfChildren}\n` +
+              `Est. # of Action Sequences = ${factorial(rootNode.numberOfChildren)}\n` +
+              `Sequences fully evaluated = ${rootNode.numSequencesEvaluated}\n` +
+              `Branches Pruned = ${rootNode.branchesPruned}\n` +
+              `Pruning Threshold = ${PRUNING_THRESHOLD}\n` +
+              `min. # of actions = ${preProc_minimumNumberOfActionsToEvaluate}\n` +
+              `% Eval. After Min. = ${preProc_percentOfActionsToEvaluateAfterMinimum}\n` +
+              `depthLimit = ${rootNode.depthLimit}\n` +
+              `msTimeLimit = ${rootNode.msTimeLimit}`,
+          );
 
           // respond with sequence actions
           const sequenceActionsJSON = gameSession.serializeToJSON(sequence.actions);
@@ -200,8 +203,10 @@ if (cluster.isMaster) {
       const ai2Version = req.body.ai_2_version != null ? req.body.ai_2_version : 2;
       const depthLimit = req.body.depth_limit != null ? req.body.depth_limit : 9999;
       const msTimeLimit = req.body.ms_time_limit != null ? req.body.ms_time_limit : 0;
-      const ai1NumRandomCards = req.body.ai_1_num_random_cards != null ? parseInt(req.body.ai_1_num_random_cards) : 0;
-      const ai2NumRandomCards = req.body.ai_2_num_random_cards != null ? parseInt(req.body.ai_2_num_random_cards) : 0;
+      const ai1NumRandomCards =
+        req.body.ai_1_num_random_cards != null ? parseInt(req.body.ai_1_num_random_cards) : 0;
+      const ai2NumRandomCards =
+        req.body.ai_2_num_random_cards != null ? parseInt(req.body.ai_2_num_random_cards) : 0;
       const ai1Deck = UsableDecks.getAutomaticUsableDeck(ai1GeneralId, 1.0, ai1NumRandomCards);
       const ai2Deck = UsableDecks.getAutomaticUsableDeck(ai2GeneralId, 1.0, ai2NumRandomCards);
 
@@ -239,7 +244,9 @@ if (cluster.isMaster) {
       gameSession.setIsRunningAsAuthoritative(true);
       SDK.GameSetup.setupNewSession(gameSession, player1Data, player2Data);
 
-      Logger.module('AI').debug(`AI Simulator Server starting game ${gameId} using v${ai1Version} w/ general ${SDK.CardFactory.cardForIdentifier(ai1GeneralId, SDK.GameSession.getInstance()).getName()} vs v${ai2Version} w/ general ${SDK.CardFactory.cardForIdentifier(ai2GeneralId, SDK.GameSession.getInstance()).getName()}`);
+      Logger.module('AI').debug(
+        `AI Simulator Server starting game ${gameId} using v${ai1Version} w/ general ${SDK.CardFactory.cardForIdentifier(ai1GeneralId, SDK.GameSession.getInstance()).getName()} vs v${ai2Version} w/ general ${SDK.CardFactory.cardForIdentifier(ai2GeneralId, SDK.GameSession.getInstance()).getName()}`,
+      );
 
       // setup game data
       runningGameData = {
@@ -276,7 +283,14 @@ if (cluster.isMaster) {
           gameSession.executeAction(aiAction);
         }
       } else {
-        aiPromises.push(ai_findAndExecuteActionSequence(gameSession, runningGameData.ai1PlayerId, runningGameData.depthLimit, runningGameData.msTimeLimit));
+        aiPromises.push(
+          ai_findAndExecuteActionSequence(
+            gameSession,
+            runningGameData.ai1PlayerId,
+            runningGameData.depthLimit,
+            runningGameData.msTimeLimit,
+          ),
+        );
       }
 
       if (runningGameData.ai2 instanceof StarterAI) {
@@ -285,7 +299,14 @@ if (cluster.isMaster) {
           gameSession.executeAction(aiAction);
         }
       } else {
-        aiPromises.push(ai_findAndExecuteActionSequence(gameSession, runningGameData.ai2PlayerId, runningGameData.depthLimit, runningGameData.msTimeLimit));
+        aiPromises.push(
+          ai_findAndExecuteActionSequence(
+            gameSession,
+            runningGameData.ai2PlayerId,
+            runningGameData.depthLimit,
+            runningGameData.msTimeLimit,
+          ),
+        );
       }
 
       // respond with the game session once mulligan complete
@@ -328,12 +349,16 @@ if (cluster.isMaster) {
       // which causes the game session to get incorrectly flagged as a local client game
       // and this activates systems that are unnecessary and performance intensive
       gameSessionData.gameType = SDK.GameType.SinglePlayer;
-      if (gameSessionData.gameId == null) { gameSessionData.gameId = generatePushId(); }
+      if (gameSessionData.gameId == null) {
+        gameSessionData.gameId = generatePushId();
+      }
       const gameSession = SDK.GameSession.create();
       gameSession.setIsRunningAsAuthoritative(true);
       gameSession.deserializeSessionFromFirebase(gameSessionData);
       const { gameId } = gameSession;
-      Logger.module('AI').debug(`AI Simulator Server starting game from data ${gameId} using v${ai1Version} vs v${ai2Version}`);
+      Logger.module('AI').debug(
+        `AI Simulator Server starting game from data ${gameId} using v${ai1Version} vs v${ai2Version}`,
+      );
 
       // setup game data
       const ai1PlayerId = gameSession.getPlayer1Id();
@@ -413,36 +438,46 @@ if (cluster.isMaster) {
             }
 
             if (ai instanceof StarterAI) {
-              aiPromises.push(new Promise((resolve, reject) => {
-                const stepsExecuted = [];
-                const aiAction = ai.nextAction();
-                if (aiAction != null) {
-                  gameSession.executeAction(aiAction);
-                  if (aiAction.getIsValid()) {
-                    let lastStep = gameSession.getLastStep();
-                    while (lastStep != null) {
-                      stepsExecuted.unshift(lastStep);
-                      lastStep = lastStep.getParentStep();
+              aiPromises.push(
+                new Promise((resolve, reject) => {
+                  const stepsExecuted = [];
+                  const aiAction = ai.nextAction();
+                  if (aiAction != null) {
+                    gameSession.executeAction(aiAction);
+                    if (aiAction.getIsValid()) {
+                      let lastStep = gameSession.getLastStep();
+                      while (lastStep != null) {
+                        stepsExecuted.unshift(lastStep);
+                        lastStep = lastStep.getParentStep();
+                      }
                     }
                   }
-                }
-                resolve(stepsExecuted);
-              }));
+                  resolve(stepsExecuted);
+                }),
+              );
             } else {
-              aiPromises.push(ai_findAndExecuteActionSequence(gameSession, currentPlayerId, runningGameData.depthLimit, runningGameData.msTimeLimit));
+              aiPromises.push(
+                ai_findAndExecuteActionSequence(
+                  gameSession,
+                  currentPlayerId,
+                  runningGameData.depthLimit,
+                  runningGameData.msTimeLimit,
+                ),
+              );
             }
           }
         }
 
         // respond once all steps have been executed
-        Promise.all(aiPromises).then((results) => {
-          let stepsExecuted = [];
-          for (let i = 0, il = results.length; i < il; i++) {
-            stepsExecuted = stepsExecuted.concat(results[i]);
-          }
-          const stepsJSON = gameSession.serializeToJSON(stepsExecuted);
-          res.status(200).json({ steps: stepsJSON });
-        })
+        Promise.all(aiPromises)
+          .then((results) => {
+            let stepsExecuted = [];
+            for (let i = 0, il = results.length; i < il; i++) {
+              stepsExecuted = stepsExecuted.concat(results[i]);
+            }
+            const stepsJSON = gameSession.serializeToJSON(stepsExecuted);
+            res.status(200).json({ steps: stepsJSON });
+          })
           .catch((error) => {
             Logger.module('AI').debug(`step_game -> error: ${error.message}`);
             Logger.module('AI').debug(`step_game -> error stack: ${error.stack}`);
@@ -477,8 +512,10 @@ if (cluster.isMaster) {
       const numGames = req.body.num_games != null ? req.body.num_games : 10;
       const depthLimit = req.body.depth_limit != null ? req.body.depth_limit : 9999;
       const msTimeLimit = req.body.ms_time_limit != null ? req.body.ms_time_limit : 0;
-      const ai1NumRandomCards = req.body.ai_1_num_random_cards != null ? parseInt(req.body.ai_1_num_random_cards) : 0;
-      const ai2NumRandomCards = req.body.ai_2_num_random_cards != null ? parseInt(req.body.ai_2_num_random_cards) : 0;
+      const ai1NumRandomCards =
+        req.body.ai_1_num_random_cards != null ? parseInt(req.body.ai_1_num_random_cards) : 0;
+      const ai2NumRandomCards =
+        req.body.ai_2_num_random_cards != null ? parseInt(req.body.ai_2_num_random_cards) : 0;
       const ai1PlayerId = `AI1_v${ai1Version}`;
       const ai2PlayerId = `AI2_v${ai2Version}`;
       Logger.module('AI').debug(`AI Simulator Server running ${numGames} games`);
@@ -504,7 +541,7 @@ if (cluster.isMaster) {
 
           // action
           const lastAction = gameSession.getLastStep() && gameSession.getLastStep().getAction();
-          errorGameState += `\nlast action: ${((lastAction && lastAction.getLogName()) + (lastAction instanceof SDK.PlayCardFromHandAction ? (` playing ${lastAction.getCard() && lastAction.getCard().getLogName()}`) : '')) || 'none'}`;
+          errorGameState += `\nlast action: ${(lastAction && lastAction.getLogName()) + (lastAction instanceof SDK.PlayCardFromHandAction ? ` playing ${lastAction.getCard() && lastAction.getCard().getLogName()}` : '') || 'none'}`;
 
           // mana
           errorGameState += `\nmana: ${gameSession.getCurrentPlayer().getRemainingMana()} / ${gameSession.getCurrentPlayer().getMaximumMana()}`;
@@ -514,7 +551,9 @@ if (cluster.isMaster) {
           errorGameState += `\nbbs: ${(signatureCard && signatureCard.getName()) || 'none'}`;
 
           if (gameSession.getIsFollowupActive()) {
-            const followupParentCard = gameSession.getValidatorFollowup().getCardWaitingForFollowups();
+            const followupParentCard = gameSession
+              .getValidatorFollowup()
+              .getCardWaitingForFollowups();
             const followupRootCard = followupParentCard.getRootCard();
             errorGameState += `\nfollowup: ${followupParentCard.getName()}`;
             errorGameState += `\nfollowup root: ${followupRootCard.getName()} at ${followupRootCard.getPositionX()}, ${followupRootCard.getPositionY()}`;
@@ -561,211 +600,249 @@ if (cluster.isMaster) {
       // run each game in sequence
       let gameSession;
       const games = _.range(numGames);
-      PromiseUtils.each(games, (i) => new Promise<void>((gameResolve, gameReject) => {
-        // timestamp start of game
-        const startTime = Date.now();
+      PromiseUtils.each(
+        games,
+        (i) =>
+          new Promise<void>((gameResolve, gameReject) => {
+            // timestamp start of game
+            const startTime = Date.now();
 
-        // pick random general if none provided
-        let ai1GeneralIdForGame;
-        if (ai1GeneralId == null) {
-          ai1GeneralIdForGame = _.sample(_.sample(SDK.FactionFactory.getAllPlayableFactions()).generalIds);
-        } else {
-          ai1GeneralIdForGame = ai1GeneralId;
-        }
-        let ai2GeneralIdForGame;
-        if (ai2GeneralId == null) {
-          ai2GeneralIdForGame = _.sample(_.sample(SDK.FactionFactory.getAllPlayableFactions()).generalIds);
-        } else {
-          ai2GeneralIdForGame = ai2GeneralId;
-        }
-
-        // get deck for faction
-        const ai1Deck = UsableDecks.getAutomaticUsableDeck(ai1GeneralIdForGame, 1.0);
-        const ai2Deck = UsableDecks.getAutomaticUsableDeck(ai2GeneralIdForGame, 1.0);
-
-        // randomize decks as needed
-        let ai1DeckForGame;
-        if (_.isNumber(ai1NumRandomCards) && ai1NumRandomCards > 0) {
-          ai1DeckForGame = UsableDecks.randomizeDeck(ai1Deck, ai1NumRandomCards);
-        } else {
-          ai1DeckForGame = ai1Deck;
-        }
-        let ai2DeckForGame;
-        if (_.isNumber(ai2NumRandomCards) && ai2NumRandomCards > 0) {
-          ai2DeckForGame = UsableDecks.randomizeDeck(ai2Deck, ai2NumRandomCards);
-        } else {
-          ai2DeckForGame = ai2Deck;
-        }
-
-        // replace general in deck with requested general
-        ai1DeckForGame[0] = { id: ai1GeneralIdForGame };
-        ai2DeckForGame[0] = { id: ai2GeneralIdForGame };
-
-        // setup player data and randomize starting player
-        let ai2IsPlayer1;
-        let player1Data;
-        let player2Data;
-        if (Math.random() > 0.5) {
-          ai2IsPlayer1 = true;
-          player1Data = { userId: ai2PlayerId, name: ai2PlayerId, deck: ai2DeckForGame };
-          player2Data = { userId: ai1PlayerId, name: ai1PlayerId, deck: ai1DeckForGame };
-        } else {
-          ai2IsPlayer1 = false;
-          player1Data = { userId: ai1PlayerId, name: ai1PlayerId, deck: ai1DeckForGame };
-          player2Data = { userId: ai2PlayerId, name: ai2PlayerId, deck: ai2DeckForGame };
-        }
-
-        // setup session
-        const gameId = generatePushId();
-        gameSession = SDK.GameSession.create();
-        gameSession.gameType = SDK.GameType.SinglePlayer;
-        gameSession.gameId = gameId;
-        gameSession.setIsRunningAsAuthoritative(true);
-        SDK.GameSetup.setupNewSession(gameSession, player1Data, player2Data);
-        // turn on logger temporarily
-        Logger.enabled = true;
-
-        // log start of game
-        Logger.module('AI').debug(`AI Simulator Server running game ${i + 1} / ${numGames} with id ${gameId} using v${ai1Version} w/ general ${SDK.CardFactory.cardForIdentifier(ai1GeneralIdForGame, SDK.GameSession.getInstance()).getName()} vs v${ai2Version} w/ general ${SDK.CardFactory.cardForIdentifier(ai2GeneralIdForGame, SDK.GameSession.getInstance()).getName()}`);
-
-        // turn off logger temporarily
-        Logger.enabled = false;
-
-        // setup AI
-        let ai1;
-        if (ai1PlayerId != null && ai1Version != null) {
-          if (ai1Version === 1) {
-            ai1 = new StarterAI(gameSession, ai1PlayerId, 1.0);
-          }
-        }
-        let ai2;
-        if (ai2PlayerId != null && ai2Version != null) {
-          if (ai2Version === 1) {
-            ai2 = new StarterAI(gameSession, ai2PlayerId, 1.0);
-          }
-        }
-
-        // setup function to mulligan
-        const executeMulligan = function () {
-          const aiPromises = [];
-
-          if (ai1 instanceof StarterAI) {
-            aiPromises.push(new Promise((resolve, reject) => {
-              const stepsExecuted = [];
-              const aiAction = ai1.nextAction();
-              if (aiAction != null) {
-                gameSession.executeAction(aiAction);
-                if (aiAction.getIsValid()) {
-                  let lastStep = gameSession.getLastStep();
-                  while (lastStep != null) {
-                    stepsExecuted.unshift(lastStep);
-                    lastStep = lastStep.getParentStep();
-                  }
-                }
-              }
-              resolve(stepsExecuted);
-            }));
-          } else {
-            aiPromises.push(ai_findAndExecuteActionSequence(gameSession, ai1PlayerId, depthLimit, msTimeLimit));
-          }
-
-          if (ai2 instanceof StarterAI) {
-            aiPromises.push(new Promise((resolve, reject) => {
-              const stepsExecuted = [];
-              const aiAction = ai2.nextAction();
-              if (aiAction != null) {
-                gameSession.executeAction(aiAction);
-                if (aiAction.getIsValid()) {
-                  stepsExecuted.push(gameSession.getLastStep());
-                }
-              }
-              resolve(stepsExecuted);
-            }));
-          } else {
-            aiPromises.push(ai_findAndExecuteActionSequence(gameSession, ai2PlayerId, depthLimit, msTimeLimit));
-          }
-
-          return Promise.all(aiPromises);
-        };
-
-        // setup recursive method for executing turns until game is over
-        var executeTurnsUntilGameOver = function () {
-          let aiPromise;
-          if (gameSession.isOver()) {
-            return Promise.resolve();
-          }
-          // find ai
-          const currentPlayerId = gameSession.getCurrentPlayerId();
-          let ai;
-          if (currentPlayerId === gameSession.getPlayer2Id()) {
-            ai = ai2IsPlayer1 ? ai1 : ai2;
-          } else {
-            ai = ai2IsPlayer1 ? ai2 : ai1;
-          }
-
-          // get ai next actions
-          if (ai instanceof StarterAI) {
-            aiPromise = new Promise((resolve, reject) => {
-              const stepsExecuted = [];
-              const aiAction = ai.nextAction();
-              if (aiAction != null) {
-                gameSession.executeAction(aiAction);
-                if (aiAction.getIsValid()) {
-                  stepsExecuted.push(gameSession.getLastStep());
-                } else {
-                  // AI made an invalid action that it can't recover from
-                  console.log(`run_headless_games -> INVALID ACTION ${aiAction.getLogName()}${aiAction instanceof SDK.PlayCardFromHandAction ? (` playing ${aiAction.getCard() && aiAction.getCard().getLogName()}`) : ''} / VALIDATED BY: ${aiAction.getValidatorType()} / MESSAGE: ${aiAction.getValidationMessage()}`);
-                }
-              }
-              resolve(stepsExecuted);
-            });
-          } else {
-            aiPromise = ai_findAndExecuteActionSequence(gameSession, currentPlayerId, depthLimit, msTimeLimit);
-          }
-
-          // recurse
-          return aiPromise.then((stepsExecuted) => {
-            if (stepsExecuted == null || stepsExecuted.length === 0) {
-              return Promise.reject('Roping detected!');
+            // pick random general if none provided
+            let ai1GeneralIdForGame;
+            if (ai1GeneralId == null) {
+              ai1GeneralIdForGame = _.sample(
+                _.sample(SDK.FactionFactory.getAllPlayableFactions()).generalIds,
+              );
+            } else {
+              ai1GeneralIdForGame = ai1GeneralId;
             }
-            return executeTurnsUntilGameOver();
-          });
-        };
+            let ai2GeneralIdForGame;
+            if (ai2GeneralId == null) {
+              ai2GeneralIdForGame = _.sample(
+                _.sample(SDK.FactionFactory.getAllPlayableFactions()).generalIds,
+              );
+            } else {
+              ai2GeneralIdForGame = ai2GeneralId;
+            }
 
-        // setup method to handle game over
-        const afterGameOver = function () {
-          Logger.module('AI').debug(`AI Simulator Server finished running game ${gameId}`);
-          // push stats object to list
-          const gameStats: Record<string, any> = {};
-          gameStats.gameId = gameId;
-          gameStats.duration = Date.now() - startTime;
-          gameStats.winnerId = gameSession.getWinnerId();
-          gameStats.loserId = gameSession.getLoserId();
-          gameStats.numberOfTurns = gameSession.getNumberOfTurns();
-          if (gameStats.winnerId == null) {
-            gameStats.isDraw = true;
-          } else {
-            gameStats.isDraw = false;
-            gameStats.winnerVersion = gameStats.winnerId === ai1PlayerId ? ai1Version : ai2Version;
-            const winnerSetupData = gameSession.getPlayerSetupDataForPlayerId(gameStats.winnerId);
-            gameStats.winnerFactionId = winnerSetupData.factionId;
-            gameStats.winnerGeneralId = winnerSetupData.generalId;
-            const loserSetupData = gameSession.getPlayerSetupDataForPlayerId(gameStats.loserId);
-            gameStats.loserFactionId = loserSetupData.factionId;
-            gameStats.loserGeneralId = loserSetupData.generalId;
-          }
-          gamesStats.push(gameStats);
+            // get deck for faction
+            const ai1Deck = UsableDecks.getAutomaticUsableDeck(ai1GeneralIdForGame, 1.0);
+            const ai2Deck = UsableDecks.getAutomaticUsableDeck(ai2GeneralIdForGame, 1.0);
 
-          // resolve and move to next game
-          gameResolve();
-        };
+            // randomize decks as needed
+            let ai1DeckForGame;
+            if (_.isNumber(ai1NumRandomCards) && ai1NumRandomCards > 0) {
+              ai1DeckForGame = UsableDecks.randomizeDeck(ai1Deck, ai1NumRandomCards);
+            } else {
+              ai1DeckForGame = ai1Deck;
+            }
+            let ai2DeckForGame;
+            if (_.isNumber(ai2NumRandomCards) && ai2NumRandomCards > 0) {
+              ai2DeckForGame = UsableDecks.randomizeDeck(ai2Deck, ai2NumRandomCards);
+            } else {
+              ai2DeckForGame = ai2Deck;
+            }
 
-        // run game
-        executeMulligan()
-          .then(executeTurnsUntilGameOver)
-          .then(afterGameOver)
-          .catch(handleErrorsAndRoping);
-      }))
+            // replace general in deck with requested general
+            ai1DeckForGame[0] = { id: ai1GeneralIdForGame };
+            ai2DeckForGame[0] = { id: ai2GeneralIdForGame };
+
+            // setup player data and randomize starting player
+            let ai2IsPlayer1;
+            let player1Data;
+            let player2Data;
+            if (Math.random() > 0.5) {
+              ai2IsPlayer1 = true;
+              player1Data = { userId: ai2PlayerId, name: ai2PlayerId, deck: ai2DeckForGame };
+              player2Data = { userId: ai1PlayerId, name: ai1PlayerId, deck: ai1DeckForGame };
+            } else {
+              ai2IsPlayer1 = false;
+              player1Data = { userId: ai1PlayerId, name: ai1PlayerId, deck: ai1DeckForGame };
+              player2Data = { userId: ai2PlayerId, name: ai2PlayerId, deck: ai2DeckForGame };
+            }
+
+            // setup session
+            const gameId = generatePushId();
+            gameSession = SDK.GameSession.create();
+            gameSession.gameType = SDK.GameType.SinglePlayer;
+            gameSession.gameId = gameId;
+            gameSession.setIsRunningAsAuthoritative(true);
+            SDK.GameSetup.setupNewSession(gameSession, player1Data, player2Data);
+            // turn on logger temporarily
+            Logger.enabled = true;
+
+            // log start of game
+            Logger.module('AI').debug(
+              `AI Simulator Server running game ${i + 1} / ${numGames} with id ${gameId} using v${ai1Version} w/ general ${SDK.CardFactory.cardForIdentifier(ai1GeneralIdForGame, SDK.GameSession.getInstance()).getName()} vs v${ai2Version} w/ general ${SDK.CardFactory.cardForIdentifier(ai2GeneralIdForGame, SDK.GameSession.getInstance()).getName()}`,
+            );
+
+            // turn off logger temporarily
+            Logger.enabled = false;
+
+            // setup AI
+            let ai1;
+            if (ai1PlayerId != null && ai1Version != null) {
+              if (ai1Version === 1) {
+                ai1 = new StarterAI(gameSession, ai1PlayerId, 1.0);
+              }
+            }
+            let ai2;
+            if (ai2PlayerId != null && ai2Version != null) {
+              if (ai2Version === 1) {
+                ai2 = new StarterAI(gameSession, ai2PlayerId, 1.0);
+              }
+            }
+
+            // setup function to mulligan
+            const executeMulligan = function () {
+              const aiPromises = [];
+
+              if (ai1 instanceof StarterAI) {
+                aiPromises.push(
+                  new Promise((resolve, reject) => {
+                    const stepsExecuted = [];
+                    const aiAction = ai1.nextAction();
+                    if (aiAction != null) {
+                      gameSession.executeAction(aiAction);
+                      if (aiAction.getIsValid()) {
+                        let lastStep = gameSession.getLastStep();
+                        while (lastStep != null) {
+                          stepsExecuted.unshift(lastStep);
+                          lastStep = lastStep.getParentStep();
+                        }
+                      }
+                    }
+                    resolve(stepsExecuted);
+                  }),
+                );
+              } else {
+                aiPromises.push(
+                  ai_findAndExecuteActionSequence(
+                    gameSession,
+                    ai1PlayerId,
+                    depthLimit,
+                    msTimeLimit,
+                  ),
+                );
+              }
+
+              if (ai2 instanceof StarterAI) {
+                aiPromises.push(
+                  new Promise((resolve, reject) => {
+                    const stepsExecuted = [];
+                    const aiAction = ai2.nextAction();
+                    if (aiAction != null) {
+                      gameSession.executeAction(aiAction);
+                      if (aiAction.getIsValid()) {
+                        stepsExecuted.push(gameSession.getLastStep());
+                      }
+                    }
+                    resolve(stepsExecuted);
+                  }),
+                );
+              } else {
+                aiPromises.push(
+                  ai_findAndExecuteActionSequence(
+                    gameSession,
+                    ai2PlayerId,
+                    depthLimit,
+                    msTimeLimit,
+                  ),
+                );
+              }
+
+              return Promise.all(aiPromises);
+            };
+
+            // setup recursive method for executing turns until game is over
+            var executeTurnsUntilGameOver = function () {
+              let aiPromise;
+              if (gameSession.isOver()) {
+                return Promise.resolve();
+              }
+              // find ai
+              const currentPlayerId = gameSession.getCurrentPlayerId();
+              let ai;
+              if (currentPlayerId === gameSession.getPlayer2Id()) {
+                ai = ai2IsPlayer1 ? ai1 : ai2;
+              } else {
+                ai = ai2IsPlayer1 ? ai2 : ai1;
+              }
+
+              // get ai next actions
+              if (ai instanceof StarterAI) {
+                aiPromise = new Promise((resolve, reject) => {
+                  const stepsExecuted = [];
+                  const aiAction = ai.nextAction();
+                  if (aiAction != null) {
+                    gameSession.executeAction(aiAction);
+                    if (aiAction.getIsValid()) {
+                      stepsExecuted.push(gameSession.getLastStep());
+                    } else {
+                      // AI made an invalid action that it can't recover from
+                      console.log(
+                        `run_headless_games -> INVALID ACTION ${aiAction.getLogName()}${aiAction instanceof SDK.PlayCardFromHandAction ? ` playing ${aiAction.getCard() && aiAction.getCard().getLogName()}` : ''} / VALIDATED BY: ${aiAction.getValidatorType()} / MESSAGE: ${aiAction.getValidationMessage()}`,
+                      );
+                    }
+                  }
+                  resolve(stepsExecuted);
+                });
+              } else {
+                aiPromise = ai_findAndExecuteActionSequence(
+                  gameSession,
+                  currentPlayerId,
+                  depthLimit,
+                  msTimeLimit,
+                );
+              }
+
+              // recurse
+              return aiPromise.then((stepsExecuted) => {
+                if (stepsExecuted == null || stepsExecuted.length === 0) {
+                  return Promise.reject('Roping detected!');
+                }
+                return executeTurnsUntilGameOver();
+              });
+            };
+
+            // setup method to handle game over
+            const afterGameOver = function () {
+              Logger.module('AI').debug(`AI Simulator Server finished running game ${gameId}`);
+              // push stats object to list
+              const gameStats: Record<string, any> = {};
+              gameStats.gameId = gameId;
+              gameStats.duration = Date.now() - startTime;
+              gameStats.winnerId = gameSession.getWinnerId();
+              gameStats.loserId = gameSession.getLoserId();
+              gameStats.numberOfTurns = gameSession.getNumberOfTurns();
+              if (gameStats.winnerId == null) {
+                gameStats.isDraw = true;
+              } else {
+                gameStats.isDraw = false;
+                gameStats.winnerVersion =
+                  gameStats.winnerId === ai1PlayerId ? ai1Version : ai2Version;
+                const winnerSetupData = gameSession.getPlayerSetupDataForPlayerId(
+                  gameStats.winnerId,
+                );
+                gameStats.winnerFactionId = winnerSetupData.factionId;
+                gameStats.winnerGeneralId = winnerSetupData.generalId;
+                const loserSetupData = gameSession.getPlayerSetupDataForPlayerId(gameStats.loserId);
+                gameStats.loserFactionId = loserSetupData.factionId;
+                gameStats.loserGeneralId = loserSetupData.generalId;
+              }
+              gamesStats.push(gameStats);
+
+              // resolve and move to next game
+              gameResolve();
+            };
+
+            // run game
+            executeMulligan()
+              .then(executeTurnsUntilGameOver)
+              .then(afterGameOver)
+              .catch(handleErrorsAndRoping);
+          }),
+      )
         .then(() => {
           // restore logger
           Logger.enabled = true;
@@ -793,42 +870,51 @@ if (cluster.isMaster) {
               if (winsByAINumber[aiNumber] == null) winsByAINumber[aiNumber] = 0;
               winsByAINumber[aiNumber]++;
 
-              if (winsByVersion[gameStats.winnerVersion] == null) winsByVersion[gameStats.winnerVersion] = 0;
+              if (winsByVersion[gameStats.winnerVersion] == null)
+                winsByVersion[gameStats.winnerVersion] = 0;
               winsByVersion[gameStats.winnerVersion]++;
 
-              if (winsByFactionId[gameStats.winnerFactionId] == null) winsByFactionId[gameStats.winnerFactionId] = 0;
+              if (winsByFactionId[gameStats.winnerFactionId] == null)
+                winsByFactionId[gameStats.winnerFactionId] = 0;
               winsByFactionId[gameStats.winnerFactionId]++;
 
-              if (numGamesByFactionId[gameStats.winnerFactionId] == null) numGamesByFactionId[gameStats.winnerFactionId] = 0;
+              if (numGamesByFactionId[gameStats.winnerFactionId] == null)
+                numGamesByFactionId[gameStats.winnerFactionId] = 0;
               numGamesByFactionId[gameStats.winnerFactionId]++;
               if (gameStats.winnerFactionId !== gameStats.loserFactionId) {
-                if (numGamesByFactionId[gameStats.loserFactionId] == null) numGamesByFactionId[gameStats.loserFactionId] = 0;
+                if (numGamesByFactionId[gameStats.loserFactionId] == null)
+                  numGamesByFactionId[gameStats.loserFactionId] = 0;
                 numGamesByFactionId[gameStats.loserFactionId]++;
               }
 
-              if (winsByGeneralId[gameStats.winnerGeneralId] == null) winsByGeneralId[gameStats.winnerGeneralId] = 0;
+              if (winsByGeneralId[gameStats.winnerGeneralId] == null)
+                winsByGeneralId[gameStats.winnerGeneralId] = 0;
               winsByGeneralId[gameStats.winnerGeneralId]++;
 
-              if (numGamesByGeneralId[gameStats.winnerGeneralId] == null) numGamesByGeneralId[gameStats.winnerGeneralId] = 0;
+              if (numGamesByGeneralId[gameStats.winnerGeneralId] == null)
+                numGamesByGeneralId[gameStats.winnerGeneralId] = 0;
               numGamesByGeneralId[gameStats.winnerGeneralId]++;
               if (gameStats.winnerGeneralId !== gameStats.loserGeneralId) {
-                if (numGamesByGeneralId[gameStats.loserGeneralId] == null) numGamesByGeneralId[gameStats.loserGeneralId] = 0;
+                if (numGamesByGeneralId[gameStats.loserGeneralId] == null)
+                  numGamesByGeneralId[gameStats.loserGeneralId] = 0;
                 numGamesByGeneralId[gameStats.loserGeneralId]++;
               }
 
               var versionAndFactionId = `${gameStats.winnerVersion}_${gameStats.winnerFactionId}`;
-              if (winsByVersionAndFactionId[versionAndFactionId] == null) winsByVersionAndFactionId[versionAndFactionId] = 0;
+              if (winsByVersionAndFactionId[versionAndFactionId] == null)
+                winsByVersionAndFactionId[versionAndFactionId] = 0;
               winsByVersionAndFactionId[versionAndFactionId]++;
 
               var versionAndGeneralId = `${gameStats.winnerVersion}_${gameStats.winnerGeneralId}`;
-              if (winsByVersionAndGeneralId[versionAndGeneralId] == null) winsByVersionAndGeneralId[versionAndGeneralId] = 0;
+              if (winsByVersionAndGeneralId[versionAndGeneralId] == null)
+                winsByVersionAndGeneralId[versionAndGeneralId] = 0;
               winsByVersionAndGeneralId[versionAndGeneralId]++;
             }
           }
 
           // create stats string
           let statsString = 'AI Simulator Server run games stats: \n';
-          statsString += `Average game duration = ${((totalDuration / 1000.0) / numGames).toFixed(3)} seconds\n`;
+          statsString += `Average game duration = ${(totalDuration / 1000.0 / numGames).toFixed(3)} seconds\n`;
           statsString += `Average number of turns = ${(totalNumberOfTurns / numGames).toFixed(2)}\n`;
           statsString += `Wins for AI 1 = ${winsByAINumber[1]} with a ratio of ${((winsByAINumber[1] / numGames) * 100.0).toFixed(1)}\n`;
           statsString += `Wins for AI 2 = ${winsByAINumber[2]} with a ratio of ${((winsByAINumber[2] / numGames) * 100.0).toFixed(1)}\n`;
@@ -941,62 +1027,110 @@ if (cluster.isMaster) {
   });
 } else if (cluster.isWorker) {
   // create method to evaluate game session and send actions to master
-  const ai_cluster_worker_evaluateGameSessionAndSendToMaster = function (gameSession, bestScoresByDepth, depthLimit, msTimeLimit, includedRandomness) {
-    Logger.module('AI').debug(`ai_cluster_worker_evaluateGameSessionAndSendToMaster() *Worker#${process.pid}:* evaluating gameSession. depthlimit = ${depthLimit}. mstimelimit = ${msTimeLimit}`);
+  const ai_cluster_worker_evaluateGameSessionAndSendToMaster = function (
+    gameSession,
+    bestScoresByDepth,
+    depthLimit,
+    msTimeLimit,
+    includedRandomness,
+  ) {
+    Logger.module('AI').debug(
+      `ai_cluster_worker_evaluateGameSessionAndSendToMaster() *Worker#${process.pid}:* evaluating gameSession. depthlimit = ${depthLimit}. mstimelimit = ${msTimeLimit}`,
+    );
 
     ai_init(); // TODO: remove me
 
     const rootNode = generateRootNode(gameSession, depthLimit, msTimeLimit);
     rootNode.includedRandomness = includedRandomness;
-    Logger.module('AI').debug(`ai_cluster_worker_evaluateGameSessionAndSendToMaster() *Worker#${process.pid}:* added action to rootNode.parentPsuedoAction = ${rootNode.parentPsuedoAction}`);
+    Logger.module('AI').debug(
+      `ai_cluster_worker_evaluateGameSessionAndSendToMaster() *Worker#${process.pid}:* added action to rootNode.parentPsuedoAction = ${rootNode.parentPsuedoAction}`,
+    );
     // console.log(gameSession.getLastStep().getAction());
     // console.log(rootNode.parentPsuedoAction);
     // pruning - pre-load prior-evaluated best scores by depth if available
     rootNode.bestScoresByDepth = bestScoresByDepth;
     buildTree(rootNode, gameSession);
-    Logger.module('AI').debug(`ai_cluster_worker_evaluateGameSessionAndSendToMaster() *Worker#${process.pid}:* gameSession tree fully built. bestLeaf boardscore: ${rootNode.bestLeaf.boardScore}. bestLeaf's parentPsuedoAction =`, rootNode.bestLeaf.parentPsuedoAction);
+    Logger.module('AI').debug(
+      `ai_cluster_worker_evaluateGameSessionAndSendToMaster() *Worker#${process.pid}:* gameSession tree fully built. bestLeaf boardscore: ${rootNode.bestLeaf.boardScore}. bestLeaf's parentPsuedoAction =`,
+      rootNode.bestLeaf.parentPsuedoAction,
+    );
     var psuedoActionSequence = [];
     // find best sequence here - will return empty array when no actions/branches were found!
     // also truncates any nodes that ocurred after an action with RNG
     const nodeSequence = buildNodeSequenceFromTreeRoot(rootNode);
     if (nodeSequence.length > 0) {
-      var psuedoActionSequence = _.map(nodeSequence, (node) =>
-        // Logger.module("AI").debug("ai_cluster_worker_evaluateGameSessionAndSendToMaster() *Worker#" + process.pid + ":* Mapping actions from bestLeaf's node sequence. On action:", node.parentPsuedoAction);
-        node.parentPsuedoAction);
+      var psuedoActionSequence = _.map(
+        nodeSequence,
+        (node) =>
+          // Logger.module("AI").debug("ai_cluster_worker_evaluateGameSessionAndSendToMaster() *Worker#" + process.pid + ":* Mapping actions from bestLeaf's node sequence. On action:", node.parentPsuedoAction);
+          node.parentPsuedoAction,
+      );
     }
     // add parent action to beginning of sequence - this is the action that *master* executed to create the branch the worker is evaluating.
-    Logger.module('AI').debug(`ai_cluster_worker_evaluateGameSessionAndSendToMaster() *Worker#${process.pid}:* **sequence created - now adding the root branch action. getLastStep().getAction = `, gameSession.getLastStep().getAction());
+    Logger.module('AI').debug(
+      `ai_cluster_worker_evaluateGameSessionAndSendToMaster() *Worker#${process.pid}:* **sequence created - now adding the root branch action. getLastStep().getAction = `,
+      gameSession.getLastStep().getAction(),
+    );
     // Logger.module("AI").debug("ai_cluster_worker_evaluateGameSessionAndSendToMaster() *Worker#" + process.pid + ":* **psuedoAction from this action = ", generatePseudoActionFromAction(gameSession.getLastStep().getAction()));
     // since this always happens in a worker, the "last step" action should be the master's action branch - this is the only reliable action as it's possible for workers to NOT find any actions at all, in which case just the master's branched action is taken here
     // it's possible (in a 1 action only scenario) that the action sequence only consists of 1 action (from master).
-    psuedoActionSequence.unshift(generatePseudoActionFromAction(gameSession.getLastStep().getAction()));
+    psuedoActionSequence.unshift(
+      generatePseudoActionFromAction(gameSession.getLastStep().getAction()),
+    );
     // check for sequence completion - if no actions are left on bestLeaf OR bestLeaf was rootNode (in which case no further actions are selected from worker)
-    if (rootNode.truncated == false && (rootNode.bestLeaf.noMoreActions == true || rootNode.bestLeaf == rootNode)) {
-      Logger.module('AI').debug(`ai_cluster_worker_evaluateGameSessionAndSendToMaster() *Worker#${process.pid}:* gameSession tree fully built. sequence length = ${psuedoActionSequence.length}. no more actions found on bestLeaf node AND NOT TRUNCATED pushing an endTurn action onto end of sequence now. truncated = ${rootNode.truncated}. no more actions = ${rootNode.bestLeaf.noMoreActions}. rootNode.bestLeaf == rootNode = ${rootNode.bestLeaf}` == rootNode);
+    if (
+      rootNode.truncated == false &&
+      (rootNode.bestLeaf.noMoreActions == true || rootNode.bestLeaf == rootNode)
+    ) {
+      Logger.module('AI').debug(
+        `ai_cluster_worker_evaluateGameSessionAndSendToMaster() *Worker#${process.pid}:* gameSession tree fully built. sequence length = ${psuedoActionSequence.length}. no more actions found on bestLeaf node AND NOT TRUNCATED pushing an endTurn action onto end of sequence now. truncated = ${rootNode.truncated}. no more actions = ${rootNode.bestLeaf.noMoreActions}. rootNode.bestLeaf == rootNode = ${rootNode.bestLeaf}` ==
+          rootNode,
+      );
       psuedoActionSequence.push({ actionType: SDK.EndTurnAction.type });
     } else {
-      Logger.module('AI').debug(`ai_cluster_worker_evaluateGameSessionAndSendToMaster() *Worker#${process.pid}:* gameSession tree fully built. sequence length = ${psuedoActionSequence.length}. bestLeaf still has actions left, so NOT adding endTurn action onto sequence.`);
+      Logger.module('AI').debug(
+        `ai_cluster_worker_evaluateGameSessionAndSendToMaster() *Worker#${process.pid}:* gameSession tree fully built. sequence length = ${psuedoActionSequence.length}. bestLeaf still has actions left, so NOT adding endTurn action onto sequence.`,
+      );
     }
 
-    Logger.module('AI').debug(`ai_cluster_worker_evaluateGameSessionAndSendToMaster() *Worker#${process.pid}:* action sequence fully built. Sending back to master! length = ${psuedoActionSequence.length}. actions = `, psuedoActionSequence);
+    Logger.module('AI').debug(
+      `ai_cluster_worker_evaluateGameSessionAndSendToMaster() *Worker#${process.pid}:* action sequence fully built. Sending back to master! length = ${psuedoActionSequence.length}. actions = `,
+      psuedoActionSequence,
+    );
     // send message to master: ai_cluster_master_receiveMessageFromWorker( )
     process.send({
-      actions: psuedoActionSequence, score: rootNode.bestLeaf.boardScore, branchesPruned: rootNode.branchesPruned, numSequencesEvaluated: rootNode.numSequencesEvaluated, bestScoresByDepth: rootNode.bestScoresByDepth, gameId: getGameId(rootNode),
+      actions: psuedoActionSequence,
+      score: rootNode.bestLeaf.boardScore,
+      branchesPruned: rootNode.branchesPruned,
+      numSequencesEvaluated: rootNode.numSequencesEvaluated,
+      bestScoresByDepth: rootNode.bestScoresByDepth,
+      gameId: getGameId(rootNode),
     });
   };
 
   // receive messages from the master process
   process.on('message', (msg) => {
-    Logger.module('AI').debug(`ai_cluster_master_receiveMessageFromWorker() *Worker#${process.pid}:* evaluating gameSession. depthlimit = ${msg.depthLimit}. mstimelimit = ${msg.msTimeLimit}`);
+    Logger.module('AI').debug(
+      `ai_cluster_master_receiveMessageFromWorker() *Worker#${process.pid}:* evaluating gameSession. depthlimit = ${msg.depthLimit}. mstimelimit = ${msg.msTimeLimit}`,
+    );
     // deserialize gameSession
     let gameSessionCopy = SDK.GameSession.create();
     gameSessionCopy.setIsRunningAsAuthoritative(true);
     gameSessionCopy.deserializeSessionFromFirebase(JSON.parse(msg.gameSession));
     if (msg.cardWaitingForFollowupsIndex != null) {
-    // followup was active in parent node prior to serialization and transmission to worker. this will restore the active followup into the worker branch post-deserialization
-      gameSessionCopy = injectFollowupIntoGameSession(gameSessionCopy, msg.cardWaitingForFollowupsIndex);
+      // followup was active in parent node prior to serialization and transmission to worker. this will restore the active followup into the worker branch post-deserialization
+      gameSessionCopy = injectFollowupIntoGameSession(
+        gameSessionCopy,
+        msg.cardWaitingForFollowupsIndex,
+      );
     }
-    ai_cluster_worker_evaluateGameSessionAndSendToMaster(gameSessionCopy, msg.bestScoresByDepth, msg.depthLimit, msg.msTimeLimit, msg.includedRandomness);
+    ai_cluster_worker_evaluateGameSessionAndSendToMaster(
+      gameSessionCopy,
+      msg.bestScoresByDepth,
+      msg.depthLimit,
+      msg.msTimeLimit,
+      msg.includedRandomness,
+    );
   });
 
   // send message to master process that worker is ready
@@ -1013,27 +1147,34 @@ if (cluster.isMaster) {
  * @returns {Promise} promise resolves with array of steps executed
  */
 var ai_findAndExecuteActionSequence = function (gameSession, playerId, depthLimit, msTimeLimit) {
-  return ai_findActionSequence(gameSession, playerId, depthLimit, msTimeLimit)
-    .then((results) => {
-      const { sequence } = results;
-      const { actions } = sequence;
-      const stepsExecuted = [];
-      Logger.module('AI').debug(`[G:${gameSession.gameId}] ai_findAndExecuteActionSequence( ) -> actions: `, actions);
+  return ai_findActionSequence(gameSession, playerId, depthLimit, msTimeLimit).then((results) => {
+    const { sequence } = results;
+    const { actions } = sequence;
+    const stepsExecuted = [];
+    Logger.module('AI').debug(
+      `[G:${gameSession.gameId}] ai_findAndExecuteActionSequence( ) -> actions: `,
+      actions,
+    );
 
-      for (let i = 0, il = actions.length; i < il; i++) {
-        const pseudoAction = actions[i];
-        Logger.module('AI').debug(`[G:${gameSession.gameId}] ai_findAndExecuteActionSequence( ) -> building actions from psuedoactions: on psuedoAction# ${i}. Object:  `, pseudoAction);
-        const action = generateActionFromPseudoAction(gameSession, pseudoAction);
-        gameSession.executeAction(action);
-        if (action.getIsValid()) {
-          stepsExecuted.push(gameSession.getLastStep());
-        } else {
-          throw new Error(`ai_findAndExecuteActionSequence -> invalid action in found sequence: ${JSON.stringify(pseudoAction)}`);
-        }
+    for (let i = 0, il = actions.length; i < il; i++) {
+      const pseudoAction = actions[i];
+      Logger.module('AI').debug(
+        `[G:${gameSession.gameId}] ai_findAndExecuteActionSequence( ) -> building actions from psuedoactions: on psuedoAction# ${i}. Object:  `,
+        pseudoAction,
+      );
+      const action = generateActionFromPseudoAction(gameSession, pseudoAction);
+      gameSession.executeAction(action);
+      if (action.getIsValid()) {
+        stepsExecuted.push(gameSession.getLastStep());
+      } else {
+        throw new Error(
+          `ai_findAndExecuteActionSequence -> invalid action in found sequence: ${JSON.stringify(pseudoAction)}`,
+        );
       }
+    }
 
-      return stepsExecuted;
-    });
+    return stepsExecuted;
+  });
 };
 
 /**
@@ -1047,7 +1188,9 @@ var ai_findAndExecuteActionSequence = function (gameSession, playerId, depthLimi
 var ai_findActionSequence = function (gameSession, playerId, depthLimit, msTimeLimit) {
   const gameId = getGameId(gameSession);
   return new Promise((resolve, reject) => {
-    Logger.module('AI').debug(`[G:${gameId}] ai_findActionSequence( ) -> depthLimit = ${depthLimit}. msTimeLimit = ${msTimeLimit}. playerId = ${playerId}`);
+    Logger.module('AI').debug(
+      `[G:${gameId}] ai_findActionSequence( ) -> depthLimit = ${depthLimit}. msTimeLimit = ${msTimeLimit}. playerId = ${playerId}`,
+    );
     // store resolve to be triggered async when finished with evaluation
     ai_cluster_findActionSequenceResolveByGameId[gameId] = resolve;
 
@@ -1057,23 +1200,35 @@ var ai_findActionSequence = function (gameSession, playerId, depthLimit, msTimeL
     const rootNode = generateRootNode(gameSession, depthLimit, msTimeLimit);
     if (cluster.isMaster) {
       // store true root node by game id to be accessed async
-      Logger.module('AI').debug(`ai_findActionSequence() *Master:* rootNode generated and added to ai_cluster_rootNodesByGameId[] keyed to gameId: ${getGameId(gameSession)}`);
+      Logger.module('AI').debug(
+        `ai_findActionSequence() *Master:* rootNode generated and added to ai_cluster_rootNodesByGameId[] keyed to gameId: ${getGameId(gameSession)}`,
+      );
       ai_cluster_rootNodesByGameId[gameId] = rootNode;
     }
     if (gameSession.isNew()) {
       // mulligan
       // generate a pseudo action, then spoof a worker message to end-point function to return single action
-      const drawStartingHandPseudoAction = ai_getDrawStartingHandPseudoAction(gameSession, playerId);
+      const drawStartingHandPseudoAction = ai_getDrawStartingHandPseudoAction(
+        gameSession,
+        playerId,
+      );
       rootNode.numberOfChildren = 1;
       var spoofedWorkerMsg = ai_getSpoofedWorkerMsg(gameSession, drawStartingHandPseudoAction);
       ai_cluster_master_addReturnedSequenceToRootNode(spoofedWorkerMsg);
-    } else if (gameSession.getPlayerById(playerId).getDeck().getCanReplaceCardThisTurn() && gameSession.getLastStep().getAction().getType() == SDK.EndTurnAction.type || gameSession.getLastStep().getAction().getType() == SDK.DrawStartingHandAction.type) {
+    } else if (
+      (gameSession.getPlayerById(playerId).getDeck().getCanReplaceCardThisTurn() &&
+        gameSession.getLastStep().getAction().getType() == SDK.EndTurnAction.type) ||
+      gameSession.getLastStep().getAction().getType() == SDK.DrawStartingHandAction.type
+    ) {
       // dont need mull, can replace
       // generate a pseudo action, then spoof a worker message to end-point function to return single action
 
       // +++TODO - RNG Detection to allow mid-turn replace actions. Can't use score = 999 and spoofed msg with # of children = 1 to force an early return. Doesn't make sense.
       // +++CURRENTLY only allows card replace at beginning of turn! Because RNG detection is needed
-      const replaceCardFromHandPseudoAction = ai_getReplaceCardFromHandPseudoAction(gameSession, playerId);
+      const replaceCardFromHandPseudoAction = ai_getReplaceCardFromHandPseudoAction(
+        gameSession,
+        playerId,
+      );
       if (replaceCardFromHandPseudoAction !== null) {
         rootNode.numberOfChildren = 1;
         var spoofedWorkerMsg = ai_getSpoofedWorkerMsg(gameSession, replaceCardFromHandPseudoAction);
@@ -1099,13 +1254,20 @@ const ai_foundActionSequence = function (rootNode) {
   const { gameId } = rootNode;
 
   // pick highest scoring sequence
-  Logger.module('AI').debug(`ai_foundActionSequence() -> *Master:* Selecting best sequence out of ${rootNode.evaluatedSequences.length} sequences.`);
+  Logger.module('AI').debug(
+    `ai_foundActionSequence() -> *Master:* Selecting best sequence out of ${rootNode.evaluatedSequences.length} sequences.`,
+  );
   const sequence = _.max(rootNode.evaluatedSequences, (sequence) => sequence.score);
-  Logger.module('AI').debug(`ai_foundActionSequence() -> *Master:* Sequence selected with score = ${sequence.score} and # of actions = ${sequence.actions.length}`);
+  Logger.module('AI').debug(
+    `ai_foundActionSequence() -> *Master:* Sequence selected with score = ${sequence.score} and # of actions = ${sequence.actions.length}`,
+  );
   Logger.module('AI').debug('ai_foundActionSequence() -> *Master:* ', sequence.actions);
   // clear queue of matching game sessions
   if (ai_cluster_evaluationQueue.length > 0) {
-    ai_cluster_evaluationQueue = _.reject(ai_cluster_evaluationQueue, (gameSession) => getGameId(gameSession) == gameId);
+    ai_cluster_evaluationQueue = _.reject(
+      ai_cluster_evaluationQueue,
+      (gameSession) => getGameId(gameSession) == gameId,
+    );
   }
 
   // delete root node from record
@@ -1125,7 +1287,9 @@ const ai_foundActionSequence = function (rootNode) {
 var ai_cluster_master_evaluateQueuedGameSessions = function () {
   // evaluate gameSession if worker available
   while (ai_cluster_evaluationQueue.length > 0 && ai_cluster_workerPool_idle.length > 0) {
-    Logger.module('AI').debug('ai_cluster_master_evaluateQueuedGameSessions() -> *Master:* Idle worker and queued gameSession detected. Launching evaluation.');
+    Logger.module('AI').debug(
+      'ai_cluster_master_evaluateQueuedGameSessions() -> *Master:* Idle worker and queued gameSession detected. Launching evaluation.',
+    );
     const worker = ai_cluster_workerPool_idle.shift();
     ai_cluster_workerPool_busy.push(worker);
     const gameSession = ai_cluster_evaluationQueue.shift();
@@ -1137,26 +1301,41 @@ var ai_cluster_master_evaluateQueuedGameSessions = function () {
     const lastStep = gameSession.getLastStep();
     let cardWaitingForFollowupsIndex = null;
     if (gameSession.getIsFollowupActive()) {
-    // transmit the followupcard index with the active followup so that we can inject it after deserializing in the worker process
-      cardWaitingForFollowupsIndex = gameSession.getValidatorFollowup().getCardWaitingForFollowups().getIndex();
+      // transmit the followupcard index with the active followup so that we can inject it after deserializing in the worker process
+      cardWaitingForFollowupsIndex = gameSession
+        .getValidatorFollowup()
+        .getCardWaitingForFollowups()
+        .getIndex();
     }
     const includedRandomness = lastStep.getIncludedRandomness();
-    Logger.module('AI').debug(`ai_cluster_master_evaluateQueuedGameSessions() -> *Master:* Sending serialized gameSession from Queue to worker. depthLimit = ${depthLimit}. msTimeLimit = ${msTimeLimit}`);
+    Logger.module('AI').debug(
+      `ai_cluster_master_evaluateQueuedGameSessions() -> *Master:* Sending serialized gameSession from Queue to worker. depthLimit = ${depthLimit}. msTimeLimit = ${msTimeLimit}`,
+    );
     worker.send({
-      gameSession: serializedGameSession, bestScoresByDepth, depthLimit, msTimeLimit, includedRandomness, cardWaitingForFollowupsIndex,
+      gameSession: serializedGameSession,
+      bestScoresByDepth,
+      depthLimit,
+      msTimeLimit,
+      includedRandomness,
+      cardWaitingForFollowupsIndex,
     });
   }
 };
 
 var ai_cluster_master_addReturnedSequenceToRootNode = function (msgFromWorker) {
   // bestSequence: actionSequence, score: rootNode.bestLeaf.boardScore, branchesPruned: rootNode.branchesPruned, numSequencesEvaluated: rootNode.numSequencesEvaluated, bestScoresByDepth: rootNode.bestScoresByDepth });
-  Logger.module('AI').debug('ai_cluster_master_addReturnedSequenceToRootNode() -> Conjoining returned worker data to True Root...');
+  Logger.module('AI').debug(
+    'ai_cluster_master_addReturnedSequenceToRootNode() -> Conjoining returned worker data to True Root...',
+  );
   const { gameId } = msgFromWorker;
   const rootNode = ai_cluster_rootNodesByGameId[gameId];
   if (rootNode == null) {
     return; // root no longer exists due to time limit being exceeded. discard results
   }
-  Logger.module('AI').debug(`ai_cluster_master_addReturnedSequenceToRootNode() -> Retrieved True Root = ${rootNode.gameId}. Adding the following actions to sequences: `, msgFromWorker.actions);
+  Logger.module('AI').debug(
+    `ai_cluster_master_addReturnedSequenceToRootNode() -> Retrieved True Root = ${rootNode.gameId}. Adding the following actions to sequences: `,
+    msgFromWorker.actions,
+  );
   rootNode.evaluatedSequences.push(msgFromWorker);
   rootNode.branchesPruned += msgFromWorker.branchesPruned;
   rootNode.numSequencesEvaluated += msgFromWorker.numSequencesEvaluated;
@@ -1164,17 +1343,27 @@ var ai_cluster_master_addReturnedSequenceToRootNode = function (msgFromWorker) {
   for (i = 0; i < msgFromWorker.bestScoresByDepth.length; i++) {
     if (msgFromWorker.bestScoresByDepth[i] !== null && rootNode.bestScoresByDepth[i] == null) {
       rootNode.bestScoresByDepth[i] = msgFromWorker.bestScoresByDepth[i];
-    } else if (msgFromWorker.bestScoresByDepth[i] != null && msgFromWorker.bestScoresByDepth[i] > rootNode.bestScoresByDepth[i]) {
+    } else if (
+      msgFromWorker.bestScoresByDepth[i] != null &&
+      msgFromWorker.bestScoresByDepth[i] > rootNode.bestScoresByDepth[i]
+    ) {
       rootNode.bestScoresByDepth[i] = msgFromWorker.bestScoresByDepth[i];
     }
   }
 
   // check if ALL rootNode's children have returned or if we've hit our time limit
-  if (getIsTimeLimitReached(rootNode) || rootNode.evaluatedSequences.length >= rootNode.numberOfChildren) {
-    Logger.module('AI').debug(`[G:${getGameId(rootNode)}]ai_cluster_master_addReturnedSequenceToRootNode() *Master:* finished. Returning root to ai_foundActionSequence()...`);
+  if (
+    getIsTimeLimitReached(rootNode) ||
+    rootNode.evaluatedSequences.length >= rootNode.numberOfChildren
+  ) {
+    Logger.module('AI').debug(
+      `[G:${getGameId(rootNode)}]ai_cluster_master_addReturnedSequenceToRootNode() *Master:* finished. Returning root to ai_foundActionSequence()...`,
+    );
     ai_foundActionSequence(rootNode);
   } else {
-    Logger.module('AI').debug(`[G:${getGameId(rootNode)}]ai_cluster_master_addReturnedSequenceToRootNode() *Master:* Child # ${rootNode.evaluatedSequences.length} returned out of ${rootNode.numberOfChildren} total children. Checking for more work...`);
+    Logger.module('AI').debug(
+      `[G:${getGameId(rootNode)}]ai_cluster_master_addReturnedSequenceToRootNode() *Master:* Child # ${rootNode.evaluatedSequences.length} returned out of ${rootNode.numberOfChildren} total children. Checking for more work...`,
+    );
     ai_cluster_master_evaluateQueuedGameSessions();
   }
 };
@@ -1205,7 +1394,12 @@ const ai_preprocessProtoActions = function (protoActions, gameSession) {
   _.each(protoActions, (protoAction) => {
     // Logger.module("AI").debug("[G:" + gameSession.gameId + "] ai_preprocessProtoActions() => scoring " + protoAction.targetsAndScores.length + " targets for protoAction");
     _.each(protoAction.targetsAndScores, (targetAndScore) => {
-      targetAndScore.score = ai_getScoreForAction(protoAction.card, targetAndScore.target, protoAction.actionType, gameSession);
+      targetAndScore.score = ai_getScoreForAction(
+        protoAction.card,
+        targetAndScore.target,
+        protoAction.actionType,
+        gameSession,
+      );
     });
   });
 
@@ -1229,7 +1423,10 @@ var ai_preProc_filterProtoActionTargets = function (protoAction) {
   // rejects any PlayCardFromHandAction action that scores below qualitythreshold
   if (protoAction.actionType == 'PlayCardFromHandAction') {
     // TODO: unexpected behavior with summon spells - consider excluding summons or diff. threshold for summons?
-    filteredProtoActionTargetsAndScores = _.filter(filteredProtoActionTargetsAndScores, (targetAndScore) => targetAndScore.score > preProc_qualityThreshold_playCard);
+    filteredProtoActionTargetsAndScores = _.filter(
+      filteredProtoActionTargetsAndScores,
+      (targetAndScore) => targetAndScore.score > preProc_qualityThreshold_playCard,
+    );
   }
 
   // relative filtering next
@@ -1237,16 +1434,24 @@ var ai_preProc_filterProtoActionTargets = function (protoAction) {
   // sort targets in descending order
   // optimize - to remove/replace with faster sorting (during scoring)
   // Logger.module("AI").debug("ai_preprocessProtoActions() => BEFORE SORT: ", filteredProtoActionTargetsAndScores);
-  filteredProtoActionTargetsAndScores = _.sortBy(filteredProtoActionTargetsAndScores, (targetAndScore) => targetAndScore.score).reverse();
+  filteredProtoActionTargetsAndScores = _.sortBy(
+    filteredProtoActionTargetsAndScores,
+    (targetAndScore) => targetAndScore.score,
+  ).reverse();
   // Logger.module("AI").debug("ai_preprocessProtoActions() => AFTER SORT: ", filteredProtoActionTargetsAndScores);
 
   // while targets remain, take targets up to quality threshold setting starting with best target and descending
-  while (filteredProtoActionTargetsAndScores.length > 0 && targetsAndScoresToReturn.length < preProc_minimumNumberOfActionsToEvaluate) {
+  while (
+    filteredProtoActionTargetsAndScores.length > 0 &&
+    targetsAndScoresToReturn.length < preProc_minimumNumberOfActionsToEvaluate
+  ) {
     targetsAndScoresToReturn.push(filteredProtoActionTargetsAndScores.shift()); // changed to shift(). was pop() but we sorted in reverse() [descending], so if we pop, we'd be taking the LOWEST scored action first...?
   }
   // anything beyond threshold, take floor of depth variable
   if (filteredProtoActionTargetsAndScores.length > 0) {
-    const numberToTake = Math.floor(filteredProtoActionTargetsAndScores.length * preProc_percentOfActionsToEvaluateAfterMinimum);
+    const numberToTake = Math.floor(
+      filteredProtoActionTargetsAndScores.length * preProc_percentOfActionsToEvaluateAfterMinimum,
+    );
     for (let i = 0; i < numberToTake; i++) {
       targetsAndScoresToReturn.push(filteredProtoActionTargetsAndScores.shift()); // changed to shift(). was pop() but we sorted in reverse() [descending], so if we pop, we'd be taking the LOWEST scored action first...?
     }
@@ -1263,19 +1468,19 @@ var ai_getScoreForAction = function (card, target, actionType, gameSession) {
   // ai_getScoreForAction(protoAction.card, target, protoAction.actionType);
   let score = 0;
   switch (actionType) {
-  case SDK.MoveAction.type:
-    score = ScoreForCardAtTargetPosition(card, target, gameSession);
-    break;
-  case SDK.AttackAction.type:
-    var targetedEnemyUnit = gameSession.getBoard().getUnitAtPosition(target);
-    score += ScoreForUnitDamage(gameSession, targetedEnemyUnit, card.getATK());
-    score -= ScoreForUnitDamage(gameSession, card, targetedEnemyUnit.getATK());
-    break;
-  case SDK.PlayCardAction.type:
-  case SDK.PlayCardFromHandAction.type:
-  case SDK.PlaySignatureCardAction.type:
-    score = ai_getScoreForPlayCardAction(card, target, gameSession);
-    break;
+    case SDK.MoveAction.type:
+      score = ScoreForCardAtTargetPosition(card, target, gameSession);
+      break;
+    case SDK.AttackAction.type:
+      var targetedEnemyUnit = gameSession.getBoard().getUnitAtPosition(target);
+      score += ScoreForUnitDamage(gameSession, targetedEnemyUnit, card.getATK());
+      score -= ScoreForUnitDamage(gameSession, card, targetedEnemyUnit.getATK());
+      break;
+    case SDK.PlayCardAction.type:
+    case SDK.PlayCardFromHandAction.type:
+    case SDK.PlaySignatureCardAction.type:
+      score = ai_getScoreForPlayCardAction(card, target, gameSession);
+      break;
   }
   return score;
 };
@@ -1349,7 +1554,8 @@ var ai_preProc_playCard_module_draw = function (card, target, gameSession) {
   if (card.drawCardsPostPlay !== null) {
     const numberOfCardsInHand = gameSession.getCurrentPlayer().getDeck().getNumCardsInHand();
     const maxHandSize = CONFIG.MAX_HAND_SIZE;
-    const remainingManaAfterCast = gameSession.getCurrentPlayer().getRemainingMana() - card.getManaCost();
+    const remainingManaAfterCast =
+      gameSession.getCurrentPlayer().getRemainingMana() - card.getManaCost();
     var maxPotentialDraw = maxHandSize - numberOfCardsInHand;
     var cardsToDraw = card.drawCardsPostPlay;
 
@@ -1396,7 +1602,8 @@ var ai_preProc_playCard_module_removal = function (card, targetPosition, gameSes
       if (CARD_INTENT[cardId].indexOf('minion') !== -1) {
         affectedUnits = _.reject(affectedUnits, (unit) => unit.getIsGeneral());
       }
-      if (cardId == SDK.Cards.Spell.PlasmaStorm) { // TODO+++++ REMOVE CARD SPECIFIC CODE?
+      if (cardId == SDK.Cards.Spell.PlasmaStorm) {
+        // TODO+++++ REMOVE CARD SPECIFIC CODE?
         affectedUnits = _.reject(affectedUnits, (unit) => unit.getATK() > 3);
       }
     } else {
@@ -1409,7 +1616,7 @@ var ai_preProc_playCard_module_removal = function (card, targetPosition, gameSes
       //* **+++TODO - HAND SCORING MODULE (FOR UNPLAYED CARDS) NEEDS TO INCLUDE THRESHOLD SCORING FOR REMOVAL CARDS!
       // subtract opportunity cost of removal to create a base threshold for removal (so we don't waste removal on 1/1's)
       // removal spells range from 2 (martyrdor) to 5 (abyssian hard removal). Most are 3-4.
-      score -= ((card.getManaCost() * 1) + 4); // baseline threshold of ~6-9 which translates to ~2/2 or better
+      score -= card.getManaCost() * 1 + 4; // baseline threshold of ~6-9 which translates to ~2/2 or better
       // subtract score of friendly unit from score, add enemy
       if (affectedUnit.getOwner() == myPlayer) {
         score -= scoreOfAffectedUnit;
@@ -1467,11 +1674,15 @@ var ai_preProc_playCard_module_dealDamage = function (card, targetPosition, game
       }
       _.each(affectedUnits, (affectedUnit) => {
         // score for each removed unit
-        const scoreOfAffectedUnit = ScoreForUnitDamage(gameSession, affectedUnit, card.damageAmount);
+        const scoreOfAffectedUnit = ScoreForUnitDamage(
+          gameSession,
+          affectedUnit,
+          card.damageAmount,
+        );
         //* **+++TODO - HAND SCORING MODULE (FOR UNPLAYED CARDS) NEEDS TO INCLUDE THRESHOLD SCORING FOR REMOVAL CARDS!
         // subtract opportunity cost of removal to create a base threshold for removal (so we don't waste removal on 1/1's)
         // removal spells range from 2 (martyrdor) to 5 (abyssian hard removal). Most are 3-4.
-        score -= (BOUNTY.DAMAGE_LETHAL - 5); // baseline threshold lethal BOUNTY.BOUNTY - this causes most burn spells to be held unless 1 or more unit is killed
+        score -= BOUNTY.DAMAGE_LETHAL - 5; // baseline threshold lethal BOUNTY.BOUNTY - this causes most burn spells to be held unless 1 or more unit is killed
         // subtract score of friendly unit from score, add enemy
         if (affectedUnit.getOwner() == myPlayer) {
           score -= scoreOfAffectedUnit;
@@ -1510,7 +1721,13 @@ var ai_getDrawStartingHandPseudoAction = function (gameSession, playerId) {
       const cardsInHand = myPlayer.getDeck().getCardsInHand();
       for (let i = 0, il = cardsInHand.length; i < il; i++) {
         const card = cardsInHand[i];
-        if (mulliganIndices.length < CONFIG.STARTING_HAND_REPLACE_COUNT && card != null && ((card instanceof SDK.Spell && CARD_INTENT[card.getBaseCardId()] != 'summon') || card instanceof SDK.Artifact || card.getManaCost() > myPlayer.getRemainingMana() + 1)) {
+        if (
+          mulliganIndices.length < CONFIG.STARTING_HAND_REPLACE_COUNT &&
+          card != null &&
+          ((card instanceof SDK.Spell && CARD_INTENT[card.getBaseCardId()] != 'summon') ||
+            card instanceof SDK.Artifact ||
+            card.getManaCost() > myPlayer.getRemainingMana() + 1)
+        ) {
           // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] _nextActionForNewGame -> mulligan " + card.getLogName() + "because it is a non summon spell, artifact, or costs too much mana");
           mulliganIndices.push(i);
         }
@@ -1529,11 +1746,21 @@ var ai_getReplaceCardFromHandPseudoAction = function (gameSession, playerId) {
     const cardsInHand = myPlayer.getDeck().getCardsInHandExcludingMissing();
 
     // find first card that costs at least 2 more than our max mana
-    cardToReplace = _.find(cardsInHand, (card) => (myPlayer.getDeck().getNumCardsReplacedThisTurn() == 0 && card.getManaCost() >= (myPlayer.getMaximumMana() + 2)));
+    cardToReplace = _.find(
+      cardsInHand,
+      (card) =>
+        myPlayer.getDeck().getNumCardsReplacedThisTurn() == 0 &&
+        card.getManaCost() >= myPlayer.getMaximumMana() + 2,
+    );
 
     // if we didn't replace yet try to replace anything with more than 1 copy in hand
     if (cardToReplace == null) {
-      cardToReplace = _.find(cardsInHand, (card) => (myPlayer.getDeck().getNumCardsReplacedThisTurn() == 0 && _.where(cardsInHand, { id: card.getBaseCardId() }).length > 1));
+      cardToReplace = _.find(
+        cardsInHand,
+        (card) =>
+          myPlayer.getDeck().getNumCardsReplacedThisTurn() == 0 &&
+          _.where(cardsInHand, { id: card.getBaseCardId() }).length > 1,
+      );
     }
 
     // if we have more than 2 spells, force a spell to be replaced at random
@@ -1557,7 +1784,11 @@ var ai_getReplaceCardFromHandPseudoAction = function (gameSession, playerId) {
 
     if (cardToReplace != null) {
       // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] _replaceCard -> " + cardToReplace.getLogName() + "");
-      return generatePseudoActionFromAction(myPlayer.actionReplaceCardFromHand(myPlayer.getDeck().getHand().indexOf(cardToReplace.getIndex())));
+      return generatePseudoActionFromAction(
+        myPlayer.actionReplaceCardFromHand(
+          myPlayer.getDeck().getHand().indexOf(cardToReplace.getIndex()),
+        ),
+      );
     }
     return null;
     // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] _replaceCard -> nothing to replace");
@@ -1582,7 +1813,10 @@ const getIsDepthLimitReached = function (node) {
 };
 
 var getIsTimeLimitReached = function (node) {
-  return node.root.msTimeLimit > 0 && Math.round((Date.now() - node.root.startTime)) >= node.root.msTimeLimit;
+  return (
+    node.root.msTimeLimit > 0 &&
+    Math.round(Date.now() - node.root.startTime) >= node.root.msTimeLimit
+  );
 };
 
 var buildTree = function (parentNode, gameSession) {
@@ -1627,9 +1861,15 @@ var buildTree = function (parentNode, gameSession) {
     // score board every other node
     parentNode.boardScore = ScoreForBoard(gameSession);
     /// /Logger.module("AI").debug("[G:" + gameSession.gameId + "] buildTree( ) -> current node's parent not scored. scored current node = " + parentNode.boardScore);
-    if (parentNode.root.bestScoresByDepth[parentNode.depth] == null || parentNode.boardScore > parentNode.root.bestScoresByDepth[parentNode.depth]) {
+    if (
+      parentNode.root.bestScoresByDepth[parentNode.depth] == null ||
+      parentNode.boardScore > parentNode.root.bestScoresByDepth[parentNode.depth]
+    ) {
       parentNode.root.bestScoresByDepth[parentNode.depth] = parentNode.boardScore;
-    } else if (parentNode.boardScore < (parentNode.root.bestScoresByDepth[parentNode.depth] * PRUNING_THRESHOLD)) {
+    } else if (
+      parentNode.boardScore <
+      parentNode.root.bestScoresByDepth[parentNode.depth] * PRUNING_THRESHOLD
+    ) {
       /// /Logger.module("AI").debug("[G:" + gameSession.gameId + "] buildTree( ) -> current node's score " + parentNode.boardScore + " has fallen below pruning threshold of " + parentNode.root.bestLeaf.boardScore * PRUNING_THRESHOLD);
       // treat branch as a terminated leaf and return upwards
 
@@ -1661,7 +1901,11 @@ var buildTree = function (parentNode, gameSession) {
     var snapshotOfCurrentGameSession = gameSession.generateGameSessionSnapshot();
     _.each(protoActions, (protoAction) => {
       if (protoAction.targetsAndScores.length > 0) {
-        const actionsToPush = _buildActionsAndBranchFromProtoAction(gameSession, protoAction, snapshotOfCurrentGameSession);
+        const actionsToPush = _buildActionsAndBranchFromProtoAction(
+          gameSession,
+          protoAction,
+          snapshotOfCurrentGameSession,
+        );
         actions = actions.concat(actionsToPush);
       }
     });
@@ -1688,7 +1932,9 @@ var buildTree = function (parentNode, gameSession) {
     }
     /// /Logger.module("AI").debug("[G:" + gameSession.gameId + "] buildTree( ) -> actions fully evaluated, returning.");
   } else {
-    Logger.module('AI').debug(`[G:${gameSession.gameId}] buildTree( ) -> terminating leaf. # of actions = ${protoActions.length}. depthLimitReached = ${depthLimitReached}. timeLimitReached = ${timeLimitReached}`);
+    Logger.module('AI').debug(
+      `[G:${gameSession.gameId}] buildTree( ) -> terminating leaf. # of actions = ${protoActions.length}. depthLimitReached = ${depthLimitReached}. timeLimitReached = ${timeLimitReached}`,
+    );
     // parent node is terminating leaf due to depth/time limit or no more actions left
     if (cluster.isMaster) {
       // master true root desires/has no actions - possible when re-evaluating after partial sequence execution to check for additional actions.
@@ -1731,16 +1977,24 @@ var buildTree = function (parentNode, gameSession) {
     // force rescoring of board for end-turn effects
     parentNode.boardScore = ScoreForBoard(gameSession, myPlayerId);
 
-    Logger.module('AI').debug(`[G:${gameSession.gameId}] buildTree( ) -> no actions from parentNode. parentNode is terminating leaf. leaf score = ${parentNode.boardScore}`);
+    Logger.module('AI').debug(
+      `[G:${gameSession.gameId}] buildTree( ) -> no actions from parentNode. parentNode is terminating leaf. leaf score = ${parentNode.boardScore}`,
+    );
 
     parentNode.root.numSequencesEvaluated++;
-    if (parentNode.root.bestScoresByDepth[parentNode.depth] == null || parentNode.boardScore > parentNode.root.bestScoresByDepth[parentNode.depth]) {
+    if (
+      parentNode.root.bestScoresByDepth[parentNode.depth] == null ||
+      parentNode.boardScore > parentNode.root.bestScoresByDepth[parentNode.depth]
+    ) {
       parentNode.root.bestScoresByDepth[parentNode.depth] = parentNode.boardScore;
     }
     if (parentNode.boardScore > parentNode.root.bestLeaf.boardScore) {
       parentNode.root.bestLeaf = parentNode;
       parentNode.root.bestLeaf.boardScore = parentNode.boardScore;
-      Logger.module('AI').debug('buildTree( ) -> leafScore is higher than best leaf. best leaf is now current parent. returning. bestLeaf\'s parentPsuedoAction = ', parentNode.root.bestLeaf.parentPsuedoAction);
+      Logger.module('AI').debug(
+        "buildTree( ) -> leafScore is higher than best leaf. best leaf is now current parent. returning. bestLeaf's parentPsuedoAction = ",
+        parentNode.root.bestLeaf.parentPsuedoAction,
+      );
     }
   }
 };
@@ -1764,7 +2018,10 @@ var buildNodeSequenceFromTreeRoot = function (root) {
     // Logger.module("AI").debug("[G:" + getGameId(root) + "] buildNodeSequenceFromTreeRoot( ) -> **addedbestLeaf to node sequence. parentPsuedoAction = ", bestLeaf.parentPsuedoAction);
     while (currentNodeInTraversal.parent !== null) {
       // check for RNG and flag it
-      if (currentNodeInTraversal !== bestLeaf && currentNodeInTraversal.includedRandomness == true) {
+      if (
+        currentNodeInTraversal !== bestLeaf &&
+        currentNodeInTraversal.includedRandomness == true
+      ) {
         // Logger.module("AI").debug("[G:" + getGameId(root) + "] buildNodeSequenceFromTreeRoot( ) -> About to truncate all nodes in sequence of length = " + nodeSequence.length);
         nodeSequence = []; // truncates node Sequence after RNG occurs
         root.truncated = true;
@@ -1780,7 +2037,16 @@ var buildNodeSequenceFromTreeRoot = function (root) {
 
 var generateNode = function (action, parent, root, gameId) {
   const child = {
-    parent, root, children: [], parentPsuedoAction: generatePseudoActionFromAction(action), boardScore: null, depth: ++parent.depth, numberOfChildren: 0, gameId, noMoreActions: false, includedRandomness: false,
+    parent,
+    root,
+    children: [],
+    parentPsuedoAction: generatePseudoActionFromAction(action),
+    boardScore: null,
+    depth: ++parent.depth,
+    numberOfChildren: 0,
+    gameId,
+    noMoreActions: false,
+    includedRandomness: false,
   };
   // Logger.module("AI").debug("[G:" + getGameId(root) + "] generateNode( ) -> child created. parentPsuedoAction = ", child.parentPsuedoAction);
   parent.children.push(child);
@@ -1802,7 +2068,24 @@ var generateRootNode = function (gameSession, depthLimit, msTimeLimit) {
   /// /Logger.module("AI").debug("[G:" + gameSession.gameId + "] generateRootNode( ) -> baseline board score = " + baseBoardScore);
   // create root node
   const rootNode = {
-    parent: null, root: null, children: [], parentPsuedoAction: null, boardScore: baseBoardScore, bestLeaf: null, numSequencesEvaluated: 0, branchesPruned: 0, depth: 0, bestScoresByDepth: [], numberOfChildren: 0, startTime: Date.now(), gameId: getGameId(gameSession), depthLimit, msTimeLimit, evaluatedSequences: [], includedRandomness: false, truncated: false,
+    parent: null,
+    root: null,
+    children: [],
+    parentPsuedoAction: null,
+    boardScore: baseBoardScore,
+    bestLeaf: null,
+    numSequencesEvaluated: 0,
+    branchesPruned: 0,
+    depth: 0,
+    bestScoresByDepth: [],
+    numberOfChildren: 0,
+    startTime: Date.now(),
+    gameId: getGameId(gameSession),
+    depthLimit,
+    msTimeLimit,
+    evaluatedSequences: [],
+    includedRandomness: false,
+    truncated: false,
   };
   rootNode.root = rootNode;
   rootNode.bestLeaf = rootNode;
@@ -1885,22 +2168,22 @@ var generatePseudoActionFromAction = function (action) {
   // Logger.module("AI").debug("[G:" + getGameId(root) + "] generatePseudoActionFromAction( ) -> action = ", action);
   // Logger.module("AI").debug("[G:" + getGameId(root) + "] generatePseudoActionFromAction( ) -> actionType = ", action.getType());
   switch (action.getType()) {
-  case SDK.MoveAction.type:
-    return new MovePseudoAction(action);
-  case SDK.AttackAction.type:
-    return new AttackPseudoAction(action);
-  case SDK.PlayCardFromHandAction.type:
-    return new PlayCardFromHandPseudoAction(action);
-  case SDK.ReplaceCardFromHandAction.type:
-    return new ReplaceCardFromHandPseudoAction(action);
-  case SDK.EndTurnAction.type:
-    return new PseudoAction(action);
-  case SDK.PlayCardAction.type:
-    return new PlayFollowupPseudoAction(action);
-  case SDK.PlaySignatureCardAction.type:
-    return new PlaySignatureCardPseudoAction(action);
-  case SDK.DrawStartingHandAction.type:
-    return new DrawStartingHandPseudoAction(action);
+    case SDK.MoveAction.type:
+      return new MovePseudoAction(action);
+    case SDK.AttackAction.type:
+      return new AttackPseudoAction(action);
+    case SDK.PlayCardFromHandAction.type:
+      return new PlayCardFromHandPseudoAction(action);
+    case SDK.ReplaceCardFromHandAction.type:
+      return new ReplaceCardFromHandPseudoAction(action);
+    case SDK.EndTurnAction.type:
+      return new PseudoAction(action);
+    case SDK.PlayCardAction.type:
+      return new PlayFollowupPseudoAction(action);
+    case SDK.PlaySignatureCardAction.type:
+      return new PlaySignatureCardPseudoAction(action);
+    case SDK.DrawStartingHandAction.type:
+      return new DrawStartingHandPseudoAction(action);
   }
 
   throw new Error(`Cannot generate pseudo action for action type ${action.getType()}`);
@@ -1908,36 +2191,40 @@ var generatePseudoActionFromAction = function (action) {
 
 var generateActionFromPseudoAction = function (gameSession, pseudoAction) {
   switch (pseudoAction.actionType) {
-  case SDK.MoveAction.type:
-    var sourceCard = gameSession.getBoard().getUnitAtPosition(pseudoAction.sourcePosition);
-    var { targetPosition } = pseudoAction;
-    return sourceCard.actionMove(targetPosition);
-  case SDK.AttackAction.type:
-    var sourceCard = gameSession.getBoard().getUnitAtPosition(pseudoAction.sourcePosition);
-    var { targetPosition } = pseudoAction;
-    return sourceCard.actionAttackEntityAtPosition(targetPosition);
-  case SDK.PlayCardFromHandAction.type:
-    var player = gameSession.getPlayerById(pseudoAction.playerId);
-    var { targetPosition } = pseudoAction;
-    return player.actionPlayCardFromHand(pseudoAction.handIndex, targetPosition.x, targetPosition.y);
-  case SDK.PlaySignatureCardAction.type:
-    var player = gameSession.getPlayerById(pseudoAction.playerId);
-    var { targetPosition } = pseudoAction;
-    return player.actionPlaySignatureCard(targetPosition.x, targetPosition.y);
-  case SDK.ReplaceCardFromHandAction.type:
-    var player = gameSession.getPlayerById(pseudoAction.playerId);
-    return player.actionReplaceCardFromHand(pseudoAction.handIndex);
-  case SDK.EndTurnAction.type:
-    return gameSession.actionEndTurn();
-  case SDK.PlayCardAction.type:
-    var player = gameSession.getPlayerById(pseudoAction.playerId);
-    var cardWaitingForFollowups = gameSession.getValidatorFollowup().getCardWaitingForFollowups();
-    var currentFollowupCard = cardWaitingForFollowups.getCurrentFollowupCard();
-    var { targetPosition } = pseudoAction;
-    return player.actionPlayFollowup(currentFollowupCard, targetPosition.x, targetPosition.y);
-  case SDK.DrawStartingHandAction.type:
-    var player = gameSession.getPlayerById(pseudoAction.playerId);
-    return player.actionDrawStartingHand(pseudoAction.mulliganIndices);
+    case SDK.MoveAction.type:
+      var sourceCard = gameSession.getBoard().getUnitAtPosition(pseudoAction.sourcePosition);
+      var { targetPosition } = pseudoAction;
+      return sourceCard.actionMove(targetPosition);
+    case SDK.AttackAction.type:
+      var sourceCard = gameSession.getBoard().getUnitAtPosition(pseudoAction.sourcePosition);
+      var { targetPosition } = pseudoAction;
+      return sourceCard.actionAttackEntityAtPosition(targetPosition);
+    case SDK.PlayCardFromHandAction.type:
+      var player = gameSession.getPlayerById(pseudoAction.playerId);
+      var { targetPosition } = pseudoAction;
+      return player.actionPlayCardFromHand(
+        pseudoAction.handIndex,
+        targetPosition.x,
+        targetPosition.y,
+      );
+    case SDK.PlaySignatureCardAction.type:
+      var player = gameSession.getPlayerById(pseudoAction.playerId);
+      var { targetPosition } = pseudoAction;
+      return player.actionPlaySignatureCard(targetPosition.x, targetPosition.y);
+    case SDK.ReplaceCardFromHandAction.type:
+      var player = gameSession.getPlayerById(pseudoAction.playerId);
+      return player.actionReplaceCardFromHand(pseudoAction.handIndex);
+    case SDK.EndTurnAction.type:
+      return gameSession.actionEndTurn();
+    case SDK.PlayCardAction.type:
+      var player = gameSession.getPlayerById(pseudoAction.playerId);
+      var cardWaitingForFollowups = gameSession.getValidatorFollowup().getCardWaitingForFollowups();
+      var currentFollowupCard = cardWaitingForFollowups.getCurrentFollowupCard();
+      var { targetPosition } = pseudoAction;
+      return player.actionPlayFollowup(currentFollowupCard, targetPosition.x, targetPosition.y);
+    case SDK.DrawStartingHandAction.type:
+      var player = gameSession.getPlayerById(pseudoAction.playerId);
+      return player.actionDrawStartingHand(pseudoAction.mulliganIndices);
   }
 
   throw new Error(`Cannot generate action for pseudo action type ${pseudoAction.actionType}`);
@@ -1956,10 +2243,10 @@ var _findAllProtoActions = function (gameSession) {
   // if no active f/u, then compile actions for all friendly entities in play and in hand
   //* ** ATTACKS
   // Logger.module("AI").debug("[G:" + gameSession.gameId + "] gathering move actions...");
-  protoActions = protoActions.concat((_findMoveProtoActions(gameSession)));
+  protoActions = protoActions.concat(_findMoveProtoActions(gameSession));
   //* *** MOVES
   // Logger.module("AI").debug("[G:" + gameSession.gameId + "] gathering attack actions...");
-  protoActions = protoActions.concat((_findAttackProtoActions(gameSession)));
+  protoActions = protoActions.concat(_findAttackProtoActions(gameSession));
   //* *** PLAY CARDS
   // Logger.module("AI").debug("[G:" + gameSession.gameId + "] gathering play card actions...");
   protoActions = protoActions.concat(_findPlayCardProtoActions(gameSession));
@@ -2006,7 +2293,10 @@ var _findPlayCardProtoActions = function (gameSession) {
       let targetPositions = card.getValidTargetPositions();
       if (targetPositions.length > 0) {
         // Logger.module("AI").debug("[G:" + gameSession.gameId + "] _findPlayCardProtoActions -> targetPositions.length ", targetPositions.length);
-        if (targetPositions.length >= (CONFIG.BOARDCOL * CONFIG.BOARDROW) && !card.getTargetsSpace()) {
+        if (
+          targetPositions.length >= CONFIG.BOARDCOL * CONFIG.BOARDROW &&
+          !card.getTargetsSpace()
+        ) {
           // take arbitrary tile for mass/global spells or artifacts, don't apply to spells that targets spaces (like chromatic cold's dispel)...
           targetPositions = [targetPositions[Math.floor(Math.random() * targetPositions.length)]];
         }
@@ -2031,7 +2321,9 @@ var _findPlayCardProtoActions = function (gameSession) {
 
 var _findAttackProtoActions = function (gameSession) {
   const protoActions = [];
-  if (gameSession.getIsFollowupActive()) { return protoActions; }
+  if (gameSession.getIsFollowupActive()) {
+    return protoActions;
+  }
   // assemble my units
   const myGeneral = gameSession.getGeneralForPlayer(gameSession.getCurrentPlayer());
 
@@ -2040,12 +2332,22 @@ var _findAttackProtoActions = function (gameSession) {
   // Logger.module("AI").debug("[G:" + gameSession.gameId + "] _findAttackProtoActions() -> units: ", myUnits);
   _.each(myUnits, (unit) => {
     if (!_isUnitPreventedFromAttacking(unit)) {
-      const potentialAttackTargets = unit.getAttackRange().getValidTargets(gameSession.getBoard(), unit, unit.getPosition());
+      const potentialAttackTargets = unit
+        .getAttackRange()
+        .getValidTargets(gameSession.getBoard(), unit, unit.getPosition());
       // filter out bad targets i.e. suicide targets for generals or illegal targets while provoked or immune units
-      const filteredPotentialAttackTargets = filterAttackTargetsForUnit(unit, potentialAttackTargets);
-      const potentialAttackPositions = _.map(filteredPotentialAttackTargets, (target) => target.getPosition());
+      const filteredPotentialAttackTargets = filterAttackTargetsForUnit(
+        unit,
+        potentialAttackTargets,
+      );
+      const potentialAttackPositions = _.map(filteredPotentialAttackTargets, (target) =>
+        target.getPosition(),
+      );
       if (potentialAttackPositions.length > 0) {
-        const targetsAndScores = _.map(potentialAttackPositions, (target) => ({ target, score: null }));
+        const targetsAndScores = _.map(potentialAttackPositions, (target) => ({
+          target,
+          score: null,
+        }));
         const protoAction: Record<string, any> = {
           card: unit,
           targetsAndScores,
@@ -2061,7 +2363,9 @@ var _findAttackProtoActions = function (gameSession) {
 
 var _findMoveProtoActions = function (gameSession) {
   const protoActions = [];
-  if (gameSession.getIsFollowupActive()) { return protoActions; }
+  if (gameSession.getIsFollowupActive()) {
+    return protoActions;
+  }
   // assemble my units
   const myGeneral = gameSession.getGeneralForPlayer(gameSession.getCurrentPlayer());
   const myUnits = gameSession.getBoard().getFriendlyEntitiesForEntity(myGeneral);
@@ -2111,7 +2415,11 @@ var injectFollowupIntoGameSession = function (gameSession, followupParentCardInd
   return gameSession;
 };
 
-var _buildActionsAndBranchFromProtoAction = function (gameSession, protoAction, snapshotOfCurrentGameSession) {
+var _buildActionsAndBranchFromProtoAction = function (
+  gameSession,
+  protoAction,
+  snapshotOfCurrentGameSession,
+) {
   // Logger.module("AI").debug("[G:" + gameSession.gameId + "] _buildActionsAndBranchFromProtoAction() => building actions for protoAction with targets length = " + protoAction.targetsAndScores.length);
   const { targetsAndScores } = protoAction;
   const { card } = protoAction;
@@ -2124,7 +2432,10 @@ var _buildActionsAndBranchFromProtoAction = function (gameSession, protoAction, 
     if (card.getIsFollowup()) {
       // reconstruct followup data in cloned gamesession
       const followupParentCardIndex = card.getParentCardIndex();
-      gameSessionBranched = injectFollowupIntoGameSession(gameSessionBranched, followupParentCardIndex);
+      gameSessionBranched = injectFollowupIntoGameSession(
+        gameSessionBranched,
+        followupParentCardIndex,
+      );
     } else if (protoAction.actionType == SDK.PlaySignatureCardAction.type) {
       // do nothing
     } else {
@@ -2132,30 +2443,35 @@ var _buildActionsAndBranchFromProtoAction = function (gameSession, protoAction, 
     }
 
     switch (protoAction.actionType) {
-    case SDK.AttackAction.type:
-      // Logger.module("AI").debug("[G:" + gameSessionBranched.gameId + "] _buildActionsAndBranchFromProtoAction() => building attack action for card " + cardInBranchedSession.getLogName() + " attacking unit " + gameSessionBranched.getBoard().getUnitAtPosition(position).getLogName());
-      actions.push(cardInBranchedSession.actionAttackEntityAtPosition(position));
-      break;
-    case SDK.MoveAction.type:
-      // Logger.module("AI").debug("[G:" + gameSessionBranched.gameId + "] _buildActionsAndBranchFromProtoAction() => building move action for card " + cardInBranchedSession.getLogName() + " moving to " + position.x + ", " + position.y);
-      actions.push(cardInBranchedSession.actionMove(position));
-      break;
-    case SDK.PlayCardFromHandAction.type:
-      var myPlayerBranched = gameSessionBranched.getCurrentPlayer();
-      var indexOfCard = myPlayerBranched.getDeck().getCardsInHand().indexOf(cardInBranchedSession);
-      // Logger.module("AI").debug("[G:" + gameSessionBranched.gameId + "] _buildActionsAndBranchFromProtoAction() => building actionPlayCardFromHand for card at index " + indexOfCard + " to " + position.x + ", " + position.y + ". Card is " + myPlayerBranched.getDeck().getCardInHandAtIndex(indexOfCard).getLogName());
-      actions.push(myPlayerBranched.actionPlayCardFromHand(indexOfCard, position.x, position.y));
-      break;
-    case SDK.PlayCardAction.type:
-      var myPlayerBranched = gameSessionBranched.getCurrentPlayer();
-      // Logger.module("AI").debug("[G:" + gameSessionBranched.gameId + "] _buildActionsAndBranchFromProtoAction() => building actionPlayFollowup for followupcard " + cardInBranchedSession.getLogName() + " to " + position.x + ", " + position.y);
-      actions.push(myPlayerBranched.actionPlayFollowup(cardInBranchedSession, position.x, position.y));
-      break;
-    case SDK.PlaySignatureCardAction.type:
-      var myPlayerBranched = gameSessionBranched.getCurrentPlayer();
-      // Logger.module("AI").debug("[G:" + gameSessionBranched.gameId + "] _buildActionsAndBranchFromProtoAction() => building actionPlayFollowup for followupcard " + cardInBranchedSession.getLogName() + " to " + position.x + ", " + position.y);
-      actions.push(myPlayerBranched.actionPlaySignatureCard(position.x, position.y));
-      break;
+      case SDK.AttackAction.type:
+        // Logger.module("AI").debug("[G:" + gameSessionBranched.gameId + "] _buildActionsAndBranchFromProtoAction() => building attack action for card " + cardInBranchedSession.getLogName() + " attacking unit " + gameSessionBranched.getBoard().getUnitAtPosition(position).getLogName());
+        actions.push(cardInBranchedSession.actionAttackEntityAtPosition(position));
+        break;
+      case SDK.MoveAction.type:
+        // Logger.module("AI").debug("[G:" + gameSessionBranched.gameId + "] _buildActionsAndBranchFromProtoAction() => building move action for card " + cardInBranchedSession.getLogName() + " moving to " + position.x + ", " + position.y);
+        actions.push(cardInBranchedSession.actionMove(position));
+        break;
+      case SDK.PlayCardFromHandAction.type:
+        var myPlayerBranched = gameSessionBranched.getCurrentPlayer();
+        var indexOfCard = myPlayerBranched
+          .getDeck()
+          .getCardsInHand()
+          .indexOf(cardInBranchedSession);
+        // Logger.module("AI").debug("[G:" + gameSessionBranched.gameId + "] _buildActionsAndBranchFromProtoAction() => building actionPlayCardFromHand for card at index " + indexOfCard + " to " + position.x + ", " + position.y + ". Card is " + myPlayerBranched.getDeck().getCardInHandAtIndex(indexOfCard).getLogName());
+        actions.push(myPlayerBranched.actionPlayCardFromHand(indexOfCard, position.x, position.y));
+        break;
+      case SDK.PlayCardAction.type:
+        var myPlayerBranched = gameSessionBranched.getCurrentPlayer();
+        // Logger.module("AI").debug("[G:" + gameSessionBranched.gameId + "] _buildActionsAndBranchFromProtoAction() => building actionPlayFollowup for followupcard " + cardInBranchedSession.getLogName() + " to " + position.x + ", " + position.y);
+        actions.push(
+          myPlayerBranched.actionPlayFollowup(cardInBranchedSession, position.x, position.y),
+        );
+        break;
+      case SDK.PlaySignatureCardAction.type:
+        var myPlayerBranched = gameSessionBranched.getCurrentPlayer();
+        // Logger.module("AI").debug("[G:" + gameSessionBranched.gameId + "] _buildActionsAndBranchFromProtoAction() => building actionPlayFollowup for followupcard " + cardInBranchedSession.getLogName() + " to " + position.x + ", " + position.y);
+        actions.push(myPlayerBranched.actionPlaySignatureCard(position.x, position.y));
+        break;
     }
   });
   return actions;
@@ -2180,8 +2496,13 @@ var _findPotentialMovePositionsForUnit = function (gameSession, unit) {
 
 const _isUnitAdjacentToOrOnManaTile = function (unit) {
   const gameSession = unit.getGameSession();
-  const manaTiles = _.filter(gameSession.getBoard().getTiles(true), (tile) => tile.getBaseCardId() === SDK.Cards.Tile.BonusMana);
-  return _.some(manaTiles, (manaTile) => _arePositionsEqualOrAdjacent(unit.position, manaTile.position));
+  const manaTiles = _.filter(
+    gameSession.getBoard().getTiles(true),
+    (tile) => tile.getBaseCardId() === SDK.Cards.Tile.BonusMana,
+  );
+  return _.some(manaTiles, (manaTile) =>
+    _arePositionsEqualOrAdjacent(unit.position, manaTile.position),
+  );
 };
 
 // endregion FIND ACTIONS
@@ -2209,22 +2530,26 @@ let _arePositionsEqualOrAdjacent = function (positionA, positionB) {
 
 const _getIsScoredModifier = function (modifier) {
   return !(
-  // modifier instanceof SDK.ModifierClone ||
-    modifier instanceof SDK.ModifierAirdrop
-    || modifier instanceof SDK.ModifierProvoked
-    || modifier instanceof SDK.ModifierDyingWish
-    || modifier instanceof SDK.ModifierEphemeral
-    || modifier instanceof SDK.ModifierOpeningGambit
-    || modifier instanceof SDK.ModifierStunned
-    || modifier instanceof SDK.ModifierTransformed
-    || modifier instanceof SDK.ModifierWall
-    || modifier instanceof SDK.ModifierFirstBlood
+    // modifier instanceof SDK.ModifierClone ||
+    modifier instanceof SDK.ModifierAirdrop ||
+    modifier instanceof SDK.ModifierProvoked ||
+    modifier instanceof SDK.ModifierDyingWish ||
+    modifier instanceof SDK.ModifierEphemeral ||
+    modifier instanceof SDK.ModifierOpeningGambit ||
+    modifier instanceof SDK.ModifierStunned ||
+    modifier instanceof SDK.ModifierTransformed ||
+    modifier instanceof SDK.ModifierWall ||
+    modifier instanceof SDK.ModifierFirstBlood
   );
 };
 
 const _getBountyForDistanceFromMyGeneral = function (gameSession, playerId) {
   // yields exponentially increasing desire to be near general as his health declines
-  return BOUNTY.DISTANCE_FROM_MY_GENERAL * (BOUNTY.DISTANCE_FROM_MY_GENERAL_FACTOR / gameSession.getGeneralForPlayer(gameSession.getPlayerById(playerId)).getHP());
+  return (
+    BOUNTY.DISTANCE_FROM_MY_GENERAL *
+    (BOUNTY.DISTANCE_FROM_MY_GENERAL_FACTOR /
+      gameSession.getGeneralForPlayer(gameSession.getPlayerById(playerId)).getHP())
+  );
 };
 
 const findNearestObjective = function (position, objectives) {
@@ -2266,7 +2591,7 @@ const ai_getScoreForAttackAction = function (attackSource, attackTargetPosition)
 
 // region PRE_PROCESSING CONFIG end
 
-var PRUNING_THRESHOLD = 0.90; // if a branch falls below XX% of best depth score, it is pruned
+var PRUNING_THRESHOLD = 0.9; // if a branch falls below XX% of best depth score, it is pruned
 var preProc_percentOfActionsToEvaluateAfterMinimum = 0.2;
 var preProc_minimumNumberOfActionsToEvaluate = 2;
 var preProc_qualityThreshold_playCard = -2;

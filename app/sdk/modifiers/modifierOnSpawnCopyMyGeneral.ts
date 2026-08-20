@@ -41,7 +41,12 @@ class ModifierOnSpawnCopyMyGeneral extends Modifier {
     return (() => {
       const result = [];
       for (var modifier of Array.from<any>(general.getModifiers())) {
-        if ((modifier != null) && !modifier.getIsAdditionalInherent() && modifier.getIsCloneable() && !(modifier instanceof ModifierSilence)) {
+        if (
+          modifier != null &&
+          !modifier.getIsAdditionalInherent() &&
+          modifier.getIsCloneable() &&
+          !(modifier instanceof ModifierSilence)
+        ) {
           var contextObject = modifier.createContextObjectForClone();
 
           // convert artifact modifiers into "plain" modifiers
@@ -53,7 +58,11 @@ class ModifierOnSpawnCopyMyGeneral extends Modifier {
 
           // hide all modifiers applied to this copy (prevents weird names from showing up)
           contextObject.isHiddenToUI = true;
-          result.push(this.getCard().getGameSession().applyModifierContextObject(contextObject, this.getCard()));
+          result.push(
+            this.getCard()
+              .getGameSession()
+              .applyModifierContextObject(contextObject, this.getCard()),
+          );
         } else {
           result.push(undefined);
         }
@@ -67,6 +76,9 @@ ModifierOnSpawnCopyMyGeneral.prototype.activeInHand = false;
 ModifierOnSpawnCopyMyGeneral.prototype.activeInDeck = false;
 ModifierOnSpawnCopyMyGeneral.prototype.activeInSignatureCards = false;
 ModifierOnSpawnCopyMyGeneral.prototype.activeOnBoard = true;
-ModifierOnSpawnCopyMyGeneral.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericSpawn'];
+ModifierOnSpawnCopyMyGeneral.prototype.fxResource = [
+  'FX.Modifiers.ModifierOpeningGambit',
+  'FX.Modifiers.ModifierGenericSpawn',
+];
 
 module.exports = ModifierOnSpawnCopyMyGeneral;

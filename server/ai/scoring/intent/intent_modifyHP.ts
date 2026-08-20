@@ -43,7 +43,10 @@ const getScoreForModifyHPFromCardWithIntentToCard = function (card, intent, targ
 const ScoreForIntentModifyHP = function (card, targetPosition, cardIntents) {
   let score = 0;
   const cardId = card.getBaseCardId();
-  const validIntents = cardIntents != null ? CardIntent.filterIntentsByIntentType(cardIntents, CardIntentType.ModifyHP) : CardIntent.getIntentsByIntentType(cardId, CardIntentType.ModifyHP);
+  const validIntents =
+    cardIntents != null
+      ? CardIntent.filterIntentsByIntentType(cardIntents, CardIntentType.ModifyHP)
+      : CardIntent.getIntentsByIntentType(cardId, CardIntentType.ModifyHP);
 
   _.each(validIntents, (intent) => {
     const cards = CardIntent.getCardsTargetedByCardWithIntent(card, intent, targetPosition);

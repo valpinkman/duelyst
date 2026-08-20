@@ -14,10 +14,14 @@ class SpellWarbird extends SpellDamage {
     const general = this.getGameSession().getGeneralForOpponentOfPlayerId(this.getOwnerId());
     const generalPosition = general.getPosition();
 
-    for (let i = 0, end = CONFIG.BOARDROW - 1, asc = end >= 0; asc ? i <= end : i >= end; asc ? i++ : i--) {
+    for (
+      let i = 0, end = CONFIG.BOARDROW - 1, asc = end >= 0;
+      asc ? i <= end : i >= end;
+      asc ? i++ : i--
+    ) {
       var testPosition = { x: generalPosition.x, y: i };
       var entity = board.getUnitAtPosition(testPosition);
-      if ((entity != null) && entity.getIsSameTeamAs(general)) {
+      if (entity != null && entity.getIsSameTeamAs(general)) {
         applyEffectPositions.push(entity.getPosition());
       }
     }

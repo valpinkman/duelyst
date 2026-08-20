@@ -20,7 +20,9 @@ class ModifierSynergizeSummonMinionNearby extends ModifierSynergize {
   static type = 'ModifierSynergizeSummonMinionNearby';
 
   static createContextObject(cardDataOrIndexToSpawn, spawnCount, options) {
-    if (spawnCount == null) { spawnCount = 1; }
+    if (spawnCount == null) {
+      spawnCount = 1;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.cardDataOrIndexToSpawn = cardDataOrIndexToSpawn;
     contextObject.spawnCount = spawnCount;
@@ -31,19 +33,43 @@ class ModifierSynergizeSummonMinionNearby extends ModifierSynergize {
     super.onSynergize(action);
 
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
-      const card = this.getGameSession().getExistingCardFromIndexOrCachedCardFromData(this.cardDataOrIndexToSpawn);
+      const card = this.getGameSession().getExistingCardFromIndexOrCachedCardFromData(
+        this.cardDataOrIndexToSpawn,
+      );
       const spawnLocations = [];
-      const validSpawnLocations = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(this.getGameSession(), this.getCard().getPosition(), CONFIG.PATTERN_3x3, card, this.getCard(), 8);
-      for (let i = 0, end = this.spawnCount, asc = end >= 0; asc ? i < end : i > end; asc ? i++ : i--) {
+      const validSpawnLocations = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(
+        this.getGameSession(),
+        this.getCard().getPosition(),
+        CONFIG.PATTERN_3x3,
+        card,
+        this.getCard(),
+        8,
+      );
+      for (
+        let i = 0, end = this.spawnCount, asc = end >= 0;
+        asc ? i < end : i > end;
+        asc ? i++ : i--
+      ) {
         if (validSpawnLocations.length > 0) {
-          spawnLocations.push(validSpawnLocations.splice(this.getGameSession().getRandomIntegerForExecution(validSpawnLocations.length), 1)[0]);
+          spawnLocations.push(
+            validSpawnLocations.splice(
+              this.getGameSession().getRandomIntegerForExecution(validSpawnLocations.length),
+              1,
+            )[0],
+          );
         }
       }
 
       return (() => {
         const result = [];
         for (var position of Array.from<any>(spawnLocations)) {
-          var playCardAction = new PlayCardSilentlyAction(this.getGameSession(), this.getOwnerId(), position.x, position.y, this.cardDataOrIndexToSpawn);
+          var playCardAction = new PlayCardSilentlyAction(
+            this.getGameSession(),
+            this.getOwnerId(),
+            position.x,
+            position.y,
+            this.cardDataOrIndexToSpawn,
+          );
           playCardAction.setSource(this.getCard());
           result.push(this.getGameSession().executeAction(playCardAction));
         }

@@ -16,7 +16,9 @@ class ModifierMyTeamMoveWatchAnyReasonBuffTarget extends ModifierMyTeamMoveWatch
   static description = 'Whenever a friendly minion is moved for any reason, %Y';
 
   static createContextObject(modContextObject, description, options) {
-    if (options == null) { options = undefined; }
+    if (options == null) {
+      options = undefined;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.modifiersContextObjects = modContextObject;
     contextObject.modDescription = description;
@@ -34,11 +36,16 @@ class ModifierMyTeamMoveWatchAnyReasonBuffTarget extends ModifierMyTeamMoveWatch
     // apply modifiers to card being summoned
     if (buffTarget != null) {
       return Array.from<any>(this.modifiersContextObjects).map((modifierContextObject) =>
-        this.getGameSession().applyModifierContextObject(modifierContextObject, buffTarget));
+        this.getGameSession().applyModifierContextObject(modifierContextObject, buffTarget),
+      );
     }
   }
 }
-ModifierMyTeamMoveWatchAnyReasonBuffTarget.prototype.type = 'ModifierMyTeamMoveWatchAnyReasonBuffTarget';
-ModifierMyTeamMoveWatchAnyReasonBuffTarget.prototype.fxResource = ['FX.Modifiers.ModifierMyTeamMoveWatch', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierMyTeamMoveWatchAnyReasonBuffTarget.prototype.type =
+  'ModifierMyTeamMoveWatchAnyReasonBuffTarget';
+ModifierMyTeamMoveWatchAnyReasonBuffTarget.prototype.fxResource = [
+  'FX.Modifiers.ModifierMyTeamMoveWatch',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 
 module.exports = ModifierMyTeamMoveWatchAnyReasonBuffTarget;

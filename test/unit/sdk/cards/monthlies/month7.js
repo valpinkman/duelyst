@@ -13,13 +13,9 @@ Logger.enabled = false;
 describe('monthlies', () => {
   describe('month 7', () => {
     beforeEach(() => {
-      const player1Deck = [
-        { id: SDK.Cards.Faction6.General },
-      ];
+      const player1Deck = [{ id: SDK.Cards.Faction6.General }];
 
-      const player2Deck = [
-        { id: SDK.Cards.Faction1.General },
-      ];
+      const player2Deck = [{ id: SDK.Cards.Faction1.General }];
 
       UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
     });
@@ -33,13 +29,28 @@ describe('monthlies', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const arrowWhistler = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.ArrowWhistler }, 7, 2, gameSession.getPlayer1Id());
-      const valeHunter = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.ValeHunter }, 7, 3, gameSession.getPlayer1Id());
+      const arrowWhistler = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.ArrowWhistler },
+        7,
+        2,
+        gameSession.getPlayer1Id(),
+      );
+      const valeHunter = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.ValeHunter },
+        7,
+        3,
+        gameSession.getPlayer1Id(),
+      );
 
       expect(arrowWhistler.getATK()).to.equal(2);
       expect(valeHunter.getATK()).to.equal(2);
 
-      const arrowWhistler2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.ArrowWhistler }, 6, 2, gameSession.getPlayer1Id());
+      const arrowWhistler2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.ArrowWhistler },
+        6,
+        2,
+        gameSession.getPlayer1Id(),
+      );
       expect(arrowWhistler.getATK()).to.equal(3);
       expect(valeHunter.getATK()).to.equal(3);
     });
@@ -49,14 +60,26 @@ describe('monthlies', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const goldenJusticar = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.GoldenJusticar }, 7, 2, gameSession.getPlayer1Id());
-      const silverguardKnight = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.SilverguardKnight }, 7, 3, gameSession.getPlayer1Id());
+      const goldenJusticar = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.GoldenJusticar },
+        7,
+        2,
+        gameSession.getPlayer1Id(),
+      );
+      const silverguardKnight = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.SilverguardKnight },
+        7,
+        3,
+        gameSession.getPlayer1Id(),
+      );
 
       silverguardKnight.refreshExhaustion();
       const action = silverguardKnight.actionMove({ x: 3, y: 3 });
       gameSession.executeAction(action);
 
-      expect(board.getUnitAtPosition({ x: 3, y: 3 }).getId()).to.equal(SDK.Cards.Faction1.SilverguardKnight);
+      expect(board.getUnitAtPosition({ x: 3, y: 3 }).getId()).to.equal(
+        SDK.Cards.Faction1.SilverguardKnight,
+      );
     });
 
     /* Test disabled: failing
@@ -88,13 +111,38 @@ describe('monthlies', () => {
 
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction3.Pyromancer }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction3.Pyromancer }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.Dilotas }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction3.Pyromancer }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction3.Pyromancer }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction3.Pyromancer,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction3.Pyromancer,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.Dilotas,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction3.Pyromancer,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction3.Pyromancer,
+        }),
+      );
 
-      const unseven = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Unseven }, 7, 2, gameSession.getPlayer1Id());
+      const unseven = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.Unseven },
+        7,
+        2,
+        gameSession.getPlayer1Id(),
+      );
       unseven.refreshExhaustion();
       unseven.setDamage(3);
 

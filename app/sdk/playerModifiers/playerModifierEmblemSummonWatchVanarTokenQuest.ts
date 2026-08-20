@@ -26,13 +26,19 @@ class PlayerModifierEmblemSummonWatchVanarTokenQuest extends PlayerModifierEmble
 
   onGainMinionWatch(action) {
     const unit = action.getTarget();
-    if ((unit != null) && (this.modifiersContextObjects != null) && (unit.getRarityId() === Rarity.TokenUnit)) {
+    if (
+      unit != null &&
+      this.modifiersContextObjects != null &&
+      unit.getRarityId() === Rarity.TokenUnit
+    ) {
       return (() => {
         const result = [];
         for (var modifiersContextObject of Array.from<any>(this.modifiersContextObjects)) {
           if (modifiersContextObject != null) {
             modifiersContextObject.isRemovable = false;
-            result.push(this.getGameSession().applyModifierContextObject(modifiersContextObject, unit));
+            result.push(
+              this.getGameSession().applyModifierContextObject(modifiersContextObject, unit),
+            );
           } else {
             result.push(undefined);
           }
@@ -67,20 +73,29 @@ class PlayerModifierEmblemSummonWatchVanarTokenQuest extends PlayerModifierEmble
     if (this.modifiersContextObjects != null) {
       return (() => {
         const result = [];
-        for (var unit of Array.from<any>(this.getGameSession().getBoard().getFriendlyEntitiesForEntity(this.getCard()))) {
-          if ((unit != null) && !unit.getIsGeneral() && (unit.getType() === CardType.Unit) && (unit.getRarityId() === Rarity.TokenUnit)) {
-            result.push((() => {
-              const result1 = [];
-              for (var modifier of Array.from<any>(this.modifiersContextObjects)) {
-                if (modifier != null) {
-                  modifier.isRemovable = false;
-                  result1.push(this.getGameSession().applyModifierContextObject(modifier, unit));
-                } else {
-                  result1.push(undefined);
+        for (var unit of Array.from<any>(
+          this.getGameSession().getBoard().getFriendlyEntitiesForEntity(this.getCard()),
+        )) {
+          if (
+            unit != null &&
+            !unit.getIsGeneral() &&
+            unit.getType() === CardType.Unit &&
+            unit.getRarityId() === Rarity.TokenUnit
+          ) {
+            result.push(
+              (() => {
+                const result1 = [];
+                for (var modifier of Array.from<any>(this.modifiersContextObjects)) {
+                  if (modifier != null) {
+                    modifier.isRemovable = false;
+                    result1.push(this.getGameSession().applyModifierContextObject(modifier, unit));
+                  } else {
+                    result1.push(undefined);
+                  }
                 }
-              }
-              return result1;
-            })());
+                return result1;
+              })(),
+            );
           } else {
             result.push(undefined);
           }
@@ -90,7 +105,8 @@ class PlayerModifierEmblemSummonWatchVanarTokenQuest extends PlayerModifierEmble
     }
   }
 }
-PlayerModifierEmblemSummonWatchVanarTokenQuest.prototype.type = 'PlayerModifierEmblemSummonWatchVanarTokenQuest';
+PlayerModifierEmblemSummonWatchVanarTokenQuest.prototype.type =
+  'PlayerModifierEmblemSummonWatchVanarTokenQuest';
 PlayerModifierEmblemSummonWatchVanarTokenQuest.prototype.maxStacks = 1;
 PlayerModifierEmblemSummonWatchVanarTokenQuest.prototype.modifiersContextObjects = null;
 

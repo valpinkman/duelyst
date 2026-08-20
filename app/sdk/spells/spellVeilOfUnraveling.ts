@@ -16,7 +16,7 @@ class SpellVeilOfUnraveling extends SpellDamage {
   declare damageAmount: any;
 
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
-    if ((this.damageAmount == null)) {
+    if (this.damageAmount == null) {
       this.destroyShadowCreepAndSetSpellDamage();
     }
     return super.onApplyEffectToBoardTile(board, x, y, sourceAction);
@@ -27,10 +27,17 @@ class SpellVeilOfUnraveling extends SpellDamage {
     // find friendly shadow creep
     return (() => {
       const result = [];
-      for (var card of Array.from<any>(this.getGameSession().getBoard().getCards(CardType.Tile, true))) {
-        if ((card.getBaseCardId() === Cards.Tile.Shadow) && card.isOwnedBy(this.getOwner())) {
+      for (var card of Array.from<any>(
+        this.getGameSession().getBoard().getCards(CardType.Tile, true),
+      )) {
+        if (card.getBaseCardId() === Cards.Tile.Shadow && card.isOwnedBy(this.getOwner())) {
           this.damageAmount++; // increase damage of spell
-          result.push(this.getGameSession().applyModifierContextObject(ModifierSilence.createContextObject(), card));
+          result.push(
+            this.getGameSession().applyModifierContextObject(
+              ModifierSilence.createContextObject(),
+              card,
+            ),
+          );
         } else {
           result.push(undefined);
         }

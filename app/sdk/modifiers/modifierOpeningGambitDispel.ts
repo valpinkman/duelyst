@@ -17,9 +17,21 @@ class ModifierOpeningGambitDispel extends ModifierOpeningGambit {
   static description = 'Dispel ALL spaces around it';
 
   onOpeningGambit() {
-    const entities = this.getGameSession().getBoard().getCardsWithinRadiusOfPosition(this.getCard().getPosition(), CardType.Entity, 1, false, true);
+    const entities = this.getGameSession()
+      .getBoard()
+      .getCardsWithinRadiusOfPosition(
+        this.getCard().getPosition(),
+        CardType.Entity,
+        1,
+        false,
+        true,
+      );
     return Array.from<any>(entities).map((entity) =>
-      this.getGameSession().applyModifierContextObject(ModifierSilence.createContextObject(), entity));
+      this.getGameSession().applyModifierContextObject(
+        ModifierSilence.createContextObject(),
+        entity,
+      ),
+    );
   }
 }
 ModifierOpeningGambitDispel.prototype.type = 'ModifierOpeningGambitDispel';

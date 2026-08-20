@@ -24,7 +24,13 @@ if (files.length === 0) {
 }
 
 const SEARCH_ROOTS = ['app', 'server', 'worker', 'test', 'scripts', 'cli', 'gulp'];
-const SKIP_DIRS = new Set(['app/vendor', 'app/resources', 'app/original_resources', 'node_modules', 'scripts/codemods']);
+const SKIP_DIRS = new Set([
+  'app/vendor',
+  'app/resources',
+  'app/original_resources',
+  'node_modules',
+  'scripts/codemods',
+]);
 
 function* walk(dir) {
   if (SKIP_DIRS.has(dir)) return;
@@ -43,7 +49,11 @@ for (const file of files) {
     continue;
   }
   try {
-    execFileSync('node', ['node_modules/decaffeinate/bin/decaffeinate', '--disallow-invalid-constructors', file], { stdio: 'pipe' });
+    execFileSync(
+      'node',
+      ['node_modules/decaffeinate/bin/decaffeinate', '--disallow-invalid-constructors', file],
+      { stdio: 'pipe' },
+    );
     // decaffeinate exits 0 even when it refuses a file (e.g. invalid
     // constructors) - only trust it if the .js actually materialized
     if (!fs.existsSync(file.replace(/\.coffee$/, '.js'))) {
@@ -84,7 +94,16 @@ if (converted.length > 0) {
   }
   console.log(`${rewrites} file(s) had .coffee requires rewritten`);
   try {
-    execFileSync('node', ['node_modules/eslint/bin/eslint.js', '--quiet', '--fix', ...converted.map((f) => f.replace(/\.coffee$/, '.js'))], { stdio: 'inherit', cwd: rootDir });
+    execFileSync(
+      'node',
+      [
+        'node_modules/eslint/bin/eslint.js',
+        '--quiet',
+        '--fix',
+        ...converted.map((f) => f.replace(/\.coffee$/, '.js')),
+      ],
+      { stdio: 'inherit', cwd: rootDir },
+    );
   } catch {
     console.error('eslint --fix left unfixable problems; inspect manually');
   }

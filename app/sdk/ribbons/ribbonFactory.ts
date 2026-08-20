@@ -15,7 +15,9 @@ class RibbonFactory {
       return ribbon;
     }
     // no emote found
-    console.error(`RibbonFactory.ribbonForIdentifier - Unknown ribbon identifier: ${identifier}`.red);
+    console.error(
+      `RibbonFactory.ribbonForIdentifier - Unknown ribbon identifier: ${identifier}`.red,
+    );
     return undefined;
   }
 }

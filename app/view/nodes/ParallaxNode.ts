@@ -16,10 +16,7 @@ const ParallaxNode = cc.ParallaxNode.extend({
         const child = point.getChild();
         const offset = point.getOffset();
         const ratio = point.getRatio();
-        child.setPosition(
-          offset.x + pos.x * ratio.x - pos.x,
-          offset.y + pos.y * ratio.y - pos.y,
-        );
+        child.setPosition(offset.x + pos.x * ratio.x - pos.x, offset.y + pos.y * ratio.y - pos.y);
       }
       this._lastPosition = pos;
     }

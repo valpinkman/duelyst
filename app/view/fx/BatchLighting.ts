@@ -51,10 +51,38 @@ const BatchLighting = Batch.extend({
     const { bl } = quad;
     const { br } = quad;
 
-    this.insertVertexAttributes(offset + attributeCount * 0, tl.vertices.x, tl.vertices.y, tl.vertices.z, tl.texCoords.u, tl.texCoords.v); // tl
-    this.insertVertexAttributes(offset + attributeCount * 1, bl.vertices.x, bl.vertices.y, bl.vertices.z, bl.texCoords.u, bl.texCoords.v); // bl
-    this.insertVertexAttributes(offset + attributeCount * 2, tr.vertices.x, tr.vertices.y, tr.vertices.z, tr.texCoords.u, tr.texCoords.v); // tr
-    this.insertVertexAttributes(offset + attributeCount * 3, br.vertices.x, br.vertices.y, br.vertices.z, br.texCoords.u, br.texCoords.v); // br
+    this.insertVertexAttributes(
+      offset + attributeCount * 0,
+      tl.vertices.x,
+      tl.vertices.y,
+      tl.vertices.z,
+      tl.texCoords.u,
+      tl.texCoords.v,
+    ); // tl
+    this.insertVertexAttributes(
+      offset + attributeCount * 1,
+      bl.vertices.x,
+      bl.vertices.y,
+      bl.vertices.z,
+      bl.texCoords.u,
+      bl.texCoords.v,
+    ); // bl
+    this.insertVertexAttributes(
+      offset + attributeCount * 2,
+      tr.vertices.x,
+      tr.vertices.y,
+      tr.vertices.z,
+      tr.texCoords.u,
+      tr.texCoords.v,
+    ); // tr
+    this.insertVertexAttributes(
+      offset + attributeCount * 3,
+      br.vertices.x,
+      br.vertices.y,
+      br.vertices.z,
+      br.texCoords.u,
+      br.texCoords.v,
+    ); // br
   },
   insertVertexAttributes(offset, x, y, z, u, v) {
     const { vertices } = this;
@@ -86,7 +114,7 @@ const BatchLighting = Batch.extend({
 
         const gl = cc._renderContext;
 
-        if (this.getDirty() || batchSize > (this.indices.length / 6)) {
+        if (this.getDirty() || batchSize > this.indices.length / 6) {
           this.rebuild();
         }
 
@@ -97,16 +125,42 @@ const BatchLighting = Batch.extend({
         // use own vertices and texture coords
         gl.bindBuffer(gl.ARRAY_BUFFER, this.verticesBuffer);
         gl.vertexAttribPointer(cc.VERTEX_ATTRIB_POSITION, 3, gl.FLOAT, false, this.stride, 0);
-        gl.vertexAttribPointer(cc.VERTEX_ATTRIB_TEX_COORDS, 2, gl.FLOAT, false, this.stride, 3 * Float32Array.BYTES_PER_ELEMENT);
+        gl.vertexAttribPointer(
+          cc.VERTEX_ATTRIB_TEX_COORDS,
+          2,
+          gl.FLOAT,
+          false,
+          this.stride,
+          3 * Float32Array.BYTES_PER_ELEMENT,
+        );
 
         // get colors and properties from shared batch lights
         gl.bindBuffer(gl.ARRAY_BUFFER, sharedBatch.verticesBuffer);
-        gl.vertexAttribPointer(cc.VERTEX_ATTRIB_COLOR, 4, gl.FLOAT, false, sharedBatch.stride, 5 * Float32Array.BYTES_PER_ELEMENT);
-        gl.vertexAttribPointer(cc.VERTEX_ATTRIB_ORIGIN_RADIUS, 4, gl.FLOAT, false, sharedBatch.stride, 9 * Float32Array.BYTES_PER_ELEMENT);
+        gl.vertexAttribPointer(
+          cc.VERTEX_ATTRIB_COLOR,
+          4,
+          gl.FLOAT,
+          false,
+          sharedBatch.stride,
+          5 * Float32Array.BYTES_PER_ELEMENT,
+        );
+        gl.vertexAttribPointer(
+          cc.VERTEX_ATTRIB_ORIGIN_RADIUS,
+          4,
+          gl.FLOAT,
+          false,
+          sharedBatch.stride,
+          9 * Float32Array.BYTES_PER_ELEMENT,
+        );
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer);
 
-        gl.drawElements(gl.TRIANGLES, batchSize * 6, gl.UNSIGNED_SHORT, offset * 6 * this.indices.BYTES_PER_ELEMENT);
+        gl.drawElements(
+          gl.TRIANGLES,
+          batchSize * 6,
+          gl.UNSIGNED_SHORT,
+          offset * 6 * this.indices.BYTES_PER_ELEMENT,
+        );
         cc.incrementGLDraws(1);
 
         // and don't forget to disable custom attributes manually

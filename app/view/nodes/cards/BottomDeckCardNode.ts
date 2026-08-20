@@ -25,7 +25,6 @@ BottomDeckCardNode.create()
  *************************************************************************** */
 
 const BottomDeckCardNode = SdkNode.extend({
-
   cardBackgroundSprite: null,
   _cardBackgroundSpriteIdentifier: null,
   cardSprite: null,
@@ -64,7 +63,9 @@ const BottomDeckCardNode = SdkNode.extend({
     // mana token
     this.manaTokenSprite = BaseSprite.create(RSX.icon_mana.img);
     this.manaTokenSprite.setAnchorPoint(0.49, 0.45);
-    this.manaTokenSprite.setPosition(cc.p(contentSize.width * 0.5, contentSize.height * 0.5 - 50.0));
+    this.manaTokenSprite.setPosition(
+      cc.p(contentSize.width * 0.5, contentSize.height * 0.5 - 50.0),
+    );
     this.manaTokenSprite.setScale(0.65);
 
     // mana cost
@@ -157,7 +158,10 @@ const BottomDeckCardNode = SdkNode.extend({
   setSdkCardFromHandIndex(handIndex, cardFadeDuration) {
     this.handIndex = handIndex;
     if (this.handIndex != null) {
-      const sdkCard = SDK.GameSession.getInstance().getMyPlayer().getDeck().getCardInHandAtIndex(this.handIndex);
+      const sdkCard = SDK.GameSession.getInstance()
+        .getMyPlayer()
+        .getDeck()
+        .getCardInHandAtIndex(this.handIndex);
       this.setSdkCard(sdkCard, cardFadeDuration);
     } else {
       this.setSdkCard(null, cardFadeDuration);
@@ -209,7 +213,8 @@ const BottomDeckCardNode = SdkNode.extend({
 
         // card options
         const cardOptions = _.extend({}, sdkCard.getCardOptions());
-        cardOptions.spriteIdentifier = sdkCard.getBaseAnimResource() && sdkCard.getBaseAnimResource().idle;
+        cardOptions.spriteIdentifier =
+          sdkCard.getBaseAnimResource() && sdkCard.getBaseAnimResource().idle;
         cardOptions.antiAlias = false;
         if (cardOptions.scale == null) {
           cardOptions.scale = CONFIG.SCALE;
@@ -217,9 +222,13 @@ const BottomDeckCardNode = SdkNode.extend({
 
         // reposition shadow
         if (this.sdkCard instanceof SDK.Unit) {
-          this.shadowSprite.setPosition(cc.p(contentSize.width * 0.5, contentSize.height * 0.5 - CONFIG.DEPTH_OFFSET));
+          this.shadowSprite.setPosition(
+            cc.p(contentSize.width * 0.5, contentSize.height * 0.5 - CONFIG.DEPTH_OFFSET),
+          );
         } else {
-          this.shadowSprite.setPosition(cc.p(contentSize.width * 0.5, contentSize.height * 0.5 - 25.0));
+          this.shadowSprite.setPosition(
+            cc.p(contentSize.width * 0.5, contentSize.height * 0.5 - 25.0),
+          );
         }
 
         // when load completes
@@ -232,8 +241,9 @@ const BottomDeckCardNode = SdkNode.extend({
 
           // position card sprite
           const cardSpritePosition = this.cardSprite.getPosition();
-          cardSpritePosition.x += contentSize.width * 0.5 + ((cardOptions.offset && cardOptions.offset.x) || 0);
-          cardSpritePosition.y += ((cardOptions.offset && cardOptions.offset.y) || 0);
+          cardSpritePosition.x +=
+            contentSize.width * 0.5 + ((cardOptions.offset && cardOptions.offset.x) || 0);
+          cardSpritePosition.y += (cardOptions.offset && cardOptions.offset.y) || 0;
 
           if (sdkCard instanceof SDK.Unit) {
             this.cardSprite.setAnchorPoint(0.5, 0.0);
@@ -252,12 +262,17 @@ const BottomDeckCardNode = SdkNode.extend({
           // fade card sprites
           this.cardSprite.fadeTo(cardFadeDuration, 255.0);
           this.manaCostLabel.fadeTo(cardFadeDuration, 255.0);
-          this.shadowSprite.fadeTo(cardFadeDuration, (SDK.Cards.getIsPrismaticCardId(this.sdkCard.getId()) ? 200.0 : 150.0));
+          this.shadowSprite.fadeTo(
+            cardFadeDuration,
+            SDK.Cards.getIsPrismaticCardId(this.sdkCard.getId()) ? 200.0 : 150.0,
+          );
         });
 
-        if (!CONFIG.SHOW_PRISMATIC_ONLY_ON_INSPECT
-          && !(this.sdkCard instanceof SDK.Tile)
-          && SDK.Cards.getIsPrismaticCardId(this.sdkCard.getId())) {
+        if (
+          !CONFIG.SHOW_PRISMATIC_ONLY_ON_INSPECT &&
+          !(this.sdkCard instanceof SDK.Tile) &&
+          SDK.Cards.getIsPrismaticCardId(this.sdkCard.getId())
+        ) {
           this.showPrismatic(cardFadeDuration);
         }
       }
@@ -338,7 +353,11 @@ const BottomDeckCardNode = SdkNode.extend({
   },
 
   showInactiveAnimState() {
-    if (!this.highlighted && this.sdkCard != null && (!this.selected || !SDK.GameSession.current().isActive())) {
+    if (
+      !this.highlighted &&
+      this.sdkCard != null &&
+      (!this.selected || !SDK.GameSession.current().isActive())
+    ) {
       const animResource = this.sdkCard.getBaseAnimResource();
       if (animResource) {
         if (this.sdkCard instanceof SDK.Unit) {
@@ -489,15 +508,21 @@ const BottomDeckCardNode = SdkNode.extend({
             lastStatChangeData.atk = `${(parseInt(lastAtk) || 0) + parseInt(atkValue)}`;
           } else if (lastAtkSign != null && atkSign != null && lastAtkSign[1] === atkSign[1]) {
             squashed = true;
-            lastStatChangeData.atk = lastAtkSign[1] + ((parseInt(lastAtk && lastAtk.slice(1)) || 0) + parseInt(atkValue.slice(1)));
+            lastStatChangeData.atk =
+              lastAtkSign[1] +
+              ((parseInt(lastAtk && lastAtk.slice(1)) || 0) + parseInt(atkValue.slice(1)));
           }
-        } else if (lastStatChangeData.hpChangeType == null || lastStatChangeData.hpChangeType == hpChangeType) {
+        } else if (
+          lastStatChangeData.hpChangeType == null ||
+          lastStatChangeData.hpChangeType == hpChangeType
+        ) {
           // squash change if signs match
           const lastHP = lastStatChangeData.hp;
           const lastHPSign = lastHP && lastHP.match(/([+-])/);
           const hpSign = hpValue.match(/([+-])/);
           const signsMatchNull = lastHPSign == null && hpSign == null;
-          const signsMatchNotNull = lastHPSign != null && hpSign != null && lastHPSign[1] === hpSign[1];
+          const signsMatchNotNull =
+            lastHPSign != null && hpSign != null && lastHPSign[1] === hpSign[1];
           let signsMatch = signsMatchNull || signsMatchNotNull;
           if (signsMatch) {
             // squash atk
@@ -510,7 +535,9 @@ const BottomDeckCardNode = SdkNode.extend({
                 lastStatChangeData.atk = `${(parseInt(lastAtk) || 0) + parseInt(atkValue)}`;
               } else if (lastAtkSign != null && atkSign != null && lastAtkSign[1] === atkSign[1]) {
                 signsMatch = true;
-                lastStatChangeData.atk = lastAtkSign[1] + ((parseInt(lastAtk && lastAtk.slice(1)) || 0) + parseInt(atkValue.slice(1)));
+                lastStatChangeData.atk =
+                  lastAtkSign[1] +
+                  ((parseInt(lastAtk && lastAtk.slice(1)) || 0) + parseInt(atkValue.slice(1)));
               } else {
                 signsMatch = false;
               }
@@ -522,7 +549,9 @@ const BottomDeckCardNode = SdkNode.extend({
               if (signsMatchNull) {
                 lastStatChangeData.hp = `${(parseInt(lastHP) || 0) + parseInt(hpValue)}`;
               } else if (signsMatchNotNull) {
-                lastStatChangeData.hp = lastHPSign[1] + ((parseInt(lastHP && lastHP.slice(1)) || 0) + parseInt(hpValue.slice(1)));
+                lastStatChangeData.hp =
+                  lastHPSign[1] +
+                  ((parseInt(lastHP && lastHP.slice(1)) || 0) + parseInt(hpValue.slice(1)));
               }
             }
           }
@@ -535,10 +564,12 @@ const BottomDeckCardNode = SdkNode.extend({
         if (!this._statChangeShowing && this._statChangeQueue.length === 1) {
           // delay slightly to allow multiple rapid stat changes to be squashed
           this._statChangeShowing = true;
-          this.runAction(cc.sequence(
-            cc.delayTime(showDuration * 0.25),
-            cc.callFunc(this._showNextStatChange, this),
-          ));
+          this.runAction(
+            cc.sequence(
+              cc.delayTime(showDuration * 0.25),
+              cc.callFunc(this._showNextStatChange, this),
+            ),
+          );
         }
       }
     }
@@ -555,13 +586,16 @@ const BottomDeckCardNode = SdkNode.extend({
     if (this._statChangeQueue.length > 0) {
       this._statChangeShowing = true;
       const statChangeData = this._statChangeQueue.shift();
-      const showDuration = this._statsChangeNode.showChanges(statChangeData.atk, statChangeData.hp, statChangeData.hpChangeType);
+      const showDuration = this._statsChangeNode.showChanges(
+        statChangeData.atk,
+        statChangeData.hp,
+        statChangeData.hpChangeType,
+      );
       if (showDuration > 0.0) {
         // delay and then show next changes
-        this.runAction(cc.sequence(
-          cc.delayTime(showDuration),
-          cc.callFunc(this._showNextStatChange, this),
-        ));
+        this.runAction(
+          cc.sequence(cc.delayTime(showDuration), cc.callFunc(this._showNextStatChange, this)),
+        );
       } else {
         this._showNextStatChange();
       }
@@ -587,14 +621,17 @@ const BottomDeckCardNode = SdkNode.extend({
       // card is usable when is unowned or has starting hand or enough mana on my turn
       if (this.sdkCard.isOwnedByGameSession()) {
         return this.showUsable();
-      } if (!gameLayer.getIsGameActive() || gameLayer.getIsChooseHand()) {
+      }
+      if (!gameLayer.getIsGameActive() || gameLayer.getIsChooseHand()) {
         if (!this.selected) {
           return this.showUsable();
         }
-      } else if (gameLayer.getIsTurnForPlayerId(this.sdkCard.getOwnerId())
-        && !gameLayer.getIsPlayerSelectionLocked()
-        && this.sdkCard.getDoesOwnerHaveEnoughManaToPlay()
-        && this.sdkCard.getIsAllowedToBePlayed()) {
+      } else if (
+        gameLayer.getIsTurnForPlayerId(this.sdkCard.getOwnerId()) &&
+        !gameLayer.getIsPlayerSelectionLocked() &&
+        this.sdkCard.getDoesOwnerHaveEnoughManaToPlay() &&
+        this.sdkCard.getIsAllowedToBePlayed()
+      ) {
         return this.showUsable();
       }
     }
@@ -630,11 +667,15 @@ const BottomDeckCardNode = SdkNode.extend({
     this.whenResourcesReady(this.getCardResourceRequestId()).then((cardResourceRequestId) => {
       if (!this.getAreResourcesValid(cardResourceRequestId)) return; // card has changed
       if (this.cardSprite != null) {
-        this.cardSprite.setShaderProgram(cc.shaderCache.programForKey(cc.SHADER_POSITION_TEXTURECOLOR));
+        this.cardSprite.setShaderProgram(
+          cc.shaderCache.programForKey(cc.SHADER_POSITION_TEXTURECOLOR),
+        );
       }
     });
     if (this.manaTokenSprite) {
-      this.manaTokenSprite.setShaderProgram(cc.shaderCache.programForKey(cc.SHADER_POSITION_TEXTURECOLOR));
+      this.manaTokenSprite.setShaderProgram(
+        cc.shaderCache.programForKey(cc.SHADER_POSITION_TEXTURECOLOR),
+      );
     }
 
     if (this.sdkCard) {
@@ -712,7 +753,12 @@ const BottomDeckCardNode = SdkNode.extend({
       this.highlighted = highlighted;
       this.updateUsability();
 
-      if (CONFIG.SHOW_PRISMATIC_ONLY_ON_INSPECT && this.sdkCard != null && !(this.sdkCard instanceof SDK.Tile) && SDK.Cards.getIsPrismaticCardId(this.sdkCard.getId())) {
+      if (
+        CONFIG.SHOW_PRISMATIC_ONLY_ON_INSPECT &&
+        this.sdkCard != null &&
+        !(this.sdkCard instanceof SDK.Tile) &&
+        SDK.Cards.getIsPrismaticCardId(this.sdkCard.getId())
+      ) {
         if (this.highlighted) {
           this.showPrismatic(CONFIG.ANIMATE_FAST_DURATION);
         } else {
@@ -720,11 +766,15 @@ const BottomDeckCardNode = SdkNode.extend({
         }
       }
 
-      const isPregame = !this.getScene().getGameLayer() || !this.getScene().getGameLayer().getIsGameActive();
+      const isPregame =
+        !this.getScene().getGameLayer() || !this.getScene().getGameLayer().getIsGameActive();
       if (isPregame) {
         if (this.highlighted) {
           this.showActiveAnimState();
-          this.addInjectedVisualStateTagWithId(CardNodeVisualStateTag.createShowGlowForPlayerTag(), this._cardNodeGlowTagId);
+          this.addInjectedVisualStateTagWithId(
+            CardNodeVisualStateTag.createShowGlowForPlayerTag(),
+            this._cardNodeGlowTagId,
+          );
         } else {
           this.showInactiveAnimState();
           this.removeInjectedVisualStateTagById(this._cardNodeGlowTagId);
@@ -737,7 +787,10 @@ const BottomDeckCardNode = SdkNode.extend({
           }
         }
       } else if (!this.selected) {
-        const playable = this.sdkCard && this.getScene().getGameLayer().getIsMyTurn() && this.sdkCard.getDoesOwnerHaveEnoughManaToPlay();
+        const playable =
+          this.sdkCard &&
+          this.getScene().getGameLayer().getIsMyTurn() &&
+          this.sdkCard.getDoesOwnerHaveEnoughManaToPlay();
         if (!this.highlighted) {
           this.showInactiveAnimState();
 
@@ -752,10 +805,16 @@ const BottomDeckCardNode = SdkNode.extend({
 
           if (playable) {
             this.showCardBackground(RSX.bottom_deck_card_background_highlight.img);
-            this.addInjectedVisualStateTagWithId(CardNodeVisualStateTag.createShowGlowForPlayerTag(), this._cardNodeGlowTagId);
+            this.addInjectedVisualStateTagWithId(
+              CardNodeVisualStateTag.createShowGlowForPlayerTag(),
+              this._cardNodeGlowTagId,
+            );
           } else {
             this.showCardBackground(RSX.bottom_deck_card_background_disabled.img);
-            this.addInjectedVisualStateTagWithId(CardNodeVisualStateTag.createShowGlowForOpponentTag(), this._cardNodeGlowTagId);
+            this.addInjectedVisualStateTagWithId(
+              CardNodeVisualStateTag.createShowGlowForOpponentTag(),
+              this._cardNodeGlowTagId,
+            );
           }
         }
       }
@@ -780,7 +839,10 @@ const BottomDeckCardNode = SdkNode.extend({
           this.removeMulliganState();
         }
       } else {
-        const playable = this.sdkCard && this.getScene().getGameLayer().getIsMyTurn() && this.sdkCard.getDoesOwnerHaveEnoughManaToPlay();
+        const playable =
+          this.sdkCard &&
+          this.getScene().getGameLayer().getIsMyTurn() &&
+          this.sdkCard.getDoesOwnerHaveEnoughManaToPlay();
 
         if (this.selected) {
           // update by selected
@@ -788,10 +850,16 @@ const BottomDeckCardNode = SdkNode.extend({
 
           if (playable) {
             this.showCardBackground(RSX.bottom_deck_card_background_highlight.img);
-            this.addInjectedVisualStateTagWithId(CardNodeVisualStateTag.createShowGlowForPlayerTag(), this._cardNodeGlowTagId);
+            this.addInjectedVisualStateTagWithId(
+              CardNodeVisualStateTag.createShowGlowForPlayerTag(),
+              this._cardNodeGlowTagId,
+            );
           } else {
             this.showCardBackground(RSX.bottom_deck_card_background_disabled.img);
-            this.addInjectedVisualStateTagWithId(CardNodeVisualStateTag.createShowGlowForOpponentTag(), this._cardNodeGlowTagId);
+            this.addInjectedVisualStateTagWithId(
+              CardNodeVisualStateTag.createShowGlowForOpponentTag(),
+              this._cardNodeGlowTagId,
+            );
           }
         } else {
           // when highlighted, allow highlight to take over
@@ -832,8 +900,15 @@ const BottomDeckCardNode = SdkNode.extend({
     this._containerNode.stopActionByTag(CONFIG.MOVE_TAG);
 
     // move slightly to show selection state
-    if (!UtilsPosition.getPositionsAreEqualAprox(targetScreenPosition, this._containerNode.getPosition())) {
-      const moveAction = cc.moveTo(CONFIG.FADE_FAST_DURATION, targetScreenPosition).easing(cc.easeSineOut());
+    if (
+      !UtilsPosition.getPositionsAreEqualAprox(
+        targetScreenPosition,
+        this._containerNode.getPosition(),
+      )
+    ) {
+      const moveAction = cc
+        .moveTo(CONFIG.FADE_FAST_DURATION, targetScreenPosition)
+        .easing(cc.easeSineOut());
       moveAction.setTag(CONFIG.MOVE_TAG);
       this._containerNode.runAction(moveAction);
     }
@@ -848,8 +923,15 @@ const BottomDeckCardNode = SdkNode.extend({
 
     this._containerNode.stopActionByTag(CONFIG.MOVE_TAG);
     const targetScreenPosition = cc.p();
-    if (!UtilsPosition.getPositionsAreEqualAprox(targetScreenPosition, this._containerNode.getPosition())) {
-      const moveAction = cc.moveTo(CONFIG.FADE_FAST_DURATION, targetScreenPosition).easing(cc.easeSineOut());
+    if (
+      !UtilsPosition.getPositionsAreEqualAprox(
+        targetScreenPosition,
+        this._containerNode.getPosition(),
+      )
+    ) {
+      const moveAction = cc
+        .moveTo(CONFIG.FADE_FAST_DURATION, targetScreenPosition)
+        .easing(cc.easeSineOut());
       moveAction.setTag(CONFIG.MOVE_TAG);
       this._containerNode.runAction(moveAction);
     }
@@ -878,7 +960,9 @@ const BottomDeckCardNode = SdkNode.extend({
     }
 
     if (this.sdkCard) {
-      if (showDelay == null) { showDelay = 0.0; }
+      if (showDelay == null) {
+        showDelay = 0.0;
+      }
 
       // generate draw FX
       const drawFXSprites = NodeFactory.createFX(DATA.dataForIdentifiers('FX.Game.CardDrawFX'));
@@ -888,7 +972,9 @@ const BottomDeckCardNode = SdkNode.extend({
       showDuration = drawFXDelays.showDelay * 0.5 + CONFIG.FADE_FAST_DURATION * 2;
 
       // get resources promise
-      const whenCardResourcesReadyPromise = this.whenResourcesReady(this.getCardResourceRequestId());
+      const whenCardResourcesReadyPromise = this.whenResourcesReady(
+        this.getCardResourceRequestId(),
+      );
 
       // hide elements
       whenCardResourcesReadyPromise.then((cardResourceRequestId) => {
@@ -913,7 +999,10 @@ const BottomDeckCardNode = SdkNode.extend({
 
             // fade elements in
             this.manaCostLabel.fadeTo(CONFIG.FADE_FAST_DURATION, 255.0);
-            this.shadowSprite.fadeTo(CONFIG.FADE_FAST_DURATION, (SDK.Cards.getIsPrismaticCardId(this.sdkCard.getId()) ? 200.0 : 150.0));
+            this.shadowSprite.fadeTo(
+              CONFIG.FADE_FAST_DURATION,
+              SDK.Cards.getIsPrismaticCardId(this.sdkCard.getId()) ? 200.0 : 150.0,
+            );
 
             // set sprite draw visuals
             this.cardSprite.setLeveled(true);
@@ -1049,8 +1138,15 @@ const BottomDeckCardNode = SdkNode.extend({
         // move upwards
         this._containerNode.stopActionByTag(CONFIG.MOVE_TAG);
         const targetScreenPosition = cc.p(40.0, 0.0);
-        if (!UtilsPosition.getPositionsAreEqualAprox(targetScreenPosition, this._containerNode.getPosition())) {
-          const moveAction = cc.moveTo(CONFIG.FADE_FAST_DURATION, targetScreenPosition).easing(cc.easeSineOut());
+        if (
+          !UtilsPosition.getPositionsAreEqualAprox(
+            targetScreenPosition,
+            this._containerNode.getPosition(),
+          )
+        ) {
+          const moveAction = cc
+            .moveTo(CONFIG.FADE_FAST_DURATION, targetScreenPosition)
+            .easing(cc.easeSineOut());
           moveAction.setTag(CONFIG.MOVE_TAG);
           this._containerNode.runAction(moveAction);
         }
@@ -1098,7 +1194,10 @@ const BottomDeckCardNode = SdkNode.extend({
     SdkNode.prototype._handleDeactivatedVisualStateTags.call(this, deactivatedVisualStateTags);
     for (let i = 0; i < deactivatedVisualStateTags.length; i++) {
       const currentTag = deactivatedVisualStateTags[i];
-      if (currentTag.tagType == CardNodeVisualStateTag.showGlowForPlayerTagType || currentTag.tagType == CardNodeVisualStateTag.showGlowForOpponentTagType) {
+      if (
+        currentTag.tagType == CardNodeVisualStateTag.showGlowForPlayerTagType ||
+        currentTag.tagType == CardNodeVisualStateTag.showGlowForOpponentTagType
+      ) {
         this.whenResourcesReady(this.getCardResourceRequestId()).then((cardResourceRequestId) => {
           if (!this.getAreResourcesValid(cardResourceRequestId)) return; // card has changed
           if (this.cardSprite != null) {
@@ -1133,7 +1232,6 @@ const BottomDeckCardNode = SdkNode.extend({
   },
 
   // endregion visual effect state methods
-
 });
 
 BottomDeckCardNode.create = function (sdkCard, node) {

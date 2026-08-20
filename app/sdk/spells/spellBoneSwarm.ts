@@ -25,7 +25,7 @@ class SpellBoneSwarm extends Spell {
     const applyEffectPosition = { x, y };
     const general = board.getCardAtPosition(applyEffectPosition, this.targetType);
 
-    if ((general != null) && general.getIsGeneral()) {
+    if (general != null && general.getIsGeneral()) {
       // damage enemy general
       let damageAction = new DamageAction(this.getGameSession());
       damageAction.setOwnerId(this.getOwnerId());
@@ -36,7 +36,9 @@ class SpellBoneSwarm extends Spell {
       // damage all enemy nearby minions around General (friendly to the General you are targeting)
       return (() => {
         const result = [];
-        for (var entity of Array.from<any>(board.getFriendlyEntitiesAroundEntity(general, CardType.Unit, 1))) {
+        for (var entity of Array.from<any>(
+          board.getFriendlyEntitiesAroundEntity(general, CardType.Unit, 1),
+        )) {
           damageAction = new DamageAction(this.getGameSession());
           damageAction.setOwnerId(this.ownerId);
           damageAction.setTarget(entity);
@@ -53,7 +55,9 @@ class SpellBoneSwarm extends Spell {
 
     // only affects enemy General
     const enemyGeneral = this.getGameSession().getGeneralForOpponentOfPlayerId(this.getOwnerId());
-    if (enemyGeneral != null) { applyEffectPositions.push(enemyGeneral.getPosition()); }
+    if (enemyGeneral != null) {
+      applyEffectPositions.push(enemyGeneral.getPosition());
+    }
 
     return applyEffectPositions;
   }

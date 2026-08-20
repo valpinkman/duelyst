@@ -20,8 +20,12 @@ class PlayerModifierEmblemEndTurnWatch extends PlayerModifierEmblem {
   static type = 'PlayerModifierEmblemEndTurnWatch';
 
   static createContextObject(activeOnMyTurn, activeOnEnemyTurn, options) {
-    if (activeOnMyTurn == null) { activeOnMyTurn = true; }
-    if (activeOnEnemyTurn == null) { activeOnEnemyTurn = false; }
+    if (activeOnMyTurn == null) {
+      activeOnMyTurn = true;
+    }
+    if (activeOnEnemyTurn == null) {
+      activeOnEnemyTurn = false;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.activeOnMyTurn = activeOnMyTurn;
     contextObject.activeOnEnemyTurn = activeOnEnemyTurn;
@@ -37,9 +41,10 @@ class PlayerModifierEmblemEndTurnWatch extends PlayerModifierEmblem {
       const endTurnAction = executingAction.getMatchingAncestorAction(EndTurnAction);
       if (endTurnAction != null) {
         const playedByAction = this.getCard().getAppliedToBoardByAction();
-        if ((playedByAction == null)) {
+        if (playedByAction == null) {
           return this.onTurnWatch(endTurnAction);
-        } if (playedByAction.getIndex() < endTurnAction.getIndex()) {
+        }
+        if (playedByAction.getIndex() < endTurnAction.getIndex()) {
           return this.onTurnWatch(executingAction);
         }
       }
@@ -48,7 +53,12 @@ class PlayerModifierEmblemEndTurnWatch extends PlayerModifierEmblem {
 
   onEndTurn(e) {
     super.onEndTurn(e);
-    if ((this.activeOnMyTurn && (this.getGameSession().getCurrentPlayer().getPlayerId() === this.getCard().getOwnerId())) || (this.activeOnEnemyTurn && (this.getGameSession().getCurrentPlayer().getPlayerId() !== this.getCard().getOwnerId()))) {
+    if (
+      (this.activeOnMyTurn &&
+        this.getGameSession().getCurrentPlayer().getPlayerId() === this.getCard().getOwnerId()) ||
+      (this.activeOnEnemyTurn &&
+        this.getGameSession().getCurrentPlayer().getPlayerId() !== this.getCard().getOwnerId())
+    ) {
       return this.onTurnWatch(this.getGameSession().getExecutingAction());
     }
   }

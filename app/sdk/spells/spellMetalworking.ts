@@ -45,10 +45,19 @@ class SpellMetalworking extends Spell {
       }
     }
     if (potentialArtifacts.length > 0) {
-      const artifactToPlay = potentialArtifacts[this.getGameSession().getRandomIntegerForExecution(potentialArtifacts.length)];
+      const artifactToPlay =
+        potentialArtifacts[
+          this.getGameSession().getRandomIntegerForExecution(potentialArtifacts.length)
+        ];
 
       if (artifactToPlay != null) {
-        const playCardAction = new PlayCardSilentlyAction(this.getGameSession(), this.getOwnerId(), x, y, artifactToPlay.createNewCardData());
+        const playCardAction = new PlayCardSilentlyAction(
+          this.getGameSession(),
+          this.getOwnerId(),
+          x,
+          y,
+          artifactToPlay.createNewCardData(),
+        );
         playCardAction.setSource(this);
         return this.getGameSession().executeAction(playCardAction);
       }

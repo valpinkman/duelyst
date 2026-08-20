@@ -21,7 +21,6 @@ var QuestItemView = require('./quest_item');
 var QuestLogEmptyView = require('./quest_log_empty');
 
 var QuestLogView = Backbone.Marionette.CompositeView.extend({
-
   tagName: 'ul',
   className: 'quest-log-list',
 
@@ -55,7 +54,9 @@ var QuestLogView = Backbone.Marionette.CompositeView.extend({
 
     var model = this.collection.get(index);
 
-    audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
+    audio_engine
+      .current()
+      .play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
 
     $quest.removeClass('animateIn').addClass('replacing');
     this.listenToOnce(model, 'change', function () {
@@ -65,11 +66,12 @@ var QuestLogView = Backbone.Marionette.CompositeView.extend({
     });
 
     var request = QuestsManager.getInstance().requestQuestReplace(index);
-    request.done(function (response) {
-      // nada
-    }.bind(this));
+    request.done(
+      function (response) {
+        // nada
+      }.bind(this),
+    );
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

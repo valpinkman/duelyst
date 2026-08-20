@@ -14,7 +14,6 @@ PrismaticPlayCardNode.create()
  *************************************************************************** */
 
 const PrismaticPlayCardNode = cc.Node.extend({
-
   _animationDuration: 0.5,
   _gradientFloorSprite: null,
   _particles: null,
@@ -112,7 +111,9 @@ const PrismaticPlayCardNode = cc.Node.extend({
   },
 
   getRequiredResources() {
-    return cc.Node.prototype.getRequiredResources.call(this).concat(PKGS.getPkgForIdentifier('prismatic_play_card'));
+    return cc.Node.prototype.getRequiredResources
+      .call(this)
+      .concat(PKGS.getPkgForIdentifier('prismatic_play_card'));
   },
 
   onEnter() {
@@ -149,26 +150,30 @@ const PrismaticPlayCardNode = cc.Node.extend({
   _showFloorGradient(duration, delay) {
     this._gradientFloorSprite.setVisible(false);
     this._gradientFloorSprite.setOpacity(0.0);
-    this._gradientFloorSprite.runAction(cc.sequence(
-      cc.delayTime(delay),
-      cc.show(),
-      cc.fadeTo(duration, 255.0).easing(cc.easeCubicActionOut()),
-      cc.fadeTo(duration, 0.0).easing(cc.easeCubicActionIn()),
-      cc.hide(),
-    ));
+    this._gradientFloorSprite.runAction(
+      cc.sequence(
+        cc.delayTime(delay),
+        cc.show(),
+        cc.fadeTo(duration, 255.0).easing(cc.easeCubicActionOut()),
+        cc.fadeTo(duration, 0.0).easing(cc.easeCubicActionIn()),
+        cc.hide(),
+      ),
+    );
 
     // start voronoi at half phase to show it exploding out
     const voronoiPhase = 0.5;
     this._voronoiPrismaticSprite.setPhase(voronoiPhase);
-    this._voronoiPrismaticSprite.runAction(cc.sequence(
-      cc.delayTime(delay),
-      cc.show(),
-      cc.spawn(
-        cc.fadeTo(duration * 0.5, 255.0).easing(cc.easeCubicActionOut()),
-        cc.actionTween(duration, 'phase', voronoiPhase, 1.0),
+    this._voronoiPrismaticSprite.runAction(
+      cc.sequence(
+        cc.delayTime(delay),
+        cc.show(),
+        cc.spawn(
+          cc.fadeTo(duration * 0.5, 255.0).easing(cc.easeCubicActionOut()),
+          cc.actionTween(duration, 'phase', voronoiPhase, 1.0),
+        ),
+        cc.hide(),
       ),
-      cc.hide(),
-    ));
+    );
   },
 
   _showSoftRays(duration, delay) {
@@ -181,26 +186,28 @@ const PrismaticPlayCardNode = cc.Node.extend({
     const rayOpacity = this._rayOpacity;
     const rayScale = this._rayScale;
     sprite.setVisible(false);
-    sprite.runAction(cc.sequence(
-      cc.delayTime(delay),
-      cc.callFunc(() => {
-        sprite.setPosition(basePosition.x, basePosition.y - rayOffset);
-        sprite.setOpacity(0.0);
-        sprite.setScale(rayScale);
-        sprite.setScaleY(rayScale * 0.75);
-        sprite.setVisible(true);
-      }),
-      cc.spawn(
-        cc.fadeTo(duration, rayOpacity),
-        cc.scaleTo(duration, rayScale, rayScale).easing(cc.easeCubicActionOut()),
-        cc.moveBy(duration, 0.0, rayOffset).easing(cc.easeOut(2.0)),
-        cc.sequence(
-          cc.delayTime(duration * 0.5),
-          cc.fadeTo(duration * 0.5, 0.0).easing(cc.easeCubicActionIn()),
+    sprite.runAction(
+      cc.sequence(
+        cc.delayTime(delay),
+        cc.callFunc(() => {
+          sprite.setPosition(basePosition.x, basePosition.y - rayOffset);
+          sprite.setOpacity(0.0);
+          sprite.setScale(rayScale);
+          sprite.setScaleY(rayScale * 0.75);
+          sprite.setVisible(true);
+        }),
+        cc.spawn(
+          cc.fadeTo(duration, rayOpacity),
+          cc.scaleTo(duration, rayScale, rayScale).easing(cc.easeCubicActionOut()),
+          cc.moveBy(duration, 0.0, rayOffset).easing(cc.easeOut(2.0)),
+          cc.sequence(
+            cc.delayTime(duration * 0.5),
+            cc.fadeTo(duration * 0.5, 0.0).easing(cc.easeCubicActionIn()),
+          ),
         ),
+        cc.hide(),
       ),
-      cc.hide(),
-    ));
+    );
   },
 
   _showHardRays(duration, delay) {
@@ -210,45 +217,48 @@ const PrismaticPlayCardNode = cc.Node.extend({
 
     const particles = this._particles;
     particles.stopSystem();
-    particles.runAction(cc.sequence(
-      cc.delayTime(delay),
-      cc.callFunc(() => {
-        particles.resetSystem();
-      }),
-      cc.delayTime(duration),
-      cc.callFunc(() => {
-        particles.stopSystem();
-      }),
-    ));
+    particles.runAction(
+      cc.sequence(
+        cc.delayTime(delay),
+        cc.callFunc(() => {
+          particles.resetSystem();
+        }),
+        cc.delayTime(duration),
+        cc.callFunc(() => {
+          particles.stopSystem();
+        }),
+      ),
+    );
   },
 
   _showHardRay(sprite, duration, delay, basePosition, rayOffset) {
     const rayOpacity = this._rayOpacity;
     const rayScale = this._rayScale;
     sprite.setVisible(false);
-    sprite.runAction(cc.sequence(
-      cc.delayTime(delay),
-      cc.callFunc(() => {
-        sprite.setPosition(basePosition.x, basePosition.y - rayOffset * 0.2);
-        sprite.setOpacity(rayOpacity);
-        sprite.setScale(rayScale);
-        sprite.setScaleY(rayScale * 0.5);
-        sprite.setVisible(true);
-      }),
-      cc.spawn(
-        cc.scaleTo(duration, rayScale, rayScale).easing(cc.easeExponentialOut()),
-        cc.moveBy(duration, 0.0, rayOffset).easing(cc.easeCubicActionIn()),
-        cc.sequence(
-          cc.delayTime(duration * 0.5),
-          cc.fadeTo(duration * 0.4, 0.0).easing(cc.easeCubicActionOut()),
+    sprite.runAction(
+      cc.sequence(
+        cc.delayTime(delay),
+        cc.callFunc(() => {
+          sprite.setPosition(basePosition.x, basePosition.y - rayOffset * 0.2);
+          sprite.setOpacity(rayOpacity);
+          sprite.setScale(rayScale);
+          sprite.setScaleY(rayScale * 0.5);
+          sprite.setVisible(true);
+        }),
+        cc.spawn(
+          cc.scaleTo(duration, rayScale, rayScale).easing(cc.easeExponentialOut()),
+          cc.moveBy(duration, 0.0, rayOffset).easing(cc.easeCubicActionIn()),
+          cc.sequence(
+            cc.delayTime(duration * 0.5),
+            cc.fadeTo(duration * 0.4, 0.0).easing(cc.easeCubicActionOut()),
+          ),
         ),
+        cc.hide(),
       ),
-      cc.hide(),
-    ));
+    );
   },
 
   /* endregion ANIMATION */
-
 });
 
 PrismaticPlayCardNode.create = function (node) {

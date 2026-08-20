@@ -132,7 +132,10 @@ var Light = cc.Node.extend({
   getLifeDuration() {
     // life duration is complete fade cycle
     const { duration } = this;
-    const fadeDelay = Math.max(0.0, duration - duration * (this.fadeInDurationPct + this.fadeOutDurationPct));
+    const fadeDelay = Math.max(
+      0.0,
+      duration - duration * (this.fadeInDurationPct + this.fadeOutDurationPct),
+    );
     const fadeInDuration = this.fadeInDuration + duration * this.fadeInDurationPct;
     const fadeOutDuration = this.fadeOutDuration + duration * this.fadeOutDurationPct;
 
@@ -149,7 +152,10 @@ var Light = cc.Node.extend({
   startAutoFade() {
     const sequenceSteps = [];
     const { duration } = this;
-    const fadeDelay = Math.max(0.0, duration - duration * (this.fadeInDurationPct + this.fadeOutDurationPct));
+    const fadeDelay = Math.max(
+      0.0,
+      duration - duration * (this.fadeInDurationPct + this.fadeOutDurationPct),
+    );
     const fadeInDuration = this.fadeInDuration + duration * this.fadeInDurationPct;
     const fadeOutDuration = this.fadeOutDuration + duration * this.fadeOutDurationPct;
 
@@ -162,7 +168,11 @@ var Light = cc.Node.extend({
       if (fadeDelay > 0.0) {
         sequenceSteps.push(cc.delayTime(fadeDelay));
       }
-      sequenceSteps.push(cc.callFunc(function () { this.destroy(fadeOutDuration); }, this));
+      sequenceSteps.push(
+        cc.callFunc(function () {
+          this.destroy(fadeOutDuration);
+        }, this),
+      );
     }
 
     if (sequenceSteps.length > 0) {
@@ -218,7 +228,7 @@ Light.WebGLRenderCmd = function (renderable) {
   this._dirtyBounds = true;
   this._dirtyProperties = false;
 };
-const proto = Light.WebGLRenderCmd.prototype = Object.create(cc.Node.WebGLRenderCmd.prototype);
+const proto = (Light.WebGLRenderCmd.prototype = Object.create(cc.Node.WebGLRenderCmd.prototype));
 proto.constructor = Light.WebGLRenderCmd;
 
 proto.getMVQuad = function () {
@@ -245,9 +255,9 @@ proto.setBoundsDirty = function () {
 };
 
 proto._syncStatus = function (parentCmd) {
-  const flags = cc.Node._dirtyFlags; let
-    locFlag = this._dirtyFlag;
-  if (parentCmd && (parentCmd._dirtyFlag & flags.transformDirty)) {
+  const flags = cc.Node._dirtyFlags;
+  let locFlag = this._dirtyFlag;
+  if (parentCmd && parentCmd._dirtyFlag & flags.transformDirty) {
     locFlag |= flags.transformDirty;
   }
   const transformDirty = locFlag & flags.transformDirty;
@@ -263,8 +273,8 @@ proto._syncStatus = function (parentCmd) {
   }
 };
 proto.updateStatus = function () {
-  const flags = cc.Node._dirtyFlags; const
-    locFlag = this._dirtyFlag;
+  const flags = cc.Node._dirtyFlags;
+  const locFlag = this._dirtyFlag;
   const transformDirty = locFlag & flags.transformDirty;
 
   cc.Node.WebGLRenderCmd.prototype.updateStatus.call(this);

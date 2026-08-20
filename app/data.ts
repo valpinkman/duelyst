@@ -27,13 +27,13 @@ DATA.dataForIdentifier = function (identifier) {
     let data = _cache[identifier];
 
     // find and cache data for identifier
-    if ((data == null)) {
+    if (data == null) {
       const keys = identifier.split('.');
 
       data = DATA;
       for (const key of Array.from<any>(keys)) {
         data = data[key];
-        if ((data == null)) {
+        if (data == null) {
           return null;
         }
       }
@@ -55,10 +55,14 @@ DATA.dataForIdentifiers = function (identifiers) {
   let data = [];
 
   if (identifiers) {
-    if (!_.isArray(identifiers)) { identifiers = [identifiers]; }
+    if (!_.isArray(identifiers)) {
+      identifiers = [identifiers];
+    }
     for (const identifier of Array.from<any>(identifiers)) {
       const datum = DATA.dataForIdentifier(identifier);
-      if (datum != null) { data = data.concat(datum); }
+      if (datum != null) {
+        data = data.concat(datum);
+      }
     }
   }
 
@@ -74,14 +78,20 @@ DATA.dataForIdentifiers = function (identifiers) {
   @see DATA.dataForIdentifier
 */
 DATA.dataForIdentifiersWithFilter = function (identifiers, filterKeys, foundFilterKeys) {
-  if (foundFilterKeys == null) { foundFilterKeys = {}; }
+  if (foundFilterKeys == null) {
+    foundFilterKeys = {};
+  }
   let data = [];
 
   if (identifiers && filterKeys) {
     // enforce arrays
-    if (!_.isArray(identifiers)) { identifiers = [identifiers]; }
-    if (!_.isArray(filterKeys)) { filterKeys = [filterKeys]; }
-    if ((identifiers.length > 0) && (filterKeys.length > 0)) {
+    if (!_.isArray(identifiers)) {
+      identifiers = [identifiers];
+    }
+    if (!_.isArray(filterKeys)) {
+      filterKeys = [filterKeys];
+    }
+    if (identifiers.length > 0 && filterKeys.length > 0) {
       // find data for each identifier and filter
       // work from end of identifiers backwards
       // until we've found data for each filter once
@@ -98,10 +108,16 @@ DATA.dataForIdentifiersWithFilter = function (identifiers, filterKeys, foundFilt
             let datum = _filterCache[filteredIdentifier];
 
             // find and cache
-            if ((datum == null)) {
-              if (lastDotIndex == null) { lastDotIndex = identifier.lastIndexOf('.'); }
-              if (lastKey == null) { lastKey = (lastDotIndex !== -1 ? identifier.slice(lastDotIndex + 1) : identifier); }
-              datum = (_filterCache[filteredIdentifier] = DATA.dataForIdentifier((lastKey !== filterKey ? filteredIdentifier : identifier)));
+            if (datum == null) {
+              if (lastDotIndex == null) {
+                lastDotIndex = identifier.lastIndexOf('.');
+              }
+              if (lastKey == null) {
+                lastKey = lastDotIndex !== -1 ? identifier.slice(lastDotIndex + 1) : identifier;
+              }
+              datum = _filterCache[filteredIdentifier] = DATA.dataForIdentifier(
+                lastKey !== filterKey ? filteredIdentifier : identifier,
+              );
             }
 
             if (datum != null) {
@@ -125,18 +141,30 @@ DATA.dataForIdentifiersWithFilter = function (identifiers, filterKeys, foundFilt
   @returns {Array} array of data if found, else empty array
   @see DATA.dataForIdentifiersWithFilter
 */
-DATA.dataForMappedIdentifiersWithFilter = function (filterKeyedIdentifiers, identifierKey, filterKeysKey) {
-  if (identifierKey == null) { identifierKey = 'identifiers'; }
-  if (filterKeysKey == null) { filterKeysKey = 'filterKeys'; }
+DATA.dataForMappedIdentifiersWithFilter = function (
+  filterKeyedIdentifiers,
+  identifierKey,
+  filterKeysKey,
+) {
+  if (identifierKey == null) {
+    identifierKey = 'identifiers';
+  }
+  if (filterKeysKey == null) {
+    filterKeysKey = 'filterKeys';
+  }
   let data = [];
   if (filterKeyedIdentifiers) {
     const foundFilterKeys = {};
 
     // enforce arrays
-    if (!_.isArray(filterKeyedIdentifiers)) { filterKeyedIdentifiers = [filterKeyedIdentifiers]; }
+    if (!_.isArray(filterKeyedIdentifiers)) {
+      filterKeyedIdentifiers = [filterKeyedIdentifiers];
+    }
 
     for (const map of Array.from<any>(filterKeyedIdentifiers)) {
-      data = data.concat(DATA.dataForIdentifiersWithFilter(map[identifierKey], map[filterKeysKey], foundFilterKeys));
+      data = data.concat(
+        DATA.dataForIdentifiersWithFilter(map[identifierKey], map[filterKeysKey], foundFilterKeys),
+      );
     }
   }
 
@@ -153,18 +181,24 @@ DATA.getFilterKeyedIdentifiers = function (identifiers, filterKeys) {
   const filterKeyedIdentifiers = [];
   if (identifiers && filterKeys) {
     // enforce arrays
-    if (!_.isArray(identifiers)) { identifiers = [identifiers]; }
-    if (!_.isArray(filterKeys)) { filterKeys = [filterKeys]; }
+    if (!_.isArray(identifiers)) {
+      identifiers = [identifiers];
+    }
+    if (!_.isArray(filterKeys)) {
+      filterKeys = [filterKeys];
+    }
 
     // for each identifier and filterKey, merge into a single identifier
-    if ((identifiers.length > 0) && (filterKeys.length > 0)) {
+    if (identifiers.length > 0 && filterKeys.length > 0) {
       for (let i = identifiers.length - 1; i >= 0; i--) {
         const identifier = identifiers[i];
         const lastDotIndex = identifier.lastIndexOf('.');
-        const lastKey = (lastDotIndex !== -1 ? identifier.slice(lastDotIndex + 1) : identifier);
+        const lastKey = lastDotIndex !== -1 ? identifier.slice(lastDotIndex + 1) : identifier;
         for (const filterKey of Array.from<any>(filterKeys)) {
           let filterKeyedIdentifier = identifier;
-          if (lastKey !== filterKey) { filterKeyedIdentifier += `.${filterKey}`; }
+          if (lastKey !== filterKey) {
+            filterKeyedIdentifier += `.${filterKey}`;
+          }
           filterKeyedIdentifiers.push(filterKeyedIdentifier);
         }
       }
@@ -179,7 +213,7 @@ DATA.getFilterKeyedIdentifiers = function (identifiers, filterKeys) {
 */
 DATA.releaseCaches = function () {
   _cache = {};
-  return _filterCache = {};
+  return (_filterCache = {});
 };
 
 module.exports = DATA;

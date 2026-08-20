@@ -26,7 +26,9 @@ class ModifierAnySummonWatchFromActionBarApplyModifiersToSelf extends ModifierAn
 
   static getDescription(modifierContextObject) {
     if (modifierContextObject) {
-      return i18next.t('modifiers.any_summon_watch_from_action_bar_apply_modifiers_def', { desc: this.buffDescription });
+      return i18next.t('modifiers.any_summon_watch_from_action_bar_apply_modifiers_def', {
+        desc: this.buffDescription,
+      });
     }
     return this.description;
   }
@@ -34,12 +36,19 @@ class ModifierAnySummonWatchFromActionBarApplyModifiersToSelf extends ModifierAn
   onSummonWatch(action) {
     if (this.modifiersContextObjects != null) {
       return Array.from<any>(this.modifiersContextObjects).map((modifierContextObject) =>
-        this.getGameSession().applyModifierContextObject(modifierContextObject, this.getCard()));
+        this.getGameSession().applyModifierContextObject(modifierContextObject, this.getCard()),
+      );
     }
   }
 }
-ModifierAnySummonWatchFromActionBarApplyModifiersToSelf.prototype.type = 'ModifierAnySummonWatchFromActionBarApplyModifiersToSelf';
-ModifierAnySummonWatchFromActionBarApplyModifiersToSelf.description = i18next.t('modifiers.any_summon_watch_from_action_bar_apply_modifiers_def');
-ModifierAnySummonWatchFromActionBarApplyModifiersToSelf.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierAnySummonWatchFromActionBarApplyModifiersToSelf.prototype.type =
+  'ModifierAnySummonWatchFromActionBarApplyModifiersToSelf';
+ModifierAnySummonWatchFromActionBarApplyModifiersToSelf.description = i18next.t(
+  'modifiers.any_summon_watch_from_action_bar_apply_modifiers_def',
+);
+ModifierAnySummonWatchFromActionBarApplyModifiersToSelf.prototype.fxResource = [
+  'FX.Modifiers.ModifierSummonWatch',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 
 module.exports = ModifierAnySummonWatchFromActionBarApplyModifiersToSelf;

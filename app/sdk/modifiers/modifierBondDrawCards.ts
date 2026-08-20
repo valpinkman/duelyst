@@ -28,7 +28,11 @@ class ModifierBondDrawCards extends ModifierBond {
   onBond() {
     return (() => {
       const result = [];
-      for (let i = 0, end = this.numCards, asc = end >= 0; asc ? i < end : i > end; asc ? i++ : i--) {
+      for (
+        let i = 0, end = this.numCards, asc = end >= 0;
+        asc ? i < end : i > end;
+        asc ? i++ : i--
+      ) {
         var deck = this.getGameSession().getPlayerById(this.getCard().getOwnerId()).getDeck();
         result.push(this.getCard().getGameSession().executeAction(deck.actionDrawCard()));
       }

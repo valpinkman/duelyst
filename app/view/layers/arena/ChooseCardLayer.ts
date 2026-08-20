@@ -23,7 +23,6 @@ const FXRarityFlareSprite = require('../../nodes/fx/FXRarityFlareSprite');
  *************************************************************************** */
 
 const ChooseCardLayer = BaseLayer.extend({
-
   delegate: null,
   _currentlyHighlightedNode: null,
   _cardNodes: null,
@@ -45,7 +44,13 @@ const ChooseCardLayer = BaseLayer.extend({
     // do super ctor
     this._super();
 
-    this.titleLabel = new cc.LabelTTF('', RSX.font_bold.name, 24, cc.size(500, 32), cc.TEXT_ALIGNMENT_CENTER);
+    this.titleLabel = new cc.LabelTTF(
+      '',
+      RSX.font_bold.name,
+      24,
+      cc.size(500, 32),
+      cc.TEXT_ALIGNMENT_CENTER,
+    );
     this.titleLabel.setPosition(0, 220);
     this.addChild(this.titleLabel);
   },
@@ -120,54 +125,58 @@ const ChooseCardLayer = BaseLayer.extend({
           this._fluidPuffNodes[i].setVisible(false);
           this._fluidPuffNodes[i].setFlippedX(Math.random() > 0.5);
           this._fluidPuffNodes[i].setFlippedY(Math.random() > 0.5);
-          this._fluidPuffNodes[i].runAction(cc.sequence(
-            cc.delayTime(revealDelay + (numCards - i) * 0.4),
-            cc.spawn(
-              cc.callFunc(function () {
-                const flare = this.parent._rarityFlares[this.i];
-                flare.setVisible(true);
-                flare.setOpacity(0);
-                flare.setPhase(1.0);
-                flare.runAction(
-                  cc.sequence(
-                    cc.fadeIn(0.5),
-                    cc.delayTime(1.0 + Math.random() * 0.6),
-                    cc.spawn(
-                      cc.actionTween(1.0, 'phase', 1.0, 0.25),
-                    ),
-                    cc.callFunc((() => {
-                      // this.setVisible(false)
-                    })),
-                  ),
-                );
-
-                this.parent._fluidPuffNodes[this.i].setVisible(true);
-                this.parent._fluidPuffNodes[this.i].setOpacity(0);
-                // var particles = BaseParticleSystem.create({
-                //   plistFile: RSX.card_reveal_fountain.plist,
-                //   type: "Particles",
-                //   fadeInAtLifePct:0.1,
-                //   fadeOutAtLifePct:0.8
-                // });
-                // particles.setStartColor(rarityColor);
-                // particles.setEndColor(rarityColor);
-                // particles.setPosition(this.cardNode.getPosition());
-                // particles.setAutoRemoveOnFinish(true);
-                // this.parent.addChild(particles,this.i-1);
-              }.bind({ parent: this, i, cardNode })),
+          this._fluidPuffNodes[i].runAction(
+            cc.sequence(
+              cc.delayTime(revealDelay + (numCards - i) * 0.4),
               cc.spawn(
-                cc.fadeIn(1.0),
-                fluidSpriteAnimation,
-                cc.sequence(
-                  cc.delayTime(fluidSpriteAnimation.getDuration() - CONFIG.ANIMATE_FAST_DURATION),
-                  cc.fadeOut(CONFIG.ANIMATE_FAST_DURATION),
+                cc.callFunc(
+                  function () {
+                    const flare = this.parent._rarityFlares[this.i];
+                    flare.setVisible(true);
+                    flare.setOpacity(0);
+                    flare.setPhase(1.0);
+                    flare.runAction(
+                      cc.sequence(
+                        cc.fadeIn(0.5),
+                        cc.delayTime(1.0 + Math.random() * 0.6),
+                        cc.spawn(cc.actionTween(1.0, 'phase', 1.0, 0.25)),
+                        cc.callFunc(() => {
+                          // this.setVisible(false)
+                        }),
+                      ),
+                    );
+
+                    this.parent._fluidPuffNodes[this.i].setVisible(true);
+                    this.parent._fluidPuffNodes[this.i].setOpacity(0);
+                    // var particles = BaseParticleSystem.create({
+                    //   plistFile: RSX.card_reveal_fountain.plist,
+                    //   type: "Particles",
+                    //   fadeInAtLifePct:0.1,
+                    //   fadeOutAtLifePct:0.8
+                    // });
+                    // particles.setStartColor(rarityColor);
+                    // particles.setEndColor(rarityColor);
+                    // particles.setPosition(this.cardNode.getPosition());
+                    // particles.setAutoRemoveOnFinish(true);
+                    // this.parent.addChild(particles,this.i-1);
+                  }.bind({ parent: this, i, cardNode }),
+                ),
+                cc.spawn(
+                  cc.fadeIn(1.0),
+                  fluidSpriteAnimation,
+                  cc.sequence(
+                    cc.delayTime(fluidSpriteAnimation.getDuration() - CONFIG.ANIMATE_FAST_DURATION),
+                    cc.fadeOut(CONFIG.ANIMATE_FAST_DURATION),
+                  ),
                 ),
               ),
+              cc.callFunc(
+                function () {
+                  this.setVisible(false);
+                }.bind(this._fluidPuffNodes[i]),
+              ),
             ),
-            cc.callFunc(function () {
-              this.setVisible(false);
-            }.bind(this._fluidPuffNodes[i])),
-          ));
+          );
         }
 
         cardNode.setScale(1.0);
@@ -176,16 +185,18 @@ const ChooseCardLayer = BaseLayer.extend({
         cardNode.runAction(
           cc.sequence(
             cc.delayTime(revealDelay + (numCards - i) * 0.4),
-            cc.callFunc(function () {
-              // play reveal sound
-              audio_engine.current().play_effect(RSX.sfx_ui_card_reveal.audio, false);
+            cc.callFunc(
+              function () {
+                // play reveal sound
+                audio_engine.current().play_effect(RSX.sfx_ui_card_reveal.audio, false);
 
-              // show reveal
-              this.setVisible(true);
-              this.selectReveal().then(() => {
-                this.setGlowing(true, 0.1 + extraDelayTimeForGlow / 2.0);
-              });
-            }.bind(cardNode)),
+                // show reveal
+                this.setVisible(true);
+                this.selectReveal().then(() => {
+                  this.setGlowing(true, 0.1 + extraDelayTimeForGlow / 2.0);
+                });
+              }.bind(cardNode),
+            ),
           ),
         );
       }
@@ -297,7 +308,9 @@ const ChooseCardLayer = BaseLayer.extend({
       const selectedSdkCard = this._selectedNode.getSdkCard();
 
       // play select audio
-      audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.SELECT_SFX_PRIORITY);
+      audio_engine
+        .current()
+        .play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.SELECT_SFX_PRIORITY);
 
       // get unselected cards
       const unselectedSdkCards = [];
@@ -335,37 +348,41 @@ const ChooseCardLayer = BaseLayer.extend({
       node.toggleFadeOutlineSpriteGlow(true);
       node.showShine(0.6, 0.4);
 
-      node.runAction(cc.sequence(
-        cc.delayTime(0.6),
-        cc.callFunc(() => {
-          // show outline
-          const tempOutline = new BaseSprite(node.getOutlineGlowSprite().getTexture());
-          tempOutline.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
-          tempOutline.setPosition(node.getPosition());
-          tempOutline.setOpacity(0);
-          this.addChild(tempOutline);
-          tempOutline.runAction(cc.sequence(
-            cc.fadeIn(CONFIG.ANIMATE_FAST_DURATION * 0.5),
-            cc.delayTime(0.2),
-            cc.fadeOut(CONFIG.ANIMATE_FAST_DURATION),
-            cc.callFunc(() => {
-              tempOutline.destroy();
-            }),
-          ));
+      node.runAction(
+        cc.sequence(
+          cc.delayTime(0.6),
+          cc.callFunc(() => {
+            // show outline
+            const tempOutline = new BaseSprite(node.getOutlineGlowSprite().getTexture());
+            tempOutline.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
+            tempOutline.setPosition(node.getPosition());
+            tempOutline.setOpacity(0);
+            this.addChild(tempOutline);
+            tempOutline.runAction(
+              cc.sequence(
+                cc.fadeIn(CONFIG.ANIMATE_FAST_DURATION * 0.5),
+                cc.delayTime(0.2),
+                cc.fadeOut(CONFIG.ANIMATE_FAST_DURATION),
+                cc.callFunc(() => {
+                  tempOutline.destroy();
+                }),
+              ),
+            );
 
-          // show particles
-          const particles = new BaseParticleSystem(RSX.card_fade.plist);
-          particles.setAutoRemoveOnFinish(true);
-          particles.setPosition(node.getPosition());
-          this.addChild(particles);
-        }),
-        cc.fadeOut(CONFIG.ANIMATE_FAST_DURATION),
-        cc.delayTime(0.4),
-        cc.callFunc(() => {
-          node.toggleFadeOutlineSpriteGlow(false, 0.0);
-          node.setGlowing(false, 0.0);
-        }),
-      ));
+            // show particles
+            const particles = new BaseParticleSystem(RSX.card_fade.plist);
+            particles.setAutoRemoveOnFinish(true);
+            particles.setPosition(node.getPosition());
+            this.addChild(particles);
+          }),
+          cc.fadeOut(CONFIG.ANIMATE_FAST_DURATION),
+          cc.delayTime(0.4),
+          cc.callFunc(() => {
+            node.toggleFadeOutlineSpriteGlow(false, 0.0);
+            node.setGlowing(false, 0.0);
+          }),
+        ),
+      );
 
       // deemphasize unselected cards
       for (let i = 0; i < this._cardNodes.length; i++) {
@@ -387,14 +404,18 @@ const ChooseCardLayer = BaseLayer.extend({
           fadeAction.setTag(CONFIG.FADE_TAG);
           otherNode.runAction(fadeAction);
 
-          tempOutline.runAction(cc.sequence(
-            cc.fadeIn(CONFIG.ANIMATE_FAST_DURATION),
-            cc.delayTime(0.2),
-            cc.fadeOut(CONFIG.ANIMATE_FAST_DURATION),
-            cc.callFunc(function () {
-              this.destroy();
-            }.bind(tempOutline)),
-          ));
+          tempOutline.runAction(
+            cc.sequence(
+              cc.fadeIn(CONFIG.ANIMATE_FAST_DURATION),
+              cc.delayTime(0.2),
+              cc.fadeOut(CONFIG.ANIMATE_FAST_DURATION),
+              cc.callFunc(
+                function () {
+                  this.destroy();
+                }.bind(tempOutline),
+              ),
+            ),
+          );
         }
       }
 
@@ -436,26 +457,32 @@ const ChooseCardLayer = BaseLayer.extend({
   transitionIn() {
     return new Promise<void>((resolve, reject) => {
       this.setOpacity(0.0);
-      this.runAction(cc.sequence(
-        cc.fadeIn(CONFIG.FADE_FAST_DURATION),
-        cc.callFunc(() => {
-          resolve();
-        }),
-      ));
+      this.runAction(
+        cc.sequence(
+          cc.fadeIn(CONFIG.FADE_FAST_DURATION),
+          cc.callFunc(() => {
+            resolve();
+          }),
+        ),
+      );
     });
   },
 
   transitionOut() {
-    return (this._showingAnimationsPromise || Promise.resolve()).then(() => new Promise<void>((resolve, reject) => {
-      this.runAction(cc.sequence(
-        cc.fadeOut(CONFIG.FADE_FAST_DURATION),
-        cc.callFunc(() => {
-          resolve();
+    return (this._showingAnimationsPromise || Promise.resolve()).then(
+      () =>
+        new Promise<void>((resolve, reject) => {
+          this.runAction(
+            cc.sequence(
+              cc.fadeOut(CONFIG.FADE_FAST_DURATION),
+              cc.callFunc(() => {
+                resolve();
+              }),
+            ),
+          );
         }),
-      ));
-    }));
+    );
   },
-
 });
 
 ChooseCardLayer.create = function (layer) {

@@ -18,7 +18,7 @@ class ModifierATKThresholdDie extends Modifier {
 
   static type = 'ModifierATKThresholdDie';
   static modifierName = 'Modifier ATK Threshold Die';
-  static description = 'When this unit\'s attack is greater than %X it dies';
+  static description = "When this unit's attack is greater than %X it dies";
 
   static createContextObject(atkThreshold, options) {
     const contextObject = super.createContextObject(options);
@@ -36,19 +36,15 @@ class ModifierATKThresholdDie extends Modifier {
   onAction(e) {
     super.onAction(e);
 
-    const {
-      action,
-    } = e;
+    const { action } = e;
 
-    if ((action.getTarget() === this.getCard()) && action instanceof ApplyModifierAction) {
+    if (action.getTarget() === this.getCard() && action instanceof ApplyModifierAction) {
       return this.onATKChange(action);
     }
   }
 
   onATKChange(e) {
-    const {
-      action,
-    } = e;
+    const { action } = e;
 
     if (this.getCard().getATK() > this.atkThreshold) {
       const killAction = new KillAction(this.getGameSession());

@@ -18,7 +18,9 @@ class ModifierOpeningGambitRemoveArtifactToDrawArtifactFromFaction extends Modif
 
   onOpeningGambit() {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
-      const enemyGeneral = this.getCard().getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
+      const enemyGeneral = this.getCard()
+        .getGameSession()
+        .getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
       const modifiersByArtifact = enemyGeneral.getArtifactModifiersGroupedByArtifactCard();
 
       // if enemy General has at least one artifact on
@@ -29,10 +31,15 @@ class ModifierOpeningGambitRemoveArtifactToDrawArtifactFromFaction extends Modif
         this.getGameSession().executeAction(removeArtifactAction);
 
         // add random in-faction artifact to action bar
-        const factionId = this.getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId()).getFactionId();
+        const factionId = this.getGameSession()
+          .getGeneralForPlayerId(this.getCard().getOwnerId())
+          .getFactionId();
         let factionArtifacts = [];
         if (this.getGameSession().getGameFormat() === GameFormat.Standard) {
-          factionArtifacts = this.getGameSession().getCardCaches().getIsLegacy(false).getFaction(factionId)
+          factionArtifacts = this.getGameSession()
+            .getCardCaches()
+            .getIsLegacy(false)
+            .getFaction(factionId)
             .getType(CardType.Artifact)
             .getIsHiddenInCollection(false)
             .getIsToken(false)
@@ -40,7 +47,10 @@ class ModifierOpeningGambitRemoveArtifactToDrawArtifactFromFaction extends Modif
             .getIsSkinned(false)
             .getCards();
         } else {
-          factionArtifacts = this.getGameSession().getCardCaches().getFaction(factionId).getType(CardType.Artifact)
+          factionArtifacts = this.getGameSession()
+            .getCardCaches()
+            .getFaction(factionId)
+            .getType(CardType.Artifact)
             .getIsHiddenInCollection(false)
             .getIsToken(false)
             .getIsPrismatic(false)
@@ -49,14 +59,22 @@ class ModifierOpeningGambitRemoveArtifactToDrawArtifactFromFaction extends Modif
         }
 
         if (factionArtifacts.length > 0) {
-          const cardToPutInHand = factionArtifacts[this.getGameSession().getRandomIntegerForExecution(factionArtifacts.length)];
-          const a = new PutCardInHandAction(this.getGameSession(), this.getCard().getOwnerId(), cardToPutInHand.createNewCardData());
+          const cardToPutInHand =
+            factionArtifacts[
+              this.getGameSession().getRandomIntegerForExecution(factionArtifacts.length)
+            ];
+          const a = new PutCardInHandAction(
+            this.getGameSession(),
+            this.getCard().getOwnerId(),
+            cardToPutInHand.createNewCardData(),
+          );
           return this.getGameSession().executeAction(a);
         }
       }
     }
   }
 }
-ModifierOpeningGambitRemoveArtifactToDrawArtifactFromFaction.prototype.type = 'ModifierOpeningGambitRemoveArtifactToDrawArtifactFromFaction';
+ModifierOpeningGambitRemoveArtifactToDrawArtifactFromFaction.prototype.type =
+  'ModifierOpeningGambitRemoveArtifactToDrawArtifactFromFaction';
 
 module.exports = ModifierOpeningGambitRemoveArtifactToDrawArtifactFromFaction;

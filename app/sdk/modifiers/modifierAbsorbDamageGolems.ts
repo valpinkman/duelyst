@@ -34,7 +34,7 @@ class ModifierAbsorbDamageGolems extends Modifier {
   }
 
   getIsActionRelevant(a) {
-    return a instanceof DamageAction && (a.getTarget() === this.getCard());
+    return a instanceof DamageAction && a.getTarget() === this.getCard();
   }
 
   _modifyAction(a) {

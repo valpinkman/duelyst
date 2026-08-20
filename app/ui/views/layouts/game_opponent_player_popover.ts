@@ -15,7 +15,6 @@ var i18next = require('i18next');
 var PlayerPopoverLayout = require('./game_player_popover');
 
 var MyPlayerPopoverLayout = PlayerPopoverLayout.extend({
-
   className: 'player-popover opponent-player',
 
   template: OpponentPlayerPopoverLayoutTempl,
@@ -40,8 +39,14 @@ var MyPlayerPopoverLayout = PlayerPopoverLayout.extend({
         _canUse: true,
       }),
     ];
-    var emotesListCompositeView = new EmotesListCompositeView({ collection: new Backbone.Collection(opponentEmotes) });
-    emotesListCompositeView.listenTo(emotesListCompositeView, 'childview:select', this.onSelectEmote.bind(this));
+    var emotesListCompositeView = new EmotesListCompositeView({
+      collection: new Backbone.Collection(opponentEmotes),
+    });
+    emotesListCompositeView.listenTo(
+      emotesListCompositeView,
+      'childview:select',
+      this.onSelectEmote.bind(this),
+    );
     this.emotesListRegion.show(emotesListCompositeView);
 
     // listen for emotes
@@ -80,10 +85,8 @@ var MyPlayerPopoverLayout = PlayerPopoverLayout.extend({
     if (this._emoteReceivedAt + CONFIG.EMOTE_DELAY * 1000.0 <= receivedTimestamp) {
       this._emoteReceivedAt = receivedTimestamp;
       var emoteId = event.id;
-      if (event.playerId && event.playerId != this.model.get('playerId'))
-        return;
-      else
-        this.showEmote(emoteId);
+      if (event.playerId && event.playerId != this.model.get('playerId')) return;
+      else this.showEmote(emoteId);
     }
   },
 
@@ -92,7 +95,9 @@ var MyPlayerPopoverLayout = PlayerPopoverLayout.extend({
     var emoteCallback = emoteModel && emoteModel.get('callback');
     if (emoteCallback != null) {
       // play effect
-      audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_select.audio, CONFIG.SELECT_SFX_PRIORITY);
+      audio_engine
+        .current()
+        .play_effect_for_interaction(RSX.sfx_ui_select.audio, CONFIG.SELECT_SFX_PRIORITY);
 
       // stop showing emotes
       this.stopShowingEmote();
@@ -111,7 +116,6 @@ var MyPlayerPopoverLayout = PlayerPopoverLayout.extend({
   },
 
   /* endregion EMOTES */
-
 });
 
 // Expose the class either via CommonJS or the global object

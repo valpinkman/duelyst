@@ -167,7 +167,9 @@ class CardFactory_UnitySet_Faction4 {
       card.maxHP = 6;
       card.manaCost = 8;
       card.rarityId = Rarity.Legendary;
-      card.setInherentModifiersContextObjects([ModifierOpeningGambitDeathKnell.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierOpeningGambitDeathKnell.createContextObject(),
+      ]);
     }
 
     if (identifier === Cards.Artifact.AngryRebirthAmulet) {

@@ -34,11 +34,16 @@ class ModifierCollectable extends Modifier {
   }
 
   getCollectingEntity() {
-    const entities = this.getGameSession().getBoard().getEntitiesAtPosition(this.getCard().getPosition());
+    const entities = this.getGameSession()
+      .getBoard()
+      .getEntitiesAtPosition(this.getCard().getPosition());
     for (var entity of Array.from<any>(entities)) {
       // get the current obstructing entity at my entity's location
       // entity must also not be the same team as my entity
-      if (entity.getIsObstructing() && (this.getCard().getIsSameTeamAs(entity) || this.getCard().isOwnedByGameSession())) {
+      if (
+        entity.getIsObstructing() &&
+        (this.getCard().getIsSameTeamAs(entity) || this.getCard().isOwnedByGameSession())
+      ) {
         return entity;
       }
     }
@@ -86,7 +91,7 @@ class ModifierCollectable extends Modifier {
     super.postDeserialize();
 
     // get the current obstructing entity at my entity's location
-    return this._private.collectingEntity = this.getCollectingEntity();
+    return (this._private.collectingEntity = this.getCollectingEntity());
   }
 }
 ModifierCollectable.prototype.type = 'ModifierCollectable';

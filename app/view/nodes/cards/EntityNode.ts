@@ -30,7 +30,6 @@ const CausticPrismaticGlowSprite = require('../fx/CausticPrismaticGlowSprite');
  *************************************************************************** */
 
 const EntityNode = SdkNode.extend({
-
   _actionStateRecord: null,
   _animResource: null,
   autoZOrder: true,
@@ -89,19 +88,32 @@ const EntityNode = SdkNode.extend({
         const { sdkCard } = this;
         if (sdkCard.getGameSession().isNew()) {
           return sdkCard.isOwnedByPlayer1();
-        } if (sdkCard.getGameSession().isOver()) {
+        }
+        if (sdkCard.getGameSession().isOver()) {
           return false;
-        } if (sdkCard.getIsActive() && sdkCard.isOwnersTurn() && sdkCard.getIsTargetable() && sdkCard.getCanAct()) {
+        }
+        if (
+          sdkCard.getIsActive() &&
+          sdkCard.isOwnersTurn() &&
+          sdkCard.getIsTargetable() &&
+          sdkCard.getCanAct()
+        ) {
           // has moved but not attacked, check if any targets are in range
           if (!sdkCard.getCanMove() && sdkCard.getCanAttack()) {
-            return sdkCard.getAttackRange().getValidTargets(sdkCard.getGameSession().getBoard(), sdkCard).length > 0;
+            return (
+              sdkCard.getAttackRange().getValidTargets(sdkCard.getGameSession().getBoard(), sdkCard)
+                .length > 0
+            );
           }
           return true;
         }
         return false;
       }.bind(this),
     };
-    this._actionStateRecord.setupToRecordStateOnEvent(EVENTS.update_cache_step, resolvePropertiesToRecord);
+    this._actionStateRecord.setupToRecordStateOnEvent(
+      EVENTS.update_cache_step,
+      resolvePropertiesToRecord,
+    );
 
     // set content size to match tile size
     const contentSize = cc.size(CONFIG.TILESIZE, CONFIG.TILESIZE);
@@ -109,7 +121,9 @@ const EntityNode = SdkNode.extend({
 
     // create sprites
     const spriteOptions = _.extend({}, sdkCard.getSpriteOptions());
-    if (spriteOptions.spriteIdentifier == null) { spriteOptions.spriteIdentifier = this.getAnimResource().idle; }
+    if (spriteOptions.spriteIdentifier == null) {
+      spriteOptions.spriteIdentifier = this.getAnimResource().idle;
+    }
     this.centerOffset = cc.p(
       this.centerOffset.x + (spriteOptions.offset ? spriteOptions.offset.x : 0),
       this.centerOffset.y + (spriteOptions.offset ? spriteOptions.offset.y : 0),
@@ -150,7 +164,10 @@ const EntityNode = SdkNode.extend({
       // player owned targetable entities
       if (!sdkCard.isOwnedByGameSession()) {
         // owner decal sprite (only if we would ever show it)
-        if (this._ownerIndicatorSprite == null && (CONFIG.PLAYER_OWNER_OPACITY > 0 || CONFIG.OPPONENT_OWNER_OPACITY > 0)) {
+        if (
+          this._ownerIndicatorSprite == null &&
+          (CONFIG.PLAYER_OWNER_OPACITY > 0 || CONFIG.OPPONENT_OWNER_OPACITY > 0)
+        ) {
           /*
           this._ownerIndicatorSprite = BaseSprite.create({
            spriteIdentifier: RSX.decal_readiness.img,
@@ -165,7 +182,10 @@ const EntityNode = SdkNode.extend({
         }
 
         // readiness particles (only if we would ever show them)
-        if (this._readinessParticles == null && (CONFIG.PLAYER_READY_PARTICLES_VISIBLE || CONFIG.OPPONENT_READY_PARTICLES_VISIBLE)) {
+        if (
+          this._readinessParticles == null &&
+          (CONFIG.PLAYER_READY_PARTICLES_VISIBLE || CONFIG.OPPONENT_READY_PARTICLES_VISIBLE)
+        ) {
           this._readinessParticles = BaseParticleSystem.create({
             plistFile: RSX.ptcl_readiness.plist,
             xyzRotation: CONFIG.ENTITY_XYZ_ROTATION,
@@ -233,10 +253,16 @@ const EntityNode = SdkNode.extend({
     this._super();
     const position = this.getCenterPositionForExternal();
     if (this._statsNode != null) {
-      this._statsNode.setPosition(position.x + CONFIG.OVERLAY_STATS_OFFSET.x, position.y + CONFIG.OVERLAY_STATS_OFFSET.y);
+      this._statsNode.setPosition(
+        position.x + CONFIG.OVERLAY_STATS_OFFSET.x,
+        position.y + CONFIG.OVERLAY_STATS_OFFSET.y,
+      );
     }
     if (this._killPreviewNode != null) {
-      this._killPreviewNode.setPosition(position.x + CONFIG.KILL_NODE_OFFSET.x, position.y + CONFIG.KILL_NODE_OFFSET.y);
+      this._killPreviewNode.setPosition(
+        position.x + CONFIG.KILL_NODE_OFFSET.x,
+        position.y + CONFIG.KILL_NODE_OFFSET.y,
+      );
     }
   },
 
@@ -280,7 +306,10 @@ const EntityNode = SdkNode.extend({
   },
 
   getGroundPosition() {
-    return cc.p(this.groundOffset.x + this._contentSize.width * 0.5, this.groundOffset.y + this._contentSize.height * 0.5);
+    return cc.p(
+      this.groundOffset.x + this._contentSize.width * 0.5,
+      this.groundOffset.y + this._contentSize.height * 0.5,
+    );
   },
 
   getGroundPositionForExternal() {
@@ -342,7 +371,12 @@ const EntityNode = SdkNode.extend({
     val = !!val;
     if (this.hovered !== val) {
       this.hovered = val;
-      if (CONFIG.SHOW_PRISMATIC_ONLY_ON_INSPECT && this.sdkCard != null && !(this.sdkCard instanceof SDK.Tile) && SDK.Cards.getIsPrismaticCardId(this.sdkCard.getId())) {
+      if (
+        CONFIG.SHOW_PRISMATIC_ONLY_ON_INSPECT &&
+        this.sdkCard != null &&
+        !(this.sdkCard instanceof SDK.Tile) &&
+        SDK.Cards.getIsPrismaticCardId(this.sdkCard.getId())
+      ) {
         if (this.hovered) {
           this.showPrismatic();
         } else {
@@ -377,10 +411,14 @@ const EntityNode = SdkNode.extend({
   getMoveTileCount(sourceBoardPosition, targetBoardPosition) {
     let tileCount = 0;
 
-    if (sourceBoardPosition != null && targetBoardPosition != null && !UtilsPosition.getPositionsAreEqual(sourceBoardPosition, targetBoardPosition)) {
+    if (
+      sourceBoardPosition != null &&
+      targetBoardPosition != null &&
+      !UtilsPosition.getPositionsAreEqual(sourceBoardPosition, targetBoardPosition)
+    ) {
       const diffX = targetBoardPosition.x - sourceBoardPosition.x;
       const diffY = targetBoardPosition.y - sourceBoardPosition.y;
-      const distance = Math.sqrt((diffX * diffX) + (diffY * diffY));
+      const distance = Math.sqrt(diffX * diffX + diffY * diffY);
       tileCount = Math.floor(distance);
 
       if (this.sdkCard != null && this.sdkCard.hasActiveModifierClass(SDK.ModifierFlying)) {
@@ -414,7 +452,11 @@ const EntityNode = SdkNode.extend({
   },
 
   getIsReadyAtAction(action) {
-    return this.sdkCard != null && !this.sdkCard.getIsUncontrollableBattlePet() && this._actionStateRecord.getStateAtAction(action).isReady;
+    return (
+      this.sdkCard != null &&
+      !this.sdkCard.getIsUncontrollableBattlePet() &&
+      this._actionStateRecord.getStateAtAction(action).isReady
+    );
   },
 
   getHasActiveState() {
@@ -483,9 +525,16 @@ const EntityNode = SdkNode.extend({
   /* region SPRITES */
 
   getCanShowOwnerSprites() {
-    if (this.sdkCard != null
-      && ((!this.sdkCard.isOwnedByMyPlayer() && CONFIG.OPPONENT_OWNER_OPACITY > 0.0) || (this.sdkCard.isOwnedByMyPlayer() && CONFIG.PLAYER_OWNER_OPACITY > 0.0))
-      && !this.hovered && !this.selected && !this.isValidTarget && !this.getIsMoving() && this.getIsSpawned()) {
+    if (
+      this.sdkCard != null &&
+      ((!this.sdkCard.isOwnedByMyPlayer() && CONFIG.OPPONENT_OWNER_OPACITY > 0.0) ||
+        (this.sdkCard.isOwnedByMyPlayer() && CONFIG.PLAYER_OWNER_OPACITY > 0.0)) &&
+      !this.hovered &&
+      !this.selected &&
+      !this.isValidTarget &&
+      !this.getIsMoving() &&
+      this.getIsSpawned()
+    ) {
       const scene = this.getScene();
       const gameLayer = scene && scene.getGameLayer();
       return gameLayer && gameLayer.getIsActive();
@@ -505,7 +554,9 @@ const EntityNode = SdkNode.extend({
     if (!this._showingOwnerSprites && this._ownerIndicatorSprite != null) {
       // update position only on show as owner tile sprite should always be hidden while moving
       this._showingOwnerSprites = true;
-      this._ownerIndicatorSprite.setPosition(UtilsEngine.transformTileMapToScreen(this.getPosition()));
+      this._ownerIndicatorSprite.setPosition(
+        UtilsEngine.transformTileMapToScreen(this.getPosition()),
+      );
 
       let opacity;
       let color;
@@ -552,7 +603,11 @@ const EntityNode = SdkNode.extend({
 
       // tint entity sprite by owner as needed
       const colorForOwnerTint = this._getColorForOwnerTint();
-      if (colorForOwnerTint != null && (this._cachedColorForOwnerTint == null || !cc.colorEqual(this._cachedColorForOwnerTint, colorForOwnerTint))) {
+      if (
+        colorForOwnerTint != null &&
+        (this._cachedColorForOwnerTint == null ||
+          !cc.colorEqual(this._cachedColorForOwnerTint, colorForOwnerTint))
+      ) {
         this._cachedColorForOwnerTint = colorForOwnerTint;
         this.whenResourcesReady(this.getCardResourceRequestId()).then((cardResourceRequestId) => {
           if (!this.getAreResourcesValid(cardResourceRequestId)) return; // card has changed
@@ -635,7 +690,10 @@ const EntityNode = SdkNode.extend({
       const glowWidth = Math.min(200.0, Math.max(80.0, boundingBox.width * 1.8));
       const glowHeight = Math.min(200.0, Math.max(80.0, boundingBox.height * 1.8));
       this._prismaticGlow.setTextureRect(cc.rect(0, 0, glowWidth, glowHeight));
-      this._prismaticGlow.setPosition(contentSize.width * 0.5, contentSize.height * 0.5 + boundingBox.height * 0.5);
+      this._prismaticGlow.setPosition(
+        contentSize.width * 0.5,
+        contentSize.height * 0.5 + boundingBox.height * 0.5,
+      );
 
       this._prismaticGlow.fadeTo(duration, 175.0);
     }
@@ -692,8 +750,12 @@ const EntityNode = SdkNode.extend({
 
     if (hasAtkValue || hasHPValue) {
       // ensure strings
-      if (hasAtkValue) { atkValue = `${atkValue}`; }
-      if (hasHPValue) { hpValue = `${hpValue}`; }
+      if (hasAtkValue) {
+        atkValue = `${atkValue}`;
+      }
+      if (hasHPValue) {
+        hpValue = `${hpValue}`;
+      }
 
       // we're queuing stat change to be shown
       // but we know how long it will show for
@@ -718,13 +780,17 @@ const EntityNode = SdkNode.extend({
             squashed = true;
             lastStatChangeData.atk = `${lastAtkSign[1]}${(parseInt(lastAtk && lastAtk.slice(1)) || 0) + parseInt(atkValue.slice(1))}`;
           }
-        } else if (lastStatChangeData.hpChangeType == null || lastStatChangeData.hpChangeType == hpChangeType) {
+        } else if (
+          lastStatChangeData.hpChangeType == null ||
+          lastStatChangeData.hpChangeType == hpChangeType
+        ) {
           // squash change if signs match
           const lastHP = lastStatChangeData.hp;
           const lastHPSign = lastHP && lastHP.match(/([+-])/);
           const hpSign = hpValue.match(/([+-])/);
           const signsMatchNull = lastHPSign == null && hpSign == null;
-          const signsMatchNotNull = lastHPSign != null && hpSign != null && lastHPSign[1] === hpSign[1];
+          const signsMatchNotNull =
+            lastHPSign != null && hpSign != null && lastHPSign[1] === hpSign[1];
           let signsMatch = signsMatchNull || signsMatchNotNull;
           if (signsMatch) {
             // squash atk
@@ -767,10 +833,12 @@ const EntityNode = SdkNode.extend({
           if (hasHPValue && !hpValueIsNumeric) {
             this._showNextStatChange();
           } else {
-            this.runAction(cc.sequence(
-              cc.delayTime(showDuration * 0.25),
-              cc.callFunc(this._showNextStatChange, this),
-            ));
+            this.runAction(
+              cc.sequence(
+                cc.delayTime(showDuration * 0.25),
+                cc.callFunc(this._showNextStatChange, this),
+              ),
+            );
           }
         }
       }
@@ -792,13 +860,16 @@ const EntityNode = SdkNode.extend({
     if (this._statChangeQueue.length > 0) {
       this._statChangeShowing = true;
       const statChangeData = this._statChangeQueue.shift();
-      const showDuration = this._statsChangeNode.showChanges(statChangeData.atk, statChangeData.hp, statChangeData.hpChangeType);
+      const showDuration = this._statsChangeNode.showChanges(
+        statChangeData.atk,
+        statChangeData.hp,
+        statChangeData.hpChangeType,
+      );
       if (showDuration > 0.0) {
         // delay and then show next changes
-        this.runAction(cc.sequence(
-          cc.delayTime(showDuration),
-          cc.callFunc(this._showNextStatChange, this),
-        ));
+        this.runAction(
+          cc.sequence(cc.delayTime(showDuration), cc.callFunc(this._showNextStatChange, this)),
+        );
       } else {
         this._showNextStatChange();
       }
@@ -915,7 +986,7 @@ const EntityNode = SdkNode.extend({
           this.showNoState();
 
           // create a new base state
-          const baseStateAction = this._baseStateAction = this.getBaseStateAction();
+          const baseStateAction = (this._baseStateAction = this.getBaseStateAction());
 
           // run base state
           this._baseStateDirty = false;
@@ -927,10 +998,7 @@ const EntityNode = SdkNode.extend({
   },
 
   getBaseStateAction() {
-    return cc.sequence(
-      cc.delayTime(1.0),
-      cc.callFunc(this.changeBaseState, this),
-    ).repeatForever();
+    return cc.sequence(cc.delayTime(1.0), cc.callFunc(this.changeBaseState, this)).repeatForever();
   },
 
   changeBaseState() {
@@ -994,24 +1062,31 @@ const EntityNode = SdkNode.extend({
         if (SDK.Cards.getIsPrismaticCardId(this.sdkCard.getId())) {
           // show prismatic spawn
           if (this.sdkCard.isOwnedByMyPlayer()) {
-            this.addInjectedVisualStateTagWithId(EntityNodeVisualStateTag.createShowGlowForPlayerTag(), this._prismaticSpawnGlowTagId);
+            this.addInjectedVisualStateTagWithId(
+              EntityNodeVisualStateTag.createShowGlowForPlayerTag(),
+              this._prismaticSpawnGlowTagId,
+            );
           } else {
-            this.addInjectedVisualStateTagWithId(EntityNodeVisualStateTag.createShowGlowForOpponentTag(), this._prismaticSpawnGlowTagId);
+            this.addInjectedVisualStateTagWithId(
+              EntityNodeVisualStateTag.createShowGlowForOpponentTag(),
+              this._prismaticSpawnGlowTagId,
+            );
           }
 
           const colorForOwnerTint = this._getColorForOwnerTint() || cc.color(255, 255, 255);
-          this.entitySprite.runAction(cc.sequence(
-            cc.tintTo(0.2, 0, 0, 0),
-            cc.delayTime(0.2),
-            cc.tintTo(0.2, colorForOwnerTint.r, colorForOwnerTint.g, colorForOwnerTint.b),
-            cc.callFunc(() => {
-              this.removeInjectedVisualStateTagById(this._prismaticSpawnGlowTagId);
-            }),
-          ));
+          this.entitySprite.runAction(
+            cc.sequence(
+              cc.tintTo(0.2, 0, 0, 0),
+              cc.delayTime(0.2),
+              cc.tintTo(0.2, colorForOwnerTint.r, colorForOwnerTint.g, colorForOwnerTint.b),
+              cc.callFunc(() => {
+                this.removeInjectedVisualStateTagById(this._prismaticSpawnGlowTagId);
+              }),
+            ),
+          );
 
           // show prismatic state
-          if (!CONFIG.SHOW_PRISMATIC_ONLY_ON_INSPECT
-            && !(this.sdkCard instanceof SDK.Tile)) {
+          if (!CONFIG.SHOW_PRISMATIC_ONLY_ON_INSPECT && !(this.sdkCard instanceof SDK.Tile)) {
             this.showPrismatic();
           }
         }
@@ -1032,7 +1107,12 @@ const EntityNode = SdkNode.extend({
   showSpawned() {
     this.setSpawned(true);
     this.updateOwnerSprites();
-    if (!CONFIG.SHOW_PRISMATIC_ONLY_ON_INSPECT && this.sdkCard != null && !(this.sdkCard instanceof SDK.Tile) && SDK.Cards.getIsPrismaticCardId(this.sdkCard.getId())) {
+    if (
+      !CONFIG.SHOW_PRISMATIC_ONLY_ON_INSPECT &&
+      this.sdkCard != null &&
+      !(this.sdkCard instanceof SDK.Tile) &&
+      SDK.Cards.getIsPrismaticCardId(this.sdkCard.getId())
+    ) {
       this.showPrismatic();
     }
     this.showBaseState();
@@ -1053,7 +1133,13 @@ const EntityNode = SdkNode.extend({
 
     // show teleport if positions are different
     const sourceBoardPosition = UtilsEngine.transformScreenToBoard(this.getPosition());
-    if (gameLayer != null && sourceBoardPosition != null && targetBoardPosition != null && this.canChangeState() && !UtilsPosition.getPositionsAreEqual(sourceBoardPosition, targetBoardPosition)) {
+    if (
+      gameLayer != null &&
+      sourceBoardPosition != null &&
+      targetBoardPosition != null &&
+      this.canChangeState() &&
+      !UtilsPosition.getPositionsAreEqual(sourceBoardPosition, targetBoardPosition)
+    ) {
       this.stopShowingMove();
       this.stopShowingTeleport();
       this.showBaseState();
@@ -1065,13 +1151,19 @@ const EntityNode = SdkNode.extend({
       const distance = Math.sqrt(dx * dx + dy * dy);
 
       // create fx
-      const sourceFX = DATA.dataForIdentifiersWithFilter(action.getFXResource(), SDK.FXType.MoveSourceFX);
+      const sourceFX = DATA.dataForIdentifiersWithFilter(
+        action.getFXResource(),
+        SDK.FXType.MoveSourceFX,
+      );
       const sourceFXSprites = NodeFactory.createFX(sourceFX, {
         targetBoardPosition: sourceBoardPosition,
         offset: this.centerOffset,
       });
       const sourceFXDelays = UtilsEngine.getDelaysFromFXSprites(sourceFXSprites);
-      const targetFX = DATA.dataForIdentifiersWithFilter(action.getFXResource(), SDK.FXType.MoveTargetFX);
+      const targetFX = DATA.dataForIdentifiersWithFilter(
+        action.getFXResource(),
+        SDK.FXType.MoveTargetFX,
+      );
       const targetFXSprites = NodeFactory.createFX(targetFX, {
         targetBoardPosition,
         offset: this.centerOffset,
@@ -1101,7 +1193,9 @@ const EntityNode = SdkNode.extend({
       this.removeReadinessVisualTag();
 
       // emit the start of the move
-      gameLayer.getEventBus().trigger(EVENTS.before_show_move, { type: EVENTS.before_show_move, action });
+      gameLayer
+        .getEventBus()
+        .trigger(EVENTS.before_show_move, { type: EVENTS.before_show_move, action });
 
       // setup final method
       const onFinishMove = function () {
@@ -1115,7 +1209,9 @@ const EntityNode = SdkNode.extend({
         this.setOpacity(255.0);
 
         // emit the completion of the move
-        gameLayer.getEventBus().trigger(EVENTS.after_show_move, { type: EVENTS.after_show_move, action });
+        gameLayer
+          .getEventBus()
+          .trigger(EVENTS.after_show_move, { type: EVENTS.after_show_move, action });
       }.bind(this);
 
       this.whenResourcesReady(this.getCardResourceRequestId()).then((cardResourceRequestId) => {
@@ -1140,12 +1236,14 @@ const EntityNode = SdkNode.extend({
                   moveFXSprite.setLife(totalTravelDuration * 2.0);
                 }
                 // move fx sprites
-                moveFXSprite.runAction(cc.sequence(
-                  cc.delayTime(startTravelDuration),
-                  cc.moveTo(travelDuration, targetTileMapPosition),
-                  cc.delayTime(endTravelDuration),
-                  cc.fadeOut(CONFIG.FADE_MEDIUM_DURATION),
-                ));
+                moveFXSprite.runAction(
+                  cc.sequence(
+                    cc.delayTime(startTravelDuration),
+                    cc.moveTo(travelDuration, targetTileMapPosition),
+                    cc.delayTime(endTravelDuration),
+                    cc.fadeOut(CONFIG.FADE_MEDIUM_DURATION),
+                  ),
+                );
               }
             }, this),
             cc.fadeOut(CONFIG.FADE_FAST_DURATION),
@@ -1201,7 +1299,13 @@ const EntityNode = SdkNode.extend({
     const gameLayer = scene && scene.getGameLayer();
 
     // show movement if positions are different
-    if (gameLayer != null && sourceBoardPosition != null && targetBoardPosition != null && this.canChangeState() && !UtilsPosition.getPositionsAreEqual(sourceBoardPosition, targetBoardPosition)) {
+    if (
+      gameLayer != null &&
+      sourceBoardPosition != null &&
+      targetBoardPosition != null &&
+      this.canChangeState() &&
+      !UtilsPosition.getPositionsAreEqual(sourceBoardPosition, targetBoardPosition)
+    ) {
       this.stopShowingMove();
       this.stopShowingTeleport();
 
@@ -1209,7 +1313,10 @@ const EntityNode = SdkNode.extend({
       const targetTileMapPosition = UtilsEngine.transformBoardToTileMap(targetBoardPosition);
       const moveTileCount = this.getMoveTileCount(sourceBoardPosition, targetBoardPosition);
       const moveDuration = this.getMoveDuration(moveTileCount);
-      const animMoveAction = this.getAnimationActionFromAnimResource('walk') || this.getAnimationActionFromAnimResource('run') || this.getAnimationActionFromAnimResource('move');
+      const animMoveAction =
+        this.getAnimationActionFromAnimResource('walk') ||
+        this.getAnimationActionFromAnimResource('run') ||
+        this.getAnimationActionFromAnimResource('move');
       const animMoveDuration = animMoveAction != null ? animMoveAction.getDuration() : 0.0;
       const animMoveCorrection = animMoveDuration * CONFIG.ENTITY_MOVE_CORRECTION;
       const actualDuration = animMoveDuration * (moveTileCount + 1) - animMoveCorrection;
@@ -1235,7 +1342,9 @@ const EntityNode = SdkNode.extend({
         this.setIsMoving(false);
 
         // emit the completion of the move
-        gameLayer.getEventBus().trigger(EVENTS.after_show_move, { type: EVENTS.after_show_move, action });
+        gameLayer
+          .getEventBus()
+          .trigger(EVENTS.after_show_move, { type: EVENTS.after_show_move, action });
       }.bind(this);
 
       this.whenResourcesReady(this.getCardResourceRequestId()).then((cardResourceRequestId) => {
@@ -1256,7 +1365,9 @@ const EntityNode = SdkNode.extend({
           this.removeReadinessVisualTag();
 
           // emit the start of the move
-          gameLayer.getEventBus().trigger(EVENTS.before_show_move, { type: EVENTS.before_show_move, action });
+          gameLayer
+            .getEventBus()
+            .trigger(EVENTS.before_show_move, { type: EVENTS.before_show_move, action });
 
           // walking sound
           const sfx_walk = this.getSoundResource() && this.getSoundResource().walk;
@@ -1272,24 +1383,28 @@ const EntityNode = SdkNode.extend({
             for (let i = 0; i < moveTileCount + 1; i++) {
               animationSteps.push(animMoveAction.clone());
             }
-            animationSequence = cc.targetedAction(this.entitySprite, cc.sequence(animationSteps).speed(actualDuration / moveDuration));
+            animationSequence = cc.targetedAction(
+              this.entitySprite,
+              cc.sequence(animationSteps).speed(actualDuration / moveDuration),
+            );
           }
 
           // spawn move and animations in parallel
           if (animationSequence != null) {
-            sequenceSteps.push(cc.spawn(
-              cc.moveTo(moveDuration, targetTileMapPosition),
-              animationSequence,
-            ));
+            sequenceSteps.push(
+              cc.spawn(cc.moveTo(moveDuration, targetTileMapPosition), animationSequence),
+            );
           } else {
             sequenceSteps.push(cc.moveTo(moveDuration, targetTileMapPosition));
           }
 
-          sequenceSteps.push(cc.callFunc(function () {
-            this._showMoveAction = null;
-            onFinishMove();
-            this.showNextState();
-          }, this));
+          sequenceSteps.push(
+            cc.callFunc(function () {
+              this._showMoveAction = null;
+              onFinishMove();
+              this.showNextState();
+            }, this),
+          );
 
           // run sequence
           const moveSequence = cc.sequence(sequenceSteps);
@@ -1433,7 +1548,10 @@ const EntityNode = SdkNode.extend({
    * @returns {Number} duration of show
    */
   showAttackedState(action) {
-    return this.showHPChange(`-${action.getTotalDamageAmount()}`, StatsChangeNode.HP_CHANGE_TYPE_DAMAGE);
+    return this.showHPChange(
+      `-${action.getTotalDamageAmount()}`,
+      StatsChangeNode.HP_CHANGE_TYPE_DAMAGE,
+    );
   },
 
   /**
@@ -1537,18 +1655,27 @@ const EntityNode = SdkNode.extend({
             // console.log(this.sdkCard.getLogName(), " > > showCastingStartState", this._numCastingStatesToShow, this._showingCastingEndStateTimeoutId == null, !this.getHasActiveState(), !this._showingCastingState);
             if (this.canChangeState() && this._showingCastingEndStateTimeoutId == null) {
               const animAction = animIdentifier && UtilsEngine.getAnimationAction(animIdentifier);
-              if (animAction != null && !this.getHasActiveState() && !this._showingCastingState && !this._showingCastState) {
+              if (
+                animAction != null &&
+                !this.getHasActiveState() &&
+                !this._showingCastingState &&
+                !this._showingCastState
+              ) {
                 // clear all states
                 this.showNoState();
                 this.removeReadinessVisualTag();
                 this._showingCastingStartState = true;
-                this._stateActions.push(this.entitySprite.runAction(cc.sequence(
-                  animAction,
-                  cc.callFunc(() => {
-                    this.cleanupStateActions();
-                    this.showCastingLoopState();
-                  }),
-                )));
+                this._stateActions.push(
+                  this.entitySprite.runAction(
+                    cc.sequence(
+                      animAction,
+                      cc.callFunc(() => {
+                        this.cleanupStateActions();
+                        this.showCastingLoopState();
+                      }),
+                    ),
+                  ),
+                );
               }
             }
           });
@@ -1569,7 +1696,13 @@ const EntityNode = SdkNode.extend({
     if (this.canChangeState()) {
       this.whenResourcesReady(this.getCardResourceRequestId()).then((cardResourceRequestId) => {
         if (!this.getAreResourcesValid(cardResourceRequestId)) return; // card has changed
-        if (this.canChangeState() && (!this.getHasActiveState() || this._showingCastingStartState) && this._numCastingStatesToShow > 0 && !this._showingCastingState && !this._showingCastState) {
+        if (
+          this.canChangeState() &&
+          (!this.getHasActiveState() || this._showingCastingStartState) &&
+          this._numCastingStatesToShow > 0 &&
+          !this._showingCastingState &&
+          !this._showingCastState
+        ) {
           // console.log(this.sdkCard.getLogName(), " > > showCastingLoopState");
           this._showingCastingState = true;
 
@@ -1577,21 +1710,29 @@ const EntityNode = SdkNode.extend({
 
           this.removeReadinessVisualTag();
 
-          const animLoopAction = animResource.castLoop && UtilsEngine.getAnimationAction(animResource.castLoop, true);
+          const animLoopAction =
+            animResource.castLoop && UtilsEngine.getAnimationAction(animResource.castLoop, true);
           if (animLoopAction != null) {
-            const needsStartAnim = !this._showingCastingStartState && this._showingCastingEndStateTimeoutId == null && animResource.castStart;
+            const needsStartAnim =
+              !this._showingCastingStartState &&
+              this._showingCastingEndStateTimeoutId == null &&
+              animResource.castStart;
             let animStartAction;
             if (needsStartAnim) {
               animStartAction = UtilsEngine.getAnimationAction(animResource.castStart);
             }
             if (needsStartAnim && animStartAction != null) {
               // show casting start if not already
-              this._stateActions.push(this.entitySprite.runAction(cc.sequence(
-                animStartAction,
-                cc.callFunc(() => {
-                  this._stateActions.push(this.entitySprite.runAction(animLoopAction));
-                }),
-              )));
+              this._stateActions.push(
+                this.entitySprite.runAction(
+                  cc.sequence(
+                    animStartAction,
+                    cc.callFunc(() => {
+                      this._stateActions.push(this.entitySprite.runAction(animLoopAction));
+                    }),
+                  ),
+                ),
+              );
             } else {
               this._stateActions.push(this.entitySprite.runAction(animLoopAction));
             }
@@ -1643,9 +1784,11 @@ const EntityNode = SdkNode.extend({
             sequence.push(animAction);
           }
 
-          sequence.push(cc.callFunc(() => {
-            this.showNextState();
-          }));
+          sequence.push(
+            cc.callFunc(() => {
+              this.showNextState();
+            }),
+          );
           this._stateActions.push(this.entitySprite.runAction(cc.sequence(sequence)));
         }
       });
@@ -1665,7 +1808,11 @@ const EntityNode = SdkNode.extend({
     this._cleanupCastingStartStateTimeout();
     this._numCastingStatesToShow = Math.max(0, this._numCastingStatesToShow - 1);
 
-    if (this.canChangeState() && this._showingCastingEndStateTimeoutId == null && !this._showingCastState) {
+    if (
+      this.canChangeState() &&
+      this._showingCastingEndStateTimeoutId == null &&
+      !this._showingCastState
+    ) {
       // get duration
       const animResource = this.getAnimResource();
       const animIdentifier = animResource && animResource.castEnd;
@@ -1682,7 +1829,13 @@ const EntityNode = SdkNode.extend({
         this.whenResourcesReady(this.getCardResourceRequestId()).then((cardResourceRequestId) => {
           if (!this.getAreResourcesValid(cardResourceRequestId)) return; // card has changed
           // console.log(this.sdkCard.getLogName(), " > > showCastingEndState", this._showingCastingStartStateTimeoutId == null, this._showingCastingStartState || this._showingCastingState, !this._showingCastState);
-          if (this.canChangeState() && this._showingCastingStartStateTimeoutId == null && !this.getIsMoving() && (this._showingCastingStartState || this._showingCastingState) && !this._showingCastState) {
+          if (
+            this.canChangeState() &&
+            this._showingCastingStartStateTimeoutId == null &&
+            !this.getIsMoving() &&
+            (this._showingCastingStartState || this._showingCastingState) &&
+            !this._showingCastState
+          ) {
             // clear all states
             this.showNoState();
 
@@ -1784,7 +1937,12 @@ const EntityNode = SdkNode.extend({
       } else if (currentTag.tagType == EntityNodeVisualStateTag.showGlowForOpponentTagType) {
         this._showGlowForOpponent();
       } else if (currentTag.tagType == EntityNodeVisualStateTag.showHighlightTagType) {
-        this._showHighlight(currentTag.color, currentTag.frequency, currentTag.minAlpha, currentTag.maxAlpha);
+        this._showHighlight(
+          currentTag.color,
+          currentTag.frequency,
+          currentTag.minAlpha,
+          currentTag.maxAlpha,
+        );
       } else if (currentTag.tagType == EntityNodeVisualStateTag.showInstructionalGlowTagType) {
         this._showGlowForInstructional();
       }
@@ -1798,7 +1956,10 @@ const EntityNode = SdkNode.extend({
   // Applies effect representing the entity being less important
   _deemphasisVisualTagId: 'DeemphasisVisualTagId',
   addDeemphasisVisualTag() {
-    this.addInjectedVisualStateTagWithId(EntityNodeVisualStateTag.createShowDeemphasisTag(), this._deemphasisVisualTagId);
+    this.addInjectedVisualStateTagWithId(
+      EntityNodeVisualStateTag.createShowDeemphasisTag(),
+      this._deemphasisVisualTagId,
+    );
   },
   removeDeemphasisVisualTag() {
     this.removeInjectedVisualStateTagById(this._deemphasisVisualTagId);
@@ -1816,7 +1977,9 @@ const EntityNode = SdkNode.extend({
     this.whenResourcesReady(this.getCardResourceRequestId()).then((cardResourceRequestId) => {
       if (!this.getAreResourcesValid(cardResourceRequestId)) return; // card has changed
 
-      this.entitySprite.setShaderProgram(cc.shaderCache.programForKey(cc.SHADER_POSITION_TEXTURECOLOR));
+      this.entitySprite.setShaderProgram(
+        cc.shaderCache.programForKey(cc.SHADER_POSITION_TEXTURECOLOR),
+      );
     });
   },
 
@@ -1826,7 +1989,10 @@ const EntityNode = SdkNode.extend({
 
   _dissolveVisualTagId: 'DissolveVisualTagId',
   addDissolveVisualTag() {
-    this.addInjectedVisualStateTagWithId(EntityNodeVisualStateTag.createShowDissolveTag(), this._dissolveVisualTagId);
+    this.addInjectedVisualStateTagWithId(
+      EntityNodeVisualStateTag.createShowDissolveTag(),
+      this._dissolveVisualTagId,
+    );
   },
   removeDissolveVisualTag() {
     this.removeInjectedVisualStateTagById(this._dissolveVisualTagId);
@@ -1855,20 +2021,34 @@ const EntityNode = SdkNode.extend({
       const { sdkCard } = this;
       const scene = this.getScene();
       const gameLayer = scene && scene.getGameLayer();
-      if (gameLayer != null && gameLayer.getIsGameActive() && !gameLayer.getIsPlayerSelectionLocked()) {
+      if (
+        gameLayer != null &&
+        gameLayer.getIsGameActive() &&
+        !gameLayer.getIsPlayerSelectionLocked()
+      ) {
         if (sdkCard.isOwnedByOpponentPlayer()) {
           // opponent cards always show readiness
           this.addReadinessVisualTag();
         } else {
           // my cards show readiness only when ready for the last action
-          const isReady = this.getIsReadyAtAction(gameLayer && gameLayer.getLastShownSdkStateRecordingAction());
+          const isReady = this.getIsReadyAtAction(
+            gameLayer && gameLayer.getLastShownSdkStateRecordingAction(),
+          );
           const isMyTurn = gameLayer.getIsMyTurn();
-          const canShowReadiness = isMyTurn && !gameLayer.getIsShowingStep() && !gameLayer.getMyPlayer().getIsTakingSelectionAction();
+          const canShowReadiness =
+            isMyTurn &&
+            !gameLayer.getIsShowingStep() &&
+            !gameLayer.getMyPlayer().getIsTakingSelectionAction();
           if (isReady && canShowReadiness) {
             this.addReadinessVisualTag();
           } else {
             this.removeReadinessVisualTag();
-            if (!isReady && isMyTurn && !this.getHasActiveState() && !sdkCard.getIsUncontrollableBattlePet()) {
+            if (
+              !isReady &&
+              isMyTurn &&
+              !this.getHasActiveState() &&
+              !sdkCard.getIsUncontrollableBattlePet()
+            ) {
               // exhaustion show for when something has moved but cannot attack (effectively exhausted unless something is moved)
               this.addDeemphasisVisualTag();
             }
@@ -1884,9 +2064,15 @@ const EntityNode = SdkNode.extend({
     this.removeDeemphasisVisualTag();
 
     if (this.sdkCard.isOwnedByMyPlayer()) {
-      this.addInjectedVisualStateTagWithId(EntityNodeVisualStateTag.createShowReadinessForPlayerTag(), this._readinessVisualTagId);
+      this.addInjectedVisualStateTagWithId(
+        EntityNodeVisualStateTag.createShowReadinessForPlayerTag(),
+        this._readinessVisualTagId,
+      );
     } else {
-      this.addInjectedVisualStateTagWithId(EntityNodeVisualStateTag.createShowReadinessForOpponentTag(), this._readinessVisualTagId);
+      this.addInjectedVisualStateTagWithId(
+        EntityNodeVisualStateTag.createShowReadinessForOpponentTag(),
+        this._readinessVisualTagId,
+      );
     }
   },
 
@@ -1909,7 +2095,12 @@ const EntityNode = SdkNode.extend({
       }
 
       if (CONFIG.PLAYER_READY_HIGHLIGHT_VISIBLE) {
-        this._showHighlight(CONFIG.PLAYER_READY_HIGHLIGHT_COLOR, CONFIG.PLAYER_READY_HIGHLIGHT_FREQUENCY, CONFIG.PLAYER_READY_HIGHLIGHT_OPACITY_MIN, CONFIG.PLAYER_READY_HIGHLIGHT_OPACITY_MAX);
+        this._showHighlight(
+          CONFIG.PLAYER_READY_HIGHLIGHT_COLOR,
+          CONFIG.PLAYER_READY_HIGHLIGHT_FREQUENCY,
+          CONFIG.PLAYER_READY_HIGHLIGHT_OPACITY_MIN,
+          CONFIG.PLAYER_READY_HIGHLIGHT_OPACITY_MAX,
+        );
       } else {
         this._removeHighlight();
       }
@@ -1934,7 +2125,12 @@ const EntityNode = SdkNode.extend({
       }
 
       if (CONFIG.OPPONENT_READY_HIGHLIGHT_VISIBLE) {
-        this._showHighlight(CONFIG.OPPONENT_READY_HIGHLIGHT_COLOR, CONFIG.OPPONENT_READY_HIGHLIGHT_FREQUENCY, CONFIG.OPPONENT_READY_HIGHLIGHT_OPACITY_MIN, CONFIG.OPPONENT_READY_HIGHLIGHT_OPACITY_MAX);
+        this._showHighlight(
+          CONFIG.OPPONENT_READY_HIGHLIGHT_COLOR,
+          CONFIG.OPPONENT_READY_HIGHLIGHT_FREQUENCY,
+          CONFIG.OPPONENT_READY_HIGHLIGHT_OPACITY_MIN,
+          CONFIG.OPPONENT_READY_HIGHLIGHT_OPACITY_MAX,
+        );
       } else {
         this._removeHighlight();
       }
@@ -2085,16 +2281,22 @@ const EntityNode = SdkNode.extend({
             if (!this.getAreResourcesValid(cardResourceRequestId)) return; // card has changed
 
             const colorForOwnerTint = this._getColorForOwnerTint() || cc.color(255, 255, 255);
-            this.entitySprite.runAction(cc.sequence(
-              cc.delayTime(lifeDuration),
-              cc.tintTo(0.2, 0, 0, 0),
-              cc.delayTime(0.2),
-              cc.tintTo(0.2, colorForOwnerTint.r, colorForOwnerTint.g, colorForOwnerTint.b),
-            ));
+            this.entitySprite.runAction(
+              cc.sequence(
+                cc.delayTime(lifeDuration),
+                cc.tintTo(0.2, 0, 0, 0),
+                cc.delayTime(0.2),
+                cc.tintTo(0.2, colorForOwnerTint.r, colorForOwnerTint.g, colorForOwnerTint.b),
+              ),
+            );
           });
 
-          const sourceScreenPosition = UtilsEngine.transformBoardToTileMap(sourceSdkCard.getPosition());
-          const targetScreenPosition = UtilsEngine.transformBoardToTileMap(targetSdkCard.getPosition());
+          const sourceScreenPosition = UtilsEngine.transformBoardToTileMap(
+            sourceSdkCard.getPosition(),
+          );
+          const targetScreenPosition = UtilsEngine.transformBoardToTileMap(
+            targetSdkCard.getPosition(),
+          );
 
           // show particles
           const particleSystem = BaseParticleSystem.create(RSX.ptcl_soot_ball.plist);
@@ -2108,14 +2310,18 @@ const EntityNode = SdkNode.extend({
           this.getScene().getGameLayer().addNodes(particleSystem);
 
           // move fx sprites
-          particleSystem.runAction(cc.sequence(
-            cc.delayTime(lifeDuration),
-            cc.moveTo(travelDuration, targetScreenPosition),
-            cc.delayTime(lifeDuration),
-            cc.callFunc(function () {
-              this.destroy(CONFIG.FADE_MEDIUM_DURATION);
-            }.bind(particleSystem)),
-          ));
+          particleSystem.runAction(
+            cc.sequence(
+              cc.delayTime(lifeDuration),
+              cc.moveTo(travelDuration, targetScreenPosition),
+              cc.delayTime(lifeDuration),
+              cc.callFunc(
+                function () {
+                  this.destroy(CONFIG.FADE_MEDIUM_DURATION);
+                }.bind(particleSystem),
+              ),
+            ),
+          );
         }
       }
     }
@@ -2172,7 +2378,6 @@ const EntityNode = SdkNode.extend({
   },
 
   /* endregion Triggered Visual Effects */
-
 });
 
 EntityNode.create = function (sdkCard, node) {

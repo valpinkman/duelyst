@@ -34,9 +34,15 @@ class ModifierSummonWatchHydrax extends ModifierSummonWatch {
       const entity = action.getTarget();
       if (entity != null) {
         // apply self buff
-        this.getGameSession().applyModifierContextObject(this.modifiersContextObjects[0], this.getCard());
+        this.getGameSession().applyModifierContextObject(
+          this.modifiersContextObjects[0],
+          this.getCard(),
+        );
         // apply buff to battle pet being spawend
-        return this.getGameSession().applyModifierContextObject(this.modifiersContextObjects[1], entity);
+        return this.getGameSession().applyModifierContextObject(
+          this.modifiersContextObjects[1],
+          entity,
+        );
       }
     }
   }

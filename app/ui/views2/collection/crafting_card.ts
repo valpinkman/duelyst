@@ -4,7 +4,6 @@ var CONFIG = require('app/common/config');
 var CardCompositeView = require('app/ui/views/composite/card');
 
 var CraftingCardCompositeView = CardCompositeView.extend({
-
   draggable: true,
   draggableScope: 'remove',
 
@@ -19,7 +18,6 @@ var CraftingCardCompositeView = CardCompositeView.extend({
   getCardClasses: function () {
     return CardCompositeView.prototype.getCardClasses.apply(this, arguments) + ' crafting-card';
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

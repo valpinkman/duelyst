@@ -13,7 +13,13 @@ const ForcedAttackAction = require('app/sdk/actions/forcedAttackAction');
 class SpellBetrayal extends Spell {
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     const enemyGeneral = this.getGameSession().getGeneralForOpponentOfPlayerId(this.getOwnerId());
-    const minions = board.getFriendlyEntitiesAroundEntity(enemyGeneral, CardType.Unit, 1, true, false);
+    const minions = board.getFriendlyEntitiesAroundEntity(
+      enemyGeneral,
+      CardType.Unit,
+      1,
+      true,
+      false,
+    );
 
     if (minions != null) {
       return (() => {

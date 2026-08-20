@@ -80,8 +80,17 @@ class CardFactory_BloodstormSet_Faction5 {
       card.rarityId = Rarity.Legendary;
       const doubleAttackModifierContextObject = ModifierDoubleAttackStat.createContextObject();
       doubleAttackModifierContextObject.durationEndTurn = 1;
-      doubleAttackModifierContextObject.appliedName = i18next.t('modifiers.faction_5_drogon_buff_name');
-      card.setInherentModifiersContextObjects([ModifierSynergizeApplyModifiersToGeneral.createContextObject([doubleAttackModifierContextObject], true, false, 'Double your General\'s Attack this turn')]);
+      doubleAttackModifierContextObject.appliedName = i18next.t(
+        'modifiers.faction_5_drogon_buff_name',
+      );
+      card.setInherentModifiersContextObjects([
+        ModifierSynergizeApplyModifiersToGeneral.createContextObject(
+          [doubleAttackModifierContextObject],
+          true,
+          false,
+          "Double your General's Attack this turn",
+        ),
+      ]);
     }
 
     if (identifier === Cards.Faction5.Thraex) {
@@ -116,7 +125,11 @@ class CardFactory_BloodstormSet_Faction5 {
       const buffContextObject = Modifier.createContextObjectWithAttributeBuffs(1);
       buffContextObject.appliedName = i18next.t('modifiers.faction_5_thraex_buff_name');
       card.setInherentModifiersContextObjects([
-        ModifierSynergizeApplyModifiers.createContextObjectForAllAlliesAndSelf([buffContextObject], false, 'All friendly minions gain +1 Attack (including itself)'),
+        ModifierSynergizeApplyModifiers.createContextObjectForAllAlliesAndSelf(
+          [buffContextObject],
+          false,
+          'All friendly minions gain +1 Attack (including itself)',
+        ),
       ]);
     }
 
@@ -151,7 +164,9 @@ class CardFactory_BloodstormSet_Faction5 {
       card.maxHP = 3;
       card.manaCost = 2;
       card.rarityId = Rarity.Rare;
-      card.setInherentModifiersContextObjects([ModifierMyGeneralDamagedWatchBuffSelfAttackForSame.createContextObject('Rancour\'s Rage')]);
+      card.setInherentModifiersContextObjects([
+        ModifierMyGeneralDamagedWatchBuffSelfAttackForSame.createContextObject("Rancour's Rage"),
+      ]);
     }
     // card.setInherentModifiersContextObjects([ModifierMyGeneralDamagedWatchBuffSelfAttackForSame.createContextObject(i18next.t("modifiers.faction_5_rancour_buff_name"))])
 
@@ -245,7 +260,12 @@ class CardFactory_BloodstormSet_Faction5 {
       card.manaCost = 4;
       card.rarityId = Rarity.Epic;
       card.cardDataOrIndexToSpawn = { id: Cards.Faction5.Egg };
-      card.cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects = [ModifierEgg.createContextObject({ id: Cards.Faction5.SpiritOfValknu }, 'copy of your General')];
+      card.cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects = [
+        ModifierEgg.createContextObject(
+          { id: Cards.Faction5.SpiritOfValknu },
+          'copy of your General',
+        ),
+      ];
       card.spellFilterType = SpellFilterType.SpawnSource;
       card.addKeywordClassToInclude(ModifierTokenCreator);
       card.setFXResource(['FX.Cards.Spell.MindSteal']);

@@ -59,7 +59,9 @@ exports.withTimeout = function (promise, ms, message) {
  * Replacement for bluebird's `.delay(ms)`: pass the value through after a wait.
  */
 exports.delay = function (ms, value) {
-  return new Promise((resolve) => { setTimeout(() => resolve(value), ms); });
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(value), ms);
+  });
 };
 
 /**
@@ -130,8 +132,13 @@ exports.cancellable = function (promise) {
 exports.nodeify = function (promise, callback) {
   if (typeof callback !== 'function') return promise;
   return promise.then(
-    (value) => { callback(null, value); return value; },
-    (err) => { callback(err); },
+    (value) => {
+      callback(null, value);
+      return value;
+    },
+    (err) => {
+      callback(err);
+    },
   );
 };
 
@@ -166,23 +173,26 @@ exports.map = function (items, mapper, options) {
 
     return new Promise((resolve, reject) => {
       const launch = function () {
-        while (next < length && !failed && (next - completed) < limit) {
+        while (next < length && !failed && next - completed < limit) {
           const i = next;
           next += 1;
           Promise.resolve(arr[i])
             .then((item) => mapper(item, i, length))
-            .then((value) => {
-              results[i] = value;
-              completed += 1;
-              if (completed === length) {
-                resolve(results);
-              } else {
-                launch();
-              }
-            }, (err) => {
-              failed = true;
-              reject(err);
-            });
+            .then(
+              (value) => {
+                results[i] = value;
+                completed += 1;
+                if (completed === length) {
+                  resolve(results);
+                } else {
+                  launch();
+                }
+              },
+              (err) => {
+                failed = true;
+                reject(err);
+              },
+            );
         }
       };
       launch();
@@ -200,9 +210,7 @@ exports.each = function (items, iterator) {
     const arr = Array.from(list);
     let chain = Promise.resolve();
     arr.forEach((item, i) => {
-      chain = chain
-        .then(() => item)
-        .then((value) => iterator(value, i, arr.length));
+      chain = chain.then(() => item).then((value) => iterator(value, i, arr.length));
     });
     return chain.then(() => arr);
   });
@@ -217,7 +225,9 @@ exports.props = function (obj) {
     const keys = Object.keys(o);
     return Promise.all(keys.map((k) => o[k])).then((values) => {
       const out = {};
-      keys.forEach((k, i) => { out[k] = values[i]; });
+      keys.forEach((k, i) => {
+        out[k] = values[i];
+      });
       return out;
     });
   });
@@ -246,8 +256,14 @@ exports.inspectable = function (promise?) {
 
   let state = 'pending';
   const tracked = Promise.resolve(promise).then(
-    (value) => { state = 'fulfilled'; return value; },
-    (err) => { state = 'rejected'; throw err; },
+    (value) => {
+      state = 'fulfilled';
+      return value;
+    },
+    (err) => {
+      state = 'rejected';
+      throw err;
+    },
   );
   tracked.isFulfilled = () => state === 'fulfilled';
   tracked.isRejected = () => state === 'rejected';

@@ -19,11 +19,14 @@ class ModifierCounterMechazorBuildProgressDescription extends Modifier {
 
   static getDescription(modifierContextObject) {
     if (modifierContextObject) {
-      return i18next.t('modifiers.mechazor_counter_applied_desc', { percent_complete: modifierContextObject.percentComplete });
+      return i18next.t('modifiers.mechazor_counter_applied_desc', {
+        percent_complete: modifierContextObject.percentComplete,
+      });
     }
   }
 }
-ModifierCounterMechazorBuildProgressDescription.prototype.type = 'ModifierCounterMechazorBuildProgressDescription';
+ModifierCounterMechazorBuildProgressDescription.prototype.type =
+  'ModifierCounterMechazorBuildProgressDescription';
 ModifierCounterMechazorBuildProgressDescription.prototype.maxStacks = 1;
 
 module.exports = ModifierCounterMechazorBuildProgressDescription;

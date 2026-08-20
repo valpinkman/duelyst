@@ -13,13 +13,9 @@ Logger.enabled = false;
 describe('core set', () => {
   describe('epics', () => {
     beforeEach(() => {
-      const player1Deck = [
-        { id: SDK.Cards.Faction6.General },
-      ];
+      const player1Deck = [{ id: SDK.Cards.Faction6.General }];
 
-      const player2Deck = [
-        { id: SDK.Cards.Faction1.General },
-      ];
+      const player2Deck = [{ id: SDK.Cards.Faction1.General }];
 
       UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
     });
@@ -33,11 +29,28 @@ describe('core set', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const aethermaster = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Aethermaster }, 1, 2, gameSession.getPlayer1Id());
+      const aethermaster = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.Aethermaster },
+        1,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.Metamorphosis }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PhoenixFire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PhoenixFire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.Metamorphosis,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
 
       var action = player1.actionReplaceCardFromHand(0);
       gameSession.executeAction(action);
@@ -59,11 +72,19 @@ describe('core set', () => {
 
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PhoenixFire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 8, 2);
       gameSession.executeAction(playCardFromHandAction);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.AlcuinLoremaster }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.AlcuinLoremaster,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -78,9 +99,18 @@ describe('core set', () => {
 
       player1.remainingMana = 9;
 
-      var chaosElemental = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.ChaosElemental }, 1, 2, gameSession.getPlayer1Id());
+      var chaosElemental = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.ChaosElemental },
+        1,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PhoenixFire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 2);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -98,9 +128,18 @@ describe('core set', () => {
 
       player1.remainingMana = 9;
 
-      const swornAvenger = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.SwornAvenger }, 1, 2, gameSession.getPlayer1Id());
+      const swornAvenger = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.SwornAvenger },
+        1,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PhoenixFire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 0, 2);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -114,8 +153,18 @@ describe('core set', () => {
 
       player1.remainingMana = 9;
 
-      const syvrel = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.SyvrelTheExile }, 1, 2, gameSession.getPlayer1Id());
-      var azurehorn = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.AzureHornShaman }, 7, 4, gameSession.getPlayer2Id());
+      const syvrel = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.SyvrelTheExile },
+        1,
+        2,
+        gameSession.getPlayer1Id(),
+      );
+      var azurehorn = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.AzureHornShaman },
+        7,
+        4,
+        gameSession.getPlayer2Id(),
+      );
 
       syvrel.refreshExhaustion();
       const action = syvrel.actionAttack(azurehorn);
@@ -134,9 +183,18 @@ describe('core set', () => {
 
       player1.remainingMana = 9;
 
-      const venomtoth = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.VenomToth }, 4, 2, gameSession.getPlayer2Id());
+      const venomtoth = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.VenomToth },
+        4,
+        2,
+        gameSession.getPlayer2Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.AzureHornShaman }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.AzureHornShaman,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 2);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -150,8 +208,16 @@ describe('core set', () => {
 
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Artifact.ArclyteRegalia }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.ArtifactHunter }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Artifact.ArclyteRegalia,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.ArtifactHunter,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 2);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -206,7 +272,12 @@ describe('core set', () => {
 
       player1.remainingMana = 9;
 
-      const moebius = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Moebius }, 7, 2, gameSession.getPlayer1Id());
+      const moebius = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.Moebius },
+        7,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
       moebius.setDamage(1);
 
@@ -229,7 +300,12 @@ describe('core set', () => {
 
       player1.remainingMana = 9;
 
-      const moebius = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Moebius }, 7, 2, gameSession.getPlayer1Id());
+      const moebius = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.Moebius },
+        7,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
       expect(moebius.getHP()).to.equal(5);
       expect(moebius.getATK()).to.equal(3);
@@ -248,9 +324,18 @@ describe('core set', () => {
 
       player1.remainingMana = 9;
 
-      const moebius = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Moebius }, 7, 2, gameSession.getPlayer1Id());
+      const moebius = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.Moebius },
+        7,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PermafrostShield }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PermafrostShield,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 7, 2);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -272,15 +357,20 @@ describe('core set', () => {
       player1.remainingMana = 9;
       gameSession.getGeneralForPlayer1().setDamage(5);
 
-      const purgatos = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Purgatos }, 7, 2, gameSession.getPlayer1Id());
+      const purgatos = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.Purgatos },
+        7,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
       purgatos.refreshExhaustion();
       const action = purgatos.actionAttack(gameSession.getGeneralForPlayer2());
       gameSession.executeAction(action);
 
       let damageSpread = 0;
-      damageSpread += (gameSession.getGeneralForPlayer1().getHP() - 20); // general heal
-      damageSpread += ((gameSession.getGeneralForPlayer2().getHP() - 22) * -1); // enemy general damage
+      damageSpread += gameSession.getGeneralForPlayer1().getHP() - 20; // general heal
+      damageSpread += (gameSession.getGeneralForPlayer2().getHP() - 22) * -1; // enemy general damage
 
       expect(damageSpread).to.equal(3);
     });
@@ -292,7 +382,12 @@ describe('core set', () => {
 
       player1.remainingMana = 9;
 
-      const hankHart = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.HankHart }, 5, 2, gameSession.getPlayer1Id());
+      const hankHart = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.HankHart },
+        5,
+        2,
+        gameSession.getPlayer1Id(),
+      );
       hankHart.setDamage(3);
 
       hankHart.refreshExhaustion();
@@ -309,10 +404,25 @@ describe('core set', () => {
 
       player1.remainingMana = 9;
 
-      const hankHart = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.HankHart }, 5, 2, gameSession.getPlayer1Id());
+      const hankHart = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.HankHart },
+        5,
+        2,
+        gameSession.getPlayer1Id(),
+      );
       hankHart.setDamage(3);
-      const luxIgnis = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.LuxIgnis }, 6, 2, gameSession.getPlayer1Id());
-      const brightmossGolem = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.BrightmossGolem }, 7, 2, gameSession.getPlayer1Id());
+      const luxIgnis = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.LuxIgnis },
+        6,
+        2,
+        gameSession.getPlayer1Id(),
+      );
+      const brightmossGolem = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.BrightmossGolem },
+        7,
+        2,
+        gameSession.getPlayer1Id(),
+      );
       brightmossGolem.setDamage(3);
 
       gameSession.executeAction(gameSession.actionEndTurn());
@@ -328,9 +438,19 @@ describe('core set', () => {
 
       player1.remainingMana = 9;
 
-      const swornDefender = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.SwornDefender }, 5, 2, gameSession.getPlayer1Id());
+      const swornDefender = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.SwornDefender },
+        5,
+        2,
+        gameSession.getPlayer1Id(),
+      );
       swornDefender.setDamage(6);
-      const brightmossGolem = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.BrightmossGolem }, 1, 2, gameSession.getPlayer2Id());
+      const brightmossGolem = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.BrightmossGolem },
+        1,
+        2,
+        gameSession.getPlayer2Id(),
+      );
 
       const action = gameSession.getGeneralForPlayer1().actionAttack(brightmossGolem);
       gameSession.executeAction(action);
@@ -345,11 +465,19 @@ describe('core set', () => {
 
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PhoenixFire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 8, 2);
       gameSession.executeAction(playCardFromHandAction);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.TwilightMage }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.TwilightMage,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
 

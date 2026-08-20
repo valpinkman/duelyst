@@ -19,7 +19,10 @@ class SpellFollowupHollowGroveKeeper extends SpellKillTarget {
     for (var position of Array.from<any>(validPositions)) {
       var unit = this.getGameSession().getBoard().getUnitAtPosition(position);
       // kill a target with provoke or frenzy
-      if ((unit != null) && (unit.hasModifierClass(ModifierProvoke) || unit.hasModifierClass(ModifierFrenzy))) {
+      if (
+        unit != null &&
+        (unit.hasModifierClass(ModifierProvoke) || unit.hasModifierClass(ModifierFrenzy))
+      ) {
         filteredValidPositions.push(position);
       }
     }
@@ -31,9 +34,17 @@ class SpellFollowupHollowGroveKeeper extends SpellKillTarget {
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     super.onApplyEffectToBoardTile(board, x, y, sourceAction);
     // apply frenzy and provoke to source unit
-    const sourceUnit = this.getGameSession().getBoard().getUnitAtPosition(this.getFollowupSourcePosition());
-    this.getGameSession().applyModifierContextObject(ModifierProvoke.createContextObject(), sourceUnit);
-    return this.getGameSession().applyModifierContextObject(ModifierFrenzy.createContextObject(), sourceUnit);
+    const sourceUnit = this.getGameSession()
+      .getBoard()
+      .getUnitAtPosition(this.getFollowupSourcePosition());
+    this.getGameSession().applyModifierContextObject(
+      ModifierProvoke.createContextObject(),
+      sourceUnit,
+    );
+    return this.getGameSession().applyModifierContextObject(
+      ModifierFrenzy.createContextObject(),
+      sourceUnit,
+    );
   }
 }
 

@@ -14,9 +14,9 @@ const ScoreForUnit = function (unit, onlyRemovableModifiers) {
 
   // add stats bounties
   if (unit.getIsGeneral()) {
-    score += (unit.getHP() * BOUNTY.GENERAL_HP) + (unit.getATK() * BOUNTY.GENERAL_ATK);
+    score += unit.getHP() * BOUNTY.GENERAL_HP + unit.getATK() * BOUNTY.GENERAL_ATK;
   } else {
-    score += (unit.getHP() * BOUNTY.UNIT_HP) + (unit.getATK() * BOUNTY.UNIT_ATK) ** 1.5; // test values here
+    score += unit.getHP() * BOUNTY.UNIT_HP + (unit.getATK() * BOUNTY.UNIT_ATK) ** 1.5; // test values here
   }
 
   // add modifier score

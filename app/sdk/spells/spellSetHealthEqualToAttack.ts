@@ -31,10 +31,18 @@ class SpellSetHealthEqualToAttack extends Spell {
     contextObject.attributeBuffsAbsolute = ['maxHP'];
     contextObject.resetsDamage = true;
     contextObject.isRemovable = false;
-    if (this.appliedName != null) { contextObject.appliedName = this.appliedName; }
-    if (this.appliedDescription != null) { contextObject.appliedDescription = this.appliedDescription; }
-    if (this.durationEndTurn != null) { contextObject.durationEndTurn = this.durationEndTurn; }
-    if (this.durationStartTurn != null) { contextObject.durationStartTurn = this.durationStartTurn; }
+    if (this.appliedName != null) {
+      contextObject.appliedName = this.appliedName;
+    }
+    if (this.appliedDescription != null) {
+      contextObject.appliedDescription = this.appliedDescription;
+    }
+    if (this.durationEndTurn != null) {
+      contextObject.durationEndTurn = this.durationEndTurn;
+    }
+    if (this.durationStartTurn != null) {
+      contextObject.durationStartTurn = this.durationStartTurn;
+    }
     return this.getGameSession().applyModifierContextObject(contextObject, entity);
   }
 }

@@ -16,7 +16,11 @@ F2[Cards.Spell.PhoenixFire] = [
   {
     type: CardIntentType.Burn,
     amount: 3,
-    targets: CardTargetType.Minion | CardTargetType.Enemy | CardTargetType.General | CardTargetType.Friendly,
+    targets:
+      CardTargetType.Minion |
+      CardTargetType.Enemy |
+      CardTargetType.General |
+      CardTargetType.Friendly,
   },
 ];
 
@@ -32,7 +36,11 @@ F2[Cards.Spell.SpiralTechnique] = [
   {
     type: CardIntentType.Burn,
     amount: 8,
-    targets: CardTargetType.Minion | CardTargetType.Enemy | CardTargetType.General | CardTargetType.Friendly,
+    targets:
+      CardTargetType.Minion |
+      CardTargetType.Enemy |
+      CardTargetType.General |
+      CardTargetType.Friendly,
   },
 ];
 
@@ -201,9 +209,7 @@ targets: CardTargetType.Spell | CardTargetType.Friendly
 F2[Cards.Artifact.MaskOfShadows] = [
   {
     type: CardIntentType.ApplyModifiers,
-    modifiers: [
-      ModifierBackstab.type,
-    ],
+    modifiers: [ModifierBackstab.type],
     targets: CardTargetType.General | CardTargetType.Friendly,
   },
 ];
@@ -211,9 +217,7 @@ F2[Cards.Artifact.MaskOfShadows] = [
 F2[Cards.Artifact.MaskOfTranscendance] = [
   {
     type: CardIntentType.ApplyModifiers,
-    modifiers: [
-      ModifierRanged.type,
-    ],
+    modifiers: [ModifierRanged.type],
     targets: CardTargetType.General | CardTargetType.Friendly,
   },
 ];
@@ -320,9 +324,7 @@ F2[Cards.Spell.CobraStrike] = [
 F2[Cards.Artifact.MaskOfCelerity] = [
   {
     type: CardIntentType.ApplyModifiers,
-    modifiers: [
-      ModifierTranscendance.type,
-    ],
+    modifiers: [ModifierTranscendance.type],
     targets: CardTargetType.General | CardTargetType.Friendly,
   },
 ];
@@ -373,9 +375,7 @@ F2[Cards.Spell.Thunderbomb] = [
 F2[Cards.Spell.MassFlight] = [
   {
     type: CardIntentType.ApplyModifiers,
-    modifiers: [
-      ModifierFlying.type,
-    ],
+    modifiers: [ModifierFlying.type],
     targets: CardTargetType.Minion | CardTargetType.Friendly | CardTargetType.All,
   },
 ];

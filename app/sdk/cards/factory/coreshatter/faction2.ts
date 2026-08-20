@@ -80,18 +80,26 @@ class CardFactory_CoreshatterSet_Faction2 {
       card.factionId = Factions.Faction2;
       card.setCardSetId(CardSet.Coreshatter);
       card.name = 'Hideatsu the Ebon Ox';
-      card.setDescription('Trial: Summon 7 minions from your action bar with different costs.\nDestiny: Summon friendly minions to deal their cost as damage to an enemy.');
+      card.setDescription(
+        'Trial: Summon 7 minions from your action bar with different costs.\nDestiny: Summon friendly minions to deal their cost as damage to an enemy.',
+      );
       card.atk = 5;
       card.maxHP = 5;
       card.manaCost = 0;
       card.rarityId = Rarity.Mythron;
-      const emblemContextObject = PlayerModifierEmblemSummonWatchSonghaiMeltdownQuest.createContextObject();
+      const emblemContextObject =
+        PlayerModifierEmblemSummonWatchSonghaiMeltdownQuest.createContextObject();
       emblemContextObject.appliedName = 'Storm of the Ebon Ox';
-      emblemContextObject.appliedDescription = 'Whenever you summon a minion, deal damage equal to its cost to an enemy.';
+      emblemContextObject.appliedDescription =
+        'Whenever you summon a minion, deal damage equal to its cost to an enemy.';
       card.setInherentModifiersContextObjects([
         ModifierStartsInHand.createContextObject(),
         ModifierCannotBeReplaced.createContextObject(),
-        ModifierOnSummonFromHandApplyEmblems.createContextObject([emblemContextObject], true, false),
+        ModifierOnSummonFromHandApplyEmblems.createContextObject(
+          [emblemContextObject],
+          true,
+          false,
+        ),
         ModifierFateSonghaiMinionQuest.createContextObject(7),
         ModifierCannotBeRemovedFromHand.createContextObject(),
       ]);
@@ -128,7 +136,9 @@ class CardFactory_CoreshatterSet_Faction2 {
       card.maxHP = 6;
       card.manaCost = 4;
       card.rarityId = Rarity.Epic;
-      card.setInherentModifiersContextObjects([ModifierMyMoveWatchAnyReasonDrawCard.createContextObject(1)]);
+      card.setInherentModifiersContextObjects([
+        ModifierMyMoveWatchAnyReasonDrawCard.createContextObject(1),
+      ]);
       card.setFXResource(['FX.Cards.Neutral.SunSeer']);
       card.setBoundingBoxWidth(45);
       card.setBoundingBoxHeight(80);
@@ -158,7 +168,9 @@ class CardFactory_CoreshatterSet_Faction2 {
       card.factionId = Factions.Faction2;
       card.id = Cards.Spell.DejaVu;
       card.name = 'Meditate';
-      card.setDescription('Shuffle five copies of the spell you cast most recently into your deck (excluding Meditate).');
+      card.setDescription(
+        'Shuffle five copies of the spell you cast most recently into your deck (excluding Meditate).',
+      );
       card.rarityId = Rarity.Rare;
       card.manaCost = 0;
       card.spellFilterType = SpellFilterType.NeutralIndirect;
@@ -202,18 +214,24 @@ class CardFactory_CoreshatterSet_Faction2 {
       card.factionId = Factions.Faction2;
       card.id = Cards.Artifact.BackstabGloves;
       card.name = 'Horned Mask';
-      card.setDescription('Your General gains +1 Attack.\nAfter a friendly minion with Backstab attacks, it gains +1/+1.');
+      card.setDescription(
+        'Your General gains +1 Attack.\nAfter a friendly minion with Backstab attacks, it gains +1/+1.',
+      );
       card.manaCost = 1;
       card.rarityId = Rarity.Epic;
       card.durability = 3;
       const attackBuffContextObject = Modifier.createContextObjectWithAttributeBuffs(1, 1);
       attackBuffContextObject.appliedName = 'Growing Charge';
-      const auraContextObject = ModifierMyAttackWatchApplyModifiers.createContextObject([attackBuffContextObject]);
+      const auraContextObject = ModifierMyAttackWatchApplyModifiers.createContextObject([
+        attackBuffContextObject,
+      ]);
       auraContextObject.appliedName = 'Poised to Strike';
       auraContextObject.appliedDescription = 'After this minion attacks, it gains +1/+1.';
       card.setTargetModifiersContextObjects([
         Modifier.createContextObjectWithAttributeBuffs(1, 0),
-        Modifier.createContextObjectWithAuraForAllAllies([auraContextObject], null, null, [ModifierBackstab.type]),
+        Modifier.createContextObjectWithAuraForAllAllies([auraContextObject], null, null, [
+          ModifierBackstab.type,
+        ]),
       ]);
       card.addKeywordClassToInclude(ModifierBackstab);
       card.setFXResource(['FX.Cards.Artifact.EnergyAmulet']);
@@ -231,12 +249,17 @@ class CardFactory_CoreshatterSet_Faction2 {
       card.setCardSetId(CardSet.Coreshatter);
       card.factionId = Factions.Faction2;
       card.name = 'Kaido Expert';
-      card.setDescription('Backstab: (1).\nWhenever this minion backstabs, summon a minion with Backstab that costs 2 or less from your deck nearby.');
+      card.setDescription(
+        'Backstab: (1).\nWhenever this minion backstabs, summon a minion with Backstab that costs 2 or less from your deck nearby.',
+      );
       card.atk = 2;
       card.maxHP = 2;
       card.manaCost = 3;
       card.rarityId = Rarity.Rare;
-      card.setInherentModifiersContextObjects([ModifierBackstab.createContextObject(1), ModifierBackstabWatchSummonBackstabMinion.createContextObject(2)]);
+      card.setInherentModifiersContextObjects([
+        ModifierBackstab.createContextObject(1),
+        ModifierBackstabWatchSummonBackstabMinion.createContextObject(2),
+      ]);
       card.setFXResource(['FX.Cards.Neutral.VineEntangler']);
       card.setBaseSoundResource({
         apply: RSX.sfx_unit_deploy.audio,
@@ -263,16 +286,24 @@ class CardFactory_CoreshatterSet_Faction2 {
       card.setCardSetId(CardSet.Coreshatter);
       card.factionId = Factions.Faction2;
       card.name = 'Massacre Artist';
-      card.setDescription('Backstab: (2).\nAfter this minion attacks and backstabs, all attacks are backstabs this turn.');
+      card.setDescription(
+        'Backstab: (2).\nAfter this minion attacks and backstabs, all attacks are backstabs this turn.',
+      );
       card.atk = 2;
       card.maxHP = 5;
       card.manaCost = 4;
       card.rarityId = Rarity.Legendary;
-      const teamAlwaysBackstabbedModifier = PlayerModifierTeamAlwaysBackstabbed.createContextObject('Massacred', 'Backstabbed from any angle!');
+      const teamAlwaysBackstabbedModifier = PlayerModifierTeamAlwaysBackstabbed.createContextObject(
+        'Massacred',
+        'Backstabbed from any angle!',
+      );
       teamAlwaysBackstabbedModifier.durationEndTurn = 1;
       card.setInherentModifiersContextObjects([
         ModifierBackstab.createContextObject(2),
-        ModifierBackstabWatchApplyPlayerModifiers.createContextObjectToTargetEnemyPlayer([teamAlwaysBackstabbedModifier], false),
+        ModifierBackstabWatchApplyPlayerModifiers.createContextObjectToTargetEnemyPlayer(
+          [teamAlwaysBackstabbedModifier],
+          false,
+        ),
       ]);
       card.setFXResource(['FX.Cards.Neutral.BloodshardGolem']);
       card.setBoundingBoxWidth(80);
@@ -336,12 +367,19 @@ class CardFactory_CoreshatterSet_Faction2 {
       card.setCardSetId(CardSet.Coreshatter);
       card.factionId = Factions.Faction2;
       card.name = 'Xenkai Cannoneer';
-      card.setDescription('Ranged\nWhenever you summon a minion with Ranged, that minion gains Rush.');
+      card.setDescription(
+        'Ranged\nWhenever you summon a minion with Ranged, that minion gains Rush.',
+      );
       card.atk = 4;
       card.maxHP = 4;
       card.manaCost = 5;
       card.rarityId = Rarity.Legendary;
-      card.setInherentModifiersContextObjects([ModifierRanged.createContextObject(), ModifierSummonWatchApplyModifiersToRanged.createContextObject([ModifierFirstBlood.createContextObject()])]);
+      card.setInherentModifiersContextObjects([
+        ModifierRanged.createContextObject(),
+        ModifierSummonWatchApplyModifiersToRanged.createContextObject([
+          ModifierFirstBlood.createContextObject(),
+        ]),
+      ]);
       card.addKeywordClassToInclude(ModifierFirstBlood);
       card.setFXResource(['FX.Cards.Faction2.FlareSlinger']);
       card.setBaseSoundResource({
@@ -407,7 +445,9 @@ class CardFactory_CoreshatterSet_Faction2 {
       card.setCardSetId(CardSet.Coreshatter);
       card.id = Cards.Spell.HollowVortex;
       card.name = 'Kensho Vortex';
-      card.setDescription('Costs 1 less for each spell you cast this game. Whenever you cast a spell this turn, summon a minion that costs up to 2 more nearby your General.');
+      card.setDescription(
+        'Costs 1 less for each spell you cast this game. Whenever you cast a spell this turn, summon a minion that costs up to 2 more nearby your General.',
+      );
       card.manaCost = 11;
       card.rarityId = Rarity.Legendary;
       const customContextObject = PlayerModifierSpellWatchHollowVortex.createContextObject(2);
@@ -417,7 +457,9 @@ class CardFactory_CoreshatterSet_Faction2 {
       card.applyToOwnGeneral = true;
       card.setTargetModifiersContextObjects([customContextObject]);
       const manaChangeContextObject = ModifierManaCostChange.createContextObject(-1);
-      const manaSpellWatch = ModifierSpellWatchAnywhereApplyModifiers.createContextObject([manaChangeContextObject]);
+      const manaSpellWatch = ModifierSpellWatchAnywhereApplyModifiers.createContextObject([
+        manaChangeContextObject,
+      ]);
       card.setInherentModifiersContextObjects([manaSpellWatch]);
       card.spellFilterType = SpellFilterType.None;
       card.setFXResource(['FX.Cards.Spell.KenshoVortex']);
@@ -436,7 +478,9 @@ class CardFactory_CoreshatterSet_Faction2 {
       card.setCardSetId(CardSet.Coreshatter);
       card.id = Cards.Spell.PandaJail;
       card.name = 'Pandatentiary';
-      card.setDescription('Surround the enemy General with friendly Panddo that disappear at the start of your next turn.');
+      card.setDescription(
+        'Surround the enemy General with friendly Panddo that disappear at the start of your next turn.',
+      );
       card.manaCost = 3;
       card.rarityId = Rarity.Epic;
       card.spellFilterType = SpellFilterType.None;

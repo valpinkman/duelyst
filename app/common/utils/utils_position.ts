@@ -118,7 +118,9 @@ UtilsPosition.normalizePosition = function (position) {
   const { x } = position;
   const { y } = position;
   let len = Math.sqrt(x * x + y * y);
-  if (len !== 0.0) { len = 1.0 / len; }
+  if (len !== 0.0) {
+    len = 1.0 / len;
+  }
   return { x: x * len, y: y * len };
 };
 /**
@@ -145,7 +147,12 @@ UtilsPosition.getArraysOfPositionsAreEqual = function (positionsA, positionsB) {
   for (let i = 0, il = positionsA.length; i < il; i++) {
     const positionA = positionsA[i];
     const positionB = positionsB[i];
-    if ((positionA != null && positionB == null) || (positionA == null && positionB != null) || positionA.x !== positionB.x || positionA.y !== positionB.y) {
+    if (
+      (positionA != null && positionB == null) ||
+      (positionA == null && positionB != null) ||
+      positionA.x !== positionB.x ||
+      positionA.y !== positionB.y
+    ) {
       return false;
     }
   }
@@ -187,8 +194,16 @@ UtilsPosition.getArrayOfPositionsContainsArrayOfPositions = function (positionsA
  * @param {Array} positionsB positions to match
  * @returns {Boolean}
  * */
-UtilsPosition.getArrayOfPositionsContainsMultipleArrayOfPositions = function (positionsA, positionsB) {
-  if (positionsA == null || positionsB == null || positionsA.length < positionsB.length || positionsA.length % positionsB.length !== 0) {
+UtilsPosition.getArrayOfPositionsContainsMultipleArrayOfPositions = function (
+  positionsA,
+  positionsB,
+) {
+  if (
+    positionsA == null ||
+    positionsB == null ||
+    positionsA.length < positionsB.length ||
+    positionsA.length % positionsB.length !== 0
+  ) {
     return false;
   }
   const multiples = positionsA.length / positionsB.length;
@@ -224,7 +239,16 @@ UtilsPosition.getArrayOfPositionsContainsMultipleArrayOfPositions = function (po
  * @returns {Boolean} true if found
  * */
 UtilsPosition.getIsPositionInPositions = function (positions, position) {
-  return !!(position && _.find(positions, (comparisonPosition) => comparisonPosition && position.x === comparisonPosition.x && position.y === comparisonPosition.y));
+  return !!(
+    position &&
+    _.find(
+      positions,
+      (comparisonPosition) =>
+        comparisonPosition &&
+        position.x === comparisonPosition.x &&
+        position.y === comparisonPosition.y,
+    )
+  );
 };
 
 /**
@@ -274,7 +298,12 @@ UtilsPosition.removePositionsFromPositions = function (positionsToRemove, positi
  * @returns {Boolean} true equal
  * */
 UtilsPosition.getPositionsAreEqual = function (positionA, positionB) {
-  return positionA != null && positionB != null && positionA.x === positionB.x && positionA.y === positionB.y;
+  return (
+    positionA != null &&
+    positionB != null &&
+    positionA.x === positionB.x &&
+    positionA.y === positionB.y
+  );
 };
 
 /**
@@ -284,5 +313,10 @@ UtilsPosition.getPositionsAreEqual = function (positionA, positionB) {
  * @returns {Boolean} true equal
  * */
 UtilsPosition.getPositionsAreEqualAprox = function (positionA, positionB) {
-  return positionA != null && positionB != null && positionA.x.toFixed(4) === positionB.x.toFixed(4) && positionA.y.toFixed(4) === positionB.y.toFixed(4);
+  return (
+    positionA != null &&
+    positionB != null &&
+    positionA.x.toFixed(4) === positionB.x.toFixed(4) &&
+    positionA.y.toFixed(4) === positionB.y.toFixed(4)
+  );
 };

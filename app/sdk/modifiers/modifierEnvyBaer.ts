@@ -14,7 +14,8 @@ class ModifierEnvyBaer extends ModifierDealDamageWatch {
 
   static type = 'ModifierEnvyBaer';
   static modifierName = 'Envybaer';
-  static description = 'Whenever this minion damages an enemy, teleport that enemy to a random corner';
+  static description =
+    'Whenever this minion damages an enemy, teleport that enemy to a random corner';
 
   onDealDamage(action) {
     if (action.getTarget().getOwnerId() !== this.getCard().getOwnerId()) {
@@ -22,7 +23,9 @@ class ModifierEnvyBaer extends ModifierDealDamageWatch {
       randomTeleportAction.setOwnerId(this.getCard().getOwnerId());
       randomTeleportAction.setSource(action.getTarget());
       randomTeleportAction.setTeleportPattern(CONFIG.PATTERN_CORNERS);
-      randomTeleportAction.setFXResource(_.union(randomTeleportAction.getFXResource(), this.getFXResource()));
+      randomTeleportAction.setFXResource(
+        _.union(randomTeleportAction.getFXResource(), this.getFXResource()),
+      );
       return this.getGameSession().executeAction(randomTeleportAction);
     }
   }

@@ -52,7 +52,11 @@ function watchConsole(page) {
 
 /** The client boots cocos2d and streams assets; wait for the SDK to be live. */
 async function waitForClientBoot(page) {
-  await page.waitForFunction(() => typeof window.SDK !== 'undefined' && window.SDK.GameSession != null, null, { timeout: 120_000 });
+  await page.waitForFunction(
+    () => typeof window.SDK !== 'undefined' && window.SDK.GameSession != null,
+    null,
+    { timeout: 120_000 },
+  );
 }
 
 /** Read game state straight from the SDK singleton the client exposes. */
@@ -64,7 +68,10 @@ function gameState(page) {
       status: gs.getStatus(),
       stepCount: gs.getStepCount(),
       isMyTurn: gs.getCurrentPlayerId() === gs.getMyPlayerId(),
-      units: gs.getBoard().getUnits().map((u) => u.getName()),
+      units: gs
+        .getBoard()
+        .getUnits()
+        .map((u) => u.getName()),
     };
   });
 }
@@ -81,7 +88,9 @@ test.describe('the game runs', () => {
     expect(errors, `client logged console errors:\n${errors.join('\n')}`).toEqual([]);
   });
 
-  test('registers an account, starts a practice game, and the AI takes its turn', async ({ page }) => {
+  test('registers an account, starts a practice game, and the AI takes its turn', async ({
+    page,
+  }) => {
     const errors = watchConsole(page);
     // unique per run: registration is part of what we are testing, and reusing
     // a name would fail on the second run
@@ -132,11 +141,9 @@ test.describe('the game runs', () => {
     await page.getByRole('button', { name: /play practice/i }).click();
 
     // the single-player server creates the game and assigns an id
-    await page.waitForFunction(
-      () => window.SDK.GameSession.getInstance().gameId !== 'N/A',
-      null,
-      { timeout: 120_000 },
-    );
+    await page.waitForFunction(() => window.SDK.GameSession.getInstance().gameId !== 'N/A', null, {
+      timeout: 120_000,
+    });
 
     // --- mulligan, then hand the turn to the AI ---------------------------
     // the starting-hand screen confirms itself if left alone, so only click it
@@ -146,7 +153,10 @@ test.describe('the game runs', () => {
     // case-insensitive name rather than by exact text.
     // several hidden layouts also contain a Confirm button, so take the
     // visible one
-    const confirmHand = page.getByRole('button', { name: /confirm/i }).locator('visible=true').first();
+    const confirmHand = page
+      .getByRole('button', { name: /confirm/i })
+      .locator('visible=true')
+      .first();
     await expect(page.getByText(/choose starting hand/i)).toBeVisible({ timeout: 60_000 });
     await confirmHand.click();
     await page.waitForFunction(
@@ -156,10 +166,14 @@ test.describe('the game runs', () => {
     );
 
     // who moves first is not fixed, so wait for the turn rather than assume it
-    await page.waitForFunction(() => {
-      const gs = window.SDK.GameSession.getInstance();
-      return gs.getCurrentPlayerId() === gs.getMyPlayerId();
-    }, null, { timeout: 120_000 });
+    await page.waitForFunction(
+      () => {
+        const gs = window.SDK.GameSession.getInstance();
+        return gs.getCurrentPlayerId() === gs.getMyPlayerId();
+      },
+      null,
+      { timeout: 120_000 },
+    );
 
     const beforeEndTurn = await gameState(page);
 
@@ -188,7 +202,10 @@ test.describe('the game runs', () => {
           status: gs.getStatus(),
           stepCount: gs.getStepCount(),
           isMyTurn: true, // true by construction: the guard above just checked it
-          units: gs.getBoard().getUnits().map((u) => u.getName()),
+          units: gs
+            .getBoard()
+            .getUnits()
+            .map((u) => u.getName()),
         };
       },
       beforeEndTurn.stepCount,

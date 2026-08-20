@@ -25,7 +25,7 @@ class SpellLucentBeam extends SpellDamage {
     let actions = [action];
 
     const subActions = action.getSubActions();
-    if ((subActions != null) && (subActions.length > 0)) {
+    if (subActions != null && subActions.length > 0) {
       for (let i = 0; i < subActions.length; i++) {
         action = subActions[i];
         actions = actions.concat(this.getAllActionsFromParentAction(subActions[i]));
@@ -46,7 +46,7 @@ class SpellLucentBeam extends SpellDamage {
     }
 
     for (var action of Array.from<any>(actions)) {
-      if ((action.type === HealAction.type) && (action.getTotalHealApplied() > 0)) {
+      if (action.type === HealAction.type && action.getTotalHealApplied() > 0) {
         wasAnythingHealed = true;
         break;
       }

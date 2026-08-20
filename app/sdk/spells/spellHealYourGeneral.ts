@@ -19,7 +19,9 @@ class SpellHealYourGeneral extends SpellHeal {
 
     // can only target enemy general
     const general = this.getGameSession().getGeneralForPlayerId(this.getOwnerId());
-    if (general != null) { applyEffectPositions.push(general.getPosition()); }
+    if (general != null) {
+      applyEffectPositions.push(general.getPosition());
+    }
 
     return applyEffectPositions;
   }

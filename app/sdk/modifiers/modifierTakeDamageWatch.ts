@@ -23,8 +23,9 @@ class ModifierTakeDamageWatch extends Modifier {
     super.onAction(actionEvent);
 
     const a = actionEvent.action;
-    if (a instanceof DamageAction && (a.getTarget() === this.getCard())) {
-      if (this.willDealDamage(a)) { // check if anything is preventing this action from dealing its damage
+    if (a instanceof DamageAction && a.getTarget() === this.getCard()) {
+      if (this.willDealDamage(a)) {
+        // check if anything is preventing this action from dealing its damage
         return this.onDamageTaken(a);
       }
     }

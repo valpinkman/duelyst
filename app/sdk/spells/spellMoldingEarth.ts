@@ -38,7 +38,10 @@ class SpellMoldingEarth extends SpellSpawnEntity {
       ModifierForcefield.createContextObject(),
     ];
 
-    const modifierContextObject = modifiersToObtain[this.getGameSession().getRandomIntegerForExecution(modifiersToObtain.length)];
+    const modifierContextObject =
+      modifiersToObtain[
+        this.getGameSession().getRandomIntegerForExecution(modifiersToObtain.length)
+      ];
 
     this.cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects = [modifierContextObject];
 
@@ -52,7 +55,14 @@ class SpellMoldingEarth extends SpellSpawnEntity {
     const numberOfApplyPositions = this.numUnits;
 
     if (numberOfApplyPositions > 0) {
-      applyEffectPositions = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(this.getGameSession(), generalPosition, CONFIG.PATTERN_3x3, card, this, numberOfApplyPositions);
+      applyEffectPositions = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(
+        this.getGameSession(),
+        generalPosition,
+        CONFIG.PATTERN_3x3,
+        card,
+        this,
+        numberOfApplyPositions,
+      );
     } else {
       applyEffectPositions = [];
     }

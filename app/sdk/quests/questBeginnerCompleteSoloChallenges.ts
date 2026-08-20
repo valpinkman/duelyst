@@ -14,12 +14,19 @@ class QuestBeginnerCompleteSoloChallenges extends QuestBeginner {
   static Identifier = 9904;
 
   constructor() {
-    super(QuestBeginnerCompleteSoloChallenges.Identifier, i18next.t('quests.quest_beginner_complete_solo_challenges_title'), [QuestType.Beginner], QuestBeginnerCompleteSoloChallenges.prototype.goldReward);
+    super(
+      QuestBeginnerCompleteSoloChallenges.Identifier,
+      i18next.t('quests.quest_beginner_complete_solo_challenges_title'),
+      [QuestType.Beginner],
+      QuestBeginnerCompleteSoloChallenges.prototype.goldReward,
+    );
     this.params.completionProgress = 3;
   }
 
   getDescription() {
-    return i18next.t('quests.quest_beginner_complete_solo_challenges_desc', { count: this.params.completionProgress });
+    return i18next.t('quests.quest_beginner_complete_solo_challenges_desc', {
+      count: this.params.completionProgress,
+    });
   }
   // return "Complete #{@params["completionProgress"]} Solo Challenges."
 

@@ -225,12 +225,31 @@ const Batch = cc.Class.extend({
       gl.bindBuffer(gl.ARRAY_BUFFER, this.verticesBuffer);
       cc.glEnableVertexAttribs(cc.VERTEX_ATTRIB_FLAG_POS_COLOR_TEX);
       gl.vertexAttribPointer(cc.VERTEX_ATTRIB_POSITION, 2, gl.FLOAT, false, stride, 0);
-      gl.vertexAttribPointer(cc.VERTEX_ATTRIB_TEX_COORDS, 2, gl.FLOAT, false, stride, 2 * Float32Array.BYTES_PER_ELEMENT);
-      gl.vertexAttribPointer(cc.VERTEX_ATTRIB_COLOR, 4, gl.FLOAT, false, stride, 2 * Float32Array.BYTES_PER_ELEMENT);
+      gl.vertexAttribPointer(
+        cc.VERTEX_ATTRIB_TEX_COORDS,
+        2,
+        gl.FLOAT,
+        false,
+        stride,
+        2 * Float32Array.BYTES_PER_ELEMENT,
+      );
+      gl.vertexAttribPointer(
+        cc.VERTEX_ATTRIB_COLOR,
+        4,
+        gl.FLOAT,
+        false,
+        stride,
+        2 * Float32Array.BYTES_PER_ELEMENT,
+      );
 
       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer);
 
-      gl.drawElements(gl.TRIANGLES, batchSize * 6, gl.UNSIGNED_SHORT, offset * 6 * this.indices.BYTES_PER_ELEMENT);
+      gl.drawElements(
+        gl.TRIANGLES,
+        batchSize * 6,
+        gl.UNSIGNED_SHORT,
+        offset * 6 * this.indices.BYTES_PER_ELEMENT,
+      );
       cc.incrementGLDraws(1);
     }
   },

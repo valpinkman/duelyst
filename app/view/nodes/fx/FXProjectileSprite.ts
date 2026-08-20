@@ -50,7 +50,14 @@ const FXProjectileSprite = FXSprite.extend({
     // reset to source position
     if (sourceScreenPosition && targetScreenPosition) {
       this.setPosition(sourceScreenPosition);
-      this.setRotation(-Math.atan2(targetScreenPosition.y - sourceScreenPosition.y, targetScreenPosition.x - sourceScreenPosition.x) * 180 / Math.PI);
+      this.setRotation(
+        (-Math.atan2(
+          targetScreenPosition.y - sourceScreenPosition.y,
+          targetScreenPosition.x - sourceScreenPosition.x,
+        ) *
+          180) /
+          Math.PI,
+      );
       // handles own facing
       this.setFlippedX(false);
     }
@@ -61,10 +68,7 @@ const FXProjectileSprite = FXSprite.extend({
         movement = this.easing.create(movement);
       }
 
-      this.runAction(cc.sequence(
-        movement,
-        cc.callFunc(this.end, this),
-      ));
+      this.runAction(cc.sequence(movement, cc.callFunc(this.end, this)));
     }
   },
   startEvents() {
@@ -73,10 +77,9 @@ const FXProjectileSprite = FXSprite.extend({
   end() {
     this.impact();
 
-    this.runAction(cc.sequence(
-      cc.FadeOut.create(CONFIG.FADE_MEDIUM_DURATION),
-      cc.callFunc(this.destroy, this),
-    ));
+    this.runAction(
+      cc.sequence(cc.FadeOut.create(CONFIG.FADE_MEDIUM_DURATION), cc.callFunc(this.destroy, this)),
+    );
   },
 });
 

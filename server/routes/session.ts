@@ -85,9 +85,8 @@ const analyticsDataFromUserData = function (userRow) {
  * that silently cannot talk to Firebase. Failing the login is the honest
  * outcome, and the error is logged with the user id for diagnosis.
  */
-const mintFirebaseCustomToken = (id, username) => DuelystFirebase
-  .createCustomToken(id, { username: username || null })
-  .catch((e) => {
+const mintFirebaseCustomToken = (id, username) =>
+  DuelystFirebase.createCustomToken(id, { username: username || null }).catch((e) => {
     Logger.module('SESSION').error(`failed to mint firebase custom token for ${id}: ${e.message}`);
     throw e;
   });
@@ -100,12 +99,14 @@ const logUserIn = (id) => {
   const _chainState: Record<string, any> = {};
   return UsersModule.userDataForId(id)
     .then(function (data) {
-      if ((data == null)) {
+      if (data == null) {
         throw new Errors.NotFoundError();
       }
 
       if (data.is_suspended) {
-        throw new Errors.AccountDisabled(`This account has been suspended. Reason: ${data.suspended_memo}`);
+        throw new Errors.AccountDisabled(
+          `This account has been suspended. Reason: ${data.suspended_memo}`,
+        );
       }
 
       const payload = {
@@ -123,12 +124,12 @@ const logUserIn = (id) => {
 
       _chainState.token = jwt.sign(payload, config.get('firebase.legacyToken'), options);
       _chainState.analyticsData = analyticsDataFromUserData(data);
-      return mintFirebaseCustomToken(id, data.username)
-        .then((firebaseToken) => {
-          _chainState.firebaseToken = firebaseToken;
-          return UsersModule.bumpSessionCountAndSyncDataIfNeeded(id, data);
-        });
-    }).then(function (synced) {
+      return mintFirebaseCustomToken(id, data.username).then((firebaseToken) => {
+        _chainState.firebaseToken = firebaseToken;
+        return UsersModule.bumpSessionCountAndSyncDataIfNeeded(id, data);
+      });
+    })
+    .then(function (synced) {
       _chainState.synced = synced;
       return UsersModule.createDaysSeenOnJob(id);
     })
@@ -152,7 +153,8 @@ router.get('/session/', isSignedIn, function (req, res, next) {
   const user_id = req.user.d.id;
 
   return logUserIn(user_id)
-    .then((data) => res.status(200).json(data)).catch(onType(Errors.NotFoundError, (e) => res.status(401).json({})))
+    .then((data) => res.status(200).json(data))
+    .catch(onType(Errors.NotFoundError, (e) => res.status(401).json({})))
     .catch(onType(Errors.AccountDisabled, (e) => res.status(401).json({ message: e.message })))
     .catch((e) => next(e));
 });
@@ -169,22 +171,25 @@ router.post('/session/', function (req, res, next) {
   }
 
   const username = result.value.username != null ? result.value.username.toLowerCase() : undefined;
-  const {
-    password,
-  } = result.value;
+  const { password } = result.value;
 
   return UsersModule.userIdForUsername(username)
-    .then(function (id) { // Step 2 : check if user exists
+    .then(function (id) {
+      // Step 2 : check if user exists
       if (!id) {
         throw new Errors.NotFoundError();
       }
 
       _chainState.id = id;
       return UsersModule.userDataForId(id);
-    }).then(function (data) { // check password valid
+    })
+    .then(function (data) {
+      // check password valid
       _chainState.userRow = data;
       if (data.is_suspended) {
-        throw new Errors.AccountDisabled(`This account has been suspended. Reason: ${data.suspended_memo}`);
+        throw new Errors.AccountDisabled(
+          `This account has been suspended. Reason: ${data.suspended_memo}`,
+        );
       }
       return hashHelpers.comparePassword(password, data.password);
     })
@@ -192,10 +197,10 @@ router.post('/session/', function (req, res, next) {
       if (!match) {
         throw new Errors.BadPasswordError();
       } else {
-      // Firebase expects payload with following items:
-      // d: profile data encoded in token, becomes accessible by Firebase security rules
-      // v: version number (0)
-      // iat : issued at time in seconds since epoch
+        // Firebase expects payload with following items:
+        // d: profile data encoded in token, becomes accessible by Firebase security rules
+        // v: version number (0)
+        // iat : issued at time in seconds since epoch
         const payload = {
           d: {
             id: _chainState.id,
@@ -222,11 +227,16 @@ router.post('/session/', function (req, res, next) {
         // make a db transaction/ledger event for the login
         // UsersModule.logEvent(@id,"session","login")
 
-        return mintFirebaseCustomToken(_chainState.id, _chainState.userRow && _chainState.userRow.username)
-          .then((firebaseToken) => {
-            _chainState.firebaseToken = firebaseToken;
-            return UsersModule.bumpSessionCountAndSyncDataIfNeeded(_chainState.id, _chainState.userRow);
-          });
+        return mintFirebaseCustomToken(
+          _chainState.id,
+          _chainState.userRow && _chainState.userRow.username,
+        ).then((firebaseToken) => {
+          _chainState.firebaseToken = firebaseToken;
+          return UsersModule.bumpSessionCountAndSyncDataIfNeeded(
+            _chainState.id,
+            _chainState.userRow,
+          );
+        });
       }
     })
     .then(function () {
@@ -236,11 +246,23 @@ router.post('/session/', function (req, res, next) {
       const analyticsData = analyticsDataFromUserData(_chainState.userRow);
       // Send token
       // firebase_token is additive in 9.1; the client ignores it until 9.3
-      return res.status(200).json({ token: _chainState.token, firebase_token: _chainState.firebaseToken, analytics_data: analyticsData });
+      return res.status(200).json({
+        token: _chainState.token,
+        firebase_token: _chainState.firebaseToken,
+        analytics_data: analyticsData,
+      });
     })
     .catch(onType(Errors.AccountDisabled, (e) => res.status(401).json({ message: e.message })))
-    .catch(onType(Errors.NotFoundError, (e) => res.status(401).json({ message: 'Invalid Username or Password' })))
-    .catch(onType(Errors.BadPasswordError, (e) => res.status(401).json({ message: 'Invalid Username or Password' })))
+    .catch(
+      onType(Errors.NotFoundError, (e) =>
+        res.status(401).json({ message: 'Invalid Username or Password' }),
+      ),
+    )
+    .catch(
+      onType(Errors.BadPasswordError, (e) =>
+        res.status(401).json({ message: 'Invalid Username or Password' }),
+      ),
+    )
     .catch((e) => next(e));
 });
 
@@ -255,40 +277,46 @@ router.post('/session/register', function (req, res, next) {
     return res.status(400).json(result.errors);
   }
 
-  const {
-    password,
-  } = result.value;
+  const { password } = result.value;
   const username = result.value.username.toLowerCase();
   const inviteCode = result.value.keycode != null ? result.value.keycode.trim() : undefined;
-  const referralCode = result.value.referral_code != null ? result.value.referral_code.trim() : undefined;
-  const friendReferralCode = result.value.friend_referral_code != null ? result.value.friend_referral_code.trim() : undefined;
+  const referralCode =
+    result.value.referral_code != null ? result.value.referral_code.trim() : undefined;
+  const friendReferralCode =
+    result.value.friend_referral_code != null
+      ? result.value.friend_referral_code.trim()
+      : undefined;
   const campaignData = result.value.campaign_data;
-  const {
-    captcha,
-  } = result.value;
+  const { captcha } = result.value;
   const registrationSource = result.value.is_desktop ? 'desktop' : 'web';
 
   return UsersModule.isValidInviteCode(inviteCode)
-    .then(function (inviteCodeData) { // captcha verification
-      if ((captcha != null) && config.get('recaptcha.secret')) {
-        return PromiseUtils.withTimeout(Promise.resolve(
-          fetch('https://www.google.com/recaptcha/api/siteverify', {
-            method: 'POST',
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: formurlencoded({
-              secret: config.get('recaptcha.secret'),
-              response: captcha,
+    .then(function (inviteCodeData) {
+      // captcha verification
+      if (captcha != null && config.get('recaptcha.secret')) {
+        return PromiseUtils.withTimeout(
+          Promise.resolve(
+            fetch('https://www.google.com/recaptcha/api/siteverify', {
+              method: 'POST',
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded',
+              },
+              body: formurlencoded({
+                secret: config.get('recaptcha.secret'),
+                response: captcha,
+              }),
             }),
-          }),
-        ), 10000)
+          ),
+          10000,
+        )
           .then(function (res) {
             if (res.ok) {
               return res.json();
             } else {
-              throw new Errors.UnverifiedCaptchaError('We could not verify the captcha (bot detection).');
+              throw new Errors.UnverifiedCaptchaError(
+                'We could not verify the captcha (bot detection).',
+              );
             }
           })
           .then((body) => Promise.resolve(body.success));
@@ -297,49 +325,101 @@ router.post('/session/register', function (req, res, next) {
       } else {
         return false;
       }
-    }).then(function (isCaptchaVerified) {
+    })
+    .then(function (isCaptchaVerified) {
       if (!isCaptchaVerified) {
         throw new Errors.UnverifiedCaptchaError('We could not verify the captcha (bot detection).');
       }
-      return UsersModule.createNewUser(username, password, inviteCode, referralCode, campaignData, registrationSource);
+      return UsersModule.createNewUser(
+        username,
+        password,
+        inviteCode,
+        referralCode,
+        campaignData,
+        registrationSource,
+      );
     })
     .then(function (userId) {
-    // if we have a friend referral code just fire off async the job to link these two together
+      // if we have a friend referral code just fire off async the job to link these two together
       if (friendReferralCode != null) {
         UsersModule.userIdForUsername(friendReferralCode)
           .then(function (referrerId) {
-            if ((referrerId == null)) {
+            if (referrerId == null) {
               throw new Errors.NotFoundError('Referrer not found by username.');
             }
             return ReferralsModule.markUserAsReferredByFriend(userId, referrerId);
-          }).catch((err) => Logger.module('Session').error(`failed to mark ${userId} as referred by ${friendReferralCode}. error:${err.message}`.red));
+          })
+          .catch((err) =>
+            Logger.module('Session').error(
+              `failed to mark ${userId} as referred by ${friendReferralCode}. error:${err.message}`
+                .red,
+            ),
+          );
       }
       // notify twitch alerts of conversion
-      if ((campaignData != null ? campaignData.campaign_id : undefined) && ((campaignData != null ? campaignData.campaign_medium : undefined) === 'openpromotion')) {
-        Logger.module('Session').debug(`twitch-alerts conversion. pinging: https://promos.twitchalerts.com/webhook/conversion?advertiser_id=34&code=${campaignData.campaign_source}&ip=${req.ip}&api_key=...&campaign_id=${campaignData.campaign_id}`);
-        PromiseUtils.withTimeout(Promise.resolve(fetch(`https://promos.twitchalerts.com/webhook/conversion?advertiser_id=34&code=${campaignData.campaign_source}&ip=${req.ip}&api_key=2d82e8c0cf17467490467b0c77c6c08e&campaign_id=${campaignData.campaign_id}`)), 10000)
-          .then((res) => res.json()).then((body) => Logger.module('Session').debug('twitch-alerts response: ', body))
-          .catch((e) => Logger.module('Session').error(`twitch-alerts error processing: ${e.message}`));
+      if (
+        (campaignData != null ? campaignData.campaign_id : undefined) &&
+        (campaignData != null ? campaignData.campaign_medium : undefined) === 'openpromotion'
+      ) {
+        Logger.module('Session').debug(
+          `twitch-alerts conversion. pinging: https://promos.twitchalerts.com/webhook/conversion?advertiser_id=34&code=${campaignData.campaign_source}&ip=${req.ip}&api_key=...&campaign_id=${campaignData.campaign_id}`,
+        );
+        PromiseUtils.withTimeout(
+          Promise.resolve(
+            fetch(
+              `https://promos.twitchalerts.com/webhook/conversion?advertiser_id=34&code=${campaignData.campaign_source}&ip=${req.ip}&api_key=2d82e8c0cf17467490467b0c77c6c08e&campaign_id=${campaignData.campaign_id}`,
+            ),
+          ),
+          10000,
+        )
+          .then((res) => res.json())
+          .then((body) => Logger.module('Session').debug('twitch-alerts response: ', body))
+          .catch((e) =>
+            Logger.module('Session').error(`twitch-alerts error processing: ${e.message}`),
+          );
       }
       // respond back to client
       return res.status(200).json({});
     })
-    .catch(onType(Errors.InvalidInviteCodeError, function (e) { // Specific error if the invite code is invalid
-      Logger.module('Session').error(`can not register because invite code ${(inviteCode != null ? inviteCode.yellow : undefined)} is invalid`.red);
-      return res.status(400).json(e);
-    }))
-    .catch(onType(Errors.InvalidReferralCodeError, function (e) { // Specific error if the invite code is invalid
-      Logger.module('Session').error(`can not register because referral code ${(referralCode != null ? referralCode.yellow : undefined)} is invalid`.red);
-      return res.status(400).json(e);
-    }))
-    .catch(onType(Errors.AlreadyExistsError, function (e) { // Specific error if the user already exists
-      Logger.module('Session').error(`can not register because username ${(username != null ? username.blue : undefined)} already exists`.red);
-      return res.status(401).json(e);
-    }))
-    .catch(onType(Errors.UnverifiedCaptchaError, function (e) { // Specific error if the captcha fails
-      Logger.module('Session').error(`can not register because captcha ${captcha} input is invalid`.red);
-      return res.status(401).json(e);
-    }))
+    .catch(
+      onType(Errors.InvalidInviteCodeError, function (e) {
+        // Specific error if the invite code is invalid
+        Logger.module('Session').error(
+          `can not register because invite code ${inviteCode != null ? inviteCode.yellow : undefined} is invalid`
+            .red,
+        );
+        return res.status(400).json(e);
+      }),
+    )
+    .catch(
+      onType(Errors.InvalidReferralCodeError, function (e) {
+        // Specific error if the invite code is invalid
+        Logger.module('Session').error(
+          `can not register because referral code ${referralCode != null ? referralCode.yellow : undefined} is invalid`
+            .red,
+        );
+        return res.status(400).json(e);
+      }),
+    )
+    .catch(
+      onType(Errors.AlreadyExistsError, function (e) {
+        // Specific error if the user already exists
+        Logger.module('Session').error(
+          `can not register because username ${username != null ? username.blue : undefined} already exists`
+            .red,
+        );
+        return res.status(401).json(e);
+      }),
+    )
+    .catch(
+      onType(Errors.UnverifiedCaptchaError, function (e) {
+        // Specific error if the captcha fails
+        Logger.module('Session').error(
+          `can not register because captcha ${captcha} input is invalid`.red,
+        );
+        return res.status(401).json(e);
+      }),
+    )
     .catch((e) => next(e));
 });
 
@@ -361,7 +441,9 @@ router.post('/session/username_available', function (req, res, next) {
       } else {
         return res.status(200).json({});
       }
-    }).catch(onType(Errors.AlreadyExistsError, (e) => res.status(401).json(e))).catch((e) => next(e));
+    })
+    .catch(onType(Errors.AlreadyExistsError, (e) => res.status(401).json(e)))
+    .catch((e) => next(e));
 });
 
 /*
@@ -377,13 +459,24 @@ router.post('/session/change_username', isSignedIn, function (req, res, next) {
   const new_username = result.value.toLowerCase();
 
   return UsersModule.changeUsername(user_id, new_username)
-    .then(() => res.status(200).json({})).catch(onType(Errors.AlreadyExistsError, function (e) { // Specific error if the username already exists
-      Logger.module('Session').error(`can not change username to ${new_username.blue} as it already exists`.red);
-      return res.status(400).json(e);
-    })).catch(onType(Errors.InsufficientFundsError, function (e) {
-      Logger.module('Session').error(`can not change username to ${new_username.blue} due to insufficient funds`.red);
-      return res.status(400).json(e);
-    }))
+    .then(() => res.status(200).json({}))
+    .catch(
+      onType(Errors.AlreadyExistsError, function (e) {
+        // Specific error if the username already exists
+        Logger.module('Session').error(
+          `can not change username to ${new_username.blue} as it already exists`.red,
+        );
+        return res.status(400).json(e);
+      }),
+    )
+    .catch(
+      onType(Errors.InsufficientFundsError, function (e) {
+        Logger.module('Session').error(
+          `can not change username to ${new_username.blue} due to insufficient funds`.red,
+        );
+        return res.status(400).json(e);
+      }),
+    )
     .catch((e) => next(e));
 });
 
@@ -397,21 +490,21 @@ router.post('/session/change_password', isSignedIn, function (req, res, next) {
     return res.status(400).json(result.errors);
   }
 
-  const {
-    current_password,
-  } = result.value;
-  const {
-    new_password,
-  } = result.value;
+  const { current_password } = result.value;
+  const { new_password } = result.value;
 
   return UsersModule.changePassword(user_id, current_password, new_password)
-    .then(() => res.status(200).json({ message: 'OK - password changed' })).catch(onType(Errors.BadPasswordError, (e) => res.status(401).json({}))).catch((e) => next(e));
+    .then(() => res.status(200).json({ message: 'OK - password changed' }))
+    .catch(onType(Errors.BadPasswordError, (e) => res.status(401).json({})))
+    .catch((e) => next(e));
 });
 
 /*
 GET handler for session logout
 Invalidates current session used by user
 */
-router.get('/session/logout', isSignedIn, (req, res) => res.status(200).json({ authenticated: false }));
+router.get('/session/logout', isSignedIn, (req, res) =>
+  res.status(200).json({ authenticated: false }),
+);
 
 module.exports = router;

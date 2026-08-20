@@ -21,7 +21,9 @@ class ModifierIntensifyDamageEnemyGeneral extends ModifierIntensify {
   onIntensify() {
     const totalDamageAmount = this.getIntensifyAmount() * this.damageAmount;
 
-    const enemyGeneral = this.getCard().getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
+    const enemyGeneral = this.getCard()
+      .getGameSession()
+      .getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
 
     const enemyDamageAction = new DamageAction(this.getGameSession());
     enemyDamageAction.setOwnerId(this.getCard().getOwnerId());

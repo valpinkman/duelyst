@@ -20,7 +20,10 @@ class DamageAsAttackAction extends DamageAction {
   getDamageAmount() {
     // attack damage amount is always source's atk value
     const source = this.getSource();
-    if (source != null) { return source.getATK(); } return 0;
+    if (source != null) {
+      return source.getATK();
+    }
+    return 0;
   }
 }
 DamageAsAttackAction.prototype.damageAmount = 0;

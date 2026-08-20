@@ -16,7 +16,10 @@ class SpellTwinStrike extends SpellDamage {
 
     const ownerId = this.getOwnerId();
     const general = this.getGameSession().getGeneralForPlayerId(ownerId);
-    return this.getGameSession().applyModifierContextObject(PlayerModifierCardDrawModifier.createContextObject(1, 1), general);
+    return this.getGameSession().applyModifierContextObject(
+      PlayerModifierCardDrawModifier.createContextObject(1, 1),
+      general,
+    );
   }
 
   _findApplyEffectPositions(position, sourceAction) {
@@ -37,7 +40,12 @@ class SpellTwinStrike extends SpellDamage {
     // there must be at least 2 enemy minions on the board to play this spell
     const enemyMinions = [];
     const board = this.getGameSession().getBoard();
-    for (var enemy of Array.from<any>(board.getEnemyEntitiesForEntity(this.getGameSession().getGeneralForPlayerId(this.getOwnerId()), CardType.Unit))) {
+    for (var enemy of Array.from<any>(
+      board.getEnemyEntitiesForEntity(
+        this.getGameSession().getGeneralForPlayerId(this.getOwnerId()),
+        CardType.Unit,
+      ),
+    )) {
       if (!enemy.getIsGeneral()) {
         enemyMinions.push(enemy);
       }

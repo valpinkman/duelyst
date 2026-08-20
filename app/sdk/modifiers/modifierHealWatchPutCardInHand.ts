@@ -29,11 +29,17 @@ class ModifierHealWatchPutCardInHand extends ModifierHealWatch {
   }
 
   onHealWatch(action) {
-    const a = new PutCardInHandAction(this.getGameSession(), this.getCard().getOwnerId(), this.cardDataOrIndexToPutInHand);
+    const a = new PutCardInHandAction(
+      this.getGameSession(),
+      this.getCard().getOwnerId(),
+      this.cardDataOrIndexToPutInHand,
+    );
     return this.getGameSession().executeAction(a);
   }
 }
 ModifierHealWatchPutCardInHand.prototype.type = 'ModifierHealWatchPutCardInHand';
-ModifierHealWatchPutCardInHand.prototype.fxResource = ['FX.Modifiers.ModifierFriendlyMinionHealWatch'];
+ModifierHealWatchPutCardInHand.prototype.fxResource = [
+  'FX.Modifiers.ModifierFriendlyMinionHealWatch',
+];
 
 module.exports = ModifierHealWatchPutCardInHand;

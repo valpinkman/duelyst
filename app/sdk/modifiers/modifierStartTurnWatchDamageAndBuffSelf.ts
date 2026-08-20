@@ -18,8 +18,12 @@ class ModifierStartTurnWatchDamageAndBuffSelf extends ModifierStartTurnWatchBuff
   static description = 'At the start of your turn, take %X damage but gain %Y';
 
   static createContextObject(attackBuff, maxHPBuff, damageAmount, options) {
-    if (attackBuff == null) { attackBuff = 0; }
-    if (maxHPBuff == null) { maxHPBuff = 0; }
+    if (attackBuff == null) {
+      attackBuff = 0;
+    }
+    if (maxHPBuff == null) {
+      maxHPBuff = 0;
+    }
     const contextObject = super.createContextObject(attackBuff, maxHPBuff, options);
     contextObject.damageAmount = damageAmount;
 
@@ -29,7 +33,13 @@ class ModifierStartTurnWatchDamageAndBuffSelf extends ModifierStartTurnWatchBuff
   static getDescription(modifierContextObject) {
     if (modifierContextObject) {
       const subContextObject = modifierContextObject.modifiersContextObjects[0];
-      const replaceText = this.description.replace(/%Y/, Stringifiers.stringifyAttackHealthBuff(subContextObject.attributeBuffs.atk, subContextObject.attributeBuffs.maxHP));
+      const replaceText = this.description.replace(
+        /%Y/,
+        Stringifiers.stringifyAttackHealthBuff(
+          subContextObject.attributeBuffs.atk,
+          subContextObject.attributeBuffs.maxHP,
+        ),
+      );
       return replaceText.replace(/%X/, modifierContextObject.damageAmount);
     }
     return this.description;
@@ -51,7 +61,10 @@ class ModifierStartTurnWatchDamageAndBuffSelf extends ModifierStartTurnWatchBuff
   }
 }
 ModifierStartTurnWatchDamageAndBuffSelf.prototype.type = 'ModifierStartTurnWatchDamageAndBuffSelf';
-ModifierStartTurnWatchDamageAndBuffSelf.prototype.fxResource = ['FX.Modifiers.ModifierStartTurnWatch', 'FX.Modifiers.ModifierGenericChainLightning'];
+ModifierStartTurnWatchDamageAndBuffSelf.prototype.fxResource = [
+  'FX.Modifiers.ModifierStartTurnWatch',
+  'FX.Modifiers.ModifierGenericChainLightning',
+];
 // then buff self
 
 module.exports = ModifierStartTurnWatchDamageAndBuffSelf;

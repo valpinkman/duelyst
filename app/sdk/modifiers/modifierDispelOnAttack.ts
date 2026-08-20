@@ -29,8 +29,11 @@ class ModifierDispelOnAttack extends Modifier {
     // dispel target before attack action so that it cannot do onAttack actions
     // example: this dispel disables strikeback before it can counter attack
     const a = actionEvent.action;
-    if (a instanceof AttackAction && (a.getSource() === this.getCard())) {
-      return this.getGameSession().applyModifierContextObject(ModifierSilence.createContextObject(), a.getTarget());
+    if (a instanceof AttackAction && a.getSource() === this.getCard()) {
+      return this.getGameSession().applyModifierContextObject(
+        ModifierSilence.createContextObject(),
+        a.getTarget(),
+      );
     }
   }
 }

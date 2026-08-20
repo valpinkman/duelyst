@@ -29,25 +29,37 @@ class PlayerModifierEndTurnRespawnEntityWithBuff extends PlayerModifier {
     super.onEndTurn(action);
 
     // add modifiers
-    let {
-      cardDataOrIndexToSpawn,
-    } = this;
+    let { cardDataOrIndexToSpawn } = this;
     if (cardDataOrIndexToSpawn != null) {
       if (_.isObject(cardDataOrIndexToSpawn)) {
         cardDataOrIndexToSpawn = UtilsJavascript.fastExtend({}, cardDataOrIndexToSpawn);
       } else {
-        cardDataOrIndexToSpawn = this.getGameSession().getCardByIndex(cardDataOrIndexToSpawn).createNewCardData();
+        cardDataOrIndexToSpawn = this.getGameSession()
+          .getCardByIndex(cardDataOrIndexToSpawn)
+          .createNewCardData();
       }
-      if (cardDataOrIndexToSpawn.additionalModifiersContextObjects == null) { cardDataOrIndexToSpawn.additionalModifiersContextObjects = []; }
-      cardDataOrIndexToSpawn.additionalModifiersContextObjects = cardDataOrIndexToSpawn.additionalModifiersContextObjects.concat(UtilsJavascript.deepCopy(this.modifiersContextObjects));
+      if (cardDataOrIndexToSpawn.additionalModifiersContextObjects == null) {
+        cardDataOrIndexToSpawn.additionalModifiersContextObjects = [];
+      }
+      cardDataOrIndexToSpawn.additionalModifiersContextObjects =
+        cardDataOrIndexToSpawn.additionalModifiersContextObjects.concat(
+          UtilsJavascript.deepCopy(this.modifiersContextObjects),
+        );
 
-      const playCardAction = new PlayCardSilentlyAction(this.getGameSession(), this.getPlayer().getPlayerId(), this.position.x, this.position.y, cardDataOrIndexToSpawn);
+      const playCardAction = new PlayCardSilentlyAction(
+        this.getGameSession(),
+        this.getPlayer().getPlayerId(),
+        this.position.x,
+        this.position.y,
+        cardDataOrIndexToSpawn,
+      );
       playCardAction.setSource(this.getCard());
       return this.getGameSession().executeAction(playCardAction);
     }
   }
 }
-PlayerModifierEndTurnRespawnEntityWithBuff.prototype.type = 'PlayerModifierEndTurnRespawnEntityWithBuff';
+PlayerModifierEndTurnRespawnEntityWithBuff.prototype.type =
+  'PlayerModifierEndTurnRespawnEntityWithBuff';
 PlayerModifierEndTurnRespawnEntityWithBuff.prototype.durationEndTurn = 1;
 PlayerModifierEndTurnRespawnEntityWithBuff.prototype.cardDataOrIndexToSpawn = null;
 

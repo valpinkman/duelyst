@@ -13,15 +13,29 @@ class QuestBeginnerWinFourPracticeGames extends QuestBeginner {
   static Identifier = 9905;
 
   constructor() {
-    super(QuestBeginnerWinFourPracticeGames.Identifier, 'Win 4 Practice Games', [QuestType.Beginner], QuestBeginnerWinFourPracticeGames.prototype.goldReward);
+    super(
+      QuestBeginnerWinFourPracticeGames.Identifier,
+      'Win 4 Practice Games',
+      [QuestType.Beginner],
+      QuestBeginnerWinFourPracticeGames.prototype.goldReward,
+    );
     this.params.completionProgress = 4;
   }
 
   _progressForGameDataForPlayerId(gameData, playerId) {
     for (var player of Array.from<any>(gameData.players)) {
-      var playerSetupData = UtilsGameSession.getPlayerSetupDataForPlayerId(gameData, player.playerId);
-      Logger.module('Quests').debug(`QuestBeginnerWinFourPracticeGames checking ${player.playerId} game type ${playerSetupData.gameType} winner: ${player.isWinner}`);
-      if ((player.playerId === playerId) && player.isWinner && (gameData.gameType === GameType.SinglePlayer)) {
+      var playerSetupData = UtilsGameSession.getPlayerSetupDataForPlayerId(
+        gameData,
+        player.playerId,
+      );
+      Logger.module('Quests').debug(
+        `QuestBeginnerWinFourPracticeGames checking ${player.playerId} game type ${playerSetupData.gameType} winner: ${player.isWinner}`,
+      );
+      if (
+        player.playerId === playerId &&
+        player.isWinner &&
+        gameData.gameType === GameType.SinglePlayer
+      ) {
         return 1;
       }
     }

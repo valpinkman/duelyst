@@ -5,7 +5,6 @@ const CompositePass = require('./CompositePass');
  * @see CompositePass
  */
 const CompositeVerticalPass = CompositePass.extend({
-
   /* region RENDERING */
 
   _renderWhenRenderable(texture) {
@@ -35,7 +34,6 @@ const CompositeVerticalPass = CompositePass.extend({
   },
 
   /* endregion RENDERING */
-
 });
 
 module.exports = CompositeVerticalPass;

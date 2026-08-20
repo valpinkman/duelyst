@@ -40,7 +40,6 @@ var ChallengeModel = DuelystBackbone.Model.extend({
 });
 
 var ProgressionManager = Manager.extend({
-
   gameCounterModel: null,
   gameCounterRewardsCollection: null,
   bossesDefeatedCollection: null,
@@ -57,7 +56,8 @@ var ProgressionManager = Manager.extend({
     const _self = this;
     Manager.prototype.onBeforeConnect.call(this);
 
-    ProfileManager.getInstance().onReady()
+    ProfileManager.getInstance()
+      .onReady()
       .then(function () {
         _self.checkForReferralRewards();
 
@@ -90,25 +90,27 @@ var ProgressionManager = Manager.extend({
         neededToBeReady.push(_self.bossesDefeatedCollection);
 
         _self.bossEventsCollection = new DuelystFirebase.Collection(null, {
-          firebase: new Firebase(process.env.FIREBASE_URL)
-            .child('boss-events'),
+          firebase: new Firebase(process.env.FIREBASE_URL).child('boss-events'),
         });
         _self.bossEventsCollection.comparator = 'event_start';
         neededToBeReady.push(_self.bossEventsCollection);
 
         _self._factionProgressionStats = {};
-        _.each(SDK.FactionFactory.getAllPlayableFactions(), function (faction) {
-          var factionId = faction.id.toString();
-          var factionProgressionModel = new DuelystFirebase.Model(null, {
-            firebase: new Firebase(process.env.FIREBASE_URL)
-              .child('user-faction-progression')
-              .child(userId)
-              .child(factionId)
-              .child('stats'),
-          });
-          this._factionProgressionStats[factionId] = factionProgressionModel;
-          neededToBeReady.push(factionProgressionModel);
-        }.bind(_self));
+        _.each(
+          SDK.FactionFactory.getAllPlayableFactions(),
+          function (faction) {
+            var factionId = faction.id.toString();
+            var factionProgressionModel = new DuelystFirebase.Model(null, {
+              firebase: new Firebase(process.env.FIREBASE_URL)
+                .child('user-faction-progression')
+                .child(userId)
+                .child(factionId)
+                .child('stats'),
+            });
+            this._factionProgressionStats[factionId] = factionProgressionModel;
+            neededToBeReady.push(factionProgressionModel);
+          }.bind(_self),
+        );
 
         _self.challengeProgressionCollection = new DuelystBackbone.Collection();
         _self.challengeProgressionCollection.model = ChallengeModel;
@@ -122,34 +124,53 @@ var ProgressionManager = Manager.extend({
         // neededToBeReady.push(this.challengeProgressionCollection);
 
         // what to do when we're ready
-        _self.onReady()
-          .then(function () {
-            this.listenTo(this.gameCounterRewardsCollection, 'add', this.ongameCounterRewardReceived);
-          }.bind(_self));
+        _self.onReady().then(
+          function () {
+            this.listenTo(
+              this.gameCounterRewardsCollection,
+              'add',
+              this.ongameCounterRewardReceived,
+            );
+          }.bind(_self),
+        );
 
         _self._markAsReadyWhenModelsAndCollectionsSynced(neededToBeReady);
       });
   },
 
   checkForReferralRewards: function () {
-    var rewardsClaimedAt = moment.utc(ProfileManager.getInstance().get('referral_rewards_claimed_at') || 0);
-    var rewardsUpdatedAt = moment.utc(ProfileManager.getInstance().get('referral_rewards_updated_at') || 0);
+    var rewardsClaimedAt = moment.utc(
+      ProfileManager.getInstance().get('referral_rewards_claimed_at') || 0,
+    );
+    var rewardsUpdatedAt = moment.utc(
+      ProfileManager.getInstance().get('referral_rewards_updated_at') || 0,
+    );
     if (rewardsClaimedAt.isBefore(rewardsUpdatedAt)) {
       var notification = new NotificationModel({
         message: i18next.t('rewards.referral_rewards_available_message'),
         type: NotificationsManager.NOTIFICATION_BUDDY_INVITE,
         ctaTitle: i18next.t('common.claim_label'),
       });
-      this.listenTo(notification, 'cta_accept', function (model) {
-        var model = new DuelystBackbone.Model();
-        model.url = process.env.API_URL + '/api/me/referrals/summary';
-        model.fetch();
-        NavigationManager.getInstance().showModalView(new ReferralDialogView({ model: model }));
-        this.stopListening(notification);
-      }, this);
-      this.listenTo(notification, 'dismiss', function (model) {
-        this.stopListening(notification);
-      }, this);
+      this.listenTo(
+        notification,
+        'cta_accept',
+        function (model) {
+          var model = new DuelystBackbone.Model();
+          model.url = process.env.API_URL + '/api/me/referrals/summary';
+          model.fetch();
+          NavigationManager.getInstance().showModalView(new ReferralDialogView({ model: model }));
+          this.stopListening(notification);
+        },
+        this,
+      );
+      this.listenTo(
+        notification,
+        'dismiss',
+        function (model) {
+          this.stopListening(notification);
+        },
+        this,
+      );
       NotificationsManager.getInstance().showNotification(notification);
     }
   },
@@ -169,11 +190,14 @@ var ProgressionManager = Manager.extend({
       return true;
     }
     var progressionStatsModel = this.getFactionProgressionStatsModel(factionId);
-    return (progressionStatsModel != null && progressionStatsModel.get('xp') != null);
+    return progressionStatsModel != null && progressionStatsModel.get('xp') != null;
   },
 
   isFactionUnlockedOrCardsOwned: function (factionId) {
-    return this.isFactionUnlocked(factionId) || InventoryManager.getInstance().hasAnyCardsOfFaction(factionId);
+    return (
+      this.isFactionUnlocked(factionId) ||
+      InventoryManager.getInstance().hasAnyCardsOfFaction(factionId)
+    );
   },
 
   getGameCount: function () {
@@ -203,9 +227,11 @@ var ProgressionManager = Manager.extend({
     return this.bossEventsCollection.filter(function (eventModel) {
       var bossCard = SDK.GameSession.getCardCaches().getCardById(eventModel.get('boss_id'));
 
-      return (eventModel.get('event_start') < momentNowUtc.valueOf())
-        && (eventModel.get('event_end') > momentNowUtc.valueOf())
-        && (bossCard != null);
+      return (
+        eventModel.get('event_start') < momentNowUtc.valueOf() &&
+        eventModel.get('event_end') > momentNowUtc.valueOf() &&
+        bossCard != null
+      );
     });
   },
 
@@ -214,14 +240,13 @@ var ProgressionManager = Manager.extend({
     return this.bossEventsCollection.find(function (eventModel) {
       var bossCard = SDK.GameSession.getCardCaches().getCardById(eventModel.get('boss_id'));
 
-      return (eventModel.get('event_start') > momentNowUtc.valueOf()) && (bossCard != null);
+      return eventModel.get('event_start') > momentNowUtc.valueOf() && bossCard != null;
     });
   },
 
   getTimeToUpcomingBossEventAvailable: function () {
     var currentEventModel = this.getUpcomingBossEventModel();
-    if (!currentEventModel)
-      return 0;
+    if (!currentEventModel) return 0;
     var momentNowUtc = moment.utc();
     var eventStartMoment = moment.utc(currentEventModel.get('event_start'));
 
@@ -230,8 +255,10 @@ var ProgressionManager = Manager.extend({
 
   getHasDefeatedBossForEvent: function (bossCardId, bossEventId) {
     var defeatedBossModel = this.bossesDefeatedCollection.find(function (defeatedBossModel) {
-      return (defeatedBossModel.get('boss_id') == bossCardId)
-        && (defeatedBossModel.get('boss_event_id') == bossEventId);
+      return (
+        defeatedBossModel.get('boss_id') == bossCardId &&
+        defeatedBossModel.get('boss_event_id') == bossEventId
+      );
     });
 
     return defeatedBossModel != null;
@@ -247,120 +274,150 @@ var ProgressionManager = Manager.extend({
 
   // Returns a promise that resolves to the challenge type when completed
   completeChallengeWithType: function (challengeType) {
-    return new Promise(function (resolve, reject) {
-      var challengePreviouslyCompleted = this.hasCompletedChallengeOfType(challengeType);
+    return new Promise(
+      function (resolve, reject) {
+        var challengePreviouslyCompleted = this.hasCompletedChallengeOfType(challengeType);
 
-      var processQuests = false;
-      QuestsManager.getInstance().dailyQuestsCollection.each(function (questModel) {
-        if (SDK.QuestFactory.questForIdentifier(questModel.get('quest_type_id')) instanceof QuestBeginnerCompleteSoloChallenges) {
-          processQuests = true;
-        }
-      });
+        var processQuests = false;
+        QuestsManager.getInstance().dailyQuestsCollection.each(function (questModel) {
+          if (
+            SDK.QuestFactory.questForIdentifier(questModel.get('quest_type_id')) instanceof
+            QuestBeginnerCompleteSoloChallenges
+          ) {
+            processQuests = true;
+          }
+        });
 
-      var request = $.ajax({
-        data: JSON.stringify({ completed_at: moment().utc().valueOf(), process_quests: processQuests }),
-        url: process.env.API_URL + '/api/me/challenges/gated/' + challengeType + '/completed_at',
-        type: 'PUT',
-        contentType: 'application/json',
-        dataType: 'json',
-      });
+        var request = $.ajax({
+          data: JSON.stringify({
+            completed_at: moment().utc().valueOf(),
+            process_quests: processQuests,
+          }),
+          url: process.env.API_URL + '/api/me/challenges/gated/' + challengeType + '/completed_at',
+          type: 'PUT',
+          contentType: 'application/json',
+          dataType: 'json',
+        });
 
-      request.done(function (response) {
-        if (request.status != 304) {
-          // 304 Status means a challenge was already completed
-          Analytics.track('challenge completed', {
-            category: Analytics.EventCategory.Challenges,
-            challenge_type: challengeType,
-          }, {
-            labelKey: 'challenge_type',
-          });
-          var challenge = response.challenge;
-          this.challengeProgressionCollection.add([challenge], { merge: true });
-          this.trigger(EVENTS.challenge_completed, { challengeCompletedType: challengeType });
-        }
+        request.done(
+          function (response) {
+            if (request.status != 304) {
+              // 304 Status means a challenge was already completed
+              Analytics.track(
+                'challenge completed',
+                {
+                  category: Analytics.EventCategory.Challenges,
+                  challenge_type: challengeType,
+                },
+                {
+                  labelKey: 'challenge_type',
+                },
+              );
+              var challenge = response.challenge;
+              this.challengeProgressionCollection.add([challenge], { merge: true });
+              this.trigger(EVENTS.challenge_completed, { challengeCompletedType: challengeType });
+            }
 
-        if (response && response.challenge) {
-          resolve(response.challenge);
-        } else {
-          resolve({});
-        }
-      }.bind(this));
+            if (response && response.challenge) {
+              resolve(response.challenge);
+            } else {
+              resolve({});
+            }
+          }.bind(this),
+        );
 
-      request.fail(function (response) {
-        // Temporary error, should parse server response.
-        var error = 'Complete challenge request failed';
-        EventBus.getInstance().trigger(EVENTS.ajax_error, error);
-        reject(new Error('Failed to complete challenge with type ' + challengeType));
-      });
-    }.bind(this));
+        request.fail(function (response) {
+          // Temporary error, should parse server response.
+          var error = 'Complete challenge request failed';
+          EventBus.getInstance().trigger(EVENTS.ajax_error, error);
+          reject(new Error('Failed to complete challenge with type ' + challengeType));
+        });
+      }.bind(this),
+    );
   },
 
   markChallengeAsAttemptedWithType: function (challengeType) {
-    return new Promise(function (resolve, reject) {
-      var challengePreviouslyAttempted = this.hasAttemptedChallengeOfType(challengeType);
+    return new Promise(
+      function (resolve, reject) {
+        var challengePreviouslyAttempted = this.hasAttemptedChallengeOfType(challengeType);
 
-      var request = $.ajax({
-        data: JSON.stringify({ last_attempted_at: moment().utc().valueOf() }),
-        url: process.env.API_URL + '/api/me/challenges/gated/' + challengeType + '/last_attempted_at',
-        type: 'PUT',
-        contentType: 'application/json',
-        dataType: 'json',
-      });
+        var request = $.ajax({
+          data: JSON.stringify({ last_attempted_at: moment().utc().valueOf() }),
+          url:
+            process.env.API_URL +
+            '/api/me/challenges/gated/' +
+            challengeType +
+            '/last_attempted_at',
+          type: 'PUT',
+          contentType: 'application/json',
+          dataType: 'json',
+        });
 
-      request.done(function (response) {
-        var challenge = response.challenge;
-        this.challengeProgressionCollection.add([challenge], { merge: true });
-        this.trigger(EVENTS.challenge_attempted, { challengeCompletedType: challengeType });
+        request.done(
+          function (response) {
+            var challenge = response.challenge;
+            this.challengeProgressionCollection.add([challenge], { merge: true });
+            this.trigger(EVENTS.challenge_attempted, { challengeCompletedType: challengeType });
 
-        resolve(challengeType);
-      }.bind(this));
+            resolve(challengeType);
+          }.bind(this),
+        );
 
-      request.fail(function (response) {
-        // Temporary error, should parse server response.
-        var error = 'Attempt challenge request failed';
-        EventBus.getInstance().trigger(EVENTS.ajax_error, error);
-        reject(new Error('Failed to attempt challenge with type ' + challengeType));
-      });
-    }.bind(this));
+        request.fail(function (response) {
+          // Temporary error, should parse server response.
+          var error = 'Attempt challenge request failed';
+          EventBus.getInstance().trigger(EVENTS.ajax_error, error);
+          reject(new Error('Failed to attempt challenge with type ' + challengeType));
+        });
+      }.bind(this),
+    );
   },
 
   completeDailyChallenge: function (challengeId) {
-    var completeDailyChallengePromise = new Promise(function (resolve, reject) {
-      var request = $.ajax({
-        data: JSON.stringify({ completed_at: moment().utc().valueOf() }),
-        url: process.env.API_URL + '/api/me/challenges/daily/' + challengeId + '/completed_at',
-        type: 'PUT',
-        contentType: 'application/json',
-        dataType: 'json',
-      });
+    var completeDailyChallengePromise = new Promise(
+      function (resolve, reject) {
+        var request = $.ajax({
+          data: JSON.stringify({ completed_at: moment().utc().valueOf() }),
+          url: process.env.API_URL + '/api/me/challenges/daily/' + challengeId + '/completed_at',
+          type: 'PUT',
+          contentType: 'application/json',
+          dataType: 'json',
+        });
 
-      request.done(function (response, textStatus, jqXHR) {
-        if (request.status != 304) {
-          // 304 Status means a challenge was already completed
-          Analytics.track('daily challenge completed', {
-            category: Analytics.EventCategory.Challenges,
-            challenge_type: challengeId,
-          }, {
-            labelKey: 'challenge_type',
-          });
-        }
+        request.done(
+          function (response, textStatus, jqXHR) {
+            if (request.status != 304) {
+              // 304 Status means a challenge was already completed
+              Analytics.track(
+                'daily challenge completed',
+                {
+                  category: Analytics.EventCategory.Challenges,
+                  challenge_type: challengeId,
+                },
+                {
+                  labelKey: 'challenge_type',
+                },
+              );
+            }
 
-        if (response && response.challenge) {
-          resolve(response.challenge);
-        } else {
+            if (response && response.challenge) {
+              resolve(response.challenge);
+            } else {
+              resolve({});
+            }
+          }.bind(this),
+        );
+
+        request.fail(function (response) {
+          var error = 'Complete daily challenge request failed';
+          if (response && response.responseJSON && response.responseJSON.message) {
+            error = response.responseJSON.message;
+          }
+          EventBus.getInstance().trigger(EVENTS.ajax_error, error);
           resolve({});
-        }
-      }.bind(this));
-
-      request.fail(function (response) {
-        var error = 'Complete daily challenge request failed';
-        if (response && response.responseJSON && response.responseJSON.message) {
-          error = response.responseJSON.message;
-        }
-        EventBus.getInstance().trigger(EVENTS.ajax_error, error);
-        resolve({});
-      });
-    }.bind(this));
+        });
+      }.bind(this),
+    );
 
     // This doesn't need to be directly part of the daily challenge completion promise chain
     completeDailyChallengePromise.then(function () {
@@ -372,27 +429,40 @@ var ProgressionManager = Manager.extend({
 
   hasAttemptedChallengeOfType: function (challengeType) {
     var challengeData = this.challengeProgressionCollection.get(challengeType);
-    return challengeData && (challengeData.get('last_attempted_at') != null || challengeData.get('completed_at') != null);
+    return (
+      challengeData &&
+      (challengeData.get('last_attempted_at') != null || challengeData.get('completed_at') != null)
+    );
   },
 
   hasAttemptedChallengeCategory: function (challengeCategory) {
     var challengesInCategory = SDK.ChallengeFactory.getChallengesForCategoryType(challengeCategory);
-    return _.reduce(challengesInCategory, function (memo, challenge) {
-      return memo && this.hasAttemptedChallengeOfType(challenge.type);
-    }, true, this);
+    return _.reduce(
+      challengesInCategory,
+      function (memo, challenge) {
+        return memo && this.hasAttemptedChallengeOfType(challenge.type);
+      },
+      true,
+      this,
+    );
   },
 
   hasCompletedChallengeOfType: function (challengeType) {
     var challengeData = this.challengeProgressionCollection.get(challengeType);
-    return challengeData && (challengeData.get('completed_at') != null);
+    return challengeData && challengeData.get('completed_at') != null;
   },
 
   // A Challenge category is completed if all challenges in that category are done
   hasCompletedChallengeCategory: function (challengeCategory) {
     var challengesInCategory = SDK.ChallengeFactory.getChallengesForCategoryType(challengeCategory);
-    return _.reduce(challengesInCategory, function (memo, challenge) {
-      return memo && this.hasCompletedChallengeOfType(challenge.type);
-    }, true, this);
+    return _.reduce(
+      challengesInCategory,
+      function (memo, challenge) {
+        return memo && this.hasCompletedChallengeOfType(challenge.type);
+      },
+      true,
+      this,
+    );
   },
 
   /* region EVENT HANDLERS */
@@ -402,5 +472,4 @@ var ProgressionManager = Manager.extend({
   },
 
   /* endregion EVENT HANDLERS */
-
 });

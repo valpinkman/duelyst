@@ -13,21 +13,28 @@ class ModifierBandingDoubleAttack extends ModifierBanding {
   declare fxResource: any;
 
   static type = 'ModifierBandingDoubleAttack';
-  static description = 'Double this minion\'s Attack at the end of your turn';
+  static description = "Double this minion's Attack at the end of your turn";
 
   static createContextObject(attackBuff, options) {
-    if (attackBuff == null) { attackBuff = 0; }
-    if (options == null) { options = undefined; }
+    if (attackBuff == null) {
+      attackBuff = 0;
+    }
+    if (options == null) {
+      options = undefined;
+    }
     const contextObject = super.createContextObject(options);
-    contextObject.appliedName = 'Zeal: Lion\'s Growth';
+    contextObject.appliedName = "Zeal: Lion's Growth";
     const bandedContextObject = ModifierBandedDoubleAttack.createContextObject(attackBuff);
-    bandedContextObject.appliedName = 'Zealed: Lion\'s Growth';
+    bandedContextObject.appliedName = "Zealed: Lion's Growth";
     contextObject.modifiersContextObjects = [bandedContextObject];
     return contextObject;
   }
 }
 ModifierBandingDoubleAttack.prototype.type = 'ModifierBandingDoubleAttack';
 ModifierBandingDoubleAttack.prototype.maxStacks = 1;
-ModifierBandingDoubleAttack.prototype.fxResource = ['FX.Modifiers.ModifierZeal', 'FX.Modifiers.ModifierZealDoubleAttack'];
+ModifierBandingDoubleAttack.prototype.fxResource = [
+  'FX.Modifiers.ModifierZeal',
+  'FX.Modifiers.ModifierZealDoubleAttack',
+];
 
 module.exports = ModifierBandingDoubleAttack;

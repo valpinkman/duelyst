@@ -18,7 +18,9 @@ const getScoreForTransformFromCardWithIntentToCard = function (card, intent, tar
   let score = 0;
   let transformCard = null;
   if (intent.cardId != null) {
-    transformCard = card.getGameSession().getExistingCardFromIndexOrCreateCardFromData({ id: intent.cardId });
+    transformCard = card
+      .getGameSession()
+      .getExistingCardFromIndexOrCreateCardFromData({ id: intent.cardId });
   }
 
   if (transformCard != null) {
@@ -51,7 +53,10 @@ const getScoreForTransformFromCardWithIntentToCard = function (card, intent, tar
 const ScoreForIntentTransform = function (card, targetPosition, cardIntents) {
   let score = 0;
   const cardId = card.getBaseCardId();
-  const validIntents = cardIntents != null ? CardIntent.filterIntentsByIntentType(cardIntents, CardIntentType.Transform) : CardIntent.getIntentsByIntentType(cardId, CardIntentType.Transform);
+  const validIntents =
+    cardIntents != null
+      ? CardIntent.filterIntentsByIntentType(cardIntents, CardIntentType.Transform)
+      : CardIntent.getIntentsByIntentType(cardId, CardIntentType.Transform);
 
   _.each(validIntents, (intent) => {
     const cards = CardIntent.getCardsTargetedByCardWithIntent(card, intent, targetPosition);

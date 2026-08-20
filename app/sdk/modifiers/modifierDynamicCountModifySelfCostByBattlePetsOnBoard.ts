@@ -20,8 +20,12 @@ class ModifierDynamicCountModifySelfCostByBattlePetsOnBoard extends ModifierDyna
   static description = 'Costs %X for each friendly Battle Pet on the field';
 
   static createContextObject(manaCostChange, description, appliedName, options) {
-    if (manaCostChange == null) { manaCostChange = 0; }
-    if (options == null) { options = undefined; }
+    if (manaCostChange == null) {
+      manaCostChange = 0;
+    }
+    if (options == null) {
+      options = undefined;
+    }
     const contextObject = super.createContextObject(options);
     const perPetCostChangeBuff = ModifierManaCostChange.createContextObject(manaCostChange);
     if (appliedName) {
@@ -39,14 +43,18 @@ class ModifierDynamicCountModifySelfCostByBattlePetsOnBoard extends ModifierDyna
   getCurrentCount() {
     let battlePetCount = 0;
     for (var card of Array.from<any>(this.getGameSession().getBoard().getCards(CardType.Unit))) {
-      if ((card.getOwnerId() === this.getCard().getOwnerId()) && card.getBelongsToTribe(Races.BattlePet)) {
+      if (
+        card.getOwnerId() === this.getCard().getOwnerId() &&
+        card.getBelongsToTribe(Races.BattlePet)
+      ) {
         battlePetCount++;
       }
     }
     return battlePetCount;
   }
 }
-ModifierDynamicCountModifySelfCostByBattlePetsOnBoard.prototype.type = 'ModifierDynamicCountModifySelfCostByBattlePetsOnBoard';
+ModifierDynamicCountModifySelfCostByBattlePetsOnBoard.prototype.type =
+  'ModifierDynamicCountModifySelfCostByBattlePetsOnBoard';
 ModifierDynamicCountModifySelfCostByBattlePetsOnBoard.prototype.activeInDeck = false;
 ModifierDynamicCountModifySelfCostByBattlePetsOnBoard.prototype.activeInHand = true;
 ModifierDynamicCountModifySelfCostByBattlePetsOnBoard.prototype.activeInSignatureCards = false;

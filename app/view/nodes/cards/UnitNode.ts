@@ -20,7 +20,6 @@ const EntityNode = require('./EntityNode');
  *************************************************************************** */
 
 const UnitNode = EntityNode.extend({
-
   // sprites
   shadowSprite: null,
 
@@ -40,7 +39,9 @@ const UnitNode = EntityNode.extend({
 
       // entity sprite
       this.entitySprite = UnitSprite.create(spriteOptions);
-      if (scale != null) { this.entitySprite.setScale(scale); }
+      if (scale != null) {
+        this.entitySprite.setScale(scale);
+      }
 
       // shadow sprite
       this.shadowSprite = BaseSprite.create(RSX.unit_shadow.img);
@@ -80,16 +81,13 @@ const UnitNode = EntityNode.extend({
     let animSequence;
     if (animAction != null) {
       if (animAction.getDuration() > 0) {
-        animSequence = cc.sequence(
-          animAction,
-          cc.callFunc(this.changeBaseState, this),
-        ).repeatForever();
+        animSequence = cc
+          .sequence(animAction, cc.callFunc(this.changeBaseState, this))
+          .repeatForever();
       } else {
-        animSequence = cc.sequence(
-          animAction,
-          cc.delayTime(1.0),
-          cc.callFunc(this.changeBaseState, this),
-        ).repeatForever();
+        animSequence = cc
+          .sequence(animAction, cc.delayTime(1.0), cc.callFunc(this.changeBaseState, this))
+          .repeatForever();
       }
     } else {
       animSequence = EntityNode.prototype.getBaseStateAction.call(this);
@@ -111,10 +109,11 @@ const UnitNode = EntityNode.extend({
     if (animActionApply != null) {
       this.showNoState();
       this.entitySprite.setOpacity(255);
-      this._stateActions.push(this.entitySprite.runAction(cc.sequence(
-        animActionApply,
-        cc.callFunc(this.showNextState, this),
-      )));
+      this._stateActions.push(
+        this.entitySprite.runAction(
+          cc.sequence(animActionApply, cc.callFunc(this.showNextState, this)),
+        ),
+      );
     } else {
       this.showBaseState();
       this.entitySprite.setOpacity(0);
@@ -242,16 +241,25 @@ const UnitNode = EntityNode.extend({
             sequenceSteps.push(animAction);
           }
           sequenceSteps.push(cc.callFunc(this.showNextState, this));
-          this._stateActions.push(this.entitySprite.runAction(cc.sequence(sequenceSteps).speed(1.0 / CONFIG.ENTITY_ATTACK_DURATION_MODIFIER)));
+          this._stateActions.push(
+            this.entitySprite.runAction(
+              cc.sequence(sequenceSteps).speed(1.0 / CONFIG.ENTITY_ATTACK_DURATION_MODIFIER),
+            ),
+          );
 
           // sound
-          const releaseDelay = (this.getAnimResource() && this.getAnimResource().attackReleaseDelay) || 0.0;
-          this._stateActions.push(this.entitySprite.runAction(cc.sequence(
-            cc.delayTime(releaseDelay * CONFIG.ENTITY_ATTACK_DURATION_MODIFIER),
-            cc.callFunc(function () {
-              this.playSoundAttackerRelease(sdkCard);
-            }, this),
-          )));
+          const releaseDelay =
+            (this.getAnimResource() && this.getAnimResource().attackReleaseDelay) || 0.0;
+          this._stateActions.push(
+            this.entitySprite.runAction(
+              cc.sequence(
+                cc.delayTime(releaseDelay * CONFIG.ENTITY_ATTACK_DURATION_MODIFIER),
+                cc.callFunc(function () {
+                  this.playSoundAttackerRelease(sdkCard);
+                }, this),
+              ),
+            ),
+          );
         }
       });
     }
@@ -288,7 +296,11 @@ const UnitNode = EntityNode.extend({
             sequenceSteps.push(animAction);
           }
           sequenceSteps.push(cc.callFunc(this.showNextState, this));
-          this._stateActions.push(this.entitySprite.runAction(cc.sequence(sequenceSteps).speed(1.0 / CONFIG.ENTITY_ATTACK_DURATION_MODIFIER)));
+          this._stateActions.push(
+            this.entitySprite.runAction(
+              cc.sequence(sequenceSteps).speed(1.0 / CONFIG.ENTITY_ATTACK_DURATION_MODIFIER),
+            ),
+          );
         }
       });
     }
@@ -380,7 +392,12 @@ const UnitNode = EntityNode.extend({
                 });
                 const centerPosition = this.getCenterPositionForExternal();
                 const groundPosition = this.getGroundPositionForExternal();
-                particleSystem.setPosition(cc.p((centerPosition.x + groundPosition.x) * 0.5, (centerPosition.y + groundPosition.y) * 0.5));
+                particleSystem.setPosition(
+                  cc.p(
+                    (centerPosition.x + groundPosition.x) * 0.5,
+                    (centerPosition.y + groundPosition.y) * 0.5,
+                  ),
+                );
                 this.getScene().getGameLayer().addNode(particleSystem);
               }, this),
               cc.actionTween(dissolveDuration, TweenTypes.DISSOLVE, 0.0, 1.0),
@@ -406,9 +423,12 @@ const UnitNode = EntityNode.extend({
         if (this.canChangeState()) {
           const { sdkCard } = this;
           const { entitySprite } = this;
-          const animAction = this.getAnimationActionFromAnimResource('walk') || this.getAnimationActionFromAnimResource('run') || this.getAnimationActionFromAnimResource('move');
+          const animAction =
+            this.getAnimationActionFromAnimResource('walk') ||
+            this.getAnimationActionFromAnimResource('run') ||
+            this.getAnimationActionFromAnimResource('move');
           if (animAction != null) {
-            let offset = CONFIG.TILESIZE;// * 0.5;
+            let offset = CONFIG.TILESIZE; // * 0.5;
             let delay = 0.0;
             const duration = animAction.getDuration() * (offset / CONFIG.TILESIZE);
             const numClones = 5;
@@ -426,7 +446,17 @@ const UnitNode = EntityNode.extend({
             // copy self
             this.cloneSprites = [];
             for (var i = 0; i < numClones; i++) {
-              this._showClone(entitySprite, sourceScreenPosition, position, animAction.clone(), true, 255, true, delay, duration);
+              this._showClone(
+                entitySprite,
+                sourceScreenPosition,
+                position,
+                animAction.clone(),
+                true,
+                255,
+                true,
+                delay,
+                duration,
+              );
               delay += deltaDuration;
             }
 
@@ -437,7 +467,8 @@ const UnitNode = EntityNode.extend({
               const animReactionAction = this.getAnimationActionFromAnimResource('idle');
               if (animReactionAction != null) {
                 const sequenceSteps = [];
-                const numReactions = Math.ceil((duration * 2) / animReactionAction.getDuration()) || 1;
+                const numReactions =
+                  Math.ceil((duration * 2) / animReactionAction.getDuration()) || 1;
                 for (i = 0; i < numReactions; i++) {
                   sequenceSteps.push(animReactionAction.clone());
                 }
@@ -473,7 +504,17 @@ const UnitNode = EntityNode.extend({
     }
   },
 
-  _showClone(sourceSprite, sourceScreenPosition, targetScreenPosition, animAction, reverseAnim, opacity, additive, delay, duration) {
+  _showClone(
+    sourceSprite,
+    sourceScreenPosition,
+    targetScreenPosition,
+    animAction,
+    reverseAnim,
+    opacity,
+    additive,
+    delay,
+    duration,
+  ) {
     delay || (delay = 0.0);
     duration || (duration = 0.5);
 
@@ -489,10 +530,9 @@ const UnitNode = EntityNode.extend({
 
     // clone move
     cloneSprite.setPosition(sourceScreenPosition);
-    cloneSprite.runAction(cc.sequence(
-      cc.delayTime(delay),
-      cc.MoveTo.create(duration, targetScreenPosition),
-    ));
+    cloneSprite.runAction(
+      cc.sequence(cc.delayTime(delay), cc.MoveTo.create(duration, targetScreenPosition)),
+    );
 
     // clone fade in
     opacity || (opacity = 127);
@@ -511,22 +551,20 @@ const UnitNode = EntityNode.extend({
       animAction = animAction.reverse();
     }
 
-    cloneSprite.runAction(cc.sequence(
-      cc.delayTime(delay),
-      animAction,
-    ));
+    cloneSprite.runAction(cc.sequence(cc.delayTime(delay), animAction));
 
     if (additive) {
       // things don't play nice with blend fn so we set it last
-      cloneSprite.runAction(cc.sequence(
-        cc.delayTime(delay),
-        cc.callFunc(() => {
-          cloneSprite.setBlendFunc(gl.SRC_ALPHA, gl.ONE);
-        }),
-      ));
+      cloneSprite.runAction(
+        cc.sequence(
+          cc.delayTime(delay),
+          cc.callFunc(() => {
+            cloneSprite.setBlendFunc(gl.SRC_ALPHA, gl.ONE);
+          }),
+        ),
+      );
     }
   },
-
 });
 
 UnitNode.create = function (sdkCard, node) {

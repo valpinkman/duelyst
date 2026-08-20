@@ -12,7 +12,7 @@ class SpellKillDamagedMinion extends SpellKillTarget {
 
     for (var position of Array.from<any>(validPositions)) {
       var unit = this.getGameSession().getBoard().getUnitAtPosition(position);
-      if ((unit != null) && (unit.getHP() < unit.getMaxHP())) {
+      if (unit != null && unit.getHP() < unit.getMaxHP()) {
         damagedMinionsPositions.push(position);
       }
     }

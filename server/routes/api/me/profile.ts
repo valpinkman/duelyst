@@ -24,7 +24,8 @@ router.put('/portrait_id', function (req, res, next) {
   const new_portrait_id = result.value;
 
   return UsersModule.setPortraitId(user_id, new_portrait_id)
-    .then(() => res.status(200).json({})).catch((error) => next(error));
+    .then(() => res.status(200).json({}))
+    .catch((error) => next(error));
 });
 
 router.put('/battle_map_id', function (req, res, next) {
@@ -37,7 +38,8 @@ router.put('/battle_map_id', function (req, res, next) {
   const new_battle_map_id = result.value;
 
   return UsersModule.setBattleMapId(user_id, new_battle_map_id)
-    .then(() => res.status(200).json({})).catch((error) => next(error));
+    .then(() => res.status(200).json({}))
+    .catch((error) => next(error));
 });
 
 router.put('/card_back_id', function (req, res, next) {
@@ -50,7 +52,8 @@ router.put('/card_back_id', function (req, res, next) {
   const new_card_back_id = result.value;
 
   return UsersModule.setCardBackId(user_id, new_card_back_id)
-    .then(() => res.status(200).json({})).catch((error) => next(error));
+    .then(() => res.status(200).json({}))
+    .catch((error) => next(error));
 });
 
 module.exports = router;

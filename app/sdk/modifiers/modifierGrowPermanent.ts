@@ -19,14 +19,18 @@ class ModifierGrowPermanent extends ModifierGrow {
   // in this case we want the applied buffs to be permanent even if the Grow Modifier
   // is removed later on
   applyManagedModifiersFromModifiersContextObjects(modifiersContextObjects, card) {
-    if ((modifiersContextObjects != null) && (card != null)) {
+    if (modifiersContextObjects != null && card != null) {
       return Array.from<any>(modifiersContextObjects).map((modifierContextObject) =>
-        this.getGameSession().applyModifierContextObject(modifierContextObject, card));
+        this.getGameSession().applyModifierContextObject(modifierContextObject, card),
+      );
     }
   }
 }
 ModifierGrowPermanent.prototype.type = 'ModifierGrowPermanent';
-ModifierGrowPermanent.prototype.fxResource = ['FX.Modifiers.ModifierGenericBuff', 'FX.Modifiers.ModifierGrow'];
+ModifierGrowPermanent.prototype.fxResource = [
+  'FX.Modifiers.ModifierGenericBuff',
+  'FX.Modifiers.ModifierGrow',
+];
 // NOT being applied as a child modifier
 
 module.exports = ModifierGrowPermanent;

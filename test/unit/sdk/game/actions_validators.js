@@ -13,10 +13,18 @@ Logger.enabled = false;
 describe('actions: validators', () => {
   beforeEach(() => {
     // get all cards
-    const allCards = SDK.GameSession.getCardCaches().getType(SDK.CardType.Unit).getIsGeneral(false).getCards();
-    const cardsThatCost1 = _.filter(allCards, (card) => card.getManaCost() === 1
-        && (card.getFactionId() === SDK.Factions.Neutral || card.getFactionId() === SDK.Factions.Faction1)
-        && (card.modifiersContextObjects == null || card.modifiersContextObjects.length === 0));
+    const allCards = SDK.GameSession.getCardCaches()
+      .getType(SDK.CardType.Unit)
+      .getIsGeneral(false)
+      .getCards();
+    const cardsThatCost1 = _.filter(
+      allCards,
+      (card) =>
+        card.getManaCost() === 1 &&
+        (card.getFactionId() === SDK.Factions.Neutral ||
+          card.getFactionId() === SDK.Factions.Faction1) &&
+        (card.modifiersContextObjects == null || card.modifiersContextObjects.length === 0),
+    );
 
     // define test decks
     const playerDecks = [
@@ -34,7 +42,7 @@ describe('actions: validators', () => {
     SDK.GameSession.reset();
   });
 
-  it('expect invalid action when not player\'s turn', () => {
+  it("expect invalid action when not player's turn", () => {
     const player = SDK.GameSession.getInstance().getNonCurrentPlayer();
     const cardsInHand = player.getDeck().getCardsInHand();
     let indexToPlay = -1;
@@ -49,7 +57,11 @@ describe('actions: validators', () => {
     }
     const validTargetPositions = cardToPlay.getValidTargetPositions();
     const validTargetPosition = _.sample(validTargetPositions);
-    const playCardFromHandAction = player.actionPlayCardFromHand(indexToPlay, validTargetPosition.x, validTargetPosition.y);
+    const playCardFromHandAction = player.actionPlayCardFromHand(
+      indexToPlay,
+      validTargetPosition.x,
+      validTargetPosition.y,
+    );
     SDK.GameSession.getInstance().executeAction(playCardFromHandAction);
 
     expect(playCardFromHandAction.getIsValid()).to.equal(false);

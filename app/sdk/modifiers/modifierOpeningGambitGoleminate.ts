@@ -19,10 +19,16 @@ class ModifierOpeningGambitGoleminate extends ModifierOpeningGambit {
   onOpeningGambit() {
     return (() => {
       const result = [];
-      for (var entity of Array.from<any>(this.getGameSession().getBoard().getEntities())) { // dispel every entity on the board
-        if (!(entity === this.getCard())) { // don't dispel self though
-          this.getGameSession().applyModifierContextObject(ModifierSilence.createContextObject(), entity);
-          if (entity.getIsGeneral()) { // if entity is a General, remove all Artifacts
+      for (var entity of Array.from<any>(this.getGameSession().getBoard().getEntities())) {
+        // dispel every entity on the board
+        if (!(entity === this.getCard())) {
+          // don't dispel self though
+          this.getGameSession().applyModifierContextObject(
+            ModifierSilence.createContextObject(),
+            entity,
+          );
+          if (entity.getIsGeneral()) {
+            // if entity is a General, remove all Artifacts
             var removeArtifactsAction = new RemoveArtifactsAction(this.getGameSession());
             removeArtifactsAction.setTarget(entity);
             result.push(this.getGameSession().executeAction(removeArtifactsAction));

@@ -35,7 +35,7 @@ class ModifierFateAbyssianDyingQuest extends ModifierFate {
   }
 
   getDeathSpellActionIndices() {
-    if ((this._private.deathSpellActionIndices == null)) {
+    if (this._private.deathSpellActionIndices == null) {
       this._private.deathSpellActionIndices = [];
       this.checkFate(this.getGameSession().filterActions(this.getIsActionRelevant.bind(this)));
     }
@@ -64,8 +64,17 @@ class ModifierFateAbyssianDyingQuest extends ModifierFate {
   getIsActionRelevant(action) {
     if (action.getOwnerId() === this.getOwnerId()) {
       const target = action.getTarget();
-      if ((target != null) && action instanceof DieAction && (target.getType() === CardType.Unit) && (target.getOwnerId() === this.getCard().getOwnerId())) {
-        if ((action.getRootAction() instanceof PlayCardFromHandAction || action.getRootAction() instanceof PlaySignatureCardAction) && (__guard__(action.getRootAction().getCard(), (x) => x.type) === CardType.Spell)) {
+      if (
+        target != null &&
+        action instanceof DieAction &&
+        target.getType() === CardType.Unit &&
+        target.getOwnerId() === this.getCard().getOwnerId()
+      ) {
+        if (
+          (action.getRootAction() instanceof PlayCardFromHandAction ||
+            action.getRootAction() instanceof PlaySignatureCardAction) &&
+          __guard__(action.getRootAction().getCard(), (x) => x.type) === CardType.Spell
+        ) {
           return true;
         }
       }
@@ -85,13 +94,17 @@ class ModifierFateAbyssianDyingQuest extends ModifierFate {
     const general = this.getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
     if (general.hasActiveModifierClass(ModifierQuestStatusAbyssian)) {
       return Array.from<any>(general.getModifiersByClass(ModifierQuestStatusAbyssian)).map((mod) =>
-        this.getGameSession().removeModifier(mod));
+        this.getGameSession().removeModifier(mod),
+      );
     }
   }
 
   applyQuestStatusModifier(questCompleted) {
     const general = this.getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
-    const countModifier = ModifierQuestStatusAbyssian.createContextObject(questCompleted, this.getDeathSpellActionIndices().length);
+    const countModifier = ModifierQuestStatusAbyssian.createContextObject(
+      questCompleted,
+      this.getDeathSpellActionIndices().length,
+    );
     return this.getGameSession().applyModifierContextObject(countModifier, general);
   }
 }
@@ -101,5 +114,5 @@ ModifierFateAbyssianDyingQuest.prototype.deathCountRequired = 1;
 module.exports = ModifierFateAbyssianDyingQuest;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

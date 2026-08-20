@@ -32,7 +32,9 @@ class ModifierOpeningGambitHealMyGeneral extends ModifierOpeningGambit {
   }
 
   onOpeningGambit() {
-    const general = this.getCard().getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
+    const general = this.getCard()
+      .getGameSession()
+      .getGeneralForPlayerId(this.getCard().getOwnerId());
 
     const healAction = new HealAction(this.getGameSession());
     healAction.setOwnerId(this.getCard().getOwnerId());
@@ -43,6 +45,9 @@ class ModifierOpeningGambitHealMyGeneral extends ModifierOpeningGambit {
 }
 ModifierOpeningGambitHealMyGeneral.prototype.type = 'ModifierOpeningGambitHealMyGeneral';
 ModifierOpeningGambitHealMyGeneral.prototype.healAmount = 0;
-ModifierOpeningGambitHealMyGeneral.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericHeal'];
+ModifierOpeningGambitHealMyGeneral.prototype.fxResource = [
+  'FX.Modifiers.ModifierOpeningGambit',
+  'FX.Modifiers.ModifierGenericHeal',
+];
 
 module.exports = ModifierOpeningGambitHealMyGeneral;

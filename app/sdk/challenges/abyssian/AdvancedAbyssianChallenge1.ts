@@ -51,10 +51,7 @@ class AdvancedAbyssianChallenge1 extends Challenge {
   }
 
   getOpponentPlayerDeckData(gameSession) {
-    return [
-      { id: Cards.Faction1.General },
-      { id: Cards.TutorialSpell.TutorialFireOrb },
-    ];
+    return [{ id: Cards.Faction1.General }, { id: Cards.TutorialSpell.TutorialFireOrb }];
   }
 
   setupBoard(gameSession) {
@@ -76,22 +73,71 @@ class AdvancedAbyssianChallenge1 extends Challenge {
     this.applyCardToBoard({ id: Cards.Neutral.SaberspineTiger }, 4, 0, myPlayerId);
     this.applyCardToBoard({ id: Cards.Tile.Shadow }, 4, 2, myPlayerId);
 
-    const rockPulverizer1 = this.applyCardToBoard({ id: Cards.Neutral.RockPulverizer }, 4, 3, opponentPlayerId);
-    const rockPulverizer2 = this.applyCardToBoard({ id: Cards.Neutral.RockPulverizer }, 5, 2, opponentPlayerId);
-    const swampEntangler = this.applyCardToBoard({ id: Cards.Neutral.VineEntangler }, 7, 3, opponentPlayerId);
-    const silverguardKnight = this.applyCardToBoard({ id: Cards.Faction1.SilverguardKnight }, 7, 4, opponentPlayerId);
-    const primusShieldmaster1 = this.applyCardToBoard({ id: Cards.Neutral.PrimusShieldmaster }, 6, 1, opponentPlayerId);
-    const primusShieldmaster2 = this.applyCardToBoard({ id: Cards.Neutral.PrimusShieldmaster }, 7, 1, opponentPlayerId);
+    const rockPulverizer1 = this.applyCardToBoard(
+      { id: Cards.Neutral.RockPulverizer },
+      4,
+      3,
+      opponentPlayerId,
+    );
+    const rockPulverizer2 = this.applyCardToBoard(
+      { id: Cards.Neutral.RockPulverizer },
+      5,
+      2,
+      opponentPlayerId,
+    );
+    const swampEntangler = this.applyCardToBoard(
+      { id: Cards.Neutral.VineEntangler },
+      7,
+      3,
+      opponentPlayerId,
+    );
+    const silverguardKnight = this.applyCardToBoard(
+      { id: Cards.Faction1.SilverguardKnight },
+      7,
+      4,
+      opponentPlayerId,
+    );
+    const primusShieldmaster1 = this.applyCardToBoard(
+      { id: Cards.Neutral.PrimusShieldmaster },
+      6,
+      1,
+      opponentPlayerId,
+    );
+    const primusShieldmaster2 = this.applyCardToBoard(
+      { id: Cards.Neutral.PrimusShieldmaster },
+      7,
+      1,
+      opponentPlayerId,
+    );
     this.applyCardToBoard({ id: Cards.Spell.WarSurge }, 4, 2, opponentPlayerId);
 
-    const hailStoneHowler = this.applyCardToBoard({ id: Cards.Neutral.HailstoneHowler }, 5, 3, opponentPlayerId);
+    const hailStoneHowler = this.applyCardToBoard(
+      { id: Cards.Neutral.HailstoneHowler },
+      5,
+      3,
+      opponentPlayerId,
+    );
     // Every enemy unit above here has 2 azure horn shaman buffs
 
     // ironcliffe only has one azure horn shaman buff
-    const ironcliffeGuardian = this.applyCardToBoard({ id: Cards.Faction1.IroncliffeGuardian }, 8, 3, opponentPlayerId);
+    const ironcliffeGuardian = this.applyCardToBoard(
+      { id: Cards.Faction1.IroncliffeGuardian },
+      8,
+      3,
+      opponentPlayerId,
+    );
 
     // add first shaman buffs
-    let unitsToReceiveBuff = [rockPulverizer1, rockPulverizer2, swampEntangler, silverguardKnight, hailStoneHowler, primusShieldmaster1, primusShieldmaster2, ironcliffeGuardian];
+    let unitsToReceiveBuff = [
+      rockPulverizer1,
+      rockPulverizer2,
+      swampEntangler,
+      silverguardKnight,
+      hailStoneHowler,
+      primusShieldmaster1,
+      primusShieldmaster2,
+      ironcliffeGuardian,
+    ];
     _.each(unitsToReceiveBuff, (unit) => {
       const shamanContextObject = Modifier.createContextObjectWithAttributeBuffs(0, 4);
       shamanContextObject.appliedName = i18next.t('modifiers.neutral_azure_horn_shaman_modifier');
@@ -111,24 +157,37 @@ class AdvancedAbyssianChallenge1 extends Challenge {
   setupOpponentAgent(gameSession) {
     super.setupOpponentAgent(gameSession);
 
-    this._opponentAgent.addActionForTurn(0, AgentActions.createAgentSoftActionShowInstructionLabels([{
-      label: i18next.t('challenges.advanced_abyss_1_taunt'),
-      isSpeech: true,
-      yPosition: 0.7,
-      isPersistent: true,
-      isOpponent: true,
-    },
-    ]));
-    return this._opponentAgent.addActionForTurn(0, AgentActions.createAgentActionPlayCardFindPosition(0, () => [GameSession.getInstance().getGeneralForPlayer1().getPosition()]));
+    this._opponentAgent.addActionForTurn(
+      0,
+      AgentActions.createAgentSoftActionShowInstructionLabels([
+        {
+          label: i18next.t('challenges.advanced_abyss_1_taunt'),
+          isSpeech: true,
+          yPosition: 0.7,
+          isPersistent: true,
+          isOpponent: true,
+        },
+      ]),
+    );
+    return this._opponentAgent.addActionForTurn(
+      0,
+      AgentActions.createAgentActionPlayCardFindPosition(0, () => [
+        GameSession.getInstance().getGeneralForPlayer1().getPosition(),
+      ]),
+    );
   }
 }
 AdvancedAbyssianChallenge1.prototype.type = 'AdvancedAbyssianChallenge1';
 AdvancedAbyssianChallenge1.prototype.categoryType = ChallengeCategory.contest2.type;
 AdvancedAbyssianChallenge1.prototype.name = i18next.t('challenges.advanced_abyss_1_title');
-AdvancedAbyssianChallenge1.prototype.description = i18next.t('challenges.advanced_abyss_1_description');
+AdvancedAbyssianChallenge1.prototype.description = i18next.t(
+  'challenges.advanced_abyss_1_description',
+);
 AdvancedAbyssianChallenge1.prototype.iconUrl = RSX.speech_portrait_abyssian.img;
 AdvancedAbyssianChallenge1.prototype._musicOverride = RSX.music_battlemap_abyssian.audio;
-AdvancedAbyssianChallenge1.prototype.otkChallengeStartMessage = i18next.t('challenges.advanced_abyss_1_start');
+AdvancedAbyssianChallenge1.prototype.otkChallengeStartMessage = i18next.t(
+  'challenges.advanced_abyss_1_start',
+);
 AdvancedAbyssianChallenge1.prototype.otkChallengeFailureMessages = [
   i18next.t('challenges.advanced_abyss_1_fail'),
 ];

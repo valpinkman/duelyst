@@ -17,7 +17,7 @@ class RestoreManaAction extends Action {
   }
 
   setManaAmount(manaToRestore) {
-    return this.restoreManaAmount = manaToRestore;
+    return (this.restoreManaAmount = manaToRestore);
   }
 
   _execute() {
@@ -26,10 +26,10 @@ class RestoreManaAction extends Action {
     const owner = this.getOwner();
     if (owner != null) {
       if (owner.getRemainingMana() < owner.getMaximumMana()) {
-        if ((owner.getRemainingMana() + this.restoreManaAmount) <= owner.getMaximumMana()) {
-          return owner.remainingMana += this.restoreManaAmount;
+        if (owner.getRemainingMana() + this.restoreManaAmount <= owner.getMaximumMana()) {
+          return (owner.remainingMana += this.restoreManaAmount);
         }
-        return owner.remainingMana = owner.getMaximumMana();
+        return (owner.remainingMana = owner.getMaximumMana());
       }
     }
   }

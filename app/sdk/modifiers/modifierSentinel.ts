@@ -44,10 +44,18 @@ class ModifierSentinel extends ModifierOverwatch {
   transformSelf() {
     // create the action to spawn the new entity before the existing entity is removed
     // because we may need information about the existing entity being replaced
-    const spawnAction = new PlayCardAsTransformAction(this.getGameSession(), this.getCard().getOwnerId(), this.getCard().getPositionX(), this.getCard().getPositionY(), this.transformCardData);
+    const spawnAction = new PlayCardAsTransformAction(
+      this.getGameSession(),
+      this.getCard().getOwnerId(),
+      this.getCard().getPositionX(),
+      this.getCard().getPositionY(),
+      this.transformCardData,
+    );
 
     // remove the existing entity
-    const removingEntity = this.getGameSession().getBoard().getCardAtPosition(this.getCard().getPosition(), CardType.Unit);
+    const removingEntity = this.getGameSession()
+      .getBoard()
+      .getCardAtPosition(this.getCard().getPosition(), CardType.Unit);
     if (removingEntity != null) {
       const removeOriginalEntityAction = new RemoveAction(this.getGameSession());
       removeOriginalEntityAction.setOwnerId(this.getCard().getOwnerId());

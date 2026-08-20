@@ -46,96 +46,111 @@ class LessonTwo extends Challenge {
 
     this.hiddenUIElements.push('CardCount');
 
-    this.addInstructionToQueueForTurnIndex(0, new Instruction({
-      failedLabel: i18next.t('tutorial.lesson_2_turn_0_failure_message_1'),
-      sourcePosition: {
-        x: 8,
-        y: 2,
-      },
-      targetPosition: {
-        x: 6,
-        y: 2,
-      },
-      preventSelectionUntilLabelIndex: 3,
-      expectedActionType: MoveAction.type,
-      instructionLabels: [{
-        label: i18next.t('tutorial.lesson_2_turn_0_instruction_1'),
-        position: {
+    this.addInstructionToQueueForTurnIndex(
+      0,
+      new Instruction({
+        failedLabel: i18next.t('tutorial.lesson_2_turn_0_failure_message_1'),
+        sourcePosition: {
           x: 8,
           y: 2,
         },
-        duration: CONFIG.INSTRUCTIONAL_ULTRAFAST_DURATION,
-      },
-      {
-        label: i18next.t('tutorial.lesson_2_turn_0_instruction_2'),
-        positionAtManaIndex: 2,
-        focusUp: true,
-        duration: CONFIG.INSTRUCTIONAL_ULTRAFAST_DURATION,
-      },
-      {
-        label: i18next.t('tutorial.lesson_2_turn_0_instruction_3'),
-        position: {
-          x: 5,
+        targetPosition: {
+          x: 6,
           y: 2,
         },
-        instructionArrowPositions: [{ x: 4, y: 0 }, { x: 4, y: 4 }],
-      },
-      {
-        label: i18next.t('tutorial.lesson_2_turn_0_instruction_4'),
-        position: {
-          x: 8,
-          y: 2,
-        },
-        duration: CONFIG.INSTRUCTIONAL_ULTRAFAST_DURATION,
-      },
-      ],
-    }));
+        preventSelectionUntilLabelIndex: 3,
+        expectedActionType: MoveAction.type,
+        instructionLabels: [
+          {
+            label: i18next.t('tutorial.lesson_2_turn_0_instruction_1'),
+            position: {
+              x: 8,
+              y: 2,
+            },
+            duration: CONFIG.INSTRUCTIONAL_ULTRAFAST_DURATION,
+          },
+          {
+            label: i18next.t('tutorial.lesson_2_turn_0_instruction_2'),
+            positionAtManaIndex: 2,
+            focusUp: true,
+            duration: CONFIG.INSTRUCTIONAL_ULTRAFAST_DURATION,
+          },
+          {
+            label: i18next.t('tutorial.lesson_2_turn_0_instruction_3'),
+            position: {
+              x: 5,
+              y: 2,
+            },
+            instructionArrowPositions: [
+              { x: 4, y: 0 },
+              { x: 4, y: 4 },
+            ],
+          },
+          {
+            label: i18next.t('tutorial.lesson_2_turn_0_instruction_4'),
+            position: {
+              x: 8,
+              y: 2,
+            },
+            duration: CONFIG.INSTRUCTIONAL_ULTRAFAST_DURATION,
+          },
+        ],
+      }),
+    );
 
     this.addInstructionToQueueForTurnIndex(0, Instruction.createEndTurnInstruction());
 
-    this.addInstructionToQueueForTurnIndex(1, new Instruction({
-      failedLabel: i18next.t('tutorial.lesson_2_turn_1_failure_message_1'),
-      sourcePosition: {
-        x: 6,
-        y: 2,
-      },
-      targetPosition: {
-        x: 5,
-        y: 2,
-      },
-      expectedActionType: MoveAction.type,
-      instructionLabels: [{
-        label: i18next.t('tutorial.lesson_2_turn_1_instruction_1'),
-        position: {
+    this.addInstructionToQueueForTurnIndex(
+      1,
+      new Instruction({
+        failedLabel: i18next.t('tutorial.lesson_2_turn_1_failure_message_1'),
+        sourcePosition: {
+          x: 6,
+          y: 2,
+        },
+        targetPosition: {
           x: 5,
           y: 2,
         },
-        duration: CONFIG.INSTRUCTIONAL_SHORT_DURATION,
-      },
-      ],
-    }));
+        expectedActionType: MoveAction.type,
+        instructionLabels: [
+          {
+            label: i18next.t('tutorial.lesson_2_turn_1_instruction_1'),
+            position: {
+              x: 5,
+              y: 2,
+            },
+            duration: CONFIG.INSTRUCTIONAL_SHORT_DURATION,
+          },
+        ],
+      }),
+    );
 
-    this.addInstructionToQueueForTurnIndex(1, new Instruction({
-      failedLabel: i18next.t('tutorial.lesson_2_turn_1_failure_message_2'),
-      handIndex: 0,
-      targetPosition: {
-        x: 4,
-        y: 1,
-      },
-      preventSelectionUntilLabelIndex: 1,
-      expectedActionType: PlayCardFromHandAction.type,
-      instructionLabels: [{
-        label: i18next.t('tutorial.lesson_2_turn_1_instruction_2'),
-        positionAtManaIndex: 4,
-        focusUp: true,
-      },
-      {
-        label: i18next.t('tutorial.lesson_2_turn_1_instruction_3'),
-        positionAtHandIndex: 0,
-        delay: CONFIG.INSTRUCTIONAL_MANUAL_DEFAULT_DELAY,
-      },
-      ],
-    }));
+    this.addInstructionToQueueForTurnIndex(
+      1,
+      new Instruction({
+        failedLabel: i18next.t('tutorial.lesson_2_turn_1_failure_message_2'),
+        handIndex: 0,
+        targetPosition: {
+          x: 4,
+          y: 1,
+        },
+        preventSelectionUntilLabelIndex: 1,
+        expectedActionType: PlayCardFromHandAction.type,
+        instructionLabels: [
+          {
+            label: i18next.t('tutorial.lesson_2_turn_1_instruction_2'),
+            positionAtManaIndex: 4,
+            focusUp: true,
+          },
+          {
+            label: i18next.t('tutorial.lesson_2_turn_1_instruction_3'),
+            positionAtHandIndex: 0,
+            delay: CONFIG.INSTRUCTIONAL_MANUAL_DEFAULT_DELAY,
+          },
+        ],
+      }),
+    );
 
     //    @addInstructionToQueueForTurnIndex(1,new Instruction(
     //      failedLabel:"Cast [True Strike] onto the enemy Gro."
@@ -169,50 +184,58 @@ class LessonTwo extends Challenge {
     //      ]
     //    ))
 
-    this.addInstructionToQueueForTurnIndex(1, new Instruction({
-      failedLabel: i18next.t('tutorial.lesson_2_turn_1_failure_message_3'),
-      handIndex: 1,
-      expectedActionType: ReplaceCardFromHandAction.type,
-      instructionLabels: [{
-        label: i18next.t('tutorial.lesson_2_turn_1_instruction_4'),
-        positionAtHandIndex: 1,
-        duration: CONFIG.INSTRUCTIONAL_LONG_DURATION,
-      },
-      {
-        label: i18next.t('tutorial.lesson_2_turn_1_instruction_5'),
-        positionAtHandIndex: 1,
-        delay: CONFIG.INSTRUCTIONAL_MANUAL_DEFAULT_DELAY,
-      },
-      ],
-    }));
+    this.addInstructionToQueueForTurnIndex(
+      1,
+      new Instruction({
+        failedLabel: i18next.t('tutorial.lesson_2_turn_1_failure_message_3'),
+        handIndex: 1,
+        expectedActionType: ReplaceCardFromHandAction.type,
+        instructionLabels: [
+          {
+            label: i18next.t('tutorial.lesson_2_turn_1_instruction_4'),
+            positionAtHandIndex: 1,
+            duration: CONFIG.INSTRUCTIONAL_LONG_DURATION,
+          },
+          {
+            label: i18next.t('tutorial.lesson_2_turn_1_instruction_5'),
+            positionAtHandIndex: 1,
+            delay: CONFIG.INSTRUCTIONAL_MANUAL_DEFAULT_DELAY,
+          },
+        ],
+      }),
+    );
 
-    this.addInstructionToQueueForTurnIndex(1, new Instruction({
-      failedLabel: i18next.t('tutorial.lesson_2_turn_1_failure_message_4'),
-      handIndex: 1,
-      targetPosition: {
-        x: 5,
-        y: 1,
-      },
-      expectedActionType: PlayCardFromHandAction.type,
-      preventSelectionUntilLabelIndex: 2,
-      instructionLabels: [{
-        label: i18next.t('tutorial.lesson_2_turn_1_instruction_6'),
-        isSpeech: true,
-        isPersistent: true,
-        isOpponent: false,
-        yPosition: 0.6,
-      },
-      {
-        label: i18next.t('tutorial.lesson_2_turn_1_instruction_7'),
-        positionAtHandIndex: 1,
-      },
-      {
-        label: i18next.t('tutorial.lesson_2_turn_1_instruction_8'),
-        positionAtHandIndex: 1,
-        delay: CONFIG.INSTRUCTIONAL_MANUAL_DEFAULT_DELAY,
-      },
-      ],
-    }));
+    this.addInstructionToQueueForTurnIndex(
+      1,
+      new Instruction({
+        failedLabel: i18next.t('tutorial.lesson_2_turn_1_failure_message_4'),
+        handIndex: 1,
+        targetPosition: {
+          x: 5,
+          y: 1,
+        },
+        expectedActionType: PlayCardFromHandAction.type,
+        preventSelectionUntilLabelIndex: 2,
+        instructionLabels: [
+          {
+            label: i18next.t('tutorial.lesson_2_turn_1_instruction_6'),
+            isSpeech: true,
+            isPersistent: true,
+            isOpponent: false,
+            yPosition: 0.6,
+          },
+          {
+            label: i18next.t('tutorial.lesson_2_turn_1_instruction_7'),
+            positionAtHandIndex: 1,
+          },
+          {
+            label: i18next.t('tutorial.lesson_2_turn_1_instruction_8'),
+            positionAtHandIndex: 1,
+            delay: CONFIG.INSTRUCTIONAL_MANUAL_DEFAULT_DELAY,
+          },
+        ],
+      }),
+    );
 
     this.addInstructionToQueueForTurnIndex(1, Instruction.createEndTurnInstruction());
 
@@ -246,13 +269,16 @@ class LessonTwo extends Challenge {
     const general1 = gameSession.getGeneralForPlayerId(myPlayerId);
     general1.maxHP = 4;
     const general2 = gameSession.getGeneralForPlayerId(opponentPlayerId);
-    return general2.maxHP = 6;
+    return (general2.maxHP = 6);
   }
 
   setupOpponentAgent(gameSession) {
     super.setupOpponentAgent(gameSession);
 
-    this._opponentAgent.addActionForTurn(0, AgentActions.createAgentActionMoveUnit('general', { x: 2, y: 0 }));
+    this._opponentAgent.addActionForTurn(
+      0,
+      AgentActions.createAgentActionMoveUnit('general', { x: 2, y: 0 }),
+    );
     // @_opponentAgent.addActionForTurn(1,AgentActions.createAgentSoftActionShowInstructionLabels([
     //  label:"Here we make our stand!"
     //  isSpeech:true
@@ -260,12 +286,21 @@ class LessonTwo extends Challenge {
     //  isPersistent: true
     //  isOpponent: true
     // ]))
-    this._opponentAgent.addActionForTurn(1, AgentActions.createAgentActionMoveUnit('general', { x: 2, y: 0 }));
+    this._opponentAgent.addActionForTurn(
+      1,
+      AgentActions.createAgentActionMoveUnit('general', { x: 2, y: 0 }),
+    );
     // @_opponentAgent.addActionForTurn(1,AgentActions.createAgentActionAttackWithUnit("general",{x:1,y:0},false))
-    this._opponentAgent.addActionForTurn(1, AgentActions.createAgentActionPlayCard(0, { x: 5, y: 1 }));
+    this._opponentAgent.addActionForTurn(
+      1,
+      AgentActions.createAgentActionPlayCard(0, { x: 5, y: 1 }),
+    );
     // @_opponentAgent.addActionForTurn(1,AgentActions.createAgentActionPlayCard(1,{x:5,y:3}))
 
-    this._opponentAgent.addActionForTurn(2, AgentActions.createAgentActionMoveUnit('general', { x: -2, y: 0 }));
+    this._opponentAgent.addActionForTurn(
+      2,
+      AgentActions.createAgentActionMoveUnit('general', { x: -2, y: 0 }),
+    );
     // @_opponentAgent.addActionForTurn(2,AgentActions.createAgentActionPlayCard(2,{x:3,y:1}))
     // @_opponentAgent.addActionForTurn(2,AgentActions.createAgentActionPlayFollowup(Cards.Spell.CloneSourceEntity2X,{x:3,y:1},{x:4,y:1}))
     // @_opponentAgent.addActionForTurn(2,AgentActions.createAgentActionPlayFollowup(Cards.Spell.CloneSourceEntity,{x:4,y:1},{x:5,y:1}))
@@ -279,15 +314,24 @@ class LessonTwo extends Challenge {
     //    ).bind(this)))
 
     // cast spell on enemy general
-    this._opponentAgent.addActionForTurn(3, AgentActions.createAgentSoftActionShowInstructionLabels([{
-      label: i18next.t('tutorial.lesson_2_taunt_1'),
-      isSpeech: true,
-      yPosition: 0.7,
-      isPersistent: true,
-      isOpponent: true,
-    },
-    ]));
-    return this._opponentAgent.addActionForTurn(3, AgentActions.createAgentActionPlayCardFindPosition(1, () => [GameSession.getInstance().getGeneralForPlayer2().getPosition()]));
+    this._opponentAgent.addActionForTurn(
+      3,
+      AgentActions.createAgentSoftActionShowInstructionLabels([
+        {
+          label: i18next.t('tutorial.lesson_2_taunt_1'),
+          isSpeech: true,
+          yPosition: 0.7,
+          isPersistent: true,
+          isOpponent: true,
+        },
+      ]),
+    );
+    return this._opponentAgent.addActionForTurn(
+      3,
+      AgentActions.createAgentActionPlayCardFindPosition(1, () => [
+        GameSession.getInstance().getGeneralForPlayer2().getPosition(),
+      ]),
+    );
   }
 }
 LessonTwo.prototype.type = 'LessonTwo';
@@ -296,9 +340,7 @@ LessonTwo.prototype.name = i18next.t('tutorial.lesson_2_title');
 LessonTwo.prototype.description = i18next.t('tutorial.lesson_2_description');
 LessonTwo.prototype.difficulty = i18next.t('tutorial.lesson_2_difficulty');
 LessonTwo.prototype.otkChallengeStartMessage = i18next.t('tutorial.lesson_2_start_message');
-LessonTwo.prototype.otkChallengeFailureMessages = [
-  i18next.t('tutorial.lesson_2_failure_message'),
-];
+LessonTwo.prototype.otkChallengeFailureMessages = [i18next.t('tutorial.lesson_2_failure_message')];
 LessonTwo.prototype.iconUrl = RSX.speech_portrait_rook.img;
 LessonTwo.prototype._musicOverride = RSX.music_battlemap_songhai.audio;
 LessonTwo.prototype.userIsPlayer1 = false;

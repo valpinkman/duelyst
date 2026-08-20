@@ -24,13 +24,30 @@ class ModifierSecondWind extends Modifier {
 
   static type = 'ModifierSecondWind';
 
-  static createContextObject(attackBuff, maxHPBuff, buffsAreRemovable, buffAppliedName, buffAppliedDescription = null, options) {
-    if (attackBuff == null) { attackBuff = 0; }
-    if (maxHPBuff == null) { maxHPBuff = 0; }
-    if (buffsAreRemovable == null) { buffsAreRemovable = true; }
-    if (buffAppliedName == null) { buffAppliedName = undefined; }
+  static createContextObject(
+    attackBuff,
+    maxHPBuff,
+    buffsAreRemovable,
+    buffAppliedName,
+    buffAppliedDescription = null,
+    options,
+  ) {
+    if (attackBuff == null) {
+      attackBuff = 0;
+    }
+    if (maxHPBuff == null) {
+      maxHPBuff = 0;
+    }
+    if (buffsAreRemovable == null) {
+      buffsAreRemovable = true;
+    }
+    if (buffAppliedName == null) {
+      buffAppliedName = undefined;
+    }
     const contextObject = super.createContextObject(options);
-    if (buffAppliedDescription == null) { buffAppliedDescription = Stringifiers.stringifyAttackHealthBuff(attackBuff, maxHPBuff); }
+    if (buffAppliedDescription == null) {
+      buffAppliedDescription = Stringifiers.stringifyAttackHealthBuff(attackBuff, maxHPBuff);
+    }
     contextObject.modifiersContextObjects = [
       Modifier.createContextObjectWithAttributeBuffs(attackBuff, maxHPBuff, {
         modifierName: this.modifierName,
@@ -54,11 +71,12 @@ class ModifierSecondWind extends Modifier {
   onAfterCleanupAction(event) {
     super.onAfterCleanupAction(event);
 
-    const {
-      action,
-    } = event;
+    const { action } = event;
 
-    if (this.getGameSession().getIsRunningAsAuthoritative() && (this._private.secondWindAtActionIndex === action.getIndex())) {
+    if (
+      this.getGameSession().getIsRunningAsAuthoritative() &&
+      this._private.secondWindAtActionIndex === action.getIndex()
+    ) {
       // after cleaning up action, trigger second wind
       this.onSecondWind(action);
 
@@ -70,15 +88,21 @@ class ModifierSecondWind extends Modifier {
   onValidateAction(event) {
     super.onValidateAction(event);
 
-    const {
-      action,
-    } = event;
+    const { action } = event;
 
     // when our entity would die, invalidate the action until second wind executes
-    if (action instanceof DieAction && (action.getTarget() === this.getCard()) && action.getParentAction() instanceof DamageAction) {
+    if (
+      action instanceof DieAction &&
+      action.getTarget() === this.getCard() &&
+      action.getParentAction() instanceof DamageAction
+    ) {
       // record index of parent action of die action, so we know when to trigger second wind
       this._private.secondWindAtActionIndex = action.getParentAction().getIndex();
-      return this.invalidateAction(action, this.getCard().getPosition(), `${this.getCard().getName()} finds a second wind and avoids death!`);
+      return this.invalidateAction(
+        action,
+        this.getCard().getPosition(),
+        `${this.getCard().getName()} finds a second wind and avoids death!`,
+      );
     }
   }
 
@@ -89,12 +113,11 @@ class ModifierSecondWind extends Modifier {
     this.getCard().silence();
 
     // apply buffs
-    const {
-      modifiersContextObjects,
-    } = this;
-    if ((modifiersContextObjects != null) && (modifiersContextObjects.length > 0)) {
+    const { modifiersContextObjects } = this;
+    if (modifiersContextObjects != null && modifiersContextObjects.length > 0) {
       return Array.from<any>(modifiersContextObjects).map((modifierContextObject) =>
-        this.getGameSession().applyModifierContextObject(modifierContextObject, this.getCard()));
+        this.getGameSession().applyModifierContextObject(modifierContextObject, this.getCard()),
+      );
     }
   }
 }

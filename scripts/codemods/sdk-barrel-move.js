@@ -13,7 +13,13 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOTS = ['app', 'server', 'worker', 'test', 'scripts', 'cli'];
-const SKIP = new Set(['app/vendor', 'app/resources', 'app/original_resources', 'node_modules', 'scripts/codemods']);
+const SKIP = new Set([
+  'app/vendor',
+  'app/resources',
+  'app/original_resources',
+  'node_modules',
+  'scripts/codemods',
+]);
 
 function walk(dir) {
   if (SKIP.has(dir)) return [];
@@ -36,9 +42,15 @@ for (const root of ROOTS) {
     if (file !== 'app/sdk/index.coffee' && /\bSDK\.NetworkManager\b/.test(out)) {
       out = out.replace(/\bSDK\.NetworkManager\b/g, 'NetworkManager');
       if (file.endsWith('.coffee')) {
-        out = out.replace(/^(SDK = .*|SDK = require.*)$/m, '$&\nNetworkManager = require \'app/networkManager\'');
+        out = out.replace(
+          /^(SDK = .*|SDK = require.*)$/m,
+          "$&\nNetworkManager = require 'app/networkManager'",
+        );
       } else {
-        out = out.replace(/^((?:const|var|let) SDK = require\('app\/sdk'\);)$/m, '$1\nconst NetworkManager = require(\'app/networkManager\');');
+        out = out.replace(
+          /^((?:const|var|let) SDK = require\('app\/sdk'\);)$/m,
+          "$1\nconst NetworkManager = require('app/networkManager');",
+        );
       }
     }
     if (out !== src) {

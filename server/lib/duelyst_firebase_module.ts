@@ -4,8 +4,7 @@
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-let error,
-  firebaseServiceAccount;
+let error, firebaseServiceAccount;
 /*
  * firebase-admin 14 is fully modular: the namespaced API this file used to
  * call (firebaseAdmin.credential.cert, firebaseAdmin.database.enableLogging,
@@ -71,17 +70,19 @@ class DuelystFirebaseModule {
   static connect(firebaseUrl) {
     // Check for an existing connection on this URL.
     // TODO: check token expiration, new tokens from callers, etc.
-    if (firebaseUrl == null) { firebaseUrl = defaultFirebaseUrl; }
+    if (firebaseUrl == null) {
+      firebaseUrl = defaultFirebaseUrl;
+    }
     const key = url.format(url.parse(firebaseUrl));
     if (this.apps[key] != null) {
       return this.apps[key];
     }
 
     // Create a new connection.
-    return this.apps[key] = new DuelystFirebaseModule({
+    return (this.apps[key] = new DuelystFirebaseModule({
       key,
       firebaseUrl,
-    });
+    }));
   }
 
   // Gracefully disconnect from Firebase.
@@ -125,10 +126,13 @@ class DuelystFirebaseModule {
       }
 
       try {
-        const app = initializeApp({
-          credential: cert(firebaseServiceAccount),
-          databaseURL: this.firebaseUrl,
-        }, this.firebaseUrl);
+        const app = initializeApp(
+          {
+            credential: cert(firebaseServiceAccount),
+            databaseURL: this.firebaseUrl,
+          },
+          this.firebaseUrl,
+        );
 
         // Initialize the database before resolving.
         const db = getDatabase(app);
@@ -159,21 +163,21 @@ class DuelystFirebaseModule {
    * Reuses the existing app so the credential is initialised exactly once.
    */
   static createCustomToken(userId, claims, firebaseUrl) {
-    return this.connect(firebaseUrl).promise
-      .then((app) => getAuth(app).createCustomToken(userId, claims));
+    return this.connect(firebaseUrl).promise.then((app) =>
+      getAuth(app).createCustomToken(userId, claims),
+    );
   }
 
   // Returns a Promise with the Firebase root reference
   getRootRef() {
-    return this.promise
-      .then(function (app) {
-        try {
-          const db = getDatabase(app);
-          return db.ref();
-        } catch (e) {
-          return Logger.module('Firebase').error(`failed to get ref: ${e.toString()}`);
-        }
-      });
+    return this.promise.then(function (app) {
+      try {
+        const db = getDatabase(app);
+        return db.ref();
+      } catch (e) {
+        return Logger.module('Firebase').error(`failed to get ref: ${e.toString()}`);
+      }
+    });
   }
 }
 

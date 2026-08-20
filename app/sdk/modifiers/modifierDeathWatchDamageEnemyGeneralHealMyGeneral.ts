@@ -18,8 +18,12 @@ class ModifierDeathWatchDamageEnemyGeneralHealMyGeneral extends ModifierDeathWat
   static description = 'Deal %X damage to the enemy General, and restore %Y Health to your General';
 
   static createContextObject(damageAmount, healAmount, options) {
-    if (damageAmount == null) { damageAmount = 1; }
-    if (healAmount == null) { healAmount = 1; }
+    if (damageAmount == null) {
+      damageAmount = 1;
+    }
+    if (healAmount == null) {
+      healAmount = 1;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.damageAmount = damageAmount;
     contextObject.healAmount = healAmount;
@@ -36,7 +40,9 @@ class ModifierDeathWatchDamageEnemyGeneralHealMyGeneral extends ModifierDeathWat
 
   onDeathWatch(action) {
     // damage enemy General
-    const general = this.getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
+    const general = this.getGameSession().getGeneralForOpponentOfPlayerId(
+      this.getCard().getOwnerId(),
+    );
     if (general != null) {
       const damageAction = new DamageAction(this.getGameSession());
       damageAction.setOwnerId(this.getCard().getOwnerId());
@@ -51,7 +57,9 @@ class ModifierDeathWatchDamageEnemyGeneralHealMyGeneral extends ModifierDeathWat
     }
 
     // heal my General
-    const myGeneral = this.getCard().getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
+    const myGeneral = this.getCard()
+      .getGameSession()
+      .getGeneralForPlayerId(this.getCard().getOwnerId());
     if (myGeneral != null) {
       const healAction = new HealAction(this.getGameSession());
       healAction.setOwnerId(this.getCard().getOwnerId());
@@ -61,8 +69,12 @@ class ModifierDeathWatchDamageEnemyGeneralHealMyGeneral extends ModifierDeathWat
     }
   }
 }
-ModifierDeathWatchDamageEnemyGeneralHealMyGeneral.prototype.type = 'ModifierDeathWatchDamageEnemyGeneral';
+ModifierDeathWatchDamageEnemyGeneralHealMyGeneral.prototype.type =
+  'ModifierDeathWatchDamageEnemyGeneral';
 ModifierDeathWatchDamageEnemyGeneralHealMyGeneral.prototype.damageAmount = 0;
-ModifierDeathWatchDamageEnemyGeneralHealMyGeneral.prototype.fxResource = ['FX.Modifiers.ModifierDeathwatch', 'FX.Modifiers.ModifierGenericChain'];
+ModifierDeathWatchDamageEnemyGeneralHealMyGeneral.prototype.fxResource = [
+  'FX.Modifiers.ModifierDeathwatch',
+  'FX.Modifiers.ModifierGenericChain',
+];
 
 module.exports = ModifierDeathWatchDamageEnemyGeneralHealMyGeneral;

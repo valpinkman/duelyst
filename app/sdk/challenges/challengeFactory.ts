@@ -77,7 +77,10 @@ class ChallengeFactory {
     }
 
     // Find any matching tutorial lesson
-    const matchingTutorialChallenge = _.find(this.getAllChallenges(), (challenge) => challenge.type === type);
+    const matchingTutorialChallenge = _.find(
+      this.getAllChallenges(),
+      (challenge) => challenge.type === type,
+    );
     if (matchingTutorialChallenge != null) {
       return matchingTutorialChallenge;
     }
@@ -167,7 +170,15 @@ class ChallengeFactory {
   static getAllChallengeCategories() {
     // TODO: kv search over cats
     // return [ChallengeCategory.tutorial, ChallengeCategory.keywords, ChallengeCategory.beginner2, ChallengeCategory.starter, ChallengeCategory.beginner, ChallengeCategory.advanced, ChallengeCategory.expert, ChallengeCategory.vault1, ChallengeCategory.vault2, ChallengeCategory.contest1, ChallengeCategory.contest2]
-    return [ChallengeCategory.tutorial, ChallengeCategory.keywords, ChallengeCategory.beginner2, ChallengeCategory.starter, ChallengeCategory.beginner, ChallengeCategory.advanced, ChallengeCategory.expert];
+    return [
+      ChallengeCategory.tutorial,
+      ChallengeCategory.keywords,
+      ChallengeCategory.beginner2,
+      ChallengeCategory.starter,
+      ChallengeCategory.beginner,
+      ChallengeCategory.advanced,
+      ChallengeCategory.expert,
+    ];
   }
 
   static getCategoryForType(categoryType) {
@@ -264,7 +275,7 @@ class ChallengeFactory {
 
     this._challengeGoldRewards[AdvancedAbyssianChallenge1.type] = 5;
     this._challengeGoldRewards[AdvancedMagmarChallenge1.type] = 5;
-    return this._challengeGoldRewards[AdvancedVanarChallenge1.type] = 5;
+    return (this._challengeGoldRewards[AdvancedVanarChallenge1.type] = 5);
   }
 
   static getCardIdsRewardedForChallengeType(type) {

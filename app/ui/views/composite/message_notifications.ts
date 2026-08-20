@@ -9,7 +9,6 @@ var BuddiesLayout = require('../layouts/buddies');
 var NotificationsCompositeView = require('./notifications');
 
 var MessageNotificationsView = NotificationsCompositeView.extend({
-
   id: 'app-message-notifications',
 
   childView: MessageItemView,
@@ -26,18 +25,27 @@ var MessageNotificationsView = NotificationsCompositeView.extend({
     }
 
     // dismiss after short delay
-    setTimeout(function () {
-      childView.$el.fadeOut(CONFIG.QUEST_NOTIFICATION_FADE_DURATION * 1000.0, function () {
-        NotificationsManager.getInstance().dismissNotification(childView.model);
-      }.bind(this));
-    }.bind(this), CONFIG.BUDDY_MESSAGES_PREVIEW_DURATION * 1000.0);
+    setTimeout(
+      function () {
+        childView.$el.fadeOut(
+          CONFIG.QUEST_NOTIFICATION_FADE_DURATION * 1000.0,
+          function () {
+            NotificationsManager.getInstance().dismissNotification(childView.model);
+          }.bind(this),
+        );
+      }.bind(this),
+      CONFIG.BUDDY_MESSAGES_PREVIEW_DURATION * 1000.0,
+    );
 
     // Play a sound effect when showing a new message notification
     if (this._throttledNotificationSFXPlay == null) {
       // Deferrted creation of a throttled sfx player
-      this._throttledNotificationSFXPlay = _.throttle(function (sfxAudio) {
-        audio_engine.current().play_effect(sfxAudio, false);
-      }.bind(this), CONFIG.INCOMING_MESSAGE_SFX_DELAY * 1000.0);
+      this._throttledNotificationSFXPlay = _.throttle(
+        function (sfxAudio) {
+          audio_engine.current().play_effect(sfxAudio, false);
+        }.bind(this),
+        CONFIG.INCOMING_MESSAGE_SFX_DELAY * 1000.0,
+      );
     }
     if (childView && childView.model && childView.model.get('audio')) {
       this._throttledNotificationSFXPlay(childView.model.get('audio'));
@@ -50,7 +58,6 @@ var MessageNotificationsView = NotificationsCompositeView.extend({
     var buddiesLayout = NavigationManager.getInstance().getModalView();
     buddiesLayout.selectBuddy(message.get('fromId'));
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

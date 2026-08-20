@@ -1,8 +1,6 @@
 const express = require('express');
 const { expressjwt } = require('express-jwt');
-const {
-  compose,
-} = require('compose-middleware');
+const { compose } = require('compose-middleware');
 const t = require('tcomb-validation');
 const validators = require('../validators');
 const config = require('../../config/config');

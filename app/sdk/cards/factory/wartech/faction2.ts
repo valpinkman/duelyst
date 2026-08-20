@@ -120,11 +120,20 @@ class CardFactory_WartechSet_Faction2 {
       card.maxHP = 7;
       card.manaCost = 7;
       card.rarityId = Rarity.Legendary;
-      const contextObject = PlayerModifierManaModifier.createCostChangeContextObject(-2, CardType.Spell);
-      contextObject.activeInHand = (contextObject.activeInDeck = (contextObject.activeInSignatureCards = false));
-      contextObject.activeOnBoard = (contextObject.auraIncludeSignatureCards = true);
+      const contextObject = PlayerModifierManaModifier.createCostChangeContextObject(
+        -2,
+        CardType.Spell,
+      );
+      contextObject.activeInHand =
+        contextObject.activeInDeck =
+        contextObject.activeInSignatureCards =
+          false;
+      contextObject.activeOnBoard = contextObject.auraIncludeSignatureCards = true;
       card.setInherentModifiersContextObjects([
-        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetOwnPlayer([contextObject], i18next.t('cards.faction_2_unit_second_sword_sarugi_desc')),
+        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetOwnPlayer(
+          [contextObject],
+          i18next.t('cards.faction_2_unit_second_sword_sarugi_desc'),
+        ),
       ]);
       card.setFXResource(['FX.Cards.Neutral.Eclipse']);
       card.setBaseSoundResource({
@@ -157,9 +166,7 @@ class CardFactory_WartechSet_Faction2 {
       card.manaCost = 6;
       card.rarityId = Rarity.Rare;
       card.durability = 3;
-      card.setTargetModifiersContextObjects([
-        ModifierSpellWatchDrawCard.createContextObject(),
-      ]);
+      card.setTargetModifiersContextObjects([ModifierSpellWatchDrawCard.createContextObject()]);
       card.setFXResource(['FX.Cards.Artifact.OrnateHiogi']);
       card.setBaseAnimResource({
         idle: RSX.iconOrnateHiogiIdle.name,
@@ -274,11 +281,18 @@ class CardFactory_WartechSet_Faction2 {
       card.manaCost = 4;
       card.rarityId = Rarity.Common;
       buildData = { id: Cards.Faction2.ManakiteBuilding };
-      if (buildData.additionalInherentModifiersContextObjects == null) { buildData.additionalInherentModifiersContextObjects = []; }
-      buildData.additionalInherentModifiersContextObjects.push(ModifierBuildCompleteGainTempMana.createContextObject(2, 'Builds into Manakite Drifter after 2 turns (this cannot be dispelled).', { id: Cards.Faction2.ManakiteDrifter }, 2));
-      card.setInherentModifiersContextObjects([
-        ModifierBuild.createContextObject(buildData),
-      ]);
+      if (buildData.additionalInherentModifiersContextObjects == null) {
+        buildData.additionalInherentModifiersContextObjects = [];
+      }
+      buildData.additionalInherentModifiersContextObjects.push(
+        ModifierBuildCompleteGainTempMana.createContextObject(
+          2,
+          'Builds into Manakite Drifter after 2 turns (this cannot be dispelled).',
+          { id: Cards.Faction2.ManakiteDrifter },
+          2,
+        ),
+      );
+      card.setInherentModifiersContextObjects([ModifierBuild.createContextObject(buildData)]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
       card.setFXResource(['FX.Cards.Neutral.DustWailer']);
       card.setBoundingBoxWidth(60);
@@ -314,12 +328,23 @@ class CardFactory_WartechSet_Faction2 {
       card.manaCost = 3;
       card.rarityId = Rarity.Legendary;
       buildData = { id: Cards.Faction2.PenumbraxxBuilding };
-      if (buildData.additionalInherentModifiersContextObjects == null) { buildData.additionalInherentModifiersContextObjects = []; }
-      buildData.additionalInherentModifiersContextObjects.push(ModifierBuilding.createContextObject('Builds into Penumbraxx after 2 turns (this cannot be dispelled).', { id: Cards.Faction2.Penumbraxx }, 2));
+      if (buildData.additionalInherentModifiersContextObjects == null) {
+        buildData.additionalInherentModifiersContextObjects = [];
+      }
+      buildData.additionalInherentModifiersContextObjects.push(
+        ModifierBuilding.createContextObject(
+          'Builds into Penumbraxx after 2 turns (this cannot be dispelled).',
+          { id: Cards.Faction2.Penumbraxx },
+          2,
+        ),
+      );
       card.setInherentModifiersContextObjects([
         ModifierBuild.createContextObject(buildData),
         ModifierBackstab.createContextObject(2),
-        ModifierBackstabWatchTransformToBuilding.createContextObject({ id: Cards.Faction2.PenumbraxxBuilding }, 'Builds into Penumbraxx after 1 turn (this cannot be dispelled).'),
+        ModifierBackstabWatchTransformToBuilding.createContextObject(
+          { id: Cards.Faction2.PenumbraxxBuilding },
+          'Builds into Penumbraxx after 1 turn (this cannot be dispelled).',
+        ),
       ]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
       card.setFXResource(['FX.Cards.Neutral.VoidHunter']);
@@ -537,10 +562,14 @@ class CardFactory_WartechSet_Faction2 {
       card.manaCost = 0;
       card.spellFilterType = SpellFilterType.None;
       card.applyToOwnGeneral = true;
-      card.setFollowups([{
-        id: Cards.Spell.DeployMechaz0r,
-      }]);
-      card.setTargetModifiersContextObjects([PlayerModifierMechazorBuildProgress.createContextObject()]);
+      card.setFollowups([
+        {
+          id: Cards.Spell.DeployMechaz0r,
+        },
+      ]);
+      card.setTargetModifiersContextObjects([
+        PlayerModifierMechazorBuildProgress.createContextObject(),
+      ]);
       card.setFXResource(['FX.Cards.Spell.MechProgress']);
       card.setBaseAnimResource({
         idle: RSX.iconMechProgressIdle.name,

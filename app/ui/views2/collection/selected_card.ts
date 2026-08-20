@@ -14,7 +14,6 @@ var CollectionCardCompositeView = require('./collection_card');
 var SelectedCardLayoutTempl = require('./templates/selected_card.hbs');
 
 var SelectedCardLayout = Backbone.Marionette.LayoutView.extend({
-
   _startOffset: null,
   _animateDuration: CONFIG.ANIMATE_MEDIUM_DURATION * 1000.0,
 
@@ -65,7 +64,9 @@ var SelectedCardLayout = Backbone.Marionette.LayoutView.extend({
     this.cardRegion.show(this.cardView);
 
     // play sfx for show
-    audio_engine.current().play_effect_for_interaction(RSX.sfx_collection_next.audio, CONFIG.SHOW_SFX_PRIORITY);
+    audio_engine
+      .current()
+      .play_effect_for_interaction(RSX.sfx_collection_next.audio, CONFIG.SHOW_SFX_PRIORITY);
 
     // check for card lore
     var baseCardId = this.model.get('baseCardId');
@@ -85,10 +86,11 @@ var SelectedCardLayout = Backbone.Marionette.LayoutView.extend({
   },
 
   onClick: function () {
-    audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_cancel.audio, CONFIG.HIDE_SFX_PRIORITY);
+    audio_engine
+      .current()
+      .play_effect_for_interaction(RSX.sfx_ui_cancel.audio, CONFIG.HIDE_SFX_PRIORITY);
     this.trigger('close');
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

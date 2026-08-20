@@ -18,7 +18,10 @@ class PlaySignatureCardAction extends PlayCardAction {
 
   getManaCost() {
     const card = this.getCard();
-    if (card != null) { return card.getManaCost(); } return super.getManaCost();
+    if (card != null) {
+      return card.getManaCost();
+    }
+    return super.getManaCost();
   }
 
   _execute() {
@@ -38,5 +41,5 @@ class PlaySignatureCardAction extends PlayCardAction {
 module.exports = PlaySignatureCardAction;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

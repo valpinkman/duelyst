@@ -22,7 +22,14 @@ class SpellShadowspawn extends SpellSpawnEntity {
     const numberOfApplyPositions = this.numUnits;
 
     if (numberOfApplyPositions > 0) {
-      applyEffectPositions = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(this.getGameSession(), generalPosition, CONFIG.PATTERN_3x3, card, this, numberOfApplyPositions);
+      applyEffectPositions = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(
+        this.getGameSession(),
+        generalPosition,
+        CONFIG.PATTERN_3x3,
+        card,
+        this,
+        numberOfApplyPositions,
+      );
     } else {
       applyEffectPositions = [];
     }

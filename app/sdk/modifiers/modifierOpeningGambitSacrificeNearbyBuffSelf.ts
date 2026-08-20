@@ -31,11 +31,20 @@ class ModifierOpeningGambitSacrificeNearbyBuffSelf extends ModifierOpeningGambit
   }
 
   static createContextObject(attackBuff, maxHPBuff, options) {
-    if (attackBuff == null) { attackBuff = 0; }
-    if (maxHPBuff == null) { maxHPBuff = 0; }
-    if (options == null) { options = undefined; }
+    if (attackBuff == null) {
+      attackBuff = 0;
+    }
+    if (maxHPBuff == null) {
+      maxHPBuff = 0;
+    }
+    if (options == null) {
+      options = undefined;
+    }
     const contextObject = super.createContextObject(options);
-    const statBuffContextObject = Modifier.createContextObjectWithAttributeBuffs(attackBuff, maxHPBuff);
+    const statBuffContextObject = Modifier.createContextObjectWithAttributeBuffs(
+      attackBuff,
+      maxHPBuff,
+    );
     statBuffContextObject.appliedName = 'Consumed Strength';
     contextObject.modifiersContextObjects = [statBuffContextObject];
     return contextObject;
@@ -44,7 +53,13 @@ class ModifierOpeningGambitSacrificeNearbyBuffSelf extends ModifierOpeningGambit
   static getDescription(modifierContextObject) {
     if (modifierContextObject) {
       const subContextObject = modifierContextObject.modifiersContextObjects[0];
-      return this.description.replace(/%X/, Stringifiers.stringifyAttackHealthBuff(subContextObject.attributeBuffs.atk, subContextObject.attributeBuffs.maxHP));
+      return this.description.replace(
+        /%X/,
+        Stringifiers.stringifyAttackHealthBuff(
+          subContextObject.attributeBuffs.atk,
+          subContextObject.attributeBuffs.maxHP,
+        ),
+      );
     }
     return this.description;
   }
@@ -52,13 +67,16 @@ class ModifierOpeningGambitSacrificeNearbyBuffSelf extends ModifierOpeningGambit
   applyManagedModifiersFromModifiersContextObjects(modifiersContextObjects, card) {
     // apply once per sacrifice
     return __range__(0, this._private.numSacrificed, false).map((i) =>
-      super.applyManagedModifiersFromModifiersContextObjects(modifiersContextObjects, card));
+      super.applyManagedModifiersFromModifiersContextObjects(modifiersContextObjects, card),
+    );
   }
 
   onOpeningGambit() {
     super.onOpeningGambit();
 
-    const entities = this.getGameSession().getBoard().getFriendlyEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
+    const entities = this.getGameSession()
+      .getBoard()
+      .getFriendlyEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
     for (var entity of Array.from<any>(entities)) {
       // don't kill general
       if (!entity.getIsGeneral()) {
@@ -71,13 +89,20 @@ class ModifierOpeningGambitSacrificeNearbyBuffSelf extends ModifierOpeningGambit
       }
     }
 
-    return this.applyManagedModifiersFromModifiersContextObjects(this.modifiersContextObjects, this.getCard());
+    return this.applyManagedModifiersFromModifiersContextObjects(
+      this.modifiersContextObjects,
+      this.getCard(),
+    );
   }
 }
-ModifierOpeningGambitSacrificeNearbyBuffSelf.prototype.type = 'ModifierOpeningGambitSacrificeNearbyBuffSelf';
+ModifierOpeningGambitSacrificeNearbyBuffSelf.prototype.type =
+  'ModifierOpeningGambitSacrificeNearbyBuffSelf';
 ModifierOpeningGambitSacrificeNearbyBuffSelf.prototype.targetEnemies = false;
 ModifierOpeningGambitSacrificeNearbyBuffSelf.prototype.targetAllies = true;
-ModifierOpeningGambitSacrificeNearbyBuffSelf.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericDamageNearbyShadow'];
+ModifierOpeningGambitSacrificeNearbyBuffSelf.prototype.fxResource = [
+  'FX.Modifiers.ModifierOpeningGambit',
+  'FX.Modifiers.ModifierGenericDamageNearbyShadow',
+];
 
 module.exports = ModifierOpeningGambitSacrificeNearbyBuffSelf;
 

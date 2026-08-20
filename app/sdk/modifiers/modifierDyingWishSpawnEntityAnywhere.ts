@@ -24,8 +24,12 @@ class ModifierDyingWishSpawnEntityAnywhere extends ModifierDyingWish {
   static type = 'ModifierDyingWishSpawnEntityAnywhere';
 
   static createContextObject(cardDataOrIndexToSpawn, spawnCount, spawnSilently, options) {
-    if (spawnCount == null) { spawnCount = 1; }
-    if (spawnSilently == null) { spawnSilently = true; }
+    if (spawnCount == null) {
+      spawnCount = 1;
+    }
+    if (spawnSilently == null) {
+      spawnSilently = true;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.cardDataOrIndexToSpawn = cardDataOrIndexToSpawn;
     contextObject.spawnCount = spawnCount;
@@ -38,19 +42,42 @@ class ModifierDyingWishSpawnEntityAnywhere extends ModifierDyingWish {
 
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
       const wholeBoardPattern = CONFIG.ALL_BOARD_POSITIONS;
-      const card = this.getGameSession().getExistingCardFromIndexOrCachedCardFromData(this.cardDataOrIndexToSpawn);
+      const card = this.getGameSession().getExistingCardFromIndexOrCachedCardFromData(
+        this.cardDataOrIndexToSpawn,
+      );
       const thisEntityPosition = this.getCard().getPosition();
-      const validPositions = _.reject(wholeBoardPattern, (position) => UtilsPosition.getPositionsAreEqual(position, thisEntityPosition));
-      const spawnLocations = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(this.getGameSession(), { x: 0, y: 0 }, validPositions, card, this.getCard(), this.spawnCount);
+      const validPositions = _.reject(wholeBoardPattern, (position) =>
+        UtilsPosition.getPositionsAreEqual(position, thisEntityPosition),
+      );
+      const spawnLocations = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(
+        this.getGameSession(),
+        { x: 0, y: 0 },
+        validPositions,
+        card,
+        this.getCard(),
+        this.spawnCount,
+      );
 
       return (() => {
         const result = [];
         for (var position of Array.from<any>(spawnLocations)) {
           var playCardAction;
           if (!this.spawnSilently) {
-            playCardAction = new PlayCardAction(this.getGameSession(), this.getCard().getOwnerId(), position.x, position.y, this.cardDataOrIndexToSpawn);
+            playCardAction = new PlayCardAction(
+              this.getGameSession(),
+              this.getCard().getOwnerId(),
+              position.x,
+              position.y,
+              this.cardDataOrIndexToSpawn,
+            );
           } else {
-            playCardAction = new PlayCardSilentlyAction(this.getGameSession(), this.getCard().getOwnerId(), position.x, position.y, this.cardDataOrIndexToSpawn);
+            playCardAction = new PlayCardSilentlyAction(
+              this.getGameSession(),
+              this.getCard().getOwnerId(),
+              position.x,
+              position.y,
+              this.cardDataOrIndexToSpawn,
+            );
           }
           playCardAction.setSource(this.getCard());
           result.push(this.getGameSession().executeAction(playCardAction));
@@ -61,7 +88,10 @@ class ModifierDyingWishSpawnEntityAnywhere extends ModifierDyingWish {
   }
 }
 ModifierDyingWishSpawnEntityAnywhere.prototype.type = 'ModifierDyingWishSpawnEntityAnywhere';
-ModifierDyingWishSpawnEntityAnywhere.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericSpawn'];
+ModifierDyingWishSpawnEntityAnywhere.prototype.fxResource = [
+  'FX.Modifiers.ModifierDyingWish',
+  'FX.Modifiers.ModifierGenericSpawn',
+];
 ModifierDyingWishSpawnEntityAnywhere.prototype.cardDataOrIndexToSpawn = null;
 ModifierDyingWishSpawnEntityAnywhere.prototype.spawnCount = 1;
 ModifierDyingWishSpawnEntityAnywhere.prototype.spawnSilently = true;

@@ -14,7 +14,11 @@ const ScoreForUnitTeleportDestination = require('../base/unit_teleport_destinati
  * @static
  * @public
  */
-const getScoreForTeleportDestinationFromCardWithIntentToCard = function (card, intent, targetPosition) {
+const getScoreForTeleportDestinationFromCardWithIntentToCard = function (
+  card,
+  intent,
+  targetPosition,
+) {
   let score = 0;
   const teleportDestinationCard = intent.cardId || null;
   if (targetPosition != null && teleportDestinationCard != null) {
@@ -35,7 +39,10 @@ const getScoreForTeleportDestinationFromCardWithIntentToCard = function (card, i
 const ScoreForIntentTeleportDestination = function (card, targetPosition, cardIntents) {
   let score = 0;
   const cardId = card.getBaseCardId();
-  const validIntents = cardIntents != null ? CardIntent.filterIntentsByIntentType(cardIntents, CardIntentType.TeleportDestination) : CardIntent.getIntentsByIntentType(cardId, CardIntentType.TeleportDestination);
+  const validIntents =
+    cardIntents != null
+      ? CardIntent.filterIntentsByIntentType(cardIntents, CardIntentType.TeleportDestination)
+      : CardIntent.getIntentsByIntentType(cardId, CardIntentType.TeleportDestination);
 
   _.each(validIntents, (intent) => {
     // let cards = CardIntent.getCardsTargetedByCardWithIntent(card, intent, targetPosition);

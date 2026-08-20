@@ -119,7 +119,9 @@ class CardFactory_WartechSet_Faction3 {
       speedBuffContextObject.attributeBuffsAbsolute = ['speed'];
       speedBuffContextObject.attributeBuffsFixed = ['speed'];
       speedBuffContextObject.appliedName = i18next.t('modifiers.faction_3_kinematic_projection_1');
-      speedBuffContextObject.appliedDescription = i18next.t('modifiers.faction_3_kinematic_projection_2');
+      speedBuffContextObject.appliedDescription = i18next.t(
+        'modifiers.faction_3_kinematic_projection_2',
+      );
       card.setTargetModifiersContextObjects([
         ModifierBlastAttack.createContextObject(),
         speedBuffContextObject,
@@ -217,8 +219,16 @@ class CardFactory_WartechSet_Faction3 {
       card.manaCost = 4;
       card.rarityId = Rarity.Common;
       buildData = { id: Cards.Faction3.ShrikeBuilding };
-      if (buildData.additionalInherentModifiersContextObjects == null) { buildData.additionalInherentModifiersContextObjects = []; }
-      buildData.additionalInherentModifiersContextObjects.push(ModifierBuilding.createContextObject('Builds into Barren Shrike after 2 turns (this cannot be dispelled).', { id: Cards.Faction3.BarrenShrike }, 2));
+      if (buildData.additionalInherentModifiersContextObjects == null) {
+        buildData.additionalInherentModifiersContextObjects = [];
+      }
+      buildData.additionalInherentModifiersContextObjects.push(
+        ModifierBuilding.createContextObject(
+          'Builds into Barren Shrike after 2 turns (this cannot be dispelled).',
+          { id: Cards.Faction3.BarrenShrike },
+          2,
+        ),
+      );
       card.setInherentModifiersContextObjects([
         ModifierBlastAttack.createContextObject(),
         ModifierBuild.createContextObject(buildData),
@@ -262,9 +272,7 @@ class CardFactory_WartechSet_Faction3 {
         ModifierOpeningGambitApplyMechazorPlayerModifiers.createContextObject(2),
       ]);
       card.addKeywordClassToInclude(PlayerModifierMechazorBuildProgress);
-      card.setFollowups([
-        { id: Cards.Spell.DeployMechaz0r },
-      ]);
+      card.setFollowups([{ id: Cards.Spell.DeployMechaz0r }]);
       card.setFXResource(['FX.Cards.Neutral.SilicaWeaver']);
       card.setBaseSoundResource({
         apply: RSX.sfx_unit_deploy.audio,
@@ -493,10 +501,16 @@ class CardFactory_WartechSet_Faction3 {
       card.maxHP = 7;
       card.manaCost = 3;
       card.rarityId = Rarity.Legendary;
-      const buildingModifier = ModifierBuildCompleteReplicateAndSummonDervish.createContextObject('Builds into Simulacra Obelysk after 2 turns (this cannot be dispelled).', { id: Cards.Faction3.SimulacraObelysk }, 2);
+      const buildingModifier = ModifierBuildCompleteReplicateAndSummonDervish.createContextObject(
+        'Builds into Simulacra Obelysk after 2 turns (this cannot be dispelled).',
+        { id: Cards.Faction3.SimulacraObelysk },
+        2,
+      );
       buildingModifier.buildingMinion = { id: Cards.Faction3.SimulacraBuilding };
       buildData = { id: Cards.Faction3.SimulacraBuilding };
-      if (buildData.additionalInherentModifiersContextObjects == null) { buildData.additionalInherentModifiersContextObjects = []; }
+      if (buildData.additionalInherentModifiersContextObjects == null) {
+        buildData.additionalInherentModifiersContextObjects = [];
+      }
       buildData.additionalInherentModifiersContextObjects.push(buildingModifier);
       card.setInherentModifiersContextObjects([
         ModifierStartTurnWatchSummonDervish.createContextObject(),

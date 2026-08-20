@@ -20,10 +20,19 @@ class ModifierImmuneToSpellDamage extends ModifierImmuneToDamage {
   static type = 'ModifierImmuneToSpellDamage';
 
   getIsActionRelevant(a) {
-    if ((this.getCard() != null) && a instanceof DamageAction && (this.getCard() === a.getTarget()) && !a.getCreatedByTriggeringModifier() && (__guard__(a.getSource(), (x) => x.getType()) === CardType.Spell)) {
+    if (
+      this.getCard() != null &&
+      a instanceof DamageAction &&
+      this.getCard() === a.getTarget() &&
+      !a.getCreatedByTriggeringModifier() &&
+      __guard__(a.getSource(), (x) => x.getType()) === CardType.Spell
+    ) {
       const rootAction = a.getRootAction();
       // this action was not triggered by a modifier, but was it caused by a spell cast?
-      if (rootAction instanceof ApplyCardToBoardAction && (__guard__(rootAction.getCard().getRootCard(), (x1) => x1.getType()) === CardType.Spell)) {
+      if (
+        rootAction instanceof ApplyCardToBoardAction &&
+        __guard__(rootAction.getCard().getRootCard(), (x1) => x1.getType()) === CardType.Spell
+      ) {
         return true;
       }
     }
@@ -33,10 +42,13 @@ class ModifierImmuneToSpellDamage extends ModifierImmuneToDamage {
 ModifierImmuneToSpellDamage.prototype.type = 'ModifierImmuneToSpellDamage';
 ModifierImmuneToSpellDamage.modifierName = i18next.t('modifiers.immune_to_spell_damage_name');
 ModifierImmuneToSpellDamage.description = i18next.t('modifiers.immune_to_spell_damage_def');
-ModifierImmuneToSpellDamage.prototype.fxResource = ['FX.Modifiers.ModifierImmunity', 'FX.Modifiers.ModifierImmunitySpell'];
+ModifierImmuneToSpellDamage.prototype.fxResource = [
+  'FX.Modifiers.ModifierImmunity',
+  'FX.Modifiers.ModifierImmunitySpell',
+];
 
 module.exports = ModifierImmuneToSpellDamage;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

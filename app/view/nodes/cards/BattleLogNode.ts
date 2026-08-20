@@ -16,7 +16,6 @@ const BaseSprite = require('../BaseSprite');
  ************************************************************************** */
 
 const BattleLogNode = SdkNode.extend({
-
   step: null,
   cardSprite: null,
   bgSprite: null,
@@ -86,7 +85,8 @@ const BattleLogNode = SdkNode.extend({
 
         // set options
         const cardOptions = _.extend({}, sdkCard.getCardOptions());
-        cardOptions.spriteIdentifier = sdkCard.getBaseAnimResource() && sdkCard.getBaseAnimResource().idle;
+        cardOptions.spriteIdentifier =
+          sdkCard.getBaseAnimResource() && sdkCard.getBaseAnimResource().idle;
         cardOptions.antiAlias = false;
 
         this.whenResourcesReady(this.getCardResourceRequestId()).then((cardResourceRequestId) => {
@@ -155,7 +155,10 @@ const BattleLogNode = SdkNode.extend({
 
         // set sdk card
         let sdkCard;
-        if (action instanceof SDK.PlayCardFromHandAction || action instanceof SDK.PlaySignatureCardAction) {
+        if (
+          action instanceof SDK.PlayCardFromHandAction ||
+          action instanceof SDK.PlaySignatureCardAction
+        ) {
           sdkCard = action.getCard();
         } else if (action instanceof SDK.MoveAction) {
           sdkCard = action.getSource();
@@ -244,7 +247,10 @@ const BattleLogNode = SdkNode.extend({
         const action = this.step.getAction();
 
         // show by type
-        if (action instanceof SDK.PlayCardFromHandAction || action instanceof SDK.PlaySignatureCardAction) {
+        if (
+          action instanceof SDK.PlayCardFromHandAction ||
+          action instanceof SDK.PlaySignatureCardAction
+        ) {
           // show inspect
           const sdkCard = this.getSdkCard();
           if (sdkCard != null) {
@@ -300,9 +306,21 @@ const BattleLogNode = SdkNode.extend({
           const tileBoardPath = action.getPath();
           gameLayer.getAltPlayer().showTilePath(tileBoardPath, true);
         } else if (action instanceof SDK.AttackAction) {
-          const directScreenPath = [UtilsEngine.transformBoardToTileMap(action.getSourcePosition()), UtilsEngine.transformBoardToTileMap(action.getTargetPosition())];
+          const directScreenPath = [
+            UtilsEngine.transformBoardToTileMap(action.getSourcePosition()),
+            UtilsEngine.transformBoardToTileMap(action.getTargetPosition()),
+          ];
           gameLayer.getAltPlayer().showDirectPath(directScreenPath, true);
-          gameLayer.getAltPlayer().showTargetTile(UtilsEngine.transformTileMapToScreen(directScreenPath[directScreenPath.length - 1]), false, CONFIG.TARGET_ACTIVE_OPACITY, CONFIG.FADE_FAST_DURATION, CONFIG.AGGRO_OPPONENT_COLOR, RSX.tile_attack.frame);
+          gameLayer
+            .getAltPlayer()
+            .showTargetTile(
+              UtilsEngine.transformTileMapToScreen(directScreenPath[directScreenPath.length - 1]),
+              false,
+              CONFIG.TARGET_ACTIVE_OPACITY,
+              CONFIG.FADE_FAST_DURATION,
+              CONFIG.AGGRO_OPPONENT_COLOR,
+              RSX.tile_attack.frame,
+            );
         }
       }
     }
@@ -342,7 +360,10 @@ const BattleLogNode = SdkNode.extend({
       this.stopAnimations();
 
       // show animation
-      const sourceScreenPosition = cc.p(targetScreenPosition.x, targetScreenPosition.y + CONFIG.BATTLELOG_ENTRY_SIZE * 0.5);
+      const sourceScreenPosition = cc.p(
+        targetScreenPosition.x,
+        targetScreenPosition.y + CONFIG.BATTLELOG_ENTRY_SIZE * 0.5,
+      );
       this.setPosition(sourceScreenPosition);
       this.setOpacity(0.0);
       const animationAction = cc.sequence(
@@ -365,7 +386,10 @@ const BattleLogNode = SdkNode.extend({
       this.stopAnimations();
 
       // show animation
-      const targetScreenPosition = cc.p(sourceScreenPosition.x, sourceScreenPosition.y - CONFIG.BATTLELOG_ENTRY_SIZE * 0.5);
+      const targetScreenPosition = cc.p(
+        sourceScreenPosition.x,
+        sourceScreenPosition.y - CONFIG.BATTLELOG_ENTRY_SIZE * 0.5,
+      );
       const animationAction = cc.sequence(
         cc.spawn(
           cc.fadeOut(CONFIG.FADE_FAST_DURATION),
@@ -399,7 +423,6 @@ const BattleLogNode = SdkNode.extend({
   },
 
   /* endregion ANIMATION */
-
 });
 
 BattleLogNode.create = function (step, node) {

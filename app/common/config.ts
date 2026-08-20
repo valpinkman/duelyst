@@ -46,7 +46,8 @@ CONFIG.RESOLUTION_AUTO = 1;
 CONFIG.RESOLUTION_EXACT = 2;
 CONFIG.RESOLUTION_PIXEL_PERFECT = 9999;
 CONFIG.RESOLUTION_DEFAULT = CONFIG.RESOLUTION_AUTO;
-CONFIG.RESOLUTIONS = [ // TODO: localize
+CONFIG.RESOLUTIONS = [
+  // TODO: localize
   { value: CONFIG.RESOLUTION_AUTO, description: 'settings.best_fit', selected: true },
   { value: CONFIG.RESOLUTION_EXACT, description: 'settings.tightest_fit' },
   { value: CONFIG.RESOLUTION_PIXEL_PERFECT, description: 'settings.pixel_perfect' },
@@ -75,7 +76,10 @@ CONFIG.MINUTES_ALLOWED_TO_CONTINUE_GAME = 45;
 CONFIG.AI_PLAYER_ID = 'ai';
 // background color
 CONFIG.BACKGROUND_COLOR = {
-  r: 0, g: 0, b: 0, a: 255,
+  r: 0,
+  g: 0,
+  b: 0,
+  a: 255,
 };
 // static size of reference window to base layout calculations on
 CONFIG.REF_WINDOW_SIZE = { width: 1280.0, height: 720.0 };
@@ -160,8 +164,16 @@ CONFIG.BATTLEMAP_TEMPLATES = [
     clouds: [
       { background: true, sourcePosition: { x: 1.0, y: 0.85 }, targetPosition: { x: 0.0, y: 1.0 } },
       { background: true, sourcePosition: { x: 1.0, y: 0.85 }, targetPosition: { x: 0.0, y: 1.0 } },
-      { background: false, sourcePosition: { x: 1.0, y: 0.125 }, targetPosition: { x: 0.0, y: 0.05 } },
-      { background: false, sourcePosition: { x: 1.0, y: 0.125 }, targetPosition: { x: 0.0, y: 0.05 } },
+      {
+        background: false,
+        sourcePosition: { x: 1.0, y: 0.125 },
+        targetPosition: { x: 0.0, y: 0.05 },
+      },
+      {
+        background: false,
+        sourcePosition: { x: 1.0, y: 0.125 },
+        targetPosition: { x: 0.0, y: 0.05 },
+      },
     ],
   },
   {
@@ -172,8 +184,16 @@ CONFIG.BATTLEMAP_TEMPLATES = [
     blueDustChance: 1.0,
     sunRaysChance: 1.0,
     clouds: [
-      { background: false, sourcePosition: { x: 0.0, y: 0.125 }, targetPosition: { x: 1.0, y: 0.05 } },
-      { background: false, sourcePosition: { x: 0.0, y: 0.125 }, targetPosition: { x: 1.0, y: 0.05 } },
+      {
+        background: false,
+        sourcePosition: { x: 0.0, y: 0.125 },
+        targetPosition: { x: 1.0, y: 0.05 },
+      },
+      {
+        background: false,
+        sourcePosition: { x: 0.0, y: 0.125 },
+        targetPosition: { x: 1.0, y: 0.05 },
+      },
     ],
   },
   {
@@ -184,10 +204,10 @@ CONFIG.BATTLEMAP_TEMPLATES = [
     blueDustChance: 1.0,
     sunRaysChance: 1.0,
     clouds: [
-      { background: true, sourcePosition: { x: 0.0, y: 0.90 }, targetPosition: { x: 1.0, y: 0.70 } },
-      { background: true, sourcePosition: { x: 0.0, y: 0.90 }, targetPosition: { x: 1.0, y: 0.70 } },
-      { background: true, sourcePosition: { x: 0.0, y: 0.50 }, targetPosition: { x: 1.0, y: 0.30 } },
-      { background: true, sourcePosition: { x: 0.0, y: 0.50 }, targetPosition: { x: 1.0, y: 0.30 } },
+      { background: true, sourcePosition: { x: 0.0, y: 0.9 }, targetPosition: { x: 1.0, y: 0.7 } },
+      { background: true, sourcePosition: { x: 0.0, y: 0.9 }, targetPosition: { x: 1.0, y: 0.7 } },
+      { background: true, sourcePosition: { x: 0.0, y: 0.5 }, targetPosition: { x: 1.0, y: 0.3 } },
+      { background: true, sourcePosition: { x: 0.0, y: 0.5 }, targetPosition: { x: 1.0, y: 0.3 } },
     ],
   },
   {
@@ -198,8 +218,16 @@ CONFIG.BATTLEMAP_TEMPLATES = [
     blueDustChance: 1.0,
     sunRaysChance: 1.0,
     clouds: [
-      { background: false, sourcePosition: { x: 1.0, y: 0.05 }, targetPosition: { x: 0.0, y: 0.05 } },
-      { background: false, sourcePosition: { x: 1.0, y: 0.05 }, targetPosition: { x: 0.0, y: 0.05 } },
+      {
+        background: false,
+        sourcePosition: { x: 1.0, y: 0.05 },
+        targetPosition: { x: 0.0, y: 0.05 },
+      },
+      {
+        background: false,
+        sourcePosition: { x: 1.0, y: 0.05 },
+        targetPosition: { x: 0.0, y: 0.05 },
+      },
     ],
   },
   {
@@ -210,33 +238,61 @@ CONFIG.BATTLEMAP_TEMPLATES = [
     blueDustChance: 1.0,
     sunRaysChance: 0.0,
     clouds: [
-      { background: true, sourcePosition: { x: 0.0, y: 0.95 }, targetPosition: { x: 1.0, y: 0.85 } },
-      { background: true, sourcePosition: { x: 0.0, y: 0.95 }, targetPosition: { x: 1.0, y: 0.85 } },
+      {
+        background: true,
+        sourcePosition: { x: 0.0, y: 0.95 },
+        targetPosition: { x: 1.0, y: 0.85 },
+      },
+      {
+        background: true,
+        sourcePosition: { x: 0.0, y: 0.95 },
+        targetPosition: { x: 1.0, y: 0.85 },
+      },
     ],
   },
   {
     map: CONFIG.BATTLEMAP_SHIMZAR,
     weatherChance: 0.25,
-    rainChance: 0.50,
+    rainChance: 0.5,
     snowChance: 0.0,
     blueDustChance: 1.0,
     sunRaysChance: 1.0,
     blueDustColor: { r: 255, g: 184, b: 71 },
     clouds: [
       {
-        background: true, sourcePosition: { x: 0.0, y: 0.75 }, targetPosition: { x: 1.0, y: 0.85 }, sourceColor: { r: 255, g: 225, b: 190 }, targetColor: { r: 84, g: 163, b: 174 },
+        background: true,
+        sourcePosition: { x: 0.0, y: 0.75 },
+        targetPosition: { x: 1.0, y: 0.85 },
+        sourceColor: { r: 255, g: 225, b: 190 },
+        targetColor: { r: 84, g: 163, b: 174 },
       },
       {
-        background: true, sourcePosition: { x: 0.0, y: 0.75 }, targetPosition: { x: 1.0, y: 0.85 }, sourceColor: { r: 255, g: 184, b: 150 }, targetColor: { r: 72, g: 117, b: 130 },
+        background: true,
+        sourcePosition: { x: 0.0, y: 0.75 },
+        targetPosition: { x: 1.0, y: 0.85 },
+        sourceColor: { r: 255, g: 184, b: 150 },
+        targetColor: { r: 72, g: 117, b: 130 },
       },
       {
-        background: true, sourcePosition: { x: 0.0, y: 0.75 }, targetPosition: { x: 1.0, y: 0.85 }, sourceColor: { r: 255, g: 184, b: 150 }, targetColor: { r: 93, g: 175, b: 190 },
+        background: true,
+        sourcePosition: { x: 0.0, y: 0.75 },
+        targetPosition: { x: 1.0, y: 0.85 },
+        sourceColor: { r: 255, g: 184, b: 150 },
+        targetColor: { r: 93, g: 175, b: 190 },
       },
       {
-        background: false, sourcePosition: { x: 1.0, y: 0.075 }, targetPosition: { x: 0.0, y: 0.05 }, sourceColor: { r: 93, g: 175, b: 190 }, targetColor: { r: 255, g: 184, b: 150 },
+        background: false,
+        sourcePosition: { x: 1.0, y: 0.075 },
+        targetPosition: { x: 0.0, y: 0.05 },
+        sourceColor: { r: 93, g: 175, b: 190 },
+        targetColor: { r: 255, g: 184, b: 150 },
       },
       {
-        background: false, sourcePosition: { x: 1.0, y: 0.075 }, targetPosition: { x: 0.0, y: 0.05 }, sourceColor: { r: 60, g: 100, b: 80 }, targetColor: { r: 100, g: 80, b: 60 },
+        background: false,
+        sourcePosition: { x: 1.0, y: 0.075 },
+        targetPosition: { x: 0.0, y: 0.05 },
+        sourceColor: { r: 60, g: 100, b: 80 },
+        targetColor: { r: 100, g: 80, b: 60 },
       },
     ],
   },
@@ -250,13 +306,25 @@ CONFIG.BATTLEMAP_TEMPLATES = [
     blueDustColor: { r: 255, g: 0, b: 0 },
     clouds: [
       {
-        background: true, sourcePosition: { x: 0.0, y: 0.8 }, targetPosition: { x: 1.0, y: 1.0 }, sourceColor: { r: 47, g: 50, b: 90 }, targetColor: { r: 32, g: 35, b: 62 },
+        background: true,
+        sourcePosition: { x: 0.0, y: 0.8 },
+        targetPosition: { x: 1.0, y: 1.0 },
+        sourceColor: { r: 47, g: 50, b: 90 },
+        targetColor: { r: 32, g: 35, b: 62 },
       },
       {
-        background: true, sourcePosition: { x: 0.0, y: 0.8 }, targetPosition: { x: 1.0, y: 1.0 }, sourceColor: { r: 95, g: 66, b: 127 }, targetColor: { r: 65, g: 47, b: 84 },
+        background: true,
+        sourcePosition: { x: 0.0, y: 0.8 },
+        targetPosition: { x: 1.0, y: 1.0 },
+        sourceColor: { r: 95, g: 66, b: 127 },
+        targetColor: { r: 65, g: 47, b: 84 },
       },
       {
-        background: true, sourcePosition: { x: 0.0, y: 0.8 }, targetPosition: { x: 1.0, y: 1.0 }, sourceColor: { r: 66, g: 72, b: 127 }, targetColor: { r: 44, g: 48, b: 84 },
+        background: true,
+        sourcePosition: { x: 0.0, y: 0.8 },
+        targetPosition: { x: 1.0, y: 1.0 },
+        sourceColor: { r: 66, g: 72, b: 127 },
+        targetColor: { r: 44, g: 48, b: 84 },
       },
     ],
   },
@@ -269,13 +337,29 @@ CONFIG.BATTLEMAP_TEMPLATES = [
     sunRaysChance: 1.0,
     blueDustColor: { r: 255, g: 150, b: 30 },
     clouds: [
-      { background: true, sourcePosition: { x: 0.0, y: 0.95 }, targetPosition: { x: 1.0, y: 0.85 } },
-      { background: true, sourcePosition: { x: 0.0, y: 0.95 }, targetPosition: { x: 1.0, y: 0.85 } },
       {
-        background: false, sourcePosition: { x: 1.0, y: 0.1 }, targetPosition: { x: 0.0, y: -0.025 }, sourceColor: { r: 225, g: 210, b: 210 }, targetColor: { r: 127, g: 80, b: 80 },
+        background: true,
+        sourcePosition: { x: 0.0, y: 0.95 },
+        targetPosition: { x: 1.0, y: 0.85 },
       },
       {
-        background: false, sourcePosition: { x: 1.0, y: 0.075 }, targetPosition: { x: 0.0, y: 0.0 }, sourceColor: { r: 225, g: 210, b: 210 }, targetColor: { r: 127, g: 80, b: 80 },
+        background: true,
+        sourcePosition: { x: 0.0, y: 0.95 },
+        targetPosition: { x: 1.0, y: 0.85 },
+      },
+      {
+        background: false,
+        sourcePosition: { x: 1.0, y: 0.1 },
+        targetPosition: { x: 0.0, y: -0.025 },
+        sourceColor: { r: 225, g: 210, b: 210 },
+        targetColor: { r: 127, g: 80, b: 80 },
+      },
+      {
+        background: false,
+        sourcePosition: { x: 1.0, y: 0.075 },
+        targetPosition: { x: 0.0, y: 0.0 },
+        sourceColor: { r: 225, g: 210, b: 210 },
+        targetColor: { r: 127, g: 80, b: 80 },
       },
     ],
   },
@@ -287,10 +371,26 @@ CONFIG.BATTLEMAP_TEMPLATES = [
     blueDustChance: 0.0,
     sunRaysChance: 0.0,
     clouds: [
-      { background: true, sourcePosition: { x: 1.0, y: 0.85 }, targetPosition: { x: 0.0, y: 0.95 } },
-      { background: true, sourcePosition: { x: 1.0, y: 0.85 }, targetPosition: { x: 0.0, y: 0.95 } },
-      { background: false, sourcePosition: { x: 1.0, y: 0.1 }, targetPosition: { x: 0.0, y: -0.025 } },
-      { background: false, sourcePosition: { x: 1.0, y: 0.075 }, targetPosition: { x: 0.0, y: 0.0 } },
+      {
+        background: true,
+        sourcePosition: { x: 1.0, y: 0.85 },
+        targetPosition: { x: 0.0, y: 0.95 },
+      },
+      {
+        background: true,
+        sourcePosition: { x: 1.0, y: 0.85 },
+        targetPosition: { x: 0.0, y: 0.95 },
+      },
+      {
+        background: false,
+        sourcePosition: { x: 1.0, y: 0.1 },
+        targetPosition: { x: 0.0, y: -0.025 },
+      },
+      {
+        background: false,
+        sourcePosition: { x: 1.0, y: 0.075 },
+        targetPosition: { x: 0.0, y: 0.0 },
+      },
     ],
   },
 ];
@@ -320,7 +420,10 @@ CONFIG.CARD_PADDING = 75.0;
 CONFIG.CARD_MARGIN = 75.0;
 // color of card sidebar and modifiers bar
 CONFIG.CARD_METADATA_BARS_COLOR = {
-  r: 20, g: 20, b: 20, a: 255,
+  r: 20,
+  g: 20,
+  b: 20,
+  a: 255,
 };
 // padding for card modifiers and keywords
 CONFIG.CARD_MODIFIER_PADDING_HORIZONTAL = 8.0;
@@ -524,7 +627,7 @@ CONFIG.ENTITY_STATS_CHANGE_DELAY = 0.75;
 CONFIG.ENTITY_STATS_CHANGE_ATK_FONT_SIZE = 20;
 CONFIG.ENTITY_STATS_CHANGE_HP_FONT_SIZE = 20;
 CONFIG.ENTITY_STATS_CHANGE_HEAL_FONT_SIZE = 20;
-CONFIG.ENTITY_STATS_CHANGE_DAMAGE_FONT_SIZE = 20;// 30;
+CONFIG.ENTITY_STATS_CHANGE_DAMAGE_FONT_SIZE = 20; // 30;
 // whether to show prismatic fx only when inspecting
 CONFIG.SHOW_PRISMATIC_ONLY_ON_INSPECT = false;
 // whether to show prismatic card shine
@@ -681,7 +784,8 @@ CONFIG.HIGHLIGHT_GENERAL_TAUNT_DURATION = 2.0;
 CONFIG.HIGHLIGHT_MY_GENERAL_TAUNT_DELAY = 0.5;
 // duration in seconds to delay before showing opponent general taunting
 // if this value is less than my general's taunt, it will show before
-CONFIG.HIGHLIGHT_OPPONENT_GENERAL_TAUNT_DELAY = CONFIG.HIGHLIGHT_MY_GENERAL_TAUNT_DELAY + CONFIG.HIGHLIGHT_GENERAL_TAUNT_DURATION + 0.5;
+CONFIG.HIGHLIGHT_OPPONENT_GENERAL_TAUNT_DELAY =
+  CONFIG.HIGHLIGHT_MY_GENERAL_TAUNT_DELAY + CONFIG.HIGHLIGHT_GENERAL_TAUNT_DURATION + 0.5;
 // duration in seconds to fade out fx used to show general
 CONFIG.GENERAL_FX_FADE_DURATION = CONFIG.FADE_FAST_DURATION;
 // template of options for fx that is used to show my general
@@ -717,13 +821,19 @@ CONFIG.KILL_NODE_OFFSET = { x: 0.0, y: -CONFIG.TILESIZE * 0.225 };
 CONFIG.INSTRUCTION_NODE_OFFSET = CONFIG.TILESIZE * 0.5;
 // colors for entity glows
 CONFIG.PLAYER_CARD_GLOW_RAMP_FROM_COLOR = {
-  r: 255, g: 255, b: 255, a: 255,
+  r: 255,
+  g: 255,
+  b: 255,
+  a: 255,
 };
 CONFIG.PLAYER_CARD_GLOW_RAMP_TRANSITION_COLOR = { r: 40, g: 170, b: 255 };
 CONFIG.PLAYER_CARD_GLOW_RAMP_TO_COLOR = { r: 40, g: 170, b: 255 };
 CONFIG.PLAYER_CARD_GLOW_RAMP_NOISE_COLOR = { r: 40, g: 255, b: 255 };
 CONFIG.OPPONENT_CARD_GLOW_RAMP_FROM_COLOR = {
-  r: 255, g: 175, b: 175, a: 255,
+  r: 255,
+  g: 175,
+  b: 175,
+  a: 255,
 };
 CONFIG.OPPONENT_CARD_GLOW_RAMP_TRANSITION_COLOR = { r: 255, g: 60, b: 60 };
 CONFIG.OPPONENT_CARD_GLOW_RAMP_TO_COLOR = { r: 255, g: 0, b: 0 };
@@ -732,7 +842,10 @@ CONFIG.PLAYER_SIGNATURE_CARD_GLOW = { r: 40, g: 201, b: 255 };
 CONFIG.OPPONENT_SIGNATURE_CARD_GLOW = { r: 255, g: 50, b: 75 };
 CONFIG.NEUTRAL_SIGNATURE_CARD_GLOW = { r: 40, g: 133, b: 255 };
 CONFIG.INSTRUCTIONAL_CARD_GLOW_RAMP_FROM_COLOR = {
-  r: 255, g: 255, b: 255, a: 255,
+  r: 255,
+  g: 255,
+  b: 255,
+  a: 255,
 };
 CONFIG.INSTRUCTIONAL_CARD_GLOW_RAMP_TRANSITION_COLOR = { r: 40, g: 170, b: 255 };
 CONFIG.INSTRUCTIONAL_CARD_GLOW_RAMP_TO_COLOR = { r: 40, g: 170, b: 255 };
@@ -855,16 +968,28 @@ CONFIG.INSTRUCTIONAL_TARGET_COLOR = { r: 255, g: 255, b: 255 };
 
 // Colors for instruction nodes
 CONFIG.INSTRUCTION_NODE_BACKGROUND_COLOR = {
-  r: 0, g: 0, b: 0, a: 255,
+  r: 0,
+  g: 0,
+  b: 0,
+  a: 255,
 };
 CONFIG.INSTRUCTION_NODE_OUTLINE_COLOR = {
-  r: 255, g: 255, b: 255, a: 255,
+  r: 255,
+  g: 255,
+  b: 255,
+  a: 255,
 };
 CONFIG.INSTRUCTION_NODE_CARROT_BACKGROUND_COLOR = {
-  r: 255, g: 69, b: 0, a: 255,
+  r: 255,
+  g: 69,
+  b: 0,
+  a: 255,
 };
 CONFIG.INSTRUCTION_NODE_CARROT_OUTLINE_COLOR = {
-  r: 0, g: 0, b: 0, a: 200,
+  r: 0,
+  g: 0,
+  b: 0,
+  a: 200,
 };
 CONFIG.INSTRUCTION_NODE_TEXT_COLOR = { r: 255, g: 255, b: 255 };
 CONFIG.INSTRUCTION_NODE_HIGHLIGHT_TEXT_COLOR = { r: 0, g: 255, b: 0 };
@@ -885,15 +1010,24 @@ CONFIG.INSTRUCTIONAL_UI_CORRECT_TARGET_OPACITY = 200;
 CONFIG.CONTINUE_TEXT_COLOR = { r: 141, g: 253, b: 255 };
 CONFIG.CONTINUE_BUTTON_TEXT_COLOR = { r: 255, g: 255, b: 255 };
 CONFIG.CONTINUE_BG_COLOR = {
-  r: 19, g: 19, b: 49, a: 128,
+  r: 19,
+  g: 19,
+  b: 49,
+  a: 128,
 };
 CONFIG.BUY_TEXT_COLOR = { r: 141, g: 253, b: 255 };
 CONFIG.BUY_BUTTON_TEXT_COLOR = { r: 255, g: 255, b: 255 };
 CONFIG.BUY_BG_COLOR = {
-  r: 19, g: 19, b: 49, a: 128,
+  r: 19,
+  g: 19,
+  b: 49,
+  a: 128,
 };
 CONFIG.SEASON_BG_COLOR = {
-  r: 19, g: 19, b: 49, a: 192,
+  r: 19,
+  g: 19,
+  b: 49,
+  a: 192,
 };
 
 CONFIG.ATTACKABLE_TARGET_GLOW_RAMP_FROM = { r: 255, g: 210, b: 180 };
@@ -999,13 +1133,11 @@ CONFIG.ALL_BOARD_POSITIONS = (function () {
     }
   }
   return pattern;
-}());
+})();
 
 // commonly used patterns
 
-CONFIG.PATTERN_1x1 = [
-  { x: 0, y: 0 },
-];
+CONFIG.PATTERN_1x1 = [{ x: 0, y: 0 }];
 CONFIG.PATTERN_3x1 = [
   { x: -1, y: 0 },
   { x: 1, y: 0 },
@@ -1063,47 +1195,124 @@ CONFIG.PATTERN_3X1 = [
 ];
 CONFIG.PATTERN_4SPACES = [
   { x: -4, y: 0 },
-  { x: -3, y: -1 }, { x: -3, y: 0 }, { x: -3, y: 1 },
-  { x: -2, y: -2 }, { x: -2, y: -1 }, { x: -2, y: 0 }, { x: -2, y: 1 }, { x: -2, y: 2 },
-  { x: -1, y: -3 }, { x: -1, y: -2 }, { x: -1, y: -1 }, { x: -1, y: 0 }, { x: -1, y: 1 }, { x: -1, y: 2 }, { x: -1, y: 3 },
-  { x: 0, y: -4 }, { x: 0, y: -3 }, { x: 0, y: -2 }, { x: 0, y: -1 }, { x: 0, y: 0 }, { x: 0, y: 1 }, { x: 0, y: 2 }, { x: 0, y: 3 }, { x: 0, y: 4 },
-  { x: 1, y: -3 }, { x: 1, y: -2 }, { x: 1, y: -1 }, { x: 1, y: 0 }, { x: 1, y: 1 }, { x: 1, y: 2 }, { x: 1, y: 3 },
-  { x: 2, y: -2 }, { x: 2, y: -1 }, { x: 2, y: 0 }, { x: 2, y: 1 }, { x: 2, y: 2 },
-  { x: 3, y: -1 }, { x: 3, y: 0 }, { x: 3, y: 1 },
+  { x: -3, y: -1 },
+  { x: -3, y: 0 },
+  { x: -3, y: 1 },
+  { x: -2, y: -2 },
+  { x: -2, y: -1 },
+  { x: -2, y: 0 },
+  { x: -2, y: 1 },
+  { x: -2, y: 2 },
+  { x: -1, y: -3 },
+  { x: -1, y: -2 },
+  { x: -1, y: -1 },
+  { x: -1, y: 0 },
+  { x: -1, y: 1 },
+  { x: -1, y: 2 },
+  { x: -1, y: 3 },
+  { x: 0, y: -4 },
+  { x: 0, y: -3 },
+  { x: 0, y: -2 },
+  { x: 0, y: -1 },
+  { x: 0, y: 0 },
+  { x: 0, y: 1 },
+  { x: 0, y: 2 },
+  { x: 0, y: 3 },
+  { x: 0, y: 4 },
+  { x: 1, y: -3 },
+  { x: 1, y: -2 },
+  { x: 1, y: -1 },
+  { x: 1, y: 0 },
+  { x: 1, y: 1 },
+  { x: 1, y: 2 },
+  { x: 1, y: 3 },
+  { x: 2, y: -2 },
+  { x: 2, y: -1 },
+  { x: 2, y: 0 },
+  { x: 2, y: 1 },
+  { x: 2, y: 2 },
+  { x: 3, y: -1 },
+  { x: 3, y: 0 },
+  { x: 3, y: 1 },
   { x: 4, y: 0 },
 ];
 
 CONFIG.PATTERN_3SPACES_WITHOUT_CENTER = [
   { x: -3, y: 0 },
-  { x: -2, y: -1 }, { x: -2, y: 0 }, { x: -2, y: 1 },
-  { x: -1, y: -2 }, { x: -1, y: -1 }, { x: -1, y: 0 }, { x: -1, y: 1 }, { x: -1, y: 2 },
-  { x: 0, y: -3 }, { x: 0, y: -2 }, { x: 0, y: -1 }, { x: 0, y: 1 }, { x: 0, y: 2 }, { x: 0, y: 3 },
-  { x: 1, y: -2 }, { x: 1, y: -1 }, { x: 1, y: 0 }, { x: 1, y: 1 }, { x: 1, y: 2 },
-  { x: 2, y: -1 }, { x: 2, y: 0 }, { x: 2, y: 1 },
+  { x: -2, y: -1 },
+  { x: -2, y: 0 },
+  { x: -2, y: 1 },
+  { x: -1, y: -2 },
+  { x: -1, y: -1 },
+  { x: -1, y: 0 },
+  { x: -1, y: 1 },
+  { x: -1, y: 2 },
+  { x: 0, y: -3 },
+  { x: 0, y: -2 },
+  { x: 0, y: -1 },
+  { x: 0, y: 1 },
+  { x: 0, y: 2 },
+  { x: 0, y: 3 },
+  { x: 1, y: -2 },
+  { x: 1, y: -1 },
+  { x: 1, y: 0 },
+  { x: 1, y: 1 },
+  { x: 1, y: 2 },
+  { x: 2, y: -1 },
+  { x: 2, y: 0 },
+  { x: 2, y: 1 },
   { x: 3, y: 0 },
 ];
 
 CONFIG.PATTERN_3SPACES = [
   { x: -3, y: 0 },
-  { x: -2, y: -1 }, { x: -2, y: 0 }, { x: -2, y: 1 },
-  { x: -1, y: -2 }, { x: -1, y: -1 }, { x: -1, y: 0 }, { x: -1, y: 1 }, { x: -1, y: 2 },
-  { x: 0, y: -3 }, { x: 0, y: -2 }, { x: 0, y: -1 }, { x: 0, y: 0 }, { x: 0, y: 1 }, { x: 0, y: 2 }, { x: 0, y: 3 },
-  { x: 1, y: -2 }, { x: 1, y: -1 }, { x: 1, y: 0 }, { x: 1, y: 1 }, { x: 1, y: 2 },
-  { x: 2, y: -1 }, { x: 2, y: 0 }, { x: 2, y: 1 },
+  { x: -2, y: -1 },
+  { x: -2, y: 0 },
+  { x: -2, y: 1 },
+  { x: -1, y: -2 },
+  { x: -1, y: -1 },
+  { x: -1, y: 0 },
+  { x: -1, y: 1 },
+  { x: -1, y: 2 },
+  { x: 0, y: -3 },
+  { x: 0, y: -2 },
+  { x: 0, y: -1 },
+  { x: 0, y: 0 },
+  { x: 0, y: 1 },
+  { x: 0, y: 2 },
+  { x: 0, y: 3 },
+  { x: 1, y: -2 },
+  { x: 1, y: -1 },
+  { x: 1, y: 0 },
+  { x: 1, y: 1 },
+  { x: 1, y: 2 },
+  { x: 2, y: -1 },
+  { x: 2, y: 0 },
+  { x: 2, y: 1 },
   { x: 3, y: 0 },
 ];
 
 CONFIG.PATTERN_2SPACES = [
   { x: -2, y: 0 },
-  { x: -1, y: -1 }, { x: -1, y: 0 }, { x: -1, y: 1 },
-  { x: 0, y: -2 }, { x: 0, y: -1 }, { x: 0, y: 0 }, { x: 0, y: 1 }, { x: 0, y: 2 },
-  { x: 1, y: -1 }, { x: 1, y: 0 }, { x: 1, y: 1 },
+  { x: -1, y: -1 },
+  { x: -1, y: 0 },
+  { x: -1, y: 1 },
+  { x: 0, y: -2 },
+  { x: 0, y: -1 },
+  { x: 0, y: 0 },
+  { x: 0, y: 1 },
+  { x: 0, y: 2 },
+  { x: 1, y: -1 },
+  { x: 1, y: 0 },
+  { x: 1, y: 1 },
   { x: 2, y: 0 },
 ];
 
 CONFIG.PATTERN_1SPACE = [
   { x: -1, y: 0 },
-  { x: 0, y: -1 }, { x: 0, y: 0 }, { x: 0, y: 1 },
+  { x: 0, y: -1 },
+  { x: 0, y: 0 },
+  { x: 0, y: 1 },
   { x: 1, y: 0 },
 ];
 
@@ -1122,7 +1331,7 @@ CONFIG.PATTERN_WHOLE_BOARD = (function () {
     }
   }
   return pattern;
-}());
+})();
 
 CONFIG.PATTERN_HALF_BOARD = (function () {
   const pattern = [];
@@ -1132,7 +1341,7 @@ CONFIG.PATTERN_HALF_BOARD = (function () {
     }
   }
   return pattern;
-}());
+})();
 
 CONFIG.PATTERN_WHOLE_ROW = (function () {
   const pattern = [];
@@ -1143,7 +1352,7 @@ CONFIG.PATTERN_WHOLE_ROW = (function () {
     });
   }
   return pattern;
-}());
+})();
 
 CONFIG.PATTERN_WHOLE_COLUMN = (function () {
   const pattern = [];
@@ -1154,7 +1363,7 @@ CONFIG.PATTERN_WHOLE_COLUMN = (function () {
     });
   }
   return pattern;
-}());
+})();
 
 CONFIG.PATTERN_BLAST = (function () {
   let pattern = [];
@@ -1198,7 +1407,7 @@ CONFIG.PATTERN_BLAST = (function () {
   }
 
   return finalPattern;
-}());
+})();
 
 CONFIG.TEST_LIGHT_TEMPLATE = {
   type: 'Light',
@@ -1301,10 +1510,13 @@ CONFIG.getGlobalScaleForResolution = function (resolution, width, height) {
   let globalScale = 1.0;
 
   if (resolution !== CONFIG.RESOLUTION_PIXEL_PERFECT) {
-    globalScale = Math.min(width / CONFIG.REF_WINDOW_SIZE.width, height / CONFIG.REF_WINDOW_SIZE.height);
+    globalScale = Math.min(
+      width / CONFIG.REF_WINDOW_SIZE.width,
+      height / CONFIG.REF_WINDOW_SIZE.height,
+    );
 
     // ensure scale is in multiples of CONFIG.GLOBAL_SCALE_MULTIPLE
-    globalScale = Math.round((globalScale) * 100) / 100;
+    globalScale = Math.round(globalScale * 100) / 100;
     const globalScaleMult = globalScale % CONFIG.GLOBAL_SCALE_MULTIPLE;
     globalScale -= globalScaleMult;
 

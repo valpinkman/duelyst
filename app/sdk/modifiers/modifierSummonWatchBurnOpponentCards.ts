@@ -17,7 +17,9 @@ class ModifierSummonWatchBurnOpponentCards extends ModifierSummonWatch {
   static type = 'ModifierSummonWatchBurnOpponentCards';
 
   static createContextObject(cardsToBurn, options) {
-    if (cardsToBurn == null) { cardsToBurn = 1; }
+    if (cardsToBurn == null) {
+      cardsToBurn = 1;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.cardsToBurn = cardsToBurn;
     return contextObject;
@@ -26,8 +28,15 @@ class ModifierSummonWatchBurnOpponentCards extends ModifierSummonWatch {
   onSummonWatch(action) {
     return (() => {
       const result = [];
-      for (let i = 1, end = this.cardsToBurn, asc = end >= 1; asc ? i <= end : i >= end; asc ? i++ : i--) {
-        var burnCardAction = new BurnCardAction(this.getGameSession(), this.getGameSession().getGeneralForOpponentOfPlayerId(this.getOwnerId()).getOwnerId());
+      for (
+        let i = 1, end = this.cardsToBurn, asc = end >= 1;
+        asc ? i <= end : i >= end;
+        asc ? i++ : i--
+      ) {
+        var burnCardAction = new BurnCardAction(
+          this.getGameSession(),
+          this.getGameSession().getGeneralForOpponentOfPlayerId(this.getOwnerId()).getOwnerId(),
+        );
         result.push(this.getGameSession().executeAction(burnCardAction));
       }
       return result;

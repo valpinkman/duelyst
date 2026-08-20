@@ -55,13 +55,15 @@ class ModifierSummonWatchMechsShareKeywords extends ModifierSummonWatch {
     let backstabAmount = 0;
 
     const myGeneral = this.getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
-    const friendlyMinions = this.getGameSession().getBoard().getFriendlyEntitiesForEntity(myGeneral, CardType.Unit, true, false);
+    const friendlyMinions = this.getGameSession()
+      .getBoard()
+      .getFriendlyEntitiesForEntity(myGeneral, CardType.Unit, true, false);
     const friendlyMechs = [];
 
     if (friendlyMinions != null) {
       let modifier;
       for (var minion of Array.from<any>(friendlyMinions)) {
-        if ((minion != null) && !minion.getIsGeneral() && minion.getBelongsToTribe(Races.Mech)) {
+        if (minion != null && !minion.getIsGeneral() && minion.getBelongsToTribe(Races.Mech)) {
           friendlyMechs.push(minion);
           if (minion.hasActiveModifierClass(ModifierBackstab)) {
             hasBackstab = true;
@@ -137,23 +139,41 @@ class ModifierSummonWatchMechsShareKeywords extends ModifierSummonWatch {
               }
             }
             if (backstabAmount > currentBackstabAmount) {
-              this.getGameSession().applyModifierContextObject(ModifierBackstab.createContextObject(backstabAmount - currentBackstabAmount), mech);
+              this.getGameSession().applyModifierContextObject(
+                ModifierBackstab.createContextObject(backstabAmount - currentBackstabAmount),
+                mech,
+              );
             }
           }
           if (hasBlast && !mech.hasActiveModifierClass(ModifierBlastAttack)) {
-            this.getGameSession().applyModifierContextObject(ModifierBlastAttack.createContextObject(), mech);
+            this.getGameSession().applyModifierContextObject(
+              ModifierBlastAttack.createContextObject(),
+              mech,
+            );
           }
           if (hasCelerity && !mech.hasActiveModifierClass(ModifierTranscendance)) {
-            this.getGameSession().applyModifierContextObject(ModifierTranscendance.createContextObject(), mech);
+            this.getGameSession().applyModifierContextObject(
+              ModifierTranscendance.createContextObject(),
+              mech,
+            );
           }
           if (hasFlying && !mech.hasActiveModifierClass(ModifierFlying)) {
-            this.getGameSession().applyModifierContextObject(ModifierFlying.createContextObject(), mech);
+            this.getGameSession().applyModifierContextObject(
+              ModifierFlying.createContextObject(),
+              mech,
+            );
           }
           if (hasForcefield && !mech.hasActiveModifierClass(ModifierForcefield)) {
-            this.getGameSession().applyModifierContextObject(ModifierForcefield.createContextObject(), mech);
+            this.getGameSession().applyModifierContextObject(
+              ModifierForcefield.createContextObject(),
+              mech,
+            );
           }
           if (hasFrenzy && !mech.hasActiveModifierClass(ModifierFrenzy)) {
-            this.getGameSession().applyModifierContextObject(ModifierFrenzy.createContextObject(), mech);
+            this.getGameSession().applyModifierContextObject(
+              ModifierFrenzy.createContextObject(),
+              mech,
+            );
           }
           if (hasGrow) {
             var currentGrowAmount = 0;
@@ -165,23 +185,43 @@ class ModifierSummonWatchMechsShareKeywords extends ModifierSummonWatch {
               }
             }
             if (growAmount > currentGrowAmount) {
-              this.getGameSession().applyModifierContextObject(ModifierGrow.createContextObject(growAmount - currentGrowAmount), mech);
+              this.getGameSession().applyModifierContextObject(
+                ModifierGrow.createContextObject(growAmount - currentGrowAmount),
+                mech,
+              );
             }
           }
           if (hasProvoke && !mech.hasActiveModifierClass(ModifierProvoke)) {
-            this.getGameSession().applyModifierContextObject(ModifierProvoke.createContextObject(), mech);
+            this.getGameSession().applyModifierContextObject(
+              ModifierProvoke.createContextObject(),
+              mech,
+            );
           }
           if (hasRanged && !mech.hasActiveModifierClass(ModifierRanged)) {
-            this.getGameSession().applyModifierContextObject(ModifierRanged.createContextObject(), mech);
+            this.getGameSession().applyModifierContextObject(
+              ModifierRanged.createContextObject(),
+              mech,
+            );
           }
           if (hasRebirth && !mech.hasActiveModifierClass(ModifierRebirth)) {
-            this.getGameSession().applyModifierContextObject(ModifierRebirth.createContextObject(), mech);
+            this.getGameSession().applyModifierContextObject(
+              ModifierRebirth.createContextObject(),
+              mech,
+            );
           }
           if (hasRush && !mech.hasActiveModifierClass(ModifierFirstBlood)) {
-            this.getGameSession().applyModifierContextObject(ModifierFirstBlood.createContextObject(), mech);
+            this.getGameSession().applyModifierContextObject(
+              ModifierFirstBlood.createContextObject(),
+              mech,
+            );
           }
           if (hasAirdrop && !mech.hasActiveModifierClass(ModifierAirdrop)) {
-            result.push(this.getGameSession().applyModifierContextObject(ModifierAirdrop.createContextObject(), mech));
+            result.push(
+              this.getGameSession().applyModifierContextObject(
+                ModifierAirdrop.createContextObject(),
+                mech,
+              ),
+            );
           } else {
             result.push(undefined);
           }

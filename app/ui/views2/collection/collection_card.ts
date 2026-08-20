@@ -8,7 +8,6 @@ var ProgressionManager = require('app/ui/managers/progression_manager');
 var CardCompositeView = require('app/ui/views/composite/card');
 
 var CollectionCardCompositeView = CardCompositeView.extend({
-
   _craftingMode: false,
   _browsingMode: false,
   _deckCardBackSelectingMode: false,
@@ -29,10 +28,11 @@ var CollectionCardCompositeView = CardCompositeView.extend({
       this.setUnlockable(false);
     } else {
       this.setUnlockable(
-        (this.model.get('isUnlockable') && !this.model.get('isUnlocked'))
-        || (!ProgressionManager.getInstance().isFactionUnlocked(this.model.get('factionId'))
-          && (this.model.get('isGeneral') || (this.model.get('rarityId') == SDK.Rarity.Fixed && !this.model.get('isUnlockableBasic')))
-        ),
+        (this.model.get('isUnlockable') && !this.model.get('isUnlocked')) ||
+          (!ProgressionManager.getInstance().isFactionUnlocked(this.model.get('factionId')) &&
+            (this.model.get('isGeneral') ||
+              (this.model.get('rarityId') == SDK.Rarity.Fixed &&
+                !this.model.get('isUnlockableBasic')))),
       );
     }
 
@@ -63,7 +63,10 @@ var CollectionCardCompositeView = CardCompositeView.extend({
           // generals are never maxed in deck unless is current deck general
           isMaxedOutInDeck = this.model.get('id') === this._currentDeck.getGeneralId();
         } else if (this.model.get('rarityId') == SDK.Rarity.Mythron) {
-          var mythronCards = SDK.GameSession.getCardCaches().getRarity(SDK.Rarity.Mythron).getIsUnlockable(false).getIsCollectible(true)
+          var mythronCards = SDK.GameSession.getCardCaches()
+            .getRarity(SDK.Rarity.Mythron)
+            .getIsUnlockable(false)
+            .getIsCollectible(true)
             .getIsPrismatic(false)
             .getCards();
           var mythronCount = 0;
@@ -74,7 +77,10 @@ var CollectionCardCompositeView = CardCompositeView.extend({
             isMaxedOutInDeck = true;
           }
         } else {
-          isMaxedOutInDeck = baseCardCountInDeck >= CONFIG.MAX_DECK_DUPLICATES || (this._currentDeck.getCountForCardId(this.model.get('id')) >= this.model.get('inventoryCount'));
+          isMaxedOutInDeck =
+            baseCardCountInDeck >= CONFIG.MAX_DECK_DUPLICATES ||
+            this._currentDeck.getCountForCardId(this.model.get('id')) >=
+              this.model.get('inventoryCount');
         }
         usable = usable && !isMaxedOutInDeck;
 
@@ -91,7 +97,10 @@ var CollectionCardCompositeView = CardCompositeView.extend({
         // when in browsing mode
         this.setDraggable(false);
         this.setRead(!InventoryManager.getInstance().isCardUnread(id));
-        this.setLoreRead(SDK.CardLore.loreForIdentifier(baseCardId) == null || !InventoryManager.getInstance().isCardLoreUnread(baseCardId));
+        this.setLoreRead(
+          SDK.CardLore.loreForIdentifier(baseCardId) == null ||
+            !InventoryManager.getInstance().isCardLoreUnread(baseCardId),
+        );
       }
       this.setUsable(usable);
     }
@@ -176,7 +185,6 @@ var CollectionCardCompositeView = CardCompositeView.extend({
     this._craftingMode = true;
     this._updateState();
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

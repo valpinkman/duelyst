@@ -21,7 +21,8 @@ const TileAttackSprite = BaseSprite.extend({
 
 TileAttackSprite.create = function (sprite) {
   if (sprite == null) {
-    sprite = cc.pool.getFromPool(TileAttackSprite) || BaseSprite.create(null, new TileAttackSprite());
+    sprite =
+      cc.pool.getFromPool(TileAttackSprite) || BaseSprite.create(null, new TileAttackSprite());
   }
   return sprite;
 };

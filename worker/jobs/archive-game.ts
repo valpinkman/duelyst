@@ -30,28 +30,30 @@ module.exports = function (job, done) {
 
   Logger.module('JOB').debug(`[J:${job.id}] archive-game -> (${gameId}) starting`);
 
-  return Promise.all([
-    GameManager.loadGameSession(gameId),
-    GameManager.loadGameMouseUIData(gameId),
-  ])
+  return Promise.all([GameManager.loadGameSession(gameId), GameManager.loadGameMouseUIData(gameId)])
     .then(function ([serializedGameData, serializedMouseAndUIEventData]) {
       _chainState.serializedGameData = serializedGameData;
       if (!serializedGameData) {
         throw new Error('Game data is null. Game may have already been archived.');
       } else {
-        if ((serializedMouseAndUIEventData == null)) {
-          Logger.module('JOB').warn(`[J:${job.id}] archive-game -> WARNING: mouse data not present for game:${gameId}`);
+        if (serializedMouseAndUIEventData == null) {
+          Logger.module('JOB').warn(
+            `[J:${job.id}] archive-game -> WARNING: mouse data not present for game:${gameId}`,
+          );
         }
         return uploadGameToS3(gameId, serializedGameData, serializedMouseAndUIEventData);
       }
-    }).then(function (url) {
+    })
+    .then(function (url) {
       _chainState.url = url;
       Logger.module('JOB').debug(`[J:${job.id}] archive-game -> (${gameId}) uploaded to ${url}.`);
       Logger.module('JOB').debug(`[J:${job.id}] archive-game -> (${gameId}) saving game metadata.`);
       return GamesModule.saveGameMetadata(gameId, JSON.parse(_chainState.serializedGameData), url);
     })
     .then(function () {
-      Logger.module('JOB').debug(`[J:${job.id}] archive-game -> (${gameId}) DONE. - ${_chainState.url}`);
+      Logger.module('JOB').debug(
+        `[J:${job.id}] archive-game -> (${gameId}) DONE. - ${_chainState.url}`,
+      );
       return done();
     })
     .catch((error) => done(error));

@@ -14,7 +14,9 @@ const ModifierMyAttackWatch = require('./modifierMyAttackWatch');
 
 var ModifierMyAttackWatchSummonDeadMinions = (function () {
   let numMinions;
-  ModifierMyAttackWatchSummonDeadMinions = class ModifierMyAttackWatchSummonDeadMinions extends ModifierMyAttackWatch {
+  ModifierMyAttackWatchSummonDeadMinions = class ModifierMyAttackWatchSummonDeadMinions extends (
+    ModifierMyAttackWatch
+  ) {
     declare type: any;
     static initClass() {
       this.prototype.type = 'ModifierMyAttackWatchSummonDeadMinions';
@@ -32,20 +34,41 @@ var ModifierMyAttackWatchSummonDeadMinions = (function () {
     onMyAttackWatch(action) {
       if (this.getGameSession().getIsRunningAsAuthoritative()) {
         const deadMinions = this.getGameSession().getDeadUnits(this.getCard().getOwnerId());
-        if ((deadMinions != null) && (deadMinions.length > 0)) {
+        if (deadMinions != null && deadMinions.length > 0) {
           let numToSpawn = this.numMinions;
           if (deadMinions.length < numToSpawn) {
             numToSpawn = deadMinions.length;
           }
           return (() => {
             const result = [];
-            for (let i = 0, end = numToSpawn, asc = end >= 0; asc ? i < end : i > end; asc ? i++ : i--) {
-              var minion = deadMinions.splice(this.getGameSession().getRandomIntegerForExecution(deadMinions.length), 1)[0];
-              var validSpawnLocations = UtilsGameSession.getSmartSpawnPositionsFromPattern(this.getGameSession(), { x: 0, y: 0 }, CONFIG.ALL_BOARD_POSITIONS, minion);
+            for (
+              let i = 0, end = numToSpawn, asc = end >= 0;
+              asc ? i < end : i > end;
+              asc ? i++ : i--
+            ) {
+              var minion = deadMinions.splice(
+                this.getGameSession().getRandomIntegerForExecution(deadMinions.length),
+                1,
+              )[0];
+              var validSpawnLocations = UtilsGameSession.getSmartSpawnPositionsFromPattern(
+                this.getGameSession(),
+                { x: 0, y: 0 },
+                CONFIG.ALL_BOARD_POSITIONS,
+                minion,
+              );
               if (validSpawnLocations.length > 0) {
-                var location = validSpawnLocations.splice(this.getGameSession().getRandomIntegerForExecution(validSpawnLocations.length), 1)[0];
+                var location = validSpawnLocations.splice(
+                  this.getGameSession().getRandomIntegerForExecution(validSpawnLocations.length),
+                  1,
+                )[0];
                 var cardData = minion.createNewCardData();
-                var playCardAction = new PlayCardSilentlyAction(this.getGameSession(), this.getCard().getOwnerId(), location.x, location.y, cardData);
+                var playCardAction = new PlayCardSilentlyAction(
+                  this.getGameSession(),
+                  this.getCard().getOwnerId(),
+                  location.x,
+                  location.y,
+                  cardData,
+                );
                 playCardAction.setSource(this.getCard());
                 result.push(this.getGameSession().executeAction(playCardAction));
               } else {
@@ -60,6 +83,6 @@ var ModifierMyAttackWatchSummonDeadMinions = (function () {
   };
   ModifierMyAttackWatchSummonDeadMinions.initClass();
   return ModifierMyAttackWatchSummonDeadMinions;
-}());
+})();
 
 module.exports = ModifierMyAttackWatchSummonDeadMinions;

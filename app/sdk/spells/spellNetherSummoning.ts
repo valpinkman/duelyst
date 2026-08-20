@@ -50,7 +50,14 @@ class SpellNetherSummoning extends SpellSpawnEntity {
     }
 
     if (numberOfApplyPositions > 0) {
-      applyEffectPositions = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(this.getGameSession(), generalPosition, CONFIG.PATTERN_3x3, card, this, numberOfApplyPositions);
+      applyEffectPositions = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(
+        this.getGameSession(),
+        generalPosition,
+        CONFIG.PATTERN_3x3,
+        card,
+        this,
+        numberOfApplyPositions,
+      );
     } else {
       applyEffectPositions = [];
     }
@@ -63,7 +70,7 @@ class SpellNetherSummoning extends SpellSpawnEntity {
   }
 
   getDeadUnits() {
-    if ((this._private.deadUnits == null)) {
+    if (this._private.deadUnits == null) {
       this._private.deadUnits = this.getGameSession().getDeadUnits(null, this.getOwnerId());
     }
     return this._private.deadUnits;

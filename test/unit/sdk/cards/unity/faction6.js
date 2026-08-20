@@ -14,13 +14,9 @@ Logger.enabled = false;
 describe('unity', () => {
   describe('faction6', () => {
     beforeEach(() => {
-      const player1Deck = [
-        { id: SDK.Cards.Faction6.AltGeneral },
-      ];
+      const player1Deck = [{ id: SDK.Cards.Faction6.AltGeneral }];
 
-      const player2Deck = [
-        { id: SDK.Cards.Faction1.General },
-      ];
+      const player2Deck = [{ id: SDK.Cards.Faction1.General }];
 
       UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
     });
@@ -36,13 +32,23 @@ describe('unity', () => {
 
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction6.KindredHunter }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction6.KindredHunter,
+        }),
+      );
       var playCardFromHandAction1 = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction1);
-      var nightHowler = board.getFriendlyEntitiesAroundEntity(board.getUnitAtPosition({ x: 1, y: 1 }));
+      var nightHowler = board.getFriendlyEntitiesAroundEntity(
+        board.getUnitAtPosition({ x: 1, y: 1 }),
+      );
       expect(nightHowler[1]).to.not.exist;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction6.KindredHunter }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction6.KindredHunter,
+        }),
+      );
       var playCardFromHandAction1 = player1.actionPlayCardFromHand(0, 2, 2);
       gameSession.executeAction(playCardFromHandAction1);
 
@@ -51,7 +57,9 @@ describe('unity', () => {
       const action = nightMove.actionMove({ x: 0, y: 1 });
       gameSession.executeAction(action);
 
-      var nightHowler = board.getFriendlyEntitiesAroundEntity(board.getUnitAtPosition({ x: 2, y: 2 }));
+      var nightHowler = board.getFriendlyEntitiesAroundEntity(
+        board.getUnitAtPosition({ x: 2, y: 2 }),
+      );
       expect(nightHowler[0].getId()).to.equal(SDK.Cards.Faction6.ShadowVespyr);
     });
 
@@ -60,9 +68,18 @@ describe('unity', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const bloodtearAlchemist = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.BloodtearAlchemist }, 5, 1, gameSession.getPlayer2Id());
+      const bloodtearAlchemist = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.BloodtearAlchemist },
+        5,
+        1,
+        gameSession.getPlayer2Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.ManaDeathgrip }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.ManaDeathgrip,
+        }),
+      );
       const action = player1.actionPlayCardFromHand(0, 5, 1);
       gameSession.executeAction(action);
 
@@ -78,9 +95,18 @@ describe('unity', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const HealingMystic = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.HealingMystic }, 5, 1, gameSession.getPlayer2Id());
+      const HealingMystic = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.HealingMystic },
+        5,
+        1,
+        gameSession.getPlayer2Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.ManaDeathgrip }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.ManaDeathgrip,
+        }),
+      );
       const action = player1.actionPlayCardFromHand(0, 5, 1);
       gameSession.executeAction(action);
 
@@ -97,10 +123,19 @@ describe('unity', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Artifact.ShatteringHeart }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Artifact.ShatteringHeart,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 1, 1));
 
-      const brightmossGolem = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.BrightmossGolem }, 1, 2, gameSession.getPlayer2Id());
+      const brightmossGolem = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.BrightmossGolem },
+        1,
+        2,
+        gameSession.getPlayer2Id(),
+      );
 
       const action = gameSession.getGeneralForPlayer1().actionAttack(brightmossGolem);
       gameSession.executeAction(action);
@@ -114,11 +149,24 @@ describe('unity', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Artifact.ShatteringHeart }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Artifact.ShatteringHeart,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 1, 1));
 
-      const brightmossGolem = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.BrightmossGolem }, 1, 2, gameSession.getPlayer2Id());
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.FlashFreeze }));
+      const brightmossGolem = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.BrightmossGolem },
+        1,
+        2,
+        gameSession.getPlayer2Id(),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.FlashFreeze,
+        }),
+      );
       var action = player1.actionPlayCardFromHand(0, 1, 2);
       gameSession.executeAction(action);
 
@@ -134,16 +182,28 @@ describe('unity', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction6.Circulus }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction6.Circulus,
+        }),
+      );
       var playCardFromHandAction1 = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction1);
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.ConcealingShroud }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.ConcealingShroud,
+        }),
+      );
       var playCardFromHandAction1 = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction1);
       var hand1 = player1.getDeck().getCardsInHand();
       expect(hand1[0]).to.exist;
       expect(hand1[0].getId()).to.equal(SDK.Cards.Neutral.ArcaneIllusion);
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.ConcealingShroud }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.ConcealingShroud,
+        }),
+      );
       const playCardFromHandAction2 = player1.actionPlayCardFromHand(1, 1, 2);
       gameSession.executeAction(playCardFromHandAction2);
       var hand1 = player1.getDeck().getCardsInHand();

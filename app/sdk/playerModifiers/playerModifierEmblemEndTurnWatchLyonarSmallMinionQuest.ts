@@ -31,14 +31,31 @@ class PlayerModifierEmblemEndTurnWatchLyonarSmallMinionQuest extends PlayerModif
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
       return (() => {
         const result = [];
-        for (var unit of Array.from<any>(this.getGameSession().getBoard().getFriendlyEntitiesAroundEntity(this.getCard(), CardType.Unit, CONFIG.WHOLE_BOARD_RADIUS, false, false))) {
-          if ((unit != null) && !unit.getIsGeneral() && (unit.getBaseCardId() !== Cards.Faction1.RightfulHeir)) {
+        for (var unit of Array.from<any>(
+          this.getGameSession()
+            .getBoard()
+            .getFriendlyEntitiesAroundEntity(
+              this.getCard(),
+              CardType.Unit,
+              CONFIG.WHOLE_BOARD_RADIUS,
+              false,
+              false,
+            ),
+        )) {
+          if (
+            unit != null &&
+            !unit.getIsGeneral() &&
+            unit.getBaseCardId() !== Cards.Faction1.RightfulHeir
+          ) {
             var originalCost = unit.getManaCost();
             var newCost = originalCost + 1;
 
             var allMinions = [];
             if (this.getGameSession().getGameFormat() === GameFormat.Standard) {
-              allMinions = this.getGameSession().getCardCaches().getIsLegacy(false).getFaction(this.getCard().getFactionId())
+              allMinions = this.getGameSession()
+                .getCardCaches()
+                .getIsLegacy(false)
+                .getFaction(this.getCard().getFactionId())
                 .getType(CardType.Unit)
                 .getIsHiddenInCollection(false)
                 .getIsToken(false)
@@ -47,7 +64,10 @@ class PlayerModifierEmblemEndTurnWatchLyonarSmallMinionQuest extends PlayerModif
                 .getIsSkinned(false)
                 .getCards();
             } else {
-              allMinions = this.getGameSession().getCardCaches().getFaction(this.getCard().getFactionId()).getType(CardType.Unit)
+              allMinions = this.getGameSession()
+                .getCardCaches()
+                .getFaction(this.getCard().getFactionId())
+                .getType(CardType.Unit)
                 .getIsHiddenInCollection(false)
                 .getIsToken(false)
                 .getIsGeneral(false)
@@ -59,10 +79,13 @@ class PlayerModifierEmblemEndTurnWatchLyonarSmallMinionQuest extends PlayerModif
             if (allMinions.length > 0) {
               var availableMinionAtCost = false;
               var possibleCards = [];
-              while (!availableMinionAtCost && (newCost >= 0)) {
+              while (!availableMinionAtCost && newCost >= 0) {
                 var tempPossibilities = [];
                 for (var minion of Array.from<any>(allMinions)) {
-                  if (((minion != null ? minion.getManaCost() : undefined) === newCost) && (minion.getBaseCardId() !== Cards.Faction1.RightfulHeir)) {
+                  if (
+                    (minion != null ? minion.getManaCost() : undefined) === newCost &&
+                    minion.getBaseCardId() !== Cards.Faction1.RightfulHeir
+                  ) {
                     possibleCards.push(minion);
                   }
                 }
@@ -80,7 +103,10 @@ class PlayerModifierEmblemEndTurnWatchLyonarSmallMinionQuest extends PlayerModif
               }
 
               if (possibleCards.length > 0) {
-                var newUnit = possibleCards[this.getGameSession().getRandomIntegerForExecution(possibleCards.length)];
+                var newUnit =
+                  possibleCards[
+                    this.getGameSession().getRandomIntegerForExecution(possibleCards.length)
+                  ];
 
                 if (newUnit.getManaCost() > unit.getManaCost()) {
                   var removeOriginalEntityAction = new RemoveAction(this.getGameSession());
@@ -89,9 +115,23 @@ class PlayerModifierEmblemEndTurnWatchLyonarSmallMinionQuest extends PlayerModif
                   this.getGameSession().executeAction(removeOriginalEntityAction);
 
                   var newCardData = newUnit.createNewCardData();
-                  if (newCardData.additionalInherentModifiersContextObjects == null) { newCardData.additionalInherentModifiersContextObjects = []; }
-                  newCardData.additionalInherentModifiersContextObjects.push(ModifierTransformed.createContextObject(unit.getExhausted(), unit.getMovesMade(), unit.getAttacksMade()));
-                  var spawnEntityAction = new PlayCardAsTransformAction(this.getCard().getGameSession(), this.getCard().getOwnerId(), unit.getPosition().x, unit.getPosition().y, newCardData);
+                  if (newCardData.additionalInherentModifiersContextObjects == null) {
+                    newCardData.additionalInherentModifiersContextObjects = [];
+                  }
+                  newCardData.additionalInherentModifiersContextObjects.push(
+                    ModifierTransformed.createContextObject(
+                      unit.getExhausted(),
+                      unit.getMovesMade(),
+                      unit.getAttacksMade(),
+                    ),
+                  );
+                  var spawnEntityAction = new PlayCardAsTransformAction(
+                    this.getCard().getGameSession(),
+                    this.getCard().getOwnerId(),
+                    unit.getPosition().x,
+                    unit.getPosition().y,
+                    newCardData,
+                  );
                   result.push(this.getGameSession().executeAction(spawnEntityAction));
                 } else {
                   result.push(undefined);
@@ -111,7 +151,8 @@ class PlayerModifierEmblemEndTurnWatchLyonarSmallMinionQuest extends PlayerModif
     }
   }
 }
-PlayerModifierEmblemEndTurnWatchLyonarSmallMinionQuest.prototype.type = 'PlayerModifierEmblemEndTurnWatchLyonarSmallMinionQuest';
+PlayerModifierEmblemEndTurnWatchLyonarSmallMinionQuest.prototype.type =
+  'PlayerModifierEmblemEndTurnWatchLyonarSmallMinionQuest';
 PlayerModifierEmblemEndTurnWatchLyonarSmallMinionQuest.prototype.maxStacks = 1;
 
 module.exports = PlayerModifierEmblemEndTurnWatchLyonarSmallMinionQuest;

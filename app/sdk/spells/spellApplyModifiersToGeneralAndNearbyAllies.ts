@@ -15,7 +15,9 @@ class SpellApplyModifiersToGeneralAndNearbyAllies extends SpellApplyModifiers {
     const myGeneral = this.getGameSession().getGeneralForPlayerId(this.getOwnerId());
     if (myGeneral != null) {
       applyEffectPositions.push(myGeneral.getPosition());
-      for (var entity of Array.from<any>(board.getFriendlyEntitiesAroundEntity(myGeneral, CardType.Unit, 1))) {
+      for (var entity of Array.from<any>(
+        board.getFriendlyEntitiesAroundEntity(myGeneral, CardType.Unit, 1),
+      )) {
         if (entity != null) {
           applyEffectPositions.push(entity.getPosition());
         }

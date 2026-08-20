@@ -25,7 +25,9 @@ class PlayerModifierOpponentSummonWatchSwapGeneral extends PlayerModifierOpponen
   onSummonWatch(action) {
     super.onSummonWatch(action);
 
-    const general = this.getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
+    const general = this.getGameSession().getGeneralForOpponentOfPlayerId(
+      this.getCard().getOwnerId(),
+    );
     const newMinion = action.getTarget();
 
     // turn the new unit into your general
@@ -38,7 +40,11 @@ class PlayerModifierOpponentSummonWatchSwapGeneral extends PlayerModifierOpponen
     }
   }
 }
-PlayerModifierOpponentSummonWatchSwapGeneral.prototype.type = 'PlayerModifierOpponentSummonWatchSwapGeneral';
-PlayerModifierOpponentSummonWatchSwapGeneral.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericSpawn'];
+PlayerModifierOpponentSummonWatchSwapGeneral.prototype.type =
+  'PlayerModifierOpponentSummonWatchSwapGeneral';
+PlayerModifierOpponentSummonWatchSwapGeneral.prototype.fxResource = [
+  'FX.Modifiers.ModifierSummonWatch',
+  'FX.Modifiers.ModifierGenericSpawn',
+];
 
 module.exports = PlayerModifierOpponentSummonWatchSwapGeneral;

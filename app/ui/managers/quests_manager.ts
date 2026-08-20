@@ -33,7 +33,6 @@ var ProfileManager = require('./profile_manager');
 var Manager = require('./manager');
 
 var QuestsManager = Manager.extend({
-
   dailyQuestsCollection: null,
   dailyQuestsGeneratedAtModel: null,
   dailyChallengesLastCompletedAtModel: null,
@@ -49,48 +48,67 @@ var QuestsManager = Manager.extend({
     const _self = this;
     Manager.prototype.onBeforeConnect.call(this);
 
-    ProfileManager.getInstance().onReady()
+    ProfileManager.getInstance()
+      .onReady()
       .then(function () {
         var userId = ProfileManager.getInstance().get('id');
         _self._unreadQuestProgressNotificationModels = [];
         _self.dailyQuestsGeneratedAtModel = null;
         _self.dailyQuestsCollection = null;
 
-        NewPlayerManager.getInstance().onReady().then(function () {
-        // on first connect/session start request new daily quests
-          this.requestNewDailyQuests().finally(function () {
-            var dailyquestsFirebaseReference = new Firebase(process.env.FIREBASE_URL + 'user-quests/' + userId + '/daily/current/generated_at');
-            this.dailyQuestsGeneratedAtModel = new DuelystFirebase.Model(null, {
-              firebase: dailyquestsFirebaseReference,
-            });
+        NewPlayerManager.getInstance()
+          .onReady()
+          .then(
+            function () {
+              // on first connect/session start request new daily quests
+              this.requestNewDailyQuests().finally(
+                function () {
+                  var dailyquestsFirebaseReference = new Firebase(
+                    process.env.FIREBASE_URL +
+                      'user-quests/' +
+                      userId +
+                      '/daily/current/generated_at',
+                  );
+                  this.dailyQuestsGeneratedAtModel = new DuelystFirebase.Model(null, {
+                    firebase: dailyquestsFirebaseReference,
+                  });
 
-            // var dailyChallengesLastCompletedAtModelFirebaseReference = new Firebase(process.env.FIREBASE_URL + "user-challenges-daily/" + userId + "/last_completed_at")
-            // this.dailyChallengesLastCompletedAtModel = new DuelystFirebase.Model(null, {
-            //  firebase: dailyChallengesLastCompletedAtModelFirebaseReference
-            // })
+                  // var dailyChallengesLastCompletedAtModelFirebaseReference = new Firebase(process.env.FIREBASE_URL + "user-challenges-daily/" + userId + "/last_completed_at")
+                  // this.dailyChallengesLastCompletedAtModel = new DuelystFirebase.Model(null, {
+                  //  firebase: dailyChallengesLastCompletedAtModelFirebaseReference
+                  // })
 
-            this.dailyChallengesLastCompletedAtModel = new DuelystBackbone.Model();
-            this.dailyChallengesLastCompletedAtModel.url = process.env.API_URL + '/api/me/challenges/daily/completed_at';
-            this.dailyChallengesLastCompletedAtModel.fetch();
+                  this.dailyChallengesLastCompletedAtModel = new DuelystBackbone.Model();
+                  this.dailyChallengesLastCompletedAtModel.url =
+                    process.env.API_URL + '/api/me/challenges/daily/completed_at';
+                  this.dailyChallengesLastCompletedAtModel.fetch();
 
-            var dailyQuestsPath = process.env.FIREBASE_URL + 'user-quests/' + userId + '/daily/current/quests';
-            var dailyquestsFirebaseReference = new Firebase(dailyQuestsPath);
+                  var dailyQuestsPath =
+                    process.env.FIREBASE_URL + 'user-quests/' + userId + '/daily/current/quests';
+                  var dailyquestsFirebaseReference = new Firebase(dailyQuestsPath);
 
-            this.dailyQuestsCollection = new DuelystFirebase.Collection(null, {
-              firebase: dailyquestsFirebaseReference,
-            });
+                  this.dailyQuestsCollection = new DuelystFirebase.Collection(null, {
+                    firebase: dailyquestsFirebaseReference,
+                  });
 
-            // what to do when we're ready
-            this.onReady().then(function () {
-              this.listenTo(this.dailyQuestsCollection, 'add', this.onQuestAdded);
-              this.listenTo(this.dailyQuestsCollection, 'remove', this.onQuestRemoved);
-              this.listenTo(this.dailyQuestsCollection, 'change', this.onQuestsChanged);
-              this.dailyQuestsCollection.each(this.onQuestAdded.bind(this));
-            }.bind(this));
+                  // what to do when we're ready
+                  this.onReady().then(
+                    function () {
+                      this.listenTo(this.dailyQuestsCollection, 'add', this.onQuestAdded);
+                      this.listenTo(this.dailyQuestsCollection, 'remove', this.onQuestRemoved);
+                      this.listenTo(this.dailyQuestsCollection, 'change', this.onQuestsChanged);
+                      this.dailyQuestsCollection.each(this.onQuestAdded.bind(this));
+                    }.bind(this),
+                  );
 
-            this._markAsReadyWhenModelsAndCollectionsSynced([this.dailyQuestsGeneratedAtModel, this.dailyQuestsCollection]);
-          }.bind(this));
-        }.bind(_self));
+                  this._markAsReadyWhenModelsAndCollectionsSynced([
+                    this.dailyQuestsGeneratedAtModel,
+                    this.dailyQuestsCollection,
+                  ]);
+                }.bind(this),
+              );
+            }.bind(_self),
+          );
       });
   },
 
@@ -109,7 +127,9 @@ var QuestsManager = Manager.extend({
 
   getDailyChallengesLastCompletedAtMoment: function () {
     if (this.dailyChallengesLastCompletedAtModel) {
-      var lastCompletedAt = this.dailyChallengesLastCompletedAtModel.get('daily_challenge_last_completed_at');
+      var lastCompletedAt = this.dailyChallengesLastCompletedAtModel.get(
+        'daily_challenge_last_completed_at',
+      );
       return moment.utc(lastCompletedAt || '2016-01-01');
     } else {
       return moment.utc('2016-01-01');
@@ -165,24 +185,28 @@ var QuestsManager = Manager.extend({
       quest.params = questModel.get('params');
 
       // generate notification
-      var notification = new NotificationModel(_.extend(_.clone(questModel.attributes), {
-        type: NotificationsManager.NOTIFICATION_QUEST_PROGRESS,
-        title: quest.getName(),
-        quest_instructions: quest.getDescription(),
-        audio: RSX.sfx_collection_next.audio,
-      }));
+      var notification = new NotificationModel(
+        _.extend(_.clone(questModel.attributes), {
+          type: NotificationsManager.NOTIFICATION_QUEST_PROGRESS,
+          title: quest.getName(),
+          quest_instructions: quest.getDescription(),
+          audio: RSX.sfx_collection_next.audio,
+        }),
+      );
 
       // show the unread quest notifications
       NotificationsManager.getInstance().showNotification(notification);
 
       // defer marking quest as read until the current stack call completes
       // just in case this method is called as a result of a change event
-      _.defer(function () {
-        // showing quest as notification so mark as read
-        if (questModel.get('is_unread')) {
-          questModel.set('is_unread', false);
-        }
-      }.bind(this));
+      _.defer(
+        function () {
+          // showing quest as notification so mark as read
+          if (questModel.get('is_unread')) {
+            questModel.set('is_unread', false);
+          }
+        }.bind(this),
+      );
     }
   },
 
@@ -202,13 +226,15 @@ var QuestsManager = Manager.extend({
 
   markQuestsAsRead: function () {
     // defer marking as read until the current stack call completes
-    _.defer(function () {
-      this.dailyQuestsCollection.each(function (q) {
-        if (q.get('is_unread')) {
-          q.set('is_unread', false);
-        }
-      });
-    }.bind(this));
+    _.defer(
+      function () {
+        this.dailyQuestsCollection.each(function (q) {
+          if (q.get('is_unread')) {
+            q.set('is_unread', false);
+          }
+        });
+      }.bind(this),
+    );
   },
 
   /* endregion UNREAD QUEST PROGRESS */
@@ -217,7 +243,8 @@ var QuestsManager = Manager.extend({
 
   hasUnreadDailyChallenges: function () {
     var startOfToday = moment.utc().startOf('day');
-    var dailyChallengeCompletedStartOfDay = this.getDailyChallengesLastCompletedAtMoment().startOf('day');
+    var dailyChallengeCompletedStartOfDay =
+      this.getDailyChallengesLastCompletedAtMoment().startOf('day');
 
     // If user has recently completed a daily challenge return true
     if (this._hasUnreadDailyChallengeCompletion) {
@@ -261,25 +288,33 @@ var QuestsManager = Manager.extend({
       return Promise.resolve();
     }
 
-    return new Promise(function (resolve, reject) {
-      var updateRequest = this.dailyChallengesLastCompletedAtModel.fetch();
+    return new Promise(
+      function (resolve, reject) {
+        var updateRequest = this.dailyChallengesLastCompletedAtModel.fetch();
 
-      updateRequest.done(function () {
-        resolve();
-      }.bind(this));
+        updateRequest.done(
+          function () {
+            resolve();
+          }.bind(this),
+        );
 
-      updateRequest.fail(function () {
-        var error = 'Daily challenge last completed at update request failed';
-        EventBus.getInstance().trigger(EVENTS.ajax_error, error);
+        updateRequest.fail(
+          function () {
+            var error = 'Daily challenge last completed at update request failed';
+            EventBus.getInstance().trigger(EVENTS.ajax_error, error);
 
-        reject(new Error(error));
-      }.bind(this));
-    }.bind(this));
+            reject(new Error(error));
+          }.bind(this),
+        );
+      }.bind(this),
+    );
   },
 
   fetchDailyChallengeModel: function () {
     var dailyChallengeModel = new DuelystFirebase.Model(null, {
-      firebase: new Firebase(process.env.FIREBASE_URL + 'daily-challenges/' + moment.utc().format('YYYY-MM-DD')),
+      firebase: new Firebase(
+        process.env.FIREBASE_URL + 'daily-challenges/' + moment.utc().format('YYYY-MM-DD'),
+      ),
     });
 
     return dailyChallengeModel.onSyncOrReady();
@@ -293,7 +328,10 @@ var QuestsManager = Manager.extend({
     Logger.module('UI').log('QuestsManager::requestNewDailyQuests');
 
     // if we're at a stage that doesn't need daily quests just RESOLVE
-    if (NewPlayerManager.getInstance().getCurrentCoreStage().value < NewPlayerProgressionHelper.DailyQuestsStartToGenerateStage.value) {
+    if (
+      NewPlayerManager.getInstance().getCurrentCoreStage().value <
+      NewPlayerProgressionHelper.DailyQuestsStartToGenerateStage.value
+    ) {
       return Promise.resolve();
     }
 
@@ -318,7 +356,10 @@ var QuestsManager = Manager.extend({
     if (this.dailyQuestsGeneratedAtModel) {
       var questsLastGeneratedAt = parseInt(_.keys(this.dailyQuestsGeneratedAtModel.attributes)[0]);
       // looks like we're still in the same day
-      if (moment().utc().startOf('day').valueOf() <= moment.utc(questsLastGeneratedAt).startOf('day').valueOf()) {
+      if (
+        moment().utc().startOf('day').valueOf() <=
+        moment.utc(questsLastGeneratedAt).startOf('day').valueOf()
+      ) {
         return Promise.resolve();
       }
     }
@@ -338,9 +379,11 @@ var QuestsManager = Manager.extend({
       dataType: 'json',
     });
 
-    request.done(function (response) {
-      this._scheduleQuestsUpdateWhenUTCdayRollsOver();
-    }.bind(this));
+    request.done(
+      function (response) {
+        this._scheduleQuestsUpdateWhenUTCdayRollsOver();
+      }.bind(this),
+    );
 
     request.fail(function (response) {
       // Temporary error, should parse server response.
@@ -353,18 +396,23 @@ var QuestsManager = Manager.extend({
   },
 
   /**
-  * Schedules an update request for new daily quests at UTC midnight.
-  * @private
-  */
+   * Schedules an update request for new daily quests at UTC midnight.
+   * @private
+   */
   _scheduleQuestsUpdateWhenUTCdayRollsOver: function () {
-    if (this._questUpdateScheduleTimeout)
-      clearTimeout(this._questUpdateScheduleTimeout);
+    if (this._questUpdateScheduleTimeout) clearTimeout(this._questUpdateScheduleTimeout);
     var milisecondsToUTCMidnight = moment().utc().endOf('day').valueOf() - moment().utc().valueOf();
     // add 3 minutes to quest refresh just in case of clock skew
-    milisecondsToUTCMidnight += (3 * 60 * 1000);
+    milisecondsToUTCMidnight += 3 * 60 * 1000;
     var duration = moment.duration(milisecondsToUTCMidnight);
-    Logger.module('UI').log('QuestsManager::_scheduleQuestsUpdateWhenUTCdayRollsOver() -> quests scheduled to check for update in ' + duration.humanize());
-    this._questUpdateScheduleTimeout = setTimeout(this.requestNewDailyQuests.bind(this), milisecondsToUTCMidnight);
+    Logger.module('UI').log(
+      'QuestsManager::_scheduleQuestsUpdateWhenUTCdayRollsOver() -> quests scheduled to check for update in ' +
+        duration.humanize(),
+    );
+    this._questUpdateScheduleTimeout = setTimeout(
+      this.requestNewDailyQuests.bind(this),
+      milisecondsToUTCMidnight,
+    );
   },
 
   requestQuestReplace: function (index) {
@@ -381,14 +429,20 @@ var QuestsManager = Manager.extend({
     request.done(function (response, textStatus, jqXHR) {
       if (response) {
         // track an event in analytics
-        Analytics.track('quest replaced', {
-          category: Analytics.EventCategory.Quest,
-          quest_type_id: replacedQuestId,
-        }, {
-          labelKey: 'quest_type_id',
-        });
+        Analytics.track(
+          'quest replaced',
+          {
+            category: Analytics.EventCategory.Quest,
+            quest_type_id: replacedQuestId,
+          },
+          {
+            labelKey: 'quest_type_id',
+          },
+        );
       } else if (jqXHR.status == 304) {
-        NavigationManager.getInstance().showDialogView(new ErrorDialogItemView({ title: 'Daily quest has already been mulliganed once today.' }));
+        NavigationManager.getInstance().showDialogView(
+          new ErrorDialogItemView({ title: 'Daily quest has already been mulliganed once today.' }),
+        );
       }
     });
 
@@ -402,5 +456,4 @@ var QuestsManager = Manager.extend({
   },
 
   /* endregion QUEST CYCLING */
-
 });

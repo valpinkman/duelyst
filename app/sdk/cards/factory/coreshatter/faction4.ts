@@ -75,18 +75,24 @@ class CardFactory_CoreshatterSet_Faction4 {
       card = new Unit(gameSession);
       card.factionId = Factions.Faction4;
       card.setCardSetId(CardSet.Coreshatter);
-      card.name = 'Underlord Xor\'Xuul';
-      card.setDescription('Trial: Cast 6 spells that destroy a friendly minion.\nDestiny: Whenever a friendly minion dies, re-summon it on a random space.');
+      card.name = "Underlord Xor'Xuul";
+      card.setDescription(
+        'Trial: Cast 6 spells that destroy a friendly minion.\nDestiny: Whenever a friendly minion dies, re-summon it on a random space.',
+      );
       card.atk = 6;
       card.maxHP = 1;
       card.manaCost = 6;
       card.rarityId = Rarity.Mythron;
       const dyingWishModifier = ModifierQuestBuffAbyssian.createContextObject();
       dyingWishModifier.appliedName = 'Will of the Undying';
-      dyingWishModifier.appliedDescription = 'Whenever this minion dies, re-summon it on a random space.';
-      const emblemModifier = PlayerModifierEmblemSummonWatchAbyssUndyingQuest.createContextObject([dyingWishModifier]);
-      emblemModifier.appliedName = 'Underlord\'s Decree';
-      emblemModifier.appliedDescription = 'Whenever a friendly minion dies, re-summon it on a random space.';
+      dyingWishModifier.appliedDescription =
+        'Whenever this minion dies, re-summon it on a random space.';
+      const emblemModifier = PlayerModifierEmblemSummonWatchAbyssUndyingQuest.createContextObject([
+        dyingWishModifier,
+      ]);
+      emblemModifier.appliedName = "Underlord's Decree";
+      emblemModifier.appliedDescription =
+        'Whenever a friendly minion dies, re-summon it on a random space.';
       card.setInherentModifiersContextObjects([
         ModifierStartsInHand.createContextObject(),
         ModifierCannotBeReplaced.createContextObject(),
@@ -122,7 +128,9 @@ class CardFactory_CoreshatterSet_Faction4 {
       card.factionId = Factions.Faction4;
       card.setCardSetId(CardSet.Coreshatter);
       card.name = 'Hexclaw';
-      card.setDescription('Dying Wish: The enemy General gains, "At the start of your turn, take 1 damage."');
+      card.setDescription(
+        'Dying Wish: The enemy General gains, "At the start of your turn, take 1 damage."',
+      );
       card.atk = 7;
       card.maxHP = 2;
       card.manaCost = 5;
@@ -130,7 +138,9 @@ class CardFactory_CoreshatterSet_Faction4 {
       const damageSelf = ModifierStartTurnWatchDamageMyGeneral.createContextObject(1);
       damageSelf.appliedName = 'Curse';
       damageSelf.appliedDescription = 'At the start of your turn, your General takes 1 damage.';
-      card.setInherentModifiersContextObjects([ModifierDyingWishApplyModifiersToGenerals.createContextObject([damageSelf], false, true)]);
+      card.setInherentModifiersContextObjects([
+        ModifierDyingWishApplyModifiersToGenerals.createContextObject([damageSelf], false, true),
+      ]);
       card.setFXResource(['FX.Cards.Neutral.Necroseer']);
       card.setBaseSoundResource({
         apply: RSX.sfx_unit_deploy.audio,
@@ -164,11 +174,15 @@ class CardFactory_CoreshatterSet_Faction4 {
       card.durability = 3;
       const attackBuffContextObject = Modifier.createContextObjectWithAttributeBuffs(2, 2);
       attackBuffContextObject.appliedName = 'Crown of the Meek';
-      const wraithlingId = [
-        Cards.Faction4.Wraithling,
-      ];
+      const wraithlingId = [Cards.Faction4.Wraithling];
       card.setTargetModifiersContextObjects([
-        Modifier.createContextObjectWithAuraForAllAllies([attackBuffContextObject], null, wraithlingId, null, 'Crown of the Meek'),
+        Modifier.createContextObjectWithAuraForAllAllies(
+          [attackBuffContextObject],
+          null,
+          wraithlingId,
+          null,
+          'Crown of the Meek',
+        ),
       ]);
       card.setFXResource(['FX.Cards.Artifact.Mindlathe']);
       card.setBaseAnimResource({
@@ -185,12 +199,16 @@ class CardFactory_CoreshatterSet_Faction4 {
       card.factionId = Factions.Faction4;
       card.setCardSetId(CardSet.Coreshatter);
       card.name = 'Carrion Collector';
-      card.setDescription('Dying Wish: Lower the cost of all minions with Dying Wish in your deck and action bar by 1.');
+      card.setDescription(
+        'Dying Wish: Lower the cost of all minions with Dying Wish in your deck and action bar by 1.',
+      );
       card.atk = 1;
       card.maxHP = 1;
       card.manaCost = 2;
       card.rarityId = Rarity.Epic;
-      card.setInherentModifiersContextObjects([ModifierDyingWishReduceManaCostOfDyingWish.createContextObject(1)]);
+      card.setInherentModifiersContextObjects([
+        ModifierDyingWishReduceManaCostOfDyingWish.createContextObject(1),
+      ]);
       card.setFXResource(['FX.Cards.Neutral.SilvertongueCorsair']);
       card.setBaseSoundResource({
         apply: RSX.sfx_unit_deploy_3.audio,
@@ -218,7 +236,9 @@ class CardFactory_CoreshatterSet_Faction4 {
       card.setCardSetId(CardSet.Coreshatter);
       card.id = Cards.Spell.ShadowBlossom;
       card.name = 'Painful Pluck';
-      card.setDescription('Intensify: Turn 1 random space into Shadow Creep, prioritizing spaces under enemy minions.');
+      card.setDescription(
+        'Intensify: Turn 1 random space into Shadow Creep, prioritizing spaces under enemy minions.',
+      );
       card.manaCost = 1;
       card.rarityId = Rarity.Common;
       card.spellFilterType = SpellFilterType.None;
@@ -265,12 +285,18 @@ class CardFactory_CoreshatterSet_Faction4 {
       card.factionId = Factions.Faction4;
       card.setCardSetId(CardSet.Coreshatter);
       card.name = 'Abyssal Tormentor';
-      card.setDescription('Provoke\nYour Shadow Creep deals damage equal to the number of friendly Shadow Creep.');
+      card.setDescription(
+        'Provoke\nYour Shadow Creep deals damage equal to the number of friendly Shadow Creep.',
+      );
       card.atk = 6;
       card.maxHP = 6;
       card.manaCost = 6;
       card.rarityId = Rarity.Legendary;
-      const auraContextObject = Modifier.createContextObjectWithAuraForAllAllies([ModifierStackingShadowsBonusDamageEqualNumberTiles.createContextObject()], null, [Cards.Tile.Shadow]);
+      const auraContextObject = Modifier.createContextObjectWithAuraForAllAllies(
+        [ModifierStackingShadowsBonusDamageEqualNumberTiles.createContextObject()],
+        null,
+        [Cards.Tile.Shadow],
+      );
       auraContextObject.auraFilterByCardType = CardType.Tile;
       card.setInherentModifiersContextObjects([
         ModifierProvoke.createContextObject(),
@@ -306,7 +332,7 @@ class CardFactory_CoreshatterSet_Faction4 {
       card.setCardSetId(CardSet.Coreshatter);
       card.id = Cards.Spell.GateToDudesHouse;
       card.name = 'Unfathomable Rite';
-      card.setDescription('Draw cards from your opponent\'s deck to fill your action bar.');
+      card.setDescription("Draw cards from your opponent's deck to fill your action bar.");
       card.manaCost = 6;
       card.rarityId = Rarity.Epic;
       card.setFXResource(['FX.Cards.Spell.UnfathomableRite']);
@@ -325,7 +351,9 @@ class CardFactory_CoreshatterSet_Faction4 {
       card.setCardSetId(CardSet.Coreshatter);
       card.id = Cards.Spell.TickleTendril;
       card.name = 'Munch';
-      card.setDescription('Steal Health from an enemy minion for each friendly Shadow Creep (but not more than its Health).');
+      card.setDescription(
+        'Steal Health from an enemy minion for each friendly Shadow Creep (but not more than its Health).',
+      );
       card.manaCost = 3;
       card.rarityId = Rarity.Rare;
       card.spellFilterType = SpellFilterType.EnemyDirect;
@@ -417,7 +445,9 @@ class CardFactory_CoreshatterSet_Faction4 {
       card.setCardSetId(CardSet.Coreshatter);
       card.factionId = Factions.Faction4;
       card.name = 'Gibbet';
-      card.setDescription('Whenever this attacks an enemy minion, destroy that minion and summon a Gibbet on that space.');
+      card.setDescription(
+        'Whenever this attacks an enemy minion, destroy that minion and summon a Gibbet on that space.',
+      );
       card.atk = 1;
       card.maxHP = 2;
       card.manaCost = 2;
@@ -452,7 +482,7 @@ class CardFactory_CoreshatterSet_Faction4 {
       card.setCardSetId(CardSet.Coreshatter);
       card.id = Cards.Spell.TwoForMe;
       card.name = 'Demonic Conversion';
-      card.setDescription('Draw a minion from your opponent\'s deck. It gains +1/+1.');
+      card.setDescription("Draw a minion from your opponent's deck. It gains +1/+1.");
       card.manaCost = 1;
       card.rarityId = Rarity.Common;
       card.spellFilterType = SpellFilterType.None;
@@ -473,7 +503,9 @@ class CardFactory_CoreshatterSet_Faction4 {
       card.setCardSetId(CardSet.Coreshatter);
       card.id = Cards.Spell.EvilXerox;
       card.name = 'Unleash the Evil';
-      card.setDescription('Summon a copy of the minion your opponent most recently summoned from their action bar. It gains Rush and Flying.');
+      card.setDescription(
+        'Summon a copy of the minion your opponent most recently summoned from their action bar. It gains Rush and Flying.',
+      );
       card.manaCost = 8;
       card.rarityId = Rarity.Legendary;
       card.spellFilterType = SpellFilterType.SpawnSource;

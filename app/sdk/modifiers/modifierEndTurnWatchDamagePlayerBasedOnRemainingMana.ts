@@ -12,7 +12,8 @@ class ModifierEndTurnWatchDamagePlayerBasedOnRemainingMana extends ModifierEndEv
 
   static type = 'ModifierEndTurnWatchDamagePlayerBasedOnRemainingMana';
   static modifierName = 'End Watch';
-  static description = 'At the end of each turn, deal damage to the player equal to their remaining mana';
+  static description =
+    'At the end of each turn, deal damage to the player equal to their remaining mana';
 
   static createContextObject(options) {
     const contextObject = super.createContextObject(options);
@@ -41,7 +42,11 @@ class ModifierEndTurnWatchDamagePlayerBasedOnRemainingMana extends ModifierEndEv
     return this.getGameSession().executeAction(damageAction);
   }
 }
-ModifierEndTurnWatchDamagePlayerBasedOnRemainingMana.prototype.type = 'ModifierEndTurnWatchDamagePlayerBasedOnRemainingMana';
-ModifierEndTurnWatchDamagePlayerBasedOnRemainingMana.prototype.fxResource = ['FX.Modifiers.ModifierEndTurnWatch', 'FX.Modifiers.ModifierExplosionsNearby'];
+ModifierEndTurnWatchDamagePlayerBasedOnRemainingMana.prototype.type =
+  'ModifierEndTurnWatchDamagePlayerBasedOnRemainingMana';
+ModifierEndTurnWatchDamagePlayerBasedOnRemainingMana.prototype.fxResource = [
+  'FX.Modifiers.ModifierEndTurnWatch',
+  'FX.Modifiers.ModifierExplosionsNearby',
+];
 
 module.exports = ModifierEndTurnWatchDamagePlayerBasedOnRemainingMana;

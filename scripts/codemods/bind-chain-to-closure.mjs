@@ -38,11 +38,26 @@ const require = createRequire(import.meta.url);
  */
 const tsParser = require('@typescript-eslint/parser');
 const espree = {
-  parse: (code) => tsParser.parse(code, { ecmaVersion: 2022, sourceType: 'script', loc: true, range: true }),
+  parse: (code) =>
+    tsParser.parse(code, { ecmaVersion: 2022, sourceType: 'script', loc: true, range: true }),
 };
 
-const COMBINATORS = new Set(['then', 'catch', 'finally', 'tap', 'spread', 'map', 'each',
-  'reduce', 'filter', 'nodeify', 'done', 'caught', 'error', 'bind']);
+const COMBINATORS = new Set([
+  'then',
+  'catch',
+  'finally',
+  'tap',
+  'spread',
+  'map',
+  'each',
+  'reduce',
+  'filter',
+  'nodeify',
+  'done',
+  'caught',
+  'error',
+  'bind',
+]);
 
 function walk(node, visit, parents = []) {
   if (!node || typeof node.type !== 'string') return;
@@ -61,8 +76,13 @@ function isPromiseCallback(fnNode, parents) {
   if (!parent || parent.type !== 'CallExpression') return false;
   if (!parent.arguments.includes(fnNode)) return false;
   const c = parent.callee;
-  return c && c.type === 'MemberExpression' && !c.computed
-    && c.property.type === 'Identifier' && COMBINATORS.has(c.property.name);
+  return (
+    c &&
+    c.type === 'MemberExpression' &&
+    !c.computed &&
+    c.property.type === 'Identifier' &&
+    COMBINATORS.has(c.property.name)
+  );
 }
 
 /**
@@ -81,8 +101,11 @@ function isPromiseCallback(fnNode, parents) {
 function hostFor(parents, fnIdx) {
   for (let i = fnIdx - 1; i >= 0; i -= 1) {
     const p = parents[i];
-    if (p.type === 'FunctionExpression' || p.type === 'FunctionDeclaration'
-      || p.type === 'ArrowFunctionExpression') {
+    if (
+      p.type === 'FunctionExpression' ||
+      p.type === 'FunctionDeclaration' ||
+      p.type === 'ArrowFunctionExpression'
+    ) {
       // an arrow with an expression body has nowhere to put a declaration
       if (p.body && p.body.type === 'BlockStatement') return p;
     }
@@ -131,7 +154,11 @@ for (const file of process.argv.slice(2)) {
     let fnIdx = -1;
     for (let i = parents.length - 1; i >= 0; i -= 1) {
       const p = parents[i];
-      if (p.type === 'FunctionExpression' || p.type === 'FunctionDeclaration') { fn = p; fnIdx = i; break; }
+      if (p.type === 'FunctionExpression' || p.type === 'FunctionDeclaration') {
+        fn = p;
+        fnIdx = i;
+        break;
+      }
       if (p.type === 'ArrowFunctionExpression') continue;
     }
     if (!fn || fn.type !== 'FunctionExpression') return;
@@ -158,7 +185,11 @@ for (const file of process.argv.slice(2)) {
     const indent = first
       ? (src.slice(0, first.range[0]).match(/[^\n]*$/) || [''])[0].match(/^\s*/)[0]
       : '  ';
-    edits.push({ start: bodyStart + 1, end: bodyStart + 1, text: `\n${indent}const _chainState = {};` });
+    edits.push({
+      start: bodyStart + 1,
+      end: bodyStart + 1,
+      text: `\n${indent}const _chainState = {};`,
+    });
   }
 
   if (unhosted) {

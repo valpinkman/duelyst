@@ -55,15 +55,20 @@ whenLocalizationReady.then(() => {
 
     // inject css overrides
     let css = '';
-    css += '.editor { position: absolute; float:left; z-index: 99999; pointer-events: none; margin: 0; padding: 0; width: 100%; height: 100%; top: 0; bottom: 0; left: 0; right: 0; }';
-    css += '.dg.container { position: relative; float:left; padding: 0; height: 100%; display: flex; flex-flow: column-reverse nowrap; }';
-    css += '.dg.container > ul { overflow: hidden; overflow-y: auto; background-color: black; pointer-events: auto; max-height: 100%; }';
+    css +=
+      '.editor { position: absolute; float:left; z-index: 99999; pointer-events: none; margin: 0; padding: 0; width: 100%; height: 100%; top: 0; bottom: 0; left: 0; right: 0; }';
+    css +=
+      '.dg.container { position: relative; float:left; padding: 0; height: 100%; display: flex; flex-flow: column-reverse nowrap; }';
+    css +=
+      '.dg.container > ul { overflow: hidden; overflow-y: auto; background-color: black; pointer-events: auto; max-height: 100%; }';
     css += '.dg.container > ul::-webkit-scrollbar { width: 5px; background: #1a1a1a; }';
-    css += '.dg.container > ul::-webkit-scrollbar-thumb { border-radius: 5px; background: #676767; }';
+    css +=
+      '.dg.container > ul::-webkit-scrollbar-thumb { border-radius: 5px; background: #676767; }';
     css += '.dg.container > ul::-webkit-scrollbar-corner { height: 0; display: none; }';
     css += '.dg.container > ul.closed { padding-bottom: 0; }';
     css += '.dg.container > ul > .title { padding-right: 25px; }';
-    css += '.dg.container .primary-button { background-color: #222222; text-align: center; padding: 5px; pointer-events: auto; position: relative; height: 30px; font-size: 12px; line-height: 20px; }';
+    css +=
+      '.dg.container .primary-button { background-color: #222222; text-align: center; padding: 5px; pointer-events: auto; position: relative; height: 30px; font-size: 12px; line-height: 20px; }';
     css += '.dg.container .primary-button:hover { background-color: #333333; }';
     css += '.dg.container .close-button { }';
     css += '.dg.container .close-button:hover { }';
@@ -73,7 +78,8 @@ whenLocalizationReady.then(() => {
     css += '.dg.container .reload-css-button:hover { }';
     css += '.dg.container .resource-validate-button { }';
     css += '.dg.container .resource-validate-button:hover { }';
-    css += '.dg .action-button { position: absolute; z-index: 9999; top: 1px; right: 0px; padding: 2px; width: 25px; height: 25px; color: white; font-size: 16px; text-shadow: none; }';
+    css +=
+      '.dg .action-button { position: absolute; z-index: 9999; top: 1px; right: 0px; padding: 2px; width: 25px; height: 25px; color: white; font-size: 16px; text-shadow: none; }';
     css += '.dg .closed .action-button { display: none; }';
     css += '.dg .action-button:last-child { right: 0; }';
     css += '.dg .action-button:nth-last-child(2) { right: 20px; }';
@@ -82,25 +88,31 @@ whenLocalizationReady.then(() => {
     css += '.dg .action-button:nth-last-child(5) { right: 80px; }';
     css += '.dg.main {position: absolute; left: 0;}';
     css += '.dg.main > ul {}';
-    css += '.dg.main > ul > li.folder > .dg > ul > li.folder > .dg > ul > li.title { background: rgba(76, 76, 76, 1);}';
+    css +=
+      '.dg.main > ul > li.folder > .dg > ul > li.folder > .dg > ul > li.title { background: rgba(76, 76, 76, 1);}';
     css += '.dg.selected { position: absolute; right: 0; width: 300px; padding-left: 3px;}';
     css += '.dg.selected > ul > li.title { position: relative; width: 300px; z-index: 1; }';
-    css += '.dg.selected > ul > li.function:nth-child(2) { position: relative; width: 297px; z-index: 1; }';
-    css += '.dg.selected > ul > li.function:nth-child(3) { position: relative; width: 297px; z-index: 1; }';
+    css +=
+      '.dg.selected > ul > li.function:nth-child(2) { position: relative; width: 297px; z-index: 1; }';
+    css +=
+      '.dg.selected > ul > li.function:nth-child(3) { position: relative; width: 297px; z-index: 1; }';
     css += '.dg.container > ul.closed > li:nth-child(4) { margin-top: 0; }';
-    css += '.dg.selected > ul > li.folder > .dg > ul > li.title { background: rgba(76, 76, 76, 1);}';
+    css +=
+      '.dg.selected > ul > li.folder > .dg > ul > li.title { background: rgba(76, 76, 76, 1);}';
     css += '.dg.new-data { position: relative; width: 200px !important; }';
     css += '.dg.new-data .close-button { display: none; }';
     css += '.dg .c { padding-right: 20px; }';
     css += '.dg .c select { color: black; max-width: 100%; }';
     css += '.dg .c input[type=text] { line-height: 10px; height: 18px; }';
-    css += '.dg li { position: relative; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }';
+    css +=
+      '.dg li { position: relative; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }';
     css += '.dg li.title { padding-right: 48px; }';
     css += '.dg li.folder { border-left: 0; }';
     css += '.dg li.folder > .dg { border-left: 6px solid rgba(0,0,0,0); margin-left: -2px; }';
     css += '.dg li.folder > .dg > ul > li.title { border-left: 3px solid #9D32E7; }';
     css += '.dg .function .property-name { width: 90%; }';
-    css += '.editor-popover { border-radius: 0; text-shadow: none; z-index: 100000; background: rgb(12, 126, 216); }';
+    css +=
+      '.editor-popover { border-radius: 0; text-shadow: none; z-index: 100000; background: rgb(12, 126, 216); }';
     css += '.editor-popover .popover-content { padding: 2px; }';
     css += '.editor-popover.left > .arrow:after { border-left-color: #0C7ED8; }';
     css += '.editor-popover.right > .arrow:after { border-right-color: #0C7ED8; }';
@@ -127,8 +139,10 @@ whenLocalizationReady.then(() => {
 
   Editor.start = function () {
     // clear container
-    let card; let cardFactionTypeName; let cardId; let
-      id;
+    let card;
+    let cardFactionTypeName;
+    let cardId;
+    let id;
     if (Editor.$container != null) {
       Editor.$container.remove();
       Editor.$container = null;
@@ -149,11 +163,15 @@ whenLocalizationReady.then(() => {
     const usableFXByFolder = [];
     const addResourceAsUsableFXAsNeeded = function (resourceName) {
       const resource = RSX[resourceName];
-      if ((resource != null) && !_.isFunction(resource) && _.isObject(resource)) {
+      if (resource != null && !_.isFunction(resource) && _.isObject(resource)) {
         const imgPath = resource.img;
         const plistPath = resource.plist;
-        const isAnimatedSprite = (imgPath != null) && (plistPath != null) && !(/[\/](?:units|tiles|icons)[\/]/i.test(imgPath));
-        const isParticles = /particle|ptcl/i.test(resourceName) || ((imgPath != null) && /particle|ptcl/i.test(imgPath)) || ((plistPath != null) && /particle|ptcl/i.test(plistPath));
+        const isAnimatedSprite =
+          imgPath != null && plistPath != null && !/[\/](?:units|tiles|icons)[\/]/i.test(imgPath);
+        const isParticles =
+          /particle|ptcl/i.test(resourceName) ||
+          (imgPath != null && /particle|ptcl/i.test(imgPath)) ||
+          (plistPath != null && /particle|ptcl/i.test(plistPath));
         if (isAnimatedSprite || isParticles) {
           let resourceFXData;
           if (isParticles) {
@@ -168,8 +186,12 @@ whenLocalizationReady.then(() => {
           }
           const resourcePreview = { name: resourceName, fxData: resourceFXData };
           resourcePreview[resourceName] = () => Editor.previewFXData(resourcePreview.fxData);
-          const folderName = (imgPath || plistPath).replace(/^resources[\/]/i, '').match(/(.*?)[\/].+?\./)[1];
-          if (usableFXByFolder[folderName] == null) { usableFXByFolder[folderName] = []; }
+          const folderName = (imgPath || plistPath)
+            .replace(/^resources[\/]/i, '')
+            .match(/(.*?)[\/].+?\./)[1];
+          if (usableFXByFolder[folderName] == null) {
+            usableFXByFolder[folderName] = [];
+          }
           return usableFXByFolder[folderName].push(resourcePreview);
         }
       }
@@ -222,9 +244,14 @@ whenLocalizationReady.then(() => {
         contentType: 'application/json',
         dataType: 'json',
       });
-      request.done((data) => CrateManager.getInstance().refreshGiftCrates()
-        .then(() => alert('Success: Added Gift Crate')));
-      return request.fail((response) => alert(`FAILED: Add Gift Crate failed\n${response.responseJSON.message}`));
+      request.done((data) =>
+        CrateManager.getInstance()
+          .refreshGiftCrates()
+          .then(() => alert('Success: Added Gift Crate')),
+      );
+      return request.fail((response) =>
+        alert(`FAILED: Add Gift Crate failed\n${response.responseJSON.message}`),
+      );
     };
 
     qaButtons['Clear Crate Progression'] = function () {
@@ -234,8 +261,12 @@ whenLocalizationReady.then(() => {
         contentType: 'application/json',
         dataType: 'json',
       });
-      request.done((data) => alert('Success: Cleared Crate Progression Info. Next WIN should give crate.'));
-      return request.fail((response) => alert(`FAILED: Clear Crate Progression failed\n${response.responseJSON.message}`));
+      request.done((data) =>
+        alert('Success: Cleared Crate Progression Info. Next WIN should give crate.'),
+      );
+      return request.fail((response) =>
+        alert(`FAILED: Clear Crate Progression failed\n${response.responseJSON.message}`),
+      );
     };
 
     qaButtons['Add Common Cosmetic Chest'] = function () {
@@ -246,7 +277,9 @@ whenLocalizationReady.then(() => {
         dataType: 'json',
       });
       request.done((data) => alert('Success: Added Cosmetic Chest'));
-      return request.fail((response) => alert(`FAILED: Add Cosmetic Chest failed\n${response.responseJSON.message}`));
+      return request.fail((response) =>
+        alert(`FAILED: Add Cosmetic Chest failed\n${response.responseJSON.message}`),
+      );
     };
 
     qaButtons['Add Rare Cosmetic Chest'] = function () {
@@ -257,7 +290,9 @@ whenLocalizationReady.then(() => {
         dataType: 'json',
       });
       request.done((data) => alert('Success: Added Cosmetic Chest'));
-      return request.fail((response) => alert(`FAILED: Add Cosmetic Chest failed\n${response.responseJSON.message}`));
+      return request.fail((response) =>
+        alert(`FAILED: Add Cosmetic Chest failed\n${response.responseJSON.message}`),
+      );
     };
 
     qaButtons['Add Epic Cosmetic Chest'] = function () {
@@ -268,7 +303,9 @@ whenLocalizationReady.then(() => {
         dataType: 'json',
       });
       request.done((data) => alert('Success: Added Cosmetic Chest'));
-      return request.fail((response) => alert(`FAILED: Add Cosmetic Chest failed\n${response.responseJSON.message}`));
+      return request.fail((response) =>
+        alert(`FAILED: Add Cosmetic Chest failed\n${response.responseJSON.message}`),
+      );
     };
 
     qaButtons['Add Boss Chest'] = function () {
@@ -284,7 +321,9 @@ whenLocalizationReady.then(() => {
         dataType: 'json',
       });
       request.done((data) => alert('Success: Added Cosmetic Chest'));
-      return request.fail((response) => alert(`FAILED: Add Cosmetic Chest failed\n${response.responseJSON.message}`));
+      return request.fail((response) =>
+        alert(`FAILED: Add Cosmetic Chest failed\n${response.responseJSON.message}`),
+      );
     };
 
     qaButtons['Add Common Cosmetic Chest Key'] = function () {
@@ -295,7 +334,9 @@ whenLocalizationReady.then(() => {
         dataType: 'json',
       });
       request.done((data) => alert('Success: Added Cosmetic Chest Key'));
-      return request.fail((response) => alert(`FAILED: Add Cosmetic Chest Key failed\n${response.responseJSON.message}`));
+      return request.fail((response) =>
+        alert(`FAILED: Add Cosmetic Chest Key failed\n${response.responseJSON.message}`),
+      );
     };
 
     qaButtons['Add Rare Cosmetic Chest Key'] = function () {
@@ -306,7 +347,9 @@ whenLocalizationReady.then(() => {
         dataType: 'json',
       });
       request.done((data) => alert('Success: Added Cosmetic Chest Key'));
-      return request.fail((response) => alert(`FAILED: Add Cosmetic Chest Key failed\n${response.responseJSON.message}`));
+      return request.fail((response) =>
+        alert(`FAILED: Add Cosmetic Chest Key failed\n${response.responseJSON.message}`),
+      );
     };
 
     qaButtons['Add Epic Cosmetic Chest Key'] = function () {
@@ -317,7 +360,9 @@ whenLocalizationReady.then(() => {
         dataType: 'json',
       });
       request.done((data) => alert('Success: Added Cosmetic Chest Key'));
-      return request.fail((response) => alert(`FAILED: Add Cosmetic Chest Key failed\n${response.responseJSON.message}`));
+      return request.fail((response) =>
+        alert(`FAILED: Add Cosmetic Chest Key failed\n${response.responseJSON.message}`),
+      );
     };
 
     qaButtons['Add Boss Chest Key'] = function () {
@@ -328,7 +373,9 @@ whenLocalizationReady.then(() => {
         dataType: 'json',
       });
       request.done((data) => alert('Success: Added Cosmetic Chest Key'));
-      return request.fail((response) => alert(`FAILED: Add Cosmetic Chest Key failed\n${response.responseJSON.message}`));
+      return request.fail((response) =>
+        alert(`FAILED: Add Cosmetic Chest Key failed\n${response.responseJSON.message}`),
+      );
     };
 
     const skins = SDK.CosmeticsFactory.cosmeticsForType(SDK.CosmeticsTypeLookup.CardSkin);
@@ -351,7 +398,9 @@ whenLocalizationReady.then(() => {
             dataType: 'json',
           });
           request.done((data) => alert(`Success: Added Skin ${skinName}`));
-          return request.fail((response) => alert(`FAILED: Add Skin failed\n${response.responseJSON.message}`));
+          return request.fail((response) =>
+            alert(`FAILED: Add Skin failed\n${response.responseJSON.message}`),
+          );
         }
       }
     };
@@ -362,22 +411,27 @@ whenLocalizationReady.then(() => {
     };
 
     const qaQuestButtons = {};
-    qaQuestButtons['Reset Daily Quests'] = () => $.ajax({
-      url: `${process.env.API_URL}/api/me/qa/quests/current`,
-      type: 'DELETE',
-      contentType: 'application/json',
-      dataType: 'json',
-    }).done(() => alert('done!'));
+    qaQuestButtons['Reset Daily Quests'] = () =>
+      $.ajax({
+        url: `${process.env.API_URL}/api/me/qa/quests/current`,
+        type: 'DELETE',
+        contentType: 'application/json',
+        dataType: 'json',
+      }).done(() => alert('done!'));
     qaQuestButtons['Set Daily Quests'] = function () {
       let promptText = '';
       // Generate list of quest name/ids to show in prompt
-      if ((SDK.QuestFactory._questCache == null)) {
+      if (SDK.QuestFactory._questCache == null) {
         SDK.QuestFactory._generateQuestCache();
       }
 
       for (var k in SDK.QuestFactory._questCache) {
         var quest = SDK.QuestFactory._questCache[k];
-        if (quest.isCatchUp || quest.isBeginner || _.contains(quest.types, QuestType.ExcludeFromSystem)) {
+        if (
+          quest.isCatchUp ||
+          quest.isBeginner ||
+          _.contains(quest.types, QuestType.ExcludeFromSystem)
+        ) {
           continue;
         } else {
           promptText += `\n${quest.getName()}: ${quest.getId()}`;
@@ -390,7 +444,7 @@ whenLocalizationReady.then(() => {
       // validate and parse
       const questIdStrings = dailyQuestString.split(',');
 
-      if ((questIdStrings == null) || (questIdStrings.length !== 2)) {
+      if (questIdStrings == null || questIdStrings.length !== 2) {
         alert('Invalid usage.');
         return;
       }
@@ -398,7 +452,7 @@ whenLocalizationReady.then(() => {
       const questIds = [];
       for (var questIdString of Array.from<any>(questIdStrings)) {
         var questId = parseInt(questIdString);
-        if (Number.isNaN(questId) || (SDK.QuestFactory.questForIdentifier(questId) == null)) {
+        if (Number.isNaN(questId) || SDK.QuestFactory.questForIdentifier(questId) == null) {
           alert('Invalid usage.');
           return;
         }
@@ -431,7 +485,9 @@ whenLocalizationReady.then(() => {
         alert(`Success: Set quest generation back ${days_back} days\nReload required`);
         return location.reload();
       });
-      return request.fail((response) => alert(`FAILED: Set quest generation back failed\n${response.responseJSON.message}`));
+      return request.fail((response) =>
+        alert(`FAILED: Set quest generation back failed\n${response.responseJSON.message}`),
+      );
     };
     qaQuestButtons['Setup Frostfire 2016'] = function () {
       const request = $.ajax({
@@ -442,12 +498,17 @@ whenLocalizationReady.then(() => {
         dataType: 'json',
       });
       request.done((data) => alert('DONE'));
-      return request.fail((response) => alert(`FAILED: setup Frostfire 2016 quests failed\n${response.responseJSON.message}`));
+      return request.fail((response) =>
+        alert(`FAILED: setup Frostfire 2016 quests failed\n${response.responseJSON.message}`),
+      );
     };
     qaQuestButtons['Setup Seasonal quest for date'] = function () {
       const inOneMonthMoment = moment.utc().add(1, 'month');
-      const generateQuestsAtString = prompt('Enter Date to generate seasonal quest at\nExample: 2016-12-31', inOneMonthMoment.format('YYYY-MM-DD'));
-      if ((generateQuestsAtString == null)) {
+      const generateQuestsAtString = prompt(
+        'Enter Date to generate seasonal quest at\nExample: 2016-12-31',
+        inOneMonthMoment.format('YYYY-MM-DD'),
+      );
+      if (generateQuestsAtString == null) {
         alert('No entry, canceling generation');
         return;
       }
@@ -463,13 +524,18 @@ whenLocalizationReady.then(() => {
         dataType: 'json',
       });
       request.done((data) => alert('DONE'));
-      return request.fail((response) => alert(`FAILED: Setup seasonal quest failed\n${response.responseJSON.message}`));
+      return request.fail((response) =>
+        alert(`FAILED: Setup seasonal quest failed\n${response.responseJSON.message}`),
+      );
     };
 
     qaQuestButtons['Setup Promo quest for date'] = function () {
       const inOneMonthMoment = moment.utc().add(1, 'month');
-      const generateQuestsAtString = prompt('Enter Date to generate promo quest at\nExample: 2016-12-31', inOneMonthMoment.format('YYYY-MM-DD'));
-      if ((generateQuestsAtString == null)) {
+      const generateQuestsAtString = prompt(
+        'Enter Date to generate promo quest at\nExample: 2016-12-31',
+        inOneMonthMoment.format('YYYY-MM-DD'),
+      );
+      if (generateQuestsAtString == null) {
         alert('No entry, canceling generation');
         return;
       }
@@ -485,18 +551,22 @@ whenLocalizationReady.then(() => {
         dataType: 'json',
       });
       request.done((data) => alert('DONE'));
-      return request.fail((response) => alert(`FAILED: Setup Promo quest failed\n${response.responseJSON.message}`));
+      return request.fail((response) =>
+        alert(`FAILED: Setup Promo quest failed\n${response.responseJSON.message}`),
+      );
     };
 
     //  '/quests/setup_seasonal_quest'
     // router.put '/quests/current/progress', (req, res, next) ->
     qaQuestButtons['Progress quests by 1'] = function () {
-      const questSlotString = prompt('Enter list of quest slots you wish to progress\nDaily quests: 0 and 1\nWelcome Back quest: 10\nExample for all: 0,1,10');
+      const questSlotString = prompt(
+        'Enter list of quest slots you wish to progress\nDaily quests: 0 and 1\nWelcome Back quest: 10\nExample for all: 0,1,10',
+      );
       let questSlots = questSlotString.split(',');
       questSlots = _.map(questSlots, (slot) => parseInt(slot));
       questSlots = _.filter(questSlots, (slot) => _.isNumber(slot));
 
-      if ((questSlots == null) || (questSlots.length === 0)) {
+      if (questSlots == null || questSlots.length === 0) {
         alert('No valid indices, aborting');
         return;
       }
@@ -525,7 +595,10 @@ whenLocalizationReady.then(() => {
         contentType: 'application/json',
         dataType: 'json',
       }).done(() => {
-        const historyRequest = __guard__(__guard__(GamesManager.getInstance(), (x1) => x1.historyRankingModelCollection), (x) => x.fetch());
+        const historyRequest = __guard__(
+          __guard__(GamesManager.getInstance(), (x1) => x1.historyRankingModelCollection),
+          (x) => x.fetch(),
+        );
         return historyRequest.done(() => alert('done!'));
       });
     };
@@ -541,7 +614,10 @@ whenLocalizationReady.then(() => {
         contentType: 'application/json',
         dataType: 'json',
       }).done(() => {
-        const historyRequest = __guard__(__guard__(GamesManager.getInstance(), (x1) => x1.historyRankingModelCollection), (x) => x.fetch());
+        const historyRequest = __guard__(
+          __guard__(GamesManager.getInstance(), (x1) => x1.historyRankingModelCollection),
+          (x) => x.fetch(),
+        );
         return historyRequest.done(() => alert('done!'));
       });
     };
@@ -555,9 +631,11 @@ whenLocalizationReady.then(() => {
         type: 'PUT',
         contentType: 'application/json',
         dataType: 'json',
-      }).done((response) => alert(`Current season rank set. \n \
+      }).done((response) =>
+        alert(`Current season rank set. \n \
 Current season rank: ${response.rank}\n \
-Current season top_rank: ${response.top_rank}`));
+Current season top_rank: ${response.top_rank}`),
+      );
     };
     qaRankButtons['Set Current Season SRank Rating'] = function () {
       let rank_rating = prompt('Enter Rating (Max 5000,Min 100)', 1500) || 1500;
@@ -571,39 +649,52 @@ Current season top_rank: ${response.top_rank}`));
         type: 'PUT',
         contentType: 'application/json',
         dataType: 'json',
-      }).done((response) => alert(`Current season S-Rank Rating set. \n \
-New ladder position: ${response.ladder_position}`));
+      }).done((response) =>
+        alert(`Current season S-Rank Rating set. \n \
+New ladder position: ${response.ladder_position}`),
+      );
     };
-    qaRankButtons['Reset Current Season SRank Rating'] = () => $.ajax({
-      url: `${process.env.API_URL}/api/me/qa/rank_rating`,
-      type: 'DELETE',
-      contentType: 'application/json',
-      dataType: 'json',
-    }).done(() => alert('Current season S-Rank Rating reset.'));
-    qaRankButtons['Get Current SRank Ladder Position'] = () => $.ajax({
-      url: `${process.env.API_URL}/api/me/qa/ladder_position`,
-      type: 'GET',
-      contentType: 'application/json',
-      dataType: 'json',
-    }).done((response) => alert(`Current season S-Rank Ladder Position:\n${response.user_ladder_position}`));
-    qaRankButtons['Get Current Season SRank Info'] = () => $.ajax({
-      url: `${process.env.API_URL}/api/me/qa/rank_rating`,
-      type: 'GET',
-      contentType: 'application/json',
-      dataType: 'json',
-    }).done((response) => alert(`Current season rank info: \n \
+    qaRankButtons['Reset Current Season SRank Rating'] = () =>
+      $.ajax({
+        url: `${process.env.API_URL}/api/me/qa/rank_rating`,
+        type: 'DELETE',
+        contentType: 'application/json',
+        dataType: 'json',
+      }).done(() => alert('Current season S-Rank Rating reset.'));
+    qaRankButtons['Get Current SRank Ladder Position'] = () =>
+      $.ajax({
+        url: `${process.env.API_URL}/api/me/qa/ladder_position`,
+        type: 'GET',
+        contentType: 'application/json',
+        dataType: 'json',
+      }).done((response) =>
+        alert(`Current season S-Rank Ladder Position:\n${response.user_ladder_position}`),
+      );
+    qaRankButtons['Get Current Season SRank Info'] = () =>
+      $.ajax({
+        url: `${process.env.API_URL}/api/me/qa/rank_rating`,
+        type: 'GET',
+        contentType: 'application/json',
+        dataType: 'json',
+      }).done((response) =>
+        alert(`Current season rank info: \n \
 S-Rank Rating: ${response.user_rating_data.rating}\n \
 S-Rank Game Count: ${response.user_rating_data.srank_game_count}\n \
 S-Rank Win Count: ${response.user_rating_data.srank_win_count}\n \
 S-Rank Ladder Rating: ${response.user_rating_data.ladder_rating}\n \
-S-Rank Position: ${response.user_rating_data.ladder_position}`));
-    qaRankButtons['Use Current Season To Trigger Season Rollover'] = () => $.ajax({
-      url: `${process.env.API_URL}/api/me/qa/rank/history/last`,
-      type: 'DELETE',
-      contentType: 'application/json',
-      dataType: 'json',
-    }).done(() => GamesManager.getInstance()._requestRankUpdateFromServer()
-      .then(() => alert('Current season has been used to simulate a season rollover')));
+S-Rank Position: ${response.user_rating_data.ladder_position}`),
+      );
+    qaRankButtons['Use Current Season To Trigger Season Rollover'] = () =>
+      $.ajax({
+        url: `${process.env.API_URL}/api/me/qa/rank/history/last`,
+        type: 'DELETE',
+        contentType: 'application/json',
+        dataType: 'json',
+      }).done(() =>
+        GamesManager.getInstance()
+          ._requestRankUpdateFromServer()
+          .then(() => alert('Current season has been used to simulate a season rollover')),
+      );
     qaRankButtons['Add queue time for BRONZE'] = function () {
       const ms = prompt('Enter Rank', parseInt(Math.random() * 100) * 1000);
       return $.ajax({
@@ -618,12 +709,13 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
     };
 
     const qaProgressionButtons = {};
-    qaProgressionButtons['Set all Faction Win Counts to 99'] = () => $.ajax({
-      url: `${process.env.API_URL}/api/me/qa/faction_progression/set_all_win_counts_to_99`,
-      type: 'POST',
-      contentType: 'application/json',
-      dataType: 'json',
-    }).done(() => alert('done!'));
+    qaProgressionButtons['Set all Faction Win Counts to 99'] = () =>
+      $.ajax({
+        url: `${process.env.API_URL}/api/me/qa/faction_progression/set_all_win_counts_to_99`,
+        type: 'POST',
+        contentType: 'application/json',
+        dataType: 'json',
+      }).done(() => alert('done!'));
     qaProgressionButtons['Complete Progression'] = function () {
       NewPlayerManager.getInstance()._completeProgression();
       return alert('Complete: Navigate away from main menu and back');
@@ -638,13 +730,20 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
       });
       alert('This may take quite a while!\nDismiss this and wait for success prompt');
       request.done((data) => alert('Success: All factions set to level 10'));
-      return request.fail((response) => alert(`FAILED: Set all factions to level 10 failed\n${response.responseJSON.message}`));
+      return request.fail((response) =>
+        alert(`FAILED: Set all factions to level 10 failed\n${response.responseJSON.message}`),
+      );
     };
 
-    const qaAddFactionLevel: Record<string, any> = { Faction: SDK.FactionFactory.getAllPlayableFactions()[0].name };
+    const qaAddFactionLevel: Record<string, any> = {
+      Faction: SDK.FactionFactory.getAllPlayableFactions()[0].name,
+    };
     qaAddFactionLevel.Add = function () {
       const factionName = qaAddFactionLevel.Faction;
-      const factionData = _.find(SDK.FactionFactory.getAllPlayableFactions(), (factionData) => factionData.name === factionName);
+      const factionData = _.find(
+        SDK.FactionFactory.getAllPlayableFactions(),
+        (factionData) => factionData.name === factionName,
+      );
       if (factionData != null) {
         const request = $.ajax({
           url: `${process.env.API_URL}/api/me/qa/faction_progression/add_level`,
@@ -657,11 +756,17 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
         });
         alert('This may take quite a while!\nDismiss this and wait for success prompt');
         request.done((data) => alert('Success: faction level increased'));
-        return request.fail((response) => alert(`FAILED: adding faction level failed\n${response.responseJSON.message}`));
+        return request.fail((response) =>
+          alert(`FAILED: adding faction level failed\n${response.responseJSON.message}`),
+        );
       }
     };
     const qaAddFactionLevelFolder = qaProgressionFolder.addFolder('Add Faction Level');
-    qaAddFactionLevelFolder.add(qaAddFactionLevel, 'Faction', _.map(SDK.FactionFactory.getAllPlayableFactions(), (factionData) => factionData.name));
+    qaAddFactionLevelFolder.add(
+      qaAddFactionLevel,
+      'Faction',
+      _.map(SDK.FactionFactory.getAllPlayableFactions(), (factionData) => factionData.name),
+    );
     qaAddFactionLevelFolder.add(qaAddFactionLevel, 'Add');
 
     const qaGauntletButtons = {};
@@ -675,8 +780,12 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
         contentType: 'application/json',
         dataType: 'json',
       });
-      request.done((data) => alert(`Added Gauntlet Victory\nWins: ${data.win_count}\nLosses: ${data.loss_count}`));
-      return request.fail((response) => alert(`FAILED: Add Gauntlet Victory failed\n${response.responseJSON.message}`));
+      request.done((data) =>
+        alert(`Added Gauntlet Victory\nWins: ${data.win_count}\nLosses: ${data.loss_count}`),
+      );
+      return request.fail((response) =>
+        alert(`FAILED: Add Gauntlet Victory failed\n${response.responseJSON.message}`),
+      );
     };
     qaGauntletButtons['Add Gauntlet Loss'] = function () {
       const request = $.ajax({
@@ -688,8 +797,12 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
         contentType: 'application/json',
         dataType: 'json',
       });
-      request.done((data) => alert(`Added Gauntlet Loss\nWins: ${data.win_count}\nLosses: ${data.loss_count}`));
-      return request.fail((response) => alert(`FAILED: Add Gauntlet Loss failed\n${response.responseJSON.message}`));
+      request.done((data) =>
+        alert(`Added Gauntlet Loss\nWins: ${data.win_count}\nLosses: ${data.loss_count}`),
+      );
+      return request.fail((response) =>
+        alert(`FAILED: Add Gauntlet Loss failed\n${response.responseJSON.message}`),
+      );
     };
     qaGauntletButtons['Fill Gauntlet Deck'] = function () {
       alert('Please wait for confirmation dialogue (May take up to 10 seconds).');
@@ -700,7 +813,9 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
         dataType: 'json',
       });
       request.done((data) => alert('Gauntlet deck filled\n'));
-      return request.fail((response) => alert(`FAILED: Filling Gauntlet deck\n${response.responseJSON.message}`));
+      return request.fail((response) =>
+        alert(`FAILED: Filling Gauntlet deck\n${response.responseJSON.message}`),
+      );
     };
     qaGauntletButtons['Remove Gauntlet General'] = function () {
       alert('Removing general from current Gauntlet Deck.');
@@ -711,7 +826,9 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
         dataType: 'json',
       });
       request.done((data) => alert('Current Gauntlet deck General has been removed\n'));
-      return request.fail((response) => alert(`FAILED: Removing Gauntlet deck General\n${response.responseJSON.message}`));
+      return request.fail((response) =>
+        alert(`FAILED: Removing Gauntlet deck General\n${response.responseJSON.message}`),
+      );
     };
 
     qaGauntletButtons['Delete Current Gauntlet Run'] = function () {
@@ -728,8 +845,10 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
       });
     };
     qaGauntletButtons['Enable Gauntlet/Rift'] = function () {
-      SDK.PlayModeFactory.playModeForIdentifier(SDK.PlayModes.Gauntlet).availableOnDaysOfWeek = null;
-      SDK.PlayModeFactory.playModeForIdentifier(SDK.PlayModes.Gauntlet).gamesRequiredToUnlock = null;
+      SDK.PlayModeFactory.playModeForIdentifier(SDK.PlayModes.Gauntlet).availableOnDaysOfWeek =
+        null;
+      SDK.PlayModeFactory.playModeForIdentifier(SDK.PlayModes.Gauntlet).gamesRequiredToUnlock =
+        null;
       SDK.PlayModeFactory.playModeForIdentifier(SDK.PlayModes.Rift).gamesRequiredToUnlock = null;
 
       return alert('Gauntlet has been enabled LOCALLY.\nRefreshing will clear this change.');
@@ -748,7 +867,9 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
         dataType: 'json',
       });
       request.done((data) => alert('Processed referral user.'));
-      return request.fail((response) => alert(`FAILED: Processed referral \n${response.responseJSON.message}`));
+      return request.fail((response) =>
+        alert(`FAILED: Processed referral \n${response.responseJSON.message}`),
+      );
     };
     qaReferralButtons['Add Referral SILVER Event'] = function () {
       const eventType = 'silver';
@@ -762,7 +883,9 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
         dataType: 'json',
       });
       request.done((data) => alert(`Processed referral event '${eventType}'.`));
-      return request.fail((response) => alert(`FAILED: Processed referral event\n${response.responseJSON.message}`));
+      return request.fail((response) =>
+        alert(`FAILED: Processed referral event\n${response.responseJSON.message}`),
+      );
     };
     qaReferralButtons['Add Referral GOLD Event'] = function () {
       const eventType = 'gold';
@@ -776,7 +899,9 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
         dataType: 'json',
       });
       request.done((data) => alert(`Processed referral event '${eventType}'.`));
-      return request.fail((response) => alert(`FAILED: Processed referral event\n${response.responseJSON.message}`));
+      return request.fail((response) =>
+        alert(`FAILED: Processed referral event\n${response.responseJSON.message}`),
+      );
     };
 
     const qaInventoryButtons = {};
@@ -806,7 +931,9 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
       });
 
       request.done((data) => alert(`Added ${amount} Gold!`));
-      return request.fail((response) => alert(`FAILED: Adding Gold\n${response.responseJSON.message}`));
+      return request.fail((response) =>
+        alert(`FAILED: Adding Gold\n${response.responseJSON.message}`),
+      );
     };
     qaInventoryButtons['Add X Spirit'] = function () {
       let amount = prompt('Spirit amount to add:', 900) || 900;
@@ -822,7 +949,9 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
       });
 
       request.done((data) => alert(`Added ${amount} Spirit!`));
-      return request.fail((response) => alert(`FAILED: Adding Spirit\n${response.responseJSON.message}`));
+      return request.fail((response) =>
+        alert(`FAILED: Adding Spirit\n${response.responseJSON.message}`),
+      );
     };
 
     qaInventoryButtons['Add X Diamond'] = function () {
@@ -839,7 +968,9 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
       });
 
       request.done((data) => alert(`Added ${amount} Diamond!`));
-      return request.fail((response) => alert(`FAILED: Adding Diamond\n${response.responseJSON.message}`));
+      return request.fail((response) =>
+        alert(`FAILED: Adding Diamond\n${response.responseJSON.message}`),
+      );
     };
 
     qaInventoryButtons['Add Rift Ticket'] = function () {
@@ -851,7 +982,9 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
       });
 
       request.done((data) => alert('Added 1 Rift Ticket!'));
-      return request.fail((response) => alert(`FAILED: Adding Rift Ticket\n${response.responseJSON.message}`));
+      return request.fail((response) =>
+        alert(`FAILED: Adding Rift Ticket\n${response.responseJSON.message}`),
+      );
     };
     qaInventoryButtons['Add 3x Rare'] = function () {
       let factionId = prompt('Enter Faction:', 1) || 1;
@@ -860,7 +993,10 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
       let countToPop = prompt('Remove Any:', 0) || 0;
       countToPop = parseInt(countToPop);
 
-      const allCommonCards = _.filter(__guard__(GameDataManager.getInstance().visibleCardsCollection, (x) => x.models), (c) => (c.get('factionId') === factionId) && (c.get('rarityId') === SDK.Rarity.Rare));
+      const allCommonCards = _.filter(
+        __guard__(GameDataManager.getInstance().visibleCardsCollection, (x) => x.models),
+        (c) => c.get('factionId') === factionId && c.get('rarityId') === SDK.Rarity.Rare,
+      );
       const allCommonCardIds = _.map(allCommonCards, (c) => c.get('id'));
       let cardIds = _.map(allCommonCardIds, (c) => [c, c, c]);
       cardIds = _.flatten(cardIds);
@@ -891,7 +1027,7 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
         cardSetPromptStr += `\n${SDK.CardSetFactory.cardSetForIdentifier(cardSetId).name}: ${cardSetId}`;
       }
       cardSetId = prompt(cardSetPromptStr) || null;
-      if ((cardSetId == null)) {
+      if (cardSetId == null) {
         alert('No Card Set Selected');
         return;
       }
@@ -908,8 +1044,11 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
       });
       request.done((data) => alert('Purchased card set with spirit'));
       return request.fail((response) => {
-        let errorStr = __guard__(response != null ? response.responseJSON : undefined, (x) => x.message);
-        if ((errorStr == null)) {
+        let errorStr = __guard__(
+          response != null ? response.responseJSON : undefined,
+          (x) => x.message,
+        );
+        if (errorStr == null) {
           errorStr = JSON.stringify(response, null, 2);
         }
         errorStr = JSON.stringify(errorStr);
@@ -957,8 +1096,11 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
       return alert('Sandbox is now enabled.');
     };
     qaChallengeButtons['Set my daily challenge completion time'] = function () {
-      let relativeDays = prompt('Set daily challenge\'s last completion time X days relative to today:\n'
-          + 'Negative numbers for past, 0 for today, positive numbers for the future', 0);
+      let relativeDays = prompt(
+        "Set daily challenge's last completion time X days relative to today:\n" +
+          'Negative numbers for past, 0 for today, positive numbers for the future',
+        0,
+      );
       relativeDays = parseInt(relativeDays);
       const newCompletionMoment = moment.utc().add(relativeDays, 'day');
       return $.ajax({
@@ -976,25 +1118,26 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
     };
     qaChallengeButtons['Play daily challenge for date'] = function () {
       const dailyChallengeDateString = prompt(
-        'Enter date in to load daily challenge for:\n'
-          + 'This won\'t count as completing a daily challenge (no reward no daily challenge has already been completed\n'
-          + 'Format: YYYY-MM-DD',
+        'Enter date in to load daily challenge for:\n' +
+          "This won't count as completing a daily challenge (no reward no daily challenge has already been completed\n" +
+          'Format: YYYY-MM-DD',
         moment.utc().format('YYYY-MM-DD'),
       );
 
-      const dailyChallengeRef = new Firebase(`${process.env.FIREBASE_URL}/daily-challenges/${dailyChallengeDateString}`);
+      const dailyChallengeRef = new Firebase(
+        `${process.env.FIREBASE_URL}/daily-challenges/${dailyChallengeDateString}`,
+      );
       return dailyChallengeRef.once('value', (dailyChallengeSnapshot) => {
-        if ((dailyChallengeSnapshot == null) || (dailyChallengeSnapshot.val() == null)) {
+        if (dailyChallengeSnapshot == null || dailyChallengeSnapshot.val() == null) {
           alert(`No challenge found for date provided: ${dailyChallengeDateString}`);
         } else {
           const dailyChallengeData = dailyChallengeSnapshot.val();
           // Insert a date key on the daily challenge to identify it when marking as QA
           dailyChallengeData.dateKey = dailyChallengeDateString;
-          SDK.ChallengeRemote.loadAndCreateFromModelData(dailyChallengeData)
-            .then((challenge) => {
-              challenge._generatedForQA = true;
-              return EventBus.getInstance().trigger(EVENTS.start_challenge, challenge);
-            });
+          SDK.ChallengeRemote.loadAndCreateFromModelData(dailyChallengeData).then((challenge) => {
+            challenge._generatedForQA = true;
+            return EventBus.getInstance().trigger(EVENTS.start_challenge, challenge);
+          });
         }
       });
     };
@@ -1006,9 +1149,11 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
       }
 
       const dailyChallenge = gameSession.getChallenge();
-      if ((dailyChallenge == null) || (dailyChallenge.dateKey == null)) {
-        alert('Failed: Current daily challenge was not loaded from QA Tool\n'
-          + 'Use QA Tool \'Play daily challenge for date\' to mark a challenge as QA passed');
+      if (dailyChallenge == null || dailyChallenge.dateKey == null) {
+        alert(
+          'Failed: Current daily challenge was not loaded from QA Tool\n' +
+            "Use QA Tool 'Play daily challenge for date' to mark a challenge as QA passed",
+        );
         return;
       }
 
@@ -1023,11 +1168,16 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
       });
 
       request.done((data) => alert('Success: Daily challenge marked as passing QA'));
-      return request.fail((response) => alert(`Failed: Daily challenge not set as passed qa\n${response.toString()}`));
+      return request.fail((response) =>
+        alert(`Failed: Daily challenge not set as passed qa\n${response.toString()}`),
+      );
     };
 
     qaChallengeButtons['Get list of daily challenges'] = function () {
-      const startDateString = prompt('Enter start date of range:\nFormat: YYYY-MM-DD', moment.utc().format('YYYY-MM-DD'));
+      const startDateString = prompt(
+        'Enter start date of range:\nFormat: YYYY-MM-DD',
+        moment.utc().format('YYYY-MM-DD'),
+      );
       const startDateMoment = moment.utc(startDateString);
       let numDays = prompt('Enter num days to search:', 10);
       numDays = parseInt(numDays);
@@ -1039,22 +1189,33 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
 
       const challengeResults = {};
 
-      return PromiseUtils.each(allDateKeys, (dateKey) => new Promise((resolve, reject) => {
-        const dailyChallengeRef = new Firebase(`${process.env.FIREBASE_URL}/daily-challenges/${dateKey}`);
-        dailyChallengeRef.once(
-          'value',
-          (dataSnapshot) => {
-            challengeResults[dateKey] = dataSnapshot.val();
-            return resolve({
-              dateKey,
-              challenge: dataSnapshot.val(),
-            });
-          },
-          (error) => reject('fb error'),
+      return PromiseUtils.each(
+        allDateKeys,
+        (dateKey) =>
+          new Promise((resolve, reject) => {
+            const dailyChallengeRef = new Firebase(
+              `${process.env.FIREBASE_URL}/daily-challenges/${dateKey}`,
+            );
+            dailyChallengeRef.once(
+              'value',
+              (dataSnapshot) => {
+                challengeResults[dateKey] = dataSnapshot.val();
+                return resolve({
+                  dateKey,
+                  challenge: dataSnapshot.val(),
+                });
+              },
+              (error) => reject('fb error'),
+            );
+          }),
+      ).then((challengesData) => {
+        alert(
+          `Challenges: (This is also printed to console)\n${JSON.stringify(
+            challengeResults,
+            null,
+            2,
+          )}`,
         );
-      })).then((challengesData) => {
-        alert(`Challenges: (This is also printed to console)\n${
-          JSON.stringify(challengeResults, null, 2)}`);
         return console.log(JSON.stringify(challengeResults, null, 2));
       });
     };
@@ -1081,9 +1242,11 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
         const bossIndex = _.indexOf(btBossNames, bossName);
         if (bossIndex !== -1) {
           const bossCardId = btBossCardIds[bossIndex];
-          if ((bossCardId != null) && (bossCardId !== btBossCardIds[0])) {
+          if (bossCardId != null && bossCardId !== btBossCardIds[0]) {
             let adjustedMs = btSetupBossEvent['Delta Time (ms)'];
-            if (isNaN(adjustedMs) || !_.isNumber(adjustedMs)) { adjustedMs = 0; }
+            if (isNaN(adjustedMs) || !_.isNumber(adjustedMs)) {
+              adjustedMs = 0;
+            }
             const request = $.ajax({
               url: `${process.env.API_URL}/api/me/qa/boss_event`,
               data: JSON.stringify({
@@ -1095,8 +1258,12 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
               dataType: 'json',
             });
 
-            request.done((data) => alert('Success: QA Boss Event Created (re-enter main menu to update UI)'));
-            return request.fail((response) => alert(`Failed: Could not create QA Boss Event \n${response.toString()}`));
+            request.done((data) =>
+              alert('Success: QA Boss Event Created (re-enter main menu to update UI)'),
+            );
+            return request.fail((response) =>
+              alert(`Failed: Could not create QA Boss Event \n${response.toString()}`),
+            );
           }
         }
       }
@@ -1114,8 +1281,12 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
         dataType: 'json',
       });
 
-      request.done((data) => alert('Success: QA Boss Event Removed (re-enter main menu to update UI)'));
-      return request.fail((response) => alert(`Failed: Could not remove QA Boss Event \n${response.toString()}`));
+      request.done((data) =>
+        alert('Success: QA Boss Event Removed (re-enter main menu to update UI)'),
+      );
+      return request.fail((response) =>
+        alert(`Failed: Could not remove QA Boss Event \n${response.toString()}`),
+      );
     };
     qaBossFolder.add(qaBossButtons, 'Remove QA Boss Event');
 
@@ -1128,7 +1299,9 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
       });
 
       request.done((data) => alert('Success: Boss Rewards Removed'));
-      return request.fail((response) => alert(`Failed: Could not remove Boss Rewards \n${response.toString()}`));
+      return request.fail((response) =>
+        alert(`Failed: Could not remove Boss Rewards \n${response.toString()}`),
+      );
     };
     qaBossFolder.add(qaBossButtons, 'Reset Boss Rewards');
 
@@ -1166,9 +1339,10 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
 
       //      achievementIdToReset = prompt(enabledAchievementsDescription)
       const achievementNameToReset = mtSetupAchievementReset.Achievements;
-      const achievementIdToReset = mtAchievementIds[_.indexOf(mtAchievementNames, achievementNameToReset)];
+      const achievementIdToReset =
+        mtAchievementIds[_.indexOf(mtAchievementNames, achievementNameToReset)];
 
-      if ((SDK.AchievementsFactory.achievementForIdentifier(achievementIdToReset) == null)) {
+      if (SDK.AchievementsFactory.achievementForIdentifier(achievementIdToReset) == null) {
         alert(`No achievement id matching: ${achievementIdToReset}`);
         return;
       }
@@ -1196,7 +1370,7 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
       let numOrbs = prompt('Number of spirit orbs to add:\n', 0);
       numOrbs = parseInt(numOrbs);
 
-      const confirmation = prompt('Please enter \'confirm\' to proceed');
+      const confirmation = prompt("Please enter 'confirm' to proceed");
       if (confirmation !== 'confirm') {
         alert('Abandoning backfill set up');
         return;
@@ -1229,7 +1403,7 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
         languageKey = null;
       }
 
-      if ((languageKey === 'cimode') && (languageKey !== null)) {
+      if (languageKey === 'cimode' && languageKey !== null) {
         return i18next.changeLanguage(languageKey, (err, t) => {
           if (err != null) {
             alert(`Something went wrong changing language:\n${err}`);
@@ -1238,16 +1412,23 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
 
           alert('Language change complete');
           Storage.set('preferredLanguageKey', languageKey);
-          EventBus.getInstance().trigger(EVENTS.request_reload, { id: 'language_changed', message: 'Language Changed.  Please restart.' });
+          EventBus.getInstance().trigger(EVENTS.request_reload, {
+            id: 'language_changed',
+            message: 'Language Changed.  Please restart.',
+          });
         });
-      } if (languageKey !== null) {
+      }
+      if (languageKey !== null) {
         return i18next.loadLanguages(languageKey, (err, t) => {
           if (err != null) {
             alert(`Something went wrong loading language:\n${err}`);
             return;
           }
           Storage.set('preferredLanguageKey', languageKey);
-          return EventBus.getInstance().trigger(EVENTS.request_reload, { id: 'language_changed', message: 'Language Changed.  Please restart.' });
+          return EventBus.getInstance().trigger(EVENTS.request_reload, {
+            id: 'language_changed',
+            message: 'Language Changed.  Please restart.',
+          });
           //          i18next.changeLanguage(languageKey, (err,t) ->
           //            if (err?)
           //              alert("Something went wrong changing language:\n" + err)
@@ -1262,7 +1443,7 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
     };
 
     qaMiscButtons['Reset account and reload'] = function () {
-      const confirmation = prompt('Please enter \'confirm\' to proceed resetting account');
+      const confirmation = prompt("Please enter 'confirm' to proceed resetting account");
       if (confirmation !== 'confirm') {
         alert('Abandoning account reset');
         return;
@@ -1279,7 +1460,9 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
         alert('Please reload');
         return location.reload();
       });
-      return request.fail((response) => alert(`Failed: Could not reset account:\n${response.responseJSON.message}`));
+      return request.fail((response) =>
+        alert(`Failed: Could not reset account:\n${response.responseJSON.message}`),
+      );
     };
 
     qaMiscButtons['Convert rift run to have duplicate card choices'] = function () {
@@ -1291,7 +1474,11 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
       });
 
       request.done((data) => alert('Any rift run with card choices now have duplicates'));
-      return request.fail((response) => alert(`Failed: Could not create rift duplicate card choices:\n${response.responseJSON.message}`));
+      return request.fail((response) =>
+        alert(
+          `Failed: Could not create rift duplicate card choices:\n${response.responseJSON.message}`,
+        ),
+      );
     };
 
     qaMiscButtons['Retrieve Charge Log'] = function () {
@@ -1306,7 +1493,9 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
         alert(JSON.stringify(data, null, 2));
         return console.log(JSON.stringify(data, null, 2));
       });
-      return request.fail((response) => alert(`Failed: Could not retrieve user charge log:\n${response.responseJSON.message}`));
+      return request.fail((response) =>
+        alert(`Failed: Could not retrieve user charge log:\n${response.responseJSON.message}`),
+      );
     };
 
     // User qa buttons
@@ -1440,7 +1629,9 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
         sortVal += '4';
       } else if (card instanceof SDK.Spell) {
         sortVal += '5';
-      } else if (card instanceof SDK.Artifact) { sortVal += '6'; }
+      } else if (card instanceof SDK.Artifact) {
+        sortVal += '6';
+      }
       sortVal += card.getName();
       return sortVal;
     });
@@ -1476,7 +1667,10 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
 
     // game tools: add or remove cards
     const gtAddCardToHand = {
-      Card: gtCardFactionTypeNames[0], X: -1, Y: -1, 'Hand Slot': -1,
+      Card: gtCardFactionTypeNames[0],
+      X: -1,
+      Y: -1,
+      'Hand Slot': -1,
     };
     gtAddCardToHand['Add Selected Card'] = function () {
       const player = SDK.GameSession.getInstance().getCurrentPlayer();
@@ -1491,21 +1685,39 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
             const y = gtAddCardToHand.Y;
             if (index !== -1) {
               if (player.getDeck().getCardIndexInHandAtIndex(index) != null) {
-                const removeCardFromHandAction = new SDK.RemoveCardFromHandAction(SDK.GameSession.getInstance(), index, player.getPlayerId());
+                const removeCardFromHandAction = new SDK.RemoveCardFromHandAction(
+                  SDK.GameSession.getInstance(),
+                  index,
+                  player.getPlayerId(),
+                );
                 gtExecuteActionWithoutValidation(removeCardFromHandAction);
               }
-              const putCardInHandAction = new SDK.PutCardInHandAction(SDK.GameSession.getInstance(), player.getPlayerId(), card.createNewCardData(), index);
+              const putCardInHandAction = new SDK.PutCardInHandAction(
+                SDK.GameSession.getInstance(),
+                player.getPlayerId(),
+                card.createNewCardData(),
+                index,
+              );
               return gtExecuteActionWithoutValidation(putCardInHandAction);
-            } if ((x !== -1) && (y !== -1)) {
+            }
+            if (x !== -1 && y !== -1) {
               if (card instanceof SDK.Unit) {
-                const unitAtPosition = SDK.GameSession.getInstance().getBoard().getUnitAtPosition({ x, y });
+                const unitAtPosition = SDK.GameSession.getInstance()
+                  .getBoard()
+                  .getUnitAtPosition({ x, y });
                 if (unitAtPosition != null) {
                   const removeAction = new SDK.RemoveAction(SDK.GameSession.getInstance());
                   removeAction.setTarget(unitAtPosition);
                   gtExecuteActionWithoutValidation(removeAction);
                 }
               }
-              const applyCardToBoardAction = new SDK.ApplyCardToBoardAction(SDK.GameSession.getInstance(), player.getPlayerId(), x, y, card.createNewCardData());
+              const applyCardToBoardAction = new SDK.ApplyCardToBoardAction(
+                SDK.GameSession.getInstance(),
+                player.getPlayerId(),
+                x,
+                y,
+                card.createNewCardData(),
+              );
               return gtExecuteActionWithoutValidation(applyCardToBoardAction);
             }
           }
@@ -1519,10 +1731,14 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
       const y = gtAddCardToHand.Y;
       if (index !== -1) {
         if (player.getDeck().getCardIndexInHandAtIndex(index) != null) {
-          const removeCardFromHandAction = new SDK.RemoveCardFromHandAction(SDK.GameSession.getInstance(), index, player.getPlayerId());
+          const removeCardFromHandAction = new SDK.RemoveCardFromHandAction(
+            SDK.GameSession.getInstance(),
+            index,
+            player.getPlayerId(),
+          );
           return gtExecuteActionWithoutValidation(removeCardFromHandAction);
         }
-      } else if ((x !== -1) && (y !== -1)) {
+      } else if (x !== -1 && y !== -1) {
         const unitAtPosition = SDK.GameSession.getInstance().getBoard().getUnitAtPosition({ x, y });
         if (unitAtPosition != null) {
           const removeAction = new SDK.RemoveAction(SDK.GameSession.getInstance());
@@ -1533,15 +1749,32 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
     };
     const gtAddCardToHandFolder = gtFolder.addFolder('Add or Remove Card');
     gtAddCardToHandFolder.add(gtAddCardToHand, 'Card', gtCardFactionTypeNames);
-    gtAddCardToHandFolder.add(gtAddCardToHand, 'X').min(-1).max(CONFIG.BOARDCOL - 1).step(1);
-    gtAddCardToHandFolder.add(gtAddCardToHand, 'Y').min(-1).max(CONFIG.BOARDROW - 1).step(1);
-    gtAddCardToHandFolder.add(gtAddCardToHand, 'Hand Slot').min(-1).max(CONFIG.MAX_HAND_SIZE - 1).step(1);
+    gtAddCardToHandFolder
+      .add(gtAddCardToHand, 'X')
+      .min(-1)
+      .max(CONFIG.BOARDCOL - 1)
+      .step(1);
+    gtAddCardToHandFolder
+      .add(gtAddCardToHand, 'Y')
+      .min(-1)
+      .max(CONFIG.BOARDROW - 1)
+      .step(1);
+    gtAddCardToHandFolder
+      .add(gtAddCardToHand, 'Hand Slot')
+      .min(-1)
+      .max(CONFIG.MAX_HAND_SIZE - 1)
+      .step(1);
     gtAddCardToHandFolder.add(gtAddCardToHand, 'Add Selected Card');
     gtAddCardToHandFolder.add(gtAddCardToHand, 'Remove Any Card');
 
     // game tools: change unit stats
     const gtChangeStats = {
-      'Max HP': -1, Attack: -1, Damage: -1, X: -1, Y: -1, 'Hand Slot': -1,
+      'Max HP': -1,
+      Attack: -1,
+      Damage: -1,
+      X: -1,
+      Y: -1,
+      'Hand Slot': -1,
     };
     gtChangeStats.Change = function () {
       const player = SDK.GameSession.getInstance().getCurrentPlayer();
@@ -1550,13 +1783,19 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
       const y = gtChangeStats.Y;
       if (index !== -1) {
         card = player.getDeck().getCardInHandAtIndex(index);
-      } else if ((x !== -1) && (y !== -1)) {
+      } else if (x !== -1 && y !== -1) {
         card = SDK.GameSession.getInstance().getBoard().getUnitAtPosition({ x, y });
       }
       if (card instanceof SDK.Unit) {
-        if (gtChangeStats['Max HP'] !== -1) { card.maxHP = gtChangeStats['Max HP']; }
-        if (gtChangeStats.Attack !== -1) { card.atk = gtChangeStats.Attack; }
-        if (gtChangeStats.Damage !== -1) { card.setDamage(gtChangeStats.Damage); }
+        if (gtChangeStats['Max HP'] !== -1) {
+          card.maxHP = gtChangeStats['Max HP'];
+        }
+        if (gtChangeStats.Attack !== -1) {
+          card.atk = gtChangeStats.Attack;
+        }
+        if (gtChangeStats.Damage !== -1) {
+          card.setDamage(gtChangeStats.Damage);
+        }
         card.flushCachedAttributes();
         return gtExecuteActionWithoutValidation(new SDK.Action(SDK.GameSession.getInstance())); // execute generic action to update session and engine
       }
@@ -1565,24 +1804,48 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
     gtChangeStatsFolder.add(gtChangeStats, 'Max HP').min(-1).max(25).step(1);
     gtChangeStatsFolder.add(gtChangeStats, 'Attack').min(-1).max(25).step(1);
     gtChangeStatsFolder.add(gtChangeStats, 'Damage').min(-1).max(25).step(1);
-    gtChangeStatsFolder.add(gtChangeStats, 'X').min(-1).max(CONFIG.BOARDCOL - 1).step(1);
-    gtChangeStatsFolder.add(gtChangeStats, 'Y').min(-1).max(CONFIG.BOARDROW - 1).step(1);
-    gtChangeStatsFolder.add(gtChangeStats, 'Hand Slot').min(-1).max(CONFIG.MAX_HAND_SIZE - 1).step(1);
+    gtChangeStatsFolder
+      .add(gtChangeStats, 'X')
+      .min(-1)
+      .max(CONFIG.BOARDCOL - 1)
+      .step(1);
+    gtChangeStatsFolder
+      .add(gtChangeStats, 'Y')
+      .min(-1)
+      .max(CONFIG.BOARDROW - 1)
+      .step(1);
+    gtChangeStatsFolder
+      .add(gtChangeStats, 'Hand Slot')
+      .min(-1)
+      .max(CONFIG.MAX_HAND_SIZE - 1)
+      .step(1);
     gtChangeStatsFolder.add(gtChangeStats, 'Change');
 
     // game tools: refresh unit on board
     const gtRefresh: Record<string, any> = { X: 0, Y: 0 };
     gtRefresh.Refresh = function () {
-      const unit = SDK.GameSession.getInstance().getBoard().getUnitAtPosition({ x: gtRefresh.X, y: gtRefresh.Y });
+      const unit = SDK.GameSession.getInstance()
+        .getBoard()
+        .getUnitAtPosition({ x: gtRefresh.X, y: gtRefresh.Y });
       if (unit != null) {
-        const refreshExhaustionAction = new SDK.RefreshExhaustionAction(SDK.GameSession.getInstance());
+        const refreshExhaustionAction = new SDK.RefreshExhaustionAction(
+          SDK.GameSession.getInstance(),
+        );
         refreshExhaustionAction.setTarget(unit);
         return gtExecuteActionWithoutValidation(refreshExhaustionAction);
       }
     };
     const gtRefreshFolder = gtFolder.addFolder('Refresh Unit');
-    gtRefreshFolder.add(gtRefresh, 'X').min(0).max(CONFIG.BOARDCOL - 1).step(1);
-    gtRefreshFolder.add(gtRefresh, 'Y').min(0).max(CONFIG.BOARDROW - 1).step(1);
+    gtRefreshFolder
+      .add(gtRefresh, 'X')
+      .min(0)
+      .max(CONFIG.BOARDCOL - 1)
+      .step(1);
+    gtRefreshFolder
+      .add(gtRefresh, 'Y')
+      .min(0)
+      .max(CONFIG.BOARDROW - 1)
+      .step(1);
     gtRefreshFolder.add(gtRefresh, 'Refresh');
 
     // game tools: change  mana
@@ -1602,14 +1865,18 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
       'Toggle Bloodbound Spell': function () {
         const player = SDK.GameSession.getInstance().getCurrentPlayer();
         player.setIsSignatureCardActive(!player.getIsSignatureCardActive());
-        return Scene.getInstance().getGameLayer().getCurrentPlayerLayer().bindAndResetSignatureCard();
+        return Scene.getInstance()
+          .getGameLayer()
+          .getCurrentPlayerLayer()
+          .bindAndResetSignatureCard();
       },
     };
     gtFolder.add(gtToggleBBS, 'Toggle Bloodbound Spell');
 
     // game tools: set rotation format
     const gtRotationFormat = { 'Format 0=S 1=L': -1 };
-    gtRotationFormat['Set Format'] = () => SDK.GameSession.getInstance().setGameFormat(gtRotationFormat['Format 0=S 1=L']);
+    gtRotationFormat['Set Format'] = () =>
+      SDK.GameSession.getInstance().setGameFormat(gtRotationFormat['Format 0=S 1=L']);
     const gtRotationFormatFolder = gtFolder.addFolder('Change Rotation Format');
     gtRotationFormatFolder.add(gtRotationFormat, 'Format 0=S 1=L').min(-1).max(1).step(1);
     gtRotationFormatFolder.add(gtRotationFormat, 'Set Format');
@@ -1669,65 +1936,78 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
         return;
       }
 
-      return (new Promise((resolve, reject) => {
-        const dailyChallengeRef = new Firebase(`${process.env.FIREBASE_URL}/daily-challenges/${challengeDate}`);
+      return new Promise((resolve, reject) => {
+        const dailyChallengeRef = new Firebase(
+          `${process.env.FIREBASE_URL}/daily-challenges/${challengeDate}`,
+        );
         dailyChallengeRef.once('value', (dailyChallengeSnapshot) => {
-          if ((dailyChallengeSnapshot == null) || (dailyChallengeSnapshot.val() == null)) {
+          if (dailyChallengeSnapshot == null || dailyChallengeSnapshot.val() == null) {
             // No existing challenge
             return resolve(null);
           }
           const dailyChallengeData = dailyChallengeSnapshot.val();
-          const overwriteText = prompt('Daily challenge already exists for provided date:\n'
-              + `Date: ${moment.utc(challengeDate).format('YYYY-MM-DD')}\n`
-              + `Name: ${challengeName}\n`
-              + `Description: ${challengeDesc}\n`
-              + `Difficulty: ${challengeDiff}\n`
-              + `Instructions: ${challengeInstructions}\n`
-              + `Hint: ${challengeHint}\n`
-              + '\n'
-              + 'Please enter \'overwrite\' to overwrite that challenge...', '');
+          const overwriteText = prompt(
+            'Daily challenge already exists for provided date:\n' +
+              `Date: ${moment.utc(challengeDate).format('YYYY-MM-DD')}\n` +
+              `Name: ${challengeName}\n` +
+              `Description: ${challengeDesc}\n` +
+              `Difficulty: ${challengeDiff}\n` +
+              `Instructions: ${challengeInstructions}\n` +
+              `Hint: ${challengeHint}\n` +
+              '\n' +
+              "Please enter 'overwrite' to overwrite that challenge...",
+            '',
+          );
 
           if (overwriteText === 'overwrite') {
             return resolve(dailyChallengeData);
           }
-          return reject(new Error('Chose not to overwrite existing daily challenge at provided date'));
+          return reject(
+            new Error('Chose not to overwrite existing daily challenge at provided date'),
+          );
         });
-      })).then(() => {
-        const confirmText = prompt('Preparing to push daily challenge with configuration:\n'
-          + `Date: ${moment.utc(challengeDate).format('YYYY-MM-DD')}\n`
-          + `Name: ${challengeName}\n`
-          + `Description: ${challengeDesc}\n`
-          + `Difficulty: ${challengeDiff}\n`
-          + `Instructions: ${challengeInstructions}\n`
-          + `Hint: ${challengeHint}\n`
-          + '\n'
-          + 'Please enter \'confirm\' to proceed...', '');
+      })
+        .then(() => {
+          const confirmText = prompt(
+            'Preparing to push daily challenge with configuration:\n' +
+              `Date: ${moment.utc(challengeDate).format('YYYY-MM-DD')}\n` +
+              `Name: ${challengeName}\n` +
+              `Description: ${challengeDesc}\n` +
+              `Difficulty: ${challengeDiff}\n` +
+              `Instructions: ${challengeInstructions}\n` +
+              `Hint: ${challengeHint}\n` +
+              '\n' +
+              "Please enter 'confirm' to proceed...",
+            '',
+          );
 
-        if (confirmText !== 'confirm') {
-          alert('Did not enter \'confirm\', aborting');
-          return;
-        }
+          if (confirmText !== 'confirm') {
+            alert("Did not enter 'confirm', aborting");
+            return;
+          }
 
-        const challengeJson = SDK.GameSession.getInstance().generateGameSessionSnapshot();
-        const request = $.ajax({
-          url: `${process.env.API_URL}/api/me/qa/daily_challenge`,
-          data: JSON.stringify({
-            challenge_name: challengeName,
-            challenge_description: challengeDesc,
-            challenge_json: challengeJson,
-            challenge_difficulty: challengeDiff,
-            challenge_date: challengeDate,
-            challenge_instructions: challengeInstructions,
-            challenge_hint: challengeHint,
-
-          }),
-          type: 'POST',
-          contentType: 'application/json',
-          dataType: 'json',
-        });
-        request.done((data) => alert('Pushed daily challenge'));
-        return request.fail((response) => alert(`FAILED: Pushing daily challenge \n${response.responseJSON.message}`));
-      }).catch((e) => alert(`Failed pushing daily challenge: \n ${e.toString()}`));
+          const challengeJson = SDK.GameSession.getInstance().generateGameSessionSnapshot();
+          const request = $.ajax({
+            url: `${process.env.API_URL}/api/me/qa/daily_challenge`,
+            data: JSON.stringify({
+              challenge_name: challengeName,
+              challenge_description: challengeDesc,
+              challenge_json: challengeJson,
+              challenge_difficulty: challengeDiff,
+              challenge_date: challengeDate,
+              challenge_instructions: challengeInstructions,
+              challenge_hint: challengeHint,
+            }),
+            type: 'POST',
+            contentType: 'application/json',
+            dataType: 'json',
+          });
+          request.done((data) => alert('Pushed daily challenge'));
+          return request.fail((response) =>
+            alert(`FAILED: Pushing daily challenge \n${response.responseJSON.message}`),
+          );
+        })
+        .catch((e) => alert(`Failed pushing daily challenge: \n ${e.toString()}`));
     };
 
     const gtPushGameFolder = gtFolder.addFolder('Config and Push Challenge');
@@ -1748,7 +2028,7 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
       buttons['Reload CSS'] = function () {
         const queryString = `?reload=${new Date().getTime()}`;
         return $('link[rel="stylesheet"]').each(function () {
-          return this.href = this.href.replace(/\?.*|$/, queryString);
+          return (this.href = this.href.replace(/\?.*|$/, queryString));
         });
       };
 
@@ -1763,9 +2043,12 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
       if (result.brokenResources.length > 0) {
         // broken resources found, alert user to fix
         return alert(`Found broken resources:\n\n${result.brokenResources}`);
-      } if (result.overSelectableLimit.length > 0) {
+      }
+      if (result.overSelectableLimit.length > 0) {
         // over selectable limit found, alert user to fix
-        return alert(`Found FX with more than the maximum allowed ${Editor.maxNumSelectables} items:\n\n${result.overSelectableLimit}`);
+        return alert(
+          `Found FX with more than the maximum allowed ${Editor.maxNumSelectables} items:\n\n${result.overSelectableLimit}`,
+        );
       }
       return alert(`Validated ${result.numResourcesResolved} resources, all passed!`);
     };
@@ -1783,17 +2066,19 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
         alert(`Found broken resources:\n\n${result.brokenResources}`);
       } else if (result.overSelectableLimit.length > 0) {
         // over selectable limit found, alert user to fix
-        alert(`Found FX with more than the maximum allowed ${Editor.maxNumSelectables} items:\n\n${result.overSelectableLimit}`);
+        alert(
+          `Found FX with more than the maximum allowed ${Editor.maxNumSelectables} items:\n\n${result.overSelectableLimit}`,
+        );
       } else {
-        const {
-          fxData,
-        } = result;
+        const { fxData } = result;
 
         // stringify and format fx data to json
         let json = JSON.stringify(fxData, null, '\t');
 
         // remove line breaks between objects that don't contain other objects to compress data
-        json = json.replace(/\{[^\{\}]+\}/g, (match, p1) => match.replace(/[\r\n][\s\t]*?(["'\}\]])/g, '$1'));
+        json = json.replace(/\{[^\{\}]+\}/g, (match, p1) =>
+          match.replace(/[\r\n][\s\t]*?(["'\}\]])/g, '$1'),
+        );
 
         // remove quotes around property names
         json = json.replace(/["'](\w+)["'][\s\t]*?:/g, '$1:');
@@ -1837,26 +2122,28 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
       if (resourceData != null) {
         if (isForParticles) {
           resourceAlias = `${resourceData.name}.plist`;
-        } else if ((resourceData.img != null) && (resourceData.plist == null)) {
+        } else if (resourceData.img != null && resourceData.plist == null) {
           resourceAlias = `${resourceData.name}.img`;
         } else {
           resourceAlias = `${resourceData.name}.name`;
         }
       }
 
-      if ((resourceAlias == null)) {
+      if (resourceAlias == null) {
         // no matching resource found, record as broken
-        let brokenPath; let
-          valuePath;
+        let brokenPath;
+        let valuePath;
         const parts = path.match(/(.*?)\.(\w+FX\..*?$)/);
-        if (parts && (parts.length === 3)) {
+        if (parts && parts.length === 3) {
           brokenPath = parts[1];
           valuePath = `${parts[2]}: ${value}`;
         } else {
           brokenPath = path;
           valuePath = value;
         }
-        if ((brokenResourcesByPath[brokenPath] == null)) { brokenResourcesByPath[brokenPath] = []; }
+        if (brokenResourcesByPath[brokenPath] == null) {
+          brokenResourcesByPath[brokenPath] = [];
+        }
         brokenResourcesByPath[brokenPath].push(valuePath);
         return value;
       }
@@ -1866,19 +2153,28 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
     var walkData = function (data, parentPath, recursiveCountSelectableItems) {
       const dataResolved: Record<string, any> = {};
 
-      const countSelectableItems = Editor.getSelectableTopLevelItemMatched(parentPath, Editor.selectableKeyMatches);
+      const countSelectableItems = Editor.getSelectableTopLevelItemMatched(
+        parentPath,
+        Editor.selectableKeyMatches,
+      );
       if (countSelectableItems) {
         recursiveCountSelectableItems = true;
         dataResolved.numSelectableItems = 1;
       }
 
       for (var property in data) {
-        var i; var item; var path; var
-          subDataResolved;
+        var i;
+        var item;
+        var path;
+        var subDataResolved;
         var value = data[property];
-        if (parentPath) { path = `${parentPath}.${property}`; } else { path = property; }
+        if (parentPath) {
+          path = `${parentPath}.${property}`;
+        } else {
+          path = property;
+        }
         var isForParticles = property === 'plistFile';
-        if ((property === 'spriteIdentifier') || isForParticles) {
+        if (property === 'spriteIdentifier' || isForParticles) {
           if (_.isArray(value)) {
             dataResolved[property] = [];
             for (i = 0; i < value.length; i++) {
@@ -1898,7 +2194,9 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
 
             // extract selectable count
             if (recursiveCountSelectableItems) {
-              if (dataResolved.numSelectableItems == null) { dataResolved.numSelectableItems = 0; }
+              if (dataResolved.numSelectableItems == null) {
+                dataResolved.numSelectableItems = 0;
+              }
               dataResolved.numSelectableItems += subDataResolved.numSelectableItems || 0;
               delete subDataResolved.numSelectableItems;
             } else if (subDataResolved.numSelectableItems != null) {
@@ -1919,13 +2217,13 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
 
           // extract and check selectable count
           if (recursiveCountSelectableItems) {
-            if (dataResolved.numSelectableItems == null) { dataResolved.numSelectableItems = 0; }
+            if (dataResolved.numSelectableItems == null) {
+              dataResolved.numSelectableItems = 0;
+            }
             dataResolved.numSelectableItems += subDataResolved.numSelectableItems || 0;
             delete subDataResolved.numSelectableItems;
           } else if (subDataResolved.numSelectableItems != null) {
-            var {
-              numSelectableItems,
-            } = subDataResolved;
+            var { numSelectableItems } = subDataResolved;
             delete subDataResolved.numSelectableItems;
             if (numSelectableItems > Editor.maxNumSelectables) {
               overSelectableLimitPaths.push(path);
@@ -1964,7 +2262,10 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
     }
 
     return {
-      fxData, brokenResources, overSelectableLimit, numResourcesResolved,
+      fxData,
+      brokenResources,
+      overSelectableLimit,
+      numResourcesResolved,
     };
   };
 
@@ -1979,7 +2280,7 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
     $el.addClass('container');
 
     // create container
-    if ((Editor.$container == null)) {
+    if (Editor.$container == null) {
       Editor.$container = $('<div class="editor"></div>');
       $('body').append(Editor.$container);
     }
@@ -1988,7 +2289,8 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
     return $el;
   };
 
-  Editor.getIsPathForSelected = (path) => (Editor.pathSelected != null) && (path.length >= Editor.pathSelected.length);
+  Editor.getIsPathForSelected = (path) =>
+    Editor.pathSelected != null && path.length >= Editor.pathSelected.length;
 
   // lists all data in a JSON object
   Editor.listData = function (data, gui, path, selectableKeyMatches) {
@@ -2020,24 +2322,27 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
     if (!_.isFunction(value) && data.hasOwnProperty(key)) {
       // when not top level
       let selectableMatched;
-      if (path && (path.length > 0)) {
+      if (path && path.length > 0) {
         path += '.';
 
         // we're not selecting a key and key ends in a selectable match
         // we want it to be selectable
-        if (!Editor.getIsPathForSelected(path)) { selectableMatched = Editor.getSelectableMatched(key, selectableKeyMatches); }
+        if (!Editor.getIsPathForSelected(path)) {
+          selectableMatched = Editor.getSelectableMatched(key, selectableKeyMatches);
+        }
       }
 
       // add key to full key
       path += key;
 
       // this key is a selectable so we'll stop listing data here
-      if ((selectableMatched != null) && (selectableMatched.length > 0)) {
+      if (selectableMatched != null && selectableMatched.length > 0) {
         return Editor.listDataForSelectable(value, gui, key, path, selectableMatched);
       }
       if (_.isArray(value)) {
         return Editor.listDataForArray(value, gui, key, path, selectableKeyMatches);
-      } if (_.isObject(value)) {
+      }
+      if (_.isObject(value)) {
         return Editor.listDataForObject(value, gui, key, path, selectableKeyMatches);
       }
       return Editor.listDataForKey(data, gui, key, path);
@@ -2045,18 +2350,26 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
   };
 
   Editor.getSelectableMatched = function (key, selectableKeyMatches) {
-    if ((key != null) && (selectableKeyMatches != null)) {
+    if (key != null && selectableKeyMatches != null) {
       for (var keyMatch of Array.from<any>(selectableKeyMatches)) {
-        if (key.lastIndexOf(keyMatch) !== -1) { return keyMatch; }
+        if (key.lastIndexOf(keyMatch) !== -1) {
+          return keyMatch;
+        }
       }
     }
     return null;
   };
 
   Editor.getSelectableTopLevelItemMatched = function (key, selectableKeyMatches) {
-    if ((key != null) && (selectableKeyMatches != null)) {
+    if (key != null && selectableKeyMatches != null) {
       for (var keyMatch of Array.from<any>(selectableKeyMatches)) {
-        if ((key.lastIndexOf(keyMatch) !== -1) && (new RegExp(`${keyMatch}\$`, 'i').test(key) || new RegExp(`${keyMatch}\\.\\d\+\$`, 'i').test(key))) { return keyMatch; }
+        if (
+          key.lastIndexOf(keyMatch) !== -1 &&
+          (new RegExp(`${keyMatch}\$`, 'i').test(key) ||
+            new RegExp(`${keyMatch}\\.\\d\+\$`, 'i').test(key))
+        ) {
+          return keyMatch;
+        }
       }
     }
     return null;
@@ -2082,7 +2395,10 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
     const isForSelected = Editor.getIsPathForSelected(path);
 
     // make data previewable when for fx
-    if (isForSelected && Editor.getSelectableTopLevelItemMatched(path, Editor.selectableKeyMatches)) {
+    if (
+      isForSelected &&
+      Editor.getSelectableTopLevelItemMatched(path, Editor.selectableKeyMatches)
+    ) {
       Editor.makeDataPreviewable(data, folder);
     }
 
@@ -2093,7 +2409,9 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
     Editor.makeDataRemovable(folder, gui, path);
 
     // open folder when selected path
-    if (isForSelected) { folder.open(); }
+    if (isForSelected) {
+      folder.open();
+    }
 
     // list sub data
     Editor.listData(data, folder, path, selectableKeyMatches);
@@ -2108,7 +2426,9 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
     Editor.makeDataIncreasable(data, folder, key, path, $(folder.domElement).parent());
     Editor.makeDataRemovable(folder, gui, path);
     // open folder when selected path
-    if (Editor.getIsPathForSelected(path)) { folder.open(); }
+    if (Editor.getIsPathForSelected(path)) {
+      folder.open();
+    }
     // list sub data
     for (let i = 0; i < data.length; i++) {
       var subValue = data[i];
@@ -2132,7 +2452,9 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
     const isPathForSelected = Editor.getIsPathForSelected(path);
 
     // create a button to add
-    const $addButton = $('<button type="button" class="close action-button add-button"><i class="fa fa-pencil-square-o"></i></button>');
+    const $addButton = $(
+      '<button type="button" class="close action-button add-button"><i class="fa fa-pencil-square-o"></i></button>',
+    );
     $addButton.on('click', (event) => {
       // we dont want clicks on the add to do anything to the data
       event.stopPropagation();
@@ -2186,7 +2508,14 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
           options.type = 'object';
         } else {
           Editor.guiNewData.add(options, 'value');
-          Editor.guiNewData.add(options, 'type', ['string', 'number', 'vector', 'boolean', 'object', 'array']);
+          Editor.guiNewData.add(options, 'type', [
+            'string',
+            'number',
+            'vector',
+            'boolean',
+            'object',
+            'array',
+          ]);
         }
         Editor.guiNewData.add(options, '+ Add');
         Editor.guiNewData.open();
@@ -2201,7 +2530,7 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
           animation: false,
           trigger: 'manual',
           container: 'body',
-          placement: (isPathForSelected ? 'left' : 'right'),
+          placement: isPathForSelected ? 'left' : 'right',
         });
         Editor.$popoverNewDataSource.popover('show');
 
@@ -2220,9 +2549,11 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
 
         // listen for key presses
         Editor.onKeyUpNewData = function (e) {
-          if (e.which === 13) { // enter
+          if (e.which === 13) {
+            // enter
             Editor.onAddNewDataAtPath(data, gui, key, path, options);
-          } else if (e.which === 27) { // esc
+          } else if (e.which === 27) {
+            // esc
             Editor.removeNewDataGUI();
           }
           return true;
@@ -2235,7 +2566,7 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
           const $target = $(e.target);
           if ($target.closest('.new-data').length === 0) {
             Editor.removeNewDataEvents();
-            if (!$target.hasClass('add-button') && ($target.closest('.add-button').length === 0)) {
+            if (!$target.hasClass('add-button') && $target.closest('.add-button').length === 0) {
               Editor.removeNewDataGUI();
             }
           }
@@ -2244,7 +2575,9 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
         $(document).on('click', Editor.onClickNewData);
 
         // listen for scroll
-        Editor.$scrollElNewData = (isPathForSelected ? Editor.$guiElSelected.find('> ul') : Editor.$guiEl.find('> ul'));
+        Editor.$scrollElNewData = isPathForSelected
+          ? Editor.$guiElSelected.find('> ul')
+          : Editor.$guiEl.find('> ul');
         Editor.onScrollNewData = (e) => Editor.removeNewDataGUI();
         Editor.$scrollElNewData.one('scroll', Editor.onScrollNewData);
 
@@ -2266,36 +2599,38 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
       let selectableMatched;
       let name = `${options.name}`;
       let value = `${options.value}`;
-      const {
-        type,
-      } = options;
+      const { type } = options;
 
       // remove spaces from name
       name = name.replace(/\s/g, '');
 
       // late check for if selectable matched
-      if (!Editor.getIsPathForSelected(path)) { selectableMatched = Editor.getSelectableMatched(name, Editor.selectableKeyMatches); }
+      if (!Editor.getIsPathForSelected(path)) {
+        selectableMatched = Editor.getSelectableMatched(name, Editor.selectableKeyMatches);
+      }
 
       // name must be present
-      if ((name != null) && (name.length > 0)) {
+      if (name != null && name.length > 0) {
         // cast value to type
         // default to string
         if (type === 'number') {
           value = parseFloat(value) || 0;
         } else if (type === 'boolean') {
           value = value.toLowerCase();
-          if ((value === 'true') || (value === '1')) {
+          if (value === 'true' || value === '1') {
             value = true;
-          } else if ((value === 'false') || (value === '0')) {
+          } else if (value === 'false' || value === '0') {
             value = false;
-          } else { value = Boolean(value) || false; }
-        } else if ((type === 'array') || (selectableMatched != null)) {
+          } else {
+            value = Boolean(value) || false;
+          }
+        } else if (type === 'array' || selectableMatched != null) {
           value = [];
         } else if (type === 'vector') {
           value = { x: 0, y: 0 };
         } else if (type === 'object') {
           // give objects some default values when in a selection
-          if (Editor.getIsPathForSelected(path) && (gui === Editor.guiSelected)) {
+          if (Editor.getIsPathForSelected(path) && gui === Editor.guiSelected) {
             value = {
               spriteIdentifier: 'fxPlaceholderName',
               offset: { x: 0, y: 0 },
@@ -2311,13 +2646,13 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
         Editor.removeNewDataGUI();
 
         // always change the data
-        const dataExists = (data[name] != null);
+        const dataExists = data[name] != null;
         data[name] = value;
         Editor.changeOriginalDataAtPath(`${path}.${name}`, value);
 
         // only list data when nothing exists at path already
         if (!dataExists) {
-          if ((gui.__selectables != null) || (selectableMatched != null)) {
+          if (gui.__selectables != null || selectableMatched != null) {
             return Editor.listDataItem(data, gui, name, path, Editor.selectableKeyMatches);
           }
           return Editor.listDataItem(data, gui, name, path);
@@ -2343,7 +2678,7 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
     }
 
     if (Editor.pathNewData != null) {
-      return Editor.pathNewData = null;
+      return (Editor.pathNewData = null);
     }
   };
 
@@ -2360,7 +2695,7 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
 
     if (Editor.$scrollElNewData) {
       Editor.$scrollElNewData.off('scroll', Editor.onScrollNewData);
-      return Editor.onScrollNewData = null;
+      return (Editor.onScrollNewData = null);
     }
   };
 
@@ -2370,10 +2705,16 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
       const keys = path.split('.');
       // search main data object for path
       let data = DATA;
-      for (let i = 0, end = keys.length - 2, asc = end >= 0; asc ? i <= end : i >= end; asc ? i++ : i--) {
+      for (
+        let i = 0, end = keys.length - 2, asc = end >= 0;
+        asc ? i <= end : i >= end;
+        asc ? i++ : i--
+      ) {
         var key = keys[i];
         data = data[key];
-        if ((data == null)) { return; }
+        if (data == null) {
+          return;
+        }
       }
 
       // set value at final key in path
@@ -2393,7 +2734,9 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
     $container.find('> .remove-button').remove();
 
     // create a button to remove
-    const $removeButton = $('<button type="button" class="close action-button remove-button"><i class="fa fa-trash-o"></i></button>');
+    const $removeButton = $(
+      '<button type="button" class="close action-button remove-button"><i class="fa fa-trash-o"></i></button>',
+    );
     $removeButton.on('click', (event) => {
       // we dont want clicks on the close to do anything to the data
       event.stopPropagation();
@@ -2415,27 +2758,17 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
         const lastScrollTop = $guiSelectedScrollEl.scrollTop() || 0;
         const lastScrollHeight = $guiSelectedScrollEl.get(0).scrollHeight || 0;
         const parentGUI = Editor.guiSelected.parent;
-        const {
-          dataSelected,
-        } = Editor;
-        const {
-          pathSelected,
-        } = Editor;
-        const {
-          keySelected,
-        } = Editor;
-        const {
-          selectableMatched,
-        } = Editor;
+        const { dataSelected } = Editor;
+        const { pathSelected } = Editor;
+        const { keySelected } = Editor;
+        const { selectableMatched } = Editor;
         Editor.removeSelectedGUI();
         Editor.onSelectKey(dataSelected, parentGUI, keySelected, pathSelected, selectableMatched);
 
         // attempt to restore scroll position
-        if ((lastScrollTop !== 0) && (lastScrollHeight !== 0)) {
+        if (lastScrollTop !== 0 && lastScrollHeight !== 0) {
           $guiSelectedScrollEl = $(Editor.guiSelected.domElement).find('> ul');
-          const {
-            scrollHeight,
-          } = $guiSelectedScrollEl.get(0);
+          const { scrollHeight } = $guiSelectedScrollEl.get(0);
           if (scrollHeight > 0) {
             $guiSelectedScrollEl.scrollTop(scrollHeight * (lastScrollTop / lastScrollHeight));
           }
@@ -2456,7 +2789,9 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
     $container.find('> .preview-button, > .remove-preview-button').remove();
 
     // create a button to preview
-    const $previewButton = $('<button type="button" class="close action-button preview-button"><i class="fa fa-eye"></i></button>');
+    const $previewButton = $(
+      '<button type="button" class="close action-button preview-button"><i class="fa fa-eye"></i></button>',
+    );
     $previewButton.on('click', (event) => {
       // we dont want clicks on the close to do anything to the data
       event.stopPropagation();
@@ -2471,7 +2806,9 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
     $container.append($previewButton);
 
     // create a button to remove preview
-    const $removeButton = $('<button type="button" class="close action-button remove-preview-button"><i class="fa fa-eye-slash"></i></button>');
+    const $removeButton = $(
+      '<button type="button" class="close action-button remove-preview-button"><i class="fa fa-eye-slash"></i></button>',
+    );
     $removeButton.on('click', (event) => {
       // we dont want clicks on the close to do anything to the data
       event.stopPropagation();
@@ -2492,10 +2829,16 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
       const keys = path.split('.');
       // search main data object for path
       let data = DATA;
-      for (let i = 0, end = keys.length - 2, asc = end >= 0; asc ? i <= end : i >= end; asc ? i++ : i--) {
+      for (
+        let i = 0, end = keys.length - 2, asc = end >= 0;
+        asc ? i <= end : i >= end;
+        asc ? i++ : i--
+      ) {
         var key = keys[i];
         data = data[key];
-        if ((data == null)) { return; }
+        if (data == null) {
+          return;
+        }
       }
 
       // delete final key in path
@@ -2594,7 +2937,7 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
     }
 
     if (Editor.selectableMatched != null) {
-      return Editor.selectableMatched = null;
+      return (Editor.selectableMatched = null);
     }
   };
 
@@ -2603,31 +2946,38 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
     Editor.removeFXPreview();
 
     // load all resources needed for data
-    const loadId = (Editor.fxNodesPreviewLoadId = `fx_preview_${UtilsJavascript.generateIncrementalId()}`);
+    const loadId =
+      (Editor.fxNodesPreviewLoadId = `fx_preview_${UtilsJavascript.generateIncrementalId()}`);
     const resources = Editor.walkFXDataForResources(data);
 
     // check if num fx to create will exceed maximum
-    if (_.isArray(data) && (data.length > CONFIG.MAX_FX_PER_EVENT)) {
-      alert(`Editor.previewFXData -> showing all ${data.length} FX for preview, but in-game FX will be limited to first ${CONFIG.MAX_FX_PER_EVENT} items!`);
+    if (_.isArray(data) && data.length > CONFIG.MAX_FX_PER_EVENT) {
+      alert(
+        `Editor.previewFXData -> showing all ${data.length} FX for preview, but in-game FX will be limited to first ${CONFIG.MAX_FX_PER_EVENT} items!`,
+      );
     }
 
-    return PackageManager.getInstance().loadPackage(loadId, resources).then(() => {
-      // create fx from data
-      Editor.fxNodesPreviewing = NodeFactory.createFX(data, {
-        sourceBoardPosition: CONFIG.BOARDCENTER,
-        targetBoardPosition: CONFIG.BOARDCENTER,
-        offset: { x: 0.0, y: CONFIG.TILESIZE * 0.5 },
-        noLimit: true,
-      });
+    return PackageManager.getInstance()
+      .loadPackage(loadId, resources)
+      .then(() => {
+        // create fx from data
+        Editor.fxNodesPreviewing = NodeFactory.createFX(data, {
+          sourceBoardPosition: CONFIG.BOARDCENTER,
+          targetBoardPosition: CONFIG.BOARDCENTER,
+          offset: { x: 0.0, y: CONFIG.TILESIZE * 0.5 },
+          noLimit: true,
+        });
 
-      // attempt to use game layer to preview if exists
-      const gameLayer = Scene.getInstance().getGameLayer();
-      if (gameLayer != null) {
-        return gameLayer.addNodes(Editor.fxNodesPreviewing);
-      }
-      return Array.from<any>(Editor.fxNodesPreviewing).map((fxNode) =>
-        Scene.getInstance().addChild(fxNode, 9999));
-    }).catch((error) => alert(`Editor.previewFXData -> error: ${error}`));
+        // attempt to use game layer to preview if exists
+        const gameLayer = Scene.getInstance().getGameLayer();
+        if (gameLayer != null) {
+          return gameLayer.addNodes(Editor.fxNodesPreviewing);
+        }
+        return Array.from<any>(Editor.fxNodesPreviewing).map((fxNode) =>
+          Scene.getInstance().addChild(fxNode, 9999),
+        );
+      })
+      .catch((error) => alert(`Editor.previewFXData -> error: ${error}`));
   };
 
   Editor.removeFXPreview = function () {
@@ -2645,7 +2995,7 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
           fxNode.destroy();
         }
       }
-      return Editor.fxNodesPreviewing = null;
+      return (Editor.fxNodesPreviewing = null);
     }
   };
 
@@ -2656,7 +3006,9 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
       var value = data[property];
       if (value != null) {
         if (/spriteIdentifier|plistFile/.test(property)) {
-          if (!_.isArray(value)) { value = [value]; }
+          if (!_.isArray(value)) {
+            value = [value];
+          }
           for (var resourceIdentifier of Array.from<any>(value)) {
             var resourcesForIdentifier = RSX.getResourcesByPath(resourceIdentifier);
 
@@ -2728,7 +3080,7 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
       PERF.log();
 
       // create gui for logs as needed
-      if ((Editor.gui_performance_logs == null)) {
+      if (Editor.gui_performance_logs == null) {
         Editor.gui_performance_logs = Editor.gui_performance_tools.addFolder('Performance Logs');
       }
 
@@ -2743,7 +3095,11 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
 
       // list all the data in editor
       const stats_data = PERF.get_stats_data();
-      const stats_folder = Editor.listDataForObject(stats_data, Editor.gui_performance_logs, timestamp);
+      const stats_folder = Editor.listDataForObject(
+        stats_data,
+        Editor.gui_performance_logs,
+        timestamp,
+      );
 
       // open performance logs and close all previous logs
       Editor.gui_performance_logs.open();
@@ -2769,7 +3125,7 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
   Editor.remove_performance_tools_gui = function () {
     if (Editor.gui_performance_tools) {
       Editor.$gui_el_performance_tools.remove();
-      return Editor.gui_performance_tools = null;
+      return (Editor.gui_performance_tools = null);
     }
   };
 
@@ -2780,9 +3136,9 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
   Editor.setup();
 
   // expose globally
-  return window.Editor = Editor;
+  return (window.Editor = Editor);
 });
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

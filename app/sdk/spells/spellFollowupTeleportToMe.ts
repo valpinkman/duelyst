@@ -21,14 +21,18 @@ class SpellFollowupTeleportToMe extends SpellFollowupTeleport {
       // set x offset based on which direction the source unit faces
       let offset;
       const sourcePosition = source.getPosition();
-      if (source.isOwnedByPlayer1()) { offset = 1; } else { offset = -1; }
+      if (source.isOwnedByPlayer1()) {
+        offset = 1;
+      } else {
+        offset = -1;
+      }
       return { x: sourcePosition.x + offset, y: sourcePosition.y };
     }
   }
 
   _postFilterPlayPositions(spellPositions) {
     // make sure that there is nothing at the target position
-    if ((this.getTeleportTarget(this.getApplyEffectPosition()) == null)) {
+    if (this.getTeleportTarget(this.getApplyEffectPosition()) == null) {
       const validPositions = [];
 
       for (var position of Array.from<any>(spellPositions)) {
@@ -48,6 +52,7 @@ class SpellFollowupTeleportToMe extends SpellFollowupTeleport {
     return !followupCard.getTeleportTarget(followupCard.getApplyEffectPosition());
   }
 }
-SpellFollowupTeleportToMe.prototype._postFilterApplyPositions = SpellFollowupTeleportToMe.prototype._postFilterPlayPositions;
+SpellFollowupTeleportToMe.prototype._postFilterApplyPositions =
+  SpellFollowupTeleportToMe.prototype._postFilterPlayPositions;
 
 module.exports = SpellFollowupTeleportToMe;

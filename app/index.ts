@@ -9,5 +9,5 @@ const whenLocalizationReady = require('app/localization/index');
 whenLocalizationReady.then(() => {
   let app;
   const i18next = require('i18next');
-  return app = require('./application');
+  return (app = require('./application'));
 });

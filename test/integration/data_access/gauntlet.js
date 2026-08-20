@@ -28,7 +28,9 @@ describe('gauntlet module', () => {
   const numDeckRarityTests = 3000;
 
   const fillOutArenaDeck = function (userId) {
-    return knex('user_gauntlet_run').first().where('user_id', userId)
+    return knex('user_gauntlet_run')
+      .first()
+      .where('user_id', userId)
       .then((arenaData) => GauntletModule.chooseCard(userId, arenaData.card_choices[0]))
       .then((arenaData) => GauntletModule.chooseCard(userId, arenaData.card_choices[0]))
       .then((arenaData) => GauntletModule.chooseCard(userId, arenaData.card_choices[0]))
@@ -68,16 +70,21 @@ describe('gauntlet module', () => {
       .then((userIdCreated) => {
         Logger.module('UNITTEST').log('created user ', userIdCreated);
         userId = userIdCreated;
-      }).catch(onType(Errors.AlreadyExistsError, (error) => {
-        Logger.module('UNITTEST').log('existing user');
-        return UsersModule.userIdForUsername('unittest').then((userIdExisting) => {
-          Logger.module('UNITTEST').log('existing user retrieved', userIdExisting);
-          userId = userIdExisting;
-          return SyncModule.wipeUserData(userIdExisting);
-        }).then(() => {
-          Logger.module('UNITTEST').log('existing user data wiped', userId);
-        });
-      }));
+      })
+      .catch(
+        onType(Errors.AlreadyExistsError, (error) => {
+          Logger.module('UNITTEST').log('existing user');
+          return UsersModule.userIdForUsername('unittest')
+            .then((userIdExisting) => {
+              Logger.module('UNITTEST').log('existing user retrieved', userIdExisting);
+              userId = userIdExisting;
+              return SyncModule.wipeUserData(userIdExisting);
+            })
+            .then(() => {
+              Logger.module('UNITTEST').log('existing user data wiped', userId);
+            });
+        }),
+      );
   });
 
   // // after cleanup
@@ -94,40 +101,57 @@ describe('gauntlet module', () => {
   // });
 
   describe('buyArenaTicketWithGold()', () => {
-    it('expect to NOT be able to buy ticket with insufficient gold', () => GauntletModule.buyArenaTicketWithGold(userId)
-      .then((result) => {
-        expect(result).to.not.exist;
-      }).catch((error) => {
-        expect(error).to.exist;
-        expect(error).to.not.be.an.instanceof(chai.AssertionError);
-        expect(error).to.be.an.instanceof(Errors.InsufficientFundsError);
-        return DuelystFirebase.connect().getRootRef();
-      }).then((rootRef) => Promise.all([
-        knex.first().from('users').where({ id: userId }),
-        knex.select().from('user_gauntlet_tickets').where({ user_id: userId }),
-        FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('gauntlet-tickets'), 'value'),
-      ]))
-      .then(([userRow, ticketRows, fbTickets]) => {
-        expect(userRow.wallet_gold).to.equal(0);
-        expect(ticketRows.length).to.equal(0);
-        expect(fbTickets.numChildren()).to.equal(0);
-      }));
+    it('expect to NOT be able to buy ticket with insufficient gold', () =>
+      GauntletModule.buyArenaTicketWithGold(userId)
+        .then((result) => {
+          expect(result).to.not.exist;
+        })
+        .catch((error) => {
+          expect(error).to.exist;
+          expect(error).to.not.be.an.instanceof(chai.AssertionError);
+          expect(error).to.be.an.instanceof(Errors.InsufficientFundsError);
+          return DuelystFirebase.connect().getRootRef();
+        })
+        .then((rootRef) =>
+          Promise.all([
+            knex.first().from('users').where({ id: userId }),
+            knex.select().from('user_gauntlet_tickets').where({ user_id: userId }),
+            FirebasePromises.once(
+              rootRef.child('user-inventory').child(userId).child('gauntlet-tickets'),
+              'value',
+            ),
+          ]),
+        )
+        .then(([userRow, ticketRows, fbTickets]) => {
+          expect(userRow.wallet_gold).to.equal(0);
+          expect(ticketRows.length).to.equal(0);
+          expect(fbTickets.numChildren()).to.equal(0);
+        }));
 
-    it('expect to be able to buy a ticket for 150 gold', () => knex('users').where('id', userId).update({ wallet_gold: 150 }).then((numUpdates) => GauntletModule.buyArenaTicketWithGold(userId))
-      .then((ticket) => {
-        expect(ticket).to.exist;
-        return DuelystFirebase.connect().getRootRef();
-      })
-      .then((rootRef) => Promise.all([
-        knex.first().from('users').where({ id: userId }),
-        knex.select().from('user_gauntlet_tickets').where({ user_id: userId }),
-        FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('gauntlet-tickets'), 'value'),
-      ]))
-      .then(([userRow, ticketRows, fbTickets]) => {
-        expect(userRow.wallet_gold).to.equal(0);
-        expect(ticketRows.length).to.equal(1);
-        expect(fbTickets.numChildren()).to.equal(1);
-      }));
+    it('expect to be able to buy a ticket for 150 gold', () =>
+      knex('users')
+        .where('id', userId)
+        .update({ wallet_gold: 150 })
+        .then((numUpdates) => GauntletModule.buyArenaTicketWithGold(userId))
+        .then((ticket) => {
+          expect(ticket).to.exist;
+          return DuelystFirebase.connect().getRootRef();
+        })
+        .then((rootRef) =>
+          Promise.all([
+            knex.first().from('users').where({ id: userId }),
+            knex.select().from('user_gauntlet_tickets').where({ user_id: userId }),
+            FirebasePromises.once(
+              rootRef.child('user-inventory').child(userId).child('gauntlet-tickets'),
+              'value',
+            ),
+          ]),
+        )
+        .then(([userRow, ticketRows, fbTickets]) => {
+          expect(userRow.wallet_gold).to.equal(0);
+          expect(ticketRows.length).to.equal(1);
+          expect(fbTickets.numChildren()).to.equal(1);
+        }));
   });
 
   describe('startRun()', () => {
@@ -135,92 +159,131 @@ describe('gauntlet module', () => {
     const otherUserTicketId = 'invalid-ticket-for-other-user';
 
     // before cleanup to check if user already exists and delete
-    beforeAll(() => knex('user_gauntlet_tickets').where('id', otherUserTicketId).delete()
-      .then(() => knex('user_gauntlet_tickets').insert({
-        id: otherUserTicketId,
-        user_id: 'some-other-user',
-      })));
+    beforeAll(() =>
+      knex('user_gauntlet_tickets')
+        .where('id', otherUserTicketId)
+        .delete()
+        .then(() =>
+          knex('user_gauntlet_tickets').insert({
+            id: otherUserTicketId,
+            user_id: 'some-other-user',
+          }),
+        ),
+    );
 
     // before cleanup to check if user already exists and delete
     afterAll(() => knex('user_gauntlet_tickets').where('id', otherUserTicketId).delete());
 
-    it('expect to NOT be able to start a run with an invalid ticket', () => GauntletModule.startRun(userId, 'doesnt-exist')
-      .then((result) => {
-        expect(result).to.not.exist;
-      }).catch((error) => {
-        expect(error).to.exist;
-        expect(error).to.not.be.an.instanceof(chai.AssertionError);
-        expect(error).to.be.an.instanceof(Errors.NotFoundError);
-        return DuelystFirebase.connect().getRootRef();
-      }).then((rootRef) => Promise.all([
-        knex.first().from('user_gauntlet_run').where({ user_id: userId }),
-        FirebasePromises.once(rootRef.child('user-gauntlet-run').child(userId).child('current'), 'value'),
-      ]))
-      .then(([gauntletRunRow, fbRun]) => {
-        expect(gauntletRunRow).to.not.exist;
-        expect(fbRun.val()).to.not.exist;
-      }));
+    it('expect to NOT be able to start a run with an invalid ticket', () =>
+      GauntletModule.startRun(userId, 'doesnt-exist')
+        .then((result) => {
+          expect(result).to.not.exist;
+        })
+        .catch((error) => {
+          expect(error).to.exist;
+          expect(error).to.not.be.an.instanceof(chai.AssertionError);
+          expect(error).to.be.an.instanceof(Errors.NotFoundError);
+          return DuelystFirebase.connect().getRootRef();
+        })
+        .then((rootRef) =>
+          Promise.all([
+            knex.first().from('user_gauntlet_run').where({ user_id: userId }),
+            FirebasePromises.once(
+              rootRef.child('user-gauntlet-run').child(userId).child('current'),
+              'value',
+            ),
+          ]),
+        )
+        .then(([gauntletRunRow, fbRun]) => {
+          expect(gauntletRunRow).to.not.exist;
+          expect(fbRun.val()).to.not.exist;
+        }));
 
-    it('expect to NOT be able to start a run with another user\'s ticket', () => GauntletModule.startRun(userId, otherUserTicketId)
-      .then((result) => {
-        expect(result).to.not.exist;
-      }).catch((error) => {
-        expect(error).to.exist;
-        expect(error).to.not.be.an.instanceof(chai.AssertionError);
-        expect(error).to.be.an.instanceof(Errors.NotFoundError);
-        return DuelystFirebase.connect().getRootRef();
-      }).then((rootRef) => Promise.all([
-        knex.first().from('user_gauntlet_run').where({ user_id: userId }),
-        FirebasePromises.once(rootRef.child('user-gauntlet-run').child(userId).child('current'), 'value'),
-      ]))
-      .then(([gauntletRunRow, fbRun]) => {
-        expect(gauntletRunRow).to.not.exist;
-        expect(fbRun.val()).to.not.exist;
-      }));
+    it("expect to NOT be able to start a run with another user's ticket", () =>
+      GauntletModule.startRun(userId, otherUserTicketId)
+        .then((result) => {
+          expect(result).to.not.exist;
+        })
+        .catch((error) => {
+          expect(error).to.exist;
+          expect(error).to.not.be.an.instanceof(chai.AssertionError);
+          expect(error).to.be.an.instanceof(Errors.NotFoundError);
+          return DuelystFirebase.connect().getRootRef();
+        })
+        .then((rootRef) =>
+          Promise.all([
+            knex.first().from('user_gauntlet_run').where({ user_id: userId }),
+            FirebasePromises.once(
+              rootRef.child('user-gauntlet-run').child(userId).child('current'),
+              'value',
+            ),
+          ]),
+        )
+        .then(([gauntletRunRow, fbRun]) => {
+          expect(gauntletRunRow).to.not.exist;
+          expect(fbRun.val()).to.not.exist;
+        }));
 
-    it('expect to be able to start a run with a valid ticket', () => knex('user_gauntlet_tickets').where('user_id', userId).first()
-      .then((ticketRow) => {
-        _chainState.ticketId = ticketRow.id;
-        return GauntletModule.startRun(userId, ticketRow.id);
-      })
-      .then((runData) => {
-        expect(runData).to.exist;
-        return DuelystFirebase.connect().getRootRef();
-      })
-      .then((rootRef) => Promise.all([
-        knex.select().from('user_gauntlet_tickets').where({ user_id: userId }),
-        knex.first().from('user_gauntlet_run').where({ user_id: userId }),
-        FirebasePromises.once(rootRef.child('user-gauntlet-run').child(userId).child('current'), 'value'),
-      ]))
-      .then(([ticketRows, gauntletRunRow, fbRun]) => {
-        expect(ticketRows.length).to.equal(0);
-        expect(gauntletRunRow).to.exist;
-        expect(fbRun.val()).to.exist;
-      }));
+    it('expect to be able to start a run with a valid ticket', () =>
+      knex('user_gauntlet_tickets')
+        .where('user_id', userId)
+        .first()
+        .then((ticketRow) => {
+          _chainState.ticketId = ticketRow.id;
+          return GauntletModule.startRun(userId, ticketRow.id);
+        })
+        .then((runData) => {
+          expect(runData).to.exist;
+          return DuelystFirebase.connect().getRootRef();
+        })
+        .then((rootRef) =>
+          Promise.all([
+            knex.select().from('user_gauntlet_tickets').where({ user_id: userId }),
+            knex.first().from('user_gauntlet_run').where({ user_id: userId }),
+            FirebasePromises.once(
+              rootRef.child('user-gauntlet-run').child(userId).child('current'),
+              'value',
+            ),
+          ]),
+        )
+        .then(([ticketRows, gauntletRunRow, fbRun]) => {
+          expect(ticketRows.length).to.equal(0);
+          expect(gauntletRunRow).to.exist;
+          expect(fbRun.val()).to.exist;
+        }));
 
-    it('expect to ERROR out attempting starting a run in the middle of another one and to NOT use up an arena ticket', () => knex('users').where('id', userId).update({ wallet_gold: 150 }).then((numUpdates) => GauntletModule.buyArenaTicketWithGold(userId))
-      .then((ticketId) => {
-        expect(ticketId).to.exist;
-        return GauntletModule.startRun(userId, ticketId);
-      })
-      .then((runData) => {
-        expect(runData).to.not.exist;
-      })
-      .catch((error) => {
-        expect(error).to.exist;
-        expect(error).to.not.be.an.instanceof(chai.AssertionError);
-        return DuelystFirebase.connect().getRootRef();
-      })
-      .then((rootRef) => Promise.all([
-        knex.first().from('users').where({ id: userId }),
-        knex.select().from('user_gauntlet_tickets').where({ user_id: userId }),
-        FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('gauntlet-tickets'), 'value'),
-      ]))
-      .then(([userRow, ticketRows, fbTickets]) => {
-        expect(userRow.wallet_gold).to.equal(0);
-        expect(ticketRows.length).to.equal(1);
-        expect(fbTickets.numChildren()).to.equal(1);
-      }));
+    it('expect to ERROR out attempting starting a run in the middle of another one and to NOT use up an arena ticket', () =>
+      knex('users')
+        .where('id', userId)
+        .update({ wallet_gold: 150 })
+        .then((numUpdates) => GauntletModule.buyArenaTicketWithGold(userId))
+        .then((ticketId) => {
+          expect(ticketId).to.exist;
+          return GauntletModule.startRun(userId, ticketId);
+        })
+        .then((runData) => {
+          expect(runData).to.not.exist;
+        })
+        .catch((error) => {
+          expect(error).to.exist;
+          expect(error).to.not.be.an.instanceof(chai.AssertionError);
+          return DuelystFirebase.connect().getRootRef();
+        })
+        .then((rootRef) =>
+          Promise.all([
+            knex.first().from('users').where({ id: userId }),
+            knex.select().from('user_gauntlet_tickets').where({ user_id: userId }),
+            FirebasePromises.once(
+              rootRef.child('user-inventory').child(userId).child('gauntlet-tickets'),
+              'value',
+            ),
+          ]),
+        )
+        .then(([userRow, ticketRows, fbTickets]) => {
+          expect(userRow.wallet_gold).to.equal(0);
+          expect(ticketRows.length).to.equal(1);
+          expect(fbTickets.numChildren()).to.equal(1);
+        }));
   });
 
   // describe("chooseFaction()", function() {
@@ -498,42 +561,54 @@ describe('gauntlet module', () => {
   // });
 
   describe('getArenaDeck()', () => {
-    it('expect to be able to retrive a user\'s active arena deck', () => SyncModule.wipeUserData(userId)
-      .then(() => knex('users').where('id', userId).update({ wallet_gold: 150 })).then(() => GauntletModule.buyArenaTicketWithGold(userId)).then((ticketId) => GauntletModule.startRun(userId, ticketId))
-      .then((arenaData) => GauntletModule.chooseCard(userId, arenaData.general_choices[0]))
-      .then(() => fillOutArenaDeck(userId))
-      .then(() => GauntletModule.getArenaDeck(userId))
-      .then((deck) => {
-        expect(deck).to.exist;
-        expect(deck.length).to.equal(31);
-      }));
+    it("expect to be able to retrive a user's active arena deck", () =>
+      SyncModule.wipeUserData(userId)
+        .then(() => knex('users').where('id', userId).update({ wallet_gold: 150 }))
+        .then(() => GauntletModule.buyArenaTicketWithGold(userId))
+        .then((ticketId) => GauntletModule.startRun(userId, ticketId))
+        .then((arenaData) => GauntletModule.chooseCard(userId, arenaData.general_choices[0]))
+        .then(() => fillOutArenaDeck(userId))
+        .then(() => GauntletModule.getArenaDeck(userId))
+        .then((deck) => {
+          expect(deck).to.exist;
+          expect(deck.length).to.equal(31);
+        }));
 
-    it('expect the first card in a user\'s active arena deck to be the correct GENERAL', () => {
+    it("expect the first card in a user's active arena deck to be the correct GENERAL", () => {
       let generalId;
-      return GauntletModule.getArenaDeck(userId).then((deck) => {
-        expect(deck).to.exist;
+      return GauntletModule.getArenaDeck(userId)
+        .then((deck) => {
+          expect(deck).to.exist;
 
-        generalId = deck.shift();
-        const generalCard = SDK.CardFactory.cardForIdentifier(generalId, SDK.GameSession.current());
+          generalId = deck.shift();
+          const generalCard = SDK.CardFactory.cardForIdentifier(
+            generalId,
+            SDK.GameSession.current(),
+          );
 
-        expect(generalCard.getIsGeneral()).to.equal(true);
-      }).then(() => knex('user_gauntlet_run').first().where('user_id', userId)).then((runRow) => {
-        expect(generalId).to.equal(runRow.general_id);
-      });
+          expect(generalCard.getIsGeneral()).to.equal(true);
+        })
+        .then(() => knex('user_gauntlet_run').first().where('user_id', userId))
+        .then((runRow) => {
+          expect(generalId).to.equal(runRow.general_id);
+        });
     });
   });
 
   describe('getRunMatchmakingMetric()', () => {
-    it('expect to be able to retrive a user\'s active arena matchmaking metric', () => GauntletModule.getRunMatchmakingMetric(userId).then((metric) => {
-      expect(metric).to.exist;
-      expect(metric).to.within(0, 12);
-    }));
-
-    it('expect metric to equal MAX WINS - win count', () => GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'metric_game_1')
-      .then(() => GauntletModule.getRunMatchmakingMetric(userId)).then((metric) => {
+    it("expect to be able to retrive a user's active arena matchmaking metric", () =>
+      GauntletModule.getRunMatchmakingMetric(userId).then((metric) => {
         expect(metric).to.exist;
-        expect(metric).to.equal(11);
+        expect(metric).to.within(0, 12);
       }));
+
+    it('expect metric to equal MAX WINS - win count', () =>
+      GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'metric_game_1')
+        .then(() => GauntletModule.getRunMatchmakingMetric(userId))
+        .then((metric) => {
+          expect(metric).to.exist;
+          expect(metric).to.equal(11);
+        }));
 
     it('TODO: expect metric request to fail on run with incomplete deck', () => {
       expect(true).to.exist;
@@ -543,7 +618,7 @@ describe('gauntlet module', () => {
       expect(true).to.exist;
     });
 
-    it('TODO: expect metric request to fail when there\'s no run', () => {
+    it("TODO: expect metric request to fail when there's no run", () => {
       expect(true).to.exist;
     });
   });
@@ -554,112 +629,146 @@ describe('gauntlet module', () => {
     // before cleanup
     beforeAll(() => knex('user_gauntlet_run').where({ user_id: userId }).delete());
 
-    it('expect to ERROR out an attempt to resign with no run', () => GauntletModule.resignRun(userId)
-      .then((data) => {
-        expect(data).to.not.exist;
-      }).catch((error) => {
-        expect(error).to.exist;
-        expect(error).to.be.an.instanceof(Errors.NotFoundError);
-      }));
+    it('expect to ERROR out an attempt to resign with no run', () =>
+      GauntletModule.resignRun(userId)
+        .then((data) => {
+          expect(data).to.not.exist;
+        })
+        .catch((error) => {
+          expect(error).to.exist;
+          expect(error).to.be.an.instanceof(Errors.NotFoundError);
+        }));
 
-    it('expect to be able to resign an active arena run', () => knex('users').where('id', userId).update({ wallet_gold: 150 })
-      .then(() => GauntletModule.buyArenaTicketWithGold(userId))
-      .then((ticketId) => GauntletModule.startRun(userId, ticketId))
-      .then((arenaData) => GauntletModule.resignRun(userId))
-      .then((arenaData) => {
-        expect(arenaData.ended_at).to.exist;
-        expect(arenaData.is_resigned).to.equal(true);
-        return DuelystFirebase.connect().getRootRef();
-      })
-      .then((rootRef) => Promise.all([
-        knex.first().from('user_gauntlet_run').where({ user_id: userId }),
-        FirebasePromises.once(rootRef.child('user-gauntlet-run').child(userId).child('current'), 'value'),
-      ]))
-      .then(([gauntletRow, fbRun]) => {
-        expect(gauntletRow.is_resigned).to.equal(true);
-        expect(gauntletRow.ended_at).to.exist;
+    it('expect to be able to resign an active arena run', () =>
+      knex('users')
+        .where('id', userId)
+        .update({ wallet_gold: 150 })
+        .then(() => GauntletModule.buyArenaTicketWithGold(userId))
+        .then((ticketId) => GauntletModule.startRun(userId, ticketId))
+        .then((arenaData) => GauntletModule.resignRun(userId))
+        .then((arenaData) => {
+          expect(arenaData.ended_at).to.exist;
+          expect(arenaData.is_resigned).to.equal(true);
+          return DuelystFirebase.connect().getRootRef();
+        })
+        .then((rootRef) =>
+          Promise.all([
+            knex.first().from('user_gauntlet_run').where({ user_id: userId }),
+            FirebasePromises.once(
+              rootRef.child('user-gauntlet-run').child(userId).child('current'),
+              'value',
+            ),
+          ]),
+        )
+        .then(([gauntletRow, fbRun]) => {
+          expect(gauntletRow.is_resigned).to.equal(true);
+          expect(gauntletRow.ended_at).to.exist;
 
-        expect(fbRun.val().is_resigned).to.equal(true);
-        expect(fbRun.val().ended_at).to.exist;
+          expect(fbRun.val().is_resigned).to.equal(true);
+          expect(fbRun.val().ended_at).to.exist;
 
-        lastResignedAt = gauntletRow.ended_at;
-      }));
+          lastResignedAt = gauntletRow.ended_at;
+        }));
 
-    it('expect an attempt to resign an ended run to ERROR out and leave data untouched', () => GauntletModule.resignRun(userId)
-      .then((data) => {
-        expect(data).to.not.exist;
-      }).catch((error) => {
-        expect(error).to.be.an.instanceof(Errors.InvalidRequestError);
-        return DuelystFirebase.connect().getRootRef();
-      }).then((rootRef) => Promise.all([
-        knex.first().from('user_gauntlet_run').where({ user_id: userId }),
-        FirebasePromises.once(rootRef.child('user-gauntlet-run').child(userId).child('current'), 'value'),
-      ]))
-      .then(([gauntletRow, fbRun]) => {
-        expect(gauntletRow.is_resigned).to.equal(true);
-        expect(gauntletRow.ended_at).to.exist;
-        expect(gauntletRow.ended_at.valueOf()).to.equal(lastResignedAt.valueOf());
+    it('expect an attempt to resign an ended run to ERROR out and leave data untouched', () =>
+      GauntletModule.resignRun(userId)
+        .then((data) => {
+          expect(data).to.not.exist;
+        })
+        .catch((error) => {
+          expect(error).to.be.an.instanceof(Errors.InvalidRequestError);
+          return DuelystFirebase.connect().getRootRef();
+        })
+        .then((rootRef) =>
+          Promise.all([
+            knex.first().from('user_gauntlet_run').where({ user_id: userId }),
+            FirebasePromises.once(
+              rootRef.child('user-gauntlet-run').child(userId).child('current'),
+              'value',
+            ),
+          ]),
+        )
+        .then(([gauntletRow, fbRun]) => {
+          expect(gauntletRow.is_resigned).to.equal(true);
+          expect(gauntletRow.ended_at).to.exist;
+          expect(gauntletRow.ended_at.valueOf()).to.equal(lastResignedAt.valueOf());
 
-        expect(fbRun.val().is_resigned).to.equal(true);
-        expect(fbRun.val().ended_at).to.exist;
-      }));
+          expect(fbRun.val().is_resigned).to.equal(true);
+          expect(fbRun.val().ended_at).to.exist;
+        }));
 
-    it('expect to ERROR out attempts to start a run before claiming rewards on a resigned run', () => knex('users').where('id', userId).update({ wallet_gold: 150 })
-      .then(() => GauntletModule.buyArenaTicketWithGold(userId))
-      .then((ticketId) => GauntletModule.startRun(userId, ticketId))
-      .then((response) => {
-        expect(response).to.not.exist;
-      })
-      .catch((error) => {
-        expect(error).to.exist;
-        expect(error).to.be.an.instanceof(Errors.InvalidRequestError);
-        expect(error.message).to.equal('Could not start run: rewards not yet claimed.');
-      }));
+    it('expect to ERROR out attempts to start a run before claiming rewards on a resigned run', () =>
+      knex('users')
+        .where('id', userId)
+        .update({ wallet_gold: 150 })
+        .then(() => GauntletModule.buyArenaTicketWithGold(userId))
+        .then((ticketId) => GauntletModule.startRun(userId, ticketId))
+        .then((response) => {
+          expect(response).to.not.exist;
+        })
+        .catch((error) => {
+          expect(error).to.exist;
+          expect(error).to.be.an.instanceof(Errors.InvalidRequestError);
+          expect(error.message).to.equal('Could not start run: rewards not yet claimed.');
+        }));
   });
 
   describe('updateArenaRunWithGameOutcome()', () => {
     const _chainState = {};
     const tickets = [];
 
-    beforeAll(() => knex('users').where('id', userId).update({ wallet_gold: 2500 }).then((numUpdates) => knex('user_gauntlet_run').where({ user_id: userId }).delete())
-      .then(() => Promise.all([
-        GauntletModule.buyArenaTicketWithGold(userId),
-        GauntletModule.buyArenaTicketWithGold(userId),
-        GauntletModule.buyArenaTicketWithGold(userId),
-        GauntletModule.buyArenaTicketWithGold(userId),
-        GauntletModule.buyArenaTicketWithGold(userId),
-        GauntletModule.buyArenaTicketWithGold(userId),
-        GauntletModule.buyArenaTicketWithGold(userId),
-      ]))
-      .then((ticketData) => {
-        _.each(ticketData, (t) => {
-          if (t) tickets.push(t);
-        });
-      }));
+    beforeAll(() =>
+      knex('users')
+        .where('id', userId)
+        .update({ wallet_gold: 2500 })
+        .then((numUpdates) => knex('user_gauntlet_run').where({ user_id: userId }).delete())
+        .then(() =>
+          Promise.all([
+            GauntletModule.buyArenaTicketWithGold(userId),
+            GauntletModule.buyArenaTicketWithGold(userId),
+            GauntletModule.buyArenaTicketWithGold(userId),
+            GauntletModule.buyArenaTicketWithGold(userId),
+            GauntletModule.buyArenaTicketWithGold(userId),
+            GauntletModule.buyArenaTicketWithGold(userId),
+            GauntletModule.buyArenaTicketWithGold(userId),
+          ]),
+        )
+        .then((ticketData) => {
+          _.each(ticketData, (t) => {
+            if (t) tickets.push(t);
+          });
+        }),
+    );
 
-    afterAll(() => {
-    });
+    afterAll(() => {});
 
-    it('expect to FAIL to update arena run with a game if no arena run is active', () => GauntletModule.updateArenaRunWithGameOutcome(userId, 'game 1', true)
-      .then((arenaData) => {
-        expect(arenaData).to.not.exist;
-      }).catch((error) => {
-        expect(error).to.exist;
-        expect(error).to.be.an.instanceof(Error);
-      }));
+    it('expect to FAIL to update arena run with a game if no arena run is active', () =>
+      GauntletModule.updateArenaRunWithGameOutcome(userId, 'game 1', true)
+        .then((arenaData) => {
+          expect(arenaData).to.not.exist;
+        })
+        .catch((error) => {
+          expect(error).to.exist;
+          expect(error).to.be.an.instanceof(Error);
+        }));
 
-    it('expect to FAIL to update arena run with a game if an arena run is over', () => GauntletModule.startRun(userId, tickets.pop())
-      .then((arenaData) => GauntletModule.resignRun(userId)).then((arenaData) => GauntletModule.updateArenaRunWithGameOutcome(userId, 'game 1', true)).then((arenaData) => {
-        expect(arenaData).to.not.exist;
-      })
-      .catch((error) => {
-        expect(error).to.exist;
-        expect(error).to.be.an.instanceof(Error);
-      }));
+    it('expect to FAIL to update arena run with a game if an arena run is over', () =>
+      GauntletModule.startRun(userId, tickets.pop())
+        .then((arenaData) => GauntletModule.resignRun(userId))
+        .then((arenaData) => GauntletModule.updateArenaRunWithGameOutcome(userId, 'game 1', true))
+        .then((arenaData) => {
+          expect(arenaData).to.not.exist;
+        })
+        .catch((error) => {
+          expect(error).to.exist;
+          expect(error).to.be.an.instanceof(Error);
+        }));
 
     it('expect a won game to update the arena win counter', () => {
       const gameId = generatePushId();
-      return knex('user_gauntlet_run').where({ user_id: userId }).delete()
+      return knex('user_gauntlet_run')
+        .where({ user_id: userId })
+        .delete()
         .then(() => GauntletModule.startRun(userId, tickets.pop()))
         .then((arenaData) => GauntletModule.chooseCard(userId, arenaData.general_choices[0]))
         .then((arenaData) => fillOutArenaDeck(userId))
@@ -670,11 +779,19 @@ describe('gauntlet module', () => {
           expect(arenaData.loss_count).to.equal(0);
           return DuelystFirebase.connect().getRootRef();
         })
-        .then((rootRef) => Promise.all([
-          knex.first().from('user_gauntlet_run').where({ user_id: userId }),
-          FirebasePromises.once(rootRef.child('user-gauntlet-run').child(userId).child('current'), 'value'),
-          FirebasePromises.once(rootRef.child('user-games').child(userId).child(gameId).child('job_status'), 'value'),
-        ]))
+        .then((rootRef) =>
+          Promise.all([
+            knex.first().from('user_gauntlet_run').where({ user_id: userId }),
+            FirebasePromises.once(
+              rootRef.child('user-gauntlet-run').child(userId).child('current'),
+              'value',
+            ),
+            FirebasePromises.once(
+              rootRef.child('user-games').child(userId).child(gameId).child('job_status'),
+              'value',
+            ),
+          ]),
+        )
         .then(([gauntletRow, fbRun, firebaseGameJobStatusSnapshot]) => {
           expect(gauntletRow.win_count).to.equal(1);
           expect(gauntletRow.loss_count).to.equal(0);
@@ -686,404 +803,544 @@ describe('gauntlet module', () => {
         });
     });
 
-    it('expect a lost game to update the arena loss counter', () => GauntletModule.updateArenaRunWithGameOutcome(userId, false, 'game 2')
-      .then((arenaData) => {
-        expect(arenaData).to.exist;
-        expect(arenaData.win_count).to.equal(1);
-        expect(arenaData.loss_count).to.equal(1);
-        return DuelystFirebase.connect().getRootRef();
-      }).then((rootRef) => Promise.all([
-        knex.first().from('user_gauntlet_run').where({ user_id: userId }),
-        FirebasePromises.once(rootRef.child('user-gauntlet-run').child(userId).child('current'), 'value'),
-      ])).then(([gauntletRow, fbRun]) => {
-        expect(gauntletRow.win_count).to.equal(1);
-        expect(gauntletRow.loss_count).to.equal(1);
+    it('expect a lost game to update the arena loss counter', () =>
+      GauntletModule.updateArenaRunWithGameOutcome(userId, false, 'game 2')
+        .then((arenaData) => {
+          expect(arenaData).to.exist;
+          expect(arenaData.win_count).to.equal(1);
+          expect(arenaData.loss_count).to.equal(1);
+          return DuelystFirebase.connect().getRootRef();
+        })
+        .then((rootRef) =>
+          Promise.all([
+            knex.first().from('user_gauntlet_run').where({ user_id: userId }),
+            FirebasePromises.once(
+              rootRef.child('user-gauntlet-run').child(userId).child('current'),
+              'value',
+            ),
+          ]),
+        )
+        .then(([gauntletRow, fbRun]) => {
+          expect(gauntletRow.win_count).to.equal(1);
+          expect(gauntletRow.loss_count).to.equal(1);
 
-        expect(fbRun.val().win_count).to.equal(1);
-        expect(fbRun.val().loss_count).to.equal(1);
-      }));
+          expect(fbRun.val().win_count).to.equal(1);
+          expect(fbRun.val().loss_count).to.equal(1);
+        }));
 
-    it('expect a draw to update the arena draw counter and not win/loss', () => GauntletModule.updateArenaRunWithGameOutcome(userId, false, 'game 2', true)
-      .then((arenaData) => {
-        expect(arenaData).to.exist;
-        expect(arenaData.win_count).to.equal(1);
-        expect(arenaData.loss_count).to.equal(1);
-        expect(arenaData.draw_count).to.equal(1);
-        return DuelystFirebase.connect().getRootRef();
-      }).then((rootRef) => Promise.all([
-        knex.first().from('user_gauntlet_run').where({ user_id: userId }),
-        FirebasePromises.once(rootRef.child('user-gauntlet-run').child(userId).child('current'), 'value'),
-      ])).then(([gauntletRow, fbRun]) => {
-        expect(gauntletRow.win_count).to.equal(1);
-        expect(gauntletRow.loss_count).to.equal(1);
-        expect(gauntletRow.draw_count).to.equal(1);
+    it('expect a draw to update the arena draw counter and not win/loss', () =>
+      GauntletModule.updateArenaRunWithGameOutcome(userId, false, 'game 2', true)
+        .then((arenaData) => {
+          expect(arenaData).to.exist;
+          expect(arenaData.win_count).to.equal(1);
+          expect(arenaData.loss_count).to.equal(1);
+          expect(arenaData.draw_count).to.equal(1);
+          return DuelystFirebase.connect().getRootRef();
+        })
+        .then((rootRef) =>
+          Promise.all([
+            knex.first().from('user_gauntlet_run').where({ user_id: userId }),
+            FirebasePromises.once(
+              rootRef.child('user-gauntlet-run').child(userId).child('current'),
+              'value',
+            ),
+          ]),
+        )
+        .then(([gauntletRow, fbRun]) => {
+          expect(gauntletRow.win_count).to.equal(1);
+          expect(gauntletRow.loss_count).to.equal(1);
+          expect(gauntletRow.draw_count).to.equal(1);
 
-        expect(fbRun.val().win_count).to.equal(1);
-        expect(fbRun.val().loss_count).to.equal(1);
-        expect(fbRun.val().draw_count).to.equal(1);
-      }));
+          expect(fbRun.val().win_count).to.equal(1);
+          expect(fbRun.val().loss_count).to.equal(1);
+          expect(fbRun.val().draw_count).to.equal(1);
+        }));
 
-    it('expect 3 losses to end the run', () => Promise.all([
-      GauntletModule.updateArenaRunWithGameOutcome(userId, false, 'game 3'),
-      GauntletModule.updateArenaRunWithGameOutcome(userId, false, 'game 4'),
-    ]).then(([arenaDataNoFinal, arenaData]) => {
-      expect(arenaDataNoFinal.ended_at).to.not.exist;
-
-      expect(arenaData).to.exist;
-      expect(arenaData.loss_count).to.equal(3);
-      expect(arenaData.ended_at).to.exist;
-      expect(arenaData.rewards).to.not.exist;
-      return DuelystFirebase.connect().getRootRef();
-    }).then((rootRef) => Promise.all([
-      knex.first().from('user_gauntlet_run').where({ user_id: userId }),
-      FirebasePromises.once(rootRef.child('user-gauntlet-run').child(userId).child('current'), 'value'),
-    ])).then(([gauntletRow, fbRun]) => {
-      expect(gauntletRow.loss_count).to.equal(3);
-      expect(gauntletRow.ended_at).to.exist;
-      expect(gauntletRow.rewards).to.not.exist;
-
-      expect(fbRun.val().loss_count).to.equal(3);
-      expect(fbRun.val().ended_at).to.exist;
-      expect(fbRun.val().rewards).to.not.exist;
-    }));
-
-    it('expect to be able to claim rewards for a complete run', () => GauntletModule.claimRewards(userId)
-      .then((arenaData) => {
-        expect(arenaData).to.exist;
-        expect(arenaData.rewards_claimed_at).to.exist;
-        expect(arenaData.rewards).to.exist;
-        return DuelystFirebase.connect().getRootRef();
-      }).then((rootRef) => Promise.all([
-        knex.first().from('user_gauntlet_run').where({ user_id: userId }),
-        knex.select().from('user_rewards').where({ user_id: userId }),
-        FirebasePromises.once(rootRef.child('user-gauntlet-run').child(userId).child('current'), 'value'),
-      ])).then(([gauntletRow, rewardRows, fbRun]) => {
-        const arenaRewards = _.filter(rewardRows, (row) => row.source_id === gauntletRow.ticket_id);
-
-        expect(arenaRewards).to.exist;
-        expect(arenaRewards.length).to.be.above(0);
-
-        expect(gauntletRow.rewards_claimed_at).to.exist;
-        expect(gauntletRow.reward_ids).to.exist;
-
-        expect(fbRun.val().rewards_claimed_at).to.exist;
-        expect(fbRun.val().rewards).to.exist;
-      }));
-
-    it('expect NOT to be able to claim rewards TWICE for a complete run', () => knex.select().from('user_rewards').where({ user_id: userId })
-      .then((rewardRows) => {
-        _chainState.rewardCount = rewardRows.length;
-        return GauntletModule.claimRewards(userId);
-      })
-      .then((arenaData) => {
-        expect(arenaData).to.not.exist;
-      })
-      .catch((error) => {
-        expect(error).to.exist;
-        expect(error).to.be.an.instanceof(Errors.ArenaRewardsAlreadyClaimedError);
-        return DuelystFirebase.connect().getRootRef();
-      })
-      .then((rootRef) => Promise.all([
-        knex.first().from('user_gauntlet_run').where({ user_id: userId }),
-        knex.select().from('user_rewards').where({ user_id: userId }),
-      ]))
-      .then(([gauntletRow, rewardRows]) => {
-        const arenaRewards = _.filter(rewardRows, (row) => row.source_id === gauntletRow.ticket_id);
-
-        expect(arenaRewards).to.exist;
-        expect(arenaRewards.length).to.be.equal(_chainState.rewardCount);
-      }));
-
-    it('expect an arena run with 3 wins to generate 4 reward slots', () => GauntletModule.startRun(userId, tickets.pop())
-      .then((arenaData) => GauntletModule.chooseCard(userId, arenaData.general_choices[0])).then((arenaData) => fillOutArenaDeck(userId)).then((arenaData) => Promise.all([
-        GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 1'),
-        GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 2'),
-        GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 3'),
-      ]))
-      .then(() => Promise.all([
+    it('expect 3 losses to end the run', () =>
+      Promise.all([
+        GauntletModule.updateArenaRunWithGameOutcome(userId, false, 'game 3'),
         GauntletModule.updateArenaRunWithGameOutcome(userId, false, 'game 4'),
-        GauntletModule.updateArenaRunWithGameOutcome(userId, false, 'game 5'),
-        GauntletModule.updateArenaRunWithGameOutcome(userId, false, 'game 6'),
-      ]))
-      .then(() => GauntletModule.claimRewards(userId))
-      .then((arenaData) => {
-        expect(arenaData.loss_count).to.equal(3);
-        expect(arenaData.ended_at).to.exist;
-        expect(arenaData.rewards).to.exist;
-        expect(arenaData.rewards.length).to.equal(4);
-        return DuelystFirebase.connect().getRootRef();
-      })
-      .then((rootRef) => Promise.all([
-        knex.first().from('user_gauntlet_run').where({ user_id: userId }),
-        knex.select().from('user_rewards').where({ user_id: userId }),
-        FirebasePromises.once(rootRef.child('user-gauntlet-run').child(userId).child('current'), 'value'),
-      ]))
-      .then(([gauntletRow, rewardRows, fbRun]) => {
-        const arenaRewards = _.filter(rewardRows, (row) => row.source_id === gauntletRow.ticket_id);
+      ])
+        .then(([arenaDataNoFinal, arenaData]) => {
+          expect(arenaDataNoFinal.ended_at).to.not.exist;
 
-        expect(arenaRewards).to.exist;
-        expect(arenaRewards.length).to.be.equal(4);
+          expect(arenaData).to.exist;
+          expect(arenaData.loss_count).to.equal(3);
+          expect(arenaData.ended_at).to.exist;
+          expect(arenaData.rewards).to.not.exist;
+          return DuelystFirebase.connect().getRootRef();
+        })
+        .then((rootRef) =>
+          Promise.all([
+            knex.first().from('user_gauntlet_run').where({ user_id: userId }),
+            FirebasePromises.once(
+              rootRef.child('user-gauntlet-run').child(userId).child('current'),
+              'value',
+            ),
+          ]),
+        )
+        .then(([gauntletRow, fbRun]) => {
+          expect(gauntletRow.loss_count).to.equal(3);
+          expect(gauntletRow.ended_at).to.exist;
+          expect(gauntletRow.rewards).to.not.exist;
 
-        expect(gauntletRow.rewards_claimed_at).to.exist;
-        expect(gauntletRow.reward_ids).to.exist;
+          expect(fbRun.val().loss_count).to.equal(3);
+          expect(fbRun.val().ended_at).to.exist;
+          expect(fbRun.val().rewards).to.not.exist;
+        }));
 
-        expect(fbRun.val().rewards_claimed_at).to.exist;
-        expect(fbRun.val().rewards).to.exist;
-      }));
+    it('expect to be able to claim rewards for a complete run', () =>
+      GauntletModule.claimRewards(userId)
+        .then((arenaData) => {
+          expect(arenaData).to.exist;
+          expect(arenaData.rewards_claimed_at).to.exist;
+          expect(arenaData.rewards).to.exist;
+          return DuelystFirebase.connect().getRootRef();
+        })
+        .then((rootRef) =>
+          Promise.all([
+            knex.first().from('user_gauntlet_run').where({ user_id: userId }),
+            knex.select().from('user_rewards').where({ user_id: userId }),
+            FirebasePromises.once(
+              rootRef.child('user-gauntlet-run').child(userId).child('current'),
+              'value',
+            ),
+          ]),
+        )
+        .then(([gauntletRow, rewardRows, fbRun]) => {
+          const arenaRewards = _.filter(
+            rewardRows,
+            (row) => row.source_id === gauntletRow.ticket_id,
+          );
 
-    it('expect an arena run with 7 wins to generate 5 reward slots', () => GauntletModule.startRun(userId, tickets.pop())
-      .then((arenaData) => GauntletModule.chooseCard(userId, arenaData.general_choices[0])).then((arenaData) => fillOutArenaDeck(userId)).then((arenaData) => Promise.all([
-        GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 1'),
-        GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 2'),
-        GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 3'),
-        GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 4'),
-        GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 5'),
-        GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 6'),
-        GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 7'),
-      ]))
-      .then(() => Promise.all([
-        GauntletModule.updateArenaRunWithGameOutcome(userId, false, 'game 8'),
-        GauntletModule.updateArenaRunWithGameOutcome(userId, false, 'game 9'),
-        GauntletModule.updateArenaRunWithGameOutcome(userId, false, 'game 10'),
-      ]))
-      .then(() => GauntletModule.claimRewards(userId))
-      .then((arenaData) => {
-        expect(arenaData).to.exist;
-        expect(arenaData.loss_count).to.equal(3);
-        expect(arenaData.ended_at).to.exist;
-        expect(arenaData.rewards).to.exist;
-        expect(arenaData.rewards.length).to.be.equal(5);
-        return DuelystFirebase.connect().getRootRef();
-      })
-      .then((rootRef) => Promise.all([
-        knex.first().from('user_gauntlet_run').where({ user_id: userId }),
-        knex.select().from('user_rewards').where({ user_id: userId }),
-        FirebasePromises.once(rootRef.child('user-gauntlet-run').child(userId).child('current'), 'value'),
-      ]))
-      .then(([gauntletRow, rewardRows, fbRun]) => {
-        const arenaRewards = _.filter(rewardRows, (row) => row.source_id === gauntletRow.ticket_id);
+          expect(arenaRewards).to.exist;
+          expect(arenaRewards.length).to.be.above(0);
 
-        expect(arenaRewards).to.exist;
-        expect(arenaRewards.length).to.be.equal(5);
+          expect(gauntletRow.rewards_claimed_at).to.exist;
+          expect(gauntletRow.reward_ids).to.exist;
 
-        expect(gauntletRow.rewards_claimed_at).to.exist;
-        expect(gauntletRow.reward_ids).to.exist;
+          expect(fbRun.val().rewards_claimed_at).to.exist;
+          expect(fbRun.val().rewards).to.exist;
+        }));
 
-        expect(fbRun.val().rewards_claimed_at).to.exist;
-        expect(fbRun.val().rewards).to.exist;
-      }));
+    it('expect NOT to be able to claim rewards TWICE for a complete run', () =>
+      knex
+        .select()
+        .from('user_rewards')
+        .where({ user_id: userId })
+        .then((rewardRows) => {
+          _chainState.rewardCount = rewardRows.length;
+          return GauntletModule.claimRewards(userId);
+        })
+        .then((arenaData) => {
+          expect(arenaData).to.not.exist;
+        })
+        .catch((error) => {
+          expect(error).to.exist;
+          expect(error).to.be.an.instanceof(Errors.ArenaRewardsAlreadyClaimedError);
+          return DuelystFirebase.connect().getRootRef();
+        })
+        .then((rootRef) =>
+          Promise.all([
+            knex.first().from('user_gauntlet_run').where({ user_id: userId }),
+            knex.select().from('user_rewards').where({ user_id: userId }),
+          ]),
+        )
+        .then(([gauntletRow, rewardRows]) => {
+          const arenaRewards = _.filter(
+            rewardRows,
+            (row) => row.source_id === gauntletRow.ticket_id,
+          );
 
-    it('expect an arena run with 10 wins to generate 6 reward slots', () => GauntletModule.startRun(userId, tickets.pop())
-      .then((arenaData) => GauntletModule.chooseCard(userId, arenaData.general_choices[0])).then((arenaData) => fillOutArenaDeck(userId)).then((arenaData) => Promise.all([
-        GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 1'),
-        GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 2'),
-        GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 3'),
-        GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 4'),
-        GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 5'),
-        GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 6'),
-        GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 7'),
-        GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 8'),
-        GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 9'),
-        GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 10'),
-      ]))
-      .then(() => Promise.all([
+          expect(arenaRewards).to.exist;
+          expect(arenaRewards.length).to.be.equal(_chainState.rewardCount);
+        }));
 
-        GauntletModule.updateArenaRunWithGameOutcome(userId, false, 'game 11'),
-        GauntletModule.updateArenaRunWithGameOutcome(userId, false, 'game 12'),
-        GauntletModule.updateArenaRunWithGameOutcome(userId, false, 'game 13'),
-      ]))
-      .then(() => GauntletModule.claimRewards(userId))
-      .then((arenaData) => {
-        expect(arenaData).to.exist;
-        expect(arenaData.loss_count).to.equal(3);
-        expect(arenaData.ended_at).to.exist;
-        expect(arenaData.rewards).to.exist;
-        expect(arenaData.rewards.length).to.be.equal(6);
+    it('expect an arena run with 3 wins to generate 4 reward slots', () =>
+      GauntletModule.startRun(userId, tickets.pop())
+        .then((arenaData) => GauntletModule.chooseCard(userId, arenaData.general_choices[0]))
+        .then((arenaData) => fillOutArenaDeck(userId))
+        .then((arenaData) =>
+          Promise.all([
+            GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 1'),
+            GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 2'),
+            GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 3'),
+          ]),
+        )
+        .then(() =>
+          Promise.all([
+            GauntletModule.updateArenaRunWithGameOutcome(userId, false, 'game 4'),
+            GauntletModule.updateArenaRunWithGameOutcome(userId, false, 'game 5'),
+            GauntletModule.updateArenaRunWithGameOutcome(userId, false, 'game 6'),
+          ]),
+        )
+        .then(() => GauntletModule.claimRewards(userId))
+        .then((arenaData) => {
+          expect(arenaData.loss_count).to.equal(3);
+          expect(arenaData.ended_at).to.exist;
+          expect(arenaData.rewards).to.exist;
+          expect(arenaData.rewards.length).to.equal(4);
+          return DuelystFirebase.connect().getRootRef();
+        })
+        .then((rootRef) =>
+          Promise.all([
+            knex.first().from('user_gauntlet_run').where({ user_id: userId }),
+            knex.select().from('user_rewards').where({ user_id: userId }),
+            FirebasePromises.once(
+              rootRef.child('user-gauntlet-run').child(userId).child('current'),
+              'value',
+            ),
+          ]),
+        )
+        .then(([gauntletRow, rewardRows, fbRun]) => {
+          const arenaRewards = _.filter(
+            rewardRows,
+            (row) => row.source_id === gauntletRow.ticket_id,
+          );
 
-        return DuelystFirebase.connect().getRootRef();
-      })
-      .then((rootRef) => Promise.all([
-        knex.first().from('user_gauntlet_run').where({ user_id: userId }),
-        knex.select().from('user_rewards').where({ user_id: userId }),
-        FirebasePromises.once(rootRef.child('user-gauntlet-run').child(userId).child('current'), 'value'),
-      ]))
-      .then(([gauntletRow, rewardRows, fbRun]) => {
-        const arenaRewards = _.filter(rewardRows, (row) => row.source_id === gauntletRow.ticket_id);
+          expect(arenaRewards).to.exist;
+          expect(arenaRewards.length).to.be.equal(4);
 
-        expect(arenaRewards).to.exist;
-        expect(arenaRewards.length).to.be.equal(5); // Only 5 because Card ids are collapsed
+          expect(gauntletRow.rewards_claimed_at).to.exist;
+          expect(gauntletRow.reward_ids).to.exist;
 
-        expect(gauntletRow.rewards_claimed_at).to.exist;
-        expect(gauntletRow.reward_ids).to.exist;
+          expect(fbRun.val().rewards_claimed_at).to.exist;
+          expect(fbRun.val().rewards).to.exist;
+        }));
 
-        expect(fbRun.val().rewards_claimed_at).to.exist;
-        expect(fbRun.val().rewards).to.exist;
-      }));
+    it('expect an arena run with 7 wins to generate 5 reward slots', () =>
+      GauntletModule.startRun(userId, tickets.pop())
+        .then((arenaData) => GauntletModule.chooseCard(userId, arenaData.general_choices[0]))
+        .then((arenaData) => fillOutArenaDeck(userId))
+        .then((arenaData) =>
+          Promise.all([
+            GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 1'),
+            GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 2'),
+            GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 3'),
+            GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 4'),
+            GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 5'),
+            GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 6'),
+            GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 7'),
+          ]),
+        )
+        .then(() =>
+          Promise.all([
+            GauntletModule.updateArenaRunWithGameOutcome(userId, false, 'game 8'),
+            GauntletModule.updateArenaRunWithGameOutcome(userId, false, 'game 9'),
+            GauntletModule.updateArenaRunWithGameOutcome(userId, false, 'game 10'),
+          ]),
+        )
+        .then(() => GauntletModule.claimRewards(userId))
+        .then((arenaData) => {
+          expect(arenaData).to.exist;
+          expect(arenaData.loss_count).to.equal(3);
+          expect(arenaData.ended_at).to.exist;
+          expect(arenaData.rewards).to.exist;
+          expect(arenaData.rewards.length).to.be.equal(5);
+          return DuelystFirebase.connect().getRootRef();
+        })
+        .then((rootRef) =>
+          Promise.all([
+            knex.first().from('user_gauntlet_run').where({ user_id: userId }),
+            knex.select().from('user_rewards').where({ user_id: userId }),
+            FirebasePromises.once(
+              rootRef.child('user-gauntlet-run').child(userId).child('current'),
+              'value',
+            ),
+          ]),
+        )
+        .then(([gauntletRow, rewardRows, fbRun]) => {
+          const arenaRewards = _.filter(
+            rewardRows,
+            (row) => row.source_id === gauntletRow.ticket_id,
+          );
 
-    it('expect an arena run with 12 wins and 0 losses to end', () => GauntletModule.startRun(userId, tickets.pop())
-      .then((arenaData) => GauntletModule.chooseCard(userId, arenaData.general_choices[0])).then((arenaData) => fillOutArenaDeck(userId)).then((arenaData) => Promise.all([
-        GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 1'),
-        GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 2'),
-        GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 3'),
-        GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 4'),
-        GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 5'),
-        GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 6'),
-        GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 7'),
-        GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 8'),
-        GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 9'),
-        GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 10'),
-        GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 11'),
-        GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 12'),
-      ]))
-      .then(() => GauntletModule.claimRewards(userId))
-      .then((arenaData) => {
-        expect(arenaData).to.exist;
-        expect(arenaData.loss_count).to.equal(0);
-        expect(arenaData.ended_at).to.exist;
-        return DuelystFirebase.connect().getRootRef();
-      })
-      .then((rootRef) => Promise.all([
-        knex.first().from('user_gauntlet_run').where({ user_id: userId }),
-        FirebasePromises.once(rootRef.child('user-gauntlet-run').child(userId).child('current'), 'value'),
-      ]))
-      .then(([gauntletRow, fbRun]) => {
-        expect(gauntletRow.ended_at).to.exist;
-        expect(fbRun.val().ended_at).to.exist;
-      }));
+          expect(arenaRewards).to.exist;
+          expect(arenaRewards.length).to.be.equal(5);
+
+          expect(gauntletRow.rewards_claimed_at).to.exist;
+          expect(gauntletRow.reward_ids).to.exist;
+
+          expect(fbRun.val().rewards_claimed_at).to.exist;
+          expect(fbRun.val().rewards).to.exist;
+        }));
+
+    it('expect an arena run with 10 wins to generate 6 reward slots', () =>
+      GauntletModule.startRun(userId, tickets.pop())
+        .then((arenaData) => GauntletModule.chooseCard(userId, arenaData.general_choices[0]))
+        .then((arenaData) => fillOutArenaDeck(userId))
+        .then((arenaData) =>
+          Promise.all([
+            GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 1'),
+            GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 2'),
+            GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 3'),
+            GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 4'),
+            GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 5'),
+            GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 6'),
+            GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 7'),
+            GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 8'),
+            GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 9'),
+            GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 10'),
+          ]),
+        )
+        .then(() =>
+          Promise.all([
+            GauntletModule.updateArenaRunWithGameOutcome(userId, false, 'game 11'),
+            GauntletModule.updateArenaRunWithGameOutcome(userId, false, 'game 12'),
+            GauntletModule.updateArenaRunWithGameOutcome(userId, false, 'game 13'),
+          ]),
+        )
+        .then(() => GauntletModule.claimRewards(userId))
+        .then((arenaData) => {
+          expect(arenaData).to.exist;
+          expect(arenaData.loss_count).to.equal(3);
+          expect(arenaData.ended_at).to.exist;
+          expect(arenaData.rewards).to.exist;
+          expect(arenaData.rewards.length).to.be.equal(6);
+
+          return DuelystFirebase.connect().getRootRef();
+        })
+        .then((rootRef) =>
+          Promise.all([
+            knex.first().from('user_gauntlet_run').where({ user_id: userId }),
+            knex.select().from('user_rewards').where({ user_id: userId }),
+            FirebasePromises.once(
+              rootRef.child('user-gauntlet-run').child(userId).child('current'),
+              'value',
+            ),
+          ]),
+        )
+        .then(([gauntletRow, rewardRows, fbRun]) => {
+          const arenaRewards = _.filter(
+            rewardRows,
+            (row) => row.source_id === gauntletRow.ticket_id,
+          );
+
+          expect(arenaRewards).to.exist;
+          expect(arenaRewards.length).to.be.equal(5); // Only 5 because Card ids are collapsed
+
+          expect(gauntletRow.rewards_claimed_at).to.exist;
+          expect(gauntletRow.reward_ids).to.exist;
+
+          expect(fbRun.val().rewards_claimed_at).to.exist;
+          expect(fbRun.val().rewards).to.exist;
+        }));
+
+    it('expect an arena run with 12 wins and 0 losses to end', () =>
+      GauntletModule.startRun(userId, tickets.pop())
+        .then((arenaData) => GauntletModule.chooseCard(userId, arenaData.general_choices[0]))
+        .then((arenaData) => fillOutArenaDeck(userId))
+        .then((arenaData) =>
+          Promise.all([
+            GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 1'),
+            GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 2'),
+            GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 3'),
+            GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 4'),
+            GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 5'),
+            GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 6'),
+            GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 7'),
+            GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 8'),
+            GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 9'),
+            GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 10'),
+            GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 11'),
+            GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 12'),
+          ]),
+        )
+        .then(() => GauntletModule.claimRewards(userId))
+        .then((arenaData) => {
+          expect(arenaData).to.exist;
+          expect(arenaData.loss_count).to.equal(0);
+          expect(arenaData.ended_at).to.exist;
+          return DuelystFirebase.connect().getRootRef();
+        })
+        .then((rootRef) =>
+          Promise.all([
+            knex.first().from('user_gauntlet_run').where({ user_id: userId }),
+            FirebasePromises.once(
+              rootRef.child('user-gauntlet-run').child(userId).child('current'),
+              'value',
+            ),
+          ]),
+        )
+        .then(([gauntletRow, fbRun]) => {
+          expect(gauntletRow.ended_at).to.exist;
+          expect(fbRun.val().ended_at).to.exist;
+        }));
   });
 
   describe('claimRewards()', () => {
     const _chainState = {};
     const tickets = [];
 
-    beforeAll(() => knex('users').where('id', userId).update({ wallet_gold: 2500 }).then((numUpdates) => knex('user_gauntlet_run').where({ user_id: userId }).delete())
-      .then(() => Promise.all([
-        GauntletModule.buyArenaTicketWithGold(userId),
-        GauntletModule.buyArenaTicketWithGold(userId),
-        GauntletModule.buyArenaTicketWithGold(userId),
-        GauntletModule.buyArenaTicketWithGold(userId),
-        GauntletModule.buyArenaTicketWithGold(userId),
-        GauntletModule.buyArenaTicketWithGold(userId),
-        GauntletModule.buyArenaTicketWithGold(userId),
-      ]))
-      .then((ticketData) => {
-        _.each(ticketData, (t) => {
-          if (t) tickets.push(t);
-        });
-      }));
+    beforeAll(() =>
+      knex('users')
+        .where('id', userId)
+        .update({ wallet_gold: 2500 })
+        .then((numUpdates) => knex('user_gauntlet_run').where({ user_id: userId }).delete())
+        .then(() =>
+          Promise.all([
+            GauntletModule.buyArenaTicketWithGold(userId),
+            GauntletModule.buyArenaTicketWithGold(userId),
+            GauntletModule.buyArenaTicketWithGold(userId),
+            GauntletModule.buyArenaTicketWithGold(userId),
+            GauntletModule.buyArenaTicketWithGold(userId),
+            GauntletModule.buyArenaTicketWithGold(userId),
+            GauntletModule.buyArenaTicketWithGold(userId),
+          ]),
+        )
+        .then((ticketData) => {
+          _.each(ticketData, (t) => {
+            if (t) tickets.push(t);
+          });
+        }),
+    );
 
-    afterAll(() => {
-    });
+    afterAll(() => {});
 
-    it('expect inventory and wallet to update after claiming rewards', () => Promise.all([
-      knex('users').first().where('id', userId),
-      knex('user_card_collection').first().where('user_id', userId),
-      knex('user_spirit_orbs').select().where('user_id', userId),
-      knex('user_gauntlet_tickets').select().where('user_id', userId),
-    ]).then(([userRow, collectionRow, boosterRows, ticketRows]) => {
-      _chainState.userRow = userRow;
-      _chainState.collectionRow = collectionRow;
-      _chainState.boosterRows = boosterRows;
-      _chainState.ticketRows = ticketRows;
-
-      return GauntletModule.startRun(userId, tickets.pop());
-    }).then((arenaData) => GauntletModule.chooseCard(userId, arenaData.general_choices[0])).then((arenaData) => fillOutArenaDeck(userId))
-      .then((arenaData) => Promise.all([
-        GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 1'),
-        GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 2'),
-        GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 3'),
-        GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 4'),
-        GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 5'),
-        GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 6'),
-        GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 7'),
-      ]))
-      .then(() => Promise.all([
-        GauntletModule.updateArenaRunWithGameOutcome(userId, false, 'game 8'),
-        GauntletModule.updateArenaRunWithGameOutcome(userId, false, 'game 9'),
-        GauntletModule.updateArenaRunWithGameOutcome(userId, false, 'game 10'),
-      ]))
-      .then(() => GauntletModule.claimRewards(userId))
-      .then((arenaData) => {
-        expect(arenaData).to.exist;
-        expect(arenaData.loss_count).to.equal(3);
-        expect(arenaData.ended_at).to.exist;
-        expect(arenaData.rewards).to.exist;
-        expect(arenaData.rewards.length).to.be.above(4); // 5 or 6 reward slots because one could include 2 card rewards
-        _chainState.rewards = arenaData.reward_ids;
-        return DuelystFirebase.connect().getRootRef();
-      })
-      .then((rootRef) => Promise.all([
-        knex('user_rewards').select().whereIn('id', _chainState.rewards),
+    it('expect inventory and wallet to update after claiming rewards', () =>
+      Promise.all([
         knex('users').first().where('id', userId),
         knex('user_card_collection').first().where('user_id', userId),
         knex('user_spirit_orbs').select().where('user_id', userId),
         knex('user_gauntlet_tickets').select().where('user_id', userId),
-        FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('wallet'), 'value'),
-        FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('card-collection'), 'value'),
-        FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('spirit-orbs'), 'value'),
-        FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('gauntlet-tickets'), 'value'),
-      ]))
-      .then(([rewardRows, userRow, collectionRow, boosterRows, ticketRows, walletSnapshot, collectionSnapshot, boosterPacksSnapshot, ticketsSnapshot]) => {
-        const newCollectionData = collectionSnapshot.val();
-        let totalGoldEarned = 0;
-        let totalSpiritEarned = 0;
+      ])
+        .then(([userRow, collectionRow, boosterRows, ticketRows]) => {
+          _chainState.userRow = userRow;
+          _chainState.collectionRow = collectionRow;
+          _chainState.boosterRows = boosterRows;
+          _chainState.ticketRows = ticketRows;
 
-        _.each(rewardRows, (reward) => {
-          if (reward.cards) {
-            const cardId = reward.cards[0];
-            // Logger.module("UNITTEST").log("checking card "+cardId);
-            const newCount = newCollectionData[cardId].count;
-            let oldCount = 0;
-            if (_chainState.collectionRow && _chainState.collectionRow.cards[cardId]) oldCount = _chainState.collectionRow.cards[cardId].count;
+          return GauntletModule.startRun(userId, tickets.pop());
+        })
+        .then((arenaData) => GauntletModule.chooseCard(userId, arenaData.general_choices[0]))
+        .then((arenaData) => fillOutArenaDeck(userId))
+        .then((arenaData) =>
+          Promise.all([
+            GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 1'),
+            GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 2'),
+            GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 3'),
+            GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 4'),
+            GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 5'),
+            GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 6'),
+            GauntletModule.updateArenaRunWithGameOutcome(userId, true, 'game 7'),
+          ]),
+        )
+        .then(() =>
+          Promise.all([
+            GauntletModule.updateArenaRunWithGameOutcome(userId, false, 'game 8'),
+            GauntletModule.updateArenaRunWithGameOutcome(userId, false, 'game 9'),
+            GauntletModule.updateArenaRunWithGameOutcome(userId, false, 'game 10'),
+          ]),
+        )
+        .then(() => GauntletModule.claimRewards(userId))
+        .then((arenaData) => {
+          expect(arenaData).to.exist;
+          expect(arenaData.loss_count).to.equal(3);
+          expect(arenaData.ended_at).to.exist;
+          expect(arenaData.rewards).to.exist;
+          expect(arenaData.rewards.length).to.be.above(4); // 5 or 6 reward slots because one could include 2 card rewards
+          _chainState.rewards = arenaData.reward_ids;
+          return DuelystFirebase.connect().getRootRef();
+        })
+        .then((rootRef) =>
+          Promise.all([
+            knex('user_rewards').select().whereIn('id', _chainState.rewards),
+            knex('users').first().where('id', userId),
+            knex('user_card_collection').first().where('user_id', userId),
+            knex('user_spirit_orbs').select().where('user_id', userId),
+            knex('user_gauntlet_tickets').select().where('user_id', userId),
+            FirebasePromises.once(
+              rootRef.child('user-inventory').child(userId).child('wallet'),
+              'value',
+            ),
+            FirebasePromises.once(
+              rootRef.child('user-inventory').child(userId).child('card-collection'),
+              'value',
+            ),
+            FirebasePromises.once(
+              rootRef.child('user-inventory').child(userId).child('spirit-orbs'),
+              'value',
+            ),
+            FirebasePromises.once(
+              rootRef.child('user-inventory').child(userId).child('gauntlet-tickets'),
+              'value',
+            ),
+          ]),
+        )
+        .then(
+          ([
+            rewardRows,
+            userRow,
+            collectionRow,
+            boosterRows,
+            ticketRows,
+            walletSnapshot,
+            collectionSnapshot,
+            boosterPacksSnapshot,
+            ticketsSnapshot,
+          ]) => {
+            const newCollectionData = collectionSnapshot.val();
+            let totalGoldEarned = 0;
+            let totalSpiritEarned = 0;
 
-            expect(oldCount + 1).to.equal(newCount);
-            expect(oldCount + 1).to.equal(collectionRow.cards[cardId].count);
-          } else if (reward.gold) {
-            totalGoldEarned += parseInt(reward.gold, 10);
-          } else if (reward.spirit) {
-            totalSpiritEarned += parseInt(reward.spirit, 10);
-          }
-        });
+            _.each(rewardRows, (reward) => {
+              if (reward.cards) {
+                const cardId = reward.cards[0];
+                // Logger.module("UNITTEST").log("checking card "+cardId);
+                const newCount = newCollectionData[cardId].count;
+                let oldCount = 0;
+                if (_chainState.collectionRow && _chainState.collectionRow.cards[cardId])
+                  oldCount = _chainState.collectionRow.cards[cardId].count;
 
-        // Logger.module("UNITTEST").log("wallet",walletSnapshot.val())
+                expect(oldCount + 1).to.equal(newCount);
+                expect(oldCount + 1).to.equal(collectionRow.cards[cardId].count);
+              } else if (reward.gold) {
+                totalGoldEarned += parseInt(reward.gold, 10);
+              } else if (reward.spirit) {
+                totalSpiritEarned += parseInt(reward.spirit, 10);
+              }
+            });
 
-        // check gold
-        const oldGold = _chainState.userRow.wallet_gold || 0;
-        expect(userRow.wallet_gold).to.equal(oldGold + totalGoldEarned);
-        expect((walletSnapshot.val().gold_amount || 0)).to.equal(oldGold + totalGoldEarned);
+            // Logger.module("UNITTEST").log("wallet",walletSnapshot.val())
 
-        // check spirit
-        const oldSpirit = _chainState.userRow.wallet_spirit || 0;
-        expect(userRow.wallet_spirit).to.equal(oldSpirit + totalSpiritEarned);
-        expect((walletSnapshot.val().spirit_amount || 0)).to.equal(oldSpirit + totalSpiritEarned);
+            // check gold
+            const oldGold = _chainState.userRow.wallet_gold || 0;
+            expect(userRow.wallet_gold).to.equal(oldGold + totalGoldEarned);
+            expect(walletSnapshot.val().gold_amount || 0).to.equal(oldGold + totalGoldEarned);
 
-        // check boosters
-        expect(boosterRows.length).to.equal(_chainState.boosterRows.length + 1);
-        expect(boosterPacksSnapshot.numChildren()).to.equal(_chainState.boosterRows.length + 1);
+            // check spirit
+            const oldSpirit = _chainState.userRow.wallet_spirit || 0;
+            expect(userRow.wallet_spirit).to.equal(oldSpirit + totalSpiritEarned);
+            expect(walletSnapshot.val().spirit_amount || 0).to.equal(oldSpirit + totalSpiritEarned);
 
-        // check tickets (same as before because we used one and got one)
-        expect(ticketRows.length).to.equal(_chainState.ticketRows.length);
-        expect(ticketsSnapshot.numChildren()).to.equal(_chainState.ticketRows.length);
-      }));
+            // check boosters
+            expect(boosterRows.length).to.equal(_chainState.boosterRows.length + 1);
+            expect(boosterPacksSnapshot.numChildren()).to.equal(_chainState.boosterRows.length + 1);
 
-    it('expect not to be able to claim rewards twice', () => GauntletModule.claimRewards(userId)
-      .then((response) => {
-        expect(response).to.not.exist;
-      }).catch((error) => {
-        expect(error).to.exist;
-        expect(error).to.be.an.instanceof(Errors.ArenaRewardsAlreadyClaimedError);
-      }));
+            // check tickets (same as before because we used one and got one)
+            expect(ticketRows.length).to.equal(_chainState.ticketRows.length);
+            expect(ticketsSnapshot.numChildren()).to.equal(_chainState.ticketRows.length);
+          },
+        ));
+
+    it('expect not to be able to claim rewards twice', () =>
+      GauntletModule.claimRewards(userId)
+        .then((response) => {
+          expect(response).to.not.exist;
+        })
+        .catch((error) => {
+          expect(error).to.exist;
+          expect(error).to.be.an.instanceof(Errors.ArenaRewardsAlreadyClaimedError);
+        }));
   });
 
   /// /
   describe('generate card rarity output', () => {
     const tickets = [];
 
-    beforeAll(() => {
-    });
+    beforeAll(() => {});
 
-    afterAll(() => {
-    });
+    afterAll(() => {});
 
     it('iterate over card choice rarities', () => {
       let numBasics = 0;
@@ -1100,120 +1357,332 @@ describe('gauntlet module', () => {
       const generateDeck = function () {
         const deck = [];
         const factionId = _.random(1, 6);
-        return GauntletModule._generateCardChoices(Promise.resolve(), knex, userId, factionId, 1, null)
+        return GauntletModule._generateCardChoices(
+          Promise.resolve(),
+          knex,
+          userId,
+          factionId,
+          1,
+          null,
+        )
           .then((cardIds) => {
             deck.push(cardIds[_.random(0, 2)]);
-            return GauntletModule._generateCardChoices(Promise.resolve(), knex, userId, factionId, 2, deck[deck.length - 1]);
-          }).then((cardIds) => {
-            deck.push(cardIds[_.random(0, 2)]);
-            return GauntletModule._generateCardChoices(Promise.resolve(), knex, userId, factionId, 3, deck[deck.length - 1]);
-          }).then((cardIds) => {
-            deck.push(cardIds[_.random(0, 2)]);
-            return GauntletModule._generateCardChoices(Promise.resolve(), knex, userId, factionId, 4, deck[deck.length - 1]);
+            return GauntletModule._generateCardChoices(
+              Promise.resolve(),
+              knex,
+              userId,
+              factionId,
+              2,
+              deck[deck.length - 1],
+            );
           })
           .then((cardIds) => {
             deck.push(cardIds[_.random(0, 2)]);
-            return GauntletModule._generateCardChoices(Promise.resolve(), knex, userId, factionId, 5, deck[deck.length - 1]);
+            return GauntletModule._generateCardChoices(
+              Promise.resolve(),
+              knex,
+              userId,
+              factionId,
+              3,
+              deck[deck.length - 1],
+            );
           })
           .then((cardIds) => {
             deck.push(cardIds[_.random(0, 2)]);
-            return GauntletModule._generateCardChoices(Promise.resolve(), knex, userId, factionId, 6, deck[deck.length - 1]);
+            return GauntletModule._generateCardChoices(
+              Promise.resolve(),
+              knex,
+              userId,
+              factionId,
+              4,
+              deck[deck.length - 1],
+            );
           })
           .then((cardIds) => {
             deck.push(cardIds[_.random(0, 2)]);
-            return GauntletModule._generateCardChoices(Promise.resolve(), knex, userId, factionId, 7, deck[deck.length - 1]);
+            return GauntletModule._generateCardChoices(
+              Promise.resolve(),
+              knex,
+              userId,
+              factionId,
+              5,
+              deck[deck.length - 1],
+            );
           })
           .then((cardIds) => {
             deck.push(cardIds[_.random(0, 2)]);
-            return GauntletModule._generateCardChoices(Promise.resolve(), knex, userId, factionId, 8, deck[deck.length - 1]);
+            return GauntletModule._generateCardChoices(
+              Promise.resolve(),
+              knex,
+              userId,
+              factionId,
+              6,
+              deck[deck.length - 1],
+            );
           })
           .then((cardIds) => {
             deck.push(cardIds[_.random(0, 2)]);
-            return GauntletModule._generateCardChoices(Promise.resolve(), knex, userId, factionId, 9, deck[deck.length - 1]);
+            return GauntletModule._generateCardChoices(
+              Promise.resolve(),
+              knex,
+              userId,
+              factionId,
+              7,
+              deck[deck.length - 1],
+            );
           })
           .then((cardIds) => {
             deck.push(cardIds[_.random(0, 2)]);
-            return GauntletModule._generateCardChoices(Promise.resolve(), knex, userId, factionId, 10, deck[deck.length - 1]);
+            return GauntletModule._generateCardChoices(
+              Promise.resolve(),
+              knex,
+              userId,
+              factionId,
+              8,
+              deck[deck.length - 1],
+            );
           })
           .then((cardIds) => {
             deck.push(cardIds[_.random(0, 2)]);
-            return GauntletModule._generateCardChoices(Promise.resolve(), knex, userId, factionId, 11, deck[deck.length - 1]);
+            return GauntletModule._generateCardChoices(
+              Promise.resolve(),
+              knex,
+              userId,
+              factionId,
+              9,
+              deck[deck.length - 1],
+            );
           })
           .then((cardIds) => {
             deck.push(cardIds[_.random(0, 2)]);
-            return GauntletModule._generateCardChoices(Promise.resolve(), knex, userId, factionId, 12, deck[deck.length - 1]);
+            return GauntletModule._generateCardChoices(
+              Promise.resolve(),
+              knex,
+              userId,
+              factionId,
+              10,
+              deck[deck.length - 1],
+            );
           })
           .then((cardIds) => {
             deck.push(cardIds[_.random(0, 2)]);
-            return GauntletModule._generateCardChoices(Promise.resolve(), knex, userId, factionId, 13, deck[deck.length - 1]);
+            return GauntletModule._generateCardChoices(
+              Promise.resolve(),
+              knex,
+              userId,
+              factionId,
+              11,
+              deck[deck.length - 1],
+            );
           })
           .then((cardIds) => {
             deck.push(cardIds[_.random(0, 2)]);
-            return GauntletModule._generateCardChoices(Promise.resolve(), knex, userId, factionId, 14, deck[deck.length - 1]);
+            return GauntletModule._generateCardChoices(
+              Promise.resolve(),
+              knex,
+              userId,
+              factionId,
+              12,
+              deck[deck.length - 1],
+            );
           })
           .then((cardIds) => {
             deck.push(cardIds[_.random(0, 2)]);
-            return GauntletModule._generateCardChoices(Promise.resolve(), knex, userId, factionId, 15, deck[deck.length - 1]);
+            return GauntletModule._generateCardChoices(
+              Promise.resolve(),
+              knex,
+              userId,
+              factionId,
+              13,
+              deck[deck.length - 1],
+            );
           })
           .then((cardIds) => {
             deck.push(cardIds[_.random(0, 2)]);
-            return GauntletModule._generateCardChoices(Promise.resolve(), knex, userId, factionId, 16, deck[deck.length - 1]);
+            return GauntletModule._generateCardChoices(
+              Promise.resolve(),
+              knex,
+              userId,
+              factionId,
+              14,
+              deck[deck.length - 1],
+            );
           })
           .then((cardIds) => {
             deck.push(cardIds[_.random(0, 2)]);
-            return GauntletModule._generateCardChoices(Promise.resolve(), knex, userId, factionId, 17, deck[deck.length - 1]);
+            return GauntletModule._generateCardChoices(
+              Promise.resolve(),
+              knex,
+              userId,
+              factionId,
+              15,
+              deck[deck.length - 1],
+            );
           })
           .then((cardIds) => {
             deck.push(cardIds[_.random(0, 2)]);
-            return GauntletModule._generateCardChoices(Promise.resolve(), knex, userId, factionId, 18, deck[deck.length - 1]);
+            return GauntletModule._generateCardChoices(
+              Promise.resolve(),
+              knex,
+              userId,
+              factionId,
+              16,
+              deck[deck.length - 1],
+            );
           })
           .then((cardIds) => {
             deck.push(cardIds[_.random(0, 2)]);
-            return GauntletModule._generateCardChoices(Promise.resolve(), knex, userId, factionId, 19, deck[deck.length - 1]);
+            return GauntletModule._generateCardChoices(
+              Promise.resolve(),
+              knex,
+              userId,
+              factionId,
+              17,
+              deck[deck.length - 1],
+            );
           })
           .then((cardIds) => {
             deck.push(cardIds[_.random(0, 2)]);
-            return GauntletModule._generateCardChoices(Promise.resolve(), knex, userId, factionId, 20, deck[deck.length - 1]);
+            return GauntletModule._generateCardChoices(
+              Promise.resolve(),
+              knex,
+              userId,
+              factionId,
+              18,
+              deck[deck.length - 1],
+            );
           })
           .then((cardIds) => {
             deck.push(cardIds[_.random(0, 2)]);
-            return GauntletModule._generateCardChoices(Promise.resolve(), knex, userId, factionId, 21, deck[deck.length - 1]);
+            return GauntletModule._generateCardChoices(
+              Promise.resolve(),
+              knex,
+              userId,
+              factionId,
+              19,
+              deck[deck.length - 1],
+            );
           })
           .then((cardIds) => {
             deck.push(cardIds[_.random(0, 2)]);
-            return GauntletModule._generateCardChoices(Promise.resolve(), knex, userId, factionId, 22, deck[deck.length - 1]);
+            return GauntletModule._generateCardChoices(
+              Promise.resolve(),
+              knex,
+              userId,
+              factionId,
+              20,
+              deck[deck.length - 1],
+            );
           })
           .then((cardIds) => {
             deck.push(cardIds[_.random(0, 2)]);
-            return GauntletModule._generateCardChoices(Promise.resolve(), knex, userId, factionId, 23, deck[deck.length - 1]);
+            return GauntletModule._generateCardChoices(
+              Promise.resolve(),
+              knex,
+              userId,
+              factionId,
+              21,
+              deck[deck.length - 1],
+            );
           })
           .then((cardIds) => {
             deck.push(cardIds[_.random(0, 2)]);
-            return GauntletModule._generateCardChoices(Promise.resolve(), knex, userId, factionId, 24, deck[deck.length - 1]);
+            return GauntletModule._generateCardChoices(
+              Promise.resolve(),
+              knex,
+              userId,
+              factionId,
+              22,
+              deck[deck.length - 1],
+            );
           })
           .then((cardIds) => {
             deck.push(cardIds[_.random(0, 2)]);
-            return GauntletModule._generateCardChoices(Promise.resolve(), knex, userId, factionId, 25, deck[deck.length - 1]);
+            return GauntletModule._generateCardChoices(
+              Promise.resolve(),
+              knex,
+              userId,
+              factionId,
+              23,
+              deck[deck.length - 1],
+            );
           })
           .then((cardIds) => {
             deck.push(cardIds[_.random(0, 2)]);
-            return GauntletModule._generateCardChoices(Promise.resolve(), knex, userId, factionId, 26, deck[deck.length - 1]);
+            return GauntletModule._generateCardChoices(
+              Promise.resolve(),
+              knex,
+              userId,
+              factionId,
+              24,
+              deck[deck.length - 1],
+            );
           })
           .then((cardIds) => {
             deck.push(cardIds[_.random(0, 2)]);
-            return GauntletModule._generateCardChoices(Promise.resolve(), knex, userId, factionId, 27, deck[deck.length - 1]);
+            return GauntletModule._generateCardChoices(
+              Promise.resolve(),
+              knex,
+              userId,
+              factionId,
+              25,
+              deck[deck.length - 1],
+            );
           })
           .then((cardIds) => {
             deck.push(cardIds[_.random(0, 2)]);
-            return GauntletModule._generateCardChoices(Promise.resolve(), knex, userId, factionId, 28, deck[deck.length - 1]);
+            return GauntletModule._generateCardChoices(
+              Promise.resolve(),
+              knex,
+              userId,
+              factionId,
+              26,
+              deck[deck.length - 1],
+            );
           })
           .then((cardIds) => {
             deck.push(cardIds[_.random(0, 2)]);
-            return GauntletModule._generateCardChoices(Promise.resolve(), knex, userId, factionId, 29, deck[deck.length - 1]);
+            return GauntletModule._generateCardChoices(
+              Promise.resolve(),
+              knex,
+              userId,
+              factionId,
+              27,
+              deck[deck.length - 1],
+            );
           })
           .then((cardIds) => {
             deck.push(cardIds[_.random(0, 2)]);
-            return GauntletModule._generateCardChoices(Promise.resolve(), knex, userId, factionId, 30, deck[deck.length - 1]);
+            return GauntletModule._generateCardChoices(
+              Promise.resolve(),
+              knex,
+              userId,
+              factionId,
+              28,
+              deck[deck.length - 1],
+            );
+          })
+          .then((cardIds) => {
+            deck.push(cardIds[_.random(0, 2)]);
+            return GauntletModule._generateCardChoices(
+              Promise.resolve(),
+              knex,
+              userId,
+              factionId,
+              29,
+              deck[deck.length - 1],
+            );
+          })
+          .then((cardIds) => {
+            deck.push(cardIds[_.random(0, 2)]);
+            return GauntletModule._generateCardChoices(
+              Promise.resolve(),
+              knex,
+              userId,
+              factionId,
+              30,
+              deck[deck.length - 1],
+            );
           })
           .then((cardIds) => {
             deck.push(cardIds[_.random(0, 2)]);
@@ -1222,36 +1691,35 @@ describe('gauntlet module', () => {
       };
 
       const gatherDeckResults = function (iteration) {
-        return generateDeck()
-          .then((deck) => {
-            let deckRaritySum = 0;
-            _.each(deck, (cardId) => {
-              const sdkCard = SDK.GameSession.getCardCaches().getCardById(cardId);
-              const cardRarity = sdkCard.getRarityId();
-              const cardFactionId = sdkCard.getFactionId();
+        return generateDeck().then((deck) => {
+          let deckRaritySum = 0;
+          _.each(deck, (cardId) => {
+            const sdkCard = SDK.GameSession.getCardCaches().getCardById(cardId);
+            const cardRarity = sdkCard.getRarityId();
+            const cardFactionId = sdkCard.getFactionId();
 
-              deckRaritySum += cardRarity;
+            deckRaritySum += cardRarity;
 
-              if (cardRarity === SDK.Rarity.Fixed) {
-                numBasics += 1;
-              } else if (cardRarity === SDK.Rarity.Common) {
-                numCommon += 1;
-              } else if (cardRarity === SDK.Rarity.Rare) {
-                numRare += 1;
-              } else if (cardRarity === SDK.Rarity.Epic) {
-                numEpic += 1;
-              } else if (cardRarity === SDK.Rarity.Legendary) {
-                numLegendary += 1;
-              }
+            if (cardRarity === SDK.Rarity.Fixed) {
+              numBasics += 1;
+            } else if (cardRarity === SDK.Rarity.Common) {
+              numCommon += 1;
+            } else if (cardRarity === SDK.Rarity.Rare) {
+              numRare += 1;
+            } else if (cardRarity === SDK.Rarity.Epic) {
+              numEpic += 1;
+            } else if (cardRarity === SDK.Rarity.Legendary) {
+              numLegendary += 1;
+            }
 
-              if (cardFactionId !== SDK.Factions.Neutral) {
-                numFactionCards += 1;
-              } else {
-                numNeutralCards += 1;
-              }
-            });
-            return Promise.resolve();
+            if (cardFactionId !== SDK.Factions.Neutral) {
+              numFactionCards += 1;
+            } else {
+              numNeutralCards += 1;
+            }
           });
+          return Promise.resolve();
+        });
       };
 
       const deckPromises = [];
@@ -1259,21 +1727,20 @@ describe('gauntlet module', () => {
         deckPromises.push(gatherDeckResults(i));
       }
 
-      return Promise.all(deckPromises)
-        .then(() => {
-          const sumCards = numBasics + numCommon + numRare + numEpic + numLegendary;
-          console.log('============');
-          console.log(`${numDeckRarityTests} Iterations:`);
-          console.log(`${((numBasics / sumCards) * 100).toFixed(1)}% basics`);
-          console.log(`${((numCommon / sumCards) * 100).toFixed(1)}% common`);
-          console.log(`${((numRare / sumCards) * 100).toFixed(1)}% rare`);
-          console.log(`${((numEpic / sumCards) * 100).toFixed(1)}% epic`);
-          console.log(`${((numLegendary / sumCards) * 100).toFixed(1)}% legendary`);
-          console.log('============');
-          console.log(`${((numFactionCards / sumCards) * 100).toFixed(1)}% Faction Cards`);
-          console.log(`${((numNeutralCards / sumCards) * 100).toFixed(1)}% Neutral Cards`);
-          console.log('============');
-        });
+      return Promise.all(deckPromises).then(() => {
+        const sumCards = numBasics + numCommon + numRare + numEpic + numLegendary;
+        console.log('============');
+        console.log(`${numDeckRarityTests} Iterations:`);
+        console.log(`${((numBasics / sumCards) * 100).toFixed(1)}% basics`);
+        console.log(`${((numCommon / sumCards) * 100).toFixed(1)}% common`);
+        console.log(`${((numRare / sumCards) * 100).toFixed(1)}% rare`);
+        console.log(`${((numEpic / sumCards) * 100).toFixed(1)}% epic`);
+        console.log(`${((numLegendary / sumCards) * 100).toFixed(1)}% legendary`);
+        console.log('============');
+        console.log(`${((numFactionCards / sumCards) * 100).toFixed(1)}% Faction Cards`);
+        console.log(`${((numNeutralCards / sumCards) * 100).toFixed(1)}% Neutral Cards`);
+        console.log('============');
+      });
     });
   });
 });

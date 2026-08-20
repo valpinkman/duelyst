@@ -24,8 +24,12 @@ class ModifierGrow extends ModifierStartTurnWatchBuffSelf {
   static description = '+%X/+%X';
 
   static createContextObject(growValue, options) {
-    if (growValue == null) { growValue = 0; }
-    if (options == null) { options = {}; }
+    if (growValue == null) {
+      growValue = 0;
+    }
+    if (options == null) {
+      options = {};
+    }
     options.appliedName = 'Grow';
     const contextObject = super.createContextObject(growValue, growValue, options);
     contextObject.growValue = growValue;
@@ -46,14 +50,20 @@ class ModifierGrow extends ModifierStartTurnWatchBuffSelf {
     // check if we need to grow on enemy's turn as well
     if (!this.getCard().isOwnersTurn()) {
       if (this.getCard().hasModifierType(ModifierGrowOnBothTurns.type)) {
-        this.applyManagedModifiersFromModifiersContextObjects(this.modifiersContextObjects, this.getCard());
+        this.applyManagedModifiersFromModifiersContextObjects(
+          this.modifiersContextObjects,
+          this.getCard(),
+        );
       }
     }
     return super.onStartTurn(e); // always grow on our own turn
   }
 
   activateGrow() {
-    return this.applyManagedModifiersFromModifiersContextObjects(this.modifiersContextObjects, this.getCard());
+    return this.applyManagedModifiersFromModifiersContextObjects(
+      this.modifiersContextObjects,
+      this.getCard(),
+    );
   }
 
   getGrowBonus() {
@@ -67,6 +77,9 @@ ModifierGrow.prototype.activeInHand = false;
 ModifierGrow.prototype.activeInDeck = false;
 ModifierGrow.prototype.activeInSignatureCards = false;
 ModifierGrow.prototype.activeOnBoard = true;
-ModifierGrow.prototype.fxResource = ['FX.Modifiers.ModifierGenericBuff', 'FX.Modifiers.ModifierGrow'];
+ModifierGrow.prototype.fxResource = [
+  'FX.Modifiers.ModifierGenericBuff',
+  'FX.Modifiers.ModifierGrow',
+];
 
 module.exports = ModifierGrow;

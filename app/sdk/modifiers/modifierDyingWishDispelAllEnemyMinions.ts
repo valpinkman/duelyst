@@ -21,9 +21,16 @@ class ModifierDyingWishDispelAllEnemyMinions extends ModifierDyingWish {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
       return (() => {
         const result = [];
-        for (var enemyUnit of Array.from<any>(this.getGameSession().getBoard().getEnemyEntitiesForEntity(this.getCard(), CardType.Unit))) {
+        for (var enemyUnit of Array.from<any>(
+          this.getGameSession().getBoard().getEnemyEntitiesForEntity(this.getCard(), CardType.Unit),
+        )) {
           if (!enemyUnit.getIsGeneral()) {
-            result.push(this.getGameSession().applyModifierContextObject(ModifierSilence.createContextObject(), enemyUnit));
+            result.push(
+              this.getGameSession().applyModifierContextObject(
+                ModifierSilence.createContextObject(),
+                enemyUnit,
+              ),
+            );
           } else {
             result.push(undefined);
           }
@@ -34,6 +41,9 @@ class ModifierDyingWishDispelAllEnemyMinions extends ModifierDyingWish {
   }
 }
 ModifierDyingWishDispelAllEnemyMinions.prototype.type = 'ModifierDyingWishDispelAllEnemies';
-ModifierDyingWishDispelAllEnemyMinions.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierDyingWishDispelAllEnemyMinions.prototype.fxResource = [
+  'FX.Modifiers.ModifierDyingWish',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 
 module.exports = ModifierDyingWishDispelAllEnemyMinions;

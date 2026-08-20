@@ -19,7 +19,14 @@ class SpellMirrorMeld extends SpellApplyEntityToBoard {
     super.onApplyEffectToBoardTile(board, x, y, sourceAction);
 
     const card = this.getGameSession().getBoard().getCardAtPosition({ x, y }, this.targetType);
-    const targetSpawnPosition = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(this.getGameSession(), { x, y }, CONFIG.PATTERN_3x3, card, this, 1)[0];
+    const targetSpawnPosition = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(
+      this.getGameSession(),
+      { x, y },
+      CONFIG.PATTERN_3x3,
+      card,
+      this,
+      1,
+    )[0];
     if (targetSpawnPosition != null) {
       const spawnAction = this.getSpawnAction(x, y, targetSpawnPosition);
       if (spawnAction != null) {
@@ -29,9 +36,21 @@ class SpellMirrorMeld extends SpellApplyEntityToBoard {
   }
 
   getSpawnAction(x, y, targetSpawnPosition) {
-    const cloningEntity = this.getGameSession().getBoard().getCardAtPosition({ x, y }, this.targetType);
-    if ((cloningEntity != null) && !this.getGameSession().getBoard().getObstructionAtPositionForEntity(targetSpawnPosition, cloningEntity)) {
-      const spawnEntityAction = new CloneEntityAction(this.getGameSession(), this.getOwnerId(), targetSpawnPosition.x, targetSpawnPosition.y);
+    const cloningEntity = this.getGameSession()
+      .getBoard()
+      .getCardAtPosition({ x, y }, this.targetType);
+    if (
+      cloningEntity != null &&
+      !this.getGameSession()
+        .getBoard()
+        .getObstructionAtPositionForEntity(targetSpawnPosition, cloningEntity)
+    ) {
+      const spawnEntityAction = new CloneEntityAction(
+        this.getGameSession(),
+        this.getOwnerId(),
+        targetSpawnPosition.x,
+        targetSpawnPosition.y,
+      );
       spawnEntityAction.setOwnerId(this.getOwnerId());
       spawnEntityAction.setSource(cloningEntity);
       return spawnEntityAction;

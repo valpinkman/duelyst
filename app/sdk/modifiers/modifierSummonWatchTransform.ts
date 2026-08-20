@@ -25,15 +25,33 @@ class ModifierSummonWatchTransform extends ModifierSummonWatch {
   onSummonWatch(action) {
     super.onSummonWatch(action);
     const entity = action.getTarget();
-    if ((entity != null) && (this.cardDataOrIndexToSpawn != null) && this.getIsValidTransformPosition(entity.getPosition())) {
+    if (
+      entity != null &&
+      this.cardDataOrIndexToSpawn != null &&
+      this.getIsValidTransformPosition(entity.getPosition())
+    ) {
       const removeOriginalEntityAction = new RemoveAction(this.getGameSession());
       removeOriginalEntityAction.setOwnerId(this.getCard().getOwnerId());
       removeOriginalEntityAction.setTarget(entity);
       this.getGameSession().executeAction(removeOriginalEntityAction);
 
-      if (this.cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects == null) { this.cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects = []; }
-      this.cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects.push(ModifierTransformed.createContextObject(entity.getExhausted(), entity.getMovesMade(), entity.getAttacksMade()));
-      const spawnEntityAction = new PlayCardAsTransformAction(this.getCard().getGameSession(), this.getCard().getOwnerId(), entity.getPosition().x, entity.getPosition().y, this.cardDataOrIndexToSpawn);
+      if (this.cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects == null) {
+        this.cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects = [];
+      }
+      this.cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects.push(
+        ModifierTransformed.createContextObject(
+          entity.getExhausted(),
+          entity.getMovesMade(),
+          entity.getAttacksMade(),
+        ),
+      );
+      const spawnEntityAction = new PlayCardAsTransformAction(
+        this.getCard().getGameSession(),
+        this.getCard().getOwnerId(),
+        entity.getPosition().x,
+        entity.getPosition().y,
+        this.cardDataOrIndexToSpawn,
+      );
       return this.getGameSession().executeAction(spawnEntityAction);
     }
   }

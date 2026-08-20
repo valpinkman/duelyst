@@ -18,7 +18,8 @@ const router = express.Router();
 router.get('/twitch_rewards/unread', function (req, res, next) {
   const user_id = req.user.d.id;
 
-  return knex('user_twitch_rewards').where({ user_id: user_id })
+  return knex('user_twitch_rewards')
+    .where({ user_id: user_id })
     .then(function (rewardRows) {
       rewardRows = _.filter(rewardRows, (row) => row.claimed_at === null);
       if (rewardRows != null) {
@@ -26,13 +27,17 @@ router.get('/twitch_rewards/unread', function (req, res, next) {
       } else {
         return res.status(404).end();
       }
-    }).catch((error) => next(error));
+    })
+    .catch((error) => next(error));
 });
 
 router.put('/twitch_rewards/:twitch_reward_id', function (req, res, next) {
   let user_id = req.user.d.id;
 
-  const result = t.validate(req.params.twitch_reward_id, t.subtype(t.Str, (s) => s.length <= 36));
+  const result = t.validate(
+    req.params.twitch_reward_id,
+    t.subtype(t.Str, (s) => s.length <= 36),
+  );
   if (!result.isValid()) {
     return next();
   }
@@ -40,9 +45,11 @@ router.put('/twitch_rewards/:twitch_reward_id', function (req, res, next) {
   user_id = req.user.d.id;
   const twitch_reward_id = result.value;
 
-  return knex('user_twitch_rewards').where({ twitch_reward_id: twitch_reward_id, user_id: user_id }).update({
-    claimed_at: moment.utc().toDate(),
-  })
+  return knex('user_twitch_rewards')
+    .where({ twitch_reward_id: twitch_reward_id, user_id: user_id })
+    .update({
+      claimed_at: moment.utc().toDate(),
+    })
     .then(function (value) {
       if (value) {
         return res.status(200).json({});
@@ -54,7 +61,10 @@ router.put('/twitch_rewards/:twitch_reward_id', function (req, res, next) {
 });
 
 router.get('/:reward_id', function (req, res, next) {
-  const result = t.validate(req.params.reward_id, t.subtype(t.Str, (s) => s.length <= 36));
+  const result = t.validate(
+    req.params.reward_id,
+    t.subtype(t.Str, (s) => s.length <= 36),
+  );
   if (!result.isValid()) {
     return next();
   }
@@ -62,7 +72,9 @@ router.get('/:reward_id', function (req, res, next) {
   const user_id = req.user.d.id;
   const reward_id = result.value;
 
-  return knex('user_rewards').where({ id: reward_id, user_id: user_id }).first()
+  return knex('user_rewards')
+    .where({ id: reward_id, user_id: user_id })
+    .first()
     .then(function (rewardRow) {
       if (rewardRow) {
         return res.status(200).json(DataAccessHelpers.restifyData(rewardRow));
@@ -74,7 +86,10 @@ router.get('/:reward_id', function (req, res, next) {
 });
 
 router.put('/:reward_id/read_at', function (req, res, next) {
-  const result = t.validate(req.params.reward_id, t.subtype(t.Str, (s) => s.length <= 36));
+  const result = t.validate(
+    req.params.reward_id,
+    t.subtype(t.Str, (s) => s.length <= 36),
+  );
   if (!result.isValid()) {
     return next();
   }
@@ -82,9 +97,11 @@ router.put('/:reward_id/read_at', function (req, res, next) {
   const user_id = req.user.d.id;
   const reward_id = result.value;
 
-  return knex('user_rewards').where({ id: reward_id, user_id: user_id }).update({
-    is_unread: false,
-  })
+  return knex('user_rewards')
+    .where({ id: reward_id, user_id: user_id })
+    .update({
+      is_unread: false,
+    })
     .then(function (value) {
       if (value) {
         return res.status(200).json({});

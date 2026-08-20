@@ -17,10 +17,22 @@ class ModifierBackstabWatchApplyPlayerModifiers extends ModifierBackstabWatch {
 
   static type = 'ModifierBackstabWatchApplyPlayerModifiers';
 
-  static createContextObject(modifiersContextObjects, managedByCard, applyToOwnPlayer, applyToEnemyPlayer, options) {
-    if (managedByCard == null) { managedByCard = false; }
-    if (applyToOwnPlayer == null) { applyToOwnPlayer = false; }
-    if (applyToEnemyPlayer == null) { applyToEnemyPlayer = false; }
+  static createContextObject(
+    modifiersContextObjects,
+    managedByCard,
+    applyToOwnPlayer,
+    applyToEnemyPlayer,
+    options,
+  ) {
+    if (managedByCard == null) {
+      managedByCard = false;
+    }
+    if (applyToOwnPlayer == null) {
+      applyToOwnPlayer = false;
+    }
+    if (applyToEnemyPlayer == null) {
+      applyToEnemyPlayer = false;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.modifiersContextObjects = modifiersContextObjects;
     contextObject.managedByCard = managedByCard;
@@ -54,15 +66,28 @@ class ModifierBackstabWatchApplyPlayerModifiers extends ModifierBackstabWatch {
 
       // applying to enemy
       if (this.applyToEnemyPlayer) {
-        const opponentPlayerId = this.getGameSession().getOpponentPlayerIdOfPlayerId(this.getCard().getOwnerId());
+        const opponentPlayerId = this.getGameSession().getOpponentPlayerIdOfPlayerId(
+          this.getCard().getOwnerId(),
+        );
         const opponentGeneral = this.getGameSession().getGeneralForPlayerId(opponentPlayerId);
         return (() => {
           const result = [];
           for (modifierContextObject of Array.from<any>(this.modifiersContextObjects)) {
             if (this.managedByCard) {
-              result.push(this.getGameSession().applyModifierContextObject(modifierContextObject, opponentGeneral, this));
+              result.push(
+                this.getGameSession().applyModifierContextObject(
+                  modifierContextObject,
+                  opponentGeneral,
+                  this,
+                ),
+              );
             } else {
-              result.push(this.getGameSession().applyModifierContextObject(modifierContextObject, opponentGeneral));
+              result.push(
+                this.getGameSession().applyModifierContextObject(
+                  modifierContextObject,
+                  opponentGeneral,
+                ),
+              );
             }
           }
           return result;
@@ -71,7 +96,8 @@ class ModifierBackstabWatchApplyPlayerModifiers extends ModifierBackstabWatch {
     }
   }
 }
-ModifierBackstabWatchApplyPlayerModifiers.prototype.type = 'ModifierBackstabWatchApplyPlayerModifiers';
+ModifierBackstabWatchApplyPlayerModifiers.prototype.type =
+  'ModifierBackstabWatchApplyPlayerModifiers';
 ModifierBackstabWatchApplyPlayerModifiers.prototype.modifiersContextObjects = null;
 ModifierBackstabWatchApplyPlayerModifiers.prototype.managedByCard = false;
 ModifierBackstabWatchApplyPlayerModifiers.prototype.applyToOwnPlayer = false;

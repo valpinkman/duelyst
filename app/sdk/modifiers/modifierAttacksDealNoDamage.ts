@@ -32,7 +32,7 @@ class ModifierAttacksDealNoDamage extends Modifier {
   }
 
   getIsActionRelevant(a) {
-    return a instanceof AttackAction && (a.getSource() === this.getCard());
+    return a instanceof AttackAction && a.getSource() === this.getCard();
   }
 
   _modifyAction(a) {

@@ -30,7 +30,9 @@ var FXCausticSprite = FXSprite.extend({
 
   setOptions(options) {
     this._super(options);
-    if (options.timeScale != null) { this.setTimeScale(options.timeScale); }
+    if (options.timeScale != null) {
+      this.setTimeScale(options.timeScale);
+    }
   },
 
   setTimeScale(timeScale) {
@@ -39,12 +41,12 @@ var FXCausticSprite = FXSprite.extend({
 
   updateTweenAction(value, key) {
     switch (key) {
-    case 'timeScale':
-      this.timeScale = this._timeScaleTarget * value;
-      break;
-    default:
-      FXSprite.prototype.updateTweenAction.call(this, value, key);
-      break;
+      case 'timeScale':
+        this.timeScale = this._timeScaleTarget * value;
+        break;
+      default:
+        FXSprite.prototype.updateTweenAction.call(this, value, key);
+        break;
     }
   },
 });
@@ -52,7 +54,9 @@ var FXCausticSprite = FXSprite.extend({
 FXCausticSprite.WebGLRenderCmd = function (renderable) {
   FXSprite.WebGLRenderCmd.call(this, renderable);
 };
-const proto = FXCausticSprite.WebGLRenderCmd.prototype = Object.create(FXSprite.WebGLRenderCmd.prototype);
+const proto = (FXCausticSprite.WebGLRenderCmd.prototype = Object.create(
+  FXSprite.WebGLRenderCmd.prototype,
+));
 proto.constructor = FXCausticSprite.WebGLRenderCmd;
 
 proto.rendering = function () {
@@ -65,7 +69,11 @@ proto.rendering = function () {
   const shaderProgram = this._shaderProgram;
   shaderProgram.use();
   shaderProgram._setUniformForMVPMatrixWithMat4(this._stackMatrix);
-  shaderProgram.setUniformLocationWith2f(shaderProgram.loc_texResolution, node._texture.getPixelsWide(), node._texture.getPixelsHigh());
+  shaderProgram.setUniformLocationWith2f(
+    shaderProgram.loc_texResolution,
+    node._texture.getPixelsWide(),
+    node._texture.getPixelsHigh(),
+  );
   shaderProgram.setUniformLocationWith1f(shaderProgram.loc_time, node.getFX().getTime());
   cc.glBindTexture2DN(0, node._texture);
   cc.glBlendFunc(node._blendFunc.src, node._blendFunc.dst);

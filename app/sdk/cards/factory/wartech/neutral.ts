@@ -86,7 +86,9 @@ class CardFactory_WartechSet_Neutral {
       card.manaCost = 2;
       card.rarityId = Rarity.Common;
       const rushModifier = ModifierFirstBlood.createContextObject();
-      card.setInherentModifiersContextObjects([ModifierSituationalBuffSelfIfHaveMech.createContextObject([rushModifier])]);
+      card.setInherentModifiersContextObjects([
+        ModifierSituationalBuffSelfIfHaveMech.createContextObject([rushModifier]),
+      ]);
       card.addKeywordClassToInclude(ModifierFirstBlood);
       card.setFXResource(['FX.Cards.Neutral.GhostLynx']);
       card.setBaseSoundResource({
@@ -119,11 +121,20 @@ class CardFactory_WartechSet_Neutral {
       card.maxHP = 3;
       card.manaCost = 2;
       card.rarityId = Rarity.Rare;
-      const contextObject = PlayerModifierManaModifierOncePerTurn.createCostChangeContextObject(-1, CardType.Artifact);
-      contextObject.activeInHand = (contextObject.activeInDeck = (contextObject.activeInSignatureCards = false));
+      const contextObject = PlayerModifierManaModifierOncePerTurn.createCostChangeContextObject(
+        -1,
+        CardType.Artifact,
+      );
+      contextObject.activeInHand =
+        contextObject.activeInDeck =
+        contextObject.activeInSignatureCards =
+          false;
       contextObject.activeOnBoard = true;
       card.setInherentModifiersContextObjects([
-        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetOwnPlayer([contextObject], 'The first artifact you play each turn costs 1 less'),
+        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetOwnPlayer(
+          [contextObject],
+          'The first artifact you play each turn costs 1 less',
+        ),
       ]);
       card.setFXResource(['FX.Cards.Neutral.AzureHornShaman']);
       card.setBaseSoundResource({
@@ -229,7 +240,12 @@ class CardFactory_WartechSet_Neutral {
       card.manaCost = 6;
       card.rarityId = Rarity.Legendary;
       card.setInherentModifiersContextObjects([
-        ModifierSummonWatchAnywhereByRaceBuffSelf.createContextObject(2, 2, Races.Mech, i18next.t('modifiers.neutral_project_omega_1')),
+        ModifierSummonWatchAnywhereByRaceBuffSelf.createContextObject(
+          2,
+          2,
+          Races.Mech,
+          i18next.t('modifiers.neutral_project_omega_1'),
+        ),
       ]);
       card.setFXResource(['FX.Cards.Faction5.Kin']);
       card.setBaseSoundResource({
@@ -443,8 +459,12 @@ class CardFactory_WartechSet_Neutral {
       card.maxHP = 10;
       card.manaCost = 5;
       card.rarityId = Rarity.Rare;
-      card.setInherentModifiersContextObjects([ModifierProvoke.createContextObject(),
-        ModifierEnemyAttackWatchGainAttack.createContextObject(2, i18next.t('modifiers.neutral_impervious_giago_1')),
+      card.setInherentModifiersContextObjects([
+        ModifierProvoke.createContextObject(),
+        ModifierEnemyAttackWatchGainAttack.createContextObject(
+          2,
+          i18next.t('modifiers.neutral_impervious_giago_1'),
+        ),
       ]);
       card.setFXResource(['FX.Cards.Neutral.Bonereaper']);
       card.setBoundingBoxWidth(75);
@@ -752,8 +772,17 @@ class CardFactory_WartechSet_Neutral {
       card.manaCost = 2;
       card.rarityId = Rarity.Common;
       buildData = { id: Cards.Neutral.RescueRXBuilding };
-      if (buildData.additionalInherentModifiersContextObjects == null) { buildData.additionalInherentModifiersContextObjects = []; }
-      buildData.additionalInherentModifiersContextObjects.push(ModifierBuildCompleteHealGeneral.createContextObject(5, 'Builds into Rescue-RX after 2 turns (this cannot be dispelled).', { id: Cards.Neutral.RescueRX }, 2));
+      if (buildData.additionalInherentModifiersContextObjects == null) {
+        buildData.additionalInherentModifiersContextObjects = [];
+      }
+      buildData.additionalInherentModifiersContextObjects.push(
+        ModifierBuildCompleteHealGeneral.createContextObject(
+          5,
+          'Builds into Rescue-RX after 2 turns (this cannot be dispelled).',
+          { id: Cards.Neutral.RescueRX },
+          2,
+        ),
+      );
       card.setInherentModifiersContextObjects([ModifierBuild.createContextObject(buildData)]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
       card.setFXResource(['FX.Cards.Neutral.Mindwarper']);
@@ -788,8 +817,16 @@ class CardFactory_WartechSet_Neutral {
       card.manaCost = 3;
       card.rarityId = Rarity.Epic;
       buildData = { id: Cards.Neutral.ArchitectBuilding };
-      if (buildData.additionalInherentModifiersContextObjects == null) { buildData.additionalInherentModifiersContextObjects = []; }
-      buildData.additionalInherentModifiersContextObjects.push(ModifierBuilding.createContextObject('Builds into Architect-T2K5 after 1 turn (this cannot be dispelled).', { id: Cards.Neutral.ArchitectT2K5 }, 1));
+      if (buildData.additionalInherentModifiersContextObjects == null) {
+        buildData.additionalInherentModifiersContextObjects = [];
+      }
+      buildData.additionalInherentModifiersContextObjects.push(
+        ModifierBuilding.createContextObject(
+          'Builds into Architect-T2K5 after 1 turn (this cannot be dispelled).',
+          { id: Cards.Neutral.ArchitectT2K5 },
+          1,
+        ),
+      );
       card.setInherentModifiersContextObjects([
         ModifierBuild.createContextObject(buildData),
         ModifierMyBuildWatchDrawCards.createContextObject(1),
@@ -848,7 +885,9 @@ class CardFactory_WartechSet_Neutral {
       card.atk = 2;
       card.maxHP = 2;
       card.manaCost = 4;
-      card.setInherentModifiersContextObjects([ModifierOpeningGambitProgressBuild.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierOpeningGambitProgressBuild.createContextObject(),
+      ]);
       card.rarityId = Rarity.Common;
     }
 
@@ -863,7 +902,9 @@ class CardFactory_WartechSet_Neutral {
       card.maxHP = 5;
       card.manaCost = 6;
       card.rarityId = Rarity.Legendary;
-      card.setInherentModifiersContextObjects([ModifierSummonWatchMechsShareKeywords.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierSummonWatchMechsShareKeywords.createContextObject(),
+      ]);
       card.setFXResource(['FX.Cards.Neutral.RubyRifter']);
       card.setBaseSoundResource({
         apply: RSX.sfx_spell_fractalreplication.audio,

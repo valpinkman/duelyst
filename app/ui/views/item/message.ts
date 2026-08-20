@@ -7,9 +7,7 @@ var EventBus = require('app/common/eventbus');
 var EVENTS = require('app/common/event_types');
 
 var MessageItemView = Backbone.Marionette.ItemView.extend({
-
-  initialize: function () {
-  },
+  initialize: function () {},
 
   tagName: 'li',
   className: 'message',
@@ -29,8 +27,7 @@ var MessageItemView = Backbone.Marionette.ItemView.extend({
     'click .btn-watch-replay': 'onClickReplay',
   },
 
-  onRender: function () {
-  },
+  onRender: function () {},
 
   onShow: function () {
     if (this.model.get('fromId') == ProfileManager.getInstance().get('id')) {
@@ -46,7 +43,6 @@ var MessageItemView = Backbone.Marionette.ItemView.extend({
     });
     return false;
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

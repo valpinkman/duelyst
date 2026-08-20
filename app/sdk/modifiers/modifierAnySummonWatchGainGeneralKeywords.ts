@@ -112,23 +112,41 @@ class ModifierAnySummonWatchGainGeneralKeywords extends ModifierAnySummonWatch {
           }
         }
         if (backstabAmount > currentBackstabAmount) {
-          this.getGameSession().applyModifierContextObject(ModifierBackstab.createContextObject(backstabAmount - currentBackstabAmount), summonedMinion);
+          this.getGameSession().applyModifierContextObject(
+            ModifierBackstab.createContextObject(backstabAmount - currentBackstabAmount),
+            summonedMinion,
+          );
         }
       }
       if (hasBlast && !summonedMinion.hasModifierClass(ModifierBlastAttack)) {
-        this.getGameSession().applyModifierContextObject(ModifierBlastAttack.createContextObject(), summonedMinion);
+        this.getGameSession().applyModifierContextObject(
+          ModifierBlastAttack.createContextObject(),
+          summonedMinion,
+        );
       }
       if (hasCelerity && !summonedMinion.hasModifierClass(ModifierTranscendance)) {
-        this.getGameSession().applyModifierContextObject(ModifierTranscendance.createContextObject(), summonedMinion);
+        this.getGameSession().applyModifierContextObject(
+          ModifierTranscendance.createContextObject(),
+          summonedMinion,
+        );
       }
       if (hasFlying && !summonedMinion.hasModifierClass(ModifierFlying)) {
-        this.getGameSession().applyModifierContextObject(ModifierFlying.createContextObject(), summonedMinion);
+        this.getGameSession().applyModifierContextObject(
+          ModifierFlying.createContextObject(),
+          summonedMinion,
+        );
       }
       if (hasForcefield && !summonedMinion.hasModifierClass(ModifierForcefield)) {
-        this.getGameSession().applyModifierContextObject(ModifierForcefield.createContextObject(), summonedMinion);
+        this.getGameSession().applyModifierContextObject(
+          ModifierForcefield.createContextObject(),
+          summonedMinion,
+        );
       }
       if (hasFrenzy && !summonedMinion.hasModifierClass(ModifierFrenzy)) {
-        this.getGameSession().applyModifierContextObject(ModifierFrenzy.createContextObject(), summonedMinion);
+        this.getGameSession().applyModifierContextObject(
+          ModifierFrenzy.createContextObject(),
+          summonedMinion,
+        );
       }
       if (hasGrow) {
         let currentGrowAmount = 0;
@@ -140,28 +158,47 @@ class ModifierAnySummonWatchGainGeneralKeywords extends ModifierAnySummonWatch {
           }
         }
         if (growAmount > currentGrowAmount) {
-          this.getGameSession().applyModifierContextObject(ModifierGrow.createContextObject(growAmount - currentGrowAmount), summonedMinion);
+          this.getGameSession().applyModifierContextObject(
+            ModifierGrow.createContextObject(growAmount - currentGrowAmount),
+            summonedMinion,
+          );
         }
       }
       if (hasProvoke && !summonedMinion.hasModifierClass(ModifierProvoke)) {
-        this.getGameSession().applyModifierContextObject(ModifierProvoke.createContextObject(), summonedMinion);
+        this.getGameSession().applyModifierContextObject(
+          ModifierProvoke.createContextObject(),
+          summonedMinion,
+        );
       }
       if (hasRanged && !summonedMinion.hasModifierClass(ModifierRanged)) {
-        this.getGameSession().applyModifierContextObject(ModifierRanged.createContextObject(), summonedMinion);
+        this.getGameSession().applyModifierContextObject(
+          ModifierRanged.createContextObject(),
+          summonedMinion,
+        );
       }
       if (hasRebirth && !summonedMinion.hasModifierClass(ModifierRebirth)) {
-        this.getGameSession().applyModifierContextObject(ModifierRebirth.createContextObject(), summonedMinion);
+        this.getGameSession().applyModifierContextObject(
+          ModifierRebirth.createContextObject(),
+          summonedMinion,
+        );
       }
       if (hasRush && !summonedMinion.hasModifierClass(ModifierFirstBlood)) {
-        this.getGameSession().applyModifierContextObject(ModifierFirstBlood.createContextObject(), summonedMinion);
+        this.getGameSession().applyModifierContextObject(
+          ModifierFirstBlood.createContextObject(),
+          summonedMinion,
+        );
       }
       if (hasAirdrop && !summonedMinion.hasModifierClass(ModifierAirdrop)) {
-        return this.getGameSession().applyModifierContextObject(ModifierAirdrop.createContextObject(), summonedMinion);
+        return this.getGameSession().applyModifierContextObject(
+          ModifierAirdrop.createContextObject(),
+          summonedMinion,
+        );
       }
     }
   }
 }
-ModifierAnySummonWatchGainGeneralKeywords.prototype.type = 'ModifierAnySummonWatchGainGeneralKeywords';
+ModifierAnySummonWatchGainGeneralKeywords.prototype.type =
+  'ModifierAnySummonWatchGainGeneralKeywords';
 ModifierAnySummonWatchGainGeneralKeywords.prototype.activeInHand = false;
 ModifierAnySummonWatchGainGeneralKeywords.prototype.activeInDeck = false;
 ModifierAnySummonWatchGainGeneralKeywords.prototype.activeInSignatureCards = false;

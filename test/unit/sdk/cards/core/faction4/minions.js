@@ -13,13 +13,9 @@ Logger.enabled = false;
 describe('faction4', () => {
   describe('minions', () => {
     beforeEach(() => {
-      const player1Deck = [
-        { id: SDK.Cards.Faction4.General },
-      ];
+      const player1Deck = [{ id: SDK.Cards.Faction4.General }];
 
-      const player2Deck = [
-        { id: SDK.Cards.Faction2.General },
-      ];
+      const player2Deck = [{ id: SDK.Cards.Faction2.General }];
 
       UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
     });
@@ -33,7 +29,12 @@ describe('faction4', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const abyssalCrawler1 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.AbyssalCrawler }, 0, 0, gameSession.getPlayer1Id());
+      const abyssalCrawler1 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.AbyssalCrawler },
+        0,
+        0,
+        gameSession.getPlayer1Id(),
+      );
 
       gameSession.executeAction(gameSession.actionEndTurn());
 
@@ -66,9 +67,18 @@ describe('faction4', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const youngSilithar = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction5.YoungSilithar }, 0, 1, gameSession.getPlayer2Id());
+      const youngSilithar = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction5.YoungSilithar },
+        0,
+        1,
+        gameSession.getPlayer2Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction4.DarkSiren }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction4.DarkSiren,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
       const followupCard = playCardFromHandAction.getCard().getCurrentFollowupCard();
@@ -90,10 +100,19 @@ describe('faction4', () => {
 
       gameSession.executeAction(gameSession.actionEndTurn());
 
-      const darkspineElemental = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.DarkspineElemental }, 5, 2, gameSession.getPlayer2Id());
+      const darkspineElemental = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.DarkspineElemental },
+        5,
+        2,
+        gameSession.getPlayer2Id(),
+      );
 
       player2.remainingMana = 9;
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer2Id(), { id: SDK.Cards.Spell.ShadowNova }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer2Id(), {
+          id: SDK.Cards.Spell.ShadowNova,
+        }),
+      );
       var playCardFromHandAction = player2.actionPlayCardFromHand(0, 0, 2);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -103,12 +122,26 @@ describe('faction4', () => {
 
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.ShadowNova }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.ShadowNova,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 7, 2);
       gameSession.executeAction(playCardFromHandAction);
 
-      const darkspineElemental2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.DarkspineElemental }, 4, 1, gameSession.getPlayer1Id());
-      const darkspineElemental3 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.DarkspineElemental }, 3, 1, gameSession.getPlayer1Id());
+      const darkspineElemental2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.DarkspineElemental },
+        4,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const darkspineElemental3 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.DarkspineElemental },
+        3,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
       gameSession.executeAction(gameSession.actionEndTurn());
 
@@ -120,7 +153,11 @@ describe('faction4', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction4.GloomChaser }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction4.GloomChaser,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -151,9 +188,18 @@ describe('faction4', () => {
 
       player1.remainingMana = 9;
 
-      const windblade = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.WindbladeAdept }, 1, 1, gameSession.getPlayer2Id());
+      const windblade = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.WindbladeAdept },
+        1,
+        1,
+        gameSession.getPlayer2Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction4.NightsorrowAssassin }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction4.NightsorrowAssassin,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 0, 1);
       gameSession.executeAction(playCardFromHandAction);
       const followupCard = playCardFromHandAction.getCard().getCurrentFollowupCard();
@@ -170,9 +216,18 @@ describe('faction4', () => {
 
       player1.remainingMana = 9;
 
-      const knight = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.IroncliffeGuardian }, 1, 1, gameSession.getPlayer2Id());
+      const knight = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.IroncliffeGuardian },
+        1,
+        1,
+        gameSession.getPlayer2Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction4.NightsorrowAssassin }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction4.NightsorrowAssassin,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 0, 1);
       gameSession.executeAction(playCardFromHandAction);
       const followupCard = playCardFromHandAction.getCard().getCurrentFollowupCard();
@@ -187,9 +242,24 @@ describe('faction4', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const shadowwatcher = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.ShadowWatcher }, 3, 1, gameSession.getPlayer1Id());
-      const youngSilithar = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction5.YoungSilithar }, 0, 1, gameSession.getPlayer2Id());
-      const abyssalCrawler1 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.AbyssalCrawler }, 1, 1, gameSession.getPlayer1Id());
+      const shadowwatcher = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.ShadowWatcher },
+        3,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const youngSilithar = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction5.YoungSilithar },
+        0,
+        1,
+        gameSession.getPlayer2Id(),
+      );
+      const abyssalCrawler1 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.AbyssalCrawler },
+        1,
+        1,
+        gameSession.getPlayer1Id(),
+      );
       abyssalCrawler1.refreshExhaustion();
 
       youngSilithar.setDamage(2);
@@ -209,12 +279,21 @@ describe('faction4', () => {
 
       gameSession.executeAction(gameSession.actionEndTurn());
 
-      const abyssalJuggernaut = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.AbyssalJuggernaut }, 5, 2, gameSession.getPlayer2Id());
+      const abyssalJuggernaut = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.AbyssalJuggernaut },
+        5,
+        2,
+        gameSession.getPlayer2Id(),
+      );
       expect(abyssalJuggernaut.getHP()).to.equal(3);
       expect(abyssalJuggernaut.getATK()).to.equal(3);
 
       player2.remainingMana = 9;
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer2Id(), { id: SDK.Cards.Spell.ShadowNova }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer2Id(), {
+          id: SDK.Cards.Spell.ShadowNova,
+        }),
+      );
       var playCardFromHandAction = player2.actionPlayCardFromHand(0, 0, 2);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -225,7 +304,11 @@ describe('faction4', () => {
 
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.SunBloom }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.SunBloom,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 0, 2);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -238,9 +321,24 @@ describe('faction4', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const bloodmoonPriestess = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.BloodmoonPriestess }, 6, 1, gameSession.getPlayer1Id());
-      const youngSilithar = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction5.YoungSilithar }, 0, 1, gameSession.getPlayer2Id());
-      const abyssalCrawler1 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.AbyssalCrawler }, 1, 1, gameSession.getPlayer1Id());
+      const bloodmoonPriestess = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.BloodmoonPriestess },
+        6,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const youngSilithar = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction5.YoungSilithar },
+        0,
+        1,
+        gameSession.getPlayer2Id(),
+      );
+      const abyssalCrawler1 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.AbyssalCrawler },
+        1,
+        1,
+        gameSession.getPlayer1Id(),
+      );
       abyssalCrawler1.refreshExhaustion();
 
       youngSilithar.setDamage(2);
@@ -273,12 +371,36 @@ describe('faction4', () => {
 
       player1.remainingMana = 9;
 
-      const youngSilithar = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction5.YoungSilithar }, 0, 1, gameSession.getPlayer2Id());
-      const abyssalCrawler1 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.AbyssalCrawler }, 1, 1, gameSession.getPlayer1Id());
-      const abyssalCrawler3 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.AbyssalCrawler }, 1, 3, gameSession.getPlayer1Id());
-      const abyssalCrawler4 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.AbyssalCrawler }, 0, 3, gameSession.getPlayer1Id());
+      const youngSilithar = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction5.YoungSilithar },
+        0,
+        1,
+        gameSession.getPlayer2Id(),
+      );
+      const abyssalCrawler1 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.AbyssalCrawler },
+        1,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const abyssalCrawler3 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.AbyssalCrawler },
+        1,
+        3,
+        gameSession.getPlayer1Id(),
+      );
+      const abyssalCrawler4 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.AbyssalCrawler },
+        0,
+        3,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction4.DeepfireDevourer }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction4.DeepfireDevourer,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 2);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -295,9 +417,18 @@ describe('faction4', () => {
 
       player1.remainingMana = 9;
 
-      const blackSolus = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.BlackSolus }, 1, 1, gameSession.getPlayer1Id());
+      const blackSolus = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.BlackSolus },
+        1,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.WraithlingSwarm }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.WraithlingSwarm,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 0, 3);
       gameSession.executeAction(playCardFromHandAction);
       const followupCard = playCardFromHandAction.getCard().getCurrentFollowupCard();
@@ -323,10 +454,24 @@ describe('faction4', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer2Id(), { id: SDK.Cards.Faction5.SilitharElder }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer2Id(), {
+          id: SDK.Cards.Faction5.SilitharElder,
+        }),
+      );
 
-      const unstableLeviathan = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction5.UnstableLeviathan }, 0, 1, gameSession.getPlayer2Id());
-      const reaper = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.ReaperNineMoons }, 1, 1, gameSession.getPlayer1Id());
+      const unstableLeviathan = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction5.UnstableLeviathan },
+        0,
+        1,
+        gameSession.getPlayer2Id(),
+      );
+      const reaper = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.ReaperNineMoons },
+        1,
+        1,
+        gameSession.getPlayer1Id(),
+      );
       reaper.refreshExhaustion();
 
       const action = reaper.actionAttack(unstableLeviathan);
@@ -342,8 +487,18 @@ describe('faction4', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const unstableLeviathan = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction5.UnstableLeviathan }, 0, 1, gameSession.getPlayer2Id());
-      const reaper = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.ReaperNineMoons }, 1, 1, gameSession.getPlayer1Id());
+      const unstableLeviathan = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction5.UnstableLeviathan },
+        0,
+        1,
+        gameSession.getPlayer2Id(),
+      );
+      const reaper = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.ReaperNineMoons },
+        1,
+        1,
+        gameSession.getPlayer1Id(),
+      );
       reaper.refreshExhaustion();
 
       const action = reaper.actionAttack(unstableLeviathan);
@@ -358,9 +513,24 @@ describe('faction4', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const shadowDancer = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.SharianShadowdancer }, 3, 1, gameSession.getPlayer1Id());
-      const youngSilithar = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction5.YoungSilithar }, 0, 1, gameSession.getPlayer2Id());
-      const abyssalCrawler1 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.AbyssalCrawler }, 1, 1, gameSession.getPlayer1Id());
+      const shadowDancer = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.SharianShadowdancer },
+        3,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const youngSilithar = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction5.YoungSilithar },
+        0,
+        1,
+        gameSession.getPlayer2Id(),
+      );
+      const abyssalCrawler1 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.AbyssalCrawler },
+        1,
+        1,
+        gameSession.getPlayer1Id(),
+      );
       abyssalCrawler1.refreshExhaustion();
 
       youngSilithar.setDamage(2);
@@ -378,8 +548,18 @@ describe('faction4', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const unstableLeviathan = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction5.UnstableLeviathan }, 0, 1, gameSession.getPlayer2Id());
-      const reaver = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.VorpalReaver }, 1, 1, gameSession.getPlayer1Id());
+      const unstableLeviathan = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction5.UnstableLeviathan },
+        0,
+        1,
+        gameSession.getPlayer2Id(),
+      );
+      const reaver = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.VorpalReaver },
+        1,
+        1,
+        gameSession.getPlayer1Id(),
+      );
       reaver.refreshExhaustion();
 
       const action = reaver.actionAttack(unstableLeviathan);
@@ -408,8 +588,18 @@ describe('faction4', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const unstableLeviathan = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction5.UnstableLeviathan }, 0, 1, gameSession.getPlayer2Id());
-      const revenant = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.SpectralRevenant }, 1, 1, gameSession.getPlayer1Id());
+      const unstableLeviathan = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction5.UnstableLeviathan },
+        0,
+        1,
+        gameSession.getPlayer2Id(),
+      );
+      const revenant = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.SpectralRevenant },
+        1,
+        1,
+        gameSession.getPlayer1Id(),
+      );
       revenant.refreshExhaustion();
 
       const action = revenant.actionAttack(unstableLeviathan);

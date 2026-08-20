@@ -16,7 +16,9 @@ class ModifierBandingHeal extends ModifierBanding {
   static type = 'ModifierBandingHeal';
 
   static createContextObject(options) {
-    if (options == null) { options = undefined; }
+    if (options == null) {
+      options = undefined;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.appliedName = i18next.t('modifiers.banding_heal_applied_name');
     const bandedContextObject = ModifierBandedHeal.createContextObject();
@@ -27,6 +29,9 @@ class ModifierBandingHeal extends ModifierBanding {
 }
 ModifierBandingHeal.prototype.type = 'ModifierBandingHeal';
 ModifierBandingHeal.prototype.maxStacks = 1;
-ModifierBandingHeal.prototype.fxResource = ['FX.Modifiers.ModifierZeal', 'FX.Modifiers.ModifierZealHeal'];
+ModifierBandingHeal.prototype.fxResource = [
+  'FX.Modifiers.ModifierZeal',
+  'FX.Modifiers.ModifierZealHeal',
+];
 
 module.exports = ModifierBandingHeal;

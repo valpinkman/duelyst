@@ -59,9 +59,13 @@ class PutCardInHandAction extends Action {
    * NOTE: This card may or may not be indexed if this method is called before this action is executed.
    */
   getCard() {
-    if ((this._private.cachedCard == null)) {
-      this._private.cachedCard = this.getGameSession().getExistingCardFromIndexOrCreateCardFromData(this.cardDataOrIndex);
-      if (this._private.cachedCard != null) { this._private.cachedCard.setOwnerId(this.getOwnerId()); }
+    if (this._private.cachedCard == null) {
+      this._private.cachedCard = this.getGameSession().getExistingCardFromIndexOrCreateCardFromData(
+        this.cardDataOrIndex,
+      );
+      if (this._private.cachedCard != null) {
+        this._private.cachedCard.setOwnerId(this.getOwnerId());
+      }
     }
     return this._private.cachedCard;
   }
@@ -71,7 +75,7 @@ class PutCardInHandAction extends Action {
    * NOTE: This card reference is not serialized and will not be preserved through deserialize/rollback.
    */
   setCard(card) {
-    return this._private.cachedCard = card;
+    return (this._private.cachedCard = card);
   }
 
   /**
@@ -87,7 +91,7 @@ class PutCardInHandAction extends Action {
    * NOTE: this will only return reliable values POST EXECUTION
    */
   getIsBurnedCard() {
-    return (this.cardDataOrIndex != null) && (this.indexOfCardInHand == null);
+    return this.cardDataOrIndex != null && this.indexOfCardInHand == null;
   }
 
   _execute() {
@@ -115,20 +119,39 @@ class PutCardInHandAction extends Action {
 
       if (this.burnCard) {
         // apply and immediagtely burn the card through the game session
-        this.indexOfCardInHand = this.getGameSession().applyCardToHand(deck, this.cardDataOrIndex, card, this.indexOfCardInHand, this, true);
+        this.indexOfCardInHand = this.getGameSession().applyCardToHand(
+          deck,
+          this.cardDataOrIndex,
+          card,
+          this.indexOfCardInHand,
+          this,
+          true,
+        );
       } else {
         // apply the card through the game session
-        this.indexOfCardInHand = this.getGameSession().applyCardToHand(deck, this.cardDataOrIndex, card, this.indexOfCardInHand, this);
+        this.indexOfCardInHand = this.getGameSession().applyCardToHand(
+          deck,
+          this.cardDataOrIndex,
+          card,
+          this.indexOfCardInHand,
+          this,
+        );
       }
 
       // get post apply card data
-      if (this.getGameSession().getIsRunningAsAuthoritative()) { return this.cardDataOrIndex = card.updateCardDataPostApply(this.cardDataOrIndex); }
+      if (this.getGameSession().getIsRunningAsAuthoritative()) {
+        return (this.cardDataOrIndex = card.updateCardDataPostApply(this.cardDataOrIndex));
+      }
     }
   }
 
   scrubSensitiveData(actionData, scrubFromPerspectiveOfPlayerId, forSpectator) {
     if (actionData.ownerId !== scrubFromPerspectiveOfPlayerId) {
-      if ((actionData.cardDataOrIndex != null) && (actionData.indexOfCardInHand != null) && _.isObject(actionData.cardDataOrIndex)) {
+      if (
+        actionData.cardDataOrIndex != null &&
+        actionData.indexOfCardInHand != null &&
+        _.isObject(actionData.cardDataOrIndex)
+      ) {
         // scrub the card id and only retain the card index
         // unless burned card (no index in hand), then don't scrub and reveal to both players
         actionData.cardDataOrIndex = { id: -1, index: actionData.cardDataOrIndex.index };

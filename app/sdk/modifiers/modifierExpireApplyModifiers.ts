@@ -15,9 +15,24 @@ class ModifierExpireApplyModifiers extends Modifier {
   static modifierName = '';
   static description = '';
 
-  static createContextObject(modifiersContextObjects, durationEndTurn, durationStartTurn, auraIncludeSelf, auraIncludeAlly, auraIncludeEnemy, auraRadius, canTargetGeneral, description, options) {
-    if (durationEndTurn == null) { durationEndTurn = 1; }
-    if (durationStartTurn == null) { durationStartTurn = 0; }
+  static createContextObject(
+    modifiersContextObjects,
+    durationEndTurn,
+    durationStartTurn,
+    auraIncludeSelf,
+    auraIncludeAlly,
+    auraIncludeEnemy,
+    auraRadius,
+    canTargetGeneral,
+    description,
+    options,
+  ) {
+    if (durationEndTurn == null) {
+      durationEndTurn = 1;
+    }
+    if (durationStartTurn == null) {
+      durationStartTurn = 0;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.modifiersContextObjects = modifiersContextObjects;
     contextObject.durationEndTurn = durationEndTurn;
@@ -37,15 +52,27 @@ class ModifierExpireApplyModifiers extends Modifier {
     if (this.modifiersContextObjects != null) {
       return Array.from<any>(this.getAffectedEntities()).map((entity) =>
         Array.from<any>(this.modifiersContextObjects).map((modifierContextObject) =>
-          this.getGameSession().applyModifierContextObject(modifierContextObject, entity)));
+          this.getGameSession().applyModifierContextObject(modifierContextObject, entity),
+        ),
+      );
     }
   }
 
   getAffectedEntities() {
-    const entityList = this.getGameSession().getBoard().getCardsWithinRadiusOfPosition(this.getCard().getPosition(), this.auraFilterByCardType, this.auraRadius, this.auraIncludeSelf);
+    const entityList = this.getGameSession()
+      .getBoard()
+      .getCardsWithinRadiusOfPosition(
+        this.getCard().getPosition(),
+        this.auraFilterByCardType,
+        this.auraRadius,
+        this.auraIncludeSelf,
+      );
     const affectedEntities = [];
     for (var entity of Array.from<any>(entityList)) {
-      if ((this.auraIncludeAlly && entity.getIsSameTeamAs(this.getCard())) || (this.auraIncludeEnemy && !entity.getIsSameTeamAs(this.getCard()))) {
+      if (
+        (this.auraIncludeAlly && entity.getIsSameTeamAs(this.getCard())) ||
+        (this.auraIncludeEnemy && !entity.getIsSameTeamAs(this.getCard()))
+      ) {
         if (this.canTargetGeneral || !entity.getIsGeneral()) {
           affectedEntities.push(entity);
         }

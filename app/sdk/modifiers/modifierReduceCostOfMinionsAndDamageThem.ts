@@ -20,7 +20,8 @@ class ModifierReduceCostOfMinionsAndDamageThem extends ModifierSummonWatch {
 
   static type = 'ModifierReduceCostOfMinionsAndDamageThem';
   static modifierName = 'Summon Watch (reduce cost of minions and damage them)';
-  static description = 'Your minions cost %X less to summon and take %Y damage when summoned from your action bar';
+  static description =
+    'Your minions cost %X less to summon and take %Y damage when summoned from your action bar';
 
   static createContextObject(costChange, damageAmount, options) {
     const contextObject = super.createContextObject(options);
@@ -42,8 +43,14 @@ class ModifierReduceCostOfMinionsAndDamageThem extends ModifierSummonWatch {
 
     // set player mana modifier as sub-modifier of this modifier. that way, if this
     // unit is dispelled or killed, player modifier will be removed as well
-    const contextObject = PlayerModifierManaModifier.createCostChangeContextObject(-1 * this.costChange, CardType.Unit);
-    contextObject.activeInHand = (contextObject.activeInDeck = (contextObject.activeInSignatureCards = false));
+    const contextObject = PlayerModifierManaModifier.createCostChangeContextObject(
+      -1 * this.costChange,
+      CardType.Unit,
+    );
+    contextObject.activeInHand =
+      contextObject.activeInDeck =
+      contextObject.activeInSignatureCards =
+        false;
     contextObject.activeOnBoard = true;
     const ownPlayerId = this.getCard().getOwnerId();
     const ownGeneral = this.getGameSession().getGeneralForPlayerId(ownPlayerId);
@@ -52,12 +59,20 @@ class ModifierReduceCostOfMinionsAndDamageThem extends ModifierSummonWatch {
 
   getIsActionRelevant(action) {
     // watch for a unit being summoned from action bar by the player who owns this entity, don't trigger on summon of this unit
-    return action instanceof PlayCardFromHandAction && (action.getCard() !== this.getCard()) && super.getIsActionRelevant(action);
+    return (
+      action instanceof PlayCardFromHandAction &&
+      action.getCard() !== this.getCard() &&
+      super.getIsActionRelevant(action)
+    );
   }
 
   onSummonWatch(action) {
     const unitToDamage = action.getTarget();
-    if ((unitToDamage != null) && !UtilsPosition.getPositionsAreEqual(unitToDamage.getPosition(), this.getCard().getPosition())) { // make sure we aren't trying to damage a clone summoned by a followup spawn (mirage master)
+    if (
+      unitToDamage != null &&
+      !UtilsPosition.getPositionsAreEqual(unitToDamage.getPosition(), this.getCard().getPosition())
+    ) {
+      // make sure we aren't trying to damage a clone summoned by a followup spawn (mirage master)
       const damageAction = new DamageAction(this.getGameSession());
       damageAction.setOwnerId(this.getCard().getOwnerId());
       damageAction.setSource(this.getCard());
@@ -67,7 +82,8 @@ class ModifierReduceCostOfMinionsAndDamageThem extends ModifierSummonWatch {
     }
   }
 }
-ModifierReduceCostOfMinionsAndDamageThem.prototype.type = 'ModifierReduceCostOfMinionsAndDamageThem';
+ModifierReduceCostOfMinionsAndDamageThem.prototype.type =
+  'ModifierReduceCostOfMinionsAndDamageThem';
 ModifierReduceCostOfMinionsAndDamageThem.prototype.activeInHand = false;
 ModifierReduceCostOfMinionsAndDamageThem.prototype.activeInDeck = false;
 ModifierReduceCostOfMinionsAndDamageThem.prototype.activeInSignatureCards = false;

@@ -52,7 +52,10 @@ const getScoreForHealFromCardWithIntentToCard = function (card, intent, targetCa
 const ScoreForIntentHeal = function (card, targetPosition, cardIntents) {
   let score = 0;
   const cardId = card.getBaseCardId();
-  const validIntents = cardIntents != null ? CardIntent.filterIntentsByIntentType(cardIntents, CardIntentType.Heal) : CardIntent.getIntentsByIntentType(cardId, CardIntentType.Heal);
+  const validIntents =
+    cardIntents != null
+      ? CardIntent.filterIntentsByIntentType(cardIntents, CardIntentType.Heal)
+      : CardIntent.getIntentsByIntentType(cardId, CardIntentType.Heal);
 
   _.each(validIntents, (intent) => {
     const cards = CardIntent.getCardsTargetedByCardWithIntent(card, intent, targetPosition);

@@ -12,7 +12,6 @@ var DeckMetadataTmpl = require('./templates/deck_metadata.hbs');
 var HistogramTmpl = require('./templates/histogram.hbs');
 
 var DeckMetadataItemView = Backbone.Marionette.ItemView.extend({
-
   className: 'deck-metadata',
   template: DeckMetadataTmpl,
 
@@ -39,7 +38,6 @@ var DeckMetadataItemView = Backbone.Marionette.ItemView.extend({
   },
 
   templateHelpers: {
-
     getDeckSize: function () {
       return this.model.get('cards').length;
     },
@@ -51,7 +49,6 @@ var DeckMetadataItemView = Backbone.Marionette.ItemView.extend({
     getColorCodes: function () {
       return CONFIG.COLOR_CODES;
     },
-
   },
 
   /* region MARIONETTE */
@@ -116,11 +113,13 @@ var DeckMetadataItemView = Backbone.Marionette.ItemView.extend({
   bindDeckCardBack: function () {
     var cardBackId = this.model.get('card_back_id');
     var cardBackImg = SDK.CosmeticsFactory.cardBackForIdentifier(cardBackId).img;
-    this.ui.$deckCardBackImg.attr('src', RSX.getResourcePathForScale(cardBackImg, CONFIG.resourceScaleCSS));
+    this.ui.$deckCardBackImg.attr(
+      'src',
+      RSX.getResourcePathForScale(cardBackImg, CONFIG.resourceScaleCSS),
+    );
   },
 
   /* endregion EVENTS */
-
 });
 
 // Expose the class either via CommonJS or the global object

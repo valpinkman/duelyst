@@ -10,7 +10,6 @@ const MysteryCrateNode = require('./MysteryCrateNode');
  *************************************************************************** */
 
 var MysteryT1CrateNode = MysteryCrateNode.extend({
-
   getCrateType() {
     return MysteryT1CrateNode.crateType;
   },
@@ -46,7 +45,6 @@ var MysteryT1CrateNode = MysteryCrateNode.extend({
   _getLootCrateGlowSpriteIdentifier() {
     return RSX.mystery_t1_loot_crate_glow_map.img;
   },
-
 });
 
 MysteryT1CrateNode.crateType = SDK.CosmeticsChestTypeLookup.Common;

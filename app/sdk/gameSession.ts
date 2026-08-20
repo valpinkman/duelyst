@@ -25,72 +25,79 @@ class GameSession {
 
   static getInstance() {
     // Logger.module("SDK").debug "[G:#{@.gameId}]", "GS.getInstance"
-    if (this.instance == null) { this.instance = new _GameSession(); }
+    if (this.instance == null) {
+      this.instance = new _GameSession();
+    }
     return this.instance;
   }
 
   // alias of "getInstance"
   static current() {
-    if (this.instance == null) { this.instance = new _GameSession(); }
+    if (this.instance == null) {
+      this.instance = new _GameSession();
+    }
     return this.instance;
   }
 
   static reset() {
     if (this.instance != null) {
       this.instance.terminate();
-      return this.instance = null;
+      return (this.instance = null);
     }
   }
 
   static setStepSubmitter(submitter) {
-    return this._stepSubmitter = submitter; // caches of all cards
+    return (this._stepSubmitter = submitter); // caches of all cards
   }
 
   /**
-  * Returns all card caches.
-  * NOTE: getCardCaches() will lazily create all cards and all further chained methods will lazily group those cards
-  * @param {moment} systemTime
-  * @public
-  * @example
-  * # getCardCaches returns an object with getter methods
-  * # each part of the cache chain also returns a similar object
-  * GameSession.getCardCaches().getCards() # returns array of cards
-  * GameSession.getCardCaches().getCardIds() # returns array of card ids
-  * GameSession.getCardCaches().getCardsData() # returns array of {id: cardId} objects
-  *
-  * # the cache chain is created for each key in GameSession._cacheCardsBy
-  * # where each key value is mapped to a getter method
-  * # such as the getter method "getCardSet" for the key "cardSet"
-  * GameSession.getCardCaches().getCardSet(cardSetId).getCards()
-  * GameSession.getCardCaches().getFaction(factionId).getCardIds()
-  * GameSession.getCardCaches().getRarity(rarityId).getCardsData()
-  * ...etc
-  *
-  * # the cache chain can be traversed in any order
-  * # but it is recommended that traversal be done in order from general to specific
-  * # to prevent unnecessary caches from being created
-  * GameSession.getCardCaches().getCardSet(cardSetId).getFaction(factionId).getCards()
-  * GameSession.getCardCaches().getFaction(factionId).getCardSet(cardSetId).getCards()
-  * GameSession.getCardCaches().getCardSet(cardSetId).getRarity(rarityId).getFaction(factionId).getCardIds()
-  * GameSession.getCardCaches().getRarity(rarityId).getFaction(factionId).getCardSet(cardSetId).getCardIds()
-  * ...etc
-  */
+   * Returns all card caches.
+   * NOTE: getCardCaches() will lazily create all cards and all further chained methods will lazily group those cards
+   * @param {moment} systemTime
+   * @public
+   * @example
+   * # getCardCaches returns an object with getter methods
+   * # each part of the cache chain also returns a similar object
+   * GameSession.getCardCaches().getCards() # returns array of cards
+   * GameSession.getCardCaches().getCardIds() # returns array of card ids
+   * GameSession.getCardCaches().getCardsData() # returns array of {id: cardId} objects
+   *
+   * # the cache chain is created for each key in GameSession._cacheCardsBy
+   * # where each key value is mapped to a getter method
+   * # such as the getter method "getCardSet" for the key "cardSet"
+   * GameSession.getCardCaches().getCardSet(cardSetId).getCards()
+   * GameSession.getCardCaches().getFaction(factionId).getCardIds()
+   * GameSession.getCardCaches().getRarity(rarityId).getCardsData()
+   * ...etc
+   *
+   * # the cache chain can be traversed in any order
+   * # but it is recommended that traversal be done in order from general to specific
+   * # to prevent unnecessary caches from being created
+   * GameSession.getCardCaches().getCardSet(cardSetId).getFaction(factionId).getCards()
+   * GameSession.getCardCaches().getFaction(factionId).getCardSet(cardSetId).getCards()
+   * GameSession.getCardCaches().getCardSet(cardSetId).getRarity(rarityId).getFaction(factionId).getCardIds()
+   * GameSession.getCardCaches().getRarity(rarityId).getFaction(factionId).getCardSet(cardSetId).getCardIds()
+   * ...etc
+   */
   static getCardCaches(systemTime) {
     this._buildCachesIfNeeded(systemTime);
     return this._cardCaches;
   }
 
   /**
-  * Builds caches of sdk card objects and cardIds
-  * @param {moment} systemTime
-  * @private
-  */
+   * Builds caches of sdk card objects and cardIds
+   * @param {moment} systemTime
+   * @private
+   */
   static _buildCachesIfNeeded(systemTime?) {
     const MOMENT_NOW_UTC = systemTime || moment().utc();
 
     // we don't have a cached array or if the month has changed since last cache
     // we need to check month because monthly content cards are invisible until month rolls over
-    if ((GameSession._cardsCachedAt == null) || (MOMENT_NOW_UTC.month() !== GameSession._cardsCachedAt.month())) {
+    if (
+      GameSession._cardsCachedAt == null ||
+      MOMENT_NOW_UTC.month() !== GameSession._cardsCachedAt.month()
+    ) {
       GameSession._cardsCachedAt = moment(MOMENT_NOW_UTC);
       Logger.module('GameSession').debug('_buildCachesIfNeeded() -> building card cache.'.yellow);
 
@@ -109,18 +116,31 @@ class GameSession {
       // - unreleased / in development
       // - hidden to users
       // - not in an enabled faction
-      allCards = _.filter(allCards, (card) => card.getIsAvailable(MOMENT_NOW_UTC)
-          && (factionsHash[card.getFactionId()] != null)
-          && (factionsHash[card.getFactionId()].isInDevelopment !== true));
+      allCards = _.filter(
+        allCards,
+        (card) =>
+          card.getIsAvailable(MOMENT_NOW_UTC) &&
+          factionsHash[card.getFactionId()] != null &&
+          factionsHash[card.getFactionId()].isInDevelopment !== true,
+      );
 
       // create recursive caching methods
-      const cacheRecursive = function (cacheInto, cacheByMasterKey, cardsToCache, cacheByRemaining) {
+      const cacheRecursive = function (
+        cacheInto,
+        cacheByMasterKey,
+        cardsToCache,
+        cacheByRemaining,
+      ) {
         // cache cards
-        if (cardsToCache == null) { cardsToCache = []; }
+        if (cardsToCache == null) {
+          cardsToCache = [];
+        }
 
         var cache = (cacheInto[cacheByMasterKey] = {
           cards: cardsToCache,
-          getCards() { return this.cards; },
+          getCards() {
+            return this.cards;
+          },
 
           cardsById: null,
           getCardById(cardId) {
@@ -130,7 +150,9 @@ class GameSession {
               cardsById[card.getId()] = card;
             }
             cache.cardsById = cardsById;
-            cache.getCardById = function (cardId) { return this.cardsById[cardId]; };
+            cache.getCardById = function (cardId) {
+              return this.cardsById[cardId];
+            };
             return cardsById[cardId];
           },
 
@@ -140,7 +162,9 @@ class GameSession {
             const cardIdsToCache = _.map(cardsToCache, (card) => card.getId());
             cache.cardIds = cardIdsToCache;
             // replace lazy getter method
-            cache.getCardIds = function () { return this.cardIds; };
+            cache.getCardIds = function () {
+              return this.cardIds;
+            };
             return cardIdsToCache;
           },
 
@@ -152,24 +176,28 @@ class GameSession {
             }));
             cache.cardsData = cardsDataToCache;
             // replace lazy getter method
-            cache.getCardsData = function () { return this.cardsData; };
+            cache.getCardsData = function () {
+              return this.cardsData;
+            };
             return cardsDataToCache;
           },
         });
 
         // create methods to lazy cache all sub keys when called
         return Array.from<any>(cacheByRemaining).map((cacheByData) =>
-          createLazySubCache(cache, cacheByData, cardsToCache, cacheByRemaining));
+          createLazySubCache(cache, cacheByData, cardsToCache, cacheByRemaining),
+        );
       };
 
       var createLazySubCache = function (cache, cacheByData, cardsToCache, cacheByRemaining) {
         // create getter method to lazy init sub cache
         // (this method gets replaced when sub cache is created)
         const cacheByKey = cacheByData.key;
-        return cache[`get${cacheByKey.slice(0, 1).toLocaleUpperCase()}${cacheByKey.slice(1)}`] = function (key) {
-          createSubCache(cache, cacheByData, cardsToCache, cacheByRemaining);
-          return cache[cacheByKey][key];
-        };
+        return (cache[`get${cacheByKey.slice(0, 1).toLocaleUpperCase()}${cacheByKey.slice(1)}`] =
+          function (key) {
+            createSubCache(cache, cacheByData, cardsToCache, cacheByRemaining);
+            return cache[cacheByKey][key];
+          });
       };
 
       var createSubCache = function (cache, cacheByData, cardsToCache, cacheByRemaining) {
@@ -193,7 +221,8 @@ class GameSession {
         const subCache = (cache[cacheByKey] = {});
 
         // create getter method for sub cache card groups
-        cache[`get${cacheByKey.slice(0, 1).toLocaleUpperCase()}${cacheByKey.slice(1)}`] = (key) => subCache[key];
+        cache[`get${cacheByKey.slice(0, 1).toLocaleUpperCase()}${cacheByKey.slice(1)}`] = (key) =>
+          subCache[key];
 
         // remove sub key from remaining
         const subCacheByRemaining = [];
@@ -208,7 +237,9 @@ class GameSession {
         return (() => {
           const result = [];
           for (groupKey of Array.from<any>(cacheByGroupKeys)) {
-            result.push(cacheRecursive(subCache, groupKey, cardsGrouped[groupKey], subCacheByRemaining));
+            result.push(
+              cacheRecursive(subCache, groupKey, cardsGrouped[groupKey], subCacheByRemaining),
+            );
           }
           return result;
         })();
@@ -222,68 +253,150 @@ class GameSession {
 GameSession._cacheCardsBy = [
   {
     key: 'cardSet',
-    getGroupKey(card) { return card.getCardSetId(); },
-    getGroupKeys() { return _.map(_.filter(Object.keys(CardSet), (key) => !_.isObject(CardSet[key]) && !_.isFunction(CardSet[key])), (key) => CardSet[key]); },
+    getGroupKey(card) {
+      return card.getCardSetId();
+    },
+    getGroupKeys() {
+      return _.map(
+        _.filter(
+          Object.keys(CardSet),
+          (key) => !_.isObject(CardSet[key]) && !_.isFunction(CardSet[key]),
+        ),
+        (key) => CardSet[key],
+      );
+    },
   },
   {
     key: 'faction',
-    getGroupKey(card) { return card.getFactionId(); },
-    getGroupKeys() { return _.map(_.filter(Object.keys(Factions), (key) => !_.isObject(Factions[key]) && !_.isFunction(Factions[key])), (key) => Factions[key]); },
+    getGroupKey(card) {
+      return card.getFactionId();
+    },
+    getGroupKeys() {
+      return _.map(
+        _.filter(
+          Object.keys(Factions),
+          (key) => !_.isObject(Factions[key]) && !_.isFunction(Factions[key]),
+        ),
+        (key) => Factions[key],
+      );
+    },
   },
   {
     key: 'rarity',
-    getGroupKey(card) { return card.getRarityId(); },
-    getGroupKeys() { return _.map(_.filter(Object.keys(Rarity), (key) => !_.isObject(Rarity[key]) && !_.isFunction(Rarity[key])), (key) => Rarity[key]); },
+    getGroupKey(card) {
+      return card.getRarityId();
+    },
+    getGroupKeys() {
+      return _.map(
+        _.filter(
+          Object.keys(Rarity),
+          (key) => !_.isObject(Rarity[key]) && !_.isFunction(Rarity[key]),
+        ),
+        (key) => Rarity[key],
+      );
+    },
   },
   {
     key: 'race',
-    getGroupKey(card) { return card.getRaceId(); },
-    getGroupKeys() { return _.map(_.filter(Object.keys(Races), (key) => !_.isObject(Races[key]) && !_.isFunction(Races[key])), (key) => Races[key]); },
+    getGroupKey(card) {
+      return card.getRaceId();
+    },
+    getGroupKeys() {
+      return _.map(
+        _.filter(Object.keys(Races), (key) => !_.isObject(Races[key]) && !_.isFunction(Races[key])),
+        (key) => Races[key],
+      );
+    },
   },
   {
     key: 'isToken',
-    getGroupKey(card) { return card.getRarityId() === Rarity.TokenUnit; },
-    getGroupKeys() { return [true, false]; },
+    getGroupKey(card) {
+      return card.getRarityId() === Rarity.TokenUnit;
+    },
+    getGroupKeys() {
+      return [true, false];
+    },
   },
   {
     key: 'type',
-    getGroupKey(card) { return card.getType(); },
-    getGroupKeys() { return _.map(_.filter(Object.keys(CardType), (key) => !_.isObject(CardType[key]) && !_.isFunction(CardType[key])), (key) => CardType[key]); },
+    getGroupKey(card) {
+      return card.getType();
+    },
+    getGroupKeys() {
+      return _.map(
+        _.filter(
+          Object.keys(CardType),
+          (key) => !_.isObject(CardType[key]) && !_.isFunction(CardType[key]),
+        ),
+        (key) => CardType[key],
+      );
+    },
   },
   {
     key: 'isGeneral',
-    getGroupKey(card) { return card instanceof Entity && card.getIsGeneral(); },
-    getGroupKeys() { return [true, false]; },
+    getGroupKey(card) {
+      return card instanceof Entity && card.getIsGeneral();
+    },
+    getGroupKeys() {
+      return [true, false];
+    },
   },
   {
     key: 'isCollectible',
-    getGroupKey(card) { return card.getIsCollectible(); },
-    getGroupKeys() { return [true, false]; },
+    getGroupKey(card) {
+      return card.getIsCollectible();
+    },
+    getGroupKeys() {
+      return [true, false];
+    },
   },
   {
     key: 'isUnlockable',
-    getGroupKey(card) { return card.getIsUnlockable(); },
-    getGroupKeys() { return [true, false]; },
+    getGroupKey(card) {
+      return card.getIsUnlockable();
+    },
+    getGroupKeys() {
+      return [true, false];
+    },
   },
   {
     key: 'isHiddenInCollection',
-    getGroupKey(card) { return card.getIsHiddenInCollection(); },
-    getGroupKeys() { return [true, false]; },
+    getGroupKey(card) {
+      return card.getIsHiddenInCollection();
+    },
+    getGroupKeys() {
+      return [true, false];
+    },
   },
   {
     key: 'isPrismatic',
-    getGroupKey(card) { return Cards.getIsPrismaticCardId(card.getId()); },
-    getGroupKeys() { return [true, false]; },
+    getGroupKey(card) {
+      return Cards.getIsPrismaticCardId(card.getId());
+    },
+    getGroupKeys() {
+      return [true, false];
+    },
   },
   {
     key: 'isSkinned',
-    getGroupKey(card) { return Cards.getIsSkinnedCardId(card.getId()); },
-    getGroupKeys() { return [true, false]; },
+    getGroupKey(card) {
+      return Cards.getIsSkinnedCardId(card.getId());
+    },
+    getGroupKeys() {
+      return [true, false];
+    },
   },
   {
     key: 'isLegacy',
-    getGroupKey(card) { return card.getIsLegacy() || (CardSetFactory.cardSetForIdentifier(card.getCardSetId()).isLegacy != null); },
-    getGroupKeys() { return [true, false]; },
+    getGroupKey(card) {
+      return (
+        card.getIsLegacy() ||
+        CardSetFactory.cardSetForIdentifier(card.getCardSetId()).isLegacy != null
+      );
+    },
+    getGroupKeys() {
+      return [true, false];
+    },
   },
 ];
 
@@ -500,7 +613,7 @@ class _GameSession extends SDKObject {
   // region getters / setters
 
   generateIndex() {
-    return this.index = (this.index + 1 + (Math.random() * 100.0)) | 0;
+    return (this.index = (this.index + 1 + Math.random() * 100.0) | 0);
   }
 
   getGameId() {
@@ -541,7 +654,7 @@ class _GameSession extends SDKObject {
   }
 
   setValidators(val) {
-    return this._private.validators = val;
+    return (this._private.validators = val);
   }
 
   getValidators() {
@@ -561,21 +674,21 @@ class _GameSession extends SDKObject {
   }
 
   setBattleMapTemplate(battleMapTemplate) {
-    return this.battleMapTemplate = battleMapTemplate;
+    return (this.battleMapTemplate = battleMapTemplate);
   }
 
   /**
-  * Get how many MS there are remaining in the turn. For now, this is a value that is set on the game session by an outside controller based on server or local client timer. This value can be used to bind to periodically bind UI or to check against.
-  * @return {int} Turn milliseconds remaining.
-  */
+   * Get how many MS there are remaining in the turn. For now, this is a value that is set on the game session by an outside controller based on server or local client timer. This value can be used to bind to periodically bind UI or to check against.
+   * @return {int} Turn milliseconds remaining.
+   */
   getTurnTimeRemaining() {
     return this._private.turnTimeRemaining;
   }
 
   /**
-  * Set remaining turn time info.
-  * @param {int}    Turn milliseconds remaining.
-  */
+   * Set remaining turn time info.
+   * @param {int}    Turn milliseconds remaining.
+   */
   setTurnTimeRemaining(value) {
     this._private.turnTimeRemaining = value;
     return this.pushEvent({ type: EVENTS.turn_time, time: value, gameSession: this });
@@ -587,7 +700,7 @@ class _GameSession extends SDKObject {
 
   /**
    * Returns the event bus where all events are piped through.
-    */
+   */
   getEventBus() {
     return this._private.eventBus;
   }
@@ -608,7 +721,7 @@ class _GameSession extends SDKObject {
     const eventType = event.type;
     this.pushEventTypeToStack(eventType);
 
-    if ((options == null)) {
+    if (options == null) {
       // push, no options
       this._private.blockActionExecution = false;
 
@@ -618,19 +731,15 @@ class _GameSession extends SDKObject {
       // push event to bus
       this.getEventBus().trigger(eventType, event);
     } else {
-      let lastAction; let
-        lastResolveAction;
+      let lastAction;
+      let lastResolveAction;
       if (options.blockActionExecution) {
         this._private.blockActionExecution = true;
       }
 
       // forced actions
-      const {
-        action,
-      } = options;
-      const {
-        resolveAction,
-      } = options;
+      const { action } = options;
+      const { resolveAction } = options;
       if (action != null) {
         lastAction = this.getExecutingAction();
         this.setExecutingAction(action);
@@ -657,7 +766,7 @@ class _GameSession extends SDKObject {
 
     // execute any authoritative sub actions for the event's action that occurred during this event
     const parentAction = this.getExecutingParentAction();
-    if (event.executeAuthoritativeSubActions && (parentAction != null)) {
+    if (event.executeAuthoritativeSubActions && parentAction != null) {
       parentAction.executeNextOfEventTypeFromAuthoritativeSubActionQueue(eventType);
     }
 
@@ -676,9 +785,7 @@ class _GameSession extends SDKObject {
    * - game session cards
    */
   _pushEventToSession(event, options) {
-    const {
-      isBufferable,
-    } = event;
+    const { isBufferable } = event;
 
     // push event to validators
     for (var validator of Array.from<any>(this.getValidators())) {
@@ -697,7 +804,9 @@ class _GameSession extends SDKObject {
     // push event to game session cards
     for (var card of Array.from<any>(this.getEventReceivingCards())) {
       card.onEvent(event);
-      if (this.getIsBufferingEvents() && isBufferable) { break; }
+      if (this.getIsBufferingEvents() && isBufferable) {
+        break;
+      }
     }
 
     // if buffering began while processing bufferable event
@@ -756,7 +865,7 @@ class _GameSession extends SDKObject {
    */
   p_startBufferingEvents() {
     Logger.module('SDK').debug(`[G:${this.gameId}]`, 'GS.p_startBufferingEvents');
-    return this._private.isBufferingEvents = true;
+    return (this._private.isBufferingEvents = true);
   }
 
   /**
@@ -775,21 +884,23 @@ class _GameSession extends SDKObject {
       }
 
       // flush buffered events
-      if (bufferedEvents && (bufferedEvents.length > 0)) {
+      if (bufferedEvents && bufferedEvents.length > 0) {
         Logger.module('SDK').debug(`[G:${this.gameId}]`, 'GS._flushBufferedEvents');
         // push all previously buffered events to main event stream
         return (() => {
           const result = [];
           for (let i = 0; i < bufferedEvents.length; i++) {
-          // Logger.module("SDK").debug "[G:#{@.gameId}]", "GS._flushBufferedEvents -> type #{eventData.event?.type} action? #{eventData.event?.action?.getLogName()}"
+            // Logger.module("SDK").debug "[G:#{@.gameId}]", "GS._flushBufferedEvents -> type #{eventData.event?.type} action? #{eventData.event?.action?.getLogName()}"
             var eventData = bufferedEvents[i];
             this.pushEvent(eventData.event, eventData.options, true);
 
             // if events started buffering again during flush
             // stop flush and move remaining buffered events back into event buffer
-            if (this.getIsBufferingEvents() && (bufferedEvents.length > (i + 1))) {
+            if (this.getIsBufferingEvents() && bufferedEvents.length > i + 1) {
               // Logger.module("SDK").debug "[G:#{@.gameId}]", "GS._flushBufferedEvents -> buffering started mid-flush, moving #{bufferedEvents.length - (i + 1)} events back into buffer"
-              this._private.eventBuffer = this._private.eventBuffer.concat(bufferedEvents.slice(i + 1));
+              this._private.eventBuffer = this._private.eventBuffer.concat(
+                bufferedEvents.slice(i + 1),
+              );
               break;
             } else {
               result.push(undefined);
@@ -836,7 +947,10 @@ class _GameSession extends SDKObject {
       // rollback snapshots are only allowed for the player playing the followup or the server
       if (this.isMyTurn() || this.getIsRunningAsAuthoritative()) {
         this._private.rollbackSnapshotData = this.generateGameSessionSnapshot();
-        return this.pushEvent({ type: EVENTS.rollback_to_snapshot_recorded, gameSession: this }, { blockActionExecution: true });
+        return this.pushEvent(
+          { type: EVENTS.rollback_to_snapshot_recorded, gameSession: this },
+          { blockActionExecution: true },
+        );
       }
     }
   }
@@ -872,8 +986,7 @@ class _GameSession extends SDKObject {
       card.syncState();
     }
 
-    return Array.from<any>(this.players).map((player) =>
-      player.syncState());
+    return Array.from<any>(this.players).map((player) => player.syncState());
   }
 
   /**
@@ -883,7 +996,10 @@ class _GameSession extends SDKObject {
   p_requestRollbackToSnapshot() {
     // Logger.module("SDK").debug "[G:#{@.gameId}]", "GS.p_requestRollbackToSnapshot"
     this._private.rollbackToSnapshotRequested = true;
-    return this.pushEvent({ type: EVENTS.rollback_to_snapshot_requested, gameSession: this }, { blockActionExecution: true });
+    return this.pushEvent(
+      { type: EVENTS.rollback_to_snapshot_requested, gameSession: this },
+      { blockActionExecution: true },
+    );
   }
 
   /**
@@ -892,7 +1008,7 @@ class _GameSession extends SDKObject {
    */
   p_requestRollbackSnapshotDiscard() {
     // Logger.module("SDK").debug "[G:#{@.gameId}]", "GS.p_requestRollbackSnapshotDiscard"
-    return this._private.rollbackSnapshotDataDiscardRequested = true;
+    return (this._private.rollbackSnapshotDataDiscardRequested = true);
   }
 
   generateGameSessionSnapshot() {
@@ -910,13 +1026,19 @@ class _GameSession extends SDKObject {
     }
 
     // rollback snapshots are only allowed for the player playing the followup or the server
-    if ((this.isMyTurn() || this.getIsRunningAsAuthoritative()) && (snapshotData != null)) {
+    if ((this.isMyTurn() || this.getIsRunningAsAuthoritative()) && snapshotData != null) {
       Logger.module('SDK').debug(`[G:${this.gameId}]`, 'GS._rollbackToSnapshot');
 
       // rollback by deserializing the snapshot data
-      this.pushEvent({ type: EVENTS.before_rollback_to_snapshot, gameSession: this }, { blockActionExecution: true });
+      this.pushEvent(
+        { type: EVENTS.before_rollback_to_snapshot, gameSession: this },
+        { blockActionExecution: true },
+      );
       this.deserializeSessionFromFirebase(JSON.parse(snapshotData));
-      return this.pushEvent({ type: EVENTS.rollback_to_snapshot, gameSession: this }, { blockActionExecution: true });
+      return this.pushEvent(
+        { type: EVENTS.rollback_to_snapshot, gameSession: this },
+        { blockActionExecution: true },
+      );
     }
   }
 
@@ -926,7 +1048,7 @@ class _GameSession extends SDKObject {
     this._private.rollbackToSnapshotRequested = false;
     this._private.rollbackSnapshotDataDiscardRequested = false;
     this._private.rollbackSnapshotData = null;
-    return this._private.eventBuffer = [];
+    return (this._private.eventBuffer = []);
   }
 
   // endregion snapshots
@@ -934,7 +1056,7 @@ class _GameSession extends SDKObject {
   // region status
 
   setIsRunningAsAuthoritative(isRunningAsAuthoritative) {
-    return this._private.isRunningAsAuthoritative = isRunningAsAuthoritative;
+    return (this._private.isRunningAsAuthoritative = isRunningAsAuthoritative);
   }
 
   getIsRunningAsAuthoritative() {
@@ -954,9 +1076,16 @@ class _GameSession extends SDKObject {
     if (this.status !== s) {
       const prevStatus = this.status;
       this.status = s;
-      return this.pushEvent({
-        type: EVENTS.status, status: s, from: prevStatus, to: s, gameSession: this,
-      }, { blockActionExecution: true });
+      return this.pushEvent(
+        {
+          type: EVENTS.status,
+          status: s,
+          from: prevStatus,
+          to: s,
+          gameSession: this,
+        },
+        { blockActionExecution: true },
+      );
     }
   }
 
@@ -973,7 +1102,7 @@ class _GameSession extends SDKObject {
   }
 
   setGameType(val) {
-    return this.gameType = val;
+    return (this.gameType = val);
   }
 
   getGameType() {
@@ -981,7 +1110,7 @@ class _GameSession extends SDKObject {
   }
 
   setGameFormat(val) {
-    return this.gameFormat = val;
+    return (this.gameFormat = val);
   }
 
   getGameFormat() {
@@ -1029,7 +1158,10 @@ class _GameSession extends SDKObject {
   }
 
   isTutorial() {
-    return this.isChallenge() && (__guard__(this.getChallenge(), (x) => x.categoryType) === ChallengeCategory.tutorial.type);
+    return (
+      this.isChallenge() &&
+      __guard__(this.getChallenge(), (x) => x.categoryType) === ChallengeCategory.tutorial.type
+    );
   }
 
   getAreDecksRandomized() {
@@ -1041,11 +1173,11 @@ class _GameSession extends SDKObject {
   }
 
   setChallenge(val) {
-    return this._private.challenge = val;
+    return (this._private.challenge = val);
   }
 
   setAiDifficulty(val) {
-    return this.aiDifficulty = val;
+    return (this.aiDifficulty = val);
   }
 
   getAiDifficulty() {
@@ -1058,7 +1190,7 @@ class _GameSession extends SDKObject {
    */
   p_requestGameOver() {
     // Logger.module("SDK").debug "[G:#{@.gameId}]", "GS.p_requestGameOver"
-    return this._private.gameOverRequested = true;
+    return (this._private.gameOverRequested = true);
   }
 
   _validateGameOverRequest() {
@@ -1070,9 +1202,15 @@ class _GameSession extends SDKObject {
       // emit event that game over state should be validated
       // this gives modifiers a chance to swap general or otherwise prevent general death
       if (!(this.getExecutingAction().getRootAction() instanceof ResignAction)) {
-        this.pushEvent({
-          type: EVENTS.validate_game_over, action: this.getExecutingAction(), executeAuthoritativeSubActions: !this.getIsRunningAsAuthoritative(), gameSession: this,
-        }, { resolveAction: this.getExecutingAction() });
+        this.pushEvent(
+          {
+            type: EVENTS.validate_game_over,
+            action: this.getExecutingAction(),
+            executeAuthoritativeSubActions: !this.getIsRunningAsAuthoritative(),
+            gameSession: this,
+          },
+          { resolveAction: this.getExecutingAction() },
+        );
       }
 
       // check for dead generals
@@ -1081,7 +1219,7 @@ class _GameSession extends SDKObject {
         var general = this.getGeneralForPlayerId(player.getPlayerId());
 
         // find last general if player currently has no general
-        if ((general == null)) {
+        if (general == null) {
           var maxRemovedByActionIndex = -1;
           var cardIndices = Object.keys(this.cardsByIndex);
           for (var index of Array.from<any>(cardIndices)) {
@@ -1096,7 +1234,7 @@ class _GameSession extends SDKObject {
           }
         }
 
-        if ((general != null) && general.getIsRemoved()) {
+        if (general != null && general.getIsRemoved()) {
           deadGenerals.push(general);
         }
       }
@@ -1129,8 +1267,14 @@ class _GameSession extends SDKObject {
         this.setStatus(GameStatus.over);
 
         // emit game over
-        this.pushEvent({ type: EVENTS.game_over, winner: this.getWinner(), gameSession: this }, { blockActionExecution: true });
-        return Logger.module('SDK').debug(`[G:${this.gameId}]`, 'GS._validateGameOverRequest -> GAME OVER.'.red);
+        this.pushEvent(
+          { type: EVENTS.game_over, winner: this.getWinner(), gameSession: this },
+          { blockActionExecution: true },
+        );
+        return Logger.module('SDK').debug(
+          `[G:${this.gameId}]`,
+          'GS._validateGameOverRequest -> GAME OVER.'.red,
+        );
       }
     }
   }
@@ -1144,7 +1288,7 @@ class _GameSession extends SDKObject {
   }
 
   setUserId(userId) {
-    return this._private.userId = userId;
+    return (this._private.userId = userId);
   }
 
   getUserId() {
@@ -1156,7 +1300,10 @@ class _GameSession extends SDKObject {
   }
 
   isMyTurnEnding() {
-    return (this.getMyPlayerId() === this.getCurrentPlayer().getPlayerId()) && this.getCurrentTurn().getEnded();
+    return (
+      this.getMyPlayerId() === this.getCurrentPlayer().getPlayerId() &&
+      this.getCurrentTurn().getEnded()
+    );
   }
 
   /**
@@ -1180,10 +1327,16 @@ class _GameSession extends SDKObject {
       }
 
       // a player should ALWAYS be found when a player id is defined
-      return Logger.module('SDK').error(`[G:${this.gameId}].getPlayerById -> No player found with playerId: `, playerId);
-    } if (this.getUserId() != null) {
+      return Logger.module('SDK').error(
+        `[G:${this.gameId}].getPlayerById -> No player found with playerId: `,
+        playerId,
+      );
+    }
+    if (this.getUserId() != null) {
       // a player id should always be passed in if we have at least the user id defined
-      return Logger.module('SDK').error(`[G:${this.gameId}].getPlayerById -> Cannot get player by NULL playerId!`);
+      return Logger.module('SDK').error(
+        `[G:${this.gameId}].getPlayerById -> Cannot get player by NULL playerId!`,
+      );
     }
   }
 
@@ -1196,7 +1349,7 @@ class _GameSession extends SDKObject {
   }
 
   setAiPlayerId(val) {
-    return this.aiPlayerId = val;
+    return (this.aiPlayerId = val);
   }
 
   getAiPlayerId() {
@@ -1234,10 +1387,16 @@ class _GameSession extends SDKObject {
       }
 
       // a player should ALWAYS be found when a player id is defined
-      return Logger.module('SDK').error(`[G:${this.gameId}].getPlayerById -> No opponent player found to playerId: `, playerId);
-    } if (this.getUserId() != null) {
+      return Logger.module('SDK').error(
+        `[G:${this.gameId}].getPlayerById -> No opponent player found to playerId: `,
+        playerId,
+      );
+    }
+    if (this.getUserId() != null) {
       // a player id should always be passed in if we have at least the user id defined
-      return Logger.module('SDK').error(`[G:${this.gameId}].getPlayerById -> Cannot get opponent player of NULL playerId!`);
+      return Logger.module('SDK').error(
+        `[G:${this.gameId}].getPlayerById -> Cannot get opponent player of NULL playerId!`,
+      );
     }
   }
 
@@ -1289,11 +1448,11 @@ class _GameSession extends SDKObject {
     if (playerId != null) {
       let general = this._private.cachedGeneralsByPlayerId[playerId];
 
-      if ((general == null)) {
+      if (general == null) {
         const cardIndices = Object.keys(this.cardsByIndex);
         for (var cardIndex of Array.from<any>(cardIndices)) {
           var card = this.cardsByIndex[cardIndex];
-          if (card instanceof Unit && card.getIsGeneral() && (card.getOwnerId() === playerId)) {
+          if (card instanceof Unit && card.getIsGeneral() && card.getOwnerId() === playerId) {
             this._private.cachedGeneralsByPlayerId[playerId] = card;
             general = card;
           }
@@ -1301,9 +1460,12 @@ class _GameSession extends SDKObject {
       }
 
       return general;
-    } if (this.getUserId() != null) {
+    }
+    if (this.getUserId() != null) {
       // a player id should always be passed in if we have at least the user id defined
-      return Logger.module('SDK').error(`[G:${this.gameId}].getGeneralForPlayerId -> Cannot get general of NULL playerId!`);
+      return Logger.module('SDK').error(
+        `[G:${this.gameId}].getGeneralForPlayerId -> Cannot get general of NULL playerId!`,
+      );
     }
   }
 
@@ -1335,7 +1497,7 @@ class _GameSession extends SDKObject {
    * Flushes the cached found generals by player id. Use this when a general changes during the game.
    */
   flushCachedGeneralsByPlayerId() {
-    return this._private.cachedGeneralsByPlayerId = {};
+    return (this._private.cachedGeneralsByPlayerId = {});
   }
 
   /**
@@ -1406,9 +1568,7 @@ class _GameSession extends SDKObject {
   getEventReceivingCards() {
     // this has to be its own array so that it cannot be modified mid event loop
     if (this._private.cachedEventReceivingCards == null) {
-      this._private.cachedEventReceivingCards = [].concat(
-        this.getEventReceivingCardsOnBoard(),
-      );
+      this._private.cachedEventReceivingCards = [].concat(this.getEventReceivingCardsOnBoard());
     }
     return this._private.cachedEventReceivingCards;
   }
@@ -1424,7 +1584,7 @@ class _GameSession extends SDKObject {
    * Flushes the cached event receiving cards.
    */
   flushCachedEventReceivingCards() {
-    return this._private.cachedEventReceivingCards = null;
+    return (this._private.cachedEventReceivingCards = null);
   }
 
   addEventReceivingCardOnBoard(card) {
@@ -1484,7 +1644,7 @@ class _GameSession extends SDKObject {
   }
 
   skipSwapCurrentPlayerNextTurn() {
-    return this.swapPlayersOnNewTurn = false;
+    return (this.swapPlayersOnNewTurn = false);
   }
 
   getIsDeveloperMode() {
@@ -1492,11 +1652,11 @@ class _GameSession extends SDKObject {
   }
 
   setIsDeveloperMode(val) {
-    return this._private.isDeveloperMode = val || false;
+    return (this._private.isDeveloperMode = val || false);
   }
 
   setIsSpectateMode(val) {
-    return this._private.isSpectateMode = val;
+    return (this._private.isSpectateMode = val);
   }
 
   getIsSpectateMode(val) {
@@ -1504,7 +1664,7 @@ class _GameSession extends SDKObject {
   }
 
   setIsReplay(val) {
-    return this._private.isReplay = val;
+    return (this._private.isReplay = val);
   }
 
   getIsReplay(val) {
@@ -1512,7 +1672,7 @@ class _GameSession extends SDKObject {
   }
 
   setIsSignatureCardAlwaysReady(val) {
-    return this._private.isSignatureCardAlwaysReady = val;
+    return (this._private.isSignatureCardAlwaysReady = val);
   }
 
   getIsSignatureCardAlwaysReady(val) {
@@ -1554,7 +1714,10 @@ class _GameSession extends SDKObject {
    */
   p_endTurn() {
     if (this.isActive() && !this.getCurrentTurn().getEnded()) {
-      Logger.module('SDK').debug(`[G:${this.gameId}]`, `GS.p_endTurn -> turn count: ${this.getNumberOfTurns()}`);
+      Logger.module('SDK').debug(
+        `[G:${this.gameId}]`,
+        `GS.p_endTurn -> turn count: ${this.getNumberOfTurns()}`,
+      );
       const currentPlayer = this.getCurrentPlayer();
 
       // set current turn as ended
@@ -1567,7 +1730,11 @@ class _GameSession extends SDKObject {
       this.turns.push(this.currentTurn);
 
       return this.pushEvent({
-        type: EVENTS.end_turn, action: this.getExecutingAction(), executeAuthoritativeSubActions: !this.getIsRunningAsAuthoritative(), turn: this.currentTurn, gameSession: this,
+        type: EVENTS.end_turn,
+        action: this.getExecutingAction(),
+        executeAuthoritativeSubActions: !this.getIsRunningAsAuthoritative(),
+        turn: this.currentTurn,
+        gameSession: this,
       });
     }
   }
@@ -1603,7 +1770,7 @@ class _GameSession extends SDKObject {
       this.currentTurn.setPlayerId(this.getCurrentPlayer().getPlayerId());
 
       // update entities
-      for (var entity of Array.from<any>(this.board.getEntities(allowUntargetable = true))) {
+      for (var entity of Array.from<any>(this.board.getEntities((allowUntargetable = true)))) {
         entity.refreshExhaustion();
       }
 
@@ -1616,7 +1783,7 @@ class _GameSession extends SDKObject {
         if (player.getIsCurrentPlayer()) {
           // player 2 starts out with one more mana than player 1, so don't increment on first turn change
           // otherwise, give player +1 max mana (up to 9) at each new turn start when they are current player
-          if ((player.maximumMana < CONFIG.MAX_MANA) && (this.getNumberOfTurns() > 1)) {
+          if (player.maximumMana < CONFIG.MAX_MANA && this.getNumberOfTurns() > 1) {
             player.maximumMana++;
           }
           player.remainingMana = player.maximumMana;
@@ -1626,7 +1793,11 @@ class _GameSession extends SDKObject {
       }
 
       return this.pushEvent({
-        type: EVENTS.start_turn, action: this.getExecutingAction(), executeAuthoritativeSubActions: !this.getIsRunningAsAuthoritative(), turn: this.currentTurn, gameSession: this,
+        type: EVENTS.start_turn,
+        action: this.getExecutingAction(),
+        executeAuthoritativeSubActions: !this.getIsRunningAsAuthoritative(),
+        turn: this.currentTurn,
+        gameSession: this,
       });
     }
   }
@@ -1638,42 +1809,72 @@ class _GameSession extends SDKObject {
   _getNumberOfTurnsUntilPlayerActivatesSignatureCard(player, fromTurnNumber?) {
     if (this.getIsSignatureCardAlwaysReady()) {
       return 0;
-    } if (this.getIsSignatureCardAlwaysReadyForPlayer(player)) {
+    }
+    if (this.getIsSignatureCardAlwaysReadyForPlayer(player)) {
       return 0;
     }
-    if (fromTurnNumber == null) { fromTurnNumber = this.getNumberOfTurns(); }
+    if (fromTurnNumber == null) {
+      fromTurnNumber = this.getNumberOfTurns();
+    }
     if (fromTurnNumber >= 12) {
-      if (player === this.getCurrentPlayer()) { return 0; } return 1;
-    } if (player === this.getPlayer2()) {
+      if (player === this.getCurrentPlayer()) {
+        return 0;
+      }
+      return 1;
+    }
+    if (player === this.getPlayer2()) {
       // player 2 gets signature cards on game turn 5 and 9 or player turn 3 and 5
-      if (fromTurnNumber <= 5) { return 5 - fromTurnNumber; }
-      if (fromTurnNumber <= 9) { return 9 - fromTurnNumber; }
+      if (fromTurnNumber <= 5) {
+        return 5 - fromTurnNumber;
+      }
+      if (fromTurnNumber <= 9) {
+        return 9 - fromTurnNumber;
+      }
       return 13 - fromTurnNumber;
     }
     // player 1 gets signature cards on game turn 4 and 8 or player turn 3 and 5
-    if (fromTurnNumber <= 4) { return 4 - fromTurnNumber; }
-    if (fromTurnNumber <= 8) { return 8 - fromTurnNumber; }
+    if (fromTurnNumber <= 4) {
+      return 4 - fromTurnNumber;
+    }
+    if (fromTurnNumber <= 8) {
+      return 8 - fromTurnNumber;
+    }
     return 12 - fromTurnNumber;
   }
 
-  getNumberOfPlayerTurnsUntilPlayerActivatesSignatureCard(player, ignoreHasSignatureCard?, fromTurnNumber?) {
-    if (ignoreHasSignatureCard == null) { ignoreHasSignatureCard = false; }
-    if (fromTurnNumber == null) { fromTurnNumber = this.getNumberOfTurns(); }
+  getNumberOfPlayerTurnsUntilPlayerActivatesSignatureCard(
+    player,
+    ignoreHasSignatureCard?,
+    fromTurnNumber?,
+  ) {
+    if (ignoreHasSignatureCard == null) {
+      ignoreHasSignatureCard = false;
+    }
+    if (fromTurnNumber == null) {
+      fromTurnNumber = this.getNumberOfTurns();
+    }
     const hasSignatureCard = !ignoreHasSignatureCard && player.getIsSignatureCardActive();
     if (hasSignatureCard) {
       return 0;
     }
     let numPlayerTurns;
     if (fromTurnNumber >= 12) {
-      if (player === this.getCurrentPlayer()) { numPlayerTurns = 0; } else { numPlayerTurns = 1; }
+      if (player === this.getCurrentPlayer()) {
+        numPlayerTurns = 0;
+      } else {
+        numPlayerTurns = 1;
+      }
     } else if (player === this.getPlayer2()) {
       numPlayerTurns = Math.ceil((4 - (Math.max(0, fromTurnNumber - 1) % 4)) * 0.5);
     } else {
       numPlayerTurns = Math.ceil((4 - (fromTurnNumber % 4)) * 0.5);
     }
 
-    if ((numPlayerTurns === 0) && (player === this.getCurrentPlayer()) && !hasSignatureCard) {
-      if (fromTurnNumber >= 12) { return 1; } return 2;
+    if (numPlayerTurns === 0 && player === this.getCurrentPlayer() && !hasSignatureCard) {
+      if (fromTurnNumber >= 12) {
+        return 1;
+      }
+      return 2;
     }
     return numPlayerTurns;
   }
@@ -1683,17 +1884,25 @@ class _GameSession extends SDKObject {
     if (hasSignatureCard) {
       return 1.0;
     }
-    if (fromTurnNumber == null) { fromTurnNumber = this.getNumberOfTurns(); }
+    if (fromTurnNumber == null) {
+      fromTurnNumber = this.getNumberOfTurns();
+    }
     if (player === this.getPlayer2()) {
       if (fromTurnNumber >= 13) {
-        if ((player === this.getCurrentPlayer()) && hasSignatureCard) { return 1; } return 0;
+        if (player === this.getCurrentPlayer() && hasSignatureCard) {
+          return 1;
+        }
+        return 0;
       }
-      return 1.0 - (Math.ceil((4 - (Math.max(0, fromTurnNumber - 1) % 4)) * 0.5) / 2.0);
+      return 1.0 - Math.ceil((4 - (Math.max(0, fromTurnNumber - 1) % 4)) * 0.5) / 2.0;
     }
     if (fromTurnNumber >= 12) {
-      if ((player === this.getCurrentPlayer()) && hasSignatureCard) { return 1; } return 0;
+      if (player === this.getCurrentPlayer() && hasSignatureCard) {
+        return 1;
+      }
+      return 0;
     }
-    return 1.0 - (Math.ceil((4 - (fromTurnNumber % 4)) * 0.5) / 2.0);
+    return 1.0 - Math.ceil((4 - (fromTurnNumber % 4)) * 0.5) / 2.0;
   }
 
   // endregion turns
@@ -1709,7 +1918,13 @@ class _GameSession extends SDKObject {
   submitExplicitAction(action) {
     // attempt to submit action and return true if submitted, otherwise false
     // ignore attempts to submit actions if we're spectating
-    if (!this.getIsSpectateMode() && (this._private.submittedExplicitAction == null) && (action != null) && !action.getIsImplicit() && action.isFirstTime()) {
+    if (
+      !this.getIsSpectateMode() &&
+      this._private.submittedExplicitAction == null &&
+      action != null &&
+      !action.getIsImplicit() &&
+      action.isFirstTime()
+    ) {
       // validate action before submitting
       this.validateAction(action);
       if (action.getIsValid()) {
@@ -1728,7 +1943,9 @@ class _GameSession extends SDKObject {
           if (GameSession._stepSubmitter != null) {
             GameSession._stepSubmitter({ type: EVENTS.step, step });
           } else {
-            Logger.module('SDK').error('GameSession.submitExplicitAction: no step submitter registered - step not transmitted');
+            Logger.module('SDK').error(
+              'GameSession.submitExplicitAction: no step submitter registered - step not transmitted',
+            );
           }
         }
 
@@ -1744,7 +1961,7 @@ class _GameSession extends SDKObject {
    * @returns {Boolean} whether waiting for a submitted action
    */
   getIsWaitingForSubmittedExplicitAction() {
-    return (this._private.submittedExplicitAction != null);
+    return this._private.submittedExplicitAction != null;
   }
 
   /**
@@ -1825,7 +2042,10 @@ class _GameSession extends SDKObject {
       return;
     }
 
-    if ((action.getType() === RollbackToSnapshotAction.type) && !(this.getIsRunningAsAuthoritative() || this.isMyTurn())) {
+    if (
+      action.getType() === RollbackToSnapshotAction.type &&
+      !(this.getIsRunningAsAuthoritative() || this.isMyTurn())
+    ) {
       // we can safely ignore steps with a RollbackToSnapshotAction if we're not running on the server and it's not our turn
       // otherwise we can get in a situation (in net games) where there is no recorded snapshot and this step gets added to the queue and our total step index is lower than the other person's IF they cancel their followup
       // Logger.module("SDK").debug "[G:#{@.gameId}]", "GS.executeAction -> ignoring RollbackToSnapshotAction that is not intended for my player"
@@ -1869,7 +2089,7 @@ class _GameSession extends SDKObject {
       action.setTriggeringModifier(triggeringModifier);
 
       // set action source if it doesn't exist and there is a triggering modifier or an active playing card
-      if ((action.getSource() == null)) {
+      if (action.getSource() == null) {
         if (triggeringModifier != null) {
           action.setSource(triggeringModifier.getCard());
         } else {
@@ -1882,7 +2102,10 @@ class _GameSession extends SDKObject {
     }
 
     // send an event that an action was just added to the queue
-    this.pushEvent({ type: EVENTS.added_action_to_queue, action, gameSession: this }, { blockActionExecution: true });
+    this.pushEvent(
+      { type: EVENTS.added_action_to_queue, action, gameSession: this },
+      { blockActionExecution: true },
+    );
 
     if (this._private.actionQueue != null) {
       // queue is in progress
@@ -1932,11 +2155,14 @@ class _GameSession extends SDKObject {
   }
 
   _startNextStep() {
-    if ((this._private.step == null) && (this._private.stepQueue.length > 0)) {
+    if (this._private.step == null && this._private.stepQueue.length > 0) {
       // get step and action
       const step = this._private.stepQueue.shift();
       const action = step.getAction();
-      Logger.module('SDK').debug(`[G:${this.gameId}]`, `GS._startNextStep -> ${step.getIndex()} w/ action ${action.getType()}`);
+      Logger.module('SDK').debug(
+        `[G:${this.gameId}]`,
+        `GS._startNextStep -> ${step.getIndex()} w/ action ${action.getType()}`,
+      );
 
       // start step
       this._startStep(step);
@@ -1960,12 +2186,15 @@ class _GameSession extends SDKObject {
 
       // emit event that step is starting
       // note: actions are not allowed in response to this event
-      return this.pushEvent({ type: EVENTS.start_step, step, gameSession: this }, { blockActionExecution: true });
+      return this.pushEvent(
+        { type: EVENTS.start_step, step, gameSession: this },
+        { blockActionExecution: true },
+      );
     }
   }
 
   _executeStepQueue(actionQueue) {
-    if ((this._private.step != null) && (this._private.actionQueue == null) && (actionQueue != null)) {
+    if (this._private.step != null && this._private.actionQueue == null && actionQueue != null) {
       // store the new queue
       this._private.actionQueue = actionQueue;
 
@@ -1989,8 +2218,8 @@ class _GameSession extends SDKObject {
 
   _executeActionForStep(actionToExecute, step) {
     // get action properties
-    let manaCost; let
-      resolveAction;
+    let manaCost;
+    let resolveAction;
     const depthFirst = actionToExecute.getIsDepthFirst();
     const actionIsFirstTime = actionToExecute.isFirstTime();
 
@@ -2011,11 +2240,16 @@ class _GameSession extends SDKObject {
 
     // set action index as needed
     let actionIndex = actionToExecute.getIndex();
-    if ((actionIndex == null)) {
+    if (actionIndex == null) {
       actionIndex = this.generateIndex();
       actionToExecute.setIndex(actionIndex);
     }
-    Logger.module('SDK').debug(`[G:${this.gameId}]`, 'GS._executeActionForStep -> ', actionToExecute.type, actionToExecute.index);
+    Logger.module('SDK').debug(
+      `[G:${this.gameId}]`,
+      'GS._executeActionForStep -> ',
+      actionToExecute.type,
+      actionToExecute.index,
+    );
 
     // Logger.module("SDK").group("ACTION #{actionToExecute.getLogName()}")
 
@@ -2028,12 +2262,16 @@ class _GameSession extends SDKObject {
     if (actionIsFirstTime) {
       // set action as resolve sub action of resolution parent
       resolveAction = actionToExecute.getResolveParentAction();
-      if (resolveAction != null) { resolveAction.addResolveSubAction(actionToExecute); }
+      if (resolveAction != null) {
+        resolveAction.addResolveSubAction(actionToExecute);
+      }
     }
 
     // set the action's as a triggered action of its triggering modifier now that it has an index
     const triggeringModifier = actionToExecute.getTriggeringModifier();
-    if (triggeringModifier != null) { triggeringModifier.onTriggeredAction(actionToExecute); }
+    if (triggeringModifier != null) {
+      triggeringModifier.onTriggeredAction(actionToExecute);
+    }
 
     // allow the action to modify itself for execution
     // but don't allow sub actions to be created
@@ -2042,9 +2280,15 @@ class _GameSession extends SDKObject {
     this._private.blockActionExecution = false;
 
     // send an event that an action can be modified for execution
-    this.pushEvent({
-      type: EVENTS.modify_action_for_execution, action: actionToExecute, step, gameSession: this,
-    }, { blockActionExecution: true });
+    this.pushEvent(
+      {
+        type: EVENTS.modify_action_for_execution,
+        action: actionToExecute,
+        step,
+        gameSession: this,
+      },
+      { blockActionExecution: true },
+    );
 
     // set the action's as a trigger changed action of its triggering modifier now that it has an index
     const changedByModifiers = actionToExecute.getChangedByModifiers();
@@ -2060,15 +2304,29 @@ class _GameSession extends SDKObject {
 
     // send an event that an action is about to execute and overwatches should trigger
     // note: actions are allowed in response to this event
-    this.pushBufferableEvent({
-      type: EVENTS.overwatch, action: actionToExecute, executeAuthoritativeSubActions: !this.getIsRunningAsAuthoritative(), step, gameSession: this,
-    }, { resolveAction: actionToExecute });
+    this.pushBufferableEvent(
+      {
+        type: EVENTS.overwatch,
+        action: actionToExecute,
+        executeAuthoritativeSubActions: !this.getIsRunningAsAuthoritative(),
+        step,
+        gameSession: this,
+      },
+      { resolveAction: actionToExecute },
+    );
 
     // send an event that an action is about to execute
     // note: actions are allowed in response to this event
-    this.pushBufferableEvent({
-      type: EVENTS.before_action, action: actionToExecute, executeAuthoritativeSubActions: !this.getIsRunningAsAuthoritative(), step, gameSession: this,
-    }, { resolveAction: actionToExecute });
+    this.pushBufferableEvent(
+      {
+        type: EVENTS.before_action,
+        action: actionToExecute,
+        executeAuthoritativeSubActions: !this.getIsRunningAsAuthoritative(),
+        step,
+        gameSession: this,
+      },
+      { resolveAction: actionToExecute },
+    );
 
     // apply mana cost to remaining player mana
     // in case of authoritative, we know how much action will cost before it executes
@@ -2087,7 +2345,9 @@ class _GameSession extends SDKObject {
     actionToExecute._execute();
 
     // execute any authoritative sub actions that occurred during execute event
-    if (!this.getIsRunningAsAuthoritative()) { actionToExecute.executeNextOfEventTypeFromAuthoritativeSubActionQueue('execute'); }
+    if (!this.getIsRunningAsAuthoritative()) {
+      actionToExecute.executeNextOfEventTypeFromAuthoritativeSubActionQueue('execute');
+    }
 
     // stop pseudo event: execute
     this.popEventTypeFromStack();
@@ -2106,9 +2366,16 @@ class _GameSession extends SDKObject {
 
     // emit an event that an action has just executed but not yet been signed (most places should listen to this)
     // note: actions are allowed in response to this event
-    this.pushBufferableEvent({
-      type: EVENTS.action, action: actionToExecute, executeAuthoritativeSubActions: !this.getIsRunningAsAuthoritative(), step, gameSession: this,
-    }, { resolveAction: actionToExecute });
+    this.pushBufferableEvent(
+      {
+        type: EVENTS.action,
+        action: actionToExecute,
+        executeAuthoritativeSubActions: !this.getIsRunningAsAuthoritative(),
+        step,
+        gameSession: this,
+      },
+      { resolveAction: actionToExecute },
+    );
 
     // sign action with current timestamp after it's been executed (this is later used to replay/not generate implicit actions)
     actionToExecute.addSignature();
@@ -2116,22 +2383,39 @@ class _GameSession extends SDKObject {
 
     // send an event that an action is done executing and signed
     // note: actions are allowed in response to this event
-    this.pushBufferableEvent({
-      type: EVENTS.after_action, action: actionToExecute, executeAuthoritativeSubActions: !this.getIsRunningAsAuthoritative(), step, gameSession: this,
-    }, { resolveAction: actionToExecute });
+    this.pushBufferableEvent(
+      {
+        type: EVENTS.after_action,
+        action: actionToExecute,
+        executeAuthoritativeSubActions: !this.getIsRunningAsAuthoritative(),
+        step,
+        gameSession: this,
+      },
+      { resolveAction: actionToExecute },
+    );
 
-    if (!depthFirst
-      && (actionToExecute instanceof DieAction
-      || (!this.getIsBufferingEvents()
-        && !(actionToExecute instanceof ApplyCardToBoardAction
-          || actionToExecute instanceof PutCardInDeckAction
-          || actionToExecute instanceof PutCardInHandAction
-          || actionToExecute instanceof GenerateSignatureCardAction)))) {
+    if (
+      !depthFirst &&
+      (actionToExecute instanceof DieAction ||
+        (!this.getIsBufferingEvents() &&
+          !(
+            actionToExecute instanceof ApplyCardToBoardAction ||
+            actionToExecute instanceof PutCardInDeckAction ||
+            actionToExecute instanceof PutCardInHandAction ||
+            actionToExecute instanceof GenerateSignatureCardAction
+          )))
+    ) {
       // send an event that all cached elements should update/flush
       // note: actions are not allowed in response to this event
-      this.pushBufferableEvent({
-        type: EVENTS.update_cache_action, action: actionToExecute, step, gameSession: this,
-      }, { resolveAction: actionToExecute, blockActionExecution: true });
+      this.pushBufferableEvent(
+        {
+          type: EVENTS.update_cache_action,
+          action: actionToExecute,
+          step,
+          gameSession: this,
+        },
+        { resolveAction: actionToExecute, blockActionExecution: true },
+      );
     }
 
     // Logger.module("SDK").groupEnd("ACTION")
@@ -2146,13 +2430,20 @@ class _GameSession extends SDKObject {
 
         if (this._getIsActionQueueEmpty()) {
           // the queue is empty and we just resolved the step
-          if (this.getIsBufferingEvents() && !(this._private.step.getAction() instanceof RollbackToSnapshotAction)) {
+          if (
+            this.getIsBufferingEvents() &&
+            !(this._private.step.getAction() instanceof RollbackToSnapshotAction)
+          ) {
             if (this.getIsFollowupActive()) {
               // when we're at the end of the step and we're retaining rollback data as a result of a followup
               // check if this step's first action has a valid followup
               // if not, create and execute an end followup action
               const card = this.getValidatorFollowup().getCardWaitingForFollowups();
-              if ((card == null) || (card.getCurrentFollowup() == null) || !card.getPassesConditionsForCurrentFollowup()) {
+              if (
+                card == null ||
+                card.getCurrentFollowup() == null ||
+                !card.getPassesConditionsForCurrentFollowup()
+              ) {
                 this.executeAction(this.getCurrentPlayer().actionEndFollowup());
               }
             } else {
@@ -2166,7 +2457,7 @@ class _GameSession extends SDKObject {
             if (!this._private.hasDrawnCardsForTurn) {
               this._private.hasDrawnCardsForTurn = true;
               let drawCardActionsForTurn = this.getCurrentPlayer().getDeck().actionsDrawNewCards();
-              if ((drawCardActionsForTurn != null) && (drawCardActionsForTurn.length > 0)) {
+              if (drawCardActionsForTurn != null && drawCardActionsForTurn.length > 0) {
                 const drawCardActionsToExecute = drawCardActionsForTurn;
                 drawCardActionsForTurn = null;
                 for (action of Array.from<any>(drawCardActionsToExecute)) {
@@ -2181,9 +2472,16 @@ class _GameSession extends SDKObject {
               this._private.updatedElapsedEndTurn = true;
               // end turn duration change phase: update end turn duration of all modifiers
               // note: actions are allowed in response to this event
-              this.pushBufferableEvent({
-                type: EVENTS.modifier_end_turn_duration_change, action: actionToExecute, executeAuthoritativeSubActions: false, step, gameSession: this,
-              }, { resolveAction: actionToExecute });
+              this.pushBufferableEvent(
+                {
+                  type: EVENTS.modifier_end_turn_duration_change,
+                  action: actionToExecute,
+                  executeAuthoritativeSubActions: false,
+                  step,
+                  gameSession: this,
+                },
+                { resolveAction: actionToExecute },
+              );
             }
           } else if (this._private.startTurnAction != null) {
             // after a new turn has been started, activate the current player's signature card as needed
@@ -2191,8 +2489,12 @@ class _GameSession extends SDKObject {
             if (!this._private.hasActivatedSignatureCardForTurn) {
               this._private.hasActivatedSignatureCardForTurn = true;
               const currentPlayer = this.getCurrentPlayer();
-              if (!currentPlayer.getIsSignatureCardActive() && (this._getNumberOfTurnsUntilPlayerActivatesSignatureCard(currentPlayer) <= 0)) {
-                const activateSignatureCardAction = this.getCurrentPlayer().actionActivateSignatureCard();
+              if (
+                !currentPlayer.getIsSignatureCardActive() &&
+                this._getNumberOfTurnsUntilPlayerActivatesSignatureCard(currentPlayer) <= 0
+              ) {
+                const activateSignatureCardAction =
+                  this.getCurrentPlayer().actionActivateSignatureCard();
                 if (activateSignatureCardAction != null) {
                   this.executeAction(activateSignatureCardAction);
                 }
@@ -2205,9 +2507,16 @@ class _GameSession extends SDKObject {
               this._private.updatedElapsedStartTurn = true;
               // start turn duration change phase: update start turn duration of all modifiers
               // note: actions are allowed in response to this event
-              this.pushBufferableEvent({
-                type: EVENTS.modifier_start_turn_duration_change, action: actionToExecute, executeAuthoritativeSubActions: false, step, gameSession: this,
-              }, { resolveAction: actionToExecute });
+              this.pushBufferableEvent(
+                {
+                  type: EVENTS.modifier_start_turn_duration_change,
+                  action: actionToExecute,
+                  executeAuthoritativeSubActions: false,
+                  step,
+                  gameSession: this,
+                },
+                { resolveAction: actionToExecute },
+              );
             }
           }
         }
@@ -2223,21 +2532,43 @@ class _GameSession extends SDKObject {
           actionToExecute.executeNextOfEventTypeFromAuthoritativeSubActionQueue('empty_queue');
 
           // update end turn duration when turn is ended and queue is empty
-          if (this.getCurrentTurn().getEnded() && !this._private.updatedElapsedEndTurn && this._getIsActionQueueEmpty()) {
+          if (
+            this.getCurrentTurn().getEnded() &&
+            !this._private.updatedElapsedEndTurn &&
+            this._getIsActionQueueEmpty()
+          ) {
             this._private.updatedElapsedEndTurn = true;
             // end turn duration change phase: update end turn duration of all modifiers
             // note: actions are allowed in response to this event
-            this.pushBufferableEvent({
-              type: EVENTS.modifier_end_turn_duration_change, action: actionToExecute, executeAuthoritativeSubActions: true, step, gameSession: this,
-            }, { resolveAction: actionToExecute });
-          } else if ((this._private.startTurnAction != null) && !this._private.updatedElapsedStartTurn && this._getIsActionQueueEmpty()) {
+            this.pushBufferableEvent(
+              {
+                type: EVENTS.modifier_end_turn_duration_change,
+                action: actionToExecute,
+                executeAuthoritativeSubActions: true,
+                step,
+                gameSession: this,
+              },
+              { resolveAction: actionToExecute },
+            );
+          } else if (
+            this._private.startTurnAction != null &&
+            !this._private.updatedElapsedStartTurn &&
+            this._getIsActionQueueEmpty()
+          ) {
             // update start turn duration when new turn is started and queue is empty
             this._private.updatedElapsedStartTurn = true;
             // start turn duration change phase: update start turn duration of all modifiers
             // note: actions are allowed in response to this event
-            this.pushBufferableEvent({
-              type: EVENTS.modifier_start_turn_duration_change, action: actionToExecute, executeAuthoritativeSubActions: true, step, gameSession: this,
-            }, { resolveAction: actionToExecute });
+            this.pushBufferableEvent(
+              {
+                type: EVENTS.modifier_start_turn_duration_change,
+                action: actionToExecute,
+                executeAuthoritativeSubActions: true,
+                step,
+                gameSession: this,
+              },
+              { resolveAction: actionToExecute },
+            );
           }
         }
       }
@@ -2252,8 +2583,16 @@ class _GameSession extends SDKObject {
       this._private.depthFirstActions.length = 0;
     }
 
-    if (!this.getIsRunningAsAuthoritative() && (actionToExecute.getSubActionsQueue() != null) && (actionToExecute.getSubActionsQueue().length > 0)) {
-      return Logger.module('SDK').error(`[G:${this.gameId}]`, `GS._executeActionForStep -> authoritative action ${actionToExecute.getLogName()} did not execute all sub actions:`, actionToExecute.getSubActionsQueue().slice(0));
+    if (
+      !this.getIsRunningAsAuthoritative() &&
+      actionToExecute.getSubActionsQueue() != null &&
+      actionToExecute.getSubActionsQueue().length > 0
+    ) {
+      return Logger.module('SDK').error(
+        `[G:${this.gameId}]`,
+        `GS._executeActionForStep -> authoritative action ${actionToExecute.getLogName()} did not execute all sub actions:`,
+        actionToExecute.getSubActionsQueue().slice(0),
+      );
     }
   }
 
@@ -2267,7 +2606,7 @@ class _GameSession extends SDKObject {
     this._private.updatedElapsedEndTurn = false;
     this._private.updatedElapsedStartTurn = false;
     this._private.hasActivatedSignatureCardForTurn = false;
-    return this._private.actionQueue = null;
+    return (this._private.actionQueue = null);
   }
 
   _executeActionWithForcedParentAction(action, parentAction) {
@@ -2291,7 +2630,7 @@ class _GameSession extends SDKObject {
     // when action queue has 1 left in the queue, because we may want to add more to the queue
     // but we don't want to start a new loop, i.e. if queue is at 0 length when we add more actions
     // do not call this from outside action queue execution
-    return (this._private.actionQueue == null) || (this._private.actionQueue.length === 1);
+    return this._private.actionQueue == null || this._private.actionQueue.length === 1;
   }
 
   /**
@@ -2307,20 +2646,33 @@ class _GameSession extends SDKObject {
     // because the card that has the followup is also the one that copies the followup properties into the followup itself
     // as nothing is sent across the net for followups except the id of the followup card, which is done to prevent cheating using followups
     // however, followups should not be validated by their source cards here, because normal validators should get a chance to validate first
-    if (emitEventWhenInvalid == null) { emitEventWhenInvalid = true; }
-    this.pushEvent({ type: EVENTS.modify_action_for_validation, action, gameSession: this }, { blockActionExecution: true });
+    if (emitEventWhenInvalid == null) {
+      emitEventWhenInvalid = true;
+    }
+    this.pushEvent(
+      { type: EVENTS.modify_action_for_validation, action, gameSession: this },
+      { blockActionExecution: true },
+    );
 
     // emit validate action
     // this event allows objects across the game session to subscribe and validate that this action can be executed.
     // FOR EXAMPLE: Provoke/Taunt Trait should invalidate any attack actions by units that are nearby to a provoke unit.
     // NOTE: only actions executed by an authoritative source or that have not been executed will be validated
     if (this.getIsRunningAsAuthoritative() || action.isFirstTime()) {
-      this.pushEvent({ type: EVENTS.validate_action, action, gameSession: this }, { blockActionExecution: true });
+      this.pushEvent(
+        { type: EVENTS.validate_action, action, gameSession: this },
+        { blockActionExecution: true },
+      );
     }
 
     if (!action.getIsValid() && emitEventWhenInvalid) {
       // emit invalid action event
-      return this.onInvalidAction(action, action.getValidatorType(), action.getValidationMessage(), action.getValidationMessagePosition());
+      return this.onInvalidAction(
+        action,
+        action.getValidatorType(),
+        action.getValidationMessage(),
+        action.getValidationMessagePosition(),
+      );
     }
   }
 
@@ -2332,7 +2684,12 @@ class _GameSession extends SDKObject {
     // index any cards that will be created
     // this guarantees that even if the card is not applied to a location
     // the game session can operate on the card and its state will be correct
-    if (action instanceof ApplyCardToBoardAction || action instanceof PutCardInDeckAction || action instanceof PutCardInHandAction || action instanceof GenerateSignatureCardAction) {
+    if (
+      action instanceof ApplyCardToBoardAction ||
+      action instanceof PutCardInDeckAction ||
+      action instanceof PutCardInHandAction ||
+      action instanceof GenerateSignatureCardAction
+    ) {
       const card = action.getCard();
       if (card != null) {
         this._indexCardAsNeeded(card, action.getCardDataOrIndex());
@@ -2340,7 +2697,11 @@ class _GameSession extends SDKObject {
     }
 
     // start followup when action is non-implicit, playing card with followup
-    if (action instanceof PlayCardAction && !action.getIsImplicit() && (__guard__(action.getCard(), (x) => x.getCurrentFollowup()) != null)) {
+    if (
+      action instanceof PlayCardAction &&
+      !action.getIsImplicit() &&
+      __guard__(action.getCard(), (x) => x.getCurrentFollowup()) != null
+    ) {
       return this._startFollowup();
     }
   }
@@ -2357,7 +2718,12 @@ class _GameSession extends SDKObject {
       this._private.submittedExplicitAction = null;
 
       // emit invalid action event
-      return this.onInvalidAction(action, event.validatorType, event.validationMessage, event.validationMessagePosition);
+      return this.onInvalidAction(
+        action,
+        event.validatorType,
+        event.validationMessage,
+        event.validationMessagePosition,
+      );
     }
   }
 
@@ -2368,15 +2734,21 @@ class _GameSession extends SDKObject {
    */
   onInvalidAction(action, validatorType, validationMessage, validationMessagePosition) {
     if (action != null) {
-      Logger.module('SDK').log(`[G:${this.gameId}]`, `GS.validateAction INVALID ACTION: ${action.getLogName()} / VALIDATED BY: ${validatorType} / MESSAGE: ${validationMessage}`);
-      return this.pushEvent({
-        type: EVENTS.invalid_action,
-        action,
-        validatorType,
-        validationMessage,
-        validationMessagePosition,
-        gameSession: this,
-      }, { blockActionExecution: true });
+      Logger.module('SDK').log(
+        `[G:${this.gameId}]`,
+        `GS.validateAction INVALID ACTION: ${action.getLogName()} / VALIDATED BY: ${validatorType} / MESSAGE: ${validationMessage}`,
+      );
+      return this.pushEvent(
+        {
+          type: EVENTS.invalid_action,
+          action,
+          validatorType,
+          validationMessage,
+          validationMessagePosition,
+          gameSession: this,
+        },
+        { blockActionExecution: true },
+      );
     }
   }
 
@@ -2385,15 +2757,11 @@ class _GameSession extends SDKObject {
    * NOTE: only use this during the action execution loop.
    */
   p_resolveStep() {
-    const {
-      actionsToResolve,
-    } = this._private;
+    const { actionsToResolve } = this._private;
     if (actionsToResolve.length > 0) {
       Logger.module('SDK').debug(`[G:${this.gameId}]`, 'GameSession.p_resolveStep');
       // note: these events may be emitted multiple times for a step if actions are continually added during this phase
-      const {
-        step,
-      } = this._private;
+      const { step } = this._private;
       const executingAction = this.getExecutingAction();
       this._private.actionsToResolve = [];
 
@@ -2406,7 +2774,10 @@ class _GameSession extends SDKObject {
       // remove actions that may not need to be resolved themselves
       // but because of their execution may need a game session resolve
       const firstActionToResolve = actionsToResolve[0];
-      if (firstActionToResolve instanceof EndTurnAction || firstActionToResolve instanceof StartTurnAction) {
+      if (
+        firstActionToResolve instanceof EndTurnAction ||
+        firstActionToResolve instanceof StartTurnAction
+      ) {
         actionsToResolve.shift();
       }
 
@@ -2415,44 +2786,83 @@ class _GameSession extends SDKObject {
         // note: actions are not allowed in response to this event
         let action;
         for (action of Array.from<any>(actionsToResolve)) {
-          this.pushBufferableEvent({ type: EVENTS.cleanup_action, action, gameSession: this }, { resolveAction: action });
+          this.pushBufferableEvent(
+            { type: EVENTS.cleanup_action, action, gameSession: this },
+            { resolveAction: action },
+          );
         }
         // push one pseudo-event for this phase to execute any authoritative sub actions that occurred during cleanup
         if (!this.getIsRunningAsAuthoritative()) {
-          this.pushBufferableEvent({
-            type: EVENTS.cleanup_action, action: executingAction, executeAuthoritativeSubActions: true, gameSession: this,
-          }, { resolveAction: executingAction });
+          this.pushBufferableEvent(
+            {
+              type: EVENTS.cleanup_action,
+              action: executingAction,
+              executeAuthoritativeSubActions: true,
+              gameSession: this,
+            },
+            { resolveAction: executingAction },
+          );
         }
 
         // after cleanup phase: trigger after cleanup for each action for any reactions that should only trigger if the entity is still active
         // note: actions are allowed in response to this event
         for (action of Array.from<any>(actionsToResolve)) {
-          this.pushBufferableEvent({ type: EVENTS.after_cleanup_action, action, gameSession: this }, { resolveAction: action });
+          this.pushBufferableEvent(
+            { type: EVENTS.after_cleanup_action, action, gameSession: this },
+            { resolveAction: action },
+          );
         }
         // push one pseudo-event for this phase to execute any authoritative sub actions that occurred during after cleanup
         if (!this.getIsRunningAsAuthoritative()) {
-          this.pushBufferableEvent({
-            type: EVENTS.after_cleanup_action, action: executingAction, executeAuthoritativeSubActions: true, gameSession: this,
-          }, { resolveAction: executingAction });
+          this.pushBufferableEvent(
+            {
+              type: EVENTS.after_cleanup_action,
+              action: executingAction,
+              executeAuthoritativeSubActions: true,
+              gameSession: this,
+            },
+            { resolveAction: executingAction },
+          );
         }
 
         // activate state change phase: change active state of all modifiers
         // note: actions are allowed in response to this event
-        this.pushBufferableEvent({
-          type: EVENTS.modifier_active_change, action: executingAction, executeAuthoritativeSubActions: !this.getIsRunningAsAuthoritative(), step, gameSession: this,
-        }, { resolveAction: executingAction });
+        this.pushBufferableEvent(
+          {
+            type: EVENTS.modifier_active_change,
+            action: executingAction,
+            executeAuthoritativeSubActions: !this.getIsRunningAsAuthoritative(),
+            step,
+            gameSession: this,
+          },
+          { resolveAction: executingAction },
+        );
 
         // remove aura phase: remove auras as needed
         // note: actions are allowed in response to this event
-        this.pushBufferableEvent({
-          type: EVENTS.modifier_remove_aura, action: executingAction, executeAuthoritativeSubActions: !this.getIsRunningAsAuthoritative(), step, gameSession: this,
-        }, { resolveAction: executingAction });
+        this.pushBufferableEvent(
+          {
+            type: EVENTS.modifier_remove_aura,
+            action: executingAction,
+            executeAuthoritativeSubActions: !this.getIsRunningAsAuthoritative(),
+            step,
+            gameSession: this,
+          },
+          { resolveAction: executingAction },
+        );
 
         // add aura phase: add auras as needed
         // note: actions are allowed in response to this event
-        this.pushBufferableEvent({
-          type: EVENTS.modifier_add_aura, action: executingAction, executeAuthoritativeSubActions: !this.getIsRunningAsAuthoritative(), step, gameSession: this,
-        }, { resolveAction: executingAction });
+        this.pushBufferableEvent(
+          {
+            type: EVENTS.modifier_add_aura,
+            action: executingAction,
+            executeAuthoritativeSubActions: !this.getIsRunningAsAuthoritative(),
+            step,
+            gameSession: this,
+          },
+          { resolveAction: executingAction },
+        );
       }
 
       // check that both players have drawn their starting hands, and if so, update the game status to active
@@ -2477,7 +2887,7 @@ class _GameSession extends SDKObject {
   _endStep(step) {
     // ensure step is valid
     const action = step != null ? step.action : undefined;
-    if ((action != null) && !action.isFirstTime() && action.getIsValid()) {
+    if (action != null && !action.isFirstTime() && action.getIsValid()) {
       Logger.module('SDK').debug(`[G:${this.gameId}]`, 'GS._endStep', step.index);
       // Logger.module("SDK").groupEnd("STEP #{step.index}")
       const lastNonDepthFirstAction = this.getExecutingNonDepthFirstAction();
@@ -2488,9 +2898,15 @@ class _GameSession extends SDKObject {
       // send an event that all cached elements should update/flush
       // note: actions are not allowed in response to this event
       if (!this.getIsBufferingEvents()) {
-        this.pushEvent({
-          type: EVENTS.update_cache_step, action: lastNonDepthFirstAction, step, gameSession: this,
-        }, { resolveAction: lastNonDepthFirstAction, blockActionExecution: true });
+        this.pushEvent(
+          {
+            type: EVENTS.update_cache_step,
+            action: lastNonDepthFirstAction,
+            step,
+            gameSession: this,
+          },
+          { resolveAction: lastNonDepthFirstAction, blockActionExecution: true },
+        );
       }
 
       // rollback to snapshot was requested during step
@@ -2506,7 +2922,7 @@ class _GameSession extends SDKObject {
       if (!this.isOver()) {
         // start new turn as needed
         if (action instanceof EndTurnAction) {
-          if ((this._private.startTurnAction == null)) {
+          if (this._private.startTurnAction == null) {
             // start new turn
             this.currentTurn = new GameTurn(this);
 
@@ -2533,7 +2949,10 @@ class _GameSession extends SDKObject {
       // emit after_step after everything has had a chance to react to step
       // this way, external listeners can create new steps safely in reaction to steps
       this.pushEvent({
-        type: EVENTS.after_step, action, step, gameSession: this,
+        type: EVENTS.after_step,
+        action,
+        step,
+        gameSession: this,
       });
 
       // reset step queue now that we're done
@@ -2542,7 +2961,10 @@ class _GameSession extends SDKObject {
 
       // emit step after changing any statuses
       // this way, external listeners know the state of the game as they react
-      this.pushEvent({ type: EVENTS.step, step, gameSession: this }, { blockActionExecution: true });
+      this.pushEvent(
+        { type: EVENTS.step, step, gameSession: this },
+        { blockActionExecution: true },
+      );
 
       // terminate game session when game is over
       // otherwise try to start the next step
@@ -2566,7 +2988,7 @@ class _GameSession extends SDKObject {
    * @returns {Boolean}
    */
   hasActionsInQueue() {
-    return (this._private.actionQueue != null) && (this._private.actionQueue.length > 0);
+    return this._private.actionQueue != null && this._private.actionQueue.length > 0;
   }
 
   /**
@@ -2577,12 +2999,15 @@ class _GameSession extends SDKObject {
    */
   getActionsOfClassInQueue(actionClass, targetPosition) {
     const actions = [];
-    const {
-      actionQueue,
-    } = this._private;
+    const { actionQueue } = this._private;
     if (actionQueue != null) {
       for (var action of Array.from<any>(actionQueue)) {
-        if ((action !== this.getExecutingAction()) && action instanceof actionClass && (!targetPosition || UtilsPosition.getPositionsAreEqual(targetPosition, action.getTargetPosition()))) {
+        if (
+          action !== this.getExecutingAction() &&
+          action instanceof actionClass &&
+          (!targetPosition ||
+            UtilsPosition.getPositionsAreEqual(targetPosition, action.getTargetPosition()))
+        ) {
           actions.push(action);
         }
       }
@@ -2599,14 +3024,20 @@ class _GameSession extends SDKObject {
    */
   getRemovalActionsInQueue(targetPosition, targetType) {
     const actions = [];
-    const {
-      actionQueue,
-    } = this._private;
+    const { actionQueue } = this._private;
     if (actionQueue != null) {
       for (var action of Array.from<any>(actionQueue)) {
-        if ((action !== this.getExecutingAction()) && (action instanceof RemoveAction || action instanceof KillAction)) {
+        if (
+          action !== this.getExecutingAction() &&
+          (action instanceof RemoveAction || action instanceof KillAction)
+        ) {
           var target = action.getTarget();
-          if ((target != null) && (!targetPosition || UtilsPosition.getPositionsAreEqual(targetPosition, target.getPosition())) && (!targetType || (target.getType() === CardType.Entity) || (target.getType() === targetType))) {
+          if (
+            target != null &&
+            (!targetPosition ||
+              UtilsPosition.getPositionsAreEqual(targetPosition, target.getPosition())) &&
+            (!targetType || target.getType() === CardType.Entity || target.getType() === targetType)
+          ) {
             actions.push(action);
           }
         }
@@ -2623,7 +3054,9 @@ class _GameSession extends SDKObject {
    * @returns {Boolean}
    */
   getCanCardBeScheduledForRemoval(card, includeExecutingAction?) {
-    if (includeExecutingAction == null) { includeExecutingAction = false; }
+    if (includeExecutingAction == null) {
+      includeExecutingAction = false;
+    }
     if (card != null) {
       if (!card.getIsActive()) {
         // card has not yet been played or is already removed
@@ -2631,17 +3064,23 @@ class _GameSession extends SDKObject {
       }
       // card is being removed by the currently executing action
       const executingAction = this.getExecutingAction();
-      if (includeExecutingAction && (executingAction instanceof RemoveAction || executingAction instanceof KillAction) && (card === executingAction.getTarget())) {
+      if (
+        includeExecutingAction &&
+        (executingAction instanceof RemoveAction || executingAction instanceof KillAction) &&
+        card === executingAction.getTarget()
+      ) {
         return false;
       }
 
       // card may be removed by an action in the queue
       if (this._private.actionQueue != null) {
-        const {
-          actionQueue,
-        } = this._private;
+        const { actionQueue } = this._private;
         for (var action of Array.from<any>(actionQueue)) {
-          if ((action !== executingAction) && (action instanceof RemoveAction || action instanceof KillAction) && (card === action.getTarget())) {
+          if (
+            action !== executingAction &&
+            (action instanceof RemoveAction || action instanceof KillAction) &&
+            card === action.getTarget()
+          ) {
             return false;
           }
         }
@@ -2658,7 +3097,7 @@ class _GameSession extends SDKObject {
    * @returns {Boolean}
    */
   wasActionExecutedDuringTurn(action, turn) {
-    if ((action != null) && (turn != null)) {
+    if (action != null && turn != null) {
       const rootAction = action.getRootAction();
       for (var step of Array.from<any>(turn.getSteps())) {
         if (__guard__(step.getAction(), (x) => x.getIndex()) === rootAction.getIndex()) {
@@ -2682,7 +3121,7 @@ class _GameSession extends SDKObject {
 
   setExecutingAction(val) {
     this._private.action = val;
-    if ((val == null) || !val.getIsDepthFirst()) {
+    if (val == null || !val.getIsDepthFirst()) {
       return this.setExecutingNonDepthFirstAction(val);
     }
   }
@@ -2696,7 +3135,7 @@ class _GameSession extends SDKObject {
   }
 
   setExecutingNonDepthFirstAction(val) {
-    return this._private.nonDepthFirstAction = val;
+    return (this._private.nonDepthFirstAction = val);
   }
 
   /**
@@ -2708,7 +3147,7 @@ class _GameSession extends SDKObject {
   }
 
   setExecutingResolveAction(val) {
-    return this._private.resolveAction = val;
+    return (this._private.resolveAction = val);
   }
 
   /**
@@ -2720,7 +3159,7 @@ class _GameSession extends SDKObject {
   }
 
   setExecutingParentAction(val) {
-    return this._private.parentAction = val;
+    return (this._private.parentAction = val);
   }
 
   getActionExecutionEventType() {
@@ -2728,7 +3167,7 @@ class _GameSession extends SDKObject {
   }
 
   setActionExecutionEventType(val) {
-    return this._private.actionExecutionEventType = val;
+    return (this._private.actionExecutionEventType = val);
   }
 
   getActionExecutionEventTypeStack() {
@@ -2772,7 +3211,7 @@ class _GameSession extends SDKObject {
     const actionIndices = Object.keys(this._private.actionsByIndex);
     for (var index of Array.from<any>(actionIndices)) {
       var action = this._private.actionsByIndex[index];
-      if ((action != null) && byMethod(action)) {
+      if (action != null && byMethod(action)) {
         actions.push(action);
       }
     }
@@ -2788,7 +3227,7 @@ class _GameSession extends SDKObject {
     const actionIndices = Object.keys(this._private.actionsByIndex);
     for (var index of Array.from<any>(actionIndices)) {
       var action = this._private.actionsByIndex[index];
-      if ((action != null) && byMethod(action)) {
+      if (action != null && byMethod(action)) {
         return action;
       }
     }
@@ -2805,7 +3244,9 @@ class _GameSession extends SDKObject {
     if (indices != null) {
       for (var index of Array.from<any>(indices)) {
         var action = this.getActionByIndex(index);
-        if (action != null) { actions.push(action); }
+        if (action != null) {
+          actions.push(action);
+        }
       }
     }
 
@@ -2866,7 +3307,9 @@ class _GameSession extends SDKObject {
     if (indices != null) {
       for (var index of Array.from<any>(indices)) {
         var step = this.getStepByIndex(index);
-        if (step != null) { steps.push(step); }
+        if (step != null) {
+          steps.push(step);
+        }
       }
     }
 
@@ -2878,7 +3321,7 @@ class _GameSession extends SDKObject {
    * @returns {Action}
    */
   getExecutingRootAction() {
-    return (this._private.step != null ? this._private.step.getAction() : undefined);
+    return this._private.step != null ? this._private.step.getAction() : undefined;
   }
 
   /**
@@ -2897,7 +3340,8 @@ class _GameSession extends SDKObject {
     if (this.isOver()) {
       if (this._private.step != null) {
         return this._private.step;
-      } if (this._private.lastStep != null) {
+      }
+      if (this._private.lastStep != null) {
         return this._private.lastStep;
       }
     }
@@ -2910,8 +3354,12 @@ class _GameSession extends SDKObject {
    * @returns {Number}
    */
   getRandomIntegerForExecution(max?, min?) {
-    if (max == null) { max = 1.0; }
-    if (min == null) { min = 0.0; }
+    if (max == null) {
+      max = 1.0;
+    }
+    if (min == null) {
+      min = 0.0;
+    }
     const randomNumber = min + Math.floor(Math.random() * (max - min));
     __guard__(this.getExecutingAction(), (x) => x.setIncludedRandomness(true));
     __guard__(this.getExecutingStep(), (x1) => x1.setIncludedRandomness(true));
@@ -2941,15 +3389,13 @@ class _GameSession extends SDKObject {
       let card;
       if (_.isObject(cardDataOrIndex)) {
         // attempt to find indexed card
-        const {
-          index,
-        } = cardDataOrIndex;
+        const { index } = cardDataOrIndex;
         if (index != null) {
           card = this.getCardByIndex(index);
         }
 
         // get cached card
-        if ((card == null) && (cardDataOrIndex.id != null) && (cardDataOrIndex.id !== -1)) {
+        if (card == null && cardDataOrIndex.id != null && cardDataOrIndex.id !== -1) {
           card = this.getCardCaches().getCardById(cardDataOrIndex.id);
         }
       } else {
@@ -2971,15 +3417,13 @@ class _GameSession extends SDKObject {
       let card;
       if (_.isObject(cardDataOrIndex)) {
         // attempt to find indexed card
-        const {
-          index,
-        } = cardDataOrIndex;
+        const { index } = cardDataOrIndex;
         if (index != null) {
           card = this.getCardByIndex(index);
         }
 
         // create new card
-        if ((card == null) && (cardDataOrIndex.id != null) && (cardDataOrIndex.id !== -1)) {
+        if (card == null && cardDataOrIndex.id != null && cardDataOrIndex.id !== -1) {
           card = this.createCardForIdentifier(cardDataOrIndex.id);
         }
       } else {
@@ -3005,19 +3449,21 @@ class _GameSession extends SDKObject {
       index = card.getIndex();
     }
 
-    if ((index == null)) {
+    if (index == null) {
       if (cardDataOrIndex != null) {
         if (_.isObject(cardDataOrIndex)) {
-          ({
-            index,
-          } = cardDataOrIndex);
-        } else { index = cardDataOrIndex; }
+          ({ index } = cardDataOrIndex);
+        } else {
+          index = cardDataOrIndex;
+        }
       }
     }
 
-    if (index == null) { index = this.generateIndex(); }
+    if (index == null) {
+      index = this.generateIndex();
+    }
 
-    if ((card != null) && (this.cardsByIndex[index] == null)) {
+    if (card != null && this.cardsByIndex[index] == null) {
       // record card
       this.cardsByIndex[index] = card;
       card.setIndex(index);
@@ -3037,7 +3483,7 @@ class _GameSession extends SDKObject {
    * @private
    */
   _injectSkinAndPrismaticPropertiesIntoCard(card, sourceAction) {
-    if ((card != null) && (sourceAction != null) && !(sourceAction instanceof DrawCardAction)) {
+    if (card != null && sourceAction != null && !(sourceAction instanceof DrawCardAction)) {
       // get card current id
       let refCard;
       let cardId = card.getId();
@@ -3046,8 +3492,10 @@ class _GameSession extends SDKObject {
       const triggeringModifier = sourceAction.getTriggeringModifier();
       if (triggeringModifier != null) {
         if (triggeringModifier.getCanConvertCardToPrismatic()) {
-          refCard = triggeringModifier.getIsInherent() ? triggeringModifier.getCardAffected() : triggeringModifier.getSourceCard();
-          if ((refCard != null) && Cards.getIsPrismaticCardId(refCard.getId())) {
+          refCard = triggeringModifier.getIsInherent()
+            ? triggeringModifier.getCardAffected()
+            : triggeringModifier.getSourceCard();
+          if (refCard != null && Cards.getIsPrismaticCardId(refCard.getId())) {
             cardId = Cards.getPrismaticCardId(cardId);
           }
         }
@@ -3056,10 +3504,16 @@ class _GameSession extends SDKObject {
           refCard = triggeringModifier.getSourceCard();
           if (refCard != null) {
             const refCardId = refCard.getId();
-            if ((Cards.getBaseCardId(refCardId) === Cards.getBaseCardId(cardId)) && Cards.getIsSkinnedCardId(refCardId)) {
+            if (
+              Cards.getBaseCardId(refCardId) === Cards.getBaseCardId(cardId) &&
+              Cards.getIsSkinnedCardId(refCardId)
+            ) {
               const skinNum = Cards.getCardSkinNum(refCardId);
               cardId = Cards.getSkinnedCardId(cardId, skinNum);
-              CosmeticsFactory.injectSkinPropertiesIntoCard(card, Cards.getCardSkinIdForCardId(cardId));
+              CosmeticsFactory.injectSkinPropertiesIntoCard(
+                card,
+                Cards.getCardSkinIdForCardId(cardId),
+              );
             }
           }
         }
@@ -3067,11 +3521,15 @@ class _GameSession extends SDKObject {
 
       // root card
       const rootAction = sourceAction.getRootAction();
-      if ((rootAction !== sourceAction) && (rootAction.getCard != null)) {
+      if (rootAction !== sourceAction && rootAction.getCard != null) {
         const rootPlayedCard = rootAction.getCard();
-        if ((rootPlayedCard != null) && (rootPlayedCard.getType() === CardType.Spell) && rootPlayedCard.getCanConvertCardToPrismatic()) {
+        if (
+          rootPlayedCard != null &&
+          rootPlayedCard.getType() === CardType.Spell &&
+          rootPlayedCard.getCanConvertCardToPrismatic()
+        ) {
           refCard = rootPlayedCard.getIsFollowup() ? rootPlayedCard.getRootCard() : rootPlayedCard;
-          if ((refCard != null) && Cards.getIsPrismaticCardId(refCard.getId())) {
+          if (refCard != null && Cards.getIsPrismaticCardId(refCard.getId())) {
             cardId = Cards.getPrismaticCardId(cardId);
           }
         }
@@ -3117,15 +3575,13 @@ class _GameSession extends SDKObject {
       let modifier;
       if (_.isObject(contextObjectOrIndex)) {
         // attempt to find indexed modifier
-        const {
-          index,
-        } = contextObjectOrIndex;
+        const { index } = contextObjectOrIndex;
         if (index != null) {
           modifier = this.getModifierByIndex(index);
         }
 
         // create modifier
-        if ((modifier == null) && (contextObjectOrIndex.type != null)) {
+        if (modifier == null && contextObjectOrIndex.type != null) {
           modifier = this.createModifierForType(contextObjectOrIndex.type);
         }
       } else {
@@ -3147,15 +3603,13 @@ class _GameSession extends SDKObject {
       let modifier;
       if (_.isObject(contextObjectOrIndex)) {
         // attempt to find indexed modifier
-        const {
-          index,
-        } = contextObjectOrIndex;
+        const { index } = contextObjectOrIndex;
         if (index != null) {
           modifier = this.getModifierByIndex(index);
         }
 
         // create modifier
-        if ((modifier == null) && (contextObjectOrIndex.type != null)) {
+        if (modifier == null && contextObjectOrIndex.type != null) {
           modifier = this.createModifierForType(contextObjectOrIndex.type);
           // copy data so we don't modify anything unintentionally
           const modifierContextObject = UtilsJavascript.fastExtend({}, contextObjectOrIndex);
@@ -3184,19 +3638,21 @@ class _GameSession extends SDKObject {
       index = modifier.getIndex();
     }
 
-    if ((index == null)) {
+    if (index == null) {
       if (contextObjectOrIndex != null) {
         if (_.isObject(contextObjectOrIndex)) {
-          ({
-            index,
-          } = contextObjectOrIndex);
-        } else { index = contextObjectOrIndex; }
+          ({ index } = contextObjectOrIndex);
+        } else {
+          index = contextObjectOrIndex;
+        }
       }
     }
 
-    if (index == null) { index = this.generateIndex(); }
+    if (index == null) {
+      index = this.generateIndex();
+    }
 
-    if ((modifier != null) && (this.modifiersByIndex[index] == null)) {
+    if (modifier != null && this.modifiersByIndex[index] == null) {
       // record modifier
       this.modifiersByIndex[index] = modifier;
       modifier.setIndex(index);
@@ -3214,25 +3670,50 @@ class _GameSession extends SDKObject {
 
   _removeCardFromCurrentLocation(card, cardIndex, sourceAction) {
     let indexRemoved;
-    if ((card == null) && (cardIndex != null)) {
+    if (card == null && cardIndex != null) {
       card = this.getCardByIndex(card);
     }
 
     if (card != null) {
       const owner = card.getOwner();
       if (card.getIsLocatedInDeck()) {
-        indexRemoved = this.removeCardByIndexFromDeck(owner.getDeck(), cardIndex, card, sourceAction);
+        indexRemoved = this.removeCardByIndexFromDeck(
+          owner.getDeck(),
+          cardIndex,
+          card,
+          sourceAction,
+        );
         if (indexRemoved != null) {
           return indexRemoved;
-        } return this.removeCardByIndexFromDeck(this.getOpponentPlayerOfPlayerId(owner.getPlayerId()).getDeck(), cardIndex, card, sourceAction);
-      } if (card.getIsLocatedInHand()) {
-        indexRemoved = this.removeCardByIndexFromHand(owner.getDeck(), cardIndex, card, sourceAction);
+        }
+        return this.removeCardByIndexFromDeck(
+          this.getOpponentPlayerOfPlayerId(owner.getPlayerId()).getDeck(),
+          cardIndex,
+          card,
+          sourceAction,
+        );
+      }
+      if (card.getIsLocatedInHand()) {
+        indexRemoved = this.removeCardByIndexFromHand(
+          owner.getDeck(),
+          cardIndex,
+          card,
+          sourceAction,
+        );
         if (indexRemoved != null) {
           return indexRemoved;
-        } return this.removeCardByIndexFromHand(this.getOpponentPlayerOfPlayerId(owner.getPlayerId()).getDeck(), cardIndex, card, sourceAction);
-      } if (card.getIsLocatedInSignatureCards()) {
+        }
+        return this.removeCardByIndexFromHand(
+          this.getOpponentPlayerOfPlayerId(owner.getPlayerId()).getDeck(),
+          cardIndex,
+          card,
+          sourceAction,
+        );
+      }
+      if (card.getIsLocatedInSignatureCards()) {
         return this.removeCardFromSignatureCards(card, sourceAction);
-      } if (card.getIsLocatedOnBoard()) {
+      }
+      if (card.getIsLocatedOnBoard()) {
         const position = card.getPosition();
         return this.removeCardFromBoard(card, position.x, position.y, sourceAction);
       }
@@ -3241,16 +3722,24 @@ class _GameSession extends SDKObject {
       const player1 = this.getPlayer1();
       const player1Deck = player1.getDeck();
       indexRemoved = this.removeCardByIndexFromDeck(player1Deck, cardIndex, card, sourceAction);
-      if (indexRemoved != null) { return indexRemoved; }
+      if (indexRemoved != null) {
+        return indexRemoved;
+      }
       indexRemoved = this.removeCardByIndexFromHand(player1Deck, cardIndex, card, sourceAction);
-      if (indexRemoved != null) { return indexRemoved; }
+      if (indexRemoved != null) {
+        return indexRemoved;
+      }
 
       const player2 = this.getPlayer2();
       const player2Deck = player2.getDeck();
       indexRemoved = this.removeCardByIndexFromDeck(player2Deck, cardIndex, card, sourceAction);
-      if (indexRemoved != null) { return indexRemoved; }
+      if (indexRemoved != null) {
+        return indexRemoved;
+      }
       indexRemoved = this.removeCardByIndexFromHand(player2Deck, cardIndex, card, sourceAction);
-      if (indexRemoved != null) { return indexRemoved; }
+      if (indexRemoved != null) {
+        return indexRemoved;
+      }
     }
   }
 
@@ -3291,7 +3780,11 @@ class _GameSession extends SDKObject {
         card.onApplyToDeck(deck, sourceAction);
 
         // execute any authoritative sub actions that occurred during apply_card_to_deck event
-        if (!this.getIsRunningAsAuthoritative() && (this.getExecutingAction() != null)) { this.getExecutingAction().executeNextOfEventTypeFromAuthoritativeSubActionQueue('apply_card_to_deck'); }
+        if (!this.getIsRunningAsAuthoritative() && this.getExecutingAction() != null) {
+          this.getExecutingAction().executeNextOfEventTypeFromAuthoritativeSubActionQueue(
+            'apply_card_to_deck',
+          );
+        }
 
         // stop pseudo event: apply_card_to_deck
         this.popCardFromStack(card);
@@ -3300,7 +3793,7 @@ class _GameSession extends SDKObject {
         // sync the game state if this change occurred via a non-action source
         // normally game state is cached and synced in response to action events
         // so if a non-action changes game state, then a manual sync is needed
-        if ((sourceAction == null)) {
+        if (sourceAction == null) {
           return this.syncState();
         }
       }
@@ -3317,20 +3810,20 @@ class _GameSession extends SDKObject {
    */
   removeCardByIndexFromDeck(deck, cardIndex, card, sourceAction) {
     let indexOfCardInDeck = null;
-    if ((cardIndex != null) && (deck != null)) {
+    if (cardIndex != null && deck != null) {
       // attempt to remove the card index from the deck
       indexOfCardInDeck = deck.removeCardIndexFromDeck(cardIndex);
     }
     // Logger.module("SDK").debug("[G:#{@gameId}]","GS.removeCardByIndexFromDeck ->", card?.getLogName(), "at index", indexOfCardInDeck, "for deck", deck?, "by action", sourceAction?.getLogName())
     // if the card data was removed
-    if ((indexOfCardInDeck != null) && (card != null)) {
+    if (indexOfCardInDeck != null && card != null) {
       // remove the card from the deck
       card.onRemoveFromDeck(deck, sourceAction);
 
       // sync the game state if this change occurred via a non-action source
       // normally game state is cached and synced in response to action events
       // so if a non-action changes game state, then a manual sync is needed
-      if ((sourceAction == null)) {
+      if (sourceAction == null) {
         this.syncState();
       }
     }
@@ -3349,7 +3842,9 @@ class _GameSession extends SDKObject {
    * @returns {Number|null} index in hand card was applied to, or null if not applied
    */
   applyCardToHand(deck, cardDataOrIndex, card, indexInHand, sourceAction, burnCard?) {
-    if (burnCard == null) { burnCard = false; }
+    if (burnCard == null) {
+      burnCard = false;
+    }
     if (deck != null) {
       if (card != null) {
         // apply card data received
@@ -3382,7 +3877,7 @@ class _GameSession extends SDKObject {
         this.pushEventTypeToStack('apply_card_to_hand');
         this.pushCardToStack(card);
 
-        if ((indexInHand == null)) {
+        if (indexInHand == null) {
           // burned from hand
           card.onRemoveFromHand(deck, sourceAction);
         } else {
@@ -3391,7 +3886,11 @@ class _GameSession extends SDKObject {
         }
 
         // execute any authoritative sub actions that occurred during apply_card_to_hand event
-        if (!this.getIsRunningAsAuthoritative() && (this.getExecutingAction() != null)) { this.getExecutingAction().executeNextOfEventTypeFromAuthoritativeSubActionQueue('apply_card_to_hand'); }
+        if (!this.getIsRunningAsAuthoritative() && this.getExecutingAction() != null) {
+          this.getExecutingAction().executeNextOfEventTypeFromAuthoritativeSubActionQueue(
+            'apply_card_to_hand',
+          );
+        }
 
         // stop pseudo event: apply_card_to_hand
         this.popCardFromStack(card);
@@ -3400,21 +3899,29 @@ class _GameSession extends SDKObject {
         // sync the game state if this change occurred via a non-action source
         // normally game state is cached and synced in response to action events
         // so if a non-action changes game state, then a manual sync is needed
-        if ((sourceAction == null)) {
+        if (sourceAction == null) {
           this.syncState();
         } else {
           if (indexInHand != null) {
             // force record state for card just after applying
             card.setupActionStateRecord();
-            __guard__(card.getActionStateRecord(), (x) => x.recordStateEvenIfNotChanged(sourceAction.getIndex()));
+            __guard__(card.getActionStateRecord(), (x) =>
+              x.recordStateEvenIfNotChanged(sourceAction.getIndex()),
+            );
           }
 
           if (!this.getIsBufferingEvents()) {
             // send an event that all cached elements should update/flush
             // note: actions are not allowed in response to this event
-            this.pushEvent({
-              type: EVENTS.update_cache_action, action: sourceAction, step: this.getExecutingStep(), gameSession: this,
-            }, { resolveAction: sourceAction, blockActionExecution: true });
+            this.pushEvent(
+              {
+                type: EVENTS.update_cache_action,
+                action: sourceAction,
+                step: this.getExecutingStep(),
+                gameSession: this,
+              },
+              { resolveAction: sourceAction, blockActionExecution: true },
+            );
           }
         }
       }
@@ -3433,7 +3940,7 @@ class _GameSession extends SDKObject {
    */
   removeCardByIndexFromHand(deck, cardIndex, card, sourceAction) {
     let indexOfCardInHand = null;
-    if ((deck != null) && (cardIndex != null)) {
+    if (deck != null && cardIndex != null) {
       // Logger.module("SDK").debug("[G:#{@gameId}]","GS.removeCardByIndexFromHand ->", card?.getLogName(), "by action", sourceAction?.getLogName())
 
       // attempt to remove the card data
@@ -3451,7 +3958,7 @@ class _GameSession extends SDKObject {
         // sync the game state if this change occurred via a non-action source
         // normally game state is cached and synced in response to action events
         // so if a non-action changes game state, then a manual sync is needed
-        if ((sourceAction == null)) {
+        if (sourceAction == null) {
           this.syncState();
         }
       }
@@ -3470,7 +3977,10 @@ class _GameSession extends SDKObject {
     if (card != null) {
       const owner = card.getOwner();
       if (!(owner instanceof Player)) {
-        Logger.module('SDK').error(`[G:${this.gameId}]`, 'GS.applyCardToSignatureCards -> cannot apply card without an owner to signature slot!');
+        Logger.module('SDK').error(
+          `[G:${this.gameId}]`,
+          'GS.applyCardToSignatureCards -> cannot apply card without an owner to signature slot!',
+        );
       }
 
       // apply card data received
@@ -3497,7 +4007,11 @@ class _GameSession extends SDKObject {
       card.onApplyToSignatureCards(sourceAction);
 
       // execute any authoritative sub actions that occurred during apply_card_to_signature_cards event
-      if (!this.getIsRunningAsAuthoritative() && (this.getExecutingAction() != null)) { this.getExecutingAction().executeNextOfEventTypeFromAuthoritativeSubActionQueue('apply_card_to_signature_cards'); }
+      if (!this.getIsRunningAsAuthoritative() && this.getExecutingAction() != null) {
+        this.getExecutingAction().executeNextOfEventTypeFromAuthoritativeSubActionQueue(
+          'apply_card_to_signature_cards',
+        );
+      }
 
       // stop pseudo event: apply_card_to_signature_cards
       this.popCardFromStack(card);
@@ -3506,19 +4020,27 @@ class _GameSession extends SDKObject {
       // sync the game state if this change occurred via a non-action source
       // normally game state is cached and synced in response to action events
       // so if a non-action changes game state, then a manual sync is needed
-      if ((sourceAction == null)) {
+      if (sourceAction == null) {
         return this.syncState();
       }
       // force record state for card just after applying
       card.setupActionStateRecord();
-      __guard__(card.getActionStateRecord(), (x) => x.recordStateEvenIfNotChanged(sourceAction.getIndex()));
+      __guard__(card.getActionStateRecord(), (x) =>
+        x.recordStateEvenIfNotChanged(sourceAction.getIndex()),
+      );
 
       if (!this.getIsBufferingEvents()) {
         // send an event that all cached elements should update/flush
         // note: actions are not allowed in response to this event
-        return this.pushEvent({
-          type: EVENTS.update_cache_action, action: sourceAction, step: this.getExecutingStep(), gameSession: this,
-        }, { resolveAction: sourceAction, blockActionExecution: true });
+        return this.pushEvent(
+          {
+            type: EVENTS.update_cache_action,
+            action: sourceAction,
+            step: this.getExecutingStep(),
+            gameSession: this,
+          },
+          { resolveAction: sourceAction, blockActionExecution: true },
+        );
       }
     }
   }
@@ -3534,12 +4056,23 @@ class _GameSession extends SDKObject {
     if (card != null) {
       const owner = card.getOwner();
       if (!(owner instanceof Player)) {
-        Logger.module('SDK').error(`[G:${this.gameId}]`, 'GS.removeCardFromSignatureCards -> cannot remove card without an owner from signature slot!');
+        Logger.module('SDK').error(
+          `[G:${this.gameId}]`,
+          'GS.removeCardFromSignatureCards -> cannot remove card without an owner from signature slot!',
+        );
       }
 
       // attempt to remove the card data
       indexOfCardInSignatureCards = owner.removeSignatureCard(card);
-      Logger.module('SDK').debug(`[G:${this.gameId}]`, 'GS.removeCardFromSignatureCards ->', card.getLogName(), 'by action', sourceAction != null ? sourceAction.getLogName() : undefined, 'from index', indexOfCardInSignatureCards);
+      Logger.module('SDK').debug(
+        `[G:${this.gameId}]`,
+        'GS.removeCardFromSignatureCards ->',
+        card.getLogName(),
+        'by action',
+        sourceAction != null ? sourceAction.getLogName() : undefined,
+        'from index',
+        indexOfCardInSignatureCards,
+      );
 
       // remove the card from signature cards
       card.onRemoveFromSignatureCards(sourceAction);
@@ -3547,7 +4080,7 @@ class _GameSession extends SDKObject {
       // sync the game state if this change occurred via a non-action source
       // normally game state is cached and synced in response to action events
       // so if a non-action changes game state, then a manual sync is needed
-      if ((sourceAction == null)) {
+      if (sourceAction == null) {
         this.syncState();
       }
     }
@@ -3566,7 +4099,7 @@ class _GameSession extends SDKObject {
   applyCardToBoard(card, x, y, cardDataOrIndex, sourceAction) {
     let isValidApplication = false;
 
-    if ((card != null) && !card.getIsActive()) {
+    if (card != null && !card.getIsActive()) {
       // apply card data received
       card.applyCardData(cardDataOrIndex);
 
@@ -3579,22 +4112,32 @@ class _GameSession extends SDKObject {
 
       // check whether card application is valid
       const targetPosition = { x, y };
-      isValidApplication = this.getBoard().isOnBoard(targetPosition)
-          && (!CardType.getIsEntityCardType(card.getType())
-            || !this.getBoard().getObstructionAtPositionForEntity(targetPosition, card)
-            || (this.getExecutingAction() instanceof PlayCardFromHandAction && card.hasModifierClass(ModifierCustomSpawn)));
+      isValidApplication =
+        this.getBoard().isOnBoard(targetPosition) &&
+        (!CardType.getIsEntityCardType(card.getType()) ||
+          !this.getBoard().getObstructionAtPositionForEntity(targetPosition, card) ||
+          (this.getExecutingAction() instanceof PlayCardFromHandAction &&
+            card.hasModifierClass(ModifierCustomSpawn)));
 
-      if ((sourceAction != null) && isValidApplication) {
+      if (sourceAction != null && isValidApplication) {
         // force record state for card just before applying
         card.setupActionStateRecord();
-        __guard__(card.getActionStateRecord(), (x1) => x1.recordStateEvenIfNotChanged(sourceAction.getIndex()));
+        __guard__(card.getActionStateRecord(), (x1) =>
+          x1.recordStateEvenIfNotChanged(sourceAction.getIndex()),
+        );
 
         if (!this.getIsBufferingEvents()) {
           // send an event that all cached elements should update/flush
           // note: actions are not allowed in response to this event
-          this.pushEvent({
-            type: EVENTS.update_cache_action, action: sourceAction, step: this.getExecutingStep(), gameSession: this,
-          }, { resolveAction: sourceAction, blockActionExecution: true });
+          this.pushEvent(
+            {
+              type: EVENTS.update_cache_action,
+              action: sourceAction,
+              step: this.getExecutingStep(),
+              gameSession: this,
+            },
+            { resolveAction: sourceAction, blockActionExecution: true },
+          );
         }
       }
 
@@ -3636,13 +4179,21 @@ class _GameSession extends SDKObject {
         card.onApplyToBoard(this.board, x, y, sourceAction);
 
         // check if card was an entity that died during apply
-        if ((card.getType() === CardType.Entity) && (card.getHP() <= 0) && this.getCanCardBeScheduledForRemoval(card)) {
+        if (
+          card.getType() === CardType.Entity &&
+          card.getHP() <= 0 &&
+          this.getCanCardBeScheduledForRemoval(card)
+        ) {
           this.executeAction(card.actionDie());
         }
       }
 
       // execute any authoritative sub actions that occurred during apply_card_to_board event
-      if (!this.getIsRunningAsAuthoritative() && (this.getExecutingAction() != null)) { this.getExecutingAction().executeNextOfEventTypeFromAuthoritativeSubActionQueue('apply_card_to_board'); }
+      if (!this.getIsRunningAsAuthoritative() && this.getExecutingAction() != null) {
+        this.getExecutingAction().executeNextOfEventTypeFromAuthoritativeSubActionQueue(
+          'apply_card_to_board',
+        );
+      }
 
       // stop pseudo event: apply_card_to_board
       this.popCardFromStack(card);
@@ -3653,7 +4204,7 @@ class _GameSession extends SDKObject {
       // - not entities (ex: spells, artifacts)
       if (!isValidApplication || !(card instanceof Entity)) {
         this.removeCardFromBoard(card, x, y, sourceAction);
-      } else if ((sourceAction == null)) {
+      } else if (sourceAction == null) {
         // sync the game state if this change occurred via a non-action source
         // normally game state is cached and synced in response to action events
         // so if a non-action changes game state, then a manual sync is needed
@@ -3672,7 +4223,7 @@ class _GameSession extends SDKObject {
    * @param {Action} [sourceAction=null] action that applied the card
    */
   removeCardFromBoard(card, x, y, sourceAction) {
-    if ((card != null) && card.getIsActive()) {
+    if (card != null && card.getIsActive()) {
       // Logger.module("SDK").debug("[G:#{@gameId}]","GS.removeCardFromBoard ->", card?.getLogName(), "at (#{x}, #{y}) by action", sourceAction?.getLogName())
       // remove the card from the board
       // must be done before setting card as removed
@@ -3696,7 +4247,7 @@ class _GameSession extends SDKObject {
       // sync the game state if this change occurred via a non-action source
       // normally game state is cached and synced in response to action events
       // so if a non-action changes game state, then a manual sync is needed
-      if ((sourceAction == null)) {
+      if (sourceAction == null) {
         return this.syncState();
       }
     }
@@ -3767,13 +4318,20 @@ class _GameSession extends SDKObject {
    */
   getCardsPlayed(playerId, cardClass?) {
     const cards = [];
-    if (cardClass == null) { cardClass = Card; }
+    if (cardClass == null) {
+      cardClass = Card;
+    }
     const sortingMethod = (card) => card.getAppliedToBoardByActionIndex();
 
     // get all cards that have been played by a player
     // sort by played index
     for (var card of Array.from<any>(this.getCards())) {
-      if (card instanceof cardClass && (card.getOwnerId() != null) && ((playerId == null) || (card.getOwnerId() === playerId)) && card.getIsPlayed()) {
+      if (
+        card instanceof cardClass &&
+        card.getOwnerId() != null &&
+        (playerId == null || card.getOwnerId() === playerId) &&
+        card.getIsPlayed()
+      ) {
         UtilsJavascript.arraySortedInsertAscendingByScore(cards, card, sortingMethod);
       }
     }
@@ -3824,7 +4382,11 @@ class _GameSession extends SDKObject {
     const turns = [].concat(this.getGameSession().getTurns(), currentTurn);
     for (let i = turns.length - 1; i >= 0; i--) {
       var turn = turns[i];
-      if ((searchUntilLastTurnOfPlayerId != null) && (turn !== currentTurn) && (turn.getPlayerId() === searchUntilLastTurnOfPlayerId)) {
+      if (
+        searchUntilLastTurnOfPlayerId != null &&
+        turn !== currentTurn &&
+        turn.getPlayerId() === searchUntilLastTurnOfPlayerId
+      ) {
         break;
       } else {
         for (var step of Array.from<any>(turn.getSteps())) {
@@ -3836,7 +4398,13 @@ class _GameSession extends SDKObject {
     for (var action of Array.from<any>(actions)) {
       if (action instanceof DieAction) {
         var card = action.getTarget();
-        if (card instanceof Unit && card.getIsRemoved() && ((playerId == null) || (card.getOwnerId() === playerId)) && !(card.getRarityId() === Rarity.TokenUnit) && !card.getWasGeneral()) {
+        if (
+          card instanceof Unit &&
+          card.getIsRemoved() &&
+          (playerId == null || card.getOwnerId() === playerId) &&
+          !(card.getRarityId() === Rarity.TokenUnit) &&
+          !card.getWasGeneral()
+        ) {
           deadUnits.push(card);
         }
       }
@@ -3857,17 +4425,33 @@ class _GameSession extends SDKObject {
    * @param {Number} [auraModifierId=null] identifier for which modifier in the parentModifier aura this is
    */
   applyModifierContextObject(modifierContextObject, card, parentModifier, auraModifierId) {
-    if ((modifierContextObject != null) && card instanceof Card && (this.getIsRunningAsAuthoritative() || (modifierContextObject.index != null))) {
-      if ((this._private.actionQueue != null) && (modifierContextObject.index == null)) {
+    if (
+      modifierContextObject != null &&
+      card instanceof Card &&
+      (this.getIsRunningAsAuthoritative() || modifierContextObject.index != null)
+    ) {
+      if (this._private.actionQueue != null && modifierContextObject.index == null) {
         // non-indexed modifiers should apply via action when applied during action execution
-        const applyModifierAction = new ApplyModifierAction(this, modifierContextObject, card, parentModifier, auraModifierId);
+        const applyModifierAction = new ApplyModifierAction(
+          this,
+          modifierContextObject,
+          card,
+          parentModifier,
+          auraModifierId,
+        );
         return this.executeAction(applyModifierAction);
       }
       // modifiers can apply instantly when no actions executing
       // copy data so we don't modify anything unintentionally
       modifierContextObject = UtilsJavascript.fastExtend({}, modifierContextObject);
       const modifier = this.getOrCreateModifierFromContextObjectOrIndex(modifierContextObject);
-      return this.p_applyModifier(modifier, card, parentModifier, modifierContextObject, auraModifierId);
+      return this.p_applyModifier(
+        modifier,
+        card,
+        parentModifier,
+        modifierContextObject,
+        auraModifierId,
+      );
     }
   }
 
@@ -3877,11 +4461,22 @@ class _GameSession extends SDKObject {
    * @see applyModifierContextObject
    */
   p_applyModifier(modifier, card, parentModifier, modifierContextObject, auraModifierId) {
-    if (card instanceof Card && modifier instanceof Modifier && !card.getIsRemoved() && !modifier.getIsRemoved()) {
+    if (
+      card instanceof Card &&
+      modifier instanceof Modifier &&
+      !card.getIsRemoved() &&
+      !modifier.getIsRemoved()
+    ) {
       // ensure player modifiers are valid
       let sourceCardIndex;
-      if (modifier instanceof PlayerModifier && (!(card instanceof Entity) || !card.getIsGeneral())) {
-        Logger.module('SDK').error(`[G:${this.gameId}]`, 'GS.applyModifierContextObject -> cannot apply player modifier to non-general!');
+      if (
+        modifier instanceof PlayerModifier &&
+        (!(card instanceof Entity) || !card.getIsGeneral())
+      ) {
+        Logger.module('SDK').error(
+          `[G:${this.gameId}]`,
+          'GS.applyModifierContextObject -> cannot apply player modifier to non-general!',
+        );
       }
 
       // apply context object received
@@ -3892,7 +4487,9 @@ class _GameSession extends SDKObject {
       // Logger.module("SDK").debug "[G:#{@.gameId}]", "GS.p_applyModifier -> #{modifier.getLogName()} to #{card.getLogName()}"
 
       // set parent/child relationship
-      if (parentModifier == null) { parentModifier = modifier.getParentModifier(); }
+      if (parentModifier == null) {
+        parentModifier = modifier.getParentModifier();
+      }
       if (parentModifier instanceof Modifier) {
         parentModifier.addSubModifier(modifier);
 
@@ -3903,11 +4500,15 @@ class _GameSession extends SDKObject {
       // set triggering relationship
       const triggeringModifier = this.getTriggeringModifier();
       if (triggeringModifier instanceof Modifier) {
-        triggeringModifier.onTriggerAppliedModifier(modifier, this.getExecutingAction(), this.getExecutingResolveAction());
+        triggeringModifier.onTriggerAppliedModifier(
+          modifier,
+          this.getExecutingAction(),
+          this.getExecutingResolveAction(),
+        );
       }
 
       // find source card index as needed
-      if ((sourceCardIndex == null)) {
+      if (sourceCardIndex == null) {
         const activeCard = this.getActiveCard();
         const executingAction = this.getExecutingAction();
         if (activeCard != null) {
@@ -3931,7 +4532,9 @@ class _GameSession extends SDKObject {
       modifier.setSourceCardIndex(sourceCardIndex);
 
       // set aura modifier id
-      if (auraModifierId != null) { modifier.setAuraModifierId(auraModifierId); }
+      if (auraModifierId != null) {
+        modifier.setAuraModifierId(auraModifierId);
+      }
 
       // record the modifier with the card
       card.onAddModifier(modifier);
@@ -3946,7 +4549,12 @@ class _GameSession extends SDKObject {
    * @param {Modifier} modifier modifier to remove
    */
   removeModifier(modifier) {
-    if (this.getIsRunningAsAuthoritative() && modifier instanceof Modifier && (modifier.getCard() != null) && !modifier.getIsRemoved()) {
+    if (
+      this.getIsRunningAsAuthoritative() &&
+      modifier instanceof Modifier &&
+      modifier.getCard() != null &&
+      !modifier.getIsRemoved()
+    ) {
       if (this._private.actionQueue != null) {
         // modifiers should remove via action when removed during action execution
         const removeModifierAction = new RemoveModifierAction(this, modifier);
@@ -3963,14 +4571,18 @@ class _GameSession extends SDKObject {
    * @see removeModifier
    */
   p_removeModifier(modifier) {
-    if (modifier instanceof Modifier && (modifier.getCard() != null) && !modifier.getIsRemoved()) {
+    if (modifier instanceof Modifier && modifier.getCard() != null && !modifier.getIsRemoved()) {
       // Logger.module("SDK").debug "[G:#{@.gameId}]", "GS.p_removeModifier -> #{modifier.getLogName()} from #{modifier.getCard()?.getLogName()}"
       const card = modifier.getCard();
 
       // set triggering relationship
       const triggeringModifier = this.getTriggeringModifier();
       if (triggeringModifier instanceof Modifier) {
-        triggeringModifier.onTriggerRemovedModifier(modifier, this.getExecutingAction(), this.getExecutingResolveAction());
+        triggeringModifier.onTriggerRemovedModifier(
+          modifier,
+          this.getExecutingAction(),
+          this.getExecutingResolveAction(),
+        );
       }
 
       // remove the modifier from the card's record
@@ -3982,7 +4594,11 @@ class _GameSession extends SDKObject {
   }
 
   moveModifierToCard(modifier, card) {
-    if (this.getIsRunningAsAuthoritative() && card instanceof Card && modifier instanceof Modifier) {
+    if (
+      this.getIsRunningAsAuthoritative() &&
+      card instanceof Card &&
+      modifier instanceof Modifier
+    ) {
       // Logger.module("SDK").debug("[G:#{@.gameId}]", "GS.moveModifierToCard -> MODIFIER: #{modifier.getType()} with index #{modifier.getIndex()} isRemoved? #{modifier.getIsActive()} CARD FROM: #{modifier.getCard()?.getName()} CARD TO: #{card?.getName()}")
       // copy modifier context object
       const modifierContextObject = modifier.createContextObjectForClone();
@@ -4098,9 +4714,19 @@ class _GameSession extends SDKObject {
     // Logger.module("SDK").debug("[G:#{@.gameId}]", "GS.deserializeSessionFromFirebase")
     // emit event that we're deserializing
     // this allows any existing sdk objects to clean themselves up
-    let action; let actionIndex; let card; let cardIndices; let index; let modifier; let modifierIndices; let player; let
-      turn;
-    this.pushEvent({ type: EVENTS.before_deserialize, gameSession: this }, { blockActionExecution: true });
+    let action;
+    let actionIndex;
+    let card;
+    let cardIndices;
+    let index;
+    let modifier;
+    let modifierIndices;
+    let player;
+    let turn;
+    this.pushEvent(
+      { type: EVENTS.before_deserialize, gameSession: this },
+      { blockActionExecution: true },
+    );
 
     // copy over all the data
     UtilsJavascript.fastExtend(this, sessionData);
@@ -4148,7 +4774,9 @@ class _GameSession extends SDKObject {
               // because modifiers are in a flat array, we know sub modifiers will be deserialized
               // instead just add self as sub modifier of parent
               var parentModifier = modifier.getParentModifier();
-              if (parentModifier) { parentModifier.addSubModifier(modifier); }
+              if (parentModifier) {
+                parentModifier.addSubModifier(modifier);
+              }
             }
           }
         }
@@ -4221,7 +4849,7 @@ class _GameSession extends SDKObject {
         // actions cannot ever serialize references to cards for anti-cheat
         // so we have to request the index of the action from the card
         actionIndex = card.getAppliedToBoardByActionIndex();
-        if ((actionIndex != null) && (actionIndex > -1)) {
+        if (actionIndex != null && actionIndex > -1) {
           action = this.getActionByIndex(actionIndex);
           if (action != null) {
             action.setCard(card);
@@ -4281,7 +4909,10 @@ class _GameSession extends SDKObject {
       player.postDeserialize();
     }
 
-    return this.pushEvent({ type: EVENTS.deserialize, gameSession: this }, { blockActionExecution: true });
+    return this.pushEvent(
+      { type: EVENTS.deserialize, gameSession: this },
+      { blockActionExecution: true },
+    );
   }
 
   deserializeCardFromFirebase(cardData) {
@@ -4356,5 +4987,5 @@ _GameSession.prototype.getLocalPlayer = _GameSession.prototype.getMyPlayer;
 // endregion serialization
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

@@ -13,7 +13,9 @@ const router = express.Router();
 router.get('/', function (req, res, next) {
   const user_id = req.user.d.id;
 
-  return knex('user_ribbons').where('user_id', user_id).select()
+  return knex('user_ribbons')
+    .where('user_id', user_id)
+    .select()
     .then(function (rows) {
       rows = DataAccessHelpers.restifyData(rows);
       return res.status(200).json(rows);

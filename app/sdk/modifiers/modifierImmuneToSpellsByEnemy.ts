@@ -21,11 +21,28 @@ class ModifierImmuneToSpellsByEnemy extends ModifierImmuneToSpells {
   onValidateAction(event) {
     const a = event.action;
 
-    if ((this.getCard() != null) && (a.getOwner() === this.getGameSession().getOpponentPlayerOfPlayerId(this.getCard().getOwnerId())) && a instanceof ApplyCardToBoardAction && a.getIsValid() && UtilsPosition.getPositionsAreEqual(this.getCard().getPosition(), a.getTargetPosition())) { // may be trying to target this unit
+    if (
+      this.getCard() != null &&
+      a.getOwner() ===
+        this.getGameSession().getOpponentPlayerOfPlayerId(this.getCard().getOwnerId()) &&
+      a instanceof ApplyCardToBoardAction &&
+      a.getIsValid() &&
+      UtilsPosition.getPositionsAreEqual(this.getCard().getPosition(), a.getTargetPosition())
+    ) {
+      // may be trying to target this unit
       const card = a.getCard();
       // is this in fact an enemy spell directly trying to target this unit? (not this space, not multiple spaces - directly targeting this unit)
-      if ((card != null) && (__guard__(card.getRootCard(), (x) => x.type) === CardType.Spell) && !card.getTargetsSpace() && !card.getAppliesSameEffectToMultipleTargets()) {
-        return this.invalidateAction(a, this.getCard().getPosition(), i18next.t('modifiers.immune_to_attacks_error'));
+      if (
+        card != null &&
+        __guard__(card.getRootCard(), (x) => x.type) === CardType.Spell &&
+        !card.getTargetsSpace() &&
+        !card.getAppliesSameEffectToMultipleTargets()
+      ) {
+        return this.invalidateAction(
+          a,
+          this.getCard().getPosition(),
+          i18next.t('modifiers.immune_to_attacks_error'),
+        );
       }
     }
   }
@@ -36,5 +53,5 @@ ModifierImmuneToSpellsByEnemy.description = i18next.t('modifiers.immune_to_spell
 module.exports = ModifierImmuneToSpellsByEnemy;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

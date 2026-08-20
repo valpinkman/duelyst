@@ -26,11 +26,26 @@ class ModifierOnOpponentDeathWatchSpawnEntityOnSpace extends ModifierOnOpponentD
   static modifierName = 'Deathwatch';
   static description = 'Whenever an enemy minion dies, summon a %X';
 
-  static createContextObject(cardDataOrIndexToSpawn, spawnDescription, spawnCount, spawnPattern, spawnSilently, options) {
-    if (spawnDescription == null) { spawnDescription = 'prisoner'; }
-    if (spawnCount == null) { spawnCount = 1; }
-    if (spawnPattern == null) { spawnPattern = CONFIG.PATTERN_1x1; }
-    if (spawnSilently == null) { spawnSilently = true; }
+  static createContextObject(
+    cardDataOrIndexToSpawn,
+    spawnDescription,
+    spawnCount,
+    spawnPattern,
+    spawnSilently,
+    options,
+  ) {
+    if (spawnDescription == null) {
+      spawnDescription = 'prisoner';
+    }
+    if (spawnCount == null) {
+      spawnCount = 1;
+    }
+    if (spawnPattern == null) {
+      spawnPattern = CONFIG.PATTERN_1x1;
+    }
+    if (spawnSilently == null) {
+      spawnSilently = true;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.cardDataOrIndexToSpawn = cardDataOrIndexToSpawn;
     contextObject.spawnDescription = spawnDescription;
@@ -52,20 +67,47 @@ class ModifierOnOpponentDeathWatchSpawnEntityOnSpace extends ModifierOnOpponentD
 
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
       // if there's no defined card to summon, instead spawn a random prisoner
-      if ((this.cardDataOrIndexToSpawn == null) || Array.from<any>(this.prisonerList).includes(this.cardDataOrIndexToSpawn)) {
-        this.cardDataOrIndexToSpawn = this.prisonerList[this.getGameSession().getRandomIntegerForExecution(this.prisonerList.length)];
+      if (
+        this.cardDataOrIndexToSpawn == null ||
+        Array.from<any>(this.prisonerList).includes(this.cardDataOrIndexToSpawn)
+      ) {
+        this.cardDataOrIndexToSpawn =
+          this.prisonerList[
+            this.getGameSession().getRandomIntegerForExecution(this.prisonerList.length)
+          ];
       }
 
-      const card = this.getGameSession().getExistingCardFromIndexOrCachedCardFromData(this.cardDataOrIndexToSpawn);
-      const spawnLocations = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(this.getGameSession(), action.getTargetPosition(), this.spawnPattern, card, this.getCard(), 1);
+      const card = this.getGameSession().getExistingCardFromIndexOrCachedCardFromData(
+        this.cardDataOrIndexToSpawn,
+      );
+      const spawnLocations = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(
+        this.getGameSession(),
+        action.getTargetPosition(),
+        this.spawnPattern,
+        card,
+        this.getCard(),
+        1,
+      );
       return (() => {
         const result = [];
         for (var position of Array.from<any>(spawnLocations)) {
           var playCardAction;
           if (!this.spawnSilently) {
-            playCardAction = new PlayCardAction(this.getGameSession(), this.getCard().getOwnerId(), position.x, position.y, this.cardDataOrIndexToSpawn);
+            playCardAction = new PlayCardAction(
+              this.getGameSession(),
+              this.getCard().getOwnerId(),
+              position.x,
+              position.y,
+              this.cardDataOrIndexToSpawn,
+            );
           } else {
-            playCardAction = new PlayCardSilentlyAction(this.getGameSession(), this.getCard().getOwnerId(), position.x, position.y, this.cardDataOrIndexToSpawn);
+            playCardAction = new PlayCardSilentlyAction(
+              this.getGameSession(),
+              this.getCard().getOwnerId(),
+              position.x,
+              position.y,
+              this.cardDataOrIndexToSpawn,
+            );
           }
           playCardAction.setSource(this.getCard());
           result.push(this.getGameSession().executeAction(playCardAction));
@@ -83,12 +125,23 @@ class ModifierOnOpponentDeathWatchSpawnEntityOnSpace extends ModifierOnOpponentD
     return this.getCard().getOwnerId();
   }
 }
-ModifierOnOpponentDeathWatchSpawnEntityOnSpace.prototype.type = 'ModifierOnOpponentDeathWatchSpawnEntityOnSpace';
+ModifierOnOpponentDeathWatchSpawnEntityOnSpace.prototype.type =
+  'ModifierOnOpponentDeathWatchSpawnEntityOnSpace';
 ModifierOnOpponentDeathWatchSpawnEntityOnSpace.prototype.cardDataOrIndexToSpawn = null;
 ModifierOnOpponentDeathWatchSpawnEntityOnSpace.prototype.spawnCount = 1;
 ModifierOnOpponentDeathWatchSpawnEntityOnSpace.prototype.spawnSilently = true;
 ModifierOnOpponentDeathWatchSpawnEntityOnSpace.prototype.spawnPattern = CONFIG.PATTERN_1x1;
-ModifierOnOpponentDeathWatchSpawnEntityOnSpace.prototype.prisonerList = [{ id: Cards.Neutral.Prisoner1 }, { id: Cards.Neutral.Prisoner2 }, { id: Cards.Neutral.Prisoner3 }, { id: Cards.Neutral.Prisoner4 }, { id: Cards.Neutral.Prisoner5 }, { id: Cards.Neutral.Prisoner6 }];
-ModifierOnOpponentDeathWatchSpawnEntityOnSpace.prototype.fxResource = ['FX.Modifiers.ModifierDeathWatch', 'FX.Modifiers.ModifierGenericSpawn'];
+ModifierOnOpponentDeathWatchSpawnEntityOnSpace.prototype.prisonerList = [
+  { id: Cards.Neutral.Prisoner1 },
+  { id: Cards.Neutral.Prisoner2 },
+  { id: Cards.Neutral.Prisoner3 },
+  { id: Cards.Neutral.Prisoner4 },
+  { id: Cards.Neutral.Prisoner5 },
+  { id: Cards.Neutral.Prisoner6 },
+];
+ModifierOnOpponentDeathWatchSpawnEntityOnSpace.prototype.fxResource = [
+  'FX.Modifiers.ModifierDeathWatch',
+  'FX.Modifiers.ModifierGenericSpawn',
+];
 
 module.exports = ModifierOnOpponentDeathWatchSpawnEntityOnSpace;

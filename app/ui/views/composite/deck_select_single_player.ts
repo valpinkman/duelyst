@@ -18,7 +18,6 @@ var i18next = require('i18next');
 var DeckSelectCompositeView = require('./deck_select');
 
 var DeckSelectSinglePlayerCompositeView = DeckSelectCompositeView.extend({
-
   className: 'sliding-panel-select deck-select deck-select-single-player',
 
   template: DeckSelectSinglePlayerTmpl,
@@ -44,15 +43,35 @@ var DeckSelectSinglePlayerCompositeView = DeckSelectCompositeView.extend({
   },
 
   getRecommendedOpponentId: function () {
-    if (ProgressionManager.getInstance().getFactionProgressionStatsModel(SDK.Factions.Faction5).get('level') == null) {
+    if (
+      ProgressionManager.getInstance()
+        .getFactionProgressionStatsModel(SDK.Factions.Faction5)
+        .get('level') == null
+    ) {
       return SDK.Cards.Faction5.General;
-    } else if (ProgressionManager.getInstance().getFactionProgressionStatsModel(SDK.Factions.Faction3).get('level') == null) {
+    } else if (
+      ProgressionManager.getInstance()
+        .getFactionProgressionStatsModel(SDK.Factions.Faction3)
+        .get('level') == null
+    ) {
       return SDK.Cards.Faction3.General;
-    } else if (ProgressionManager.getInstance().getFactionProgressionStatsModel(SDK.Factions.Faction4).get('level') == null) {
+    } else if (
+      ProgressionManager.getInstance()
+        .getFactionProgressionStatsModel(SDK.Factions.Faction4)
+        .get('level') == null
+    ) {
       return SDK.Cards.Faction4.General;
-    } else if (ProgressionManager.getInstance().getFactionProgressionStatsModel(SDK.Factions.Faction2).get('level') == null) {
+    } else if (
+      ProgressionManager.getInstance()
+        .getFactionProgressionStatsModel(SDK.Factions.Faction2)
+        .get('level') == null
+    ) {
       return SDK.Cards.Faction2.General;
-    } else if (ProgressionManager.getInstance().getFactionProgressionStatsModel(SDK.Factions.Faction6).get('level') == null) {
+    } else if (
+      ProgressionManager.getInstance()
+        .getFactionProgressionStatsModel(SDK.Factions.Faction6)
+        .get('level') == null
+    ) {
       return SDK.Cards.Faction6.General;
     }
   },
@@ -64,13 +83,19 @@ var DeckSelectSinglePlayerCompositeView = DeckSelectCompositeView.extend({
     var recommendedOpponentId = this.getRecommendedOpponentId();
 
     // for each faction
-    var factionModels = GameDataManager.getInstance().visibleFactionsCollection.where({ isNeutral: false, enabled: true });
+    var factionModels = GameDataManager.getInstance().visibleFactionsCollection.where({
+      isNeutral: false,
+      enabled: true,
+    });
     for (var i = 0, il = factionModels.length; i < il; i++) {
       var factionModel = factionModels[i];
       var factionId = factionModel.get('id');
 
       // opponent should be primary general from faction
-      var generalId = SDK.FactionFactory.generalIdForFactionByOrder(factionId, SDK.FactionFactory.GeneralOrder.Primary);
+      var generalId = SDK.FactionFactory.generalIdForFactionByOrder(
+        factionId,
+        SDK.FactionFactory.GeneralOrder.Primary,
+      );
       var generalCard = SDK.GameSession.getCardCaches().getCardById(generalId);
 
       var opponentData: Record<string, any> = {
@@ -93,7 +118,10 @@ var DeckSelectSinglePlayerCompositeView = DeckSelectCompositeView.extend({
         for (var j = 0, jl = otherGeneralOrders.length; j < jl; j++) {
           var generalOrder = otherGeneralOrders[j];
           var otherOpponentData = UtilsJavascript.fastExtend({}, opponentData);
-          var otherGeneralId = SDK.FactionFactory.generalIdForFactionByOrder(factionId, generalOrder);
+          var otherGeneralId = SDK.FactionFactory.generalIdForFactionByOrder(
+            factionId,
+            generalOrder,
+          );
           var otherGeneralCard = SDK.GameSession.getCardCaches().getCardById(otherGeneralId);
           if (otherGeneralCard != null) {
             otherOpponentData.id = otherGeneralId;
@@ -124,7 +152,9 @@ var DeckSelectSinglePlayerCompositeView = DeckSelectCompositeView.extend({
 
       // listen for change in ai tools
       this.$el.find('.setting-difficulty input').on('change', this.onChangeDifficulty.bind(this));
-      this.$el.find('.setting-num-random-cards input').on('change', this.onChangeNumRandomCards.bind(this));
+      this.$el
+        .find('.setting-num-random-cards input')
+        .on('change', this.onChangeNumRandomCards.bind(this));
     } else {
       // remove ai dev tools
       this.$el.find('.ai-tool').remove();
@@ -132,7 +162,9 @@ var DeckSelectSinglePlayerCompositeView = DeckSelectCompositeView.extend({
 
     // show selected opponent faction as active
     if (this._selectedOpponentId != null) {
-      this.$el.find(this._opponentClassPrefix + '[data-opponent-id=\'' + this._selectedOpponentId + '\']').addClass('active');
+      this.$el
+        .find(this._opponentClassPrefix + "[data-opponent-id='" + this._selectedOpponentId + "']")
+        .addClass('active');
     }
 
     // restore opponent choices scroll
@@ -159,17 +191,23 @@ var DeckSelectSinglePlayerCompositeView = DeckSelectCompositeView.extend({
   setSelectedOpponent: function (opponentId, factionId) {
     if (opponentId != null && this._selectedOpponentId !== opponentId) {
       // clear previous showing as active
-      this.$el.find(this._opponentClassPrefix + '[data-opponent-id=\'' + this._selectedOpponentId + '\']').removeClass('active');
+      this.$el
+        .find(this._opponentClassPrefix + "[data-opponent-id='" + this._selectedOpponentId + "']")
+        .removeClass('active');
 
       // store new
       this._selectedOpponentId = opponentId;
       this._selectedOpponentFactionId = factionId;
 
       // show new as active
-      this.$el.find(this._opponentClassPrefix + '[data-opponent-id=\'' + opponentId + '\']').addClass('active');
+      this.$el
+        .find(this._opponentClassPrefix + "[data-opponent-id='" + opponentId + "']")
+        .addClass('active');
 
       // play select sound
-      audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_select.audio, CONFIG.SELECT_SFX_PRIORITY);
+      audio_engine
+        .current()
+        .play_effect_for_interaction(RSX.sfx_ui_select.audio, CONFIG.SELECT_SFX_PRIORITY);
 
       // emit select event
       this.trigger('select_opponent', opponentId);
@@ -185,7 +223,9 @@ var DeckSelectSinglePlayerCompositeView = DeckSelectCompositeView.extend({
     var selectedOpponentId = this._selectedOpponentId;
     if (selectedDeckModel != null && selectedOpponentId != null) {
       this.ui.$deckSelectConfirm.addClass('disabled');
-      audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
+      audio_engine
+        .current()
+        .play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
       var aiDifficulty;
       var aiNumRandomCards;
       if (process.env.AI_TOOLS_ENABLED) {
@@ -209,14 +249,29 @@ var DeckSelectSinglePlayerCompositeView = DeckSelectCompositeView.extend({
         aiNumRandomCards,
       );
     } else if (selectedDeckModel != null) {
-      audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_error.audio, CONFIG.ERROR_SFX_PRIORITY);
-      this._showSelectDeckWarningPopover(this.ui.$deckSelectConfirm, i18next.t('game_setup.must_select_opponent_message'));
+      audio_engine
+        .current()
+        .play_effect_for_interaction(RSX.sfx_ui_error.audio, CONFIG.ERROR_SFX_PRIORITY);
+      this._showSelectDeckWarningPopover(
+        this.ui.$deckSelectConfirm,
+        i18next.t('game_setup.must_select_opponent_message'),
+      );
     } else if (selectedOpponentId != null) {
-      audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_error.audio, CONFIG.ERROR_SFX_PRIORITY);
-      this._showSelectDeckWarningPopover(this.ui.$deckSelectConfirm, i18next.t('game_setup.must_select_deck_message'));
+      audio_engine
+        .current()
+        .play_effect_for_interaction(RSX.sfx_ui_error.audio, CONFIG.ERROR_SFX_PRIORITY);
+      this._showSelectDeckWarningPopover(
+        this.ui.$deckSelectConfirm,
+        i18next.t('game_setup.must_select_deck_message'),
+      );
     } else {
-      audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_error.audio, CONFIG.ERROR_SFX_PRIORITY);
-      this._showSelectDeckWarningPopover(this.ui.$deckSelectConfirm, i18next.t('game_setup.must_select_deck_and_opponent_message'));
+      audio_engine
+        .current()
+        .play_effect_for_interaction(RSX.sfx_ui_error.audio, CONFIG.ERROR_SFX_PRIORITY);
+      this._showSelectDeckWarningPopover(
+        this.ui.$deckSelectConfirm,
+        i18next.t('game_setup.must_select_deck_and_opponent_message'),
+      );
     }
   },
 
@@ -247,7 +302,6 @@ var DeckSelectSinglePlayerCompositeView = DeckSelectCompositeView.extend({
   },
 
   /* endregion AI TOOLS */
-
 });
 
 // Expose the class either via CommonJS or the global object

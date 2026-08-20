@@ -10,7 +10,6 @@ TileMapMergedLarge03Sprite.create()
  *************************************************************************** */
 
 const TileMapMergedLarge03Sprite = TileMapScaledSprite.extend({
-
   ctor() {
     this._super(RSX.tile_merged_large_03.frame);
   },
@@ -18,7 +17,9 @@ const TileMapMergedLarge03Sprite = TileMapScaledSprite.extend({
 
 TileMapMergedLarge03Sprite.create = function (sprite) {
   if (sprite == null) {
-    sprite = cc.pool.getFromPool(TileMapMergedLarge03Sprite) || TileMapScaledSprite.create(new TileMapMergedLarge03Sprite());
+    sprite =
+      cc.pool.getFromPool(TileMapMergedLarge03Sprite) ||
+      TileMapScaledSprite.create(new TileMapMergedLarge03Sprite());
   }
   return sprite;
 };

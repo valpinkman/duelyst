@@ -10,7 +10,6 @@ TileMapPathMoveCornerFromStartSprite.create()
  *************************************************************************** */
 
 const TileMapPathMoveCornerFromStartSprite = TileMapScaledSprite.extend({
-
   ctor() {
     this._super(RSX.tile_path_move_corner_from_start.frame);
   },
@@ -18,7 +17,9 @@ const TileMapPathMoveCornerFromStartSprite = TileMapScaledSprite.extend({
 
 TileMapPathMoveCornerFromStartSprite.create = function (sprite) {
   if (sprite == null) {
-    sprite = cc.pool.getFromPool(TileMapPathMoveCornerFromStartSprite) || TileMapScaledSprite.create(new TileMapPathMoveCornerFromStartSprite());
+    sprite =
+      cc.pool.getFromPool(TileMapPathMoveCornerFromStartSprite) ||
+      TileMapScaledSprite.create(new TileMapPathMoveCornerFromStartSprite());
   }
   return sprite;
 };

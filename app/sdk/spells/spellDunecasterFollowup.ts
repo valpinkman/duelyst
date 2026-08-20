@@ -17,7 +17,8 @@ class SpellDunecasterFollowup extends SpellApplyModifiers {
     if (targetUnit.getBaseCardId() === Cards.Faction3.Dervish) {
       // remove ephemeral modifiers
       return Array.from<any>(targetUnit.getModifiersByClass(ModifierEphemeral)).map((mod) =>
-        this.getGameSession().removeModifier(mod));
+        this.getGameSession().removeModifier(mod),
+      );
     }
   }
 }

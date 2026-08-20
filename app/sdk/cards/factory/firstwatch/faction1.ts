@@ -85,7 +85,13 @@ class CardFactory_FirstWatchSet_Faction1 {
       card.maxHP = 3;
       card.manaCost = 2;
       card.rarityId = Rarity.Common;
-      card.setInherentModifiersContextObjects([ModifierEnemySpellWatchBuffSelf.createContextObject(1, 1, i18next.t('modifiers.faction_1_pureblade_enforcer_applied_name'))]);
+      card.setInherentModifiersContextObjects([
+        ModifierEnemySpellWatchBuffSelf.createContextObject(
+          1,
+          1,
+          i18next.t('modifiers.faction_1_pureblade_enforcer_applied_name'),
+        ),
+      ]);
     }
 
     if (identifier === Cards.Faction1.SunriseCleric) {
@@ -161,9 +167,7 @@ class CardFactory_FirstWatchSet_Faction1 {
       card.maxHP = 4;
       card.manaCost = 4;
       card.rarityId = Rarity.Rare;
-      card.setInherentModifiersContextObjects([
-        ModifierBandingRanged.createContextObject(),
-      ]);
+      card.setInherentModifiersContextObjects([ModifierBandingRanged.createContextObject()]);
       card.addKeywordClassToInclude(ModifierRanged);
     }
 
@@ -199,7 +203,12 @@ class CardFactory_FirstWatchSet_Faction1 {
       card.manaCost = 3;
       card.rarityId = Rarity.Epic;
       card.setInherentModifiersContextObjects([
-        ModifierSummonWatchIfLowAttackSummonedBuffSelf.createContextObject(2, 0, 2, i18next.t('modifiers.faction_1_aurora_applied_name')),
+        ModifierSummonWatchIfLowAttackSummonedBuffSelf.createContextObject(
+          2,
+          0,
+          2,
+          i18next.t('modifiers.faction_1_aurora_applied_name'),
+        ),
       ]);
     }
 
@@ -236,7 +245,15 @@ class CardFactory_FirstWatchSet_Faction1 {
       card.rarityId = Rarity.Rare;
       const shieldContextObject = ModifierImmuneToSpellsByEnemy.createContextObject();
       shieldContextObject.appliedName = i18next.t('modifiers.faction_1_war_judicator_applied_name');
-      card.setInherentModifiersContextObjects([Modifier.createContextObjectWithAuraForNearbyAllies([shieldContextObject], null, null, null, i18next.t('cards.faction_1_unit_war_judicator_desc'))]);
+      card.setInherentModifiersContextObjects([
+        Modifier.createContextObjectWithAuraForNearbyAllies(
+          [shieldContextObject],
+          null,
+          null,
+          null,
+          i18next.t('cards.faction_1_unit_war_judicator_desc'),
+        ),
+      ]);
     }
 
     if (identifier === Cards.Artifact.HaloBulwark) {
@@ -250,7 +267,13 @@ class CardFactory_FirstWatchSet_Faction1 {
       card.rarityId = Rarity.Legendary;
       card.durability = 3;
       card.setTargetModifiersContextObjects([
-        Modifier.createContextObjectWithAuraForNearbyAllies([ModifierForcefield.createContextObject()], null, null, null, i18next.t('cards.faction_1_artifact_halo_bulwark_desc')),
+        Modifier.createContextObjectWithAuraForNearbyAllies(
+          [ModifierForcefield.createContextObject()],
+          null,
+          null,
+          null,
+          i18next.t('cards.faction_1_artifact_halo_bulwark_desc'),
+        ),
       ]);
       card.setFXResource(['FX.Cards.Artifact.HaloBulwark']);
       card.setBaseAnimResource({
@@ -308,10 +331,10 @@ class CardFactory_FirstWatchSet_Faction1 {
       card.rarityId = Rarity.Epic;
       card.setAffectPattern(CONFIG.PATTERN_2X2);
       statContextObject = Modifier.createContextObjectWithAttributeBuffs(2, 2);
-      statContextObject.appliedName = i18next.t('modifiers.faction_1_spell_empyreal_congregation_1');
-      card.setTargetModifiersContextObjects([
-        statContextObject,
-      ]);
+      statContextObject.appliedName = i18next.t(
+        'modifiers.faction_1_spell_empyreal_congregation_1',
+      );
+      card.setTargetModifiersContextObjects([statContextObject]);
       card.spellFilterType = SpellFilterType.AllyIndirect;
       card.setFXResource(['FX.Cards.Spell.Congregation']);
       card.setBaseAnimResource({
@@ -337,9 +360,7 @@ class CardFactory_FirstWatchSet_Faction1 {
       card.cardDataOrIndexToSpawn = { id: Cards.Tile.Hallowed };
       statContextObject = Modifier.createContextObjectWithAttributeBuffs(1, 1);
       statContextObject.appliedName = i18next.t('modifiers.faction_1_spell_sanctify_1');
-      card.setTargetModifiersContextObjects([
-        statContextObject,
-      ]);
+      card.setTargetModifiersContextObjects([statContextObject]);
       card.setFXResource(['FX.Cards.Spell.Sanctify']);
       card.setBaseSoundResource({
         apply: RSX.sfx_spell_sunbloom.audio,

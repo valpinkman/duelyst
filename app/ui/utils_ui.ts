@@ -21,7 +21,9 @@ const UtilsEngine = require('app/common/utils/utils_engine');
  * @param {String|DOM|jQuery} [scrollTargetSelectorOrElement=selectorOrElement]
  */
 UtilsUI.overlayScrollbars = function (selectorOrElement, scrollTargetSelectorOrElement) {
-  if (scrollTargetSelectorOrElement == null) { scrollTargetSelectorOrElement = selectorOrElement; }
+  if (scrollTargetSelectorOrElement == null) {
+    scrollTargetSelectorOrElement = selectorOrElement;
+  }
   const $els = $(selectorOrElement);
   $(scrollTargetSelectorOrElement).each((i, scrollTarget) => {
     const $scrollTarget = $(scrollTarget);
@@ -35,9 +37,13 @@ UtilsUI.overlayScrollbars = function (selectorOrElement, scrollTargetSelectorOrE
 
     // initialize scrolling
     if ($scrollTarget.children('.scrollable-inner').length === 0) {
-      $scrollTarget.wrapInner('<div class=\'scrollable-inner\'></div>');
-      $scrollTarget.append('<div class=\'scrollable-bar-horizontal\'><div class=\'scrollable-bar-horizontal-inner\'></div></div>');
-      $scrollTarget.append('<div class=\'scrollable-bar-vertical\'><div class=\'scrollable-bar-vertical-inner\'></div></div>');
+      $scrollTarget.wrapInner("<div class='scrollable-inner'></div>");
+      $scrollTarget.append(
+        "<div class='scrollable-bar-horizontal'><div class='scrollable-bar-horizontal-inner'></div></div>",
+      );
+      $scrollTarget.append(
+        "<div class='scrollable-bar-vertical'><div class='scrollable-bar-vertical-inner'></div></div>",
+      );
       $scrollTarget.addClass('scrollable');
       $scrollTarget.data('width', 0);
       $scrollTarget.data('height', 0);
@@ -50,7 +56,9 @@ UtilsUI.overlayScrollbars = function (selectorOrElement, scrollTargetSelectorOrE
     const $scrollbarVertical = $scrollTarget.children('.scrollable-bar-vertical');
     const $scrollbarVerticalInner = $scrollbarVertical.children('.scrollable-bar-vertical-inner');
     const $scrollbarHorizontal = $scrollTarget.children('.scrollable-bar-horizontal');
-    const $scrollbarHorizontalInner = $scrollbarHorizontal.children('.scrollable-bar-horizontal-inner');
+    const $scrollbarHorizontalInner = $scrollbarHorizontal.children(
+      '.scrollable-bar-horizontal-inner',
+    );
 
     // measure element size
     const width = $scrollTarget.width();
@@ -59,10 +67,12 @@ UtilsUI.overlayScrollbars = function (selectorOrElement, scrollTargetSelectorOrE
     const { scrollHeight } = $inner[0];
 
     // check if anything has changed since last time
-    if ($scrollTarget.data('width') === width
-      && $scrollTarget.data('height') === height
-      && $scrollTarget.data('scrollWidth') === scrollWidth
-      && $scrollTarget.data('scrollHeight') === scrollHeight) {
+    if (
+      $scrollTarget.data('width') === width &&
+      $scrollTarget.data('height') === height &&
+      $scrollTarget.data('scrollWidth') === scrollWidth &&
+      $scrollTarget.data('scrollHeight') === scrollHeight
+    ) {
       return;
     }
 
@@ -99,8 +109,14 @@ UtilsUI.overlayScrollbars = function (selectorOrElement, scrollTargetSelectorOrE
       // setup inner sync
       if (needsScrollVertical && needsScrollHorizontal) {
         $el.on('wheel', (event) => {
-          const scrollTop = Math.min(maxScrollVertical, Math.max(0.0, $inner.scrollTop() + event.originalEvent.deltaY));
-          const scrollLeft = Math.min(maxScrollHorizontal, Math.max(0.0, $inner.scrollLeft() + event.originalEvent.deltaX));
+          const scrollTop = Math.min(
+            maxScrollVertical,
+            Math.max(0.0, $inner.scrollTop() + event.originalEvent.deltaY),
+          );
+          const scrollLeft = Math.min(
+            maxScrollHorizontal,
+            Math.max(0.0, $inner.scrollLeft() + event.originalEvent.deltaX),
+          );
 
           $inner.scrollTop(scrollTop);
           $inner.scrollLeft(scrollLeft);
@@ -110,13 +126,19 @@ UtilsUI.overlayScrollbars = function (selectorOrElement, scrollTargetSelectorOrE
         });
       } else if (needsScrollVertical) {
         $el.on('wheel', (event) => {
-          const scrollTop = Math.min(maxScrollVertical, Math.max(0.0, $inner.scrollTop() + event.originalEvent.deltaY));
+          const scrollTop = Math.min(
+            maxScrollVertical,
+            Math.max(0.0, $inner.scrollTop() + event.originalEvent.deltaY),
+          );
           $inner.scrollTop(scrollTop);
           $scrollbarVertical.scrollTop(scrollTop);
         });
       } else if (needsScrollHorizontal) {
         $el.on('wheel', (event) => {
-          const scrollLeft = Math.min(maxScrollHorizontal, Math.max(0.0, $inner.scrollLeft() + event.originalEvent.deltaX));
+          const scrollLeft = Math.min(
+            maxScrollHorizontal,
+            Math.max(0.0, $inner.scrollLeft() + event.originalEvent.deltaX),
+          );
           $inner.scrollLeft(scrollLeft);
           $scrollbarHorizontal.scrollLeft(scrollLeft);
         });
@@ -154,7 +176,9 @@ UtilsUI.overlayScrollbars = function (selectorOrElement, scrollTargetSelectorOrE
  * @param {String|DOM|jQuery} [scrollTargetSelectorOrElement=selectorOrElement]
  */
 UtilsUI.removeOverlayScrollbars = function (selectorOrElement, scrollTargetSelectorOrElement) {
-  if (scrollTargetSelectorOrElement == null) { scrollTargetSelectorOrElement = selectorOrElement; }
+  if (scrollTargetSelectorOrElement == null) {
+    scrollTargetSelectorOrElement = selectorOrElement;
+  }
   const $els = $(selectorOrElement);
   $(scrollTargetSelectorOrElement).each((i, scrollTarget) => {
     const $scrollTarget = $(scrollTarget);
@@ -170,7 +194,10 @@ UtilsUI.removeOverlayScrollbars = function (selectorOrElement, scrollTargetSelec
     $el.off('wheel');
     $scrollTarget.removeClass('scrollable');
     $scrollTarget.children('.scrollable-inner').children().unwrap();
-    $scrollTarget.children('.scrollable-bar-vertical, .scrollable-bar-horizontal').off('scroll').remove();
+    $scrollTarget
+      .children('.scrollable-bar-vertical, .scrollable-bar-horizontal')
+      .off('scroll')
+      .remove();
     $scrollTarget.children('.scrollable-bar-vertical').off('scroll').remove();
   });
 };
@@ -184,43 +211,66 @@ UtilsUI.removeOverlayScrollbars = function (selectorOrElement, scrollTargetSelec
 UtilsUI.getFactionFlavorTextWithUserStats = function (factionId, userStatsData) {
   if (factionId === SDK.Factions.Faction1) {
     let zealUnitsPlayed = 0;
-    zealUnitsPlayed += userStatsData.ranked[factionId].cardsPlayedCounts[SDK.Cards.Faction1.WindbladeAdept] || 0;
-    zealUnitsPlayed += userStatsData.ranked[factionId].cardsPlayedCounts[SDK.Cards.Faction1.SuntideMaiden] || 0;
-    zealUnitsPlayed += userStatsData.ranked[factionId].cardsPlayedCounts[SDK.Cards.Faction1.SilverguardKnight] || 0;
-    zealUnitsPlayed += userStatsData.ranked[factionId].cardsPlayedCounts[SDK.Cards.Faction1.WindbladeCommander] || 0;
-    zealUnitsPlayed += userStatsData.ranked[factionId].cardsPlayedCounts[SDK.Cards.Faction1.Sunriser] || 0;
+    zealUnitsPlayed +=
+      userStatsData.ranked[factionId].cardsPlayedCounts[SDK.Cards.Faction1.WindbladeAdept] || 0;
+    zealUnitsPlayed +=
+      userStatsData.ranked[factionId].cardsPlayedCounts[SDK.Cards.Faction1.SuntideMaiden] || 0;
+    zealUnitsPlayed +=
+      userStatsData.ranked[factionId].cardsPlayedCounts[SDK.Cards.Faction1.SilverguardKnight] || 0;
+    zealUnitsPlayed +=
+      userStatsData.ranked[factionId].cardsPlayedCounts[SDK.Cards.Faction1.WindbladeCommander] || 0;
+    zealUnitsPlayed +=
+      userStatsData.ranked[factionId].cardsPlayedCounts[SDK.Cards.Faction1.Sunriser] || 0;
     // Lyonar reports the number of games with provokes
     return `${zealUnitsPlayed} Zealous units summoned`;
-  } if (factionId === SDK.Factions.Faction2) {
+  }
+  if (factionId === SDK.Factions.Faction2) {
     // Songhai reports the number of games with backstabs
     let backstabUnitsPlayed = 0;
-    backstabUnitsPlayed += userStatsData.ranked[factionId].cardsPlayedCounts[SDK.Cards.Faction2.KaidoAssassin] || 0;
-    backstabUnitsPlayed += userStatsData.ranked[factionId].cardsPlayedCounts[SDK.Cards.Faction2.ScarletViper] || 0;
-    backstabUnitsPlayed += userStatsData.ranked[factionId].cardsPlayedCounts[SDK.Cards.Faction2.GoreHorn] || 0;
+    backstabUnitsPlayed +=
+      userStatsData.ranked[factionId].cardsPlayedCounts[SDK.Cards.Faction2.KaidoAssassin] || 0;
+    backstabUnitsPlayed +=
+      userStatsData.ranked[factionId].cardsPlayedCounts[SDK.Cards.Faction2.ScarletViper] || 0;
+    backstabUnitsPlayed +=
+      userStatsData.ranked[factionId].cardsPlayedCounts[SDK.Cards.Faction2.GoreHorn] || 0;
     return `${backstabUnitsPlayed} Assassins summoned`;
-  } if (factionId === SDK.Factions.Faction3) {
+  }
+  if (factionId === SDK.Factions.Faction3) {
     // Vetruvian reports the number of games with dervishes
-    const dervishesSummoned = userStatsData.ranked[factionId].cardsPlayedCounts[SDK.Cards.Faction3.Dervish] || 0;
+    const dervishesSummoned =
+      userStatsData.ranked[factionId].cardsPlayedCounts[SDK.Cards.Faction3.Dervish] || 0;
     return `${dervishesSummoned} Ethereal Dervishes manifested`;
-  } if (factionId === SDK.Factions.Faction4) {
+  }
+  if (factionId === SDK.Factions.Faction4) {
     // Abyssian reports the number of games with wraithlings
-    const wraithlingsSpawned = userStatsData.ranked[factionId].cardsPlayedCounts[SDK.Cards.Faction4.Wraithling] || 0;
+    const wraithlingsSpawned =
+      userStatsData.ranked[factionId].cardsPlayedCounts[SDK.Cards.Faction4.Wraithling] || 0;
     return `${wraithlingsSpawned} Wraithlings spawned`;
-  } if (factionId === SDK.Factions.Faction5) {
+  }
+  if (factionId === SDK.Factions.Faction5) {
     // Magmar reports the number of games with rebirth
     let rebirthersSummoned = 0;
-    rebirthersSummoned += userStatsData.ranked[factionId].cardsPlayedCounts[SDK.Cards.Faction5.YoungSilithar] || 0;
-    rebirthersSummoned += userStatsData.ranked[factionId].cardsPlayedCounts[SDK.Cards.Faction5.VeteranSilithar] || 0;
-    rebirthersSummoned += userStatsData.ranked[factionId].cardsPlayedCounts[SDK.Cards.Faction5.SilitharElder] || 0;
+    rebirthersSummoned +=
+      userStatsData.ranked[factionId].cardsPlayedCounts[SDK.Cards.Faction5.YoungSilithar] || 0;
+    rebirthersSummoned +=
+      userStatsData.ranked[factionId].cardsPlayedCounts[SDK.Cards.Faction5.VeteranSilithar] || 0;
+    rebirthersSummoned +=
+      userStatsData.ranked[factionId].cardsPlayedCounts[SDK.Cards.Faction5.SilitharElder] || 0;
     return `${rebirthersSummoned} Rebirth units summoned`;
-  } if (factionId === SDK.Factions.Faction6) {
+  }
+  if (factionId === SDK.Factions.Faction6) {
     // Vanar reports the number of games with inflitration
     let infilitratorsSummoned = 0;
-    infilitratorsSummoned += userStatsData.ranked[factionId].cardsPlayedCounts[SDK.Cards.Faction6.Ravager] || 0;
-    infilitratorsSummoned += userStatsData.ranked[factionId].cardsPlayedCounts[SDK.Cards.Faction6.GhostWolf] || 0;
-    infilitratorsSummoned += userStatsData.ranked[factionId].cardsPlayedCounts[SDK.Cards.Faction6.Cloaker] || 0;
-    infilitratorsSummoned += userStatsData.ranked[factionId].cardsPlayedCounts[SDK.Cards.Faction6.WyrBeast] || 0;
-    infilitratorsSummoned += userStatsData.ranked[factionId].cardsPlayedCounts[SDK.Cards.Faction6.WolfRaven] || 0;
+    infilitratorsSummoned +=
+      userStatsData.ranked[factionId].cardsPlayedCounts[SDK.Cards.Faction6.Ravager] || 0;
+    infilitratorsSummoned +=
+      userStatsData.ranked[factionId].cardsPlayedCounts[SDK.Cards.Faction6.GhostWolf] || 0;
+    infilitratorsSummoned +=
+      userStatsData.ranked[factionId].cardsPlayedCounts[SDK.Cards.Faction6.Cloaker] || 0;
+    infilitratorsSummoned +=
+      userStatsData.ranked[factionId].cardsPlayedCounts[SDK.Cards.Faction6.WyrBeast] || 0;
+    infilitratorsSummoned +=
+      userStatsData.ranked[factionId].cardsPlayedCounts[SDK.Cards.Faction6.WolfRaven] || 0;
     return `${infilitratorsSummoned} Infiltrators summoned`;
   }
   return 'Flavor Text - Unknown Faction';
@@ -454,9 +504,23 @@ UtilsUI.getCocosSpriteFrameData = function (spriteFrame) {
  * @param {Boolean} [scale] scale to draw at (defaults internally to CONFIG.SCALE)
  * @returns {glData}
  */
-UtilsUI.showCocosSprite = function ($element, glData, spriteData, callback, animated, card, specialSpriteData, specialSound, scale) {
-  if (animated == null) { animated = true; }
-  if (scale == null) { scale = CONFIG.SCALE; }
+UtilsUI.showCocosSprite = function (
+  $element,
+  glData,
+  spriteData,
+  callback,
+  animated,
+  card,
+  specialSpriteData,
+  specialSound,
+  scale,
+) {
+  if (animated == null) {
+    animated = true;
+  }
+  if (scale == null) {
+    scale = CONFIG.SCALE;
+  }
 
   // reset gl data
   UtilsUI.resetCocosSprite(glData);
@@ -464,7 +528,9 @@ UtilsUI.showCocosSprite = function ($element, glData, spriteData, callback, anim
   if ($element instanceof $ && spriteData != null && spriteData.frames.length > 0) {
     const cardOptions = card && card.getCardOptions();
     let offset = cardOptions && cardOptions.offset;
-    if (offset == null) { offset = { x: 0, y: 0 }; }
+    if (offset == null) {
+      offset = { x: 0, y: 0 };
+    }
 
     const frame = spriteData.frames[0];
     let width;
@@ -514,13 +580,18 @@ UtilsUI.showCocosSprite = function ($element, glData, spriteData, callback, anim
       if (glData.$element == null || !glData.$element.is($element)) glData.$element = $element;
       if (glData.callback !== callback) glData.callback = callback;
       if (glData.height !== height) glData.height = height;
-      if (offset != null && (glData.offset == null || glData.offset.x !== offset.x || glData.offset.y !== offset.y)) glData.offset = offset;
+      if (
+        offset != null &&
+        (glData.offset == null || glData.offset.x !== offset.x || glData.offset.y !== offset.y)
+      )
+        glData.offset = offset;
       if (glData.specialSpriteData !== spriteData) glData.specialSpriteData = specialSpriteData;
       if (glData.specialSoundData !== spriteData) glData.specialSoundData = { sound: specialSound };
       if (glData.spriteData !== spriteData) glData.spriteData = spriteData;
       if (glData.scale !== scale) glData.scale = scale;
       if (glData.width !== width) glData.width = width;
-      glData.specialShown = glData.specialSpriteData == null || glData.specialSpriteData === glData.spriteData;
+      glData.specialShown =
+        glData.specialSpriteData == null || glData.specialSpriteData === glData.spriteData;
     }
 
     glData.currentSpriteData = glData.spriteData;

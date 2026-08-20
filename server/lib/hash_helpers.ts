@@ -22,7 +22,8 @@ const compareAsync = promisify(bcrypt.compare);
  * @param  {Function}  [callback]        Optional callback(err,hash)
  * @return  {Promise}              Promise returning hash
  */
-module.exports.generateHash = (password, callback) => genSaltAsync(10).then((salt) => PromiseUtils.nodeify(hashAsync(password, salt), callback));
+module.exports.generateHash = (password, callback) =>
+  genSaltAsync(10).then((salt) => PromiseUtils.nodeify(hashAsync(password, salt), callback));
 
 /**
  * Compare a password against a bcrypt hash
@@ -33,4 +34,5 @@ module.exports.generateHash = (password, callback) => genSaltAsync(10).then((sal
  * @param  {Function}  [callback]        Optional callback(err,match)
  * @return  {Promise}              Promise returning true/false
  */
-module.exports.comparePassword = (password, hash, callback) => PromiseUtils.nodeify(compareAsync(password, hash), callback);
+module.exports.comparePassword = (password, hash, callback) =>
+  PromiseUtils.nodeify(compareAsync(password, hash), callback);

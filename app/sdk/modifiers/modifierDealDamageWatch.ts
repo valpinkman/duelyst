@@ -38,9 +38,11 @@ class ModifierDealDamageWatch extends Modifier {
 
   getIsActionRelevant(a) {
     // check if this action will deal damage
-    let isRelevant = a instanceof DamageAction && (a.getSource() === this.getCard()) && this.willDealDamage(a);
-    if (this.enemyOnly) { // check that target of damage action is an enemy
-      isRelevant = isRelevant && (a.getTarget().getOwnerId() !== this.getCard().getOwnerId());
+    let isRelevant =
+      a instanceof DamageAction && a.getSource() === this.getCard() && this.willDealDamage(a);
+    if (this.enemyOnly) {
+      // check that target of damage action is an enemy
+      isRelevant = isRelevant && a.getTarget().getOwnerId() !== this.getCard().getOwnerId();
     }
     return isRelevant;
   }

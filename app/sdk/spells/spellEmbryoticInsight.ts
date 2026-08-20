@@ -17,7 +17,11 @@ class SpellEmbryoticInsight extends Spell {
     return (() => {
       const result = [];
       for (var unit of Array.from<any>(this.getGameSession().getBoard().getUnits())) {
-        if ((unit.getOwnerId() === this.getOwnerId()) && !unit.getIsGeneral() && (unit.getBaseCardId() === Cards.Faction5.Egg)) {
+        if (
+          unit.getOwnerId() === this.getOwnerId() &&
+          !unit.getIsGeneral() &&
+          unit.getBaseCardId() === Cards.Faction5.Egg
+        ) {
           var drawAction1 = player.getDeck().actionDrawCard();
           this.getGameSession().executeAction(drawAction1);
           var drawAction2 = player.getDeck().actionDrawCard();

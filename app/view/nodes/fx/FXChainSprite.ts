@@ -45,9 +45,15 @@ var FXChainSprite = FXSprite.extend({
   setOptions(options) {
     this._super(options);
 
-    if (options.numSegments) { this.setNumSegments(options.numSegments); }
-    if (typeof options.autoSegment !== 'undefined') { this.setAutoSegment(options.autoSegment); }
-    if (typeof options.autoSegmentThreshold !== 'undefined') { this.setAutoSegmentThreshold(options.autoSegmentThreshold); }
+    if (options.numSegments) {
+      this.setNumSegments(options.numSegments);
+    }
+    if (typeof options.autoSegment !== 'undefined') {
+      this.setAutoSegment(options.autoSegment);
+    }
+    if (typeof options.autoSegmentThreshold !== 'undefined') {
+      this.setAutoSegmentThreshold(options.autoSegmentThreshold);
+    }
   },
 
   getNodeToParentTransform() {
@@ -240,7 +246,10 @@ var FXChainSprite = FXSprite.extend({
     this.setFlippedX(false);
 
     // static segment mode
-    const diff = cc.p(targetScreenPosition.x - sourceScreenPosition.x, targetScreenPosition.y - sourceScreenPosition.y);
+    const diff = cc.p(
+      targetScreenPosition.x - sourceScreenPosition.x,
+      targetScreenPosition.y - sourceScreenPosition.y,
+    );
     const length = cc.kmVec2Length(diff);
     const rect = this.getTextureRect();
     const worldTransform = this.nodeToWorldTransform();
@@ -255,7 +264,7 @@ var FXChainSprite = FXSprite.extend({
       this.numSegments = Math.ceil(lengthPct / this.autoSegmentThreshold);
     }
 
-    const t = ((this._segmentIndex + 1.0) / this.numSegments);
+    const t = (this._segmentIndex + 1.0) / this.numSegments;
     segmentPosition.x = sourceScreenPosition.x * (1.0 - t) + targetScreenPosition.x * t;
     segmentPosition.y = sourceScreenPosition.y * (1.0 - t) + targetScreenPosition.y * t;
 
@@ -271,7 +280,7 @@ var FXChainSprite = FXSprite.extend({
 
     // set final properties
     this.setPosition(segmentPosition);
-    this.setRotation(-Math.atan2(diff.y, diff.x) * 180 / Math.PI);
+    this.setRotation((-Math.atan2(diff.y, diff.x) * 180) / Math.PI);
   },
   startAnimation() {
     if (!this.duration) {

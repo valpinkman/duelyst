@@ -23,7 +23,13 @@ const ScoreForIntents = require('./intents');
  * @static
  * @public
  */
-const ScoreForIntentFollowup = function (card, targetPosition, cardIntents, allFollowupCards, bestFollowupPositions) {
+const ScoreForIntentFollowup = function (
+  card,
+  targetPosition,
+  cardIntents,
+  allFollowupCards,
+  bestFollowupPositions,
+) {
   const cardId = card.getBaseCardId();
   const scoreAndFollowups = {
     score: 0,
@@ -32,7 +38,10 @@ const ScoreForIntentFollowup = function (card, targetPosition, cardIntents, allF
   };
 
   // cards can only have a single follow-up intent
-  const validIntents = cardIntents != null ? CardIntent.filterIntentsByIntentType(cardIntents, CardIntentType.Followup) : CardIntent.getIntentsByIntentType(cardId, CardIntentType.Followup);
+  const validIntents =
+    cardIntents != null
+      ? CardIntent.filterIntentsByIntentType(cardIntents, CardIntentType.Followup)
+      : CardIntent.getIntentsByIntentType(cardId, CardIntentType.Followup);
   const intent = validIntents[0];
   if (intent != null) {
     // inject properties into card to simulate card being played
@@ -78,14 +87,29 @@ const ScoreForIntentFollowup = function (card, targetPosition, cardIntents, allF
     // process all followup intents
     // intents that do not have an intent of followup should always process first
     const followupIntents = intent.followups;
-    const followupIntentsWithIntentFollowup = _.groupBy(followupIntents, (intent) => intent.type === CardIntentType.Followup);
+    const followupIntentsWithIntentFollowup = _.groupBy(
+      followupIntents,
+      (intent) => intent.type === CardIntentType.Followup,
+    );
     const intentsFollowup = followupIntentsWithIntentFollowup.true;
     const notIntentsFollowup = followupIntentsWithIntentFollowup.false;
     if (notIntentsFollowup != null && notIntentsFollowup.length > 0) {
-      findBestFollowup(targetPosition, notIntentsFollowup, scoreAndFollowups, allFollowupCards, bestFollowupPositions);
+      findBestFollowup(
+        targetPosition,
+        notIntentsFollowup,
+        scoreAndFollowups,
+        allFollowupCards,
+        bestFollowupPositions,
+      );
     }
     if (intentsFollowup != null && intentsFollowup.length > 0) {
-      findBestFollowup(targetPosition, intentsFollowup, scoreAndFollowups, allFollowupCards, bestFollowupPositions);
+      findBestFollowup(
+        targetPosition,
+        intentsFollowup,
+        scoreAndFollowups,
+        allFollowupCards,
+        bestFollowupPositions,
+      );
     }
 
     // finished and at root card
@@ -104,7 +128,13 @@ const ScoreForIntentFollowup = function (card, targetPosition, cardIntents, allF
   return scoreAndFollowups;
 };
 
-const findBestFollowup = function (followupSourcePosition, followupIntents, scoreAndFollowups, allFollowupCards, bestFollowupPositions) {
+const findBestFollowup = function (
+  followupSourcePosition,
+  followupIntents,
+  scoreAndFollowups,
+  allFollowupCards,
+  bestFollowupPositions,
+) {
   const followupScores = {};
   const followupSubScoreAndFollowups = {};
   let bestFollowupScore;
@@ -131,7 +161,9 @@ const findBestFollowup = function (followupSourcePosition, followupIntents, scor
     if (validTargetPositions.length > 0) {
       // card that can be applied anywhere and have only "all" targeted intents should only use a single random valid target position
       if (canCardAndEffectsBeAppliedAnywhere(followupCard, [followupIntent])) {
-        validTargetPositions = [validTargetPositions[Math.floor(Math.random() * validTargetPositions.length)]];
+        validTargetPositions = [
+          validTargetPositions[Math.floor(Math.random() * validTargetPositions.length)],
+        ];
       }
 
       for (let j = 0, jl = validTargetPositions.length; j < jl; j++) {
@@ -146,14 +178,20 @@ const findBestFollowup = function (followupSourcePosition, followupIntents, scor
         }
         let subScoreAndFollowups;
         if (followupIntent.type === CardIntentType.Followup) {
-          subScoreAndFollowups = ScoreForIntentFollowup(followupCard, followupTargetPosition, [followupIntent], allFollowupCards, bestFollowupPositions);
+          subScoreAndFollowups = ScoreForIntentFollowup(
+            followupCard,
+            followupTargetPosition,
+            [followupIntent],
+            allFollowupCards,
+            bestFollowupPositions,
+          );
         } else {
           subScoreAndFollowups = {
             score: ScoreForIntents(followupCard, followupTargetPosition, [followupIntent]),
             position: followupTargetPosition,
           };
         }
-        const totalFollowupScore = followupScores[followupScoreKey] += subScoreAndFollowups.score;
+        const totalFollowupScore = (followupScores[followupScoreKey] += subScoreAndFollowups.score);
         followupSubScoreAndFollowupsAtPos.push(subScoreAndFollowups);
         if (bestFollowupScore == null || totalFollowupScore > bestFollowupScore) {
           bestFollowupScore = totalFollowupScore;
@@ -180,7 +218,10 @@ const findBestFollowup = function (followupSourcePosition, followupIntents, scor
         // multi-push instead of concat to preserve original array
         // we're passing this array to all recursive calls
         // so we need to ensure we continue using this array
-        scoreAndFollowups.followupPositions.push.apply(scoreAndFollowups.followupPositions, subFollowupPositions);
+        scoreAndFollowups.followupPositions.push.apply(
+          scoreAndFollowups.followupPositions,
+          subFollowupPositions,
+        );
       }
     }
   }
@@ -200,7 +241,9 @@ const setupFollowupCard = function (rootCard, parentCard, followupCard, followup
   // followup cards need a parent card
   // but because we're not playing these followup cards
   // we have to override the parent card getter method to return this parent card
-  followupCard.getParentCard = function () { return parentCard; };
+  followupCard.getParentCard = function () {
+    return parentCard;
+  };
 
   // special followup cases
   if (followupCard instanceof SpellCloneSourceEntity) {

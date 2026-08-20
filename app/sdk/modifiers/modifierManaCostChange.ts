@@ -18,7 +18,9 @@ class ModifierManaCostChange extends Modifier {
   static type = 'ModifierManaCostChange';
 
   static createContextObject(costChange, options) {
-    if (costChange == null) { costChange = 0; }
+    if (costChange == null) {
+      costChange = 0;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.attributeBuffs = { manaCost: costChange };
     return contextObject;
@@ -28,11 +30,15 @@ class ModifierManaCostChange extends Modifier {
     if (modifierContextObject) {
       const costChange = modifierContextObject.attributeBuffs.manaCost;
       if (costChange >= 0) {
-        if ((modifierContextObject.attributeBuffsAbsolute != null) && _.contains(modifierContextObject.attributeBuffsAbsolute, 'manaCost')) {
+        if (
+          modifierContextObject.attributeBuffsAbsolute != null &&
+          _.contains(modifierContextObject.attributeBuffsAbsolute, 'manaCost')
+        ) {
           return i18next.t('modifiers.mana_shift_set', { amount: Math.abs(costChange) });
         }
         return i18next.t('modifiers.mana_shift_plus', { amount: Math.abs(costChange) });
-      } if (costChange < 0) {
+      }
+      if (costChange < 0) {
         return i18next.t('modifiers.mana_shift_minus', { amount: Math.abs(costChange) });
       }
     }
@@ -40,12 +46,10 @@ class ModifierManaCostChange extends Modifier {
 
   _onAfterAction(event) {
     // destroy this modifier if the card it is applied to has been played
-    const {
-      action,
-    } = event;
+    const { action } = event;
     if (this.getCard().getIsPlayed()) {
       const appliedByActionIndex = this.getCard().getAppliedToBoardByActionIndex();
-      if ((appliedByActionIndex === -1) || (action.getIndex() === appliedByActionIndex)) {
+      if (appliedByActionIndex === -1 || action.getIndex() === appliedByActionIndex) {
         this.getGameSession().removeModifier(this);
         return;
       }

@@ -12,16 +12,21 @@ class ModifierDealDamageWatchIfMinionHealMyGeneral extends ModifierDealDamageWat
 
   static type = 'ModifierDealDamageWatchIfMinionHealMyGeneral';
   static modifierName = 'Deal Damage Watch';
-  static description = 'Whenever this minion deals damage to a minion, restore Health to your General';
+  static description =
+    'Whenever this minion deals damage to a minion, restore Health to your General';
 
   onDealDamage(action) {
     const target = action.getTarget();
-    if ((target != null) && !target.getIsGeneral()) {
+    if (target != null && !target.getIsGeneral()) {
       return super.onDealDamage(action);
     }
   }
 }
-ModifierDealDamageWatchIfMinionHealMyGeneral.prototype.type = 'ModifierDealDamageWatchIfMinionHealMyGeneral';
-ModifierDealDamageWatchIfMinionHealMyGeneral.prototype.fxResource = ['FX.Modifiers.ModifierDealDamageWatch', 'FX.Modifiers.ModifierGenericHeal'];
+ModifierDealDamageWatchIfMinionHealMyGeneral.prototype.type =
+  'ModifierDealDamageWatchIfMinionHealMyGeneral';
+ModifierDealDamageWatchIfMinionHealMyGeneral.prototype.fxResource = [
+  'FX.Modifiers.ModifierDealDamageWatch',
+  'FX.Modifiers.ModifierGenericHeal',
+];
 
 module.exports = ModifierDealDamageWatchIfMinionHealMyGeneral;

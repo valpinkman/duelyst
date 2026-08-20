@@ -43,7 +43,10 @@ const getScoreForDispelFromCardWithIntentToCard = function (card, intent, target
 const ScoreForIntentDispel = function (card, targetPosition, cardIntents) {
   let score = 0;
   const cardId = card.getBaseCardId();
-  const validIntents = cardIntents != null ? CardIntent.filterIntentsByIntentType(cardIntents, CardIntentType.Dispel) : CardIntent.getIntentsByIntentType(cardId, CardIntentType.Dispel);
+  const validIntents =
+    cardIntents != null
+      ? CardIntent.filterIntentsByIntentType(cardIntents, CardIntentType.Dispel)
+      : CardIntent.getIntentsByIntentType(cardId, CardIntentType.Dispel);
 
   _.each(validIntents, (intent) => {
     const cards = CardIntent.getCardsTargetedByCardWithIntent(card, intent, targetPosition);

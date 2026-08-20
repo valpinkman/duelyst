@@ -13,10 +13,15 @@ class ModifierSummonWatchFromActionBarApplyModifiers extends ModifierSummonWatch
   static description = 'Minions summoned from your action bar, gain %X';
 
   getIsActionRelevant(action) {
-    return action instanceof PlayCardFromHandAction && (action.getCard() !== this.getCard()) && super.getIsActionRelevant(action);
+    return (
+      action instanceof PlayCardFromHandAction &&
+      action.getCard() !== this.getCard() &&
+      super.getIsActionRelevant(action)
+    );
   }
 }
-ModifierSummonWatchFromActionBarApplyModifiers.prototype.type = 'ModifierSummonWatchFromActionBarApplyModifiers';
+ModifierSummonWatchFromActionBarApplyModifiers.prototype.type =
+  'ModifierSummonWatchFromActionBarApplyModifiers';
 // watch for a unit being summoned from action bar by the player who owns this entity, don't trigger on summon of this unit
 
 module.exports = ModifierSummonWatchFromActionBarApplyModifiers;

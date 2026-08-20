@@ -21,7 +21,6 @@ var openUrl = require('app/common/openUrl');
 var Template = require('./templates/shop_premium_packs_collection_view.hbs');
 
 var ShopPremiumPacksCollectionView = Backbone.Marionette.ItemView.extend({
-
   className: 'shop-premium-packs-container',
   selectedSubCategory: null,
   initialSubCategory: null,
@@ -46,8 +45,7 @@ var ShopPremiumPacksCollectionView = Backbone.Marionette.ItemView.extend({
     return data;
   },
 
-  initialize: function (opts) {
-  },
+  initialize: function (opts) {},
 
   onRender: function () {
     this.onWalletChange();
@@ -58,22 +56,17 @@ var ShopPremiumPacksCollectionView = Backbone.Marionette.ItemView.extend({
     this.onWalletChange();
   },
 
-  onPrepareForDestroy: function () {
-  },
+  onPrepareForDestroy: function () {},
 
-  onWalletChange: function () {
-  },
+  onWalletChange: function () {},
 
   /* region PURCHASE */
 
-  onSelectProduct: function (e) {
-  },
+  onSelectProduct: function (e) {},
 
-  onPurchaseComplete: function (purchaseData) {
-  },
+  onPurchaseComplete: function (purchaseData) {},
 
   /* endregion PURCHASE */
-
 });
 
 module.exports = ShopPremiumPacksCollectionView;

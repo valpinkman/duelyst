@@ -31,18 +31,22 @@ class ModifierDealDamageWatchApplyModifiersToAllies extends ModifierDealDamageWa
     }
 
     // apply to friendly minions and General
-    const friendlyEntities = this.getGameSession().getBoard().getFriendlyEntitiesForEntity(this.getCard());
+    const friendlyEntities = this.getGameSession()
+      .getBoard()
+      .getFriendlyEntitiesForEntity(this.getCard());
     return (() => {
       const result = [];
       for (var entity of Array.from<any>(friendlyEntities)) {
         if (!entity.getIsGeneral() || this.includeGeneral) {
-          result.push((() => {
-            const result1 = [];
-            for (modifier of Array.from<any>(this.modifierContextObjects)) {
-              result1.push(this.getGameSession().applyModifierContextObject(modifier, entity));
-            }
-            return result1;
-          })());
+          result.push(
+            (() => {
+              const result1 = [];
+              for (modifier of Array.from<any>(this.modifierContextObjects)) {
+                result1.push(this.getGameSession().applyModifierContextObject(modifier, entity));
+              }
+              return result1;
+            })(),
+          );
         } else {
           result.push(undefined);
         }
@@ -51,7 +55,8 @@ class ModifierDealDamageWatchApplyModifiersToAllies extends ModifierDealDamageWa
     })();
   }
 }
-ModifierDealDamageWatchApplyModifiersToAllies.prototype.type = 'ModifierDealDamageWatchApplyModifiersToAllies';
+ModifierDealDamageWatchApplyModifiersToAllies.prototype.type =
+  'ModifierDealDamageWatchApplyModifiersToAllies';
 ModifierDealDamageWatchApplyModifiersToAllies.prototype.modifierContextObjects = null;
 ModifierDealDamageWatchApplyModifiersToAllies.prototype.includeGeneral = false;
 

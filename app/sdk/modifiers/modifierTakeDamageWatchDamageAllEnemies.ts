@@ -34,7 +34,9 @@ class ModifierTakeDamageWatchDamageAllEnemies extends ModifierTakeDamageWatch {
   onDamageTaken(action) {
     return (() => {
       const result = [];
-      for (var enemyMinion of Array.from<any>(this.getGameSession().getBoard().getEnemyEntitiesForEntity(this.getCard(), CardType.Unit))) {
+      for (var enemyMinion of Array.from<any>(
+        this.getGameSession().getBoard().getEnemyEntitiesForEntity(this.getCard(), CardType.Unit),
+      )) {
         var damageAction = new DamageAction(this.getGameSession());
         damageAction.setOwnerId(this.getCard().getOwnerId());
         damageAction.setSource(this.getCard());
@@ -47,6 +49,9 @@ class ModifierTakeDamageWatchDamageAllEnemies extends ModifierTakeDamageWatch {
   }
 }
 ModifierTakeDamageWatchDamageAllEnemies.prototype.type = 'ModifierTakeDamageWatchDamageAllEnemies';
-ModifierTakeDamageWatchDamageAllEnemies.prototype.fxResource = ['FX.Modifiers.ModifierTakeDamageWatch', 'FX.Modifiers.ModifierGenericDamage'];
+ModifierTakeDamageWatchDamageAllEnemies.prototype.fxResource = [
+  'FX.Modifiers.ModifierTakeDamageWatch',
+  'FX.Modifiers.ModifierGenericDamage',
+];
 
 module.exports = ModifierTakeDamageWatchDamageAllEnemies;

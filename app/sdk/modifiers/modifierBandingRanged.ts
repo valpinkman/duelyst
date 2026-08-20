@@ -14,7 +14,9 @@ class ModifierBandingRanged extends ModifierBanding {
   static type = 'ModifierBandingRanged';
 
   static createContextObject(options) {
-    if (options == null) { options = undefined; }
+    if (options == null) {
+      options = undefined;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.modifiersContextObjects = [ModifierBandedRanged.createContextObject()];
     return contextObject;
@@ -25,6 +27,9 @@ class ModifierBandingRanged extends ModifierBanding {
   }
 }
 ModifierBandingRanged.prototype.type = 'ModifierBandingRanged';
-ModifierBandingRanged.prototype.fxResource = ['FX.Modifiers.ModifierZeal', 'FX.Modifiers.ModifierZealRanged'];
+ModifierBandingRanged.prototype.fxResource = [
+  'FX.Modifiers.ModifierZeal',
+  'FX.Modifiers.ModifierZealRanged',
+];
 
 module.exports = ModifierBandingRanged;

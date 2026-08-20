@@ -38,16 +38,21 @@ describe('quests module', () => {
       .then((userIdCreated) => {
         Logger.module('UNITTEST').log('created user ', userIdCreated);
         userId = userIdCreated;
-      }).catch(onType(Errors.AlreadyExistsError, (error) => {
-        Logger.module('UNITTEST').log('existing user');
-        return UsersModule.userIdForUsername('unittest').then((userIdExisting) => {
-          Logger.module('UNITTEST').log('existing user retrieved', userIdExisting);
-          userId = userIdExisting;
-          return SyncModule.wipeUserData(userIdExisting);
-        }).then(() => {
-          Logger.module('UNITTEST').log('existing user data wiped', userId);
-        });
-      }));
+      })
+      .catch(
+        onType(Errors.AlreadyExistsError, (error) => {
+          Logger.module('UNITTEST').log('existing user');
+          return UsersModule.userIdForUsername('unittest')
+            .then((userIdExisting) => {
+              Logger.module('UNITTEST').log('existing user retrieved', userIdExisting);
+              userId = userIdExisting;
+              return SyncModule.wipeUserData(userIdExisting);
+            })
+            .then(() => {
+              Logger.module('UNITTEST').log('existing user data wiped', userId);
+            });
+        }),
+      );
   });
 
   // // after cleanup
@@ -64,44 +69,57 @@ describe('quests module', () => {
 
   describe('FTUE', () => {
     describe('needsDailyQuests()', () => {
-      it('expect to return FALSE for new users that are before the stage where quests are supposed to start generating', () => QuestsModule.needsDailyQuests(userId)
-        .then((needsQuest) => {
+      it('expect to return FALSE for new users that are before the stage where quests are supposed to start generating', () =>
+        QuestsModule.needsDailyQuests(userId).then((needsQuest) => {
           expect(needsQuest).to.exist;
           expect(needsQuest).to.be.a('boolean');
           expect(needsQuest).to.equal(false);
         }));
 
-      it('expect to return FALSE for new users that have 2 beginner quests in their slots', () => UsersModule.setNewPlayerFeatureProgression(userId, NewPlayerProgressionModuleLookup.Core, NewPlayerProgressionStageEnum.FirstGameDone.key)
-        .then(() => QuestsModule.generateBeginnerQuests(userId)).then(() => QuestsModule.needsDailyQuests(userId)).then((needsQuest) => {
-          expect(needsQuest).to.exist;
-          expect(needsQuest).to.be.a('boolean');
-          expect(needsQuest).to.equal(false);
-        }));
+      it('expect to return FALSE for new users that have 2 beginner quests in their slots', () =>
+        UsersModule.setNewPlayerFeatureProgression(
+          userId,
+          NewPlayerProgressionModuleLookup.Core,
+          NewPlayerProgressionStageEnum.FirstGameDone.key,
+        )
+          .then(() => QuestsModule.generateBeginnerQuests(userId))
+          .then(() => QuestsModule.needsDailyQuests(userId))
+          .then((needsQuest) => {
+            expect(needsQuest).to.exist;
+            expect(needsQuest).to.be.a('boolean');
+            expect(needsQuest).to.equal(false);
+          }));
 
-      it('expect to return TRUE for users with completed FTUE progression and at least one open quest slot', () => knex('user_quests').delete().where('user_id', userId).andWhere('quest_slot_index', 1)
-        .then(() => QuestsModule.needsDailyQuests(userId))
-        .then((needsQuest) => {
-          expect(needsQuest).to.exist;
-          expect(needsQuest).to.be.a('boolean');
-          expect(needsQuest).to.equal(true);
-        }));
+      it('expect to return TRUE for users with completed FTUE progression and at least one open quest slot', () =>
+        knex('user_quests')
+          .delete()
+          .where('user_id', userId)
+          .andWhere('quest_slot_index', 1)
+          .then(() => QuestsModule.needsDailyQuests(userId))
+          .then((needsQuest) => {
+            expect(needsQuest).to.exist;
+            expect(needsQuest).to.be.a('boolean');
+            expect(needsQuest).to.equal(true);
+          }));
     });
 
     describe('canMulliganDailyQuest()', () => {
-      it('expect to NOT be able to mulligan a begginer quest', () => QuestsModule.canMulliganDailyQuest(userId, 0)
-        .then((canMulligan) => {
+      it('expect to NOT be able to mulligan a begginer quest', () =>
+        QuestsModule.canMulliganDailyQuest(userId, 0).then((canMulligan) => {
           expect(canMulligan).to.equal(false);
         }));
     });
 
     describe('mulliganDailyQuest()', () => {
-      it('expect to NOT be able to mulligan a begginer quest', () => QuestsModule.mulliganDailyQuest(userId, 0)
-        .then((questData) => {
-          expect(questData).to.not.exist;
-        }).catch((error) => {
-          expect(error).to.exist;
-          expect(error).to.be.an.instanceof(Errors.BadRequestError);
-        }));
+      it('expect to NOT be able to mulligan a begginer quest', () =>
+        QuestsModule.mulliganDailyQuest(userId, 0)
+          .then((questData) => {
+            expect(questData).to.not.exist;
+          })
+          .catch((error) => {
+            expect(error).to.exist;
+            expect(error).to.be.an.instanceof(Errors.BadRequestError);
+          }));
     });
 
     describe('updateQuestProgressWithProgressedFactionData()', () => {
@@ -110,20 +128,47 @@ describe('quests module', () => {
         level: 9,
       };
 
-      beforeAll(() => SyncModule.wipeUserData(userId)
-        .then(() => UsersModule.setNewPlayerFeatureProgression(userId, NewPlayerProgressionModuleLookup.Core, NewPlayerProgressionStageEnum.FirstGameDone.key)).then(() => QuestsModule.generateBeginnerQuests(userId)));
+      beforeAll(() =>
+        SyncModule.wipeUserData(userId)
+          .then(() =>
+            UsersModule.setNewPlayerFeatureProgression(
+              userId,
+              NewPlayerProgressionModuleLookup.Core,
+              NewPlayerProgressionStageEnum.FirstGameDone.key,
+            ),
+          )
+          .then(() => QuestsModule.generateBeginnerQuests(userId)),
+      );
 
-      it('expect to progress/complete faction quest with leveling up a faction', () => knex.transaction((tx) => QuestsModule.updateQuestProgressWithProgressedFactionData(Promise.resolve(), tx, userId, fakeFactionData)).then((result) => {
-        expect(result).to.exist;
-        expect(result.quests[0].progress).to.equal(1);
-        expect(result.quests[0].completed_at).to.exist;
-        return DuelystFirebase.connect().getRootRef();
-      }).then((rootRef) => Promise.all([
-        knex.select().from('user_quests_complete').where('user_id', userId).orderBy('quest_slot_index', 'asc'),
-      ])).then(([questRows]) => {
-        expect(questRows).to.exist;
-        expect(questRows[0].progress).to.equal(1);
-      }));
+      it('expect to progress/complete faction quest with leveling up a faction', () =>
+        knex
+          .transaction((tx) =>
+            QuestsModule.updateQuestProgressWithProgressedFactionData(
+              Promise.resolve(),
+              tx,
+              userId,
+              fakeFactionData,
+            ),
+          )
+          .then((result) => {
+            expect(result).to.exist;
+            expect(result.quests[0].progress).to.equal(1);
+            expect(result.quests[0].completed_at).to.exist;
+            return DuelystFirebase.connect().getRootRef();
+          })
+          .then((rootRef) =>
+            Promise.all([
+              knex
+                .select()
+                .from('user_quests_complete')
+                .where('user_id', userId)
+                .orderBy('quest_slot_index', 'asc'),
+            ]),
+          )
+          .then(([questRows]) => {
+            expect(questRows).to.exist;
+            expect(questRows[0].progress).to.equal(1);
+          }));
     });
   });
 
@@ -131,17 +176,18 @@ describe('quests module', () => {
     beforeAll(() => {
       QuestsModule.SEASONAL_QUESTS_ACTIVE = false;
 
-      return SyncModule.wipeUserData(userId)
-        .then(() => knex('user_new_player_progression').insert({
+      return SyncModule.wipeUserData(userId).then(() =>
+        knex('user_new_player_progression').insert({
           user_id: userId,
           module_name: NewPlayerProgressionModuleLookup.Core,
           stage: NewPlayerProgressionStageEnum.Skipped.key,
-        }));
+        }),
+      );
     });
 
     describe('needsDailyQuests()', () => {
-      it('expect to return true for users empty quest slots', () => QuestsModule.needsDailyQuests(userId)
-        .then((needsQuest) => {
+      it('expect to return true for users empty quest slots', () =>
+        QuestsModule.needsDailyQuests(userId).then((needsQuest) => {
           expect(needsQuest).to.exist;
           expect(needsQuest).to.be.a('boolean');
           expect(needsQuest).to.equal(true);
@@ -152,76 +198,83 @@ describe('quests module', () => {
       let updatedAt = null;
       let generatedAt = null;
 
-      beforeAll(() => {
-      });
+      beforeAll(() => {});
 
-      afterAll(() => {
-      });
+      afterAll(() => {});
 
-      it('expect to save and return quest data', () => QuestsModule.generateDailyQuests(userId)
-        .then((questData) => {
-          expect(questData).to.exist;
-          updatedAt = questData.updated_at;
-          generatedAt = questData.generated_at;
-          return DuelystFirebase.connect().getRootRef();
-        }).then((rootRef) => Promise.all([
-          knex('users').first().where('id', userId),
-          knex.select().from('user_quests').where('user_id', userId),
-          FirebasePromises.once(rootRef.child('user-quests').child(userId), 'value'),
-        ])).then(([userRow, questRows, firebaseQuestsSnapshot]) => {
-          expect(userRow.daily_quests_generated_at.valueOf()).to.equal(generatedAt.valueOf());
-          expect(userRow.daily_quests_updated_at.valueOf()).to.equal(updatedAt.valueOf());
-          // expect(questRows.length).to.equal(2);
-          const q1 = _.find(questRows, (row) => row.quest_slot_index === 0);
-          const q2 = _.find(questRows, (row) => row.quest_slot_index === 1);
-          expect(q1).to.exist;
-          expect(q2).to.exist;
+      it('expect to save and return quest data', () =>
+        QuestsModule.generateDailyQuests(userId)
+          .then((questData) => {
+            expect(questData).to.exist;
+            updatedAt = questData.updated_at;
+            generatedAt = questData.generated_at;
+            return DuelystFirebase.connect().getRootRef();
+          })
+          .then((rootRef) =>
+            Promise.all([
+              knex('users').first().where('id', userId),
+              knex.select().from('user_quests').where('user_id', userId),
+              FirebasePromises.once(rootRef.child('user-quests').child(userId), 'value'),
+            ]),
+          )
+          .then(([userRow, questRows, firebaseQuestsSnapshot]) => {
+            expect(userRow.daily_quests_generated_at.valueOf()).to.equal(generatedAt.valueOf());
+            expect(userRow.daily_quests_updated_at.valueOf()).to.equal(updatedAt.valueOf());
+            // expect(questRows.length).to.equal(2);
+            const q1 = _.find(questRows, (row) => row.quest_slot_index === 0);
+            const q2 = _.find(questRows, (row) => row.quest_slot_index === 1);
+            expect(q1).to.exist;
+            expect(q2).to.exist;
 
-          const currentQuestsData = firebaseQuestsSnapshot.val().daily.current;
-          expect(currentQuestsData).to.exist;
-          expect(currentQuestsData.quests[0]).to.exist;
-          expect(currentQuestsData.quests[1]).to.exist;
-        }));
+            const currentQuestsData = firebaseQuestsSnapshot.val().daily.current;
+            expect(currentQuestsData).to.exist;
+            expect(currentQuestsData.quests[0]).to.exist;
+            expect(currentQuestsData.quests[1]).to.exist;
+          }));
 
-      it('expect needsDailyQuests() to return FALSE after quests are generated', () => QuestsModule.needsDailyQuests(userId)
-        .then((needsQuest) => {
+      it('expect needsDailyQuests() to return FALSE after quests are generated', () =>
+        QuestsModule.needsDailyQuests(userId).then((needsQuest) => {
           expect(needsQuest).to.exist;
           expect(needsQuest).to.be.a('boolean');
           expect(needsQuest).to.equal(false);
         }));
 
-      it('expect to make no change if we try to generate again', () => QuestsModule.generateDailyQuests(userId)
-        .then((questData) => {
-          expect(questData).to.exist;
-          expect(moment.utc(questData.updated_at).valueOf()).to.equal(moment.utc(updatedAt).valueOf());
-          return Promise.all([
-            knex('users').first().where('id', userId),
-          ]);
-        }).then(([userRow]) => {
-          expect(userRow.daily_quests_generated_at.valueOf()).to.equal(generatedAt.valueOf());
-          expect(userRow.daily_quests_updated_at.valueOf()).to.equal(updatedAt.valueOf());
-        }));
+      it('expect to make no change if we try to generate again', () =>
+        QuestsModule.generateDailyQuests(userId)
+          .then((questData) => {
+            expect(questData).to.exist;
+            expect(moment.utc(questData.updated_at).valueOf()).to.equal(
+              moment.utc(updatedAt).valueOf(),
+            );
+            return Promise.all([knex('users').first().where('id', userId)]);
+          })
+          .then(([userRow]) => {
+            expect(userRow.daily_quests_generated_at.valueOf()).to.equal(generatedAt.valueOf());
+            expect(userRow.daily_quests_updated_at.valueOf()).to.equal(updatedAt.valueOf());
+          }));
 
       it('expect needsDailyQuests() to return TRUE at +25 hours', () => {
         const systemTime = moment().add(25, 'hours');
-        return QuestsModule.needsDailyQuests(userId, systemTime)
-          .then((needsQuest) => {
-            expect(needsQuest).to.exist;
-            expect(needsQuest).to.equal(true);
-          });
+        return QuestsModule.needsDailyQuests(userId, systemTime).then((needsQuest) => {
+          expect(needsQuest).to.exist;
+          expect(needsQuest).to.equal(true);
+        });
       });
 
       it('expect to make no change if we have full quests 25 hours later', () => {
         const systemTime = moment().add(25, 'hours');
         return QuestsModule.generateDailyQuests(userId, systemTime)
           .then((questData) => {
-            expect(moment.utc(questData.updated_at).valueOf()).to.equal(moment.utc(updatedAt).valueOf());
-            expect(moment.utc(questData.generated_at).valueOf()).to.be.above(moment.utc(generatedAt).valueOf());
+            expect(moment.utc(questData.updated_at).valueOf()).to.equal(
+              moment.utc(updatedAt).valueOf(),
+            );
+            expect(moment.utc(questData.generated_at).valueOf()).to.be.above(
+              moment.utc(generatedAt).valueOf(),
+            );
             generatedAt = questData.generated_at;
-            return Promise.all([
-              knex('users').first().where('id', userId),
-            ]);
-          }).then(([userRow]) => {
+            return Promise.all([knex('users').first().where('id', userId)]);
+          })
+          .then(([userRow]) => {
             expect(userRow.daily_quests_generated_at.valueOf()).to.equal(generatedAt.valueOf());
             expect(userRow.daily_quests_updated_at.valueOf()).to.equal(updatedAt.valueOf());
           });
@@ -229,13 +282,23 @@ describe('quests module', () => {
 
       it('expect needsDailyQuests() to return FALSE if you complete a quest at +25 hours (since you had full today quest log)', () => {
         const systemTime = moment().add(25, 'hours');
-        return DuelystFirebase.connect().getRootRef()
-          .then((rootRef) => Promise.all([
-            FirebasePromises.remove(rootRef.child('user-quests').child(userId).child('daily').child('current')
-              .child('quests')
-              .child('0')),
-            knex('user_quests').where({ user_id: userId, quest_slot_index: 0 }).delete(),
-          ])).then(() => QuestsModule.needsDailyQuests(userId, systemTime))
+        return DuelystFirebase.connect()
+          .getRootRef()
+          .then((rootRef) =>
+            Promise.all([
+              FirebasePromises.remove(
+                rootRef
+                  .child('user-quests')
+                  .child(userId)
+                  .child('daily')
+                  .child('current')
+                  .child('quests')
+                  .child('0'),
+              ),
+              knex('user_quests').where({ user_id: userId, quest_slot_index: 0 }).delete(),
+            ]),
+          )
+          .then(() => QuestsModule.needsDailyQuests(userId, systemTime))
           .then((needsQuest) => {
             expect(needsQuest).to.exist;
             expect(needsQuest).to.equal(false);
@@ -244,11 +307,10 @@ describe('quests module', () => {
 
       it('expect needsDailyQuests() to return TRUE at +50 hours (since now we are one day since last completion)', () => {
         const systemTime = moment().add(50, 'hours');
-        return QuestsModule.needsDailyQuests(userId, systemTime)
-          .then((needsQuest) => {
-            expect(needsQuest).to.exist;
-            expect(needsQuest).to.equal(true);
-          });
+        return QuestsModule.needsDailyQuests(userId, systemTime).then((needsQuest) => {
+          expect(needsQuest).to.exist;
+          expect(needsQuest).to.equal(true);
+        });
       });
 
       it('expect to generate new quests at +50 hours later', () => {
@@ -256,18 +318,28 @@ describe('quests module', () => {
         return QuestsModule.generateDailyQuests(userId, systemTime)
           .then((questData) => {
             expect(questData).to.exist;
-            expect(moment.utc(questData.generated_at).valueOf()).to.not.equal(moment.utc(generatedAt).valueOf());
-            expect(moment.utc(questData.updated_at).valueOf()).to.not.equal(moment.utc(updatedAt).valueOf());
+            expect(moment.utc(questData.generated_at).valueOf()).to.not.equal(
+              moment.utc(generatedAt).valueOf(),
+            );
+            expect(moment.utc(questData.updated_at).valueOf()).to.not.equal(
+              moment.utc(updatedAt).valueOf(),
+            );
             return DuelystFirebase.connect().getRootRef();
-          }).then((rootRef) => Promise.all([
-            knex('users').first().where('id', userId),
-            knex.select().from('user_quests').where('user_id', userId),
-            FirebasePromises.once(rootRef.child('user-quests').child(userId), 'value'),
-          ])).then(([userRow, questRows, firebaseQuestsSnapshot]) => {
+          })
+          .then((rootRef) =>
+            Promise.all([
+              knex('users').first().where('id', userId),
+              knex.select().from('user_quests').where('user_id', userId),
+              FirebasePromises.once(rootRef.child('user-quests').child(userId), 'value'),
+            ]),
+          )
+          .then(([userRow, questRows, firebaseQuestsSnapshot]) => {
             expect(userRow.daily_quests_generated_at.valueOf()).to.be.above(generatedAt.valueOf());
             expect(userRow.daily_quests_updated_at.valueOf()).to.be.above(updatedAt.valueOf());
 
-            const dailyQuestRows = _.filter(questRows, (questRow) => _.contains(QuestsModule.DAILY_QUEST_SLOTS, questRow.quest_slot_index));
+            const dailyQuestRows = _.filter(questRows, (questRow) =>
+              _.contains(QuestsModule.DAILY_QUEST_SLOTS, questRow.quest_slot_index),
+            );
             expect(dailyQuestRows.length).to.equal(2);
 
             const currentQuestsData = firebaseQuestsSnapshot.val().daily.current;
@@ -281,46 +353,54 @@ describe('quests module', () => {
     describe('mulliganDailyQuest()', () => {
       let mulliganedAt = null;
 
-      beforeAll(() => {
-      });
+      beforeAll(() => {});
 
-      afterAll(() => {
-      });
+      afterAll(() => {});
 
-      it('expect to be able to mulligan quest at index [0]', () => QuestsModule.mulliganDailyQuest(userId, 0)
-        .then((questData) => {
-          expect(questData).to.exist;
-          expect(questData[0].mulliganed_at).to.exist;
-          mulliganedAt = questData[0].mulliganed_at;
-          return DuelystFirebase.connect().getRootRef();
-        }).then((rootRef) => Promise.all([
-          knex.select().from('user_quests').where('user_id', userId),
-          FirebasePromises.once(rootRef.child('user-quests').child(userId), 'value'),
-        ])).then(([questRows, firebaseQuestsSnapshot]) => {
-          const dailyQuestRows = _.filter(questRows, (questRow) => _.contains(QuestsModule.DAILY_QUEST_SLOTS, questRow.quest_slot_index));
-          expect(dailyQuestRows.length).to.equal(2);
+      it('expect to be able to mulligan quest at index [0]', () =>
+        QuestsModule.mulliganDailyQuest(userId, 0)
+          .then((questData) => {
+            expect(questData).to.exist;
+            expect(questData[0].mulliganed_at).to.exist;
+            mulliganedAt = questData[0].mulliganed_at;
+            return DuelystFirebase.connect().getRootRef();
+          })
+          .then((rootRef) =>
+            Promise.all([
+              knex.select().from('user_quests').where('user_id', userId),
+              FirebasePromises.once(rootRef.child('user-quests').child(userId), 'value'),
+            ]),
+          )
+          .then(([questRows, firebaseQuestsSnapshot]) => {
+            const dailyQuestRows = _.filter(questRows, (questRow) =>
+              _.contains(QuestsModule.DAILY_QUEST_SLOTS, questRow.quest_slot_index),
+            );
+            expect(dailyQuestRows.length).to.equal(2);
 
-          const questAt0 = _.find(questRows, (row) => row.quest_slot_index === 0);
-          expect(questAt0.mulliganed_at.valueOf()).to.equal(mulliganedAt.valueOf());
+            const questAt0 = _.find(questRows, (row) => row.quest_slot_index === 0);
+            expect(questAt0.mulliganed_at.valueOf()).to.equal(mulliganedAt.valueOf());
 
-          const currentQuestsData = firebaseQuestsSnapshot.val().daily.current;
-          expect(currentQuestsData).to.exist;
-          expect(currentQuestsData.quests[0].mulliganed_at).to.equal(mulliganedAt.valueOf());
-        }));
+            const currentQuestsData = firebaseQuestsSnapshot.val().daily.current;
+            expect(currentQuestsData).to.exist;
+            expect(currentQuestsData.quests[0].mulliganed_at).to.equal(mulliganedAt.valueOf());
+          }));
 
-      it('expect to NOT be able to mulligan quest at index [0] again', () => QuestsModule.mulliganDailyQuest(userId, 0)
-        .then((questData) => {
-          expect(questData).to.not.exist;
-        }).catch((error) => {
-          expect(error).to.exist;
-        }));
+      it('expect to NOT be able to mulligan quest at index [0] again', () =>
+        QuestsModule.mulliganDailyQuest(userId, 0)
+          .then((questData) => {
+            expect(questData).to.not.exist;
+          })
+          .catch((error) => {
+            expect(error).to.exist;
+          }));
 
       it('expect to NOT be able to mulligan quest at index [0] again later in the same day', () => {
         const systemTime = moment().utc().endOf('day').subtract(2, 'hours');
         return QuestsModule.mulliganDailyQuest(userId, 0, systemTime)
           .then((questData) => {
             expect(questData).to.not.exist;
-          }).catch((error) => {
+          })
+          .catch((error) => {
             expect(error).to.exist;
             expect(error).to.be.an.instanceof(Errors.QuestCantBeMulliganedError);
           });
@@ -328,52 +408,58 @@ describe('quests module', () => {
 
       it('expect to be able to mulligan quest at index [0] again 23 hours after begging of last day it was mulliganed', () => {
         const systemTime = moment().utc().startOf('day').add(23, 'hours');
-        return QuestsModule.mulliganDailyQuest(userId, 0, systemTime)
-          .then((questData) => {
-            expect(questData).to.exist;
-            //   expect(questData[0].mulliganed_at).to.exist;
-            //   expect(moment.utc(questData[0].mulliganed_at).valueOf()).to.not.equal(moment.utc(mulliganedAt).valueOf());
-            //   mulliganedAt = questData[0].mulliganed_at;
-            //   return DuelystFirebase.connect().getRootRef()
-            //
-            // }).then(function(rootRef){
-            //   return Promise.all([
-            //     knex.select().from("user_quests").where('user_id',userId),
-            //     FirebasePromises.once(rootRef.child("user-quests").child(userId),"value")
-            //   ])
-            // }).then(function([questRows,firebaseQuestsSnapshot]){
-            //
-            //   expect(questRows.length).to.equal(2);
-            //
-            //   const questAt0 = _.find(questRows,function(row){ return row.quest_slot_index === 0; });
-            //   expect(questAt0.mulliganed_at.valueOf()).to.equal(mulliganedAt.valueOf());
-            //
-            //   const currentQuestsData = firebaseQuestsSnapshot.val()["daily"]["current"];
-            //   expect(currentQuestsData).to.exist;
-            //   expect(currentQuestsData["quests"][0]["mulliganed_at"]).to.equal(mulliganedAt.valueOf());
-          });
+        return QuestsModule.mulliganDailyQuest(userId, 0, systemTime).then((questData) => {
+          expect(questData).to.exist;
+          //   expect(questData[0].mulliganed_at).to.exist;
+          //   expect(moment.utc(questData[0].mulliganed_at).valueOf()).to.not.equal(moment.utc(mulliganedAt).valueOf());
+          //   mulliganedAt = questData[0].mulliganed_at;
+          //   return DuelystFirebase.connect().getRootRef()
+          //
+          // }).then(function(rootRef){
+          //   return Promise.all([
+          //     knex.select().from("user_quests").where('user_id',userId),
+          //     FirebasePromises.once(rootRef.child("user-quests").child(userId),"value")
+          //   ])
+          // }).then(function([questRows,firebaseQuestsSnapshot]){
+          //
+          //   expect(questRows.length).to.equal(2);
+          //
+          //   const questAt0 = _.find(questRows,function(row){ return row.quest_slot_index === 0; });
+          //   expect(questAt0.mulliganed_at.valueOf()).to.equal(mulliganedAt.valueOf());
+          //
+          //   const currentQuestsData = firebaseQuestsSnapshot.val()["daily"]["current"];
+          //   expect(currentQuestsData).to.exist;
+          //   expect(currentQuestsData["quests"][0]["mulliganed_at"]).to.equal(mulliganedAt.valueOf());
+        });
       });
 
-      it('expect to be able to mulligan quest at index [1]', () => QuestsModule.mulliganDailyQuest(userId, 1)
-        .then((questData) => {
-          expect(questData).to.exist;
-          expect(questData[1].mulliganed_at).to.exist;
-          mulliganedAt = questData[1].mulliganed_at;
-          return DuelystFirebase.connect().getRootRef();
-        }).then((rootRef) => Promise.all([
-          knex.select().from('user_quests').where('user_id', userId),
-          FirebasePromises.once(rootRef.child('user-quests').child(userId), 'value'),
-        ])).then(([questRows, firebaseQuestsSnapshot]) => {
-          const dailyQuestRows = _.filter(questRows, (questRow) => _.contains(QuestsModule.DAILY_QUEST_SLOTS, questRow.quest_slot_index));
-          expect(dailyQuestRows.length).to.equal(2);
+      it('expect to be able to mulligan quest at index [1]', () =>
+        QuestsModule.mulliganDailyQuest(userId, 1)
+          .then((questData) => {
+            expect(questData).to.exist;
+            expect(questData[1].mulliganed_at).to.exist;
+            mulliganedAt = questData[1].mulliganed_at;
+            return DuelystFirebase.connect().getRootRef();
+          })
+          .then((rootRef) =>
+            Promise.all([
+              knex.select().from('user_quests').where('user_id', userId),
+              FirebasePromises.once(rootRef.child('user-quests').child(userId), 'value'),
+            ]),
+          )
+          .then(([questRows, firebaseQuestsSnapshot]) => {
+            const dailyQuestRows = _.filter(questRows, (questRow) =>
+              _.contains(QuestsModule.DAILY_QUEST_SLOTS, questRow.quest_slot_index),
+            );
+            expect(dailyQuestRows.length).to.equal(2);
 
-          const questAt0 = _.find(questRows, (row) => row.quest_slot_index === 1);
-          expect(questAt0.mulliganed_at.valueOf()).to.equal(mulliganedAt.valueOf());
+            const questAt0 = _.find(questRows, (row) => row.quest_slot_index === 1);
+            expect(questAt0.mulliganed_at.valueOf()).to.equal(mulliganedAt.valueOf());
 
-          const currentQuestsData = firebaseQuestsSnapshot.val().daily.current;
-          expect(currentQuestsData).to.exist;
-          expect(currentQuestsData.quests[1].mulliganed_at).to.equal(mulliganedAt.valueOf());
-        }));
+            const currentQuestsData = firebaseQuestsSnapshot.val().daily.current;
+            expect(currentQuestsData).to.exist;
+            expect(currentQuestsData.quests[1].mulliganed_at).to.equal(mulliganedAt.valueOf());
+          }));
 
       it('expect to be able to mulligan quest at index [1] again after 24 hours', () => {
         const systemTime = moment().add(24, 'hours');
@@ -381,14 +467,22 @@ describe('quests module', () => {
           .then((questData) => {
             expect(questData).to.exist;
             expect(questData[1].mulliganed_at).to.exist;
-            expect(moment.utc(questData[1].mulliganed_at).valueOf()).to.not.equal(moment.utc(mulliganedAt).valueOf());
+            expect(moment.utc(questData[1].mulliganed_at).valueOf()).to.not.equal(
+              moment.utc(mulliganedAt).valueOf(),
+            );
             mulliganedAt = questData[1].mulliganed_at;
             return DuelystFirebase.connect().getRootRef();
-          }).then((rootRef) => Promise.all([
-            knex.select().from('user_quests').where('user_id', userId),
-            FirebasePromises.once(rootRef.child('user-quests').child(userId), 'value'),
-          ])).then(([questRows, firebaseQuestsSnapshot]) => {
-            const dailyQuestRows = _.filter(questRows, (questRow) => _.contains(QuestsModule.DAILY_QUEST_SLOTS, questRow.quest_slot_index));
+          })
+          .then((rootRef) =>
+            Promise.all([
+              knex.select().from('user_quests').where('user_id', userId),
+              FirebasePromises.once(rootRef.child('user-quests').child(userId), 'value'),
+            ]),
+          )
+          .then(([questRows, firebaseQuestsSnapshot]) => {
+            const dailyQuestRows = _.filter(questRows, (questRow) =>
+              _.contains(QuestsModule.DAILY_QUEST_SLOTS, questRow.quest_slot_index),
+            );
             expect(dailyQuestRows.length).to.equal(2);
 
             const questAt0 = _.find(questRows, (row) => row.quest_slot_index === 1);
@@ -425,23 +519,38 @@ describe('quests module', () => {
         ]);
       });
 
-      afterAll(() => {
-      });
+      afterAll(() => {});
 
       it('expect to progress a Lyonar Participation Quest (101) with a game', () => {
         const systemTime = moment().add(51, 'hours');
-        return QuestsModule.updateQuestProgressWithGame(userId, 'game1', fakeGameSessionData, systemTime)
+        return QuestsModule.updateQuestProgressWithGame(
+          userId,
+          'game1',
+          fakeGameSessionData,
+          systemTime,
+        )
           .then((result) => {
             expect(result).to.exist;
             expect(result.quests[0].progress).to.equal(1);
             expect(result.quests[0].updated_at.valueOf()).to.equal(systemTime.valueOf());
 
             return DuelystFirebase.connect().getRootRef();
-          }).then((rootRef) => Promise.all([
-            knex.select().from('user_quests').where('user_id', userId).orderBy('quest_slot_index', 'asc'),
-            FirebasePromises.once(rootRef.child('user-quests').child(userId), 'value'),
-            FirebasePromises.once(rootRef.child('user-games').child(userId).child('game1').child('job_status'), 'value'),
-          ])).then(([questRows, firebaseQuestsSnapshot, firebaseGameJobStatusSnapshot]) => {
+          })
+          .then((rootRef) =>
+            Promise.all([
+              knex
+                .select()
+                .from('user_quests')
+                .where('user_id', userId)
+                .orderBy('quest_slot_index', 'asc'),
+              FirebasePromises.once(rootRef.child('user-quests').child(userId), 'value'),
+              FirebasePromises.once(
+                rootRef.child('user-games').child(userId).child('game1').child('job_status'),
+                'value',
+              ),
+            ]),
+          )
+          .then(([questRows, firebaseQuestsSnapshot, firebaseGameJobStatusSnapshot]) => {
             expect(questRows).to.exist;
             expect(questRows[0].progress).to.equal(1);
             expect(questRows[0].updated_at.valueOf()).to.equal(systemTime.valueOf());
@@ -461,69 +570,123 @@ describe('quests module', () => {
         const systemTime = moment().add(52, 'hours');
         const gameId = generatePushId();
         return Promise.all([
-          QuestsModule.updateQuestProgressWithGame(userId, 'game2', fakeGameSessionData, systemTime),
-          QuestsModule.updateQuestProgressWithGame(userId, 'game3', fakeGameSessionData, systemTime),
-        ]).then(([result1, result2]) =>
-          // this should finish it
-          QuestsModule.updateQuestProgressWithGame(userId, gameId, fakeGameSessionData, systemTime)).then((result3) => {
-          expect(result3).to.exist;
-          expect(result3.quests[0].progress).to.equal(4);
-          expect(result3.quests[0].completed_at.valueOf()).to.equal(systemTime.valueOf());
+          QuestsModule.updateQuestProgressWithGame(
+            userId,
+            'game2',
+            fakeGameSessionData,
+            systemTime,
+          ),
+          QuestsModule.updateQuestProgressWithGame(
+            userId,
+            'game3',
+            fakeGameSessionData,
+            systemTime,
+          ),
+        ])
+          .then(([result1, result2]) =>
+            // this should finish it
+            QuestsModule.updateQuestProgressWithGame(
+              userId,
+              gameId,
+              fakeGameSessionData,
+              systemTime,
+            ),
+          )
+          .then((result3) => {
+            expect(result3).to.exist;
+            expect(result3.quests[0].progress).to.equal(4);
+            expect(result3.quests[0].completed_at.valueOf()).to.equal(systemTime.valueOf());
 
-          return DuelystFirebase.connect().getRootRef();
-        }).then((rootRef) => Promise.all([
-          knex.first().from('users').where('id', userId),
-          knex.select().from('user_quests').where('user_id', userId).orderBy('quest_slot_index', 'asc'),
-          knex.select().from('user_quests_complete').where('user_id', userId),
-          knex.select().from('user_rewards').where('user_id', userId),
-          FirebasePromises.once(rootRef.child('user-quests').child(userId), 'value'),
-          FirebasePromises.once(rootRef.child('user-games').child(userId).child(gameId).child('job_status'), 'value'),
-        ]))
-          .then(([userRow, questRows, completeQuestRows, rewardRows, firebaseQuestsSnapshot, firebaseGameJobStatusSnapshot]) => {
-            expect(questRows).to.exist;
-            const dailyQuestRows = _.filter(questRows, (questRow) => _.contains(QuestsModule.DAILY_QUEST_SLOTS, questRow.quest_slot_index));
-            expect(dailyQuestRows.length).to.equal(1);
-            expect(dailyQuestRows[0].quest_type_id).to.not.equal(101);
+            return DuelystFirebase.connect().getRootRef();
+          })
+          .then((rootRef) =>
+            Promise.all([
+              knex.first().from('users').where('id', userId),
+              knex
+                .select()
+                .from('user_quests')
+                .where('user_id', userId)
+                .orderBy('quest_slot_index', 'asc'),
+              knex.select().from('user_quests_complete').where('user_id', userId),
+              knex.select().from('user_rewards').where('user_id', userId),
+              FirebasePromises.once(rootRef.child('user-quests').child(userId), 'value'),
+              FirebasePromises.once(
+                rootRef.child('user-games').child(userId).child(gameId).child('job_status'),
+                'value',
+              ),
+            ]),
+          )
+          .then(
+            ([
+              userRow,
+              questRows,
+              completeQuestRows,
+              rewardRows,
+              firebaseQuestsSnapshot,
+              firebaseGameJobStatusSnapshot,
+            ]) => {
+              expect(questRows).to.exist;
+              const dailyQuestRows = _.filter(questRows, (questRow) =>
+                _.contains(QuestsModule.DAILY_QUEST_SLOTS, questRow.quest_slot_index),
+              );
+              expect(dailyQuestRows.length).to.equal(1);
+              expect(dailyQuestRows[0].quest_type_id).to.not.equal(101);
 
-            expect(completeQuestRows).to.exist;
-            const completedDailyQuestRows = _.filter(completeQuestRows, (questRow) => _.contains(QuestsModule.DAILY_QUEST_SLOTS, questRow.quest_slot_index));
-            expect(completedDailyQuestRows.length).to.equal(1);
-            expect(completedDailyQuestRows[0].quest_type_id).to.equal(101);
-            expect(completedDailyQuestRows[0].completed_at.valueOf()).to.equal(systemTime.valueOf());
-            expect(completedDailyQuestRows[0].progressed_by_game_ids.length).to.equal(4);
-            expect(_.intersection(completedDailyQuestRows[0].progressed_by_game_ids, ['game1', 'game2', 'game3', gameId]).length).to.equal(4);
+              expect(completeQuestRows).to.exist;
+              const completedDailyQuestRows = _.filter(completeQuestRows, (questRow) =>
+                _.contains(QuestsModule.DAILY_QUEST_SLOTS, questRow.quest_slot_index),
+              );
+              expect(completedDailyQuestRows.length).to.equal(1);
+              expect(completedDailyQuestRows[0].quest_type_id).to.equal(101);
+              expect(completedDailyQuestRows[0].completed_at.valueOf()).to.equal(
+                systemTime.valueOf(),
+              );
+              expect(completedDailyQuestRows[0].progressed_by_game_ids.length).to.equal(4);
+              expect(
+                _.intersection(completedDailyQuestRows[0].progressed_by_game_ids, [
+                  'game1',
+                  'game2',
+                  'game3',
+                  gameId,
+                ]).length,
+              ).to.equal(4);
 
-            expect(rewardRows).to.exist;
-            const dailyQuestRewardRows = _.filter(rewardRows, (rewardRows) => {
-              if (rewardRows.quest_type_id == null) {
-                return false;
-              }
-              const sdkQuest = SDK.QuestFactory.questForIdentifier(rewardRows.quest_type_id);
-              return sdkQuest != null && !sdkQuest.isBeginner && !sdkQuest.isCatchUp;
-            });
-            expect(dailyQuestRewardRows.length).to.equal(1);
-            expect(dailyQuestRewardRows[0].source_id).to.equal(completedDailyQuestRows[0].id);
-            expect(dailyQuestRewardRows[0].quest_type_id).to.equal(101);
-            expect(dailyQuestRewardRows[0].created_at.valueOf()).to.equal(systemTime.valueOf());
-            expect(dailyQuestRewardRows[0].gold).to.equal(completedDailyQuestRows[0].gold);
+              expect(rewardRows).to.exist;
+              const dailyQuestRewardRows = _.filter(rewardRows, (rewardRows) => {
+                if (rewardRows.quest_type_id == null) {
+                  return false;
+                }
+                const sdkQuest = SDK.QuestFactory.questForIdentifier(rewardRows.quest_type_id);
+                return sdkQuest != null && !sdkQuest.isBeginner && !sdkQuest.isCatchUp;
+              });
+              expect(dailyQuestRewardRows.length).to.equal(1);
+              expect(dailyQuestRewardRows[0].source_id).to.equal(completedDailyQuestRows[0].id);
+              expect(dailyQuestRewardRows[0].quest_type_id).to.equal(101);
+              expect(dailyQuestRewardRows[0].created_at.valueOf()).to.equal(systemTime.valueOf());
+              expect(dailyQuestRewardRows[0].gold).to.equal(completedDailyQuestRows[0].gold);
 
-            expect(userRow).to.exist;
-            const questRewardRowsGold = _.reduce(rewardRows, (memo, rewardRow) => {
-              if (rewardRow.quest_type_id == null) {
-                return memo;
-              }
-              return memo + rewardRow.gold;
-            }, 0);
-            // expect(userRow.wallet_gold).to.equal(rewardRows[0].gold);
-            expect(userRow.wallet_gold).to.equal(questRewardRowsGold);
+              expect(userRow).to.exist;
+              const questRewardRowsGold = _.reduce(
+                rewardRows,
+                (memo, rewardRow) => {
+                  if (rewardRow.quest_type_id == null) {
+                    return memo;
+                  }
+                  return memo + rewardRow.gold;
+                },
+                0,
+              );
+              // expect(userRow.wallet_gold).to.equal(rewardRows[0].gold);
+              expect(userRow.wallet_gold).to.equal(questRewardRowsGold);
 
-            const firebaseData = firebaseQuestsSnapshot.val().daily.current;
+              const firebaseData = firebaseQuestsSnapshot.val().daily.current;
 
-            expect(firebaseData).to.exist;
-            expect(firebaseData.quests[0]).to.not.exist;
+              expect(firebaseData).to.exist;
+              expect(firebaseData.quests[0]).to.not.exist;
 
-            expect(firebaseGameJobStatusSnapshot.val().quests).to.equal(true);
-          });
+              expect(firebaseGameJobStatusSnapshot.val().quests).to.equal(true);
+            },
+          );
       });
     });
 
@@ -545,30 +708,46 @@ describe('quests module', () => {
         fakeGameSessionData.gameSetupData.players[0].factionId = SDK.Factions.Lyonar;
 
         // set up user quests as Lyonar and Songhai participation quests
-        return QuestsModule.generateDailyQuests(userId, systemTime)
-          .then(() => Promise.all([
+        return QuestsModule.generateDailyQuests(userId, systemTime).then(() =>
+          Promise.all([
             QuestsModule.mulliganDailyQuest(userId, 0, systemTime, 101),
             QuestsModule.mulliganDailyQuest(userId, 1, systemTime, 102),
-          ]));
+          ]),
+        );
       });
 
-      afterAll(() => {
-      });
+      afterAll(() => {});
 
       it('expect to progress a Lyonar Win Quest (101) with a rift game', () => {
         const systemTime = moment().add(101, 'hours');
-        return QuestsModule.updateQuestProgressWithGame(userId, 'game1', fakeGameSessionData, systemTime)
+        return QuestsModule.updateQuestProgressWithGame(
+          userId,
+          'game1',
+          fakeGameSessionData,
+          systemTime,
+        )
           .then((result) => {
             expect(result).to.exist;
             expect(result.quests[0].progress).to.equal(1);
             expect(result.quests[0].updated_at.valueOf()).to.equal(systemTime.valueOf());
 
             return DuelystFirebase.connect().getRootRef();
-          }).then((rootRef) => Promise.all([
-            knex.select().from('user_quests').where('user_id', userId).orderBy('quest_slot_index', 'asc'),
-            FirebasePromises.once(rootRef.child('user-quests').child(userId), 'value'),
-            FirebasePromises.once(rootRef.child('user-games').child(userId).child('game1').child('job_status'), 'value'),
-          ])).then(([questRows, firebaseQuestsSnapshot, firebaseGameJobStatusSnapshot]) => {
+          })
+          .then((rootRef) =>
+            Promise.all([
+              knex
+                .select()
+                .from('user_quests')
+                .where('user_id', userId)
+                .orderBy('quest_slot_index', 'asc'),
+              FirebasePromises.once(rootRef.child('user-quests').child(userId), 'value'),
+              FirebasePromises.once(
+                rootRef.child('user-games').child(userId).child('game1').child('job_status'),
+                'value',
+              ),
+            ]),
+          )
+          .then(([questRows, firebaseQuestsSnapshot, firebaseGameJobStatusSnapshot]) => {
             expect(questRows).to.exist;
             expect(questRows[0].progress).to.equal(1);
             expect(questRows[0].updated_at.valueOf()).to.equal(systemTime.valueOf());
@@ -588,45 +767,95 @@ describe('quests module', () => {
         const systemTime = moment().add(102, 'hours');
         const gameId = generatePushId();
         return Promise.all([
-          QuestsModule.updateQuestProgressWithGame(userId, 'game2', fakeGameSessionData, systemTime),
-          QuestsModule.updateQuestProgressWithGame(userId, 'game3', fakeGameSessionData, systemTime),
-        ]).then(([result1, result2]) =>
-          // this should finish it
-          QuestsModule.updateQuestProgressWithGame(userId, gameId, fakeGameSessionData, systemTime)).then((result3) => {
-          expect(result3).to.exist;
-          expect(result3.quests[0].progress).to.equal(4);
-          expect(result3.quests[0].completed_at.valueOf()).to.equal(systemTime.valueOf());
+          QuestsModule.updateQuestProgressWithGame(
+            userId,
+            'game2',
+            fakeGameSessionData,
+            systemTime,
+          ),
+          QuestsModule.updateQuestProgressWithGame(
+            userId,
+            'game3',
+            fakeGameSessionData,
+            systemTime,
+          ),
+        ])
+          .then(([result1, result2]) =>
+            // this should finish it
+            QuestsModule.updateQuestProgressWithGame(
+              userId,
+              gameId,
+              fakeGameSessionData,
+              systemTime,
+            ),
+          )
+          .then((result3) => {
+            expect(result3).to.exist;
+            expect(result3.quests[0].progress).to.equal(4);
+            expect(result3.quests[0].completed_at.valueOf()).to.equal(systemTime.valueOf());
 
-          return DuelystFirebase.connect().getRootRef();
-        }).then((rootRef) => Promise.all([
-          knex.first().from('users').where('id', userId),
-          knex.select().from('user_quests').where('user_id', userId).orderBy('quest_slot_index', 'asc'),
-          knex.select().from('user_quests_complete').where('user_id', userId),
-          knex.select().from('user_rewards').where('user_id', userId),
-          FirebasePromises.once(rootRef.child('user-quests').child(userId), 'value'),
-          FirebasePromises.once(rootRef.child('user-games').child(userId).child(gameId).child('job_status'), 'value'),
-        ]))
-          .then(([userRow, questRows, completeQuestRows, rewardRows, firebaseQuestsSnapshot, firebaseGameJobStatusSnapshot]) => {
-            expect(questRows).to.exist;
-            const dailyQuestRows = _.filter(questRows, (questRow) => _.contains(QuestsModule.DAILY_QUEST_SLOTS, questRow.quest_slot_index));
-            expect(dailyQuestRows.length).to.equal(1);
-            expect(dailyQuestRows[0].quest_type_id).to.not.equal(101);
+            return DuelystFirebase.connect().getRootRef();
+          })
+          .then((rootRef) =>
+            Promise.all([
+              knex.first().from('users').where('id', userId),
+              knex
+                .select()
+                .from('user_quests')
+                .where('user_id', userId)
+                .orderBy('quest_slot_index', 'asc'),
+              knex.select().from('user_quests_complete').where('user_id', userId),
+              knex.select().from('user_rewards').where('user_id', userId),
+              FirebasePromises.once(rootRef.child('user-quests').child(userId), 'value'),
+              FirebasePromises.once(
+                rootRef.child('user-games').child(userId).child(gameId).child('job_status'),
+                'value',
+              ),
+            ]),
+          )
+          .then(
+            ([
+              userRow,
+              questRows,
+              completeQuestRows,
+              rewardRows,
+              firebaseQuestsSnapshot,
+              firebaseGameJobStatusSnapshot,
+            ]) => {
+              expect(questRows).to.exist;
+              const dailyQuestRows = _.filter(questRows, (questRow) =>
+                _.contains(QuestsModule.DAILY_QUEST_SLOTS, questRow.quest_slot_index),
+              );
+              expect(dailyQuestRows.length).to.equal(1);
+              expect(dailyQuestRows[0].quest_type_id).to.not.equal(101);
 
-            expect(completeQuestRows).to.exist;
-            const completedDailyQuestRows = _.filter(completeQuestRows, (questRow) => _.contains(QuestsModule.DAILY_QUEST_SLOTS, questRow.quest_slot_index));
-            expect(completedDailyQuestRows.length).to.equal(2);
-            expect(completedDailyQuestRows[1].quest_type_id).to.equal(101);
-            expect(completedDailyQuestRows[1].completed_at.valueOf()).to.equal(systemTime.valueOf());
-            expect(completedDailyQuestRows[1].progressed_by_game_ids.length).to.equal(4);
-            expect(_.intersection(completedDailyQuestRows[1].progressed_by_game_ids, ['game1', 'game2', 'game3', gameId]).length).to.equal(4);
+              expect(completeQuestRows).to.exist;
+              const completedDailyQuestRows = _.filter(completeQuestRows, (questRow) =>
+                _.contains(QuestsModule.DAILY_QUEST_SLOTS, questRow.quest_slot_index),
+              );
+              expect(completedDailyQuestRows.length).to.equal(2);
+              expect(completedDailyQuestRows[1].quest_type_id).to.equal(101);
+              expect(completedDailyQuestRows[1].completed_at.valueOf()).to.equal(
+                systemTime.valueOf(),
+              );
+              expect(completedDailyQuestRows[1].progressed_by_game_ids.length).to.equal(4);
+              expect(
+                _.intersection(completedDailyQuestRows[1].progressed_by_game_ids, [
+                  'game1',
+                  'game2',
+                  'game3',
+                  gameId,
+                ]).length,
+              ).to.equal(4);
 
-            const firebaseData = firebaseQuestsSnapshot.val().daily.current;
+              const firebaseData = firebaseQuestsSnapshot.val().daily.current;
 
-            expect(firebaseData).to.exist;
-            expect(firebaseData.quests[0]).to.not.exist;
+              expect(firebaseData).to.exist;
+              expect(firebaseData.quests[0]).to.not.exist;
 
-            expect(firebaseGameJobStatusSnapshot.val().quests).to.equal(true);
-          });
+              expect(firebaseGameJobStatusSnapshot.val().quests).to.equal(true);
+            },
+          );
       });
     });
 
@@ -647,21 +876,36 @@ describe('quests module', () => {
         fakeGameSessionData.gameSetupData.players[0].playerId = userId;
         fakeGameSessionData.gameSetupData.players[0].factionId = SDK.Factions.Lyonar;
 
-        return knex('user_quests').delete().where('user_id', userId)
-          .then(() => UsersModule.setNewPlayerFeatureProgression(userId, NewPlayerProgressionModuleLookup.Core, NewPlayerProgressionStageEnum.TutorialDone.key))
+        return knex('user_quests')
+          .delete()
+          .where('user_id', userId)
+          .then(() =>
+            UsersModule.setNewPlayerFeatureProgression(
+              userId,
+              NewPlayerProgressionModuleLookup.Core,
+              NewPlayerProgressionStageEnum.TutorialDone.key,
+            ),
+          )
           .then(() => QuestsModule.generateBeginnerQuests(userId));
       });
 
-      afterAll(() => {
-      });
+      afterAll(() => {});
 
       it('expect to recieve a spirit orb for completing win 1 practice game quest', () => {
         const _chainState = {};
         const systemTime = moment().utc();
-        return knex.select().from('user_spirit_orbs').where('user_id', userId)
+        return knex
+          .select()
+          .from('user_spirit_orbs')
+          .where('user_id', userId)
           .then((userSpiritOrbRows) => {
             _chainState.userSpiritOrbRows = userSpiritOrbRows;
-            return QuestsModule.updateQuestProgressWithGame(userId, generatePushId(), fakeGameSessionData, systemTime);
+            return QuestsModule.updateQuestProgressWithGame(
+              userId,
+              generatePushId(),
+              fakeGameSessionData,
+              systemTime,
+            );
           })
           .then((result) => {
             expect(result).to.exist;
@@ -670,10 +914,15 @@ describe('quests module', () => {
 
             return DuelystFirebase.connect().getRootRef();
           })
-          .then((rootRef) => Promise.all([
-            knex.select().from('user_spirit_orbs').where('user_id', userId),
-            FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('spirit-orbs'), 'value'),
-          ]))
+          .then((rootRef) =>
+            Promise.all([
+              knex.select().from('user_spirit_orbs').where('user_id', userId),
+              FirebasePromises.once(
+                rootRef.child('user-inventory').child(userId).child('spirit-orbs'),
+                'value',
+              ),
+            ]),
+          )
           .then(([userSpiritOrbRows, firebaseSpiritOrbsSnapshot]) => {
             expect(userSpiritOrbRows.length).to.equal(_chainState.userSpiritOrbRows.length + 1);
 
@@ -693,11 +942,13 @@ describe('quests module', () => {
       beforeAll(() => {
         const systemTime = moment().utc();
 
-        return knex('user_quests').delete().where('user_id', userId).andWhere('quest_slot_index', QuestsModule.CATCH_UP_QUEST_SLOT);
+        return knex('user_quests')
+          .delete()
+          .where('user_id', userId)
+          .andWhere('quest_slot_index', QuestsModule.CATCH_UP_QUEST_SLOT);
       });
 
-      afterAll(() => {
-      });
+      afterAll(() => {});
 
       it('expect to create a quest when giving a user first catch up charge', () => {
         const systemTime = moment().utc();
@@ -705,39 +956,13 @@ describe('quests module', () => {
         catchUpChargesGiven += catchUpChargesToGive;
         const catchUpChargesToExpect = catchUpChargesGiven;
         const txPromise = knex.transaction((tx) => {
-          QuestsModule._giveUserCatchUpQuestCharge(txPromise, tx, userId, catchUpChargesToGive, systemTime)
-            .then(() => {
-              tx.commit();
-            })
-            .catch((e) => {
-              Logger.module('UNITTEST').log(e);
-              tx.rollback();
-            });
-        });
-
-        return txPromise.then(() => DuelystFirebase.connect().getRootRef()).then((rootRef) => Promise.all([
-          knex('user_quests').first().where('user_id', userId).andWhere('quest_slot_index', QuestsModule.CATCH_UP_QUEST_SLOT),
-          FirebasePromises.once(rootRef.child('user-quests').child(userId).child('daily').child('current')
-            .child('quests')
-            .child(QuestsModule.CATCH_UP_QUEST_SLOT), 'value'),
-        ])).then(([catchUpQuestRow, fbCatchUpQuest]) => {
-          expect(catchUpQuestRow).to.exist;
-          expect(catchUpQuestRow.gold).to.equal(QuestsModule.CATCH_UP_CHARGE_GOLD_VALUE * catchUpChargesToExpect);
-
-          expect(fbCatchUpQuest).to.exist;
-          const fbCatchUpQuestData = fbCatchUpQuest.val();
-          expect(fbCatchUpQuestData).to.exist;
-          expect(fbCatchUpQuestData.gold).to.equal(QuestsModule.CATCH_UP_CHARGE_GOLD_VALUE * catchUpChargesToExpect);
-        });
-      });
-
-      it('expect quest catch up charges to add to the current catch up quest\'s value', () => {
-        const systemTime = moment().utc();
-        const catchUpChargesToGive = 2;
-        catchUpChargesGiven += catchUpChargesToGive;
-        const catchUpChargesToExpect = catchUpChargesGiven;
-        const txPromise = knex.transaction((tx) => {
-          QuestsModule._giveUserCatchUpQuestCharge(txPromise, tx, userId, catchUpChargesToGive, systemTime)
+          QuestsModule._giveUserCatchUpQuestCharge(
+            txPromise,
+            tx,
+            userId,
+            catchUpChargesToGive,
+            systemTime,
+          )
             .then(() => {
               tx.commit();
             })
@@ -748,19 +973,95 @@ describe('quests module', () => {
         });
 
         return txPromise
-          .then(() => PromiseUtils.delay(2000)).then(() => DuelystFirebase.connect().getRootRef()).then((rootRef) => Promise.all([
-            knex('user_quests').first().where('user_id', userId).andWhere('quest_slot_index', QuestsModule.CATCH_UP_QUEST_SLOT),
-            FirebasePromises.once(rootRef.child('user-quests').child(userId).child('daily').child('current')
-              .child('quests')
-              .child(QuestsModule.CATCH_UP_QUEST_SLOT), 'value'),
-          ])).then(([catchUpQuestRow, fbCatchUpQuest]) => {
+          .then(() => DuelystFirebase.connect().getRootRef())
+          .then((rootRef) =>
+            Promise.all([
+              knex('user_quests')
+                .first()
+                .where('user_id', userId)
+                .andWhere('quest_slot_index', QuestsModule.CATCH_UP_QUEST_SLOT),
+              FirebasePromises.once(
+                rootRef
+                  .child('user-quests')
+                  .child(userId)
+                  .child('daily')
+                  .child('current')
+                  .child('quests')
+                  .child(QuestsModule.CATCH_UP_QUEST_SLOT),
+                'value',
+              ),
+            ]),
+          )
+          .then(([catchUpQuestRow, fbCatchUpQuest]) => {
             expect(catchUpQuestRow).to.exist;
-            expect(catchUpQuestRow.gold).to.equal(QuestsModule.CATCH_UP_CHARGE_GOLD_VALUE * catchUpChargesToExpect);
+            expect(catchUpQuestRow.gold).to.equal(
+              QuestsModule.CATCH_UP_CHARGE_GOLD_VALUE * catchUpChargesToExpect,
+            );
 
             expect(fbCatchUpQuest).to.exist;
             const fbCatchUpQuestData = fbCatchUpQuest.val();
             expect(fbCatchUpQuestData).to.exist;
-            expect(fbCatchUpQuestData.gold).to.equal(QuestsModule.CATCH_UP_CHARGE_GOLD_VALUE * catchUpChargesToExpect);
+            expect(fbCatchUpQuestData.gold).to.equal(
+              QuestsModule.CATCH_UP_CHARGE_GOLD_VALUE * catchUpChargesToExpect,
+            );
+          });
+      });
+
+      it("expect quest catch up charges to add to the current catch up quest's value", () => {
+        const systemTime = moment().utc();
+        const catchUpChargesToGive = 2;
+        catchUpChargesGiven += catchUpChargesToGive;
+        const catchUpChargesToExpect = catchUpChargesGiven;
+        const txPromise = knex.transaction((tx) => {
+          QuestsModule._giveUserCatchUpQuestCharge(
+            txPromise,
+            tx,
+            userId,
+            catchUpChargesToGive,
+            systemTime,
+          )
+            .then(() => {
+              tx.commit();
+            })
+            .catch((e) => {
+              Logger.module('UNITTEST').log(e);
+              tx.rollback();
+            });
+        });
+
+        return txPromise
+          .then(() => PromiseUtils.delay(2000))
+          .then(() => DuelystFirebase.connect().getRootRef())
+          .then((rootRef) =>
+            Promise.all([
+              knex('user_quests')
+                .first()
+                .where('user_id', userId)
+                .andWhere('quest_slot_index', QuestsModule.CATCH_UP_QUEST_SLOT),
+              FirebasePromises.once(
+                rootRef
+                  .child('user-quests')
+                  .child(userId)
+                  .child('daily')
+                  .child('current')
+                  .child('quests')
+                  .child(QuestsModule.CATCH_UP_QUEST_SLOT),
+                'value',
+              ),
+            ]),
+          )
+          .then(([catchUpQuestRow, fbCatchUpQuest]) => {
+            expect(catchUpQuestRow).to.exist;
+            expect(catchUpQuestRow.gold).to.equal(
+              QuestsModule.CATCH_UP_CHARGE_GOLD_VALUE * catchUpChargesToExpect,
+            );
+
+            expect(fbCatchUpQuest).to.exist;
+            const fbCatchUpQuestData = fbCatchUpQuest.val();
+            expect(fbCatchUpQuestData).to.exist;
+            expect(fbCatchUpQuestData.gold).to.equal(
+              QuestsModule.CATCH_UP_CHARGE_GOLD_VALUE * catchUpChargesToExpect,
+            );
           });
       });
 
@@ -769,7 +1070,13 @@ describe('quests module', () => {
         const catchUpChargesToGive = 20;
         catchUpChargesGiven += catchUpChargesToGive;
         const txPromise = knex.transaction((tx) => {
-          QuestsModule._giveUserCatchUpQuestCharge(txPromise, tx, userId, catchUpChargesToGive, systemTime)
+          QuestsModule._giveUserCatchUpQuestCharge(
+            txPromise,
+            tx,
+            userId,
+            catchUpChargesToGive,
+            systemTime,
+          )
             .then(() => {
               tx.commit();
             })
@@ -780,12 +1087,27 @@ describe('quests module', () => {
         });
 
         return txPromise
-          .then(() => PromiseUtils.delay(2000)).then(() => DuelystFirebase.connect().getRootRef()).then((rootRef) => Promise.all([
-            knex('user_quests').first().where('user_id', userId).andWhere('quest_slot_index', QuestsModule.CATCH_UP_QUEST_SLOT),
-            FirebasePromises.once(rootRef.child('user-quests').child(userId).child('daily').child('current')
-              .child('quests')
-              .child(QuestsModule.CATCH_UP_QUEST_SLOT), 'value'),
-          ])).then(([catchUpQuestRow, fbCatchUpQuest]) => {
+          .then(() => PromiseUtils.delay(2000))
+          .then(() => DuelystFirebase.connect().getRootRef())
+          .then((rootRef) =>
+            Promise.all([
+              knex('user_quests')
+                .first()
+                .where('user_id', userId)
+                .andWhere('quest_slot_index', QuestsModule.CATCH_UP_QUEST_SLOT),
+              FirebasePromises.once(
+                rootRef
+                  .child('user-quests')
+                  .child(userId)
+                  .child('daily')
+                  .child('current')
+                  .child('quests')
+                  .child(QuestsModule.CATCH_UP_QUEST_SLOT),
+                'value',
+              ),
+            ]),
+          )
+          .then(([catchUpQuestRow, fbCatchUpQuest]) => {
             expect(catchUpQuestRow).to.exist;
             expect(catchUpQuestRow.gold).to.equal(QuestsModule.CATCH_UP_MAX_GOLD_VALUE);
 
@@ -811,31 +1133,41 @@ describe('quests module', () => {
         ]);
       });
 
-      afterAll(() => {
-      });
+      afterAll(() => {});
 
       it('expect to not generate a catch up quest when user has completed all of their quests and can generate quests 1 day later', () => {
         const _chainState = {};
         const systemTime = moment().utc();
 
-        return DuelystFirebase.connect().getRootRef()
+        return DuelystFirebase.connect()
+          .getRootRef()
           .then((fbRootRef) => {
             _chainState.fbRootRef = fbRootRef;
           })
-          .then(() => Promise.all([
-            knex('user_quests').delete().where('user_id', userId),
-            knex('users').where('id', userId).update({
-              daily_quests_generated_at: systemTime.toDate(),
-            }),
-          ]))
+          .then(() =>
+            Promise.all([
+              knex('user_quests').delete().where('user_id', userId),
+              knex('users').where('id', userId).update({
+                daily_quests_generated_at: systemTime.toDate(),
+              }),
+            ]),
+          )
           .then(() => QuestsModule.generateDailyQuests(userId, systemTime.clone().add(1, 'days')))
-          .then(() => Promise.all([
-            knex.select().from('user_quests').where('user_id', userId),
-            FirebasePromises.once(_chainState.fbRootRef.child('user-quests').child(userId), 'value'),
-          ]))
+          .then(() =>
+            Promise.all([
+              knex.select().from('user_quests').where('user_id', userId),
+              FirebasePromises.once(
+                _chainState.fbRootRef.child('user-quests').child(userId),
+                'value',
+              ),
+            ]),
+          )
           .then(([questRows, firebaseQuestsSnapshot]) => {
             expect(questRows.length).to.equal(2);
-            const catchUpQuestRows = _.filter(questRows, (questRow) => questRow.quest_slot_index === QuestsModule.CATCH_UP_QUEST_SLOT);
+            const catchUpQuestRows = _.filter(
+              questRows,
+              (questRow) => questRow.quest_slot_index === QuestsModule.CATCH_UP_QUEST_SLOT,
+            );
             expect(catchUpQuestRows.length).to.equal(0);
 
             const currentQuestsData = firebaseQuestsSnapshot.val().daily.current;
@@ -849,26 +1181,42 @@ describe('quests module', () => {
         const _chainState = {};
         const systemTime = moment().utc();
 
-        return DuelystFirebase.connect().getRootRef()
+        return DuelystFirebase.connect()
+          .getRootRef()
           .then((fbRootRef) => {
             _chainState.fbRootRef = fbRootRef;
           })
-          .then(() => Promise.all([
-            knex('user_quests').delete().where('user_id', userId),
-            knex('users').where('id', userId).update({
-              daily_quests_generated_at: systemTime.toDate(),
-            }),
-          ]))
+          .then(() =>
+            Promise.all([
+              knex('user_quests').delete().where('user_id', userId),
+              knex('users').where('id', userId).update({
+                daily_quests_generated_at: systemTime.toDate(),
+              }),
+            ]),
+          )
           .then(() => QuestsModule.generateDailyQuests(userId, systemTime.clone().add(1, 'days')))
-          .then(() => knex('user_quests').delete().where('user_id', userId).andWhere('quest_slot_index', QuestsModule.DAILY_QUEST_SLOTS[0]))
+          .then(() =>
+            knex('user_quests')
+              .delete()
+              .where('user_id', userId)
+              .andWhere('quest_slot_index', QuestsModule.DAILY_QUEST_SLOTS[0]),
+          )
           .then(() => QuestsModule.generateDailyQuests(userId, systemTime.clone().add(2, 'days')))
-          .then(() => Promise.all([
-            knex.select().from('user_quests').where('user_id', userId),
-            FirebasePromises.once(_chainState.fbRootRef.child('user-quests').child(userId), 'value'),
-          ]))
+          .then(() =>
+            Promise.all([
+              knex.select().from('user_quests').where('user_id', userId),
+              FirebasePromises.once(
+                _chainState.fbRootRef.child('user-quests').child(userId),
+                'value',
+              ),
+            ]),
+          )
           .then(([questRows, firebaseQuestsSnapshot]) => {
             expect(questRows.length).to.equal(3);
-            const catchUpQuestRows = _.filter(questRows, (questRow) => questRow.quest_slot_index === QuestsModule.CATCH_UP_QUEST_SLOT);
+            const catchUpQuestRows = _.filter(
+              questRows,
+              (questRow) => questRow.quest_slot_index === QuestsModule.CATCH_UP_QUEST_SLOT,
+            );
             expect(catchUpQuestRows.length).to.equal(1);
 
             const catchUpQuestRow = catchUpQuestRows[0];
@@ -880,7 +1228,9 @@ describe('quests module', () => {
             expect(currentQuestsData.quests[0]).to.exist;
             expect(currentQuestsData.quests[1]).to.exist;
             expect(currentQuestsData.quests[QuestsModule.CATCH_UP_QUEST_SLOT]).to.exist;
-            expect(currentQuestsData.quests[QuestsModule.CATCH_UP_QUEST_SLOT].gold).to.equal(1 * QuestsModule.CATCH_UP_CHARGE_GOLD_VALUE);
+            expect(currentQuestsData.quests[QuestsModule.CATCH_UP_QUEST_SLOT].gold).to.equal(
+              1 * QuestsModule.CATCH_UP_CHARGE_GOLD_VALUE,
+            );
           });
       });
 
@@ -888,25 +1238,36 @@ describe('quests module', () => {
         const _chainState = {};
         const systemTime = moment().utc();
 
-        return DuelystFirebase.connect().getRootRef()
+        return DuelystFirebase.connect()
+          .getRootRef()
           .then((fbRootRef) => {
             _chainState.fbRootRef = fbRootRef;
           })
-          .then(() => Promise.all([
-            knex('user_quests').delete().where('user_id', userId),
-            knex('users').where('id', userId).update({
-              daily_quests_generated_at: systemTime.toDate(),
-            }),
-          ]))
+          .then(() =>
+            Promise.all([
+              knex('user_quests').delete().where('user_id', userId),
+              knex('users').where('id', userId).update({
+                daily_quests_generated_at: systemTime.toDate(),
+              }),
+            ]),
+          )
           .then(() => QuestsModule.generateDailyQuests(userId, systemTime.clone().add(1, 'days')))
           .then(() => QuestsModule.generateDailyQuests(userId, systemTime.clone().add(2, 'days')))
-          .then(() => Promise.all([
-            knex.select().from('user_quests').where('user_id', userId),
-            FirebasePromises.once(_chainState.fbRootRef.child('user-quests').child(userId), 'value'),
-          ]))
+          .then(() =>
+            Promise.all([
+              knex.select().from('user_quests').where('user_id', userId),
+              FirebasePromises.once(
+                _chainState.fbRootRef.child('user-quests').child(userId),
+                'value',
+              ),
+            ]),
+          )
           .then(([questRows, firebaseQuestsSnapshot]) => {
             expect(questRows.length).to.equal(3);
-            const catchUpQuestRows = _.filter(questRows, (questRow) => questRow.quest_slot_index === QuestsModule.CATCH_UP_QUEST_SLOT);
+            const catchUpQuestRows = _.filter(
+              questRows,
+              (questRow) => questRow.quest_slot_index === QuestsModule.CATCH_UP_QUEST_SLOT,
+            );
             expect(catchUpQuestRows.length).to.equal(1);
 
             const catchUpQuestRow = catchUpQuestRows[0];
@@ -918,7 +1279,9 @@ describe('quests module', () => {
             expect(currentQuestsData.quests[0]).to.exist;
             expect(currentQuestsData.quests[1]).to.exist;
             expect(currentQuestsData.quests[QuestsModule.CATCH_UP_QUEST_SLOT]).to.exist;
-            expect(currentQuestsData.quests[QuestsModule.CATCH_UP_QUEST_SLOT].gold).to.equal(2 * QuestsModule.CATCH_UP_CHARGE_GOLD_VALUE);
+            expect(currentQuestsData.quests[QuestsModule.CATCH_UP_QUEST_SLOT].gold).to.equal(
+              2 * QuestsModule.CATCH_UP_CHARGE_GOLD_VALUE,
+            );
           });
       });
 
@@ -926,26 +1289,42 @@ describe('quests module', () => {
         const _chainState = {};
         const systemTime = moment().utc();
 
-        return DuelystFirebase.connect().getRootRef()
+        return DuelystFirebase.connect()
+          .getRootRef()
           .then((fbRootRef) => {
             _chainState.fbRootRef = fbRootRef;
           })
-          .then(() => Promise.all([
-            knex('user_quests').delete().where('user_id', userId),
-            knex('users').where('id', userId).update({
-              daily_quests_generated_at: systemTime.toDate(),
-            }),
-          ]))
+          .then(() =>
+            Promise.all([
+              knex('user_quests').delete().where('user_id', userId),
+              knex('users').where('id', userId).update({
+                daily_quests_generated_at: systemTime.toDate(),
+              }),
+            ]),
+          )
           .then(() => QuestsModule.generateDailyQuests(userId, systemTime.clone().add(1, 'days')))
-          .then(() => knex('user_quests').delete().where('user_id', userId).andWhere('quest_slot_index', QuestsModule.DAILY_QUEST_SLOTS[0]))
+          .then(() =>
+            knex('user_quests')
+              .delete()
+              .where('user_id', userId)
+              .andWhere('quest_slot_index', QuestsModule.DAILY_QUEST_SLOTS[0]),
+          )
           .then(() => QuestsModule.generateDailyQuests(userId, systemTime.clone().add(3, 'days')))
-          .then(() => Promise.all([
-            knex.select().from('user_quests').where('user_id', userId),
-            FirebasePromises.once(_chainState.fbRootRef.child('user-quests').child(userId), 'value'),
-          ]))
+          .then(() =>
+            Promise.all([
+              knex.select().from('user_quests').where('user_id', userId),
+              FirebasePromises.once(
+                _chainState.fbRootRef.child('user-quests').child(userId),
+                'value',
+              ),
+            ]),
+          )
           .then(([questRows, firebaseQuestsSnapshot]) => {
             expect(questRows.length).to.equal(3);
-            const catchUpQuestRows = _.filter(questRows, (questRow) => questRow.quest_slot_index === QuestsModule.CATCH_UP_QUEST_SLOT);
+            const catchUpQuestRows = _.filter(
+              questRows,
+              (questRow) => questRow.quest_slot_index === QuestsModule.CATCH_UP_QUEST_SLOT,
+            );
             expect(catchUpQuestRows.length).to.equal(1);
 
             const catchUpQuestRow = catchUpQuestRows[0];
@@ -957,36 +1336,59 @@ describe('quests module', () => {
             expect(currentQuestsData.quests[0]).to.exist;
             expect(currentQuestsData.quests[1]).to.exist;
             expect(currentQuestsData.quests[QuestsModule.CATCH_UP_QUEST_SLOT]).to.exist;
-            expect(currentQuestsData.quests[QuestsModule.CATCH_UP_QUEST_SLOT].gold).to.equal(3 * QuestsModule.CATCH_UP_CHARGE_GOLD_VALUE);
+            expect(currentQuestsData.quests[QuestsModule.CATCH_UP_QUEST_SLOT].gold).to.equal(
+              3 * QuestsModule.CATCH_UP_CHARGE_GOLD_VALUE,
+            );
           });
       });
 
-      it('expect to generate a catch up quest with 2 charges when doesn\'t complete 1 of their quests 2 days in a row', () => {
+      it("expect to generate a catch up quest with 2 charges when doesn't complete 1 of their quests 2 days in a row", () => {
         const _chainState = {};
         const systemTime = moment().utc();
 
-        return DuelystFirebase.connect().getRootRef()
+        return DuelystFirebase.connect()
+          .getRootRef()
           .then((fbRootRef) => {
             _chainState.fbRootRef = fbRootRef;
           })
-          .then(() => Promise.all([
-            knex('user_quests').delete().where('user_id', userId),
-            knex('users').where('id', userId).update({
-              daily_quests_generated_at: systemTime.toDate(),
-            }),
-          ]))
+          .then(() =>
+            Promise.all([
+              knex('user_quests').delete().where('user_id', userId),
+              knex('users').where('id', userId).update({
+                daily_quests_generated_at: systemTime.toDate(),
+              }),
+            ]),
+          )
           .then(() => QuestsModule.generateDailyQuests(userId, systemTime.clone().add(1, 'days')))
-          .then(() => knex('user_quests').delete().where('user_id', userId).andWhere('quest_slot_index', QuestsModule.DAILY_QUEST_SLOTS[0]))
+          .then(() =>
+            knex('user_quests')
+              .delete()
+              .where('user_id', userId)
+              .andWhere('quest_slot_index', QuestsModule.DAILY_QUEST_SLOTS[0]),
+          )
           .then(() => QuestsModule.generateDailyQuests(userId, systemTime.clone().add(2, 'days')))
-          .then(() => knex('user_quests').delete().where('user_id', userId).andWhere('quest_slot_index', QuestsModule.DAILY_QUEST_SLOTS[0]))
+          .then(() =>
+            knex('user_quests')
+              .delete()
+              .where('user_id', userId)
+              .andWhere('quest_slot_index', QuestsModule.DAILY_QUEST_SLOTS[0]),
+          )
           .then(() => QuestsModule.generateDailyQuests(userId, systemTime.clone().add(3, 'days')))
-          .then(() => Promise.all([
-            knex.select().from('user_quests').where('user_id', userId),
-            FirebasePromises.once(_chainState.fbRootRef.child('user-quests').child(userId), 'value'),
-          ]))
+          .then(() =>
+            Promise.all([
+              knex.select().from('user_quests').where('user_id', userId),
+              FirebasePromises.once(
+                _chainState.fbRootRef.child('user-quests').child(userId),
+                'value',
+              ),
+            ]),
+          )
           .then(([questRows, firebaseQuestsSnapshot]) => {
             expect(questRows.length).to.equal(3);
-            const catchUpQuestRows = _.filter(questRows, (questRow) => questRow.quest_slot_index === QuestsModule.CATCH_UP_QUEST_SLOT);
+            const catchUpQuestRows = _.filter(
+              questRows,
+              (questRow) => questRow.quest_slot_index === QuestsModule.CATCH_UP_QUEST_SLOT,
+            );
             expect(catchUpQuestRows.length).to.equal(1);
 
             const catchUpQuestRow = catchUpQuestRows[0];
@@ -998,7 +1400,9 @@ describe('quests module', () => {
             expect(currentQuestsData.quests[0]).to.exist;
             expect(currentQuestsData.quests[1]).to.exist;
             expect(currentQuestsData.quests[QuestsModule.CATCH_UP_QUEST_SLOT]).to.exist;
-            expect(currentQuestsData.quests[QuestsModule.CATCH_UP_QUEST_SLOT].gold).to.equal(2 * QuestsModule.CATCH_UP_CHARGE_GOLD_VALUE);
+            expect(currentQuestsData.quests[QuestsModule.CATCH_UP_QUEST_SLOT].gold).to.equal(
+              2 * QuestsModule.CATCH_UP_CHARGE_GOLD_VALUE,
+            );
           });
       });
 
@@ -1006,26 +1410,42 @@ describe('quests module', () => {
         const _chainState = {};
         const systemTime = moment().utc();
 
-        return DuelystFirebase.connect().getRootRef()
+        return DuelystFirebase.connect()
+          .getRootRef()
           .then((fbRootRef) => {
             _chainState.fbRootRef = fbRootRef;
           })
-          .then(() => Promise.all([
-            knex('user_quests').delete().where('user_id', userId),
-            knex('users').where('id', userId).update({
-              daily_quests_generated_at: systemTime.toDate(),
-            }),
-          ]))
+          .then(() =>
+            Promise.all([
+              knex('user_quests').delete().where('user_id', userId),
+              knex('users').where('id', userId).update({
+                daily_quests_generated_at: systemTime.toDate(),
+              }),
+            ]),
+          )
           .then(() => QuestsModule.generateDailyQuests(userId, systemTime.clone().add(1, 'days')))
-          .then(() => knex('user_quests').delete().where('user_id', userId).andWhere('quest_slot_index', QuestsModule.DAILY_QUEST_SLOTS[0]))
+          .then(() =>
+            knex('user_quests')
+              .delete()
+              .where('user_id', userId)
+              .andWhere('quest_slot_index', QuestsModule.DAILY_QUEST_SLOTS[0]),
+          )
           .then(() => QuestsModule.generateDailyQuests(userId, systemTime.clone().add(10, 'days')))
-          .then(() => Promise.all([
-            knex.select().from('user_quests').where('user_id', userId),
-            FirebasePromises.once(_chainState.fbRootRef.child('user-quests').child(userId), 'value'),
-          ]))
+          .then(() =>
+            Promise.all([
+              knex.select().from('user_quests').where('user_id', userId),
+              FirebasePromises.once(
+                _chainState.fbRootRef.child('user-quests').child(userId),
+                'value',
+              ),
+            ]),
+          )
           .then(([questRows, firebaseQuestsSnapshot]) => {
             expect(questRows.length).to.equal(3);
-            const catchUpQuestRows = _.filter(questRows, (questRow) => questRow.quest_slot_index === QuestsModule.CATCH_UP_QUEST_SLOT);
+            const catchUpQuestRows = _.filter(
+              questRows,
+              (questRow) => questRow.quest_slot_index === QuestsModule.CATCH_UP_QUEST_SLOT,
+            );
             expect(catchUpQuestRows.length).to.equal(1);
 
             const catchUpQuestRow = catchUpQuestRows[0];
@@ -1037,7 +1457,9 @@ describe('quests module', () => {
             expect(currentQuestsData.quests[0]).to.exist;
             expect(currentQuestsData.quests[1]).to.exist;
             expect(currentQuestsData.quests[QuestsModule.CATCH_UP_QUEST_SLOT]).to.exist;
-            expect(currentQuestsData.quests[QuestsModule.CATCH_UP_QUEST_SLOT].gold).to.equal(QuestsModule.CATCH_UP_MAX_GOLD_VALUE);
+            expect(currentQuestsData.quests[QuestsModule.CATCH_UP_QUEST_SLOT].gold).to.equal(
+              QuestsModule.CATCH_UP_MAX_GOLD_VALUE,
+            );
           });
       });
     });
@@ -1048,11 +1470,20 @@ describe('quests module', () => {
       QuestsModule.SEASONAL_QUESTS_ACTIVE = false;
 
       return SyncModule.wipeUserData(userId)
-        .then(() => knex('user_new_player_progression').insert({
-          user_id: userId,
-          module_name: NewPlayerProgressionModuleLookup.Core,
-          stage: NewPlayerProgressionHelper.DailyQuestsStartToGenerateStage.key,
-        })).then(() => QuestsModule.generateBeginnerQuests(userId)).then(() => knex('user_quests').delete().where('user_id', userId).andWhere('quest_slot_index', QuestsModule.DAILY_QUEST_SLOTS[1]));
+        .then(() =>
+          knex('user_new_player_progression').insert({
+            user_id: userId,
+            module_name: NewPlayerProgressionModuleLookup.Core,
+            stage: NewPlayerProgressionHelper.DailyQuestsStartToGenerateStage.key,
+          }),
+        )
+        .then(() => QuestsModule.generateBeginnerQuests(userId))
+        .then(() =>
+          knex('user_quests')
+            .delete()
+            .where('user_id', userId)
+            .andWhere('quest_slot_index', QuestsModule.DAILY_QUEST_SLOTS[1]),
+        );
     });
 
     describe('generateDailyQuests() - catch up quest', () => {
@@ -1060,23 +1491,37 @@ describe('quests module', () => {
         const _chainState = {};
         const systemTime = moment().utc();
 
-        return DuelystFirebase.connect().getRootRef()
+        return DuelystFirebase.connect()
+          .getRootRef()
           .then((fbRootRef) => {
             _chainState.fbRootRef = fbRootRef;
           })
-          .then(() => Promise.all([
-            knex('user_quests').delete().where('user_id', userId).andWhere('quest_slot_index', QuestsModule.DAILY_QUEST_SLOTS[1]),
-            knex('users').where('id', userId).update({
-              daily_quests_generated_at: systemTime.toDate(),
-            }),
-          ]))
+          .then(() =>
+            Promise.all([
+              knex('user_quests')
+                .delete()
+                .where('user_id', userId)
+                .andWhere('quest_slot_index', QuestsModule.DAILY_QUEST_SLOTS[1]),
+              knex('users').where('id', userId).update({
+                daily_quests_generated_at: systemTime.toDate(),
+              }),
+            ]),
+          )
           .then(() => QuestsModule.generateDailyQuests(userId, systemTime.clone().add(1, 'days')))
-          .then(() => Promise.all([
-            knex.select().from('user_quests').where('user_id', userId),
-            FirebasePromises.once(_chainState.fbRootRef.child('user-quests').child(userId), 'value'),
-          ]))
+          .then(() =>
+            Promise.all([
+              knex.select().from('user_quests').where('user_id', userId),
+              FirebasePromises.once(
+                _chainState.fbRootRef.child('user-quests').child(userId),
+                'value',
+              ),
+            ]),
+          )
           .then(([questRows, firebaseQuestsSnapshot]) => {
-            const catchUpQuestRows = _.filter(questRows, (questRow) => questRow.quest_slot_index === QuestsModule.CATCH_UP_QUEST_SLOT);
+            const catchUpQuestRows = _.filter(
+              questRows,
+              (questRow) => questRow.quest_slot_index === QuestsModule.CATCH_UP_QUEST_SLOT,
+            );
             expect(catchUpQuestRows.length).to.equal(0);
 
             const currentQuestsData = firebaseQuestsSnapshot.val().daily.current;
@@ -1086,28 +1531,39 @@ describe('quests module', () => {
           });
       });
 
-      it('expect to generate a catch up quest with 2 charges when user doesn\'t complete 1 of their quests and the other is a beginner quest 2 days in a row', () => {
+      it("expect to generate a catch up quest with 2 charges when user doesn't complete 1 of their quests and the other is a beginner quest 2 days in a row", () => {
         const _chainState = {};
         const systemTime = moment().utc();
 
-        return DuelystFirebase.connect().getRootRef()
+        return DuelystFirebase.connect()
+          .getRootRef()
           .then((fbRootRef) => {
             _chainState.fbRootRef = fbRootRef;
           })
-          .then(() => Promise.all([
-            knex('user_quests').delete().where('user_id', userId),
-            knex('users').where('id', userId).update({
-              daily_quests_generated_at: systemTime.toDate(),
-            }),
-          ]))
+          .then(() =>
+            Promise.all([
+              knex('user_quests').delete().where('user_id', userId),
+              knex('users').where('id', userId).update({
+                daily_quests_generated_at: systemTime.toDate(),
+              }),
+            ]),
+          )
           .then(() => QuestsModule.generateDailyQuests(userId, systemTime.clone().add(1, 'days')))
           .then(() => QuestsModule.generateDailyQuests(userId, systemTime.clone().add(2, 'days')))
-          .then(() => Promise.all([
-            knex.select().from('user_quests').where('user_id', userId),
-            FirebasePromises.once(_chainState.fbRootRef.child('user-quests').child(userId), 'value'),
-          ]))
+          .then(() =>
+            Promise.all([
+              knex.select().from('user_quests').where('user_id', userId),
+              FirebasePromises.once(
+                _chainState.fbRootRef.child('user-quests').child(userId),
+                'value',
+              ),
+            ]),
+          )
           .then(([questRows, firebaseQuestsSnapshot]) => {
-            const catchUpQuestRows = _.filter(questRows, (questRow) => questRow.quest_slot_index === QuestsModule.CATCH_UP_QUEST_SLOT);
+            const catchUpQuestRows = _.filter(
+              questRows,
+              (questRow) => questRow.quest_slot_index === QuestsModule.CATCH_UP_QUEST_SLOT,
+            );
             expect(catchUpQuestRows.length).to.equal(1);
 
             const catchUpQuestRow = catchUpQuestRows[0];
@@ -1119,7 +1575,9 @@ describe('quests module', () => {
             expect(currentQuestsData.quests[0]).to.exist;
             expect(currentQuestsData.quests[1]).to.exist;
             expect(currentQuestsData.quests[QuestsModule.CATCH_UP_QUEST_SLOT]).to.exist;
-            expect(currentQuestsData.quests[QuestsModule.CATCH_UP_QUEST_SLOT].gold).to.equal(2 * QuestsModule.CATCH_UP_CHARGE_GOLD_VALUE);
+            expect(currentQuestsData.quests[QuestsModule.CATCH_UP_QUEST_SLOT].gold).to.equal(
+              2 * QuestsModule.CATCH_UP_CHARGE_GOLD_VALUE,
+            );
           });
       });
     });
@@ -1128,85 +1586,144 @@ describe('quests module', () => {
   describe('Seasonal Quests', () => {
     beforeAll(() => {
       QuestsModule.SEASONAL_QUESTS_ACTIVE = true;
-      return SyncModule.wipeUserData(userId)
-        .then(() => knex('user_new_player_progression').insert({
+      return SyncModule.wipeUserData(userId).then(() =>
+        knex('user_new_player_progression').insert({
           user_id: userId,
           module_name: NewPlayerProgressionModuleLookup.Core,
           stage: NewPlayerProgressionStageEnum.Skipped.key,
-        }));
+        }),
+      );
     });
 
     describe('Frostfire 2016 Quest', () => {
       describe('generateDailyQuests() - Frostfire 2016 Quest', () => {
-        it('expect not to generate the seasonal Frostfire-2016 quest before December 1st 2016', () => QuestsModule.generateDailyQuests(userId, moment.utc('2016-11-30'))
-          .then((result) => {
+        it('expect not to generate the seasonal Frostfire-2016 quest before December 1st 2016', () =>
+          QuestsModule.generateDailyQuests(userId, moment.utc('2016-11-30')).then((result) => {
             expect(result.quests[QuestsModule.SEASONAL_QUEST_SLOT]).to.not.exist;
             // expect(_.keys(result.quests).length).to.equal(2)
           }));
 
-        it('expect not to generate the seasonal Frostfire-2016 quest after January 1st 2017', () => QuestsModule.generateDailyQuests(userId, moment.utc('2017-01-02'))
-          .then((result) => {
+        it('expect not to generate the seasonal Frostfire-2016 quest after January 1st 2017', () =>
+          QuestsModule.generateDailyQuests(userId, moment.utc('2017-01-02')).then((result) => {
             expect(result.quests[QuestsModule.SEASONAL_QUEST_SLOT]).to.not.exist;
             // expect(_.keys(result.quests).length).to.equal(2)
           }));
 
-        it('expect to generate the seasonal Frostfire-2016 during December 2016', () => QuestsModule.generateDailyQuests(userId, moment.utc('2016-12-02'))
-          .then((result) => {
+        it('expect to generate the seasonal Frostfire-2016 during December 2016', () =>
+          QuestsModule.generateDailyQuests(userId, moment.utc('2016-12-02')).then((result) => {
             expect(result.quests[QuestsModule.SEASONAL_QUEST_SLOT]).to.exist;
             expect(result.quests[QuestsModule.SEASONAL_QUEST_SLOT].quest_type_id).to.equal(30001);
             // expect(_.keys(result.quests).length).to.equal(3)
           }));
 
-        it('expect to NOT generate/overwrite the seasonal Frostfire-2016 quest if it already exists', () => knex.transaction((tx) => tx('user_quests').where('user_id', userId)
-          .then((questRows) => QuestsModule.updateQuestProgressWithCompletedQuest(Promise.resolve(), tx, userId, generatePushId(), 1, questRows)).then((result) => {
-            expect(result.quests[QuestsModule.SEASONAL_QUEST_SLOT]).to.exist;
-            expect(result.quests[QuestsModule.SEASONAL_QUEST_SLOT].progress).to.equal(1);
-          })).then(() => QuestsModule.generateDailyQuests(userId, moment.utc('2016-12-02'))).then((result) => {
-          expect(result.quests[QuestsModule.SEASONAL_QUEST_SLOT]).to.exist;
-          expect(result.quests[QuestsModule.SEASONAL_QUEST_SLOT].quest_type_id).to.equal(30001);
-          expect(result.quests[QuestsModule.SEASONAL_QUEST_SLOT].progress).to.equal(1);
-        }));
+        it('expect to NOT generate/overwrite the seasonal Frostfire-2016 quest if it already exists', () =>
+          knex
+            .transaction((tx) =>
+              tx('user_quests')
+                .where('user_id', userId)
+                .then((questRows) =>
+                  QuestsModule.updateQuestProgressWithCompletedQuest(
+                    Promise.resolve(),
+                    tx,
+                    userId,
+                    generatePushId(),
+                    1,
+                    questRows,
+                  ),
+                )
+                .then((result) => {
+                  expect(result.quests[QuestsModule.SEASONAL_QUEST_SLOT]).to.exist;
+                  expect(result.quests[QuestsModule.SEASONAL_QUEST_SLOT].progress).to.equal(1);
+                }),
+            )
+            .then(() => QuestsModule.generateDailyQuests(userId, moment.utc('2016-12-02')))
+            .then((result) => {
+              expect(result.quests[QuestsModule.SEASONAL_QUEST_SLOT]).to.exist;
+              expect(result.quests[QuestsModule.SEASONAL_QUEST_SLOT].quest_type_id).to.equal(30001);
+              expect(result.quests[QuestsModule.SEASONAL_QUEST_SLOT].progress).to.equal(1);
+            }));
 
-        it('expect to NOT generate the seasonal Frostfire-2016 quest if it\'s already complete', () => knex.transaction((tx) => tx('user_quests').where('user_id', userId)
-          .then((questRows) => {
-            const array = [];
-            _.times(14, (i) => { array.push(i); });
-            return PromiseUtils.map(array, (i) => QuestsModule.updateQuestProgressWithCompletedQuest(Promise.resolve(), tx, userId, generatePushId(), 1, questRows), { concurrency: 1 });
-          })).then(() => QuestsModule.generateDailyQuests(userId, moment.utc('2016-12-02'))).then((result) => {
-          expect(result.quests[QuestsModule.SEASONAL_QUEST_SLOT]).to.not.exist;
-          return DuelystFirebase.connect().getRootRef();
-        }).then((rootRef) => Promise.all([
-          knex('user_quests').where('user_id', userId).select(),
-          knex('user_quests_complete').where('user_id', userId).select(),
-          FirebasePromises.once(rootRef.child('user-quests').child(userId), 'value'),
-        ]))
-          .then(([questRows, questCompleteRows, questSnapshot]) => {
-            const currentQuestsData = questSnapshot.val().daily.current;
-            expect(currentQuestsData[QuestsModule.SEASONAL_QUEST_SLOT]).to.not.exist;
-            const q1 = _.find(questRows, (q) => q.quest_slot_index === QuestsModule.SEASONAL_QUEST_SLOT);
-            const q2 = _.find(questCompleteRows, (q) => q.quest_slot_index === QuestsModule.SEASONAL_QUEST_SLOT);
-            expect(q1).to.not.exist;
-            expect(q2).to.exist;
-          }));
+        it("expect to NOT generate the seasonal Frostfire-2016 quest if it's already complete", () =>
+          knex
+            .transaction((tx) =>
+              tx('user_quests')
+                .where('user_id', userId)
+                .then((questRows) => {
+                  const array = [];
+                  _.times(14, (i) => {
+                    array.push(i);
+                  });
+                  return PromiseUtils.map(
+                    array,
+                    (i) =>
+                      QuestsModule.updateQuestProgressWithCompletedQuest(
+                        Promise.resolve(),
+                        tx,
+                        userId,
+                        generatePushId(),
+                        1,
+                        questRows,
+                      ),
+                    { concurrency: 1 },
+                  );
+                }),
+            )
+            .then(() => QuestsModule.generateDailyQuests(userId, moment.utc('2016-12-02')))
+            .then((result) => {
+              expect(result.quests[QuestsModule.SEASONAL_QUEST_SLOT]).to.not.exist;
+              return DuelystFirebase.connect().getRootRef();
+            })
+            .then((rootRef) =>
+              Promise.all([
+                knex('user_quests').where('user_id', userId).select(),
+                knex('user_quests_complete').where('user_id', userId).select(),
+                FirebasePromises.once(rootRef.child('user-quests').child(userId), 'value'),
+              ]),
+            )
+            .then(([questRows, questCompleteRows, questSnapshot]) => {
+              const currentQuestsData = questSnapshot.val().daily.current;
+              expect(currentQuestsData[QuestsModule.SEASONAL_QUEST_SLOT]).to.not.exist;
+              const q1 = _.find(
+                questRows,
+                (q) => q.quest_slot_index === QuestsModule.SEASONAL_QUEST_SLOT,
+              );
+              const q2 = _.find(
+                questCompleteRows,
+                (q) => q.quest_slot_index === QuestsModule.SEASONAL_QUEST_SLOT,
+              );
+              expect(q1).to.not.exist;
+              expect(q2).to.exist;
+            }));
 
         it('expect the seasonal Frostfire-2016 quest to NOT contribute to catchup quests', () => {
           const systemTime = moment.utc('2016-12-02').add(1, 'hour');
           return SyncModule.wipeUserData(userId)
-            .then(() => knex('user_new_player_progression').insert({
-              user_id: userId,
-              module_name: NewPlayerProgressionModuleLookup.Core,
-              stage: NewPlayerProgressionStageEnum.Skipped.key,
-            })).then(() => QuestsModule.generateDailyQuests(userId, systemTime)).then(() => QuestsModule.generateDailyQuests(userId, systemTime.clone().add(1, 'day')))
+            .then(() =>
+              knex('user_new_player_progression').insert({
+                user_id: userId,
+                module_name: NewPlayerProgressionModuleLookup.Core,
+                stage: NewPlayerProgressionStageEnum.Skipped.key,
+              }),
+            )
+            .then(() => QuestsModule.generateDailyQuests(userId, systemTime))
+            .then(() => QuestsModule.generateDailyQuests(userId, systemTime.clone().add(1, 'day')))
             .then((result) => {
               expect(result.quests[QuestsModule.CATCH_UP_QUEST_SLOT]).to.exist;
-              expect(result.quests[QuestsModule.CATCH_UP_QUEST_SLOT].gold).to.equal(2 * QuestsModule.CATCH_UP_CHARGE_GOLD_VALUE);
+              expect(result.quests[QuestsModule.CATCH_UP_QUEST_SLOT].gold).to.equal(
+                2 * QuestsModule.CATCH_UP_CHARGE_GOLD_VALUE,
+              );
             })
             .then(() => QuestsModule.generateDailyQuests(userId, systemTime.clone().add(2, 'day')))
             .then((result) => {
               expect(result.quests[QuestsModule.CATCH_UP_QUEST_SLOT]).to.exist;
-              expect(result.quests[QuestsModule.CATCH_UP_QUEST_SLOT].gold).to.equal(4 * QuestsModule.CATCH_UP_CHARGE_GOLD_VALUE);
+              expect(result.quests[QuestsModule.CATCH_UP_QUEST_SLOT].gold).to.equal(
+                4 * QuestsModule.CATCH_UP_CHARGE_GOLD_VALUE,
+              );
 
-              return knex('user_quests').where('user_id', userId).andWhere('quest_slot_index', QuestsModule.CATCH_UP_QUEST_SLOT).first();
+              return knex('user_quests')
+                .where('user_id', userId)
+                .andWhere('quest_slot_index', QuestsModule.CATCH_UP_QUEST_SLOT)
+                .first();
             })
             .then((questRow) => {
               expect(questRow).to.exist;
@@ -1219,21 +1736,25 @@ describe('quests module', () => {
         beforeAll(() => {
           QuestsModule.SEASONAL_QUESTS_ACTIVE = true;
           return SyncModule.wipeUserData(userId)
-            .then(() => knex('user_new_player_progression').insert({
-              user_id: userId,
-              module_name: NewPlayerProgressionModuleLookup.Core,
-              stage: NewPlayerProgressionStageEnum.Skipped.key,
-            }))
+            .then(() =>
+              knex('user_new_player_progression').insert({
+                user_id: userId,
+                module_name: NewPlayerProgressionModuleLookup.Core,
+                stage: NewPlayerProgressionStageEnum.Skipped.key,
+              }),
+            )
             .then(() => QuestsModule.generateDailyQuests(userId, moment.utc('2016-12-05')));
         });
 
-        it('expect not to be able to mulligan seasonal Frostfire-2016 quest', () => QuestsModule.mulliganDailyQuest(userId, QuestsModule.SEASONAL_QUEST_SLOT)
-          .then((result) => {
-            expect(result).to.not.exist;
-          }).catch((error) => {
-            expect(error).to.exist;
-            expect(error).to.be.an.instanceof(Errors.BadRequestError);
-          }));
+        it('expect not to be able to mulligan seasonal Frostfire-2016 quest', () =>
+          QuestsModule.mulliganDailyQuest(userId, QuestsModule.SEASONAL_QUEST_SLOT)
+            .then((result) => {
+              expect(result).to.not.exist;
+            })
+            .catch((error) => {
+              expect(error).to.exist;
+              expect(error).to.be.an.instanceof(Errors.BadRequestError);
+            }));
       });
 
       describe('updateQuestProgressWithGame() - Frostfire 2016 Quest', () => {
@@ -1254,45 +1775,79 @@ describe('quests module', () => {
           fakeGameSessionData.gameSetupData.players[0].factionId = SDK.Factions.Lyonar;
           // set up user quests as Lyonar and Songhai participation quests
           return SyncModule.wipeUserData(userId)
-            .then(() => knex('user_new_player_progression').insert({
-              user_id: userId,
-              module_name: NewPlayerProgressionModuleLookup.Core,
-              stage: NewPlayerProgressionStageEnum.Skipped.key,
-            })).then(() => QuestsModule.generateDailyQuests(userId, moment.utc('2016-12-02'))).then(() => Promise.all([
-              QuestsModule.mulliganDailyQuest(userId, 0, systemTime, 101),
-              QuestsModule.mulliganDailyQuest(userId, 1, systemTime, 102),
-            ]));
+            .then(() =>
+              knex('user_new_player_progression').insert({
+                user_id: userId,
+                module_name: NewPlayerProgressionModuleLookup.Core,
+                stage: NewPlayerProgressionStageEnum.Skipped.key,
+              }),
+            )
+            .then(() => QuestsModule.generateDailyQuests(userId, moment.utc('2016-12-02')))
+            .then(() =>
+              Promise.all([
+                QuestsModule.mulliganDailyQuest(userId, 0, systemTime, 101),
+                QuestsModule.mulliganDailyQuest(userId, 1, systemTime, 102),
+              ]),
+            );
         });
 
-        it('expect completing a quest to fire updateQuestProgressWithCompletedQuest() and progress the Frostfire-2016 quest', () => PromiseUtils.map([
-          generatePushId(),
-          generatePushId(),
-          generatePushId(),
-          generatePushId(),
-        ], (gameId) => QuestsModule.updateQuestProgressWithGame(userId, generatePushId(), fakeGameSessionData), { concurrency: 1 })
-          .then(() => knex('user_quests').where('user_id', userId).andWhere('quest_slot_index', QuestsModule.SEASONAL_QUEST_SLOT).first()).then((questRow) => {
-            expect(questRow.progress).to.equal(1);
-          }));
+        it('expect completing a quest to fire updateQuestProgressWithCompletedQuest() and progress the Frostfire-2016 quest', () =>
+          PromiseUtils.map(
+            [generatePushId(), generatePushId(), generatePushId(), generatePushId()],
+            (gameId) =>
+              QuestsModule.updateQuestProgressWithGame(
+                userId,
+                generatePushId(),
+                fakeGameSessionData,
+              ),
+            { concurrency: 1 },
+          )
+            .then(() =>
+              knex('user_quests')
+                .where('user_id', userId)
+                .andWhere('quest_slot_index', QuestsModule.SEASONAL_QUEST_SLOT)
+                .first(),
+            )
+            .then((questRow) => {
+              expect(questRow.progress).to.equal(1);
+            }));
 
         it('expect completing 2 quests to fire updateQuestProgressWithCompletedQuest() and progress the Frostfire-2016 quest by 2 ticks', () => {
           const futureTime = moment().add(100, 'hours');
 
           return SyncModule.wipeUserData(userId)
-            .then(() => knex('user_new_player_progression').insert({
-              user_id: userId,
-              module_name: NewPlayerProgressionModuleLookup.Core,
-              stage: NewPlayerProgressionStageEnum.Skipped.key,
-            })).then(() => QuestsModule.generateDailyQuests(userId, moment.utc('2016-12-02'))).then(() => Promise.all([
-              QuestsModule.mulliganDailyQuest(userId, 0, futureTime, 101),
-              QuestsModule.mulliganDailyQuest(userId, 1, futureTime, 101),
-            ]))
-            .then(() => PromiseUtils.map([
-              generatePushId(),
-              generatePushId(),
-              generatePushId(),
-              generatePushId(),
-            ], (gameId) => QuestsModule.updateQuestProgressWithGame(userId, generatePushId(), fakeGameSessionData), { concurrency: 1 }))
-            .then(() => knex('user_quests').where('user_id', userId).andWhere('quest_slot_index', QuestsModule.SEASONAL_QUEST_SLOT).first())
+            .then(() =>
+              knex('user_new_player_progression').insert({
+                user_id: userId,
+                module_name: NewPlayerProgressionModuleLookup.Core,
+                stage: NewPlayerProgressionStageEnum.Skipped.key,
+              }),
+            )
+            .then(() => QuestsModule.generateDailyQuests(userId, moment.utc('2016-12-02')))
+            .then(() =>
+              Promise.all([
+                QuestsModule.mulliganDailyQuest(userId, 0, futureTime, 101),
+                QuestsModule.mulliganDailyQuest(userId, 1, futureTime, 101),
+              ]),
+            )
+            .then(() =>
+              PromiseUtils.map(
+                [generatePushId(), generatePushId(), generatePushId(), generatePushId()],
+                (gameId) =>
+                  QuestsModule.updateQuestProgressWithGame(
+                    userId,
+                    generatePushId(),
+                    fakeGameSessionData,
+                  ),
+                { concurrency: 1 },
+              ),
+            )
+            .then(() =>
+              knex('user_quests')
+                .where('user_id', userId)
+                .andWhere('quest_slot_index', QuestsModule.SEASONAL_QUEST_SLOT)
+                .first(),
+            )
             .then((questRow) => {
               expect(questRow.progress).to.equal(2);
             });
@@ -1302,26 +1857,49 @@ describe('quests module', () => {
           const futureTime = moment().add(100, 'hours');
 
           return SyncModule.wipeUserData(userId)
-            .then(() => knex('user_new_player_progression').insert({
-              user_id: userId,
-              module_name: NewPlayerProgressionModuleLookup.Core,
-              stage: NewPlayerProgressionStageEnum.Skipped.key,
-            })).then(() => QuestsModule.generateDailyQuests(userId, moment.utc('2016-12-02'))).then(() => Promise.all([
-              QuestsModule.mulliganDailyQuest(userId, 0, futureTime, 101),
-              QuestsModule.mulliganDailyQuest(userId, 1, futureTime, 101),
-              knex('user_quests').where('user_id', userId).andWhere('quest_slot_index', QuestsModule.SEASONAL_QUEST_SLOT).update({ progress: 14 }),
-            ]))
-            .then(() => PromiseUtils.map([
-              generatePushId(),
-              generatePushId(),
-              generatePushId(),
-              generatePushId(),
-            ], (gameId) => QuestsModule.updateQuestProgressWithGame(userId, generatePushId(), fakeGameSessionData), { concurrency: 1 }))
-            .then(() => Promise.all([
-              knex('user_quests').where('user_id', userId).andWhere('quest_slot_index', QuestsModule.SEASONAL_QUEST_SLOT).first(),
-              knex('user_quests_complete').where('user_id', userId).andWhere('quest_slot_index', QuestsModule.SEASONAL_QUEST_SLOT).first(),
-              knex('user_gift_crates').where('user_id', userId),
-            ]))
+            .then(() =>
+              knex('user_new_player_progression').insert({
+                user_id: userId,
+                module_name: NewPlayerProgressionModuleLookup.Core,
+                stage: NewPlayerProgressionStageEnum.Skipped.key,
+              }),
+            )
+            .then(() => QuestsModule.generateDailyQuests(userId, moment.utc('2016-12-02')))
+            .then(() =>
+              Promise.all([
+                QuestsModule.mulliganDailyQuest(userId, 0, futureTime, 101),
+                QuestsModule.mulliganDailyQuest(userId, 1, futureTime, 101),
+                knex('user_quests')
+                  .where('user_id', userId)
+                  .andWhere('quest_slot_index', QuestsModule.SEASONAL_QUEST_SLOT)
+                  .update({ progress: 14 }),
+              ]),
+            )
+            .then(() =>
+              PromiseUtils.map(
+                [generatePushId(), generatePushId(), generatePushId(), generatePushId()],
+                (gameId) =>
+                  QuestsModule.updateQuestProgressWithGame(
+                    userId,
+                    generatePushId(),
+                    fakeGameSessionData,
+                  ),
+                { concurrency: 1 },
+              ),
+            )
+            .then(() =>
+              Promise.all([
+                knex('user_quests')
+                  .where('user_id', userId)
+                  .andWhere('quest_slot_index', QuestsModule.SEASONAL_QUEST_SLOT)
+                  .first(),
+                knex('user_quests_complete')
+                  .where('user_id', userId)
+                  .andWhere('quest_slot_index', QuestsModule.SEASONAL_QUEST_SLOT)
+                  .first(),
+                knex('user_gift_crates').where('user_id', userId),
+              ]),
+            )
             .then(([questRow, completedQuestRow, giftChestRows]) => {
               expect(questRow).to.not.exist;
               expect(completedQuestRow.progress).to.equal(15);
@@ -1385,34 +1963,80 @@ describe('quests module', () => {
           const systemTime = moment().add(50, 'hours');
           // set up user quests as Lyonar and Songhai participation quests
           return SyncModule.wipeUserData(userId)
-            .then(() => knex('user_new_player_progression').insert({
-              user_id: userId,
-              module_name: NewPlayerProgressionModuleLookup.Core,
-              stage: NewPlayerProgressionStageEnum.Skipped.key,
-            })).then(() => QuestsModule.generateDailyQuests(userId, moment.utc('2016-12-02'))).then(() => Promise.all([
-              QuestsModule.mulliganDailyQuest(userId, 0, systemTime, 101),
-              QuestsModule.mulliganDailyQuest(userId, 1, systemTime, 102),
-            ]));
+            .then(() =>
+              knex('user_new_player_progression').insert({
+                user_id: userId,
+                module_name: NewPlayerProgressionModuleLookup.Core,
+                stage: NewPlayerProgressionStageEnum.Skipped.key,
+              }),
+            )
+            .then(() => QuestsModule.generateDailyQuests(userId, moment.utc('2016-12-02')))
+            .then(() =>
+              Promise.all([
+                QuestsModule.mulliganDailyQuest(userId, 0, systemTime, 101),
+                QuestsModule.mulliganDailyQuest(userId, 1, systemTime, 102),
+              ]),
+            );
         });
 
-        it('expect Frostfire-2016 quest to progress with a quest completion', () => knex.transaction((tx) => tx('user_quests').where('user_id', userId)
-          .then((questRows) => QuestsModule.updateQuestProgressWithCompletedQuest(Promise.resolve(), tx, userId, generatePushId(), 1, questRows)).then((result) => {
-            expect(result.quests[QuestsModule.SEASONAL_QUEST_SLOT].progress).to.equal(1);
-          })));
+        it('expect Frostfire-2016 quest to progress with a quest completion', () =>
+          knex.transaction((tx) =>
+            tx('user_quests')
+              .where('user_id', userId)
+              .then((questRows) =>
+                QuestsModule.updateQuestProgressWithCompletedQuest(
+                  Promise.resolve(),
+                  tx,
+                  userId,
+                  generatePushId(),
+                  1,
+                  questRows,
+                ),
+              )
+              .then((result) => {
+                expect(result.quests[QuestsModule.SEASONAL_QUEST_SLOT].progress).to.equal(1);
+              }),
+          ));
 
         it('expect completing the Frostfire-2016 quest to award 1 gift chest', () => {
           const gameId = generatePushId();
-          return knex.transaction((tx) => tx('user_quests').where('user_id', userId)
-            .then((questRows) => {
-              const array = [];
-              _.times(14, (i) => { array.push(i); });
-              return PromiseUtils.map(array, (i) => QuestsModule.updateQuestProgressWithCompletedQuest(Promise.resolve(), tx, userId, gameId, 1, questRows), { concurrency: 1 });
-            }))
-            .then(() => Promise.all([
-              knex('user_gift_crates').where('user_id', userId).andWhere('crate_type', GiftCrateLookup.Frostfire2016).select(),
-              knex('user_quests_complete').where('user_id', userId).andWhere('quest_slot_index', QuestsModule.SEASONAL_QUEST_SLOT).first(),
-              knex('user_rewards').where('user_id', userId).andWhere('game_id', gameId).select(),
-            ]))
+          return knex
+            .transaction((tx) =>
+              tx('user_quests')
+                .where('user_id', userId)
+                .then((questRows) => {
+                  const array = [];
+                  _.times(14, (i) => {
+                    array.push(i);
+                  });
+                  return PromiseUtils.map(
+                    array,
+                    (i) =>
+                      QuestsModule.updateQuestProgressWithCompletedQuest(
+                        Promise.resolve(),
+                        tx,
+                        userId,
+                        gameId,
+                        1,
+                        questRows,
+                      ),
+                    { concurrency: 1 },
+                  );
+                }),
+            )
+            .then(() =>
+              Promise.all([
+                knex('user_gift_crates')
+                  .where('user_id', userId)
+                  .andWhere('crate_type', GiftCrateLookup.Frostfire2016)
+                  .select(),
+                knex('user_quests_complete')
+                  .where('user_id', userId)
+                  .andWhere('quest_slot_index', QuestsModule.SEASONAL_QUEST_SLOT)
+                  .first(),
+                knex('user_rewards').where('user_id', userId).andWhere('game_id', gameId).select(),
+              ]),
+            )
             .then(([giftCrateRows, questRow, rewardRows]) => {
               expect(giftCrateRows.length).to.equal(1);
               expect(giftCrateRows[0].crate_type).to.equal(GiftCrateLookup.Frostfire2016);
@@ -1427,16 +2051,19 @@ describe('quests module', () => {
     describe('February 2017 Quest', () => {
       const FebQuestId = 30002;
 
-      beforeAll(() => SyncModule.wipeUserData(userId)
-        .then(() => knex('user_new_player_progression').insert({
-          user_id: userId,
-          module_name: NewPlayerProgressionModuleLookup.Core,
-          stage: NewPlayerProgressionStageEnum.Skipped.key,
-        })));
+      beforeAll(() =>
+        SyncModule.wipeUserData(userId).then(() =>
+          knex('user_new_player_progression').insert({
+            user_id: userId,
+            module_name: NewPlayerProgressionModuleLookup.Core,
+            stage: NewPlayerProgressionStageEnum.Skipped.key,
+          }),
+        ),
+      );
 
       describe('generateDailyQuests() - February 2017 Quest', () => {
-        it('expect not to generate the seasonal February-2017 quest before February 1st 2017', () => QuestsModule.generateDailyQuests(userId, moment.utc('2017-01-31'))
-          .then((result) => {
+        it('expect not to generate the seasonal February-2017 quest before February 1st 2017', () =>
+          QuestsModule.generateDailyQuests(userId, moment.utc('2017-01-31')).then((result) => {
             if (result.quests[QuestsModule.SEASONAL_QUEST_SLOT] != null) {
               expect(result.quests[QuestsModule.SEASONAL_QUEST_SLOT]).to.not.equal(FebQuestId);
             } else {
@@ -1444,8 +2071,8 @@ describe('quests module', () => {
             }
           }));
 
-        it('expect not to generate the seasonal February-2017 quest after March 1st 2017', () => QuestsModule.generateDailyQuests(userId, moment.utc('2017-03-01'))
-          .then((result) => {
+        it('expect not to generate the seasonal February-2017 quest after March 1st 2017', () =>
+          QuestsModule.generateDailyQuests(userId, moment.utc('2017-03-01')).then((result) => {
             if (result.quests[QuestsModule.SEASONAL_QUEST_SLOT] != null) {
               expect(result.quests[QuestsModule.SEASONAL_QUEST_SLOT]).to.not.equal(FebQuestId);
             } else {
@@ -1453,43 +2080,94 @@ describe('quests module', () => {
             }
           }));
 
-        it('expect to generate the seasonal February-2017 during February 2017', () => QuestsModule.generateDailyQuests(userId, moment.utc('2017-02-05'))
-          .then((result) => {
+        it('expect to generate the seasonal February-2017 during February 2017', () =>
+          QuestsModule.generateDailyQuests(userId, moment.utc('2017-02-05')).then((result) => {
             expect(result.quests[QuestsModule.SEASONAL_QUEST_SLOT]).to.exist;
-            expect(result.quests[QuestsModule.SEASONAL_QUEST_SLOT].quest_type_id).to.equal(FebQuestId);
+            expect(result.quests[QuestsModule.SEASONAL_QUEST_SLOT].quest_type_id).to.equal(
+              FebQuestId,
+            );
           }));
 
-        it('expect to NOT generate/overwrite the seasonal quest if it already exists', () => knex.transaction((tx) => tx('user_quests').where('user_id', userId)
-          .then((questRows) => QuestsModule.updateQuestProgressWithCompletedQuest(Promise.resolve(), tx, userId, generatePushId(), 1, questRows)).then((result) => {
-            expect(result.quests[QuestsModule.SEASONAL_QUEST_SLOT]).to.exist;
-            expect(result.quests[QuestsModule.SEASONAL_QUEST_SLOT].progress).to.equal(1);
-          })).then(() => QuestsModule.generateDailyQuests(userId, moment.utc('2017-02-06'))).then((result) => {
-          expect(result.quests[QuestsModule.SEASONAL_QUEST_SLOT]).to.exist;
-          expect(result.quests[QuestsModule.SEASONAL_QUEST_SLOT].quest_type_id).to.equal(FebQuestId);
-          expect(result.quests[QuestsModule.SEASONAL_QUEST_SLOT].progress).to.equal(1);
-        }));
+        it('expect to NOT generate/overwrite the seasonal quest if it already exists', () =>
+          knex
+            .transaction((tx) =>
+              tx('user_quests')
+                .where('user_id', userId)
+                .then((questRows) =>
+                  QuestsModule.updateQuestProgressWithCompletedQuest(
+                    Promise.resolve(),
+                    tx,
+                    userId,
+                    generatePushId(),
+                    1,
+                    questRows,
+                  ),
+                )
+                .then((result) => {
+                  expect(result.quests[QuestsModule.SEASONAL_QUEST_SLOT]).to.exist;
+                  expect(result.quests[QuestsModule.SEASONAL_QUEST_SLOT].progress).to.equal(1);
+                }),
+            )
+            .then(() => QuestsModule.generateDailyQuests(userId, moment.utc('2017-02-06')))
+            .then((result) => {
+              expect(result.quests[QuestsModule.SEASONAL_QUEST_SLOT]).to.exist;
+              expect(result.quests[QuestsModule.SEASONAL_QUEST_SLOT].quest_type_id).to.equal(
+                FebQuestId,
+              );
+              expect(result.quests[QuestsModule.SEASONAL_QUEST_SLOT].progress).to.equal(1);
+            }));
 
-        it('expect to NOT generate the seasonal February-2017 quest if it\'s already complete', () => knex.transaction((tx) => tx('user_quests').where('user_id', userId)
-          .then((questRows) => {
-            const array = [];
-            _.times(14, (i) => { array.push(i); });
-            return PromiseUtils.map(array, (i) => QuestsModule.updateQuestProgressWithCompletedQuest(Promise.resolve(), tx, userId, generatePushId(), 1, questRows), { concurrency: 1 });
-          })).then(() => QuestsModule.generateDailyQuests(userId, moment.utc('2017-02-07'))).then((result) => {
-          expect(result.quests[QuestsModule.SEASONAL_QUEST_SLOT]).to.not.exist;
-          return DuelystFirebase.connect().getRootRef();
-        }).then((rootRef) => Promise.all([
-          knex('user_quests').where('user_id', userId).select(),
-          knex('user_quests_complete').where('user_id', userId).select(),
-          FirebasePromises.once(rootRef.child('user-quests').child(userId), 'value'),
-        ]))
-          .then(([questRows, questCompleteRows, questSnapshot]) => {
-            const currentQuestsData = questSnapshot.val().daily.current;
-            expect(currentQuestsData[QuestsModule.SEASONAL_QUEST_SLOT]).to.not.exist;
-            const q1 = _.find(questRows, (q) => q.quest_slot_index === QuestsModule.SEASONAL_QUEST_SLOT);
-            const q2 = _.find(questCompleteRows, (q) => q.quest_slot_index === QuestsModule.SEASONAL_QUEST_SLOT);
-            expect(q1).to.not.exist;
-            expect(q2).to.exist;
-          }));
+        it("expect to NOT generate the seasonal February-2017 quest if it's already complete", () =>
+          knex
+            .transaction((tx) =>
+              tx('user_quests')
+                .where('user_id', userId)
+                .then((questRows) => {
+                  const array = [];
+                  _.times(14, (i) => {
+                    array.push(i);
+                  });
+                  return PromiseUtils.map(
+                    array,
+                    (i) =>
+                      QuestsModule.updateQuestProgressWithCompletedQuest(
+                        Promise.resolve(),
+                        tx,
+                        userId,
+                        generatePushId(),
+                        1,
+                        questRows,
+                      ),
+                    { concurrency: 1 },
+                  );
+                }),
+            )
+            .then(() => QuestsModule.generateDailyQuests(userId, moment.utc('2017-02-07')))
+            .then((result) => {
+              expect(result.quests[QuestsModule.SEASONAL_QUEST_SLOT]).to.not.exist;
+              return DuelystFirebase.connect().getRootRef();
+            })
+            .then((rootRef) =>
+              Promise.all([
+                knex('user_quests').where('user_id', userId).select(),
+                knex('user_quests_complete').where('user_id', userId).select(),
+                FirebasePromises.once(rootRef.child('user-quests').child(userId), 'value'),
+              ]),
+            )
+            .then(([questRows, questCompleteRows, questSnapshot]) => {
+              const currentQuestsData = questSnapshot.val().daily.current;
+              expect(currentQuestsData[QuestsModule.SEASONAL_QUEST_SLOT]).to.not.exist;
+              const q1 = _.find(
+                questRows,
+                (q) => q.quest_slot_index === QuestsModule.SEASONAL_QUEST_SLOT,
+              );
+              const q2 = _.find(
+                questCompleteRows,
+                (q) => q.quest_slot_index === QuestsModule.SEASONAL_QUEST_SLOT,
+              );
+              expect(q1).to.not.exist;
+              expect(q2).to.exist;
+            }));
       });
 
       describe('updateQuestProgressWithCompletedQuest() - February 2017 Quest', () => {
@@ -1497,35 +2175,85 @@ describe('quests module', () => {
           const systemTime = moment().add(50, 'hours');
           // set up user quests as Lyonar and Songhai participation quests
           return SyncModule.wipeUserData(userId)
-            .then(() => knex('user_new_player_progression').insert({
-              user_id: userId,
-              module_name: NewPlayerProgressionModuleLookup.Core,
-              stage: NewPlayerProgressionStageEnum.Skipped.key,
-            })).then(() => QuestsModule.generateDailyQuests(userId, moment.utc('2017-02-05'))).then(() => Promise.all([
-              QuestsModule.mulliganDailyQuest(userId, 0, systemTime, 101),
-              QuestsModule.mulliganDailyQuest(userId, 1, systemTime, 102),
-            ]));
+            .then(() =>
+              knex('user_new_player_progression').insert({
+                user_id: userId,
+                module_name: NewPlayerProgressionModuleLookup.Core,
+                stage: NewPlayerProgressionStageEnum.Skipped.key,
+              }),
+            )
+            .then(() => QuestsModule.generateDailyQuests(userId, moment.utc('2017-02-05')))
+            .then(() =>
+              Promise.all([
+                QuestsModule.mulliganDailyQuest(userId, 0, systemTime, 101),
+                QuestsModule.mulliganDailyQuest(userId, 1, systemTime, 102),
+              ]),
+            );
         });
 
-        it('expect February-2017 quest to progress with a quest completion', () => knex.transaction((tx) => tx('user_quests').where('user_id', userId)
-          .then((questRows) => QuestsModule.updateQuestProgressWithCompletedQuest(Promise.resolve(), tx, userId, generatePushId(), 1, questRows)).then((result) => {
-            expect(result.quests[QuestsModule.SEASONAL_QUEST_SLOT].progress).to.equal(1);
-          })));
+        it('expect February-2017 quest to progress with a quest completion', () =>
+          knex.transaction((tx) =>
+            tx('user_quests')
+              .where('user_id', userId)
+              .then((questRows) =>
+                QuestsModule.updateQuestProgressWithCompletedQuest(
+                  Promise.resolve(),
+                  tx,
+                  userId,
+                  generatePushId(),
+                  1,
+                  questRows,
+                ),
+              )
+              .then((result) => {
+                expect(result.quests[QuestsModule.SEASONAL_QUEST_SLOT].progress).to.equal(1);
+              }),
+          ));
 
         it('expect completing the February-2017 quest to award 1 common cosmetic key', () => {
           const gameId = generatePushId();
-          return knex.transaction((tx) => tx('user_quests').where('user_id', userId)
-            .then((questRows) => {
-              const array = [];
-              _.times(14, (i) => { array.push(i); });
-              return PromiseUtils.map(array, (i) => QuestsModule.updateQuestProgressWithCompletedQuest(Promise.resolve(), tx, userId, gameId, 1, questRows), { concurrency: 1 });
-            }))
-            .then(() => Promise.all([
-              knex('user_gift_crates').where('user_id', userId).andWhere('crate_type', GiftCrateLookup.Frostfire2016).select(),
-              knex('user_cosmetic_chest_keys').where('user_id', userId).andWhere('key_type', SDK.CosmeticsChestTypeLookup.Common).select(),
-              knex('user_quests_complete').where('user_id', userId).andWhere('quest_slot_index', QuestsModule.SEASONAL_QUEST_SLOT).first(),
-              knex('user_rewards').where('user_id', userId).andWhere('game_id', gameId).select(),
-            ])).then(([giftCrateRows, crateKeyRows, questRow, rewardRows]) => {
+          return knex
+            .transaction((tx) =>
+              tx('user_quests')
+                .where('user_id', userId)
+                .then((questRows) => {
+                  const array = [];
+                  _.times(14, (i) => {
+                    array.push(i);
+                  });
+                  return PromiseUtils.map(
+                    array,
+                    (i) =>
+                      QuestsModule.updateQuestProgressWithCompletedQuest(
+                        Promise.resolve(),
+                        tx,
+                        userId,
+                        gameId,
+                        1,
+                        questRows,
+                      ),
+                    { concurrency: 1 },
+                  );
+                }),
+            )
+            .then(() =>
+              Promise.all([
+                knex('user_gift_crates')
+                  .where('user_id', userId)
+                  .andWhere('crate_type', GiftCrateLookup.Frostfire2016)
+                  .select(),
+                knex('user_cosmetic_chest_keys')
+                  .where('user_id', userId)
+                  .andWhere('key_type', SDK.CosmeticsChestTypeLookup.Common)
+                  .select(),
+                knex('user_quests_complete')
+                  .where('user_id', userId)
+                  .andWhere('quest_slot_index', QuestsModule.SEASONAL_QUEST_SLOT)
+                  .first(),
+                knex('user_rewards').where('user_id', userId).andWhere('game_id', gameId).select(),
+              ]),
+            )
+            .then(([giftCrateRows, crateKeyRows, questRow, rewardRows]) => {
               expect(giftCrateRows.length).to.equal(0);
               expect(crateKeyRows.length).to.equal(1);
               expect(questRow).to.exist;
@@ -1543,34 +2271,80 @@ describe('quests module', () => {
         const systemTime = moment().add(50, 'hours');
         // set up user quests as Lyonar and Songhai participation quests
         return SyncModule.wipeUserData(userId)
-          .then(() => knex('user_new_player_progression').insert({
-            user_id: userId,
-            module_name: NewPlayerProgressionModuleLookup.Core,
-            stage: NewPlayerProgressionStageEnum.Skipped.key,
-          })).then(() => QuestsModule.generateDailyQuests(userId, moment.utc('2016-12-02'))).then(() => Promise.all([
-            QuestsModule.mulliganDailyQuest(userId, 0, systemTime, 101),
-            QuestsModule.mulliganDailyQuest(userId, 1, systemTime, 102),
-          ]));
+          .then(() =>
+            knex('user_new_player_progression').insert({
+              user_id: userId,
+              module_name: NewPlayerProgressionModuleLookup.Core,
+              stage: NewPlayerProgressionStageEnum.Skipped.key,
+            }),
+          )
+          .then(() => QuestsModule.generateDailyQuests(userId, moment.utc('2016-12-02')))
+          .then(() =>
+            Promise.all([
+              QuestsModule.mulliganDailyQuest(userId, 0, systemTime, 101),
+              QuestsModule.mulliganDailyQuest(userId, 1, systemTime, 102),
+            ]),
+          );
       });
 
-      it('expect Frostfire-2016 quest to progress with a quest completion', () => knex.transaction((tx) => tx('user_quests').where('user_id', userId)
-        .then((questRows) => QuestsModule.updateQuestProgressWithCompletedQuest(Promise.resolve(), tx, userId, generatePushId(), 1, questRows)).then((result) => {
-          expect(result.quests[QuestsModule.SEASONAL_QUEST_SLOT].progress).to.equal(1);
-        })));
+      it('expect Frostfire-2016 quest to progress with a quest completion', () =>
+        knex.transaction((tx) =>
+          tx('user_quests')
+            .where('user_id', userId)
+            .then((questRows) =>
+              QuestsModule.updateQuestProgressWithCompletedQuest(
+                Promise.resolve(),
+                tx,
+                userId,
+                generatePushId(),
+                1,
+                questRows,
+              ),
+            )
+            .then((result) => {
+              expect(result.quests[QuestsModule.SEASONAL_QUEST_SLOT].progress).to.equal(1);
+            }),
+        ));
 
       it('expect completing the Frostfire-2016 quest to award 1 gift chest', () => {
         const gameId = generatePushId();
-        return knex.transaction((tx) => tx('user_quests').where('user_id', userId)
-          .then((questRows) => {
-            const array = [];
-            _.times(14, (i) => { array.push(i); });
-            return PromiseUtils.map(array, (i) => QuestsModule.updateQuestProgressWithCompletedQuest(Promise.resolve(), tx, userId, gameId, 1, questRows), { concurrency: 1 });
-          }))
-          .then(() => Promise.all([
-            knex('user_gift_crates').where('user_id', userId).andWhere('crate_type', GiftCrateLookup.Frostfire2016).select(),
-            knex('user_quests_complete').where('user_id', userId).andWhere('quest_slot_index', QuestsModule.SEASONAL_QUEST_SLOT).first(),
-            knex('user_rewards').where('user_id', userId).andWhere('game_id', gameId).select(),
-          ]))
+        return knex
+          .transaction((tx) =>
+            tx('user_quests')
+              .where('user_id', userId)
+              .then((questRows) => {
+                const array = [];
+                _.times(14, (i) => {
+                  array.push(i);
+                });
+                return PromiseUtils.map(
+                  array,
+                  (i) =>
+                    QuestsModule.updateQuestProgressWithCompletedQuest(
+                      Promise.resolve(),
+                      tx,
+                      userId,
+                      gameId,
+                      1,
+                      questRows,
+                    ),
+                  { concurrency: 1 },
+                );
+              }),
+          )
+          .then(() =>
+            Promise.all([
+              knex('user_gift_crates')
+                .where('user_id', userId)
+                .andWhere('crate_type', GiftCrateLookup.Frostfire2016)
+                .select(),
+              knex('user_quests_complete')
+                .where('user_id', userId)
+                .andWhere('quest_slot_index', QuestsModule.SEASONAL_QUEST_SLOT)
+                .first(),
+              knex('user_rewards').where('user_id', userId).andWhere('game_id', gameId).select(),
+            ]),
+          )
           .then(([giftCrateRows, questRow, rewardRows]) => {
             expect(giftCrateRows.length).to.equal(1);
             expect(giftCrateRows[0].crate_type).to.equal(GiftCrateLookup.Frostfire2016);
@@ -1585,16 +2359,19 @@ describe('quests module', () => {
   describe('Promo Quest', () => {
     const annQuestId = 40001;
 
-    beforeAll(() => SyncModule.wipeUserData(userId)
-      .then(() => knex('user_new_player_progression').insert({
-        user_id: userId,
-        module_name: NewPlayerProgressionModuleLookup.Core,
-        stage: NewPlayerProgressionStageEnum.Skipped.key,
-      })));
+    beforeAll(() =>
+      SyncModule.wipeUserData(userId).then(() =>
+        knex('user_new_player_progression').insert({
+          user_id: userId,
+          module_name: NewPlayerProgressionModuleLookup.Core,
+          stage: NewPlayerProgressionStageEnum.Skipped.key,
+        }),
+      ),
+    );
 
     describe('generateDailyQuests() - Anniversary 2017 Quest', () => {
-      it('expect not to generate the promo Anniversary-2017 quest before May 1st 2017', () => QuestsModule.generateDailyQuests(userId, moment.utc('2017-04-29'))
-        .then((result) => {
+      it('expect not to generate the promo Anniversary-2017 quest before May 1st 2017', () =>
+        QuestsModule.generateDailyQuests(userId, moment.utc('2017-04-29')).then((result) => {
           if (result.quests[QuestsModule.PROMOTIONAL_QUEST_SLOT] != null) {
             expect(result.quests[QuestsModule.PROMOTIONAL_QUEST_SLOT]).to.not.equal(annQuestId);
           } else {
@@ -1602,8 +2379,8 @@ describe('quests module', () => {
           }
         }));
 
-      it('expect not to generate the promo Anniversary-2017 quest after May 15th 2017', () => QuestsModule.generateDailyQuests(userId, moment.utc('2017-05-16'))
-        .then((result) => {
+      it('expect not to generate the promo Anniversary-2017 quest after May 15th 2017', () =>
+        QuestsModule.generateDailyQuests(userId, moment.utc('2017-05-16')).then((result) => {
           if (result.quests[QuestsModule.PROMOTIONAL_QUEST_SLOT] != null) {
             expect(result.quests[QuestsModule.PROMOTIONAL_QUEST_SLOT]).to.not.equal(annQuestId);
           } else {
@@ -1611,15 +2388,20 @@ describe('quests module', () => {
           }
         }));
 
-      it('expect to generate the promo Anniversary-2017 during May first week 2017', () => QuestsModule.generateDailyQuests(userId, moment.utc('2017-05-05'))
-        .then((result) => {
+      it('expect to generate the promo Anniversary-2017 during May first week 2017', () =>
+        QuestsModule.generateDailyQuests(userId, moment.utc('2017-05-05')).then((result) => {
           expect(result.quests[QuestsModule.PROMOTIONAL_QUEST_SLOT]).to.exist;
-          expect(result.quests[QuestsModule.PROMOTIONAL_QUEST_SLOT].quest_type_id).to.equal(annQuestId);
+          expect(result.quests[QuestsModule.PROMOTIONAL_QUEST_SLOT].quest_type_id).to.equal(
+            annQuestId,
+          );
         }));
 
       it('expect to NOT generate/overwrite the promo quest if it already exists', () => {
         const genTime = moment.utc('2017-05-06');
-        return knex('user_quests').where('user_id', userId).andWhere('quest_slot_index', QuestsModule.PROMOTIONAL_QUEST_SLOT).update({ progress: 0 })
+        return knex('user_quests')
+          .where('user_id', userId)
+          .andWhere('quest_slot_index', QuestsModule.PROMOTIONAL_QUEST_SLOT)
+          .update({ progress: 0 })
           .then(() => {
             const fakeGameSessionData = {};
             fakeGameSessionData.status = SDK.GameStatus.over;
@@ -1631,37 +2413,51 @@ describe('quests module', () => {
             fakeGameSessionData.gameSetupData.players[0] = {};
             fakeGameSessionData.gameSetupData.players[0].playerId = userId;
             fakeGameSessionData.gameSetupData.players[0].factionId = SDK.Factions.Lyonar;
-            return QuestsModule.updateQuestProgressWithGame(userId, generatePushId(), fakeGameSessionData);
+            return QuestsModule.updateQuestProgressWithGame(
+              userId,
+              generatePushId(),
+              fakeGameSessionData,
+            );
           })
           .then(() => QuestsModule.generateDailyQuests(userId, genTime))
           .then((result) => {
             if (result.quests[QuestsModule.PROMOTIONAL_QUEST_SLOT] != null) {
-              expect(result.quests[QuestsModule.PROMOTIONAL_QUEST_SLOT].created_at).to.not.equal(genTime.toDate());
+              expect(result.quests[QuestsModule.PROMOTIONAL_QUEST_SLOT].created_at).to.not.equal(
+                genTime.toDate(),
+              );
             }
           });
       });
 
-      it('expect to NOT generate/overwrite the promo quest if it already complete', () => knex('user_quests').where('user_id', userId).andWhere('quest_slot_index', QuestsModule.PROMOTIONAL_QUEST_SLOT).update({ progress: 3 })
-        .then(() => {
-          const fakeGameSessionData = {};
-          fakeGameSessionData.status = SDK.GameStatus.over;
-          fakeGameSessionData.gameType = SDK.GameType.Rift;
-          fakeGameSessionData.players = [];
-          fakeGameSessionData.players.push({ playerId: userId, deck: {}, isWinner: true });
-          fakeGameSessionData.gameSetupData = {};
-          fakeGameSessionData.gameSetupData.players = [];
-          fakeGameSessionData.gameSetupData.players[0] = {};
-          fakeGameSessionData.gameSetupData.players[0].playerId = userId;
-          fakeGameSessionData.gameSetupData.players[0].factionId = SDK.Factions.Lyonar;
-          return QuestsModule.updateQuestProgressWithGame(userId, generatePushId(), fakeGameSessionData);
-        })
-        .then(() => QuestsModule.generateDailyQuests(userId, moment.utc('2017-05-06')))
-        .then((result) => {
-          expect(result.quests[QuestsModule.PROMOTIONAL_QUEST_SLOT]).to.not.exist;
-        }));
+      it('expect to NOT generate/overwrite the promo quest if it already complete', () =>
+        knex('user_quests')
+          .where('user_id', userId)
+          .andWhere('quest_slot_index', QuestsModule.PROMOTIONAL_QUEST_SLOT)
+          .update({ progress: 3 })
+          .then(() => {
+            const fakeGameSessionData = {};
+            fakeGameSessionData.status = SDK.GameStatus.over;
+            fakeGameSessionData.gameType = SDK.GameType.Rift;
+            fakeGameSessionData.players = [];
+            fakeGameSessionData.players.push({ playerId: userId, deck: {}, isWinner: true });
+            fakeGameSessionData.gameSetupData = {};
+            fakeGameSessionData.gameSetupData.players = [];
+            fakeGameSessionData.gameSetupData.players[0] = {};
+            fakeGameSessionData.gameSetupData.players[0].playerId = userId;
+            fakeGameSessionData.gameSetupData.players[0].factionId = SDK.Factions.Lyonar;
+            return QuestsModule.updateQuestProgressWithGame(
+              userId,
+              generatePushId(),
+              fakeGameSessionData,
+            );
+          })
+          .then(() => QuestsModule.generateDailyQuests(userId, moment.utc('2017-05-06')))
+          .then((result) => {
+            expect(result.quests[QuestsModule.PROMOTIONAL_QUEST_SLOT]).to.not.exist;
+          }));
 
-      it('expect to remove the promo Anniversary-2017 during May third week 2017', () => QuestsModule.generateDailyQuests(userId, moment.utc('2017-05-21'))
-        .then((result) => {
+      it('expect to remove the promo Anniversary-2017 during May third week 2017', () =>
+        QuestsModule.generateDailyQuests(userId, moment.utc('2017-05-21')).then((result) => {
           expect(result.quests[QuestsModule.PROMOTIONAL_QUEST_SLOT]).to.not.exist;
         }));
     });

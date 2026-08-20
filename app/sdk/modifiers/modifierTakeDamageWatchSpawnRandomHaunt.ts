@@ -13,7 +13,9 @@ class ModifierTakeDamageWatchSpawnRandomHaunt extends ModifierTakeDamageWatchSpa
   static description = 'Whenever this minion takes damage, summon a random haunt nearby';
 
   getCardDataOrIndexToSpawn() {
-    return this.possibleTokens[this.getGameSession().getRandomIntegerForExecution(this.possibleTokens.length)];
+    return this.possibleTokens[
+      this.getGameSession().getRandomIntegerForExecution(this.possibleTokens.length)
+    ];
   }
 }
 ModifierTakeDamageWatchSpawnRandomHaunt.prototype.type = 'ModifierTakeDamageWatchSpawnRandomHaunt';

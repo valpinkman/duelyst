@@ -27,9 +27,10 @@ class ModifierEndTurnWatchAnyPlayer extends Modifier {
       const endTurnAction = executingAction.getMatchingAncestorAction(EndTurnAction);
       if (endTurnAction != null) {
         const playedByAction = this.getCard().getAppliedToBoardByAction();
-        if ((playedByAction == null)) {
+        if (playedByAction == null) {
           return this.onTurnWatch(endTurnAction);
-        } if (playedByAction.getIndex() < endTurnAction.getIndex()) {
+        }
+        if (playedByAction.getIndex() < endTurnAction.getIndex()) {
           return this.onTurnWatch(executingAction);
         }
       }

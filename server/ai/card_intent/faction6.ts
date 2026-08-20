@@ -44,7 +44,7 @@ F6[Cards.Spell.AspectOfTheWolf] = [
     type: CardIntentType.Transform,
     cardId: Cards.Faction6.WolfAspect,
     targets: CardTargetType.Minion | CardTargetType.Enemy | CardTargetType.Friendly,
-  }, /* ,
+  } /* ,
   {
     type: CardIntentType.ModifyATK,
     amount: 3,
@@ -56,7 +56,7 @@ F6[Cards.Spell.AspectOfTheWolf] = [
     amount: 3,
     amountIsRebase: true,
     targets: CardTargetType.Minion | CardTargetType.Enemy | CardTargetType.Friendly
-} */
+} */,
 ];
 
 F6[Cards.Spell.AspectOfTheDrake] = [
@@ -67,9 +67,7 @@ F6[Cards.Spell.AspectOfTheDrake] = [
   },
   {
     type: CardIntentType.ApplyModifiers,
-    modifiers: [
-      ModifierFlying.type,
-    ],
+    modifiers: [ModifierFlying.type],
     targets: CardTargetType.Minion | CardTargetType.Nearby | CardTargetType.Friendly,
   },
 ];
@@ -327,12 +325,22 @@ F6[Cards.Spell.LuminousCharge] = [
 F6[Cards.Spell.Avalanche] = [
   {
     type: CardIntentType.Stun,
-    targets: CardTargetType.FriendlySide | CardTargetType.General | CardTargetType.Minion | CardTargetType.Enemy | CardTargetType.Friendly,
+    targets:
+      CardTargetType.FriendlySide |
+      CardTargetType.General |
+      CardTargetType.Minion |
+      CardTargetType.Enemy |
+      CardTargetType.Friendly,
   },
   {
     type: CardIntentType.Burn,
     amount: 4,
-    targets: CardTargetType.FriendlySide | CardTargetType.General | CardTargetType.Minion | CardTargetType.Enemy | CardTargetType.Friendly,
+    targets:
+      CardTargetType.FriendlySide |
+      CardTargetType.General |
+      CardTargetType.Minion |
+      CardTargetType.Enemy |
+      CardTargetType.Friendly,
   },
 ];
 
@@ -369,7 +377,11 @@ F6[Cards.Spell.ChromaticCold] = [
   },
   {
     type: CardIntentType.Dispel,
-    targets: CardTargetType.Minion | CardTargetType.Enemy | CardTargetType.General | CardTargetType.Friendly,
+    targets:
+      CardTargetType.Minion |
+      CardTargetType.Enemy |
+      CardTargetType.General |
+      CardTargetType.Friendly,
   },
 ];
 
@@ -377,7 +389,8 @@ F6[Cards.Spell.Warbird] = [
   {
     type: CardIntentType.Burn,
     amount: 2,
-    targets: CardTargetType.Column | CardTargetType.General | CardTargetType.Minion | CardTargetType.Enemy,
+    targets:
+      CardTargetType.Column | CardTargetType.General | CardTargetType.Minion | CardTargetType.Enemy,
   },
 ];
 
@@ -458,13 +471,15 @@ F6[Cards.Spell.Enfeeble] = [
     type: CardIntentType.ModifyATK,
     amountIsRebase: true,
     amount: 1,
-    targets: CardTargetType.Minion | CardTargetType.Friendly | CardTargetType.Enemy | CardTargetType.All,
+    targets:
+      CardTargetType.Minion | CardTargetType.Friendly | CardTargetType.Enemy | CardTargetType.All,
   },
   {
     type: CardIntentType.ModifyHP,
     amountIsRebase: true,
     amount: 1,
-    targets: CardTargetType.Minion | CardTargetType.Friendly | CardTargetType.Enemy | CardTargetType.All,
+    targets:
+      CardTargetType.Minion | CardTargetType.Friendly | CardTargetType.Enemy | CardTargetType.All,
   },
 ];
 
@@ -480,7 +495,8 @@ F6[Cards.Spell.BlindingSnowstorm] = [
   {
     type: CardIntentType.Burn,
     amount: 1,
-    targets: CardTargetType.Minion | CardTargetType.Enemy | CardTargetType.All | CardTargetType.General,
+    targets:
+      CardTargetType.Minion | CardTargetType.Enemy | CardTargetType.All | CardTargetType.General,
   },
 ];
 

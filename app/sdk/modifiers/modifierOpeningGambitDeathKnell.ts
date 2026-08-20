@@ -31,7 +31,7 @@ class ModifierOpeningGambitDeathKnell extends ModifierOpeningGambit {
   }
 
   getDeadUnits() {
-    if ((this._private.deadUnits == null)) {
+    if (this._private.deadUnits == null) {
       this._private.deadUnits = this.getGameSession().getDeadUnits(this.getOwnerId());
     }
     return this._private.deadUnits;
@@ -50,15 +50,31 @@ class ModifierOpeningGambitDeathKnell extends ModifierOpeningGambit {
 
       if (deadArcanystIds.length > 0) {
         let i;
-        let asc; let
-          end;
-        const card = this.getGameSession().getExistingCardFromIndexOrCachedCardFromData({ id: this.getCard().getId() });
+        let asc;
+        let end;
+        const card = this.getGameSession().getExistingCardFromIndexOrCachedCardFromData({
+          id: this.getCard().getId(),
+        });
         const spawnLocations = [];
         _.shuffle(deadArcanystIds);
-        const validSpawnLocations = UtilsGameSession.getSmartSpawnPositionsFromPattern(this.getGameSession(), this.getCard().getPosition(), CONFIG.PATTERN_3x3, this.getCard());
-        for (i = 0, end = deadArcanystIds.length, asc = end >= 0; asc ? i < end : i > end; asc ? i++ : i--) {
+        const validSpawnLocations = UtilsGameSession.getSmartSpawnPositionsFromPattern(
+          this.getGameSession(),
+          this.getCard().getPosition(),
+          CONFIG.PATTERN_3x3,
+          this.getCard(),
+        );
+        for (
+          i = 0, end = deadArcanystIds.length, asc = end >= 0;
+          asc ? i < end : i > end;
+          asc ? i++ : i--
+        ) {
           if (validSpawnLocations.length > 0) {
-            spawnLocations.push(validSpawnLocations.splice(this.getGameSession().getRandomIntegerForExecution(validSpawnLocations.length), 1)[0]);
+            spawnLocations.push(
+              validSpawnLocations.splice(
+                this.getGameSession().getRandomIntegerForExecution(validSpawnLocations.length),
+                1,
+              )[0],
+            );
           } else {
             break;
           }
@@ -68,7 +84,13 @@ class ModifierOpeningGambitDeathKnell extends ModifierOpeningGambit {
           const result = [];
           for (i = 0; i < spawnLocations.length; i++) {
             var position = spawnLocations[i];
-            var playCardAction = new PlayCardSilentlyAction(this.getGameSession(), this.getCard().getOwnerId(), position.x, position.y, { id: deadArcanystIds[i] });
+            var playCardAction = new PlayCardSilentlyAction(
+              this.getGameSession(),
+              this.getCard().getOwnerId(),
+              position.x,
+              position.y,
+              { id: deadArcanystIds[i] },
+            );
             playCardAction.setSource(this.getCard());
             result.push(this.getGameSession().executeAction(playCardAction));
           }
@@ -79,6 +101,8 @@ class ModifierOpeningGambitDeathKnell extends ModifierOpeningGambit {
   }
 }
 ModifierOpeningGambitDeathKnell.prototype.type = 'ModifierOpeningGambitDeathKnell';
-ModifierOpeningGambitDeathKnell.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambitDeathKnell'];
+ModifierOpeningGambitDeathKnell.prototype.fxResource = [
+  'FX.Modifiers.ModifierOpeningGambitDeathKnell',
+];
 
 module.exports = ModifierOpeningGambitDeathKnell;

@@ -14,12 +14,18 @@ class SpellAstralFlood extends Spell {
     super.onApplyOneEffectToBoard(board, x, y, sourceAction);
 
     // pull faction battle pets + neutral token battle pets
-    const factionBattlePetCards = this.getGameSession().getCardCaches().getFaction(Factions.Faction3).getRace(Races.BattlePet)
+    const factionBattlePetCards = this.getGameSession()
+      .getCardCaches()
+      .getFaction(Factions.Faction3)
+      .getRace(Races.BattlePet)
       .getIsToken(false)
       .getIsPrismatic(false)
       .getIsSkinned(false)
       .getCards();
-    const neutralBattlePetCards = this.getGameSession().getCardCaches().getFaction(Factions.Neutral).getRace(Races.BattlePet)
+    const neutralBattlePetCards = this.getGameSession()
+      .getCardCaches()
+      .getFaction(Factions.Neutral)
+      .getRace(Races.BattlePet)
       .getIsToken(true)
       .getIsPrismatic(false)
       .getIsSkinned(false)
@@ -29,8 +35,13 @@ class SpellAstralFlood extends Spell {
     return (() => {
       const result = [];
       for (let i = 0; i <= 2; i++) {
-        var card = battlePetCards[this.getGameSession().getRandomIntegerForExecution(battlePetCards.length)];
-        var a = new PutCardInHandAction(this.getGameSession(), this.getOwnerId(), card.createNewCardData());
+        var card =
+          battlePetCards[this.getGameSession().getRandomIntegerForExecution(battlePetCards.length)];
+        var a = new PutCardInHandAction(
+          this.getGameSession(),
+          this.getOwnerId(),
+          card.createNewCardData(),
+        );
         result.push(this.getGameSession().executeAction(a));
       }
       return result;

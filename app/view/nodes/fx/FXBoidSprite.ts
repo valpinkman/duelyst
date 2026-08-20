@@ -36,10 +36,9 @@ const FXBoidSprite = FXSprite.extend({
   end() {
     this.impact();
 
-    this.runAction(cc.sequence(
-      cc.FadeOut.create(CONFIG.FADE_MEDIUM_DURATION),
-      cc.callFunc(this.destroy, this),
-    ));
+    this.runAction(
+      cc.sequence(cc.FadeOut.create(CONFIG.FADE_MEDIUM_DURATION), cc.callFunc(this.destroy, this)),
+    );
   },
 });
 

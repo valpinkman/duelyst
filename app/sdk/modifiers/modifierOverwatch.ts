@@ -44,15 +44,17 @@ class ModifierOverwatch extends Modifier {
   }
 
   onCheckForOverwatch(e) {
-    const {
-      action,
-    } = e;
+    const { action } = e;
     if (this.getCanReactToAction(action) && this.getIsActionRelevant(action)) {
       // setup for triggering
       this.getGameSession().pushTriggeringModifierOntoStack(this);
 
       // reveal the overwatch card
-      const revealAction = new RevealHiddenCardAction(this.getGameSession(), this.getOwnerId(), this.getRevealedCardData());
+      const revealAction = new RevealHiddenCardAction(
+        this.getGameSession(),
+        this.getOwnerId(),
+        this.getRevealedCardData(),
+      );
       revealAction.setTarget(this.getSourceCard());
       this.getGameSession().executeAction(revealAction);
 
@@ -74,7 +76,11 @@ class ModifierOverwatch extends Modifier {
 
   getCanReactToAction(action) {
     // overwatch can only react on authoritative source on opponent's turn
-    return this.getGameSession().getIsRunningAsAuthoritative() && (this.getGameSession().getCurrentPlayerId() !== this.getOwnerId()) && super.getCanReactToAction(action);
+    return (
+      this.getGameSession().getIsRunningAsAuthoritative() &&
+      this.getGameSession().getCurrentPlayerId() !== this.getOwnerId() &&
+      super.getCanReactToAction(action)
+    );
   }
 
   getIsActionRelevant(action) {

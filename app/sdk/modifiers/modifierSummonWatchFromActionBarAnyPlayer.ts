@@ -25,9 +25,7 @@ class ModifierSummonWatchFromActionBarAnyPlayer extends Modifier {
   onAction(e) {
     super.onAction(e);
 
-    const {
-      action,
-    } = e;
+    const { action } = e;
 
     // watch for a unit being summoned in any way by any player, but don't react to transforms
     if (this.getIsActionRelevant(action) && this.getIsCardRelevantToWatcher(action.getCard())) {
@@ -36,7 +34,15 @@ class ModifierSummonWatchFromActionBarAnyPlayer extends Modifier {
   }
 
   getIsActionRelevant(action) {
-    return action instanceof PlayCardFromHandAction && (__guard__(action.getCard(), (x) => x.type) === CardType.Unit) && (action.getCard() !== this.getCard()) && !(action instanceof PlayCardAsTransformAction || action instanceof CloneEntityAsTransformAction);
+    return (
+      action instanceof PlayCardFromHandAction &&
+      __guard__(action.getCard(), (x) => x.type) === CardType.Unit &&
+      action.getCard() !== this.getCard() &&
+      !(
+        action instanceof PlayCardAsTransformAction ||
+        action instanceof CloneEntityAsTransformAction
+      )
+    );
   }
 
   onSummonWatch(action) {}
@@ -46,16 +52,19 @@ class ModifierSummonWatchFromActionBarAnyPlayer extends Modifier {
     return true;
   }
 }
-ModifierSummonWatchFromActionBarAnyPlayer.prototype.type = 'ModifierSummonWatchFromActionBarAnyPlayer';
+ModifierSummonWatchFromActionBarAnyPlayer.prototype.type =
+  'ModifierSummonWatchFromActionBarAnyPlayer';
 ModifierSummonWatchFromActionBarAnyPlayer.prototype.activeInHand = false;
 ModifierSummonWatchFromActionBarAnyPlayer.prototype.activeInDeck = false;
 ModifierSummonWatchFromActionBarAnyPlayer.prototype.activeInSignatureCards = false;
 ModifierSummonWatchFromActionBarAnyPlayer.prototype.activeOnBoard = true;
-ModifierSummonWatchFromActionBarAnyPlayer.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch'];
+ModifierSummonWatchFromActionBarAnyPlayer.prototype.fxResource = [
+  'FX.Modifiers.ModifierSummonWatch',
+];
 // override me in sub classes to implement special behavior
 
 module.exports = ModifierSummonWatchFromActionBarAnyPlayer;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

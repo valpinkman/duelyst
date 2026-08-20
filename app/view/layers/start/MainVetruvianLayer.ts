@@ -17,7 +17,6 @@ const FXFlockSprite = require('../../nodes/fx/FXFlockSprite');
  *************************************************************************** */
 
 const MainVetruvianLayer = FXCompositeLayer.extend({
-
   /* region INITIALIZE */
 
   ctor() {
@@ -41,14 +40,14 @@ const MainVetruvianLayer = FXCompositeLayer.extend({
 
       this.stars = new BaseParticleSystem({
         plistFile: RSX.scene_vetruvian_stars_particles.plist,
-        fadeInAtLifePct: 0.10,
-        fadeOutAtLifePct: 0.90,
+        fadeInAtLifePct: 0.1,
+        fadeOutAtLifePct: 0.9,
       });
 
       this.lights = new BaseParticleSystem({
         plistFile: RSX.scene_vetruvian_stars_particles.plist,
-        fadeInAtLifePct: 0.10,
-        fadeOutAtLifePct: 0.90,
+        fadeInAtLifePct: 0.1,
+        fadeOutAtLifePct: 0.9,
         staticPositionsToSample: validParticlePositions,
       });
       this.lights.setAnchorPoint(cc.p(0, 0));
@@ -108,27 +107,15 @@ const MainVetruvianLayer = FXCompositeLayer.extend({
       this.ray2.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
       this.ray3.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
 
-      this.ray1.runAction(cc.repeatForever(
-        cc.sequence(
-          cc.fadeOut(5.0),
-          cc.delayTime(3.0),
-          cc.fadeIn(5.0),
-        ),
-      ));
-      this.ray2.runAction(cc.repeatForever(
-        cc.sequence(
-          cc.fadeOut(5.0),
-          cc.delayTime(6.0),
-          cc.fadeIn(5.0),
-        ),
-      ));
-      this.ray3.runAction(cc.repeatForever(
-        cc.sequence(
-          cc.fadeOut(5.0),
-          cc.delayTime(1.0),
-          cc.fadeIn(5.0),
-        ),
-      ));
+      this.ray1.runAction(
+        cc.repeatForever(cc.sequence(cc.fadeOut(5.0), cc.delayTime(3.0), cc.fadeIn(5.0))),
+      );
+      this.ray2.runAction(
+        cc.repeatForever(cc.sequence(cc.fadeOut(5.0), cc.delayTime(6.0), cc.fadeIn(5.0))),
+      );
+      this.ray3.runAction(
+        cc.repeatForever(cc.sequence(cc.fadeOut(5.0), cc.delayTime(1.0), cc.fadeIn(5.0))),
+      );
     });
 
     // do super ctor
@@ -143,7 +130,9 @@ const MainVetruvianLayer = FXCompositeLayer.extend({
   /* region RESOURCES */
 
   getRequiredResources() {
-    return FXCompositeLayer.prototype.getRequiredResources.call(this).concat(PKGS.getPkgForIdentifier('VetruvianMainMenu'));
+    return FXCompositeLayer.prototype.getRequiredResources
+      .call(this)
+      .concat(PKGS.getPkgForIdentifier('VetruvianMainMenu'));
   },
 
   /* endregion RESOURCES */
@@ -228,11 +217,21 @@ const MainVetruvianLayer = FXCompositeLayer.extend({
       // clouds
       this.clouds1.setSourceScreenPosition(cc.p(winWidth * 0.1, -winHeight * 0.4));
       this.clouds1.setTargetScreenPosition(cc.p(-winWidth * 0.5, -winHeight * 0.45));
-      this.parallaxLayer.addOrUpdateParallaxedNode(this.clouds1, 3, cc.p(), this.clouds1.getSourceScreenOffsetPosition());
+      this.parallaxLayer.addOrUpdateParallaxedNode(
+        this.clouds1,
+        3,
+        cc.p(),
+        this.clouds1.getSourceScreenOffsetPosition(),
+      );
 
       this.clouds2.setSourceScreenPosition(cc.p(winWidth * 0.1, -winHeight * 0.4));
       this.clouds2.setTargetScreenPosition(cc.p(-winWidth * 0.5, -winHeight * 0.45));
-      this.parallaxLayer.addOrUpdateParallaxedNode(this.clouds2, 3, cc.p(), this.clouds2.getSourceScreenOffsetPosition());
+      this.parallaxLayer.addOrUpdateParallaxedNode(
+        this.clouds2,
+        3,
+        cc.p(),
+        this.clouds2.getSourceScreenOffsetPosition(),
+      );
       //
       // this.clouds3.setSourceScreenPosition(cc.p(winWidth * 0.1, -winHeight * 0.4));
       // this.clouds3.setTargetScreenPosition(cc.p(-winWidth * 0.5, -winHeight * 0.45));
@@ -246,7 +245,10 @@ const MainVetruvianLayer = FXCompositeLayer.extend({
       this.fg.setScale(parallaxScale);
       this.fg.setAnchorPoint(1.0, 0.5);
       ratio = cc.p(0.02, 0.01);
-      offset = cc.p(winWidth * 0.55, -winHeight * 0.5 + this.fg.getContentSize().height * (0.5 - ratio.y) * this.fg.getScale());
+      offset = cc.p(
+        winWidth * 0.55,
+        -winHeight * 0.5 + this.fg.getContentSize().height * (0.5 - ratio.y) * this.fg.getScale(),
+      );
       this.parallaxLayer.addOrUpdateParallaxedNode(this.fg, 4, ratio, offset);
 
       // reset parallax
@@ -259,7 +261,6 @@ const MainVetruvianLayer = FXCompositeLayer.extend({
   playMusic() {
     audio_engine.current().play_music(RSX.music_ageofdisjunction.audio);
   },
-
 });
 
 MainVetruvianLayer.create = function (layer) {
@@ -268,7 +269,8 @@ MainVetruvianLayer.create = function (layer) {
 
 module.exports = MainVetruvianLayer;
 
-const validParticlePositions = [{ x: 0, y: 742 },
+const validParticlePositions = [
+  { x: 0, y: 742 },
   { x: 0, y: 741 },
   { x: 0, y: 726 },
   { x: 0, y: 725 },
@@ -12226,4 +12228,5 @@ const validParticlePositions = [{ x: 0, y: 742 },
   { x: 1920, y: 727 },
   { x: 1920, y: 726 },
   { x: 1920, y: 719 },
-  { x: 1920, y: 718 }];
+  { x: 1920, y: 718 },
+];

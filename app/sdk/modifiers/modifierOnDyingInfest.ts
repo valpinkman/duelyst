@@ -17,7 +17,9 @@ class ModifierOnDyingInfest extends ModifierOnDying {
   static type = 'ModifierOnDyingInfest';
 
   onDying() {
-    const general = this.getCard().getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
+    const general = this.getCard()
+      .getGameSession()
+      .getGeneralForPlayerId(this.getCard().getOwnerId());
 
     const damageAction = new DamageAction(this.getGameSession());
     damageAction.setOwnerId(this.getCard().getOwnerId());
@@ -26,15 +28,19 @@ class ModifierOnDyingInfest extends ModifierOnDying {
     damageAction.setDamageAmount(2);
     this.getGameSession().executeAction(damageAction);
 
-    const nearbyAllies = this.getGameSession().getBoard().getFriendlyEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
+    const nearbyAllies = this.getGameSession()
+      .getBoard()
+      .getFriendlyEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
     return (() => {
       const result = [];
       for (var entity of Array.from<any>(nearbyAllies)) {
-        if ((entity != null) && !entity.getIsGeneral()) {
+        if (entity != null && !entity.getIsGeneral()) {
           var deathPlagueModifier = ModifierOnDyingInfest.createContextObject();
           deathPlagueModifier.appliedName = this.appliedName;
           deathPlagueModifier.appliedDescription = this.appliedDescription;
-          result.push(this.getGameSession().applyModifierContextObject(deathPlagueModifier, entity));
+          result.push(
+            this.getGameSession().applyModifierContextObject(deathPlagueModifier, entity),
+          );
         } else {
           result.push(undefined);
         }
@@ -44,6 +50,9 @@ class ModifierOnDyingInfest extends ModifierOnDying {
   }
 }
 ModifierOnDyingInfest.prototype.type = 'ModifierOnDyingInfest';
-ModifierOnDyingInfest.prototype.fxResource = ['FX.Modifiers.ModifierInfest', 'FX.Modifiers.ModifierGenericChain'];
+ModifierOnDyingInfest.prototype.fxResource = [
+  'FX.Modifiers.ModifierInfest',
+  'FX.Modifiers.ModifierGenericChain',
+];
 
 module.exports = ModifierOnDyingInfest;

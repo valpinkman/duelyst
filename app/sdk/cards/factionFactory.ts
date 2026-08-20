@@ -57,11 +57,13 @@ class FactionFactory {
       return faction;
     }
     // no faction found
-    return console.error(`FactionFactory.factionForIdentifier - Unknown faction identifier: ${identifier}`.red);
+    return console.error(
+      `FactionFactory.factionForIdentifier - Unknown faction identifier: ${identifier}`.red,
+    );
   }
 
   static getAllFactions() {
-    if ((this._allFactions == null)) {
+    if (this._allFactions == null) {
       this._allFactions = [];
       for (var factionId of Array.from<any>(_.chain(Factions).values().uniq().value())) {
         var faction = FactionFactory.factionForIdentifier(factionId);
@@ -75,7 +77,7 @@ class FactionFactory {
   }
 
   static getAllPlayableFactions() {
-    if ((this._playableFactions == null)) {
+    if (this._playableFactions == null) {
       this._playableFactions = [];
       for (var factionId of Array.from<any>(_.chain(Factions).values().uniq().value())) {
         var faction = FactionFactory.factionForIdentifier(factionId);
@@ -89,7 +91,7 @@ class FactionFactory {
   }
 
   static getAllEnabledFactions() {
-    if ((this._enabledFactions == null)) {
+    if (this._enabledFactions == null) {
       this._enabledFactions = [];
       for (var factionId of Array.from<any>(_.chain(Factions).values().uniq().value())) {
         var faction = FactionFactory.factionForIdentifier(factionId);
@@ -103,13 +105,19 @@ class FactionFactory {
   }
 
   static starterDeckForFactionLevel(factionId, factionLevel) {
-    if (factionLevel == null) { factionLevel = 0; }
+    if (factionLevel == null) {
+      factionLevel = 0;
+    }
     const starterDeck = this.factionForIdentifier(factionId).starterDeck.slice();
     if (factionLevel > 0) {
       const unlockedCardIds = FactionProgression.unlockedCardsUpToLevel(factionLevel, factionId);
       for (var cardId of Array.from<any>(unlockedCardIds)) {
         if (FactionFactory.unlockedCardIsValidForStarterDeck(cardId)) {
-          for (var i = 0, end = CONFIG.MAX_DECK_DUPLICATES, asc = end >= 0; asc ? i < end : i > end; asc ? i++ : i--) {
+          for (
+            var i = 0, end = CONFIG.MAX_DECK_DUPLICATES, asc = end >= 0;
+            asc ? i < end : i > end;
+            asc ? i++ : i--
+          ) {
             starterDeck.push({ id: cardId });
           }
         }
@@ -120,19 +128,24 @@ class FactionFactory {
   }
 
   static cardIdIsGeneral(cardId) {
-    return (this.factionForGeneralId(cardId) != null);
+    return this.factionForGeneralId(cardId) != null;
   }
 
   static unlockedCardIsValidForStarterDeck(cardId) {
     // if card is not prismatic, it is valid for starter decks
-    if (Cards.getIsPrismaticCardId(cardId)) { return false; }
+    if (Cards.getIsPrismaticCardId(cardId)) {
+      return false;
+    }
 
     // search for faction for this card id
     // if card id is a general, it will return a faction
     // if card is not a general, it is valid for starter deck
     // if card id is primary general, it is valid for starter deck
     const factionData = this.factionForGeneralId(cardId);
-    return (factionData == null) || (cardId === factionData.generalIdsByOrder[FactionFactory.GeneralOrder.Primary]);
+    return (
+      factionData == null ||
+      cardId === factionData.generalIdsByOrder[FactionFactory.GeneralOrder.Primary]
+    );
   }
 
   static generalIdForFactionByOrder(factionId, order) {
@@ -149,7 +162,7 @@ class FactionFactory {
     const factionIds = Object.keys(this.factionMap);
     for (var factionId of Array.from<any>(factionIds)) {
       var faction = this.factionMap[factionId];
-      if ((faction.generalIds != null) && _.contains(faction.generalIds, generalId)) {
+      if (faction.generalIds != null && _.contains(faction.generalIds, generalId)) {
         return faction;
       }
     }
@@ -165,17 +178,17 @@ class FactionFactory {
 
   static getCrestResourceForFactionId(factionId) {
     const faction = this.factionForIdentifier(factionId);
-    return (faction != null ? faction.crestResource : undefined);
+    return faction != null ? faction.crestResource : undefined;
   }
 
   static getCrestShadowResourceForFactionId(factionId) {
     const faction = this.factionForIdentifier(factionId);
-    return (faction != null ? faction.crestShadowResource : undefined);
+    return faction != null ? faction.crestShadowResource : undefined;
   }
 
   static getCrestDeckSelectResourceForFactionId(factionId) {
     const faction = this.factionForIdentifier(factionId);
-    return (faction != null ? faction.crestDeckSelectResource : undefined);
+    return faction != null ? faction.crestDeckSelectResource : undefined;
   }
 
   static getTauntCallout(myGeneralId, opponentGeneralId) {
@@ -183,8 +196,9 @@ class FactionFactory {
     myGeneralId = Cards.getBaseCardId(parseInt(myGeneralId));
     const myFaction = this.factionForGeneralId(myGeneralId);
     if (myFaction != null) {
-      let calloutDataForOpponentFaction; let calloutDataForOpponentGeneral; let
-        opponentFaction;
+      let calloutDataForOpponentFaction;
+      let calloutDataForOpponentGeneral;
+      let opponentFaction;
       opponentGeneralId = Cards.getBaseCardId(parseInt(opponentGeneralId));
       // check if there is a callout map defined for my general
       const calloutDataForMyGeneral = myFaction.generalTauntCallouts[myGeneralId];
@@ -197,7 +211,9 @@ class FactionFactory {
           opponentFaction = this.factionForGeneralId(opponentGeneralId);
           if (opponentFaction != null) {
             // check if there is a callout defined for the opponent faction
-            calloutDataForOpponentFaction = calloutDataForMyGeneral[opponentFaction.id] || calloutDataForMyGeneral[Factions.Neutral];
+            calloutDataForOpponentFaction =
+              calloutDataForMyGeneral[opponentFaction.id] ||
+              calloutDataForMyGeneral[Factions.Neutral];
             if (_.isString(calloutDataForOpponentFaction)) {
               callout = calloutDataForOpponentFaction;
             }
@@ -207,7 +223,9 @@ class FactionFactory {
         opponentFaction = this.factionForGeneralId(opponentGeneralId);
         if (opponentFaction != null) {
           // check if there is a callout defined for the opponent faction
-          calloutDataForOpponentFaction = myFaction.generalTauntCallouts[opponentFaction.id] || myFaction.generalTauntCallouts[Factions.Neutral];
+          calloutDataForOpponentFaction =
+            myFaction.generalTauntCallouts[opponentFaction.id] ||
+            myFaction.generalTauntCallouts[Factions.Neutral];
           if (_.isString(calloutDataForOpponentFaction)) {
             callout = calloutDataForOpponentFaction;
           } else if (_.isObject(calloutDataForOpponentFaction)) {
@@ -228,8 +246,9 @@ class FactionFactory {
     myGeneralId = Cards.getBaseCardId(parseInt(myGeneralId));
     const myFaction = this.factionForGeneralId(myGeneralId);
     if (myFaction != null) {
-      let opponentFaction; let responseDataForOpponentFaction; let
-        responseDataForOpponentGeneral;
+      let opponentFaction;
+      let responseDataForOpponentFaction;
+      let responseDataForOpponentGeneral;
       opponentGeneralId = Cards.getBaseCardId(parseInt(opponentGeneralId));
       // check if there is a response map defined for my general
       const responseDataForMyGeneral = myFaction.generalTauntResponses[myGeneralId];
@@ -242,7 +261,9 @@ class FactionFactory {
           opponentFaction = this.factionForGeneralId(opponentGeneralId);
           if (opponentFaction != null) {
             // check if there is a response defined for the opponent faction
-            responseDataForOpponentFaction = responseDataForMyGeneral[opponentFaction.id] || responseDataForMyGeneral[Factions.Neutral];
+            responseDataForOpponentFaction =
+              responseDataForMyGeneral[opponentFaction.id] ||
+              responseDataForMyGeneral[Factions.Neutral];
             if (_.isString(responseDataForOpponentFaction)) {
               response = responseDataForOpponentFaction;
             }
@@ -257,7 +278,9 @@ class FactionFactory {
           opponentFaction = this.factionForGeneralId(opponentGeneralId);
           if (opponentFaction != null) {
             // check if there is a response defined for the opponent faction
-            responseDataForOpponentFaction = myFaction.generalTauntResponses[opponentFaction.id] || myFaction.generalTauntResponses[Factions.Neutral];
+            responseDataForOpponentFaction =
+              myFaction.generalTauntResponses[opponentFaction.id] ||
+              myFaction.generalTauntResponses[Factions.Neutral];
             if (_.isString(responseDataForOpponentFaction)) {
               response = responseDataForOpponentFaction;
             }
@@ -301,10 +324,16 @@ fmap[Factions.Faction1] = {
   crestShadowResource: RSX.crest_f1_shadow,
   crestDeckSelectResource: RSX.crest_f1_deck_select,
   gradientColorMapWhite: {
-    r: 250, g: 200, b: 80, a: 255,
+    r: 250,
+    g: 200,
+    b: 80,
+    a: 255,
   },
   gradientColorMapBlack: {
-    r: 40, g: 33, b: 4, a: 255,
+    r: 40,
+    g: 33,
+    b: 4,
+    a: 255,
   },
 
   starterDeck: [
@@ -397,10 +426,16 @@ fmap[Factions.Faction2] = {
   crestShadowResource: RSX.crest_f2_shadow,
   crestDeckSelectResource: RSX.crest_f2_deck_select,
   gradientColorMapWhite: {
-    r: 254, g: 80, b: 100, a: 255,
+    r: 254,
+    g: 80,
+    b: 100,
+    a: 255,
   },
   gradientColorMapBlack: {
-    r: 70, g: 5, b: 1, a: 255,
+    r: 70,
+    g: 5,
+    b: 1,
+    a: 255,
   },
 
   starterDeck: [
@@ -493,10 +528,16 @@ fmap[Factions.Faction3] = {
   crestShadowResource: RSX.crest_f3_shadow,
   crestDeckSelectResource: RSX.crest_f3_deck_select,
   gradientColorMapWhite: {
-    r: 250, g: 160, b: 0, a: 255,
+    r: 250,
+    g: 160,
+    b: 0,
+    a: 255,
   },
   gradientColorMapBlack: {
-    r: 39, g: 33, b: 21, a: 255,
+    r: 39,
+    g: 33,
+    b: 21,
+    a: 255,
   },
 
   starterDeck: [
@@ -589,10 +630,16 @@ fmap[Factions.Faction4] = {
   crestShadowResource: RSX.crest_f4_shadow,
   crestDeckSelectResource: RSX.crest_f4_deck_select,
   gradientColorMapWhite: {
-    r: 247, g: 151, b: 254, a: 255,
+    r: 247,
+    g: 151,
+    b: 254,
+    a: 255,
   },
   gradientColorMapBlack: {
-    r: 45, g: 50, b: 167, a: 255,
+    r: 45,
+    g: 50,
+    b: 167,
+    a: 255,
   },
 
   starterDeck: [
@@ -685,10 +732,16 @@ fmap[Factions.Faction5] = {
   crestShadowResource: RSX.crest_f5_shadow,
   crestDeckSelectResource: RSX.crest_f5_deck_select,
   gradientColorMapWhite: {
-    r: 0, g: 252, b: 250, a: 255,
+    r: 0,
+    g: 252,
+    b: 250,
+    a: 255,
   },
   gradientColorMapBlack: {
-    r: 0, g: 62, b: 66, a: 255,
+    r: 0,
+    g: 62,
+    b: 66,
+    a: 255,
   },
 
   starterDeck: [
@@ -781,10 +834,16 @@ fmap[Factions.Faction6] = {
   crestShadowResource: RSX.crest_f6_shadow,
   crestDeckSelectResource: RSX.crest_f6_deck_select,
   gradientColorMapWhite: {
-    r: 185, g: 208, b: 226, a: 255,
+    r: 185,
+    g: 208,
+    b: 226,
+    a: 255,
   },
   gradientColorMapBlack: {
-    r: 9, g: 12, b: 55, a: 255,
+    r: 9,
+    g: 12,
+    b: 55,
+    a: 255,
   },
 
   starterDeck: [
@@ -890,10 +949,16 @@ fmap[Factions.Tutorial] = {
   announcerFirst: null, // TODO: audio
   announcerSecond: null, // TODO: audio
   gradientColorMapWhite: {
-    r: 255, g: 255, b: 255, a: 255,
+    r: 255,
+    g: 255,
+    b: 255,
+    a: 255,
   },
   gradientColorMapBlack: {
-    r: 0, g: 0, b: 0, a: 255,
+    r: 0,
+    g: 0,
+    b: 0,
+    a: 255,
   },
 };
 
@@ -958,10 +1023,16 @@ fmap[Factions.Boss] = {
   crestShadowImg: null,
   crestDeckSelectImg: null,
   gradientColorMapWhite: {
-    r: 255, g: 255, b: 255, a: 255,
+    r: 255,
+    g: 255,
+    b: 255,
+    a: 255,
   },
   gradientColorMapBlack: {
-    r: 0, g: 0, b: 0, a: 255,
+    r: 0,
+    g: 0,
+    b: 0,
+    a: 255,
   },
 };
 
@@ -975,7 +1046,7 @@ const fbC1 = (fbC[Cards.Boss.Boss1] = {});
 fbC1[Factions.Neutral] = i18next.t('factions.boss_1_taunt');
 const fbC2 = (fbC[Cards.Boss.Boss2] = {});
 fbC2[Factions.Neutral] = i18next.t('factions.boss_2_taunt');
-const fbC3 = (fbC[Cards.Boss.Boss3] = (fbC[Cards.Boss.Boss7] = {}));
+const fbC3 = (fbC[Cards.Boss.Boss3] = fbC[Cards.Boss.Boss7] = {});
 fbC3[Factions.Neutral] = i18next.t('factions.boss_3_taunt');
 const fbC4 = (fbC[Cards.Boss.Boss4] = {});
 fbC4[Factions.Neutral] = i18next.t('factions.boss_4_taunt');
@@ -1056,7 +1127,7 @@ const fbR1 = (fbR[Cards.Boss.Boss1] = {});
 fbR1[Factions.Neutral] = i18next.t('factions.boss_1_taunt');
 const fbR2 = (fbR[Cards.Boss.Boss2] = {});
 fbR2[Factions.Neutral] = i18next.t('factions.boss_2_taunt');
-const fbR3 = (fbR[Cards.Boss.Boss3] = (fbR[Cards.Boss.Boss7] = {}));
+const fbR3 = (fbR[Cards.Boss.Boss3] = fbR[Cards.Boss.Boss7] = {});
 fbR3[Factions.Neutral] = i18next.t('factions.boss_3_taunt');
 const fbR4 = (fbR[Cards.Boss.Boss4] = {});
 fbR4[Factions.Neutral] = i18next.t('factions.boss_4_taunt');
@@ -1130,5 +1201,5 @@ fbR38[Factions.Neutral] = i18next.t('factions.boss_38_taunt');
 module.exports = FactionFactory;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

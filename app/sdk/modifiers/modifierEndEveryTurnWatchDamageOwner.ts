@@ -17,7 +17,9 @@ class ModifierEndEveryTurnWatchDamageOwner extends ModifierEndEveryTurnWatch {
   static description = 'At end of EACH turn, deal %X damage to your General';
 
   static createContextObject(damageAmount, options) {
-    if (damageAmount == null) { damageAmount = 0; }
+    if (damageAmount == null) {
+      damageAmount = 0;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.damageAmount = damageAmount;
     return contextObject;
@@ -47,6 +49,9 @@ class ModifierEndEveryTurnWatchDamageOwner extends ModifierEndEveryTurnWatch {
   }
 }
 ModifierEndEveryTurnWatchDamageOwner.prototype.type = 'ModifierEndEveryTurnWatchDamageOwner';
-ModifierEndEveryTurnWatchDamageOwner.prototype.fxResource = ['FX.Modifiers.ModifierEndTurnWatch', 'FX.Modifiers.ModifierGenericDamageEnergySmall'];
+ModifierEndEveryTurnWatchDamageOwner.prototype.fxResource = [
+  'FX.Modifiers.ModifierEndTurnWatch',
+  'FX.Modifiers.ModifierGenericDamageEnergySmall',
+];
 
 module.exports = ModifierEndEveryTurnWatchDamageOwner;

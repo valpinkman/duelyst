@@ -19,7 +19,6 @@ var CraftingTmpl = require('./templates/crafting.hbs');
 var CraftingCardCompositeView = require('./crafting_card');
 
 var CraftingCompositeView = Backbone.Marionette.CompositeView.extend({
-
   id: 'app-crafting',
   className: 'card-container-hover-keywords',
 
@@ -72,13 +71,21 @@ var CraftingCompositeView = Backbone.Marionette.CompositeView.extend({
       // has resources to craft
       // and owns less than 3 for common to legendary
       // OR and owns less than 1 for Mythron rarity
-      if (this.model.get('hasEnoughResources')
-        && ((this._selectedCardModel.get('rarityId') != SDK.Rarity.Mythron && this._selectedCardModel.get('inventoryCount') < CONFIG.MAX_DECK_DUPLICATES) || (this._selectedCardModel.get('rarityId') == SDK.Rarity.Mythron && this._selectedCardModel.get('inventoryCount') < 1))) {
+      if (
+        this.model.get('hasEnoughResources') &&
+        ((this._selectedCardModel.get('rarityId') != SDK.Rarity.Mythron &&
+          this._selectedCardModel.get('inventoryCount') < CONFIG.MAX_DECK_DUPLICATES) ||
+          (this._selectedCardModel.get('rarityId') == SDK.Rarity.Mythron &&
+            this._selectedCardModel.get('inventoryCount') < 1))
+      ) {
         this.ui.$buttonCraft.removeClass('disabled');
       } else {
         this.ui.$buttonCraft.addClass('disabled');
       }
-      if (this._selectedCardModel.get('inventoryCount') > 0 && this.model.get('disenchantMaterials')[0].amount != 0) {
+      if (
+        this._selectedCardModel.get('inventoryCount') > 0 &&
+        this.model.get('disenchantMaterials')[0].amount != 0
+      ) {
         this.ui.$buttonDisenchant.removeClass('disabled');
       } else {
         this.ui.$buttonDisenchant.addClass('disabled');
@@ -105,7 +112,9 @@ var CraftingCompositeView = Backbone.Marionette.CompositeView.extend({
     var cardModel = cardView && cardView.model;
     if (cardModel != null && this._selectedCardModel != cardModel) {
       Animations.cssClassAnimation.call(cardView, 'flash-brightness');
-      audio_engine.current().play_effect_for_interaction(RSX.sfx_collection_next.audio, CONFIG.SELECT_SFX_PRIORITY);
+      audio_engine
+        .current()
+        .play_effect_for_interaction(RSX.sfx_collection_next.audio, CONFIG.SELECT_SFX_PRIORITY);
       this.selectCard(cardModel);
     }
   },
@@ -137,13 +146,15 @@ var CraftingCompositeView = Backbone.Marionette.CompositeView.extend({
       var walletSpirit = walletModel.get('spirit_amount');
 
       this.model.set({
-        hasEnoughResources: (walletSpirit >= spiritCost),
-        craftMaterials: [{
-          type: 'Spirit',
-          localizedType: i18next.t('common.currency_spirit'),
-          rarity: '',
-          amount: spiritCost,
-        }],
+        hasEnoughResources: walletSpirit >= spiritCost,
+        craftMaterials: [
+          {
+            type: 'Spirit',
+            localizedType: i18next.t('common.currency_spirit'),
+            rarity: '',
+            amount: spiritCost,
+          },
+        ],
       });
 
       this.listenTo(this._selectedCardModel, 'change', this.bindSelectedCardProperties);
@@ -151,36 +162,45 @@ var CraftingCompositeView = Backbone.Marionette.CompositeView.extend({
 
       this.collection.reset([this._selectedCardModel]);
 
-      InventoryManager.getInstance().getDisenchantPromosCollection().onSyncOrReady().then(function (collection) {
-        if (this.isDestroyed || this._selectedCardModel != cardModel) return; // view is destroyed or selection has changed
+      InventoryManager.getInstance()
+        .getDisenchantPromosCollection()
+        .onSyncOrReady()
+        .then(
+          function (collection) {
+            if (this.isDestroyed || this._selectedCardModel != cardModel) return; // view is destroyed or selection has changed
 
-        var baseCardId = sdkCard.getBaseCardId();
-        var promoCardData = collection.get(baseCardId);
-        if (promoCardData) {
-          var hasExpired = false;
-          if (promoCardData.get('expires_at')) {
-            hasExpired = moment(new Date()).utc().valueOf() > promoCardData.get('expires_at');
-          }
-          if (!hasExpired) {
-            spiritReward = promoCardData.get('spirit');
-            if (spiritReward == 'COST') {
-              spiritReward = isPrismatic ? rarityData.spiritCostPrismatic : rarityData.spiritCost;
+            var baseCardId = sdkCard.getBaseCardId();
+            var promoCardData = collection.get(baseCardId);
+            if (promoCardData) {
+              var hasExpired = false;
+              if (promoCardData.get('expires_at')) {
+                hasExpired = moment(new Date()).utc().valueOf() > promoCardData.get('expires_at');
+              }
+              if (!hasExpired) {
+                spiritReward = promoCardData.get('spirit');
+                if (spiritReward == 'COST') {
+                  spiritReward = isPrismatic
+                    ? rarityData.spiritCostPrismatic
+                    : rarityData.spiritCost;
+                }
+              }
             }
-          }
-        }
 
-        this.model.set({
-          disenchantMaterials: [{
-            type: 'Spirit',
-            localizedType: i18next.t('common.currency_spirit'),
-            rarity: '',
-            amount: spiritReward,
-          }],
-        });
+            this.model.set({
+              disenchantMaterials: [
+                {
+                  type: 'Spirit',
+                  localizedType: i18next.t('common.currency_spirit'),
+                  rarity: '',
+                  amount: spiritReward,
+                },
+              ],
+            });
 
-        this.listenTo(this.model, 'change', this.render);
-        this.render();
-      }.bind(this));
+            this.listenTo(this.model, 'change', this.render);
+            this.render();
+          }.bind(this),
+        );
     }
   },
 
@@ -208,15 +228,23 @@ var CraftingCompositeView = Backbone.Marionette.CompositeView.extend({
 
   bindSelectedCardProperties: function () {
     if (this._selectedCardModel != null) {
-      var cardSetData = SDK.CardSetFactory.cardSetForIdentifier(this._selectedCardModel.get('cardSetId'));
+      var cardSetData = SDK.CardSetFactory.cardSetForIdentifier(
+        this._selectedCardModel.get('cardSetId'),
+      );
       this.model.set({
         isCraftable: this._selectedCardModel.get('isCraftable'),
         isUnlocked: this._selectedCardModel.get('isUnlocked'),
         isSkinned: this._selectedCardModel.get('isSkinned'),
-        isUnlockableThroughProgression: this._selectedCardModel.get('isUnlockableThroughProgression'),
+        isUnlockableThroughProgression: this._selectedCardModel.get(
+          'isUnlockableThroughProgression',
+        ),
         isUnlockableWithAchievement: this._selectedCardModel.get('isUnlockableWithAchievement'),
-        isUnlockablePrismaticWithAchievement: this._selectedCardModel.get('isUnlockablePrismaticWithAchievement'),
-        isUnlockablePrismaticWithSpiritOrbs: this._selectedCardModel.get('isUnlockablePrismaticWithSpiritOrbs'),
+        isUnlockablePrismaticWithAchievement: this._selectedCardModel.get(
+          'isUnlockablePrismaticWithAchievement',
+        ),
+        isUnlockablePrismaticWithSpiritOrbs: this._selectedCardModel.get(
+          'isUnlockablePrismaticWithSpiritOrbs',
+        ),
         isUnlockableWithSpiritOrbs: this._selectedCardModel.get('isUnlockableWithSpiritOrbs'),
         cardSetName: cardSetData.name,
       });
@@ -242,7 +270,9 @@ var CraftingCompositeView = Backbone.Marionette.CompositeView.extend({
    * Cancels out of any crafting sub-view and returns to the instructional view.
    */
   onCraftingCancel: function () {
-    audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_cardburn.audio, CONFIG.SELECT_SFX_PRIORITY);
+    audio_engine
+      .current()
+      .play_effect_for_interaction(RSX.sfx_ui_cardburn.audio, CONFIG.SELECT_SFX_PRIORITY);
     this.deselectCard();
   },
 
@@ -257,32 +287,50 @@ var CraftingCompositeView = Backbone.Marionette.CompositeView.extend({
     var inventoryCount = selectedCardModel.get('inventoryCount');
 
     var confirmationMessage = i18next.t('collection.confirm_card_crafting_message', {
-      card_name: (SDK.Cards.getIsPrismaticCardId(sdkCard.getId()) ? 'Prismatic ' : '') + selectedCardModel.get('name'),
+      card_name:
+        (SDK.Cards.getIsPrismaticCardId(sdkCard.getId()) ? 'Prismatic ' : '') +
+        selectedCardModel.get('name'),
       interpolation: { escapeValue: false },
     });
-    NavigationManager.getInstance().showDialogForConfirmation(confirmationMessage).then(function () {
-      NavigationManager.getInstance().showDialogView(new ActivityDialogItemView());
-      InventoryManager.getInstance().craftCard(cardId)
-        .then(function (response) {
-          // set the new inventory count ... dont wait for firebase
-          selectedCardModel.set({ inventoryCount: inventoryCount + 1 });
+    NavigationManager.getInstance()
+      .showDialogForConfirmation(confirmationMessage)
+      .then(
+        function () {
+          NavigationManager.getInstance().showDialogView(new ActivityDialogItemView());
+          InventoryManager.getInstance()
+            .craftCard(cardId)
+            .then(
+              function (response) {
+                // set the new inventory count ... dont wait for firebase
+                selectedCardModel.set({ inventoryCount: inventoryCount + 1 });
 
-          // sync wallet data and update crafting state
-          var walletData = response.wallet;
-          var isPrismatic = SDK.Cards.getIsPrismaticCardId(sdkCard.getId());
-          var rarityData = SDK.RarityFactory.rarityForIdentifier(sdkCard.getRarityId());
-          var spiritCost = isPrismatic ? rarityData.spiritCostPrismatic : rarityData.spiritCost;
-          this.model.set(_.extend({}, walletData, {
-            hasEnoughResources: (walletData.spirit_amount >= spiritCost),
-          }));
+                // sync wallet data and update crafting state
+                var walletData = response.wallet;
+                var isPrismatic = SDK.Cards.getIsPrismaticCardId(sdkCard.getId());
+                var rarityData = SDK.RarityFactory.rarityForIdentifier(sdkCard.getRarityId());
+                var spiritCost = isPrismatic
+                  ? rarityData.spiritCostPrismatic
+                  : rarityData.spiritCost;
+                this.model.set(
+                  _.extend({}, walletData, {
+                    hasEnoughResources: walletData.spirit_amount >= spiritCost,
+                  }),
+                );
 
-          // hide dialog
-          NavigationManager.getInstance().destroyDialogView();
-        }.bind(this))
-        .catch(function (errorMessage) {
-          NavigationManager.getInstance().showDialogViewByClass(ErrorDialogItemView, { title: 'Oops... there was a problem crafting your card.', message: errorMessage });
-        }.bind(this));
-    }.bind(this));
+                // hide dialog
+                NavigationManager.getInstance().destroyDialogView();
+              }.bind(this),
+            )
+            .catch(
+              function (errorMessage) {
+                NavigationManager.getInstance().showDialogViewByClass(ErrorDialogItemView, {
+                  title: 'Oops... there was a problem crafting your card.',
+                  message: errorMessage,
+                });
+              }.bind(this),
+            );
+        }.bind(this),
+      );
   },
 
   /**
@@ -295,68 +343,100 @@ var CraftingCompositeView = Backbone.Marionette.CompositeView.extend({
     var sdkCard = selectedCardModel.get('card');
     var inventoryCount = selectedCardModel.get('inventoryCount');
     var confirmationMessage = i18next.t('collection.confirm_card_disenchanting_message', {
-      card_name: (SDK.Cards.getIsPrismaticCardId(sdkCard.getId()) ? 'Prismatic ' : '') + selectedCardModel.get('name'),
+      card_name:
+        (SDK.Cards.getIsPrismaticCardId(sdkCard.getId()) ? 'Prismatic ' : '') +
+        selectedCardModel.get('name'),
       interpolation: { escapeValue: false },
     });
-    NavigationManager.getInstance().showDialogForConfirmation(confirmationMessage).then(function () {
-      NavigationManager.getInstance().showDialogView(new ActivityDialogItemView());
-      InventoryManager.getInstance().disenchantCards([cardId])
-        .then(function (response) {
-          // set the new inventory count and dont wait for firebase
-          selectedCardModel.set('inventoryCount', inventoryCount - 1);
+    NavigationManager.getInstance()
+      .showDialogForConfirmation(confirmationMessage)
+      .then(
+        function () {
+          NavigationManager.getInstance().showDialogView(new ActivityDialogItemView());
+          InventoryManager.getInstance()
+            .disenchantCards([cardId])
+            .then(
+              function (response) {
+                // set the new inventory count and dont wait for firebase
+                selectedCardModel.set('inventoryCount', inventoryCount - 1);
 
-          // sync wallet data and update crafting state
-          var walletData = response.wallet;
-          var isPrismatic = SDK.Cards.getIsPrismaticCardId(sdkCard.getId());
-          var rarityData = SDK.RarityFactory.rarityForIdentifier(sdkCard.getRarityId());
-          var spiritCost = isPrismatic ? rarityData.spiritCostPrismatic : rarityData.spiritCost;
-          this.model.set(_.extend({}, walletData, {
-            hasEnoughResources: (walletData.spirit_amount >= spiritCost),
-          }));
+                // sync wallet data and update crafting state
+                var walletData = response.wallet;
+                var isPrismatic = SDK.Cards.getIsPrismaticCardId(sdkCard.getId());
+                var rarityData = SDK.RarityFactory.rarityForIdentifier(sdkCard.getRarityId());
+                var spiritCost = isPrismatic
+                  ? rarityData.spiritCostPrismatic
+                  : rarityData.spiritCost;
+                this.model.set(
+                  _.extend({}, walletData, {
+                    hasEnoughResources: walletData.spirit_amount >= spiritCost,
+                  }),
+                );
 
-          // hide dialog
-          NavigationManager.getInstance().destroyDialogView();
+                // hide dialog
+                NavigationManager.getInstance().destroyDialogView();
 
-          // show rewards
-          this.showRewardsDialogWithData(response.rewards);
-        }.bind(this))
-        .catch(function (errorMessage) {
-          NavigationManager.getInstance().showDialogViewByClass(ErrorDialogItemView, { title: 'Oops... there was a problem disenchanting your cards.', message: errorMessage });
-        }.bind(this));
-    }.bind(this));
+                // show rewards
+                this.showRewardsDialogWithData(response.rewards);
+              }.bind(this),
+            )
+            .catch(
+              function (errorMessage) {
+                NavigationManager.getInstance().showDialogViewByClass(ErrorDialogItemView, {
+                  title: 'Oops... there was a problem disenchanting your cards.',
+                  message: errorMessage,
+                });
+              }.bind(this),
+            );
+        }.bind(this),
+      );
   },
 
   /**
    * Disenchants all cards in inventory that are craftable and have more than CONFIG.MAX_DECK_DUPLICATES copies.
    */
   onCraftingDisenchantAll: function () {
-    NavigationManager.getInstance().showDialogForConfirmation(i18next.t('collection.confirm_card_disenchant_all_message')).then(function () {
-      NavigationManager.getInstance().showDialogView(new ActivityDialogItemView());
+    NavigationManager.getInstance()
+      .showDialogForConfirmation(i18next.t('collection.confirm_card_disenchant_all_message'))
+      .then(
+        function () {
+          NavigationManager.getInstance().showDialogView(new ActivityDialogItemView());
 
-      // super poor-man's solution here:
-      InventoryManager.getInstance().cardsCollection.once('change', function () {
-        // when we get the new inventory data from Firebase, destroy dialog...
-        NavigationManager.getInstance().destroyDialogView();
-      });
+          // super poor-man's solution here:
+          InventoryManager.getInstance().cardsCollection.once('change', function () {
+            // when we get the new inventory data from Firebase, destroy dialog...
+            NavigationManager.getInstance().destroyDialogView();
+          });
 
-      InventoryManager.getInstance().disenchantDuplicateCards()
-        .then(function (response) {
-          // sync local wallet data copy and don't wait for firebase
-          this.model.set(response.wallet);
+          InventoryManager.getInstance()
+            .disenchantDuplicateCards()
+            .then(
+              function (response) {
+                // sync local wallet data copy and don't wait for firebase
+                this.model.set(response.wallet);
 
-          // poor man's way of removing card from sidebar
-          this.onCraftingCancel();
+                // poor man's way of removing card from sidebar
+                this.onCraftingCancel();
 
-          // show rewards
-          this.showRewardsDialogWithData(response.rewards);
+                // show rewards
+                this.showRewardsDialogWithData(response.rewards);
 
-          // fade out the dis-enchant all area
-          this.ui.$disenchantAllContainer.fadeOut();
-        }.bind(this))
-        .catch(function (errorMessage) {
-          NavigationManager.getInstance().showDialogView(new ErrorDialogItemView({ title: 'Oops... there was a problem disenchanting your cards.', message: errorMessage }));
-        }.bind(this));
-    }.bind(this));
+                // fade out the dis-enchant all area
+                this.ui.$disenchantAllContainer.fadeOut();
+              }.bind(this),
+            )
+            .catch(
+              function (errorMessage) {
+                NavigationManager.getInstance().showDialogView(
+                  new ErrorDialogItemView({
+                    title: 'Oops... there was a problem disenchanting your cards.',
+                    message: errorMessage,
+                  }),
+                );
+              }.bind(this),
+            );
+        }.bind(this),
+      );
   },
 
   onSkinUnlock: function () {
@@ -365,9 +445,10 @@ var CraftingCompositeView = Backbone.Marionette.CompositeView.extend({
     if (InventoryManager.getInstance().getCanPurchaseCosmeticById(skinId)) {
       // buy skin
       var productData = SDK.CosmeticsFactory.cosmeticProductDataForIdentifier(skinId);
-      NavigationManager.getInstance().showDialogForConfirmPurchase(productData)
+      NavigationManager.getInstance()
+        .showDialogForConfirmPurchase(productData)
         .catch(function () {
-        // do nothing on cancel
+          // do nothing on cancel
         });
     }
   },
@@ -387,15 +468,21 @@ var CraftingCompositeView = Backbone.Marionette.CompositeView.extend({
     var memo = { spirit_gained: 0 };
 
     // reduce the model rewards to a single aggregate object
-    var modelRewards = _.reduce(modelRewards, function (memo, reward) {
-      // aggregate spirit
-      memo.spirit_gained += reward.spirit_gained;
+    var modelRewards = _.reduce(
+      modelRewards,
+      function (memo, reward) {
+        // aggregate spirit
+        memo.spirit_gained += reward.spirit_gained;
 
-      return memo;
-    }, memo);
+        return memo;
+      },
+      memo,
+    );
 
     // show rewards dialog
-    NavigationManager.getInstance().showDialogView(new CraftingRewardsDialogItemView({ model: new Backbone.Model(modelRewards) }));
+    NavigationManager.getInstance().showDialogView(
+      new CraftingRewardsDialogItemView({ model: new Backbone.Model(modelRewards) }),
+    );
   },
 
   /* DRAG AND DROP */
@@ -407,7 +494,6 @@ var CraftingCompositeView = Backbone.Marionette.CompositeView.extend({
       $draggable.trigger('click');
     }
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

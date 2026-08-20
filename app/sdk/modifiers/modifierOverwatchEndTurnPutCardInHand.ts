@@ -16,7 +16,9 @@ class ModifierOverwatchEndTurnPutCardInHand extends ModifierOverwatchEndTurn {
   static type = 'ModifierOverwatchEndTurnPutCardInHand';
 
   static createContextObject(numCards, options) {
-    if (numCards == null) { numCards = 0; }
+    if (numCards == null) {
+      numCards = 0;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.numCards = numCards;
     return contextObject;
@@ -25,8 +27,14 @@ class ModifierOverwatchEndTurnPutCardInHand extends ModifierOverwatchEndTurn {
   onOverwatch(action) {
     return (() => {
       const result = [];
-      for (let i = 0, end = this.numCards, asc = end >= 0; asc ? i < end : i > end; asc ? i++ : i--) {
-        var a = new PutCardInHandAction(this.getGameSession(), this.getCard().getOwnerId(), { id: this.getCard().getId() });
+      for (
+        let i = 0, end = this.numCards, asc = end >= 0;
+        asc ? i < end : i > end;
+        asc ? i++ : i--
+      ) {
+        var a = new PutCardInHandAction(this.getGameSession(), this.getCard().getOwnerId(), {
+          id: this.getCard().getId(),
+        });
         result.push(this.getGameSession().executeAction(a));
       }
       return result;

@@ -13,7 +13,10 @@ import fs from 'node:fs';
 for (const file of process.argv.slice(2)) {
   let src = fs.readFileSync(file, 'utf8');
   const classMatch = src.match(/class (\w+) extends/);
-  if (!classMatch) { console.error(`no class in ${file}`); continue; }
+  if (!classMatch) {
+    console.error(`no class in ${file}`);
+    continue;
+  }
   const className = classMatch[1];
 
   // pattern 1: @.prop or @prop inside super(...) args
@@ -27,11 +30,19 @@ for (const file of process.argv.slice(2)) {
     /^(\s*)constructor\s*:\s*\(([^)]*)\)\s*->\n((?:.*\n)*?)(\s*)(super\([^\n]*\))/m,
     (m, ind, params, between, sind, superCall) => {
       const names = [];
-      const newParams = params.split(',').map((p) => {
-        const t = p.trim();
-        if (t.startsWith('@')) { const n = t.slice(1); names.push(n); return n; }
-        return t;
-      }).filter((p) => p !== '').join(', ');
+      const newParams = params
+        .split(',')
+        .map((p) => {
+          const t = p.trim();
+          if (t.startsWith('@')) {
+            const n = t.slice(1);
+            names.push(n);
+            return n;
+          }
+          return t;
+        })
+        .filter((p) => p !== '')
+        .join(', ');
       if (names.length === 0) return m;
       const assigns = names.map((n) => `${sind}@${n} = ${n}`).join('\n');
       return `${ind}constructor: (${newParams}) ->\n${between}${sind}${superCall}\n${assigns}`;

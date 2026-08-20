@@ -34,11 +34,19 @@ class ModifierOpeningGambitDamageInFront extends ModifierOpeningGambit {
 
   onOpeningGambit() {
     let playerOffset = 0;
-    if (this.getCard().isOwnedByPlayer1()) { playerOffset = 1; } else { playerOffset = -1; }
-    const offsetPosition = { x: this.getCard().getPosition().x + playerOffset, y: this.getCard().getPosition().y };
+    if (this.getCard().isOwnedByPlayer1()) {
+      playerOffset = 1;
+    } else {
+      playerOffset = -1;
+    }
+    const offsetPosition = {
+      x: this.getCard().getPosition().x + playerOffset,
+      y: this.getCard().getPosition().y,
+    };
     const target = this.getCard().getGameSession().getBoard().getUnitAtPosition(offsetPosition);
 
-    if ((target != null) && !target.getIsGeneral()) { // if there is a unit in front of this one, then damage it
+    if (target != null && !target.getIsGeneral()) {
+      // if there is a unit in front of this one, then damage it
       const damageAction = new DamageAction(this.getGameSession());
       damageAction.setOwnerId(this.getCard().getOwnerId());
       damageAction.setTarget(target);

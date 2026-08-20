@@ -95,7 +95,10 @@ class CardFactory_ShimzarSet_Neutral {
       card.maxHP = 1;
       card.manaCost = 1;
       card.rarityId = Rarity.TokenUnit;
-      card.setInherentModifiersContextObjects([ModifierDyingWishDrawRandomBattlePet.createContextObject(), ModifierBattlePet.createContextObject(0)]);
+      card.setInherentModifiersContextObjects([
+        ModifierDyingWishDrawRandomBattlePet.createContextObject(),
+        ModifierBattlePet.createContextObject(0),
+      ]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
       card.addKeywordClassToInclude(ModifierToken);
     }
@@ -131,7 +134,10 @@ class CardFactory_ShimzarSet_Neutral {
       card.maxHP = 3;
       card.manaCost = 1;
       card.rarityId = Rarity.TokenUnit;
-      card.setInherentModifiersContextObjects([ModifierBattlePet.createContextObject(), ModifierFlying.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierBattlePet.createContextObject(),
+        ModifierFlying.createContextObject(),
+      ]);
       card.addKeywordClassToInclude(ModifierToken);
     }
 
@@ -166,7 +172,10 @@ class CardFactory_ShimzarSet_Neutral {
       card.maxHP = 5;
       card.manaCost = 1;
       card.rarityId = Rarity.TokenUnit;
-      card.setInherentModifiersContextObjects([ModifierBattlePet.createContextObject(), ModifierTranscendance.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierBattlePet.createContextObject(),
+        ModifierTranscendance.createContextObject(),
+      ]);
       card.addKeywordClassToInclude(ModifierToken);
     }
 
@@ -266,7 +275,10 @@ class CardFactory_ShimzarSet_Neutral {
       card.maxHP = 4;
       card.manaCost = 1;
       card.rarityId = Rarity.TokenUnit;
-      card.setInherentModifiersContextObjects([ModifierBattlePet.createContextObject(), ModifierCannotMove.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierBattlePet.createContextObject(),
+        ModifierCannotMove.createContextObject(),
+      ]);
       card.addKeywordClassToInclude(ModifierToken);
     }
 
@@ -301,7 +313,11 @@ class CardFactory_ShimzarSet_Neutral {
       card.maxHP = 3;
       card.manaCost = 3;
       card.rarityId = Rarity.Rare;
-      card.setInherentModifiersContextObjects([ModifierBattlePet.createContextObject(), ModifierDoubleDamageToGenerals.createContextObject(), ModifierRanged.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierBattlePet.createContextObject(),
+        ModifierDoubleDamageToGenerals.createContextObject(),
+        ModifierRanged.createContextObject(),
+      ]);
     }
 
     if (identifier === Cards.Neutral.Hydrax) {
@@ -333,7 +349,9 @@ class CardFactory_ShimzarSet_Neutral {
       card.maxHP = 4;
       card.manaCost = 3;
       card.rarityId = Rarity.Legendary;
-      card.setInherentModifiersContextObjects([ModifierFriendlyDeathWatchForBattlePetDrawCard.createContextObject(1)]);
+      card.setInherentModifiersContextObjects([
+        ModifierFriendlyDeathWatchForBattlePetDrawCard.createContextObject(1),
+      ]);
     }
 
     if (identifier === Cards.Neutral.Koi) {
@@ -366,7 +384,10 @@ class CardFactory_ShimzarSet_Neutral {
       card.maxHP = 1;
       card.manaCost = 1;
       card.rarityId = Rarity.Common;
-      card.setInherentModifiersContextObjects([ModifierBattlePet.createContextObject(), ModifierImmuneToDamageByGeneral.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierBattlePet.createContextObject(),
+        ModifierImmuneToDamageByGeneral.createContextObject(),
+      ]);
     }
 
     if (identifier === Cards.Neutral.Beastmaster) {
@@ -398,7 +419,10 @@ class CardFactory_ShimzarSet_Neutral {
       card.maxHP = 5;
       card.manaCost = 5;
       card.rarityId = Rarity.Rare;
-      card.setInherentModifiersContextObjects([ModifierFrenzy.createContextObject(), ModifierTranscendance.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierFrenzy.createContextObject(),
+        ModifierTranscendance.createContextObject(),
+      ]);
     }
 
     if (identifier === Cards.Neutral.Silverbeak) {
@@ -460,7 +484,9 @@ class CardFactory_ShimzarSet_Neutral {
       card.maxHP = 2;
       card.manaCost = 3;
       card.rarityId = Rarity.Common;
-      card.setInherentModifiersContextObjects([ModifierOpeningGambitDrawRandomBattlePet.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierOpeningGambitDrawRandomBattlePet.createContextObject(),
+      ]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
     }
 
@@ -493,7 +519,9 @@ class CardFactory_ShimzarSet_Neutral {
       card.maxHP = 3;
       card.manaCost = 4;
       card.rarityId = Rarity.Common;
-      card.setInherentModifiersContextObjects([ModifierDyingWishDamageNearbyEnemies.createContextObject(3)]);
+      card.setInherentModifiersContextObjects([
+        ModifierDyingWishDamageNearbyEnemies.createContextObject(3),
+      ]);
     }
 
     if (identifier === Cards.Neutral.Soboro) {
@@ -525,7 +553,9 @@ class CardFactory_ShimzarSet_Neutral {
       card.maxHP = 4;
       card.manaCost = 3;
       card.rarityId = Rarity.Epic;
-      card.setInherentModifiersContextObjects([ModifierDealDamageWatchKillNeutralTarget.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierDealDamageWatchKillNeutralTarget.createContextObject(),
+      ]);
     }
 
     if (identifier === Cards.Neutral.Zukong) {
@@ -557,7 +587,13 @@ class CardFactory_ShimzarSet_Neutral {
       card.maxHP = 4;
       card.manaCost = 3;
       card.setInherentModifiersContextObjects([
-        Modifier.createContextObjectWithAuraForAllAllies([ModifierTamedBattlePet.createContextObject()], [Races.BattlePet], null, null, 'You control your Battle Pets'),
+        Modifier.createContextObjectWithAuraForAllAllies(
+          [ModifierTamedBattlePet.createContextObject()],
+          [Races.BattlePet],
+          null,
+          null,
+          'You control your Battle Pets',
+        ),
       ]);
       card.rarityId = Rarity.Legendary;
     }
@@ -591,7 +627,10 @@ class CardFactory_ShimzarSet_Neutral {
       card.atk = 3;
       card.maxHP = 7;
       card.manaCost = 5;
-      card.setInherentModifiersContextObjects([ModifierBattlePet.createContextObject(), ModifierTakeDamageWatchSpawnRandomBattlePet.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierBattlePet.createContextObject(),
+        ModifierTakeDamageWatchSpawnRandomBattlePet.createContextObject(),
+      ]);
       card.rarityId = Rarity.Legendary;
       card.addKeywordClassToInclude(ModifierTokenCreator);
     }
@@ -736,7 +775,15 @@ class CardFactory_ShimzarSet_Neutral {
       card.maxHP = 5;
       card.manaCost = 5;
       card.rarityId = Rarity.Legendary;
-      card.setInherentModifiersContextObjects([ModifierProvoke.createContextObject(), ModifierInquisitorKron.createContextObject({ id: Cards.Neutral.Prisoner1 }, '2/2 Prisoner with a random ability', 1, CONFIG.PATTERN_3x3)]);
+      card.setInherentModifiersContextObjects([
+        ModifierProvoke.createContextObject(),
+        ModifierInquisitorKron.createContextObject(
+          { id: Cards.Neutral.Prisoner1 },
+          '2/2 Prisoner with a random ability',
+          1,
+          CONFIG.PATTERN_3x3,
+        ),
+      ]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
     }
 
@@ -791,7 +838,6 @@ class CardFactory_ShimzarSet_Neutral {
         death: RSX.sfx_f1silverguardsquire_death.audio,
       });
       card.setBaseAnimResource({
-
         breathing: RSX.neutralTribalMelee2Breathing.name,
         idle: RSX.neutralTribalMelee2Idle.name,
         walk: RSX.neutralTribalMelee2Run.name,
@@ -940,7 +986,9 @@ class CardFactory_ShimzarSet_Neutral {
       card.maxHP = 1;
       card.manaCost = 4;
       card.rarityId = Rarity.Epic;
-      card.setInherentModifiersContextObjects([ModifierOpeningGambitBuffSelfByBattlePetsHandStats.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierOpeningGambitBuffSelfByBattlePetsHandStats.createContextObject(),
+      ]);
     }
 
     if (identifier === Cards.Neutral.Oni) {
@@ -974,7 +1022,10 @@ class CardFactory_ShimzarSet_Neutral {
       card.maxHP = 1;
       card.manaCost = 1;
       card.rarityId = Rarity.TokenUnit;
-      card.setInherentModifiersContextObjects([ModifierBattlePet.createContextObject(), ModifierForcefield.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierBattlePet.createContextObject(),
+        ModifierForcefield.createContextObject(),
+      ]);
       card.addKeywordClassToInclude(ModifierToken);
     }
 

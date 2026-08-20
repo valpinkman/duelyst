@@ -16,7 +16,8 @@ class ModifierDealOrTakeDamageWatchRandomTeleportOther extends ModifierDealOrTak
   declare type: any;
 
   static type = 'ModifierDealOrTakeDamageWatchRandomTeleportOther';
-  static description = 'Whenever an enemy damages or takes damage from this, teleport that enemy to a random location';
+  static description =
+    'Whenever an enemy damages or takes damage from this, teleport that enemy to a random location';
 
   onDealOrTakeDamage(action) {
     let targetToTeleport;
@@ -24,27 +25,38 @@ class ModifierDealOrTakeDamageWatchRandomTeleportOther extends ModifierDealOrTak
 
     // if the target of the action is this unit, the unit is receiving the damage
     if (action.getTarget() === this.getCard()) {
-      targetToTeleport = __guard__(action.getSource(), (x) => x.getAncestorCardOfType(CardType.Unit));
-      if (!targetToTeleport) { // If we couldn't find a unit that dealt the damage, assume the source of damage was spell, in which case teleport the general
-        targetToTeleport = this.getCard().getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
+      targetToTeleport = __guard__(action.getSource(), (x) =>
+        x.getAncestorCardOfType(CardType.Unit),
+      );
+      if (!targetToTeleport) {
+        // If we couldn't find a unit that dealt the damage, assume the source of damage was spell, in which case teleport the general
+        targetToTeleport = this.getCard()
+          .getGameSession()
+          .getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
       }
-    } else if (action.getTarget().getOwnerId() !== this.getCard().getOwnerId()) { // else we are dealing damage
+    } else if (action.getTarget().getOwnerId() !== this.getCard().getOwnerId()) {
+      // else we are dealing damage
       targetToTeleport = action.getTarget();
     }
 
-    if ((targetToTeleport != null) && !_.contains(this._private.cardIndicesTeleported, targetToTeleport.getIndex())) {
+    if (
+      targetToTeleport != null &&
+      !_.contains(this._private.cardIndicesTeleported, targetToTeleport.getIndex())
+    ) {
       this._private.cardIndicesTeleported.push(targetToTeleport.getIndex());
       const randomTeleportAction = new RandomTeleportAction(this.getGameSession());
       randomTeleportAction.setOwnerId(this.getCard().getOwnerId());
       randomTeleportAction.setSource(targetToTeleport);
-      randomTeleportAction.setFXResource(_.union(randomTeleportAction.getFXResource(), this.getFXResource()));
+      randomTeleportAction.setFXResource(
+        _.union(randomTeleportAction.getFXResource(), this.getFXResource()),
+      );
       return this.getGameSession().executeAction(randomTeleportAction);
     }
   }
 
   updateCachedState() {
     super.updateCachedState();
-    return this._private.cardIndicesTeleported.length = 0;
+    return (this._private.cardIndicesTeleported.length = 0);
   }
 
   getPrivateDefaults(gameSession) {
@@ -54,10 +66,11 @@ class ModifierDealOrTakeDamageWatchRandomTeleportOther extends ModifierDealOrTak
     return p;
   }
 }
-ModifierDealOrTakeDamageWatchRandomTeleportOther.prototype.type = 'ModifierDealOrTakeDamageWatchRandomTeleportOther';
+ModifierDealOrTakeDamageWatchRandomTeleportOther.prototype.type =
+  'ModifierDealOrTakeDamageWatchRandomTeleportOther';
 
 module.exports = ModifierDealOrTakeDamageWatchRandomTeleportOther;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

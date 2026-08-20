@@ -22,9 +22,7 @@ const router = express.Router();
 
 router.post('/', function (req, res, next) {
   const user_id = req.user.d.id;
-  const {
-    gift_code,
-  } = req.body;
+  const { gift_code } = req.body;
 
   const result = t.validate(gift_code, validatorTypes.GiftCode);
   if (!result.isValid()) {
@@ -37,11 +35,12 @@ router.post('/', function (req, res, next) {
       .then(function () {
         Logger.module('API').debug(`user ${user_id} redeemed gift code`);
         return res.status(200).json({});
-      }).catch(onType(Errors.NotFoundError, (e) => res.status(400).json(e)))
+      })
+      .catch(onType(Errors.NotFoundError, (e) => res.status(400).json(e)))
       .catch(onType(Errors.BadRequestError, (e) => res.status(400).json(e)))
       .catch((error) => next(error));
 
-  // else assume it's a referral code
+    // else assume it's a referral code
   } else {
     Logger.module('API').debug(`user ${user_id} redeemed referral code ${gift_code}`);
 
@@ -51,7 +50,9 @@ router.post('/', function (req, res, next) {
           throw new Errors.NotFoundError();
         }
         return ReferralsModule.markUserAsReferredByFriend(user_id, referrer_id);
-      }).then(() => res.status(200).json({})).catch(onType(Errors.NotFoundError, (e) => res.status(400).json(e)))
+      })
+      .then(() => res.status(200).json({}))
+      .catch(onType(Errors.NotFoundError, (e) => res.status(400).json(e)))
       .catch(onType(Errors.BadRequestError, (e) => res.status(400).json(e)))
       .catch((error) => next(error));
   }

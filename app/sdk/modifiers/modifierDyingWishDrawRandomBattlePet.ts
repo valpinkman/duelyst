@@ -18,13 +18,23 @@ class ModifierDyingWishDrawRandomBattlePet extends ModifierDyingWish {
 
   onDyingWish() {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
-      const neutralBattlePetCards = this.getGameSession().getCardCaches().getFaction(Factions.Neutral).getRace(Races.BattlePet)
+      const neutralBattlePetCards = this.getGameSession()
+        .getCardCaches()
+        .getFaction(Factions.Neutral)
+        .getRace(Races.BattlePet)
         .getIsToken(true)
         .getIsPrismatic(false)
         .getIsSkinned(false)
         .getCards();
-      const card = neutralBattlePetCards[this.getGameSession().getRandomIntegerForExecution(neutralBattlePetCards.length)];
-      const a = new PutCardInHandAction(this.getGameSession(), this.getCard().getOwnerId(), card.createNewCardData());
+      const card =
+        neutralBattlePetCards[
+          this.getGameSession().getRandomIntegerForExecution(neutralBattlePetCards.length)
+        ];
+      const a = new PutCardInHandAction(
+        this.getGameSession(),
+        this.getCard().getOwnerId(),
+        card.createNewCardData(),
+      );
       return this.getGameSession().executeAction(a);
     }
   }

@@ -74,7 +74,16 @@ class CardFactory_Monthly_M7_Warmasters {
       card.rarityId = Rarity.Common;
       const attackBuffContextObject = Modifier.createContextObjectWithAttributeBuffs(1, 0);
       attackBuffContextObject.appliedName = i18next.t('modifiers.neutral_arrow_whistler_modifier');
-      card.setInherentModifiersContextObjects([ModifierRanged.createContextObject(), Modifier.createContextObjectWithAuraForAllAllies([attackBuffContextObject], null, null, [ModifierRanged.type], 'Your other minions with Ranged have +1 Attack')]);
+      card.setInherentModifiersContextObjects([
+        ModifierRanged.createContextObject(),
+        Modifier.createContextObjectWithAuraForAllAllies(
+          [attackBuffContextObject],
+          null,
+          null,
+          [ModifierRanged.type],
+          'Your other minions with Ranged have +1 Attack',
+        ),
+      ]);
     }
 
     if (identifier === Cards.Neutral.GoldenJusticar) {
@@ -111,8 +120,19 @@ class CardFactory_Monthly_M7_Warmasters {
       const speedBuffContextObject = Modifier.createContextObjectOnBoard();
       speedBuffContextObject.attributeBuffs = { speed: 2 };
       speedBuffContextObject.appliedName = i18next.t('modifiers.neutral_golden_justicar_modifier');
-      speedBuffContextObject.appliedDescription = i18next.t('modifiers.neutral_golden_justicar_modifier_2');
-      card.setInherentModifiersContextObjects([ModifierProvoke.createContextObject(), Modifier.createContextObjectWithAuraForAllAllies([speedBuffContextObject], null, null, [ModifierProvoke.type], 'Your other minions with Provoke can move two additional spaces')]);
+      speedBuffContextObject.appliedDescription = i18next.t(
+        'modifiers.neutral_golden_justicar_modifier_2',
+      );
+      card.setInherentModifiersContextObjects([
+        ModifierProvoke.createContextObject(),
+        Modifier.createContextObjectWithAuraForAllAllies(
+          [speedBuffContextObject],
+          null,
+          null,
+          [ModifierProvoke.type],
+          'Your other minions with Provoke can move two additional spaces',
+        ),
+      ]);
     }
 
     if (identifier === Cards.Neutral.Skywing) {
@@ -148,7 +168,18 @@ class CardFactory_Monthly_M7_Warmasters {
       card.rarityId = Rarity.Rare;
       const costChangeContextObject = ModifierManaCostChange.createContextObject(-1);
       costChangeContextObject.appliedName = i18next.t('modifiers.neutral_skywing_modifier');
-      const handAura = Modifier.createContextObjectWithAura([costChangeContextObject], false, true, false, false, 1, null, null, [ModifierFlying.type], 'Your other minions with Flying cost 1 less');
+      const handAura = Modifier.createContextObjectWithAura(
+        [costChangeContextObject],
+        false,
+        true,
+        false,
+        false,
+        1,
+        null,
+        null,
+        [ModifierFlying.type],
+        'Your other minions with Flying cost 1 less',
+      );
       handAura.auraIncludeHand = true;
       card.setInherentModifiersContextObjects([ModifierFlying.createContextObject(), handAura]);
     }

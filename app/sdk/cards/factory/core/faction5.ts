@@ -86,8 +86,9 @@ class CardFactory_CoreSet_Faction5 {
    * @returns {Card}
    */
   static cardForIdentifier(identifier, gameSession) {
-    let attackBuffContextObject; let customContextObject; let
-      statContextObject;
+    let attackBuffContextObject;
+    let customContextObject;
+    let statContextObject;
     let card = null;
 
     if (identifier === Cards.Faction5.General) {
@@ -135,7 +136,7 @@ class CardFactory_CoreSet_Faction5 {
 
     if (identifier === Cards.Faction5.AltGeneral) {
       card = new Unit(gameSession);
-      if ((process.env.ALL_CARDS_AVAILABLE == null)) {
+      if (process.env.ALL_CARDS_AVAILABLE == null) {
         card.setIsUnlockableBasic(true);
       }
       card.setIsGeneral(true);
@@ -182,7 +183,7 @@ class CardFactory_CoreSet_Faction5 {
     if (identifier === Cards.Faction5.ThirdGeneral) {
       card = new Unit(gameSession);
       card.setIsGeneral(true);
-      if ((process.env.ALL_CARDS_AVAILABLE == null)) {
+      if (process.env.ALL_CARDS_AVAILABLE == null) {
         card.setIsUnlockableWithAchievement(true);
         card.setIsUnlockedWithAchievementId(WartechGeneralFaction5Achievement.id);
       }
@@ -355,7 +356,10 @@ class CardFactory_CoreSet_Faction5 {
       card.maxHP = 4;
       card.manaCost = 6;
       card.rarityId = Rarity.Epic;
-      card.setInherentModifiersContextObjects([ModifierFrenzy.createContextObject(), ModifierFirstBlood.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierFrenzy.createContextObject(),
+        ModifierFirstBlood.createContextObject(),
+      ]);
     }
 
     if (identifier === Cards.Faction5.Phalanxar) {
@@ -418,7 +422,10 @@ class CardFactory_CoreSet_Faction5 {
       card.atk = 5;
       card.maxHP = 4;
       card.manaCost = 4;
-      card.setInherentModifiersContextObjects([ModifierOpeningGambitDamageMyGeneral.createContextObject(4), ModifierFirstBlood.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierOpeningGambitDamageMyGeneral.createContextObject(4),
+        ModifierFirstBlood.createContextObject(),
+      ]);
       card.rarityId = Rarity.Rare;
     }
 
@@ -451,7 +458,9 @@ class CardFactory_CoreSet_Faction5 {
       card.atk = 11;
       card.maxHP = 11;
       card.manaCost = 7;
-      card.setInherentModifiersContextObjects([ModifierStartTurnWatchDamageRandom.createContextObject(4)]);
+      card.setInherentModifiersContextObjects([
+        ModifierStartTurnWatchDamageRandom.createContextObject(4),
+      ]);
       card.rarityId = Rarity.Rare;
     }
 
@@ -493,7 +502,7 @@ class CardFactory_CoreSet_Faction5 {
     if (identifier === Cards.Faction5.PrimordialGazer) {
       card = new Unit(gameSession);
       card.factionId = Factions.Faction5;
-      if ((process.env.ALL_CARDS_AVAILABLE == null)) {
+      if (process.env.ALL_CARDS_AVAILABLE == null) {
         card.setIsUnlockableBasic(true);
       }
       card.name = i18next.t('cards.faction_5_unit_primordial_gazer_name');
@@ -530,9 +539,7 @@ class CardFactory_CoreSet_Faction5 {
         {
           id: Cards.Spell.ApplyModifiers,
           spellFilterType: SpellFilterType.AllyDirect,
-          targetModifiersContextObjects: [
-            statContextObject,
-          ],
+          targetModifiersContextObjects: [statContextObject],
           _private: {
             followupSourcePattern: CONFIG.PATTERN_3x3,
           },
@@ -670,7 +677,10 @@ class CardFactory_CoreSet_Faction5 {
       card.maxHP = 7;
       card.manaCost = 7;
       card.rarityId = Rarity.Legendary;
-      card.setInherentModifiersContextObjects([ModifierRebirth.createContextObject(), ModifierEndTurnWatchSpawnEgg.createContextObject('a Silithar Elder Egg')]);
+      card.setInherentModifiersContextObjects([
+        ModifierRebirth.createContextObject(),
+        ModifierEndTurnWatchSpawnEgg.createContextObject('a Silithar Elder Egg'),
+      ]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
     }
 
@@ -704,7 +714,9 @@ class CardFactory_CoreSet_Faction5 {
       card.maxHP = 5;
       card.manaCost = 5;
       card.rarityId = Rarity.Rare;
-      card.setInherentModifiersContextObjects([ModifierEndTurnWatchDamageAllMinions.createContextObject(1, CONFIG.WHOLE_BOARD_RADIUS)]);
+      card.setInherentModifiersContextObjects([
+        ModifierEndTurnWatchDamageAllMinions.createContextObject(1, CONFIG.WHOLE_BOARD_RADIUS),
+      ]);
     }
 
     if (identifier === Cards.Faction5.MiniMagmar) {
@@ -785,9 +797,7 @@ class CardFactory_CoreSet_Faction5 {
       card.applyToOwnGeneral = true;
       statContextObject = Modifier.createContextObjectWithAttributeBuffs(1);
       statContextObject.appliedName = i18next.t('modifiers.faction_5_spell_overload_1');
-      card.setTargetModifiersContextObjects([
-        statContextObject,
-      ]);
+      card.setTargetModifiersContextObjects([statContextObject]);
       card.setFXResource(['FX.Cards.Spell.Overload']);
       card.setBaseSoundResource({
         apply: RSX.sfx_division_crest_outline_reveal.audio,
@@ -826,7 +836,12 @@ class CardFactory_CoreSet_Faction5 {
       card.manaCost = 1;
       card.spellFilterType = SpellFilterType.None;
       const gibblegupEgg: Record<string, any> = { id: Cards.Faction5.Egg };
-      gibblegupEgg.additionalInherentModifiersContextObjects = [ModifierEgg.createContextObject({ id: Cards.Faction5.Gibblegup }, i18next.t('cards.faction_5_unit_ripper_name'))];
+      gibblegupEgg.additionalInherentModifiersContextObjects = [
+        ModifierEgg.createContextObject(
+          { id: Cards.Faction5.Gibblegup },
+          i18next.t('cards.faction_5_unit_ripper_name'),
+        ),
+      ];
       card.cardDataOrIndexToSpawn = gibblegupEgg;
       card.filterNearGeneral = true;
       card.setFXResource(['FX.Cards.Spell.EggBBS']);
@@ -884,11 +899,14 @@ class CardFactory_CoreSet_Faction5 {
       card.manaCost = 6;
       card.rarityId = Rarity.Epic;
       card.spellFilterType = SpellFilterType.AllyDirect;
-      card.setFollowups([{
-        id: Cards.Spell.CloneSourceEntity,
-      }, {
-        id: Cards.Spell.CloneSourceEntity,
-      }]);
+      card.setFollowups([
+        {
+          id: Cards.Spell.CloneSourceEntity,
+        },
+        {
+          id: Cards.Spell.CloneSourceEntity,
+        },
+      ]);
       card.setFXResource(['FX.Spell.FireTornado', 'FX.Cards.Spell.FractalReplication']);
       card.setBaseSoundResource({
         apply: RSX.sfx_spell_fractalreplication.audio,
@@ -902,7 +920,7 @@ class CardFactory_CoreSet_Faction5 {
     if (identifier === Cards.Spell.DampeningWave) {
       card = new SpellApplyModifiers(gameSession);
       card.factionId = Factions.Faction5;
-      if ((process.env.ALL_CARDS_AVAILABLE == null)) {
+      if (process.env.ALL_CARDS_AVAILABLE == null) {
         card.setIsUnlockableBasic(true);
       }
       card.id = Cards.Spell.DampeningWave;
@@ -931,7 +949,8 @@ class CardFactory_CoreSet_Faction5 {
       card.manaCost = 0;
       card.rarityId = Rarity.Rare;
       card.applyToOwnGeneral = true;
-      const manaModifierContextObject = PlayerModifierFlashReincarnation.createCostChangeContextObject(-2, CardType.Unit);
+      const manaModifierContextObject =
+        PlayerModifierFlashReincarnation.createCostChangeContextObject(-2, CardType.Unit);
       manaModifierContextObject.durationEndTurn = 1;
       card.setTargetModifiersContextObjects([manaModifierContextObject]);
       card.spellFilterType = SpellFilterType.None;
@@ -956,8 +975,13 @@ class CardFactory_CoreSet_Faction5 {
       card.rarityId = Rarity.Common;
       card.spellFilterType = SpellFilterType.AllyDirect;
       attackBuffContextObject = Modifier.createContextObjectWithAttributeBuffs(1, 0);
-      attackBuffContextObject.appliedName = i18next.t('modifiers.faction_5_spell_diretide_frenzy_1');
-      card.setTargetModifiersContextObjects([attackBuffContextObject, ModifierFrenzy.createContextObject()]);
+      attackBuffContextObject.appliedName = i18next.t(
+        'modifiers.faction_5_spell_diretide_frenzy_1',
+      );
+      card.setTargetModifiersContextObjects([
+        attackBuffContextObject,
+        ModifierFrenzy.createContextObject(),
+      ]);
       card.setFXResource(['FX.Cards.Spell.DiretideFrenzy']);
       card.setBaseSoundResource({
         apply: RSX.sfx_spell_diretidefrenzy.audio,
@@ -993,7 +1017,7 @@ class CardFactory_CoreSet_Faction5 {
     if (identifier === Cards.Spell.DanceOfDreams) {
       card = new SpellApplyPlayerModifiers(gameSession);
       card.factionId = Factions.Faction5;
-      if ((process.env.ALL_CARDS_AVAILABLE == null)) {
+      if (process.env.ALL_CARDS_AVAILABLE == null) {
         card.setIsUnlockableBasic(true);
       }
       card.id = Cards.Spell.DanceOfDreams;
@@ -1025,9 +1049,7 @@ class CardFactory_CoreSet_Faction5 {
       card.spellFilterType = SpellFilterType.AllyDirect;
       statContextObject = Modifier.createContextObjectWithAttributeBuffs(2, 2);
       statContextObject.appliedName = i18next.t('modifiers.faction_5_spell_greater_fortitude_1');
-      card.setTargetModifiersContextObjects([
-        statContextObject,
-      ]);
+      card.setTargetModifiersContextObjects([statContextObject]);
       card.setFXResource(['FX.Cards.Spell.GreaterFortitude']);
       card.setBaseSoundResource({
         apply: RSX.sfx_spell_flashreincarnation.audio,
@@ -1072,7 +1094,9 @@ class CardFactory_CoreSet_Faction5 {
       card.spellFilterType = SpellFilterType.None;
       customContextObject = Modifier.createContextObjectWithRebasedAttributeBuffs(10, 10);
       customContextObject.appliedName = i18next.t('cards.faction_5_spell_bounded_lifeforce_name');
-      customContextObject.appliedDescription = i18next.t('modifiers.faction_5_spell_bounded_lifeforce_1');
+      customContextObject.appliedDescription = i18next.t(
+        'modifiers.faction_5_spell_bounded_lifeforce_1',
+      );
       customContextObject.isRemovable = false;
       card.setTargetModifiersContextObjects([customContextObject]);
       card.setFXResource(['FX.Cards.Spell.BoundedLifeforce']);
@@ -1133,7 +1157,7 @@ class CardFactory_CoreSet_Faction5 {
     if (identifier === Cards.Spell.PlasmaStorm) {
       card = new SpellLavastorm(gameSession);
       card.factionId = Factions.Faction5;
-      if ((process.env.ALL_CARDS_AVAILABLE == null)) {
+      if (process.env.ALL_CARDS_AVAILABLE == null) {
         card.setIsUnlockableBasic(true);
       }
       card.id = Cards.Spell.PlasmaStorm;
@@ -1239,7 +1263,9 @@ class CardFactory_CoreSet_Faction5 {
       card.setAffectPattern(CONFIG.PATTERN_3x3_INCLUDING_CENTER);
       card.spellFilterType = SpellFilterType.None;
       attackBuffContextObject = Modifier.createContextObjectWithAttributeBuffs(2);
-      attackBuffContextObject.appliedName = i18next.t('modifiers.faction_5_spell_kinetic_equlibrium_1');
+      attackBuffContextObject.appliedName = i18next.t(
+        'modifiers.faction_5_spell_kinetic_equlibrium_1',
+      );
       card.setTargetModifiersContextObjects([attackBuffContextObject]);
       card.applyToAllies = true;
       card.setFXResource(['FX.Cards.Spell.KineticEquilibrium']);

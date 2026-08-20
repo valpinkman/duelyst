@@ -19,7 +19,14 @@ class ModifierImmuneToAttacksByMinions extends ModifierImmuneToAttacks {
   static description = 'Cannot be attacked by Minions';
 
   getIsActionRelevant(a) {
-    return (this.getCard() != null) && a instanceof AttackAction && a.getIsValid() && !a.getIsImplicit() && (this.getCard() === a.getTarget()) && !__guard__(a.getSource(), (x) => x.getIsGeneral());
+    return (
+      this.getCard() != null &&
+      a instanceof AttackAction &&
+      a.getIsValid() &&
+      !a.getIsImplicit() &&
+      this.getCard() === a.getTarget() &&
+      !__guard__(a.getSource(), (x) => x.getIsGeneral())
+    );
   }
 }
 ModifierImmuneToAttacksByMinions.prototype.type = 'ModifierImmuneToAttacksByMinions';
@@ -27,5 +34,5 @@ ModifierImmuneToAttacksByMinions.prototype.type = 'ModifierImmuneToAttacksByMini
 module.exports = ModifierImmuneToAttacksByMinions;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

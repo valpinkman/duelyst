@@ -14,8 +14,15 @@ class ModifierOpeningGambitDagona extends ModifierOpeningGambit {
 
   onOpeningGambit() {
     // consume original unit at spawn position (remove it from board)
-    if (!(this.getGameSession().getBoard().getCardAtPosition(this.getCard().getPosition()) === this.getCard())) {
-      const originalCardAtPosition = this.getGameSession().getBoard().getCardAtPosition(this.getCard().getPosition());
+    if (
+      !(
+        this.getGameSession().getBoard().getCardAtPosition(this.getCard().getPosition()) ===
+        this.getCard()
+      )
+    ) {
+      const originalCardAtPosition = this.getGameSession()
+        .getBoard()
+        .getCardAtPosition(this.getCard().getPosition());
       const removeOriginalEntityAction = new RemoveAction(this.getGameSession());
       removeOriginalEntityAction.setOwnerId(this.getOwnerId());
       removeOriginalEntityAction.setTarget(originalCardAtPosition);

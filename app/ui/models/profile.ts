@@ -15,10 +15,9 @@ const NotificationsManager = require('app/ui/managers/notifications_manager');
 const Analytics = require('app/common/analytics');
 const Storage = require('app/common/storage');
 const moment = require('moment');
-const CosmeticsLookup = require(('app/sdk/cosmetics/cosmeticsLookup'));
+const CosmeticsLookup = require('app/sdk/cosmetics/cosmeticsLookup');
 
 const Profile = DuelystFirebase.Model.extend({
-
   initialize() {
     Logger.module('UI').log('initialize a Profile model');
     // listen for changes to settings
@@ -42,7 +41,8 @@ const Profile = DuelystFirebase.Model.extend({
 
     this.onSyncOrReady().then(() =>
       // certain event handlers should only happen after first sync
-      this.on('change:ltv', this.onLtvChanged, this));
+      this.on('change:ltv', this.onLtvChanged, this),
+    );
 
     // trigger initial changes
     this.onGameSpeedChange();
@@ -95,13 +95,21 @@ const Profile = DuelystFirebase.Model.extend({
   onSync() {
     // ensure volume isn't super loud
     const masterVolume = parseFloat(this.get('masterVolume'));
-    if (masterVolume > 1.0) { this.set('masterVolume', masterVolume / 100.0); }
+    if (masterVolume > 1.0) {
+      this.set('masterVolume', masterVolume / 100.0);
+    }
     const musicVolume = parseFloat(this.get('musicVolume'));
-    if (musicVolume > 1.0) { this.set('musicVolume', musicVolume / 100.0); }
+    if (musicVolume > 1.0) {
+      this.set('musicVolume', musicVolume / 100.0);
+    }
     const voiceVolume = parseFloat(this.get('voiceVolume'));
-    if (voiceVolume > 1.0) { this.set('voiceVolume', voiceVolume / 100.0); }
+    if (voiceVolume > 1.0) {
+      this.set('voiceVolume', voiceVolume / 100.0);
+    }
     const effectsVolume = parseFloat(this.get('effectsVolume'));
-    if (effectsVolume > 1.0) { return this.set('effectsVolume', effectsVolume / 100.0); }
+    if (effectsVolume > 1.0) {
+      return this.set('effectsVolume', effectsVolume / 100.0);
+    }
   },
 
   onGameSpeedChange() {
@@ -169,15 +177,15 @@ const Profile = DuelystFirebase.Model.extend({
   },
 
   setGameSpeed(val) {
-    return CONFIG.gameSpeed = parseFloat(val);
+    return (CONFIG.gameSpeed = parseFloat(val));
   },
 
   setLightingQuality(val) {
-    return CONFIG.lightingQuality = parseFloat(val);
+    return (CONFIG.lightingQuality = parseFloat(val));
   },
 
   setShadowQuality(val) {
-    return CONFIG.shadowQuality = parseFloat(val);
+    return (CONFIG.shadowQuality = parseFloat(val));
   },
 
   setBoardQuality(val) {
@@ -192,7 +200,7 @@ const Profile = DuelystFirebase.Model.extend({
   },
 
   setBloom(val) {
-    return CONFIG.bloom = parseFloat(val);
+    return (CONFIG.bloom = parseFloat(val));
   },
 
   setAlwaysShowStats(val) {
@@ -219,15 +227,15 @@ const Profile = DuelystFirebase.Model.extend({
   },
 
   setStickyTargeting(val) {
-    return CONFIG.stickyTargeting = val;
+    return (CONFIG.stickyTargeting = val);
   },
 
   setShowInGameTips(val) {
-    return CONFIG.showInGameTips = val;
+    return (CONFIG.showInGameTips = val);
   },
 
   setRazerChromaEnabled(val) {
-    return CONFIG.razerChromaEnabled = window.isDesktop && val;
+    return (CONFIG.razerChromaEnabled = window.isDesktop && val);
   },
 
   setMasterVolume(val) {
@@ -256,14 +264,18 @@ const Profile = DuelystFirebase.Model.extend({
   },
 
   setSelectedScene(scene) {
-    if ((scene != null) && (CONFIG.selectedScene !== scene)) {
+    if (scene != null && CONFIG.selectedScene !== scene) {
       if (scene !== CosmeticsLookup.Scene.Frostfire) {
         this.set('selectedScene', scene);
         Storage.set('selectedScene', scene);
       }
       const lastSelectedScene = CONFIG.selectedScene;
       CONFIG.selectedScene = scene;
-      return EventBus.getInstance().trigger(EVENTS.change_scene, { type: EVENTS.change_scene, from: lastSelectedScene, to: scene });
+      return EventBus.getInstance().trigger(EVENTS.change_scene, {
+        type: EVENTS.change_scene,
+        from: lastSelectedScene,
+        to: scene,
+      });
     }
   },
 
@@ -280,16 +292,20 @@ const Profile = DuelystFirebase.Model.extend({
 
     // Detect first monetization event
     const previousLtv = val.previous('ltv') || 0;
-    if ((previousLtv === 0) && (currentLtv !== 0)) {
+    if (previousLtv === 0 && currentLtv !== 0) {
       // TODO: There are probably better ways to track this now?
-      return Analytics.track('first purchase made', {
-        category: Analytics.EventCategory.FTUE,
-        price: currentLtv,
-      }, {
-        sendUTMData: true,
-        valueKey: 'price',
-        nonInteraction: 1,
-      });
+      return Analytics.track(
+        'first purchase made',
+        {
+          category: Analytics.EventCategory.FTUE,
+          price: currentLtv,
+        },
+        {
+          sendUTMData: true,
+          valueKey: 'price',
+          nonInteraction: 1,
+        },
+      );
     }
   },
 });

@@ -27,7 +27,11 @@ module.exports = new Promise((resolve, reject) => {
 
   suite.add('Construct new session', {
     fn() {
-      UtilsSDK.setupSession(SDK.FactionFactory.starterDeckForFactionLevel(1, 30), SDK.FactionFactory.starterDeckForFactionLevel(2, 30), true);
+      UtilsSDK.setupSession(
+        SDK.FactionFactory.starterDeckForFactionLevel(1, 30),
+        SDK.FactionFactory.starterDeckForFactionLevel(2, 30),
+        true,
+      );
     },
   });
 
@@ -40,14 +44,24 @@ module.exports = new Promise((resolve, reject) => {
       // in order to do this we also need to disable validators
       // because these actions aren't valid explicit player actions
       const player = gameSession.getCurrentPlayer();
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, player.getPlayerId(), player.getDeck().getCardIndexInHandAtIndex(0)));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(
+          gameSession,
+          player.getPlayerId(),
+          player.getDeck().getCardIndexInHandAtIndex(0),
+        ),
+      );
 
       // end turn
       gameSession.executeAction(gameSession.actionEndTurn());
     },
     onCycle(event) {
       // setup session with starter decks and skip mulligan
-      UtilsSDK.setupSession(SDK.FactionFactory.starterDeckForFactionLevel(1, 30), SDK.FactionFactory.starterDeckForFactionLevel(2, 30), true);
+      UtilsSDK.setupSession(
+        SDK.FactionFactory.starterDeckForFactionLevel(1, 30),
+        SDK.FactionFactory.starterDeckForFactionLevel(2, 30),
+        true,
+      );
     },
   });
 
@@ -59,9 +73,21 @@ module.exports = new Promise((resolve, reject) => {
       // in order to do this we also need to disable validators
       // because this action isn't a valid explicit player action
       const player = gameSession.getCurrentPlayer();
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, player.getPlayerId(), { id: SDK.Cards.Spell.AerialRift }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, player.getPlayerId(), { id: SDK.Cards.Neutral.PlanarScout }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, player.getPlayerId(), { id: SDK.Cards.Spell.TrueStrike }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, player.getPlayerId(), {
+          id: SDK.Cards.Spell.AerialRift,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, player.getPlayerId(), {
+          id: SDK.Cards.Neutral.PlanarScout,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, player.getPlayerId(), {
+          id: SDK.Cards.Spell.TrueStrike,
+        }),
+      );
       player.remainingMana = 9;
 
       // play aerial rift from hand index 0 to position 0, 0
@@ -78,7 +104,12 @@ module.exports = new Promise((resolve, reject) => {
     },
     onCycle(event) {
       // setup session with empty decks and skip mulligan and set to developer mode
-      UtilsSDK.setupSession([{ id: SDK.Cards.Faction1.General }], [{ id: SDK.Cards.Faction1.General }], true, true);
+      UtilsSDK.setupSession(
+        [{ id: SDK.Cards.Faction1.General }],
+        [{ id: SDK.Cards.Faction1.General }],
+        true,
+        true,
+      );
     },
   });
 
@@ -94,7 +125,11 @@ module.exports = new Promise((resolve, reject) => {
     },
     onCycle(event) {
       // setup session with starter decks and skip mulligan
-      UtilsSDK.setupSession(SDK.FactionFactory.starterDeckForFactionLevel(1, 30), SDK.FactionFactory.starterDeckForFactionLevel(2, 30), true);
+      UtilsSDK.setupSession(
+        SDK.FactionFactory.starterDeckForFactionLevel(1, 30),
+        SDK.FactionFactory.starterDeckForFactionLevel(2, 30),
+        true,
+      );
     },
   });
 
@@ -119,21 +154,57 @@ module.exports = new Promise((resolve, reject) => {
     },
     onCycle(event) {
       // setup session with starter decks and skip mulligan
-      UtilsSDK.setupSession(SDK.FactionFactory.starterDeckForFactionLevel(1, 30), SDK.FactionFactory.starterDeckForFactionLevel(2, 30), true);
+      UtilsSDK.setupSession(
+        SDK.FactionFactory.starterDeckForFactionLevel(1, 30),
+        SDK.FactionFactory.starterDeckForFactionLevel(2, 30),
+        true,
+      );
 
       const gameSession = SDK.GameSession.getInstance();
       const player1 = gameSession.getPlayer1();
       const player2 = gameSession.getPlayer2();
 
       // add provokers to board
-      UtilsSDK.executeActionWithoutValidation(new SDK.ApplyCardToBoardAction(gameSession, player1.getPlayerId(), 0, 0, { id: SDK.Cards.Faction1.SilverguardKnight }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.ApplyCardToBoardAction(gameSession, player2.getPlayerId(), 0, 1, { id: SDK.Cards.Faction1.SilverguardKnight }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.ApplyCardToBoardAction(gameSession, player1.getPlayerId(), 1, 1, { id: SDK.Cards.Faction1.SilverguardKnight }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.ApplyCardToBoardAction(gameSession, player2.getPlayerId(), 1, 0, { id: SDK.Cards.Faction1.SilverguardKnight }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.ApplyCardToBoardAction(gameSession, player1.getPlayerId(), 2, 0, { id: SDK.Cards.Faction1.SilverguardKnight }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.ApplyCardToBoardAction(gameSession, player2.getPlayerId(), 2, 1, { id: SDK.Cards.Faction1.SilverguardKnight }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.ApplyCardToBoardAction(gameSession, player1.getPlayerId(), 3, 1, { id: SDK.Cards.Faction1.SilverguardKnight }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.ApplyCardToBoardAction(gameSession, player2.getPlayerId(), 3, 0, { id: SDK.Cards.Faction1.SilverguardKnight }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.ApplyCardToBoardAction(gameSession, player1.getPlayerId(), 0, 0, {
+          id: SDK.Cards.Faction1.SilverguardKnight,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.ApplyCardToBoardAction(gameSession, player2.getPlayerId(), 0, 1, {
+          id: SDK.Cards.Faction1.SilverguardKnight,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.ApplyCardToBoardAction(gameSession, player1.getPlayerId(), 1, 1, {
+          id: SDK.Cards.Faction1.SilverguardKnight,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.ApplyCardToBoardAction(gameSession, player2.getPlayerId(), 1, 0, {
+          id: SDK.Cards.Faction1.SilverguardKnight,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.ApplyCardToBoardAction(gameSession, player1.getPlayerId(), 2, 0, {
+          id: SDK.Cards.Faction1.SilverguardKnight,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.ApplyCardToBoardAction(gameSession, player2.getPlayerId(), 2, 1, {
+          id: SDK.Cards.Faction1.SilverguardKnight,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.ApplyCardToBoardAction(gameSession, player1.getPlayerId(), 3, 1, {
+          id: SDK.Cards.Faction1.SilverguardKnight,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.ApplyCardToBoardAction(gameSession, player2.getPlayerId(), 3, 0, {
+          id: SDK.Cards.Faction1.SilverguardKnight,
+        }),
+      );
     },
   });
 

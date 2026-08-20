@@ -37,7 +37,11 @@ class ModifierPortal extends Modifier {
     speedBuffContextObject.attributeBuffsFixed = ['speed'];
     speedBuffContextObject.isHiddenToUI = true;
     speedBuffContextObject.isCloneable = false;
-    return this.getGameSession().applyModifierContextObject(speedBuffContextObject, this.getCard(), this);
+    return this.getGameSession().applyModifierContextObject(
+      speedBuffContextObject,
+      this.getCard(),
+      this,
+    );
   }
 
   stopAttack() {
@@ -47,7 +51,11 @@ class ModifierPortal extends Modifier {
     attackBuffContextObject.attributeBuffsFixed = ['atk'];
     attackBuffContextObject.isHiddenToUI = true;
     attackBuffContextObject.isCloneable = false;
-    return this.getGameSession().applyModifierContextObject(attackBuffContextObject, this.getCard(), this);
+    return this.getGameSession().applyModifierContextObject(
+      attackBuffContextObject,
+      this.getCard(),
+      this,
+    );
   }
 
   // if we ever want to allow this Structure to move, remove the cannot move hidden submodifier

@@ -42,6 +42,8 @@ pnpm test:e2e                                  # Playwright: boots the client an
                                                # (needs: real Firebase in .env, pnpm build, docker compose up)
 pnpm lint                                      # oxlint (shared config in tooling/oxlint-config)
 pnpm lint:fix                                  # oxlint --fix
+pnpm format                                    # oxfmt -- owns JS/TS/JSON/MD/YAML style
+pnpm format:check                              # CI gate; run `pnpm format` if it drifts
 pnpm api | pnpm game | pnpm sp | pnpm worker   # start services (need Redis/Postgres/Firebase env, see docs/QUICKSTART.md)
 docker compose up                              # full local stack (rebuild images after source changes: they are NOT live-mounted)
 ```
@@ -51,31 +53,31 @@ token, service account) — see `docs/QUICKSTART.md`. Building and unit-testing 
 
 ## Repo map (where things are)
 
-| Path | What | Language |
-|---|---|---|
-| `app/sdk/` | Game engine shared by client and server: `gameSession`, actions, modifiers (718), spells (257), cards + `cards/factory/*` (card definitions), challenges, quests… | CoffeeScript (100%) |
-| `app/common/` | `config.js` (mutable global CONFIG), `logger`, `eventbus`, `utils/*` | JS + Coffee |
-| `app/ui/`, `app/view/`, `app/audio/` | Marionette views/managers, Cocos2d layers/nodes/fx, audio | JS (decaffeinated) |
-| `app/application.coffee`, `app/index.coffee` | client boot, router, `window.*` singletons | Coffee |
-| `app/data/` | `resources.js` (RSX asset manifest), `fx.js`, `packages.js` (**generated, gitignored**) | JS |
-| `app/resources/`, `app/original_resources/` | 1.2 GB of art/audio — never touch, never bundle | assets |
-| `app/vendor/` | cocos2d-html5 3.3, jquery-ui, aws-sdk (not npm managed) | JS |
-| `server/` | `api.coffee`/`express.coffee` (API, port 3000), `game.coffee` (8001), `single_player.coffee` (8000), `lib/data_access` (knex), `redis/` (kue, matchmaking), `routes/`, `ai/` (JS), `migrations/` (JS) | mixed |
-| `worker/` | Kue jobs (`worker.coffee` registers them explicitly) | Coffee |
-| `bin/` | entrypoints: `app-module-path` → `coffeescript/register` → `config/config` → main | JS |
-| `config/` | convict schema `config.js` + `{development,staging,production}.json` | JS |
-| `test/` | mocha: `unit/` (sdk, ai, firebase, misc), `integration/`, `rest/` (broken), `perf/` (Benchmark.js) | JS |
-| `vite.config.client.mjs`, `scripts/build/build-client.mjs` | client build: Vite/rolldown bundle (coffee/hbs/glslify plugins, envify defines) + vendor concat, sass, index.html, locales, resource copy | JS |
-| `scripts/generate_packages.js` | **build-critical**: scans `//pragma PKGS:` comments and RSX refs to emit `app/data/packages.js` | JS |
-| `packages/` | vendored forks: `chroma-js` (TS), `warlock`, `backfire`, `Backbone.VirtualCollection` | mixed |
-| `desktop/` | Electron 43 shell: main+preload bundled by Vite, packaged with electron-builder, game client shipped as an unpacked resource | JS |
-| `docs/` | `QUICKSTART.md`, `ARCHITECTURE.md`, `GULP.md`, **`MODERNIZATION_AUDIT.md`** (analysis), **`MODERNIZATION_PLAN.md`** (checklist / resume point) | |
+| Path                                                       | What                                                                                                                                                                                                  | Language            |
+| ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------- |
+| `app/sdk/`                                                 | Game engine shared by client and server: `gameSession`, actions, modifiers (718), spells (257), cards + `cards/factory/*` (card definitions), challenges, quests…                                     | CoffeeScript (100%) |
+| `app/common/`                                              | `config.js` (mutable global CONFIG), `logger`, `eventbus`, `utils/*`                                                                                                                                  | JS + Coffee         |
+| `app/ui/`, `app/view/`, `app/audio/`                       | Marionette views/managers, Cocos2d layers/nodes/fx, audio                                                                                                                                             | JS (decaffeinated)  |
+| `app/application.coffee`, `app/index.coffee`               | client boot, router, `window.*` singletons                                                                                                                                                            | Coffee              |
+| `app/data/`                                                | `resources.js` (RSX asset manifest), `fx.js`, `packages.js` (**generated, gitignored**)                                                                                                               | JS                  |
+| `app/resources/`, `app/original_resources/`                | 1.2 GB of art/audio — never touch, never bundle                                                                                                                                                       | assets              |
+| `app/vendor/`                                              | cocos2d-html5 3.3, jquery-ui, aws-sdk (not npm managed)                                                                                                                                               | JS                  |
+| `server/`                                                  | `api.coffee`/`express.coffee` (API, port 3000), `game.coffee` (8001), `single_player.coffee` (8000), `lib/data_access` (knex), `redis/` (kue, matchmaking), `routes/`, `ai/` (JS), `migrations/` (JS) | mixed               |
+| `worker/`                                                  | Kue jobs (`worker.coffee` registers them explicitly)                                                                                                                                                  | Coffee              |
+| `bin/`                                                     | entrypoints: `app-module-path` → `coffeescript/register` → `config/config` → main                                                                                                                     | JS                  |
+| `config/`                                                  | convict schema `config.js` + `{development,staging,production}.json`                                                                                                                                  | JS                  |
+| `test/`                                                    | mocha: `unit/` (sdk, ai, firebase, misc), `integration/`, `rest/` (broken), `perf/` (Benchmark.js)                                                                                                    | JS                  |
+| `vite.config.client.mjs`, `scripts/build/build-client.mjs` | client build: Vite/rolldown bundle (coffee/hbs/glslify plugins, envify defines) + vendor concat, sass, index.html, locales, resource copy                                                             | JS                  |
+| `scripts/generate_packages.js`                             | **build-critical**: scans `//pragma PKGS:` comments and RSX refs to emit `app/data/packages.js`                                                                                                       | JS                  |
+| `packages/`                                                | vendored forks: `chroma-js` (TS), `warlock`, `backfire`, `Backbone.VirtualCollection`                                                                                                                 | mixed               |
+| `desktop/`                                                 | Electron 43 shell: main+preload bundled by Vite, packaged with electron-builder, game client shipped as an unpacked resource                                                                          | JS                  |
+| `docs/`                                                    | `QUICKSTART.md`, `ARCHITECTURE.md`, `GULP.md`, **`MODERNIZATION_AUDIT.md`** (analysis), **`MODERNIZATION_PLAN.md`** (checklist / resume point)                                                        |                     |
 
 ## Conventions and gotchas that bite
 
 - **TS2304 is a CI gate; the rest of typecheck is not.** No JS linter resolves TypeScript
   identifiers — `no-undef` was off for `.ts` under eslint and oxlint does not cover it either —
-  so TypeScript is the *only* thing that can see an undefined identifier. Sweeping TS2304 to zero found 26 real bugs — missing requires, undeclared
+  so TypeScript is the _only_ thing that can see an undefined identifier. Sweeping TS2304 to zero found 26 real bugs — missing requires, undeclared
   variables, a `clone()` constructing the wrong class. It is kept at zero by
   `pnpm check:undefined-names`, because a codemod regression shipped once while typecheck sat
   unread. **Run it after any codemod.**
@@ -90,11 +92,11 @@ token, service account) — see `docs/QUICKSTART.md`. Building and unit-testing 
   `EventBus`. Unit tests share the `GameSession` singleton within a file: files may run in
   parallel, tests inside a file may not.
 - **Serialization is structural.** `SDKObject` + `fastExtend(this, data)` — instance property
-  layout *is* the wire format (game state, replays). Moving CoffeeScript prototype defaults into
+  layout _is_ the wire format (game state, replays). Moving CoffeeScript prototype defaults into
   instance fields, or renaming properties, silently breaks replays. Add round-trip tests first.
 - **`@type` (static) vs `type:` (prototype) on the same class** — `ModifierFactory`/`CardFactory`
   dispatch on the static, instances carry the prototype value. Keep both when converting.
-- **Card factories** (`app/sdk/cards/factory/**`) are *text-parsed* by `generate_packages.js`;
+- **Card factories** (`app/sdk/cards/factory/**`) are _text-parsed_ by `generate_packages.js`;
   keep the `Cards.X` / `RSX.Y` literal shape or the asset packages break.
 - **CommonJS "export before require" idiom** (`module.exports = X` at the top of managers, class
   defined before requires in `gameSession.coffee`) exists to survive circular requires. It does not
@@ -107,8 +109,12 @@ token, service account) — see `docs/QUICKSTART.md`. Building and unit-testing 
 - **Asset packages are text-parsed** (`scripts/generate_packages.js`) — the build verifies the
   generated key set against `scripts/build/packages-manifest.json` and fails on drift.
   Regenerate deliberately with `--update-packages-manifest`.
-- Style: 2-space indent, LF, single quotes, semicolons in JS (`.editorconfig`,
-  `.oxlintrc.json`). ESLint has many per-directory rule downgrades — don't "fix" them wholesale.
+- Style: 2-space indent, LF, single quotes, semicolons, 100 columns — all of it enforced by
+  **oxfmt** (`.oxfmtrc.json`), which owns JS/TS/JSON/MD/YAML. `.editorconfig` deliberately covers
+  only what oxfmt does not (templates, styles, shaders), so the two cannot disagree.
+- Lint is **oxlint**, config in `tooling/oxlint-config/base.jsonc`. It gates on `correctness`
+  only; every rule that is off or downgraded says why in the config. Don't re-enable the noisy
+  ones wholesale — `no-unused-vars` alone is 6,530 legacy hits.
 
 ## Modernization program
 
@@ -125,6 +131,7 @@ Remotes: `myrepo` = `valpinkman/duelyst` (private, **our** repo; local `moderniz
 tracks its `main`). `origin` = upstream `open-duelyst/duelyst`, read-only — never push there.
 
 How we work on it:
+
 - All work happens on the **`modernization`** branch (or branches stacked on it), **one commit
   per step**, each step leaving `pnpm build` and `pnpm test:unit` green so any step can be
   reverted in isolation. No big-bang rewrites.
@@ -136,7 +143,7 @@ How we work on it:
   modifiers/spells → actions → entities/card → gameSession; server: redis → routes →
   data_access → socket servers, last).
 - Coffee → TS: go through decaffeinate → JS first (that's how `app/ui`, `app/view`, `server/ai`
-  were done), then rename to `.ts` under a *loose* tsconfig; the strict root `tsconfig.json` is
+  were done), then rename to `.ts` under a _loose_ tsconfig; the strict root `tsconfig.json` is
   the destination, not the starting point. Do not hand-rewrite files that a codemod can convert.
 - Tests: vitest only (mocha retired). chai `expect` stays. `test/perf` is a Benchmark.js
   harness, not a suite.
@@ -144,6 +151,7 @@ How we work on it:
   `generate_packages.js` and RSX paths.
 
 Status log (newest first):
+
 - 2026-08-20 — **TS2304 is now a CI gate** (`pnpm check:undefined-names`). I shipped a
   regression to prove why: the state-bag merge codemod removed a `this_obj` declaration in
   `gift_crate.ts` and left one write behind, so the function threw `this_obj is not defined`.
@@ -195,7 +203,7 @@ Status log (newest first):
   `user_rank` table no migration creates, passed a variable to its own initializer, discarded the
   result, and no client calls it (404 now, not 500). Removed a `referral_events` cleanup that was
   dead twice over. **Two corrections to my own earlier claims:** there are no orphaned
-  `referral_events` rows (no such table), and `sourceId` is vestigial across the *whole* currency
+  `referral_events` rows (no such table), and `sourceId` is vestigial across the _whole_ currency
   API rather than recorded-by-one — `user_currency_log` has no source column and `giveUserSpirit`
   never declared the parameter.
 - 2026-08-20 — **TS2554 read individually, 145 → 75; typecheck now 366.** This was the slice
@@ -264,7 +272,7 @@ Status log (newest first):
   `pnpm check:bluebird-orphans`. Lesson repeated: lint can't see this class (no-undef is off for
   TS), unit tests can't either — the e2e suite and booting the services found all four.
 - 2026-08-20 — **knex 0.19 → 3.3.0**, and with it the last of bluebird's `.timeout` (20/20
-  converted, 0 left in server+worker). `/health` pool stats now read tarn *or* generic-pool and
+  converted, 0 left in server+worker). `/health` pool stats now read tarn _or_ generic-pool and
   degrade to nulls rather than throwing. Advisories 90 → 88, and **bluebird is now a direct
   dependency only** — knex was the last package pulling it in, so dropping it is unblocked once
   redis v4 lands. Verified against a real database: migrations, all 6 services, register/login,

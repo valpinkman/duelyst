@@ -20,10 +20,22 @@ class ModifierEnemyTeamMoveWatchSummonEntityBehind extends ModifierEnemyTeamMove
   static modifierName = 'Enemy Team Move Watch Buff Target';
   static description = 'Whenever an enemy minion is moved for any reason, summon %X';
 
-  static createContextObject(cardDataOrIndexToSpawn, spawnDescription, spawnCount, spawnSilently, options) {
-    if (spawnDescription == null) { spawnDescription = ''; }
-    if (spawnCount == null) { spawnCount = 1; }
-    if (spawnSilently == null) { spawnSilently = false; }
+  static createContextObject(
+    cardDataOrIndexToSpawn,
+    spawnDescription,
+    spawnCount,
+    spawnSilently,
+    options,
+  ) {
+    if (spawnDescription == null) {
+      spawnDescription = '';
+    }
+    if (spawnCount == null) {
+      spawnCount = 1;
+    }
+    if (spawnSilently == null) {
+      spawnSilently = false;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.cardDataOrIndexToSpawn = cardDataOrIndexToSpawn;
     contextObject.spawnDescription = spawnDescription;
@@ -53,9 +65,21 @@ class ModifierEnemyTeamMoveWatchSummonEntityBehind extends ModifierEnemyTeamMove
         const ownerId = this.getSpawnOwnerId(action);
         const cardDataOrIndexToSpawn = this.getCardDataOrIndexToSpawn();
         if (this.spawnSilently) {
-          spawnAction = new PlayCardSilentlyAction(this.getGameSession(), ownerId, behindPosition.x, behindPosition.y, cardDataOrIndexToSpawn);
+          spawnAction = new PlayCardSilentlyAction(
+            this.getGameSession(),
+            ownerId,
+            behindPosition.x,
+            behindPosition.y,
+            cardDataOrIndexToSpawn,
+          );
         } else {
-          spawnAction = new PlayCardAction(this.getGameSession(), ownerId, behindPosition.x, behindPosition.y, cardDataOrIndexToSpawn);
+          spawnAction = new PlayCardAction(
+            this.getGameSession(),
+            ownerId,
+            behindPosition.x,
+            behindPosition.y,
+            cardDataOrIndexToSpawn,
+          );
         }
         spawnAction.setSource(this.getCard());
         return this.getGameSession().executeAction(spawnAction);
@@ -80,7 +104,11 @@ class ModifierEnemyTeamMoveWatchSummonEntityBehind extends ModifierEnemyTeamMove
     return this.getCard().getOwnerId();
   }
 }
-ModifierEnemyTeamMoveWatchSummonEntityBehind.prototype.type = 'ModifierEnemyTeamMoveWatchSummonEntityBehind';
-ModifierEnemyTeamMoveWatchSummonEntityBehind.prototype.fxResource = ['FX.Modifiers.ModifierMyTeamMoveWatch', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierEnemyTeamMoveWatchSummonEntityBehind.prototype.type =
+  'ModifierEnemyTeamMoveWatchSummonEntityBehind';
+ModifierEnemyTeamMoveWatchSummonEntityBehind.prototype.fxResource = [
+  'FX.Modifiers.ModifierMyTeamMoveWatch',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 
 module.exports = ModifierEnemyTeamMoveWatchSummonEntityBehind;

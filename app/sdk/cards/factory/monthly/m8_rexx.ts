@@ -110,7 +110,15 @@ class CardFactory_Monthly_M8_Rexx {
       const buffContextObject = Modifier.createContextObjectWithAttributeBuffs(0, 1);
       buffContextObject.appliedName = i18next.t('modifiers.neutral_bastion_modifier');
       card.setInherentModifiersContextObjects([
-        ModifierEndTurnWatchApplyModifiers.createContextObject([buffContextObject], false, true, false, CONFIG.WHOLE_BOARD_RADIUS, false, 'give other friendly minions +1 Health'),
+        ModifierEndTurnWatchApplyModifiers.createContextObject(
+          [buffContextObject],
+          false,
+          true,
+          false,
+          CONFIG.WHOLE_BOARD_RADIUS,
+          false,
+          'give other friendly minions +1 Health',
+        ),
         ModifierPortal.createContextObject(),
       ]);
     }
@@ -147,7 +155,15 @@ class CardFactory_Monthly_M8_Rexx {
       card.maxHP = 1;
       card.manaCost = 3;
       const contextObject = ModifierManaCostChange.createContextObject(-1);
-      card.setInherentModifiersContextObjects([ModifierOpeningGambitApplyModifiersToHand.createContextObjectToTargetOwnPlayer([contextObject], false, CardType.Spell, null, 'Lower the cost of all spells in your action bar by 1')]);
+      card.setInherentModifiersContextObjects([
+        ModifierOpeningGambitApplyModifiersToHand.createContextObjectToTargetOwnPlayer(
+          [contextObject],
+          false,
+          CardType.Spell,
+          null,
+          'Lower the cost of all spells in your action bar by 1',
+        ),
+      ]);
       card.rarityId = Rarity.Rare;
     }
 
@@ -184,7 +200,9 @@ class CardFactory_Monthly_M8_Rexx {
       card.maxHP = 5;
       card.manaCost = 5;
       card.rarityId = Rarity.Legendary;
-      card.setInherentModifiersContextObjects([ModifierMechazorWatchPutMechazorInHand.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierMechazorWatchPutMechazorInHand.createContextObject(),
+      ]);
     }
 
     return card;

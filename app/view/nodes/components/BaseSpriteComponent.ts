@@ -31,7 +31,6 @@ const BaseSpriteComponent = cc.Class.extend({
   },
 
   /* endregion GETTERS / SETTERS */
-
 });
 
 module.exports = BaseSpriteComponent;

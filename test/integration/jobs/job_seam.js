@@ -50,7 +50,13 @@ describe('job seam (BullMQ)', () => {
   afterEach(async () => {
     await Promise.all(workers.map((w) => w.close()));
     workers = [];
-    await Promise.all(queueNames.map((n) => Jobs.queueFor(n).obliterate({ force: true }).catch(() => {})));
+    await Promise.all(
+      queueNames.map((n) =>
+        Jobs.queueFor(n)
+          .obliterate({ force: true })
+          .catch(() => {}),
+      ),
+    );
     queueNames = [];
   });
 
@@ -62,7 +68,10 @@ describe('job seam (BullMQ)', () => {
     it('runs an enqueued job and hands the handler its data', async () => {
       const name = uniqueQueue('basic');
       const seen = [];
-      startWorker(name, 1, (job, done) => { seen.push(job.data); done(); });
+      startWorker(name, 1, (job, done) => {
+        seen.push(job.data);
+        done();
+      });
 
       const job = await enqueue(name, { hello: 'world', n: 7 });
       await Jobs.waitFor(job);
@@ -73,9 +82,16 @@ describe('job seam (BullMQ)', () => {
     it('keeps job types isolated - a worker only sees its own queue', async () => {
       const a = uniqueQueue('iso-a');
       const b = uniqueQueue('iso-b');
-      const seenA = []; const seenB = [];
-      startWorker(a, 1, (job, done) => { seenA.push(job.data.tag); done(); });
-      startWorker(b, 1, (job, done) => { seenB.push(job.data.tag); done(); });
+      const seenA = [];
+      const seenB = [];
+      startWorker(a, 1, (job, done) => {
+        seenA.push(job.data.tag);
+        done();
+      });
+      startWorker(b, 1, (job, done) => {
+        seenB.push(job.data.tag);
+        done();
+      });
 
       await Jobs.waitFor(await enqueue(a, { tag: 'for-a' }));
       await Jobs.waitFor(await enqueue(b, { tag: 'for-b' }));
@@ -87,7 +103,10 @@ describe('job seam (BullMQ)', () => {
     it('processes every job when several are queued', async () => {
       const name = uniqueQueue('many');
       const seen = [];
-      startWorker(name, 1, (job, done) => { seen.push(job.data.i); done(); });
+      startWorker(name, 1, (job, done) => {
+        seen.push(job.data.i);
+        done();
+      });
 
       const jobs = await Promise.all([0, 1, 2, 3, 4].map((i) => enqueue(name, { i })));
 
@@ -98,10 +117,19 @@ describe('job seam (BullMQ)', () => {
        * that the handler ran would pass even while every waiter hung, which is
        * exactly the bug this test exists to catch.
        */
-      const settled = await Promise.all(jobs.map((j, idx) => Promise.race([
-        Jobs.waitFor(j).then(() => `#${idx}:ok`, (e) => `#${idx}:rejected ${e.message}`),
-        new Promise((r) => { setTimeout(() => r(`#${idx}:HUNG`), 15000); }),
-      ])));
+      const settled = await Promise.all(
+        jobs.map((j, idx) =>
+          Promise.race([
+            Jobs.waitFor(j).then(
+              () => `#${idx}:ok`,
+              (e) => `#${idx}:rejected ${e.message}`,
+            ),
+            new Promise((r) => {
+              setTimeout(() => r(`#${idx}:HUNG`), 15000);
+            }),
+          ]),
+        ),
+      );
 
       expect(settled).to.deep.equal(['#0:ok', '#1:ok', '#2:ok', '#3:ok', '#4:ok']);
       expect(seen.slice().sort()).to.deep.equal([0, 1, 2, 3, 4]);
@@ -122,16 +150,22 @@ describe('job seam (BullMQ)', () => {
       startWorker(name, 1, (job, done) => done(new Error('handler said no')));
 
       let err = null;
-      await Jobs.waitFor(await enqueue(name, {})).catch((e) => { err = e; });
+      await Jobs.waitFor(await enqueue(name, {})).catch((e) => {
+        err = e;
+      });
       expect(err && err.message).to.equal('handler said no');
     });
 
     it('rejects waitFor when the handler throws synchronously', async () => {
       const name = uniqueQueue('throw');
-      startWorker(name, 1, () => { throw new Error('boom'); });
+      startWorker(name, 1, () => {
+        throw new Error('boom');
+      });
 
       let err = null;
-      await Jobs.waitFor(await enqueue(name, {})).catch((e) => { err = e; });
+      await Jobs.waitFor(await enqueue(name, {})).catch((e) => {
+        err = e;
+      });
       expect(err && err.message).to.equal('boom');
     });
   });
@@ -155,7 +189,9 @@ describe('job seam (BullMQ)', () => {
       startWorker(name, 1, (job, done) => done(new Error('failed anyway')));
 
       let err = null;
-      await Jobs.waitFor(await enqueue(name, {}, { removeOnComplete: true })).catch((e) => { err = e; });
+      await Jobs.waitFor(await enqueue(name, {}, { removeOnComplete: true })).catch((e) => {
+        err = e;
+      });
       expect(err && err.message).to.equal('failed anyway');
     });
   });
@@ -168,17 +204,28 @@ describe('job seam (BullMQ)', () => {
   describe('ttl', () => {
     it('fails a job whose handler never completes', async () => {
       const name = uniqueQueue('ttl-hang');
-      startWorker(name, 1, () => { /* never calls done */ }, { ttl: 300 });
+      startWorker(
+        name,
+        1,
+        () => {
+          /* never calls done */
+        },
+        { ttl: 300 },
+      );
 
       let err = null;
-      await Jobs.waitFor(await enqueue(name, {})).catch((e) => { err = e; });
+      await Jobs.waitFor(await enqueue(name, {})).catch((e) => {
+        err = e;
+      });
       expect(err, 'a hanging handler must fail the job').to.not.equal(null);
       expect(err.message).to.match(/ttl|timed out/i);
     });
 
     it('leaves a job that finishes within the ttl alone', async () => {
       const name = uniqueQueue('ttl-ok');
-      startWorker(name, 1, (job, done) => setTimeout(() => done(null, 'in time'), 20), { ttl: 2000 });
+      startWorker(name, 1, (job, done) => setTimeout(() => done(null, 'in time'), 20), {
+        ttl: 2000,
+      });
 
       expect(await Jobs.waitFor(await enqueue(name, {}))).to.equal('in time');
     });
@@ -193,7 +240,10 @@ describe('job seam (BullMQ)', () => {
       const name = uniqueQueue('delay');
       let ranAt = null;
       const enqueuedAt = Date.now();
-      startWorker(name, 1, (job, done) => { ranAt = Date.now(); done(); });
+      startWorker(name, 1, (job, done) => {
+        ranAt = Date.now();
+        done();
+      });
 
       await Jobs.waitFor(await enqueue(name, {}, { delay: 400 }));
 
@@ -204,11 +254,15 @@ describe('job seam (BullMQ)', () => {
   describe('concurrency', () => {
     it('runs at most `concurrency` handlers at once', async () => {
       const name = uniqueQueue('concurrency');
-      let inFlight = 0; let maxInFlight = 0;
+      let inFlight = 0;
+      let maxInFlight = 0;
       startWorker(name, 2, (job, done) => {
         inFlight += 1;
         maxInFlight = Math.max(maxInFlight, inFlight);
-        setTimeout(() => { inFlight -= 1; done(); }, 60);
+        setTimeout(() => {
+          inFlight -= 1;
+          done();
+        }, 60);
       });
 
       const jobs = await Promise.all([1, 2, 3, 4, 5, 6].map((i) => enqueue(name, { i })));

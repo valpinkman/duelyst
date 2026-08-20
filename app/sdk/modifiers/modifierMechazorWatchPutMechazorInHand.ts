@@ -27,15 +27,19 @@ class ModifierMechazorWatchPutMechazorInHand extends Modifier {
   onAction(e) {
     super.onAction(e);
 
-    const {
-      action,
-    } = e;
+    const { action } = e;
 
     if (
-      (action instanceof PlayCardAction && (action.getOwnerId() === this.getCard().getOwnerId()) && (action.getCard().getBaseCardId() === Cards.Spell.DeployMechaz0r))
-      || (action instanceof PlayCardFromHandAction && (action.getOwnerId() === this.getCard().getOwnerId()) && (action.getCard().getBaseCardId() === Cards.Neutral.Mechaz0r))
+      (action instanceof PlayCardAction &&
+        action.getOwnerId() === this.getCard().getOwnerId() &&
+        action.getCard().getBaseCardId() === Cards.Spell.DeployMechaz0r) ||
+      (action instanceof PlayCardFromHandAction &&
+        action.getOwnerId() === this.getCard().getOwnerId() &&
+        action.getCard().getBaseCardId() === Cards.Neutral.Mechaz0r)
     ) {
-      const a = new PutCardInHandAction(this.getGameSession(), this.getCard().getOwnerId(), { id: Cards.Neutral.Mechaz0r });
+      const a = new PutCardInHandAction(this.getGameSession(), this.getCard().getOwnerId(), {
+        id: Cards.Neutral.Mechaz0r,
+      });
       return this.getGameSession().executeAction(a);
     }
   }

@@ -19,6 +19,9 @@ class ModifierDyingWishSpawnTileAnywhere extends ModifierDyingWishSpawnEntityAny
   }
 }
 ModifierDyingWishSpawnTileAnywhere.prototype.type = 'ModifierDyingWishSpawnTileAnywhere';
-ModifierDyingWishSpawnTileAnywhere.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericSpawn'];
+ModifierDyingWishSpawnTileAnywhere.prototype.fxResource = [
+  'FX.Modifiers.ModifierDyingWish',
+  'FX.Modifiers.ModifierGenericSpawn',
+];
 
 module.exports = ModifierDyingWishSpawnTileAnywhere;

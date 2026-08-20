@@ -23,12 +23,14 @@ class ModifierInvalidateRush extends Modifier {
   onValidateAction(actionEvent) {
     super.onValidateAction(actionEvent);
 
-    const {
-      action,
-    } = actionEvent;
+    const { action } = actionEvent;
     // block refresh exhaustion actions triggered by a Rush modifier
     // note: we have to check against gamesession triggering modifier here since this is pre-validation, triggering modifier relationship is not yet set
-    if (action instanceof RefreshExhaustionAction && !__guard__(action.getTarget(), (x) => x.getIsGeneral()) && this.getGameSession().getTriggeringModifier() instanceof ModifierFirstBlood) {
+    if (
+      action instanceof RefreshExhaustionAction &&
+      !__guard__(action.getTarget(), (x) => x.getIsGeneral()) &&
+      this.getGameSession().getTriggeringModifier() instanceof ModifierFirstBlood
+    ) {
       return this.invalidateAction(action);
     }
   }
@@ -43,5 +45,5 @@ ModifierInvalidateRush.prototype.fxResource = ['FX.Modifiers.ModifierInvalidateR
 module.exports = ModifierInvalidateRush;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

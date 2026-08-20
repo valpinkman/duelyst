@@ -19,21 +19,45 @@ class ValidatorApplyCardToBoard extends Validator {
 
   onValidateAction(event) {
     super.onValidateAction(event);
-    const {
-      action,
-    } = event;
-    if ((action != null) && action.getIsValid() && action instanceof ApplyCardToBoardAction && !(action instanceof RandomPlayCardSilentlyAction)) {
+    const { action } = event;
+    if (
+      action != null &&
+      action.getIsValid() &&
+      action instanceof ApplyCardToBoardAction &&
+      !(action instanceof RandomPlayCardSilentlyAction)
+    ) {
       // applying a card to board
       const card = action.getCard();
       const targetPosition = action.getTargetPosition();
       if (!this.getGameSession().getBoard().isOnBoard(targetPosition)) {
         // applying a card to a position outside the board
-        return this.invalidateAction(action, targetPosition, i18next.t('validators.position_off_board_message'));
-      } if (card instanceof Entity && !(action instanceof PlayCardFromHandAction && card.hasActiveModifierClass(ModifierCustomSpawn))) {
-        const obstruction = this.getGameSession().getBoard().getObstructionAtPositionForEntity(targetPosition, card);
-        if ((obstruction != null) && !obstruction.getIsRemoved() && this.getGameSession().getCanCardBeScheduledForRemoval(obstruction, true)) {
+        return this.invalidateAction(
+          action,
+          targetPosition,
+          i18next.t('validators.position_off_board_message'),
+        );
+      }
+      if (
+        card instanceof Entity &&
+        !(
+          action instanceof PlayCardFromHandAction &&
+          card.hasActiveModifierClass(ModifierCustomSpawn)
+        )
+      ) {
+        const obstruction = this.getGameSession()
+          .getBoard()
+          .getObstructionAtPositionForEntity(targetPosition, card);
+        if (
+          obstruction != null &&
+          !obstruction.getIsRemoved() &&
+          this.getGameSession().getCanCardBeScheduledForRemoval(obstruction, true)
+        ) {
           // applying an entity to an obstructed position
-          return this.invalidateAction(action, targetPosition, i18next.t('validators.obstructed_position_message'));
+          return this.invalidateAction(
+            action,
+            targetPosition,
+            i18next.t('validators.obstructed_position_message'),
+          );
         }
       }
     }

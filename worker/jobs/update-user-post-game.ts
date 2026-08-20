@@ -44,9 +44,23 @@ const PromiseUtils = require('../../app/common/utils/utils_promise');
  * @param  {Object} gameSessionData  Game Session data loaded from REDIS
  * @return  {Promise}          Promise that resolves whan this process is complete.
  */
-const onProcessQuests = function (job, userId, opponentId, gameId, factionId, generalId, isWinner, isDraw, isUnscored, gameType, gameSessionData) {
-  if (!isUnscored && (gameSessionData != null)) {
-    Logger.module('JOB').debug(`[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> processing quests ...`);
+const onProcessQuests = function (
+  job,
+  userId,
+  opponentId,
+  gameId,
+  factionId,
+  generalId,
+  isWinner,
+  isDraw,
+  isUnscored,
+  gameType,
+  gameSessionData,
+) {
+  if (!isUnscored && gameSessionData != null) {
+    Logger.module('JOB').debug(
+      `[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> processing quests ...`,
+    );
     return QuestsModule.updateQuestProgressWithGame(userId, gameId, gameSessionData);
   } else {
     return Promise.resolve();
@@ -67,9 +81,24 @@ const onProcessQuests = function (job, userId, opponentId, gameId, factionId, ge
  * @param  {Object} gameSessionData  Game Session data loaded from REDIS
  * @return  {Promise}          Promise that resolves whan this process is complete.
  */
-const onProcessGameType = function (job, userId, opponentId, gameId, factionId, generalId, isWinner, isDraw, isUnscored, gameType, gameSessionData, ticketId) {
+const onProcessGameType = function (
+  job,
+  userId,
+  opponentId,
+  gameId,
+  factionId,
+  generalId,
+  isWinner,
+  isDraw,
+  isUnscored,
+  gameType,
+  gameSessionData,
+  ticketId,
+) {
   if (gameType === GameType.Ranked) {
-    Logger.module('JOB').debug(`[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> processing rank ...`);
+    Logger.module('JOB').debug(
+      `[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> processing rank ...`,
+    );
     return RankModule.userNeedsSeasonStartRanking(userId)
       .then(function (needsCycle) {
         if (needsCycle) {
@@ -77,36 +106,61 @@ const onProcessGameType = function (job, userId, opponentId, gameId, factionId, 
         } else {
           return Promise.resolve();
         }
-      }).then(() => RankModule.updateUserRankingWithGameOutcome(userId, isWinner, gameId, isDraw));
+      })
+      .then(() => RankModule.updateUserRankingWithGameOutcome(userId, isWinner, gameId, isDraw));
   } else if (gameType === GameType.Gauntlet) {
-    Logger.module('JOB').debug(`[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> processing gauntlet outcome ...`);
+    Logger.module('JOB').debug(
+      `[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> processing gauntlet outcome ...`,
+    );
     return GauntletModule.updateArenaRunWithGameOutcome(userId, isWinner, gameId, isDraw);
   } else if (gameType === GameType.Rift) {
-    Logger.module('JOB').debug(`[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> processing rift outcome ...`);
+    Logger.module('JOB').debug(
+      `[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> processing rift outcome ...`,
+    );
     const playerData = UtilsGameSession.getPlayerDataForId(gameSessionData, userId);
     let damageDealt = 0;
     if (playerData.totalDamageDealtToGeneral > 0) {
       // If a player won, and they did less than 25 damage to enemy general, give them 25 credit
-      if (playerData.isWinner && (playerData.totalDamageDealtToGeneral < 25)) {
+      if (playerData.isWinner && playerData.totalDamageDealtToGeneral < 25) {
         damageDealt = 25;
       } else {
         damageDealt = playerData.totalDamageDealtToGeneral;
       }
     }
-    return RiftModule.updateRiftRunWithGameOutcome(userId, ticketId, isWinner, gameId, isDraw, damageDealt, gameSessionData);
-  } else if ((gameType === GameType.SinglePlayer) && isWinner) {
-    Logger.module('JOB').debug(`[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> processing single player outcome ...`);
+    return RiftModule.updateRiftRunWithGameOutcome(
+      userId,
+      ticketId,
+      isWinner,
+      gameId,
+      isDraw,
+      damageDealt,
+      gameSessionData,
+    );
+  } else if (gameType === GameType.SinglePlayer && isWinner) {
+    Logger.module('JOB').debug(
+      `[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> processing single player outcome ...`,
+    );
     // single player games should CREATE a faction xp record for the opponent faction if one already does not exist
-    const opponentSetupData = _.find(gameSessionData.gameSetupData.players, (p) => p.playerId !== userId);
+    const opponentSetupData = _.find(
+      gameSessionData.gameSetupData.players,
+      (p) => p.playerId !== userId,
+    );
     const opponentFactionId = opponentSetupData.factionId;
     if (opponentFactionId !== factionId) {
       // ensure opponent faction is a playable faction before making record for player
       const playableFactions = FactionFactory.getAllPlayableFactions();
-      const playableOpponentFaction = _.find(playableFactions, (factionData) => factionData.id === opponentFactionId);
+      const playableOpponentFaction = _.find(
+        playableFactions,
+        (factionData) => factionData.id === opponentFactionId,
+      );
       if (playableOpponentFaction != null) {
-        const whenCreated = UsersModule.createFactionProgressionRecord(userId, opponentFactionId, gameId, gameType)
-          .catch(onType(Errors.AlreadyExistsError, function (e) {}));
-          // silently catch already exist errors and move on
+        const whenCreated = UsersModule.createFactionProgressionRecord(
+          userId,
+          opponentFactionId,
+          gameId,
+          gameType,
+        ).catch(onType(Errors.AlreadyExistsError, function (e) {}));
+        // silently catch already exist errors and move on
         return whenCreated;
       }
     }
@@ -130,15 +184,52 @@ const onProcessGameType = function (job, userId, opponentId, gameId, factionId, 
  * @param  {Object} gameSessionData  Game Session data loaded from REDIS
  * @return  {Promise}          Promise that resolves whan this process is complete.
  */
-const onProcessProgression = function (job, userId, opponentId, gameId, factionId, generalId, isWinner, isDraw, isUnscored, gameType, gameSessionData) {
-  if ((gameType === GameType.SinglePlayer) || (gameType === GameType.Friendly) || (gameType === GameType.Rift)) {
+const onProcessProgression = function (
+  job,
+  userId,
+  opponentId,
+  gameId,
+  factionId,
+  generalId,
+  isWinner,
+  isDraw,
+  isUnscored,
+  gameType,
+  gameSessionData,
+) {
+  if (
+    gameType === GameType.SinglePlayer ||
+    gameType === GameType.Friendly ||
+    gameType === GameType.Rift
+  ) {
     return Promise.resolve();
   } else if (gameType === GameType.BossBattle) {
-    Logger.module('JOB').debug(`[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> processing boss progression ...`);
-    return UsersModule.updateUserBossProgressionWithGameOutcome(userId, opponentId, isWinner, gameId, gameType, isUnscored, isDraw, gameSessionData);
+    Logger.module('JOB').debug(
+      `[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> processing boss progression ...`,
+    );
+    return UsersModule.updateUserBossProgressionWithGameOutcome(
+      userId,
+      opponentId,
+      isWinner,
+      gameId,
+      gameType,
+      isUnscored,
+      isDraw,
+      gameSessionData,
+    );
   } else {
-    Logger.module('JOB').debug(`[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> processing progression ...`);
-    return UsersModule.updateUserProgressionWithGameOutcome(userId, opponentId, isWinner, gameId, gameType, isUnscored, isDraw);
+    Logger.module('JOB').debug(
+      `[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> processing progression ...`,
+    );
+    return UsersModule.updateUserProgressionWithGameOutcome(
+      userId,
+      opponentId,
+      isWinner,
+      gameId,
+      gameType,
+      isUnscored,
+      isDraw,
+    );
   }
 };
 
@@ -156,15 +247,50 @@ const onProcessProgression = function (job, userId, opponentId, gameId, factionI
  * @param  {Object} gameSessionData  Game Session data loaded from REDIS
  * @return  {Promise}          Promise that resolves whan this process is complete.
  */
-const onProcessLootCrates = function (job, userId, opponentId, gameId, factionId, generalId, isWinner, isDraw, isUnscored, gameType, gameSessionData) {
-  if ((gameType === GameType.SinglePlayer) || (gameType === GameType.Friendly) || (gameType === GameType.Rift)) {
+const onProcessLootCrates = function (
+  job,
+  userId,
+  opponentId,
+  gameId,
+  factionId,
+  generalId,
+  isWinner,
+  isDraw,
+  isUnscored,
+  gameType,
+  gameSessionData,
+) {
+  if (
+    gameType === GameType.SinglePlayer ||
+    gameType === GameType.Friendly ||
+    gameType === GameType.Rift
+  ) {
     return Promise.resolve();
   } else if (gameType === GameType.BossBattle) {
-    Logger.module('JOB').debug(`[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> processing loot crates ...`);
-    return CosmeticChestsModule.updateUserChestRewardWithBossGameOutcome(userId, isWinner, gameId, gameType, isUnscored, isDraw, gameSessionData);
+    Logger.module('JOB').debug(
+      `[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> processing loot crates ...`,
+    );
+    return CosmeticChestsModule.updateUserChestRewardWithBossGameOutcome(
+      userId,
+      isWinner,
+      gameId,
+      gameType,
+      isUnscored,
+      isDraw,
+      gameSessionData,
+    );
   } else {
-    Logger.module('JOB').debug(`[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> processing loot crates ...`);
-    return CosmeticChestsModule.updateUserChestRewardWithGameOutcome(userId, isWinner, gameId, gameType, isUnscored, isDraw);
+    Logger.module('JOB').debug(
+      `[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> processing loot crates ...`,
+    );
+    return CosmeticChestsModule.updateUserChestRewardWithGameOutcome(
+      userId,
+      isWinner,
+      gameId,
+      gameType,
+      isUnscored,
+      isDraw,
+    );
   }
 };
 
@@ -181,10 +307,32 @@ const onProcessLootCrates = function (job, userId, opponentId, gameId, factionId
  * @param  {Object} gameSessionData  Game Session data loaded from REDIS
  * @return  {Promise}          Promise that resolves whan this process is complete.
  */
-const onProcessFactionXp = function (job, userId, opponentId, gameId, factionId, generalId, isWinner, isDraw, isUnscored, gameType, gameSessionData) {
+const onProcessFactionXp = function (
+  job,
+  userId,
+  opponentId,
+  gameId,
+  factionId,
+  generalId,
+  isWinner,
+  isDraw,
+  isUnscored,
+  gameType,
+  gameSessionData,
+) {
   if (gameType !== GameType.Rift) {
-    Logger.module('JOB').debug(`[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> processing faction xp ...`);
-    return UsersModule.updateUserFactionProgressionWithGameOutcome(userId, factionId, isWinner, gameId, gameType, isUnscored, isDraw);
+    Logger.module('JOB').debug(
+      `[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> processing faction xp ...`,
+    );
+    return UsersModule.updateUserFactionProgressionWithGameOutcome(
+      userId,
+      factionId,
+      isWinner,
+      gameId,
+      gameType,
+      isUnscored,
+      isDraw,
+    );
   } else {
     return Promise.resolve();
   }
@@ -204,9 +352,31 @@ const onProcessFactionXp = function (job, userId, opponentId, gameId, factionId,
  * @param  {Object} gameSessionData  Game Session data loaded from REDIS
  * @return  {Promise}          Promise that resolves whan this process is complete.
  */
-const onProcessGameCounters = function (job, userId, opponentId, gameId, factionId, generalId, isWinner, isDraw, isUnscored, gameType, gameSessionData) {
-  Logger.module('JOB').debug(`[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> processing game counters ...`);
-  return UsersModule.updateGameCounters(userId, factionId, generalId, isWinner, gameType, isUnscored, isDraw);
+const onProcessGameCounters = function (
+  job,
+  userId,
+  opponentId,
+  gameId,
+  factionId,
+  generalId,
+  isWinner,
+  isDraw,
+  isUnscored,
+  gameType,
+  gameSessionData,
+) {
+  Logger.module('JOB').debug(
+    `[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> processing game counters ...`,
+  );
+  return UsersModule.updateGameCounters(
+    userId,
+    factionId,
+    generalId,
+    isWinner,
+    gameType,
+    isUnscored,
+    isDraw,
+  );
 };
 
 /**
@@ -222,11 +392,29 @@ const onProcessGameCounters = function (job, userId, opponentId, gameId, faction
  * @param  {Object} gameSessionData  Game Session data loaded from REDIS
  * @return  {Promise}          Promise that resolves whan this process is complete.
  */
-const onProcessStats = function (job, userId, opponentId, gameId, factionId, generalId, isWinner, isDraw, isUnscored, gameType, gameSessionData) {
-  if ((gameType === GameType.SinglePlayer) || (gameType === GameType.BossBattle) || (gameSessionData == null)) {
+const onProcessStats = function (
+  job,
+  userId,
+  opponentId,
+  gameId,
+  factionId,
+  generalId,
+  isWinner,
+  isDraw,
+  isUnscored,
+  gameType,
+  gameSessionData,
+) {
+  if (
+    gameType === GameType.SinglePlayer ||
+    gameType === GameType.BossBattle ||
+    gameSessionData == null
+  ) {
     return Promise.resolve();
   } else {
-    Logger.module('JOB').debug(`[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> processing stats ...`);
+    Logger.module('JOB').debug(
+      `[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> processing stats ...`,
+    );
     return UsersModule.updateUserStatsWithGame(userId, gameId, gameType, gameSessionData);
   }
 };
@@ -245,17 +433,35 @@ const onProcessStats = function (job, userId, opponentId, gameId, factionId, gen
  * @param  {Object} gameSessionData  Game Session data loaded from REDIS
  * @return  {Promise}          Promise that resolves whan this process is complete.
  */
-const onProcessAchievements = function (job, userId, opponentId, gameId, factionId, generalId, isWinner, isDraw, isUnscored, gameType, gameSessionData) {
+const onProcessAchievements = function (
+  job,
+  userId,
+  opponentId,
+  gameId,
+  factionId,
+  generalId,
+  isWinner,
+  isDraw,
+  isUnscored,
+  gameType,
+  gameSessionData,
+) {
   if (gameType !== GameType.SinglePlayer) {
-    Logger.module('JOB').debug(`[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> starting achievements job ...`);
-    Jobs.enqueue('update-user-achievements', {
-      name: 'Update User Game Achievements',
-      title: util.format('User %s :: Update Game Achievements', userId),
-      userId,
-      gameId,
-      isDraw,
-      isUnscored,
-    }, { removeOnComplete: true });
+    Logger.module('JOB').debug(
+      `[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> starting achievements job ...`,
+    );
+    Jobs.enqueue(
+      'update-user-achievements',
+      {
+        name: 'Update User Game Achievements',
+        title: util.format('User %s :: Update Game Achievements', userId),
+        userId,
+        gameId,
+        isDraw,
+        isUnscored,
+      },
+      { removeOnComplete: true },
+    );
   }
   return Promise.resolve();
 };
@@ -273,18 +479,12 @@ module.exports = function (job, done) {
   const opponentId = job.data.opponentId || null;
   const factionId = job.data.factionId || null;
   const generalId = job.data.generalId || null;
-  const {
-    isWinner,
-  } = job.data;
-  const {
-    isDraw,
-  } = job.data;
+  const { isWinner } = job.data;
+  const { isDraw } = job.data;
   const isUnscored = job.data.isUnscored || false;
   const isBotGame = job.data.isBotGame || false;
   const ticketId = job.data.ticketId || null;
-  const {
-    gameType,
-  } = job.data;
+  const { gameType } = job.data;
 
   if (!gameId) {
     return done(new Error('Game ID is not defined.'));
@@ -296,7 +496,7 @@ module.exports = function (job, done) {
     return done(new Error('factionId is not defined.'));
   }
   // isWinner may no longer be null, expect true or false
-  if ((isWinner == null)) {
+  if (isWinner == null) {
     return done(new Error('isWinner is not defined.'));
   }
   if (!gameType) {
@@ -305,56 +505,98 @@ module.exports = function (job, done) {
 
   const thisObj: Record<string, any> = {};
 
-  Logger.module('JOB').debug(`[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> STARTING... ${gameType} winner:${isWinner} unscored:${isUnscored} draw:${isDraw}`.cyan);
+  Logger.module('JOB').debug(
+    `[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> STARTING... ${gameType} winner:${isWinner} unscored:${isUnscored} draw:${isDraw}`
+      .cyan,
+  );
 
-  const logSignature = `[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> DONE - ${gameType} winner:${isWinner} unscored:${isUnscored} draw:${isDraw}`.green;
+  const logSignature =
+    `[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> DONE - ${gameType} winner:${isWinner} unscored:${isUnscored} draw:${isDraw}`
+      .green;
   Logger.module('JOB').time(logSignature);
 
   return GamesModule.updateUserGame(userId, gameId, {
-    status: GameStatus.over, is_scored: !isUnscored, is_winner: isWinner, is_draw: isDraw, is_bot_game: isBotGame,
+    status: GameStatus.over,
+    is_scored: !isUnscored,
+    is_winner: isWinner,
+    is_draw: isDraw,
+    is_bot_game: isBotGame,
   })
     .then(function () {
-      Logger.module('JOB').debug(`[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> loading game session data ...`);
+      Logger.module('JOB').debug(
+        `[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> loading game session data ...`,
+      );
       // grab game session data from REDIS
       return GameManager.loadGameSession(gameId)
         .then(JSON.parse) // parse game session data to JSON
         .then(function (gameSessionData) {
-          Logger.module('JOB').debug(`[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> loading game session data ... DONE`);
+          Logger.module('JOB').debug(
+            `[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> loading game session data ... DONE`,
+          );
           thisObj.gameSessionData = gameSessionData;
           return gameSessionData;
         });
-    }).then(function (gameSessionData) { // process game promises
-    // if the game session data is not available
+    })
+    .then(function (gameSessionData) {
+      // process game promises
+      // if the game session data is not available
       if (!gameSessionData) {
-      // log out a warning that some processes will fail
-        Logger.module('JOB').error(`[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> ERROR: game session data is null. Will not be able to process quests / stats.`);
+        // log out a warning that some processes will fail
+        Logger.module('JOB').error(
+          `[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> ERROR: game session data is null. Will not be able to process quests / stats.`,
+        );
       }
 
       // this strange structure will loop through an array of functions sequentially (one-by-one)
       // each function will kick off a processing phase and return a promise
-      return PromiseUtils.each([
-        { name: 'quests', func: onProcessQuests },
-        { name: 'game_type', func: onProcessGameType },
-        { name: 'progression', func: onProcessProgression },
-        { name: 'loot_crates', func: onProcessLootCrates },
-        { name: 'faction_xp', func: onProcessFactionXp },
-        { name: 'game_counters', func: onProcessGameCounters },
-        { name: 'stats', func: onProcessStats },
-        { name: 'achievements', func: onProcessAchievements },
-      ], (item) => // call the process function, and watch for errors on the returned promise
-        (item != null ? item.func(job, userId, opponentId, gameId, factionId, generalId, isWinner, isDraw, isUnscored, gameType, gameSessionData, ticketId)
-          .catch(function (e) {
-            // if we catch an error, add it to the retained error object, and log out some info
-            if (thisObj.errors == null) { thisObj.errors = []; }
-            thisObj.errors.push(e);
-            Logger.module('JOB').debug(`[J:${job.id}]`, e.stack);
-            return Logger.module('JOB').error(`[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> error processing part '${(item != null ? item.name : undefined)}' `, e != null ? e.message : undefined);
-          }) : undefined));
+      return PromiseUtils.each(
+        [
+          { name: 'quests', func: onProcessQuests },
+          { name: 'game_type', func: onProcessGameType },
+          { name: 'progression', func: onProcessProgression },
+          { name: 'loot_crates', func: onProcessLootCrates },
+          { name: 'faction_xp', func: onProcessFactionXp },
+          { name: 'game_counters', func: onProcessGameCounters },
+          { name: 'stats', func: onProcessStats },
+          { name: 'achievements', func: onProcessAchievements },
+        ],
+        (item) =>
+          // call the process function, and watch for errors on the returned promise
+          item != null
+            ? item
+                .func(
+                  job,
+                  userId,
+                  opponentId,
+                  gameId,
+                  factionId,
+                  generalId,
+                  isWinner,
+                  isDraw,
+                  isUnscored,
+                  gameType,
+                  gameSessionData,
+                  ticketId,
+                )
+                .catch(function (e) {
+                  // if we catch an error, add it to the retained error object, and log out some info
+                  if (thisObj.errors == null) {
+                    thisObj.errors = [];
+                  }
+                  thisObj.errors.push(e);
+                  Logger.module('JOB').debug(`[J:${job.id}]`, e.stack);
+                  return Logger.module('JOB').error(
+                    `[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> error processing part '${item != null ? item.name : undefined}' `,
+                    e != null ? e.message : undefined,
+                  );
+                })
+            : undefined,
+      );
     })
     .then(function () {
-    // done with all processes! check the retained errors object to find if any of the processes failed
+      // done with all processes! check the retained errors object to find if any of the processes failed
       if (thisObj.errors != null ? thisObj.errors.length : undefined) {
-      // throw the first error
+        // throw the first error
         throw thisObj.errors[0];
       }
       // otherwise all good
@@ -362,14 +604,20 @@ module.exports = function (job, done) {
       // mark KUE job as done
       return done();
     })
-    .catch(onType(PromiseUtils.TimeoutError, function (e) {
-    // custom logging for promise timeout errors
-      Logger.module('JOB').error(`[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> TIMEOUT.`);
-      return done(e);
-    }))
+    .catch(
+      onType(PromiseUtils.TimeoutError, function (e) {
+        // custom logging for promise timeout errors
+        Logger.module('JOB').error(
+          `[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> TIMEOUT.`,
+        );
+        return done(e);
+      }),
+    )
     .catch(function (e) {
-    // log out and fail the job on an error
-      Logger.module('JOB').error(`[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> FAILED! ${(e != null ? e.message : undefined)}`);
+      // log out and fail the job on an error
+      Logger.module('JOB').error(
+        `[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> FAILED! ${e != null ? e.message : undefined}`,
+      );
       // mark KUE job as done with ERROR
       return done(e);
     });

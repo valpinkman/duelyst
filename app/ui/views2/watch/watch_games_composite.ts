@@ -7,7 +7,6 @@ var WatchGamesEmptyView = require('./watch_games_empty');
 var Template = require('./templates/watch_games_composite.hbs');
 
 var WatchGamesCompositeView = Backbone.Marionette.CompositeView.extend({
-
   id: 'watch_games_collection',
   template: Template,
 
@@ -17,12 +16,13 @@ var WatchGamesCompositeView = Backbone.Marionette.CompositeView.extend({
 
   onShow: function () {
     var delay = 0;
-    this.children.each(function (childView) {
-      childView.animateReveal(200.0, delay);
-      delay += 100.0;
-    }.bind(this));
+    this.children.each(
+      function (childView) {
+        childView.animateReveal(200.0, delay);
+        delay += 100.0;
+      }.bind(this),
+    );
   },
-
 });
 
 module.exports = WatchGamesCompositeView;

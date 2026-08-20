@@ -37,7 +37,7 @@ class ModifierStunned extends Modifier {
     // if your unit is stunned during your turn, they will remain stunned
     // until the end of your NEXT turn
     if (this.getCard().isOwnersTurn()) {
-      return this.durationEndTurn = 3;
+      return (this.durationEndTurn = 3);
     }
   }
 
@@ -47,7 +47,7 @@ class ModifierStunned extends Modifier {
     // stunned unit cannot explicitly attack (but it can do "auto" attacks like strikeback)
     if (a.getIsValid()) {
       if (a instanceof AttackAction) {
-        if (!a.getIsImplicit() && (this.getCard() === a.getSource())) {
+        if (!a.getIsImplicit() && this.getCard() === a.getSource()) {
           return this.invalidateAction(a, this.getCard().getPosition(), 'Stunned, cannot attack.');
         }
       } else if (a instanceof MoveAction) {

@@ -13,10 +13,17 @@ class SpellFollowupTeleportInFrontOfAnyGeneral extends SpellFollowupTeleport {
       // apply in front of any General
       var playerOffset = 0;
       if (unit.getIsGeneral()) {
-        if (unit.isOwnedByPlayer1()) { playerOffset = 1; } else { playerOffset = -1; }
+        if (unit.isOwnedByPlayer1()) {
+          playerOffset = 1;
+        } else {
+          playerOffset = -1;
+        }
         var entity = this.getGameSession().getGeneralForPlayerId(this.getOwnerId());
         var inFrontOfPosition = { x: unit.getPosition().x + playerOffset, y: unit.getPosition().y };
-        if (board.isOnBoard(inFrontOfPosition) && !board.getObstructionAtPositionForEntity(inFrontOfPosition, entity)) {
+        if (
+          board.isOnBoard(inFrontOfPosition) &&
+          !board.getObstructionAtPositionForEntity(inFrontOfPosition, entity)
+        ) {
           inFrontOfPositions.push(inFrontOfPosition);
         }
       }
@@ -24,7 +31,10 @@ class SpellFollowupTeleportInFrontOfAnyGeneral extends SpellFollowupTeleport {
 
     const paternInFrontOfGenerals = [];
     for (var position of Array.from<any>(inFrontOfPositions)) {
-      paternInFrontOfGenerals.push({ x: position.x - this.getFollowupSourcePosition().x, y: position.y - this.getFollowupSourcePosition().y });
+      paternInFrontOfGenerals.push({
+        x: position.x - this.getFollowupSourcePosition().x,
+        y: position.y - this.getFollowupSourcePosition().y,
+      });
     }
 
     return paternInFrontOfGenerals;

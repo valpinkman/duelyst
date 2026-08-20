@@ -20,8 +20,12 @@ class ModifierStackingShadowsBonusDamage extends Modifier {
   static isHiddenToUI = true;
 
   static createContextObject(flatBonus, multiplierBonus) {
-    if (flatBonus == null) { flatBonus = 0; }
-    if (multiplierBonus == null) { multiplierBonus = 1; }
+    if (flatBonus == null) {
+      flatBonus = 0;
+    }
+    if (multiplierBonus == null) {
+      multiplierBonus = 1;
+    }
     const contextObject = super.createContextObject();
     contextObject.bonusDamageAmount = flatBonus;
     contextObject.multiplierBonusDamage = multiplierBonus;

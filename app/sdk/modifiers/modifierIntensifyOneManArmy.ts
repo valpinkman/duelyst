@@ -15,12 +15,22 @@ class ModifierIntensifyOneManArmy extends ModifierIntensify {
   static type = 'ModifierIntensifyOneManArmy';
 
   onIntensify() {
-    for (let i = 0, end = this.getIntensifyAmount(), asc = end >= 0; asc ? i < end : i > end; asc ? i++ : i--) {
-      var addCardToHandAction = new PutCardInHandAction(this.getGameSession(), this.getCard().getOwnerId(), { id: Cards.Faction1.KingsGuard });
+    for (
+      let i = 0, end = this.getIntensifyAmount(), asc = end >= 0;
+      asc ? i < end : i > end;
+      asc ? i++ : i--
+    ) {
+      var addCardToHandAction = new PutCardInHandAction(
+        this.getGameSession(),
+        this.getCard().getOwnerId(),
+        { id: Cards.Faction1.KingsGuard },
+      );
       this.getGameSession().executeAction(addCardToHandAction);
     }
 
-    const putCardInDeckAction = new PutCardInDeckAction(this.getGameSession(), this.getOwnerId(), { id: Cards.Faction1.OneManArmy });
+    const putCardInDeckAction = new PutCardInDeckAction(this.getGameSession(), this.getOwnerId(), {
+      id: Cards.Faction1.OneManArmy,
+    });
     return this.getGameSession().executeAction(putCardInDeckAction);
   }
 }

@@ -17,11 +17,23 @@ class SpellDuplicator extends Spell {
 
     if (entityToClone != null) {
       // put fresh copy of spell into deck
-      const a = new PutCardInDeckAction(this.getGameSession(), ownerId, entityToClone.createNewCardData());
+      const a = new PutCardInDeckAction(
+        this.getGameSession(),
+        ownerId,
+        entityToClone.createNewCardData(),
+      );
       this.getGameSession().executeAction(a);
-      const b = new PutCardInDeckAction(this.getGameSession(), ownerId, entityToClone.createNewCardData());
+      const b = new PutCardInDeckAction(
+        this.getGameSession(),
+        ownerId,
+        entityToClone.createNewCardData(),
+      );
       this.getGameSession().executeAction(b);
-      const c = new PutCardInDeckAction(this.getGameSession(), ownerId, entityToClone.createNewCardData());
+      const c = new PutCardInDeckAction(
+        this.getGameSession(),
+        ownerId,
+        entityToClone.createNewCardData(),
+      );
       return this.getGameSession().executeAction(c);
     }
   }

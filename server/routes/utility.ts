@@ -12,9 +12,7 @@ const util = require('util');
 const fs = require('fs');
 const hbs = require('hbs');
 
-const {
-  handlebars,
-} = hbs;
+const { handlebars } = hbs;
 const moment = require('moment');
 
 const generatePushId = require('../../app/common/generate_push_id');
@@ -41,7 +39,8 @@ const loadClientLogsHandlebarsTemplateAsync = new Promise(function (resolve, rej
     .then(function (template) {
       const hbs_template = handlebars.compile(template.toString());
       return resolve(hbs_template);
-    }).catch((err) => reject(err));
+    })
+    .catch((err) => reject(err));
 });
 
 // # Require authentication
@@ -49,12 +48,15 @@ router.use('/utility', isSignedIn);
 
 // Unused handler to facilitate uploading logs to S3.
 // Stub the handler so we can remove the AWS SDK dependency.
-router.post('/utility/client_logs', (req, res, next) => res.status(403).json({
-  status: 'error',
-  code: 403,
-  message: 'This endpoint is deprecated.',
-}),
-/*
+router.post(
+  '/utility/client_logs',
+  (req, res, next) =>
+    res.status(403).json({
+      status: 'error',
+      code: 403,
+      message: 'This endpoint is deprecated.',
+    }),
+  /*
   user_id = req.user.d.id
   log_id = "#{moment().utc().format("YYYY-MM-DD---hh-mm-ss")}.#{uuid.v4()}"
 
@@ -82,6 +84,7 @@ router.post('/utility/client_logs', (req, res, next) => res.status(403).json({
   .catch (err) ->
     Logger.module("EXPRESS").error "ERROR UPLOADING #{user_id.blue} CLIENT LOGS to #{url} : #{err.message}".red
     next(err)
-  */);
+  */
+);
 
 module.exports = router;

@@ -2281,10 +2281,10 @@
     "deck_save_no_general_error_msg": "Du kannst kein Deck ohne einen General speichern.",
     "max_copies_added_to_deck": "Max. Anzahl Kopien zum Deck hinzugefügt",
     "artifact_desc": "Artefakte verleihen deinem General Boni und spezielle Fähigkeiten. Ein General kann bis zu 3 Artefakte gleichzeitig tragen. Artefakte bleiben aktiv, bis sie ausgetauscht oder zerstört werden.",
-  	"general_desc": "Generäle befehligen deine Schergen und wirken deine Zauber. Jeder General hat seinen eigenen Blutbund-Zauber, den er im Lauf eines Kampfes mehrmals verwenden kann. Zerstöre den gegnerischen General, um das Spiel zu gewinnen!",
-  	"minion_desc": "Du kannst Schergen neben jedem anderen verbündeten Schergen auf dem Schlachtfeld ausspielen. Vor ihrem ersten Zug sind Schergen erschöpft, aber jeden folgenden Zug können sie mindestens eine Bewegung und einen Angriff durchführen. Sie bleiben aktiv, bis sie getötet werden.",
-  	"spell_desc": "Du kannst einen Zauber auf das Schlachtfeld wirken, um den Text des Zaubers zu aktivieren. Zauber bleiben nach ihrer Aktivierung nicht aktiv.",
-  	"copies_label": "Kopien: "
+    "general_desc": "Generäle befehligen deine Schergen und wirken deine Zauber. Jeder General hat seinen eigenen Blutbund-Zauber, den er im Lauf eines Kampfes mehrmals verwenden kann. Zerstöre den gegnerischen General, um das Spiel zu gewinnen!",
+    "minion_desc": "Du kannst Schergen neben jedem anderen verbündeten Schergen auf dem Schlachtfeld ausspielen. Vor ihrem ersten Zug sind Schergen erschöpft, aber jeden folgenden Zug können sie mindestens eine Bewegung und einen Angriff durchführen. Sie bleiben aktiv, bis sie getötet werden.",
+    "spell_desc": "Du kannst einen Zauber auf das Schlachtfeld wirken, um den Text des Zaubers zu aktivieren. Zauber bleiben nach ihrer Aktivierung nicht aktiv.",
+    "copies_label": "Kopien: "
   },
   "common": {
     "loading_dialog_one_moment_label": "Einen Augenblick ...",
@@ -3333,9 +3333,9 @@
     "opponent_bloodborn_refresh_message_plural": "Der [Blutbund-Zauber] deines Gegenspielers ist in {{count}} Zügen wieder verfügbar.",
     "connected_label": "Verbunden",
     "disconnected_label": "Verbindung getrennt",
-    "label_your_turn":"DEIN ZUG",
-  	"label_enemy_turn":"GEGNERISCHER ZUG",
-  	"label_automatic_moves":"AUTOM. BEWEGUNGEN"
+    "label_your_turn": "DEIN ZUG",
+    "label_enemy_turn": "GEGNERISCHER ZUG",
+    "label_automatic_moves": "AUTOM. BEWEGUNGEN"
   },
   "gauntlet": {
     "gauntlet_title": "Die Feuerprobe",
@@ -3617,9 +3617,9 @@
     "neutral_boulder_breacher_modifier": "GEBROCHEN!",
     "neutral_boulder_breacher_modifier_2": "Kann diesen Zug keinen Gegenschlag durchführen.",
     "neutral_lesson_of_courage_modifier": "Herz der Flamme",
-		"mana_spring_name":"Manaquell",
-		"bonus_mana_name": "Bonus-Mana",
-		"bonus_mana_def": "Erhalte +1 Mana in diesem Zug",
+    "mana_spring_name": "Manaquell",
+    "bonus_mana_name": "Bonus-Mana",
+    "bonus_mana_def": "Erhalte +1 Mana in diesem Zug",
     "flying_name": "Flug",
     "flying_def": "Kann sich an einen beliebigen Ort auf dem Schlachtfeld bewegen.",
     "blast_name": "Strahl",
@@ -4062,7 +4062,7 @@
     "boss_defeated_reward_message": "+1 GEISTKUGEL, weil du den Boss das erste Mal besiegt hast.",
     "achievement_complete_title": "Errungenschaft erhalten:",
     "multi_mystery_crate": "Du hast {{numCrates}} Überraschungstruhen gewonnen!",
-  	"one_mystery_crate": "Du hast eine Truhe vom Typ {{crateName}} gewonnen!"
+    "one_mystery_crate": "Du hast eine Truhe vom Typ {{crateName}} gewonnen!"
   },
   "rift": {
     "rift_title": "Das Portal",
@@ -4275,14 +4275,14 @@
     "frostfire_premium_2017_name": "Frostfeuer-Premium-Truhe",
     "frostfire_premium_2017_name_plural": "{{count}} Frostfeuer-Truhen",
     "frostfire_premium_2017_description": "Enthält eine exklusive kosmetische Festtagskarte, ein hübsches Häufchen Geist und zwei Geistkugeln (Unsterbliche Vorhut). Doppelte kosmetische Gegenstände werden in zusätzlichen Geist umgewandelt.",
-  	"F1_F5_STARTER_SPECIAL_name": "Starterpaket: Lyonar und Magmar",
-  	"F1_F5_STARTER_SPECIAL_description": "4 epische Karten, 8 seltene Karten und 2 Emotes für Lyonar und Magmar. Plus ein Kartenrücken.",
-  	"F2_F4_STARTER_SPECIAL_name": "Starterpaket: Songhai und Abyssian",
-  	"F2_F4_STARTER_SPECIAL_description": "4 epische Karten, 8 seltene Karten und 2 Emotes für Songhai und Abyssian. Plus ein Kartenrücken.",
-  	"F3_F6_STARTER_SPECIAL_name": "Starterpaket: Vetruvian und Vanar",
-  	"F3_F6_STARTER_SPECIAL_description": "4 epische Karten, 8 seltene Karten und 2 Emotes für Vetruvian und Vanar. Plus ein Kartenrücken.",
-  	"ALL_FACTIONS_STARTER_SPECIAL_name": "Megapaket mit allen Fraktionen",
-  	"ALL_FACTIONS_STARTER_SPECIAL_description": "12 epische Karten, 24 seltene Karten und 6 Emotes für alle Fraktionen! Plus ein Kartenrücken.",
+    "F1_F5_STARTER_SPECIAL_name": "Starterpaket: Lyonar und Magmar",
+    "F1_F5_STARTER_SPECIAL_description": "4 epische Karten, 8 seltene Karten und 2 Emotes für Lyonar und Magmar. Plus ein Kartenrücken.",
+    "F2_F4_STARTER_SPECIAL_name": "Starterpaket: Songhai und Abyssian",
+    "F2_F4_STARTER_SPECIAL_description": "4 epische Karten, 8 seltene Karten und 2 Emotes für Songhai und Abyssian. Plus ein Kartenrücken.",
+    "F3_F6_STARTER_SPECIAL_name": "Starterpaket: Vetruvian und Vanar",
+    "F3_F6_STARTER_SPECIAL_description": "4 epische Karten, 8 seltene Karten und 2 Emotes für Vetruvian und Vanar. Plus ein Kartenrücken.",
+    "ALL_FACTIONS_STARTER_SPECIAL_name": "Megapaket mit allen Fraktionen",
+    "ALL_FACTIONS_STARTER_SPECIAL_description": "12 epische Karten, 24 seltene Karten und 6 Emotes für alle Fraktionen! Plus ein Kartenrücken.",
     "view_cards_in_set": "Alle Karten im Set {{setName}} anzeigen"
   },
   "tutorial": {

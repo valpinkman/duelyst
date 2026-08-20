@@ -25,14 +25,21 @@ class ModifierMyAttackOrCounterattackWatchApplyModifiersToFriendlyMinions extend
 
   onMyAttackOrCounterattackWatch(action) {
     if (this.modifierContextObjects != null) {
-      const general = this.getCard().getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
-      const friendlyMinions = this.getGameSession().getBoard().getFriendlyEntitiesForEntity(general, CardType.Unit, true, false);
+      const general = this.getCard()
+        .getGameSession()
+        .getGeneralForPlayerId(this.getCard().getOwnerId());
+      const friendlyMinions = this.getGameSession()
+        .getBoard()
+        .getFriendlyEntitiesForEntity(general, CardType.Unit, true, false);
       return (() => {
         const result = [];
         for (var minion of Array.from<any>(friendlyMinions)) {
-          if ((this.raceId == null) || minion.getBelongsToTribe(this.raceId)) {
-            result.push(Array.from<any>(this.modifierContextObjects).map((modifierContextObject) =>
-              this.getGameSession().applyModifierContextObject(modifierContextObject, minion)));
+          if (this.raceId == null || minion.getBelongsToTribe(this.raceId)) {
+            result.push(
+              Array.from<any>(this.modifierContextObjects).map((modifierContextObject) =>
+                this.getGameSession().applyModifierContextObject(modifierContextObject, minion),
+              ),
+            );
           } else {
             result.push(undefined);
           }
@@ -42,8 +49,10 @@ class ModifierMyAttackOrCounterattackWatchApplyModifiersToFriendlyMinions extend
     }
   }
 }
-ModifierMyAttackOrCounterattackWatchApplyModifiersToFriendlyMinions.prototype.type = 'ModifierMyAttackOrCounterattackWatchApplyModifiersToFriendlyMinions';
-ModifierMyAttackOrCounterattackWatchApplyModifiersToFriendlyMinions.prototype.modifierContextObjects = null;
+ModifierMyAttackOrCounterattackWatchApplyModifiersToFriendlyMinions.prototype.type =
+  'ModifierMyAttackOrCounterattackWatchApplyModifiersToFriendlyMinions';
+ModifierMyAttackOrCounterattackWatchApplyModifiersToFriendlyMinions.prototype.modifierContextObjects =
+  null;
 ModifierMyAttackOrCounterattackWatchApplyModifiersToFriendlyMinions.prototype.raceId = null;
 
 module.exports = ModifierMyAttackOrCounterattackWatchApplyModifiersToFriendlyMinions;

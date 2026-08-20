@@ -37,4 +37,6 @@ RedisClient.on('connect', () => Logger.module('REDIS').debug('client onConnect')
 
 // Error event
 // TODO: We should probably do something if we receive an error
-RedisClient.on('error', (error) => Logger.module('REDIS').error(`client onError: ${error && error.message})`));
+RedisClient.on('error', (error) =>
+  Logger.module('REDIS').error(`client onError: ${error && error.message})`),
+);

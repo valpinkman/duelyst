@@ -25,7 +25,8 @@ class WorldExplorerAchievement extends Achievement {
     const playableFactionIds = _.map(playableFactions, (faction) => faction.id);
     for (var playableFactionId of Array.from<any>(playableFactionIds)) {
       var factionData = factionProgressionData[playableFactionId];
-      var factionGameCount = __guard__(factionData != null ? factionData.stats : undefined, (x) => x.game_count) || 0;
+      var factionGameCount =
+        __guard__(factionData != null ? factionData.stats : undefined, (x) => x.game_count) || 0;
       // If player has no game count or a 0 game count for any playable faction: return with no progress
       if (factionGameCount === 0) {
         // No games for this faction yet means no progress
@@ -43,5 +44,5 @@ WorldExplorerAchievement.description = i18next.t('achievements.world_explorer_de
 module.exports = WorldExplorerAchievement;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

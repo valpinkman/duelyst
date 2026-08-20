@@ -21,12 +21,16 @@ class TeleportAction extends Action {
    * Returns whether this was a valid teleport, i.e. whether source and target positions are different.
    * NOTE: in some teleport action subclasses, this may only return reliable values after execution!
    * @returns {Boolean}
-  */
+   */
   getIsValidTeleport() {
     const targetPosition = this.getTargetPosition();
     if (targetPosition != null) {
       const sourcePosition = this.getSourcePosition();
-      if ((sourcePosition == null) || (sourcePosition.x !== targetPosition.x) || (sourcePosition.y !== targetPosition.y)) {
+      if (
+        sourcePosition == null ||
+        sourcePosition.x !== targetPosition.x ||
+        sourcePosition.y !== targetPosition.y
+      ) {
         return true;
       }
     }
@@ -41,7 +45,13 @@ class TeleportAction extends Action {
     const targetPosition = this.getTargetPosition();
 
     // at execution time, make sure the target position is unoccupied and on the board
-    if ((unit != null) && unit.getIsActive() && (targetPosition != null) && !board.getObstructionAtPositionForEntity(targetPosition, unit) && board.isOnBoard(targetPosition)) {
+    if (
+      unit != null &&
+      unit.getIsActive() &&
+      targetPosition != null &&
+      !board.getObstructionAtPositionForEntity(targetPosition, unit) &&
+      board.isOnBoard(targetPosition)
+    ) {
       // Logger.module("SDK").debug "[G:#{@.getGameSession().gameId}]", "TeleportAction::execute - moving unit #{JSON.stringify(unit?.getLogName())} to #{targetPosition.x}, #{targetPosition.y}"
       return unit.setPosition(targetPosition);
     }

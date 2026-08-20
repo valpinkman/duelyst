@@ -66,7 +66,9 @@ class CardFactory_Monthly_M4_Replace {
         damage: RSX.neutralWhiteWidowHit.name,
         death: RSX.neutralWhiteWidowDeath.name,
       });
-      card.setInherentModifiersContextObjects([ModifierReplaceWatchDamageEnemy.createContextObject(2)]);
+      card.setInherentModifiersContextObjects([
+        ModifierReplaceWatchDamageEnemy.createContextObject(2),
+      ]);
       card.atk = 3;
       card.maxHP = 4;
       card.manaCost = 4;
@@ -98,10 +100,19 @@ class CardFactory_Monthly_M4_Replace {
         damage: RSX.neutralWingsOfParadiseHit.name,
         death: RSX.neutralWingsOfParadiseDeath.name,
       });
-      const replaceWatchContextObject = ModifierReplaceWatchBuffSelf.createContextObject(2, 0, '+2 Attack this turn');
-      replaceWatchContextObject.modifiersContextObjects[0].appliedName = i18next.t('modifiers.neutral_wings_of_paradise_modifier');
+      const replaceWatchContextObject = ModifierReplaceWatchBuffSelf.createContextObject(
+        2,
+        0,
+        '+2 Attack this turn',
+      );
+      replaceWatchContextObject.modifiersContextObjects[0].appliedName = i18next.t(
+        'modifiers.neutral_wings_of_paradise_modifier',
+      );
       replaceWatchContextObject.modifiersContextObjects[0].durationEndTurn = 1;
-      card.setInherentModifiersContextObjects([ModifierFlying.createContextObject(), replaceWatchContextObject]);
+      card.setInherentModifiersContextObjects([
+        ModifierFlying.createContextObject(),
+        replaceWatchContextObject,
+      ]);
       card.atk = 3;
       card.maxHP = 3;
       card.manaCost = 3;
@@ -136,7 +147,9 @@ class CardFactory_Monthly_M4_Replace {
         damage: RSX.neutralAstralCrusaderHit.name,
         death: RSX.neutralAstralCrusaderDeath.name,
       });
-      card.setInherentModifiersContextObjects([ModifierBuffSelfOnReplace.createContextObject(3, 3, -3, 'it costs 3 less and gains +3/+3')]);
+      card.setInherentModifiersContextObjects([
+        ModifierBuffSelfOnReplace.createContextObject(3, 3, -3, 'it costs 3 less and gains +3/+3'),
+      ]);
       card.atk = 7;
       card.maxHP = 6;
       card.manaCost = 7;

@@ -78,7 +78,9 @@ class CardFactory_BloodstormSet_Faction6 {
       card.maxHP = 3;
       card.manaCost = 3;
       card.rarityId = Rarity.Common;
-      card.setInherentModifiersContextObjects([ModifierSynergizeSpawnVanarToken.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierSynergizeSpawnVanarToken.createContextObject(),
+      ]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
     }
 
@@ -112,7 +114,9 @@ class CardFactory_BloodstormSet_Faction6 {
       card.atk = 3;
       card.maxHP = 6;
       card.manaCost = 4;
-      card.setInherentModifiersContextObjects([ModifierKillWatchRefreshExhaustion.createContextObject(false, true)]);
+      card.setInherentModifiersContextObjects([
+        ModifierKillWatchRefreshExhaustion.createContextObject(false, true),
+      ]);
       card.rarityId = Rarity.Rare;
     }
 
@@ -129,10 +133,10 @@ class CardFactory_BloodstormSet_Faction6 {
       card.applyToOwnGeneral = true;
       const immunityModifierContextObject = ModifierImmuneToDamage.createContextObject();
       immunityModifierContextObject.durationEndTurn = 2;
-      immunityModifierContextObject.appliedName = i18next.t('modifiers.faction_6_spell_concealing_shroud_1');
-      card.setTargetModifiersContextObjects([
-        immunityModifierContextObject,
-      ]);
+      immunityModifierContextObject.appliedName = i18next.t(
+        'modifiers.faction_6_spell_concealing_shroud_1',
+      );
+      card.setTargetModifiersContextObjects([immunityModifierContextObject]);
       card.setFXResource(['FX.Cards.Spell.ElementalFury']);
       card.setBaseSoundResource({
         apply: RSX.sfx_neutral_dancingblades_death.audio,
@@ -226,7 +230,9 @@ class CardFactory_BloodstormSet_Faction6 {
       card.maxHP = 5;
       card.manaCost = 8;
       card.rarityId = Rarity.Legendary;
-      card.setInherentModifiersContextObjects([ModifierOpeningGambitSpawnVanarTokensAroundGeneral.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierOpeningGambitSpawnVanarTokensAroundGeneral.createContextObject(),
+      ]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
     }
 

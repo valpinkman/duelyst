@@ -23,17 +23,18 @@ class SpellBloodRage extends SpellApplyModifiers {
       actions = actions.concat(step.getAction().getFlattenedActionTree());
     }
     for (var action of Array.from<any>(actions)) {
-      if (action instanceof DamageAction && (action.getTotalDamageAmount() > 0)) {
+      if (action instanceof DamageAction && action.getTotalDamageAmount() > 0) {
         damageCount++;
       }
     }
 
     if (damageCount > 0) {
-      const statContextObject = Modifier.createContextObjectWithAttributeBuffs(damageCount, damageCount);
+      const statContextObject = Modifier.createContextObjectWithAttributeBuffs(
+        damageCount,
+        damageCount,
+      );
       statContextObject.appliedName = 'Enraged';
-      this.setTargetModifiersContextObjects([
-        statContextObject,
-      ]);
+      this.setTargetModifiersContextObjects([statContextObject]);
 
       return super.onApplyEffectToBoardTile(board, x, y, sourceAction); // apply buff
     }

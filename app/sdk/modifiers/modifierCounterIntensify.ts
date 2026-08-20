@@ -25,7 +25,9 @@ class ModifierCounterIntensify extends ModifierCounter {
 
   onActivate() {
     let intensifyCount = 1;
-    const relevantActions = this.getGameSession().filterActions(this.getIsActionRelevant.bind(this));
+    const relevantActions = this.getGameSession().filterActions(
+      this.getIsActionRelevant.bind(this),
+    );
     if (relevantActions != null) {
       intensifyCount += relevantActions.length;
     }
@@ -36,23 +38,31 @@ class ModifierCounterIntensify extends ModifierCounter {
   updateCountIfNeeded() {
     if (this._private.currentCount !== this._private.previousCount) {
       this.removeSubModifiers();
-      this.getGameSession().applyModifierContextObject(this.getModifierContextObjectToApply(), this.getCard(), this);
-      return this._private.previousCount = this._private.currentCount;
+      this.getGameSession().applyModifierContextObject(
+        this.getModifierContextObjectToApply(),
+        this.getCard(),
+        this,
+      );
+      return (this._private.previousCount = this._private.currentCount);
     }
   }
 
   getModifierContextObjectToApply() {
-    const modContextObject = ModifierCounterIntensifyDescription.createContextObject(this._private.currentCount);
+    const modContextObject = ModifierCounterIntensifyDescription.createContextObject(
+      this._private.currentCount,
+    );
     modContextObject.appliedName = i18next.t('modifiers.intensify_counter_applied_name');
     return modContextObject;
   }
 
   onAfterAction(event) {
     super.onAfterAction(event);
-    const {
-      action,
-    } = event;
-    if (action instanceof ApplyCardToBoardAction && (action.getOwnerId() === this.getOwnerId()) && (action.getCard().getBaseCardId() === this.getCard().getBaseCardId())) {
+    const { action } = event;
+    if (
+      action instanceof ApplyCardToBoardAction &&
+      action.getOwnerId() === this.getOwnerId() &&
+      action.getCard().getBaseCardId() === this.getCard().getBaseCardId()
+    ) {
       this._private.currentCount++;
       return this.updateCountIfNeeded();
     }
@@ -60,7 +70,11 @@ class ModifierCounterIntensify extends ModifierCounter {
 
   getIsActionRelevant(action) {
     // instances playing card this is attached to
-    if (action instanceof ApplyCardToBoardAction && (action.getOwnerId() === this.getOwnerId()) && (action.getCard().getBaseCardId() === this.getCard().getBaseCardId())) {
+    if (
+      action instanceof ApplyCardToBoardAction &&
+      action.getOwnerId() === this.getOwnerId() &&
+      action.getCard().getBaseCardId() === this.getCard().getBaseCardId()
+    ) {
       return true;
     }
     return false;

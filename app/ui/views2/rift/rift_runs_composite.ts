@@ -11,7 +11,6 @@ var RiftRunsEmptyView = require('./rift_runs_empty');
 var Templ = require('./templates/rift_runs_composite.hbs');
 
 var RiftRunsComposite = SlidingPanelSelectCompositeView.extend({
-
   tagName: 'div',
   className: 'sliding-panel-select rift-runs',
   template: Templ,
@@ -37,11 +36,15 @@ var RiftRunsComposite = SlidingPanelSelectCompositeView.extend({
       return InventoryManager.getInstance().hasAnyBattleMapCosmetics();
     },
     hasAnyStoredRiftUpgrades: function () {
-      var storedUpgradeCount = ProfileManager.getInstance().profile.get('rift_stored_upgrade_count');
+      var storedUpgradeCount = ProfileManager.getInstance().profile.get(
+        'rift_stored_upgrade_count',
+      );
       return storedUpgradeCount != null && storedUpgradeCount != 0;
     },
     getStoredRiftUpgradesCount: function () {
-      var storedUpgradeCount = ProfileManager.getInstance().profile.get('rift_stored_upgrade_count');
+      var storedUpgradeCount = ProfileManager.getInstance().profile.get(
+        'rift_stored_upgrade_count',
+      );
       return storedUpgradeCount || 0;
     },
   },
@@ -53,24 +56,38 @@ var RiftRunsComposite = SlidingPanelSelectCompositeView.extend({
     Scene.getInstance().showContentByClass(RiftDeckSelectLayer, true);
 
     // change fx
-    Scene.getInstance().getFX().showGradientColorMap(this._requestId, CONFIG.ANIMATE_FAST_DURATION, {
-      r: 255, g: 0, b: 0, a: 255,
-    }, {
-      r: 0, g: 0, b: 0, a: 255,
-    });
+    Scene.getInstance().getFX().showGradientColorMap(
+      this._requestId,
+      CONFIG.ANIMATE_FAST_DURATION,
+      {
+        r: 255,
+        g: 0,
+        b: 0,
+        a: 255,
+      },
+      {
+        r: 0,
+        g: 0,
+        b: 0,
+        a: 255,
+      },
+    );
 
     var riftRunModels = [];
     if (this.collection != null && this.collection.models != null) {
       riftRunModels = this.collection.models;
     }
 
-    var canClaimFreeTicket = !InventoryManager.getInstance().hasUnusedRiftTicket() && (riftRunModels.length == 0);
+    var canClaimFreeTicket =
+      !InventoryManager.getInstance().hasUnusedRiftTicket() && riftRunModels.length == 0;
 
     if (InventoryManager.getInstance().hasUnusedRiftTicket() || canClaimFreeTicket) {
       this.ui.$start_new_run_container_existing.removeClass('hide');
     } else {
       this.ui.$start_new_run_container_buy.removeClass('hide');
-      if (InventoryManager.getInstance().getWalletModelGoldAmount() < CONFIG.RIFT_TICKET_GOLD_PRICE) {
+      if (
+        InventoryManager.getInstance().getWalletModelGoldAmount() < CONFIG.RIFT_TICKET_GOLD_PRICE
+      ) {
         this.ui.$start_new_run_button_with_gold.addClass('disabled');
       }
     }
@@ -78,9 +95,10 @@ var RiftRunsComposite = SlidingPanelSelectCompositeView.extend({
 
   onPrepareForDestroy: function () {
     // reset fx
-    Scene.getInstance().getFX().clearGradientColorMap(this._requestId, CONFIG.ANIMATE_MEDIUM_DURATION);
+    Scene.getInstance()
+      .getFX()
+      .clearGradientColorMap(this._requestId, CONFIG.ANIMATE_MEDIUM_DURATION);
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

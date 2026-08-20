@@ -20,11 +20,14 @@ class ModifierDoomed extends ModifierEndTurnWatch {
   onTurnWatch() {
     super.onTurnWatch();
 
-    if (this.numEndTurnsElapsed > 1) { // don't kill self on same end turn this modifier was applied!
+    if (this.numEndTurnsElapsed > 1) {
+      // don't kill self on same end turn this modifier was applied!
       const entityToKill = this.getCard();
       const killAction = new KillAction(this.getGameSession());
       killAction.setOwnerId(this.getCard().getOwnerId());
-      killAction.setSource(this.getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId()));
+      killAction.setSource(
+        this.getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId()),
+      );
       killAction.setTarget(entityToKill);
       this.getGameSession().executeAction(killAction);
       return this.getGameSession().removeModifier(this);

@@ -48,10 +48,7 @@ class BeginnerVanarChallenge1 extends Challenge {
   }
 
   getOpponentPlayerDeckData(gameSession) {
-    return [
-      { id: Cards.Faction3.General },
-      { id: Cards.TutorialSpell.TutorialFireOrb },
-    ];
+    return [{ id: Cards.Faction3.General }, { id: Cards.TutorialSpell.TutorialFireOrb }];
   }
 
   setupBoard(gameSession) {
@@ -76,31 +73,49 @@ class BeginnerVanarChallenge1 extends Challenge {
     this.applyCardToBoard({ id: Cards.Faction3.StarfireScarab }, 4, 2, opponentPlayerId);
     this.applyCardToBoard({ id: Cards.Faction3.Dervish }, 5, 3, opponentPlayerId);
     this.applyCardToBoard({ id: Cards.Faction3.PortalGuardian }, 5, 2, opponentPlayerId);
-    const dunecasterUnit = this.applyCardToBoard({ id: Cards.Faction3.Dunecaster }, 6, 3, opponentPlayerId);
+    const dunecasterUnit = this.applyCardToBoard(
+      { id: Cards.Faction3.Dunecaster },
+      6,
+      3,
+      opponentPlayerId,
+    );
     return this.applyCardToBoard(dunecasterUnit.getCurrentFollowupCard(), 5, 3, opponentPlayerId);
   }
 
   setupOpponentAgent(gameSession) {
     super.setupOpponentAgent(gameSession);
 
-    this._opponentAgent.addActionForTurn(0, AgentActions.createAgentSoftActionShowInstructionLabels([{
-      label: i18next.t('challenges.beginner_vanar_1_taunt'),
-      isSpeech: true,
-      yPosition: 0.6,
-      isPersistent: true,
-      isOpponent: true,
-    },
-    ]));
-    return this._opponentAgent.addActionForTurn(0, AgentActions.createAgentActionPlayCardFindPosition(0, () => [GameSession.getInstance().getGeneralForPlayer1().getPosition()]));
+    this._opponentAgent.addActionForTurn(
+      0,
+      AgentActions.createAgentSoftActionShowInstructionLabels([
+        {
+          label: i18next.t('challenges.beginner_vanar_1_taunt'),
+          isSpeech: true,
+          yPosition: 0.6,
+          isPersistent: true,
+          isOpponent: true,
+        },
+      ]),
+    );
+    return this._opponentAgent.addActionForTurn(
+      0,
+      AgentActions.createAgentActionPlayCardFindPosition(0, () => [
+        GameSession.getInstance().getGeneralForPlayer1().getPosition(),
+      ]),
+    );
   }
 }
 BeginnerVanarChallenge1.prototype.type = 'BeginnerVanarChallenge1';
 BeginnerVanarChallenge1.prototype.categoryType = ChallengeCategory.vault1.type;
 BeginnerVanarChallenge1.prototype.name = i18next.t('challenges.beginner_vanar_1_title');
-BeginnerVanarChallenge1.prototype.description = i18next.t('challenges.beginner_vanar_1_description');
+BeginnerVanarChallenge1.prototype.description = i18next.t(
+  'challenges.beginner_vanar_1_description',
+);
 BeginnerVanarChallenge1.prototype.iconUrl = RSX.speech_portrait_vanar.img;
 BeginnerVanarChallenge1.prototype._musicOverride = RSX.music_battlemap_vanar.audio;
-BeginnerVanarChallenge1.prototype.otkChallengeStartMessage = i18next.t('challenges.beginner_vanar_1_start');
+BeginnerVanarChallenge1.prototype.otkChallengeStartMessage = i18next.t(
+  'challenges.beginner_vanar_1_start',
+);
 BeginnerVanarChallenge1.prototype.otkChallengeFailureMessages = [
   i18next.t('challenges.beginner_vanar_1_fail'),
 ];

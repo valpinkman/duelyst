@@ -27,11 +27,16 @@ class SpellEvilXerox extends SpellSpawnEntity {
         }
         for (var action of Array.from<any>(actions)) {
           for (var subaction of Array.from<any>(action)) {
-            if (subaction instanceof PlayCardFromHandAction
-            && (__guard__(__guard__(subaction.getCard(), (x2) => x2.getRootCard()), (x1) => x1.getType()) === CardType.Unit)
-            && (subaction.getCard().getRootCard() === subaction.getCard())
-            && !subaction.getIsImplicit()
-            && (subaction.getOwnerId() !== this.getOwnerId())) {
+            if (
+              subaction instanceof PlayCardFromHandAction &&
+              __guard__(
+                __guard__(subaction.getCard(), (x2) => x2.getRootCard()),
+                (x1) => x1.getType(),
+              ) === CardType.Unit &&
+              subaction.getCard().getRootCard() === subaction.getCard() &&
+              !subaction.getIsImplicit() &&
+              subaction.getOwnerId() !== this.getOwnerId()
+            ) {
               minions.push(__guard__(subaction.getCard(), (x3) => x3.getRootCard()));
             }
           }
@@ -40,7 +45,10 @@ class SpellEvilXerox extends SpellSpawnEntity {
 
       if (minions.length > 0) {
         const cardToSpawn = minions[minions.length - 1].createNewCardData();
-        cardToSpawn.additionalModifiersContextObjects = [ModifierFirstBlood.createContextObject(), ModifierFlying.createContextObject()];
+        cardToSpawn.additionalModifiersContextObjects = [
+          ModifierFirstBlood.createContextObject(),
+          ModifierFlying.createContextObject(),
+        ];
         this.cardDataOrIndexToSpawn = cardToSpawn;
         return super.onApplyEffectToBoardTile(board, x, y, sourceAction);
       }
@@ -52,5 +60,5 @@ SpellEvilXerox.prototype.spawnSilently = true;
 module.exports = SpellEvilXerox;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

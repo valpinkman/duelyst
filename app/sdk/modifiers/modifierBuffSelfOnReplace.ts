@@ -21,10 +21,18 @@ class ModifierBuffSelfOnReplace extends Modifier {
   static modifierName = 'Buff Self On Replace';
 
   static createContextObject(attackBuff, maxHPBuff, costChange, description, options) {
-    if (attackBuff == null) { attackBuff = 0; }
-    if (maxHPBuff == null) { maxHPBuff = 0; }
-    if (costChange == null) { costChange = 0; }
-    if (options == null) { options = undefined; }
+    if (attackBuff == null) {
+      attackBuff = 0;
+    }
+    if (maxHPBuff == null) {
+      maxHPBuff = 0;
+    }
+    if (costChange == null) {
+      costChange = 0;
+    }
+    if (options == null) {
+      options = undefined;
+    }
     const contextObject = super.createContextObject(options);
     const statsBuff = Modifier.createContextObjectWithAttributeBuffs(attackBuff, maxHPBuff);
     statsBuff.appliedName = i18next.t('modifiers.buff_self_on_replace_name');
@@ -45,15 +53,21 @@ class ModifierBuffSelfOnReplace extends Modifier {
   onAction(e) {
     super.onAction(e);
 
-    const {
-      action,
-    } = e;
+    const { action } = e;
 
     // watch for my player replacing THIS card
-    if (action instanceof ReplaceCardFromHandAction && (action.getOwnerId() === this.getCard().getOwnerId())) {
-      const replacedCard = this.getGameSession().getExistingCardFromIndexOrCreateCardFromData(action.replacedCardIndex);
+    if (
+      action instanceof ReplaceCardFromHandAction &&
+      action.getOwnerId() === this.getCard().getOwnerId()
+    ) {
+      const replacedCard = this.getGameSession().getExistingCardFromIndexOrCreateCardFromData(
+        action.replacedCardIndex,
+      );
       if (replacedCard === this.getCard()) {
-        return this.applyManagedModifiersFromModifiersContextObjects(this.modifiersContextObjects, this.getCard());
+        return this.applyManagedModifiersFromModifiersContextObjects(
+          this.modifiersContextObjects,
+          this.getCard(),
+        );
       }
     }
   }

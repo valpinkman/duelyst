@@ -4,7 +4,6 @@ var NavigationManager = require('app/ui/managers/navigation_manager');
 var CraftingRewardsDialogItemViewTempl = require('./templates/crafting_rewards_dialog.hbs');
 
 var CraftingRewardsDialogItemView = Backbone.Marionette.ItemView.extend({
-
   id: 'crafting-rewards-dialog',
   className: 'modal prompt-modal',
 
@@ -27,7 +26,6 @@ var CraftingRewardsDialogItemView = Backbone.Marionette.ItemView.extend({
     NavigationManager.getInstance().destroyDialogView();
     this.trigger('cancel');
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

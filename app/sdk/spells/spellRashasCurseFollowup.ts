@@ -11,8 +11,14 @@ const RemoveRandomArtifactAction = require('app/sdk/actions/removeRandomArtifact
 
 class SpellRashasCurseFollowup extends SpellSpawnEntity {
   getValidTargetPositions() {
-    if ((this._private.cachedValidTargetPositions == null)) {
-      this._private.cachedValidTargetPositions = this._filterPlayPositions(UtilsGameSession.getValidBoardPositionsFromPattern(this.getGameSession().getBoard(), this.getFollowupSourcePosition(), this.getFollowupSourcePattern()));
+    if (this._private.cachedValidTargetPositions == null) {
+      this._private.cachedValidTargetPositions = this._filterPlayPositions(
+        UtilsGameSession.getValidBoardPositionsFromPattern(
+          this.getGameSession().getBoard(),
+          this.getFollowupSourcePosition(),
+          this.getFollowupSourcePattern(),
+        ),
+      );
     }
     return this._private.cachedValidTargetPositions;
   }

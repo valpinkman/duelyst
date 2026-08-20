@@ -1,5 +1,4 @@
-let
-  RedisInviteQueue;
+let RedisInviteQueue;
 const _ = require('underscore');
 const crypto = require('crypto');
 const Logger = require('../../app/common/logger');
@@ -15,7 +14,7 @@ const keyPrefix = () => `${env}:matchmaking:`;
  * Manages invites in Redis in a list structure
  * New list is created for each inviteId
  */
-module.exports = (RedisInviteQueue = class RedisInviteQueue {
+module.exports = RedisInviteQueue = class RedisInviteQueue {
   declare list: any;
   declare redis: any;
   /**
@@ -73,12 +72,12 @@ module.exports = (RedisInviteQueue = class RedisInviteQueue {
     const inviteKey = `${this.list}:${inviteId}`;
     return this.redis.lrange(inviteKey, 0, -1);
   }
-});
+};
 
 /**
  * Export a factory
  */
-module.exports = (exports = function (redis) {
+module.exports = exports = function (redis) {
   const InviteQueue = new RedisInviteQueue(redis);
   return InviteQueue;
-});
+};

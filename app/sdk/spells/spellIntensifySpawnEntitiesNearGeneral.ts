@@ -18,16 +18,34 @@ class SpellIntensifySpawnEntitiesNearGeneral extends SpellIntensify {
   onApplyOneEffectToBoard(board, x, y, sourceAction) {
     super.onApplyOneEffectToBoard(board, x, y, sourceAction);
 
-    if (this.getGameSession().getIsRunningAsAuthoritative() && (this.cardDataOrIndexToSpawn != null)) {
+    if (
+      this.getGameSession().getIsRunningAsAuthoritative() &&
+      this.cardDataOrIndexToSpawn != null
+    ) {
       const myGeneral = this.getGameSession().getGeneralForPlayerId(this.getOwnerId());
       const totalNumberToSpawn = this.numberToSummon * this.getIntensifyAmount();
-      const card = this.getGameSession().getExistingCardFromIndexOrCreateCardFromData(this.cardDataOrIndexToSpawn);
-      const spawnLocations = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(this.getGameSession(), myGeneral.getPosition(), CONFIG.PATTERN_3x3, card, this, totalNumberToSpawn);
+      const card = this.getGameSession().getExistingCardFromIndexOrCreateCardFromData(
+        this.cardDataOrIndexToSpawn,
+      );
+      const spawnLocations = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(
+        this.getGameSession(),
+        myGeneral.getPosition(),
+        CONFIG.PATTERN_3x3,
+        card,
+        this,
+        totalNumberToSpawn,
+      );
 
       return (() => {
         const result = [];
         for (var location of Array.from<any>(spawnLocations)) {
-          var spawnAction = new PlayCardSilentlyAction(this.getGameSession(), this.getOwnerId(), location.x, location.y, this.cardDataOrIndexToSpawn);
+          var spawnAction = new PlayCardSilentlyAction(
+            this.getGameSession(),
+            this.getOwnerId(),
+            location.x,
+            location.y,
+            this.cardDataOrIndexToSpawn,
+          );
           spawnAction.setSource(this);
           result.push(this.getGameSession().executeAction(spawnAction));
         }

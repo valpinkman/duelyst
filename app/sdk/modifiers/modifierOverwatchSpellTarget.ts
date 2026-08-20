@@ -23,10 +23,23 @@ class ModifierOverwatchSpellTarget extends ModifierOverwatch {
   }
 
   getIsActionRelevant(action) {
-    if ((this.getCard() != null) && (action.getOwner() === this.getGameSession().getOpponentPlayerOfPlayerId(this.getCard().getOwnerId())) && action instanceof ApplyCardToBoardAction && action.getIsValid() && UtilsPosition.getPositionsAreEqual(this.getCard().getPosition(), action.getTargetPosition())) { // may be trying to target this unit
+    if (
+      this.getCard() != null &&
+      action.getOwner() ===
+        this.getGameSession().getOpponentPlayerOfPlayerId(this.getCard().getOwnerId()) &&
+      action instanceof ApplyCardToBoardAction &&
+      action.getIsValid() &&
+      UtilsPosition.getPositionsAreEqual(this.getCard().getPosition(), action.getTargetPosition())
+    ) {
+      // may be trying to target this unit
       const card = action.getCard();
       // is this in fact an enemy spell directly trying to target this unit? (not this space, not multiple spaces - directly targeting this unit)
-      if ((card != null) && (__guard__(card.getRootCard(), (x) => x.type) === CardType.Spell) && !card.getTargetsSpace() && !card.getAppliesSameEffectToMultipleTargets()) {
+      if (
+        card != null &&
+        __guard__(card.getRootCard(), (x) => x.type) === CardType.Spell &&
+        !card.getTargetsSpace() &&
+        !card.getAppliesSameEffectToMultipleTargets()
+      ) {
         return true;
       }
     }
@@ -38,5 +51,5 @@ ModifierOverwatchSpellTarget.prototype.type = 'ModifierOverwatchSpellTarget';
 module.exports = ModifierOverwatchSpellTarget;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

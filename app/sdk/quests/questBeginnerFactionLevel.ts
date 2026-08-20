@@ -12,12 +12,17 @@ class QuestBeginnerFactionLevel extends QuestBeginner {
   static Identifier = 9906;
 
   constructor() {
-    super(QuestBeginnerFactionLevel.Identifier, i18next.t('quests.quest_beginner_faction_up_title'), [QuestType.Beginner], QuestBeginnerFactionLevel.prototype.goldReward);
+    super(
+      QuestBeginnerFactionLevel.Identifier,
+      i18next.t('quests.quest_beginner_faction_up_title'),
+      [QuestType.Beginner],
+      QuestBeginnerFactionLevel.prototype.goldReward,
+    );
     this.params.completionProgress = 1;
   }
 
   progressForProgressedFactionData(progressedFactionData) {
-    if (progressedFactionData && (progressedFactionData.level >= 9)) {
+    if (progressedFactionData && progressedFactionData.level >= 9) {
       return 1;
     }
     return 0;

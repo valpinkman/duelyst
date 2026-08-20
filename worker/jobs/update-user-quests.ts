@@ -27,7 +27,9 @@ module.exports = function (job, done) {
     return done(new Error('User ID is not defined.'));
   }
 
-  Logger.module('JOB').debug(`[J:${job.id}] Update User (${userId}) Quests for game ${gameId} starting`);
+  Logger.module('JOB').debug(
+    `[J:${job.id}] Update User (${userId}) Quests for game ${gameId} starting`,
+  );
   Logger.module('JOB').time(`[J:${job.id}] Update User (${userId}) Quests for game ${gameId}`);
 
   return GameManager.loadGameSession(gameId)
@@ -38,8 +40,11 @@ module.exports = function (job, done) {
       } else {
         return QuestsModule.updateQuestProgressWithGame(userId, gameId, gameSessionData);
       }
-    }).then(function () {
-      Logger.module('JOB').timeEnd(`[J:${job.id}] Update User (${userId}) Quests for game ${gameId}`);
+    })
+    .then(function () {
+      Logger.module('JOB').timeEnd(
+        `[J:${job.id}] Update User (${userId}) Quests for game ${gameId}`,
+      );
       return done();
     })
     .catch((error) => done(error));

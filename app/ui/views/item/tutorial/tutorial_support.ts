@@ -15,7 +15,6 @@ var FXRipplingGlowImageMapSprite = require('app/view/nodes/fx/FXRipplingGlowImag
  * Abstract view for tutorial support UI such as intro, restart, etc.
  */
 var TutorialSupportView = Backbone.Marionette.ItemView.extend({
-
   className: 'status tutorial-support',
 
   animateIn: Animations.fadeIn,
@@ -32,18 +31,22 @@ var TutorialSupportView = Backbone.Marionette.ItemView.extend({
     this.onResize();
 
     // show engine nodes
-    this.whenRequiredResourcesReady().then(function (requestId) {
-      if (!this.getAreResourcesValid(requestId)) return; // resources invalidated
-      this._showEngineNodes(CONFIG.VIEW_TRANSITION_DURATION);
-    }.bind(this));
+    this.whenRequiredResourcesReady().then(
+      function (requestId) {
+        if (!this.getAreResourcesValid(requestId)) return; // resources invalidated
+        this._showEngineNodes(CONFIG.VIEW_TRANSITION_DURATION);
+      }.bind(this),
+    );
   },
 
   onPrepareForDestroy: function () {
     // destroy engine nodes
-    this.whenRequiredResourcesReady().then(function (requestId) {
-      if (!this.getAreResourcesValid(requestId)) return; // resources invalidated
-      this._destroyEngineNodes(CONFIG.VIEW_TRANSITION_DURATION);
-    }.bind(this));
+    this.whenRequiredResourcesReady().then(
+      function (requestId) {
+        if (!this.getAreResourcesValid(requestId)) return; // resources invalidated
+        this._destroyEngineNodes(CONFIG.VIEW_TRANSITION_DURATION);
+      }.bind(this),
+    );
   },
 
   onDestroy: function () {
@@ -109,7 +112,6 @@ var TutorialSupportView = Backbone.Marionette.ItemView.extend({
   },
 
   /* endregion ENGINE */
-
 });
 
 // Expose the class either via CommonJS or the global object

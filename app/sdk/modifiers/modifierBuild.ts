@@ -36,19 +36,37 @@ class ModifierBuild extends Modifier {
   }
 
   onModifyActionForExecution(event) {
-    const {
-      action,
-    } = event;
-    if ((action != null) && action instanceof PlayCardFromHandAction && action.getIsValid() && (action.getCard() === this.getCard())) {
+    const { action } = event;
+    if (
+      action != null &&
+      action instanceof PlayCardFromHandAction &&
+      action.getIsValid() &&
+      action.getCard() === this.getCard()
+    ) {
       for (var mod of Array.from<any>(this.getCard().getModifiers())) {
         // find all non-inherent modifiers added to this unit in hand (can ignore mana modifiers as they are deleted upon the unit being played)
-        if (!(mod.getIsInherent() || mod.getIsAdditionalInherent()) && (mod.getType() !== ModifierManaCostChange.type)) {
-          for (var additionalInherentModifiersContextObject of Array.from<any>(this.buildCardData.additionalInherentModifiersContextObjects)) {
-            var additionalMod = this.getGameSession().getOrCreateModifierFromContextObjectOrIndex(additionalInherentModifiersContextObject);
+        if (
+          !(mod.getIsInherent() || mod.getIsAdditionalInherent()) &&
+          mod.getType() !== ModifierManaCostChange.type
+        ) {
+          for (var additionalInherentModifiersContextObject of Array.from<any>(
+            this.buildCardData.additionalInherentModifiersContextObjects,
+          )) {
+            var additionalMod = this.getGameSession().getOrCreateModifierFromContextObjectOrIndex(
+              additionalInherentModifiersContextObject,
+            );
             // find the sentinel modifier context object, and add the hand buffs so that they will transfer to the TRANSFORMED unit after sentinel triggers
             if (additionalMod instanceof ModifierBuilding) {
-              if (additionalInherentModifiersContextObject.transformCardData.additionalModifiersContextObjects == null) { additionalInherentModifiersContextObject.transformCardData.additionalModifiersContextObjects = []; }
-              additionalInherentModifiersContextObject.transformCardData.additionalModifiersContextObjects.push(mod.createContextObjectForClone());
+              if (
+                additionalInherentModifiersContextObject.transformCardData
+                  .additionalModifiersContextObjects == null
+              ) {
+                additionalInherentModifiersContextObject.transformCardData.additionalModifiersContextObjects =
+                  [];
+              }
+              additionalInherentModifiersContextObject.transformCardData.additionalModifiersContextObjects.push(
+                mod.createContextObjectForClone(),
+              );
             }
           }
         }
@@ -56,7 +74,9 @@ class ModifierBuild extends Modifier {
       if (Cards.getIsPrismaticCardId(this.getCard().getId())) {
         this.buildCardData.id = Cards.getPrismaticCardId(this.buildCardData.id);
       }
-      const newCard = this.getGameSession().getExistingCardFromIndexOrCreateCardFromData(this.buildCardData);
+      const newCard = this.getGameSession().getExistingCardFromIndexOrCreateCardFromData(
+        this.buildCardData,
+      );
       newCard.ownerId = this.getCard().getOwnerId();
       // re-index card here as card has changed from original card played from hand
       // cards are normally indexed as soon as action is verified valid by game session, but we are swapping card being played from hand

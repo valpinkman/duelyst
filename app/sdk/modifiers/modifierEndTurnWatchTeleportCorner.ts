@@ -24,7 +24,9 @@ class ModifierEndTurnWatchTeleportCorner extends ModifierEndTurnWatch {
     randomTeleportAction.setOwnerId(this.getCard().getOwnerId());
     randomTeleportAction.setSource(this.getCard());
     randomTeleportAction.setTeleportPattern(CONFIG.PATTERN_CORNERS);
-    randomTeleportAction.setFXResource(_.union(randomTeleportAction.getFXResource(), this.getFXResource()));
+    randomTeleportAction.setFXResource(
+      _.union(randomTeleportAction.getFXResource(), this.getFXResource()),
+    );
     return this.getGameSession().executeAction(randomTeleportAction);
   }
 }

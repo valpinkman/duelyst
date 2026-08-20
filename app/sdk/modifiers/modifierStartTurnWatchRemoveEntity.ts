@@ -27,5 +27,5 @@ ModifierStartTurnWatchRemoveEntity.prototype.type = 'ModifierStartTurnWatchRemov
 module.exports = ModifierStartTurnWatchRemoveEntity;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

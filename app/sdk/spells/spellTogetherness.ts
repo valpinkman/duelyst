@@ -20,7 +20,7 @@ class SpellTogetherness extends Spell {
     return (() => {
       const result = [];
       for (var unit of Array.from<any>(unitsNearby)) {
-        if ((unit != null) && !unit.getIsGeneral() && (unit.getOwnerId() === this.getOwnerId())) {
+        if (unit != null && !unit.getIsGeneral() && unit.getOwnerId() === this.getOwnerId()) {
           var action = player.getDeck().actionDrawCard();
           result.push(this.getGameSession().executeAction(action));
         } else {

@@ -12,7 +12,8 @@ class ModifierStartTurnWatchSwapStats extends ModifierStartTurnWatch {
   declare fxResource: any;
 
   static type = 'ModifierStartTurnWatchSwapStats';
-  static description = 'At the start of your turn, fully heal this minion and switch its Attack and Health';
+  static description =
+    'At the start of your turn, fully heal this minion and switch its Attack and Health';
 
   onTurnWatch(action) {
     super.onTurnWatch();
@@ -32,7 +33,9 @@ class ModifierStartTurnWatchSwapStats extends ModifierStartTurnWatch {
     contextObject.attributeBuffsAbsolute = ['atk', 'maxHP'];
 
     contextObject.isHiddenToUI = true;
-    return this.getCard().getGameSession().applyModifierContextObject(contextObject, this.getCard());
+    return this.getCard()
+      .getGameSession()
+      .applyModifierContextObject(contextObject, this.getCard());
   }
 }
 ModifierStartTurnWatchSwapStats.prototype.type = 'ModifierStartTurnWatchSwapStats';

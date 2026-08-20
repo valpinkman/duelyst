@@ -11,7 +11,6 @@ var NavigationManager = require('app/ui/managers/navigation_manager');
 var UtilityMenuItemView = require('./utility_menu');
 
 var EscGameMenuItemView = UtilityMenuItemView.extend({
-
   template: EscGameMenuTmpl,
 
   id: 'app-esc-game-menu',
@@ -29,8 +28,14 @@ var EscGameMenuItemView = UtilityMenuItemView.extend({
   onShow: function () {
     UtilityMenuItemView.prototype.onShow.apply(this, arguments);
     this._updateConcedeButton();
-    this.listenTo(SDK.GameSession.getInstance().getEventBus(), EVENTS.game_over, this._updateConcedeButton);
-    audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_tab_in.audio, CONFIG.SHOW_SFX_PRIORITY);
+    this.listenTo(
+      SDK.GameSession.getInstance().getEventBus(),
+      EVENTS.game_over,
+      this._updateConcedeButton,
+    );
+    audio_engine
+      .current()
+      .play_effect_for_interaction(RSX.sfx_ui_tab_in.audio, CONFIG.SHOW_SFX_PRIORITY);
   },
 
   animateReveal: function () {
@@ -38,7 +43,10 @@ var EscGameMenuItemView = UtilityMenuItemView.extend({
   },
 
   _updateConcedeButton: function () {
-    if (SDK.GameType.isLocalGameType(SDK.GameSession.getInstance().getGameType()) || SDK.GameSession.getInstance().getIsSpectateMode()) {
+    if (
+      SDK.GameType.isLocalGameType(SDK.GameSession.getInstance().getGameType()) ||
+      SDK.GameSession.getInstance().getIsSpectateMode()
+    ) {
       // when in local games, allow only exit
       this.$el.find('.concede').remove();
     } else {
@@ -53,7 +61,11 @@ var EscGameMenuItemView = UtilityMenuItemView.extend({
       if (gameSession.isOver()) {
         // allow loser to skip all remaining showing actions and go straight to game over screen
         var gameLayer = Scene.getInstance().getGameLayer();
-        if (gameLayer != null && !gameLayer.getIsGameOver() && gameSession.getLoserId() === gameSession.getMyPlayerId()) {
+        if (
+          gameLayer != null &&
+          !gameLayer.getIsGameOver() &&
+          gameSession.getLoserId() === gameSession.getMyPlayerId()
+        ) {
           gameLayer.resetStepQueue();
           gameLayer.showGameOver();
         }
@@ -63,7 +75,6 @@ var EscGameMenuItemView = UtilityMenuItemView.extend({
       }
     }
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

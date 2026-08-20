@@ -7,7 +7,7 @@ const _ = require('underscore');
 const i18next = require('i18next');
 
 UtilsJavascript.defaultToValue = function (optionalValue, defaultValue) {
-  return (typeof optionalValue === 'undefined') ? defaultValue : optionalValue;
+  return typeof optionalValue === 'undefined' ? defaultValue : optionalValue;
 };
 
 let incrementalId = 0;
@@ -55,20 +55,24 @@ UtilsJavascript.serializeObject = function (input) {
   const il = keys.length;
   if (il === 0) {
     return '{}';
-  } if (il === 1) {
+  }
+  if (il === 1) {
     const key = keys[0];
     const value = input[key];
     const type = typeof value;
     if (type === 'object') {
       if (value === null) {
         return `{"${key}":null}`;
-      } if (Array.isArray(value)) {
+      }
+      if (Array.isArray(value)) {
         return `{"${key}":${UtilsJavascript.serializeArray(value)}}`;
       }
       return `{"${key}":${UtilsJavascript.serializeObject(value)}}`;
-    } if (type === 'string') {
+    }
+    if (type === 'string') {
       return `{"${key}":"${value}"}`;
-    } if (type === 'undefined') {
+    }
+    if (type === 'undefined') {
       return `{"${key}":null}`;
     }
     return `{"${key}":${value}}`;
@@ -110,19 +114,23 @@ UtilsJavascript.serializeArray = function (input) {
   const il = input.length;
   if (il === 0) {
     return '[]';
-  } if (il === 1) {
+  }
+  if (il === 1) {
     const value = input[0];
     const type = typeof value;
     if (type === 'object') {
       if (value === null) {
         return '[null]';
-      } if (Array.isArray(value)) {
+      }
+      if (Array.isArray(value)) {
         return `[${UtilsJavascript.serializeArray(value)}]`;
       }
       return `[${UtilsJavascript.serializeObject(value)}]`;
-    } if (type === 'string') {
+    }
+    if (type === 'string') {
       return `["${value}"]`;
-    } if (type === 'undefined') {
+    }
+    if (type === 'undefined') {
       return '[null]';
     }
     return `[${value}]`;
@@ -171,7 +179,11 @@ UtilsJavascript.deepCopy = function (source, filter, post) {
       for (let i = 0, il = keys.length; i < il; i++) {
         const key = keys[i];
         const property = value[key];
-        if (!_.isFunction(property) && proto[key] !== property && (filter == null || filter(key, property))) {
+        if (
+          !_.isFunction(property) &&
+          proto[key] !== property &&
+          (filter == null || filter(key, property))
+        ) {
           const index = _.indexOf(visited, property);
           if (index !== -1) {
             dst[key] = reference[index];

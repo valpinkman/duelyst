@@ -14,11 +14,15 @@ class ModifierOverwatchDestroyedPutMagmarCardsInHand extends ModifierOverwatchDe
   declare type: any;
 
   static type = 'ModifierOverwatchDestroyedPutMagmarCardsInHand';
-  static description = 'When this minion is destroyed add two random Magmar spells with its mana cost to your action bar';
+  static description =
+    'When this minion is destroyed add two random Magmar spells with its mana cost to your action bar';
 
   onOverwatch(action) {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
-      const factionCards = this.getGameSession().getCardCaches().getFaction(Factions.Faction5).getIsHiddenInCollection(false)
+      const factionCards = this.getGameSession()
+        .getCardCaches()
+        .getFaction(Factions.Faction5)
+        .getIsHiddenInCollection(false)
         .getIsToken(false)
         .getIsGeneral(false)
         .getIsPrismatic(false)
@@ -32,12 +36,27 @@ class ModifierOverwatchDestroyedPutMagmarCardsInHand extends ModifierOverwatchDe
         }
       }
 
-      if (factionCardsWithThisManaCost.length > 0) { // possible there are no faction cards with correct mana cost, so verify before putting cards in hand
-        let cardToPutInHand = factionCardsWithThisManaCost[this.getGameSession().getRandomIntegerForExecution(factionCardsWithThisManaCost.length)];
-        const a = new PutCardInHandAction(this.getGameSession(), this.getCard().getOwnerId(), cardToPutInHand.createNewCardData());
+      if (factionCardsWithThisManaCost.length > 0) {
+        // possible there are no faction cards with correct mana cost, so verify before putting cards in hand
+        let cardToPutInHand =
+          factionCardsWithThisManaCost[
+            this.getGameSession().getRandomIntegerForExecution(factionCardsWithThisManaCost.length)
+          ];
+        const a = new PutCardInHandAction(
+          this.getGameSession(),
+          this.getCard().getOwnerId(),
+          cardToPutInHand.createNewCardData(),
+        );
 
-        cardToPutInHand = factionCardsWithThisManaCost[this.getGameSession().getRandomIntegerForExecution(factionCardsWithThisManaCost.length)];
-        const a2 = new PutCardInHandAction(this.getGameSession(), this.getCard().getOwnerId(), cardToPutInHand.createNewCardData());
+        cardToPutInHand =
+          factionCardsWithThisManaCost[
+            this.getGameSession().getRandomIntegerForExecution(factionCardsWithThisManaCost.length)
+          ];
+        const a2 = new PutCardInHandAction(
+          this.getGameSession(),
+          this.getCard().getOwnerId(),
+          cardToPutInHand.createNewCardData(),
+        );
 
         this.getGameSession().executeAction(a);
         return this.getGameSession().executeAction(a2);
@@ -45,6 +64,7 @@ class ModifierOverwatchDestroyedPutMagmarCardsInHand extends ModifierOverwatchDe
     }
   }
 }
-ModifierOverwatchDestroyedPutMagmarCardsInHand.prototype.type = 'ModifierOverwatchDestroyedPutMagmarCardsInHand';
+ModifierOverwatchDestroyedPutMagmarCardsInHand.prototype.type =
+  'ModifierOverwatchDestroyedPutMagmarCardsInHand';
 
 module.exports = ModifierOverwatchDestroyedPutMagmarCardsInHand;

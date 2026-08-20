@@ -8,7 +8,6 @@ const PlayerLayer = require('./PlayerLayer');
  *************************************************************************** */
 
 const Player1Layer = PlayerLayer.extend({
-
   /* region LAYOUT */
 
   _updateArtifactNodesLayout() {
@@ -27,7 +26,6 @@ const Player1Layer = PlayerLayer.extend({
   },
 
   /* endregion LAYOUT */
-
 });
 
 Player1Layer.create = function (playerId, layer) {

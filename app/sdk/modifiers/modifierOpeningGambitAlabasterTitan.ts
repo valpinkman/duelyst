@@ -35,9 +35,27 @@ class ModifierOpeningGambitAlabasterTitan extends ModifierOpeningGambit {
       const artifact2 = { id: Cards.Artifact.IndomitableWill };
       const artifact3 = { id: Cards.Artifact.HaloBulwark };
 
-      const playCardAction1 = new PlayCardSilentlyAction(gameSession, this.getCard().getOwnerId(), this.getCard().getPosition().x, this.getCard().getPosition().y, artifact1);
-      const playCardAction2 = new PlayCardSilentlyAction(gameSession, this.getCard().getOwnerId(), this.getCard().getPosition().x, this.getCard().getPosition().y, artifact2);
-      const playCardAction3 = new PlayCardSilentlyAction(gameSession, this.getCard().getOwnerId(), this.getCard().getPosition().x, this.getCard().getPosition().y, artifact3);
+      const playCardAction1 = new PlayCardSilentlyAction(
+        gameSession,
+        this.getCard().getOwnerId(),
+        this.getCard().getPosition().x,
+        this.getCard().getPosition().y,
+        artifact1,
+      );
+      const playCardAction2 = new PlayCardSilentlyAction(
+        gameSession,
+        this.getCard().getOwnerId(),
+        this.getCard().getPosition().x,
+        this.getCard().getPosition().y,
+        artifact2,
+      );
+      const playCardAction3 = new PlayCardSilentlyAction(
+        gameSession,
+        this.getCard().getOwnerId(),
+        this.getCard().getPosition().x,
+        this.getCard().getPosition().y,
+        artifact3,
+      );
 
       playCardAction1.setSource(this.getCard());
       playCardAction2.setSource(this.getCard());
@@ -55,5 +73,5 @@ ModifierOpeningGambitAlabasterTitan.prototype.fxResource = ['FX.Modifiers.Modifi
 module.exports = ModifierOpeningGambitAlabasterTitan;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

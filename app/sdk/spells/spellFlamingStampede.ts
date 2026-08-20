@@ -10,7 +10,10 @@ class SpellFlamingStampede extends SpellDamage {
   _postFilterApplyPositions(originalPositions) {
     const filteredPositions = [];
     for (var position of Array.from<any>(originalPositions)) {
-      if (this.getGameSession().getBoard().getUnitAtPosition(position).getBaseCardId() !== Cards.Faction5.Egg) {
+      if (
+        this.getGameSession().getBoard().getUnitAtPosition(position).getBaseCardId() !==
+        Cards.Faction5.Egg
+      ) {
         filteredPositions.push(position);
       }
     }

@@ -26,7 +26,9 @@ class ModifierCounterBuildProgress extends ModifierCounter {
   }
 
   getModifierContextObjectToApply() {
-    const modContextObject = ModifierCounterBuildProgressDescription.createContextObject(this.getCurrentCount());
+    const modContextObject = ModifierCounterBuildProgressDescription.createContextObject(
+      this.getCurrentCount(),
+    );
     modContextObject.appliedName = i18next.t('modifiers.building_counter_applied_name');
 
     return modContextObject;
@@ -34,9 +36,7 @@ class ModifierCounterBuildProgress extends ModifierCounter {
 
   onAfterAction(event) {
     super.onAfterAction(event);
-    const {
-      action,
-    } = event;
+    const { action } = event;
     if (action instanceof StartTurnAction) {
       return this.updateCountIfNeeded();
     }

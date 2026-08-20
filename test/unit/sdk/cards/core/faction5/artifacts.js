@@ -14,13 +14,9 @@ describe('faction5', () => {
   describe('artifacts', () => {
     beforeEach(() => {
       // define test decks.  Spells do not work.  Only add minions and generals this way
-      const player1Deck = [
-        { id: SDK.Cards.Faction5.General },
-      ];
+      const player1Deck = [{ id: SDK.Cards.Faction5.General }];
 
-      const player2Deck = [
-        { id: SDK.Cards.Faction1.General },
-      ];
+      const player2Deck = [{ id: SDK.Cards.Faction1.General }];
 
       // setup test session
       UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
@@ -40,10 +36,16 @@ describe('faction5', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Artifact.PristineScale }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Artifact.PristineScale,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 1, 1));
 
-      expect(gameSession.getGeneralForPlayer1().hasModifierClass(SDK.ModifierFrenzy)).to.equal(true);
+      expect(gameSession.getGeneralForPlayer1().hasModifierClass(SDK.ModifierFrenzy)).to.equal(
+        true,
+      );
     });
 
     it('expect adamantite claws to give general +4 attack', () => {
@@ -51,7 +53,11 @@ describe('faction5', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Artifact.AdamantineClaws }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Artifact.AdamantineClaws,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 1, 1));
 
       expect(gameSession.getGeneralForPlayer1().getATK()).to.equal(6);
@@ -62,11 +68,25 @@ describe('faction5', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Artifact.TwinFang }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Artifact.TwinFang,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 1, 1));
 
-      const youngSilithar = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction5.YoungSilithar }, 0, 1, gameSession.getPlayer2Id());
-      const abyssalCrawler1 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.AbyssalCrawler }, 1, 1, gameSession.getPlayer1Id());
+      const youngSilithar = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction5.YoungSilithar },
+        0,
+        1,
+        gameSession.getPlayer2Id(),
+      );
+      const abyssalCrawler1 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.AbyssalCrawler },
+        1,
+        1,
+        gameSession.getPlayer1Id(),
+      );
       abyssalCrawler1.refreshExhaustion();
 
       var action = abyssalCrawler1.actionAttack(youngSilithar);

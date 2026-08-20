@@ -15,7 +15,7 @@ class SpellDamageAndApplyModifiers extends SpellApplyModifiers {
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     const applyEffectPosition = { x, y };
     const unit = board.getUnitAtPosition(applyEffectPosition);
-    if ((unit != null) && (!unit.getIsGeneral() || (unit.getIsGeneral() && this.canTargetGeneral))) {
+    if (unit != null && (!unit.getIsGeneral() || (unit.getIsGeneral() && this.canTargetGeneral))) {
       // deal damage
       const damageAction = new DamageAction(this.getGameSession());
       damageAction.setOwnerId(this.getOwnerId());
@@ -24,10 +24,10 @@ class SpellDamageAndApplyModifiers extends SpellApplyModifiers {
       this.getGameSession().executeAction(damageAction);
 
       // apply modifiers
-      if ((unit.getOwnerId() === this.getOwnerId()) && this.applyToAllies) {
+      if (unit.getOwnerId() === this.getOwnerId() && this.applyToAllies) {
         super.onApplyEffectToBoardTile(board, x, y, sourceAction);
       }
-      if ((unit.getOwnerId() !== this.getOwnerId()) && this.applyToEnemy) {
+      if (unit.getOwnerId() !== this.getOwnerId() && this.applyToEnemy) {
         return super.onApplyEffectToBoardTile(board, x, y, sourceAction);
       }
     }

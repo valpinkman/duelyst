@@ -16,7 +16,7 @@ class SpellKillTargetWithModifierStunned extends SpellKillTarget {
 
     for (var position of Array.from<any>(validPositions)) {
       var unit = this.getGameSession().getBoard().getUnitAtPosition(position);
-      if ((unit != null) && unit.hasActiveModifierClass(ModifierStunned)) {
+      if (unit != null && unit.hasActiveModifierClass(ModifierStunned)) {
         filteredValidPositions.push(position);
       }
     }

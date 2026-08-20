@@ -22,7 +22,10 @@ class SpellLavastorm extends SpellKillTarget {
     // apply to each unit with < minAttackValue attack
     for (position of Array.from<any>(potentialApplyEffectPositions)) {
       var unit = board.getUnitAtPosition(position);
-      if (((unit != null ? unit.getATK() : undefined) < this.minAttackValue) && !unit.getIsGeneral()) {
+      if (
+        (unit != null ? unit.getATK() : undefined) < this.minAttackValue &&
+        !unit.getIsGeneral()
+      ) {
         applyEffectPositions.push(position);
       }
     }

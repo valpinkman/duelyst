@@ -11,7 +11,6 @@ var GamesManager = require('app/ui/managers/games_manager');
 var ErrorDialogItemView = require('app/ui/views/item/error_dialog');
 
 var ConversationCompositeView = Backbone.Marionette.CompositeView.extend({
-
   _scrollTop: 0,
 
   className: 'conversation',
@@ -47,7 +46,12 @@ var ConversationCompositeView = Backbone.Marionette.CompositeView.extend({
 
   onRender: function () {
     this.ui.$messagesList.scrollTop(this._scrollTop);
-    if (!ChatManager.getInstance().getConnected() || !ChatManager.getInstance().getBuddiesCollection().getIsBuddyOnlineById(this.model.get('userId'))) {
+    if (
+      !ChatManager.getInstance().getConnected() ||
+      !ChatManager.getInstance()
+        .getBuddiesCollection()
+        .getIsBuddyOnlineById(this.model.get('userId'))
+    ) {
       this.ui.$currentMessage.addClass('disabled');
     }
   },
@@ -88,11 +92,12 @@ var ConversationCompositeView = Backbone.Marionette.CompositeView.extend({
         var message = this.ui.chatInput.val();
         this.model.sendReplay(lastGame.get('game_id'), lastGame.get('general_id'), message);
       } else {
-        NavigationManager.getInstance().showDialogView(new ErrorDialogItemView({ title: 'This game is too old to share :(' }));
+        NavigationManager.getInstance().showDialogView(
+          new ErrorDialogItemView({ title: 'This game is too old to share :(' }),
+        );
       }
     }
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

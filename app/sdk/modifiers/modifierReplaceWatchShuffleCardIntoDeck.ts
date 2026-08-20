@@ -17,8 +17,12 @@ class ModifierReplaceWatchShuffleCardIntoDeck extends ModifierReplaceWatch {
   static type = 'ModifierReplaceWatchShuffleCardIntoDeck';
 
   static createContextObject(cardDataOrIndexToSpawn, numOfCopies, options) {
-    if (numOfCopies == null) { numOfCopies = 1; }
-    if (options == null) { options = undefined; }
+    if (numOfCopies == null) {
+      numOfCopies = 1;
+    }
+    if (options == null) {
+      options = undefined;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.cardDataOrIndexToSpawn = cardDataOrIndexToSpawn;
     contextObject.numOfCopies = numOfCopies;
@@ -26,11 +30,19 @@ class ModifierReplaceWatchShuffleCardIntoDeck extends ModifierReplaceWatch {
   }
 
   onReplaceWatch(action) {
-    if ((this.cardDataOrIndexToSpawn != null) && (this.numOfCopies > 0)) {
+    if (this.cardDataOrIndexToSpawn != null && this.numOfCopies > 0) {
       return (() => {
         const result = [];
-        for (let i = 0, end = this.numOfCopies, asc = end >= 0; asc ? i < end : i > end; asc ? i++ : i--) {
-          var a = new PutCardInDeckAction(this.getGameSession(), this.getCard().getOwnerId(), this.cardDataOrIndexToSpawn);
+        for (
+          let i = 0, end = this.numOfCopies, asc = end >= 0;
+          asc ? i < end : i > end;
+          asc ? i++ : i--
+        ) {
+          var a = new PutCardInDeckAction(
+            this.getGameSession(),
+            this.getCard().getOwnerId(),
+            this.cardDataOrIndexToSpawn,
+          );
           result.push(this.getGameSession().executeAction(a));
         }
         return result;
@@ -39,6 +51,9 @@ class ModifierReplaceWatchShuffleCardIntoDeck extends ModifierReplaceWatch {
   }
 }
 ModifierReplaceWatchShuffleCardIntoDeck.prototype.type = 'ModifierReplaceWatchShuffleCardIntoDeck';
-ModifierReplaceWatchShuffleCardIntoDeck.prototype.fxResource = ['FX.Modifiers.ModifierReplaceWatch', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierReplaceWatchShuffleCardIntoDeck.prototype.fxResource = [
+  'FX.Modifiers.ModifierReplaceWatch',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 
 module.exports = ModifierReplaceWatchShuffleCardIntoDeck;

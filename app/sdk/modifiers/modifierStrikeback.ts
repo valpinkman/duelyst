@@ -39,7 +39,16 @@ class ModifierStrikeback extends Modifier {
 
   getIsActionRelevant(a) {
     // attack against this entity must be explicit or caused by a specific modifier that entities are allowed to strikeback against
-    return ((a instanceof AttackAction && (!a.getIsImplicit() || a.getTriggeringModifier() instanceof ModifierBlastAttack)) || a instanceof ForcedAttackAction) && (a.getTarget() === this.getCard()) && (a.getSource() !== this.getCard()) && a.getIsStrikebackAllowed() && (this.getCard().getATK() > 0) && this.getCanReachEntity(a.getSource());
+    return (
+      ((a instanceof AttackAction &&
+        (!a.getIsImplicit() || a.getTriggeringModifier() instanceof ModifierBlastAttack)) ||
+        a instanceof ForcedAttackAction) &&
+      a.getTarget() === this.getCard() &&
+      a.getSource() !== this.getCard() &&
+      a.getIsStrikebackAllowed() &&
+      this.getCard().getATK() > 0 &&
+      this.getCanReachEntity(a.getSource())
+    );
   }
 
   onBeforeAction(actionEvent) {
@@ -63,7 +72,9 @@ class ModifierStrikeback extends Modifier {
     // check that entity is within my range
     const reach = this.getCard().getReach();
     if (reach === 1) {
-      for (var nearbyEntity of Array.from<any>(this.getCard().getGameSession().getBoard().getEntitiesAroundEntity(this.getCard()))) {
+      for (var nearbyEntity of Array.from<any>(
+        this.getCard().getGameSession().getBoard().getEntitiesAroundEntity(this.getCard()),
+      )) {
         if (nearbyEntity === entity) {
           return true;
         }

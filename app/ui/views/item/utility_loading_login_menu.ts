@@ -12,7 +12,6 @@ var EscMainMenuItemView = require('./esc_main_menu');
  * Loading/login utility menu that gives ability to open main esc menu.
  */
 var UtilityLoadingLoginMenuItemView = UtilityMenuItemView.extend({
-
   id: 'app-utility-desktop-menu',
 
   template: UtilityLoadingLoginMenuTmpl,
@@ -24,7 +23,6 @@ var UtilityLoadingLoginMenuItemView = UtilityMenuItemView.extend({
   toggleEscMainMenu: function () {
     NavigationManager.getInstance().toggleModalViewByClass(EscMainMenuItemView);
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

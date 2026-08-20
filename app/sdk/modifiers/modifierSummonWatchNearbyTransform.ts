@@ -12,7 +12,10 @@ class ModifierSummonWatchNearbyTransform extends ModifierSummonWatchTransform {
 
   getIsValidTransformPosition(summonedUnitPosition) {
     const entityPosition = this.getCard().getPosition();
-    if ((Math.abs(summonedUnitPosition.x - entityPosition.x) <= 1) && (Math.abs(summonedUnitPosition.y - entityPosition.y) <= 1)) {
+    if (
+      Math.abs(summonedUnitPosition.x - entityPosition.x) <= 1 &&
+      Math.abs(summonedUnitPosition.y - entityPosition.y) <= 1
+    ) {
       return true;
     }
     return false;

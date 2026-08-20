@@ -11,7 +11,6 @@ var NewPlayerManager = require('app/ui/managers/new_player_manager');
 var DeckSelectCompositeView = require('./deck_select');
 
 var DeckSelectRankedCompositeView = DeckSelectCompositeView.extend({
-
   filterLegacy: false,
 
   _showNewPlayerUI: function () {
@@ -43,7 +42,6 @@ var DeckSelectRankedCompositeView = DeckSelectCompositeView.extend({
       this.ui.$deckSelectConfirm.removeClass('disabled');
     }
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

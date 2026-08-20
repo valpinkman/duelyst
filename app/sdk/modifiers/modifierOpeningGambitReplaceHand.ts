@@ -21,7 +21,8 @@ class ModifierOpeningGambitReplaceHand extends ModifierOpeningGambit {
       return;
     }
 
-    if (this.getOwner().getActivePlayerModifiersByClass(PlayerModifierCannotReplace).length === 0) { // if not being blocked by the Riddle (cannot replace any cards)
+    if (this.getOwner().getActivePlayerModifiersByClass(PlayerModifierCannotReplace).length === 0) {
+      // if not being blocked by the Riddle (cannot replace any cards)
       // replace each card in hand - but don't count against normal replaces
       return (() => {
         const result = [];
@@ -29,7 +30,11 @@ class ModifierOpeningGambitReplaceHand extends ModifierOpeningGambit {
         for (let handIndex = 0; handIndex < iterable.length; handIndex++) {
           var card = iterable[handIndex];
           if (card != null) {
-            var a = new ReplaceCardFromHandAction(this.getGameSession(), this.getCard().getOwnerId(), handIndex);
+            var a = new ReplaceCardFromHandAction(
+              this.getGameSession(),
+              this.getCard().getOwnerId(),
+              handIndex,
+            );
             a.forcedReplace = true;
             result.push(this.getGameSession().executeAction(a));
           } else {

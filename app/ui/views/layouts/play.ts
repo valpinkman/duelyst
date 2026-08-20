@@ -28,7 +28,6 @@ var VirtualCollection = require('backbone-virtual-collection');
 var ArenaLayout = require('./arena');
 
 var PlayLayout = Backbone.Marionette.LayoutView.extend({
-
   id: 'app-play',
   template: PlayLayoutTempl,
 
@@ -89,36 +88,84 @@ var PlayLayout = Backbone.Marionette.LayoutView.extend({
 
     var showPromise;
     if (playModeIdentifier === SDK.PlayModes.Practice) {
-      showPromise = this.modeRegion.show(new DeckSelectSinglePlayerCompositeView({ model: new Backbone.Model(), collection: new VirtualCollection(new DecksCollection()) }));
+      showPromise = this.modeRegion.show(
+        new DeckSelectSinglePlayerCompositeView({
+          model: new Backbone.Model(),
+          collection: new VirtualCollection(new DecksCollection()),
+        }),
+      );
     } else if (playModeIdentifier === SDK.PlayModes.Challenges) {
-      showPromise = this.modeRegion.show(new ChallengeCategorySelectCompositeView({ model: new Backbone.Model(), collection: new Backbone.Collection() }));
+      showPromise = this.modeRegion.show(
+        new ChallengeCategorySelectCompositeView({
+          model: new Backbone.Model(),
+          collection: new Backbone.Collection(),
+        }),
+      );
     } else if (playModeIdentifier === SDK.PlayModes.Ranked) {
-      showPromise = this.modeRegion.show(new DeckSelectRankedCompositeView({ model: new Backbone.Model(), collection: new VirtualCollection(new DecksCollection()) }));
+      showPromise = this.modeRegion.show(
+        new DeckSelectRankedCompositeView({
+          model: new Backbone.Model(),
+          collection: new VirtualCollection(new DecksCollection()),
+        }),
+      );
     } else if (playModeIdentifier === SDK.PlayModes.Casual) {
-      showPromise = this.modeRegion.show(new DeckSelectUnrankedCompositeView({ model: new Backbone.Model(), collection: new VirtualCollection(new DecksCollection()) }));
+      showPromise = this.modeRegion.show(
+        new DeckSelectUnrankedCompositeView({
+          model: new Backbone.Model(),
+          collection: new VirtualCollection(new DecksCollection()),
+        }),
+      );
     } else if (playModeIdentifier === SDK.PlayModes.Gauntlet) {
       showPromise = this.modeRegion.show(new ArenaLayout());
     } else if (playModeIdentifier === SDK.PlayModes.BossBattle) {
-      showPromise = this.modeRegion.show(new DeckSelectBossBattleCompositeView({ model: new Backbone.Model(), collection: new VirtualCollection(new DecksCollection()) }));
+      showPromise = this.modeRegion.show(
+        new DeckSelectBossBattleCompositeView({
+          model: new Backbone.Model(),
+          collection: new VirtualCollection(new DecksCollection()),
+        }),
+      );
     } else if (playModeIdentifier === SDK.PlayModes.Sandbox) {
-      showPromise = this.modeRegion.show(new DeckSelectSandboxCompositeView({ model: new Backbone.Model(), collection: new VirtualCollection(new DecksCollection()) }));
+      showPromise = this.modeRegion.show(
+        new DeckSelectSandboxCompositeView({
+          model: new Backbone.Model(),
+          collection: new VirtualCollection(new DecksCollection()),
+        }),
+      );
     } else if (playModeIdentifier === SDK.PlayModes.Developer && !UtilsEnv.getIsInProduction()) {
-      showPromise = this.modeRegion.show(new DeckSelectSandboxCompositeView({ model: new Backbone.Model({ developer: true }), collection: new VirtualCollection(new DecksCollection()) }));
+      showPromise = this.modeRegion.show(
+        new DeckSelectSandboxCompositeView({
+          model: new Backbone.Model({ developer: true }),
+          collection: new VirtualCollection(new DecksCollection()),
+        }),
+      );
     } else if (playModeIdentifier === SDK.PlayModes.Friend) {
-      showPromise = this.modeRegion.show(new DeckSelectFriendlyCompositeView({ model: new Backbone.Model(), collection: new VirtualCollection(new DecksCollection()) }));
+      showPromise = this.modeRegion.show(
+        new DeckSelectFriendlyCompositeView({
+          model: new Backbone.Model(),
+          collection: new VirtualCollection(new DecksCollection()),
+        }),
+      );
     } else if (playModeIdentifier === SDK.PlayModes.Rift) {
       showPromise = this.modeRegion.show(new RiftDeckSelectLayout());
     } else {
       var playModesDisplayed = SDK.PlayModeFactory.getAllVisiblePlayModes();
       if (!UtilsEnv.getIsInProduction()) {
-        var sandboxPlayMode = _.extend({}, SDK.PlayModeFactory.playModeForIdentifier(SDK.PlayModes.Sandbox));
+        var sandboxPlayMode = _.extend(
+          {},
+          SDK.PlayModeFactory.playModeForIdentifier(SDK.PlayModes.Sandbox),
+        );
         playModesDisplayed.push(sandboxPlayMode);
-        var developerPlayMode = _.extend({}, SDK.PlayModeFactory.playModeForIdentifier(SDK.PlayModes.Developer));
+        var developerPlayMode = _.extend(
+          {},
+          SDK.PlayModeFactory.playModeForIdentifier(SDK.PlayModes.Developer),
+        );
         playModesDisplayed.push(developerPlayMode);
       }
 
       var playModesCollection = new Backbone.Collection(playModesDisplayed);
-      var playModeSelectCompositeView = new PlayModeSelectCompositeView({ collection: playModesCollection });
+      var playModeSelectCompositeView = new PlayModeSelectCompositeView({
+        collection: playModesCollection,
+      });
       this.listenToOnce(playModeSelectCompositeView, 'select', function (model) {
         if (model != null) {
           EventBus.getInstance().trigger(EVENTS.show_play, model.get('id'));
@@ -131,7 +178,6 @@ var PlayLayout = Backbone.Marionette.LayoutView.extend({
   },
 
   /* endregion PLAY MODES */
-
 });
 
 // Expose the class either via CommonJS or the global object

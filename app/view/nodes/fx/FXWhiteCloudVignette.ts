@@ -31,8 +31,12 @@ var FXWhiteCloudVignette = FXSprite.extend({
 
   setOptions(options) {
     this._super(options);
-    if (options.timeScale != null) { this.setTimeScale(options.timeScale); }
-    if (options.vignetteAmount != null) { this.setVignetteAmount(options.vignetteAmount); }
+    if (options.timeScale != null) {
+      this.setTimeScale(options.timeScale);
+    }
+    if (options.vignetteAmount != null) {
+      this.setVignetteAmount(options.vignetteAmount);
+    }
   },
 
   setVignetteAmount(vignetteAmount) {
@@ -45,15 +49,15 @@ var FXWhiteCloudVignette = FXSprite.extend({
 
   updateTweenAction(value, key) {
     switch (key) {
-    case 'timeScale':
-      this.timeScale = value;
-      break;
-    case 'vignetteAmount':
-      this.vignetteAmount = value;
-      break;
-    default:
-      FXSprite.prototype.updateTweenAction.call(this, value, key);
-      break;
+      case 'timeScale':
+        this.timeScale = value;
+        break;
+      case 'vignetteAmount':
+        this.vignetteAmount = value;
+        break;
+      default:
+        FXSprite.prototype.updateTweenAction.call(this, value, key);
+        break;
     }
   },
 });
@@ -61,7 +65,9 @@ var FXWhiteCloudVignette = FXSprite.extend({
 FXWhiteCloudVignette.WebGLRenderCmd = function (renderable) {
   FXSprite.WebGLRenderCmd.call(this, renderable);
 };
-const proto = FXWhiteCloudVignette.WebGLRenderCmd.prototype = Object.create(FXSprite.WebGLRenderCmd.prototype);
+const proto = (FXWhiteCloudVignette.WebGLRenderCmd.prototype = Object.create(
+  FXSprite.WebGLRenderCmd.prototype,
+));
 proto.constructor = FXWhiteCloudVignette.WebGLRenderCmd;
 
 proto.rendering = function () {
@@ -74,7 +80,11 @@ proto.rendering = function () {
   const shaderProgram = this._shaderProgram;
   shaderProgram.use();
   shaderProgram._setUniformForMVPMatrixWithMat4(this._stackMatrix);
-  shaderProgram.setUniformLocationWith2f(shaderProgram.loc_texResolution, node._texture.getPixelsWide(), node._texture.getPixelsHigh());
+  shaderProgram.setUniformLocationWith2f(
+    shaderProgram.loc_texResolution,
+    node._texture.getPixelsWide(),
+    node._texture.getPixelsHigh(),
+  );
   shaderProgram.setUniformLocationWith1f(shaderProgram.loc_time, node.getFX().getTime());
   shaderProgram.setUniformLocationWith1f(shaderProgram.loc_vignetteAmount, node.vignetteAmount);
   cc.glBindTexture2DN(0, node._texture);

@@ -14,7 +14,12 @@ F1[Cards.Spell.Tempest] = [
   {
     type: CardIntentType.Burn,
     amount: 2,
-    targets: CardTargetType.All | CardTargetType.General | CardTargetType.Minion | CardTargetType.Friendly | CardTargetType.Enemy,
+    targets:
+      CardTargetType.All |
+      CardTargetType.General |
+      CardTargetType.Minion |
+      CardTargetType.Friendly |
+      CardTargetType.Enemy,
   },
 ];
 
@@ -78,7 +83,11 @@ F1[Cards.Spell.SundropElixir] = [
   {
     type: CardIntentType.Heal,
     amount: 5,
-    targets: CardTargetType.Minion | CardTargetType.Friendly | CardTargetType.General | CardTargetType.Enemy,
+    targets:
+      CardTargetType.Minion |
+      CardTargetType.Friendly |
+      CardTargetType.General |
+      CardTargetType.Enemy,
   },
 ];
 
@@ -104,7 +113,8 @@ F1[Cards.Spell.Martyrdom] = [
 F1[Cards.Spell.SunBloom] = [
   {
     type: CardIntentType.Dispel,
-    targets: CardTargetType.Minion | CardTargetType.Enemy | CardTargetType.Friendly | CardTargetType.Tile,
+    targets:
+      CardTargetType.Minion | CardTargetType.Enemy | CardTargetType.Friendly | CardTargetType.Tile,
     pattern: CONFIG.PATTERN_2X2,
   },
 ];
@@ -130,9 +140,7 @@ F1[Cards.Spell.AerialRift] = [
   },
   {
     type: CardIntentType.ApplyModifiers,
-    modifiers: [
-      ModifierAirdrop.type,
-    ],
+    modifiers: [ModifierAirdrop.type],
     targets: CardTargetType.Hand | CardTargetType.Minion | CardTargetType.Friendly,
   },
 ];
@@ -235,7 +243,12 @@ targets: CardTargetType.Friendly | CardTargetType.General
 F1[Cards.Spell.Decimate] = [
   {
     type: CardIntentType.Remove,
-    targets: CardTargetType.NotNearby | CardTargetType.General | CardTargetType.Minion | CardTargetType.Friendly | CardTargetType.Enemy,
+    targets:
+      CardTargetType.NotNearby |
+      CardTargetType.General |
+      CardTargetType.Minion |
+      CardTargetType.Friendly |
+      CardTargetType.Enemy,
   },
 ];
 
@@ -357,7 +370,12 @@ F1[Cards.Spell.SkyPhalanx] = [
 F1[Cards.Spell.SkyBurial] = [
   {
     type: CardIntentType.Remove,
-    targets: CardTargetType.NotNearby | CardTargetType.General | CardTargetType.Minion | CardTargetType.Friendly | CardTargetType.Enemy,
+    targets:
+      CardTargetType.NotNearby |
+      CardTargetType.General |
+      CardTargetType.Minion |
+      CardTargetType.Friendly |
+      CardTargetType.Enemy,
   },
 ];
 

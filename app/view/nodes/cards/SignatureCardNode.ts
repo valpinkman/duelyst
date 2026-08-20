@@ -27,7 +27,6 @@ SignatureCardNode.create()
  *************************************************************************** */
 
 const SignatureCardNode = SdkNode.extend({
-
   isDisabled: false,
   selected: false,
   highlighted: false,
@@ -207,7 +206,8 @@ const SignatureCardNode = SdkNode.extend({
 
         // card options
         const cardOptions = _.extend({}, sdkCard.getCardOptions());
-        cardOptions.spriteIdentifier = sdkCard.getBaseAnimResource() && sdkCard.getBaseAnimResource().idle;
+        cardOptions.spriteIdentifier =
+          sdkCard.getBaseAnimResource() && sdkCard.getBaseAnimResource().idle;
         cardOptions.antiAlias = false;
         if (cardOptions.scale == null) {
           cardOptions.scale = CONFIG.SCALE;
@@ -306,7 +306,11 @@ const SignatureCardNode = SdkNode.extend({
   },
 
   showInactiveAnimState() {
-    if (this.sdkCard != null && !this.highlighted && (!this.selected || !SDK.GameSession.current().isActive())) {
+    if (
+      this.sdkCard != null &&
+      !this.highlighted &&
+      (!this.selected || !SDK.GameSession.current().isActive())
+    ) {
       if (this.getIsOnCooldown()) {
         this.showCooldownAnimState();
       } else {
@@ -358,10 +362,14 @@ const SignatureCardNode = SdkNode.extend({
       }
 
       // card is usable when owner has enough mana on my turn AND his signature card is set to be active
-      if (owner instanceof SDK.Player && owner.getIsSignatureCardActive()
-        && gameLayer.getIsTurnForPlayerId(this.sdkCard.getOwnerId())
-        && (this.sdkCard.getOwnerId() !== gameLayer.getMyPlayerId() || !gameLayer.getIsPlayerSelectionLocked())
-        && this.sdkCard.getDoesOwnerHaveEnoughManaToPlay()) {
+      if (
+        owner instanceof SDK.Player &&
+        owner.getIsSignatureCardActive() &&
+        gameLayer.getIsTurnForPlayerId(this.sdkCard.getOwnerId()) &&
+        (this.sdkCard.getOwnerId() !== gameLayer.getMyPlayerId() ||
+          !gameLayer.getIsPlayerSelectionLocked()) &&
+        this.sdkCard.getDoesOwnerHaveEnoughManaToPlay()
+      ) {
         return this.showUsable();
       }
     }
@@ -376,11 +384,15 @@ const SignatureCardNode = SdkNode.extend({
     this.whenResourcesReady(this.getCardResourceRequestId()).then((cardResourceRequestId) => {
       if (!this.getAreResourcesValid(cardResourceRequestId)) return; // card has changed
       if (this.cardSprite != null) {
-        this.cardSprite.setShaderProgram(cc.shaderCache.programForKey(cc.SHADER_POSITION_TEXTURECOLOR));
+        this.cardSprite.setShaderProgram(
+          cc.shaderCache.programForKey(cc.SHADER_POSITION_TEXTURECOLOR),
+        );
       }
     });
     if (this.manaTokenSprite) {
-      this.manaTokenSprite.setShaderProgram(cc.shaderCache.programForKey(cc.SHADER_POSITION_TEXTURECOLOR));
+      this.manaTokenSprite.setShaderProgram(
+        cc.shaderCache.programForKey(cc.SHADER_POSITION_TEXTURECOLOR),
+      );
     }
 
     if (this.sdkCard) {
@@ -396,7 +408,10 @@ const SignatureCardNode = SdkNode.extend({
 
       // glow whenever active for my player only
       if (this.sdkCard.isOwnedByMyPlayer()) {
-        this.addInjectedVisualStateTagWithId(CardNodeVisualStateTag.createShowGlowForNeutralTag(), this._activeGlowTagId);
+        this.addInjectedVisualStateTagWithId(
+          CardNodeVisualStateTag.createShowGlowForNeutralTag(),
+          this._activeGlowTagId,
+        );
       }
     }
   },
@@ -452,9 +467,15 @@ const SignatureCardNode = SdkNode.extend({
 
           const playable = this.sdkCard != null && this._usable && this.sdkCard.isOwnedByMyPlayer();
           if (playable) {
-            this.addInjectedVisualStateTagWithId(CardNodeVisualStateTag.createShowGlowForPlayerTag(true, 1), this._highlightGlowTagId);
+            this.addInjectedVisualStateTagWithId(
+              CardNodeVisualStateTag.createShowGlowForPlayerTag(true, 1),
+              this._highlightGlowTagId,
+            );
           } else {
-            this.addInjectedVisualStateTagWithId(CardNodeVisualStateTag.createShowGlowForOpponentTag(true, 1), this._highlightGlowTagId);
+            this.addInjectedVisualStateTagWithId(
+              CardNodeVisualStateTag.createShowGlowForOpponentTag(true, 1),
+              this._highlightGlowTagId,
+            );
           }
         }
       }
@@ -476,9 +497,15 @@ const SignatureCardNode = SdkNode.extend({
 
         const playable = this.sdkCard != null && this._usable && this.sdkCard.isOwnedByMyPlayer();
         if (playable) {
-          this.addInjectedVisualStateTagWithId(CardNodeVisualStateTag.createShowGlowForPlayerTag(true, 1), this._highlightGlowTagId);
+          this.addInjectedVisualStateTagWithId(
+            CardNodeVisualStateTag.createShowGlowForPlayerTag(true, 1),
+            this._highlightGlowTagId,
+          );
         } else {
-          this.addInjectedVisualStateTagWithId(CardNodeVisualStateTag.createShowGlowForOpponentTag(true, 1), this._highlightGlowTagId);
+          this.addInjectedVisualStateTagWithId(
+            CardNodeVisualStateTag.createShowGlowForOpponentTag(true, 1),
+            this._highlightGlowTagId,
+          );
         }
       } else {
         // when highlighted, allow highlight to take over
@@ -507,7 +534,12 @@ const SignatureCardNode = SdkNode.extend({
   },
 
   updateCooldown(duration) {
-    if (this.sdkCard != null && SDK.GameSession.getInstance().getNumberOfPlayerTurnsUntilPlayerActivatesSignatureCard(this.sdkCard.getOwner()) > 0) {
+    if (
+      this.sdkCard != null &&
+      SDK.GameSession.getInstance().getNumberOfPlayerTurnsUntilPlayerActivatesSignatureCard(
+        this.sdkCard.getOwner(),
+      ) > 0
+    ) {
       this.showCooldown(duration);
     } else {
       this.hideCooldown(duration);
@@ -516,12 +548,16 @@ const SignatureCardNode = SdkNode.extend({
 
   showCooldown(duration) {
     if (this.sdkCard) {
-      if (duration == null) { duration = CONFIG.ANIMATE_MEDIUM_DURATION; }
+      if (duration == null) {
+        duration = CONFIG.ANIMATE_MEDIUM_DURATION;
+      }
       const owner = this.sdkCard.getOwner();
       if (!owner.getIsSignatureCardActive()) {
         // show timer sprite
-        const progress = SDK.GameSession.getInstance().getProgressUntilPlayerActivatesSignatureCard(owner);
-        const cooldownOpacity = CONFIG.SIGNATURE_CARD_COOLDOWN_TIMER_OPACITY * Math.max(0.5, progress ** 0.5);
+        const progress =
+          SDK.GameSession.getInstance().getProgressUntilPlayerActivatesSignatureCard(owner);
+        const cooldownOpacity =
+          CONFIG.SIGNATURE_CARD_COOLDOWN_TIMER_OPACITY * Math.max(0.5, progress ** 0.5);
         this.cooldownTimerSprite.fadeTo(duration, cooldownOpacity);
         this.cooldownTimerSprite.animateProgress(duration, progress);
       }
@@ -533,7 +569,9 @@ const SignatureCardNode = SdkNode.extend({
 
   hideCooldown(duration) {
     if (this.sdkCard) {
-      if (duration == null) { duration = CONFIG.ANIMATE_MEDIUM_DURATION; }
+      if (duration == null) {
+        duration = CONFIG.ANIMATE_MEDIUM_DURATION;
+      }
 
       // hide timer sprite
       this.cooldownTimerSprite.fadeToInvisible(duration);
@@ -545,7 +583,11 @@ const SignatureCardNode = SdkNode.extend({
 
   _animateCooldownLabelTo(duration) {
     const owner = this.sdkCard.getOwner();
-    const cooldown = SDK.GameSession.getInstance().getNumberOfPlayerTurnsUntilPlayerActivatesSignatureCard(owner, true);
+    const cooldown =
+      SDK.GameSession.getInstance().getNumberOfPlayerTurnsUntilPlayerActivatesSignatureCard(
+        owner,
+        true,
+      );
     if (this.cooldownLabel.getString() !== `${cooldown}`) {
       const cooldownLabelLast = this.cooldownLabel;
       if (cooldownLabelLast === this._cooldownLabel1) {
@@ -578,7 +620,10 @@ const SignatureCardNode = SdkNode.extend({
 
       this.cooldownLabel.stopActionByTag(CONFIG.FADE_TAG);
       this.cooldownLabel.setOpacity(0.0);
-      this.cooldownLabel.setPosition(cooldownLabelPosition.x - moveDistance.x, cooldownLabelPosition.y - moveDistance.y);
+      this.cooldownLabel.setPosition(
+        cooldownLabelPosition.x - moveDistance.x,
+        cooldownLabelPosition.y - moveDistance.y,
+      );
       this.cooldownLabel.setVisible(true);
       const showNewAction = cc.spawn(
         cc.fadeIn(duration),
@@ -625,14 +670,21 @@ const SignatureCardNode = SdkNode.extend({
     }
 
     // show draw visuals only if card changes
-    if (this.sdkCard && (lastSdkCard == null || this.sdkCard.getBaseCardId() !== lastSdkCard.getBaseCardId())) {
-      if (showDelay == null) { showDelay = 0.0; }
+    if (
+      this.sdkCard &&
+      (lastSdkCard == null || this.sdkCard.getBaseCardId() !== lastSdkCard.getBaseCardId())
+    ) {
+      if (showDelay == null) {
+        showDelay = 0.0;
+      }
 
       // add show times to show duration
       showDuration = CONFIG.FADE_FAST_DURATION * 2;
 
       // get resources promise
-      const whenCardResourcesReadyPromise = this.whenResourcesReady(this.getCardResourceRequestId());
+      const whenCardResourcesReadyPromise = this.whenResourcesReady(
+        this.getCardResourceRequestId(),
+      );
 
       // hide elements
       whenCardResourcesReadyPromise.then((cardResourceRequestId) => {
@@ -669,7 +721,10 @@ const SignatureCardNode = SdkNode.extend({
               cc.spawn(
                 cc.actionTween(CONFIG.FADE_MEDIUM_DURATION, TweenTypes.TINT_FADE, 1.0, 0.0),
                 cc.callFunc(() => {
-                  this.cardSprite.fadeOutHighlight(tintFadeDuration - CONFIG.FADE_FAST_DURATION, cc.easeIn(2.0));
+                  this.cardSprite.fadeOutHighlight(
+                    tintFadeDuration - CONFIG.FADE_FAST_DURATION,
+                    cc.easeIn(2.0),
+                  );
                 }),
               ),
               cc.spawn(
@@ -708,7 +763,9 @@ const SignatureCardNode = SdkNode.extend({
     let showDuration = 0.0;
 
     if (this.sdkCard) {
-      if (showDelay == null) { showDelay = 0.0; }
+      if (showDelay == null) {
+        showDelay = 0.0;
+      }
       // console.log("show BBS activate", this.sdkCard.getLogName(), this.sdkCard.getOwnerId())
       // stop any running animations
       this.stopAnimations();
@@ -721,7 +778,9 @@ const SignatureCardNode = SdkNode.extend({
       showDuration = drawFXDelays.showDelay * 0.5 + CONFIG.FADE_FAST_DURATION * 2;
 
       // get resources promise
-      const whenCardResourcesReadyPromise = this.whenResourcesReady(this.getCardResourceRequestId());
+      const whenCardResourcesReadyPromise = this.whenResourcesReady(
+        this.getCardResourceRequestId(),
+      );
 
       whenCardResourcesReadyPromise.then((cardResourceRequestId) => {
         if (!this.getAreResourcesValid(cardResourceRequestId)) return; // card has changed
@@ -771,9 +830,11 @@ const SignatureCardNode = SdkNode.extend({
     SdkNode.prototype._handleDeactivatedVisualStateTags.call(this, deactivatedVisualStateTags);
     for (let i = 0; i < deactivatedVisualStateTags.length; i++) {
       const currentTag = deactivatedVisualStateTags[i];
-      if (currentTag.tagType == CardNodeVisualStateTag.showGlowForPlayerTagType
-        || currentTag.tagType == CardNodeVisualStateTag.showGlowForOpponentTagType
-        || currentTag.tagType == CardNodeVisualStateTag.showGlowForNeutralTagType) {
+      if (
+        currentTag.tagType == CardNodeVisualStateTag.showGlowForPlayerTagType ||
+        currentTag.tagType == CardNodeVisualStateTag.showGlowForOpponentTagType ||
+        currentTag.tagType == CardNodeVisualStateTag.showGlowForNeutralTagType
+      ) {
         this.cardGlowSprite.stopAllActions();
         this.cardGlowSprite.fadeToInvisible(CONFIG.FADE_FAST_DURATION);
       }
@@ -814,18 +875,29 @@ const SignatureCardNode = SdkNode.extend({
     if (this._instructionNode != null) {
       const position = this.getCenterPositionForExternal();
       if (this._instructionNode._carrotDirection == InstructionNode.DIRECTION_UP) {
-        this._instructionNode.setPosition(position.x, position.y - this.getContentSize().height * 0.5);
+        this._instructionNode.setPosition(
+          position.x,
+          position.y - this.getContentSize().height * 0.5,
+        );
       } else if (this._instructionNode._carrotDirection == InstructionNode.DIRECTION_DOWN) {
-        this._instructionNode.setPosition(position.x, position.y + this.getContentSize().height * 0.5);
+        this._instructionNode.setPosition(
+          position.x,
+          position.y + this.getContentSize().height * 0.5,
+        );
       } else if (this._instructionNode._carrotDirection == InstructionNode.DIRECTION_RIGHT) {
-        this._instructionNode.setPosition(position.x - this.getContentSize().width * 0.5, position.y);
+        this._instructionNode.setPosition(
+          position.x - this.getContentSize().width * 0.5,
+          position.y,
+        );
       } else {
         // assume left
-        this._instructionNode.setPosition(position.x + this.getContentSize().width * 0.5, position.y);
+        this._instructionNode.setPosition(
+          position.x + this.getContentSize().width * 0.5,
+          position.y,
+        );
       }
     }
   },
-
 });
 
 SignatureCardNode.create = function (sdkCard, node) {

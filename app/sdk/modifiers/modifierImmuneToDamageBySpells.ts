@@ -18,7 +18,14 @@ class ModifierImmuneToDamageBySpells extends ModifierImmuneToDamage {
   static type = 'ModifierImmuneToDamageBySpells';
 
   getIsActionRelevant(a) {
-    return (this.getCard() != null) && a instanceof DamageAction && a.getIsValid() && (this.getCard() === a.getTarget()) && a.getParentAction() instanceof ApplyCardToBoardAction && (__guard__(a.getParentAction().getCard(), (x) => x.type) === CardType.Spell);
+    return (
+      this.getCard() != null &&
+      a instanceof DamageAction &&
+      a.getIsValid() &&
+      this.getCard() === a.getTarget() &&
+      a.getParentAction() instanceof ApplyCardToBoardAction &&
+      __guard__(a.getParentAction().getCard(), (x) => x.type) === CardType.Spell
+    );
   }
 }
 ModifierImmuneToDamageBySpells.prototype.type = 'ModifierImmuneToDamageBySpells';
@@ -27,5 +34,5 @@ ModifierImmuneToDamageBySpells.description = i18next.t('modifiers.immune_to_dama
 module.exports = ModifierImmuneToDamageBySpells;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

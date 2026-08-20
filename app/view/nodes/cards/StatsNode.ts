@@ -13,7 +13,6 @@ StatsNode
  *************************************************************************** */
 
 const StatsNode = EntitySupportNode.extend({
-
   _active: false,
   atkLabel: null,
   atkBGSprite: null,
@@ -137,17 +136,24 @@ const StatsNode = EntitySupportNode.extend({
    * @param {String} [actionEventType=EVENTS.update_cache_action] action event type to show
    */
   showHP(action, actionEventType) {
-    if (actionEventType == null) { actionEventType = EVENTS.update_cache_action; }
-    if (action == null
-      || action.getIndex() > this._showingHPForActionIndex
-      || (this._showingHPForActionEventType !== EVENTS.update_cache_step && actionEventType === EVENTS.update_cache_step)) {
+    if (actionEventType == null) {
+      actionEventType = EVENTS.update_cache_action;
+    }
+    if (
+      action == null ||
+      action.getIndex() > this._showingHPForActionIndex ||
+      (this._showingHPForActionEventType !== EVENTS.update_cache_step &&
+        actionEventType === EVENTS.update_cache_step)
+    ) {
       const entityNode = this.getEntityNode();
       const sdkCard = entityNode && entityNode.getSdkCard();
       let state;
       if (action != null) {
         this._showingHPForActionIndex = action.getIndex();
         this._showingHPForActionEventType = actionEventType;
-        state = sdkCard.getActionStateRecord().getStateAtActionForEventType(action, actionEventType);
+        state = sdkCard
+          .getActionStateRecord()
+          .getStateAtActionForEventType(action, actionEventType);
       } else {
         this._showingHPForActionIndex = -1;
         this._showingHPForActionEventType = null;
@@ -187,17 +193,24 @@ const StatsNode = EntitySupportNode.extend({
    * @param {String} [actionEventType=EVENTS.update_cache_action] action event type to show
    */
   showATK(action, actionEventType) {
-    if (actionEventType == null) { actionEventType = EVENTS.update_cache_action; }
-    if (action == null
-      || action.getIndex() > this._showingATKForActionIndex
-      || (this._showingATKForActionEventType !== EVENTS.update_cache_step && actionEventType === EVENTS.update_cache_step)) {
+    if (actionEventType == null) {
+      actionEventType = EVENTS.update_cache_action;
+    }
+    if (
+      action == null ||
+      action.getIndex() > this._showingATKForActionIndex ||
+      (this._showingATKForActionEventType !== EVENTS.update_cache_step &&
+        actionEventType === EVENTS.update_cache_step)
+    ) {
       const entityNode = this.getEntityNode();
       const sdkCard = entityNode && entityNode.getSdkCard();
       let state;
       if (action != null) {
         this._showingATKForActionIndex = action.getIndex();
         this._showingATKForActionEventType = actionEventType;
-        state = sdkCard.getActionStateRecord().getStateAtActionForEventType(action, actionEventType);
+        state = sdkCard
+          .getActionStateRecord()
+          .getStateAtActionForEventType(action, actionEventType);
       } else {
         this._showingATKForActionIndex = -1;
         this._showingATKForActionEventType = null;
@@ -263,7 +276,6 @@ const StatsNode = EntitySupportNode.extend({
   },
 
   /* endregion SHOW / HIDE */
-
 });
 
 StatsNode.create = function (entityNode, node) {

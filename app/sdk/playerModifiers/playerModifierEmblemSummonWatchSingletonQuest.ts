@@ -25,13 +25,15 @@ class PlayerModifierEmblemSummonWatchSingletonQuest extends PlayerModifierEmblem
 
   onGainMinionWatch(action) {
     const entity = action.getTarget();
-    if ((entity != null) && (this.modifiersContextObjects != null)) {
+    if (entity != null && this.modifiersContextObjects != null) {
       return (() => {
         const result = [];
         for (var modifiersContextObject of Array.from<any>(this.modifiersContextObjects)) {
           if (modifiersContextObject != null) {
             modifiersContextObject.isRemovable = false;
-            result.push(this.getGameSession().applyModifierContextObject(modifiersContextObject, entity));
+            result.push(
+              this.getGameSession().applyModifierContextObject(modifiersContextObject, entity),
+            );
           } else {
             result.push(undefined);
           }
@@ -66,20 +68,29 @@ class PlayerModifierEmblemSummonWatchSingletonQuest extends PlayerModifierEmblem
     if (this.modifiersContextObjects != null) {
       return (() => {
         const result = [];
-        for (var unit of Array.from<any>(this.getGameSession().getBoard().getFriendlyEntitiesForEntity(this.getCard()))) {
-          if ((unit != null) && !unit.getIsGeneral() && (unit.getType() === CardType.Unit) && (unit !== this.getSourceCard())) {
-            result.push((() => {
-              const result1 = [];
-              for (var modifier of Array.from<any>(this.modifiersContextObjects)) {
-                if (modifier != null) {
-                  modifier.isRemovable = false;
-                  result1.push(this.getGameSession().applyModifierContextObject(modifier, unit));
-                } else {
-                  result1.push(undefined);
+        for (var unit of Array.from<any>(
+          this.getGameSession().getBoard().getFriendlyEntitiesForEntity(this.getCard()),
+        )) {
+          if (
+            unit != null &&
+            !unit.getIsGeneral() &&
+            unit.getType() === CardType.Unit &&
+            unit !== this.getSourceCard()
+          ) {
+            result.push(
+              (() => {
+                const result1 = [];
+                for (var modifier of Array.from<any>(this.modifiersContextObjects)) {
+                  if (modifier != null) {
+                    modifier.isRemovable = false;
+                    result1.push(this.getGameSession().applyModifierContextObject(modifier, unit));
+                  } else {
+                    result1.push(undefined);
+                  }
                 }
-              }
-              return result1;
-            })());
+                return result1;
+              })(),
+            );
           } else {
             result.push(undefined);
           }
@@ -89,7 +100,8 @@ class PlayerModifierEmblemSummonWatchSingletonQuest extends PlayerModifierEmblem
     }
   }
 }
-PlayerModifierEmblemSummonWatchSingletonQuest.prototype.type = 'PlayerModifierEmblemSummonWatchSingletonQuest';
+PlayerModifierEmblemSummonWatchSingletonQuest.prototype.type =
+  'PlayerModifierEmblemSummonWatchSingletonQuest';
 PlayerModifierEmblemSummonWatchSingletonQuest.prototype.maxStacks = 1;
 PlayerModifierEmblemSummonWatchSingletonQuest.prototype.modifiersContextObjects = null;
 

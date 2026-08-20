@@ -31,9 +31,13 @@ class ModifierStartTurnWatchDamageGeneralEqualToMinionsOwned extends ModifierSta
   onTurnWatch(action) {
     super.onTurnWatch(action);
 
-    const enemyMinions = this.getGameSession().getBoard().getEnemyEntitiesForEntity(this.getCard(), CardType.Unit);
+    const enemyMinions = this.getGameSession()
+      .getBoard()
+      .getEnemyEntitiesForEntity(this.getCard(), CardType.Unit);
     const damageAmount = enemyMinions.length - 1; // removing 1 point of damage since the enemy general is included
-    const general = this.getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
+    const general = this.getGameSession().getGeneralForOpponentOfPlayerId(
+      this.getCard().getOwnerId(),
+    );
     if (general != null) {
       const damageAction = new DamageAction(this.getGameSession());
       damageAction.setOwnerId(this.getCard().getOwnerId());
@@ -44,9 +48,15 @@ class ModifierStartTurnWatchDamageGeneralEqualToMinionsOwned extends ModifierSta
     }
   }
 }
-ModifierStartTurnWatchDamageGeneralEqualToMinionsOwned.prototype.type = 'ModifierStartTurnWatchDamageGeneralEqualToMinionsOwned';
-ModifierStartTurnWatchDamageGeneralEqualToMinionsOwned.description = i18next.t('modifiers.start_turn_watch_damage_general_equal_to_minions_owned_def');
+ModifierStartTurnWatchDamageGeneralEqualToMinionsOwned.prototype.type =
+  'ModifierStartTurnWatchDamageGeneralEqualToMinionsOwned';
+ModifierStartTurnWatchDamageGeneralEqualToMinionsOwned.description = i18next.t(
+  'modifiers.start_turn_watch_damage_general_equal_to_minions_owned_def',
+);
 ModifierStartTurnWatchDamageGeneralEqualToMinionsOwned.prototype.damageAmount = 0;
-ModifierStartTurnWatchDamageGeneralEqualToMinionsOwned.prototype.fxResource = ['FX.Modifiers.ModifierStartTurnWatch', 'FX.Modifiers.ModifierGenericChainLightningRed'];
+ModifierStartTurnWatchDamageGeneralEqualToMinionsOwned.prototype.fxResource = [
+  'FX.Modifiers.ModifierStartTurnWatch',
+  'FX.Modifiers.ModifierGenericChainLightningRed',
+];
 
 module.exports = ModifierStartTurnWatchDamageGeneralEqualToMinionsOwned;

@@ -22,23 +22,30 @@ const matchParen = (src, open) => {
   let depth = 0;
   for (let i = open; i < src.length; i += 1) {
     if (src[i] === '(') depth += 1;
-    else if (src[i] === ')') { depth -= 1; if (depth === 0) return i; }
+    else if (src[i] === ')') {
+      depth -= 1;
+      if (depth === 0) return i;
+    }
   }
   return -1;
 };
 
-let converted = 0; const skipped = [];
+let converted = 0;
+const skipped = [];
 
 for (const file of process.argv.slice(2)) {
   const before = fs.readFileSync(file, 'utf8');
-  let out = ''; let cursor = 0; let i = 0; let touched = false;
+  let out = '';
+  let cursor = 0;
+  let i = 0;
+  let touched = false;
 
   while ((i = before.indexOf('Jobs.create(', cursor)) !== -1) {
     const open = before.indexOf('(', i);
     const close = matchParen(before, open);
     if (close === -1) break;
 
-    const args = before.slice(open + 1, close).replace(/,\s*$/, '');   // drop trailing comma
+    const args = before.slice(open + 1, close).replace(/,\s*$/, ''); // drop trailing comma
     // consume the chain that follows
     let j = close + 1;
     const opts = [];
@@ -54,8 +61,12 @@ for (const file of process.argv.slice(2)) {
         continue;
       }
       const s = rest.match(/^\s*\.save\(\s*\)/);
-      if (s) { j += rest.indexOf(')', rest.indexOf('.save(')) + 1; break; }
-      ok = false; break;                       // .save(cb), or no .save at all
+      if (s) {
+        j += rest.indexOf(')', rest.indexOf('.save(')) + 1;
+        break;
+      }
+      ok = false;
+      break; // .save(cb), or no .save at all
     }
 
     if (!ok) {
@@ -71,7 +82,8 @@ for (const file of process.argv.slice(2)) {
     out += before.slice(cursor, i);
     out += `Jobs.enqueue(${args}, { ${opts.join(', ')} })`;
     cursor = j;
-    converted += 1; touched = true;
+    converted += 1;
+    touched = true;
   }
 
   if (!touched) continue;
@@ -79,7 +91,9 @@ for (const file of process.argv.slice(2)) {
 
   // Guard: never write output that does not parse, and never write output that
   // is dramatically shorter than the input (the signature of dropped regions).
-  try { parse(out, { range: true }); } catch (e) {
+  try {
+    parse(out, { range: true });
+  } catch (e) {
     console.error(`  !! ${file}: output does not parse, skipping (${e.message})`);
     continue;
   }

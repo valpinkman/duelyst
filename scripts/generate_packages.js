@@ -79,7 +79,10 @@
           partials = p1.match(/"(?:[^"])*"|'(?:[^'])*'|\}(.*?)\$\{|\}(.*?)\`|\`(.*?)\$\{/g) || [];
           partialAtBeginning = partials.length <= 1;
           partials = _.map(partials, (partial) => partial.replace(/["'`}]|(\$\{)/g, ''));
-          partials = _.reject(partials, (partial) => !partial || partial.length < 2 || !isNaN(parseInt(partial)));
+          partials = _.reject(
+            partials,
+            (partial) => !partial || partial.length < 2 || !isNaN(parseInt(partial)),
+          );
         } else {
           isDynamic = false;
           partials = [p1];
@@ -93,12 +96,13 @@
           const resourceMatchRegExp = new RegExp((partialAtBeginning ? '^' : '') + partialEscaped);
           for (const key in RSX) {
             const resource = RSX[key];
-            if (!_.isFunction(resource)
-              && (resourceMatchRegExp.test(key)
-              || (resource.img != null && resourceMatchRegExp.test(resource.img))
-              || (resource.plist != null && resourceMatchRegExp.test(resource.plist))
-              || (resource.audio != null && resourceMatchRegExp.test(resource.audio))
-              || (resource.font != null && resourceMatchRegExp.test(resource.font)))
+            if (
+              !_.isFunction(resource) &&
+              (resourceMatchRegExp.test(key) ||
+                (resource.img != null && resourceMatchRegExp.test(resource.img)) ||
+                (resource.plist != null && resourceMatchRegExp.test(resource.plist)) ||
+                (resource.audio != null && resourceMatchRegExp.test(resource.audio)) ||
+                (resource.font != null && resourceMatchRegExp.test(resource.font)))
             ) {
               if (/getResourcePathForScale/i.test(match)) {
                 console.log(match, p1, 'getResourcePathForScale match', key);
@@ -114,12 +118,17 @@
         }
 
         if (debug && !matchFound) {
-          console.log(` [GP] [WARN] ${getRelativePath(file)} -> matched RSX search but no resource could be found for: ${match}`);
+          console.log(
+            ` [GP] [WARN] ${getRelativePath(file)} -> matched RSX search but no resource could be found for: ${match}`,
+          );
         }
       }
     };
 
-    content.replace(/(?:RSX[.\[]{1})(.*?)(?=\]|\.name|\.img|\.plist|\.audio|\.font|\.framePrefix|\.frame)/g, parsePartials);
+    content.replace(
+      /(?:RSX[.\[]{1})(.*?)(?=\]|\.name|\.img|\.plist|\.audio|\.font|\.framePrefix|\.frame)/g,
+      parsePartials,
+    );
     content.replace(/(?:RSX\.)(\w+)/g, parsePartials);
 
     // search for data key partials
@@ -142,7 +151,11 @@
     const pkgFlagsBlocks = content.match(/pragma[\s\t]*?PKGS:.*?[\r\n]/);
     if (pkgFlagsBlocks != null) {
       for (var i = 0; i < pkgFlagsBlocks.length; i++) {
-        const pkgFlagBlock = pkgFlagsBlocks[i].replace(/pragma[\s\t]*?PKGS:[\s\t]*?(.*?)[\r\n]/, '$1').replace(/\t/g, ' ').replace(/^\s*(.*?)\s*$/, '$1').replace(/\s+/g, ' ');
+        const pkgFlagBlock = pkgFlagsBlocks[i]
+          .replace(/pragma[\s\t]*?PKGS:[\s\t]*?(.*?)[\r\n]/, '$1')
+          .replace(/\t/g, ' ')
+          .replace(/^\s*(.*?)\s*$/, '$1')
+          .replace(/\s+/g, ' ');
         pkgNames = pkgNames.concat(pkgFlagBlock.split(' '));
       }
     }
@@ -184,14 +197,17 @@
       if (needsPartialMatch) {
         // search for partial key matches in RSX
         resources = [];
-        const resourceMatchRegExp = new RegExp(`^${UtilsJavascript.escapeStringForRegexSearch(partial)}`);
+        const resourceMatchRegExp = new RegExp(
+          `^${UtilsJavascript.escapeStringForRegexSearch(partial)}`,
+        );
         for (const key in RSX) {
           var resource = RSX[key];
-          if (resourceMatchRegExp.test(key)
-            || (resource.img != null && resourceMatchRegExp.test(resource.img))
-            || (resource.plist != null && resourceMatchRegExp.test(resource.plist))
-            || (resource.audio != null && resourceMatchRegExp.test(resource.audio))
-            || (resource.font != null && resourceMatchRegExp.test(resource.font))
+          if (
+            resourceMatchRegExp.test(key) ||
+            (resource.img != null && resourceMatchRegExp.test(resource.img)) ||
+            (resource.plist != null && resourceMatchRegExp.test(resource.plist)) ||
+            (resource.audio != null && resourceMatchRegExp.test(resource.audio)) ||
+            (resource.font != null && resourceMatchRegExp.test(resource.font))
           ) {
             resources.push(resource);
           }
@@ -215,18 +231,39 @@
           };
           if (ext === 'png' || ext === 'jpg' || ext === 'jpeg' || ext === 'bmp' || ext === 'gif') {
             resource.img = `"${match}"`;
-          } else if (ext === 'ogg' || ext === 'wav' || ext === 'mp3' || ext === 'mp4' || ext === 'm4a') {
+          } else if (
+            ext === 'ogg' ||
+            ext === 'wav' ||
+            ext === 'mp3' ||
+            ext === 'mp4' ||
+            ext === 'm4a'
+          ) {
             resource.audio = `"${match}"`;
-          } else if (ext === 'ttf' || ext === 'fnt' || ext === 'font' || ext === 'eot' || ext === 'woff' || ext === 'svg') {
+          } else if (
+            ext === 'ttf' ||
+            ext === 'fnt' ||
+            ext === 'font' ||
+            ext === 'eot' ||
+            ext === 'woff' ||
+            ext === 'svg'
+          ) {
             resource.font = `"${match}"`;
           } else if (ext === 'plist') {
             resource.plist = `"${match}"`;
           }
-          if (resource.img != null || resource.audio != null || resource.font != null || resource.plist != null) {
+          if (
+            resource.img != null ||
+            resource.audio != null ||
+            resource.font != null ||
+            resource.plist != null
+          ) {
             RSX_NON_ALIASED.push(resource);
             RSX_NON_ALIASED_MATCHES[match] = resource;
 
-            if (resource.img != null && helpers.getContentAfterLastDot(file).toLowerCase() !== 'css') {
+            if (
+              resource.img != null &&
+              helpers.getContentAfterLastDot(file).toLowerCase() !== 'css'
+            ) {
               // when not processing css, add versions at all resolutions
               const resourceName = resource.name.replace(/['"]/g, '');
               const imagePath = resource.img.replace(/['"]/g, '');
@@ -243,11 +280,15 @@
               }
             }
           } else {
-            console.log(` [GP] [WARN] ${getRelativePath(file)} -> has non aliased empty resource: ${match}`);
+            console.log(
+              ` [GP] [WARN] ${getRelativePath(file)} -> has non aliased empty resource: ${match}`,
+            );
           }
         }
       } else if (debug) {
-        console.log(` [GP] [WARN] ${getRelativePath(file)} -> has non aliased path that may not get loaded: ${match}`);
+        console.log(
+          ` [GP] [WARN] ${getRelativePath(file)} -> has non aliased path that may not get loaded: ${match}`,
+        );
       }
     });
 
@@ -268,7 +309,9 @@
     content = helpers.stripComments(content).replace('\r', '\n');
 
     // look for fx resource in file
-    const fxResourceBlocks = content.match(/(fxResource|cardFXResource)[\s\t]*?[:=][\s\t]*?[^null][\s\S]*?\]/g);
+    const fxResourceBlocks = content.match(
+      /(fxResource|cardFXResource)[\s\t]*?[:=][\s\t]*?[^null][\s\S]*?\]/g,
+    );
     if (fxResourceBlocks != null && fxResourceBlocks.length > 0) {
       for (var i = 0, il = fxResourceBlocks.length; i < il; i++) {
         const fxResourceBlock = fxResourceBlocks[i];
@@ -300,17 +343,23 @@
     if (actionBlocks != null && actionBlocks.length > 0) {
       for (var i = 0, il = actionBlocks.length; i < il; i++) {
         const actionClass = actionBlocks[i].replace(/new /g, '');
-        if (SDK_ACTION_MAP[className] == null) { SDK_ACTION_MAP[className] = []; }
+        if (SDK_ACTION_MAP[className] == null) {
+          SDK_ACTION_MAP[className] = [];
+        }
         SDK_ACTION_MAP[className].push(actionClass);
       }
     }
 
     // look for modifier usage in file
-    const modifiersBlock = content.match(/new ((?:Player)?Modifier\w+?)(?=\()|((?:Player)?Modifier\w+?)(?=\.type|\.createContext)/g);
+    const modifiersBlock = content.match(
+      /new ((?:Player)?Modifier\w+?)(?=\()|((?:Player)?Modifier\w+?)(?=\.type|\.createContext)/g,
+    );
     if (modifiersBlock != null && modifiersBlock.length > 0) {
       for (var i = 0, il = modifiersBlock.length; i < il; i++) {
         const modifierClass = modifiersBlock[i].replace(/new /g, '');
-        if (SDK_MODIFIER_MAP[className] == null) { SDK_MODIFIER_MAP[className] = []; }
+        if (SDK_MODIFIER_MAP[className] == null) {
+          SDK_MODIFIER_MAP[className] = [];
+        }
         SDK_MODIFIER_MAP[className].push(modifierClass);
       }
     }
@@ -571,7 +620,10 @@
     for (let j = 1; j < idStringParts.length; j++) {
       cardId = cardId[idStringParts[j]];
       if (cardId == null) {
-        console.log(` [GP] [WARN] ${cardIdString} -> not found in cards lookup at part: `, idStringParts[j]);
+        console.log(
+          ` [GP] [WARN] ${cardIdString} -> not found in cards lookup at part: `,
+          idStringParts[j],
+        );
         break;
       }
     }
@@ -651,10 +703,13 @@
       };
 
       // search for misc resources
-      const resourceStrings = cardContent.match(/(?:set\w*?Resource\()*RSX\..*?(?=[\.\W\r\n])/g) || [];
+      const resourceStrings =
+        cardContent.match(/(?:set\w*?Resource\()*RSX\..*?(?=[\.\W\r\n])/g) || [];
       for (var j = 0; j < resourceStrings.length; j++) {
         const resourceString = resourceStrings[j];
-        const resource = resourceString.replace(/set\w*?Resource\(/g, '').replace(/[\t\s\r\n"']/g, '');
+        const resource = resourceString
+          .replace(/set\w*?Resource\(/g, '')
+          .replace(/[\t\s\r\n"']/g, '');
 
         resourcesForAllPkg.push(resource);
       }
@@ -662,11 +717,17 @@
       // anim resources for inspect
       const animResourceBlock = cardContent.match(/setBaseAnimResource\([\s\S]*?\)/g);
       if (animResourceBlock != null) {
-        const animResourceLines = animResourceBlock[0].match(/(\w+)[\s\t]*?:[\s\t]*?(RSX\..*?)(?=[\.\r\n])/g) || [];
+        const animResourceLines =
+          animResourceBlock[0].match(/(\w+)[\s\t]*?:[\s\t]*?(RSX\..*?)(?=[\.\r\n])/g) || [];
         for (var j = 0; j < animResourceLines.length; j++) {
           const animResourceLine = animResourceLines[j];
-          const animResourceName = animResourceLine.replace(/(\w+)[\s\t]*?:[\s\t]*?RSX\..*?$/, '$1').replace(/[\t\s\r\n"']/g, '').toLowerCase();
-          const animResource = animResourceLine.replace(/\w+[\s\t]*?:[\s\t]*?(RSX\..*?)$/, '$1').replace(/[\t\s\r\n"']/g, '');
+          const animResourceName = animResourceLine
+            .replace(/(\w+)[\s\t]*?:[\s\t]*?RSX\..*?$/, '$1')
+            .replace(/[\t\s\r\n"']/g, '')
+            .toLowerCase();
+          const animResource = animResourceLine
+            .replace(/\w+[\s\t]*?:[\s\t]*?(RSX\..*?)$/, '$1')
+            .replace(/[\t\s\r\n"']/g, '');
           cardData.resources.animResources.push(animResource);
           if (/breathing|idle|attack|active/i.test(animResourceName)) {
             cardData.resources.animResourcesForCardInspect.push(animResource);
@@ -677,11 +738,17 @@
       // sound resources
       const soundResourceBlock = cardContent.match(/setBaseSoundResource\([\s\S]*?\)/g);
       if (soundResourceBlock != null) {
-        const soundResourcesLines = soundResourceBlock[0].match(/(\w+)[\s\t]*?:[\s\t]*?(RSX\..*?)(?=[\.\r\n])/g) || [];
+        const soundResourcesLines =
+          soundResourceBlock[0].match(/(\w+)[\s\t]*?:[\s\t]*?(RSX\..*?)(?=[\.\r\n])/g) || [];
         for (var j = 0; j < soundResourcesLines.length; j++) {
           const soundResourceLine = soundResourcesLines[j];
-          const soundResourceName = soundResourceLine.replace(/(\w+)[\s\t]*?:[\s\t]*?RSX\..*?$/, '$1').replace(/[\t\s\r\n"']/g, '').toLowerCase();
-          const soundResource = soundResourceLine.replace(/\w+[\s\t]*?:[\s\t]*?(RSX\..*?)$/, '$1').replace(/[\t\s\r\n"']/g, '');
+          const soundResourceName = soundResourceLine
+            .replace(/(\w+)[\s\t]*?:[\s\t]*?RSX\..*?$/, '$1')
+            .replace(/[\t\s\r\n"']/g, '')
+            .toLowerCase();
+          const soundResource = soundResourceLine
+            .replace(/\w+[\s\t]*?:[\s\t]*?(RSX\..*?)$/, '$1')
+            .replace(/[\t\s\r\n"']/g, '');
           cardData.resources.soundResources.push(soundResource);
           /*
           if (/attack/i.test(soundResourceName)) {
@@ -694,7 +761,7 @@
 
       // fx resource strings specific to skin
       let fxResourceStrings = [];
-      const fxResourceBlocks = cardContent.match(/fxResource[(:\s]*?\[([\s\S]*?)\]/ig);
+      const fxResourceBlocks = cardContent.match(/fxResource[(:\s]*?\[([\s\S]*?)\]/gi);
       if (fxResourceBlocks != null) {
         for (var j = 0; j < fxResourceBlocks.length; j++) {
           const fxResourceBlock = fxResourceBlocks[j];
@@ -708,7 +775,8 @@
       // get resources used by card class name
       const resourcesForClassName = resourcesBySDKClassName(className);
       if (resourcesForClassName != null && resourcesForClassName.length > 0) {
-        cardData.resources.classResources = cardData.resources.classResources.concat(resourcesForClassName);
+        cardData.resources.classResources =
+          cardData.resources.classResources.concat(resourcesForClassName);
       }
 
       // get fx resources strings this card may use
@@ -726,7 +794,7 @@
           for (var j = 0, jl = factionFXResource.length; j < jl; j++) {
             const factionFXResourceString = factionFXResource[j];
             // neutral faction fx resources are always loaded
-            if (!(/neutral$/i.test(factionFXResourceString))) {
+            if (!/neutral$/i.test(factionFXResourceString)) {
               fxResourceStrings.push(factionFXResourceString);
             }
           }
@@ -734,7 +802,9 @@
       }
 
       // check for modifier classes used by this card
-      const modifierBlocks = cardContent.match(/new ((?:Player)?Modifier\w+?)(?=\()|((?:Player)?Modifier\w+?)(?=\.type|\.createContext)/g);
+      const modifierBlocks = cardContent.match(
+        /new ((?:Player)?Modifier\w+?)(?=\()|((?:Player)?Modifier\w+?)(?=\.type|\.createContext)/g,
+      );
       if (modifierBlocks != null) {
         for (var j = 0; j < modifierBlocks.length; j++) {
           const modifierClass = modifierBlocks[j].replace(/new /g, '');
@@ -742,12 +812,18 @@
           // get resources used by modifier classes this card uses
           const resourcesForModifierClassName = resourcesBySDKClassName(modifierClass);
           if (resourcesForModifierClassName != null && resourcesForModifierClassName.length > 0) {
-            cardData.resources.classResources = cardData.resources.classResources.concat(resourcesForModifierClassName);
+            cardData.resources.classResources = cardData.resources.classResources.concat(
+              resourcesForModifierClassName,
+            );
           }
 
           // fx resource strings of any modifiers specific to card definition
-          const fxResourceStringsForModifierClassName = fxResourceStringsBySDKClassName(modifierClass);
-          if (fxResourceStringsForModifierClassName != null && fxResourceStringsForModifierClassName.length > 0) {
+          const fxResourceStringsForModifierClassName =
+            fxResourceStringsBySDKClassName(modifierClass);
+          if (
+            fxResourceStringsForModifierClassName != null &&
+            fxResourceStringsForModifierClassName.length > 0
+          ) {
             fxResourceStrings = fxResourceStrings.concat(fxResourceStringsForModifierClassName);
           }
         }
@@ -777,7 +853,10 @@
       addPkgResources(CARD_INSPECT_PKG_PREFIX + cardId, resources.animResourcesForCardInspect);
     }
     if (resources.animResourcesForFactionInspect != null) {
-      addPkgResources(FACTION_INSPECT_PKG_PREFIX + factionId, resources.animResourcesForFactionInspect);
+      addPkgResources(
+        FACTION_INSPECT_PKG_PREFIX + factionId,
+        resources.animResourcesForFactionInspect,
+      );
     }
 
     // sound
@@ -788,7 +867,10 @@
       addPkgResources(CARD_INSPECT_PKG_PREFIX + cardId, resources.soundResourcesForCardInspect);
     }
     if (resources.soundResourcesForFactionInspect != null) {
-      addPkgResources(FACTION_INSPECT_PKG_PREFIX + factionId, resources.soundResourcesForFactionInspect);
+      addPkgResources(
+        FACTION_INSPECT_PKG_PREFIX + factionId,
+        resources.soundResourcesForFactionInspect,
+      );
     }
 
     // fx
@@ -817,8 +899,9 @@
     // what asset lookup keys on. (Static and prototype type normally match;
     // modifierImmuneToDamageOnEnemyTurn is an upstream exception where the
     // static was mangled by an old find/replace - see MODERNIZATION_PLAN.md.)
-    let modifierType = content.match(/prototype\.type\s*=\s*['"](\w+?)['"]/)
-      || content.match(/type\s*[:=]\s*['"](\w+?)['"]/);
+    let modifierType =
+      content.match(/prototype\.type\s*=\s*['"](\w+?)['"]/) ||
+      content.match(/type\s*[:=]\s*['"](\w+?)['"]/);
     if (modifierType != null) {
       modifierType = modifierType[1];
     } else {
@@ -1043,7 +1126,10 @@
 
       // anything between open and close indices is a part of the current battlemap
       var resourcesData = resourcesForFile(file, content.slice(openIndex, closeIndex + 1));
-      addPkgResources(BATTLE_MAP_PKG_PREFIX + battleMapId, [].concat(resourcesData.resources, resourcesData.dynamicResources));
+      addPkgResources(
+        BATTLE_MAP_PKG_PREFIX + battleMapId,
+        [].concat(resourcesData.resources, resourcesData.dynamicResources),
+      );
 
       // get next match
       nextBattleMapMatch = battleMapRegex.exec(content);
@@ -1139,7 +1225,9 @@
         } else {
           const skinNum = skinNumBlock && parseInt(skinNumBlock[1]);
           if (skinNum == null || isNaN(skinNum)) {
-            console.log(` [GP] [WARN] card skin data for ${cardSkinIdKey} -> has no/invalid skin num!`);
+            console.log(
+              ` [GP] [WARN] card skin data for ${cardSkinIdKey} -> has no/invalid skin num!`,
+            );
           } else {
             const cardIdString = cardIdBlock[1];
             const cardData = CARD_DATA_BY_ID_STRING[cardIdString];
@@ -1154,13 +1242,21 @@
             const animResources = [];
             const animResourcesForCardInspect = [];
             const animResourcesForFactionInspect = [];
-            const animResourceBlock = cardSkinBlock.match(/animResource[\s\t]*?:[\s\t]*?\{[\s\S]*?\}/g);
+            const animResourceBlock = cardSkinBlock.match(
+              /animResource[\s\t]*?:[\s\t]*?\{[\s\S]*?\}/g,
+            );
             if (animResourceBlock != null) {
-              const animResourceLines = animResourceBlock[0].match(/(\w+)[\s\t]*?:[\s\t]*?(RSX\..*?)(?=[\.\r\n])/g) || [];
+              const animResourceLines =
+                animResourceBlock[0].match(/(\w+)[\s\t]*?:[\s\t]*?(RSX\..*?)(?=[\.\r\n])/g) || [];
               for (var j = 0; j < animResourceLines.length; j++) {
                 const animResourceLine = animResourceLines[j];
-                const animResourceName = animResourceLine.replace(/(\w+)[\s\t]*?:[\s\t]*?RSX\..*?$/, '$1').replace(/[\t\s\r\n"']/g, '').toLowerCase();
-                const animResource = animResourceLine.replace(/\w+[\s\t]*?:[\s\t]*?(RSX\..*?)$/, '$1').replace(/[\t\s\r\n"']/g, '');
+                const animResourceName = animResourceLine
+                  .replace(/(\w+)[\s\t]*?:[\s\t]*?RSX\..*?$/, '$1')
+                  .replace(/[\t\s\r\n"']/g, '')
+                  .toLowerCase();
+                const animResource = animResourceLine
+                  .replace(/\w+[\s\t]*?:[\s\t]*?(RSX\..*?)$/, '$1')
+                  .replace(/[\t\s\r\n"']/g, '');
                 animResources.push(animResource);
                 if (/breathing|idle|attack|active/i.test(animResourceName)) {
                   animResourcesForCardInspect.push(animResource);
@@ -1181,13 +1277,21 @@
             const soundResources = [];
             const soundResourcesForCardInspect = [];
             const soundResourcesForFactionInspect = [];
-            const soundResourceBlock = cardSkinBlock.match(/soundResource[\s\t]*?:[\s\t]*?\{[\s\S]*?\}/g);
+            const soundResourceBlock = cardSkinBlock.match(
+              /soundResource[\s\t]*?:[\s\t]*?\{[\s\S]*?\}/g,
+            );
             if (soundResourceBlock != null) {
-              const soundResourcesLines = soundResourceBlock[0].match(/(\w+)[\s\t]*?:[\s\t]*?(RSX\..*?)(?=[\.\r\n])/g) || [];
+              const soundResourcesLines =
+                soundResourceBlock[0].match(/(\w+)[\s\t]*?:[\s\t]*?(RSX\..*?)(?=[\.\r\n])/g) || [];
               for (var j = 0; j < soundResourcesLines.length; j++) {
                 const soundResourceLine = soundResourcesLines[j];
-                const soundResourceName = soundResourceLine.replace(/(\w+)[\s\t]*?:[\s\t]*?RSX\..*?$/, '$1').replace(/[\t\s\r\n"']/g, '').toLowerCase();
-                const soundResource = soundResourceLine.replace(/\w+[\s\t]*?:[\s\t]*?(RSX\..*?)$/, '$1').replace(/[\t\s\r\n"']/g, '');
+                const soundResourceName = soundResourceLine
+                  .replace(/(\w+)[\s\t]*?:[\s\t]*?RSX\..*?$/, '$1')
+                  .replace(/[\t\s\r\n"']/g, '')
+                  .toLowerCase();
+                const soundResource = soundResourceLine
+                  .replace(/\w+[\s\t]*?:[\s\t]*?(RSX\..*?)$/, '$1')
+                  .replace(/[\t\s\r\n"']/g, '');
                 soundResources.push(soundResource);
               }
             }
@@ -1222,12 +1326,17 @@
 
     // find all resources
     const resources = [];
-    const iconResourceNames = content.match(/icon_image_resource_name['"][\s\t]*?:[\s\t]*?['"]\w+['"]/g) || [];
-    const coverResourceNames = content.match(/cover_image_resource_name['"][\s\t]*?:[\s\t]*?['"]\w+['"]/g) || [];
+    const iconResourceNames =
+      content.match(/icon_image_resource_name['"][\s\t]*?:[\s\t]*?['"]\w+['"]/g) || [];
+    const coverResourceNames =
+      content.match(/cover_image_resource_name['"][\s\t]*?:[\s\t]*?['"]\w+['"]/g) || [];
     const resourceNames = [].concat(iconResourceNames, coverResourceNames);
     if (resourceNames != null) {
       for (let i = 0; i < resourceNames.length; i++) {
-        const resourceName = resourceNames[i].replace(/[\s\t'":]|icon_image_resource_name|cover_image_resource_name/g, '');
+        const resourceName = resourceNames[i].replace(
+          /[\s\t'":]|icon_image_resource_name|cover_image_resource_name/g,
+          '',
+        );
         if (resourceName.length > 0 && RSX[resourceName] != null) {
           resources.push(resourceName);
         } else {
@@ -1260,36 +1369,76 @@
     helpers.recursivelyReadDirectoryAndFiles(`${dir}/../app/audio`, mapResourcesForFile),
     helpers.recursivelyReadDirectoryAndFiles(`${dir}/../app/ui`, mapResourcesForFile, /\.scss/),
     helpers.readFile(`${dir}/../dist/src/duelyst.css`, mapResourcesForFile),
-    helpers.recursivelyReadDirectoryAndFiles(`${dir}/../app/view`, mapResourcesForFile, /battlemap/i),
-    helpers.recursivelyReadDirectoryAndFiles(`${dir}/../app/sdk`, mapResourcesForSDKFile, /cardFactory|factory\/|factionFactory|cosmeticsFactory|modifierFactory|actionfactory|codex/i),
-  ]).then(() => {
-    console.log(' [GP] Resources packed for STANDARD files!');
-    console.log(' [GP] Packaging resources for SPECIAL files...');
-    return Promise.all([
-      helpers.readFile(resolveSourceFile(`${dir}/../app/sdk/cards/factionFactory`), parseFactionFactory),
-      helpers.readFile(resolveSourceFile(`${dir}/../app/sdk/codex/codex`), parseCodex),
-      helpers.readFile(resolveSourceFile(`${dir}/../app/view/layers/game/BattleMap`), parseBattleMap),
-      helpers.recursivelyReadDirectoryAndFiles(`${dir}/../app/sdk/modifiers`, parseModifier, /modifierFactory|modifierContextObject/i),
-      helpers.recursivelyReadDirectoryAndFiles(`${dir}/../app/sdk/playerModifiers`, parseModifier, /modifierFactory|modifierContextObject/i),
-      helpers.recursivelyReadDirectoryAndFiles(`${dir}/../app/sdk/challenges`, parseChallenge, /challengeCategory|challengeFactory/i),
-      helpers.recursivelyReadDirectoryAndFiles(`${dir}/../app/sdk/challenges`, parseChallengeSuperClass, /challengeCategory|challengeFactory/i),
-      helpers.readFile(`${dir}/../app/data/shop.json`, parseShopData),
-      helpers.readFile(`${dir}/../app/data/premium_shop.json`, parseShopData),
-    ]);
-  }).then(() => {
-    console.log(' [GP] Resources packed for SPECIAL files!');
-    console.log(' [GP] Packaging resources for CARD FACTORY...');
-    // card factory is incredibly performance intensive to process
-    // so instead of processing the entire file, read line by line
-    // each card factory file must be read in sequence, otherwise we'll have data conflict
-    // once all lines are read and data extracted, parse the extracted data
-    return helpers.recursivelyReadDirectoryAndFilesByLine(`${dir}/../app/sdk/cards/factory`, parseCardFactoryLine);
-  }).then(() => parseCardFactoryData())
+    helpers.recursivelyReadDirectoryAndFiles(
+      `${dir}/../app/view`,
+      mapResourcesForFile,
+      /battlemap/i,
+    ),
+    helpers.recursivelyReadDirectoryAndFiles(
+      `${dir}/../app/sdk`,
+      mapResourcesForSDKFile,
+      /cardFactory|factory\/|factionFactory|cosmeticsFactory|modifierFactory|actionfactory|codex/i,
+    ),
+  ])
+    .then(() => {
+      console.log(' [GP] Resources packed for STANDARD files!');
+      console.log(' [GP] Packaging resources for SPECIAL files...');
+      return Promise.all([
+        helpers.readFile(
+          resolveSourceFile(`${dir}/../app/sdk/cards/factionFactory`),
+          parseFactionFactory,
+        ),
+        helpers.readFile(resolveSourceFile(`${dir}/../app/sdk/codex/codex`), parseCodex),
+        helpers.readFile(
+          resolveSourceFile(`${dir}/../app/view/layers/game/BattleMap`),
+          parseBattleMap,
+        ),
+        helpers.recursivelyReadDirectoryAndFiles(
+          `${dir}/../app/sdk/modifiers`,
+          parseModifier,
+          /modifierFactory|modifierContextObject/i,
+        ),
+        helpers.recursivelyReadDirectoryAndFiles(
+          `${dir}/../app/sdk/playerModifiers`,
+          parseModifier,
+          /modifierFactory|modifierContextObject/i,
+        ),
+        helpers.recursivelyReadDirectoryAndFiles(
+          `${dir}/../app/sdk/challenges`,
+          parseChallenge,
+          /challengeCategory|challengeFactory/i,
+        ),
+        helpers.recursivelyReadDirectoryAndFiles(
+          `${dir}/../app/sdk/challenges`,
+          parseChallengeSuperClass,
+          /challengeCategory|challengeFactory/i,
+        ),
+        helpers.readFile(`${dir}/../app/data/shop.json`, parseShopData),
+        helpers.readFile(`${dir}/../app/data/premium_shop.json`, parseShopData),
+      ]);
+    })
+    .then(() => {
+      console.log(' [GP] Resources packed for SPECIAL files!');
+      console.log(' [GP] Packaging resources for CARD FACTORY...');
+      // card factory is incredibly performance intensive to process
+      // so instead of processing the entire file, read line by line
+      // each card factory file must be read in sequence, otherwise we'll have data conflict
+      // once all lines are read and data extracted, parse the extracted data
+      return helpers.recursivelyReadDirectoryAndFilesByLine(
+        `${dir}/../app/sdk/cards/factory`,
+        parseCardFactoryLine,
+      );
+    })
+    .then(() => parseCardFactoryData())
     .then(() =>
-    // parse cosmetic factory after card factory
-    // that way all card resources have been gathered
-    // and card skin packages can be correctly generated
-      helpers.readFile(resolveSourceFile(`${dir}/../app/sdk/cosmetics/cosmeticsFactory`), parseCosmeticsFactory))
+      // parse cosmetic factory after card factory
+      // that way all card resources have been gathered
+      // and card skin packages can be correctly generated
+      helpers.readFile(
+        resolveSourceFile(`${dir}/../app/sdk/cosmetics/cosmeticsFactory`),
+        parseCosmeticsFactory,
+      ),
+    )
     .then(() => {
       console.log(' [GP] Resources packed for CARD FACTORY!');
       console.log(' [GP] Wrapping packages...');
@@ -1303,9 +1452,14 @@
       for (var i = 0, il = rsxKeys.length; i < il; i++) {
         var key = rsxKeys[i];
         RSX_MAP[key] = _.uniq(RSX_MAP[key]);
-        if (debug && RSX_MAP[key].length > WARN_WHEN_REQUIRES_MORE_RSX_THAN
-          && !(/factory[\/]|battlemap|cosmeticsFactory|factionfactory/i.test(key))) {
-          console.log(` [GP] [WARN] ${key} -> appears to require ~${RSX_MAP[key].length} resources!`);
+        if (
+          debug &&
+          RSX_MAP[key].length > WARN_WHEN_REQUIRES_MORE_RSX_THAN &&
+          !/factory[\/]|battlemap|cosmeticsFactory|factionfactory/i.test(key)
+        ) {
+          console.log(
+            ` [GP] [WARN] ${key} -> appears to require ~${RSX_MAP[key].length} resources!`,
+          );
         }
       }
 
@@ -1335,10 +1489,10 @@
 
         if (_.isArray(pkg)) {
           if (pkg.length === 0) {
-          // delete package if it has no resources
+            // delete package if it has no resources
             pkgKeysToDelete.push(key);
           } else {
-          // make pkg unique
+            // make pkg unique
             pkg = _.uniq(pkg);
 
             // store final pkg
@@ -1365,9 +1519,14 @@
           for (var j = 0, jl = cardKeys.length; j < jl; j++) {
             const cardKey = cardKeys[j];
             // generic cards don't need packages
-            if (!/clone|followup|prismatic|killtarget|modifiers|spelldamage|spawnentity|spawnneutralentity|^(dispel|repulsion|deploymechaz0r|mindcontrolbyattackvalue|doubleattackandhealth|wall)$/gi.test(cardKey)) {
+            if (
+              !/clone|followup|prismatic|killtarget|modifiers|spelldamage|spawnentity|spawnneutralentity|^(dispel|repulsion|deploymechaz0r|mindcontrolbyattackvalue|doubleattackandhealth|wall)$/gi.test(
+                cardKey,
+              )
+            ) {
               const cardId = cardGroup[cardKey];
-              const cardInspectPkgKey = CARD_INSPECT_PKG_PREFIX + Cards.getNonPrismaticCardId(cardId);
+              const cardInspectPkgKey =
+                CARD_INSPECT_PKG_PREFIX + Cards.getNonPrismaticCardId(cardId);
               if (PKGS[cardInspectPkgKey] == null) {
                 console.log(` [GP] [WARN] card ${cardKey} -> has no inspect package!`);
               }
@@ -1406,11 +1565,14 @@
         if (_.isString(resource)) {
           resource = RSX[resource.replace('RSX.', '')];
           let imagePath = resource.img;
-          if (imagePath != null
-          && !resource.noScale && !resource.is16Bit
-          && pseudoImagesSeen[imagePath] == null
-          && !(/@\d/i.test(helpers.getFileName(imagePath)))) {
-          // mark image as seen
+          if (
+            imagePath != null &&
+            !resource.noScale &&
+            !resource.is16Bit &&
+            pseudoImagesSeen[imagePath] == null &&
+            !/@\d/i.test(helpers.getFileName(imagePath))
+          ) {
+            // mark image as seen
             pseudoImagesSeen[imagePath] = true;
 
             // strip quotes
@@ -1447,8 +1609,10 @@
         const { audio } = resource;
         if (audio != null) {
           const audioExt = helpers.getContentAfterLastDot(audio);
-          if (!(/m4a|mp4/i.test(audioExt))) {
-            throw new Error(`${resource.name} uses an invalid audio format (${audioExt}), please use m4a or mp4 instead.`);
+          if (!/m4a|mp4/i.test(audioExt)) {
+            throw new Error(
+              `${resource.name} uses an invalid audio format (${audioExt}), please use m4a or mp4 instead.`,
+            );
           }
         }
       }
@@ -1474,9 +1638,12 @@
       PKGS_CONTENT += '\n';
       PKGS_CONTENT += `var PKGS = ${PKGS_JSON};\n`;
       PKGS_CONTENT += '\n';
-      PKGS_CONTENT += 'PKGS.getPkgForIdentifier = function (pkgIdentifier) { return PKGS[pkgIdentifier] || []; };\n';
-      PKGS_CONTENT += 'PKGS.setPkgForIdentifier = function (pkgIdentifier, pkg) { PKGS[pkgIdentifier] = pkg || []; };\n';
-      PKGS_CONTENT += 'PKGS.addToPkgForIdentifier = function (pkgIdentifier, pkgAdditions) { PKGS[pkgIdentifier] = (PKGS[pkgIdentifier] || []).concat(pkgAdditions || []); };\n';
+      PKGS_CONTENT +=
+        'PKGS.getPkgForIdentifier = function (pkgIdentifier) { return PKGS[pkgIdentifier] || []; };\n';
+      PKGS_CONTENT +=
+        'PKGS.setPkgForIdentifier = function (pkgIdentifier, pkg) { PKGS[pkgIdentifier] = pkg || []; };\n';
+      PKGS_CONTENT +=
+        'PKGS.addToPkgForIdentifier = function (pkgIdentifier, pkgAdditions) { PKGS[pkgIdentifier] = (PKGS[pkgIdentifier] || []).concat(pkgAdditions || []); };\n';
       PKGS_CONTENT += `PKGS.getFactionGamePkgIdentifier = function (factionIdentifier) { return '${FACTION_GAME_PKG_PREFIX}' + factionIdentifier; };\n`;
       PKGS_CONTENT += `PKGS.getFactionInspectPkgIdentifier = function (factionIdentifier) { return '${FACTION_INSPECT_PKG_PREFIX}' + factionIdentifier; };\n`;
       PKGS_CONTENT += `PKGS.getCardGamePkgIdentifier = function (cardIdentifier) { return '${CARD_GAME_PKG_PREFIX}' + Cards.getNonPrismaticCardId(cardIdentifier); };\n`;
@@ -1489,9 +1656,7 @@
       PKGS_CONTENT += 'module.exports = PKGS;\n';
 
       // write packages map
-      return Promise.all([
-        helpers.writeFile(`${dir}/../app/data/packages.js`, PKGS_CONTENT),
-      ]);
+      return Promise.all([helpers.writeFile(`${dir}/../app/data/packages.js`, PKGS_CONTENT)]);
     })
     .then(() => {
       console.log(' [GP] Packages wrapped!');
@@ -1500,4 +1665,4 @@
     .catch((error) => {
       console.log(` [GP] [ERR] Package generation failed -> ${error.stack}`);
     });
-}());
+})();

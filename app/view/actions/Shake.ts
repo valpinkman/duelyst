@@ -7,7 +7,6 @@
  * @return {Shake}
  */
 var Shake = cc.ActionInterval.extend({
-
   _strength: null,
   _originalPosition: null,
 
@@ -29,8 +28,12 @@ var Shake = cc.ActionInterval.extend({
     if (time === 1.0) {
       this.target.setPosition(this._originalPosition);
     } else {
-      const x = this._originalPosition.x + (Math.random() * (this._strength * 2.0) - this._strength) * (1.0 - time);
-      const y = this._originalPosition.y + (Math.random() * (this._strength * 2.0) - this._strength) * (1.0 - time);
+      const x =
+        this._originalPosition.x +
+        (Math.random() * (this._strength * 2.0) - this._strength) * (1.0 - time);
+      const y =
+        this._originalPosition.y +
+        (Math.random() * (this._strength * 2.0) - this._strength) * (1.0 - time);
       this.target.setPosition(x, y);
     }
   },

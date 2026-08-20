@@ -17,7 +17,6 @@ var ShopProductView = require('./shop_product_view');
 var Template = require('./templates/shop_product_collection_view.hbs');
 
 var ShopProductCollectionView = Backbone.Marionette.CompositeView.extend({
-
   className: 'product-collection',
   template: Template,
   childView: ShopProductView,
@@ -51,7 +50,13 @@ var ShopProductCollectionView = Backbone.Marionette.CompositeView.extend({
     this.collection = new VirtualCollection(opts.collection, {
       destroy_with: this,
       comparator: function (a, b) {
-        return ((a.get('order_id') || 0) - (b.get('order_id') || 0)) || ((a.get('faction_id') || 0) - (b.get('faction_id') || 0)) || ((a.get('general_id') || 0) - (b.get('general_id') || 0)) || ((b.get('rarity_id') || 0) - (a.get('rarity_id') || 0)) || ((a.get('id') || 0) - (b.get('id') || 0));
+        return (
+          (a.get('order_id') || 0) - (b.get('order_id') || 0) ||
+          (a.get('faction_id') || 0) - (b.get('faction_id') || 0) ||
+          (a.get('general_id') || 0) - (b.get('general_id') || 0) ||
+          (b.get('rarity_id') || 0) - (a.get('rarity_id') || 0) ||
+          (a.get('id') || 0) - (b.get('id') || 0)
+        );
       },
     });
     this.collection.sort();
@@ -76,7 +81,7 @@ var ShopProductCollectionView = Backbone.Marionette.CompositeView.extend({
     categories.unshift('all');
     categories = _.map(categories, function (category, i) {
       return {
-        is_active: (i == 0),
+        is_active: i == 0,
         title: category,
         localized_title: SDK.CosmeticsFactory.localizedSubTypeTitle(category),
       };
@@ -94,7 +99,7 @@ var ShopProductCollectionView = Backbone.Marionette.CompositeView.extend({
 
   onRender: function () {
     $('li', this.ui.tabs).removeClass('active');
-    this.ui.tabs.find('[data-value=\'' + this.selectedSubCategory + '\']').addClass('active');
+    this.ui.tabs.find("[data-value='" + this.selectedSubCategory + "']").addClass('active');
     if (this.searchInput) {
       this.ui.searchInput.focus().val(this.searchInput);
       this.ui.$searchSubmit.removeClass('active');
@@ -124,12 +129,13 @@ var ShopProductCollectionView = Backbone.Marionette.CompositeView.extend({
         description: i18next.t('shop.' + productData.description),
       });
     }
-    return NavigationManager.getInstance().showDialogForConfirmPurchase(productData, saleData)
+    return NavigationManager.getInstance()
+      .showDialogForConfirmPurchase(productData, saleData)
       .then(function (purchaseData) {
         _self.onPurchaseComplete(purchaseData);
       })
       .catch(function () {
-      // do nothing on cancel
+        // do nothing on cancel
       });
   },
 
@@ -142,37 +148,46 @@ var ShopProductCollectionView = Backbone.Marionette.CompositeView.extend({
   /* region CATEGORIES */
 
   updateCollectionFilter: function () {
-    this.collection.updateFilter(function (model) {
-      var matches = true;
-      if (this.searchInput) {
-        var rarityName = '';
-        var productName = model.get('name') || '';
-        var subCategoryName = model.get('sub_category_name') || '';
-        var description = model.get('description') || '';
-        var rarity = SDK.RarityFactory.rarityForIdentifier(model.get('rarity_id'));
-        if (rarity) {
-          rarityName = rarity.name;
+    this.collection.updateFilter(
+      function (model) {
+        var matches = true;
+        if (this.searchInput) {
+          var rarityName = '';
+          var productName = model.get('name') || '';
+          var subCategoryName = model.get('sub_category_name') || '';
+          var description = model.get('description') || '';
+          var rarity = SDK.RarityFactory.rarityForIdentifier(model.get('rarity_id'));
+          if (rarity) {
+            rarityName = rarity.name;
+          }
+          var found =
+            subCategoryName.toLowerCase().indexOf(this.searchInput.toLowerCase()) >= 0 ||
+            productName.toLowerCase().indexOf(this.searchInput.toLowerCase()) >= 0 ||
+            rarityName.toLowerCase().indexOf(this.searchInput.toLowerCase()) >= 0 ||
+            description.toLowerCase().indexOf(this.searchInput.toLowerCase()) >= 0;
+          matches = matches && found;
         }
-        var found = (
-          subCategoryName.toLowerCase().indexOf(this.searchInput.toLowerCase()) >= 0
-          || productName.toLowerCase().indexOf(this.searchInput.toLowerCase()) >= 0
-          || rarityName.toLowerCase().indexOf(this.searchInput.toLowerCase()) >= 0
-          || description.toLowerCase().indexOf(this.searchInput.toLowerCase()) >= 0
-        );
-        matches = matches && found;
-      }
-      if (this.selectedSubCategory && this.selectedSubCategory !== this.subCategoryAll) {
-        matches = matches && model.get('sub_category_name') && model.get('sub_category_name').toLowerCase().indexOf(this.selectedSubCategory.toLowerCase()) >= 0;
-      }
-      return matches;
-    }.bind(this));
+        if (this.selectedSubCategory && this.selectedSubCategory !== this.subCategoryAll) {
+          matches =
+            matches &&
+            model.get('sub_category_name') &&
+            model
+              .get('sub_category_name')
+              .toLowerCase()
+              .indexOf(this.selectedSubCategory.toLowerCase()) >= 0;
+        }
+        return matches;
+      }.bind(this),
+    );
     this.trigger('filter');
   },
 
   onSubCategoryChanged: function (e) {
     var button = $(e.currentTarget);
     var selectedValue = button.data('value');
-    audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_tab_in.audio, CONFIG.SELECT_SFX_PRIORITY);
+    audio_engine
+      .current()
+      .play_effect_for_interaction(RSX.sfx_ui_tab_in.audio, CONFIG.SELECT_SFX_PRIORITY);
     this.setSubCategory(selectedValue);
   },
 
@@ -181,7 +196,7 @@ var ShopProductCollectionView = Backbone.Marionette.CompositeView.extend({
       this.selectedSubCategory = selectedValue;
       this.updateCollectionFilter();
       $('li', this.ui.tabs).removeClass('active');
-      this.ui.tabs.find('[data-value=\'' + selectedValue + '\']').addClass('active');
+      this.ui.tabs.find("[data-value='" + selectedValue + "']").addClass('active');
       if (selectedValue === 'all') selectedValue = null;
     }
   },
@@ -202,7 +217,6 @@ var ShopProductCollectionView = Backbone.Marionette.CompositeView.extend({
   },
 
   /* endregion CATEGORIES */
-
 });
 
 // Expose the class either via CommonJS or the global object

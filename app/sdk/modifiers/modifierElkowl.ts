@@ -43,10 +43,19 @@ class ModifierElkowl extends ModifierOpeningGambit {
 
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
       // pick two unique modifiers from the list
-      const modifierContextObject = this.allModifierContextObjects.splice(this.getGameSession().getRandomIntegerForExecution(this.allModifierContextObjects.length), 1)[0];
+      const modifierContextObject = this.allModifierContextObjects.splice(
+        this.getGameSession().getRandomIntegerForExecution(this.allModifierContextObjects.length),
+        1,
+      )[0];
       this.getGameSession().applyModifierContextObject(modifierContextObject, this.getCard());
-      const modifierContextObject2 = this.allModifierContextObjects.splice(this.getGameSession().getRandomIntegerForExecution(this.allModifierContextObjects.length), 1)[0];
-      return this.getGameSession().applyModifierContextObject(modifierContextObject2, this.getCard());
+      const modifierContextObject2 = this.allModifierContextObjects.splice(
+        this.getGameSession().getRandomIntegerForExecution(this.allModifierContextObjects.length),
+        1,
+      )[0];
+      return this.getGameSession().applyModifierContextObject(
+        modifierContextObject2,
+        this.getCard(),
+      );
     }
   }
 }

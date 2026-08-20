@@ -17,7 +17,6 @@ const FXFlockSprite = require('../../nodes/fx/FXFlockSprite');
  *************************************************************************** */
 
 const MainMagaariEmberHighlandsLayer = FXCompositeLayer.extend({
-
   /* region INITIALIZE */
 
   ctor() {
@@ -130,7 +129,9 @@ const MainMagaariEmberHighlandsLayer = FXCompositeLayer.extend({
   /* region RESOURCES */
 
   getRequiredResources() {
-    return FXCompositeLayer.prototype.getRequiredResources.call(this).concat(PKGS.getPkgForIdentifier('MagaariEmberHighlands'));
+    return FXCompositeLayer.prototype.getRequiredResources
+      .call(this)
+      .concat(PKGS.getPkgForIdentifier('MagaariEmberHighlands'));
   },
 
   /* endregion RESOURCES */
@@ -182,7 +183,12 @@ const MainMagaariEmberHighlandsLayer = FXCompositeLayer.extend({
       let offset;
 
       // vignette sizing
-      this.vignette.setScale(Math.max(winWidth / this.vignette.getContentSize().width, winHeight / this.vignette.getContentSize().height));
+      this.vignette.setScale(
+        Math.max(
+          winWidth / this.vignette.getContentSize().width,
+          winHeight / this.vignette.getContentSize().height,
+        ),
+      );
       this.vignette.setPosition(winWidth * 0.5, 0.0);
 
       // background
@@ -192,35 +198,44 @@ const MainMagaariEmberHighlandsLayer = FXCompositeLayer.extend({
 
       // bg
       this.bg.setScale(parallaxScale);
-      ratio = cc.p(0.00, 0.00);
+      ratio = cc.p(0.0, 0.0);
       offset = cc.p(0.0, 0.0);
       this.parallaxLayer.addOrUpdateParallaxedNode(this.bg, 0, ratio, offset);
 
       // middleground 1
       this.mg.setScale(parallaxScale);
       ratio = cc.p(0.002, 0.001);
-      offset = cc.p(winWidth * 0.235, winHeight * 0.52 - this.mg.getContentSize().height * (0.5 - ratio.y) * parallaxScale);
+      offset = cc.p(
+        winWidth * 0.235,
+        winHeight * 0.52 - this.mg.getContentSize().height * (0.5 - ratio.y) * parallaxScale,
+      );
       this.parallaxLayer.addOrUpdateParallaxedNode(this.mg, 0, ratio, offset);
 
       // light rays
       this.lightRay001.setScale(parallaxScale);
-      ratio = cc.p(0.00, 0.00);
+      ratio = cc.p(0.0, 0.0);
       offset = cc.p(winWidth * 0.235, winHeight * 0.52);
       this.parallaxLayer.addOrUpdateParallaxedNode(this.lightRay001, 0, ratio, offset);
       this.lightRay001.stopAllActions();
       this.lightRay001.runAction(cc.repeatForever(cc.sequence(cc.fadeOut(15.0), cc.fadeIn(15.0))));
 
       this.lightRay002.setScale(parallaxScale);
-      ratio = cc.p(0.00, 0.00);
-      offset = cc.p(0.0, winHeight * 0.52 - this.lightRay002.getContentSize().height * 0.1 * parallaxScale);
+      ratio = cc.p(0.0, 0.0);
+      offset = cc.p(
+        0.0,
+        winHeight * 0.52 - this.lightRay002.getContentSize().height * 0.1 * parallaxScale,
+      );
       this.parallaxLayer.addOrUpdateParallaxedNode(this.lightRay002, 0, ratio, offset);
       this.lightRay002.stopAllActions();
       this.lightRay002.stopAllActions();
       this.lightRay002.runAction(cc.repeatForever(cc.sequence(cc.fadeOut(10.0), cc.fadeIn(10.0))));
 
       this.lightRay003.setScale(parallaxScale);
-      ratio = cc.p(0.00, 0.00);
-      offset = cc.p(-winWidth * 0.15, winHeight * 0.52 + this.lightRay002.getContentSize().height * 0.05 * parallaxScale);
+      ratio = cc.p(0.0, 0.0);
+      offset = cc.p(
+        -winWidth * 0.15,
+        winHeight * 0.52 + this.lightRay002.getContentSize().height * 0.05 * parallaxScale,
+      );
       this.parallaxLayer.addOrUpdateParallaxedNode(this.lightRay003, 0, ratio, offset);
       this.lightRay003.setOpacity(0.0);
       this.lightRay003.runAction(cc.repeatForever(cc.sequence(cc.fadeIn(17.0), cc.fadeOut(17.0))));
@@ -236,8 +251,10 @@ const MainMagaariEmberHighlandsLayer = FXCompositeLayer.extend({
         0,
         cc.p(),
         cc.p(
-          birds1SourceScreenPosition.x + (birds1TargetScreenPosition.x - birds1SourceScreenPosition.x) * 0.5,
-          birds1SourceScreenPosition.y + (birds1TargetScreenPosition.y - birds1SourceScreenPosition.y) * 0.5,
+          birds1SourceScreenPosition.x +
+            (birds1TargetScreenPosition.x - birds1SourceScreenPosition.x) * 0.5,
+          birds1SourceScreenPosition.y +
+            (birds1TargetScreenPosition.y - birds1SourceScreenPosition.y) * 0.5,
         ),
       );
 
@@ -251,43 +268,76 @@ const MainMagaariEmberHighlandsLayer = FXCompositeLayer.extend({
         0,
         cc.p(),
         cc.p(
-          birds2SourceScreenPosition.x + (birds2TargetScreenPosition.x - birds2SourceScreenPosition.x) * 0.5,
-          birds2SourceScreenPosition.y + (birds2TargetScreenPosition.y - birds2SourceScreenPosition.y) * 0.5,
+          birds2SourceScreenPosition.x +
+            (birds2TargetScreenPosition.x - birds2SourceScreenPosition.x) * 0.5,
+          birds2SourceScreenPosition.y +
+            (birds2TargetScreenPosition.y - birds2SourceScreenPosition.y) * 0.5,
         ),
       );
 
       // trees
       this.trees001.setScale(parallaxScale);
       ratio = cc.p(0.0025, 0.00125);
-      offset = cc.p(-winWidth * 0.45 + this.trees001.getContentSize().width * (0.5 - ratio.x) * parallaxScale, -winHeight * 0.61 + this.trees001.getContentSize().height * (0.5 - ratio.y) * parallaxScale);
+      offset = cc.p(
+        -winWidth * 0.45 + this.trees001.getContentSize().width * (0.5 - ratio.x) * parallaxScale,
+        -winHeight * 0.61 + this.trees001.getContentSize().height * (0.5 - ratio.y) * parallaxScale,
+      );
       this.parallaxLayer.addOrUpdateParallaxedNode(this.trees001, 0, ratio, offset);
 
       this.trees002.setScale(parallaxScale);
       ratio = cc.p(0.0075, 0.005);
-      offset = cc.p(winWidth * 0.5 - this.fg.getContentSize().width * 0.4 * parallaxScale + this.trees002.getContentSize().width * (1.0 - ratio.x) * parallaxScale, -winHeight * 0.52 + this.trees002.getContentSize().height * (0.5 - ratio.y) * parallaxScale);
+      offset = cc.p(
+        winWidth * 0.5 -
+          this.fg.getContentSize().width * 0.4 * parallaxScale +
+          this.trees002.getContentSize().width * (1.0 - ratio.x) * parallaxScale,
+        -winHeight * 0.52 + this.trees002.getContentSize().height * (0.5 - ratio.y) * parallaxScale,
+      );
       this.parallaxLayer.addOrUpdateParallaxedNode(this.trees002, 0, ratio, offset);
 
       // clouds
       this.clouds1.setSourceScreenPosition(cc.p(-winWidth * 0.5, -winHeight * 0.55));
       this.clouds1.setTargetScreenPosition(cc.p(winWidth * 0.5, -winHeight * 0.25));
-      this.parallaxLayer.addOrUpdateParallaxedNode(this.clouds1, 0, cc.p(), this.clouds1.getSourceScreenOffsetPosition());
+      this.parallaxLayer.addOrUpdateParallaxedNode(
+        this.clouds1,
+        0,
+        cc.p(),
+        this.clouds1.getSourceScreenOffsetPosition(),
+      );
 
       this.clouds2.setSourceScreenPosition(cc.p(-winWidth * 0.5, -winHeight * 0.55));
       this.clouds2.setTargetScreenPosition(cc.p(winWidth * 0.5, -winHeight * 0.25));
-      this.parallaxLayer.addOrUpdateParallaxedNode(this.clouds2, 0, cc.p(), this.clouds2.getSourceScreenOffsetPosition());
+      this.parallaxLayer.addOrUpdateParallaxedNode(
+        this.clouds2,
+        0,
+        cc.p(),
+        this.clouds2.getSourceScreenOffsetPosition(),
+      );
 
       this.clouds3.setSourceScreenPosition(cc.p(-winWidth * 0.5, -winHeight * 0.55));
       this.clouds3.setTargetScreenPosition(cc.p(winWidth * 0.5, -winHeight * 0.25));
-      this.parallaxLayer.addOrUpdateParallaxedNode(this.clouds3, 0, cc.p(), this.clouds3.getSourceScreenOffsetPosition());
+      this.parallaxLayer.addOrUpdateParallaxedNode(
+        this.clouds3,
+        0,
+        cc.p(),
+        this.clouds3.getSourceScreenOffsetPosition(),
+      );
 
       this.clouds4.setSourceScreenPosition(cc.p(-winWidth * 0.5, -winHeight * 0.55));
       this.clouds4.setTargetScreenPosition(cc.p(winWidth * 0.5, -winHeight * 0.25));
-      this.parallaxLayer.addOrUpdateParallaxedNode(this.clouds4, 0, cc.p(), this.clouds4.getSourceScreenOffsetPosition());
+      this.parallaxLayer.addOrUpdateParallaxedNode(
+        this.clouds4,
+        0,
+        cc.p(),
+        this.clouds4.getSourceScreenOffsetPosition(),
+      );
 
       // foreground
       this.fg.setScale(parallaxScale);
       ratio = cc.p(0.02, 0.01);
-      offset = cc.p(winWidth * 0.5 - this.fg.getContentSize().width * (0.5 - ratio.x) * parallaxScale, -winHeight * 0.52 + this.fg.getContentSize().height * (0.5 - ratio.y) * parallaxScale);
+      offset = cc.p(
+        winWidth * 0.5 - this.fg.getContentSize().width * (0.5 - ratio.x) * parallaxScale,
+        -winHeight * 0.52 + this.fg.getContentSize().height * (0.5 - ratio.y) * parallaxScale,
+      );
       this.parallaxLayer.addOrUpdateParallaxedNode(this.fg, 0, ratio, offset);
 
       // reset parallax

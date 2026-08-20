@@ -47,39 +47,43 @@ const makeDirectory = function (cb) {
   });
 };
 
-const downloadIndexHtml = (url, cb) => downloadHtml(`${url}/index.html`, `${__dirname}/../public/${env}/index.html`, cb);
+const downloadIndexHtml = (url, cb) =>
+  downloadHtml(`${url}/index.html`, `${__dirname}/../public/${env}/index.html`, cb);
 
-const downloadRegisterHtml = (url, cb) => downloadHtml(`${url}/register.html`, `${__dirname}/../public/${env}/register.html`, cb);
+const downloadRegisterHtml = (url, cb) =>
+  downloadHtml(`${url}/register.html`, `${__dirname}/../public/${env}/register.html`, cb);
 
-const setupDevelopment = () => server.listen(apiPort, function () {
-  server.connected = true;
-  return Logger.module('SERVER').log(`Duelyst '${env}' started on port ${apiPort}`);
-});
+const setupDevelopment = () =>
+  server.listen(apiPort, function () {
+    server.connected = true;
+    return Logger.module('SERVER').log(`Duelyst '${env}' started on port ${apiPort}`);
+  });
 
-const setupProduction = () => makeDirectory(function (err) {
-  if (err != null) {
-    Logger.module('SERVER').error(`setupDirectory() failed; exiting: ${err}`);
-    return process.exit(1);
-  } else {
-    // FIXME: register.html is not currently in the build.
-    downloadRegisterHtml(cdnUrl, function (err) {
-      if (err != null) {
-        return Logger.module('SERVER').warn(`downloadRegisterHtml() failed: ${err}`);
-      }
-    });
-    return downloadIndexHtml(cdnUrl, function (err) {
-      if (err != null) {
-        Logger.module('SERVER').error(`downloadIndexHtml() failed; exiting: ${err}`);
-        return process.exit(1);
-      } else {
-        return server.listen(apiPort, function () {
-          server.connected = true;
-          return Logger.module('SERVER').log(`Duelyst '${env}' started on port ${apiPort}`);
-        });
-      }
-    });
-  }
-});
+const setupProduction = () =>
+  makeDirectory(function (err) {
+    if (err != null) {
+      Logger.module('SERVER').error(`setupDirectory() failed; exiting: ${err}`);
+      return process.exit(1);
+    } else {
+      // FIXME: register.html is not currently in the build.
+      downloadRegisterHtml(cdnUrl, function (err) {
+        if (err != null) {
+          return Logger.module('SERVER').warn(`downloadRegisterHtml() failed: ${err}`);
+        }
+      });
+      return downloadIndexHtml(cdnUrl, function (err) {
+        if (err != null) {
+          Logger.module('SERVER').error(`downloadIndexHtml() failed; exiting: ${err}`);
+          return process.exit(1);
+        } else {
+          return server.listen(apiPort, function () {
+            server.connected = true;
+            return Logger.module('SERVER').log(`Duelyst '${env}' started on port ${apiPort}`);
+          });
+        }
+      });
+    }
+  });
 
 process.on('uncaughtException', (err) => shutdownLib.errorShutdown(err));
 

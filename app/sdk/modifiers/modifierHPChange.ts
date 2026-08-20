@@ -17,16 +17,18 @@ class ModifierHPChange extends Modifier {
 
   static type = 'ModifierHPChange';
   static modifierName = 'Modifier HP Change';
-  static description = 'Whenever this card\'s HP changes';
+  static description = "Whenever this card's HP changes";
 
   onAction(e) {
     super.onAction(e);
 
-    const {
-      action,
-    } = e;
+    const { action } = e;
 
-    if ((action.getTarget() === this.getCard()) && ((action instanceof HealAction && (action.getTotalHealApplied() > 0)) || (action instanceof DamageAction && (action.getTotalDamageAmount() > 0)))) {
+    if (
+      action.getTarget() === this.getCard() &&
+      ((action instanceof HealAction && action.getTotalHealApplied() > 0) ||
+        (action instanceof DamageAction && action.getTotalDamageAmount() > 0))
+    ) {
       return this.onHPChange(action);
     }
   }

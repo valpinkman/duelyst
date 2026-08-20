@@ -14,9 +14,13 @@ class ModifierEndTurnWatchRefreshArtifacts extends ModifierEndTurnWatch {
   static description = 'At the end of your turn, repair all of your artifacts to full durability';
 
   onTurnWatch() {
-    const refreshArtifactChargesAction = new RefreshArtifactChargesAction(this.getCard().getGameSession());
+    const refreshArtifactChargesAction = new RefreshArtifactChargesAction(
+      this.getCard().getGameSession(),
+    );
     // target is your General
-    refreshArtifactChargesAction.setTarget(this.getCard().getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId()));
+    refreshArtifactChargesAction.setTarget(
+      this.getCard().getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId()),
+    );
     refreshArtifactChargesAction.setSource(this.getCard());
     refreshArtifactChargesAction.setOwnerId(this.getCard().getOwnerId());
     return this.getCard().getGameSession().executeAction(refreshArtifactChargesAction);

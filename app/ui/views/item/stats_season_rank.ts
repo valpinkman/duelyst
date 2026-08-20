@@ -6,7 +6,6 @@ var RankFactory = require('app/ui/sdk/rank/rankFactory');
 var UtilsJavascript = require('app/common/utils/utils_javascript');
 
 var StatsSeasonRankItemView = Backbone.Marionette.ItemView.extend({
-
   className: 'stats-season-rank',
 
   template: StatsSeasonRankItemViewTempl,
@@ -29,7 +28,10 @@ var StatsSeasonRankItemView = Backbone.Marionette.ItemView.extend({
 
     if (this.model.get('_isTop')) {
       // setup top rank
-      var topRankText = 'Highest Rank: ' + RankFactory.rankedDivisionNameForRank(this.model.get('rank')) + ' Division';
+      var topRankText =
+        'Highest Rank: ' +
+        RankFactory.rankedDivisionNameForRank(this.model.get('rank')) +
+        ' Division';
       topRankText = topRankText.toUpperCase();
       this.ui.$rankDescription.text(topRankText);
     } else {
@@ -47,14 +49,20 @@ var StatsSeasonRankItemView = Backbone.Marionette.ItemView.extend({
         if (daysTillNextSeason > 0) {
           rankText += ' (' + daysTillNextSeason + ' days left)';
         } else {
-          rankText += ' (' + UtilsJavascript.stringifyHoursMinutesSeconds(nextSeasonStartMoment.diff(moment.utc(), 'hours') % 24, nextSeasonStartMoment.diff(moment.utc(), 'minutes') % 60, 0) + ' left)';
+          rankText +=
+            ' (' +
+            UtilsJavascript.stringifyHoursMinutesSeconds(
+              nextSeasonStartMoment.diff(moment.utc(), 'hours') % 24,
+              nextSeasonStartMoment.diff(moment.utc(), 'minutes') % 60,
+              0,
+            ) +
+            ' left)';
         }
       }
 
       this.ui.$rankDescription.text(rankText);
     }
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

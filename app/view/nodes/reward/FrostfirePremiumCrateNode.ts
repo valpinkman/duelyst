@@ -12,7 +12,6 @@ const LootCrateNode = require('./LootCrateNode');
  *************************************************************************** */
 
 var FrostfirePremiumCrateNode = LootCrateNode.extend({
-
   /* region GETTERS / SETTERS */
 
   getRequiredResources() {
@@ -49,7 +48,9 @@ var FrostfirePremiumCrateNode = LootCrateNode.extend({
   },
 
   getCrateCount() {
-    return CrateManager.getInstance().getGiftCrateCount(GiftCrateLookup.FrostfirePremiumPurchasable2017);
+    return CrateManager.getInstance().getGiftCrateCount(
+      GiftCrateLookup.FrostfirePremiumPurchasable2017,
+    );
   },
 
   /* endregion GETTERS / SETTERS */
@@ -62,12 +63,20 @@ var FrostfirePremiumCrateNode = LootCrateNode.extend({
   },
 
   showCrateDescriptionLabel(duration, fontName, fontSize, fontColor, contentSize) {
-    if (contentSize == null) { contentSize = cc.size(275, 0); }
-    LootCrateNode.prototype.showCrateDescriptionLabel.call(this, duration, fontName, fontSize, fontColor, contentSize);
+    if (contentSize == null) {
+      contentSize = cc.size(275, 0);
+    }
+    LootCrateNode.prototype.showCrateDescriptionLabel.call(
+      this,
+      duration,
+      fontName,
+      fontSize,
+      fontColor,
+      contentSize,
+    );
   },
 
   /* endregion LABELS */
-
 });
 
 FrostfirePremiumCrateNode.crateType = CosmeticsChestTypeLookup.FrostfirePremium;

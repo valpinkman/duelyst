@@ -27,15 +27,25 @@ class SpellCryogenesis extends SpellDamage {
       // find only frost minions
       cardIndex = drawPile[i];
       var card = this.getGameSession().getCardByIndex(cardIndex);
-      if ((card != null) && (card.getType() === CardType.Unit) && card.getBelongsToTribe(Races.Vespyr)) {
+      if (
+        card != null &&
+        card.getType() === CardType.Unit &&
+        card.getBelongsToTribe(Races.Vespyr)
+      ) {
         indexesOfMinions.push(i);
       }
     }
 
     if (indexesOfMinions.length > 0) {
-      const indexOfCardInDeck = indexesOfMinions[this.getGameSession().getRandomIntegerForExecution(indexesOfMinions.length)];
+      const indexOfCardInDeck =
+        indexesOfMinions[
+          this.getGameSession().getRandomIntegerForExecution(indexesOfMinions.length)
+        ];
       cardIndex = drawPile[indexOfCardInDeck];
-      const drawCardAction = this.getGameSession().getPlayerById(this.getOwner().getPlayerId()).getDeck().actionDrawCard(cardIndex);
+      const drawCardAction = this.getGameSession()
+        .getPlayerById(this.getOwner().getPlayerId())
+        .getDeck()
+        .actionDrawCard(cardIndex);
       return this.getGameSession().executeAction(drawCardAction);
     }
   }

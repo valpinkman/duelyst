@@ -48,11 +48,11 @@ class ModifierAbsorbDamage extends Modifier {
 
   onStartTurn(actionEvent) {
     super.onStartTurn(actionEvent);
-    return this.canAbsorb = true;
+    return (this.canAbsorb = true);
   }
 
   getIsActionRelevant(a) {
-    return this.canAbsorb && a instanceof DamageAction && (a.getTarget() === this.getCard());
+    return this.canAbsorb && a instanceof DamageAction && a.getTarget() === this.getCard();
   }
 
   _modifyAction(a) {
@@ -66,7 +66,7 @@ class ModifierAbsorbDamage extends Modifier {
     const a = actionEvent.action;
     if (this.getIsActionRelevant(a)) {
       this._modifyAction(a);
-      return this.canAbsorb = false;
+      return (this.canAbsorb = false);
     }
   }
 

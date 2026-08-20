@@ -16,9 +16,13 @@ class ModifierOpeningGambitProgressBuild extends ModifierOpeningGambit {
   static description = 'Progress your buildings by 1';
 
   onOpeningGambit() {
-    return Array.from<any>(this.getGameSession().getBoard().getFriendlyEntitiesForEntity(this.getCard())).map((unit) =>
+    return Array.from<any>(
+      this.getGameSession().getBoard().getFriendlyEntitiesForEntity(this.getCard()),
+    ).map((unit) =>
       Array.from<any>(unit.getActiveModifiersByClass(ModifierBuilding)).map((buildModifier) =>
-        buildModifier.progressBuild()));
+        buildModifier.progressBuild(),
+      ),
+    );
   }
 }
 ModifierOpeningGambitProgressBuild.prototype.type = 'ModifierOpeningGambitProgressBuild';

@@ -62,7 +62,9 @@ class AgentActions {
    * @param {object} targetPositionIsAbsolute - (optional) flag for whether the attack position should be a delta from attacker or absolute position
    */
   static createAgentActionAttackWithUnit(unitTag, attackTargetPosition, targetPositionIsAbsolute) {
-    if (targetPositionIsAbsolute == null) { targetPositionIsAbsolute = true; }
+    if (targetPositionIsAbsolute == null) {
+      targetPositionIsAbsolute = true;
+    }
     const agentAction = this._createBaseAgentAction(this._attackActionType);
     agentAction.unitTag = unitTag;
     agentAction.attackTargetPosition = attackTargetPosition;
@@ -93,8 +95,8 @@ class AgentActions {
   }
 
   static createSDKActionFromAgentAction(agent, agentAction) {
-    let targetPosition; let
-      unit;
+    let targetPosition;
+    let unit;
     const gameSession = GameSession.current();
     if (agentAction.type === this._moveUnitType) {
       unit = agent.getUnitForTag(gameSession, agentAction.unitTag);
@@ -102,24 +104,52 @@ class AgentActions {
       targetPosition.x += agentAction.deltaXY.x;
       targetPosition.y += agentAction.deltaXY.y;
       return unit.actionMove(targetPosition);
-    } if (agentAction.type === this._attackActionType) {
+    }
+    if (agentAction.type === this._attackActionType) {
       unit = agent.getUnitForTag(gameSession, agentAction.unitTag);
-      targetPosition = { x: agentAction.attackTargetPosition.x, y: agentAction.attackTargetPosition.y };
+      targetPosition = {
+        x: agentAction.attackTargetPosition.x,
+        y: agentAction.attackTargetPosition.y,
+      };
       if (!agentAction.targetPositionIsAbsolute) {
         targetPosition.x += unit.getPositionX();
         targetPosition.y += unit.getPositionY();
       }
       return unit.actionAttackEntityAtPosition(targetPosition);
-    } if (agentAction.type === this._playCardActionType) {
-      return new PlayCardFromHandAction(gameSession, gameSession.getCurrentPlayerId(), agentAction.targetPosition.x, agentAction.targetPosition.y, agentAction.handIndex);
-    } if (agentAction.type === this._playFollowupActionType) {
-      const playCardAction = new PlayCardAction(gameSession, gameSession.getCurrentPlayerId(), agentAction.targetPosition.x, agentAction.targetPosition.y, { id: agentAction.followupCardId });
-      playCardAction.sourcePosition = { x: agentAction.sourcePosition.x, y: agentAction.sourcePosition.y };
+    }
+    if (agentAction.type === this._playCardActionType) {
+      return new PlayCardFromHandAction(
+        gameSession,
+        gameSession.getCurrentPlayerId(),
+        agentAction.targetPosition.x,
+        agentAction.targetPosition.y,
+        agentAction.handIndex,
+      );
+    }
+    if (agentAction.type === this._playFollowupActionType) {
+      const playCardAction = new PlayCardAction(
+        gameSession,
+        gameSession.getCurrentPlayerId(),
+        agentAction.targetPosition.x,
+        agentAction.targetPosition.y,
+        { id: agentAction.followupCardId },
+      );
+      playCardAction.sourcePosition = {
+        x: agentAction.sourcePosition.x,
+        y: agentAction.sourcePosition.y,
+      };
       return playCardAction;
-    } if (agentAction.type === this._playCardFindPositionActionType) {
+    }
+    if (agentAction.type === this._playCardFindPositionActionType) {
       const possiblePositions = agentAction.positionFilter();
       targetPosition = possiblePositions[0];
-      return new PlayCardFromHandAction(gameSession, gameSession.getCurrentPlayerId(), targetPosition.x, targetPosition.y, agentAction.handIndex);
+      return new PlayCardFromHandAction(
+        gameSession,
+        gameSession.getCurrentPlayerId(),
+        targetPosition.x,
+        targetPosition.y,
+        agentAction.handIndex,
+      );
     }
     throw new Error(`Unexpected AgentAction type: ${agentAction.type}`);
   }
@@ -140,7 +170,9 @@ class AgentActions {
   static executeSoftActionForAgent(agent, agentSoftAction) {
     const gameSession = GameSession.current();
     if (agentSoftAction.type === this._tagUnitActionType) {
-      const unitAtPosition = gameSession.getBoard().getUnitAtPosition(agentSoftAction.position, true, true);
+      const unitAtPosition = gameSession
+        .getBoard()
+        .getUnitAtPosition(agentSoftAction.position, true, true);
       return agent.addUnitWithTag(unitAtPosition, agentSoftAction.unitTag);
     }
   }

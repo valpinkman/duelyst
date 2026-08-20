@@ -28,12 +28,28 @@ class ModifierBackstabWatchTransformToBuilding extends ModifierBackstabWatch {
   onBackstabWatch(action) {
     // create the action to spawn the new entity before the existing entity is removed
     // because we may need information about the existing entity being replaced
-    if (this.cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects == null) { this.cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects = []; }
-    this.cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects.push(ModifierBuilding.createContextObject(this.buildModifierDescription, { id: Cards.Faction2.Penumbraxx }, 1));
-    const spawnAction = new PlayCardAsTransformAction(this.getGameSession(), this.getCard().getOwnerId(), this.getCard().getPositionX(), this.getCard().getPositionY(), this.cardDataOrIndexToSpawn);
+    if (this.cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects == null) {
+      this.cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects = [];
+    }
+    this.cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects.push(
+      ModifierBuilding.createContextObject(
+        this.buildModifierDescription,
+        { id: Cards.Faction2.Penumbraxx },
+        1,
+      ),
+    );
+    const spawnAction = new PlayCardAsTransformAction(
+      this.getGameSession(),
+      this.getCard().getOwnerId(),
+      this.getCard().getPositionX(),
+      this.getCard().getPositionY(),
+      this.cardDataOrIndexToSpawn,
+    );
 
     // remove the existing entity
-    const removingEntity = this.getGameSession().getBoard().getCardAtPosition(this.getCard().getPosition(), CardType.Unit);
+    const removingEntity = this.getGameSession()
+      .getBoard()
+      .getCardAtPosition(this.getCard().getPosition(), CardType.Unit);
     if (removingEntity != null) {
       const removeOriginalEntityAction = new RemoveAction(this.getGameSession());
       removeOriginalEntityAction.setOwnerId(this.getCard().getOwnerId());
@@ -47,7 +63,8 @@ class ModifierBackstabWatchTransformToBuilding extends ModifierBackstabWatch {
     }
   }
 }
-ModifierBackstabWatchTransformToBuilding.prototype.type = 'ModifierBackstabWatchTransformToBuilding';
+ModifierBackstabWatchTransformToBuilding.prototype.type =
+  'ModifierBackstabWatchTransformToBuilding';
 ModifierBackstabWatchTransformToBuilding.prototype.cardDataOrIndexToSpawn = null;
 ModifierBackstabWatchTransformToBuilding.prototype.buildModifierDescription = null;
 

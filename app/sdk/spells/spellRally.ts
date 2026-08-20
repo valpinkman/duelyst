@@ -18,10 +18,18 @@ class SpellRally extends Spell {
     const targetGeneralPosition = targetGeneral.getPosition();
 
     const applyEffectPositions = [];
-    if (this.getGameSession().getBoard().getUnitAtPosition({ x: targetGeneralPosition.x + 1, y: targetGeneralPosition.y })) {
+    if (
+      this.getGameSession()
+        .getBoard()
+        .getUnitAtPosition({ x: targetGeneralPosition.x + 1, y: targetGeneralPosition.y })
+    ) {
       applyEffectPositions.push({ x: targetGeneralPosition.x + 1, y: targetGeneralPosition.y });
     }
-    if (this.getGameSession().getBoard().getUnitAtPosition({ x: targetGeneralPosition.x - 1, y: targetGeneralPosition.y })) {
+    if (
+      this.getGameSession()
+        .getBoard()
+        .getUnitAtPosition({ x: targetGeneralPosition.x - 1, y: targetGeneralPosition.y })
+    ) {
       applyEffectPositions.push({ x: targetGeneralPosition.x - 1, y: targetGeneralPosition.y });
     }
     return applyEffectPositions;
@@ -31,12 +39,15 @@ class SpellRally extends Spell {
     super.onApplyEffectToBoardTile(board, x, y, sourceAction);
 
     const entity = board.getUnitAtPosition({ x, y });
-    if ((entity != null) && !entity.getIsGeneral() && (entity.getOwnerId() === this.getOwnerId())) {
+    if (entity != null && !entity.getIsGeneral() && entity.getOwnerId() === this.getOwnerId()) {
       const buff = Modifier.createContextObjectWithAttributeBuffs(2, 2);
       buff.appliedName = this.buffName;
       this.getGameSession().applyModifierContextObject(buff, entity);
       if (entity.hasActiveModifierClass(ModifierBanding)) {
-        return this.getGameSession().applyModifierContextObject(ModifierImmuneToSpellsByEnemy.createContextObject(), entity);
+        return this.getGameSession().applyModifierContextObject(
+          ModifierImmuneToSpellsByEnemy.createContextObject(),
+          entity,
+        );
       }
     }
   }

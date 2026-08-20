@@ -3,7 +3,6 @@
 var ViewTempl = require('app/ui/templates/item/maintenance_announcement.hbs');
 
 var MaintenanceAnnouncementItemView = Backbone.Marionette.ItemView.extend({
-
   template: ViewTempl,
 
   events: {
@@ -33,7 +32,6 @@ var MaintenanceAnnouncementItemView = Backbone.Marionette.ItemView.extend({
   dismiss: function () {
     this.$el.addClass('hide');
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

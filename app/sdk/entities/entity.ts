@@ -85,7 +85,10 @@ class Entity extends Card {
     p.movementRange = new MovementRange(p.gameSession);
     p.customAttackPattern = null;
     p.boundingBox = {
-      x: 0, y: 0, width: 80, height: 80,
+      x: 0,
+      y: 0,
+      width: 80,
+      height: 80,
     };
 
     return p;
@@ -132,14 +135,20 @@ class Entity extends Card {
   }
 
   getIsBattlePet() {
-    if (this._private.cachedIsBattlePet == null) { this._private.cachedIsBattlePet = this.hasModifierClass(ModifierBattlePet); }
+    if (this._private.cachedIsBattlePet == null) {
+      this._private.cachedIsBattlePet = this.hasModifierClass(ModifierBattlePet);
+    }
     return this._private.cachedIsBattlePet;
   }
 
   getIsUncontrollableBattlePet() {
     // normally battle pets are uncontrollable, unless tamed
     // generals that are acting like battle pets are always uncontrollable
-    if (this._private.cachedIsUncontrollableBattlePet == null) { this._private.cachedIsUncontrollableBattlePet = this.getIsBattlePet() && (!this.hasModifierClass(ModifierTamedBattlePet) || this.getIsGeneral()); }
+    if (this._private.cachedIsUncontrollableBattlePet == null) {
+      this._private.cachedIsUncontrollableBattlePet =
+        this.getIsBattlePet() &&
+        (!this.hasModifierClass(ModifierTamedBattlePet) || this.getIsGeneral());
+    }
     return this._private.cachedIsUncontrollableBattlePet;
   }
 
@@ -162,7 +171,7 @@ class Entity extends Card {
   // region ### BOUNDING BOX ###
 
   setBoundingBox(val) {
-    return this._private.boundingBox = val;
+    return (this._private.boundingBox = val);
   }
 
   getBoundingBox() {
@@ -170,7 +179,7 @@ class Entity extends Card {
   }
 
   setBoundingBoxX(val) {
-    return this._private.boundingBox.x = val;
+    return (this._private.boundingBox.x = val);
   }
 
   getBoundingBoxX() {
@@ -178,7 +187,7 @@ class Entity extends Card {
   }
 
   setBoundingBoxY(val) {
-    return this._private.boundingBox.y = val;
+    return (this._private.boundingBox.y = val);
   }
 
   getBoundingBoxY() {
@@ -186,7 +195,7 @@ class Entity extends Card {
   }
 
   setBoundingBoxWidth(val) {
-    return this._private.boundingBox.width = val;
+    return (this._private.boundingBox.width = val);
   }
 
   getBoundingBoxWidth() {
@@ -194,7 +203,7 @@ class Entity extends Card {
   }
 
   setBoundingBoxHeight(val) {
-    return this._private.boundingBox.height = val;
+    return (this._private.boundingBox.height = val);
   }
 
   getBoundingBoxHeight() {
@@ -206,13 +215,14 @@ class Entity extends Card {
   // region ### VALID POSITIONS ###
 
   getValidTargetPositions() {
-    if ((this._private.cachedValidTargetPositions == null)) {
+    if (this._private.cachedValidTargetPositions == null) {
       let validPositions;
       if (this.getCanBeAppliedAnywhere()) {
         // some cards can be applied anywhere on board
         validPositions = this._getValidApplyAnywherePositions();
       } else if (this.hasActiveModifierClass(ModifierCustomSpawn)) {
-        validPositions = this.getActiveModifiersByClass(ModifierCustomSpawn)[0].getCustomSpawnPositions();
+        validPositions =
+          this.getActiveModifiersByClass(ModifierCustomSpawn)[0].getCustomSpawnPositions();
       } else {
         validPositions = this.getGameSession().getBoard().getValidSpawnPositions(this);
       }
@@ -257,7 +267,9 @@ class Entity extends Card {
     if (this.hasModifierClass(PlayerModifierChangeSignatureCard)) {
       // populate signature card data based on order of application of player modifiers
       const modifiers = this.getActiveModifiersByClass(PlayerModifierChangeSignatureCard);
-      if (modifiers.length > 0) { signatureCardData = modifiers[modifiers.length - 1].getSignatureCardData(); }
+      if (modifiers.length > 0) {
+        signatureCardData = modifiers[modifiers.length - 1].getSignatureCardData();
+      }
     }
 
     if (signatureCardData != null) {
@@ -278,9 +290,7 @@ class Entity extends Card {
    * @returns {Object|null}
    */
   getBaseSignatureCardData() {
-    const {
-      signatureCardData,
-    } = this;
+    const { signatureCardData } = this;
 
     // if General is prismatic, return a prismatic signature card
     if (signatureCardData != null) {
@@ -298,10 +308,14 @@ class Entity extends Card {
    */
   getReferenceSignatureCard() {
     const owner = this.getOwner();
-    if ((owner != null) && (owner !== this.getGameSession())) {
+    if (owner != null && owner !== this.getGameSession()) {
       return owner.getReferenceSignatureCard();
-    } if ((this._private.cachedReferenceSignatureCard == null)) {
-      this._private.cachedReferenceSignatureCard = this.getGameSession().getExistingCardFromIndexOrCreateCardFromData(this.getSignatureCardData());
+    }
+    if (this._private.cachedReferenceSignatureCard == null) {
+      this._private.cachedReferenceSignatureCard =
+        this.getGameSession().getExistingCardFromIndexOrCreateCardFromData(
+          this.getSignatureCardData(),
+        );
     }
     return this._private.cachedReferenceSignatureCard;
   }
@@ -310,7 +324,7 @@ class Entity extends Card {
    * Flushes the cached reference card for signature so that the next call will regenerate the card.
    */
   flushCachedReferenceSignatureCard() {
-    return this._private.cachedReferenceSignatureCard = null;
+    return (this._private.cachedReferenceSignatureCard = null);
   }
 
   // endregion ### SIGNATURE CARD ###
@@ -330,7 +344,7 @@ class Entity extends Card {
   }
 
   setDamage(damage) {
-    return this.damage = Math.max(0, damage);
+    return (this.damage = Math.max(0, damage));
   }
 
   getDamage() {
@@ -393,24 +407,33 @@ class Entity extends Card {
   }
 
   getAttackPattern() {
-    if ((this._private.cachedAttackPattern == null)) {
+    if (this._private.cachedAttackPattern == null) {
       // don't use custom attack patterns if ranged (can already attack everywhere)
-      if ((this._private.customAttackPattern != null) && !this.isRanged()) {
+      if (this._private.customAttackPattern != null && !this.isRanged()) {
         this._private.cachedAttackPattern = this._private.customAttackPattern;
       } else {
-        this._private.cachedAttackPattern = this._private.attackRange.getPatternByDistance(this.getGameSession().getBoard(), this.getReach());
+        this._private.cachedAttackPattern = this._private.attackRange.getPatternByDistance(
+          this.getGameSession().getBoard(),
+          this.getReach(),
+        );
       }
     }
     return this._private.cachedAttackPattern;
   }
 
   getAttackPatternMap() {
-    if ((this._private.cachedAttackPatternMap == null)) {
+    if (this._private.cachedAttackPatternMap == null) {
       // don't use custom attack patterns if ranged (can already attack everywhere)
-      if ((this._private.customAttackPattern != null) && !this.isRanged()) {
-        this._private.cachedAttackPatternMap = this._private.attackRange.getPatternMapFromPattern(this.getGameSession().getBoard(), this._private.customAttackPattern);
+      if (this._private.customAttackPattern != null && !this.isRanged()) {
+        this._private.cachedAttackPatternMap = this._private.attackRange.getPatternMapFromPattern(
+          this.getGameSession().getBoard(),
+          this._private.customAttackPattern,
+        );
       } else {
-        this._private.cachedAttackPatternMap = this._private.attackRange.getPatternMapByDistance(this.getGameSession().getBoard(), this.getReach());
+        this._private.cachedAttackPatternMap = this._private.attackRange.getPatternMapByDistance(
+          this.getGameSession().getBoard(),
+          this.getReach(),
+        );
       }
     }
     return this._private.cachedAttackPatternMap;
@@ -440,15 +463,21 @@ class Entity extends Card {
   }
 
   getMovementPattern() {
-    if ((this._private.cachedMovementPattern == null)) {
-      this._private.cachedMovementPattern = this._private.movementRange.getPatternByDistance(this.getGameSession().getBoard(), this.getSpeed());
+    if (this._private.cachedMovementPattern == null) {
+      this._private.cachedMovementPattern = this._private.movementRange.getPatternByDistance(
+        this.getGameSession().getBoard(),
+        this.getSpeed(),
+      );
     }
     return this._private.cachedMovementPattern;
   }
 
   getMovementPatternMap() {
-    if ((this._private.cachedMovementPatternMap == null)) {
-      this._private.cachedMovementPatternMap = this._private.movementRange.getPatternMapByDistance(this.getGameSession().getBoard(), this.getSpeed());
+    if (this._private.cachedMovementPatternMap == null) {
+      this._private.cachedMovementPatternMap = this._private.movementRange.getPatternMapByDistance(
+        this.getGameSession().getBoard(),
+        this.getSpeed(),
+      );
     }
     return this._private.cachedMovementPatternMap;
   }
@@ -464,7 +493,9 @@ class Entity extends Card {
     // also check attacks made and increase to always be at least 1 less than moves
     // this enforces celerity rules of not allowing more than one move per attack
     const minimumAttacksMade = this.movesMade - 1;
-    if (this.getAttacksMade() < minimumAttacksMade) { return this.setAttacksMade(minimumAttacksMade); }
+    if (this.getAttacksMade() < minimumAttacksMade) {
+      return this.setAttacksMade(minimumAttacksMade);
+    }
   }
 
   getMovesMade() {
@@ -476,18 +507,20 @@ class Entity extends Card {
   }
 
   getHasMovesLeft() {
-    return this.getIsUncontrollableBattlePet() || (this.getMovesMade() < this.getMoves());
+    return this.getIsUncontrollableBattlePet() || this.getMovesMade() < this.getMoves();
   }
 
   getCanMove() {
-    return !this.getIsExhausted() && this.getHasMovesLeft() && (this.getSpeed() > 0);
+    return !this.getIsExhausted() && this.getHasMovesLeft() && this.getSpeed() > 0;
   }
 
   setAttacksMade(attacksMade) {
     this.attacksMade = Math.max(0, attacksMade);
     // also check moves made and increase to match attacks
     // this enforces sequence of move before attack and never after
-    if (this.getMovesMade() < this.attacksMade) { return this.setMovesMade(this.attacksMade); }
+    if (this.getMovesMade() < this.attacksMade) {
+      return this.setMovesMade(this.attacksMade);
+    }
   }
 
   getAttacksMade() {
@@ -499,26 +532,32 @@ class Entity extends Card {
   }
 
   getHasAttacksLeft() {
-    return this.getIsUncontrollableBattlePet() || (this.getAttacksMade() < this.getAttacks());
+    return this.getIsUncontrollableBattlePet() || this.getAttacksMade() < this.getAttacks();
   }
 
   getCanAttack() {
-    return !this.getIsExhausted() && this.getHasAttacksLeft() && (this.getATK() > 0) && (this.getReach() > 0);
+    return (
+      !this.getIsExhausted() && this.getHasAttacksLeft() && this.getATK() > 0 && this.getReach() > 0
+    );
   }
 
   getCanAct() {
-    return this.isOwnersTurn() && this.getDoesOwnerHaveEnoughManaToAct() && (this.getCanMove() || this.getCanAttack());
+    return (
+      this.isOwnersTurn() &&
+      this.getDoesOwnerHaveEnoughManaToAct() &&
+      (this.getCanMove() || this.getCanAttack())
+    );
   }
 
   getNeverActs() {
-    return (this.getSpeed() <= 0) && (this.getATK() <= 0);
+    return this.getSpeed() <= 0 && this.getATK() <= 0;
   }
 
   /*
-  * Returns exhausted state, accounting for all factors.
-  * NOTE: for checking actual exhausted state value, use "getExhausted".
-  * @returns {Boolean}
-  */
+   * Returns exhausted state, accounting for all factors.
+   * NOTE: for checking actual exhausted state value, use "getExhausted".
+   * @returns {Boolean}
+   */
   getIsExhausted() {
     if (this.getIsUncontrollableBattlePet()) {
       return false;
@@ -527,14 +566,14 @@ class Entity extends Card {
   }
 
   setExhausted(val) {
-    return this.exhausted = val;
+    return (this.exhausted = val);
   }
 
   /*
-  * Returns actual exhausted state value, not accounting for any other factors.
-  * NOTE: for checking exhausted state that accounts for all factors, use "getIsExhausted".
-  * @returns {Boolean}
-  */
+   * Returns actual exhausted state value, not accounting for any other factors.
+   * NOTE: for checking exhausted state that accounts for all factors, use "getIsExhausted".
+   * @returns {Boolean}
+   */
   getExhausted() {
     return this.exhausted;
   }
@@ -569,11 +608,20 @@ class Entity extends Card {
     const gameSession = this.getGameSession();
 
     // prefer cached
-    let entitiesKilled = this._private.cachedEntitiesKilledByAttackOn != null ? this._private.cachedEntitiesKilledByAttackOn[attackTarget.getIndex()] : undefined;
-    if (entitiesKilled != null) { return entitiesKilled; } entitiesKilled = [];
+    let entitiesKilled =
+      this._private.cachedEntitiesKilledByAttackOn != null
+        ? this._private.cachedEntitiesKilledByAttackOn[attackTarget.getIndex()]
+        : undefined;
+    if (entitiesKilled != null) {
+      return entitiesKilled;
+    }
+    entitiesKilled = [];
 
     // calculate entities killed
-    if ((attackTarget != null) && this.getAttackRange().getIsValidTarget(gameSession.getBoard(), this, attackTarget)) {
+    if (
+      attackTarget != null &&
+      this.getAttackRange().getIsValidTarget(gameSession.getBoard(), this, attackTarget)
+    ) {
       // create explicit attack
       const attackAction = this.actionAttack(attackTarget);
 
@@ -585,16 +633,26 @@ class Entity extends Card {
       const validActions = [];
 
       // emit event for all modifiers to validate explicit attack for attack prediction
-      gameSession.pushEvent({ type: EVENTS.validate_action, action: attackAction, gameSession }, { blockNewImplicitActions: true });
+      gameSession.pushEvent(
+        { type: EVENTS.validate_action, action: attackAction, gameSession },
+        { blockNewImplicitActions: true },
+      );
 
       if (attackAction.getIsValid()) {
         // emit event for all modifiers to modify explicit attack for attack prediction
         let action;
-        gameSession.pushEvent({ type: EVENTS.modify_action_for_entities_involved_in_attack, action: attackAction, gameSession });
+        gameSession.pushEvent({
+          type: EVENTS.modify_action_for_entities_involved_in_attack,
+          action: attackAction,
+          gameSession,
+        });
 
         // emit event for all modifiers to add entities and attacks that are involved in this attack
         gameSession.pushEvent({
-          type: EVENTS.entities_involved_in_attack, action: attackAction, actions, gameSession,
+          type: EVENTS.entities_involved_in_attack,
+          action: attackAction,
+          actions,
+          gameSession,
         });
 
         // for all implicit actions
@@ -604,11 +662,17 @@ class Entity extends Card {
 
           // parent/root actions are retrieved by index but none of these actions have indices
           // so the getter methods must be modified to always return the attack action
-          action.getParentAction = (action.getResolveParentAction = (action.getRootAction = () => attackAction));
+          action.getParentAction =
+            action.getResolveParentAction =
+            action.getRootAction =
+              () => attackAction;
           action.getIsImplicit = () => true;
 
           // emit event for all modifiers to validate resulting actions for attack prediction
-          gameSession.pushEvent({ type: EVENTS.validate_action, action, gameSession }, { blockNewImplicitActions: true });
+          gameSession.pushEvent(
+            { type: EVENTS.validate_action, action, gameSession },
+            { blockNewImplicitActions: true },
+          );
 
           if (action.getIsValid()) {
             // add valid action
@@ -618,11 +682,18 @@ class Entity extends Card {
             attackAction.addSubAction(action);
 
             // emit event for all modifiers to modify resulting actions for attack prediction
-            gameSession.pushEvent({ type: EVENTS.modify_action_for_entities_involved_in_attack, action, gameSession });
+            gameSession.pushEvent({
+              type: EVENTS.modify_action_for_entities_involved_in_attack,
+              action,
+              gameSession,
+            });
 
             // emit event for all modifiers to add entities and attacks that are involved in this attack
             gameSession.pushEvent({
-              type: EVENTS.entities_involved_in_attack, action, actions, gameSession,
+              type: EVENTS.entities_involved_in_attack,
+              action,
+              actions,
+              gameSession,
             });
           }
         }
@@ -633,7 +704,13 @@ class Entity extends Card {
         // test damage of each attack action against hp of target
         for (action of Array.from<any>(validActions)) {
           var target = action.getTarget();
-          if (((target != null) && (action instanceof DamageAction && (action.getTotalDamageAmount() >= target.getHP()))) || (action instanceof RemoveAction || action instanceof KillAction)) {
+          if (
+            (target != null &&
+              action instanceof DamageAction &&
+              action.getTotalDamageAmount() >= target.getHP()) ||
+            action instanceof RemoveAction ||
+            action instanceof KillAction
+          ) {
             entitiesKilled.push(target);
           }
         }
@@ -644,7 +721,9 @@ class Entity extends Card {
     entitiesKilled = _.uniq(entitiesKilled);
 
     // cache results
-    if (this._private.cachedEntitiesKilledByAttackOn == null) { this._private.cachedEntitiesKilledByAttackOn = {}; }
+    if (this._private.cachedEntitiesKilledByAttackOn == null) {
+      this._private.cachedEntitiesKilledByAttackOn = {};
+    }
     this._private.cachedEntitiesKilledByAttackOn[attackTarget.getIndex()] = entitiesKilled;
 
     return entitiesKilled;
@@ -660,12 +739,20 @@ class Entity extends Card {
 
   getObstructsEntity(entity) {
     if (this.getType() === CardType.Unit) {
-      if (entity.getType() === CardType.Unit) { return true; }
-      if (entity.getIsObstructing()) { return true; }
+      if (entity.getType() === CardType.Unit) {
+        return true;
+      }
+      if (entity.getIsObstructing()) {
+        return true;
+      }
     } else if (entity.getType() === CardType.Unit) {
-      if (this.getIsObstructing()) { return true; }
-    } else if ((this.getType() === CardType.Tile) && (entity.getType() === CardType.Tile)) {
-      if (this.getObstructsOtherTiles()) { return true; }
+      if (this.getIsObstructing()) {
+        return true;
+      }
+    } else if (this.getType() === CardType.Tile && entity.getType() === CardType.Tile) {
+      if (this.getObstructsOtherTiles()) {
+        return true;
+      }
     }
     return false;
   }
@@ -733,7 +820,9 @@ class Entity extends Card {
   actionAttackEntityAtPosition(position) {
     const targetEntity = this.getGameSession().getBoard().getUnitAtPosition(position);
     if (!targetEntity) {
-      Logger.module('SDK').error(`[G:${this.getGameSession().getGameId()}] Entity ${this.getLogName()} actionAttackEntityAtPosition - attempt to attack position with no entity`);
+      Logger.module('SDK').error(
+        `[G:${this.getGameSession().getGameId()}] Entity ${this.getLogName()} actionAttackEntityAtPosition - attempt to attack position with no entity`,
+      );
     }
     return this.actionAttack(targetEntity);
   }
@@ -758,7 +847,7 @@ class Entity extends Card {
     super.flushCachedModifiers();
 
     this._private.cachedIsBattlePet = null;
-    return this._private.cachedIsUncontrollableBattlePet = null;
+    return (this._private.cachedIsUncontrollableBattlePet = null);
   }
 
   // endregion CACHE

@@ -28,7 +28,9 @@ class SpellApplyEntityToBoard extends Spell {
       if (entity != null) {
         const filteredPositions = [];
         for (var position of Array.from<any>(validPositions)) {
-          if (!this.getGameSession().getBoard().getObstructionAtPositionForEntity(position, entity)) {
+          if (
+            !this.getGameSession().getBoard().getObstructionAtPositionForEntity(position, entity)
+          ) {
             filteredPositions.push(position);
           }
         }

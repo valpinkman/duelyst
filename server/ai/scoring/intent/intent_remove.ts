@@ -23,7 +23,7 @@ const getScoreForRemoveFromCardWithIntentToCard = function (card, intent, target
     } else {
       // subtract score for removed friendly card
       // removing own units isn't as significant and removing enemy units <- possibly wrong.
-      score -= ScoreForUnitRemove(targetCard);// * 0.75;
+      score -= ScoreForUnitRemove(targetCard); // * 0.75;
     }
   }
   return score;
@@ -41,7 +41,10 @@ const getScoreForRemoveFromCardWithIntentToCard = function (card, intent, target
 const ScoreForIntentRemove = function (card, targetPosition, cardIntents) {
   let score = 0;
   const cardId = card.getBaseCardId();
-  const validIntents = cardIntents != null ? CardIntent.filterIntentsByIntentType(cardIntents, CardIntentType.Remove) : CardIntent.getIntentsByIntentType(cardId, CardIntentType.Remove);
+  const validIntents =
+    cardIntents != null
+      ? CardIntent.filterIntentsByIntentType(cardIntents, CardIntentType.Remove)
+      : CardIntent.getIntentsByIntentType(cardId, CardIntentType.Remove);
 
   _.each(validIntents, (intent) => {
     const cards = CardIntent.getCardsTargetedByCardWithIntent(card, intent, targetPosition);

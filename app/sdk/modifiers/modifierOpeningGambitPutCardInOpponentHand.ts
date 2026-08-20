@@ -10,7 +10,7 @@ class ModifierOpeningGambitPutCardInOpponentHand extends ModifierOpeningGambit {
   declare type: any;
 
   static type = 'ModifierOpeningGambitPutCardInOpponentHand';
-  static description = 'Put %X in your opponent\'s action bar';
+  static description = "Put %X in your opponent's action bar";
 
   static createContextObject(cardDataOrIndexToPutInHand, cardDescription, options) {
     const contextObject = super.createContextObject(options);
@@ -28,10 +28,15 @@ class ModifierOpeningGambitPutCardInOpponentHand extends ModifierOpeningGambit {
 
   onOpeningGambit(action) {
     super.onOpeningGambit(action);
-    const a = new PutCardInHandAction(this.getGameSession(), this.getCard().getGameSession().getOpponentPlayerIdOfPlayerId(this.getCard().getOwnerId()), this.cardDataOrIndexToPutInHand);
+    const a = new PutCardInHandAction(
+      this.getGameSession(),
+      this.getCard().getGameSession().getOpponentPlayerIdOfPlayerId(this.getCard().getOwnerId()),
+      this.cardDataOrIndexToPutInHand,
+    );
     return this.getGameSession().executeAction(a);
   }
 }
-ModifierOpeningGambitPutCardInOpponentHand.prototype.type = 'ModifierOpeningGambitPutCardInOpponentHand';
+ModifierOpeningGambitPutCardInOpponentHand.prototype.type =
+  'ModifierOpeningGambitPutCardInOpponentHand';
 
 module.exports = ModifierOpeningGambitPutCardInOpponentHand;

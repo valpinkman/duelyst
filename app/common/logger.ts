@@ -28,7 +28,7 @@ class Logger {
 
   static startRecording() {
     this.isRecording = true;
-    return this.recordedBuffer = [];
+    return (this.recordedBuffer = []);
   }
 
   static recordingFilter() {
@@ -38,7 +38,9 @@ class Logger {
   static record() {
     const args = _.map(arguments[0], (arg) => (arg != null ? arg.toString() : undefined));
     if (this.recordingFilter(args)) {
-      if (!(args[1] instanceof Object)) { this.recordedBuffer.push(args); }
+      if (!(args[1] instanceof Object)) {
+        this.recordedBuffer.push(args);
+      }
       if (this.recordedBuffer.length > 500) {
         return this.recordedBuffer.shift();
       }
@@ -48,7 +50,7 @@ class Logger {
   static endRecording() {
     this.isRecording = false;
     this.recordedBuffer = [];
-    return this.recordingFilter = () => true;
+    return (this.recordingFilter = () => true);
   }
 
   static log() {
@@ -102,7 +104,7 @@ class Logger {
 
     if (_name !== 'GLOBAL') {
       modulePrefix = _name.slice(0, Logger._padLength);
-      modulePrefix += `${Array((Logger._padLength + 3) - modulePrefix.length).join(' ')}|`;
+      modulePrefix += `${Array(Logger._padLength + 3 - modulePrefix.length).join(' ')}|`;
       if (typeof window !== 'undefined') {
         modulePrefix = `%c${modulePrefix}`;
       } else {
@@ -115,46 +117,49 @@ class Logger {
       logfn = console.log.bind(console, modulePrefix, modulePrefixColorString);
       ['log', 'debug', 'warn', 'error', 'info'].forEach((f) => {
         const logFunction = console[f] || console.log;
-        return logfn[f] = logFunction.bind(console, modulePrefix, modulePrefixColorString);
+        return (logfn[f] = logFunction.bind(console, modulePrefix, modulePrefixColorString));
       });
     } else {
       logfn = console.log.bind(console, modulePrefix);
       ['log', 'debug', 'warn', 'error', 'info'].forEach((f) => {
         const logFunction = console[f] || console.log;
-        return logfn[f] = logFunction.bind(console, modulePrefix, moment().unix());
+        return (logfn[f] = logFunction.bind(console, modulePrefix, moment().unix()));
       });
     }
 
     ['group', 'groupEnd'].forEach((f) => {
       if (console[f]) {
-        return logfn[f] = console[f].bind(console);
+        return (logfn[f] = console[f].bind(console));
       }
-      return logfn[f] = () => ({});
+      return (logfn[f] = () => ({}));
     });
 
     ['time', 'timeEnd'].forEach((f) => {
       if (console[f]) {
-        return logfn[f] = (msg) => console[f](`${modulePrefix} ${msg}`);
+        return (logfn[f] = (msg) => console[f](`${modulePrefix} ${msg}`));
       }
-      return logfn[f] = () => ({});
+      return (logfn[f] = () => ({}));
     });
 
     this._modules[name] = logfn;
 
     // on the client side in production, wrap any of the log functions with a function that potentially routes logs to be recorded
-    if ((typeof window !== 'undefined') && process.env.RECORD_CLIENT_LOGS) {
+    if (typeof window !== 'undefined' && process.env.RECORD_CLIENT_LOGS) {
       this._modules[name] = {};
-      ['log', 'debug', 'warn', 'error', 'info'].forEach((f) => this._modules[name][f] = function () {
-        if (Logger.isRecording) {
-          const record_args = Array.prototype.slice.call(arguments);
-          if (record_args != null) {
-            record_args.unshift(_name);
-          }
-          Logger.record(record_args);
-        }
-        return logfn.apply(null, arguments);
-      });
-      ['group', 'groupEnd'].forEach((f) => this._modules[name][f] = logfn[f]);
+      ['log', 'debug', 'warn', 'error', 'info'].forEach(
+        (f) =>
+          (this._modules[name][f] = function () {
+            if (Logger.isRecording) {
+              const record_args = Array.prototype.slice.call(arguments);
+              if (record_args != null) {
+                record_args.unshift(_name);
+              }
+              Logger.record(record_args);
+            }
+            return logfn.apply(null, arguments);
+          }),
+      );
+      ['group', 'groupEnd'].forEach((f) => (this._modules[name][f] = logfn[f]));
     }
 
     // return the new logger module

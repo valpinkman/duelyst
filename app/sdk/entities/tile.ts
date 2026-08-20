@@ -50,7 +50,7 @@ class Tile extends Entity {
   setOccupant(occupant) {
     if (this._private.occupant !== occupant) {
       this._private.occupant = occupant;
-      return this._private.occupantChangingAction = this.getGameSession().getExecutingAction();
+      return (this._private.occupantChangingAction = this.getGameSession().getExecutingAction());
     }
   }
 

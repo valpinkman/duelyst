@@ -51,7 +51,6 @@ const LOOT_CRATE_REWARD_SFX = [
  *************************************************************************** */
 
 const LootCrateNode = cc.Node.extend({
-
   _crateTypeLabel: null,
   _crateCountLabel: null,
   _crateMaxCountLabel: null,
@@ -135,11 +134,15 @@ const LootCrateNode = cc.Node.extend({
       this.addChild(this._lootCrateContainerNode, this._zOrderCrate);
 
       // BACK LEFT
-      this._lootCrateBackLeftSprite = BaseSprite.create(this._getLootCrateBackLeftSpriteIdentifier());
+      this._lootCrateBackLeftSprite = BaseSprite.create(
+        this._getLootCrateBackLeftSpriteIdentifier(),
+      );
       this._lootCrateContainerNode.addChild(this._lootCrateBackLeftSprite);
 
       // BACK RIGHT
-      this._lootCrateBackRightSprite = BaseSprite.create(this._getLootCrateBackRightSpriteIdentifier());
+      this._lootCrateBackRightSprite = BaseSprite.create(
+        this._getLootCrateBackRightSpriteIdentifier(),
+      );
       this._lootCrateContainerNode.addChild(this._lootCrateBackRightSprite);
 
       // BOTTOM
@@ -151,11 +154,15 @@ const LootCrateNode = cc.Node.extend({
       this._lootCrateContainerNode.addChild(this._lootCrateSphereSprite);
 
       // FRONT RIGHT
-      this._lootCrateFrontRightSprite = BaseSprite.create(this._getLootCrateFrontRightSpriteIdentifier());
+      this._lootCrateFrontRightSprite = BaseSprite.create(
+        this._getLootCrateFrontRightSpriteIdentifier(),
+      );
       this._lootCrateContainerNode.addChild(this._lootCrateFrontRightSprite);
 
       // FRONT LEFT
-      this._lootCrateFrontLeftSprite = BaseSprite.create(this._getLootCrateFrontLeftSpriteIdentifier());
+      this._lootCrateFrontLeftSprite = BaseSprite.create(
+        this._getLootCrateFrontLeftSpriteIdentifier(),
+      );
       this._lootCrateContainerNode.addChild(this._lootCrateFrontLeftSprite);
 
       // TOP
@@ -252,12 +259,24 @@ const LootCrateNode = cc.Node.extend({
   /* region LABELS */
 
   showCrateTypeLabel(duration, fontName, fontSize, fontColor) {
-    if (fontName == null) { fontName = RSX.font_light.name; }
-    if (fontSize == null) { fontSize = 20; }
+    if (fontName == null) {
+      fontName = RSX.font_light.name;
+    }
+    if (fontSize == null) {
+      fontSize = 20;
+    }
     if (this._crateTypeLabel == null) {
       const lootCrateType = this.getCrateType();
-      const crateLabel = i18next.t('mystery_crates.crate_type_label', { crate_type: SDK.CosmeticsFactory.nameForCosmeticChestType(lootCrateType) });
-      this._crateTypeLabel = new cc.LabelTTF(crateLabel, fontName, fontSize, null, cc.TEXT_ALIGNMENT_CENTER);
+      const crateLabel = i18next.t('mystery_crates.crate_type_label', {
+        crate_type: SDK.CosmeticsFactory.nameForCosmeticChestType(lootCrateType),
+      });
+      this._crateTypeLabel = new cc.LabelTTF(
+        crateLabel,
+        fontName,
+        fontSize,
+        null,
+        cc.TEXT_ALIGNMENT_CENTER,
+      );
       this.addChild(this._crateTypeLabel, this._zOrderLabels);
     } else {
       this._crateTypeLabel.setFontName(fontName);
@@ -286,10 +305,20 @@ const LootCrateNode = cc.Node.extend({
   },
 
   showCrateCountLabel(duration, fontName, fontSize, fontColor) {
-    if (fontName == null) { fontName = RSX.font_bold.name; }
-    if (fontSize == null) { fontSize = 40; }
+    if (fontName == null) {
+      fontName = RSX.font_bold.name;
+    }
+    if (fontSize == null) {
+      fontSize = 40;
+    }
     if (this._crateCountLabel == null) {
-      this._crateCountLabel = new cc.LabelTTF(`${this.getCrateCount()}`, fontName, fontSize, null, cc.TEXT_ALIGNMENT_CENTER);
+      this._crateCountLabel = new cc.LabelTTF(
+        `${this.getCrateCount()}`,
+        fontName,
+        fontSize,
+        null,
+        cc.TEXT_ALIGNMENT_CENTER,
+      );
       this.addChild(this._crateCountLabel, this._zOrderLabels);
     } else {
       this._crateCountLabel.setFontName(fontName);
@@ -308,10 +337,20 @@ const LootCrateNode = cc.Node.extend({
   },
 
   showCrateExpirationLabel(duration, fontName, fontSize, fontColor) {
-    if (fontName == null) { fontName = RSX.font_regular.name; }
-    if (fontSize == null) { fontSize = 32; }
+    if (fontName == null) {
+      fontName = RSX.font_regular.name;
+    }
+    if (fontSize == null) {
+      fontSize = 32;
+    }
     if (this._expirationLabel == null) {
-      this._expirationLabel = new cc.LabelTTF('', fontName, fontSize, null, cc.TEXT_ALIGNMENT_CENTER);
+      this._expirationLabel = new cc.LabelTTF(
+        '',
+        fontName,
+        fontSize,
+        null,
+        cc.TEXT_ALIGNMENT_CENTER,
+      );
       this.addChild(this._expirationLabel, this._zOrderLabels);
     } else {
       this._expirationLabel.setFontName(fontName);
@@ -335,10 +374,20 @@ const LootCrateNode = cc.Node.extend({
   },
 
   showCrateExpirationInstructionLabel(duration, fontName, fontSize, fontColor) {
-    if (fontName == null) { fontName = RSX.font_regular.name; }
-    if (fontSize == null) { fontSize = 12; }
+    if (fontName == null) {
+      fontName = RSX.font_regular.name;
+    }
+    if (fontSize == null) {
+      fontSize = 12;
+    }
     if (this._expirationInstructionLabel == null) {
-      this._expirationInstructionLabel = new cc.LabelTTF(i18next.t('mystery_crates.crate_expires_in_label'), fontName, fontSize, null, cc.TEXT_ALIGNMENT_CENTER);
+      this._expirationInstructionLabel = new cc.LabelTTF(
+        i18next.t('mystery_crates.crate_expires_in_label'),
+        fontName,
+        fontSize,
+        null,
+        cc.TEXT_ALIGNMENT_CENTER,
+      );
       this.addChild(this._expirationInstructionLabel, this._zOrderLabels);
     } else {
       this._expirationInstructionLabel.setFontName(fontName);
@@ -375,7 +424,9 @@ const LootCrateNode = cc.Node.extend({
     const crateExpirationMoment = this.getCrateExpirationTime();
     if (this._expirationLabel != null && crateExpirationMoment != null) {
       const momentNowUtc = moment.utc();
-      const durationLeft = moment.duration(crateExpirationMoment.valueOf() - momentNowUtc.valueOf());
+      const durationLeft = moment.duration(
+        crateExpirationMoment.valueOf() - momentNowUtc.valueOf(),
+      );
       const daysRemaining = durationLeft.days();
       let hoursRemaining = durationLeft.hours();
       const minutesRemaining = durationLeft.minutes();
@@ -385,9 +436,11 @@ const LootCrateNode = cc.Node.extend({
       let secondsRemainingString = `${secondsRemaining}`;
       if (secondsRemaining < 10) secondsRemainingString = `0${secondsRemainingString}`;
 
-      hoursRemaining += (daysRemaining * 24);
+      hoursRemaining += daysRemaining * 24;
 
-      this._expirationLabel.setString(`${hoursRemaining}:${minutesRemainingString}:${secondsRemainingString}`);
+      this._expirationLabel.setString(
+        `${hoursRemaining}:${minutesRemainingString}:${secondsRemainingString}`,
+      );
     }
 
     if (crateExpirationMoment == null) {
@@ -435,11 +488,23 @@ const LootCrateNode = cc.Node.extend({
   },
 
   showCrateMaxCountLabel(duration, fontName?, fontSize?, fontColor?) {
-    if (fontName == null) { fontName = RSX.font_light.name; }
-    if (fontSize == null) { fontSize = 20; }
-    if (fontColor == null) { fontColor = { r: 194, g: 203, b: 220 }; }
+    if (fontName == null) {
+      fontName = RSX.font_light.name;
+    }
+    if (fontSize == null) {
+      fontSize = 20;
+    }
+    if (fontColor == null) {
+      fontColor = { r: 194, g: 203, b: 220 };
+    }
     if (this._crateMaxCountLabel == null) {
-      this._crateMaxCountLabel = new cc.LabelTTF('', fontName, fontSize, null, cc.TEXT_ALIGNMENT_CENTER);
+      this._crateMaxCountLabel = new cc.LabelTTF(
+        '',
+        fontName,
+        fontSize,
+        null,
+        cc.TEXT_ALIGNMENT_CENTER,
+      );
       this.addChild(this._crateMaxCountLabel, this._zOrderLabels);
     } else {
       this._crateMaxCountLabel.setFontName(fontName);
@@ -466,13 +531,27 @@ const LootCrateNode = cc.Node.extend({
   },
 
   showCrateDescriptionLabel(duration, fontName, fontSize, fontColor, contentSize, labelText) {
-    if (fontName == null) { fontName = RSX.font_light.name; }
-    if (fontSize == null) { fontSize = 16; }
-    if (fontColor == null) { fontColor = { r: 220, g: 220, b: 220 }; }
-    if (contentSize == null) { contentSize = cc.size(350, 0); }
+    if (fontName == null) {
+      fontName = RSX.font_light.name;
+    }
+    if (fontSize == null) {
+      fontSize = 16;
+    }
+    if (fontColor == null) {
+      fontColor = { r: 220, g: 220, b: 220 };
+    }
+    if (contentSize == null) {
+      contentSize = cc.size(350, 0);
+    }
     if (this._crateDescriptionLabel == null) {
       const lootCrateType = this.getCrateType();
-      this._crateDescriptionLabel = new BaseLabel(labelText || SDK.CosmeticsFactory.descriptionForCosmeticChestType(lootCrateType), fontName, fontSize, contentSize, cc.TEXT_ALIGNMENT_LEFT);
+      this._crateDescriptionLabel = new BaseLabel(
+        labelText || SDK.CosmeticsFactory.descriptionForCosmeticChestType(lootCrateType),
+        fontName,
+        fontSize,
+        contentSize,
+        cc.TEXT_ALIGNMENT_LEFT,
+      );
       this.addChild(this._crateDescriptionLabel, this._zOrderLabels);
     } else {
       this._crateDescriptionLabel.setFontName(fontName);
@@ -495,11 +574,19 @@ const LootCrateNode = cc.Node.extend({
   getCrateDescriptionLabelBasePosition() {
     const contentSize = this.getContentSize();
     const centerPosition = this.getCenterPosition();
-    const descriptionLabelContentSize = (this._crateDescriptionLabel && this._crateDescriptionLabel.getContentSize()) || cc.size(0, 0);
+    const descriptionLabelContentSize =
+      (this._crateDescriptionLabel && this._crateDescriptionLabel.getContentSize()) ||
+      cc.size(0, 0);
     if (this.getReducedDescriptionSpacing()) {
-      return cc.p(centerPosition.x + contentSize.width * 0.5 + descriptionLabelContentSize.width * 0.5, centerPosition.y);
+      return cc.p(
+        centerPosition.x + contentSize.width * 0.5 + descriptionLabelContentSize.width * 0.5,
+        centerPosition.y,
+      );
     }
-    return cc.p(centerPosition.x + contentSize.width + descriptionLabelContentSize.width * 0.5, centerPosition.y);
+    return cc.p(
+      centerPosition.x + contentSize.width + descriptionLabelContentSize.width * 0.5,
+      centerPosition.y,
+    );
   },
 
   /* endregion LABELS */
@@ -511,7 +598,9 @@ const LootCrateNode = cc.Node.extend({
    * @returns {Array}
    */
   getRequiredResources() {
-    return cc.Node.prototype.getRequiredResources.call(this).concat(PKGS.getPkgForIdentifier('loot_crate'));
+    return cc.Node.prototype.getRequiredResources
+      .call(this)
+      .concat(PKGS.getPkgForIdentifier('loot_crate'));
   },
 
   /* endregion RESOURCES */
@@ -577,9 +666,10 @@ const LootCrateNode = cc.Node.extend({
       for (var i = 0; i < rewardsModels.length; i++) {
         const rewardModel = rewardsModels[i];
 
-        if (rewardModel.cosmetic_id || rewardModel.get && rewardModel.get('cosmetic_id')) {
+        if (rewardModel.cosmetic_id || (rewardModel.get && rewardModel.get('cosmetic_id'))) {
           // cosmetic
-          const cosmeticId = rewardModel.cosmetic_id || rewardModel.get && rewardModel.get('cosmetic_id');
+          const cosmeticId =
+            rewardModel.cosmetic_id || (rewardModel.get && rewardModel.get('cosmetic_id'));
           const cosmeticData = SDK.CosmeticsFactory.cosmeticForIdentifier(cosmeticId);
           if (cosmeticData != null) {
             const cosmeticTypeId = cosmeticData.typeId;
@@ -600,36 +690,37 @@ const LootCrateNode = cc.Node.extend({
 
             if (cosmeticRewardData != null) {
               // check for cosmetic converted to spirit
-              if (rewardModel.spirit || rewardModel.get && rewardModel.get('spirit')) {
-                var spirit = rewardModel.spirit || rewardModel.get && rewardModel.get('spirit');
+              if (rewardModel.spirit || (rewardModel.get && rewardModel.get('spirit'))) {
+                var spirit = rewardModel.spirit || (rewardModel.get && rewardModel.get('spirit'));
                 cosmeticRewardData.convertedToSpirit = spirit;
               }
 
               this._rewardsData.push(cosmeticRewardData);
             }
           }
-        } else if (rewardModel.gold || rewardModel.get && rewardModel.get('gold')) {
+        } else if (rewardModel.gold || (rewardModel.get && rewardModel.get('gold'))) {
           // Gold
-          const gold = rewardModel.gold || rewardModel.get && rewardModel.get('gold');
+          const gold = rewardModel.gold || (rewardModel.get && rewardModel.get('gold'));
           this._rewardsData.push({ gold });
-        } else if (rewardModel.spirit || rewardModel.get && rewardModel.get('spirit')) {
+        } else if (rewardModel.spirit || (rewardModel.get && rewardModel.get('spirit'))) {
           // Spirit
-          var spirit = rewardModel.spirit || rewardModel.get && rewardModel.get('spirit');
+          var spirit = rewardModel.spirit || (rewardModel.get && rewardModel.get('spirit'));
           this._rewardsData.push({ spirit });
-        } else if (rewardModel.card_id || rewardModel.get && rewardModel.get('card_id')) {
+        } else if (rewardModel.card_id || (rewardModel.get && rewardModel.get('card_id'))) {
           // Individual card id
-          const card_id = rewardModel.card_id || rewardModel.get && rewardModel.get('card_id');
+          const card_id = rewardModel.card_id || (rewardModel.get && rewardModel.get('card_id'));
           this._rewardsData.push({ cardId: card_id });
-        } else if (rewardModel.cards || rewardModel.get && rewardModel.get('cards')) {
+        } else if (rewardModel.cards || (rewardModel.get && rewardModel.get('cards'))) {
           // Card ids array
-          const cards = rewardModel.cards || rewardModel.get && rewardModel.get('cards');
+          const cards = rewardModel.cards || (rewardModel.get && rewardModel.get('cards'));
           for (var j = 0; j < cards.length; j++) {
             const cardId = cards[j];
             this._rewardsData.push({ cardId });
           }
-        } else if (rewardModel.spirit_orbs || rewardModel.get && rewardModel.get('spirit_orbs')) {
+        } else if (rewardModel.spirit_orbs || (rewardModel.get && rewardModel.get('spirit_orbs'))) {
           // Spirit orbs
-          const spirit_orbs = rewardModel.spirit_orbs || rewardModel.get && rewardModel.get('spirit_orbs');
+          const spirit_orbs =
+            rewardModel.spirit_orbs || (rewardModel.get && rewardModel.get('spirit_orbs'));
           if (_.isArray(spirit_orbs)) {
             for (var j = 0; j < spirit_orbs.length; j++) {
               this._rewardsData.push({ spirit_orbs: spirit_orbs[j] });
@@ -637,26 +728,41 @@ const LootCrateNode = cc.Node.extend({
           } else {
             this._rewardsData.push({ spirit_orbs });
           }
-        } else if (rewardModel.arena_tickets || rewardModel.get && rewardModel.get('arena_tickets')) {
+        } else if (
+          rewardModel.arena_tickets ||
+          (rewardModel.get && rewardModel.get('arena_tickets'))
+        ) {
           // Gauntlet tickets
-          const arena_tickets = rewardModel.arena_tickets || rewardModel.get && rewardModel.get('arena_tickets');
+          const arena_tickets =
+            rewardModel.arena_tickets || (rewardModel.get && rewardModel.get('arena_tickets'));
           this._rewardsData.push({ gauntletTickets: arena_tickets });
-        } else if (rewardModel.gauntlet_tickets || rewardModel.get && rewardModel.get('gauntlet_tickets')) {
+        } else if (
+          rewardModel.gauntlet_tickets ||
+          (rewardModel.get && rewardModel.get('gauntlet_tickets'))
+        ) {
           // Gauntlet tickets
-          const gauntlet_tickets = rewardModel.gauntlet_tickets || rewardModel.get && rewardModel.get('gauntlet_tickets');
+          const gauntlet_tickets =
+            rewardModel.gauntlet_tickets ||
+            (rewardModel.get && rewardModel.get('gauntlet_tickets'));
           this._rewardsData.push({ gauntletTickets: gauntlet_tickets });
-        } else if (rewardModel.chest_key || rewardModel.get && rewardModel.get('chest_key')) {
+        } else if (rewardModel.chest_key || (rewardModel.get && rewardModel.get('chest_key'))) {
           // chest keys
-          const chest_key_type = rewardModel.chest_key || rewardModel.get && rewardModel.get('chest_key');
+          const chest_key_type =
+            rewardModel.chest_key || (rewardModel.get && rewardModel.get('chest_key'));
           this._rewardsData.push({ keyType: chest_key_type });
-        } else if (rewardModel.cosmetic_keys || rewardModel.get && rewardModel.get('cosmetic_keys')) {
+        } else if (
+          rewardModel.cosmetic_keys ||
+          (rewardModel.get && rewardModel.get('cosmetic_keys'))
+        ) {
           // chest keys
           _.each(rewardModel.cosmetic_keys || rewardModel.get('cosmetic_keys'), (key) => {
             this._rewardsData.push({ keyType: key });
           });
         } else {
           // Shouldn't reach here
-          console.error(`EndOfSeasonLayer:animateReward - Reward model with no recognizable reward type - ${_.keys(rewardModel)}`);
+          console.error(
+            `EndOfSeasonLayer:animateReward - Reward model with no recognizable reward type - ${_.keys(rewardModel)}`,
+          );
         }
       }
     }
@@ -691,8 +797,10 @@ const LootCrateNode = cc.Node.extend({
             progressAroundCircle += 0.5 / numNodes;
           }
           const targetPosition = cc.p(
-            centerPosition.x + horizontalRadialDistance * Math.cos(Math.PI / 2 + 2 * Math.PI * progressAroundCircle),
-            centerPosition.y + verticalRadialDistance * Math.sin(Math.PI / 2 + 2 * Math.PI * progressAroundCircle),
+            centerPosition.x +
+              horizontalRadialDistance * Math.cos(Math.PI / 2 + 2 * Math.PI * progressAroundCircle),
+            centerPosition.y +
+              verticalRadialDistance * Math.sin(Math.PI / 2 + 2 * Math.PI * progressAroundCircle),
           );
           targetPosition.x *= scaleRadiusX;
           targetPosition.y *= scaleRadiusY;
@@ -758,10 +866,18 @@ const LootCrateNode = cc.Node.extend({
       this._rewardNodes.push(rewardNode);
 
       // reward animation callback
-      let rewardAnimationCallback = this._createRewardAnimationCallback(rewardData, rewardNode, sfxIndex);
+      let rewardAnimationCallback = this._createRewardAnimationCallback(
+        rewardData,
+        rewardNode,
+        sfxIndex,
+      );
 
       // converted to reward
-      const convertedToAnimationCallback = this._createConvertedToRewardAnimationCallback(rewardData, rewardNode, rewardAnimationCallback);
+      const convertedToAnimationCallback = this._createConvertedToRewardAnimationCallback(
+        rewardData,
+        rewardNode,
+        rewardAnimationCallback,
+      );
       if (convertedToAnimationCallback != null) {
         rewardAnimationCallback = convertedToAnimationCallback;
       }
@@ -778,39 +894,50 @@ const LootCrateNode = cc.Node.extend({
     if (rewardData.gold) {
       // gold
       return new CurrencyRewardNode('gold', rewardData.gold);
-    } if (rewardData.spirit) {
+    }
+    if (rewardData.spirit) {
       // spirit
       return new CurrencyRewardNode('spirit', rewardData.spirit);
-    } if (rewardData.cardId) {
+    }
+    if (rewardData.cardId) {
       // card
       const { cardId } = rewardData;
       const sdkCard = SDK.CardFactory.cardForIdentifier(cardId, SDK.GameSession.current());
       return new CardNode(sdkCard);
-    } if (rewardData.spirit_orbs) {
+    }
+    if (rewardData.spirit_orbs) {
       // spirit orbs
       return new SpiritOrbRewardNode(rewardData.spirit_orbs);
-    } if (rewardData.gauntletTickets) {
+    }
+    if (rewardData.gauntletTickets) {
       // gauntlet ticket
       return new TicketNode();
-    } if (rewardData.emoteId) {
+    }
+    if (rewardData.emoteId) {
       // emote
       return new EmoteRewardNode(rewardData.emoteId);
-    } if (rewardData.keyType) {
+    }
+    if (rewardData.keyType) {
       // key
       return new KeyRewardNode(rewardData.keyType);
-    } if (rewardData.profileIconId) {
+    }
+    if (rewardData.profileIconId) {
       // profile icon
       return new CosmeticRewardNode(rewardData.profileIconId);
-    } if (rewardData.cardSkinId) {
+    }
+    if (rewardData.cardSkinId) {
       // card skin
       return new CardSkinRewardNode(rewardData.cardSkinId);
-    } if (rewardData.cardBackId) {
+    }
+    if (rewardData.cardBackId) {
       // card back
       return new CardBackRewardNode(rewardData.cardBackId);
-    } if (rewardData.battleMapId) {
+    }
+    if (rewardData.battleMapId) {
       // battle map
       return new CosmeticRewardNode(rewardData.battleMapId);
-    } if (rewardData.sceneId) {
+    }
+    if (rewardData.sceneId) {
       // TODO
       // scene
     } else {
@@ -823,7 +950,11 @@ const LootCrateNode = cc.Node.extend({
     let convertedToRewardAnimationCallback;
     if (rewardData.convertedToSpirit) {
       // spirit
-      convertedToRewardNode = new CurrencyRewardNode('spirit', rewardData.convertedToSpirit, i18next.t('cosmetics.cosmetic_chest_duplicate').toLocaleUpperCase());
+      convertedToRewardNode = new CurrencyRewardNode(
+        'spirit',
+        rewardData.convertedToSpirit,
+        i18next.t('cosmetics.cosmetic_chest_duplicate').toLocaleUpperCase(),
+      );
       convertedToRewardAnimationCallback = function () {
         convertedToRewardNode.setVisible(true);
         return convertedToRewardNode.animateReward(false, true);
@@ -832,28 +963,32 @@ const LootCrateNode = cc.Node.extend({
 
     if (convertedToRewardAnimationCallback != null) {
       return function () {
-        return rewardAnimationCallback()
-          .then(() => {
-            convertedToRewardNode.setVisible(false);
-            convertedToRewardNode.setPosition(rewardNode.getPosition());
-            rewardNode.getParent().addChild(convertedToRewardNode, convertedToRewardNode.getLocalZOrder() + 0.5);
-            return new Promise<void>((resolve, reject) => {
-              const replaceDelay = 0.75;
-              const replaceAction = cc.spawn(
-                Shake.create(replaceDelay + CONFIG.ANIMATE_FAST_DURATION, 5.0, rewardNode.getPosition()),
-                cc.sequence(
-                  cc.delayTime(replaceDelay),
-                  cc.callFunc(() => {
-                    resolve();
-                  }),
-                  cc.fadeTo(CONFIG.ANIMATE_FAST_DURATION, 0.0),
-                  cc.hide(),
-                ),
-              );
-              rewardNode.runAction(replaceAction);
-            })
-              .then(convertedToRewardAnimationCallback);
-          });
+        return rewardAnimationCallback().then(() => {
+          convertedToRewardNode.setVisible(false);
+          convertedToRewardNode.setPosition(rewardNode.getPosition());
+          rewardNode
+            .getParent()
+            .addChild(convertedToRewardNode, convertedToRewardNode.getLocalZOrder() + 0.5);
+          return new Promise<void>((resolve, reject) => {
+            const replaceDelay = 0.75;
+            const replaceAction = cc.spawn(
+              Shake.create(
+                replaceDelay + CONFIG.ANIMATE_FAST_DURATION,
+                5.0,
+                rewardNode.getPosition(),
+              ),
+              cc.sequence(
+                cc.delayTime(replaceDelay),
+                cc.callFunc(() => {
+                  resolve();
+                }),
+                cc.fadeTo(CONFIG.ANIMATE_FAST_DURATION, 0.0),
+                cc.hide(),
+              ),
+            );
+            rewardNode.runAction(replaceAction);
+          }).then(convertedToRewardAnimationCallback);
+        });
       };
     }
   },
@@ -866,28 +1001,32 @@ const LootCrateNode = cc.Node.extend({
         rewardNode.setVisible(true);
         return rewardNode.animateReward(false, true);
       };
-    } if (rewardData.spirit) {
+    }
+    if (rewardData.spirit) {
       // spirit
       return function () {
         audio_engine.current().play_effect(LOOT_CRATE_REWARD_SFX[sfxIndex].audio, false);
         rewardNode.setVisible(true);
         return rewardNode.animateReward(false, true);
       };
-    } if (rewardData.cardId) {
+    }
+    if (rewardData.cardId) {
       // card
       return function () {
         audio_engine.current().play_effect(LOOT_CRATE_REWARD_SFX[sfxIndex].audio, false);
         rewardNode.setVisible(true);
         return rewardNode.showReveal(null, rewardNode.getPosition(), null);
       };
-    } if (rewardData.spirit_orbs) {
+    }
+    if (rewardData.spirit_orbs) {
       // spirit orbs
       return function () {
         audio_engine.current().play_effect(LOOT_CRATE_REWARD_SFX[sfxIndex].audio, false);
         rewardNode.setVisible(true);
         return rewardNode.animateReward(false, true);
       };
-    } if (rewardData.gauntletTickets) {
+    }
+    if (rewardData.gauntletTickets) {
       // gauntlet ticket
       return function () {
         audio_engine.current().play_effect(LOOT_CRATE_REWARD_SFX[sfxIndex].audio, false);
@@ -895,47 +1034,60 @@ const LootCrateNode = cc.Node.extend({
         const showDelay = rewardNode.showReveal();
         return PromiseUtils.delay(showDelay * 1000.0);
       };
-    } if (rewardData.emoteId) {
+    }
+    if (rewardData.emoteId) {
       // emote
       return function () {
         audio_engine.current().play_effect(LOOT_CRATE_REWARD_SFX[sfxIndex].audio, false);
         rewardNode.setVisible(true);
         return rewardNode.animateReward(false, true);
       };
-    } if (rewardData.keyType) {
+    }
+    if (rewardData.keyType) {
       // key
       return function () {
         audio_engine.current().play_effect(LOOT_CRATE_REWARD_SFX[sfxIndex].audio, false);
         rewardNode.setVisible(true);
         return rewardNode.animateReward(false, true);
       };
-    } if (rewardData.cardSkinId) {
+    }
+    if (rewardData.cardSkinId) {
       // card back
       return function () {
         audio_engine.current().play_effect(LOOT_CRATE_REWARD_SFX[sfxIndex].audio, false);
         rewardNode.setVisible(true);
         return rewardNode.animateReward(false, true);
       };
-    } if (rewardData.cardBackId) {
+    }
+    if (rewardData.cardBackId) {
       // card back
       return function () {
         audio_engine.current().play_effect(LOOT_CRATE_REWARD_SFX[sfxIndex].audio, false);
         rewardNode.setVisible(true);
         return rewardNode.animateReward(false, true);
       };
-    } if (rewardData.profileIconId) {
+    }
+    if (rewardData.profileIconId) {
       // profile icon
       return function () {
         audio_engine.current().play_effect(LOOT_CRATE_REWARD_SFX[sfxIndex].audio, false);
         rewardNode.setVisible(true);
-        return rewardNode.animateReward(false, i18next.t('cosmetics.cosmetic_type_profile_icon').toLocaleUpperCase(), true);
+        return rewardNode.animateReward(
+          false,
+          i18next.t('cosmetics.cosmetic_type_profile_icon').toLocaleUpperCase(),
+          true,
+        );
       };
-    } if (rewardData.battleMapId) {
+    }
+    if (rewardData.battleMapId) {
       // profile icon
       return function () {
         audio_engine.current().play_effect(LOOT_CRATE_REWARD_SFX[sfxIndex].audio, false);
         rewardNode.setVisible(true);
-        return rewardNode.animateReward(false, i18next.t('cosmetics.cosmetic_type_battle_map').toLocaleUpperCase());
+        return rewardNode.animateReward(
+          false,
+          i18next.t('cosmetics.cosmetic_type_battle_map').toLocaleUpperCase(),
+        );
       };
     }
     console.error('Invalid reward used in LootCrate Node');
@@ -976,8 +1128,12 @@ const LootCrateNode = cc.Node.extend({
    * @return {Promise}
    */
   showReveal(scaleTo?, withAudio?) {
-    if (scaleTo == null) { scaleTo = 1.0; }
-    if (withAudio == null) { withAudio = true; }
+    if (scaleTo == null) {
+      scaleTo = 1.0;
+    }
+    if (withAudio == null) {
+      withAudio = true;
+    }
 
     // hide elements immediately
     this.setVisible(false);
@@ -993,19 +1149,22 @@ const LootCrateNode = cc.Node.extend({
           audio_engine.current().play_effect(RSX.sfx_loot_crate_reveal.audio, false);
         }
 
-        this.runAction(cc.sequence(
-          // reveal self
-          cc.spawn(
-            cc.show(),
-            cc.fadeIn(CONFIG.ANIMATE_FAST_DURATION),
-            cc.scaleTo(CONFIG.ANIMATE_FAST_DURATION, scaleTo).easing(cc.easeBackOut()),
+        this.runAction(
+          cc.sequence(
+            // reveal self
+            cc.spawn(
+              cc.show(),
+              cc.fadeIn(CONFIG.ANIMATE_FAST_DURATION),
+              cc.scaleTo(CONFIG.ANIMATE_FAST_DURATION, scaleTo).easing(cc.easeBackOut()),
+            ),
+            cc.callFunc(() => {
+              resolve();
+            }),
           ),
-          cc.callFunc(() => {
-            resolve();
-          }),
-        ));
-      })
-        .catch((error) => { EventBus.getInstance().trigger(EVENTS.error, error); });
+        );
+      }).catch((error) => {
+        EventBus.getInstance().trigger(EVENTS.error, error);
+      });
     });
   },
 
@@ -1020,7 +1179,9 @@ const LootCrateNode = cc.Node.extend({
     return this.whenRequiredResourcesReady().then((requestId) => {
       if (!this.getAreResourcesValid(requestId)) return; // load invalidated or resources changed
 
-      if (duration == null) { duration = 0.0; }
+      if (duration == null) {
+        duration = 0.0;
+      }
 
       if (!preserveFX) {
         this._stopShowingFXSprites(duration);
@@ -1049,7 +1210,9 @@ const LootCrateNode = cc.Node.extend({
     return this.whenRequiredResourcesReady().then((requestId) => {
       if (!this.getAreResourcesValid(requestId)) return; // load invalidated or resources changed
 
-      if (duration == null) { duration = 0.0; }
+      if (duration == null) {
+        duration = 0.0;
+      }
 
       this._idleParticles.resumeSystem();
       this._idleParticles2.resumeSystem();
@@ -1065,7 +1228,12 @@ const LootCrateNode = cc.Node.extend({
       // Loop the loot crate around in a figure eight repeating
       if (this._repeatingFigureEightAction == null) {
         const centerPosition = this.getCenterPosition();
-        this._repeatingFigureEightAction = FigureEight.create(10.0, 2, 5, centerPosition).repeatForever();
+        this._repeatingFigureEightAction = FigureEight.create(
+          10.0,
+          2,
+          5,
+          centerPosition,
+        ).repeatForever();
         this._lootCrateContainerNode.runAction(this._repeatingFigureEightAction);
       } else {
         this._repeatingFigureEightAction.setDuration(10.0);
@@ -1133,7 +1301,9 @@ const LootCrateNode = cc.Node.extend({
         if (!this.getAreResourcesValid(requestId)) return; // load invalidated or resources changed
 
         if (this._glowImageMap != null) {
-          if (duration == null) { duration = 0.0; }
+          if (duration == null) {
+            duration = 0.0;
+          }
           this._glowImageMap.fadeToInvisible(duration);
         }
       });
@@ -1163,161 +1333,211 @@ const LootCrateNode = cc.Node.extend({
         const centerPosition = this.getCenterPosition();
 
         const locResolve = resolve;
-        this.runAction(cc.sequence(
-          // cc.delayTime(1),// To sync with audio
-          cc.callFunc(() => {
-            // wipe flare
-            const wipeFlare = FXFbmPolarFlareWipeSprite.create();
-            wipeFlare.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
-            wipeFlare.setTextureRect(cc.rect(0, 0, 512, 512));
-            wipeFlare.setAnchorPoint(0.5, 0.5);
-            wipeFlare.setPosition(centerPosition);
-            wipeFlare.setColor(cc.color(165, 233, 255));
-            this.addChild(wipeFlare, this._zOrderInfrontOfCrate);
-
-            // run the wipe effect
-            wipeFlare.runAction(cc.sequence(
-              cc.fadeIn(0.01),
-              cc.actionTween(0.25, 'phase', 0.0, 0.5),
-              cc.actionTween(0.75, 'phase', 0.5, 1.5),
-              cc.fadeOut(0.1),
-              cc.removeSelf(),
-            ));
-          }),
-
-          cc.spawn(
-            // Break apart loot crate pieces
-            cc.targetedAction(this._lootCrateBackLeftSprite, cc.spawn(
-              cc.moveBy(CONFIG.MOVE_SLOW_DURATION, {
-                x: -uleg * pieceTravelDistance,
-                y: uleg * pieceTravelDistance,
-              }).easing(cc.easeExponentialOut()),
-              cc.scaleTo(CONFIG.MOVE_SLOW_DURATION, 0.8).easing(cc.easeExponentialOut()),
-              cc.sequence(
-                cc.delayTime(CONFIG.MOVE_SLOW_DURATION * 0.7),
-                cc.fadeOut(CONFIG.MOVE_SLOW_DURATION * 0.3),
-              ),
-            )),
-            cc.targetedAction(this._lootCrateBackRightSprite, cc.spawn(
-              cc.moveBy(CONFIG.MOVE_SLOW_DURATION, {
-                x: uleg * pieceTravelDistance,
-                y: uleg * pieceTravelDistance,
-              }).easing(cc.easeExponentialOut()),
-              cc.scaleTo(CONFIG.MOVE_SLOW_DURATION, 0.8).easing(cc.easeExponentialOut()),
-              cc.sequence(
-                cc.delayTime(CONFIG.MOVE_SLOW_DURATION * 0.7),
-                cc.fadeOut(CONFIG.MOVE_SLOW_DURATION * 0.3),
-              ),
-            )),
-            cc.targetedAction(this._lootCrateTopSprite, cc.spawn(
-              cc.moveBy(CONFIG.MOVE_SLOW_DURATION, {
-                x: 0,
-                y: pieceTravelDistance,
-              }).easing(cc.easeExponentialOut()),
-              cc.scaleTo(CONFIG.MOVE_SLOW_DURATION, 0.9).easing(cc.easeExponentialOut()),
-              cc.sequence(
-                cc.delayTime(CONFIG.MOVE_SLOW_DURATION * 0.7),
-                cc.fadeOut(CONFIG.MOVE_SLOW_DURATION * 0.3),
-              ),
-            )),
-            cc.targetedAction(this._lootCrateBottomSprite, cc.spawn(
-              cc.moveBy(CONFIG.MOVE_SLOW_DURATION, {
-                x: 0,
-                y: -pieceTravelDistance,
-              }).easing(cc.easeExponentialOut()),
-              cc.scaleTo(CONFIG.MOVE_SLOW_DURATION, 1.1).easing(cc.easeExponentialOut()),
-              cc.sequence(
-                cc.delayTime(CONFIG.MOVE_SLOW_DURATION * 0.7),
-                cc.fadeOut(CONFIG.MOVE_SLOW_DURATION * 0.3),
-              ),
-            )),
-            cc.targetedAction(this._lootCrateFrontLeftSprite, cc.spawn(
-              cc.moveBy(CONFIG.MOVE_SLOW_DURATION, {
-                x: -uleg * pieceTravelDistance,
-                y: -uleg * pieceTravelDistance,
-              }).easing(cc.easeExponentialOut()),
-              cc.scaleTo(CONFIG.MOVE_SLOW_DURATION, 1.2).easing(cc.easeExponentialOut()),
-              cc.sequence(
-                cc.delayTime(CONFIG.MOVE_SLOW_DURATION * 0.7),
-                cc.fadeOut(CONFIG.MOVE_SLOW_DURATION * 0.3),
-              ),
-            )),
-            cc.targetedAction(this._lootCrateFrontRightSprite, cc.spawn(
-              cc.moveBy(CONFIG.MOVE_SLOW_DURATION, {
-                x: uleg * pieceTravelDistance,
-                y: -uleg * pieceTravelDistance,
-              }).easing(cc.easeExponentialOut()),
-              cc.scaleTo(CONFIG.MOVE_SLOW_DURATION, 1.2).easing(cc.easeExponentialOut()),
-              cc.sequence(
-                cc.delayTime(CONFIG.MOVE_SLOW_DURATION * 0.7),
-                cc.fadeOut(CONFIG.MOVE_SLOW_DURATION * 0.3),
-              ),
-            )),
+        this.runAction(
+          cc.sequence(
+            // cc.delayTime(1),// To sync with audio
             cc.callFunc(() => {
-              // Add explosion particles behind loot crate
-              const explosionParticles = BaseParticleSystem.create(RSX.explosion.plist);
-              explosionParticles.setPosition(centerPosition);
-              explosionParticles.setAnchorPoint(cc.p(0.5, 0.5));
-              explosionParticles.setAutoRemoveOnFinish(true);
-              this.addChild(explosionParticles, this._zOrderInfrontOfCrate);
+              // wipe flare
+              const wipeFlare = FXFbmPolarFlareWipeSprite.create();
+              wipeFlare.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
+              wipeFlare.setTextureRect(cc.rect(0, 0, 512, 512));
+              wipeFlare.setAnchorPoint(0.5, 0.5);
+              wipeFlare.setPosition(centerPosition);
+              wipeFlare.setColor(cc.color(165, 233, 255));
+              this.addChild(wipeFlare, this._zOrderInfrontOfCrate);
 
-              // Remove fx from behind sphere
-              this._idleParticles.stopSystem();
-              this._idleParticles2.stopSystem();
-              this._flareBehindCrate.runAction(cc.sequence(
-                cc.fadeOut(0.2),
-                cc.removeSelf(),
-              ));
-
-              // shake sphere
-              this._lootCrateSphereSprite.runAction(
-                Shake.create(CONFIG.MOVE_SLOW_DURATION + CONFIG.ANIMATE_MEDIUM_DURATION, 5.0, this._lootCrateSphereSprite.getPosition()),
+              // run the wipe effect
+              wipeFlare.runAction(
+                cc.sequence(
+                  cc.fadeIn(0.01),
+                  cc.actionTween(0.25, 'phase', 0.0, 0.5),
+                  cc.actionTween(0.75, 'phase', 0.5, 1.5),
+                  cc.fadeOut(0.1),
+                  cc.removeSelf(),
+                ),
               );
             }),
-          ),
 
-          cc.spawn(
-            // animate out the sphere
-            cc.targetedAction(this._lootCrateSphereSprite, cc.spawn(
-              cc.fadeOut(CONFIG.ANIMATE_MEDIUM_DURATION),
-              cc.scaleTo(CONFIG.ANIMATE_MEDIUM_DURATION, 0.8).easing(cc.easeBackIn()),
-            )),
+            cc.spawn(
+              // Break apart loot crate pieces
+              cc.targetedAction(
+                this._lootCrateBackLeftSprite,
+                cc.spawn(
+                  cc
+                    .moveBy(CONFIG.MOVE_SLOW_DURATION, {
+                      x: -uleg * pieceTravelDistance,
+                      y: uleg * pieceTravelDistance,
+                    })
+                    .easing(cc.easeExponentialOut()),
+                  cc.scaleTo(CONFIG.MOVE_SLOW_DURATION, 0.8).easing(cc.easeExponentialOut()),
+                  cc.sequence(
+                    cc.delayTime(CONFIG.MOVE_SLOW_DURATION * 0.7),
+                    cc.fadeOut(CONFIG.MOVE_SLOW_DURATION * 0.3),
+                  ),
+                ),
+              ),
+              cc.targetedAction(
+                this._lootCrateBackRightSprite,
+                cc.spawn(
+                  cc
+                    .moveBy(CONFIG.MOVE_SLOW_DURATION, {
+                      x: uleg * pieceTravelDistance,
+                      y: uleg * pieceTravelDistance,
+                    })
+                    .easing(cc.easeExponentialOut()),
+                  cc.scaleTo(CONFIG.MOVE_SLOW_DURATION, 0.8).easing(cc.easeExponentialOut()),
+                  cc.sequence(
+                    cc.delayTime(CONFIG.MOVE_SLOW_DURATION * 0.7),
+                    cc.fadeOut(CONFIG.MOVE_SLOW_DURATION * 0.3),
+                  ),
+                ),
+              ),
+              cc.targetedAction(
+                this._lootCrateTopSprite,
+                cc.spawn(
+                  cc
+                    .moveBy(CONFIG.MOVE_SLOW_DURATION, {
+                      x: 0,
+                      y: pieceTravelDistance,
+                    })
+                    .easing(cc.easeExponentialOut()),
+                  cc.scaleTo(CONFIG.MOVE_SLOW_DURATION, 0.9).easing(cc.easeExponentialOut()),
+                  cc.sequence(
+                    cc.delayTime(CONFIG.MOVE_SLOW_DURATION * 0.7),
+                    cc.fadeOut(CONFIG.MOVE_SLOW_DURATION * 0.3),
+                  ),
+                ),
+              ),
+              cc.targetedAction(
+                this._lootCrateBottomSprite,
+                cc.spawn(
+                  cc
+                    .moveBy(CONFIG.MOVE_SLOW_DURATION, {
+                      x: 0,
+                      y: -pieceTravelDistance,
+                    })
+                    .easing(cc.easeExponentialOut()),
+                  cc.scaleTo(CONFIG.MOVE_SLOW_DURATION, 1.1).easing(cc.easeExponentialOut()),
+                  cc.sequence(
+                    cc.delayTime(CONFIG.MOVE_SLOW_DURATION * 0.7),
+                    cc.fadeOut(CONFIG.MOVE_SLOW_DURATION * 0.3),
+                  ),
+                ),
+              ),
+              cc.targetedAction(
+                this._lootCrateFrontLeftSprite,
+                cc.spawn(
+                  cc
+                    .moveBy(CONFIG.MOVE_SLOW_DURATION, {
+                      x: -uleg * pieceTravelDistance,
+                      y: -uleg * pieceTravelDistance,
+                    })
+                    .easing(cc.easeExponentialOut()),
+                  cc.scaleTo(CONFIG.MOVE_SLOW_DURATION, 1.2).easing(cc.easeExponentialOut()),
+                  cc.sequence(
+                    cc.delayTime(CONFIG.MOVE_SLOW_DURATION * 0.7),
+                    cc.fadeOut(CONFIG.MOVE_SLOW_DURATION * 0.3),
+                  ),
+                ),
+              ),
+              cc.targetedAction(
+                this._lootCrateFrontRightSprite,
+                cc.spawn(
+                  cc
+                    .moveBy(CONFIG.MOVE_SLOW_DURATION, {
+                      x: uleg * pieceTravelDistance,
+                      y: -uleg * pieceTravelDistance,
+                    })
+                    .easing(cc.easeExponentialOut()),
+                  cc.scaleTo(CONFIG.MOVE_SLOW_DURATION, 1.2).easing(cc.easeExponentialOut()),
+                  cc.sequence(
+                    cc.delayTime(CONFIG.MOVE_SLOW_DURATION * 0.7),
+                    cc.fadeOut(CONFIG.MOVE_SLOW_DURATION * 0.3),
+                  ),
+                ),
+              ),
+              cc.callFunc(() => {
+                // Add explosion particles behind loot crate
+                const explosionParticles = BaseParticleSystem.create(RSX.explosion.plist);
+                explosionParticles.setPosition(centerPosition);
+                explosionParticles.setAnchorPoint(cc.p(0.5, 0.5));
+                explosionParticles.setAutoRemoveOnFinish(true);
+                this.addChild(explosionParticles, this._zOrderInfrontOfCrate);
 
-            // explode and animate flare out
-            cc.targetedAction(this.flare, cc.sequence(
-              cc.show(),
-              cc.scaleTo(0.8, 8.0),
-              cc.actionTween(0.8, 'armLength', 0.0, 1.0),
-              cc.fadeOut(CONFIG.ANIMATE_FAST_DURATION),
-            )),
+                // Remove fx from behind sphere
+                this._idleParticles.stopSystem();
+                this._idleParticles2.stopSystem();
+                this._flareBehindCrate.runAction(cc.sequence(cc.fadeOut(0.2), cc.removeSelf()));
 
-            // show rewards
-            cc.callFunc(() => {
-              for (let i = 0; i < this._rewardNodes.length; i++) {
-                this._rewardNodes[i].setPosition(this._rewardTargetPositions[i]);
-              }
+                // shake sphere
+                this._lootCrateSphereSprite.runAction(
+                  Shake.create(
+                    CONFIG.MOVE_SLOW_DURATION + CONFIG.ANIMATE_MEDIUM_DURATION,
+                    5.0,
+                    this._lootCrateSphereSprite.getPosition(),
+                  ),
+                );
+              }),
+            ),
 
-              this._showRewardDiscs()
-                .then(() =>
-                // Run through the promise chain for each reward show animation
-                  _.reduce(this._rewardAnimationPromiseCallbacks, (currentPromiseCallback, nextPromiseCallback, index) => {
-                    const zodiacDestroyPromiseCallback = function () {
-                      return new Promise(function (index, resolve, reject) {
-                        this._rewardZodiacs[index].destroy();
-                        resolve();
-                      }.bind(this, index));
-                    }.bind(this);
+            cc.spawn(
+              // animate out the sphere
+              cc.targetedAction(
+                this._lootCrateSphereSprite,
+                cc.spawn(
+                  cc.fadeOut(CONFIG.ANIMATE_MEDIUM_DURATION),
+                  cc.scaleTo(CONFIG.ANIMATE_MEDIUM_DURATION, 0.8).easing(cc.easeBackIn()),
+                ),
+              ),
 
-                    return currentPromiseCallback.then(zodiacDestroyPromiseCallback).then(nextPromiseCallback);
-                  }, Promise.resolve()).then(() => {
+              // explode and animate flare out
+              cc.targetedAction(
+                this.flare,
+                cc.sequence(
+                  cc.show(),
+                  cc.scaleTo(0.8, 8.0),
+                  cc.actionTween(0.8, 'armLength', 0.0, 1.0),
+                  cc.fadeOut(CONFIG.ANIMATE_FAST_DURATION),
+                ),
+              ),
+
+              // show rewards
+              cc.callFunc(() => {
+                for (let i = 0; i < this._rewardNodes.length; i++) {
+                  this._rewardNodes[i].setPosition(this._rewardTargetPositions[i]);
+                }
+
+                this._showRewardDiscs().then(() =>
+                  // Run through the promise chain for each reward show animation
+                  _.reduce(
+                    this._rewardAnimationPromiseCallbacks,
+                    (currentPromiseCallback, nextPromiseCallback, index) => {
+                      const zodiacDestroyPromiseCallback = function () {
+                        return new Promise(
+                          function (index, resolve, reject) {
+                            this._rewardZodiacs[index].destroy();
+                            resolve();
+                          }.bind(this, index),
+                        );
+                      }.bind(this);
+
+                      return currentPromiseCallback
+                        .then(zodiacDestroyPromiseCallback)
+                        .then(nextPromiseCallback);
+                    },
+                    Promise.resolve(),
+                  ).then(() => {
                     locResolve();
-                  }));
-            }),
+                  }),
+                );
+              }),
+            ),
+            cc.delayTime(CONFIG.ANIMATE_FAST_DURATION),
           ),
-          cc.delayTime(CONFIG.ANIMATE_FAST_DURATION),
-        ));
-      })
-        .catch((error) => { EventBus.getInstance().trigger(EVENTS.error, error); });
+        );
+      }).catch((error) => {
+        EventBus.getInstance().trigger(EVENTS.error, error);
+      });
     });
   },
 
@@ -1340,7 +1560,7 @@ const LootCrateNode = cc.Node.extend({
 
         const cardScreenRevealPosition = this._rewardTargetPositions[i];
         const maxDuration = 2.0;
-        const duration = maxDuration / 2 + maxDuration / 2 * Math.random();
+        const duration = maxDuration / 2 + (maxDuration / 2) * Math.random();
         const delayScaleDown = maxDuration - duration - 1.0;
         var numReady = 0;
 
@@ -1350,58 +1570,66 @@ const LootCrateNode = cc.Node.extend({
         );
 
         // move disc
-        cardDisc.runAction(cc.sequence(
-          cc.moveTo(duration, cardScreenRevealPosition).easing(cc.easeExponentialOut()),
-          cc.delayTime(delayScaleDown),
-          cc.callFunc(function () {
-            this.stopSystem();
-          }.bind(particles)),
-          cc.scaleTo(0.5, 0.25).easing(cc.easeExponentialOut()),
-          cc.callFunc(function (cardDisc, index) {
-            // zodiac symbol that animates from a single point out
-            const zodiac = new ZodiacNode({
-              width: 80,
-              height: 80,
-              lineWidth: 1,
-              duration: 1.0,
-            });
-            zodiac.setAnchorPoint(cc.p(0.5, 0.5));
-            zodiac.setPosition(cc.p(
-              cardDisc.getPosition().x - 40,
-              cardDisc.getPosition().y - 40,
-            ));
-            this._rewardZodiacs[index] = zodiac;
-            this.addChild(zodiac, this._zOrderInfrontOfCrate);
+        cardDisc.runAction(
+          cc.sequence(
+            cc.moveTo(duration, cardScreenRevealPosition).easing(cc.easeExponentialOut()),
+            cc.delayTime(delayScaleDown),
+            cc.callFunc(
+              function () {
+                this.stopSystem();
+              }.bind(particles),
+            ),
+            cc.scaleTo(0.5, 0.25).easing(cc.easeExponentialOut()),
+            cc.callFunc(
+              function (cardDisc, index) {
+                // zodiac symbol that animates from a single point out
+                const zodiac = new ZodiacNode({
+                  width: 80,
+                  height: 80,
+                  lineWidth: 1,
+                  duration: 1.0,
+                });
+                zodiac.setAnchorPoint(cc.p(0.5, 0.5));
+                zodiac.setPosition(
+                  cc.p(cardDisc.getPosition().x - 40, cardDisc.getPosition().y - 40),
+                );
+                this._rewardZodiacs[index] = zodiac;
+                this.addChild(zodiac, this._zOrderInfrontOfCrate);
 
-            // energy particles
-            const particles = BaseParticleSystem.create(RSX.zodiac_appear_001.plist);
-            particles.setAnchorPoint(cc.p(0.5, 0.5));
-            particles.setPosition(cardDisc.getPosition());
-            particles.setAutoRemoveOnFinish(true);
-            this.addChild(particles, this._zOrderInfrontOfCrate);
+                // energy particles
+                const particles = BaseParticleSystem.create(RSX.zodiac_appear_001.plist);
+                particles.setAnchorPoint(cc.p(0.5, 0.5));
+                particles.setPosition(cardDisc.getPosition());
+                particles.setAutoRemoveOnFinish(true);
+                this.addChild(particles, this._zOrderInfrontOfCrate);
 
-            // zodiac fragment particles
-            const particles2 = BaseParticleSystem.create(RSX.zodiac_appear_002.plist);
-            particles2.setAnchorPoint(cc.p(0.5, 0.5));
-            particles2.setPosition(cardDisc.getPosition());
-            particles2.setAutoRemoveOnFinish(true);
-            this.addChild(particles2, this._zOrderInfrontOfCrate);
+                // zodiac fragment particles
+                const particles2 = BaseParticleSystem.create(RSX.zodiac_appear_002.plist);
+                particles2.setAnchorPoint(cc.p(0.5, 0.5));
+                particles2.setPosition(cardDisc.getPosition());
+                particles2.setAutoRemoveOnFinish(true);
+                this.addChild(particles2, this._zOrderInfrontOfCrate);
 
-            cardDisc.zodiac = zodiac;
-          }.bind(this, cardDisc, index)),
-          // cc.delayTime(0.5),
-          cc.fadeOut(0.1),
-          cc.callFunc(function (cardDisc, index) {
-            numReady += 1;
-            if (numReady == this._rewardNodes.length) {
-              locResolve();
-            }
-          }.bind(this, cardDisc, index)),
-          cc.removeSelf(),
-        ));
+                cardDisc.zodiac = zodiac;
+              }.bind(this, cardDisc, index),
+            ),
+            // cc.delayTime(0.5),
+            cc.fadeOut(0.1),
+            cc.callFunc(
+              function (cardDisc, index) {
+                numReady += 1;
+                if (numReady == this._rewardNodes.length) {
+                  locResolve();
+                }
+              }.bind(this, cardDisc, index),
+            ),
+            cc.removeSelf(),
+          ),
+        );
       }
-    })
-      .catch((error) => { EventBus.getInstance().trigger(EVENTS.error, error); });
+    }).catch((error) => {
+      EventBus.getInstance().trigger(EVENTS.error, error);
+    });
   },
 
   /**
@@ -1415,20 +1643,23 @@ const LootCrateNode = cc.Node.extend({
 
       return new Promise<void>((resolve, reject) => {
         audio_engine.current().play_effect(RSX.sfx_loot_crate_reward_disappear.audio, false);
-        this.runAction(cc.sequence(
-          cc.callFunc(() => {
-            for (let i = 0; i < this._rewardNodes.length; i++) {
-              this._rewardNodes[i].destroy(CONFIG.ANIMATE_FAST_DURATION);
-            }
-          }),
-          cc.delayTime(CONFIG.ANIMATE_FAST_DURATION),
-          cc.callFunc(() => {
-            this.destroy();
-            resolve();
-          }),
-        ));
-      })
-        .catch((error) => { EventBus.getInstance().trigger(EVENTS.error, error); });
+        this.runAction(
+          cc.sequence(
+            cc.callFunc(() => {
+              for (let i = 0; i < this._rewardNodes.length; i++) {
+                this._rewardNodes[i].destroy(CONFIG.ANIMATE_FAST_DURATION);
+              }
+            }),
+            cc.delayTime(CONFIG.ANIMATE_FAST_DURATION),
+            cc.callFunc(() => {
+              this.destroy();
+              resolve();
+            }),
+          ),
+        );
+      }).catch((error) => {
+        EventBus.getInstance().trigger(EVENTS.error, error);
+      });
     });
   },
 
@@ -1441,8 +1672,16 @@ const LootCrateNode = cc.Node.extend({
       scene.getEventBus().on(EVENTS.pointer_move, this.onPointerMove, this);
     }
 
-    EventBus.getInstance().on(EVENTS.cosmetic_chest_collection_change, this.onCrateCollectionsChanged, this);
-    EventBus.getInstance().on(EVENTS.gift_crate_collection_change, this.onCrateCollectionsChanged, this);
+    EventBus.getInstance().on(
+      EVENTS.cosmetic_chest_collection_change,
+      this.onCrateCollectionsChanged,
+      this,
+    );
+    EventBus.getInstance().on(
+      EVENTS.gift_crate_collection_change,
+      this.onCrateCollectionsChanged,
+      this,
+    );
   },
 
   _stopListeningToEvents() {
@@ -1451,8 +1690,16 @@ const LootCrateNode = cc.Node.extend({
       scene.getEventBus().off(EVENTS.pointer_move, this.onPointerMove, this);
     }
 
-    EventBus.getInstance().off(EVENTS.cosmetic_chest_collection_change, this.onCrateCollectionsChanged, this);
-    EventBus.getInstance().off(EVENTS.gift_crate_collection_change, this.onCrateCollectionsChanged, this);
+    EventBus.getInstance().off(
+      EVENTS.cosmetic_chest_collection_change,
+      this.onCrateCollectionsChanged,
+      this,
+    );
+    EventBus.getInstance().off(
+      EVENTS.gift_crate_collection_change,
+      this.onCrateCollectionsChanged,
+      this,
+    );
   },
 
   onPointerMove(event) {
@@ -1466,7 +1713,10 @@ const LootCrateNode = cc.Node.extend({
       // find reward under mouse
       for (let i = 0; i < this._rewardNodes.length; i++) {
         const rewardNode = this._rewardNodes[i];
-        if (rewardNode.isVisible() && UtilsEngine.getNodeUnderMouse(rewardNode, location.x, location.y)) {
+        if (
+          rewardNode.isVisible() &&
+          UtilsEngine.getNodeUnderMouse(rewardNode, location.x, location.y)
+        ) {
           mouseOverRewardNode = rewardNode;
           break;
         }
@@ -1501,7 +1751,6 @@ const LootCrateNode = cc.Node.extend({
   },
 
   /* endregion EVENTS */
-
 });
 
 LootCrateNode.create = function (node) {

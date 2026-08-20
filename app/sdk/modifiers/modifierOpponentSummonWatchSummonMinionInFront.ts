@@ -21,22 +21,38 @@ class ModifierOpponentSummonWatchSummonMinionInFront extends ModifierOpponentSum
 
   onSummonWatch(action) {
     const unit = action.getTarget();
-    if ((unit != null) && (this.cardDataOrIndexToSpawn != null)) {
+    if (unit != null && this.cardDataOrIndexToSpawn != null) {
       let playerOffset = 0;
-      if (unit.isOwnedByPlayer1()) { playerOffset = 1; } else { playerOffset = -1; }
+      if (unit.isOwnedByPlayer1()) {
+        playerOffset = 1;
+      } else {
+        playerOffset = -1;
+      }
       const inFrontOfPosition = { x: unit.getPosition().x + playerOffset, y: unit.getPosition().y };
 
-      const entity = this.getGameSession().getExistingCardFromIndexOrCreateCardFromData(this.cardDataOrIndexToSpawn);
+      const entity = this.getGameSession().getExistingCardFromIndexOrCreateCardFromData(
+        this.cardDataOrIndexToSpawn,
+      );
       const board = this.getGameSession().getBoard();
-      if (board.isOnBoard(inFrontOfPosition) && !board.getObstructionAtPositionForEntity(inFrontOfPosition, entity)) {
-        const playCardAction = new PlayCardSilentlyAction(this.getGameSession(), this.getCard().getOwnerId(), inFrontOfPosition.x, inFrontOfPosition.y, this.cardDataOrIndexToSpawn);
+      if (
+        board.isOnBoard(inFrontOfPosition) &&
+        !board.getObstructionAtPositionForEntity(inFrontOfPosition, entity)
+      ) {
+        const playCardAction = new PlayCardSilentlyAction(
+          this.getGameSession(),
+          this.getCard().getOwnerId(),
+          inFrontOfPosition.x,
+          inFrontOfPosition.y,
+          this.cardDataOrIndexToSpawn,
+        );
         playCardAction.setSource(this.getCard());
         return this.getGameSession().executeAction(playCardAction);
       }
     }
   }
 }
-ModifierOpponentSummonWatchSummonMinionInFront.prototype.type = 'ModifierOpponentSummonWatchSummonMinionInFront';
+ModifierOpponentSummonWatchSummonMinionInFront.prototype.type =
+  'ModifierOpponentSummonWatchSummonMinionInFront';
 ModifierOpponentSummonWatchSummonMinionInFront.prototype.cardDataOrIndexToSpawn = null;
 
 module.exports = ModifierOpponentSummonWatchSummonMinionInFront;

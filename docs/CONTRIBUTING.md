@@ -34,14 +34,14 @@ directories commonly used when working on the game:
 - `docker-compose.yaml` contains our Docker container configuration
 - `docs` contains documentation, including this guide
 - `gulp/` and `gulpfile.babel.js` contain workflow automation, for tasks like
-	building the code
+  building the code
 - `package.json` contains our Node.js dependencies
 - `server` contains code for the HTTP API server and the WebSocket game servers
 - `terraform` contains code for provisioning staging and production
-	environments
+  environments
 - `test` contains unit and integration tests
 - `worker` contains code for the worker, which processes asynchronous
-	background jobs
+  background jobs
 
 #### Code Style and Linting
 
@@ -66,11 +66,13 @@ The codebase is TypeScript. It is typed loosely for now (`tsconfig.json`);
 We use `vitest` (with `chai` assertions) to run unit and integration tests.
 
 To run unit tests:
+
 ```
 pnpm test:unit
 ```
 
 To run integration tests:
+
 ```
 pnpm test:integration
 ```

@@ -58,8 +58,18 @@ function playScriptedGame() {
   ];
   UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
   const gameSession = SDK.GameSession.getInstance();
-  UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.SilverguardSquire }, 2, 2, gameSession.getPlayer1Id());
-  UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction2.KaidoAssassin }, 3, 2, gameSession.getPlayer2Id());
+  UtilsSDK.applyCardToBoard(
+    { id: SDK.Cards.Faction1.SilverguardSquire },
+    2,
+    2,
+    gameSession.getPlayer1Id(),
+  );
+  UtilsSDK.applyCardToBoard(
+    { id: SDK.Cards.Faction2.KaidoAssassin },
+    3,
+    2,
+    gameSession.getPlayer2Id(),
+  );
   gameSession.executeAction(gameSession.actionEndTurn());
   const kaido = gameSession.getBoard().getCardAtPosition({ x: 3, y: 2 });
   const squire = gameSession.getBoard().getCardAtPosition({ x: 2, y: 2 });
@@ -144,7 +154,12 @@ describe('wire format guard rails', () => {
   });
 
   describe('factory type dispatch (static @type vs prototype type:)', () => {
-    const modifierClasses = [Modifier, ModifierFlying, ModifierOpeningGambit, PlayerModifierManaModifier];
+    const modifierClasses = [
+      Modifier,
+      ModifierFlying,
+      ModifierOpeningGambit,
+      PlayerModifierManaModifier,
+    ];
     modifierClasses.forEach((ModifierClass) => {
       it(`expect ${ModifierClass.type} to keep its static and prototype type in sync and dispatch via ModifierFactory`, () => {
         expect(ModifierClass.type, 'static @type').to.be.a('string');
@@ -165,7 +180,10 @@ describe('wire format guard rails', () => {
         const action = ActionFactory.actionForType(ActionClass.type, gameSession);
         expect(action).to.be.an.instanceOf(ActionClass);
         expect(action.getType()).to.equal(ActionClass.type);
-        expect(Object.prototype.hasOwnProperty.call(action, 'type'), 'instance own type property (serialized)').to.equal(true);
+        expect(
+          Object.prototype.hasOwnProperty.call(action, 'type'),
+          'instance own type property (serialized)',
+        ).to.equal(true);
         expect(JSON.parse(JSON.stringify(action)).type).to.equal(ActionClass.type);
       });
     });

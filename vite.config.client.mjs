@@ -41,7 +41,7 @@ let ENV_VARS;
 let config;
 if (process.env.DUELYST_BUILD_CONFIG) {
   ENV_VARS = JSON.parse(process.env.DUELYST_BUILD_CONFIG);
-  config = { get: (k) => ({ datGuiEditorEnabled: ENV_VARS.DAT_GUI_EDITOR_ENABLED }[k]) };
+  config = { get: (k) => ({ datGuiEditorEnabled: ENV_VARS.DAT_GUI_EDITOR_ENABLED })[k] };
 } else {
   process.env.NODE_ENV = process.env.DUELYST_ENV || 'development';
   config = require('./config/config');
@@ -115,7 +115,9 @@ function glslifyCallPlugin() {
         const file = path.resolve(path.dirname(id), rel);
         const source = glslify.file(file);
         if (source.includes('#{')) {
-          throw new Error(`${id}: compiled shader ${rel} contains '#{' which would interpolate in CoffeeScript`);
+          throw new Error(
+            `${id}: compiled shader ${rel} contains '#{' which would interpolate in CoffeeScript`,
+          );
         }
         return JSON.stringify(source);
       });
@@ -132,7 +134,7 @@ function umdThisShimPlugin() {
     name: 'duelyst:umd-this-shim',
     transform(code, id) {
       if (!id.includes('moment-duration-format')) return null;
-      let out = code.replace('})(this);', '})(typeof self !== \'undefined\' ? self : {});');
+      let out = code.replace('})(this);', "})(typeof self !== 'undefined' ? self : {});");
       // its `typeof require === "function"` guard is false in the browser even
       // though the bundler statically rewires the require('moment') call
       out = out.replace('if (typeof require === "function") {', 'if (true) {');
@@ -146,8 +148,13 @@ function umdThisShimPlugin() {
 // A virtual entry reproduces that multi-entry-single-bundle behavior.
 const VIRTUAL_ENTRY = '\0duelyst-entry';
 function entryPlugin() {
-  const entries = ["./app/index.ts"];
-  if (ENV_VARS.DAT_GUI_EDITOR_ENABLED != null ? ENV_VARS.DAT_GUI_EDITOR_ENABLED : config.get('datGuiEditorEnabled')) entries.push('./app/tools/editor.ts');
+  const entries = ['./app/index.ts'];
+  if (
+    ENV_VARS.DAT_GUI_EDITOR_ENABLED != null
+      ? ENV_VARS.DAT_GUI_EDITOR_ENABLED
+      : config.get('datGuiEditorEnabled')
+  )
+    entries.push('./app/tools/editor.ts');
   return {
     name: 'duelyst:entry',
     resolveId(id) {
@@ -206,7 +213,8 @@ export default defineConfig({
         inlineDynamicImports: true,
         // browserify parity: it injected a process shim for dependencies that
         // touch the bare `process` global at runtime (nextTick etc.)
-        banner: "var process = { env: {}, browser: true, argv: [], cwd: function () { return '/'; }, nextTick: function (fn) { var args = [].slice.call(arguments, 1); setTimeout(function () { fn.apply(null, args); }, 0); } };",
+        banner:
+          "var process = { env: {}, browser: true, argv: [], cwd: function () { return '/'; }, nextTick: function (fn) { var args = [].slice.call(arguments, 1); setTimeout(function () { fn.apply(null, args); }, 0); } };",
       },
     },
   },

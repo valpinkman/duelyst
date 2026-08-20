@@ -18,17 +18,32 @@ const ScoreForPhaseSummon = function (card, targetPosition) {
 
   const cardId = card.getBaseCardId();
   const player = card.getOwner();
-  const cardsInHand = [].concat(player.getDeck().getCardsInHand(), player.getCurrentSignatureCard());
+  const cardsInHand = [].concat(
+    player.getDeck().getCardsInHand(),
+    player.getCurrentSignatureCard(),
+  );
   if (cardsInHand.length > 0) {
     const intents = CardIntent.getIntentsByPartialPhaseType(cardId, CardPhaseType.Summon);
     if (intents.length > 0) {
-      const modifierSummonWatchContextObjectOnCard = card.getContextObjectForModifierClass(ModifierSummonWatch);
-      const modifierSummonWatchOnCard = card.getGameSession().getOrCreateModifierFromContextObjectOrIndexAndApplyContextObject(modifierSummonWatchContextObjectOnCard);
+      const modifierSummonWatchContextObjectOnCard =
+        card.getContextObjectForModifierClass(ModifierSummonWatch);
+      const modifierSummonWatchOnCard = card
+        .getGameSession()
+        .getOrCreateModifierFromContextObjectOrIndexAndApplyContextObject(
+          modifierSummonWatchContextObjectOnCard,
+        );
       let totalSummonScore = 0;
-      let remainingManaAfterPlayingCard = Math.max(0, player.getRemainingMana() - card.getManaCost());
+      let remainingManaAfterPlayingCard = Math.max(
+        0,
+        player.getRemainingMana() - card.getManaCost(),
+      );
       for (let i = 0, il = cardsInHand.length; i < il; i++) {
         const cardInHand = cardsInHand[i];
-        if (cardInHand instanceof Unit && cardInHand !== card && modifierSummonWatchOnCard.getIsCardRelevantToWatcher(cardInHand)) {
+        if (
+          cardInHand instanceof Unit &&
+          cardInHand !== card &&
+          modifierSummonWatchOnCard.getIsCardRelevantToWatcher(cardInHand)
+        ) {
           totalSummonScore += BOUNTY.MODIFIER_SUMMONWATCH;
           if (remainingManaAfterPlayingCard >= cardInHand.getManaCost()) {
             // add additional score when the card in hand could be played together with spell phase card

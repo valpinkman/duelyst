@@ -15,7 +15,9 @@ class SpellChargeIntoBattle extends SpellApplyModifiers {
     const filteredValidPositions = [];
 
     // find unit that is behind the general
-    const generalPosition = this.getGameSession().getGeneralForPlayerId(this.getOwnerId()).getPosition();
+    const generalPosition = this.getGameSession()
+      .getGeneralForPlayerId(this.getOwnerId())
+      .getPosition();
     if (this.getGameSession().getGeneralForPlayerId(this.getOwnerId()).isOwnedByPlayer1()) {
       player1 = true;
     } else {
@@ -24,10 +26,18 @@ class SpellChargeIntoBattle extends SpellApplyModifiers {
 
     for (var position of Array.from<any>(validPositions)) {
       var unit = this.getGameSession().getBoard().getUnitAtPosition(position);
-      if (player1 && ((unit != null ? unit.getPosition().x : undefined) === (generalPosition.x - 1)) && (unit.getPosition().y === generalPosition.y)) {
+      if (
+        player1 &&
+        (unit != null ? unit.getPosition().x : undefined) === generalPosition.x - 1 &&
+        unit.getPosition().y === generalPosition.y
+      ) {
         filteredValidPositions.push(unit.getPosition());
       }
-      if (!player1 && ((unit != null ? unit.getPosition().x : undefined) === (generalPosition.x + 1)) && (unit.getPosition().y === generalPosition.y)) {
+      if (
+        !player1 &&
+        (unit != null ? unit.getPosition().x : undefined) === generalPosition.x + 1 &&
+        unit.getPosition().y === generalPosition.y
+      ) {
         filteredValidPositions.push(unit.getPosition());
       }
     }

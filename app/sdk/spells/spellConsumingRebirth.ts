@@ -22,7 +22,11 @@ class SpellConsumingRebirth extends SpellKillTarget {
       if (myGeneral != null) {
         const buffContextObject = Modifier.createContextObjectWithAttributeBuffs(1, 1);
         buffContextObject.appliedName = 'Consumed and Reborn';
-        const respawnContextObject = PlayerModifierEndTurnRespawnEntityWithBuff.createContextObject(target.createNewCardData(), [buffContextObject], target.getPosition());
+        const respawnContextObject = PlayerModifierEndTurnRespawnEntityWithBuff.createContextObject(
+          target.createNewCardData(),
+          [buffContextObject],
+          target.getPosition(),
+        );
         return this.getGameSession().applyModifierContextObject(respawnContextObject, myGeneral);
       }
     }

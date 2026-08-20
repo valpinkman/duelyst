@@ -83,9 +83,7 @@ class CardFactory_Monthly_M11_PennyArcade {
         {
           id: Cards.Spell.ApplyModifiers,
           spellFilterType: SpellFilterType.AllyDirect,
-          targetModifiersContextObjects: [
-            ModifierProvoke.createContextObject(),
-          ],
+          targetModifiersContextObjects: [ModifierProvoke.createContextObject()],
           _private: {
             followupSourcePattern: CONFIG.PATTERN_3x3,
           },
@@ -158,7 +156,10 @@ class CardFactory_Monthly_M11_PennyArcade {
       card.manaCost = 6;
       card.rarityId = Rarity.Epic;
       card.setInherentModifiersContextObjects([
-        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetOwnPlayer([ModifierForcefield.createContextObject()], 'While this minion is on the battlefield, your General has Forcefield'),
+        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetOwnPlayer(
+          [ModifierForcefield.createContextObject()],
+          'While this minion is on the battlefield, your General has Forcefield',
+        ),
       ]);
       card.addKeywordClassToInclude(ModifierForcefield);
     }
@@ -188,7 +189,12 @@ class CardFactory_Monthly_M11_PennyArcade {
         damage: RSX.neutralSphynxHit.name,
         death: RSX.neutralSphynxDeath.name,
       });
-      card.setInherentModifiersContextObjects([ModifierOpeningGambitPutCardInOpponentHand.createContextObject({ id: Cards.Spell.Riddle }, 'a Riddle')]);
+      card.setInherentModifiersContextObjects([
+        ModifierOpeningGambitPutCardInOpponentHand.createContextObject(
+          { id: Cards.Spell.Riddle },
+          'a Riddle',
+        ),
+      ]);
       card.atk = 5;
       card.maxHP = 4;
       card.manaCost = 4;
@@ -212,9 +218,22 @@ class CardFactory_Monthly_M11_PennyArcade {
         active: RSX.iconRiddleActive.name,
       });
       const contextObject = PlayerModifierCannotReplace.createContextObject();
-      contextObject.activeInHand = (contextObject.activeInDeck = (contextObject.activeOnBoard = (contextObject.activeInSignatureCards = true)));
+      contextObject.activeInHand =
+        contextObject.activeInDeck =
+        contextObject.activeOnBoard =
+        contextObject.activeInSignatureCards =
+          true;
       card.setInherentModifiersContextObjects([
-        ModifierCardControlledPlayerModifiers.createContextObject([contextObject], true, false, true, false, false, false, 'While you have the Riddle, you cannot replace'),
+        ModifierCardControlledPlayerModifiers.createContextObject(
+          [contextObject],
+          true,
+          false,
+          true,
+          false,
+          false,
+          false,
+          'While you have the Riddle, you cannot replace',
+        ),
       ]);
     }
 

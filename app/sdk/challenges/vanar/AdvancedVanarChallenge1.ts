@@ -52,10 +52,7 @@ class AdvancedVanarChallenge1 extends Challenge {
   }
 
   getOpponentPlayerDeckData(gameSession) {
-    return [
-      { id: Cards.Faction2.General },
-      { id: Cards.TutorialSpell.TutorialFireOrb },
-    ];
+    return [{ id: Cards.Faction2.General }, { id: Cards.TutorialSpell.TutorialFireOrb }];
   }
 
   setupBoard(gameSession) {
@@ -83,25 +80,60 @@ class AdvancedVanarChallenge1 extends Challenge {
     // @applyCardToBoard({id: Cards.Neutral.Manaforger}, 8, 2, myPlayerId)
     this.applyCardToBoard({ id: Cards.Faction6.ArcticRhyno }, 8, 0, myPlayerId);
 
-    const ladyLocke = this.applyCardToBoard({ id: Cards.Neutral.LadyLocke }, 2, 4, opponentPlayerId);
-    const chakri1 = this.applyCardToBoard({ id: Cards.Faction2.ChakriAvatar }, 1, 2, opponentPlayerId);
-    const manaForger = this.applyCardToBoard({ id: Cards.Neutral.Manaforger }, 2, 3, opponentPlayerId);
-    const owlbeast = this.applyCardToBoard({ id: Cards.Neutral.OwlbeastSage }, 2, 2, opponentPlayerId);
-    const chakri2 = this.applyCardToBoard({ id: Cards.Faction2.ChakriAvatar }, 3, 2, opponentPlayerId);
+    const ladyLocke = this.applyCardToBoard(
+      { id: Cards.Neutral.LadyLocke },
+      2,
+      4,
+      opponentPlayerId,
+    );
+    const chakri1 = this.applyCardToBoard(
+      { id: Cards.Faction2.ChakriAvatar },
+      1,
+      2,
+      opponentPlayerId,
+    );
+    const manaForger = this.applyCardToBoard(
+      { id: Cards.Neutral.Manaforger },
+      2,
+      3,
+      opponentPlayerId,
+    );
+    const owlbeast = this.applyCardToBoard(
+      { id: Cards.Neutral.OwlbeastSage },
+      2,
+      2,
+      opponentPlayerId,
+    );
+    const chakri2 = this.applyCardToBoard(
+      { id: Cards.Faction2.ChakriAvatar },
+      3,
+      2,
+      opponentPlayerId,
+    );
     this.applyCardToBoard({ id: Cards.Neutral.LadyLocke }, 2, 1, opponentPlayerId);
 
     // give lady lockes buffs to enemy manaforger, owlbeast, and both chakris
-    const lockPlayerModifier = ladyLocke.getModifierByType(ModifierOpeningGambitApplyPlayerModifiers.type);
-    for (modifierContextObject of Array.from<any>(lockPlayerModifier.modifiersContextObjects[0].modifiersContextObjects)) {
+    const lockPlayerModifier = ladyLocke.getModifierByType(
+      ModifierOpeningGambitApplyPlayerModifiers.type,
+    );
+    for (modifierContextObject of Array.from<any>(
+      lockPlayerModifier.modifiersContextObjects[0].modifiersContextObjects,
+    )) {
       gameSession.applyModifierContextObject(modifierContextObject, chakri1);
     }
-    for (modifierContextObject of Array.from<any>(lockPlayerModifier.modifiersContextObjects[0].modifiersContextObjects)) {
+    for (modifierContextObject of Array.from<any>(
+      lockPlayerModifier.modifiersContextObjects[0].modifiersContextObjects,
+    )) {
       gameSession.applyModifierContextObject(modifierContextObject, manaForger);
     }
-    for (modifierContextObject of Array.from<any>(lockPlayerModifier.modifiersContextObjects[0].modifiersContextObjects)) {
+    for (modifierContextObject of Array.from<any>(
+      lockPlayerModifier.modifiersContextObjects[0].modifiersContextObjects,
+    )) {
       gameSession.applyModifierContextObject(modifierContextObject, owlbeast);
     }
-    for (modifierContextObject of Array.from<any>(lockPlayerModifier.modifiersContextObjects[0].modifiersContextObjects)) {
+    for (modifierContextObject of Array.from<any>(
+      lockPlayerModifier.modifiersContextObjects[0].modifiersContextObjects,
+    )) {
       gameSession.applyModifierContextObject(modifierContextObject, chakri2);
     }
 
@@ -112,24 +144,37 @@ class AdvancedVanarChallenge1 extends Challenge {
   setupOpponentAgent(gameSession) {
     super.setupOpponentAgent(gameSession);
 
-    this._opponentAgent.addActionForTurn(0, AgentActions.createAgentSoftActionShowInstructionLabels([{
-      label: i18next.t('challenges.advanced_vanar_1_taunt'),
-      isSpeech: true,
-      yPosition: 0.7,
-      isPersistent: true,
-      isOpponent: true,
-    },
-    ]));
-    return this._opponentAgent.addActionForTurn(0, AgentActions.createAgentActionPlayCardFindPosition(0, () => [GameSession.getInstance().getGeneralForPlayer1().getPosition()]));
+    this._opponentAgent.addActionForTurn(
+      0,
+      AgentActions.createAgentSoftActionShowInstructionLabels([
+        {
+          label: i18next.t('challenges.advanced_vanar_1_taunt'),
+          isSpeech: true,
+          yPosition: 0.7,
+          isPersistent: true,
+          isOpponent: true,
+        },
+      ]),
+    );
+    return this._opponentAgent.addActionForTurn(
+      0,
+      AgentActions.createAgentActionPlayCardFindPosition(0, () => [
+        GameSession.getInstance().getGeneralForPlayer1().getPosition(),
+      ]),
+    );
   }
 }
 AdvancedVanarChallenge1.prototype.type = 'AdvancedVanarChallenge1';
 AdvancedVanarChallenge1.prototype.categoryType = ChallengeCategory.contest2.type;
 AdvancedVanarChallenge1.prototype.name = i18next.t('challenges.advanced_vanar_1_title');
-AdvancedVanarChallenge1.prototype.description = i18next.t('challenges.advanced_vanar_1_description');
+AdvancedVanarChallenge1.prototype.description = i18next.t(
+  'challenges.advanced_vanar_1_description',
+);
 AdvancedVanarChallenge1.prototype.iconUrl = RSX.speech_portrait_vanar.img;
 AdvancedVanarChallenge1.prototype._musicOverride = RSX.music_battlemap_vanar.audio;
-AdvancedVanarChallenge1.prototype.otkChallengeStartMessage = i18next.t('challenges.advanced_vanar_1_start');
+AdvancedVanarChallenge1.prototype.otkChallengeStartMessage = i18next.t(
+  'challenges.advanced_vanar_1_start',
+);
 AdvancedVanarChallenge1.prototype.otkChallengeFailureMessages = [
   i18next.t('challenges.advanced_vanar_1_fail'),
 ];

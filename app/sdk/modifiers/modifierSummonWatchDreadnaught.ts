@@ -23,15 +23,21 @@ class ModifierSummonWatchDreadnaught extends ModifierSummonWatchByCardBuffTarget
   }
 
   getIsCardRelevantToWatcher(card) {
-    return (__guard__(card.getAppliedToBoardByAction(), (x) => x.getSource()) !== this.getCard()) && super.getIsCardRelevantToWatcher(card);
+    return (
+      __guard__(card.getAppliedToBoardByAction(), (x) => x.getSource()) !== this.getCard() &&
+      super.getIsCardRelevantToWatcher(card)
+    );
   }
 }
 ModifierSummonWatchDreadnaught.prototype.type = 'ModifierSummonWatchDreadnaught';
-ModifierSummonWatchDreadnaught.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierSummonWatchDreadnaught.prototype.fxResource = [
+  'FX.Modifiers.ModifierSummonWatch',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 ModifierSummonWatchDreadnaught.prototype.validCardIds = null;
 
 module.exports = ModifierSummonWatchDreadnaught;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

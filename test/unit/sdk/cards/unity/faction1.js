@@ -14,13 +14,9 @@ Logger.enabled = false;
 describe('unity', () => {
   describe('faction1', () => {
     beforeEach(() => {
-      const player1Deck = [
-        { id: SDK.Cards.Faction1.General },
-      ];
+      const player1Deck = [{ id: SDK.Cards.Faction1.General }];
 
-      const player2Deck = [
-        { id: SDK.Cards.Faction1.General },
-      ];
+      const player2Deck = [{ id: SDK.Cards.Faction1.General }];
 
       UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
     });
@@ -35,8 +31,17 @@ describe('unity', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
       // make squire, then warblade (won't work)
-      const silverguardSquire1 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.SilverguardSquire }, 1, 1, gameSession.getPlayer1Id());
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.Warblade }));
+      const silverguardSquire1 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.SilverguardSquire },
+        1,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.Warblade,
+        }),
+      );
       const playCardFromHandAction1 = player1.actionPlayCardFromHand(0, 1, 2);
       gameSession.executeAction(playCardFromHandAction1);
       expect(silverguardSquire1.getHP()).to.equal(4);
@@ -44,7 +49,11 @@ describe('unity', () => {
       expect(board.getUnitAtPosition({ x: 1, y: 2 }).getATK()).to.equal(1);
 
       // make second warblade, check everything
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.Warblade }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.Warblade,
+        }),
+      );
       const playCardFromHandAction2 = player1.actionPlayCardFromHand(0, 2, 1);
       gameSession.executeAction(playCardFromHandAction2);
       expect(silverguardSquire1.getHP()).to.equal(5);
@@ -60,13 +69,35 @@ describe('unity', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
       // make squires, tempest the first one, then double both their Health
-      const silverguardSquire1 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.SilverguardSquire }, 1, 1, gameSession.getPlayer1Id());
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.Tempest }));
+      const silverguardSquire1 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.SilverguardSquire },
+        1,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.Tempest,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 0, 0));
-      const silverguardSquire2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.SilverguardSquire }, 1, 2, gameSession.getPlayer1Id());
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.LifeCoil }));
+      const silverguardSquire2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.SilverguardSquire },
+        1,
+        2,
+        gameSession.getPlayer1Id(),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.LifeCoil,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 1, 1));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.LifeCoil }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.LifeCoil,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 1, 2));
       // check if it worked
       expect(silverguardSquire1.getId()).to.equal(SDK.Cards.Faction1.SilverguardSquire);
@@ -82,18 +113,36 @@ describe('unity', () => {
       player1.remainingMana = 9;
 
       // Tempest, give them a brightmoss golem
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.Tempest }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.Tempest,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 0, 0));
-      const brightmossGolem = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.BrightmossGolem }, 6, 2, gameSession.getPlayer2Id());
+      const brightmossGolem = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.BrightmossGolem },
+        6,
+        2,
+        gameSession.getPlayer2Id(),
+      );
 
       // now get the artifact and heal both players once each
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Artifact.GoldVitriol }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Artifact.GoldVitriol,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 1, 1));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.EmeraldRejuvenator }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.EmeraldRejuvenator,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 2);
       gameSession.executeAction(playCardFromHandAction);
       // check the damage
-      const totalDamage = brightmossGolem.getDamage() + gameSession.getGeneralForPlayer2().getDamage();
+      const totalDamage =
+        brightmossGolem.getDamage() + gameSession.getGeneralForPlayer2().getDamage();
       expect(totalDamage).to.equal(4);
     });
 
@@ -103,8 +152,18 @@ describe('unity', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
       // check that buff works near general
-      const warblade = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.Warblade }, 0, 0, gameSession.getPlayer1Id());
-      const solPontiff = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.SolPontiff }, 0, 1, gameSession.getPlayer1Id());
+      const warblade = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.Warblade },
+        0,
+        0,
+        gameSession.getPlayer1Id(),
+      );
+      const solPontiff = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.SolPontiff },
+        0,
+        1,
+        gameSession.getPlayer1Id(),
+      );
       expect(warblade.getATK()).to.equal(3);
       expect(solPontiff.getATK()).to.equal(3);
       // check that buff doesn't with zeal turned off

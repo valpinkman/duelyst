@@ -27,7 +27,8 @@ class ModifierFate extends Modifier {
   static isKeyworded = true;
   static modifierName = 'Trial';
   static description = null;
-  static keywordDefinition = 'Starts locked in your action bar. Complete the Trial to unlock the ability to play this card.';
+  static keywordDefinition =
+    'Starts locked in your action bar. Complete the Trial to unlock the ability to play this card.';
 
   getPrivateDefaults(gameSession) {
     const p = super.getPrivateDefaults(gameSession);
@@ -41,9 +42,23 @@ class ModifierFate extends Modifier {
     const a = actionEvent.action;
 
     if (!this.fateConditionFulfilled()) {
-      if (a instanceof PlayCardFromHandAction && a.getIsValid() && this.getCard().getIsLocatedInHand() && (a.getOwner() === this.getCard().getOwner())) {
-        if (__guard__(this.getCard().getOwner().getDeck().getCardInHandAtIndex(a.indexOfCardInHand), (x) => x.getIndex()) === this.getCard().getIndex()) {
-          return this.invalidateAction(a, this.getCard().getPosition(), 'Cannot be played until the Fate condition is met.');
+      if (
+        a instanceof PlayCardFromHandAction &&
+        a.getIsValid() &&
+        this.getCard().getIsLocatedInHand() &&
+        a.getOwner() === this.getCard().getOwner()
+      ) {
+        if (
+          __guard__(
+            this.getCard().getOwner().getDeck().getCardInHandAtIndex(a.indexOfCardInHand),
+            (x) => x.getIndex(),
+          ) === this.getCard().getIndex()
+        ) {
+          return this.invalidateAction(
+            a,
+            this.getCard().getPosition(),
+            'Cannot be played until the Fate condition is met.',
+          );
         }
       }
     }
@@ -56,18 +71,16 @@ class ModifierFate extends Modifier {
   }
 
   onAction(e) {
-    const {
-      action,
-    } = e;
+    const { action } = e;
     return this.checkFate([action]);
   }
 
   checkFate(actions) {
-    if (!this._private.fateFulfilled && (actions != null)) {
+    if (!this._private.fateFulfilled && actions != null) {
       return (() => {
         const result = [];
         for (var action of Array.from<any>(actions)) {
-          if ((action != null) && action instanceof Action) {
+          if (action != null && action instanceof Action) {
             result.push(this.updateFateCondition(action));
           } else {
             result.push(undefined);
@@ -108,5 +121,5 @@ ModifierFate.prototype.fxResource = ['FX.Modifiers.ModifierFate'];
 module.exports = ModifierFate;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

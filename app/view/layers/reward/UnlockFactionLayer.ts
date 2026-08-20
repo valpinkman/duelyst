@@ -24,7 +24,6 @@ const FXDissolveWithDiscFromCenterSprite = require('../../nodes/fx/FXDissolveWit
  *************************************************************************** */
 
 const UnlockFactionLayer = RewardLayer.extend({
-
   _animationResolve: null,
   _cardNodes: null,
   cardRevealRadiusX: 520,
@@ -56,10 +55,12 @@ const UnlockFactionLayer = RewardLayer.extend({
   },
 
   getRequiredResources() {
-    return RewardLayer.prototype.getRequiredResources.call(this).concat(
-      PKGS.getPkgForIdentifier('unlock_faction'),
-      PKGS.getPkgForIdentifier(PKGS.getFactionInspectPkgIdentifier(this._factionId)),
-    );
+    return RewardLayer.prototype.getRequiredResources
+      .call(this)
+      .concat(
+        PKGS.getPkgForIdentifier('unlock_faction'),
+        PKGS.getPkgForIdentifier(PKGS.getFactionInspectPkgIdentifier(this._factionId)),
+      );
   },
 
   showBackground() {
@@ -67,11 +68,10 @@ const UnlockFactionLayer = RewardLayer.extend({
   },
 
   showContinueNode() {
-    return this.showPressToContinueNode()
-      .then(() => {
-        this.continueNode.setEnabled(false);
-        this.continueNode.setVisible(false);
-      });
+    return this.showPressToContinueNode().then(() => {
+      this.continueNode.setEnabled(false);
+      this.continueNode.setVisible(false);
+    });
   },
 
   onEnter() {
@@ -97,7 +97,9 @@ const UnlockFactionLayer = RewardLayer.extend({
     }
 
     if (this._generalSprite != null) {
-      this._generalSprite.setScale(UtilsEngine.getWindowHeightRelativeNodeScale(this._generalSprite) * 1.9);
+      this._generalSprite.setScale(
+        UtilsEngine.getWindowHeightRelativeNodeScale(this._generalSprite) * 1.9,
+      );
       this._generalSprite.setPosition(0.0, -UtilsEngine.getGSIWinHeight() * 0.2);
     }
   },
@@ -115,7 +117,10 @@ const UnlockFactionLayer = RewardLayer.extend({
     let mouseOverCard = null;
     if (location && this._cardNodes.length > 0) {
       // find card under mouse
-      if (this._mouseOverCard && UtilsEngine.getNodeUnderMouse(this._mouseOverCard, location.x, location.y)) {
+      if (
+        this._mouseOverCard &&
+        UtilsEngine.getNodeUnderMouse(this._mouseOverCard, location.x, location.y)
+      ) {
         mouseOverCard = this._mouseOverCard;
       } else {
         for (let i = 0; i < this._cardNodes.length; i++) {
@@ -179,7 +184,9 @@ const UnlockFactionLayer = RewardLayer.extend({
     return new Promise((resolve, reject) => {
       // show crest
       this._crestNode = new BaseSprite();
-      this._crestNode.setRequiredTextureResource(SDK.FactionFactory.getCrestResourceForFactionId(this._factionId));
+      this._crestNode.setRequiredTextureResource(
+        SDK.FactionFactory.getCrestResourceForFactionId(this._factionId),
+      );
       this._crestNode.setVisible(false);
       this._crestNode.setPosition(0.0, 0.0);
       this.addChild(this._crestNode, this.zOrderCrest);
@@ -198,10 +205,11 @@ const UnlockFactionLayer = RewardLayer.extend({
         fireRingSprite.setAnchorPoint(0.5, 0.5);
         fireRingSprite.setPosition(0.0, 0.0);
         const fireRingContentSize = fireRingSprite.getContentSize();
-        const fireRingScale = Math.max(
-          (crestContentSize.width * crestScale) / fireRingContentSize.width,
-          (crestContentSize.height * crestScale) / fireRingContentSize.height,
-        ) * 2.0;
+        const fireRingScale =
+          Math.max(
+            (crestContentSize.width * crestScale) / fireRingContentSize.width,
+            (crestContentSize.height * crestScale) / fireRingContentSize.height,
+          ) * 2.0;
         fireRingSprite.setScale(fireRingScale);
         fireRingSprite.setVisible(false);
         this.addChild(fireRingSprite, this.zOrderCrest - 1);
@@ -221,47 +229,52 @@ const UnlockFactionLayer = RewardLayer.extend({
         // animate crest in
         this._crestNode.setOpacity(0);
         this._crestNode.setScale(crestScale * 2.0);
-        this._crestNode.runAction(cc.sequence(
-          // pick up
-          cc.spawn(
-            cc.fadeIn(CONFIG.ANIMATE_FAST_DURATION).easing(cc.easeOut(3.0)),
-            cc.scaleTo(CONFIG.ANIMATE_FAST_DURATION, crestScale * 2.5).easing(cc.easeOut(3.0)),
-          ),
-          // slam down
-          cc.spawn(
-            cc.sequence(
-              cc.scaleTo(CONFIG.ANIMATE_FAST_DURATION, crestScale).easing(cc.easeIn(3.0)),
-              cc.callFunc(resolve),
+        this._crestNode.runAction(
+          cc.sequence(
+            // pick up
+            cc.spawn(
+              cc.fadeIn(CONFIG.ANIMATE_FAST_DURATION).easing(cc.easeOut(3.0)),
+              cc.scaleTo(CONFIG.ANIMATE_FAST_DURATION, crestScale * 2.5).easing(cc.easeOut(3.0)),
             ),
-            cc.sequence(
-              cc.delayTime(CONFIG.ANIMATE_FAST_DURATION * 0.75),
-              Shake.create(CONFIG.ANIMATE_FAST_DURATION * 2.0, 5.0),
-            ),
-            cc.sequence(
-              cc.delayTime(CONFIG.ANIMATE_FAST_DURATION * 0.6),
-              cc.spawn(
-                cc.callFunc(() => {
-                  // explosion
-                  explosionParticles.setAutoRemoveOnFinish(true);
-                  explosionParticles.resumeSystem();
-                }),
-                cc.targetedAction(fireRingSprite, cc.sequence(
-                  cc.show(),
-                  cc.spawn(
-                    cc.actionTween(1.0, 'phase', 1.0, 0.0).easing(cc.easeExponentialOut()),
+            // slam down
+            cc.spawn(
+              cc.sequence(
+                cc.scaleTo(CONFIG.ANIMATE_FAST_DURATION, crestScale).easing(cc.easeIn(3.0)),
+                cc.callFunc(resolve),
+              ),
+              cc.sequence(
+                cc.delayTime(CONFIG.ANIMATE_FAST_DURATION * 0.75),
+                Shake.create(CONFIG.ANIMATE_FAST_DURATION * 2.0, 5.0),
+              ),
+              cc.sequence(
+                cc.delayTime(CONFIG.ANIMATE_FAST_DURATION * 0.6),
+                cc.spawn(
+                  cc.callFunc(() => {
+                    // explosion
+                    explosionParticles.setAutoRemoveOnFinish(true);
+                    explosionParticles.resumeSystem();
+                  }),
+                  cc.targetedAction(
+                    fireRingSprite,
                     cc.sequence(
-                      cc.delayTime(1.0 - CONFIG.FADE_MEDIUM_DURATION),
-                      cc.fadeOut(CONFIG.FADE_MEDIUM_DURATION),
+                      cc.show(),
+                      cc.spawn(
+                        cc.actionTween(1.0, 'phase', 1.0, 0.0).easing(cc.easeExponentialOut()),
+                        cc.sequence(
+                          cc.delayTime(1.0 - CONFIG.FADE_MEDIUM_DURATION),
+                          cc.fadeOut(CONFIG.FADE_MEDIUM_DURATION),
+                        ),
+                      ),
+                      cc.callFunc(() => {
+                        fireRingSprite.destroy();
+                      }),
                     ),
                   ),
-                  cc.callFunc(() => {
-                    fireRingSprite.destroy();
-                  }),
-                )),
+                ),
               ),
             ),
           ),
-        ));
+        );
       });
     });
   },
@@ -274,25 +287,47 @@ const UnlockFactionLayer = RewardLayer.extend({
       const factionColorBlack = factionData.gradientColorMapBlack;
 
       // gradient map to faction color
-      this.getFX().showGradientColorMap(this._requestId, CONFIG.ANIMATE_FAST_DURATION, factionColorWhite, factionColorBlack);
+      this.getFX().showGradientColorMap(
+        this._requestId,
+        CONFIG.ANIMATE_FAST_DURATION,
+        factionColorWhite,
+        factionColorBlack,
+      );
 
       // create general
-      const generalId = SDK.FactionFactory.generalIdForFactionByOrder(this._factionId, SDK.FactionFactory.GeneralOrder.Primary);
-      const generalConceptResource = SDK.GameSession.getCardCaches().getCardById(generalId).getConceptResource();
+      const generalId = SDK.FactionFactory.generalIdForFactionByOrder(
+        this._factionId,
+        SDK.FactionFactory.GeneralOrder.Primary,
+      );
+      const generalConceptResource = SDK.GameSession.getCardCaches()
+        .getCardById(generalId)
+        .getConceptResource();
       this._generalSprite = new BaseSprite();
       this._generalSprite.setRequiredTextureResource(generalConceptResource);
       this._generalSprite.setVisible(false);
       this.addChild(this._generalSprite, this.zOrderGeneral);
 
       // create labels
-      this._unlockedLabel = new cc.LabelTTF(i18next.t('new_player_experience.faction_unlocked_title'), RSX.font_regular.name, 25, null, cc.TEXT_ALIGNMENT_CENTER);
+      this._unlockedLabel = new cc.LabelTTF(
+        i18next.t('new_player_experience.faction_unlocked_title'),
+        RSX.font_regular.name,
+        25,
+        null,
+        cc.TEXT_ALIGNMENT_CENTER,
+      );
       this._unlockedLabel.setFontFillColor({ r: 255, g: 255, b: 255 });
       this._unlockedLabel.setPosition(0.0, this.unlockLabelOffsetY - 20.0);
       this._unlockedLabel.setOpacity(0.0);
       this._unlockedLabel.setVisible(false);
       this.addChild(this._unlockedLabel, this.zOrderLabel);
 
-      this._factionNameLabel = new cc.LabelTTF(factionData.name.toUpperCase(), RSX.font_regular.name, 60, null, cc.TEXT_ALIGNMENT_CENTER);
+      this._factionNameLabel = new cc.LabelTTF(
+        factionData.name.toUpperCase(),
+        RSX.font_regular.name,
+        60,
+        null,
+        cc.TEXT_ALIGNMENT_CENTER,
+      );
       this._factionNameLabel.setFontFillColor({ r: 255, g: 255, b: 255 });
       this._factionNameLabel.setPosition(0.0, this.factionNameOffsetY - 20.0);
       this._factionNameLabel.setOpacity(0.0);
@@ -303,49 +338,71 @@ const UnlockFactionLayer = RewardLayer.extend({
         if (!this._generalSprite.getAreResourcesValid(requestId)) return; // resources have been invalidated
         this._generalSprite.setVisible(true);
 
-        this._generalSprite.setScale(UtilsEngine.getWindowHeightRelativeNodeScale(this._generalSprite) * 1.9);
+        this._generalSprite.setScale(
+          UtilsEngine.getWindowHeightRelativeNodeScale(this._generalSprite) * 1.9,
+        );
         this._generalSprite.setPosition(-40.0, -UtilsEngine.getGSIWinHeight() * 0.2);
         this._generalSprite.setTint(new cc.Color(255, 255, 255, 255));
 
         // animate
-        this.runAction(cc.sequence(
-          // fade/tint general
-          cc.targetedAction(this._generalSprite, cc.spawn(
-            cc.show(),
-            cc.moveBy(CONFIG.ANIMATE_FAST_DURATION, cc.p(40.0, 0.0)).easing(cc.easeOut(3.0)),
-            cc.actionTween(CONFIG.ANIMATE_MEDIUM_DURATION, TweenTypes.TINT_FADE, 255.0, 0.0).easing(cc.easeIn(3.0)),
-          )),
-          cc.spawn(
-            // show vignette
-            cc.callFunc(() => {
-              this.showVignetteBackground(CONFIG.ANIMATE_MEDIUM_DURATION, this.zOrderGeneral);
-            }),
-            // darken crest
-            cc.targetedAction(this._crestNode, cc.tintTo(CONFIG.ANIMATE_MEDIUM_DURATION, 127, 127, 127)),
-          ),
-          // show text
-          cc.spawn(
-            cc.callFunc(() => {
-              // play reward audio
-              audio_engine.current().play_effect(RSX.sfx_victory_reward.audio, false);
-            }),
-            cc.targetedAction(this._unlockedLabel, cc.spawn(
-              cc.show(),
-              cc.fadeIn(CONFIG.ANIMATE_FAST_DURATION),
-              cc.moveBy(CONFIG.ANIMATE_FAST_DURATION, cc.p(0.0, 20.0)).easing(cc.easeCubicActionOut()),
-            )),
-            cc.targetedAction(this._factionNameLabel, cc.sequence(
-              cc.delayTime(CONFIG.ANIMATE_FAST_DURATION * 0.5),
+        this.runAction(
+          cc.sequence(
+            // fade/tint general
+            cc.targetedAction(
+              this._generalSprite,
               cc.spawn(
                 cc.show(),
-                cc.fadeIn(CONFIG.ANIMATE_FAST_DURATION),
-                cc.moveBy(CONFIG.ANIMATE_FAST_DURATION, cc.p(0.0, 20.0)).easing(cc.easeCubicActionOut()),
+                cc.moveBy(CONFIG.ANIMATE_FAST_DURATION, cc.p(40.0, 0.0)).easing(cc.easeOut(3.0)),
+                cc
+                  .actionTween(CONFIG.ANIMATE_MEDIUM_DURATION, TweenTypes.TINT_FADE, 255.0, 0.0)
+                  .easing(cc.easeIn(3.0)),
               ),
-            )),
+            ),
+            cc.spawn(
+              // show vignette
+              cc.callFunc(() => {
+                this.showVignetteBackground(CONFIG.ANIMATE_MEDIUM_DURATION, this.zOrderGeneral);
+              }),
+              // darken crest
+              cc.targetedAction(
+                this._crestNode,
+                cc.tintTo(CONFIG.ANIMATE_MEDIUM_DURATION, 127, 127, 127),
+              ),
+            ),
+            // show text
+            cc.spawn(
+              cc.callFunc(() => {
+                // play reward audio
+                audio_engine.current().play_effect(RSX.sfx_victory_reward.audio, false);
+              }),
+              cc.targetedAction(
+                this._unlockedLabel,
+                cc.spawn(
+                  cc.show(),
+                  cc.fadeIn(CONFIG.ANIMATE_FAST_DURATION),
+                  cc
+                    .moveBy(CONFIG.ANIMATE_FAST_DURATION, cc.p(0.0, 20.0))
+                    .easing(cc.easeCubicActionOut()),
+                ),
+              ),
+              cc.targetedAction(
+                this._factionNameLabel,
+                cc.sequence(
+                  cc.delayTime(CONFIG.ANIMATE_FAST_DURATION * 0.5),
+                  cc.spawn(
+                    cc.show(),
+                    cc.fadeIn(CONFIG.ANIMATE_FAST_DURATION),
+                    cc
+                      .moveBy(CONFIG.ANIMATE_FAST_DURATION, cc.p(0.0, 20.0))
+                      .easing(cc.easeCubicActionOut()),
+                  ),
+                ),
+              ),
+            ),
+            // done
+            cc.callFunc(resolve),
           ),
-          // done
-          cc.callFunc(resolve),
-        ));
+        );
       });
     });
   },
@@ -379,13 +436,15 @@ const UnlockFactionLayer = RewardLayer.extend({
           this.cardRevealRadiusY * Math.sin(angle) - this.cardRevealRadiusY * 0.5,
         );
         var delay = 0.4 * i;
-        cardRevealPromises.push(this._showCardMoveAndReveal(
-          card.get('id'),
-          cc.p(0, this.factionNameOffsetY),
-          targetScreenPosition,
-          delay,
-          this.zOrderCard + (il - i),
-        ));
+        cardRevealPromises.push(
+          this._showCardMoveAndReveal(
+            card.get('id'),
+            cc.p(0, this.factionNameOffsetY),
+            targetScreenPosition,
+            delay,
+            this.zOrderCard + (il - i),
+          ),
+        );
       }
       for (var i = 0, il = cardsRight.length; i < il; i++) {
         var card = cardsRight[i];
@@ -395,13 +454,15 @@ const UnlockFactionLayer = RewardLayer.extend({
           this.cardRevealRadiusY * Math.sin(angle) - this.cardRevealRadiusY * 0.5,
         );
         var delay = 0.4 * (i + cardsLeft.length);
-        cardRevealPromises.push(this._showCardMoveAndReveal(
-          card.get('id'),
-          cc.p(0, this.factionNameOffsetY),
-          targetScreenPosition,
-          delay,
-          this.zOrderCard + i,
-        ));
+        cardRevealPromises.push(
+          this._showCardMoveAndReveal(
+            card.get('id'),
+            cc.p(0, this.factionNameOffsetY),
+            targetScreenPosition,
+            delay,
+            this.zOrderCard + i,
+          ),
+        );
       }
 
       Promise.all(cardRevealPromises).then(resolve);
@@ -418,8 +479,12 @@ const UnlockFactionLayer = RewardLayer.extend({
    * @returns {Promise}
    */
   _showCardMoveAndReveal(cardId, sourceScreenPosition, targetScreenPosition, delay, zOrder) {
-    if (delay == null) { delay = 0.0; }
-    if (zOrder == null) { zOrder = this.zOrderCard; }
+    if (delay == null) {
+      delay = 0.0;
+    }
+    if (zOrder == null) {
+      zOrder = this.zOrderCard;
+    }
 
     return new Promise<void>((resolve, reject) => {
       const cardDisc = BaseSprite.create(RSX.booster_glowing_disc.img);
@@ -442,51 +507,52 @@ const UnlockFactionLayer = RewardLayer.extend({
       const zodiacFragmentParticles = cc.ParticleSystem.create(RSX.zodiac_appear_002.plist);
 
       const maxDuration = 2.0;
-      const duration = maxDuration / 2 + maxDuration / 2 * Math.random();
+      const duration = maxDuration / 2 + (maxDuration / 2) * Math.random();
       const delayScaleDown = maxDuration - duration - 1.0;
 
       // move particles
-      particles.runAction(cc.moveTo(duration, targetScreenPosition).easing(cc.easeExponentialOut()));
+      particles.runAction(
+        cc.moveTo(duration, targetScreenPosition).easing(cc.easeExponentialOut()),
+      );
 
       // move disc
-      cardDisc.runAction(cc.sequence(
-        cc.moveTo(duration, targetScreenPosition).easing(cc.easeExponentialOut()),
-        cc.delayTime(delayScaleDown),
-        cc.callFunc(() => {
-          particles.stopSystem();
-        }),
-        cc.scaleTo(0.5, 0.25).easing(cc.easeExponentialOut()),
-        cc.callFunc(() => {
-          const discPosition = cardDisc.getPosition();
+      cardDisc.runAction(
+        cc.sequence(
+          cc.moveTo(duration, targetScreenPosition).easing(cc.easeExponentialOut()),
+          cc.delayTime(delayScaleDown),
+          cc.callFunc(() => {
+            particles.stopSystem();
+          }),
+          cc.scaleTo(0.5, 0.25).easing(cc.easeExponentialOut()),
+          cc.callFunc(() => {
+            const discPosition = cardDisc.getPosition();
 
-          // show zodiac
-          zodiac.setAnchorPoint(0.5, 0.5);
-          zodiac.setPosition(
-            discPosition.x - 40.0,
-            discPosition.y - 40.0,
-          );
-          this.addChild(zodiac, zOrder);
+            // show zodiac
+            zodiac.setAnchorPoint(0.5, 0.5);
+            zodiac.setPosition(discPosition.x - 40.0, discPosition.y - 40.0);
+            this.addChild(zodiac, zOrder);
 
-          zodiacEnergyParticles.setAnchorPoint(0.5, 0.5);
-          zodiacEnergyParticles.setPosition(discPosition);
-          this.addChild(zodiacEnergyParticles, zOrder);
+            zodiacEnergyParticles.setAnchorPoint(0.5, 0.5);
+            zodiacEnergyParticles.setPosition(discPosition);
+            this.addChild(zodiacEnergyParticles, zOrder);
 
-          zodiacFragmentParticles.setAnchorPoint(0.5, 0.5);
-          zodiacFragmentParticles.setPosition(discPosition);
-          this.addChild(zodiacFragmentParticles, zOrder);
-        }),
-        cc.fadeOut(0.1),
-        cc.delayTime(delay),
-        cc.callFunc(() => {
-          // destroy zodiac
-          zodiac.destroy();
+            zodiacFragmentParticles.setAnchorPoint(0.5, 0.5);
+            zodiacFragmentParticles.setPosition(discPosition);
+            this.addChild(zodiacFragmentParticles, zOrder);
+          }),
+          cc.fadeOut(0.1),
+          cc.delayTime(delay),
+          cc.callFunc(() => {
+            // destroy zodiac
+            zodiac.destroy();
 
-          // show card reveal and resolve
-          this._showCardReveal(cardId, targetScreenPosition, zOrder).then(() => {
-            resolve();
-          });
-        }),
-      ));
+            // show card reveal and resolve
+            this._showCardReveal(cardId, targetScreenPosition, zOrder).then(() => {
+              resolve();
+            });
+          }),
+        ),
+      );
     });
   },
 
@@ -498,7 +564,9 @@ const UnlockFactionLayer = RewardLayer.extend({
    * @returns {Promise}
    */
   _showCardReveal(cardId, targetScreenPosition, zOrder) {
-    if (zOrder == null) { zOrder = this.zOrderCard; }
+    if (zOrder == null) {
+      zOrder = this.zOrderCard;
+    }
 
     // create empty card
     const cardNode = CardNode.create();
@@ -511,17 +579,15 @@ const UnlockFactionLayer = RewardLayer.extend({
 
     // show card reveal, then show stack
     const sdkCard = SDK.CardFactory.cardForIdentifier(cardId, SDK.GameSession.getInstance());
-    return cardNode.selectReveal(sdkCard)
-      .then(() => {
-        // show stack if not general
-        if (!(sdkCard instanceof SDK.Entity) || !sdkCard.getIsGeneral()) {
-          cardNode.showStack();
-        }
-      });
+    return cardNode.selectReveal(sdkCard).then(() => {
+      // show stack if not general
+      if (!(sdkCard instanceof SDK.Entity) || !sdkCard.getIsGeneral()) {
+        cardNode.showStack();
+      }
+    });
   },
 
   /* endregion REWARD */
-
 });
 
 UnlockFactionLayer.create = function (factionId, layer) {

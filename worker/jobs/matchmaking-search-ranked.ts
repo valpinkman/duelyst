@@ -51,13 +51,18 @@ const getRequeueParams = function () {
     return Promise.resolve(defaults);
   }
 
-  return Consul.kv.get(`environments/${process.env.NODE_ENV}/matchmaking-params.json`)
+  return Consul.kv
+    .get(`environments/${process.env.NODE_ENV}/matchmaking-params.json`)
     .then(function (v) {
       let params = JSON.parse(v);
       params = _.extend(defaults, params);
       return params;
-    }).catch((error) => // Just return the defaults if polling Consul fails
-      defaults);
+    })
+    .catch(
+      (error) =>
+        // Just return the defaults if polling Consul fails
+        defaults,
+    );
 };
 
 /**
@@ -66,31 +71,33 @@ const getRequeueParams = function () {
  * Logic to update searchRadius, delay, goes here
  * @param  {Object} job    Kue job
  */
-const requeueJob = (job, done) => getRequeueParams()
-  .then(function (params) {
-  // Logger.module("MATCHMAKING-JOB").debug("[#{job.id}] getRequeueParams(): #{JSON.stringify(params)}")
+const requeueJob = (job, done) =>
+  getRequeueParams()
+    .then(function (params) {
+      // Logger.module("MATCHMAKING-JOB").debug("[#{job.id}] getRequeueParams(): #{JSON.stringify(params)}")
 
-    // Each attempt, we incease by parameters stored in Consul
-    job.data.attempt++;
-    job.data.searchRadius += params.searchRadiusIncrease;
-    job.data.delayMs = params.delayMs;
-    job.data.lastAttemptAt = Date.now();
-    const firstMetric = job.data.rank;
-    const secondMetric = job.data.deckValue;
+      // Each attempt, we incease by parameters stored in Consul
+      job.data.attempt++;
+      job.data.searchRadius += params.searchRadiusIncrease;
+      job.data.delayMs = params.delayMs;
+      job.data.lastAttemptAt = Date.now();
+      const firstMetric = job.data.rank;
+      const secondMetric = job.data.deckValue;
 
-    Logger.module('MATCHMAKING-JOB').debug(`[${job.id}] ${job.data.gameType.yellow} - \
+      Logger.module('MATCHMAKING-JOB').debug(`[${job.id}] ${job.data.gameType.yellow} - \
 Search for Game (${job.data.userId}) metric:${job.data.rank}(${firstMetric},${secondMetric}), \
 attempt ${job.data.attempt}, \
 delay ${job.data.delayMs}ms, \
-searchRadius ${job.data.searchRadius}`,
-    );
+searchRadius ${job.data.searchRadius}`);
 
-    // Recreate as new job with updated parameters (and delayed)
-    return Redis.Jobs.enqueue('matchmaking-search-ranked', job.data, {
-      delay: job.data.delayMs,
-      removeOnComplete: true,
-    });
-  }).then(() => done()).catch((error) => done(error));
+      // Recreate as new job with updated parameters (and delayed)
+      return Redis.Jobs.enqueue('matchmaking-search-ranked', job.data, {
+        delay: job.data.delayMs,
+        removeOnComplete: true,
+      });
+    })
+    .then(() => done())
+    .catch((error) => done(error));
 
 /**
  * 'logMatchMade'
@@ -107,17 +114,21 @@ const logMatchMade = function (token1, token2) {
   const rank2 = token2.rank;
   const deckValue1 = token1.deckValue;
   const deckValue2 = token2.deckValue;
-  const division1 = __guard__(RankFactory.rankedDivisionAssetNameForRank(rank1), (x) => x.toLowerCase());
-  const division2 = __guard__(RankFactory.rankedDivisionAssetNameForRank(rank2), (x1) => x1.toLowerCase());
+  const division1 = __guard__(RankFactory.rankedDivisionAssetNameForRank(rank1), (x) =>
+    x.toLowerCase(),
+  );
+  const division2 = __guard__(RankFactory.rankedDivisionAssetNameForRank(rank2), (x1) =>
+    x1.toLowerCase(),
+  );
   rankedQueue.matchMade(division1, waitTime1);
   rankedQueue.matchMade(division2, waitTime2);
 
   // calculate match quality
-  let rankDelta = Math.abs((rank1 - rank2));
+  let rankDelta = Math.abs(rank1 - rank2);
   rankDelta = Math.min(rankDelta, 5);
-  let deckValueDelta = Math.abs((deckValue1 - deckValue2));
+  let deckValueDelta = Math.abs(deckValue1 - deckValue2);
   deckValueDelta = Math.min(deckValueDelta, 5);
-  return matchQuality = 1 - ((rankDelta + deckValueDelta) / 10);
+  return (matchQuality = 1 - (rankDelta + deckValueDelta) / 10);
 };
 
 /**
@@ -135,15 +146,14 @@ var findLockablePlayer = function (players) {
     return null;
   }
 
-  return Redis.TokenManager.lock(players[0])
-    .then(function (unlock) {
-      if (_.isFunction(unlock)) {
-        return { id: players[0], unlock };
-      } else {
-        players = players.slice(1);
-        return findLockablePlayer(players);
-      }
-    });
+  return Redis.TokenManager.lock(players[0]).then(function (unlock) {
+    if (_.isFunction(unlock)) {
+      return { id: players[0], unlock };
+    } else {
+      players = players.slice(1);
+      return findLockablePlayer(players);
+    }
+  });
 };
 
 /**
@@ -165,7 +175,10 @@ const findOpponent = (userId, lastOpponentId, rank, deckValue, attempt, firstAtt
 
       let scoreRadius = Math.floor(attempt * params.searchRadiusIncrease);
       scoreRadius = Math.min(scoreRadius, params.maxRankRadius);
-      let deckValueRadius = (attempt % 6) + Math.floor(attempt / 3) + Math.floor(attempt * params.rankedDeckRadiusIncrease);
+      let deckValueRadius =
+        (attempt % 6) +
+        Math.floor(attempt / 3) +
+        Math.floor(attempt * params.rankedDeckRadiusIncrease);
       deckValueRadius = Math.min(deckValueRadius, params.maxDeckValueRadius);
 
       // start to taper off the deck search radius at rank 20 to 15
@@ -173,7 +186,7 @@ const findOpponent = (userId, lastOpponentId, rank, deckValue, attempt, firstAtt
       const taperEnd = 15;
       if (rank < taperStart) {
         const delta = Math.max(0, rank - taperEnd);
-        const taperVal = 10 - (10 * (delta / (taperStart - taperEnd)));
+        const taperVal = 10 - 10 * (delta / (taperStart - taperEnd));
         // Logger.module("MATCHMAKING-JOB").debug("tapering deck limits by #{taperVal}")
         deckValueRadius = Math.floor(deckValueRadius + taperVal);
       }
@@ -192,14 +205,17 @@ const findOpponent = (userId, lastOpponentId, rank, deckValue, attempt, firstAtt
         rankedQueue.search({ score: rank, searchRadius: scoreRadius }),
         rankedDeckValueQueue.search({ score: deckValue, searchRadius: deckValueRadius }),
       ]);
-    }).then(function ([playersWithinRank, playersWithinDeckValue]) {
+    })
+    .then(function ([playersWithinRank, playersWithinDeckValue]) {
       // exclude the user that's looking
       let rankPlayers = _.filter(playersWithinRank, (id) => id !== userId);
       let deckPlayers = _.filter(playersWithinDeckValue, (id) => id !== userId);
 
       // exclude last opponent
       if (!_chainState.allowMatchWithLastOpponent && lastOpponentId) {
-        Logger.module('MATCHMAKING-JOB').debug(`excluding last opponent ${(lastOpponentId != null ? lastOpponentId.blue : undefined)}`);
+        Logger.module('MATCHMAKING-JOB').debug(
+          `excluding last opponent ${lastOpponentId != null ? lastOpponentId.blue : undefined}`,
+        );
         rankPlayers = _.filter(playersWithinRank, (id) => id !== lastOpponentId);
         deckPlayers = _.filter(playersWithinDeckValue, (id) => id !== lastOpponentId);
       }
@@ -207,7 +223,9 @@ const findOpponent = (userId, lastOpponentId, rank, deckValue, attempt, firstAtt
       // players within both RANK and DECK VALUE
       const players = _.intersection(rankPlayers, deckPlayers);
 
-      Logger.module('MATCHMAKING-JOB').debug(`found ${players.length} potential matches within range`);
+      Logger.module('MATCHMAKING-JOB').debug(
+        `found ${players.length} potential matches within range`,
+      );
       return findLockablePlayer(players);
     });
 };
@@ -233,9 +251,7 @@ module.exports = function (job, done) {
   const firstAttemptAt = (job.data.firstAttemptAt = job.data.firstAttemptAt || Date.now());
   const lastAttemptAt = (job.data.lastAttemptAt = job.data.lastAttemptAt || Date.now());
   job.data.searchRadius = job.data.searchRadius || 0;
-  const {
-    tokenId,
-  } = job.data;
+  const { tokenId } = job.data;
 
   // 1a. check if player *this* player is still in queue, otherwise done()
   // 1b. check if player *this* player is locked by another job, otherwise requeue()
@@ -253,90 +269,131 @@ module.exports = function (job, done) {
   // grab player token
   const playerToken = Redis.TokenManager.get(userId);
 
-  return Promise.all([isQueued, isLocked, playerToken]).then(function ([isQueued, isLocked, playerToken]) {
-    if ((isQueued == null) || (playerToken == null)) {
-      Logger.module('MATCHMAKING-JOB').debug(`[J:${job.id}] player (${userId}) is no longer queued (isQueued:${isQueued})`);
-      return done(); // the player is no longer in queue
-    }
+  return Promise.all([isQueued, isLocked, playerToken])
+    .then(function ([isQueued, isLocked, playerToken]) {
+      if (isQueued == null || playerToken == null) {
+        Logger.module('MATCHMAKING-JOB').debug(
+          `[J:${job.id}] player (${userId}) is no longer queued (isQueued:${isQueued})`,
+        );
+        return done(); // the player is no longer in queue
+      }
 
-    // save rank from player token in the job so the requeue method can use it
-    const rank = (job.data.rank = parseInt(playerToken.rank));
-    const {
-      deckValue,
-    } = job.data;
+      // save rank from player token in the job so the requeue method can use it
+      const rank = (job.data.rank = parseInt(playerToken.rank));
+      const { deckValue } = job.data;
 
-    if (isLocked) {
-      Logger.module('MATCHMAKING-JOB').debug(`[J:${job.id}] player (${userId}) is locked (isLocked:${isLocked})`);
-      return requeueJob(job, done); // the player is 'locked' by another job
-    }
+      if (isLocked) {
+        Logger.module('MATCHMAKING-JOB').debug(
+          `[J:${job.id}] player (${userId}) is locked (isLocked:${isLocked})`,
+        );
+        return requeueJob(job, done); // the player is 'locked' by another job
+      }
 
-    if (playerToken.id !== tokenId) {
-      Logger.module('MATCHMAKING-JOB').debug(`[J:${job.id}] this job's token ${tokenId} is outdated compared to ${playerToken.id}... killing job`);
-      return done(); // looks like this job is for a token that has since been replaced
-    }
+      if (playerToken.id !== tokenId) {
+        Logger.module('MATCHMAKING-JOB').debug(
+          `[J:${job.id}] this job's token ${tokenId} is outdated compared to ${playerToken.id}... killing job`,
+        );
+        return done(); // looks like this job is for a token that has since been replaced
+      }
 
-    return Redis.TokenManager.lock(userId, 1000)
-      .then(function (unlock) {
+      return Redis.TokenManager.lock(userId, 1000).then(function (unlock) {
         if (!_.isFunction(unlock)) {
           Logger.module('MATCHMAKING-JOB').debug(`[J:${job.id}] lock(${userId}) acquire failed!`);
           return requeueJob(job, done);
         } else {
-          Logger.module('MATCHMAKING-JOB').debug(`[J:${job.id}] lock(${userId}) acquired - matchmaking metric ${rank},${deckValue}. Last opponent: ${playerToken.lastOpponentId}.`);
-          return findOpponent(userId, playerToken.lastOpponentId, rank, deckValue, attempt, firstAttemptAt)
-            .then(function (opponent) {
-              const _chainState: Record<string, any> = {};
-              if (!opponent) {
-                // no opponents found, unlock and requeue
-                unlock();
-                return requeueJob(job, done);
-              } else {
-                Logger.module('MATCHMAKING-JOB').debug(`[J:${job.id}] searchQueue(${userId}): ${JSON.stringify(opponent)}`);
+          Logger.module('MATCHMAKING-JOB').debug(
+            `[J:${job.id}] lock(${userId}) acquired - matchmaking metric ${rank},${deckValue}. Last opponent: ${playerToken.lastOpponentId}.`,
+          );
+          return findOpponent(
+            userId,
+            playerToken.lastOpponentId,
+            rank,
+            deckValue,
+            attempt,
+            firstAttemptAt,
+          ).then(function (opponent) {
+            const _chainState: Record<string, any> = {};
+            if (!opponent) {
+              // no opponents found, unlock and requeue
+              unlock();
+              return requeueJob(job, done);
+            } else {
+              Logger.module('MATCHMAKING-JOB').debug(
+                `[J:${job.id}] searchQueue(${userId}): ${JSON.stringify(opponent)}`,
+              );
 
-                return Redis.TokenManager.get(opponent.id)
-                  .then(function (opponentToken) { // TODO: We should validate results
-                    // Logger.module("MATCHMAKING-JOB").debug("[J:#{job.id}] current ids: #{@token1} #{@token2}")
+              return Redis.TokenManager.get(opponent.id)
+                .then(function (opponentToken) {
+                  // TODO: We should validate results
+                  // Logger.module("MATCHMAKING-JOB").debug("[J:#{job.id}] current ids: #{@token1} #{@token2}")
 
-                    _chainState.token1 = playerToken;
-                    _chainState.token2 = opponentToken;
+                  _chainState.token1 = playerToken;
+                  _chainState.token2 = opponentToken;
 
-                    if (!(_chainState.token1 != null ? _chainState.token1.userId : undefined)) {
-                      Logger.module('MATCHMAKING-JOB').error(`[J:${job.id}] searchQueue(${userId}): ERROR: player token has no user id`);
-                      throw new Errors.NotFoundError('player token has no user id');
-                    }
-                    if (!(_chainState.token2 != null ? _chainState.token2.userId : undefined)) {
-                      Logger.module('MATCHMAKING-JOB').error(`[J:${job.id}] searchQueue(${userId}): ERROR: opponent token has no user id`);
-                      throw new Errors.UnexpectedBadDataError('opponent token has no user id');
-                    }
+                  if (!(_chainState.token1 != null ? _chainState.token1.userId : undefined)) {
+                    Logger.module('MATCHMAKING-JOB').error(
+                      `[J:${job.id}] searchQueue(${userId}): ERROR: player token has no user id`,
+                    );
+                    throw new Errors.NotFoundError('player token has no user id');
+                  }
+                  if (!(_chainState.token2 != null ? _chainState.token2.userId : undefined)) {
+                    Logger.module('MATCHMAKING-JOB').error(
+                      `[J:${job.id}] searchQueue(${userId}): ERROR: opponent token has no user id`,
+                    );
+                    throw new Errors.UnexpectedBadDataError('opponent token has no user id');
+                  }
 
-                    return Promise.all([
-                      Redis.TokenManager.remove(_chainState.token1.userId),
-                      Redis.TokenManager.remove(_chainState.token2.userId),
-                      rankedQueue.remove([_chainState.token1.userId, _chainState.token2.userId]),
-                      rankedDeckValueQueue.remove([_chainState.token1.userId, _chainState.token2.userId]),
-                    ]);
-                  }).then(function (results) { // TODO: We should validate results
-                    // mark match made
-                    logMatchMade(_chainState.token1, _chainState.token2);
+                  return Promise.all([
+                    Redis.TokenManager.remove(_chainState.token1.userId),
+                    Redis.TokenManager.remove(_chainState.token2.userId),
+                    rankedQueue.remove([_chainState.token1.userId, _chainState.token2.userId]),
+                    rankedDeckValueQueue.remove([
+                      _chainState.token1.userId,
+                      _chainState.token2.userId,
+                    ]),
+                  ]);
+                })
+                .then(function (results) {
+                  // TODO: We should validate results
+                  // mark match made
+                  logMatchMade(_chainState.token1, _chainState.token2);
 
-                    // log it
-                    Logger.module('MATCHMAKING-JOB').debug(`[J:${job.id}] ${gameType.yellow} - Search for Game (${userId}) done(), matched versus ${_chainState.token2.userId}`);
-                    job.log('Matched versus %s(%s)', _chainState.token2.userId, _chainState.token2.name);
+                  // log it
+                  Logger.module('MATCHMAKING-JOB').debug(
+                    `[J:${job.id}] ${gameType.yellow} - Search for Game (${userId}) done(), matched versus ${_chainState.token2.userId}`,
+                  );
+                  job.log(
+                    'Matched versus %s(%s)',
+                    _chainState.token2.userId,
+                    _chainState.token2.name,
+                  );
 
-                    // Fire off job to setup game between both players
-                    Redis.Jobs.enqueue('matchmaking-setup-game', {
+                  // Fire off job to setup game between both players
+                  Redis.Jobs.enqueue(
+                    'matchmaking-setup-game',
+                    {
                       name: 'Matchmaking Setup Game',
-                      title: util.format('Game :: Setup Game :: %s versus %s', _chainState.token1.name, _chainState.token2.name),
+                      title: util.format(
+                        'Game :: Setup Game :: %s versus %s',
+                        _chainState.token1.name,
+                        _chainState.token2.name,
+                      ),
                       token1: _chainState.token1,
                       token2: _chainState.token2,
                       gameType,
-                    }, { removeOnComplete: true });
+                    },
+                    { removeOnComplete: true },
+                  );
 
-                    // We're done
-                    return done(null, { opponentName: _chainState.token2.name });
-                  })
-                  .catch(onType(Errors.NotFoundError, (error) => done(error)))
-                  .catch(onType(Errors.UnexpectedBadDataError, function (error) {
-                    Logger.module('MATCHMAKING-JOB').debug(`[J:${job.id}] searchQueue(${userId}): removing opponent token ${opponent.id} due to error`);
+                  // We're done
+                  return done(null, { opponentName: _chainState.token2.name });
+                })
+                .catch(onType(Errors.NotFoundError, (error) => done(error)))
+                .catch(
+                  onType(Errors.UnexpectedBadDataError, function (error) {
+                    Logger.module('MATCHMAKING-JOB').debug(
+                      `[J:${job.id}] searchQueue(${userId}): removing opponent token ${opponent.id} due to error`,
+                    );
 
                     // dangling async removal of potentially bad opponent data
                     Redis.TokenManager.remove(opponent.id);
@@ -347,14 +404,16 @@ module.exports = function (job, done) {
                     unlock();
 
                     return requeueJob(job, done);
-                  }));
-              }
-            });
+                  }),
+                );
+            }
+          });
         }
       });
-  }).catch((error) => done(error));
+    })
+    .catch((error) => done(error));
 };
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

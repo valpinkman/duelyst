@@ -24,7 +24,9 @@ class ModifierHealWatchDamageNearbyEnemies extends ModifierHealWatch {
   }
 
   onHealWatch(action) {
-    const entities = this.getGameSession().getBoard().getEnemyEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
+    const entities = this.getGameSession()
+      .getBoard()
+      .getEnemyEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
     return (() => {
       const result = [];
       for (var entity of Array.from<any>(entities)) {
@@ -41,6 +43,9 @@ class ModifierHealWatchDamageNearbyEnemies extends ModifierHealWatch {
 }
 ModifierHealWatchDamageNearbyEnemies.prototype.type = 'ModifierHealWatchDamageNearbyEnemies';
 ModifierHealWatchDamageNearbyEnemies.prototype.damageAmount = 0;
-ModifierHealWatchDamageNearbyEnemies.prototype.fxResource = ['FX.Modifiers.ModifierHealWatch', 'FX.Modifiers.ModifierGenericDamageNearby'];
+ModifierHealWatchDamageNearbyEnemies.prototype.fxResource = [
+  'FX.Modifiers.ModifierHealWatch',
+  'FX.Modifiers.ModifierGenericDamageNearby',
+];
 
 module.exports = ModifierHealWatchDamageNearbyEnemies;

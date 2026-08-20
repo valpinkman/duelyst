@@ -53,7 +53,7 @@ class WartechGeneralFaction4Achievement extends Achievement {
   }
 
   static rewardUnlockMessage(progressMade) {
-    if ((progressMade == null)) {
+    if (progressMade == null) {
       progressMade = 0;
     }
 
@@ -62,12 +62,16 @@ class WartechGeneralFaction4Achievement extends Achievement {
     return `Win ${progressNeeded} more online matches with Abyssian to unlock.`;
   }
 }
-WartechGeneralFaction4Achievement.title = i18next.t('achievements.wartech_general_achievement_title', { faction_name: i18next.t('factions.faction_4_abbreviated_name') });
-WartechGeneralFaction4Achievement.description = i18next.t('achievements.wartech_general_achievement_desc', { faction_name: i18next.t('factions.faction_4_abbreviated_name') });
+WartechGeneralFaction4Achievement.title = i18next.t(
+  'achievements.wartech_general_achievement_title',
+  { faction_name: i18next.t('factions.faction_4_abbreviated_name') },
+);
+WartechGeneralFaction4Achievement.description = i18next.t(
+  'achievements.wartech_general_achievement_desc',
+  { faction_name: i18next.t('factions.faction_4_abbreviated_name') },
+);
 WartechGeneralFaction4Achievement.rewards = {
-  cards: [
-    Cards.Faction4.ThirdGeneral,
-  ],
+  cards: [Cards.Faction4.ThirdGeneral],
 };
 
 module.exports = WartechGeneralFaction4Achievement;

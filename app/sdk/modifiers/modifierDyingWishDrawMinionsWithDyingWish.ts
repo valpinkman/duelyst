@@ -18,7 +18,9 @@ class ModifierDyingWishDrawMinionsWithDyingWish extends ModifierDyingWish {
   static description = 'Draw minions with a Dying Wish';
 
   static createContextObject(numMinions) {
-    if (numMinions == null) { numMinions = 0; }
+    if (numMinions == null) {
+      numMinions = 0;
+    }
     const contextObject = super.createContextObject();
     contextObject.numMinions = numMinions;
     return contextObject;
@@ -30,8 +32,8 @@ class ModifierDyingWishDrawMinionsWithDyingWish extends ModifierDyingWish {
     const gameSession = this.getGameSession();
     if (gameSession.getIsRunningAsAuthoritative()) {
       // calculate minions to draw on the server, since only the server knows contents of both decks
-      let cardIndex; let
-        cardIndicesToDraw;
+      let cardIndex;
+      let cardIndicesToDraw;
       if (!cardIndicesToDraw) {
         cardIndicesToDraw = [];
 
@@ -41,9 +43,12 @@ class ModifierDyingWishDrawMinionsWithDyingWish extends ModifierDyingWish {
         for (let i = 0; i < drawPile.length; i++) {
           cardIndex = drawPile[i];
           var cardAtIndex = gameSession.getCardByIndex(cardIndex);
-          if ((cardAtIndex != null) && (cardAtIndex.getType() === CardType.Unit)) {
+          if (cardAtIndex != null && cardAtIndex.getType() === CardType.Unit) {
             for (var kwClass of Array.from<any>(cardAtIndex.getKeywordClasses())) {
-              if ((kwClass.belongsToKeywordClass(ModifierDyingWish)) && (cardAtIndex.hasModifierClass(ModifierDyingWish))) {
+              if (
+                kwClass.belongsToKeywordClass(ModifierDyingWish) &&
+                cardAtIndex.hasModifierClass(ModifierDyingWish)
+              ) {
                 indexOfMinions.push(i);
                 break;
               }
@@ -52,9 +57,15 @@ class ModifierDyingWishDrawMinionsWithDyingWish extends ModifierDyingWish {
         }
 
         // find X random dying wish minions
-        for (let j = 0, end = this.numMinions, asc = end >= 0; asc ? j < end : j > end; asc ? j++ : j--) {
+        for (
+          let j = 0, end = this.numMinions, asc = end >= 0;
+          asc ? j < end : j > end;
+          asc ? j++ : j--
+        ) {
           if (indexOfMinions.length > 0) {
-            var minionIndexToRemove = this.getGameSession().getRandomIntegerForExecution(indexOfMinions.length);
+            var minionIndexToRemove = this.getGameSession().getRandomIntegerForExecution(
+              indexOfMinions.length,
+            );
             var indexOfCardInDeck = indexOfMinions[minionIndexToRemove];
             indexOfMinions.splice(minionIndexToRemove, 1);
             cardIndicesToDraw.push(drawPile[indexOfCardInDeck]);
@@ -63,11 +74,14 @@ class ModifierDyingWishDrawMinionsWithDyingWish extends ModifierDyingWish {
       }
 
       // put the random minions from deck into hand
-      if (cardIndicesToDraw && (cardIndicesToDraw.length > 0)) {
+      if (cardIndicesToDraw && cardIndicesToDraw.length > 0) {
         return (() => {
           const result = [];
           for (cardIndex of Array.from<any>(cardIndicesToDraw)) {
-            var drawCardAction = this.getGameSession().getPlayerById(this.getCard().getOwnerId()).getDeck().actionDrawCard(cardIndex);
+            var drawCardAction = this.getGameSession()
+              .getPlayerById(this.getCard().getOwnerId())
+              .getDeck()
+              .actionDrawCard(cardIndex);
             result.push(this.getGameSession().executeAction(drawCardAction));
           }
           return result;
@@ -76,7 +90,8 @@ class ModifierDyingWishDrawMinionsWithDyingWish extends ModifierDyingWish {
     }
   }
 }
-ModifierDyingWishDrawMinionsWithDyingWish.prototype.type = 'ModifierDyingWishDrawMinionsWithDyingWish';
+ModifierDyingWishDrawMinionsWithDyingWish.prototype.type =
+  'ModifierDyingWishDrawMinionsWithDyingWish';
 ModifierDyingWishDrawMinionsWithDyingWish.prototype.numMinions = 0;
 
 module.exports = ModifierDyingWishDrawMinionsWithDyingWish;

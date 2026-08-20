@@ -16,11 +16,15 @@ class ModifierOverwatchAttackedBuffSelf extends ModifierOverwatchAttacked {
   static description = 'When this minion is attacked, it gains %X';
 
   static createContextObject(attackBuff, maxHPBuff, options) {
-    if (attackBuff == null) { attackBuff = 0; }
-    if (maxHPBuff == null) { maxHPBuff = 0; }
+    if (attackBuff == null) {
+      attackBuff = 0;
+    }
+    if (maxHPBuff == null) {
+      maxHPBuff = 0;
+    }
     const contextObject = super.createContextObject(options);
     const statsBuff = Modifier.createContextObjectWithAttributeBuffs(attackBuff, maxHPBuff);
-    statsBuff.appliedName = 'Overwatcher\'s Preparation';
+    statsBuff.appliedName = "Overwatcher's Preparation";
     contextObject.modifiersContextObjects = [statsBuff];
     return contextObject;
   }
@@ -28,7 +32,13 @@ class ModifierOverwatchAttackedBuffSelf extends ModifierOverwatchAttacked {
   static getDescription(modifierContextObject) {
     if (modifierContextObject) {
       const subContextObject = modifierContextObject.modifiersContextObjects[0];
-      return this.description.replace(/%X/, Stringifiers.stringifyAttackHealthBuff(subContextObject.attributeBuffs.atk, subContextObject.attributeBuffs.maxHP));
+      return this.description.replace(
+        /%X/,
+        Stringifiers.stringifyAttackHealthBuff(
+          subContextObject.attributeBuffs.atk,
+          subContextObject.attributeBuffs.maxHP,
+        ),
+      );
     }
     return this.description;
   }
@@ -39,7 +49,8 @@ class ModifierOverwatchAttackedBuffSelf extends ModifierOverwatchAttacked {
     if (this.modifiersContextObjects != null) {
       const card = this.getCard();
       return Array.from<any>(this.modifiersContextObjects).map((modifierContextObject) =>
-        this.getGameSession().applyModifierContextObject(modifierContextObject, card));
+        this.getGameSession().applyModifierContextObject(modifierContextObject, card),
+      );
     }
   }
 }

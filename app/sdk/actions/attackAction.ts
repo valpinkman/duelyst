@@ -28,14 +28,17 @@ class AttackAction extends DamageAction {
   getDamageAmount() {
     // attack damage amount is always source's atk value
     const source = this.getSource();
-    if (source != null) { return source.getATK(); } return 0;
+    if (source != null) {
+      return source.getATK();
+    }
+    return 0;
   }
 
   setDamageAmount() {}
   // does nothing for attacks
 
   setIsStrikebackAllowed(isStrikebackAllowed) {
-    return this._private.isStrikebackAllowed = isStrikebackAllowed;
+    return (this._private.isStrikebackAllowed = isStrikebackAllowed);
   }
 
   getIsStrikebackAllowed() {
@@ -48,7 +51,9 @@ class AttackAction extends DamageAction {
     const attacker = this.getSource();
 
     if (attacker != null) {
-      if (!this.getIsImplicit()) { return attacker.setAttacksMade(attacker.getAttacksMade() + 1); }
+      if (!this.getIsImplicit()) {
+        return attacker.setAttacksMade(attacker.getAttacksMade() + 1);
+      }
     }
   }
 }

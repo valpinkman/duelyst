@@ -13,13 +13,9 @@ Logger.enabled = false;
 describe('board', () => {
   beforeEach(() => {
     SDK.GameSession.reset();
-    const player1Deck = [
-      { id: SDK.Cards.Faction1.General },
-    ];
+    const player1Deck = [{ id: SDK.Cards.Faction1.General }];
 
-    const player2Deck = [
-      { id: SDK.Cards.Faction4.General },
-    ];
+    const player2Deck = [{ id: SDK.Cards.Faction4.General }];
 
     UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
 
@@ -73,28 +69,45 @@ describe('board', () => {
   });
 
   it('expect board.getCardAtPosition to find card at 0, 2', () => {
-    expect(SDK.GameSession.getInstance().getBoard().getCardAtPosition({ x: 0, y: 2 }) instanceof SDK.Card).to.equal(true);
+    expect(
+      SDK.GameSession.getInstance().getBoard().getCardAtPosition({ x: 0, y: 2 }) instanceof
+        SDK.Card,
+    ).to.equal(true);
   });
 
   it('expect board.getEntityAtPosition to find entity at 4, 3', () => {
     console.log(SDK.GameSession.getInstance().getBoard().getUnits().length);
-    expect(SDK.GameSession.getInstance().getBoard().getEntityAtPosition({ x: 4, y: 3 }) instanceof SDK.Entity).to.equal(true);
+    expect(
+      SDK.GameSession.getInstance().getBoard().getEntityAtPosition({ x: 4, y: 3 }) instanceof
+        SDK.Entity,
+    ).to.equal(true);
   });
 
   it('expect board.getUnitAtPosition to find unit at 5, 3', () => {
-    expect(SDK.GameSession.getInstance().getBoard().getUnitAtPosition({ x: 5, y: 3 }) instanceof SDK.Unit).to.equal(true);
+    expect(
+      SDK.GameSession.getInstance().getBoard().getUnitAtPosition({ x: 5, y: 3 }) instanceof
+        SDK.Unit,
+    ).to.equal(true);
   });
 
   it('expect board.getEntityAtPosition to find unit and not tile at 8, 2', () => {
-    expect(SDK.GameSession.getInstance().getBoard().getEntityAtPosition({ x: 8, y: 2 }) instanceof SDK.Unit).to.equal(true);
+    expect(
+      SDK.GameSession.getInstance().getBoard().getEntityAtPosition({ x: 8, y: 2 }) instanceof
+        SDK.Unit,
+    ).to.equal(true);
   });
 
   it('expect board.getTileAtPosition to not find tile at 8, 2', () => {
-    expect(SDK.GameSession.getInstance().getBoard().getTileAtPosition({ x: 8, y: 2 }) == null).to.equal(true);
+    expect(
+      SDK.GameSession.getInstance().getBoard().getTileAtPosition({ x: 8, y: 2 }) == null,
+    ).to.equal(true);
   });
 
   it('expect board.getTileAtPosition, allowing untargetable, to find tile at 8, 2', () => {
-    expect(SDK.GameSession.getInstance().getBoard().getTileAtPosition({ x: 8, y: 2 }, true) instanceof SDK.Tile).to.equal(true);
+    expect(
+      SDK.GameSession.getInstance().getBoard().getTileAtPosition({ x: 8, y: 2 }, true) instanceof
+        SDK.Tile,
+    ).to.equal(true);
   });
 
   it('expect board.getCardsAtPosition to find unit but not tile at 8, 2', () => {
@@ -103,7 +116,9 @@ describe('board', () => {
   });
 
   it('expect board.getCardsAtPosition, allowing untargetable, to find unit and tile at 8, 2', () => {
-    const entites = SDK.GameSession.getInstance().getBoard().getCardsAtPosition({ x: 8, y: 2 }, null, true);
+    const entites = SDK.GameSession.getInstance()
+      .getBoard()
+      .getCardsAtPosition({ x: 8, y: 2 }, null, true);
     expect(entites[0] instanceof SDK.Unit && entites[1] instanceof SDK.Tile).to.equal(true);
   });
 
@@ -113,26 +128,38 @@ describe('board', () => {
   });
 
   it('expect board.getEntitiesAtPosition, allowing untargetable, to find unit and tile at 8, 2', () => {
-    const entites = SDK.GameSession.getInstance().getBoard().getEntitiesAtPosition({ x: 8, y: 2 }, true);
+    const entites = SDK.GameSession.getInstance()
+      .getBoard()
+      .getEntitiesAtPosition({ x: 8, y: 2 }, true);
     expect(entites[0] instanceof SDK.Unit && entites[1] instanceof SDK.Tile).to.equal(true);
   });
 
   it('expect board.getObstructionAtPosition to find obstruction at 5, 3', () => {
-    expect(SDK.GameSession.getInstance().getBoard().getObstructionAtPosition({ x: 5, y: 3 }) != null).to.equal(true);
+    expect(
+      SDK.GameSession.getInstance().getBoard().getObstructionAtPosition({ x: 5, y: 3 }) != null,
+    ).to.equal(true);
   });
 
   it('expect board.getObstructionAtPositionForEntity to find obstruction for unit at 3, 1', () => {
     const entity = SDK.GameSession.getInstance().getBoard().getUnitAtPosition({ x: 0, y: 2 });
-    expect(SDK.GameSession.getInstance().getBoard().getObstructionAtPositionForEntity({ x: 3, y: 1 }, entity) != null).to.equal(true);
+    expect(
+      SDK.GameSession.getInstance()
+        .getBoard()
+        .getObstructionAtPositionForEntity({ x: 3, y: 1 }, entity) != null,
+    ).to.equal(true);
   });
 
   it('expect board.getCardsWithinRadiusOfPosition with radius of 1 to find 5 cards at 0, 2', () => {
-    const entites = SDK.GameSession.getInstance().getBoard().getCardsWithinRadiusOfPosition({ x: 0, y: 2 });
+    const entites = SDK.GameSession.getInstance()
+      .getBoard()
+      .getCardsWithinRadiusOfPosition({ x: 0, y: 2 });
     expect(entites.length).to.equal(5);
   });
 
   it('expect board.getCardsWithinRadiusOfPosition with radius of entire board to find 15 cards at 0, 2', () => {
-    const entites = SDK.GameSession.getInstance().getBoard().getCardsWithinRadiusOfPosition({ x: 0, y: 2 }, null, CONFIG.WHOLE_BOARD_RADIUS);
+    const entites = SDK.GameSession.getInstance()
+      .getBoard()
+      .getCardsWithinRadiusOfPosition({ x: 0, y: 2 }, null, CONFIG.WHOLE_BOARD_RADIUS);
     expect(entites.length).to.equal(15);
   });
 
@@ -149,13 +176,17 @@ describe('board', () => {
 
   it('expect board.getFriendlyEntitiesAroundEntity with radius of 1 to find 2 cards at 0, 2', () => {
     const entity = SDK.GameSession.getInstance().getBoard().getUnitAtPosition({ x: 0, y: 2 });
-    const entites = SDK.GameSession.getInstance().getBoard().getFriendlyEntitiesAroundEntity(entity);
+    const entites = SDK.GameSession.getInstance()
+      .getBoard()
+      .getFriendlyEntitiesAroundEntity(entity);
     expect(entites.length).to.equal(2);
   });
 
   it('expect board.getFriendlyEntitiesAroundEntity with radius of entire board to find 7 cards at 0, 2', () => {
     const entity = SDK.GameSession.getInstance().getBoard().getUnitAtPosition({ x: 0, y: 2 });
-    const entites = SDK.GameSession.getInstance().getBoard().getFriendlyEntitiesAroundEntity(entity, null, CONFIG.WHOLE_BOARD_RADIUS);
+    const entites = SDK.GameSession.getInstance()
+      .getBoard()
+      .getFriendlyEntitiesAroundEntity(entity, null, CONFIG.WHOLE_BOARD_RADIUS);
     expect(entites.length).to.equal(7);
   });
 
@@ -167,7 +198,9 @@ describe('board', () => {
 
   it('expect board.getEnemyEntitiesAroundEntity with radius of entire board to find 7 cards at 0, 2', () => {
     const entity = SDK.GameSession.getInstance().getBoard().getUnitAtPosition({ x: 0, y: 2 });
-    const entites = SDK.GameSession.getInstance().getBoard().getEnemyEntitiesAroundEntity(entity, null, CONFIG.WHOLE_BOARD_RADIUS);
+    const entites = SDK.GameSession.getInstance()
+      .getBoard()
+      .getEnemyEntitiesAroundEntity(entity, null, CONFIG.WHOLE_BOARD_RADIUS);
     expect(entites.length).to.equal(7);
   });
 
@@ -195,19 +228,25 @@ describe('board', () => {
 
   it('expect board.getEntitiesOnCardinalAxisFromEntityToPosition to find 2 cards at 0, 2 to 8, 2', () => {
     const entity = SDK.GameSession.getInstance().getBoard().getUnitAtPosition({ x: 0, y: 2 });
-    const entites = SDK.GameSession.getInstance().getBoard().getEntitiesOnCardinalAxisFromEntityToPosition(entity, { x: 8, y: 2 });
+    const entites = SDK.GameSession.getInstance()
+      .getBoard()
+      .getEntitiesOnCardinalAxisFromEntityToPosition(entity, { x: 8, y: 2 });
     expect(entites.length).to.equal(2);
   });
 
   it('expect board.getEntitiesOnCardinalAxisFromEntityToPosition to find 2 cards at 0, 0 to 8, 0', () => {
     const entity = SDK.GameSession.getInstance().getBoard().getUnitAtPosition({ x: 0, y: 0 });
-    const entites = SDK.GameSession.getInstance().getBoard().getEntitiesOnCardinalAxisFromEntityToPosition(entity, { x: 8, y: 0 });
+    const entites = SDK.GameSession.getInstance()
+      .getBoard()
+      .getEntitiesOnCardinalAxisFromEntityToPosition(entity, { x: 8, y: 0 });
     expect(entites.length).to.equal(2);
   });
 
   it('expect board.getEntitiesOnCardinalAxisFromEntityToPosition to find 2 cards at 0, 2 to 0, 0', () => {
     const entity = SDK.GameSession.getInstance().getBoard().getUnitAtPosition({ x: 0, y: 2 });
-    const entites = SDK.GameSession.getInstance().getBoard().getEntitiesOnCardinalAxisFromEntityToPosition(entity, { x: 0, y: 0 });
+    const entites = SDK.GameSession.getInstance()
+      .getBoard()
+      .getEntitiesOnCardinalAxisFromEntityToPosition(entity, { x: 0, y: 0 });
     expect(entites.length).to.equal(2);
   });
 });

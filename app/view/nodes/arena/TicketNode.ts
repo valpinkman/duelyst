@@ -19,7 +19,6 @@ const FXCardShineSprite = require('../fx/FXCardShineSprite');
  *************************************************************************** */
 
 const TicketNode = GlowSprite.extend({
-
   ticketBackgroundSprite: null,
 
   // selectReveal glow outline sprite
@@ -73,7 +72,9 @@ const TicketNode = GlowSprite.extend({
   },
 
   getRequiredResources() {
-    return GlowSprite.prototype.getRequiredResources.call(this).concat(PKGS.getPkgForIdentifier('gauntlet_ticket'));
+    return GlowSprite.prototype.getRequiredResources
+      .call(this)
+      .concat(PKGS.getPkgForIdentifier('gauntlet_ticket'));
   },
 
   /* endregion INITIALIZATION */
@@ -96,12 +97,14 @@ const TicketNode = GlowSprite.extend({
           this._glowMapNode.runAction(cc.fadeIn(duration));
         } else {
           this._glowMapNode.stopAllActions();
-          this._glowMapNode.runAction(cc.sequence(
-            cc.fadeOut(duration),
-            cc.callFunc(() => {
-              this._glowMapNode.setVisible(false);
-            }),
-          ));
+          this._glowMapNode.runAction(
+            cc.sequence(
+              cc.fadeOut(duration),
+              cc.callFunc(() => {
+                this._glowMapNode.setVisible(false);
+              }),
+            ),
+          );
         }
       });
     }
@@ -133,12 +136,14 @@ const TicketNode = GlowSprite.extend({
           this._outlineGlow.runAction(cc.fadeIn(duration));
         } else {
           this._outlineGlow.stopAllActions();
-          this._outlineGlow.runAction(cc.sequence(
-            cc.fadeOut(duration),
-            cc.callFunc(() => {
-              this._outlineGlow.setVisible(false);
-            }),
-          ));
+          this._outlineGlow.runAction(
+            cc.sequence(
+              cc.fadeOut(duration),
+              cc.callFunc(() => {
+                this._outlineGlow.setVisible(false);
+              }),
+            ),
+          );
         }
       });
     }
@@ -186,7 +191,9 @@ const TicketNode = GlowSprite.extend({
     let showDuration = 0.0;
     const revealDuration = CONFIG.FADE_MEDIUM_DURATION;
 
-    if (delayTime == null) { delayTime = 0.0; }
+    if (delayTime == null) {
+      delayTime = 0.0;
+    }
 
     // update showDuration
     showDuration += revealDuration + delayTime;
@@ -207,9 +214,7 @@ const TicketNode = GlowSprite.extend({
       });
       fxFluidPuff.setPosition(centerPosition);
       fxFluidPuff.runAction(
-        cc.sequence(
-          UtilsEngine.getAnimationAction(RSX.fxFluidCardShapePuff.name, false),
-        ),
+        cc.sequence(UtilsEngine.getAnimationAction(RSX.fxFluidCardShapePuff.name, false)),
         cc.fadeOut(0.1),
         cc.callFunc(() => {
           fxFluidPuff.destroy();
@@ -247,12 +252,14 @@ const TicketNode = GlowSprite.extend({
       this._glowMapNode.setVisible(true);
       this._glowMapNode.setOpacity(255.0);
       this._glowMapNode.stopAllActions();
-      this._glowMapNode.runAction(cc.sequence(
-        cc.fadeOut(0.5).easing(cc.easeIn(3.0)),
-        cc.callFunc(() => {
-          this._glowMapNode.setVisible(false);
-        }),
-      ));
+      this._glowMapNode.runAction(
+        cc.sequence(
+          cc.fadeOut(0.5).easing(cc.easeIn(3.0)),
+          cc.callFunc(() => {
+            this._glowMapNode.setVisible(false);
+          }),
+        ),
+      );
 
       // highlight and tint
       this.ticketBackgroundSprite.setLeveled(true);
@@ -262,11 +269,17 @@ const TicketNode = GlowSprite.extend({
       this.ticketBackgroundSprite.setTint(new cc.Color(255, 255, 255, 255));
       const tintAction = cc.sequence(
         cc.delayTime(revealDuration),
-        cc.actionTween(revealDuration / 2.0, TweenTypes.TINT_FADE, 255.0, 0.0).easing(cc.easeOut(3.0)),
+        cc
+          .actionTween(revealDuration / 2.0, TweenTypes.TINT_FADE, 255.0, 0.0)
+          .easing(cc.easeOut(3.0)),
         cc.callFunc(() => {
           this.ticketBackgroundSprite.fadeOutHighlight(revealDuration);
-          this.ticketBackgroundSprite.runAction(cc.actionTween(revealDuration, 'levelsInWhite', 180.0, 255.0));
-          this.ticketBackgroundSprite.runAction(cc.actionTween(revealDuration, 'levelsInBlack', 30.0, 0.0));
+          this.ticketBackgroundSprite.runAction(
+            cc.actionTween(revealDuration, 'levelsInWhite', 180.0, 255.0),
+          );
+          this.ticketBackgroundSprite.runAction(
+            cc.actionTween(revealDuration, 'levelsInBlack', 30.0, 0.0),
+          );
         }),
       );
       tintAction.setTag(CONFIG.TINT_TAG);
@@ -277,7 +290,6 @@ const TicketNode = GlowSprite.extend({
   },
 
   /* endregion REVEAL */
-
 });
 
 TicketNode.create = function (node) {

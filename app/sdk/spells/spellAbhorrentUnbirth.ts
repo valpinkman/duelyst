@@ -48,7 +48,7 @@ class SpellAbhorrentUnbirth extends SpellSpawnEntity {
     const modifierContextObjects = [];
     if (friendlyMinions != null) {
       for (var minion of Array.from<any>(friendlyMinions)) {
-        if ((minion != null) && !minion.hasActiveModifierClass(ModifierInvulnerable)) {
+        if (minion != null && !minion.hasActiveModifierClass(ModifierInvulnerable)) {
           var modifier;
           abomAttack += minion.getATK();
           abomHealth += minion.getHP();
@@ -124,8 +124,11 @@ class SpellAbhorrentUnbirth extends SpellSpawnEntity {
       modifierContextObjects.push(ModifierBackstab.createContextObject(backstabAmount));
     }
 
-    if ((abomAttack > 0) || (abomHealth > 0)) {
-      const statContextObject = Modifier.createContextObjectWithAttributeBuffs(abomAttack, abomHealth);
+    if (abomAttack > 0 || abomHealth > 0) {
+      const statContextObject = Modifier.createContextObjectWithAttributeBuffs(
+        abomAttack,
+        abomHealth,
+      );
       statContextObject.appliedName = this.appliedName;
       modifierContextObjects.push(statContextObject);
     }

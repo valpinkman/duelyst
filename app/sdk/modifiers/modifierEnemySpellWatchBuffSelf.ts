@@ -17,8 +17,12 @@ class ModifierEnemySpellWatchBuffSelf extends ModifierEnemySpellWatch {
   static description = 'Whenever the opponent casts a spell, this minion gains +X/+X';
 
   static createContextObject(attackBuff, maxHPBuff, buffName, options) {
-    if (attackBuff == null) { attackBuff = 0; }
-    if (maxHPBuff == null) { maxHPBuff = 0; }
+    if (attackBuff == null) {
+      attackBuff = 0;
+    }
+    if (maxHPBuff == null) {
+      maxHPBuff = 0;
+    }
     const contextObject = super.createContextObject(options);
     const statsBuff = Modifier.createContextObjectWithAttributeBuffs(attackBuff, maxHPBuff);
     statsBuff.appliedName = buffName;
@@ -27,11 +31,17 @@ class ModifierEnemySpellWatchBuffSelf extends ModifierEnemySpellWatch {
   }
 
   onEnemySpellWatch(action) {
-    return this.applyManagedModifiersFromModifiersContextObjects(this.modifiersContextObjects, this.getCard());
+    return this.applyManagedModifiersFromModifiersContextObjects(
+      this.modifiersContextObjects,
+      this.getCard(),
+    );
   }
 }
 ModifierEnemySpellWatchBuffSelf.prototype.type = 'ModifierEnemySpellWatchBuffSelf';
-ModifierEnemySpellWatchBuffSelf.prototype.fxResource = ['FX.Modifiers.ModifierSpellWatch', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierEnemySpellWatchBuffSelf.prototype.fxResource = [
+  'FX.Modifiers.ModifierSpellWatch',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 ModifierEnemySpellWatchBuffSelf.prototype.statsBuff = null;
 
 module.exports = ModifierEnemySpellWatchBuffSelf;

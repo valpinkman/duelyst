@@ -20,7 +20,9 @@ class ModifierDealDamageWatchModifyTarget extends ModifierDealDamageWatch {
   static description = 'Whenever this minion damages an enemy minion, %X';
 
   static createContextObject(modifiersContextObjects, description, options) {
-    if (description == null) { description = ''; }
+    if (description == null) {
+      description = '';
+    }
     const contextObject = super.createContextObject(options);
     contextObject.modifiersContextObjects = modifiersContextObjects;
     contextObject.description = description;
@@ -36,15 +38,25 @@ class ModifierDealDamageWatchModifyTarget extends ModifierDealDamageWatch {
 
   onDealDamage(action) {
     const target = action.getTarget();
-    if ((target != null) && (target.getOwnerId() !== this.getCard().getOwnerId()) && CardType.getIsEntityCardType(target.getType()) && !target.getIsGeneral()) { // don't fire when we hit a General, only when we hit a minion
+    if (
+      target != null &&
+      target.getOwnerId() !== this.getCard().getOwnerId() &&
+      CardType.getIsEntityCardType(target.getType()) &&
+      !target.getIsGeneral()
+    ) {
+      // don't fire when we hit a General, only when we hit a minion
       if (this.modifiersContextObjects != null) {
         return Array.from<any>(this.modifiersContextObjects).map((modifierContextObject) =>
-          this.getGameSession().applyModifierContextObject(modifierContextObject, target));
+          this.getGameSession().applyModifierContextObject(modifierContextObject, target),
+        );
       }
     }
   }
 }
 ModifierDealDamageWatchModifyTarget.prototype.type = 'ModifierDealDamageWatchModifyTarget';
-ModifierDealDamageWatchModifyTarget.prototype.fxResource = ['FX.Modifiers.ModifierDealDamageWatch', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierDealDamageWatchModifyTarget.prototype.fxResource = [
+  'FX.Modifiers.ModifierDealDamageWatch',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 
 module.exports = ModifierDealDamageWatchModifyTarget;

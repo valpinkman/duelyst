@@ -18,7 +18,6 @@ const CausticPrismaticGlowSprite = require('../fx/CausticPrismaticGlowSprite');
  ************************************************************************** */
 
 const ArtifactNode = SdkNode.extend({
-
   cardSprite: null,
   _fxHitSprite: null,
   _fxBreakSprite: null,
@@ -95,7 +94,10 @@ const ArtifactNode = SdkNode.extend({
   },
 
   setDurability(val) {
-    this.durability = this._durabilityTarget = Math.max(0, Math.min(val || 0, CONFIG.MAX_ARTIFACT_DURABILITY));
+    this.durability = this._durabilityTarget = Math.max(
+      0,
+      Math.min(val || 0, CONFIG.MAX_ARTIFACT_DURABILITY),
+    );
 
     if (this.sdkCard != null) {
       // show durability sprites up to max durability
@@ -145,7 +147,7 @@ const ArtifactNode = SdkNode.extend({
       const numDurabilitySprites = this._durabilitySprites.length;
       const { durabilityOnLeft } = this;
       const x = durabilityOnLeft ? 0.0 : contentSize.width;
-      let y = (contentSize.height - (durabilitySpriteHeight * numDurabilitySprites)) * 0.5 + 8.0;
+      let y = (contentSize.height - durabilitySpriteHeight * numDurabilitySprites) * 0.5 + 8.0;
       for (let i = 0; i < numDurabilitySprites; i++) {
         const durabilitySprite = this._durabilitySprites[i];
         durabilitySprite.setPosition(x + (durabilityOnLeft ? -8.0 : 8.0), y);
@@ -198,9 +200,12 @@ const ArtifactNode = SdkNode.extend({
 
         // card options
         const cardOptions = _.extend({}, sdkCard.getCardOptions());
-        cardOptions.spriteIdentifier = sdkCard.getBaseAnimResource() && sdkCard.getBaseAnimResource().idle;
+        cardOptions.spriteIdentifier =
+          sdkCard.getBaseAnimResource() && sdkCard.getBaseAnimResource().idle;
         cardOptions.antiAlias = false;
-        if (cardOptions.scale == null) { cardOptions.scale = CONFIG.SCALE; }
+        if (cardOptions.scale == null) {
+          cardOptions.scale = CONFIG.SCALE;
+        }
 
         this.whenResourcesReady(this.getCardResourceRequestId()).then((cardResourceRequestId) => {
           if (!this.getAreResourcesValid(cardResourceRequestId)) return; // card has changed
@@ -230,7 +235,10 @@ const ArtifactNode = SdkNode.extend({
           this._fxBreakSprite.setPosition(cardSpritePosition);
         });
 
-        if (!CONFIG.SHOW_PRISMATIC_ONLY_ON_INSPECT && SDK.Cards.getIsPrismaticCardId(this.sdkCard.getId())) {
+        if (
+          !CONFIG.SHOW_PRISMATIC_ONLY_ON_INSPECT &&
+          SDK.Cards.getIsPrismaticCardId(this.sdkCard.getId())
+        ) {
           this.showPrismatic();
         }
 
@@ -326,7 +334,11 @@ const ArtifactNode = SdkNode.extend({
     if (this.highlighted !== highlighted) {
       this.highlighted = highlighted;
 
-      if (CONFIG.SHOW_PRISMATIC_ONLY_ON_INSPECT && this.sdkCard != null && SDK.Cards.getIsPrismaticCardId(this.sdkCard.getId())) {
+      if (
+        CONFIG.SHOW_PRISMATIC_ONLY_ON_INSPECT &&
+        this.sdkCard != null &&
+        SDK.Cards.getIsPrismaticCardId(this.sdkCard.getId())
+      ) {
         if (this.highlighted) {
           this.showPrismatic();
         } else {
@@ -409,7 +421,9 @@ const ArtifactNode = SdkNode.extend({
    */
   showApply(sdkCard, showDelay, completionCallback) {
     const showDuration = 0.0;
-    if (showDelay == null) { showDelay = 0.0; }
+    if (showDelay == null) {
+      showDelay = 0.0;
+    }
 
     if (sdkCard != null) {
       // stop any running animations
@@ -437,7 +451,9 @@ const ArtifactNode = SdkNode.extend({
    */
   showRemove(showDelay, completionCallback) {
     let showDuration = 0.0;
-    if (showDelay == null) { showDelay = 0.0; }
+    if (showDelay == null) {
+      showDelay = 0.0;
+    }
     if (!this.getIsEmpty()) {
       // stop any running animations
       this.stopAnimations();
@@ -468,7 +484,9 @@ const ArtifactNode = SdkNode.extend({
       this._fxBreakSprite.runAction(fxAnimationAction);
 
       // get resources ready promise
-      const whenCardResourcesReadyPromise = this.whenResourcesReady(this.getCardResourceRequestId());
+      const whenCardResourcesReadyPromise = this.whenResourcesReady(
+        this.getCardResourceRequestId(),
+      );
 
       // create remove action
       this._showRemoveAction = cc.sequence(
@@ -505,7 +523,9 @@ const ArtifactNode = SdkNode.extend({
    */
   showDurabilityChange(durabilityChange, showDelay, completionCallback) {
     let showDuration = 0.0;
-    if (showDelay == null) { showDelay = 0.0; }
+    if (showDelay == null) {
+      showDelay = 0.0;
+    }
 
     if (durabilityChange !== 0 && !this.getIsEmpty()) {
       // set durability to current durability target
@@ -573,7 +593,6 @@ const ArtifactNode = SdkNode.extend({
   },
 
   /* endregion DURABILITY CHANGE */
-
 });
 
 ArtifactNode.create = function (sdkCard, node) {

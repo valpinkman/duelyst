@@ -14,7 +14,6 @@ var Storage = require('app/common/storage');
 var Template = require('./templates/watch_game_item.hbs');
 
 var WatchGameItemView = Backbone.Marionette.ItemView.extend({
-
   className: 'watch-game-item',
   template: Template,
   events: {
@@ -46,29 +45,41 @@ var WatchGameItemView = Backbone.Marionette.ItemView.extend({
     }
 
     // setup all unit animations
-    this.whenRequiredResourcesReady().then(function (requestId) {
-      if (!this.getAreResourcesValid(requestId)) return; // resources invalidated
+    this.whenRequiredResourcesReady().then(
+      function (requestId) {
+        if (!this.getAreResourcesValid(requestId)) return; // resources invalidated
 
-      this.ui.$keyUnits.each(function (i, el) {
-        var $el = $(el);
-        var cardId = $el.data('card-id');
-        var cardModel = GameDataManager.getInstance().getCardModelById(cardId);
-        var card = cardModel.get('card');
-        if (card != null) {
-          // show card sprite
-          var animResource = card.getAnimResource();
-          if (animResource != null) {
-            var spriteData = null;
-            if (card instanceof SDK.Unit) {
-              spriteData = UtilsUI.getCocosSpriteData(animResource.breathing);
-            } else {
-              spriteData = UtilsUI.getCocosSpriteData(animResource.idle);
+        this.ui.$keyUnits.each(function (i, el) {
+          var $el = $(el);
+          var cardId = $el.data('card-id');
+          var cardModel = GameDataManager.getInstance().getCardModelById(cardId);
+          var card = cardModel.get('card');
+          if (card != null) {
+            // show card sprite
+            var animResource = card.getAnimResource();
+            if (animResource != null) {
+              var spriteData = null;
+              if (card instanceof SDK.Unit) {
+                spriteData = UtilsUI.getCocosSpriteData(animResource.breathing);
+              } else {
+                spriteData = UtilsUI.getCocosSpriteData(animResource.idle);
+              }
+              UtilsUI.showCocosSprite(
+                $('.sprite', el),
+                null,
+                spriteData,
+                null,
+                false,
+                cardModel.get('card'),
+                null,
+                null,
+                1.0,
+              );
             }
-            UtilsUI.showCocosSprite($('.sprite', el), null, spriteData, null, false, cardModel.get('card'), null, null, 1.0);
           }
-        }
-      });
-    }.bind(this));
+        });
+      }.bind(this),
+    );
   },
 
   /* region RESOURCES */
@@ -97,11 +108,13 @@ var WatchGameItemView = Backbone.Marionette.ItemView.extend({
     this.$el.css('opacity', 0.0);
 
     // reveal when resources loaded
-    this.whenRequiredResourcesReady().then(function (requestId) {
-      if (!this.getAreResourcesValid(requestId)) return; // resources invalidated
+    this.whenRequiredResourcesReady().then(
+      function (requestId) {
+        if (!this.getAreResourcesValid(requestId)) return; // resources invalidated
 
-      Animations.fadeZoomUpIn.call(this, duration, delay, 0, 0, 0.9);
-    }.bind(this));
+        Animations.fadeZoomUpIn.call(this, duration, delay, 0, 0, 0.9);
+      }.bind(this),
+    );
   },
 
   onClickWatch: function (e) {
@@ -116,13 +129,17 @@ var WatchGameItemView = Backbone.Marionette.ItemView.extend({
       Storage.set('watched_game_ids', readItems);
     }
 
-    Analytics.track('watched replay', {
-      category: Analytics.EventCategory.Watch,
-      division_id: this.model.get('division'),
-      game_id: this.model.get('id'),
-    }, {
-      labelKey: 'division',
-    });
+    Analytics.track(
+      'watched replay',
+      {
+        category: Analytics.EventCategory.Watch,
+        division_id: this.model.get('division'),
+        game_id: this.model.get('id'),
+      },
+      {
+        labelKey: 'division',
+      },
+    );
 
     EventBus.getInstance().trigger(EVENTS.start_replay, {
       gameId: this.model.get('id'),
@@ -130,7 +147,6 @@ var WatchGameItemView = Backbone.Marionette.ItemView.extend({
       promotedDivisionName: this.model.get('division'),
     });
   },
-
 });
 
 module.exports = WatchGameItemView;

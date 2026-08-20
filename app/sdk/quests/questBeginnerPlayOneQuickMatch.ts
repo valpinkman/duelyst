@@ -12,14 +12,22 @@ class QuestBeginnerPlayOneQuickMatch extends QuestBeginner {
   static Identifier = 9903;
 
   constructor() {
-    super(QuestBeginnerPlayOneQuickMatch.Identifier, 'Into the Fray', [QuestType.Beginner], QuestBeginnerPlayOneQuickMatch.prototype.goldReward);
+    super(
+      QuestBeginnerPlayOneQuickMatch.Identifier,
+      'Into the Fray',
+      [QuestType.Beginner],
+      QuestBeginnerPlayOneQuickMatch.prototype.goldReward,
+    );
     this.params.completionProgress = 1;
   }
 
   _progressForGameDataForPlayerId(gameData, playerId) {
     for (var player of Array.from<any>(gameData.players)) {
-      var playerSetupData = UtilsGameSession.getPlayerSetupDataForPlayerId(gameData, player.playerId);
-      if ((player.playerId === playerId) && (gameData.gameType === GameType.Casual)) {
+      var playerSetupData = UtilsGameSession.getPlayerSetupDataForPlayerId(
+        gameData,
+        player.playerId,
+      );
+      if (player.playerId === playerId && gameData.gameType === GameType.Casual) {
         return 1;
       }
     }

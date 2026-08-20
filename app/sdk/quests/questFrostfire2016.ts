@@ -31,11 +31,14 @@ class QuestFrostfire2016 extends Quest {
   }
 
   isAvailableOn(momentUtc) {
-    return momentUtc.isAfter(moment.utc('2016-12-01')) && momentUtc.isBefore(moment.utc('2017-01-01'));
+    return (
+      momentUtc.isAfter(moment.utc('2016-12-01')) && momentUtc.isBefore(moment.utc('2017-01-01'))
+    );
   }
 }
 QuestFrostfire2016.prototype.isReplaceable = false;
 QuestFrostfire2016.prototype.giftChests = [GiftCrateLookup.Frostfire2016];
-QuestFrostfire2016.prototype.rewardDetails = 'Gift Box contains: Saberspine Tiger Skin, 100 Gold, 1 Rare Crate Key.';
+QuestFrostfire2016.prototype.rewardDetails =
+  'Gift Box contains: Saberspine Tiger Skin, 100 Gold, 1 Rare Crate Key.';
 
 module.exports = QuestFrostfire2016;

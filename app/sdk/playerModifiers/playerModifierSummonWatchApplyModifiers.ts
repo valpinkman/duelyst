@@ -26,7 +26,8 @@ class PlayerModifierSummonWatchApplyModifiers extends PlayerModifierSummonWatch 
     const entity = action.getTarget();
     if (entity != null) {
       return Array.from<any>(this.modifiersContextObjects).map((modifierContextObject) =>
-        this.getGameSession().applyModifierContextObject(modifierContextObject, entity));
+        this.getGameSession().applyModifierContextObject(modifierContextObject, entity),
+      );
     }
   }
 }

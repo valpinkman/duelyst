@@ -71,7 +71,6 @@ SdkActionInterface.prototype = {
   getSdkStepInterface() {
     return this._sdkStepInterface;
   },
-
 };
 
 module.exports = SdkActionInterface;

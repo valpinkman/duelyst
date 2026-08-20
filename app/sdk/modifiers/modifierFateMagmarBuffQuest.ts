@@ -36,7 +36,7 @@ class ModifierFateMagmarBuffQuest extends ModifierFate {
   }
 
   getNumBuffSpells() {
-    if ((this._private.buffSpellActionIndices == null)) {
+    if (this._private.buffSpellActionIndices == null) {
       this._private.buffSpellActionIndices = [];
       this.checkFate(this.getGameSession().filterActions(this.getIsActionRelevant.bind(this)));
     }
@@ -66,11 +66,28 @@ class ModifierFateMagmarBuffQuest extends ModifierFate {
 
   getIsActionRelevant(action) {
     if (action.getOwnerId() === this.getOwnerId()) {
-      if ((action.getRootAction() instanceof PlayCardFromHandAction || action.getRootAction() instanceof PlaySignatureCardAction) && (__guard__(action.getRootAction().getCard(), (x) => x.type) === CardType.Spell)) {
-        if (action instanceof ApplyModifierAction && action.getModifier().getBuffsAttribute('atk') && !__guardMethod__(action.getTarget(), 'getIsGeneral', (o) => o.getIsGeneral())) {
+      if (
+        (action.getRootAction() instanceof PlayCardFromHandAction ||
+          action.getRootAction() instanceof PlaySignatureCardAction) &&
+        __guard__(action.getRootAction().getCard(), (x) => x.type) === CardType.Spell
+      ) {
+        if (
+          action instanceof ApplyModifierAction &&
+          action.getModifier().getBuffsAttribute('atk') &&
+          !__guardMethod__(action.getTarget(), 'getIsGeneral', (o) => o.getIsGeneral())
+        ) {
           const modifier = action.getModifier();
-          if (modifier.getBuffsAttribute('atk') && (modifier.attributeBuffs.atk > 0) && !modifier.getRebasesAttribute('atk') && !modifier.getBuffsAttributeAbsolutely('atk')) {
-            if (__guard__(action.getTarget().getAppliedToBoardByAction(), (x1) => x1.getRootAction()) !== action.getRootAction()) {
+          if (
+            modifier.getBuffsAttribute('atk') &&
+            modifier.attributeBuffs.atk > 0 &&
+            !modifier.getRebasesAttribute('atk') &&
+            !modifier.getBuffsAttributeAbsolutely('atk')
+          ) {
+            if (
+              __guard__(action.getTarget().getAppliedToBoardByAction(), (x1) =>
+                x1.getRootAction(),
+              ) !== action.getRootAction()
+            ) {
               return true;
             }
           }
@@ -92,13 +109,17 @@ class ModifierFateMagmarBuffQuest extends ModifierFate {
     const general = this.getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
     if (general.hasActiveModifierClass(ModifierQuestStatusMagmar)) {
       return Array.from<any>(general.getModifiersByClass(ModifierQuestStatusMagmar)).map((mod) =>
-        this.getGameSession().removeModifier(mod));
+        this.getGameSession().removeModifier(mod),
+      );
     }
   }
 
   applyQuestStatusModifier(questCompleted) {
     const general = this.getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
-    const countModifier = ModifierQuestStatusMagmar.createContextObject(questCompleted, this.getNumBuffSpells().length);
+    const countModifier = ModifierQuestStatusMagmar.createContextObject(
+      questCompleted,
+      this.getNumBuffSpells().length,
+    );
     return this.getGameSession().applyModifierContextObject(countModifier, general);
   }
 }
@@ -108,7 +129,7 @@ ModifierFateMagmarBuffQuest.prototype.attackBuffCount = 1;
 module.exports = ModifierFateMagmarBuffQuest;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }
 function __guardMethod__(obj, methodName, transform) {
   if (typeof obj !== 'undefined' && obj !== null && typeof obj[methodName] === 'function') {

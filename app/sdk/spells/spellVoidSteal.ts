@@ -15,9 +15,13 @@ class SpellVoidSteal extends SpellApplyModifiers {
     // then apply friendly modifier to friendly units nearby the target
     return (() => {
       const result = [];
-      for (var unit of Array.from<any>(this.getGameSession().getBoard().getCardsAroundPosition({ x, y }, CardType.Unit, 1))) {
-        if (!unit.getIsGeneral() && (unit.getOwnerId() === this.getOwnerId())) {
-          result.push(this.getGameSession().applyModifierContextObject(this.allyBuffContextObject, unit));
+      for (var unit of Array.from<any>(
+        this.getGameSession().getBoard().getCardsAroundPosition({ x, y }, CardType.Unit, 1),
+      )) {
+        if (!unit.getIsGeneral() && unit.getOwnerId() === this.getOwnerId()) {
+          result.push(
+            this.getGameSession().applyModifierContextObject(this.allyBuffContextObject, unit),
+          );
         } else {
           result.push(undefined);
         }

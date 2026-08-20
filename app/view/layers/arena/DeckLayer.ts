@@ -22,7 +22,6 @@ const UnitNode = require('../../nodes/cards/UnitNode');
  *************************************************************************** */
 
 const DeckLayer = BaseLayer.extend({
-
   cards: null,
   cardCounts: null,
   _cardNodes: null,
@@ -79,11 +78,14 @@ const DeckLayer = BaseLayer.extend({
     this._cardNodesOffsetMax = this._cardNodesOffsetMin;
     if (this._cardNodesTotalHeight > verticalSize) {
       // can scroll
-      this._cardNodesOffsetMax += (this._cardNodesTotalHeight - verticalSize);
+      this._cardNodesOffsetMax += this._cardNodesTotalHeight - verticalSize;
     }
 
     // clamp offset as needed
-    this._cardNodesOffset = Math.min(this._cardNodesOffsetMax, Math.max(this._cardNodesOffsetMin, this._cardNodesOffset));
+    this._cardNodesOffset = Math.min(
+      this._cardNodesOffsetMax,
+      Math.max(this._cardNodesOffsetMin, this._cardNodesOffset),
+    );
   },
 
   _updateCardNodesPositions() {
@@ -125,7 +127,10 @@ const DeckLayer = BaseLayer.extend({
     }
     const delta = event && event.getWheelDeltaY();
     if (delta) {
-      this._cardNodesOffset = Math.min(this._cardNodesOffsetMax, Math.max(this._cardNodesOffsetMin, this._cardNodesOffset + delta));
+      this._cardNodesOffset = Math.min(
+        this._cardNodesOffsetMax,
+        Math.max(this._cardNodesOffsetMin, this._cardNodesOffset + delta),
+      );
       this._updateCardNodesPositions();
     }
   },
@@ -159,11 +164,7 @@ const DeckLayer = BaseLayer.extend({
       // update preview
       if (this._currentlyHighlightedCardNode == null) {
         // no card, just hide preview
-        const fadeAction = cc.sequence(
-          cc.delayTime(0.1),
-          cc.fadeOut(0.1),
-          cc.hide(),
-        );
+        const fadeAction = cc.sequence(cc.delayTime(0.1), cc.fadeOut(0.1), cc.hide());
         this._cardPreviewNode.addAnimationAction(fadeAction);
         this._cardPreviewNode.runAction(fadeAction);
       } else {
@@ -175,7 +176,10 @@ const DeckLayer = BaseLayer.extend({
 
         // set y position
         const cardContentSize = this._cardPreviewNode.getCardContentSize();
-        const y = UtilsEngine.getGSINodeScreenPosition(this._currentlyHighlightedCardNode).y + this._currentlyHighlightedCardNode.getContentSize().height * 0.5 - this.getPositionY();
+        const y =
+          UtilsEngine.getGSINodeScreenPosition(this._currentlyHighlightedCardNode).y +
+          this._currentlyHighlightedCardNode.getContentSize().height * 0.5 -
+          this.getPositionY();
 
         // make sure card doesn't go outside screen
         const top = UtilsEngine.getGSIWinHeight() - cardContentSize.height * 0.5;
@@ -267,7 +271,7 @@ const DeckLayer = BaseLayer.extend({
     Logger.module('ENGINE').log('DeckLayer -> addCard', cardId);
 
     // update count
-    const count = this.cardCounts[cardId] = (this.cardCounts[cardId] || 0) + 1;
+    const count = (this.cardCounts[cardId] = (this.cardCounts[cardId] || 0) + 1);
 
     // try to find card node
     let cardNode = _.find(this._cardNodes, (cardNode) => {
@@ -314,7 +318,6 @@ const DeckLayer = BaseLayer.extend({
   },
 
   /* endregion DECK STATE */
-
 });
 
 DeckLayer.create = function (layer) {

@@ -39,19 +39,28 @@ class SpellAmbush extends SpellSpawnEntity {
     const infiltratePattern = [];
 
     if (this.isOwnedByPlayer1()) {
-      enemySideStartX = Math.floor(((enemySideEndX - enemySideStartX) * 0.5) + 1);
+      enemySideStartX = Math.floor((enemySideEndX - enemySideStartX) * 0.5 + 1);
     } else if (this.isOwnedByPlayer2()) {
-      enemySideEndX = Math.floor(((enemySideEndX - enemySideStartX) * 0.5) - 1);
+      enemySideEndX = Math.floor((enemySideEndX - enemySideStartX) * 0.5 - 1);
     }
 
-    for (position of Array.from<any>(this.getGameSession().getBoard().getUnobstructedPositionsForEntity(this.getEntityToSpawn()))) {
-      if ((position.x >= enemySideStartX) && (position.x <= enemySideEndX)) {
+    for (position of Array.from<any>(
+      this.getGameSession().getBoard().getUnobstructedPositionsForEntity(this.getEntityToSpawn()),
+    )) {
+      if (position.x >= enemySideStartX && position.x <= enemySideEndX) {
         infiltratePattern.push(position);
       }
     }
 
     const card = this.getEntityToSpawn();
-    const applyEffectPositions = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(this.getGameSession(), { x: 0, y: 0 }, infiltratePattern, card, this, 4);
+    const applyEffectPositions = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(
+      this.getGameSession(),
+      { x: 0, y: 0 },
+      infiltratePattern,
+      card,
+      this,
+      4,
+    );
 
     return applyEffectPositions;
   }

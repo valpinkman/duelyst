@@ -55,8 +55,14 @@ const flattenIntentsForFollowups = function (intents) {
   for (let i = 0, il = intents.length; i < il; i++) {
     const intentObj = intents[i];
     intentsWithFollowups.push(intentObj);
-    if (intentObj.type === CardIntentType.Followup && intentObj.followups != null && intentObj.followups.length > 0) {
-      intentsWithFollowups = intentsWithFollowups.concat(flattenIntentsForFollowups(intentObj.followups));
+    if (
+      intentObj.type === CardIntentType.Followup &&
+      intentObj.followups != null &&
+      intentObj.followups.length > 0
+    ) {
+      intentsWithFollowups = intentsWithFollowups.concat(
+        flattenIntentsForFollowups(intentObj.followups),
+      );
     }
   }
   return intentsWithFollowups;
@@ -105,7 +111,12 @@ CardIntent.getIntentsByIntentType = function (cardId, intentType, includeFollowu
   return cardIntentsByIntentType;
 };
 
-CardIntent.getIntentsByIntentTypeWithExactTargetType = function (cardId, intentType, targetType, includeFollowups) {
+CardIntent.getIntentsByIntentTypeWithExactTargetType = function (
+  cardId,
+  intentType,
+  targetType,
+  includeFollowups,
+) {
   const cardIntentsByIntentType = [];
   const cardIntents = CardIntent.getIntentsByCardId(cardId, includeFollowups);
   if (cardIntents && cardIntents.length > 0) {
@@ -119,13 +130,21 @@ CardIntent.getIntentsByIntentTypeWithExactTargetType = function (cardId, intentT
   return cardIntentsByIntentType;
 };
 
-CardIntent.getIntentsByIntentTypeWithPartialTargetType = function (cardId, intentType, targetType, includeFollowups) {
+CardIntent.getIntentsByIntentTypeWithPartialTargetType = function (
+  cardId,
+  intentType,
+  targetType,
+  includeFollowups,
+) {
   const cardIntentsByIntentType = [];
   const cardIntents = CardIntent.getIntentsByCardId(cardId, includeFollowups);
   if (cardIntents && cardIntents.length > 0) {
     for (let i = 0, il = cardIntents.length; i < il; i++) {
       const intentObj = cardIntents[i];
-      if (intentObj.type === intentType && CardIntent.getPartialBitmaskMatch(intentObj.targets, targetType.value)) {
+      if (
+        intentObj.type === intentType &&
+        CardIntent.getPartialBitmaskMatch(intentObj.targets, targetType.value)
+      ) {
         cardIntentsByIntentType.push(intentObj);
       }
     }
@@ -146,7 +165,12 @@ CardIntent.getHasIntentType = function (cardId, intentType, includeFollowups) {
   return false;
 };
 
-CardIntent.getHasIntentTypeWithExactTargetType = function (cardId, intentType, targetType, includeFollowups) {
+CardIntent.getHasIntentTypeWithExactTargetType = function (
+  cardId,
+  intentType,
+  targetType,
+  includeFollowups,
+) {
   const cardIntents = CardIntent.getIntentsByCardId(cardId, includeFollowups);
   if (cardIntents && cardIntents.length > 0) {
     for (let i = 0, il = cardIntents.length; i < il; i++) {
@@ -159,12 +183,20 @@ CardIntent.getHasIntentTypeWithExactTargetType = function (cardId, intentType, t
   return false;
 };
 
-CardIntent.getHasIntentTypeWithPartialTargetType = function (cardId, intentType, targetType, includeFollowups) {
+CardIntent.getHasIntentTypeWithPartialTargetType = function (
+  cardId,
+  intentType,
+  targetType,
+  includeFollowups,
+) {
   const cardIntents = CardIntent.getIntentsByCardId(cardId, includeFollowups);
   if (cardIntents && cardIntents.length > 0) {
     for (let i = 0, il = cardIntents.length; i < il; i++) {
       const intentObj = cardIntents[i];
-      if (intentObj.type === intentType && CardIntent.getPartialBitmaskMatch(intentObj.targets, targetType.value)) {
+      if (
+        intentObj.type === intentType &&
+        CardIntent.getPartialBitmaskMatch(intentObj.targets, targetType.value)
+      ) {
         return true;
       }
     }
@@ -172,12 +204,21 @@ CardIntent.getHasIntentTypeWithPartialTargetType = function (cardId, intentType,
   return false;
 };
 
-CardIntent.getHasIntentTypeWithExactPhaseType = function (cardId, intentType, phaseType, includeFollowups) {
+CardIntent.getHasIntentTypeWithExactPhaseType = function (
+  cardId,
+  intentType,
+  phaseType,
+  includeFollowups,
+) {
   const cardIntents = CardIntent.getIntentsByCardId(cardId, includeFollowups);
   if (cardIntents && cardIntents.length > 0) {
     for (let i = 0, il = cardIntents.length; i < il; i++) {
       const intentObj = cardIntents[i];
-      if (intentObj.type === intentType && intentObj.phase != null && intentObj.phase === phaseType) {
+      if (
+        intentObj.type === intentType &&
+        intentObj.phase != null &&
+        intentObj.phase === phaseType
+      ) {
         return true;
       }
     }
@@ -185,12 +226,21 @@ CardIntent.getHasIntentTypeWithExactPhaseType = function (cardId, intentType, ph
   return false;
 };
 
-CardIntent.getHasIntentTypeWithPartialPhaseType = function (cardId, intentType, phaseType, includeFollowups) {
+CardIntent.getHasIntentTypeWithPartialPhaseType = function (
+  cardId,
+  intentType,
+  phaseType,
+  includeFollowups,
+) {
   const cardIntents = CardIntent.getIntentsByCardId(cardId, includeFollowups);
   if (cardIntents && cardIntents.length > 0) {
     for (let i = 0, il = cardIntents.length; i < il; i++) {
       const intentObj = cardIntents[i];
-      if (intentObj.type === intentType && intentObj.phase != null && CardIntent.getPartialBitmaskMatch(intentObj.phase, phaseType.value)) {
+      if (
+        intentObj.type === intentType &&
+        intentObj.phase != null &&
+        CardIntent.getPartialBitmaskMatch(intentObj.phase, phaseType.value)
+      ) {
         return true;
       }
     }
@@ -291,7 +341,10 @@ CardIntent.getIntentsByPartialPhaseType = function (cardId, phaseType, includeFo
   if (cardIntents && cardIntents.length > 0) {
     for (let i = 0, il = cardIntents.length; i < il; i++) {
       const intentObj = cardIntents[i];
-      if (intentObj.phase != null && CardIntent.getPartialBitmaskMatch(intentObj.phase, phaseType.value)) {
+      if (
+        intentObj.phase != null &&
+        CardIntent.getPartialBitmaskMatch(intentObj.phase, phaseType.value)
+      ) {
         cardIntentsByPhase.push(intentObj);
       }
     }
@@ -317,7 +370,10 @@ CardIntent.getHasPartialPhaseType = function (cardId, phaseType, includeFollowup
   if (cardIntents && cardIntents.length > 0) {
     for (let i = 0, il = cardIntents.length; i < il; i++) {
       const intentObj = cardIntents[i];
-      if (intentObj.phase != null && CardIntent.getPartialBitmaskMatch(intentObj.phase, phaseType.value)) {
+      if (
+        intentObj.phase != null &&
+        CardIntent.getPartialBitmaskMatch(intentObj.phase, phaseType.value)
+      ) {
         return true;
       }
     }
@@ -330,10 +386,14 @@ CardIntent.getHasWatchPhaseType = function (cardId, includeFollowups) {
   if (cardIntents && cardIntents.length > 0) {
     for (let i = 0, il = cardIntents.length; i < il; i++) {
       const intentObj = cardIntents[i];
-      if (intentObj.phase != null
-        && !(CardIntent.getPartialBitmaskMatch(intentObj.phase, CardPhaseType.Now.value)
-          || CardIntent.getPartialBitmaskMatch(intentObj.phase, CardPhaseType.EndTurn.value)
-          || CardIntent.getPartialBitmaskMatch(intentObj.phase, CardPhaseType.StartTurn.value))) {
+      if (
+        intentObj.phase != null &&
+        !(
+          CardIntent.getPartialBitmaskMatch(intentObj.phase, CardPhaseType.Now.value) ||
+          CardIntent.getPartialBitmaskMatch(intentObj.phase, CardPhaseType.EndTurn.value) ||
+          CardIntent.getPartialBitmaskMatch(intentObj.phase, CardPhaseType.StartTurn.value)
+        )
+      ) {
         return true;
       }
     }
@@ -369,14 +429,20 @@ CardIntent.getIsCardTargetedByCardWithIntent = function (card, intent, targetCar
     const gameSession = card.getGameSession();
 
     // step 1: filter friendly/enemy
-    isTargeted = (CardIntent.getPartialBitmaskMatch(targetType, CardTargetType.Friendly.value) && targetCard.getIsSameTeamAs(gameSession.getGeneralForPlayerId(ownerId)))
-      || (CardIntent.getPartialBitmaskMatch(targetType, CardTargetType.Enemy.value) && !targetCard.getIsSameTeamAs(gameSession.getGeneralForPlayerId(ownerId)));
+    isTargeted =
+      (CardIntent.getPartialBitmaskMatch(targetType, CardTargetType.Friendly.value) &&
+        targetCard.getIsSameTeamAs(gameSession.getGeneralForPlayerId(ownerId))) ||
+      (CardIntent.getPartialBitmaskMatch(targetType, CardTargetType.Enemy.value) &&
+        !targetCard.getIsSameTeamAs(gameSession.getGeneralForPlayerId(ownerId)));
 
     if (isTargeted) {
       // step 2: filter minion/general/spell/artifact
       if (targetCard instanceof Unit) {
-        isTargeted = (CardIntent.getPartialBitmaskMatch(targetType, CardTargetType.Minion.value) && !targetCard.getIsGeneral())
-          || (CardIntent.getPartialBitmaskMatch(targetType, CardTargetType.General.value) && targetCard.getIsGeneral());
+        isTargeted =
+          (CardIntent.getPartialBitmaskMatch(targetType, CardTargetType.Minion.value) &&
+            !targetCard.getIsGeneral()) ||
+          (CardIntent.getPartialBitmaskMatch(targetType, CardTargetType.General.value) &&
+            targetCard.getIsGeneral());
       } else if (targetCard instanceof Tile) {
         isTargeted = CardIntent.getPartialBitmaskMatch(targetType, CardTargetType.Tile.value);
       } else if (targetCard instanceof Spell) {
@@ -654,7 +720,9 @@ CardIntent.getCardsTargetedByCardWithIntent = function (card, intent, targetPosi
     // case: targets all on enemy's side
 
     // get all units on enemy's side
-    cards = cards.concat(board.getEntitiesOnEntityStartingSide(gameSession.getGeneralForOpponentOfPlayerId(ownerId)));
+    cards = cards.concat(
+      board.getEntitiesOnEntityStartingSide(gameSession.getGeneralForOpponentOfPlayerId(ownerId)),
+    );
     // console.log(cards);
 
     // remove minions
@@ -721,8 +789,10 @@ CardIntent.getCardsTargetedByCardWithIntent = function (card, intent, targetPosi
         }
       }
     }
-  } else if (CardIntent.getPartialBitmaskMatch(targetType, CardTargetType.General.value)
-    && !(CardIntent.getPartialBitmaskMatch(targetType, CardTargetType.Minion.value))) {
+  } else if (
+    CardIntent.getPartialBitmaskMatch(targetType, CardTargetType.General.value) &&
+    !CardIntent.getPartialBitmaskMatch(targetType, CardTargetType.Minion.value)
+  ) {
     // case: only targets generals
 
     // add opponent general of target
@@ -755,7 +825,10 @@ CardIntent.getCardsTargetedByCardWithIntent = function (card, intent, targetPosi
     cards.push(card);
   } else if (CardIntent.getPartialBitmaskMatch(targetType, CardTargetType.Dead.value)) {
     // case: targets dead units
-    const forFriendly = CardIntent.getPartialBitmaskMatch(targetType, CardTargetType.Friendly.value);
+    const forFriendly = CardIntent.getPartialBitmaskMatch(
+      targetType,
+      CardTargetType.Friendly.value,
+    );
     const forEnemy = CardIntent.getPartialBitmaskMatch(targetType, CardTargetType.Enemy.value);
     let forPlayerId;
     if (forFriendly && forEnemy) {
@@ -767,8 +840,14 @@ CardIntent.getCardsTargetedByCardWithIntent = function (card, intent, targetPosi
     }
 
     // search until last turn filter
-    const untilFriendly = CardIntent.getPartialBitmaskMatch(targetType, CardTargetType.DeadUntilLastFriendlyTurn.value);
-    const untilEnemy = CardIntent.getPartialBitmaskMatch(targetType, CardTargetType.DeadUntilLastEnemyTurn.value);
+    const untilFriendly = CardIntent.getPartialBitmaskMatch(
+      targetType,
+      CardTargetType.DeadUntilLastFriendlyTurn.value,
+    );
+    const untilEnemy = CardIntent.getPartialBitmaskMatch(
+      targetType,
+      CardTargetType.DeadUntilLastEnemyTurn.value,
+    );
     let searchUntilLastTurnForPlayerId;
     if (untilFriendly && untilEnemy) {
       searchUntilLastTurnForPlayerId = null;
@@ -781,7 +860,10 @@ CardIntent.getCardsTargetedByCardWithIntent = function (card, intent, targetPosi
     cards = cards.concat(gameSession.getDeadUnits(forPlayerId, searchUntilLastTurnForPlayerId));
   } else if (CardIntent.getPartialBitmaskMatch(targetType, CardTargetType.Played.value)) {
     // case: targets played spells/artifacts
-    const forFriendly = CardIntent.getPartialBitmaskMatch(targetType, CardTargetType.Friendly.value);
+    const forFriendly = CardIntent.getPartialBitmaskMatch(
+      targetType,
+      CardTargetType.Friendly.value,
+    );
     const forEnemy = CardIntent.getPartialBitmaskMatch(targetType, CardTargetType.Enemy.value);
     let forPlayerId;
     if (forFriendly && forEnemy) {

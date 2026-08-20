@@ -96,7 +96,9 @@ class CardFactory_FirstWatchSet_Faction2 {
       card.maxHP = 4;
       card.manaCost = 4;
       card.rarityId = Rarity.Common;
-      card.setInherentModifiersContextObjects([ModifierMyMoveWatchAnyReasonDamageNearbyEnemyMinions.createContextObject(2)]);
+      card.setInherentModifiersContextObjects([
+        ModifierMyMoveWatchAnyReasonDamageNearbyEnemyMinions.createContextObject(2),
+      ]);
     }
 
     if (identifier === Cards.Faction2.ScrollBandit) {
@@ -131,7 +133,10 @@ class CardFactory_FirstWatchSet_Faction2 {
       card.manaCost = 2;
       card.rarityId = Rarity.Epic;
       card.raceId = Races.Arcanyst;
-      card.setInherentModifiersContextObjects([ModifierBackstab.createContextObject(1), ModifierBackstabWatchStealSpellFromDeck.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierBackstab.createContextObject(1),
+        ModifierBackstabWatchStealSpellFromDeck.createContextObject(),
+      ]);
     }
 
     if (identifier === Cards.Faction2.EternityPainter) {
@@ -165,7 +170,11 @@ class CardFactory_FirstWatchSet_Faction2 {
       card.maxHP = 4;
       card.manaCost = 6;
       card.rarityId = Rarity.Legendary;
-      card.setInherentModifiersContextObjects([ModifierEndTurnWatchTransformNearbyEnemies.createContextObject({ id: Cards.Faction2.OnyxBear })]);
+      card.setInherentModifiersContextObjects([
+        ModifierEndTurnWatchTransformNearbyEnemies.createContextObject({
+          id: Cards.Faction2.OnyxBear,
+        }),
+      ]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
     }
 
@@ -181,8 +190,12 @@ class CardFactory_FirstWatchSet_Faction2 {
       card.durability = 3;
       const speedBuffContextObject = Modifier.createContextObjectOnBoard();
       speedBuffContextObject.attributeBuffs = { speed: 1 };
-      speedBuffContextObject.appliedName = i18next.t('cards.faction_2_artifact_unbounded_energy_amulet_name');
-      speedBuffContextObject.appliedDescription = i18next.t('modifiers.faction_2_artifact_unbounded_energy_amulet_1');
+      speedBuffContextObject.appliedName = i18next.t(
+        'cards.faction_2_artifact_unbounded_energy_amulet_name',
+      );
+      speedBuffContextObject.appliedDescription = i18next.t(
+        'modifiers.faction_2_artifact_unbounded_energy_amulet_1',
+      );
       card.setTargetModifiersContextObjects([
         Modifier.createContextObjectWithAttributeBuffs(1, undefined, {
           name: i18next.t('cards.faction_2_artifact_unbounded_energy_amulet_name'),
@@ -287,9 +300,19 @@ class CardFactory_FirstWatchSet_Faction2 {
       card.manaCost = 3;
       card.rarityId = Rarity.Common;
       sentinelData = { id: Cards.Faction2.SonghaiSentinel };
-      if (sentinelData.additionalModifiersContextObjects == null) { sentinelData.additionalModifiersContextObjects = []; }
-      sentinelData.additionalModifiersContextObjects.push(ModifierSentinelOpponentSummonDamageIt.createContextObject('transform and deal 2 damage to the minion that transformed it.', { id: Cards.Faction2.HundredHand }, 2));
-      card.setInherentModifiersContextObjects([ModifierSentinelSetup.createContextObject(sentinelData)]);
+      if (sentinelData.additionalModifiersContextObjects == null) {
+        sentinelData.additionalModifiersContextObjects = [];
+      }
+      sentinelData.additionalModifiersContextObjects.push(
+        ModifierSentinelOpponentSummonDamageIt.createContextObject(
+          'transform and deal 2 damage to the minion that transformed it.',
+          { id: Cards.Faction2.HundredHand },
+          2,
+        ),
+      );
+      card.setInherentModifiersContextObjects([
+        ModifierSentinelSetup.createContextObject(sentinelData),
+      ]);
       card.addKeywordClassToInclude(ModifierSentinel);
       card.addKeywordClassToInclude(ModifierTokenCreator);
     }
@@ -326,9 +349,19 @@ class CardFactory_FirstWatchSet_Faction2 {
       card.manaCost = 3;
       card.rarityId = Rarity.Rare;
       sentinelData = { id: Cards.Faction2.SonghaiSentinel };
-      if (sentinelData.additionalModifiersContextObjects == null) { sentinelData.additionalModifiersContextObjects = []; }
-      sentinelData.additionalModifiersContextObjects.push(ModifierSentinelOpponentGeneralAttack.createContextObject('transform.', { id: Cards.Faction2.Mizuchi }));
-      card.setInherentModifiersContextObjects([ModifierBackstab.createContextObject(2), ModifierFlying.createContextObject(), ModifierSentinelSetup.createContextObject(sentinelData)]);
+      if (sentinelData.additionalModifiersContextObjects == null) {
+        sentinelData.additionalModifiersContextObjects = [];
+      }
+      sentinelData.additionalModifiersContextObjects.push(
+        ModifierSentinelOpponentGeneralAttack.createContextObject('transform.', {
+          id: Cards.Faction2.Mizuchi,
+        }),
+      );
+      card.setInherentModifiersContextObjects([
+        ModifierBackstab.createContextObject(2),
+        ModifierFlying.createContextObject(),
+        ModifierSentinelSetup.createContextObject(sentinelData),
+      ]);
       card.addKeywordClassToInclude(ModifierSentinel);
       card.addKeywordClassToInclude(ModifierTokenCreator);
     }
@@ -364,9 +397,18 @@ class CardFactory_FirstWatchSet_Faction2 {
       card.maxHP = 2;
       card.manaCost = 3;
       sentinelData = { id: Cards.Faction2.SonghaiSentinel };
-      if (sentinelData.additionalModifiersContextObjects == null) { sentinelData.additionalModifiersContextObjects = []; }
-      sentinelData.additionalModifiersContextObjects.push(ModifierSentinelOpponentSpellCast.createContextObject('transform.', { id: Cards.Faction2.MindCageOni }));
-      card.setInherentModifiersContextObjects([ModifierEnemySpellWatchCopySpell.createContextObject(), ModifierSentinelSetup.createContextObject(sentinelData)]);
+      if (sentinelData.additionalModifiersContextObjects == null) {
+        sentinelData.additionalModifiersContextObjects = [];
+      }
+      sentinelData.additionalModifiersContextObjects.push(
+        ModifierSentinelOpponentSpellCast.createContextObject('transform.', {
+          id: Cards.Faction2.MindCageOni,
+        }),
+      );
+      card.setInherentModifiersContextObjects([
+        ModifierEnemySpellWatchCopySpell.createContextObject(),
+        ModifierSentinelSetup.createContextObject(sentinelData),
+      ]);
       card.rarityId = Rarity.Rare;
       card.addKeywordClassToInclude(ModifierSentinel);
       card.addKeywordClassToInclude(ModifierTokenCreator);

@@ -46,10 +46,7 @@ class BeginnerVetruvianChallenge5 extends Challenge {
   }
 
   getOpponentPlayerDeckData(gameSession) {
-    return [
-      { id: Cards.Faction6.General },
-      { id: Cards.TutorialSpell.TutorialFireOrb },
-    ];
+    return [{ id: Cards.Faction6.General }, { id: Cards.TutorialSpell.TutorialFireOrb }];
   }
 
   setupBoard(gameSession) {
@@ -76,24 +73,37 @@ class BeginnerVetruvianChallenge5 extends Challenge {
   setupOpponentAgent(gameSession) {
     super.setupOpponentAgent(gameSession);
 
-    this._opponentAgent.addActionForTurn(0, AgentActions.createAgentSoftActionShowInstructionLabels([{
-      label: i18next.t('challenges.beginner_vetruvian_5_taunt'),
-      isSpeech: true,
-      isPersistent: true,
-      yPosition: 0.6,
-      isOpponent: true,
-    },
-    ]));
-    return this._opponentAgent.addActionForTurn(0, AgentActions.createAgentActionPlayCardFindPosition(0, () => [GameSession.getInstance().getGeneralForPlayer1().getPosition()]));
+    this._opponentAgent.addActionForTurn(
+      0,
+      AgentActions.createAgentSoftActionShowInstructionLabels([
+        {
+          label: i18next.t('challenges.beginner_vetruvian_5_taunt'),
+          isSpeech: true,
+          isPersistent: true,
+          yPosition: 0.6,
+          isOpponent: true,
+        },
+      ]),
+    );
+    return this._opponentAgent.addActionForTurn(
+      0,
+      AgentActions.createAgentActionPlayCardFindPosition(0, () => [
+        GameSession.getInstance().getGeneralForPlayer1().getPosition(),
+      ]),
+    );
   }
 }
 BeginnerVetruvianChallenge5.prototype.type = 'BeginnerVetruvianChallenge5';
 BeginnerVetruvianChallenge5.prototype.categoryType = ChallengeCategory.starter.type;
 BeginnerVetruvianChallenge5.prototype.name = i18next.t('challenges.beginner_vetruvian_5_title');
-BeginnerVetruvianChallenge5.prototype.description = i18next.t('challenges.beginner_vetruvian_5_description');
+BeginnerVetruvianChallenge5.prototype.description = i18next.t(
+  'challenges.beginner_vetruvian_5_description',
+);
 BeginnerVetruvianChallenge5.prototype.iconUrl = RSX.speech_portrait_vetruvian.img;
 BeginnerVetruvianChallenge5.prototype._musicOverride = RSX.music_battlemap_vetruv.audio;
-BeginnerVetruvianChallenge5.prototype.otkChallengeStartMessage = i18next.t('challenges.beginner_vetruvian_5_start');
+BeginnerVetruvianChallenge5.prototype.otkChallengeStartMessage = i18next.t(
+  'challenges.beginner_vetruvian_5_start',
+);
 BeginnerVetruvianChallenge5.prototype.otkChallengeFailureMessages = [
   i18next.t('challenges.beginner_vetruvian_5_fail'),
 ];

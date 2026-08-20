@@ -18,8 +18,12 @@ class ModifierOpeningGambitRemoveCardsFromDecksByCost extends ModifierOpeningGam
   static type = 'ModifierOpeningGambitRemoveCardsFromDecksByCost';
 
   static createContextObject(manaCost, affectMyDeck, affectOppDeck, options) {
-    if (affectMyDeck == null) { affectMyDeck = true; }
-    if (affectOppDeck == null) { affectOppDeck = true; }
+    if (affectMyDeck == null) {
+      affectMyDeck = true;
+    }
+    if (affectOppDeck == null) {
+      affectOppDeck = true;
+    }
     const contextObject = super.createContextObject();
     contextObject.manaCost = manaCost;
     contextObject.affectMyDeck = affectMyDeck;
@@ -30,30 +34,48 @@ class ModifierOpeningGambitRemoveCardsFromDecksByCost extends ModifierOpeningGam
 
   onOpeningGambit() {
     if (this.manaCost != null) {
-      let cardAtIndex; let cardIndex; let i; let
-        removeCardFromDeckAction;
+      let cardAtIndex;
+      let cardIndex;
+      let i;
+      let removeCardFromDeckAction;
       if (this.affectMyDeck) {
         const myDrawPile = this.getOwner().getDeck().getDrawPile();
         for (i = 0; i < myDrawPile.length; i++) {
           cardIndex = myDrawPile[i];
           cardAtIndex = this.getGameSession().getCardByIndex(cardIndex);
-          if (((cardAtIndex != null ? cardAtIndex.getManaCost() : undefined) <= this.manaCost) && (cardAtIndex.getType() === CardType.Unit)) {
-            removeCardFromDeckAction = new RemoveCardFromDeckAction(this.getGameSession(), cardAtIndex.getIndex(), this.getOwner().getPlayerId());
+          if (
+            (cardAtIndex != null ? cardAtIndex.getManaCost() : undefined) <= this.manaCost &&
+            cardAtIndex.getType() === CardType.Unit
+          ) {
+            removeCardFromDeckAction = new RemoveCardFromDeckAction(
+              this.getGameSession(),
+              cardAtIndex.getIndex(),
+              this.getOwner().getPlayerId(),
+            );
             this.getGameSession().executeAction(removeCardFromDeckAction);
           }
         }
       }
 
       if (this.affectOppDeck) {
-        const opponent = this.getGameSession().getOpponentPlayerOfPlayerId(this.getCard().getOwnerId());
+        const opponent = this.getGameSession().getOpponentPlayerOfPlayerId(
+          this.getCard().getOwnerId(),
+        );
         const opponentDrawPile = opponent.getDeck().getDrawPile();
         return (() => {
           const result = [];
           for (i = 0; i < opponentDrawPile.length; i++) {
             cardIndex = opponentDrawPile[i];
             cardAtIndex = this.getGameSession().getCardByIndex(cardIndex);
-            if (((cardAtIndex != null ? cardAtIndex.getManaCost() : undefined) <= this.manaCost) && (cardAtIndex.getType() === CardType.Unit)) {
-              removeCardFromDeckAction = new RemoveCardFromDeckAction(this.getGameSession(), cardAtIndex.getIndex(), opponent.getPlayerId());
+            if (
+              (cardAtIndex != null ? cardAtIndex.getManaCost() : undefined) <= this.manaCost &&
+              cardAtIndex.getType() === CardType.Unit
+            ) {
+              removeCardFromDeckAction = new RemoveCardFromDeckAction(
+                this.getGameSession(),
+                cardAtIndex.getIndex(),
+                opponent.getPlayerId(),
+              );
               result.push(this.getGameSession().executeAction(removeCardFromDeckAction));
             } else {
               result.push(undefined);
@@ -65,7 +87,8 @@ class ModifierOpeningGambitRemoveCardsFromDecksByCost extends ModifierOpeningGam
     }
   }
 }
-ModifierOpeningGambitRemoveCardsFromDecksByCost.prototype.type = 'ModifierOpeningGambitRemoveCardsFromDecksByCost';
+ModifierOpeningGambitRemoveCardsFromDecksByCost.prototype.type =
+  'ModifierOpeningGambitRemoveCardsFromDecksByCost';
 ModifierOpeningGambitRemoveCardsFromDecksByCost.prototype.manaCost = null;
 ModifierOpeningGambitRemoveCardsFromDecksByCost.prototype.affectMyDeck = true;
 ModifierOpeningGambitRemoveCardsFromDecksByCost.prototype.affectOppDeck = true;

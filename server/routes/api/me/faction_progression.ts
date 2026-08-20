@@ -15,7 +15,9 @@ const router = express.Router();
 router.get('/', function (req, res, next) {
   const user_id = req.user.d.id;
 
-  return knex('user_faction_progression').where('user_id', user_id).select()
+  return knex('user_faction_progression')
+    .where('user_id', user_id)
+    .select()
     .then(function (progressionRows) {
       progressionRows = DataAccessHelpers.restifyData(progressionRows);
       const responseData = {};
@@ -36,7 +38,10 @@ router.get('/:faction_id', function (req, res, next) {
   const user_id = req.user.d.id;
   const faction_id = result.value;
 
-  return knex('user_faction_progression').where('user_id', user_id).andWhere('faction_id', faction_id).first()
+  return knex('user_faction_progression')
+    .where('user_id', user_id)
+    .andWhere('faction_id', faction_id)
+    .first()
     .then(function (row) {
       row = DataAccessHelpers.restifyData(row);
       return res.status(200).json(row);

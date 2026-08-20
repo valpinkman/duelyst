@@ -49,10 +49,7 @@ class AdvancedLyonarChallenge1 extends Challenge {
   }
 
   getOpponentPlayerDeckData(gameSession) {
-    return [
-      { id: Cards.Faction1.General },
-      { id: Cards.TutorialSpell.TutorialFireOrb },
-    ];
+    return [{ id: Cards.Faction1.General }, { id: Cards.TutorialSpell.TutorialFireOrb }];
   }
 
   setupBoard(gameSession) {
@@ -77,38 +74,66 @@ class AdvancedLyonarChallenge1 extends Challenge {
     this.applyCardToBoard({ id: Cards.Faction1.Lightchaser }, 4, 0, myPlayerId);
     this.applyCardToBoard({ id: Cards.Faction1.SunstoneTemplar }, 5, 3, myPlayerId);
 
-    const ladyLocke = this.applyCardToBoard({ id: Cards.Neutral.LadyLocke }, 7, 0, opponentPlayerId);
-    const windbladeAdept = this.applyCardToBoard({ id: Cards.Faction1.WindbladeAdept }, 7, 2, opponentPlayerId);
+    const ladyLocke = this.applyCardToBoard(
+      { id: Cards.Neutral.LadyLocke },
+      7,
+      0,
+      opponentPlayerId,
+    );
+    const windbladeAdept = this.applyCardToBoard(
+      { id: Cards.Faction1.WindbladeAdept },
+      7,
+      2,
+      opponentPlayerId,
+    );
     this.applyCardToBoard({ id: Cards.Spell.WarSurge }, 4, 2, opponentPlayerId);
     this.applyCardToBoard({ id: Cards.Spell.WarSurge }, 4, 2, opponentPlayerId);
     this.applyCardToBoard({ id: Cards.Faction1.IroncliffeGuardian }, 6, 1, opponentPlayerId);
     // Apply lady lock buff to windblade adept
-    const lockPlayerModifier = ladyLocke.getModifierByType(ModifierOpeningGambitApplyPlayerModifiers.type);
-    return Array.from<any>(lockPlayerModifier.modifiersContextObjects[0].modifiersContextObjects).map((modifierContextObject) =>
-      gameSession.applyModifierContextObject(modifierContextObject, windbladeAdept));
+    const lockPlayerModifier = ladyLocke.getModifierByType(
+      ModifierOpeningGambitApplyPlayerModifiers.type,
+    );
+    return Array.from<any>(
+      lockPlayerModifier.modifiersContextObjects[0].modifiersContextObjects,
+    ).map((modifierContextObject) =>
+      gameSession.applyModifierContextObject(modifierContextObject, windbladeAdept),
+    );
   }
 
   setupOpponentAgent(gameSession) {
     super.setupOpponentAgent(gameSession);
 
-    this._opponentAgent.addActionForTurn(0, AgentActions.createAgentSoftActionShowInstructionLabels([{
-      label: i18next.t('challenges.advanced_lyonar_1_taunt'),
-      isSpeech: true,
-      yPosition: 0.7,
-      isPersistent: true,
-      isOpponent: true,
-    },
-    ]));
-    return this._opponentAgent.addActionForTurn(0, AgentActions.createAgentActionPlayCardFindPosition(0, () => [GameSession.getInstance().getGeneralForPlayer1().getPosition()]));
+    this._opponentAgent.addActionForTurn(
+      0,
+      AgentActions.createAgentSoftActionShowInstructionLabels([
+        {
+          label: i18next.t('challenges.advanced_lyonar_1_taunt'),
+          isSpeech: true,
+          yPosition: 0.7,
+          isPersistent: true,
+          isOpponent: true,
+        },
+      ]),
+    );
+    return this._opponentAgent.addActionForTurn(
+      0,
+      AgentActions.createAgentActionPlayCardFindPosition(0, () => [
+        GameSession.getInstance().getGeneralForPlayer1().getPosition(),
+      ]),
+    );
   }
 }
 AdvancedLyonarChallenge1.prototype.type = 'AdvancedLyonarChallenge1';
 AdvancedLyonarChallenge1.prototype.categoryType = ChallengeCategory.contest1.type;
 AdvancedLyonarChallenge1.prototype.name = i18next.t('challenges.advanced_lyonar_1_title');
-AdvancedLyonarChallenge1.prototype.description = i18next.t('challenges.advanced_lyonar_1_description');
+AdvancedLyonarChallenge1.prototype.description = i18next.t(
+  'challenges.advanced_lyonar_1_description',
+);
 AdvancedLyonarChallenge1.prototype.iconUrl = RSX.speech_portrait_lyonar_side.img;
 AdvancedLyonarChallenge1.prototype._musicOverride = RSX.music_battlemap_songhai.audio;
-AdvancedLyonarChallenge1.prototype.otkChallengeStartMessage = i18next.t('challenges.advanced_lyonar_1_start');
+AdvancedLyonarChallenge1.prototype.otkChallengeStartMessage = i18next.t(
+  'challenges.advanced_lyonar_1_start',
+);
 AdvancedLyonarChallenge1.prototype.otkChallengeFailureMessages = [
   i18next.t('challenges.advanced_lyonar_1_fail'),
 ];

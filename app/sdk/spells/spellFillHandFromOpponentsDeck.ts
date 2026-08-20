@@ -25,20 +25,26 @@ class SpellFillHandFromOpponentsDeck extends Spell {
     let emptySlots = 0;
     const myHand = this.getGameSession().getPlayerById(this.getOwnerId()).getDeck().getHand();
     for (var card of Array.from<any>(myHand)) {
-      if ((card === null) || (card === undefined)) {
+      if (card === null || card === undefined) {
         emptySlots++;
       }
     }
 
     if (emptySlots > 0) {
-      let opponentCard; let
-        opponentPlayer;
+      let opponentCard;
+      let opponentPlayer;
       const cardIndices = []; // first create indices of the cards we want to take from the opponent's deck
-      for (let i = 1, end = emptySlots, asc = end >= 1; asc ? i <= end : i >= end; asc ? i++ : i--) {
+      for (
+        let i = 1, end = emptySlots, asc = end >= 1;
+        asc ? i <= end : i >= end;
+        asc ? i++ : i--
+      ) {
         opponentPlayer = this.getGameSession().getOpponentPlayerOfPlayerId(this.getOwnerId());
         var opponentsDrawPile = opponentPlayer.getDeck().getDrawPile();
         if (opponentsDrawPile.length > 0) {
-          var randomIndex = this.getGameSession().getRandomIntegerForExecution(opponentsDrawPile.length);
+          var randomIndex = this.getGameSession().getRandomIntegerForExecution(
+            opponentsDrawPile.length,
+          );
           opponentCard = this.getGameSession().getCardByIndex(opponentsDrawPile[randomIndex]);
           cardIndices.push(opponentCard);
           opponentsDrawPile.splice(randomIndex, 1);
@@ -53,9 +59,17 @@ class SpellFillHandFromOpponentsDeck extends Spell {
             if (opponentCard != null) {
               var myNewCardData = newCard.createCardData();
               myNewCardData.ownerId = this.getOwnerId(); // reset owner id to player who will recieve this card
-              var removeCardFromDeckAction = new RemoveCardFromDeckAction(this.getGameSession(), newCard.getIndex(), opponentPlayer.getPlayerId());
+              var removeCardFromDeckAction = new RemoveCardFromDeckAction(
+                this.getGameSession(),
+                newCard.getIndex(),
+                opponentPlayer.getPlayerId(),
+              );
               this.getGameSession().executeAction(removeCardFromDeckAction);
-              var putCardInHandAction = new PutCardInHandAction(this.getGameSession(), this.getOwnerId(), myNewCardData);
+              var putCardInHandAction = new PutCardInHandAction(
+                this.getGameSession(),
+                this.getOwnerId(),
+                myNewCardData,
+              );
               result.push(this.getGameSession().executeAction(putCardInHandAction));
             } else {
               result.push(undefined);

@@ -17,7 +17,6 @@ var ChallengeSelectCompositeView = require('./challenge_select');
 var SlidingPanelSelectCompositeView = require('./sliding_panel_select');
 
 var ChallengeCategorySelectCompositeView = SlidingPanelSelectCompositeView.extend({
-
   className: 'sliding-panel-select challenge-category-select',
 
   template: ChallengeCategorySelectTmpl,
@@ -46,7 +45,9 @@ var ChallengeCategorySelectCompositeView = SlidingPanelSelectCompositeView.exten
       challengeCategories = _.without(challengeCategories, SDK.ChallengeCategory.tutorial); // remove tutorial
     }
     var categoryModels = [];
-    var hasAttemptedTutorial = ProgressionManager.getInstance().hasAttemptedChallengeCategory(SDK.ChallengeCategory.tutorial.type);
+    var hasAttemptedTutorial = ProgressionManager.getInstance().hasAttemptedChallengeCategory(
+      SDK.ChallengeCategory.tutorial.type,
+    );
     _.each(challengeCategories, function (challengeCategory) {
       var challenges = SDK.ChallengeFactory.getChallengesForCategoryType(challengeCategory.type);
       if (challenges && challenges.length) {
@@ -54,7 +55,10 @@ var ChallengeCategorySelectCompositeView = SlidingPanelSelectCompositeView.exten
         var unlockMessage = '';
 
         // check if not tutorial category and has not attempted full tutorial
-        if (challengeCategory.type !== SDK.ChallengeCategory.tutorial.type && !hasAttemptedTutorial) {
+        if (
+          challengeCategory.type !== SDK.ChallengeCategory.tutorial.type &&
+          !hasAttemptedTutorial
+        ) {
           unlockMessage += 'Complete the Tutorial Gate';
           enabled = false;
         }
@@ -64,7 +68,11 @@ var ChallengeCategorySelectCompositeView = SlidingPanelSelectCompositeView.exten
         var gameCountRequired = challengeCategory.gamesRequiredToUnlock;
         if (gameCountRequired != null && gameCountRequired > 0 && gameCount < gameCountRequired) {
           var gamesNeeded = gameCountRequired - gameCount;
-          unlockMessage += (unlockMessage.length === 0 ? '' : ' and ') + 'Play ' + gamesNeeded + ' more online matches to unlock';
+          unlockMessage +=
+            (unlockMessage.length === 0 ? '' : ' and ') +
+            'Play ' +
+            gamesNeeded +
+            ' more online matches to unlock';
           enabled = false;
         }
 
@@ -81,13 +89,15 @@ var ChallengeCategorySelectCompositeView = SlidingPanelSelectCompositeView.exten
         });
 
         // create model for category
-        var categoryModel = new Backbone.Model(_.extend({}, challengeCategory, {
-          challenges: challenges,
-          numChallengesAttempted: numChallengesAttempted,
-          numChallengesCompleted: numChallengesCompleted,
-          enabled: enabled,
-          unlockMessage: unlockMessage + '.',
-        }));
+        var categoryModel = new Backbone.Model(
+          _.extend({}, challengeCategory, {
+            challenges: challenges,
+            numChallengesAttempted: numChallengesAttempted,
+            numChallengesCompleted: numChallengesCompleted,
+            enabled: enabled,
+            unlockMessage: unlockMessage + '.',
+          }),
+        );
         categoryModels.push(categoryModel);
       }
     });
@@ -131,19 +141,28 @@ var ChallengeCategorySelectCompositeView = SlidingPanelSelectCompositeView.exten
     if (selectedChildViewPrev != null) {
       if (selectedChildView == null) {
         // play audio
-        audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_challenge_category_deselect.audio, CONFIG.SELECT_SFX_PRIORITY);
+        audio_engine
+          .current()
+          .play_effect_for_interaction(
+            RSX.sfx_ui_challenge_category_deselect.audio,
+            CONFIG.SELECT_SFX_PRIORITY,
+          );
       }
     }
 
     // set new selected
     if (selectedChildView != null) {
       // play audio
-      audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_challenge_category_select.audio, CONFIG.SELECT_SFX_PRIORITY);
+      audio_engine
+        .current()
+        .play_effect_for_interaction(
+          RSX.sfx_ui_challenge_category_select.audio,
+          CONFIG.SELECT_SFX_PRIORITY,
+        );
     }
   },
 
   /* endregion SELECT */
-
 });
 
 // Expose the class either via CommonJS or the global object

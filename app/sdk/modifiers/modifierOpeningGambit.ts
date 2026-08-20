@@ -34,12 +34,17 @@ class ModifierOpeningGambit extends Modifier {
       let executingAction = this.getGameSession().getExecutingAction();
 
       // account for modifier activated by being applied
-      if ((executingAction != null) && executingAction instanceof ApplyModifierAction) {
+      if (executingAction != null && executingAction instanceof ApplyModifierAction) {
         const parentAction = executingAction.getParentAction();
-        if (parentAction instanceof PlayCardAction) { executingAction = parentAction; }
+        if (parentAction instanceof PlayCardAction) {
+          executingAction = parentAction;
+        }
       }
 
-      if ((executingAction == null) || (executingAction instanceof PlayCardAction && (executingAction.getCard() === this.getCard()))) {
+      if (
+        executingAction == null ||
+        (executingAction instanceof PlayCardAction && executingAction.getCard() === this.getCard())
+      ) {
         // only trigger when played PlayCardAction or no action (i.e. during game setup)
         this.getGameSession().p_startBufferingEvents();
         return this.onOpeningGambit();

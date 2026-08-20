@@ -29,12 +29,19 @@ module.exports = function (job, done) {
     return done(new Error('eventType is not defined.'));
   }
 
-  Logger.module('JOB').debug(`[J:${job.id}] User (${userId}) generated referral event \"${eventType}\" for code \"${referrerId}\" ... starting`);
-  Logger.module('JOB').time(`[J:${job.id}] User (${userId}) generated referral event \"${eventType}\" for code \"${referrerId}\"`);
+  Logger.module('JOB').debug(
+    `[J:${job.id}] User (${userId}) generated referral event \"${eventType}\" for code \"${referrerId}\" ... starting`,
+  );
+  Logger.module('JOB').time(
+    `[J:${job.id}] User (${userId}) generated referral event \"${eventType}\" for code \"${referrerId}\"`,
+  );
 
   return ReferralsModule.processReferralEventForUser(userId, referrerId, eventType)
     .then(function () {
-      Logger.module('JOB').timeEnd(`[J:${job.id}] User (${userId}) generated referral event \"${eventType}\" for code \"${referrerId}\"`);
+      Logger.module('JOB').timeEnd(
+        `[J:${job.id}] User (${userId}) generated referral event \"${eventType}\" for code \"${referrerId}\"`,
+      );
       return done();
-    }).catch((error) => done(error));
+    })
+    .catch((error) => done(error));
 };

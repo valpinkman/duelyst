@@ -13,7 +13,11 @@ class SpellRefreshFriendlyRanged extends SpellRefreshExhaustion {
 
     const board = this.getGameSession().getBoard();
     for (var unit of Array.from<any>(board.getUnits(true, false))) {
-      if (((unit != null ? unit.getOwnerId() : undefined) === this.getOwnerId()) && !unit.getIsGeneral() && unit.hasActiveModifierClass(ModifierRanged)) {
+      if (
+        (unit != null ? unit.getOwnerId() : undefined) === this.getOwnerId() &&
+        !unit.getIsGeneral() &&
+        unit.hasActiveModifierClass(ModifierRanged)
+      ) {
         var position = unit.getPosition();
         filteredPositions.push(position);
       }

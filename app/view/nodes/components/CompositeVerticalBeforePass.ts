@@ -5,9 +5,7 @@ const CompositeVerticalPass = require('./CompositeVerticalPass');
  * @see CompositePass
  */
 const CompositeVerticalBeforePass = CompositeVerticalPass.extend({
-
   // nothing yet
-
 });
 
 module.exports = CompositeVerticalBeforePass;

@@ -25,35 +25,64 @@ class ModifierOpeningGambitSpawnTribal extends ModifierOpeningGambit {
 
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
       let tribalCards = [];
-      for (var race of Array.from<any>(_.filter(_.chain(Races).values().uniq().value(), (val) => val !== Races.Neutral))) {
+      for (var race of Array.from<any>(
+        _.filter(_.chain(Races).values().uniq().value(), (val) => val !== Races.Neutral),
+      )) {
         if (this.getGameSession().getGameFormat() === GameFormat.Standard) {
-          tribalCards = tribalCards.concat(this.getGameSession().getCardCaches().getIsLegacy(false).getRace(race)
-            .getIsToken(false)
-            .getIsHiddenInCollection(false)
-            .getIsPrismatic(false)
-            .getIsSkinned(false)
-            .getCards());
+          tribalCards = tribalCards.concat(
+            this.getGameSession()
+              .getCardCaches()
+              .getIsLegacy(false)
+              .getRace(race)
+              .getIsToken(false)
+              .getIsHiddenInCollection(false)
+              .getIsPrismatic(false)
+              .getIsSkinned(false)
+              .getCards(),
+          );
         } else {
-          tribalCards = tribalCards.concat(this.getGameSession().getCardCaches().getRace(race).getIsToken(false)
-            .getIsHiddenInCollection(false)
-            .getIsPrismatic(false)
-            .getIsSkinned(false)
-            .getCards());
+          tribalCards = tribalCards.concat(
+            this.getGameSession()
+              .getCardCaches()
+              .getRace(race)
+              .getIsToken(false)
+              .getIsHiddenInCollection(false)
+              .getIsPrismatic(false)
+              .getIsSkinned(false)
+              .getCards(),
+          );
         }
       }
-      const tribalCard = tribalCards[this.getGameSession().getRandomIntegerForExecution(tribalCards.length)];
+      const tribalCard =
+        tribalCards[this.getGameSession().getRandomIntegerForExecution(tribalCards.length)];
       const cardData = tribalCard.createNewCardData();
       const card = this.getGameSession().getExistingCardFromIndexOrCreateCardFromData(cardData);
       const spawnLocations = [];
-      const validSpawnLocations = UtilsGameSession.getSmartSpawnPositionsFromPattern(this.getGameSession(), this.getCard().getPosition(), CONFIG.PATTERN_3x3, card);
+      const validSpawnLocations = UtilsGameSession.getSmartSpawnPositionsFromPattern(
+        this.getGameSession(),
+        this.getCard().getPosition(),
+        CONFIG.PATTERN_3x3,
+        card,
+      );
       if (validSpawnLocations.length > 0) {
-        spawnLocations.push(validSpawnLocations.splice(this.getGameSession().getRandomIntegerForExecution(validSpawnLocations.length), 1)[0]);
+        spawnLocations.push(
+          validSpawnLocations.splice(
+            this.getGameSession().getRandomIntegerForExecution(validSpawnLocations.length),
+            1,
+          )[0],
+        );
       }
 
       return (() => {
         const result = [];
         for (var position of Array.from<any>(spawnLocations)) {
-          var playCardAction = new PlayCardSilentlyAction(this.getGameSession(), this.getCard().getOwnerId(), position.x, position.y, card);
+          var playCardAction = new PlayCardSilentlyAction(
+            this.getGameSession(),
+            this.getCard().getOwnerId(),
+            position.x,
+            position.y,
+            card,
+          );
           playCardAction.setSource(this.getCard());
           result.push(this.getGameSession().executeAction(playCardAction));
         }
@@ -63,6 +92,9 @@ class ModifierOpeningGambitSpawnTribal extends ModifierOpeningGambit {
   }
 }
 ModifierOpeningGambitSpawnTribal.prototype.type = 'ModifierOpeningGambitSpawnTribal';
-ModifierOpeningGambitSpawnTribal.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericSpawn'];
+ModifierOpeningGambitSpawnTribal.prototype.fxResource = [
+  'FX.Modifiers.ModifierOpeningGambit',
+  'FX.Modifiers.ModifierGenericSpawn',
+];
 
 module.exports = ModifierOpeningGambitSpawnTribal;

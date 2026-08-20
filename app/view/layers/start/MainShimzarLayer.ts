@@ -17,7 +17,6 @@ const FXFlockSprite = require('../../nodes/fx/FXFlockSprite');
  *************************************************************************** */
 
 const MainShimzarLayer = FXCompositeLayer.extend({
-
   /* region INITIALIZE */
 
   ctor() {
@@ -41,8 +40,8 @@ const MainShimzarLayer = FXCompositeLayer.extend({
 
       this.lights = new BaseParticleSystem({
         plistFile: RSX.scene_shimzar_lights_particles.plist,
-        fadeInAtLifePct: 0.10,
-        fadeOutAtLifePct: 0.90,
+        fadeInAtLifePct: 0.1,
+        fadeOutAtLifePct: 0.9,
         staticPositionsToSample: leftLightPositions,
       });
       this.lights.setAnchorPoint(cc.p(0, 0));
@@ -51,8 +50,8 @@ const MainShimzarLayer = FXCompositeLayer.extend({
 
       this.lights2 = new BaseParticleSystem({
         plistFile: RSX.scene_shimzar_lights_particles.plist,
-        fadeInAtLifePct: 0.10,
-        fadeOutAtLifePct: 0.90,
+        fadeInAtLifePct: 0.1,
+        fadeOutAtLifePct: 0.9,
         staticPositionsToSample: rightLightsPositions,
       });
       this.lights2.setAnchorPoint(cc.p(0, 0));
@@ -62,8 +61,8 @@ const MainShimzarLayer = FXCompositeLayer.extend({
       //
       this.waterfallMid1 = new BaseParticleSystem({
         plistFile: RSX.scene_shimzar_waterfall_particles.plist,
-        fadeInAtLifePct: 0.10,
-        fadeOutAtLifePct: 0.90,
+        fadeInAtLifePct: 0.1,
+        fadeOutAtLifePct: 0.9,
       });
       this.waterfallMid1.setAnchorPoint(cc.p(0, 0));
       this.waterfallMid1.setPosition(cc.p(730 + 30, 425));
@@ -72,8 +71,8 @@ const MainShimzarLayer = FXCompositeLayer.extend({
       //
       this.waterfallMid2 = new BaseParticleSystem({
         plistFile: RSX.scene_shimzar_waterfall_particles.plist,
-        fadeInAtLifePct: 0.10,
-        fadeOutAtLifePct: 0.90,
+        fadeInAtLifePct: 0.1,
+        fadeOutAtLifePct: 0.9,
       });
       this.waterfallMid2.setAnchorPoint(cc.p(0, 0));
       this.waterfallMid2.setPosition(cc.p(993 + 20, 420));
@@ -82,8 +81,8 @@ const MainShimzarLayer = FXCompositeLayer.extend({
       //
       this.waterfallMid3 = new BaseParticleSystem({
         plistFile: RSX.scene_shimzar_waterfall_particles.plist,
-        fadeInAtLifePct: 0.10,
-        fadeOutAtLifePct: 0.90,
+        fadeInAtLifePct: 0.1,
+        fadeOutAtLifePct: 0.9,
       });
       this.waterfallMid3.setAnchorPoint(cc.p(0, 0));
       this.waterfallMid3.setPosition(cc.p(738 + 30, 481));
@@ -95,8 +94,8 @@ const MainShimzarLayer = FXCompositeLayer.extend({
       //
       this.waterfallMid4 = new BaseParticleSystem({
         plistFile: RSX.scene_shimzar_waterfall_particles.plist,
-        fadeInAtLifePct: 0.10,
-        fadeOutAtLifePct: 0.90,
+        fadeInAtLifePct: 0.1,
+        fadeOutAtLifePct: 0.9,
       });
       this.waterfallMid4.setAnchorPoint(cc.p(0, 0));
       this.waterfallMid4.setPosition(cc.p(958 + 25, 490));
@@ -110,8 +109,8 @@ const MainShimzarLayer = FXCompositeLayer.extend({
       //
       this.waterfallBg1 = new BaseParticleSystem({
         plistFile: RSX.scene_shimzar_waterfall_particles.plist,
-        fadeInAtLifePct: 0.10,
-        fadeOutAtLifePct: 0.90,
+        fadeInAtLifePct: 0.1,
+        fadeOutAtLifePct: 0.9,
       });
       this.waterfallBg1.setAnchorPoint(cc.p(0, 0));
       this.waterfallBg1.setPosition(cc.p(1189 + 10, 577));
@@ -122,8 +121,8 @@ const MainShimzarLayer = FXCompositeLayer.extend({
       //
       this.waterfallBg2 = new BaseParticleSystem({
         plistFile: RSX.scene_shimzar_waterfall_particles.plist,
-        fadeInAtLifePct: 0.10,
-        fadeOutAtLifePct: 0.90,
+        fadeInAtLifePct: 0.1,
+        fadeOutAtLifePct: 0.9,
       });
       this.waterfallBg2.setAnchorPoint(cc.p(0, 0));
       this.waterfallBg2.setPosition(cc.p(1291 + 20, 577));
@@ -134,8 +133,8 @@ const MainShimzarLayer = FXCompositeLayer.extend({
       //
       this.waterfallBg3 = new BaseParticleSystem({
         plistFile: RSX.scene_shimzar_waterfall_particles.plist,
-        fadeInAtLifePct: 0.10,
-        fadeOutAtLifePct: 0.90,
+        fadeInAtLifePct: 0.1,
+        fadeOutAtLifePct: 0.9,
       });
       this.waterfallBg3.setAnchorPoint(cc.p(0, 0));
       this.waterfallBg3.setPosition(cc.p(1465 + 20, 577));
@@ -146,8 +145,8 @@ const MainShimzarLayer = FXCompositeLayer.extend({
       //
       this.waterfallBg4 = new BaseParticleSystem({
         plistFile: RSX.scene_shimzar_waterfall_particles.plist,
-        fadeInAtLifePct: 0.10,
-        fadeOutAtLifePct: 0.90,
+        fadeInAtLifePct: 0.1,
+        fadeOutAtLifePct: 0.9,
       });
       this.waterfallBg4.setAnchorPoint(cc.p(0, 0));
       this.waterfallBg4.setPosition(cc.p(1746 + 5, 945));
@@ -207,13 +206,9 @@ const MainShimzarLayer = FXCompositeLayer.extend({
       this.ray1.setAnchorPoint(cc.p(0, 0));
       this.ray1.setPosition(cc.p(360, 140));
       this.ray1.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
-      this.ray1.runAction(cc.repeatForever(
-        cc.sequence(
-          cc.fadeOut(5.0),
-          cc.delayTime(3.0),
-          cc.fadeIn(5.0),
-        ),
-      ));
+      this.ray1.runAction(
+        cc.repeatForever(cc.sequence(cc.fadeOut(5.0), cc.delayTime(3.0), cc.fadeIn(5.0))),
+      );
     });
 
     // do super ctor
@@ -228,7 +223,9 @@ const MainShimzarLayer = FXCompositeLayer.extend({
   /* region RESOURCES */
 
   getRequiredResources() {
-    return FXCompositeLayer.prototype.getRequiredResources.call(this).concat(PKGS.getPkgForIdentifier('ShimzarMainMenu'));
+    return FXCompositeLayer.prototype.getRequiredResources
+      .call(this)
+      .concat(PKGS.getPkgForIdentifier('ShimzarMainMenu'));
   },
 
   /* endregion RESOURCES */
@@ -281,7 +278,7 @@ const MainShimzarLayer = FXCompositeLayer.extend({
       let shiftX;
 
       // vignette sizing
-      this.vignette.setScaleX(0.8 * winWidth / this.vignette.getContentSize().width);
+      this.vignette.setScaleX((0.8 * winWidth) / this.vignette.getContentSize().width);
       this.vignette.setScaleY(winHeight / this.vignette.getContentSize().height);
       this.vignette.setPosition(-winWidth * 0.6, 0);
 
@@ -307,11 +304,21 @@ const MainShimzarLayer = FXCompositeLayer.extend({
       // clouds
       this.clouds1.setSourceScreenPosition(cc.p(winWidth * 0.1, -winHeight * 0.4));
       this.clouds1.setTargetScreenPosition(cc.p(-winWidth * 0.5, -winHeight * 0.45));
-      this.parallaxLayer.addOrUpdateParallaxedNode(this.clouds1, 3, cc.p(), this.clouds1.getSourceScreenOffsetPosition());
+      this.parallaxLayer.addOrUpdateParallaxedNode(
+        this.clouds1,
+        3,
+        cc.p(),
+        this.clouds1.getSourceScreenOffsetPosition(),
+      );
 
       this.clouds2.setSourceScreenPosition(cc.p(winWidth * 0.1, -winHeight * 0.4));
       this.clouds2.setTargetScreenPosition(cc.p(-winWidth * 0.5, -winHeight * 0.45));
-      this.parallaxLayer.addOrUpdateParallaxedNode(this.clouds2, 3, cc.p(), this.clouds2.getSourceScreenOffsetPosition());
+      this.parallaxLayer.addOrUpdateParallaxedNode(
+        this.clouds2,
+        3,
+        cc.p(),
+        this.clouds2.getSourceScreenOffsetPosition(),
+      );
 
       //
       // this.clouds3.setSourceScreenPosition(cc.p(winWidth * 0.1, -winHeight * 0.4));
@@ -324,22 +331,31 @@ const MainShimzarLayer = FXCompositeLayer.extend({
 
       // trees 1
       this.trees1.setScale(parallaxScale);
-      ratio = cc.p(0.0175, 0.0100);
-      offset = cc.p(winWidth / 2 * 0.75, -winHeight * 0.4 + this.trees1.getContentSize().height * (0.475 - ratio.y) * this.trees1.getScale());
+      ratio = cc.p(0.0175, 0.01);
+      offset = cc.p(
+        (winWidth / 2) * 0.75,
+        -winHeight * 0.4 +
+          this.trees1.getContentSize().height * (0.475 - ratio.y) * this.trees1.getScale(),
+      );
       this.parallaxLayer.addOrUpdateParallaxedNode(this.trees1, 3, ratio, offset);
 
       // trees 2
       this.trees2.setScale(parallaxScale);
       this.trees2.setAnchorPoint(0.5, 0.0);
-      ratio = cc.p(0.00150, 0.00250);
+      ratio = cc.p(0.0015, 0.0025);
       offset = cc.p(-winWidth / 4, -winHeight * 0.6);
       this.parallaxLayer.addOrUpdateParallaxedNode(this.trees2, 3, ratio, offset);
 
       // foreground
       this.fg.setScale(parallaxScale);
       this.fg.setAnchorPoint(1.0, 0.5);
-      ratio = cc.p(0.0200, 0.0100);
-      offset = cc.p(winWidth * 0.55, -winHeight * 0.5 + this.fg.getContentSize().height * (0.5 - ratio.y) * this.fg.getScale() - 1);
+      ratio = cc.p(0.02, 0.01);
+      offset = cc.p(
+        winWidth * 0.55,
+        -winHeight * 0.5 +
+          this.fg.getContentSize().height * (0.5 - ratio.y) * this.fg.getScale() -
+          1,
+      );
       this.parallaxLayer.addOrUpdateParallaxedNode(this.fg, 4, ratio, offset);
 
       // reset parallax
@@ -352,7 +368,6 @@ const MainShimzarLayer = FXCompositeLayer.extend({
   playMusic() {
     audio_engine.current().play_music(RSX.music_ageofdisjunction.audio);
   },
-
 });
 
 MainShimzarLayer.create = function (layer) {
@@ -361,7 +376,8 @@ MainShimzarLayer.create = function (layer) {
 
 module.exports = MainShimzarLayer;
 
-const rightLightsPositions = [{ x: 1082, y: 617 },
+const rightLightsPositions = [
+  { x: 1082, y: 617 },
   { x: 1083, y: 627 },
   { x: 1083, y: 617 },
   { x: 1084, y: 627 },
@@ -3816,9 +3832,11 @@ const rightLightsPositions = [{ x: 1082, y: 617 },
   { x: 1938, y: 700 },
   { x: 1939, y: 701 },
   { x: 1939, y: 700 },
-  { x: 1940, y: 700 }];
+  { x: 1940, y: 700 },
+];
 
-const leftLightPositions = [{ x: 575, y: 586 },
+const leftLightPositions = [
+  { x: 575, y: 586 },
   { x: 575, y: 585 },
   { x: 576, y: 587 },
   { x: 576, y: 586 },
@@ -6923,4 +6941,5 @@ const leftLightPositions = [{ x: 575, y: 586 },
   { x: 1225, y: 495 },
   { x: 1225, y: 494 },
   { x: 1227, y: 505 },
-  { x: 1228, y: 505 }];
+  { x: 1228, y: 505 },
+];

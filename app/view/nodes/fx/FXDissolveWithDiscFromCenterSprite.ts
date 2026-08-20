@@ -30,7 +30,9 @@ var FXDissolveWithDiscFromCenterSprite = FXSprite.extend({
 
   setOptions(options) {
     this._super(options);
-    if (options.phase != null) { this.setPhase(options.phase); }
+    if (options.phase != null) {
+      this.setPhase(options.phase);
+    }
   },
 
   setPhase(phase) {
@@ -39,12 +41,12 @@ var FXDissolveWithDiscFromCenterSprite = FXSprite.extend({
 
   updateTweenAction(value, key) {
     switch (key) {
-    case 'phase':
-      this.phase = value;
-      break;
-    default:
-      FXSprite.prototype.updateTweenAction.call(this, value, key);
-      break;
+      case 'phase':
+        this.phase = value;
+        break;
+      default:
+        FXSprite.prototype.updateTweenAction.call(this, value, key);
+        break;
     }
   },
 });
@@ -52,7 +54,9 @@ var FXDissolveWithDiscFromCenterSprite = FXSprite.extend({
 FXDissolveWithDiscFromCenterSprite.WebGLRenderCmd = function (renderable) {
   FXSprite.WebGLRenderCmd.call(this, renderable);
 };
-const proto = FXDissolveWithDiscFromCenterSprite.WebGLRenderCmd.prototype = Object.create(FXSprite.WebGLRenderCmd.prototype);
+const proto = (FXDissolveWithDiscFromCenterSprite.WebGLRenderCmd.prototype = Object.create(
+  FXSprite.WebGLRenderCmd.prototype,
+));
 proto.constructor = FXDissolveWithDiscFromCenterSprite.WebGLRenderCmd;
 
 proto.rendering = function () {
@@ -65,7 +69,11 @@ proto.rendering = function () {
   const shaderProgram = this._shaderProgram;
   shaderProgram.use();
   shaderProgram._setUniformForMVPMatrixWithMat4(this._stackMatrix);
-  shaderProgram.setUniformLocationWith2f(shaderProgram.loc_texResolution, node._texture.getPixelsWide(), node._texture.getPixelsHigh());
+  shaderProgram.setUniformLocationWith2f(
+    shaderProgram.loc_texResolution,
+    node._texture.getPixelsWide(),
+    node._texture.getPixelsHigh(),
+  );
   shaderProgram.setUniformLocationWith1f(shaderProgram.loc_time, node.getFX().getTime());
   // note: because the shader renders a white box at phase 0, we min out the value to 0.01
   shaderProgram.setUniformLocationWith1f(shaderProgram.loc_phase, Math.max(0.01, node.phase)); // node.getFX().getTime()
@@ -88,7 +96,11 @@ proto.rendering = function () {
 };
 
 FXDissolveWithDiscFromCenterSprite.create = function (options, sprite) {
-  return FXSprite.create.call(this, options, sprite || new FXDissolveWithDiscFromCenterSprite(options));
+  return FXSprite.create.call(
+    this,
+    options,
+    sprite || new FXDissolveWithDiscFromCenterSprite(options),
+  );
 };
 
 module.exports = FXDissolveWithDiscFromCenterSprite;

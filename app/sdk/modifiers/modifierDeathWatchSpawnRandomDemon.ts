@@ -24,10 +24,22 @@ class ModifierDeathWatchSpawnRandomDemon extends ModifierDeathWatch {
 
   static type = 'ModifierDeathWatchSpawnRandomDemon';
 
-  static createContextObject(possibleCardsToSpawn, spawnCount, spawnPattern, spawnSilently, options) {
-    if (spawnCount == null) { spawnCount = 1; }
-    if (spawnPattern == null) { spawnPattern = CONFIG.PATTERN_3x3; }
-    if (spawnSilently == null) { spawnSilently = true; }
+  static createContextObject(
+    possibleCardsToSpawn,
+    spawnCount,
+    spawnPattern,
+    spawnSilently,
+    options,
+  ) {
+    if (spawnCount == null) {
+      spawnCount = 1;
+    }
+    if (spawnPattern == null) {
+      spawnPattern = CONFIG.PATTERN_3x3;
+    }
+    if (spawnSilently == null) {
+      spawnSilently = true;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.possibleCardsToSpawn = possibleCardsToSpawn;
     contextObject.spawnCount = spawnCount;
@@ -41,16 +53,31 @@ class ModifierDeathWatchSpawnRandomDemon extends ModifierDeathWatch {
 
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
       const ownerId = this.getSpawnOwnerId(action);
-      const spawnPositions = UtilsGameSession.getRandomNonConflictingSmartSpawnPositionsForModifier(this, ModifierDeathWatchSpawnRandomDemon);
+      const spawnPositions = UtilsGameSession.getRandomNonConflictingSmartSpawnPositionsForModifier(
+        this,
+        ModifierDeathWatchSpawnRandomDemon,
+      );
       return (() => {
         const result = [];
         for (var spawnPosition of Array.from<any>(spawnPositions)) {
           var spawnAction;
           var cardDataOrIndexToSpawn = this.getCardDataOrIndexToSpawn();
           if (this.spawnSilently) {
-            spawnAction = new PlayCardSilentlyAction(this.getGameSession(), ownerId, spawnPosition.x, spawnPosition.y, cardDataOrIndexToSpawn);
+            spawnAction = new PlayCardSilentlyAction(
+              this.getGameSession(),
+              ownerId,
+              spawnPosition.x,
+              spawnPosition.y,
+              cardDataOrIndexToSpawn,
+            );
           } else {
-            spawnAction = new PlayCardAction(this.getGameSession(), ownerId, spawnPosition.x, spawnPosition.y, cardDataOrIndexToSpawn);
+            spawnAction = new PlayCardAction(
+              this.getGameSession(),
+              ownerId,
+              spawnPosition.x,
+              spawnPosition.y,
+              cardDataOrIndexToSpawn,
+            );
           }
           spawnAction.setSource(this.getCard());
           result.push(this.getGameSession().executeAction(spawnAction));
@@ -70,7 +97,9 @@ class ModifierDeathWatchSpawnRandomDemon extends ModifierDeathWatch {
       if (this.getGameSession().getGameFormat() !== GameFormat.Standard) {
         possibleCardsToSpawn.push({ id: Cards.Faction4.Klaxon });
       }
-      return possibleCardsToSpawn[this.getGameSession().getRandomIntegerForExecution(possibleCardsToSpawn.length)];
+      return possibleCardsToSpawn[
+        this.getGameSession().getRandomIntegerForExecution(possibleCardsToSpawn.length)
+      ];
     }
     return null;
   }
@@ -84,6 +113,9 @@ ModifierDeathWatchSpawnRandomDemon.prototype.possibleCardsToSpawn = null;
 ModifierDeathWatchSpawnRandomDemon.prototype.spawnCount = 1;
 ModifierDeathWatchSpawnRandomDemon.prototype.spawnSilently = true;
 ModifierDeathWatchSpawnRandomDemon.prototype.spawnPattern = CONFIG.PATTERN_3x3;
-ModifierDeathWatchSpawnRandomDemon.prototype.fxResource = ['FX.Modifiers.ModifierDeathWatch', 'FX.Modifiers.ModifierGenericSpawn'];
+ModifierDeathWatchSpawnRandomDemon.prototype.fxResource = [
+  'FX.Modifiers.ModifierDeathWatch',
+  'FX.Modifiers.ModifierGenericSpawn',
+];
 
 module.exports = ModifierDeathWatchSpawnRandomDemon;

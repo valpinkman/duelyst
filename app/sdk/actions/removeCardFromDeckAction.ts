@@ -24,7 +24,12 @@ class RemoveCardFromDeckAction extends Action {
 
     if (this.cardIndex != null) {
       const deck = this.getGameSession().getPlayerById(this.targetPlayerId).getDeck();
-      return this.getGameSession().removeCardByIndexFromDeck(deck, this.cardIndex, this.getGameSession().getCardByIndex(this.cardIndex), this);
+      return this.getGameSession().removeCardByIndexFromDeck(
+        deck,
+        this.cardIndex,
+        this.getGameSession().getCardByIndex(this.cardIndex),
+        this,
+      );
     }
   }
 

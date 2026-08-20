@@ -20,12 +20,16 @@ class ModifierMyOtherMinionsDamagedWatch extends Modifier {
   onAfterCleanupAction(actionEvent) {
     super.onAfterCleanupAction(actionEvent);
 
-    const {
-      action,
-    } = actionEvent;
+    const { action } = actionEvent;
     // check if action is a damage action targeting a friendly minion
-    if (action instanceof DamageAction && (__guard__(action.getTarget(), (x) => x.getOwnerId()) === this.getCard().getOwnerId()) && (action.getTarget() !== this.getCard()) && !action.getTarget().getIsGeneral()) {
-      if (this.willDealDamage(action)) { // check if anything is preventing this action from dealing its damage
+    if (
+      action instanceof DamageAction &&
+      __guard__(action.getTarget(), (x) => x.getOwnerId()) === this.getCard().getOwnerId() &&
+      action.getTarget() !== this.getCard() &&
+      !action.getTarget().getIsGeneral()
+    ) {
+      if (this.willDealDamage(action)) {
+        // check if anything is preventing this action from dealing its damage
         return this.onDamageDealtToMinion(action);
       }
     }
@@ -43,11 +47,13 @@ ModifierMyOtherMinionsDamagedWatch.prototype.activeInHand = false;
 ModifierMyOtherMinionsDamagedWatch.prototype.activeInDeck = false;
 ModifierMyOtherMinionsDamagedWatch.prototype.activeInSignatureCards = false;
 ModifierMyOtherMinionsDamagedWatch.prototype.activeOnBoard = true;
-ModifierMyOtherMinionsDamagedWatch.prototype.fxResource = ['FX.Modifiers.ModifierMyOtherMinionsDamagedWatch'];
+ModifierMyOtherMinionsDamagedWatch.prototype.fxResource = [
+  'FX.Modifiers.ModifierMyOtherMinionsDamagedWatch',
+];
 // override me in sub classes to implement special behavior
 
 module.exports = ModifierMyOtherMinionsDamagedWatch;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

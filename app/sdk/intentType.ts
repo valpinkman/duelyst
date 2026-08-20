@@ -15,12 +15,12 @@ class IntentType {
 
   static getIsAggroIntentType(intentType) {
     // general check for aggresive intent types
-    return (intentType === IntentType.DamageIntent) || (intentType === IntentType.NerfIntent);
+    return intentType === IntentType.DamageIntent || intentType === IntentType.NerfIntent;
   }
 
   static getIsAssistIntentType(intentType) {
     // general check for helpful intent types
-    return (intentType === IntentType.HealIntent) || (intentType === IntentType.BuffIntent);
+    return intentType === IntentType.HealIntent || intentType === IntentType.BuffIntent;
   }
 }
 

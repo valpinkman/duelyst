@@ -17,8 +17,12 @@ class ModifierOpponentDrawCardWatchBuffSelf extends ModifierOpponentDrawCardWatc
   static description = 'Whenever your opponent draws a card, this minion gains %X';
 
   static createContextObject(attackBuff, maxHPBuff, options) {
-    if (attackBuff == null) { attackBuff = 0; }
-    if (maxHPBuff == null) { maxHPBuff = 0; }
+    if (attackBuff == null) {
+      attackBuff = 0;
+    }
+    if (maxHPBuff == null) {
+      maxHPBuff = 0;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.modifiersContextObjects = [
       Modifier.createContextObjectWithAttributeBuffs(attackBuff, maxHPBuff, {
@@ -33,16 +37,28 @@ class ModifierOpponentDrawCardWatchBuffSelf extends ModifierOpponentDrawCardWatc
   static getDescription(modifierContextObject) {
     if (modifierContextObject) {
       const subContextObject = modifierContextObject.modifiersContextObjects[0];
-      return this.description.replace(/%X/, Stringifiers.stringifyAttackHealthBuff(subContextObject.attributeBuffs.atk, subContextObject.attributeBuffs.maxHP));
+      return this.description.replace(
+        /%X/,
+        Stringifiers.stringifyAttackHealthBuff(
+          subContextObject.attributeBuffs.atk,
+          subContextObject.attributeBuffs.maxHP,
+        ),
+      );
     }
     return this.description;
   }
 
   onDrawCardWatch(action) {
-    return this.applyManagedModifiersFromModifiersContextObjects(this.modifiersContextObjects, this.getCard());
+    return this.applyManagedModifiersFromModifiersContextObjects(
+      this.modifiersContextObjects,
+      this.getCard(),
+    );
   }
 }
 ModifierOpponentDrawCardWatchBuffSelf.prototype.type = 'ModifierOpponentDrawCardWatchBuffSelf';
-ModifierOpponentDrawCardWatchBuffSelf.prototype.fxResource = ['FX.Modifiers.ModifierOpponentDrawCardWatchBuffSelf', 'FX.Modifiers.ModifierGenericDamage'];
+ModifierOpponentDrawCardWatchBuffSelf.prototype.fxResource = [
+  'FX.Modifiers.ModifierOpponentDrawCardWatchBuffSelf',
+  'FX.Modifiers.ModifierGenericDamage',
+];
 
 module.exports = ModifierOpponentDrawCardWatchBuffSelf;

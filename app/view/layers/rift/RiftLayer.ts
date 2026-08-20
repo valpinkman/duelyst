@@ -29,7 +29,6 @@ const RunLayer = require('./RunLayer');
  *************************************************************************** */
 
 const RiftLayer = FXCompositeLayer.extend({
-
   bgGradientSprite: null,
   bgRaysSprite: null,
   vignette: null,
@@ -102,7 +101,9 @@ const RiftLayer = FXCompositeLayer.extend({
 
     if (this.outerLayer) this.outerLayer.setPosition(winCenterPosition);
 
-    this.bgGradientSprite.setScale(UtilsEngine.getWindowSizeRelativeNodeScale(this.bgGradientSprite));
+    this.bgGradientSprite.setScale(
+      UtilsEngine.getWindowSizeRelativeNodeScale(this.bgGradientSprite),
+    );
     this.bgGradientSprite.setPosition(winCenterPosition);
 
     this.bgRaysSprite.setScaleX(UtilsEngine.getWindowWidthRelativeNodeScale(this.bgRaysSprite));
@@ -115,7 +116,9 @@ const RiftLayer = FXCompositeLayer.extend({
     this.vignette.setPosition(winCenterPosition.x, winCenterPosition.y);
 
     this.riftGlowLineSprite.setPosition(winCenterPosition.x, winCenterPosition.y);
-    this.riftGlowLineSprite.setScaleX(UtilsEngine.getGSIWinWidth() / this.riftGlowLineSprite.getContentSize().width);
+    this.riftGlowLineSprite.setScaleX(
+      UtilsEngine.getGSIWinWidth() / this.riftGlowLineSprite.getContentSize().width,
+    );
 
     this.bgBubblesParticleSystem.setPosVar(cc.p(UtilsEngine.getGSIWinWidth() / 2, 0));
     this.bgBubblesParticleSystem.setPosition(winCenterPosition);
@@ -142,7 +145,13 @@ const RiftLayer = FXCompositeLayer.extend({
 
     // change gradient color mapping
 
-    this.getFX().showGradientColorMap(this._requestId, CONFIG.ANIMATE_FAST_DURATION, cc.color(255, 235, 143, 255), cc.color(11, 14, 38, 255), cc.color(143, 0, 0, 255));
+    this.getFX().showGradientColorMap(
+      this._requestId,
+      CONFIG.ANIMATE_FAST_DURATION,
+      cc.color(255, 235, 143, 255),
+      cc.color(11, 14, 38, 255),
+      cc.color(143, 0, 0, 255),
+    );
     // this.getFX().showGradientColorMap(this._requestId, CONFIG.ANIMATE_FAST_DURATION, cc.color(200,14,38,255), cc.color(11,14,38,255));
   },
 
@@ -222,7 +231,9 @@ const RiftLayer = FXCompositeLayer.extend({
 
         if (this._crestNode == null) {
           this._crestNode = new BaseSprite();
-          this._crestNode.setRequiredTextureResource(SDK.FactionFactory.getCrestResourceForFactionId(factionId));
+          this._crestNode.setRequiredTextureResource(
+            SDK.FactionFactory.getCrestResourceForFactionId(factionId),
+          );
           const winCenterPosition = UtilsEngine.getGSIWinCenterPosition();
           this._crestNode.setPosition(winCenterPosition.x, winCenterPosition.y);
           this._crestNode.setScale(1.25);
@@ -243,7 +254,6 @@ const RiftLayer = FXCompositeLayer.extend({
    * @param {String} [generalId=null]
    */
   showPortraitForFactionId(factionId, generalId) {
-
     // if (this._portraitsByGeneralId == null) {
     //   this._portraitsByGeneralId = {};
     // }
@@ -300,16 +310,24 @@ const RiftLayer = FXCompositeLayer.extend({
   showShake(delay, duration, strength) {
     return new Promise<void>((resolve, reject) => {
       if (this.outerLayer != null) {
-        if (delay == null) { delay = 0.0; }
-        if (duration == null) { duration = 0.5; }
-        if (strength == null) { strength = 5.0; }
-        this.outerLayer.runAction(cc.sequence(
-          cc.delayTime(delay),
-          Shake.create(duration, strength, UtilsEngine.getGSIWinCenterPosition()),
-          cc.callFunc(() => {
-            resolve();
-          }),
-        ));
+        if (delay == null) {
+          delay = 0.0;
+        }
+        if (duration == null) {
+          duration = 0.5;
+        }
+        if (strength == null) {
+          strength = 5.0;
+        }
+        this.outerLayer.runAction(
+          cc.sequence(
+            cc.delayTime(delay),
+            Shake.create(duration, strength, UtilsEngine.getGSIWinCenterPosition()),
+            cc.callFunc(() => {
+              resolve();
+            }),
+          ),
+        );
       } else {
         resolve();
       }
@@ -410,8 +428,15 @@ const RiftLayer = FXCompositeLayer.extend({
 
     // wait for select to resolve and then add the card to deck
     selectCardPromise.then((riftData) => {
-      if (selectedSdkCard != null && selectedSdkCard instanceof SDK.Entity && selectedSdkCard.getIsGeneral()) {
-        this.showFactionVisualsForFactionId(selectedSdkCard.getFactionId(), selectedSdkCard.getId());
+      if (
+        selectedSdkCard != null &&
+        selectedSdkCard instanceof SDK.Entity &&
+        selectedSdkCard.getIsGeneral()
+      ) {
+        this.showFactionVisualsForFactionId(
+          selectedSdkCard.getFactionId(),
+          selectedSdkCard.getId(),
+        );
       } else {
         this.removeCardFromDeck(cardIdToRemove).then(() => {
           this.addCardToDeck(selectedSdkCard.getId());
@@ -423,7 +448,9 @@ const RiftLayer = FXCompositeLayer.extend({
   },
 
   bindDeck(deckCards) {
-    if (deckCards == null) { deckCards = []; }
+    if (deckCards == null) {
+      deckCards = [];
+    }
     this.deckLayer.bindCards(deckCards);
   },
 
@@ -497,19 +524,27 @@ const RiftLayer = FXCompositeLayer.extend({
       const generalId = this.dataSource.getRiftRunGeneralId();
       this.showFactionVisualsForFactionId(riftRunData.faction_id, generalId);
 
-      return this.outerLayer.transitionIn().then(() => this.outerLayer.showUnlockPack()).then(() => {
-        let disableStoringUpgrade = false;
-        const storedUpgradeCount = ProfileManager.getInstance().profile.get('rift_stored_upgrade_count') || 0;
-        if (riftRunData.disable_storing_upgrade) {
-          disableStoringUpgrade = true;
-        } else if (storedUpgradeCount >= 10) {
-          disableStoringUpgrade = true;
-        }
-        return this.outerLayer.showRevealPack(riftRunData.card_choices, disableStoringUpgrade, riftRunData.current_upgrade_reroll_count, riftRunData.total_reroll_count);
-      });
+      return this.outerLayer
+        .transitionIn()
+        .then(() => this.outerLayer.showUnlockPack())
+        .then(() => {
+          let disableStoringUpgrade = false;
+          const storedUpgradeCount =
+            ProfileManager.getInstance().profile.get('rift_stored_upgrade_count') || 0;
+          if (riftRunData.disable_storing_upgrade) {
+            disableStoringUpgrade = true;
+          } else if (storedUpgradeCount >= 10) {
+            disableStoringUpgrade = true;
+          }
+          return this.outerLayer.showRevealPack(
+            riftRunData.card_choices,
+            disableStoringUpgrade,
+            riftRunData.current_upgrade_reroll_count,
+            riftRunData.total_reroll_count,
+          );
+        });
     });
   },
-
 });
 
 RiftLayer.create = function (layer) {

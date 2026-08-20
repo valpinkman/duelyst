@@ -25,16 +25,23 @@ class ModifierOpeningGambitRetrieveRandomSpell extends ModifierOpeningGambit {
         const ownerId = this.getCard().getOwnerId();
         const spellsPlayedByOwner = [];
         for (var spell of Array.from<any>(spellsPlayedToBoard)) {
-          if (!spell.getIsFollowup() && (spell.getOwnerId() === ownerId)) {
+          if (!spell.getIsFollowup() && spell.getOwnerId() === ownerId) {
             spellsPlayedByOwner.push(spell);
           }
         }
 
         if (spellsPlayedByOwner.length > 0) {
-          const spellToCopy = spellsPlayedByOwner[this.getGameSession().getRandomIntegerForExecution(spellsPlayedByOwner.length)];
+          const spellToCopy =
+            spellsPlayedByOwner[
+              this.getGameSession().getRandomIntegerForExecution(spellsPlayedByOwner.length)
+            ];
           if (spellToCopy != null) {
             // put fresh copy of spell into hand
-            const a = new PutCardInHandAction(this.getGameSession(), ownerId, spellToCopy.createNewCardData());
+            const a = new PutCardInHandAction(
+              this.getGameSession(),
+              ownerId,
+              spellToCopy.createNewCardData(),
+            );
             return this.getGameSession().executeAction(a);
           }
         }
@@ -42,6 +49,7 @@ class ModifierOpeningGambitRetrieveRandomSpell extends ModifierOpeningGambit {
     }
   }
 }
-ModifierOpeningGambitRetrieveRandomSpell.prototype.type = 'ModifierOpeningGambitRetrieveRandomSpell';
+ModifierOpeningGambitRetrieveRandomSpell.prototype.type =
+  'ModifierOpeningGambitRetrieveRandomSpell';
 
 module.exports = ModifierOpeningGambitRetrieveRandomSpell;

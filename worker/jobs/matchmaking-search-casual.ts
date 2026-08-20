@@ -54,13 +54,18 @@ const getRequeueParams = function () {
     return Promise.resolve(defaults);
   }
 
-  return Consul.kv.get(`environments/${process.env.NODE_ENV}/matchmaking-params.json`)
+  return Consul.kv
+    .get(`environments/${process.env.NODE_ENV}/matchmaking-params.json`)
     .then(function (v) {
       let params = JSON.parse(v);
       params = _.extend(defaults, params);
       return params;
-    }).catch((error) => // Just return the defaults if polling Consul fails
-      defaults);
+    })
+    .catch(
+      (error) =>
+        // Just return the defaults if polling Consul fails
+        defaults,
+    );
 };
 
 /**
@@ -69,31 +74,37 @@ const getRequeueParams = function () {
  * Logic to update searchRadius, delay, goes here
  * @param  {Object} job    Kue job
  */
-const requeueJob = (job, done) => getRequeueParams()
-  .then(function (params) {
-  // Logger.module("JOB").debug("[#{job.id}] getRequeueParams(): #{JSON.stringify(params)}")
+const requeueJob = (job, done) =>
+  getRequeueParams()
+    .then(function (params) {
+      // Logger.module("JOB").debug("[#{job.id}] getRequeueParams(): #{JSON.stringify(params)}")
 
-    // Each attempt, we incease by parameters stored in Consul
-    job.data.attempt++;
-    job.data.searchRadius += params.searchRadiusIncrease;
-    job.data.delayMs = params.delayMs;
-    job.data.lastAttemptAt = Date.now();
-    const firstMetric = job.data.timeServed;
-    const secondMetric = job.data.deckValue;
+      // Each attempt, we incease by parameters stored in Consul
+      job.data.attempt++;
+      job.data.searchRadius += params.searchRadiusIncrease;
+      job.data.delayMs = params.delayMs;
+      job.data.lastAttemptAt = Date.now();
+      const firstMetric = job.data.timeServed;
+      const secondMetric = job.data.deckValue;
 
-    Logger.module('JOB').debug(`[${job.id}] ` + 'casual'.yellow + ` - \
+      Logger.module('JOB').debug(
+        `[${job.id}] ` +
+          'casual'.yellow +
+          ` - \
 Search for Game (${job.data.userId}) metric:${job.data.rank}(${firstMetric},${secondMetric}), \
 attempt ${job.data.attempt}, \
 delay ${job.data.delayMs}ms, \
 searchRadius ${job.data.searchRadius}`,
-    );
+      );
 
-    // Recreate as new job with updated parameters (and delayed)
-    return Redis.Jobs.enqueue('matchmaking-search-casual', job.data, {
-      delay: job.data.delayMs,
-      removeOnComplete: true,
-    });
-  }).then(() => done()).catch((error) => done(error));
+      // Recreate as new job with updated parameters (and delayed)
+      return Redis.Jobs.enqueue('matchmaking-search-casual', job.data, {
+        delay: job.data.delayMs,
+        removeOnComplete: true,
+      });
+    })
+    .then(() => done())
+    .catch((error) => done(error));
 
 /**
  * 'logMatchMade'
@@ -102,9 +113,7 @@ searchRadius ${job.data.searchRadius}`,
  * @param  {Object} player 2's matchmaking token
  */
 const logMatchMade = function (token1, token2) {
-  let division1,
-    division2,
-    matchQuality;
+  let division1, division2, matchQuality;
   const now = Date.now();
   const waitTime1 = now - token1.createdAt;
   const waitTime2 = now - token2.createdAt;
@@ -116,7 +125,9 @@ const logMatchMade = function (token1, token2) {
     division1 = 'casual';
     casualQueue.matchMade(division1, waitTime1);
   } else {
-    division1 = __guard__(RankFactory.rankedDivisionAssetNameForRank(rank1), (x) => x.toLowerCase());
+    division1 = __guard__(RankFactory.rankedDivisionAssetNameForRank(rank1), (x) =>
+      x.toLowerCase(),
+    );
     rankedQueue.matchMade(division1, waitTime1);
   }
 
@@ -124,16 +135,18 @@ const logMatchMade = function (token1, token2) {
     division2 = 'casual';
     casualQueue.matchMade(division2, waitTime2);
   } else {
-    division2 = __guard__(RankFactory.rankedDivisionAssetNameForRank(rank2), (x1) => x1.toLowerCase());
+    division2 = __guard__(RankFactory.rankedDivisionAssetNameForRank(rank2), (x1) =>
+      x1.toLowerCase(),
+    );
     rankedQueue.matchMade(division2, waitTime2);
   }
 
   // calculate match quality
-  let rankDelta = Math.abs((rank1 - rank2));
+  let rankDelta = Math.abs(rank1 - rank2);
   rankDelta = Math.min(rankDelta, 5);
-  let deckValueDelta = Math.abs((deckValue1 - deckValue2));
+  let deckValueDelta = Math.abs(deckValue1 - deckValue2);
   deckValueDelta = Math.min(deckValueDelta, 5);
-  return matchQuality = 1 - ((rankDelta + deckValueDelta) / 10);
+  return (matchQuality = 1 - (rankDelta + deckValueDelta) / 10);
 };
 
 /**
@@ -151,15 +164,14 @@ var findLockablePlayer = function (players) {
     return null;
   }
 
-  return Redis.TokenManager.lock(players[0])
-    .then(function (unlock) {
-      if (_.isFunction(unlock)) {
-        return { id: players[0], unlock };
-      } else {
-        players = players.slice(1);
-        return findLockablePlayer(players);
-      }
-    });
+  return Redis.TokenManager.lock(players[0]).then(function (unlock) {
+    if (_.isFunction(unlock)) {
+      return { id: players[0], unlock };
+    } else {
+      players = players.slice(1);
+      return findLockablePlayer(players);
+    }
+  });
 };
 
 /**
@@ -175,7 +187,16 @@ var findLockablePlayer = function (players) {
  * @param   {Date}    firstAttemptAt    first attempt time
  * @return   {Object}   [opponent: (see 'findLockablePlayer'), searchedRanked: true/false]
  */
-const findOpponent = function (userId, lastOpponentId, rank, timeServed, deckValue, attempt, attemptInRanked, firstAttemptAt) {
+const findOpponent = function (
+  userId,
+  lastOpponentId,
+  rank,
+  timeServed,
+  deckValue,
+  attempt,
+  attemptInRanked,
+  firstAttemptAt,
+) {
   const _chainState: Record<string, any> = {};
   const searchedRanked = false;
 
@@ -209,22 +230,32 @@ const findOpponent = function (userId, lastOpponentId, rank, timeServed, deckVal
       //   queueSearchPromises.push(rankedDeckValueQueue.search({score: deckValue, searchRadius: deckValueRadius}))
 
       return Promise.all(queueSearchPromises);
-    }).then(function ([casualPlayersWithinSearch, casualPlayersWithinDeckValueSearch, rankedPlayersWithinRankSearch, rankedPlayersWithinDeckValueSearch]) {
-    // exclude self from casual results
+    })
+    .then(function ([
+      casualPlayersWithinSearch,
+      casualPlayersWithinDeckValueSearch,
+      rankedPlayersWithinRankSearch,
+      rankedPlayersWithinDeckValueSearch,
+    ]) {
+      // exclude self from casual results
       let opponents = _.filter(casualPlayersWithinSearch, (id) => id !== userId);
       opponents = _.filter(casualPlayersWithinDeckValueSearch, (id) => id !== userId);
 
-      if ((rankedPlayersWithinRankSearch != null) && (rankedPlayersWithinDeckValueSearch != null)) {
-      // opponents from ranked must be within both RANK and DECK VALUE
-        opponents = opponents.concat(_.intersection(rankedPlayersWithinRankSearch, rankedPlayersWithinDeckValueSearch));
+      if (rankedPlayersWithinRankSearch != null && rankedPlayersWithinDeckValueSearch != null) {
+        // opponents from ranked must be within both RANK and DECK VALUE
+        opponents = opponents.concat(
+          _.intersection(rankedPlayersWithinRankSearch, rankedPlayersWithinDeckValueSearch),
+        );
       }
 
       if (!_chainState.allowMatchWithLastOpponent && lastOpponentId) {
-      // exclude last opponent from search
+        // exclude last opponent from search
         opponents = _.filter(opponents, (id) => id !== lastOpponentId);
       }
 
-      Logger.module('JOB').debug(`Found ${opponents.length} potential matches (searched ranked:${searchedRanked})`);
+      Logger.module('JOB').debug(
+        `Found ${opponents.length} potential matches (searched ranked:${searchedRanked})`,
+      );
       // return a locked opponent and whether we're also searching ranked
       return PromiseUtils.props({ opponent: findLockablePlayer(opponents), searchedRanked });
     });
@@ -252,9 +283,7 @@ module.exports = function (job, done) {
   const firstAttemptAt = (job.data.firstAttemptAt = job.data.firstAttemptAt || Date.now());
   const lastAttemptAt = (job.data.lastAttemptAt = job.data.lastAttemptAt || Date.now());
   job.data.searchRadius = job.data.searchRadius || 0;
-  const {
-    tokenId,
-  } = job.data;
+  const { tokenId } = job.data;
 
   // 1a. check if player *this* player is still in queue, otherwise done()
   // 1b. check if player *this* player is locked by another job, otherwise requeue()
@@ -272,120 +301,163 @@ module.exports = function (job, done) {
   // grab player token
   const playerToken = Redis.TokenManager.get(userId);
 
-  return Promise.all([isQueued, isLocked, playerToken]).then(function ([isQueued, isLocked, playerToken]) {
-    if ((isQueued == null) || (playerToken == null)) {
-      Logger.module('JOB').debug(`[J:${job.id}] player (${userId}) is no longer queued (isQueued:${isQueued})`);
-      return done(); // the player is no longer in queue
-    }
+  return Promise.all([isQueued, isLocked, playerToken])
+    .then(function ([isQueued, isLocked, playerToken]) {
+      if (isQueued == null || playerToken == null) {
+        Logger.module('JOB').debug(
+          `[J:${job.id}] player (${userId}) is no longer queued (isQueued:${isQueued})`,
+        );
+        return done(); // the player is no longer in queue
+      }
 
-    // save rank from player token in the job so the requeue method can use it
-    const rank = (job.data.rank = parseInt(playerToken.rank));
-    const {
-      deckValue,
-    } = job.data;
-    const {
-      timeServed,
-    } = job.data;
+      // save rank from player token in the job so the requeue method can use it
+      const rank = (job.data.rank = parseInt(playerToken.rank));
+      const { deckValue } = job.data;
+      const { timeServed } = job.data;
 
-    if (isLocked) {
-      Logger.module('JOB').debug(`[J:${job.id}] player (${userId}) is locked (isLocked:${isLocked})`);
-      return requeueJob(job, done); // the player is 'locked' by another job
-    }
+      if (isLocked) {
+        Logger.module('JOB').debug(
+          `[J:${job.id}] player (${userId}) is locked (isLocked:${isLocked})`,
+        );
+        return requeueJob(job, done); // the player is 'locked' by another job
+      }
 
-    if (playerToken.id !== tokenId) {
-      Logger.module('JOB').debug(`[J:${job.id}] this job's token ${tokenId} is outdated compared to ${playerToken.id}... killing job`);
-      return done(); // looks like this job is for a token that has since been replaced
-    }
+      if (playerToken.id !== tokenId) {
+        Logger.module('JOB').debug(
+          `[J:${job.id}] this job's token ${tokenId} is outdated compared to ${playerToken.id}... killing job`,
+        );
+        return done(); // looks like this job is for a token that has since been replaced
+      }
 
-    return Redis.TokenManager.lock(userId, 1000)
-      .then(function (unlock) {
+      return Redis.TokenManager.lock(userId, 1000).then(function (unlock) {
         if (!_.isFunction(unlock)) {
           Logger.module('JOB').debug(`[J:${job.id}] lock(${userId}) acquire failed!`);
           return requeueJob(job, done);
         } else {
-          Logger.module('JOB').debug(`[J:${job.id}] lock(${userId}) acquired - matchmaking metric ${rank},${deckValue}.`);
-          return findOpponent(userId, playerToken.lastOpponentId, rank, timeServed, deckValue, attempt, attemptInRanked, firstAttemptAt)
-            .then(function (searchData) {
-              const _chainState: Record<string, any> = {};
-              const {
-                opponent,
-              } = searchData;
-              const {
-                searchedRanked,
-              } = searchData;
-              if (searchedRanked) {
-                job.data.attemptInRanked++;
-              }
+          Logger.module('JOB').debug(
+            `[J:${job.id}] lock(${userId}) acquired - matchmaking metric ${rank},${deckValue}.`,
+          );
+          return findOpponent(
+            userId,
+            playerToken.lastOpponentId,
+            rank,
+            timeServed,
+            deckValue,
+            attempt,
+            attemptInRanked,
+            firstAttemptAt,
+          ).then(function (searchData) {
+            const _chainState: Record<string, any> = {};
+            const { opponent } = searchData;
+            const { searchedRanked } = searchData;
+            if (searchedRanked) {
+              job.data.attemptInRanked++;
+            }
 
-              if (!opponent) {
-                // no opponents found, unlock and requeue
-                unlock();
-                return requeueJob(job, done);
-              } else {
-                Logger.module('JOB').debug(`[J:${job.id}] searchQueue(${userId}): ${JSON.stringify(opponent)}`);
+            if (!opponent) {
+              // no opponents found, unlock and requeue
+              unlock();
+              return requeueJob(job, done);
+            } else {
+              Logger.module('JOB').debug(
+                `[J:${job.id}] searchQueue(${userId}): ${JSON.stringify(opponent)}`,
+              );
 
-                return Redis.TokenManager.get(opponent.id)
-                  .then(function (opponentToken) { // TODO: We should validate results
-                    // Logger.module("JOB").debug("[J:#{job.id}] current ids: #{@token1} #{@token2}")
+              return Redis.TokenManager.get(opponent.id)
+                .then(function (opponentToken) {
+                  // TODO: We should validate results
+                  // Logger.module("JOB").debug("[J:#{job.id}] current ids: #{@token1} #{@token2}")
 
-                    let removalPromises;
-                    _chainState.token1 = playerToken;
-                    _chainState.token2 = opponentToken;
+                  let removalPromises;
+                  _chainState.token1 = playerToken;
+                  _chainState.token2 = opponentToken;
 
-                    if (!(_chainState.token1 != null ? _chainState.token1.userId : undefined)) {
-                      Logger.module('JOB').error(`[J:${job.id}] searchQueue(${userId}): ERROR: player token has no user id`);
-                      throw new Errors.NotFoundError('player token has no user id');
-                    }
-                    if (!(_chainState.token2 != null ? _chainState.token2.userId : undefined)) {
-                      Logger.module('JOB').error(`[J:${job.id}] searchQueue(${userId}): ERROR: opponent token has no user id`);
-                      throw new Errors.UnexpectedBadDataError('opponent token has no user id');
-                    }
+                  if (!(_chainState.token1 != null ? _chainState.token1.userId : undefined)) {
+                    Logger.module('JOB').error(
+                      `[J:${job.id}] searchQueue(${userId}): ERROR: player token has no user id`,
+                    );
+                    throw new Errors.NotFoundError('player token has no user id');
+                  }
+                  if (!(_chainState.token2 != null ? _chainState.token2.userId : undefined)) {
+                    Logger.module('JOB').error(
+                      `[J:${job.id}] searchQueue(${userId}): ERROR: opponent token has no user id`,
+                    );
+                    throw new Errors.UnexpectedBadDataError('opponent token has no user id');
+                  }
 
-                    // check whether opponent is also in casual or from ranked
-                    if (_chainState.token2.gameType === GameType.Casual) {
-                      Logger.module('JOB').debug(`[J:${job.id}] searchQueue(${userId}): found opponent from CASUAL`);
-                      removalPromises = [
-                        Redis.TokenManager.remove(_chainState.token1.userId),
-                        Redis.TokenManager.remove(_chainState.token2.userId),
-                        casualQueue.remove([_chainState.token1.userId, _chainState.token2.userId]),
-                        casualDeckValueQueue.remove([_chainState.token1.userId, _chainState.token2.userId]),
-                      ];
-                    } else {
-                      Logger.module('JOB').debug(`[J:${job.id}] searchQueue(${userId}): found opponent from RANKED`);
-                      removalPromises = [
-                        Redis.TokenManager.remove(_chainState.token1.userId),
-                        Redis.TokenManager.remove(_chainState.token2.userId),
-                        casualQueue.remove([_chainState.token1.userId]),
-                        casualDeckValueQueue.remove([_chainState.token2.userId]),
-                        rankedQueue.remove([_chainState.token2.userId]),
-                        rankedDeckValueQueue.remove([_chainState.token2.userId]),
-                      ];
-                    }
+                  // check whether opponent is also in casual or from ranked
+                  if (_chainState.token2.gameType === GameType.Casual) {
+                    Logger.module('JOB').debug(
+                      `[J:${job.id}] searchQueue(${userId}): found opponent from CASUAL`,
+                    );
+                    removalPromises = [
+                      Redis.TokenManager.remove(_chainState.token1.userId),
+                      Redis.TokenManager.remove(_chainState.token2.userId),
+                      casualQueue.remove([_chainState.token1.userId, _chainState.token2.userId]),
+                      casualDeckValueQueue.remove([
+                        _chainState.token1.userId,
+                        _chainState.token2.userId,
+                      ]),
+                    ];
+                  } else {
+                    Logger.module('JOB').debug(
+                      `[J:${job.id}] searchQueue(${userId}): found opponent from RANKED`,
+                    );
+                    removalPromises = [
+                      Redis.TokenManager.remove(_chainState.token1.userId),
+                      Redis.TokenManager.remove(_chainState.token2.userId),
+                      casualQueue.remove([_chainState.token1.userId]),
+                      casualDeckValueQueue.remove([_chainState.token2.userId]),
+                      rankedQueue.remove([_chainState.token2.userId]),
+                      rankedDeckValueQueue.remove([_chainState.token2.userId]),
+                    ];
+                  }
 
-                    return Promise.all(removalPromises);
-                  }).then(function (results) { // TODO: We should spread and validate results
-                    // mark match made
-                    logMatchMade(_chainState.token1, _chainState.token2);
+                  return Promise.all(removalPromises);
+                })
+                .then(function (results) {
+                  // TODO: We should spread and validate results
+                  // mark match made
+                  logMatchMade(_chainState.token1, _chainState.token2);
 
-                    // log it
-                    Logger.module('JOB').debug(`[J:${job.id}]` + 'casual'.yellow + ` - Search for Game (${userId}) done(), matched versus ${_chainState.token2.userId}`);
-                    job.log('Matched versus %s(%s)', _chainState.token2.userId, _chainState.token2.name);
+                  // log it
+                  Logger.module('JOB').debug(
+                    `[J:${job.id}]` +
+                      'casual'.yellow +
+                      ` - Search for Game (${userId}) done(), matched versus ${_chainState.token2.userId}`,
+                  );
+                  job.log(
+                    'Matched versus %s(%s)',
+                    _chainState.token2.userId,
+                    _chainState.token2.name,
+                  );
 
-                    // Fire off job to setup game between both players
-                    Redis.Jobs.enqueue('matchmaking-setup-game', {
+                  // Fire off job to setup game between both players
+                  Redis.Jobs.enqueue(
+                    'matchmaking-setup-game',
+                    {
                       name: 'Matchmaking Setup Game',
-                      title: util.format('Game :: Setup Game :: %s versus %s', _chainState.token1.name, _chainState.token2.name),
+                      title: util.format(
+                        'Game :: Setup Game :: %s versus %s',
+                        _chainState.token1.name,
+                        _chainState.token2.name,
+                      ),
                       token1: _chainState.token1,
                       token2: _chainState.token2,
                       gameType,
-                    }, { removeOnComplete: true });
+                    },
+                    { removeOnComplete: true },
+                  );
 
-                    // We're done
-                    return done(null, { opponentName: _chainState.token2.name });
-                  })
-                  .catch(onType(Errors.NotFoundError, (error) => done(error)))
-                  .catch(onType(Errors.UnexpectedBadDataError, function (error) {
-                    Logger.module('JOB').error(`[J:${job.id}] searchQueue(${userId}): removing opponent token ${opponent.id} due to error`);
+                  // We're done
+                  return done(null, { opponentName: _chainState.token2.name });
+                })
+                .catch(onType(Errors.NotFoundError, (error) => done(error)))
+                .catch(
+                  onType(Errors.UnexpectedBadDataError, function (error) {
+                    Logger.module('JOB').error(
+                      `[J:${job.id}] searchQueue(${userId}): removing opponent token ${opponent.id} due to error`,
+                    );
 
                     // dangling async removal of potentially bad opponent data
                     Redis.TokenManager.remove(opponent.id);
@@ -398,14 +470,16 @@ module.exports = function (job, done) {
                     unlock();
 
                     return requeueJob(job, done);
-                  }));
-              }
-            });
+                  }),
+                );
+            }
+          });
         }
       });
-  }).catch((error) => done(error));
+    })
+    .catch((error) => done(error));
 };
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

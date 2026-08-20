@@ -7,7 +7,6 @@ var _ = require('underscore');
 var ProfileRiftSummaryViewTempl = require('./templates/profile_rift_summary_item.hbs');
 
 var ProfileRiftSummaryView = Backbone.Marionette.ItemView.extend({
-
   className: 'profile-rift-summary',
 
   template: ProfileRiftSummaryViewTempl,
@@ -17,9 +16,14 @@ var ProfileRiftSummaryView = Backbone.Marionette.ItemView.extend({
 
     if (data.highest_rated_run != null) {
       if (data.highest_rated_run.rift_level != null && data.highest_rated_run.rift_points != null) {
-        var currentLevelPointsNeeded = RiftHelper.pointsRequiredForLevel(data.highest_rated_run.rift_level + 1);
-        var currentLevelPointsProgress = data.highest_rated_run.rift_points - RiftHelper.totalPointsForLevel(data.highest_rated_run.rift_level);
-        data.highest_rated_run.rift_level_percent = currentLevelPointsProgress / currentLevelPointsNeeded * 100.0;
+        var currentLevelPointsNeeded = RiftHelper.pointsRequiredForLevel(
+          data.highest_rated_run.rift_level + 1,
+        );
+        var currentLevelPointsProgress =
+          data.highest_rated_run.rift_points -
+          RiftHelper.totalPointsForLevel(data.highest_rated_run.rift_level);
+        data.highest_rated_run.rift_level_percent =
+          (currentLevelPointsProgress / currentLevelPointsNeeded) * 100.0;
       }
     }
 
@@ -30,7 +34,6 @@ var ProfileRiftSummaryView = Backbone.Marionette.ItemView.extend({
     // model changes do not auto render unless we listen for changes and listeners should only be added onShow to prevent zombie views
     this.listenTo(this.model, 'change sync', this.render);
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

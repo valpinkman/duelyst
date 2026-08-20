@@ -23,22 +23,29 @@ class SisterAchievement extends Achievement {
   static progressRequired = 1;
 
   static progressForCardCollection(cardCollection, allCards) {
-    if ((cardCollection == null)) {
+    if (cardCollection == null) {
       return 0;
     }
 
-    const sisterCount = (cardCollection[Cards.Faction5.EarthSister] != null ? cardCollection[Cards.Faction5.EarthSister].count : undefined) || 0;
+    const sisterCount =
+      (cardCollection[Cards.Faction5.EarthSister] != null
+        ? cardCollection[Cards.Faction5.EarthSister].count
+        : undefined) || 0;
     if (sisterCount >= 3) {
       return 0;
     }
 
     // check if player owns 3 or more of at least 6 rare cards for this faction
-    const allFactionRares = _.filter(allCards, (card) => (card.getFactionId() === Factions.Faction5)
-      && (card.getRarityId() === RarityLookup.Rare)
-      && !card.getIsHiddenInCollection()
-      && card.getIsAvailable()
-      && !Cards.getIsPrismaticCardId(card.getId())
-      && !Cards.getIsSkinnedCardId(card.getId()));
+    const allFactionRares = _.filter(
+      allCards,
+      (card) =>
+        card.getFactionId() === Factions.Faction5 &&
+        card.getRarityId() === RarityLookup.Rare &&
+        !card.getIsHiddenInCollection() &&
+        card.getIsAvailable() &&
+        !Cards.getIsPrismaticCardId(card.getId()) &&
+        !Cards.getIsSkinnedCardId(card.getId()),
+    );
 
     let numRaresWith3xCopies = 0;
     const numCompletedRaresRequired = 6;
@@ -47,7 +54,11 @@ class SisterAchievement extends Achievement {
       var prismaticCardId = Cards.getPrismaticCardId(baseCardId);
       var cardCollectionBase = cardCollection[baseCardId];
       var cardCollectionPrismatic = cardCollection[prismaticCardId];
-      if ((((cardCollectionBase != null ? cardCollectionBase.count : undefined) || 0) + ((cardCollectionPrismatic != null ? cardCollectionPrismatic.count : undefined) || 0)) >= 3) {
+      if (
+        ((cardCollectionBase != null ? cardCollectionBase.count : undefined) || 0) +
+          ((cardCollectionPrismatic != null ? cardCollectionPrismatic.count : undefined) || 0) >=
+        3
+      ) {
         numRaresWith3xCopies += 1;
         if (numRaresWith3xCopies >= 6) {
           return 1;
@@ -61,11 +72,7 @@ class SisterAchievement extends Achievement {
 SisterAchievement.title = i18next.t('achievements.earth_sister_title');
 SisterAchievement.description = i18next.t('achievements.earth_sister_desc');
 SisterAchievement.rewards = {
-  cards: [
-    Cards.Faction5.EarthSister,
-    Cards.Faction5.EarthSister,
-    Cards.Faction5.EarthSister,
-  ],
+  cards: [Cards.Faction5.EarthSister, Cards.Faction5.EarthSister, Cards.Faction5.EarthSister],
 };
 
 module.exports = SisterAchievement;

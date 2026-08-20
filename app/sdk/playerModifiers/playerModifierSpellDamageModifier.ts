@@ -18,21 +18,31 @@ class PlayerModifierSpellDamageModifier extends PlayerModifier {
   static type = 'PlayerModifierSpellDamageModifier';
 
   setSpellDamageChange(damageChange) {
-    return this.spellDamageChange = damageChange;
+    return (this.spellDamageChange = damageChange);
   }
 
   setSpellDamageMultiplier(damageMultiplier) {
-    return this.spellDamageMultiplier = damageMultiplier;
+    return (this.spellDamageMultiplier = damageMultiplier);
   }
 
   onModifyActionForExecution(actionEvent) {
     super.onModifyActionForExecution(actionEvent);
     const a = actionEvent.action;
     // watch for damageActions created by this player that were not triggered by a modifier
-    if ((a.getOwnerId() === this.getPlayerId()) && a instanceof DamageAction && !a.getCreatedByTriggeringModifier()) {
+    if (
+      a.getOwnerId() === this.getPlayerId() &&
+      a instanceof DamageAction &&
+      !a.getCreatedByTriggeringModifier()
+    ) {
       const rootAction = a.getRootAction();
       // this action was not triggered by a modifier, but was it caused by a spell cast?
-      if (rootAction instanceof ApplyCardToBoardAction && (__guard__(__guard__(rootAction.getCard(), (x1) => x1.getRootCard()), (x) => x.getType()) === CardType.Spell)) {
+      if (
+        rootAction instanceof ApplyCardToBoardAction &&
+        __guard__(
+          __guard__(rootAction.getCard(), (x1) => x1.getRootCard()),
+          (x) => x.getType(),
+        ) === CardType.Spell
+      ) {
         // modify the damageAmount
         a.setChangedByModifier(this);
         if (this.spellDamageChange != null) {
@@ -52,5 +62,5 @@ PlayerModifierSpellDamageModifier.prototype.spellDamageMultiplier = null;
 module.exports = PlayerModifierSpellDamageModifier;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

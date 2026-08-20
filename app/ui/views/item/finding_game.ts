@@ -17,7 +17,6 @@ var momentDurationFormat = require('moment-duration-format');
 var i18next = require('i18next');
 
 var FindingGameItemView = Backbone.Marionette.ItemView.extend({
-
   id: 'app-finding-game',
   className: 'status game-vs',
 
@@ -55,11 +54,22 @@ var FindingGameItemView = Backbone.Marionette.ItemView.extend({
 
   onShow: function () {
     // change gradient color mapping
-    Scene.getInstance().getFX().showGradientColorMap(this._requestId, CONFIG.ANIMATE_FAST_DURATION, {
-      r: 194, g: 203, b: 240, a: 255,
-    }, {
-      r: 20, g: 25, b: 60, a: 255,
-    });
+    Scene.getInstance().getFX().showGradientColorMap(
+      this._requestId,
+      CONFIG.ANIMATE_FAST_DURATION,
+      {
+        r: 194,
+        g: 203,
+        b: 240,
+        a: 255,
+      },
+      {
+        r: 20,
+        g: 25,
+        b: 60,
+        a: 255,
+      },
+    );
 
     this._canShowGame = true;
     if (this._foundGamePlayerDataModel) {
@@ -87,7 +97,9 @@ var FindingGameItemView = Backbone.Marionette.ItemView.extend({
 
   onPrepareForDestroy: function () {
     // reset gradient color mapping
-    Scene.getInstance().getFX().clearGradientColorMap(this._requestId, CONFIG.ANIMATE_MEDIUM_DURATION);
+    Scene.getInstance()
+      .getFX()
+      .clearGradientColorMap(this._requestId, CONFIG.ANIMATE_MEDIUM_DURATION);
   },
 
   onDestroy: function () {
@@ -105,17 +117,24 @@ var FindingGameItemView = Backbone.Marionette.ItemView.extend({
   onShowVelocity: function (velocity) {
     var prettyTimestamp = moment.duration(velocity).format('m:ss', { trim: false });
 
-    var waitString = i18next.t('game_setup.matchmaking_wait_time_message', { wait_time: prettyTimestamp });
+    var waitString = i18next.t('game_setup.matchmaking_wait_time_message', {
+      wait_time: prettyTimestamp,
+    });
 
     if (!velocity || velocity <= 5) {
       velocity = 90000 + 10000 - Math.round(Math.random() * 20000);
-      var waitString = i18next.t('game_setup.matchmaking_estimated_wait_time_message', { wait_time: prettyTimestamp });
+      var waitString = i18next.t('game_setup.matchmaking_estimated_wait_time_message', {
+        wait_time: prettyTimestamp,
+      });
     }
 
     this.ui.velocity.html(waitString);
-    this.ui.velocity.animate({
-      opacity: 1,
-    }, 250);
+    this.ui.velocity.animate(
+      {
+        opacity: 1,
+      },
+      250,
+    );
   },
 
   updateClock: function () {
@@ -137,15 +156,20 @@ var FindingGameItemView = Backbone.Marionette.ItemView.extend({
       .velocity('stop')
       .velocity(
         { opacity: 0 },
-        { duration: CONFIG.FADE_FAST_DURATION * 1000.0, complete: function () { this.ui.$game_tip.text(GAME_TIPS.random_tip()); }.bind(this) },
+        {
+          duration: CONFIG.FADE_FAST_DURATION * 1000.0,
+          complete: function () {
+            this.ui.$game_tip.text(GAME_TIPS.random_tip());
+          }.bind(this),
+        },
       )
-      .velocity(
-        { opacity: 1 },
-        { duration: CONFIG.FADE_FAST_DURATION * 1000.0 },
-      );
+      .velocity({ opacity: 1 }, { duration: CONFIG.FADE_FAST_DURATION * 1000.0 });
 
     // delay and show next
-    this._game_tip_timeout_id = setTimeout(this._showNextGameTip.bind(this), CONFIG.GAME_TIP_DURATION * 1000.0);
+    this._game_tip_timeout_id = setTimeout(
+      this._showNextGameTip.bind(this),
+      CONFIG.GAME_TIP_DURATION * 1000.0,
+    );
   },
 
   _stopShowingGameTips: function () {
@@ -225,11 +249,19 @@ var FindingGameItemView = Backbone.Marionette.ItemView.extend({
       if (player1SpriteData != null && player2SpriteData != null) {
         if (this._displayedPlayer1SpriteData !== player1SpriteData) {
           this._displayedPlayer1SpriteData = player1SpriteData;
-          this._player1GLData = UtilsUI.showCocosSprite(this.ui.player1General, this._player1GLData, player1SpriteData);
+          this._player1GLData = UtilsUI.showCocosSprite(
+            this.ui.player1General,
+            this._player1GLData,
+            player1SpriteData,
+          );
         }
         if (this._displayedPlayer2SpriteData !== player2SpriteData) {
           this._displayedPlayer2SpriteData = player2SpriteData;
-          this._player2GLData = UtilsUI.showCocosSprite(this.ui.player2General, this._player2GLData, player2SpriteData);
+          this._player2GLData = UtilsUI.showCocosSprite(
+            this.ui.player2General,
+            this._player2GLData,
+            player2SpriteData,
+          );
         }
       } else {
         this.ui.player1General.remove();
@@ -244,7 +276,6 @@ var FindingGameItemView = Backbone.Marionette.ItemView.extend({
   },
 
   /* endregion MODES */
-
 });
 
 // Expose the class either via CommonJS or the global object

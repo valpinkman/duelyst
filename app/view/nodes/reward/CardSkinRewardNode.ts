@@ -17,7 +17,6 @@ const BaseParticleSystem = require('../BaseParticleSystem');
  *************************************************************************** */
 
 const CardSkinRewardNode = RewardNode.extend({
-
   _cardSkinId: null,
 
   ctor(cardSkinId) {
@@ -41,7 +40,10 @@ const CardSkinRewardNode = RewardNode.extend({
    */
   getRequiredResources() {
     const cardSkinRewardResources = PKGS.getPkgForIdentifier('card_skin_reward');
-    const cardSkinResources = this._cardSkinId != null ? SDK.CosmeticsFactory.cosmeticResourcesForIdentifier(this._cardSkinId) : [];
+    const cardSkinResources =
+      this._cardSkinId != null
+        ? SDK.CosmeticsFactory.cosmeticResourcesForIdentifier(this._cardSkinId)
+        : [];
     return this._super().concat(cardSkinResources, cardSkinRewardResources);
   },
 
@@ -50,8 +52,8 @@ const CardSkinRewardNode = RewardNode.extend({
   /* region ANIMATION */
 
   getRewardAnimationPromise(looping, showLabel) {
-    return (looping ? this.showLoopingRewardFlare() : this.showRewardFlare())
-      .then(() => new Promise<void>((resolve) => {
+    return (looping ? this.showLoopingRewardFlare() : this.showRewardFlare()).then(() =>
+      new Promise<void>((resolve) => {
         // card skin data
         const cardSkinData = SDK.CosmeticsFactory.cosmeticForIdentifier(this._cardSkinId);
         const { animResource } = cardSkinData;
@@ -77,8 +79,16 @@ const CardSkinRewardNode = RewardNode.extend({
 
         if (showLabel) {
           // primary label
-          const labelText = _.isString(showLabel) ? showLabel : i18next.t('cosmetics.cosmetic_type_card_skin').toLocaleUpperCase();
-          var label = new cc.LabelTTF(labelText, RSX.font_regular.name, 22, cc.size(200, 24), cc.TEXT_ALIGNMENT_CENTER);
+          const labelText = _.isString(showLabel)
+            ? showLabel
+            : i18next.t('cosmetics.cosmetic_type_card_skin').toLocaleUpperCase();
+          var label = new cc.LabelTTF(
+            labelText,
+            RSX.font_regular.name,
+            22,
+            cc.size(200, 24),
+            cc.TEXT_ALIGNMENT_CENTER,
+          );
           label.setPosition(0, -120);
           label.setOpacity(0);
           this.addChild(label, 1);
@@ -87,7 +97,13 @@ const CardSkinRewardNode = RewardNode.extend({
           const { rarityId } = cardSkinData;
           if (rarityId != null) {
             const rarityData = SDK.RarityFactory.rarityForIdentifier(rarityId);
-            var sublabel = new cc.LabelTTF(rarityData.name.toLocaleUpperCase(), RSX.font_regular.name, 16, cc.size(200, 24), cc.TEXT_ALIGNMENT_CENTER);
+            var sublabel = new cc.LabelTTF(
+              rarityData.name.toLocaleUpperCase(),
+              RSX.font_regular.name,
+              16,
+              cc.size(200, 24),
+              cc.TEXT_ALIGNMENT_CENTER,
+            );
             sublabel.setFontFillColor(rarityData.color);
             sublabel.setPosition(0, -100);
             sublabel.setOpacity(0);
@@ -104,52 +120,62 @@ const CardSkinRewardNode = RewardNode.extend({
         cardSkinSprite.runAction(animationLoopingAction);
 
         // show card skin
-        this.runAction(cc.sequence(
-          cc.spawn(
-            cc.targetedAction(cardSkinSprite, cc.sequence(
-              cc.show(),
-              cc.scaleTo(CONFIG.ANIMATE_MEDIUM_DURATION, cardSkinScale).easing(cc.easeBackOut()),
-            )),
-            cc.targetedAction(shadowSprite, cc.sequence(
-              cc.show(),
-              cc.fadeTo(CONFIG.ANIMATE_MEDIUM_DURATION, 125.0),
-            )),
-          ),
-          cc.callFunc(() => {
-            // show labels
-            if (label != null) {
-              label.fadeTo(CONFIG.ANIMATE_FAST_DURATION, 255.0);
-            }
-            if (sublabel != null) {
-              sublabel.fadeTo(CONFIG.ANIMATE_FAST_DURATION, 255.0);
-            }
-          }),
-          cc.spawn(
+        this.runAction(
+          cc.sequence(
+            cc.spawn(
+              cc.targetedAction(
+                cardSkinSprite,
+                cc.sequence(
+                  cc.show(),
+                  cc
+                    .scaleTo(CONFIG.ANIMATE_MEDIUM_DURATION, cardSkinScale)
+                    .easing(cc.easeBackOut()),
+                ),
+              ),
+              cc.targetedAction(
+                shadowSprite,
+                cc.sequence(cc.show(), cc.fadeTo(CONFIG.ANIMATE_MEDIUM_DURATION, 125.0)),
+              ),
+            ),
             cc.callFunc(() => {
-              // show start action and then loop idle animation
-              cardSkinSprite.stopAction(animationLoopingAction);
-              cardSkinSprite.runAction(cc.sequence(
-                animationStartAction,
-                cc.callFunc(() => {
-                  cardSkinSprite.runAction(animationLoopingAction);
-                }),
-              ));
+              // show labels
+              if (label != null) {
+                label.fadeTo(CONFIG.ANIMATE_FAST_DURATION, 255.0);
+              }
+              if (sublabel != null) {
+                sublabel.fadeTo(CONFIG.ANIMATE_FAST_DURATION, 255.0);
+              }
             }),
-            cc.sequence(
-              cc.delayTime(animationStartAction.getDuration() * 0.5),
+            cc.spawn(
               cc.callFunc(() => {
-                // finish
-                resolve();
+                // show start action and then loop idle animation
+                cardSkinSprite.stopAction(animationLoopingAction);
+                cardSkinSprite.runAction(
+                  cc.sequence(
+                    animationStartAction,
+                    cc.callFunc(() => {
+                      cardSkinSprite.runAction(animationLoopingAction);
+                    }),
+                  ),
+                );
               }),
+              cc.sequence(
+                cc.delayTime(animationStartAction.getDuration() * 0.5),
+                cc.callFunc(() => {
+                  // finish
+                  resolve();
+                }),
+              ),
             ),
           ),
-        ));
-      })
-        .catch((error) => { EventBus.getInstance().trigger(EVENTS.error, error); }));
+        );
+      }).catch((error) => {
+        EventBus.getInstance().trigger(EVENTS.error, error);
+      }),
+    );
   },
 
   /* endregion ANIMATION */
-
 });
 
 CardSkinRewardNode.create = function (options, node) {

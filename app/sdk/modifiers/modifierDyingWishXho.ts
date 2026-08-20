@@ -19,15 +19,23 @@ class ModifierDyingWishXho extends ModifierDyingWish {
 
   onDyingWish() {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
-      const f2SpellCards = this.getGameSession().getCardCaches().getFaction(Factions.Faction2).getType(CardType.Spell)
+      const f2SpellCards = this.getGameSession()
+        .getCardCaches()
+        .getFaction(Factions.Faction2)
+        .getType(CardType.Spell)
         .getIsHiddenInCollection(false)
         .getIsPrismatic(false)
         .getIsSkinned(false)
         .getCards();
-      const spellCard = f2SpellCards[this.getGameSession().getRandomIntegerForExecution(f2SpellCards.length)];
+      const spellCard =
+        f2SpellCards[this.getGameSession().getRandomIntegerForExecution(f2SpellCards.length)];
       const cardData = spellCard.createNewCardData();
       cardData.additionalModifiersContextObjects = [ModifierManaCostChange.createContextObject(-1)];
-      const a = new PutCardInHandAction(this.getGameSession(), this.getCard().getOwnerId(), cardData);
+      const a = new PutCardInHandAction(
+        this.getGameSession(),
+        this.getCard().getOwnerId(),
+        cardData,
+      );
       return this.getGameSession().executeAction(a);
     }
   }

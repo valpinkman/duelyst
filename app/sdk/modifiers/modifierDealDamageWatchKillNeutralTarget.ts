@@ -23,7 +23,10 @@ class ModifierDealDamageWatchKillNeutralTarget extends ModifierDealDamageWatchKi
 
   getIsActionRelevant(a) {
     // kill the target as long as it satisfies base requirements AND is Neutral
-    return super.getIsActionRelevant(a) && (__guard__(a.getTarget(), (x) => x.getFactionId()) === Factions.Neutral);
+    return (
+      super.getIsActionRelevant(a) &&
+      __guard__(a.getTarget(), (x) => x.getFactionId()) === Factions.Neutral
+    );
   }
 
   onDealDamage(action) {
@@ -33,12 +36,16 @@ class ModifierDealDamageWatchKillNeutralTarget extends ModifierDealDamageWatchKi
     }
   }
 }
-ModifierDealDamageWatchKillNeutralTarget.prototype.type = 'ModifierDealDamageWatchKillNeutralTarget';
+ModifierDealDamageWatchKillNeutralTarget.prototype.type =
+  'ModifierDealDamageWatchKillNeutralTarget';
 ModifierDealDamageWatchKillNeutralTarget.prototype.maxStacks = 1;
-ModifierDealDamageWatchKillNeutralTarget.prototype.fxResource = ['FX.Modifiers.ModifierDealDamageWatch', 'FX.Modifiers.ModifierGenericKill'];
+ModifierDealDamageWatchKillNeutralTarget.prototype.fxResource = [
+  'FX.Modifiers.ModifierDealDamageWatch',
+  'FX.Modifiers.ModifierGenericKill',
+];
 
 module.exports = ModifierDealDamageWatchKillNeutralTarget;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

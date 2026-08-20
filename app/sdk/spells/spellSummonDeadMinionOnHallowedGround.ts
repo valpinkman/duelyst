@@ -20,7 +20,7 @@ class SpellSummonDeadMinionOnHallowedGround extends SpellSpawnEntity {
   }
 
   getDeadUnits() {
-    if ((this._private.deadUnits == null)) {
+    if (this._private.deadUnits == null) {
       this._private.deadUnits = this.getGameSession().getDeadUnits(this.getOwnerId());
     }
     return this._private.deadUnits;
@@ -31,7 +31,8 @@ class SpellSummonDeadMinionOnHallowedGround extends SpellSpawnEntity {
       const entities = this.getDeadUnits();
       // find and spawn a dead unit
       if (entities.length > 0) {
-        const entityToSpawn = entities[this.getGameSession().getRandomIntegerForExecution(entities.length)];
+        const entityToSpawn =
+          entities[this.getGameSession().getRandomIntegerForExecution(entities.length)];
         if (entityToSpawn != null) {
           this.cardDataOrIndexToSpawn = entityToSpawn.createNewCardData();
           return super.onApplyEffectToBoardTile(board, x, y, sourceAction);
@@ -45,7 +46,7 @@ class SpellSummonDeadMinionOnHallowedGround extends SpellSpawnEntity {
     const possibleSummonPositions = [];
 
     for (var tile of Array.from<any>(board.getTiles(true, false))) {
-      if ((tile.getOwnerId() === this.getOwnerId()) && (tile.getBaseCardId() === Cards.Tile.Hallowed)) {
+      if (tile.getOwnerId() === this.getOwnerId() && tile.getBaseCardId() === Cards.Tile.Hallowed) {
         var tilePosition = { x: tile.getPosition().x, y: tile.getPosition().y };
         if (!board.getCardAtPosition(tilePosition, CardType.Unit)) {
           possibleSummonPositions.push(tilePosition);
@@ -54,7 +55,7 @@ class SpellSummonDeadMinionOnHallowedGround extends SpellSpawnEntity {
     }
 
     // don't allow followup if there's nothing to re-summon or no unoccupied tiles
-    if ((this.getDeadUnits().length > 0) && (possibleSummonPositions.length > 0)) {
+    if (this.getDeadUnits().length > 0 && possibleSummonPositions.length > 0) {
       return super._postFilterPlayPositions(possibleSummonPositions);
     }
     return [];

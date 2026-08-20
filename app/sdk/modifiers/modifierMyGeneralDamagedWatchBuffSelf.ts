@@ -18,8 +18,12 @@ class ModifierMyGeneralDamagedWatchBuffSelf extends ModifierMyGeneralDamagedWatc
   static description = 'Whenever your General takes damage, this minion gains %X';
 
   static createContextObject(attackBuff, maxHPBuff, options) {
-    if (attackBuff == null) { attackBuff = 0; }
-    if (maxHPBuff == null) { maxHPBuff = 0; }
+    if (attackBuff == null) {
+      attackBuff = 0;
+    }
+    if (maxHPBuff == null) {
+      maxHPBuff = 0;
+    }
     const contextObject = super.createContextObject(options);
     const statContextObject = Modifier.createContextObjectWithAttributeBuffs(attackBuff, maxHPBuff);
     statContextObject.appliedName = 'Vengeful Rage';
@@ -30,13 +34,22 @@ class ModifierMyGeneralDamagedWatchBuffSelf extends ModifierMyGeneralDamagedWatc
   static getDescription(modifierContextObject) {
     if (modifierContextObject) {
       const subContextObject = modifierContextObject.modifiersContextObjects[0];
-      return this.description.replace(/%X/, Stringifiers.stringifyAttackHealthBuff(subContextObject.attributeBuffs.atk, subContextObject.attributeBuffs.maxHP));
+      return this.description.replace(
+        /%X/,
+        Stringifiers.stringifyAttackHealthBuff(
+          subContextObject.attributeBuffs.atk,
+          subContextObject.attributeBuffs.maxHP,
+        ),
+      );
     }
     return this.description;
   }
 
   onDamageDealtToGeneral(action) {
-    return this.applyManagedModifiersFromModifiersContextObjects(this.modifiersContextObjects, this.getCard());
+    return this.applyManagedModifiersFromModifiersContextObjects(
+      this.modifiersContextObjects,
+      this.getCard(),
+    );
   }
 }
 ModifierMyGeneralDamagedWatchBuffSelf.prototype.type = 'ModifierMyGeneralDamagedWatchBuffSelf';

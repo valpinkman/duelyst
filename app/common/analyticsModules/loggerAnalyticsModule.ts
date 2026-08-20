@@ -18,19 +18,27 @@ class LoggerAnalyticsModule {
   }
 
   static identify(id, params) {
-    return Logger.module('Analytics').log(`identify() -> id: ${id}. params: ${JSON.stringify(params)}`);
+    return Logger.module('Analytics').log(
+      `identify() -> id: ${id}. params: ${JSON.stringify(params)}`,
+    );
   }
 
   static page(title, params) {
-    return Logger.module('Analytics').log(`page() -> title: ${title}. params: ${JSON.stringify(params)}`);
+    return Logger.module('Analytics').log(
+      `page() -> title: ${title}. params: ${JSON.stringify(params)}`,
+    );
   }
 
   static screen(title, params) {
-    return Logger.module('Analytics').log(`screen() -> title: ${title}. params: ${JSON.stringify(params)}`);
+    return Logger.module('Analytics').log(
+      `screen() -> title: ${title}. params: ${JSON.stringify(params)}`,
+    );
   }
 
   static track(eventName, params) {
-    return Logger.module('Analytics').log(`track() -> eventName: ${eventName}. params: ${JSON.stringify(params)}`);
+    return Logger.module('Analytics').log(
+      `track() -> eventName: ${eventName}. params: ${JSON.stringify(params)}`,
+    );
   }
 
   static reset() {

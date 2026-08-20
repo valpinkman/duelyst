@@ -11,7 +11,6 @@ const BaseSprite = require('../BaseSprite');
  *************************************************************************** */
 
 const ReplaceNode = cc.Node.extend({
-
   backgroundSprite: null,
   innerRingSprite: null,
   innerGlowSprite: null,
@@ -73,7 +72,13 @@ const ReplaceNode = cc.Node.extend({
     this.addChild(this.outerRingShineSprite);
 
     // text
-    this.label = new cc.LabelTTF(i18next.t('battle.replace_button_label').toUpperCase(), RSX.font_regular.name, 16, cc.size(200, 32), cc.TEXT_ALIGNMENT_CENTER);
+    this.label = new cc.LabelTTF(
+      i18next.t('battle.replace_button_label').toUpperCase(),
+      RSX.font_regular.name,
+      16,
+      cc.size(200, 32),
+      cc.TEXT_ALIGNMENT_CENTER,
+    );
     this.label.getTexture().setAntiAliasTexParameters();
     this.label.setAnchorPoint(cc.p(0.5, 0.5));
     this.label.setFontFillColor(cc.color.WHITE);
@@ -175,12 +180,14 @@ const ReplaceNode = cc.Node.extend({
   showActiveHighlightState() {
     this.setVisible(true);
     this._removeDeemphasis();
-    this.label.runAction(cc.sequence(
-      cc.fadeTo(CONFIG.FADE_MEDIUM_DURATION, 0),
-      cc.callFunc(() => {
-        this.label.setVisible(false);
-      }),
-    ));
+    this.label.runAction(
+      cc.sequence(
+        cc.fadeTo(CONFIG.FADE_MEDIUM_DURATION, 0),
+        cc.callFunc(() => {
+          this.label.setVisible(false);
+        }),
+      ),
+    );
     this.backgroundSprite.startRotating(30.0, 360.0);
     this.innerGlowSprite.startRotating(30.0, 360.0);
     this.innerGlowSprite.startPulsingOpacity(0.5, 127.0, 255.0);
@@ -206,12 +213,14 @@ const ReplaceNode = cc.Node.extend({
   showInactiveState() {
     this.setVisible(true);
     this._showDeemphasis();
-    this.label.runAction(cc.sequence(
-      cc.fadeTo(CONFIG.FADE_MEDIUM_DURATION, 0),
-      cc.callFunc(() => {
-        this.label.setVisible(false);
-      }),
-    ));
+    this.label.runAction(
+      cc.sequence(
+        cc.fadeTo(CONFIG.FADE_MEDIUM_DURATION, 0),
+        cc.callFunc(() => {
+          this.label.setVisible(false);
+        }),
+      ),
+    );
     this.backgroundSprite.startRotating(60.0, 360.0);
     this.innerGlowSprite.startRotating(60.0, 360.0);
     this.innerGlowSprite.stopPulsingOpacity();
@@ -229,15 +238,24 @@ const ReplaceNode = cc.Node.extend({
     this.outerRingShineSprite.setShaderProgram(cc.shaderCache.programForKey('Monochrome'));
   },
   _removeDeemphasis() {
-    this.backgroundSprite.setShaderProgram(cc.shaderCache.programForKey(cc.SHADER_POSITION_TEXTURECOLOR));
-    this.innerGlowSprite.setShaderProgram(cc.shaderCache.programForKey(cc.SHADER_POSITION_TEXTURECOLOR));
-    this.innerRingSprite.setShaderProgram(cc.shaderCache.programForKey(cc.SHADER_POSITION_TEXTURECOLOR));
-    this.outerRingSmokeSprite.setShaderProgram(cc.shaderCache.programForKey(cc.SHADER_POSITION_TEXTURECOLOR));
-    this.outerRingShineSprite.setShaderProgram(cc.shaderCache.programForKey(cc.SHADER_POSITION_TEXTURECOLOR));
+    this.backgroundSprite.setShaderProgram(
+      cc.shaderCache.programForKey(cc.SHADER_POSITION_TEXTURECOLOR),
+    );
+    this.innerGlowSprite.setShaderProgram(
+      cc.shaderCache.programForKey(cc.SHADER_POSITION_TEXTURECOLOR),
+    );
+    this.innerRingSprite.setShaderProgram(
+      cc.shaderCache.programForKey(cc.SHADER_POSITION_TEXTURECOLOR),
+    );
+    this.outerRingSmokeSprite.setShaderProgram(
+      cc.shaderCache.programForKey(cc.SHADER_POSITION_TEXTURECOLOR),
+    );
+    this.outerRingShineSprite.setShaderProgram(
+      cc.shaderCache.programForKey(cc.SHADER_POSITION_TEXTURECOLOR),
+    );
   },
 
   /* endregion STATES */
-
 });
 
 ReplaceNode.create = function (options, node) {

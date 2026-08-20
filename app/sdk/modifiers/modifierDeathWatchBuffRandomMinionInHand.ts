@@ -33,21 +33,31 @@ class ModifierDeathWatchBuffRandomMinionInHand extends ModifierDeathWatch {
   onDeathWatch(action) {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
       const possibleMinions = [];
-      for (var card of Array.from<any>(this.getCard().getOwner().getDeck().getCardsInHandExcludingMissing())) {
+      for (var card of Array.from<any>(
+        this.getCard().getOwner().getDeck().getCardsInHandExcludingMissing(),
+      )) {
         if (card.getType() === CardType.Unit) {
           possibleMinions.push(card);
         }
       }
       if (possibleMinions.length > 0) {
-        const cardToBuff = possibleMinions[this.getGameSession().getRandomIntegerForExecution(possibleMinions.length)];
+        const cardToBuff =
+          possibleMinions[
+            this.getGameSession().getRandomIntegerForExecution(possibleMinions.length)
+          ];
         return Array.from<any>(this.modifiersContextObjects).map((modifierContextObject) =>
-          this.getGameSession().applyModifierContextObject(modifierContextObject, cardToBuff));
+          this.getGameSession().applyModifierContextObject(modifierContextObject, cardToBuff),
+        );
       }
     }
   }
 }
-ModifierDeathWatchBuffRandomMinionInHand.prototype.type = 'ModifierDeathWatchBuffRandomMinionInHand';
-ModifierDeathWatchBuffRandomMinionInHand.prototype.fxResource = ['FX.Modifiers.ModifierDeathwatch', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierDeathWatchBuffRandomMinionInHand.prototype.type =
+  'ModifierDeathWatchBuffRandomMinionInHand';
+ModifierDeathWatchBuffRandomMinionInHand.prototype.fxResource = [
+  'FX.Modifiers.ModifierDeathwatch',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 ModifierDeathWatchBuffRandomMinionInHand.prototype.modifiersContextObjects = null;
 
 module.exports = ModifierDeathWatchBuffRandomMinionInHand;

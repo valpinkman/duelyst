@@ -27,10 +27,18 @@ class ModifierFirstBlood extends Modifier {
   onActivate() {
     super.onActivate();
     // if rush is applied on the turn that the unit was summoned
-    if (this.getGameSession().wasActionExecutedDuringTurn(this.getCard().getAppliedToBoardByAction(), this.getGameSession().getCurrentTurn()) && this.getGameSession().getCanCardBeScheduledForRemoval(this.getCard())) {
+    if (
+      this.getGameSession().wasActionExecutedDuringTurn(
+        this.getCard().getAppliedToBoardByAction(),
+        this.getGameSession().getCurrentTurn(),
+      ) &&
+      this.getGameSession().getCanCardBeScheduledForRemoval(this.getCard())
+    ) {
       // immediately activate the unit IF it has not already moved and / or attacked this turn (do not re-activate units that already had rush)
-      if ((this.getCard().getMovesMade() === 0) && (this.getCard().getAttacksMade() === 0)) {
-        const refreshExhaustionAction = this.getGameSession().createActionForType(RefreshExhaustionAction.type);
+      if (this.getCard().getMovesMade() === 0 && this.getCard().getAttacksMade() === 0) {
+        const refreshExhaustionAction = this.getGameSession().createActionForType(
+          RefreshExhaustionAction.type,
+        );
         refreshExhaustionAction.setSource(this.getCard());
         refreshExhaustionAction.setTarget(this.getCard());
         return this.getCard().getGameSession().executeAction(refreshExhaustionAction);
@@ -41,8 +49,16 @@ class ModifierFirstBlood extends Modifier {
   deactivateRushIfNeeded() {
     // if rush is dispelled, deactivated, or removed on the turn that the unit was summoned
     // immediately exhaust the unit
-    if (this.getGameSession().wasActionExecutedDuringTurn(__guard__(this.getCard(), (x) => x.getAppliedToBoardByAction()), this.getGameSession().getCurrentTurn()) && this.getGameSession().getCanCardBeScheduledForRemoval(this.getCard())) {
-      const applyExhaustionAction = this.getGameSession().createActionForType(ApplyExhaustionAction.type);
+    if (
+      this.getGameSession().wasActionExecutedDuringTurn(
+        __guard__(this.getCard(), (x) => x.getAppliedToBoardByAction()),
+        this.getGameSession().getCurrentTurn(),
+      ) &&
+      this.getGameSession().getCanCardBeScheduledForRemoval(this.getCard())
+    ) {
+      const applyExhaustionAction = this.getGameSession().createActionForType(
+        ApplyExhaustionAction.type,
+      );
       applyExhaustionAction.setSource(this.getCard());
       applyExhaustionAction.setTarget(this.getCard());
       return this.getGameSession().executeAction(applyExhaustionAction);
@@ -72,5 +88,5 @@ ModifierFirstBlood.prototype.fxResource = ['FX.Modifiers.ModifierFirstBlood'];
 module.exports = ModifierFirstBlood;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

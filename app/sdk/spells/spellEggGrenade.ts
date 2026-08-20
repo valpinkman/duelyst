@@ -37,7 +37,7 @@ class SpellEggGrenade extends SpellKillTarget {
     const filteredPositions = [];
     for (var position of Array.from<any>(validPositions)) {
       var entityAtPosition = this.getGameSession().getBoard().getEntityAtPosition(position);
-      if ((entityAtPosition != null) && (entityAtPosition.getBaseCardId() === Cards.Faction5.Egg)) {
+      if (entityAtPosition != null && entityAtPosition.getBaseCardId() === Cards.Faction5.Egg) {
         filteredPositions.push(position);
       }
     }

@@ -18,13 +18,22 @@ class ModifierDyingWishRespawnEntity extends ModifierDyingWish {
     super.onDyingWish(action);
 
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
-      const spawnAction = new PlayCardSilentlyAction(this.getGameSession(), this.getCard().getOwnerId(), this.getCard().getPosition().x, this.getCard().getPosition().y, this.getCard().createNewCardData());
+      const spawnAction = new PlayCardSilentlyAction(
+        this.getGameSession(),
+        this.getCard().getOwnerId(),
+        this.getCard().getPosition().x,
+        this.getCard().getPosition().y,
+        this.getCard().createNewCardData(),
+      );
       spawnAction.setSource(this.getCard());
       return this.getGameSession().executeAction(spawnAction);
     }
   }
 }
 ModifierDyingWishRespawnEntity.prototype.type = 'ModifierDyingWishRespawnEntity';
-ModifierDyingWishRespawnEntity.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericSpawn'];
+ModifierDyingWishRespawnEntity.prototype.fxResource = [
+  'FX.Modifiers.ModifierDyingWish',
+  'FX.Modifiers.ModifierGenericSpawn',
+];
 
 module.exports = ModifierDyingWishRespawnEntity;

@@ -28,7 +28,8 @@ class Validator {
   onEvent(event) {
     if (event.type === EVENTS.terminate) {
       return this._onTerminate(event);
-    } if (event.type === EVENTS.validate_action) {
+    }
+    if (event.type === EVENTS.validate_action) {
       return this.onValidateAction(event);
     }
   }
@@ -51,7 +52,9 @@ class Validator {
 
   invalidateAction(action, position, message?) {
     // helper method for invalidating an action at a position with a message
-    if (message == null) { message = 'Invalid Action!'; }
+    if (message == null) {
+      message = 'Invalid Action!';
+    }
     action.setIsValid(false);
     action.setValidationMessage(message);
     action.setValidationMessagePosition(position);

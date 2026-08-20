@@ -29,8 +29,12 @@ const EMAIL_TO_USERNAME = new Map([
   ['does@not.exist', 'doesnotexist'],
 ]);
 const VAR_TO_VAR = new Map([
-  ['email', 'username'], ['email1', 'username1'], ['email2', 'username2'],
-  ['email3', 'username3'], ['email4', 'username4'], ['userEmail', 'userName'],
+  ['email', 'username'],
+  ['email1', 'username1'],
+  ['email2', 'username2'],
+  ['email3', 'username3'],
+  ['email4', 'username4'],
+  ['userEmail', 'userName'],
 ]);
 
 const walk = (node, fn) => {
@@ -44,14 +48,22 @@ const walk = (node, fn) => {
   }
 };
 
-let files = 0; let dropped = 0; let renamed = 0; const unmapped = [];
+let files = 0;
+let dropped = 0;
+let renamed = 0;
+const unmapped = [];
 
 for (const file of process.argv.slice(2)) {
   const src = readFileSync(file, 'utf8');
   let ast;
-  try { ast = parse(src, { range: true }); } catch (e) { console.error(`  parse failed ${file}`); continue; }
+  try {
+    ast = parse(src, { range: true });
+  } catch (e) {
+    console.error(`  parse failed ${file}`);
+    continue;
+  }
 
-  const edits = [];   // { start, end, text }
+  const edits = []; // { start, end, text }
 
   walk(ast, (n) => {
     if (n.type !== 'CallExpression' || n.callee.type !== 'MemberExpression') return;
@@ -67,12 +79,20 @@ for (const file of process.argv.slice(2)) {
     }
 
     if (name === 'userIdForEmail') {
-      edits.push({ start: n.callee.property.range[0], end: n.callee.property.range[1], text: 'userIdForUsername' });
+      edits.push({
+        start: n.callee.property.range[0],
+        end: n.callee.property.range[1],
+        text: 'userIdForUsername',
+      });
       renamed += 1;
       const arg = n.arguments[0];
-      if (!arg) return;                                  // userIdForEmail() -- arity test
+      if (!arg) return; // userIdForEmail() -- arity test
       if (arg.type === 'Literal' && EMAIL_TO_USERNAME.has(arg.value)) {
-        edits.push({ start: arg.range[0], end: arg.range[1], text: `'${EMAIL_TO_USERNAME.get(arg.value)}'` });
+        edits.push({
+          start: arg.range[0],
+          end: arg.range[1],
+          text: `'${EMAIL_TO_USERNAME.get(arg.value)}'`,
+        });
       } else if (arg.type === 'Identifier' && VAR_TO_VAR.has(arg.name)) {
         edits.push({ start: arg.range[0], end: arg.range[1], text: VAR_TO_VAR.get(arg.name) });
       } else {
@@ -83,13 +103,19 @@ for (const file of process.argv.slice(2)) {
 
   if (!edits.length) continue;
   let out = src;
-  for (const e of edits.sort((a, b) => b.start - a.start)) out = out.slice(0, e.start) + e.text + out.slice(e.end);
-  try { parse(out, { range: true }); } catch (e) {
-    console.error(`  !! ${file}: output does not parse (${e.message})`); continue;
+  for (const e of edits.sort((a, b) => b.start - a.start))
+    out = out.slice(0, e.start) + e.text + out.slice(e.end);
+  try {
+    parse(out, { range: true });
+  } catch (e) {
+    console.error(`  !! ${file}: output does not parse (${e.message})`);
+    continue;
   }
   writeFileSync(file, out);
   files += 1;
 }
 
-console.log(`${files} file(s): dropped ${dropped} email argument(s), renamed ${renamed} userIdForEmail call(s)`);
+console.log(
+  `${files} file(s): dropped ${dropped} email argument(s), renamed ${renamed} userIdForEmail call(s)`,
+);
 for (const u of unmapped) console.log(`  UNMAPPED (hand-check): ${u}`);

@@ -32,7 +32,13 @@ class ModifierFriendsguard extends ModifierFriendlyDeathWatch {
 
       const entityPosition = this.getCard().getPosition();
       const entityOwnerId = this.getCard().getOwnerId();
-      const spawnEntityAction = new PlayCardAsTransformAction(this.getCard().getGameSession(), entityOwnerId, entityPosition.x, entityPosition.y, this.cardDataOrIndexToSpawn);
+      const spawnEntityAction = new PlayCardAsTransformAction(
+        this.getCard().getGameSession(),
+        entityOwnerId,
+        entityPosition.x,
+        entityPosition.y,
+        this.cardDataOrIndexToSpawn,
+      );
       return this.getGameSession().executeAction(spawnEntityAction);
     }
   }

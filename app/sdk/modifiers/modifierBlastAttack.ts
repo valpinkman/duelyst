@@ -56,7 +56,7 @@ class ModifierBlastAttack extends Modifier {
 
   getIsActionRelevant(a) {
     // when this unit initially attacks (only blast on explicit initial attacks, not on strike backs or other implicit attacks)
-    return a instanceof AttackAction && (a.getSource() === this.getCard()) && !a.getIsImplicit();
+    return a instanceof AttackAction && a.getSource() === this.getCard() && !a.getIsImplicit();
   }
 
   getAttackableEntities(a) {
@@ -65,7 +65,16 @@ class ModifierBlastAttack extends Modifier {
 
     if (target != null) {
       // find all other attackable enemy entities
-      for (var entity of Array.from<any>(this.getGameSession().getBoard().getEnemyEntitiesOnCardinalAxisFromEntityToPosition(this.getCard(), target.getPosition(), CardType.Unit, false))) {
+      for (var entity of Array.from<any>(
+        this.getGameSession()
+          .getBoard()
+          .getEnemyEntitiesOnCardinalAxisFromEntityToPosition(
+            this.getCard(),
+            target.getPosition(),
+            CardType.Unit,
+            false,
+          ),
+      )) {
         if (entity !== target) {
           entities.push(entity);
         }
@@ -107,7 +116,7 @@ class ModifierBlastAttack extends Modifier {
 
   postDeserialize() {
     super.postDeserialize();
-    if ((this.getCard() != null) && this._private.cachedIsActive) {
+    if (this.getCard() != null && this._private.cachedIsActive) {
       // override the attack pattern with blast
       return this.getCard().setCustomAttackPattern(CONFIG.PATTERN_BLAST);
     }

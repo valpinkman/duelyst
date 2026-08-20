@@ -14,13 +14,9 @@ Logger.enabled = false;
 describe('first watch', () => {
   describe('faction5', () => {
     beforeEach(() => {
-      const player1Deck = [
-        { id: SDK.Cards.Faction5.AltGeneral },
-      ];
+      const player1Deck = [{ id: SDK.Cards.Faction5.AltGeneral }];
 
-      const player2Deck = [
-        { id: SDK.Cards.Faction1.General },
-      ];
+      const player2Deck = [{ id: SDK.Cards.Faction1.General }];
 
       UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
     });
@@ -37,11 +33,30 @@ describe('first watch', () => {
       player1.remainingMana = 9;
       player2.remainingMana = 9;
 
-      const quillbeast = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction5.Quillbeast }, 2, 1, gameSession.getPlayer1Id());
-      const terradon1 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction5.Terradon }, 3, 1, gameSession.getPlayer1Id());
-      const terradon2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction5.Terradon }, 3, 4, gameSession.getPlayer2Id());
+      const quillbeast = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction5.Quillbeast },
+        2,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const terradon1 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction5.Terradon },
+        3,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const terradon2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction5.Terradon },
+        3,
+        4,
+        gameSession.getPlayer2Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PhoenixFire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
       const playCardFromHandAction1 = player1.actionPlayCardFromHand(0, 8, 2);
       gameSession.executeAction(playCardFromHandAction1);
 
@@ -58,9 +73,18 @@ describe('first watch', () => {
       player1.remainingMana = 9;
       player2.remainingMana = 9;
 
-      const terradon2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction5.Terradon }, 3, 4, gameSession.getPlayer2Id());
+      const terradon2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction5.Terradon },
+        3,
+        4,
+        gameSession.getPlayer2Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.VaathsBrutality }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.VaathsBrutality,
+        }),
+      );
       const playCardFromHandAction1 = player1.actionPlayCardFromHand(0, 3, 4);
       gameSession.executeAction(playCardFromHandAction1);
 
@@ -76,17 +100,35 @@ describe('first watch', () => {
       player1.remainingMana = 9;
       player2.remainingMana = 9;
 
-      const terradon1 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction5.Terradon }, 3, 1, gameSession.getPlayer1Id());
-      const terradon2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction5.Terradon }, 1, 1, gameSession.getPlayer2Id());
+      const terradon1 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction5.Terradon },
+        3,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const terradon2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction5.Terradon },
+        1,
+        1,
+        gameSession.getPlayer2Id(),
+      );
 
       const action = gameSession.getGeneralForPlayer1().actionAttack(terradon2);
       gameSession.executeAction(action); // +2 instances of damage
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.Tempest }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.Tempest,
+        }),
+      );
       var playCardFromHandAction1 = player1.actionPlayCardFromHand(0, 3, 4);
       gameSession.executeAction(playCardFromHandAction1); // +4 instances of damage
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.BloodRage }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.BloodRage,
+        }),
+      );
       var playCardFromHandAction1 = player1.actionPlayCardFromHand(0, 3, 1);
       gameSession.executeAction(playCardFromHandAction1);
 
@@ -102,9 +144,18 @@ describe('first watch', () => {
       player1.remainingMana = 9;
       player2.remainingMana = 9;
 
-      const terradon1 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction5.Terradon }, 1, 2, gameSession.getPlayer1Id());
+      const terradon1 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction5.Terradon },
+        1,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction5.Omniseer }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction5.Omniseer,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
       const followupCard = playCardFromHandAction.getCard().getCurrentFollowupCard();
@@ -123,9 +174,18 @@ describe('first watch', () => {
       player1.remainingMana = 9;
       player2.remainingMana = 9;
 
-      const terradon1 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction5.Terradon }, 1, 2, gameSession.getPlayer1Id());
+      const terradon1 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction5.Terradon },
+        1,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction5.Omniseer }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction5.Omniseer,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
       const followupCard = playCardFromHandAction.getCard().getCurrentFollowupCard();
@@ -150,9 +210,18 @@ describe('first watch', () => {
       player1.remainingMana = 9;
       player2.remainingMana = 9;
 
-      const terradon1 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction5.Terradon }, 1, 2, gameSession.getPlayer1Id());
+      const terradon1 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction5.Terradon },
+        1,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction5.Omniseer }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction5.Omniseer,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
       const followupCard = playCardFromHandAction.getCard().getCurrentFollowupCard();
@@ -162,11 +231,19 @@ describe('first watch', () => {
       var primaltile = board.getTileAtPosition({ x: 1, y: 2 }, true);
       expect(primaltile.getId()).to.equal(SDK.Cards.Tile.PrimalMojo);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.GreaterFortitude }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.GreaterFortitude,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 2);
       gameSession.executeAction(playCardFromHandAction);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PrimalBallast }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PrimalBallast,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 2);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -184,11 +261,20 @@ describe('first watch', () => {
       player1.remainingMana = 9;
       player2.remainingMana = 9;
 
-      const rizen = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction5.Rizen }, 3, 4, gameSession.getPlayer1Id());
+      const rizen = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction5.Rizen },
+        3,
+        4,
+        gameSession.getPlayer1Id(),
+      );
 
       gameSession.executeAction(gameSession.actionEndTurn());
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer2Id(), { id: SDK.Cards.Faction5.Terradon }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer2Id(), {
+          id: SDK.Cards.Faction5.Terradon,
+        }),
+      );
       const playCardFromHandAction = player2.actionPlayCardFromHand(0, 8, 1);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -210,7 +296,11 @@ describe('first watch', () => {
 
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.EndureTheBeastlands }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.EndureTheBeastlands,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 0, 0);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -234,9 +324,18 @@ describe('first watch', () => {
       player1.remainingMana = 9;
       player2.remainingMana = 9;
 
-      const terradon1 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction5.Terradon }, 1, 2, gameSession.getPlayer1Id());
+      const terradon1 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction5.Terradon },
+        1,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction5.Omniseer }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction5.Omniseer,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
       const followupCard = playCardFromHandAction.getCard().getCurrentFollowupCard();
@@ -248,7 +347,11 @@ describe('first watch', () => {
       var primaltile2 = board.getTileAtPosition({ x: 1, y: 1 }, true);
       expect(primaltile2).to.not.exist;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.VerdentFulmination }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.VerdentFulmination,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -266,12 +369,20 @@ describe('first watch', () => {
       player1.remainingMana = 9;
       player2.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction5.GrandmasterKraigon }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction5.GrandmasterKraigon,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
 
-      expect(gameSession.getGeneralForPlayer1().hasActiveModifierClass(SDK.ModifierFrenzy)).to.equal(true);
-      expect(gameSession.getGeneralForPlayer1().hasActiveModifierClass(ModifierForcefield)).to.equal(true);
+      expect(
+        gameSession.getGeneralForPlayer1().hasActiveModifierClass(SDK.ModifierFrenzy),
+      ).to.equal(true);
+      expect(
+        gameSession.getGeneralForPlayer1().hasActiveModifierClass(ModifierForcefield),
+      ).to.equal(true);
 
       gameSession.executeAction(gameSession.actionEndTurn());
       gameSession.executeAction(gameSession.actionEndTurn());
@@ -282,20 +393,36 @@ describe('first watch', () => {
       // kill Kraigon to make sure the buffs are removed
 
       player1.remainingMana = 9;
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.SpiralTechnique }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.SpiralTechnique,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
       player1.remainingMana = 9;
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.SpiralTechnique }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.SpiralTechnique,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
       player1.remainingMana = 9;
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.SpiralTechnique }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.SpiralTechnique,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
 
-      expect(gameSession.getGeneralForPlayer1().hasActiveModifierClass(SDK.ModifierFrenzy)).to.equal(false);
-      expect(gameSession.getGeneralForPlayer1().hasActiveModifierClass(ModifierForcefield)).to.equal(false);
+      expect(
+        gameSession.getGeneralForPlayer1().hasActiveModifierClass(SDK.ModifierFrenzy),
+      ).to.equal(false);
+      expect(
+        gameSession.getGeneralForPlayer1().hasActiveModifierClass(ModifierForcefield),
+      ).to.equal(false);
       expect(gameSession.getGeneralForPlayer1().getATK()).to.equal(9);
       expect(gameSession.getGeneralForPlayer1().getHP()).to.equal(32);
 
@@ -314,11 +441,31 @@ describe('first watch', () => {
       player1.remainingMana = 9;
       player2.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.EvolutionaryApex }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction5.Terradon }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction5.Terradon }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer2Id(), { id: SDK.Cards.Faction5.Terradon }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer2Id(), { id: SDK.Cards.Faction5.Terradon }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.EvolutionaryApex,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction5.Terradon,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction5.Terradon,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer2Id(), {
+          id: SDK.Cards.Faction5.Terradon,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer2Id(), {
+          id: SDK.Cards.Faction5.Terradon,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -343,11 +490,19 @@ describe('first watch', () => {
 
       gameSession.getGeneralForPlayer1().setDamage(20);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Artifact.EternalHeart }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Artifact.EternalHeart,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.SpiralTechnique }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.SpiralTechnique,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 0, 2);
       gameSession.executeAction(playCardFromHandAction);
 

@@ -25,8 +25,14 @@ class ModifierEnemyCannotCastBBS extends ModifierCannot {
     const a = actionEvent.action;
 
     // prevents owner from casting BBS
-    if ((a instanceof PlaySignatureCardAction && (a.getOwner() !== this.getOwner())) && a.getIsValid() && !a.getIsImplicit() && (__guard__(a.getCard(), (x) => x.getType()) === CardType.Spell)) {
-      return this.invalidateAction(a, this.getCard().getPosition(), 'You can\'t cast that!');
+    if (
+      a instanceof PlaySignatureCardAction &&
+      a.getOwner() !== this.getOwner() &&
+      a.getIsValid() &&
+      !a.getIsImplicit() &&
+      __guard__(a.getCard(), (x) => x.getType()) === CardType.Spell
+    ) {
+      return this.invalidateAction(a, this.getCard().getPosition(), "You can't cast that!");
     }
   }
 }
@@ -37,5 +43,5 @@ ModifierEnemyCannotCastBBS.prototype.fxResource = ['FX.Modifiers.ModifierCannotC
 module.exports = ModifierEnemyCannotCastBBS;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

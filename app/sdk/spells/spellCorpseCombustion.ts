@@ -48,7 +48,14 @@ class SpellCorpseCombustion extends SpellSpawnEntity {
     const numberOfApplyPositions = this.getDeadUnits().length;
 
     if (numberOfApplyPositions > 0) {
-      applyEffectPositions = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(this.getGameSession(), { x: 0, y: 0 }, CONFIG.PATTERN_WHOLE_BOARD, card, this, numberOfApplyPositions);
+      applyEffectPositions = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(
+        this.getGameSession(),
+        { x: 0, y: 0 },
+        CONFIG.PATTERN_WHOLE_BOARD,
+        card,
+        this,
+        numberOfApplyPositions,
+      );
     } else {
       applyEffectPositions = [];
     }
@@ -64,7 +71,7 @@ class SpellCorpseCombustion extends SpellSpawnEntity {
     let actions = [action];
 
     const subActions = action.getSubActions();
-    if ((subActions != null) && (subActions.length > 0)) {
+    if (subActions != null && subActions.length > 0) {
       for (let i = 0; i < subActions.length; i++) {
         action = subActions[i];
         actions = actions.concat(this.getAllActionsFromParentAction(subActions[i]));
@@ -75,9 +82,9 @@ class SpellCorpseCombustion extends SpellSpawnEntity {
 
   getDeadUnits() {
     let deadUnits;
-    if ((this._private.deadUnits == null)) {
-      let card; let
-        turn;
+    if (this._private.deadUnits == null) {
+      let card;
+      let turn;
       deadUnits = [];
       const turnsToCheck = [];
       turnsToCheck.push(this.getGameSession().getCurrentTurn()); // always check current turn
@@ -103,7 +110,13 @@ class SpellCorpseCombustion extends SpellSpawnEntity {
       for (var action of Array.from<any>(actions)) {
         if (action.type === DieAction.type) {
           card = action.getTarget();
-          if (((card != null ? card.getType() : undefined) === CardType.Unit) && card.getIsRemoved() && (card.getOwnerId() === this.getOwnerId()) && !(card.getRarityId() === Rarity.TokenUnit) && !card.getWasGeneral()) {
+          if (
+            (card != null ? card.getType() : undefined) === CardType.Unit &&
+            card.getIsRemoved() &&
+            card.getOwnerId() === this.getOwnerId() &&
+            !(card.getRarityId() === Rarity.TokenUnit) &&
+            !card.getWasGeneral()
+          ) {
             deadUnits.push(card);
           }
         }
@@ -114,8 +127,13 @@ class SpellCorpseCombustion extends SpellSpawnEntity {
       // check inherent modifiers for any dying wish modifier
       for (var deadUnit of Array.from<any>(deadUnits)) {
         card = this.getGameSession().getCardCaches().getCardById(deadUnit.getId());
-        for (var modifierContextObject of Array.from<any>(card.getInherentModifiersContextObjects())) {
-          if (this.getGameSession().createModifierForType(modifierContextObject.type) instanceof ModifierDyingWish) {
+        for (var modifierContextObject of Array.from<any>(
+          card.getInherentModifiersContextObjects(),
+        )) {
+          if (
+            this.getGameSession().createModifierForType(modifierContextObject.type) instanceof
+            ModifierDyingWish
+          ) {
             // if we find a "Dying Wish"
             deadUnitsWithDyingWish.push(deadUnit);
           }

@@ -19,7 +19,9 @@ class ModifierOverwatchMovedNearbyMoveBothToCorners extends ModifierOverwatchMov
     randomTeleportAction.setOwnerId(this.getCard().getOwnerId());
     randomTeleportAction.setSource(action.getSource());
     randomTeleportAction.setTeleportPattern(CONFIG.PATTERN_CORNERS);
-    randomTeleportAction.setFXResource(_.union(randomTeleportAction.getFXResource(), this.getFXResource()));
+    randomTeleportAction.setFXResource(
+      _.union(randomTeleportAction.getFXResource(), this.getFXResource()),
+    );
     this.getGameSession().executeAction(randomTeleportAction);
 
     // teleport self
@@ -27,10 +29,13 @@ class ModifierOverwatchMovedNearbyMoveBothToCorners extends ModifierOverwatchMov
     randomTeleportAction.setOwnerId(this.getCard().getOwnerId());
     randomTeleportAction.setSource(this.getCard());
     randomTeleportAction.setTeleportPattern(CONFIG.PATTERN_CORNERS);
-    randomTeleportAction.setFXResource(_.union(randomTeleportAction.getFXResource(), this.getFXResource()));
+    randomTeleportAction.setFXResource(
+      _.union(randomTeleportAction.getFXResource(), this.getFXResource()),
+    );
     return this.getGameSession().executeAction(randomTeleportAction);
   }
 }
-ModifierOverwatchMovedNearbyMoveBothToCorners.prototype.type = 'ModifierOverwatchMovedNearbyMoveBothToCorners';
+ModifierOverwatchMovedNearbyMoveBothToCorners.prototype.type =
+  'ModifierOverwatchMovedNearbyMoveBothToCorners';
 
 module.exports = ModifierOverwatchMovedNearbyMoveBothToCorners;

@@ -14,16 +14,16 @@ on:
         default: false
   push:
     branches:
-    - main
+      - main
     paths:
-    - firebaseRules.json
-    - firebase.json
-    - test/rules/**
+      - firebaseRules.json
+      - firebase.json
+      - test/rules/**
   pull_request:
     paths:
-    - firebaseRules.json
-    - firebase.json
-    - test/rules/**
+      - firebaseRules.json
+      - firebase.json
+      - test/rules/**
 
 jobs:
   # Runs against the emulator, so it needs no cloud project and no secrets -
@@ -31,30 +31,30 @@ jobs:
   test_rules:
     runs-on: ubuntu-latest
     steps:
-    - name: check out code
-      uses: actions/checkout@v4
+      - name: check out code
+        uses: actions/checkout@v4
 
-    - name: install pnpm
-      uses: pnpm/action-setup@v4
+      - name: install pnpm
+        uses: pnpm/action-setup@v4
 
-    - name: use node
-      uses: actions/setup-node@v4
-      with:
-        node-version: 24
-        cache: pnpm
+      - name: use node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
 
-    # the database emulator is a JAR; firebase-tools 14 accepts JDK 17+
-    - name: use java
-      uses: actions/setup-java@v4
-      with:
-        distribution: temurin
-        java-version: '21'
+      # the database emulator is a JAR; firebase-tools 14 accepts JDK 17+
+      - name: use java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
 
-    - name: install node dependencies
-      run: pnpm install --frozen-lockfile
+      - name: install node dependencies
+        run: pnpm install --frozen-lockfile
 
-    - name: run security rules tests
-      run: pnpm test:rules
+      - name: run security rules tests
+        run: pnpm test:rules
 
   # duelyst-ci only. Automatic, because nobody plays on it - this is the
   # rehearsal that makes the production deploy boring.
@@ -65,32 +65,32 @@ jobs:
     env:
       SA: ${{ secrets.FIREBASE_CI_SERVICE_ACCOUNT }}
     steps:
-    - name: check out code
-      uses: actions/checkout@v4
+      - name: check out code
+        uses: actions/checkout@v4
 
-    - name: install pnpm
-      uses: pnpm/action-setup@v4
+      - name: install pnpm
+        uses: pnpm/action-setup@v4
 
-    - name: use node
-      uses: actions/setup-node@v4
-      with:
-        node-version: 24
-        cache: pnpm
+      - name: use node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
 
-    - name: install node dependencies
-      run: pnpm install --frozen-lockfile
+      - name: install node dependencies
+        run: pnpm install --frozen-lockfile
 
-    - name: deploy rules to duelyst-ci
-      if: env.SA != ''
-      run: |
-        printf '%s' "$SA" > "$RUNNER_TEMP/sa.json"
-        GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/sa.json" \
-          pnpm exec firebase deploy --only database --project duelyst-ci --non-interactive
-        rm -f "$RUNNER_TEMP/sa.json"
+      - name: deploy rules to duelyst-ci
+        if: env.SA != ''
+        run: |
+          printf '%s' "$SA" > "$RUNNER_TEMP/sa.json"
+          GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/sa.json" \
+            pnpm exec firebase deploy --only database --project duelyst-ci --non-interactive
+          rm -f "$RUNNER_TEMP/sa.json"
 
-    - name: note skipped deploy
-      if: env.SA == ''
-      run: echo "::notice title=CI rules deploy skipped::Set the FIREBASE_CI_SERVICE_ACCOUNT secret to enable it."
+      - name: note skipped deploy
+        if: env.SA == ''
+        run: echo "::notice title=CI rules deploy skipped::Set the FIREBASE_CI_SERVICE_ACCOUNT secret to enable it."
 
   # PRODUCTION. Never automatic: manual dispatch, an explicit checkbox, and its
   # own secret, so no merge can reach the database real accounts live in.
@@ -101,30 +101,30 @@ jobs:
     env:
       SA: ${{ secrets.FIREBASE_PRODUCTION_SERVICE_ACCOUNT }}
     steps:
-    - name: check out code
-      uses: actions/checkout@v4
+      - name: check out code
+        uses: actions/checkout@v4
 
-    - name: install pnpm
-      uses: pnpm/action-setup@v4
+      - name: install pnpm
+        uses: pnpm/action-setup@v4
 
-    - name: use node
-      uses: actions/setup-node@v4
-      with:
-        node-version: 24
-        cache: pnpm
+      - name: use node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
 
-    - name: install node dependencies
-      run: pnpm install --frozen-lockfile
+      - name: install node dependencies
+        run: pnpm install --frozen-lockfile
 
-    - name: fail if the production secret is missing
-      if: env.SA == ''
-      run: |
-        echo "::error title=Missing secret::FIREBASE_PRODUCTION_SERVICE_ACCOUNT is not set."
-        exit 1
+      - name: fail if the production secret is missing
+        if: env.SA == ''
+        run: |
+          echo "::error title=Missing secret::FIREBASE_PRODUCTION_SERVICE_ACCOUNT is not set."
+          exit 1
 
-    - name: deploy rules to duelyst-universe
-      run: |
-        printf '%s' "$SA" > "$RUNNER_TEMP/sa.json"
-        GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/sa.json" \
-          pnpm exec firebase deploy --only database --project duelyst-universe --non-interactive
-        rm -f "$RUNNER_TEMP/sa.json"
+      - name: deploy rules to duelyst-universe
+        run: |
+          printf '%s' "$SA" > "$RUNNER_TEMP/sa.json"
+          GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/sa.json" \
+            pnpm exec firebase deploy --only database --project duelyst-universe --non-interactive
+          rm -f "$RUNNER_TEMP/sa.json"

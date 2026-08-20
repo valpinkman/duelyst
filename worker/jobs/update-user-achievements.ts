@@ -36,21 +36,24 @@ module.exports = function (job, done) {
   // # Game Achievement
   const gameId = job.data.gameId || null;
   if (gameId != null) {
-    const {
-      isUnscored,
-    } = job.data;
-    const {
-      isDraw,
-    } = job.data;
+    const { isUnscored } = job.data;
+    const { isDraw } = job.data;
     return GameManager.loadGameSession(gameId)
       .then(JSON.parse)
       .then(function (gameSessionData) {
         if (!gameSessionData) {
           throw new Error('Game data is null. Game may have already been archived.');
         } else {
-          return AchievementsModule.updateAchievementsProgressWithGame(userId, gameId, gameSessionData, isUnscored, isDraw);
+          return AchievementsModule.updateAchievementsProgressWithGame(
+            userId,
+            gameId,
+            gameSessionData,
+            isUnscored,
+            isDraw,
+          );
         }
-      }).then(function () {
+      })
+      .then(function () {
         Logger.module('JOB').timeEnd(`[J:${job.id}] Update User (${userId}) Achievements`);
         return done();
       })
@@ -64,7 +67,8 @@ module.exports = function (job, done) {
       .then(function () {
         Logger.module('JOB').timeEnd(`[J:${job.id}] Update User (${userId}) Achievements`);
         return done();
-      }).catch((error) => done(error));
+      })
+      .catch((error) => done(error));
   }
 
   // # Disenchanting Achievement
@@ -72,23 +76,33 @@ module.exports = function (job, done) {
   if (disenchantedCardIdList != null) {
     const disenchantProgressPromises = [];
     for (var disenchantedCardId of Array.from<any>(disenchantedCardIdList)) {
-      disenchantProgressPromises.push(AchievementsModule.updateAchievementsProgressWithDisenchantedCard(userId, disenchantedCardId));
+      disenchantProgressPromises.push(
+        AchievementsModule.updateAchievementsProgressWithDisenchantedCard(
+          userId,
+          disenchantedCardId,
+        ),
+      );
     }
     return Promise.all(disenchantProgressPromises)
       .then(function () {
         Logger.module('JOB').timeEnd(`[J:${job.id}] Update User (${userId}) Achievements`);
         return done();
-      }).catch((error) => done(error));
+      })
+      .catch((error) => done(error));
   }
 
   // # Armory Achievement
   const armoryPurchaseSku = job.data.armoryPurchaseSku || null;
   if (armoryPurchaseSku != null) {
-    return AchievementsModule.updateAchievementsProgressWithArmoryPurchase(userId, armoryPurchaseSku)
+    return AchievementsModule.updateAchievementsProgressWithArmoryPurchase(
+      userId,
+      armoryPurchaseSku,
+    )
       .then(function () {
         Logger.module('JOB').timeEnd(`[J:${job.id}] Update User (${userId}) Achievements`);
         return done();
-      }).catch((error) => done(error));
+      })
+      .catch((error) => done(error));
   }
 
   // # Referral Achievement
@@ -98,21 +112,28 @@ module.exports = function (job, done) {
       .then(function () {
         Logger.module('JOB').timeEnd(`[J:${job.id}] Update User (${userId}) Achievements`);
         return done();
-      }).catch((error) => done(error));
+      })
+      .catch((error) => done(error));
   }
 
   // # Faction Achievement
   const factionProgressed = job.data.factionProgressed || null;
   if (factionProgressed) {
-    return DuelystFirebase.connect().getRootRef()
+    return DuelystFirebase.connect()
+      .getRootRef()
       .then(function (fbRootRef) {
         _chainState.fbRootRef = fbRootRef;
-        const factionProgressionRootRef = _chainState.fbRootRef.child('user-faction-progression').child(userId);
+        const factionProgressionRootRef = _chainState.fbRootRef
+          .child('user-faction-progression')
+          .child(userId);
         return FirebasePromises.once(factionProgressionRootRef, 'value');
       })
       .then(function (factionProgressionSnapshot) {
         const factionProgressionData = factionProgressionSnapshot.val();
-        return AchievementsModule.updateAchievementsProgressWithFactionProgression(userId, factionProgressionData);
+        return AchievementsModule.updateAchievementsProgressWithFactionProgression(
+          userId,
+          factionProgressionData,
+        );
       })
       .then(function () {
         Logger.module('JOB').timeEnd(`[J:${job.id}] Update User (${userId}) Achievements`);
@@ -124,15 +145,22 @@ module.exports = function (job, done) {
   // # Inventory Achievement
   const inventoryChanged = job.data.inventoryChanged || null;
   if (inventoryChanged) {
-    return DuelystFirebase.connect().getRootRef()
+    return DuelystFirebase.connect()
+      .getRootRef()
       .then(function (fbRootRef) {
         _chainState.fbRootRef = fbRootRef;
-        const cardCollectionRootRef = _chainState.fbRootRef.child('user-inventory').child(userId).child('card-collection');
+        const cardCollectionRootRef = _chainState.fbRootRef
+          .child('user-inventory')
+          .child(userId)
+          .child('card-collection');
         return FirebasePromises.once(cardCollectionRootRef, 'value');
       })
       .then(function (cardCollectionSnapshot) {
         const cardCollectionData = cardCollectionSnapshot.val();
-        return AchievementsModule.updateAchievementsProgressWithCardCollection(userId, cardCollectionData);
+        return AchievementsModule.updateAchievementsProgressWithCardCollection(
+          userId,
+          cardCollectionData,
+        );
       })
       .then(function () {
         Logger.module('JOB').timeEnd(`[J:${job.id}] Update User (${userId}) Achievements`);
@@ -144,11 +172,15 @@ module.exports = function (job, done) {
   // # Loot Crate Achievement
   const receivedCosmeticChestType = job.data.receivedCosmeticChestType || null;
   if (receivedCosmeticChestType != null) {
-    return AchievementsModule.updateAchievementsProgressWithReceivedCosmeticChest(userId, receivedCosmeticChestType)
+    return AchievementsModule.updateAchievementsProgressWithReceivedCosmeticChest(
+      userId,
+      receivedCosmeticChestType,
+    )
       .then(function () {
         Logger.module('JOB').timeEnd(`[J:${job.id}] Update User (${userId}) Achievements`);
         return done();
-      }).catch((error) => done(error));
+      })
+      .catch((error) => done(error));
   }
 
   // # Quest Achievement
@@ -158,7 +190,8 @@ module.exports = function (job, done) {
       .then(function () {
         Logger.module('JOB').timeEnd(`[J:${job.id}] Update User (${userId}) Achievements`);
         return done();
-      }).catch((error) => done(error));
+      })
+      .catch((error) => done(error));
   }
 
   // # Rank Achievement
@@ -171,7 +204,8 @@ module.exports = function (job, done) {
       .then(function () {
         Logger.module('JOB').timeEnd(`[J:${job.id}] Update User (${userId}) Achievements`);
         return done();
-      }).catch((error) => done(error));
+      })
+      .catch((error) => done(error));
   }
 
   // # Login Achievement
@@ -188,21 +222,32 @@ module.exports = function (job, done) {
     if (currentLoginAt != null) {
       currentLoginMoment = moment.utc(currentLoginAt);
     }
-    return AchievementsModule.updateAchievementsProgressWithLogin(userId, lastLoginMoment, currentLoginMoment, lastLoginVersion, currentLoginVersion)
+    return AchievementsModule.updateAchievementsProgressWithLogin(
+      userId,
+      lastLoginMoment,
+      currentLoginMoment,
+      lastLoginVersion,
+      currentLoginVersion,
+    )
       .then(function () {
         Logger.module('JOB').timeEnd(`[J:${job.id}] Update User (${userId}) Achievements`);
         return done();
-      }).catch((error) => done(error));
+      })
+      .catch((error) => done(error));
   }
 
   // # Opened Spirit Orb Achievement
   const spiritOrbOpenedFromSet = job.data.spiritOrbOpenedFromSet || null;
   if (spiritOrbOpenedFromSet != null) {
-    return AchievementsModule.updateAchievementsProgressWithSpiritOrbOpening(userId, spiritOrbOpenedFromSet)
+    return AchievementsModule.updateAchievementsProgressWithSpiritOrbOpening(
+      userId,
+      spiritOrbOpenedFromSet,
+    )
       .then(function () {
         Logger.module('JOB').timeEnd(`[J:${job.id}] Update User (${userId}) Achievements`);
         return done();
-      }).catch((error) => done(error));
+      })
+      .catch((error) => done(error));
   }
 
   // # All done with quests, shouldn't reach here

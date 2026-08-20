@@ -53,7 +53,7 @@ class WartechGeneralFaction5Achievement extends Achievement {
   }
 
   static rewardUnlockMessage(progressMade) {
-    if ((progressMade == null)) {
+    if (progressMade == null) {
       progressMade = 0;
     }
 
@@ -62,12 +62,16 @@ class WartechGeneralFaction5Achievement extends Achievement {
     return `Win ${progressNeeded} more online matches with Magmar to unlock.`;
   }
 }
-WartechGeneralFaction5Achievement.title = i18next.t('achievements.wartech_general_achievement_title', { faction_name: i18next.t('factions.faction_5_abbreviated_name') });
-WartechGeneralFaction5Achievement.description = i18next.t('achievements.wartech_general_achievement_desc', { faction_name: i18next.t('factions.faction_5_abbreviated_name') });
+WartechGeneralFaction5Achievement.title = i18next.t(
+  'achievements.wartech_general_achievement_title',
+  { faction_name: i18next.t('factions.faction_5_abbreviated_name') },
+);
+WartechGeneralFaction5Achievement.description = i18next.t(
+  'achievements.wartech_general_achievement_desc',
+  { faction_name: i18next.t('factions.faction_5_abbreviated_name') },
+);
 WartechGeneralFaction5Achievement.rewards = {
-  cards: [
-    Cards.Faction5.ThirdGeneral,
-  ],
+  cards: [Cards.Faction5.ThirdGeneral],
 };
 
 module.exports = WartechGeneralFaction5Achievement;

@@ -19,8 +19,11 @@ class SpellAspectOfTheMountains extends SpellAspectBase {
     const applyEffectPosition = { x, y };
     return (() => {
       const result = [];
-      for (var entity of Array.from<any>(board.getCardsWithinRadiusOfPosition(applyEffectPosition, CardType.Unit, 1, false))) {
-        if (!entity.getIsGeneral() && (entity.getOwnerId() !== this.getOwnerId())) { // don't damage Generals or friendly units
+      for (var entity of Array.from<any>(
+        board.getCardsWithinRadiusOfPosition(applyEffectPosition, CardType.Unit, 1, false),
+      )) {
+        if (!entity.getIsGeneral() && entity.getOwnerId() !== this.getOwnerId()) {
+          // don't damage Generals or friendly units
           var damageAction = new DamageAction(this.getGameSession());
           damageAction.setOwnerId(this.ownerId);
           damageAction.setTarget(entity);

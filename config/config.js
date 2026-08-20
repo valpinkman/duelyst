@@ -399,20 +399,25 @@ config.validate();
 
 // special case for certain environment flags that are required via ENVIFY in SDK and need to be available on the server as well
 if (process.env) {
-  if (!process.env.ALL_CARDS_AVAILABLE) process.env.ALL_CARDS_AVAILABLE = config.get('allCardsAvailable');
+  if (!process.env.ALL_CARDS_AVAILABLE)
+    process.env.ALL_CARDS_AVAILABLE = config.get('allCardsAvailable');
   if (!process.env.AI_TOOLS_ENABLED) process.env.AI_TOOLS_ENABLED = config.get('aiToolsEnabled');
 }
 
 // helper methods to quickly check our current environment
 config.isProduction = function () {
   const env = config.get('env');
-  if (env === 'production' || env === 'staging') { return true; }
+  if (env === 'production' || env === 'staging') {
+    return true;
+  }
   return false;
 };
 
 config.isStaging = function () {
   const env = config.get('env');
-  if (env === 'staging') { return true; }
+  if (env === 'staging') {
+    return true;
+  }
   return false;
 };
 

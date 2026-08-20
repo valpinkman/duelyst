@@ -20,7 +20,10 @@ class SpellZodiacTriad extends Spell {
       // pull faction minions
       let factionMinions = [];
       if (this.getGameSession().getGameFormat() === GameFormat.Standard) {
-        factionMinions = this.getGameSession().getCardCaches().getIsLegacy(false).getFaction(Factions.Faction2)
+        factionMinions = this.getGameSession()
+          .getCardCaches()
+          .getIsLegacy(false)
+          .getFaction(Factions.Faction2)
           .getType(CardType.Unit)
           .getIsGeneral(false)
           .getIsHiddenInCollection(false)
@@ -29,7 +32,10 @@ class SpellZodiacTriad extends Spell {
           .getIsSkinned(false)
           .getCards();
       } else {
-        factionMinions = this.getGameSession().getCardCaches().getFaction(Factions.Faction2).getType(CardType.Unit)
+        factionMinions = this.getGameSession()
+          .getCardCaches()
+          .getFaction(Factions.Faction2)
+          .getType(CardType.Unit)
           .getIsGeneral(false)
           .getIsHiddenInCollection(false)
           .getIsToken(false)
@@ -44,9 +50,18 @@ class SpellZodiacTriad extends Spell {
       }
 
       if (factionMinions.length > 0) {
-        const card1 = factionMinions[this.getGameSession().getRandomIntegerForExecution(factionMinions.length)].createNewCardData();
-        const card2 = factionMinions[this.getGameSession().getRandomIntegerForExecution(factionMinions.length)].createNewCardData();
-        const card3 = factionMinions[this.getGameSession().getRandomIntegerForExecution(factionMinions.length)].createNewCardData();
+        const card1 =
+          factionMinions[
+            this.getGameSession().getRandomIntegerForExecution(factionMinions.length)
+          ].createNewCardData();
+        const card2 =
+          factionMinions[
+            this.getGameSession().getRandomIntegerForExecution(factionMinions.length)
+          ].createNewCardData();
+        const card3 =
+          factionMinions[
+            this.getGameSession().getRandomIntegerForExecution(factionMinions.length)
+          ].createNewCardData();
 
         card1.additionalModifiersContextObjects = [ModifierManaCostChange.createContextObject(-1)];
         card2.additionalModifiersContextObjects = [ModifierManaCostChange.createContextObject(-1)];

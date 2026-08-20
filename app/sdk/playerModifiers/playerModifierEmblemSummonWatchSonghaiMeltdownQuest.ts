@@ -15,7 +15,7 @@ class PlayerModifierEmblemSummonWatchSonghaiMeltdownQuest extends PlayerModifier
 
   onSummonWatch(action) {
     const unit = action.getTarget();
-    if ((unit != null) && (unit.getManaCost() > 0)) {
+    if (unit != null && unit.getManaCost() > 0) {
       const randomDamageAction = new RandomDamageAction(this.getGameSession());
       randomDamageAction.setOwnerId(this.getCard().getOwnerId());
       randomDamageAction.setSource(unit);
@@ -25,7 +25,8 @@ class PlayerModifierEmblemSummonWatchSonghaiMeltdownQuest extends PlayerModifier
     }
   }
 }
-PlayerModifierEmblemSummonWatchSonghaiMeltdownQuest.prototype.type = 'PlayerModifierEmblemSummonWatchSonghaiMeltdownQuest';
+PlayerModifierEmblemSummonWatchSonghaiMeltdownQuest.prototype.type =
+  'PlayerModifierEmblemSummonWatchSonghaiMeltdownQuest';
 PlayerModifierEmblemSummonWatchSonghaiMeltdownQuest.prototype.maxStacks = 1;
 
 module.exports = PlayerModifierEmblemSummonWatchSonghaiMeltdownQuest;

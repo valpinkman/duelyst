@@ -18,7 +18,9 @@ class ModifierFriendlyDeathWatchForBattlePetDrawCard extends ModifierFriendlyDea
   static description = 'Whenever a friendly Battle Pet dies, draw %X';
 
   static createContextObject(numCards) {
-    if (numCards == null) { numCards = 1; }
+    if (numCards == null) {
+      numCards = 1;
+    }
     const contextObject = super.createContextObject();
     contextObject.numCards = numCards;
     return contextObject;
@@ -39,11 +41,18 @@ class ModifierFriendlyDeathWatchForBattlePetDrawCard extends ModifierFriendlyDea
     // if dying minion is a Battle Pet OR Ghoulie (Ghoulie belongs to all tribes)
     // need to look specifically for Ghoulie because his ability modifier is the thing that makes him belong to all tribes
     // and once he dies, his modifier is removed. Explicit check needed to work around this.
-    if (__guard__(action.getTarget(), (x) => x.getBelongsToTribe(Races.BattlePet)) || (__guard__(action.getTarget(), (x1) => x1.getBaseCardId()) === Cards.Neutral.Ghoulie)) {
+    if (
+      __guard__(action.getTarget(), (x) => x.getBelongsToTribe(Races.BattlePet)) ||
+      __guard__(action.getTarget(), (x1) => x1.getBaseCardId()) === Cards.Neutral.Ghoulie
+    ) {
       // draw a card
       return (() => {
         const result = [];
-        for (let i = 0, end = this.numCards, asc = end >= 0; asc ? i < end : i > end; asc ? i++ : i--) {
+        for (
+          let i = 0, end = this.numCards, asc = end >= 0;
+          asc ? i < end : i > end;
+          asc ? i++ : i--
+        ) {
           var deck = this.getGameSession().getPlayerById(this.getCard().getOwnerId()).getDeck();
           result.push(this.getCard().getGameSession().executeAction(deck.actionDrawCard()));
         }
@@ -52,10 +61,11 @@ class ModifierFriendlyDeathWatchForBattlePetDrawCard extends ModifierFriendlyDea
     }
   }
 }
-ModifierFriendlyDeathWatchForBattlePetDrawCard.prototype.type = 'ModifierFriendlyDeathWatchForBattlePetDrawCard';
+ModifierFriendlyDeathWatchForBattlePetDrawCard.prototype.type =
+  'ModifierFriendlyDeathWatchForBattlePetDrawCard';
 
 module.exports = ModifierFriendlyDeathWatchForBattlePetDrawCard;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

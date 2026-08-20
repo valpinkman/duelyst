@@ -28,8 +28,9 @@ describe('QuestFactory', () => {
   describe('the quest cache', () => {
     it('expect building it not to throw', () => {
       // the original failure mode: this threw and left the cache empty
-      expect(() => QuestFactory.questForIdentifier(QuestFactory._FACTION_CHALLENGER_BASE_ID + 1))
-        .to.not.throw();
+      expect(() =>
+        QuestFactory.questForIdentifier(QuestFactory._FACTION_CHALLENGER_BASE_ID + 1),
+      ).to.not.throw();
     });
 
     it('expect a populated cache of quests', () => {
@@ -44,10 +45,14 @@ describe('QuestFactory', () => {
       const factions = FactionFactory.getAllPlayableFactions();
       expect(factions.length).to.be.greaterThan(0);
       factions.forEach((faction) => {
-        const quest = QuestFactory.questForIdentifier(QuestFactory._FACTION_CHALLENGER_BASE_ID + faction.id);
+        const quest = QuestFactory.questForIdentifier(
+          QuestFactory._FACTION_CHALLENGER_BASE_ID + faction.id,
+        );
         expect(quest, `participation quest missing for faction ${faction.id}`).to.exist;
         // the actual regression: this was null for every faction
-        expect(quest.getFactionId(), `faction id wrong for faction ${faction.id}`).to.equal(faction.id);
+        expect(quest.getFactionId(), `faction id wrong for faction ${faction.id}`).to.equal(
+          faction.id,
+        );
         expect(quest.params.factionId).to.equal(faction.id);
       });
     });

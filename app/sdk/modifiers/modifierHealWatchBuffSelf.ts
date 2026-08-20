@@ -18,8 +18,12 @@ class ModifierHealWatchBuffSelf extends ModifierHealWatch {
   static type = 'ModifierHealWatchBuffSelf';
 
   static createContextObject(attackBuff, maxHPBuff, options) {
-    if (attackBuff == null) { attackBuff = 0; }
-    if (maxHPBuff == null) { maxHPBuff = 0; }
+    if (attackBuff == null) {
+      attackBuff = 0;
+    }
+    if (maxHPBuff == null) {
+      maxHPBuff = 0;
+    }
     const contextObject = super.createContextObject(options);
     const statsBuff = Modifier.createContextObjectWithAttributeBuffs(attackBuff, maxHPBuff);
     statsBuff.appliedName = i18next.t('modifiers.healwatch_bufself_applied_name');
@@ -28,10 +32,16 @@ class ModifierHealWatchBuffSelf extends ModifierHealWatch {
   }
 
   onHealWatch(action) {
-    return this.applyManagedModifiersFromModifiersContextObjects(this.modifiersContextObjects, this.getCard());
+    return this.applyManagedModifiersFromModifiersContextObjects(
+      this.modifiersContextObjects,
+      this.getCard(),
+    );
   }
 }
 ModifierHealWatchBuffSelf.prototype.type = 'ModifierHealWatchBuffSelf';
-ModifierHealWatchBuffSelf.prototype.fxResource = ['FX.Modifiers.ModifierHealWatch', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierHealWatchBuffSelf.prototype.fxResource = [
+  'FX.Modifiers.ModifierHealWatch',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 
 module.exports = ModifierHealWatchBuffSelf;

@@ -30,16 +30,21 @@ describe('decks module', () => {
       .then((userIdCreated) => {
         Logger.module('UNITTEST').log('created user ', userIdCreated);
         userId = userIdCreated;
-      }).catch(onType(Errors.AlreadyExistsError, (error) => {
-        Logger.module('UNITTEST').log('existing user');
-        return UsersModule.userIdForUsername('unittest').then((userIdExisting) => {
-          Logger.module('UNITTEST').log('existing user retrieved', userIdExisting);
-          userId = userIdExisting;
-          return SyncModule.wipeUserData(userIdExisting);
-        }).then(() => {
-          Logger.module('UNITTEST').log('existing user data wiped', userId);
-        });
-      }));
+      })
+      .catch(
+        onType(Errors.AlreadyExistsError, (error) => {
+          Logger.module('UNITTEST').log('existing user');
+          return UsersModule.userIdForUsername('unittest')
+            .then((userIdExisting) => {
+              Logger.module('UNITTEST').log('existing user retrieved', userIdExisting);
+              userId = userIdExisting;
+              return SyncModule.wipeUserData(userIdExisting);
+            })
+            .then(() => {
+              Logger.module('UNITTEST').log('existing user data wiped', userId);
+            });
+        }),
+      );
   });
 
   // // after cleanup
@@ -55,38 +60,77 @@ describe('decks module', () => {
   // });
 
   describe('addDeck()', () => {
-    it('adds a deck', () => DecksModule.addDeck(userId, SDK.Factions.Lyonar, 'lyonoobs', [SDK.Cards.Faction1.Lightchaser, SDK.Cards.Faction1.Lightchaser, SDK.Cards.Faction1.Lightchaser], 0, 3, 0, 0)
-      .then(() => knex('user_decks').select().where('user_id', userId)).then((deckRows) => {
-        expect(deckRows.length).to.equal(1);
-        expect(deckRows[0].name).to.equal('lyonoobs');
-        expect(deckRows[0].cards.length).to.equal(3);
-        expect(deckRows[0].cards).to.contain(SDK.Cards.Faction1.Lightchaser);
-        expect(deckRows[0].minion_count).to.equal(3);
-      }));
+    it('adds a deck', () =>
+      DecksModule.addDeck(
+        userId,
+        SDK.Factions.Lyonar,
+        'lyonoobs',
+        [
+          SDK.Cards.Faction1.Lightchaser,
+          SDK.Cards.Faction1.Lightchaser,
+          SDK.Cards.Faction1.Lightchaser,
+        ],
+        0,
+        3,
+        0,
+        0,
+      )
+        .then(() => knex('user_decks').select().where('user_id', userId))
+        .then((deckRows) => {
+          expect(deckRows.length).to.equal(1);
+          expect(deckRows[0].name).to.equal('lyonoobs');
+          expect(deckRows[0].cards.length).to.equal(3);
+          expect(deckRows[0].cards).to.contain(SDK.Cards.Faction1.Lightchaser);
+          expect(deckRows[0].minion_count).to.equal(3);
+        }));
   });
 
   describe('updateDeck()', () => {
-    it('updates a deck', () => knex('user_decks').first().where('user_id', userId)
-      .then((deckRow) => DecksModule.updateDeck(userId, deckRow.id, SDK.Factions.Lyonar, 'lyonoobs 2', [SDK.Cards.Faction1.Sunriser], 0, 1, 0, 0))
-      .then(() => knex('user_decks').select().where('user_id', userId))
-      .then((deckRows) => {
-        expect(deckRows.length).to.equal(1);
-        expect(deckRows[0].name).to.equal('lyonoobs 2');
-        expect(deckRows[0].cards.length).to.equal(1);
-        expect(deckRows[0].cards).to.contain(SDK.Cards.Faction1.Sunriser);
-        expect(deckRows[0].minion_count).to.equal(1);
-      }));
+    it('updates a deck', () =>
+      knex('user_decks')
+        .first()
+        .where('user_id', userId)
+        .then((deckRow) =>
+          DecksModule.updateDeck(
+            userId,
+            deckRow.id,
+            SDK.Factions.Lyonar,
+            'lyonoobs 2',
+            [SDK.Cards.Faction1.Sunriser],
+            0,
+            1,
+            0,
+            0,
+          ),
+        )
+        .then(() => knex('user_decks').select().where('user_id', userId))
+        .then((deckRows) => {
+          expect(deckRows.length).to.equal(1);
+          expect(deckRows[0].name).to.equal('lyonoobs 2');
+          expect(deckRows[0].cards.length).to.equal(1);
+          expect(deckRows[0].cards).to.contain(SDK.Cards.Faction1.Sunriser);
+          expect(deckRows[0].minion_count).to.equal(1);
+        }));
   });
 
   describe('hashCodeForDeck()', () => {
     it('generates a deck digest', () => {
-      const digest = DecksModule.hashForDeck([SDK.Cards.Faction1.Sunriser, SDK.Cards.Faction1.Sunriser, SDK.Cards.Faction1.Sunriser], '');
+      const digest = DecksModule.hashForDeck(
+        [SDK.Cards.Faction1.Sunriser, SDK.Cards.Faction1.Sunriser, SDK.Cards.Faction1.Sunriser],
+        '',
+      );
       expect(digest).to.exist;
     });
 
     it('generates two different digests based on salt', () => {
-      const digest1 = DecksModule.hashForDeck([SDK.Cards.Faction1.Sunriser, SDK.Cards.Faction1.Sunriser, SDK.Cards.Faction1.Sunriser], '2');
-      const digest2 = DecksModule.hashForDeck([SDK.Cards.Faction1.Sunriser, SDK.Cards.Faction1.Sunriser, SDK.Cards.Faction1.Sunriser], '1');
+      const digest1 = DecksModule.hashForDeck(
+        [SDK.Cards.Faction1.Sunriser, SDK.Cards.Faction1.Sunriser, SDK.Cards.Faction1.Sunriser],
+        '2',
+      );
+      const digest2 = DecksModule.hashForDeck(
+        [SDK.Cards.Faction1.Sunriser, SDK.Cards.Faction1.Sunriser, SDK.Cards.Faction1.Sunriser],
+        '1',
+      );
       expect(digest1).to.not.equal(digest2);
     });
   });

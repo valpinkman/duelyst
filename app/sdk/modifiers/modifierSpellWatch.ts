@@ -25,12 +25,14 @@ class ModifierSpellWatch extends Modifier {
   onBeforeAction(e) {
     super.onBeforeAction(e);
 
-    const {
-      action,
-    } = e;
+    const { action } = e;
 
     // watch for a spell (but not a followup) being cast by player who owns this entity
-    if ((action instanceof PlayCardFromHandAction || action instanceof PlaySignatureCardAction) && (action.getOwnerId() === this.getCard().getOwnerId()) && (__guard__(action.getCard(), (x) => x.type) === CardType.Spell)) {
+    if (
+      (action instanceof PlayCardFromHandAction || action instanceof PlaySignatureCardAction) &&
+      action.getOwnerId() === this.getCard().getOwnerId() &&
+      __guard__(action.getCard(), (x) => x.type) === CardType.Spell
+    ) {
       return this.onSpellWatch(action);
     }
   }
@@ -48,5 +50,5 @@ ModifierSpellWatch.prototype.fxResource = ['FX.Modifiers.ModifierSpellWatch'];
 module.exports = ModifierSpellWatch;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

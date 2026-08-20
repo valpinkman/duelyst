@@ -121,7 +121,6 @@ const CompositePass = BaseSpriteComponent.extend({
   },
 
   /* endregion RENDERING */
-
 });
 
 module.exports = CompositePass;

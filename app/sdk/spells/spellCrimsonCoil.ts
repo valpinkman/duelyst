@@ -20,10 +20,19 @@ class SpellCrimsonCoil extends SpellDamage {
       return (() => {
         const result = [];
         for (var card of Array.from<any>(this.getGameSession().getBoard().getUnits())) {
-          if ((card.getOwnerId() === this.getOwnerId()) && !card.getIsGeneral() && card.getIsBattlePet()) {
-            result.push(general.getModifierByClass(PlayerModifierBattlePetManager).triggerBattlePet(card));
-          // for minions that "belong to all tribes" - unexhaust them
-          } else if ((card.getOwnerId() === this.getOwnerId()) && card.getBelongsToTribe(Races.BattlePet)) {
+          if (
+            card.getOwnerId() === this.getOwnerId() &&
+            !card.getIsGeneral() &&
+            card.getIsBattlePet()
+          ) {
+            result.push(
+              general.getModifierByClass(PlayerModifierBattlePetManager).triggerBattlePet(card),
+            );
+            // for minions that "belong to all tribes" - unexhaust them
+          } else if (
+            card.getOwnerId() === this.getOwnerId() &&
+            card.getBelongsToTribe(Races.BattlePet)
+          ) {
             var refreshExhaustionAction = new RefreshExhaustionAction(this.getGameSession());
             refreshExhaustionAction.setTarget(card);
             result.push(this.getGameSession().executeAction(refreshExhaustionAction));

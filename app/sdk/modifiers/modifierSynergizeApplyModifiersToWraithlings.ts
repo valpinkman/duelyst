@@ -15,7 +15,17 @@ class ModifierSynergizeApplyModifiersToWraithlings extends ModifierSynergizeAppl
   static description = '';
 
   static createContextObject(modifiersContextObjects, auraRadius, description, options) {
-    const contextObject = super.createContextObject(modifiersContextObjects, false, false, true, false, false, auraRadius, description, options);
+    const contextObject = super.createContextObject(
+      modifiersContextObjects,
+      false,
+      false,
+      true,
+      false,
+      false,
+      auraRadius,
+      description,
+      options,
+    );
     contextObject.cardId = Cards.Faction4.Wraithling;
     return contextObject;
   }
@@ -33,7 +43,11 @@ class ModifierSynergizeApplyModifiersToWraithlings extends ModifierSynergizeAppl
     return affectedEntities;
   }
 }
-ModifierSynergizeApplyModifiersToWraithlings.prototype.type = 'ModifierSynergizeApplyModifiersToWraithlings';
-ModifierSynergizeApplyModifiersToWraithlings.prototype.fxResource = ['FX.Modifiers.ModifierSynergize', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierSynergizeApplyModifiersToWraithlings.prototype.type =
+  'ModifierSynergizeApplyModifiersToWraithlings';
+ModifierSynergizeApplyModifiersToWraithlings.prototype.fxResource = [
+  'FX.Modifiers.ModifierSynergize',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 
 module.exports = ModifierSynergizeApplyModifiersToWraithlings;

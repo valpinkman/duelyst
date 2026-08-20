@@ -32,7 +32,9 @@ class QuestSeasonal2017October extends Quest {
   }
 
   isAvailableOn(momentUtc) {
-    return momentUtc.isAfter(moment.utc('2017-10-01')) && momentUtc.isBefore(moment.utc('2017-11-01'));
+    return (
+      momentUtc.isAfter(moment.utc('2017-10-01')) && momentUtc.isBefore(moment.utc('2017-11-01'))
+    );
   }
 }
 QuestSeasonal2017October.prototype.isReplaceable = false;

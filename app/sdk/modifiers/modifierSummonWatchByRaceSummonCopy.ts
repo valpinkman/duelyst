@@ -25,12 +25,27 @@ class ModifierSummonWatchByRaceSummonCopy extends ModifierSummonWatch {
   onSummonWatch(action) {
     const minion = action.getTarget();
 
-    if ((minion != null) && !(action.getTriggeringModifier() instanceof ModifierSummonWatchByRaceSummonCopy)) {
+    if (
+      minion != null &&
+      !(action.getTriggeringModifier() instanceof ModifierSummonWatchByRaceSummonCopy)
+    ) {
       const originalPosition = minion.getPosition();
-      const spawnLocations = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(this.getGameSession(), originalPosition, CONFIG.PATTERN_3x3, minion, this.getCard(), 1);
-      if ((spawnLocations != null) && (spawnLocations.length > 0)) {
+      const spawnLocations = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(
+        this.getGameSession(),
+        originalPosition,
+        CONFIG.PATTERN_3x3,
+        minion,
+        this.getCard(),
+        1,
+      );
+      if (spawnLocations != null && spawnLocations.length > 0) {
         const spawnPosition = spawnLocations[0];
-        const spawnEntityAction = new CloneEntityAction(this.getGameSession(), this.getOwnerId(), spawnPosition.x, spawnPosition.y);
+        const spawnEntityAction = new CloneEntityAction(
+          this.getGameSession(),
+          this.getOwnerId(),
+          spawnPosition.x,
+          spawnPosition.y,
+        );
         spawnEntityAction.setOwnerId(this.getOwnerId());
         spawnEntityAction.setSource(minion);
         return this.getGameSession().executeAction(spawnEntityAction);

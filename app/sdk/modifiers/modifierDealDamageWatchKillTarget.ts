@@ -30,7 +30,7 @@ class ModifierDealDamageWatchKillTarget extends ModifierDealDamageWatch {
 
   getIsActionRelevant(a) {
     // kill the target as long as it isn't a general
-    return super.getIsActionRelevant(a) && !(__guard__(a.getTarget(), (x) => x.getIsGeneral()));
+    return super.getIsActionRelevant(a) && !__guard__(a.getTarget(), (x) => x.getIsGeneral());
   }
 
   onDealDamage(action) {
@@ -56,10 +56,13 @@ class ModifierDealDamageWatchKillTarget extends ModifierDealDamageWatch {
 }
 ModifierDealDamageWatchKillTarget.prototype.type = 'ModifierDealDamageWatchKillTarget';
 ModifierDealDamageWatchKillTarget.prototype.maxStacks = 1;
-ModifierDealDamageWatchKillTarget.prototype.fxResource = ['FX.Modifiers.ModifierDealDamageWatch', 'FX.Modifiers.ModifierGenericKill'];
+ModifierDealDamageWatchKillTarget.prototype.fxResource = [
+  'FX.Modifiers.ModifierDealDamageWatch',
+  'FX.Modifiers.ModifierGenericKill',
+];
 
 module.exports = ModifierDealDamageWatchKillTarget;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

@@ -26,7 +26,11 @@ class ModifierSurviveDamageWatchReturnToHand extends ModifierSurviveDamageWatch 
       this.getGameSession().executeAction(removeOriginalEntityAction);
 
       // put a fresh card matching the original unit into hand
-      const putCardInHandAction = new PutCardInHandAction(this.getGameSession(), this.getCard().getOwnerId(), this.getCard().createNewCardData());
+      const putCardInHandAction = new PutCardInHandAction(
+        this.getGameSession(),
+        this.getCard().getOwnerId(),
+        this.getCard().createNewCardData(),
+      );
       return this.getGameSession().executeAction(putCardInHandAction);
     }
   }

@@ -17,11 +17,16 @@ class ModifierStartTurnWatchDamageEnemyGeneralBuffSelf extends ModifierStartTurn
 
   static type = 'ModifierStartTurnWatchDamageEnemyGeneralBuffSelf';
   static modifierName = 'Turn Watch';
-  static description = 'At the start of your turn, deal %X damage to the enemy General and this minion gains %Y';
+  static description =
+    'At the start of your turn, deal %X damage to the enemy General and this minion gains %Y';
 
   static createContextObject(attackBuff, maxHPBuff, damageAmount, options) {
-    if (attackBuff == null) { attackBuff = 0; }
-    if (maxHPBuff == null) { maxHPBuff = 0; }
+    if (attackBuff == null) {
+      attackBuff = 0;
+    }
+    if (maxHPBuff == null) {
+      maxHPBuff = 0;
+    }
     const contextObject = super.createContextObject(attackBuff, maxHPBuff, options);
     contextObject.damageAmount = damageAmount;
 
@@ -31,7 +36,13 @@ class ModifierStartTurnWatchDamageEnemyGeneralBuffSelf extends ModifierStartTurn
   static getDescription(modifierContextObject) {
     if (modifierContextObject) {
       const subContextObject = modifierContextObject.modifiersContextObjects[0];
-      const replaceText = this.description.replace(/%Y/, Stringifiers.stringifyAttackHealthBuff(subContextObject.attributeBuffs.atk, subContextObject.attributeBuffs.maxHP));
+      const replaceText = this.description.replace(
+        /%Y/,
+        Stringifiers.stringifyAttackHealthBuff(
+          subContextObject.attributeBuffs.atk,
+          subContextObject.attributeBuffs.maxHP,
+        ),
+      );
       return replaceText.replace(/%X/, modifierContextObject.damageAmount);
     }
     return this.description;
@@ -39,7 +50,9 @@ class ModifierStartTurnWatchDamageEnemyGeneralBuffSelf extends ModifierStartTurn
 
   onTurnWatch(action) {
     // damage enemy General
-    const general = this.getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
+    const general = this.getGameSession().getGeneralForOpponentOfPlayerId(
+      this.getCard().getOwnerId(),
+    );
     if (general != null) {
       const damageAction = new DamageAction(this.getGameSession());
       damageAction.setOwnerId(this.getCard().getOwnerId());
@@ -56,9 +69,14 @@ class ModifierStartTurnWatchDamageEnemyGeneralBuffSelf extends ModifierStartTurn
     return super.onTurnWatch(action);
   }
 }
-ModifierStartTurnWatchDamageEnemyGeneralBuffSelf.prototype.type = 'ModifierStartTurnWatchDamageEnemyGeneralBuffSelf';
+ModifierStartTurnWatchDamageEnemyGeneralBuffSelf.prototype.type =
+  'ModifierStartTurnWatchDamageEnemyGeneralBuffSelf';
 ModifierStartTurnWatchDamageEnemyGeneralBuffSelf.prototype.damageAmount = 0;
-ModifierStartTurnWatchDamageEnemyGeneralBuffSelf.prototype.fxResource = ['FX.Modifiers.ModifierStartTurnWatch', 'FX.Modifiers.ModifierGenericDamageFire', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierStartTurnWatchDamageEnemyGeneralBuffSelf.prototype.fxResource = [
+  'FX.Modifiers.ModifierStartTurnWatch',
+  'FX.Modifiers.ModifierGenericDamageFire',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 // then buff self
 
 module.exports = ModifierStartTurnWatchDamageEnemyGeneralBuffSelf;

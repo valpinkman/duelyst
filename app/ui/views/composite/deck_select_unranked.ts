@@ -12,7 +12,6 @@ var NewPlayerManager = require('app/ui/managers/new_player_manager');
 var DeckSelectCompositeView = require('./deck_select');
 
 var DeckSelectUnrankedCompositeView = DeckSelectCompositeView.extend({
-
   template: DeckSelectSandboxTmpl,
 
   _showNewPlayerUI: function () {
@@ -47,7 +46,6 @@ var DeckSelectUnrankedCompositeView = DeckSelectCompositeView.extend({
       this.ui.$deckSelectConfirmCasual.removeClass('disabled');
     }
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

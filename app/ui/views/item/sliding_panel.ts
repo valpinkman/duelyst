@@ -7,7 +7,6 @@ var audio_engine = require('app/audio/audio_engine');
 var SlidingPanelTmpl = require('app/ui/templates/item/sliding_panel.hbs');
 
 var SlidingPanelItemView = Backbone.Marionette.ItemView.extend({
-
   tagName: 'li',
   className: 'sliding-panel',
 
@@ -37,7 +36,6 @@ var SlidingPanelItemView = Backbone.Marionette.ItemView.extend({
       this.trigger('select');
     }
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

@@ -25,7 +25,7 @@ class SwapGeneralAction extends Action {
 
     const source = this.getSource();
     const target = this.getTarget();
-    if ((source != null) && (target != null)) {
+    if (source != null && target != null) {
       // Logger.module("SDK").debug("#{@getGameSession().gameId} SwapGeneralAction._execute -> swap from #{source.getLogName()} to #{target.getLogName()}")
       // get all modifiers on the current general that must move to the new general
       // remove any modifiers controlled by new general that were targeting the old general
@@ -34,15 +34,21 @@ class SwapGeneralAction extends Action {
       for (let i = iterable.length - 1; i >= 0; i--) {
         var modifier = iterable[i];
         var parentModifier = modifier.getParentModifier();
-        if (modifier instanceof PlayerModifier || parentModifier instanceof ModifierCardControlledPlayerModifiers) {
-          if ((parentModifier != null) && (parentModifier.getCard() === target)) {
+        if (
+          modifier instanceof PlayerModifier ||
+          parentModifier instanceof ModifierCardControlledPlayerModifiers
+        ) {
+          if (parentModifier != null && parentModifier.getCard() === target) {
             // remove any modifiers that are controlled by the new general
             if (parentModifier instanceof ModifierCardControlledPlayerModifiers) {
               this.getGameSession().removeModifier(parentModifier);
             } else {
               this.getGameSession().removeModifier(modifier);
             }
-          } else if (modifier instanceof PlayerModifierBattlePetManager && target.hasModifierClass(PlayerModifierBattlePetManager)) {
+          } else if (
+            modifier instanceof PlayerModifierBattlePetManager &&
+            target.hasModifierClass(PlayerModifierBattlePetManager)
+          ) {
             // don't move battle pet managers if target already has one (i.e. target is already a general)
             this.getGameSession().removeModifier(modifier);
           } else {
@@ -64,7 +70,8 @@ class SwapGeneralAction extends Action {
 
       // move modifiers to new general
       return Array.from<any>(modifiersToMove).map((playerModifier) =>
-        this.getGameSession().moveModifierToCard(playerModifier, target));
+        this.getGameSession().moveModifierToCard(playerModifier, target),
+      );
     }
   }
 }

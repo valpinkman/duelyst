@@ -19,9 +19,7 @@ const { GameManager } = require('../../server/redis');
 module.exports = function (job, done) {
   const gameId = job.data.gameId || null;
   const userId = job.data.userId || null;
-  const {
-    gameType,
-  } = job.data;
+  const { gameType } = job.data;
 
   if (!gameId) {
     return done(new Error('Game ID is not defined.'));
@@ -33,7 +31,9 @@ module.exports = function (job, done) {
     return done(new Error('Game type is not defined.'));
   }
 
-  Logger.module('JOB').debug(`[J:${job.id}] Update User (${userId}) Stats for game ${gameId} starting`);
+  Logger.module('JOB').debug(
+    `[J:${job.id}] Update User (${userId}) Stats for game ${gameId} starting`,
+  );
   Logger.module('JOB').time(`[J:${job.id}] Update User (${userId}) Stats for game ${gameId}`);
 
   return GameManager.loadGameSession(gameId)
@@ -44,8 +44,11 @@ module.exports = function (job, done) {
       } else {
         return UsersModule.updateUserStatsWithGame(userId, gameId, gameType, gameSessionData);
       }
-    }).then(function () {
-      Logger.module('JOB').timeEnd(`[J:${job.id}] Update User (${userId}) Stats for game ${gameId}`);
+    })
+    .then(function () {
+      Logger.module('JOB').timeEnd(
+        `[J:${job.id}] Update User (${userId}) Stats for game ${gameId}`,
+      );
       return done();
     })
     .catch((error) => done(error));

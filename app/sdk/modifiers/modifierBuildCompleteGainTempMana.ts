@@ -13,7 +13,12 @@ class ModifierBuildCompleteGainTempMana extends ModifierBuilding {
   static type = 'ModifierBuildCompleteGainTempMana';
 
   static createContextObject(bonusMana, description, transformCardData, turnsToBuild, options) {
-    const contextObject = super.createContextObject(description, transformCardData, turnsToBuild, options);
+    const contextObject = super.createContextObject(
+      description,
+      transformCardData,
+      turnsToBuild,
+      options,
+    );
     contextObject.bonusMana = bonusMana;
     return contextObject;
   }
@@ -21,7 +26,9 @@ class ModifierBuildCompleteGainTempMana extends ModifierBuilding {
   onBuildComplete() {
     super.onBuildComplete();
 
-    const general = this.getCard().getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
+    const general = this.getCard()
+      .getGameSession()
+      .getGeneralForPlayerId(this.getCard().getOwnerId());
     const action = this.getGameSession().createActionForType(BonusManaAction.type);
     action.setSource(this.getCard());
     action.setTarget(general);

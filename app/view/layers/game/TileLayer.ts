@@ -26,7 +26,6 @@ const RenderPass = require('app/view/fx/RenderPass');
  *************************************************************************** */
 
 var TileLayer = BaseLayer.extend({
-
   _boardBatchNode: null,
   _boardNonBatchNode: null,
   _renderPass: null,
@@ -38,19 +37,31 @@ var TileLayer = BaseLayer.extend({
   ctor() {
     this._tileMapMergedSpriteClassesByName = {};
 
-    this._tileMapMergedSpriteClassesByName[RSX.tile_merged_large_0.frame] = TileMapMergedLarge0Sprite;
-    this._tileMapMergedSpriteClassesByName[RSX.tile_merged_large_01.frame] = TileMapMergedLarge01Sprite;
-    this._tileMapMergedSpriteClassesByName[RSX.tile_merged_large_0123.frame] = TileMapMergedLarge0123Sprite;
-    this._tileMapMergedSpriteClassesByName[RSX.tile_merged_large_013.frame] = TileMapMergedLarge013Sprite;
-    this._tileMapMergedSpriteClassesByName[RSX.tile_merged_large_03.frame] = TileMapMergedLarge03Sprite;
-    this._tileMapMergedSpriteClassesByName[RSX.tile_merged_large_0_seam.frame] = TileMapMergedLarge0SeamSprite;
+    this._tileMapMergedSpriteClassesByName[RSX.tile_merged_large_0.frame] =
+      TileMapMergedLarge0Sprite;
+    this._tileMapMergedSpriteClassesByName[RSX.tile_merged_large_01.frame] =
+      TileMapMergedLarge01Sprite;
+    this._tileMapMergedSpriteClassesByName[RSX.tile_merged_large_0123.frame] =
+      TileMapMergedLarge0123Sprite;
+    this._tileMapMergedSpriteClassesByName[RSX.tile_merged_large_013.frame] =
+      TileMapMergedLarge013Sprite;
+    this._tileMapMergedSpriteClassesByName[RSX.tile_merged_large_03.frame] =
+      TileMapMergedLarge03Sprite;
+    this._tileMapMergedSpriteClassesByName[RSX.tile_merged_large_0_seam.frame] =
+      TileMapMergedLarge0SeamSprite;
 
-    this._tileMapMergedSpriteClassesByName[RSX.tile_merged_hover_0.frame] = TileMapMergedHover0Sprite;
-    this._tileMapMergedSpriteClassesByName[RSX.tile_merged_hover_01.frame] = TileMapMergedHover01Sprite;
-    this._tileMapMergedSpriteClassesByName[RSX.tile_merged_hover_0123.frame] = TileMapMergedHover0123Sprite;
-    this._tileMapMergedSpriteClassesByName[RSX.tile_merged_hover_013.frame] = TileMapMergedHover013Sprite;
-    this._tileMapMergedSpriteClassesByName[RSX.tile_merged_hover_03.frame] = TileMapMergedHover03Sprite;
-    this._tileMapMergedSpriteClassesByName[RSX.tile_merged_hover_0_seam.frame] = TileMapMergedHover0SeamSprite;
+    this._tileMapMergedSpriteClassesByName[RSX.tile_merged_hover_0.frame] =
+      TileMapMergedHover0Sprite;
+    this._tileMapMergedSpriteClassesByName[RSX.tile_merged_hover_01.frame] =
+      TileMapMergedHover01Sprite;
+    this._tileMapMergedSpriteClassesByName[RSX.tile_merged_hover_0123.frame] =
+      TileMapMergedHover0123Sprite;
+    this._tileMapMergedSpriteClassesByName[RSX.tile_merged_hover_013.frame] =
+      TileMapMergedHover013Sprite;
+    this._tileMapMergedSpriteClassesByName[RSX.tile_merged_hover_03.frame] =
+      TileMapMergedHover03Sprite;
+    this._tileMapMergedSpriteClassesByName[RSX.tile_merged_hover_0_seam.frame] =
+      TileMapMergedHover0SeamSprite;
 
     // create node for non-batched board tiles
     this._boardNonBatchNode = new cc.Node();
@@ -124,9 +135,21 @@ var TileLayer = BaseLayer.extend({
       // build render pass for aliasing board tiles
       if (this._renderPass == null) {
         this._renderPassStackId = RenderPass.get_new_reset_stack_id();
-        this._renderPass = new RenderPass(cc.Texture2D.PIXEL_FORMAT_RGBA8888, cc.winSize.width, cc.winSize.height, 1, true);
+        this._renderPass = new RenderPass(
+          cc.Texture2D.PIXEL_FORMAT_RGBA8888,
+          cc.winSize.width,
+          cc.winSize.height,
+          1,
+          true,
+        );
       } else {
-        this._renderPass.rebuild(cc.Texture2D.PIXEL_FORMAT_RGBA8888, cc.winSize.width, cc.winSize.height, 1, true);
+        this._renderPass.rebuild(
+          cc.Texture2D.PIXEL_FORMAT_RGBA8888,
+          cc.winSize.width,
+          cc.winSize.height,
+          1,
+          true,
+        );
       }
 
       // flag render cmd as needing draw
@@ -136,10 +159,10 @@ var TileLayer = BaseLayer.extend({
       if (this._boardBatchNode.getParent() == null) {
         // add to parent
         if (!this._boardBatchNode.isRunning()) {
-          this.addChild(this._boardBatchNode);// , -9999);
+          this.addChild(this._boardBatchNode); // , -9999);
         } else {
           this._boardBatchNode.setParent(this);
-          this._insertChild(this._boardBatchNode);// , -9999);
+          this._insertChild(this._boardBatchNode); // , -9999);
         }
 
         // update transforms
@@ -211,10 +234,19 @@ var TileLayer = BaseLayer.extend({
    * @private
    */
   _getMergedTileCornerValues(mapNode, map, altMap) {
-    let ntl; let nt; let ntr; let nr; let nbr; let nb; let nbl; let
-      nl;
+    let ntl;
+    let nt;
+    let ntr;
+    let nr;
+    let nbr;
+    let nb;
+    let nbl;
+    let nl;
     const values = {
-      tl: '', tr: '', br: '', bl: '',
+      tl: '',
+      tr: '',
+      br: '',
+      bl: '',
     };
 
     if (mapNode) {
@@ -251,16 +283,32 @@ var TileLayer = BaseLayer.extend({
       // alt map used to create corner seams
       if (altMap) {
         if (vl) {
-          if (!values.tl && altMap[il]) { values.tl = '_seam'; }
-          if (!values.bl && altMap[il]) { values.bl = '_seam'; }
-          if (!values.tl && altMap[itl]) { values.tl = '_seam'; }
-          if (!values.bl && altMap[ibl]) { values.bl = '_seam'; }
+          if (!values.tl && altMap[il]) {
+            values.tl = '_seam';
+          }
+          if (!values.bl && altMap[il]) {
+            values.bl = '_seam';
+          }
+          if (!values.tl && altMap[itl]) {
+            values.tl = '_seam';
+          }
+          if (!values.bl && altMap[ibl]) {
+            values.bl = '_seam';
+          }
         }
         if (vr) {
-          if (!values.tr && altMap[ir]) { values.tr = '_seam'; }
-          if (!values.br && altMap[ir]) { values.br = '_seam'; }
-          if (!values.tr && altMap[itr]) { values.tr = '_seam'; }
-          if (!values.br && altMap[ibr]) { values.br = '_seam'; }
+          if (!values.tr && altMap[ir]) {
+            values.tr = '_seam';
+          }
+          if (!values.br && altMap[ir]) {
+            values.br = '_seam';
+          }
+          if (!values.tr && altMap[itr]) {
+            values.tr = '_seam';
+          }
+          if (!values.br && altMap[ibr]) {
+            values.br = '_seam';
+          }
         }
       }
     }
@@ -305,8 +353,26 @@ var TileLayer = BaseLayer.extend({
         const { y } = mapNode;
         const tlTileSprite = this.displayMergedTile(filePrefix, values.tl, x, y, -1, 1, tlColor, 0);
         const trTileSprite = this.displayMergedTile(filePrefix, values.tr, x, y, 1, 1, trColor, 90);
-        const brTileSprite = this.displayMergedTile(filePrefix, values.br, x, y, 1, -1, brColor, 180);
-        const blTileSprite = this.displayMergedTile(filePrefix, values.bl, x, y, -1, -1, blColor, 270);
+        const brTileSprite = this.displayMergedTile(
+          filePrefix,
+          values.br,
+          x,
+          y,
+          1,
+          -1,
+          brColor,
+          180,
+        );
+        const blTileSprite = this.displayMergedTile(
+          filePrefix,
+          values.bl,
+          x,
+          y,
+          -1,
+          -1,
+          blColor,
+          270,
+        );
         mapNode.tlTileSprite = tlTileSprite;
         mapNode.trTileSprite = trTileSprite;
         mapNode.brTileSprite = brTileSprite;
@@ -330,7 +396,10 @@ var TileLayer = BaseLayer.extend({
   getMapFromBoardPositions(positions, map) {
     map || (map = []);
 
-    const baseMap = UtilsPosition.getMapFromPositions(SDK.GameSession.getInstance().getBoard().getColumnCount(), positions);
+    const baseMap = UtilsPosition.getMapFromPositions(
+      SDK.GameSession.getInstance().getBoard().getColumnCount(),
+      positions,
+    );
     for (let i = 0, il = baseMap.length; i < il; i++) {
       const position = baseMap[i];
       if (position) {
@@ -360,12 +429,24 @@ var TileLayer = BaseLayer.extend({
    * @param {Number} [rotation=0]
    * @returns {cc.Node} tile sprite
    */
-  displayMergedTile(tilePrefix, mergedTilePartId, boardX, boardY, offsetX, offsetY, color, rotation) {
+  displayMergedTile(
+    tilePrefix,
+    mergedTilePartId,
+    boardX,
+    boardY,
+    offsetX,
+    offsetY,
+    color,
+    rotation,
+  ) {
     // get tile class
     const tileMapMergedSpriteClassName = RSX[`${tilePrefix}0${mergedTilePartId}`].frame;
-    const tileMapMergedSpriteClass = this._tileMapMergedSpriteClassesByName[tileMapMergedSpriteClassName];
+    const tileMapMergedSpriteClass =
+      this._tileMapMergedSpriteClassesByName[tileMapMergedSpriteClassName];
     if (tileMapMergedSpriteClass == null) {
-      throw new Error(`TileLayer.displayMergedTile -> invalid tileMapMergedSpriteClassName ${tileMapMergedSpriteClassName}`);
+      throw new Error(
+        `TileLayer.displayMergedTile -> invalid tileMapMergedSpriteClassName ${tileMapMergedSpriteClassName}`,
+      );
     }
 
     const tileSprite = tileMapMergedSpriteClass.create();
@@ -410,12 +491,51 @@ var TileLayer = BaseLayer.extend({
       for (let i = 0, il = locs.length; i < il; i++) {
         const location = locs[i];
         const values = this._getMergedTileCornerValues(location, map, altMap);
-        const tlTileSprite = this.displayMergedTile(filePrefix, values.tl, location.x, location.y, -1, 1, color, 0);
-        const trTileSprite = this.displayMergedTile(filePrefix, values.tr, location.x, location.y, 1, 1, color, 90);
-        const brTileSprite = this.displayMergedTile(filePrefix, values.br, location.x, location.y, 1, -1, color, 180);
-        const blTileSprite = this.displayMergedTile(filePrefix, values.bl, location.x, location.y, -1, -1, color, 270);
+        const tlTileSprite = this.displayMergedTile(
+          filePrefix,
+          values.tl,
+          location.x,
+          location.y,
+          -1,
+          1,
+          color,
+          0,
+        );
+        const trTileSprite = this.displayMergedTile(
+          filePrefix,
+          values.tr,
+          location.x,
+          location.y,
+          1,
+          1,
+          color,
+          90,
+        );
+        const brTileSprite = this.displayMergedTile(
+          filePrefix,
+          values.br,
+          location.x,
+          location.y,
+          1,
+          -1,
+          color,
+          180,
+        );
+        const blTileSprite = this.displayMergedTile(
+          filePrefix,
+          values.bl,
+          location.x,
+          location.y,
+          -1,
+          -1,
+          color,
+          270,
+        );
 
-        const mapNode = map[UtilsPosition.getMapIndexFromPosition(board.getColumnCount(), location.x, location.y)];
+        const mapNode =
+          map[
+            UtilsPosition.getMapIndexFromPosition(board.getColumnCount(), location.x, location.y)
+          ];
         mapNode.tlTileSprite = tlTileSprite;
         mapNode.trTileSprite = trTileSprite;
         mapNode.brTileSprite = brTileSprite;
@@ -461,7 +581,9 @@ var TileLayer = BaseLayer.extend({
    * @param {Number} fadeDuration seconds over which to fade tiles
    */
   removeTilesWithFade(tiles, fadeDuration) {
-    if (fadeDuration == null) { fadeDuration = CONFIG.FADE_FAST_DURATION; }
+    if (fadeDuration == null) {
+      fadeDuration = CONFIG.FADE_FAST_DURATION;
+    }
     if (_.isArray(tiles)) {
       for (let i = 0, il = tiles.length; i < il; i++) {
         const tileSprite = tiles[i];
@@ -477,18 +599,21 @@ var TileLayer = BaseLayer.extend({
    * @param {Number} fadeDuration seconds over which to fade tile
    */
   removeTileWithFade(tileSprite, fadeDuration) {
-    if (fadeDuration == null) { fadeDuration = CONFIG.FADE_FAST_DURATION; }
+    if (fadeDuration == null) {
+      fadeDuration = CONFIG.FADE_FAST_DURATION;
+    }
     this.removeTile(tileSprite, fadeDuration);
   },
 
   /* endregion TILES */
-
 });
 
 TileLayer.WebGLRenderCmd = function (renderable) {
   cc.Layer.WebGLRenderCmd.call(this, renderable);
 };
-const proto = TileLayer.WebGLRenderCmd.prototype = Object.create(cc.Layer.WebGLRenderCmd.prototype);
+const proto = (TileLayer.WebGLRenderCmd.prototype = Object.create(
+  cc.Layer.WebGLRenderCmd.prototype,
+));
 proto.constructor = TileLayer.WebGLRenderCmd;
 
 proto.visit = function (parentCmd) {
@@ -510,7 +635,8 @@ proto.visit = function (parentCmd) {
     boardBatchNodeRenderCmd._curLevel = this._curLevel + 1;
 
     // batchNode's transform must always occur
-    if (!(boardBatchNodeRenderCmd._dirtyFlag & cc.Node._dirtyFlags.transformDirty)) boardBatchNodeRenderCmd.transform(this);
+    if (!(boardBatchNodeRenderCmd._dirtyFlag & cc.Node._dirtyFlags.transformDirty))
+      boardBatchNodeRenderCmd.transform(this);
     // batchNode doesn't visit its children
     boardBatchNodeRenderCmd.updateStatus(this);
 
@@ -539,7 +665,10 @@ proto.rendering = function (ctx) {
     const boardBatchNodeShaderProgram = boardBatchNodeRenderCmd._shaderProgram;
     boardBatchNodeShaderProgram.use();
     boardBatchNodeShaderProgram.setUniformForModelViewAndProjectionMatrixWithMat4();
-    boardBatchNode._arrayMakeObjectsPerformSelector(boardBatchNode._children, cc.Node._stateCallbackType.updateTransform);
+    boardBatchNode._arrayMakeObjectsPerformSelector(
+      boardBatchNode._children,
+      cc.Node._stateCallbackType.updateTransform,
+    );
 
     // separate blend function to account for rendering to offscreen texture
     gl.enable(gl.BLEND);

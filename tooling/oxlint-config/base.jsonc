@@ -16,14 +16,14 @@
 
   "categories": {
     // the bug-finding category, and the reason for the swap
-    "correctness": "error"
+    "correctness": "error",
   },
 
   "env": {
     "builtin": true,
     "browser": true,
     "node": true,
-    "es2024": true
+    "es2024": true,
   },
 
   "globals": {
@@ -38,7 +38,7 @@
     "Handlebars": "readonly",
     "Velocity": "readonly",
     "AWS": "readonly",
-    "ga": "readonly"
+    "ga": "readonly",
   },
 
   "rules": {
@@ -85,6 +85,6 @@
     "no-unreachable": "warn",
     "no-unassigned-vars": "warn",
     "oxc/erasing-op": "warn",
-    "no-extra-boolean-cast": "warn"
-  }
+    "no-extra-boolean-cast": "warn",
+  },
 }

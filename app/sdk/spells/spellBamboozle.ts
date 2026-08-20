@@ -21,7 +21,8 @@ class SpellHugToDeath extends SpellRemoveAndReplaceEntity {
 
         const player = this.getGameSession().getPlayerById(this.getOwnerId());
         return Array.from<any>(player.getDeck().actionsDrawCardsToRefillHand()).map((action) =>
-          this.getGameSession().executeAction(action));
+          this.getGameSession().executeAction(action),
+        );
       }
       this.cardDataOrIndexToSpawn = { id: Cards.Faction2.OnyxBear };
       return super.onApplyEffectToBoardTile(board, x, y, sourceAction);

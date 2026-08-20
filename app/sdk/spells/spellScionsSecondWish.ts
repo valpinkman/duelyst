@@ -17,8 +17,8 @@ class SpellScionsSecondWish extends Spell {
   declare spellFilterType: any;
 
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
-    let cardIndex; let
-      i;
+    let cardIndex;
+    let i;
     super.onApplyEffectToBoardTile(board, x, y, sourceAction);
 
     // draw 2 Vetruvian cards
@@ -28,7 +28,7 @@ class SpellScionsSecondWish extends Spell {
     for (i = 0; i < drawPile.length; i++) {
       cardIndex = drawPile[i];
       var card = this.getGameSession().getCardByIndex(cardIndex);
-      if ((card != null) && (card.getFactionId() === Factions.Faction3)) {
+      if (card != null && card.getFactionId() === Factions.Faction3) {
         indexOfCards.push(i);
       }
     }
@@ -42,7 +42,11 @@ class SpellScionsSecondWish extends Spell {
           cardIndex = drawPile[indexOfCardInDeck];
           indexOfCards.splice(whichCard, 1); // remove this card from the list (don't try to draw same card twice)
           // put card in hand
-          var putCardInHandAction = new PutCardInHandAction(this.getGameSession(), this.getOwnerId(), cardIndex);
+          var putCardInHandAction = new PutCardInHandAction(
+            this.getGameSession(),
+            this.getOwnerId(),
+            cardIndex,
+          );
           result.push(this.getGameSession().executeAction(putCardInHandAction));
         } else {
           result.push(undefined);

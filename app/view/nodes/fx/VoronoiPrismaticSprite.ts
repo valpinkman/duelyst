@@ -24,7 +24,9 @@ var VoronoiPrismaticSprite = BaseSprite.extend({
 
   setOptions(options) {
     this._super(options);
-    if (options.phase != null) { this.setPhase(options.phase); }
+    if (options.phase != null) {
+      this.setPhase(options.phase);
+    }
   },
 
   setPhase(phase) {
@@ -46,7 +48,9 @@ var VoronoiPrismaticSprite = BaseSprite.extend({
 VoronoiPrismaticSprite.WebGLRenderCmd = function (renderable) {
   BaseSprite.WebGLRenderCmd.call(this, renderable);
 };
-const proto = VoronoiPrismaticSprite.WebGLRenderCmd.prototype = Object.create(BaseSprite.WebGLRenderCmd.prototype);
+const proto = (VoronoiPrismaticSprite.WebGLRenderCmd.prototype = Object.create(
+  BaseSprite.WebGLRenderCmd.prototype,
+));
 proto.constructor = VoronoiPrismaticSprite.WebGLRenderCmd;
 
 proto.rendering = function () {

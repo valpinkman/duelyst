@@ -16,9 +16,15 @@ class ModifierDealDamageWatchBuffSelf extends ModifierDealDamageWatch {
   static description = 'Whenever this minion damages an enemy, this minion gains %X';
 
   static createContextObject(attackBuff, maxHPBuff, modAppliedName, options) {
-    if (attackBuff == null) { attackBuff = 0; }
-    if (maxHPBuff == null) { maxHPBuff = 0; }
-    if (modAppliedName == null) { modAppliedName = undefined; }
+    if (attackBuff == null) {
+      attackBuff = 0;
+    }
+    if (maxHPBuff == null) {
+      maxHPBuff = 0;
+    }
+    if (modAppliedName == null) {
+      modAppliedName = undefined;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.modifiersContextObjects = [
       Modifier.createContextObjectWithAttributeBuffs(attackBuff, maxHPBuff, {
@@ -33,16 +39,28 @@ class ModifierDealDamageWatchBuffSelf extends ModifierDealDamageWatch {
   static getDescription(modifierContextObject) {
     if (modifierContextObject) {
       const subContextObject = modifierContextObject.modifiersContextObjects[0];
-      return this.description.replace(/%X/, Stringifiers.stringifyAttackHealthBuff(subContextObject.attributeBuffs.atk, subContextObject.attributeBuffs.maxHP));
+      return this.description.replace(
+        /%X/,
+        Stringifiers.stringifyAttackHealthBuff(
+          subContextObject.attributeBuffs.atk,
+          subContextObject.attributeBuffs.maxHP,
+        ),
+      );
     }
     return this.description;
   }
 
   onAfterDealDamage(action) {
-    return this.applyManagedModifiersFromModifiersContextObjects(this.modifiersContextObjects, this.getCard());
+    return this.applyManagedModifiersFromModifiersContextObjects(
+      this.modifiersContextObjects,
+      this.getCard(),
+    );
   }
 }
 ModifierDealDamageWatchBuffSelf.prototype.type = 'ModifierDealDamageWatchBuffSelf';
-ModifierDealDamageWatchBuffSelf.prototype.fxResource = ['FX.Modifiers.ModifierDeathwatch', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierDealDamageWatchBuffSelf.prototype.fxResource = [
+  'FX.Modifiers.ModifierDeathwatch',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 
 module.exports = ModifierDealDamageWatchBuffSelf;

@@ -22,11 +22,26 @@ class ModifierDyingWishSpawnEntityNearbyGeneral extends ModifierDyingWish {
   static modifierName = 'Dying Wish';
   static description = 'Summon %X nearby your General';
 
-  static createContextObject(cardDataOrIndexToSpawn, spawnDescription, spawnCount, spawnPattern, spawnSilently, options) {
-    if (spawnDescription == null) { spawnDescription = ''; }
-    if (spawnCount == null) { spawnCount = 1; }
-    if (spawnPattern == null) { spawnPattern = CONFIG.PATTERN_3x3; }
-    if (spawnSilently == null) { spawnSilently = true; }
+  static createContextObject(
+    cardDataOrIndexToSpawn,
+    spawnDescription,
+    spawnCount,
+    spawnPattern,
+    spawnSilently,
+    options,
+  ) {
+    if (spawnDescription == null) {
+      spawnDescription = '';
+    }
+    if (spawnCount == null) {
+      spawnCount = 1;
+    }
+    if (spawnPattern == null) {
+      spawnPattern = CONFIG.PATTERN_3x3;
+    }
+    if (spawnSilently == null) {
+      spawnSilently = true;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.cardDataOrIndexToSpawn = cardDataOrIndexToSpawn;
     contextObject.spawnDescription = spawnDescription;
@@ -47,18 +62,41 @@ class ModifierDyingWishSpawnEntityNearbyGeneral extends ModifierDyingWish {
     super.onDyingWish(action);
 
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
-      const card = this.getGameSession().getExistingCardFromIndexOrCachedCardFromData(this.cardDataOrIndexToSpawn);
-      const generalPosition = this.getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId()).getPosition();
-      const spawnLocations = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(this.getGameSession(), generalPosition, this.spawnPattern, card, this.getCard(), this.spawnCount);
+      const card = this.getGameSession().getExistingCardFromIndexOrCachedCardFromData(
+        this.cardDataOrIndexToSpawn,
+      );
+      const generalPosition = this.getGameSession()
+        .getGeneralForPlayerId(this.getCard().getOwnerId())
+        .getPosition();
+      const spawnLocations = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(
+        this.getGameSession(),
+        generalPosition,
+        this.spawnPattern,
+        card,
+        this.getCard(),
+        this.spawnCount,
+      );
 
       return (() => {
         const result = [];
         for (var position of Array.from<any>(spawnLocations)) {
           var playCardAction;
           if (!this.spawnSilently) {
-            playCardAction = new PlayCardAction(this.getGameSession(), this.getCard().getOwnerId(), position.x, position.y, this.cardDataOrIndexToSpawn);
+            playCardAction = new PlayCardAction(
+              this.getGameSession(),
+              this.getCard().getOwnerId(),
+              position.x,
+              position.y,
+              this.cardDataOrIndexToSpawn,
+            );
           } else {
-            playCardAction = new PlayCardSilentlyAction(this.getGameSession(), this.getCard().getOwnerId(), position.x, position.y, this.cardDataOrIndexToSpawn);
+            playCardAction = new PlayCardSilentlyAction(
+              this.getGameSession(),
+              this.getCard().getOwnerId(),
+              position.x,
+              position.y,
+              this.cardDataOrIndexToSpawn,
+            );
           }
           playCardAction.sourcePosition = this.getCard().getPosition();
           result.push(this.getGameSession().executeAction(playCardAction));
@@ -68,8 +106,12 @@ class ModifierDyingWishSpawnEntityNearbyGeneral extends ModifierDyingWish {
     }
   }
 }
-ModifierDyingWishSpawnEntityNearbyGeneral.prototype.type = 'ModifierDyingWishSpawnEntityNearbyGeneral';
-ModifierDyingWishSpawnEntityNearbyGeneral.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericSpawn'];
+ModifierDyingWishSpawnEntityNearbyGeneral.prototype.type =
+  'ModifierDyingWishSpawnEntityNearbyGeneral';
+ModifierDyingWishSpawnEntityNearbyGeneral.prototype.fxResource = [
+  'FX.Modifiers.ModifierDyingWish',
+  'FX.Modifiers.ModifierGenericSpawn',
+];
 ModifierDyingWishSpawnEntityNearbyGeneral.prototype.cardDataOrIndexToSpawn = null;
 
 module.exports = ModifierDyingWishSpawnEntityNearbyGeneral;

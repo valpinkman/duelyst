@@ -12,11 +12,25 @@ class SpellAspectBase extends SpellRemoveAndReplaceEntity {
   getCardDataOrIndexToSpawn(x, y) {
     let cardDataOrIndexToSpawn = super.getCardDataOrIndexToSpawn(x, y);
 
-    const existingEntity = this.getGameSession().getBoard().getCardAtPosition({ x, y }, CardType.Entity);
+    const existingEntity = this.getGameSession()
+      .getBoard()
+      .getCardAtPosition({ x, y }, CardType.Entity);
     if (existingEntity != null) {
-      if ((cardDataOrIndexToSpawn != null) && !_.isObject(cardDataOrIndexToSpawn)) { cardDataOrIndexToSpawn = this.getGameSession().getCardByIndex(cardDataOrIndexToSpawn).createNewCardData(); }
-      if (cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects == null) { cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects = []; }
-      cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects.push(ModifierTransformed.createContextObject(existingEntity.getExhausted(), existingEntity.getMovesMade(), existingEntity.getAttacksMade()));
+      if (cardDataOrIndexToSpawn != null && !_.isObject(cardDataOrIndexToSpawn)) {
+        cardDataOrIndexToSpawn = this.getGameSession()
+          .getCardByIndex(cardDataOrIndexToSpawn)
+          .createNewCardData();
+      }
+      if (cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects == null) {
+        cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects = [];
+      }
+      cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects.push(
+        ModifierTransformed.createContextObject(
+          existingEntity.getExhausted(),
+          existingEntity.getMovesMade(),
+          existingEntity.getAttacksMade(),
+        ),
+      );
     }
 
     return cardDataOrIndexToSpawn;

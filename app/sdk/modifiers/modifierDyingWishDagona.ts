@@ -20,11 +20,11 @@ class ModifierDyingWishDagona extends ModifierDyingWishSpawnEntity {
   }
 
   setCardDataOrIndexToSpawn(cardDataOrIndexToSpawn) {
-    return this.cardDataOrIndexToSpawn = cardDataOrIndexToSpawn;
+    return (this.cardDataOrIndexToSpawn = cardDataOrIndexToSpawn);
   }
 
   setSpawnOwnerId(ownerId) {
-    return this.spawnOwnerId = ownerId;
+    return (this.spawnOwnerId = ownerId);
   }
 
   getSpawnOwnerId(action) {

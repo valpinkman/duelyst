@@ -28,11 +28,11 @@ class Range {
   // flushed out any cached state so that the next call to use it will regenerate
   flushCachedState() {
     this._validPositions = null;
-    return this._positionsTestedForValidByIndex = null;
+    return (this._positionsTestedForValidByIndex = null);
   }
 
   getValidPositions(board, entity) {
-    if ((this._validPositions == null)) {
+    if (this._validPositions == null) {
       const entityPosition = entity.getPosition();
       const pattern = entity.getPattern();
 
@@ -40,7 +40,10 @@ class Range {
 
       for (var node of Array.from<any>(pattern)) {
         var testPosition = { x: entityPosition.x + node.x, y: entityPosition.y + node.y };
-        if (board.isOnBoard(testPosition) && !((entityPosition.x === testPosition.x) && (entityPosition.y === testPosition.y))) {
+        if (
+          board.isOnBoard(testPosition) &&
+          !(entityPosition.x === testPosition.x && entityPosition.y === testPosition.y)
+        ) {
           var entityAtTarget = board.getCardAtPosition(testPosition, entity.getType());
           if (!entityAtTarget) {
             validPositions.push(testPosition);
@@ -53,21 +56,29 @@ class Range {
   }
 
   getIsPositionValid(board, entity, position) {
-    return (this.getValidPosition(board, entity, position) != null);
+    return this.getValidPosition(board, entity, position) != null;
   }
 
   getValidPosition(board, entity, position) {
     if (board.isOnBoard(position)) {
       // if we've already tested this position, return previous result
-      const index = UtilsPosition.getMapIndexFromPosition(board.getColumnCount(), position.x, position.y);
-      if ((this._positionsTestedForValidByIndex == null)) { this._positionsTestedForValidByIndex = {}; }
+      const index = UtilsPosition.getMapIndexFromPosition(
+        board.getColumnCount(),
+        position.x,
+        position.y,
+      );
+      if (this._positionsTestedForValidByIndex == null) {
+        this._positionsTestedForValidByIndex = {};
+      }
       const isValid = this._positionsTestedForValidByIndex[index];
       if (isValid != null) {
-        if (isValid) { return position; }
+        if (isValid) {
+          return position;
+        }
       } else {
         const pattern = this.getValidPositions(board, entity);
         for (var patternPosition of Array.from<any>(pattern)) {
-          if ((patternPosition.x === position.x) && (patternPosition.y === position.y)) {
+          if (patternPosition.x === position.x && patternPosition.y === position.y) {
             // position is valid
             this._positionsTestedForValidByIndex[index] = true;
             return position;
@@ -86,15 +97,21 @@ class Range {
     const columnCount = board.getColumnCount();
     const mapX = position.x + (columnCount - 1);
     const mapY = position.y + (rowCount - 1);
-    if ((mapX >= 0) && (mapX < ((columnCount * 2) - 1)) && (mapY >= 0) && (mapY < ((rowCount * 2) - 1))) {
-      return (patternMap[mapX][mapY] != null);
+    if (mapX >= 0 && mapX < columnCount * 2 - 1 && mapY >= 0 && mapY < rowCount * 2 - 1) {
+      return patternMap[mapX][mapY] != null;
     }
   }
 
   getPatternByDistance(board, distance) {
     let pattern = Range.patternsByDistance[distance];
-    if ((pattern == null)) {
-      Range._generateAndCachePatternAndMap(board, distance, CONFIG.RANGE_PATTERN_STEP, Range.patternsByDistance, Range.patternMapsByDistance);
+    if (pattern == null) {
+      Range._generateAndCachePatternAndMap(
+        board,
+        distance,
+        CONFIG.RANGE_PATTERN_STEP,
+        Range.patternsByDistance,
+        Range.patternMapsByDistance,
+      );
       pattern = Range.patternsByDistance[distance];
     }
     return pattern;
@@ -102,8 +119,14 @@ class Range {
 
   getPatternMapByDistance(board, distance) {
     let patternMap = Range.patternMapsByDistance[distance];
-    if ((patternMap == null)) {
-      Range._generateAndCachePatternAndMap(board, distance, CONFIG.RANGE_PATTERN_STEP, Range.patternsByDistance, Range.patternMapsByDistance);
+    if (patternMap == null) {
+      Range._generateAndCachePatternAndMap(
+        board,
+        distance,
+        CONFIG.RANGE_PATTERN_STEP,
+        Range.patternsByDistance,
+        Range.patternMapsByDistance,
+      );
       patternMap = Range.patternMapsByDistance[distance];
     }
     return patternMap;
@@ -111,10 +134,10 @@ class Range {
 
   getPatternMapFromPattern(board, pattern) {
     const rowCount = board.getRowCount();
-    const rowCount2 = (rowCount * 2) - 1;
+    const rowCount2 = rowCount * 2 - 1;
     const rowOffset = rowCount - 1;
     const columnCount = board.getColumnCount();
-    const columnCount2 = (columnCount * 2) - 1;
+    const columnCount2 = columnCount * 2 - 1;
     const columnOffset = columnCount - 1;
     const patternMap = [];
     for (let i = 0, end = columnCount2, asc = end >= 0; asc ? i < end : i > end; asc ? i++ : i--) {
@@ -125,7 +148,13 @@ class Range {
     for (var node of Array.from<any>(pattern)) {
       var mapX = node.x + columnOffset;
       var mapY = node.y + rowOffset;
-      if ((mapX >= 0) && (mapX < columnCount2) && (mapY >= 0) && (mapY < rowCount2) && (patternMap[mapX][mapY] == null)) {
+      if (
+        mapX >= 0 &&
+        mapX < columnCount2 &&
+        mapY >= 0 &&
+        mapY < rowCount2 &&
+        patternMap[mapX][mapY] == null
+      ) {
         patternMap[mapX][mapY] = node;
       }
     }
@@ -136,10 +165,10 @@ class Range {
   static _generateAndCachePatternAndMap(board, distance, step, patternCache, patternMapCache) {
     const originNode = { x: 0, y: 0 };
     const rowCount = board.getRowCount();
-    const rowCount2 = (rowCount * 2) - 1;
+    const rowCount2 = rowCount * 2 - 1;
     const rowOffset = rowCount - 1;
     const columnCount = board.getColumnCount();
-    const columnCount2 = (columnCount * 2) - 1;
+    const columnCount2 = columnCount * 2 - 1;
     const columnOffset = columnCount - 1;
     const pattern = (patternCache[distance] = []);
     const patternMap = (patternMapCache[distance] = []);
@@ -165,7 +194,13 @@ class Range {
           if (currentDistance <= distance) {
             var mapX = nextNodeX + columnOffset;
             var mapY = nextNodeY + rowOffset;
-            if ((mapX >= 0) && (mapX < columnCount2) && (mapY >= 0) && (mapY < rowCount2) && (patternMap[mapX][mapY] == null)) {
+            if (
+              mapX >= 0 &&
+              mapX < columnCount2 &&
+              mapY >= 0 &&
+              mapY < rowCount2 &&
+              patternMap[mapX][mapY] == null
+            ) {
               patternMap[mapX][mapY] = nextNode;
               pattern.push(nextNode);
               nodesToProcessNext.push(nextNode);
@@ -177,7 +212,7 @@ class Range {
           currentDistance++;
           if (nodesToProcessNext.length > 0) {
             nodesToProcess = nodesToProcessNext;
-            result.push(nodesToProcessNext = []);
+            result.push((nodesToProcessNext = []));
           } else {
             result.push(undefined);
           }

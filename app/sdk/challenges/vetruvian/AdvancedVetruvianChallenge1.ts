@@ -58,10 +58,7 @@ class AdvancedVetruvianChallenge1 extends Challenge {
   }
 
   getOpponentPlayerDeckData(gameSession) {
-    return [
-      { id: Cards.Faction4.General },
-      { id: Cards.TutorialSpell.TutorialFireOrb },
-    ];
+    return [{ id: Cards.Faction4.General }, { id: Cards.TutorialSpell.TutorialFireOrb }];
   }
 
   setupBoard(gameSession) {
@@ -88,11 +85,22 @@ class AdvancedVetruvianChallenge1 extends Challenge {
     this.applyCardToBoard({ id: Cards.Faction4.SharianShadowdancer }, 5, 4, opponentPlayerId);
 
     // equip grimwar to lilith
-    const grimwar = this.applyCardToBoard({ id: Cards.Artifact.SoulGrimwar }, 5, 2, opponentPlayerId);
+    const grimwar = this.applyCardToBoard(
+      { id: Cards.Artifact.SoulGrimwar },
+      5,
+      2,
+      opponentPlayerId,
+    );
     // buff lilithe from grimwar
     const grimwarModifier = general2.getModifierByType(ModifierDeathWatchBuffSelf.type);
-    grimwarModifier.applyManagedModifiersFromModifiersContextObjects(grimwarModifier.modifiersContextObjects, general2);
-    return grimwarModifier.applyManagedModifiersFromModifiersContextObjects(grimwarModifier.modifiersContextObjects, general2);
+    grimwarModifier.applyManagedModifiersFromModifiersContextObjects(
+      grimwarModifier.modifiersContextObjects,
+      general2,
+    );
+    return grimwarModifier.applyManagedModifiersFromModifiersContextObjects(
+      grimwarModifier.modifiersContextObjects,
+      general2,
+    );
   }
 
   setupOpponentAgent(gameSession) {
@@ -103,15 +111,26 @@ class AdvancedVetruvianChallenge1 extends Challenge {
     return (() => {
       const result = [];
       for (let i = 0; i <= 5; i++) {
-        this._opponentAgent.addActionForTurn(i, AgentActions.createAgentSoftActionShowInstructionLabels([{
-          label: i18next.t('challenges.advanced_vetruvian_1_taunt'),
-          isSpeech: true,
-          yPosition: 0.7,
-          isPersistent: true,
-          isOpponent: true,
-        },
-        ]));
-        result.push(this._opponentAgent.addActionForTurn(i, AgentActions.createAgentActionPlayCardFindPosition(0, () => [GameSession.getInstance().getGeneralForPlayer1().getPosition()])));
+        this._opponentAgent.addActionForTurn(
+          i,
+          AgentActions.createAgentSoftActionShowInstructionLabels([
+            {
+              label: i18next.t('challenges.advanced_vetruvian_1_taunt'),
+              isSpeech: true,
+              yPosition: 0.7,
+              isPersistent: true,
+              isOpponent: true,
+            },
+          ]),
+        );
+        result.push(
+          this._opponentAgent.addActionForTurn(
+            i,
+            AgentActions.createAgentActionPlayCardFindPosition(0, () => [
+              GameSession.getInstance().getGeneralForPlayer1().getPosition(),
+            ]),
+          ),
+        );
       }
       return result;
     })();
@@ -120,10 +139,14 @@ class AdvancedVetruvianChallenge1 extends Challenge {
 AdvancedVetruvianChallenge1.prototype.type = 'AdvancedVetruvianChallenge1';
 AdvancedVetruvianChallenge1.prototype.categoryType = ChallengeCategory.contest1.type;
 AdvancedVetruvianChallenge1.prototype.name = i18next.t('challenges.advanced_vetruvian_1_title');
-AdvancedVetruvianChallenge1.prototype.description = i18next.t('challenges.advanced_vetruvian_1_description');
+AdvancedVetruvianChallenge1.prototype.description = i18next.t(
+  'challenges.advanced_vetruvian_1_description',
+);
 AdvancedVetruvianChallenge1.prototype.iconUrl = RSX.speech_portrait_vetruvian.img;
 AdvancedVetruvianChallenge1.prototype._musicOverride = RSX.music_battlemap_vetruv.audio;
-AdvancedVetruvianChallenge1.prototype.otkChallengeStartMessage = i18next.t('challenges.advanced_vetruvian_1_start');
+AdvancedVetruvianChallenge1.prototype.otkChallengeStartMessage = i18next.t(
+  'challenges.advanced_vetruvian_1_start',
+);
 AdvancedVetruvianChallenge1.prototype.otkChallengeFailureMessages = [
   i18next.t('challenges.advanced_vetruvian_1_fail'),
 ];

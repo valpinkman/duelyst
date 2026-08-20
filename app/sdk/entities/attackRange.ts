@@ -66,7 +66,11 @@ var AttackRange = (function () {
           } else {
             // create a map for each position and do not allow duplicates
             for (var position of Array.from<any>(positions)) {
-              var mapIndex = UtilsPosition.getMapIndexFromPosition(columnCount, position.x, position.y);
+              var mapIndex = UtilsPosition.getMapIndexFromPosition(
+                columnCount,
+                position.x,
+                position.y,
+              );
               if (bufferInterface[mapIndex] !== 1) {
                 bufferInterface[mapIndex] = 1;
                 map = new AttackMap(this, position);
@@ -84,12 +88,13 @@ var AttackRange = (function () {
         buildLinesOfSight() {
           this.validNodes = [];
           this.validNodesByPosition = {};
-          return Array.from<any>(this.maps).map((map) =>
-            map.buildLinesOfSight());
+          return Array.from<any>(this.maps).map((map) => map.buildLinesOfSight());
         }
 
         hasLineOfSight(x, y) {
-          if ((this._losByIndex == null)) { this._losByIndex = {}; }
+          if (this._losByIndex == null) {
+            this._losByIndex = {};
+          }
           const index = UtilsPosition.getMapIndexFromPosition(this.board.getColumnCount(), x, y);
           const result = this._losByIndex[index];
           if (result != null) {
@@ -97,18 +102,16 @@ var AttackRange = (function () {
           }
           for (var map of Array.from<any>(this.maps)) {
             if (map.hasLineOfSight(x, y)) {
-              return this._losByIndex[index] = true;
+              return (this._losByIndex[index] = true);
             }
           }
 
-          return this._losByIndex[index] = false;
+          return (this._losByIndex[index] = false);
         }
 
         getReachesEntireMap() {
           // check entity attack pattern for full board range
-          const {
-            board,
-          } = this;
+          const { board } = this;
           const entityPosition = this.entity.getPosition();
           const attackPattern = this.entity.getAttackPattern();
           const columnCount = board.getColumnCount();
@@ -123,15 +126,28 @@ var AttackRange = (function () {
             testPosition.y = entityPosition.y + attackOffset.y;
             if (board.isOnBoard(testPosition)) {
               // get attack range
-              if (testPosition.x < minRangeX) { minRangeX = testPosition.x; }
-              if (testPosition.x > maxRangeX) { maxRangeX = testPosition.x; }
-              if (testPosition.y < minRangeY) { minRangeY = testPosition.y; }
-              if (testPosition.y > maxRangeY) { maxRangeY = testPosition.y; }
+              if (testPosition.x < minRangeX) {
+                minRangeX = testPosition.x;
+              }
+              if (testPosition.x > maxRangeX) {
+                maxRangeX = testPosition.x;
+              }
+              if (testPosition.y < minRangeY) {
+                minRangeY = testPosition.y;
+              }
+              if (testPosition.y > maxRangeY) {
+                maxRangeY = testPosition.y;
+              }
             }
           }
 
           // range runs from edge to edge
-          if ((minRangeX === 0) && (minRangeY === 0) && (maxRangeX === (columnCount - 1)) && (maxRangeY === (rowCount - 1))) {
+          if (
+            minRangeX === 0 &&
+            minRangeY === 0 &&
+            maxRangeX === columnCount - 1 &&
+            maxRangeY === rowCount - 1
+          ) {
             return true;
           }
 
@@ -143,14 +159,19 @@ var AttackRange = (function () {
         }
 
         getValidTargets() {
-          if ((this._validTargetEntities == null)) {
+          if (this._validTargetEntities == null) {
             // search board for valid target entities
             const validTargetEntities = (this._validTargetEntities = []);
             for (var validNode of Array.from<any>(this.validNodes)) {
               for (var targetEntity of Array.from<any>(validNode.entities)) {
                 // this really gets all POTENTIAL valid targets for attack
                 // attacks may still be invalidated on action validation step (common example: provoke)
-                if (targetEntity && targetEntity.getIsActive() && targetEntity.getIsTargetable() && !targetEntity.getIsSameTeamAs(this.entity)) {
+                if (
+                  targetEntity &&
+                  targetEntity.getIsActive() &&
+                  targetEntity.getIsTargetable() &&
+                  !targetEntity.getIsSameTeamAs(this.entity)
+                ) {
                   validTargetEntities.push(targetEntity);
                 }
               }
@@ -182,8 +203,10 @@ var AttackRange = (function () {
         }
 
         constructor(atlas, position) {
-          let node; let row; let x; let
-            y;
+          let node;
+          let row;
+          let x;
+          let y;
           this.atlas = atlas;
           this.position = position;
           this.nodes = {};
@@ -195,11 +218,15 @@ var AttackRange = (function () {
 
           // add entity node
           const entityNode = new AttackNode(this, this.position.x, this.position.y);
-          this.nodes[UtilsPosition.getMapIndexFromPosition(columnCount, this.position.x, this.position.y)] = entityNode;
+          this.nodes[
+            UtilsPosition.getMapIndexFromPosition(columnCount, this.position.x, this.position.y)
+          ] = entityNode;
           // when entity does not need line of sight, any nodes in pattern are valid
           if (!entity.getAttackNeedsLOS()) {
-            row = this.atlas.validNodesByPosition[this.position.y] || (this.atlas.validNodesByPosition[this.position.y] = {});
-            if ((row[this.position.x] == null)) {
+            row =
+              this.atlas.validNodesByPosition[this.position.y] ||
+              (this.atlas.validNodesByPosition[this.position.y] = {});
+            if (row[this.position.x] == null) {
               row[this.position.x] = entityNode;
               this.atlas.validNodes.push(entityNode);
             }
@@ -218,10 +245,18 @@ var AttackRange = (function () {
             y = this.position.y + attackOffset.y;
             if (board.isOnBoard({ x, y })) {
               // get attack range
-              if (x < this._minRangeX) { this._minRangeX = x; }
-              if (x > this._maxRangeX) { this._maxRangeX = x; }
-              if (y < this._minRangeY) { this._minRangeY = y; }
-              if (y > this._maxRangeY) { this._maxRangeY = y; }
+              if (x < this._minRangeX) {
+                this._minRangeX = x;
+              }
+              if (x > this._maxRangeX) {
+                this._maxRangeX = x;
+              }
+              if (y < this._minRangeY) {
+                this._minRangeY = y;
+              }
+              if (y > this._maxRangeY) {
+                this._maxRangeY = y;
+              }
 
               // add pattern nodes
               node = new AttackNode(this, x, y);
@@ -229,9 +264,10 @@ var AttackRange = (function () {
 
               // when entity does not need line of sight, any nodes in pattern are valid
               // add node to atlas's valid nodes, unless there is already a valid node at the location
-              if (!entity.getAttackNeedsLOS() && ((this.position.x !== x) || (this.position.y !== y))) {
-                row = this.atlas.validNodesByPosition[y] || (this.atlas.validNodesByPosition[y] = {});
-                if ((row[x] == null)) {
+              if (!entity.getAttackNeedsLOS() && (this.position.x !== x || this.position.y !== y)) {
+                row =
+                  this.atlas.validNodesByPosition[y] || (this.atlas.validNodesByPosition[y] = {});
+                if (row[x] == null) {
                   row[x] = node;
                   this.atlas.validNodes.push(node);
                 }
@@ -242,18 +278,19 @@ var AttackRange = (function () {
           // assign all enemy board entities to nodes if within range
           const entities = board.getEntities();
           for (var otherEntity of Array.from<any>(entities)) {
-            ({
-              x,
-            } = otherEntity.position);
-            ({
-              y,
-            } = otherEntity.position);
-            if (otherEntity.getIsActive() && otherEntity.getIsTargetable() && !entity.getIsSameTeamAs(otherEntity) && this.getIsWithinRange(x, y)) {
+            ({ x } = otherEntity.position);
+            ({ y } = otherEntity.position);
+            if (
+              otherEntity.getIsActive() &&
+              otherEntity.getIsTargetable() &&
+              !entity.getIsSameTeamAs(otherEntity) &&
+              this.getIsWithinRange(x, y)
+            ) {
               var entityNodeIndex = UtilsPosition.getMapIndexFromPosition(columnCount, x, y);
               node = this.nodes[entityNodeIndex];
               // create new nodes to record entities, for obstruction
-              if ((node == null)) {
-                node = (this.nodes[entityNodeIndex] = new AttackNode(this, x, y));
+              if (node == null) {
+                node = this.nodes[entityNodeIndex] = new AttackNode(this, x, y);
                 node.withinPattern = false;
               }
               node.entities.push(otherEntity);
@@ -262,10 +299,12 @@ var AttackRange = (function () {
         }
 
         buildLinesOfSight() {
-          let asc; let end; let
-            start;
-          let node; let x; let
-            y;
+          let asc;
+          let end;
+          let start;
+          let node;
+          let x;
+          let y;
           const board = this.getBoard();
           const columnCount = board.getColumnCount();
           const entity = this.getEntity();
@@ -278,14 +317,26 @@ var AttackRange = (function () {
 
           // fill in map based on attack range
           // this ensures we'll step to all nodes even if they aren't connected to each other
-          for (start = this._minRangeX + 1, x = start, end = this._maxRangeX, asc = start <= end; asc ? x < end : x > end; asc ? x++ : x--) {
-            var asc1; var end1; var
-              start1;
-            for (start1 = this._minRangeY + 1, y = start1, end1 = this._maxRangeY, asc1 = start1 <= end1; asc1 ? y < end1 : y > end1; asc1 ? y++ : y--) {
+          for (
+            start = this._minRangeX + 1, x = start, end = this._maxRangeX, asc = start <= end;
+            asc ? x < end : x > end;
+            asc ? x++ : x--
+          ) {
+            var asc1;
+            var end1;
+            var start1;
+            for (
+              start1 = this._minRangeY + 1,
+                y = start1,
+                end1 = this._maxRangeY,
+                asc1 = start1 <= end1;
+              asc1 ? y < end1 : y > end1;
+              asc1 ? y++ : y--
+            ) {
               var fillIndex = UtilsPosition.getMapIndexFromPosition(columnCount, x, y);
               node = this.nodes[fillIndex];
-              if ((node == null)) {
-                node = (this.nodes[fillIndex] = new AttackNode(this, x, y));
+              if (node == null) {
+                node = this.nodes[fillIndex] = new AttackNode(this, x, y);
                 node.withinPattern = false;
               }
             }
@@ -315,10 +366,16 @@ var AttackRange = (function () {
               nextNode.testNodeVisibility(fromNode);
 
               // record valid nodes
-              if (nextNode.withinPattern && nextNode.visible && ((this.position.x !== nextNode.x) || (this.position.y !== nextNode.y))) {
+              if (
+                nextNode.withinPattern &&
+                nextNode.visible &&
+                (this.position.x !== nextNode.x || this.position.y !== nextNode.y)
+              ) {
                 // add node to atlas's valid nodes, unless there is already a valid node at the location
-                var row = atlasValidNodesByPosition[nextNode.y] || (atlasValidNodesByPosition[nextNode.y] = {});
-                if ((row[nextNode.x] == null)) {
+                var row =
+                  atlasValidNodesByPosition[nextNode.y] ||
+                  (atlasValidNodesByPosition[nextNode.y] = {});
+                if (row[nextNode.x] == null) {
                   row[nextNode.x] = nextNode;
                   atlasValidNodes.push(nextNode);
                 }
@@ -340,11 +397,16 @@ var AttackRange = (function () {
 
         hasLineOfSight(x, y) {
           const attackNode = this.getNodeAt(x, y);
-          return (attackNode != null) && attackNode.visible && attackNode.withinPattern;
+          return attackNode != null && attackNode.visible && attackNode.withinPattern;
         }
 
         getIsWithinRange(x, y) {
-          return (x >= this._minRangeX) && (x <= this._maxRangeX) && (y >= this._minRangeY) && (y <= this._maxRangeY);
+          return (
+            x >= this._minRangeX &&
+            x <= this._maxRangeX &&
+            y >= this._minRangeY &&
+            y <= this._maxRangeY
+          );
         }
 
         getNodeAt(x, y) {
@@ -400,33 +462,48 @@ var AttackRange = (function () {
             let dx = atNode.x - this.x;
             let dy = atNode.y - this.y;
             // check adjacent nodes towards origin
-            if ((dx !== 0) && (dy !== 0)) {
+            if (dx !== 0 && dy !== 0) {
               // threshold diagonal check
               const angle = Math.abs(Math.atan2(dy, dx)) % (Math.PI * 0.5);
-              if ((angle <= this._diagonalMaxThreshold) && (angle >= this._diagonalMinThreshold)) {
-                let sx; let
-                  sy;
-                if (dx > 0) { sx = 1; } else { sx = -1; }
-                if (dy > 0) { sy = 1; } else { sy = -1; }
-                return this.visible = this.isAdjacentNodeVisibleForEntity(sx, sy) && (this.isAdjacentNodeVisibleForEntity(sx, 0) || this.isAdjacentNodeVisibleForEntity(0, sy));
+              if (angle <= this._diagonalMaxThreshold && angle >= this._diagonalMinThreshold) {
+                let sx;
+                let sy;
+                if (dx > 0) {
+                  sx = 1;
+                } else {
+                  sx = -1;
+                }
+                if (dy > 0) {
+                  sy = 1;
+                } else {
+                  sy = -1;
+                }
+                return (this.visible =
+                  this.isAdjacentNodeVisibleForEntity(sx, sy) &&
+                  (this.isAdjacentNodeVisibleForEntity(sx, 0) ||
+                    this.isAdjacentNodeVisibleForEntity(0, sy)));
               }
 
               // force ignore of one direction for test
-              if (angle > this._diagonalMaxThreshold) { dy = 0; } else { dx = 0; }
+              if (angle > this._diagonalMaxThreshold) {
+                dy = 0;
+              } else {
+                dx = 0;
+              }
             }
 
             if (dx !== 0) {
               if (dx > 0) {
-                return this.visible = this.isAdjacentNodeVisibleForEntity(1, 0);
+                return (this.visible = this.isAdjacentNodeVisibleForEntity(1, 0));
               }
-              return this.visible = this.isAdjacentNodeVisibleForEntity(-1, 0);
+              return (this.visible = this.isAdjacentNodeVisibleForEntity(-1, 0));
             }
 
             if (dy !== 0) {
               if (dy > 0) {
-                return this.visible = this.isAdjacentNodeVisibleForEntity(0, 1);
+                return (this.visible = this.isAdjacentNodeVisibleForEntity(0, 1));
               }
-              return this.visible = this.isAdjacentNodeVisibleForEntity(0, -1);
+              return (this.visible = this.isAdjacentNodeVisibleForEntity(0, -1));
             }
           }
 
@@ -452,13 +529,13 @@ var AttackRange = (function () {
         };
         AttackNode.initClass();
         return AttackNode;
-      }());
+      })();
     }
 
     flushCachedState() {
       super.flushCachedState();
       this._attackAtlasesByIndex = null;
-      return this._targetsTestedForValidByIndex = null;
+      return (this._targetsTestedForValidByIndex = null);
     }
 
     // Returns list of tile grid positions where attacks are valid (excluding locations with friendly targets)
@@ -472,12 +549,16 @@ var AttackRange = (function () {
         // if we've already tested this position, return previous result
         const columnCount = board.getColumnCount();
         const index = UtilsPosition.getMapIndexFromPosition(columnCount, position.x, position.y);
-        if ((this._positionsTestedForValidByIndex == null)) { this._positionsTestedForValidByIndex = {}; }
+        if (this._positionsTestedForValidByIndex == null) {
+          this._positionsTestedForValidByIndex = {};
+        }
         const isValid = this._positionsTestedForValidByIndex[index];
         if (isValid != null) {
-          if (isValid) { return position; }
+          if (isValid) {
+            return position;
+          }
         } else if (entity.getAttackNeedsLOS()) {
-          if ((attackAtlas == null)) {
+          if (attackAtlas == null) {
             attackAtlas = this.getAttackAtlas(board, entity);
           }
 
@@ -489,7 +570,10 @@ var AttackRange = (function () {
         } else {
           const entityPosition = entity.getPosition();
           const attackPatternMap = entity.getAttackPatternMap();
-          const attackPatternPosition = { x: position.x - entityPosition.x, y: position.y - entityPosition.y };
+          const attackPatternPosition = {
+            x: position.x - entityPosition.x,
+            y: position.y - entityPosition.y,
+          };
 
           if (this.getIsPositionInPatternMap(board, attackPatternMap, attackPatternPosition)) {
             // valid position found
@@ -511,19 +595,25 @@ var AttackRange = (function () {
 
     getIsValidTarget(board, entity, targetEntity) {
       const index = targetEntity.getIndex();
-      if ((this._targetsTestedForValidByIndex == null)) { this._targetsTestedForValidByIndex = {}; }
+      if (this._targetsTestedForValidByIndex == null) {
+        this._targetsTestedForValidByIndex = {};
+      }
       const isValid = this._targetsTestedForValidByIndex[index];
       if (isValid != null) {
         return isValid;
       }
       let needle;
-      return this._targetsTestedForValidByIndex[index] = (needle = targetEntity, Array.from<any>(this.getValidTargets(board, entity)).includes(needle));
+      return (this._targetsTestedForValidByIndex[index] =
+        ((needle = targetEntity),
+        Array.from<any>(this.getValidTargets(board, entity)).includes(needle)));
     }
 
     getAttackAtlas(board, entity, fromPositions?) {
-      if ((this._attackAtlasesByIndex == null)) { this._attackAtlasesByIndex = {}; }
+      if (this._attackAtlasesByIndex == null) {
+        this._attackAtlasesByIndex = {};
+      }
       // ensure from positions is an array
-      if ((fromPositions == null)) {
+      if (fromPositions == null) {
         fromPositions = [entity.getPosition()];
       } else if (!_.isArray(fromPositions)) {
         fromPositions = [fromPositions];
@@ -547,11 +637,15 @@ var AttackRange = (function () {
         return attackAtlas;
       }
       // create new atlas and cache
-      return this._attackAtlasesByIndex[index] = new AttackAtlas(board, entity, validFromPositions);
+      return (this._attackAtlasesByIndex[index] = new AttackAtlas(
+        board,
+        entity,
+        validFromPositions,
+      ));
     }
   };
   AttackRange.initClass();
   return AttackRange;
-}());
+})();
 
 module.exports = AttackRange;

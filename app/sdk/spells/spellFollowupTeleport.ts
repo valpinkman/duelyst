@@ -22,7 +22,10 @@ class SpellFollowupTeleport extends Spell {
     const applyEffectPosition = { x, y };
 
     // Logger.module("SDK").debug "[G:#{@.getGameSession().gameId}]", "SpellFollowupTeleport::onApplyEffectToBoardTile "
-    const source = board.getCardAtPosition(this.getTeleportSourcePosition(applyEffectPosition), this.targetType);
+    const source = board.getCardAtPosition(
+      this.getTeleportSourcePosition(applyEffectPosition),
+      this.targetType,
+    );
 
     const teleAction = new TeleportAction(this.getGameSession());
     teleAction.setOwnerId(this.getOwnerId());
@@ -38,7 +41,9 @@ class SpellFollowupTeleport extends Spell {
   }
 
   getTeleportSource(applyEffectPosition) {
-    return this.getGameSession().getBoard().getCardAtPosition(this.getTeleportSourcePosition(applyEffectPosition), this.targetType);
+    return this.getGameSession()
+      .getBoard()
+      .getCardAtPosition(this.getTeleportSourcePosition(applyEffectPosition), this.targetType);
   }
 
   getTeleportTargetPosition(applyEffectPosition) {
@@ -47,7 +52,9 @@ class SpellFollowupTeleport extends Spell {
   }
 
   getTeleportTarget(applyEffectPosition) {
-    return this.getGameSession().getBoard().getCardAtPosition(this.getTeleportTargetPosition(applyEffectPosition), this.targetType);
+    return this.getGameSession()
+      .getBoard()
+      .getCardAtPosition(this.getTeleportTargetPosition(applyEffectPosition), this.targetType);
   }
 
   _postFilterPlayPositions(spellPositions) {
@@ -74,6 +81,7 @@ class SpellFollowupTeleport extends Spell {
 }
 SpellFollowupTeleport.prototype.targetType = CardType.Unit;
 SpellFollowupTeleport.prototype.spellFilterType = SpellFilterType.None;
-SpellFollowupTeleport.prototype._postFilterApplyPositions = SpellFollowupTeleport.prototype._postFilterPlayPositions;
+SpellFollowupTeleport.prototype._postFilterApplyPositions =
+  SpellFollowupTeleport.prototype._postFilterPlayPositions;
 
 module.exports = SpellFollowupTeleport;

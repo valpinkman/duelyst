@@ -26,7 +26,12 @@ class SpellSilence extends Spell {
       const result = [];
       for (var entity of Array.from<any>(entities)) {
         if (entity != null) {
-          result.push(this.getGameSession().applyModifierContextObject(ModifierSilence.createContextObject(), entity));
+          result.push(
+            this.getGameSession().applyModifierContextObject(
+              ModifierSilence.createContextObject(),
+              entity,
+            ),
+          );
         } else {
           result.push(undefined);
         }
@@ -40,7 +45,10 @@ class SpellSilence extends Spell {
     const silenceableEntities = [];
     for (var entity of Array.from<any>(entities)) {
       // both tiles and units can be dispelled
-      if ((entity != null) && ((entity.getType() === CardType.Tile) || (entity.getType() === CardType.Unit))) {
+      if (
+        entity != null &&
+        (entity.getType() === CardType.Tile || entity.getType() === CardType.Unit)
+      ) {
         // only add the position as valid once, for the first
         if (!_.contains(silenceableEntities, entity)) {
           silenceableEntities.push(entity);

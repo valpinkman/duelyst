@@ -32,7 +32,7 @@ class ModifierSpellWatchDamageAllMinions extends ModifierSpellWatch {
     return (() => {
       const result = [];
       for (var unit of Array.from<any>(board.getUnits(true, false))) {
-        if ((unit != null) && !unit.getIsGeneral()) {
+        if (unit != null && !unit.getIsGeneral()) {
           var damageAction = new DamageAction(this.getGameSession());
           damageAction.setOwnerId(this.getCard().getOwnerId());
           damageAction.setSource(this.getCard());
@@ -49,6 +49,9 @@ class ModifierSpellWatchDamageAllMinions extends ModifierSpellWatch {
 }
 ModifierSpellWatchDamageAllMinions.prototype.type = 'ModifierSpellWatchDamageAllMinions';
 ModifierSpellWatchDamageAllMinions.prototype.damageAmount = 0;
-ModifierSpellWatchDamageAllMinions.prototype.fxResource = ['FX.Modifiers.ModifierSpellWatch', 'FX.Modifiers.ModifierGenericChainLightning'];
+ModifierSpellWatchDamageAllMinions.prototype.fxResource = [
+  'FX.Modifiers.ModifierSpellWatch',
+  'FX.Modifiers.ModifierGenericChainLightning',
+];
 
 module.exports = ModifierSpellWatchDamageAllMinions;

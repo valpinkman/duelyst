@@ -39,7 +39,6 @@ var GamePlayer2Layout = require('./game_player2');
 var GamePlayer1Layout = require('./game_player1');
 
 var GameLayout = Backbone.Marionette.LayoutView.extend({
-
   id: 'app-game',
 
   template: GameTmpl,
@@ -54,7 +53,10 @@ var GameLayout = Backbone.Marionette.LayoutView.extend({
     centerRegion: { selector: '#app-game-center-region', regionClass: TransitionRegion },
     bottomRegion: { selector: '#app-game-bottom-region', regionClass: TransitionRegion },
     followupRegion: { selector: '#app-game-followup-region', regionClass: TransitionRegion },
-    customOverlayRegion: { selector: '#app-game-custom-overlay-region', regionClass: TransitionRegion },
+    customOverlayRegion: {
+      selector: '#app-game-custom-overlay-region',
+      regionClass: TransitionRegion,
+    },
   },
 
   ui: {
@@ -98,7 +100,12 @@ var GameLayout = Backbone.Marionette.LayoutView.extend({
     var endX = endPosition.x;
 
     this.ui.$turnTimerContainer.css({
-      transform: 'translate(' + (startX) / 10.0 + 'rem, ' + (-startPosition.y - CONFIG.HAND_CARD_SIZE * 0.5) / 10.0 + 'rem)',
+      transform:
+        'translate(' +
+        startX / 10.0 +
+        'rem, ' +
+        (-startPosition.y - CONFIG.HAND_CARD_SIZE * 0.5) / 10.0 +
+        'rem)',
       width: (endX - startX) / 10.0 + 'rem',
     });
   },
@@ -136,20 +143,44 @@ var GameLayout = Backbone.Marionette.LayoutView.extend({
 
   onShow: function () {
     // listen to game events
-    this.listenTo(SDK.GameSession.getInstance().getEventBus(), EVENTS.status, this.onGameStatusChanged);
-    this.listenTo(SDK.GameSession.getInstance().getEventBus(), EVENTS.turn_time, this.onTurnTimeChanged);
+    this.listenTo(
+      SDK.GameSession.getInstance().getEventBus(),
+      EVENTS.status,
+      this.onGameStatusChanged,
+    );
+    this.listenTo(
+      SDK.GameSession.getInstance().getEventBus(),
+      EVENTS.turn_time,
+      this.onTurnTimeChanged,
+    );
 
     var scene = Scene.getInstance();
     var gameLayer = scene && scene.getGameLayer();
     if (gameLayer != null) {
       this.listenTo(gameLayer.getEventBus(), EVENTS.show_active_game, this.onShowActiveGame);
-      this.listenTo(gameLayer.getEventBus(), EVENTS.before_show_game_over, this.onBeforeShowGameOver);
+      this.listenTo(
+        gameLayer.getEventBus(),
+        EVENTS.before_show_game_over,
+        this.onBeforeShowGameOver,
+      );
       this.listenTo(gameLayer.getEventBus(), EVENTS.show_game_over, this.onShowGameOver);
       this.listenTo(gameLayer.getEventBus(), EVENTS.show_end_turn, this.onShowEndTurn);
-      this.listenTo(gameLayer.getEventBus(), EVENTS.after_show_start_turn, this.onAfterShowStartTurn);
+      this.listenTo(
+        gameLayer.getEventBus(),
+        EVENTS.after_show_start_turn,
+        this.onAfterShowStartTurn,
+      );
       this.listenTo(gameLayer.getEventBus(), EVENTS.after_show_step, this.onAfterShowStep);
-      this.listenTo(gameLayer.getEventBus(), EVENTS.followup_card_start, this.onGameFollowupCardStart);
-      this.listenTo(gameLayer.getEventBus(), EVENTS.followup_card_stop, this.onGameFollowupCardStop);
+      this.listenTo(
+        gameLayer.getEventBus(),
+        EVENTS.followup_card_start,
+        this.onGameFollowupCardStart,
+      );
+      this.listenTo(
+        gameLayer.getEventBus(),
+        EVENTS.followup_card_stop,
+        this.onGameFollowupCardStop,
+      );
       this.listenTo(gameLayer.getEventBus(), EVENTS.inspect_card_start, this.onInspectCardStart);
       this.listenTo(gameLayer.getEventBus(), EVENTS.inspect_card_stop, this.onInspectCardStop);
     }
@@ -165,7 +196,11 @@ var GameLayout = Backbone.Marionette.LayoutView.extend({
   onDestroy: function () {
     this._clearInspectCardHideProfilesTimeout();
     this._stopReminderTimeouts();
-    this.stopListening(SDK.GameSession.getInstance().getEventBus(), EVENTS.action, this.onDrawStartingHand);
+    this.stopListening(
+      SDK.GameSession.getInstance().getEventBus(),
+      EVENTS.action,
+      this.onDrawStartingHand,
+    );
   },
 
   /* endregion MARIONETTE EVENTS */
@@ -175,25 +210,31 @@ var GameLayout = Backbone.Marionette.LayoutView.extend({
   onGameStatusChanged: function (event) {
     // defer so the current call stack can complete
     // this allows promises to resolve before we check statuses
-    _.defer(function () {
-      // when mulligan is done and we need to go to the next step in game setup
-      if (event && event.from == SDK.GameStatus.new && event.to == SDK.GameStatus.active) {
-        var scene = Scene.getInstance();
-        var gameLayer = scene && scene.getGameLayer();
-        if (gameLayer != null) {
-          // if still choosing starting hand, skip
-          if (gameLayer.getStatus() <= GameLayer.STATUS.CHOOSE_HAND
-            && gameLayer.getStatus() !== GameLayer.STATUS.TRANSITIONING_TO_DRAW_HAND) {
-            this.showNextStepInGameSetup();
-          } else {
-            // wait until engine is at least showing starting hand
-            gameLayer.whenStatus(GameLayer.STATUS.STARTING_HAND).then(function () {
+    _.defer(
+      function () {
+        // when mulligan is done and we need to go to the next step in game setup
+        if (event && event.from == SDK.GameStatus.new && event.to == SDK.GameStatus.active) {
+          var scene = Scene.getInstance();
+          var gameLayer = scene && scene.getGameLayer();
+          if (gameLayer != null) {
+            // if still choosing starting hand, skip
+            if (
+              gameLayer.getStatus() <= GameLayer.STATUS.CHOOSE_HAND &&
+              gameLayer.getStatus() !== GameLayer.STATUS.TRANSITIONING_TO_DRAW_HAND
+            ) {
               this.showNextStepInGameSetup();
-            }.bind(this));
+            } else {
+              // wait until engine is at least showing starting hand
+              gameLayer.whenStatus(GameLayer.STATUS.STARTING_HAND).then(
+                function () {
+                  this.showNextStepInGameSetup();
+                }.bind(this),
+              );
+            }
           }
         }
-      }
-    }.bind(this));
+      }.bind(this),
+    );
   },
 
   onGameFollowupCardStart: function (event) {
@@ -207,7 +248,10 @@ var GameLayout = Backbone.Marionette.LayoutView.extend({
       }
 
       // show
-      var gameFollowupItemView = new GameFollowupItemView({ followupCard: followupCard, model: new Backbone.Model() });
+      var gameFollowupItemView = new GameFollowupItemView({
+        followupCard: followupCard,
+        model: new Backbone.Model(),
+      });
       this.followupRegion.show(gameFollowupItemView);
     }
   },
@@ -239,12 +283,26 @@ var GameLayout = Backbone.Marionette.LayoutView.extend({
 
           // assemble text
           var owner = gameLayer.getMyPlayer().getSdkPlayer();
-          var cooldown = SDK.GameSession.getInstance().getNumberOfPlayerTurnsUntilPlayerActivatesSignatureCard(owner, true);
+          var cooldown =
+            SDK.GameSession.getInstance().getNumberOfPlayerTurnsUntilPlayerActivatesSignatureCard(
+              owner,
+              true,
+            );
           var text = i18next.t('new_player_experience.bloodborn_message', { count: cooldown });
 
           // show instruction
-          var direction = owner.getPlayerId() === SDK.GameSession.getInstance().getPlayer2Id() ? InstructionNode.DIRECTION_RIGHT : InstructionNode.DIRECTION_LEFT;
-          gameLayer.showInstructionForSdkNode(mySignatureCardNode, text, null, CONFIG.INSTRUCTIONAL_LONG_DURATION, false, direction);
+          var direction =
+            owner.getPlayerId() === SDK.GameSession.getInstance().getPlayer2Id()
+              ? InstructionNode.DIRECTION_RIGHT
+              : InstructionNode.DIRECTION_LEFT;
+          gameLayer.showInstructionForSdkNode(
+            mySignatureCardNode,
+            text,
+            null,
+            CONFIG.INSTRUCTIONAL_LONG_DURATION,
+            false,
+            direction,
+          );
         }
       }
     }
@@ -253,8 +311,10 @@ var GameLayout = Backbone.Marionette.LayoutView.extend({
   onBeforeShowGameOver: function (event) {
     this._stopReminderTimeouts();
 
-    if (!Scene.getInstance().getGameLayer().getIsActive()
-      && !Scene.getInstance().getGameLayer().getIsTransitioningToActive()) {
+    if (
+      !Scene.getInstance().getGameLayer().getIsActive() &&
+      !Scene.getInstance().getGameLayer().getIsTransitioningToActive()
+    ) {
       this._emptyCentralContent();
       this._emptyOverlay();
     } else if (SDK.GameSession.getInstance().isSinglePlayer() && !this._aiHasShownGG) {
@@ -288,23 +348,23 @@ var GameLayout = Backbone.Marionette.LayoutView.extend({
   onAfterShowStartTurn: function () {
     if (CONFIG.razerChromaEnabled) {
       if (Scene.getInstance().getGameLayer().getIsMyTurn()) {
-        Chroma.flashActionThrottled(CONFIG.razerChromaIdleColor, 50, 2)
-          .then(() => {
-            Chroma.setAll(CONFIG.razerChromaIdleColor);
-          });
+        Chroma.flashActionThrottled(CONFIG.razerChromaIdleColor, 50, 2).then(() => {
+          Chroma.setAll(CONFIG.razerChromaIdleColor);
+        });
       } else {
         // enemy color just white, we might want to make this dynamic based on enemy faction
         const color = new Chroma.Color('FFFFFF');
-        Chroma.flashActionThrottled(color, 50, 2)
-          .then(() => {
-            Chroma.setAll(color);
-          });
+        Chroma.flashActionThrottled(color, 50, 2).then(() => {
+          Chroma.setAll(color);
+        });
       }
     }
-    if (CONFIG.showInGameTips
-      && !SDK.GameSession.getInstance().getIsSpectateMode()
-      && !SDK.GameSession.getInstance().isChallenge()
-      && Scene.getInstance().getGameLayer().getIsMyTurn()) {
+    if (
+      CONFIG.showInGameTips &&
+      !SDK.GameSession.getInstance().getIsSpectateMode() &&
+      !SDK.GameSession.getInstance().isChallenge() &&
+      Scene.getInstance().getGameLayer().getIsMyTurn()
+    ) {
       // increment reminder counters
       var gameLayer = Scene.getInstance().getGameLayer();
       if (gameLayer != null) {
@@ -325,41 +385,70 @@ var GameLayout = Backbone.Marionette.LayoutView.extend({
       var delay = CONFIG.REMINDER_DELAY;
 
       // show signature card reminder as needed
-      if (this._remindSignatureCardTimeoutId == null
-        && this._numTurnsSinceSignatureCardUsed >= CONFIG.NUM_TURNS_BEFORE_SHOW_SIGNATURE_CARD_REMINDER
-        && ProgressionManager.getInstance().getGameCount() < CONFIG.NUM_GAMES_TO_SHOW_SIGNATURE_CARD_REMINDER) {
-        this._remindSignatureCardTimeoutId = setTimeout(function () {
-          this._remindSignatureCardTimeoutId = null;
-          var gameLayer = Scene.getInstance().getGameLayer();
-          if (gameLayer != null && gameLayer.getIsMyTurn()) {
-            var myPlayerLayer = gameLayer.getMyPlayerLayer();
-            var mySignatureCardNode = myPlayerLayer.getSignatureCardNode();
-            var text = 'Remember, your [Bloodbound Spell] is very powerful.';
-            var direction = gameLayer.getMyPlayerId() === SDK.GameSession.getInstance().getPlayer2Id() ? InstructionNode.DIRECTION_RIGHT : InstructionNode.DIRECTION_LEFT;
-            gameLayer.showInstructionForSdkNode(mySignatureCardNode, text, null, CONFIG.INSTRUCTIONAL_LONG_DURATION, false, direction);
-          }
-        }.bind(this), delay * 1000.0);
+      if (
+        this._remindSignatureCardTimeoutId == null &&
+        this._numTurnsSinceSignatureCardUsed >=
+          CONFIG.NUM_TURNS_BEFORE_SHOW_SIGNATURE_CARD_REMINDER &&
+        ProgressionManager.getInstance().getGameCount() <
+          CONFIG.NUM_GAMES_TO_SHOW_SIGNATURE_CARD_REMINDER
+      ) {
+        this._remindSignatureCardTimeoutId = setTimeout(
+          function () {
+            this._remindSignatureCardTimeoutId = null;
+            var gameLayer = Scene.getInstance().getGameLayer();
+            if (gameLayer != null && gameLayer.getIsMyTurn()) {
+              var myPlayerLayer = gameLayer.getMyPlayerLayer();
+              var mySignatureCardNode = myPlayerLayer.getSignatureCardNode();
+              var text = 'Remember, your [Bloodbound Spell] is very powerful.';
+              var direction =
+                gameLayer.getMyPlayerId() === SDK.GameSession.getInstance().getPlayer2Id()
+                  ? InstructionNode.DIRECTION_RIGHT
+                  : InstructionNode.DIRECTION_LEFT;
+              gameLayer.showInstructionForSdkNode(
+                mySignatureCardNode,
+                text,
+                null,
+                CONFIG.INSTRUCTIONAL_LONG_DURATION,
+                false,
+                direction,
+              );
+            }
+          }.bind(this),
+          delay * 1000.0,
+        );
 
         // delay in case we're also showing replace reminder
         delay += CONFIG.INSTRUCTIONAL_LONG_DURATION;
       }
 
       // show replace reminder as needed
-      if (this._remindReplaceCardTimeoutId == null
-        && this._numTurnsSinceReplaceUsed >= CONFIG.NUM_TURNS_BEFORE_SHOW_REPLACE_REMINDER
-        && ProgressionManager.getInstance().getGameCount() < CONFIG.NUM_GAMES_TO_SHOW_REPLACE_REMINDER) {
-        this._remindReplaceCardTimeoutId = setTimeout(function () {
-          this._remindReplaceCardTimeoutId = null;
-          var gameLayer = Scene.getInstance().getGameLayer();
-          if (gameLayer != null && gameLayer.getIsMyTurn()) {
-            var bottomDeckLayer = gameLayer.getBottomDeckLayer();
-            var replaceNode = bottomDeckLayer.getReplaceNode();
-            var replacePosition = replaceNode.getPosition();
-            replacePosition.y += replaceNode.height * 0.55;
-            var text = 'Remember, you can [Replace] cards from your action bar.';
-            gameLayer.showInstructionAtPosition(replacePosition, text, null, CONFIG.INSTRUCTIONAL_LONG_DURATION, false, InstructionNode.DIRECTION_DOWN);
-          }
-        }.bind(this), delay * 1000.0);
+      if (
+        this._remindReplaceCardTimeoutId == null &&
+        this._numTurnsSinceReplaceUsed >= CONFIG.NUM_TURNS_BEFORE_SHOW_REPLACE_REMINDER &&
+        ProgressionManager.getInstance().getGameCount() < CONFIG.NUM_GAMES_TO_SHOW_REPLACE_REMINDER
+      ) {
+        this._remindReplaceCardTimeoutId = setTimeout(
+          function () {
+            this._remindReplaceCardTimeoutId = null;
+            var gameLayer = Scene.getInstance().getGameLayer();
+            if (gameLayer != null && gameLayer.getIsMyTurn()) {
+              var bottomDeckLayer = gameLayer.getBottomDeckLayer();
+              var replaceNode = bottomDeckLayer.getReplaceNode();
+              var replacePosition = replaceNode.getPosition();
+              replacePosition.y += replaceNode.height * 0.55;
+              var text = 'Remember, you can [Replace] cards from your action bar.';
+              gameLayer.showInstructionAtPosition(
+                replacePosition,
+                text,
+                null,
+                CONFIG.INSTRUCTIONAL_LONG_DURATION,
+                false,
+                InstructionNode.DIRECTION_DOWN,
+              );
+            }
+          }.bind(this),
+          delay * 1000.0,
+        );
       }
     }
   },
@@ -380,9 +469,15 @@ var GameLayout = Backbone.Marionette.LayoutView.extend({
 
       // show battle pet tip once per game if user has never seen it
       var hasNotSeenBattlePetInfo = !NewPlayerManager.getInstance().getHasSeenBattlePetInfo();
-      var hasNotSeenBattlePetReminder = !NewPlayerManager.getInstance().getHasSeenBattlePetReminder();
-      var needsBattlePetTip = !this._hasShownBattlePetTip && (hasNotSeenBattlePetInfo || hasNotSeenBattlePetReminder);
-      if (needsBattlePetTip && action instanceof SDK.ApplyCardToBoardAction && action.getCard().getRaceId() === SDK.Races.BattlePet) {
+      var hasNotSeenBattlePetReminder =
+        !NewPlayerManager.getInstance().getHasSeenBattlePetReminder();
+      var needsBattlePetTip =
+        !this._hasShownBattlePetTip && (hasNotSeenBattlePetInfo || hasNotSeenBattlePetReminder);
+      if (
+        needsBattlePetTip &&
+        action instanceof SDK.ApplyCardToBoardAction &&
+        action.getCard().getRaceId() === SDK.Races.BattlePet
+      ) {
         var gameLayer = Scene.getInstance().getGameLayer();
         if (gameLayer != null) {
           var battlePetNode = gameLayer.getNodeForSdkCard(action.getCard());
@@ -396,7 +491,10 @@ var GameLayout = Backbone.Marionette.LayoutView.extend({
             }
 
             // assemble text
-            var text = 'This is a [Battle Pet]. At the start of' + (battlePetNode.getSdkCard().isOwnedByMyPlayer() ? ' your' : ' its owner\'s') + ' turn, it will act on its own!';
+            var text =
+              'This is a [Battle Pet]. At the start of' +
+              (battlePetNode.getSdkCard().isOwnedByMyPlayer() ? ' your' : " its owner's") +
+              ' turn, it will act on its own!';
 
             // show instruction
             var direction;
@@ -407,10 +505,22 @@ var GameLayout = Backbone.Marionette.LayoutView.extend({
             } else {
               direction = InstructionNode.DIRECTION_LEFT;
             }
-            gameLayer.showInstructionForSdkNode(battlePetNode, text, null, CONFIG.INSTRUCTIONAL_LONG_DURATION, false, direction);
+            gameLayer.showInstructionForSdkNode(
+              battlePetNode,
+              text,
+              null,
+              CONFIG.INSTRUCTIONAL_LONG_DURATION,
+              false,
+              direction,
+            );
           }
         }
-      } else if (!NewPlayerManager.getInstance().getHasSeenBattlePetActionNotification() && action.getIsAutomatic() && action.getSource() != null && action.getSource().getRaceId() === SDK.Races.BattlePet) {
+      } else if (
+        !NewPlayerManager.getInstance().getHasSeenBattlePetActionNotification() &&
+        action.getIsAutomatic() &&
+        action.getSource() != null &&
+        action.getSource().getRaceId() === SDK.Races.BattlePet
+      ) {
         var gameLayer = Scene.getInstance().getGameLayer();
         if (gameLayer != null) {
           var battlePetNode = gameLayer.getNodeForSdkCard(action.getSource());
@@ -425,12 +535,22 @@ var GameLayout = Backbone.Marionette.LayoutView.extend({
             var direction;
             var position = battlePetNode.getPosition();
             var winRect = UtilsEngine.getGSIWinRect();
-            if (position.x > winRect.x + winRect.width * 0.5 || action.getSourcePosition().x < action.getTargetPosition().x) {
+            if (
+              position.x > winRect.x + winRect.width * 0.5 ||
+              action.getSourcePosition().x < action.getTargetPosition().x
+            ) {
               direction = InstructionNode.DIRECTION_RIGHT;
             } else {
               direction = InstructionNode.DIRECTION_LEFT;
             }
-            gameLayer.showInstructionForSdkNode(battlePetNode, text, null, CONFIG.INSTRUCTIONAL_SHORT_DURATION, false, direction);
+            gameLayer.showInstructionForSdkNode(
+              battlePetNode,
+              text,
+              null,
+              CONFIG.INSTRUCTIONAL_SHORT_DURATION,
+              false,
+              direction,
+            );
           }
         }
       }
@@ -446,11 +566,17 @@ var GameLayout = Backbone.Marionette.LayoutView.extend({
     if (!this._hidingPlayerProfilePreviews) {
       this._hidingPlayerProfilePreviews = true;
 
-      if (this.player1Region.currentView instanceof GamePlayerProfilePreview && this.player1Region.currentView.$el instanceof $) {
+      if (
+        this.player1Region.currentView instanceof GamePlayerProfilePreview &&
+        this.player1Region.currentView.$el instanceof $
+      ) {
         Animations.fadeOut.call(this.player1Region.currentView, 100);
       }
 
-      if (this.player2Region.currentView instanceof GamePlayerProfilePreview && this.player2Region.currentView.$el instanceof $) {
+      if (
+        this.player2Region.currentView instanceof GamePlayerProfilePreview &&
+        this.player2Region.currentView.$el instanceof $
+      ) {
         Animations.fadeOut.call(this.player2Region.currentView, 100);
       }
     }
@@ -460,17 +586,26 @@ var GameLayout = Backbone.Marionette.LayoutView.extend({
     if (this._hidingPlayerProfilePreviews) {
       this._clearInspectCardHideProfilesTimeout();
 
-      this._clearInspectCardHideProfilesTimeoutId = setTimeout(function () {
-        this._hidingPlayerProfilePreviews = false;
+      this._clearInspectCardHideProfilesTimeoutId = setTimeout(
+        function () {
+          this._hidingPlayerProfilePreviews = false;
 
-        if (this.player1Region.currentView instanceof GamePlayerProfilePreview && this.player1Region.currentView.$el instanceof $) {
-          Animations.fadeIn.call(this.player1Region.currentView, 100);
-        }
+          if (
+            this.player1Region.currentView instanceof GamePlayerProfilePreview &&
+            this.player1Region.currentView.$el instanceof $
+          ) {
+            Animations.fadeIn.call(this.player1Region.currentView, 100);
+          }
 
-        if (this.player2Region.currentView instanceof GamePlayerProfilePreview && this.player2Region.currentView.$el instanceof $) {
-          Animations.fadeIn.call(this.player2Region.currentView, 100);
-        }
-      }.bind(this), 500);
+          if (
+            this.player2Region.currentView instanceof GamePlayerProfilePreview &&
+            this.player2Region.currentView.$el instanceof $
+          ) {
+            Animations.fadeIn.call(this.player2Region.currentView, 100);
+          }
+        }.bind(this),
+        500,
+      );
     }
   },
 
@@ -491,7 +626,10 @@ var GameLayout = Backbone.Marionette.LayoutView.extend({
       return this.showActiveGame();
     } else {
       // show bottom bar for spectate mode immediately
-      if (SDK.GameSession.getInstance().getIsSpectateMode() && !(this.bottomRegion.currentView instanceof GameBottomBarCompositeView)) {
+      if (
+        SDK.GameSession.getInstance().getIsSpectateMode() &&
+        !(this.bottomRegion.currentView instanceof GameBottomBarCompositeView)
+      ) {
         this.bottomRegion.show(new GameBottomBarCompositeView());
       }
 
@@ -533,7 +671,9 @@ var GameLayout = Backbone.Marionette.LayoutView.extend({
 
     if (!SDK.GameSession.current().getIsSpectateMode()) {
       // store choose hand UI
-      var chooseHandItemView = new GameChooseHandItemView({ model: new Backbone.Model({ maxMulliganCount: CONFIG.STARTING_HAND_REPLACE_COUNT }) });
+      var chooseHandItemView = new GameChooseHandItemView({
+        model: new Backbone.Model({ maxMulliganCount: CONFIG.STARTING_HAND_REPLACE_COUNT }),
+      });
       this.chooseHandView = chooseHandItemView;
 
       // listen for submit
@@ -550,7 +690,11 @@ var GameLayout = Backbone.Marionette.LayoutView.extend({
     }
 
     // wait to hear from the server about new cards
-    this.listenTo(SDK.GameSession.getInstance().getEventBus(), EVENTS.action, this.onDrawStartingHand);
+    this.listenTo(
+      SDK.GameSession.getInstance().getEventBus(),
+      EVENTS.action,
+      this.onDrawStartingHand,
+    );
 
     var gameSession = SDK.GameSession.getInstance();
     if (SDK.GameType.isNetworkGameType(gameSession.getGameType())) {
@@ -570,34 +714,67 @@ var GameLayout = Backbone.Marionette.LayoutView.extend({
         myProfile = new Backbone.Model(ProfileManager.getInstance().profile.get('presence'));
       } else {
         myProfile = new DuelystFirebase.Model(null, {
-          firebase: new Firebase(process.env.FIREBASE_URL).child('users').child(myPlayerId).child('presence'),
+          firebase: new Firebase(process.env.FIREBASE_URL)
+            .child('users')
+            .child(myPlayerId)
+            .child('presence'),
         });
       }
       if (gameSession.getPlayer2Id() === myPlayerId) {
-        allPromises.push(this.player2Region.show(new GamePlayerProfilePreview({ model: myProfile, collection: myRibbonCollection })));
+        allPromises.push(
+          this.player2Region.show(
+            new GamePlayerProfilePreview({ model: myProfile, collection: myRibbonCollection }),
+          ),
+        );
       } else {
-        allPromises.push(this.player1Region.show(new GamePlayerProfilePreview({ model: myProfile, collection: myRibbonCollection })));
+        allPromises.push(
+          this.player1Region.show(
+            new GamePlayerProfilePreview({ model: myProfile, collection: myRibbonCollection }),
+          ),
+        );
       }
 
       // opponent player
       if (SDK.GameType.isMultiplayerGameType(gameSession.getGameType())) {
         var opponentPlayerId = gameSession.getOpponentPlayerId();
         var opponentRibbonCollection;
-        if (SDK.GameSession.getInstance().isGauntlet() || SDK.GameSession.getInstance().isCasual()) {
+        if (
+          SDK.GameSession.getInstance().isGauntlet() ||
+          SDK.GameSession.getInstance().isCasual()
+        ) {
           // never show ribbons information in gauntlet and casual
           opponentRibbonCollection = new Backbone.Collection();
         } else {
           opponentRibbonCollection = new DuelystFirebase.Collection(null, {
-            firebase: new Firebase(process.env.FIREBASE_URL).child('user-ribbons').child(opponentPlayerId),
+            firebase: new Firebase(process.env.FIREBASE_URL)
+              .child('user-ribbons')
+              .child(opponentPlayerId),
           });
         }
         var opponentProfile = new DuelystFirebase.Model(null, {
-          firebase: new Firebase(process.env.FIREBASE_URL).child('users').child(opponentPlayerId).child('presence'),
+          firebase: new Firebase(process.env.FIREBASE_URL)
+            .child('users')
+            .child(opponentPlayerId)
+            .child('presence'),
         });
         if (gameSession.getPlayer2Id() === opponentPlayerId) {
-          allPromises.push(this.player2Region.show(new GamePlayerProfilePreview({ model: opponentProfile, collection: opponentRibbonCollection })));
+          allPromises.push(
+            this.player2Region.show(
+              new GamePlayerProfilePreview({
+                model: opponentProfile,
+                collection: opponentRibbonCollection,
+              }),
+            ),
+          );
         } else {
-          allPromises.push(this.player1Region.show(new GamePlayerProfilePreview({ model: opponentProfile, collection: opponentRibbonCollection })));
+          allPromises.push(
+            this.player1Region.show(
+              new GamePlayerProfilePreview({
+                model: opponentProfile,
+                collection: opponentRibbonCollection,
+              }),
+            ),
+          );
         }
       }
     }
@@ -608,13 +785,20 @@ var GameLayout = Backbone.Marionette.LayoutView.extend({
   showSubmitChosenHand: function () {
     // create an action to set the starting hand based on selected mulligan cards
     var mulliganIndices = Scene.getInstance().getGameLayer().getMulliganIndices();
-    var drawStartingHandAction = SDK.GameSession.getInstance().getMyPlayer().actionDrawStartingHand(mulliganIndices);
+    var drawStartingHandAction = SDK.GameSession.getInstance()
+      .getMyPlayer()
+      .actionDrawStartingHand(mulliganIndices);
 
     // submit chosen hand to server to get new cards
     var submitted = SDK.GameSession.getInstance().submitExplicitAction(drawStartingHandAction);
 
     // update UI if submitted
-    Logger.module('UI').log('GameLayout.showSubmitChosenHand ->', mulliganIndices, 'submitted?', submitted);
+    Logger.module('UI').log(
+      'GameLayout.showSubmitChosenHand ->',
+      mulliganIndices,
+      'submitted?',
+      submitted,
+    );
     if (submitted) {
       // stop listening for submit
       if (this.chooseHandView != null) {
@@ -633,14 +817,26 @@ var GameLayout = Backbone.Marionette.LayoutView.extend({
   onDrawStartingHand: function (event) {
     var action = event.action;
 
-    if (action instanceof SDK.DrawStartingHandAction && action.ownerId === SDK.GameSession.getInstance().getMyPlayerId()) {
+    if (
+      action instanceof SDK.DrawStartingHandAction &&
+      action.ownerId === SDK.GameSession.getInstance().getMyPlayerId()
+    ) {
       Logger.module('UI').log('GameLayout.onDrawStartingHand', action.mulliganIndices);
-      this.stopListening(SDK.GameSession.getInstance().getEventBus(), EVENTS.action, this.onDrawStartingHand);
+      this.stopListening(
+        SDK.GameSession.getInstance().getEventBus(),
+        EVENTS.action,
+        this.onDrawStartingHand,
+      );
 
       // show next step once we've transitioned to starting hand
-      Scene.getInstance().getGameLayer().showDrawStartingHand(action.mulliganIndices).then(function () {
-        this.showNextStepInGameSetup();
-      }.bind(this));
+      Scene.getInstance()
+        .getGameLayer()
+        .showDrawStartingHand(action.mulliganIndices)
+        .then(
+          function () {
+            this.showNextStepInGameSetup();
+          }.bind(this),
+        );
 
       // if (SDK.GameType.isMultiplayerGameType(SDK.GameSession.getInstance().getGameType())) {
       //  var mulliganStartMoment = moment(SDK.GameSession.getInstance().createdAt);
@@ -660,17 +856,27 @@ var GameLayout = Backbone.Marionette.LayoutView.extend({
 
   showStartingHand: function () {
     Logger.module('UI').log('GameLayout.showStartingHand');
-    this.stopListening(SDK.GameSession.getInstance().getEventBus(), EVENTS.action, this.onDrawStartingHand);
+    this.stopListening(
+      SDK.GameSession.getInstance().getEventBus(),
+      EVENTS.action,
+      this.onDrawStartingHand,
+    );
 
     return Promise.all([
       Scene.getInstance().getGameLayer().showStartingHand(),
-      this.middleRegion.show(new GameStartingHandItemView({ model: ProfileManager.getInstance().profile })),
+      this.middleRegion.show(
+        new GameStartingHandItemView({ model: ProfileManager.getInstance().profile }),
+      ),
     ]);
   },
 
   showActiveGame: function () {
     Logger.module('UI').log('GameLayout.showActiveGame');
-    this.stopListening(SDK.GameSession.getInstance().getEventBus(), EVENTS.action, this.onDrawStartingHand);
+    this.stopListening(
+      SDK.GameSession.getInstance().getEventBus(),
+      EVENTS.action,
+      this.onDrawStartingHand,
+    );
 
     this.middleRegion.empty();
 
@@ -679,31 +885,60 @@ var GameLayout = Backbone.Marionette.LayoutView.extend({
     if (gameLayer) {
       // when in sandbox mode, swap test user id back to profile user id
       if (SDK.GameSession.getInstance().isSandbox()) {
-        gameLayer.whenIsStatusForActiveGame().then(function () {
-          SDK.GameSession.getInstance().setUserId(SDK.GameSession.getInstance().getPlayer1().playerId);
-        }.bind(this));
+        gameLayer.whenIsStatusForActiveGame().then(
+          function () {
+            SDK.GameSession.getInstance().setUserId(
+              SDK.GameSession.getInstance().getPlayer1().playerId,
+            );
+          }.bind(this),
+        );
       }
 
       // show the active game
       gameLayer.showActiveGame();
-      showActiveGamePromise = gameLayer.whenStatus(GameLayer.STATUS.ACTIVE).then(function () {
-        // when the bottom deck (hand) is active, show the rest of the UI
-        var uiPromises = [
-          this.player1Region.show(new GamePlayer1Layout({ model: new Backbone.Model(), collection: new Backbone.Collection() })),
-          this.player2Region.show(new GamePlayer2Layout({ model: new Backbone.Model(), collection: new Backbone.Collection() })),
-          this.topRegion.show(new GameTopBarCompositeView()),
-        ];
-        if (!SDK.GameSession.getInstance().getIsSpectateMode() && !(this.bottomRegion.currentView instanceof GameBottomBarCompositeView)) {
-          uiPromises.push(this.bottomRegion.show(new GameBottomBarCompositeView()));
-        }
-        return Promise.all(uiPromises);
-      }.bind(this)).then(function () {
-        // ai should send player glhf on show
-        if (SDK.GameSession.getInstance().isActive() && SDK.GameSession.getInstance().isSinglePlayer() && !this._aiHasShownGLHF && !SDK.GameSession.getInstance().getIsSpectateMode()) {
-          this._aiHasShownGLHF = true;
-          this.showAIEmote(SDK.CosmeticsLookup.Emote.TextGLHF);
-        }
-      }.bind(this));
+      showActiveGamePromise = gameLayer
+        .whenStatus(GameLayer.STATUS.ACTIVE)
+        .then(
+          function () {
+            // when the bottom deck (hand) is active, show the rest of the UI
+            var uiPromises = [
+              this.player1Region.show(
+                new GamePlayer1Layout({
+                  model: new Backbone.Model(),
+                  collection: new Backbone.Collection(),
+                }),
+              ),
+              this.player2Region.show(
+                new GamePlayer2Layout({
+                  model: new Backbone.Model(),
+                  collection: new Backbone.Collection(),
+                }),
+              ),
+              this.topRegion.show(new GameTopBarCompositeView()),
+            ];
+            if (
+              !SDK.GameSession.getInstance().getIsSpectateMode() &&
+              !(this.bottomRegion.currentView instanceof GameBottomBarCompositeView)
+            ) {
+              uiPromises.push(this.bottomRegion.show(new GameBottomBarCompositeView()));
+            }
+            return Promise.all(uiPromises);
+          }.bind(this),
+        )
+        .then(
+          function () {
+            // ai should send player glhf on show
+            if (
+              SDK.GameSession.getInstance().isActive() &&
+              SDK.GameSession.getInstance().isSinglePlayer() &&
+              !this._aiHasShownGLHF &&
+              !SDK.GameSession.getInstance().getIsSpectateMode()
+            ) {
+              this._aiHasShownGLHF = true;
+              this.showAIEmote(SDK.CosmeticsLookup.Emote.TextGLHF);
+            }
+          }.bind(this),
+        );
     } else {
       showActiveGamePromise = Promise.resolve();
     }
@@ -713,9 +948,15 @@ var GameLayout = Backbone.Marionette.LayoutView.extend({
 
   showAIEmote: function (emoteId) {
     var aiPlayerLayout;
-    if (this.player1Region.currentView && this.player1Region.currentView.model.get('playerId') === CONFIG.AI_PLAYER_ID) {
+    if (
+      this.player1Region.currentView &&
+      this.player1Region.currentView.model.get('playerId') === CONFIG.AI_PLAYER_ID
+    ) {
       aiPlayerLayout = this.player1Region.currentView;
-    } else if (this.player2Region.currentView && this.player2Region.currentView.model.get('playerId') === CONFIG.AI_PLAYER_ID) {
+    } else if (
+      this.player2Region.currentView &&
+      this.player2Region.currentView.model.get('playerId') === CONFIG.AI_PLAYER_ID
+    ) {
       aiPlayerLayout = this.player2Region.currentView;
     }
     if (aiPlayerLayout != null) {
@@ -728,7 +969,9 @@ var GameLayout = Backbone.Marionette.LayoutView.extend({
   /* region TURN TIMER */
 
   updateTurnTimerBar: function (time) {
-    const isOpponentTurn = SDK.GameSession.getInstance().getCurrentPlayer() !== SDK.GameSession.getInstance().getMyPlayer();
+    const isOpponentTurn =
+      SDK.GameSession.getInstance().getCurrentPlayer() !==
+      SDK.GameSession.getInstance().getMyPlayer();
     time = Math.ceil((time || 0) - CONFIG.TURN_DURATION_LATENCY_BUFFER);
     if (time <= CONFIG.TURN_TIME_SHOW) {
       this.ui.$turnTimerContainer.addClass('active');
@@ -781,43 +1024,57 @@ var GameLayout = Backbone.Marionette.LayoutView.extend({
 
   showSpectatorNotification: function (message) {
     this.ui.spectator_notification.show().find('.message').text(message);
-    this.ui.spectator_notification.get(0).animate([
-      { opacity: 0.0, transform: 'translateY(-2rem)' },
-      { opacity: 1.0, transform: 'translateY(0rem)' },
-    ], {
-      duration: 500,
-      delay: 0.0,
-      fill: 'forwards',
-    });
-    clearTimeout(this._spectatorNotificationTimeout);
-    this._spectatorNotificationTimeout = setTimeout(function () {
-      var animation = this.ui.spectator_notification.get(0).animate([
+    this.ui.spectator_notification.get(0).animate(
+      [
+        { opacity: 0.0, transform: 'translateY(-2rem)' },
         { opacity: 1.0, transform: 'translateY(0rem)' },
-        { opacity: 0.0, transform: 'translateY(2rem)' },
-      ], {
-        duration: 300,
+      ],
+      {
+        duration: 500,
         delay: 0.0,
         fill: 'forwards',
-      });
+      },
+    );
+    clearTimeout(this._spectatorNotificationTimeout);
+    this._spectatorNotificationTimeout = setTimeout(
+      function () {
+        var animation = this.ui.spectator_notification.get(0).animate(
+          [
+            { opacity: 1.0, transform: 'translateY(0rem)' },
+            { opacity: 0.0, transform: 'translateY(2rem)' },
+          ],
+          {
+            duration: 300,
+            delay: 0.0,
+            fill: 'forwards',
+          },
+        );
 
-      animation.onfinish = this.showSpectatorStatus.bind(this);
-    }.bind(this), 3000);
+        animation.onfinish = this.showSpectatorStatus.bind(this);
+      }.bind(this),
+      3000,
+    );
   },
 
   showSpectatorStatus: function () {
     if (NetworkManager.getInstance().spectators.length > 0) {
-      this.ui.spectator_notification.find('.message').html('<i class="fa fa-eye"></i> ' + NetworkManager.getInstance().spectators.length).fadeIn();
-      this.ui.spectator_notification.get(0).animate([
-        { opacity: 0.0, transform: 'translateY(-2rem)' },
-        { opacity: 1.0, transform: 'translateY(0rem)' },
-      ], {
-        duration: 100,
-        delay: 0.0,
-        fill: 'forwards',
-      });
+      this.ui.spectator_notification
+        .find('.message')
+        .html('<i class="fa fa-eye"></i> ' + NetworkManager.getInstance().spectators.length)
+        .fadeIn();
+      this.ui.spectator_notification.get(0).animate(
+        [
+          { opacity: 0.0, transform: 'translateY(-2rem)' },
+          { opacity: 1.0, transform: 'translateY(0rem)' },
+        ],
+        {
+          duration: 100,
+          delay: 0.0,
+          fill: 'forwards',
+        },
+      );
     }
   },
-
 });
 
 module.exports = GameLayout;

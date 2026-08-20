@@ -5,7 +5,6 @@ const PKGS = require('app/data/packages');
 const _ = require('underscore');
 
 const MotionStreakRingNode = cc.Node.extend({
-
   _guideNodes: null,
   _radius: 100.0,
   _speed: 900.0,
@@ -27,7 +26,13 @@ const MotionStreakRingNode = cc.Node.extend({
 
       for (let i = 0; i < this._streakCount; i++) {
         const node = new cc.Node();
-        const streak = new cc.MotionStreak(0.35, 4, 20, cc.color(255, 255, 255), RSX.motion_streak.img);
+        const streak = new cc.MotionStreak(
+          0.35,
+          4,
+          20,
+          cc.color(255, 255, 255),
+          RSX.motion_streak.img,
+        );
 
         this.addChild(streak);
         this._streakNodes.push(streak);
@@ -45,10 +50,18 @@ const MotionStreakRingNode = cc.Node.extend({
     this._super(options);
 
     if (_.isObject(options)) {
-      if (options.radius != null) { this.setRadius(options.radius); }
-      if (options.speed != null) { this.setSpeed(options.speed); }
-      if (options.spreadFactor != null) { this.setSpreadFactor(options.spreadFactor); }
-      if (options.streakCount != null) { this.setStreakCount(options.streakCount); }
+      if (options.radius != null) {
+        this.setRadius(options.radius);
+      }
+      if (options.speed != null) {
+        this.setSpeed(options.speed);
+      }
+      if (options.spreadFactor != null) {
+        this.setSpreadFactor(options.spreadFactor);
+      }
+      if (options.streakCount != null) {
+        this.setStreakCount(options.streakCount);
+      }
     }
   },
 
@@ -81,7 +94,9 @@ const MotionStreakRingNode = cc.Node.extend({
   },
 
   getRequiredResources() {
-    return cc.Node.prototype.getRequiredResources.call(this).concat(PKGS.getPkgForIdentifier('motion_streak'));
+    return cc.Node.prototype.getRequiredResources
+      .call(this)
+      .concat(PKGS.getPkgForIdentifier('motion_streak'));
   },
 
   onEnter() {
@@ -118,9 +133,13 @@ const MotionStreakRingNode = cc.Node.extend({
       const previousPoint = motionPoints[0] || destinationPoint;
       var p = cc.p(0, 0);
       if (previousPoint.x == 0) {
-        p.x += destinationPoint.x * 1 / 4 + Math.random() * destinationPoint.x * 3 / 4 || (this._radius - Math.random() * (2 * this._radius));
+        p.x +=
+          (destinationPoint.x * 1) / 4 + (Math.random() * destinationPoint.x * 3) / 4 ||
+          this._radius - Math.random() * (2 * this._radius);
       } else if (destinationPoint.y == 0) {
-        p.y += destinationPoint.y * 1 / 4 + Math.random() * destinationPoint.y * 3 / 4 || (this._radius - Math.random() * (2 * this._radius));
+        p.y +=
+          (destinationPoint.y * 1) / 4 + (Math.random() * destinationPoint.y * 3) / 4 ||
+          this._radius - Math.random() * (2 * this._radius);
       }
       p.x = this._spreadFactor * Math.round(p.x);
       p.y = this._spreadFactor * Math.round(p.y);
@@ -133,10 +152,7 @@ const MotionStreakRingNode = cc.Node.extend({
     streak.setPosition(sourcePoint);
     let sequence = [cc.delayTime(i * 0.1)];
 
-    streak.runAction(cc.sequence(
-      cc.delayTime(i * 0.1),
-      cc.fadeIn(0.2),
-    ));
+    streak.runAction(cc.sequence(cc.delayTime(i * 0.1), cc.fadeIn(0.2)));
 
     for (var j = 0; j < 4; j++) {
       var p = motionPoints[j];
@@ -183,7 +199,7 @@ const MotionStreakRingNode = cc.Node.extend({
     //   )
     // ))
 
-    const arcCircumference = Math.PI * this._radius / 2.0;
+    const arcCircumference = (Math.PI * this._radius) / 2.0;
     const arcDuration = arcCircumference / this._speed;
 
     sequence = sequence.concat([
@@ -205,7 +221,6 @@ const MotionStreakRingNode = cc.Node.extend({
       streak.setPosition(guide.getPosition());
     }
   },
-
 });
 
 MotionStreakRingNode.create = function (options, node) {

@@ -58,6 +58,9 @@ ModifierOnSpawnKillMyGeneral.prototype.activeInHand = false;
 ModifierOnSpawnKillMyGeneral.prototype.activeInDeck = false;
 ModifierOnSpawnKillMyGeneral.prototype.activeInSignatureCards = false;
 ModifierOnSpawnKillMyGeneral.prototype.activeOnBoard = true;
-ModifierOnSpawnKillMyGeneral.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericSpawn'];
+ModifierOnSpawnKillMyGeneral.prototype.fxResource = [
+  'FX.Modifiers.ModifierOpeningGambit',
+  'FX.Modifiers.ModifierGenericSpawn',
+];
 
 module.exports = ModifierOnSpawnKillMyGeneral;

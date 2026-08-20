@@ -14,7 +14,9 @@ class ModifierSynergizeBuffSelf extends ModifierSynergize {
   static type = 'ModifierSynergizeBuffSelf';
 
   static createContextObject(modifiers, options) {
-    if (options == null) { options = undefined; }
+    if (options == null) {
+      options = undefined;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.modifiers = modifiers;
     return contextObject;

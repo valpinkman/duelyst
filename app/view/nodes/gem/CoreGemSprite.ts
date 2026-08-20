@@ -11,7 +11,6 @@ const CompositeHorizontalPass = require('app/view/nodes/components/CompositeHori
  *************************************************************************** */
 
 const CoreGemSprite = BaseSprite.extend({
-
   // parameters that control appearance
   blackColor: cc.color(50.0, 0.0, 0.0),
   gemSeed: 1.0,
@@ -42,14 +41,19 @@ const CoreGemSprite = BaseSprite.extend({
   },
 
   getRequiredResources() {
-    return BaseSprite.prototype.getRequiredResources.call(this).concat(PKGS.getPkgForIdentifier('core_gem_sprite'));
+    return BaseSprite.prototype.getRequiredResources
+      .call(this)
+      .concat(PKGS.getPkgForIdentifier('core_gem_sprite'));
   },
 
   onEnter() {
     BaseSprite.prototype.onEnter.call(this);
 
     // make a strong reference to cubemap texture resource so it doesn't get unloaded too early
-    PackageManager.getInstance().addStrongReferenceToResourcePath(RSX.core_gem_cubemap.name, this.__instanceId);
+    PackageManager.getInstance().addStrongReferenceToResourcePath(
+      RSX.core_gem_cubemap.name,
+      this.__instanceId,
+    );
 
     // schedule an update on each tick so we can mark the render pass composite as dirty
     this.scheduleUpdate();
@@ -59,7 +63,10 @@ const CoreGemSprite = BaseSprite.extend({
     BaseSprite.prototype.onExit.call(this);
 
     // remove strong reference to cubemap texture resource so it can be unloaded
-    PackageManager.getInstance().removeStrongReferenceToResourcePath(RSX.core_gem_cubemap.name, this.__instanceId);
+    PackageManager.getInstance().removeStrongReferenceToResourcePath(
+      RSX.core_gem_cubemap.name,
+      this.__instanceId,
+    );
   },
 
   /**
@@ -72,8 +79,15 @@ const CoreGemSprite = BaseSprite.extend({
     const cubemapTexture = cc.textureCache.getTextureForKey(RSX.core_gem_cubemap.name);
     if (cubemapTexture != null) {
       const gl = cc._renderContext;
-      shaderProgram.setUniformLocationWith2f(shaderProgram.loc_texResolution, this._texture.getPixelsWide(), this._texture.getPixelsHigh());
-      shaderProgram.setUniformLocationWith1f(shaderProgram.loc_time, this.getFX().getTime() * (this.timeScale || 1.0));
+      shaderProgram.setUniformLocationWith2f(
+        shaderProgram.loc_texResolution,
+        this._texture.getPixelsWide(),
+        this._texture.getPixelsHigh(),
+      );
+      shaderProgram.setUniformLocationWith1f(
+        shaderProgram.loc_time,
+        this.getFX().getTime() * (this.timeScale || 1.0),
+      );
       shaderProgram.setUniformLocationWith1f(shaderProgram.loc_gemSeed, this.gemSeed);
       gl.activeTexture(gl.TEXTURE1);
       gl.bindTexture(gl.TEXTURE_CUBE_MAP, cubemapTexture.getGLTexture());
@@ -90,20 +104,42 @@ const CoreGemSprite = BaseSprite.extend({
       this.highlightsEdges = highlightsEdges;
 
       // auto manage leveled component
-      this.autoManageComponentById(this.getHighlightsEdges(), 'HighlightsEdges', this.createHighlightsEdgesComponent.bind(this));
+      this.autoManageComponentById(
+        this.getHighlightsEdges(),
+        'HighlightsEdges',
+        this.createHighlightsEdgesComponent.bind(this),
+      );
     }
   },
   getHighlightsEdges() {
     return this.highlightsEdges;
   },
   createHighlightsEdgesComponent() {
-    return new CompositeHorizontalPass(this, cc.shaderCache.programForKey('CoreGemEdgesAndColorizeFragment'), this.setupHighlightsEdgesRender.bind(this));
+    return new CompositeHorizontalPass(
+      this,
+      cc.shaderCache.programForKey('CoreGemEdgesAndColorizeFragment'),
+      this.setupHighlightsEdgesRender.bind(this),
+    );
   },
   setupHighlightsEdgesRender(shaderProgram) {
     this._renderCmd.setDefaultMatricesAndBlendModesForDraw(shaderProgram);
-    shaderProgram.setUniformLocationWith2f(shaderProgram.loc_texResolution, this._texture.getPixelsWide(), this._texture.getPixelsHigh());
-    shaderProgram.setUniformLocationWith3f(shaderProgram.loc_colorBlackPoint, this.blackColor.r / 255.0, this.blackColor.g / 255.0, this.blackColor.b / 255.0);
-    shaderProgram.setUniformLocationWith3f(shaderProgram.loc_colorMidPoint, this.midColor.r / 255.0, this.midColor.g / 255.0, this.midColor.b / 255.0);
+    shaderProgram.setUniformLocationWith2f(
+      shaderProgram.loc_texResolution,
+      this._texture.getPixelsWide(),
+      this._texture.getPixelsHigh(),
+    );
+    shaderProgram.setUniformLocationWith3f(
+      shaderProgram.loc_colorBlackPoint,
+      this.blackColor.r / 255.0,
+      this.blackColor.g / 255.0,
+      this.blackColor.b / 255.0,
+    );
+    shaderProgram.setUniformLocationWith3f(
+      shaderProgram.loc_colorMidPoint,
+      this.midColor.r / 255.0,
+      this.midColor.g / 255.0,
+      this.midColor.b / 255.0,
+    );
   },
 
   /**
@@ -114,7 +150,6 @@ const CoreGemSprite = BaseSprite.extend({
     BaseSprite.prototype.update.call(this, dt);
     this._renderCmd.setCompositeDirty();
   },
-
 });
 
 module.exports = CoreGemSprite;

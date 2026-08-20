@@ -82,7 +82,14 @@ class CardFactory_BloodstormSet_Faction3 {
       card.rarityId = Rarity.Common;
       const frenzyModifierContextObject = ModifierFrenzy.createContextObject();
       frenzyModifierContextObject.durationEndTurn = 1;
-      card.setInherentModifiersContextObjects([ModifierSynergizeApplyModifiersToGeneral.createContextObject([frenzyModifierContextObject], true, false, 'Your General gains Frenzy this turn')]);
+      card.setInherentModifiersContextObjects([
+        ModifierSynergizeApplyModifiersToGeneral.createContextObject(
+          [frenzyModifierContextObject],
+          true,
+          false,
+          'Your General gains Frenzy this turn',
+        ),
+      ]);
       card.addKeywordClassToInclude(ModifierFrenzy);
     }
 
@@ -122,7 +129,10 @@ class CardFactory_BloodstormSet_Faction3 {
       speedBuffContextObject.appliedName = i18next.t('modifiers.faction_3_incinera_1');
       speedBuffContextObject.appliedDescription = i18next.t('modifiers.faction_3_incinera_2');
       card.setInherentModifiersContextObjects([
-        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetOwnPlayer([speedBuffContextObject], 'Your General may move 2 additional spaces'),
+        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetOwnPlayer(
+          [speedBuffContextObject],
+          'Your General may move 2 additional spaces',
+        ),
       ]);
     }
 
@@ -200,7 +210,10 @@ class CardFactory_BloodstormSet_Faction3 {
       card.setInherentModifiersContextObjects([
         ModifierFlying.createContextObject(),
         ModifierBlastAttack.createContextObject(),
-        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetEnemyPlayer([customContextObject], 'The enemy General takes double damage'),
+        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetEnemyPlayer(
+          [customContextObject],
+          'The enemy General takes double damage',
+        ),
       ]);
     }
 
@@ -230,7 +243,8 @@ class CardFactory_BloodstormSet_Faction3 {
       toggleStructureContextObject.durationEndTurn = 1;
       toggleStructureContextObject.appliedName = i18next.t('modifiers.faction_3_stone_to_spears_2');
       card.setTargetModifiersContextObjects([
-        attackBuffContextObject, toggleStructureContextObject,
+        attackBuffContextObject,
+        toggleStructureContextObject,
       ]);
       card.setFXResource(['FX.Cards.Spell.StoneToSpears']);
       card.setBaseSoundResource({

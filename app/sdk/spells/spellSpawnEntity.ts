@@ -36,36 +36,52 @@ class SpellSpawnEntity extends SpellApplyEntityToBoard {
   }
 
   getCardDataOrIndexToSpawn(x, y) {
-    let {
-      cardDataOrIndexToSpawn,
-    } = this;
-    if ((cardDataOrIndexToSpawn != null) && _.isObject(cardDataOrIndexToSpawn)) { cardDataOrIndexToSpawn = UtilsJavascript.fastExtend({}, cardDataOrIndexToSpawn); }
+    let { cardDataOrIndexToSpawn } = this;
+    if (cardDataOrIndexToSpawn != null && _.isObject(cardDataOrIndexToSpawn)) {
+      cardDataOrIndexToSpawn = UtilsJavascript.fastExtend({}, cardDataOrIndexToSpawn);
+    }
     return cardDataOrIndexToSpawn;
   }
 
   getSpawnAction(x, y, cardDataOrIndexToSpawn) {
     let spawnEntityAction;
     const targetPosition = { x, y };
-    if ((cardDataOrIndexToSpawn == null)) { cardDataOrIndexToSpawn = this.getCardDataOrIndexToSpawn(x, y); }
+    if (cardDataOrIndexToSpawn == null) {
+      cardDataOrIndexToSpawn = this.getCardDataOrIndexToSpawn(x, y);
+    }
     const entity = this.getEntityToSpawn(cardDataOrIndexToSpawn);
-    if (entity && !this.getGameSession().getBoard().getObstructionAtPositionForEntity(targetPosition, entity)) {
+    if (
+      entity &&
+      !this.getGameSession().getBoard().getObstructionAtPositionForEntity(targetPosition, entity)
+    ) {
       if (this.spawnSilently) {
-        spawnEntityAction = new PlayCardSilentlyAction(this.getGameSession(), this.getOwnerId(), x, y, cardDataOrIndexToSpawn);
+        spawnEntityAction = new PlayCardSilentlyAction(
+          this.getGameSession(),
+          this.getOwnerId(),
+          x,
+          y,
+          cardDataOrIndexToSpawn,
+        );
       } else {
-        spawnEntityAction = new PlayCardAction(this.getGameSession(), this.getOwnerId(), x, y, cardDataOrIndexToSpawn);
+        spawnEntityAction = new PlayCardAction(
+          this.getGameSession(),
+          this.getOwnerId(),
+          x,
+          y,
+          cardDataOrIndexToSpawn,
+        );
       }
     }
     return spawnEntityAction;
   }
 
   getEntityToSpawn(cardDataOrIndexToSpawn) {
-    if ((cardDataOrIndexToSpawn == null)) {
-      ({
-        cardDataOrIndexToSpawn,
-      } = this);
+    if (cardDataOrIndexToSpawn == null) {
+      ({ cardDataOrIndexToSpawn } = this);
     }
     if (cardDataOrIndexToSpawn != null) {
-      const entity = this.getGameSession().getExistingCardFromIndexOrCreateCardFromData(cardDataOrIndexToSpawn);
+      const entity =
+        this.getGameSession().getExistingCardFromIndexOrCreateCardFromData(cardDataOrIndexToSpawn);
       if (entity != null) {
         entity.setOwnerId(this.getOwnerId());
         return entity;

@@ -23,13 +23,16 @@ class ModifierFriendlyDeathWatch extends Modifier {
   onAfterCleanupAction(e) {
     super.onAfterCleanupAction(e);
 
-    const {
-      action,
-    } = e;
+    const { action } = e;
     const target = action.getTarget();
     const entity = this.getCard();
     // watch for a friendly unit dying
-    if (action instanceof DieAction && ((target != null ? target.type : undefined) === CardType.Unit) && (target !== entity) && (target.getOwnerId() === entity.getOwnerId())) {
+    if (
+      action instanceof DieAction &&
+      (target != null ? target.type : undefined) === CardType.Unit &&
+      target !== entity &&
+      target.getOwnerId() === entity.getOwnerId()
+    ) {
       return this.onFriendlyDeathWatch(action);
     }
   }

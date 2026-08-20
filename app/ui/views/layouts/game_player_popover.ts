@@ -17,7 +17,6 @@ var PlayerPopoverLayoutTempl = require('app/ui/templates/layouts/game_player_pop
  * @type {*|Object|Function}
  */
 var PlayerPopoverLayout = Backbone.Marionette.LayoutView.extend({
-
   className: 'player-popover',
 
   template: PlayerPopoverLayoutTempl,
@@ -63,14 +62,22 @@ var PlayerPopoverLayout = Backbone.Marionette.LayoutView.extend({
       if (this.onClickAnywhereToHideOptionsBound == null) {
         this.onClickAnywhereToHideOptionsBound = this.onClickAnywhereToHideOptions.bind(this);
       }
-      _.defer(function () {
-        $(CONFIG.GAME_SELECTOR + ', ' + CONFIG.GAMECANVAS_SELECTOR).on('click', this.onClickAnywhereToHideOptionsBound);
-      }.bind(this));
+      _.defer(
+        function () {
+          $(CONFIG.GAME_SELECTOR + ', ' + CONFIG.GAMECANVAS_SELECTOR).on(
+            'click',
+            this.onClickAnywhereToHideOptionsBound,
+          );
+        }.bind(this),
+      );
     }
   },
 
   getIsShowingOptions: function () {
-    return this.ui.$playerPopoverContainer instanceof $ && this.ui.$playerPopoverContainer.hasClass('active');
+    return (
+      this.ui.$playerPopoverContainer instanceof $ &&
+      this.ui.$playerPopoverContainer.hasClass('active')
+    );
   },
 
   hide: function () {
@@ -80,7 +87,10 @@ var PlayerPopoverLayout = Backbone.Marionette.LayoutView.extend({
 
   hideOptions: function () {
     if (this.onClickAnywhereToHideOptionsBound != null) {
-      $(CONFIG.GAME_SELECTOR + ', ' + CONFIG.GAMECANVAS_SELECTOR).off('click', this.onClickAnywhereToHideOptionsBound);
+      $(CONFIG.GAME_SELECTOR + ', ' + CONFIG.GAMECANVAS_SELECTOR).off(
+        'click',
+        this.onClickAnywhereToHideOptionsBound,
+      );
       this.onClickAnywhereToHideOptionsBound = null;
     }
     if (this.ui.$playerPopoverContainer instanceof $) {
@@ -116,9 +126,12 @@ var PlayerPopoverLayout = Backbone.Marionette.LayoutView.extend({
       this.emoteRegion.show(emoteView);
 
       // delay and then stop showing
-      this._showEmoteTimeoutId = setTimeout(function () {
-        this.stopShowingEmote();
-      }.bind(this), CONFIG.EMOTE_DURATION * 1000.0);
+      this._showEmoteTimeoutId = setTimeout(
+        function () {
+          this.stopShowingEmote();
+        }.bind(this),
+        CONFIG.EMOTE_DURATION * 1000.0,
+      );
     }
   },
 
@@ -133,7 +146,6 @@ var PlayerPopoverLayout = Backbone.Marionette.LayoutView.extend({
   },
 
   /* endregion EMOTES */
-
 });
 
 // Expose the class either via CommonJS or the global object

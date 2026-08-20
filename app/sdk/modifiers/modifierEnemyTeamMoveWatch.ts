@@ -23,16 +23,36 @@ class ModifierEnemyTeamMoveWatch extends Modifier {
 
   onAction(event) {
     super.onAction(event);
-    const {
-      action,
-    } = event;
-    if ((action instanceof MoveAction || (action instanceof TeleportAction && action.getIsValidTeleport())) && (action.getSource().getOwnerId() === this.getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId()).getOwnerId()) && !__guardMethod__(action.getSource(), 'getIsGeneral', (o) => o.getIsGeneral())) {
+    const { action } = event;
+    if (
+      (action instanceof MoveAction ||
+        (action instanceof TeleportAction && action.getIsValidTeleport())) &&
+      action.getSource().getOwnerId() ===
+        this.getGameSession()
+          .getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId())
+          .getOwnerId() &&
+      !__guardMethod__(action.getSource(), 'getIsGeneral', (o) => o.getIsGeneral())
+    ) {
       return this.onEnemyTeamMoveWatch(action, action.getSource());
-    } if (action instanceof SwapUnitsAction) { // for swap units action, must check both source AND target (both could be on my team)
-      if ((action.getSource().getOwnerId() === this.getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId()).getOwnerId()) && !__guardMethod__(action.getSource(), 'getIsGeneral', (o1) => o1.getIsGeneral())) {
+    }
+    if (action instanceof SwapUnitsAction) {
+      // for swap units action, must check both source AND target (both could be on my team)
+      if (
+        action.getSource().getOwnerId() ===
+          this.getGameSession()
+            .getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId())
+            .getOwnerId() &&
+        !__guardMethod__(action.getSource(), 'getIsGeneral', (o1) => o1.getIsGeneral())
+      ) {
         this.onEnemyTeamMoveWatch(action, action.getSource());
       }
-      if ((action.getTarget().getOwnerId() === this.getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId()).getOwnerId()) && !__guardMethod__(action.getSource(), 'getIsGeneral', (o2) => o2.getIsGeneral())) {
+      if (
+        action.getTarget().getOwnerId() ===
+          this.getGameSession()
+            .getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId())
+            .getOwnerId() &&
+        !__guardMethod__(action.getSource(), 'getIsGeneral', (o2) => o2.getIsGeneral())
+      ) {
         return this.onEnemyTeamMoveWatch(action, action.getTarget());
       }
     }

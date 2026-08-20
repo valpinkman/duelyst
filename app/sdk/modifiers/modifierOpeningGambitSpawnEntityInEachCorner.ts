@@ -21,7 +21,9 @@ class ModifierOpeningGambitSpawnEntityInEachCorner extends ModifierOpeningGambit
   static description = 'Summon %X';
 
   static createContextObject(cardDataOrIndexToSpawn, spawnDescription, options) {
-    if (spawnDescription == null) { spawnDescription = ''; }
+    if (spawnDescription == null) {
+      spawnDescription = '';
+    }
     const contextObject = super.createContextObject(options);
     contextObject.cardDataOrIndexToSpawn = cardDataOrIndexToSpawn;
     contextObject.spawnDescription = spawnDescription;
@@ -30,7 +32,10 @@ class ModifierOpeningGambitSpawnEntityInEachCorner extends ModifierOpeningGambit
 
   static getDescription(modifierContextObject) {
     if (modifierContextObject) {
-      return this.description.replace(/%X/, `${modifierContextObject.spawnDescription} in each corner`);
+      return this.description.replace(
+        /%X/,
+        `${modifierContextObject.spawnDescription} in each corner`,
+      );
     }
     return this.description;
   }
@@ -39,19 +44,37 @@ class ModifierOpeningGambitSpawnEntityInEachCorner extends ModifierOpeningGambit
     super.onOpeningGambit();
 
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
-      const card = this.getGameSession().getExistingCardFromIndexOrCachedCardFromData(this.cardDataOrIndexToSpawn);
+      const card = this.getGameSession().getExistingCardFromIndexOrCachedCardFromData(
+        this.cardDataOrIndexToSpawn,
+      );
       const spawnLocations = [];
-      const validSpawnLocations = UtilsGameSession.getSmartSpawnPositionsFromPattern(this.getGameSession(), { x: 0, y: 0 }, CONFIG.PATTERN_CORNERS, card);
+      const validSpawnLocations = UtilsGameSession.getSmartSpawnPositionsFromPattern(
+        this.getGameSession(),
+        { x: 0, y: 0 },
+        CONFIG.PATTERN_CORNERS,
+        card,
+      );
       for (let i = 0; i < 4; i++) {
         if (validSpawnLocations.length > 0) {
-          spawnLocations.push(validSpawnLocations.splice(this.getGameSession().getRandomIntegerForExecution(validSpawnLocations.length), 1)[0]);
+          spawnLocations.push(
+            validSpawnLocations.splice(
+              this.getGameSession().getRandomIntegerForExecution(validSpawnLocations.length),
+              1,
+            )[0],
+          );
         }
       }
 
       return (() => {
         const result = [];
         for (var position of Array.from<any>(spawnLocations)) {
-          var playCardAction = new PlayCardSilentlyAction(this.getGameSession(), this.getCard().getOwnerId(), position.x, position.y, this.cardDataOrIndexToSpawn);
+          var playCardAction = new PlayCardSilentlyAction(
+            this.getGameSession(),
+            this.getCard().getOwnerId(),
+            position.x,
+            position.y,
+            this.cardDataOrIndexToSpawn,
+          );
           playCardAction.setSource(this.getCard());
           result.push(this.getGameSession().executeAction(playCardAction));
         }
@@ -60,8 +83,12 @@ class ModifierOpeningGambitSpawnEntityInEachCorner extends ModifierOpeningGambit
     }
   }
 }
-ModifierOpeningGambitSpawnEntityInEachCorner.prototype.type = 'ModifierOpeningGambitSpawnEntityInEachCorner';
+ModifierOpeningGambitSpawnEntityInEachCorner.prototype.type =
+  'ModifierOpeningGambitSpawnEntityInEachCorner';
 ModifierOpeningGambitSpawnEntityInEachCorner.prototype.cardDataOrIndexToSpawn = null;
-ModifierOpeningGambitSpawnEntityInEachCorner.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericSpawn'];
+ModifierOpeningGambitSpawnEntityInEachCorner.prototype.fxResource = [
+  'FX.Modifiers.ModifierOpeningGambit',
+  'FX.Modifiers.ModifierGenericSpawn',
+];
 
 module.exports = ModifierOpeningGambitSpawnEntityInEachCorner;

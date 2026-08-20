@@ -21,6 +21,8 @@ ModifierProvidesAlwaysInfiltrated.prototype.activeInHand = false;
 ModifierProvidesAlwaysInfiltrated.prototype.activeInDeck = false;
 ModifierProvidesAlwaysInfiltrated.prototype.activeInSignatureCards = false;
 ModifierProvidesAlwaysInfiltrated.prototype.activeOnBoard = true;
-ModifierProvidesAlwaysInfiltrated.prototype.fxResource = ['FX.Modifiers.ModifierProvidesAlwaysInfiltrated'];
+ModifierProvidesAlwaysInfiltrated.prototype.fxResource = [
+  'FX.Modifiers.ModifierProvidesAlwaysInfiltrated',
+];
 
 module.exports = ModifierProvidesAlwaysInfiltrated;

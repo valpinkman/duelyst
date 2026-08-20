@@ -8,7 +8,6 @@ const BaseParticleSystem = require('app/view/nodes/BaseParticleSystem');
 const GameUIModule = require('./GameUIModule');
 
 const TimeMaelstromUIModule = GameUIModule.extend({
-
   _maelstromPlayerId: null,
   _particleSystems: null,
 
@@ -42,7 +41,11 @@ const TimeMaelstromUIModule = GameUIModule.extend({
     const scene = this.getScene();
     const gameLayer = scene && scene.getGameLayer();
     const { step } = event;
-    if (step.action instanceof SDK.PlayCardAction && step.action.getCard() != null && step.action.getCard().getBaseCardId() == SDK.Cards.Spell.Maelstrom) {
+    if (
+      step.action instanceof SDK.PlayCardAction &&
+      step.action.getCard() != null &&
+      step.action.getCard().getBaseCardId() == SDK.Cards.Spell.Maelstrom
+    ) {
       const maelstromPlayerId = gameLayer.getCurrentPlayer().getPlayerId();
       if (this._maelstromPlayerId != maelstromPlayerId) {
         this._maelstromPlayerId = maelstromPlayerId;
@@ -102,7 +105,6 @@ const TimeMaelstromUIModule = GameUIModule.extend({
     });
     this._particleSystems = [];
   },
-
 });
 
 module.exports = TimeMaelstromUIModule;

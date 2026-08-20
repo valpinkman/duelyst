@@ -11,7 +11,7 @@ class CardType {
   static Artifact = 6;
 
   static getIsEntityCardType(cardType) {
-    return (cardType === CardType.Entity) || (cardType === CardType.Unit) || (cardType === CardType.Tile);
+    return cardType === CardType.Entity || cardType === CardType.Unit || cardType === CardType.Tile;
   }
 
   static getIsUnitCardType(cardType) {
@@ -33,23 +33,29 @@ class CardType {
   static getAreCardTypesEqual(cardTypeA, cardTypeB) {
     if (cardTypeA === cardTypeB) {
       return true;
-    } if (cardTypeA === CardType.Entity) {
-      return (cardTypeB === CardType.Unit) || (cardTypeB === CardType.Tile);
-    } if (cardTypeB === CardType.Entity) {
-      return (cardTypeA === CardType.Unit) || (cardTypeA === CardType.Tile);
+    }
+    if (cardTypeA === CardType.Entity) {
+      return cardTypeB === CardType.Unit || cardTypeB === CardType.Tile;
+    }
+    if (cardTypeB === CardType.Entity) {
+      return cardTypeA === CardType.Unit || cardTypeA === CardType.Tile;
     }
   }
 
   static getNameForCardType(cardType) {
     if (this.getIsArtifactCardType(cardType)) {
       return 'Artifact';
-    } if (this.getIsSpellCardType(cardType)) {
+    }
+    if (this.getIsSpellCardType(cardType)) {
       return 'Spell';
-    } if (this.getIsTileCardType(cardType)) {
+    }
+    if (this.getIsTileCardType(cardType)) {
       return 'Tile';
-    } if (this.getIsUnitCardType(cardType)) {
+    }
+    if (this.getIsUnitCardType(cardType)) {
       return 'Unit';
-    } if (this.getIsEntityCardType(cardType)) {
+    }
+    if (this.getIsEntityCardType(cardType)) {
       return 'Entity';
     }
     return 'Card';

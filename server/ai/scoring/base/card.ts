@@ -15,9 +15,11 @@ const ScoreForArtifact = require('./artifact');
 const ScoreForCard = function (card) {
   if (card instanceof Entity) {
     return ScoreForUnit(card);
-  } if (card instanceof Spell) {
+  }
+  if (card instanceof Spell) {
     return ScoreForSpell(card);
-  } if (card instanceof Artifact) {
+  }
+  if (card instanceof Artifact) {
     return ScoreForArtifact(card);
   }
   return 0;

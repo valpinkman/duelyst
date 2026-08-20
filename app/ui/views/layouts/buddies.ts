@@ -15,7 +15,6 @@ var BuddySelectionEmptyView = require('app/ui/views/item/buddy_selection_empty')
 var BuddySelectionLayout = require('./buddy_selection');
 
 var BuddiesLayout = Backbone.Marionette.LayoutView.extend({
-
   id: 'app-buddies',
   className: 'modal duelyst-modal',
 
@@ -49,18 +48,32 @@ var BuddiesLayout = Backbone.Marionette.LayoutView.extend({
 
   onShow: function () {
     // show the buddy list
-    this.buddyList = new BuddyListView({ model: new Backbone.Model({}), collection: new Backbone.Collection() });
+    this.buddyList = new BuddyListView({
+      model: new Backbone.Model({}),
+      collection: new Backbone.Collection(),
+    });
     this.listenTo(this.buddyList, 'buddy_selected', this.onSelectBuddy);
     this.buddySelectionRegion.show(new BuddySelectionEmptyView());
     this.buddyListRegion.show(this.buddyList);
 
-    this.listenTo(ChatManager.getInstance().getBuddiesCollection().getPresenceCollection(), 'remove', this.onRemoveBuddy);
+    this.listenTo(
+      ChatManager.getInstance().getBuddiesCollection().getPresenceCollection(),
+      'remove',
+      this.onRemoveBuddy,
+    );
 
-    audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_tab_in.audio, CONFIG.SHOW_SFX_PRIORITY);
+    audio_engine
+      .current()
+      .play_effect_for_interaction(RSX.sfx_ui_tab_in.audio, CONFIG.SHOW_SFX_PRIORITY);
   },
 
   selectBuddy: function (buddyId) {
-    var model = ChatManager.getInstance().getBuddiesCollection().getPresenceCollection().find(function (model) { return model.userId == buddyId; });
+    var model = ChatManager.getInstance()
+      .getBuddiesCollection()
+      .getPresenceCollection()
+      .find(function (model) {
+        return model.userId == buddyId;
+      });
     if (model) {
       model.set('_active', true);
       if (this.buddyList) {
@@ -87,7 +100,6 @@ var BuddiesLayout = Backbone.Marionette.LayoutView.extend({
   onRemoveBuddy: function () {
     this.onSelectBuddy(null);
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

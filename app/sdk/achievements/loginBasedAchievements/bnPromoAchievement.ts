@@ -11,12 +11,16 @@ class BNPromoAchievement extends Achievement {
 
   static id = 'bnPromoAchievement';
   static title = 'BANDAI NAMCO PARTNERSHIP EVENT';
-  static description = 'Here\'s a FREE GIFT CRATE to celebrate our new partnership!';
+  static description = "Here's a FREE GIFT CRATE to celebrate our new partnership!";
   static progressRequired = 1;
   static enabled = true;
 
   static progressForLoggingIn(currentLoginMoment) {
-    if ((currentLoginMoment !== null) && currentLoginMoment.isAfter(moment.utc('2017-07-03')) && currentLoginMoment.isBefore(moment.utc('2017-08-01'))) {
+    if (
+      currentLoginMoment !== null &&
+      currentLoginMoment.isAfter(moment.utc('2017-07-03')) &&
+      currentLoginMoment.isBefore(moment.utc('2017-08-01'))
+    ) {
       return 1;
     }
     return 0;

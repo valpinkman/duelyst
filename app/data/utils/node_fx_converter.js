@@ -115,7 +115,10 @@ function parseCFCPart(part) {
     fxTemplate.push('Factions.Neutral');
   }
   fxTemplate.push(faction);
-  part = part.replace(/[\s]*card\.addFXTemplate\(FactionFactory\.factionForIdentifier\(card\.factionId\)\.fxTemplate\)/g, '');
+  part = part.replace(
+    /[\s]*card\.addFXTemplate\(FactionFactory\.factionForIdentifier\(card\.factionId\)\.fxTemplate\)/g,
+    '',
+  );
 
   // get the copied fx
   const copiedFX = S(part).between('addFXTemplate(FXFactory.fxTemplateFromIdentifiers({', '}))').s;
@@ -124,7 +127,10 @@ function parseCFCPart(part) {
     copiedId = copiedId.replace(/\n|\r/g, '');
     fxTemplate.push(copiedId);
   }
-  part = part.replace(/[\s]*card\.addFXTemplate\(FXFactory\.fxTemplateFromIdentifiers\(\{[\s\S]*\}\)\)/g, '');
+  part = part.replace(
+    /[\s]*card\.addFXTemplate\(FXFactory\.fxTemplateFromIdentifiers\(\{[\s\S]*\}\)\)/g,
+    '',
+  );
 
   // replace some old stuff
   part = part.replace(/[\s]*card\.attackDamageZone[\s]*=[\s]*null/g, '');
@@ -136,7 +142,10 @@ function parseCFCPart(part) {
   if (hasCustomFX) {
     part = part.replace(/[\s]*card\.addFXTemplate\(\{[\s\S]*\]\}\)/g, '');
   } else if (part.indexOf('getFXTemplate()') !== -1) {
-    part = part.replace(/[\s]*card\.getFXTemplate\(\)[\s\S]*(?=card\.)*/g, `\n${indent}\n${indent.replace(/\t/, '')}`);
+    part = part.replace(
+      /[\s]*card\.getFXTemplate\(\)[\s\S]*(?=card\.)*/g,
+      `\n${indent}\n${indent.replace(/\t/, '')}`,
+    );
   }
 
   // clean out any \r from fxTemplate

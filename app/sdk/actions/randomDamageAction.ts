@@ -24,7 +24,9 @@ class RandomDamageAction extends DamageAction {
 
     // find target to damage
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
-      const entities = this.getGameSession().getBoard().getEnemyEntitiesAroundEntity(this.getSource(), CardType.Unit, CONFIG.WHOLE_BOARD_RADIUS);
+      const entities = this.getGameSession()
+        .getBoard()
+        .getEnemyEntitiesAroundEntity(this.getSource(), CardType.Unit, CONFIG.WHOLE_BOARD_RADIUS);
       const validEntities = [];
       for (var entity of Array.from<any>(entities)) {
         if (!entity.getIsGeneral() || this.canTargetGenerals) {
@@ -33,7 +35,8 @@ class RandomDamageAction extends DamageAction {
       }
 
       if (validEntities.length > 0) {
-        const unitToDamage = validEntities[this.getGameSession().getRandomIntegerForExecution(validEntities.length)];
+        const unitToDamage =
+          validEntities[this.getGameSession().getRandomIntegerForExecution(validEntities.length)];
         return this.setTarget(unitToDamage);
       }
     }

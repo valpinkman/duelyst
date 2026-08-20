@@ -24,8 +24,22 @@ import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const tsParser = require('@typescript-eslint/parser');
 
-const COMBINATORS = new Set(['then', 'catch', 'finally', 'tap', 'spread', 'map', 'each',
-  'reduce', 'filter', 'nodeify', 'done', 'caught', 'error', 'bind']);
+const COMBINATORS = new Set([
+  'then',
+  'catch',
+  'finally',
+  'tap',
+  'spread',
+  'map',
+  'each',
+  'reduce',
+  'filter',
+  'nodeify',
+  'done',
+  'caught',
+  'error',
+  'bind',
+]);
 
 function walk(node, visit, parents = []) {
   if (!node || typeof node.type !== 'string') return;
@@ -44,8 +58,13 @@ function isPromiseCallback(fnNode, parents) {
   if (!parent || parent.type !== 'CallExpression') return false;
   if (!parent.arguments.includes(fnNode)) return false;
   const c = parent.callee;
-  return c && c.type === 'MemberExpression' && !c.computed
-    && c.property.type === 'Identifier' && COMBINATORS.has(c.property.name);
+  return (
+    c &&
+    c.type === 'MemberExpression' &&
+    !c.computed &&
+    c.property.type === 'Identifier' &&
+    COMBINATORS.has(c.property.name)
+  );
 }
 
 let files = 0;
@@ -72,7 +91,7 @@ for (const file of process.argv.slice(2)) {
     if (c.property.type !== 'Identifier' || c.property.name !== 'bind') return;
     if (node.arguments.length !== 1) return;
     const arg = node.arguments[0];
-    if (arg.type !== 'Identifier') return;         // only `.bind(someVar)`
+    if (arg.type !== 'Identifier') return; // only `.bind(someVar)`
     if (arg.name === 'this') return;
     bound.push({ start: node.range[0], end: node.range[1], name: arg.name });
     edits.push({ start: c.object.range[1], end: node.range[1], text: '' });
@@ -85,7 +104,11 @@ for (const file of process.argv.slice(2)) {
     let fnIdx = -1;
     for (let i = parents.length - 1; i >= 0; i -= 1) {
       const p = parents[i];
-      if (p.type === 'FunctionExpression' || p.type === 'FunctionDeclaration') { fn = p; fnIdx = i; break; }
+      if (p.type === 'FunctionExpression' || p.type === 'FunctionDeclaration') {
+        fn = p;
+        fnIdx = i;
+        break;
+      }
       if (p.type === 'ArrowFunctionExpression') continue;
     }
     if (!fn || fn.type !== 'FunctionExpression') return;

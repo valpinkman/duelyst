@@ -15,8 +15,13 @@ class SpellDeathIncoming extends Spell {
     const target = board.getCardAtPosition({ x, y }, CardType.Unit);
     if (target != null) {
       if (!target.getIsGeneral()) {
-        const respawnModifier = PlayerModifierEndTurnRespawnEntityAnywhere.createContextObject(target.createNewCardData());
-        this.getGameSession().applyModifierContextObject(respawnModifier, this.getGameSession().getGeneralForPlayerId(this.getOwnerId()));
+        const respawnModifier = PlayerModifierEndTurnRespawnEntityAnywhere.createContextObject(
+          target.createNewCardData(),
+        );
+        this.getGameSession().applyModifierContextObject(
+          respawnModifier,
+          this.getGameSession().getGeneralForPlayerId(this.getOwnerId()),
+        );
 
         // then kill the target unit
         const killAction = new KillAction(this.getGameSession());

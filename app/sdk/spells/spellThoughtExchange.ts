@@ -30,7 +30,7 @@ class SpellThoughtExchange extends Spell {
       return (() => {
         const result = [];
         for (var enemy of Array.from<any>(surroundingEnemies)) {
-          if ((enemy.getATK() < attackThreshold) && !enemy.getIsGeneral()) {
+          if (enemy.getATK() < attackThreshold && !enemy.getIsGeneral()) {
             var swapAction = new SwapUnitAllegianceAction(this.getGameSession());
             swapAction.setTarget(enemy);
             result.push(this.getGameSession().executeAction(swapAction));

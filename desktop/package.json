@@ -1,9 +1,17 @@
 {
   "name": "duelyst-desktop",
-  "productName": "Duelyst",
-  "license": "CC0-1.0",
   "version": "1.97.13",
+  "license": "CC0-1.0",
   "main": "build/main.cjs",
+  "scripts": {
+    "build": "vite build --mode main && vite build --mode preload",
+    "package": "pnpm run build && electron-builder --publish never",
+    "package:mac": "pnpm run build && electron-builder --mac --arm64 --publish never",
+    "package:mac:x64": "pnpm run build && electron-builder --mac --x64 --publish never",
+    "package:win": "pnpm run build && electron-builder --win --x64 --publish never",
+    "package:linux": "pnpm run build && electron-builder --linux --x64 --publish never",
+    "start": "pnpm run build && electron build/main.cjs"
+  },
   "dependencies": {},
   "devDependencies": {
     "@electron/rebuild": "^4.2.0",
@@ -16,13 +24,5 @@
     "minimist": "^1.1.2",
     "os-name": "^2.0.1"
   },
-  "scripts": {
-    "build": "vite build --mode main && vite build --mode preload",
-    "package": "pnpm run build && electron-builder --publish never",
-    "package:mac": "pnpm run build && electron-builder --mac --arm64 --publish never",
-    "package:mac:x64": "pnpm run build && electron-builder --mac --x64 --publish never",
-    "package:win": "pnpm run build && electron-builder --win --x64 --publish never",
-    "package:linux": "pnpm run build && electron-builder --linux --x64 --publish never",
-    "start": "pnpm run build && electron build/main.cjs"
-  }
+  "productName": "Duelyst"
 }

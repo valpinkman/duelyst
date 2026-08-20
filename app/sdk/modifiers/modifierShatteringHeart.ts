@@ -38,7 +38,12 @@ class ModifierShatteringHeart extends Modifier {
   }
 
   getIsActionRelevant(a) {
-    return a instanceof AttackAction && !(__guard__(a.getTarget(), (x) => x.getIsGeneral())) && (a.getSource() === this.getCard()) && __guard__(a.getTarget(), (x1) => x1.hasModifierClass(ModifierStunned));
+    return (
+      a instanceof AttackAction &&
+      !__guard__(a.getTarget(), (x) => x.getIsGeneral()) &&
+      a.getSource() === this.getCard() &&
+      __guard__(a.getTarget(), (x1) => x1.hasModifierClass(ModifierStunned))
+    );
   }
 
   _modifyAction(a) {
@@ -97,5 +102,5 @@ ModifierShatteringHeart.prototype.maxStacks = 1;
 module.exports = ModifierShatteringHeart;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

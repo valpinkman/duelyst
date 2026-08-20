@@ -15,12 +15,15 @@ class ModifierKillWatchRefreshExhaustionIfTargetStunned extends ModifierKillWatc
 
   onKillWatch(action) {
     const target = action.getTarget();
-    if ((target != null) && target.hasActiveModifierClass(ModifierStunned)) {
+    if (target != null && target.hasActiveModifierClass(ModifierStunned)) {
       return super.onKillWatch();
     }
   }
 }
-ModifierKillWatchRefreshExhaustionIfTargetStunned.prototype.type = 'ModifierKillWatchRefreshExhaustionIfTargetStunned';
-ModifierKillWatchRefreshExhaustionIfTargetStunned.prototype.fxResource = ['FX.Modifiers.ModifierKillWatch'];
+ModifierKillWatchRefreshExhaustionIfTargetStunned.prototype.type =
+  'ModifierKillWatchRefreshExhaustionIfTargetStunned';
+ModifierKillWatchRefreshExhaustionIfTargetStunned.prototype.fxResource = [
+  'FX.Modifiers.ModifierKillWatch',
+];
 
 module.exports = ModifierKillWatchRefreshExhaustionIfTargetStunned;

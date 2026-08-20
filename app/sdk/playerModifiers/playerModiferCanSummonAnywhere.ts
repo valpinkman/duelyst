@@ -27,6 +27,8 @@ PlayerModiferCanSummonAnywhere.prototype.auraIncludeEnemy = false;
 PlayerModiferCanSummonAnywhere.prototype.auraIncludeGeneral = false;
 PlayerModiferCanSummonAnywhere.prototype.auraIncludeHand = true;
 PlayerModiferCanSummonAnywhere.prototype.auraIncludeSelf = false;
-PlayerModiferCanSummonAnywhere.prototype.modifiersContextObjects = [ModifierAirdrop.createContextObject()];
+PlayerModiferCanSummonAnywhere.prototype.modifiersContextObjects = [
+  ModifierAirdrop.createContextObject(),
+];
 
 module.exports = PlayerModiferCanSummonAnywhere;

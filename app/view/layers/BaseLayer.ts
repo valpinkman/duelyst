@@ -6,7 +6,6 @@ const EVENTS = require('app/common/event_types');
  *************************************************************************** */
 
 const BaseLayer = cc.Layer.extend({
-
   /* region INITIALIZATION */
 
   ctor() {

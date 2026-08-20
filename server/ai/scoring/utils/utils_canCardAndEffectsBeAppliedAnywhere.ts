@@ -21,8 +21,11 @@ const canCardAndEffectsBeAppliedAnywhere = function (card, cardIntents) {
       const failingCardIntent = _.find(cardIntents, (intentObj) => {
         if (CardIntent.getPartialBitmaskMatch(intentObj.targets, CardTargetType.All.value)) {
           return false;
-        } if (CardIntent.getPartialBitmaskMatch(intentObj.targets, CardTargetType.General.value)
-          && !CardIntent.getPartialBitmaskMatch(intentObj.targets, CardTargetType.Minion.value)) {
+        }
+        if (
+          CardIntent.getPartialBitmaskMatch(intentObj.targets, CardTargetType.General.value) &&
+          !CardIntent.getPartialBitmaskMatch(intentObj.targets, CardTargetType.Minion.value)
+        ) {
           return false;
         }
         return true;

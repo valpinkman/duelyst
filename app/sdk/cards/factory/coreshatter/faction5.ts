@@ -74,14 +74,21 @@ class CardFactory_CoreshatterSet_Faction5 {
       card.factionId = Factions.Faction5;
       card.setCardSetId(CardSet.Coreshatter);
       card.name = 'Hatefurnace';
-      card.setDescription('Trial: Cast 7 spells that cause a minion to gain +Attack.\nDestiny: Minions summoned from your action bar gain Rush and Frenzy.');
+      card.setDescription(
+        'Trial: Cast 7 spells that cause a minion to gain +Attack.\nDestiny: Minions summoned from your action bar gain Rush and Frenzy.',
+      );
       card.atk = 5;
       card.maxHP = 4;
       card.manaCost = 4;
       card.rarityId = Rarity.Mythron;
-      const emblemModifier = PlayerModifierEmblemSummonWatchFromHandMagmarBuffQuest.createContextObject([ModifierFirstBlood.createContextObject(), ModifierFrenzy.createContextObject()]);
+      const emblemModifier =
+        PlayerModifierEmblemSummonWatchFromHandMagmarBuffQuest.createContextObject([
+          ModifierFirstBlood.createContextObject(),
+          ModifierFrenzy.createContextObject(),
+        ]);
       emblemModifier.appliedName = 'Spark of Hatred';
-      emblemModifier.appliedDescription = 'Minions summoned from your action bar have Rush and Frenzy.';
+      emblemModifier.appliedDescription =
+        'Minions summoned from your action bar have Rush and Frenzy.';
       card.setInherentModifiersContextObjects([
         ModifierStartsInHand.createContextObject(),
         ModifierCannotBeReplaced.createContextObject(),
@@ -177,7 +184,9 @@ class CardFactory_CoreshatterSet_Faction5 {
       card.setCardSetId(CardSet.Coreshatter);
       card.factionId = Factions.Faction5;
       card.name = 'Mortar-maw';
-      card.setDescription('Ranged\nWhenever this minion attacks, it also damages enemies around its target.');
+      card.setDescription(
+        'Ranged\nWhenever this minion attacks, it also damages enemies around its target.',
+      );
       card.atk = 4;
       card.maxHP = 4;
       card.manaCost = 5;
@@ -217,7 +226,9 @@ class CardFactory_CoreshatterSet_Faction5 {
       card.maxHP = 6;
       card.manaCost = 4;
       card.rarityId = Rarity.Rare;
-      card.setInherentModifiersContextObjects([ModifierImmuneToDamageByWeakerEnemies.createContextObject(false)]);
+      card.setInherentModifiersContextObjects([
+        ModifierImmuneToDamageByWeakerEnemies.createContextObject(false),
+      ]);
       card.setFXResource(['FX.Cards.Neutral.RazorcragGolem']);
       card.setBoundingBoxWidth(80);
       card.setBoundingBoxHeight(95);
@@ -246,7 +257,9 @@ class CardFactory_CoreshatterSet_Faction5 {
       card.setCardSetId(CardSet.Coreshatter);
       card.factionId = Factions.Faction5;
       card.name = 'Oropsisaur';
-      card.setDescription('Grow: +1/+1.\nWhenever another friendly minion with Grow survives damage, that minion grows.');
+      card.setDescription(
+        'Grow: +1/+1.\nWhenever another friendly minion with Grow survives damage, that minion grows.',
+      );
       card.atk = 2;
       card.maxHP = 5;
       card.manaCost = 3;
@@ -286,7 +299,9 @@ class CardFactory_CoreshatterSet_Faction5 {
       card.maxHP = 4;
       card.manaCost = 3;
       card.rarityId = Rarity.Common;
-      card.setInherentModifiersContextObjects([ModifierOpeningGambitDamageEverything.createContextObject(1, true)]);
+      card.setInherentModifiersContextObjects([
+        ModifierOpeningGambitDamageEverything.createContextObject(1, true),
+      ]);
       card.setFXResource(['FX.Cards.Neutral.BlisteringSkorn']);
       card.setBaseSoundResource({
         apply: RSX.sfx_spell_blindscorch.audio,
@@ -361,12 +376,14 @@ class CardFactory_CoreshatterSet_Faction5 {
       card.manaCost = 2;
       card.rarityId = Rarity.Epic;
       card.durability = 3;
-      const eggs = [
-        Cards.Faction5.Egg,
-      ];
+      const eggs = [Cards.Faction5.Egg];
       card.setTargetModifiersContextObjects([
         Modifier.createContextObjectWithAttributeBuffs(1, undefined),
-        Modifier.createContextObjectWithAuraForAllAllies([ModifierForcefield.createContextObject()], null, eggs),
+        Modifier.createContextObjectWithAuraForAllAllies(
+          [ModifierForcefield.createContextObject()],
+          null,
+          eggs,
+        ),
       ]);
       card.addKeywordClassToInclude(ModifierForcefield);
       card.setFXResource(['FX.Cards.Artifact.OblivionSickle']);
@@ -385,7 +402,9 @@ class CardFactory_CoreshatterSet_Faction5 {
       card.setCardSetId(CardSet.Coreshatter);
       card.id = Cards.Spell.Reggplicate;
       card.name = 'Mitotic Induction';
-      card.setDescription('Summon an Egg of the minion most recently summoned from your action bar.');
+      card.setDescription(
+        'Summon an Egg of the minion most recently summoned from your action bar.',
+      );
       card.manaCost = 2;
       card.rarityId = Rarity.Epic;
       card.spellFilterType = SpellFilterType.SpawnSource;
@@ -468,9 +487,7 @@ class CardFactory_CoreshatterSet_Faction5 {
       card.spellFilterType = SpellFilterType.AllyDirect;
       const statContextObject = Modifier.createContextObjectWithAttributeBuffs(3, 0);
       statContextObject.appliedName = 'Yelled Real Loud';
-      card.setTargetModifiersContextObjects([
-        statContextObject,
-      ]);
+      card.setTargetModifiersContextObjects([statContextObject]);
       card.addKeywordClassToInclude(ModifierStun);
       card.setFXResource(['FX.Cards.Spell.Bellow']);
       card.setBaseSoundResource({
@@ -492,7 +509,9 @@ class CardFactory_CoreshatterSet_Faction5 {
       card.maxHP = 6;
       card.manaCost = 4;
       card.rarityId = Rarity.Legendary;
-      card.setInherentModifiersContextObjects([ModifierTakeDamageWatchOpponentDrawCard.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierTakeDamageWatchOpponentDrawCard.createContextObject(),
+      ]);
       card.setBoundingBoxWidth(60);
       card.setBoundingBoxHeight(90);
       card.setFXResource(['FX.Cards.Faction2.CelestialPhantom']);

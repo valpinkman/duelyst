@@ -7,7 +7,6 @@ var ProgressionManager = require('app/ui/managers/progression_manager');
 var TutorialSupportView = require('./tutorial_support');
 
 var TutorialIntroView = TutorialSupportView.extend({
-
   id: 'tutorial-intro',
 
   template: TutorialIntroTmpl,
@@ -38,7 +37,12 @@ var TutorialIntroView = TutorialSupportView.extend({
         this.model.set('gold_reward', challenge.goldReward);
       }
 
-      this.model.set('challenge_previously_completed', ProgressionManager.getInstance().hasCompletedChallengeOfType(this.model.get('challenge').type));
+      this.model.set(
+        'challenge_previously_completed',
+        ProgressionManager.getInstance().hasCompletedChallengeOfType(
+          this.model.get('challenge').type,
+        ),
+      );
     }
   },
 
@@ -49,7 +53,6 @@ var TutorialIntroView = TutorialSupportView.extend({
   },
 
   /* endregion EVENTS */
-
 });
 
 // Expose the class either via CommonJS or the global object

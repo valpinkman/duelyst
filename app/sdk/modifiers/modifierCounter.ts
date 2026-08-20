@@ -33,7 +33,7 @@ class ModifierCounter extends Modifier {
 
   onDeactivate() {
     // reset to default states when deactivated
-    this._private.currentCount = (this._private.previousCount = 0);
+    this._private.currentCount = this._private.previousCount = 0;
     return this.removeManagedModifiersFromCard(this.getCard());
   }
 
@@ -49,7 +49,11 @@ class ModifierCounter extends Modifier {
     this._private.currentCount = this.getCurrentCount();
     if (this._private.currentCount !== this._private.previousCount) {
       this.removeSubModifiers();
-      return this.getGameSession().applyModifierContextObject(this.getModifierContextObjectToApply(), this.getCard(), this);
+      return this.getGameSession().applyModifierContextObject(
+        this.getModifierContextObjectToApply(),
+        this.getCard(),
+        this,
+      );
     }
   }
 

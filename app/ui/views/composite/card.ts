@@ -17,7 +17,6 @@ var ProfileManager = require('app/ui/managers/profile_manager');
 var Animations = require('app/ui/views/animations');
 
 var CardCompositeView = Backbone.Marionette.CompositeView.extend({
-
   tagName: 'li',
   className: 'card choice',
 
@@ -35,10 +34,8 @@ var CardCompositeView = Backbone.Marionette.CompositeView.extend({
   },
 
   templateHelpers: {
-
     longCardDescription: function () {
-      if (this.description == null)
-        return false;
+      if (this.description == null) return false;
       var descriptionLength = this.description.length;
       if (this.description.includes('<br/>')) {
         descriptionLength += 15;
@@ -47,8 +44,7 @@ var CardCompositeView = Backbone.Marionette.CompositeView.extend({
     },
 
     longCardName: function () {
-      if (this.name == null)
-        return false;
+      if (this.name == null) return false;
       return this.name.length >= 23;
     },
   },
@@ -153,7 +149,11 @@ var CardCompositeView = Backbone.Marionette.CompositeView.extend({
       InventoryManager.getInstance().markCardAsReadInCollection(cardId);
       this.setRead(true);
       if (interactiveAndUsable) {
-        this.setSprite(this._activeSpriteData, this._activeStartingSpriteData, this._activeStartingSound);
+        this.setSprite(
+          this._activeSpriteData,
+          this._activeStartingSpriteData,
+          this._activeStartingSound,
+        );
       }
     }
 
@@ -267,7 +267,8 @@ var CardCompositeView = Backbone.Marionette.CompositeView.extend({
         if (cardPkgId != null) {
           // we have to make each load pkg id unique in case more than one card loads the same assets
           // we don't want one to unload those assets and have another card that also uses the assets break
-          var loadPkgId = this._loadPkgId = cardPkgId + '_' + UtilsJavascript.generateIncrementalId();
+          var loadPkgId = (this._loadPkgId =
+            cardPkgId + '_' + UtilsJavascript.generateIncrementalId());
           var cardResourcesPkg = PKGS.getPkgForIdentifier(cardPkgId);
 
           // include signature card resources
@@ -284,25 +285,31 @@ var CardCompositeView = Backbone.Marionette.CompositeView.extend({
       }
 
       if (this._loadPkgId != null) {
-        this._loadCardPkgPromise = new Promise(function (resolve, reject) {
-          PackageManager.getInstance().loadMinorPackage(this._loadPkgId, cardResourcesPkg).then(function () {
-            // unload previous card assets after loading new
-            // this will better preserve assets if we're paging back and forth quickly
-            if (previousLoadPkgId != null) {
-              PackageManager.getInstance().unloadMajorMinorPackage(previousLoadPkgId);
-            }
+        this._loadCardPkgPromise = new Promise(
+          function (resolve, reject) {
+            PackageManager.getInstance()
+              .loadMinorPackage(this._loadPkgId, cardResourcesPkg)
+              .then(
+                function () {
+                  // unload previous card assets after loading new
+                  // this will better preserve assets if we're paging back and forth quickly
+                  if (previousLoadPkgId != null) {
+                    PackageManager.getInstance().unloadMajorMinorPackage(previousLoadPkgId);
+                  }
 
-            // when loaded current pkg
-            if (loadPkgId === this._loadPkgId) {
-              // update sprite data
-              this._findSpriteData();
-              this.setSprite(this._inactiveSpriteData);
-              this.setSignatureSprite(this._signatureSpriteData);
-            }
+                  // when loaded current pkg
+                  if (loadPkgId === this._loadPkgId) {
+                    // update sprite data
+                    this._findSpriteData();
+                    this.setSprite(this._inactiveSpriteData);
+                    this.setSignatureSprite(this._signatureSpriteData);
+                  }
 
-            resolve();
-          }.bind(this));
-        }.bind(this));
+                  resolve();
+                }.bind(this),
+              );
+          }.bind(this),
+        );
       } else {
         // no new load needed
         if (previousLoadPkgId != null) {
@@ -326,7 +333,9 @@ var CardCompositeView = Backbone.Marionette.CompositeView.extend({
     if (options instanceof Backbone.Model) {
       model = options;
     } else if (options != null) {
-      model = GameDataManager.getInstance().getCardModelById(options.id || (options.card && options.card.id));
+      model = GameDataManager.getInstance().getCardModelById(
+        options.id || (options.card && options.card.id),
+      );
     }
 
     if (model == null) {
@@ -457,7 +466,9 @@ var CardCompositeView = Backbone.Marionette.CompositeView.extend({
           this._activeSpriteData = UtilsUI.getCocosSpriteData(animResource.idle);
           this._activeStartingSpriteData = UtilsUI.getCocosSpriteData(animResource.attack);
         } else if (card instanceof SDK.Tile) {
-          this._inactiveSpriteData = this._activeSpriteData = UtilsUI.getCocosSpriteData(animResource.idle);
+          this._inactiveSpriteData = this._activeSpriteData = UtilsUI.getCocosSpriteData(
+            animResource.idle,
+          );
         } else {
           this._inactiveSpriteData = UtilsUI.getCocosSpriteData(animResource.idle);
           this._activeSpriteData = UtilsUI.getCocosSpriteData(animResource.active);
@@ -486,7 +497,16 @@ var CardCompositeView = Backbone.Marionette.CompositeView.extend({
     if (this._displayedSpriteData !== spriteData) {
       this._displayedSpriteData = spriteData;
       if (this._displayedSpriteData != null) {
-        this._displayedSpriteGLData = UtilsUI.showCocosSprite(this.ui.$cardSprite, this._displayedSpriteGLData, this._displayedSpriteData, null, this.animated, this.model.get('card'), startingSpriteData, startingSound);
+        this._displayedSpriteGLData = UtilsUI.showCocosSprite(
+          this.ui.$cardSprite,
+          this._displayedSpriteGLData,
+          this._displayedSpriteData,
+          null,
+          this.animated,
+          this.model.get('card'),
+          startingSpriteData,
+          startingSound,
+        );
       } else {
         UtilsUI.resetCocosSprite(this._displayedSpriteGLData);
         this._displayedSpriteGLData = null;
@@ -498,7 +518,17 @@ var CardCompositeView = Backbone.Marionette.CompositeView.extend({
     if (this._displayedSignatureSpriteData !== spriteData) {
       this._displayedSignatureSpriteData = spriteData;
       if (this._displayedSignatureSpriteData != null) {
-        this._displayedSignatureSpriteGLData = UtilsUI.showCocosSprite(this.ui.$signatureCardSprite, this._displayedSignatureSpriteGLData, spriteData, null, this.animated, null, null, null, this.signatureSpriteScale);
+        this._displayedSignatureSpriteGLData = UtilsUI.showCocosSprite(
+          this.ui.$signatureCardSprite,
+          this._displayedSignatureSpriteGLData,
+          spriteData,
+          null,
+          this.animated,
+          null,
+          null,
+          null,
+          this.signatureSpriteScale,
+        );
       } else {
         UtilsUI.resetCocosSprite(this._displayedSignatureSpriteGLData);
         this._displayedSignatureSpriteGLData = null;
@@ -519,11 +549,30 @@ var CardCompositeView = Backbone.Marionette.CompositeView.extend({
 
       // display sprites on draggable element
       var $draggableCardSprite = $draggableElement.find('.card-sprite .sprite');
-      this._draggableSpriteGLData = UtilsUI.showCocosSprite($draggableCardSprite, this._draggableSpriteGLData, this._activeSpriteData, null, this.animated, this.model.get('card'));
+      this._draggableSpriteGLData = UtilsUI.showCocosSprite(
+        $draggableCardSprite,
+        this._draggableSpriteGLData,
+        this._activeSpriteData,
+        null,
+        this.animated,
+        this.model.get('card'),
+      );
 
       if (this._signatureSpriteData != null) {
-        var $draggableSignatureCardSprite = $draggableElement.find('.signature-card-sprite .sprite');
-        this._draggableSignatureSpriteGLData = UtilsUI.showCocosSprite($draggableSignatureCardSprite, this._draggableSignatureSpriteGLData, this._signatureSpriteData, null, this.animated, null, null, null, this.signatureSpriteScaleDraggable);
+        var $draggableSignatureCardSprite = $draggableElement.find(
+          '.signature-card-sprite .sprite',
+        );
+        this._draggableSignatureSpriteGLData = UtilsUI.showCocosSprite(
+          $draggableSignatureCardSprite,
+          this._draggableSignatureSpriteGLData,
+          this._signatureSpriteData,
+          null,
+          this.animated,
+          null,
+          null,
+          null,
+          this.signatureSpriteScaleDraggable,
+        );
       }
     }
   },
@@ -534,7 +583,6 @@ var CardCompositeView = Backbone.Marionette.CompositeView.extend({
     UtilsUI.resetCocosSprite(this._draggableSpriteGLData);
     UtilsUI.resetCocosSprite(this._draggableSignatureSpriteGLData);
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

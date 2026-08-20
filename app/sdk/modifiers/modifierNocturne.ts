@@ -23,22 +23,36 @@ class ModifierNocturne extends Modifier {
   onAfterCleanupAction(e) {
     super.onAfterCleanupAction(e);
 
-    const {
-      action,
-    } = e;
+    const { action } = e;
 
-    if (action instanceof ApplyCardToBoardAction && (action.getOwnerId() === this.getCard().getOwnerId())) {
+    if (
+      action instanceof ApplyCardToBoardAction &&
+      action.getOwnerId() === this.getCard().getOwnerId()
+    ) {
       // if summoning a wraithling
       let playCardAction;
       if (action.getCard().getBaseCardId() === Cards.Faction4.Wraithling) {
         // also spawn a shadow creep
-        playCardAction = new PlayCardSilentlyAction(this.getGameSession(), this.getCard().getOwnerId(), action.getTargetPosition().x, action.getTargetPosition().y, { id: Cards.Tile.Shadow });
+        playCardAction = new PlayCardSilentlyAction(
+          this.getGameSession(),
+          this.getCard().getOwnerId(),
+          action.getTargetPosition().x,
+          action.getTargetPosition().y,
+          { id: Cards.Tile.Shadow },
+        );
         playCardAction.setSource(this.getCard());
         return this.getGameSession().executeAction(playCardAction);
-      // if summoning a shadow creep tile
-      } if (action.getCard().getBaseCardId() === Cards.Tile.Shadow) {
+        // if summoning a shadow creep tile
+      }
+      if (action.getCard().getBaseCardId() === Cards.Tile.Shadow) {
         // also spawn a wraithling
-        playCardAction = new PlayCardSilentlyAction(this.getGameSession(), this.getCard().getOwnerId(), action.getTargetPosition().x, action.getTargetPosition().y, { id: Cards.Faction4.Wraithling });
+        playCardAction = new PlayCardSilentlyAction(
+          this.getGameSession(),
+          this.getCard().getOwnerId(),
+          action.getTargetPosition().x,
+          action.getTargetPosition().y,
+          { id: Cards.Faction4.Wraithling },
+        );
         playCardAction.setSource(this.getCard());
         return this.getGameSession().executeAction(playCardAction);
       }

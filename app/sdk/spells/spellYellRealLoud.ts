@@ -22,7 +22,12 @@ class SpellYellRealLoud extends SpellApplyModifiers {
       const result = [];
       for (var entity of Array.from<any>(entities)) {
         if (!entity.getIsGeneral()) {
-          result.push(this.getGameSession().applyModifierContextObject(ModifierStunned.createContextObject(), entity));
+          result.push(
+            this.getGameSession().applyModifierContextObject(
+              ModifierStunned.createContextObject(),
+              entity,
+            ),
+          );
         } else {
           result.push(undefined);
         }

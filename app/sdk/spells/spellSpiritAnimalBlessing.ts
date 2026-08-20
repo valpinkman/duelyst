@@ -21,13 +21,13 @@ class SpellSpiritAnimalBlessing extends SpellRefreshExhaustion {
       filteredPositions = [];
 
       if (this.isOwnedByPlayer2()) {
-        opponentSideEndX = Math.floor(((opponentSideEndX - opponentSideStartX) * 0.5) - 1);
+        opponentSideEndX = Math.floor((opponentSideEndX - opponentSideStartX) * 0.5 - 1);
       } else if (this.isOwnedByPlayer1()) {
-        opponentSideStartX = Math.floor(((opponentSideEndX - opponentSideStartX) * 0.5) + 1);
+        opponentSideStartX = Math.floor((opponentSideEndX - opponentSideStartX) * 0.5 + 1);
       }
 
       for (var position of Array.from<any>(validPositions)) {
-        if ((position.x >= opponentSideStartX) && (position.x <= opponentSideEndX)) {
+        if (position.x >= opponentSideStartX && position.x <= opponentSideEndX) {
           filteredPositions.push(position);
         }
       }

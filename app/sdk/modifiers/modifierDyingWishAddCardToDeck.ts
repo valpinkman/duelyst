@@ -22,7 +22,11 @@ class ModifierDyingWishAddCardToDeck extends ModifierDyingWish {
   onDyingWish() {
     if (this.cardData != null) {
       this.cardData.ownerId = this.getOwnerId();
-      const putCardInDeckAction = new PutCardInDeckAction(this.getGameSession(), this.getOwnerId(), this.cardData);
+      const putCardInDeckAction = new PutCardInDeckAction(
+        this.getGameSession(),
+        this.getOwnerId(),
+        this.cardData,
+      );
       return this.getGameSession().executeAction(putCardInDeckAction);
     }
   }

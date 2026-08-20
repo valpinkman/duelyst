@@ -16,7 +16,11 @@ class MidAugLoginAchievement extends Achievement {
   static enabled = true;
 
   static progressForLoggingIn(currentLoginMoment) {
-    if ((currentLoginMoment !== null) && currentLoginMoment.isAfter(moment.utc('2017-08-15')) && currentLoginMoment.isBefore(moment.utc('Thu Aug 31 2017 18:00:00 GMT+0000'))) {
+    if (
+      currentLoginMoment !== null &&
+      currentLoginMoment.isAfter(moment.utc('2017-08-15')) &&
+      currentLoginMoment.isBefore(moment.utc('Thu Aug 31 2017 18:00:00 GMT+0000'))
+    ) {
       return 1;
     }
     return 0;

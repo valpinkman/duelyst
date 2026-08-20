@@ -18,12 +18,20 @@ class SpellStarsFury extends SpellSpawnEntity {
 
     // apply in front of each enemy unit and General
     let playerOffset = 0;
-    if (this.isOwnedByPlayer1()) { playerOffset = -1; } else { playerOffset = 1; }
+    if (this.isOwnedByPlayer1()) {
+      playerOffset = -1;
+    } else {
+      playerOffset = 1;
+    }
     const entity = this.getEntityToSpawn();
     for (var unit of Array.from<any>(board.getUnits())) {
       // look for units owned by the opponent of the player who cast the spell, and with an open space "in front" of the enemy unit
       var inFrontOfPosition = { x: unit.getPosition().x + playerOffset, y: unit.getPosition().y };
-      if ((unit.getOwnerId() !== this.getOwnerId()) && board.isOnBoard(inFrontOfPosition) && !board.getObstructionAtPositionForEntity(inFrontOfPosition, entity)) {
+      if (
+        unit.getOwnerId() !== this.getOwnerId() &&
+        board.isOnBoard(inFrontOfPosition) &&
+        !board.getObstructionAtPositionForEntity(inFrontOfPosition, entity)
+      ) {
         applyEffectPositions.push(inFrontOfPosition);
       }
     }

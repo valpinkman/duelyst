@@ -15,12 +15,13 @@ class ModifierDealDamageWatchControlEnemyMinionUntilEOT extends ModifierDealDama
 
   static type = 'ModifierDealDamageWatchControlEnemyMinionUntilEOT';
   static modifierName = 'Deal Damage to a minion and take control of it';
-  static description = 'Whenever this minion deals damage to a minion, take control of it until end of turn';
+  static description =
+    'Whenever this minion deals damage to a minion, take control of it until end of turn';
 
   onDealDamage(action) {
     const target = action.getTarget();
 
-    if (((target != null ? target.type : undefined) === CardType.Unit) && !target.getIsGeneral()) {
+    if ((target != null ? target.type : undefined) === CardType.Unit && !target.getIsGeneral()) {
       let endTurnDuration = 1;
       if (!this.getCard().isOwnersTurn()) {
         endTurnDuration = 2;
@@ -43,6 +44,7 @@ class ModifierDealDamageWatchControlEnemyMinionUntilEOT extends ModifierDealDama
     }
   }
 }
-ModifierDealDamageWatchControlEnemyMinionUntilEOT.prototype.type = 'ModifierDealDamageWatchControlEnemyMinionUntilEOT';
+ModifierDealDamageWatchControlEnemyMinionUntilEOT.prototype.type =
+  'ModifierDealDamageWatchControlEnemyMinionUntilEOT';
 
 module.exports = ModifierDealDamageWatchControlEnemyMinionUntilEOT;

@@ -18,10 +18,18 @@ class ModifierReplaceWatchBuffSelf extends ModifierReplaceWatch {
   static description = 'Whenever you replace a card, this minion gains %X';
 
   static createContextObject(attackBuff, maxHPBuff, buffDescription, options) {
-    if (attackBuff == null) { attackBuff = 0; }
-    if (maxHPBuff == null) { maxHPBuff = 0; }
-    if (buffDescription == null) { buffDescription = undefined; }
-    if (options == null) { options = undefined; }
+    if (attackBuff == null) {
+      attackBuff = 0;
+    }
+    if (maxHPBuff == null) {
+      maxHPBuff = 0;
+    }
+    if (buffDescription == null) {
+      buffDescription = undefined;
+    }
+    if (options == null) {
+      options = undefined;
+    }
     const contextObject = super.createContextObject(options);
     const statsBuff = Modifier.createContextObjectWithAttributeBuffs(attackBuff, maxHPBuff);
     if (buffDescription != null) {
@@ -37,16 +45,28 @@ class ModifierReplaceWatchBuffSelf extends ModifierReplaceWatch {
     }
     if (modifierContextObject) {
       const subContextObject = modifierContextObject.modifiersContextObjects[0];
-      return this.description.replace(/%X/, Stringifiers.stringifyAttackHealthBuff(subContextObject.attributeBuffs.atk, subContextObject.attributeBuffs.maxHP));
+      return this.description.replace(
+        /%X/,
+        Stringifiers.stringifyAttackHealthBuff(
+          subContextObject.attributeBuffs.atk,
+          subContextObject.attributeBuffs.maxHP,
+        ),
+      );
     }
     return this.description;
   }
 
   onReplaceWatch(action) {
-    return this.applyManagedModifiersFromModifiersContextObjects(this.modifiersContextObjects, this.getCard());
+    return this.applyManagedModifiersFromModifiersContextObjects(
+      this.modifiersContextObjects,
+      this.getCard(),
+    );
   }
 }
 ModifierReplaceWatchBuffSelf.prototype.type = 'ModifierReplaceWatchBuffSelf';
-ModifierReplaceWatchBuffSelf.prototype.fxResource = ['FX.Modifiers.ModifierReplaceWatch', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierReplaceWatchBuffSelf.prototype.fxResource = [
+  'FX.Modifiers.ModifierReplaceWatch',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 
 module.exports = ModifierReplaceWatchBuffSelf;

@@ -11,14 +11,17 @@ class ModifierOpeningGambitActivateSignatureCard extends ModifierOpeningGambit {
 
   static type = 'ModifierOpeningGambitActivateSignatureCard';
   static modifierName = 'Opening Gambit';
-  static description = 'Refresh your General\'s Bloodbound Spell';
+  static description = "Refresh your General's Bloodbound Spell";
 
   onOpeningGambit() {
     const player = this.getCard().getGameSession().getPlayerById(this.getCard().getOwnerId());
     return this.getGameSession().executeAction(player.actionGenerateSignatureCard());
   }
 }
-ModifierOpeningGambitActivateSignatureCard.prototype.type = 'ModifierOpeningGambitActivateSignatureCard';
-ModifierOpeningGambitActivateSignatureCard.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
+ModifierOpeningGambitActivateSignatureCard.prototype.type =
+  'ModifierOpeningGambitActivateSignatureCard';
+ModifierOpeningGambitActivateSignatureCard.prototype.fxResource = [
+  'FX.Modifiers.ModifierOpeningGambit',
+];
 
 module.exports = ModifierOpeningGambitActivateSignatureCard;

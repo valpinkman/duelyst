@@ -21,14 +21,18 @@ class OpeningGambitTeleportAllNearby extends ModifierOpeningGambit {
   static description = ' Push ALL nearby minions and Generals to random spaces';
 
   onOpeningGambit() {
-    const entities = this.getGameSession().getBoard().getEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
+    const entities = this.getGameSession()
+      .getBoard()
+      .getEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
     return (() => {
       const result = [];
       for (var entity of Array.from<any>(entities)) {
         var randomTeleportAction = new RandomTeleportAction(this.getGameSession());
         randomTeleportAction.setOwnerId(this.getCard().getOwnerId());
         randomTeleportAction.setSource(entity);
-        randomTeleportAction.setFXResource(_.union(randomTeleportAction.getFXResource(), this.getFXResource()));
+        randomTeleportAction.setFXResource(
+          _.union(randomTeleportAction.getFXResource(), this.getFXResource()),
+        );
         result.push(this.getGameSession().executeAction(randomTeleportAction));
       }
       return result;

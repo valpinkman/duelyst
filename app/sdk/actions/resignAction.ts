@@ -20,7 +20,7 @@ class ResignAction extends DieAction {
 
   _execute() {
     super._execute();
-    return this.getGameSession().getPlayerById(this.getOwnerId()).hasResigned = true;
+    return (this.getGameSession().getPlayerById(this.getOwnerId()).hasResigned = true);
   }
 }
 

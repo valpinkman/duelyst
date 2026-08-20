@@ -22,12 +22,16 @@ class ModifierEnemyStunWatch extends Modifier {
   onBeforeAction(e) {
     super.onBeforeAction(e);
 
-    const {
-      action,
-    } = e;
+    const { action } = e;
 
     // watch for a stun being used on an enemy
-    if ((action instanceof ApplyModifierAction) && (action.getModifier() instanceof ModifierStunned || action.getModifier() instanceof ModifierStunnedVanar || action.getModifier() instanceof ModifierStun) && (action.getTarget().getOwnerId() !== this.getCard().getOwnerId())) {
+    if (
+      action instanceof ApplyModifierAction &&
+      (action.getModifier() instanceof ModifierStunned ||
+        action.getModifier() instanceof ModifierStunnedVanar ||
+        action.getModifier() instanceof ModifierStun) &&
+      action.getTarget().getOwnerId() !== this.getCard().getOwnerId()
+    ) {
       return this.onEnemyStunWatch(action);
     }
   }

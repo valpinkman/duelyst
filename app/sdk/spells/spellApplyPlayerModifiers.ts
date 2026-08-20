@@ -22,7 +22,10 @@ class SpellApplyPlayerModifiers extends SpellApplyModifiers {
   _findApplyEffectPositions(position, sourceAction) {
     const applyEffectPositions = [];
 
-    if ((this.targetModifiersContextObjects != null) && (this.targetModifiersContextObjects.length > 0)) {
+    if (
+      this.targetModifiersContextObjects != null &&
+      this.targetModifiersContextObjects.length > 0
+    ) {
       const ownerId = this.getOwnerId();
 
       if (this.applyToOwnGeneral) {

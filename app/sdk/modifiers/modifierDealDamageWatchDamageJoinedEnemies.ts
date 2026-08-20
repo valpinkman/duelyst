@@ -20,7 +20,7 @@ class ModifierDealDamageWatchDamageJoinedEnemies extends ModifierDealDamageWatch
 
   onDealDamage(action) {
     const unit = action.getTarget();
-    if ((unit != null) && (unit.getOwnerId() !== this.getCard().getOwnerId())) {
+    if (unit != null && unit.getOwnerId() !== this.getCard().getOwnerId()) {
       const damagedPositions = [];
       const damageAmount = action.getDamageAmount();
       const position = unit.getPosition();
@@ -31,7 +31,9 @@ class ModifierDealDamageWatchDamageJoinedEnemies extends ModifierDealDamageWatch
   }
 
   damageEnemiesNearby(damageAmount, unit, damagedPositions) {
-    const enemiesNearby = this.getGameSession().getBoard().getFriendlyEntitiesAroundEntity(unit, CardType.Unit, 1);
+    const enemiesNearby = this.getGameSession()
+      .getBoard()
+      .getFriendlyEntitiesAroundEntity(unit, CardType.Unit, 1);
     return (() => {
       const result = [];
       for (var enemy of Array.from<any>(enemiesNearby)) {
@@ -39,7 +41,7 @@ class ModifierDealDamageWatchDamageJoinedEnemies extends ModifierDealDamageWatch
           var enemyPosition = enemy.getPosition();
           var alreadyDamaged = false;
           for (var position of Array.from<any>(damagedPositions)) {
-            if ((enemyPosition.x === position.x) && (enemyPosition.y === position.y)) {
+            if (enemyPosition.x === position.x && enemyPosition.y === position.y) {
               alreadyDamaged = true;
               break;
             }
@@ -65,7 +67,10 @@ class ModifierDealDamageWatchDamageJoinedEnemies extends ModifierDealDamageWatch
     })();
   }
 }
-ModifierDealDamageWatchDamageJoinedEnemies.prototype.type = 'ModifierDealDamageWatchDamageJoinedEnemies';
-ModifierDealDamageWatchDamageJoinedEnemies.prototype.fxResource = ['FX.Modifiers.ModifierGenericChainLightning'];
+ModifierDealDamageWatchDamageJoinedEnemies.prototype.type =
+  'ModifierDealDamageWatchDamageJoinedEnemies';
+ModifierDealDamageWatchDamageJoinedEnemies.prototype.fxResource = [
+  'FX.Modifiers.ModifierGenericChainLightning',
+];
 
 module.exports = ModifierDealDamageWatchDamageJoinedEnemies;

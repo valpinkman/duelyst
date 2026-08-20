@@ -23,16 +23,21 @@ class ModifierEquipFriendlyArtifactWatchGainAttackEqualToCost extends ModifierEq
   onEquipFriendlyArtifactWatch(action, artifact) {
     if (artifact != null) {
       const manaCost = artifact.getManaCost();
-      if ((manaCost != null) && (manaCost > 0)) {
+      if (manaCost != null && manaCost > 0) {
         const attackModifier = Modifier.createContextObjectWithAttributeBuffs(manaCost, 0);
         attackModifier.appliedName = this.buffName;
-        return this.getCard().getGameSession().applyModifierContextObject(attackModifier, this.getCard());
+        return this.getCard()
+          .getGameSession()
+          .applyModifierContextObject(attackModifier, this.getCard());
       }
     }
   }
 }
-ModifierEquipFriendlyArtifactWatchGainAttackEqualToCost.prototype.type = 'ModifierEquipFriendlyArtifactWatchGainAttackEqualToCost';
-ModifierEquipFriendlyArtifactWatchGainAttackEqualToCost.prototype.fxResource = ['FX.Modifiers.ModifierGenericBuff'];
+ModifierEquipFriendlyArtifactWatchGainAttackEqualToCost.prototype.type =
+  'ModifierEquipFriendlyArtifactWatchGainAttackEqualToCost';
+ModifierEquipFriendlyArtifactWatchGainAttackEqualToCost.prototype.fxResource = [
+  'FX.Modifiers.ModifierGenericBuff',
+];
 ModifierEquipFriendlyArtifactWatchGainAttackEqualToCost.prototype.buffName = null;
 
 module.exports = ModifierEquipFriendlyArtifactWatchGainAttackEqualToCost;

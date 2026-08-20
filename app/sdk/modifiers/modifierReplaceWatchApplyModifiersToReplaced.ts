@@ -16,7 +16,9 @@ class ModifierReplaceWatchApplyModifiersToReplaced extends ModifierReplaceWatch 
   static type = 'ModifierReplaceWatchApplyModifiersToReplaced';
 
   static createContextObject(modifierContextObjects, options) {
-    if (options == null) { options = undefined; }
+    if (options == null) {
+      options = undefined;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.modifierContextObjects = modifierContextObjects;
     return contextObject;
@@ -29,7 +31,9 @@ class ModifierReplaceWatchApplyModifiersToReplaced extends ModifierReplaceWatch 
         const result = [];
         for (var modifierContextObject of Array.from<any>(this.modifierContextObjects)) {
           if (modifierContextObject != null) {
-            result.push(this.getGameSession().applyModifierContextObject(modifierContextObject, card));
+            result.push(
+              this.getGameSession().applyModifierContextObject(modifierContextObject, card),
+            );
           } else {
             result.push(undefined);
           }
@@ -39,8 +43,11 @@ class ModifierReplaceWatchApplyModifiersToReplaced extends ModifierReplaceWatch 
     }
   }
 }
-ModifierReplaceWatchApplyModifiersToReplaced.prototype.type = 'ModifierReplaceWatchApplyModifiersToReplaced';
-ModifierReplaceWatchApplyModifiersToReplaced.prototype.fxResource = ['FX.Modifiers.ModifierReplaceWatch'];
+ModifierReplaceWatchApplyModifiersToReplaced.prototype.type =
+  'ModifierReplaceWatchApplyModifiersToReplaced';
+ModifierReplaceWatchApplyModifiersToReplaced.prototype.fxResource = [
+  'FX.Modifiers.ModifierReplaceWatch',
+];
 ModifierReplaceWatchApplyModifiersToReplaced.prototype.modifierContextObjects = null;
 
 module.exports = ModifierReplaceWatchApplyModifiersToReplaced;

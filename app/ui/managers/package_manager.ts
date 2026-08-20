@@ -131,7 +131,8 @@ _PackageManager.injectClassWithResourceRequests = function (cls) {
    */
   cls.prototype.getRequiredResourcesRequestId = function () {
     if (this._requiredResourcesRequestId == null) {
-      this._requiredResourcesRequestId = 'require_resources_' + UtilsJavascript.generateIncrementalId();
+      this._requiredResourcesRequestId =
+        'require_resources_' + UtilsJavascript.generateIncrementalId();
     }
     return this._requiredResourcesRequestId;
   };
@@ -164,26 +165,41 @@ _PackageManager.injectClassWithResourceRequests = function (cls) {
    * @returns {Promise} resolve called when load completes with request id or false if request removed before loading
    */
   cls.prototype.addResourceRequest = function (requestId, packageId, resources) {
-    if (requestId == null) { throw new Error('addResourceRequest -> invalid requestId'); }
-    if (packageId == null) { packageId = requestId; }
+    if (requestId == null) {
+      throw new Error('addResourceRequest -> invalid requestId');
+    }
+    if (packageId == null) {
+      packageId = requestId;
+    }
 
     var resourceRequest = this._getOrCreateResourceRequest(requestId);
     if (resourceRequest.packageId == null) {
       resourceRequest.packageId = packageId;
       var packageResources = PKGS.getPkgForIdentifier(resourceRequest.packageId);
-      if (packageResources != null && packageResources.length > 0) { resourceRequest.resources = resourceRequest.resources.concat(packageResources); }
-      if (resources != null && resources.length > 0) { resourceRequest.resources = resourceRequest.resources.concat(resources); }
+      if (packageResources != null && packageResources.length > 0) {
+        resourceRequest.resources = resourceRequest.resources.concat(packageResources);
+      }
+      if (resources != null && resources.length > 0) {
+        resourceRequest.resources = resourceRequest.resources.concat(resources);
+      }
 
       if (this._canExecuteResourceRequests) {
         // load immediately if already added to scene
         this._executeResourceRequest(resourceRequest);
       } else {
         // queue for loading
-        if (this._queuedResourceRequestsById == null) { this._queuedResourceRequestsById = {}; }
+        if (this._queuedResourceRequestsById == null) {
+          this._queuedResourceRequestsById = {};
+        }
         this._queuedResourceRequestsById[requestId] = resourceRequest;
       }
     } else {
-      Logger.module('RESOURCES').warn('addResourceRequest -> duplicate resource request: ' + requestId + ' w/ packageId ' + packageId);
+      Logger.module('RESOURCES').warn(
+        'addResourceRequest -> duplicate resource request: ' +
+          requestId +
+          ' w/ packageId ' +
+          packageId,
+      );
     }
 
     return resourceRequest.promise;
@@ -305,13 +321,15 @@ _PackageManager.injectClassWithResourceRequests = function (cls) {
    * @private
    */
   cls.prototype._executeResourceRequest = function (request) {
-    request.loadPromise = _PackageManager.getInstance().loadMinorPackage(request.id, request.resources)
+    request.loadPromise = _PackageManager
+      .getInstance()
+      .loadMinorPackage(request.id, request.resources)
       .then(function () {
-      // resolve with request id
+        // resolve with request id
         request.resolve(request.id);
       })
       .catch(function (error) {
-      // pass on error
+        // pass on error
         request.reject(error);
       });
 
@@ -358,7 +376,6 @@ var NavigationManager = require('app/ui/managers/navigation_manager');
  *  @see Cocos2d for actual loading and resource caching.
  */
 var PackageManager = Manager.extend({
-
   _activeMajorId: null,
   _activeMajorMinorIds: null,
   _ids: null,
@@ -468,190 +485,227 @@ var PackageManager = Manager.extend({
         pkg._promise = Promise.resolve();
       } else {
         // store package when not preventing allocation
-        if (!preventAllocation) { this._packagesById[id] = pkg; }
+        if (!preventAllocation) {
+          this._packagesById[id] = pkg;
+        }
 
-        pkg._promise = new Promise(function (resolve, reject) {
-          // filter package resources to load
-          var resourcesToLoad = [];
-          var resourcePathsToLoad = [];
-          var resourceNamesAndPathsMapped = {};
-          var loadPromisesForResources = [];
-          var loadPromisesForResourcesSeenById = {};
-          var addLoadPromisesFromPkgs = function (pkgs) {
-            for (var i = 0, il = pkgs.length; i < il; i++) {
-              var pkgForPromises = pkgs[i];
-              var pkgForPromisesId = pkgForPromises.getId();
-              if (pkgForPromises !== pkg && loadPromisesForResourcesSeenById[pkgForPromisesId] == null) {
-                loadPromisesForResourcesSeenById[pkgForPromisesId] = true;
-                loadPromisesForResources.push(pkgForPromises.getPromise());
-              }
-            }
-          };
-          var addToLoadOrWaitForResourcePath = function (resourcePath, resourceOptions) {
-            if (resourcePath != null && resourceNamesAndPathsMapped[resourcePath] == null) {
-              resourceNamesAndPathsMapped[resourcePath] = true;
-
-              // find all packages using this resource
-              var pkgsForResource = this._packagesByResourcePath[resourcePath];
-              if (pkgsForResource == null || pkgsForResource.length === 0) {
-                // nothing else is using this resource
-                if (!preventAllocation) {
-                  // add this package to list of packages using this resource
-                  this._packagesByResourcePath[resourcePath] = [pkg];
-                }
-
-                // need to load this resource
-                if (resourceOptions != null) {
-                  resourceOptions.type = UtilsResources.getExt(resourcePath);
-                  resourceOptions.referencePath = resourcePath;
-                  if (resourceOptions.resourceScale != null && resourceOptions.resourceScale !== 1.0) {
-                    var indexOfExt = resourcePath.lastIndexOf('.');
-                    resourceOptions.src = resourcePath.substring(0, indexOfExt) + '@' + resourceOptions.resourceScale + 'x' + resourcePath.substring(indexOfExt);
-                  } else {
-                    resourceOptions.src = resourcePath;
-                  }
-                  resourcePathsToLoad.push(resourceOptions);
-                } else {
-                  resourcePathsToLoad.push(resourcePath);
-                }
-              } else {
-                // gather all load promises from packages using resources from this package
-                addLoadPromisesFromPkgs(pkgsForResource);
-
-                if (!preventAllocation) {
-                  // add this package to list of packages using this resource
-                  pkgsForResource.push(pkg);
-                }
-              }
-            }
-          }.bind(this);
-
-          // check each resource data and either load or wait for previous load of all resource paths
-          for (var i = 0, il = pkgResources.length; i < il; i++) {
-            var resourceData = pkgResources[i];
-            var resourceName = resourceData.name;
-            if (resourceNamesAndPathsMapped[resourceName] == null) {
-              resourceNamesAndPathsMapped[resourceName] = true;
-
-              // load or wait for previous load of all resource paths
-              var imgLoadOptions: Record<string, any> = {};
-              if (resourceData.is16Bit) {
-                // 16 bit images should load in 16-bit format
-                imgLoadOptions.pixelFormat = cc.Texture2D.PIXEL_FORMAT_RGB5A1;
-                // 16 bit images should load at 1x scale
-                imgLoadOptions.resourceScale = 1.0;
-              } else {
-                // non-16 bit images should load in 32-bit format
-                imgLoadOptions.pixelFormat = cc.Texture2D.PIXEL_FORMAT_RGBA8888;
-                // non-16 bit images without noScale flag should load at engine resource scale
-                imgLoadOptions.resourceScale = resourceData.noScale ? 1.0 : CONFIG.resourceScaleEngine;
-              }
-
-              if (resourceData.imgPosX != null) {
-                imgLoadOptions.isForCubemap = true;
-                addToLoadOrWaitForResourcePath(resourceData.imgPosX, _.extend({}, imgLoadOptions));
-                addToLoadOrWaitForResourcePath(resourceData.imgNegX, _.extend({}, imgLoadOptions));
-                addToLoadOrWaitForResourcePath(resourceData.imgPosY, _.extend({}, imgLoadOptions));
-                addToLoadOrWaitForResourcePath(resourceData.imgNegY, _.extend({}, imgLoadOptions));
-                addToLoadOrWaitForResourcePath(resourceData.imgPosZ, _.extend({}, imgLoadOptions));
-                addToLoadOrWaitForResourcePath(resourceData.imgNegZ, _.extend({}, imgLoadOptions));
-              }
-
-              addToLoadOrWaitForResourcePath(resourceData.img, imgLoadOptions);
-              addToLoadOrWaitForResourcePath(resourceData.plist);
-              addToLoadOrWaitForResourcePath(resourceData.font);
-
-              if (!window.isDesktop && !resourceData.streaming) {
-                // audio should only load on web client and only when not streaming
-                addToLoadOrWaitForResourcePath(resourceData.audio);
-              }
-
-              var pkgsForResourceName = this._packagesByResourceName[resourceName];
-              if (pkgsForResourceName != null) {
-                // packages already require this entire resource
-                addLoadPromisesFromPkgs(pkgsForResourceName);
-                if (!preventAllocation) {
-                  pkgsForResourceName.push(pkg);
-                }
-              } else {
-                // this resource should be loaded
-                resourcesToLoad.push(resourceData);
-
-                if (!preventAllocation) {
-                  // map package
-                  this._packagesByResourceName[resourceName] = [pkg];
-
-                  // make strong references to resource paths
-                  // these references only need to be made the first time a resource is loaded
-                  if (resourceData.imgPosX != null) {
-                    this.addStrongReferenceToResourcePath(resourceName, resourceName);
-                  }
-                  this.addStrongReferenceToResourcePath(resourceData.img, resourceName);
-                  this.addStrongReferenceToResourcePath(resourceData.plist, resourceName);
-                  this.addStrongReferenceToResourcePath(resourceData.font, resourceName);
-                  this.addStrongReferenceToResourcePath(resourceData.audio, resourceName);
-                }
-              }
-            }
-          }
-
-          // after filtering, add id to list of ids when not preventing allocation
-          if (!preventAllocation) {
-            this._ids.push(id);
-          }
-
-          // setup promise for all other packages loading these resources
-          var loadPromiseForResources = Promise.all(loadPromisesForResources);
-          // console.log("LOAD", pkg, "(", loadPromisesForResources.length, "other packages loading some/all of resources) -> resourcesToLoad", resourcesToLoad, "resourcePathsToLoad", resourcePathsToLoad);
-          // setup load parameters
-          var loadCompleted = false;
-          var onLoadComplete = function () {
-            if (!loadCompleted) {
-              loadCompleted = true;
-
-              // wait for existing load promises
-              loadPromiseForResources.then(function () {
-                if (!preventAllocation) {
-                  // add all resources to caches
-                  for (var i = 0, il = resourcesToLoad.length; i < il; i++) {
-                    this._addResourcesToCachesByResourceData(resourcesToLoad[i]);
-                  }
-                }
-
-                resolve();
-              }.bind(this));
-            }
-          }.bind(this);
-
-          if (resourcePathsToLoad.length === 0) {
-            // nothing new to load, call completion immediately
-            onLoadComplete();
-          } else {
-            // setup load options
-            var loadOptions: Record<string, any> = {};
-
-            // add load options progress callback
-            loadOptions.trigger = function (resource, numLoading, numLoaded) {
-              if (!loadCompleted) {
-                if (_.isFunction(progressHandler)) {
-                  var progress = Math.min(Math.max(numLoaded / numLoading, 0), 1);
-                  progressHandler(progress);
+        pkg._promise = new Promise(
+          function (resolve, reject) {
+            // filter package resources to load
+            var resourcesToLoad = [];
+            var resourcePathsToLoad = [];
+            var resourceNamesAndPathsMapped = {};
+            var loadPromisesForResources = [];
+            var loadPromisesForResourcesSeenById = {};
+            var addLoadPromisesFromPkgs = function (pkgs) {
+              for (var i = 0, il = pkgs.length; i < il; i++) {
+                var pkgForPromises = pkgs[i];
+                var pkgForPromisesId = pkgForPromises.getId();
+                if (
+                  pkgForPromises !== pkg &&
+                  loadPromisesForResourcesSeenById[pkgForPromisesId] == null
+                ) {
+                  loadPromisesForResourcesSeenById[pkgForPromisesId] = true;
+                  loadPromisesForResources.push(pkgForPromises.getPromise());
                 }
               }
             };
+            var addToLoadOrWaitForResourcePath = function (resourcePath, resourceOptions) {
+              if (resourcePath != null && resourceNamesAndPathsMapped[resourcePath] == null) {
+                resourceNamesAndPathsMapped[resourcePath] = true;
 
-            // add load options complete callback
-            loadOptions.cb = onLoadComplete;
+                // find all packages using this resource
+                var pkgsForResource = this._packagesByResourcePath[resourcePath];
+                if (pkgsForResource == null || pkgsForResource.length === 0) {
+                  // nothing else is using this resource
+                  if (!preventAllocation) {
+                    // add this package to list of packages using this resource
+                    this._packagesByResourcePath[resourcePath] = [pkg];
+                  }
 
-            // switch to non allocating loader
-            if (preventAllocation) {
-              NonAllocatingLoader.load(resourcePathsToLoad, loadOptions);
-            } else {
-              // start load using cocos
-              cc.loader.load(resourcePathsToLoad, loadOptions);
+                  // need to load this resource
+                  if (resourceOptions != null) {
+                    resourceOptions.type = UtilsResources.getExt(resourcePath);
+                    resourceOptions.referencePath = resourcePath;
+                    if (
+                      resourceOptions.resourceScale != null &&
+                      resourceOptions.resourceScale !== 1.0
+                    ) {
+                      var indexOfExt = resourcePath.lastIndexOf('.');
+                      resourceOptions.src =
+                        resourcePath.substring(0, indexOfExt) +
+                        '@' +
+                        resourceOptions.resourceScale +
+                        'x' +
+                        resourcePath.substring(indexOfExt);
+                    } else {
+                      resourceOptions.src = resourcePath;
+                    }
+                    resourcePathsToLoad.push(resourceOptions);
+                  } else {
+                    resourcePathsToLoad.push(resourcePath);
+                  }
+                } else {
+                  // gather all load promises from packages using resources from this package
+                  addLoadPromisesFromPkgs(pkgsForResource);
+
+                  if (!preventAllocation) {
+                    // add this package to list of packages using this resource
+                    pkgsForResource.push(pkg);
+                  }
+                }
+              }
+            }.bind(this);
+
+            // check each resource data and either load or wait for previous load of all resource paths
+            for (var i = 0, il = pkgResources.length; i < il; i++) {
+              var resourceData = pkgResources[i];
+              var resourceName = resourceData.name;
+              if (resourceNamesAndPathsMapped[resourceName] == null) {
+                resourceNamesAndPathsMapped[resourceName] = true;
+
+                // load or wait for previous load of all resource paths
+                var imgLoadOptions: Record<string, any> = {};
+                if (resourceData.is16Bit) {
+                  // 16 bit images should load in 16-bit format
+                  imgLoadOptions.pixelFormat = cc.Texture2D.PIXEL_FORMAT_RGB5A1;
+                  // 16 bit images should load at 1x scale
+                  imgLoadOptions.resourceScale = 1.0;
+                } else {
+                  // non-16 bit images should load in 32-bit format
+                  imgLoadOptions.pixelFormat = cc.Texture2D.PIXEL_FORMAT_RGBA8888;
+                  // non-16 bit images without noScale flag should load at engine resource scale
+                  imgLoadOptions.resourceScale = resourceData.noScale
+                    ? 1.0
+                    : CONFIG.resourceScaleEngine;
+                }
+
+                if (resourceData.imgPosX != null) {
+                  imgLoadOptions.isForCubemap = true;
+                  addToLoadOrWaitForResourcePath(
+                    resourceData.imgPosX,
+                    _.extend({}, imgLoadOptions),
+                  );
+                  addToLoadOrWaitForResourcePath(
+                    resourceData.imgNegX,
+                    _.extend({}, imgLoadOptions),
+                  );
+                  addToLoadOrWaitForResourcePath(
+                    resourceData.imgPosY,
+                    _.extend({}, imgLoadOptions),
+                  );
+                  addToLoadOrWaitForResourcePath(
+                    resourceData.imgNegY,
+                    _.extend({}, imgLoadOptions),
+                  );
+                  addToLoadOrWaitForResourcePath(
+                    resourceData.imgPosZ,
+                    _.extend({}, imgLoadOptions),
+                  );
+                  addToLoadOrWaitForResourcePath(
+                    resourceData.imgNegZ,
+                    _.extend({}, imgLoadOptions),
+                  );
+                }
+
+                addToLoadOrWaitForResourcePath(resourceData.img, imgLoadOptions);
+                addToLoadOrWaitForResourcePath(resourceData.plist);
+                addToLoadOrWaitForResourcePath(resourceData.font);
+
+                if (!window.isDesktop && !resourceData.streaming) {
+                  // audio should only load on web client and only when not streaming
+                  addToLoadOrWaitForResourcePath(resourceData.audio);
+                }
+
+                var pkgsForResourceName = this._packagesByResourceName[resourceName];
+                if (pkgsForResourceName != null) {
+                  // packages already require this entire resource
+                  addLoadPromisesFromPkgs(pkgsForResourceName);
+                  if (!preventAllocation) {
+                    pkgsForResourceName.push(pkg);
+                  }
+                } else {
+                  // this resource should be loaded
+                  resourcesToLoad.push(resourceData);
+
+                  if (!preventAllocation) {
+                    // map package
+                    this._packagesByResourceName[resourceName] = [pkg];
+
+                    // make strong references to resource paths
+                    // these references only need to be made the first time a resource is loaded
+                    if (resourceData.imgPosX != null) {
+                      this.addStrongReferenceToResourcePath(resourceName, resourceName);
+                    }
+                    this.addStrongReferenceToResourcePath(resourceData.img, resourceName);
+                    this.addStrongReferenceToResourcePath(resourceData.plist, resourceName);
+                    this.addStrongReferenceToResourcePath(resourceData.font, resourceName);
+                    this.addStrongReferenceToResourcePath(resourceData.audio, resourceName);
+                  }
+                }
+              }
             }
-          }
-        }.bind(this));
+
+            // after filtering, add id to list of ids when not preventing allocation
+            if (!preventAllocation) {
+              this._ids.push(id);
+            }
+
+            // setup promise for all other packages loading these resources
+            var loadPromiseForResources = Promise.all(loadPromisesForResources);
+            // console.log("LOAD", pkg, "(", loadPromisesForResources.length, "other packages loading some/all of resources) -> resourcesToLoad", resourcesToLoad, "resourcePathsToLoad", resourcePathsToLoad);
+            // setup load parameters
+            var loadCompleted = false;
+            var onLoadComplete = function () {
+              if (!loadCompleted) {
+                loadCompleted = true;
+
+                // wait for existing load promises
+                loadPromiseForResources.then(
+                  function () {
+                    if (!preventAllocation) {
+                      // add all resources to caches
+                      for (var i = 0, il = resourcesToLoad.length; i < il; i++) {
+                        this._addResourcesToCachesByResourceData(resourcesToLoad[i]);
+                      }
+                    }
+
+                    resolve();
+                  }.bind(this),
+                );
+              }
+            }.bind(this);
+
+            if (resourcePathsToLoad.length === 0) {
+              // nothing new to load, call completion immediately
+              onLoadComplete();
+            } else {
+              // setup load options
+              var loadOptions: Record<string, any> = {};
+
+              // add load options progress callback
+              loadOptions.trigger = function (resource, numLoading, numLoaded) {
+                if (!loadCompleted) {
+                  if (_.isFunction(progressHandler)) {
+                    var progress = Math.min(Math.max(numLoaded / numLoading, 0), 1);
+                    progressHandler(progress);
+                  }
+                }
+              };
+
+              // add load options complete callback
+              loadOptions.cb = onLoadComplete;
+
+              // switch to non allocating loader
+              if (preventAllocation) {
+                NonAllocatingLoader.load(resourcePathsToLoad, loadOptions);
+              } else {
+                // start load using cocos
+                cc.loader.load(resourcePathsToLoad, loadOptions);
+              }
+            }
+          }.bind(this),
+        );
       }
     }
 
@@ -683,69 +737,71 @@ var PackageManager = Manager.extend({
         this._ids = _.without(this._ids, id);
 
         // wait for resolve then unload all resources
-        return pkgPromise.then(function () {
-          // console.log("UNLOAD", pkg);
-          // unload package
+        return pkgPromise.then(
+          function () {
+            // console.log("UNLOAD", pkg);
+            // unload package
 
-          var unmapResourcePath = function (resourcePath) {
-            if (resourcePath != null) {
-              // remove resource from package maps
-              var pkgsForResource = this._packagesByResourcePath[resourcePath];
-              if (pkgsForResource != null) {
-                // remove package from map
-                pkgsForResource = _.without(pkgsForResource, pkg);
-                if (pkgsForResource.length === 0) {
-                  // no more packages need this resource path
-                  delete this._packagesByResourcePath[resourcePath];
-                } else {
-                  this._packagesByResourcePath[resourcePath] = pkgsForResource;
+            var unmapResourcePath = function (resourcePath) {
+              if (resourcePath != null) {
+                // remove resource from package maps
+                var pkgsForResource = this._packagesByResourcePath[resourcePath];
+                if (pkgsForResource != null) {
+                  // remove package from map
+                  pkgsForResource = _.without(pkgsForResource, pkg);
+                  if (pkgsForResource.length === 0) {
+                    // no more packages need this resource path
+                    delete this._packagesByResourcePath[resourcePath];
+                  } else {
+                    this._packagesByResourcePath[resourcePath] = pkgsForResource;
+                  }
                 }
               }
-            }
-          }.bind(this);
+            }.bind(this);
 
-          for (var i = 0, il = pkgResources.length; i < il; i++) {
-            var resourceData = pkgResources[i];
-            var resourceName = resourceData.name;
+            for (var i = 0, il = pkgResources.length; i < il; i++) {
+              var resourceData = pkgResources[i];
+              var resourceName = resourceData.name;
 
-            var pkgsForResourceName = this._packagesByResourceName[resourceName];
-            if (pkgsForResourceName != null && pkgsForResourceName.length > 0) {
-              // unmap resources
-              if (resourceData.imgPosX != null) {
-                unmapResourcePath(resourceData.imgPosX, resourceName);
-                unmapResourcePath(resourceData.imgNegX, resourceName);
-                unmapResourcePath(resourceData.imgPosY, resourceName);
-                unmapResourcePath(resourceData.imgNegY, resourceName);
-                unmapResourcePath(resourceData.imgPosZ, resourceName);
-                unmapResourcePath(resourceData.imgNegZ, resourceName);
-              }
-              unmapResourcePath(resourceData.img, resourceName);
-              unmapResourcePath(resourceData.plist, resourceName);
-              unmapResourcePath(resourceData.audio, resourceName);
-              unmapResourcePath(resourceData.font, resourceName);
-
-              // remove resource data from package maps
-              pkgsForResourceName = _.without(pkgsForResourceName, pkg);
-
-              if (pkgsForResourceName.length === 0) {
-                // no other packages need resource
-                delete this._packagesByResourceName[resourceName];
-
-                // remove strong references to resource paths
-                // these references only need to be removed when no packages need this resource anymore
+              var pkgsForResourceName = this._packagesByResourceName[resourceName];
+              if (pkgsForResourceName != null && pkgsForResourceName.length > 0) {
+                // unmap resources
                 if (resourceData.imgPosX != null) {
-                  this.removeStrongReferenceToResourcePath(resourceName, resourceName);
+                  unmapResourcePath(resourceData.imgPosX, resourceName);
+                  unmapResourcePath(resourceData.imgNegX, resourceName);
+                  unmapResourcePath(resourceData.imgPosY, resourceName);
+                  unmapResourcePath(resourceData.imgNegY, resourceName);
+                  unmapResourcePath(resourceData.imgPosZ, resourceName);
+                  unmapResourcePath(resourceData.imgNegZ, resourceName);
                 }
-                this.removeStrongReferenceToResourcePath(resourceData.img, resourceName);
-                this.removeStrongReferenceToResourcePath(resourceData.plist, resourceName);
-                this.removeStrongReferenceToResourcePath(resourceData.audio, resourceName);
-                this.removeStrongReferenceToResourcePath(resourceData.font, resourceName);
-              } else {
-                this._packagesByResourceName[resourceName] = pkgsForResourceName;
+                unmapResourcePath(resourceData.img, resourceName);
+                unmapResourcePath(resourceData.plist, resourceName);
+                unmapResourcePath(resourceData.audio, resourceName);
+                unmapResourcePath(resourceData.font, resourceName);
+
+                // remove resource data from package maps
+                pkgsForResourceName = _.without(pkgsForResourceName, pkg);
+
+                if (pkgsForResourceName.length === 0) {
+                  // no other packages need resource
+                  delete this._packagesByResourceName[resourceName];
+
+                  // remove strong references to resource paths
+                  // these references only need to be removed when no packages need this resource anymore
+                  if (resourceData.imgPosX != null) {
+                    this.removeStrongReferenceToResourcePath(resourceName, resourceName);
+                  }
+                  this.removeStrongReferenceToResourcePath(resourceData.img, resourceName);
+                  this.removeStrongReferenceToResourcePath(resourceData.plist, resourceName);
+                  this.removeStrongReferenceToResourcePath(resourceData.audio, resourceName);
+                  this.removeStrongReferenceToResourcePath(resourceData.font, resourceName);
+                } else {
+                  this._packagesByResourceName[resourceName] = pkgsForResourceName;
+                }
               }
             }
-          }
-        }.bind(this));
+          }.bind(this),
+        );
       }
     }
   },
@@ -836,7 +892,10 @@ var PackageManager = Manager.extend({
       if (img != null) {
         var texture = cc.textureCache.getTextureForKey(img);
         if (texture == null) {
-          throw new Error('PackageManager._addResourcesToCachesByResourceData -> images must be loaded before adding to cache: ' + img);
+          throw new Error(
+            'PackageManager._addResourcesToCachesByResourceData -> images must be loaded before adding to cache: ' +
+              img,
+          );
         }
       }
 
@@ -869,7 +928,7 @@ var PackageManager = Manager.extend({
   _addAnimationResourceToCaches: function (resourceData) {
     var name = resourceData.name;
     var plist = resourceData.plist;
-    var frameDelay = resourceData.frameDelay * .8; // flat incrase of all sprite animation speeds
+    var frameDelay = resourceData.frameDelay * 0.8; // flat incrase of all sprite animation speeds
     var animFrames = [];
 
     // add plist
@@ -996,7 +1055,11 @@ var PackageManager = Manager.extend({
           for (var i = 0, il = spriteFramesKeys.length; i < il; i++) {
             var spriteFrameKey = spriteFramesKeys[i];
             var spriteFrame = spriteFrames[spriteFrameKey];
-            if (spriteFrame && (spriteFrame.getTexture() == texture) && this.getNumStrongReferencesForResourcePath(spriteFrameKey) > 0) {
+            if (
+              spriteFrame &&
+              spriteFrame.getTexture() == texture &&
+              this.getNumStrongReferencesForResourcePath(spriteFrameKey) > 0
+            ) {
               textureUsedElsewhere = true;
               break;
             }
@@ -1018,7 +1081,7 @@ var PackageManager = Manager.extend({
       for (var i = 0, il = spriteFramesKeys.length; i < il; i++) {
         var spriteFrameKey = spriteFramesKeys[i];
         var spriteFrame = spriteFrames[spriteFrameKey];
-        if (spriteFrame && (spriteFrame.getTexture() == texture)) {
+        if (spriteFrame && spriteFrame.getTexture() == texture) {
           // search animations for spriteFrame
           for (var j = 0, jl = animationsKeys.length; j < jl; j++) {
             var animationKey = animationsKeys[j];
@@ -1199,7 +1262,9 @@ var PackageManager = Manager.extend({
    */
   loadMinorPackage: function (id, resources, majorId) {
     if (id != null && !CONFIG.LOAD_ALL_AT_START) {
-      if (majorId == null) { majorId = this._loadingMajorId || this._activeMajorId; }
+      if (majorId == null) {
+        majorId = this._loadingMajorId || this._activeMajorId;
+      }
       var promise;
       var pkg = this._packagesById[id];
       if (pkg != null) {
@@ -1317,8 +1382,11 @@ var PackageManager = Manager.extend({
       this._removePreloadingUI();
 
       // swap ui as needed
-      loadPromise = ((uiSwapCallback != null && uiSwapCallback()) || Promise.resolve())
-        .catch(function (error) { EventBus.getInstance().trigger(EVENTS.error, error); });
+      loadPromise = ((uiSwapCallback != null && uiSwapCallback()) || Promise.resolve()).catch(
+        function (error) {
+          EventBus.getInstance().trigger(EVENTS.error, error);
+        },
+      );
     } else if (this.getMajorPackageId() == majorId) {
       // make sure preloading UI is removed
       this._removePreloadingUI();
@@ -1332,29 +1400,36 @@ var PackageManager = Manager.extend({
       this.unloadUnusedMajorMinorPackages();
 
       // swap ui as needed
-      loadPromise = ((uiSwapCallback != null && uiSwapCallback()) || Promise.resolve())
-        .catch(function (error) { EventBus.getInstance().trigger(EVENTS.error, error); });
+      loadPromise = ((uiSwapCallback != null && uiSwapCallback()) || Promise.resolve()).catch(
+        function (error) {
+          EventBus.getInstance().trigger(EVENTS.error, error);
+        },
+      );
     } else {
       // show loading dialog and destroy all UI
-      loadPromise = NavigationManager.getInstance().showDialogForLoad().then(function () {
-        // make sure preloading UI is removed
-        this._removePreloadingUI();
+      loadPromise = NavigationManager.getInstance()
+        .showDialogForLoad()
+        .then(
+          function () {
+            // make sure preloading UI is removed
+            this._removePreloadingUI();
 
-        return Promise.all([
-          // load major/minor packages
-          this.loadMajorPackage(majorId, minorIds, resources),
-          // activate new major package as soon as new load begins
-          this.activateLoadingMajorPackage(),
-          // unload previous major package as soon as new load begins
-          this.unloadUnusedMajorMinorPackages(),
-        ]);
-      }.bind(this))
+            return Promise.all([
+              // load major/minor packages
+              this.loadMajorPackage(majorId, minorIds, resources),
+              // activate new major package as soon as new load begins
+              this.activateLoadingMajorPackage(),
+              // unload previous major package as soon as new load begins
+              this.unloadUnusedMajorMinorPackages(),
+            ]);
+          }.bind(this),
+        )
         .then(function () {
           // destroy loading dialog
           NavigationManager.getInstance().destroyDialogForLoad();
 
           // update UI
-          return (uiSwapCallback != null && uiSwapCallback() || Promise.resolve());
+          return (uiSwapCallback != null && uiSwapCallback()) || Promise.resolve();
         })
         .catch(function (error) {
           EventBus.getInstance().trigger(EVENTS.error, error);
@@ -1365,7 +1440,14 @@ var PackageManager = Manager.extend({
 
   _removePreloadingUI: function () {
     if (this._$preloading == null) {
-      this._$preloading = $('#app-preloading').addClass('out').one('transitionend', function () { this._$preloading.remove(); }.bind(this));
+      this._$preloading = $('#app-preloading')
+        .addClass('out')
+        .one(
+          'transitionend',
+          function () {
+            this._$preloading.remove();
+          }.bind(this),
+        );
     }
   },
 
@@ -1420,12 +1502,9 @@ var PackageManager = Manager.extend({
     }
   },
 
-  injectClassWithResourceRequests: function (cls) {
-
-  },
+  injectClassWithResourceRequests: function (cls) {},
 
   /* endregion UTILITY */
-
 });
 
 /* region LOAD PACKAGE */
@@ -1474,36 +1553,49 @@ var NonAllocatingLoader = {
     var completionCallback = options && options.cb;
 
     // ensure array
-    if (resources != null && !_.isArray(resources)) { resources = [resources]; }
+    if (resources != null && !_.isArray(resources)) {
+      resources = [resources];
+    }
 
     if (resources == null || resources.length === 0) {
-      if (completionCallback) { completionCallback(); }
+      if (completionCallback) {
+        completionCallback();
+      }
     } else {
       // map load requests with a concurrency limit
       var numLoading = resources.length;
       var numLoaded = 0;
-      PromiseUtils.map(resources, function (resource) {
-        var url;
-        if (resource.type) {
-          url = resource.src ? resource.src : (resource.name + '.' + resource.type.toLowerCase());
-        } else {
-          url = resource;
-        }
-        return this.loadUrl(url).then(function () {
-          // update progress as soon as get request resolves
-          numLoaded++;
-          if (progressCallback) { progressCallback(url, numLoading, numLoaded); }
-        }).catch(function (errorMessage) {
-          // log errors for now and do nothing
-          console.log(errorMessage);
-        });
-      }.bind(this), { concurrency: 10000 })
-        .then(function () {
+      PromiseUtils.map(
+        resources,
+        function (resource) {
+          var url;
+          if (resource.type) {
+            url = resource.src ? resource.src : resource.name + '.' + resource.type.toLowerCase();
+          } else {
+            url = resource;
+          }
+          return this.loadUrl(url)
+            .then(function () {
+              // update progress as soon as get request resolves
+              numLoaded++;
+              if (progressCallback) {
+                progressCallback(url, numLoading, numLoaded);
+              }
+            })
+            .catch(function (errorMessage) {
+              // log errors for now and do nothing
+              console.log(errorMessage);
+            });
+        }.bind(this),
+        { concurrency: 10000 },
+      ).then(function () {
         // for now, we want to complete the load whether all resources get loaded or not
         // we don't need to retry on errors because this is loading without allocation
         // i.e. something is better than nothing
-          if (completionCallback) { completionCallback(); }
-        });
+        if (completionCallback) {
+          completionCallback();
+        }
+      });
     }
   },
   loadUrl: function (url) {
@@ -1540,9 +1632,12 @@ var NonAllocatingLoader = {
 // inject all views with resource request architecture
 _PackageManager.injectClassWithResourceRequests(Backbone.Marionette.View);
 
-Backbone.Marionette.View.prototype._super_onShowCalled_fromResources = Backbone.Marionette.View.prototype.onShowCalled;
+Backbone.Marionette.View.prototype._super_onShowCalled_fromResources =
+  Backbone.Marionette.View.prototype.onShowCalled;
 Backbone.Marionette.View.prototype.onShowCalled = function () {
-  if (this.isDestroyed) { return; }
+  if (this.isDestroyed) {
+    return;
+  }
 
   // call original method
   Backbone.Marionette.View.prototype._super_onShowCalled_fromResources.call(this);
@@ -1551,9 +1646,12 @@ Backbone.Marionette.View.prototype.onShowCalled = function () {
   this.enabledAndExecuteResourceRequests();
 };
 
-Backbone.Marionette.View.prototype._super_destroy_fromResources = Backbone.Marionette.View.prototype.destroy;
+Backbone.Marionette.View.prototype._super_destroy_fromResources =
+  Backbone.Marionette.View.prototype.destroy;
 Backbone.Marionette.View.prototype.destroy = function () {
-  if (this.isDestroyed) { return; }
+  if (this.isDestroyed) {
+    return;
+  }
 
   // call original method
   Backbone.Marionette.View.prototype._super_destroy_fromResources.call(this);
@@ -1595,7 +1693,12 @@ var ImageLoader = {
 
       // attempt to release html image object (but not texture)
       // this frees up the RAM on the CPU side, as the image data has already been pushed to the GPU
-      if (CONFIG.UNLOAD_CPU_IMAGES && !CONFIG.LOAD_ALL_AT_START && img != null && !options.isForCubemap) {
+      if (
+        CONFIG.UNLOAD_CPU_IMAGES &&
+        !CONFIG.LOAD_ALL_AT_START &&
+        img != null &&
+        !options.isForCubemap
+      ) {
         cc.textureCache.releaseImageFromCPU(referencePath);
       }
     });
@@ -1664,8 +1767,7 @@ cc.textureCache.addImage = function (url, cb, target, pixelFormat) {
   tex.url = url;
   var loadFunc = cc.loader._checkIsImageURL(url) ? cc.loader.load : cc.loader.loadImg;
   loadFunc.call(cc.loader, url, function (err, img) {
-    if (err)
-      return cb && cb.call(target, err);
+    if (err) return cb && cb.call(target, err);
 
     if (typeof pixelFormat === 'undefined') {
       cc.textureCache.handleLoadedTexture(url, cc.Texture2D.PIXEL_FORMAT_RGBA8888);
@@ -1684,8 +1786,7 @@ cc.textureCache.addImage = function (url, cb, target, pixelFormat) {
 cc.Texture2D.prototype.handleLoadedTexture = function (options) {
   var gl = cc._renderContext;
 
-  if (!cc._rendererInitialized)
-    return;
+  if (!cc._rendererInitialized) return;
 
   // cocos defaults all textures to be anti aliased
   this._antiAliased = true;
@@ -1698,8 +1799,7 @@ cc.Texture2D.prototype.handleLoadedTexture = function (options) {
 
   var pixelsWide = this._htmlElementObj.width;
   var pixelsHigh = this._htmlElementObj.height;
-  if (!pixelsWide || !pixelsHigh)
-    return;
+  if (!pixelsWide || !pixelsHigh) return;
 
   // extract options
   var pixelFormat;
@@ -1728,7 +1828,7 @@ cc.Texture2D.prototype.handleLoadedTexture = function (options) {
   cc.glBindTexture2D(this);
 
   // pixel store
-  var bytesPerRow = pixelsWide * bitsPerPixel / 8;
+  var bytesPerRow = (pixelsWide * bitsPerPixel) / 8;
   if (bytesPerRow % 8 === 0) {
     gl.pixelStorei(gl.UNPACK_ALIGNMENT, 8);
   } else if (bytesPerRow % 4 === 0) {
@@ -1743,32 +1843,32 @@ cc.Texture2D.prototype.handleLoadedTexture = function (options) {
   var format = gl.RGBA;
   var type = gl.UNSIGNED_BYTE;
   switch (pixelFormat) {
-  case cc.Texture2D.PIXEL_FORMAT_RGBA8888:
-    format = gl.RGBA;
-    break;
-  case cc.Texture2D.PIXEL_FORMAT_RGB888:
-    format = gl.RGB;
-    break;
-  case cc.Texture2D.PIXEL_FORMAT_RGBA4444:
-    type = gl.UNSIGNED_SHORT_4_4_4_4;
-    break;
-  case cc.Texture2D.PIXEL_FORMAT_RGB5A1:
-    type = gl.UNSIGNED_SHORT_5_5_5_1;
-    break;
-  case cc.Texture2D.PIXEL_FORMAT_RGB565:
-    type = gl.UNSIGNED_SHORT_5_6_5;
-    break;
-  case cc.Texture2D.PIXEL_FORMAT_AI88:
-    format = gl.LUMINANCE_ALPHA;
-    break;
-  case cc.Texture2D.PIXEL_FORMAT_A8:
-    format = gl.ALPHA;
-    break;
-  case cc.Texture2D.PIXEL_FORMAT_I8:
-    format = gl.LUMINANCE;
-    break;
-  default:
-    cc.assert(0, cc._LogInfos.Texture2D_initWithData);
+    case cc.Texture2D.PIXEL_FORMAT_RGBA8888:
+      format = gl.RGBA;
+      break;
+    case cc.Texture2D.PIXEL_FORMAT_RGB888:
+      format = gl.RGB;
+      break;
+    case cc.Texture2D.PIXEL_FORMAT_RGBA4444:
+      type = gl.UNSIGNED_SHORT_4_4_4_4;
+      break;
+    case cc.Texture2D.PIXEL_FORMAT_RGB5A1:
+      type = gl.UNSIGNED_SHORT_5_5_5_1;
+      break;
+    case cc.Texture2D.PIXEL_FORMAT_RGB565:
+      type = gl.UNSIGNED_SHORT_5_6_5;
+      break;
+    case cc.Texture2D.PIXEL_FORMAT_AI88:
+      format = gl.LUMINANCE_ALPHA;
+      break;
+    case cc.Texture2D.PIXEL_FORMAT_A8:
+      format = gl.ALPHA;
+      break;
+    case cc.Texture2D.PIXEL_FORMAT_I8:
+      format = gl.LUMINANCE;
+      break;
+    default:
+      cc.assert(0, cc._LogInfos.Texture2D_initWithData);
   }
 
   // Specify OpenGL texture image
@@ -1800,7 +1900,6 @@ cc.Texture2D.prototype.getGLTexture = function () {
 };
 
 var CubemapTexture = cc.Texture2D.extend({
-
   _urlPosX: null,
   _urlNegX: null,
   _urlPosY: null,
@@ -1830,8 +1929,7 @@ var CubemapTexture = cc.Texture2D.extend({
   handleLoadedTexture: function (options) {
     var gl = cc._renderContext;
 
-    if (!cc._rendererInitialized)
-      return;
+    if (!cc._rendererInitialized) return;
 
     this._urlPosX = options.imgPosX;
     this._urlNegX = options.imgNegX;
@@ -1841,24 +1939,78 @@ var CubemapTexture = cc.Texture2D.extend({
     this._urlNegZ = options.imgNegZ;
 
     // strong reference sides to avoid unloading them before ready
-    _PackageManager.getInstance().addStrongReferenceToResourcePath(this._urlPosX, this.__instanceId);
-    _PackageManager.getInstance().addStrongReferenceToResourcePath(this._urlNegX, this.__instanceId);
-    _PackageManager.getInstance().addStrongReferenceToResourcePath(this._urlPosY, this.__instanceId);
-    _PackageManager.getInstance().addStrongReferenceToResourcePath(this._urlNegY, this.__instanceId);
-    _PackageManager.getInstance().addStrongReferenceToResourcePath(this._urlPosZ, this.__instanceId);
-    _PackageManager.getInstance().addStrongReferenceToResourcePath(this._urlNegZ, this.__instanceId);
+    _PackageManager
+      .getInstance()
+      .addStrongReferenceToResourcePath(this._urlPosX, this.__instanceId);
+    _PackageManager
+      .getInstance()
+      .addStrongReferenceToResourcePath(this._urlNegX, this.__instanceId);
+    _PackageManager
+      .getInstance()
+      .addStrongReferenceToResourcePath(this._urlPosY, this.__instanceId);
+    _PackageManager
+      .getInstance()
+      .addStrongReferenceToResourcePath(this._urlNegY, this.__instanceId);
+    _PackageManager
+      .getInstance()
+      .addStrongReferenceToResourcePath(this._urlPosZ, this.__instanceId);
+    _PackageManager
+      .getInstance()
+      .addStrongReferenceToResourcePath(this._urlNegZ, this.__instanceId);
 
     // bind texture for the cubemap
     this._webTextureObj = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_CUBE_MAP, this._webTextureObj);
 
     // set texture image data for the cube map
-    gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, cc.loader.getRes(this._urlPosX));
-    gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, cc.loader.getRes(this._urlNegX));
-    gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Y, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, cc.loader.getRes(this._urlPosY));
-    gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, cc.loader.getRes(this._urlNegY));
-    gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Z, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, cc.loader.getRes(this._urlPosZ));
-    gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, cc.loader.getRes(this._urlNegZ));
+    gl.texImage2D(
+      gl.TEXTURE_CUBE_MAP_POSITIVE_X,
+      0,
+      gl.RGBA,
+      gl.RGBA,
+      gl.UNSIGNED_BYTE,
+      cc.loader.getRes(this._urlPosX),
+    );
+    gl.texImage2D(
+      gl.TEXTURE_CUBE_MAP_NEGATIVE_X,
+      0,
+      gl.RGBA,
+      gl.RGBA,
+      gl.UNSIGNED_BYTE,
+      cc.loader.getRes(this._urlNegX),
+    );
+    gl.texImage2D(
+      gl.TEXTURE_CUBE_MAP_POSITIVE_Y,
+      0,
+      gl.RGBA,
+      gl.RGBA,
+      gl.UNSIGNED_BYTE,
+      cc.loader.getRes(this._urlPosY),
+    );
+    gl.texImage2D(
+      gl.TEXTURE_CUBE_MAP_NEGATIVE_Y,
+      0,
+      gl.RGBA,
+      gl.RGBA,
+      gl.UNSIGNED_BYTE,
+      cc.loader.getRes(this._urlNegY),
+    );
+    gl.texImage2D(
+      gl.TEXTURE_CUBE_MAP_POSITIVE_Z,
+      0,
+      gl.RGBA,
+      gl.RGBA,
+      gl.UNSIGNED_BYTE,
+      cc.loader.getRes(this._urlPosZ),
+    );
+    gl.texImage2D(
+      gl.TEXTURE_CUBE_MAP_NEGATIVE_Z,
+      0,
+      gl.RGBA,
+      gl.RGBA,
+      gl.UNSIGNED_BYTE,
+      cc.loader.getRes(this._urlNegZ),
+    );
 
     // set cube map gl params
     gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
@@ -1877,14 +2029,32 @@ var CubemapTexture = cc.Texture2D.extend({
 
   releaseTexture: function () {
     // remove strong references to cube map sides
-    _PackageManager.getInstance().removeStrongReferenceToResourcePath(this._urlPosX, this.__instanceId);
-    _PackageManager.getInstance().removeStrongReferenceToResourcePath(this._urlNegX, this.__instanceId);
-    _PackageManager.getInstance().removeStrongReferenceToResourcePath(this._urlPosY, this.__instanceId);
-    _PackageManager.getInstance().removeStrongReferenceToResourcePath(this._urlNegY, this.__instanceId);
-    _PackageManager.getInstance().removeStrongReferenceToResourcePath(this._urlPosZ, this.__instanceId);
-    _PackageManager.getInstance().removeStrongReferenceToResourcePath(this._urlNegZ, this.__instanceId);
+    _PackageManager
+      .getInstance()
+      .removeStrongReferenceToResourcePath(this._urlPosX, this.__instanceId);
+    _PackageManager
+      .getInstance()
+      .removeStrongReferenceToResourcePath(this._urlNegX, this.__instanceId);
+    _PackageManager
+      .getInstance()
+      .removeStrongReferenceToResourcePath(this._urlPosY, this.__instanceId);
+    _PackageManager
+      .getInstance()
+      .removeStrongReferenceToResourcePath(this._urlNegY, this.__instanceId);
+    _PackageManager
+      .getInstance()
+      .removeStrongReferenceToResourcePath(this._urlPosZ, this.__instanceId);
+    _PackageManager
+      .getInstance()
+      .removeStrongReferenceToResourcePath(this._urlNegZ, this.__instanceId);
 
-    this._urlPosX = this._urlNegX = this._urlPosY = this._urlNegY = this._urlPosZ = this._urlNegZ = null;
+    this._urlPosX =
+      this._urlNegX =
+      this._urlPosY =
+      this._urlNegY =
+      this._urlPosZ =
+      this._urlNegZ =
+        null;
 
     if (this._webTextureObj != null) {
       cc._renderContext.deleteTexture(this._webTextureObj);
@@ -1936,10 +2106,12 @@ cc.Sprite.prototype.setRequiredTextureResource = function (resource) {
     this._requiredTextureResource = resource;
     if (this._requiredTextureResource != null && !this._requiredTextureResourceRequested) {
       this._requiredTextureResourceRequested = true;
-      this.whenRequiredResourcesReady().then(function (requestId) {
-        if (!this.getAreResourcesValid(requestId)) return; // resources have been invalidated
-        this.setTexture(cc.textureCache.getTextureForKey(resource.img));
-      }.bind(this));
+      this.whenRequiredResourcesReady().then(
+        function (requestId) {
+          if (!this.getAreResourcesValid(requestId)) return; // resources have been invalidated
+          this.setTexture(cc.textureCache.getTextureForKey(resource.img));
+        }.bind(this),
+      );
     }
   }
 };
@@ -1952,7 +2124,8 @@ cc.Sprite.prototype.getRequiredTextureResource = function () {
   return this._requiredTextureResource;
 };
 
-cc.Sprite.prototype._super_getRequiredResources_fromResources = cc.Sprite.prototype.getRequiredResources;
+cc.Sprite.prototype._super_getRequiredResources_fromResources =
+  cc.Sprite.prototype.getRequiredResources;
 cc.Sprite.prototype.getRequiredResources = function () {
   var requiredTextureResource = this.getRequiredTextureResource();
   var requiredResources = cc.Sprite.prototype._super_getRequiredResources_fromResources.call(this);
@@ -1972,10 +2145,12 @@ cc.Sprite.prototype.onEnter = function () {
     var requiredTextureResource = this.getRequiredTextureResource();
     if (requiredTextureResource != null) {
       this._requiredTextureResourceRequested = true;
-      this.whenRequiredResourcesReady().then(function (requestId) {
-        if (!this.getAreResourcesValid(requestId)) return; // resources have been invalidated
-        this.setTexture(cc.textureCache.getTextureForKey(requiredTextureResource.img));
-      }.bind(this));
+      this.whenRequiredResourcesReady().then(
+        function (requestId) {
+          if (!this.getAreResourcesValid(requestId)) return; // resources have been invalidated
+          this.setTexture(cc.textureCache.getTextureForKey(requiredTextureResource.img));
+        }.bind(this),
+      );
     }
   }
 
@@ -1987,7 +2162,9 @@ cc.Sprite.prototype.onExit = function () {
   // remove strong reference to the texture resource so it can be unloaded
   var texture = this._texture;
   if (texture != null) {
-    _PackageManager.getInstance().removeStrongReferenceToResourcePath(texture.url, this.__instanceId);
+    _PackageManager
+      .getInstance()
+      .removeStrongReferenceToResourcePath(texture.url, this.__instanceId);
   }
 
   cc.Sprite.prototype._super_onExit_fromResources.call(this);
@@ -2006,12 +2183,16 @@ cc.Sprite.prototype.setTexture = function () {
     if (texturePrev != texture) {
       if (texturePrev != null) {
         // remove strong reference to the texture resource so it can be unloaded
-        _PackageManager.getInstance().removeStrongReferenceToResourcePath(texturePrev.url, this.__instanceId);
+        _PackageManager
+          .getInstance()
+          .removeStrongReferenceToResourcePath(texturePrev.url, this.__instanceId);
       }
 
       if (texture != null) {
         // make a strong reference to the texture resource so it doesn't get unloaded too early
-        _PackageManager.getInstance().addStrongReferenceToResourcePath(texture.url, this.__instanceId);
+        _PackageManager
+          .getInstance()
+          .addStrongReferenceToResourcePath(texture.url, this.__instanceId);
       }
     }
   }
@@ -2032,9 +2213,13 @@ cc.Audio.prototype.play = function () {
     var super_onended = this._currentSource.onended;
     this._currentSource.onended = function () {
       // remove strong reference to the audio resource so it can be unloaded
-      _PackageManager.getInstance().removeStrongReferenceToResourcePath(this.src, this.__instanceId);
+      _PackageManager
+        .getInstance()
+        .removeStrongReferenceToResourcePath(this.src, this.__instanceId);
 
-      if (super_onended) { super_onended(); }
+      if (super_onended) {
+        super_onended();
+      }
     }.bind(this);
   }
 };
@@ -2054,7 +2239,9 @@ cc.Audio.prototype.stop = function () {
 cc.LabelTTF.prototype._super_onEnter_fromResources = cc.LabelTTF.prototype.onEnter;
 cc.LabelTTF.prototype.onEnter = function () {
   // make a strong reference to the font resource so it doesn't get unloaded too early
-  _PackageManager.getInstance().addStrongReferenceToResourcePath(this.getFontName(), this.__instanceId);
+  _PackageManager
+    .getInstance()
+    .addStrongReferenceToResourcePath(this.getFontName(), this.__instanceId);
 
   cc.LabelTTF.prototype._super_onEnter_fromResources.call(this);
 };
@@ -2062,7 +2249,9 @@ cc.LabelTTF.prototype.onEnter = function () {
 cc.LabelTTF.prototype._super_onExit_fromResources = cc.LabelTTF.prototype.onExit;
 cc.LabelTTF.prototype.onExit = function () {
   // remove strong reference to the font resource so it can be unloaded
-  _PackageManager.getInstance().removeStrongReferenceToResourcePath(this.getFontName(), this.__instanceId);
+  _PackageManager
+    .getInstance()
+    .removeStrongReferenceToResourcePath(this.getFontName(), this.__instanceId);
 
   cc.LabelTTF.prototype._super_onExit_fromResources.call(this);
 };
@@ -2076,11 +2265,15 @@ cc.LabelTTF.prototype.setFontName = function () {
   if (this.isRunning()) {
     if (fontNamePrev != null) {
       // remove strong reference to the font resource so it can be unloaded
-      _PackageManager.getInstance().removeStrongReferenceToResourcePath(fontNamePrev, this.__instanceId);
+      _PackageManager
+        .getInstance()
+        .removeStrongReferenceToResourcePath(fontNamePrev, this.__instanceId);
     }
 
     // make a strong reference to the font resource so it doesn't get unloaded too early
-    _PackageManager.getInstance().addStrongReferenceToResourcePath(this.getFontName(), this.__instanceId);
+    _PackageManager
+      .getInstance()
+      .addStrongReferenceToResourcePath(this.getFontName(), this.__instanceId);
   }
 };
 

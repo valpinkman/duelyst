@@ -17,7 +17,6 @@ const FXFlockSprite = require('../../nodes/fx/FXFlockSprite');
  *************************************************************************** */
 
 const MainObsidianWoodsLayer = FXCompositeLayer.extend({
-
   /* region INITIALIZE */
 
   ctor() {
@@ -119,7 +118,9 @@ const MainObsidianWoodsLayer = FXCompositeLayer.extend({
   /* region RESOURCES */
 
   getRequiredResources() {
-    return FXCompositeLayer.prototype.getRequiredResources.call(this).concat(PKGS.getPkgForIdentifier('ObsidianWoods'));
+    return FXCompositeLayer.prototype.getRequiredResources
+      .call(this)
+      .concat(PKGS.getPkgForIdentifier('ObsidianWoods'));
   },
 
   /* endregion RESOURCES */
@@ -183,28 +184,30 @@ const MainObsidianWoodsLayer = FXCompositeLayer.extend({
 
       // bg
       this.bg.setScale(parallaxScale);
-      ratio = cc.p(0.00, 0.00);
+      ratio = cc.p(0.0, 0.0);
       offset = cc.p(0.0, 0.0);
       this.parallaxLayer.addOrUpdateParallaxedNode(this.bg, 0, ratio, offset);
 
       // light ray
       this.lightRay.setScale(parallaxScale);
-      ratio = cc.p(0.00, 0.00);
-      offset = cc.p(this.lightRay.getContentSize().width / 7, this.lightRay.getContentSize().height / 3 * this.lightRay.getScale());
+      ratio = cc.p(0.0, 0.0);
+      offset = cc.p(
+        this.lightRay.getContentSize().width / 7,
+        (this.lightRay.getContentSize().height / 3) * this.lightRay.getScale(),
+      );
       this.parallaxLayer.addOrUpdateParallaxedNode(this.lightRay, 0, ratio, offset);
 
       this.lightRay.stopAllActions();
-      this.lightRay.runAction(cc.repeatForever(
-        cc.sequence(
-          cc.fadeOut(10.0),
-          cc.fadeIn(10.0),
-        ),
-      ));
+      this.lightRay.runAction(cc.repeatForever(cc.sequence(cc.fadeOut(10.0), cc.fadeIn(10.0))));
 
       // middleground 1
       this.pillar.setScale(parallaxScale);
       ratio = cc.p(0.0025, 0.00125);
-      offset = cc.p(winWidth / 2 * 0.9, -winHeight * 0.4 + this.pillar.getContentSize().height * (0.475 - ratio.y) * this.pillar.getScale());
+      offset = cc.p(
+        (winWidth / 2) * 0.9,
+        -winHeight * 0.4 +
+          this.pillar.getContentSize().height * (0.475 - ratio.y) * this.pillar.getScale(),
+      );
       this.parallaxLayer.addOrUpdateParallaxedNode(this.pillar, 0, ratio, offset);
 
       // birds
@@ -218,8 +221,10 @@ const MainObsidianWoodsLayer = FXCompositeLayer.extend({
         0,
         cc.p(),
         cc.p(
-          birds1SourceScreenPosition.x + (birds1TargetScreenPosition.x - birds1SourceScreenPosition.x) * 0.5,
-          birds1SourceScreenPosition.y + (birds1TargetScreenPosition.y - birds1SourceScreenPosition.y) * 0.5,
+          birds1SourceScreenPosition.x +
+            (birds1TargetScreenPosition.x - birds1SourceScreenPosition.x) * 0.5,
+          birds1SourceScreenPosition.y +
+            (birds1TargetScreenPosition.y - birds1SourceScreenPosition.y) * 0.5,
         ),
       );
 
@@ -233,32 +238,57 @@ const MainObsidianWoodsLayer = FXCompositeLayer.extend({
         0,
         cc.p(),
         cc.p(
-          birds2SourceScreenPosition.x + (birds2TargetScreenPosition.x - birds2SourceScreenPosition.x) * 0.5,
-          birds2SourceScreenPosition.y + (birds2TargetScreenPosition.y - birds2SourceScreenPosition.y) * 0.5,
+          birds2SourceScreenPosition.x +
+            (birds2TargetScreenPosition.x - birds2SourceScreenPosition.x) * 0.5,
+          birds2SourceScreenPosition.y +
+            (birds2TargetScreenPosition.y - birds2SourceScreenPosition.y) * 0.5,
         ),
       );
 
       // clouds
       this.clouds1.setSourceScreenPosition(cc.p(winWidth * 0.5, -winHeight * 0.25));
       this.clouds1.setTargetScreenPosition(cc.p(-winWidth * 0.5, -winHeight * 0.45));
-      this.parallaxLayer.addOrUpdateParallaxedNode(this.clouds1, 0, cc.p(), this.clouds1.getSourceScreenOffsetPosition());
+      this.parallaxLayer.addOrUpdateParallaxedNode(
+        this.clouds1,
+        0,
+        cc.p(),
+        this.clouds1.getSourceScreenOffsetPosition(),
+      );
 
       this.clouds2.setSourceScreenPosition(cc.p(winWidth * 0.5, -winHeight * 0.25));
       this.clouds2.setTargetScreenPosition(cc.p(-winWidth * 0.5, -winHeight * 0.45));
-      this.parallaxLayer.addOrUpdateParallaxedNode(this.clouds2, 0, cc.p(), this.clouds2.getSourceScreenOffsetPosition());
+      this.parallaxLayer.addOrUpdateParallaxedNode(
+        this.clouds2,
+        0,
+        cc.p(),
+        this.clouds2.getSourceScreenOffsetPosition(),
+      );
 
       this.clouds3.setSourceScreenPosition(cc.p(winWidth * 0.5, -winHeight * 0.25));
       this.clouds3.setTargetScreenPosition(cc.p(-winWidth * 0.5, -winHeight * 0.45));
-      this.parallaxLayer.addOrUpdateParallaxedNode(this.clouds3, 0, cc.p(), this.clouds3.getSourceScreenOffsetPosition());
+      this.parallaxLayer.addOrUpdateParallaxedNode(
+        this.clouds3,
+        0,
+        cc.p(),
+        this.clouds3.getSourceScreenOffsetPosition(),
+      );
 
       this.clouds4.setSourceScreenPosition(cc.p(winWidth * 0.5, -winHeight * 0.25));
       this.clouds4.setTargetScreenPosition(cc.p(-winWidth * 0.5, -winHeight * 0.45));
-      this.parallaxLayer.addOrUpdateParallaxedNode(this.clouds4, 0, cc.p(), this.clouds4.getSourceScreenOffsetPosition());
+      this.parallaxLayer.addOrUpdateParallaxedNode(
+        this.clouds4,
+        0,
+        cc.p(),
+        this.clouds4.getSourceScreenOffsetPosition(),
+      );
 
       // foreground
       this.fg.setScale(parallaxScale);
       ratio = cc.p(0.02, 0.01);
-      offset = cc.p(-winWidth * 0.65 + this.fg.getContentSize().width * (0.65 - ratio.x) * this.fg.getScale(), -winHeight * 0.55 + this.fg.getContentSize().height * (0.5 - ratio.y) * this.fg.getScale());
+      offset = cc.p(
+        -winWidth * 0.65 + this.fg.getContentSize().width * (0.65 - ratio.x) * this.fg.getScale(),
+        -winHeight * 0.55 + this.fg.getContentSize().height * (0.5 - ratio.y) * this.fg.getScale(),
+      );
       this.parallaxLayer.addOrUpdateParallaxedNode(this.fg, 0, ratio, offset);
 
       // reset parallax

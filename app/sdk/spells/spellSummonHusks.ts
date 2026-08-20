@@ -19,11 +19,26 @@ class SpellSummonHusks extends SpellKillTarget {
       const attack = target.getATK();
       super.onApplyEffectToBoardTile(board, x, y, sourceAction);
 
-      const entity = this.getGameSession().getExistingCardFromIndexOrCreateCardFromData({ id: Cards.Faction4.Husk });
-      const spawnPositions = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(this.getGameSession(), position, CONFIG.PATTERN_3x3, entity, this, attack);
+      const entity = this.getGameSession().getExistingCardFromIndexOrCreateCardFromData({
+        id: Cards.Faction4.Husk,
+      });
+      const spawnPositions = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(
+        this.getGameSession(),
+        position,
+        CONFIG.PATTERN_3x3,
+        entity,
+        this,
+        attack,
+      );
       if (spawnPositions != null) {
         for (var spawnPosition of Array.from<any>(spawnPositions)) {
-          var spawnEntityAction = new PlayCardSilentlyAction(this.getGameSession(), this.getOwnerId(), spawnPosition.x, spawnPosition.y, { id: Cards.Faction4.Husk });
+          var spawnEntityAction = new PlayCardSilentlyAction(
+            this.getGameSession(),
+            this.getOwnerId(),
+            spawnPosition.x,
+            spawnPosition.y,
+            { id: Cards.Faction4.Husk },
+          );
           this.getGameSession().executeAction(spawnEntityAction);
         }
       }

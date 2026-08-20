@@ -187,16 +187,13 @@ describe('RankFactory', () => {
       const resultingRankData = SDK.RankFactory.updateRankDataWithGameOutcome(rankData, true);
 
       // we should have gottan an object back
-      expect(resultingRankData).to.exist
-        .and.to.be.a('object');
+      expect(resultingRankData).to.exist.and.to.be.a('object');
 
       // should have earned a star
-      expect(resultingRankData.stars).to.be.a('number')
-        .and.to.equal(1);
+      expect(resultingRankData.stars).to.be.a('number').and.to.equal(1);
 
       // rank should not change
-      expect(resultingRankData.rank).to.be.a('number')
-        .and.to.equal(1);
+      expect(resultingRankData.rank).to.be.a('number').and.to.equal(1);
     });
 
     it('ranks up by 1 for 1 win (no streak) up to rank 25', () => {
@@ -212,17 +209,15 @@ describe('RankFactory', () => {
         const resultingRankData = SDK.RankFactory.updateRankDataWithGameOutcome(rankData, true);
 
         // we should have gottan an object back
-        expect(resultingRankData).to.exist
-          .and.to.be.a('object');
+        expect(resultingRankData).to.exist.and.to.be.a('object');
 
         // should have earned a star but stars should be 0 since your rank went up
-        expect(resultingRankData.delta.stars).to.be.a('number')
-          .and.to.equal(1);
-        expect(resultingRankData.stars).to.be.a('number')
-          .and.to.equal(0);
+        expect(resultingRankData.delta.stars).to.be.a('number').and.to.equal(1);
+        expect(resultingRankData.stars).to.be.a('number').and.to.equal(0);
 
         // rank should go up by 1
-        expect(resultingRankData.rank).to.be.a('number')
+        expect(resultingRankData.rank)
+          .to.be.a('number')
           .and.to.equal(i - 1);
       }
     });
@@ -240,16 +235,13 @@ describe('RankFactory', () => {
         const resultingRankData = SDK.RankFactory.updateRankDataWithGameOutcome(rankData, true);
 
         // we should have gottan an object back
-        expect(resultingRankData).to.exist
-          .and.to.be.a('object');
+        expect(resultingRankData).to.exist.and.to.be.a('object');
 
         // rank should NOT go up by 1
-        expect(resultingRankData.rank).to.be.a('number')
-          .and.to.equal(i);
+        expect(resultingRankData.rank).to.be.a('number').and.to.equal(i);
 
         // should have earned a star
-        expect(resultingRankData.stars).to.be.a('number')
-          .and.to.equal(1);
+        expect(resultingRankData.stars).to.be.a('number').and.to.equal(1);
       }
     });
 
@@ -264,8 +256,7 @@ describe('RankFactory', () => {
         const resultingRankData = SDK.RankFactory.updateRankDataWithGameOutcome(rankData, true);
 
         // we should have gottan an object back
-        expect(resultingRankData).to.exist
-          .and.to.be.a('object');
+        expect(resultingRankData).to.exist.and.to.be.a('object');
 
         // Expect result object to have a rank and stars
         expect(resultingRankData.rank).to.be.a('number');
@@ -273,12 +264,13 @@ describe('RankFactory', () => {
 
         // should have earned 2 stars
         const previousTotalStars = SDK.RankFactory.totalStarsRequiredForRank(i);
-        const starsAfterOutcome = SDK.RankFactory.totalStarsRequiredForRank(resultingRankData.rank) + resultingRankData.stars;
+        const starsAfterOutcome =
+          SDK.RankFactory.totalStarsRequiredForRank(resultingRankData.rank) +
+          resultingRankData.stars;
         expect(starsAfterOutcome).to.equal(previousTotalStars + 2);
 
         // Expect win streak to have advanced
-        expect(resultingRankData.win_streak).to.be.a('number')
-          .and.to.equal(3);
+        expect(resultingRankData.win_streak).to.be.a('number').and.to.equal(3);
       }
     });
 
@@ -301,7 +293,9 @@ describe('RankFactory', () => {
 
         // should have earned 2 stars
         const previousTotalStars = SDK.RankFactory.totalStarsRequiredForRank(i);
-        const starsAfterOutcome = SDK.RankFactory.totalStarsRequiredForRank(resultingRankData.rank) + resultingRankData.stars;
+        const starsAfterOutcome =
+          SDK.RankFactory.totalStarsRequiredForRank(resultingRankData.rank) +
+          resultingRankData.stars;
         expect(starsAfterOutcome).to.equal(previousTotalStars + 1);
       }
     });
@@ -317,8 +311,7 @@ describe('RankFactory', () => {
         const resultingRankData = SDK.RankFactory.updateRankDataWithGameOutcome(rankData, true);
 
         // we should have gottan an object back
-        expect(resultingRankData).to.exist
-          .and.to.be.a('object');
+        expect(resultingRankData).to.exist.and.to.be.a('object');
 
         // Expect result object to have a rank and stars
         expect(resultingRankData.rank).to.be.a('number');
@@ -326,7 +319,9 @@ describe('RankFactory', () => {
 
         // should have earned 2 stars
         const previousTotalStars = SDK.RankFactory.totalStarsRequiredForRank(i);
-        const starsAfterOutcome = SDK.RankFactory.totalStarsRequiredForRank(resultingRankData.rank) + resultingRankData.stars;
+        const starsAfterOutcome =
+          SDK.RankFactory.totalStarsRequiredForRank(resultingRankData.rank) +
+          resultingRankData.stars;
         expect(starsAfterOutcome).to.equal(previousTotalStars + 1);
       }
     });
@@ -339,23 +334,23 @@ describe('RankFactory', () => {
         win_streak: 2,
       };
 
-      const resultingRankData = SDK.RankFactory.updateRankDataWithGameOutcome(rankData, false, true);
+      const resultingRankData = SDK.RankFactory.updateRankDataWithGameOutcome(
+        rankData,
+        false,
+        true,
+      );
 
       // we should have gottan an object back
-      expect(resultingRankData).to.exist
-        .and.to.be.a('object');
+      expect(resultingRankData).to.exist.and.to.be.a('object');
 
       // rank should not change
-      expect(resultingRankData.win_streak).to.be.a('number')
-        .and.to.equal(2);
+      expect(resultingRankData.win_streak).to.be.a('number').and.to.equal(2);
 
       // should have earned a star
-      expect(resultingRankData.stars).to.be.a('number')
-        .and.to.equal(1);
+      expect(resultingRankData.stars).to.be.a('number').and.to.equal(1);
 
       // should have earned a star
-      expect(resultingRankData.rank).to.be.a('number')
-        .and.to.equal(15);
+      expect(resultingRankData.rank).to.be.a('number').and.to.equal(15);
     });
 
     it('resets win streaks at border ranks for divisions (20,10,5)', () => {
@@ -370,12 +365,10 @@ describe('RankFactory', () => {
 
       let resultingRankData = SDK.RankFactory.updateRankDataWithGameOutcome(rankData, false);
 
-      expect(resultingRankData.rank).to.be.a('number')
-        .and.to.equal(20);
+      expect(resultingRankData.rank).to.be.a('number').and.to.equal(20);
 
       // win streak should be 0
-      expect(resultingRankData.win_streak).to.be.a('number')
-        .and.to.equal(0);
+      expect(resultingRankData.win_streak).to.be.a('number').and.to.equal(0);
 
       //
       // RANK 10
@@ -388,12 +381,10 @@ describe('RankFactory', () => {
 
       resultingRankData = SDK.RankFactory.updateRankDataWithGameOutcome(rankData, false);
 
-      expect(resultingRankData.rank).to.be.a('number')
-        .and.to.equal(10);
+      expect(resultingRankData.rank).to.be.a('number').and.to.equal(10);
 
       // win streak should be 0
-      expect(resultingRankData.win_streak).to.be.a('number')
-        .and.to.equal(0);
+      expect(resultingRankData.win_streak).to.be.a('number').and.to.equal(0);
 
       //
       // RANK 5
@@ -406,12 +397,10 @@ describe('RankFactory', () => {
 
       resultingRankData = SDK.RankFactory.updateRankDataWithGameOutcome(rankData, false);
 
-      expect(resultingRankData.rank).to.be.a('number')
-        .and.to.equal(5);
+      expect(resultingRankData.rank).to.be.a('number').and.to.equal(5);
 
       // win streak should be 0
-      expect(resultingRankData.win_streak).to.be.a('number')
-        .and.to.equal(0);
+      expect(resultingRankData.win_streak).to.be.a('number').and.to.equal(0);
     });
 
     it('begins losing stars at rank 20', () => {
@@ -425,16 +414,13 @@ describe('RankFactory', () => {
       const resultingRankData = SDK.RankFactory.updateRankDataWithGameOutcome(rankData, false);
 
       // we should have gottan an object back
-      expect(resultingRankData).to.exist
-        .and.to.be.a('object');
+      expect(resultingRankData).to.exist.and.to.be.a('object');
 
       // we should have gottan an object back
-      expect(resultingRankData.rank).to.be.a('number')
-        .and.to.equal(20);
+      expect(resultingRankData.rank).to.be.a('number').and.to.equal(20);
 
       // should have earned a star
-      expect(resultingRankData.stars).to.be.a('number')
-        .and.to.equal(0);
+      expect(resultingRankData.stars).to.be.a('number').and.to.equal(0);
     });
 
     it('does NOT drop you rank for losing stars at rank 20 (start of SILVER) when you have 0 stars left', () => {
@@ -449,19 +435,17 @@ describe('RankFactory', () => {
       const resultingRankData = SDK.RankFactory.updateRankDataWithGameOutcome(rankData, false);
 
       // we should have gottan an object back
-      expect(resultingRankData).to.exist
-        .and.to.be.a('object');
+      expect(resultingRankData).to.exist.and.to.be.a('object');
 
       // we should have gottan an object back
-      expect(resultingRankData.rank).to.be.a('number')
-        .and.to.equal(20);
+      expect(resultingRankData.rank).to.be.a('number').and.to.equal(20);
 
       // should have stars equal to previous level's requirement
-      expect(resultingRankData.stars).to.be.a('number')
-        .and.to.equal(0);
+      expect(resultingRankData.stars).to.be.a('number').and.to.equal(0);
 
       // should have previous level's star requirement
-      expect(resultingRankData.stars_required).to.be.a('number')
+      expect(resultingRankData.stars_required)
+        .to.be.a('number')
         .and.to.equal(SDK.RankFactory.starsNeededToAdvanceRank(20));
     });
 
@@ -476,16 +460,13 @@ describe('RankFactory', () => {
       const resultingRankData = SDK.RankFactory.updateRankDataWithGameOutcome(rankData, false);
 
       // we should have gottan an object back
-      expect(resultingRankData).to.exist
-        .and.to.be.a('object');
+      expect(resultingRankData).to.exist.and.to.be.a('object');
 
       // we should have gottan an object back
-      expect(resultingRankData.rank).to.be.a('number')
-        .and.to.equal(21);
+      expect(resultingRankData.rank).to.be.a('number').and.to.equal(21);
 
       // should have stars equal to previous level's requirement
-      expect(resultingRankData.stars).to.be.a('number')
-        .and.to.equal(0);
+      expect(resultingRankData.stars).to.be.a('number').and.to.equal(0);
     });
 
     it('drops you rank for losing stars at rank 19 when you have 0 stars left', () => {
@@ -499,19 +480,19 @@ describe('RankFactory', () => {
       const resultingRankData = SDK.RankFactory.updateRankDataWithGameOutcome(rankData, false);
 
       // we should have gottan an object back
-      expect(resultingRankData).to.exist
-        .and.to.be.a('object');
+      expect(resultingRankData).to.exist.and.to.be.a('object');
 
       // we should have gottan an object back
-      expect(resultingRankData.rank).to.be.a('number')
-        .and.to.equal(20);
+      expect(resultingRankData.rank).to.be.a('number').and.to.equal(20);
 
       // should have stars equal to previous level's requirement
-      expect(resultingRankData.stars).to.be.a('number')
+      expect(resultingRankData.stars)
+        .to.be.a('number')
         .and.to.equal(SDK.RankFactory.starsNeededToAdvanceRank(20));
 
       // should have previous level's star requirement
-      expect(resultingRankData.stars_required).to.be.a('number')
+      expect(resultingRankData.stars_required)
+        .to.be.a('number')
         .and.to.equal(SDK.RankFactory.starsNeededToAdvanceRank(20));
     });
 
@@ -526,16 +507,13 @@ describe('RankFactory', () => {
       const resultingRankData = SDK.RankFactory.updateRankDataWithGameOutcome(rankData, true);
 
       // we should have gottan an object back
-      expect(resultingRankData).to.exist
-        .and.to.be.a('object');
+      expect(resultingRankData).to.exist.and.to.be.a('object');
 
       // rank should not change
-      expect(resultingRankData.win_streak).to.be.a('number')
-        .and.to.equal(0);
+      expect(resultingRankData.win_streak).to.be.a('number').and.to.equal(0);
 
       // should have NOT earned a star
-      expect(resultingRankData.stars).to.be.a('number')
-        .and.to.equal(0);
+      expect(resultingRankData.stars).to.be.a('number').and.to.equal(0);
     });
 
     it('losing at rank 0 (KUMITE) does NOT drop you to rank 1', () => {
@@ -549,20 +527,16 @@ describe('RankFactory', () => {
       const resultingRankData = SDK.RankFactory.updateRankDataWithGameOutcome(rankData, false);
 
       // we should have gottan an object back
-      expect(resultingRankData).to.exist
-        .and.to.be.a('object');
+      expect(resultingRankData).to.exist.and.to.be.a('object');
 
       // rank should be 1
-      expect(resultingRankData.rank).to.be.a('number')
-        .and.to.equal(0);
+      expect(resultingRankData.rank).to.be.a('number').and.to.equal(0);
 
       // win streaks should be 0
-      expect(resultingRankData.win_streak).to.be.a('number')
-        .and.to.equal(0);
+      expect(resultingRankData.win_streak).to.be.a('number').and.to.equal(0);
 
       // win streaks should be 0
-      expect(resultingRankData.stars).to.be.a('number')
-        .and.to.equal(0);
+      expect(resultingRankData.stars).to.be.a('number').and.to.equal(0);
     });
   });
 });

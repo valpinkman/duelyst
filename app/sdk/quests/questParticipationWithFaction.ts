@@ -36,7 +36,9 @@ class QuestParticipationWithFaction extends Quest {
 
   constructor(id, typesIn, reward, factionId) {
     const faction = FactionFactory.factionForIdentifier(factionId);
-    const name = i18next.t('quests.quest_faction_games_title', { faction_name: faction.short_name });
+    const name = i18next.t('quests.quest_faction_games_title', {
+      faction_name: faction.short_name,
+    });
     super(id, name, typesIn, reward);
     // CoffeeScript `=>` method: bound to the instance
     this.getFactionId = this.getFactionId.bind(this);
@@ -47,8 +49,15 @@ class QuestParticipationWithFaction extends Quest {
 
   _progressForGameDataForPlayerId(gameData, playerId) {
     for (const player of Array.from<any>(gameData.players)) {
-      const playerSetupData = UtilsGameSession.getPlayerSetupDataForPlayerId(gameData, player.playerId);
-      if ((player.playerId === playerId) && (playerSetupData.factionId === this.getFactionId()) && GameType.isCompetitiveGameType(gameData.gameType)) {
+      const playerSetupData = UtilsGameSession.getPlayerSetupDataForPlayerId(
+        gameData,
+        player.playerId,
+      );
+      if (
+        player.playerId === playerId &&
+        playerSetupData.factionId === this.getFactionId() &&
+        GameType.isCompetitiveGameType(gameData.gameType)
+      ) {
         return 1;
       }
     }
@@ -62,9 +71,15 @@ class QuestParticipationWithFaction extends Quest {
   getDescription() {
     const faction = FactionFactory.factionForIdentifier(this.factionId);
     if (this.getFactionId() === FactionsLookup.Abyssian) {
-      return i18next.t('quests.quest_faction_abyss_games_desc', { count: this.params.completionProgress, faction: faction.short_name });
+      return i18next.t('quests.quest_faction_abyss_games_desc', {
+        count: this.params.completionProgress,
+        faction: faction.short_name,
+      });
     }
-    return i18next.t('quests.quest_faction_games_desc', { count: this.params.completionProgress, faction: faction.short_name });
+    return i18next.t('quests.quest_faction_games_desc', {
+      count: this.params.completionProgress,
+      faction: faction.short_name,
+    });
   }
 }
 QuestParticipationWithFaction.prototype.factionId = null;

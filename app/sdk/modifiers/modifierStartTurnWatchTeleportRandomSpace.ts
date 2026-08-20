@@ -21,10 +21,13 @@ class ModifierStartTurnWatchTeleportRandomSpace extends ModifierStartTurnWatch {
     const randomTeleportAction = new RandomTeleportAction(this.getGameSession());
     randomTeleportAction.setOwnerId(this.getCard().getOwnerId());
     randomTeleportAction.setSource(this.getCard());
-    randomTeleportAction.setFXResource(_.union(randomTeleportAction.getFXResource(), this.getFXResource()));
+    randomTeleportAction.setFXResource(
+      _.union(randomTeleportAction.getFXResource(), this.getFXResource()),
+    );
     return this.getGameSession().executeAction(randomTeleportAction);
   }
 }
-ModifierStartTurnWatchTeleportRandomSpace.prototype.type = 'ModifierStartTurnWatchTeleportRandomSpace';
+ModifierStartTurnWatchTeleportRandomSpace.prototype.type =
+  'ModifierStartTurnWatchTeleportRandomSpace';
 
 module.exports = ModifierStartTurnWatchTeleportRandomSpace;

@@ -12,7 +12,6 @@ const _ = require('underscore');
  * performance.js - Multi-purpose client-side performance tracking tool.
  */
 var PERF: Record<string, any> = {
-
   _started: false,
   _observing_loads: [],
   stats_by_id: {},
@@ -75,18 +74,33 @@ var PERF: Record<string, any> = {
       stats_data.average = stats.average(fixed, unconverted);
       stats_data.deviation = stats.deviation(fixed, unconverted);
 
-      const stats_noise_threshold = noise_threshold != null ? noise_threshold : stats.get_noise_threshold();
+      const stats_noise_threshold =
+        noise_threshold != null ? noise_threshold : stats.get_noise_threshold();
       if (stats_noise_threshold != null) {
-        stats_data[`noise(${stats_noise_threshold})`] = stats.noise(stats_noise_threshold, fixed, unconverted);
+        stats_data[`noise(${stats_noise_threshold})`] = stats.noise(
+          stats_noise_threshold,
+          fixed,
+          unconverted,
+        );
       }
 
-      const stats_below_threshold = below_threshold != null ? below_threshold : stats.get_below_threshold();
+      const stats_below_threshold =
+        below_threshold != null ? below_threshold : stats.get_below_threshold();
       if (stats_below_threshold != null) {
-        stats_data[`below(${stats_below_threshold})`] = stats.below(stats_below_threshold, fixed, unconverted);
+        stats_data[`below(${stats_below_threshold})`] = stats.below(
+          stats_below_threshold,
+          fixed,
+          unconverted,
+        );
       }
-      const stats_above_threshold = above_threshold != null ? above_threshold : stats.get_above_threshold();
+      const stats_above_threshold =
+        above_threshold != null ? above_threshold : stats.get_above_threshold();
       if (stats_above_threshold != null) {
-        stats_data[`above(${stats_above_threshold})`] = stats.above(stats_above_threshold, fixed, unconverted);
+        stats_data[`above(${stats_above_threshold})`] = stats.above(
+          stats_above_threshold,
+          fixed,
+          unconverted,
+        );
       }
     }
     return stats_data;
@@ -98,10 +112,24 @@ var PERF: Record<string, any> = {
    */
   log(id, noise_threshold, below_threshold, above_threshold, fixed, unconverted) {
     if (id != null) {
-      PERF.log_stats_by_id(id, noise_threshold, below_threshold, above_threshold, fixed, unconverted);
+      PERF.log_stats_by_id(
+        id,
+        noise_threshold,
+        below_threshold,
+        above_threshold,
+        fixed,
+        unconverted,
+      );
     } else {
       for (var id in PERF.stats_by_id) {
-        PERF.log_stats_by_id(id, noise_threshold, below_threshold, above_threshold, fixed, unconverted);
+        PERF.log_stats_by_id(
+          id,
+          noise_threshold,
+          below_threshold,
+          above_threshold,
+          fixed,
+          unconverted,
+        );
       }
     }
   },
@@ -122,17 +150,32 @@ var PERF: Record<string, any> = {
       Logger.module('PERF').log('entries: ', stats.get_num_records());
       Logger.module('PERF').log('average: ', stats.average(fixed, unconverted));
       Logger.module('PERF').log('deviation: ', stats.deviation(fixed, unconverted));
-      if (noise_threshold == null) { noise_threshold = stats.get_noise_threshold(); }
+      if (noise_threshold == null) {
+        noise_threshold = stats.get_noise_threshold();
+      }
       if (noise_threshold != null) {
-        Logger.module('PERF').log(`noise(${noise_threshold}): `, stats.noise(noise_threshold, fixed, unconverted));
+        Logger.module('PERF').log(
+          `noise(${noise_threshold}): `,
+          stats.noise(noise_threshold, fixed, unconverted),
+        );
       }
-      if (below_threshold == null) { below_threshold = stats.get_below_threshold(); }
+      if (below_threshold == null) {
+        below_threshold = stats.get_below_threshold();
+      }
       if (below_threshold != null) {
-        Logger.module('PERF').log(`below(${below_threshold}): `, stats.below(below_threshold, fixed, unconverted));
+        Logger.module('PERF').log(
+          `below(${below_threshold}): `,
+          stats.below(below_threshold, fixed, unconverted),
+        );
       }
-      if (above_threshold == null) { above_threshold = stats.get_above_threshold(); }
+      if (above_threshold == null) {
+        above_threshold = stats.get_above_threshold();
+      }
       if (above_threshold != null) {
-        Logger.module('PERF').log(`above(${above_threshold}): `, stats.above(above_threshold, fixed, unconverted));
+        Logger.module('PERF').log(
+          `above(${above_threshold}): `,
+          stats.above(above_threshold, fixed, unconverted),
+        );
       }
       Logger.module('PERF').groupEnd();
     } else {
@@ -182,19 +225,19 @@ var PERF: Record<string, any> = {
 
   _start_tracking_draw_scene() {
     // track engine scene draw loop
-    const drawScene_stats = PERF.stats_by_id.FPS = new Performance_Stats(
+    const drawScene_stats = (PERF.stats_by_id.FPS = new Performance_Stats(
       // 10 minute sample
       60 * 60 * 10,
       // convert recorded delta time values to fps
-      ((val) => (val > 0 ? 1000.0 / val : 0.0)),
+      (val) => (val > 0 ? 1000.0 / val : 0.0),
       // consider more than 5 frames off noisy
       5,
       // threshold for frame rates below 50
       50,
       // threshold for frame rates above 60
       60,
-    );
-    const drawScene_method = PERF._drawScene_method = cc.Director.prototype.drawScene;
+    ));
+    const drawScene_method = (PERF._drawScene_method = cc.Director.prototype.drawScene);
     let drawScene_timestamp;
     const drawScene_wrapper = function () {
       if (PERF._observing_loads.length === 0) {
@@ -232,15 +275,24 @@ var PERF: Record<string, any> = {
 
   _start_tracking_loads() {
     // setup stats
-    const load_major_nongame_stats = PERF.stats_by_id['Load out of Game (s)'] = new Performance_Stats(20, ((val) => val / 1000.0));
-    const load_major_game_stats = PERF.stats_by_id['Load into Game (s)'] = new Performance_Stats(20, ((val) => val / 1000.0));
-    const load_minor_game_stats = PERF.stats_by_id['Load during Game (ms)'] = new Performance_Stats(1000);
+    const load_major_nongame_stats = (PERF.stats_by_id['Load out of Game (s)'] =
+      new Performance_Stats(20, (val) => val / 1000.0));
+    const load_major_game_stats = (PERF.stats_by_id['Load into Game (s)'] = new Performance_Stats(
+      20,
+      (val) => val / 1000.0,
+    ));
+    const load_minor_game_stats = (PERF.stats_by_id['Load during Game (ms)'] =
+      new Performance_Stats(1000));
 
     // reference original methods
-    const method_loadMajorPackage = PERF._method_loadMajorPackage = PackageManager.getInstance().loadMajorPackage;
-    const method_activateLoadingMajorPackage = PERF._method_activateLoadingMajorPackage = PackageManager.getInstance().activateLoadingMajorPackage;
-    const method_unloadUnusedMajorMinorPackages = PERF._method_unloadUnusedMajorMinorPackages = PackageManager.getInstance().unloadUnusedMajorMinorPackages;
-    const method_loadMinorPackage = PERF._method_loadMinorPackage = PackageManager.getInstance().loadMinorPackage;
+    const method_loadMajorPackage = (PERF._method_loadMajorPackage =
+      PackageManager.getInstance().loadMajorPackage);
+    const method_activateLoadingMajorPackage = (PERF._method_activateLoadingMajorPackage =
+      PackageManager.getInstance().activateLoadingMajorPackage);
+    const method_unloadUnusedMajorMinorPackages = (PERF._method_unloadUnusedMajorMinorPackages =
+      PackageManager.getInstance().unloadUnusedMajorMinorPackages);
+    const method_loadMinorPackage = (PERF._method_loadMinorPackage =
+      PackageManager.getInstance().loadMinorPackage);
 
     // replace original methods
     let load_major_id;
@@ -249,12 +301,13 @@ var PERF: Record<string, any> = {
     let activate_major_promise;
     let unload_major_promise;
     const on_major_promises_present = function () {
-      if (load_major_id != null && load_major_promise != null && activate_major_promise != null && unload_major_promise != null) {
-        Promise.all([
-          load_major_promise,
-          activate_major_promise,
-          unload_major_promise,
-        ]).then(() => {
+      if (
+        load_major_id != null &&
+        load_major_promise != null &&
+        activate_major_promise != null &&
+        unload_major_promise != null
+      ) {
+        Promise.all([load_major_promise, activate_major_promise, unload_major_promise]).then(() => {
           // when load resolves record time delta
           const time_delta = performance.now() - load_major_timestamp;
           if (load_major_id === 'game') {
@@ -281,7 +334,12 @@ var PERF: Record<string, any> = {
         load_major_timestamp = performance.now();
 
         // call original method
-        load_major_promise = method_loadMajorPackage.call(PackageManager.getInstance(), majorId, minorIds, resources);
+        load_major_promise = method_loadMajorPackage.call(
+          PackageManager.getInstance(),
+          majorId,
+          minorIds,
+          resources,
+        );
 
         // check if all promises present
         on_major_promises_present();
@@ -289,11 +347,21 @@ var PERF: Record<string, any> = {
         return load_major_promise;
       }
       // call original method
-      return method_loadMajorPackage.call(PackageManager.getInstance(), majorId, minorIds, resources);
+      return method_loadMajorPackage.call(
+        PackageManager.getInstance(),
+        majorId,
+        minorIds,
+        resources,
+      );
     };
     PackageManager.getInstance().activateLoadingMajorPackage = function () {
-      if (PackageManager.getInstance()._loadingMajorId === load_major_id && PackageManager.getInstance()._activeMajorId !== load_major_id) {
-        activate_major_promise = method_activateLoadingMajorPackage.call(PackageManager.getInstance());
+      if (
+        PackageManager.getInstance()._loadingMajorId === load_major_id &&
+        PackageManager.getInstance()._activeMajorId !== load_major_id
+      ) {
+        activate_major_promise = method_activateLoadingMajorPackage.call(
+          PackageManager.getInstance(),
+        );
 
         // check if all promises present
         on_major_promises_present();
@@ -304,7 +372,9 @@ var PERF: Record<string, any> = {
     };
     PackageManager.getInstance().unloadUnusedMajorMinorPackages = function () {
       if (load_major_id != null) {
-        unload_major_promise = method_unloadUnusedMajorMinorPackages.call(PackageManager.getInstance());
+        unload_major_promise = method_unloadUnusedMajorMinorPackages.call(
+          PackageManager.getInstance(),
+        );
 
         // check if all promises present
         on_major_promises_present();
@@ -318,9 +388,11 @@ var PERF: Record<string, any> = {
       const game_layer = scene && scene.getGameLayer();
       if (game_layer != null && game_layer.getStatus() !== GameLayer.STATUS.DISABLED) {
         const load_minor_timestamp = performance.now();
-        return method_loadMinorPackage.call(PackageManager.getInstance(), id, resources, majorId).then(() => {
-          load_minor_game_stats.record(performance.now() - load_minor_timestamp);
-        });
+        return method_loadMinorPackage
+          .call(PackageManager.getInstance(), id, resources, majorId)
+          .then(() => {
+            load_minor_game_stats.record(performance.now() - load_minor_timestamp);
+          });
       }
       return method_loadMinorPackage.call(PackageManager.getInstance(), id, resources, majorId);
     };
@@ -332,11 +404,13 @@ var PERF: Record<string, any> = {
       PERF._method_loadMajorPackage = null;
     }
     if (PERF._method_activateLoadingMajorPackage != null) {
-      PackageManager.getInstance().activateLoadingMajorPackage = PERF._method_activateLoadingMajorPackage;
+      PackageManager.getInstance().activateLoadingMajorPackage =
+        PERF._method_activateLoadingMajorPackage;
       PERF._method_activateLoadingMajorPackage = null;
     }
     if (PERF._method_unloadUnusedMajorMinorPackages != null) {
-      PackageManager.getInstance().unloadUnusedMajorMinorPackages = PERF._method_unloadUnusedMajorMinorPackages;
+      PackageManager.getInstance().unloadUnusedMajorMinorPackages =
+        PERF._method_unloadUnusedMajorMinorPackages;
       PERF._method_unloadUnusedMajorMinorPackages = null;
     }
     if (PERF._method_loadMinorPackage != null) {
@@ -351,10 +425,12 @@ var PERF: Record<string, any> = {
 
   _start_tracking_network() {
     // setup stats
-    const action_response_stats = PERF.stats_by_id['Server Action Response (ms)'] = new Performance_Stats(1000);
+    const action_response_stats = (PERF.stats_by_id['Server Action Response (ms)'] =
+      new Performance_Stats(1000));
 
     // reference original methods
-    const method_broadcastGameEvent = PERF._method_broadcastGameEvent = NetworkManager.getInstance().broadcastGameEvent;
+    const method_broadcastGameEvent = (PERF._method_broadcastGameEvent =
+      NetworkManager.getInstance().broadcastGameEvent);
 
     // replace original methods
     PERF.step_timestamp = performance.now();
@@ -362,7 +438,10 @@ var PERF: Record<string, any> = {
       const timestamp = performance.now();
 
       // call original method
-      const validForBroadcast = method_broadcastGameEvent.call(NetworkManager.getInstance(), eventData);
+      const validForBroadcast = method_broadcastGameEvent.call(
+        NetworkManager.getInstance(),
+        eventData,
+      );
 
       // valid step broadcast
       if (validForBroadcast) {
@@ -375,7 +454,9 @@ var PERF: Record<string, any> = {
 
       return validForBroadcast;
     };
-    NetworkManager.getInstance().getEventBus().on(EVENTS.network_game_event, PERF._on_game_event, PERF);
+    NetworkManager.getInstance()
+      .getEventBus()
+      .on(EVENTS.network_game_event, PERF._on_game_event, PERF);
   },
 
   _on_game_event(eventData) {
@@ -383,7 +464,9 @@ var PERF: Record<string, any> = {
       const { step } = eventData;
       if (step != null && step.playerId === SDK.GameSession.getInstance().getMyPlayerId()) {
         // record time delta
-        PERF.stats_by_id['Server Action Response (ms)'].record(performance.now() - PERF.step_timestamp);
+        PERF.stats_by_id['Server Action Response (ms)'].record(
+          performance.now() - PERF.step_timestamp,
+        );
         PERF.step_timestamp = null;
       }
     }
@@ -394,12 +477,13 @@ var PERF: Record<string, any> = {
       NetworkManager.getInstance().broadcastGameEvent = PERF._method_broadcastGameEvent;
       PERF._method_broadcastGameEvent = null;
     }
-    NetworkManager.getInstance().getEventBus().off(EVENTS.network_game_event, PERF._on_game_event, PERF);
+    NetworkManager.getInstance()
+      .getEventBus()
+      .off(EVENTS.network_game_event, PERF._on_game_event, PERF);
     PERF.step_timestamp = null;
   },
 
   /* endregion TRACKING LOAD */
-
 };
 
 /**
@@ -410,7 +494,13 @@ var PERF: Record<string, any> = {
  * @param {Number} [below_threshold=0] threshold which entries are considered below
  * @param {Number} [above_threshold=0] threshold which entries are considered above
  */
-var Performance_Stats = function (max_records, converter, noise_threshold, below_threshold, above_threshold) {
+var Performance_Stats = function (
+  max_records,
+  converter,
+  noise_threshold,
+  below_threshold,
+  above_threshold,
+) {
   // preallocate an array buffer that can record for n entries
   // stats are recorded as 32-bit floating point numbers
   const bytes_per_stat = 4;
@@ -437,7 +527,9 @@ Performance_Stats.prototype = {
   _above_threshold: null,
   _below_threshold: null,
 
-  _converter(val) { return val; },
+  _converter(val) {
+    return val;
+  },
 
   /**
    * Gets number of recorded values.
@@ -525,8 +617,10 @@ Performance_Stats.prototype = {
   },
 
   _to_fixed(val, places?) {
-    if (places == null) { places = 2; }
-    return +(`${Math.round(`${val}e+${places}`)}e-${places}`);
+    if (places == null) {
+      places = 2;
+    }
+    return +`${Math.round(`${val}e+${places}`)}e-${places}`;
   },
 
   /**
@@ -610,7 +704,9 @@ Performance_Stats.prototype = {
     let result = 0;
 
     if (recorded_values.length > 0) {
-      if (threshold == null) { threshold = this._noise_threshold; }
+      if (threshold == null) {
+        threshold = this._noise_threshold;
+      }
       if (threshold != null) {
         const average = this.average();
         for (let i = 0, il = recorded_values.length; i < il; i++) {
@@ -637,7 +733,9 @@ Performance_Stats.prototype = {
     let result = 0;
 
     if (recorded_values.length > 0) {
-      if (threshold == null) { threshold = this._below_threshold; }
+      if (threshold == null) {
+        threshold = this._below_threshold;
+      }
       if (threshold != null) {
         for (let i = 0, il = recorded_values.length; i < il; i++) {
           if (recorded_values[i] < threshold) {
@@ -663,7 +761,9 @@ Performance_Stats.prototype = {
     let result = 0;
 
     if (recorded_values.length > 0) {
-      if (threshold == null) { threshold = this._above_threshold; }
+      if (threshold == null) {
+        threshold = this._above_threshold;
+      }
       if (threshold != null) {
         for (let i = 0, il = recorded_values.length; i < il; i++) {
           if (recorded_values[i] > threshold) {

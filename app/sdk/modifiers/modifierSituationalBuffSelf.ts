@@ -30,12 +30,16 @@ class ModifierSituationalBuffSelf extends Modifier {
     // apply situational modifiers once and retain them on self
     // this way we can enable/disable based on whether the situation is active
     // rather than constantly adding and removing modifiers
-    return this.applyManagedModifiersFromModifiersContextObjectsOnce(this.modifiersContextObjects, this.getCard());
+    return this.applyManagedModifiersFromModifiersContextObjectsOnce(
+      this.modifiersContextObjects,
+      this.getCard(),
+    );
   }
 
   updateCachedStateAfterActive() {
     this._private.cachedWasSituationActive = this._private.cachedIsSituationActive;
-    this._private.cachedIsSituationActive = this._private.cachedIsActive && this.getIsSituationActiveForCache();
+    this._private.cachedIsSituationActive =
+      this._private.cachedIsActive && this.getIsSituationActiveForCache();
 
     // call super after updating whether situation is active
     // because we need to know if situation is active to know whether sub modifiers are disabled

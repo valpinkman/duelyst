@@ -12,7 +12,8 @@ class ModifierDeathWatchFriendlyMinionSwapAllegiance extends ModifierDeathWatch 
 
   static type = 'ModifierDeathWatchFriendlyMinionSwapAllegiance';
   static modifierName = 'Deathwatch';
-  static description = 'Whenever a friendly minion is destroyed, your opponent gains control of this minion.';
+  static description =
+    'Whenever a friendly minion is destroyed, your opponent gains control of this minion.';
 
   onDeathWatch(action) {
     // if the target is a friendly minion
@@ -23,7 +24,11 @@ class ModifierDeathWatchFriendlyMinionSwapAllegiance extends ModifierDeathWatch 
     }
   }
 }
-ModifierDeathWatchFriendlyMinionSwapAllegiance.prototype.type = 'ModifierDeathWatchFriendlyMinionSwapAllegiance';
-ModifierDeathWatchFriendlyMinionSwapAllegiance.prototype.fxResource = ['FX.Modifiers.ModifierDeathwatch', 'FX.Modifiers.ModifierGenericChain'];
+ModifierDeathWatchFriendlyMinionSwapAllegiance.prototype.type =
+  'ModifierDeathWatchFriendlyMinionSwapAllegiance';
+ModifierDeathWatchFriendlyMinionSwapAllegiance.prototype.fxResource = [
+  'FX.Modifiers.ModifierDeathwatch',
+  'FX.Modifiers.ModifierGenericChain',
+];
 
 module.exports = ModifierDeathWatchFriendlyMinionSwapAllegiance;

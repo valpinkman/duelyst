@@ -8,15 +8,33 @@ const changeCase = require('change-case');
 
 module.exports.updateCounterWithGameOutcome = function (counter, isWinner, isDraw, isUnscored) {
   counter = counter || {};
-  if (counter.game_count == null) { counter.game_count = 0; }
-  if (counter.win_count == null) { counter.win_count = 0; }
-  if (counter.loss_count == null) { counter.loss_count = 0; }
-  if (counter.draw_count == null) { counter.draw_count = 0; }
-  if (counter.unscored_count == null) { counter.unscored_count = 0; }
-  if (counter.win_streak == null) { counter.win_streak = 0; }
-  if (counter.loss_streak == null) { counter.loss_streak = 0; }
-  if (counter.top_win_streak == null) { counter.top_win_streak = 0; }
-  if (counter.top_loss_streak == null) { counter.top_loss_streak = 0; }
+  if (counter.game_count == null) {
+    counter.game_count = 0;
+  }
+  if (counter.win_count == null) {
+    counter.win_count = 0;
+  }
+  if (counter.loss_count == null) {
+    counter.loss_count = 0;
+  }
+  if (counter.draw_count == null) {
+    counter.draw_count = 0;
+  }
+  if (counter.unscored_count == null) {
+    counter.unscored_count = 0;
+  }
+  if (counter.win_streak == null) {
+    counter.win_streak = 0;
+  }
+  if (counter.loss_streak == null) {
+    counter.loss_streak = 0;
+  }
+  if (counter.top_win_streak == null) {
+    counter.top_win_streak = 0;
+  }
+  if (counter.top_loss_streak == null) {
+    counter.top_loss_streak = 0;
+  }
 
   counter.game_count += 1;
 

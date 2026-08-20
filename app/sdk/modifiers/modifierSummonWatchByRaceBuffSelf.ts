@@ -14,16 +14,27 @@ class ModifierSummonWatchByRaceBuffSelf extends ModifierSummonWatch {
   static type = 'ModifierSummonWatchByRaceBuffSelf';
 
   static createContextObject(attackBuff, maxHPBuff, targetRaceId, buffAppliedName, options) {
-    if (attackBuff == null) { attackBuff = 0; }
-    if (maxHPBuff == null) { maxHPBuff = 0; }
+    if (attackBuff == null) {
+      attackBuff = 0;
+    }
+    if (maxHPBuff == null) {
+      maxHPBuff = 0;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.targetRaceId = targetRaceId;
-    contextObject.modifiersContextObjects = [Modifier.createContextObjectWithAttributeBuffs(attackBuff, maxHPBuff, { appliedName: buffAppliedName })];
+    contextObject.modifiersContextObjects = [
+      Modifier.createContextObjectWithAttributeBuffs(attackBuff, maxHPBuff, {
+        appliedName: buffAppliedName,
+      }),
+    ];
     return contextObject;
   }
 
   onSummonWatch(action) {
-    return this.applyManagedModifiersFromModifiersContextObjects(this.modifiersContextObjects, this.getCard());
+    return this.applyManagedModifiersFromModifiersContextObjects(
+      this.modifiersContextObjects,
+      this.getCard(),
+    );
   }
 
   getIsCardRelevantToWatcher(card) {
@@ -31,6 +42,9 @@ class ModifierSummonWatchByRaceBuffSelf extends ModifierSummonWatch {
   }
 }
 ModifierSummonWatchByRaceBuffSelf.prototype.type = 'ModifierSummonWatchByRaceBuffSelf';
-ModifierSummonWatchByRaceBuffSelf.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierSummonWatchByRaceBuffSelf.prototype.fxResource = [
+  'FX.Modifiers.ModifierSummonWatch',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 
 module.exports = ModifierSummonWatchByRaceBuffSelf;

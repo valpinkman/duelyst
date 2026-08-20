@@ -19,8 +19,12 @@ class ModifierMyGeneralAttackWatchSpawnRandomEntityFromDeck extends ModifierMyGe
   static type = 'ModifierMyGeneralAttackWatchSpawnRandomEntityFromDeck';
 
   static createContextObject(manaCostLimit, onlyThisManaCost, spawnCount, options) {
-    if (onlyThisManaCost == null) { onlyThisManaCost = false; }
-    if (spawnCount == null) { spawnCount = 1; }
+    if (onlyThisManaCost == null) {
+      onlyThisManaCost = false;
+    }
+    if (spawnCount == null) {
+      spawnCount = 1;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.manaCostLimit = manaCostLimit;
     contextObject.spawnCount = spawnCount;
@@ -36,23 +40,45 @@ class ModifierMyGeneralAttackWatchSpawnRandomEntityFromDeck extends ModifierMyGe
     for (let i = 0; i < drawPile.length; i++) {
       var cardIndex = drawPile[i];
       card = this.getGameSession().getCardByIndex(cardIndex);
-      if ((card != null) && (card.getType() === CardType.Unit) && ((this.onlyThisManaCost && (card.getManaCost() === this.manaCostLimit)) || (!this.onlyThisManaCost && (card.getManaCost() <= this.manaCostLimit)))) {
+      if (
+        card != null &&
+        card.getType() === CardType.Unit &&
+        ((this.onlyThisManaCost && card.getManaCost() === this.manaCostLimit) ||
+          (!this.onlyThisManaCost && card.getManaCost() <= this.manaCostLimit))
+      ) {
         indexesOfMinions.push(i);
       }
     }
 
     if (indexesOfMinions.length > 0) {
-      const indexOfCardInDeck = indexesOfMinions[this.getGameSession().getRandomIntegerForExecution(indexesOfMinions.length)];
+      const indexOfCardInDeck =
+        indexesOfMinions[
+          this.getGameSession().getRandomIntegerForExecution(indexesOfMinions.length)
+        ];
       const cardIndexToDraw = drawPile[indexOfCardInDeck];
       card = this.getGameSession().getCardByIndex(cardIndexToDraw);
 
       let spawnLocation = null;
-      const validSpawnLocations = UtilsGameSession.getSmartSpawnPositionsFromPattern(this.getGameSession(), this.getCard().getPosition(), CONFIG.PATTERN_3x3, card);
+      const validSpawnLocations = UtilsGameSession.getSmartSpawnPositionsFromPattern(
+        this.getGameSession(),
+        this.getCard().getPosition(),
+        CONFIG.PATTERN_3x3,
+        card,
+      );
       if ((validSpawnLocations != null ? validSpawnLocations.length : undefined) > 0) {
-        spawnLocation = validSpawnLocations[this.getGameSession().getRandomIntegerForExecution(validSpawnLocations.length)];
+        spawnLocation =
+          validSpawnLocations[
+            this.getGameSession().getRandomIntegerForExecution(validSpawnLocations.length)
+          ];
 
         if (spawnLocation != null) {
-          const playCardAction = new PlayCardSilentlyAction(this.getGameSession(), this.getCard().getOwnerId(), spawnLocation.x, spawnLocation.y, card);
+          const playCardAction = new PlayCardSilentlyAction(
+            this.getGameSession(),
+            this.getCard().getOwnerId(),
+            spawnLocation.x,
+            spawnLocation.y,
+            card,
+          );
           playCardAction.setSource(this.getCard());
           return this.getGameSession().executeAction(playCardAction);
         }
@@ -60,7 +86,8 @@ class ModifierMyGeneralAttackWatchSpawnRandomEntityFromDeck extends ModifierMyGe
     }
   }
 }
-ModifierMyGeneralAttackWatchSpawnRandomEntityFromDeck.prototype.type = 'ModifierMyGeneralAttackWatchSpawnRandomEntityFromDeck';
+ModifierMyGeneralAttackWatchSpawnRandomEntityFromDeck.prototype.type =
+  'ModifierMyGeneralAttackWatchSpawnRandomEntityFromDeck';
 ModifierMyGeneralAttackWatchSpawnRandomEntityFromDeck.prototype.manaCostLimit = 0;
 ModifierMyGeneralAttackWatchSpawnRandomEntityFromDeck.prototype.spawnCount = 1;
 ModifierMyGeneralAttackWatchSpawnRandomEntityFromDeck.prototype.onlyThisManaCost = false;

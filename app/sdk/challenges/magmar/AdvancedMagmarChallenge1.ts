@@ -49,10 +49,7 @@ class AdvancedMagmarChallenge1 extends Challenge {
   }
 
   getOpponentPlayerDeckData(gameSession) {
-    return [
-      { id: Cards.Faction2.General },
-      { id: Cards.TutorialSpell.TutorialFrozenFinisher },
-    ];
+    return [{ id: Cards.Faction2.General }, { id: Cards.TutorialSpell.TutorialFrozenFinisher }];
   }
 
   setupBoard(gameSession) {
@@ -79,10 +76,25 @@ class AdvancedMagmarChallenge1 extends Challenge {
     this.applyCardToBoard({ id: Cards.Faction2.MageOfFourWinds }, 2, 3, myPlayerId);
     this.applyCardToBoard({ id: Cards.Faction5.Vindicator }, 3, 1, myPlayerId);
 
-    const songweaver1 = this.applyCardToBoard({ id: Cards.Neutral.Songweaver }, 5, 2, opponentPlayerId);
+    const songweaver1 = this.applyCardToBoard(
+      { id: Cards.Neutral.Songweaver },
+      5,
+      2,
+      opponentPlayerId,
+    );
     this.applyCardToBoard({ id: Cards.Neutral.OwlbeastSage }, 6, 2, opponentPlayerId);
-    const owlbeast = this.applyCardToBoard({ id: Cards.Neutral.OwlbeastSage }, 6, 0, opponentPlayerId);
-    const songweaver2 = this.applyCardToBoard({ id: Cards.Neutral.Songweaver }, 7, 2, opponentPlayerId);
+    const owlbeast = this.applyCardToBoard(
+      { id: Cards.Neutral.OwlbeastSage },
+      6,
+      0,
+      opponentPlayerId,
+    );
+    const songweaver2 = this.applyCardToBoard(
+      { id: Cards.Neutral.Songweaver },
+      7,
+      2,
+      opponentPlayerId,
+    );
     this.applyCardToBoard({ id: Cards.Faction2.ScarletViper }, 4, 3, opponentPlayerId);
     this.applyCardToBoard({ id: Cards.Faction2.Heartseeker }, 4, 1, opponentPlayerId);
     this.applyCardToBoard({ id: Cards.Faction2.Heartseeker }, 5, 1, opponentPlayerId);
@@ -101,24 +113,37 @@ class AdvancedMagmarChallenge1 extends Challenge {
   setupOpponentAgent(gameSession) {
     super.setupOpponentAgent(gameSession);
 
-    this._opponentAgent.addActionForTurn(0, AgentActions.createAgentSoftActionShowInstructionLabels([{
-      label: i18next.t('challenges.advanced_magmar_1_taunt'),
-      isSpeech: true,
-      yPosition: 0.7,
-      isPersistent: true,
-      isOpponent: true,
-    },
-    ]));
-    return this._opponentAgent.addActionForTurn(0, AgentActions.createAgentActionPlayCardFindPosition(0, () => [GameSession.getInstance().getGeneralForPlayer1().getPosition()]));
+    this._opponentAgent.addActionForTurn(
+      0,
+      AgentActions.createAgentSoftActionShowInstructionLabels([
+        {
+          label: i18next.t('challenges.advanced_magmar_1_taunt'),
+          isSpeech: true,
+          yPosition: 0.7,
+          isPersistent: true,
+          isOpponent: true,
+        },
+      ]),
+    );
+    return this._opponentAgent.addActionForTurn(
+      0,
+      AgentActions.createAgentActionPlayCardFindPosition(0, () => [
+        GameSession.getInstance().getGeneralForPlayer1().getPosition(),
+      ]),
+    );
   }
 }
 AdvancedMagmarChallenge1.prototype.type = 'AdvancedMagmarChallenge1';
 AdvancedMagmarChallenge1.prototype.categoryType = ChallengeCategory.contest2.type;
 AdvancedMagmarChallenge1.prototype.name = i18next.t('challenges.advanced_magmar_1_title');
-AdvancedMagmarChallenge1.prototype.description = i18next.t('challenges.advanced_magmar_1_description');
+AdvancedMagmarChallenge1.prototype.description = i18next.t(
+  'challenges.advanced_magmar_1_description',
+);
 AdvancedMagmarChallenge1.prototype.iconUrl = RSX.speech_portrait_magmar.img;
 AdvancedMagmarChallenge1.prototype._musicOverride = RSX.music_training.audio;
-AdvancedMagmarChallenge1.prototype.otkChallengeStartMessage = i18next.t('challenges.advanced_magmar_1_start');
+AdvancedMagmarChallenge1.prototype.otkChallengeStartMessage = i18next.t(
+  'challenges.advanced_magmar_1_start',
+);
 AdvancedMagmarChallenge1.prototype.otkChallengeFailureMessages = [
   i18next.t('challenges.advanced_magmar_1_fail'),
 ];

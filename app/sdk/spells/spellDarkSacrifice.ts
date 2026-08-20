@@ -29,7 +29,13 @@ class SpellDarkSacrifice extends Spell {
     this.getGameSession().executeAction(killAction);
 
     // add cost reduction for next unit card
-    this.getGameSession().applyModifierContextObject(PlayerModifierManaModifierSingleUse.createCostChangeContextObject(this.costChange, CardType.Unit), this.getGameSession().getGeneralForPlayerId(this.getOwnerId()));
+    this.getGameSession().applyModifierContextObject(
+      PlayerModifierManaModifierSingleUse.createCostChangeContextObject(
+        this.costChange,
+        CardType.Unit,
+      ),
+      this.getGameSession().getGeneralForPlayerId(this.getOwnerId()),
+    );
 
     return true;
   }

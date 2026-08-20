@@ -43,7 +43,6 @@ const BLADE_WIN_COUNT_MAP = {
  *************************************************************************** */
 
 const RunLayer = BaseLayer.extend({
-
   delegate: null,
 
   // ui elements
@@ -73,8 +72,19 @@ const RunLayer = BaseLayer.extend({
     this.showKeyblade(arenaData.win_count, wonLastGauntletGame);
 
     // label
-    const winLossLabel = i18next.t('gauntlet.win_loss_label', { win_count: arenaData.win_count, loss_count: arenaData.loss_count }).toUpperCase();
-    this.runDetailsLabel = new cc.LabelTTF(winLossLabel, RSX.font_bold.name, 20, cc.size(500, 32), cc.TEXT_ALIGNMENT_CENTER);
+    const winLossLabel = i18next
+      .t('gauntlet.win_loss_label', {
+        win_count: arenaData.win_count,
+        loss_count: arenaData.loss_count,
+      })
+      .toUpperCase();
+    this.runDetailsLabel = new cc.LabelTTF(
+      winLossLabel,
+      RSX.font_bold.name,
+      20,
+      cc.size(500, 32),
+      cc.TEXT_ALIGNMENT_CENTER,
+    );
     this.runDetailsLabel.setPosition(0, 150);
     this.runDetailsLabel.setFontFillColor(cc.color(255, 255, 255));
 
@@ -94,13 +104,20 @@ const RunLayer = BaseLayer.extend({
 
     const confirmButtonSprite = new ccui.Scale9Sprite(RSX.button_confirm.img);
     const confirmButtonGlowSprite = new ccui.Scale9Sprite(RSX.button_confirm_glow.img);
-    this.playButton = new cc.ControlButton(i18next.t('main_menu.menu_item_play').toUpperCase(), confirmButtonSprite, 32);
+    this.playButton = new cc.ControlButton(
+      i18next.t('main_menu.menu_item_play').toUpperCase(),
+      confirmButtonSprite,
+      32,
+    );
     this.playButton.setPreferredSize(confirmButtonSprite.getContentSize());
     this.playButton.setAdjustBackgroundImage(false);
     this.playButton.setZoomOnTouchDown(false);
     this.playButton.setTitleTTFForState(RSX.font_bold.name, cc.CONTROL_STATE_NORMAL);
     this.playButton.setBackgroundSpriteForState(confirmButtonSprite, cc.CONTROL_STATE_NORMAL);
-    this.playButton.setBackgroundSpriteForState(confirmButtonGlowSprite, cc.CONTROL_STATE_HIGHLIGHTED);
+    this.playButton.setBackgroundSpriteForState(
+      confirmButtonGlowSprite,
+      cc.CONTROL_STATE_HIGHLIGHTED,
+    );
     this.playButton.setTitleColorForState(cc.color(255, 255, 255), cc.CONTROL_STATE_NORMAL);
     this.playButton.setPosition(0, -165);
     // this.addChild(this.playButton);
@@ -136,23 +153,33 @@ const RunLayer = BaseLayer.extend({
       Promise.all([
         this.keyBladeSprite.whenRequiredResourcesReady(),
         this.keyBladeGlowSprite.whenRequiredResourcesReady(),
-      ])
-        .then(([keybladeRequestId, keybladeGlowRequestId]) => {
-          if (!this.keyBladeSprite.getAreResourcesValid(keybladeRequestId) || !this.keyBladeGlowSprite.getAreResourcesValid(keybladeGlowRequestId)) return; // load invalidated or resources changed
+      ]).then(([keybladeRequestId, keybladeGlowRequestId]) => {
+        if (
+          !this.keyBladeSprite.getAreResourcesValid(keybladeRequestId) ||
+          !this.keyBladeGlowSprite.getAreResourcesValid(keybladeGlowRequestId)
+        )
+          return; // load invalidated or resources changed
 
-          this.keyBladeGlowSprite.setOpacity(0.0);
-          this.keyBladeGlowSprite.setScale(0.0);
-          this.fireRingFlare.setScale(0.0);
-          this.keyBladeSprite.setScale(0.0);
-          this.keyBladeGlowSprite.runAction(cc.sequence(
+        this.keyBladeGlowSprite.setOpacity(0.0);
+        this.keyBladeGlowSprite.setScale(0.0);
+        this.fireRingFlare.setScale(0.0);
+        this.keyBladeSprite.setScale(0.0);
+        this.keyBladeGlowSprite.runAction(
+          cc.sequence(
             cc.delayTime(0.5),
             cc.show(),
             cc.spawn(
               cc.fadeIn(CONFIG.FADE_MEDIUM_DURATION),
               cc.scaleTo(CONFIG.FADE_MEDIUM_DURATION, 1.0).easing(cc.easeBackOut()),
-              cc.targetedAction(this.keyBladeSprite, cc.scaleTo(CONFIG.FADE_MEDIUM_DURATION, 1.0).easing(cc.easeBackOut())),
+              cc.targetedAction(
+                this.keyBladeSprite,
+                cc.scaleTo(CONFIG.FADE_MEDIUM_DURATION, 1.0).easing(cc.easeBackOut()),
+              ),
               cc.targetedAction(this.fireRingFlare, cc.fadeIn(0.1)),
-              cc.targetedAction(this.fireRingFlare, cc.scaleTo(0.15, 7.0).easing(cc.easeCubicActionOut())),
+              cc.targetedAction(
+                this.fireRingFlare,
+                cc.scaleTo(0.15, 7.0).easing(cc.easeCubicActionOut()),
+              ),
               cc.sequence(
                 cc.delayTime(CONFIG.FADE_MEDIUM_DURATION * 0.5),
                 cc.spawn(
@@ -166,12 +193,14 @@ const RunLayer = BaseLayer.extend({
                     levelUpParticles1.setAutoRemoveOnFinish(true);
                     this.addChild(levelUpParticles1, 0);
 
-                    this.fireRingFlare.runAction(cc.sequence(
-                      cc.actionTween(5.0, 'phase', 1.0, -0.5).easing(cc.easeExponentialOut()),
-                      cc.callFunc(() => {
-                        this.fireRingFlare.destroy();
-                      }),
-                    ));
+                    this.fireRingFlare.runAction(
+                      cc.sequence(
+                        cc.actionTween(5.0, 'phase', 1.0, -0.5).easing(cc.easeExponentialOut()),
+                        cc.callFunc(() => {
+                          this.fireRingFlare.destroy();
+                        }),
+                      ),
+                    );
                   }),
                   cc.delayTime(0.5),
                 ),
@@ -179,21 +208,20 @@ const RunLayer = BaseLayer.extend({
             ),
             cc.fadeOut(0.25),
             cc.targetedAction(this.causticSprite, cc.fadeIn(0.4)),
-          ));
-        });
+          ),
+        );
+      });
     } else {
-      this.keyBladeSprite.whenRequiredResourcesReady()
-        .then((keybladeRequestId) => {
-          if (!this.keyBladeSprite.getAreResourcesValid(keybladeRequestId)) return; // load invalidated or resources changed
+      this.keyBladeSprite.whenRequiredResourcesReady().then((keybladeRequestId) => {
+        if (!this.keyBladeSprite.getAreResourcesValid(keybladeRequestId)) return; // load invalidated or resources changed
 
-          this.keyBladeSprite.runAction(cc.sequence(
+        this.keyBladeSprite.runAction(
+          cc.sequence(
             cc.delayTime(0.5),
-            cc.spawn(
-              cc.fadeIn(0.2),
-              cc.targetedAction(this.causticSprite, cc.fadeIn(0.4)),
-            ),
-          ));
-        });
+            cc.spawn(cc.fadeIn(0.2), cc.targetedAction(this.causticSprite, cc.fadeIn(0.4))),
+          ),
+        );
+      });
     }
   },
 
@@ -204,12 +232,7 @@ const RunLayer = BaseLayer.extend({
     this._runGameNodes = [];
 
     // temp
-    arenaData.games = [
-      { won: false },
-      { won: true },
-      { won: false },
-      { won: true },
-    ];
+    arenaData.games = [{ won: false }, { won: true }, { won: false }, { won: true }];
 
     let lastPosition = cc.p(0, 0);
     _.each(arenaData.games, (game, i) => {
@@ -217,7 +240,10 @@ const RunLayer = BaseLayer.extend({
       const gameSprite = BaseSprite.create(spriteIdentifier);
       const lineSprite = BaseSprite.create(RSX.run_line.img);
       const median = Math.floor(arenaData.games.length / 2) + 1;
-      const position = cc.p((-median + i) * (gameSprite.getContentSize().width + lineSprite.getContentSize().width), 0);
+      const position = cc.p(
+        (-median + i) * (gameSprite.getContentSize().width + lineSprite.getContentSize().width),
+        0,
+      );
 
       gameSprite.setAnchorPoint(0, 0.39);
       gameSprite.setPosition(position);
@@ -280,7 +306,11 @@ const RunLayer = BaseLayer.extend({
     let mouseOverButton;
     const location = event && event.getLocation();
     if (location) {
-      if (this.playButton instanceof cc.ControlButton && this.playButton.isEnabled() && UtilsEngine.getNodeUnderMouse(this.playButton, location.x, location.y)) {
+      if (
+        this.playButton instanceof cc.ControlButton &&
+        this.playButton.isEnabled() &&
+        UtilsEngine.getNodeUnderMouse(this.playButton, location.x, location.y)
+      ) {
         mouseOverButton = this.playButton;
       }
     }
@@ -303,7 +333,11 @@ const RunLayer = BaseLayer.extend({
 
     const location = event && event.getLocation();
     if (location) {
-      if (this.playButton instanceof cc.ControlButton && this.playButton.isEnabled() && UtilsEngine.getNodeUnderMouse(this.playButton, location.x, location.y)) {
+      if (
+        this.playButton instanceof cc.ControlButton &&
+        this.playButton.isEnabled() &&
+        UtilsEngine.getNodeUnderMouse(this.playButton, location.x, location.y)
+      ) {
         this.onPlayPressed();
       }
     }
@@ -321,28 +355,31 @@ const RunLayer = BaseLayer.extend({
   transitionIn() {
     return new Promise<void>((resolve, reject) => {
       this.setOpacity(0.0);
-      this.runAction(cc.sequence(
-        cc.fadeIn(CONFIG.FADE_FAST_DURATION),
-        cc.callFunc(() => {
-          resolve();
-        }),
-      ));
+      this.runAction(
+        cc.sequence(
+          cc.fadeIn(CONFIG.FADE_FAST_DURATION),
+          cc.callFunc(() => {
+            resolve();
+          }),
+        ),
+      );
     });
   },
 
   transitionOut() {
     return new Promise<void>((resolve, reject) => {
-      this.runAction(cc.sequence(
-        cc.fadeOut(CONFIG.FADE_FAST_DURATION),
-        cc.callFunc(() => {
-          resolve();
-        }),
-      ));
+      this.runAction(
+        cc.sequence(
+          cc.fadeOut(CONFIG.FADE_FAST_DURATION),
+          cc.callFunc(() => {
+            resolve();
+          }),
+        ),
+      );
     });
   },
 
   /* endregion TRANSITION */
-
 });
 
 RunLayer.create = function (layer) {

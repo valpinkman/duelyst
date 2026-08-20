@@ -212,7 +212,13 @@ const FX = cc.Class.extend({
     glowNoiseProgram.use();
     glowNoiseProgram.setUniformLocationWith4f(glowNoiseProgram.loc_color, 1.0, 1.0, 1.0, 1.0);
     glowNoiseProgram.setUniformLocationWith4f(glowNoiseProgram.loc_rampFrom, 1.0, 1.0, 1.0, 1.0);
-    glowNoiseProgram.setUniformLocationWith4f(glowNoiseProgram.loc_rampTransition, 1.0, 1.0, 1.0, 1.0);
+    glowNoiseProgram.setUniformLocationWith4f(
+      glowNoiseProgram.loc_rampTransition,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+    );
     glowNoiseProgram.setUniformLocationWith1f(glowNoiseProgram.loc_expandModifier, 0.2);
     glowNoiseProgram.setUniformLocationWith1f(glowNoiseProgram.loc_frequency, 75.0);
     glowNoiseProgram.setUniformLocationWith1f(glowNoiseProgram.loc_amplitude, 0.75);
@@ -241,20 +247,44 @@ const FX = cc.Class.extend({
 
     const lightingProgram = shaderCache.programForKey('Lighting');
     lightingProgram.use();
-    lightingProgram.setUniformLocationWith1f(lightingProgram.loc_falloffModifier, this.falloffModifier);
-    lightingProgram.setUniformLocationWith1f(lightingProgram.loc_intensityModifier, this.intensityModifier);
+    lightingProgram.setUniformLocationWith1f(
+      lightingProgram.loc_falloffModifier,
+      this.falloffModifier,
+    );
+    lightingProgram.setUniformLocationWith1f(
+      lightingProgram.loc_intensityModifier,
+      this.intensityModifier,
+    );
 
     const shadowLowQualityProgram = shaderCache.programForKey('ShadowLowQuality');
     shadowLowQualityProgram.use();
-    shadowLowQualityProgram.setUniformLocationWith1f(shadowLowQualityProgram.loc_intensity, this.shadowIntensity);
-    shadowLowQualityProgram.setUniformLocationWith1f(shadowLowQualityProgram.loc_blurShiftModifier, this.shadowBlurShiftModifier);
-    shadowLowQualityProgram.setUniformLocationWith1f(shadowLowQualityProgram.loc_blurIntensityModifier, this.shadowBlurIntensityModifier);
+    shadowLowQualityProgram.setUniformLocationWith1f(
+      shadowLowQualityProgram.loc_intensity,
+      this.shadowIntensity,
+    );
+    shadowLowQualityProgram.setUniformLocationWith1f(
+      shadowLowQualityProgram.loc_blurShiftModifier,
+      this.shadowBlurShiftModifier,
+    );
+    shadowLowQualityProgram.setUniformLocationWith1f(
+      shadowLowQualityProgram.loc_blurIntensityModifier,
+      this.shadowBlurIntensityModifier,
+    );
 
     const shadowHighQualityProgram = shaderCache.programForKey('ShadowHighQuality');
     shadowHighQualityProgram.use();
-    shadowHighQualityProgram.setUniformLocationWith1f(shadowHighQualityProgram.loc_intensity, this.shadowIntensity);
-    shadowHighQualityProgram.setUniformLocationWith1f(shadowHighQualityProgram.loc_blurShiftModifier, this.shadowBlurShiftModifier);
-    shadowHighQualityProgram.setUniformLocationWith1f(shadowHighQualityProgram.loc_blurIntensityModifier, this.shadowBlurIntensityModifier);
+    shadowHighQualityProgram.setUniformLocationWith1f(
+      shadowHighQualityProgram.loc_intensity,
+      this.shadowIntensity,
+    );
+    shadowHighQualityProgram.setUniformLocationWith1f(
+      shadowHighQualityProgram.loc_blurShiftModifier,
+      this.shadowBlurShiftModifier,
+    );
+    shadowHighQualityProgram.setUniformLocationWith1f(
+      shadowHighQualityProgram.loc_blurIntensityModifier,
+      this.shadowBlurIntensityModifier,
+    );
 
     const energyBallProgram = shaderCache.programForKey('EnergyBall');
     energyBallProgram.use();
@@ -268,20 +298,43 @@ const FX = cc.Class.extend({
 
     const whiteCloudVignetteProgram = shaderCache.programForKey('WhiteCloudVignette');
     whiteCloudVignetteProgram.use();
-    whiteCloudVignetteProgram.setUniformLocationWith1f(whiteCloudVignetteProgram.loc_noiseAmount, 1.0);
-    whiteCloudVignetteProgram.setUniformLocationWith1f(whiteCloudVignetteProgram.loc_vignetteAmount, 1.0);
+    whiteCloudVignetteProgram.setUniformLocationWith1f(
+      whiteCloudVignetteProgram.loc_noiseAmount,
+      1.0,
+    );
+    whiteCloudVignetteProgram.setUniformLocationWith1f(
+      whiteCloudVignetteProgram.loc_vignetteAmount,
+      1.0,
+    );
 
     const toneCurveProgram = shaderCache.programForKey('ToneCurve');
     toneCurveProgram.use();
-    toneCurveProgram.setUniformLocationWith1f(toneCurveProgram.loc_amount, this.getToneCurveAmount());
+    toneCurveProgram.setUniformLocationWith1f(
+      toneCurveProgram.loc_amount,
+      this.getToneCurveAmount(),
+    );
 
     const glowImageMapControlProgram = shaderCache.programForKey('GlowImageMapControl');
     glowImageMapControlProgram.use();
-    glowImageMapControlProgram.setUniformLocationWith1f(glowImageMapControlProgram.loc_intensity, 1.0);
+    glowImageMapControlProgram.setUniformLocationWith1f(
+      glowImageMapControlProgram.loc_intensity,
+      1.0,
+    );
     glowImageMapControlProgram.setUniformLocationWith1f(glowImageMapControlProgram.loc_gamma, 1.0);
-    glowImageMapControlProgram.setUniformLocationWith1f(glowImageMapControlProgram.loc_levelsInWhite, 255.0);
-    glowImageMapControlProgram.setUniformLocationWith1f(glowImageMapControlProgram.loc_levelsInBlack, 0.0);
-    glowImageMapControlProgram.setUniformLocationWith3f(glowImageMapControlProgram.loc_color, 37, 176, 255);
+    glowImageMapControlProgram.setUniformLocationWith1f(
+      glowImageMapControlProgram.loc_levelsInWhite,
+      255.0,
+    );
+    glowImageMapControlProgram.setUniformLocationWith1f(
+      glowImageMapControlProgram.loc_levelsInBlack,
+      0.0,
+    );
+    glowImageMapControlProgram.setUniformLocationWith3f(
+      glowImageMapControlProgram.loc_color,
+      37,
+      176,
+      255,
+    );
 
     // var noiseRaysProgram = shaderCache.programForKey("FbmNoiseRays");
     // noiseRaysProgram.use();
@@ -292,12 +345,21 @@ const FX = cc.Class.extend({
 
     const glowImageMapRippleProgram = shaderCache.programForKey('GlowImageMapRipple');
     glowImageMapRippleProgram.use();
-    glowImageMapRippleProgram.setUniformLocationWith1f(glowImageMapRippleProgram.loc_intensity, 1.0);
+    glowImageMapRippleProgram.setUniformLocationWith1f(
+      glowImageMapRippleProgram.loc_intensity,
+      1.0,
+    );
 
     const cardAngleGradientShineProgram = shaderCache.programForKey('CardAngledGradientShine');
     cardAngleGradientShineProgram.use();
-    cardAngleGradientShineProgram.setUniformLocationWith1f(cardAngleGradientShineProgram.loc_intensity, 1.0);
-    cardAngleGradientShineProgram.setUniformLocationWith1f(cardAngleGradientShineProgram.loc_phase, 0.0);
+    cardAngleGradientShineProgram.setUniformLocationWith1f(
+      cardAngleGradientShineProgram.loc_intensity,
+      1.0,
+    );
+    cardAngleGradientShineProgram.setUniformLocationWith1f(
+      cardAngleGradientShineProgram.loc_phase,
+      0.0,
+    );
   },
 
   _initTime() {
@@ -321,34 +383,146 @@ const FX = cc.Class.extend({
     this.setScreenCacheDirty();
     this.setSurfaceCacheDirty();
 
-    if (this.passes.cache != null) { this.passes.cache.release(); }
-    this.passes.cache = RenderPass.create(cc.Texture2D.PIXEL_FORMAT_RGBA8888, cc.winSize.width, cc.winSize.height, 1, false);
-    if (this.passes.screen != null) { this.passes.screen.release(); }
-    this.passes.screen = RenderPass.create(cc.Texture2D.PIXEL_FORMAT_RGBA8888, cc.winSize.width, cc.winSize.height, 1, false);
-    if (this.passes.blurComposite != null) { this.passes.blurComposite.release(); }
-    this.passes.blurComposite = RenderPass.create(cc.Texture2D.PIXEL_FORMAT_RGBA8888, cc.winSize.width, cc.winSize.height, 1.0, true);
-    if (this.passes.surfaceA != null) { this.passes.surfaceA.release(); }
-    this.passes.surfaceA = RenderPass.create(cc.Texture2D.PIXEL_FORMAT_RGBA8888, cc.winSize.width, cc.winSize.height, 1, false);
-    if (this.passes.surfaceB != null) { this.passes.surfaceB.release(); }
-    this.passes.surfaceB = RenderPass.create(cc.Texture2D.PIXEL_FORMAT_RGBA8888, cc.winSize.width, cc.winSize.height, 1, false);
-    if (this.passes.depth != null) { this.passes.depth.release(); }
-    this.passes.depth = RenderPass.create(cc.Texture2D.PIXEL_FORMAT_RGBA8888, cc.winSize.width, cc.winSize.height, 1, false);
-    if (this.passes.highpass != null) { this.passes.highpass.release(); }
-    this.passes.highpass = RenderPass.create(cc.Texture2D.PIXEL_FORMAT_RGBA8888, cc.winSize.width, cc.winSize.height, this.bloomScale, true);
-    if (this.passes.blur != null) { this.passes.blur.release(); }
-    this.passes.blur = RenderPass.create(cc.Texture2D.PIXEL_FORMAT_RGBA8888, cc.winSize.width, cc.winSize.height, this.bloomScale, true);
-    if (this.passes.bloom != null) { this.passes.bloom.release(); }
-    this.passes.bloom = RenderPass.create(cc.Texture2D.PIXEL_FORMAT_RGBA8888, cc.winSize.width, cc.winSize.height, this.bloomScale, true);
-    if (this.passes.bloomCompositeA != null) { this.passes.bloomCompositeA.release(); }
-    this.passes.bloomCompositeA = RenderPass.create(cc.Texture2D.PIXEL_FORMAT_RGBA8888, cc.winSize.width, cc.winSize.height, this.bloomScale, true);
-    if (this.passes.bloomCompositeB != null) { this.passes.bloomCompositeB.release(); }
-    this.passes.bloomCompositeB = RenderPass.create(cc.Texture2D.PIXEL_FORMAT_RGBA8888, cc.winSize.width, cc.winSize.height, this.bloomScale, true);
-    if (this.passes.radialBlur != null) { this.passes.radialBlur.release(); }
-    this.passes.radialBlur = RenderPass.create(cc.Texture2D.PIXEL_FORMAT_RGBA8888, cc.winSize.width, cc.winSize.height, 1.0, false);
-    if (this.passes.toneCurve != null) { this.passes.toneCurve.release(); }
-    this.passes.toneCurve = RenderPass.create(cc.Texture2D.PIXEL_FORMAT_RGBA8888, cc.winSize.width, cc.winSize.height, 1.0, false);
-    if (this.passes.gradientColorMap != null) { this.passes.gradientColorMap.release(); }
-    this.passes.gradientColorMap = RenderPass.create(cc.Texture2D.PIXEL_FORMAT_RGBA8888, cc.winSize.width, cc.winSize.height, 1.0, false);
+    if (this.passes.cache != null) {
+      this.passes.cache.release();
+    }
+    this.passes.cache = RenderPass.create(
+      cc.Texture2D.PIXEL_FORMAT_RGBA8888,
+      cc.winSize.width,
+      cc.winSize.height,
+      1,
+      false,
+    );
+    if (this.passes.screen != null) {
+      this.passes.screen.release();
+    }
+    this.passes.screen = RenderPass.create(
+      cc.Texture2D.PIXEL_FORMAT_RGBA8888,
+      cc.winSize.width,
+      cc.winSize.height,
+      1,
+      false,
+    );
+    if (this.passes.blurComposite != null) {
+      this.passes.blurComposite.release();
+    }
+    this.passes.blurComposite = RenderPass.create(
+      cc.Texture2D.PIXEL_FORMAT_RGBA8888,
+      cc.winSize.width,
+      cc.winSize.height,
+      1.0,
+      true,
+    );
+    if (this.passes.surfaceA != null) {
+      this.passes.surfaceA.release();
+    }
+    this.passes.surfaceA = RenderPass.create(
+      cc.Texture2D.PIXEL_FORMAT_RGBA8888,
+      cc.winSize.width,
+      cc.winSize.height,
+      1,
+      false,
+    );
+    if (this.passes.surfaceB != null) {
+      this.passes.surfaceB.release();
+    }
+    this.passes.surfaceB = RenderPass.create(
+      cc.Texture2D.PIXEL_FORMAT_RGBA8888,
+      cc.winSize.width,
+      cc.winSize.height,
+      1,
+      false,
+    );
+    if (this.passes.depth != null) {
+      this.passes.depth.release();
+    }
+    this.passes.depth = RenderPass.create(
+      cc.Texture2D.PIXEL_FORMAT_RGBA8888,
+      cc.winSize.width,
+      cc.winSize.height,
+      1,
+      false,
+    );
+    if (this.passes.highpass != null) {
+      this.passes.highpass.release();
+    }
+    this.passes.highpass = RenderPass.create(
+      cc.Texture2D.PIXEL_FORMAT_RGBA8888,
+      cc.winSize.width,
+      cc.winSize.height,
+      this.bloomScale,
+      true,
+    );
+    if (this.passes.blur != null) {
+      this.passes.blur.release();
+    }
+    this.passes.blur = RenderPass.create(
+      cc.Texture2D.PIXEL_FORMAT_RGBA8888,
+      cc.winSize.width,
+      cc.winSize.height,
+      this.bloomScale,
+      true,
+    );
+    if (this.passes.bloom != null) {
+      this.passes.bloom.release();
+    }
+    this.passes.bloom = RenderPass.create(
+      cc.Texture2D.PIXEL_FORMAT_RGBA8888,
+      cc.winSize.width,
+      cc.winSize.height,
+      this.bloomScale,
+      true,
+    );
+    if (this.passes.bloomCompositeA != null) {
+      this.passes.bloomCompositeA.release();
+    }
+    this.passes.bloomCompositeA = RenderPass.create(
+      cc.Texture2D.PIXEL_FORMAT_RGBA8888,
+      cc.winSize.width,
+      cc.winSize.height,
+      this.bloomScale,
+      true,
+    );
+    if (this.passes.bloomCompositeB != null) {
+      this.passes.bloomCompositeB.release();
+    }
+    this.passes.bloomCompositeB = RenderPass.create(
+      cc.Texture2D.PIXEL_FORMAT_RGBA8888,
+      cc.winSize.width,
+      cc.winSize.height,
+      this.bloomScale,
+      true,
+    );
+    if (this.passes.radialBlur != null) {
+      this.passes.radialBlur.release();
+    }
+    this.passes.radialBlur = RenderPass.create(
+      cc.Texture2D.PIXEL_FORMAT_RGBA8888,
+      cc.winSize.width,
+      cc.winSize.height,
+      1.0,
+      false,
+    );
+    if (this.passes.toneCurve != null) {
+      this.passes.toneCurve.release();
+    }
+    this.passes.toneCurve = RenderPass.create(
+      cc.Texture2D.PIXEL_FORMAT_RGBA8888,
+      cc.winSize.width,
+      cc.winSize.height,
+      1.0,
+      false,
+    );
+    if (this.passes.gradientColorMap != null) {
+      this.passes.gradientColorMap.release();
+    }
+    this.passes.gradientColorMap = RenderPass.create(
+      cc.Texture2D.PIXEL_FORMAT_RGBA8888,
+      cc.winSize.width,
+      cc.winSize.height,
+      1.0,
+      false,
+    );
   },
 
   /**
@@ -368,27 +542,51 @@ const FX = cc.Class.extend({
 
     const depthProgram = shaderCache.programForKey('Depth');
     depthProgram.use();
-    depthProgram.setUniformLocationWith2f(depthProgram.loc_resolution, cc.winSize.width, cc.winSize.height);
+    depthProgram.setUniformLocationWith2f(
+      depthProgram.loc_resolution,
+      cc.winSize.width,
+      cc.winSize.height,
+    );
 
     const depthTestProgram = shaderCache.programForKey('DepthTest');
     depthTestProgram.use();
-    depthTestProgram.setUniformLocationWith2f(depthTestProgram.loc_resolution, cc.winSize.width, cc.winSize.height);
+    depthTestProgram.setUniformLocationWith2f(
+      depthTestProgram.loc_resolution,
+      cc.winSize.width,
+      cc.winSize.height,
+    );
 
     const fxaaProgram = shaderCache.programForKey('FXAA');
     fxaaProgram.use();
-    fxaaProgram.setUniformLocationWith2f(fxaaProgram.loc_resolution, cc.winSize.width, cc.winSize.height);
+    fxaaProgram.setUniformLocationWith2f(
+      fxaaProgram.loc_resolution,
+      cc.winSize.width,
+      cc.winSize.height,
+    );
 
     const glowNoiseProgram = shaderCache.programForKey('GlowNoise');
     glowNoiseProgram.use();
-    glowNoiseProgram.setUniformLocationWith2f(glowNoiseProgram.loc_resolution, cc.winSize.width, cc.winSize.height);
+    glowNoiseProgram.setUniformLocationWith2f(
+      glowNoiseProgram.loc_resolution,
+      cc.winSize.width,
+      cc.winSize.height,
+    );
 
     const glowProgram = shaderCache.programForKey('Glow');
     glowProgram.use();
-    glowProgram.setUniformLocationWith2f(glowProgram.loc_resolution, cc.winSize.width, cc.winSize.height);
+    glowProgram.setUniformLocationWith2f(
+      glowProgram.loc_resolution,
+      cc.winSize.width,
+      cc.winSize.height,
+    );
 
     const chromaticProgram = shaderCache.programForKey('Chromatic');
     chromaticProgram.use();
-    chromaticProgram.setUniformLocationWith2f(chromaticProgram.loc_resolution, cc.winSize.width, cc.winSize.height);
+    chromaticProgram.setUniformLocationWith2f(
+      chromaticProgram.loc_resolution,
+      cc.winSize.width,
+      cc.winSize.height,
+    );
 
     const lightingProgram = shaderCache.programForKey('Lighting');
     lightingProgram.use();
@@ -396,23 +594,43 @@ const FX = cc.Class.extend({
 
     const distortionProgram = shaderCache.programForKey('Distortion');
     distortionProgram.use();
-    distortionProgram.setUniformLocationWith2f(distortionProgram.loc_resolution, cc.winSize.width, cc.winSize.height);
+    distortionProgram.setUniformLocationWith2f(
+      distortionProgram.loc_resolution,
+      cc.winSize.width,
+      cc.winSize.height,
+    );
 
     const waterProgram = shaderCache.programForKey('Water');
     waterProgram.use();
-    waterProgram.setUniformLocationWith2f(waterProgram.loc_resolution, cc.winSize.width, cc.winSize.height);
+    waterProgram.setUniformLocationWith2f(
+      waterProgram.loc_resolution,
+      cc.winSize.width,
+      cc.winSize.height,
+    );
 
     const shockwaveProgram = shaderCache.programForKey('Shockwave');
     shockwaveProgram.use();
-    shockwaveProgram.setUniformLocationWith2f(shockwaveProgram.loc_resolution, cc.winSize.width, cc.winSize.height);
+    shockwaveProgram.setUniformLocationWith2f(
+      shockwaveProgram.loc_resolution,
+      cc.winSize.width,
+      cc.winSize.height,
+    );
 
     const vortexProgram = shaderCache.programForKey('Vortex');
     vortexProgram.use();
-    vortexProgram.setUniformLocationWith2f(vortexProgram.loc_resolution, cc.winSize.width, cc.winSize.height);
+    vortexProgram.setUniformLocationWith2f(
+      vortexProgram.loc_resolution,
+      cc.winSize.width,
+      cc.winSize.height,
+    );
 
     const fireWaveProgram = shaderCache.programForKey('FireLinearWave');
     fireWaveProgram.use();
-    fireWaveProgram.setUniformLocationWith2f(fireWaveProgram.loc_resolution, cc.winSize.width, cc.winSize.height);
+    fireWaveProgram.setUniformLocationWith2f(
+      fireWaveProgram.loc_resolution,
+      cc.winSize.width,
+      cc.winSize.height,
+    );
   },
 
   /**
@@ -610,7 +828,9 @@ const FX = cc.Class.extend({
         const numRequests = this._blurSurfaceRequests.length;
         this._blurSurfaceRequests.push(id);
         if (numRequests === 0 && this._blurSurfaceRequests.length === 1) {
-          this.getEventBus().trigger(EVENTS.blur_surface_start, { type: EVENTS.blur_surface_start });
+          this.getEventBus().trigger(EVENTS.blur_surface_start, {
+            type: EVENTS.blur_surface_start,
+          });
         }
       }
     } else {
@@ -667,7 +887,9 @@ const FX = cc.Class.extend({
   setScreenCacheDirty() {
     if (this._cachingScreen && !this._cachingScreenDirty) {
       this._cachingScreenDirty = true;
-      this.getEventBus().trigger(EVENTS.caching_screen_dirty, { type: EVENTS.caching_screen_dirty });
+      this.getEventBus().trigger(EVENTS.caching_screen_dirty, {
+        type: EVENTS.caching_screen_dirty,
+      });
     }
   },
   getScreenCacheDirty() {
@@ -680,7 +902,9 @@ const FX = cc.Class.extend({
   setSurfaceCacheDirty() {
     if (this._cachingSurface && !this._cachingSurfaceDirty) {
       this._cachingSurfaceDirty = true;
-      this.getEventBus().trigger(EVENTS.caching_surface_dirty, { type: EVENTS.caching_surface_dirty });
+      this.getEventBus().trigger(EVENTS.caching_surface_dirty, {
+        type: EVENTS.caching_surface_dirty,
+      });
     }
   },
   getSurfaceCacheDirty() {
@@ -704,7 +928,9 @@ const FX = cc.Class.extend({
   _startCachingScreen() {
     if (!this._cachingScreen) {
       this._cachingScreen = true;
-      this.getEventBus().trigger(EVENTS.caching_screen_start, { type: EVENTS.caching_screen_start });
+      this.getEventBus().trigger(EVENTS.caching_screen_start, {
+        type: EVENTS.caching_screen_start,
+      });
     }
   },
 
@@ -752,7 +978,9 @@ const FX = cc.Class.extend({
   _startCachingSurface() {
     if (!this._cachingSurface) {
       this._cachingSurface = true;
-      this.getEventBus().trigger(EVENTS.caching_surface_start, { type: EVENTS.caching_surface_start });
+      this.getEventBus().trigger(EVENTS.caching_surface_start, {
+        type: EVENTS.caching_surface_start,
+      });
     }
   },
 
@@ -760,7 +988,9 @@ const FX = cc.Class.extend({
     if (this._cachingSurface) {
       this._cachingSurfaceDirty = false;
       this._cachingSurface = false;
-      this.getEventBus().trigger(EVENTS.caching_surface_stop, { type: EVENTS.caching_surface_stop });
+      this.getEventBus().trigger(EVENTS.caching_surface_stop, {
+        type: EVENTS.caching_surface_stop,
+      });
     }
   },
 
@@ -885,8 +1115,17 @@ const FX = cc.Class.extend({
         }
       } else {
         if (instancedRenderPass == null) {
-          instancedRenderPass = this._instancedRenderPassesById[instancingId] = new RenderPass(cc.Texture2D.PIXEL_FORMAT_RGBA8888, width, height, 1, true);
-        } else if (instancedRenderPass.getWidth() !== width || instancedRenderPass.getHeight() !== height) {
+          instancedRenderPass = this._instancedRenderPassesById[instancingId] = new RenderPass(
+            cc.Texture2D.PIXEL_FORMAT_RGBA8888,
+            width,
+            height,
+            1,
+            true,
+          );
+        } else if (
+          instancedRenderPass.getWidth() !== width ||
+          instancedRenderPass.getHeight() !== height
+        ) {
           instancedRenderPass.rebuild(cc.Texture2D.PIXEL_FORMAT_RGBA8888, width, height, 1, true);
         }
 
@@ -934,10 +1173,12 @@ const FX = cc.Class.extend({
 
   setAmbientLightColor(color) {
     const { ambientLightColor } = this;
-    if (ambientLightColor
-        && (ambientLightColor.r !== color.r
-        || ambientLightColor.g !== color.g
-        || ambientLightColor.b !== color.b)) {
+    if (
+      ambientLightColor &&
+      (ambientLightColor.r !== color.r ||
+        ambientLightColor.g !== color.g ||
+        ambientLightColor.b !== color.b)
+    ) {
       // use a plain object so that the values can go negative
       // cocos doesn't allow negative color values
       this.ambientLightColor = { r: color.r, g: color.g, b: color.b };
@@ -957,33 +1198,51 @@ const FX = cc.Class.extend({
 
     const shadowLowQualityProgram = cc.shaderCache.programForKey('ShadowLowQuality');
     shadowLowQualityProgram.use();
-    shadowLowQualityProgram.setUniformLocationWith1f(shadowLowQualityProgram.loc_intensity, this.shadowIntensity);
+    shadowLowQualityProgram.setUniformLocationWith1f(
+      shadowLowQualityProgram.loc_intensity,
+      this.shadowIntensity,
+    );
 
     const shadowHighQualityProgram = cc.shaderCache.programForKey('ShadowHighQuality');
     shadowHighQualityProgram.use();
-    shadowHighQualityProgram.setUniformLocationWith1f(shadowHighQualityProgram.loc_intensity, this.shadowIntensity);
+    shadowHighQualityProgram.setUniformLocationWith1f(
+      shadowHighQualityProgram.loc_intensity,
+      this.shadowIntensity,
+    );
   },
   setShadowBlurShiftModifier(value) {
     this.shadowBlurShiftModifier = value;
 
     const shadowLowQualityProgram = cc.shaderCache.programForKey('ShadowLowQuality');
     shadowLowQualityProgram.use();
-    shadowLowQualityProgram.setUniformLocationWith1f(shadowLowQualityProgram.loc_blurShiftModifier, this.shadowBlurShiftModifier);
+    shadowLowQualityProgram.setUniformLocationWith1f(
+      shadowLowQualityProgram.loc_blurShiftModifier,
+      this.shadowBlurShiftModifier,
+    );
 
     const shadowHighQualityProgram = cc.shaderCache.programForKey('ShadowHighQuality');
     shadowHighQualityProgram.use();
-    shadowHighQualityProgram.setUniformLocationWith1f(shadowHighQualityProgram.loc_blurShiftModifier, this.shadowBlurShiftModifier);
+    shadowHighQualityProgram.setUniformLocationWith1f(
+      shadowHighQualityProgram.loc_blurShiftModifier,
+      this.shadowBlurShiftModifier,
+    );
   },
   setShadowBlurIntensityModifier(value) {
     this.shadowBlurIntensityModifier = value;
 
     const shadowLowQualityProgram = cc.shaderCache.programForKey('ShadowLowQuality');
     shadowLowQualityProgram.use();
-    shadowLowQualityProgram.setUniformLocationWith1f(shadowLowQualityProgram.loc_blurIntensityModifier, this.shadowBlurIntensityModifier);
+    shadowLowQualityProgram.setUniformLocationWith1f(
+      shadowLowQualityProgram.loc_blurIntensityModifier,
+      this.shadowBlurIntensityModifier,
+    );
 
     const shadowHighQualityProgram = cc.shaderCache.programForKey('ShadowHighQuality');
     shadowHighQualityProgram.use();
-    shadowHighQualityProgram.setUniformLocationWith1f(shadowHighQualityProgram.loc_blurIntensityModifier, this.shadowBlurIntensityModifier);
+    shadowHighQualityProgram.setUniformLocationWith1f(
+      shadowHighQualityProgram.loc_blurIntensityModifier,
+      this.shadowBlurIntensityModifier,
+    );
   },
   setBloomThreshold(value) {
     this.bloomThreshold = value;
@@ -1016,7 +1275,9 @@ const FX = cc.Class.extend({
     return this.windDirection;
   },
   setRadialBlurPosition(radialBlurPosition) {
-    this.setRadialBlurScreenPct(cc.p(radialBlurPosition.x / cc.winSize.width, radialBlurPosition.y / cc.winSize.height));
+    this.setRadialBlurScreenPct(
+      cc.p(radialBlurPosition.x / cc.winSize.width, radialBlurPosition.y / cc.winSize.height),
+    );
   },
   setRadialBlurScreenPct(radialBlurScreenPct) {
     this.radialBlurScreenPct = radialBlurScreenPct;
@@ -1220,7 +1481,9 @@ const FX = cc.Class.extend({
    * @param {cc.Color} [toColorMid=0] target mid point )optional
    */
   showGradientColorMap(id, duration, toColorWhite, toColorBlack, toColorMid) {
-    if (duration == null) { duration = 0.0; }
+    if (duration == null) {
+      duration = 0.0;
+    }
 
     // stop current top of stack
     if (this._gradientMapStack.length > 0) {
@@ -1289,7 +1552,15 @@ const FX = cc.Class.extend({
     }
 
     // run gradient map action
-    gradientMapData.action = GradientColorMap.create(duration, fromColorWhite, fromColorMid, fromColorBlack, gradientMapData.toColorWhite, gradientMapData.toColorMid, gradientMapData.toColorBlack);
+    gradientMapData.action = GradientColorMap.create(
+      duration,
+      fromColorWhite,
+      fromColorMid,
+      fromColorBlack,
+      gradientMapData.toColorWhite,
+      gradientMapData.toColorMid,
+      gradientMapData.toColorBlack,
+    );
     this.getScene().runAction(gradientMapData.action);
   },
 
@@ -1510,10 +1781,7 @@ const FX = cc.Class.extend({
    * @param {cc.Node} decal decal node
    */
   fadeDecal(decal) {
-    decal.runAction(cc.sequence(
-      cc.fadeOut(0.3),
-      cc.callFunc(decal.destroy, decal),
-    ));
+    decal.runAction(cc.sequence(cc.fadeOut(0.3), cc.callFunc(decal.destroy, decal)));
   },
 
   /**
@@ -1549,7 +1817,11 @@ const FX = cc.Class.extend({
   },
 
   _compareDistortions(a, b) {
-    return (Number(b instanceof FXShockWaveSprite) - Number(a instanceof FXShockWaveSprite)) || (b.getWorldDepth() - a.getWorldDepth()) || (a.getWorldZOrder() - b.getWorldZOrder());
+    return (
+      Number(b instanceof FXShockWaveSprite) - Number(a instanceof FXShockWaveSprite) ||
+      b.getWorldDepth() - a.getWorldDepth() ||
+      a.getWorldZOrder() - b.getWorldZOrder()
+    );
   },
 
   /**
@@ -1561,7 +1833,8 @@ const FX = cc.Class.extend({
     if (this._gradientMapDirty) {
       const pgw = this.getPhaseGradientColorMapWhiteColor();
       const pgb = this.getPhaseGradientColorMapBlackColor();
-      this._needsGradientColorMap = (pgw.r + pgw.g + pgw.b + pgw.a + pgb.r + pgb.g + pgb.b + pgb.a) > 0.0;
+      this._needsGradientColorMap =
+        pgw.r + pgw.g + pgw.b + pgw.a + pgb.r + pgb.g + pgb.b + pgb.a > 0.0;
       if (this.getIsCachingScreen()) {
         this.setScreenCacheDirty();
       }
@@ -1582,10 +1855,14 @@ const FX = cc.Class.extend({
 
     if (!this.getIsCachingScreen() && !this.getIsCachingSurface()) {
       if (this.getScreenCacheRequested()) {
-        this.getEventBus().trigger(EVENTS.caching_screen_setup, { type: EVENTS.caching_screen_setup });
+        this.getEventBus().trigger(EVENTS.caching_screen_setup, {
+          type: EVENTS.caching_screen_setup,
+        });
       }
       if (this.getSurfaceCacheRequested()) {
-        this.getEventBus().trigger(EVENTS.caching_surface_setup, { type: EVENTS.caching_surface_setup });
+        this.getEventBus().trigger(EVENTS.caching_surface_setup, {
+          type: EVENTS.caching_surface_setup,
+        });
       }
     }
   },
@@ -1594,9 +1871,7 @@ const FX = cc.Class.extend({
    * Ends visit phase of fx.
    * NOTE: This should be called automatically at the end of the frame visit phase.
    */
-  endForVisit() {
-
-  },
+  endForVisit() {},
 
   /**
    * Begins redirecting drawing into screen framebuffers.
@@ -1689,7 +1964,11 @@ const FX = cc.Class.extend({
    * NOTE: This should be called once per frame by a FXCompositeLayer just before drawing anything that should be affected by post processing.
    */
   beginSurfaceWithClear() {
-    if (!this._redirectingToSurfacePass && !this.getIsCachingScreen() && !this.getIsCachingSurface()) {
+    if (
+      !this._redirectingToSurfacePass &&
+      !this.getIsCachingScreen() &&
+      !this.getIsCachingSurface()
+    ) {
       // clear previous depth pass and set to max depth
       this.passes.depth.beginWithClear(255.0, 255.0, 255.0, 255.0);
       this.passes.depth.end();
@@ -1721,8 +2000,16 @@ const FX = cc.Class.extend({
       // we should use the rendering matrix stack instead of the fixed orthographic matrices
       shaderProgram.setUniformForModelViewAndProjectionMatrixWithMat4();
     } else {
-      shaderProgram._glContext.uniformMatrix4fv(shaderProgram._uniforms[cc.UNIFORM_MVMATRIX], false, UtilsEngine.MAT4_ORTHOGRAPHIC_STACK.mat);
-      shaderProgram._glContext.uniformMatrix4fv(shaderProgram._uniforms[cc.UNIFORM_PMATRIX], false, UtilsEngine.MAT4_ORTHOGRAPHIC_PROJECTION.mat);
+      shaderProgram._glContext.uniformMatrix4fv(
+        shaderProgram._uniforms[cc.UNIFORM_MVMATRIX],
+        false,
+        UtilsEngine.MAT4_ORTHOGRAPHIC_STACK.mat,
+      );
+      shaderProgram._glContext.uniformMatrix4fv(
+        shaderProgram._uniforms[cc.UNIFORM_PMATRIX],
+        false,
+        UtilsEngine.MAT4_ORTHOGRAPHIC_PROJECTION.mat,
+      );
     }
   },
 
@@ -1774,7 +2061,10 @@ const FX = cc.Class.extend({
       highpassProgram.use();
       this.setRenderPassMatrices(highpassProgram);
       highpassProgram.setUniformLocationWith1f(highpassProgram.loc_threshold, this.bloomThreshold);
-      highpassProgram.setUniformLocationWith1f(highpassProgram.loc_intensity, this.bloomIntensity * CONFIG.bloom);
+      highpassProgram.setUniformLocationWith1f(
+        highpassProgram.loc_intensity,
+        this.bloomIntensity * CONFIG.bloom,
+      );
       cc.glBlendFunc(gl.ONE, gl.ZERO);
       cc.glBindTexture2DN(0, this._currentSurfacePass.texture);
       this.passes.highpass.render();
@@ -1807,7 +2097,10 @@ const FX = cc.Class.extend({
       const bloomProgram = shaderCache.programForKey('Bloom');
       bloomProgram.use();
       this.setRenderPassMatrices(bloomProgram);
-      const bloomTransition = this.getSurfaceCacheRequested() || this.getScreenCacheRequested() ? 1.0 : this.bloomTransition;
+      const bloomTransition =
+        this.getSurfaceCacheRequested() || this.getScreenCacheRequested()
+          ? 1.0
+          : this.bloomTransition;
       bloomProgram.setUniformLocationWith1f(bloomProgram.loc_transition, bloomTransition);
       cc.glBlendFunc(gl.ONE, gl.ZERO);
       cc.glBindTexture2DN(0, this.passes.bloom.texture);
@@ -1872,12 +2165,28 @@ const FX = cc.Class.extend({
         const radialBlurProgram = shaderCache.programForKey('RadialBlur');
         radialBlurProgram.use();
         this.setRenderPassMatrices(radialBlurProgram);
-        radialBlurProgram.setUniformLocationWith2f(radialBlurProgram.loc_origin, this.radialBlurScreenPct.x, this.radialBlurScreenPct.y);
-        radialBlurProgram.setUniformLocationWith1f(radialBlurProgram.loc_strength, this.radialBlurStrength);
-        radialBlurProgram.setUniformLocationWith1f(radialBlurProgram.loc_deadZone, this.radialBlurDeadZone);
+        radialBlurProgram.setUniformLocationWith2f(
+          radialBlurProgram.loc_origin,
+          this.radialBlurScreenPct.x,
+          this.radialBlurScreenPct.y,
+        );
+        radialBlurProgram.setUniformLocationWith1f(
+          radialBlurProgram.loc_strength,
+          this.radialBlurStrength,
+        );
+        radialBlurProgram.setUniformLocationWith1f(
+          radialBlurProgram.loc_deadZone,
+          this.radialBlurDeadZone,
+        );
         radialBlurProgram.setUniformLocationWith1f(radialBlurProgram.loc_ramp, this.radialBlurRamp);
-        radialBlurProgram.setUniformLocationWith1f(radialBlurProgram.loc_decay, this.radialBlurDecay);
-        radialBlurProgram.setUniformLocationWith1f(radialBlurProgram.loc_spread, this.radialBlurSpread);
+        radialBlurProgram.setUniformLocationWith1f(
+          radialBlurProgram.loc_decay,
+          this.radialBlurDecay,
+        );
+        radialBlurProgram.setUniformLocationWith1f(
+          radialBlurProgram.loc_spread,
+          this.radialBlurSpread,
+        );
         cc.glBlendFunc(gl.ONE, gl.ZERO);
         cc.glBindTexture2DN(0, this.passes.radialBlur.texture);
         this._currentSurfacePass.render();
@@ -1910,13 +2219,52 @@ const FX = cc.Class.extend({
         var gradientColorMapProgram = shaderCache.programForKey('GradientColorMap');
         gradientColorMapProgram.use();
         this.setRenderPassMatrices(gradientColorMapProgram);
-        gradientColorMapProgram.setUniformLocationWith4f(gradientColorMapProgram.loc_fromColorBlack, this._fromGradientColorMapBlackColor.r / 255.0, this._fromGradientColorMapBlackColor.g / 255.0, this._fromGradientColorMapBlackColor.b / 255.0, this._fromGradientColorMapBlackColor.a / 255.0);
-        gradientColorMapProgram.setUniformLocationWith4f(gradientColorMapProgram.loc_fromColorMid, this._fromGradientColorMapMidColor.r / 255.0, this._fromGradientColorMapMidColor.g / 255.0, this._fromGradientColorMapMidColor.b / 255.0, this._fromGradientColorMapMidColor.a / 255.0);
-        gradientColorMapProgram.setUniformLocationWith4f(gradientColorMapProgram.loc_fromColorWhite, this._fromGradientColorMapWhiteColor.r / 255.0, this._fromGradientColorMapWhiteColor.g / 255.0, this._fromGradientColorMapWhiteColor.b / 255.0, this._fromGradientColorMapWhiteColor.a / 255.0);
-        gradientColorMapProgram.setUniformLocationWith4f(gradientColorMapProgram.loc_toColorBlack, this._toGradientColorMapBlackColor.r / 255.0, this._toGradientColorMapBlackColor.g / 255.0, this._toGradientColorMapBlackColor.b / 255.0, this._toGradientColorMapBlackColor.a / 255.0);
-        gradientColorMapProgram.setUniformLocationWith4f(gradientColorMapProgram.loc_toColorMid, this._toGradientColorMapMidColor.r / 255.0, this._toGradientColorMapMidColor.g / 255.0, this._toGradientColorMapMidColor.b / 255.0, this._toGradientColorMapMidColor.a / 255.0);
-        gradientColorMapProgram.setUniformLocationWith4f(gradientColorMapProgram.loc_toColorWhite, this._toGradientColorMapWhiteColor.r / 255.0, this._toGradientColorMapWhiteColor.g / 255.0, this._toGradientColorMapWhiteColor.b / 255.0, this._toGradientColorMapWhiteColor.a / 255.0);
-        gradientColorMapProgram.setUniformLocationWith1f(gradientColorMapProgram.loc_phase, this._gradientMapTransitionPhase);
+        gradientColorMapProgram.setUniformLocationWith4f(
+          gradientColorMapProgram.loc_fromColorBlack,
+          this._fromGradientColorMapBlackColor.r / 255.0,
+          this._fromGradientColorMapBlackColor.g / 255.0,
+          this._fromGradientColorMapBlackColor.b / 255.0,
+          this._fromGradientColorMapBlackColor.a / 255.0,
+        );
+        gradientColorMapProgram.setUniformLocationWith4f(
+          gradientColorMapProgram.loc_fromColorMid,
+          this._fromGradientColorMapMidColor.r / 255.0,
+          this._fromGradientColorMapMidColor.g / 255.0,
+          this._fromGradientColorMapMidColor.b / 255.0,
+          this._fromGradientColorMapMidColor.a / 255.0,
+        );
+        gradientColorMapProgram.setUniformLocationWith4f(
+          gradientColorMapProgram.loc_fromColorWhite,
+          this._fromGradientColorMapWhiteColor.r / 255.0,
+          this._fromGradientColorMapWhiteColor.g / 255.0,
+          this._fromGradientColorMapWhiteColor.b / 255.0,
+          this._fromGradientColorMapWhiteColor.a / 255.0,
+        );
+        gradientColorMapProgram.setUniformLocationWith4f(
+          gradientColorMapProgram.loc_toColorBlack,
+          this._toGradientColorMapBlackColor.r / 255.0,
+          this._toGradientColorMapBlackColor.g / 255.0,
+          this._toGradientColorMapBlackColor.b / 255.0,
+          this._toGradientColorMapBlackColor.a / 255.0,
+        );
+        gradientColorMapProgram.setUniformLocationWith4f(
+          gradientColorMapProgram.loc_toColorMid,
+          this._toGradientColorMapMidColor.r / 255.0,
+          this._toGradientColorMapMidColor.g / 255.0,
+          this._toGradientColorMapMidColor.b / 255.0,
+          this._toGradientColorMapMidColor.a / 255.0,
+        );
+        gradientColorMapProgram.setUniformLocationWith4f(
+          gradientColorMapProgram.loc_toColorWhite,
+          this._toGradientColorMapWhiteColor.r / 255.0,
+          this._toGradientColorMapWhiteColor.g / 255.0,
+          this._toGradientColorMapWhiteColor.b / 255.0,
+          this._toGradientColorMapWhiteColor.a / 255.0,
+        );
+        gradientColorMapProgram.setUniformLocationWith1f(
+          gradientColorMapProgram.loc_phase,
+          this._gradientMapTransitionPhase,
+        );
         cc.glBlendFunc(gl.ONE, gl.ZERO);
         cc.glBindTexture2DN(0, this.passes.gradientColorMap.texture);
         this._currentSurfacePass.render();
@@ -1963,13 +2311,52 @@ const FX = cc.Class.extend({
         var gradientColorMapProgram = shaderCache.programForKey('GradientColorMap');
         gradientColorMapProgram.use();
         this.setRenderPassMatrices(gradientColorMapProgram);
-        gradientColorMapProgram.setUniformLocationWith4f(gradientColorMapProgram.loc_fromColorBlack, this._fromGradientColorMapBlackColor.r / 255.0, this._fromGradientColorMapBlackColor.g / 255.0, this._fromGradientColorMapBlackColor.b / 255.0, this._fromGradientColorMapBlackColor.a / 255.0);
-        gradientColorMapProgram.setUniformLocationWith4f(gradientColorMapProgram.loc_fromColorMid, this._fromGradientColorMapMidColor.r / 255.0, this._fromGradientColorMapMidColor.g / 255.0, this._fromGradientColorMapMidColor.b / 255.0, this._fromGradientColorMapMidColor.a / 255.0);
-        gradientColorMapProgram.setUniformLocationWith4f(gradientColorMapProgram.loc_fromColorWhite, this._fromGradientColorMapWhiteColor.r / 255.0, this._fromGradientColorMapWhiteColor.g / 255.0, this._fromGradientColorMapWhiteColor.b / 255.0, this._fromGradientColorMapWhiteColor.a / 255.0);
-        gradientColorMapProgram.setUniformLocationWith4f(gradientColorMapProgram.loc_toColorBlack, this._toGradientColorMapBlackColor.r / 255.0, this._toGradientColorMapBlackColor.g / 255.0, this._toGradientColorMapBlackColor.b / 255.0, this._toGradientColorMapBlackColor.a / 255.0);
-        gradientColorMapProgram.setUniformLocationWith4f(gradientColorMapProgram.loc_toColorMid, this._toGradientColorMapMidColor.r / 255.0, this._toGradientColorMapMidColor.g / 255.0, this._toGradientColorMapMidColor.b / 255.0, this._toGradientColorMapMidColor.a / 255.0);
-        gradientColorMapProgram.setUniformLocationWith4f(gradientColorMapProgram.loc_toColorWhite, this._toGradientColorMapWhiteColor.r / 255.0, this._toGradientColorMapWhiteColor.g / 255.0, this._toGradientColorMapWhiteColor.b / 255.0, this._toGradientColorMapWhiteColor.a / 255.0);
-        gradientColorMapProgram.setUniformLocationWith1f(gradientColorMapProgram.loc_phase, this._gradientMapTransitionPhase);
+        gradientColorMapProgram.setUniformLocationWith4f(
+          gradientColorMapProgram.loc_fromColorBlack,
+          this._fromGradientColorMapBlackColor.r / 255.0,
+          this._fromGradientColorMapBlackColor.g / 255.0,
+          this._fromGradientColorMapBlackColor.b / 255.0,
+          this._fromGradientColorMapBlackColor.a / 255.0,
+        );
+        gradientColorMapProgram.setUniformLocationWith4f(
+          gradientColorMapProgram.loc_fromColorMid,
+          this._fromGradientColorMapMidColor.r / 255.0,
+          this._fromGradientColorMapMidColor.g / 255.0,
+          this._fromGradientColorMapMidColor.b / 255.0,
+          this._fromGradientColorMapMidColor.a / 255.0,
+        );
+        gradientColorMapProgram.setUniformLocationWith4f(
+          gradientColorMapProgram.loc_fromColorWhite,
+          this._fromGradientColorMapWhiteColor.r / 255.0,
+          this._fromGradientColorMapWhiteColor.g / 255.0,
+          this._fromGradientColorMapWhiteColor.b / 255.0,
+          this._fromGradientColorMapWhiteColor.a / 255.0,
+        );
+        gradientColorMapProgram.setUniformLocationWith4f(
+          gradientColorMapProgram.loc_toColorBlack,
+          this._toGradientColorMapBlackColor.r / 255.0,
+          this._toGradientColorMapBlackColor.g / 255.0,
+          this._toGradientColorMapBlackColor.b / 255.0,
+          this._toGradientColorMapBlackColor.a / 255.0,
+        );
+        gradientColorMapProgram.setUniformLocationWith4f(
+          gradientColorMapProgram.loc_toColorMid,
+          this._toGradientColorMapMidColor.r / 255.0,
+          this._toGradientColorMapMidColor.g / 255.0,
+          this._toGradientColorMapMidColor.b / 255.0,
+          this._toGradientColorMapMidColor.a / 255.0,
+        );
+        gradientColorMapProgram.setUniformLocationWith4f(
+          gradientColorMapProgram.loc_toColorWhite,
+          this._toGradientColorMapWhiteColor.r / 255.0,
+          this._toGradientColorMapWhiteColor.g / 255.0,
+          this._toGradientColorMapWhiteColor.b / 255.0,
+          this._toGradientColorMapWhiteColor.a / 255.0,
+        );
+        gradientColorMapProgram.setUniformLocationWith1f(
+          gradientColorMapProgram.loc_phase,
+          this._gradientMapTransitionPhase,
+        );
       } else {
         const posTexProgram = shaderCache.programForKey(cc.SHADER_POSITION_TEXTURE);
         posTexProgram.use();
@@ -1997,14 +2384,20 @@ const FX = cc.Class.extend({
     const loopingDirectionalTimeOverflow = this._loopingDirectionalTimeOverflow;
     this._loopingDirectionalTimeOverflow = 0.0;
     if (this._loopingDirection > 0) {
-      loopingDirectionalTime = (loopingDirectionalTimeOverflow !== 0 ? loopingDirectionalTimeOverflow : this.loopingDirectionalTime) + ldt;
+      loopingDirectionalTime =
+        (loopingDirectionalTimeOverflow !== 0
+          ? loopingDirectionalTimeOverflow
+          : this.loopingDirectionalTime) + ldt;
       if (loopingDirectionalTime >= 1.0) {
         this._loopingDirectionalTimeOverflow = loopingDirectionalTime - 1.0;
         loopingDirectionalTime = 1.0;
         this._loopingDirection *= -1.0;
       }
     } else if (this._loopingDirection < 0) {
-      loopingDirectionalTime = (loopingDirectionalTimeOverflow !== 0 ? loopingDirectionalTimeOverflow + 1.0 : this.loopingDirectionalTime) + ldt;
+      loopingDirectionalTime =
+        (loopingDirectionalTimeOverflow !== 0
+          ? loopingDirectionalTimeOverflow + 1.0
+          : this.loopingDirectionalTime) + ldt;
       if (loopingDirectionalTime <= 0.0) {
         this._loopingDirectionalTimeOverflow = loopingDirectionalTime;
         loopingDirectionalTime = 0.0;
@@ -2041,11 +2434,18 @@ FX.setup = function () {
     cc.VERTEX_ATTRIB_PROPERTIES = cc.VERTEX_ATTRIB_MAX + 1;
     cc.VERTEX_ATTRIB_FLAG_PROPERTIES = 1 << cc.VERTEX_ATTRIB_PROPERTIES;
 
-    const posTexAlphaProgram = cc.shaderCache.programForKey(cc.SHADER_POSITION_TEXTURECOLORALPHATEST);
-    posTexAlphaProgram.loc_CC_alpha_value = posTexAlphaProgram._uniforms[cc.UNIFORM_ALPHA_TEST_VALUE_S] = posTexAlphaProgram.getUniformLocationForName(cc.UNIFORM_ALPHA_TEST_VALUE_S);
+    const posTexAlphaProgram = cc.shaderCache.programForKey(
+      cc.SHADER_POSITION_TEXTURECOLORALPHATEST,
+    );
+    posTexAlphaProgram.loc_CC_alpha_value = posTexAlphaProgram._uniforms[
+      cc.UNIFORM_ALPHA_TEST_VALUE_S
+    ] = posTexAlphaProgram.getUniformLocationForName(cc.UNIFORM_ALPHA_TEST_VALUE_S);
 
     const monochromeProgram = new cc.GLProgram();
-    monochromeProgram.initWithVertexShaderByteArray(glslify('./../../shaders/helpers/PosTexColorVertex.glsl'), glslify('./../../shaders/MonochromeFragment.glsl'));
+    monochromeProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/helpers/PosTexColorVertex.glsl'),
+      glslify('./../../shaders/MonochromeFragment.glsl'),
+    );
     monochromeProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     monochromeProgram.addAttribute(cc.ATTRIBUTE_NAME_COLOR, cc.VERTEX_ATTRIB_COLOR);
     monochromeProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
@@ -2054,7 +2454,10 @@ FX.setup = function () {
     cc.shaderCache.addProgram(monochromeProgram, 'Monochrome');
 
     const tintingProgram = new cc.GLProgram();
-    tintingProgram.initWithVertexShaderByteArray(glslify('./../../shaders/helpers/PosTexColorVertex.glsl'), glslify('./../../shaders/TintingFragment.glsl'));
+    tintingProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/helpers/PosTexColorVertex.glsl'),
+      glslify('./../../shaders/TintingFragment.glsl'),
+    );
     tintingProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     tintingProgram.addAttribute(cc.ATTRIBUTE_NAME_COLOR, cc.VERTEX_ATTRIB_COLOR);
     tintingProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
@@ -2064,7 +2467,10 @@ FX.setup = function () {
     cc.shaderCache.addProgram(tintingProgram, 'Tinting');
 
     const depthProgram = new cc.GLProgram();
-    depthProgram.initWithVertexShaderByteArray(glslify('./../../shaders/DepthVertex.glsl'), glslify('./../../shaders/DepthFragment.glsl'));
+    depthProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/DepthVertex.glsl'),
+      glslify('./../../shaders/DepthFragment.glsl'),
+    );
     depthProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     depthProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
     depthProgram.link();
@@ -2075,7 +2481,10 @@ FX.setup = function () {
     shaderCache.addProgram(depthProgram, 'Depth');
 
     const depthTestProgram = new cc.GLProgram();
-    depthTestProgram.initWithVertexShaderByteArray(glslify('./../../shaders/DepthTestVertex.glsl'), glslify('./../../shaders/DepthTestFragment.glsl'));
+    depthTestProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/DepthTestVertex.glsl'),
+      glslify('./../../shaders/DepthTestFragment.glsl'),
+    );
     depthTestProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     depthTestProgram.addAttribute(cc.ATTRIBUTE_NAME_COLOR, cc.VERTEX_ATTRIB_COLOR);
     depthTestProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
@@ -2083,7 +2492,8 @@ FX.setup = function () {
     depthTestProgram.updateUniforms();
     depthTestProgram.loc_resolution = depthTestProgram.getUniformLocationForName('u_resolution');
     depthTestProgram.loc_depthOffset = depthTestProgram.getUniformLocationForName('u_depthOffset');
-    depthTestProgram.loc_depthModifier = depthTestProgram.getUniformLocationForName('u_depthModifier');
+    depthTestProgram.loc_depthModifier =
+      depthTestProgram.getUniformLocationForName('u_depthModifier');
     // textures are unlikely to change slots
     // depth map for z sorting
     depthTestProgram.loc_depthMap = depthTestProgram.getUniformLocationForName('u_depthMap');
@@ -2091,7 +2501,10 @@ FX.setup = function () {
     shaderCache.addProgram(depthTestProgram, 'DepthTest');
 
     const maskProgram = new cc.GLProgram();
-    maskProgram.initWithVertexShaderByteArray(glslify('./../../shaders/MaskVertex.glsl'), glslify('./../../shaders/MaskFragment.glsl'));
+    maskProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/MaskVertex.glsl'),
+      glslify('./../../shaders/MaskFragment.glsl'),
+    );
     maskProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     maskProgram.addAttribute(cc.ATTRIBUTE_NAME_COLOR, cc.VERTEX_ATTRIB_COLOR);
     maskProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
@@ -2105,7 +2518,10 @@ FX.setup = function () {
     shaderCache.addProgram(maskProgram, 'Mask');
 
     const fxaaProgram = new cc.GLProgram();
-    fxaaProgram.initWithVertexShaderByteArray(glslify('./../../shaders/helpers/PosTexVertex.glsl'), glslify('./../../shaders/FXAAFragment.glsl'));
+    fxaaProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/helpers/PosTexVertex.glsl'),
+      glslify('./../../shaders/FXAAFragment.glsl'),
+    );
     fxaaProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     fxaaProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
     fxaaProgram.link();
@@ -2114,7 +2530,10 @@ FX.setup = function () {
     shaderCache.addProgram(fxaaProgram, 'FXAA');
 
     const depthDebugProgram = new cc.GLProgram();
-    depthDebugProgram.initWithVertexShaderByteArray(glslify('./../../shaders/helpers/PosTexVertex.glsl'), glslify('./../../shaders/DepthDebugFragment.glsl'));
+    depthDebugProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/helpers/PosTexVertex.glsl'),
+      glslify('./../../shaders/DepthDebugFragment.glsl'),
+    );
     depthDebugProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     depthDebugProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
     depthDebugProgram.link();
@@ -2122,7 +2541,10 @@ FX.setup = function () {
     shaderCache.addProgram(depthDebugProgram, 'DepthDebug');
 
     const surfaceProgram = new cc.GLProgram();
-    surfaceProgram.initWithVertexShaderByteArray(glslify('./../../shaders/helpers/PosTexVertex.glsl'), glslify('./../../shaders/SurfaceFragment.glsl'));
+    surfaceProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/helpers/PosTexVertex.glsl'),
+      glslify('./../../shaders/SurfaceFragment.glsl'),
+    );
     surfaceProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     surfaceProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
     surfaceProgram.link();
@@ -2134,7 +2556,10 @@ FX.setup = function () {
     shaderCache.addProgram(surfaceProgram, 'Surface');
 
     const bloomProgram = new cc.GLProgram();
-    bloomProgram.initWithVertexShaderByteArray(glslify('./../../shaders/helpers/PosTexVertex.glsl'), glslify('./../../shaders/BloomFragment.glsl'));
+    bloomProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/helpers/PosTexVertex.glsl'),
+      glslify('./../../shaders/BloomFragment.glsl'),
+    );
     bloomProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     bloomProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
     bloomProgram.link();
@@ -2147,7 +2572,10 @@ FX.setup = function () {
     shaderCache.addProgram(bloomProgram, 'Bloom');
 
     const highpassProgram = new cc.GLProgram();
-    highpassProgram.initWithVertexShaderByteArray(glslify('./../../shaders/helpers/PosTexVertex.glsl'), glslify('./../../shaders/HighpassFragment.glsl'));
+    highpassProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/helpers/PosTexVertex.glsl'),
+      glslify('./../../shaders/HighpassFragment.glsl'),
+    );
     highpassProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     highpassProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
     highpassProgram.link();
@@ -2167,7 +2595,10 @@ FX.setup = function () {
     BlurShaderGenerator.compileShader('BlurFullScreenMega', 16);
 
     const radialBlurProgram = new cc.GLProgram();
-    radialBlurProgram.initWithVertexShaderByteArray(glslify('./../../shaders/helpers/PosTexVertex.glsl'), glslify('./../../shaders/RadialBlurFragment.glsl'));
+    radialBlurProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/helpers/PosTexVertex.glsl'),
+      glslify('./../../shaders/RadialBlurFragment.glsl'),
+    );
     radialBlurProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     radialBlurProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
     radialBlurProgram.link();
@@ -2181,7 +2612,10 @@ FX.setup = function () {
     shaderCache.addProgram(radialBlurProgram, 'RadialBlur');
 
     const glowNoiseProgram = new cc.GLProgram();
-    glowNoiseProgram.initWithVertexShaderByteArray(glslify('./../../shaders/helpers/PosTexVertex.glsl'), glslify('./../../shaders/GlowNoiseFragment.glsl'));
+    glowNoiseProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/helpers/PosTexVertex.glsl'),
+      glslify('./../../shaders/GlowNoiseFragment.glsl'),
+    );
     glowNoiseProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     glowNoiseProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
     glowNoiseProgram.link();
@@ -2189,13 +2623,17 @@ FX.setup = function () {
     glowNoiseProgram.loc_resolution = glowNoiseProgram.getUniformLocationForName('u_resolution');
     glowNoiseProgram.loc_color = glowNoiseProgram.getUniformLocationForName('u_color');
     glowNoiseProgram.loc_rampFrom = glowNoiseProgram.getUniformLocationForName('u_rampFrom');
-    glowNoiseProgram.loc_rampTransition = glowNoiseProgram.getUniformLocationForName('u_rampTransition');
+    glowNoiseProgram.loc_rampTransition =
+      glowNoiseProgram.getUniformLocationForName('u_rampTransition');
     // position of vertical fade from top of sprite going down
-    glowNoiseProgram.loc_verticalFadeFromTop = glowNoiseProgram.getUniformLocationForName('u_verticalFadeFromTop');
+    glowNoiseProgram.loc_verticalFadeFromTop =
+      glowNoiseProgram.getUniformLocationForName('u_verticalFadeFromTop');
     // speed of vertical fade, where higher will fade more aggressively
-    glowNoiseProgram.loc_verticalFadeSpeed = glowNoiseProgram.getUniformLocationForName('u_verticalFadeSpeed');
+    glowNoiseProgram.loc_verticalFadeSpeed =
+      glowNoiseProgram.getUniformLocationForName('u_verticalFadeSpeed');
     // higher expand, noise is shown further from glow
-    glowNoiseProgram.loc_expandModifier = glowNoiseProgram.getUniformLocationForName('u_expandModifier');
+    glowNoiseProgram.loc_expandModifier =
+      glowNoiseProgram.getUniformLocationForName('u_expandModifier');
     // higher frequency, smaller noise
     glowNoiseProgram.loc_frequency = glowNoiseProgram.getUniformLocationForName('u_frequency');
     glowNoiseProgram.loc_amplitude = glowNoiseProgram.getUniformLocationForName('u_amplitude');
@@ -2206,7 +2644,10 @@ FX.setup = function () {
     shaderCache.addProgram(glowNoiseProgram, 'GlowNoise');
 
     const glowProgram = new cc.GLProgram();
-    glowProgram.initWithVertexShaderByteArray(glslify('./../../shaders/GlowVertex.glsl'), glslify('./../../shaders/GlowFragment.glsl'));
+    glowProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/GlowVertex.glsl'),
+      glslify('./../../shaders/GlowFragment.glsl'),
+    );
     glowProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     glowProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
     glowProgram.link();
@@ -2221,7 +2662,10 @@ FX.setup = function () {
     shaderCache.addProgram(glowProgram, 'Glow');
 
     const highlightProgram = new cc.GLProgram();
-    highlightProgram.initWithVertexShaderByteArray(glslify('./../../shaders/HighlightVertex.glsl'), glslify('./../../shaders/HighlightFragment.glsl'));
+    highlightProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/HighlightVertex.glsl'),
+      glslify('./../../shaders/HighlightFragment.glsl'),
+    );
     highlightProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     highlightProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
     highlightProgram.addAttribute(cc.ATTRIBUTE_NAME_COLOR, cc.VERTEX_ATTRIB_COLOR);
@@ -2239,9 +2683,11 @@ FX.setup = function () {
     // when a color is bloomed, how intense the effect should be
     highlightProgram.loc_intensity = highlightProgram.getUniformLocationForName('u_intensity');
     // position of vertical fade from top of sprite going down
-    highlightProgram.loc_verticalFadeFromTop = highlightProgram.getUniformLocationForName('u_verticalFadeFromTop');
+    highlightProgram.loc_verticalFadeFromTop =
+      highlightProgram.getUniformLocationForName('u_verticalFadeFromTop');
     // speed of vertical fade, where higher will fade more aggressively
-    highlightProgram.loc_verticalFadeSpeed = highlightProgram.getUniformLocationForName('u_verticalFadeSpeed');
+    highlightProgram.loc_verticalFadeSpeed =
+      highlightProgram.getUniformLocationForName('u_verticalFadeSpeed');
     // properties for adjusting levels
     highlightProgram.loc_inBlack = highlightProgram.getUniformLocationForName('u_inBlack');
     highlightProgram.loc_inWhite = highlightProgram.getUniformLocationForName('u_inWhite');
@@ -2251,46 +2697,65 @@ FX.setup = function () {
     shaderCache.addProgram(highlightProgram, 'Highlight');
 
     const lensFlareProgram = new cc.GLProgram();
-    lensFlareProgram.initWithVertexShaderByteArray(glslify('./../../shaders/helpers/PosTexColorVertex.glsl'), glslify('./../../shaders/LensFlareFragment.glsl'));
+    lensFlareProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/helpers/PosTexColorVertex.glsl'),
+      glslify('./../../shaders/LensFlareFragment.glsl'),
+    );
     lensFlareProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     lensFlareProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
     lensFlareProgram.addAttribute(cc.ATTRIBUTE_NAME_COLOR, cc.VERTEX_ATTRIB_COLOR);
     lensFlareProgram.link();
     lensFlareProgram.updateUniforms();
     lensFlareProgram.loc_origin = lensFlareProgram.getUniformLocationForName('u_origin');
-    lensFlareProgram.loc_texResolution = lensFlareProgram.getUniformLocationForName('u_texResolution');
+    lensFlareProgram.loc_texResolution =
+      lensFlareProgram.getUniformLocationForName('u_texResolution');
     lensFlareProgram.loc_time = lensFlareProgram.getUniformLocationForName('u_time');
-    lensFlareProgram.loc_rampThreshold = lensFlareProgram.getUniformLocationForName('u_rampThreshold');
+    lensFlareProgram.loc_rampThreshold =
+      lensFlareProgram.getUniformLocationForName('u_rampThreshold');
     shaderCache.addProgram(lensFlareProgram, 'LensFlare');
 
     const wispLensFlareProgram = new cc.GLProgram();
-    wispLensFlareProgram.initWithVertexShaderByteArray(glslify('./../../shaders/helpers/PosTexColorVertex.glsl'), glslify('./../../shaders/WispLensFlareFragment.glsl'));
+    wispLensFlareProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/helpers/PosTexColorVertex.glsl'),
+      glslify('./../../shaders/WispLensFlareFragment.glsl'),
+    );
     wispLensFlareProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     wispLensFlareProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
     wispLensFlareProgram.addAttribute(cc.ATTRIBUTE_NAME_COLOR, cc.VERTEX_ATTRIB_COLOR);
     wispLensFlareProgram.link();
     wispLensFlareProgram.updateUniforms();
-    wispLensFlareProgram.loc_texResolution = wispLensFlareProgram.getUniformLocationForName('u_texResolution');
+    wispLensFlareProgram.loc_texResolution =
+      wispLensFlareProgram.getUniformLocationForName('u_texResolution');
     wispLensFlareProgram.loc_time = wispLensFlareProgram.getUniformLocationForName('u_time');
-    wispLensFlareProgram.loc_pulseRate = wispLensFlareProgram.getUniformLocationForName('u_pulseRate');
-    wispLensFlareProgram.loc_armLength = wispLensFlareProgram.getUniformLocationForName('u_armLength');
-    wispLensFlareProgram.loc_wispSize = wispLensFlareProgram.getUniformLocationForName('u_wispSize');
-    wispLensFlareProgram.loc_flareSize = wispLensFlareProgram.getUniformLocationForName('u_flareSize');
+    wispLensFlareProgram.loc_pulseRate =
+      wispLensFlareProgram.getUniformLocationForName('u_pulseRate');
+    wispLensFlareProgram.loc_armLength =
+      wispLensFlareProgram.getUniformLocationForName('u_armLength');
+    wispLensFlareProgram.loc_wispSize =
+      wispLensFlareProgram.getUniformLocationForName('u_wispSize');
+    wispLensFlareProgram.loc_flareSize =
+      wispLensFlareProgram.getUniformLocationForName('u_flareSize');
     shaderCache.addProgram(wispLensFlareProgram, 'WispLensFlare');
 
     const chromaticProgram = new cc.GLProgram();
-    chromaticProgram.initWithVertexShaderByteArray(glslify('./../../shaders/ChromaticVertex.glsl'), glslify('./../../shaders/ChromaticFragment.glsl'));
+    chromaticProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/ChromaticVertex.glsl'),
+      glslify('./../../shaders/ChromaticFragment.glsl'),
+    );
     chromaticProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     chromaticProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
     chromaticProgram.link();
     chromaticProgram.updateUniforms();
     chromaticProgram.loc_time = chromaticProgram.getUniformLocationForName('u_time');
     chromaticProgram.loc_resolution = chromaticProgram.getUniformLocationForName('u_resolution');
-    chromaticProgram.loc_aberrationScale = chromaticProgram.getUniformLocationForName('u_aberrationScale');
+    chromaticProgram.loc_aberrationScale =
+      chromaticProgram.getUniformLocationForName('u_aberrationScale');
     chromaticProgram.loc_frequency = chromaticProgram.getUniformLocationForName('u_frequency');
     chromaticProgram.loc_amplitude = chromaticProgram.getUniformLocationForName('u_amplitude');
-    chromaticProgram.loc_smoothstepMin = chromaticProgram.getUniformLocationForName('u_smoothstepMin');
-    chromaticProgram.loc_smoothstepMax = chromaticProgram.getUniformLocationForName('u_smoothstepMax');
+    chromaticProgram.loc_smoothstepMin =
+      chromaticProgram.getUniformLocationForName('u_smoothstepMin');
+    chromaticProgram.loc_smoothstepMax =
+      chromaticProgram.getUniformLocationForName('u_smoothstepMax');
     // uncomment if using noise map based chromatic shader
     /*
     // textures are unlikely to change slots
@@ -2300,7 +2765,10 @@ FX.setup = function () {
     shaderCache.addProgram(chromaticProgram, 'Chromatic');
 
     const chromaticFlareProgram = new cc.GLProgram();
-    chromaticFlareProgram.initWithVertexShaderByteArray(glslify('./../../shaders/helpers/PosTexColorVertex.glsl'), glslify('./../../shaders/ChromaticFlareFragment.glsl'));
+    chromaticFlareProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/helpers/PosTexColorVertex.glsl'),
+      glslify('./../../shaders/ChromaticFlareFragment.glsl'),
+    );
     chromaticFlareProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     chromaticFlareProgram.addAttribute(cc.ATTRIBUTE_NAME_COLOR, cc.VERTEX_ATTRIB_COLOR);
     chromaticFlareProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
@@ -2309,34 +2777,52 @@ FX.setup = function () {
     chromaticFlareProgram.loc_phase = chromaticFlareProgram.getUniformLocationForName('u_phase');
     chromaticFlareProgram.loc_time = chromaticFlareProgram.getUniformLocationForName('u_time');
     chromaticFlareProgram.loc_size = chromaticFlareProgram.getUniformLocationForName('u_size');
-    chromaticFlareProgram.loc_frequency = chromaticFlareProgram.getUniformLocationForName('u_frequency');
-    chromaticFlareProgram.loc_amplitude = chromaticFlareProgram.getUniformLocationForName('u_amplitude');
-    chromaticFlareProgram.loc_smoothstepMin = chromaticFlareProgram.getUniformLocationForName('u_smoothstepMin');
-    chromaticFlareProgram.loc_smoothstepMax = chromaticFlareProgram.getUniformLocationForName('u_smoothstepMax');
+    chromaticFlareProgram.loc_frequency =
+      chromaticFlareProgram.getUniformLocationForName('u_frequency');
+    chromaticFlareProgram.loc_amplitude =
+      chromaticFlareProgram.getUniformLocationForName('u_amplitude');
+    chromaticFlareProgram.loc_smoothstepMin =
+      chromaticFlareProgram.getUniformLocationForName('u_smoothstepMin');
+    chromaticFlareProgram.loc_smoothstepMax =
+      chromaticFlareProgram.getUniformLocationForName('u_smoothstepMax');
     shaderCache.addProgram(chromaticFlareProgram, 'ChromaticFlare');
 
     const causticPrismaticGlowProgram = new cc.GLProgram();
-    causticPrismaticGlowProgram.initWithVertexShaderByteArray(glslify('./../../shaders/helpers/PosTexColorVertex.glsl'), glslify('./../../shaders/CausticPrismaticGlowFragment.glsl'));
+    causticPrismaticGlowProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/helpers/PosTexColorVertex.glsl'),
+      glslify('./../../shaders/CausticPrismaticGlowFragment.glsl'),
+    );
     causticPrismaticGlowProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     causticPrismaticGlowProgram.addAttribute(cc.ATTRIBUTE_NAME_COLOR, cc.VERTEX_ATTRIB_COLOR);
-    causticPrismaticGlowProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
+    causticPrismaticGlowProgram.addAttribute(
+      cc.ATTRIBUTE_NAME_TEX_COORD,
+      cc.VERTEX_ATTRIB_TEX_COORDS,
+    );
     causticPrismaticGlowProgram.link();
     causticPrismaticGlowProgram.updateUniforms();
-    causticPrismaticGlowProgram.loc_time = causticPrismaticGlowProgram.getUniformLocationForName('u_time');
+    causticPrismaticGlowProgram.loc_time =
+      causticPrismaticGlowProgram.getUniformLocationForName('u_time');
     shaderCache.addProgram(causticPrismaticGlowProgram, 'CausticPrismaticGlow');
 
     const voronoiPrismaticProgram = new cc.GLProgram();
-    voronoiPrismaticProgram.initWithVertexShaderByteArray(glslify('./../../shaders/helpers/PosTexColorVertex.glsl'), glslify('./../../shaders/VoronoiPrismaticFragment.glsl'));
+    voronoiPrismaticProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/helpers/PosTexColorVertex.glsl'),
+      glslify('./../../shaders/VoronoiPrismaticFragment.glsl'),
+    );
     voronoiPrismaticProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     voronoiPrismaticProgram.addAttribute(cc.ATTRIBUTE_NAME_COLOR, cc.VERTEX_ATTRIB_COLOR);
     voronoiPrismaticProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
     voronoiPrismaticProgram.link();
     voronoiPrismaticProgram.updateUniforms();
-    voronoiPrismaticProgram.loc_phase = voronoiPrismaticProgram.getUniformLocationForName('u_phase');
+    voronoiPrismaticProgram.loc_phase =
+      voronoiPrismaticProgram.getUniformLocationForName('u_phase');
     shaderCache.addProgram(voronoiPrismaticProgram, 'VoronoiPrismatic');
 
     const lightingProgram = new cc.GLProgram();
-    lightingProgram.initWithVertexShaderByteArray(glslify('./../../shaders/LightingVertex.glsl'), glslify('./../../shaders/LightingFragment.glsl'));
+    lightingProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/LightingVertex.glsl'),
+      glslify('./../../shaders/LightingFragment.glsl'),
+    );
     lightingProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     lightingProgram.addAttribute(cc.ATTRIBUTE_NAME_COLOR, cc.VERTEX_ATTRIB_COLOR);
     lightingProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
@@ -2345,68 +2831,107 @@ FX.setup = function () {
     lightingProgram.updateUniforms();
     lightingProgram.loc_depthRange = lightingProgram.getUniformLocationForName('u_depthRange');
     lightingProgram.loc_depthOffset = lightingProgram.getUniformLocationForName('u_depthOffset');
-    lightingProgram.loc_lightMapScale = lightingProgram.getUniformLocationForName('u_lightMapScale');
-    lightingProgram.loc_depthRotationMatrix = lightingProgram.getUniformLocationForName('u_depthRotationMatrix');
+    lightingProgram.loc_lightMapScale =
+      lightingProgram.getUniformLocationForName('u_lightMapScale');
+    lightingProgram.loc_depthRotationMatrix =
+      lightingProgram.getUniformLocationForName('u_depthRotationMatrix');
     lightingProgram.loc_normal = lightingProgram.getUniformLocationForName('u_normal');
-    lightingProgram.loc_falloffModifier = lightingProgram.getUniformLocationForName('u_falloffModifier');
-    lightingProgram.loc_intensityModifier = lightingProgram.getUniformLocationForName('u_intensityModifier');
+    lightingProgram.loc_falloffModifier =
+      lightingProgram.getUniformLocationForName('u_falloffModifier');
+    lightingProgram.loc_intensityModifier =
+      lightingProgram.getUniformLocationForName('u_intensityModifier');
     shaderCache.addProgram(lightingProgram, 'Lighting');
 
     const shadowLowQualityProgram = new cc.GLProgram();
-    shadowLowQualityProgram.initWithVertexShaderByteArray(glslify('./../../shaders/ShadowVertex.glsl'), glslify('./../../shaders/ShadowLowQualityFragment.glsl'));
+    shadowLowQualityProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/ShadowVertex.glsl'),
+      glslify('./../../shaders/ShadowLowQualityFragment.glsl'),
+    );
     shadowLowQualityProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     shadowLowQualityProgram.addAttribute(cc.ATTRIBUTE_NAME_COLOR, cc.VERTEX_ATTRIB_COLOR);
     shadowLowQualityProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
-    shadowLowQualityProgram.addAttribute(cc.ATTRIBUTE_NAME_ORIGIN_RADIUS, cc.VERTEX_ATTRIB_ORIGIN_RADIUS);
+    shadowLowQualityProgram.addAttribute(
+      cc.ATTRIBUTE_NAME_ORIGIN_RADIUS,
+      cc.VERTEX_ATTRIB_ORIGIN_RADIUS,
+    );
     shadowLowQualityProgram.link();
     shadowLowQualityProgram.updateUniforms();
     shadowLowQualityProgram.loc_size = shadowLowQualityProgram.getUniformLocationForName('u_size');
-    shadowLowQualityProgram.loc_anchor = shadowLowQualityProgram.getUniformLocationForName('u_anchor');
-    shadowLowQualityProgram.loc_intensity = shadowLowQualityProgram.getUniformLocationForName('u_intensity');
-    shadowLowQualityProgram.loc_blurShiftModifier = shadowLowQualityProgram.getUniformLocationForName('u_blurShiftModifier');
-    shadowLowQualityProgram.loc_blurIntensityModifier = shadowLowQualityProgram.getUniformLocationForName('u_blurIntensityModifier');
+    shadowLowQualityProgram.loc_anchor =
+      shadowLowQualityProgram.getUniformLocationForName('u_anchor');
+    shadowLowQualityProgram.loc_intensity =
+      shadowLowQualityProgram.getUniformLocationForName('u_intensity');
+    shadowLowQualityProgram.loc_blurShiftModifier =
+      shadowLowQualityProgram.getUniformLocationForName('u_blurShiftModifier');
+    shadowLowQualityProgram.loc_blurIntensityModifier =
+      shadowLowQualityProgram.getUniformLocationForName('u_blurIntensityModifier');
     shaderCache.addProgram(shadowLowQualityProgram, 'ShadowLowQuality');
 
     const shadowHighQualityProgram = new cc.GLProgram();
-    shadowHighQualityProgram.initWithVertexShaderByteArray(glslify('./../../shaders/ShadowVertex.glsl'), glslify('./../../shaders/ShadowHighQualityFragment.glsl'));
+    shadowHighQualityProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/ShadowVertex.glsl'),
+      glslify('./../../shaders/ShadowHighQualityFragment.glsl'),
+    );
     shadowHighQualityProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     shadowHighQualityProgram.addAttribute(cc.ATTRIBUTE_NAME_COLOR, cc.VERTEX_ATTRIB_COLOR);
     shadowHighQualityProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
-    shadowHighQualityProgram.addAttribute(cc.ATTRIBUTE_NAME_ORIGIN_RADIUS, cc.VERTEX_ATTRIB_ORIGIN_RADIUS);
+    shadowHighQualityProgram.addAttribute(
+      cc.ATTRIBUTE_NAME_ORIGIN_RADIUS,
+      cc.VERTEX_ATTRIB_ORIGIN_RADIUS,
+    );
     shadowHighQualityProgram.link();
     shadowHighQualityProgram.updateUniforms();
-    shadowHighQualityProgram.loc_size = shadowHighQualityProgram.getUniformLocationForName('u_size');
-    shadowHighQualityProgram.loc_anchor = shadowHighQualityProgram.getUniformLocationForName('u_anchor');
-    shadowHighQualityProgram.loc_intensity = shadowHighQualityProgram.getUniformLocationForName('u_intensity');
-    shadowHighQualityProgram.loc_blurShiftModifier = shadowHighQualityProgram.getUniformLocationForName('u_blurShiftModifier');
-    shadowHighQualityProgram.loc_blurIntensityModifier = shadowHighQualityProgram.getUniformLocationForName('u_blurIntensityModifier');
+    shadowHighQualityProgram.loc_size =
+      shadowHighQualityProgram.getUniformLocationForName('u_size');
+    shadowHighQualityProgram.loc_anchor =
+      shadowHighQualityProgram.getUniformLocationForName('u_anchor');
+    shadowHighQualityProgram.loc_intensity =
+      shadowHighQualityProgram.getUniformLocationForName('u_intensity');
+    shadowHighQualityProgram.loc_blurShiftModifier =
+      shadowHighQualityProgram.getUniformLocationForName('u_blurShiftModifier');
+    shadowHighQualityProgram.loc_blurIntensityModifier =
+      shadowHighQualityProgram.getUniformLocationForName('u_blurIntensityModifier');
     shaderCache.addProgram(shadowHighQualityProgram, 'ShadowHighQuality');
 
     const multipliedLightingProgram = new cc.GLProgram();
-    multipliedLightingProgram.initWithVertexShaderByteArray(glslify('./../../shaders/helpers/PosTexVertex.glsl'), glslify('./../../shaders/MultipliedLightingFragment.glsl'));
+    multipliedLightingProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/helpers/PosTexVertex.glsl'),
+      glslify('./../../shaders/MultipliedLightingFragment.glsl'),
+    );
     multipliedLightingProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
-    multipliedLightingProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
+    multipliedLightingProgram.addAttribute(
+      cc.ATTRIBUTE_NAME_TEX_COORD,
+      cc.VERTEX_ATTRIB_TEX_COORDS,
+    );
     multipliedLightingProgram.link();
     multipliedLightingProgram.updateUniforms();
-    multipliedLightingProgram.loc_ambientColor = multipliedLightingProgram.getUniformLocationForName('u_ambientColor');
+    multipliedLightingProgram.loc_ambientColor =
+      multipliedLightingProgram.getUniformLocationForName('u_ambientColor');
     // textures are unlikely to change slots
-    multipliedLightingProgram.loc_lightMap = multipliedLightingProgram.getUniformLocationForName('u_lightMap');
+    multipliedLightingProgram.loc_lightMap =
+      multipliedLightingProgram.getUniformLocationForName('u_lightMap');
     multipliedLightingProgram.setUniformLocationWith1i(multipliedLightingProgram.loc_lightMap, 1);
     shaderCache.addProgram(multipliedLightingProgram, 'MultipliedLighting');
 
     const distortionProgram = new cc.GLProgram();
-    distortionProgram.initWithVertexShaderByteArray(glslify('./../../shaders/DistortionVertex.glsl'), glslify('./../../shaders/DistortionFragment.glsl'));
+    distortionProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/DistortionVertex.glsl'),
+      glslify('./../../shaders/DistortionFragment.glsl'),
+    );
     distortionProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     distortionProgram.addAttribute(cc.ATTRIBUTE_NAME_COLOR, cc.VERTEX_ATTRIB_COLOR);
     distortionProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
     distortionProgram.link();
     distortionProgram.updateUniforms();
     distortionProgram.loc_resolution = distortionProgram.getUniformLocationForName('u_resolution');
-    distortionProgram.loc_depthOffset = distortionProgram.getUniformLocationForName('u_depthOffset');
-    distortionProgram.loc_depthModifier = distortionProgram.getUniformLocationForName('u_depthModifier');
+    distortionProgram.loc_depthOffset =
+      distortionProgram.getUniformLocationForName('u_depthOffset');
+    distortionProgram.loc_depthModifier =
+      distortionProgram.getUniformLocationForName('u_depthModifier');
     distortionProgram.loc_refraction = distortionProgram.getUniformLocationForName('u_refraction');
     distortionProgram.loc_reflection = distortionProgram.getUniformLocationForName('u_reflection');
-    distortionProgram.loc_fresnelBias = distortionProgram.getUniformLocationForName('u_fresnelBias');
+    distortionProgram.loc_fresnelBias =
+      distortionProgram.getUniformLocationForName('u_fresnelBias');
     // textures are unlikely to change slots
     // sprite texture should be a map of normals (rgb) and intensity (a) used to control distortion
     // depth map for z sorting
@@ -2418,7 +2943,10 @@ FX.setup = function () {
     shaderCache.addProgram(distortionProgram, 'Distortion');
 
     const waterProgram = new cc.GLProgram();
-    waterProgram.initWithVertexShaderByteArray(glslify('./../../shaders/DistortionVertex.glsl'), glslify('./../../shaders/WaterFragment.glsl'));
+    waterProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/DistortionVertex.glsl'),
+      glslify('./../../shaders/WaterFragment.glsl'),
+    );
     waterProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     waterProgram.addAttribute(cc.ATTRIBUTE_NAME_COLOR, cc.VERTEX_ATTRIB_COLOR);
     waterProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
@@ -2444,7 +2972,10 @@ FX.setup = function () {
     shaderCache.addProgram(waterProgram, 'Water');
 
     const shockwaveProgram = new cc.GLProgram();
-    shockwaveProgram.initWithVertexShaderByteArray(glslify('./../../shaders/DistortionVertex.glsl'), glslify('./../../shaders/ShockwaveFragment.glsl'));
+    shockwaveProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/DistortionVertex.glsl'),
+      glslify('./../../shaders/ShockwaveFragment.glsl'),
+    );
     shockwaveProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     shockwaveProgram.addAttribute(cc.ATTRIBUTE_NAME_COLOR, cc.VERTEX_ATTRIB_COLOR);
     shockwaveProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
@@ -2452,7 +2983,8 @@ FX.setup = function () {
     shockwaveProgram.updateUniforms();
     shockwaveProgram.loc_resolution = shockwaveProgram.getUniformLocationForName('u_resolution');
     shockwaveProgram.loc_depthOffset = shockwaveProgram.getUniformLocationForName('u_depthOffset');
-    shockwaveProgram.loc_depthModifier = shockwaveProgram.getUniformLocationForName('u_depthModifier');
+    shockwaveProgram.loc_depthModifier =
+      shockwaveProgram.getUniformLocationForName('u_depthModifier');
     shockwaveProgram.loc_refraction = shockwaveProgram.getUniformLocationForName('u_refraction');
     shockwaveProgram.loc_reflection = shockwaveProgram.getUniformLocationForName('u_reflection');
     shockwaveProgram.loc_fresnelBias = shockwaveProgram.getUniformLocationForName('u_fresnelBias');
@@ -2465,7 +2997,10 @@ FX.setup = function () {
     shaderCache.addProgram(shockwaveProgram, 'Shockwave');
 
     const vortexProgram = new cc.GLProgram();
-    vortexProgram.initWithVertexShaderByteArray(glslify('./../../shaders/DistortionVertex.glsl'), glslify('./../../shaders/VortexFragment.glsl'));
+    vortexProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/DistortionVertex.glsl'),
+      glslify('./../../shaders/VortexFragment.glsl'),
+    );
     vortexProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     vortexProgram.addAttribute(cc.ATTRIBUTE_NAME_COLOR, cc.VERTEX_ATTRIB_COLOR);
     vortexProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
@@ -2488,33 +3023,50 @@ FX.setup = function () {
     shaderCache.addProgram(vortexProgram, 'Vortex');
 
     const toneCurveProgram = new cc.GLProgram();
-    toneCurveProgram.initWithVertexShaderByteArray(glslify('./../../shaders/helpers/PosTexVertex.glsl'), glslify('./../../shaders/ToneCurveFragment.glsl'));
+    toneCurveProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/helpers/PosTexVertex.glsl'),
+      glslify('./../../shaders/ToneCurveFragment.glsl'),
+    );
     toneCurveProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     toneCurveProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
     toneCurveProgram.link();
     toneCurveProgram.updateUniforms();
-    toneCurveProgram.loc_toneCurveTexture = toneCurveProgram.getUniformLocationForName('u_toneCurveTexture');
+    toneCurveProgram.loc_toneCurveTexture =
+      toneCurveProgram.getUniformLocationForName('u_toneCurveTexture');
     toneCurveProgram.loc_amount = toneCurveProgram.getUniformLocationForName('u_amount');
     toneCurveProgram.setUniformLocationWith1i(toneCurveProgram.loc_toneCurveTexture, 1);
     shaderCache.addProgram(toneCurveProgram, 'ToneCurve');
 
     const gradientColorMapProgram = new cc.GLProgram();
-    gradientColorMapProgram.initWithVertexShaderByteArray(glslify('./../../shaders/helpers/PosTexVertex.glsl'), glslify('./../../shaders/GradientColorMapFragment.glsl'));
+    gradientColorMapProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/helpers/PosTexVertex.glsl'),
+      glslify('./../../shaders/GradientColorMapFragment.glsl'),
+    );
     gradientColorMapProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     gradientColorMapProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
     gradientColorMapProgram.link();
     gradientColorMapProgram.updateUniforms();
-    gradientColorMapProgram.loc_fromColorBlack = gradientColorMapProgram.getUniformLocationForName('u_fromColorBlack');
-    gradientColorMapProgram.loc_fromColorMid = gradientColorMapProgram.getUniformLocationForName('u_fromColorMid');
-    gradientColorMapProgram.loc_fromColorWhite = gradientColorMapProgram.getUniformLocationForName('u_fromColorWhite');
-    gradientColorMapProgram.loc_toColorBlack = gradientColorMapProgram.getUniformLocationForName('u_toColorBlack');
-    gradientColorMapProgram.loc_toColorMid = gradientColorMapProgram.getUniformLocationForName('u_toColorMid');
-    gradientColorMapProgram.loc_toColorWhite = gradientColorMapProgram.getUniformLocationForName('u_toColorWhite');
-    gradientColorMapProgram.loc_phase = gradientColorMapProgram.getUniformLocationForName('u_phase');
+    gradientColorMapProgram.loc_fromColorBlack =
+      gradientColorMapProgram.getUniformLocationForName('u_fromColorBlack');
+    gradientColorMapProgram.loc_fromColorMid =
+      gradientColorMapProgram.getUniformLocationForName('u_fromColorMid');
+    gradientColorMapProgram.loc_fromColorWhite =
+      gradientColorMapProgram.getUniformLocationForName('u_fromColorWhite');
+    gradientColorMapProgram.loc_toColorBlack =
+      gradientColorMapProgram.getUniformLocationForName('u_toColorBlack');
+    gradientColorMapProgram.loc_toColorMid =
+      gradientColorMapProgram.getUniformLocationForName('u_toColorMid');
+    gradientColorMapProgram.loc_toColorWhite =
+      gradientColorMapProgram.getUniformLocationForName('u_toColorWhite');
+    gradientColorMapProgram.loc_phase =
+      gradientColorMapProgram.getUniformLocationForName('u_phase');
     shaderCache.addProgram(gradientColorMapProgram, 'GradientColorMap');
 
     const dissolveProgram = new cc.GLProgram();
-    dissolveProgram.initWithVertexShaderByteArray(glslify('./../../shaders/helpers/PosTexColorVertex.glsl'), glslify('./../../shaders/DissolveFragment.glsl'));
+    dissolveProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/helpers/PosTexColorVertex.glsl'),
+      glslify('./../../shaders/DissolveFragment.glsl'),
+    );
     dissolveProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     dissolveProgram.addAttribute(cc.ATTRIBUTE_NAME_COLOR, cc.VERTEX_ATTRIB_COLOR);
     dissolveProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
@@ -2523,64 +3075,98 @@ FX.setup = function () {
     dissolveProgram.loc_seed = dissolveProgram.getUniformLocationForName('u_seed');
     dissolveProgram.loc_frequency = dissolveProgram.getUniformLocationForName('u_frequency');
     dissolveProgram.loc_amplitude = dissolveProgram.getUniformLocationForName('u_amplitude');
-    dissolveProgram.loc_vignetteStrength = dissolveProgram.getUniformLocationForName('u_vignetteStrength');
+    dissolveProgram.loc_vignetteStrength =
+      dissolveProgram.getUniformLocationForName('u_vignetteStrength');
     dissolveProgram.loc_edgeFalloff = dissolveProgram.getUniformLocationForName('u_edgeFalloff');
     dissolveProgram.loc_time = dissolveProgram.getUniformLocationForName('u_time');
     shaderCache.addProgram(dissolveProgram, 'Dissolve');
 
     const dissolveWithDiscFromCenterProgram = new cc.GLProgram();
-    dissolveWithDiscFromCenterProgram.initWithVertexShaderByteArray(glslify('./../../shaders/helpers/PosTexColorVertex.glsl'), glslify('./../../shaders/DissolveFromCenterWithDiscFragment.glsl'));
-    dissolveWithDiscFromCenterProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
+    dissolveWithDiscFromCenterProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/helpers/PosTexColorVertex.glsl'),
+      glslify('./../../shaders/DissolveFromCenterWithDiscFragment.glsl'),
+    );
+    dissolveWithDiscFromCenterProgram.addAttribute(
+      cc.ATTRIBUTE_NAME_POSITION,
+      cc.VERTEX_ATTRIB_POSITION,
+    );
     dissolveWithDiscFromCenterProgram.addAttribute(cc.ATTRIBUTE_NAME_COLOR, cc.VERTEX_ATTRIB_COLOR);
-    dissolveWithDiscFromCenterProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
+    dissolveWithDiscFromCenterProgram.addAttribute(
+      cc.ATTRIBUTE_NAME_TEX_COORD,
+      cc.VERTEX_ATTRIB_TEX_COORDS,
+    );
     dissolveWithDiscFromCenterProgram.link();
     dissolveWithDiscFromCenterProgram.updateUniforms();
-    dissolveWithDiscFromCenterProgram.loc_time = dissolveWithDiscFromCenterProgram.getUniformLocationForName('u_time');
-    dissolveWithDiscFromCenterProgram.loc_phase = dissolveWithDiscFromCenterProgram.getUniformLocationForName('u_phase');
-    dissolveWithDiscFromCenterProgram.loc_texResolution = dissolveWithDiscFromCenterProgram.getUniformLocationForName('u_texResolution');
+    dissolveWithDiscFromCenterProgram.loc_time =
+      dissolveWithDiscFromCenterProgram.getUniformLocationForName('u_time');
+    dissolveWithDiscFromCenterProgram.loc_phase =
+      dissolveWithDiscFromCenterProgram.getUniformLocationForName('u_phase');
+    dissolveWithDiscFromCenterProgram.loc_texResolution =
+      dissolveWithDiscFromCenterProgram.getUniformLocationForName('u_texResolution');
     shaderCache.addProgram(dissolveWithDiscFromCenterProgram, 'DissolveWithDiscFromCenter');
 
     const energyBallProgram = new cc.GLProgram();
-    energyBallProgram.initWithVertexShaderByteArray(glslify('./../../shaders/helpers/PosTexColorVertex.glsl'), glslify('./../../shaders/EnergyBallFragment.glsl'));
+    energyBallProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/helpers/PosTexColorVertex.glsl'),
+      glslify('./../../shaders/EnergyBallFragment.glsl'),
+    );
     energyBallProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     energyBallProgram.addAttribute(cc.ATTRIBUTE_NAME_COLOR, cc.VERTEX_ATTRIB_COLOR);
     energyBallProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
     energyBallProgram.link();
     energyBallProgram.updateUniforms();
     energyBallProgram.loc_time = energyBallProgram.getUniformLocationForName('u_time');
-    energyBallProgram.loc_texResolution = energyBallProgram.getUniformLocationForName('u_texResolution');
+    energyBallProgram.loc_texResolution =
+      energyBallProgram.getUniformLocationForName('u_texResolution');
     energyBallProgram.loc_timeScale = energyBallProgram.getUniformLocationForName('u_timeScale');
     energyBallProgram.loc_noiseLevel = energyBallProgram.getUniformLocationForName('u_noiseLevel');
     shaderCache.addProgram(energyBallProgram, 'EnergyBall');
 
     const fireRingProgram = new cc.GLProgram();
-    fireRingProgram.initWithVertexShaderByteArray(glslify('./../../shaders/helpers/PosTexColorVertex.glsl'), glslify('./../../shaders/FireRingFragment.glsl'));
+    fireRingProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/helpers/PosTexColorVertex.glsl'),
+      glslify('./../../shaders/FireRingFragment.glsl'),
+    );
     fireRingProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     fireRingProgram.addAttribute(cc.ATTRIBUTE_NAME_COLOR, cc.VERTEX_ATTRIB_COLOR);
     fireRingProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
     fireRingProgram.link();
     fireRingProgram.updateUniforms();
-    fireRingProgram.loc_texResolution = fireRingProgram.getUniformLocationForName('u_texResolution');
+    fireRingProgram.loc_texResolution =
+      fireRingProgram.getUniformLocationForName('u_texResolution');
     fireRingProgram.loc_time = fireRingProgram.getUniformLocationForName('u_time');
     fireRingProgram.loc_phase = fireRingProgram.getUniformLocationForName('u_phase');
     fireRingProgram.loc_color = fireRingProgram.getUniformLocationForName('u_color');
     shaderCache.addProgram(fireRingProgram, 'FireRing');
 
     const fireRingFlareWarpedProgram = new cc.GLProgram();
-    fireRingFlareWarpedProgram.initWithVertexShaderByteArray(glslify('./../../shaders/helpers/PosTexColorVertex.glsl'), glslify('./../../shaders/FireRingFlareWarpedFragment.glsl'));
+    fireRingFlareWarpedProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/helpers/PosTexColorVertex.glsl'),
+      glslify('./../../shaders/FireRingFlareWarpedFragment.glsl'),
+    );
     fireRingFlareWarpedProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     fireRingFlareWarpedProgram.addAttribute(cc.ATTRIBUTE_NAME_COLOR, cc.VERTEX_ATTRIB_COLOR);
-    fireRingFlareWarpedProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
+    fireRingFlareWarpedProgram.addAttribute(
+      cc.ATTRIBUTE_NAME_TEX_COORD,
+      cc.VERTEX_ATTRIB_TEX_COORDS,
+    );
     fireRingFlareWarpedProgram.link();
     fireRingFlareWarpedProgram.updateUniforms();
-    fireRingFlareWarpedProgram.loc_texResolution = fireRingFlareWarpedProgram.getUniformLocationForName('u_texResolution');
-    fireRingFlareWarpedProgram.loc_time = fireRingFlareWarpedProgram.getUniformLocationForName('u_time');
-    fireRingFlareWarpedProgram.loc_phase = fireRingFlareWarpedProgram.getUniformLocationForName('u_phase');
-    fireRingFlareWarpedProgram.loc_color = fireRingFlareWarpedProgram.getUniformLocationForName('u_color');
+    fireRingFlareWarpedProgram.loc_texResolution =
+      fireRingFlareWarpedProgram.getUniformLocationForName('u_texResolution');
+    fireRingFlareWarpedProgram.loc_time =
+      fireRingFlareWarpedProgram.getUniformLocationForName('u_time');
+    fireRingFlareWarpedProgram.loc_phase =
+      fireRingFlareWarpedProgram.getUniformLocationForName('u_phase');
+    fireRingFlareWarpedProgram.loc_color =
+      fireRingFlareWarpedProgram.getUniformLocationForName('u_color');
     shaderCache.addProgram(fireRingFlareWarpedProgram, 'FireRingFlareWarped');
 
     const lensNoiseProgram = new cc.GLProgram();
-    lensNoiseProgram.initWithVertexShaderByteArray(glslify('./../../shaders/helpers/PosTexColorVertex.glsl'), glslify('./../../shaders/LensNoiseFragment.glsl'));
+    lensNoiseProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/helpers/PosTexColorVertex.glsl'),
+      glslify('./../../shaders/LensNoiseFragment.glsl'),
+    );
     lensNoiseProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     lensNoiseProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
     lensNoiseProgram.addAttribute(cc.ATTRIBUTE_NAME_COLOR, cc.VERTEX_ATTRIB_COLOR);
@@ -2588,99 +3174,170 @@ FX.setup = function () {
     lensNoiseProgram.updateUniforms();
     lensNoiseProgram.loc_time = lensNoiseProgram.getUniformLocationForName('u_time');
     lensNoiseProgram.loc_flareAmount = lensNoiseProgram.getUniformLocationForName('u_flareAmount');
-    lensNoiseProgram.loc_texResolution = lensNoiseProgram.getUniformLocationForName('u_texResolution');
+    lensNoiseProgram.loc_texResolution =
+      lensNoiseProgram.getUniformLocationForName('u_texResolution');
     shaderCache.addProgram(lensNoiseProgram, 'LensNoise');
 
     const whiteCloudVignetteProgram = new cc.GLProgram();
-    whiteCloudVignetteProgram.initWithVertexShaderByteArray(glslify('./../../shaders/helpers/PosTexColorVertex.glsl'), glslify('./../../shaders/WhiteCloudVignetteFragment.glsl'));
+    whiteCloudVignetteProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/helpers/PosTexColorVertex.glsl'),
+      glslify('./../../shaders/WhiteCloudVignetteFragment.glsl'),
+    );
     whiteCloudVignetteProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
-    whiteCloudVignetteProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
+    whiteCloudVignetteProgram.addAttribute(
+      cc.ATTRIBUTE_NAME_TEX_COORD,
+      cc.VERTEX_ATTRIB_TEX_COORDS,
+    );
     whiteCloudVignetteProgram.addAttribute(cc.ATTRIBUTE_NAME_COLOR, cc.VERTEX_ATTRIB_COLOR);
     whiteCloudVignetteProgram.link();
     whiteCloudVignetteProgram.updateUniforms();
-    whiteCloudVignetteProgram.loc_time = whiteCloudVignetteProgram.getUniformLocationForName('u_time');
-    whiteCloudVignetteProgram.loc_texResolution = whiteCloudVignetteProgram.getUniformLocationForName('u_texResolution');
-    whiteCloudVignetteProgram.loc_vignetteAmount = whiteCloudVignetteProgram.getUniformLocationForName('u_vignetteAmount');
-    whiteCloudVignetteProgram.loc_noiseAmount = whiteCloudVignetteProgram.getUniformLocationForName('u_noiseAmount');
+    whiteCloudVignetteProgram.loc_time =
+      whiteCloudVignetteProgram.getUniformLocationForName('u_time');
+    whiteCloudVignetteProgram.loc_texResolution =
+      whiteCloudVignetteProgram.getUniformLocationForName('u_texResolution');
+    whiteCloudVignetteProgram.loc_vignetteAmount =
+      whiteCloudVignetteProgram.getUniformLocationForName('u_vignetteAmount');
+    whiteCloudVignetteProgram.loc_noiseAmount =
+      whiteCloudVignetteProgram.getUniformLocationForName('u_noiseAmount');
     shaderCache.addProgram(whiteCloudVignetteProgram, 'WhiteCloudVignette');
 
     const fireLinearWaveShaderProgram = new cc.GLProgram();
-    fireLinearWaveShaderProgram.initWithVertexShaderByteArray(glslify('./../../shaders/helpers/PosTexColorVertex.glsl'), glslify('./../../shaders/FireLinearWaveFragment.glsl'));
+    fireLinearWaveShaderProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/helpers/PosTexColorVertex.glsl'),
+      glslify('./../../shaders/FireLinearWaveFragment.glsl'),
+    );
     fireLinearWaveShaderProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     fireLinearWaveShaderProgram.addAttribute(cc.ATTRIBUTE_NAME_COLOR, cc.VERTEX_ATTRIB_COLOR);
-    fireLinearWaveShaderProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
+    fireLinearWaveShaderProgram.addAttribute(
+      cc.ATTRIBUTE_NAME_TEX_COORD,
+      cc.VERTEX_ATTRIB_TEX_COORDS,
+    );
     fireLinearWaveShaderProgram.link();
     fireLinearWaveShaderProgram.updateUniforms();
-    fireLinearWaveShaderProgram.loc_resolution = fireLinearWaveShaderProgram.getUniformLocationForName('u_resolution');
-    fireLinearWaveShaderProgram.loc_time = fireLinearWaveShaderProgram.getUniformLocationForName('u_time');
-    fireLinearWaveShaderProgram.loc_phase = fireLinearWaveShaderProgram.getUniformLocationForName('u_phase');
+    fireLinearWaveShaderProgram.loc_resolution =
+      fireLinearWaveShaderProgram.getUniformLocationForName('u_resolution');
+    fireLinearWaveShaderProgram.loc_time =
+      fireLinearWaveShaderProgram.getUniformLocationForName('u_time');
+    fireLinearWaveShaderProgram.loc_phase =
+      fireLinearWaveShaderProgram.getUniformLocationForName('u_phase');
     shaderCache.addProgram(fireLinearWaveShaderProgram, 'FireLinearWave');
 
     const glowImageMapControlProgram = new cc.GLProgram();
-    glowImageMapControlProgram.initWithVertexShaderByteArray(glslify('./../../shaders/helpers/PosTexColorVertex.glsl'), glslify('./../../shaders/GlowImageMapControlFragment.glsl'));
+    glowImageMapControlProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/helpers/PosTexColorVertex.glsl'),
+      glslify('./../../shaders/GlowImageMapControlFragment.glsl'),
+    );
     glowImageMapControlProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     glowImageMapControlProgram.addAttribute(cc.ATTRIBUTE_NAME_COLOR, cc.VERTEX_ATTRIB_COLOR);
-    glowImageMapControlProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
+    glowImageMapControlProgram.addAttribute(
+      cc.ATTRIBUTE_NAME_TEX_COORD,
+      cc.VERTEX_ATTRIB_TEX_COORDS,
+    );
     glowImageMapControlProgram.link();
     glowImageMapControlProgram.updateUniforms();
-    glowImageMapControlProgram.loc_texResolution = glowImageMapControlProgram.getUniformLocationForName('u_texResolution');
-    glowImageMapControlProgram.loc_time = glowImageMapControlProgram.getUniformLocationForName('u_time');
-    glowImageMapControlProgram.loc_color = glowImageMapControlProgram.getUniformLocationForName('u_color');
-    glowImageMapControlProgram.loc_intensity = glowImageMapControlProgram.getUniformLocationForName('u_intensity');
-    glowImageMapControlProgram.loc_gamma = glowImageMapControlProgram.getUniformLocationForName('u_gamma');
-    glowImageMapControlProgram.loc_levelsInWhite = glowImageMapControlProgram.getUniformLocationForName('u_levelsInWhite');
-    glowImageMapControlProgram.loc_levelsInBlack = glowImageMapControlProgram.getUniformLocationForName('u_levelsInBlack');
+    glowImageMapControlProgram.loc_texResolution =
+      glowImageMapControlProgram.getUniformLocationForName('u_texResolution');
+    glowImageMapControlProgram.loc_time =
+      glowImageMapControlProgram.getUniformLocationForName('u_time');
+    glowImageMapControlProgram.loc_color =
+      glowImageMapControlProgram.getUniformLocationForName('u_color');
+    glowImageMapControlProgram.loc_intensity =
+      glowImageMapControlProgram.getUniformLocationForName('u_intensity');
+    glowImageMapControlProgram.loc_gamma =
+      glowImageMapControlProgram.getUniformLocationForName('u_gamma');
+    glowImageMapControlProgram.loc_levelsInWhite =
+      glowImageMapControlProgram.getUniformLocationForName('u_levelsInWhite');
+    glowImageMapControlProgram.loc_levelsInBlack =
+      glowImageMapControlProgram.getUniformLocationForName('u_levelsInBlack');
     shaderCache.addProgram(glowImageMapControlProgram, 'GlowImageMapControl');
 
     const glowImageMapRippleProgram = new cc.GLProgram();
-    glowImageMapRippleProgram.initWithVertexShaderByteArray(glslify('./../../shaders/helpers/PosTexColorVertex.glsl'), glslify('./../../shaders/GlowImageMapRippleFragment.glsl'));
+    glowImageMapRippleProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/helpers/PosTexColorVertex.glsl'),
+      glslify('./../../shaders/GlowImageMapRippleFragment.glsl'),
+    );
     glowImageMapRippleProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     glowImageMapRippleProgram.addAttribute(cc.ATTRIBUTE_NAME_COLOR, cc.VERTEX_ATTRIB_COLOR);
-    glowImageMapRippleProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
+    glowImageMapRippleProgram.addAttribute(
+      cc.ATTRIBUTE_NAME_TEX_COORD,
+      cc.VERTEX_ATTRIB_TEX_COORDS,
+    );
     glowImageMapRippleProgram.link();
     glowImageMapRippleProgram.updateUniforms();
-    glowImageMapRippleProgram.loc_time = glowImageMapRippleProgram.getUniformLocationForName('u_time');
-    glowImageMapRippleProgram.loc_intensity = glowImageMapRippleProgram.getUniformLocationForName('u_intensity');
-    glowImageMapRippleProgram.loc_texResolution = glowImageMapRippleProgram.getUniformLocationForName('u_texResolution');
+    glowImageMapRippleProgram.loc_time =
+      glowImageMapRippleProgram.getUniformLocationForName('u_time');
+    glowImageMapRippleProgram.loc_intensity =
+      glowImageMapRippleProgram.getUniformLocationForName('u_intensity');
+    glowImageMapRippleProgram.loc_texResolution =
+      glowImageMapRippleProgram.getUniformLocationForName('u_texResolution');
     shaderCache.addProgram(glowImageMapRippleProgram, 'GlowImageMapRipple');
 
     const fbmPolarFlareShaderProgram = new cc.GLProgram();
-    fbmPolarFlareShaderProgram.initWithVertexShaderByteArray(glslify('./../../shaders/helpers/PosTexColorVertex.glsl'), glslify('./../../shaders/FbmPolarFlareFragment.glsl'));
+    fbmPolarFlareShaderProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/helpers/PosTexColorVertex.glsl'),
+      glslify('./../../shaders/FbmPolarFlareFragment.glsl'),
+    );
     fbmPolarFlareShaderProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     fbmPolarFlareShaderProgram.addAttribute(cc.ATTRIBUTE_NAME_COLOR, cc.VERTEX_ATTRIB_COLOR);
-    fbmPolarFlareShaderProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
+    fbmPolarFlareShaderProgram.addAttribute(
+      cc.ATTRIBUTE_NAME_TEX_COORD,
+      cc.VERTEX_ATTRIB_TEX_COORDS,
+    );
     fbmPolarFlareShaderProgram.link();
     fbmPolarFlareShaderProgram.updateUniforms();
-    fbmPolarFlareShaderProgram.loc_size = fbmPolarFlareShaderProgram.getUniformLocationForName('u_size');
-    fbmPolarFlareShaderProgram.loc_time = fbmPolarFlareShaderProgram.getUniformLocationForName('u_time');
-    fbmPolarFlareShaderProgram.loc_phase = fbmPolarFlareShaderProgram.getUniformLocationForName('u_phase');
-    fbmPolarFlareShaderProgram.loc_flareColor = fbmPolarFlareShaderProgram.getUniformLocationForName('u_flareColor');
+    fbmPolarFlareShaderProgram.loc_size =
+      fbmPolarFlareShaderProgram.getUniformLocationForName('u_size');
+    fbmPolarFlareShaderProgram.loc_time =
+      fbmPolarFlareShaderProgram.getUniformLocationForName('u_time');
+    fbmPolarFlareShaderProgram.loc_phase =
+      fbmPolarFlareShaderProgram.getUniformLocationForName('u_phase');
+    fbmPolarFlareShaderProgram.loc_flareColor =
+      fbmPolarFlareShaderProgram.getUniformLocationForName('u_flareColor');
     shaderCache.addProgram(fbmPolarFlareShaderProgram, 'FbmPolarFlare');
 
     const fbmNoiseRaysShaderProgram = new cc.GLProgram();
-    fbmNoiseRaysShaderProgram.initWithVertexShaderByteArray(glslify('./../../shaders/helpers/PosTexColorVertex.glsl'), glslify('./../../shaders/FbmNoiseRays.glsl'));
+    fbmNoiseRaysShaderProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/helpers/PosTexColorVertex.glsl'),
+      glslify('./../../shaders/FbmNoiseRays.glsl'),
+    );
     fbmNoiseRaysShaderProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     fbmNoiseRaysShaderProgram.addAttribute(cc.ATTRIBUTE_NAME_COLOR, cc.VERTEX_ATTRIB_COLOR);
-    fbmNoiseRaysShaderProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
+    fbmNoiseRaysShaderProgram.addAttribute(
+      cc.ATTRIBUTE_NAME_TEX_COORD,
+      cc.VERTEX_ATTRIB_TEX_COORDS,
+    );
     fbmNoiseRaysShaderProgram.link();
     fbmNoiseRaysShaderProgram.updateUniforms();
-    fbmNoiseRaysShaderProgram.loc_texResolution = fbmNoiseRaysShaderProgram.getUniformLocationForName('u_texResolution');
-    fbmNoiseRaysShaderProgram.loc_time = fbmNoiseRaysShaderProgram.getUniformLocationForName('u_time');
+    fbmNoiseRaysShaderProgram.loc_texResolution =
+      fbmNoiseRaysShaderProgram.getUniformLocationForName('u_texResolution');
+    fbmNoiseRaysShaderProgram.loc_time =
+      fbmNoiseRaysShaderProgram.getUniformLocationForName('u_time');
     shaderCache.addProgram(fbmNoiseRaysShaderProgram, 'FbmNoiseRays');
 
     const fbmNoiseGradientMaskProgram = new cc.GLProgram();
-    fbmNoiseGradientMaskProgram.initWithVertexShaderByteArray(glslify('./../../shaders/helpers/PosTexColorVertex.glsl'), glslify('./../../shaders/FbmNoiseGradientMask.glsl'));
+    fbmNoiseGradientMaskProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/helpers/PosTexColorVertex.glsl'),
+      glslify('./../../shaders/FbmNoiseGradientMask.glsl'),
+    );
     fbmNoiseGradientMaskProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     fbmNoiseGradientMaskProgram.addAttribute(cc.ATTRIBUTE_NAME_COLOR, cc.VERTEX_ATTRIB_COLOR);
-    fbmNoiseGradientMaskProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
+    fbmNoiseGradientMaskProgram.addAttribute(
+      cc.ATTRIBUTE_NAME_TEX_COORD,
+      cc.VERTEX_ATTRIB_TEX_COORDS,
+    );
     fbmNoiseGradientMaskProgram.link();
     fbmNoiseGradientMaskProgram.updateUniforms();
-    fbmNoiseGradientMaskProgram.loc_texResolution = fbmNoiseGradientMaskProgram.getUniformLocationForName('u_texResolution');
-    fbmNoiseGradientMaskProgram.loc_time = fbmNoiseGradientMaskProgram.getUniformLocationForName('u_time');
+    fbmNoiseGradientMaskProgram.loc_texResolution =
+      fbmNoiseGradientMaskProgram.getUniformLocationForName('u_texResolution');
+    fbmNoiseGradientMaskProgram.loc_time =
+      fbmNoiseGradientMaskProgram.getUniformLocationForName('u_time');
     shaderCache.addProgram(fbmNoiseGradientMaskProgram, 'FbmNoiseGradientMask');
 
     const levelsShaderProgram = new cc.GLProgram();
-    levelsShaderProgram.initWithVertexShaderByteArray(glslify('./../../shaders/helpers/PosTexVertex.glsl'), glslify('./../../shaders/LevelsFragment.glsl'));
+    levelsShaderProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/helpers/PosTexVertex.glsl'),
+      glslify('./../../shaders/LevelsFragment.glsl'),
+    );
     levelsShaderProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     levelsShaderProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
     levelsShaderProgram.link();
@@ -2693,20 +3350,36 @@ FX.setup = function () {
     shaderCache.addProgram(levelsShaderProgram, 'Levels');
 
     const cardAngleGradientShineProgram = new cc.GLProgram();
-    cardAngleGradientShineProgram.initWithVertexShaderByteArray(glslify('./../../shaders/helpers/PosTexColorVertex.glsl'), glslify('./../../shaders/CardAngledGradientShine.glsl'));
-    cardAngleGradientShineProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
+    cardAngleGradientShineProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/helpers/PosTexColorVertex.glsl'),
+      glslify('./../../shaders/CardAngledGradientShine.glsl'),
+    );
+    cardAngleGradientShineProgram.addAttribute(
+      cc.ATTRIBUTE_NAME_POSITION,
+      cc.VERTEX_ATTRIB_POSITION,
+    );
     cardAngleGradientShineProgram.addAttribute(cc.ATTRIBUTE_NAME_COLOR, cc.VERTEX_ATTRIB_COLOR);
-    cardAngleGradientShineProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
+    cardAngleGradientShineProgram.addAttribute(
+      cc.ATTRIBUTE_NAME_TEX_COORD,
+      cc.VERTEX_ATTRIB_TEX_COORDS,
+    );
     cardAngleGradientShineProgram.link();
     cardAngleGradientShineProgram.updateUniforms();
-    cardAngleGradientShineProgram.loc_phase = cardAngleGradientShineProgram.getUniformLocationForName('u_phase');
-    cardAngleGradientShineProgram.loc_time = cardAngleGradientShineProgram.getUniformLocationForName('u_time');
-    cardAngleGradientShineProgram.loc_intensity = cardAngleGradientShineProgram.getUniformLocationForName('u_intensity');
-    cardAngleGradientShineProgram.loc_texResolution = cardAngleGradientShineProgram.getUniformLocationForName('u_texResolution');
+    cardAngleGradientShineProgram.loc_phase =
+      cardAngleGradientShineProgram.getUniformLocationForName('u_phase');
+    cardAngleGradientShineProgram.loc_time =
+      cardAngleGradientShineProgram.getUniformLocationForName('u_time');
+    cardAngleGradientShineProgram.loc_intensity =
+      cardAngleGradientShineProgram.getUniformLocationForName('u_intensity');
+    cardAngleGradientShineProgram.loc_texResolution =
+      cardAngleGradientShineProgram.getUniformLocationForName('u_texResolution');
     shaderCache.addProgram(cardAngleGradientShineProgram, 'CardAngledGradientShine');
 
     const colorizeProgram = new cc.GLProgram();
-    colorizeProgram.initWithVertexShaderByteArray(glslify('./../../shaders/helpers/PosTexColorVertex.glsl'), glslify('./../../shaders/ColorizeFragment.glsl'));
+    colorizeProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/helpers/PosTexColorVertex.glsl'),
+      glslify('./../../shaders/ColorizeFragment.glsl'),
+    );
     colorizeProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     colorizeProgram.addAttribute(cc.ATTRIBUTE_NAME_COLOR, cc.VERTEX_ATTRIB_COLOR);
     colorizeProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
@@ -2715,7 +3388,10 @@ FX.setup = function () {
     shaderCache.addProgram(colorizeProgram, 'Colorize');
 
     const rarityFlareProgram = new cc.GLProgram();
-    rarityFlareProgram.initWithVertexShaderByteArray(glslify('./../../shaders/helpers/PosTexColorVertex.glsl'), glslify('./../../shaders/RarityFlareFragment.glsl'));
+    rarityFlareProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/helpers/PosTexColorVertex.glsl'),
+      glslify('./../../shaders/RarityFlareFragment.glsl'),
+    );
     rarityFlareProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     rarityFlareProgram.addAttribute(cc.ATTRIBUTE_NAME_COLOR, cc.VERTEX_ATTRIB_COLOR);
     rarityFlareProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
@@ -2723,12 +3399,16 @@ FX.setup = function () {
     rarityFlareProgram.updateUniforms();
     rarityFlareProgram.loc_phase = rarityFlareProgram.getUniformLocationForName('u_phase');
     rarityFlareProgram.loc_time = rarityFlareProgram.getUniformLocationForName('u_time');
-    rarityFlareProgram.loc_texResolution = rarityFlareProgram.getUniformLocationForName('u_texResolution');
+    rarityFlareProgram.loc_texResolution =
+      rarityFlareProgram.getUniformLocationForName('u_texResolution');
     shaderCache.addProgram(rarityFlareProgram, 'RarityFlare');
 
     // NOTE: HorizontalGlowFlare is very similar to 'RarityFlare' program but has lower intensity and does not force 1:1 aspect.
     const horizontalGlowFlare = new cc.GLProgram();
-    horizontalGlowFlare.initWithVertexShaderByteArray(glslify('./../../shaders/helpers/PosTexColorVertex.glsl'), glslify('./../../shaders/HorizontalGlowFlareFragment.glsl'));
+    horizontalGlowFlare.initWithVertexShaderByteArray(
+      glslify('./../../shaders/helpers/PosTexColorVertex.glsl'),
+      glslify('./../../shaders/HorizontalGlowFlareFragment.glsl'),
+    );
     horizontalGlowFlare.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     horizontalGlowFlare.addAttribute(cc.ATTRIBUTE_NAME_COLOR, cc.VERTEX_ATTRIB_COLOR);
     horizontalGlowFlare.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
@@ -2736,22 +3416,30 @@ FX.setup = function () {
     horizontalGlowFlare.updateUniforms();
     horizontalGlowFlare.loc_phase = horizontalGlowFlare.getUniformLocationForName('u_phase');
     horizontalGlowFlare.loc_time = horizontalGlowFlare.getUniformLocationForName('u_time');
-    horizontalGlowFlare.loc_texResolution = horizontalGlowFlare.getUniformLocationForName('u_texResolution');
+    horizontalGlowFlare.loc_texResolution =
+      horizontalGlowFlare.getUniformLocationForName('u_texResolution');
     shaderCache.addProgram(horizontalGlowFlare, 'HorizontalGlowFlare');
 
     const shadowBlobProgram = new cc.GLProgram();
-    shadowBlobProgram.initWithVertexShaderByteArray(glslify('./../../shaders/helpers/PosTexColorVertex.glsl'), glslify('./../../shaders/ShadowBlobFragment.glsl'));
+    shadowBlobProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/helpers/PosTexColorVertex.glsl'),
+      glslify('./../../shaders/ShadowBlobFragment.glsl'),
+    );
     shadowBlobProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     shadowBlobProgram.addAttribute(cc.ATTRIBUTE_NAME_COLOR, cc.VERTEX_ATTRIB_COLOR);
     shadowBlobProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
     shadowBlobProgram.link();
     shadowBlobProgram.updateUniforms();
     shadowBlobProgram.loc_time = shadowBlobProgram.getUniformLocationForName('u_time');
-    shadowBlobProgram.loc_texResolution = shadowBlobProgram.getUniformLocationForName('u_texResolution');
+    shadowBlobProgram.loc_texResolution =
+      shadowBlobProgram.getUniformLocationForName('u_texResolution');
     shaderCache.addProgram(shadowBlobProgram, 'ShadowBlob');
 
     const coreGemProgram = new cc.GLProgram();
-    coreGemProgram.initWithVertexShaderByteArray(glslify('./../../shaders/helpers/PosTexColorVertex.glsl'), glslify('./../../shaders/CoreGemFragment.glsl'));
+    coreGemProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/helpers/PosTexColorVertex.glsl'),
+      glslify('./../../shaders/CoreGemFragment.glsl'),
+    );
     coreGemProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     coreGemProgram.addAttribute(cc.ATTRIBUTE_NAME_COLOR, cc.VERTEX_ATTRIB_COLOR);
     coreGemProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
@@ -2765,19 +3453,40 @@ FX.setup = function () {
     shaderCache.addProgram(coreGemProgram, 'CoreGem');
 
     const coreGemEdgesAndColorizeFragmentProgram = new cc.GLProgram();
-    coreGemEdgesAndColorizeFragmentProgram.initWithVertexShaderByteArray(glslify('./../../shaders/helpers/PosTexColorVertex.glsl'), glslify('./../../shaders/CoreGemEdgesAndColorizeFragment.glsl'));
-    coreGemEdgesAndColorizeFragmentProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
-    coreGemEdgesAndColorizeFragmentProgram.addAttribute(cc.ATTRIBUTE_NAME_COLOR, cc.VERTEX_ATTRIB_COLOR);
-    coreGemEdgesAndColorizeFragmentProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
+    coreGemEdgesAndColorizeFragmentProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/helpers/PosTexColorVertex.glsl'),
+      glslify('./../../shaders/CoreGemEdgesAndColorizeFragment.glsl'),
+    );
+    coreGemEdgesAndColorizeFragmentProgram.addAttribute(
+      cc.ATTRIBUTE_NAME_POSITION,
+      cc.VERTEX_ATTRIB_POSITION,
+    );
+    coreGemEdgesAndColorizeFragmentProgram.addAttribute(
+      cc.ATTRIBUTE_NAME_COLOR,
+      cc.VERTEX_ATTRIB_COLOR,
+    );
+    coreGemEdgesAndColorizeFragmentProgram.addAttribute(
+      cc.ATTRIBUTE_NAME_TEX_COORD,
+      cc.VERTEX_ATTRIB_TEX_COORDS,
+    );
     coreGemEdgesAndColorizeFragmentProgram.link();
     coreGemEdgesAndColorizeFragmentProgram.updateUniforms();
-    coreGemEdgesAndColorizeFragmentProgram.loc_texResolution = coreGemEdgesAndColorizeFragmentProgram.getUniformLocationForName('u_texResolution');
-    coreGemEdgesAndColorizeFragmentProgram.loc_colorBlackPoint = coreGemEdgesAndColorizeFragmentProgram.getUniformLocationForName('u_colorBlackPoint');
-    coreGemEdgesAndColorizeFragmentProgram.loc_colorMidPoint = coreGemEdgesAndColorizeFragmentProgram.getUniformLocationForName('u_colorMidPoint');
-    shaderCache.addProgram(coreGemEdgesAndColorizeFragmentProgram, 'CoreGemEdgesAndColorizeFragment');
+    coreGemEdgesAndColorizeFragmentProgram.loc_texResolution =
+      coreGemEdgesAndColorizeFragmentProgram.getUniformLocationForName('u_texResolution');
+    coreGemEdgesAndColorizeFragmentProgram.loc_colorBlackPoint =
+      coreGemEdgesAndColorizeFragmentProgram.getUniformLocationForName('u_colorBlackPoint');
+    coreGemEdgesAndColorizeFragmentProgram.loc_colorMidPoint =
+      coreGemEdgesAndColorizeFragmentProgram.getUniformLocationForName('u_colorMidPoint');
+    shaderCache.addProgram(
+      coreGemEdgesAndColorizeFragmentProgram,
+      'CoreGemEdgesAndColorizeFragment',
+    );
 
     const polarFlareWipeProgram = new cc.GLProgram();
-    polarFlareWipeProgram.initWithVertexShaderByteArray(glslify('./../../shaders/helpers/PosTexColorVertex.glsl'), glslify('./../../shaders/FbmPolarFlareWipeFragment.glsl'));
+    polarFlareWipeProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/helpers/PosTexColorVertex.glsl'),
+      glslify('./../../shaders/FbmPolarFlareWipeFragment.glsl'),
+    );
     polarFlareWipeProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     polarFlareWipeProgram.addAttribute(cc.ATTRIBUTE_NAME_COLOR, cc.VERTEX_ATTRIB_COLOR);
     polarFlareWipeProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
@@ -2789,7 +3498,10 @@ FX.setup = function () {
     shaderCache.addProgram(polarFlareWipeProgram, 'FbmPolarFlareWipe');
 
     const timerProgram = new cc.GLProgram();
-    timerProgram.initWithVertexShaderByteArray(glslify('./../../shaders/helpers/PosTexColorVertex.glsl'), glslify('./../../shaders/TimerFragment.glsl'));
+    timerProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/helpers/PosTexColorVertex.glsl'),
+      glslify('./../../shaders/TimerFragment.glsl'),
+    );
     timerProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     timerProgram.addAttribute(cc.ATTRIBUTE_NAME_COLOR, cc.VERTEX_ATTRIB_COLOR);
     timerProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
@@ -2797,13 +3509,17 @@ FX.setup = function () {
     timerProgram.updateUniforms();
     timerProgram.loc_progress = timerProgram.getUniformLocationForName('u_progress');
     timerProgram.loc_startingAngle = timerProgram.getUniformLocationForName('u_startingAngle');
-    timerProgram.loc_edgeGradientFactor = timerProgram.getUniformLocationForName('u_edgeGradientFactor');
+    timerProgram.loc_edgeGradientFactor =
+      timerProgram.getUniformLocationForName('u_edgeGradientFactor');
     timerProgram.loc_bgColor = timerProgram.getUniformLocationForName('u_bgColor');
     timerProgram.loc_texResolution = timerProgram.getUniformLocationForName('u_texResolution');
     shaderCache.addProgram(timerProgram, 'Timer');
 
     const causticProgram = new cc.GLProgram();
-    causticProgram.initWithVertexShaderByteArray(glslify('./../../shaders/helpers/PosTexColorVertex.glsl'), glslify('./../../shaders/CausticFragment.glsl'));
+    causticProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/helpers/PosTexColorVertex.glsl'),
+      glslify('./../../shaders/CausticFragment.glsl'),
+    );
     causticProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     causticProgram.addAttribute(cc.ATTRIBUTE_NAME_COLOR, cc.VERTEX_ATTRIB_COLOR);
     causticProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
@@ -2814,26 +3530,34 @@ FX.setup = function () {
     shaderCache.addProgram(causticProgram, 'Caustic');
 
     const riftLineProgram = new cc.GLProgram();
-    riftLineProgram.initWithVertexShaderByteArray(glslify('./../../shaders/helpers/PosTexColorVertex.glsl'), glslify('./../../shaders/RiftLineFragment.glsl'));
+    riftLineProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/helpers/PosTexColorVertex.glsl'),
+      glslify('./../../shaders/RiftLineFragment.glsl'),
+    );
     riftLineProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     riftLineProgram.addAttribute(cc.ATTRIBUTE_NAME_COLOR, cc.VERTEX_ATTRIB_COLOR);
     riftLineProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
     riftLineProgram.link();
     riftLineProgram.updateUniforms();
-    riftLineProgram.loc_texResolution = riftLineProgram.getUniformLocationForName('u_texResolution');
+    riftLineProgram.loc_texResolution =
+      riftLineProgram.getUniformLocationForName('u_texResolution');
     riftLineProgram.loc_time = riftLineProgram.getUniformLocationForName('u_time');
     riftLineProgram.loc_progress = riftLineProgram.getUniformLocationForName('u_progress');
     // riftLineProgram.loc_color = riftLineProgram.getUniformLocationForName("u_color");
     shaderCache.addProgram(riftLineProgram, 'RiftLine');
 
     const riftFireProgram = new cc.GLProgram();
-    riftFireProgram.initWithVertexShaderByteArray(glslify('./../../shaders/helpers/PosTexColorVertex.glsl'), glslify('./../../shaders/RiftFireFragment.glsl'));
+    riftFireProgram.initWithVertexShaderByteArray(
+      glslify('./../../shaders/helpers/PosTexColorVertex.glsl'),
+      glslify('./../../shaders/RiftFireFragment.glsl'),
+    );
     riftFireProgram.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
     riftFireProgram.addAttribute(cc.ATTRIBUTE_NAME_COLOR, cc.VERTEX_ATTRIB_COLOR);
     riftFireProgram.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
     riftFireProgram.link();
     riftFireProgram.updateUniforms();
-    riftFireProgram.loc_texResolution = riftFireProgram.getUniformLocationForName('u_texResolution');
+    riftFireProgram.loc_texResolution =
+      riftFireProgram.getUniformLocationForName('u_texResolution');
     riftFireProgram.loc_time = riftFireProgram.getUniformLocationForName('u_time');
     shaderCache.addProgram(riftFireProgram, 'RiftFire');
   }

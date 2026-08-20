@@ -6,9 +6,13 @@ const _ = require('underscore');
 const SDK = require('app/sdk');
 
 const findAttackObjectivesAndScoresForUnit = function (gameSession, unit, targetPosition) {
-  const sourceUnit = unit.getIsPlayed() ? unit : gameSession.getGeneralForPlayerId(unit.getOwnerId());
+  const sourceUnit = unit.getIsPlayed()
+    ? unit
+    : gameSession.getGeneralForPlayerId(unit.getOwnerId());
   // get potential attack targets at target position
-  const potentialAttackTargets = sourceUnit.getAttackRange().getValidTargets(gameSession.getBoard(), sourceUnit, targetPosition);
+  const potentialAttackTargets = sourceUnit
+    .getAttackRange()
+    .getValidTargets(gameSession.getBoard(), sourceUnit, targetPosition);
   /// /Logger.module("AI").debug("[G:" + gameSession.gameId + "] _findSortedFilteredAttackObjectivesAndScoresForUnit() => potentialAttackTargets " + potentialAttackTargets.length);
 
   // don't attack units that will die at the end of the turn (shadow creep...)
@@ -33,20 +37,45 @@ const findAttackObjectivesAndScoresForUnit = function (gameSession, unit, target
     let sortBounty = 0;
     sortBounty += ScoreForUnitDamage(gameSession, enemy, unitATK);
     /// /Logger.module("AI").debug("[G:" + gameSession.gameId + "] _findSortedFilteredAttackObjectivesAndScoresForUnit() => unit " + unit.getLogName() + "'s enemy " + enemy.getLogName() + " score for damage = " + sortBounty);
-    if (!unit.hasModifierClass(SDK.ModifierRanged) && !unit.hasModifierClass(SDK.ModifierBlastAttack)) {
+    if (
+      !unit.hasModifierClass(SDK.ModifierRanged) &&
+      !unit.hasModifierClass(SDK.ModifierBlastAttack)
+    ) {
       sortBounty += unit.getHP() >= enemy.getATK() ? BOUNTY.TARGET_COUNTERATTACK_NOT_LETHAL : 0; // counterattack not lethal +15
     }
     if (unit.hasModifierClass(SDK.ModifierProvoke) && enemy.getIsGeneral()) {
       sortBounty += BOUNTY.PROVOKE_ENEMY_GENERAL;
     }
     if (unit.getIsPlayed()) {
-      if (unit.hasModifierClass(SDK.ModifierRanged) || unit.hasModifierClass(SDK.ModifierBlastAttack)) sortBounty += distanceBetweenBoardPositions(unit.position, enemy.position) <= 1 ? 0 : BOUNTY.TARGET_AT_RANGE; // ranged prefer to attack units at range
-      if (unit.hasModifierClass(SDK.ModifierBackstab)) sortBounty += gameSession.getBoard().getIsPositionBehindEntity(enemy, unit.position, 1, 0) ? BOUNTY.TARGET_BACKSTAB_PROC : 0; // backstab prefer to attack units from behind
+      if (
+        unit.hasModifierClass(SDK.ModifierRanged) ||
+        unit.hasModifierClass(SDK.ModifierBlastAttack)
+      )
+        sortBounty +=
+          distanceBetweenBoardPositions(unit.position, enemy.position) <= 1
+            ? 0
+            : BOUNTY.TARGET_AT_RANGE; // ranged prefer to attack units at range
+      if (unit.hasModifierClass(SDK.ModifierBackstab))
+        sortBounty += gameSession.getBoard().getIsPositionBehindEntity(enemy, unit.position, 1, 0)
+          ? BOUNTY.TARGET_BACKSTAB_PROC
+          : 0; // backstab prefer to attack units from behind
       if (unit.hasModifierClass(SDK.ModifierBlastAttack)) {
-        sortBounty += _.reject(gameSession.getBoard().getEntitiesInRow(enemy.getPosition().y, SDK.CardType.Unit), (entity) => entity.getIsSameTeamAs(unit)).length * BOUNTY.TARGET_ENEMIES_IN_SAME_ROW;
+        sortBounty +=
+          _.reject(
+            gameSession.getBoard().getEntitiesInRow(enemy.getPosition().y, SDK.CardType.Unit),
+            (entity) => entity.getIsSameTeamAs(unit),
+          ).length * BOUNTY.TARGET_ENEMIES_IN_SAME_ROW;
       }
-    } else { // unit not played, but we still want ranged/blastAttackers to spawn at distance.
-      if (unit.hasModifierClass(SDK.ModifierRanged) || unit.hasModifierClass(SDK.ModifierBlastAttack)) sortBounty += distanceBetweenBoardPositions(sourceUnit.position, enemy.position) <= 1 ? 0 : BOUNTY.TARGET_AT_RANGE; // ranged prefer to attack units at range
+    } else {
+      // unit not played, but we still want ranged/blastAttackers to spawn at distance.
+      if (
+        unit.hasModifierClass(SDK.ModifierRanged) ||
+        unit.hasModifierClass(SDK.ModifierBlastAttack)
+      )
+        sortBounty +=
+          distanceBetweenBoardPositions(sourceUnit.position, enemy.position) <= 1
+            ? 0
+            : BOUNTY.TARGET_AT_RANGE; // ranged prefer to attack units at range
     }
     /// /Logger.module("AI").debug("[G:" + gameSession.gameId + "] _findSortedFilteredAttackObjectivesAndScoresForUnit() => unit " + unit.getLogName() + "'s enemy " + enemy.getLogName() + " sorted bounty = " + sortBounty);
     // return object with objective and score
@@ -56,7 +85,10 @@ const findAttackObjectivesAndScoresForUnit = function (gameSession, unit, target
     };
   });
   // sort high to low (descending)
-  const sortedFilteredAttackTargetsAndScores = _.sortBy(filteredAttackTargetsAndScores, (objectiveAndScore) => objectiveAndScore.score).reverse();
+  const sortedFilteredAttackTargetsAndScores = _.sortBy(
+    filteredAttackTargetsAndScores,
+    (objectiveAndScore) => objectiveAndScore.score,
+  ).reverse();
   /// /Logger.module("AI").debug("[G:" + gameSession.gameId + "] _findSortedFilteredAttackObjectivesAndScoresForUnit() => sortedFilteredAttackTargets length = " + sortedFilteredAttackTargetsAndScores.length);
   return sortedFilteredAttackTargetsAndScores;
 };

@@ -32,27 +32,62 @@ var GameType = (function () {
     }
 
     static isNetworkGameType(type) {
-      return (type === GameType.Ranked) || (type === GameType.Casual) || (type === GameType.Gauntlet) || (type === GameType.Friendly) || (type === GameType.SinglePlayer) || (type === GameType.BossBattle) || (type === GameType.Rift) || (type === GameType.FriendlyLegacy);
+      return (
+        type === GameType.Ranked ||
+        type === GameType.Casual ||
+        type === GameType.Gauntlet ||
+        type === GameType.Friendly ||
+        type === GameType.SinglePlayer ||
+        type === GameType.BossBattle ||
+        type === GameType.Rift ||
+        type === GameType.FriendlyLegacy
+      );
     }
 
     static isMultiplayerGameType(type) {
-      return (type === GameType.Ranked) || (type === GameType.Casual) || (type === GameType.Gauntlet) || (type === GameType.Friendly) || (type === GameType.Rift) || (type === GameType.FriendlyLegacy);
+      return (
+        type === GameType.Ranked ||
+        type === GameType.Casual ||
+        type === GameType.Gauntlet ||
+        type === GameType.Friendly ||
+        type === GameType.Rift ||
+        type === GameType.FriendlyLegacy
+      );
     }
 
     static isSinglePlayerGameType(type) {
-      return (type === GameType.SinglePlayer) || (type === GameType.BossBattle) || (type === GameType.Challenge) || (type === GameType.Sandbox);
+      return (
+        type === GameType.SinglePlayer ||
+        type === GameType.BossBattle ||
+        type === GameType.Challenge ||
+        type === GameType.Sandbox
+      );
     }
 
     static isLocalGameType(type) {
-      return (type === GameType.Challenge) || (type === GameType.Sandbox);
+      return type === GameType.Challenge || type === GameType.Sandbox;
     }
 
     static isCompetitiveGameType(type) {
-      return (type === GameType.Ranked) || (type === GameType.Casual) || (type === GameType.Gauntlet) || (type === GameType.Rift);
+      return (
+        type === GameType.Ranked ||
+        type === GameType.Casual ||
+        type === GameType.Gauntlet ||
+        type === GameType.Rift
+      );
     }
 
     static isFactionXPGameType(type) {
-      return (type === GameType.Ranked) || (type === GameType.Casual) || (type === GameType.Gauntlet) || (type === GameType.SinglePlayer) || (type === GameType.Friendly) || (type === GameType.BossBattle) || (type === GameType.Rift) || (type === GameType.FriendlyLegacy);
+      return (
+        type === GameType.Ranked ||
+        type === GameType.Casual ||
+        type === GameType.Gauntlet ||
+        type === GameType.SinglePlayer ||
+        type === GameType.Friendly ||
+        type === GameType.BossBattle ||
+        type === GameType.Rift ||
+        type === GameType.FriendlyLegacy
+      );
     }
 
     static getGameFormatForGameType(type) {
@@ -61,6 +96,6 @@ var GameType = (function () {
   };
   GameType.initClass();
   return GameType;
-}());
+})();
 
 module.exports = GameType;

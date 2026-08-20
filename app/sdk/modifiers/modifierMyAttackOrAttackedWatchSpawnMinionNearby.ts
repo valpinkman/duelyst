@@ -23,11 +23,26 @@ class ModifierMyAttackOrAttackedWatchSpawnMinionNearby extends ModifierMyAttackO
   static modifierName = 'Attack or Attacked Watch and Spawn Minion';
   static description = 'Whenever this minion attacks or is attacked, summon %X nearby';
 
-  static createContextObject(cardDataOrIndexToSpawn, spawnDescription, spawnCount, spawnPattern, spawnSilently, options) {
-    if (spawnDescription == null) { spawnDescription = ''; }
-    if (spawnCount == null) { spawnCount = 1; }
-    if (spawnPattern == null) { spawnPattern = CONFIG.PATTERN_3x3; }
-    if (spawnSilently == null) { spawnSilently = true; }
+  static createContextObject(
+    cardDataOrIndexToSpawn,
+    spawnDescription,
+    spawnCount,
+    spawnPattern,
+    spawnSilently,
+    options,
+  ) {
+    if (spawnDescription == null) {
+      spawnDescription = '';
+    }
+    if (spawnCount == null) {
+      spawnCount = 1;
+    }
+    if (spawnPattern == null) {
+      spawnPattern = CONFIG.PATTERN_3x3;
+    }
+    if (spawnSilently == null) {
+      spawnSilently = true;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.cardDataOrIndexToSpawn = cardDataOrIndexToSpawn;
     contextObject.spawnDescription = spawnDescription;
@@ -49,16 +64,31 @@ class ModifierMyAttackOrAttackedWatchSpawnMinionNearby extends ModifierMyAttackO
 
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
       const ownerId = this.getSpawnOwnerId(action);
-      const spawnPositions = UtilsGameSession.getRandomNonConflictingSmartSpawnPositionsForModifier(this, ModifierMyAttackOrAttackedWatchSpawnMinionNearby);
+      const spawnPositions = UtilsGameSession.getRandomNonConflictingSmartSpawnPositionsForModifier(
+        this,
+        ModifierMyAttackOrAttackedWatchSpawnMinionNearby,
+      );
       return (() => {
         const result = [];
         for (var spawnPosition of Array.from<any>(spawnPositions)) {
           var spawnAction;
           var cardDataOrIndexToSpawn = this.getCardDataOrIndexToSpawn();
           if (this.spawnSilently) {
-            spawnAction = new PlayCardSilentlyAction(this.getGameSession(), ownerId, spawnPosition.x, spawnPosition.y, cardDataOrIndexToSpawn);
+            spawnAction = new PlayCardSilentlyAction(
+              this.getGameSession(),
+              ownerId,
+              spawnPosition.x,
+              spawnPosition.y,
+              cardDataOrIndexToSpawn,
+            );
           } else {
-            spawnAction = new PlayCardAction(this.getGameSession(), ownerId, spawnPosition.x, spawnPosition.y, cardDataOrIndexToSpawn);
+            spawnAction = new PlayCardAction(
+              this.getGameSession(),
+              ownerId,
+              spawnPosition.x,
+              spawnPosition.y,
+              cardDataOrIndexToSpawn,
+            );
           }
           spawnAction.setSource(this.getCard());
           result.push(this.getGameSession().executeAction(spawnAction));
@@ -76,8 +106,11 @@ class ModifierMyAttackOrAttackedWatchSpawnMinionNearby extends ModifierMyAttackO
     return this.getCard().getOwnerId();
   }
 }
-ModifierMyAttackOrAttackedWatchSpawnMinionNearby.prototype.type = 'ModifierMyAttackOrAttackedWatchSpawnMinionNearby';
-ModifierMyAttackOrAttackedWatchSpawnMinionNearby.prototype.fxResource = ['FX.Modifiers.ModifierGenericSpawn'];
+ModifierMyAttackOrAttackedWatchSpawnMinionNearby.prototype.type =
+  'ModifierMyAttackOrAttackedWatchSpawnMinionNearby';
+ModifierMyAttackOrAttackedWatchSpawnMinionNearby.prototype.fxResource = [
+  'FX.Modifiers.ModifierGenericSpawn',
+];
 ModifierMyAttackOrAttackedWatchSpawnMinionNearby.prototype.cardDataOrIndexToSpawn = null;
 
 module.exports = ModifierMyAttackOrAttackedWatchSpawnMinionNearby;

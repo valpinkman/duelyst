@@ -23,7 +23,9 @@ class ModifierExtraDamageOnCounterattack extends Modifier {
   static description = 'Deals double damage on counter attacks';
 
   static createContextObject(extraDamage, options) {
-    if (extraDamage == null) { extraDamage = 2; }
+    if (extraDamage == null) {
+      extraDamage = 2;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.extraDamage = extraDamage;
     return contextObject;
@@ -56,7 +58,9 @@ class ModifierExtraDamageOnCounterattack extends Modifier {
 
   getIsActionRelevant(a) {
     // check if this action will deal damage or take damage
-    return a.getTriggeringModifier() instanceof ModifierStrikeback && (a.getSource() === this.getCard());
+    return (
+      a.getTriggeringModifier() instanceof ModifierStrikeback && a.getSource() === this.getCard()
+    );
   }
 
   _modifyAction(a) {

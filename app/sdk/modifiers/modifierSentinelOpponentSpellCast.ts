@@ -23,10 +23,15 @@ class ModifierSentinelOpponentSpellCast extends ModifierSentinel {
   }
 
   getIsActionRelevant(action) {
-    if ((action.getOwner() === this.getGameSession().getOpponentPlayerOfPlayerId(this.getCard().getOwnerId())) && action instanceof ApplyCardToBoardAction && action.getIsValid()) {
+    if (
+      action.getOwner() ===
+        this.getGameSession().getOpponentPlayerOfPlayerId(this.getCard().getOwnerId()) &&
+      action instanceof ApplyCardToBoardAction &&
+      action.getIsValid()
+    ) {
       const card = action.getCard();
       // watch for a spell being cast, but ignore followups! (like opening gambits)
-      if ((card != null) && (__guard__(card.getRootCard(), (x) => x.type) === CardType.Spell)) {
+      if (card != null && __guard__(card.getRootCard(), (x) => x.type) === CardType.Spell) {
         return true;
       }
     }
@@ -39,5 +44,5 @@ ModifierSentinelOpponentSpellCast.description = i18next.t('modifiers.sentinel_sp
 module.exports = ModifierSentinelOpponentSpellCast;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

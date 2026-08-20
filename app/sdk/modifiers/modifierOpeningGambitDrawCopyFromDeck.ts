@@ -21,7 +21,10 @@ class ModifierOpeningGambitDrawCopyFromDeck extends ModifierOpeningGambit {
     for (i = 0; i < drawPile.length; i++) {
       var cardIndex = drawPile[i];
       var cardAtIndex = this.getGameSession().getCardByIndex(cardIndex);
-      if ((cardAtIndex != null ? cardAtIndex.getBaseCardId() : undefined) === this.getCard().getBaseCardId()) {
+      if (
+        (cardAtIndex != null ? cardAtIndex.getBaseCardId() : undefined) ===
+        this.getCard().getBaseCardId()
+      ) {
         indexOfCard = i;
         cardFound = true;
         break;
@@ -32,7 +35,10 @@ class ModifierOpeningGambitDrawCopyFromDeck extends ModifierOpeningGambit {
       const cardIndexToDraw = drawPile[i];
       if (cardIndexToDraw != null) {
         const card = this.getGameSession().getCardByIndex(cardIndexToDraw);
-        const drawCardAction = this.getGameSession().getPlayerById(this.getOwner().getPlayerId()).getDeck().actionDrawCard(cardIndexToDraw);
+        const drawCardAction = this.getGameSession()
+          .getPlayerById(this.getOwner().getPlayerId())
+          .getDeck()
+          .actionDrawCard(cardIndexToDraw);
         drawCardAction.isDepthFirst = true;
         return this.getGameSession().executeAction(drawCardAction);
       }

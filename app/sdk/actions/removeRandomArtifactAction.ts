@@ -23,7 +23,8 @@ class RemoveRandomArtifactAction extends Action {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
       const target = this.getTarget();
       if (target != null) {
-        if (!target.getIsGeneral()) { // artifacts are only on the general
+        if (!target.getIsGeneral()) {
+          // artifacts are only on the general
           return;
         }
 
@@ -32,7 +33,10 @@ class RemoveRandomArtifactAction extends Action {
 
         // pick a random set of modifiers that were added by the same source card index and remove them
         if (modifiersByArtifact.length > 0) {
-          const modifiersToRemove = modifiersByArtifact[this.getGameSession().getRandomIntegerForExecution(modifiersByArtifact.length)];
+          const modifiersToRemove =
+            modifiersByArtifact[
+              this.getGameSession().getRandomIntegerForExecution(modifiersByArtifact.length)
+            ];
           return (() => {
             const result = [];
             for (let i = modifiersToRemove.length - 1; i >= 0; i--) {

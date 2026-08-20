@@ -12,8 +12,12 @@ const Cards = require('app/sdk/cards/cardsLookupComplete');
 class SpellLavaLance extends SpellDamage {
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     this.damageAmount = 2; // regular damage of the spell
-    for (var entity of Array.from<any>(this.getGameSession().getBoard().getUnits())) { // check for any friendly eggs
-      if (((entity != null ? entity.getOwnerId() : undefined) === this.getOwnerId()) && (entity.getBaseCardId() === Cards.Faction5.Egg)) {
+    for (var entity of Array.from<any>(this.getGameSession().getBoard().getUnits())) {
+      // check for any friendly eggs
+      if (
+        (entity != null ? entity.getOwnerId() : undefined) === this.getOwnerId() &&
+        entity.getBaseCardId() === Cards.Faction5.Egg
+      ) {
         // found an egg owned by this player, so set new damage amount on the spell
         this.damageAmount = 4;
         break;

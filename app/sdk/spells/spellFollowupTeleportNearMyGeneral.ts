@@ -17,7 +17,12 @@ class SpellFollowupTeleportNearMyGeneral extends SpellFollowupTeleport {
 
       const general = this.getGameSession().getGeneralForPlayerId(this.getOwnerId());
       if (general != null) {
-        const teleportLocations = UtilsGameSession.getValidBoardPositionsFromPattern(this.getGameSession().getBoard(), general.getPosition(), CONFIG.PATTERN_3x3, false);
+        const teleportLocations = UtilsGameSession.getValidBoardPositionsFromPattern(
+          this.getGameSession().getBoard(),
+          general.getPosition(),
+          CONFIG.PATTERN_3x3,
+          false,
+        );
         for (var position of Array.from<any>(teleportLocations)) {
           validPositions.push(position);
         }

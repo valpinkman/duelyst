@@ -35,10 +35,19 @@ class ModifierSpiritScribe extends ModifierSummonWatch {
   onSummonWatch(action) {
     super.onSummonWatch(action);
 
-    if (this.getGameSession().getIsRunningAsAuthoritative() && (this.allModifierContextObjects.length > 0)) {
+    if (
+      this.getGameSession().getIsRunningAsAuthoritative() &&
+      this.allModifierContextObjects.length > 0
+    ) {
       // pick one modifier from the remaining list and splice it out of the set of choices
-      const modifierContextObject = this.allModifierContextObjects.splice(this.getGameSession().getRandomIntegerForExecution(this.allModifierContextObjects.length), 1)[0];
-      return this.getGameSession().applyModifierContextObject(modifierContextObject, this.getCard());
+      const modifierContextObject = this.allModifierContextObjects.splice(
+        this.getGameSession().getRandomIntegerForExecution(this.allModifierContextObjects.length),
+        1,
+      )[0];
+      return this.getGameSession().applyModifierContextObject(
+        modifierContextObject,
+        this.getCard(),
+      );
     }
   }
 }

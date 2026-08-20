@@ -26,14 +26,20 @@ class PlayerModifierEmblemSummonWatchFromHandMagmarBuffQuest extends PlayerModif
   onSummonWatch(action) {
     if (action instanceof PlayCardFromHandAction) {
       const entity = action.getTarget();
-      if ((entity != null) && (this.modifiersContextObjects != null)) {
+      if (entity != null && this.modifiersContextObjects != null) {
         return (() => {
           const result = [];
           for (var modifiersContextObject of Array.from<any>(this.modifiersContextObjects)) {
             if (modifiersContextObject != null) {
               modifiersContextObject.isRemovable = false;
               // Set this parent of buff, so it's known the modifier originates from an emblem
-              result.push(this.getGameSession().applyModifierContextObject(modifiersContextObject, entity, this));
+              result.push(
+                this.getGameSession().applyModifierContextObject(
+                  modifiersContextObject,
+                  entity,
+                  this,
+                ),
+              );
             } else {
               result.push(undefined);
             }
@@ -44,7 +50,8 @@ class PlayerModifierEmblemSummonWatchFromHandMagmarBuffQuest extends PlayerModif
     }
   }
 }
-PlayerModifierEmblemSummonWatchFromHandMagmarBuffQuest.prototype.type = 'PlayerModifierEmblemSummonWatchFromHandMagmarBuffQuest';
+PlayerModifierEmblemSummonWatchFromHandMagmarBuffQuest.prototype.type =
+  'PlayerModifierEmblemSummonWatchFromHandMagmarBuffQuest';
 PlayerModifierEmblemSummonWatchFromHandMagmarBuffQuest.prototype.maxStacks = 1;
 PlayerModifierEmblemSummonWatchFromHandMagmarBuffQuest.prototype.modifiersContextObjects = null;
 

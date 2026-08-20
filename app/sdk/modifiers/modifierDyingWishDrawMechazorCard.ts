@@ -16,11 +16,19 @@ class ModifierDyingWishDrawMechazorCard extends ModifierDyingWish {
 
   onDyingWish() {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
-      const mechCards = this.getGameSession().getCardCaches().getRace(Races.Mech).getIsPrismatic(false)
+      const mechCards = this.getGameSession()
+        .getCardCaches()
+        .getRace(Races.Mech)
+        .getIsPrismatic(false)
         .getIsSkinned(false)
         .getCards();
-      const mechCard = mechCards[this.getGameSession().getRandomIntegerForExecution(mechCards.length)];
-      const a = new PutCardInHandAction(this.getGameSession(), this.getCard().getOwnerId(), mechCard.createNewCardData());
+      const mechCard =
+        mechCards[this.getGameSession().getRandomIntegerForExecution(mechCards.length)];
+      const a = new PutCardInHandAction(
+        this.getGameSession(),
+        this.getCard().getOwnerId(),
+        mechCard.createNewCardData(),
+      );
       return this.getGameSession().executeAction(a);
     }
   }

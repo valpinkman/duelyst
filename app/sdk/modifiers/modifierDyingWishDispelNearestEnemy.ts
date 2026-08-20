@@ -22,9 +22,14 @@ class ModifierDyingWishDispelNearestEnemy extends ModifierDyingWish {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
       let bestAbsoluteDistance = 9999;
       let potentialTargets = [];
-      for (var potentialTarget of Array.from<any>(this.getGameSession().getBoard().getEnemyEntitiesForEntity(this.getCard(), CardType.Unit))) {
-        if (!potentialTarget.getIsGeneral() && potentialTarget.getIsActive()) { // don't target Generals or inactive cards for dispel
-          var absoluteDistance = Math.abs(this.getCard().position.x - potentialTarget.position.x) + Math.abs(this.getCard().position.y - potentialTarget.position.y);
+      for (var potentialTarget of Array.from<any>(
+        this.getGameSession().getBoard().getEnemyEntitiesForEntity(this.getCard(), CardType.Unit),
+      )) {
+        if (!potentialTarget.getIsGeneral() && potentialTarget.getIsActive()) {
+          // don't target Generals or inactive cards for dispel
+          var absoluteDistance =
+            Math.abs(this.getCard().position.x - potentialTarget.position.x) +
+            Math.abs(this.getCard().position.y - potentialTarget.position.y);
           // found a new best target
           if (absoluteDistance < bestAbsoluteDistance) {
             bestAbsoluteDistance = absoluteDistance;
@@ -39,8 +44,14 @@ class ModifierDyingWishDispelNearestEnemy extends ModifierDyingWish {
 
       if (potentialTargets.length > 0) {
         // choose randomly between all equally close enemy minions and dispel one
-        const target = potentialTargets[this.getGameSession().getRandomIntegerForExecution(potentialTargets.length)];
-        return this.getGameSession().applyModifierContextObject(ModifierSilence.createContextObject(), target);
+        const target =
+          potentialTargets[
+            this.getGameSession().getRandomIntegerForExecution(potentialTargets.length)
+          ];
+        return this.getGameSession().applyModifierContextObject(
+          ModifierSilence.createContextObject(),
+          target,
+        );
       }
     }
   }

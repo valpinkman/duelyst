@@ -19,7 +19,13 @@ class ApplyModifierAction extends Action {
 
   static type = 'ApplyModifierAction';
 
-  constructor(gameSession, modifierContextObject, card, parentModifier = null, auraModifierId = null) {
+  constructor(
+    gameSession,
+    modifierContextObject,
+    card,
+    parentModifier = null,
+    auraModifierId = null,
+  ) {
     super(gameSession);
     this.setModifierContextObject(modifierContextObject);
     this.setTarget(card);
@@ -43,10 +49,10 @@ class ApplyModifierAction extends Action {
 
   setModifierContextObject(val) {
     // copy data so we don't modify anything unintentionally
-    if ((val != null) && _.isObject(val)) {
-      return this.modifierContextObject = UtilsJavascript.fastExtend({}, val);
+    if (val != null && _.isObject(val)) {
+      return (this.modifierContextObject = UtilsJavascript.fastExtend({}, val));
     }
-    return this.modifierContextObject = val;
+    return (this.modifierContextObject = val);
   }
 
   getModifierContextObject() {
@@ -54,14 +60,17 @@ class ApplyModifierAction extends Action {
   }
 
   getModifier() {
-    if ((this._private.cachedModifier == null)) {
-      this._private.cachedModifier = this.getGameSession().getOrCreateModifierFromContextObjectOrIndex(this.modifierContextObject);
+    if (this._private.cachedModifier == null) {
+      this._private.cachedModifier =
+        this.getGameSession().getOrCreateModifierFromContextObjectOrIndex(
+          this.modifierContextObject,
+        );
     }
     return this._private.cachedModifier;
   }
 
   setParentModifierIndex(val) {
-    return this.parentModifierIndex = val;
+    return (this.parentModifierIndex = val);
   }
 
   getParentModifierIndex() {
@@ -69,18 +78,22 @@ class ApplyModifierAction extends Action {
   }
 
   setParentModifier(parentModifier) {
-    return this.setParentModifierIndex(parentModifier != null ? parentModifier.getIndex() : undefined);
+    return this.setParentModifierIndex(
+      parentModifier != null ? parentModifier.getIndex() : undefined,
+    );
   }
 
   getParentModifier() {
-    if ((this._private.cachedParentModifier == null) && (this.parentModifierIndex != null)) {
-      this._private.cachedParentModifier = this.getGameSession().getModifierByIndex(this.parentModifierIndex);
+    if (this._private.cachedParentModifier == null && this.parentModifierIndex != null) {
+      this._private.cachedParentModifier = this.getGameSession().getModifierByIndex(
+        this.parentModifierIndex,
+      );
     }
     return this._private.cachedParentModifier;
   }
 
   setAuraModifierId(val) {
-    return this.auraModifierId = val;
+    return (this.auraModifierId = val);
   }
 
   getAuraModifierId() {
@@ -110,17 +123,27 @@ class ApplyModifierAction extends Action {
       modifier.setAppliedByAction(this);
 
       // apply modifier
-      this.getGameSession().p_applyModifier(modifier, target, parentModifier, this.modifierContextObject, this.auraModifierId);
+      this.getGameSession().p_applyModifier(
+        modifier,
+        target,
+        parentModifier,
+        this.modifierContextObject,
+        this.auraModifierId,
+      );
 
       // update context object post apply so we transmit the correct values to the clients
-      if (this.getGameSession().getIsRunningAsAuthoritative()) { return this.modifierContextObject = modifier.updateContextObjectPostApply(this.modifierContextObject); }
+      if (this.getGameSession().getIsRunningAsAuthoritative()) {
+        return (this.modifierContextObject = modifier.updateContextObjectPostApply(
+          this.modifierContextObject,
+        ));
+      }
     }
   }
 
   scrubSensitiveData(actionData, scrubFromPerspectiveOfPlayerId, forSpectator) {
     // transform modifier as needed
     const modifier = this.getModifier();
-    if ((modifier != null) && modifier.isHideable(scrubFromPerspectiveOfPlayerId, forSpectator)) {
+    if (modifier != null && modifier.isHideable(scrubFromPerspectiveOfPlayerId, forSpectator)) {
       const hiddenModifier = modifier.createModifierToHideAs();
       actionData.modifierContextObject = hiddenModifier.createContextObject();
     }
@@ -136,5 +159,5 @@ ApplyModifierAction.prototype.getCard = ApplyModifierAction.prototype.getTarget;
 module.exports = ApplyModifierAction;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

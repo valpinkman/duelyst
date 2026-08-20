@@ -38,12 +38,16 @@ class PlayerModifierEmblemSituationalVetQuestCelerity extends PlayerModifierEmbl
     // apply situational modifiers once and retain them on self
     // this way we can enable/disable based on whether the situation is active
     // rather than constantly adding and removing modifiers
-    return this.applyManagedModifiersFromModifiersContextObjectsOnce([ModifierTranscendance.createContextObject()], this.getCard());
+    return this.applyManagedModifiersFromModifiersContextObjectsOnce(
+      [ModifierTranscendance.createContextObject()],
+      this.getCard(),
+    );
   }
 
   updateCachedStateAfterActive() {
     this._private.cachedWasSituationActive = this._private.cachedIsSituationActive;
-    this._private.cachedIsSituationActive = this._private.cachedIsActive && this.getIsSituationActiveForCache();
+    this._private.cachedIsSituationActive =
+      this._private.cachedIsActive && this.getIsSituationActiveForCache();
 
     // call super after updating whether situation is active
     // because we need to know if situation is active to know whether sub modifiers are disabled
@@ -67,7 +71,8 @@ class PlayerModifierEmblemSituationalVetQuestCelerity extends PlayerModifierEmbl
     return false;
   }
 }
-PlayerModifierEmblemSituationalVetQuestCelerity.prototype.type = 'PlayerModifierEmblemSituationalVetQuestCelerity';
+PlayerModifierEmblemSituationalVetQuestCelerity.prototype.type =
+  'PlayerModifierEmblemSituationalVetQuestCelerity';
 PlayerModifierEmblemSituationalVetQuestCelerity.prototype.activeInHand = false;
 PlayerModifierEmblemSituationalVetQuestCelerity.prototype.activeInDeck = false;
 PlayerModifierEmblemSituationalVetQuestCelerity.prototype.activeInSignatureCards = false;

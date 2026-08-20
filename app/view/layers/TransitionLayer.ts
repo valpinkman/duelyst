@@ -6,7 +6,6 @@ const BaseLayer = require('./BaseLayer');
  *************************************************************************** */
 
 const TransitionLayer = BaseLayer.extend({
-
   // currently running layer
   _currentLayer: null,
 
@@ -41,14 +40,16 @@ const TransitionLayer = BaseLayer.extend({
         currentLayer.fadeTo(transitionDuration, 0.0);
 
         // delay for transition duration and then resolve
-        this.runAction(cc.sequence(
-          cc.delayTime(transitionDuration),
-          cc.callFunc(() => {
-            currentLayer.onTransitionOut();
-            currentLayer.destroy();
-            resolve();
-          }),
-        ));
+        this.runAction(
+          cc.sequence(
+            cc.delayTime(transitionDuration),
+            cc.callFunc(() => {
+              currentLayer.onTransitionOut();
+              currentLayer.destroy();
+              resolve();
+            }),
+          ),
+        );
       } else {
         // no current layer
         resolve();
@@ -93,15 +94,17 @@ const TransitionLayer = BaseLayer.extend({
           layer.fadeTo(transitionDuration, 255.0);
 
           // delay for transition duration and then resolve
-          this.runAction(cc.sequence(
-            cc.delayTime(transitionDuration),
-            cc.callFunc(() => {
-              if (layer != null && layer === this._currentLayer) {
-                layer.onTransitionIn();
-              }
-              resolve();
-            }),
-          ));
+          this.runAction(
+            cc.sequence(
+              cc.delayTime(transitionDuration),
+              cc.callFunc(() => {
+                if (layer != null && layer === this._currentLayer) {
+                  layer.onTransitionIn();
+                }
+                resolve();
+              }),
+            ),
+          );
         });
       } else {
         // no new layer
@@ -111,7 +114,6 @@ const TransitionLayer = BaseLayer.extend({
 
     return Promise.all([emptyPromise, showPromise]);
   },
-
 });
 
 TransitionLayer.create = function (color, layer) {

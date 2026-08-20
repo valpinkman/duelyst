@@ -29,13 +29,19 @@ class ModifierSummonWatchNearbyApplyModifiers extends ModifierSummonWatchApplyMo
 
   getIsValidBuffPosition(summonedUnitPosition) {
     const entityPosition = this.getCard().getPosition();
-    if ((Math.abs(summonedUnitPosition.x - entityPosition.x) <= 1) && (Math.abs(summonedUnitPosition.y - entityPosition.y) <= 1)) {
+    if (
+      Math.abs(summonedUnitPosition.x - entityPosition.x) <= 1 &&
+      Math.abs(summonedUnitPosition.y - entityPosition.y) <= 1
+    ) {
       return true;
     }
     return false;
   }
 }
 ModifierSummonWatchNearbyApplyModifiers.prototype.type = 'ModifierSummonWatchNearbyApplyModifiers';
-ModifierSummonWatchNearbyApplyModifiers.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierSummonWatchNearbyApplyModifiers.prototype.fxResource = [
+  'FX.Modifiers.ModifierSummonWatch',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 
 module.exports = ModifierSummonWatchNearbyApplyModifiers;

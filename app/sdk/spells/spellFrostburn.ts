@@ -11,7 +11,13 @@ class SpellFrostburn extends SpellDamage {
   _postFilterApplyPositions(originalPositions) {
     const filteredPositions = [];
     for (var position of Array.from<any>(originalPositions)) {
-      if (!__guardMethod__(this.getGameSession().getBoard().getUnitAtPosition(position), 'getBelongsToTribe', (o) => o.getBelongsToTribe(Races.Vespyr))) {
+      if (
+        !__guardMethod__(
+          this.getGameSession().getBoard().getUnitAtPosition(position),
+          'getBelongsToTribe',
+          (o) => o.getBelongsToTribe(Races.Vespyr),
+        )
+      ) {
         filteredPositions.push(position);
       }
     }

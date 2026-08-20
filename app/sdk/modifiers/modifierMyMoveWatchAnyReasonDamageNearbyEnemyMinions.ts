@@ -26,7 +26,9 @@ class ModifierMyMoveWatchAnyReasonDamageNearbyEnemyMinions extends ModifierMyMov
   }
 
   onMyMoveWatchAnyReason(action) {
-    const entities = this.getGameSession().getBoard().getEnemyEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
+    const entities = this.getGameSession()
+      .getBoard()
+      .getEnemyEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
     return (() => {
       const result = [];
       for (var entity of Array.from<any>(entities)) {
@@ -45,8 +47,11 @@ class ModifierMyMoveWatchAnyReasonDamageNearbyEnemyMinions extends ModifierMyMov
     })();
   }
 }
-ModifierMyMoveWatchAnyReasonDamageNearbyEnemyMinions.prototype.type = 'ModifierMyMoveWatchAnyReasonDamageNearbyEnemyMinions';
-ModifierMyMoveWatchAnyReasonDamageNearbyEnemyMinions.prototype.fxResource = ['FX.Modifiers.ModifierMyMoveWatch'];
+ModifierMyMoveWatchAnyReasonDamageNearbyEnemyMinions.prototype.type =
+  'ModifierMyMoveWatchAnyReasonDamageNearbyEnemyMinions';
+ModifierMyMoveWatchAnyReasonDamageNearbyEnemyMinions.prototype.fxResource = [
+  'FX.Modifiers.ModifierMyMoveWatch',
+];
 ModifierMyMoveWatchAnyReasonDamageNearbyEnemyMinions.prototype.damageAmount = 0;
 
 module.exports = ModifierMyMoveWatchAnyReasonDamageNearbyEnemyMinions;

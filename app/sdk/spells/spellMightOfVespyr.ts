@@ -16,17 +16,22 @@ class SpellMightOfVespyr extends SpellApplyModifiers {
     const allUnits = board.getUnits(true, false);
     if (allUnits != null) {
       for (var unit of Array.from<any>(allUnits)) {
-        if ((unit != null) && (unit.getOwnerId() === this.getOwnerId()) && unit.getBelongsToTribe(Races.Vespyr)) {
+        if (
+          unit != null &&
+          unit.getOwnerId() === this.getOwnerId() &&
+          unit.getBelongsToTribe(Races.Vespyr)
+        ) {
           buffAmount += 2;
         }
       }
     }
 
-    const statContextObject = Modifier.createContextObjectWithAttributeBuffs(buffAmount, buffAmount);
+    const statContextObject = Modifier.createContextObjectWithAttributeBuffs(
+      buffAmount,
+      buffAmount,
+    );
     statContextObject.appliedName = 'Vespyrian Might';
-    this.setTargetModifiersContextObjects([
-      statContextObject,
-    ]);
+    this.setTargetModifiersContextObjects([statContextObject]);
 
     return super.onApplyEffectToBoardTile(board, x, y, sourceAction); // apply buff
   }

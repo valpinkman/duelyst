@@ -13,7 +13,9 @@ class ModifierSpellWatchDrawCard extends ModifierSpellWatch {
   static type = 'ModifierSpellWatchDrawCard';
 
   onSpellWatch(action) {
-    return this.getGameSession().executeAction(new DrawCardAction(this.getGameSession(), this.getCard().getOwnerId()));
+    return this.getGameSession().executeAction(
+      new DrawCardAction(this.getGameSession(), this.getCard().getOwnerId()),
+    );
   }
 }
 ModifierSpellWatchDrawCard.prototype.type = 'ModifierSpellWatchDrawCard';

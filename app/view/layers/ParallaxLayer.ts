@@ -8,7 +8,6 @@ const ParallaxNode = require('../nodes/ParallaxNode');
  *************************************************************************** */
 
 const ParallaxLayer = BaseLayer.extend({
-
   // base scale should be set manually
   // usually based on the background size vs window size
   parallaxScale: 1.0,
@@ -150,7 +149,10 @@ const ParallaxLayer = BaseLayer.extend({
         }
       }
 
-      if (this.parallaxPosition.x === this.parallaxTargetPosition.x && this.parallaxPosition.y === this.parallaxTargetPosition.y) {
+      if (
+        this.parallaxPosition.x === this.parallaxTargetPosition.x &&
+        this.parallaxPosition.y === this.parallaxTargetPosition.y
+      ) {
         this._dirtyParallax = false;
       }
     }

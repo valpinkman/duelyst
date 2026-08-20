@@ -40,7 +40,9 @@ describe('challenges', () => {
 
       let action = gameSession.getGeneralForPlayer1().actionMove({ x: 3, y: 2 });
       gameSession.executeAction(action);
-      action = gameSession.getGeneralForPlayer1().actionAttack(board.getUnitAtPosition({ x: 4, y: 2 }));
+      action = gameSession
+        .getGeneralForPlayer1()
+        .actionAttack(board.getUnitAtPosition({ x: 4, y: 2 }));
       gameSession.executeAction(action);
 
       const squire = board.getUnitAtPosition({ x: 3, y: 1 });

@@ -31,5 +31,6 @@ module.exports = function (job, done) {
     .then(function () {
       Logger.module('JOB').timeEnd(`[J:${job.id}] synced user (${userId}) buddy list`);
       return done();
-    }).catch((error) => done(error));
+    })
+    .catch((error) => done(error));
 };

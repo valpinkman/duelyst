@@ -40,9 +40,11 @@ class ValidatorFollowup extends Validator {
 
     if (event.type === EVENTS.deserialize) {
       return this.clearCardsWithFollowup(event);
-    } if (event.type === EVENTS.modify_action_for_validation) {
+    }
+    if (event.type === EVENTS.modify_action_for_validation) {
       return this.onModifyActionForValidation(event);
-    } if (event.type === EVENTS.added_action_to_queue) {
+    }
+    if (event.type === EVENTS.added_action_to_queue) {
       return this.onAddedActionToQueue(event);
     }
   }
@@ -60,7 +62,12 @@ class ValidatorFollowup extends Validator {
   }
 
   getActionClearsFollowups(action) {
-    return action instanceof StopBufferingEventsAction || action instanceof RollbackToSnapshotAction || action instanceof EndTurnAction || action instanceof ResignAction;
+    return (
+      action instanceof StopBufferingEventsAction ||
+      action instanceof RollbackToSnapshotAction ||
+      action instanceof EndTurnAction ||
+      action instanceof ResignAction
+    );
   }
 
   // endregion GETTERS / SETTERS
@@ -72,7 +79,7 @@ class ValidatorFollowup extends Validator {
       for (var card of Array.from<any>(this._cardStack)) {
         card.clearFollowups();
       }
-      return this._cardStack = [];
+      return (this._cardStack = []);
     }
   }
 
@@ -94,13 +101,19 @@ class ValidatorFollowup extends Validator {
   // region EVENTS
 
   onModifyActionForValidation(event) {
-    const {
-      action,
-    } = event;
-    if ((action != null) && action.getIsValid() && !action.getIsImplicit() && !this.getActionClearsFollowups(action)) {
+    const { action } = event;
+    if (
+      action != null &&
+      action.getIsValid() &&
+      !action.getIsImplicit() &&
+      !this.getActionClearsFollowups(action)
+    ) {
       // check against current card waiting for followups
       const cardWaitingForFollowups = this.getCardWaitingForFollowups();
-      if ((cardWaitingForFollowups != null) && cardWaitingForFollowups.getIsActionForCurrentFollowup(action)) {
+      if (
+        cardWaitingForFollowups != null &&
+        cardWaitingForFollowups.getIsActionForCurrentFollowup(action)
+      ) {
         // action is the current followup this card is waiting for
         // inject followup properties into card so that it is ready for validation and play
         // this is done here instead of by the action creating the card
@@ -112,10 +125,13 @@ class ValidatorFollowup extends Validator {
 
   onValidateAction(event) {
     super.onValidateAction(event);
-    const {
-      action,
-    } = event;
-    if ((action != null) && action.getIsValid() && !action.getIsImplicit() && !this.getActionClearsFollowups(action)) {
+    const { action } = event;
+    if (
+      action != null &&
+      action.getIsValid() &&
+      !action.getIsImplicit() &&
+      !this.getActionClearsFollowups(action)
+    ) {
       // check against current card waiting for followups
       const cardWaitingForFollowups = this.getCardWaitingForFollowups();
       if (cardWaitingForFollowups != null) {
@@ -127,23 +143,44 @@ class ValidatorFollowup extends Validator {
         // - the played card's followup options must match the original followup options of the current followup
         // - the played card's target position is a valid target position
         if (!cardWaitingForFollowups.getIsActionForCurrentFollowup(action)) {
-          return this.invalidateAction(action, action.getTargetPosition(), i18next.t('validators.invalid_followup_message'));
-        } if ((action.sourcePosition.x !== currentFollowupSourcePosition.x) || (action.sourcePosition.y !== currentFollowupSourcePosition.y)) {
-          return this.invalidateAction(action, action.getSourcePosition(), i18next.t('validators.invalid_followup_source_message'));
-        } if (!UtilsPosition.getIsPositionInPositions(currentFollowupCard.getValidTargetPositions(), action.targetPosition)) {
-          return this.invalidateAction(action, action.getTargetPosition(), i18next.t('validators.invalid_followup_target_message'));
+          return this.invalidateAction(
+            action,
+            action.getTargetPosition(),
+            i18next.t('validators.invalid_followup_message'),
+          );
+        }
+        if (
+          action.sourcePosition.x !== currentFollowupSourcePosition.x ||
+          action.sourcePosition.y !== currentFollowupSourcePosition.y
+        ) {
+          return this.invalidateAction(
+            action,
+            action.getSourcePosition(),
+            i18next.t('validators.invalid_followup_source_message'),
+          );
+        }
+        if (
+          !UtilsPosition.getIsPositionInPositions(
+            currentFollowupCard.getValidTargetPositions(),
+            action.targetPosition,
+          )
+        ) {
+          return this.invalidateAction(
+            action,
+            action.getTargetPosition(),
+            i18next.t('validators.invalid_followup_target_message'),
+          );
         }
       }
     }
   }
 
   onAddedActionToQueue(event) {
-    const {
-      action,
-    } = event;
+    const { action } = event;
     if (this.getActionClearsFollowups(action)) {
       return this.clearCardsWithFollowup();
-    } if (action && !action.getIsImplicit()) {
+    }
+    if (action && !action.getIsImplicit()) {
       // check against current card waiting for followups
       const cardWaitingForFollowups = this.getCardWaitingForFollowups();
       if (cardWaitingForFollowups != null) {

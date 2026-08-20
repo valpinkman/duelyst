@@ -8,7 +8,6 @@
  * @return {ToneCurve}
  */
 var ToneCurve = cc.ActionInterval.extend({
-
   _toneCurveAmountTo: 0.0,
   _toneCurveAmountFrom: 0.0,
 
@@ -19,15 +18,19 @@ var ToneCurve = cc.ActionInterval.extend({
 
   initWithDuration(duration, toneCurveAmountFrom, toneCurveAmountTo) {
     if (cc.ActionInterval.prototype.initWithDuration.call(this, duration)) {
-      this._toneCurveAmountFrom = toneCurveAmountFrom == null ? this._toneCurveAmountFrom : toneCurveAmountFrom;
-      this._toneCurveAmountTo = toneCurveAmountTo == null ? this._toneCurveAmountTo : toneCurveAmountTo;
+      this._toneCurveAmountFrom =
+        toneCurveAmountFrom == null ? this._toneCurveAmountFrom : toneCurveAmountFrom;
+      this._toneCurveAmountTo =
+        toneCurveAmountTo == null ? this._toneCurveAmountTo : toneCurveAmountTo;
       return true;
     }
     return false;
   },
 
   update(timePct) {
-    this.getFX().setToneCurveAmount(this._toneCurveAmountFrom * (1.0 - timePct) + this._toneCurveAmountTo * timePct);
+    this.getFX().setToneCurveAmount(
+      this._toneCurveAmountFrom * (1.0 - timePct) + this._toneCurveAmountTo * timePct,
+    );
   },
 
   reverse() {

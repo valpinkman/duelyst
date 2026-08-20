@@ -56,14 +56,14 @@ class DrawCardAction extends PutCardInHandAction {
    * NOTE: this will only return reliable values POST EXECUTION
    */
   getIsDrawFromEmptyDeck() {
-    return (this.cardDataOrIndex == null) && this.getGameSession().getAreDecksRandomized();
+    return this.cardDataOrIndex == null && this.getGameSession().getAreDecksRandomized();
   }
 
   /**
    * Set a specific card index to be drawn.
    */
   setCardIndexFromDeck(index) {
-    return this.cardIndexFromDeck = index;
+    return (this.cardIndexFromDeck = index);
   }
 
   /**

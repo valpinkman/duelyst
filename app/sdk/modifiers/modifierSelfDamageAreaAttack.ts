@@ -32,12 +32,14 @@ class ModifierSelfDamageAreaAttack extends Modifier {
     super.onBeforeAction(actionEvent);
 
     const a = actionEvent.action;
-    if (a instanceof AttackAction && (a.getSource() === this.getCard())) {
+    if (a instanceof AttackAction && a.getSource() === this.getCard()) {
       let damageAction;
       let selfDamage = this.getCard().getATK();
 
       // damage the area too
-      const entities = this.getGameSession().getBoard().getFriendlyEntitiesAroundEntity(a.getTarget(), CardType.Unit, 1);
+      const entities = this.getGameSession()
+        .getBoard()
+        .getFriendlyEntitiesAroundEntity(a.getTarget(), CardType.Unit, 1);
       for (var entity of Array.from<any>(entities)) {
         damageAction = new DamageAction(this.getGameSession());
         damageAction.setOwnerId(this.getCard().getOwnerId());

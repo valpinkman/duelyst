@@ -14,13 +14,9 @@ Logger.enabled = false;
 describe('prophecy', () => {
   describe('faction2', () => {
     beforeEach(() => {
-      const player1Deck = [
-        { id: SDK.Cards.Faction2.General },
-      ];
+      const player1Deck = [{ id: SDK.Cards.Faction2.General }];
 
-      const player2Deck = [
-        { id: SDK.Cards.Faction1.General },
-      ];
+      const player2Deck = [{ id: SDK.Cards.Faction1.General }];
 
       UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
     });
@@ -36,7 +32,11 @@ describe('prophecy', () => {
       const player2 = gameSession.getPlayer2();
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction2.HundredHand }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction2.HundredHand,
+        }),
+      );
       const action = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(action);
 
@@ -45,7 +45,11 @@ describe('prophecy', () => {
 
       gameSession.executeAction(gameSession.actionEndTurn());
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer2Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer2Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
       const playCardFromHandAction = player2.actionPlayCardFromHand(0, 7, 2);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -61,10 +65,24 @@ describe('prophecy', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      const flamewreath = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction2.Flamewreath }, 1, 1, gameSession.getPlayer1Id());
-      const hailstoneGolem = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.HailstoneGolem }, 8, 3, gameSession.getPlayer2Id());
+      const flamewreath = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction2.Flamewreath },
+        1,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const hailstoneGolem = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.HailstoneGolem },
+        8,
+        3,
+        gameSession.getPlayer2Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.MistDragonSeal }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.MistDragonSeal,
+        }),
+      );
       var action = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(action);
       const followupCard = action.getCard().getCurrentFollowupCard();
@@ -93,9 +111,18 @@ describe('prophecy', () => {
 
       player1.remainingMana = 9;
 
-      const hailstoneGolem = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.HailstoneGolem }, 8, 3, gameSession.getPlayer2Id());
+      const hailstoneGolem = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.HailstoneGolem },
+        8,
+        3,
+        gameSession.getPlayer2Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.SpiralCounter }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.SpiralCounter,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 8, 3);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -108,7 +135,12 @@ describe('prophecy', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      const hailstoneGolem = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.HailstoneGolem }, 0, 1, gameSession.getPlayer2Id());
+      const hailstoneGolem = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.HailstoneGolem },
+        0,
+        1,
+        gameSession.getPlayer2Id(),
+      );
 
       gameSession.executeAction(gameSession.actionEndTurn());
 
@@ -118,7 +150,11 @@ describe('prophecy', () => {
 
       gameSession.executeAction(gameSession.actionEndTurn());
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.SpiralCounter }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.SpiralCounter,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 0, 1);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -131,19 +167,34 @@ describe('prophecy', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      const hailstoneGolem = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.HailstoneGolem }, 8, 3, gameSession.getPlayer2Id());
+      const hailstoneGolem = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.HailstoneGolem },
+        8,
+        3,
+        gameSession.getPlayer2Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.Gotatsu }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.Gotatsu,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 8, 3);
       gameSession.executeAction(playCardFromHandAction);
 
       expect(hailstoneGolem.getHP()).to.equal(5);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.InnerFocus }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.InnerFocus,
+        }),
+      );
 
       gameSession.executeAction(gameSession.actionEndTurn());
 
-      expect(player1.getDeck().getCardInHandAtIndex(0).getId()).to.equal(SDK.Cards.Spell.InnerFocus);
+      expect(player1.getDeck().getCardInHandAtIndex(0).getId()).to.equal(
+        SDK.Cards.Spell.InnerFocus,
+      );
     });
 
     it('expect gotatsu to not work on Generals', () => {
@@ -153,7 +204,11 @@ describe('prophecy', () => {
       const player2 = gameSession.getPlayer2();
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer2Id(), { id: SDK.Cards.Spell.Gotatsu }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer2Id(), {
+          id: SDK.Cards.Spell.Gotatsu,
+        }),
+      );
       const playCardFromHandAction = player2.actionPlayCardFromHand(0, 8, 2);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -167,7 +222,11 @@ describe('prophecy', () => {
       const player2 = gameSession.getPlayer2();
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction2.Mizuchi }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction2.Mizuchi,
+        }),
+      );
       var action = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(action);
 
@@ -189,7 +248,9 @@ describe('prophecy', () => {
       gameSession.executeAction(gameSession.actionEndTurn());
       var action = gameSession.getGeneralForPlayer2().actionMove({ x: 1, y: 2 });
       gameSession.executeAction(action);
-      var action = gameSession.getGeneralForPlayer2().actionAttack(gameSession.getGeneralForPlayer1());
+      var action = gameSession
+        .getGeneralForPlayer2()
+        .actionAttack(gameSession.getGeneralForPlayer1());
       gameSession.executeAction(action);
       expect(action.getIsValid()).to.equal(true);
 
@@ -206,7 +267,11 @@ describe('prophecy', () => {
       const player2 = gameSession.getPlayer2();
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction2.MindCageOni }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction2.MindCageOni,
+        }),
+      );
       var action = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(action);
 
@@ -215,7 +280,11 @@ describe('prophecy', () => {
 
       gameSession.executeAction(gameSession.actionEndTurn());
       player2.remainingMana = 9;
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer2Id(), { id: SDK.Cards.Spell.PhoenixFire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer2Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
       var action = player2.actionPlayCardFromHand(0, 0, 2);
       gameSession.executeAction(action);
 
@@ -225,7 +294,11 @@ describe('prophecy', () => {
       var hand = player1.getDeck().getCardsInHand();
       expect(hand[0].getId()).to.equal(SDK.Cards.Spell.PhoenixFire);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer2Id(), { id: SDK.Cards.Spell.PhoenixFire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer2Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
       var action = player2.actionPlayCardFromHand(0, 0, 2);
       gameSession.executeAction(action);
 
@@ -239,10 +312,24 @@ describe('prophecy', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      const heartseeker = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction2.Heartseeker }, 0, 0, gameSession.getPlayer1Id());
-      const kaidoAssassin = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction2.KaidoAssassin }, 0, 1, gameSession.getPlayer1Id());
+      const heartseeker = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction2.Heartseeker },
+        0,
+        0,
+        gameSession.getPlayer1Id(),
+      );
+      const kaidoAssassin = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction2.KaidoAssassin },
+        0,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.Bombard }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.Bombard,
+        }),
+      );
       const action = player1.actionPlayCardFromHand(0, 0, 1);
       gameSession.executeAction(action);
 
@@ -256,16 +343,32 @@ describe('prophecy', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      const scrollBandit = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction2.ScrollBandit }, 1, 1, gameSession.getPlayer1Id());
-      const brightmossGolem = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.BrightmossGolem }, 0, 1, gameSession.getPlayer2Id());
+      const scrollBandit = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction2.ScrollBandit },
+        1,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const brightmossGolem = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.BrightmossGolem },
+        0,
+        1,
+        gameSession.getPlayer2Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer2Id(), { id: SDK.Cards.Spell.InnerFocus }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer2Id(), {
+          id: SDK.Cards.Spell.InnerFocus,
+        }),
+      );
 
       scrollBandit.refreshExhaustion();
       const action = scrollBandit.actionAttack(brightmossGolem);
       gameSession.executeAction(action);
 
-      expect(player1.getDeck().getCardInHandAtIndex(0).getId()).to.equal(SDK.Cards.Spell.InnerFocus);
+      expect(player1.getDeck().getCardInHandAtIndex(0).getId()).to.equal(
+        SDK.Cards.Spell.InnerFocus,
+      );
     });
 
     it('expect firestorm mantra to steal 2 Health for each spell cast including itself', () => {
@@ -275,7 +378,11 @@ describe('prophecy', () => {
       player1.remainingMana = 9;
       gameSession.getGeneralForPlayer1().setDamage(24);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.FirestormMantra }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.FirestormMantra,
+        }),
+      );
       var action = player1.actionPlayCardFromHand(0, 8, 2);
       gameSession.executeAction(action);
 
@@ -283,7 +390,11 @@ describe('prophecy', () => {
       expect(gameSession.getGeneralForPlayer2().getHP()).to.equal(23);
 
       player1.remainingMana = 9;
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.FirestormMantra }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.FirestormMantra,
+        }),
+      );
       var action = player1.actionPlayCardFromHand(0, 8, 2);
       gameSession.executeAction(action);
 
@@ -291,7 +402,11 @@ describe('prophecy', () => {
       expect(gameSession.getGeneralForPlayer2().getHP()).to.equal(19);
 
       player1.remainingMana = 9;
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.FirestormMantra }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.FirestormMantra,
+        }),
+      );
       var action = player1.actionPlayCardFromHand(0, 8, 2);
       gameSession.executeAction(action);
 
@@ -307,9 +422,18 @@ describe('prophecy', () => {
       player1.remainingMana = 9;
 
       // move behind minion
-      const brightmossGolem = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.BrightmossGolem }, 0, 1, gameSession.getPlayer2Id());
+      const brightmossGolem = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.BrightmossGolem },
+        0,
+        1,
+        gameSession.getPlayer2Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.Flicker }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.Flicker,
+        }),
+      );
       var action = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(action);
 
@@ -321,7 +445,11 @@ describe('prophecy', () => {
       gameSession.executeAction(action);
       gameSession.executeAction(gameSession.actionEndTurn());
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.Flicker }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.Flicker,
+        }),
+      );
       var action = player1.actionPlayCardFromHand(0, 8, 2);
       gameSession.executeAction(action);
       var flickeredGeneral = board.getUnitAtPosition({ x: 8, y: 2 });
@@ -334,7 +462,11 @@ describe('prophecy', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Artifact.EnergyAmulet }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Artifact.EnergyAmulet,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 1, 1));
 
       expect(gameSession.getGeneralForPlayer1().getATK()).to.equal(3);
@@ -347,7 +479,11 @@ describe('prophecy', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.TwilightReiki }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.TwilightReiki,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 1, 1));
 
       const hand = player1.getDeck().getCardsInHand();
@@ -368,9 +504,24 @@ describe('prophecy', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      const brightmossGolem = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.BrightmossGolem }, 2, 0, gameSession.getPlayer2Id());
-      const brightmossGolem2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.BrightmossGolem }, 2, 1, gameSession.getPlayer2Id());
-      const eternityPainter = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction2.EternityPainter }, 1, 1, gameSession.getPlayer1Id());
+      const brightmossGolem = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.BrightmossGolem },
+        2,
+        0,
+        gameSession.getPlayer2Id(),
+      );
+      const brightmossGolem2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.BrightmossGolem },
+        2,
+        1,
+        gameSession.getPlayer2Id(),
+      );
+      const eternityPainter = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction2.EternityPainter },
+        1,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
       gameSession.executeAction(gameSession.actionEndTurn());
       gameSession.executeAction(gameSession.actionEndTurn());

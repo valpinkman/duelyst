@@ -17,7 +17,12 @@ class SpellDejaVu extends Spell {
       let spellToCopy;
       for (let i = spellsPlayedToBoard.length - 1; i >= 0; i--) {
         var spell = spellsPlayedToBoard[i];
-        if (!spell.getIsFollowup() && (spell.getOwnerId() === ownerId) && !(spell === this) && !(spell.getBaseCardId() === Cards.Spell.DejaVu)) {
+        if (
+          !spell.getIsFollowup() &&
+          spell.getOwnerId() === ownerId &&
+          !(spell === this) &&
+          !(spell.getBaseCardId() === Cards.Spell.DejaVu)
+        ) {
           spellToCopy = spell;
           break;
         }
@@ -25,15 +30,35 @@ class SpellDejaVu extends Spell {
 
       if (spellToCopy != null) {
         // put fresh copy of spell into deck
-        const a = new PutCardInDeckAction(this.getGameSession(), ownerId, spellToCopy.createNewCardData());
+        const a = new PutCardInDeckAction(
+          this.getGameSession(),
+          ownerId,
+          spellToCopy.createNewCardData(),
+        );
         this.getGameSession().executeAction(a);
-        const b = new PutCardInDeckAction(this.getGameSession(), ownerId, spellToCopy.createNewCardData());
+        const b = new PutCardInDeckAction(
+          this.getGameSession(),
+          ownerId,
+          spellToCopy.createNewCardData(),
+        );
         this.getGameSession().executeAction(b);
-        const c = new PutCardInDeckAction(this.getGameSession(), ownerId, spellToCopy.createNewCardData());
+        const c = new PutCardInDeckAction(
+          this.getGameSession(),
+          ownerId,
+          spellToCopy.createNewCardData(),
+        );
         this.getGameSession().executeAction(c);
-        const d = new PutCardInDeckAction(this.getGameSession(), ownerId, spellToCopy.createNewCardData());
+        const d = new PutCardInDeckAction(
+          this.getGameSession(),
+          ownerId,
+          spellToCopy.createNewCardData(),
+        );
         this.getGameSession().executeAction(d);
-        const e = new PutCardInDeckAction(this.getGameSession(), ownerId, spellToCopy.createNewCardData());
+        const e = new PutCardInDeckAction(
+          this.getGameSession(),
+          ownerId,
+          spellToCopy.createNewCardData(),
+        );
         return this.getGameSession().executeAction(e);
       }
     }

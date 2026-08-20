@@ -28,20 +28,22 @@ class ModifierBackstabWatch extends Modifier {
   getIsActionRelevant(a) {
     const target = a.getTarget();
     const card = this.getCard();
-    if ((card != null) && (target != null) && (a.getSource() === card)) {
-      return target.hasActiveModifierClass(ModifierAlwaysBackstabbed)
-        || (card.hasModifierType(ModifierBackstab.type)
-        && a instanceof AttackAction
-        && this.getGameSession().getBoard().getIsPositionBehindEntity(target, card.getPosition(), 1, 0));
+    if (card != null && target != null && a.getSource() === card) {
+      return (
+        target.hasActiveModifierClass(ModifierAlwaysBackstabbed) ||
+        (card.hasModifierType(ModifierBackstab.type) &&
+          a instanceof AttackAction &&
+          this.getGameSession()
+            .getBoard()
+            .getIsPositionBehindEntity(target, card.getPosition(), 1, 0))
+      );
     }
     return false;
   }
 
   onAction(event) {
     super.onAction(event);
-    const {
-      action,
-    } = event;
+    const { action } = event;
     if (this.getIsActionRelevant(action)) {
       return this.onBackstabWatch(action);
     }

@@ -5,7 +5,6 @@ LensNoiseSprite
  *************************************************************************** */
 
 var LensNoiseSprite = BaseSprite.extend({
-
   _flareAmount: 1.0,
 
   _createRenderCmd() {
@@ -17,7 +16,9 @@ var LensNoiseSprite = BaseSprite.extend({
 
   setOptions(options) {
     this._super(options);
-    if (options.flareAmount != null) { this._flareAmount = options.flareAmount; }
+    if (options.flareAmount != null) {
+      this._flareAmount = options.flareAmount;
+    }
   },
 
   setFlareAmount(val) {
@@ -30,12 +31,12 @@ var LensNoiseSprite = BaseSprite.extend({
 
   updateTweenAction(value, key) {
     switch (key) {
-    case 'flareAmount':
-      this._flareAmount = value;
-      break;
-    default:
-      BaseSprite.prototype.updateTweenAction.call(this, value, key);
-      break;
+      case 'flareAmount':
+        this._flareAmount = value;
+        break;
+      default:
+        BaseSprite.prototype.updateTweenAction.call(this, value, key);
+        break;
     }
   },
 });
@@ -43,7 +44,9 @@ var LensNoiseSprite = BaseSprite.extend({
 LensNoiseSprite.WebGLRenderCmd = function (renderable) {
   BaseSprite.WebGLRenderCmd.call(this, renderable);
 };
-const proto = LensNoiseSprite.WebGLRenderCmd.prototype = Object.create(BaseSprite.WebGLRenderCmd.prototype);
+const proto = (LensNoiseSprite.WebGLRenderCmd.prototype = Object.create(
+  BaseSprite.WebGLRenderCmd.prototype,
+));
 proto.constructor = LensNoiseSprite.WebGLRenderCmd;
 
 proto.rendering = function () {
@@ -56,7 +59,11 @@ proto.rendering = function () {
   const shaderProgram = cc.shaderCache.programForKey('LensNoise');
   shaderProgram.use();
   shaderProgram._setUniformForMVPMatrixWithMat4(this._stackMatrix);
-  shaderProgram.setUniformLocationWith2f(shaderProgram.loc_texResolution, node._texture.getPixelsWide(), node._texture.getPixelsHigh());
+  shaderProgram.setUniformLocationWith2f(
+    shaderProgram.loc_texResolution,
+    node._texture.getPixelsWide(),
+    node._texture.getPixelsHigh(),
+  );
   shaderProgram.setUniformLocationWith1f(shaderProgram.loc_time, node.getFX().getTime());
   shaderProgram.setUniformLocationWith1f(shaderProgram.loc_flareAmount, node.getFlareAmount());
   cc.glBindTexture2DN(0, node._texture);

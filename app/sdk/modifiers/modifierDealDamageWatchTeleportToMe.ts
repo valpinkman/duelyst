@@ -24,7 +24,11 @@ class ModifierDealDamageWatchTeleportToMe extends ModifierDealDamageWatch {
       const target = action.getTarget();
       if (target && !target.getIsGeneral()) {
         // move target in front of this minion
-        const teleAction = new TeleportInFrontOfUnitAction(this.getGameSession(), this.getCard(), target);
+        const teleAction = new TeleportInFrontOfUnitAction(
+          this.getGameSession(),
+          this.getCard(),
+          target,
+        );
         teleAction.setFXResource(_.union(teleAction.getFXResource(), this.getFXResource()));
         return this.getGameSession().executeAction(teleAction);
       }

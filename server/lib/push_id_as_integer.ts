@@ -11,6 +11,6 @@ const getPushIdAsInteger = (function getPushIdAsInteger() {
 
     return integer;
   };
-}());
+})();
 
 module.exports = getPushIdAsInteger;

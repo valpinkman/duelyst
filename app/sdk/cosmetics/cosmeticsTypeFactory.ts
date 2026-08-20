@@ -57,7 +57,10 @@ class CosmeticsTypeFactory {
     if (typeData) {
       return typeData;
     }
-    return console.error(`CosmeticsTypeFactory.cosmeticsTypeForIdentifier - Unknown cosmestics type identifier: ${identifier}`.red);
+    return console.error(
+      `CosmeticsTypeFactory.cosmeticsTypeForIdentifier - Unknown cosmestics type identifier: ${identifier}`
+        .red,
+    );
   }
 
   static getAllCosmeticsTypes() {

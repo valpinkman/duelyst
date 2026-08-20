@@ -40,31 +40,37 @@ describe('cosmetic chests module', () => {
         .then((userIdCreated) => {
           _chainState.userId = userIdCreated;
           Logger.module('UNITTEST').log('created user ', userIdCreated);
-        }).catch(onType(Errors.AlreadyExistsError, (error) => {
-          Logger.module('UNITTEST').log('existing user', userName);
-          return UsersModule.userIdForUsername(userName)
-            .then((userIdExisting) => {
-              _chainState.userId = userIdExisting;
-              Logger.module('UNITTEST').log('existing user retrieved', userIdExisting);
-              return SyncModule.wipeUserData(userIdExisting);
-            }).then(() => {
-              Logger.module('UNITTEST').log('existing user data wiped', _chainState.userId);
-            });
-        }))
+        })
+        .catch(
+          onType(Errors.AlreadyExistsError, (error) => {
+            Logger.module('UNITTEST').log('existing user', userName);
+            return UsersModule.userIdForUsername(userName)
+              .then((userIdExisting) => {
+                _chainState.userId = userIdExisting;
+                Logger.module('UNITTEST').log('existing user retrieved', userIdExisting);
+                return SyncModule.wipeUserData(userIdExisting);
+              })
+              .then(() => {
+                Logger.module('UNITTEST').log('existing user data wiped', _chainState.userId);
+              });
+          }),
+        )
         .then(() => Promise.resolve(_chainState.userId));
     };
 
     return Promise.all([
       createOrInsertUser('unit-test-1@duelyst.local', 'player 1', 0),
       createOrInsertUser('unit-test-2@duelyst.local', 'player 2', 0),
-    ]).then(([player1CreatedId, player2CreatedId]) => {
-      userId = player1CreatedId;
-      user2Id = player2CreatedId;
+    ])
+      .then(([player1CreatedId, player2CreatedId]) => {
+        userId = player1CreatedId;
+        user2Id = player2CreatedId;
 
-      return DuelystFirebase.connect().getRootRef();
-    }).then((rootRef) => {
-      fbRootRef = rootRef;
-    });
+        return DuelystFirebase.connect().getRootRef();
+      })
+      .then((rootRef) => {
+        fbRootRef = rootRef;
+      });
   });
 
   describe('giveUserChest()', () => {
@@ -72,82 +78,166 @@ describe('cosmetic chests module', () => {
       let currentChestCount = 0;
       let chestId = null;
 
-      return knex('user_cosmetic_chests').where('user_id', userId).select()
+      return knex('user_cosmetic_chests')
+        .where('user_id', userId)
+        .select()
         .then((chestRows) => {
           currentChestCount = chestRows.length;
 
-          const txPromise = knex.transaction((tx) => CosmeticChestsModule.giveUserChest(txPromise, tx, userId, SDK.CosmeticsChestTypeLookup.Common, null, null, 1, 'Unit test', generatePushId())).then((chestDatas) => {
-            expect(chestDatas).to.exist;
-            expect(chestDatas.length).to.equal(1);
-            expect(chestDatas[0].chest_type).to.equal(SDK.CosmeticsChestTypeLookup.Common);
+          const txPromise = knex
+            .transaction((tx) =>
+              CosmeticChestsModule.giveUserChest(
+                txPromise,
+                tx,
+                userId,
+                SDK.CosmeticsChestTypeLookup.Common,
+                null,
+                null,
+                1,
+                'Unit test',
+                generatePushId(),
+              ),
+            )
+            .then((chestDatas) => {
+              expect(chestDatas).to.exist;
+              expect(chestDatas.length).to.equal(1);
+              expect(chestDatas[0].chest_type).to.equal(SDK.CosmeticsChestTypeLookup.Common);
 
-            chestId = chestDatas[0].chest_id;
+              chestId = chestDatas[0].chest_id;
 
-            return knex('user_cosmetic_chests').where('user_id', userId).select();
-          }).then((chestRows) => {
-            expect(chestRows).to.exist;
-            expect(chestRows.length).to.equal(currentChestCount + 1);
-          });
+              return knex('user_cosmetic_chests').where('user_id', userId).select();
+            })
+            .then((chestRows) => {
+              expect(chestRows).to.exist;
+              expect(chestRows.length).to.equal(currentChestCount + 1);
+            });
 
-          return txPromise.then(() => FirebasePromises.remove(fbRootRef.child('user-inventory').child(userId).child('cosmetic-chests'))).then((fbChestsSnapshot) => {
-            // expect(fbChestsSnapshot).to.exist;
-            // expect(fbChestsSnapshot.val()).to.exist;
-            // fbChestDatas = fbChestsSnapshot.val();
-            //
-            // expect(fbChestsSnapshot[chestId]).to.exist
-          });
+          return txPromise
+            .then(() =>
+              FirebasePromises.remove(
+                fbRootRef.child('user-inventory').child(userId).child('cosmetic-chests'),
+              ),
+            )
+            .then((fbChestsSnapshot) => {
+              // expect(fbChestsSnapshot).to.exist;
+              // expect(fbChestsSnapshot.val()).to.exist;
+              // fbChestDatas = fbChestsSnapshot.val();
+              //
+              // expect(fbChestsSnapshot[chestId]).to.exist
+            });
         });
     });
 
     it('expect giving a user 7 more COMMON chests to max out at 5 COMMON chests', () => {
       let currentChestCount = 0;
 
-      return knex('user_cosmetic_chests').where('user_id', userId).select()
+      return knex('user_cosmetic_chests')
+        .where('user_id', userId)
+        .select()
         .then((chestRows) => {
           currentChestCount = chestRows.length;
 
-          const txPromise = knex.transaction((tx) => CosmeticChestsModule.giveUserChest(txPromise, tx, userId, SDK.CosmeticsChestTypeLookup.Common, null, null, 7, 'Unit test', generatePushId())).then((chestDatas) => {
-            expect(chestDatas).to.exist;
-            expect(chestDatas.length).to.equal(4);
-            expect(chestDatas[0].chest_type).to.equal(SDK.CosmeticsChestTypeLookup.Common);
-            return knex('user_cosmetic_chests').where('user_id', userId).andWhere('chest_type', SDK.CosmeticsChestTypeLookup.Common).select();
-          }).then((chestRows) => {
-            expect(chestRows).to.exist;
-            expect(chestRows.length).to.equal(5);
-          });
+          const txPromise = knex
+            .transaction((tx) =>
+              CosmeticChestsModule.giveUserChest(
+                txPromise,
+                tx,
+                userId,
+                SDK.CosmeticsChestTypeLookup.Common,
+                null,
+                null,
+                7,
+                'Unit test',
+                generatePushId(),
+              ),
+            )
+            .then((chestDatas) => {
+              expect(chestDatas).to.exist;
+              expect(chestDatas.length).to.equal(4);
+              expect(chestDatas[0].chest_type).to.equal(SDK.CosmeticsChestTypeLookup.Common);
+              return knex('user_cosmetic_chests')
+                .where('user_id', userId)
+                .andWhere('chest_type', SDK.CosmeticsChestTypeLookup.Common)
+                .select();
+            })
+            .then((chestRows) => {
+              expect(chestRows).to.exist;
+              expect(chestRows.length).to.equal(5);
+            });
           return txPromise;
         });
     });
 
-    it('expect to be able to give a user 5 RARE chests', () => knex('user_cosmetic_chests').where('user_id', userId).select()
-      .then((chestRows) => {
-        const currentChestCount = chestRows.length;
-        const txPromise = knex.transaction((tx) => CosmeticChestsModule.giveUserChest(txPromise, tx, userId, SDK.CosmeticsChestTypeLookup.Rare, null, null, 5, 'Unit test', generatePushId())).then((chestDatas) => {
-          expect(chestDatas).to.exist;
-          expect(chestDatas.length).to.equal(5);
-          expect(chestDatas[0].chest_type).to.equal(SDK.CosmeticsChestTypeLookup.Rare);
-          return knex('user_cosmetic_chests').where('user_id', userId).andWhere('chest_type', SDK.CosmeticsChestTypeLookup.Rare).select();
-        }).then((chestRows) => {
-          expect(chestRows).to.exist;
-          expect(chestRows.length).to.equal(5);
-        });
-        return txPromise;
-      }));
+    it('expect to be able to give a user 5 RARE chests', () =>
+      knex('user_cosmetic_chests')
+        .where('user_id', userId)
+        .select()
+        .then((chestRows) => {
+          const currentChestCount = chestRows.length;
+          const txPromise = knex
+            .transaction((tx) =>
+              CosmeticChestsModule.giveUserChest(
+                txPromise,
+                tx,
+                userId,
+                SDK.CosmeticsChestTypeLookup.Rare,
+                null,
+                null,
+                5,
+                'Unit test',
+                generatePushId(),
+              ),
+            )
+            .then((chestDatas) => {
+              expect(chestDatas).to.exist;
+              expect(chestDatas.length).to.equal(5);
+              expect(chestDatas[0].chest_type).to.equal(SDK.CosmeticsChestTypeLookup.Rare);
+              return knex('user_cosmetic_chests')
+                .where('user_id', userId)
+                .andWhere('chest_type', SDK.CosmeticsChestTypeLookup.Rare)
+                .select();
+            })
+            .then((chestRows) => {
+              expect(chestRows).to.exist;
+              expect(chestRows.length).to.equal(5);
+            });
+          return txPromise;
+        }));
 
     it('expect to max out at 5 RARE chests', () => {
       let currentChestCount = 0;
 
-      return knex('user_cosmetic_chests').where('user_id', userId).select()
+      return knex('user_cosmetic_chests')
+        .where('user_id', userId)
+        .select()
         .then((chestRows) => {
           currentChestCount = chestRows.length;
-          const txPromise = knex.transaction((tx) => CosmeticChestsModule.giveUserChest(txPromise, tx, userId, SDK.CosmeticsChestTypeLookup.Rare, null, null, 1, 'Unit test', generatePushId())).then((chestDatas) => {
-            expect(chestDatas).to.exist;
-            expect(chestDatas.length).to.equal(0);
-            return knex('user_cosmetic_chests').where('user_id', userId).andWhere('chest_type', SDK.CosmeticsChestTypeLookup.Rare).select();
-          }).then((chestRows) => {
-            expect(chestRows).to.exist;
-            expect(chestRows.length).to.equal(5);
-          });
+          const txPromise = knex
+            .transaction((tx) =>
+              CosmeticChestsModule.giveUserChest(
+                txPromise,
+                tx,
+                userId,
+                SDK.CosmeticsChestTypeLookup.Rare,
+                null,
+                null,
+                1,
+                'Unit test',
+                generatePushId(),
+              ),
+            )
+            .then((chestDatas) => {
+              expect(chestDatas).to.exist;
+              expect(chestDatas.length).to.equal(0);
+              return knex('user_cosmetic_chests')
+                .where('user_id', userId)
+                .andWhere('chest_type', SDK.CosmeticsChestTypeLookup.Rare)
+                .select();
+            })
+            .then((chestRows) => {
+              expect(chestRows).to.exist;
+              expect(chestRows.length).to.equal(5);
+            });
           return txPromise;
         });
     });
@@ -155,33 +245,72 @@ describe('cosmetic chests module', () => {
     it('expect giving 6 EPIC chests to award only 5 EPIC chests', () => {
       let currentChestCount = 0;
 
-      return knex('user_cosmetic_chests').where('user_id', userId).select()
+      return knex('user_cosmetic_chests')
+        .where('user_id', userId)
+        .select()
         .then((chestRows) => {
           currentChestCount = chestRows.length;
-          const txPromise = knex.transaction((tx) => CosmeticChestsModule.giveUserChest(txPromise, tx, userId, SDK.CosmeticsChestTypeLookup.Epic, null, null, 6, 'Unit test', generatePushId())).then((chestDatas) => {
-            expect(chestDatas).to.exist;
-            expect(chestDatas.length).to.equal(5);
-            return knex('user_cosmetic_chests').where('user_id', userId).andWhere('chest_type', SDK.CosmeticsChestTypeLookup.Epic).select();
-          }).then((chestRows) => {
-            expect(chestRows).to.exist;
-            expect(chestRows.length).to.equal(5);
-          });
+          const txPromise = knex
+            .transaction((tx) =>
+              CosmeticChestsModule.giveUserChest(
+                txPromise,
+                tx,
+                userId,
+                SDK.CosmeticsChestTypeLookup.Epic,
+                null,
+                null,
+                6,
+                'Unit test',
+                generatePushId(),
+              ),
+            )
+            .then((chestDatas) => {
+              expect(chestDatas).to.exist;
+              expect(chestDatas.length).to.equal(5);
+              return knex('user_cosmetic_chests')
+                .where('user_id', userId)
+                .andWhere('chest_type', SDK.CosmeticsChestTypeLookup.Epic)
+                .select();
+            })
+            .then((chestRows) => {
+              expect(chestRows).to.exist;
+              expect(chestRows.length).to.equal(5);
+            });
           return txPromise;
         });
     });
 
     it('expect to be able to give a user 1 BOSS chest and it have all required data', () => {
       const MOMENT_NOW_UTC = moment.utc();
-      return knex('user_cosmetic_chests').where('user_id', userId).select()
+      return knex('user_cosmetic_chests')
+        .where('user_id', userId)
+        .select()
         .then((chestRows) => {
           const currentChestCount = chestRows.length;
-          const txPromise = knex.transaction((tx) => CosmeticChestsModule.giveUserChest(txPromise, tx, userId, SDK.CosmeticsChestTypeLookup.Boss, SDK.Cards.Boss.Boss3, 'QA-Test-Event', 1, 'Unit test', generatePushId(), MOMENT_NOW_UTC)).then((chestDatas) => {
-            expect(chestDatas).to.exist;
-            expect(chestDatas.length).to.equal(1);
-            const chestData = chestDatas[0];
-            expect(chestData.chest_type).to.equal(SDK.CosmeticsChestTypeLookup.Boss);
-            expect(moment.utc(chestData.expires_at).valueOf()).to.equal(MOMENT_NOW_UTC.clone().add(48, 'hours').valueOf());
-          });
+          const txPromise = knex
+            .transaction((tx) =>
+              CosmeticChestsModule.giveUserChest(
+                txPromise,
+                tx,
+                userId,
+                SDK.CosmeticsChestTypeLookup.Boss,
+                SDK.Cards.Boss.Boss3,
+                'QA-Test-Event',
+                1,
+                'Unit test',
+                generatePushId(),
+                MOMENT_NOW_UTC,
+              ),
+            )
+            .then((chestDatas) => {
+              expect(chestDatas).to.exist;
+              expect(chestDatas.length).to.equal(1);
+              const chestData = chestDatas[0];
+              expect(chestData.chest_type).to.equal(SDK.CosmeticsChestTypeLookup.Boss);
+              expect(moment.utc(chestData.expires_at).valueOf()).to.equal(
+                MOMENT_NOW_UTC.clone().add(48, 'hours').valueOf(),
+              );
+            });
           return txPromise;
         });
     });
@@ -191,20 +320,35 @@ describe('cosmetic chests module', () => {
     it('expect to be able to give a user 1 chest key', () => {
       let currentChestKeyCount = 0;
 
-      return knex('user_cosmetic_chest_keys').where('user_id', userId).select()
+      return knex('user_cosmetic_chest_keys')
+        .where('user_id', userId)
+        .select()
         .then((chestKeyRows) => {
           currentChestKeyCount = chestKeyRows.length;
 
-          const txPromise = knex.transaction((tx) => CosmeticChestsModule.giveUserChestKey(txPromise, tx, userId, SDK.CosmeticsChestTypeLookup.Common, 1, 'Unit test', generatePushId())).then((chestKeyDatas) => {
-            expect(chestKeyDatas).to.exist;
-            expect(chestKeyDatas.length).to.equal(1);
-            expect(chestKeyDatas[0].key_type).to.equal(SDK.CosmeticsChestTypeLookup.Common);
+          const txPromise = knex
+            .transaction((tx) =>
+              CosmeticChestsModule.giveUserChestKey(
+                txPromise,
+                tx,
+                userId,
+                SDK.CosmeticsChestTypeLookup.Common,
+                1,
+                'Unit test',
+                generatePushId(),
+              ),
+            )
+            .then((chestKeyDatas) => {
+              expect(chestKeyDatas).to.exist;
+              expect(chestKeyDatas.length).to.equal(1);
+              expect(chestKeyDatas[0].key_type).to.equal(SDK.CosmeticsChestTypeLookup.Common);
 
-            return knex('user_cosmetic_chest_keys').where('user_id', userId).select();
-          }).then((chestKeyRows) => {
-            expect(chestKeyRows).to.exist;
-            expect(chestKeyRows.length).to.equal(currentChestKeyCount + 1);
-          });
+              return knex('user_cosmetic_chest_keys').where('user_id', userId).select();
+            })
+            .then((chestKeyRows) => {
+              expect(chestKeyRows).to.exist;
+              expect(chestKeyRows.length).to.equal(currentChestKeyCount + 1);
+            });
           return txPromise;
         });
     });
@@ -212,20 +356,35 @@ describe('cosmetic chests module', () => {
     it('expect to be able to give a user 5 chest keys', () => {
       let currentChestKeyCount = 0;
 
-      return knex('user_cosmetic_chest_keys').where('user_id', userId).select()
+      return knex('user_cosmetic_chest_keys')
+        .where('user_id', userId)
+        .select()
         .then((chestKeyRows) => {
           currentChestKeyCount = chestKeyRows.length;
 
-          const txPromise = knex.transaction((tx) => CosmeticChestsModule.giveUserChestKey(txPromise, tx, userId, SDK.CosmeticsChestTypeLookup.Rare, 5, 'Unit test', generatePushId())).then((chestKeyDatas) => {
-            expect(chestKeyDatas).to.exist;
-            expect(chestKeyDatas.length).to.equal(5);
-            expect(chestKeyDatas[0].key_type).to.equal(SDK.CosmeticsChestTypeLookup.Rare);
+          const txPromise = knex
+            .transaction((tx) =>
+              CosmeticChestsModule.giveUserChestKey(
+                txPromise,
+                tx,
+                userId,
+                SDK.CosmeticsChestTypeLookup.Rare,
+                5,
+                'Unit test',
+                generatePushId(),
+              ),
+            )
+            .then((chestKeyDatas) => {
+              expect(chestKeyDatas).to.exist;
+              expect(chestKeyDatas.length).to.equal(5);
+              expect(chestKeyDatas[0].key_type).to.equal(SDK.CosmeticsChestTypeLookup.Rare);
 
-            return knex('user_cosmetic_chest_keys').where('user_id', userId).select();
-          }).then((chestKeyRows) => {
-            expect(chestKeyRows).to.exist;
-            expect(chestKeyRows.length).to.equal(currentChestKeyCount + 5);
-          });
+              return knex('user_cosmetic_chest_keys').where('user_id', userId).select();
+            })
+            .then((chestKeyRows) => {
+              expect(chestKeyRows).to.exist;
+              expect(chestKeyRows.length).to.equal(currentChestKeyCount + 5);
+            });
           return txPromise;
         });
     });
@@ -237,66 +396,138 @@ describe('cosmetic chests module', () => {
     it('expect to be able to open a chest with a key of the same type', () => {
       let keyId = null;
       let chestId = null;
-      const txPromise = knex.transaction((tx) => Promise.all([
-        CosmeticChestsModule.giveUserChest(txPromise, tx, userId, SDK.CosmeticsChestTypeLookup.Common, null, null, 1, 'Unit test', generatePushId()),
-        CosmeticChestsModule.giveUserChestKey(txPromise, tx, userId, SDK.CosmeticsChestTypeLookup.Common, 1, 'Unit test', generatePushId()),
-      ]).then(([chestDatas, chestKeyDatas]) => {
-        chestId = chestDatas[0].chest_id;
-        keyId = chestKeyDatas[0].key_id;
-      })).then(() => CosmeticChestsModule.openChest(userId, chestId, keyId)).then((chestRewardDatas) => {
-        expect(chestRewardDatas).to.exist;
-      });
+      const txPromise = knex
+        .transaction((tx) =>
+          Promise.all([
+            CosmeticChestsModule.giveUserChest(
+              txPromise,
+              tx,
+              userId,
+              SDK.CosmeticsChestTypeLookup.Common,
+              null,
+              null,
+              1,
+              'Unit test',
+              generatePushId(),
+            ),
+            CosmeticChestsModule.giveUserChestKey(
+              txPromise,
+              tx,
+              userId,
+              SDK.CosmeticsChestTypeLookup.Common,
+              1,
+              'Unit test',
+              generatePushId(),
+            ),
+          ]).then(([chestDatas, chestKeyDatas]) => {
+            chestId = chestDatas[0].chest_id;
+            keyId = chestKeyDatas[0].key_id;
+          }),
+        )
+        .then(() => CosmeticChestsModule.openChest(userId, chestId, keyId))
+        .then((chestRewardDatas) => {
+          expect(chestRewardDatas).to.exist;
+        });
       return txPromise;
     });
 
-    it('expect to be able to open a boss chest before it\'s expiration', () => {
+    it("expect to be able to open a boss chest before it's expiration", () => {
       let keyId = null;
       let chestId = null;
-      return SyncModule.wipeUserData(userId)
-        .then(() => {
-          const txPromise = knex.transaction((tx) => Promise.all([
-            CosmeticChestsModule.giveUserChest(txPromise, tx, userId, SDK.CosmeticsChestTypeLookup.Boss, SDK.Cards.Boss.Boss3, 'QA-Event-Test-1', 1, 'Unit test', generatePushId()),
-            CosmeticChestsModule.giveUserChestKey(txPromise, tx, userId, SDK.CosmeticsChestTypeLookup.Boss, 1, 'Unit test', generatePushId()),
-          ]).then(([chestDatas, chestKeyDatas]) => {
-            chestId = chestDatas[0].chest_id;
-            keyId = chestKeyDatas[0].key_id;
-          })).then(() => CosmeticChestsModule.openChest(userId, chestId, keyId)).then((chestRewardDatas) => {
+      return SyncModule.wipeUserData(userId).then(() => {
+        const txPromise = knex
+          .transaction((tx) =>
+            Promise.all([
+              CosmeticChestsModule.giveUserChest(
+                txPromise,
+                tx,
+                userId,
+                SDK.CosmeticsChestTypeLookup.Boss,
+                SDK.Cards.Boss.Boss3,
+                'QA-Event-Test-1',
+                1,
+                'Unit test',
+                generatePushId(),
+              ),
+              CosmeticChestsModule.giveUserChestKey(
+                txPromise,
+                tx,
+                userId,
+                SDK.CosmeticsChestTypeLookup.Boss,
+                1,
+                'Unit test',
+                generatePushId(),
+              ),
+            ]).then(([chestDatas, chestKeyDatas]) => {
+              chestId = chestDatas[0].chest_id;
+              keyId = chestKeyDatas[0].key_id;
+            }),
+          )
+          .then(() => CosmeticChestsModule.openChest(userId, chestId, keyId))
+          .then((chestRewardDatas) => {
             expect(chestRewardDatas).to.exist;
           });
-          return txPromise;
-        });
+        return txPromise;
+      });
     });
 
-    it('expect to be able to not be able to open a boss chest after it\'s expiration', () => {
+    it("expect to be able to not be able to open a boss chest after it's expiration", () => {
       let keyId = null;
       let chestId = null;
-      return SyncModule.wipeUserData(userId)
-        .then(() => {
-          const txPromise = knex.transaction((tx) => Promise.all([
-            CosmeticChestsModule.giveUserChest(txPromise, tx, userId, SDK.CosmeticsChestTypeLookup.Boss, SDK.Cards.Boss.Boss3, 'QA-Event-Test-1', 1, 'Unit test', generatePushId()),
-            CosmeticChestsModule.giveUserChestKey(txPromise, tx, userId, SDK.CosmeticsChestTypeLookup.Boss, 1, 'Unit test', generatePushId()),
-          ]).then(([chestDatas, chestKeyDatas]) => {
-            chestId = chestDatas[0].chest_id;
-            keyId = chestKeyDatas[0].key_id;
-          })).then(() => CosmeticChestsModule.openChest(userId, chestId, keyId, moment.utc().add(50, 'hour'))).then((chestRewardDatas) => {
+      return SyncModule.wipeUserData(userId).then(() => {
+        const txPromise = knex
+          .transaction((tx) =>
+            Promise.all([
+              CosmeticChestsModule.giveUserChest(
+                txPromise,
+                tx,
+                userId,
+                SDK.CosmeticsChestTypeLookup.Boss,
+                SDK.Cards.Boss.Boss3,
+                'QA-Event-Test-1',
+                1,
+                'Unit test',
+                generatePushId(),
+              ),
+              CosmeticChestsModule.giveUserChestKey(
+                txPromise,
+                tx,
+                userId,
+                SDK.CosmeticsChestTypeLookup.Boss,
+                1,
+                'Unit test',
+                generatePushId(),
+              ),
+            ]).then(([chestDatas, chestKeyDatas]) => {
+              chestId = chestDatas[0].chest_id;
+              keyId = chestKeyDatas[0].key_id;
+            }),
+          )
+          .then(() =>
+            CosmeticChestsModule.openChest(userId, chestId, keyId, moment.utc().add(50, 'hour')),
+          )
+          .then((chestRewardDatas) => {
             // Should not reach here
             expect(chestRewardDatas).to.exist;
             expect(chestRewardDatas).to.not.exist;
-          }).catch((error) => {
+          })
+          .catch((error) => {
             expect(error).to.exist;
             expect(error).to.be.an.instanceof(Errors.InvalidRequestError);
           });
-          return txPromise
-            .then(() =>
-              // Confirm the chest is still in users unopened chests
-              Promise.all([
-                knex('user_cosmetic_chests').where('chest_id', chestId).first(),
-                knex('user_cosmetic_chests_opened').where('chest_id', chestId).first(),
-              ])).then(([chestRow, chestRowOpened]) => {
-              expect(chestRow).to.exist;
-              expect(chestRowOpened).to.not.exist;
-            });
-        });
+        return txPromise
+          .then(() =>
+            // Confirm the chest is still in users unopened chests
+            Promise.all([
+              knex('user_cosmetic_chests').where('chest_id', chestId).first(),
+              knex('user_cosmetic_chests_opened').where('chest_id', chestId).first(),
+            ]),
+          )
+          .then(([chestRow, chestRowOpened]) => {
+            expect(chestRow).to.exist;
+            expect(chestRowOpened).to.not.exist;
+          });
+      });
     });
 
     // it('expect to default to a not expired boss crate (if one exists) when trying to open a crate after it\'s expiration', function() {
@@ -347,36 +578,84 @@ describe('cosmetic chests module', () => {
     it('expect to be not able to open a chest with a key of a different type', () => {
       let keyId = null;
       let chestId = null;
-      const txPromise = knex.transaction((tx) => Promise.all([
-        CosmeticChestsModule.giveUserChest(txPromise, tx, userId, SDK.CosmeticsChestTypeLookup.Common, null, null, 1, 'Unit test', generatePushId()),
-        CosmeticChestsModule.giveUserChestKey(txPromise, tx, userId, SDK.CosmeticsChestTypeLookup.Rare, 1, 'Unit test', generatePushId()),
-      ]).then(([chestDatas, chestKeyDatas]) => {
-        chestId = chestDatas[0].chest_id;
-        keyId = chestKeyDatas[0].key_id;
-      })).then(() => CosmeticChestsModule.openChest(userId, chestId, keyId)).then((openedChestData) => {
-        expect(openedChestData).to.not.exist;
-      }).catch((error) => {
-        expect(error).to.exist;
-        expect(error).to.be.an.instanceof(Errors.ChestAndKeyTypeDoNotMatchError);
-      });
+      const txPromise = knex
+        .transaction((tx) =>
+          Promise.all([
+            CosmeticChestsModule.giveUserChest(
+              txPromise,
+              tx,
+              userId,
+              SDK.CosmeticsChestTypeLookup.Common,
+              null,
+              null,
+              1,
+              'Unit test',
+              generatePushId(),
+            ),
+            CosmeticChestsModule.giveUserChestKey(
+              txPromise,
+              tx,
+              userId,
+              SDK.CosmeticsChestTypeLookup.Rare,
+              1,
+              'Unit test',
+              generatePushId(),
+            ),
+          ]).then(([chestDatas, chestKeyDatas]) => {
+            chestId = chestDatas[0].chest_id;
+            keyId = chestKeyDatas[0].key_id;
+          }),
+        )
+        .then(() => CosmeticChestsModule.openChest(userId, chestId, keyId))
+        .then((openedChestData) => {
+          expect(openedChestData).to.not.exist;
+        })
+        .catch((error) => {
+          expect(error).to.exist;
+          expect(error).to.be.an.instanceof(Errors.ChestAndKeyTypeDoNotMatchError);
+        });
       return txPromise;
     });
 
     it('expect not to be able to open a chest with a key that does not belong to you', () => {
       let keyId = null;
       let chestId = null;
-      const txPromise = knex.transaction((tx) => Promise.all([
-        CosmeticChestsModule.giveUserChest(txPromise, tx, userId, SDK.CosmeticsChestTypeLookup.Common, null, null, 1, 'Unit test', generatePushId()),
-        CosmeticChestsModule.giveUserChestKey(txPromise, tx, user2Id, SDK.CosmeticsChestTypeLookup.Common, 1, 'Unit test', generatePushId()),
-      ]).then(([chestDatas, chestKeyDatas]) => {
-        chestId = chestDatas[0].chest_id;
-        keyId = chestKeyDatas[0].key_id;
-      })).then(() => CosmeticChestsModule.openChest(userId, chestId, keyId)).then((openedChestData) => {
-        expect(openedChestData).to.not.exist;
-      }).catch((error) => {
-        expect(error).to.exist;
-        expect(error).to.be.an.instanceof(Errors.NotFoundError);
-      });
+      const txPromise = knex
+        .transaction((tx) =>
+          Promise.all([
+            CosmeticChestsModule.giveUserChest(
+              txPromise,
+              tx,
+              userId,
+              SDK.CosmeticsChestTypeLookup.Common,
+              null,
+              null,
+              1,
+              'Unit test',
+              generatePushId(),
+            ),
+            CosmeticChestsModule.giveUserChestKey(
+              txPromise,
+              tx,
+              user2Id,
+              SDK.CosmeticsChestTypeLookup.Common,
+              1,
+              'Unit test',
+              generatePushId(),
+            ),
+          ]).then(([chestDatas, chestKeyDatas]) => {
+            chestId = chestDatas[0].chest_id;
+            keyId = chestKeyDatas[0].key_id;
+          }),
+        )
+        .then(() => CosmeticChestsModule.openChest(userId, chestId, keyId))
+        .then((openedChestData) => {
+          expect(openedChestData).to.not.exist;
+        })
+        .catch((error) => {
+          expect(error).to.exist;
+          expect(error).to.be.an.instanceof(Errors.NotFoundError);
+        });
       return txPromise;
     });
 
@@ -432,24 +711,50 @@ describe('cosmetic chests module', () => {
     const gameId = 'game-id';
     const game2Id = 'game-id-2';
 
-    beforeAll(() => SyncModule.wipeUserData(userId).then(() => knex('user_progression').insert({
-      user_id: userId,
-      win_count: 8,
-      game_count: 5,
-      last_game_id: gameId,
-    })));
+    beforeAll(() =>
+      SyncModule.wipeUserData(userId).then(() =>
+        knex('user_progression').insert({
+          user_id: userId,
+          win_count: 8,
+          game_count: 5,
+          last_game_id: gameId,
+        }),
+      ),
+    );
 
-    it('expect to do nothing for a friendly game', () => CosmeticChestsModule.updateUserChestRewardWithGameOutcome(userId, true, gameId, SDK.GameType.Friendly, false, false, moment.utc())
-      .then((result) => {
+    it('expect to do nothing for a friendly game', () =>
+      CosmeticChestsModule.updateUserChestRewardWithGameOutcome(
+        userId,
+        true,
+        gameId,
+        SDK.GameType.Friendly,
+        false,
+        false,
+        moment.utc(),
+      ).then((result) => {
         expect(result).to.equal(false);
       }));
 
     it('expect 5 win requirement before receiving any chests (with a 100% rng roll)', () => {
       const NOW_UTC_MOMENT = moment.utc();
-      return knex('user_progression').where('user_id', userId).update({
-        win_count: 4,
-        last_game_id: gameId,
-      }).then(() => CosmeticChestsModule.updateUserChestRewardWithGameOutcome(userId, true, gameId, SDK.GameType.Ranked, false, false, NOW_UTC_MOMENT, 1.0))
+      return knex('user_progression')
+        .where('user_id', userId)
+        .update({
+          win_count: 4,
+          last_game_id: gameId,
+        })
+        .then(() =>
+          CosmeticChestsModule.updateUserChestRewardWithGameOutcome(
+            userId,
+            true,
+            gameId,
+            SDK.GameType.Ranked,
+            false,
+            false,
+            NOW_UTC_MOMENT,
+            1.0,
+          ),
+        )
         .then((response) => {
           expect(response).to.not.exist;
         });
@@ -457,16 +762,35 @@ describe('cosmetic chests module', () => {
 
     it(`expect guarantee to receive a crate at 5+${CosmeticChestsModule.CHEST_GAME_COUNT_WINDOW} wins (with a 10% rng roll)`, () => {
       const NOW_UTC_MOMENT = moment.utc();
-      return knex('user_progression').where('user_id', userId).update({
-        win_count: 5 + CosmeticChestsModule.CHEST_GAME_COUNT_WINDOW,
-        last_game_id: gameId,
-      }).then(() => CosmeticChestsModule.updateUserChestRewardWithGameOutcome(userId, true, gameId, SDK.GameType.Ranked, false, false, NOW_UTC_MOMENT, 0.1))
+      return knex('user_progression')
+        .where('user_id', userId)
+        .update({
+          win_count: 5 + CosmeticChestsModule.CHEST_GAME_COUNT_WINDOW,
+          last_game_id: gameId,
+        })
+        .then(() =>
+          CosmeticChestsModule.updateUserChestRewardWithGameOutcome(
+            userId,
+            true,
+            gameId,
+            SDK.GameType.Ranked,
+            false,
+            false,
+            NOW_UTC_MOMENT,
+            0.1,
+          ),
+        )
         .then((response) => {
           expect(response).to.exist;
           expect(response.cosmetic_chests.length).to.be.above(0);
           return Promise.all([
-            knex('user_rewards').where('user_id', userId).andWhere('reward_category', 'loot crate').andWhere('game_id', gameId),
-            knex('user_cosmetic_chests').where('user_id', userId).andWhere('transaction_id', gameId),
+            knex('user_rewards')
+              .where('user_id', userId)
+              .andWhere('reward_category', 'loot crate')
+              .andWhere('game_id', gameId),
+            knex('user_cosmetic_chests')
+              .where('user_id', userId)
+              .andWhere('transaction_id', gameId),
             knex('user_progression').where('user_id', userId).first(),
           ]);
         })
@@ -475,21 +799,42 @@ describe('cosmetic chests module', () => {
           expect(rewardRows[0].cosmetic_chests).to.contain(SDK.CosmeticsChestTypeLookup.Common);
           expect(chestRows.length).to.be.above(0);
           expect(chestRows[0].transaction_id).to.equal(rewardRows[0].game_id);
-          expect(userProgressionRow.game_count).to.equal(userProgressionRow.last_crate_awarded_game_count);
-          expect(userProgressionRow.win_count).to.equal(userProgressionRow.last_crate_awarded_win_count);
-          expect(userProgressionRow.last_crate_awarded_at.valueOf()).to.equal(NOW_UTC_MOMENT.valueOf());
+          expect(userProgressionRow.game_count).to.equal(
+            userProgressionRow.last_crate_awarded_game_count,
+          );
+          expect(userProgressionRow.win_count).to.equal(
+            userProgressionRow.last_crate_awarded_win_count,
+          );
+          expect(userProgressionRow.last_crate_awarded_at.valueOf()).to.equal(
+            NOW_UTC_MOMENT.valueOf(),
+          );
         });
     });
 
-    it(`expect to receive NO crate at ${CosmeticChestsModule.CHEST_GAME_COUNT_WINDOW * 2} wins if the last crate was at ${CosmeticChestsModule.CHEST_GAME_COUNT_WINDOW} wins BUT time of last crate is now (with a 90% rng roll)`, () => knex('user_progression').where('user_id', userId).update({
-      win_count: 2 * CosmeticChestsModule.CHEST_GAME_COUNT_WINDOW,
-      last_game_id: gameId,
-      last_crate_awarded_game_count: CosmeticChestsModule.CHEST_GAME_COUNT_WINDOW,
-      last_crate_awarded_at: moment.utc().toDate(),
-    }).then(() => CosmeticChestsModule.updateUserChestRewardWithGameOutcome(userId, true, gameId, SDK.GameType.Ranked, false, false, moment.utc(), 0.9))
-      .then((response) => {
-        expect(response).to.not.exist;
-      }));
+    it(`expect to receive NO crate at ${CosmeticChestsModule.CHEST_GAME_COUNT_WINDOW * 2} wins if the last crate was at ${CosmeticChestsModule.CHEST_GAME_COUNT_WINDOW} wins BUT time of last crate is now (with a 90% rng roll)`, () =>
+      knex('user_progression')
+        .where('user_id', userId)
+        .update({
+          win_count: 2 * CosmeticChestsModule.CHEST_GAME_COUNT_WINDOW,
+          last_game_id: gameId,
+          last_crate_awarded_game_count: CosmeticChestsModule.CHEST_GAME_COUNT_WINDOW,
+          last_crate_awarded_at: moment.utc().toDate(),
+        })
+        .then(() =>
+          CosmeticChestsModule.updateUserChestRewardWithGameOutcome(
+            userId,
+            true,
+            gameId,
+            SDK.GameType.Ranked,
+            false,
+            false,
+            moment.utc(),
+            0.9,
+          ),
+        )
+        .then((response) => {
+          expect(response).to.not.exist;
+        }));
   });
 
   describe('updateUserChestRewardWithBossGameOutcome()', () => {
@@ -519,15 +864,19 @@ describe('cosmetic chests module', () => {
       ],
     };
 
-    beforeAll(() => SyncModule.wipeUserData(userId)
-      .then(() =>
-      // Write event to firebase
-        FirebasePromises.set(fbRootRef.child('boss-events').child(bossEventId), bossEventData)));
+    beforeAll(() =>
+      SyncModule.wipeUserData(userId).then(() =>
+        // Write event to firebase
+        FirebasePromises.set(fbRootRef.child('boss-events').child(bossEventId), bossEventData),
+      ),
+    );
 
-    afterAll(() => SyncModule.wipeUserData(userId)
-      .then(() =>
-      // Write event to firebase
-        FirebasePromises.remove(fbRootRef.child('boss-events').child(bossEventId))));
+    afterAll(() =>
+      SyncModule.wipeUserData(userId).then(() =>
+        // Write event to firebase
+        FirebasePromises.remove(fbRootRef.child('boss-events').child(bossEventId)),
+      ),
+    );
 
     it('expect to get no boss chest for a friendly game', () => {
       const gameSessionData = {
@@ -538,12 +887,22 @@ describe('cosmetic chests module', () => {
           },
         ],
       };
-      return CosmeticChestsModule.updateUserChestRewardWithBossGameOutcome(userId, true, gameId, SDK.GameType.Friend, false, false, gameSessionData, momentNowUtc)
+      return CosmeticChestsModule.updateUserChestRewardWithBossGameOutcome(
+        userId,
+        true,
+        gameId,
+        SDK.GameType.Friend,
+        false,
+        false,
+        gameSessionData,
+        momentNowUtc,
+      )
         .then((result) => {
           expect(result).to.equal(false);
 
           return knex('user_cosmetic_chests').where('user_id', userId);
-        }).then((rows) => {
+        })
+        .then((rows) => {
           expect(rows).to.exist;
           expect(rows.length).to.equal(0);
         });
@@ -558,12 +917,22 @@ describe('cosmetic chests module', () => {
           },
         ],
       };
-      return CosmeticChestsModule.updateUserChestRewardWithBossGameOutcome(userId, true, gameId, SDK.GameType.Ranked, false, false, gameSessionData, momentNowUtc)
+      return CosmeticChestsModule.updateUserChestRewardWithBossGameOutcome(
+        userId,
+        true,
+        gameId,
+        SDK.GameType.Ranked,
+        false,
+        false,
+        gameSessionData,
+        momentNowUtc,
+      )
         .then((result) => {
           expect(result).to.equal(false);
 
           return knex('user_cosmetic_chests').where('user_id', userId);
-        }).then((rows) => {
+        })
+        .then((rows) => {
           expect(rows).to.exist;
           expect(rows.length).to.equal(0);
         });
@@ -578,8 +947,18 @@ describe('cosmetic chests module', () => {
           },
         ],
       };
-      return CosmeticChestsModule.updateUserChestRewardWithBossGameOutcome(userId, false, gameId, SDK.GameType.Boss, false, false, gameSessionData, momentNowUtc)
-        .then((result) => knex('user_cosmetic_chests').where('user_id', userId)).then((rows) => {
+      return CosmeticChestsModule.updateUserChestRewardWithBossGameOutcome(
+        userId,
+        false,
+        gameId,
+        SDK.GameType.Boss,
+        false,
+        false,
+        gameSessionData,
+        momentNowUtc,
+      )
+        .then((result) => knex('user_cosmetic_chests').where('user_id', userId))
+        .then((rows) => {
           expect(rows).to.exist;
           expect(rows.length).to.equal(0);
         });
@@ -602,8 +981,18 @@ describe('cosmetic chests module', () => {
           ],
         },
       };
-      return CosmeticChestsModule.updateUserChestRewardWithBossGameOutcome(userId, true, gameId, SDK.GameType.BossBattle, false, false, gameSessionData, momentNowUtc)
-        .then((result) => knex('user_cosmetic_chests').where('user_id', userId)).then((rows) => {
+      return CosmeticChestsModule.updateUserChestRewardWithBossGameOutcome(
+        userId,
+        true,
+        gameId,
+        SDK.GameType.BossBattle,
+        false,
+        false,
+        gameSessionData,
+        momentNowUtc,
+      )
+        .then((result) => knex('user_cosmetic_chests').where('user_id', userId))
+        .then((rows) => {
           expect(rows).to.exist;
           expect(rows.length).to.equal(1);
           const bossChestRow = rows[0];
@@ -636,7 +1025,7 @@ describe('cosmetic chests module', () => {
 
     it(`expects probability of 0.5 if game_count == ${CosmeticChestsModule.CHEST_GAME_COUNT_WINDOW / 2} and last_crate_awarded_at == NULL and last_crate_awarded_game_count == NULL`, () => {
       const value = CosmeticChestsModule._chestProbabilityForProgressionData({
-        game_count: (CosmeticChestsModule.CHEST_GAME_COUNT_WINDOW / 2),
+        game_count: CosmeticChestsModule.CHEST_GAME_COUNT_WINDOW / 2,
       });
       expect(value).to.equal(0.5);
     });
@@ -708,7 +1097,12 @@ describe('cosmetic chests module', () => {
   });
 
   describe('_chestTypeForProgressionData', () => {
-    const simulateChestsRandomDays = function (days, playProbability, gameCount, gameCountVariance) {
+    const simulateChestsRandomDays = function (
+      days,
+      playProbability,
+      gameCount,
+      gameCountVariance,
+    ) {
       const chestTypes = [];
       const progressionData = {
         win_count: 5,
@@ -740,14 +1134,18 @@ describe('cosmetic chests module', () => {
           }
         }
 
-        const output = _.reduce(dayChests, (memo, type) => {
-          let t = '.';
-          if (type === null) t = '.'.green;
-          else if (type) t = type.substring(0, 1).toUpperCase();
-          if (t === 'G') t = t.yellow;
-          if (t === 'P') t = t.cyan;
-          return memo + t;
-        }, `D${i}:  `);
+        const output = _.reduce(
+          dayChests,
+          (memo, type) => {
+            let t = '.';
+            if (type === null) t = '.'.green;
+            else if (type) t = type.substring(0, 1).toUpperCase();
+            if (t === 'G') t = t.yellow;
+            if (t === 'P') t = t.cyan;
+            return memo + t;
+          },
+          `D${i}:  `,
+        );
         // Logger.module("UNITTEST").log(output)
       }
       return chestTypes;
@@ -785,14 +1183,18 @@ describe('cosmetic chests module', () => {
           }
         }
 
-        const output = _.reduce(dayChests, (memo, type) => {
-          let t = '.';
-          if (type === null) t = '.'.green;
-          else if (type) t = type.substring(0, 1).toUpperCase();
-          if (t === 'G') t = t.yellow;
-          if (t === 'P') t = t.cyan;
-          return memo + t;
-        }, `D${i}:  `);
+        const output = _.reduce(
+          dayChests,
+          (memo, type) => {
+            let t = '.';
+            if (type === null) t = '.'.green;
+            else if (type) t = type.substring(0, 1).toUpperCase();
+            if (t === 'G') t = t.yellow;
+            if (t === 'P') t = t.cyan;
+            return memo + t;
+          },
+          `D${i}:  `,
+        );
         // Logger.module("UNITTEST").log(output)
       }
       return chestTypes;
@@ -808,7 +1210,7 @@ describe('cosmetic chests module', () => {
         chestTypes = _.compact(chestTypes);
         stats.push(chestTypes.length);
       });
-      expect(stats.moe()).to.be.below(1.00);
+      expect(stats.moe()).to.be.below(1.0);
       expect(Math.abs(stats.amean() - 6)).to.be.below(0.75);
       expect(stats.median().toFixed(0)).to.equal('6');
       expect(stats.percentile(99)).to.be.below(11);
@@ -829,7 +1231,7 @@ describe('cosmetic chests module', () => {
         chestTypes = _.compact(chestTypes);
         stats.push(chestTypes.length);
       });
-      expect(stats.moe()).to.be.below(1.00);
+      expect(stats.moe()).to.be.below(1.0);
       expect(Math.abs(stats.amean() - 3)).to.be.below(0.75);
       expect(stats.median().toFixed(0)).to.equal('3');
       expect(stats.percentile(99)).to.be.below(6);
@@ -841,11 +1243,11 @@ describe('cosmetic chests module', () => {
       const stats = new Stats();
       _.times(n, (i) => {
         // Logger.module("UNITTEST").log("### PLAYER "+i)
-        let chestTypes = simulateChestsRandomDays(30, 0.20, 1, 4.0);
+        let chestTypes = simulateChestsRandomDays(30, 0.2, 1, 4.0);
         chestTypes = _.compact(chestTypes);
         stats.push(chestTypes.length);
       });
-      expect(stats.moe()).to.be.below(1.00);
+      expect(stats.moe()).to.be.below(1.0);
       expect(Math.abs(stats.amean() - 3)).to.be.below(0.75);
       expect(stats.median().toFixed(0)).to.equal('3');
       expect(stats.percentile(99)).to.be.below(11);
@@ -861,7 +1263,7 @@ describe('cosmetic chests module', () => {
         chestTypes = _.compact(chestTypes);
         stats.push(chestTypes.length);
       });
-      expect(stats.moe()).to.be.below(1.00);
+      expect(stats.moe()).to.be.below(1.0);
       expect(Math.abs(stats.amean() - 8)).to.be.below(0.75);
       expect(stats.median().toFixed(0)).to.equal('8');
       expect(stats.percentile(99)).to.be.below(16);
@@ -877,7 +1279,7 @@ describe('cosmetic chests module', () => {
         chestTypes = _.compact(chestTypes);
         stats.push(chestTypes.length);
       });
-      expect(stats.moe()).to.be.below(1.00);
+      expect(stats.moe()).to.be.below(1.0);
       expect(Math.abs(stats.amean() - 12)).to.be.below(0.75);
       expect(stats.median().toFixed(0)).to.equal('12');
       expect(stats.percentile(1)).to.be.above(9);
@@ -894,7 +1296,7 @@ describe('cosmetic chests module', () => {
         chestTypes = _.compact(chestTypes);
         stats.push(chestTypes.length);
       });
-      expect(stats.moe()).to.be.below(1.00);
+      expect(stats.moe()).to.be.below(1.0);
       expect(Math.abs(stats.amean() - 15)).to.be.below(0.75);
       expect(stats.median().toFixed(0)).to.equal('15');
       expect(stats.percentile(1)).to.be.above(11);
@@ -915,7 +1317,7 @@ describe('cosmetic chests module', () => {
       // for (const i=1; i<=100; i++) {
       //   Logger.module("UNITTEST").log(i+" percentile: "+stats.percentile(i))
       // }
-      expect(stats.moe()).to.be.below(1.00);
+      expect(stats.moe()).to.be.below(1.0);
       expect(Math.abs(stats.amean() - 7)).to.be.below(1.0);
       expect(stats.percentile(40)).to.be.above(6);
       expect(stats.percentile(60)).to.be.below(9);
@@ -933,7 +1335,7 @@ describe('cosmetic chests module', () => {
         chestTypes = _.compact(chestTypes);
         stats.push(chestTypes.length);
       });
-      expect(stats.moe()).to.be.below(1.00);
+      expect(stats.moe()).to.be.below(1.0);
       expect(Math.abs(stats.amean() - 8)).to.be.below(0.75);
       expect(stats.median().toFixed(0)).to.equal('8');
       expect(stats.percentile(1)).to.be.above(2);
@@ -943,13 +1345,17 @@ describe('cosmetic chests module', () => {
 
   describe('_generateChestOpeningRewards', () => {
     const iterations = 10000;
-    const defaultAllowableVariance = 0.10;
+    const defaultAllowableVariance = 0.1;
 
     const commonChestRewardCountsByType = {};
     const rareChestRewardCountsByType = {};
     const epicChestRewardCountsByType = {};
 
-    const comparePercentageWithVariance = function (expectedPercentage, actualPercentage, allowableVariance) {
+    const comparePercentageWithVariance = function (
+      expectedPercentage,
+      actualPercentage,
+      allowableVariance,
+    ) {
       if (allowableVariance == null) {
         allowableVariance = defaultAllowableVariance;
       }
@@ -989,9 +1395,15 @@ describe('cosmetic chests module', () => {
       };
 
       _.times(iterations, () => {
-        const commonRewards = CosmeticChestsModule._generateChestOpeningRewards({ chest_type: SDK.CosmeticsChestTypeLookup.Common });
-        const rareRewards = CosmeticChestsModule._generateChestOpeningRewards({ chest_type: SDK.CosmeticsChestTypeLookup.Rare });
-        const epicRewards = CosmeticChestsModule._generateChestOpeningRewards({ chest_type: SDK.CosmeticsChestTypeLookup.Epic });
+        const commonRewards = CosmeticChestsModule._generateChestOpeningRewards({
+          chest_type: SDK.CosmeticsChestTypeLookup.Common,
+        });
+        const rareRewards = CosmeticChestsModule._generateChestOpeningRewards({
+          chest_type: SDK.CosmeticsChestTypeLookup.Rare,
+        });
+        const epicRewards = CosmeticChestsModule._generateChestOpeningRewards({
+          chest_type: SDK.CosmeticsChestTypeLookup.Epic,
+        });
 
         for (let i = 0; i < commonRewards.length; i++) {
           processReward(commonChestRewardCountsByType, commonRewards[i]);
@@ -1038,7 +1450,7 @@ describe('cosmetic chests module', () => {
       it('expect about an average of 0.20 prismatic rares per common cosmetic chest', () => {
         expect(commonChestRewardCountsByType.prismatic_rare).to.exist;
         const percentage = commonChestRewardCountsByType.prismatic_rare / iterations;
-        comparePercentageWithVariance(0.20, percentage);
+        comparePercentageWithVariance(0.2, percentage);
       });
 
       it('expect about an average of 0.04 prismatic epics per common cosmetic chest', () => {
@@ -1096,7 +1508,7 @@ describe('cosmetic chests module', () => {
       it('expect about an average of 0.10 prismatic epics per rare cosmetic chest', () => {
         expect(rareChestRewardCountsByType.prismatic_epic).to.exist;
         const percentage = rareChestRewardCountsByType.prismatic_epic / iterations;
-        comparePercentageWithVariance(0.10, percentage);
+        comparePercentageWithVariance(0.1, percentage);
       });
 
       it('expect about an average of 0.05 prismatic legendaries per rare cosmetic chest', () => {
@@ -1126,7 +1538,7 @@ describe('cosmetic chests module', () => {
       it('expect about an average of 0.10 cosmetic legendaries per rare cosmetic chest', () => {
         expect(rareChestRewardCountsByType.cosmetic_legendary).to.exist;
         const percentage = rareChestRewardCountsByType.cosmetic_legendary / iterations;
-        comparePercentageWithVariance(0.10, percentage, defaultAllowableVariance * 2);
+        comparePercentageWithVariance(0.1, percentage, defaultAllowableVariance * 2);
       });
 
       it('expect no unknown rewards per rare cosmetic chest', () => {
@@ -1142,7 +1554,7 @@ describe('cosmetic chests module', () => {
       it('expect about an average of 1.30 prismatic rares per epic cosmetic chest', () => {
         expect(epicChestRewardCountsByType.prismatic_rare).to.exist;
         const percentage = epicChestRewardCountsByType.prismatic_rare / iterations;
-        comparePercentageWithVariance(1.30, percentage);
+        comparePercentageWithVariance(1.3, percentage);
       });
 
       it('expect about an average of 0.55 prismatic epics per epic cosmetic chest', () => {
@@ -1178,7 +1590,7 @@ describe('cosmetic chests module', () => {
       it('expect about an average of 1.10 cosmetic legendaries per epic cosmetic chest', () => {
         expect(epicChestRewardCountsByType.cosmetic_legendary).to.exist;
         const percentage = epicChestRewardCountsByType.cosmetic_legendary / iterations;
-        comparePercentageWithVariance(1.10, percentage);
+        comparePercentageWithVariance(1.1, percentage);
       });
 
       it('expect no unknown rewards per rare cosmetic chest', () => {

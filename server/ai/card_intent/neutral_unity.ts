@@ -4,9 +4,7 @@ const CardTargetType = require('./card_target_type');
 const CardPhaseType = require('./card_phase_type');
 const CardImmunity = require('./card_immunity');
 
-const NU = {
-
-};
+const NU = {};
 
 // NEUTRAL ANCIENT BONDS CARD INTENTS
 
@@ -21,7 +19,12 @@ NU[Cards.Neutral.Grimes] = [
 NU[Cards.Neutral.EMP] = [
   {
     type: CardIntentType.Dispel,
-    targets: CardTargetType.Minion | CardTargetType.Enemy | CardTargetType.Friendly | CardTargetType.All | CardTargetType.General,
+    targets:
+      CardTargetType.Minion |
+      CardTargetType.Enemy |
+      CardTargetType.Friendly |
+      CardTargetType.All |
+      CardTargetType.General,
   },
 ];
 
@@ -29,7 +32,11 @@ NU[Cards.Spell.DragonBreath] = [
   {
     type: CardIntentType.Burn,
     amount: 2,
-    targets: CardTargetType.Minion | CardTargetType.Enemy | CardTargetType.Friendly | CardTargetType.General,
+    targets:
+      CardTargetType.Minion |
+      CardTargetType.Enemy |
+      CardTargetType.Friendly |
+      CardTargetType.General,
   },
 ];
 
@@ -37,7 +44,11 @@ NU[Cards.Spell.DragonGrace] = [
   {
     type: CardIntentType.Heal,
     amount: 3,
-    targets: CardTargetType.Minion | CardTargetType.Enemy | CardTargetType.Friendly | CardTargetType.General,
+    targets:
+      CardTargetType.Minion |
+      CardTargetType.Enemy |
+      CardTargetType.Friendly |
+      CardTargetType.General,
   },
 ];
 

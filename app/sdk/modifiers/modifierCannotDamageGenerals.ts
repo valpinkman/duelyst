@@ -27,7 +27,9 @@ class ModifierCannotDamageGenerals extends ModifierCannot {
   }
 
   getIsActionRelevant(a) {
-    return a instanceof DamageAction && a.getTarget().getIsGeneral() && (a.getSource() === this.getCard());
+    return (
+      a instanceof DamageAction && a.getTarget().getIsGeneral() && a.getSource() === this.getCard()
+    );
   }
 
   _modifyAction(a) {

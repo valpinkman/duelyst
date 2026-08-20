@@ -22,7 +22,9 @@ const getScoreForSummonFromCardWithIntent = function (card, intent, targetPositi
     const amount = intent.amount || 1;
     let summonedCards;
     if (intent.cardId != null) {
-      summonedCards = [card.getGameSession().getExistingCardFromIndexOrCreateCardFromData({ id: intent.cardId })];
+      summonedCards = [
+        card.getGameSession().getExistingCardFromIndexOrCreateCardFromData({ id: intent.cardId }),
+      ];
     } else if (intent.targets != null) {
       summonedCards = CardIntent.getCardsTargetedByCardWithIntent(card, intent, targetPosition);
     }
@@ -69,7 +71,10 @@ const ScoreForIntentSummon = function (card, targetPosition, cardIntents) {
     }
   }
 
-  const validIntents = cardIntents != null ? CardIntent.filterIntentsByIntentType(cardIntents, CardIntentType.Summon) : CardIntent.getIntentsByIntentType(cardId, CardIntentType.Summon);
+  const validIntents =
+    cardIntents != null
+      ? CardIntent.filterIntentsByIntentType(cardIntents, CardIntentType.Summon)
+      : CardIntent.getIntentsByIntentType(cardId, CardIntentType.Summon);
   _.each(validIntents, (intent) => {
     score += getScoreForSummonFromCardWithIntent(card, intent, targetPosition);
   });

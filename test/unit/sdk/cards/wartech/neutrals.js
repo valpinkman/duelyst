@@ -14,13 +14,9 @@ Logger.enabled = false;
 describe('wartech', () => {
   describe('neutrals', () => {
     beforeEach(() => {
-      const player1Deck = [
-        { id: SDK.Cards.Faction6.General },
-      ];
+      const player1Deck = [{ id: SDK.Cards.Faction6.General }];
 
-      const player2Deck = [
-        { id: SDK.Cards.Faction4.AltGeneral },
-      ];
+      const player2Deck = [{ id: SDK.Cards.Faction4.AltGeneral }];
 
       UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
     });
@@ -35,14 +31,28 @@ describe('wartech', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.Replicant }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.SilverguardSquire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.Replicant,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.SilverguardSquire,
+        }),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.Replicant }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.Replicant,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 2);
       gameSession.executeAction(playCardFromHandAction);
 
-      expect(player1.getDeck().getCardInHandAtIndex(0).getId()).to.equal(SDK.Cards.Neutral.Replicant);
+      expect(player1.getDeck().getCardInHandAtIndex(0).getId()).to.equal(
+        SDK.Cards.Neutral.Replicant,
+      );
     });
 
     it('expect metaltooth to gain rush only if another mech is in play', () => {
@@ -50,14 +60,24 @@ describe('wartech', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const metaltooth = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Metaltooth }, 1, 1, gameSession.getPlayer1Id());
+      const metaltooth = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.Metaltooth },
+        1,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
       var action = metaltooth.actionMove({ x: 2, y: 1 });
       gameSession.executeAction(action);
       expect(metaltooth.getPosition().x).to.equal(1);
       expect(metaltooth.getPosition().y).to.equal(1);
 
-      const metal2th = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Metaltooth }, 1, 3, gameSession.getPlayer1Id());
+      const metal2th = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.Metaltooth },
+        1,
+        3,
+        gameSession.getPlayer1Id(),
+      );
 
       var action = metal2th.actionMove({ x: 2, y: 3 });
       gameSession.executeAction(action);
@@ -71,16 +91,30 @@ describe('wartech', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      const silverguardSquire = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.SilverguardSquire }, 4, 4, gameSession.getPlayer1Id());
+      const silverguardSquire = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.SilverguardSquire },
+        4,
+        4,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.Recombobulus }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.Recombobulus,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
       const followupCard = playCardFromHandAction.getCard().getCurrentFollowupCard();
       const followupAction = player1.actionPlayFollowup(followupCard, 4, 4);
       gameSession.executeAction(followupAction);
 
-      const silverguardSquire2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.SilverguardSquire }, 4, 4, gameSession.getPlayer1Id());
+      const silverguardSquire2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.SilverguardSquire },
+        4,
+        4,
+        gameSession.getPlayer1Id(),
+      );
 
       const squires = board.getEntitiesAroundEntity(silverguardSquire2);
       expect(squires.length).to.equal(1);
@@ -98,7 +132,12 @@ describe('wartech', () => {
       gameSession.executeAction(gameSession.actionEndTurn());
       gameSession.executeAction(gameSession.actionEndTurn());
 
-      const redsteelMinos = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.RedsteelMinos }, 4, 3, gameSession.getPlayer1Id());
+      const redsteelMinos = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.RedsteelMinos },
+        4,
+        3,
+        gameSession.getPlayer1Id(),
+      );
 
       const action = player1.actionPlaySignatureCard(0, 1);
       gameSession.executeAction(action);
@@ -113,11 +152,19 @@ describe('wartech', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction4.VoidTalon }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction4.VoidTalon,
+        }),
+      );
       var action = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(action);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.Timekeeper }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.Timekeeper,
+        }),
+      );
       var action = player1.actionPlayCardFromHand(0, 1, 2);
       gameSession.executeAction(action);
 
@@ -132,10 +179,24 @@ describe('wartech', () => {
       const player2 = gameSession.getPlayer2();
       player1.remainingMana = 9;
 
-      const valeHunter = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.ValeHunter }, 5, 2, gameSession.getPlayer2Id());
-      const capriciousMarauder = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.CapriciousMarauder }, 5, 3, gameSession.getPlayer2Id());
+      const valeHunter = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.ValeHunter },
+        5,
+        2,
+        gameSession.getPlayer2Id(),
+      );
+      const capriciousMarauder = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.CapriciousMarauder },
+        5,
+        3,
+        gameSession.getPlayer2Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PhoenixFire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 5, 2);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -149,7 +210,12 @@ describe('wartech', () => {
       const player2 = gameSession.getPlayer2();
       player1.remainingMana = 9;
 
-      const imperviousGiago = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.ImperviousGiago }, 7, 2, gameSession.getPlayer1Id());
+      const imperviousGiago = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.ImperviousGiago },
+        7,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
       gameSession.executeAction(gameSession.actionEndTurn());
       const action = gameSession.getGeneralForPlayer2().actionAttack(imperviousGiago);
@@ -164,15 +230,28 @@ describe('wartech', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      const artificer = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Artificer }, 1, 3, gameSession.getPlayer1Id());
+      const artificer = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.Artificer },
+        1,
+        3,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Artifact.StaffOfYKir }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Artifact.StaffOfYKir,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 2);
       gameSession.executeAction(playCardFromHandAction);
 
       expect(player1.getRemainingMana()).to.equal(8);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Artifact.StaffOfYKir }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Artifact.StaffOfYKir,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 2);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -185,17 +264,45 @@ describe('wartech', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.ArchitectT2K5 }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.ArchitectT2K5 }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.ArchitectT2K5 }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.ArchitectT2K5 }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.ArchitectT2K5 }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.ArchitectT2K5,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.ArchitectT2K5,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.ArchitectT2K5,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.ArchitectT2K5,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.ArchitectT2K5,
+        }),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.ArchitectT2K5 }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.ArchitectT2K5,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 2);
       gameSession.executeAction(playCardFromHandAction);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.RescueRX }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.RescueRX,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 2, 2);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -232,7 +339,12 @@ describe('wartech', () => {
       gameSession.executeAction(gameSession.actionEndTurn());
       gameSession.executeAction(gameSession.actionEndTurn());
 
-      const bbmentor = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.FidgetSpinner }, 4, 3, gameSession.getPlayer1Id());
+      const bbmentor = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.FidgetSpinner },
+        4,
+        3,
+        gameSession.getPlayer1Id(),
+      );
 
       const action = player1.actionPlaySignatureCard(0, 1);
       gameSession.executeAction(action);
@@ -246,12 +358,34 @@ describe('wartech', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.Mechaz0rHelm }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.RockPulverizer }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.RockPulverizer }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.Mechaz0rHelm,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.RockPulverizer,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.RockPulverizer,
+        }),
+      );
 
-      const deceptibot = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Deceptibot }, 5, 1, gameSession.getPlayer1Id());
-      const dragonlark = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.SpottedDragonlark }, 6, 1, gameSession.getPlayer2Id());
+      const deceptibot = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.Deceptibot },
+        5,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const dragonlark = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.SpottedDragonlark },
+        6,
+        1,
+        gameSession.getPlayer2Id(),
+      );
       deceptibot.refreshExhaustion();
 
       const action = deceptibot.actionAttack(dragonlark);
@@ -269,21 +403,65 @@ describe('wartech', () => {
       const player2 = gameSession.getPlayer2();
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.Mechaz0rHelm }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.RockPulverizer }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.RockPulverizer }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.WhistlingBlade }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PhoenixFire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer2Id(), { id: SDK.Cards.Neutral.Mechaz0rHelm }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer2Id(), { id: SDK.Cards.Neutral.RockPulverizer }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer2Id(), { id: SDK.Cards.Neutral.RockPulverizer }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer2Id(), { id: SDK.Cards.Neutral.WhistlingBlade }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer2Id(), { id: SDK.Cards.Spell.PhoenixFire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.Mechaz0rHelm,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.RockPulverizer,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.RockPulverizer,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.WhistlingBlade,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer2Id(), {
+          id: SDK.Cards.Neutral.Mechaz0rHelm,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer2Id(), {
+          id: SDK.Cards.Neutral.RockPulverizer,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer2Id(), {
+          id: SDK.Cards.Neutral.RockPulverizer,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer2Id(), {
+          id: SDK.Cards.Neutral.WhistlingBlade,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer2Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
 
       expect(player1.getDeck().getDrawPile().length).to.equal(5);
       expect(player2.getDeck().getDrawPile().length).to.equal(5);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.Qorrhlmaa }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.Qorrhlmaa,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 2);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -297,10 +475,24 @@ describe('wartech', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      const ranged = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Mechaz0rCannon }, 5, 1, gameSession.getPlayer1Id());
-      const frenzy = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Mechaz0rSword }, 6, 1, gameSession.getPlayer1Id());
+      const ranged = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.Mechaz0rCannon },
+        5,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const frenzy = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.Mechaz0rSword },
+        6,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.Silver }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.Silver,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 2);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -315,7 +507,11 @@ describe('wartech', () => {
 
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.Mechaz0rChassis }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.Mechaz0rChassis,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 2, 2);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -335,14 +531,26 @@ describe('wartech', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.Mechaz0rHelm }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.Mechaz0rHelm,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 2);
       gameSession.executeAction(playCardFromHandAction);
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.Mechaz0rHelm }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.Mechaz0rHelm,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 2, 2);
       gameSession.executeAction(playCardFromHandAction);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.ProjectOmega }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.ProjectOmega,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 3, 2);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -352,7 +560,11 @@ describe('wartech', () => {
 
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.Mechaz0rChassis }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.Mechaz0rChassis,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 4, 2);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -366,10 +578,24 @@ describe('wartech', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      const neutral = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.PrimusFist }, 5, 1, gameSession.getPlayer1Id());
-      const enemy = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.WhistlingBlade }, 1, 2, gameSession.getPlayer1Id());
+      const neutral = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.PrimusFist },
+        5,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const enemy = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.WhistlingBlade },
+        1,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.Reliquarian }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.Reliquarian,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
       const followupCard = playCardFromHandAction.getCard().getCurrentFollowupCard();
@@ -385,12 +611,26 @@ describe('wartech', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      const neutral = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.IroncliffeGuardian }, 5, 1, gameSession.getPlayer1Id());
-      const enemy = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.WhistlingBlade }, 1, 2, gameSession.getPlayer1Id());
+      const neutral = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.IroncliffeGuardian },
+        5,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const enemy = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.WhistlingBlade },
+        1,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
       gameSession.getGeneralForPlayer1().setDamage(10);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.Reliquarian }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.Reliquarian,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
       const followupCard = playCardFromHandAction.getCard().getCurrentFollowupCard();
@@ -412,10 +652,24 @@ describe('wartech', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      const neutral = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction2.KaidoAssassin }, 5, 1, gameSession.getPlayer1Id());
-      const enemy = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.WhistlingBlade }, 1, 2, gameSession.getPlayer1Id());
+      const neutral = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction2.KaidoAssassin },
+        5,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const enemy = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.WhistlingBlade },
+        1,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.Reliquarian }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.Reliquarian,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
       const followupCard = playCardFromHandAction.getCard().getCurrentFollowupCard();
@@ -438,12 +692,26 @@ describe('wartech', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      const neutral = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.SpectralRevenant }, 5, 1, gameSession.getPlayer1Id());
-      const enemy = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.WhistlingBlade }, 1, 2, gameSession.getPlayer1Id());
+      const neutral = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.SpectralRevenant },
+        5,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const enemy = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.WhistlingBlade },
+        1,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
       gameSession.getGeneralForPlayer1().setDamage(10);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.Reliquarian }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.Reliquarian,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
       const followupCard = playCardFromHandAction.getCard().getCurrentFollowupCard();
@@ -465,18 +733,51 @@ describe('wartech', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      const lark1 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.SpottedDragonlark }, 3, 1, gameSession.getPlayer1Id());
-      const lark2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.SpottedDragonlark }, 4, 1, gameSession.getPlayer1Id());
-      const lark3 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.SpottedDragonlark }, 6, 1, gameSession.getPlayer1Id());
+      const lark1 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.SpottedDragonlark },
+        3,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const lark2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.SpottedDragonlark },
+        4,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const lark3 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.SpottedDragonlark },
+        6,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.Tempest }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.Tempest,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
 
-      const neutral = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.OrbWeaver }, 5, 1, gameSession.getPlayer1Id());
-      const enemy = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.WhistlingBlade }, 1, 2, gameSession.getPlayer1Id());
+      const neutral = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.OrbWeaver },
+        5,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const enemy = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.WhistlingBlade },
+        1,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.Reliquarian }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.Reliquarian,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
       const followupCard = playCardFromHandAction.getCard().getCurrentFollowupCard();
@@ -499,13 +800,37 @@ describe('wartech', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      const lark1 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.SpottedDragonlark }, 3, 1, gameSession.getPlayer1Id());
-      const lark2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.SpottedDragonlark }, 4, 1, gameSession.getPlayer1Id());
+      const lark1 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.SpottedDragonlark },
+        3,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const lark2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.SpottedDragonlark },
+        4,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
-      const neutral = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction5.Phalanxar }, 5, 1, gameSession.getPlayer1Id());
-      const enemy = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.WhistlingBlade }, 1, 2, gameSession.getPlayer1Id());
+      const neutral = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction5.Phalanxar },
+        5,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const enemy = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.WhistlingBlade },
+        1,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.Reliquarian }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.Reliquarian,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
       const followupCard = playCardFromHandAction.getCard().getCurrentFollowupCard();
@@ -529,10 +854,24 @@ describe('wartech', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      const neutral = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.CrystalCloaker }, 3, 1, gameSession.getPlayer1Id());
-      const enemy = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.WhistlingBlade }, 1, 2, gameSession.getPlayer1Id());
+      const neutral = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.CrystalCloaker },
+        3,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const enemy = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.WhistlingBlade },
+        1,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.Reliquarian }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.Reliquarian,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
       const followupCard = playCardFromHandAction.getCard().getCurrentFollowupCard();

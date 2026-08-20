@@ -14,7 +14,9 @@ class ModifierMyAttackOrCounterattackWatchDamageRandomEnemy extends ModifierMyAt
   static type = 'ModifierMyAttackOrCounterattackWatchDamageRandomEnemy';
 
   static createContextObject(damageAmount, options) {
-    if (options == null) { options = undefined; }
+    if (options == null) {
+      options = undefined;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.damageAmount = damageAmount;
     return contextObject;
@@ -29,7 +31,8 @@ class ModifierMyAttackOrCounterattackWatchDamageRandomEnemy extends ModifierMyAt
     return this.getGameSession().executeAction(randomDamageAction);
   }
 }
-ModifierMyAttackOrCounterattackWatchDamageRandomEnemy.prototype.type = 'ModifierMyAttackOrCounterattackWatchDamageRandomEnemy';
+ModifierMyAttackOrCounterattackWatchDamageRandomEnemy.prototype.type =
+  'ModifierMyAttackOrCounterattackWatchDamageRandomEnemy';
 ModifierMyAttackOrCounterattackWatchDamageRandomEnemy.prototype.damageAmount = 0;
 
 module.exports = ModifierMyAttackOrCounterattackWatchDamageRandomEnemy;

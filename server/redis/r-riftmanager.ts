@@ -48,7 +48,9 @@ class RedisRiftManager {
    * @param {Object} redis, a promisified redis connection
    */
   constructor(redis, opts) {
-    if (opts == null) { opts = {}; }
+    if (opts == null) {
+      opts = {};
+    }
     this.redis = redis;
   }
 
@@ -60,7 +62,9 @@ class RedisRiftManager {
    * @return {Promise}
    */
   updateUserRunRiftRating(userId, ticketId, riftRating, systemTime) {
-    Logger.module('REDIS').debug(`updateUserRunHighestRiftRating() -> updating Rift rating for player ${userId} run ${ticketId} to ${riftRating}`);
+    Logger.module('REDIS').debug(
+      `updateUserRunHighestRiftRating() -> updating Rift rating for player ${userId} run ${ticketId} to ${riftRating}`,
+    );
     const redisKey = keyPrefix();
     const userRunKey = `${userId}:${ticketId}`;
     const multi = this.redis.multi(); // start a multi command
@@ -77,18 +81,19 @@ class RedisRiftManager {
    * @return {Promise} Resolves to a integer for players ladder position
    */
   getUserRunLadderPosition(userId, ticketId, systemTime) {
-    Logger.module('REDIS').debug(`updateUserLadderRating() -> getting Ladder Position for user ${userId} run ${ticketId}`);
+    Logger.module('REDIS').debug(
+      `updateUserLadderRating() -> getting Ladder Position for user ${userId} run ${ticketId}`,
+    );
 
     const redisRiftKey = keyPrefix();
     const userRunKey = `${userId}:${ticketId}`;
 
-    return this.redis.zrevrank(redisRiftKey, userRunKey)
-      .then((ladderPosition) => {
-        if (ladderPosition != null) {
-          return Promise.resolve(parseInt(ladderPosition) + 1);
-        }
-        return Promise.resolve(null);
-      });
+    return this.redis.zrevrank(redisRiftKey, userRunKey).then((ladderPosition) => {
+      if (ladderPosition != null) {
+        return Promise.resolve(parseInt(ladderPosition) + 1);
+      }
+      return Promise.resolve(null);
+    });
   }
 
   /**
@@ -97,7 +102,9 @@ class RedisRiftManager {
    * @return {Promise} An array of "userId:runId" in order of top players
    */
   getTopLadderUserIdAndRunIds(numPlayers) {
-    Logger.module('REDIS').debug(`getTopLadderUserIds() -> retrieving top ${numPlayers} rift players`);
+    Logger.module('REDIS').debug(
+      `getTopLadderUserIds() -> retrieving top ${numPlayers} rift players`,
+    );
 
     const redisKey = keyPrefix();
 
@@ -112,7 +119,9 @@ class RedisRiftManager {
    */
   _removeUserRunFromLadder(userId, ticketId) {
     const userRunKey = `${userId}:${ticketId}`;
-    Logger.module('REDIS').debug(`updateUserLadderRating() -> getting Ladder Position for ${userRunKey}`);
+    Logger.module('REDIS').debug(
+      `updateUserLadderRating() -> getting Ladder Position for ${userRunKey}`,
+    );
 
     const redisKey = keyPrefix();
 
@@ -123,7 +132,7 @@ class RedisRiftManager {
 /**
  * Export a factory
  */
-module.exports = (exports = function (redis, opts) {
+module.exports = exports = function (redis, opts) {
   const RiftManager = new RedisRiftManager(redis, opts);
   return RiftManager;
-});
+};

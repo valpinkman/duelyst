@@ -189,15 +189,11 @@ class CardFactory_UnitySet_Faction3 {
       card.rarityId = Rarity.Rare;
       card.durability = 3;
       card.setTargetModifiersContextObjects([
-        ModifierKillWatchSpawnCopyNearby.createContextObject(
-          true,
-          false,
-          {
-            type: 'ModifierKillWatchSpawnCopyNearby',
-            name: i18next.t('cards.faction_3_artifact_thunderclap_name'),
-            description: i18next.t('cards.faction_3_artifact_thunderclap_description'),
-          },
-        ),
+        ModifierKillWatchSpawnCopyNearby.createContextObject(true, false, {
+          type: 'ModifierKillWatchSpawnCopyNearby',
+          name: i18next.t('cards.faction_3_artifact_thunderclap_name'),
+          description: i18next.t('cards.faction_3_artifact_thunderclap_description'),
+        }),
       ]);
       card.setFXResource(['FX.Cards.Artifact.HornOfTheForsaken']);
       card.setBaseAnimResource({

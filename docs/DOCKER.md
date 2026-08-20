@@ -11,6 +11,7 @@ Then use `docker compose up` to start all services locally.
 ## Testing Container Builds
 
 Build a container image:
+
 ```
 # <service> should be one of ('api', 'game', 'sp', 'worker')
 # <version> should match the latest git release; defaults to 'testing'
@@ -18,6 +19,7 @@ scripts/build_container.sh <service> <version>
 ```
 
 Test a container image:
+
 ```
 # This should successfully start the SP server.
 # Ctrl-C should successfully terminate the container.
@@ -27,6 +29,7 @@ docker run -it duelyst-sp
 ## Publishing Containers to ECR
 
 Tag and publish a container image:
+
 ```
 # <service> should be one of ('api', 'game', 'sp', 'worker')
 # <version> should match the latest git release
@@ -48,7 +51,7 @@ There are a few strategies we use to keep image sizes small:
 Sizes of Docker images built by `scripts/build_container.sh`:
 
 | Service | Image          | Size    | ECR Size | 50 GB Limit |
-|---------|----------------|---------|----------|-------------|
+| ------- | -------------- | ------- | -------- | ----------- |
 | Node.js | node:18        | 942 MB  | N/A      | N/A         |
 | Node.js | node:18-slim   | 234 MB  | N/A      | N/A         |
 | Node.js | node:18-alpine | 165 MB  | N/A      | N/A         |

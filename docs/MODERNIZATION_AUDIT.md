@@ -11,19 +11,19 @@ Numbers below were produced by scanning every `require()` / `import` in the repo
 
 ## 1. At a glance
 
-| Area | Files | Lines | Language | Notes |
-|---|---|---|---|---|
-| `app/sdk` — game engine, shared client/server | 1,375 | ~121k | **100% CoffeeScript** | 718 modifiers, 257 spells, 65 actions, 62 card-factory files |
-| `app/ui` + `app/view` + `app/audio` — Backbone/Marionette UI and Cocos2d rendering | 421 js + 6 coffee | ~150k | JS (already decaffeinated) | 150 `.hbs`, 52 `.scss`, 96 `.glsl` |
-| `app/common` — CONFIG, logger, utils, event bus | 18 js + 10 coffee | ~15k | mixed | `config.js` is 1,380 lines of mutable global state |
-| `app/application.coffee` + `register.coffee` | 2 | 4.8k | Coffee | boot, router, 20 singletons on `window` |
-| `server/` — API (Express), Game & SP (socket.io) | 92 coffee + 206 js | ~49k | mixed | `ai/` (114 js) and `migrations/` (86 js) done; `lib/data_access`, `routes`, `redis`, `game.coffee`, `single_player.coffee` still Coffee |
-| `worker/` — Kue jobs | 29 coffee | ~3k | Coffee | |
-| `test/` | 137 js | ~56k | JS | mocha 10 + chai 3 (expect); no e2e at all |
-| `packages/` | 4 vendored libs | ~2.7k js + 24 ts | | `chroma-js` is TS, `warlock`, `backfire`, `Backbone.VirtualCollection` |
-| `desktop/` | 5 js | 0.6k | JS | Electron shell that embeds `dist/src` |
-| `scripts/`, `cli/` | 53 coffee + 12 js + sh/py | ~9k | mostly dead ops | **`scripts/generate_packages.js` is build-critical** |
-| Assets | 6,303 png, 904 jpg, 734 m4a, 1,385 plist | 1.2 GB | | `app/resources` 619 MB + `app/original_resources` 587 MB |
+| Area                                                                               | Files                                    | Lines            | Language                   | Notes                                                                                                                                   |
+| ---------------------------------------------------------------------------------- | ---------------------------------------- | ---------------- | -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `app/sdk` — game engine, shared client/server                                      | 1,375                                    | ~121k            | **100% CoffeeScript**      | 718 modifiers, 257 spells, 65 actions, 62 card-factory files                                                                            |
+| `app/ui` + `app/view` + `app/audio` — Backbone/Marionette UI and Cocos2d rendering | 421 js + 6 coffee                        | ~150k            | JS (already decaffeinated) | 150 `.hbs`, 52 `.scss`, 96 `.glsl`                                                                                                      |
+| `app/common` — CONFIG, logger, utils, event bus                                    | 18 js + 10 coffee                        | ~15k             | mixed                      | `config.js` is 1,380 lines of mutable global state                                                                                      |
+| `app/application.coffee` + `register.coffee`                                       | 2                                        | 4.8k             | Coffee                     | boot, router, 20 singletons on `window`                                                                                                 |
+| `server/` — API (Express), Game & SP (socket.io)                                   | 92 coffee + 206 js                       | ~49k             | mixed                      | `ai/` (114 js) and `migrations/` (86 js) done; `lib/data_access`, `routes`, `redis`, `game.coffee`, `single_player.coffee` still Coffee |
+| `worker/` — Kue jobs                                                               | 29 coffee                                | ~3k              | Coffee                     |                                                                                                                                         |
+| `test/`                                                                            | 137 js                                   | ~56k             | JS                         | mocha 10 + chai 3 (expect); no e2e at all                                                                                               |
+| `packages/`                                                                        | 4 vendored libs                          | ~2.7k js + 24 ts |                            | `chroma-js` is TS, `warlock`, `backfire`, `Backbone.VirtualCollection`                                                                  |
+| `desktop/`                                                                         | 5 js                                     | 0.6k             | JS                         | Electron shell that embeds `dist/src`                                                                                                   |
+| `scripts/`, `cli/`                                                                 | 53 coffee + 12 js + sh/py                | ~9k              | mostly dead ops            | **`scripts/generate_packages.js` is build-critical**                                                                                    |
+| Assets                                                                             | 6,303 png, 904 jpg, 734 m4a, 1,385 plist | 1.2 GB           |                            | `app/resources` 619 MB + `app/original_resources` 587 MB                                                                                |
 
 Runtime: Node 24 (CI, Docker, local). Yarn 4.9.2 (Berry, `nodeLinker: node-modules`), no `workspaces`
 field. Production containers **run `.coffee` directly through `coffeescript/register`** — there is no
@@ -49,6 +49,7 @@ worker            1*      30       14       56       17        0        0       
 test            124      247      114      191        0       98        0       26
 scripts           9       47       16       69        2        0       12       36
 ```
+
 `*` server/worker → "client" is entirely `app/sdk.coffee` (the SDK barrel, which sits at `app/`
 root); there is **zero** server → `app/ui|view|audio` coupling.
 
@@ -106,14 +107,14 @@ flowchart LR
 
 Outgoing edges per sub-area (self-edges removed):
 
-| from | to (count) |
-|---|---|
-| `cards` (78 files) | modifiers 1055, spells 402, common 148, entities 68, playerModifiers 51, artifacts 40, **config/config.js 6** |
-| `modifiers` (718) | actions 682, cards 412, common 343, playerModifiers 56, helpers 53 |
-| `spells` (257) | cards 246, actions 173, common 169, modifiers 124 |
-| `challenges` (57) | actions 207, cards 105, common 59, sdk root 58, agents 52 |
-| `actions` (65) | common 82, cards 26 |
-| `achievements`, `quests`, `progression`, `cosmetics`, `giftCrates`, `rank`, `rift` | meta-game; depend on cards + sdk root, not on modifiers/actions |
+| from                                                                               | to (count)                                                                                                    |
+| ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `cards` (78 files)                                                                 | modifiers 1055, spells 402, common 148, entities 68, playerModifiers 51, artifacts 40, **config/config.js 6** |
+| `modifiers` (718)                                                                  | actions 682, cards 412, common 343, playerModifiers 56, helpers 53                                            |
+| `spells` (257)                                                                     | cards 246, actions 173, common 169, modifiers 124                                                             |
+| `challenges` (57)                                                                  | actions 207, cards 105, common 59, sdk root 58, agents 52                                                     |
+| `actions` (65)                                                                     | common 82, cards 26                                                                                           |
+| `achievements`, `quests`, `progression`, `cosmetics`, `giftCrates`, `rank`, `rift` | meta-game; depend on cards + sdk root, not on modifiers/actions                                               |
 
 Hub modules (in-degree across the whole repo): `app/common/config.js` 758, `app/common/logger.coffee`
 630, `app/sdk/cards/cardType.coffee` 579, `app/sdk/modifiers/modifier.coffee` 379, `app/sdk.coffee`
@@ -132,19 +133,20 @@ pure platform-free package.
 
 ### 2.3 External dependency usage by layer
 
-| layer | top npm deps (require count) |
-|---|---|
-| sdk | i18next 345, underscore 260, moment 102 |
-| client | underscore 95 (also a global!), bluebird 94, i18next 79, moment 64, firebase@2 8 |
+| layer  | top npm deps (require count)                                                      |
+| ------ | --------------------------------------------------------------------------------- |
+| sdk    | i18next 345, underscore 260, moment 102                                           |
+| client | underscore 95 (also a global!), bluebird 94, i18next 79, moment 64, firebase@2 8  |
 | server | underscore 85, bluebird 60, moment 49, express 39, tcomb-validation 30, colors 24 |
-| worker | bluebird 17, kue 6 |
-| test | chai 129, coffeescript/register 133, app-module-path 129, sinon 15 (never called) |
+| worker | bluebird 17, kue 6                                                                |
+| test   | chai 129, coffeescript/register 133, app-module-path 129, sinon 15 (never called) |
 
 ---
 
 ## 3. Findings per area
 
 ### 3.1 `app/sdk` (the migration's center of gravity)
+
 - Uniform shape: 1,371 files end in a single `module.exports = Class`. 1,167 `class X extends Y`.
   Base classes: Modifier 183, Spell 106, ModifierOpeningGambit 71, Achievement 57, Challenge 52, …
 - ~600 of the 718 modifiers are 20-line declarative leaves (dual `type:` / `@type:` + `attributeBuffs`).
@@ -164,6 +166,7 @@ pure platform-free package.
 - Coupling to break: card factories require `config/config.js` (server convict) and `app/data/resources`.
 
 ### 3.2 Browser client
+
 - Boot: `index.coffee` → i18next promise → `application.coffee` (3,973 lines): Marionette app on the
   **global** `Backbone`, ~140 requires, ~25 things mirrored on `window`, WebGL probe, Firebase
   min-version check, `App.start()`; Cocos boots via `Scene.setup()`.
@@ -187,6 +190,7 @@ pure platform-free package.
 - Second entry: `register.coffee` (standalone registration page, own bundle).
 
 ### 3.3 Backend
+
 - `bin/{api,game,single_player,worker,workerui}` all: `app-module-path` → `coffeescript/register` →
   `config/config` → main `.coffee`. `bin/api` sets `global.Promise = bluebird`.
 - Big Coffee files: `data_access/users.coffee` 3,133, `inventory.coffee` 2,862, `single_player.coffee`
@@ -207,6 +211,7 @@ pure platform-free package.
   `.coffee` via register. Container is server-only (`.dockerignore` drops the client).
 
 ### 3.4 Tests & CI
+
 - 137 files: `unit` 102 (~38k lines; `sdk/{cards,game,ai,challenges,progression}`, `firebase`, `misc`,
   `session`), `integration` 23 (~16k), `rest` 5 (broken), `perf` 3 (Benchmark.js, not mocha), `utils` 3.
   ~2,025 active `it`s.
@@ -219,7 +224,7 @@ pure platform-free package.
   needing nothing) with a fake `FIREBASE_URL`; `data_access/`, `achievements/`, `firebase/` (~13k
   lines) never run in CI — assume rot.
 - **No e2e/browser tests of any kind.** The Cocos/Backbone client has zero coverage.
-- vitest blockers/estimates: ~90% of unit tests run with near-zero edits *once CoffeeScript loads*
+- vitest blockers/estimates: ~90% of unit tests run with near-zero edits _once CoffeeScript loads_
   (needs a Vite/vitest coffee plugin — `require.extensions` hooks don't apply); `app-module-path` →
   `resolve.alias`; 122 `this.timeout()` calls; 69 `done`-callback tests; `-t 1000` default timeout.
 - CI: 6 workflows, node 24, `corepack enable` + `yarn workspaces focus`, `yarn tsc:chroma-js` before
@@ -227,6 +232,7 @@ pure platform-free package.
   (airbnb-base + import + mocha, ~25 rules downgraded + 12 per-dir overrides), lint_terraform.
 
 ### 3.5 Build tooling (`gulp/`)
+
 - **Needed for a dev build**: `bundler.js` (browserify + coffeeify + hbsfy + glslify + envify [+
   uglifyify]; entries `app/index`[, `app/tools/editor.coffee`]), `bundler.register.js`, `css.js`
   (dart-sass, autoprefixer, url rewrite), `html.js` (gulp-hb, injects version/cdn/gaId), `vendor.js`
@@ -234,7 +240,7 @@ pure platform-free package.
 - **Deploy-only / dead**: `cdn.js` (S3), `revision.js` (gulp-rev), `git.js`, `docker.js`, `bump.js`,
   `shop.js` (fully dead, not imported), `rsx:*_urls`, `rsx:imagemin*` (asset authoring).
 - `dist/src/{index.html,register.html,vendor.js,duelyst.js,register.js,duelyst.css,resources/**,
-  resources/locales/**}`, served in dev by `server/routes/public.coffee` via `express.static`.
+resources/locales/**}`, served in dev by `server/routes/public.coffee` via `express.static`.
 - **`scripts/generate_packages.js`** (1,476 lines) is the hidden second bundler: registers coffee, loads
   SDK lookups + `app/data/{fx,resources,packages_predefined}`, text-scans 221 source files for
   `//pragma PKGS: a b c` and `RSX.x` references, validates asset formats, and emits the gitignored
@@ -242,7 +248,9 @@ pure platform-free package.
   Any new bundler must keep or replace this.
 
 ### 3.6 `packages/` — the monorepo seed
+
 Consumed as `"./packages/x"` relative deps (no `workspaces`, though CI uses `yarn workspaces focus`):
+
 - `chroma-js` — TS (Razer Chroma), `dist` not committed → `yarn tsc:chroma-js` prebuild; required by
   **relative path** from `app/common/chroma.js` (bypasses the package name).
 - `backfire` — dead Firebase 2.x ↔ Backbone binding; consumed twice (dep + `vendor.js` concat of `dist/`).
@@ -250,11 +258,13 @@ Consumed as `"./packages/x"` relative deps (no `workspaces`, though CI uses `yar
 - `warlock` — redis lock, plain JS, mocha tests, used by `server/redis/r-tokenmanager.coffee`.
 
 ### 3.7 `desktop/`
+
 Electron shell: `desktop.js` + `renderer-preload.js`, embeds `../dist/src` (ncp). devDep electron 21 but
 `desktop/gulp/desktop.js:60` pins `electronVersion: '2.0.18'` for packaging; own `yarn.lock`;
 `execSync('yarn install')` hardcoded; requires `NODE_ENV=staging|production`. No Steam SDK.
 
 ### 3.8 pnpm-specific gotchas
+
 `resolutions.handlebars` → `pnpm.overrides`; `./packages/*` → `workspace:*` + `pnpm-workspace.yaml`;
 `desktop/` separate lockfile; native builds (`bcrypt`, `pg`, `electron`, `imagemin-*`) need
 `onlyBuiltDependencies`; stale `engines.yarn`; `.yarnrc.yml` is just `nodeLinker: node-modules`.
@@ -264,6 +274,7 @@ Electron shell: `desktop.js` + `renderer-preload.js`, embeds `../dist/src` (ncp)
 ## 4. Implications for the modernization
 
 ### 4.1 Natural package boundaries (what the graph says)
+
 The layering is already clean enough to cut along:
 
 ```mermaid
@@ -301,6 +312,7 @@ Things to untangle first (small, cheap, unblock the cut): `app/sdk/networkManage
 barrel living outside `app/sdk`.
 
 ### 4.2 CoffeeScript → TypeScript
+
 - Volume: ~1,580 files / ~175k lines of Coffee. `app/sdk` is 78% of that but is also the most
   mechanical (uniform class-per-file, 600 declarative leaves) and the best tested (99 unit files).
 - Suggested order: enums/lookups (`cardType`, `factionsLookup`, `cardsLookup`…) → declarative
@@ -315,6 +327,7 @@ barrel living outside `app/sdk`.
   `coffeescript/register`, so a TS server needs a real build (`tsc`/`tsup`/`tsx`) and Docker changes.
 
 ### 4.3 Bundler (browserify/gulp → Vite or similar)
+
 Must provide: root alias `app/*` (2,558 imports), `.coffee` transform (until conversion is done),
 `.hbs` precompile (150), glslify **call** transform (112, or codemod to `?raw`/glsl imports),
 `define` for the envify vars, SCSS with `app/vendor` + `node_modules` include paths, the vendor
@@ -325,6 +338,7 @@ The CJS "export before require" singleton idiom will not survive ESM — convert
 to plain module singletons as part of the TS pass.
 
 ### 4.4 Tests
+
 - vitest: alias + coffee plugin + `testTimeout: 1000` + convert `this.timeout` (122) and `done` (69);
   drop sinon 1 imports (unused), power-assert, `test/index.js`; exclude `test/perf`.
 - Integration suite is largely unverified today — treat as a separate lower-confidence track.
@@ -332,6 +346,7 @@ to plain module singletons as part of the TS pass.
   DOM — DOM parts testable, canvas parts only via screenshots/game-state hooks like `window.SDK`).
 
 ### 4.5 Suggested first steps (not done yet)
+
 1. `corepack enable && yarn && yarn tsc:chroma-js && FIREBASE_URL=https://x.firebaseio.com/ yarn build`
    and `yarn test:unit` to establish a green baseline (nothing is installed on this machine yet).
 2. Introduce `pnpm-workspace.yaml` with the current tree unchanged (root + `packages/*` + `desktop`),

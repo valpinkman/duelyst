@@ -18,10 +18,19 @@ class SpellAspectOfTheDrake extends SpellAspectBase {
     const applyEffectPosition = { x, y };
     return (() => {
       const result = [];
-      for (var entity of Array.from<any>(board.getCardsWithinRadiusOfPosition(applyEffectPosition, CardType.Unit, 1, false))) {
-        if (entity.getOwnerId() === this.getOwnerId()) { // friendly (based on spell caster) unit around target unit
-          if (!entity.getIsGeneral()) { // don't apply to Generals
-            result.push(this.getGameSession().applyModifierContextObject(ModifierFlying.createContextObject(), entity));
+      for (var entity of Array.from<any>(
+        board.getCardsWithinRadiusOfPosition(applyEffectPosition, CardType.Unit, 1, false),
+      )) {
+        if (entity.getOwnerId() === this.getOwnerId()) {
+          // friendly (based on spell caster) unit around target unit
+          if (!entity.getIsGeneral()) {
+            // don't apply to Generals
+            result.push(
+              this.getGameSession().applyModifierContextObject(
+                ModifierFlying.createContextObject(),
+                entity,
+              ),
+            );
           } else {
             result.push(undefined);
           }

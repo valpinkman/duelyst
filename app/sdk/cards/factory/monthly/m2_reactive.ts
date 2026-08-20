@@ -110,7 +110,12 @@ class CardFactory_Monthly_M2_Reactive {
       card.manaCost = 5;
       card.rarityId = Rarity.Rare;
       card.addKeywordClassToInclude(ModifierFirstBlood);
-      card.setInherentModifiersContextObjects([ModifierSpellWatchSpawnEntity.createContextObject({ id: Cards.Neutral.Spellspark }, '1/1 Spellspark with Rush')]);
+      card.setInherentModifiersContextObjects([
+        ModifierSpellWatchSpawnEntity.createContextObject(
+          { id: Cards.Neutral.Spellspark },
+          '1/1 Spellspark with Rush',
+        ),
+      ]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
     }
 
@@ -179,7 +184,9 @@ class CardFactory_Monthly_M2_Reactive {
       card.maxHP = 12;
       card.manaCost = 8;
       card.rarityId = Rarity.Legendary;
-      card.setInherentModifiersContextObjects([ModifierTakeDamageWatchSpawnRandomToken.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierTakeDamageWatchSpawnRandomToken.createContextObject(),
+      ]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
     }
 
@@ -212,7 +219,12 @@ class CardFactory_Monthly_M2_Reactive {
       card.maxHP = 1;
       card.manaCost = 2;
       card.rarityId = Rarity.Common;
-      card.setInherentModifiersContextObjects([ModifierDyingWishSpawnEntityInCorner.createContextObject({ id: Cards.Neutral.MiniJax }, 'a 1/1 Ranged Mini-Jax')]);
+      card.setInherentModifiersContextObjects([
+        ModifierDyingWishSpawnEntityInCorner.createContextObject(
+          { id: Cards.Neutral.MiniJax },
+          'a 1/1 Ranged Mini-Jax',
+        ),
+      ]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
     }
 

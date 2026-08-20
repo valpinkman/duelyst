@@ -31,14 +31,25 @@ class ModifierOpeningGambitDrawCardBothPlayers extends ModifierOpeningGambit {
   }
 
   onOpeningGambit() {
-    const general = this.getCard().getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
-    this.getGameSession().executeAction(new DrawCardAction(this.getGameSession(), general.getOwnerId()));
+    const general = this.getCard()
+      .getGameSession()
+      .getGeneralForPlayerId(this.getCard().getOwnerId());
+    this.getGameSession().executeAction(
+      new DrawCardAction(this.getGameSession(), general.getOwnerId()),
+    );
 
-    const enemyGeneral = this.getCard().getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
-    return this.getGameSession().executeAction(new DrawCardAction(this.getGameSession(), enemyGeneral.getOwnerId()));
+    const enemyGeneral = this.getCard()
+      .getGameSession()
+      .getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
+    return this.getGameSession().executeAction(
+      new DrawCardAction(this.getGameSession(), enemyGeneral.getOwnerId()),
+    );
   }
 }
-ModifierOpeningGambitDrawCardBothPlayers.prototype.type = 'ModifierOpeningGambitDrawCardBothPlayers';
-ModifierOpeningGambitDrawCardBothPlayers.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
+ModifierOpeningGambitDrawCardBothPlayers.prototype.type =
+  'ModifierOpeningGambitDrawCardBothPlayers';
+ModifierOpeningGambitDrawCardBothPlayers.prototype.fxResource = [
+  'FX.Modifiers.ModifierOpeningGambit',
+];
 
 module.exports = ModifierOpeningGambitDrawCardBothPlayers;

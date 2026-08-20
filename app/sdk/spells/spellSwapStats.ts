@@ -28,7 +28,7 @@ class SpellSwapStats extends Spell {
       contextObject.resetsDamage = true;
       contextObject.isRemovable = false;
       contextObject.appliedName = 'Reversal';
-      contextObject.appliedDescription = 'This minion\'s Attack and Health were swapped.';
+      contextObject.appliedDescription = "This minion's Attack and Health were swapped.";
       return this.getGameSession().applyModifierContextObject(contextObject, entity);
     }
   }

@@ -11,9 +11,12 @@ const filterAttackTargetsForUnit = function (unit, potentialTargets) {
 };
 
 const _filterAttackTargetsForProvokedUnit = function (unit, potentialTargets) {
-  if (unit.getIsProvoked()) { // may only attack provoker
+  if (unit.getIsProvoked()) {
+    // may only attack provoker
     potentialTargets = _.filter(potentialTargets, (target) => target.getIsProvoker());
-    potentialTargets = _.filter(potentialTargets, (target) => _.contains(target.getEntitiesProvoked(), unit));
+    potentialTargets = _.filter(potentialTargets, (target) =>
+      _.contains(target.getEntitiesProvoked(), unit),
+    );
   }
   return potentialTargets;
 };
@@ -27,10 +30,16 @@ const _filterAttackTargetsForGeneralUnit = function (unit, potentialTargets) {
     // a general will trade for [currently set at 0.3 or 30% of current HP at time of writing this comment]
     // Set at 0.30, a general with 25 hp won't trade damage if the counterattack will deal more than 7 dmg
     // At 11 HP, a general won't trade if the counterattack will deal more than 3 damage! thanks for reading
-    potentialTargets = _.reject(potentialTargets, (enemy) => enemy.getATK() > unit.getHP() * BOUNTY.THRESHOLD_COUNTERATTACK_HP_PCT_GENERAL);
-    potentialTargets = _.reject(potentialTargets, (enemy) =>
-      // avoid suicide
-      unit.getHP() <= enemy.getATK());
+    potentialTargets = _.reject(
+      potentialTargets,
+      (enemy) => enemy.getATK() > unit.getHP() * BOUNTY.THRESHOLD_COUNTERATTACK_HP_PCT_GENERAL,
+    );
+    potentialTargets = _.reject(
+      potentialTargets,
+      (enemy) =>
+        // avoid suicide
+        unit.getHP() <= enemy.getATK(),
+    );
     // TODO ***DRAW GAMES***
     // exception to counterattacking rules - if we want to attack enemy general for a DRAW GAME. Must only do this if:
     // enemy will have lethal next turn - how to estimate this?
@@ -87,10 +96,12 @@ const _isTargetImmuneToSource = function (target, source) {
         }
 
         if (modifier instanceof SDK.ModifierImmuneToSpells) {
-          if (source instanceof SDK.Spell
-          /* && CARD_INTENT[source.getBaseCardId()] != null
+          if (
+            source instanceof SDK.Spell
+            /* && CARD_INTENT[source.getBaseCardId()] != null
             && CARD_INTENT[source.getBaseCardId()].indexOf("mass") === -1
-            && CARD_INTENT[source.getBaseCardId()].indexOf("shadownova") === -1 */) {
+            && CARD_INTENT[source.getBaseCardId()].indexOf("shadownova") === -1 */
+          ) {
             if (modifier instanceof SDK.ModifierImmuneToSpellsByEnemy) {
               if (!target.getIsSameTeamAs(source)) {
                 // immune to enemy targeted spells

@@ -11,7 +11,6 @@ const BaseSprite = require('./BaseSprite');
  *************************************************************************** */
 
 var InstancedSprite = BaseSprite.extend({
-
   _instancingId: 'InstancingId',
 
   setDefaultOptions() {
@@ -57,7 +56,9 @@ var InstancedSprite = BaseSprite.extend({
 InstancedSprite.WebGLRenderCmd = function (renderable) {
   BaseSprite.WebGLRenderCmd.call(this, renderable);
 };
-const proto = InstancedSprite.WebGLRenderCmd.prototype = Object.create(BaseSprite.WebGLRenderCmd.prototype);
+const proto = (InstancedSprite.WebGLRenderCmd.prototype = Object.create(
+  BaseSprite.WebGLRenderCmd.prototype,
+));
 proto.constructor = InstancedSprite.WebGLRenderCmd;
 
 proto.renderingForInstancing = function (fx, instancingId, instancedRenderPass, instances) {

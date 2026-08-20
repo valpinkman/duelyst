@@ -30,7 +30,10 @@ class HealAction extends Action {
   }
 
   getTotalHealAmount() {
-    if (this._private.totalHealAmount == null) { this._private.totalHealAmount = (this.getHealAmount() + this.getHealChange()) * this.getHealMultiplier(); }
+    if (this._private.totalHealAmount == null) {
+      this._private.totalHealAmount =
+        (this.getHealAmount() + this.getHealChange()) * this.getHealMultiplier();
+    }
     return this._private.totalHealAmount;
   }
 
@@ -40,7 +43,7 @@ class HealAction extends Action {
 
   setHealAmount(healAmount) {
     this.healAmount = healAmount;
-    return this._private.totalHealAmount = null;
+    return (this._private.totalHealAmount = null);
   }
 
   getHealChange() {
@@ -49,7 +52,7 @@ class HealAction extends Action {
 
   setHealChange(healChange) {
     this._private.healChange = healChange;
-    return this._private.totalHealAmount = null;
+    return (this._private.totalHealAmount = null);
   }
 
   getHealMultiplier() {
@@ -58,7 +61,7 @@ class HealAction extends Action {
 
   setHealMultiplier(healMultiplier) {
     this._private.healMultiplier = healMultiplier;
-    return this._private.totalHealAmount = null;
+    return (this._private.totalHealAmount = null);
   }
 
   getTotalHealApplied() {
@@ -70,14 +73,14 @@ class HealAction extends Action {
 
     const target = this.getTarget();
 
-    if ((target != null) && target.getIsActive()) {
+    if (target != null && target.getIsActive()) {
       const heal = this.getTotalHealAmount();
       const targetStartHP = target.getHP();
       target.applyHeal(heal); // heal the target
       const targetEndHP = target.getHP();
-      return this._private.totalHealApplied = targetEndHP - targetStartHP;
+      return (this._private.totalHealApplied = targetEndHP - targetStartHP);
     }
-    return this._private.totalHealApplied = 0;
+    return (this._private.totalHealApplied = 0);
   }
 }
 HealAction.prototype.healAmount = 0;

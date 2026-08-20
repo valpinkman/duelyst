@@ -24,7 +24,6 @@ const DeckHistogramNode = require('../../nodes/arena/DeckHistogramNode');
  *************************************************************************** */
 
 const DeckStatsLayer = BaseLayer.extend({
-
   cards: null,
   cardCounts: null,
   spellCountLabel: null,
@@ -49,47 +48,101 @@ const DeckStatsLayer = BaseLayer.extend({
     this.controlBarBackground.setPosition(0, 20);
     this.addChild(this.controlBarBackground);
 
-    this.cardCountLabel = new cc.LabelTTF('0', RSX.font_bold.name, 16, cc.size(32, 24), cc.TEXT_ALIGNMENT_RIGHT);
+    this.cardCountLabel = new cc.LabelTTF(
+      '0',
+      RSX.font_bold.name,
+      16,
+      cc.size(32, 24),
+      cc.TEXT_ALIGNMENT_RIGHT,
+    );
     this.cardCountLabel.setAnchorPoint(0, 0);
     this.cardCountLabel.setPosition(175 - 75, -17);
     this.addChild(this.cardCountLabel);
 
-    const cardCountLabelLegend = new cc.LabelTTF(`/  ${CONFIG.MAX_DECK_SIZE_GAUNTLET}`, RSX.font_light.name, 16, cc.size(500, 24), cc.TEXT_ALIGNMENT_LEFT);
+    const cardCountLabelLegend = new cc.LabelTTF(
+      `/  ${CONFIG.MAX_DECK_SIZE_GAUNTLET}`,
+      RSX.font_light.name,
+      16,
+      cc.size(500, 24),
+      cc.TEXT_ALIGNMENT_LEFT,
+    );
     cardCountLabelLegend.setAnchorPoint(0, 0);
     cardCountLabelLegend.setPosition(215 - 75, -17);
     this.addChild(cardCountLabelLegend);
 
-    this.artifactCountLabel = new cc.LabelTTF('0', RSX.font_bold.name, 16, cc.size(32, 24), cc.TEXT_ALIGNMENT_RIGHT);
+    this.artifactCountLabel = new cc.LabelTTF(
+      '0',
+      RSX.font_bold.name,
+      16,
+      cc.size(32, 24),
+      cc.TEXT_ALIGNMENT_RIGHT,
+    );
     this.artifactCountLabel.setAnchorPoint(0, 0);
     this.artifactCountLabel.setPosition(175 - 75, 10);
     this.addChild(this.artifactCountLabel);
 
-    const artifactCountLabelLegend = new cc.LabelTTF(i18next.t('common.artifact_label', { count: 2 }).toUpperCase(), RSX.font_light.name, 16, cc.size(500, 24), cc.TEXT_ALIGNMENT_LEFT);
+    const artifactCountLabelLegend = new cc.LabelTTF(
+      i18next.t('common.artifact_label', { count: 2 }).toUpperCase(),
+      RSX.font_light.name,
+      16,
+      cc.size(500, 24),
+      cc.TEXT_ALIGNMENT_LEFT,
+    );
     artifactCountLabelLegend.setAnchorPoint(0, 0);
     artifactCountLabelLegend.setPosition(215 - 75, 10);
     this.addChild(artifactCountLabelLegend);
 
-    this.spellCountLabel = new cc.LabelTTF('0', RSX.font_bold.name, 16, cc.size(32, 24), cc.TEXT_ALIGNMENT_RIGHT);
+    this.spellCountLabel = new cc.LabelTTF(
+      '0',
+      RSX.font_bold.name,
+      16,
+      cc.size(32, 24),
+      cc.TEXT_ALIGNMENT_RIGHT,
+    );
     this.spellCountLabel.setAnchorPoint(0, 0);
     this.spellCountLabel.setPosition(175 - 75, 34);
     this.addChild(this.spellCountLabel);
 
-    const spellCountLabelLegend = new cc.LabelTTF(i18next.t('common.spell_label', { count: 2 }).toUpperCase(), RSX.font_light.name, 16, cc.size(500, 24), cc.TEXT_ALIGNMENT_LEFT);
+    const spellCountLabelLegend = new cc.LabelTTF(
+      i18next.t('common.spell_label', { count: 2 }).toUpperCase(),
+      RSX.font_light.name,
+      16,
+      cc.size(500, 24),
+      cc.TEXT_ALIGNMENT_LEFT,
+    );
     spellCountLabelLegend.setAnchorPoint(0, 0);
     spellCountLabelLegend.setPosition(215 - 75, 34);
     this.addChild(spellCountLabelLegend);
 
-    this.minionCountLabel = new cc.LabelTTF('0', RSX.font_bold.name, 16, cc.size(32, 24), cc.TEXT_ALIGNMENT_RIGHT);
+    this.minionCountLabel = new cc.LabelTTF(
+      '0',
+      RSX.font_bold.name,
+      16,
+      cc.size(32, 24),
+      cc.TEXT_ALIGNMENT_RIGHT,
+    );
     this.minionCountLabel.setAnchorPoint(0, 0);
     this.minionCountLabel.setPosition(175 - 75, 58);
     this.addChild(this.minionCountLabel);
 
-    const minionCountLabelLegend = new cc.LabelTTF(i18next.t('common.unit_label', { count: 2 }).toUpperCase(), RSX.font_light.name, 16, cc.size(500, 24), cc.TEXT_ALIGNMENT_LEFT);
+    const minionCountLabelLegend = new cc.LabelTTF(
+      i18next.t('common.unit_label', { count: 2 }).toUpperCase(),
+      RSX.font_light.name,
+      16,
+      cc.size(500, 24),
+      cc.TEXT_ALIGNMENT_LEFT,
+    );
     minionCountLabelLegend.setAnchorPoint(0, 0);
     minionCountLabelLegend.setPosition(215 - 75, 58);
     this.addChild(minionCountLabelLegend);
 
-    this.factionLabel = new cc.LabelTTF('', RSX.font_light.name, 18, cc.size(500, 24), cc.TEXT_ALIGNMENT_CENTER);
+    this.factionLabel = new cc.LabelTTF(
+      '',
+      RSX.font_light.name,
+      18,
+      cc.size(500, 24),
+      cc.TEXT_ALIGNMENT_CENTER,
+    );
     this.factionLabel.setAnchorPoint(0.5, 0);
     this.factionLabel.setPosition(-275, 58);
     // this.addChild(this.factionLabel);
@@ -102,26 +155,40 @@ const DeckStatsLayer = BaseLayer.extend({
 
     const resignButtonSprite = new ccui.Scale9Sprite(RSX.button_cancel.img);
     const resignButtonGlowSprite = new ccui.Scale9Sprite(RSX.button_cancel_glow.img);
-    this.resignButton = new cc.ControlButton(i18next.t('gauntlet.resign_run_button_label').toUpperCase(), resignButtonSprite, 24);
+    this.resignButton = new cc.ControlButton(
+      i18next.t('gauntlet.resign_run_button_label').toUpperCase(),
+      resignButtonSprite,
+      24,
+    );
     this.resignButton.setPreferredSize(resignButtonSprite.getContentSize());
     this.resignButton.setAdjustBackgroundImage(false);
     this.resignButton.setZoomOnTouchDown(false);
     this.resignButton.setTitleTTFForState(RSX.font_light.name, cc.CONTROL_STATE_NORMAL);
     this.resignButton.setBackgroundSpriteForState(resignButtonSprite, cc.CONTROL_STATE_NORMAL);
-    this.resignButton.setBackgroundSpriteForState(resignButtonGlowSprite, cc.CONTROL_STATE_HIGHLIGHTED);
+    this.resignButton.setBackgroundSpriteForState(
+      resignButtonGlowSprite,
+      cc.CONTROL_STATE_HIGHLIGHTED,
+    );
     this.resignButton.setTitleColorForState(cc.color(255, 255, 255), cc.CONTROL_STATE_NORMAL);
     this.resignButton.setPosition(-300, 22);
     this.addChild(this.resignButton);
 
     const confirmButtonSprite = new ccui.Scale9Sprite(RSX.button_confirm.img);
     const confirmButtonGlowSprite = new ccui.Scale9Sprite(RSX.button_confirm_glow.img);
-    this.playButton = new cc.ControlButton(i18next.t('main_menu.menu_item_play').toUpperCase(), confirmButtonSprite, 32);
+    this.playButton = new cc.ControlButton(
+      i18next.t('main_menu.menu_item_play').toUpperCase(),
+      confirmButtonSprite,
+      32,
+    );
     this.playButton.setPreferredSize(confirmButtonSprite.getContentSize());
     this.playButton.setAdjustBackgroundImage(false);
     this.playButton.setZoomOnTouchDown(false);
     this.playButton.setTitleTTFForState(RSX.font_bold.name, cc.CONTROL_STATE_NORMAL);
     this.playButton.setBackgroundSpriteForState(confirmButtonSprite, cc.CONTROL_STATE_NORMAL);
-    this.playButton.setBackgroundSpriteForState(confirmButtonGlowSprite, cc.CONTROL_STATE_HIGHLIGHTED);
+    this.playButton.setBackgroundSpriteForState(
+      confirmButtonGlowSprite,
+      cc.CONTROL_STATE_HIGHLIGHTED,
+    );
     this.playButton.setTitleColorForState(cc.color(255, 255, 255), cc.CONTROL_STATE_NORMAL);
     this.playButton.setPosition(314, 22);
     this.addChild(this.playButton);
@@ -166,10 +233,18 @@ const DeckStatsLayer = BaseLayer.extend({
     let mouseOverButton;
     const location = event && event.getLocation();
     if (location) {
-      if (this.resignButton instanceof cc.ControlButton && this.resignButton.isEnabled() && UtilsEngine.getNodeUnderMouse(this.resignButton, location.x, location.y)) {
+      if (
+        this.resignButton instanceof cc.ControlButton &&
+        this.resignButton.isEnabled() &&
+        UtilsEngine.getNodeUnderMouse(this.resignButton, location.x, location.y)
+      ) {
         mouseOverButton = this.resignButton;
       }
-      if (this.playButton instanceof cc.ControlButton && this.playButton.isEnabled() && UtilsEngine.getNodeUnderMouse(this.playButton, location.x, location.y)) {
+      if (
+        this.playButton instanceof cc.ControlButton &&
+        this.playButton.isEnabled() &&
+        UtilsEngine.getNodeUnderMouse(this.playButton, location.x, location.y)
+      ) {
         mouseOverButton = this.playButton;
       }
     }
@@ -192,10 +267,18 @@ const DeckStatsLayer = BaseLayer.extend({
 
     const location = event && event.getLocation();
     if (location) {
-      if (this.resignButton instanceof cc.ControlButton && this.resignButton.isEnabled() && UtilsEngine.getNodeUnderMouse(this.resignButton, location.x, location.y)) {
+      if (
+        this.resignButton instanceof cc.ControlButton &&
+        this.resignButton.isEnabled() &&
+        UtilsEngine.getNodeUnderMouse(this.resignButton, location.x, location.y)
+      ) {
         this.onResignPressed();
       }
-      if (this.playButton instanceof cc.ControlButton && this.playButton.isEnabled() && UtilsEngine.getNodeUnderMouse(this.playButton, location.x, location.y)) {
+      if (
+        this.playButton instanceof cc.ControlButton &&
+        this.playButton.isEnabled() &&
+        UtilsEngine.getNodeUnderMouse(this.playButton, location.x, location.y)
+      ) {
         this.onPlayPressed();
       }
     }
@@ -213,7 +296,9 @@ const DeckStatsLayer = BaseLayer.extend({
     this.hideResignButton();
 
     // play show audio
-    audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_cancel.audio, CONFIG.CANCEL_SFX_PRIORITY);
+    audio_engine
+      .current()
+      .play_effect_for_interaction(RSX.sfx_ui_cancel.audio, CONFIG.CANCEL_SFX_PRIORITY);
 
     // resign run
     this.delegate.resignArenaRun().catch(() => {
@@ -227,7 +312,9 @@ const DeckStatsLayer = BaseLayer.extend({
     this.hidePlayButton();
 
     // play confirm audio
-    audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
+    audio_engine
+      .current()
+      .play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
 
     // resign run
     this.delegate.playArenaRun().catch(() => {
@@ -319,7 +406,9 @@ const DeckStatsLayer = BaseLayer.extend({
     Logger.module('ENGINE').log('DeckStatsLayer -> bindCards');
     this.cardCounts = _.countBy(cardIds, (cId) => cId);
 
-    this.cards = _.map(_.keys(this.cardCounts), (cId) => SDK.CardFactory.cardForIdentifier(parseInt(cId), SDK.GameSession.getInstance()));
+    this.cards = _.map(_.keys(this.cardCounts), (cId) =>
+      SDK.CardFactory.cardForIdentifier(parseInt(cId), SDK.GameSession.getInstance()),
+    );
 
     const manaCounts = {};
     let minionCount = 0;
@@ -412,7 +501,6 @@ const DeckStatsLayer = BaseLayer.extend({
   },
 
   /* endregion DECK STATE */
-
 });
 
 DeckStatsLayer.create = function (layer) {

@@ -21,11 +21,12 @@ const router = express.Router();
 
 router.get('/current', function (req, res, next) {
   // user id is set by a middleware
-  const {
-    user_id,
-  } = req;
+  const { user_id } = req;
 
-  return knex('users').select('rank', 'rank_win_streak', 'rank_starting_at').where('id', user_id).first()
+  return knex('users')
+    .select('rank', 'rank_win_streak', 'rank_starting_at')
+    .where('id', user_id)
+    .first()
     .then(function (rankRow) {
       rankRow.win_streak = rankRow.rank_win_streak;
       rankRow.starting_at = rankRow.rank_starting_at;
@@ -38,24 +39,25 @@ router.get('/current', function (req, res, next) {
 });
 
 router.get('/current_ladder_position', function (req, res, next) {
-  const {
-    user_id,
-  } = req;
+  const { user_id } = req;
 
   const MOMENT_UTC_NOW = moment().utc();
   const startOfSeasonMonth = moment(MOMENT_UTC_NOW).utc().startOf('month');
 
   return SRankManager.getUserLadderPosition(user_id, startOfSeasonMonth)
-    .then((userLadderPosition) => Promise.resolve({ ladder_position: userLadderPosition })).then((ladderData) => res.status(200).json(ladderData)).catch((error) => next(error));
+    .then((userLadderPosition) => Promise.resolve({ ladder_position: userLadderPosition }))
+    .then((ladderData) => res.status(200).json(ladderData))
+    .catch((error) => next(error));
 });
 
 router.get('/history', function (req, res, next) {
   // user id is set by a middleware
-  const {
-    user_id,
-  } = req;
+  const { user_id } = req;
 
-  return knex('user_rank_history').where('user_id', user_id).orderBy('starting_at', 'desc').limit(12)
+  return knex('user_rank_history')
+    .where('user_id', user_id)
+    .orderBy('starting_at', 'desc')
+    .limit(12)
     .select()
     .then((rankHistoryRows) => res.status(200).json(DataAccessHelpers.restifyData(rankHistoryRows)))
     .catch((error) => next(error));
@@ -63,11 +65,12 @@ router.get('/history', function (req, res, next) {
 
 router.get('/history/game_counters', function (req, res, next) {
   // user id is set by a middleware
-  const {
-    user_id,
-  } = req;
+  const { user_id } = req;
 
-  return knex('user_game_season_counters').where('user_id', user_id).andWhere('game_type', 'ranked').orderBy('season_starting_at', 'desc')
+  return knex('user_game_season_counters')
+    .where('user_id', user_id)
+    .andWhere('game_type', 'ranked')
+    .orderBy('season_starting_at', 'desc')
     .limit(12)
     .select()
     .then((rankHistoryRows) => res.status(200).json(DataAccessHelpers.restifyData(rankHistoryRows)))
@@ -81,9 +84,7 @@ router.get('/history/:season_key/game_counter', function (req, res, next) {
   }
 
   // user id is set by a middleware
-  const {
-    user_id,
-  } = req;
+  const { user_id } = req;
   const season_key = result.value;
   const season_starting_at = moment(season_key + ' +0000', 'YYYY-MM Z').utc();
 
@@ -91,12 +92,15 @@ router.get('/history/:season_key/game_counter', function (req, res, next) {
     return res.status(400).json({});
   }
 
-  return knex('user_game_season_counters').where('user_id', user_id).andWhere('game_type', 'ranked').andWhere('season_starting_at', season_starting_at.toDate())
+  return knex('user_game_season_counters')
+    .where('user_id', user_id)
+    .andWhere('game_type', 'ranked')
+    .andWhere('season_starting_at', season_starting_at.toDate())
     .first()
     .then(function (rankHistoryRow) {
-      if ((rankHistoryRow == null)) {
-      // use empty default when no season counters exist
-      // this can happen on new accounts that haven't played any games yet
+      if (rankHistoryRow == null) {
+        // use empty default when no season counters exist
+        // this can happen on new accounts that haven't played any games yet
         rankHistoryRow = {};
       }
       return res.status(200).json(DataAccessHelpers.restifyData(rankHistoryRow));
@@ -106,11 +110,11 @@ router.get('/history/:season_key/game_counter', function (req, res, next) {
 
 router.get('/top', function (req, res, next) {
   // user id is set by a middleware
-  const {
-    user_id,
-  } = req;
+  const { user_id } = req;
 
-  return knex('users').where('id', user_id).first('top_rank', 'top_rank_starting_at', 'top_rank_ladder_position')
+  return knex('users')
+    .where('id', user_id)
+    .first('top_rank', 'top_rank_starting_at', 'top_rank_ladder_position')
     .then(function (rankRow) {
       rankRow = DataAccessHelpers.restifyData(rankRow);
       return res.status(200).json(rankRow);
@@ -120,11 +124,11 @@ router.get('/top', function (req, res, next) {
 
 router.get('/division_stats', function (req, res, next) {
   // user id is set by a middleware
-  const {
-    user_id,
-  } = req;
+  const { user_id } = req;
 
-  return knex('user_rank_history').where('user_id', user_id).select()
+  return knex('user_rank_history')
+    .where('user_id', user_id)
+    .select()
     .then(function (rankHistoryRows) {
       const stats = {};
       for (var rankKey in RankDivisionLookup) {

@@ -17,23 +17,30 @@ class ModifierOpeningGambitMoveEnemyGeneralForward extends ModifierOpeningGambit
 
   onOpeningGambit() {
     let movePosition;
-    const enemyGeneral = this.getCard().getGameSession().getGeneralForPlayerId(this.getGameSession().getOpponentPlayerIdOfPlayerId(this.getCard().getOwnerId()));
+    const enemyGeneral = this.getCard()
+      .getGameSession()
+      .getGeneralForPlayerId(
+        this.getGameSession().getOpponentPlayerIdOfPlayerId(this.getCard().getOwnerId()),
+      );
     const enemyPosition = enemyGeneral.getPosition();
     const board = this.getGameSession().getBoard();
-    if (enemyGeneral.isOwnedByPlayer1()) { // if owned by player one, check the spot to the right of the general
+    if (enemyGeneral.isOwnedByPlayer1()) {
+      // if owned by player one, check the spot to the right of the general
       if (enemyPosition.x < 8) {
         movePosition = board.getUnitAtPosition({ x: enemyPosition.x + 1, y: enemyPosition.y });
         enemyPosition.x += 1;
       }
     }
-    if (enemyGeneral.isOwnedByPlayer2()) { // if owned by player two, check the spot to the left of the general
+    if (enemyGeneral.isOwnedByPlayer2()) {
+      // if owned by player two, check the spot to the left of the general
       if (enemyPosition.x > 0) {
         movePosition = board.getUnitAtPosition({ x: enemyPosition.x - 1, y: enemyPosition.y });
         enemyPosition.x -= 1;
       }
     }
 
-    if ((movePosition == null)) { // if there's no unit currently sitting in the position we want to move the general
+    if (movePosition == null) {
+      // if there's no unit currently sitting in the position we want to move the general
       const teleAction = new TeleportAction(this.getGameSession());
       teleAction.setOwnerId(this.getOwnerId());
       teleAction.setSource(enemyGeneral);
@@ -43,7 +50,10 @@ class ModifierOpeningGambitMoveEnemyGeneralForward extends ModifierOpeningGambit
     }
   }
 }
-ModifierOpeningGambitMoveEnemyGeneralForward.prototype.type = 'ModifierOpeningGambitMoveEnemyGeneralForward';
-ModifierOpeningGambitMoveEnemyGeneralForward.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
+ModifierOpeningGambitMoveEnemyGeneralForward.prototype.type =
+  'ModifierOpeningGambitMoveEnemyGeneralForward';
+ModifierOpeningGambitMoveEnemyGeneralForward.prototype.fxResource = [
+  'FX.Modifiers.ModifierOpeningGambit',
+];
 
 module.exports = ModifierOpeningGambitMoveEnemyGeneralForward;

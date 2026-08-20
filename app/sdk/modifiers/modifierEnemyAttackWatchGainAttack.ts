@@ -15,7 +15,9 @@ class ModifierEnemyAttackWatchGainAttack extends ModifierEnemyAttackWatch {
   static type = 'ModifierEnemyAttackWatchGainAttack';
 
   static createContextObject(attackBuff, buffName, options) {
-    if (attackBuff == null) { attackBuff = 0; }
+    if (attackBuff == null) {
+      attackBuff = 0;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.attackBuff = attackBuff;
     contextObject.buffName = buffName;
@@ -24,7 +26,7 @@ class ModifierEnemyAttackWatchGainAttack extends ModifierEnemyAttackWatch {
 
   onEnemyAttackWatch(action) {
     const target = action.getTarget();
-    if ((target != null) && (target === this.getCard())) {
+    if (target != null && target === this.getCard()) {
       const statContextObject = Modifier.createContextObjectWithAttributeBuffs(this.attackBuff);
       statContextObject.appliedName = this.buffName;
       return this.getGameSession().applyModifierContextObject(statContextObject, this.getCard());

@@ -23,8 +23,7 @@ const env = config.get('env');
 
 const createGame = function (gameType, player1Data, player2Data, gameServer, callback) {
   const _chainState: Record<string, any> = {};
-  let error,
-    newGameSession;
+  let error, newGameSession;
   let player1DataForGame = player1Data;
   let player2DataForGame = player2Data;
 
@@ -43,8 +42,10 @@ const createGame = function (gameType, player1Data, player2Data, gameServer, cal
   const player2Name = player2DataForGame != null ? player2DataForGame.name : undefined;
 
   // if we are trying to create a game where the player is on both sides, or any of the two player IDs is not defined, we have an issue
-  if ((player1Id === player2Id) || (player1Id == null) || (player2Id == null)) {
-    Logger.module('GAME CREATE').error(`ERROR Creating a game for ${player1Id} and ${player2Id}. Invalid data.`.red);
+  if (player1Id === player2Id || player1Id == null || player2Id == null) {
+    Logger.module('GAME CREATE').error(
+      `ERROR Creating a game for ${player1Id} and ${player2Id}. Invalid data.`.red,
+    );
 
     error = new Error('Could not create a game because one or both the player IDs are invalid');
 
@@ -52,7 +53,9 @@ const createGame = function (gameType, player1Data, player2Data, gameServer, cal
     return Promise.reject(error);
   }
 
-  Logger.module('GAME CREATE').debug(`Setting up game for user ${player1Name} and user ${player2Name} on ${gameServer}`);
+  Logger.module('GAME CREATE').debug(
+    `Setting up game for user ${player1Name} and user ${player2Name} on ${gameServer}`,
+  );
 
   // try to setup GameSession
   try {
@@ -75,7 +78,9 @@ const createGame = function (gameType, player1Data, player2Data, gameServer, cal
     SDK.GameSetup.setupNewSession(newGameSession, player1DataForGame, player2DataForGame);
   } catch (error1) {
     error = error1;
-    Logger.module('GAME CREATE').error(`ERROR: setting up GameSession: ${JSON.stringify(error.message)}`.red);
+    Logger.module('GAME CREATE').error(
+      `ERROR: setting up GameSession: ${JSON.stringify(error.message)}`.red,
+    );
     Logger.module('GAME CREATE').error(error.stack);
     return Promise.reject(error);
   }
@@ -140,12 +145,14 @@ const createGame = function (gameType, player1Data, player2Data, gameServer, cal
       return Promise.all([
         GamesModule.newUserGame(player1DataForGame.userId, _chainState.gameId, gameDataForPlayer1),
         GamesModule.newUserGame(player2DataForGame.userId, _chainState.gameId, gameDataForPlayer2),
-      // WARNING: this code below is for testing timeouts only
-      // new Promise (resolve)-> setTimeout( (()-> resolve()), 16000)
+        // WARNING: this code below is for testing timeouts only
+        // new Promise (resolve)-> setTimeout( (()-> resolve()), 16000)
       ]);
     })
     .then(function () {
-      Logger.module('GAME CREATE').debug(`Game session ${_chainState.gameId} added to each user's list of games.`);
+      Logger.module('GAME CREATE').debug(
+        `Game session ${_chainState.gameId} added to each user's list of games.`,
+      );
       return _chainState.gameId;
     });
 };

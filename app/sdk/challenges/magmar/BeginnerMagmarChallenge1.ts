@@ -37,17 +37,11 @@ class BeginnerMagmarChallenge1 extends Challenge {
   static type = 'BeginnerMagmarChallenge1';
 
   getMyPlayerDeckData(gameSession) {
-    return [
-      { id: Cards.Faction5.General },
-      { id: Cards.Spell.NaturalSelection },
-    ];
+    return [{ id: Cards.Faction5.General }, { id: Cards.Spell.NaturalSelection }];
   }
 
   getOpponentPlayerDeckData(gameSession) {
-    return [
-      { id: Cards.Faction2.General },
-      { id: Cards.TutorialSpell.TutorialFireOrb },
-    ];
+    return [{ id: Cards.Faction2.General }, { id: Cards.TutorialSpell.TutorialFireOrb }];
   }
 
   setupBoard(gameSession) {
@@ -74,24 +68,37 @@ class BeginnerMagmarChallenge1 extends Challenge {
   setupOpponentAgent(gameSession) {
     super.setupOpponentAgent(gameSession);
 
-    this._opponentAgent.addActionForTurn(0, AgentActions.createAgentSoftActionShowInstructionLabels([{
-      label: i18next.t('challenges.beginner_magmar_1_taunt'),
-      isSpeech: true,
-      isPersistent: true,
-      yPosition: 0.6,
-      isOpponent: true,
-    },
-    ]));
-    return this._opponentAgent.addActionForTurn(0, AgentActions.createAgentActionPlayCardFindPosition(0, () => [GameSession.getInstance().getGeneralForPlayer1().getPosition()]));
+    this._opponentAgent.addActionForTurn(
+      0,
+      AgentActions.createAgentSoftActionShowInstructionLabels([
+        {
+          label: i18next.t('challenges.beginner_magmar_1_taunt'),
+          isSpeech: true,
+          isPersistent: true,
+          yPosition: 0.6,
+          isOpponent: true,
+        },
+      ]),
+    );
+    return this._opponentAgent.addActionForTurn(
+      0,
+      AgentActions.createAgentActionPlayCardFindPosition(0, () => [
+        GameSession.getInstance().getGeneralForPlayer1().getPosition(),
+      ]),
+    );
   }
 }
 BeginnerMagmarChallenge1.prototype.type = 'BeginnerMagmarChallenge1';
 BeginnerMagmarChallenge1.prototype.categoryType = ChallengeCategory.beginner2.type;
 BeginnerMagmarChallenge1.prototype.name = i18next.t('challenges.beginner_magmar_1_title');
-BeginnerMagmarChallenge1.prototype.description = i18next.t('challenges.beginner_magmar_1_description');
+BeginnerMagmarChallenge1.prototype.description = i18next.t(
+  'challenges.beginner_magmar_1_description',
+);
 BeginnerMagmarChallenge1.prototype.iconUrl = RSX.speech_portrait_magmar.img;
 BeginnerMagmarChallenge1.prototype._musicOverride = RSX.music_collection.audio;
-BeginnerMagmarChallenge1.prototype.otkChallengeStartMessage = i18next.t('challenges.beginner_magmar_1_start');
+BeginnerMagmarChallenge1.prototype.otkChallengeStartMessage = i18next.t(
+  'challenges.beginner_magmar_1_start',
+);
 BeginnerMagmarChallenge1.prototype.otkChallengeFailureMessages = [
   i18next.t('challenges.beginner_magmar_1_fail'),
 ];

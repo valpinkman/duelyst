@@ -26,7 +26,7 @@ class SpellFollowupKeeper extends SpellSpawnEntity {
   }
 
   getDeadUnits() {
-    if ((this._private.deadUnits == null)) {
+    if (this._private.deadUnits == null) {
       this._private.deadUnits = this.getGameSession().getDeadUnits(this.getOwnerId());
     }
     return this._private.deadUnits;
@@ -36,7 +36,8 @@ class SpellFollowupKeeper extends SpellSpawnEntity {
     const entities = this.getDeadUnits();
     // find and spawn a dead unit
     if (entities.length > 0) {
-      const entityToSpawn = entities[this.getGameSession().getRandomIntegerForExecution(entities.length)];
+      const entityToSpawn =
+        entities[this.getGameSession().getRandomIntegerForExecution(entities.length)];
       if (entityToSpawn != null) {
         this.cardDataOrIndexToSpawn = entityToSpawn.createNewCardData();
         return super.onApplyEffectToBoardTile(board, x, y, sourceAction);

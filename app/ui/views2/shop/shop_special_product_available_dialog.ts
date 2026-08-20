@@ -12,7 +12,6 @@ var ShopData = require('app/data/shop.json');
 var Template = require('./templates/shop_special_product_available_dialog.hbs');
 
 var ShopSpecialProductAvailableDialogItemView = Backbone.Marionette.ItemView.extend({
-
   id: 'app-shop-special-product-available-dialog',
   className: 'modal prompt-modal',
 
@@ -32,29 +31,50 @@ var ShopSpecialProductAvailableDialogItemView = Backbone.Marionette.ItemView.ext
 
     var imageUrl = null;
     switch (model.get('sku')) {
-    case ShopData.earned_specials.BRONZE_DIVISION_STARTER_SPECIAL.sku:
-      imageUrl = RSX.getResourcePathForScale('resources/shop/bronze_special.png', CONFIG.resourceScaleCSS);
-      break;
-    case ShopData.earned_specials.SILVER_DIVISION_STARTER_SPECIAL.sku:
-      imageUrl = RSX.getResourcePathForScale('resources/shop/silver_special.png', CONFIG.resourceScaleCSS);
-      break;
-    case ShopData.earned_specials.GOLD_DIVISION_STARTER_SPECIAL.sku:
-      imageUrl = RSX.getResourcePathForScale('resources/shop/gold_special.png', CONFIG.resourceScaleCSS);
-      break;
-    case ShopData.earned_specials.F1_F5_STARTER_SPECIAL.sku:
-      imageUrl = RSX.getResourcePathForScale('resources/shop/f1_f5_special.png', CONFIG.resourceScaleCSS);
-      break;
-    case ShopData.earned_specials.F2_F4_STARTER_SPECIAL.sku:
-      imageUrl = RSX.getResourcePathForScale('resources/shop/f2_f4_special.png', CONFIG.resourceScaleCSS);
-      break;
-    case ShopData.earned_specials.F3_F6_STARTER_SPECIAL.sku:
-      imageUrl = RSX.getResourcePathForScale('resources/shop/f3_f6_special.png', CONFIG.resourceScaleCSS);
-      break;
-    case ShopData.earned_specials.ALL_FACTIONS_STARTER_SPECIAL_name_STARTER_SPECIAL.sku:
-      imageUrl = RSX.getResourcePathForScale('resources/shop/f_all_special.png', CONFIG.resourceScaleCSS);
-      break;
-    default:
-      break;
+      case ShopData.earned_specials.BRONZE_DIVISION_STARTER_SPECIAL.sku:
+        imageUrl = RSX.getResourcePathForScale(
+          'resources/shop/bronze_special.png',
+          CONFIG.resourceScaleCSS,
+        );
+        break;
+      case ShopData.earned_specials.SILVER_DIVISION_STARTER_SPECIAL.sku:
+        imageUrl = RSX.getResourcePathForScale(
+          'resources/shop/silver_special.png',
+          CONFIG.resourceScaleCSS,
+        );
+        break;
+      case ShopData.earned_specials.GOLD_DIVISION_STARTER_SPECIAL.sku:
+        imageUrl = RSX.getResourcePathForScale(
+          'resources/shop/gold_special.png',
+          CONFIG.resourceScaleCSS,
+        );
+        break;
+      case ShopData.earned_specials.F1_F5_STARTER_SPECIAL.sku:
+        imageUrl = RSX.getResourcePathForScale(
+          'resources/shop/f1_f5_special.png',
+          CONFIG.resourceScaleCSS,
+        );
+        break;
+      case ShopData.earned_specials.F2_F4_STARTER_SPECIAL.sku:
+        imageUrl = RSX.getResourcePathForScale(
+          'resources/shop/f2_f4_special.png',
+          CONFIG.resourceScaleCSS,
+        );
+        break;
+      case ShopData.earned_specials.F3_F6_STARTER_SPECIAL.sku:
+        imageUrl = RSX.getResourcePathForScale(
+          'resources/shop/f3_f6_special.png',
+          CONFIG.resourceScaleCSS,
+        );
+        break;
+      case ShopData.earned_specials.ALL_FACTIONS_STARTER_SPECIAL_name_STARTER_SPECIAL.sku:
+        imageUrl = RSX.getResourcePathForScale(
+          'resources/shop/f_all_special.png',
+          CONFIG.resourceScaleCSS,
+        );
+        break;
+      default:
+        break;
     }
 
     return {
@@ -74,13 +94,14 @@ var ShopSpecialProductAvailableDialogItemView = Backbone.Marionette.ItemView.ext
   },
 
   onConfirm: function () {
-    audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
+    audio_engine
+      .current()
+      .play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
     this.trigger('confirm');
 
     // destroy last to allow any events to occur
     NavigationManager.getInstance().destroyDialogView();
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

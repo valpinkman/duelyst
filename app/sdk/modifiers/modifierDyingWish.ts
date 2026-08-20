@@ -25,12 +25,14 @@ class ModifierDyingWish extends Modifier {
   onAction(e) {
     super.onAction(e);
 
-    const {
-      action,
-    } = e;
+    const { action } = e;
 
     // when our entity has died
-    if (action instanceof DieAction && (action.getTarget() === this.getCard()) && this.getCard().getIsRemoved()) {
+    if (
+      action instanceof DieAction &&
+      action.getTarget() === this.getCard() &&
+      this.getCard().getIsRemoved()
+    ) {
       return this.onDyingWish(action);
     }
   }

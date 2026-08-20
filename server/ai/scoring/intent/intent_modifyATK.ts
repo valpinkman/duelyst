@@ -43,7 +43,10 @@ const getScoreForModifyATKFromCardWithIntentToCard = function (card, intent, tar
 const ScoreForIntentModifyATK = function (card, targetPosition, cardIntents) {
   let score = 0;
   const cardId = card.getBaseCardId();
-  const validIntents = cardIntents != null ? CardIntent.filterIntentsByIntentType(cardIntents, CardIntentType.ModifyATK) : CardIntent.getIntentsByIntentType(cardId, CardIntentType.ModifyATK);
+  const validIntents =
+    cardIntents != null
+      ? CardIntent.filterIntentsByIntentType(cardIntents, CardIntentType.ModifyATK)
+      : CardIntent.getIntentsByIntentType(cardId, CardIntentType.ModifyATK);
 
   _.each(validIntents, (intent) => {
     const cards = CardIntent.getCardsTargetedByCardWithIntent(card, intent, targetPosition);

@@ -13,17 +13,22 @@ class ModifierBondNightshroud extends ModifierBond {
   declare type: any;
 
   static type = 'ModifierBondNightshroud';
-  static description = 'Your General steals 1 Health from the enemy General for each friendly minion';
+  static description =
+    'Your General steals 1 Health from the enemy General for each friendly minion';
 
   onBond() {
     let numFriendlyArcanysts = 0;
-    for (var unit of Array.from<any>(this.getGameSession().getBoard().getFriendlyEntitiesForEntity(this.getCard()))) {
+    for (var unit of Array.from<any>(
+      this.getGameSession().getBoard().getFriendlyEntitiesForEntity(this.getCard()),
+    )) {
       if (unit.getBelongsToTribe(Races.Arcanyst)) {
         numFriendlyArcanysts++;
       }
     }
 
-    const general = this.getCard().getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
+    const general = this.getCard()
+      .getGameSession()
+      .getGeneralForPlayerId(this.getCard().getOwnerId());
 
     const healAction = new HealAction(this.getGameSession());
     healAction.setOwnerId(this.getCard().getOwnerId());
@@ -31,7 +36,11 @@ class ModifierBondNightshroud extends ModifierBond {
     healAction.setHealAmount(numFriendlyArcanysts);
     this.getGameSession().executeAction(healAction);
 
-    const enemyGeneral = this.getCard().getGameSession().getGeneralForPlayerId(this.getGameSession().getOpponentPlayerIdOfPlayerId(this.getCard().getOwnerId()));
+    const enemyGeneral = this.getCard()
+      .getGameSession()
+      .getGeneralForPlayerId(
+        this.getGameSession().getOpponentPlayerIdOfPlayerId(this.getCard().getOwnerId()),
+      );
 
     const damageAction = new DamageAction(this.getGameSession());
     damageAction.setOwnerId(this.getOwnerId());

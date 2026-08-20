@@ -34,18 +34,18 @@ class RandomTeleportAction extends TeleportAction {
   }
 
   setTeleportPattern(teleportPattern) {
-    return this.teleportPattern = teleportPattern;
+    return (this.teleportPattern = teleportPattern);
   }
 
   getPatternSource() {
-    if ((this._private.patternSource == null) && (this.patternSourceIndex != null)) {
+    if (this._private.patternSource == null && this.patternSourceIndex != null) {
       this._private.patternSource = this.getGameSession().getCardByIndex(this.patternSourceIndex);
     }
     return this._private.patternSource;
   }
 
   setPatternSource(patternSource) {
-    return this.patternSourceIndex = patternSource.getIndex();
+    return (this.patternSourceIndex = patternSource.getIndex());
   }
 
   getPatternSourcePosition() {
@@ -53,7 +53,7 @@ class RandomTeleportAction extends TeleportAction {
   }
 
   setPatternSourcePosition(patternSourcePosition) {
-    return this.patternSourcePosition = patternSourcePosition;
+    return (this.patternSourcePosition = patternSourcePosition);
   }
 
   _modifyForExecution() {
@@ -63,22 +63,48 @@ class RandomTeleportAction extends TeleportAction {
       const source = this.getSource();
       if (source != null) {
         let moveLocations;
-        if (!this.getTeleportPattern()) { // if no teleport pattern defined, use whole board
+        if (!this.getTeleportPattern()) {
+          // if no teleport pattern defined, use whole board
           // pick a random "spawn" location - locations that units can spawn are also valid target position for teleporting this unit
-          moveLocations = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(this.getGameSession(), { x: 0, y: 0 }, CONFIG.ALL_BOARD_POSITIONS, source, source, 1);
-        } else { // pick target position from teleport pattern
+          moveLocations = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(
+            this.getGameSession(),
+            { x: 0, y: 0 },
+            CONFIG.ALL_BOARD_POSITIONS,
+            source,
+            source,
+            1,
+          );
+        } else {
+          // pick target position from teleport pattern
           let patternSourcePosition;
           const patternSource = this.getPatternSource();
-          if (patternSource != null) { // around pattern source entity
+          if (patternSource != null) {
+            // around pattern source entity
             patternSourcePosition = patternSource.getPosition();
-          } else { // around pattern source position
+          } else {
+            // around pattern source position
             patternSourcePosition = this.getPatternSourcePosition();
           }
 
           if (patternSourcePosition != null) {
-            moveLocations = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(this.getGameSession(), patternSourcePosition, this.getTeleportPattern(), source, source, 1);
-          } else { // use whole board
-            moveLocations = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(this.getGameSession(), { x: 0, y: 0 }, this.getTeleportPattern(), source, source, 1);
+            moveLocations = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(
+              this.getGameSession(),
+              patternSourcePosition,
+              this.getTeleportPattern(),
+              source,
+              source,
+              1,
+            );
+          } else {
+            // use whole board
+            moveLocations = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(
+              this.getGameSession(),
+              { x: 0, y: 0 },
+              this.getTeleportPattern(),
+              source,
+              source,
+              1,
+            );
           }
         }
 

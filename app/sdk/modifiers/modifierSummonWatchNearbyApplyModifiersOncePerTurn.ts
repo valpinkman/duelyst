@@ -32,7 +32,10 @@ class ModifierSummonWatchNearbyApplyModifiersOncePerTurn extends ModifierSummonW
   getIsValidBuffPosition(summonedUnitPosition) {
     if (this.canApplyModifier) {
       const entityPosition = this.getCard().getPosition();
-      if ((Math.abs(summonedUnitPosition.x - entityPosition.x) <= 1) && (Math.abs(summonedUnitPosition.y - entityPosition.y) <= 1)) {
+      if (
+        Math.abs(summonedUnitPosition.x - entityPosition.x) <= 1 &&
+        Math.abs(summonedUnitPosition.y - entityPosition.y) <= 1
+      ) {
         this.canApplyModifier = false;
         return true;
       }
@@ -43,11 +46,15 @@ class ModifierSummonWatchNearbyApplyModifiersOncePerTurn extends ModifierSummonW
 
   onStartTurn(actionEvent) {
     super.onStartTurn(actionEvent);
-    return this.canApplyModifier = true;
+    return (this.canApplyModifier = true);
   }
 }
-ModifierSummonWatchNearbyApplyModifiersOncePerTurn.prototype.type = 'ModifierSummonWatchNearbyApplyModifiersOncePerTurn';
+ModifierSummonWatchNearbyApplyModifiersOncePerTurn.prototype.type =
+  'ModifierSummonWatchNearbyApplyModifiersOncePerTurn';
 ModifierSummonWatchNearbyApplyModifiersOncePerTurn.prototype.canApplyModifier = true;
-ModifierSummonWatchNearbyApplyModifiersOncePerTurn.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierSummonWatchNearbyApplyModifiersOncePerTurn.prototype.fxResource = [
+  'FX.Modifiers.ModifierSummonWatch',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 
 module.exports = ModifierSummonWatchNearbyApplyModifiersOncePerTurn;

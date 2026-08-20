@@ -15,13 +15,9 @@ Logger.enabled = false;
 describe('monthlies', () => {
   describe('month 11', () => {
     beforeEach(() => {
-      const player1Deck = [
-        { id: SDK.Cards.Faction6.General },
-      ];
+      const player1Deck = [{ id: SDK.Cards.Faction6.General }];
 
-      const player2Deck = [
-        { id: SDK.Cards.Faction1.General },
-      ];
+      const player2Deck = [{ id: SDK.Cards.Faction1.General }];
 
       UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
     });
@@ -37,9 +33,18 @@ describe('monthlies', () => {
 
       player1.remainingMana = 9;
 
-      const maw1 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Maw }, 1, 1, gameSession.getPlayer1Id());
+      const maw1 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.Maw },
+        1,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.WoodWen }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.WoodWen,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 0, 0);
       gameSession.executeAction(playCardFromHandAction);
       const followupCard = playCardFromHandAction.getCard().getCurrentFollowupCard();
@@ -99,15 +104,28 @@ describe('monthlies', () => {
 
       player1.remainingMana = 9;
 
-      const groveLion = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.GroveLion }, 1, 1, gameSession.getPlayer1Id());
+      const groveLion = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.GroveLion },
+        1,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
-      expect(gameSession.getGeneralForPlayer1().hasActiveModifierClass(ModifierForcefield)).to.equal(true);
+      expect(
+        gameSession.getGeneralForPlayer1().hasActiveModifierClass(ModifierForcefield),
+      ).to.equal(true);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.SpiralTechnique }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.SpiralTechnique,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
 
-      expect(gameSession.getGeneralForPlayer1().hasActiveModifierClass(ModifierForcefield)).to.equal(false);
+      expect(
+        gameSession.getGeneralForPlayer1().hasActiveModifierClass(ModifierForcefield),
+      ).to.equal(false);
     });
 
     it('expect dominate will on a grove lion to switch forcefield status between generals', () => {
@@ -117,17 +135,30 @@ describe('monthlies', () => {
       const player2 = gameSession.getPlayer2();
       player1.remainingMana = 9;
 
-      const groveLion = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.GroveLion }, 1, 2, gameSession.getPlayer2Id());
+      const groveLion = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.GroveLion },
+        1,
+        2,
+        gameSession.getPlayer2Id(),
+      );
 
       expect(groveLion.ownerId).to.equal('player2_id');
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.Enslave }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.Enslave,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 2);
       gameSession.executeAction(playCardFromHandAction);
 
       expect(groveLion.ownerId).to.equal('player1_id');
-      expect(gameSession.getGeneralForPlayer2().hasActiveModifierClass(ModifierForcefield)).to.equal(false);
-      expect(gameSession.getGeneralForPlayer1().hasActiveModifierClass(ModifierForcefield)).to.equal(true);
+      expect(
+        gameSession.getGeneralForPlayer2().hasActiveModifierClass(ModifierForcefield),
+      ).to.equal(false);
+      expect(
+        gameSession.getGeneralForPlayer1().hasActiveModifierClass(ModifierForcefield),
+      ).to.equal(true);
     });
 
     it('expect sphynx to give your opponent a riddle spell', () => {
@@ -138,7 +169,11 @@ describe('monthlies', () => {
 
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.Sphynx }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.Sphynx,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -153,9 +188,21 @@ describe('monthlies', () => {
 
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.Riddle }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PhoenixFire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.TrueStrike }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.Riddle,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.TrueStrike,
+        }),
+      );
 
       var action = player1.actionReplaceCardFromHand(1);
       gameSession.executeAction(action);
@@ -181,7 +228,11 @@ describe('monthlies', () => {
 
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.Riddle }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.Riddle,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
 

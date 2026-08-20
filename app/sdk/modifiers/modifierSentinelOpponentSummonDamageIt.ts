@@ -13,7 +13,9 @@ class ModifierSentinelOpponentSummonDamageIt extends ModifierSentinelOpponentSum
   static type = 'ModifierSentinelOpponentSummonDamageIt';
 
   static createContextObject(description, transformCardId, damageAmount, options) {
-    if (damageAmount == null) { damageAmount = 0; }
+    if (damageAmount == null) {
+      damageAmount = 0;
+    }
     const contextObject = super.createContextObject(description, transformCardId, options);
     contextObject.damageAmount = damageAmount;
     return contextObject;

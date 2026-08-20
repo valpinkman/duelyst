@@ -41,7 +41,10 @@ const getScoreForDrawFromCardWithIntentToCard = function (card, intent, targetCa
 const ScoreForIntentDraw = function (card, targetPosition, cardIntents) {
   let score = 0;
   const cardId = card.getBaseCardId();
-  const validIntents = cardIntents != null ? CardIntent.filterIntentsByIntentType(cardIntents, CardIntentType.DrawCard) : CardIntent.getIntentsByIntentType(cardId, CardIntentType.DrawCard);
+  const validIntents =
+    cardIntents != null
+      ? CardIntent.filterIntentsByIntentType(cardIntents, CardIntentType.DrawCard)
+      : CardIntent.getIntentsByIntentType(cardId, CardIntentType.DrawCard);
 
   _.each(validIntents, (intent) => {
     const cards = CardIntent.getCardsTargetedByCardWithIntent(card, intent, targetPosition);

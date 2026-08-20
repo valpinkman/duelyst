@@ -22,13 +22,15 @@ class ModifierOpponentDrawCardWatch extends Modifier {
   onAction(e) {
     super.onAction(e);
 
-    const {
-      action,
-    } = e;
+    const { action } = e;
 
     // watch for opponent player drawing a card
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
-      if (action instanceof DrawCardAction && !(action instanceof BurnCardAction) && (action.getOwnerId() !== this.getCard().getOwnerId())) {
+      if (
+        action instanceof DrawCardAction &&
+        !(action instanceof BurnCardAction) &&
+        action.getOwnerId() !== this.getCard().getOwnerId()
+      ) {
         return this.onDrawCardWatch(action);
       }
     }

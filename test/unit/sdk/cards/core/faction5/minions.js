@@ -13,13 +13,9 @@ Logger.enabled = false;
 describe('faction5', () => {
   describe('minions', () => {
     beforeEach(() => {
-      const player1Deck = [
-        { id: SDK.Cards.Faction5.General },
-      ];
+      const player1Deck = [{ id: SDK.Cards.Faction5.General }];
 
-      const player2Deck = [
-        { id: SDK.Cards.Faction2.General },
-      ];
+      const player2Deck = [{ id: SDK.Cards.Faction2.General }];
 
       UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
     });
@@ -35,9 +31,18 @@ describe('faction5', () => {
 
       player1.remainingMana = 9;
 
-      const kujata = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction5.Kujata }, 1, 1, gameSession.getPlayer1Id());
+      const kujata = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction5.Kujata },
+        1,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.KomodoCharger }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.KomodoCharger,
+        }),
+      );
       const komodo = player1.getDeck().getCardInHandAtIndex(0);
       expect(komodo.getManaCostChange()).to.equal(-1);
     });
@@ -49,9 +54,18 @@ describe('faction5', () => {
 
       player1.remainingMana = 9;
 
-      const kujata = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction5.Kujata }, 1, 1, gameSession.getPlayer1Id());
+      const kujata = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction5.Kujata },
+        1,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.KomodoCharger }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.KomodoCharger,
+        }),
+      );
       const komodo = player1.getDeck().getCardInHandAtIndex(0);
       const hp = komodo.getHP();
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 2);
@@ -68,13 +82,26 @@ describe('faction5', () => {
 
       player1.remainingMana = 9;
 
-      const kujata = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction5.Kujata }, 7, 2, gameSession.getPlayer1Id());
+      const kujata = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction5.Kujata },
+        7,
+        2,
+        gameSession.getPlayer1Id(),
+      );
       expect(kujata.getOwnerId()).to.equal(player1.getPlayerId());
 
       gameSession.executeAction(gameSession.actionEndTurn());
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer2Id(), { id: SDK.Cards.Spell.Enslave }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer2Id(), { id: SDK.Cards.Neutral.KomodoCharger }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer2Id(), {
+          id: SDK.Cards.Spell.Enslave,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer2Id(), {
+          id: SDK.Cards.Neutral.KomodoCharger,
+        }),
+      );
 
       player2.remainingMana = 9;
 
@@ -100,8 +127,18 @@ describe('faction5', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const youngSilithar = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction5.YoungSilithar }, 0, 1, gameSession.getPlayer2Id());
-      const abyssalCrawler1 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.AbyssalCrawler }, 1, 1, gameSession.getPlayer1Id());
+      const youngSilithar = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction5.YoungSilithar },
+        0,
+        1,
+        gameSession.getPlayer2Id(),
+      );
+      const abyssalCrawler1 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.AbyssalCrawler },
+        1,
+        1,
+        gameSession.getPlayer1Id(),
+      );
       abyssalCrawler1.refreshExhaustion();
 
       youngSilithar.setDamage(2);
@@ -120,8 +157,18 @@ describe('faction5', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      var youngSilithar = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction5.YoungSilithar }, 0, 1, gameSession.getPlayer2Id());
-      const abyssalCrawler1 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction4.AbyssalCrawler }, 1, 1, gameSession.getPlayer1Id());
+      var youngSilithar = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction5.YoungSilithar },
+        0,
+        1,
+        gameSession.getPlayer2Id(),
+      );
+      const abyssalCrawler1 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction4.AbyssalCrawler },
+        1,
+        1,
+        gameSession.getPlayer1Id(),
+      );
       abyssalCrawler1.refreshExhaustion();
 
       youngSilithar.setDamage(2);
@@ -145,7 +192,12 @@ describe('faction5', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const earthwalker = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction5.EarthWalker }, 0, 1, gameSession.getPlayer2Id());
+      const earthwalker = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction5.EarthWalker },
+        0,
+        1,
+        gameSession.getPlayer2Id(),
+      );
 
       gameSession.executeAction(gameSession.actionEndTurn());
       gameSession.executeAction(gameSession.actionEndTurn());
@@ -166,9 +218,18 @@ describe('faction5', () => {
       const player1 = gameSession.getPlayer1();
 
       player1.remainingMana = 9;
-      const hailstoneGolem = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.HailstoneGolem }, 0, 1, gameSession.getPlayer1Id());
+      const hailstoneGolem = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.HailstoneGolem },
+        0,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction5.PrimordialGazer }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction5.PrimordialGazer,
+        }),
+      );
       const action = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(action);
       const followupCard = action.getCard().getCurrentFollowupCard();
@@ -187,9 +248,18 @@ describe('faction5', () => {
 
       player1.remainingMana = 9;
 
-      const vindicator = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction5.Vindicator }, 0, 0, gameSession.getPlayer1Id());
+      const vindicator = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction5.Vindicator },
+        0,
+        0,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.PhaseHound }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.PhaseHound,
+        }),
+      );
       const action = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(action);
 
@@ -204,8 +274,18 @@ describe('faction5', () => {
 
       player1.remainingMana = 9;
 
-      const vindicator = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction5.Vindicator }, 0, 0, gameSession.getPlayer1Id());
-      const lanternFox = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction2.LanternFox }, 0, 1, gameSession.getPlayer2Id());
+      const vindicator = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction5.Vindicator },
+        0,
+        0,
+        gameSession.getPlayer1Id(),
+      );
+      const lanternFox = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction2.LanternFox },
+        0,
+        1,
+        gameSession.getPlayer2Id(),
+      );
 
       const myGeneral = gameSession.getGeneralForPlayer1();
       const action = myGeneral.actionAttack(lanternFox);
@@ -222,7 +302,11 @@ describe('faction5', () => {
 
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction5.Elucidator }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction5.Elucidator,
+        }),
+      );
       const action = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(action);
 
@@ -234,9 +318,24 @@ describe('faction5', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const earthwalker = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction5.EarthWalker }, 0, 1, gameSession.getPlayer2Id());
-      const earthwalker2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction5.EarthWalker }, 1, 1, gameSession.getPlayer1Id());
-      const spiritHarvester = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction5.SpiritHarvester }, 0, 0, gameSession.getPlayer1Id());
+      const earthwalker = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction5.EarthWalker },
+        0,
+        1,
+        gameSession.getPlayer2Id(),
+      );
+      const earthwalker2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction5.EarthWalker },
+        1,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const spiritHarvester = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction5.SpiritHarvester },
+        0,
+        0,
+        gameSession.getPlayer1Id(),
+      );
 
       gameSession.executeAction(gameSession.actionEndTurn());
 
@@ -250,7 +349,12 @@ describe('faction5', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const silitharElder = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction5.SilitharElder }, 0, 1, gameSession.getPlayer1Id());
+      const silitharElder = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction5.SilitharElder },
+        0,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
       gameSession.executeAction(gameSession.actionEndTurn());
 
@@ -279,13 +383,27 @@ describe('faction5', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const unstableLeviathan = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction5.UnstableLeviathan }, 0, 1, gameSession.getPlayer1Id());
-      const hailstoneGolem = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.HailstoneGolem }, 1, 1, gameSession.getPlayer2Id());
+      const unstableLeviathan = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction5.UnstableLeviathan },
+        0,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const hailstoneGolem = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.HailstoneGolem },
+        1,
+        1,
+        gameSession.getPlayer2Id(),
+      );
 
       gameSession.executeAction(gameSession.actionEndTurn());
       gameSession.executeAction(gameSession.actionEndTurn());
 
-      const totalDamage = gameSession.getGeneralForPlayer1().getDamage() + gameSession.getGeneralForPlayer2().getDamage() + unstableLeviathan.getDamage() + hailstoneGolem.getDamage();
+      const totalDamage =
+        gameSession.getGeneralForPlayer1().getDamage() +
+        gameSession.getGeneralForPlayer2().getDamage() +
+        unstableLeviathan.getDamage() +
+        hailstoneGolem.getDamage();
 
       expect(totalDamage).to.equal(4);
     });

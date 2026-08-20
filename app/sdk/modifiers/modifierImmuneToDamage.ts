@@ -32,7 +32,7 @@ class ModifierImmuneToDamage extends ModifierImmune {
   }
 
   getIsActionRelevant(a) {
-    return (this.getCard() != null) && a instanceof DamageAction && (this.getCard() === a.getTarget());
+    return this.getCard() != null && a instanceof DamageAction && this.getCard() === a.getTarget();
   }
 
   _modifyAction(a) {

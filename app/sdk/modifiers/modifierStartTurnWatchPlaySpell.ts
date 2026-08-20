@@ -37,7 +37,13 @@ class ModifierStartTurnWatchPlaySpell extends ModifierStartTurnWatch {
 
   onTurnWatch(action) {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
-      const playCardAction = new PlayCardAction(this.getGameSession(), this.getCard().getOwnerId(), this.getCard().getPosition().x, this.getCard().getPosition().y, this.cardDataOrIndexToCast);
+      const playCardAction = new PlayCardAction(
+        this.getGameSession(),
+        this.getCard().getOwnerId(),
+        this.getCard().getPosition().x,
+        this.getCard().getPosition().y,
+        this.cardDataOrIndexToCast,
+      );
       playCardAction.setSource(this.getCard());
       return this.getGameSession().executeAction(playCardAction);
     }

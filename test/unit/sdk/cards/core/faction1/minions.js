@@ -13,13 +13,9 @@ Logger.enabled = false;
 describe('faction1', () => {
   describe('minions', () => {
     beforeEach(() => {
-      const player1Deck = [
-        { id: SDK.Cards.Faction1.General },
-      ];
+      const player1Deck = [{ id: SDK.Cards.Faction1.General }];
 
-      const player2Deck = [
-        { id: SDK.Cards.Faction2.General },
-      ];
+      const player2Deck = [{ id: SDK.Cards.Faction2.General }];
 
       UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
     });
@@ -34,10 +30,19 @@ describe('faction1', () => {
       const player1 = gameSession.getPlayer1();
 
       // begin placing things on board
-      const hailstoneGolem = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.HailstoneGolem }, 0, 1, gameSession.getPlayer2Id());
+      const hailstoneGolem = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.HailstoneGolem },
+        0,
+        1,
+        gameSession.getPlayer2Id(),
+      );
 
       // put arclyte sentinel in hand
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction1.ArclyteSentinel }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction1.ArclyteSentinel,
+        }),
+      );
 
       // give Lyonar player 9 mana
       player1.remainingMana = 9;
@@ -59,8 +64,18 @@ describe('faction1', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const sunstoneTemplar = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.SunstoneTemplar }, 0, 1, gameSession.getPlayer1Id());
-      const valeHunter = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.ValeHunter }, 1, 1, gameSession.getPlayer2Id());
+      const sunstoneTemplar = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.SunstoneTemplar },
+        0,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const valeHunter = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.ValeHunter },
+        1,
+        1,
+        gameSession.getPlayer2Id(),
+      );
 
       sunstoneTemplar.refreshExhaustion();
       const action = sunstoneTemplar.actionAttack(valeHunter);
@@ -76,7 +91,12 @@ describe('faction1', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const windbladeAdept = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.WindbladeAdept }, 0, 1, gameSession.getPlayer1Id());
+      const windbladeAdept = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.WindbladeAdept },
+        0,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
       expect(windbladeAdept.hasActiveModifierClass(SDK.ModifierBanded)).to.equal(true);
       windbladeAdept.refreshExhaustion();
@@ -92,10 +112,19 @@ describe('faction1', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const lightChaser = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.Lightchaser }, 0, 1, gameSession.getPlayer1Id());
+      const lightChaser = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.Lightchaser },
+        0,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
       gameSession.getGeneralForPlayer1().setDamage(2);
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.SundropElixir }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.SundropElixir,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 0, 2);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -109,17 +138,61 @@ describe('faction1', () => {
       const player1 = gameSession.getPlayer1();
 
       // Play sunriser next to enemy general
-      const sunriser = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.Sunriser }, 7, 2, gameSession.getPlayer1Id());
-      const fourWindsMagi1 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction2.MageOfFourWinds }, 7, 1, gameSession.getPlayer2Id());
-      const fourWindsMagi2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction2.MageOfFourWinds }, 8, 1, gameSession.getPlayer2Id());
-      const fourWindsMagi3 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction2.MageOfFourWinds }, 6, 1, gameSession.getPlayer2Id());
-      const fourWindsMagi4 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction2.MageOfFourWinds }, 6, 2, gameSession.getPlayer2Id());
-      const fourWindsMagi5 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction2.MageOfFourWinds }, 6, 3, gameSession.getPlayer2Id());
-      const fourWindsMagi6 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction2.MageOfFourWinds }, 7, 3, gameSession.getPlayer2Id());
-      const fourWindsMagi7 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction2.MageOfFourWinds }, 8, 3, gameSession.getPlayer2Id());
+      const sunriser = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.Sunriser },
+        7,
+        2,
+        gameSession.getPlayer1Id(),
+      );
+      const fourWindsMagi1 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction2.MageOfFourWinds },
+        7,
+        1,
+        gameSession.getPlayer2Id(),
+      );
+      const fourWindsMagi2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction2.MageOfFourWinds },
+        8,
+        1,
+        gameSession.getPlayer2Id(),
+      );
+      const fourWindsMagi3 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction2.MageOfFourWinds },
+        6,
+        1,
+        gameSession.getPlayer2Id(),
+      );
+      const fourWindsMagi4 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction2.MageOfFourWinds },
+        6,
+        2,
+        gameSession.getPlayer2Id(),
+      );
+      const fourWindsMagi5 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction2.MageOfFourWinds },
+        6,
+        3,
+        gameSession.getPlayer2Id(),
+      );
+      const fourWindsMagi6 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction2.MageOfFourWinds },
+        7,
+        3,
+        gameSession.getPlayer2Id(),
+      );
+      const fourWindsMagi7 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction2.MageOfFourWinds },
+        8,
+        3,
+        gameSession.getPlayer2Id(),
+      );
 
       gameSession.getGeneralForPlayer1().setDamage(2);
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.SundropElixir }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.SundropElixir,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 0, 2);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -138,7 +211,12 @@ describe('faction1', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const suntideMaiden = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.SuntideMaiden }, 0, 1, gameSession.getPlayer1Id());
+      const suntideMaiden = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.SuntideMaiden },
+        0,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
       suntideMaiden.setDamage(2);
 
@@ -152,7 +230,12 @@ describe('faction1', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const elyxStormblade = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.ElyxStormblade }, 0, 1, gameSession.getPlayer1Id());
+      const elyxStormblade = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.ElyxStormblade },
+        0,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
       expect(elyxStormblade.getSpeed()).to.equal(3);
       expect(gameSession.getGeneralForPlayer1().getSpeed()).to.equal(3);
@@ -163,7 +246,12 @@ describe('faction1', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const elyxStormblade = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.ElyxStormblade }, 0, 1, gameSession.getPlayer1Id());
+      const elyxStormblade = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.ElyxStormblade },
+        0,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
       const swapAction = new SDK.SwapUnitAllegianceAction(gameSession);
       swapAction.setTarget(elyxStormblade);
@@ -179,8 +267,16 @@ describe('faction1', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const elyxStormblade = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.ElyxStormblade }, 0, 1, gameSession.getPlayer1Id());
-      gameSession.applyModifierContextObject(SDK.ModifierSilence.createContextObject(), elyxStormblade);
+      const elyxStormblade = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.ElyxStormblade },
+        0,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      gameSession.applyModifierContextObject(
+        SDK.ModifierSilence.createContextObject(),
+        elyxStormblade,
+      );
       // elyxStormblade.silence();    ALSO WORKS
 
       expect(elyxStormblade.getSpeed()).to.equal(2);
@@ -192,9 +288,18 @@ describe('faction1', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const elyxStormblade = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.ElyxStormblade }, 5, 1, gameSession.getPlayer2Id());
+      const elyxStormblade = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.ElyxStormblade },
+        5,
+        1,
+        gameSession.getPlayer2Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.DrainMorale }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.DrainMorale,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 5, 1);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -207,8 +312,18 @@ describe('faction1', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const elyxStormblade = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.ElyxStormblade }, 0, 1, gameSession.getPlayer1Id());
-      const elyxStormblade2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.ElyxStormblade }, 1, 1, gameSession.getPlayer1Id());
+      const elyxStormblade = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.ElyxStormblade },
+        0,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const elyxStormblade2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.ElyxStormblade },
+        1,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
       expect(elyxStormblade.getSpeed()).to.equal(4);
       expect(gameSession.getGeneralForPlayer1().getSpeed()).to.equal(4);
@@ -219,7 +334,12 @@ describe('faction1', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const grandmasterZir = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.GrandmasterZir }, 0, 1, gameSession.getPlayer1Id());
+      const grandmasterZir = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.GrandmasterZir },
+        0,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
       const damageAction = new SDK.DamageAction(gameSession);
       damageAction.setTarget(gameSession.getGeneralForPlayer1());
@@ -235,12 +355,34 @@ describe('faction1', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const grandmasterZir = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.GrandmasterZir }, 0, 1, gameSession.getPlayer1Id());
-      const rubyRifter = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.RubyRifter }, 2, 1, gameSession.getPlayer1Id());
+      const grandmasterZir = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.GrandmasterZir },
+        0,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const rubyRifter = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.RubyRifter },
+        2,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PhoenixFire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PhoenixFire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PhoenixFire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
 
       const damageAction = new SDK.DamageAction(gameSession);
       damageAction.setTarget(gameSession.getGeneralForPlayer1());
@@ -261,8 +403,18 @@ describe('faction1', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const zendo = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction2.GrandmasterZendo }, 6, 1, gameSession.getPlayer2Id());
-      const grandmasterZir = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.GrandmasterZir }, 0, 1, gameSession.getPlayer1Id());
+      const zendo = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction2.GrandmasterZendo },
+        6,
+        1,
+        gameSession.getPlayer2Id(),
+      );
+      const grandmasterZir = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.GrandmasterZir },
+        0,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
       const damageAction = new SDK.DamageAction(gameSession);
       damageAction.setTarget(gameSession.getGeneralForPlayer1());
@@ -283,7 +435,12 @@ describe('faction1', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const grandmasterZir = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.GrandmasterZir }, 0, 1, gameSession.getPlayer1Id());
+      const grandmasterZir = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.GrandmasterZir },
+        0,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
       const damageAction = new SDK.DamageAction(gameSession);
       damageAction.setTarget(gameSession.getGeneralForPlayer1());
@@ -294,7 +451,12 @@ describe('faction1', () => {
       expect(gameSession.getGeneralForPlayer1().getATK()).to.equal(5);
 
       gameSession.executeAction(gameSession.actionEndTurn());
-      const zendo = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction2.GrandmasterZendo }, 6, 1, gameSession.getPlayer2Id());
+      const zendo = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction2.GrandmasterZendo },
+        6,
+        1,
+        gameSession.getPlayer2Id(),
+      );
       gameSession.executeAction(gameSession.actionEndTurn());
 
       expect(grandmasterZir.getPosition().x).to.not.equal(0);
@@ -305,7 +467,12 @@ describe('faction1', () => {
       var board = gameSession.getBoard();
       var player1 = gameSession.getPlayer1();
 
-      const grandmasterZir = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.GrandmasterZir }, 0, 1, gameSession.getPlayer1Id());
+      const grandmasterZir = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.GrandmasterZir },
+        0,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
       const damageAction = new SDK.DamageAction(gameSession);
       damageAction.setTarget(gameSession.getGeneralForPlayer1());
@@ -319,7 +486,11 @@ describe('faction1', () => {
       var board = gameSession.getBoard();
       var player1 = gameSession.getPlayer1();
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Artifact.SunstoneBracers }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Artifact.SunstoneBracers,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 1, 1));
 
       expect(gameSession.getGeneralForPlayer1().getATK()).to.equal(6);
@@ -330,7 +501,12 @@ describe('faction1', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const grandmasterZir = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.GrandmasterZir }, 0, 1, gameSession.getPlayer1Id());
+      const grandmasterZir = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.GrandmasterZir },
+        0,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
       var damageAction = new SDK.DamageAction(gameSession);
       damageAction.setTarget(gameSession.getGeneralForPlayer1());
@@ -340,7 +516,12 @@ describe('faction1', () => {
       expect(gameSession.getGeneralForPlayer1().getHP()).to.equal(12);
       expect(gameSession.getGeneralForPlayer1().getATK()).to.equal(5);
 
-      const grandmasterZir2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.GrandmasterZir }, 4, 1, gameSession.getPlayer1Id());
+      const grandmasterZir2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.GrandmasterZir },
+        4,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
       var damageAction = new SDK.DamageAction(gameSession);
       damageAction.setTarget(gameSession.getGeneralForPlayer1());
@@ -356,9 +537,24 @@ describe('faction1', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const grandmasterZir = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.GrandmasterZir }, 0, 1, gameSession.getPlayer1Id());
-      const grandmasterZir2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.GrandmasterZir }, 4, 1, gameSession.getPlayer1Id());
-      const grandmasterZir3 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.GrandmasterZir }, 5, 1, gameSession.getPlayer1Id());
+      const grandmasterZir = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.GrandmasterZir },
+        0,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const grandmasterZir2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.GrandmasterZir },
+        4,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const grandmasterZir3 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.GrandmasterZir },
+        5,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
       var damageAction = new SDK.DamageAction(gameSession);
       damageAction.setTarget(gameSession.getGeneralForPlayer1());
@@ -392,11 +588,23 @@ describe('faction1', () => {
 
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Artifact.SunstoneBracers }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Artifact.SunstoneBracers,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 1, 1));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Artifact.ArclyteRegalia }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Artifact.ArclyteRegalia,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 1, 1));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Artifact.StaffOfYKir }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Artifact.StaffOfYKir,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 1, 1));
 
       // UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {id: SDK.Cards.Spell.PhoenixFire}));
@@ -410,9 +618,24 @@ describe('faction1', () => {
       expect(modifiers[1].getDurability()).to.equal(3);
       expect(modifiers[2].getDurability()).to.equal(3);
 
-      const grandmasterZir = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.GrandmasterZir }, 0, 1, gameSession.getPlayer1Id());
-      const grandmasterZir2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.GrandmasterZir }, 4, 1, gameSession.getPlayer1Id());
-      const grandmasterZir3 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.GrandmasterZir }, 5, 1, gameSession.getPlayer1Id());
+      const grandmasterZir = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.GrandmasterZir },
+        0,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const grandmasterZir2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.GrandmasterZir },
+        4,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const grandmasterZir3 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.GrandmasterZir },
+        5,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
       // Kill argeon
       const damageAction = new SDK.DamageAction(gameSession);
@@ -429,7 +652,11 @@ describe('faction1', () => {
       expect(gameSession.getGeneralForPlayer1().getATK()).to.equal(5);
 
       // playing a new artifact
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Artifact.AdamantineClaws }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Artifact.AdamantineClaws,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 1, 1));
 
       expect(gameSession.getGeneralForPlayer1().getATK()).to.equal(9);
@@ -440,8 +667,16 @@ describe('faction1', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const grandmasterZir = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.GrandmasterZir }, 0, 1, gameSession.getPlayer1Id());
-      gameSession.applyModifierContextObject(SDK.ModifierSilence.createContextObject(), grandmasterZir);
+      const grandmasterZir = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.GrandmasterZir },
+        0,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      gameSession.applyModifierContextObject(
+        SDK.ModifierSilence.createContextObject(),
+        grandmasterZir,
+      );
 
       const damageAction = new SDK.DamageAction(gameSession);
       damageAction.setTarget(gameSession.getGeneralForPlayer1());
@@ -457,7 +692,12 @@ describe('faction1', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const grandmasterZir = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.GrandmasterZir }, 0, 1, gameSession.getPlayer1Id());
+      const grandmasterZir = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.GrandmasterZir },
+        0,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
       const swapAction = new SDK.SwapUnitAllegianceAction(gameSession);
       swapAction.setTarget(grandmasterZir);
@@ -478,13 +718,26 @@ describe('faction1', () => {
       const player1 = gameSession.getPlayer1();
       player1.remainingMana = 9;
 
-      const grandmasterZir = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.GrandmasterZir }, 0, 1, gameSession.getPlayer2Id());
+      const grandmasterZir = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.GrandmasterZir },
+        0,
+        1,
+        gameSession.getPlayer2Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.Blindscorch }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.Blindscorch,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 0, 1);
       gameSession.executeAction(playCardFromHandAction);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PsychicConduit }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PsychicConduit,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 0, 1);
       gameSession.executeAction(playCardFromHandAction);
 

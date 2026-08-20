@@ -1,14 +1,20 @@
 # editorconfig.org
+#
+# JS/TS/JSON/MD formatting is owned by oxfmt (.oxfmtrc.json) -- do not restate
+# it here, or the two will disagree. What is left is for the file types oxfmt
+# does not format (templates, styles, shaders, yaml) plus the universal
+# whitespace conventions every editor should follow.
 root = true
 
 [*]
-indent_style = space
-indent_size = 2
 end_of_line = lf
 charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = true
 
-[docker-compose.yaml]
+[*.{yaml,yml,json,hbs,html,scss,css,vert,frag,glsl}]
 indent_style = space
 indent_size = 2
+
+[*.md]
+trim_trailing_whitespace = false

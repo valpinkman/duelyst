@@ -48,9 +48,15 @@ class Spell extends Card {
   updateCardDataPostApply(cardData) {
     cardData = super.updateCardDataPostApply(cardData);
 
-    if (this.applyEffectPositions != null) { cardData.applyEffectPositions = this.applyEffectPositions; }
-    if (this.applyEffectPositionsCardIndices != null) { cardData.applyEffectPositionsCardIndices = this.applyEffectPositionsCardIndices; }
-    if (this.applyEffectPosition != null) { cardData.applyEffectPosition = this.applyEffectPosition; }
+    if (this.applyEffectPositions != null) {
+      cardData.applyEffectPositions = this.applyEffectPositions;
+    }
+    if (this.applyEffectPositionsCardIndices != null) {
+      cardData.applyEffectPositionsCardIndices = this.applyEffectPositionsCardIndices;
+    }
+    if (this.applyEffectPosition != null) {
+      cardData.applyEffectPosition = this.applyEffectPosition;
+    }
 
     return cardData;
   }
@@ -58,7 +64,7 @@ class Spell extends Card {
   // region ### GETTERS / SETTERS ###
 
   setTargetModifiersContextObjects(targetModifiersContextObjects) {
-    return this.targetModifiersContextObjects = targetModifiersContextObjects;
+    return (this.targetModifiersContextObjects = targetModifiersContextObjects);
   }
 
   getTargetModifiersContextObjects() {
@@ -84,7 +90,10 @@ class Spell extends Card {
       // force reset of apply effect positions
       // in case they have been requested before the spell is played
       this.applyEffectPosition = this.getPosition();
-      this.applyEffectPositions = this._findApplyEffectPositions(this.applyEffectPosition, sourceAction);
+      this.applyEffectPositions = this._findApplyEffectPositions(
+        this.applyEffectPosition,
+        sourceAction,
+      );
 
       // remove all duplicate positions
       this.applyEffectPositions = UtilsPosition.getUniquePositions(this.applyEffectPositions);
@@ -100,7 +109,12 @@ class Spell extends Card {
         }
 
         // apply spell at each effect position
-        this.onApplyEffectToBoardTile(board, applyEffectPosition.x, applyEffectPosition.y, sourceAction);
+        this.onApplyEffectToBoardTile(
+          board,
+          applyEffectPosition.x,
+          applyEffectPosition.y,
+          sourceAction,
+        );
       }
 
       // handle apply cases that only need to act once
@@ -111,7 +125,11 @@ class Spell extends Card {
       if (this.drawCardsPostPlay > 0) {
         return (() => {
           const result = [];
-          for (let i = 0, end = this.drawCardsPostPlay, asc = end >= 0; asc ? i < end : i > end; asc ? i++ : i--) {
+          for (
+            let i = 0, end = this.drawCardsPostPlay, asc = end >= 0;
+            asc ? i < end : i > end;
+            asc ? i++ : i--
+          ) {
             var deck = this.getGameSession().getPlayerById(this.getOwnerId()).getDeck();
             result.push(this.getGameSession().executeAction(deck.actionDrawCard()));
           }
@@ -128,7 +146,7 @@ class Spell extends Card {
   // override in spell class to do custom behavior at each location spell is applied
 
   setApplyEffectPosition(val) {
-    return this.applyEffectPosition = val;
+    return (this.applyEffectPosition = val);
   }
 
   getApplyEffectPosition() {
@@ -144,15 +162,23 @@ class Spell extends Card {
     const board = this.getGameSession().getBoard();
     const affectPattern = this.getAffectPattern();
 
-    if ((affectPattern != null) && (affectPattern.length > 0)) {
+    if (affectPattern != null && affectPattern.length > 0) {
       applyEffectPositions = this.getAffectPositionsFromPattern(position);
     } else if (this.radius > 0) {
       const startX = Math.max(0, position.x - this.radius);
       const endX = Math.min(board.columnCount - 1, position.x + this.radius);
       const startY = Math.max(0, position.y - this.radius);
       const endY = Math.min(board.rowCount - 1, position.y + this.radius);
-      for (let nx = startX, end = endX, asc = startX <= end; asc ? nx <= end : nx >= end; asc ? nx++ : nx--) {
-        for (var ny = startY, end1 = endY, asc1 = startY <= end1; asc1 ? ny <= end1 : ny >= end1; asc1 ? ny++ : ny--) {
+      for (
+        let nx = startX, end = endX, asc = startX <= end;
+        asc ? nx <= end : nx >= end;
+        asc ? nx++ : nx--
+      ) {
+        for (
+          var ny = startY, end1 = endY, asc1 = startY <= end1;
+          asc1 ? ny <= end1 : ny >= end1;
+          asc1 ? ny++ : ny--
+        ) {
           var nextPosition = { x: nx, y: ny };
           if (board.isOnBoard(nextPosition)) {
             applyEffectPositions.push(nextPosition);
@@ -192,17 +218,33 @@ class Spell extends Card {
   getCenterPositionOfAppliedEffects() {
     // should return the absolute center position of the applied effects
     // if absolute center position is already set, it will use the existing value instead of calculating
-    if ((this._private.effectCenterPosition == null)) {
+    if (this._private.effectCenterPosition == null) {
       // default center is spell position
       this._private.effectCenterPosition = this.getPosition();
 
       // for area effect spells try to find center of affect pattern
       const affectPattern = this.getAffectPattern();
-      if ((affectPattern != null) && (affectPattern.length > 0)) {
-        if (UtilsPosition.getArrayOfPositionsContainsMultipleArrayOfPositions(affectPattern, CONFIG.PATTERN_WHOLE_ROW)) {
-          this._private.effectCenterPosition = { x: Math.floor(CONFIG.BOARDCOL * 0.5), y: this.getPosition().y };
-        } else if (UtilsPosition.getArrayOfPositionsContainsMultipleArrayOfPositions(affectPattern, CONFIG.PATTERN_WHOLE_COLUMN)) {
-          this._private.effectCenterPosition = { x: this.getPosition().x, y: Math.floor(CONFIG.BOARDCOL * 0.5) };
+      if (affectPattern != null && affectPattern.length > 0) {
+        if (
+          UtilsPosition.getArrayOfPositionsContainsMultipleArrayOfPositions(
+            affectPattern,
+            CONFIG.PATTERN_WHOLE_ROW,
+          )
+        ) {
+          this._private.effectCenterPosition = {
+            x: Math.floor(CONFIG.BOARDCOL * 0.5),
+            y: this.getPosition().y,
+          };
+        } else if (
+          UtilsPosition.getArrayOfPositionsContainsMultipleArrayOfPositions(
+            affectPattern,
+            CONFIG.PATTERN_WHOLE_COLUMN,
+          )
+        ) {
+          this._private.effectCenterPosition = {
+            x: this.getPosition().x,
+            y: Math.floor(CONFIG.BOARDCOL * 0.5),
+          };
         } else {
           const patternCenter = { x: 0, y: 0 };
           const boardPosition = { x: 0, y: 0 };
@@ -222,7 +264,10 @@ class Spell extends Card {
             this._private.effectCenterPosition.y += patternCenter.y / numLocationsOnBoard;
           }
         }
-      } else if ((this.radius >= CONFIG.WHOLE_BOARD_RADIUS) || (this.getCanBeAppliedAnywhere() && this.getTargetsAnywhere())) {
+      } else if (
+        this.radius >= CONFIG.WHOLE_BOARD_RADIUS ||
+        (this.getCanBeAppliedAnywhere() && this.getTargetsAnywhere())
+      ) {
         this._private.effectCenterPosition = CONFIG.BOARDCENTER;
       }
     }
@@ -240,13 +285,15 @@ class Spell extends Card {
 
   getCanBeAppliedAsFollowup() {
     const followupSourcePattern = this.getFollowupSourcePattern();
-    return this.getIsFollowup() && (followupSourcePattern != null) && (followupSourcePattern.length > 0);
+    return (
+      this.getIsFollowup() && followupSourcePattern != null && followupSourcePattern.length > 0
+    );
   }
 
   getValidTargetPositions() {
     // returns a list of valid target positions
     // it is recommended that spells do not override this method directly
-    if ((this._private.cachedValidTargetPositions == null)) {
+    if (this._private.cachedValidTargetPositions == null) {
       let validPositions = this._getPrefilteredValidTargetPositions();
 
       if (this.getIsFollowup()) {
@@ -261,7 +308,7 @@ class Spell extends Card {
         for (var position of Array.from<any>(validPositions)) {
           var stillValid = true;
           for (var pos of Array.from<any>(previouslyAppliedPositions)) {
-            if ((pos.x === position.x) && (pos.y === position.y)) {
+            if (pos.x === position.x && pos.y === position.y) {
               stillValid = false;
               break;
             }
@@ -287,7 +334,8 @@ class Spell extends Card {
     if (this.getCanBeAppliedAnywhere()) {
       // some cards can be applied anywhere on board
       return this._getValidApplyAnywherePositions();
-    } if (this.getCanBeAppliedAsFollowup()) {
+    }
+    if (this.getCanBeAppliedAsFollowup()) {
       // followups should provide a source pattern for specific playable locations
       // otherwise it is assumed they can be played anywhere on board
       return this._getValidFollowupPositions();
@@ -296,7 +344,11 @@ class Spell extends Card {
   }
 
   _getValidFollowupPositions() {
-    return UtilsGameSession.getValidBoardPositionsFromPattern(this.getGameSession().getBoard(), this.getFollowupSourcePosition(), this.getFollowupSourcePattern());
+    return UtilsGameSession.getValidBoardPositionsFromPattern(
+      this.getGameSession().getBoard(),
+      this.getFollowupSourcePosition(),
+      this.getFollowupSourcePattern(),
+    );
   }
 
   _getValidApplyAnywherePositions() {
@@ -317,13 +369,19 @@ class Spell extends Card {
       let entity;
       if (this.spellFilterType === SpellFilterType.AllyDirect) {
         for (entity of Array.from<any>(this._getEntitiesForFilter())) {
-          if ((entity.getOwnerId() === this.getOwnerId()) && this._entityPassesFilter(spellPositions, entity)) {
+          if (
+            entity.getOwnerId() === this.getOwnerId() &&
+            this._entityPassesFilter(spellPositions, entity)
+          ) {
             validPositions.push(entity.getPosition());
           }
         }
       } else if (this.spellFilterType === SpellFilterType.EnemyDirect) {
         for (entity of Array.from<any>(this._getEntitiesForFilter())) {
-          if ((entity.ownerId !== this.getOwnerId()) && this._entityPassesFilter(spellPositions, entity)) {
+          if (
+            entity.ownerId !== this.getOwnerId() &&
+            this._entityPassesFilter(spellPositions, entity)
+          ) {
             validPositions.push(entity.getPosition());
           }
         }
@@ -361,13 +419,19 @@ class Spell extends Card {
       let entity;
       if (this.getTargetsAllies()) {
         for (entity of Array.from<any>(this._getEntitiesForFilter())) {
-          if ((entity.getOwnerId() === this.getOwnerId()) && this._entityPassesFilter(spellPositions, entity)) {
+          if (
+            entity.getOwnerId() === this.getOwnerId() &&
+            this._entityPassesFilter(spellPositions, entity)
+          ) {
             validPositions.push(entity.getPosition());
           }
         }
       } else if (this.getTargetsEnemies()) {
         for (entity of Array.from<any>(this._getEntitiesForFilter())) {
-          if ((entity.ownerId !== this.getOwnerId()) && this._entityPassesFilter(spellPositions, entity)) {
+          if (
+            entity.ownerId !== this.getOwnerId() &&
+            this._entityPassesFilter(spellPositions, entity)
+          ) {
             validPositions.push(entity.getPosition());
           }
         }
@@ -396,15 +460,19 @@ class Spell extends Card {
   }
 
   _getEntitiesForFilter(allowUntargetable?) {
-    if (allowUntargetable == null) { allowUntargetable = false; }
+    if (allowUntargetable == null) {
+      allowUntargetable = false;
+    }
     const board = this.getGameSession().getBoard();
     if (this.filterNearGeneral) {
       const general = this.getGameSession().getGeneralForPlayerId(this.getOwnerId());
       if (this.spellFilterType === SpellFilterType.AllyDirect) {
         return board.getEntitiesAroundEntity(general, this.targetType, 1);
-      } if (this.spellFilterType === SpellFilterType.EnemyDirect) {
+      }
+      if (this.spellFilterType === SpellFilterType.EnemyDirect) {
         return board.getEntitiesAroundEntity(general, this.targetType, 1);
-      } if (this.spellFilterType === SpellFilterType.NeutralDirect) {
+      }
+      if (this.spellFilterType === SpellFilterType.NeutralDirect) {
         return board.getEntitiesAroundEntity(general, this.targetType, 1);
       }
     } else {
@@ -414,8 +482,15 @@ class Spell extends Card {
 
   _entityPassesFilter(spellPositions, entity) {
     let needle;
-    if (entity.getIsGeneral() && !this.canTargetGeneral) { return false; }
-    if (this.filterCardIds && !((needle = entity.getBaseCardId(), Array.from<any>(this.filterCardIds).includes(needle)))) { return false; }
+    if (entity.getIsGeneral() && !this.canTargetGeneral) {
+      return false;
+    }
+    if (
+      this.filterCardIds &&
+      !((needle = entity.getBaseCardId()), Array.from<any>(this.filterCardIds).includes(needle))
+    ) {
+      return false;
+    }
     if (this.filterRaceIds) {
       let passesRaceFilter = false;
       for (var raceId of Array.from<any>(this.filterRaceIds)) {
@@ -424,26 +499,44 @@ class Spell extends Card {
           break;
         }
       }
-      if (!passesRaceFilter) { return false; }
+      if (!passesRaceFilter) {
+        return false;
+      }
     }
-    if (!UtilsPosition.getIsPositionInPositions(spellPositions, entity.getPosition())) { return false; }
+    if (!UtilsPosition.getIsPositionInPositions(spellPositions, entity.getPosition())) {
+      return false;
+    }
     return true;
   }
 
   getTargetsAllies() {
-    return (this.spellFilterType === SpellFilterType.AllyDirect) || (this.spellFilterType === SpellFilterType.AllyIndirect);
+    return (
+      this.spellFilterType === SpellFilterType.AllyDirect ||
+      this.spellFilterType === SpellFilterType.AllyIndirect
+    );
   }
 
   getTargetsEnemies() {
-    return (this.spellFilterType === SpellFilterType.EnemyDirect) || (this.spellFilterType === SpellFilterType.EnemyIndirect);
+    return (
+      this.spellFilterType === SpellFilterType.EnemyDirect ||
+      this.spellFilterType === SpellFilterType.EnemyIndirect
+    );
   }
 
   getTargetsNeutral() {
-    return (this.spellFilterType === SpellFilterType.NeutralDirect) || (this.spellFilterType === SpellFilterType.NeutralIndirect);
+    return (
+      this.spellFilterType === SpellFilterType.NeutralDirect ||
+      this.spellFilterType === SpellFilterType.NeutralIndirect
+    );
   }
 
   getTargetsAnywhere() {
-    return (this.spellFilterType === SpellFilterType.None) || (this.spellFilterType === SpellFilterType.NeutralIndirect) || (this.spellFilterType === SpellFilterType.EnemyIndirect) || (this.spellFilterType === SpellFilterType.AllyIndirect);
+    return (
+      this.spellFilterType === SpellFilterType.None ||
+      this.spellFilterType === SpellFilterType.NeutralIndirect ||
+      this.spellFilterType === SpellFilterType.EnemyIndirect ||
+      this.spellFilterType === SpellFilterType.AllyIndirect
+    );
   }
 
   getTargetsSpace() {

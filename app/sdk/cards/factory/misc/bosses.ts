@@ -145,14 +145,38 @@ const PlayerModifierOpponentSummonWatchSwapGeneral = require('app/sdk/playerModi
 
 class CardFactory_Bosses {
   /**
-  * Returns a card that matches the identifier.
-  * @param {Number|String} identifier
-  * @param {GameSession} gameSession
-  * @returns {Card}
-  */
+   * Returns a card that matches the identifier.
+   * @param {Number|String} identifier
+   * @param {GameSession} gameSession
+   * @returns {Card}
+   */
   static cardForIdentifier(identifier, gameSession) {
-    let applyGeneralImmunityContextObject; let applyModifierToSummonedMinions; let backstabObject; let backupGeneral; let cannotAttackGenerals; let celerityObject; let contextObject; let dyingWishDrawCards; let equipArtifactObject; let excludedArtifacts; let flyingObject; let forceFieldObject; let frenzyContextObject; let healAura; let healObject; let immuneToSpellTargeting; let immunityContextObject; let includedArtifacts; let increasedManaCost; let legion; let provokeObject; let rangedModifier; let respawnClones; let rushContextObject; let sentinelData; let
-      speedBuffContextObject;
+    let applyGeneralImmunityContextObject;
+    let applyModifierToSummonedMinions;
+    let backstabObject;
+    let backupGeneral;
+    let cannotAttackGenerals;
+    let celerityObject;
+    let contextObject;
+    let dyingWishDrawCards;
+    let equipArtifactObject;
+    let excludedArtifacts;
+    let flyingObject;
+    let forceFieldObject;
+    let frenzyContextObject;
+    let healAura;
+    let healObject;
+    let immuneToSpellTargeting;
+    let immunityContextObject;
+    let includedArtifacts;
+    let increasedManaCost;
+    let legion;
+    let provokeObject;
+    let rangedModifier;
+    let respawnClones;
+    let rushContextObject;
+    let sentinelData;
+    let speedBuffContextObject;
     let card = null;
 
     if (identifier === Cards.Boss.Boss1) {
@@ -196,10 +220,14 @@ class CardFactory_Bosses {
       frenzyContextObject = ModifierFrenzy.createContextObject();
       frenzyContextObject.isRemovable = false;
       card.addKeywordClassToInclude(ModifierStunned);
-      const stunContextObject = ModifierDealDamageWatchModifyTarget.createContextObject([ModifierStunnedVanar.createContextObject()], 'it is STUNNED', {
-        name: 'Winterblade',
-        description: 'Enemy minions damaged by your General are Stunned',
-      });
+      const stunContextObject = ModifierDealDamageWatchModifyTarget.createContextObject(
+        [ModifierStunnedVanar.createContextObject()],
+        'it is STUNNED',
+        {
+          name: 'Winterblade',
+          description: 'Enemy minions damaged by your General are Stunned',
+        },
+      );
       stunContextObject.isRemovable = false;
       // startTurnCastFrostburnObject = ModifierStartTurnWatchPlaySpell.createContextObject({id: Cards.Spell.Frostburn, manaCost: 0}, "Frostburn")
       // startTurnCastFrostburnObject.isRemovable = false
@@ -244,7 +272,8 @@ class CardFactory_Bosses {
       });
       card.atk = 2;
       card.maxHP = 30;
-      const modifierSpawnClone = ModifierOpponentSummonWatchSpawn1HealthClone.createContextObject('a 1 health clone');
+      const modifierSpawnClone =
+        ModifierOpponentSummonWatchSpawn1HealthClone.createContextObject('a 1 health clone');
       modifierSpawnClone.isRemovable = false;
       card.setInherentModifiersContextObjects([modifierSpawnClone]);
       card.signatureCardData = { id: Cards.BossSpell.MoldingEarth };
@@ -289,16 +318,13 @@ class CardFactory_Bosses {
       card.maxHP = 30;
       forceFieldObject = ModifierForcefield.createContextObject();
       forceFieldObject.isRemovable = false;
-      excludedArtifacts = [
-        Cards.Artifact.Spinecleaver,
-        Cards.Artifact.IndomitableWill,
-      ];
-      equipArtifactObject = ModifierStartTurnWatchEquipArtifact.createContextObject(1, excludedArtifacts);
+      excludedArtifacts = [Cards.Artifact.Spinecleaver, Cards.Artifact.IndomitableWill];
+      equipArtifactObject = ModifierStartTurnWatchEquipArtifact.createContextObject(
+        1,
+        excludedArtifacts,
+      );
       equipArtifactObject.isRemovable = false;
-      card.setInherentModifiersContextObjects([
-        forceFieldObject,
-        equipArtifactObject,
-      ]);
+      card.setInherentModifiersContextObjects([forceFieldObject, equipArtifactObject]);
       card.signatureCardData = { id: Cards.BossSpell.RestoringLight };
     }
 
@@ -340,15 +366,13 @@ class CardFactory_Bosses {
       card.maxHP = 1;
       forceFieldObject = ModifierForcefield.createContextObject();
       forceFieldObject.isRemovable = false;
-      excludedArtifacts = [
-        Cards.Artifact.Spinecleaver,
-        Cards.Artifact.IndomitableWill,
-      ];
-      equipArtifactObject = ModifierStartTurnWatchEquipArtifact.createContextObject(1, excludedArtifacts);
+      excludedArtifacts = [Cards.Artifact.Spinecleaver, Cards.Artifact.IndomitableWill];
+      equipArtifactObject = ModifierStartTurnWatchEquipArtifact.createContextObject(
+        1,
+        excludedArtifacts,
+      );
       equipArtifactObject.isRemovable = false;
-      card.setInherentModifiersContextObjects([
-        equipArtifactObject,
-      ]);
+      card.setInherentModifiersContextObjects([equipArtifactObject]);
     }
 
     if (identifier === Cards.Boss.Boss4) {
@@ -389,9 +413,13 @@ class CardFactory_Bosses {
       card.maxHP = 35;
       frenzyContextObject = ModifierFrenzy.createContextObject();
       frenzyContextObject.isRemovable = false;
-      const dealOrTakeDamageRandomTeleportObject = ModifierDealOrTakeDamageWatchRandomTeleportOther.createContextObject();
+      const dealOrTakeDamageRandomTeleportObject =
+        ModifierDealOrTakeDamageWatchRandomTeleportOther.createContextObject();
       dealOrTakeDamageRandomTeleportObject.isRemovable = false;
-      card.setInherentModifiersContextObjects([frenzyContextObject, dealOrTakeDamageRandomTeleportObject]);
+      card.setInherentModifiersContextObjects([
+        frenzyContextObject,
+        dealOrTakeDamageRandomTeleportObject,
+      ]);
       card.signatureCardData = { id: Cards.BossSpell.EntanglingShadow };
     }
 
@@ -433,15 +461,32 @@ class CardFactory_Bosses {
       card.atk = 6;
       card.maxHP = 20;
       card.speed = 0;
-      immunityContextObject = ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetOwnPlayer([ModifierImmuneToDamage.createContextObject()], i18next.t('modifiers.boss_5_applied_desc'));
+      immunityContextObject =
+        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetOwnPlayer(
+          [ModifierImmuneToDamage.createContextObject()],
+          i18next.t('modifiers.boss_5_applied_desc'),
+        );
       immunityContextObject.appliedName = i18next.t('modifiers.boss_5_applied_name');
-      applyGeneralImmunityContextObject = Modifier.createContextObjectWithAuraForAllAllies([immunityContextObject], null, null, null, 'Cannot be damaged while friendly minions live');
+      applyGeneralImmunityContextObject = Modifier.createContextObjectWithAuraForAllAllies(
+        [immunityContextObject],
+        null,
+        null,
+        null,
+        'Cannot be damaged while friendly minions live',
+      );
       applyGeneralImmunityContextObject.isRemovable = false;
       applyGeneralImmunityContextObject.isHiddenToUI = true;
-      const zendoBattlePetContextObject = ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetEnemyPlayer([ModifierBattlePet.createContextObject()], 'The enemy General moves and attacks as if they are a Battle Pet');
+      const zendoBattlePetContextObject =
+        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetEnemyPlayer(
+          [ModifierBattlePet.createContextObject()],
+          'The enemy General moves and attacks as if they are a Battle Pet',
+        );
       // zendoBattlePetContextObject = Modifier.createContextObjectWithOnBoardAuraForAllEnemies([ModifierBattlePet.createContextObject()], "All enemies move and attack as if they are Battle Pets")
       zendoBattlePetContextObject.isRemovable = false;
-      card.setInherentModifiersContextObjects([applyGeneralImmunityContextObject, zendoBattlePetContextObject]);
+      card.setInherentModifiersContextObjects([
+        applyGeneralImmunityContextObject,
+        zendoBattlePetContextObject,
+      ]);
       card.signatureCardData = { id: Cards.BossSpell.EntanglingShadow };
     }
 
@@ -481,7 +526,11 @@ class CardFactory_Bosses {
       card.setBoundingBoxHeight(50);
       card.atk = 2;
       card.maxHP = 1;
-      immunityContextObject = ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetOwnPlayer([ModifierImmuneToDamage.createContextObject()], 'Decepticle cannot be damaged while this minion lives.');
+      immunityContextObject =
+        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetOwnPlayer(
+          [ModifierImmuneToDamage.createContextObject()],
+          'Decepticle cannot be damaged while this minion lives.',
+        );
       immunityContextObject.appliedName = i18next.t('modifiers.boss_6_applied_name');
       const mechs = [
         Cards.Boss.Boss6Wings,
@@ -489,15 +538,27 @@ class CardFactory_Bosses {
         Cards.Boss.Boss6Sword,
         Cards.Boss.Boss6Helm,
       ];
-      applyGeneralImmunityContextObject = Modifier.createContextObjectWithAuraForAllAllies([immunityContextObject], null, mechs, null, 'Cannot be damaged while other D3cepticle parts live');
+      applyGeneralImmunityContextObject = Modifier.createContextObjectWithAuraForAllAllies(
+        [immunityContextObject],
+        null,
+        mechs,
+        null,
+        'Cannot be damaged while other D3cepticle parts live',
+      );
       applyGeneralImmunityContextObject.isRemovable = false;
       applyGeneralImmunityContextObject.isHiddenToUI = false;
       provokeObject = ModifierProvoke.createContextObject();
       provokeObject.isRemovable = false;
-      const spawnPrimeBoss = ModifierDieSpawnNewGeneral.createContextObject({ id: Cards.Boss.Boss6Prime });
+      const spawnPrimeBoss = ModifierDieSpawnNewGeneral.createContextObject({
+        id: Cards.Boss.Boss6Prime,
+      });
       spawnPrimeBoss.isRemovable = false;
       spawnPrimeBoss.isHiddenToUI = true;
-      card.setInherentModifiersContextObjects([applyGeneralImmunityContextObject, provokeObject, spawnPrimeBoss]);
+      card.setInherentModifiersContextObjects([
+        applyGeneralImmunityContextObject,
+        provokeObject,
+        spawnPrimeBoss,
+      ]);
       // card.setInherentModifiersContextObjects([provokeObject, spawnPrimeBoss])
       card.signatureCardData = { id: Cards.BossSpell.AncientKnowledge };
     }
@@ -679,7 +740,13 @@ class CardFactory_Bosses {
       flyingObject.isRemovable = false;
       provokeObject = ModifierProvoke.createContextObject();
       provokeObject.isRemovable = false;
-      card.setInherentModifiersContextObjects([celerityObject, backstabObject, forceFieldObject, flyingObject, provokeObject]);
+      card.setInherentModifiersContextObjects([
+        celerityObject,
+        backstabObject,
+        forceFieldObject,
+        flyingObject,
+        provokeObject,
+      ]);
     }
 
     if (identifier === Cards.Boss.Boss7) {
@@ -724,13 +791,24 @@ class CardFactory_Bosses {
         { id: Cards.Artifact.ArclyteRegalia },
         { id: Cards.Artifact.StaffOfYKir },
       ];
-      equipArtifactObject = ModifierStartTurnWatchEquipArtifact.createContextObject(1, includedArtifacts);
+      equipArtifactObject = ModifierStartTurnWatchEquipArtifact.createContextObject(
+        1,
+        includedArtifacts,
+      );
       equipArtifactObject.isRemovable = false;
-      const equipArtifactFirstTurn = ModifierExpireApplyModifiers.createContextObject([equipArtifactObject], 0, 1, true, true, false, 0, true, 'At the start of your second turn and every turn thereafter, equip a random artifact');
+      const equipArtifactFirstTurn = ModifierExpireApplyModifiers.createContextObject(
+        [equipArtifactObject],
+        0,
+        1,
+        true,
+        true,
+        false,
+        0,
+        true,
+        'At the start of your second turn and every turn thereafter, equip a random artifact',
+      );
       equipArtifactFirstTurn.isRemovable = false;
-      card.setInherentModifiersContextObjects([
-        equipArtifactFirstTurn,
-      ]);
+      card.setInherentModifiersContextObjects([equipArtifactFirstTurn]);
       card.signatureCardData = { id: Cards.BossSpell.RestoringLight };
     }
 
@@ -801,7 +879,13 @@ class CardFactory_Bosses {
       card.maxHP = 15;
       const respawnKilledEnemy = ModifierKillWatchRespawnEntity.createContextObject();
       respawnKilledEnemy.isRemovable = false;
-      const secondWind = ModifierSecondWind.createContextObject(2, 5, false, 'Awakened', 'Failure prevented. Strength renewed. Systems adapted.');
+      const secondWind = ModifierSecondWind.createContextObject(
+        2,
+        5,
+        false,
+        'Awakened',
+        'Failure prevented. Strength renewed. Systems adapted.',
+      );
       secondWind.isRemovable = false;
       secondWind.isHiddenToUI = true;
       card.setInherentModifiersContextObjects([respawnKilledEnemy, secondWind]);
@@ -845,13 +929,20 @@ class CardFactory_Bosses {
       card.setBoundingBoxHeight(120);
       card.atk = 3;
       card.maxHP = 30;
-      const spawnCloneObject = ModifierMyAttackOrAttackedWatchSpawnMinionNearby.createContextObject({ id: Cards.Boss.Boss9Clone }, 'a decoy');
+      const spawnCloneObject = ModifierMyAttackOrAttackedWatchSpawnMinionNearby.createContextObject(
+        { id: Cards.Boss.Boss9Clone },
+        'a decoy',
+      );
       spawnCloneObject.isRemovable = false;
       flyingObject = ModifierFlying.createContextObject();
       flyingObject.isRemovable = false;
       const teleportCornerObject = ModifierEndTurnWatchTeleportCorner.createContextObject();
       teleportCornerObject.isRemovable = false;
-      card.setInherentModifiersContextObjects([flyingObject, spawnCloneObject, teleportCornerObject]);
+      card.setInherentModifiersContextObjects([
+        flyingObject,
+        spawnCloneObject,
+        teleportCornerObject,
+      ]);
       card.signatureCardData = { id: Cards.BossSpell.LivingFlame };
     }
 
@@ -926,13 +1017,20 @@ class CardFactory_Bosses {
       card.setBoundingBoxHeight(95);
       card.atk = 3;
       card.maxHP = 35;
-      const killWatchRefreshObject = ModifierKillWatchRefreshExhaustion.createContextObject(true, false);
+      const killWatchRefreshObject = ModifierKillWatchRefreshExhaustion.createContextObject(
+        true,
+        false,
+      );
       killWatchRefreshObject.isRemovable = false;
       // killWatchRefreshObject.description = "Whenever Solfist destroys a minion, reactivate it."
-      const modifierDamageSelfAndNearby = ModifierEndTurnWatchDealDamageToSelfAndNearbyEnemies.createContextObject();
+      const modifierDamageSelfAndNearby =
+        ModifierEndTurnWatchDealDamageToSelfAndNearbyEnemies.createContextObject();
       modifierDamageSelfAndNearby.isRemovable = false;
       // modifierDamageSelfAndNearby.description = "At the end of Solfist's turn, deal 1 damage to self and all nearby enemies."
-      card.setInherentModifiersContextObjects([killWatchRefreshObject, modifierDamageSelfAndNearby]);
+      card.setInherentModifiersContextObjects([
+        killWatchRefreshObject,
+        modifierDamageSelfAndNearby,
+      ]);
       card.signatureCardData = { id: Cards.BossSpell.LivingFlame };
     }
 
@@ -1017,7 +1115,8 @@ class CardFactory_Bosses {
       });
       card.atk = 0;
       card.maxHP = 35;
-      const modifierDamageWatchBuffSelf = ModifierMyMinionOrGeneralDamagedWatchBuffSelf.createContextObject(1, 0);
+      const modifierDamageWatchBuffSelf =
+        ModifierMyMinionOrGeneralDamagedWatchBuffSelf.createContextObject(1, 0);
       modifierDamageWatchBuffSelf.isRemovable = false;
       card.setInherentModifiersContextObjects([modifierDamageWatchBuffSelf]);
       card.signatureCardData = { id: Cards.BossSpell.MoldingEarth };
@@ -1056,7 +1155,11 @@ class CardFactory_Bosses {
       card.maxHP = 6;
       card.speed = 0;
       rushContextObject = ModifierFirstBlood.createContextObject();
-      const modifierSummonNearbyRush = ModifierSummonWatchNearbyAnyPlayerApplyModifiers.createContextObject([rushContextObject], 'gains Rush');
+      const modifierSummonNearbyRush =
+        ModifierSummonWatchNearbyAnyPlayerApplyModifiers.createContextObject(
+          [rushContextObject],
+          'gains Rush',
+        );
       card.setInherentModifiersContextObjects([modifierSummonNearbyRush]);
     }
 
@@ -1098,11 +1201,20 @@ class CardFactory_Bosses {
       card.maxHP = 30;
       rangedModifier = ModifierRanged.createContextObject();
       rangedModifier.isRemovable = false;
-      const opponentDrawCardOnSummon = ModifierOpponentSummonWatchOpponentDrawCard.createContextObject();
+      const opponentDrawCardOnSummon =
+        ModifierOpponentSummonWatchOpponentDrawCard.createContextObject();
       opponentDrawCardOnSummon.isRemovable = false;
-      const summonEntityOnOverdraw = ModifierOpponentDrawCardWatchOverdrawSummonEntity.createContextObject({ id: Cards.Faction4.Ooz }, 'a 3/3 Ooz');
+      const summonEntityOnOverdraw =
+        ModifierOpponentDrawCardWatchOverdrawSummonEntity.createContextObject(
+          { id: Cards.Faction4.Ooz },
+          'a 3/3 Ooz',
+        );
       summonEntityOnOverdraw.isRemovable = false;
-      card.setInherentModifiersContextObjects([rangedModifier, opponentDrawCardOnSummon, summonEntityOnOverdraw]);
+      card.setInherentModifiersContextObjects([
+        rangedModifier,
+        opponentDrawCardOnSummon,
+        summonEntityOnOverdraw,
+      ]);
       card.signatureCardData = { id: Cards.BossSpell.EntanglingShadow };
     }
 
@@ -1142,7 +1254,8 @@ class CardFactory_Bosses {
       });
       card.atk = 6;
       card.maxHP = 60;
-      const damageBasedOnRemainingMana = ModifierEndTurnWatchDamagePlayerBasedOnRemainingMana.createContextObject();
+      const damageBasedOnRemainingMana =
+        ModifierEndTurnWatchDamagePlayerBasedOnRemainingMana.createContextObject();
       damageBasedOnRemainingMana.isRemovable = false;
       card.setInherentModifiersContextObjects([damageBasedOnRemainingMana]);
       card.signatureCardData = { id: Cards.BossSpell.LaceratingFrost };
@@ -1233,7 +1346,11 @@ class CardFactory_Bosses {
       flyingObject.isRemovable = false;
       const extraDamageCounterAttack = ModifierExtraDamageOnCounterattack.createContextObject(2);
       extraDamageCounterAttack.isRemovable = false;
-      card.setInherentModifiersContextObjects([lifestealModifier, extraDamageCounterAttack, flyingObject]);
+      card.setInherentModifiersContextObjects([
+        lifestealModifier,
+        extraDamageCounterAttack,
+        flyingObject,
+      ]);
       card.signatureCardData = { id: Cards.BossSpell.EntanglingShadow };
     }
 
@@ -1276,7 +1393,10 @@ class CardFactory_Bosses {
       const spawnPrisoners = ModifierOnOpponentDeathWatchSpawnEntityOnSpace.createContextObject();
       spawnPrisoners.isRemovable = false;
       contextObject = PlayerModifierManaModifier.createCostChangeContextObject(-2, CardType.Spell);
-      contextObject.activeInHand = (contextObject.activeInDeck = (contextObject.activeInSignatureCards = false));
+      contextObject.activeInHand =
+        contextObject.activeInDeck =
+        contextObject.activeInSignatureCards =
+          false;
       contextObject.activeOnBoard = true;
       contextObject.isRemovable = false;
       card.setInherentModifiersContextObjects([spawnPrisoners, contextObject]);
@@ -1319,9 +1439,16 @@ class CardFactory_Bosses {
       });
       card.atk = 4;
       card.maxHP = 40;
-      const spawnSerpentiEgg = ModifierDyingWishSpawnEgg.createContextObject({ id: Cards.Neutral.Serpenti }, '7/4 Serpenti');
+      const spawnSerpentiEgg = ModifierDyingWishSpawnEgg.createContextObject(
+        { id: Cards.Neutral.Serpenti },
+        '7/4 Serpenti',
+      );
       spawnSerpentiEgg.isRemovable = false;
-      applyModifierToSummonedMinions = ModifierSummonWatchFromActionBarApplyModifiers.createContextObject([spawnSerpentiEgg], 'Rebirth: Serpenti');
+      applyModifierToSummonedMinions =
+        ModifierSummonWatchFromActionBarApplyModifiers.createContextObject(
+          [spawnSerpentiEgg],
+          'Rebirth: Serpenti',
+        );
       applyModifierToSummonedMinions.isRemovable = false;
       card.setInherentModifiersContextObjects([applyModifierToSummonedMinions]);
       card.signatureCardData = { id: Cards.BossSpell.AncientKnowledge };
@@ -1361,9 +1488,16 @@ class CardFactory_Bosses {
       });
       card.atk = 1;
       card.maxHP = 40;
-      const growAura = Modifier.createContextObjectWithAuraForAllAllies([ModifierGrowPermanent.createContextObject(1)], null, null, null, 'Your minions have "Grow: +1/+1."');
+      const growAura = Modifier.createContextObjectWithAuraForAllAllies(
+        [ModifierGrowPermanent.createContextObject(1)],
+        null,
+        null,
+        null,
+        'Your minions have "Grow: +1/+1."',
+      );
       growAura.isRemovable = false;
-      const takeDamageSpawnWraithlings = ModifierTakeDamageWatchSpawnWraithlings.createContextObject();
+      const takeDamageSpawnWraithlings =
+        ModifierTakeDamageWatchSpawnWraithlings.createContextObject();
       takeDamageSpawnWraithlings.isRemovable = false;
       card.setInherentModifiersContextObjects([growAura, takeDamageSpawnWraithlings]);
       card.signatureCardData = { id: Cards.BossSpell.EntanglingShadow };
@@ -1404,10 +1538,11 @@ class CardFactory_Bosses {
       card.atk = 2;
       card.maxHP = 35;
       card.speed = 0;
-      includedArtifacts = [
-        { id: Cards.BossArtifact.FrostArmor },
-      ];
-      equipArtifactObject = ModifierStartTurnWatchEquipArtifact.createContextObject(1, includedArtifacts);
+      includedArtifacts = [{ id: Cards.BossArtifact.FrostArmor }];
+      equipArtifactObject = ModifierStartTurnWatchEquipArtifact.createContextObject(
+        1,
+        includedArtifacts,
+      );
       equipArtifactObject.isRemovable = false;
       rangedModifier = ModifierRanged.createContextObject();
       rangedModifier.isRemovable = false;
@@ -1480,13 +1615,23 @@ class CardFactory_Bosses {
       });
       card.atk = 2;
       card.maxHP = 35;
-      const explodeAura = Modifier.createContextObjectWithAuraForAllAllies([ModifierDyingWishDamageNearbyEnemies.createContextObject(2)], null, null, null, 'Your minions have "Dying Wish: Deal 2 damage to all nearby enemies"');
+      const explodeAura = Modifier.createContextObjectWithAuraForAllAllies(
+        [ModifierDyingWishDamageNearbyEnemies.createContextObject(2)],
+        null,
+        null,
+        null,
+        'Your minions have "Dying Wish: Deal 2 damage to all nearby enemies"',
+      );
       explodeAura.isRemovable = false;
       const startTurnTeleport = ModifierStartTurnWatchTeleportRandomSpace.createContextObject();
       startTurnTeleport.isRemovable = false;
       frenzyContextObject = ModifierFrenzy.createContextObject();
       frenzyContextObject.isRemovable = false;
-      card.setInherentModifiersContextObjects([explodeAura, startTurnTeleport, frenzyContextObject]);
+      card.setInherentModifiersContextObjects([
+        explodeAura,
+        startTurnTeleport,
+        frenzyContextObject,
+      ]);
       card.signatureCardData = { id: Cards.BossSpell.LivingFlame };
     }
 
@@ -1528,9 +1673,16 @@ class CardFactory_Bosses {
       forceFieldObject.isRemovable = false;
       const attackBuff = 2;
       const maxHPNerf = -2;
-      const followupModifierContextObject = Modifier.createContextObjectWithAttributeBuffs(attackBuff, maxHPNerf);
+      const followupModifierContextObject = Modifier.createContextObjectWithAttributeBuffs(
+        attackBuff,
+        maxHPNerf,
+      );
       followupModifierContextObject.appliedName = i18next.t('modifiers.boss_22_applied_name');
-      const statModifierAura = ModifierSummonWatchFromActionBarAnyPlayerApplyModifiers.createContextObject([followupModifierContextObject], 'gain +2 Attack, but -2 Health');
+      const statModifierAura =
+        ModifierSummonWatchFromActionBarAnyPlayerApplyModifiers.createContextObject(
+          [followupModifierContextObject],
+          'gain +2 Attack, but -2 Health',
+        );
       statModifierAura.isRemovable = false;
       card.setInherentModifiersContextObjects([forceFieldObject, statModifierAura]);
       card.signatureCardData = { id: Cards.BossSpell.RestoringLight };
@@ -1573,9 +1725,11 @@ class CardFactory_Bosses {
       card.atk = 1;
       card.maxHP = 30;
       card.speed = 0;
-      const damageGeneralEqualToMinions = ModifierStartTurnWatchDamageGeneralEqualToMinionsOwned.createContextObject();
+      const damageGeneralEqualToMinions =
+        ModifierStartTurnWatchDamageGeneralEqualToMinionsOwned.createContextObject();
       damageGeneralEqualToMinions.isRemovable = false;
-      const shadowDancerAbility = ModifierDeathWatchDamageEnemyGeneralHealMyGeneral.createContextObject(1, 1);
+      const shadowDancerAbility =
+        ModifierDeathWatchDamageEnemyGeneralHealMyGeneral.createContextObject(1, 1);
       shadowDancerAbility.isRemovable = false;
       card.setInherentModifiersContextObjects([damageGeneralEqualToMinions, shadowDancerAbility]);
       card.signatureCardData = { id: Cards.BossSpell.EntanglingShadow };
@@ -1621,20 +1775,41 @@ class CardFactory_Bosses {
       attackBuffContextObject.appliedName = i18next.t('modifiers.boss_24_applied_name_1');
       // rangedAura = Modifier.createContextObjectWithAuraForAllAllies([attackBuffContextObject], null, null, [ModifierRanged.type], "Your minions with Ranged gain +1/+1")
       // rangedAura.isRemovable = false
-      immunityContextObject = ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetOwnPlayer([ModifierImmuneToDamage.createContextObject()], 'Skurge cannot be damaged while Valiant lives');
+      immunityContextObject =
+        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetOwnPlayer(
+          [ModifierImmuneToDamage.createContextObject()],
+          'Skurge cannot be damaged while Valiant lives',
+        );
       immunityContextObject.appliedName = i18next.t('modifiers.boss_24_applied_name_2');
-      const valiantProtector = [
-        Cards.Boss.Boss24Valiant,
-      ];
-      applyGeneralImmunityContextObject = Modifier.createContextObjectWithAuraForAllAllies([immunityContextObject], null, valiantProtector, null, 'Cannot be damaged while Valiant lives');
+      const valiantProtector = [Cards.Boss.Boss24Valiant];
+      applyGeneralImmunityContextObject = Modifier.createContextObjectWithAuraForAllAllies(
+        [immunityContextObject],
+        null,
+        valiantProtector,
+        null,
+        'Cannot be damaged while Valiant lives',
+      );
       applyGeneralImmunityContextObject.isRemovable = false;
       applyGeneralImmunityContextObject.isHiddenToUI = true;
-      const summonValiant = ModifierHPChangeSummonEntity.createContextObject({ id: Cards.Boss.Boss24Valiant }, 15, 'Valiant');
+      const summonValiant = ModifierHPChangeSummonEntity.createContextObject(
+        { id: Cards.Boss.Boss24Valiant },
+        15,
+        'Valiant',
+      );
       summonValiant.isRemovable = false;
       summonValiant.isHiddenToUI = true;
-      const damageAndBuffSelf = ModifierStartTurnWatchDamageAndBuffSelf.createContextObject(1, 0, 3);
+      const damageAndBuffSelf = ModifierStartTurnWatchDamageAndBuffSelf.createContextObject(
+        1,
+        0,
+        3,
+      );
       damageAndBuffSelf.isRemovable = false;
-      card.setInherentModifiersContextObjects([rangedModifier, applyGeneralImmunityContextObject, damageAndBuffSelf, summonValiant]);
+      card.setInherentModifiersContextObjects([
+        rangedModifier,
+        applyGeneralImmunityContextObject,
+        damageAndBuffSelf,
+        summonValiant,
+      ]);
       card.signatureCardData = { id: Cards.BossSpell.EtherealWind };
     }
 
@@ -1711,11 +1886,17 @@ class CardFactory_Bosses {
       });
       card.atk = 3;
       card.maxHP = 30;
-      const summonAssassinOnMove = ModifierEnemyTeamMoveWatchSummonEntityBehind.createContextObject({ id: Cards.Faction2.KaidoAssassin }, 'Kaido Assassin');
+      const summonAssassinOnMove = ModifierEnemyTeamMoveWatchSummonEntityBehind.createContextObject(
+        { id: Cards.Faction2.KaidoAssassin },
+        'Kaido Assassin',
+      );
       summonAssassinOnMove.isRemovable = false;
       const modContextObject = Modifier.createContextObjectWithAttributeBuffs(1, 1);
       modContextObject.appliedName = i18next.t('modifiers.boss_25_applied_name');
-      const allyMinionMoveBuff = ModifierMyTeamMoveWatchBuffTarget.createContextObject([modContextObject], 'give it +1/+1');
+      const allyMinionMoveBuff = ModifierMyTeamMoveWatchBuffTarget.createContextObject(
+        [modContextObject],
+        'give it +1/+1',
+      );
       allyMinionMoveBuff.isRemovable = false;
       card.setInherentModifiersContextObjects([summonAssassinOnMove, allyMinionMoveBuff]);
       card.signatureCardData = { id: Cards.BossSpell.LivingFlame };
@@ -1798,7 +1979,12 @@ class CardFactory_Bosses {
       atkLimiter.isRemovable = false;
       const doubleDamageGenerals = ModifierDoubleDamageToGenerals.createContextObject();
       doubleDamageGenerals.isRemovable = false;
-      card.setInherentModifiersContextObjects([ModifierBattlePet.createContextObject(), doubleDamageGenerals, atkLimiter, dyingWishKillGeneral]);
+      card.setInherentModifiersContextObjects([
+        ModifierBattlePet.createContextObject(),
+        doubleDamageGenerals,
+        atkLimiter,
+        dyingWishKillGeneral,
+      ]);
     }
 
     if (identifier === Cards.Boss.Boss27) {
@@ -1840,7 +2026,11 @@ class CardFactory_Bosses {
       card.speed = 0;
       const battlePetModifier = ModifierBattlePet.createContextObject();
       battlePetModifier.isRemovable = false;
-      const summonWatchApplyBattlepet = ModifierSummonWatchAnyPlayerApplyModifiers.createContextObject([battlePetModifier], 'act like Battle Pets');
+      const summonWatchApplyBattlepet =
+        ModifierSummonWatchAnyPlayerApplyModifiers.createContextObject(
+          [battlePetModifier],
+          'act like Battle Pets',
+        );
       summonWatchApplyBattlepet.isRemovable = false;
       speedBuffContextObject = Modifier.createContextObjectOnBoard();
       speedBuffContextObject.attributeBuffs = { speed: 0 };
@@ -1848,11 +2038,19 @@ class CardFactory_Bosses {
       speedBuffContextObject.attributeBuffsFixed = ['speed'];
       speedBuffContextObject.appliedName = i18next.t('modifiers.faction_3_spell_sand_trap_1');
       speedBuffContextObject.isRemovable = false;
-      const speed0Modifier = ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetEnemyPlayer([speedBuffContextObject], 'The enemy General cannot move');
+      const speed0Modifier =
+        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetEnemyPlayer(
+          [speedBuffContextObject],
+          'The enemy General cannot move',
+        );
       speed0Modifier.isRemovable = false;
       immuneToSpellTargeting = ModifierImmuneToSpellsByEnemy.createContextObject();
       immuneToSpellTargeting.isRemovable = false;
-      card.setInherentModifiersContextObjects([summonWatchApplyBattlepet, speed0Modifier, immuneToSpellTargeting]);
+      card.setInherentModifiersContextObjects([
+        summonWatchApplyBattlepet,
+        speed0Modifier,
+        immuneToSpellTargeting,
+      ]);
       card.signatureCardData = { id: Cards.BossSpell.AncientKnowledge };
     }
 
@@ -1892,7 +2090,8 @@ class CardFactory_Bosses {
       });
       card.atk = 3;
       card.maxHP = 30;
-      const deathWatchDamageRandomMinionHealGeneral = ModifierDeathWatchDamageRandomMinionHealMyGeneral.createContextObject();
+      const deathWatchDamageRandomMinionHealGeneral =
+        ModifierDeathWatchDamageRandomMinionHealMyGeneral.createContextObject();
       deathWatchDamageRandomMinionHealGeneral.isRemovable = false;
       card.setInherentModifiersContextObjects([deathWatchDamageRandomMinionHealGeneral]);
       card.signatureCardData = { id: Cards.BossSpell.MoldingEarth };
@@ -1932,7 +2131,12 @@ class CardFactory_Bosses {
       });
       card.atk = 2;
       card.maxHP = 40;
-      const spawnSandTile = ModifierStartTurnWatchSpawnTile.createContextObject({ id: Cards.Tile.SandPortal }, 'Exhuming Sands', 1, CONFIG.PATTERN_WHOLE_BOARD);
+      const spawnSandTile = ModifierStartTurnWatchSpawnTile.createContextObject(
+        { id: Cards.Tile.SandPortal },
+        'Exhuming Sands',
+        1,
+        CONFIG.PATTERN_WHOLE_BOARD,
+      );
       spawnSandTile.isRemovable = false;
       card.setInherentModifiersContextObjects([spawnSandTile]);
       card.signatureCardData = { id: Cards.BossSpell.EtherealWind };
@@ -1974,13 +2178,23 @@ class CardFactory_Bosses {
       });
       card.atk = 2;
       card.maxHP = 40;
-      const gainATKOpponentTurn = ModifierEndTurnWatchGainTempBuff.createContextObject(4, 0, i18next.t('modifiers.boss_30_applied_name'));
+      const gainATKOpponentTurn = ModifierEndTurnWatchGainTempBuff.createContextObject(
+        4,
+        0,
+        i18next.t('modifiers.boss_30_applied_name'),
+      );
       gainATKOpponentTurn.isRemovable = false;
       celerityObject = ModifierTranscendance.createContextObject();
       celerityObject.isRemovable = false;
-      const startTurnSpawnWolf = ModifierStartTurnWatchSpawnEntity.createContextObject({ id: Cards.Faction6.WolfAspect });
+      const startTurnSpawnWolf = ModifierStartTurnWatchSpawnEntity.createContextObject({
+        id: Cards.Faction6.WolfAspect,
+      });
       startTurnSpawnWolf.isRemovable = false;
-      card.setInherentModifiersContextObjects([gainATKOpponentTurn, celerityObject, startTurnSpawnWolf]);
+      card.setInherentModifiersContextObjects([
+        gainATKOpponentTurn,
+        celerityObject,
+        startTurnSpawnWolf,
+      ]);
       card.signatureCardData = { id: Cards.BossSpell.LaceratingFrost };
     }
 
@@ -2058,9 +2272,19 @@ class CardFactory_Bosses {
       cannotAttackGenerals = ModifierCannotAttackGeneral.createContextObject();
       cannotAttackGenerals.isRemovable = false;
       sentinelData = { id: Cards.Faction2.SonghaiSentinel };
-      if (sentinelData.additionalModifiersContextObjects == null) { sentinelData.additionalModifiersContextObjects = []; }
-      sentinelData.additionalModifiersContextObjects.push(ModifierSentinelOpponentGeneralAttackHealEnemyGeneralDrawCard.createContextObject('transform.', { id: Cards.Boss.Boss31Treat1 }));
-      card.setInherentModifiersContextObjects([ModifierSentinelSetup.createContextObject(sentinelData), cannotAttackGenerals]);
+      if (sentinelData.additionalModifiersContextObjects == null) {
+        sentinelData.additionalModifiersContextObjects = [];
+      }
+      sentinelData.additionalModifiersContextObjects.push(
+        ModifierSentinelOpponentGeneralAttackHealEnemyGeneralDrawCard.createContextObject(
+          'transform.',
+          { id: Cards.Boss.Boss31Treat1 },
+        ),
+      );
+      card.setInherentModifiersContextObjects([
+        ModifierSentinelSetup.createContextObject(sentinelData),
+        cannotAttackGenerals,
+      ]);
       card.addKeywordClassToInclude(ModifierSentinel);
     }
 
@@ -2098,9 +2322,18 @@ class CardFactory_Bosses {
       cannotAttackGenerals = ModifierCannotAttackGeneral.createContextObject();
       cannotAttackGenerals.isRemovable = false;
       sentinelData = { id: Cards.Faction4.AbyssSentinel };
-      if (sentinelData.additionalModifiersContextObjects == null) { sentinelData.additionalModifiersContextObjects = []; }
-      sentinelData.additionalModifiersContextObjects.push(ModifierSentinelOpponentSummonBuffItDrawCard.createContextObject('transform.', { id: Cards.Boss.Boss31Treat2 }));
-      card.setInherentModifiersContextObjects([ModifierSentinelSetup.createContextObject(sentinelData), cannotAttackGenerals]);
+      if (sentinelData.additionalModifiersContextObjects == null) {
+        sentinelData.additionalModifiersContextObjects = [];
+      }
+      sentinelData.additionalModifiersContextObjects.push(
+        ModifierSentinelOpponentSummonBuffItDrawCard.createContextObject('transform.', {
+          id: Cards.Boss.Boss31Treat2,
+        }),
+      );
+      card.setInherentModifiersContextObjects([
+        ModifierSentinelSetup.createContextObject(sentinelData),
+        cannotAttackGenerals,
+      ]);
       card.addKeywordClassToInclude(ModifierSentinel);
     }
 
@@ -2138,9 +2371,18 @@ class CardFactory_Bosses {
       cannotAttackGenerals = ModifierCannotAttackGeneral.createContextObject();
       cannotAttackGenerals.isRemovable = false;
       sentinelData = { id: Cards.Faction6.VanarSentinel };
-      if (sentinelData.additionalModifiersContextObjects == null) { sentinelData.additionalModifiersContextObjects = []; }
-      sentinelData.additionalModifiersContextObjects.push(ModifierSentinelOpponentSpellCastRefundManaDrawCard.createContextObject('transform.', { id: Cards.Boss.Boss31Treat3 }));
-      card.setInherentModifiersContextObjects([ModifierSentinelSetup.createContextObject(sentinelData), cannotAttackGenerals]);
+      if (sentinelData.additionalModifiersContextObjects == null) {
+        sentinelData.additionalModifiersContextObjects = [];
+      }
+      sentinelData.additionalModifiersContextObjects.push(
+        ModifierSentinelOpponentSpellCastRefundManaDrawCard.createContextObject('transform.', {
+          id: Cards.Boss.Boss31Treat3,
+        }),
+      );
+      card.setInherentModifiersContextObjects([
+        ModifierSentinelSetup.createContextObject(sentinelData),
+        cannotAttackGenerals,
+      ]);
       card.addKeywordClassToInclude(ModifierSentinel);
     }
 
@@ -2177,9 +2419,16 @@ class CardFactory_Bosses {
       card.rarityId = Rarity.Rare;
       dyingWishDrawCards = ModifierDyingWishDrawCard.createContextObject(2);
       contextObject = PlayerModifierManaModifier.createCostChangeContextObject(1, CardType.Unit);
-      contextObject.activeInHand = (contextObject.activeInDeck = (contextObject.activeInSignatureCards = false));
+      contextObject.activeInHand =
+        contextObject.activeInDeck =
+        contextObject.activeInSignatureCards =
+          false;
       contextObject.activeOnBoard = true;
-      increasedManaCost = ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetEnemyPlayer([contextObject], 'Your opponent\'s minions cost 1 more to play');
+      increasedManaCost =
+        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetEnemyPlayer(
+          [contextObject],
+          "Your opponent's minions cost 1 more to play",
+        );
       card.setInherentModifiersContextObjects([dyingWishDrawCards, increasedManaCost]);
     }
 
@@ -2216,9 +2465,16 @@ class CardFactory_Bosses {
       card.rarityId = Rarity.Rare;
       dyingWishDrawCards = ModifierDyingWishDrawCard.createContextObject(2);
       contextObject = PlayerModifierManaModifier.createCostChangeContextObject(1, CardType.Spell);
-      contextObject.activeInHand = (contextObject.activeInDeck = (contextObject.activeInSignatureCards = false));
+      contextObject.activeInHand =
+        contextObject.activeInDeck =
+        contextObject.activeInSignatureCards =
+          false;
       contextObject.activeOnBoard = true;
-      increasedManaCost = ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetEnemyPlayer([contextObject], 'Your opponent\'s non-Bloodbound spells cost 1 more to cast');
+      increasedManaCost =
+        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetEnemyPlayer(
+          [contextObject],
+          "Your opponent's non-Bloodbound spells cost 1 more to cast",
+        );
       card.setInherentModifiersContextObjects([dyingWishDrawCards, increasedManaCost]);
     }
 
@@ -2254,10 +2510,17 @@ class CardFactory_Bosses {
       card.manaCost = 3;
       card.rarityId = Rarity.Rare;
       dyingWishDrawCards = ModifierDyingWishDrawCard.createContextObject(2);
-      contextObject = PlayerModifierManaModifier.createCostChangeContextObject(1, CardType.Artifact);
-      contextObject.activeInHand = (contextObject.activeInDeck = false);
+      contextObject = PlayerModifierManaModifier.createCostChangeContextObject(
+        1,
+        CardType.Artifact,
+      );
+      contextObject.activeInHand = contextObject.activeInDeck = false;
       contextObject.activeOnBoard = true;
-      increasedManaCost = ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetEnemyPlayer([contextObject], 'Your opponent\'s artifacts cost 1 more to cast');
+      increasedManaCost =
+        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetEnemyPlayer(
+          [contextObject],
+          "Your opponent's artifacts cost 1 more to cast",
+        );
       card.setInherentModifiersContextObjects([dyingWishDrawCards, increasedManaCost]);
     }
 
@@ -2299,7 +2562,9 @@ class CardFactory_Bosses {
       card.maxHP = 50;
       // giftPlayer = ModifierStartTurnWatchPutCardInOpponentsHand.createContextObject({id: Cards.BossSpell.HolidayGift})
       // giftPlayer.isRemovable = false
-      const startTurnSpawnElf = ModifierStartTurnWatchSpawnEntity.createContextObject({ id: Cards.Boss.Boss32_2 });
+      const startTurnSpawnElf = ModifierStartTurnWatchSpawnEntity.createContextObject({
+        id: Cards.Boss.Boss32_2,
+      });
       startTurnSpawnElf.isRemovable = false;
       card.setInherentModifiersContextObjects([startTurnSpawnElf]);
       card.signatureCardData = { id: Cards.BossSpell.LaceratingFrost };
@@ -2338,7 +2603,9 @@ class CardFactory_Bosses {
       card.maxHP = 3;
       celerityObject = ModifierTranscendance.createContextObject();
       rushContextObject = ModifierFirstBlood.createContextObject();
-      const dyingWishPresent = ModifierDyingWishPutCardInOpponentHand.createContextObject({ id: Cards.BossSpell.HolidayGift });
+      const dyingWishPresent = ModifierDyingWishPutCardInOpponentHand.createContextObject({
+        id: Cards.BossSpell.HolidayGift,
+      });
       card.setInherentModifiersContextObjects([celerityObject, dyingWishPresent]);
     }
 
@@ -2405,17 +2672,32 @@ class CardFactory_Bosses {
       card.manaCost = 0;
       card.rarityId = Rarity.Epic;
       card.durability = 3;
-      const artifactContextObject = PlayerModifierManaModifier.createCostChangeContextObject(-1, CardType.Artifact);
-      artifactContextObject.activeInHand = (artifactContextObject.activeInDeck = false);
+      const artifactContextObject = PlayerModifierManaModifier.createCostChangeContextObject(
+        -1,
+        CardType.Artifact,
+      );
+      artifactContextObject.activeInHand = artifactContextObject.activeInDeck = false;
       artifactContextObject.activeOnBoard = true;
-      const spellContextObject = PlayerModifierManaModifier.createCostChangeContextObject(-1, CardType.Spell);
-      spellContextObject.activeInHand = (spellContextObject.activeInDeck = (spellContextObject.activeInSignatureCards = false));
+      const spellContextObject = PlayerModifierManaModifier.createCostChangeContextObject(
+        -1,
+        CardType.Spell,
+      );
+      spellContextObject.activeInHand =
+        spellContextObject.activeInDeck =
+        spellContextObject.activeInSignatureCards =
+          false;
       spellContextObject.activeOnBoard = true;
-      const minionContextObject = PlayerModifierManaModifier.createCostChangeContextObject(-1, CardType.Unit);
-      minionContextObject.activeInHand = (minionContextObject.activeInDeck = false);
+      const minionContextObject = PlayerModifierManaModifier.createCostChangeContextObject(
+        -1,
+        CardType.Unit,
+      );
+      minionContextObject.activeInHand = minionContextObject.activeInDeck = false;
       minionContextObject.activeOnBoard = true;
       card.setTargetModifiersContextObjects([
-        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetOwnPlayer([artifactContextObject, spellContextObject, minionContextObject], 'Cards in your hand cost 1 less to play.'),
+        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetOwnPlayer(
+          [artifactContextObject, spellContextObject, minionContextObject],
+          'Cards in your hand cost 1 less to play.',
+        ),
       ]);
       card.setFXResource(['FX.Cards.Artifact.SoulGrimwar']);
       card.setBaseAnimResource({
@@ -2523,10 +2805,19 @@ class CardFactory_Bosses {
         Cards.Boss.Boss33_4,
         Cards.Boss.Boss33,
       ];
-      healAura = Modifier.createContextObjectWithOnBoardAuraForAllAlliesAndSelfAndGeneral([healObject], null, legion, null, 'Heals for 3 at end of turn');
+      healAura = Modifier.createContextObjectWithOnBoardAuraForAllAlliesAndSelfAndGeneral(
+        [healObject],
+        null,
+        legion,
+        null,
+        'Heals for 3 at end of turn',
+      );
       healAura.isRemovable = false;
       backupGeneral = ModifierBackupGeneral.createContextObject();
-      backupGeneral.activeInHand = (backupGeneral.activeInDeck = (backupGeneral.activeInSignatureCards = false));
+      backupGeneral.activeInHand =
+        backupGeneral.activeInDeck =
+        backupGeneral.activeInSignatureCards =
+          false;
       backupGeneral.activeOnBoard = true;
       backupGeneral.isRemovable = false;
       respawnClones = ModifierStartTurnWatchRespawnClones.createContextObject();
@@ -2576,10 +2867,19 @@ class CardFactory_Bosses {
         Cards.Boss.Boss33_4,
         Cards.Boss.Boss33,
       ];
-      healAura = Modifier.createContextObjectWithOnBoardAuraForAllAlliesAndSelfAndGeneral([healObject], null, legion, null, 'Heals for 3 at end of turn');
+      healAura = Modifier.createContextObjectWithOnBoardAuraForAllAlliesAndSelfAndGeneral(
+        [healObject],
+        null,
+        legion,
+        null,
+        'Heals for 3 at end of turn',
+      );
       healAura.isRemovable = false;
       backupGeneral = ModifierBackupGeneral.createContextObject();
-      backupGeneral.activeInHand = (backupGeneral.activeInDeck = (backupGeneral.activeInSignatureCards = false));
+      backupGeneral.activeInHand =
+        backupGeneral.activeInDeck =
+        backupGeneral.activeInSignatureCards =
+          false;
       backupGeneral.activeOnBoard = true;
       backupGeneral.isRemovable = false;
       respawnClones = ModifierStartTurnWatchRespawnClones.createContextObject();
@@ -2620,7 +2920,7 @@ class CardFactory_Bosses {
       card.maxHP = 8;
       card.speed = 1;
       const attackObject = Modifier.createContextObjectWithAttributeBuffs(2, undefined, {
-        name: 'Legion\'s Strength',
+        name: "Legion's Strength",
         description: '+2 Attack.',
       });
       attackObject.isRemovable = false;
@@ -2631,11 +2931,20 @@ class CardFactory_Bosses {
         Cards.Boss.Boss33_4,
         Cards.Boss.Boss33,
       ];
-      const attackAura = Modifier.createContextObjectWithOnBoardAuraForAllAlliesAndSelfAndGeneral([attackObject], null, legion, null, 'Gains +2 Attack');
+      const attackAura = Modifier.createContextObjectWithOnBoardAuraForAllAlliesAndSelfAndGeneral(
+        [attackObject],
+        null,
+        legion,
+        null,
+        'Gains +2 Attack',
+      );
       attackAura.isRemovable = false;
       attackAura.appliedName = i18next.t('modifiers.boss_33_applied_name_2');
       backupGeneral = ModifierBackupGeneral.createContextObject();
-      backupGeneral.activeInHand = (backupGeneral.activeInDeck = (backupGeneral.activeInSignatureCards = false));
+      backupGeneral.activeInHand =
+        backupGeneral.activeInDeck =
+        backupGeneral.activeInSignatureCards =
+          false;
       backupGeneral.activeOnBoard = true;
       backupGeneral.isRemovable = false;
       respawnClones = ModifierStartTurnWatchRespawnClones.createContextObject();
@@ -2688,11 +2997,20 @@ class CardFactory_Bosses {
         Cards.Boss.Boss33_4,
         Cards.Boss.Boss33,
       ];
-      const speedAura = Modifier.createContextObjectWithOnBoardAuraForAllAlliesAndSelfAndGeneral([speedBuffContextObject], null, legion, null, 'Can move 2 extra spaces');
+      const speedAura = Modifier.createContextObjectWithOnBoardAuraForAllAlliesAndSelfAndGeneral(
+        [speedBuffContextObject],
+        null,
+        legion,
+        null,
+        'Can move 2 extra spaces',
+      );
       speedAura.isRemovable = false;
       speedAura.appliedName = i18next.t('modifiers.boss_33_applied_name');
       backupGeneral = ModifierBackupGeneral.createContextObject();
-      backupGeneral.activeInHand = (backupGeneral.activeInDeck = (backupGeneral.activeInSignatureCards = false));
+      backupGeneral.activeInHand =
+        backupGeneral.activeInDeck =
+        backupGeneral.activeInSignatureCards =
+          false;
       backupGeneral.activeOnBoard = true;
       backupGeneral.isRemovable = false;
       respawnClones = ModifierStartTurnWatchRespawnClones.createContextObject();
@@ -2741,10 +3059,20 @@ class CardFactory_Bosses {
         Cards.Boss.Boss33_4,
         Cards.Boss.Boss33,
       ];
-      const spellImmuneAura = Modifier.createContextObjectWithOnBoardAuraForAllAlliesAndSelfAndGeneral([immuneToSpellTargeting], null, legion, null, 'Cannot be targeted by enemy spells');
+      const spellImmuneAura =
+        Modifier.createContextObjectWithOnBoardAuraForAllAlliesAndSelfAndGeneral(
+          [immuneToSpellTargeting],
+          null,
+          legion,
+          null,
+          'Cannot be targeted by enemy spells',
+        );
       spellImmuneAura.isRemovable = false;
       backupGeneral = ModifierBackupGeneral.createContextObject();
-      backupGeneral.activeInHand = (backupGeneral.activeInDeck = (backupGeneral.activeInSignatureCards = false));
+      backupGeneral.activeInHand =
+        backupGeneral.activeInDeck =
+        backupGeneral.activeInSignatureCards =
+          false;
       backupGeneral.activeOnBoard = true;
       backupGeneral.isRemovable = false;
       respawnClones = ModifierStartTurnWatchRespawnClones.createContextObject();
@@ -2789,11 +3117,20 @@ class CardFactory_Bosses {
       card.atk = 3;
       card.maxHP = 25;
       contextObject = PlayerModifierManaModifier.createCostChangeContextObject(-25, CardType.Unit);
-      contextObject.activeInHand = (contextObject.activeInDeck = (contextObject.activeInSignatureCards = false));
+      contextObject.activeInHand =
+        contextObject.activeInDeck =
+        contextObject.activeInSignatureCards =
+          false;
       contextObject.activeOnBoard = true;
-      const reducedManaCost = ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetBothPlayers([contextObject], 'Minions cost 0 mana');
+      const reducedManaCost =
+        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetBothPlayers(
+          [contextObject],
+          'Minions cost 0 mana',
+        );
       reducedManaCost.isRemovable = false;
-      const spawnDissonance = ModifierDieSpawnNewGeneral.createContextObject({ id: Cards.Boss.Boss34_2 });
+      const spawnDissonance = ModifierDieSpawnNewGeneral.createContextObject({
+        id: Cards.Boss.Boss34_2,
+      });
       spawnDissonance.isRemovable = false;
       spawnDissonance.isHiddenToUI = true;
       // customContextObject = PlayerModifierManaModifier.createCostChangeContextObject(0, CardType.Unit)
@@ -2879,7 +3216,8 @@ class CardFactory_Bosses {
       });
       card.atk = 3;
       card.maxHP = 42;
-      const randomTransformMinions = ModifierOpponentSummonWatchRandomTransform.createContextObject();
+      const randomTransformMinions =
+        ModifierOpponentSummonWatchRandomTransform.createContextObject();
       randomTransformMinions.isRemovable = false;
       flyingObject = ModifierFlying.createContextObject();
       flyingObject.isRemovable = false;
@@ -3036,19 +3374,29 @@ class CardFactory_Bosses {
       });
       card.atk = 3;
       card.maxHP = 30;
-      const enemyMinionGeneralSwap = PlayerModifierOpponentSummonWatchSwapGeneral.createContextObject();
+      const enemyMinionGeneralSwap =
+        PlayerModifierOpponentSummonWatchSwapGeneral.createContextObject();
       enemyMinionGeneralSwap.isRemovable = false;
       backupGeneral = ModifierBackupGeneral.createContextObject();
-      backupGeneral.activeInHand = (backupGeneral.activeInDeck = (backupGeneral.activeInSignatureCards = false));
+      backupGeneral.activeInHand =
+        backupGeneral.activeInDeck =
+        backupGeneral.activeInSignatureCards =
+          false;
       backupGeneral.activeOnBoard = true;
       backupGeneral.isRemovable = false;
       backupGeneral.appliedName = i18next.t('modifiers.boss_37_applied_name');
       backupGeneral.appliedDescription = i18next.t('modifiers.boss_37_applied_desc');
-      applyModifierToSummonedMinions = PlayerModifierSummonWatchApplyModifiers.createContextObject([backupGeneral], i18next.t('modifiers.boss_37_applied_name'));
+      applyModifierToSummonedMinions = PlayerModifierSummonWatchApplyModifiers.createContextObject(
+        [backupGeneral],
+        i18next.t('modifiers.boss_37_applied_name'),
+      );
       applyModifierToSummonedMinions.isRemovable = false;
       // applyBackUpGeneralApplyingModifierToSummonedMinions = ModifierSummonWatchFromActionBarApplyModifiers.createContextObject([applyModifierToSummonedMinions], "Soul Vessel")
       // applyBackUpGeneralApplyingModifierToSummonedMinions.isRemovable = false
-      card.setInherentModifiersContextObjects([enemyMinionGeneralSwap, applyModifierToSummonedMinions]);
+      card.setInherentModifiersContextObjects([
+        enemyMinionGeneralSwap,
+        applyModifierToSummonedMinions,
+      ]);
       card.signatureCardData = { id: Cards.BossSpell.AncientKnowledge };
     }
 
@@ -3238,7 +3586,9 @@ class CardFactory_Bosses {
       card.setIsHiddenInCollection(true);
       card.id = Cards.BossSpell.LivingFlame;
       card.name = 'Living Flame';
-      card.setDescription('Deal 2 damage to an enemy and summon two Spellsparks nearby your General.');
+      card.setDescription(
+        'Deal 2 damage to an enemy and summon two Spellsparks nearby your General.',
+      );
       card.spellFilterType = SpellFilterType.EnemyDirect;
       card.manaCost = 1;
       card.damageAmount = 2;
@@ -3301,14 +3651,14 @@ class CardFactory_Bosses {
       card.setIsHiddenInCollection(true);
       card.id = Cards.BossSpell.RestoringLight;
       card.name = 'Restoring Light';
-      card.setDescription('Restore 3 Health to your General. Give your friendly minions +1 Health.');
+      card.setDescription(
+        'Restore 3 Health to your General. Give your friendly minions +1 Health.',
+      );
       card.spellFilterType = SpellFilterType.None;
       card.manaCost = 1;
       const buffContextObject = Modifier.createContextObjectWithAttributeBuffs(0, 1);
       buffContextObject.appliedName = 'Restored Light';
-      card.setTargetModifiersContextObjects([
-        buffContextObject,
-      ]);
+      card.setTargetModifiersContextObjects([buffContextObject]);
       card.setFXResource(['FX.Cards.Spell.RestoringLight']);
       card.setBaseSoundResource({
         apply: RSX.sfx_spell_sunbloom.audio,

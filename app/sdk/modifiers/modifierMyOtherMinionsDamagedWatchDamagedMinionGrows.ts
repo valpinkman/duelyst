@@ -15,13 +15,15 @@ class ModifierMyOtherMinionsDamagedWatchDamagedMinionGrows extends ModifierMyOth
 
   onDamageDealtToMinion(action) {
     const minion = action.getTarget();
-    if ((minion != null) && minion.hasActiveModifierClass(ModifierGrow)) {
+    if (minion != null && minion.hasActiveModifierClass(ModifierGrow)) {
       return Array.from<any>(minion.getActiveModifiersByClass(ModifierGrow)).map((mod) =>
-        mod.activateGrow());
+        mod.activateGrow(),
+      );
     }
   }
 }
-ModifierMyOtherMinionsDamagedWatchDamagedMinionGrows.prototype.type = 'ModifierMyOtherMinionsDamagedWatchDamagedMinionGrows';
+ModifierMyOtherMinionsDamagedWatchDamagedMinionGrows.prototype.type =
+  'ModifierMyOtherMinionsDamagedWatchDamagedMinionGrows';
 // activate each instance of Grow on the minion
 
 module.exports = ModifierMyOtherMinionsDamagedWatchDamagedMinionGrows;

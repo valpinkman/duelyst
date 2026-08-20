@@ -48,7 +48,7 @@ class Deck extends SDKObject {
   // region GETTERS / SETTERS
 
   setOwnerId(val) {
-    return this.ownerId = val;
+    return (this.ownerId = val);
   }
 
   getOwnerId() {
@@ -60,7 +60,7 @@ class Deck extends SDKObject {
   }
 
   setDrawPile(val) {
-    return this.drawPile = val;
+    return (this.drawPile = val);
   }
 
   /**
@@ -78,7 +78,7 @@ class Deck extends SDKObject {
   getDrawPileExcludingMissing() {
     const drawPile = [];
     for (var cardIndex of Array.from<any>(this.drawPile)) {
-      if ((cardIndex != null) && (this.getGameSession().getCardByIndex(cardIndex) != null)) {
+      if (cardIndex != null && this.getGameSession().getCardByIndex(cardIndex) != null) {
         drawPile.push(cardIndex);
       }
     }
@@ -90,7 +90,9 @@ class Deck extends SDKObject {
    * @returns {Array}
    */
   getCardsInDrawPile() {
-    if (this._private.cachedCards == null) { this._private.cachedCards = this.getGameSession().getCardsByIndices(this.drawPile); }
+    if (this._private.cachedCards == null) {
+      this._private.cachedCards = this.getGameSession().getCardsByIndices(this.drawPile);
+    }
     return this._private.cachedCards;
   }
 
@@ -99,7 +101,7 @@ class Deck extends SDKObject {
    * @returns {Array}
    */
   getCardsInDrawPileExcludingMissing() {
-    if ((this._private.cachedCardsExcludingMissing == null)) {
+    if (this._private.cachedCardsExcludingMissing == null) {
       const cards = (this._private.cachedCardsExcludingMissing = []);
       for (var cardIndex of Array.from<any>(this.drawPile)) {
         if (cardIndex != null) {
@@ -153,7 +155,9 @@ class Deck extends SDKObject {
    * @returns {Array}
    */
   getCardsInHand() {
-    if (this._private.cachedCardsInHand == null) { this._private.cachedCardsInHand = this.getGameSession().getCardsByIndices(this.hand); }
+    if (this._private.cachedCardsInHand == null) {
+      this._private.cachedCardsInHand = this.getGameSession().getCardsByIndices(this.hand);
+    }
     return this._private.cachedCardsInHand;
   }
 
@@ -163,7 +167,7 @@ class Deck extends SDKObject {
    * @returns {Array}
    */
   getCardsInHandExcludingMissing() {
-    if ((this._private.cachedCardsInHandExcludingMissing == null)) {
+    if (this._private.cachedCardsInHandExcludingMissing == null) {
       const cards = (this._private.cachedCardsInHandExcludingMissing = []);
       for (var cardIndex of Array.from<any>(this.hand)) {
         if (cardIndex != null) {
@@ -206,8 +210,14 @@ class Deck extends SDKObject {
    * @returns {Number}
    */
   getFirstEmptySpaceInHand() {
-    for (let i = 0, end = CONFIG.MAX_HAND_SIZE, asc = end >= 0; asc ? i < end : i > end; asc ? i++ : i--) {
-      if ((this.hand[i] == null)) { return i; }
+    for (
+      let i = 0, end = CONFIG.MAX_HAND_SIZE, asc = end >= 0;
+      asc ? i < end : i > end;
+      asc ? i++ : i--
+    ) {
+      if (this.hand[i] == null) {
+        return i;
+      }
     }
     return null; // if no emtpy space in hand, return null
   }
@@ -218,8 +228,14 @@ class Deck extends SDKObject {
    */
   getNumCardsInHand() {
     let numCards = 0;
-    for (let i = 0, end = CONFIG.MAX_HAND_SIZE, asc = end >= 0; asc ? i < end : i > end; asc ? i++ : i--) {
-      if (this.hand[i] != null) { numCards++; }
+    for (
+      let i = 0, end = CONFIG.MAX_HAND_SIZE, asc = end >= 0;
+      asc ? i < end : i > end;
+      asc ? i++ : i--
+    ) {
+      if (this.hand[i] != null) {
+        numCards++;
+      }
     }
     return numCards;
   }
@@ -232,7 +248,8 @@ class Deck extends SDKObject {
   actionDrawCard(optionalCardIndex = null) {
     const action = this.getGameSession().createActionForType(DrawCardAction.type);
     action.setOwnerId(this.getOwnerId());
-    if (optionalCardIndex) { // set when a specific card should be drawn
+    if (optionalCardIndex) {
+      // set when a specific card should be drawn
       action.setCardIndexFromDeck(optionalCardIndex);
     }
     return action;
@@ -241,9 +258,15 @@ class Deck extends SDKObject {
   actionsDrawCardsToRefillHand() {
     const actions = [];
     // return enough actions to refill hand
-    for (let i = 0, end = CONFIG.MAX_HAND_SIZE, asc = end >= 0; asc ? i < end : i > end; asc ? i++ : i--) {
+    for (
+      let i = 0, end = CONFIG.MAX_HAND_SIZE, asc = end >= 0;
+      asc ? i < end : i > end;
+      asc ? i++ : i--
+    ) {
       // only return an action at hand space if space is empty
-      if ((this.hand[i] == null)) { actions.push(this.actionDrawCard()); }
+      if (this.hand[i] == null) {
+        actions.push(this.actionDrawCard());
+      }
     }
     return actions;
   }
@@ -255,18 +278,25 @@ class Deck extends SDKObject {
     let numRemainingActions = CONFIG.CARD_DRAW_PER_TURN;
     // check player modifiers that change number of cards drawn at end of turn
     let cardDrawChange = 0;
-    for (var cardDrawModifier of Array.from<any>(this.getOwner().getPlayerModifiersByClass(PlayerModifierCardDrawModifier))) {
+    for (var cardDrawModifier of Array.from<any>(
+      this.getOwner().getPlayerModifiersByClass(PlayerModifierCardDrawModifier),
+    )) {
       cardDrawChange += cardDrawModifier.getCardDrawChange();
     }
     numRemainingActions += cardDrawChange; // final number of actions to create after modifiers
 
     // first try to re-fill empty slots in action bar with cards
-    for (let i = 0, end = CONFIG.MAX_HAND_SIZE, asc = end >= 0; asc ? i < end : i > end; asc ? i++ : i--) {
-      if (numRemainingActions === 0) { // stop producing draw card actions when per turn limit is reached
+    for (
+      let i = 0, end = CONFIG.MAX_HAND_SIZE, asc = end >= 0;
+      asc ? i < end : i > end;
+      asc ? i++ : i--
+    ) {
+      if (numRemainingActions === 0) {
+        // stop producing draw card actions when per turn limit is reached
         break;
       }
       // only return an action at hand space if space is empty
-      if ((this.hand[i] == null)) {
+      if (this.hand[i] == null) {
         actions.push(this.actionDrawCard());
         numRemainingActions--;
       }
@@ -274,7 +304,7 @@ class Deck extends SDKObject {
 
     // if action bar is already full but we haven't drawn enough cards yet
     // then burn cards from deck (draw and immediately discard without playing)
-    while ((numRemainingActions > 0) && !this.getGameSession().getIsDeveloperMode()) {
+    while (numRemainingActions > 0 && !this.getGameSession().getIsDeveloperMode()) {
       actions.push(this.actionDrawCard());
       numRemainingActions--;
     }
@@ -299,7 +329,7 @@ class Deck extends SDKObject {
    * @param {Number|String} cardIndex
    */
   putCardIndexIntoDeck(cardIndex) {
-    if ((cardIndex != null) && !_.contains(this.drawPile, cardIndex)) {
+    if (cardIndex != null && !_.contains(this.drawPile, cardIndex)) {
       this.drawPile.push(cardIndex);
       return this.flushCachedCards();
     }
@@ -315,8 +345,12 @@ class Deck extends SDKObject {
 
     if (cardIndex != null) {
       // find first empty place in hand, and insert card there
-      for (let i = 0, end = CONFIG.MAX_HAND_SIZE, asc = end >= 0; asc ? i < end : i > end; asc ? i++ : i--) {
-        if ((this.hand[i] == null)) {
+      for (
+        let i = 0, end = CONFIG.MAX_HAND_SIZE, asc = end >= 0;
+        asc ? i < end : i > end;
+        asc ? i++ : i--
+      ) {
+        if (this.hand[i] == null) {
           this.hand[i] = cardIndex;
           indexOfCardInHand = i;
           this.flushCachedCardsInHand();
@@ -335,7 +369,7 @@ class Deck extends SDKObject {
    * @param {Number} indexOfCard
    */
   putCardIndexInHandAtIndex(cardIndex, indexOfCard) {
-    if ((cardIndex != null) && (indexOfCard != null)) {
+    if (cardIndex != null && indexOfCard != null) {
       this.hand[indexOfCard] = cardIndex;
       return this.flushCachedCardsInHand();
     }
@@ -357,7 +391,7 @@ class Deck extends SDKObject {
       // find card data by index match
       for (let i = 0; i < this.drawPile.length; i++) {
         var existingCardIndex = this.drawPile[i];
-        if ((existingCardIndex != null) && (existingCardIndex === cardIndex)) {
+        if (existingCardIndex != null && existingCardIndex === cardIndex) {
           indexOfCard = i;
           this.drawPile.splice(i, 1);
           this.flushCachedCards();
@@ -381,7 +415,7 @@ class Deck extends SDKObject {
       // find card data by index match
       for (let i = 0; i < this.hand.length; i++) {
         var existingCardIndex = this.hand[i];
-        if ((existingCardIndex != null) && (existingCardIndex === cardIndex)) {
+        if (existingCardIndex != null && existingCardIndex === cardIndex) {
           indexOfCard = i;
           this.hand[i] = null;
           this.flushCachedCardsInHand();
@@ -398,7 +432,7 @@ class Deck extends SDKObject {
   // region REPLACE
 
   setNumCardsReplacedThisTurn(numCardsReplacedThisTurn) {
-    return this.numCardsReplacedThisTurn = numCardsReplacedThisTurn;
+    return (this.numCardsReplacedThisTurn = numCardsReplacedThisTurn);
   }
 
   getNumCardsReplacedThisTurn() {
@@ -411,11 +445,13 @@ class Deck extends SDKObject {
     }
     let replacesAllowedThisTurn = CONFIG.MAX_REPLACE_PER_TURN;
     let replaceCardChange = 0;
-    for (var replaceCardModifier of Array.from<any>(this.getOwner().getPlayerModifiersByClass(PlayerModifierReplaceCardModifier))) {
+    for (var replaceCardModifier of Array.from<any>(
+      this.getOwner().getPlayerModifiersByClass(PlayerModifierReplaceCardModifier),
+    )) {
       replaceCardChange += replaceCardModifier.getReplaceCardChange();
     }
     replacesAllowedThisTurn += replaceCardChange; // final number of cards allowed to be replaced
-    return (this.numCardsReplacedThisTurn < replacesAllowedThisTurn) && (this.drawPile.length > 0);
+    return this.numCardsReplacedThisTurn < replacesAllowedThisTurn && this.drawPile.length > 0;
   }
 
   // endregion REPLACE
@@ -426,7 +462,7 @@ class Deck extends SDKObject {
     UtilsJavascript.fastExtend(this, data);
 
     // ensure hand is correct length
-    return this.hand.length = CONFIG.MAX_HAND_SIZE;
+    return (this.hand.length = CONFIG.MAX_HAND_SIZE);
   }
 }
 Deck.prototype.numCardsReplacedThisTurn = 0;
@@ -439,5 +475,5 @@ Deck.prototype.ownerId = null;
 module.exports = Deck;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

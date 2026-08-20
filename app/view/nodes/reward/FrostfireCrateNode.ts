@@ -12,7 +12,6 @@ const LootCrateNode = require('./LootCrateNode');
  *************************************************************************** */
 
 var FrostfireCrateNode = LootCrateNode.extend({
-
   /* region GETTERS / SETTERS */
 
   getRequiredResources() {
@@ -62,12 +61,20 @@ var FrostfireCrateNode = LootCrateNode.extend({
   },
 
   showCrateDescriptionLabel(duration, fontName, fontSize, fontColor, contentSize) {
-    if (contentSize == null) { contentSize = cc.size(275, 0); }
-    LootCrateNode.prototype.showCrateDescriptionLabel.call(this, duration, fontName, fontSize, fontColor, contentSize);
+    if (contentSize == null) {
+      contentSize = cc.size(275, 0);
+    }
+    LootCrateNode.prototype.showCrateDescriptionLabel.call(
+      this,
+      duration,
+      fontName,
+      fontSize,
+      fontColor,
+      contentSize,
+    );
   },
 
   /* endregion LABELS */
-
 });
 
 FrostfireCrateNode.crateType = CosmeticsChestTypeLookup.Frostfire;

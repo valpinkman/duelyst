@@ -53,7 +53,8 @@ const openUrl = require('app/common/openUrl');
 const i18next = require('i18next');
 
 const PackageManager = (window.PackageManager = require('app/ui/managers/package_manager'));
-const NavigationManager = (window.NavigationManager = require('app/ui/managers/navigation_manager'));
+const NavigationManager =
+  (window.NavigationManager = require('app/ui/managers/navigation_manager'));
 
 const Helpers = require('app/ui/views/helpers');
 const LoaderItemView = require('app/ui/views/item/loader');
@@ -98,177 +99,171 @@ App.getIsLoggedIn = () => Storage.get('token');
 // --- Main ---- #
 //
 
-App.getIsShowingMain = () => // temporary method to check if the user can navigate to main (i.e. not already there)
-// this does NOT work for switching between main sub-screens
-  NavigationManager.getInstance().getIsShowingContentViewClass(LoginMenuItemView) || NavigationManager.getInstance().getIsShowingContentViewClass(MainMenuItemView) || NavigationManager.getInstance().getIsShowingContentViewClass(ResumeGameItemView);
+App.getIsShowingMain = () =>
+  // temporary method to check if the user can navigate to main (i.e. not already there)
+  // this does NOT work for switching between main sub-screens
+  NavigationManager.getInstance().getIsShowingContentViewClass(LoginMenuItemView) ||
+  NavigationManager.getInstance().getIsShowingContentViewClass(MainMenuItemView) ||
+  NavigationManager.getInstance().getIsShowingContentViewClass(ResumeGameItemView);
 
 App.main = function () {
-  if ((App._mainPromise == null)) {
-    App._mainPromise = App._startPromise.then(() => {
-      Logger.module('APPLICATION').log('App:main');
-      return App._showLoginMenu();
+  if (App._mainPromise == null) {
+    App._mainPromise = App._startPromise
+      .then(() => {
+        Logger.module('APPLICATION').log('App:main');
+        return App._showLoginMenu();
 
-      // # get and reset last game data
-      // lastGameType = CONFIG.lastGameType
-      // wasSpectate = CONFIG.lastGameWasSpectate
-      // wasTutorial = CONFIG.lastGameWasTutorial
-      // wasDeveloper = CONFIG.lastGameWasDeveloper
-      // wasDailyChallenge = CONFIG.lastGameWasDailyChallenge
-      // CONFIG.resetLastGameData()
+        // # get and reset last game data
+        // lastGameType = CONFIG.lastGameType
+        // wasSpectate = CONFIG.lastGameWasSpectate
+        // wasTutorial = CONFIG.lastGameWasTutorial
+        // wasDeveloper = CONFIG.lastGameWasDeveloper
+        // wasDailyChallenge = CONFIG.lastGameWasDailyChallenge
+        // CONFIG.resetLastGameData()
 
-      // # destroy game and clear game data
-      // App.cleanupGame()
+        // # destroy game and clear game data
+        // App.cleanupGame()
 
-      // # always make sure we're disconnected from the last game
-      // NetworkManager.getInstance().disconnect()
+        // # always make sure we're disconnected from the last game
+        // NetworkManager.getInstance().disconnect()
 
-      // # reset routes to main
-      // NavigationManager.getInstance().resetRoutes()
-      // NavigationManager.getInstance().addMajorRoute("main", App.main, App)
+        // # reset routes to main
+        // NavigationManager.getInstance().resetRoutes()
+        // NavigationManager.getInstance().addMajorRoute("main", App.main, App)
 
-      // # always restore user triggered navigation
-      // NavigationManager.getInstance().requestUserTriggeredNavigationUnlocked(App._userNavLockId)
+        // # always restore user triggered navigation
+        // NavigationManager.getInstance().requestUserTriggeredNavigationUnlocked(App._userNavLockId)
 
-      // if App._queryStringParams["replayId"]?
-      //   Logger.module("APPLICATION").log("jumping straight into replay...")
-      //   App.setCallbackWhenCancel(()-> alert('all done!'))
-      //   return PackageManager.getInstance().loadAndActivateMajorPackage("nongame", null, null, () ->
-      //     EventBus.getInstance().trigger(EVENTS.start_replay, {
-      //       replayId: App._queryStringParams["replayId"]
-      //     })
-      //     return Promise.resolve()
-      //   )
-      // else
-      //   if !App.getIsLoggedIn()
-      //     # kongregate silently logs in so we should never see a login screen
-      //     # we instead do nothing, this only occurs if our API fails during silent login
-      //     else if window.isKongregate
-      //       return Promise.resolve()
-      //     else
-      //       return App._showLoginMenu()
-      //   else
-      //     # all good, show main menu
-      //     return App.managersReadyDeferred.promise.then(() ->
-      //       # set user as loading
-      //       ChatManager.getInstance().setStatus(ChatManager.STATUS_LOADING)
+        // if App._queryStringParams["replayId"]?
+        //   Logger.module("APPLICATION").log("jumping straight into replay...")
+        //   App.setCallbackWhenCancel(()-> alert('all done!'))
+        //   return PackageManager.getInstance().loadAndActivateMajorPackage("nongame", null, null, () ->
+        //     EventBus.getInstance().trigger(EVENTS.start_replay, {
+        //       replayId: App._queryStringParams["replayId"]
+        //     })
+        //     return Promise.resolve()
+        //   )
+        // else
+        //   if !App.getIsLoggedIn()
+        //     # kongregate silently logs in so we should never see a login screen
+        //     # we instead do nothing, this only occurs if our API fails during silent login
+        //     else if window.isKongregate
+        //       return Promise.resolve()
+        //     else
+        //       return App._showLoginMenu()
+        //   else
+        //     # all good, show main menu
+        //     return App.managersReadyDeferred.promise.then(() ->
+        //       # set user as loading
+        //       ChatManager.getInstance().setStatus(ChatManager.STATUS_LOADING)
 
-      //       # check for an active game
-      //       lastGameModel = null
-      //       if GamesManager.getInstance().playerGames.length > 0
-      //         lastGameModel = GamesManager.getInstance().playerGames.first()
+        //       # check for an active game
+        //       lastGameModel = null
+        //       if GamesManager.getInstance().playerGames.length > 0
+        //         lastGameModel = GamesManager.getInstance().playerGames.first()
 
-      //       # calculate minutes since last game
-      //       msSinceLastGame = moment().utc().valueOf() - (lastGameModel?.get("created_at") || 0)
-      //       minutesSinceLastGame = moment.duration(msSinceLastGame).asMinutes()
+        //       # calculate minutes since last game
+        //       msSinceLastGame = moment().utc().valueOf() - (lastGameModel?.get("created_at") || 0)
+        //       minutesSinceLastGame = moment.duration(msSinceLastGame).asMinutes()
 
-      //       # if the last game is an active multiplayer game within last 45 minutes, show the continue game screen
-      //       if lastGameModel? and lastGameModel.get("cancel_reconnect") != true and (lastGameModel.get("status") == "active" || lastGameModel.get("status") == "new") and lastGameModel.get("created_at") and minutesSinceLastGame < CONFIG.MINUTES_ALLOWED_TO_CONTINUE_GAME and SDK.GameType.isMultiplayerGameType(lastGameModel.get("game_type"))
-      //         # has active game, prompt user to resume
-      //         Logger.module("UI").log("Last active game was on ", new Date(lastGameModel.get("created_at")), "with data", lastGameModel)
-      //         return App._resumeGame(lastGameModel)
-      //       else if not NewPlayerManager.getInstance().isDoneWithTutorial()
-      //         # show tutorial layout
-      //         return App._showTutorialLessons()
-      //       else if QuestsManager.getInstance().hasUnreadQuests()
-      //         # show main menu
-      //         return App._showMainMenu()
-      //       else
-      //         # try to return to selection for previous game type
-      //         if wasSpectate
-      //           return App._showMainMenu()
-      //         else if wasDailyChallenge
-      //           QuestsManager.getInstance().markDailyChallengeCompletionAsUnread()
-      //           return App._showMainMenu()
-      //         else if lastGameType == SDK.GameType.Ranked and !NewPlayerManager.getInstance().getEmphasizeBoosterUnlock()
-      //           return App.showPlay(SDK.PlayModes.Ranked, true)
-      //         else if lastGameType == SDK.GameType.Casual and !NewPlayerManager.getInstance().getEmphasizeBoosterUnlock()
-      //           return App.showPlay(SDK.PlayModes.Casual, true)
-      //         else if lastGameType == SDK.GameType.Gauntlet
-      //           return App.showPlay(SDK.PlayModes.Gauntlet, true)
-      //         else if lastGameType == SDK.GameType.Challenge and !wasTutorial
-      //           return App.showPlay(SDK.PlayModes.Challenges, true)
-      //         else if lastGameType == SDK.GameType.SinglePlayer
-      //           return App.showPlay(SDK.PlayModes.Practice, true)
-      //         else if lastGameType == SDK.GameType.BossBattle
-      //           return App.showPlay(SDK.PlayModes.BossBattle, true)
-      //         else if lastGameType == SDK.GameType.Sandbox and !wasDeveloper
-      //           return App.showPlay(SDK.PlayModes.Sandbox, true)
-      //         else if lastGameType == SDK.GameType.Rift
-      //           return App.showPlay(SDK.PlayModes.Rift, true)
-      //         else
-      //           return App._showMainMenu()
-      //     )
-    }).finally(() => {
-      App._mainPromise = null;
-      return Promise.resolve();
-    });
+        //       # if the last game is an active multiplayer game within last 45 minutes, show the continue game screen
+        //       if lastGameModel? and lastGameModel.get("cancel_reconnect") != true and (lastGameModel.get("status") == "active" || lastGameModel.get("status") == "new") and lastGameModel.get("created_at") and minutesSinceLastGame < CONFIG.MINUTES_ALLOWED_TO_CONTINUE_GAME and SDK.GameType.isMultiplayerGameType(lastGameModel.get("game_type"))
+        //         # has active game, prompt user to resume
+        //         Logger.module("UI").log("Last active game was on ", new Date(lastGameModel.get("created_at")), "with data", lastGameModel)
+        //         return App._resumeGame(lastGameModel)
+        //       else if not NewPlayerManager.getInstance().isDoneWithTutorial()
+        //         # show tutorial layout
+        //         return App._showTutorialLessons()
+        //       else if QuestsManager.getInstance().hasUnreadQuests()
+        //         # show main menu
+        //         return App._showMainMenu()
+        //       else
+        //         # try to return to selection for previous game type
+        //         if wasSpectate
+        //           return App._showMainMenu()
+        //         else if wasDailyChallenge
+        //           QuestsManager.getInstance().markDailyChallengeCompletionAsUnread()
+        //           return App._showMainMenu()
+        //         else if lastGameType == SDK.GameType.Ranked and !NewPlayerManager.getInstance().getEmphasizeBoosterUnlock()
+        //           return App.showPlay(SDK.PlayModes.Ranked, true)
+        //         else if lastGameType == SDK.GameType.Casual and !NewPlayerManager.getInstance().getEmphasizeBoosterUnlock()
+        //           return App.showPlay(SDK.PlayModes.Casual, true)
+        //         else if lastGameType == SDK.GameType.Gauntlet
+        //           return App.showPlay(SDK.PlayModes.Gauntlet, true)
+        //         else if lastGameType == SDK.GameType.Challenge and !wasTutorial
+        //           return App.showPlay(SDK.PlayModes.Challenges, true)
+        //         else if lastGameType == SDK.GameType.SinglePlayer
+        //           return App.showPlay(SDK.PlayModes.Practice, true)
+        //         else if lastGameType == SDK.GameType.BossBattle
+        //           return App.showPlay(SDK.PlayModes.BossBattle, true)
+        //         else if lastGameType == SDK.GameType.Sandbox and !wasDeveloper
+        //           return App.showPlay(SDK.PlayModes.Sandbox, true)
+        //         else if lastGameType == SDK.GameType.Rift
+        //           return App.showPlay(SDK.PlayModes.Rift, true)
+        //         else
+        //           return App._showMainMenu()
+        //     )
+      })
+      .finally(() => {
+        App._mainPromise = null;
+        return Promise.resolve();
+      });
   }
   return App._mainPromise;
 };
 
 App._showLoginMenu = function (options) {
   Logger.module('APPLICATION').log('App:_showLoginMenu');
-  return PackageManager.getInstance().loadAndActivateMajorPackage(
-    'nongame',
-    null,
-    null,
-    (() => {
-      // analytics call
-      let utilityPromise;
-      Analytics.page('Login', { path: '/#login' });
+  return PackageManager.getInstance().loadAndActivateMajorPackage('nongame', null, null, () => {
+    // analytics call
+    let utilityPromise;
+    Analytics.page('Login', { path: '/#login' });
 
-      // show main scene
-      const viewPromise = Scene.getInstance().showMain();
+    // show main scene
+    const viewPromise = Scene.getInstance().showMain();
 
-      // show login menu
-      const contentPromise = NavigationManager.getInstance().showContentView(new LoginMenuItemView(options));
+    // show login menu
+    const contentPromise = NavigationManager.getInstance().showContentView(
+      new LoginMenuItemView(options),
+    );
 
-      // show utility menu for desktop only
-      if (window.isDesktop) {
-        utilityPromise = NavigationManager.getInstance().showUtilityView(new UtilityLoadingLoginMenuItemView());
-      } else {
-        utilityPromise = Promise.resolve();
-      }
+    // show utility menu for desktop only
+    if (window.isDesktop) {
+      utilityPromise = NavigationManager.getInstance().showUtilityView(
+        new UtilityLoadingLoginMenuItemView(),
+      );
+    } else {
+      utilityPromise = Promise.resolve();
+    }
 
-      return Promise.all([
-        viewPromise,
-        contentPromise,
-        utilityPromise,
-      ]);
-    }),
-  );
+    return Promise.all([viewPromise, contentPromise, utilityPromise]);
+  });
 };
 
 App._showSelectUsername = function (data) {
   Logger.module('APPLICATION').log('App:_showSelectUsername');
-  return PackageManager.getInstance().loadAndActivateMajorPackage(
-    'nongame',
-    null,
-    null,
-    (() => {
-      // show main scene
-      const viewPromise = Scene.getInstance().showMain();
+  return PackageManager.getInstance().loadAndActivateMajorPackage('nongame', null, null, () => {
+    // show main scene
+    const viewPromise = Scene.getInstance().showMain();
 
-      // show selection dialog
-      const selectUsernameModel = new Backbone.Model({});
-      const selectUsernameItemView = new SelectUsernameItemView({ model: selectUsernameModel });
-      selectUsernameItemView.listenToOnce(selectUsernameItemView, 'success', () =>
-        // TODO: move this into SelectUsernameItemView
-        // We refresh token so the username property is now included
-        Session.refreshToken()
-          .then((refreshed) => {
-          }));
+    // show selection dialog
+    const selectUsernameModel = new Backbone.Model({});
+    const selectUsernameItemView = new SelectUsernameItemView({ model: selectUsernameModel });
+    selectUsernameItemView.listenToOnce(selectUsernameItemView, 'success', () =>
+      // TODO: move this into SelectUsernameItemView
+      // We refresh token so the username property is now included
+      Session.refreshToken().then((refreshed) => {}),
+    );
 
-      const contentPromise = NavigationManager.getInstance().showDialogView(selectUsernameItemView);
+    const contentPromise = NavigationManager.getInstance().showDialogView(selectUsernameItemView);
 
-      return Promise.all([
-        NavigationManager.getInstance().destroyModalView(),
-        NavigationManager.getInstance().destroyContentView(),
-        viewPromise,
-        contentPromise,
-      ]);
-    }),
-  );
+    return Promise.all([
+      NavigationManager.getInstance().destroyModalView(),
+      NavigationManager.getInstance().destroyContentView(),
+      viewPromise,
+      contentPromise,
+    ]);
+  });
 };
 
 App.onLogin = function (data) {
@@ -308,18 +303,26 @@ App.onLogin = function (data) {
   Analytics.identify(data.userId, identifyParams, utmParams);
 
   if (!hadPreviousSession) {
-    Analytics.track('first login', {
-      category: Analytics.EventCategory.FTUE,
-    }, {
-      nonInteraction: 1,
-      sendUTMData: true,
-    });
-    Analytics.track('registered', {
-      category: Analytics.EventCategory.Marketing,
-    }, {
-      sendUTMData: true,
-      nonInteraction: 1,
-    });
+    Analytics.track(
+      'first login',
+      {
+        category: Analytics.EventCategory.FTUE,
+      },
+      {
+        nonInteraction: 1,
+        sendUTMData: true,
+      },
+    );
+    Analytics.track(
+      'registered',
+      {
+        category: Analytics.EventCategory.Marketing,
+      },
+      {
+        sendUTMData: true,
+        nonInteraction: 1,
+      },
+    );
   }
 
   // endregion analytics data
@@ -344,9 +347,15 @@ App._currentMouseClass = null;
 
 App.onCanvasMouseState = function (e) {
   let mouseClass;
-  if ((e != null ? e.state : undefined) != null) { mouseClass = `mouse-${e.state.toLowerCase()}`; } else { mouseClass = 'mouse-auto'; }
+  if ((e != null ? e.state : undefined) != null) {
+    mouseClass = `mouse-${e.state.toLowerCase()}`;
+  } else {
+    mouseClass = 'mouse-auto';
+  }
   if (App._currentMouseClass !== mouseClass) {
-    if (App._$canvasMouseClassEl == null) { App._$canvasMouseClassEl = $(CONFIG.GAMECANVAS_SELECTOR); }
+    if (App._$canvasMouseClassEl == null) {
+      App._$canvasMouseClassEl = $(CONFIG.GAMECANVAS_SELECTOR);
+    }
     if (App._currentMouseClass === 'mouse-auto') {
       App._$canvasMouseClassEl.addClass(mouseClass);
     } else if (mouseClass === 'mouse-auto') {
@@ -354,7 +363,7 @@ App.onCanvasMouseState = function (e) {
     } else {
       App._$canvasMouseClassEl.removeClass(App._currentMouseClass).addClass(mouseClass);
     }
-    return App._currentMouseClass = mouseClass;
+    return (App._currentMouseClass = mouseClass);
   }
 };
 
@@ -431,12 +440,15 @@ App.onPointerWheel = function (event) {
   // update pointer
   let target;
   if (event != null) {
-    ({
-      target,
-    } = event);
+    ({ target } = event);
     const $app = $(CONFIG.APP_SELECTOR);
     const offset = $app.offset();
-    UtilsPointer.setPointerFromWheelEvent(event.originalEvent, $app.height(), offset.left, offset.top);
+    UtilsPointer.setPointerFromWheelEvent(
+      event.originalEvent,
+      $app.height(),
+      offset.left,
+      offset.top,
+    );
   }
 
   // trigger pointer events
@@ -457,7 +469,7 @@ App.onPointerWheel = function (event) {
 App.beforeunload = function (e) {
   // return an empty string to trigger alert
   return;
-  if ((App._reloadRequestIds.length === 0) && !window.isDesktop && !UtilsEnv.getIsInLocal()) {
+  if (App._reloadRequestIds.length === 0 && !window.isDesktop && !UtilsEnv.getIsInLocal()) {
     const confirmMessage = '';
     (e || window.event).returnValue = confirmMessage;
     return confirmMessage;
@@ -475,10 +487,12 @@ App.bindEvents = function () {
   $(document).on('visibilitychange', App.onVisibilityChange.bind(App));
   EventBus.getInstance().on(EVENTS.request_reload, App.onRequestReload);
   EventBus.getInstance().on(EVENTS.cancel_reload_request, App.onCancelReloadRequest);
-  $(CONFIG.GAMECANVAS_SELECTOR).on('webglcontextlost', () => App.onRequestReload({
-    id: 'webgl_context_lost',
-    message: `Your graphics hit a snag and requires a ${window.isDesktop ? 'restart' : 'reload'} to avoid any issues.`,
-  }));
+  $(CONFIG.GAMECANVAS_SELECTOR).on('webglcontextlost', () =>
+    App.onRequestReload({
+      id: 'webgl_context_lost',
+      message: `Your graphics hit a snag and requires a ${window.isDesktop ? 'restart' : 'reload'} to avoid any issues.`,
+    }),
+  );
 
   // session is a plain event emitter
   Session.on('login', App.onLogin);
@@ -515,7 +529,11 @@ App.bindEvents = function () {
   NavigationManager.getInstance().on(EVENTS.user_triggered_exit, App.onUserTriggeredExit, App);
   NavigationManager.getInstance().on(EVENTS.user_triggered_skip, App.onUserTriggeredSkip, App);
   NavigationManager.getInstance().on(EVENTS.user_triggered_cancel, App.onUserTriggeredCancel, App);
-  NavigationManager.getInstance().on(EVENTS.user_triggered_confirm, App.onUserTriggeredConfirm, App);
+  NavigationManager.getInstance().on(
+    EVENTS.user_triggered_confirm,
+    App.onUserTriggeredConfirm,
+    App,
+  );
 
   EventBus.getInstance().on(EVENTS.error, App._error, App);
   return EventBus.getInstance().on(EVENTS.ajax_error, App._error, App);
@@ -539,7 +557,8 @@ App.onResize = function (e) {
   App._ignoreNextResolutionChange = false;
   if (!ignoreNextResolutionChange) {
     const currentResolution = CONFIG.resolution;
-    confirmResolutionChange = (App._lastResolution != null) && (App._lastResolution !== currentResolution);
+    confirmResolutionChange =
+      App._lastResolution != null && App._lastResolution !== currentResolution;
   }
 
   // before resize
@@ -560,7 +579,9 @@ App.onResize = function (e) {
   // force user to restart if resource scale for engine has changed
   // CSS automatically handles resource scale changes
   // TODO: instead of restarting, destroy all current views, show loading screen, reload images at new scale, and return to current route
-  App._needsRestart = (App._lastResourceScaleEngine != null) && (CONFIG.resourceScaleEngine !== App._lastResourceScaleEngine);
+  App._needsRestart =
+    App._lastResourceScaleEngine != null &&
+    CONFIG.resourceScaleEngine !== App._lastResourceScaleEngine;
   if (!App._needsRestart) {
     // cancel forced reload in case user has restored original window size
     App._cancelReloadRequestForResolutionChange();
@@ -601,7 +622,10 @@ App._resizeAndScale = function () {
   for (const resourceScale of Array.from<any>(CONFIG.RESOURCE_SCALES)) {
     const scaleDiff = Math.abs(CONFIG.pixelScaleCSS - resourceScale);
     const currentScaleDiff = Math.abs(CONFIG.pixelScaleCSS - CONFIG.resourceScaleCSS);
-    if ((scaleDiff < currentScaleDiff) || ((scaleDiff === currentScaleDiff) && (resourceScale > CONFIG.resourceScaleCSS))) {
+    if (
+      scaleDiff < currentScaleDiff ||
+      (scaleDiff === currentScaleDiff && resourceScale > CONFIG.resourceScaleCSS)
+    ) {
       CONFIG.resourceScaleCSS = resourceScale;
     }
   }
@@ -618,7 +642,7 @@ App._ignoreNextResolutionChange = false;
 App._needsRestart = false;
 App._updateLastResolutionValues = function () {
   App._lastResolution = CONFIG.resolution;
-  return App._lastResourceScaleEngine = CONFIG.resourceScaleEngine;
+  return (App._lastResourceScaleEngine = CONFIG.resourceScaleEngine);
 };
 
 App._confirmResolutionChange = function () {
@@ -626,9 +650,11 @@ App._confirmResolutionChange = function () {
   const confirmData: Record<string, any> = { title: 'Do you wish to keep this viewport setting?' };
   if (App._needsRestart) {
     if (window.isDesktop) {
-      confirmData.message = 'Warning: switching from your previous viewport to this viewport will require a restart!';
+      confirmData.message =
+        'Warning: switching from your previous viewport to this viewport will require a restart!';
     } else {
-      confirmData.message = 'Warning: switching from your previous viewport to this viewport will require a reload!';
+      confirmData.message =
+        'Warning: switching from your previous viewport to this viewport will require a reload!';
     }
     if (ChatManager.getInstance().getStatusIsInBattle()) {
       confirmData.message += ' You will be able to continue your game, but you may miss your turn!';
@@ -643,31 +669,35 @@ App._confirmResolutionChange = function () {
       return _.defer(App._requestReloadForResolutionChange);
     }
     // update resource scale if no restart needed
-    return App._lastResourceScaleEngine = CONFIG.resourceScaleEngine;
+    return (App._lastResourceScaleEngine = CONFIG.resourceScaleEngine);
   });
-  confirmDialogItemView.listenToOnce(confirmDialogItemView, 'cancel', () => // defer to ensure this occurs after event resolves
+  confirmDialogItemView.listenToOnce(confirmDialogItemView, 'cancel', () =>
+    // defer to ensure this occurs after event resolves
     _.defer(() => {
-    // reset resolution and don't prompt about changes
+      // reset resolution and don't prompt about changes
       App._ignoreNextResolutionChange = true;
       const res = App._lastResolution || CONFIG.RESOLUTION_DEFAULT;
       CONFIG.resolution = res;
       Storage.set('resolution', res);
       return App.onResize();
-    }));
+    }),
+  );
 
   // show confirm/cancel
   return NavigationManager.getInstance().showDialogView(confirmDialogItemView);
 };
 
 App._requestReloadForResolutionChangeId = 'resolution_change';
-App._requestReloadForResolutionChange = () => App.onRequestReload({
-  id: App._requestReloadForResolutionChangeId,
-  message: `Your viewport change requires a ${window.isDesktop ? 'restart' : 'reload'} to avoid any issues.`,
-});
+App._requestReloadForResolutionChange = () =>
+  App.onRequestReload({
+    id: App._requestReloadForResolutionChangeId,
+    message: `Your viewport change requires a ${window.isDesktop ? 'restart' : 'reload'} to avoid any issues.`,
+  });
 
-App._cancelReloadRequestForResolutionChange = () => App.onCancelReloadRequest({
-  id: App._requestReloadForResolutionChangeId,
-});
+App._cancelReloadRequestForResolutionChange = () =>
+  App.onCancelReloadRequest({
+    id: App._requestReloadForResolutionChangeId,
+  });
 
 App._reloadRequestIds = [];
 
@@ -694,9 +724,15 @@ App.onCancelReloadRequest = function (event) {
 
 App._reload = function (message) {
   Logger.module('APPLICATION').log('App._reload');
-  const promptDialogItemView = new PromptDialogItemView({ title: `Please ${window.isDesktop ? 'restart' : 'reload'}!`, message });
+  const promptDialogItemView = new PromptDialogItemView({
+    title: `Please ${window.isDesktop ? 'restart' : 'reload'}!`,
+    message,
+  });
   promptDialogItemView.listenTo(promptDialogItemView, 'cancel', () => {
-    if (window.isDesktop) { return window.quitDesktop(); } return location.reload();
+    if (window.isDesktop) {
+      return window.quitDesktop();
+    }
+    return location.reload();
   });
   return NavigationManager.getInstance().showDialogView(promptDialogItemView);
 };
@@ -708,7 +744,7 @@ App._cancelReload = function () {
 
 App.on('before:start', (options) => {
   Logger.module('APPLICATION').log('----BEFORE START----');
-  return App.$el = $('#app');
+  return (App.$el = $('#app'));
 });
 
 App.on('start', (options) => {
@@ -726,16 +762,22 @@ App.on('start', (options) => {
   //   selectedScene = SDK.CosmeticsLookup.Scene.Shimzar
   // if moment.utc().isAfter("2017-12-01") and moment.utc().isBefore("2018-01-18")
   //   selectedScene = SDK.CosmeticsLookup.Scene.Frostfire
-  if ((selectedScene != null) && !isNaN(selectedScene) && _.isNumber(selectedScene)) { CONFIG.selectedScene = selectedScene; }
+  if (selectedScene != null && !isNaN(selectedScene) && _.isNumber(selectedScene)) {
+    CONFIG.selectedScene = selectedScene;
+  }
 
   // set initial resolution
   const userResolution = parseInt(Storage.get('resolution'));
-  if ((userResolution != null) && !isNaN(userResolution) && _.isNumber(userResolution)) { CONFIG.resolution = userResolution; }
+  if (userResolution != null && !isNaN(userResolution) && _.isNumber(userResolution)) {
+    CONFIG.resolution = userResolution;
+  }
   const userHiDPIEnabled = Storage.get('hiDPIEnabled');
   if (userHiDPIEnabled != null) {
     if (userHiDPIEnabled === 'true') {
       CONFIG.hiDPIEnabled = true;
-    } else if (userHiDPIEnabled === 'false') { CONFIG.hiDPIEnabled = false; }
+    } else if (userHiDPIEnabled === 'false') {
+      CONFIG.hiDPIEnabled = false;
+    }
   }
 
   // update last resolution values to initial
@@ -755,101 +797,113 @@ App.on('start', (options) => {
       // we pass the Kongregate ID and token
       const kongregateId = kongregate.services.getUserId();
       const kongregateToken = kongregate.services.getGameAuthToken();
-      return Session.isAuthenticatedKongregate(kongregateId, kongregateToken)
-        .then((isAuthed) => {
-          if (!isAuthed) {
-            Storage.remove('token');
-          }
-          return isAuthed;
-        });
-    }
-    return Session.isAuthenticated(Storage.get('token'))
-      .then((isAuthed) => {
+      return Session.isAuthenticatedKongregate(kongregateId, kongregateToken).then((isAuthed) => {
         if (!isAuthed) {
           Storage.remove('token');
         }
         return isAuthed;
       });
+    }
+    return Session.isAuthenticated(Storage.get('token')).then((isAuthed) => {
+      if (!isAuthed) {
+        Storage.remove('token');
+      }
+      return isAuthed;
+    });
   };
 
   // VIEW/engine needs to be setup and cocos manages its own setup so we need to wait async
   Logger.module('APPLICATION').group('LOADING');
-  App._loadingPromise = Scene.setup().then(() => {
-    // update last resolution values to initial
-    App._updateLastResolutionValues();
+  App._loadingPromise = Scene.setup()
+    .then(() => {
+      // update last resolution values to initial
+      App._updateLastResolutionValues();
 
-    // setup all events
-    App.bindEvents();
+      // setup all events
+      App.bindEvents();
 
-    // load the package of resources that should always loaded
-    return PackageManager.getInstance().loadPackage('alwaysloaded');
-  }).then(() => {
-    // temporary bypass all loader
-    return Promise.resolve();
-    // check if all assets should be loaded now or as needed
-    // we want to know if the client has cached all resources for this version
-    // we only care when not using the desktop client, on the production environment, and not loading all at start
-    // if we need to cache all resources for this version, do a non allocating cache load first
-    const version_preloaded = Storage.get('version_preloaded');
-    let needs_non_allocating_cache_load = (version_preloaded !== process.env.VERSION) && !window.isDesktop && !CONFIG.LOAD_ALL_AT_START && UtilsEnv.getIsInProduction();
-    needs_non_allocating_cache_load = needs_non_allocating_cache_load && (App._queryStringParams.replayId == null);
-    if (needs_non_allocating_cache_load || CONFIG.LOAD_ALL_AT_START) {
-      // temporarily force disable the load all at start flag
-      // this allows the preloader to setup as a major package
-      // so that it gets loaded correctly before we load all
-      const load_all_at_start = CONFIG.LOAD_ALL_AT_START;
-      CONFIG.LOAD_ALL_AT_START = false;
-      // load preloader scene to show load of all resources
-      return PackageManager.getInstance().loadAndActivateMajorPackage('preloader', null, null, () => {
-        // reset load all at start flag
-        CONFIG.LOAD_ALL_AT_START = load_all_at_start;
+      // load the package of resources that should always loaded
+      return PackageManager.getInstance().loadPackage('alwaysloaded');
+    })
+    .then(() => {
+      // temporary bypass all loader
+      return Promise.resolve();
+      // check if all assets should be loaded now or as needed
+      // we want to know if the client has cached all resources for this version
+      // we only care when not using the desktop client, on the production environment, and not loading all at start
+      // if we need to cache all resources for this version, do a non allocating cache load first
+      const version_preloaded = Storage.get('version_preloaded');
+      let needs_non_allocating_cache_load =
+        version_preloaded !== process.env.VERSION &&
+        !window.isDesktop &&
+        !CONFIG.LOAD_ALL_AT_START &&
+        UtilsEnv.getIsInProduction();
+      needs_non_allocating_cache_load =
+        needs_non_allocating_cache_load && App._queryStringParams.replayId == null;
+      if (needs_non_allocating_cache_load || CONFIG.LOAD_ALL_AT_START) {
+        // temporarily force disable the load all at start flag
+        // this allows the preloader to setup as a major package
+        // so that it gets loaded correctly before we load all
+        const load_all_at_start = CONFIG.LOAD_ALL_AT_START;
+        CONFIG.LOAD_ALL_AT_START = false;
+        // load preloader scene to show load of all resources
+        return PackageManager.getInstance()
+          .loadAndActivateMajorPackage('preloader', null, null, () => {
+            // reset load all at start flag
+            CONFIG.LOAD_ALL_AT_START = load_all_at_start;
 
-        // hide loading dialog
-        NavigationManager.getInstance().destroyDialogForLoad();
+            // hide loading dialog
+            NavigationManager.getInstance().destroyDialogForLoad();
 
-        // show load ui
-        const viewPromise = Scene.getInstance().showLoad();
-        const contentPromise = NavigationManager.getInstance().showContentView(new LoaderItemView());
+            // show load ui
+            const viewPromise = Scene.getInstance().showLoad();
+            const contentPromise = NavigationManager.getInstance().showContentView(
+              new LoaderItemView(),
+            );
 
-        // once we've authenticated, show utility for loading/login
-        // this way users can quit anytime on desktop, and logout or adjust settings while waiting for load
-        App._authenticationPromise().then((isAuthed) => {
-          if (App.getIsLoggedIn() || window.isDesktop) {
-            return NavigationManager.getInstance().showUtilityView(new UtilityLoadingLoginMenuItemView());
-          }
-          return Promise.resolve();
-        });
+            // once we've authenticated, show utility for loading/login
+            // this way users can quit anytime on desktop, and logout or adjust settings while waiting for load
+            App._authenticationPromise().then((isAuthed) => {
+              if (App.getIsLoggedIn() || window.isDesktop) {
+                return NavigationManager.getInstance().showUtilityView(
+                  new UtilityLoadingLoginMenuItemView(),
+                );
+              }
+              return Promise.resolve();
+            });
 
-        return Promise.all([
-          viewPromise,
-          contentPromise,
-        ]);
-      }).then(() => // load all resources
-        PackageManager.getInstance().loadPackage(
-          'all',
-          null,
-          (progress) => __guard__(Scene.getInstance().getLoadLayer(), (x) => x.showLoadProgress(progress)),
-          needs_non_allocating_cache_load,
-        )).then(() => {
-        // set version assets were preloaded for
-        if (!window.isDesktop) {
-          return Storage.set('version_preloaded', process.env.VERSION);
-        }
-      });
-    }
-    // no loading needed now
-    return Promise.resolve();
-  }).then(() => // clear telemetry signal that a client is loading
-  // TelemetryManager.getInstance().clearSignal("lifecycle","loading")
+            return Promise.all([viewPromise, contentPromise]);
+          })
+          .then(() =>
+            // load all resources
+            PackageManager.getInstance().loadPackage(
+              'all',
+              null,
+              (progress) =>
+                __guard__(Scene.getInstance().getLoadLayer(), (x) => x.showLoadProgress(progress)),
+              needs_non_allocating_cache_load,
+            ),
+          )
+          .then(() => {
+            // set version assets were preloaded for
+            if (!window.isDesktop) {
+              return Storage.set('version_preloaded', process.env.VERSION);
+            }
+          });
+      }
+      // no loading needed now
+      return Promise.resolve();
+    })
+    .then(() =>
+      // clear telemetry signal that a client is loading
+      // TelemetryManager.getInstance().clearSignal("lifecycle","loading")
 
-  // end loading log group
-    Logger.module('APPLICATION').groupEnd());
+      // end loading log group
+      Logger.module('APPLICATION').groupEnd(),
+    );
 
   // setup start promise
-  App._startPromise = Promise.all([
-    App._loadingPromise,
-    App._authenticationPromise(),
-  ]);
+  App._startPromise = Promise.all([App._loadingPromise, App._authenticationPromise()]);
 
   // goto main screen
   return App.main();
@@ -878,5 +932,5 @@ if (Landing.isNewUser() && Landing.shouldRedirect()) {
 }
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

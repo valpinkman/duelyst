@@ -22,12 +22,14 @@ class ModifierAnyMinionHealWatch extends Modifier {
   onAfterCleanupAction(e) {
     super.onAfterCleanupAction(e);
 
-    const {
-      action,
-    } = e;
+    const { action } = e;
     // watch for any minion being healed
     const target = action.getTarget();
-    if (action instanceof HealAction && !target.getIsGeneral() && (action.getTotalHealApplied() > 0)) {
+    if (
+      action instanceof HealAction &&
+      !target.getIsGeneral() &&
+      action.getTotalHealApplied() > 0
+    ) {
       return this.onHealWatch(action);
     }
   }

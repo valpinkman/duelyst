@@ -21,8 +21,18 @@ class ModifierCannotAttackGeneral extends ModifierCannot {
     const a = actionEvent.action;
 
     // minion cannot actively attack General, but it can strike back, frenzy, etc
-    if (a instanceof AttackAction && a.getIsValid() && !a.getIsImplicit() && (this.getCard() === a.getSource()) && __guard__(a.getTarget(), (x) => x.getIsGeneral())) {
-      return this.invalidateAction(a, this.getCard().getPosition(), i18next.t('modifiers.cannot_attack_general_error'));
+    if (
+      a instanceof AttackAction &&
+      a.getIsValid() &&
+      !a.getIsImplicit() &&
+      this.getCard() === a.getSource() &&
+      __guard__(a.getTarget(), (x) => x.getIsGeneral())
+    ) {
+      return this.invalidateAction(
+        a,
+        this.getCard().getPosition(),
+        i18next.t('modifiers.cannot_attack_general_error'),
+      );
     }
   }
 }
@@ -34,5 +44,5 @@ ModifierCannotAttackGeneral.prototype.fxResource = ['FX.Modifiers.ModifierCannot
 module.exports = ModifierCannotAttackGeneral;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

@@ -44,6 +44,9 @@ class ModifierTakeDamageWatchHealMyGeneral extends ModifierTakeDamageWatch {
 }
 ModifierTakeDamageWatchHealMyGeneral.prototype.type = 'ModifierTakeDamageWatchHealMyGeneral';
 ModifierTakeDamageWatchHealMyGeneral.prototype.healAmount = 0;
-ModifierTakeDamageWatchHealMyGeneral.prototype.fxResource = ['FX.Modifiers.ModifierTakeDamageWatch', 'FX.Modifiers.ModifierGenericHeal'];
+ModifierTakeDamageWatchHealMyGeneral.prototype.fxResource = [
+  'FX.Modifiers.ModifierTakeDamageWatch',
+  'FX.Modifiers.ModifierGenericHeal',
+];
 
 module.exports = ModifierTakeDamageWatchHealMyGeneral;

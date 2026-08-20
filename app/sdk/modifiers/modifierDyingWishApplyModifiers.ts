@@ -18,7 +18,16 @@ class ModifierDyingWishApplyModifiers extends ModifierDyingWish {
   static type = 'ModifierDyingWishApplyModifiers';
   static description = '';
 
-  static createContextObject(modifiersContextObjects, auraIncludeSelf, auraIncludeAlly, auraIncludeEnemy, auraRadius, canTargetGeneral, description, options) {
+  static createContextObject(
+    modifiersContextObjects,
+    auraIncludeSelf,
+    auraIncludeAlly,
+    auraIncludeEnemy,
+    auraRadius,
+    canTargetGeneral,
+    description,
+    options,
+  ) {
     const contextObject = super.createContextObject(options);
     contextObject.modifiersContextObjects = modifiersContextObjects;
     contextObject.auraIncludeAlly = auraIncludeAlly;
@@ -34,15 +43,27 @@ class ModifierDyingWishApplyModifiers extends ModifierDyingWish {
     if (this.modifiersContextObjects != null) {
       return Array.from<any>(this.getAffectedEntities()).map((entity) =>
         Array.from<any>(this.modifiersContextObjects).map((modifierContextObject) =>
-          this.getGameSession().applyModifierContextObject(modifierContextObject, entity)));
+          this.getGameSession().applyModifierContextObject(modifierContextObject, entity),
+        ),
+      );
     }
   }
 
   getAffectedEntities(action) {
-    const entityList = this.getGameSession().getBoard().getCardsWithinRadiusOfPosition(this.getCard().position, this.auraFilterByCardType, this.auraRadius, this.auraIncludeSelf);
+    const entityList = this.getGameSession()
+      .getBoard()
+      .getCardsWithinRadiusOfPosition(
+        this.getCard().position,
+        this.auraFilterByCardType,
+        this.auraRadius,
+        this.auraIncludeSelf,
+      );
     const affectedEntities = [];
     for (var entity of Array.from<any>(entityList)) {
-      if ((this.auraIncludeAlly && entity.getIsSameTeamAs(this.getCard())) || (this.auraIncludeEnemy && !entity.getIsSameTeamAs(this.getCard()))) {
+      if (
+        (this.auraIncludeAlly && entity.getIsSameTeamAs(this.getCard())) ||
+        (this.auraIncludeEnemy && !entity.getIsSameTeamAs(this.getCard()))
+      ) {
         if (this.canTargetGeneral || !entity.getIsGeneral()) {
           affectedEntities.push(entity);
         }
@@ -52,6 +73,9 @@ class ModifierDyingWishApplyModifiers extends ModifierDyingWish {
   }
 }
 ModifierDyingWishApplyModifiers.prototype.type = 'ModifierDyingWishApplyModifiers';
-ModifierDyingWishApplyModifiers.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierDyingWishApplyModifiers.prototype.fxResource = [
+  'FX.Modifiers.ModifierDyingWish',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 
 module.exports = ModifierDyingWishApplyModifiers;

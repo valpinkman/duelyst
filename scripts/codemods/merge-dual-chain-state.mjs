@@ -21,7 +21,10 @@ import { parse } from '@typescript-eslint/parser';
 const NAMES = ['_chainState', 'this_obj'];
 
 const analyse = (fnNode) => {
-  const acc = { _chainState: { read: new Set(), write: new Set() }, this_obj: { read: new Set(), write: new Set() } };
+  const acc = {
+    _chainState: { read: new Set(), write: new Set() },
+    this_obj: { read: new Set(), write: new Set() },
+  };
   const decls = [];
   const refs = [];
   const scan = (n, parent) => {
@@ -30,8 +33,13 @@ const analyse = (fnNode) => {
       decls.push(parent && parent.type === 'VariableDeclaration' ? parent : n);
     }
     if (n.type === 'Identifier' && n.name === 'this_obj') refs.push(n);
-    if (n.type === 'MemberExpression' && n.object.type === 'Identifier'
-        && NAMES.includes(n.object.name) && n.property && n.property.name) {
+    if (
+      n.type === 'MemberExpression' &&
+      n.object.type === 'Identifier' &&
+      NAMES.includes(n.object.name) &&
+      n.property &&
+      n.property.name
+    ) {
       const isWrite = parent && parent.type === 'AssignmentExpression' && parent.left === n;
       acc[n.object.name][isWrite ? 'write' : 'read'].add(n.property.name);
     }
@@ -43,16 +51,22 @@ const analyse = (fnNode) => {
   };
   scan(fnNode.body || fnNode, null);
 
-  const cross = [...acc.this_obj.write].some((p) => acc._chainState.read.has(p))
-    || [...acc._chainState.write].some((p) => acc.this_obj.read.has(p));
+  const cross =
+    [...acc.this_obj.write].some((p) => acc._chainState.read.has(p)) ||
+    [...acc._chainState.write].some((p) => acc.this_obj.read.has(p));
   return { cross, decls, refs };
 };
 
-let files = 0; let fixed = 0;
+let files = 0;
+let fixed = 0;
 for (const file of process.argv.slice(2)) {
   const src = readFileSync(file, 'utf8');
   let ast;
-  try { ast = parse(src, { range: true }); } catch { continue; }
+  try {
+    ast = parse(src, { range: true });
+  } catch {
+    continue;
+  }
 
   const edits = [];
   const walk = (n) => {
@@ -70,7 +84,7 @@ for (const file of process.argv.slice(2)) {
           edits.push({ kind: 'rename', range: r.range });
         }
       }
-      return;                                    // do not descend into nested fns twice
+      return; // do not descend into nested fns twice
     }
     for (const k of Object.keys(n)) {
       const v = n[k];
@@ -86,13 +100,18 @@ for (const file of process.argv.slice(2)) {
     if (e.kind === 'rename') {
       out = out.slice(0, e.range[0]) + '_chainState' + out.slice(e.range[1]);
     } else {
-      let s = e.range[0]; while (s > 0 && out[s - 1] !== '\n') s -= 1;
-      let en = e.range[1]; while (en < out.length && out[en] !== '\n') en += 1;
+      let s = e.range[0];
+      while (s > 0 && out[s - 1] !== '\n') s -= 1;
+      let en = e.range[1];
+      while (en < out.length && out[en] !== '\n') en += 1;
       out = out.slice(0, s) + out.slice(en + 1);
     }
   }
-  try { parse(out, { range: true }); } catch (err) {
-    console.error(`  !! ${file}: output does not parse (${err.message})`); continue;
+  try {
+    parse(out, { range: true });
+  } catch (err) {
+    console.error(`  !! ${file}: output does not parse (${err.message})`);
+    continue;
   }
   writeFileSync(file, out);
   files += 1;

@@ -13,11 +13,25 @@ Logger.enabled = false;
 describe('game mulligan', () => {
   beforeEach(() => {
     // get all cards
-    const allCards = SDK.GameSession.getCardCaches().getType(SDK.CardType.Unit).getIsGeneral(false).getCards();
-    const cardsThatCost1 = _.filter(allCards, (card) => card.getManaCost() === 1
-        && (card.getFactionId() === SDK.Factions.Neutral || card.getFactionId() === SDK.Factions.Faction1)
-        && (card.modifiersContextObjects == null || card.modifiersContextObjects.length === 0));
-    const cardsThatCost4Plus = _.filter(allCards, (card) => card.getManaCost() >= 4 && (card.getFactionId() === SDK.Factions.Neutral || card.getFactionId() === SDK.Factions.Faction1));
+    const allCards = SDK.GameSession.getCardCaches()
+      .getType(SDK.CardType.Unit)
+      .getIsGeneral(false)
+      .getCards();
+    const cardsThatCost1 = _.filter(
+      allCards,
+      (card) =>
+        card.getManaCost() === 1 &&
+        (card.getFactionId() === SDK.Factions.Neutral ||
+          card.getFactionId() === SDK.Factions.Faction1) &&
+        (card.modifiersContextObjects == null || card.modifiersContextObjects.length === 0),
+    );
+    const cardsThatCost4Plus = _.filter(
+      allCards,
+      (card) =>
+        card.getManaCost() >= 4 &&
+        (card.getFactionId() === SDK.Factions.Neutral ||
+          card.getFactionId() === SDK.Factions.Faction1),
+    );
 
     // define test decks
     const playerDecks = [
@@ -75,7 +89,11 @@ describe('game mulligan', () => {
     }
     const validTargetPositions = cardToPlay.getValidTargetPositions();
     const validTargetPosition = _.sample(validTargetPositions);
-    const playCardFromHandAction = player.actionPlayCardFromHand(indexToPlay, validTargetPosition.x, validTargetPosition.y);
+    const playCardFromHandAction = player.actionPlayCardFromHand(
+      indexToPlay,
+      validTargetPosition.x,
+      validTargetPosition.y,
+    );
     SDK.GameSession.getInstance().executeAction(playCardFromHandAction);
 
     expect(playCardFromHandAction.getIsValid()).to.equal(false);
@@ -108,8 +126,12 @@ describe('game mulligan', () => {
   */
 
   it('expect game to be active after both players have drawn starting hand', () => {
-    SDK.GameSession.getInstance().executeAction(SDK.GameSession.getInstance().getPlayer1().actionDrawStartingHand());
-    SDK.GameSession.getInstance().executeAction(SDK.GameSession.getInstance().getPlayer2().actionDrawStartingHand());
+    SDK.GameSession.getInstance().executeAction(
+      SDK.GameSession.getInstance().getPlayer1().actionDrawStartingHand(),
+    );
+    SDK.GameSession.getInstance().executeAction(
+      SDK.GameSession.getInstance().getPlayer2().actionDrawStartingHand(),
+    );
     expect(SDK.GameSession.getInstance().isActive()).to.equal(true);
   });
 });

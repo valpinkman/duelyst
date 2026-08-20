@@ -13,7 +13,10 @@ class SpellHealGeneralForEachFriendlyMinion extends SpellHealYourGeneral {
 
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     for (var unit of Array.from<any>(board.getUnits(true, false))) {
-      if (((unit != null ? unit.getOwnerId() : undefined) === this.getOwnerId()) && !unit.getIsGeneral()) {
+      if (
+        (unit != null ? unit.getOwnerId() : undefined) === this.getOwnerId() &&
+        !unit.getIsGeneral()
+      ) {
         this.healModifier += this.healAmountPerMinion;
       }
     }

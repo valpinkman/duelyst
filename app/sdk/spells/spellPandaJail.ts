@@ -17,17 +17,32 @@ class SpellPandaJail extends SpellSpawnEntity {
 
   getCardDataOrIndexToSpawn(x, y) {
     let cardDataOrIndexToSpawn = super.getCardDataOrIndexToSpawn(x, y);
-    if ((cardDataOrIndexToSpawn != null) && !_.isObject(cardDataOrIndexToSpawn)) { cardDataOrIndexToSpawn = this.getGameSession().getCardByIndex(cardDataOrIndexToSpawn).createNewCardData(); }
-    if (cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects == null) { cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects = []; }
+    if (cardDataOrIndexToSpawn != null && !_.isObject(cardDataOrIndexToSpawn)) {
+      cardDataOrIndexToSpawn = this.getGameSession()
+        .getCardByIndex(cardDataOrIndexToSpawn)
+        .createNewCardData();
+    }
+    if (cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects == null) {
+      cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects = [];
+    }
     const removalModifierContextObject = ModifierStartTurnWatchRemoveEntity.createContextObject();
     removalModifierContextObject.isHiddenToUI = true;
-    cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects.push(removalModifierContextObject);
+    cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects.push(
+      removalModifierContextObject,
+    );
     return cardDataOrIndexToSpawn;
   }
 
   _findApplyEffectPositions(position, sourceAction) {
     const card = this.getEntityToSpawn();
-    const applyEffectPositions = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(this.getGameSession(), this.getGameSession().getGeneralForOpponentOfPlayerId(this.getOwnerId()).getPosition(), CONFIG.PATTERN_3x3, card, this, 8);
+    const applyEffectPositions = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(
+      this.getGameSession(),
+      this.getGameSession().getGeneralForOpponentOfPlayerId(this.getOwnerId()).getPosition(),
+      CONFIG.PATTERN_3x3,
+      card,
+      this,
+      8,
+    );
 
     return applyEffectPositions;
   }

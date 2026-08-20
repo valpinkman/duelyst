@@ -29,11 +29,13 @@ class SpellRestoringLight extends Spell {
 
     return Array.from<any>(friendlyMinions).map((entity) =>
       Array.from<any>(this.getAppliedTargetModifiersContextObjects()).map((modifierContextObject) =>
-        this.getGameSession().applyModifierContextObject(modifierContextObject, entity)));
+        this.getGameSession().applyModifierContextObject(modifierContextObject, entity),
+      ),
+    );
   }
 
   setNumModifiersToApply(val) {
-    return this.numModifiersToApply = val;
+    return (this.numModifiersToApply = val);
   }
 
   getNumModifiersToApply() {
@@ -43,13 +45,18 @@ class SpellRestoringLight extends Spell {
   getAppliedTargetModifiersContextObjects() {
     let appliedModifiersContextObjects = this.getTargetModifiersContextObjects();
     let numModifiersToPick = this.numModifiersToApply;
-    if ((numModifiersToPick > 0) && (numModifiersToPick < appliedModifiersContextObjects.length)) {
+    if (numModifiersToPick > 0 && numModifiersToPick < appliedModifiersContextObjects.length) {
       // pick modifiers at random
       const modifierContextObjectsToPickFrom = appliedModifiersContextObjects.slice(0);
       appliedModifiersContextObjects = [];
       while (numModifiersToPick > 0) {
         // pick a modifier and remove it from the list to avoid picking duplicates
-        var modifierContextObject = modifierContextObjectsToPickFrom.splice(this.getGameSession().getRandomIntegerForExecution(modifierContextObjectsToPickFrom.length), 1)[0];
+        var modifierContextObject = modifierContextObjectsToPickFrom.splice(
+          this.getGameSession().getRandomIntegerForExecution(
+            modifierContextObjectsToPickFrom.length,
+          ),
+          1,
+        )[0];
         appliedModifiersContextObjects.push(modifierContextObject);
         numModifiersToPick--;
       }

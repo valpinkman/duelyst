@@ -37,7 +37,6 @@ var NotificationsManager = require('./notifications_manager');
 var Manager = require('./manager');
 
 var NavigationManager = Manager.extend({
-
   _appRegion: null,
   _mainRegion: null,
   _horizontalRegion: null,
@@ -77,72 +76,117 @@ var NavigationManager = Manager.extend({
     this._modalRegion = new TransitionRegion({ el: CONFIG.MODAL_SELECTOR });
     this._utilityRegion = new TransitionRegion({ el: CONFIG.UTILITY_SELECTOR });
     this._notificationsRegion = new TransitionRegion({ el: CONFIG.NOTIFICATIONS_SELECTOR });
-    this._maintenanceAnnouncementRegion = new Backbone.Marionette.Region({ el: CONFIG.MAINTENANCE_ANNOUNCEMENTS_SELECTOR });
+    this._maintenanceAnnouncementRegion = new Backbone.Marionette.Region({
+      el: CONFIG.MAINTENANCE_ANNOUNCEMENTS_SELECTOR,
+    });
 
     // show ui
     this._notificationsRegion.show(new NotificationsLayout());
 
     // when server status manager connects, show the system status announcement item view that will auto-update based on system status
-    ServerStatusManager.getInstance().onReady().then(function () {
-      // add maintenance announcement
-      this._maintenanceAnnouncementRegion.show(new MaintenanceAnnouncementItemView({ model: ServerStatusManager.getInstance().serverStatusModel }));
-    }.bind(this));
+    ServerStatusManager.getInstance()
+      .onReady()
+      .then(
+        function () {
+          // add maintenance announcement
+          this._maintenanceAnnouncementRegion.show(
+            new MaintenanceAnnouncementItemView({
+              model: ServerStatusManager.getInstance().serverStatusModel,
+            }),
+          );
+        }.bind(this),
+      );
 
     // attach delegate listeners to the app for special buttons
-    $(CONFIG.APP_SELECTOR).on('click', '.btn-user-cancel', function (event) {
-      // request user triggered action
-      this.requestUserTriggeredCancel();
-    }.bind(this));
-    $(CONFIG.APP_SELECTOR).on('click', '.btn-user-skip', function (event) {
-      // request user triggered action
-      this.requestUserTriggeredSkip();
-    }.bind(this));
-    $(CONFIG.APP_SELECTOR).on('click', '.btn-user-exit', function (event) {
-      // request user triggered action
-      this.requestUserTriggeredExit();
-    }.bind(this));
-    $(CONFIG.APP_SELECTOR).on('click', '.btn-user-confirm', function (event) {
-      // request user triggered action
-      this.requestUserTriggeredConfirm();
-    }.bind(this));
-
-    // attach delegate listeners to the app for button sounds
-    $(CONFIG.APP_SELECTOR).on('mouseenter', 'a, button, .btn', function () {
-      // play auto sound for hover
-      audio_engine.current().play_effect(RSX.sfx_ui_menu_hover.audio);
-    }.bind(this));
-    $(CONFIG.APP_SELECTOR).on('mouseup', 'a, button, .btn', function (event) {
-      // play auto sound for click
-      audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_click.audio, CONFIG.CLICK_SFX_PRIORITY);
-      // blur/un-focus target to remove ability for user to spam a button by pressing enter
-      $(event.target).blur();
-    }.bind(this));
-
-    // listen for specific key presses
-    $(document).on('keyup', function (event) {
-      var keyCode = event.which;
-      var $target = $(event.target);
-      if (keyCode == cc.KEY.escape) {
-        // play sound because key presses don't have auto sounds like buttons
-        audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_click.audio, CONFIG.CLICK_SFX_PRIORITY);
+    $(CONFIG.APP_SELECTOR).on(
+      'click',
+      '.btn-user-cancel',
+      function (event) {
         // request user triggered action
         this.requestUserTriggeredCancel();
-      } else if (keyCode == cc.KEY.space) {
-        if (!$target.is('input')) {
+      }.bind(this),
+    );
+    $(CONFIG.APP_SELECTOR).on(
+      'click',
+      '.btn-user-skip',
+      function (event) {
+        // request user triggered action
+        this.requestUserTriggeredSkip();
+      }.bind(this),
+    );
+    $(CONFIG.APP_SELECTOR).on(
+      'click',
+      '.btn-user-exit',
+      function (event) {
+        // request user triggered action
+        this.requestUserTriggeredExit();
+      }.bind(this),
+    );
+    $(CONFIG.APP_SELECTOR).on(
+      'click',
+      '.btn-user-confirm',
+      function (event) {
+        // request user triggered action
+        this.requestUserTriggeredConfirm();
+      }.bind(this),
+    );
+
+    // attach delegate listeners to the app for button sounds
+    $(CONFIG.APP_SELECTOR).on(
+      'mouseenter',
+      'a, button, .btn',
+      function () {
+        // play auto sound for hover
+        audio_engine.current().play_effect(RSX.sfx_ui_menu_hover.audio);
+      }.bind(this),
+    );
+    $(CONFIG.APP_SELECTOR).on(
+      'mouseup',
+      'a, button, .btn',
+      function (event) {
+        // play auto sound for click
+        audio_engine
+          .current()
+          .play_effect_for_interaction(RSX.sfx_ui_click.audio, CONFIG.CLICK_SFX_PRIORITY);
+        // blur/un-focus target to remove ability for user to spam a button by pressing enter
+        $(event.target).blur();
+      }.bind(this),
+    );
+
+    // listen for specific key presses
+    $(document).on(
+      'keyup',
+      function (event) {
+        var keyCode = event.which;
+        var $target = $(event.target);
+        if (keyCode == cc.KEY.escape) {
           // play sound because key presses don't have auto sounds like buttons
-          audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_click.audio, CONFIG.CLICK_SFX_PRIORITY);
+          audio_engine
+            .current()
+            .play_effect_for_interaction(RSX.sfx_ui_click.audio, CONFIG.CLICK_SFX_PRIORITY);
           // request user triggered action
-          this.requestUserTriggeredSkip();
+          this.requestUserTriggeredCancel();
+        } else if (keyCode == cc.KEY.space) {
+          if (!$target.is('input')) {
+            // play sound because key presses don't have auto sounds like buttons
+            audio_engine
+              .current()
+              .play_effect_for_interaction(RSX.sfx_ui_click.audio, CONFIG.CLICK_SFX_PRIORITY);
+            // request user triggered action
+            this.requestUserTriggeredSkip();
+          }
+        } else if (keyCode == cc.KEY.enter) {
+          if (!$target.is('a, button, .btn')) {
+            // play sound because key presses don't have auto sounds like buttons
+            audio_engine
+              .current()
+              .play_effect_for_interaction(RSX.sfx_ui_click.audio, CONFIG.CLICK_SFX_PRIORITY);
+            // request user triggered action
+            this.requestUserTriggeredConfirm();
+          }
         }
-      } else if (keyCode == cc.KEY.enter) {
-        if (!$target.is('a, button, .btn')) {
-          // play sound because key presses don't have auto sounds like buttons
-          audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_click.audio, CONFIG.CLICK_SFX_PRIORITY);
-          // request user triggered action
-          this.requestUserTriggeredConfirm();
-        }
-      }
-    }.bind(this));
+      }.bind(this),
+    );
 
     // listen for before resize
     this.listenTo(EventBus.getInstance(), EVENTS.before_resize, this.onBeforeResize);
@@ -191,7 +235,9 @@ var NavigationManager = Manager.extend({
   },
 
   getIsShowingViewClass: function (viewClass, parentView) {
-    return this.getIsShowingView(parentView) && this.getCurrentView(parentView) instanceof viewClass;
+    return (
+      this.getIsShowingView(parentView) && this.getCurrentView(parentView) instanceof viewClass
+    );
   },
 
   /**
@@ -201,27 +247,45 @@ var NavigationManager = Manager.extend({
   destroyAllViewsAndLayers: function (dontDestroy) {
     // unload content view
     var contentView = this.getContentView();
-    var contentViewPromise = contentView != null && !_.contains(dontDestroy, contentView) ? this.destroyContentView() : Promise.resolve();
+    var contentViewPromise =
+      contentView != null && !_.contains(dontDestroy, contentView)
+        ? this.destroyContentView()
+        : Promise.resolve();
 
     // unload modal view
     var modalView = this.getModalView();
-    var modalViewPromise = modalView != null && !_.contains(dontDestroy, modalView) ? this.destroyModalView() : Promise.resolve();
+    var modalViewPromise =
+      modalView != null && !_.contains(dontDestroy, modalView)
+        ? this.destroyModalView()
+        : Promise.resolve();
 
     // unload modal view
     var dialogView = this.getDialogView();
-    var dialogViewPromise = dialogView != null && !_.contains(dontDestroy, dialogView) ? this.destroyDialogView() : Promise.resolve();
+    var dialogViewPromise =
+      dialogView != null && !_.contains(dontDestroy, dialogView)
+        ? this.destroyDialogView()
+        : Promise.resolve();
 
     // unload utility view
     var utilityView = this.getUtilityView();
-    var utilityViewPromise = utilityView != null && !_.contains(dontDestroy, utilityView) ? this.destroyUtilityView() : Promise.resolve();
+    var utilityViewPromise =
+      utilityView != null && !_.contains(dontDestroy, utilityView)
+        ? this.destroyUtilityView()
+        : Promise.resolve();
 
     // unload content layer
     var contentLayer = Scene.getInstance().getContent();
-    var contentLayerPromise = contentLayer != null && !_.contains(dontDestroy, contentLayer) ? Scene.getInstance().destroyContent() : Promise.resolve();
+    var contentLayerPromise =
+      contentLayer != null && !_.contains(dontDestroy, contentLayer)
+        ? Scene.getInstance().destroyContent()
+        : Promise.resolve();
 
     // unload overlay layer
     var overlayLayer = Scene.getInstance().getOverlay();
-    var overlayLayerPromise = overlayLayer != null && !_.contains(dontDestroy, overlayLayer) ? Scene.getInstance().destroyOverlay() : Promise.resolve();
+    var overlayLayerPromise =
+      overlayLayer != null && !_.contains(dontDestroy, overlayLayer)
+        ? Scene.getInstance().destroyOverlay()
+        : Promise.resolve();
 
     return Promise.all([
       contentViewPromise,
@@ -255,13 +319,15 @@ var NavigationManager = Manager.extend({
       this.destroyModalView(),
       this.destroyUtilityView(),
       this._contentRegion.show(contentView),
-    ]).then(function () {
-      // unlock user navigation
-      this.requestUserTriggeredNavigationUnlocked(this._userNavLockIdContent);
+    ]).then(
+      function () {
+        // unlock user navigation
+        this.requestUserTriggeredNavigationUnlocked(this._userNavLockIdContent);
 
-      // show notifications
-      NotificationsManager.getInstance().showQueuedNotificationsThatCanBeShown();
-    }.bind(this));
+        // show notifications
+        NotificationsManager.getInstance().showQueuedNotificationsThatCanBeShown();
+      }.bind(this),
+    );
   },
 
   destroyContentView: function () {
@@ -273,10 +339,12 @@ var NavigationManager = Manager.extend({
         this.destroyModalView(),
         this.destroyUtilityView(),
         this._contentRegion.empty(),
-      ]).then(function () {
-        // unlock user navigation
-        this.requestUserTriggeredNavigationUnlocked(this._userNavLockIdContent);
-      }.bind(this));
+      ]).then(
+        function () {
+          // unlock user navigation
+          this.requestUserTriggeredNavigationUnlocked(this._userNavLockIdContent);
+        }.bind(this),
+      );
     } else {
       return Promise.resolve();
     }
@@ -334,13 +402,15 @@ var NavigationManager = Manager.extend({
     this.blurRegionsForModal();
 
     // show modal
-    return this._modalRegion.show(modalView).then(function () {
-      // unlock user navigation
-      this.requestUserTriggeredNavigationUnlocked(this._userNavLockIdModal);
+    return this._modalRegion.show(modalView).then(
+      function () {
+        // unlock user navigation
+        this.requestUserTriggeredNavigationUnlocked(this._userNavLockIdModal);
 
-      // show notifications
-      NotificationsManager.getInstance().showQueuedNotificationsThatCanBeShown();
-    }.bind(this));
+        // show notifications
+        NotificationsManager.getInstance().showQueuedNotificationsThatCanBeShown();
+      }.bind(this),
+    );
   },
 
   destroyModalView: function () {
@@ -350,10 +420,12 @@ var NavigationManager = Manager.extend({
 
       // temporarily disable user navigation
       this.requestUserTriggeredNavigationLocked(this._userNavLockIdModal);
-      return this._modalRegion.empty().then(function () {
-        // unlock user navigation
-        this.requestUserTriggeredNavigationUnlocked(this._userNavLockIdModal);
-      }.bind(this));
+      return this._modalRegion.empty().then(
+        function () {
+          // unlock user navigation
+          this.requestUserTriggeredNavigationUnlocked(this._userNavLockIdModal);
+        }.bind(this),
+      );
     } else {
       return Promise.resolve();
     }
@@ -474,20 +546,34 @@ var NavigationManager = Manager.extend({
    * @returns {Promise}
    */
   showDialogForConfirmation: function (confirmTitle, confirmMessage, buttonLabel) {
-    return new Promise(function (resolve, reject) {
-      // ask for user confirmation
-      var confirmDialogItemView = new ConfirmDialogItemView({ title: confirmTitle, message: confirmMessage, buttonLabel: buttonLabel });
-      this.listenToOnce(confirmDialogItemView, 'confirm', function () {
-        this.stopListening(confirmDialogItemView);
-        resolve(arguments);
-      }.bind(this));
-      this.listenToOnce(confirmDialogItemView, 'cancel', function () {
-        this.stopListening(confirmDialogItemView);
-        this.destroyDialogForConfirmation();
-        reject();
-      }.bind(this));
-      this.showDialogView(confirmDialogItemView);
-    }.bind(this));
+    return new Promise(
+      function (resolve, reject) {
+        // ask for user confirmation
+        var confirmDialogItemView = new ConfirmDialogItemView({
+          title: confirmTitle,
+          message: confirmMessage,
+          buttonLabel: buttonLabel,
+        });
+        this.listenToOnce(
+          confirmDialogItemView,
+          'confirm',
+          function () {
+            this.stopListening(confirmDialogItemView);
+            resolve(arguments);
+          }.bind(this),
+        );
+        this.listenToOnce(
+          confirmDialogItemView,
+          'cancel',
+          function () {
+            this.stopListening(confirmDialogItemView);
+            this.destroyDialogForConfirmation();
+            reject();
+          }.bind(this),
+        );
+        this.showDialogView(confirmDialogItemView);
+      }.bind(this),
+    );
   },
 
   /**
@@ -509,37 +595,59 @@ var NavigationManager = Manager.extend({
    */
   showDialogForConfirmPurchase: function (productData, saleData) {
     if (productData != null && !productData.is_purchased) {
-      return new Promise(function (resolve, reject) {
-        // ask for user confirmation
-        var confirmPurchaseDialogView = new ConfirmPurchaseDialogView({ model: new Backbone.Model(), productData: productData, saleData: saleData });
-        var completedPurchase = false;
-        this.listenToOnce(confirmPurchaseDialogView, 'processing', function (purchaseData) {
-          // paypal is assumed to be successful
-          if (!completedPurchase && purchaseData && (purchaseData.paymentType === 'paypal')) {
-            completedPurchase = true;
-            this.destroyDialogForConfirmPurchase();
-            resolve(purchaseData);
-          }
-        }.bind(this));
-        this.listenToOnce(confirmPurchaseDialogView, 'complete', function (purchaseData) {
-          if (!completedPurchase) {
-            completedPurchase = true;
-            resolve(purchaseData);
-          }
-        }.bind(this));
-        this.listenToOnce(confirmPurchaseDialogView, 'success', function () {
-          if (completedPurchase) {
-            this.destroyDialogForConfirmPurchase();
-          }
-        }.bind(this));
-        this.listenToOnce(confirmPurchaseDialogView, 'cancel', function () {
-          this.destroyDialogForConfirmPurchase();
-          reject();
-        }.bind(this));
+      return new Promise(
+        function (resolve, reject) {
+          // ask for user confirmation
+          var confirmPurchaseDialogView = new ConfirmPurchaseDialogView({
+            model: new Backbone.Model(),
+            productData: productData,
+            saleData: saleData,
+          });
+          var completedPurchase = false;
+          this.listenToOnce(
+            confirmPurchaseDialogView,
+            'processing',
+            function (purchaseData) {
+              // paypal is assumed to be successful
+              if (!completedPurchase && purchaseData && purchaseData.paymentType === 'paypal') {
+                completedPurchase = true;
+                this.destroyDialogForConfirmPurchase();
+                resolve(purchaseData);
+              }
+            }.bind(this),
+          );
+          this.listenToOnce(
+            confirmPurchaseDialogView,
+            'complete',
+            function (purchaseData) {
+              if (!completedPurchase) {
+                completedPurchase = true;
+                resolve(purchaseData);
+              }
+            }.bind(this),
+          );
+          this.listenToOnce(
+            confirmPurchaseDialogView,
+            'success',
+            function () {
+              if (completedPurchase) {
+                this.destroyDialogForConfirmPurchase();
+              }
+            }.bind(this),
+          );
+          this.listenToOnce(
+            confirmPurchaseDialogView,
+            'cancel',
+            function () {
+              this.destroyDialogForConfirmPurchase();
+              reject();
+            }.bind(this),
+          );
 
-        // show confirm purchase
-        this.showDialogView(confirmPurchaseDialogView);
-      }.bind(this));
+          // show confirm purchase
+          this.showDialogView(confirmPurchaseDialogView);
+        }.bind(this),
+      );
     } else {
       return Promise.reject();
     }
@@ -653,13 +761,17 @@ var NavigationManager = Manager.extend({
     // when user triggered navigation is allowed
     if (this._throttled_requestUserTriggeredExit == null) {
       // throttle to prevent spamming
-      this._throttled_requestUserTriggeredExit = _.throttle(function () {
-        if (!this.getUserTriggeredNavigationLocked()) {
-          this.trigger('user_triggered_exit');
-        } else {
-          this.trigger('user_attempt_exit');
-        }
-      }.bind(this), 300, { trailing: false });
+      this._throttled_requestUserTriggeredExit = _.throttle(
+        function () {
+          if (!this.getUserTriggeredNavigationLocked()) {
+            this.trigger('user_triggered_exit');
+          } else {
+            this.trigger('user_attempt_exit');
+          }
+        }.bind(this),
+        300,
+        { trailing: false },
+      );
     }
     this._throttled_requestUserTriggeredExit();
   },
@@ -668,13 +780,17 @@ var NavigationManager = Manager.extend({
     // when user triggered navigation is allowed
     if (this._throttled_requestUserTriggeredSkip == null) {
       // throttle to prevent spamming
-      this._throttled_requestUserTriggeredSkip = _.throttle(function () {
-        if (!this.getUserTriggeredNavigationLocked()) {
-          this.trigger('user_triggered_skip');
-        } else {
-          this.trigger('user_attempt_skip');
-        }
-      }.bind(this), 300, { trailing: false });
+      this._throttled_requestUserTriggeredSkip = _.throttle(
+        function () {
+          if (!this.getUserTriggeredNavigationLocked()) {
+            this.trigger('user_triggered_skip');
+          } else {
+            this.trigger('user_attempt_skip');
+          }
+        }.bind(this),
+        300,
+        { trailing: false },
+      );
     }
     this._throttled_requestUserTriggeredSkip();
   },
@@ -683,13 +799,17 @@ var NavigationManager = Manager.extend({
     // when user triggered navigation is allowed
     if (this._throttled_requestUserTriggeredCancel == null) {
       // throttle to prevent spamming
-      this._throttled_requestUserTriggeredCancel = _.throttle(function () {
-        if (!this.getUserTriggeredNavigationLocked()) {
-          this.trigger('user_triggered_cancel');
-        } else {
-          this.trigger('user_attempt_cancel');
-        }
-      }.bind(this), 300, { trailing: false });
+      this._throttled_requestUserTriggeredCancel = _.throttle(
+        function () {
+          if (!this.getUserTriggeredNavigationLocked()) {
+            this.trigger('user_triggered_cancel');
+          } else {
+            this.trigger('user_attempt_cancel');
+          }
+        }.bind(this),
+        300,
+        { trailing: false },
+      );
     }
     this._throttled_requestUserTriggeredCancel();
   },
@@ -698,13 +818,17 @@ var NavigationManager = Manager.extend({
     // when user triggered navigation is allowed
     if (this._throttled_requestUserTriggeredConfirm == null) {
       // throttle to prevent spamming
-      this._throttled_requestUserTriggeredConfirm = _.throttle(function () {
-        if (!this.getUserTriggeredNavigationLocked()) {
-          this.trigger('user_triggered_confirm');
-        } else {
-          this.trigger('user_attempt_confirm');
-        }
-      }.bind(this), 300, { trailing: false });
+      this._throttled_requestUserTriggeredConfirm = _.throttle(
+        function () {
+          if (!this.getUserTriggeredNavigationLocked()) {
+            this.trigger('user_triggered_confirm');
+          } else {
+            this.trigger('user_attempt_confirm');
+          }
+        }.bind(this),
+        300,
+        { trailing: false },
+      );
     }
     this._throttled_requestUserTriggeredConfirm();
   },
@@ -771,7 +895,9 @@ var NavigationManager = Manager.extend({
 
   showLastRoute: function () {
     if (this.getHasLastRoute()) {
-      audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_cancel.audio, CONFIG.CANCEL_SFX_PRIORITY);
+      audio_engine
+        .current()
+        .play_effect_for_interaction(RSX.sfx_ui_cancel.audio, CONFIG.CANCEL_SFX_PRIORITY);
 
       if (this._minorRouteStack.length > 1) {
         // go to last minor route
@@ -812,7 +938,8 @@ var NavigationManager = Manager.extend({
    */
   addMajorRoute: function (id, callback, context, parameters) {
     if (_.isFunction(callback)) {
-      var lastRoute = this._majorRouteStack.length && this._majorRouteStack[this._majorRouteStack.length - 1];
+      var lastRoute =
+        this._majorRouteStack.length && this._majorRouteStack[this._majorRouteStack.length - 1];
       if (lastRoute == null || lastRoute.id !== id) {
         // push route to top of stack
         this._majorRouteStack.push({
@@ -837,7 +964,8 @@ var NavigationManager = Manager.extend({
    */
   addMinorRoute: function (id, callback, context, parameters) {
     if (_.isFunction(callback)) {
-      var lastRoute = this._minorRouteStack.length && this._minorRouteStack[this._minorRouteStack.length - 1];
+      var lastRoute =
+        this._minorRouteStack.length && this._minorRouteStack[this._minorRouteStack.length - 1];
       if (lastRoute == null || lastRoute.id !== id) {
         this._minorRouteStack.push({
           id: id,
@@ -901,5 +1029,4 @@ var NavigationManager = Manager.extend({
   },
 
   /* endregion ROUTING */
-
 });

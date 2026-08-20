@@ -16,7 +16,6 @@ var i18next = require('i18next');
 var SlidingPanelItemView = require('./sliding_panel');
 
 var PlayModeItemView = SlidingPanelItemView.extend({
-
   className: 'sliding-panel play-mode',
 
   template: PlayModeTmpl,
@@ -33,7 +32,6 @@ var PlayModeItemView = SlidingPanelItemView.extend({
   timeAvailableForInterval: null,
 
   templateHelpers: {
-
     isAvailableToday: function () {
       return this.isModeAvailableToday();
     },
@@ -48,7 +46,6 @@ var PlayModeItemView = SlidingPanelItemView.extend({
         return local.format('ddd MMM DD hh:mm A');
       }
     },
-
   },
 
   /* region INITIALIZE */
@@ -59,14 +56,29 @@ var PlayModeItemView = SlidingPanelItemView.extend({
       // leave default message
     } else if (!NewPlayerManager.getInstance().canPlayPlayMode(this.model.get('id'))) {
       // Show a more specific message if player has completed practice up until the point of unlocking Gauntlet
-      if (this.model.get('id') == SDK.PlayModes.Gauntlet && NewPlayerManager.getInstance().getCurrentCoreStage().value == SDK.NewPlayerProgressionStageEnum.FirstGameDone.value) {
-        this.model.set('unlockMessage', i18next.t('new_player_experience.play_mode_gauntlet_unlock_message'));
+      if (
+        this.model.get('id') == SDK.PlayModes.Gauntlet &&
+        NewPlayerManager.getInstance().getCurrentCoreStage().value ==
+          SDK.NewPlayerProgressionStageEnum.FirstGameDone.value
+      ) {
+        this.model.set(
+          'unlockMessage',
+          i18next.t('new_player_experience.play_mode_gauntlet_unlock_message'),
+        );
       } else {
-        this.model.set('unlockMessage', i18next.t('new_player_experience.play_mode_unlock_message'));
+        this.model.set(
+          'unlockMessage',
+          i18next.t('new_player_experience.play_mode_unlock_message'),
+        );
       }
     } else if (!this.hasPlayedEnoughGames()) {
       var gamesRequiredToUnlock = this.model.get('gamesRequiredToUnlock');
-      this.model.set('unlockMessage', i18next.t('new_player_experience.play_mode_unlock_game_count_message', { game_count: (gamesRequiredToUnlock - ProgressionManager.getInstance().getGameCount()) }));
+      this.model.set(
+        'unlockMessage',
+        i18next.t('new_player_experience.play_mode_unlock_game_count_message', {
+          game_count: gamesRequiredToUnlock - ProgressionManager.getInstance().getGameCount(),
+        }),
+      );
     }
   },
 
@@ -77,7 +89,12 @@ var PlayModeItemView = SlidingPanelItemView.extend({
   onRender: function () {
     SlidingPanelItemView.prototype.onRender.call(this);
 
-    if (!this.model.get('enabled') || !this.isModeAvailableToday() || !NewPlayerManager.getInstance().canPlayPlayMode(this.model.get('id')) || !this.hasPlayedEnoughGames()) {
+    if (
+      !this.model.get('enabled') ||
+      !this.isModeAvailableToday() ||
+      !NewPlayerManager.getInstance().canPlayPlayMode(this.model.get('id')) ||
+      !this.hasPlayedEnoughGames()
+    ) {
       this.$el.addClass('disabled');
     } else {
       this.$el.removeClass('disabled');
@@ -91,9 +108,12 @@ var PlayModeItemView = SlidingPanelItemView.extend({
   },
 
   onShow: function () {
-    this._showNewPlayerStylingTimeout = setTimeout(function () {
-      this._showNewPlayerUI();
-    }.bind(this), 1000);
+    this._showNewPlayerStylingTimeout = setTimeout(
+      function () {
+        this._showNewPlayerUI();
+      }.bind(this),
+      1000,
+    );
   },
 
   onDestroy: function () {
@@ -122,8 +142,7 @@ var PlayModeItemView = SlidingPanelItemView.extend({
   /* region HELPERS */
 
   isModeAvailableToday: function () {
-    if (UtilsEnv.getIsInStaging() || UtilsEnv.getIsInDevelopment())
-      return true;
+    if (UtilsEnv.getIsInStaging() || UtilsEnv.getIsInDevelopment()) return true;
 
     var days = this.model.get('availableOnDaysOfWeek');
     if (days && days.length > 0) {
@@ -162,7 +181,7 @@ var PlayModeItemView = SlidingPanelItemView.extend({
 
         var delta;
         if (nextDay < currentDay) {
-          delta = (7 + nextDay) - currentDay;
+          delta = 7 + nextDay - currentDay;
         } else {
           delta = nextDay - currentDay;
         }
@@ -177,13 +196,19 @@ var PlayModeItemView = SlidingPanelItemView.extend({
 
   hasPlayedEnoughGames: function () {
     var gamesRequiredToUnlock = this.model.get('gamesRequiredToUnlock');
-    return gamesRequiredToUnlock == null || gamesRequiredToUnlock <= ProgressionManager.getInstance().getGameCount();
+    return (
+      gamesRequiredToUnlock == null ||
+      gamesRequiredToUnlock <= ProgressionManager.getInstance().getGameCount()
+    );
   },
 
   _showNewPlayerUI: function () {
     var newPlayerManager = NewPlayerManager.getInstance();
 
-    if (this.model.get('id') == SDK.PlayModes.Practice && newPlayerManager.getCurrentCoreStage() == SDK.NewPlayerProgressionStageEnum.TutorialDone) {
+    if (
+      this.model.get('id') == SDK.PlayModes.Practice &&
+      newPlayerManager.getCurrentCoreStage() == SDK.NewPlayerProgressionStageEnum.TutorialDone
+    ) {
       var popoverContainer = this.$el;
       popoverContainer.popover({
         content: i18next.t('new_player_experience.highlight_practice_game_popover'),
@@ -195,7 +220,11 @@ var PlayModeItemView = SlidingPanelItemView.extend({
       this.$el.addClass('emphasize');
     }
 
-    if (this.model.get('id') == SDK.PlayModes.Ranked && newPlayerManager.getCurrentCoreStage() == SDK.NewPlayerProgressionStageEnum.ExtendedPracticeDone) {
+    if (
+      this.model.get('id') == SDK.PlayModes.Ranked &&
+      newPlayerManager.getCurrentCoreStage() ==
+        SDK.NewPlayerProgressionStageEnum.ExtendedPracticeDone
+    ) {
       var popoverContainer = this.$el;
       popoverContainer.popover({
         content: i18next.t('new_player_experience.highlight_ladder_popover'),
@@ -252,7 +281,8 @@ var PlayModeItemView = SlidingPanelItemView.extend({
           if (durationMinutes > 1) pluralS = 's';
           durationStr += durationMinutes + ' minute' + pluralS + ' ';
         }
-        if (!durationDays) { // Only show seconds if we dont have days
+        if (!durationDays) {
+          // Only show seconds if we dont have days
           var pluralS = '';
           if (durationSeconds > 1) pluralS = 's';
           durationStr += durationSeconds + ' second' + pluralS;
@@ -309,7 +339,8 @@ var PlayModeItemView = SlidingPanelItemView.extend({
         if (durationMinutes > 1) pluralS = 's';
         durationStr += durationMinutes + ' minute' + pluralS + ' ';
       }
-      if (!durationDays) { // Only show seconds if we dont have days
+      if (!durationDays) {
+        // Only show seconds if we dont have days
         var pluralS = '';
         if (durationSeconds > 1) pluralS = 's';
         durationStr += durationSeconds + ' second' + pluralS;
@@ -330,7 +361,6 @@ var PlayModeItemView = SlidingPanelItemView.extend({
   },
 
   /* endregion HELPERS */
-
 });
 
 // Expose the class either via CommonJS or the global object

@@ -62,7 +62,9 @@ describe('challenges', () => {
 
       let action = gameSession.getGeneralForPlayer1().actionMove({ x: 3, y: 1 });
       gameSession.executeAction(action);
-      action = gameSession.getGeneralForPlayer1().actionAttack(board.getUnitAtPosition({ x: 4, y: 2 }));
+      action = gameSession
+        .getGeneralForPlayer1()
+        .actionAttack(board.getUnitAtPosition({ x: 4, y: 2 }));
       gameSession.executeAction(action);
 
       expect(gameSession.getGeneralForPlayer2().getHP()).to.equal(0);

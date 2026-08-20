@@ -17,7 +17,6 @@ const BaseParticleSystem = require('../BaseParticleSystem');
  *************************************************************************** */
 
 const CosmeticRewardNode = RewardNode.extend({
-
   _cosmeticId: null,
 
   ctor(cosmeticId) {
@@ -41,7 +40,10 @@ const CosmeticRewardNode = RewardNode.extend({
    */
   getRequiredResources() {
     const cosmeticRewardResources = PKGS.getPkgForIdentifier('cosmetic_reward');
-    const cosmeticResources = this._cosmeticId != null ? SDK.CosmeticsFactory.cosmeticResourcesForIdentifier(this._cosmeticId) : [];
+    const cosmeticResources =
+      this._cosmeticId != null
+        ? SDK.CosmeticsFactory.cosmeticResourcesForIdentifier(this._cosmeticId)
+        : [];
     return this._super().concat(cosmeticResources, cosmeticRewardResources);
   },
 
@@ -50,8 +52,8 @@ const CosmeticRewardNode = RewardNode.extend({
   /* region ANIMATION */
 
   getRewardAnimationPromise(looping, showLabel, maskWithCircle) {
-    return (looping ? this.showLoopingRewardFlare() : this.showRewardFlare())
-      .then(() => new Promise<void>((resolve) => {
+    return (looping ? this.showLoopingRewardFlare() : this.showRewardFlare()).then(() =>
+      new Promise<void>((resolve) => {
         // cosmetic data
         const cosmeticData = SDK.CosmeticsFactory.cosmeticForIdentifier(this._cosmeticId);
 
@@ -68,7 +70,13 @@ const CosmeticRewardNode = RewardNode.extend({
         if (showLabel) {
           // primary label
           const labelText = _.isString(showLabel) ? showLabel : 'COSMETIC';
-          var label = new cc.LabelTTF(labelText, RSX.font_regular.name, 22, cc.size(200, 24), cc.TEXT_ALIGNMENT_CENTER);
+          var label = new cc.LabelTTF(
+            labelText,
+            RSX.font_regular.name,
+            22,
+            cc.size(200, 24),
+            cc.TEXT_ALIGNMENT_CENTER,
+          );
           label.setPosition(0, -120);
           label.setOpacity(0);
           this.addChild(label, 1);
@@ -77,7 +85,13 @@ const CosmeticRewardNode = RewardNode.extend({
           const { rarityId } = cosmeticData;
           if (rarityId != null) {
             const rarityData = SDK.RarityFactory.rarityForIdentifier(rarityId);
-            var sublabel = new cc.LabelTTF(rarityData.name.toLocaleUpperCase(), RSX.font_regular.name, 16, cc.size(200, 24), cc.TEXT_ALIGNMENT_CENTER);
+            var sublabel = new cc.LabelTTF(
+              rarityData.name.toLocaleUpperCase(),
+              RSX.font_regular.name,
+              16,
+              cc.size(200, 24),
+              cc.TEXT_ALIGNMENT_CENTER,
+            );
             sublabel.setFontFillColor(rarityData.color);
             sublabel.setPosition(0, -100);
             sublabel.setOpacity(0);
@@ -89,37 +103,50 @@ const CosmeticRewardNode = RewardNode.extend({
         this.showRewardWipeFlare();
 
         // show cosmetic
-        this.runAction(cc.sequence(
-          cc.targetedAction(cosmeticSprite, cc.sequence(
-            cc.show(),
-            cc.scaleTo(0.0, 0.0),
-            cc.scaleTo(CONFIG.ANIMATE_MEDIUM_DURATION, cosmeticScale).easing(cc.easeBackOut()),
+        this.runAction(
+          cc.sequence(
+            cc.targetedAction(
+              cosmeticSprite,
+              cc.sequence(
+                cc.show(),
+                cc.scaleTo(0.0, 0.0),
+                cc.scaleTo(CONFIG.ANIMATE_MEDIUM_DURATION, cosmeticScale).easing(cc.easeBackOut()),
+                cc.callFunc(() => {
+                  // show labels
+                  if (label != null) {
+                    label.fadeTo(CONFIG.ANIMATE_FAST_DURATION, 255.0);
+                  }
+                  if (sublabel != null) {
+                    sublabel.fadeTo(CONFIG.ANIMATE_FAST_DURATION, 255.0);
+                  }
+                }),
+              ),
+            ),
             cc.callFunc(() => {
-              // show labels
-              if (label != null) {
-                label.fadeTo(CONFIG.ANIMATE_FAST_DURATION, 255.0);
+              // float sprite to make it appear more dynamic
+              if (!looping) {
+                cosmeticSprite.runAction(
+                  FigureEight.create(
+                    4.0 + Math.random(),
+                    2,
+                    5,
+                    cosmeticSprite.getPosition(),
+                  ).repeatForever(),
+                );
               }
-              if (sublabel != null) {
-                sublabel.fadeTo(CONFIG.ANIMATE_FAST_DURATION, 255.0);
-              }
-            }),
-          )),
-          cc.callFunc(() => {
-            // float sprite to make it appear more dynamic
-            if (!looping) {
-              cosmeticSprite.runAction(FigureEight.create(4.0 + Math.random(), 2, 5, cosmeticSprite.getPosition()).repeatForever());
-            }
 
-            // finish
-            resolve();
-          }),
-        ));
-      })
-        .catch((error) => { EventBus.getInstance().trigger(EVENTS.error, error); }));
+              // finish
+              resolve();
+            }),
+          ),
+        );
+      }).catch((error) => {
+        EventBus.getInstance().trigger(EVENTS.error, error);
+      }),
+    );
   },
 
   /* endregion ANIMATION */
-
 });
 
 CosmeticRewardNode.create = function (options, node) {

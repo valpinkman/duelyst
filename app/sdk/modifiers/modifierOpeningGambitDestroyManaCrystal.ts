@@ -16,8 +16,12 @@ class ModifierOpeningGambitDestroyManaCrystal extends ModifierOpeningGambit {
   static type = 'ModifierOpeningGambitDestroyManaCrystal';
 
   static createContextObject(takeFromOwner, amountToRemove, options) {
-    if (takeFromOwner == null) { takeFromOwner = false; }
-    if (amountToRemove == null) { amountToRemove = 1; }
+    if (takeFromOwner == null) {
+      takeFromOwner = false;
+    }
+    if (amountToRemove == null) {
+      amountToRemove = 1;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.amountToRemove = amountToRemove;
     contextObject.takeFromOwner = takeFromOwner;
@@ -27,18 +31,27 @@ class ModifierOpeningGambitDestroyManaCrystal extends ModifierOpeningGambit {
   onOpeningGambit() {
     super.onOpeningGambit();
 
-    const removeManaCoreAction = new RemoveManaCoreAction(this.getGameSession(), this.amountToRemove);
+    const removeManaCoreAction = new RemoveManaCoreAction(
+      this.getGameSession(),
+      this.amountToRemove,
+    );
     removeManaCoreAction.setSource(this.getCard());
     if (this.takeFromOwner) {
       removeManaCoreAction.setOwnerId(this.getCard().getOwnerId());
     } else {
-      removeManaCoreAction.setOwnerId(this.getGameSession().getOpponentPlayerIdOfPlayerId(this.getCard().getOwnerId()));
+      removeManaCoreAction.setOwnerId(
+        this.getGameSession().getOpponentPlayerIdOfPlayerId(this.getCard().getOwnerId()),
+      );
     }
-    return this.getGameSession().executeAction(this.getGameSession().executeAction(removeManaCoreAction));
+    return this.getGameSession().executeAction(
+      this.getGameSession().executeAction(removeManaCoreAction),
+    );
   }
 }
 ModifierOpeningGambitDestroyManaCrystal.prototype.type = 'ModifierOpeningGambitDestroyManaCrystal';
-ModifierOpeningGambitDestroyManaCrystal.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
+ModifierOpeningGambitDestroyManaCrystal.prototype.fxResource = [
+  'FX.Modifiers.ModifierOpeningGambit',
+];
 ModifierOpeningGambitDestroyManaCrystal.prototype.amountToRemove = 1;
 ModifierOpeningGambitDestroyManaCrystal.prototype.takeFromOwner = false;
 

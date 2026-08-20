@@ -11,7 +11,7 @@ class ModifierStartTurnWatchPutCardInOpponentsHand extends ModifierStartTurnWatc
   declare cardDataOrIndexToSpawn: any;
 
   static type = 'ModifierStartTurnWatchPutCardInOpponentsHand';
-  static description = 'Add a card to your opponent\'s hand at start of turn';
+  static description = "Add a card to your opponent's hand at start of turn";
 
   static createContextObject(cardDataOrIndexToSpawn, options) {
     const contextObject = super.createContextObject(options);
@@ -21,14 +21,19 @@ class ModifierStartTurnWatchPutCardInOpponentsHand extends ModifierStartTurnWatc
 
   onTurnWatch(action) {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
-      const card = this.getGameSession().getExistingCardFromIndexOrCachedCardFromData(this.cardDataOrIndexToSpawn);
-      const general = this.getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId()).getOwnerId();
+      const card = this.getGameSession().getExistingCardFromIndexOrCachedCardFromData(
+        this.cardDataOrIndexToSpawn,
+      );
+      const general = this.getGameSession()
+        .getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId())
+        .getOwnerId();
       const putCardInHandAction = new PutCardInHandAction(this.getGameSession(), general, card);
       return this.getGameSession().executeAction(putCardInHandAction);
     }
   }
 }
-ModifierStartTurnWatchPutCardInOpponentsHand.prototype.type = 'ModifierStartTurnWatchPutCardInOpponentsHand';
+ModifierStartTurnWatchPutCardInOpponentsHand.prototype.type =
+  'ModifierStartTurnWatchPutCardInOpponentsHand';
 ModifierStartTurnWatchPutCardInOpponentsHand.prototype.cardDataOrIndexToSpawn = null;
 
 module.exports = ModifierStartTurnWatchPutCardInOpponentsHand;

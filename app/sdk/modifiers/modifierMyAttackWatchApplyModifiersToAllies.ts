@@ -23,13 +23,18 @@ class ModifierMyAttackWatchApplyModifiersToAllies extends ModifierMyAttackWatch 
   }
 
   onMyAttackWatch(action) {
-    const friendlyEntities = this.getGameSession().getBoard().getFriendlyEntitiesForEntity(this.getCard());
+    const friendlyEntities = this.getGameSession()
+      .getBoard()
+      .getFriendlyEntitiesForEntity(this.getCard());
     return (() => {
       const result = [];
       for (var entity of Array.from<any>(friendlyEntities)) {
         if (!entity.getIsGeneral() || this.includeGeneral) {
-          result.push(Array.from<any>(this.modifierContextObjects).map((modifier) =>
-            this.getGameSession().applyModifierContextObject(modifier, entity)));
+          result.push(
+            Array.from<any>(this.modifierContextObjects).map((modifier) =>
+              this.getGameSession().applyModifierContextObject(modifier, entity),
+            ),
+          );
         } else {
           result.push(undefined);
         }
@@ -38,9 +43,12 @@ class ModifierMyAttackWatchApplyModifiersToAllies extends ModifierMyAttackWatch 
     })();
   }
 }
-ModifierMyAttackWatchApplyModifiersToAllies.prototype.type = 'ModifierMyAttackWatchApplyModifiersToAllies';
+ModifierMyAttackWatchApplyModifiersToAllies.prototype.type =
+  'ModifierMyAttackWatchApplyModifiersToAllies';
 ModifierMyAttackWatchApplyModifiersToAllies.prototype.modifierContextObjects = null;
 ModifierMyAttackWatchApplyModifiersToAllies.prototype.includeGeneral = false;
-ModifierMyAttackWatchApplyModifiersToAllies.prototype.fxResource = ['FX.Modifiers.ModifierGenericBuff'];
+ModifierMyAttackWatchApplyModifiersToAllies.prototype.fxResource = [
+  'FX.Modifiers.ModifierGenericBuff',
+];
 
 module.exports = ModifierMyAttackWatchApplyModifiersToAllies;

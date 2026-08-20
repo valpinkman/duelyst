@@ -34,12 +34,20 @@ class SpellBounceToActionbar extends Spell {
     // add additional modifiers as needed
     if (this.targetModifiersContextObjects) {
       if (newCardData.additionalModifiersContextObjects != null) {
-        newCardData.additionalModifiersContextObjects.concat(UtilsJavascript.deepCopy(this.targetModifiersContextObjects));
+        newCardData.additionalModifiersContextObjects.concat(
+          UtilsJavascript.deepCopy(this.targetModifiersContextObjects),
+        );
       } else {
-        newCardData.additionalModifiersContextObjects = UtilsJavascript.deepCopy(this.targetModifiersContextObjects);
+        newCardData.additionalModifiersContextObjects = UtilsJavascript.deepCopy(
+          this.targetModifiersContextObjects,
+        );
       }
     }
-    const putCardInHandAction = new PutCardInHandAction(this.getGameSession(), removingEntity.getOwnerId(), newCardData);
+    const putCardInHandAction = new PutCardInHandAction(
+      this.getGameSession(),
+      removingEntity.getOwnerId(),
+      newCardData,
+    );
     return this.getGameSession().executeAction(putCardInHandAction);
   }
 }

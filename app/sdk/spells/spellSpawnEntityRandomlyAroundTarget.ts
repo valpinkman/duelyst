@@ -17,7 +17,14 @@ class SpellSpawnEntityRandomlyAroundTarget extends SpellSpawnEntity {
   _findApplyEffectPositions(position, sourceAction) {
     const card = this.getEntityToSpawn();
     const generalPosition = this.getGameSession().getGeneralForPlayerId(this.ownerId).getPosition();
-    const applyEffectPositions = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(this.getGameSession(), position, CONFIG.PATTERN_3x3, card, this, 1);
+    const applyEffectPositions = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(
+      this.getGameSession(),
+      position,
+      CONFIG.PATTERN_3x3,
+      card,
+      this,
+      1,
+    );
 
     applyEffectPositions.push(position);
 
@@ -31,6 +38,8 @@ class SpellSpawnEntityRandomlyAroundTarget extends SpellSpawnEntity {
 }
 SpellSpawnEntityRandomlyAroundTarget.prototype.targetType = CardType.Unit;
 SpellSpawnEntityRandomlyAroundTarget.prototype.spawnSilently = true;
-SpellSpawnEntityRandomlyAroundTarget.prototype.cardDataOrIndexToSpawn = { id: Cards.Faction3.Dervish };
+SpellSpawnEntityRandomlyAroundTarget.prototype.cardDataOrIndexToSpawn = {
+  id: Cards.Faction3.Dervish,
+};
 
 module.exports = SpellSpawnEntityRandomlyAroundTarget;

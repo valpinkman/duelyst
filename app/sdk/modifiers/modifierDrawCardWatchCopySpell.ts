@@ -19,7 +19,11 @@ class ModifierDrawCardWatchCopySpell extends ModifierDrawCardWatch {
 
   onDrawCardWatch(action) {
     if (__guard__(action.getCard(), (x) => x.getType()) === CardType.Spell) {
-      const a = new PutCardInHandAction(this.getGameSession(), this.getCard().getOwnerId(), action.getCard().createCloneCardData());
+      const a = new PutCardInHandAction(
+        this.getGameSession(),
+        this.getCard().getOwnerId(),
+        action.getCard().createCloneCardData(),
+      );
       return this.getGameSession().executeAction(a);
     }
   }
@@ -30,5 +34,5 @@ ModifierDrawCardWatchCopySpell.prototype.fxResource = ['FX.Modifiers.ModifierDra
 module.exports = ModifierDrawCardWatchCopySpell;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

@@ -40,31 +40,38 @@ class ModifierSummonWatchFromEggApplyModifiers extends Modifier {
   onAction(e) {
     super.onAction(e);
 
-    const {
-      action,
-    } = e;
+    const { action } = e;
 
     // watch for a unit being summoned from an egg by the player who owns this entity
-    if (action instanceof ApplyCardToBoardAction && (action.getOwnerId() === this.getCard().getOwnerId()) && (__guard__(action.getCard(), (x) => x.type) === CardType.Unit) && (action.getCard() !== this.getCard())) {
+    if (
+      action instanceof ApplyCardToBoardAction &&
+      action.getOwnerId() === this.getCard().getOwnerId() &&
+      __guard__(action.getCard(), (x) => x.type) === CardType.Unit &&
+      action.getCard() !== this.getCard()
+    ) {
       if (action.getTriggeringModifier() instanceof ModifierEgg) {
         const entity = action.getTarget();
         if (entity != null) {
           return Array.from<any>(this.modifiersContextObjects).map((modifierContextObject) =>
-            this.getGameSession().applyModifierContextObject(modifierContextObject, entity));
+            this.getGameSession().applyModifierContextObject(modifierContextObject, entity),
+          );
         }
       }
     }
   }
 }
-ModifierSummonWatchFromEggApplyModifiers.prototype.type = 'ModifierSummonWatchFromEggApplyModifiers';
+ModifierSummonWatchFromEggApplyModifiers.prototype.type =
+  'ModifierSummonWatchFromEggApplyModifiers';
 ModifierSummonWatchFromEggApplyModifiers.prototype.activeInHand = false;
 ModifierSummonWatchFromEggApplyModifiers.prototype.activeInDeck = false;
 ModifierSummonWatchFromEggApplyModifiers.prototype.activeInSignatureCards = false;
 ModifierSummonWatchFromEggApplyModifiers.prototype.activeOnBoard = true;
-ModifierSummonWatchFromEggApplyModifiers.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch'];
+ModifierSummonWatchFromEggApplyModifiers.prototype.fxResource = [
+  'FX.Modifiers.ModifierSummonWatch',
+];
 
 module.exports = ModifierSummonWatchFromEggApplyModifiers;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

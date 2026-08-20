@@ -19,7 +19,6 @@ var i18next = require('i18next');
 var Template = require('./templates/shop_spirit_orbs_collection_view.hbs');
 
 var ShopSpiritOrbsCollectionView = Backbone.Marionette.ItemView.extend({
-
   className: 'shop-spirit-orbs-container',
   selectedSubCategory: null,
   initialSubCategory: null,
@@ -61,7 +60,14 @@ var ShopSpiritOrbsCollectionView = Backbone.Marionette.ItemView.extend({
     var packProductSetsByCardSet = {};
     var packProductSets = [];
     // var cardSetKeys = Object.keys(SDK.CardSet);
-    var cardSetKeys = ['Core', 'Shimzar', 'CombinedUnlockables', 'FirstWatch', 'Wartech', 'Coreshatter'];
+    var cardSetKeys = [
+      'Core',
+      'Shimzar',
+      'CombinedUnlockables',
+      'FirstWatch',
+      'Wartech',
+      'Coreshatter',
+    ];
     for (var i = 0, il = cardSetKeys.length; i < il; i++) {
       var cardSetKey = cardSetKeys[i];
       var cardSetId = SDK.CardSet[cardSetKey];
@@ -83,20 +89,28 @@ var ShopSpiritOrbsCollectionView = Backbone.Marionette.ItemView.extend({
       var packProductCardSet = packProductData.card_set || SDK.CardSet.Core;
       var packProductSet = packProductSetsByCardSet[packProductCardSet];
 
-      packProductData.purchase_count = ShopManager.getInstance().getPurchaseCount(packProductData.sku);
+      packProductData.purchase_count = ShopManager.getInstance().getPurchaseCount(
+        packProductData.sku,
+      );
       // packProductData.attempted_purchase_count = ShopManager.getInstance().getAttemptedPurchaseCount(packProductData.sku)
-      packProductData.is_purchase_limit_reached = (packProductData.purchase_limit > 0 && packProductData.purchase_count >= packProductData.purchase_limit);
+      packProductData.is_purchase_limit_reached =
+        packProductData.purchase_limit > 0 &&
+        packProductData.purchase_count >= packProductData.purchase_limit;
       packProductData.set_id = packProductCardSet;
-      packProductData.localized_name = i18next.t('shop.' + packProductData.name, { count: packProductData.qty });
+      packProductData.localized_name = i18next.t('shop.' + packProductData.name, {
+        count: packProductData.qty,
+      });
 
       packProductData.set_is_complete = false;
       if (!InventoryManager.getInstance().canBuyPacksForCardSet(packProductCardSet)) {
         packProductData.set_is_complete = true;
       }
 
-      if (packProductSet != null
-        && !packProductData.is_purchase_limit_reached
-        && (packProductData.sku !== 'STARTERBUNDLE_201604' || !ProfileManager.getInstance().get('has_purchased_starter_bundle'))
+      if (
+        packProductSet != null &&
+        !packProductData.is_purchase_limit_reached &&
+        (packProductData.sku !== 'STARTERBUNDLE_201604' ||
+          !ProfileManager.getInstance().get('has_purchased_starter_bundle'))
       ) {
         packProductSet.packProducts.push(packProductData);
       }
@@ -129,7 +143,11 @@ var ShopSpiritOrbsCollectionView = Backbone.Marionette.ItemView.extend({
       var cardSetData = SDK.CardSetFactory.cardSetForIdentifier(cardSetId);
       this.initialSubCategory = cardSetData.devName;
     }
-    this.listenTo(ShopManager.getInstance().productPurchaseCountsModel, 'change', this.onPurchaseCountsChanged);
+    this.listenTo(
+      ShopManager.getInstance().productPurchaseCountsModel,
+      'change',
+      this.onPurchaseCountsChanged,
+    );
   },
 
   onRender: function () {
@@ -144,7 +162,11 @@ var ShopSpiritOrbsCollectionView = Backbone.Marionette.ItemView.extend({
   onShow: function () {
     this.listenTo(InventoryManager.getInstance().walletModel, 'change', this.onWalletChange);
     this.onWalletChange();
-    this.listenTo(InventoryManager.getInstance().totalOrbCountModel, 'change', this.onTotalOrbCountChange);
+    this.listenTo(
+      InventoryManager.getInstance().totalOrbCountModel,
+      'change',
+      this.onTotalOrbCountChange,
+    );
     this.setSubCategory(this.initialSubCategory);
   },
 
@@ -160,27 +182,39 @@ var ShopSpiritOrbsCollectionView = Backbone.Marionette.ItemView.extend({
     if (this.selectedSubCategory != null) {
       var cardSetData = SDK.CardSetFactory.cardSetForDevName(this.selectedSubCategory);
       if (cardSetData != null && cardSetData.isUnlockableThroughOrbs) {
-        title = '<p>' + i18next.t('shop.eyos_orb_contents_instructions', { card_set_name: cardSetData.name }) + '</p>';
+        title =
+          '<p>' +
+          i18next.t('shop.eyos_orb_contents_instructions', { card_set_name: cardSetData.name }) +
+          '</p>';
         if (!InventoryManager.getInstance().canBuyPacksForCardSet(cardSetData.id)) {
-          title = '<p>' + i18next.t('shop.eyos_orb_set_complete_message', { card_set_name: cardSetData.name }) + '</p>';
-          this.bloodbornTooltipElement = $('div.' + cardSetData.devName, this.ui.tabBody).find('li:first');
+          title =
+            '<p>' +
+            i18next.t('shop.eyos_orb_set_complete_message', { card_set_name: cardSetData.name }) +
+            '</p>';
+          this.bloodbornTooltipElement = $('div.' + cardSetData.devName, this.ui.tabBody).find(
+            'li:first',
+          );
         }
       }
     }
     this.tooltipElement = element;
-    this._tooltipTimeoutId = setTimeout(function () {
-      this._tooltipTimeoutId = null;
-      this.tooltipElement.tooltip({
-        container: '.shop-layout',
-        animation: false,
-        html: true,
-        title: title,
-        template: '<div class=\'tooltip spirit-orb-product-popover\'><div class=\'tooltip-arrow\'></div><div class=\'tooltip-inner\'></div></div>',
-        placement: 'left',
-        trigger: 'manual',
-      });
-      this.tooltipElement.tooltip('show');
-    }.bind(this), 1000);
+    this._tooltipTimeoutId = setTimeout(
+      function () {
+        this._tooltipTimeoutId = null;
+        this.tooltipElement.tooltip({
+          container: '.shop-layout',
+          animation: false,
+          html: true,
+          title: title,
+          template:
+            "<div class='tooltip spirit-orb-product-popover'><div class='tooltip-arrow'></div><div class='tooltip-inner'></div></div>",
+          placement: 'left',
+          trigger: 'manual',
+        });
+        this.tooltipElement.tooltip('show');
+      }.bind(this),
+      1000,
+    );
   },
 
   stopShowingTooltip: function () {
@@ -271,26 +305,28 @@ var ShopSpiritOrbsCollectionView = Backbone.Marionette.ItemView.extend({
     var $canvases = this.$el.find('.zodiac-symbol-canvas');
     this._zodiacModels || (this._zodiacModels = []);
 
-    $canvases.each(function (i, canvas) {
-      var $canvas = $(canvas);
-      var $btn = $canvas.closest('.btn');
-      var zodiacModel = this._zodiacModels[i];
-      if (!zodiacModel) {
-        // setup new zodiac symbol
-        zodiacModel = this._zodiacModels[i] = new ZodiacSymbolModel({ canvas: canvas });
-        zodiacModel.listenTo(this, 'destroy', zodiacModel.stopDrawing.bind(zodiacModel));
-      } else {
-        // provide canvas to zodiac symbol
-        zodiacModel.setCanvas(canvas);
-      }
+    $canvases.each(
+      function (i, canvas) {
+        var $canvas = $(canvas);
+        var $btn = $canvas.closest('.btn');
+        var zodiacModel = this._zodiacModels[i];
+        if (!zodiacModel) {
+          // setup new zodiac symbol
+          zodiacModel = this._zodiacModels[i] = new ZodiacSymbolModel({ canvas: canvas });
+          zodiacModel.listenTo(this, 'destroy', zodiacModel.stopDrawing.bind(zodiacModel));
+        } else {
+          // provide canvas to zodiac symbol
+          zodiacModel.setCanvas(canvas);
+        }
 
-      // listen to button mouse input
-      $btn.on('mouseover', zodiacModel.startDrawing.bind(zodiacModel));
-      $btn.on('mouseout', zodiacModel.stopDrawing.bind(zodiacModel));
+        // listen to button mouse input
+        $btn.on('mouseover', zodiacModel.startDrawing.bind(zodiacModel));
+        $btn.on('mouseout', zodiacModel.stopDrawing.bind(zodiacModel));
 
-      // always draw once
-      zodiacModel.draw();
-    }.bind(this));
+        // always draw once
+        zodiacModel.draw();
+      }.bind(this),
+    );
   },
 
   /* region PURCHASE */
@@ -314,9 +350,12 @@ var ShopSpiritOrbsCollectionView = Backbone.Marionette.ItemView.extend({
       return;
     }
 
-    var packProductData = _.extend({
-      cover_image_url: 'resources/play/play_mode_rankedladder.jpg',
-    }, productData);
+    var packProductData = _.extend(
+      {
+        cover_image_url: 'resources/play/play_mode_rankedladder.jpg',
+      },
+      productData,
+    );
     // Localize name and description
     packProductData = _.extend(packProductData, {
       name: i18next.t('shop.' + packProductData.name, { count: packProductData.qty }),
@@ -337,24 +376,26 @@ var ShopSpiritOrbsCollectionView = Backbone.Marionette.ItemView.extend({
     }
     console.log(saleData);
 
-    return NavigationManager.getInstance().showDialogForConfirmPurchase(packProductData, saleData)
+    return NavigationManager.getInstance()
+      .showDialogForConfirmPurchase(packProductData, saleData)
       .then(function (purchaseData) {
         _self.onPurchaseComplete(purchaseData);
       })
       .catch(function () {
-      // do nothing on cancel
+        // do nothing on cancel
       });
   },
 
-  onPurchaseComplete: function (purchaseData) {
-  },
+  onPurchaseComplete: function (purchaseData) {},
 
   /* endregion PURCHASE */
 
   onSubCategoryChanged: function (e) {
     var button = $(e.currentTarget);
     var selectedValue = button.data('value');
-    audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_tab_in.audio, CONFIG.SELECT_SFX_PRIORITY);
+    audio_engine
+      .current()
+      .play_effect_for_interaction(RSX.sfx_ui_tab_in.audio, CONFIG.SELECT_SFX_PRIORITY);
     this.setSubCategory(selectedValue);
   },
 
@@ -375,7 +416,7 @@ var ShopSpiritOrbsCollectionView = Backbone.Marionette.ItemView.extend({
     if (selectedValue !== this.selectedSubCategory) {
       this.selectedSubCategory = selectedValue;
       $('li', this.ui.tabs).removeClass('active');
-      this.ui.tabs.find('[data-value=\'' + selectedValue + '\']').addClass('active');
+      this.ui.tabs.find("[data-value='" + selectedValue + "']").addClass('active');
 
       $('div.shop-spirit-orbs', this.ui.tabBody).addClass('hide');
       $('div.' + selectedValue, this.ui.tabBody).removeClass('hide');
@@ -393,23 +434,30 @@ var ShopSpiritOrbsCollectionView = Backbone.Marionette.ItemView.extend({
 
       this.ui.cardSetLinkOutBtn.addClass('hide');
       if (!selectedCardSetData.isPreRelease && selectedCardSetData.cardSetUrl) {
-        this.ui.cardSetLinkOutLabel.text(i18next.t('shop.view_cards_in_set', { setName: selectedCardSetData.name }));
-        _.defer(function () {
-          if (this._zodiacModels != null) {
-            _.each(this._zodiacModels, function (zodiacModel) {
-              zodiacModel.generateStartPoints();
-              zodiacModel.generateDestinationPoints();
-              zodiacModel.draw();
-            });
-          }
-          this.ui.cardSetLinkOutBtn.removeClass('hide');
-        }.bind(this));
+        this.ui.cardSetLinkOutLabel.text(
+          i18next.t('shop.view_cards_in_set', { setName: selectedCardSetData.name }),
+        );
+        _.defer(
+          function () {
+            if (this._zodiacModels != null) {
+              _.each(this._zodiacModels, function (zodiacModel) {
+                zodiacModel.generateStartPoints();
+                zodiacModel.generateDestinationPoints();
+                zodiacModel.draw();
+              });
+            }
+            this.ui.cardSetLinkOutBtn.removeClass('hide');
+          }.bind(this),
+        );
       }
     }
   },
 
   onPurchaseCountsChanged: function (e) {
-    if (ShopManager.getInstance().getPurchaseCount(ShopData.packs.STARTERBUNDLE_201604.sku) > 0 && this.ui.STARTERBUNDLE_201604) {
+    if (
+      ShopManager.getInstance().getPurchaseCount(ShopData.packs.STARTERBUNDLE_201604.sku) > 0 &&
+      this.ui.STARTERBUNDLE_201604
+    ) {
       this.ui.STARTERBUNDLE_201604.hide();
     }
   },
@@ -425,7 +473,6 @@ var ShopSpiritOrbsCollectionView = Backbone.Marionette.ItemView.extend({
     }
     return shopKeysToDisplay;
   },
-
 });
 
 module.exports = ShopSpiritOrbsCollectionView;

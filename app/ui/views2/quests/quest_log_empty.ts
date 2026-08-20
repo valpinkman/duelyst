@@ -5,12 +5,9 @@ var Logger = require('app/common/logger');
 var Templ = require('./templates/quest_log_empty.hbs');
 
 var QuestLogEmptyView = Backbone.Marionette.ItemView.extend({
-
   template: Templ,
 
-  initialize: function () {
-  },
-
+  initialize: function () {},
 });
 
 // Expose the class either via CommonJS or the global object

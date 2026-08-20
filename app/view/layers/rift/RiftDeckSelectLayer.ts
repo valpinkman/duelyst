@@ -12,7 +12,6 @@ const BaseSprite = require('../../nodes/BaseSprite');
  *************************************************************************** */
 
 const RiftDeckSelectLayer = FXCompositeLayer.extend({
-
   _bg: null,
 
   /* region INITIALIZE */
@@ -46,7 +45,9 @@ const RiftDeckSelectLayer = FXCompositeLayer.extend({
   },
 
   getRequiredResources() {
-    return FXCompositeLayer.prototype.getRequiredResources.call(this).concat(PKGS.getPkgForIdentifier('play'));
+    return FXCompositeLayer.prototype.getRequiredResources
+      .call(this)
+      .concat(PKGS.getPkgForIdentifier('play'));
   },
 
   /* endregion INITIALIZE */
@@ -70,7 +71,6 @@ const RiftDeckSelectLayer = FXCompositeLayer.extend({
   },
 
   /* endregion LAYOUT */
-
 });
 
 RiftDeckSelectLayer.create = function (layer) {

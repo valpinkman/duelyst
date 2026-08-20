@@ -16,7 +16,6 @@ const BaseParticleSystem = require('../BaseParticleSystem');
  *************************************************************************** */
 
 const RibbonRewardNode = RewardNode.extend({
-
   _ribbonId: null,
 
   ctor(ribbonId) {
@@ -49,8 +48,8 @@ const RibbonRewardNode = RewardNode.extend({
   /* region ANIMATION */
 
   getRewardAnimationPromise(looping, showLabel) {
-    return (looping ? this.showLoopingRewardFlare() : this.showRewardFlare())
-      .then(() => new Promise<void>((resolve) => {
+    return (looping ? this.showLoopingRewardFlare() : this.showRewardFlare()).then(() =>
+      new Promise<void>((resolve) => {
         // ribbon data
         const ribbonData = SDK.RibbonFactory.ribbonForIdentifier(this._ribbonId);
 
@@ -64,7 +63,13 @@ const RibbonRewardNode = RewardNode.extend({
         if (showLabel) {
           // primary label
           const labelText = _.isString(showLabel) ? showLabel : 'BATTLE RIBBON';
-          var label = new cc.LabelTTF(labelText, RSX.font_regular.name, 22, cc.size(200, 24), cc.TEXT_ALIGNMENT_CENTER);
+          var label = new cc.LabelTTF(
+            labelText,
+            RSX.font_regular.name,
+            22,
+            cc.size(200, 24),
+            cc.TEXT_ALIGNMENT_CENTER,
+          );
           label.setPosition(0, -120);
           label.setOpacity(0);
           this.addChild(label, 1);
@@ -74,39 +79,52 @@ const RibbonRewardNode = RewardNode.extend({
         this.showRewardWipeFlare();
 
         // show profile icon
-        this.runAction(cc.sequence(
-          cc.targetedAction(ribbonSprite, cc.sequence(
+        this.runAction(
+          cc.sequence(
+            cc.targetedAction(
+              ribbonSprite,
+              cc.sequence(
+                cc.callFunc(() => {
+                  ribbonSprite.setVisible(true);
+                  ribbonSprite.fadeInHighlight(CONFIG.ANIMATE_MEDIUM_DURATION);
+                }),
+                cc.scaleTo(0.0, 0.0),
+                cc.scaleTo(CONFIG.ANIMATE_MEDIUM_DURATION, 1.0).easing(cc.easeBackOut()),
+                cc.callFunc(() => {
+                  // show labels
+                  if (label != null) {
+                    label.fadeTo(CONFIG.ANIMATE_FAST_DURATION, 255.0);
+                  }
+                }),
+              ),
+            ),
             cc.callFunc(() => {
-              ribbonSprite.setVisible(true);
-              ribbonSprite.fadeInHighlight(CONFIG.ANIMATE_MEDIUM_DURATION);
-            }),
-            cc.scaleTo(0.0, 0.0),
-            cc.scaleTo(CONFIG.ANIMATE_MEDIUM_DURATION, 1.0).easing(cc.easeBackOut()),
-            cc.callFunc(() => {
-              // show labels
-              if (label != null) {
-                label.fadeTo(CONFIG.ANIMATE_FAST_DURATION, 255.0);
+              ribbonSprite.fadeOutHighlight(0.5);
+
+              // float sprite to make it appear more dynamic
+              if (!looping) {
+                ribbonSprite.runAction(
+                  FigureEight.create(
+                    4.0 + Math.random(),
+                    2,
+                    5,
+                    ribbonSprite.getPosition(),
+                  ).repeatForever(),
+                );
               }
+
+              // finish
+              resolve();
             }),
-          )),
-          cc.callFunc(() => {
-            ribbonSprite.fadeOutHighlight(0.5);
-
-            // float sprite to make it appear more dynamic
-            if (!looping) {
-              ribbonSprite.runAction(FigureEight.create(4.0 + Math.random(), 2, 5, ribbonSprite.getPosition()).repeatForever());
-            }
-
-            // finish
-            resolve();
-          }),
-        ));
-      })
-        .catch((error) => { EventBus.getInstance().trigger(EVENTS.error, error); }));
+          ),
+        );
+      }).catch((error) => {
+        EventBus.getInstance().trigger(EVENTS.error, error);
+      }),
+    );
   },
 
   /* endregion ANIMATION */
-
 });
 
 RibbonRewardNode.create = function (options, node) {

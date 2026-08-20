@@ -13,13 +13,9 @@ Logger.enabled = false;
 describe('monthlies', () => {
   describe('month 9', () => {
     beforeEach(() => {
-      const player1Deck = [
-        { id: SDK.Cards.Faction6.General },
-      ];
+      const player1Deck = [{ id: SDK.Cards.Faction6.General }];
 
-      const player2Deck = [
-        { id: SDK.Cards.Faction1.General },
-      ];
+      const player2Deck = [{ id: SDK.Cards.Faction1.General }];
 
       UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
     });
@@ -35,11 +31,36 @@ describe('monthlies', () => {
 
       player1.remainingMana = 9;
 
-      const shiro = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Shiro }, 1, 2, gameSession.getPlayer1Id());
-      const maw1 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Maw }, 1, 1, gameSession.getPlayer1Id());
-      const maw2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Maw }, 2, 2, gameSession.getPlayer1Id());
-      const maw3 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Maw }, 2, 1, gameSession.getPlayer1Id());
-      const maw4 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Maw }, 5, 1, gameSession.getPlayer1Id());
+      const shiro = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.Shiro },
+        1,
+        2,
+        gameSession.getPlayer1Id(),
+      );
+      const maw1 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.Maw },
+        1,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const maw2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.Maw },
+        2,
+        2,
+        gameSession.getPlayer1Id(),
+      );
+      const maw3 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.Maw },
+        2,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const maw4 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.Maw },
+        5,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
       gameSession.executeAction(gameSession.actionEndTurn());
 
@@ -137,13 +158,39 @@ describe('monthlies', () => {
 
       player1.remainingMana = 9;
 
-      const scientist = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.TheScientist }, 1, 2, gameSession.getPlayer1Id());
-      const golem = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.StormmetalGolem }, 5, 2, gameSession.getPlayer2Id());
+      const scientist = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.TheScientist },
+        1,
+        2,
+        gameSession.getPlayer1Id(),
+      );
+      const golem = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.StormmetalGolem },
+        5,
+        2,
+        gameSession.getPlayer2Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PhoenixFire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PhoenixFire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PhoenixFire }));
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PhoenixFire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 2);
       gameSession.executeAction(playCardFromHandAction);
       var playCardFromHandAction = player1.actionPlayCardFromHand(1, 5, 2);
@@ -161,8 +208,18 @@ describe('monthlies', () => {
 
       player1.remainingMana = 9;
 
-      const envybaer = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Envybaer }, 8, 1, gameSession.getPlayer1Id());
-      const golem = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.BrightmossGolem }, 8, 0, gameSession.getPlayer2Id());
+      const envybaer = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.Envybaer },
+        8,
+        1,
+        gameSession.getPlayer1Id(),
+      );
+      const golem = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.BrightmossGolem },
+        8,
+        0,
+        gameSession.getPlayer2Id(),
+      );
 
       envybaer.refreshExhaustion();
       var action = envybaer.actionAttack(gameSession.getGeneralForPlayer2());

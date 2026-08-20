@@ -21,12 +21,13 @@ class ModifierReplaceWatch extends Modifier {
   onAction(e) {
     super.onAction(e);
 
-    const {
-      action,
-    } = e;
+    const { action } = e;
 
     // watch for my player replacing a card
-    if (action instanceof ReplaceCardFromHandAction && (action.getOwnerId() === this.getCard().getOwnerId())) {
+    if (
+      action instanceof ReplaceCardFromHandAction &&
+      action.getOwnerId() === this.getCard().getOwnerId()
+    ) {
       return this.onReplaceWatch(action);
     }
   }

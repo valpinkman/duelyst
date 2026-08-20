@@ -9,7 +9,6 @@ var moment = require('moment');
 var FormPromptDialogItemView = require('./form_prompt_dialog');
 
 var SelectUsernameItemView = FormPromptDialogItemView.extend({
-
   template: SelectUsernameTmpl,
 
   id: 'app-change-username',
@@ -26,8 +25,7 @@ var SelectUsernameItemView = FormPromptDialogItemView.extend({
 
   _hasModifiedUsername: false,
 
-  templateHelpers: {
-  },
+  templateHelpers: {},
 
   onFormControlChangeContent: function (event) {
     // update modified state
@@ -53,7 +51,7 @@ var SelectUsernameItemView = FormPromptDialogItemView.extend({
         _self.onSuccess(res);
       })
       .catch(function (e) {
-      // onError expects a string not an actual error
+        // onError expects a string not an actual error
         _self.onError(e.innerMessage || e.message);
       });
   },
@@ -82,7 +80,6 @@ var SelectUsernameItemView = FormPromptDialogItemView.extend({
     // set valid state
     this.isValid = isValid && this._hasModifiedUsername;
   },
-
 });
 
 module.exports = SelectUsernameItemView;

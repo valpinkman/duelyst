@@ -22,7 +22,9 @@ class ModifierQuestStatusLyonar extends ModifierQuestStatus {
       if (modifierContextObject.questCompleted) {
         return i18next.t('modifiers.quest_completed_applied_desc');
       }
-      return i18next.t('modifiers.lyonarquest_counter_applied_desc', { summon_count: modifierContextObject.numMinionsSummoned });
+      return i18next.t('modifiers.lyonarquest_counter_applied_desc', {
+        summon_count: modifierContextObject.numMinionsSummoned,
+      });
     }
   }
 

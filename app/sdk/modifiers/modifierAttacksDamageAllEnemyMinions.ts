@@ -26,12 +26,13 @@ class ModifierAttacksDamageAllEnemyMinions extends Modifier {
     super.onBeforeAction(actionEvent);
 
     const a = actionEvent.action;
-    if (a instanceof AttackAction && (a.getSource() === this.getCard())) {
+    if (a instanceof AttackAction && a.getSource() === this.getCard()) {
       const entities = this.getGameSession().getBoard().getFriendlyEntitiesForEntity(a.getTarget());
       return (() => {
         const result = [];
         for (var entity of Array.from<any>(entities)) {
-          if (!entity.getIsGeneral()) { // do not target the general
+          if (!entity.getIsGeneral()) {
+            // do not target the general
             var damageAction = new DamageAction(this.getGameSession());
             damageAction.setOwnerId(this.getCard().getOwnerId());
             damageAction.setSource(this.getCard());

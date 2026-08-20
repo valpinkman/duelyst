@@ -20,13 +20,35 @@ class ModifierCardControlledPlayerModifiers extends Modifier {
   static modifierName = '';
   static description = '';
 
-  static createContextObject(modifiersContextObjects, applyToOwnPlayer, applyToEnemyPlayer, activeInHand, activeInDeck, activeInSignatureCards, activeOnBoard, description, options) {
-    if (applyToOwnPlayer == null) { applyToOwnPlayer = false; }
-    if (applyToEnemyPlayer == null) { applyToEnemyPlayer = false; }
-    if (activeInHand == null) { activeInHand = true; }
-    if (activeInDeck == null) { activeInDeck = true; }
-    if (activeInSignatureCards == null) { activeInSignatureCards = true; }
-    if (activeOnBoard == null) { activeOnBoard = true; }
+  static createContextObject(
+    modifiersContextObjects,
+    applyToOwnPlayer,
+    applyToEnemyPlayer,
+    activeInHand,
+    activeInDeck,
+    activeInSignatureCards,
+    activeOnBoard,
+    description,
+    options,
+  ) {
+    if (applyToOwnPlayer == null) {
+      applyToOwnPlayer = false;
+    }
+    if (applyToEnemyPlayer == null) {
+      applyToEnemyPlayer = false;
+    }
+    if (activeInHand == null) {
+      activeInHand = true;
+    }
+    if (activeInDeck == null) {
+      activeInDeck = true;
+    }
+    if (activeInSignatureCards == null) {
+      activeInSignatureCards = true;
+    }
+    if (activeOnBoard == null) {
+      activeOnBoard = true;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.modifiersContextObjects = modifiersContextObjects;
     contextObject.applyToOwnPlayer = applyToOwnPlayer;
@@ -39,36 +61,156 @@ class ModifierCardControlledPlayerModifiers extends Modifier {
     return contextObject;
   }
 
-  static createContextObjectToTargetOwnPlayer(modifiersContextObjects, activeInHand, activeInDeck, activeInSignatureCards, activeOnBoard, description, options) {
-    return this.createContextObject(modifiersContextObjects, true, false, activeInHand, activeInDeck, activeInSignatureCards, activeOnBoard, description, options);
+  static createContextObjectToTargetOwnPlayer(
+    modifiersContextObjects,
+    activeInHand,
+    activeInDeck,
+    activeInSignatureCards,
+    activeOnBoard,
+    description,
+    options,
+  ) {
+    return this.createContextObject(
+      modifiersContextObjects,
+      true,
+      false,
+      activeInHand,
+      activeInDeck,
+      activeInSignatureCards,
+      activeOnBoard,
+      description,
+      options,
+    );
   }
 
-  static createContextObjectOnBoardToTargetOwnPlayer(modifiersContextObjects, description, options) {
-    return this.createContextObject(modifiersContextObjects, true, false, false, false, false, true, description, options);
+  static createContextObjectOnBoardToTargetOwnPlayer(
+    modifiersContextObjects,
+    description,
+    options,
+  ) {
+    return this.createContextObject(
+      modifiersContextObjects,
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      description,
+      options,
+    );
   }
 
-  static createContextObjectInHandDeckToTargetOwnPlayer(modifiersContextObjects, description, options) {
-    return this.createContextObject(modifiersContextObjects, true, false, true, true, false, false, description, options);
+  static createContextObjectInHandDeckToTargetOwnPlayer(
+    modifiersContextObjects,
+    description,
+    options,
+  ) {
+    return this.createContextObject(
+      modifiersContextObjects,
+      true,
+      false,
+      true,
+      true,
+      false,
+      false,
+      description,
+      options,
+    );
   }
 
-  static createContextObjectToTargetEnemyPlayer(modifiersContextObjects, activeInHand, activeInDeck, activeInSignatureCards, activeOnBoard, description, options) {
-    return this.createContextObject(modifiersContextObjects, false, true, activeInHand, activeInDeck, activeInSignatureCards, activeOnBoard, description, options);
+  static createContextObjectToTargetEnemyPlayer(
+    modifiersContextObjects,
+    activeInHand,
+    activeInDeck,
+    activeInSignatureCards,
+    activeOnBoard,
+    description,
+    options,
+  ) {
+    return this.createContextObject(
+      modifiersContextObjects,
+      false,
+      true,
+      activeInHand,
+      activeInDeck,
+      activeInSignatureCards,
+      activeOnBoard,
+      description,
+      options,
+    );
   }
 
-  static createContextObjectOnBoardToTargetEnemyPlayer(modifiersContextObjects, description, options) {
-    return this.createContextObject(modifiersContextObjects, false, true, false, false, false, true, description, options);
+  static createContextObjectOnBoardToTargetEnemyPlayer(
+    modifiersContextObjects,
+    description,
+    options,
+  ) {
+    return this.createContextObject(
+      modifiersContextObjects,
+      false,
+      true,
+      false,
+      false,
+      false,
+      true,
+      description,
+      options,
+    );
   }
 
-  static createContextObjectInHandDeckToTargetEnemyPlayer(modifiersContextObjects, description, options) {
-    return this.createContextObject(modifiersContextObjects, false, true, true, true, false, false, description, options);
+  static createContextObjectInHandDeckToTargetEnemyPlayer(
+    modifiersContextObjects,
+    description,
+    options,
+  ) {
+    return this.createContextObject(
+      modifiersContextObjects,
+      false,
+      true,
+      true,
+      true,
+      false,
+      false,
+      description,
+      options,
+    );
   }
 
-  static createContextObjectOnBoardToTargetBothPlayers(modifiersContextObjects, description, options) {
-    return this.createContextObject(modifiersContextObjects, true, true, false, false, false, true, description, options);
+  static createContextObjectOnBoardToTargetBothPlayers(
+    modifiersContextObjects,
+    description,
+    options,
+  ) {
+    return this.createContextObject(
+      modifiersContextObjects,
+      true,
+      true,
+      false,
+      false,
+      false,
+      true,
+      description,
+      options,
+    );
   }
 
-  static createContextObjectInHandDeckToTargetBothPlayers(modifiersContextObjects, description, options) {
-    return this.createContextObject(modifiersContextObjects, true, true, true, true, false, false, description, options);
+  static createContextObjectInHandDeckToTargetBothPlayers(
+    modifiersContextObjects,
+    description,
+    options,
+  ) {
+    return this.createContextObject(
+      modifiersContextObjects,
+      true,
+      true,
+      true,
+      true,
+      false,
+      false,
+      description,
+      options,
+    );
   }
 
   onActivate() {
@@ -77,13 +219,21 @@ class ModifierCardControlledPlayerModifiers extends Modifier {
     if (this.applyToOwnPlayer) {
       const ownPlayerId = this.getCard().getOwnerId();
       const ownGeneral = this.getGameSession().getGeneralForPlayerId(ownPlayerId);
-      this.applyManagedModifiersFromModifiersContextObjectsOnce(this.modifiersContextObjects, ownGeneral);
+      this.applyManagedModifiersFromModifiersContextObjectsOnce(
+        this.modifiersContextObjects,
+        ownGeneral,
+      );
     }
 
     if (this.applyToEnemyPlayer) {
-      const opponentPlayerId = this.getGameSession().getOpponentPlayerIdOfPlayerId(this.getCard().getOwnerId());
+      const opponentPlayerId = this.getGameSession().getOpponentPlayerIdOfPlayerId(
+        this.getCard().getOwnerId(),
+      );
       const opponentGeneral = this.getGameSession().getGeneralForPlayerId(opponentPlayerId);
-      return this.applyManagedModifiersFromModifiersContextObjectsOnce(this.modifiersContextObjects, opponentGeneral);
+      return this.applyManagedModifiersFromModifiersContextObjectsOnce(
+        this.modifiersContextObjects,
+        opponentGeneral,
+      );
     }
   }
 
@@ -96,7 +246,9 @@ class ModifierCardControlledPlayerModifiers extends Modifier {
     }
 
     if (this.applyToEnemyPlayer) {
-      const opponentPlayerId = this.getGameSession().getOpponentPlayerIdOfPlayerId(this.getCard().getOwnerId());
+      const opponentPlayerId = this.getGameSession().getOpponentPlayerIdOfPlayerId(
+        this.getCard().getOwnerId(),
+      );
       const opponentGeneral = this.getGameSession().getGeneralForPlayerId(opponentPlayerId);
       return this.removeManagedModifiersFromCard(opponentGeneral);
     }

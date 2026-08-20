@@ -21,7 +21,9 @@ class ModifierTakeDamageWatchRandomTeleport extends ModifierTakeDamageWatch {
     const randomTeleportAction = new RandomTeleportAction(this.getGameSession());
     randomTeleportAction.setOwnerId(this.getCard().getOwnerId());
     randomTeleportAction.setSource(this.getCard());
-    randomTeleportAction.setFXResource(_.union(randomTeleportAction.getFXResource(), this.getFXResource()));
+    randomTeleportAction.setFXResource(
+      _.union(randomTeleportAction.getFXResource(), this.getFXResource()),
+    );
     return this.getGameSession().executeAction(randomTeleportAction);
   }
 }

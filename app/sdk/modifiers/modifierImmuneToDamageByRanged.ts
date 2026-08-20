@@ -19,7 +19,13 @@ class ModifierImmuneToDamageByRanged extends ModifierImmuneToDamage {
   static description = 'Takes no damage from Ranged minions and Generals';
 
   getIsActionRelevant(a) {
-    return (this.getCard() != null) && a instanceof AttackAction && a.getIsValid() && (this.getCard() === a.getTarget()) && __guard__(a.getSource(), (x) => x.isRanged());
+    return (
+      this.getCard() != null &&
+      a instanceof AttackAction &&
+      a.getIsValid() &&
+      this.getCard() === a.getTarget() &&
+      __guard__(a.getSource(), (x) => x.isRanged())
+    );
   }
 }
 ModifierImmuneToDamageByRanged.prototype.type = 'ModifierImmuneToDamageByRanged';
@@ -27,5 +33,5 @@ ModifierImmuneToDamageByRanged.prototype.type = 'ModifierImmuneToDamageByRanged'
 module.exports = ModifierImmuneToDamageByRanged;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

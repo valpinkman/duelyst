@@ -11,7 +11,6 @@ const BaseSprite = require('../../nodes/BaseSprite');
  *************************************************************************** */
 
 const PlayLayer = FXCompositeLayer.extend({
-
   _bg: null,
 
   /* region INITIALIZE */
@@ -32,7 +31,9 @@ const PlayLayer = FXCompositeLayer.extend({
   },
 
   getRequiredResources() {
-    return FXCompositeLayer.prototype.getRequiredResources.call(this).concat(PKGS.getPkgForIdentifier('play'));
+    return FXCompositeLayer.prototype.getRequiredResources
+      .call(this)
+      .concat(PKGS.getPkgForIdentifier('play'));
   },
 
   /* endregion INITIALIZE */
@@ -56,7 +57,6 @@ const PlayLayer = FXCompositeLayer.extend({
   },
 
   /* endregion LAYOUT */
-
 });
 
 PlayLayer.create = function (layer) {

@@ -130,7 +130,13 @@ var BaseParticleSystem = cc.ParticleSystem.extend({
     }
 
     // set auto remove when duration is not forever
-    if (this.getDuration() !== -1 && !this.emitFX && !this.emitOnImpact && !this.isAutoRemoveOnFinish() && (!options || typeof options.autoRemoveOnFinish === 'undefined')) {
+    if (
+      this.getDuration() !== -1 &&
+      !this.emitFX &&
+      !this.emitOnImpact &&
+      !this.isAutoRemoveOnFinish() &&
+      (!options || typeof options.autoRemoveOnFinish === 'undefined')
+    ) {
       this.setAutoRemoveOnFinish(true);
     }
 
@@ -172,51 +178,133 @@ var BaseParticleSystem = cc.ParticleSystem.extend({
   setOptions(options) {
     this._super(options);
 
-    if (options.duration) { this.setDuration(options.duration); }
-    if (options.maxParticles) { this.setMaxParticles(options.maxParticles); }
-    if (options.sourceBoardPosition) { this.setSourceBoardPosition(options.sourceBoardPosition); }
-    if (options.targetBoardPosition) { this.setTargetBoardPosition(options.targetBoardPosition); }
-    if (options.sourceScreenPosition) { this.setSourceScreenPosition(options.sourceScreenPosition); }
-    if (options.targetScreenPosition) { this.setTargetScreenPosition(options.targetScreenPosition); }
-    if (options.relativeToParent) { this.setRelativeToParent(options.relativeToParent); }
-    if (options.pixelGridAligned) { this.setPixelGridAligned(options.pixelGridAligned); }
-    if (options.pixelGridSize) { this.setPixelGridSize(options.pixelGridSize); }
-    if (options.angled != null) { this.setAngled(options.angled); }
+    if (options.duration) {
+      this.setDuration(options.duration);
+    }
+    if (options.maxParticles) {
+      this.setMaxParticles(options.maxParticles);
+    }
+    if (options.sourceBoardPosition) {
+      this.setSourceBoardPosition(options.sourceBoardPosition);
+    }
+    if (options.targetBoardPosition) {
+      this.setTargetBoardPosition(options.targetBoardPosition);
+    }
+    if (options.sourceScreenPosition) {
+      this.setSourceScreenPosition(options.sourceScreenPosition);
+    }
+    if (options.targetScreenPosition) {
+      this.setTargetScreenPosition(options.targetScreenPosition);
+    }
+    if (options.relativeToParent) {
+      this.setRelativeToParent(options.relativeToParent);
+    }
+    if (options.pixelGridAligned) {
+      this.setPixelGridAligned(options.pixelGridAligned);
+    }
+    if (options.pixelGridSize) {
+      this.setPixelGridSize(options.pixelGridSize);
+    }
+    if (options.angled != null) {
+      this.setAngled(options.angled);
+    }
     const directionAligned = options.directionAligned || this.modeA.rotationIsDir;
-    if (directionAligned != null) { this.setDirectionAligned(directionAligned); }
-    if (options.parallaxMode != null) { this.setParallaxMode(options.parallaxMode); }
-    if (options.posVarScaleSize) { this.setPosVarScaleSize(options.posVarScaleSize); }
-    if (options.posVarAOE) { this.setPosVarAOE(options.posVarAOE); }
-    if (options.friction) { this.setFriction(options.friction); }
-    if (options.fadeInAtLifePct) { this.setFadeInAtLifePct(options.fadeInAtLifePct); }
-    if (options.fadeOutAtLifePct != null) { this.setFadeOutAtLifePct(options.fadeOutAtLifePct); }
-    if (options.particleOffset) { this.setParticleOffset(options.particleOffset); }
-    if (options.relativeOffset) { this.setRelativeOffset(options.relativeOffset); }
-    if (options.emitFX) { this.setEmitFX(options.emitFX); }
-    if (options.parentSystem) { this.setParentSystem(options.parentSystem); }
-    if (options.emitOnImpact != null) { this.setEmitOnImpact(options.emitOnImpact); }
-    if (options.maxParticlesPerImpact) { this.setMaxParticlesPerImpact(options.maxParticlesPerImpact); }
-    if (options.fitToParent != null) { this.setFitToParent(options.fitToParent); }
-    if (options.fitToDistance != null) { this.setFitToDistance(options.fitToDistance); }
-    if (options.liveForDistance != null) { this.setLiveForDistance(options.liveForDistance); }
-    if (options.needsDepthTest != null) { this.setNeedsDepthTest(options.needsDepthTest); }
-    if (options.depthOffset != null) { this.setDepthOffset(options.depthOffset); }
-    if (options.particleDepthOffset != null) { this.setParticleDepthOffset(options.particleDepthOffset); }
-    if (options.depthModifier != null) { this.setDepthModifier(options.depthModifier); }
-    if (options.affectedByWind != null) { this.setAffectedByWind(options.affectedByWind); }
-    if (options.flippedX != null) { this.setFlippedX(options.flippedX); }
-    if (options.emissionChance != null) { this.setEmissionChance(options.emissionChance); }
-    if (options.emissionSynced != null) { this.setEmissionSynced(options.emissionSynced); }
-    if (options.maxInertia != null) { this.setMaxInertia(options.maxInertia); }
-    if (options.maxInertiaRandom != null) { this.setMaxInertiaRandom(options.maxInertiaRandom); }
+    if (directionAligned != null) {
+      this.setDirectionAligned(directionAligned);
+    }
+    if (options.parallaxMode != null) {
+      this.setParallaxMode(options.parallaxMode);
+    }
+    if (options.posVarScaleSize) {
+      this.setPosVarScaleSize(options.posVarScaleSize);
+    }
+    if (options.posVarAOE) {
+      this.setPosVarAOE(options.posVarAOE);
+    }
+    if (options.friction) {
+      this.setFriction(options.friction);
+    }
+    if (options.fadeInAtLifePct) {
+      this.setFadeInAtLifePct(options.fadeInAtLifePct);
+    }
+    if (options.fadeOutAtLifePct != null) {
+      this.setFadeOutAtLifePct(options.fadeOutAtLifePct);
+    }
+    if (options.particleOffset) {
+      this.setParticleOffset(options.particleOffset);
+    }
+    if (options.relativeOffset) {
+      this.setRelativeOffset(options.relativeOffset);
+    }
+    if (options.emitFX) {
+      this.setEmitFX(options.emitFX);
+    }
+    if (options.parentSystem) {
+      this.setParentSystem(options.parentSystem);
+    }
+    if (options.emitOnImpact != null) {
+      this.setEmitOnImpact(options.emitOnImpact);
+    }
+    if (options.maxParticlesPerImpact) {
+      this.setMaxParticlesPerImpact(options.maxParticlesPerImpact);
+    }
+    if (options.fitToParent != null) {
+      this.setFitToParent(options.fitToParent);
+    }
+    if (options.fitToDistance != null) {
+      this.setFitToDistance(options.fitToDistance);
+    }
+    if (options.liveForDistance != null) {
+      this.setLiveForDistance(options.liveForDistance);
+    }
+    if (options.needsDepthTest != null) {
+      this.setNeedsDepthTest(options.needsDepthTest);
+    }
+    if (options.depthOffset != null) {
+      this.setDepthOffset(options.depthOffset);
+    }
+    if (options.particleDepthOffset != null) {
+      this.setParticleDepthOffset(options.particleDepthOffset);
+    }
+    if (options.depthModifier != null) {
+      this.setDepthModifier(options.depthModifier);
+    }
+    if (options.affectedByWind != null) {
+      this.setAffectedByWind(options.affectedByWind);
+    }
+    if (options.flippedX != null) {
+      this.setFlippedX(options.flippedX);
+    }
+    if (options.emissionChance != null) {
+      this.setEmissionChance(options.emissionChance);
+    }
+    if (options.emissionSynced != null) {
+      this.setEmissionSynced(options.emissionSynced);
+    }
+    if (options.maxInertia != null) {
+      this.setMaxInertia(options.maxInertia);
+    }
+    if (options.maxInertiaRandom != null) {
+      this.setMaxInertiaRandom(options.maxInertiaRandom);
+    }
 
     // cc.ParticleSystem/Node options (incomplete)
-    if (options.posVar) { this.setPosVar(options.posVar); }
-    if (options.angle) { this.setAngle(options.angle); }
-    if (options.autoRemoveOnFinish != null) { this.setAutoRemoveOnFinish(options.autoRemoveOnFinish); }
-    if (options.positionType != null) { this.setPositionType(options.positionType); }
+    if (options.posVar) {
+      this.setPosVar(options.posVar);
+    }
+    if (options.angle) {
+      this.setAngle(options.angle);
+    }
+    if (options.autoRemoveOnFinish != null) {
+      this.setAutoRemoveOnFinish(options.autoRemoveOnFinish);
+    }
+    if (options.positionType != null) {
+      this.setPositionType(options.positionType);
+    }
 
-    if (options.staticPositionsToSample != null) { this._staticPositionsToSample = options.staticPositionsToSample; }
+    if (options.staticPositionsToSample != null) {
+      this._staticPositionsToSample = options.staticPositionsToSample;
+    }
   },
 
   setMaxParticles(maxParticles) {
@@ -487,7 +575,10 @@ var BaseParticleSystem = cc.ParticleSystem.extend({
 
   getLifeDuration(parentDuration) {
     // life is duration of emission but not infinite
-    return Math.max(typeof parentDuration === 'number' ? parentDuration : CONFIG.PARTICLE_SEQUENCE_DELAY, Math.max(0.0, this.duration));
+    return Math.max(
+      typeof parentDuration === 'number' ? parentDuration : CONFIG.PARTICLE_SEQUENCE_DELAY,
+      Math.max(0.0, this.duration),
+    );
   },
   getShowDelay() {
     // show is duration of emission but not infinite
@@ -524,13 +615,16 @@ var BaseParticleSystem = cc.ParticleSystem.extend({
   updateWorldPositionForParticle() {
     // when free or following particles, recalculate world position
     const positionType = this.getPositionType();
-    if (positionType === cc.ParticleSystem.TYPE_FREE || positionType === cc.ParticleSystem.TYPE_FOLLOW) {
+    if (
+      positionType === cc.ParticleSystem.TYPE_FREE ||
+      positionType === cc.ParticleSystem.TYPE_FOLLOW
+    ) {
       this._worldPositionForParticle = this.convertToWorldSpace(this._pointZeroForParticle);
     }
   },
 
   updateEmissionRate() {
-    this.setEmissionRate(this.getTotalParticles() / (this.getEstimatedParticleTimeToLive()));
+    this.setEmissionRate(this.getTotalParticles() / this.getEstimatedParticleTimeToLive());
 
     // reset emit counter
     const rate = 1.0 / this.emissionRate;
@@ -554,12 +648,22 @@ var BaseParticleSystem = cc.ParticleSystem.extend({
         const targetOffset = cc.p(offsetCorrection * direction.x, offsetCorrection * direction.y);
 
         // calculate offset
-        this._sourceScreenOffsetPosition = cc.p(sourceScreenPosition.x + sourceOffset.x, sourceScreenPosition.y + sourceOffset.y);
-        this._targetScreenOffsetPosition = cc.p(targetScreenPosition.x + targetOffset.x, targetScreenPosition.y + targetOffset.y);
+        this._sourceScreenOffsetPosition = cc.p(
+          sourceScreenPosition.x + sourceOffset.x,
+          sourceScreenPosition.y + sourceOffset.y,
+        );
+        this._targetScreenOffsetPosition = cc.p(
+          targetScreenPosition.x + targetOffset.x,
+          targetScreenPosition.y + targetOffset.y,
+        );
         this.setPosition(this._sourceScreenOffsetPosition);
 
         // redo difference
-        difference = cc.kmVec2Subtract(cc.p(), this._targetScreenOffsetPosition, this._sourceScreenOffsetPosition);
+        difference = cc.kmVec2Subtract(
+          cc.p(),
+          this._targetScreenOffsetPosition,
+          this._sourceScreenOffsetPosition,
+        );
         this._sourceToTargetDistance = cc.kmVec2Length(difference);
 
         // scale emission area to distance
@@ -677,7 +781,7 @@ var BaseParticleSystem = cc.ParticleSystem.extend({
           const posVarX = this._posVar.x * this.posVarAOE;
           const posVarY = this._posVar.y * this.posVarAOE;
           const radius = Math.max(posVarX, posVarY);
-          ttl = radius / delta * 1.5;
+          ttl = (radius / delta) * 1.5;
         } else if (liveForDistance) {
           // time to live based on distance
           ttl = this._sourceToTargetDistance / delta;
@@ -769,8 +873,8 @@ var BaseParticleSystem = cc.ParticleSystem.extend({
     let speed;
     if (this.getEmitterMode() === cc.ParticleSystem.MODE_GRAVITY) {
       // Mode Gravity: A
-      const locModeA = this.modeA; const
-        locParticleModeA = particle.modeA;
+      const locModeA = this.modeA;
+      const locParticleModeA = particle.modeA;
       const s = locModeA.speed + locModeA.speedVar * locRandomMinus11();
 
       // direction
@@ -779,10 +883,12 @@ var BaseParticleSystem = cc.ParticleSystem.extend({
       cc.pMultIn(locParticleModeA.dir, s);
 
       // radial accel
-      locParticleModeA.radialAccel = locModeA.radialAccel + locModeA.radialAccelVar * locRandomMinus11();
+      locParticleModeA.radialAccel =
+        locModeA.radialAccel + locModeA.radialAccelVar * locRandomMinus11();
 
       // tangential accel
-      locParticleModeA.tangentialAccel = locModeA.tangentialAccel * flipX + locModeA.tangentialAccelVar * locRandomMinus11();
+      locParticleModeA.tangentialAccel =
+        locModeA.tangentialAccel * flipX + locModeA.tangentialAccelVar * locRandomMinus11();
 
       // rotation is dir
       if (locModeA.rotationIsDir) {
@@ -820,10 +926,13 @@ var BaseParticleSystem = cc.ParticleSystem.extend({
         const radius = Math.max(posVarX, posVarY);
         const dir = cc.p(-locParticleModeA.dir.x, -locParticleModeA.dir.y);
         const dirAngle = cc.pToAngle(dir);
-        const accel = (locParticleModeA.radialAccel + locParticleModeA.tangentialAccel);
+        const accel = locParticleModeA.radialAccel + locParticleModeA.tangentialAccel;
         const accelOffsetX = -accel * 0.35;
         const accelOffsetY = particle.pos.x > 0 ? -accel * 0.65 : accel * 0.65;
-        const radiusOffset = UtilsPosition.rotatePosition(cc.p(radius + accelOffsetX, accelOffsetY), dirAngle);
+        const radiusOffset = UtilsPosition.rotatePosition(
+          cc.p(radius + accelOffsetX, accelOffsetY),
+          dirAngle,
+        );
         particle.pos.x += radiusOffset.x;
         particle.pos.y += radiusOffset.y;
         // make sure particle lives long enough to make the trip
@@ -833,25 +942,32 @@ var BaseParticleSystem = cc.ParticleSystem.extend({
         // correct depth offset so particles aren't going behind units when they still have a long ways to go
         const diff = Math.abs(particle.pos.y) - radius;
         if (diff > 0) {
-          particle.depthOffset = -this.particleDepthOffset - this.particleDepthOffset * Math.random() * 0.5;
+          particle.depthOffset =
+            -this.particleDepthOffset - this.particleDepthOffset * Math.random() * 0.5;
         } else {
-          particle.depthOffset = this.particleDepthOffset + this.particleDepthOffset * Math.random() * 0.5;
+          particle.depthOffset =
+            this.particleDepthOffset + this.particleDepthOffset * Math.random() * 0.5;
         }
       }
     } else {
       // Mode Radius: B
-      const locModeB = this.modeB; const
-        locParticleModeB = particle.modeB;
+      const locModeB = this.modeB;
+      const locParticleModeB = particle.modeB;
 
       // Set the default diameter of the particle from the source position
       const startRadius = locModeB.startRadius + locModeB.startRadiusVar * locRandomMinus11();
       const endRadius = locModeB.endRadius + locModeB.endRadiusVar * locRandomMinus11();
 
       locParticleModeB.radius = startRadius;
-      locParticleModeB.deltaRadius = (locModeB.endRadius === cc.ParticleSystem.START_RADIUS_EQUAL_TO_END_RADIUS) ? 0 : (endRadius - startRadius) / particle.timeToLive;
+      locParticleModeB.deltaRadius =
+        locModeB.endRadius === cc.ParticleSystem.START_RADIUS_EQUAL_TO_END_RADIUS
+          ? 0
+          : (endRadius - startRadius) / particle.timeToLive;
 
       locParticleModeB.angle = a;
-      locParticleModeB.degreesPerSecond = cc.degreesToRadians(locModeB.rotatePerSecond + locModeB.rotatePerSecondVar * locRandomMinus11());
+      locParticleModeB.degreesPerSecond = cc.degreesToRadians(
+        locModeB.rotatePerSecond + locModeB.rotatePerSecondVar * locRandomMinus11(),
+      );
 
       if (this.directionAligned) {
         particle.rotation = a;
@@ -895,10 +1011,10 @@ var BaseParticleSystem = cc.ParticleSystem.extend({
     }
 
     // delta color
-    const locStartColor = this._startColor; const
-      locStartColorVar = this._startColorVar;
-    const locEndColor = this._endColor; const
-      locEndColorVar = this._endColorVar;
+    const locStartColor = this._startColor;
+    const locStartColorVar = this._startColorVar;
+    const locEndColor = this._endColor;
+    const locEndColorVar = this._endColorVar;
     const start = {
       r: cc.clampf(locStartColor.r + locStartColorVar.r * locRandomMinus11(), 0, 255),
       g: cc.clampf(locStartColor.g + locStartColorVar.g * locRandomMinus11(), 0, 255),
@@ -935,7 +1051,7 @@ var BaseParticleSystem = cc.ParticleSystem.extend({
     if (emitFX && !this.emitSystems) {
       this.emitSystems = [];
 
-      const fxSprites = this._emitFXSprites = NodeFactory.createFX(emitFX);
+      const fxSprites = (this._emitFXSprites = NodeFactory.createFX(emitFX));
       for (let i = 0; i < fxSprites.length; i++) {
         const fxSprite = fxSprites[i];
 
@@ -961,8 +1077,9 @@ var BaseParticleSystem = cc.ParticleSystem.extend({
 
     // Mode A: gravity, direction, tangential accel & radial accel
     if (this.getEmitterMode() == cc.ParticleSystem.MODE_GRAVITY) {
-      const tmp = tpc; const radial = tpa; const
-        tangential = tpb;
+      const tmp = tpc;
+      const radial = tpa;
+      const tangential = tpb;
       mode = particle.modeA;
 
       // radial acceleration
@@ -1015,7 +1132,7 @@ var BaseParticleSystem = cc.ParticleSystem.extend({
     this._renderCmd._updateDeltaColor(particle, dt);
 
     // size
-    particle.size = Math.max(0, particle.size + (particle.deltaSize * dt));
+    particle.size = Math.max(0, particle.size + particle.deltaSize * dt);
 
     // align particle with direction of travel, where forward is right
     if (this.directionAligned) {
@@ -1023,13 +1140,17 @@ var BaseParticleSystem = cc.ParticleSystem.extend({
         particle.rotation = -cc.kmRadiansToDegrees(Math.atan2(deltaPos.y, deltaPos.x));
       }
     } else {
-      particle.rotation += (particle.deltaRotation * dt);
+      particle.rotation += particle.deltaRotation * dt;
     }
 
     // update values in quad
     const newPos = tpa;
     const positionType = this.getPositionType();
-    if ((positionType == cc.ParticleSystem.TYPE_FREE || positionType == cc.ParticleSystem.TYPE_RELATIVE) && !this.parallaxMode) {
+    if (
+      (positionType == cc.ParticleSystem.TYPE_FREE ||
+        positionType == cc.ParticleSystem.TYPE_RELATIVE) &&
+      !this.parallaxMode
+    ) {
       var diff = tpb;
       cc.pIn(diff, currentPosition);
       cc.pSubIn(diff, particle.startPos);
@@ -1139,7 +1260,8 @@ var BaseParticleSystem = cc.ParticleSystem.extend({
 
       if (impactMaxParticles > 0) {
         const impactPosition = cc.p(particle.pos.x, particle.pos.y);
-        const impactDuration = this.duration > 0 ? this.duration * (impactMaxParticles / this.maxParticles) : 0;
+        const impactDuration =
+          this.duration > 0 ? this.duration * (impactMaxParticles / this.maxParticles) : 0;
         this._impacts.push(new ParticleImpact(impactMaxParticles, impactPosition, impactDuration));
         this._isActive = true;
 
@@ -1179,7 +1301,7 @@ var BaseParticleSystem = cc.ParticleSystem.extend({
   seedSystem(numParticles) {
     numParticles || (numParticles = this._totalParticles);
     const particlesEmitted = 0;
-    while ((this.particleCount < this._totalParticles) && (particlesEmitted < numParticles)) {
+    while (this.particleCount < this._totalParticles && particlesEmitted < numParticles) {
       this.addParticle();
     }
   },
@@ -1203,7 +1325,7 @@ var BaseParticleSystem = cc.ParticleSystem.extend({
   },
 
   updateEmit(rate) {
-    while ((this.particleCount < this._totalParticles) && (this._emitCounter >= rate)) {
+    while (this.particleCount < this._totalParticles && this._emitCounter >= rate) {
       this.addParticle();
       this._emitCounter = Math.max(0.0, this._emitCounter - rate);
     }
@@ -1345,7 +1467,9 @@ BaseParticleSystem.WebGLRenderCmd = function (renderable) {
   this._pointRect = cc.rect();
   this._boundingSize = 1.0;
 };
-const proto = BaseParticleSystem.WebGLRenderCmd.prototype = Object.create(cc.ParticleSystem.WebGLRenderCmd.prototype);
+const proto = (BaseParticleSystem.WebGLRenderCmd.prototype = Object.create(
+  cc.ParticleSystem.WebGLRenderCmd.prototype,
+));
 proto.constructor = BaseParticleSystem.WebGLRenderCmd;
 
 proto.setBatchNode = function (batchNode) {
@@ -1414,7 +1538,10 @@ proto.transform = function () {
 };
 proto.getNodeToParentTransform = function () {
   const xyzRotationDirty = this._xyzRotationDirty;
-  const ret = cc.ParticleSystem.WebGLRenderCmd.prototype.getNodeToParentTransform.apply(this, arguments);
+  const ret = cc.ParticleSystem.WebGLRenderCmd.prototype.getNodeToParentTransform.apply(
+    this,
+    arguments,
+  );
   if (xyzRotationDirty) {
     this.updateQuad();
   }
@@ -1436,9 +1563,9 @@ proto._updateDeltaColor = function (particle, dt) {
   if (!node._dontTint) {
     const { color } = particle;
     const { deltaColor } = particle;
-    color.r = Math.max(0.0, color.r + (deltaColor.r * dt));
-    color.g = Math.max(0.0, color.g + (deltaColor.g * dt));
-    color.b = Math.max(0.0, color.b + (deltaColor.b * dt));
+    color.r = Math.max(0.0, color.r + deltaColor.r * dt);
+    color.g = Math.max(0.0, color.g + deltaColor.g * dt);
+    color.b = Math.max(0.0, color.b + deltaColor.b * dt);
 
     const lifePct = 1.0 - particle.timeToLive / particle.lifeDuration;
     const { fadeInAtLifePct } = node;
@@ -1448,7 +1575,7 @@ proto._updateDeltaColor = function (particle, dt) {
     } else if (lifePct >= fadeOutAtLifePct) {
       color.a = particle.endAlpha * ((1.0 - lifePct) / (1.0 - fadeOutAtLifePct));
     } else {
-      color.a = Math.max(0.0, color.a + (deltaColor.a * dt));
+      color.a = Math.max(0.0, color.a + deltaColor.a * dt);
     }
 
     particle.isChangeColor = true;
@@ -1499,13 +1626,31 @@ proto.updateQuad = function () {
   // vertices
 
   const needsRotation = this._xyzRotationMatrix != null;
-  let bl; let br; let tl; let
-    tr;
+  let bl;
+  let br;
+  let tl;
+  let tr;
   if (needsRotation) {
-    bl = cc.kmVec4Transform(new cc.kmVec4(), new cc.kmVec4(left, bottom, 0.0), this._xyzRotationMatrix);
-    br = cc.kmVec4Transform(new cc.kmVec4(), new cc.kmVec4(right, bottom, 0.0), this._xyzRotationMatrix);
-    tl = cc.kmVec4Transform(new cc.kmVec4(), new cc.kmVec4(left, top, 0.0), this._xyzRotationMatrix);
-    tr = cc.kmVec4Transform(new cc.kmVec4(), new cc.kmVec4(right, top, 0.0), this._xyzRotationMatrix);
+    bl = cc.kmVec4Transform(
+      new cc.kmVec4(),
+      new cc.kmVec4(left, bottom, 0.0),
+      this._xyzRotationMatrix,
+    );
+    br = cc.kmVec4Transform(
+      new cc.kmVec4(),
+      new cc.kmVec4(right, bottom, 0.0),
+      this._xyzRotationMatrix,
+    );
+    tl = cc.kmVec4Transform(
+      new cc.kmVec4(),
+      new cc.kmVec4(left, top, 0.0),
+      this._xyzRotationMatrix,
+    );
+    tr = cc.kmVec4Transform(
+      new cc.kmVec4(),
+      new cc.kmVec4(right, top, 0.0),
+      this._xyzRotationMatrix,
+    );
   } else {
     bl = new cc.kmVec4(left, bottom, 0.0);
     br = new cc.kmVec4(right, bottom, 0.0);
@@ -1530,8 +1675,10 @@ proto.updateQuad = function () {
 
   // uvs
 
-  let uvl; let uvb; let uvr; let
-    uvt;
+  let uvl;
+  let uvb;
+  let uvr;
+  let uvt;
   if (cc.FIX_ARTIFACTS_BY_STRECHING_TEXEL) {
     uvl = (rect.x * 2 + 1) / (width * 2);
     uvb = (rect.y * 2 + 1) / (height * 2);
@@ -1563,8 +1710,8 @@ proto.updateQuad = function () {
 };
 
 proto.updateQuadWithParticle = function (particle, newPosition) {
-  let quad = null; const
-    node = this._node;
+  let quad = null;
+  const node = this._node;
   if (node._batchNode) {
     const batchQuads = node._batchNode.textureAtlas.quads;
     quad = batchQuads[node.atlasIndex + particle.atlasIndex];
@@ -1575,8 +1722,10 @@ proto.updateQuadWithParticle = function (particle, newPosition) {
 
   // colors
   const { color } = particle;
-  let r; let g; let b; let
-    a;
+  let r;
+  let g;
+  let b;
+  let a;
   if (node._opacityModifyRGB) {
     const opacity = color.a / 255;
     r = 0 | (color.r * (this._displayedColor.r / 255.0) * opacity);
@@ -1589,8 +1738,10 @@ proto.updateQuadWithParticle = function (particle, newPosition) {
   }
   a = 0 | (color.a * (this._displayedOpacity / 255.0));
 
-  const blColors = quad.bl.colors; const brColors = quad.br.colors; const tlColors = quad.tl.colors; const
-    trColors = quad.tr.colors;
+  const blColors = quad.bl.colors;
+  const brColors = quad.br.colors;
+  const tlColors = quad.tl.colors;
+  const trColors = quad.tr.colors;
   blColors.r = brColors.r = tlColors.r = trColors.r = r;
   blColors.g = brColors.g = tlColors.g = trColors.g = g;
   blColors.b = brColors.b = tlColors.b = trColors.b = b;
@@ -1600,8 +1751,9 @@ proto.updateQuadWithParticle = function (particle, newPosition) {
 
   const { x } = newPosition;
   const { y } = newPosition;
-  let rad; let cr; let
-    sr;
+  let rad;
+  let cr;
+  let sr;
   let zbl = 0.0;
   let zbr = 0.0;
   let ztl = 0.0;
@@ -1725,7 +1877,10 @@ proto.rendering = function (ctx) {
     depthTestProgram.use();
     depthTestProgram._setUniformForMVPMatrixWithMat4(this._stackMatrix);
     depthTestProgram.setUniformLocationWith1f(depthTestProgram.loc_depthOffset, node.depthOffset);
-    depthTestProgram.setUniformLocationWith1f(depthTestProgram.loc_depthModifier, node.depthModifier);
+    depthTestProgram.setUniformLocationWith1f(
+      depthTestProgram.loc_depthModifier,
+      node.depthModifier,
+    );
     cc.glBindTexture2DN(0, node._texture);
     cc.glBindTexture2DN(1, node.getFX().getDepthMap());
 

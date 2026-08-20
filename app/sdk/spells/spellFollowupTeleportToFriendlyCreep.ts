@@ -13,7 +13,7 @@ class SpellFollowupTeleportToFriendlyCreep extends SpellFollowupTeleport {
     const friendlyCreepPositions = [];
 
     for (var tile of Array.from<any>(board.getTiles(true, false))) {
-      if ((tile.getOwnerId() === this.getOwnerId()) && (tile.getBaseCardId() === Cards.Tile.Shadow)) {
+      if (tile.getOwnerId() === this.getOwnerId() && tile.getBaseCardId() === Cards.Tile.Shadow) {
         var tilePosition = { x: tile.getPosition().x, y: tile.getPosition().y };
         if (!board.getCardAtPosition(tilePosition, CardType.Unit)) {
           friendlyCreepPositions.push(tilePosition);

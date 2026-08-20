@@ -30,11 +30,21 @@ var FXTimerSprite = BaseSprite.extend({
 
   setOptions(options) {
     this._super(options);
-    if (options.progress != null) { this.setProgress(options.progress); }
-    if (options.startingAngle != null) { this.setStartingAngle(options.startingAngle); }
-    if (options.edgeGradientFactor != null) { this.setEdgeGradientFactor(options.edgeGradientFactor); }
-    if (options.bgColor != null) { this.setBGColor(options.bgColor); }
-    if (options.bgOpacity != null) { this.setBGOpacity(options.bgOpacity); }
+    if (options.progress != null) {
+      this.setProgress(options.progress);
+    }
+    if (options.startingAngle != null) {
+      this.setStartingAngle(options.startingAngle);
+    }
+    if (options.edgeGradientFactor != null) {
+      this.setEdgeGradientFactor(options.edgeGradientFactor);
+    }
+    if (options.bgColor != null) {
+      this.setBGColor(options.bgColor);
+    }
+    if (options.bgOpacity != null) {
+      this.setBGOpacity(options.bgOpacity);
+    }
   },
 
   setProgress(val) {
@@ -53,7 +63,12 @@ var FXTimerSprite = BaseSprite.extend({
       if (typeof duration === 'number') {
         this._targetProgress = progress;
         this.stopActionByTag(CONFIG.ANIM_TAG);
-        const progressAction = cc.actionTween(duration, 'progress', this.progress, this._targetProgress);
+        const progressAction = cc.actionTween(
+          duration,
+          'progress',
+          this.progress,
+          this._targetProgress,
+        );
         progressAction.setTag(CONFIG.ANIM_TAG);
         this.runAction(progressAction);
       } else {
@@ -82,12 +97,12 @@ var FXTimerSprite = BaseSprite.extend({
 
   updateTweenAction(value, key) {
     switch (key) {
-    case 'progress':
-      this.progress = value;
-      break;
-    default:
-      BaseSprite.prototype.updateTweenAction.call(this, value, key);
-      break;
+      case 'progress':
+        this.progress = value;
+        break;
+      default:
+        BaseSprite.prototype.updateTweenAction.call(this, value, key);
+        break;
     }
   },
 });
@@ -95,7 +110,9 @@ var FXTimerSprite = BaseSprite.extend({
 FXTimerSprite.WebGLRenderCmd = function (renderable) {
   BaseSprite.WebGLRenderCmd.call(this, renderable);
 };
-const proto = FXTimerSprite.WebGLRenderCmd.prototype = Object.create(BaseSprite.WebGLRenderCmd.prototype);
+const proto = (FXTimerSprite.WebGLRenderCmd.prototype = Object.create(
+  BaseSprite.WebGLRenderCmd.prototype,
+));
 proto.constructor = FXTimerSprite.WebGLRenderCmd;
 
 proto.rendering = function () {
@@ -109,10 +126,23 @@ proto.rendering = function () {
   shaderProgram._setUniformForMVPMatrixWithMat4(this._stackMatrix);
   shaderProgram.setUniformLocationWith1f(shaderProgram.loc_progress, node.progress);
   shaderProgram.setUniformLocationWith1f(shaderProgram.loc_startingAngle, node.startingAngle);
-  shaderProgram.setUniformLocationWith1f(shaderProgram.loc_edgeGradientFactor, node.edgeGradientFactor);
+  shaderProgram.setUniformLocationWith1f(
+    shaderProgram.loc_edgeGradientFactor,
+    node.edgeGradientFactor,
+  );
   const { bgColor } = node;
-  shaderProgram.setUniformLocationWith4f(shaderProgram.loc_bgColor, bgColor.r / 255.0, bgColor.g / 255.0, bgColor.b / 255.0, node.bgOpacity / 255.0);
-  shaderProgram.setUniformLocationWith2f(shaderProgram.loc_texResolution, node._contentSize.width * node._scaleX, node._contentSize.height * node._scaleY);
+  shaderProgram.setUniformLocationWith4f(
+    shaderProgram.loc_bgColor,
+    bgColor.r / 255.0,
+    bgColor.g / 255.0,
+    bgColor.b / 255.0,
+    node.bgOpacity / 255.0,
+  );
+  shaderProgram.setUniformLocationWith2f(
+    shaderProgram.loc_texResolution,
+    node._contentSize.width * node._scaleX,
+    node._contentSize.height * node._scaleY,
+  );
 
   cc.glBlendFunc(node._blendFunc.src, node._blendFunc.dst);
 

@@ -87,10 +87,14 @@ function firePixels() {
     iframe.frameBorder = 0;
     iframe.width = 1;
     iframe.height = 1;
-    iframe.addEventListener('load', () => {
-      debug('iframe tracking pixel loaded');
-      resolve();
-    }, false);
+    iframe.addEventListener(
+      'load',
+      () => {
+        debug('iframe tracking pixel loaded');
+        resolve();
+      },
+      false,
+    );
     document.body.appendChild(iframe);
   });
 }

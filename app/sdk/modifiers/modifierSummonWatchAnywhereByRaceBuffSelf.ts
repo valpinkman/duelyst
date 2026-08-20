@@ -20,11 +20,16 @@ class ModifierSummonWatchAnywhereByRaceBuffSelf extends ModifierSummonWatchByRac
   onActivate() {
     // special check on activation in case this card is created mid-game
     // need to check all actions that occured this gamesession for triggers
-    const summonMinionActions = this.getGameSession().filterActions(this.getIsActionRelevant.bind(this));
+    const summonMinionActions = this.getGameSession().filterActions(
+      this.getIsActionRelevant.bind(this),
+    );
     return (() => {
       const result = [];
       for (var action of Array.from<any>(summonMinionActions)) {
-        if (this.getIsCardRelevantToWatcher(action.getCard()) && (action.getCard() !== this.getCard())) {
+        if (
+          this.getIsCardRelevantToWatcher(action.getCard()) &&
+          action.getCard() !== this.getCard()
+        ) {
           result.push(this.onSummonWatch(action));
         } else {
           result.push(undefined);
@@ -34,11 +39,15 @@ class ModifierSummonWatchAnywhereByRaceBuffSelf extends ModifierSummonWatchByRac
     })();
   }
 }
-ModifierSummonWatchAnywhereByRaceBuffSelf.prototype.type = 'ModifierSummonWatchAnywhereByRaceBuffSelf';
+ModifierSummonWatchAnywhereByRaceBuffSelf.prototype.type =
+  'ModifierSummonWatchAnywhereByRaceBuffSelf';
 ModifierSummonWatchAnywhereByRaceBuffSelf.prototype.activeInHand = true;
 ModifierSummonWatchAnywhereByRaceBuffSelf.prototype.activeInDeck = true;
 ModifierSummonWatchAnywhereByRaceBuffSelf.prototype.activeInSignatureCards = false;
 ModifierSummonWatchAnywhereByRaceBuffSelf.prototype.activeOnBoard = true;
-ModifierSummonWatchAnywhereByRaceBuffSelf.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierSummonWatchAnywhereByRaceBuffSelf.prototype.fxResource = [
+  'FX.Modifiers.ModifierSummonWatch',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 
 module.exports = ModifierSummonWatchAnywhereByRaceBuffSelf;

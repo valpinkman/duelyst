@@ -47,10 +47,18 @@ var FXChromaticFlareSprite = FXSprite.extend({
 
   setOptions(options) {
     this._super(options);
-    if (options.phase != null) { this.setPhase(options.phase); }
-    if (options.speed != null) { this.setSpeed(options.speed); }
-    if (options.frequency != null) { this.setFrequency(options.frequency); }
-    if (options.amplitude != null) { this.setAmplitude(options.amplitude); }
+    if (options.phase != null) {
+      this.setPhase(options.phase);
+    }
+    if (options.speed != null) {
+      this.setSpeed(options.speed);
+    }
+    if (options.frequency != null) {
+      this.setFrequency(options.frequency);
+    }
+    if (options.amplitude != null) {
+      this.setAmplitude(options.amplitude);
+    }
   },
 
   setPhase(phase) {
@@ -108,7 +116,9 @@ var FXChromaticFlareSprite = FXSprite.extend({
 FXChromaticFlareSprite.WebGLRenderCmd = function (renderable) {
   FXSprite.WebGLRenderCmd.call(this, renderable);
 };
-const proto = FXChromaticFlareSprite.WebGLRenderCmd.prototype = Object.create(FXSprite.WebGLRenderCmd.prototype);
+const proto = (FXChromaticFlareSprite.WebGLRenderCmd.prototype = Object.create(
+  FXSprite.WebGLRenderCmd.prototype,
+));
 proto.constructor = FXChromaticFlareSprite.WebGLRenderCmd;
 
 proto.rendering = function () {
@@ -120,13 +130,40 @@ proto.rendering = function () {
   const shaderProgram = this._shaderProgram;
   shaderProgram.use();
   shaderProgram._setUniformForMVPMatrixWithMat4(this._stackMatrix);
-  if (shaderProgram.loc_size != null) { shaderProgram.setUniformLocationWith2f(shaderProgram.loc_size, node._rect.width, node._rect.height); }
-  if (shaderProgram.loc_phase != null) { shaderProgram.setUniformLocationWith1f(shaderProgram.loc_phase, node.getPhase()); }
-  if (shaderProgram.loc_time != null) { shaderProgram.setUniformLocationWith1f(shaderProgram.loc_time, node.getFX().getTime() * node.getSpeed()); }
-  if (shaderProgram.loc_frequency != null) { shaderProgram.setUniformLocationWith1f(shaderProgram.loc_frequency, node.getFrequency()); }
-  if (shaderProgram.loc_amplitude != null) { shaderProgram.setUniformLocationWith1f(shaderProgram.loc_amplitude, node.getAmplitude()); }
-  if (shaderProgram.loc_smoothstepMin != null) { shaderProgram.setUniformLocationWith1f(shaderProgram.loc_smoothstepMin, node.getSmoothstepMin()); }
-  if (shaderProgram.loc_smoothstepMax != null) { shaderProgram.setUniformLocationWith1f(shaderProgram.loc_smoothstepMax, node.getSmoothstepMax()); }
+  if (shaderProgram.loc_size != null) {
+    shaderProgram.setUniformLocationWith2f(
+      shaderProgram.loc_size,
+      node._rect.width,
+      node._rect.height,
+    );
+  }
+  if (shaderProgram.loc_phase != null) {
+    shaderProgram.setUniformLocationWith1f(shaderProgram.loc_phase, node.getPhase());
+  }
+  if (shaderProgram.loc_time != null) {
+    shaderProgram.setUniformLocationWith1f(
+      shaderProgram.loc_time,
+      node.getFX().getTime() * node.getSpeed(),
+    );
+  }
+  if (shaderProgram.loc_frequency != null) {
+    shaderProgram.setUniformLocationWith1f(shaderProgram.loc_frequency, node.getFrequency());
+  }
+  if (shaderProgram.loc_amplitude != null) {
+    shaderProgram.setUniformLocationWith1f(shaderProgram.loc_amplitude, node.getAmplitude());
+  }
+  if (shaderProgram.loc_smoothstepMin != null) {
+    shaderProgram.setUniformLocationWith1f(
+      shaderProgram.loc_smoothstepMin,
+      node.getSmoothstepMin(),
+    );
+  }
+  if (shaderProgram.loc_smoothstepMax != null) {
+    shaderProgram.setUniformLocationWith1f(
+      shaderProgram.loc_smoothstepMax,
+      node.getSmoothstepMax(),
+    );
+  }
   cc.glBlendFunc(node._blendFunc.src, node._blendFunc.dst);
   cc.glBindTexture2DN(0, cc.textureCache.getTextureForKey(RSX.noise.img));
 

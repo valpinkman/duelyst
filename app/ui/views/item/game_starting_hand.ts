@@ -7,7 +7,6 @@ var Animations = require('app/ui/views/animations');
 var GameStartingHandTemplate = require('app/ui/templates/item/game_starting_hand.hbs');
 
 var GameStartingHandItemView = Backbone.Marionette.ItemView.extend({
-
   id: 'app-game-starting-hand',
   className: 'modal duelyst-modal',
 
@@ -22,7 +21,10 @@ var GameStartingHandItemView = Backbone.Marionette.ItemView.extend({
   animateOut: Animations.fadeOut,
 
   onRender: function () {
-    if (!SDK.GameType.isMultiplayerGameType(SDK.GameSession.getInstance().getGameType()) || SDK.GameSession.getInstance().getIsSpectateMode()) {
+    if (
+      !SDK.GameType.isMultiplayerGameType(SDK.GameSession.getInstance().getGameType()) ||
+      SDK.GameSession.getInstance().getIsSpectateMode()
+    ) {
       // in non-multiplayer game, no need to show opponent connection status
       this.ui.$opponentConnecting.hide();
       this.ui.$opponentConnected.hide();
@@ -31,7 +33,11 @@ var GameStartingHandItemView = Backbone.Marionette.ItemView.extend({
   },
 
   onShow: function () {
-    this.listenTo(NetworkManager.getInstance().getEventBus(), EVENTS.opponent_connection_status_changed, this._updateOpponentConnection);
+    this.listenTo(
+      NetworkManager.getInstance().getEventBus(),
+      EVENTS.opponent_connection_status_changed,
+      this._updateOpponentConnection,
+    );
   },
 
   _updateOpponentConnection: function () {

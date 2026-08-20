@@ -16,12 +16,17 @@ class ModifierDyingWishDrawEnemyLegendaryArtifact extends ModifierDyingWish {
 
   onDyingWish(action) {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
-      const enemyGeneral = this.getCard().getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
+      const enemyGeneral = this.getCard()
+        .getGameSession()
+        .getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
       const factionId = enemyGeneral.getFactionId();
 
       let factionArtifacts = [];
       if (this.getGameSession().getGameFormat() === GameFormat.Standard) {
-        factionArtifacts = this.getGameSession().getCardCaches().getIsLegacy(false).getFaction(factionId)
+        factionArtifacts = this.getGameSession()
+          .getCardCaches()
+          .getIsLegacy(false)
+          .getFaction(factionId)
           .getType(CardType.Artifact)
           .getRarity(Rarity.Legendary)
           .getIsHiddenInCollection(false)
@@ -30,7 +35,10 @@ class ModifierDyingWishDrawEnemyLegendaryArtifact extends ModifierDyingWish {
           .getIsSkinned(false)
           .getCards();
       } else {
-        factionArtifacts = this.getGameSession().getCardCaches().getFaction(factionId).getType(CardType.Artifact)
+        factionArtifacts = this.getGameSession()
+          .getCardCaches()
+          .getFaction(factionId)
+          .getType(CardType.Artifact)
           .getRarity(Rarity.Legendary)
           .getIsHiddenInCollection(false)
           .getIsToken(false)
@@ -40,13 +48,21 @@ class ModifierDyingWishDrawEnemyLegendaryArtifact extends ModifierDyingWish {
       }
 
       if (factionArtifacts.length > 0) {
-        const cardToPutInHand = factionArtifacts[this.getGameSession().getRandomIntegerForExecution(factionArtifacts.length)];
-        const a = new PutCardInHandAction(this.getGameSession(), this.getCard().getOwnerId(), cardToPutInHand.createNewCardData());
+        const cardToPutInHand =
+          factionArtifacts[
+            this.getGameSession().getRandomIntegerForExecution(factionArtifacts.length)
+          ];
+        const a = new PutCardInHandAction(
+          this.getGameSession(),
+          this.getCard().getOwnerId(),
+          cardToPutInHand.createNewCardData(),
+        );
         return this.getGameSession().executeAction(a);
       }
     }
   }
 }
-ModifierDyingWishDrawEnemyLegendaryArtifact.prototype.type = 'ModifierDyingWishDrawEnemyLegendaryArtifact';
+ModifierDyingWishDrawEnemyLegendaryArtifact.prototype.type =
+  'ModifierDyingWishDrawEnemyLegendaryArtifact';
 
 module.exports = ModifierDyingWishDrawEnemyLegendaryArtifact;

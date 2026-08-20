@@ -59,7 +59,9 @@ describe('challenges', () => {
 
       action = gameSession.getGeneralForPlayer1().actionMove({ x: 4, y: 2 });
       gameSession.executeAction(action);
-      action = gameSession.getGeneralForPlayer1().actionAttack(board.getUnitAtPosition({ x: 5, y: 1 }));
+      action = gameSession
+        .getGeneralForPlayer1()
+        .actionAttack(board.getUnitAtPosition({ x: 5, y: 1 }));
       gameSession.executeAction(action);
 
       action = cloaker.actionMove({ x: 5, y: 1 });
@@ -103,7 +105,9 @@ describe('challenges', () => {
 
       action = gameSession.getGeneralForPlayer1().actionMove({ x: 2, y: 1 });
       gameSession.executeAction(action);
-      action = gameSession.getGeneralForPlayer1().actionAttack(board.getUnitAtPosition({ x: 3, y: 2 }));
+      action = gameSession
+        .getGeneralForPlayer1()
+        .actionAttack(board.getUnitAtPosition({ x: 3, y: 2 }));
       gameSession.executeAction(action);
 
       const orb1 = board.getUnitAtPosition({ x: 3, y: 1 });
@@ -141,7 +145,9 @@ describe('challenges', () => {
 
       let action = gameSession.getGeneralForPlayer1().actionMove({ x: 3, y: 2 });
       gameSession.executeAction(action);
-      action = gameSession.getGeneralForPlayer1().actionAttack(board.getUnitAtPosition({ x: 4, y: 2 }));
+      action = gameSession
+        .getGeneralForPlayer1()
+        .actionAttack(board.getUnitAtPosition({ x: 4, y: 2 }));
       gameSession.executeAction(action);
 
       action = templar.actionMove({ x: 4, y: 2 });
@@ -191,7 +197,9 @@ describe('challenges', () => {
       const followupAction2 = myPlayer.actionPlayFollowup(followupCard2, 0, 3);
       gameSession.executeAction(followupAction2);
 
-      let action = gameSession.getGeneralForPlayer1().actionAttack(board.getUnitAtPosition({ x: 1, y: 1 }));
+      let action = gameSession
+        .getGeneralForPlayer1()
+        .actionAttack(board.getUnitAtPosition({ x: 1, y: 1 }));
       gameSession.executeAction(action);
 
       action = wraithling.actionMove({ x: 4, y: 3 });
@@ -243,7 +251,9 @@ describe('challenges', () => {
 
       action = gameSession.getGeneralForPlayer1().actionMove({ x: 4, y: 2 });
       gameSession.executeAction(action);
-      action = gameSession.getGeneralForPlayer1().actionAttack(board.getUnitAtPosition({ x: 5, y: 3 }));
+      action = gameSession
+        .getGeneralForPlayer1()
+        .actionAttack(board.getUnitAtPosition({ x: 5, y: 3 }));
       gameSession.executeAction(action);
 
       action = fourWinds.actionMove({ x: 5, y: 3 });

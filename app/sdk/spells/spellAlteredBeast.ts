@@ -6,14 +6,20 @@ const _ = require('underscore');
 class SpellAlteredBeast extends SpellAspectBase {
   getCardDataOrIndexToSpawn(x, y) {
     // pick a random battle pet
-    let allBattlePetCards = this.getGameSession().getCardCaches().getRace(Races.BattlePet).getIsPrismatic(false)
+    let allBattlePetCards = this.getGameSession()
+      .getCardCaches()
+      .getRace(Races.BattlePet)
+      .getIsPrismatic(false)
       .getIsSkinned(false)
       .getCards();
     allBattlePetCards = _.reject(allBattlePetCards, (card) => {
       const baseCardId = card.getBaseCardId();
       return baseCardId === Cards.Neutral.Rawr;
     });
-    const card = allBattlePetCards[this.getGameSession().getRandomIntegerForExecution(allBattlePetCards.length)];
+    const card =
+      allBattlePetCards[
+        this.getGameSession().getRandomIntegerForExecution(allBattlePetCards.length)
+      ];
     this.cardDataOrIndexToSpawn = card.createNewCardData();
 
     return super.getCardDataOrIndexToSpawn(x, y);

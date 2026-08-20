@@ -22,14 +22,20 @@ class PlayerModifierFlashReincarnation extends PlayerModifierManaModifier {
     super.onAction(event);
 
     // when a card is played from hand AFTER this modifier is applied
-    const {
-      action,
-    } = event;
-    if ((action.getIndex() > this.getAppliedByActionIndex()) && ((action instanceof PlayCardFromHandAction && this.auraIncludeHand) || (action instanceof PlaySignatureCardAction && this.auraIncludeSignatureCards)) && (action.getOwnerId() === this.getPlayerId())) {
+    const { action } = event;
+    if (
+      action.getIndex() > this.getAppliedByActionIndex() &&
+      ((action instanceof PlayCardFromHandAction && this.auraIncludeHand) ||
+        (action instanceof PlaySignatureCardAction && this.auraIncludeSignatureCards)) &&
+      action.getOwnerId() === this.getPlayerId()
+    ) {
       const card = action.getCard();
       if (card != null) {
         if (action instanceof PlayCardFromHandAction) {
-          if ((action.getOwnerId() === this.getPlayerId()) && (__guard__(action.getCard(), (x) => x.type) === CardType.Unit)) {
+          if (
+            action.getOwnerId() === this.getPlayerId() &&
+            __guard__(action.getCard(), (x) => x.type) === CardType.Unit
+          ) {
             // damage the unit IF a unit was played
             const unitToDamage = action.getTarget();
             if (unitToDamage != null) {
@@ -37,7 +43,11 @@ class PlayerModifierFlashReincarnation extends PlayerModifierManaModifier {
               damageAction.setOwnerId(this.getCard().getOwnerId());
               const appliedByAction = this.getAppliedByAction();
               if (appliedByAction != null) {
-                damageAction.setSource(__guardMethod__(appliedByAction.getRootAction(), 'getCard', (o) => o.getCard().getRootCard()));
+                damageAction.setSource(
+                  __guardMethod__(appliedByAction.getRootAction(), 'getCard', (o) =>
+                    o.getCard().getRootCard(),
+                  ),
+                );
               } else {
                 damageAction.setSource(this.getCard());
               }
@@ -59,7 +69,7 @@ PlayerModifierFlashReincarnation.prototype.damageAmount = 2;
 module.exports = PlayerModifierFlashReincarnation;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }
 function __guardMethod__(obj, methodName, transform) {
   if (typeof obj !== 'undefined' && obj !== null && typeof obj[methodName] === 'function') {

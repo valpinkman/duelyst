@@ -14,13 +14,9 @@ Logger.enabled = false;
 describe('shimzar', () => {
   describe('faction6', () => {
     beforeEach(() => {
-      const player1Deck = [
-        { id: SDK.Cards.Faction6.General },
-      ];
+      const player1Deck = [{ id: SDK.Cards.Faction6.General }];
 
-      const player2Deck = [
-        { id: SDK.Cards.Faction1.General },
-      ];
+      const player2Deck = [{ id: SDK.Cards.Faction1.General }];
 
       UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
     });
@@ -31,13 +27,9 @@ describe('shimzar', () => {
 
     it('expect snow rippler to draw a battlepet when it damages a general while infiltrated', () => {
       for (let i = 0; i < 50; i++) {
-        const player1Deck = [
-          { id: SDK.Cards.Faction6.General },
-        ];
+        const player1Deck = [{ id: SDK.Cards.Faction6.General }];
 
-        const player2Deck = [
-          { id: SDK.Cards.Faction6.General },
-        ];
+        const player2Deck = [{ id: SDK.Cards.Faction6.General }];
 
         // setup test session
         UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
@@ -45,7 +37,12 @@ describe('shimzar', () => {
         const board = gameSession.getBoard();
         const player1 = gameSession.getPlayer1();
 
-        const rippler = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.SnowRippler }, 7, 2, gameSession.getPlayer1Id());
+        const rippler = UtilsSDK.applyCardToBoard(
+          { id: SDK.Cards.Faction6.SnowRippler },
+          7,
+          2,
+          gameSession.getPlayer1Id(),
+        );
         rippler.refreshExhaustion();
         const action = rippler.actionAttack(gameSession.getGeneralForPlayer2());
         gameSession.executeAction(action);
@@ -66,9 +63,18 @@ describe('shimzar', () => {
 
       player1.remainingMana = 9;
 
-      const rippler = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.SnowRippler }, 2, 2, gameSession.getPlayer2Id());
+      const rippler = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.SnowRippler },
+        2,
+        2,
+        gameSession.getPlayer2Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction6.Icy }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction6.Icy,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
       const followupCard = playCardFromHandAction.getCard().getCurrentFollowupCard();
@@ -85,14 +91,32 @@ describe('shimzar', () => {
 
       player1.remainingMana = 9;
 
-      const rippler = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.SnowRippler }, 7, 2, gameSession.getPlayer1Id());
-      const rippler2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.SnowRippler }, 1, 2, gameSession.getPlayer1Id());
+      const rippler = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.SnowRippler },
+        7,
+        2,
+        gameSession.getPlayer1Id(),
+      );
+      const rippler2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.SnowRippler },
+        1,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.WailingOverdrive }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.WailingOverdrive,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 7, 2);
       gameSession.executeAction(playCardFromHandAction);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.WailingOverdrive }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.WailingOverdrive,
+        }),
+      );
       var playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 2);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -104,13 +128,9 @@ describe('shimzar', () => {
 
     it('expect altered beast to turn one minion into a random battlepet', () => {
       for (let i = 0; i < 50; i++) {
-        const player1Deck = [
-          { id: SDK.Cards.Faction6.General },
-        ];
+        const player1Deck = [{ id: SDK.Cards.Faction6.General }];
 
-        const player2Deck = [
-          { id: SDK.Cards.Faction6.General },
-        ];
+        const player2Deck = [{ id: SDK.Cards.Faction6.General }];
 
         // setup test session
         UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
@@ -121,9 +141,18 @@ describe('shimzar', () => {
 
         player1.remainingMana = 9;
 
-        const rippler2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.SnowRippler }, 1, 2, gameSession.getPlayer1Id());
+        const rippler2 = UtilsSDK.applyCardToBoard(
+          { id: SDK.Cards.Faction6.SnowRippler },
+          1,
+          2,
+          gameSession.getPlayer1Id(),
+        );
 
-        UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.AlteredBeast }));
+        UtilsSDK.executeActionWithoutValidation(
+          new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+            id: SDK.Cards.Spell.AlteredBeast,
+          }),
+        );
         const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 2);
         gameSession.executeAction(playCardFromHandAction);
 
@@ -143,9 +172,18 @@ describe('shimzar', () => {
 
       player1.remainingMana = 9;
 
-      const cloaker = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.CrystalCloaker }, 2, 2, gameSession.getPlayer1Id());
+      const cloaker = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.CrystalCloaker },
+        2,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction6.Huldra }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction6.Huldra,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
       const followupCard = playCardFromHandAction.getCard().getCurrentFollowupCard();
@@ -157,13 +195,9 @@ describe('shimzar', () => {
 
     it('expect bur to transform into a different battle pet when it takes damage', () => {
       for (let i = 0; i < 50; i++) {
-        const player1Deck = [
-          { id: SDK.Cards.Faction3.General },
-        ];
+        const player1Deck = [{ id: SDK.Cards.Faction3.General }];
 
-        const player2Deck = [
-          { id: SDK.Cards.Faction3.General },
-        ];
+        const player2Deck = [{ id: SDK.Cards.Faction3.General }];
 
         // setup test session
         UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
@@ -173,9 +207,18 @@ describe('shimzar', () => {
         const player1 = gameSession.getPlayer1();
         player1.remainingMana = 9;
 
-        const bur = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.Bur }, 2, 2, gameSession.getPlayer2Id());
+        const bur = UtilsSDK.applyCardToBoard(
+          { id: SDK.Cards.Faction6.Bur },
+          2,
+          2,
+          gameSession.getPlayer2Id(),
+        );
 
-        UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.GhostLightning }));
+        UtilsSDK.executeActionWithoutValidation(
+          new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+            id: SDK.Cards.Spell.GhostLightning,
+          }),
+        );
         const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
         gameSession.executeAction(playCardFromHandAction);
 
@@ -195,11 +238,30 @@ describe('shimzar', () => {
 
       player1.remainingMana = 9;
 
-      const silverguardSquire = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction1.SilverguardSquire }, 1, 1, gameSession.getPlayer2Id());
-      const brightmossGolem = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.BrightmossGolem }, 8, 1, gameSession.getPlayer2Id());
-      const brightmossGolem2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.BrightmossGolem }, 7, 1, gameSession.getPlayer1Id());
+      const silverguardSquire = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction1.SilverguardSquire },
+        1,
+        1,
+        gameSession.getPlayer2Id(),
+      );
+      const brightmossGolem = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.BrightmossGolem },
+        8,
+        1,
+        gameSession.getPlayer2Id(),
+      );
+      const brightmossGolem2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.BrightmossGolem },
+        7,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.Frostburn }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.Frostburn,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -215,9 +277,18 @@ describe('shimzar', () => {
 
       player1.remainingMana = 9;
 
-      const cloaker = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.CrystalCloaker }, 2, 2, gameSession.getPlayer1Id());
+      const cloaker = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.CrystalCloaker },
+        2,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction6.IceDryad }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction6.IceDryad,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
       const followupCard = playCardFromHandAction.getCard().getCurrentFollowupCard();
@@ -231,13 +302,9 @@ describe('shimzar', () => {
 
     it('expect vespyric call to draw a non-token vespyr minion', () => {
       for (let i = 0; i < 50; i++) {
-        const player1Deck = [
-          { id: SDK.Cards.Faction6.General },
-        ];
+        const player1Deck = [{ id: SDK.Cards.Faction6.General }];
 
-        const player2Deck = [
-          { id: SDK.Cards.Faction6.General },
-        ];
+        const player2Deck = [{ id: SDK.Cards.Faction6.General }];
 
         // setup test session
         UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
@@ -246,7 +313,11 @@ describe('shimzar', () => {
         const board = gameSession.getBoard();
         const player1 = gameSession.getPlayer1();
 
-        UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.VespyricCall }));
+        UtilsSDK.executeActionWithoutValidation(
+          new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+            id: SDK.Cards.Spell.VespyricCall,
+          }),
+        );
         const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
         gameSession.executeAction(playCardFromHandAction);
 
@@ -262,7 +333,11 @@ describe('shimzar', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.VespyricCall }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.VespyricCall,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -321,11 +396,30 @@ describe('shimzar', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const cloaker = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.CrystalCloaker }, 2, 2, gameSession.getPlayer1Id());
-      const cloaker2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.CrystalCloaker }, 7, 2, gameSession.getPlayer1Id());
-      const cloaker3 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.CrystalCloaker }, 4, 2, gameSession.getPlayer1Id());
+      const cloaker = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.CrystalCloaker },
+        2,
+        2,
+        gameSession.getPlayer1Id(),
+      );
+      const cloaker2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.CrystalCloaker },
+        7,
+        2,
+        gameSession.getPlayer1Id(),
+      );
+      const cloaker3 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.CrystalCloaker },
+        4,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.LightningBlitz }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.LightningBlitz,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -347,7 +441,11 @@ describe('shimzar', () => {
 
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Artifact.WhiteAsp }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Artifact.WhiteAsp,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 1, 1));
 
       expect(gameSession.getGeneralForPlayer1().getATK()).to.equal(5);
@@ -360,10 +458,19 @@ describe('shimzar', () => {
 
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Artifact.WhiteAsp }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Artifact.WhiteAsp,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 1, 1));
 
-      const valeHunter = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.ValeHunter }, 1, 2, gameSession.getPlayer2Id());
+      const valeHunter = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.ValeHunter },
+        1,
+        2,
+        gameSession.getPlayer2Id(),
+      );
 
       const action = gameSession.getGeneralForPlayer1().actionAttack(valeHunter);
       gameSession.executeAction(action);
@@ -379,12 +486,26 @@ describe('shimzar', () => {
 
       player1.remainingMana = 9;
 
-      const blazingSpines1 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.BlazingSpines }, 1, 2, gameSession.getPlayer1Id());
-      const blazingSpines2 = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.BlazingSpines }, 2, 2, gameSession.getPlayer1Id());
+      const blazingSpines1 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.BlazingSpines },
+        1,
+        2,
+        gameSession.getPlayer1Id(),
+      );
+      const blazingSpines2 = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.BlazingSpines },
+        2,
+        2,
+        gameSession.getPlayer1Id(),
+      );
       blazingSpines1.refreshExhaustion();
       blazingSpines2.refreshExhaustion();
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.WintersWake }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.WintersWake,
+        }),
+      );
       UtilsSDK.executeActionWithoutValidation(player1.actionPlayCardFromHand(0, 1, 1));
 
       expect(blazingSpines1.getATK()).to.equal(7);
@@ -408,7 +529,12 @@ describe('shimzar', () => {
 
       player1.remainingMana = 9;
 
-      const frostiva = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.Frostiva }, 7, 2, gameSession.getPlayer1Id());
+      const frostiva = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.Frostiva },
+        7,
+        2,
+        gameSession.getPlayer1Id(),
+      );
       frostiva.refreshExhaustion();
       const action = frostiva.actionAttack(gameSession.getGeneralForPlayer2());
       gameSession.executeAction(action);

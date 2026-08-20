@@ -13,13 +13,9 @@ Logger.enabled = false;
 describe('core set', () => {
   describe('basics', () => {
     beforeEach(() => {
-      const player1Deck = [
-        { id: SDK.Cards.Faction6.General },
-      ];
+      const player1Deck = [{ id: SDK.Cards.Faction6.General }];
 
-      const player2Deck = [
-        { id: SDK.Cards.Faction1.General },
-      ];
+      const player2Deck = [{ id: SDK.Cards.Faction1.General }];
 
       UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
     });
@@ -33,11 +29,20 @@ describe('core set', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const osterix = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.Oserix }, 1, 2, gameSession.getPlayer2Id());
+      const osterix = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.Oserix },
+        1,
+        2,
+        gameSession.getPlayer2Id(),
+      );
 
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.RepulsionBeast }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.RepulsionBeast,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
       const followupCard = playCardFromHandAction.getCard().getCurrentFollowupCard();
@@ -56,11 +61,20 @@ describe('core set', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const osterix = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.Oserix }, 1, 2, gameSession.getPlayer2Id());
+      const osterix = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.Oserix },
+        1,
+        2,
+        gameSession.getPlayer2Id(),
+      );
 
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.BloodtearAlchemist }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.BloodtearAlchemist,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
       expect(playCardFromHandAction.getIsValid()).to.equal(true);
@@ -76,11 +90,20 @@ describe('core set', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const osterix = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction3.Oserix }, 1, 2, gameSession.getPlayer2Id());
+      const osterix = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction3.Oserix },
+        1,
+        2,
+        gameSession.getPlayer2Id(),
+      );
 
       player1.remainingMana = 9;
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.EphemeralShroud }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.EphemeralShroud,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
       expect(playCardFromHandAction.getIsValid()).to.equal(true);
@@ -99,7 +122,11 @@ describe('core set', () => {
       player1.remainingMana = 9;
       gameSession.getGeneralForPlayer1().setDamage(5);
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Neutral.HealingMystic }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Neutral.HealingMystic,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
       expect(playCardFromHandAction.getIsValid()).to.equal(true);
@@ -115,9 +142,18 @@ describe('core set', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const necroseer = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Necroseer }, 7, 2, gameSession.getPlayer1Id());
+      const necroseer = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.Necroseer },
+        7,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PhoenixFire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
 
       necroseer.setDamage(3);
 
@@ -135,9 +171,18 @@ describe('core set', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const bloodletter = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.Bloodletter }, 7, 2, gameSession.getPlayer1Id());
+      const bloodletter = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.Bloodletter },
+        7,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.PhoenixFire }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInDeckAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.PhoenixFire,
+        }),
+      );
 
       bloodletter.refreshExhaustion();
       var action = bloodletter.actionAttack(gameSession.getGeneralForPlayer2());
@@ -147,7 +192,12 @@ describe('core set', () => {
 
       bloodletter.refreshExhaustion();
 
-      const brightmossGolem = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Neutral.BrightmossGolem }, 6, 2, gameSession.getPlayer2Id());
+      const brightmossGolem = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Neutral.BrightmossGolem },
+        6,
+        2,
+        gameSession.getPlayer2Id(),
+      );
 
       bloodletter.refreshExhaustion();
       var action = bloodletter.actionAttack(brightmossGolem);

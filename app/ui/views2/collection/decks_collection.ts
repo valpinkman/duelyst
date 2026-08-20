@@ -4,7 +4,6 @@ var DeckPreviewItemView = require('./deck_preview');
 var DecksCollectionTmpl = require('./templates/decks_collection.hbs');
 
 var DecksCollectionCompositeView = Backbone.Marionette.CompositeView.extend({
-
   className: 'decks-collection',
   childView: DeckPreviewItemView,
   childViewContainer: '.decks',
@@ -43,7 +42,6 @@ var DecksCollectionCompositeView = Backbone.Marionette.CompositeView.extend({
       this._scrollLast = this.ui.$cardsList.scrollTop();
     }
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

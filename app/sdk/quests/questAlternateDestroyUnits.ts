@@ -16,8 +16,11 @@ class QuestAlternateDestroyUnits extends Quest {
 
   _progressForGameDataForPlayerId(gameData, playerId) {
     for (var player of Array.from<any>(gameData.players)) {
-      var playerSetupData = UtilsGameSession.getPlayerSetupDataForPlayerId(gameData, player.playerId);
-      if ((player.playerId === playerId) && GameType.isCompetitiveGameType(gameData.gameType)) {
+      var playerSetupData = UtilsGameSession.getPlayerSetupDataForPlayerId(
+        gameData,
+        player.playerId,
+      );
+      if (player.playerId === playerId && GameType.isCompetitiveGameType(gameData.gameType)) {
         return player.totalMinionsKilled;
       }
     }

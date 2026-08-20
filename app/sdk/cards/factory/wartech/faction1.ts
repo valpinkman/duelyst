@@ -66,8 +66,9 @@ class CardFactory_WartechSet_Faction1 {
    * @returns {Card}
    */
   static cardForIdentifier(identifier, gameSession) {
-    let buffContextObject; let buildData; let
-      statContextObject;
+    let buffContextObject;
+    let buildData;
+    let statContextObject;
     let card = null;
 
     if (identifier === Cards.Faction1.Oakenheart) {
@@ -84,13 +85,21 @@ class CardFactory_WartechSet_Faction1 {
       buffContextObject = Modifier.createContextObjectWithAttributeBuffs(1, 1);
       buffContextObject.appliedName = i18next.t('modifiers.faction_1_oakenheart_applied_name');
       card.setInherentModifiersContextObjects([
-        Modifier.createContextObjectWithAuraForAllAllies([buffContextObject], [Races.Mech], null, null, i18next.t('modifiers.faction_1_oakenheart_def')),
+        Modifier.createContextObjectWithAuraForAllAllies(
+          [buffContextObject],
+          [Races.Mech],
+          null,
+          null,
+          i18next.t('modifiers.faction_1_oakenheart_def'),
+        ),
         ModifierOpeningGambitApplyMechazorPlayerModifiers.createContextObject(),
       ]);
       card.addKeywordClassToInclude(PlayerModifierMechazorBuildProgress);
-      card.setFollowups([{
-        id: Cards.Spell.DeployMechaz0r,
-      }]);
+      card.setFollowups([
+        {
+          id: Cards.Spell.DeployMechaz0r,
+        },
+      ]);
       card.setFXResource(['FX.Cards.Neutral.DaggerKiri']);
       card.setBaseSoundResource({
         apply: RSX.sfx_unit_deploy.audio,
@@ -123,7 +132,10 @@ class CardFactory_WartechSet_Faction1 {
       card.manaCost = 6;
       card.rarityId = Rarity.Epic;
       card.setInherentModifiersContextObjects([
-        ModifierSynergizeSummonMinionNearGeneral.createContextObject({ id: Cards.Faction1.SilverguardKnight }, 1),
+        ModifierSynergizeSummonMinionNearGeneral.createContextObject(
+          { id: Cards.Faction1.SilverguardKnight },
+          1,
+        ),
       ]);
       card.setFXResource(['FX.Cards.Neutral.GoldenJusticar']);
       card.setBoundingBoxWidth(105);
@@ -252,8 +264,18 @@ class CardFactory_WartechSet_Faction1 {
       statContextObject = Modifier.createContextObjectWithAttributeBuffs(0, 3);
       statContextObject.appliedName = i18next.t('modifiers.faction_1_vigilator_applied_name');
       buildData = { id: Cards.Faction1.VigilatorBuilding };
-      if (buildData.additionalInherentModifiersContextObjects == null) { buildData.additionalInherentModifiersContextObjects = []; }
-      buildData.additionalInherentModifiersContextObjects.push(ModifierBuildCompleteApplyModifiersToNearbyAllies.createContextObject([statContextObject], false, 'Builds into Vigilator after 1 turn (this cannot be dispelled).', { id: Cards.Faction1.Vigilator }, 1));
+      if (buildData.additionalInherentModifiersContextObjects == null) {
+        buildData.additionalInherentModifiersContextObjects = [];
+      }
+      buildData.additionalInherentModifiersContextObjects.push(
+        ModifierBuildCompleteApplyModifiersToNearbyAllies.createContextObject(
+          [statContextObject],
+          false,
+          'Builds into Vigilator after 1 turn (this cannot be dispelled).',
+          { id: Cards.Faction1.Vigilator },
+          1,
+        ),
+      );
       card.setInherentModifiersContextObjects([ModifierBuild.createContextObject(buildData)]);
       card.addKeywordClassToInclude(ModifierTokenCreator);
     }
@@ -269,9 +291,7 @@ class CardFactory_WartechSet_Faction1 {
       card.manaCost = 0;
       card.spellFilterType = SpellFilterType.AllyIndirect;
       card.setAffectPattern(CONFIG.PATTERN_2X2);
-      card.setTargetModifiersContextObjects([
-        ModifierProvoke.createContextObject(),
-      ]);
+      card.setTargetModifiersContextObjects([ModifierProvoke.createContextObject()]);
       card.addKeywordClassToInclude(ModifierProvoke);
       card.setFXResource(['FX.Cards.Spell.SteadfastFormation']);
       card.setBaseSoundResource({
@@ -390,10 +410,20 @@ class CardFactory_WartechSet_Faction1 {
       card.manaCost = 4;
       card.rarityId = Rarity.Legendary;
       buildData = { id: Cards.Faction1.MonumentBuilding };
-      if (buildData.additionalInherentModifiersContextObjects == null) { buildData.additionalInherentModifiersContextObjects = []; }
-      buildData.additionalInherentModifiersContextObjects.push(ModifierBuilding.createContextObject('Builds into Ironcliffe Monument after 2 turns (this cannot be dispelled).', { id: Cards.Faction1.IroncliffeMonument }, 2));
+      if (buildData.additionalInherentModifiersContextObjects == null) {
+        buildData.additionalInherentModifiersContextObjects = [];
+      }
+      buildData.additionalInherentModifiersContextObjects.push(
+        ModifierBuilding.createContextObject(
+          'Builds into Ironcliffe Monument after 2 turns (this cannot be dispelled).',
+          { id: Cards.Faction1.IroncliffeMonument },
+          2,
+        ),
+      );
       card.setInherentModifiersContextObjects([
-        ModifierSummonWatchNearbyTransform.createContextObject({ id: Cards.Faction1.IroncliffeGuardian }),
+        ModifierSummonWatchNearbyTransform.createContextObject({
+          id: Cards.Faction1.IroncliffeGuardian,
+        }),
         ModifierBuild.createContextObject(buildData),
         ModifierPortal.createContextObject(),
       ]);
@@ -434,9 +464,13 @@ class CardFactory_WartechSet_Faction1 {
       card.applyToOwnGeneral = true;
       buffContextObject = Modifier.createContextObjectWithAttributeBuffs(3, 3);
       buffContextObject.appliedName = i18next.t('modifiers.faction_1_spell_call_to_arms_1');
-      const summonWatchModifier = ModifierSummonWatchNearbyApplyModifiers.createContextObject([buffContextObject]);
+      const summonWatchModifier = ModifierSummonWatchNearbyApplyModifiers.createContextObject([
+        buffContextObject,
+      ]);
       summonWatchModifier.appliedName = i18next.t('cards.faction_1_spell_call_to_arms_name');
-      summonWatchModifier.appliedDescription = i18next.t('modifiers.faction_1_spell_call_to_arms_2');
+      summonWatchModifier.appliedDescription = i18next.t(
+        'modifiers.faction_1_spell_call_to_arms_2',
+      );
       card.setTargetModifiersContextObjects([summonWatchModifier]);
       card.setFXResource(['FX.Cards.Spell.CallToArms']);
       card.setBaseSoundResource({
@@ -481,9 +515,7 @@ class CardFactory_WartechSet_Faction1 {
       card.spellFilterType = SpellFilterType.AllyDirect;
       buffContextObject = Modifier.createContextObjectWithAttributeBuffs(4, 4);
       buffContextObject.appliedName = i18next.t('modifiers.faction_1_spell_invincible');
-      card.setTargetModifiersContextObjects([
-        buffContextObject,
-      ]);
+      card.setTargetModifiersContextObjects([buffContextObject]);
       card.setFXResource(['FX.Cards.Spell.Invincible']);
       card.setBaseAnimResource({
         idle: RSX.iconInvincibleIdle.name,
@@ -506,11 +538,13 @@ class CardFactory_WartechSet_Faction1 {
       card.spellFilterType = SpellFilterType.None;
       const damageImmuneContextObject = ModifierImmuneToDamage.createContextObject();
       damageImmuneContextObject.durationEndTurn = 1;
-      damageImmuneContextObject.appliedName = i18next.t('modifiers.faction_1_spell_dauntless_advance_1');
-      damageImmuneContextObject.appliedDescription = i18next.t('modifiers.faction_1_spell_dauntless_advance_2');
-      card.setTargetModifiersContextObjects([
-        damageImmuneContextObject,
-      ]);
+      damageImmuneContextObject.appliedName = i18next.t(
+        'modifiers.faction_1_spell_dauntless_advance_1',
+      );
+      damageImmuneContextObject.appliedDescription = i18next.t(
+        'modifiers.faction_1_spell_dauntless_advance_2',
+      );
+      card.setTargetModifiersContextObjects([damageImmuneContextObject]);
       card.setFXResource(['FX.Cards.Spell.DauntlessAdvance']);
       card.setBaseSoundResource({
         apply: RSX.sfx_spell_forcebarrier.audio,

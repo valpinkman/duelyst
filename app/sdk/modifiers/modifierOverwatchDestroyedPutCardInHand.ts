@@ -13,7 +13,9 @@ class ModifierOverwatchDestroyedPutCardInHand extends ModifierOverwatchDestroyed
   static type = 'ModifierOverwatchDestroyedPutCardInHand';
 
   onOverwatch(action) {
-    const a = new PutCardInHandAction(this.getGameSession(), this.getCard().getOwnerId(), { id: this.getCard().getId() });
+    const a = new PutCardInHandAction(this.getGameSession(), this.getCard().getOwnerId(), {
+      id: this.getCard().getId(),
+    });
     return this.getGameSession().executeAction(a);
   }
 }

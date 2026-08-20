@@ -20,8 +20,12 @@ class ModifierEndTurnWatchDamageNearbyEnemy extends ModifierEndTurnWatch {
   static description = 'At the end of your turn, deal %X damage to all %Y';
 
   static createContextObject(damageAmount, damageGenerals, options) {
-    if (damageAmount == null) { damageAmount = 1; }
-    if (damageGenerals == null) { damageGenerals = false; }
+    if (damageAmount == null) {
+      damageAmount = 1;
+    }
+    if (damageGenerals == null) {
+      damageGenerals = false;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.damageAmount = damageAmount;
     contextObject.damageGenerals = damageGenerals;
@@ -42,11 +46,13 @@ class ModifierEndTurnWatchDamageNearbyEnemy extends ModifierEndTurnWatch {
   }
 
   onTurnWatch(action) {
-    const entities = this.getGameSession().getBoard().getEnemyEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
+    const entities = this.getGameSession()
+      .getBoard()
+      .getEnemyEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
     return (() => {
       const result = [];
       for (var entity of Array.from<any>(entities)) {
-      // don't damage enemy General unless specifically allowed, but do damage enemy units
+        // don't damage enemy General unless specifically allowed, but do damage enemy units
         if (this.damageGenerals || (!this.damageGenerals && !entity.getIsGeneral())) {
           var damageAction = new DamageAction(this.getGameSession());
           damageAction.setOwnerId(this.getCard().getOwnerId());
@@ -64,6 +70,9 @@ class ModifierEndTurnWatchDamageNearbyEnemy extends ModifierEndTurnWatch {
 }
 ModifierEndTurnWatchDamageNearbyEnemy.prototype.type = 'ModifierEndTurnWatchDamageNearbyEnemy';
 ModifierEndTurnWatchDamageNearbyEnemy.prototype.damageAmount = 0;
-ModifierEndTurnWatchDamageNearbyEnemy.prototype.fxResource = ['FX.Modifiers.ModifierEndTurnWatch', 'FX.Modifiers.ModifierGenericDamageNearby'];
+ModifierEndTurnWatchDamageNearbyEnemy.prototype.fxResource = [
+  'FX.Modifiers.ModifierEndTurnWatch',
+  'FX.Modifiers.ModifierGenericDamageNearby',
+];
 
 module.exports = ModifierEndTurnWatchDamageNearbyEnemy;

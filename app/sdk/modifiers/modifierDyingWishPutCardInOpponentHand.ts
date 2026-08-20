@@ -20,8 +20,14 @@ class ModifierDyingWishPutCardInOpponentHand extends ModifierDyingWish {
   }
 
   onDyingWish() {
-    const general = this.getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId()).getOwnerId();
-    const a = new PutCardInHandAction(this.getGameSession(), general, this.cardDataOrIndexToPutInHand);
+    const general = this.getGameSession()
+      .getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId())
+      .getOwnerId();
+    const a = new PutCardInHandAction(
+      this.getGameSession(),
+      general,
+      this.cardDataOrIndexToPutInHand,
+    );
     return this.getGameSession().executeAction(a);
   }
 }

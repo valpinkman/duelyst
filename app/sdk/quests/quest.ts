@@ -38,12 +38,12 @@ class Quest {
     }
 
     // don't make progress if this game didn't count based on being friendly
-    if ((gameData.gameType === GameType.Friendly) && !this.friendlyMatchesCount) {
+    if (gameData.gameType === GameType.Friendly && !this.friendlyMatchesCount) {
       return 0;
     }
 
     // don't make progress if this game didn't count based on being rift mode
-    if ((gameData.gameType === GameType.Rift) && !this.riftMatchesCount) {
+    if (gameData.gameType === GameType.Rift && !this.riftMatchesCount) {
       return 0;
     }
 
@@ -100,8 +100,10 @@ class Quest {
   }
 
   setRequiresStreak(requiresStreak) {
-    if (requiresStreak == null) { requiresStreak = true; }
-    return this.requiresStreak = requiresStreak;
+    if (requiresStreak == null) {
+      requiresStreak = true;
+    }
+    return (this.requiresStreak = requiresStreak);
   }
 
   getRequiresStreak() {
@@ -109,8 +111,10 @@ class Quest {
   }
 
   setFriendlyMatchesCount(friendlyMatchesCount) {
-    if (friendlyMatchesCount == null) { friendlyMatchesCount = true; }
-    return this.friendlyMatchesCount = friendlyMatchesCount;
+    if (friendlyMatchesCount == null) {
+      friendlyMatchesCount = true;
+    }
+    return (this.friendlyMatchesCount = friendlyMatchesCount);
   }
 
   getFriendlyMatchesCount() {
@@ -119,7 +123,7 @@ class Quest {
 
   shouldResetProgress(gameData, progressMade) {
     // don't reset progress if this game didn't count based on being friendly
-    if ((gameData.gameType === GameType.Friendly) && !this.friendlyMatchesCount) {
+    if (gameData.gameType === GameType.Friendly && !this.friendlyMatchesCount) {
       return false;
     }
 
@@ -129,7 +133,7 @@ class Quest {
     }
 
     // If quest requires a streak, but no progress was made reset current progress
-    if (this.requiresStreak && (progressMade === 0)) {
+    if (this.requiresStreak && progressMade === 0) {
       return true;
     }
 

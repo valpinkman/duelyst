@@ -13,13 +13,9 @@ Logger.enabled = false;
 describe('faction6', () => {
   describe('minions', () => {
     beforeEach(() => {
-      const player1Deck = [
-        { id: SDK.Cards.Faction6.General },
-      ];
+      const player1Deck = [{ id: SDK.Cards.Faction6.General }];
 
-      const player2Deck = [
-        { id: SDK.Cards.Faction2.General },
-      ];
+      const player2Deck = [{ id: SDK.Cards.Faction2.General }];
 
       UtilsSDK.setupSession(player1Deck, player2Deck, true, true);
     });
@@ -33,7 +29,12 @@ describe('faction6', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const crystalCloaker = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.CrystalCloaker }, 6, 1, gameSession.getPlayer1Id());
+      const crystalCloaker = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.CrystalCloaker },
+        6,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
       expect(crystalCloaker.getATK()).to.equal(4);
     });
@@ -43,7 +44,12 @@ describe('faction6', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const crystalCloaker = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.CrystalCloaker }, 0, 1, gameSession.getPlayer1Id());
+      const crystalCloaker = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.CrystalCloaker },
+        0,
+        1,
+        gameSession.getPlayer1Id(),
+      );
 
       expect(crystalCloaker.getATK()).to.equal(2);
     });
@@ -53,7 +59,12 @@ describe('faction6', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const snowChaser = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.WyrBeast }, 7, 2, gameSession.getPlayer1Id());
+      const snowChaser = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.WyrBeast },
+        7,
+        2,
+        gameSession.getPlayer1Id(),
+      );
       snowChaser.refreshExhaustion();
       const action = snowChaser.actionAttack(gameSession.getGeneralForPlayer2());
       gameSession.executeAction(action);
@@ -67,9 +78,18 @@ describe('faction6', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const boreanBear = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.BoreanBear }, 7, 2, gameSession.getPlayer1Id());
+      const boreanBear = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.BoreanBear },
+        7,
+        2,
+        gameSession.getPlayer1Id(),
+      );
       expect(boreanBear.getATK()).to.equal(1);
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction6.WyrBeast }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction6.WyrBeast,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
       expect(boreanBear.getATK()).to.equal(2);
@@ -80,7 +100,12 @@ describe('faction6', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const crystalWisp = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.CrystalWisp }, 7, 2, gameSession.getPlayer1Id());
+      const crystalWisp = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.CrystalWisp },
+        7,
+        2,
+        gameSession.getPlayer1Id(),
+      );
       crystalWisp.refreshExhaustion();
       const action = crystalWisp.actionAttack(gameSession.getGeneralForPlayer2());
       gameSession.executeAction(action);
@@ -111,7 +136,12 @@ describe('faction6', () => {
       gameSession.executeAction(gameSession.actionEndTurn());
       gameSession.executeAction(gameSession.actionEndTurn());
 
-      const crystalWisp = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.CrystalWisp }, 7, 2, gameSession.getPlayer1Id());
+      const crystalWisp = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.CrystalWisp },
+        7,
+        2,
+        gameSession.getPlayer1Id(),
+      );
       crystalWisp.refreshExhaustion();
       const action = crystalWisp.actionAttack(gameSession.getGeneralForPlayer2());
       gameSession.executeAction(action);
@@ -127,9 +157,18 @@ describe('faction6', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      var crystalWisp = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.CrystalWisp }, 7, 2, gameSession.getPlayer1Id());
+      var crystalWisp = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.CrystalWisp },
+        7,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction6.HearthSister }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction6.HearthSister,
+        }),
+      );
 
       player1.remainingMana = 9;
 
@@ -150,7 +189,12 @@ describe('faction6', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const fenrir = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.FenrirWarmaster }, 7, 2, gameSession.getPlayer1Id());
+      const fenrir = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.FenrirWarmaster },
+        7,
+        2,
+        gameSession.getPlayer1Id(),
+      );
       fenrir.refreshExhaustion();
       fenrir.setDamage(1);
       const action = fenrir.actionAttack(gameSession.getGeneralForPlayer2());
@@ -167,10 +211,24 @@ describe('faction6', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const snowElemental = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.SnowElemental }, 7, 2, gameSession.getPlayer1Id());
-      const arcticDisplacer = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.ArcticDisplacer }, 5, 2, gameSession.getPlayer2Id());
+      const snowElemental = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.SnowElemental },
+        7,
+        2,
+        gameSession.getPlayer1Id(),
+      );
+      const arcticDisplacer = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.ArcticDisplacer },
+        5,
+        2,
+        gameSession.getPlayer2Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction6.WyrBeast }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction6.WyrBeast,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -184,10 +242,24 @@ describe('faction6', () => {
 
       player1.remainingMana = 9;
 
-      const snowchaser = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.WyrBeast }, 7, 2, gameSession.getPlayer1Id());
-      const wall = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.BlazingSpines }, 5, 2, gameSession.getPlayer1Id());
+      const snowchaser = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.WyrBeast },
+        7,
+        2,
+        gameSession.getPlayer1Id(),
+      );
+      const wall = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.BlazingSpines },
+        5,
+        2,
+        gameSession.getPlayer1Id(),
+      );
 
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction6.Razorback }));
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction6.Razorback,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -205,8 +277,17 @@ describe('faction6', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const voiceoftheWind = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.VoiceoftheWind }, 7, 2, gameSession.getPlayer1Id());
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction6.WyrBeast }));
+      const voiceoftheWind = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.VoiceoftheWind },
+        7,
+        2,
+        gameSession.getPlayer1Id(),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction6.WyrBeast,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
 
@@ -219,8 +300,17 @@ describe('faction6', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const voiceoftheWind = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.VoiceoftheWind }, 7, 2, gameSession.getPlayer1Id());
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Spell.BonechillBarrier }));
+      const voiceoftheWind = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.VoiceoftheWind },
+        7,
+        2,
+        gameSession.getPlayer1Id(),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Spell.BonechillBarrier,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 0, 3);
       gameSession.executeAction(playCardFromHandAction);
       const followupCard = playCardFromHandAction.getCard().getCurrentFollowupCard();
@@ -254,7 +344,12 @@ describe('faction6', () => {
       const board = gameSession.getBoard();
       const player1 = gameSession.getPlayer1();
 
-      const draugar = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.PrismaticGiant }, 7, 2, gameSession.getPlayer1Id());
+      const draugar = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.PrismaticGiant },
+        7,
+        2,
+        gameSession.getPlayer1Id(),
+      );
       draugar.refreshExhaustion();
       draugar.setDamage(7);
       const action = draugar.actionAttack(gameSession.getGeneralForPlayer2());
@@ -272,8 +367,17 @@ describe('faction6', () => {
       const player1 = gameSession.getPlayer1();
 
       player1.remainingMana = 9;
-      const arctic = UtilsSDK.applyCardToBoard({ id: SDK.Cards.Faction6.ArcticDisplacer }, 7, 2, gameSession.getPlayer1Id());
-      UtilsSDK.executeActionWithoutValidation(new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), { id: SDK.Cards.Faction6.AncientGrove }));
+      const arctic = UtilsSDK.applyCardToBoard(
+        { id: SDK.Cards.Faction6.ArcticDisplacer },
+        7,
+        2,
+        gameSession.getPlayer1Id(),
+      );
+      UtilsSDK.executeActionWithoutValidation(
+        new SDK.PutCardInHandAction(gameSession, gameSession.getPlayer1Id(), {
+          id: SDK.Cards.Faction6.AncientGrove,
+        }),
+      );
       const playCardFromHandAction = player1.actionPlayCardFromHand(0, 1, 1);
       gameSession.executeAction(playCardFromHandAction);
 

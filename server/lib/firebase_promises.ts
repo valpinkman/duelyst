@@ -17,11 +17,12 @@ const Logger = require('../../app/common/logger');
  * @param  {String}  eventName  One of the following strings: "value", "child_added", "child_changed", "child_removed", or "child_moved."
  * @return  {Promise}        Promise that will resolve with the Firebase snapshot, or reject with an error if the query fails.
  */
-module.exports.once = (ref, eventName) => new Promise(function (resolve, reject) {
-  const onLoaded = (snapshot) => resolve(snapshot);
-  const onError = (err) => reject(err);
-  return ref.once(eventName, onLoaded, onError);
-});
+module.exports.once = (ref, eventName) =>
+  new Promise(function (resolve, reject) {
+    const onLoaded = (snapshot) => resolve(snapshot);
+    const onError = (err) => reject(err);
+    return ref.once(eventName, onLoaded, onError);
+  });
 
 /**
  * Sets data to a firebase location.
@@ -31,15 +32,18 @@ module.exports.once = (ref, eventName) => new Promise(function (resolve, reject)
  * @param  {Object}  value    The data to write to this location.
  * @return  {Promise}        Promise that will resolve with the value written, or reject with an error if the operation fails.
  */
-module.exports.set = (ref, value) => // console.log("FIREBASE::set",ref.toString())
+module.exports.set = (ref, value) =>
+  // console.log("FIREBASE::set",ref.toString())
 
-  new Promise((resolve, reject) => ref.set(value, function (err) {
-    if (err) {
-      return reject(new Error('Firebase.set error ' + err.message));
-    } else {
-      return resolve(value);
-    }
-  }));
+  new Promise((resolve, reject) =>
+    ref.set(value, function (err) {
+      if (err) {
+        return reject(new Error('Firebase.set error ' + err.message));
+      } else {
+        return resolve(value);
+      }
+    }),
+  );
 
 /**
  * Sets data to a firebase location with a priority for ordering.
@@ -50,15 +54,18 @@ module.exports.set = (ref, value) => // console.log("FIREBASE::set",ref.toString
  * @param  {String or Number}    priority  The priority (order index) for this location.
  * @return  {Promise}              Promise that will resolve with the value written, or reject with an error if the operation fails.
  */
-module.exports.setWithPriority = (ref, value, priority) => // console.log("FIREBASE::setWithPriority",ref.toString())
+module.exports.setWithPriority = (ref, value, priority) =>
+  // console.log("FIREBASE::setWithPriority",ref.toString())
 
-  new Promise((resolve, reject) => ref.setWithPriority(value, priority, function (err) {
-    if (err) {
-      return reject(new Error('Firebase.setWithPriority error ' + err.message));
-    } else {
-      return resolve(value);
-    }
-  }));
+  new Promise((resolve, reject) =>
+    ref.setWithPriority(value, priority, function (err) {
+      if (err) {
+        return reject(new Error('Firebase.setWithPriority error ' + err.message));
+      } else {
+        return resolve(value);
+      }
+    }),
+  );
 
 /**
  * Update data on a firebase location without touching other data at the same location
@@ -68,15 +75,18 @@ module.exports.setWithPriority = (ref, value, priority) => // console.log("FIREB
  * @param  {Object}        value    The key/value map of data to write to this location.
  * @return  {Promise}              Promise that will resolve with the value written, or reject with an error if the operation fails.
  */
-module.exports.update = (ref, value) => // console.log("FIREBASE::update",ref.toString())
+module.exports.update = (ref, value) =>
+  // console.log("FIREBASE::update",ref.toString())
 
-  new Promise((resolve, reject) => ref.update(value, function (err) {
-    if (err) {
-      return reject(new Error('Firebase.update error ' + err.message));
-    } else {
-      return resolve(value);
-    }
-  }));
+  new Promise((resolve, reject) =>
+    ref.update(value, function (err) {
+      if (err) {
+        return reject(new Error('Firebase.update error ' + err.message));
+      } else {
+        return resolve(value);
+      }
+    }),
+  );
 
 /**
  * Push data on to a firebase location without touching other data at the same location
@@ -86,16 +96,17 @@ module.exports.update = (ref, value) => // console.log("FIREBASE::update",ref.to
  * @param  {Object}        value    The data to push to this location.
  * @return  {Promise}              Promise that will resolve with a firebase reference to the location of the push, or reject with an error if the operation fails.
  */
-module.exports.push = (ref, value) => new Promise(function (resolve, reject) {
-  let pushedRef;
-  return pushedRef = ref.push(value, function (err) {
-    if (err) {
-      return reject(new Error('Firebase.push error ' + err.message));
-    } else {
-      return resolve(pushedRef);
-    }
+module.exports.push = (ref, value) =>
+  new Promise(function (resolve, reject) {
+    let pushedRef;
+    return (pushedRef = ref.push(value, function (err) {
+      if (err) {
+        return reject(new Error('Firebase.push error ' + err.message));
+      } else {
+        return resolve(pushedRef);
+      }
+    }));
   });
-});
 
 /**
  * Delete data on a firebase location.
@@ -104,15 +115,18 @@ module.exports.push = (ref, value) => new Promise(function (resolve, reject) {
  * @param  {Firebase}        ref      Reference to firebase location on which to run operation
  * @return  {Promise}              Promise that will resolve if operation succeeds, or reject with an error if the operation fails.
  */
-module.exports.remove = (ref, value) => // console.log("FIREBASE::remove",ref.toString())
+module.exports.remove = (ref, value) =>
+  // console.log("FIREBASE::remove",ref.toString())
 
-  new Promise((resolve, reject) => ref.remove(function (err) {
-    if (err) {
-      return reject(new Error('Firebase.remove error ' + err.message));
-    } else {
-      return resolve(value);
-    }
-  }));
+  new Promise((resolve, reject) =>
+    ref.remove(function (err) {
+      if (err) {
+        return reject(new Error('Firebase.remove error ' + err.message));
+      } else {
+        return resolve(value);
+      }
+    }),
+  );
 
 /**
  * Execute a custom reliable transaction on a firebase location to update data.
@@ -125,11 +139,11 @@ module.exports.remove = (ref, value) => // console.log("FIREBASE::remove",ref.to
 module.exports.safeTransaction = function (ref, updateFn) {
   // console.log("FIREBASE::safeTransaction",ref.toString())
 
-  if ((ref == null)) {
+  if (ref == null) {
     return Promise.reject(new Error('firebase ref is null or not defined'));
   }
 
-  if ((updateFn == null)) {
+  if (updateFn == null) {
     return Promise.reject(new Error('transaction updateFn is null or not defined'));
   }
 
@@ -155,7 +169,7 @@ module.exports.safeTransaction = function (ref, updateFn) {
       }
 
       // if transaction does not return undefined
-      if (!innerError && (typeof updatedData !== 'undefined')) {
+      if (!innerError && typeof updatedData !== 'undefined') {
         // replace data var
         data = updatedData;
         // mark with transaction id
@@ -171,10 +185,15 @@ module.exports.safeTransaction = function (ref, updateFn) {
       Logger.module('FB').timeEnd(`Firebase transaction for /${ref} (${tx_id})`);
       if (error) {
         return reject(error);
-      } else if (committed && (__guard__(snapshot.val(), (x) => x.tx_id) === tx_id)) {
+      } else if (committed && __guard__(snapshot.val(), (x) => x.tx_id) === tx_id) {
         return resolve(snapshot);
       } else if (committed) {
-        return reject(innerError || new Errors.FirebaseTransactionDidNotCommitError('transaction ID indicates a failed update'));
+        return reject(
+          innerError ||
+            new Errors.FirebaseTransactionDidNotCommitError(
+              'transaction ID indicates a failed update',
+            ),
+        );
       } else {
         return reject(new Errors.FirebaseTransactionDidNotCommitError());
       }
@@ -185,5 +204,5 @@ module.exports.safeTransaction = function (ref, updateFn) {
 };
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

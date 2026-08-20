@@ -22,15 +22,28 @@ class ModifierImmuneToAttacks extends ModifierImmune {
     const a = event.action;
 
     if (this.getIsActionRelevant(a)) {
-      return this.invalidateAction(a, this.getCard().getPosition(), i18next.t('modifiers.immune_to_attacks_error'));
+      return this.invalidateAction(
+        a,
+        this.getCard().getPosition(),
+        i18next.t('modifiers.immune_to_attacks_error'),
+      );
     }
   }
 
   getIsActionRelevant(a) {
-    return (this.getCard() != null) && a instanceof AttackAction && a.getIsValid() && !a.getIsImplicit() && (this.getCard() === a.getTarget());
+    return (
+      this.getCard() != null &&
+      a instanceof AttackAction &&
+      a.getIsValid() &&
+      !a.getIsImplicit() &&
+      this.getCard() === a.getTarget()
+    );
   }
 }
 ModifierImmuneToAttacks.prototype.type = 'ModifierImmuneToAttacks';
-ModifierImmuneToAttacks.prototype.fxResource = ['FX.Modifiers.ModifierImmunity', 'FX.Modifiers.ModifierImmunityAttack'];
+ModifierImmuneToAttacks.prototype.fxResource = [
+  'FX.Modifiers.ModifierImmunity',
+  'FX.Modifiers.ModifierImmunityAttack',
+];
 
 module.exports = ModifierImmuneToAttacks;

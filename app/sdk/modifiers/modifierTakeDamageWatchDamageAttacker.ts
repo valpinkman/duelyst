@@ -32,9 +32,14 @@ class ModifierTakeDamageWatchDamageAttacker extends ModifierTakeDamageWatch {
   }
 
   onDamageTaken(action) {
-    let targetToDamage = __guard__(action.getSource(), (x) => x.getAncestorCardOfType(CardType.Unit));
-    if (!targetToDamage) { // If we couldn't find a unit that dealt the damage, assume the source of damage was spell, in which case damage the general
-      targetToDamage = this.getCard().getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
+    let targetToDamage = __guard__(action.getSource(), (x) =>
+      x.getAncestorCardOfType(CardType.Unit),
+    );
+    if (!targetToDamage) {
+      // If we couldn't find a unit that dealt the damage, assume the source of damage was spell, in which case damage the general
+      targetToDamage = this.getCard()
+        .getGameSession()
+        .getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
     }
 
     if (targetToDamage != null) {
@@ -48,10 +53,13 @@ class ModifierTakeDamageWatchDamageAttacker extends ModifierTakeDamageWatch {
   }
 }
 ModifierTakeDamageWatchDamageAttacker.prototype.type = 'ModifierTakeDamageWatchDamageAttacker';
-ModifierTakeDamageWatchDamageAttacker.prototype.fxResource = ['FX.Modifiers.ModifierTakeDamageWatch', 'FX.Modifiers.ModifierGenericDamage'];
+ModifierTakeDamageWatchDamageAttacker.prototype.fxResource = [
+  'FX.Modifiers.ModifierTakeDamageWatch',
+  'FX.Modifiers.ModifierGenericDamage',
+];
 
 module.exports = ModifierTakeDamageWatchDamageAttacker;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

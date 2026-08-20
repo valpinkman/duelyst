@@ -33,7 +33,6 @@ var WatchGamesLoadingView = require('./watch_games_loading');
 var Template = require('./templates/watch_layout.hbs');
 
 var WatchLayout = Backbone.Marionette.LayoutView.extend({
-
   id: 'app_watch',
   className: 'modal duelyst-modal',
   template: Template,
@@ -96,15 +95,18 @@ var WatchLayout = Backbone.Marionette.LayoutView.extend({
 
     for (var i = 0; i < tabs.length; i++) {
       $(tabs[i]).css('opacity', 0);
-      tabs[i].animate([
-        { opacity: 0.0, transform: 'translateY(1.0rem)' },
-        { opacity: 1.0, transform: 'translateY(0)' },
-      ], {
-        duration: 200,
-        delay: delay,
-        easing: 'cubic-bezier(0.39, 0.575, 0.565, 1)',
-        fill: 'forwards',
-      });
+      tabs[i].animate(
+        [
+          { opacity: 0.0, transform: 'translateY(1.0rem)' },
+          { opacity: 1.0, transform: 'translateY(0)' },
+        ],
+        {
+          duration: 200,
+          delay: delay,
+          easing: 'cubic-bezier(0.39, 0.575, 0.565, 1)',
+          fill: 'forwards',
+        },
+      );
       delay += 100;
     }
   },
@@ -130,29 +132,41 @@ var WatchLayout = Backbone.Marionette.LayoutView.extend({
   setSelectedWatchTypeTab: function (selectedTabValue) {
     if (selectedTabValue !== this._selectedWatchTypeTabValue) {
       this._selectedWatchTypeTabValue = selectedTabValue;
-      audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_tab_in.audio, CONFIG.SELECT_SFX_PRIORITY);
+      audio_engine
+        .current()
+        .play_effect_for_interaction(RSX.sfx_ui_tab_in.audio, CONFIG.SELECT_SFX_PRIORITY);
       this.ui.$watch_tabs_type.children().removeClass('active');
-      this.ui.$watch_tabs_type.find('[data-value=\'' + this._selectedWatchTypeTabValue + '\']').addClass('active');
+      this.ui.$watch_tabs_type
+        .find("[data-value='" + this._selectedWatchTypeTabValue + "']")
+        .addClass('active');
       this.showSelectedWatchTypeTab();
     }
   },
 
   showSelectedWatchTypeTab: function () {
     switch (this._selectedWatchTypeTabValue) {
-    case 'live':
-      this.contentRegion.show(new WatchGamesLoadingView());
-      StreamManager.getInstance().loadStreamStatusFromTwitch().then(function () {
-        if (this.isDestroyed) return; // this view was destroyed
-        this.contentRegion.show(new WatchStreamsCompositeView({ collection: StreamManager.getInstance().liveStreamCollection }));
-      }.bind(this));
-      this._selectedDivisionTabValue = null;
-      this.ui.$watch_tabs_division.children().removeClass('active');
-      break;
-    case 'replays':
-      this.setSelectedDivisionTab('bronze');
-      break;
-    default:
-      break;
+      case 'live':
+        this.contentRegion.show(new WatchGamesLoadingView());
+        StreamManager.getInstance()
+          .loadStreamStatusFromTwitch()
+          .then(
+            function () {
+              if (this.isDestroyed) return; // this view was destroyed
+              this.contentRegion.show(
+                new WatchStreamsCompositeView({
+                  collection: StreamManager.getInstance().liveStreamCollection,
+                }),
+              );
+            }.bind(this),
+          );
+        this._selectedDivisionTabValue = null;
+        this.ui.$watch_tabs_division.children().removeClass('active');
+        break;
+      case 'replays':
+        this.setSelectedDivisionTab('bronze');
+        break;
+      default:
+        break;
     }
   },
 
@@ -165,14 +179,20 @@ var WatchLayout = Backbone.Marionette.LayoutView.extend({
   setSelectedDivisionTab: function (selectedTabValue) {
     if (selectedTabValue !== this._selectedDivisionTabValue) {
       this._selectedDivisionTabValue = selectedTabValue;
-      audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_tab_in.audio, CONFIG.SELECT_SFX_PRIORITY);
+      audio_engine
+        .current()
+        .play_effect_for_interaction(RSX.sfx_ui_tab_in.audio, CONFIG.SELECT_SFX_PRIORITY);
       //
       this.ui.$watch_tabs_division.children().removeClass('active');
-      this.ui.$watch_tabs_division.find('[data-value=\'' + this._selectedDivisionTabValue + '\']').addClass('active');
+      this.ui.$watch_tabs_division
+        .find("[data-value='" + this._selectedDivisionTabValue + "']")
+        .addClass('active');
       //
       this._selectedWatchTypeTabValue = 'replays';
       this.ui.$watch_tabs_type.children().removeClass('active');
-      this.ui.$watch_tabs_type.find('[data-value=\'' + this._selectedWatchTypeTabValue + '\']').addClass('active');
+      this.ui.$watch_tabs_type
+        .find("[data-value='" + this._selectedWatchTypeTabValue + "']")
+        .addClass('active');
       //
       this.showSelectedDivisionTab();
     }
@@ -181,24 +201,27 @@ var WatchLayout = Backbone.Marionette.LayoutView.extend({
   showSelectedDivisionTab: function () {
     var gamesCollectionURL;
     switch (this._selectedDivisionTabValue) {
-    case 'elite':
-      gamesCollectionURL = process.env.API_URL + '/api/me/games/watchable/elite';
-      break;
-    case 'diamond':
-      gamesCollectionURL = process.env.API_URL + '/api/me/games/watchable/diamond';
-      break;
-    case 'gold':
-      gamesCollectionURL = process.env.API_URL + '/api/me/games/watchable/gold';
-      break;
-    case 'silver':
-      gamesCollectionURL = process.env.API_URL + '/api/me/games/watchable/silver';
-      break;
-    default:
-      gamesCollectionURL = process.env.API_URL + '/api/me/games/watchable/bronze';
-      break;
+      case 'elite':
+        gamesCollectionURL = process.env.API_URL + '/api/me/games/watchable/elite';
+        break;
+      case 'diamond':
+        gamesCollectionURL = process.env.API_URL + '/api/me/games/watchable/diamond';
+        break;
+      case 'gold':
+        gamesCollectionURL = process.env.API_URL + '/api/me/games/watchable/gold';
+        break;
+      case 'silver':
+        gamesCollectionURL = process.env.API_URL + '/api/me/games/watchable/silver';
+        break;
+      default:
+        gamesCollectionURL = process.env.API_URL + '/api/me/games/watchable/bronze';
+        break;
     }
 
-    if (this._selectedGamesCollection == null || this._selectedGamesCollection.url !== gamesCollectionURL) {
+    if (
+      this._selectedGamesCollection == null ||
+      this._selectedGamesCollection.url !== gamesCollectionURL
+    ) {
       this._selectedGamesCollection = new DuelystBackbone.Collection();
       this._selectedGamesCollection.url = gamesCollectionURL;
 
@@ -210,18 +233,28 @@ var WatchLayout = Backbone.Marionette.LayoutView.extend({
     }
 
     // show games
-    this._selectedGamesCollection.onSyncOrReady().then(function () {
-      if (this.isDestroyed) return; // this view was destroyed
-      if (this._selectedGamesCollection != null) {
-        this.contentRegion.show(new WatchGamesCompositeView({
-          collection: this._selectedGamesCollection,
-        }));
-      }
-    }.bind(this)).catch(function (e) {
-      NavigationManager.getInstance().showDialogView(new ErrorDialogItemView({ title: e.message }));
-    }.bind(this));
+    this._selectedGamesCollection
+      .onSyncOrReady()
+      .then(
+        function () {
+          if (this.isDestroyed) return; // this view was destroyed
+          if (this._selectedGamesCollection != null) {
+            this.contentRegion.show(
+              new WatchGamesCompositeView({
+                collection: this._selectedGamesCollection,
+              }),
+            );
+          }
+        }.bind(this),
+      )
+      .catch(
+        function (e) {
+          NavigationManager.getInstance().showDialogView(
+            new ErrorDialogItemView({ title: e.message }),
+          );
+        }.bind(this),
+      );
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

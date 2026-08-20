@@ -8,7 +8,6 @@ var audio_engine = require('app/audio/audio_engine');
 var ChallengePreviewTmpl = require('app/ui/templates/item/challenge_preview.hbs');
 
 var ChallengePreviewItemView = Backbone.Marionette.ItemView.extend({
-
   tagName: 'li',
   className: 'challenge-preview',
 
@@ -36,7 +35,6 @@ var ChallengePreviewItemView = Backbone.Marionette.ItemView.extend({
       this.trigger('select');
     }
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

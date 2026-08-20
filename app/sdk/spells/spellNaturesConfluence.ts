@@ -15,19 +15,26 @@ class SpellNaturesConfluence extends SpellSpawnEntity {
     // pick random battle pet ONCE, all battle pets that get spawned will be the same pet
     if (!this.cardDataOrIndexToSpawn) {
       // pull faction battle pets + neutral token battle pets
-      const factionBattlePetCards = this.getGameSession().getCardCaches().getFaction(Factions.Faction5).getRace(Races.BattlePet)
+      const factionBattlePetCards = this.getGameSession()
+        .getCardCaches()
+        .getFaction(Factions.Faction5)
+        .getRace(Races.BattlePet)
         .getIsToken(false)
         .getIsPrismatic(false)
         .getIsSkinned(false)
         .getCards();
-      const neutralBattlePetCards = this.getGameSession().getCardCaches().getFaction(Factions.Neutral).getRace(Races.BattlePet)
+      const neutralBattlePetCards = this.getGameSession()
+        .getCardCaches()
+        .getFaction(Factions.Neutral)
+        .getRace(Races.BattlePet)
         .getIsToken(true)
         .getIsPrismatic(false)
         .getIsSkinned(false)
         .getCards();
       const battlePetCards = [].concat(factionBattlePetCards, neutralBattlePetCards);
 
-      const card = battlePetCards[this.getGameSession().getRandomIntegerForExecution(battlePetCards.length)];
+      const card =
+        battlePetCards[this.getGameSession().getRandomIntegerForExecution(battlePetCards.length)];
       this.cardDataOrIndexToSpawn = card.createNewCardData();
     }
 

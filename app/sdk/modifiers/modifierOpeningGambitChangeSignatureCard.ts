@@ -32,7 +32,9 @@ class ModifierOpeningGambitChangeSignatureCard extends ModifierOpeningGambit {
     const general = this.getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
 
     // If a revert bbs modifier exists from a temp BBS, remove it, new BBS overwrites it
-    for (var modifier of Array.from<any>(general.getModifiersByClass(PlayerModifierEndTurnWatchRevertBBS))) {
+    for (var modifier of Array.from<any>(
+      general.getModifiersByClass(PlayerModifierEndTurnWatchRevertBBS),
+    )) {
       this.getGameSession().removeModifier(modifier);
     }
 
@@ -40,7 +42,10 @@ class ModifierOpeningGambitChangeSignatureCard extends ModifierOpeningGambit {
     return this.getGameSession().executeAction(general.getOwner().actionGenerateSignatureCard());
   }
 }
-ModifierOpeningGambitChangeSignatureCard.prototype.type = 'ModifierOpeningGambitChangeSignatureCard';
-ModifierOpeningGambitChangeSignatureCard.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
+ModifierOpeningGambitChangeSignatureCard.prototype.type =
+  'ModifierOpeningGambitChangeSignatureCard';
+ModifierOpeningGambitChangeSignatureCard.prototype.fxResource = [
+  'FX.Modifiers.ModifierOpeningGambit',
+];
 
 module.exports = ModifierOpeningGambitChangeSignatureCard;

@@ -213,9 +213,7 @@ class CardFactory_WartechSet_Faction6 {
       card.manaCost = 1;
       card.rarityId = Rarity.TokenUnit;
       card.setIsHiddenInCollection(true);
-      card.setInherentModifiersContextObjects([
-        ModifierCannotStrikeback.createContextObject(),
-      ]);
+      card.setInherentModifiersContextObjects([ModifierCannotStrikeback.createContextObject()]);
       card.addKeywordClassToInclude(ModifierToken);
       card.setFXResource(['FX.Cards.Neutral.Fireblazer']);
       card.setBaseSoundResource({
@@ -352,8 +350,16 @@ class CardFactory_WartechSet_Faction6 {
       card.manaCost = 2;
       card.rarityId = Rarity.Common;
       buildData = { id: Cards.Faction6.ProtosensorBuilding };
-      if (buildData.additionalInherentModifiersContextObjects == null) { buildData.additionalInherentModifiersContextObjects = []; }
-      buildData.additionalInherentModifiersContextObjects.push(ModifierBuilding.createContextObject('Builds into Protosensor after 1 turn (this cannot be dispelled).', { id: Cards.Faction6.Protosensor }, 1));
+      if (buildData.additionalInherentModifiersContextObjects == null) {
+        buildData.additionalInherentModifiersContextObjects = [];
+      }
+      buildData.additionalInherentModifiersContextObjects.push(
+        ModifierBuilding.createContextObject(
+          'Builds into Protosensor after 1 turn (this cannot be dispelled).',
+          { id: Cards.Faction6.Protosensor },
+          1,
+        ),
+      );
       card.setInherentModifiersContextObjects([
         ModifierBuild.createContextObject(buildData),
         ModifierAirdrop.createContextObject(),
@@ -432,7 +438,10 @@ class CardFactory_WartechSet_Faction6 {
           name: i18next.t('cards.faction_6_artifact_animus_plate_name'),
           description: i18next.t('modifiers.plus_attack_key', { amount: 2 }),
         }),
-        ModifierMyAttackOrCounterattackWatchApplyModifiersToFriendlyMinions.createContextObject([minionBuff], Races.Vespyr),
+        ModifierMyAttackOrCounterattackWatchApplyModifiersToFriendlyMinions.createContextObject(
+          [minionBuff],
+          Races.Vespyr,
+        ),
       ]);
       card.setFXResource(['FX.Cards.Artifact.AnimusPlate']);
       card.setBaseAnimResource({
@@ -480,21 +489,41 @@ class CardFactory_WartechSet_Faction6 {
       card.maxHP = 14;
       card.manaCost = 6;
       card.rarityId = Rarity.Legendary;
-      const buildingContextObject = ModifierBuildingSlowEnemies.createContextObject('Builds into Draugar Eyolith after 2 turns (this cannot be dispelled).', { id: Cards.Faction6.DraugarEyolith }, 2);
+      const buildingContextObject = ModifierBuildingSlowEnemies.createContextObject(
+        'Builds into Draugar Eyolith after 2 turns (this cannot be dispelled).',
+        { id: Cards.Faction6.DraugarEyolith },
+        2,
+      );
       buildingContextObject.auraAppliedName = i18next.t('modifiers.faction_6_draugar_eyolith_1');
-      buildingContextObject.auraAppliedDescription = i18next.t('modifiers.faction_6_draugar_eyolith_2');
-      buildingContextObject.speedChangeAppliedName = i18next.t('modifiers.faction_6_draugar_eyolith_3');
-      buildingContextObject.speedChangeAppliedDescription = i18next.t('modifiers.faction_6_draugar_eyolith_4');
+      buildingContextObject.auraAppliedDescription = i18next.t(
+        'modifiers.faction_6_draugar_eyolith_2',
+      );
+      buildingContextObject.speedChangeAppliedName = i18next.t(
+        'modifiers.faction_6_draugar_eyolith_3',
+      );
+      buildingContextObject.speedChangeAppliedDescription = i18next.t(
+        'modifiers.faction_6_draugar_eyolith_4',
+      );
       buildData = { id: Cards.Faction6.EyolithBuilding };
-      if (buildData.additionalInherentModifiersContextObjects == null) { buildData.additionalInherentModifiersContextObjects = []; }
+      if (buildData.additionalInherentModifiersContextObjects == null) {
+        buildData.additionalInherentModifiersContextObjects = [];
+      }
       buildData.additionalInherentModifiersContextObjects.push(buildingContextObject);
       const speedBuffContextObject = Modifier.createContextObjectOnBoard();
       speedBuffContextObject.attributeBuffs = { speed: 1 };
       speedBuffContextObject.attributeBuffsAbsolute = ['speed'];
       speedBuffContextObject.attributeBuffsFixed = ['speed'];
       speedBuffContextObject.appliedName = i18next.t('modifiers.faction_6_draugar_eyolith_3');
-      speedBuffContextObject.appliedDescription = i18next.t('modifiers.faction_6_draugar_eyolith_4');
-      const auraContextObject = Modifier.createContextObjectWithOnBoardAuraForAllEnemies([speedBuffContextObject], null, null, null, 'Enemies move 1 space.');
+      speedBuffContextObject.appliedDescription = i18next.t(
+        'modifiers.faction_6_draugar_eyolith_4',
+      );
+      const auraContextObject = Modifier.createContextObjectWithOnBoardAuraForAllEnemies(
+        [speedBuffContextObject],
+        null,
+        null,
+        null,
+        'Enemies move 1 space.',
+      );
       auraContextObject.auraIncludeGeneral = true;
       card.setInherentModifiersContextObjects([
         ModifierBuild.createContextObject(buildData),
@@ -576,7 +605,15 @@ class CardFactory_WartechSet_Faction6 {
       card.maxHP = 5;
       card.manaCost = 4;
       card.rarityId = Rarity.Legendary;
-      card.setInherentModifiersContextObjects([ModifierProvidesAlwaysInfiltrated.createContextObjectWithAuraForAllAlliesAndSelf([ModifierAlwaysInfiltrated.createContextObject()], null, null, null, 'Your minions are always infiltrated')]);
+      card.setInherentModifiersContextObjects([
+        ModifierProvidesAlwaysInfiltrated.createContextObjectWithAuraForAllAlliesAndSelf(
+          [ModifierAlwaysInfiltrated.createContextObject()],
+          null,
+          null,
+          null,
+          'Your minions are always infiltrated',
+        ),
+      ]);
     }
 
     return card;

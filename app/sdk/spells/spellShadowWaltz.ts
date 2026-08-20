@@ -12,7 +12,7 @@ class SpellShadowWaltz extends SpellApplyModifiersToUnitsInHand {
     const potentialCards = super.getCardsAffected();
     const finalCards = [];
     for (var card of Array.from<any>(potentialCards)) {
-      if ((card != null) && card.hasModifierType(ModifierBackstab.type)) {
+      if (card != null && card.hasModifierType(ModifierBackstab.type)) {
         finalCards.push(card);
       }
     }

@@ -14,8 +14,11 @@ class SpellUpperHand extends Spell {
 
     const applyEffectPosition = { x, y };
     const minion = board.getCardAtPosition(applyEffectPosition, CardType.Unit, false, false);
-    const hand = this.getGameSession().getOpponentPlayerOfPlayerId(this.getOwnerId()).getDeck().getCardsInHandExcludingMissing();
-    if ((hand != null) && (minion != null) && (hand.length > 0)) {
+    const hand = this.getGameSession()
+      .getOpponentPlayerOfPlayerId(this.getOwnerId())
+      .getDeck()
+      .getCardsInHandExcludingMissing();
+    if (hand != null && minion != null && hand.length > 0) {
       const damageAction = new DamageAction(this.getGameSession());
       damageAction.setOwnerId(this.getOwnerId());
       damageAction.setSource(this);

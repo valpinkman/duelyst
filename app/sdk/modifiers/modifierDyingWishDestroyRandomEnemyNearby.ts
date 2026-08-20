@@ -15,7 +15,9 @@ class ModifierDyingWishDestroyRandomEnemyNearby extends ModifierDyingWish {
 
   onDyingWish() {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
-      const entities = this.getGameSession().getBoard().getEnemyEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
+      const entities = this.getGameSession()
+        .getBoard()
+        .getEnemyEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
       const validEntities = [];
       for (var entity of Array.from<any>(entities)) {
         if (!entity.getIsGeneral()) {
@@ -24,7 +26,8 @@ class ModifierDyingWishDestroyRandomEnemyNearby extends ModifierDyingWish {
       }
 
       if (validEntities.length > 0) {
-        const unitToDestroy = validEntities[this.getGameSession().getRandomIntegerForExecution(validEntities.length)];
+        const unitToDestroy =
+          validEntities[this.getGameSession().getRandomIntegerForExecution(validEntities.length)];
         const killAction = new KillAction(this.getGameSession());
         killAction.setOwnerId(this.getOwnerId());
         killAction.setTarget(unitToDestroy);
@@ -33,6 +36,7 @@ class ModifierDyingWishDestroyRandomEnemyNearby extends ModifierDyingWish {
     }
   }
 }
-ModifierDyingWishDestroyRandomEnemyNearby.prototype.type = 'ModifierDyingWishDestroyRandomEnemyNearby';
+ModifierDyingWishDestroyRandomEnemyNearby.prototype.type =
+  'ModifierDyingWishDestroyRandomEnemyNearby';
 
 module.exports = ModifierDyingWishDestroyRandomEnemyNearby;

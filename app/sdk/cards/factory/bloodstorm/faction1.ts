@@ -80,12 +80,20 @@ class CardFactory_BloodstormSet_Faction1 {
       card.maxHP = 4;
       card.manaCost = 4;
       card.rarityId = Rarity.Rare;
-      const contextObject = PlayerModifierChangeSignatureCard.createContextObject({ id: Cards.Spell.TempestBBS });
-      contextObject.activeInHand = (contextObject.activeInDeck = (contextObject.activeInSignatureCards = false));
+      const contextObject = PlayerModifierChangeSignatureCard.createContextObject({
+        id: Cards.Spell.TempestBBS,
+      });
+      contextObject.activeInHand =
+        contextObject.activeInDeck =
+        contextObject.activeInSignatureCards =
+          false;
       contextObject.activeOnBoard = true;
       card.setInherentModifiersContextObjects([
         ModifierForcefield.createContextObject(),
-        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetOwnPlayer([contextObject], 'Your Bloodbound Spell is Tempest'),
+        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetOwnPlayer(
+          [contextObject],
+          'Your Bloodbound Spell is Tempest',
+        ),
       ]);
     }
 
@@ -118,7 +126,9 @@ class CardFactory_BloodstormSet_Faction1 {
       card.maxHP = 4;
       card.manaCost = 3;
       card.rarityId = Rarity.Common;
-      card.setInherentModifiersContextObjects([ModifierSynergizeHealMyGeneral.createContextObject(3)]);
+      card.setInherentModifiersContextObjects([
+        ModifierSynergizeHealMyGeneral.createContextObject(3),
+      ]);
     }
 
     if (identifier === Cards.Faction1.Excelsious) {
@@ -214,9 +224,7 @@ class CardFactory_BloodstormSet_Faction1 {
       card.manaCost = 2;
       card.rarityId = Rarity.Rare;
       card.spellFilterType = SpellFilterType.AllyDirect;
-      card.setTargetModifiersContextObjects([
-        ModifierForcefield.createContextObject(),
-      ]);
+      card.setTargetModifiersContextObjects([ModifierForcefield.createContextObject()]);
       card.setFXResource(['FX.Cards.Spell.AurynNexus']);
       card.setBaseSoundResource({
         apply: RSX.sfx_spell_forcebarrier.audio,

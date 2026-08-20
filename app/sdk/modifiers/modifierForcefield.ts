@@ -26,15 +26,23 @@ class ModifierForcefield extends Modifier {
 
   onActivate() {
     // apply one-time absorb effect as soon when this modifier becomes active
-    this.getGameSession().applyModifierContextObject(ModifierForcefieldAbsorb.createContextObject(), this.getCard(), this);
+    this.getGameSession().applyModifierContextObject(
+      ModifierForcefieldAbsorb.createContextObject(),
+      this.getCard(),
+      this,
+    );
     return super.onActivate();
   }
 
   onStartTurn(actionEvent) {
     const subMods = this.getSubModifiers();
-    if (!subMods || ((subMods != null ? subMods.length : undefined) === 0)) {
+    if (!subMods || (subMods != null ? subMods.length : undefined) === 0) {
       // re-apply forcefield one-time absorb effect if this modifier has no sub modifiers
-      this.getGameSession().applyModifierContextObject(ModifierForcefieldAbsorb.createContextObject(), this.getCard(), this);
+      this.getGameSession().applyModifierContextObject(
+        ModifierForcefieldAbsorb.createContextObject(),
+        this.getCard(),
+        this,
+      );
     }
     return super.onStartTurn(actionEvent);
   }

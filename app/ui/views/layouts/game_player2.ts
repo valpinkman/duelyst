@@ -4,7 +4,6 @@ var SDK = require('app/sdk');
 var GamePlayerLayout = require('./game_player');
 
 var GamePlayer2Layout = GamePlayerLayout.extend({
-
   id: 'app-game-player2',
 
   initialize: function () {

@@ -16,7 +16,11 @@ class MidNov2017LoginAchievement extends Achievement {
   static enabled = true;
 
   static progressForLoggingIn(currentLoginMoment) {
-    if ((currentLoginMoment !== null) && currentLoginMoment.isAfter(moment.utc('2017-11-09')) && currentLoginMoment.isBefore(moment.utc('2017-11-28'))) {
+    if (
+      currentLoginMoment !== null &&
+      currentLoginMoment.isAfter(moment.utc('2017-11-09')) &&
+      currentLoginMoment.isBefore(moment.utc('2017-11-28'))
+    ) {
       return 1;
     }
     return 0;

@@ -17,7 +17,9 @@ class ModifierMyMoveWatchAnyReasonDrawCard extends ModifierMyMoveWatchAnyReason 
   static type = 'ModifierMyMoveWatchAnyReasonDrawCard';
 
   static createContextObject(drawAmount, options) {
-    if (drawAmount == null) { drawAmount = 1; }
+    if (drawAmount == null) {
+      drawAmount = 1;
+    }
     const contextObject = super.createContextObject();
     contextObject.drawAmount = drawAmount;
     return contextObject;
@@ -26,7 +28,11 @@ class ModifierMyMoveWatchAnyReasonDrawCard extends ModifierMyMoveWatchAnyReason 
   onMyMoveWatchAnyReason(action) {
     return (() => {
       const result = [];
-      for (let i = 0, end = this.drawAmount, asc = end >= 0; asc ? i < end : i > end; asc ? i++ : i--) {
+      for (
+        let i = 0, end = this.drawAmount, asc = end >= 0;
+        asc ? i < end : i > end;
+        asc ? i++ : i--
+      ) {
         var deck = this.getGameSession().getPlayerById(this.getCard().getOwnerId()).getDeck();
         result.push(this.getCard().getGameSession().executeAction(deck.actionDrawCard()));
       }

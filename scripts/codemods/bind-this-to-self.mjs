@@ -56,27 +56,43 @@ function isPromiseCallback(fnNode, parents) {
   if (!parent || parent.type !== 'CallExpression') return false;
   if (!parent.arguments.includes(fnNode)) return false;
   const c = parent.callee;
-  return c && c.type === 'MemberExpression' && !c.computed
-    && c.property.type === 'Identifier' && COMBINATORS.has(c.property.name);
+  return (
+    c &&
+    c.type === 'MemberExpression' &&
+    !c.computed &&
+    c.property.type === 'Identifier' &&
+    COMBINATORS.has(c.property.name)
+  );
 }
 
 function hostFor(parents, fnIdx) {
   for (let i = fnIdx - 1; i >= 0; i -= 1) {
     const p = parents[i];
-    if ((p.type === 'FunctionExpression' || p.type === 'FunctionDeclaration'
-      || p.type === 'ArrowFunctionExpression') && p.body && p.body.type === 'BlockStatement') return p;
+    if (
+      (p.type === 'FunctionExpression' ||
+        p.type === 'FunctionDeclaration' ||
+        p.type === 'ArrowFunctionExpression') &&
+      p.body &&
+      p.body.type === 'BlockStatement'
+    )
+      return p;
   }
   return null;
 }
 
-let files = 0; let removed = 0; let refs = 0;
+let files = 0;
+let removed = 0;
+let refs = 0;
 
 for (const file of process.argv.slice(2)) {
   const src = fs.readFileSync(file, 'utf8');
   let ast;
   try {
     ast = tsParser.parse(src, { ecmaVersion: 2022, sourceType: 'script', loc: true, range: true });
-  } catch (e) { console.log(`skipped ${file}: parse error`); continue; }
+  } catch (e) {
+    console.log(`skipped ${file}: parse error`);
+    continue;
+  }
 
   const binds = [];
   walk(ast, (node, parents) => {
@@ -87,11 +103,16 @@ for (const file of process.argv.slice(2)) {
     if (node.arguments.length !== 1 || node.arguments[0].type !== 'ThisExpression') return;
     // must be `X.bind(this).then(...)`, and X must not be a function literal
     const grand = parents[parents.length - 1];
-    const chained = grand && grand.type === 'MemberExpression' && grand.object === node
-      && !grand.computed && grand.property.type === 'Identifier'
-      && COMBINATORS.has(grand.property.name);
+    const chained =
+      grand &&
+      grand.type === 'MemberExpression' &&
+      grand.object === node &&
+      !grand.computed &&
+      grand.property.type === 'Identifier' &&
+      COMBINATORS.has(grand.property.name);
     if (!chained) return;
-    if (c.object.type === 'FunctionExpression' || c.object.type === 'ArrowFunctionExpression') return;
+    if (c.object.type === 'FunctionExpression' || c.object.type === 'ArrowFunctionExpression')
+      return;
     binds.push({ node, objEnd: c.object.range[1] });
   });
   if (!binds.length) continue;
@@ -102,10 +123,15 @@ for (const file of process.argv.slice(2)) {
 
   walk(ast, (node, parents) => {
     if (node.type !== 'ThisExpression') return;
-    let fn = null; let fnIdx = -1;
+    let fn = null;
+    let fnIdx = -1;
     for (let i = parents.length - 1; i >= 0; i -= 1) {
       const p = parents[i];
-      if (p.type === 'FunctionExpression' || p.type === 'FunctionDeclaration') { fn = p; fnIdx = i; break; }
+      if (p.type === 'FunctionExpression' || p.type === 'FunctionDeclaration') {
+        fn = p;
+        fnIdx = i;
+        break;
+      }
       if (p.type === 'ArrowFunctionExpression') continue;
     }
     if (!fn || fn.type !== 'FunctionExpression') return;
@@ -113,20 +139,32 @@ for (const file of process.argv.slice(2)) {
     // only `this` belonging to one of the binds we are removing
     if (!binds.some((b) => b.node.range[0] < node.range[0])) return;
     const host = hostFor(parents, fnIdx);
-    if (!host) { unhosted += 1; return; }
+    if (!host) {
+      unhosted += 1;
+      return;
+    }
     hosts.set(host.body.range[0], host);
     edits.push({ start: node.range[0], end: node.range[1], text: '_self' });
     refs += 1;
   });
 
-  if (unhosted) { console.log(`SKIPPED ${file}: ${unhosted} this-ref(s) with nowhere to declare _self`); continue; }
+  if (unhosted) {
+    console.log(`SKIPPED ${file}: ${unhosted} this-ref(s) with nowhere to declare _self`);
+    continue;
+  }
 
   for (const [bodyStart, host] of hosts) {
     const body = src.slice(host.body.range[0], host.body.range[1]);
     if (/const _self = this;/.test(body)) continue;
     const first = host.body.body && host.body.body[0];
-    const indent = first ? (src.slice(0, first.range[0]).match(/[^\n]*$/) || [''])[0].match(/^\s*/)[0] : '  ';
-    edits.push({ start: bodyStart + 1, end: bodyStart + 1, text: `\n${indent}const _self = this;` });
+    const indent = first
+      ? (src.slice(0, first.range[0]).match(/[^\n]*$/) || [''])[0].match(/^\s*/)[0]
+      : '  ';
+    edits.push({
+      start: bodyStart + 1,
+      end: bodyStart + 1,
+      text: `\n${indent}const _self = this;`,
+    });
   }
 
   edits.sort((a, b) => b.start - a.start);
@@ -147,7 +185,10 @@ for (const file of process.argv.slice(2)) {
   }
 
   fs.writeFileSync(file, out);
-  files += 1; removed += binds.length;
+  files += 1;
+  removed += binds.length;
   console.log(`${file}: ${binds.length} bind(this) removed`);
 }
-console.log(`\n${removed} .bind(this) removed, ${refs} this-ref(s) -> _self across ${files} file(s)`);
+console.log(
+  `\n${removed} .bind(this) removed, ${refs} this-ref(s) -> _self across ${files} file(s)`,
+);

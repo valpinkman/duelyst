@@ -28,7 +28,9 @@ class ModifierDyingWishCorpseCombustion extends ModifierDyingWish {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
       // deal damage to nearby enemies
       this.getGameSession().executeAction(playCardAction);
-      const entities = this.getGameSession().getBoard().getEnemyEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
+      const entities = this.getGameSession()
+        .getBoard()
+        .getEnemyEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
       for (var entity of Array.from<any>(entities)) {
         var damageAction = new DamageAction(this.getGameSession());
         damageAction.setOwnerId(this.getCard().getOwnerId());
@@ -40,7 +42,13 @@ class ModifierDyingWishCorpseCombustion extends ModifierDyingWish {
 
       // respawn original card
       const cardData = { id: this.getCard().getId() };
-      var playCardAction = new PlayCardSilentlyAction(this.getGameSession(), this.getCard().getOwnerId(), this.getCard().getPosition().x, this.getCard().getPosition().y, cardData);
+      var playCardAction = new PlayCardSilentlyAction(
+        this.getGameSession(),
+        this.getCard().getOwnerId(),
+        this.getCard().getPosition().x,
+        this.getCard().getPosition().y,
+        cardData,
+      );
       playCardAction.setSource(this.getCard());
       return this.getGameSession().executeAction(playCardAction);
     }
@@ -48,7 +56,11 @@ class ModifierDyingWishCorpseCombustion extends ModifierDyingWish {
 }
 ModifierDyingWishCorpseCombustion.prototype.type = 'ModifierDyingWishCorpseCombustion';
 ModifierDyingWishCorpseCombustion.prototype.damageAmount = 3;
-ModifierDyingWishCorpseCombustion.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericSpawn', 'FX.Modifiers.ModifierGenericDamage'];
+ModifierDyingWishCorpseCombustion.prototype.fxResource = [
+  'FX.Modifiers.ModifierDyingWish',
+  'FX.Modifiers.ModifierGenericSpawn',
+  'FX.Modifiers.ModifierGenericDamage',
+];
 ModifierDyingWishCorpseCombustion.prototype.cardDataOrIndexToSpawn = null;
 
 module.exports = ModifierDyingWishCorpseCombustion;

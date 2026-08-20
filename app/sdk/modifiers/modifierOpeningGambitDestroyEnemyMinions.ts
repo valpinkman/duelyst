@@ -17,12 +17,15 @@ class ModifierOpeningGambitDestroyEnemyMinions extends ModifierOpeningGambit {
   static type = 'ModifierOpeningGambitDestroyEnemyMinions';
 
   onOpeningGambit() {
-    const entities = this.getGameSession().getBoard().getEnemyEntitiesAroundEntity(this.getCard(), CardType.Unit, CONFIG.WHOLE_BOARD_RADIUS);
+    const entities = this.getGameSession()
+      .getBoard()
+      .getEnemyEntitiesAroundEntity(this.getCard(), CardType.Unit, CONFIG.WHOLE_BOARD_RADIUS);
 
     return (() => {
       const result = [];
       for (var entity of Array.from<any>(entities)) {
-        if (!entity.getIsGeneral()) { // this ability only kills minions, not Generals
+        if (!entity.getIsGeneral()) {
+          // this ability only kills minions, not Generals
           var killAction = new KillAction(this.getGameSession());
           killAction.setOwnerId(this.getCard().getOwnerId());
           killAction.setSource(this.getCard());
@@ -36,7 +39,10 @@ class ModifierOpeningGambitDestroyEnemyMinions extends ModifierOpeningGambit {
     })();
   }
 }
-ModifierOpeningGambitDestroyEnemyMinions.prototype.type = 'ModifierOpeningGambitDestroyEnemyMinions';
-ModifierOpeningGambitDestroyEnemyMinions.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
+ModifierOpeningGambitDestroyEnemyMinions.prototype.type =
+  'ModifierOpeningGambitDestroyEnemyMinions';
+ModifierOpeningGambitDestroyEnemyMinions.prototype.fxResource = [
+  'FX.Modifiers.ModifierOpeningGambit',
+];
 
 module.exports = ModifierOpeningGambitDestroyEnemyMinions;

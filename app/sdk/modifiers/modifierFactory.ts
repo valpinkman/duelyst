@@ -2906,7 +2906,9 @@ class ModifierFactory {
       return GameSessionModifierFestiveSpirit;
     }
 
-    return console.error(`ModifierFactory:modifierForType - Unknown Modifier Type: ${modifierType}`.red);
+    return console.error(
+      `ModifierFactory:modifierForType - Unknown Modifier Type: ${modifierType}`.red,
+    );
   }
 }
 

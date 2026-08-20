@@ -46,10 +46,7 @@ class BeginnerVetruvianChallenge3 extends Challenge {
   }
 
   getOpponentPlayerDeckData(gameSession) {
-    return [
-      { id: Cards.Faction4.General },
-      { id: Cards.TutorialSpell.TutorialFireOrb },
-    ];
+    return [{ id: Cards.Faction4.General }, { id: Cards.TutorialSpell.TutorialFireOrb }];
   }
 
   setupBoard(gameSession) {
@@ -76,33 +73,55 @@ class BeginnerVetruvianChallenge3 extends Challenge {
     this.applyCardToBoard({ id: Cards.Tile.Shadow }, 5, 1, opponentPlayerId);
     this.applyCardToBoard({ id: Cards.Tile.Shadow }, 5, 0, opponentPlayerId);
 
-    const shadowWatcher = this.applyCardToBoard({ id: Cards.Faction4.ShadowWatcher }, 5, 2, opponentPlayerId);
+    const shadowWatcher = this.applyCardToBoard(
+      { id: Cards.Faction4.ShadowWatcher },
+      5,
+      2,
+      opponentPlayerId,
+    );
     const shadowWatcherModifier = shadowWatcher.getModifierByType(ModifierDeathWatchBuffSelf.type);
     return [0, 1, 2, 3].map((i) =>
-      shadowWatcherModifier.applyManagedModifiersFromModifiersContextObjects(shadowWatcherModifier.modifiersContextObjects, shadowWatcher));
+      shadowWatcherModifier.applyManagedModifiersFromModifiersContextObjects(
+        shadowWatcherModifier.modifiersContextObjects,
+        shadowWatcher,
+      ),
+    );
   }
 
   setupOpponentAgent(gameSession) {
     super.setupOpponentAgent(gameSession);
 
-    this._opponentAgent.addActionForTurn(0, AgentActions.createAgentSoftActionShowInstructionLabels([{
-      label: i18next.t('challenges.beginner_vetruvian_3_taunt'),
-      isSpeech: true,
-      isPersistent: true,
-      yPosition: 0.6,
-      isOpponent: true,
-    },
-    ]));
-    return this._opponentAgent.addActionForTurn(0, AgentActions.createAgentActionPlayCardFindPosition(0, () => [GameSession.getInstance().getGeneralForPlayer1().getPosition()]));
+    this._opponentAgent.addActionForTurn(
+      0,
+      AgentActions.createAgentSoftActionShowInstructionLabels([
+        {
+          label: i18next.t('challenges.beginner_vetruvian_3_taunt'),
+          isSpeech: true,
+          isPersistent: true,
+          yPosition: 0.6,
+          isOpponent: true,
+        },
+      ]),
+    );
+    return this._opponentAgent.addActionForTurn(
+      0,
+      AgentActions.createAgentActionPlayCardFindPosition(0, () => [
+        GameSession.getInstance().getGeneralForPlayer1().getPosition(),
+      ]),
+    );
   }
 }
 BeginnerVetruvianChallenge3.prototype.type = 'BeginnerVetruvianChallenge3';
 BeginnerVetruvianChallenge3.prototype.categoryType = ChallengeCategory.keywords.type;
 BeginnerVetruvianChallenge3.prototype.name = i18next.t('challenges.beginner_vetruvian_3_title');
-BeginnerVetruvianChallenge3.prototype.description = i18next.t('challenges.beginner_vetruvian_3_description');
+BeginnerVetruvianChallenge3.prototype.description = i18next.t(
+  'challenges.beginner_vetruvian_3_description',
+);
 BeginnerVetruvianChallenge3.prototype.iconUrl = RSX.speech_portrait_vetruvian.img;
 BeginnerVetruvianChallenge3.prototype._musicOverride = RSX.music_battlemap_vetruv.audio;
-BeginnerVetruvianChallenge3.prototype.otkChallengeStartMessage = i18next.t('challenges.beginner_vetruvian_3_start');
+BeginnerVetruvianChallenge3.prototype.otkChallengeStartMessage = i18next.t(
+  'challenges.beginner_vetruvian_3_start',
+);
 BeginnerVetruvianChallenge3.prototype.otkChallengeFailureMessages = [
   i18next.t('challenges.beginner_vetruvian_3_fail'),
 ];

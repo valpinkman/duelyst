@@ -24,10 +24,15 @@ class ModifierBanding extends ModifierSituationalBuffSelf {
   getIsSituationActiveForCache() {
     // banding aura is active when this entity is near its general
     const entityPosition = this.getCard().getPosition();
-    const general = this.getCard().getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
+    const general = this.getCard()
+      .getGameSession()
+      .getGeneralForPlayerId(this.getCard().getOwnerId());
     if (general != null) {
       const generalPosition = general.getPosition();
-      return (Math.abs(entityPosition.x - generalPosition.x) <= 1) && (Math.abs(entityPosition.y - generalPosition.y) <= 1);
+      return (
+        Math.abs(entityPosition.x - generalPosition.x) <= 1 &&
+        Math.abs(entityPosition.y - generalPosition.y) <= 1
+      );
     }
 
     return false;

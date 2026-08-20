@@ -72,7 +72,9 @@ class CardFactory_BloodstormSet_Neutral {
       card.atk = 2;
       card.maxHP = 2;
       card.manaCost = 2;
-      card.setInherentModifiersContextObjects([ModifierOpeningGambitRefreshSignatureCard.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierOpeningGambitRefreshSignatureCard.createContextObject(),
+      ]);
       card.rarityId = Rarity.Common;
     }
 
@@ -106,7 +108,10 @@ class CardFactory_BloodstormSet_Neutral {
       card.manaCost = 4;
       card.rarityId = Rarity.Rare;
       // contextObject = PlayerModifierManaModifier.createCostChangeContextObject(-1, CardType.Spell)
-      const customContextObject = PlayerModifierManaModifier.createCostChangeContextObject(0, CardType.Spell);
+      const customContextObject = PlayerModifierManaModifier.createCostChangeContextObject(
+        0,
+        CardType.Spell,
+      );
       // because this modifier is setting cost change TO 0 (absolute) we need to set these values manually
       // by default 0 cost change mana modifiers would normally be affecting other things about mana (like adding bonus mana)
       customContextObject.isAura = true;
@@ -115,12 +120,18 @@ class CardFactory_BloodstormSet_Neutral {
       // end of custom overridden properties
       customContextObject.modifiersContextObjects[0].attributeBuffsAbsolute = ['manaCost'];
       customContextObject.modifiersContextObjects[0].attributeBuffsFixed = ['manaCost'];
-      customContextObject.activeInHand = (customContextObject.activeInDeck = (customContextObject.activeInSignatureCards = false));
+      customContextObject.activeInHand =
+        customContextObject.activeInDeck =
+        customContextObject.activeInSignatureCards =
+          false;
       customContextObject.activeOnBoard = true;
       customContextObject.auraIncludeHand = false;
       customContextObject.auraIncludeSignatureCards = true;
       card.setInherentModifiersContextObjects([
-        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetOwnPlayer([customContextObject], 'Your Bloodbound Spell costs 0'),
+        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetOwnPlayer(
+          [customContextObject],
+          'Your Bloodbound Spell costs 0',
+        ),
       ]);
     }
 
@@ -155,7 +166,9 @@ class CardFactory_BloodstormSet_Neutral {
       card.maxHP = 6;
       card.manaCost = 8;
       card.rarityId = Rarity.Legendary;
-      card.setInherentModifiersContextObjects([ModifierSynergizeDamageEnemy.createContextObject(6)]);
+      card.setInherentModifiersContextObjects([
+        ModifierSynergizeDamageEnemy.createContextObject(6),
+      ]);
     }
 
     return card;

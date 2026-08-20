@@ -16,8 +16,12 @@ class ModifierDyingWishDestroyManaCrystal extends ModifierDyingWish {
   static type = 'ModifierDyingWishDestroyManaCrystal';
 
   static createContextObject(takeFromOwner, amountToRemove, options) {
-    if (takeFromOwner == null) { takeFromOwner = false; }
-    if (amountToRemove == null) { amountToRemove = 1; }
+    if (takeFromOwner == null) {
+      takeFromOwner = false;
+    }
+    if (amountToRemove == null) {
+      amountToRemove = 1;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.amountToRemove = amountToRemove;
     contextObject.takeFromOwner = takeFromOwner;
@@ -27,14 +31,21 @@ class ModifierDyingWishDestroyManaCrystal extends ModifierDyingWish {
   onDyingWish() {
     super.onDyingWish();
 
-    const removeManaCoreAction = new RemoveManaCoreAction(this.getGameSession(), this.amountToRemove);
+    const removeManaCoreAction = new RemoveManaCoreAction(
+      this.getGameSession(),
+      this.amountToRemove,
+    );
     removeManaCoreAction.setSource(this.getCard());
     if (this.takeFromOwner) {
       removeManaCoreAction.setOwnerId(this.getCard().getOwnerId());
     } else {
-      removeManaCoreAction.setOwnerId(this.getGameSession().getOpponentPlayerIdOfPlayerId(this.getCard().getOwnerId()));
+      removeManaCoreAction.setOwnerId(
+        this.getGameSession().getOpponentPlayerIdOfPlayerId(this.getCard().getOwnerId()),
+      );
     }
-    return this.getGameSession().executeAction(this.getGameSession().executeAction(removeManaCoreAction));
+    return this.getGameSession().executeAction(
+      this.getGameSession().executeAction(removeManaCoreAction),
+    );
   }
 }
 ModifierDyingWishDestroyManaCrystal.prototype.type = 'ModifierDyingWishDestroyManaCrystal';

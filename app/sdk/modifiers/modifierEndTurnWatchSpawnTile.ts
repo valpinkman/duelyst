@@ -17,7 +17,12 @@ class ModifierEndTurnWatchSpawnTile extends ModifierEndTurnWatchSpawnEntity {
   static getDescription(modifierContextObject) {
     if (modifierContextObject) {
       let replaceText = '';
-      if (UtilsPosition.getArraysOfPositionsAreEqual(modifierContextObject.spawnPattern, CONFIG.PATTERN_1x1)) {
+      if (
+        UtilsPosition.getArraysOfPositionsAreEqual(
+          modifierContextObject.spawnPattern,
+          CONFIG.PATTERN_1x1,
+        )
+      ) {
         replaceText = `its space into ${modifierContextObject.spawnDescription}`;
       } else if (modifierContextObject.spawnCount === 1) {
         replaceText = `a nearby space into ${modifierContextObject.spawnDescription}`;
@@ -32,6 +37,9 @@ class ModifierEndTurnWatchSpawnTile extends ModifierEndTurnWatchSpawnEntity {
   }
 }
 ModifierEndTurnWatchSpawnTile.prototype.type = 'ModifierEndTurnWatchSpawnTile';
-ModifierEndTurnWatchSpawnTile.prototype.fxResource = ['FX.Modifiers.ModifierEndTurnWatch', 'FX.Modifiers.ModifierGenericSpawn'];
+ModifierEndTurnWatchSpawnTile.prototype.fxResource = [
+  'FX.Modifiers.ModifierEndTurnWatch',
+  'FX.Modifiers.ModifierGenericSpawn',
+];
 
 module.exports = ModifierEndTurnWatchSpawnTile;

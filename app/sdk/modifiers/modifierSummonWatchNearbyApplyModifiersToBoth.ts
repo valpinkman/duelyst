@@ -18,13 +18,20 @@ class ModifierSummonWatchNearbyApplyModifiersToBoth extends ModifierSummonWatchA
 
   getIsValidBuffPosition(summonedUnitPosition) {
     const entityPosition = this.getCard().getPosition();
-    if ((Math.abs(summonedUnitPosition.x - entityPosition.x) <= 1) && (Math.abs(summonedUnitPosition.y - entityPosition.y) <= 1)) {
+    if (
+      Math.abs(summonedUnitPosition.x - entityPosition.x) <= 1 &&
+      Math.abs(summonedUnitPosition.y - entityPosition.y) <= 1
+    ) {
       return true;
     }
     return false;
   }
 }
-ModifierSummonWatchNearbyApplyModifiersToBoth.prototype.type = 'ModifierSummonWatchNearbyApplyModifiersToBoth';
-ModifierSummonWatchNearbyApplyModifiersToBoth.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierSummonWatchNearbyApplyModifiersToBoth.prototype.type =
+  'ModifierSummonWatchNearbyApplyModifiersToBoth';
+ModifierSummonWatchNearbyApplyModifiersToBoth.prototype.fxResource = [
+  'FX.Modifiers.ModifierSummonWatch',
+  'FX.Modifiers.ModifierGenericBuff',
+];
 
 module.exports = ModifierSummonWatchNearbyApplyModifiersToBoth;

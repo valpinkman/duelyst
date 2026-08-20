@@ -56,9 +56,13 @@ class PutCardInDeckAction extends Action {
    * @returns {Card}
    */
   getCard() {
-    if ((this._private.cachedCard == null)) {
-      this._private.cachedCard = this.getGameSession().getExistingCardFromIndexOrCreateCardFromData(this.cardDataOrIndex);
-      if (this._private.cachedCard != null) { this._private.cachedCard.setOwnerId(this.getOwnerId()); }
+    if (this._private.cachedCard == null) {
+      this._private.cachedCard = this.getGameSession().getExistingCardFromIndexOrCreateCardFromData(
+        this.cardDataOrIndex,
+      );
+      if (this._private.cachedCard != null) {
+        this._private.cachedCard.setOwnerId(this.getOwnerId());
+      }
     }
     return this._private.cachedCard;
   }
@@ -68,13 +72,13 @@ class PutCardInDeckAction extends Action {
    * NOTE: This card reference is not serialized and will not be preserved through deserialize/rollback.
    */
   setCard(card) {
-    return this._private.cachedCard = card;
+    return (this._private.cachedCard = card);
   }
 
   _execute() {
     super._execute();
 
-    if ((this.targetPlayerId != null) && (this.cardDataOrIndex != null)) {
+    if (this.targetPlayerId != null && this.cardDataOrIndex != null) {
       // Logger.module("SDK").debug "[G:#{@.getGameSession().gameId}]", "PutCardOnTopOfDeckAction::execute"
       const card = this.getCard();
       const deck = this.getGameSession().getPlayerById(this.targetPlayerId).getDeck();
@@ -98,14 +102,16 @@ class PutCardInDeckAction extends Action {
       this.getGameSession().applyCardToDeck(deck, this.cardDataOrIndex, card, this);
 
       // get post apply card data
-      if (this.getGameSession().getIsRunningAsAuthoritative()) { return this.cardDataOrIndex = card.updateCardDataPostApply(this.cardDataOrIndex); }
+      if (this.getGameSession().getIsRunningAsAuthoritative()) {
+        return (this.cardDataOrIndex = card.updateCardDataPostApply(this.cardDataOrIndex));
+      }
     }
   }
 
   scrubSensitiveData(actionData, scrubFromPerspectiveOfPlayerId, forSpectator) {
     // scrub the card id and only retain the card index
-    if (forSpectator || (actionData.ownerId !== scrubFromPerspectiveOfPlayerId)) {
-      if ((actionData.cardDataOrIndex != null) && _.isObject(actionData.cardDataOrIndex)) {
+    if (forSpectator || actionData.ownerId !== scrubFromPerspectiveOfPlayerId) {
+      if (actionData.cardDataOrIndex != null && _.isObject(actionData.cardDataOrIndex)) {
         actionData.cardDataOrIndex = { id: -1, index: actionData.cardDataOrIndex.index };
       }
     }

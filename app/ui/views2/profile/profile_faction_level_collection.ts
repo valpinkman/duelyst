@@ -7,7 +7,6 @@ var _ = require('underscore');
 var Template = require('./templates/profile_faction_level_collection.hbs');
 
 var ProfileFactionLevelCollectionView = Backbone.Marionette.ItemView.extend({
-
   className: 'profile-faction-levels',
   template: Template,
 
@@ -45,9 +44,15 @@ var ProfileFactionLevelCollectionView = Backbone.Marionette.ItemView.extend({
 
       var levelXPProgress = v.xp - SDK.FactionProgression.totalXPForLevel(v.level);
       var nextLevel = Math.min(v.level + 1, SDK.FactionProgression.maxLevel);
-      v.progress_percent = Math.ceil(100 * levelXPProgress / SDK.FactionProgression.deltaXPForLevel(nextLevel));
+      v.progress_percent = Math.ceil(
+        (100 * levelXPProgress) / SDK.FactionProgression.deltaXPForLevel(nextLevel),
+      );
 
-      for (var i = Math.min(v.level + 1, SDK.FactionProgression.maxLevel); i < SDK.FactionProgression.maxLevel; i++) {
+      for (
+        var i = Math.min(v.level + 1, SDK.FactionProgression.maxLevel);
+        i < SDK.FactionProgression.maxLevel;
+        i++
+      ) {
         var rewardData = SDK.FactionProgression.rewardDataForLevel(v.faction_id, i);
         if (rewardData) {
           if (rewardData.cards) {
@@ -59,7 +64,10 @@ var ProfileFactionLevelCollectionView = Backbone.Marionette.ItemView.extend({
             for (var j = 0, jl = rewardData.cards.length; j < jl; j++) {
               var rewardCardData = rewardData.cards[j];
               var rewardCardId = rewardCardData.id;
-              var rewardCard = SDK.CardFactory.cardForIdentifier(rewardCardId, SDK.GameSession.getInstance());
+              var rewardCard = SDK.CardFactory.cardForIdentifier(
+                rewardCardId,
+                SDK.GameSession.getInstance(),
+              );
               if (rewardCard) {
                 if (rewardCard instanceof SDK.Entity && rewardCard.getIsGeneral()) {
                   isGeneralReward = true;
@@ -75,9 +83,18 @@ var ProfileFactionLevelCollectionView = Backbone.Marionette.ItemView.extend({
             }
 
             if (isGeneralReward) {
-              v.next_reward_description = '1 x ' + (isNeutralReward ? 'Neutral' : 'Faction') + (isPrismaticReward ? ' Prismatic ' : ' Alternate ') + 'General';
+              v.next_reward_description =
+                '1 x ' +
+                (isNeutralReward ? 'Neutral' : 'Faction') +
+                (isPrismaticReward ? ' Prismatic ' : ' Alternate ') +
+                'General';
             } else {
-              v.next_reward_description = CONFIG.MAX_DECK_DUPLICATES + ' x ' + (isNeutralReward ? 'Neutral' : 'Faction') + (isPrismaticReward ? ' Prismatic ' : ' Basic ') + 'Card';
+              v.next_reward_description =
+                CONFIG.MAX_DECK_DUPLICATES +
+                ' x ' +
+                (isNeutralReward ? 'Neutral' : 'Faction') +
+                (isPrismaticReward ? ' Prismatic ' : ' Basic ') +
+                'Card';
             }
           }
           if (rewardData.booster_packs) {
@@ -94,7 +111,6 @@ var ProfileFactionLevelCollectionView = Backbone.Marionette.ItemView.extend({
     });
     return data;
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

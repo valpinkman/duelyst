@@ -29,20 +29,20 @@ router.post('/premium_purchase', function (req, res, next) {
   }
 
   const user_id = req.user.d.id;
-  const {
-    product_sku,
-  } = result.value;
-  const {
-    sale_id,
-  } = result.value;
+  const { product_sku } = result.value;
+  const { sale_id } = result.value;
 
   return ShopModule.purchaseProductWithPremiumCurrency(user_id, product_sku, sale_id)
     .then(function () {
       Logger.module('API').debug(`User ${user_id.blue} purchased ${product_sku}`.cyan);
       return res.status(200).json({});
-    }).catch(function (error) {
+    })
+    .catch(function (error) {
       Logger.module('API').error(`ERROR Processing Purchase ${product_sku} by ${user_id.blue}`.red);
-      if (((error.raw != null ? error.raw.type : undefined) === 'card_error') || ((error.raw != null ? error.raw.type : undefined) === 'invalid_request_error')) {
+      if (
+        (error.raw != null ? error.raw.type : undefined) === 'card_error' ||
+        (error.raw != null ? error.raw.type : undefined) === 'invalid_request_error'
+      ) {
         Logger.module('API').error(`ERROR is safe to print for user ${user_id.blue}`.red);
         return res.status(500).json({ error: error.message });
       } else {
@@ -51,15 +51,25 @@ router.post('/premium_purchase', function (req, res, next) {
     });
 });
 
-router.post('/customer', (req, res, next) => res.status(400).send('Payment methods are not supported.'));
+router.post('/customer', (req, res, next) =>
+  res.status(400).send('Payment methods are not supported.'),
+);
 
-router.delete('/customer', (req, res, next) => res.status(400).send('Payment methods are not supported.'));
+router.delete('/customer', (req, res, next) =>
+  res.status(400).send('Payment methods are not supported.'),
+);
 
-router.get('/products', (req, res, next) => Promise.resolve(ShopData)
-  .then((shopData) => res.status(200).json(shopData)).catch((error) => res.status(500).json({ error: error.message })));
+router.get('/products', (req, res, next) =>
+  Promise.resolve(ShopData)
+    .then((shopData) => res.status(200).json(shopData))
+    .catch((error) => res.status(500).json({ error: error.message })),
+);
 
-router.get('/premium_pack_products', (req, res, next) => Promise.resolve(PremiumShopData)
-  .then((premiumPackData) => res.status(200).json(premiumPackData)).catch((error) => res.status(500).json({ error: error.message })));
+router.get('/premium_pack_products', (req, res, next) =>
+  Promise.resolve(PremiumShopData)
+    .then((premiumPackData) => res.status(200).json(premiumPackData))
+    .catch((error) => res.status(500).json({ error: error.message })),
+);
 
 // Returns array of all expired shop sales
 router.get('/sales', function (req, res, next) {
@@ -68,7 +78,10 @@ router.get('/sales', function (req, res, next) {
   const MOMENT_NOW_UTC = moment.utc();
 
   // Retrieves all unexpired sales, returns sales that havent started yet
-  return knex('shop_sales').select('sale_id', 'sku', 'sale_price', 'sale_starts_at', 'sale_ends_at').where('sale_ends_at', '>', MOMENT_NOW_UTC.toDate()).andWhere('disabled', '=', false)
+  return knex('shop_sales')
+    .select('sale_id', 'sku', 'sale_price', 'sale_starts_at', 'sale_ends_at')
+    .where('sale_ends_at', '>', MOMENT_NOW_UTC.toDate())
+    .andWhere('disabled', '=', false)
     .then((shopSalesRows) => res.status(200).json(shopSalesRows))
     .catch((error) => res.status(500).json({ error: error.message }));
 });

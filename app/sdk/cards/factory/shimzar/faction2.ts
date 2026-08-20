@@ -91,7 +91,10 @@ class CardFactory_ShimzarSet_Faction2 {
       card.maxHP = 3;
       card.manaCost = 2;
       card.rarityId = Rarity.Rare;
-      card.setInherentModifiersContextObjects([ModifierBattlePet.createContextObject(), ModifierDyingWishXho.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierBattlePet.createContextObject(),
+        ModifierDyingWishXho.createContextObject(),
+      ]);
     }
 
     if (identifier === Cards.Faction2.Ace) {
@@ -124,7 +127,10 @@ class CardFactory_ShimzarSet_Faction2 {
       card.maxHP = 2;
       card.manaCost = 1;
       card.rarityId = Rarity.Common;
-      card.setInherentModifiersContextObjects([ModifierBattlePet.createContextObject(), ModifierRanged.createContextObject()]);
+      card.setInherentModifiersContextObjects([
+        ModifierBattlePet.createContextObject(),
+        ModifierRanged.createContextObject(),
+      ]);
     }
 
     if (identifier === Cards.Faction2.OnyxJaguar) {
@@ -158,7 +164,12 @@ class CardFactory_ShimzarSet_Faction2 {
       card.rarityId = Rarity.Epic;
       const modContextObject = Modifier.createContextObjectWithAttributeBuffs(1, 1);
       modContextObject.appliedName = i18next.t('modifiers.faction_2_onyx_jaguar_buff_name');
-      card.setInherentModifiersContextObjects([ModifierMyTeamMoveWatchAnyReasonBuffTarget.createContextObject([modContextObject], 'give it +1/+1')]);
+      card.setInherentModifiersContextObjects([
+        ModifierMyTeamMoveWatchAnyReasonBuffTarget.createContextObject(
+          [modContextObject],
+          'give it +1/+1',
+        ),
+      ]);
     }
 
     if (identifier === Cards.Faction2.KiBeholder) {
@@ -198,9 +209,7 @@ class CardFactory_ShimzarSet_Faction2 {
         {
           id: Cards.Spell.ApplyModifiers,
           spellFilterType: SpellFilterType.EnemyDirect,
-          targetModifiersContextObjects: [
-            statContextObject,
-          ],
+          targetModifiersContextObjects: [statContextObject],
           _private: {
             followupSourcePattern: CONFIG.PATTERN_WHOLE_BOARD,
           },
@@ -268,7 +277,9 @@ class CardFactory_ShimzarSet_Faction2 {
       card.atk = 2;
       card.maxHP = 4;
       card.manaCost = 3;
-      card.setInherentModifiersContextObjects([ModifierTakeDamageWatchDamageAllEnemies.createContextObject(1)]);
+      card.setInherentModifiersContextObjects([
+        ModifierTakeDamageWatchDamageAllEnemies.createContextObject(1),
+      ]);
       card.rarityId = Rarity.Epic;
     }
 
@@ -300,7 +311,12 @@ class CardFactory_ShimzarSet_Faction2 {
       card.maxHP = 6;
       card.manaCost = 6;
       card.rarityId = Rarity.Legendary;
-      card.setInherentModifiersContextObjects([ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetEnemyPlayer([ModifierBattlePet.createContextObject()], 'The enemy General moves and attacks as if they are a Battle Pet')]);
+      card.setInherentModifiersContextObjects([
+        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetEnemyPlayer(
+          [ModifierBattlePet.createContextObject()],
+          'The enemy General moves and attacks as if they are a Battle Pet',
+        ),
+      ]);
     }
 
     if (identifier === Cards.Spell.CrimsonCoil) {
@@ -427,17 +443,24 @@ class CardFactory_ShimzarSet_Faction2 {
       card.durability = 3;
       const contextObject = PlayerModifierSpellDamageModifier.createContextObject();
       contextObject.spellDamageChange = 1;
-      contextObject.activeInHand = (contextObject.activeInDeck = (contextObject.activeInSignatureCards = false));
+      contextObject.activeInHand =
+        contextObject.activeInDeck =
+        contextObject.activeInSignatureCards =
+          false;
       contextObject.activeOnBoard = true;
       card.setTargetModifiersContextObjects([
         Modifier.createContextObjectWithAttributeBuffs(1, 0, {
           name: i18next.t('cards.faction_2_artifact_crescent_spear_name'),
           description: i18next.t('modifiers.plus_attack_key', { amount: 1 }),
         }),
-        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetOwnPlayer([contextObject], i18next.t('modifiers.faction_2_artifact_crescent_spear_1'), {
-          name: i18next.t('cards.faction_2_artifact_crescent_spear_name'),
-          description: i18next.t('modifiers.faction_2_artifact_crescent_spear_1'),
-        }),
+        ModifierCardControlledPlayerModifiers.createContextObjectOnBoardToTargetOwnPlayer(
+          [contextObject],
+          i18next.t('modifiers.faction_2_artifact_crescent_spear_1'),
+          {
+            name: i18next.t('cards.faction_2_artifact_crescent_spear_name'),
+            description: i18next.t('modifiers.faction_2_artifact_crescent_spear_1'),
+          },
+        ),
       ]);
       card.setFXResource(['FX.Cards.Artifact.CrescentSpear']);
       card.setBaseAnimResource({

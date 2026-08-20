@@ -6,7 +6,6 @@ var moment = require('moment');
 var Templ = require('./templates/arena_run_deck.hbs');
 
 var ArenaRunDeck = SlidingPanelItemView.extend({
-
   className: 'sliding-panel deck-preview gauntlet-run-deck',
 
   template: Templ,
@@ -17,7 +16,9 @@ var ArenaRunDeck = SlidingPanelItemView.extend({
     if (data.ended_at == null) {
       data.status_text = 'CURRENT';
     } else {
-      var expiresMoment = moment.utc(data.ended_at).add(CONFIG.DAYS_BEFORE_GAUNTLET_DECK_EXPIRES, 'days');
+      var expiresMoment = moment
+        .utc(data.ended_at)
+        .add(CONFIG.DAYS_BEFORE_GAUNTLET_DECK_EXPIRES, 'days');
       var durationToExpiration = moment.duration(expiresMoment.valueOf() - moment.utc().valueOf());
       data.status_text = 'EXPIRES IN ' + durationToExpiration.humanize();
     }
@@ -36,7 +37,6 @@ var ArenaRunDeck = SlidingPanelItemView.extend({
   getIsEnabled: function () {
     return true;
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

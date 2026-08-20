@@ -8,7 +8,6 @@ var ChangePasswordTmpl = require('app/ui/templates/item/change_password.hbs');
 var FormPromptDialogItemView = require('./form_prompt_dialog');
 
 var ChangePasswordItemView = FormPromptDialogItemView.extend({
-
   template: ChangePasswordTmpl,
 
   id: 'app-change-password',
@@ -50,12 +49,13 @@ var ChangePasswordItemView = FormPromptDialogItemView.extend({
 
     var passwordCurrent = this.ui.$passwordCurrent.val();
     var password = this.ui.$password.val();
-    Session.changePassword(passwordCurrent, password).bind(this)
+    Session.changePassword(passwordCurrent, password)
+      .bind(this)
       .then(function (res) {
         this.onSuccess(res);
       })
       .catch(function (e) {
-      // onError expects a string not an actual error
+        // onError expects a string not an actual error
         this.onError(e.innerMessage || e.message);
       });
   },
@@ -99,11 +99,14 @@ var ChangePasswordItemView = FormPromptDialogItemView.extend({
     }
 
     // set valid state
-    this.isValid = isValid && this._hasModifiedPassword && this._hasModifiedPasswordConfirm && this._hasModifiedPasswordCurrent;
+    this.isValid =
+      isValid &&
+      this._hasModifiedPassword &&
+      this._hasModifiedPasswordConfirm &&
+      this._hasModifiedPasswordCurrent;
   },
 
   /* endregion STATE */
-
 });
 
 // Expose the class either via CommonJS or the global object

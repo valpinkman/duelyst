@@ -34,10 +34,27 @@ class ModifierRangedProvoke extends Modifier {
 
   onValidateAction(actionEvent) {
     const a = actionEvent.action;
-    if ((this.getCard() != null) && a instanceof AttackAction && !a.getIsImplicit() && a.getIsValid() && !this.getCard().getIsSameTeamAs(a.getSource()) && _.contains(this.getEntitiesInAura(), a.getSource()) && !a.getTarget().hasModifierType(ModifierRangedProvoke.type)) {
+    if (
+      this.getCard() != null &&
+      a instanceof AttackAction &&
+      !a.getIsImplicit() &&
+      a.getIsValid() &&
+      !this.getCard().getIsSameTeamAs(a.getSource()) &&
+      _.contains(this.getEntitiesInAura(), a.getSource()) &&
+      !a.getTarget().hasModifierType(ModifierRangedProvoke.type)
+    ) {
       // in the case of attacking melee provoker, don't invalidate
-      if (!(a.getSource().getIsProvoked() && _.contains(a.getTarget().getEntitiesProvoked(), a.getSource()))) {
-        return this.invalidateAction(a, this.getCard().getPosition(), 'Provoked - must first attack the Provoker.');
+      if (
+        !(
+          a.getSource().getIsProvoked() &&
+          _.contains(a.getTarget().getEntitiesProvoked(), a.getSource())
+        )
+      ) {
+        return this.invalidateAction(
+          a,
+          this.getCard().getPosition(),
+          'Provoked - must first attack the Provoker.',
+        );
       }
     }
   }
@@ -59,7 +76,9 @@ ModifierRangedProvoke.prototype.auraRadius = CONFIG.WHOLE_BOARD_RADIUS;
 ModifierRangedProvoke.prototype.auraIncludeSelf = false;
 ModifierRangedProvoke.prototype.auraIncludeAlly = false;
 ModifierRangedProvoke.prototype.auraIncludeEnemy = true;
-ModifierRangedProvoke.prototype.modifiersContextObjects = [ModifierRangedProvoked.createContextObject()];
+ModifierRangedProvoke.prototype.modifiersContextObjects = [
+  ModifierRangedProvoked.createContextObject(),
+];
 ModifierRangedProvoke.prototype.fxResource = ['FX.Modifiers.ModifierProvoke'];
 
 module.exports = ModifierRangedProvoke;

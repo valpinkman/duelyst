@@ -17,6 +17,7 @@ class ModifierDealDamageWatchRefreshSignatureCard extends ModifierDealDamageWatc
     return this.getGameSession().executeAction(this.getOwner().actionActivateSignatureCard());
   }
 }
-ModifierDealDamageWatchRefreshSignatureCard.prototype.type = 'ModifierDealDamageWatchRefreshSignatureCard';
+ModifierDealDamageWatchRefreshSignatureCard.prototype.type =
+  'ModifierDealDamageWatchRefreshSignatureCard';
 
 module.exports = ModifierDealDamageWatchRefreshSignatureCard;

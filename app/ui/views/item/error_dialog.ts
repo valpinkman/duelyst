@@ -11,7 +11,6 @@ var NavigationManager = require('app/ui/managers/navigation_manager');
 var i18next = require('i18next');
 
 var ErrorDialogItemView = Backbone.Marionette.ItemView.extend({
-
   id: 'app-error-dialog',
   className: 'dialog prompt-modal',
 
@@ -40,7 +39,9 @@ var ErrorDialogItemView = Backbone.Marionette.ItemView.extend({
     this.listenToOnce(NavigationManager.getInstance(), EVENTS.user_attempt_confirm, this.onCancel);
 
     // play error audio
-    audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_error.audio, CONFIG.ERROR_SFX_PRIORITY);
+    audio_engine
+      .current()
+      .play_effect_for_interaction(RSX.sfx_ui_error.audio, CONFIG.ERROR_SFX_PRIORITY);
   },
 
   onPress: function (e) {
@@ -50,11 +51,12 @@ var ErrorDialogItemView = Backbone.Marionette.ItemView.extend({
   },
 
   onCancel: function () {
-    audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_cancel.audio, CONFIG.CANCEL_SFX_PRIORITY);
+    audio_engine
+      .current()
+      .play_effect_for_interaction(RSX.sfx_ui_cancel.audio, CONFIG.CANCEL_SFX_PRIORITY);
     NavigationManager.getInstance().destroyDialogView();
     this.trigger('cancel');
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

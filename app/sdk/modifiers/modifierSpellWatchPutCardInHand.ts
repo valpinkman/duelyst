@@ -23,7 +23,11 @@ class ModifierSpellWatchPutCardInHand extends ModifierSpellWatch {
   }
 
   onSpellWatch(action) {
-    const a = new PutCardInHandAction(this.getGameSession(), this.getCard().getOwnerId(), this.cardDataOrIndexToPutInHand);
+    const a = new PutCardInHandAction(
+      this.getGameSession(),
+      this.getCard().getOwnerId(),
+      this.cardDataOrIndexToPutInHand,
+    );
     return this.getGameSession().executeAction(a);
   }
 }

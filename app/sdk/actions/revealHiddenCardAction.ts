@@ -52,7 +52,7 @@ class RevealHiddenCardAction extends Action {
    * Sets the card data used to reveal card.
    */
   setCardData(val) {
-    return this.cardData = val;
+    return (this.cardData = val);
   }
 
   /**
@@ -67,7 +67,7 @@ class RevealHiddenCardAction extends Action {
    * NOTE: This card may or may not be indexed if this method is called before this action is executed.
    */
   getCard() {
-    if ((this._private.cachedCard == null)) {
+    if (this._private.cachedCard == null) {
       const target = this.getTarget();
       const cardId = this.cardData.id;
       if (target.getId() === cardId) {
@@ -108,7 +108,7 @@ class RevealHiddenCardAction extends Action {
    * NOTE: This card reference is not serialized and will not be preserved through deserialize/rollback.
    */
   setCard(card) {
-    return this._private.cachedCard = card;
+    return (this._private.cachedCard = card);
   }
 
   /**
@@ -140,13 +140,21 @@ class RevealHiddenCardAction extends Action {
 
     // update actions that applied hidden card to locations
     const applyCardToDeckAction = target.getAppliedToDeckByAction();
-    if (applyCardToDeckAction != null) { applyCardToDeckAction.setCard(card); }
+    if (applyCardToDeckAction != null) {
+      applyCardToDeckAction.setCard(card);
+    }
     const applyCardToHandAction = target.getAppliedToHandByAction();
-    if (applyCardToHandAction != null) { applyCardToHandAction.setCard(card); }
+    if (applyCardToHandAction != null) {
+      applyCardToHandAction.setCard(card);
+    }
     const applyCardToBoardAction = target.getAppliedToBoardByAction();
-    if (applyCardToBoardAction != null) { applyCardToBoardAction.setCard(card); }
+    if (applyCardToBoardAction != null) {
+      applyCardToBoardAction.setCard(card);
+    }
     const applyCardToSignatureCardsAction = target.getAppliedToSignatureCardsByAction();
-    if (applyCardToSignatureCardsAction != null) { applyCardToSignatureCardsAction.setCard(card); }
+    if (applyCardToSignatureCardsAction != null) {
+      applyCardToSignatureCardsAction.setCard(card);
+    }
 
     // index revealed card
     return this.getGameSession()._indexCardAsNeeded(card);

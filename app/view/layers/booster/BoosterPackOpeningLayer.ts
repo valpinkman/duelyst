@@ -31,7 +31,6 @@ const EVENTS = require('../../../common/event_types');
  *************************************************************************** */
 
 const BoosterPackOpeningLayer = FXCompositeLayer.extend({
-
   _mouseOverCard: null,
   _mouseOverGem: null,
   _unlocking: false,
@@ -46,21 +45,23 @@ const BoosterPackOpeningLayer = FXCompositeLayer.extend({
   radius: 215,
   layoutsByCount: {
     3: {
-      positionsByIndex: [
-        cc.p(1, 0.5), cc.p(-1, 0.5), cc.p(0, -0.5),
-      ],
-      spacingByIndex: [
-        cc.p(20.0, 30.0), cc.p(-20.0, 30.0), cc.p(0, 10.0),
-      ],
+      positionsByIndex: [cc.p(1, 0.5), cc.p(-1, 0.5), cc.p(0, -0.5)],
+      spacingByIndex: [cc.p(20.0, 30.0), cc.p(-20.0, 30.0), cc.p(0, 10.0)],
     },
     5: {
       positionsByIndex: [
-        cc.p(1, 0.5), cc.p(0, 0.5), cc.p(-1, 0.5),
-        cc.p(-0.5, -0.5), cc.p(0.5, -0.5),
+        cc.p(1, 0.5),
+        cc.p(0, 0.5),
+        cc.p(-1, 0.5),
+        cc.p(-0.5, -0.5),
+        cc.p(0.5, -0.5),
       ],
       spacingByIndex: [
-        cc.p(20.0, 30.0), cc.p(0, 30.0), cc.p(-20.0, 30.0),
-        cc.p(-10.0, 10.0), cc.p(10.0, 10.0),
+        cc.p(20.0, 30.0),
+        cc.p(0, 30.0),
+        cc.p(-20.0, 30.0),
+        cc.p(-10.0, 10.0),
+        cc.p(10.0, 10.0),
       ],
     },
   },
@@ -121,7 +122,9 @@ const BoosterPackOpeningLayer = FXCompositeLayer.extend({
       this.blurredOverlay.setOpacity(0);
 
       // center ring with lights
-      this.centerMetalOuterRing = BaseSprite.create(RSX.booster_opening_center_metal_outer_ring.img);
+      this.centerMetalOuterRing = BaseSprite.create(
+        RSX.booster_opening_center_metal_outer_ring.img,
+      );
       this.centerMetalOuterRing.setAnchorPoint(cc.p(0.5, 0.5));
 
       // top red plate
@@ -157,28 +160,36 @@ const BoosterPackOpeningLayer = FXCompositeLayer.extend({
       instructionalArrowSprite.setPosition(cc.p(280, 0.0));
       instructionalArrowSprite.setOpacity(0.0);
       instructionalArrowSprite.setRotation(90);
-      instructionalArrowSprite.runAction(cc.sequence(
-        cc.delayTime(0.2),
-        cc.fadeIn(CONFIG.FADE_MEDIUM_DURATION),
-        cc.callFunc(() => {
-          const rings = BaseParticleSystem.create(RSX.ptcl_ring_flash.plist);
-          rings.setPosition(0, 0);
-          rings.setAutoRemoveOnFinish(true);
-          this.innerLayer.addChild(rings);
+      instructionalArrowSprite.runAction(
+        cc.sequence(
+          cc.delayTime(0.2),
+          cc.fadeIn(CONFIG.FADE_MEDIUM_DURATION),
+          cc.callFunc(() => {
+            const rings = BaseParticleSystem.create(RSX.ptcl_ring_flash.plist);
+            rings.setPosition(0, 0);
+            rings.setAutoRemoveOnFinish(true);
+            this.innerLayer.addChild(rings);
 
-          this.turbine.startRotating(30.0, 360);
-          this.centerRing.startRotating(30.0, -360);
-        }),
-        cc.moveBy(CONFIG.MOVE_SLOW_DURATION, cc.p(-140, 0)).easing(cc.easeExponentialOut()),
-        cc.delayTime(1.0),
-        cc.callFunc(() => {
-          instructionalArrowSprite.destroy(CONFIG.FADE_MEDIUM_DURATION);
-        }),
-      ));
+            this.turbine.startRotating(30.0, 360);
+            this.centerRing.startRotating(30.0, -360);
+          }),
+          cc.moveBy(CONFIG.MOVE_SLOW_DURATION, cc.p(-140, 0)).easing(cc.easeExponentialOut()),
+          cc.delayTime(1.0),
+          cc.callFunc(() => {
+            instructionalArrowSprite.destroy(CONFIG.FADE_MEDIUM_DURATION);
+          }),
+        ),
+      );
       this.innerLayer.addChild(instructionalArrowSprite);
 
       // continue instruction label
-      this.continueNode = new cc.LabelTTF(i18next.t('common.press_anywhere_to_continue_label').toUpperCase(), RSX.font_light.name, 18, cc.size(1200, 24), cc.TEXT_ALIGNMENT_CENTER);
+      this.continueNode = new cc.LabelTTF(
+        i18next.t('common.press_anywhere_to_continue_label').toUpperCase(),
+        RSX.font_light.name,
+        18,
+        cc.size(1200, 24),
+        cc.TEXT_ALIGNMENT_CENTER,
+      );
       this.continueNode.setAnchorPoint(cc.p(0.5, 0));
       this.continueNode.setLocalZOrder(999);
       this.continueNode.setOpacity(0.0);
@@ -208,7 +219,9 @@ const BoosterPackOpeningLayer = FXCompositeLayer.extend({
   },
 
   getRequiredResources() {
-    return FXCompositeLayer.prototype.getRequiredResources.call(this).concat(PKGS.getPkgForIdentifier('booster_opening'));
+    return FXCompositeLayer.prototype.getRequiredResources
+      .call(this)
+      .concat(PKGS.getPkgForIdentifier('booster_opening'));
   },
 
   /* region LAYOUT */
@@ -340,7 +353,10 @@ const BoosterPackOpeningLayer = FXCompositeLayer.extend({
       // find card under mouse
       for (var i = 0; i < this.cardNodes.length; i++) {
         const cardNode = this.cardNodes[i];
-        if (!cardNode.getIsAnimationInProgress() && UtilsEngine.getNodeUnderMouse(cardNode, location.x, location.y)) {
+        if (
+          !cardNode.getIsAnimationInProgress() &&
+          UtilsEngine.getNodeUnderMouse(cardNode, location.x, location.y)
+        ) {
           mouseOverCard = cardNode;
           break;
         }
@@ -348,7 +364,10 @@ const BoosterPackOpeningLayer = FXCompositeLayer.extend({
       // find core gem under mouse
       for (var i = 0; i < this.coreGemNodes.length; i++) {
         const gemNode = this.coreGemNodes[i];
-        if (UtilsEngine.getNodeUnderMouse(gemNode.gemSprite, location.x, location.y) && gemNode.isRunning()) {
+        if (
+          UtilsEngine.getNodeUnderMouse(gemNode.gemSprite, location.x, location.y) &&
+          gemNode.isRunning()
+        ) {
           mouseOverGem = gemNode;
           break;
         }
@@ -409,7 +428,9 @@ const BoosterPackOpeningLayer = FXCompositeLayer.extend({
       if (this._cardCountsById != null) {
         cardCount = this._cardCountsById[cardId] || 1;
       }
-      this._whenMostRecentShowCardReveal = PromiseUtils.inspectable(this._showCardReveal(cardId, index, this._mouseOverGem.getPosition(), cardCount));
+      this._whenMostRecentShowCardReveal = PromiseUtils.inspectable(
+        this._showCardReveal(cardId, index, this._mouseOverGem.getPosition(), cardCount),
+      );
 
       // destroy gem
       // this.coreGemNodes = _.without(this.coreGemNodes,this._mouseOverGem)
@@ -417,7 +438,11 @@ const BoosterPackOpeningLayer = FXCompositeLayer.extend({
       this._mouseOverGem = null;
     }
 
-    if (!this._unlocked && this.coreGemNodes.length > 0 && this.coreGemNodes.length == this.cardNodes.length) {
+    if (
+      !this._unlocked &&
+      this.coreGemNodes.length > 0 &&
+      this.coreGemNodes.length == this.cardNodes.length
+    ) {
       if (!this._whenMostRecentShowCardReveal) {
         this._whenMostRecentShowCardReveal = PromiseUtils.inspectable(Promise.resolve());
       }
@@ -427,7 +452,8 @@ const BoosterPackOpeningLayer = FXCompositeLayer.extend({
         this.continueNode.setOpacity(0);
         this.continueNode.runAction(cc.fadeIn(0.2));
       });
-    } else if (!this._unlocking && this._unlocked && this.coreGemNodes.length > 0) { // reset when pointer clicked anywhere
+    } else if (!this._unlocking && this._unlocked && this.coreGemNodes.length > 0) {
+      // reset when pointer clicked anywhere
       if (this._whenMostRecentShowCardReveal && !this._whenMostRecentShowCardReveal.isFulfilled()) {
         return;
       }
@@ -461,30 +487,46 @@ const BoosterPackOpeningLayer = FXCompositeLayer.extend({
       this.centerRing.startRotating(5.0, -360);
 
       // bloom out
-      this.runAction(cc.actionTween(0.2, TweenTypes.BLOOM_INTENSITY, 0.0, this._bloomIntensity + 1.0).easing(cc.easeExponentialOut()));
+      this.runAction(
+        cc
+          .actionTween(0.2, TweenTypes.BLOOM_INTENSITY, 0.0, this._bloomIntensity + 1.0)
+          .easing(cc.easeExponentialOut()),
+      );
 
       // unlock plates
-      this.topRedPlateBottom.runAction(cc.sequence(
-        cc.delayTime(0.1),
-        cc.spawn(
-          cc.fadeIn(0.1),
-          cc.moveTo(0.5, cc.p(winCenterPosition.x, winCenterPosition.y - 50)).easing(cc.easeExponentialOut()),
+      this.topRedPlateBottom.runAction(
+        cc.sequence(
+          cc.delayTime(0.1),
+          cc.spawn(
+            cc.fadeIn(0.1),
+            cc
+              .moveTo(0.5, cc.p(winCenterPosition.x, winCenterPosition.y - 50))
+              .easing(cc.easeExponentialOut()),
+          ),
         ),
-      ));
-      this.topRedPlateLeft.runAction(cc.sequence(
-        cc.delayTime(0.2),
-        cc.spawn(
-          cc.fadeIn(0.1),
-          cc.moveTo(0.5, cc.p(winCenterPosition.x - 50, winCenterPosition.y + 50)).easing(cc.easeExponentialOut()),
+      );
+      this.topRedPlateLeft.runAction(
+        cc.sequence(
+          cc.delayTime(0.2),
+          cc.spawn(
+            cc.fadeIn(0.1),
+            cc
+              .moveTo(0.5, cc.p(winCenterPosition.x - 50, winCenterPosition.y + 50))
+              .easing(cc.easeExponentialOut()),
+          ),
         ),
-      ));
-      this.topRedPlateRight.runAction(cc.sequence(
-        cc.delayTime(0.3),
-        cc.spawn(
-          cc.fadeIn(0.1),
-          cc.moveTo(0.5, cc.p(winCenterPosition.x + 50, winCenterPosition.y + 50)).easing(cc.easeExponentialOut()),
+      );
+      this.topRedPlateRight.runAction(
+        cc.sequence(
+          cc.delayTime(0.3),
+          cc.spawn(
+            cc.fadeIn(0.1),
+            cc
+              .moveTo(0.5, cc.p(winCenterPosition.x + 50, winCenterPosition.y + 50))
+              .easing(cc.easeExponentialOut()),
+          ),
         ),
-      ));
+      );
     });
   },
 
@@ -517,7 +559,9 @@ const BoosterPackOpeningLayer = FXCompositeLayer.extend({
       fadeAction2.setTag(CONFIG.FADE_TAG);
       this.blurredOverlay.runAction(fadeAction2);
 
-      this.runAction(cc.actionTween(fadeDuration, TweenTypes.BLOOM_INTENSITY, this._bloomIntensity, 0.0));
+      this.runAction(
+        cc.actionTween(fadeDuration, TweenTypes.BLOOM_INTENSITY, this._bloomIntensity, 0.0),
+      );
     });
   },
 
@@ -565,7 +609,9 @@ const BoosterPackOpeningLayer = FXCompositeLayer.extend({
         this.lines_particles.setStartRadiusVar(50);
         this.innerLayer.addChild(this.lines_particles);
 
-        this.inward_particles = BaseParticleSystem.create(RSX.ptcl_spiral_assemble_for_booster.plist);
+        this.inward_particles = BaseParticleSystem.create(
+          RSX.ptcl_spiral_assemble_for_booster.plist,
+        );
         this.inward_particles.setAnchorPoint(cc.p(0.5, 0.5));
         this.inward_particles.setPosition(0, 0);
         this.innerLayer.addChild(this.inward_particles);
@@ -579,40 +625,43 @@ const BoosterPackOpeningLayer = FXCompositeLayer.extend({
         // lock plates
         // this.topRedPlateBottom.setPosition(cc.p(winCenterPosition.x, winCenterPosition.y - 100))
         // this.topRedPlateBottom.setOpacity(0)
-        this.topRedPlateBottom.runAction(cc.sequence(
-          cc.delayTime(0.1),
-          cc.spawn(
-            cc.fadeIn(0.1),
-            cc.moveTo(0.5, winCenterPosition).easing(cc.easeExponentialOut()),
+        this.topRedPlateBottom.runAction(
+          cc.sequence(
+            cc.delayTime(0.1),
+            cc.spawn(
+              cc.fadeIn(0.1),
+              cc.moveTo(0.5, winCenterPosition).easing(cc.easeExponentialOut()),
+            ),
           ),
-        ));
+        );
         // this.topRedPlateLeft.setPosition(cc.p(winCenterPosition.x - 100, winCenterPosition.y + 100))
         // this.topRedPlateLeft.setOpacity(0)
-        this.topRedPlateLeft.runAction(cc.sequence(
-          cc.delayTime(0.2),
-          cc.spawn(
-            cc.fadeIn(0.1),
-            cc.moveTo(0.5, winCenterPosition).easing(cc.easeExponentialOut()),
+        this.topRedPlateLeft.runAction(
+          cc.sequence(
+            cc.delayTime(0.2),
+            cc.spawn(
+              cc.fadeIn(0.1),
+              cc.moveTo(0.5, winCenterPosition).easing(cc.easeExponentialOut()),
+            ),
           ),
-        ));
+        );
         // this.topRedPlateBottom.setOpacity(0)
         // this.topRedPlateBottom.setPosition(cc.p(winCenterPosition.x + 100, winCenterPosition.y + 100))
-        this.topRedPlateRight.runAction(cc.sequence(
-          cc.delayTime(0.3),
-          cc.spawn(
-            cc.fadeIn(0.1),
-            cc.moveTo(0.5, winCenterPosition).easing(cc.easeExponentialOut()),
+        this.topRedPlateRight.runAction(
+          cc.sequence(
+            cc.delayTime(0.3),
+            cc.spawn(
+              cc.fadeIn(0.1),
+              cc.moveTo(0.5, winCenterPosition).easing(cc.easeExponentialOut()),
+            ),
           ),
-        ));
+        );
 
         // animate global tone curve using scene
         this.getScene().runAction(ToneCurve.create(fadeDuration, 0.0, 1.0));
 
         // delay for fade duration and then resolve
-        this.runAction(cc.sequence(
-          cc.delayTime(fadeDuration),
-          cc.callFunc(resolve),
-        ));
+        this.runAction(cc.sequence(cc.delayTime(fadeDuration), cc.callFunc(resolve)));
       });
     });
   },
@@ -676,78 +725,85 @@ const BoosterPackOpeningLayer = FXCompositeLayer.extend({
         flare.runAction(cc.scaleTo(0.8, 8.0));
 
         // bloom down to baseline
-        this.runAction(cc.actionTween(0.3, TweenTypes.BLOOM_INTENSITY, this._bloomIntensity + 1.0, this._bloomIntensity).easing(cc.easeExponentialOut()));
+        this.runAction(
+          cc
+            .actionTween(
+              0.3,
+              TweenTypes.BLOOM_INTENSITY,
+              this._bloomIntensity + 1.0,
+              this._bloomIntensity,
+            )
+            .easing(cc.easeExponentialOut()),
+        );
 
         // play explode sfx
         audio_engine.current().play_effect(RSX.sfx_ui_booster_packexplode.audio);
 
         // extend flare and continue sequence
-        flare.runAction(cc.sequence(
-          cc.actionTween(0.8, 'armLength', 0.0, 1.0),
-          cc.callFunc(() => {
-            this.turbine.stopRotating();
-            this.centerRing.stopRotating();
+        flare.runAction(
+          cc.sequence(
+            cc.actionTween(0.8, 'armLength', 0.0, 1.0),
+            cc.callFunc(() => {
+              this.turbine.stopRotating();
+              this.centerRing.stopRotating();
 
-            this.getFXLayer().runAction(cc.sequence(
-              Shake.create(0.5, 5.0, cc.p(0, 0)),
-            ));
+              this.getFXLayer().runAction(cc.sequence(Shake.create(0.5, 5.0, cc.p(0, 0))));
 
-            this.vignette.stopActionByTag(CONFIG.FADE_TAG);
-            const fadeAction = cc.sequence(
-              cc.fadeTo(0.2, 100),
-              cc.fadeTo(0.5, 200),
-            );
-            fadeAction.setTag(CONFIG.FADE_TAG);
-            this.vignette.runAction(fadeAction);
+              this.vignette.stopActionByTag(CONFIG.FADE_TAG);
+              const fadeAction = cc.sequence(cc.fadeTo(0.2, 100), cc.fadeTo(0.5, 200));
+              fadeAction.setTag(CONFIG.FADE_TAG);
+              this.vignette.runAction(fadeAction);
 
-            this.blurredOverlay.stopActionByTag(CONFIG.FADE_TAG);
-            const fadeAction2 = cc.sequence(
-              cc.delayTime(0.7),
-              cc.fadeIn(0.5),
-            );
-            fadeAction2.setTag(CONFIG.FADE_TAG);
-            this.blurredOverlay.runAction(fadeAction2);
+              this.blurredOverlay.stopActionByTag(CONFIG.FADE_TAG);
+              const fadeAction2 = cc.sequence(cc.delayTime(0.7), cc.fadeIn(0.5));
+              fadeAction2.setTag(CONFIG.FADE_TAG);
+              this.blurredOverlay.runAction(fadeAction2);
 
-            this.lines_particles.destroy();
-            this.inward_particles.destroy();
+              this.lines_particles.destroy();
+              this.inward_particles.destroy();
 
-            // animate global tone curve using scene
-            this.getScene().runAction(ToneCurve.create(0.2, 1.0, 0.0));
+              // animate global tone curve using scene
+              this.getScene().runAction(ToneCurve.create(0.2, 1.0, 0.0));
 
-            fireRing.setVisible(true);
-            fireRing.runAction(cc.sequence(
-              cc.EaseExponentialOut.create(cc.actionTween(3.0, 'phase', 1.0, -0.25)),
-              cc.callFunc(() => {
-                fireRing.destroy();
-              }),
-            ));
+              fireRing.setVisible(true);
+              fireRing.runAction(
+                cc.sequence(
+                  cc.EaseExponentialOut.create(cc.actionTween(3.0, 'phase', 1.0, -0.25)),
+                  cc.callFunc(() => {
+                    fireRing.destroy();
+                  }),
+                ),
+              );
 
-            this.energyBallParticles.stopSystem();
-            this.energyBall.runAction(cc.fadeOut(0.1));
-            energyBall2.destroy();
+              this.energyBallParticles.stopSystem();
+              this.energyBall.runAction(cc.fadeOut(0.1));
+              energyBall2.destroy();
 
-            const explosionParticles = cc.ParticleSystem.create(RSX.explosion.plist);
-            explosionParticles.setAnchorPoint(cc.p(0.5, 0.5));
-            this.innerLayer.addChild(explosionParticles);
+              const explosionParticles = cc.ParticleSystem.create(RSX.explosion.plist);
+              explosionParticles.setAnchorPoint(cc.p(0.5, 0.5));
+              this.innerLayer.addChild(explosionParticles);
 
-            // reveal each card in the pack
-            const unlockCardPromises = [];
-            for (let i = 0; i < cardIds.length; i++) {
-              unlockCardPromises.push(this._showCardMoveAndReveal(cardIds[i], i));
-            }
+              // reveal each card in the pack
+              const unlockCardPromises = [];
+              for (let i = 0; i < cardIds.length; i++) {
+                unlockCardPromises.push(this._showCardMoveAndReveal(cardIds[i], i));
+              }
 
-            // when all cards revealed
-            Promise.all(unlockCardPromises).then(() => {
-              this._unlocking = false;
-              this._opened = true;
-              resolve();
-            }).catch((error) => {
-              console.error(error);
-              throw error;
-            });
-          }),
-          cc.fadeOut(0.1),
-        ));
+              // when all cards revealed
+              Promise.all(unlockCardPromises)
+                .then(() => {
+                  this._unlocking = false;
+                  this._opened = true;
+                  resolve();
+                })
+                .catch((error) => {
+                  console.error(error);
+                  throw error;
+                });
+            }),
+            cc.fadeOut(0.1),
+          ),
+        );
       });
     });
 
@@ -776,10 +832,13 @@ const BoosterPackOpeningLayer = FXCompositeLayer.extend({
       particles.setAnchorPoint(cc.p(0.5, 0.5));
       this.innerLayer.addChild(particles);
 
-      const angle = index * Math.PI / (this._cardCount / 2.0);
-      const sourceScreenPosition = cc.p(this.radius * Math.cos(angle), this.radius * Math.sin(angle));
+      const angle = (index * Math.PI) / (this._cardCount / 2.0);
+      const sourceScreenPosition = cc.p(
+        this.radius * Math.cos(angle),
+        this.radius * Math.sin(angle),
+      );
       const maxDuration = 1.5;
-      const duration = maxDuration / 2 + maxDuration / 2 * Math.random();
+      const duration = maxDuration / 2 + (maxDuration / 2) * Math.random();
       const delayScaleDown = maxDuration - duration - 1.0;
 
       // core gem will be initialized during animation
@@ -799,77 +858,80 @@ const BoosterPackOpeningLayer = FXCompositeLayer.extend({
       const cardContentSize = cc.size(226, 296);
       const cardLayout = this._getLayout();
       const targetScreenPosition = cc.p(
-        cardLayout.positionsByIndex[index].x * cardContentSize.width + cardLayout.spacingByIndex[index].x,
-        cardLayout.positionsByIndex[index].y * cardContentSize.height + cardLayout.spacingByIndex[index].y,
+        cardLayout.positionsByIndex[index].x * cardContentSize.width +
+          cardLayout.spacingByIndex[index].x,
+        cardLayout.positionsByIndex[index].y * cardContentSize.height +
+          cardLayout.spacingByIndex[index].y,
       );
 
       // move particles
       particles.runAction(cc.moveTo(duration, sourceScreenPosition).easing(cc.easeBackOut())); // cc.easeExponentialOut()
 
       // move disc
-      cardDisc.runAction(cc.sequence(
-        cc.moveTo(duration, sourceScreenPosition).easing(cc.easeBackOut()),
-        // cc.delayTime(delayScaleDown),
-        cc.callFunc(function () {
-          this.stopSystem();
-        }),
-        cc.scaleTo(0.4, 0.25).easing(cc.easeExponentialOut()),
-        cc.callFunc(() => {
-          // zodiac symbol that animates from a single point out
-          const zodiac = new ZodiacNode({
-            width: 80,
-            height: 80,
-            lineWidth: 1,
-            duration: 1.0,
-          });
-          zodiac.setAnchorPoint(cc.p(0.5, 0.5));
-          zodiac.setPosition(cc.p(
-            cardDisc.getPosition().x - 40,
-            cardDisc.getPosition().y - 40,
-          ));
-          this.innerLayer.addChild(zodiac);
+      cardDisc.runAction(
+        cc.sequence(
+          cc.moveTo(duration, sourceScreenPosition).easing(cc.easeBackOut()),
+          // cc.delayTime(delayScaleDown),
+          cc.callFunc(function () {
+            this.stopSystem();
+          }),
+          cc.scaleTo(0.4, 0.25).easing(cc.easeExponentialOut()),
+          cc.callFunc(() => {
+            // zodiac symbol that animates from a single point out
+            const zodiac = new ZodiacNode({
+              width: 80,
+              height: 80,
+              lineWidth: 1,
+              duration: 1.0,
+            });
+            zodiac.setAnchorPoint(cc.p(0.5, 0.5));
+            zodiac.setPosition(cc.p(cardDisc.getPosition().x - 40, cardDisc.getPosition().y - 40));
+            this.innerLayer.addChild(zodiac);
 
-          // energy particles
-          const particles = cc.ParticleSystem.create(RSX.zodiac_appear_001.plist);
-          particles.setAnchorPoint(cc.p(0.5, 0.5));
-          particles.setPosition(cardDisc.getPosition());
-          this.innerLayer.addChild(particles);
+            // energy particles
+            const particles = cc.ParticleSystem.create(RSX.zodiac_appear_001.plist);
+            particles.setAnchorPoint(cc.p(0.5, 0.5));
+            particles.setPosition(cardDisc.getPosition());
+            this.innerLayer.addChild(particles);
 
-          // zodiac fragment particles
-          const particles2 = cc.ParticleSystem.create(RSX.zodiac_appear_002.plist);
-          particles2.setAnchorPoint(cc.p(0.5, 0.5));
-          particles2.setPosition(cardDisc.getPosition());
-          this.innerLayer.addChild(particles2);
+            // zodiac fragment particles
+            const particles2 = cc.ParticleSystem.create(RSX.zodiac_appear_002.plist);
+            particles2.setAnchorPoint(cc.p(0.5, 0.5));
+            particles2.setPosition(cardDisc.getPosition());
+            this.innerLayer.addChild(particles2);
 
-          cardDisc.zodiac = zodiac;
-        }),
-        cc.fadeOut(0.1),
-        cc.callFunc(() => {
-          // construct core gem
-          coreGem = new CoreGemNode(cardId);
-          coreGem.fadeOutReticle(0.0);
-          coreGem.setVisible(true);
-          coreGem.setPosition(cardDisc.getPosition());
-          this.innerLayer.addChild(coreGem);
-          coreGem.transitionIn();
-          this.coreGemNodes.push(coreGem);
-          // destroy card zodiac
-          cardDisc.zodiac.destroy();
-          cardDisc.setVisible(false);
-        }),
-        cc.delayTime((index + 1) * 0.1),
-        cc.callFunc(() => {
-          const moveToFinalAction = cc.moveTo(0.4, targetScreenPosition).easing(cc.easeExponentialInOut());
-          coreGem.runAction(moveToFinalAction);
-        }),
-        cc.delayTime(0.4),
-        cc.callFunc(() => {
-          coreGem.fadeInReticle(0.5);
-          // destroy card disc
-          cardDisc.destroy();
-          resolve();
-        }),
-      ));
+            cardDisc.zodiac = zodiac;
+          }),
+          cc.fadeOut(0.1),
+          cc.callFunc(() => {
+            // construct core gem
+            coreGem = new CoreGemNode(cardId);
+            coreGem.fadeOutReticle(0.0);
+            coreGem.setVisible(true);
+            coreGem.setPosition(cardDisc.getPosition());
+            this.innerLayer.addChild(coreGem);
+            coreGem.transitionIn();
+            this.coreGemNodes.push(coreGem);
+            // destroy card zodiac
+            cardDisc.zodiac.destroy();
+            cardDisc.setVisible(false);
+          }),
+          cc.delayTime((index + 1) * 0.1),
+          cc.callFunc(() => {
+            const moveToFinalAction = cc
+              .moveTo(0.4, targetScreenPosition)
+              .easing(cc.easeExponentialInOut());
+            coreGem.runAction(moveToFinalAction);
+          }),
+          cc.delayTime(0.4),
+          cc.callFunc(() => {
+            coreGem.fadeInReticle(0.5);
+            // destroy card disc
+            cardDisc.destroy();
+            resolve();
+          }),
+        ),
+      );
     });
   },
 
@@ -881,7 +943,9 @@ const BoosterPackOpeningLayer = FXCompositeLayer.extend({
    * @returns {Promise}
    */
   _showCardReveal(cardId, index, sourceScreenPosition, cardCount) {
-    if (cardCount == null) { cardCount = 1; }
+    if (cardCount == null) {
+      cardCount = 1;
+    }
 
     // create empty card
     const cardNode = CardNode.create();
@@ -897,17 +961,18 @@ const BoosterPackOpeningLayer = FXCompositeLayer.extend({
     // var moveDelay = CONFIG.FADE_FAST_DURATION + (2.0 - (index/2.0));
 
     // play reveal sound
-    audio_engine.current().play_effect(RSX[`sfx_loot_crate_card_reward_reveal_${index}`].audio, false);
+    audio_engine
+      .current()
+      .play_effect(RSX[`sfx_loot_crate_card_reward_reveal_${index}`].audio, false);
 
     // show card reveal
     const sdkCard = SDK.CardFactory.cardForIdentifier(cardId, SDK.GameSession.getInstance());
     const showRevealPromise = cardNode.showReveal(sdkCard, sourceScreenPosition, null, 0.0);
 
     if (cardCount > 1) {
-      showRevealPromise
-        .then(() => {
-          cardNode.showStack(CONFIG.ANIMATE_FAST_DURATION, cardCount - 1, null, cc.p(0, -17), 10);
-        });
+      showRevealPromise.then(() => {
+        cardNode.showStack(CONFIG.ANIMATE_FAST_DURATION, cardCount - 1, null, cc.p(0, -17), 10);
+      });
     }
 
     return showRevealPromise;
@@ -930,7 +995,6 @@ const BoosterPackOpeningLayer = FXCompositeLayer.extend({
       fx.setBloomIntensity(value);
     }
   },
-
 });
 
 BoosterPackOpeningLayer.create = function (layer) {

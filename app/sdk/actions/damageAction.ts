@@ -33,7 +33,7 @@ class DamageAction extends Action {
 
   getTotalDamageAmount() {
     let totalDamageAmount;
-    if ((this._private.totalDamageAmount == null)) {
+    if (this._private.totalDamageAmount == null) {
       // apply 3 levels of damage change in order, but never allow damage amounts to go negative (that would be a heal)
       totalDamageAmount = Math.max(this.getDamageAmount() + this.getDamageChange(), 0); // apply initial flat damage change
       totalDamageAmount = Math.max(totalDamageAmount * this.getDamageMultiplier(), 0); // apply damage multiplier
@@ -50,7 +50,7 @@ class DamageAction extends Action {
 
   setDamageAmount(damageAmount) {
     this.damageAmount = Math.max(damageAmount, 0);
-    return this._private.totalDamageAmount = null;
+    return (this._private.totalDamageAmount = null);
   }
 
   getDamageChange() {
@@ -59,7 +59,7 @@ class DamageAction extends Action {
 
   setDamageChange(damageChange) {
     this._private.damageChange = damageChange;
-    return this._private.totalDamageAmount = null;
+    return (this._private.totalDamageAmount = null);
   }
 
   getFinalDamageChange() {
@@ -68,7 +68,7 @@ class DamageAction extends Action {
 
   setFinalDamageChange(damageChange) {
     this._private.finalDamageChange = damageChange;
-    return this._private.totalDamageAmount = null;
+    return (this._private.totalDamageAmount = null);
   }
 
   getDamageMultiplier() {
@@ -77,7 +77,7 @@ class DamageAction extends Action {
 
   setDamageMultiplier(damageMultiplier) {
     this._private.damageMultiplier = damageMultiplier;
-    return this._private.totalDamageAmount = null;
+    return (this._private.totalDamageAmount = null);
   }
 
   // convenience setters that take into account previous change values
@@ -108,14 +108,14 @@ class DamageAction extends Action {
         // Logger.module("SDK").debug "[G:#{@.getGameSession().gameId}]", "#{@getType()}::execute - damage #{dmg} from #{source?.getLogName()} to #{target.getLogName()}. HP: #{target.getHP()} / #{target.getMaxHP()}".red
 
         // record total damage dealt so far by this player
-        if ((source != null) && !source.isOwnedByGameSession()) {
+        if (source != null && !source.isOwnedByGameSession()) {
           source.getOwner().totalDamageDealt += dmg;
         }
 
         if (target.getIsGeneral()) {
           // Doesn't count damage to own general
-          if ((source != null) && (source.getOwnerId() !== target.getOwnerId())) {
-            __guard__(source.getOwner(), (x) => x.totalDamageDealtToGeneral += dmg);
+          if (source != null && source.getOwnerId() !== target.getOwnerId()) {
+            __guard__(source.getOwner(), (x) => (x.totalDamageDealtToGeneral += dmg));
           }
         }
       }
@@ -133,5 +133,5 @@ DamageAction.prototype.damageAmount = 0;
 module.exports = DamageAction;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

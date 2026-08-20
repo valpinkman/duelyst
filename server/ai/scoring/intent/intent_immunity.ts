@@ -42,7 +42,10 @@ const getScoreForImmunityFromCardWithIntentToCard = function (card, intent, targ
 const ScoreForIntentImmunity = function (card, targetPosition, cardIntents) {
   let score = 0;
   const cardId = card.getBaseCardId();
-  const validIntents = cardIntents != null ? CardIntent.filterIntentsByIntentType(cardIntents, CardIntentType.Immunity) : CardIntent.getIntentsByIntentType(cardId, CardIntentType.Immunity);
+  const validIntents =
+    cardIntents != null
+      ? CardIntent.filterIntentsByIntentType(cardIntents, CardIntentType.Immunity)
+      : CardIntent.getIntentsByIntentType(cardId, CardIntentType.Immunity);
 
   _.each(validIntents, (intent) => {
     const cards = CardIntent.getCardsTargetedByCardWithIntent(card, intent, targetPosition);

@@ -14,8 +14,11 @@ class SpellWraithstorm extends SpellKillTargetSpawnEntity {
     const board = this.getGameSession().getBoard();
     const myGeneral = this.getGameSession().getGeneralForPlayerId(this.getOwnerId());
     const filteredPositions = [];
-    for (var unit of Array.from<any>(board.getEntitiesAroundEntity(myGeneral, CardType.Unit, this.radius))) {
-      if (!(__guard__(board.getUnitAtPosition(unit.getPosition()), (x) => x.getIsGeneral()))) { // don't transform generals
+    for (var unit of Array.from<any>(
+      board.getEntitiesAroundEntity(myGeneral, CardType.Unit, this.radius),
+    )) {
+      if (!__guard__(board.getUnitAtPosition(unit.getPosition()), (x) => x.getIsGeneral())) {
+        // don't transform generals
         filteredPositions.push(unit.getPosition());
       }
     }
@@ -28,5 +31,5 @@ SpellWraithstorm.prototype.radius = 1;
 module.exports = SpellWraithstorm;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

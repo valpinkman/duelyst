@@ -17,8 +17,17 @@ class ModifierCannotBeRemovedFromHand extends ModifierCannot {
   onValidateAction(actionEvent) {
     const a = actionEvent.action;
 
-    if (a instanceof RemoveCardFromHandAction && a.getIsValid() && this.getCard().getIsLocatedInHand()) {
-      if (__guard__(this.getCard().getOwner().getDeck().getCardInHandAtIndex(a.indexOfCardInHand), (x) => x.getIndex()) === this.getCard().getIndex()) {
+    if (
+      a instanceof RemoveCardFromHandAction &&
+      a.getIsValid() &&
+      this.getCard().getIsLocatedInHand()
+    ) {
+      if (
+        __guard__(
+          this.getCard().getOwner().getDeck().getCardInHandAtIndex(a.indexOfCardInHand),
+          (x) => x.getIndex(),
+        ) === this.getCard().getIndex()
+      ) {
         return this.invalidateAction(a, this.getCard().getPosition());
       }
     }
@@ -30,5 +39,5 @@ ModifierCannotBeRemovedFromHand.prototype.activeInHand = true;
 module.exports = ModifierCannotBeRemovedFromHand;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

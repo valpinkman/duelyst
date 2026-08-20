@@ -53,7 +53,7 @@ class WartechGeneralFaction3Achievement extends Achievement {
   }
 
   static rewardUnlockMessage(progressMade) {
-    if ((progressMade == null)) {
+    if (progressMade == null) {
       progressMade = 0;
     }
 
@@ -62,12 +62,16 @@ class WartechGeneralFaction3Achievement extends Achievement {
     return `Win ${progressNeeded} more online matches with Vetruvian to unlock.`;
   }
 }
-WartechGeneralFaction3Achievement.title = i18next.t('achievements.wartech_general_achievement_title', { faction_name: i18next.t('factions.faction_3_abbreviated_name') });
-WartechGeneralFaction3Achievement.description = i18next.t('achievements.wartech_general_achievement_desc', { faction_name: i18next.t('factions.faction_3_abbreviated_name') });
+WartechGeneralFaction3Achievement.title = i18next.t(
+  'achievements.wartech_general_achievement_title',
+  { faction_name: i18next.t('factions.faction_3_abbreviated_name') },
+);
+WartechGeneralFaction3Achievement.description = i18next.t(
+  'achievements.wartech_general_achievement_desc',
+  { faction_name: i18next.t('factions.faction_3_abbreviated_name') },
+);
 WartechGeneralFaction3Achievement.rewards = {
-  cards: [
-    Cards.Faction3.ThirdGeneral,
-  ],
+  cards: [Cards.Faction3.ThirdGeneral],
 };
 
 module.exports = WartechGeneralFaction3Achievement;

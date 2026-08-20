@@ -31,7 +31,6 @@ var Template = require('./templates/premium_purchase_dialog.hbs');
 // TODO: based off ConfirmPurchaseDialogView
 
 var PremiumPurchaseDialogView = Backbone.Marionette.LayoutView.extend({
-
   // id: "shop-premium-modal",
   className: 'modal prompt-modal shop-premium-modal',
   template: Template,
@@ -109,8 +108,7 @@ var PremiumPurchaseDialogView = Backbone.Marionette.LayoutView.extend({
 
   /* region INITIALIZE */
 
-  initialize: function (opts) {
-  },
+  initialize: function (opts) {},
 
   /* endregion INITIALIZE */
 
@@ -123,18 +121,36 @@ var PremiumPurchaseDialogView = Backbone.Marionette.LayoutView.extend({
     this._showCurrentPurchaseType();
     this.onWalletChange();
     if (this._animationSpriteData != null) {
-      this._animationGLData = UtilsUI.showCocosSprite(this.ui.product_animation_sprite, this._animationGLData, this._animationSpriteData, null, true, null, this._animationStartSpriteData);
+      this._animationGLData = UtilsUI.showCocosSprite(
+        this.ui.product_animation_sprite,
+        this._animationGLData,
+        this._animationSpriteData,
+        null,
+        true,
+        null,
+        this._animationStartSpriteData,
+      );
     }
   },
 
   onShow: function () {
     // play sfx
-    audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_tab_in.audio, CONFIG.SHOW_SFX_PRIORITY);
+    audio_engine
+      .current()
+      .play_effect_for_interaction(RSX.sfx_ui_tab_in.audio, CONFIG.SHOW_SFX_PRIORITY);
 
     // listen to events
     this.listenTo(InventoryManager.getInstance().walletModel, 'change', this.onWalletChange);
-    this.listenToOnce(NavigationManager.getInstance(), EVENTS.user_attempt_confirm, this.onConfirmPurchase.bind(this));
-    this.listenToOnce(NavigationManager.getInstance(), EVENTS.user_attempt_cancel, this.onCancelConfirmPurchase.bind(this));
+    this.listenToOnce(
+      NavigationManager.getInstance(),
+      EVENTS.user_attempt_confirm,
+      this.onConfirmPurchase.bind(this),
+    );
+    this.listenToOnce(
+      NavigationManager.getInstance(),
+      EVENTS.user_attempt_cancel,
+      this.onCancelConfirmPurchase.bind(this),
+    );
 
     // show product
     if (this.productData != null) {
@@ -142,12 +158,19 @@ var PremiumPurchaseDialogView = Backbone.Marionette.LayoutView.extend({
     }
 
     this.$el.addClass('loading');
-    ShopManager.getInstance()._retrievePremiumProductsData()
-      .then(function (productDatas) {
-      // TODO: handle case of this view getting destroyed while products load
-        this.$el.removeClass('loading');
-        this.productCollectionRegion.show(new ShopPremiumPacksCollectionView({ model: new Backbone.Model({ packProducts: productDatas }) }));
-      }.bind(this));
+    ShopManager.getInstance()
+      ._retrievePremiumProductsData()
+      .then(
+        function (productDatas) {
+          // TODO: handle case of this view getting destroyed while products load
+          this.$el.removeClass('loading');
+          this.productCollectionRegion.show(
+            new ShopPremiumPacksCollectionView({
+              model: new Backbone.Model({ packProducts: productDatas }),
+            }),
+          );
+        }.bind(this),
+      );
     // this.productCollectionRegion.show(new ShopPremiumPacksCollectionView({model: new Backbone.Model()}));
   },
 
@@ -205,18 +228,27 @@ var PremiumPurchaseDialogView = Backbone.Marionette.LayoutView.extend({
     var coverImageResource = RSX[this.productData.cover_image_resource_name];
     var coverImageUrl;
     if (coverImageResource != null) {
-      coverImageUrl = coverImageResource.is16Bit ? coverImageResource.img : RSX.getResourcePathForScale(coverImageResource.img, CONFIG.resourceScaleCSS);
+      coverImageUrl = coverImageResource.is16Bit
+        ? coverImageResource.img
+        : RSX.getResourcePathForScale(coverImageResource.img, CONFIG.resourceScaleCSS);
     } else {
-      coverImageUrl = RSX.getResourcePathForScale(this.productData.cover_image_url, CONFIG.resourceScaleCSS);
+      coverImageUrl = RSX.getResourcePathForScale(
+        this.productData.cover_image_url,
+        CONFIG.resourceScaleCSS,
+      );
     }
 
     // track in analytics
-    Analytics.track('product selected', {
-      category: Analytics.EventCategory.Shop,
-      product_id: productSku,
-    }, {
-      labelKey: 'product_id',
-    });
+    Analytics.track(
+      'product selected',
+      {
+        category: Analytics.EventCategory.Shop,
+        product_id: productSku,
+      },
+      {
+        labelKey: 'product_id',
+      },
+    );
 
     this.ui.product_details_container.addClass(productCategoryId + ' ' + productSku);
     this.ui.product_name.text(productName);
@@ -250,9 +282,14 @@ var PremiumPurchaseDialogView = Backbone.Marionette.LayoutView.extend({
     var iconImageResource = RSX[this.productData.icon_image_resource_name];
     var iconImageUrl;
     if (iconImageResource != null) {
-      iconImageUrl = iconImageResource.is16Bit ? iconImageResource.img : RSX.getResourcePathForScale(iconImageResource.img, CONFIG.resourceScaleCSS);
+      iconImageUrl = iconImageResource.is16Bit
+        ? iconImageResource.img
+        : RSX.getResourcePathForScale(iconImageResource.img, CONFIG.resourceScaleCSS);
     } else {
-      iconImageUrl = RSX.getResourcePathForScale(this.productData.icon_image_url, CONFIG.resourceScaleCSS);
+      iconImageUrl = RSX.getResourcePathForScale(
+        this.productData.icon_image_url,
+        CONFIG.resourceScaleCSS,
+      );
     }
     this.ui.product_animation.hide();
     this.ui.product_icon.show();
@@ -308,10 +345,26 @@ var PremiumPurchaseDialogView = Backbone.Marionette.LayoutView.extend({
       } else if (Math.floor(quantity) !== quantity) {
         quantity = Math.floor(quantity);
         this._showInvalidQuantity('Quantity must be an integer. e.g. ' + quantity);
-      } else if (this.productData != null && this.productData.sku === 'BLOODBORN_BOOSTER1_GOLD' && quantity > inventoryManager.getRemainingBloodbornPacks()) {
-        this._showInvalidQuantity('You only need ' + inventoryManager.getRemainingBloodbornPacks() + ' more orbs to complete the Bloodbound set.');
-      } else if (this.productData != null && this.productData.sku === 'ANCIENTBONDS_BOOSTER1_GOLD' && quantity > inventoryManager.getRemainingAncientBondsPacks()) {
-        this._showInvalidQuantity('You only need ' + inventoryManager.getRemainingAncientBondsPacks() + ' more orbs to complete the Ancient Bonds set.');
+      } else if (
+        this.productData != null &&
+        this.productData.sku === 'BLOODBORN_BOOSTER1_GOLD' &&
+        quantity > inventoryManager.getRemainingBloodbornPacks()
+      ) {
+        this._showInvalidQuantity(
+          'You only need ' +
+            inventoryManager.getRemainingBloodbornPacks() +
+            ' more orbs to complete the Bloodbound set.',
+        );
+      } else if (
+        this.productData != null &&
+        this.productData.sku === 'ANCIENTBONDS_BOOSTER1_GOLD' &&
+        quantity > inventoryManager.getRemainingAncientBondsPacks()
+      ) {
+        this._showInvalidQuantity(
+          'You only need ' +
+            inventoryManager.getRemainingAncientBondsPacks() +
+            ' more orbs to complete the Ancient Bonds set.',
+        );
       } else {
         this._showValidQuantity();
       }
@@ -330,7 +383,10 @@ var PremiumPurchaseDialogView = Backbone.Marionette.LayoutView.extend({
     this._hasValidQuantity = false;
     var tooltipData = this.ui.quantity.data('bs.tooltip');
     if (tooltipData == null || tooltipData.options.title !== helpMessage) {
-      this.ui.quantity.tooltip('destroy').tooltip({ title: helpMessage || 'Invalid input', placement: 'right', trigger: 'manual' }).tooltip('show');
+      this.ui.quantity
+        .tooltip('destroy')
+        .tooltip({ title: helpMessage || 'Invalid input', placement: 'right', trigger: 'manual' })
+        .tooltip('show');
     }
     this._showCanPurchase();
   },
@@ -359,7 +415,10 @@ var PremiumPurchaseDialogView = Backbone.Marionette.LayoutView.extend({
       var gold = productData.gold;
       if (gold != null && !isNaN(gold) && gold > 0) {
         this.ui.product_gold_cost.html('<strong>' + gold + '</strong> GOLD');
-        if (InventoryManager.getInstance().walletModel.get('gold_amount') >= gold * this._quantity) {
+        if (
+          InventoryManager.getInstance().walletModel.get('gold_amount') >=
+          gold * this._quantity
+        ) {
           this._hasEnoughToPurchase = true;
         } else {
           this._hasEnoughToPurchase = false;
@@ -370,7 +429,9 @@ var PremiumPurchaseDialogView = Backbone.Marionette.LayoutView.extend({
       }
 
       // spirit cost
-      var spiritCost = productData.rarity_id ? SDK.RarityFactory.rarityForIdentifier(productData.rarity_id).spiritCostCosmetic : 0;
+      var spiritCost = productData.rarity_id
+        ? SDK.RarityFactory.rarityForIdentifier(productData.rarity_id).spiritCostCosmetic
+        : 0;
       if (spiritCost) {
         this.ui.product_spirit_cost.html(spiritCost + ' SPIRIT');
         this.ui.product_craft_button.removeClass('hide');
@@ -413,19 +474,25 @@ var PremiumPurchaseDialogView = Backbone.Marionette.LayoutView.extend({
   _showCurrentPurchaseType: function () {
     if (this._currentPurchaseType != null) {
       if (this.ui.confirm_purchase_nav instanceof $) {
-        this._$currentPurchaseTypeNavItem = this.ui.confirm_purchase_nav.find('.nav-item[data-purchase-type=\'' + this._currentPurchaseType + '\']');
+        this._$currentPurchaseTypeNavItem = this.ui.confirm_purchase_nav.find(
+          ".nav-item[data-purchase-type='" + this._currentPurchaseType + "']",
+        );
         this._$currentPurchaseTypeNavItem.addClass('active');
       }
 
       if (this.ui.nav_tabs instanceof $) {
-        this._$currentPurchaseTypeTab = this.ui.nav_tabs.find('.nav-tab[data-purchase-type=\'' + this._currentPurchaseType + '\']');
+        this._$currentPurchaseTypeTab = this.ui.nav_tabs.find(
+          ".nav-tab[data-purchase-type='" + this._currentPurchaseType + "']",
+        );
         this._$currentPurchaseTypeTab.removeClass('hide');
       }
     }
   },
 
   onWalletChange: function () {
-    this.ui.card_ending_digits.text(InventoryManager.getInstance().walletModel.get('card_last_four_digits'));
+    this.ui.card_ending_digits.text(
+      InventoryManager.getInstance().walletModel.get('card_last_four_digits'),
+    );
     this._bindProductPrice();
     this.ui.premium_amount.text(InventoryManager.getInstance().getWalletModelPremiumAmount());
   },
@@ -436,14 +503,24 @@ var PremiumPurchaseDialogView = Backbone.Marionette.LayoutView.extend({
 
   onConfirmPurchase: function (e, skipPurchaseLimitCheck) {
     var productData = this.productData;
-    var attemptedPurchaseExceedsPurchaseLimit = productData.purchase_limit > 0 && ShopManager.getInstance().getAttemptedPurchaseCount(productData.sku) > 0;
+    var attemptedPurchaseExceedsPurchaseLimit =
+      productData.purchase_limit > 0 &&
+      ShopManager.getInstance().getAttemptedPurchaseCount(productData.sku) > 0;
 
     var quantity = this._quantity;
     var inventoryManager = InventoryManager.getInstance();
-    if (this.productData != null && this.productData.sku === 'BLOODBORN_BOOSTER1_GOLD' && quantity > inventoryManager.getRemainingBloodbornPacks()) {
+    if (
+      this.productData != null &&
+      this.productData.sku === 'BLOODBORN_BOOSTER1_GOLD' &&
+      quantity > inventoryManager.getRemainingBloodbornPacks()
+    ) {
       // Ignore the confirmation, this is here for when player's press enter even though they have invalid quantity
       return;
-    } else if (this.productData != null && this.productData.sku === 'ANCIENTBONDS_BOOSTER1_GOLD' && quantity > inventoryManager.getRemainingAncientBondsPacks()) {
+    } else if (
+      this.productData != null &&
+      this.productData.sku === 'ANCIENTBONDS_BOOSTER1_GOLD' &&
+      quantity > inventoryManager.getRemainingAncientBondsPacks()
+    ) {
       // Ignore the confirmation, this is here for when player's press enter even though they have invalid quantity
       return;
     }
@@ -480,21 +557,36 @@ var PremiumPurchaseDialogView = Backbone.Marionette.LayoutView.extend({
 
       // product: individual boosters
       if (sku === 'BOOSTER1_GOLD') {
-        purchasePromise = InventoryManager.getInstance().buyBoosterPacksWithGold(quantity, SDK.CardSet.Core, sku);
+        purchasePromise = InventoryManager.getInstance().buyBoosterPacksWithGold(
+          quantity,
+          SDK.CardSet.Core,
+          sku,
+        );
       } else if (sku === 'SHIMZAR_BOOSTER1_GOLD') {
-        purchasePromise = InventoryManager.getInstance().buyBoosterPacksWithGold(quantity, SDK.CardSet.Shimzar, sku);
+        purchasePromise = InventoryManager.getInstance().buyBoosterPacksWithGold(
+          quantity,
+          SDK.CardSet.Shimzar,
+          sku,
+        );
       } else if (sku === 'BLOODBORN_BOOSTER1_GOLD') {
-        purchasePromise = InventoryManager.getInstance().buyBoosterPacksWithGold(quantity, SDK.CardSet.Bloodborn, sku);
+        purchasePromise = InventoryManager.getInstance().buyBoosterPacksWithGold(
+          quantity,
+          SDK.CardSet.Bloodborn,
+          sku,
+        );
       } else if (sku === 'ANCIENTBONDS_BOOSTER1_GOLD') {
-        purchasePromise = InventoryManager.getInstance().buyBoosterPacksWithGold(quantity, SDK.CardSet.Unity, sku);
+        purchasePromise = InventoryManager.getInstance().buyBoosterPacksWithGold(
+          quantity,
+          SDK.CardSet.Unity,
+          sku,
+        );
       }
     }
 
     if (purchasePromise == null) {
-      return Promise.resolve()
-        .then(function () {
-          _self.showError('Invalid premium purchase!');
-        });
+      return Promise.resolve().then(function () {
+        _self.showError('Invalid premium purchase!');
+      });
     } else {
       return purchasePromise
         .then(function () {
@@ -516,16 +608,21 @@ var PremiumPurchaseDialogView = Backbone.Marionette.LayoutView.extend({
   /* region SUCCESS / ERROR */
 
   flashSuccessInDialog: function (successMessage, revert) {
-    if (successMessage == null) { successMessage = 'SUCCESS!'; }
+    if (successMessage == null) {
+      successMessage = 'SUCCESS!';
+    }
     this.ui.promptSuccessTitle.text(successMessage);
     this.$el.removeClass('loading error').addClass('success');
-    this._successTriggerTimeoutId = setTimeout(function () {
-      if (revert) {
-        this.$el.removeClass('success');
-      } else {
-        this.trigger('success');
-      }
-    }.bind(this), 2000);
+    this._successTriggerTimeoutId = setTimeout(
+      function () {
+        if (revert) {
+          this.$el.removeClass('success');
+        } else {
+          this.trigger('success');
+        }
+      }.bind(this),
+      2000,
+    );
   },
 
   showError: function (errorMessage, close, noCreditCardError) {
@@ -535,13 +632,16 @@ var PremiumPurchaseDialogView = Backbone.Marionette.LayoutView.extend({
       this.ui.card_form_error_message.text(errorMessage);
     }
     this.ui.$errorMessage.text(errorMessage);
-    this._errorRevertTimeoutId = setTimeout(function () {
-      if (close) {
-        this.onCancelConfirmPurchase();
-      } else {
-        this.$el.removeClass('error');
-      }
-    }.bind(this), 2000);
+    this._errorRevertTimeoutId = setTimeout(
+      function () {
+        if (close) {
+          this.onCancelConfirmPurchase();
+        } else {
+          this.$el.removeClass('error');
+        }
+      }.bind(this),
+      2000,
+    );
     this.trigger('error', errorMessage);
   },
 
@@ -558,7 +658,8 @@ var PremiumPurchaseDialogView = Backbone.Marionette.LayoutView.extend({
     this.$el.addClass('loading');
     this.ui.product_craft_button.addClass('hide');
     this.ui.card_form_error.addClass('hide');
-    InventoryManager.getInstance().craftCosmetic(productId)
+    InventoryManager.getInstance()
+      .craftCosmetic(productId)
       .then(function () {
         _self.trigger('complete', {
           sku: sku,
@@ -595,17 +696,21 @@ var PremiumPurchaseDialogView = Backbone.Marionette.LayoutView.extend({
     this.creditCardFormRegion.show(cardFormView);
     this.ui.card_info.addClass('hide');
 
-    return Promise.resolve($.ajax({
-      url: process.env.API_URL + '/api/me/shop/customer',
-      type: 'DELETE',
-      contentType: 'application/json',
-      dataType: 'json',
-    }))
+    return Promise.resolve(
+      $.ajax({
+        url: process.env.API_URL + '/api/me/shop/customer',
+        type: 'DELETE',
+        contentType: 'application/json',
+        dataType: 'json',
+      }),
+    )
       .then(function () {
         _self.flashSuccessInDialog('SUCCESS!', true);
       })
       .catch(function (err) {
-        var errorMessage = err.responseJSON && err.responseJSON.message || 'There was a problem deleting your card.';
+        var errorMessage =
+          (err.responseJSON && err.responseJSON.message) ||
+          'There was a problem deleting your card.';
         _self.showError(errorMessage);
       });
   },
@@ -614,11 +719,9 @@ var PremiumPurchaseDialogView = Backbone.Marionette.LayoutView.extend({
 
   /* region HELP */
 
-  onHelpPress: function (e) {
-  },
+  onHelpPress: function (e) {},
 
   /* endregion HELP */
-
 });
 
 // Expose the class either via CommonJS or the global object

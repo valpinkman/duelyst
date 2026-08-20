@@ -15,7 +15,10 @@ class ModifierFeralu extends Modifier {
   static description = '';
 
   _filterPotentialCardInAura(card) {
-    return ((card.getRaceId() !== Races.Neutral) || card.hasModifierClass(ModifierBelongsToAllRaces)) && super._filterPotentialCardInAura(card);
+    return (
+      (card.getRaceId() !== Races.Neutral || card.hasModifierClass(ModifierBelongsToAllRaces)) &&
+      super._filterPotentialCardInAura(card)
+    );
   }
 }
 ModifierFeralu.prototype.type = 'ModifierFeralu';

@@ -24,7 +24,9 @@ class ModifierEnemyStunWatchDamageNearbyEnemies extends ModifierEnemyStunWatch {
   }
 
   onEnemyStunWatch(action) {
-    const entities = this.getGameSession().getBoard().getEnemyEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
+    const entities = this.getGameSession()
+      .getBoard()
+      .getEnemyEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
     return (() => {
       const result = [];
       for (var entity of Array.from<any>(entities)) {
@@ -43,8 +45,11 @@ class ModifierEnemyStunWatchDamageNearbyEnemies extends ModifierEnemyStunWatch {
     })();
   }
 }
-ModifierEnemyStunWatchDamageNearbyEnemies.prototype.type = 'ModifierEnemyStunWatchDamageNearbyEnemies';
-ModifierEnemyStunWatchDamageNearbyEnemies.prototype.fxResource = ['FX.Modifiers.ModifierMyMoveWatch'];
+ModifierEnemyStunWatchDamageNearbyEnemies.prototype.type =
+  'ModifierEnemyStunWatchDamageNearbyEnemies';
+ModifierEnemyStunWatchDamageNearbyEnemies.prototype.fxResource = [
+  'FX.Modifiers.ModifierMyMoveWatch',
+];
 ModifierEnemyStunWatchDamageNearbyEnemies.prototype.damageAmount = 0;
 
 module.exports = ModifierEnemyStunWatchDamageNearbyEnemies;

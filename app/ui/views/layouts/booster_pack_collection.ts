@@ -25,7 +25,6 @@ var ErrorDialogItemView = require('app/ui/views/item/error_dialog');
 var ShopSpiritOrbsModalView = require('app/ui/views2/shop/shop_spirit_orbs_modal');
 
 var BoosterPackCollectionLayout = Backbone.Marionette.LayoutView.extend({
-
   _resetPackPromise: null,
   _boosterPacksCompositeViews: null,
   _coreSetBoosterPacksCompositeView: null,
@@ -40,14 +39,38 @@ var BoosterPackCollectionLayout = Backbone.Marionette.LayoutView.extend({
   template: BoosterPackCollectionLayoutTemplate,
 
   regions: {
-    boosterPacksDispenserRegion: { selector: '.booster-packs-dispenser', regionClass: TransitionRegion },
-    boosterPacksDispenserRegion2: { selector: '.booster-packs-dispenser-2', regionClass: TransitionRegion },
-    boosterPacksDispenserRegion3: { selector: '.booster-packs-dispenser-3', regionClass: TransitionRegion },
-    boosterPacksDispenserRegion4: { selector: '.booster-packs-dispenser-4', regionClass: TransitionRegion },
-    boosterPacksDispenserRegion5: { selector: '.booster-packs-dispenser-5', regionClass: TransitionRegion },
-    boosterPacksDispenserRegion6: { selector: '.booster-packs-dispenser-6', regionClass: TransitionRegion },
-    boosterPacksDispenserRegion7: { selector: '.booster-packs-dispenser-7', regionClass: TransitionRegion },
-    boosterPacksDispenserRegion8: { selector: '.booster-packs-dispenser-8', regionClass: TransitionRegion },
+    boosterPacksDispenserRegion: {
+      selector: '.booster-packs-dispenser',
+      regionClass: TransitionRegion,
+    },
+    boosterPacksDispenserRegion2: {
+      selector: '.booster-packs-dispenser-2',
+      regionClass: TransitionRegion,
+    },
+    boosterPacksDispenserRegion3: {
+      selector: '.booster-packs-dispenser-3',
+      regionClass: TransitionRegion,
+    },
+    boosterPacksDispenserRegion4: {
+      selector: '.booster-packs-dispenser-4',
+      regionClass: TransitionRegion,
+    },
+    boosterPacksDispenserRegion5: {
+      selector: '.booster-packs-dispenser-5',
+      regionClass: TransitionRegion,
+    },
+    boosterPacksDispenserRegion6: {
+      selector: '.booster-packs-dispenser-6',
+      regionClass: TransitionRegion,
+    },
+    boosterPacksDispenserRegion7: {
+      selector: '.booster-packs-dispenser-7',
+      regionClass: TransitionRegion,
+    },
+    boosterPacksDispenserRegion8: {
+      selector: '.booster-packs-dispenser-8',
+      regionClass: TransitionRegion,
+    },
   },
 
   ui: {
@@ -79,57 +102,83 @@ var BoosterPackCollectionLayout = Backbone.Marionette.LayoutView.extend({
   },
 
   getRequiredResources: function () {
-    return Backbone.Marionette.LayoutView.prototype.getRequiredResources.call(this).concat(PKGS.getPkgForIdentifier('booster_opening'));
+    return Backbone.Marionette.LayoutView.prototype.getRequiredResources
+      .call(this)
+      .concat(PKGS.getPkgForIdentifier('booster_opening'));
   },
 
   onShow: function () {
     // analytics call
     Analytics.page('Booster Packs', { path: '/#booster_packs' });
 
-    this._coreSetBoosterPacksCompositeView = new BoosterPacksCompositeView({ model: new Backbone.Model({ cardSet: SDK.CardSet.Core }), collection: new Backbone.Collection() });
+    this._coreSetBoosterPacksCompositeView = new BoosterPacksCompositeView({
+      model: new Backbone.Model({ cardSet: SDK.CardSet.Core }),
+      collection: new Backbone.Collection(),
+    });
     this._boosterPacksCompositeViews.push(this._coreSetBoosterPacksCompositeView);
     this.boosterPacksDispenserRegion.show(this._coreSetBoosterPacksCompositeView);
 
-    this._shimzarSetBoosterPacksCompositeView = new BoosterPacksCompositeView({ model: new Backbone.Model({ cardSet: SDK.CardSet.Shimzar }), collection: new Backbone.Collection() });
+    this._shimzarSetBoosterPacksCompositeView = new BoosterPacksCompositeView({
+      model: new Backbone.Model({ cardSet: SDK.CardSet.Shimzar }),
+      collection: new Backbone.Collection(),
+    });
     this._boosterPacksCompositeViews.push(this._shimzarSetBoosterPacksCompositeView);
     this.boosterPacksDispenserRegion2.show(this._shimzarSetBoosterPacksCompositeView);
 
     // TODO: reorder indexes
 
-    this._firstwatchSetBoosterPacksCompositeView = new BoosterPacksCompositeView({ model: new Backbone.Model({ cardSet: SDK.CardSet.FirstWatch }), collection: new Backbone.Collection() });
+    this._firstwatchSetBoosterPacksCompositeView = new BoosterPacksCompositeView({
+      model: new Backbone.Model({ cardSet: SDK.CardSet.FirstWatch }),
+      collection: new Backbone.Collection(),
+    });
     this._boosterPacksCompositeViews.push(this._firstwatchSetBoosterPacksCompositeView);
     this.boosterPacksDispenserRegion5.show(this._firstwatchSetBoosterPacksCompositeView);
 
-    this._wartechSetBoosterPacksCompositeView = new BoosterPacksCompositeView({ model: new Backbone.Model({ cardSet: SDK.CardSet.Wartech }), collection: new Backbone.Collection() });
+    this._wartechSetBoosterPacksCompositeView = new BoosterPacksCompositeView({
+      model: new Backbone.Model({ cardSet: SDK.CardSet.Wartech }),
+      collection: new Backbone.Collection(),
+    });
     this._boosterPacksCompositeViews.push(this._wartechSetBoosterPacksCompositeView);
     this.boosterPacksDispenserRegion6.show(this._wartechSetBoosterPacksCompositeView);
 
-    this._combinedUnlockablesSetBoosterPacksCompositeView = new BoosterPacksCompositeView({ model: new Backbone.Model({ cardSet: SDK.CardSet.CombinedUnlockables }), collection: new Backbone.Collection() });
+    this._combinedUnlockablesSetBoosterPacksCompositeView = new BoosterPacksCompositeView({
+      model: new Backbone.Model({ cardSet: SDK.CardSet.CombinedUnlockables }),
+      collection: new Backbone.Collection(),
+    });
     this._boosterPacksCompositeViews.push(this._combinedUnlockablesSetBoosterPacksCompositeView);
     this.boosterPacksDispenserRegion7.show(this._combinedUnlockablesSetBoosterPacksCompositeView);
 
-    this._fateSetBoosterPacksCompositeView = new BoosterPacksCompositeView({ model: new Backbone.Model({ cardSet: SDK.CardSet.Coreshatter }), collection: new Backbone.Collection() });
+    this._fateSetBoosterPacksCompositeView = new BoosterPacksCompositeView({
+      model: new Backbone.Model({ cardSet: SDK.CardSet.Coreshatter }),
+      collection: new Backbone.Collection(),
+    });
     this._boosterPacksCompositeViews.push(this._fateSetBoosterPacksCompositeView);
     this.boosterPacksDispenserRegion8.show(this._fateSetBoosterPacksCompositeView);
 
-    this.listenTo(InventoryManager.getInstance().boosterPacksCollection, 'add remove', this.onBoosterPacksCollectionChanged);
+    this.listenTo(
+      InventoryManager.getInstance().boosterPacksCollection,
+      'add remove',
+      this.onBoosterPacksCollectionChanged,
+    );
     this.onBoosterPacksCollectionChanged();
 
     this.setLocked(true);
 
-    this.whenRequiredResourcesReady().then(function (requestId) {
-      if (!this.getAreResourcesValid(requestId)) return; // resources invalidated/unloaded
+    this.whenRequiredResourcesReady().then(
+      function (requestId) {
+        if (!this.getAreResourcesValid(requestId)) return; // resources invalidated/unloaded
 
-      this.ui.$boosterPackUnlock.droppable({
-        activate: this.onBoosterPackStartDragging.bind(this),
-        deactivate: this.onBoosterPackStopDragging.bind(this),
-        out: this.onBoosterPackOut.bind(this),
-        over: this.onBoosterPackOver.bind(this),
-        drop: this.onBoosterPackDropped.bind(this),
-      });
+        this.ui.$boosterPackUnlock.droppable({
+          activate: this.onBoosterPackStartDragging.bind(this),
+          deactivate: this.onBoosterPackStopDragging.bind(this),
+          out: this.onBoosterPackOut.bind(this),
+          over: this.onBoosterPackOver.bind(this),
+          drop: this.onBoosterPackDropped.bind(this),
+        });
 
-      this.setLocked(false);
-    }.bind(this));
+        this.setLocked(false);
+      }.bind(this),
+    );
   },
 
   onDestroy: function () {
@@ -258,7 +307,9 @@ var BoosterPackCollectionLayout = Backbone.Marionette.LayoutView.extend({
       this._unlockedBoosterPackEl = this._draggingBoosterPackEl;
       var boosterPackId = this._unlockedBoosterPackEl.attr('id');
 
-      this._unlockedBoosterPackEl.removeClass('booster-pack-over').addClass('booster-pack-unlocked');
+      this._unlockedBoosterPackEl
+        .removeClass('booster-pack-over')
+        .addClass('booster-pack-unlocked');
       this.ui.$boosterPackUnlock.removeClass('booster-pack-over').addClass('booster-pack-unlocked');
 
       // lock booster packs and navigation
@@ -267,7 +318,8 @@ var BoosterPackCollectionLayout = Backbone.Marionette.LayoutView.extend({
 
       // unlock pack immediately
       var unlockedBoosterPackCards;
-      var requestUnlockPromise = InventoryManager.getInstance().unlockBoosterPack(boosterPackId)
+      var requestUnlockPromise = InventoryManager.getInstance()
+        .unlockBoosterPack(boosterPackId)
         .then(function (response) {
           var unlockedBoosterPackModel = new Backbone.Model(response);
           unlockedBoosterPackCards = unlockedBoosterPackModel.get('cards');
@@ -295,97 +347,163 @@ var BoosterPackCollectionLayout = Backbone.Marionette.LayoutView.extend({
       var boosterPackOffset = this._unlockedBoosterPackEl.offset();
       var sourceX = boosterPackOffset.left;
       var sourceY = boosterPackOffset.top;
-      var targetX = droppableOffset.left + (droppable.outerWidth(true) - this._unlockedBoosterPackEl.width()) * 0.5 - this.ui.$boosterPacksControls.outerWidth();
-      var targetY = droppableOffset.top + (droppable.outerHeight(true) - this._unlockedBoosterPackEl.height()) * 0.5;
+      var targetX =
+        droppableOffset.left +
+        (droppable.outerWidth(true) - this._unlockedBoosterPackEl.width()) * 0.5 -
+        this.ui.$boosterPacksControls.outerWidth();
+      var targetY =
+        droppableOffset.top +
+        (droppable.outerHeight(true) - this._unlockedBoosterPackEl.height()) * 0.5;
       var deltaX = targetX - sourceX;
       var deltaY = targetY - sourceY;
       var scaleOffset = 0.25;
       var currentScale = 1.0;
       var shakeMagnitude = 10.0;
-      var animatePackPromise = new Promise(function (resolve, reject) {
-        // spiral path to center
-        var radius = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-        var theta = Math.atan2(deltaY, deltaX);
-        var spin = -(Math.PI * 0.5 + Math.random() * Math.PI * 0.5);
-        this._unlockedBoosterPackEl.velocity('stop').velocity({
-          tween: 1,
-        }, {
-          easing: 'easeInSine',
-          duration: 500.0,
-          progress: function (elements, complete, remaining, start, tweenValue) {
-            var r = radius * (1.0 - tweenValue);
-            var t = spin * tweenValue * tweenValue * tweenValue;
-            var x = Math.round(deltaX - r * Math.cos(theta + t));
-            var y = Math.round(deltaY - r * Math.sin(theta + t));
-            this._unlockedBoosterPackEl.css('transform', 'translateX(' + x + 'px) translateY(' + y + 'px)');
-          }.bind(this),
-          complete: function () {
-            // start shake/scale loop
-            this._unlockedBoosterPackEl.velocity({
+      var animatePackPromise = new Promise(
+        function (resolve, reject) {
+          // spiral path to center
+          var radius = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+          var theta = Math.atan2(deltaY, deltaX);
+          var spin = -(Math.PI * 0.5 + Math.random() * Math.PI * 0.5);
+          this._unlockedBoosterPackEl.velocity('stop').velocity(
+            {
               tween: 1,
-            }, {
+            },
+            {
               easing: 'easeInSine',
-              duration: 1000.0,
+              duration: 500.0,
               progress: function (elements, complete, remaining, start, tweenValue) {
-                currentScale = (1.0 + scaleOffset * tweenValue);
-                this._unlockedBoosterPackEl.css('transform', 'translateX(' + Math.round(deltaX + (Math.random() * shakeMagnitude - shakeMagnitude * 0.5) * tweenValue) + 'px) translateY(' + Math.round(deltaY + (Math.random() * shakeMagnitude - shakeMagnitude * 0.5) * tweenValue) + 'px) scale(' + currentScale + ')');
+                var r = radius * (1.0 - tweenValue);
+                var t = spin * tweenValue * tweenValue * tweenValue;
+                var x = Math.round(deltaX - r * Math.cos(theta + t));
+                var y = Math.round(deltaY - r * Math.sin(theta + t));
+                this._unlockedBoosterPackEl.css(
+                  'transform',
+                  'translateX(' + x + 'px) translateY(' + y + 'px)',
+                );
               }.bind(this),
-            }).velocity({
-              tween: 1,
-            }, {
-              loop: true,
-              duration: 1000.0,
-              progress: function (elements, complete, remaining, start, tweenValue) {
-                this._unlockedBoosterPackEl.css('transform', 'translateX(' + Math.round(deltaX + (Math.random() * shakeMagnitude - shakeMagnitude * 0.5)) + 'px) translateY(' + Math.round(deltaY + (Math.random() * shakeMagnitude - shakeMagnitude * 0.5)) + 'px) scale(' + currentScale + ')');
-              }.bind(this),
-            });
+              complete: function () {
+                // start shake/scale loop
+                this._unlockedBoosterPackEl
+                  .velocity(
+                    {
+                      tween: 1,
+                    },
+                    {
+                      easing: 'easeInSine',
+                      duration: 1000.0,
+                      progress: function (elements, complete, remaining, start, tweenValue) {
+                        currentScale = 1.0 + scaleOffset * tweenValue;
+                        this._unlockedBoosterPackEl.css(
+                          'transform',
+                          'translateX(' +
+                            Math.round(
+                              deltaX +
+                                (Math.random() * shakeMagnitude - shakeMagnitude * 0.5) *
+                                  tweenValue,
+                            ) +
+                            'px) translateY(' +
+                            Math.round(
+                              deltaY +
+                                (Math.random() * shakeMagnitude - shakeMagnitude * 0.5) *
+                                  tweenValue,
+                            ) +
+                            'px) scale(' +
+                            currentScale +
+                            ')',
+                        );
+                      }.bind(this),
+                    },
+                  )
+                  .velocity(
+                    {
+                      tween: 1,
+                    },
+                    {
+                      loop: true,
+                      duration: 1000.0,
+                      progress: function (elements, complete, remaining, start, tweenValue) {
+                        this._unlockedBoosterPackEl.css(
+                          'transform',
+                          'translateX(' +
+                            Math.round(
+                              deltaX + (Math.random() * shakeMagnitude - shakeMagnitude * 0.5),
+                            ) +
+                            'px) translateY(' +
+                            Math.round(
+                              deltaY + (Math.random() * shakeMagnitude - shakeMagnitude * 0.5),
+                            ) +
+                            'px) scale(' +
+                            currentScale +
+                            ')',
+                        );
+                      }.bind(this),
+                    },
+                  );
 
-            // resolve
-            resolve();
-          }.bind(this),
-        });
-      }.bind(this));
+                // resolve
+                resolve();
+              }.bind(this),
+            },
+          );
+        }.bind(this),
+      );
 
       // show unlocked cards when ready
-      Promise.all([
-        requestUnlockPromise,
-        animateUnlockPromise,
-        animatePackPromise,
-      ]).then(function () {
-        // delay then remove current booster pack
-        this._unlockedBoosterPackEl.velocity('stop', true).velocity({
-          tween: 1,
-        }, {
-          duration: 800.0,
-          progress: function (elements, complete, remaining, start, tweenValue) {
-            this._unlockedBoosterPackEl.css('transform', 'translateX(' + Math.round(deltaX + (Math.random() * shakeMagnitude - shakeMagnitude * 0.5)) + 'px) translateY(' + Math.round(deltaY + (Math.random() * shakeMagnitude - shakeMagnitude * 0.5)) + 'px) scale(' + currentScale + ')');
-          }.bind(this),
-          complete: function () {
-            this._unlockedBoosterPackEl.remove();
-            this._unlockedBoosterPackEl = null;
-          }.bind(this),
-        });
+      Promise.all([requestUnlockPromise, animateUnlockPromise, animatePackPromise]).then(
+        function () {
+          // delay then remove current booster pack
+          this._unlockedBoosterPackEl.velocity('stop', true).velocity(
+            {
+              tween: 1,
+            },
+            {
+              duration: 800.0,
+              progress: function (elements, complete, remaining, start, tweenValue) {
+                this._unlockedBoosterPackEl.css(
+                  'transform',
+                  'translateX(' +
+                    Math.round(deltaX + (Math.random() * shakeMagnitude - shakeMagnitude * 0.5)) +
+                    'px) translateY(' +
+                    Math.round(deltaY + (Math.random() * shakeMagnitude - shakeMagnitude * 0.5)) +
+                    'px) scale(' +
+                    currentScale +
+                    ')',
+                );
+              }.bind(this),
+              complete: function () {
+                this._unlockedBoosterPackEl.remove();
+                this._unlockedBoosterPackEl = null;
+              }.bind(this),
+            },
+          );
 
-        // reveal contents of pack
-        var scene = Scene.getInstance();
-        var boosterLayer = scene && scene.getContent();
-        if (boosterLayer instanceof BoosterPackOpeningLayer) {
-          boosterLayer.showRevealPack(unlockedBoosterPackCards).then(function () {
-            // unlock booster packs and navigation
-            this.setLocked(false);
-            NavigationManager.getInstance().requestUserTriggeredNavigationUnlocked(this._userNavLockId);
-          }.bind(this));
-        }
-      }.bind(this));
+          // reveal contents of pack
+          var scene = Scene.getInstance();
+          var boosterLayer = scene && scene.getContent();
+          if (boosterLayer instanceof BoosterPackOpeningLayer) {
+            boosterLayer.showRevealPack(unlockedBoosterPackCards).then(
+              function () {
+                // unlock booster packs and navigation
+                this.setLocked(false);
+                NavigationManager.getInstance().requestUserTriggeredNavigationUnlocked(
+                  this._userNavLockId,
+                );
+              }.bind(this),
+            );
+          }
+        }.bind(this),
+      );
     }
   },
 
   onClickBoosterBuy: function () {
     if (!this._locked) {
-      NavigationManager.getInstance().toggleModalViewByClass(ShopSpiritOrbsModalView, { model: new Backbone.Model() });
+      NavigationManager.getInstance().toggleModalViewByClass(ShopSpiritOrbsModalView, {
+        model: new Backbone.Model(),
+      });
     }
   },
-
 });
 
 // Expose the class either via CommonJS or the global object

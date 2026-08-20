@@ -25,12 +25,26 @@ class ModifierSummonWatchFromActionBarByRaceBothPlayersDraw extends ModifierSumm
   onSummonWatch(action) {
     return (() => {
       const result = [];
-      for (let x = 1, end = this.drawAmount, asc = end >= 1; asc ? x <= end : x >= end; asc ? x++ : x--) {
-        var general = this.getCard().getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
-        this.getGameSession().executeAction(new DrawCardAction(this.getGameSession(), general.getOwnerId()));
+      for (
+        let x = 1, end = this.drawAmount, asc = end >= 1;
+        asc ? x <= end : x >= end;
+        asc ? x++ : x--
+      ) {
+        var general = this.getCard()
+          .getGameSession()
+          .getGeneralForPlayerId(this.getCard().getOwnerId());
+        this.getGameSession().executeAction(
+          new DrawCardAction(this.getGameSession(), general.getOwnerId()),
+        );
 
-        var enemyGeneral = this.getCard().getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
-        result.push(this.getGameSession().executeAction(new DrawCardAction(this.getGameSession(), enemyGeneral.getOwnerId())));
+        var enemyGeneral = this.getCard()
+          .getGameSession()
+          .getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
+        result.push(
+          this.getGameSession().executeAction(
+            new DrawCardAction(this.getGameSession(), enemyGeneral.getOwnerId()),
+          ),
+        );
       }
       return result;
     })();
@@ -40,7 +54,8 @@ class ModifierSummonWatchFromActionBarByRaceBothPlayersDraw extends ModifierSumm
     return card.getBelongsToTribe(this.targetRaceId);
   }
 }
-ModifierSummonWatchFromActionBarByRaceBothPlayersDraw.prototype.type = 'ModifierSummonWatchFromActionBarByRaceBothPlayersDraw';
+ModifierSummonWatchFromActionBarByRaceBothPlayersDraw.prototype.type =
+  'ModifierSummonWatchFromActionBarByRaceBothPlayersDraw';
 ModifierSummonWatchFromActionBarByRaceBothPlayersDraw.prototype.targetRaceId = null;
 ModifierSummonWatchFromActionBarByRaceBothPlayersDraw.prototype.drawAmount = 1;
 

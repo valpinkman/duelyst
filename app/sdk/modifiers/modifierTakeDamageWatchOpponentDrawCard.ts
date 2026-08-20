@@ -21,8 +21,12 @@ class ModifierTakeDamageWatchOpponentDrawCard extends ModifierTakeDamageWatch {
   onDamageTaken(action) {
     super.onDamageTaken(action);
 
-    const enemyGeneral = this.getCard().getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
-    return this.getGameSession().executeAction(new DrawCardAction(this.getGameSession(), enemyGeneral.getOwnerId()));
+    const enemyGeneral = this.getCard()
+      .getGameSession()
+      .getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
+    return this.getGameSession().executeAction(
+      new DrawCardAction(this.getGameSession(), enemyGeneral.getOwnerId()),
+    );
   }
 }
 ModifierTakeDamageWatchOpponentDrawCard.prototype.type = 'ModifierTakeDamageWatchOpponentDrawCard';

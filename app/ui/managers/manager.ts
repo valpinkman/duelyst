@@ -8,7 +8,6 @@ var Logger = require('app/common/logger');
 const PromiseUtils = require('../../common/utils/utils_promise');
 
 var Manager = Backbone.Marionette.Controller.extend({
-
   connected: null,
   isReady: null,
 
@@ -68,15 +67,17 @@ var Manager = Backbone.Marionette.Controller.extend({
   },
 
   onConnect: function (callback) {
-    var p = new Promise(function (resolve, reject) {
-      if (this.connected) {
-        resolve();
-      } else {
-        this.listenToOnce(this, 'connect', function () {
+    var p = new Promise(
+      function (resolve, reject) {
+        if (this.connected) {
           resolve();
-        });
-      }
-    }.bind(this));
+        } else {
+          this.listenToOnce(this, 'connect', function () {
+            resolve();
+          });
+        }
+      }.bind(this),
+    );
 
     PromiseUtils.nodeify(p, callback);
 
@@ -84,13 +85,15 @@ var Manager = Backbone.Marionette.Controller.extend({
   },
 
   onReady: function (callback) {
-    var p = new Promise(function (resolve, reject) {
-      if (this.isReady) {
-        resolve();
-      } else {
-        this.listenToOnce(this, 'ready', resolve);
-      }
-    }.bind(this));
+    var p = new Promise(
+      function (resolve, reject) {
+        if (this.isReady) {
+          resolve();
+        } else {
+          this.listenToOnce(this, 'ready', resolve);
+        }
+      }.bind(this),
+    );
 
     PromiseUtils.nodeify(p, callback);
 
@@ -105,12 +108,13 @@ var Manager = Backbone.Marionette.Controller.extend({
         allPromises.push(modelOrCollection.onSyncOrReady());
       }
     }
-    Promise.all(allPromises).then(function () {
-      Logger.module('UI').log('Manager::_markAsReadyWhenModelsAndCollectionsSynced -> READY');
-      this.ready();
-    }.bind(this));
+    Promise.all(allPromises).then(
+      function () {
+        Logger.module('UI').log('Manager::_markAsReadyWhenModelsAndCollectionsSynced -> READY');
+        this.ready();
+      }.bind(this),
+    );
   },
-
 });
 
 module.exports = Manager;

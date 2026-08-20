@@ -18,7 +18,6 @@ var i18next = require('i18next');
 var Template = require('./templates/shop_specials_view.hbs');
 
 var ShopSpecialsView = Backbone.Marionette.ItemView.extend({
-
   className: 'shop-specials-container',
   selectedSubCategory: null,
   initialSubCategory: null,
@@ -49,7 +48,11 @@ var ShopSpecialsView = Backbone.Marionette.ItemView.extend({
   },
 
   initialize: function (opts) {
-    this.listenTo(ShopManager.getInstance().availableSpecials, 'add remove', this.render.bind(this));
+    this.listenTo(
+      ShopManager.getInstance().availableSpecials,
+      'add remove',
+      this.render.bind(this),
+    );
   },
 
   onShow: function () {
@@ -59,8 +62,7 @@ var ShopSpecialsView = Backbone.Marionette.ItemView.extend({
     });
   },
 
-  onPrepareForDestroy: function () {
-  },
+  onPrepareForDestroy: function () {},
 
   /* region PURCHASE */
 
@@ -69,33 +71,38 @@ var ShopSpecialsView = Backbone.Marionette.ItemView.extend({
     var productSku = $(e.currentTarget).data('product-sku');
     var productData = ShopData.earned_specials[productSku];
 
-    var packProductData = _.extend({
-      cover_image_url: 'resources/play/play_mode_rankedladder.jpg',
-    }, productData);
+    var packProductData = _.extend(
+      {
+        cover_image_url: 'resources/play/play_mode_rankedladder.jpg',
+      },
+      productData,
+    );
 
     packProductData = _.extend(packProductData, {
       name: i18next.t('shop.' + productData.name),
       description: i18next.t('shop.' + productData.description),
     });
 
-    return NavigationManager.getInstance().showDialogForConfirmPurchase(packProductData)
+    return NavigationManager.getInstance()
+      .showDialogForConfirmPurchase(packProductData)
       .then(function (purchaseData) {
         _self.onPurchaseComplete(purchaseData);
       })
       .catch(function () {
-      // do nothing on cancel
+        // do nothing on cancel
       });
   },
 
-  onPurchaseComplete: function (purchaseData) {
-  },
+  onPurchaseComplete: function (purchaseData) {},
 
   /* endregion PURCHASE */
 
   onSubCategoryChanged: function (e) {
     var button = $(e.currentTarget);
     var selectedValue = button.data('value');
-    audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_tab_in.audio, CONFIG.SELECT_SFX_PRIORITY);
+    audio_engine
+      .current()
+      .play_effect_for_interaction(RSX.sfx_ui_tab_in.audio, CONFIG.SELECT_SFX_PRIORITY);
     this.setSubCategory(selectedValue);
   },
 
@@ -103,13 +110,12 @@ var ShopSpecialsView = Backbone.Marionette.ItemView.extend({
     if (selectedValue !== this.selectedSubCategory) {
       this.selectedSubCategory = selectedValue;
       $('li', this.ui.tabs).removeClass('active');
-      this.ui.tabs.find('[data-value=\'' + selectedValue + '\']').addClass('active');
+      this.ui.tabs.find("[data-value='" + selectedValue + "']").addClass('active');
 
       $('div.shop-spirit-orbs', this.ui.tabBody).addClass('hide');
       $('div.' + selectedValue, this.ui.tabBody).removeClass('hide');
     }
   },
-
 });
 
 module.exports = ShopSpecialsView;

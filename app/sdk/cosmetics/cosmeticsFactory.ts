@@ -7,8 +7,15 @@
  */
 // do not add this file to any resource package
 // it is handled by special processing
-let chestType; let cosmeticData; let cosmeticId; let cosmeticTypeKey; let factionId; let factionIdKey; let rarityId; let rarityIdKey; let
-  type;
+let chestType;
+let cosmeticData;
+let cosmeticId;
+let cosmeticTypeKey;
+let factionId;
+let factionIdKey;
+let rarityId;
+let rarityIdKey;
+let type;
 const _ = require('underscore');
 const moment = require('moment');
 const RSX = require('app/data/resources');
@@ -86,11 +93,27 @@ class CosmeticsFactory {
     let orderedSubTypes = [];
     // To do any manual ordering add a subtype to the if/else below, anything not in list will be appended
     if (cosmeticType === CosmeticsTypeLookup.Emote) {
-      orderedSubTypes = ['Lyonar', 'Songhai', 'Vetruvian', 'Abyssian', 'Magmar', 'Vanar', 'Neutral'];
+      orderedSubTypes = [
+        'Lyonar',
+        'Songhai',
+        'Vetruvian',
+        'Abyssian',
+        'Magmar',
+        'Vanar',
+        'Neutral',
+      ];
     } else if (cosmeticType === CosmeticsTypeLookup.CardBack) {
       orderedSubTypes = [];
     } else if (cosmeticType === CosmeticsTypeLookup.ProfileIcon) {
-      orderedSubTypes = ['Lyonar', 'Songhai', 'Vetruvian', 'Abyssian', 'Magmar', 'Vanar', 'Neutral'];
+      orderedSubTypes = [
+        'Lyonar',
+        'Songhai',
+        'Vetruvian',
+        'Abyssian',
+        'Magmar',
+        'Vanar',
+        'Neutral',
+      ];
     } else if (cosmeticType === CosmeticsTypeLookup.Scene) {
       orderedSubTypes = [];
     }
@@ -108,16 +131,22 @@ class CosmeticsFactory {
   }
 
   static localizedSubTypeTitle(subTypeId) {
-    if ((this._cachedLocalizedSubTypeTitles == null)) {
+    if (this._cachedLocalizedSubTypeTitles == null) {
       this._cachedLocalizedSubTypeTitles = {};
       this._cachedLocalizedSubTypeTitles.all = i18next.t('shop.all_subcategories_title');
       this._cachedLocalizedSubTypeTitles.Lyonar = i18next.t('factions.faction_1_abbreviated_name');
       this._cachedLocalizedSubTypeTitles.Songhai = i18next.t('factions.faction_2_abbreviated_name');
-      this._cachedLocalizedSubTypeTitles.Vetruvian = i18next.t('factions.faction_3_abbreviated_name');
-      this._cachedLocalizedSubTypeTitles.Abyssian = i18next.t('factions.faction_4_abbreviated_name');
+      this._cachedLocalizedSubTypeTitles.Vetruvian = i18next.t(
+        'factions.faction_3_abbreviated_name',
+      );
+      this._cachedLocalizedSubTypeTitles.Abyssian = i18next.t(
+        'factions.faction_4_abbreviated_name',
+      );
       this._cachedLocalizedSubTypeTitles.Magmar = i18next.t('factions.faction_5_abbreviated_name');
       this._cachedLocalizedSubTypeTitles.Vanar = i18next.t('factions.faction_6_abbreviated_name');
-      this._cachedLocalizedSubTypeTitles.Neutral = i18next.t('factions.faction_neutral_abbreviated_name');
+      this._cachedLocalizedSubTypeTitles.Neutral = i18next.t(
+        'factions.faction_neutral_abbreviated_name',
+      );
       this._cachedLocalizedSubTypeTitles.Emotes = i18next.t('shop.category_emotes_name');
     }
 
@@ -134,7 +163,7 @@ class CosmeticsFactory {
 
   static profileIconForIdentifier(identifier) {
     const cosmeticData = this.cosmeticForIdentifier(identifier);
-    if ((cosmeticData != null) && (cosmeticData.typeId === CosmeticsTypeLookup.ProfileIcon)) {
+    if (cosmeticData != null && cosmeticData.typeId === CosmeticsTypeLookup.ProfileIcon) {
       return cosmeticData;
     }
     // return default profile icon
@@ -143,7 +172,7 @@ class CosmeticsFactory {
 
   static isIdentifierForProfileIcon(identifier) {
     const cosmeticData = this.cosmeticForIdentifier(identifier);
-    return (cosmeticData != null) && (cosmeticData.typeId === CosmeticsTypeLookup.ProfileIcon);
+    return cosmeticData != null && cosmeticData.typeId === CosmeticsTypeLookup.ProfileIcon;
   }
 
   static getDefaultProfileIconIdentifier() {
@@ -152,7 +181,7 @@ class CosmeticsFactory {
 
   static cardBackForIdentifier(identifier) {
     const cosmeticData = this.cosmeticForIdentifier(identifier);
-    if ((cosmeticData != null) && (cosmeticData.typeId === CosmeticsTypeLookup.CardBack)) {
+    if (cosmeticData != null && cosmeticData.typeId === CosmeticsTypeLookup.CardBack) {
       return cosmeticData;
     }
     // return default card back
@@ -161,7 +190,7 @@ class CosmeticsFactory {
 
   static isIdentifierForCardBack(identifier) {
     const cosmeticData = this.cosmeticForIdentifier(identifier);
-    return (cosmeticData != null) && (cosmeticData.typeId === CosmeticsTypeLookup.CardBack);
+    return cosmeticData != null && cosmeticData.typeId === CosmeticsTypeLookup.CardBack;
   }
 
   static getDefaultCardBackIdentifier() {
@@ -170,7 +199,7 @@ class CosmeticsFactory {
 
   static sceneForIdentifier(identifier) {
     const cosmeticData = this.cosmeticForIdentifier(identifier);
-    if ((cosmeticData != null) && (cosmeticData.typeId === CosmeticsTypeLookup.Scene)) {
+    if (cosmeticData != null && cosmeticData.typeId === CosmeticsTypeLookup.Scene) {
       return cosmeticData;
     }
     // return default card back
@@ -179,7 +208,7 @@ class CosmeticsFactory {
 
   static isIdentifierForScene(identifier) {
     const cosmeticData = this.cosmeticForIdentifier(identifier);
-    return (cosmeticData != null) && (cosmeticData.typeId === CosmeticsTypeLookup.Scene);
+    return cosmeticData != null && cosmeticData.typeId === CosmeticsTypeLookup.Scene;
   }
 
   static getDefaultSceneIdentifier() {
@@ -196,17 +225,17 @@ class CosmeticsFactory {
 
   static isIdentifierForCardSkin(identifier) {
     const cosmeticData = this.cosmeticForIdentifier(identifier);
-    return (cosmeticData != null) && (cosmeticData.typeId === CosmeticsTypeLookup.CardSkin);
+    return cosmeticData != null && cosmeticData.typeId === CosmeticsTypeLookup.CardSkin;
   }
 
   static injectSkinPropertiesIntoCard(card, identifier) {
     const cosmeticData = this.cosmeticForIdentifier(identifier);
-    if ((cosmeticData != null) && (cosmeticData.typeId === CosmeticsTypeLookup.CardSkin)) {
+    if (cosmeticData != null && cosmeticData.typeId === CosmeticsTypeLookup.CardSkin) {
       // anim resource
-      const {
-        animResource,
-      } = cosmeticData;
-      if (animResource != null) { return card.setBaseAnimResource(animResource); }
+      const { animResource } = cosmeticData;
+      if (animResource != null) {
+        return card.setBaseAnimResource(animResource);
+      }
     }
   }
 
@@ -219,9 +248,9 @@ class CosmeticsFactory {
 
   static cosmeticProductDataForType(cosmeticType, cosmeticSubType) {
     let cosmeticDatas = null;
-    if ((cosmeticType != null) && (cosmeticSubType == null)) {
+    if (cosmeticType != null && cosmeticSubType == null) {
       cosmeticDatas = CosmeticsFactory.cosmeticsForType(cosmeticType);
-    } else if ((cosmeticType != null) && (cosmeticSubType != null)) {
+    } else if (cosmeticType != null && cosmeticSubType != null) {
       cosmeticDatas = CosmeticsFactory.cosmeticsForTypeAndSubtype(cosmeticType, cosmeticSubType);
     } else {
       console.warn('No cosmetic type provided to CosmeticsFactory.cosmeticModelsForType');
@@ -254,7 +283,10 @@ class CosmeticsFactory {
       category_id: cosmeticData.typeId,
       sub_category_name: cosmeticData.subTypeId,
       type: 'cosmetic',
-      faction_id: (cosmeticData.factionId == null) || (cosmeticData.factionId === Factions.Neutral) ? 0 : cosmeticData.factionId,
+      faction_id:
+        cosmeticData.factionId == null || cosmeticData.factionId === Factions.Neutral
+          ? 0
+          : cosmeticData.factionId,
       general_id: cosmeticData.generalId || 0,
     };
   }
@@ -264,15 +296,23 @@ class CosmeticsFactory {
 
     const cosmeticData = this.cosmeticForIdentifier(identifier);
     if (cosmeticData != null) {
-      if (cosmeticData.rsx != null) { resources.push(cosmeticData.rsx); }
-      if (cosmeticData.coverRSX != null) { resources.push(cosmeticData.coverRSX); }
-      if (cosmeticData.glowOutlineRSX != null) { resources.push(cosmeticData.glowOutlineRSX); }
+      if (cosmeticData.rsx != null) {
+        resources.push(cosmeticData.rsx);
+      }
+      if (cosmeticData.coverRSX != null) {
+        resources.push(cosmeticData.coverRSX);
+      }
+      if (cosmeticData.glowOutlineRSX != null) {
+        resources.push(cosmeticData.glowOutlineRSX);
+      }
       if (cosmeticData.animResource != null) {
         for (var animResourceKey of Array.from<any>(Object.keys(cosmeticData.animResource))) {
           var animResourceName = cosmeticData.animResource[animResourceKey];
           if (_.isString(animResourceName)) {
             var rsx = RSX[animResourceName];
-            if (rsx != null) { resources.push(rsx); }
+            if (rsx != null) {
+              resources.push(rsx);
+            }
           }
         }
       }
@@ -300,15 +340,20 @@ class CosmeticsFactory {
   static nameForCosmeticTypeId(cosmeticTypeId) {
     if (cosmeticTypeId === CosmeticsTypeLookup.Emote) {
       return 'Emote';
-    } if (cosmeticTypeId === CosmeticsTypeLookup.CardBack) {
+    }
+    if (cosmeticTypeId === CosmeticsTypeLookup.CardBack) {
       return 'Card Back';
-    } if (cosmeticTypeId === CosmeticsTypeLookup.ProfileIcon) {
+    }
+    if (cosmeticTypeId === CosmeticsTypeLookup.ProfileIcon) {
       return 'Profile Icon';
-    } if (cosmeticTypeId === CosmeticsTypeLookup.CardSkin) {
+    }
+    if (cosmeticTypeId === CosmeticsTypeLookup.CardSkin) {
       return 'Card Skin';
-    } if (cosmeticTypeId === CosmeticsTypeLookup.Scene) {
+    }
+    if (cosmeticTypeId === CosmeticsTypeLookup.Scene) {
       return 'Scene';
-    } if (cosmeticTypeId === CosmeticsTypeLookup.BattleMap) {
+    }
+    if (cosmeticTypeId === CosmeticsTypeLookup.BattleMap) {
       return 'Battle Map';
     }
     return null;
@@ -317,15 +362,20 @@ class CosmeticsFactory {
   static nameForCosmeticChestType(cosmeticCrateType) {
     if (cosmeticCrateType === CosmeticsChestTypeLookup.Common) {
       return i18next.t('rarity.rarity_common');
-    } if (cosmeticCrateType === CosmeticsChestTypeLookup.Rare) {
+    }
+    if (cosmeticCrateType === CosmeticsChestTypeLookup.Rare) {
       return i18next.t('rarity.rarity_rare');
-    } if (cosmeticCrateType === CosmeticsChestTypeLookup.Epic) {
+    }
+    if (cosmeticCrateType === CosmeticsChestTypeLookup.Epic) {
       return i18next.t('rarity.rarity_epic');
-    } if (cosmeticCrateType === CosmeticsChestTypeLookup.Boss) {
+    }
+    if (cosmeticCrateType === CosmeticsChestTypeLookup.Boss) {
       return i18next.t('mystery_crates.boss_crate_adjective');
-    } if (cosmeticCrateType === CosmeticsChestTypeLookup.Frostfire) {
+    }
+    if (cosmeticCrateType === CosmeticsChestTypeLookup.Frostfire) {
       return i18next.t('mystery_crates.frostfire_adjective');
-    } if (cosmeticCrateType === CosmeticsChestTypeLookup.FrostfirePremium) {
+    }
+    if (cosmeticCrateType === CosmeticsChestTypeLookup.FrostfirePremium) {
       return i18next.t('mystery_crates.frostfire_premium_adjective');
     }
     return i18next.t('mystery_crates.gift_crate_adjective');
@@ -334,14 +384,19 @@ class CosmeticsFactory {
   static keySKUForCosmeticChestType(cosmeticCrateType) {
     if (cosmeticCrateType === CosmeticsChestTypeLookup.Common) {
       return 'Common_Chest_Key';
-    } if (cosmeticCrateType === CosmeticsChestTypeLookup.Rare) {
+    }
+    if (cosmeticCrateType === CosmeticsChestTypeLookup.Rare) {
       return 'Rare_Chest_Key';
-    } if (cosmeticCrateType === CosmeticsChestTypeLookup.Epic) {
+    }
+    if (cosmeticCrateType === CosmeticsChestTypeLookup.Epic) {
       return 'Epic_Chest_Key';
-    } if (cosmeticCrateType === CosmeticsChestTypeLookup.Boss) {
+    }
+    if (cosmeticCrateType === CosmeticsChestTypeLookup.Boss) {
       return 'Boss_Chest_Key';
     }
-    console.warn('Invalid cosmetic chest type provided to CosmeticsFactory.keySKUForCosmeticChestType');
+    console.warn(
+      'Invalid cosmetic chest type provided to CosmeticsFactory.keySKUForCosmeticChestType',
+    );
     return 'Invalid_Chest_Key';
   }
 
@@ -351,26 +406,31 @@ class CosmeticsFactory {
         i18next.t('cosmetics.common_mystery_crate_1'),
         i18next.t('cosmetics.common_mystery_crate_2'),
       ].join('\n');
-    } if (cosmeticCrateType === CosmeticsChestTypeLookup.Rare) {
+    }
+    if (cosmeticCrateType === CosmeticsChestTypeLookup.Rare) {
       return [
         i18next.t('cosmetics.rare_mystery_crate_1'),
         i18next.t('cosmetics.rare_mystery_crate_2'),
       ].join('\n');
-    } if (cosmeticCrateType === CosmeticsChestTypeLookup.Epic) {
+    }
+    if (cosmeticCrateType === CosmeticsChestTypeLookup.Epic) {
       return [
         i18next.t('cosmetics.epic_mystery_crate_1'),
         i18next.t('cosmetics.epic_mystery_crate_2'),
       ].join('\n');
-    } if (cosmeticCrateType === CosmeticsChestTypeLookup.Boss) {
+    }
+    if (cosmeticCrateType === CosmeticsChestTypeLookup.Boss) {
       return [
         i18next.t('cosmetics.boss_crate_1'),
         i18next.t('cosmetics.boss_crate_2'),
         i18next.t('cosmetics.boss_crate_3'),
         i18next.t('cosmetics.boss_crate_4'),
       ].join('\n');
-    } if (cosmeticCrateType === CosmeticsChestTypeLookup.Frostfire) {
+    }
+    if (cosmeticCrateType === CosmeticsChestTypeLookup.Frostfire) {
       return i18next.t('cosmetics.frostfire_crate');
-    } if (cosmeticCrateType === CosmeticsChestTypeLookup.FrostfirePremium) {
+    }
+    if (cosmeticCrateType === CosmeticsChestTypeLookup.FrostfirePremium) {
       return i18next.t('cosmetics.frostfire_premium_crate');
     }
     return i18next.t('cosmetics.generic_mystery_crate');
@@ -434,24 +494,12 @@ const EMOTE_ORDER_CUSTOM = 11;
 
 // Shorthand the cosmetics lookups
 const cl = CosmeticsLookup;
-const {
-  CardBack,
-} = cl;
-const {
-  Emote,
-} = cl;
-const {
-  ProfileIcon,
-} = cl;
-const {
-  CardSkin,
-} = cl;
-const {
-  Scene,
-} = cl;
-const {
-  BattleMap,
-} = cl;
+const { CardBack } = cl;
+const { Emote } = cl;
+const { ProfileIcon } = cl;
+const { CardSkin } = cl;
+const { Scene } = cl;
+const { BattleMap } = cl;
 
 // region Scenes
 
@@ -1800,7 +1848,7 @@ cos[CardSkin.ZukongBoss] = {
   id: CardSkin.ZukongBoss,
   typeId: CosmeticsTypeLookup.CardSkin, // category of cosmetic
   name: 'Zukong',
-  shopDescription: 'This skin was used in the Wu\'jin the Trickster boss battle',
+  shopDescription: "This skin was used in the Wu'jin the Trickster boss battle",
   enabled: true,
   alwaysVisible: true,
   order: ORDER_CARD_SKINS,
@@ -4852,8 +4900,8 @@ cos[ProfileIcon.veracity] = {
   order: ORDER_PROFILE_ICONS,
   subTypeId: 'Vanar',
   enabled: true,
-  name: 'Yggdra\'s Voracity',
-  shopDescription: 'Yggdra\'s Voracity',
+  name: "Yggdra's Voracity",
+  shopDescription: "Yggdra's Voracity",
   rarityId: Rarity.Rare,
   alwaysVisible: false,
   img: RSX.portrait_veracity.img,
@@ -9386,17 +9434,17 @@ cos[BattleMap.Vanar] = {
 // Generate skus procedurally
 for (cosmeticTypeKey in CosmeticsLookup) {
   var cosmeticsOfType = CosmeticsLookup[cosmeticTypeKey];
-  if ((cosmeticsOfType == null) || !_.isObject(cosmeticsOfType)) {
+  if (cosmeticsOfType == null || !_.isObject(cosmeticsOfType)) {
     continue;
   }
   var cosmeticTypeId = CosmeticsTypeLookup[cosmeticTypeKey];
-  if ((cosmeticTypeId == null)) {
+  if (cosmeticTypeId == null) {
     continue;
   }
   for (var cosmeticKey in cosmeticsOfType) {
     cosmeticId = cosmeticsOfType[cosmeticKey];
     cosmeticData = cos[cosmeticId];
-    if ((cosmeticData == null)) {
+    if (cosmeticData == null) {
       continue;
     }
     cosmeticData.sku = `${cosmeticTypeId}-${cosmeticKey}-${cosmeticId}`;
@@ -9436,44 +9484,73 @@ const rarityIds = Object.keys(Rarity);
 
 for (cosmeticTypeKey of Array.from<any>(cosmeticTypes)) {
   type = CosmeticsTypeLookup[cosmeticTypeKey];
-  if (CosmeticsFactory._cachedCosmeticsForType[type] == null) { CosmeticsFactory._cachedCosmeticsForType[type] = []; }
-  if (CosmeticsFactory._cachedCosmeticSubTypesByType[type] == null) { CosmeticsFactory._cachedCosmeticSubTypesByType[type] = []; }
+  if (CosmeticsFactory._cachedCosmeticsForType[type] == null) {
+    CosmeticsFactory._cachedCosmeticsForType[type] = [];
+  }
+  if (CosmeticsFactory._cachedCosmeticSubTypesByType[type] == null) {
+    CosmeticsFactory._cachedCosmeticSubTypesByType[type] = [];
+  }
 
   for (factionIdKey of Array.from<any>(factionIds)) {
     factionId = Factions[factionIdKey];
-    if (CosmeticsFactory._cachedCosmeticsForTypeAndFaction[type] == null) { CosmeticsFactory._cachedCosmeticsForTypeAndFaction[type] = []; }
-    if (CosmeticsFactory._cachedCosmeticsForTypeAndFaction[type][factionId] == null) { CosmeticsFactory._cachedCosmeticsForTypeAndFaction[type][factionId] = []; }
+    if (CosmeticsFactory._cachedCosmeticsForTypeAndFaction[type] == null) {
+      CosmeticsFactory._cachedCosmeticsForTypeAndFaction[type] = [];
+    }
+    if (CosmeticsFactory._cachedCosmeticsForTypeAndFaction[type][factionId] == null) {
+      CosmeticsFactory._cachedCosmeticsForTypeAndFaction[type][factionId] = [];
+    }
 
     for (rarityIdKey of Array.from<any>(rarityIds)) {
       rarityId = Rarity[rarityIdKey];
-      if (CosmeticsFactory._cachedCosmeticsForTypeAndFactionAndRarity[type] == null) { CosmeticsFactory._cachedCosmeticsForTypeAndFactionAndRarity[type] = []; }
-      if (CosmeticsFactory._cachedCosmeticsForTypeAndFactionAndRarity[type][factionId] == null) { CosmeticsFactory._cachedCosmeticsForTypeAndFactionAndRarity[type][factionId] = []; }
-      if (CosmeticsFactory._cachedCosmeticsForTypeAndFactionAndRarity[type][factionId][rarityId] == null) { CosmeticsFactory._cachedCosmeticsForTypeAndFactionAndRarity[type][factionId][rarityId] = []; }
+      if (CosmeticsFactory._cachedCosmeticsForTypeAndFactionAndRarity[type] == null) {
+        CosmeticsFactory._cachedCosmeticsForTypeAndFactionAndRarity[type] = [];
+      }
+      if (CosmeticsFactory._cachedCosmeticsForTypeAndFactionAndRarity[type][factionId] == null) {
+        CosmeticsFactory._cachedCosmeticsForTypeAndFactionAndRarity[type][factionId] = [];
+      }
+      if (
+        CosmeticsFactory._cachedCosmeticsForTypeAndFactionAndRarity[type][factionId][rarityId] ==
+        null
+      ) {
+        CosmeticsFactory._cachedCosmeticsForTypeAndFactionAndRarity[type][factionId][rarityId] = [];
+      }
     }
   }
 
   for (rarityIdKey of Array.from<any>(rarityIds)) {
     rarityId = Rarity[rarityIdKey];
-    if (CosmeticsFactory._cachedCosmeticsForTypeAndRarity[type] == null) { CosmeticsFactory._cachedCosmeticsForTypeAndRarity[type] = []; }
-    if (CosmeticsFactory._cachedCosmeticsForTypeAndRarity[type][rarityId] == null) { CosmeticsFactory._cachedCosmeticsForTypeAndRarity[type][rarityId] = []; }
+    if (CosmeticsFactory._cachedCosmeticsForTypeAndRarity[type] == null) {
+      CosmeticsFactory._cachedCosmeticsForTypeAndRarity[type] = [];
+    }
+    if (CosmeticsFactory._cachedCosmeticsForTypeAndRarity[type][rarityId] == null) {
+      CosmeticsFactory._cachedCosmeticsForTypeAndRarity[type][rarityId] = [];
+    }
   }
 
-  if (CosmeticsFactory._cachedCosmeticsForTypeAndSubType[type] == null) { CosmeticsFactory._cachedCosmeticsForTypeAndSubType[type] = {}; }
+  if (CosmeticsFactory._cachedCosmeticsForTypeAndSubType[type] == null) {
+    CosmeticsFactory._cachedCosmeticsForTypeAndSubType[type] = {};
+  }
 }
 
 for (factionIdKey of Array.from<any>(factionIds)) {
   factionId = Factions[factionIdKey];
-  if (CosmeticsFactory._cachedCosmeticsForFaction[factionId] == null) { CosmeticsFactory._cachedCosmeticsForFaction[factionId] = []; }
+  if (CosmeticsFactory._cachedCosmeticsForFaction[factionId] == null) {
+    CosmeticsFactory._cachedCosmeticsForFaction[factionId] = [];
+  }
 }
 
 for (rarityIdKey of Array.from<any>(rarityIds)) {
   rarityId = Rarity[rarityIdKey];
-  if (CosmeticsFactory._cachedCosmeticsForRarity[rarityId] == null) { CosmeticsFactory._cachedCosmeticsForRarity[rarityId] = []; }
+  if (CosmeticsFactory._cachedCosmeticsForRarity[rarityId] == null) {
+    CosmeticsFactory._cachedCosmeticsForRarity[rarityId] = [];
+  }
 }
 
 for (var cosmeticChestTypeKey of Array.from<any>(cosmeticChestTypes)) {
   chestType = CosmeticsChestTypeLookup[cosmeticChestTypeKey];
-  if (CosmeticsFactory._cachedCosmeticsForChestType[chestType] == null) { CosmeticsFactory._cachedCosmeticsForChestType[chestType] = []; }
+  if (CosmeticsFactory._cachedCosmeticsForChestType[chestType] == null) {
+    CosmeticsFactory._cachedCosmeticsForChestType[chestType] = [];
+  }
 }
 
 // add all cosmetics to caches
@@ -9482,15 +9559,9 @@ for (var cosmeticIdKey in cosmeticIdKeys) {
   cosmeticId = cosmeticIdKeys[cosmeticIdKey];
   cosmeticData = CosmeticsFactory._cosmeticsById[cosmeticId];
   type = cosmeticData.typeId;
-  ({
-    factionId,
-  } = cosmeticData);
-  ({
-    rarityId,
-  } = cosmeticData);
-  ({
-    chestType,
-  } = cosmeticData);
+  ({ factionId } = cosmeticData);
+  ({ rarityId } = cosmeticData);
+  ({ chestType } = cosmeticData);
   var subType = cosmeticData.subTypeId;
 
   CosmeticsFactory._cachedCosmetics.push(cosmeticData);
@@ -9506,12 +9577,16 @@ for (var cosmeticIdKey in cosmeticIdKeys) {
       CosmeticsFactory._cachedCosmeticsForTypeAndRarity[type][rarityId].push(cosmeticData);
     }
 
-    if ((factionId != null) && (rarityId != null)) {
-      CosmeticsFactory._cachedCosmeticsForTypeAndFactionAndRarity[type][factionId][rarityId].push(cosmeticData);
+    if (factionId != null && rarityId != null) {
+      CosmeticsFactory._cachedCosmeticsForTypeAndFactionAndRarity[type][factionId][rarityId].push(
+        cosmeticData,
+      );
     }
 
     if (subType != null) {
-      if (CosmeticsFactory._cachedCosmeticsForTypeAndSubType[type][subType] == null) { CosmeticsFactory._cachedCosmeticsForTypeAndSubType[type][subType] = []; }
+      if (CosmeticsFactory._cachedCosmeticsForTypeAndSubType[type][subType] == null) {
+        CosmeticsFactory._cachedCosmeticsForTypeAndSubType[type][subType] = [];
+      }
       CosmeticsFactory._cachedCosmeticsForTypeAndSubType[type][subType].push(cosmeticData);
 
       if (!_.contains(CosmeticsFactory._cachedCosmeticSubTypesByType[type], subType)) {
@@ -9520,13 +9595,15 @@ for (var cosmeticIdKey in cosmeticIdKeys) {
     }
 
     if (type === CosmeticsTypeLookup.CardSkin) {
-      var {
-        cardId,
-      } = cosmeticData;
+      var { cardId } = cosmeticData;
       if (cardId != null) {
-        if (CosmeticsFactory._cachedCardSkinsForCardId[cardId] == null) { CosmeticsFactory._cachedCardSkinsForCardId[cardId] = []; }
+        if (CosmeticsFactory._cachedCardSkinsForCardId[cardId] == null) {
+          CosmeticsFactory._cachedCardSkinsForCardId[cardId] = [];
+        }
         CosmeticsFactory._cachedCardSkinsForCardId[cardId].push(cosmeticData);
-        if (CosmeticsFactory._cachedCardSkinIdsForCardId[cardId] == null) { CosmeticsFactory._cachedCardSkinIdsForCardId[cardId] = []; }
+        if (CosmeticsFactory._cachedCardSkinIdsForCardId[cardId] == null) {
+          CosmeticsFactory._cachedCardSkinIdsForCardId[cardId] = [];
+        }
         CosmeticsFactory._cachedCardSkinIdsForCardId[cardId].push(cosmeticData.id);
       }
     }
@@ -9550,25 +9627,35 @@ for (var cosmeticIdKey in cosmeticIdKeys) {
 const _getEmotionDescriptor = function (emoteOrder) {
   if (emoteOrder === EMOTE_ORDER_ANGRY) {
     return i18next.t('cosmetics.emote_anger');
-  } if (emoteOrder === EMOTE_ORDER_BOW) {
+  }
+  if (emoteOrder === EMOTE_ORDER_BOW) {
     return i18next.t('cosmetics.emote_respect');
-  } if (emoteOrder === EMOTE_ORDER_CONFUSED) {
+  }
+  if (emoteOrder === EMOTE_ORDER_CONFUSED) {
     return i18next.t('cosmetics.emote_confusion');
-  } if (emoteOrder === EMOTE_ORDER_FRUSTRATED) {
+  }
+  if (emoteOrder === EMOTE_ORDER_FRUSTRATED) {
     return i18next.t('cosmetics.emote_frustration');
-  } if (emoteOrder === EMOTE_ORDER_HAPPY) {
+  }
+  if (emoteOrder === EMOTE_ORDER_HAPPY) {
     return i18next.t('cosmetics.emote_happiness');
-  } if (emoteOrder === EMOTE_ORDER_SAD) {
+  }
+  if (emoteOrder === EMOTE_ORDER_SAD) {
     return i18next.t('cosmetics.emote_sadness');
-  } if (emoteOrder === EMOTE_ORDER_SLEEP) {
+  }
+  if (emoteOrder === EMOTE_ORDER_SLEEP) {
     return i18next.t('cosmetics.emote_impatience');
-  } if (emoteOrder === EMOTE_ORDER_SUNGLASSES) {
+  }
+  if (emoteOrder === EMOTE_ORDER_SUNGLASSES) {
     return i18next.t('cosmetics.emote_style');
-  } if (emoteOrder === EMOTE_ORDER_SURPRISED) {
+  }
+  if (emoteOrder === EMOTE_ORDER_SURPRISED) {
     return i18next.t('cosmetics.emote_surprise');
-  } if (emoteOrder === EMOTE_ORDER_TAUNT) {
+  }
+  if (emoteOrder === EMOTE_ORDER_TAUNT) {
     return i18next.t('cosmetics.emote_confidence');
-  } if (emoteOrder === EMOTE_ORDER_KISS) {
+  }
+  if (emoteOrder === EMOTE_ORDER_KISS) {
     return i18next.t('cosmetics.emote_love');
   }
   return i18next.t('cosmetics.emote_emotion');
@@ -9587,33 +9674,73 @@ for (var cosForDesc of Array.from<any>(allCosForDesc)) {
   } else if (cosForDesc.typeId === CosmeticsTypeLookup.Emote) {
     var generalDescriptor = '';
     if (cosForDesc.generalId != null) {
-      if (cosForDesc.generalId === Cards.Faction1.General) { generalDescriptor = i18next.t('cosmetics.shop_emote_argeon'); }
-      if (cosForDesc.generalId === Cards.Faction1.AltGeneral) { generalDescriptor = i18next.t('cosmetics.shop_emote_ziran'); }
-      if (cosForDesc.generalId === Cards.Faction1.ThirdGeneral) { generalDescriptor = i18next.t('cosmetics.shop_emote_brome'); }
-      if (cosForDesc.generalId === Cards.Faction2.General) { generalDescriptor = i18next.t('cosmetics.shop_emote_kaleos'); }
-      if (cosForDesc.generalId === Cards.Faction2.AltGeneral) { generalDescriptor = i18next.t('cosmetics.shop_emote_reva'); }
-      if (cosForDesc.generalId === Cards.Faction2.ThirdGeneral) { generalDescriptor = i18next.t('cosmetics.shop_emote_shidai'); }
-      if (cosForDesc.generalId === Cards.Faction3.General) { generalDescriptor = i18next.t('cosmetics.shop_emote_zirix'); }
-      if (cosForDesc.generalId === Cards.Faction3.AltGeneral) { generalDescriptor = i18next.t('cosmetics.shop_emote_sajj'); }
-      if (cosForDesc.generalId === Cards.Faction3.ThirdGeneral) { generalDescriptor = i18next.t('cosmetics.shop_emote_ciphyron'); }
-      if (cosForDesc.generalId === Cards.Faction4.General) { generalDescriptor = i18next.t('cosmetics.shop_emote_lilithe'); }
-      if (cosForDesc.generalId === Cards.Faction4.AltGeneral) { generalDescriptor = i18next.t('cosmetics.shop_emote_cassyva'); }
-      if (cosForDesc.generalId === Cards.Faction4.ThirdGeneral) { generalDescriptor = i18next.t('cosmetics.shop_emote_maehv'); }
-      if (cosForDesc.generalId === Cards.Faction5.General) { generalDescriptor = i18next.t('cosmetics.shop_emote_vaath'); }
-      if (cosForDesc.generalId === Cards.Faction5.AltGeneral) { generalDescriptor = i18next.t('cosmetics.shop_emote_starhorn'); }
-      if (cosForDesc.generalId === Cards.Faction5.ThirdGeneral) { generalDescriptor = i18next.t('cosmetics.shop_emote_ragnora'); }
-      if (cosForDesc.generalId === Cards.Faction6.General) { generalDescriptor = i18next.t('cosmetics.shop_emote_faie'); }
-      if (cosForDesc.generalId === Cards.Faction6.AltGeneral) { generalDescriptor = i18next.t('cosmetics.shop_emote_kara'); }
-      if (cosForDesc.generalId === Cards.Faction6.ThirdGeneral) { generalDescriptor = i18next.t('cosmetics.shop_emote_ilena'); }
+      if (cosForDesc.generalId === Cards.Faction1.General) {
+        generalDescriptor = i18next.t('cosmetics.shop_emote_argeon');
+      }
+      if (cosForDesc.generalId === Cards.Faction1.AltGeneral) {
+        generalDescriptor = i18next.t('cosmetics.shop_emote_ziran');
+      }
+      if (cosForDesc.generalId === Cards.Faction1.ThirdGeneral) {
+        generalDescriptor = i18next.t('cosmetics.shop_emote_brome');
+      }
+      if (cosForDesc.generalId === Cards.Faction2.General) {
+        generalDescriptor = i18next.t('cosmetics.shop_emote_kaleos');
+      }
+      if (cosForDesc.generalId === Cards.Faction2.AltGeneral) {
+        generalDescriptor = i18next.t('cosmetics.shop_emote_reva');
+      }
+      if (cosForDesc.generalId === Cards.Faction2.ThirdGeneral) {
+        generalDescriptor = i18next.t('cosmetics.shop_emote_shidai');
+      }
+      if (cosForDesc.generalId === Cards.Faction3.General) {
+        generalDescriptor = i18next.t('cosmetics.shop_emote_zirix');
+      }
+      if (cosForDesc.generalId === Cards.Faction3.AltGeneral) {
+        generalDescriptor = i18next.t('cosmetics.shop_emote_sajj');
+      }
+      if (cosForDesc.generalId === Cards.Faction3.ThirdGeneral) {
+        generalDescriptor = i18next.t('cosmetics.shop_emote_ciphyron');
+      }
+      if (cosForDesc.generalId === Cards.Faction4.General) {
+        generalDescriptor = i18next.t('cosmetics.shop_emote_lilithe');
+      }
+      if (cosForDesc.generalId === Cards.Faction4.AltGeneral) {
+        generalDescriptor = i18next.t('cosmetics.shop_emote_cassyva');
+      }
+      if (cosForDesc.generalId === Cards.Faction4.ThirdGeneral) {
+        generalDescriptor = i18next.t('cosmetics.shop_emote_maehv');
+      }
+      if (cosForDesc.generalId === Cards.Faction5.General) {
+        generalDescriptor = i18next.t('cosmetics.shop_emote_vaath');
+      }
+      if (cosForDesc.generalId === Cards.Faction5.AltGeneral) {
+        generalDescriptor = i18next.t('cosmetics.shop_emote_starhorn');
+      }
+      if (cosForDesc.generalId === Cards.Faction5.ThirdGeneral) {
+        generalDescriptor = i18next.t('cosmetics.shop_emote_ragnora');
+      }
+      if (cosForDesc.generalId === Cards.Faction6.General) {
+        generalDescriptor = i18next.t('cosmetics.shop_emote_faie');
+      }
+      if (cosForDesc.generalId === Cards.Faction6.AltGeneral) {
+        generalDescriptor = i18next.t('cosmetics.shop_emote_kara');
+      }
+      if (cosForDesc.generalId === Cards.Faction6.ThirdGeneral) {
+        generalDescriptor = i18next.t('cosmetics.shop_emote_ilena');
+      }
     }
-    cosForDesc.shopDescription = i18next.t('cosmetics.shop_emote', { emote: _getEmotionDescriptor(cosForDesc.emoteOrder) }, { general: generalDescriptor });
+    cosForDesc.shopDescription = i18next.t(
+      'cosmetics.shop_emote',
+      { emote: _getEmotionDescriptor(cosForDesc.emoteOrder) },
+      { general: generalDescriptor },
+    );
   }
 }
 // cosForDesc.shopDescription = "Express your #{_getEmotionDescriptor(cosForDesc.emoteOrder)} in game#{generalDescriptor}"
 // Set default reward orders
 const allCosForRewardOrder = CosmeticsFactory.getAllCosmetics();
 for (var cosForOrder of Array.from<any>(allCosForRewardOrder)) {
-  if ((cosForOrder.rewardOrder == null)) {
+  if (cosForOrder.rewardOrder == null) {
     cosForOrder.rewardOrder = 0;
   }
 }

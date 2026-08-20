@@ -42,7 +42,9 @@ class ModifierEndTurnWatchAnyPlayerHsuku extends ModifierEndTurnWatchAnyPlayer {
     super.onTurnWatch();
 
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
-      const general = this.getCard().getGameSession().getGeneralForPlayerId(this.getGameSession().getCurrentPlayer().getPlayerId());
+      const general = this.getCard()
+        .getGameSession()
+        .getGeneralForPlayerId(this.getGameSession().getCurrentPlayer().getPlayerId());
       const friendlyUnits = this.getGameSession().getBoard().getFriendlyEntitiesForEntity(general);
       if (friendlyUnits != null) {
         const possibleMinions = [];
@@ -52,10 +54,19 @@ class ModifierEndTurnWatchAnyPlayerHsuku extends ModifierEndTurnWatchAnyPlayer {
           }
         }
         if (possibleMinions.length > 0) {
-          const minionToBuff = possibleMinions[this.getGameSession().getRandomIntegerForExecution(possibleMinions.length)];
-          const statBuff = this.possibleBuffs[this.getGameSession().getRandomIntegerForExecution(this.possibleBuffs.length)];
+          const minionToBuff =
+            possibleMinions[
+              this.getGameSession().getRandomIntegerForExecution(possibleMinions.length)
+            ];
+          const statBuff =
+            this.possibleBuffs[
+              this.getGameSession().getRandomIntegerForExecution(this.possibleBuffs.length)
+            ];
           statBuff.appliedName = this.buffName;
-          const ability = this.possibleAbilities[this.getGameSession().getRandomIntegerForExecution(this.possibleAbilities.length)];
+          const ability =
+            this.possibleAbilities[
+              this.getGameSession().getRandomIntegerForExecution(this.possibleAbilities.length)
+            ];
           this.getGameSession().applyModifierContextObject(statBuff, minionToBuff);
           return this.getGameSession().applyModifierContextObject(ability, minionToBuff);
         }

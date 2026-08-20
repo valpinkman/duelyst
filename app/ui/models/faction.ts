@@ -1,8 +1,7 @@
 'use strict';
 
 var FactionModel = Backbone.Model.extend({
-  initialize: function () {
-  },
+  initialize: function () {},
 
   defaults: {
     id: 0,

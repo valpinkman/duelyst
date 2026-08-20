@@ -15,7 +15,6 @@ TileNode
  *************************************************************************** */
 
 const TileNode = EntityNode.extend({
-
   _showingIdleState: false,
   _showingOccupiedState: false,
   _showingDepletedState: false,
@@ -38,7 +37,9 @@ const TileNode = EntityNode.extend({
 
       // init sprites
       this.entitySprite = EntitySprite.create(spriteOptions);
-      if (spriteOptions.scale == null) { this.entitySprite.setScale(CONFIG.SCALE); }
+      if (spriteOptions.scale == null) {
+        this.entitySprite.setScale(CONFIG.SCALE);
+      }
 
       // position sprites
       this.entitySprite.setPosition(this.getCenterPosition());
@@ -92,7 +93,9 @@ const TileNode = EntityNode.extend({
           audio_engine.current().play_effect(this.getSoundResource().idle, false);
         }
 
-        const animActionIdle = this.getAnimResource() && UtilsEngine.getAnimationAction(this.getAnimResource().idle, true);
+        const animActionIdle =
+          this.getAnimResource() &&
+          UtilsEngine.getAnimationAction(this.getAnimResource().idle, true);
         if (animActionIdle != null) {
           this.entitySprite.runAction(animActionIdle);
         }
@@ -108,14 +111,16 @@ const TileNode = EntityNode.extend({
   showSpawnSprites() {
     const sdkCard = this.getSdkCard();
     // when an apply/spawn animation is present
-    const animActionApply = this.getAnimResource() && UtilsEngine.getAnimationAction(this.getAnimResource().apply);
+    const animActionApply =
+      this.getAnimResource() && UtilsEngine.getAnimationAction(this.getAnimResource().apply);
     if (animActionApply != null) {
       this.showNoState();
       this.entitySprite.setOpacity(255);
-      this._stateActions.push(this.entitySprite.runAction(cc.sequence(
-        animActionApply,
-        cc.callFunc(this.showNextState, this),
-      )));
+      this._stateActions.push(
+        this.entitySprite.runAction(
+          cc.sequence(animActionApply, cc.callFunc(this.showNextState, this)),
+        ),
+      );
     } else {
       this.showBaseState();
       this.entitySprite.setOpacity(0);
@@ -139,7 +144,9 @@ const TileNode = EntityNode.extend({
           }
         }
 
-        const animActionOccupied = this.getAnimResource() && UtilsEngine.getAnimationAction(this.getAnimResource().occupied, true);
+        const animActionOccupied =
+          this.getAnimResource() &&
+          UtilsEngine.getAnimationAction(this.getAnimResource().occupied, true);
         if (animActionOccupied != null) {
           this.entitySprite.runAction(animActionOccupied);
         }
@@ -165,7 +172,8 @@ const TileNode = EntityNode.extend({
           }
         }
 
-        const animActionDepleted = this.getAnimResource() && UtilsEngine.getAnimationAction(this.getAnimResource().depleted);
+        const animActionDepleted =
+          this.getAnimResource() && UtilsEngine.getAnimationAction(this.getAnimResource().depleted);
         if (animActionDepleted != null) {
           sequenceSteps.push(animActionDepleted);
         }
@@ -173,9 +181,11 @@ const TileNode = EntityNode.extend({
         // short delay then destroy when dead on depletion
         if (sdkCard.getIsRemoved()) {
           this._stopListeningToEvents();
-          sequenceSteps.push(cc.callFunc(function () {
-            this.showDeathState();
-          }, this));
+          sequenceSteps.push(
+            cc.callFunc(function () {
+              this.showDeathState();
+            }, this),
+          );
           this.entitySprite.runAction(cc.sequence(sequenceSteps));
         } else {
           this._stateActions.push(this.entitySprite.runAction(cc.sequence(sequenceSteps)));
@@ -221,14 +231,20 @@ const TileNode = EntityNode.extend({
 
   onBeforeShowMove(event) {
     const action = event && event.action;
-    if (action && UtilsPosition.getPositionsAreEqual(action.getSourcePosition(), this.getBoardPosition())) {
+    if (
+      action &&
+      UtilsPosition.getPositionsAreEqual(action.getSourcePosition(), this.getBoardPosition())
+    ) {
       this.showCurrentState();
     }
   },
 
   onAfterShowMove(event) {
     const action = event && event.action;
-    if (action && UtilsPosition.getPositionsAreEqual(action.getTargetPosition(), this.getBoardPosition())) {
+    if (
+      action &&
+      UtilsPosition.getPositionsAreEqual(action.getTargetPosition(), this.getBoardPosition())
+    ) {
       this.showCurrentState();
     }
   },
@@ -237,20 +253,27 @@ const TileNode = EntityNode.extend({
     this._super(event);
 
     const action = event && event.action;
-    if (action && action === this.getSdkCard().getOccupantChangingAction() && this.getSdkCard().getOccupant() == null) {
+    if (
+      action &&
+      action === this.getSdkCard().getOccupantChangingAction() &&
+      this.getSdkCard().getOccupant() == null
+    ) {
       this.showCurrentState();
     }
   },
 
   onAfterShowAction(event) {
     const action = event && event.action;
-    if (action && action === this.getSdkCard().getOccupantChangingAction() && this.getSdkCard().getOccupant() != null) {
+    if (
+      action &&
+      action === this.getSdkCard().getOccupantChangingAction() &&
+      this.getSdkCard().getOccupant() != null
+    ) {
       this.showCurrentState();
     }
   },
 
   /* endregion EVENTS */
-
 });
 
 TileNode.create = function (sdkCard, node) {

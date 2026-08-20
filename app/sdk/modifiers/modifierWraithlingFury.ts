@@ -32,8 +32,12 @@ class ModifierWraithlingFury extends Modifier {
   }
 
   static createContextObject(attackBuff, maxHPBuff, options) {
-    if (attackBuff == null) { attackBuff = 4; }
-    if (maxHPBuff == null) { maxHPBuff = 4; }
+    if (attackBuff == null) {
+      attackBuff = 4;
+    }
+    if (maxHPBuff == null) {
+      maxHPBuff = 4;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.attributeBuffs = {
       atk: attackBuff,

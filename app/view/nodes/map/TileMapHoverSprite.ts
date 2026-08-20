@@ -10,7 +10,6 @@ TileMapHoverSprite.create()
  *************************************************************************** */
 
 const TileMapHoverSprite = TileMapScaledSprite.extend({
-
   ctor() {
     this._super(RSX.tile_hover.frame);
   },
@@ -18,7 +17,9 @@ const TileMapHoverSprite = TileMapScaledSprite.extend({
 
 TileMapHoverSprite.create = function (sprite) {
   if (sprite == null) {
-    sprite = cc.pool.getFromPool(TileMapHoverSprite) || TileMapScaledSprite.create(new TileMapHoverSprite());
+    sprite =
+      cc.pool.getFromPool(TileMapHoverSprite) ||
+      TileMapScaledSprite.create(new TileMapHoverSprite());
   }
   return sprite;
 };

@@ -32,20 +32,35 @@ class ModifierSummonSelfOnReplace extends Modifier {
   onAction(e) {
     super.onAction(e);
 
-    const {
-      action,
-    } = e;
+    const { action } = e;
 
     // watch for my player replacing THIS card
-    if (action instanceof ReplaceCardFromHandAction && (action.getOwnerId() === this.getCard().getOwnerId())) {
-      const replacedCard = this.getGameSession().getExistingCardFromIndexOrCreateCardFromData(action.replacedCardIndex);
+    if (
+      action instanceof ReplaceCardFromHandAction &&
+      action.getOwnerId() === this.getCard().getOwnerId()
+    ) {
+      const replacedCard = this.getGameSession().getExistingCardFromIndexOrCreateCardFromData(
+        action.replacedCardIndex,
+      );
       if (replacedCard === this.getCard()) {
         // and play this card in a random space nearby owner's General
         const general = this.getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
         const generalPosition = general.getPosition();
-        const spawnLocations = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(this.getGameSession(), generalPosition, CONFIG.PATTERN_3x3, this.getCard(), this.getCard());
+        const spawnLocations = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(
+          this.getGameSession(),
+          generalPosition,
+          CONFIG.PATTERN_3x3,
+          this.getCard(),
+          this.getCard(),
+        );
         if (spawnLocations.length > 0) {
-          const playCardAction = new PlayCardSilentlyAction(this.getGameSession(), this.getCard().getOwnerId(), spawnLocations[0].x, spawnLocations[0].y, this.getCard().getIndex());
+          const playCardAction = new PlayCardSilentlyAction(
+            this.getGameSession(),
+            this.getCard().getOwnerId(),
+            spawnLocations[0].x,
+            spawnLocations[0].y,
+            this.getCard().getIndex(),
+          );
           this.getGameSession().executeAction(playCardAction);
           // and damage own General for 2
           const damageAction = new DamageAction(this.getGameSession());

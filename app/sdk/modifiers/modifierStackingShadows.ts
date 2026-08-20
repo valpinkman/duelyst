@@ -35,7 +35,10 @@ class ModifierStackingShadows extends ModifierEndTurnWatch {
     // once a counter is there, don't need to keep adding - original counter will update on further shadow creep additions
     const targetCard = this.getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
     if (!targetCard.hasActiveModifierClass(ModifierCounterShadowCreep)) {
-      return this.getGameSession().applyModifierContextObject(ModifierCounterShadowCreep.createContextObject('ModifierStackingShadows'), targetCard);
+      return this.getGameSession().applyModifierContextObject(
+        ModifierCounterShadowCreep.createContextObject('ModifierStackingShadows'),
+        targetCard,
+      );
     }
   }
 
@@ -68,7 +71,9 @@ class ModifierStackingShadows extends ModifierEndTurnWatch {
     let bonusDamage = 0;
 
     // shadow creep base damage can be increased by adding ModifierStackingShadowsBonusDamage to this card
-    for (var mod of Array.from<any>(this.getCard().getActiveModifiersByClass(ModifierStackingShadowsBonusDamage))) {
+    for (var mod of Array.from<any>(
+      this.getCard().getActiveModifiersByClass(ModifierStackingShadowsBonusDamage),
+    )) {
       bonusDamage += mod.getFlatBonusDamage();
       multiBonus *= mod.getMultiplierBonusDamage();
     }
@@ -112,7 +117,7 @@ class ModifierStackingShadows extends ModifierEndTurnWatch {
 
   _activateCreep() {
     const unit = this.getGameSession().getBoard().getUnitAtPosition(this.getCard().getPosition());
-    if ((unit != null) && !this.getCard().getIsSameTeamAs(unit)) {
+    if (unit != null && !this.getCard().getIsSameTeamAs(unit)) {
       const damageAction = new DamageAction(this.getGameSession());
       damageAction.setSource(this.getCard());
       damageAction.setTarget(unit);

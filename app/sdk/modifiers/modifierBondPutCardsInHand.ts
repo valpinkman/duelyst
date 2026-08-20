@@ -28,15 +28,18 @@ class ModifierBondPutCardsInHand extends ModifierBond {
 
   onBond() {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
-      const {
-        cardIds,
-      } = this;
+      const { cardIds } = this;
       return (() => {
         const result = [];
         while ((cardIds != null ? cardIds.length : undefined) > 0) {
-          var id = cardIds.splice(this.getGameSession().getRandomIntegerForExecution(cardIds.length), 1)[0];
+          var id = cardIds.splice(
+            this.getGameSession().getRandomIntegerForExecution(cardIds.length),
+            1,
+          )[0];
           if (id != null) {
-            var a = new PutCardInHandAction(this.getGameSession(), this.getCard().getOwnerId(), { id });
+            var a = new PutCardInHandAction(this.getGameSession(), this.getCard().getOwnerId(), {
+              id,
+            });
             result.push(this.getGameSession().executeAction(a));
           } else {
             result.push(undefined);

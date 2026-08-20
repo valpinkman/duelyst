@@ -31,7 +31,10 @@ class PlayerModifierSpellWatchSpawnNeutralEntity extends PlayerModifierSpellWatc
       const originalCost = action.getCard().getManaCost();
       let newCost = originalCost + 3;
 
-      const allMinions = this.getGameSession().getCardCaches().getFaction(Factions.Neutral).getType(CardType.Unit)
+      const allMinions = this.getGameSession()
+        .getCardCaches()
+        .getFaction(Factions.Neutral)
+        .getType(CardType.Unit)
         .getIsHiddenInCollection(false)
         .getIsToken(false)
         .getIsGeneral(false)
@@ -42,7 +45,7 @@ class PlayerModifierSpellWatchSpawnNeutralEntity extends PlayerModifierSpellWatc
       if (allMinions != null) {
         let availableMinionAtCost = false;
         let possibleCards = [];
-        while (!availableMinionAtCost && (newCost >= 0)) {
+        while (!availableMinionAtCost && newCost >= 0) {
           var tempPossibilities = [];
           for (var minion of Array.from<any>(allMinions)) {
             if ((minion != null ? minion.getManaCost() : undefined) === newCost) {
@@ -58,14 +61,30 @@ class PlayerModifierSpellWatchSpawnNeutralEntity extends PlayerModifierSpellWatc
         }
 
         if (possibleCards.length > 0) {
-          const newUnit = possibleCards[this.getGameSession().getRandomIntegerForExecution(possibleCards.length)];
+          const newUnit =
+            possibleCards[this.getGameSession().getRandomIntegerForExecution(possibleCards.length)];
           const ownerId = this.getPlayerId();
-          const generalPosition = this.getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId()).getPosition();
-          const spawnPositions = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(this.getGameSession(), generalPosition, CONFIG.PATTERN_3x3, newUnit, this.getCard(), 1);
+          const generalPosition = this.getGameSession()
+            .getGeneralForPlayerId(this.getCard().getOwnerId())
+            .getPosition();
+          const spawnPositions = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(
+            this.getGameSession(),
+            generalPosition,
+            CONFIG.PATTERN_3x3,
+            newUnit,
+            this.getCard(),
+            1,
+          );
           return (() => {
             const result = [];
             for (var spawnPosition of Array.from<any>(spawnPositions)) {
-              var spawnAction = new PlayCardSilentlyAction(this.getGameSession(), ownerId, spawnPosition.x, spawnPosition.y, newUnit);
+              var spawnAction = new PlayCardSilentlyAction(
+                this.getGameSession(),
+                ownerId,
+                spawnPosition.x,
+                spawnPosition.y,
+                newUnit,
+              );
               spawnAction.setSource(this.getCard());
               result.push(this.getGameSession().executeAction(spawnAction));
             }
@@ -76,6 +95,7 @@ class PlayerModifierSpellWatchSpawnNeutralEntity extends PlayerModifierSpellWatc
     }
   }
 }
-PlayerModifierSpellWatchSpawnNeutralEntity.prototype.type = 'PlayerModifierSpellWatchSpawnNeutralEntity';
+PlayerModifierSpellWatchSpawnNeutralEntity.prototype.type =
+  'PlayerModifierSpellWatchSpawnNeutralEntity';
 
 module.exports = PlayerModifierSpellWatchSpawnNeutralEntity;

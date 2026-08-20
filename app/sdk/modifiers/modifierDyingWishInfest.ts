@@ -17,7 +17,9 @@ class ModifierDyingWishInfest extends ModifierDyingWish {
   static type = 'ModifierDyingWishInfest';
 
   onDyingWish() {
-    const general = this.getCard().getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
+    const general = this.getCard()
+      .getGameSession()
+      .getGeneralForPlayerId(this.getCard().getOwnerId());
 
     const damageAction = new DamageAction(this.getGameSession());
     damageAction.setOwnerId(this.getCard().getOwnerId());
@@ -26,15 +28,20 @@ class ModifierDyingWishInfest extends ModifierDyingWish {
     damageAction.setDamageAmount(2);
     this.getGameSession().executeAction(damageAction);
 
-    const nearbyAllies = this.getGameSession().getBoard().getFriendlyEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
+    const nearbyAllies = this.getGameSession()
+      .getBoard()
+      .getFriendlyEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
     return (() => {
       const result = [];
       for (var entity of Array.from<any>(nearbyAllies)) {
-        if ((entity != null) && !entity.getIsGeneral()) {
+        if (entity != null && !entity.getIsGeneral()) {
           var deathPlagueModifier = ModifierDyingWishInfest.createContextObject();
           deathPlagueModifier.appliedName = 'Death Plague';
-          deathPlagueModifier.appliedDescription = 'When this dies, deals 2 damage to your General, then spreads to nearby friendly minions.';
-          result.push(this.getGameSession().applyModifierContextObject(deathPlagueModifier, entity));
+          deathPlagueModifier.appliedDescription =
+            'When this dies, deals 2 damage to your General, then spreads to nearby friendly minions.';
+          result.push(
+            this.getGameSession().applyModifierContextObject(deathPlagueModifier, entity),
+          );
         } else {
           result.push(undefined);
         }
@@ -44,6 +51,9 @@ class ModifierDyingWishInfest extends ModifierDyingWish {
   }
 }
 ModifierDyingWishInfest.prototype.type = 'ModifierDyingWishInfest';
-ModifierDyingWishInfest.prototype.fxResource = ['FX.Modifiers.ModifierInfest', 'FX.Modifiers.ModifierGenericChain'];
+ModifierDyingWishInfest.prototype.fxResource = [
+  'FX.Modifiers.ModifierInfest',
+  'FX.Modifiers.ModifierGenericChain',
+];
 
 module.exports = ModifierDyingWishInfest;

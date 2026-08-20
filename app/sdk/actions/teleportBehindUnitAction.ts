@@ -27,7 +27,7 @@ class TeleportBehindUnitAction extends TeleportAction {
   _execute() {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
       // only do calculations server-side
-      if ((this._private.behindUnit != null) && this.getSource()) {
+      if (this._private.behindUnit != null && this.getSource()) {
         // calculate "in front of me"
         const position = this._private.behindUnit.getPosition();
         position.x += this._private.behindUnit.isOwnedByPlayer1() ? -1 : 1;

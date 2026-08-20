@@ -33,6 +33,8 @@ PlayerModifierPreventSpellDamage.prototype.auraIncludeGeneral = true;
 PlayerModifierPreventSpellDamage.prototype.auraIncludeHand = false;
 PlayerModifierPreventSpellDamage.prototype.auraIncludeSelf = true;
 PlayerModifierPreventSpellDamage.prototype.auraRadius = CONFIG.WHOLE_BOARD_RADIUS;
-PlayerModifierPreventSpellDamage.prototype.modifiersContextObjects = [ModifierImmuneToSpellDamage.createContextObject()];
+PlayerModifierPreventSpellDamage.prototype.modifiersContextObjects = [
+  ModifierImmuneToSpellDamage.createContextObject(),
+];
 
 module.exports = PlayerModifierPreventSpellDamage;

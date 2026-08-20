@@ -20,13 +20,14 @@ const ScoreForUnitDamage = function (unit, damageAmount) {
 
     // prefer to damage/kill high-value units
     if (targetHasForcefield) {
-      score += BOUNTY.FORCEFIELD_POP + (scoreForUnit / 4); // flat bounty for popping a forcefield - amount of damage irrelevant plus softened unit score for sorting.
+      score += BOUNTY.FORCEFIELD_POP + scoreForUnit / 4; // flat bounty for popping a forcefield - amount of damage irrelevant plus softened unit score for sorting.
     } else {
       score += scoreForUnit * BOUNTY.DAMAGE_PER_UNIT_SCORE;
     }
 
     // prefer damage that may be lethal
-    if (!targetHasForcefield) { // if unit has forcefield, impossible to have lethal damage
+    if (!targetHasForcefield) {
+      // if unit has forcefield, impossible to have lethal damage
       const hp = unit.getHP();
       const remainingHP = hp - damageAmount;
       if (remainingHP <= 0) {

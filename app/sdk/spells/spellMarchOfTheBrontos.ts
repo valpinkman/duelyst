@@ -18,16 +18,26 @@ class SpellMarchOfTheBrontos extends Spell {
 
     const position = { x, y };
     const unit = this.getGameSession().getBoard().getUnitAtPosition(position);
-    if (((unit != null ? unit.getBaseCardId() : undefined) === Cards.Faction5.Egg)
-    && (unit.getOwnerId() === this.getOwnerId())) {
+    if (
+      (unit != null ? unit.getBaseCardId() : undefined) === Cards.Faction5.Egg &&
+      unit.getOwnerId() === this.getOwnerId()
+    ) {
       const removeOriginalEntityAction = new RemoveAction(this.getGameSession());
       removeOriginalEntityAction.setOwnerId(this.getOwnerId());
       removeOriginalEntityAction.setTarget(unit);
       this.getGameSession().executeAction(removeOriginalEntityAction);
 
       const unitToSpawn: Record<string, any> = { id: Cards.Faction5.Megabrontodon };
-      unitToSpawn.additionalInherentModifiersContextObjects = [ModifierPseudoRush.createContextObject()];
-      const spawnEgg = new PlayCardAsTransformAction(this.getGameSession(), unit.getOwnerId(), position.x, position.y, unitToSpawn);
+      unitToSpawn.additionalInherentModifiersContextObjects = [
+        ModifierPseudoRush.createContextObject(),
+      ];
+      const spawnEgg = new PlayCardAsTransformAction(
+        this.getGameSession(),
+        unit.getOwnerId(),
+        position.x,
+        position.y,
+        unitToSpawn,
+      );
       return this.getGameSession().executeAction(spawnEgg);
     }
   }
@@ -38,8 +48,12 @@ class SpellMarchOfTheBrontos extends Spell {
     if (validPositions.length > 0) {
       // spell only applies to friendly eggs
       for (var position of Array.from<any>(validPositions)) {
-        if ((this.getGameSession().getBoard().getUnitAtPosition(position).getBaseCardId() === Cards.Faction5.Egg)
-        && (this.getGameSession().getBoard().getUnitAtPosition(position).getOwnerId() === this.getOwnerId())) {
+        if (
+          this.getGameSession().getBoard().getUnitAtPosition(position).getBaseCardId() ===
+            Cards.Faction5.Egg &&
+          this.getGameSession().getBoard().getUnitAtPosition(position).getOwnerId() ===
+            this.getOwnerId()
+        ) {
           filteredPositions.push(position);
         }
       }

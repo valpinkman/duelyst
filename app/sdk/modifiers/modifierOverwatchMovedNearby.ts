@@ -24,10 +24,13 @@ class ModifierOverwatchMovedNearby extends ModifierOverwatch {
     if (action instanceof MoveAction && !action.getIsImplicit()) {
       const card = this.getCard();
       const source = action.getSource();
-      if ((source !== card) && !source.getIsSameTeamAs(card) && !source.getIsGeneral()) {
+      if (source !== card && !source.getIsSameTeamAs(card) && !source.getIsGeneral()) {
         const myPosition = card.getPosition();
         const targetPosition = action.getTargetPosition();
-        return (Math.abs(myPosition.x - targetPosition.x) <= 1) && (Math.abs(myPosition.y - targetPosition.y) <= 1);
+        return (
+          Math.abs(myPosition.x - targetPosition.x) <= 1 &&
+          Math.abs(myPosition.y - targetPosition.y) <= 1
+        );
       }
     }
     return false;

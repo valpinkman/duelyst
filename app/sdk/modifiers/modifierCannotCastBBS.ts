@@ -16,7 +16,7 @@ class ModifierCannotCastBBS extends ModifierCannot {
 
   static type = 'ModifierCannotCastBBS';
   static modifierName = 'Cannot Cast BBS';
-  static description = 'Player can\'t cast Bloodbound Spell.';
+  static description = "Player can't cast Bloodbound Spell.";
 
   static createContextObject() {
     const contextObject = super.createContextObject();
@@ -27,8 +27,14 @@ class ModifierCannotCastBBS extends ModifierCannot {
     const a = actionEvent.action;
 
     // prevents owner from casting BBS
-    if ((a instanceof PlaySignatureCardAction && (a.getOwner() === this.getOwner())) && a.getIsValid() && !a.getIsImplicit() && (__guard__(a.getCard(), (x) => x.getType()) === CardType.Spell)) {
-      return this.invalidateAction(a, this.getCard().getPosition(), 'You can\'t cast that!');
+    if (
+      a instanceof PlaySignatureCardAction &&
+      a.getOwner() === this.getOwner() &&
+      a.getIsValid() &&
+      !a.getIsImplicit() &&
+      __guard__(a.getCard(), (x) => x.getType()) === CardType.Spell
+    ) {
+      return this.invalidateAction(a, this.getCard().getPosition(), "You can't cast that!");
     }
   }
 }
@@ -39,5 +45,5 @@ ModifierCannotCastBBS.prototype.fxResource = ['FX.Modifiers.ModifierCannotCastSp
 module.exports = ModifierCannotCastBBS;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

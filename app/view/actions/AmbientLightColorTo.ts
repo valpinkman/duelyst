@@ -73,8 +73,8 @@ var AmbientLightColorTo = cc.ActionInterval.extend({
    */
   update(dt) {
     dt = this._computeEaseTime(dt);
-    const locFrom = this._from; const
-      locTo = this._to;
+    const locFrom = this._from;
+    const locTo = this._to;
     if (locFrom) {
       this.target.setAmbientLightColor({
         r: locFrom.r + (locTo.r - locFrom.r) * dt,

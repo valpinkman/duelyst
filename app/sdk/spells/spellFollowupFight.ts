@@ -19,7 +19,7 @@ class SpellFollowupFight extends Spell {
     const applyEffectPosition = { x, y };
     const enemyUnit = board.getCardAtPosition(applyEffectPosition, this.targetType);
     const originalUnit = board.getCardAtPosition(this.getFollowupSourcePosition(), this.targetType);
-    if ((enemyUnit != null) && (originalUnit != null)) {
+    if (enemyUnit != null && originalUnit != null) {
       const fightAction = new FightAction(this.getGameSession());
       fightAction.setOwnerId(this.getOwnerId());
       fightAction.setSource(originalUnit);

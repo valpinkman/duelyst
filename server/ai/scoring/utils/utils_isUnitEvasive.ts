@@ -11,12 +11,16 @@ const isUnitBuffer = require('server/ai/scoring/utils/utils_isUnitBuffer');
  * @returns {Boolean}
  */
 const isUnitEvasive = function (unit) {
-  return (unit.hasModifierClass(ModifierRanged)
-    || unit.hasModifierClass(ModifierBlastAttack)
-    // Look into improving isUnitBuffer function.
-    || (isUnitBuffer(unit) && unit.getHP() < BOUNTY.BUFFER_HP_EVASIVE_THRESHOLD && !unit.hasModifierClass(ModifierForcefieldAbsorb))
-    || (unit.getIsGeneral() && unit.getHP() < BOUNTY.GENERAL_HP_EVASIVE_THRESHOLD))
-    && !unit.hasModifierClass(ModifierEphemeral);
+  return (
+    (unit.hasModifierClass(ModifierRanged) ||
+      unit.hasModifierClass(ModifierBlastAttack) ||
+      // Look into improving isUnitBuffer function.
+      (isUnitBuffer(unit) &&
+        unit.getHP() < BOUNTY.BUFFER_HP_EVASIVE_THRESHOLD &&
+        !unit.hasModifierClass(ModifierForcefieldAbsorb)) ||
+      (unit.getIsGeneral() && unit.getHP() < BOUNTY.GENERAL_HP_EVASIVE_THRESHOLD)) &&
+    !unit.hasModifierClass(ModifierEphemeral)
+  );
 };
 
 module.exports = isUnitEvasive;

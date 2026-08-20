@@ -32,8 +32,12 @@ class ModifierDeathWatchGainAttackEqualToEnemyAttack extends ModifierDeathWatch 
     }
   }
 }
-ModifierDeathWatchGainAttackEqualToEnemyAttack.prototype.type = 'ModifierDeathWatchGainAttackEqualToEnemyAttack';
+ModifierDeathWatchGainAttackEqualToEnemyAttack.prototype.type =
+  'ModifierDeathWatchGainAttackEqualToEnemyAttack';
 ModifierDeathWatchGainAttackEqualToEnemyAttack.prototype.damageAmount = 0;
-ModifierDeathWatchGainAttackEqualToEnemyAttack.prototype.fxResource = ['FX.Modifiers.ModifierDeathwatch', 'FX.Modifiers.ModifierGenericChain'];
+ModifierDeathWatchGainAttackEqualToEnemyAttack.prototype.fxResource = [
+  'FX.Modifiers.ModifierDeathwatch',
+  'FX.Modifiers.ModifierGenericChain',
+];
 
 module.exports = ModifierDeathWatchGainAttackEqualToEnemyAttack;

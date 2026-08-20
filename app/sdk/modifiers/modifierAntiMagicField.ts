@@ -33,10 +33,23 @@ class ModifierAntiMagicField extends Modifier {
     const a = event.action;
 
     // cannot be targeted by spells
-    if ((this.getCard() != null) && a instanceof ApplyCardToBoardAction && a.getIsValid() && UtilsPosition.getPositionsAreEqual(this.getCard().getPosition(), a.getTargetPosition())) {
+    if (
+      this.getCard() != null &&
+      a instanceof ApplyCardToBoardAction &&
+      a.getIsValid() &&
+      UtilsPosition.getPositionsAreEqual(this.getCard().getPosition(), a.getTargetPosition())
+    ) {
       const card = a.getCard();
-      if ((card.getRootPlayedCard().type === CardType.Spell) && !card.getTargetsSpace() && !card.getAppliesSameEffectToMultipleTargets()) {
-        return this.invalidateAction(a, this.getCard().getPosition(), 'Protected by Anti-Magic Field.');
+      if (
+        card.getRootPlayedCard().type === CardType.Spell &&
+        !card.getTargetsSpace() &&
+        !card.getAppliesSameEffectToMultipleTargets()
+      ) {
+        return this.invalidateAction(
+          a,
+          this.getCard().getPosition(),
+          'Protected by Anti-Magic Field.',
+        );
       }
     }
   }
@@ -47,7 +60,12 @@ class ModifierAntiMagicField extends Modifier {
     // cannot be damaged by spells
     if (a instanceof DamageAction) {
       const rootAction = a.getRootAction();
-      if (rootAction instanceof ApplyCardToBoardAction && (rootAction.getCard().getRootPlayedCard().type === CardType.Spell) && this.getCard() && (a.getTarget() === this.getCard())) {
+      if (
+        rootAction instanceof ApplyCardToBoardAction &&
+        rootAction.getCard().getRootPlayedCard().type === CardType.Spell &&
+        this.getCard() &&
+        a.getTarget() === this.getCard()
+      ) {
         a.setChangedByModifier(this);
         return a.setDamageMultiplier(0);
       }

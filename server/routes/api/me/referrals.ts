@@ -19,12 +19,19 @@ const router = express.Router();
 router.get('/summary', function (req, res, next) {
   const user_id = req.user.d.id;
 
-  return knex('users').where('id', user_id).first('referral_rewards_claimed_at')
+  return knex('users')
+    .where('id', user_id)
+    .first('referral_rewards_claimed_at')
     .then(function (userRow) {
-      if (userRow.referral_rewards_claimed_at == null) { userRow.referral_rewards_claimed_at = moment.utc(0).toDate(); }
+      if (userRow.referral_rewards_claimed_at == null) {
+        userRow.referral_rewards_claimed_at = moment.utc(0).toDate();
+      }
       return Promise.all([
         knex('user_referrals').where('user_id', user_id).select(),
-        knex('user_referral_events').where('referrer_id', user_id).andWhere('created_at', '>', userRow.referral_rewards_claimed_at).select(),
+        knex('user_referral_events')
+          .where('referrer_id', user_id)
+          .andWhere('created_at', '>', userRow.referral_rewards_claimed_at)
+          .select(),
       ]);
     })
     .then(function ([referralRows, unreadEventRows]) {
@@ -38,14 +45,20 @@ router.get('/summary', function (req, res, next) {
       const stats: Record<string, any> = {};
 
       for (row of Array.from<any>(referralRows)) {
-        if (stats.signups == null) { stats.signups = 0; }
+        if (stats.signups == null) {
+          stats.signups = 0;
+        }
         stats.signups++;
         if (row.level_reached > 0) {
-          if (stats.silver == null) { stats.silver = 0; }
+          if (stats.silver == null) {
+            stats.silver = 0;
+          }
           stats.silver++;
         }
         if (row.level_reached > 1) {
-          if (stats.gold == null) { stats.gold = 0; }
+          if (stats.gold == null) {
+            stats.gold = 0;
+          }
           stats.gold++;
         }
       }
@@ -54,14 +67,18 @@ router.get('/summary', function (req, res, next) {
 
       for (row of Array.from<any>(unreadEventRows)) {
         switch (row.event_type) {
-        case 'silver':
-          if (unclaimedRewards.spirit_orbs == null) { unclaimedRewards.spirit_orbs = 0; }
-          unclaimedRewards.spirit_orbs += 1;
-          break;
-        case 'gold':
-          if (unclaimedRewards.gold == null) { unclaimedRewards.gold = 0; }
-          unclaimedRewards.gold += 200;
-          break;
+          case 'silver':
+            if (unclaimedRewards.spirit_orbs == null) {
+              unclaimedRewards.spirit_orbs = 0;
+            }
+            unclaimedRewards.spirit_orbs += 1;
+            break;
+          case 'gold':
+            if (unclaimedRewards.gold == null) {
+              unclaimedRewards.gold = 0;
+            }
+            unclaimedRewards.gold += 200;
+            break;
         }
       }
       // when "purchase"
@@ -109,8 +126,15 @@ router.get('/events/recent', function (req, res, next) {
 router.get('/events/unread', function (req, res, next) {
   const user_id = req.user.d.id;
 
-  return knex('users').where('id', user_id).first('referral_rewards_claimed_at')
-    .then((userRow) => knex('user_referral_events').where('referrer_id', user_id).andWhere('created_at', '>', userRow.referral_rewards_claimed_at).select())
+  return knex('users')
+    .where('id', user_id)
+    .first('referral_rewards_claimed_at')
+    .then((userRow) =>
+      knex('user_referral_events')
+        .where('referrer_id', user_id)
+        .andWhere('created_at', '>', userRow.referral_rewards_claimed_at)
+        .select(),
+    )
     .then(function (rows) {
       rows = DataAccessHelpers.restifyData(rows);
       return res.status(200).json(rows);
@@ -122,7 +146,9 @@ router.post('/rewards/claim', function (req, res, next) {
   const user_id = req.user.d.id;
 
   return ReferralsModule.claimReferralRewards(user_id)
-    .then((rewards) => res.status(200).json(rewards)).catch(onType(Errors.BadRequestError, (error) => res.status(304).json({}))).catch((error) => next(error));
+    .then((rewards) => res.status(200).json(rewards))
+    .catch(onType(Errors.BadRequestError, (error) => res.status(304).json({})))
+    .catch((error) => next(error));
 });
 
 module.exports = router;

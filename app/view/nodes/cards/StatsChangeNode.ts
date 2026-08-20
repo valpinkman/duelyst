@@ -13,7 +13,6 @@ StatsChangeNode
  *************************************************************************** */
 
 var StatsChangeNode = EntitySupportNode.extend({
-
   atkBGSprite: null,
   atkLabel: null,
   _atkNode: null,
@@ -85,7 +84,11 @@ var StatsChangeNode = EntitySupportNode.extend({
 
   getOrCreateATKLabel() {
     if (this.atkLabel == null) {
-      this.atkLabel = new cc.LabelTTF('', RSX.font_bold.name, CONFIG.ENTITY_STATS_CHANGE_ATK_FONT_SIZE);
+      this.atkLabel = new cc.LabelTTF(
+        '',
+        RSX.font_bold.name,
+        CONFIG.ENTITY_STATS_CHANGE_ATK_FONT_SIZE,
+      );
       this.atkLabel.setFontFillColor(CONFIG.ATK_COLOR);
       this.atkLabel.setHorizontalAlignment(cc.TEXT_ALIGNMENT_CENTER);
       this.atkLabel.setAnchorPoint(0.5, 0.5);
@@ -96,7 +99,11 @@ var StatsChangeNode = EntitySupportNode.extend({
 
   getOrCreateHPLabel() {
     if (this.hpLabel == null) {
-      this.hpLabel = new cc.LabelTTF('', RSX.font_bold.name, CONFIG.ENTITY_STATS_CHANGE_HP_FONT_SIZE);
+      this.hpLabel = new cc.LabelTTF(
+        '',
+        RSX.font_bold.name,
+        CONFIG.ENTITY_STATS_CHANGE_HP_FONT_SIZE,
+      );
       this.hpLabel.setFontFillColor(CONFIG.HP_COLOR);
       this.hpLabel.setHorizontalAlignment(cc.TEXT_ALIGNMENT_CENTER);
       this.hpLabel.setAnchorPoint(0.5, 0.5);
@@ -117,9 +124,11 @@ var StatsChangeNode = EntitySupportNode.extend({
     if (this._hpNode.isVisible()) {
       if (this.damageBGSprite != null && this.damageBGSprite.isVisible()) {
         return this.damageBGSprite;
-      } if (this.hpBGSprite != null && this.hpBGSprite.isVisible()) {
+      }
+      if (this.hpBGSprite != null && this.hpBGSprite.isVisible()) {
         return this.hpBGSprite;
-      } if (this.healBGSprite != null && this.healBGSprite.isVisible()) {
+      }
+      if (this.healBGSprite != null && this.healBGSprite.isVisible()) {
         return this.healBGSprite;
       }
     }
@@ -281,7 +290,6 @@ var StatsChangeNode = EntitySupportNode.extend({
   },
 
   /* endregion CHANGES */
-
 });
 
 StatsChangeNode.create = function (entityNode, node) {

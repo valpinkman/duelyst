@@ -25,7 +25,6 @@ const FXFireRingSprite = require('../../nodes/fx/FXFireRingSprite');
  *************************************************************************** */
 
 const ChooseFactionLayer = BaseLayer.extend({
-
   delegate: null,
   _currentlyHighlightedNode: null,
   _crestNodes: null,
@@ -43,7 +42,13 @@ const ChooseFactionLayer = BaseLayer.extend({
     // do super ctor
     this._super();
 
-    this.titleLabel = new cc.LabelTTF(i18next.t('gauntlet.select_faction_label').toUpperCase(), RSX.font_bold.name, 24, cc.size(500, 32), cc.TEXT_ALIGNMENT_CENTER);
+    this.titleLabel = new cc.LabelTTF(
+      i18next.t('gauntlet.select_faction_label').toUpperCase(),
+      RSX.font_bold.name,
+      24,
+      cc.size(500, 32),
+      cc.TEXT_ALIGNMENT_CENTER,
+    );
     this.titleLabel.setPosition(0, 200);
     this.titleLabel.setVisible(false);
     this.addChild(this.titleLabel);
@@ -120,59 +125,74 @@ const ChooseFactionLayer = BaseLayer.extend({
 
   showFactionOptions(factionChoices) {
     // wait to show factions until animations complete
-    return (this._showingAnimationsPromise || Promise.resolve()).then(() => this._showingAnimationsPromise = PromiseUtils.inspectable(new Promise<void>((resolve, reject) => {
-      // reset
-      if (this._crestNodes != null && this._crestNodes.length > 0) {
-        for (var i = 0, il = this._crestNodes.length; i < il; i++) {
-          const crestNode = this._crestNodes[i];
-          crestNode._glowNode.destroy(CONFIG.FADE_FAST_DURATION);
-          crestNode._factionNameLabel.destroy(CONFIG.FADE_FAST_DURATION);
-          crestNode.destroy(CONFIG.FADE_FAST_DURATION);
-        }
-      }
-      this._crestNodes = [];
+    return (this._showingAnimationsPromise || Promise.resolve())
+      .then(
+        () =>
+          (this._showingAnimationsPromise = PromiseUtils.inspectable(
+            new Promise<void>((resolve, reject) => {
+              // reset
+              if (this._crestNodes != null && this._crestNodes.length > 0) {
+                for (var i = 0, il = this._crestNodes.length; i < il; i++) {
+                  const crestNode = this._crestNodes[i];
+                  crestNode._glowNode.destroy(CONFIG.FADE_FAST_DURATION);
+                  crestNode._factionNameLabel.destroy(CONFIG.FADE_FAST_DURATION);
+                  crestNode.destroy(CONFIG.FADE_FAST_DURATION);
+                }
+              }
+              this._crestNodes = [];
 
-      this.resetSelection();
+              this.resetSelection();
 
-      // play show audio
-      audio_engine.current().play_effect(RSX.sfx_ui_explosion.audio, false);
+              // play show audio
+              audio_engine.current().play_effect(RSX.sfx_ui_explosion.audio, false);
 
-      // show all faction choices
-      const showFactionPromises = [];
-      for (var i = 0; i < factionChoices.length; i++) {
-        showFactionPromises.push(this.showFactionOption(factionChoices[i], cc.p((i - 1) * 300, 0.0)));
-      }
+              // show all faction choices
+              const showFactionPromises = [];
+              for (var i = 0; i < factionChoices.length; i++) {
+                showFactionPromises.push(
+                  this.showFactionOption(factionChoices[i], cc.p((i - 1) * 300, 0.0)),
+                );
+              }
 
-      // fade in title after short delay
-      this.titleLabel.setOpacity(0.0);
-      this.titleLabel.runAction(cc.sequence(
-        cc.delayTime(CONFIG.ANIMATE_FAST_DURATION),
-        cc.show(),
-        cc.fadeIn(CONFIG.FADE_FAST_DURATION),
-      ));
+              // fade in title after short delay
+              this.titleLabel.setOpacity(0.0);
+              this.titleLabel.runAction(
+                cc.sequence(
+                  cc.delayTime(CONFIG.ANIMATE_FAST_DURATION),
+                  cc.show(),
+                  cc.fadeIn(CONFIG.FADE_FAST_DURATION),
+                ),
+              );
 
-      // shake delegate after short delay
-      showFactionPromises.push(this.delegate.showShake(CONFIG.ANIMATE_FAST_DURATION * 2.0));
+              // shake delegate after short delay
+              showFactionPromises.push(this.delegate.showShake(CONFIG.ANIMATE_FAST_DURATION * 2.0));
 
-      Promise.all(showFactionPromises).then(() => {
-        // resolve after everything is shown
-        resolve();
+              Promise.all(showFactionPromises).then(() => {
+                // resolve after everything is shown
+                resolve();
+              });
+            }),
+          )),
+      )
+      .finally(() => {
+        this._showingAnimationsPromise = null;
       });
-    }))).finally(() => {
-      this._showingAnimationsPromise = null;
-    });
   },
 
   showFactionOption(factionId, position, delay) {
     return new Promise<void>((resolve, reject) => {
-      if (delay == null) { delay = 0.0; }
+      if (delay == null) {
+        delay = 0.0;
+      }
 
       // add a small random delay
       delay += Math.random() * 0.1;
 
       // glow
       const crestGlow = new FXGlowImageMap();
-      crestGlow.setRequiredTextureResource(SDK.FactionFactory.getCrestShadowResourceForFactionId(factionId));
+      crestGlow.setRequiredTextureResource(
+        SDK.FactionFactory.getCrestShadowResourceForFactionId(factionId),
+      );
       crestGlow.setAnchorPoint(0.5, 0.5);
       crestGlow.setScale(0.28);
       crestGlow.setPosition(position);
@@ -183,7 +203,13 @@ const ChooseFactionLayer = BaseLayer.extend({
       this.addChild(crestGlow, -2);
 
       // label
-      const factionNameLabel = new cc.LabelTTF(SDK.FactionFactory.factionForIdentifier(factionId).name.toUpperCase(), RSX.font_light.name, 18, cc.size(500, 32), cc.TEXT_ALIGNMENT_CENTER);
+      const factionNameLabel = new cc.LabelTTF(
+        SDK.FactionFactory.factionForIdentifier(factionId).name.toUpperCase(),
+        RSX.font_light.name,
+        18,
+        cc.size(500, 32),
+        cc.TEXT_ALIGNMENT_CENTER,
+      );
       factionNameLabel.setPosition(cc.p(position.x, position.y - 200.0));
       this.addChild(factionNameLabel, -2);
 
@@ -228,8 +254,12 @@ const ChooseFactionLayer = BaseLayer.extend({
         const crestFadeAction = cc.sequence(
           cc.spawn(
             cc.fadeIn(CONFIG.ANIMATE_FAST_DURATION).easing(cc.easeOut(3.0)),
-            cc.moveTo(CONFIG.ANIMATE_FAST_DURATION, cc.p(position.x * 1.75, position.y)).easing(cc.easeOut(3.0)),
-            cc.scaleTo(CONFIG.ANIMATE_FAST_DURATION, crest._baseScale * 2.5).easing(cc.easeOut(3.0)),
+            cc
+              .moveTo(CONFIG.ANIMATE_FAST_DURATION, cc.p(position.x * 1.75, position.y))
+              .easing(cc.easeOut(3.0)),
+            cc
+              .scaleTo(CONFIG.ANIMATE_FAST_DURATION, crest._baseScale * 2.5)
+              .easing(cc.easeOut(3.0)),
           ),
           cc.delayTime(delay),
           cc.spawn(
@@ -240,18 +270,20 @@ const ChooseFactionLayer = BaseLayer.extend({
               cc.callFunc(() => {
                 // fire ring
                 fireRingSprite.setVisible(true);
-                fireRingSprite.runAction(cc.sequence(
-                  cc.spawn(
-                    cc.actionTween(1.0, 'phase', 1.0, 0.0).easing(cc.easeExponentialOut()),
-                    cc.sequence(
-                      cc.delayTime(1.0 - CONFIG.FADE_MEDIUM_DURATION),
-                      cc.fadeOut(CONFIG.FADE_MEDIUM_DURATION),
+                fireRingSprite.runAction(
+                  cc.sequence(
+                    cc.spawn(
+                      cc.actionTween(1.0, 'phase', 1.0, 0.0).easing(cc.easeExponentialOut()),
+                      cc.sequence(
+                        cc.delayTime(1.0 - CONFIG.FADE_MEDIUM_DURATION),
+                        cc.fadeOut(CONFIG.FADE_MEDIUM_DURATION),
+                      ),
                     ),
+                    cc.callFunc(() => {
+                      fireRingSprite.destroy();
+                    }),
                   ),
-                  cc.callFunc(() => {
-                    fireRingSprite.destroy();
-                  }),
-                ));
+                );
 
                 // explosion
                 explosionParticles.setAutoRemoveOnFinish(true);
@@ -308,7 +340,9 @@ const ChooseFactionLayer = BaseLayer.extend({
 
         // set new
         this._currentlyHighlightedNode = node;
-        this._currentlyHighlightedNode._glowNode.setGlowColor(CONFIG.ARENA_FACTION_GLOW_HIGHLIGHT_COLOR);
+        this._currentlyHighlightedNode._glowNode.setGlowColor(
+          CONFIG.ARENA_FACTION_GLOW_HIGHLIGHT_COLOR,
+        );
         this.delegate.highlightFaction(this._currentlyHighlightedNode._factionId);
       }
     }
@@ -320,10 +354,14 @@ const ChooseFactionLayer = BaseLayer.extend({
       const factionId = this._selectedNode._factionId;
 
       // play select audio
-      audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.SELECT_SFX_PRIORITY);
+      audio_engine
+        .current()
+        .play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.SELECT_SFX_PRIORITY);
 
       // set up an async promise that allows us to wait for animations to complete before showing anything else
-      this._showingAnimationsPromise = PromiseUtils.inspectable(this.showSelectedNode(this._selectedNode)).finally(() => {
+      this._showingAnimationsPromise = PromiseUtils.inspectable(
+        this.showSelectedNode(this._selectedNode),
+      ).finally(() => {
         this._showingAnimationsPromise = null;
       });
 
@@ -397,28 +435,34 @@ const ChooseFactionLayer = BaseLayer.extend({
   transitionIn() {
     return new Promise<void>((resolve, reject) => {
       this.setOpacity(0.0);
-      this.runAction(cc.sequence(
-        cc.fadeIn(CONFIG.FADE_FAST_DURATION),
-        cc.callFunc(() => {
-          resolve();
-        }),
-      ));
+      this.runAction(
+        cc.sequence(
+          cc.fadeIn(CONFIG.FADE_FAST_DURATION),
+          cc.callFunc(() => {
+            resolve();
+          }),
+        ),
+      );
     });
   },
 
   transitionOut() {
-    return (this._showingAnimationsPromise || Promise.resolve()).then(() => new Promise<void>((resolve, reject) => {
-      this.runAction(cc.sequence(
-        cc.fadeOut(CONFIG.FADE_FAST_DURATION),
-        cc.callFunc(() => {
-          resolve();
+    return (this._showingAnimationsPromise || Promise.resolve()).then(
+      () =>
+        new Promise<void>((resolve, reject) => {
+          this.runAction(
+            cc.sequence(
+              cc.fadeOut(CONFIG.FADE_FAST_DURATION),
+              cc.callFunc(() => {
+                resolve();
+              }),
+            ),
+          );
         }),
-      ));
-    }));
+    );
   },
 
   /* endregion TRANSITION */
-
 });
 
 ChooseFactionLayer.create = function (layer) {

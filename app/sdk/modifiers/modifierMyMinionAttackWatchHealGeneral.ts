@@ -16,7 +16,9 @@ class ModifierMyMinionAttackWatchHealGeneral extends ModifierMyMinionAttackWatch
   static description = 'Whenever a friendly minion attacks, restore %X Health to your General';
 
   static createContextObject(healAmount, options) {
-    if (healAmount == null) { healAmount = 0; }
+    if (healAmount == null) {
+      healAmount = 0;
+    }
     const contextObject = super.createContextObject(options);
     contextObject.healAmount = healAmount;
     return contextObject;
@@ -30,7 +32,9 @@ class ModifierMyMinionAttackWatchHealGeneral extends ModifierMyMinionAttackWatch
   }
 
   onMyMinionAttackWatch(action) {
-    const general = this.getCard().getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
+    const general = this.getCard()
+      .getGameSession()
+      .getGeneralForPlayerId(this.getCard().getOwnerId());
 
     const healAction = new HealAction(this.getGameSession());
     healAction.setOwnerId(this.getCard().getOwnerId());
@@ -40,6 +44,9 @@ class ModifierMyMinionAttackWatchHealGeneral extends ModifierMyMinionAttackWatch
   }
 }
 ModifierMyMinionAttackWatchHealGeneral.prototype.type = 'ModifierMyMinionAttackWatchHealGeneral';
-ModifierMyMinionAttackWatchHealGeneral.prototype.fxResource = ['FX.Modifiers.ModifierMyMinionAttackWatch', 'FX.Modifiers.ModifierGenericHeal'];
+ModifierMyMinionAttackWatchHealGeneral.prototype.fxResource = [
+  'FX.Modifiers.ModifierMyMinionAttackWatch',
+  'FX.Modifiers.ModifierGenericHeal',
+];
 
 module.exports = ModifierMyMinionAttackWatchHealGeneral;

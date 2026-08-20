@@ -19,7 +19,14 @@ class ModifierImmuneToAttacksByGeneral extends ModifierImmuneToAttacks {
   static description = 'Cannot be attacked by Generals';
 
   getIsActionRelevant(a) {
-    return (this.getCard() != null) && a instanceof AttackAction && a.getIsValid() && !a.getIsImplicit() && (this.getCard() === a.getTarget()) && __guard__(a.getSource(), (x) => x.getIsGeneral());
+    return (
+      this.getCard() != null &&
+      a instanceof AttackAction &&
+      a.getIsValid() &&
+      !a.getIsImplicit() &&
+      this.getCard() === a.getTarget() &&
+      __guard__(a.getSource(), (x) => x.getIsGeneral())
+    );
   }
 }
 ModifierImmuneToAttacksByGeneral.prototype.type = 'ModifierImmuneToAttacksByGeneral';
@@ -27,5 +34,5 @@ ModifierImmuneToAttacksByGeneral.prototype.type = 'ModifierImmuneToAttacksByGene
 module.exports = ModifierImmuneToAttacksByGeneral;
 
 function __guard__(value, transform) {
-  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
 }

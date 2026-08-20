@@ -54,20 +54,62 @@ class ModifierHPThresholdGainModifiers extends ModifierHPChange {
     let missingModifierContextObjects = [];
     let extraModifierContextObjects = [];
     if (hp <= 30) {
-      missingModifierContextObjects = missingModifierContextObjects.concat(this.searchMissingModifiers(this.listOfModifiersContextObjectsFor30HP, card));
-    } else { extraModifierContextObjects = extraModifierContextObjects.concat(this.getExistingModifiersFromContextObjects(this.listOfModifiersContextObjectsFor30HP, card)); }
+      missingModifierContextObjects = missingModifierContextObjects.concat(
+        this.searchMissingModifiers(this.listOfModifiersContextObjectsFor30HP, card),
+      );
+    } else {
+      extraModifierContextObjects = extraModifierContextObjects.concat(
+        this.getExistingModifiersFromContextObjects(
+          this.listOfModifiersContextObjectsFor30HP,
+          card,
+        ),
+      );
+    }
     if (hp <= 20) {
-      missingModifierContextObjects = missingModifierContextObjects.concat(this.searchMissingModifiers(this.listOfModifiersContextObjectsFor20HP, card));
-    } else { extraModifierContextObjects = extraModifierContextObjects.concat(this.getExistingModifiersFromContextObjects(this.listOfModifiersContextObjectsFor20HP, card)); }
+      missingModifierContextObjects = missingModifierContextObjects.concat(
+        this.searchMissingModifiers(this.listOfModifiersContextObjectsFor20HP, card),
+      );
+    } else {
+      extraModifierContextObjects = extraModifierContextObjects.concat(
+        this.getExistingModifiersFromContextObjects(
+          this.listOfModifiersContextObjectsFor20HP,
+          card,
+        ),
+      );
+    }
     if (hp <= 15) {
-      missingModifierContextObjects = missingModifierContextObjects.concat(this.searchMissingModifiers(this.listOfModifiersContextObjectsFor15HP, card));
-    } else { extraModifierContextObjects = extraModifierContextObjects.concat(this.getExistingModifiersFromContextObjects(this.listOfModifiersContextObjectsFor15HP, card)); }
+      missingModifierContextObjects = missingModifierContextObjects.concat(
+        this.searchMissingModifiers(this.listOfModifiersContextObjectsFor15HP, card),
+      );
+    } else {
+      extraModifierContextObjects = extraModifierContextObjects.concat(
+        this.getExistingModifiersFromContextObjects(
+          this.listOfModifiersContextObjectsFor15HP,
+          card,
+        ),
+      );
+    }
     if (hp <= 10) {
-      missingModifierContextObjects = missingModifierContextObjects.concat(this.searchMissingModifiers(this.listOfModifiersContextObjectsFor10HP, card));
-    } else { extraModifierContextObjects = extraModifierContextObjects.concat(this.getExistingModifiersFromContextObjects(this.listOfModifiersContextObjectsFor10HP, card)); }
+      missingModifierContextObjects = missingModifierContextObjects.concat(
+        this.searchMissingModifiers(this.listOfModifiersContextObjectsFor10HP, card),
+      );
+    } else {
+      extraModifierContextObjects = extraModifierContextObjects.concat(
+        this.getExistingModifiersFromContextObjects(
+          this.listOfModifiersContextObjectsFor10HP,
+          card,
+        ),
+      );
+    }
     if (hp <= 5) {
-      missingModifierContextObjects = missingModifierContextObjects.concat(this.searchMissingModifiers(this.listOfModifiersContextObjectsFor5HP, card));
-    } else { extraModifierContextObjects = extraModifierContextObjects.concat(this.getExistingModifiersFromContextObjects(this.listOfModifiersContextObjectsFor5HP, card)); }
+      missingModifierContextObjects = missingModifierContextObjects.concat(
+        this.searchMissingModifiers(this.listOfModifiersContextObjectsFor5HP, card),
+      );
+    } else {
+      extraModifierContextObjects = extraModifierContextObjects.concat(
+        this.getExistingModifiersFromContextObjects(this.listOfModifiersContextObjectsFor5HP, card),
+      );
+    }
 
     // adding the missing modifiers
     if (missingModifierContextObjects.length > 0) {
@@ -77,7 +119,8 @@ class ModifierHPThresholdGainModifiers extends ModifierHPChange {
     // removing the extra modifiers we don't need
     if (extraModifierContextObjects.length > 0) {
       return Array.from<any>(extraModifierContextObjects).map((modifier) =>
-        this.getGameSession().removeModifier(modifier));
+        this.getGameSession().removeModifier(modifier),
+      );
     }
   }
 
@@ -88,7 +131,11 @@ class ModifierHPThresholdGainModifiers extends ModifierHPChange {
       var modifierType = modifierContextObject.type;
       var hasModifier = false;
       for (var existingModifier of Array.from<any>(card.getModifiers())) {
-        if ((existingModifier != null) && (existingModifier.getType() === modifierType) && (existingModifier.getParentModifierIndex() === index)) {
+        if (
+          existingModifier != null &&
+          existingModifier.getType() === modifierType &&
+          existingModifier.getParentModifierIndex() === index
+        ) {
           hasModifier = true;
           break;
         }
@@ -105,7 +152,10 @@ class ModifierHPThresholdGainModifiers extends ModifierHPChange {
     const index = this.getIndex();
     for (var modifier of Array.from<any>(card.getModifiers())) {
       for (var modifierContextObject of Array.from<any>(modifierContextObjects)) {
-        if ((modifier.getType() === modifierContextObject.type) && (modifier.getParentModifierIndex() === index)) {
+        if (
+          modifier.getType() === modifierContextObject.type &&
+          modifier.getParentModifierIndex() === index
+        ) {
           modifiers.push(modifier);
         }
       }
@@ -114,7 +164,9 @@ class ModifierHPThresholdGainModifiers extends ModifierHPChange {
   }
 }
 ModifierHPThresholdGainModifiers.prototype.type = 'ModifierHPThresholdGainModifiers';
-ModifierHPThresholdGainModifiers.description = i18next.t('modifiers.HP_threshold_gain_modifiers_def');
+ModifierHPThresholdGainModifiers.description = i18next.t(
+  'modifiers.HP_threshold_gain_modifiers_def',
+);
 ModifierHPThresholdGainModifiers.prototype.fxResource = ['FX.Modifiers.ModifierBuffSelfOnReplace'];
 
 module.exports = ModifierHPThresholdGainModifiers;

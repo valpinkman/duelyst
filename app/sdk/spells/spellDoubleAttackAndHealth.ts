@@ -20,7 +20,10 @@ class SpellDoubleAttackAndHealth extends Spell {
 
     const applyEffectPosition = { x, y };
     const entity = board.getCardAtPosition(applyEffectPosition, this.targetType);
-    const healthModContextObject = Modifier.createContextObjectWithAttributeBuffs(entity.getATK(), entity.getHP());
+    const healthModContextObject = Modifier.createContextObjectWithAttributeBuffs(
+      entity.getATK(),
+      entity.getHP(),
+    );
     if (this.modifierAppliedName != null) {
       healthModContextObject.appliedName = this.modifierAppliedName;
     }

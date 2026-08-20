@@ -10,7 +10,6 @@ var Templ = require('app/ui/views2/profile/templates/profile_match_history_copy_
 var Clipboard = require('clipboard');
 
 var CopyReplayDialogItemView = Backbone.Marionette.ItemView.extend({
-
   id: 'app-copy-replay-link-dialog',
   className: 'dialog prompt-modal',
 
@@ -42,15 +41,18 @@ var CopyReplayDialogItemView = Backbone.Marionette.ItemView.extend({
     this.listenToOnce(NavigationManager.getInstance(), EVENTS.user_attempt_confirm, this.onCancel);
 
     // play error audio
-    audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_error.audio, CONFIG.ERROR_SFX_PRIORITY);
+    audio_engine
+      .current()
+      .play_effect_for_interaction(RSX.sfx_ui_error.audio, CONFIG.ERROR_SFX_PRIORITY);
   },
 
   onCancel: function () {
-    audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_cancel.audio, CONFIG.CANCEL_SFX_PRIORITY);
+    audio_engine
+      .current()
+      .play_effect_for_interaction(RSX.sfx_ui_cancel.audio, CONFIG.CANCEL_SFX_PRIORITY);
     NavigationManager.getInstance().destroyDialogView();
     this.trigger('cancel');
   },
-
 });
 
 module.exports = CopyReplayDialogItemView;

@@ -23,7 +23,11 @@ class ModifierStartTurnWatchImmolateDamagedMinions extends ModifierStartTurnWatc
     return (() => {
       const result = [];
       for (var unit of Array.from<any>(board.getUnits())) {
-        if (((unit != null ? unit.getOwnerId() : undefined) === this.getCard().getOwnerId()) && !unit.getIsGeneral() && (unit.getHP() < unit.getMaxHP())) {
+        if (
+          (unit != null ? unit.getOwnerId() : undefined) === this.getCard().getOwnerId() &&
+          !unit.getIsGeneral() &&
+          unit.getHP() < unit.getMaxHP()
+        ) {
           var healAction = new HealAction(this.getGameSession());
           healAction.setOwnerId(this.getCard().getOwnerId());
           healAction.setTarget(unit);
@@ -31,18 +35,20 @@ class ModifierStartTurnWatchImmolateDamagedMinions extends ModifierStartTurnWatc
           this.getGameSession().executeAction(healAction);
 
           var enemyEntities = board.getEnemyEntitiesAroundEntity(unit, CardType.Unit, 1);
-          result.push((() => {
-            const result1 = [];
-            for (var entity of Array.from<any>(enemyEntities)) {
-              var damageAction = new DamageAction(this.getGameSession());
-              damageAction.setOwnerId(this.getCard().getOwnerId());
-              damageAction.setSource(this.getCard());
-              damageAction.setTarget(entity);
-              damageAction.setDamageAmount(4);
-              result1.push(this.getGameSession().executeAction(damageAction));
-            }
-            return result1;
-          })());
+          result.push(
+            (() => {
+              const result1 = [];
+              for (var entity of Array.from<any>(enemyEntities)) {
+                var damageAction = new DamageAction(this.getGameSession());
+                damageAction.setOwnerId(this.getCard().getOwnerId());
+                damageAction.setSource(this.getCard());
+                damageAction.setTarget(entity);
+                damageAction.setDamageAmount(4);
+                result1.push(this.getGameSession().executeAction(damageAction));
+              }
+              return result1;
+            })(),
+          );
         } else {
           result.push(undefined);
         }
@@ -51,7 +57,12 @@ class ModifierStartTurnWatchImmolateDamagedMinions extends ModifierStartTurnWatc
     })();
   }
 }
-ModifierStartTurnWatchImmolateDamagedMinions.prototype.type = 'ModifierStartTurnWatchImmolateDamagedMinions';
-ModifierStartTurnWatchImmolateDamagedMinions.prototype.fxResource = ['FX.Modifiers.ModifierStartTurnWatch', 'FX.Modifiers.ModifierGenericHeal', 'FX.Modifiers.ModifierGenericDamageNearby'];
+ModifierStartTurnWatchImmolateDamagedMinions.prototype.type =
+  'ModifierStartTurnWatchImmolateDamagedMinions';
+ModifierStartTurnWatchImmolateDamagedMinions.prototype.fxResource = [
+  'FX.Modifiers.ModifierStartTurnWatch',
+  'FX.Modifiers.ModifierGenericHeal',
+  'FX.Modifiers.ModifierGenericDamageNearby',
+];
 
 module.exports = ModifierStartTurnWatchImmolateDamagedMinions;

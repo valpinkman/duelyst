@@ -16,7 +16,9 @@ const FXRay002Sprite = FXRaySprite.extend({
 
 FXRay002Sprite.create = function (options, sprite) {
   if (sprite == null) {
-    sprite = cc.pool.getFromPool(FXRay002Sprite, options) || FXRaySprite.create(options, new FXRay002Sprite(options));
+    sprite =
+      cc.pool.getFromPool(FXRay002Sprite, options) ||
+      FXRaySprite.create(options, new FXRay002Sprite(options));
   }
   return sprite;
 };

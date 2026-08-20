@@ -26,7 +26,7 @@ class ModifierCannotStrikeback extends ModifierCannot {
   }
 
   getIsActionRelevant(a) {
-    return a instanceof AttackAction && (a.getTarget() === this.getCard());
+    return a instanceof AttackAction && a.getTarget() === this.getCard();
   }
 
   _modifyAction(a) {

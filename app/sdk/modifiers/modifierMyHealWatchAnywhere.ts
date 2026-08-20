@@ -23,9 +23,7 @@ class ModifierMyHealWatchAnywhere extends Modifier {
   onAfterCleanupAction(e) {
     super.onAfterCleanupAction(e);
 
-    const {
-      action,
-    } = e;
+    const { action } = e;
     if (this.getIsActionRelevant(action)) {
       return this.onHealWatch(action);
     }
@@ -36,7 +34,11 @@ class ModifierMyHealWatchAnywhere extends Modifier {
 
   getIsActionRelevant(action) {
     // watch for my action healing something (actually having HP increased by the heal, not just target of a healAction)
-    if (action instanceof HealAction && (action.getOwnerId() === this.getCard().getOwnerId()) && (action.getTotalHealApplied() > 0)) {
+    if (
+      action instanceof HealAction &&
+      action.getOwnerId() === this.getCard().getOwnerId() &&
+      action.getTotalHealApplied() > 0
+    ) {
       return true;
     }
     return false;
@@ -46,8 +48,7 @@ class ModifierMyHealWatchAnywhere extends Modifier {
     // special check on activation in case this card is created mid-game
     // need to check all actions that occured this gamesession for triggers
     const healActions = this.getGameSession().filterActions(this.getIsActionRelevant.bind(this));
-    return Array.from<any>(healActions).map((action) =>
-      this.onHealWatch(action));
+    return Array.from<any>(healActions).map((action) => this.onHealWatch(action));
   }
 }
 ModifierMyHealWatchAnywhere.prototype.type = 'ModifierMyHealWatchAnywhere';

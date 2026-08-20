@@ -5,26 +5,28 @@
   const helpers = require('../../../scripts/helpers');
   const RSX = require('../resources');
 
-  helpers.readFile('./../../sdk/cards/cardFactory', (file, contents) => {
-    // replace soft returns
-    contents = contents.replace('\r', '\n');
+  helpers
+    .readFile('./../../sdk/cards/cardFactory', (file, contents) => {
+      // replace soft returns
+      contents = contents.replace('\r', '\n');
 
-    contents = contents.replace(/card\.setBaseAnimResource\([\s\S]*?\)/g, (animResources) => {
-      animResources = animResources.replace(/["'].*?["']/g, (animResource) => {
-        const animAlias = animResource.replace(/["']/g, '');
-        if (RSX[animAlias] == null) {
-          console.log(animResource, ' > ', RSX[animAlias]);
-        }
-        return `RSX.${animAlias}.name`;
+      contents = contents.replace(/card\.setBaseAnimResource\([\s\S]*?\)/g, (animResources) => {
+        animResources = animResources.replace(/["'].*?["']/g, (animResource) => {
+          const animAlias = animResource.replace(/["']/g, '');
+          if (RSX[animAlias] == null) {
+            console.log(animResource, ' > ', RSX[animAlias]);
+          }
+          return `RSX.${animAlias}.name`;
+        });
+        return animResources;
       });
-      return animResources;
-    });
 
-    return helpers.writeFile('./../../sdk/cards/cardFactory', contents);
-  }).then(() => {
-    process.exit(0);
-  });
-}());
+      return helpers.writeFile('./../../sdk/cards/cardFactory', contents);
+    })
+    .then(() => {
+      process.exit(0);
+    });
+})();
 
 const mkdirp = require('mkdirp');
 const fs = require('fs');
@@ -72,7 +74,10 @@ function parseCFCPart(part) {
     fxTemplate.push('Factions.Neutral');
   }
   fxTemplate.push(faction);
-  part = part.replace(/[\s]*card\.addFXTemplate\(FactionFactory\.factionForIdentifier\(card\.factionId\)\.fxTemplate\)/g, '');
+  part = part.replace(
+    /[\s]*card\.addFXTemplate\(FactionFactory\.factionForIdentifier\(card\.factionId\)\.fxTemplate\)/g,
+    '',
+  );
 
   // get the copied fx
   const copiedFX = S(part).between('addFXTemplate(FXFactory.fxTemplateFromIdentifiers({', '}))').s;
@@ -81,7 +86,10 @@ function parseCFCPart(part) {
     copiedId = copiedId.replace(/\n|\r/g, '');
     fxTemplate.push(copiedId);
   }
-  part = part.replace(/[\s]*card\.addFXTemplate\(FXFactory\.fxTemplateFromIdentifiers\(\{[\s\S]*\}\)\)/g, '');
+  part = part.replace(
+    /[\s]*card\.addFXTemplate\(FXFactory\.fxTemplateFromIdentifiers\(\{[\s\S]*\}\)\)/g,
+    '',
+  );
 
   // replace some old shit
   part = part.replace(/[\s]*card\.attackDamageZone[\s]*=[\s]*null/g, '');
@@ -93,7 +101,10 @@ function parseCFCPart(part) {
   if (hasCustomFX) {
     part = part.replace(/[\s]*card\.addFXTemplate\(\{[\s\S]*\]\}\)/g, '');
   } else if (part.indexOf('getFXTemplate()') !== -1) {
-    part = part.replace(/[\s]*card\.getFXTemplate\(\)[\s\S]*(?=card\.)*/g, `\n${indent}\n${indent.replace(/\t/, '')}`);
+    part = part.replace(
+      /[\s]*card\.getFXTemplate\(\)[\s\S]*(?=card\.)*/g,
+      `\n${indent}\n${indent.replace(/\t/, '')}`,
+    );
   }
 
   // clean out any \r from fxTemplate

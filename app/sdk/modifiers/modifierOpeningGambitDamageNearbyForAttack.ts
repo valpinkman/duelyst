@@ -22,8 +22,11 @@ class ModifierOpeningGambitDamageNearbyForAttack extends ModifierOpeningGambit {
   onOpeningGambit() {
     return (() => {
       const result = [];
-      for (var entity of Array.from<any>(this.getGameSession().getBoard().getEntitiesAroundEntity(this.getCard(), CardType.Unit, 1))) {
-        if (!entity.getIsGeneral()) { // this ability only damages minions, not Generals
+      for (var entity of Array.from<any>(
+        this.getGameSession().getBoard().getEntitiesAroundEntity(this.getCard(), CardType.Unit, 1),
+      )) {
+        if (!entity.getIsGeneral()) {
+          // this ability only damages minions, not Generals
           var damageAction = new DamageAction(this.getGameSession());
           damageAction.setOwnerId(this.getCard().getOwnerId());
           // source and target are same because minion deals damage to itself
@@ -39,8 +42,12 @@ class ModifierOpeningGambitDamageNearbyForAttack extends ModifierOpeningGambit {
     })();
   }
 }
-ModifierOpeningGambitDamageNearbyForAttack.prototype.type = 'ModifierOpeningGambitDamageNearbyForAttack';
+ModifierOpeningGambitDamageNearbyForAttack.prototype.type =
+  'ModifierOpeningGambitDamageNearbyForAttack';
 ModifierOpeningGambitDamageNearbyForAttack.prototype.targetType = CardType.Unit;
-ModifierOpeningGambitDamageNearbyForAttack.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericDamageNearby'];
+ModifierOpeningGambitDamageNearbyForAttack.prototype.fxResource = [
+  'FX.Modifiers.ModifierOpeningGambit',
+  'FX.Modifiers.ModifierGenericDamageNearby',
+];
 
 module.exports = ModifierOpeningGambitDamageNearbyForAttack;
