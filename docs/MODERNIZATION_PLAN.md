@@ -869,6 +869,26 @@ server and worker. What remains is *typing* (5T.4), not converting.
       NOT kue-compatible; in-flight jobs are dropped at cutover, which is fine because every
       producer sets removeOnComplete.
 
+      **Integration tests now cover the seam** (`test/integration/jobs/job_seam.js`, 12 tests,
+      `pnpm test:integration:jobs`). It needs redis and nothing else, so unlike the other
+      integration suites it **gates every push in CI** — the workflow already ran a `redis:6`
+      service for the other steps.
+
+      They paid for themselves before they were even committed, by finding a race that hand
+      probing had missed: **`waitFor` hung for one waiter in five, every run.** Enqueue five jobs
+      at once and one waiter never resolves, while the queue reports all five completed — and
+      *which* one hung varied between runs, which is why a single hand probe looked fine. BullMQ's
+      event-based wait can miss a job that finishes in the window between the waiter attaching and
+      the subscription going live, and its own `isFinished` check runs before completion is
+      recorded. `waitFor` now awaits `QueueEvents.waitUntilReady()` and races the event wait
+      against a 250ms state poll. Since the game server blocks its ratings update on exactly this
+      call, the pre-fix behaviour would have intermittently stalled ratings in production.
+
+      A note on how the test was written, because the first version was worthless: asserting that
+      the *handler* ran passes even while every waiter hangs. The assertion has to be on what the
+      waiters returned. Each `waitFor` is also raced against a timeout so a hang fails naming the
+      job rather than stalling to vitest's 60s cap.
+
       **Verified against real infrastructure:** worker boots and processes `rotate-bosses` on
       startup; a job enqueued in the **api** process is executed by the **worker** process and
       awaited back across the boundary (success in 40ms, and the failure path propagates too);

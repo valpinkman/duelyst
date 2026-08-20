@@ -63,6 +63,17 @@ jobs:
         # misc needs no real database; the dummy satisfies the config format
         FIREBASE_URL: "https://test-url.firebaseio.com/"
 
+    # The job seam needs redis and NOTHING else, so unlike the other suites it
+    # can gate every push. It exists because every bug in the kue -> BullMQ
+    # migration was found by hand-probing rather than by a test, and two had
+    # been live for many commits.
+    - name: run integration tests (jobs - needs redis)
+      run: pnpm test:integration:jobs
+      env:
+        REDIS_HOST: redis
+        POSTGRES_CONNECTION: "pg://duelyst:duelyst@db/duelyst"
+        FIREBASE_URL: "https://test-url.firebaseio.com/"
+
     # Runs against a REAL Realtime Database: it connects, writes to
     # /test-ref-server, reads it back and disconnects. Prefer a Firebase
     # project dedicated to CI over a shared one - the write path is fixed, so

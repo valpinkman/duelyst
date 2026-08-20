@@ -128,6 +128,13 @@ How we work on it:
   `generate_packages.js` and RSX paths.
 
 Status log (newest first):
+- 2026-08-20 — **integration tests for the job seam** (`pnpm test:integration:jobs`, 12 tests).
+  Needs only redis, so it **gates every push in CI**. It immediately found a race hand-probing had
+  missed: `waitFor` hung for one waiter in five, every run, with a different one hanging each time
+  — BullMQ's event wait can miss a job that finishes between the waiter attaching and the
+  subscription going live. `waitFor` now awaits `QueueEvents.waitUntilReady()` and races the event
+  against a 250ms state poll. The game server blocks its ratings update on that call, so this
+  would have stalled ratings intermittently in production.
 - 2026-08-20 — **kue → BullMQ 6**, and with it the last of `redis@2`. kue was unmaintained
   since 2017 and pulled express 4, pug 2-beta, stylus, nib and yargs 4; advisories 87 → **80**.
   42 producers converted to `Jobs.enqueue()`, 13 kue-shaped `(job, done)` handlers adapted in the

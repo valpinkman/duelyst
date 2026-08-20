@@ -13,7 +13,9 @@
  * cutover are dropped, which is acceptable here: every producer sets
  * removeOnComplete, so the queue only ever holds transient work.
  */
-const { Queue, Worker, QueueEvents } = require('bullmq');
+const {
+  Queue, Worker, QueueEvents, Job,
+} = require('bullmq');
 
 const Logger = require('../../app/common/logger');
 const config = require('../../config/config');
@@ -94,8 +96,56 @@ exports.enqueue = function (name, data, opts) {
  *
  * @returns {Promise} the job's return value, or rejects with its failure
  */
+const POLL_INTERVAL_MS = 250;
+
+/*
+ * Poll the job's stored state as a safety net for waitFor.
+ *
+ * BullMQ's event-based wait can miss a job that finishes in the window between
+ * the waiter attaching and the subscription going live, and then hangs forever.
+ * That is not theoretical: enqueueing five jobs at once reliably hung one
+ * waiter per run while the queue itself reported all five completed, and which
+ * one hung varied between runs. Since the game server blocks its ratings update
+ * on this, a hang is worse than a poll.
+ */
+const pollUntilFinished = function (queue, jobId, signal) {
+  return new Promise((resolve, reject) => {
+    const tick = function () {
+      if (signal.done) return;
+      Job.fromId(queue, jobId).then((fresh) => {
+        if (signal.done) return;
+        if (fresh && fresh.finishedOn) {
+          if (fresh.failedReason) reject(new Error(fresh.failedReason));
+          else resolve(fresh.returnvalue);
+          return;
+        }
+        setTimeout(tick, POLL_INTERVAL_MS);
+      }, () => setTimeout(tick, POLL_INTERVAL_MS));
+    };
+    setTimeout(tick, POLL_INTERVAL_MS);
+  });
+};
+
 exports.waitFor = function (job) {
-  return job.waitUntilFinished(eventsFor(job.queueName));
+  const events = eventsFor(job.queueName);
+  const queue = queueFor(job.queueName);
+  const signal = { done: false };
+
+  /*
+   * waitUntilReady() first: QueueEvents connects lazily, and waitUntilFinished
+   * attaches its listener before checking whether the job already finished.
+   * Racing the event-based wait against a state poll covers the remaining
+   * window where both the event and the state check can miss.
+   */
+  return events.waitUntilReady()
+    .then(() => Promise.race([
+      job.waitUntilFinished(events),
+      pollUntilFinished(queue, job.id, signal),
+    ]))
+    .then(
+      (value) => { signal.done = true; return value; },
+      (err) => { signal.done = true; throw err; },
+    );
 };
 
 /**

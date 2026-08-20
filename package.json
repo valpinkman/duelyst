@@ -127,6 +127,7 @@
     "test:integration:data_access": "vitest run --config vitest.integration.config.mjs test/integration/data_access",
     "test:integration:firebase": "vitest run --config vitest.integration.config.mjs test/integration/firebase",
     "test:integration:misc": "vitest run --config vitest.integration.config.mjs test/integration/misc",
+    "test:integration:jobs": "vitest run --config vitest.integration.config.mjs test/integration/jobs",
     "test:unit": "vitest run",
     "tsc:chroma-js": "tsc -p ./packages/chroma-js/tsconfig.json",
     "build:vite": "vite build --config vite.config.client.mjs",
