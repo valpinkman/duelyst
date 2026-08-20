@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /*
- * `const bag = {}` -> `const bag: Record<string, any> = {}`
+ * `const bag = {...}` -> `const bag: Record<string, any> = {...}`
  *
  * By far the largest slice of the typecheck backlog is
  * "Property 'x' does not exist on type '{}'": ~1,700 errors from untyped
@@ -25,7 +25,8 @@ import { readFileSync, writeFileSync } from 'node:fs';
 const log = readFileSync(process.argv[2], 'utf8');
 
 // file(line,col): error TS2339: Property 'x' does not exist on type '{}'.
-const RE = /^(.+?)\((\d+),(\d+)\): error TS2339: Property '([^']+)' does not exist on type '\{\}'\.$/gm;
+// any object-literal type: '{}' or '{ id: any; ... }'
+const RE = /^(.+?)\((\d+),(\d+)\): error TS2339: Property '([^']+)' does not exist on type '\{[^']*\}'\.$/gm;
 
 const wanted = new Map();   // file -> Set(receiver identifiers)
 let m;
@@ -49,11 +50,11 @@ for (const [file, names] of wanted) {
   let src = readFileSync(file, 'utf8');
   const before = src;
   for (const name of names) {
-    // only a bare `= {}` declaration with no existing annotation
-    const decl = new RegExp(`\\b(const|let|var)\\s+(${name})\\s*=\\s*\\{\\s*\\}`, 'g');
+    // a declaration initialised with an object literal and not already annotated
+    const decl = new RegExp(`\\b(const|let|var)\\s+(${name})\\s*=\\s*\\{`, 'g');
     if (!decl.test(src)) { unresolved.push(`${file}: ${name}`); continue; }
     decl.lastIndex = 0;
-    src = src.replace(decl, (_all, kw, id) => `${kw} ${id}: Record<string, any> = {}`);
+    src = src.replace(decl, (_all, kw, id) => `${kw} ${id}: Record<string, any> = {`);
     annotated += 1;
   }
   if (src !== before) { writeFileSync(file, src); files += 1; }

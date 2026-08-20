@@ -166,7 +166,7 @@ class UsersModule {
       })
       .then(function (passwordHash) {
         return knex.transaction((tx) => {
-          const userRecord = {
+          const userRecord: Record<string, any> = {
             id: userId,
             username,
             password: passwordHash,

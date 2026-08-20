@@ -1194,7 +1194,7 @@ var ai_init = function () {
 };
 
 const ai_preprocessProtoActions = function (protoActions, gameSession) {
-  // var protoAction = {
+  // var protoAction: Record<string, any> = {
   //    card: card,
   //    targetsAndScores: [{target,score}],
   //    actionType: "playCardAction"
@@ -1588,7 +1588,7 @@ var getIsTimeLimitReached = function (node) {
 var buildTree = function (parentNode, gameSession) {
   // take a node and gameSession find all actions, if actions then build tree for each action (recurse)
 
-  // var protoAction = {
+  // var protoAction: Record<string, any> = {
   //    card: card,
   //    targetsAndScores: [{target,score}],
   //    actionType: "playCardAction" };
@@ -2011,7 +2011,7 @@ var _findPlayCardProtoActions = function (gameSession) {
           targetPositions = [targetPositions[Math.floor(Math.random() * targetPositions.length)]];
         }
         const targetsAndScores = _.map(targetPositions, (target) => ({ target, score: null }));
-        const protoAction = {
+        const protoAction: Record<string, any> = {
           card,
           targetsAndScores,
         };
@@ -2046,7 +2046,7 @@ var _findAttackProtoActions = function (gameSession) {
       const potentialAttackPositions = _.map(filteredPotentialAttackTargets, (target) => target.getPosition());
       if (potentialAttackPositions.length > 0) {
         const targetsAndScores = _.map(potentialAttackPositions, (target) => ({ target, score: null }));
-        const protoAction = {
+        const protoAction: Record<string, any> = {
           card: unit,
           targetsAndScores,
           actionType: SDK.AttackAction.type,
@@ -2072,7 +2072,7 @@ var _findMoveProtoActions = function (gameSession) {
       const potentialMoves = _findPotentialMovePositionsForUnit(gameSession, unit);
       if (potentialMoves.length > 0) {
         const targetsAndScores = _.map(potentialMoves, (target) => ({ target, score: null }));
-        const protoAction = {
+        const protoAction: Record<string, any> = {
           card: unit,
           targetsAndScores,
           actionType: SDK.MoveAction.type,

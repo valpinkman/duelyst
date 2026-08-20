@@ -127,7 +127,7 @@ class CosmeticChestsModule {
 
         Logger.module('CosmeticChestsModule').time(`giveUserChest() -> User ${userId.blue}`.green + ` received ${chestAmount} chests of type ${chestType}.`.green);
         return PromiseUtils.map(__range__(0, chestAmount, false), function () {
-          const chestData = {
+          const chestData: Record<string, any> = {
             user_id: userId,
             chest_id: generatePushId(),
             chest_type: chestType,

@@ -6209,7 +6209,7 @@ var GameLayer = FXCompositeLayer.extend({
 
       // broadcast hover position
       if (this._player.getHoverDirty()) {
-        const hoverEventData = {
+        const hoverEventData: Record<string, any> = {
           type: EVENTS.network_game_hover,
           timestamp: Date.now(),
           boardPosition: this._player.getMouseBoardPosition(),

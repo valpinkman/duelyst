@@ -1041,7 +1041,7 @@ class GauntletModule {
           if (_chainState.runData.created_at) { _chainState.runData.created_at = moment.utc(_chainState.runData.created_at).valueOf(); }
           if (_chainState.runData.completed_at) { _chainState.runData.completed_at = moment.utc(_chainState.runData.completed_at).valueOf(); }
 
-          const fbGauntletUpdateData = {
+          const fbGauntletUpdateData: Record<string, any> = {
             faction_id: _chainState.runData.faction_id,
             deck: _chainState.runData.deck,
             card_choices: _chainState.runData.card_choices,

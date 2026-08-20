@@ -107,7 +107,7 @@ const VictoryLayer = RewardLayer.extend({
       this.addChild(this.diamondsBGSprite, this.bgZOrder - 1);
 
       // petals
-      const petalsOptions = {
+      const petalsOptions: Record<string, any> = {
         angled: true,
         liveForDistance: true,
         fadeInAtLifePct: 0.25,

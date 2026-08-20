@@ -86,7 +86,7 @@ class TwitchModule {
       var twitchRewardId = generatePushId();
 
       // Set default reward data
-      var rewardObject = {
+      var rewardObject: Record<string, any> = {
         id: generatePushId(),
         user_id: userId,
         reward_category: 'twitch reward',

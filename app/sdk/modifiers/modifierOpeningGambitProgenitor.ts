@@ -37,7 +37,7 @@ class ModifierOpeningGambitProgenitor extends ModifierOpeningGambit {
         for (var minion of Array.from<any>(friendlyMinions)) {
           var spawnPosition = { x: minion.getPosition().x + playerOffset, y: minion.getPosition().y };
           if (!this.getGameSession().getBoard().getObstructionAtPositionForEntity(spawnPosition, minion)) {
-            var egg = { id: Cards.Faction5.Egg };
+            var egg: Record<string, any> = { id: Cards.Faction5.Egg };
             if (egg.additionalInherentModifiersContextObjects == null) { egg.additionalInherentModifiersContextObjects = []; }
             egg.additionalInherentModifiersContextObjects.push(ModifierEgg.createContextObject(minion.createNewCardData(), minion.getName()));
 

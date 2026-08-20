@@ -449,7 +449,7 @@ class SyncModule {
         let row;
         const allPromises = [];
 
-        const userData = {
+        const userData: Record<string, any> = {
           id: _chainState.userData.id,
           username: _chainState.userData.username,
           created_at: moment.utc(_chainState.userData.created_at).valueOf(),
@@ -810,7 +810,7 @@ class SyncModule {
         return knex.transaction((trx) => {
           let key,
             run;
-          const userData = {
+          const userData: Record<string, any> = {
             id: userId,
             username: _chainState.user.username.toLowerCase(),
             invite_code: _chainState.authUser.inviteCode,

@@ -823,7 +823,7 @@ App._showMainMenu = function () {
 
     // notify Discord status
     if (Discord) {
-      const presence = {
+      const presence: Record<string, any> = {
         instance: 0,
         details: 'In Main Menu',
         largeImageKey: 'idle',
@@ -983,7 +983,7 @@ App.showCollection = function () {
 
     // notify Discord status
     if (Discord) {
-      const presence = {
+      const presence: Record<string, any> = {
         instance: 0,
         details: 'Browsing Collection',
         largeImageKey: 'idle',
@@ -1613,7 +1613,7 @@ App._findingGame = function (gameMatchRequestData) {
 
   // notify Discord status
   if (Discord) {
-    const presence = {
+    const presence: Record<string, any> = {
       instance: 0,
       largeImageKey: 'idle',
     };
@@ -2336,7 +2336,7 @@ App._startGame = function () {
     const playerFaction = SDK.GameSession.getInstance().getGeneralForPlayer(SDK.GameSession.getInstance().getMyPlayer()).factionId;
     const playerFactionImage = getFactionImage(playerFaction, false);
 
-    const presence = {
+    const presence: Record<string, any> = {
       startTimestamp: Math.floor((new Date()).getTime() / 1000),
       instance: 1,
       largeImageKey: playerFactionImage.key,
@@ -3814,7 +3814,7 @@ App._updateLastResolutionValues = function () {
 
 App._confirmResolutionChange = function () {
   Logger.module('APPLICATION').log('App._confirmResolutionChange');
-  const confirmData = { title: 'Do you wish to keep this viewport setting?' };
+  const confirmData: Record<string, any> = { title: 'Do you wish to keep this viewport setting?' };
   if (App._needsRestart) {
     if (window.isDesktop) {
       confirmData.message = 'Warning: switching from your previous viewport to this viewport will require a restart!';

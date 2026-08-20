@@ -70,7 +70,7 @@ var MovementRange = (function () {
               continue;
             }
 
-            var nextNode = { x: node.x + offset.x, y: node.y + offset.y, speed: nextSpeed };
+            var nextNode: Record<string, any> = { x: node.x + offset.x, y: node.y + offset.y, speed: nextSpeed };
             var movePosition = { x: entityPosition.x + nextNode.x, y: entityPosition.y + nextNode.y };
             var index = UtilsPosition.getMapIndexFromPosition(columnCount, movePosition.x, movePosition.y);
             // skip this node if we already have a shorter path to this position

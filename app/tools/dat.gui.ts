@@ -1940,7 +1940,7 @@ dat.GUI = dat.gui.GUI = (function (css, saveDialogueContents, styleSheet, contro
                 + ` name "${name}"`);
         }
 
-        const new_gui_params = { name, parent: this };
+        const new_gui_params: Record<string, any> = { name, parent: this };
 
         // We need to pass down the autoPlace trait so that we can
         // attach event listeners to open/close folder actions to

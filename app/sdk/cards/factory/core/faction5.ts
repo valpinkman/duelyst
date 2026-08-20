@@ -825,7 +825,7 @@ class CardFactory_CoreSet_Faction5 {
       card.setDescription(i18next.t('cards.faction_5_spell_propogate_rage_desc'));
       card.manaCost = 1;
       card.spellFilterType = SpellFilterType.None;
-      const gibblegupEgg = { id: Cards.Faction5.Egg };
+      const gibblegupEgg: Record<string, any> = { id: Cards.Faction5.Egg };
       gibblegupEgg.additionalInherentModifiersContextObjects = [ModifierEgg.createContextObject({ id: Cards.Faction5.Gibblegup }, i18next.t('cards.faction_5_unit_ripper_name'))];
       card.cardDataOrIndexToSpawn = gibblegupEgg;
       card.filterNearGeneral = true;

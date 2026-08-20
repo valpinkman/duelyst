@@ -623,7 +623,7 @@ App._updateLastResolutionValues = function () {
 
 App._confirmResolutionChange = function () {
   Logger.module('APPLICATION').log('App._confirmResolutionChange');
-  const confirmData = { title: 'Do you wish to keep this viewport setting?' };
+  const confirmData: Record<string, any> = { title: 'Do you wish to keep this viewport setting?' };
   if (App._needsRestart) {
     if (window.isDesktop) {
       confirmData.message = 'Warning: switching from your previous viewport to this viewport will require a restart!';

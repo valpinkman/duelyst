@@ -641,7 +641,7 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
       return request.fail((response) => alert(`FAILED: Set all factions to level 10 failed\n${response.responseJSON.message}`));
     };
 
-    const qaAddFactionLevel = { Faction: SDK.FactionFactory.getAllPlayableFactions()[0].name };
+    const qaAddFactionLevel: Record<string, any> = { Faction: SDK.FactionFactory.getAllPlayableFactions()[0].name };
     qaAddFactionLevel.Add = function () {
       const factionName = qaAddFactionLevel.Faction;
       const factionData = _.find(SDK.FactionFactory.getAllPlayableFactions(), (factionData) => factionData.name === factionName);
@@ -1155,7 +1155,7 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
     //    btSetupBossEventFolder.add(btSetupBossEvent, "Delta Time (ms)").step(1)
     //    btSetupBossEventFolder.add(btSetupBossEvent, "Create/Replace QA Boss Event")
 
-    const mtSetupAchievementReset = { Achievements: mtAchievementNames[0] };
+    const mtSetupAchievementReset: Record<string, any> = { Achievements: mtAchievementNames[0] };
     const mtSetupAchievementResetFolder = qaMiscFolder.addFolder('Reset And Complete Achievement');
 
     mtSetupAchievementReset.Submit = function () {
@@ -1571,7 +1571,7 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
     gtChangeStatsFolder.add(gtChangeStats, 'Change');
 
     // game tools: refresh unit on board
-    const gtRefresh = { X: 0, Y: 0 };
+    const gtRefresh: Record<string, any> = { X: 0, Y: 0 };
     gtRefresh.Refresh = function () {
       const unit = SDK.GameSession.getInstance().getBoard().getUnitAtPosition({ x: gtRefresh.X, y: gtRefresh.Y });
       if (unit != null) {

@@ -29,7 +29,7 @@ const Boss = require('./boss');
 Fill in later with a guide on how to use card intents
 */
 
-const CardIntent = {
+const CardIntent: Record<string, any> = {
   _intentsByCardId: {},
 };
 

@@ -77,7 +77,7 @@ const LoadLayer = FXCompositeLayer.extend({
     }
 
     // birds flying to platform
-    const birdToOptions = {
+    const birdToOptions: Record<string, any> = {
       angled: true,
       directionAligned: true,
       parallaxMode: true,
@@ -92,7 +92,7 @@ const LoadLayer = FXCompositeLayer.extend({
     this.birds4 = BaseParticleSystem.create(birdToOptions);
 
     // birds flying up
-    const birdUpOptions = {
+    const birdUpOptions: Record<string, any> = {
       angled: true,
       directionAligned: true,
       liveForDistance: true,

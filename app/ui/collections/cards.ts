@@ -133,7 +133,7 @@ var CardsCollection = Backbone.Collection.extend({
         unlockMessage = AchievementsManager.getInstance().getUnlockMessageForAchievementId(unlockedWithAchievementId);
       }
 
-      var modelData = {
+      var modelData: Record<string, any> = {
         baseCardId: baseCardId,
         card: card,
         cardSetId: card.getCardSetId(),

@@ -56,7 +56,7 @@ class ModifierTakeDamageWatchJuggernaut extends ModifierTakeDamageWatch {
         return (() => {
           const result = [];
           for (var position of Array.from<any>(spawnLocations)) {
-            var cardDataOrIndexToSpawn = { id: Cards.Faction5.Egg };
+            var cardDataOrIndexToSpawn: Record<string, any> = { id: Cards.Faction5.Egg };
             // add modifiers to card data
             var card = golemCards[this.getGameSession().getRandomIntegerForExecution(golemCards.length)];
             if (cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects == null) { cardDataOrIndexToSpawn.additionalInherentModifiersContextObjects = []; }

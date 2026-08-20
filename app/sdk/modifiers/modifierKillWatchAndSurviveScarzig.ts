@@ -62,7 +62,7 @@ class ModifierKillWatchAndSurviveScarzig extends ModifierKillWatchAndSurvive {
           removeOriginalEntityAction.setTarget(unit);
           this.getGameSession().executeAction(removeOriginalEntityAction);
 
-          var cardData = { id: Cards.Neutral.BigScarzig };
+          var cardData: Record<string, any> = { id: Cards.Neutral.BigScarzig };
           if (cardData.additionalInherentModifiersContextObjects == null) { cardData.additionalInherentModifiersContextObjects = []; }
           cardData.additionalInherentModifiersContextObjects.push(ModifierTransformed.createContextObject(unit.getExhausted(), unit.getMovesMade(), unit.getAttacksMade()));
           var spawnEntityAction = new PlayCardAsTransformAction(this.getCard().getGameSession(), this.getCard().getOwnerId(), unit.getPosition().x, unit.getPosition().y, cardData);

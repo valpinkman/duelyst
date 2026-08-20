@@ -56,7 +56,7 @@ const MainVetruvianLayer = FXCompositeLayer.extend({
       // this.lights.setMaxParticles(2000)
 
       // cloud elements
-      const cloudOptions = {
+      const cloudOptions: Record<string, any> = {
         angled: true,
         liveForDistance: true,
         parallaxMode: true,

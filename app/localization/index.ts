@@ -8,7 +8,7 @@ const XHR = require('i18next-xhr-backend');
 const LngDetector = require('i18next-browser-languagedetector');
 const Storage = require('app/common/storage');
 
-const options = {
+const options: Record<string, any> = {
   whitelist: ['en', 'de'],
   fallbackLng: 'en',
   contextSeparator: '$',

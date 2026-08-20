@@ -25,7 +25,7 @@ class SpellMarchOfTheBrontos extends Spell {
       removeOriginalEntityAction.setTarget(unit);
       this.getGameSession().executeAction(removeOriginalEntityAction);
 
-      const unitToSpawn = { id: Cards.Faction5.Megabrontodon };
+      const unitToSpawn: Record<string, any> = { id: Cards.Faction5.Megabrontodon };
       unitToSpawn.additionalInherentModifiersContextObjects = [ModifierPseudoRush.createContextObject()];
       const spawnEgg = new PlayCardAsTransformAction(this.getGameSession(), unit.getOwnerId(), position.x, position.y, unitToSpawn);
       return this.getGameSession().executeAction(spawnEgg);

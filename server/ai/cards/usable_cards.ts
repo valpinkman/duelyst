@@ -14,7 +14,7 @@ const NU = require('./neutral_unity');
 const NF = require('./neutral_firstwatch');
 const NW = require('./neutral_wartech');
 
-const UsableCards = {
+const UsableCards: Record<string, any> = {
   _cardIds: [],
   _cardIdsByFactionId: {},
   _usableByCardId: {},

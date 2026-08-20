@@ -217,7 +217,7 @@ class RankModule {
             is_unread: true,
           });
 
-          const updatedExistingRankAttributes = {
+          const updatedExistingRankAttributes: Record<string, any> = {
             rank: _chainState.newRank.rank,
             rank_starting_at: _chainState.newRank.starting_at,
             rank_created_at: _chainState.newRank.created_at,
@@ -354,7 +354,7 @@ class RankModule {
 
         const allQueries = [];
 
-        const updateParams = {
+        const updateParams: Record<string, any> = {
           rank_updated_at: MOMENT_UTC_NOW.toDate(),
           rank: rankData.rank,
           rank_stars: rankData.stars,
@@ -494,7 +494,7 @@ class RankModule {
 
     const player2IsWinner = !isDraw && !player1IsWinner;
 
-    const this_obj = {
+    const this_obj: Record<string, any> = {
       player1Id,
       player2Id,
       gameId,

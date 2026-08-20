@@ -72,7 +72,7 @@ class ShopModule {
     }
 
     // This is specifically for trimmed data we deem acceptable for a player to see
-    const fbReceiptData = {
+    const fbReceiptData: Record<string, any> = {
       created_at: createdAt.valueOf(),
       sku,
       price,

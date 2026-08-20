@@ -38,7 +38,7 @@ const MainObsidianWoodsLayer = FXCompositeLayer.extend({
       this.lightRay.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
 
       // bird elements
-      const birdOptions = {
+      const birdOptions: Record<string, any> = {
         antiAlias: true,
         parallaxMode: true,
         boidFX: {
@@ -72,7 +72,7 @@ const MainObsidianWoodsLayer = FXCompositeLayer.extend({
       this.birds2 = FXFlockSprite.create(birdOptions);
 
       // cloud elements
-      const cloudOptions = {
+      const cloudOptions: Record<string, any> = {
         angled: true,
         liveForDistance: true,
         parallaxMode: true,

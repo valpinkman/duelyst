@@ -2061,7 +2061,7 @@ var ai_showUIForAction = function (gameId, action, actionDelayTime) {
     }
 
     // get action properties
-    let selectEventData = {
+    let selectEventData: Record<string, any> = {
       type: EVENTS.network_game_select,
       playerId: aiPlayerId,
     };
@@ -2237,7 +2237,7 @@ const ai_showHover = function (gameId, boardX, boardY, intent, isSignatureCard) 
       pointer.y = boardY;
 
       // setup hover event data
-      const hoverEventData = {
+      const hoverEventData: Record<string, any> = {
         type: EVENTS.network_game_hover,
         boardPosition: { x: boardX, y: boardY },
         playerId: games[gameId].ai.getMyPlayerId(),

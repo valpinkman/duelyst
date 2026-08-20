@@ -73,7 +73,7 @@ const MainFrostfireLayer = FXCompositeLayer.extend({
       });
 
       // cloud elements
-      const cloudOptions = {
+      const cloudOptions: Record<string, any> = {
         angled: true,
         liveForDistance: true,
         parallaxMode: true,

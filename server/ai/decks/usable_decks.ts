@@ -12,7 +12,7 @@ const F5 = require('./faction5');
 const F6 = require('./faction6');
 const Boss = require('./boss');
 
-const UsableDecks = {
+const UsableDecks: Record<string, any> = {
   _decksById: {},
   _decksByDifficultyByFactionId: {},
 };

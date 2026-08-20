@@ -156,7 +156,7 @@ const MainShimzarLayer = FXCompositeLayer.extend({
       this.waterfallBg4.setMaxParticles(10);
 
       // cloud elements
-      const cloudOptions = {
+      const cloudOptions: Record<string, any> = {
         angled: true,
         liveForDistance: true,
         parallaxMode: true,

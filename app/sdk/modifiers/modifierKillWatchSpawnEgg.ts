@@ -37,7 +37,7 @@ class ModifierKillWatchSpawnEgg extends ModifierKillWatch {
   onKillWatch(action) {
     super.onKillWatch(action);
 
-    const egg = { id: Cards.Faction5.Egg };
+    const egg: Record<string, any> = { id: Cards.Faction5.Egg };
     if (egg.additionalInherentModifiersContextObjects == null) { egg.additionalInherentModifiersContextObjects = []; }
     egg.additionalInherentModifiersContextObjects.push(ModifierEgg.createContextObject(this.cardDataOrIndexToSpawn, this.minionName));
 

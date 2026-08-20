@@ -27,7 +27,7 @@ if (!awsRegion || !replaysBucket) {
 
 // Configure S3 access.
 Logger.module('REPLAYS').log(`Creating S3 client with Region ${awsRegion} and Bucket ${replaysBucket}`);
-const s3Opts = { region: awsRegion };
+const s3Opts: Record<string, any> = { region: awsRegion };
 if (config.get('env') === 'development') {
   s3Opts.accessKeyId = config.get('aws.accessKey');
   s3Opts.secretAccessKey = config.get('aws.secretKey');

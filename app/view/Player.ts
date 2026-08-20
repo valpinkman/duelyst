@@ -635,7 +635,7 @@ const Player = cc.Class.extend({
         gameLayer.updateMouseCursor(true);
 
         // broadcast selection
-        const selectEventData = {
+        const selectEventData: Record<string, any> = {
           type: EVENTS.network_game_select,
           timestamp: Date.now(),
           intentType: this.getIntentType(),
@@ -779,7 +779,7 @@ const Player = cc.Class.extend({
             type: EVENTS.network_game_select, timestamp: Date.now(), handIndex: playedByAction.getIndexOfCardInHand(), intentType: this.getIntentType(),
           });
         } else if (playedByAction instanceof SDK.PlaySignatureCardAction) {
-          const selectEventData = {
+          const selectEventData: Record<string, any> = {
             type: EVENTS.network_game_select,
             timestamp: Date.now(),
             intentType: this.getIntentType(),
@@ -906,7 +906,7 @@ const Player = cc.Class.extend({
         gameLayer.updateMouseCursor(true);
 
         // broadcast select
-        const selectEventData = {
+        const selectEventData: Record<string, any> = {
           type: EVENTS.network_game_select,
           timestamp: Date.now(),
           intentType: this.getIntentType(),
@@ -1114,7 +1114,7 @@ const Player = cc.Class.extend({
         gameLayer.updateMouseCursor(true);
 
         // broadcast hover
-        const hoverEventData = {
+        const hoverEventData: Record<string, any> = {
           type: EVENTS.network_game_hover,
           timestamp: Date.now(),
           intentType: this.getIntentType(),

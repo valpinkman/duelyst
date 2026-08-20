@@ -73,7 +73,7 @@ var DeckSelectSinglePlayerCompositeView = DeckSelectCompositeView.extend({
       var generalId = SDK.FactionFactory.generalIdForFactionByOrder(factionId, SDK.FactionFactory.GeneralOrder.Primary);
       var generalCard = SDK.GameSession.getCardCaches().getCardById(generalId);
 
-      var opponentData = {
+      var opponentData: Record<string, any> = {
         name: factionModel.get('name'),
         factionId: factionId,
         id: generalId,

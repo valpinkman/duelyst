@@ -11,7 +11,7 @@ const _ = require('underscore');
 /**
  * performance.js - Multi-purpose client-side performance tracking tool.
  */
-var PERF = {
+var PERF: Record<string, any> = {
 
   _started: false,
   _observing_loads: [],

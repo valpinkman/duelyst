@@ -19,7 +19,7 @@ class ModifierMyAttackOrCounterattackWatchTransformIntoEgg extends ModifierMyAtt
   onMyAttackOrCounterattackWatch(action) {
     const entity = this.getCard();
 
-    const egg = { id: Cards.Faction5.Egg };
+    const egg: Record<string, any> = { id: Cards.Faction5.Egg };
     if (egg.additionalInherentModifiersContextObjects == null) { egg.additionalInherentModifiersContextObjects = []; }
     egg.additionalInherentModifiersContextObjects.push(ModifierEgg.createContextObject(entity.createNewCardData(), entity.getName()));
     egg.additionalInherentModifiersContextObjects.push(ModifierTransformed.createContextObject(entity.getExhausted(), entity.getMovesMade(), entity.getAttacksMade()));

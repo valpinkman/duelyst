@@ -385,7 +385,7 @@ class AchievementsModule {
             _chainState.completedAchievementIds.push(achievementId);
 
             // looks like a completed achievement...
-            const rewardObject = {
+            const rewardObject: Record<string, any> = {
               id: generatePushId(),
               user_id: userId,
               reward_category: 'achievement',

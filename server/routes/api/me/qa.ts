@@ -171,7 +171,7 @@ router.put('/rank_rating', function (req, res, next) {
   const {
     rank_rating,
   } = req.body;
-  const userRatingRowData = {
+  const userRatingRowData: Record<string, any> = {
     rating: rank_rating,
     updated_at: MOMENT_UTC_NOW.toDate(),
   };

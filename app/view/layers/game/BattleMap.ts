@@ -1232,7 +1232,7 @@ var BattleMap = cc.Class.extend({
   },
   _setupParticles() {
     const battleMapTemplate = SDK.GameSession.getInstance().getBattleMapTemplate();
-    const cloudOptions = {
+    const cloudOptions: Record<string, any> = {
       angled: true,
       liveForDistance: true,
     };
