@@ -4,7 +4,8 @@ var CONFIG = require('app/common/config');
 var RSX = require('app/data/resources');
 var ProgressionManager = require('app/ui/managers/progression_manager');
 var InventoryManager = require('app/ui/managers/inventory_manager');
-var Handlebars = require('hbsfy/runtime');
+// hbsfy is deprecated; its runtime was a one-line re-export of this
+var Handlebars = require('handlebars/runtime').default;
 var markdown = require('markdown').markdown;
 var moment = require('moment');
 var SDK = require('app/sdk');

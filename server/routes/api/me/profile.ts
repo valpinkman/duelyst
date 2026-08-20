@@ -10,7 +10,6 @@ const DataAccessHelpers = require('../../../lib/data_access/helpers');
 const Logger = require('../../../../app/common/logger');
 const Errors = require('../../../lib/custom_errors');
 const t = require('tcomb-validation');
-const uuid = require('node-uuid');
 const moment = require('moment');
 const Promise = require('bluebird');
 

@@ -681,6 +681,21 @@ server and worker. What remains is *typing* (5T.4), not converting.
 
   **26 of the 129 were dev-only** (`firebase-tools` + `supertest`) and never shipped.
 
+  - [x] **Deprecated packages removed, plus the safe bumps.** `pnpm outdated` review:
+    - **`hbsfy`** (deprecated) — only ever used for `hbsfy/runtime`, which is literally
+      `require("handlebars/runtime").default`. Replaced with that directly in both call sites;
+      `handlebars` is already a direct dependency. It was a browserify-era transform that outlived
+      the bundler.
+    - **`node-uuid`** (deprecated) → `uuid` 13. Nine files required it; **only one actually called
+      it** (`r-tokenmanager`), so eight dead imports went too. `desktop/renderer-preload.js` set
+      `window.uuid` — a global nothing in the client ever read — removed rather than re-wired.
+      Also dropped a deprecated `new Buffer(...)` at the one live call site.
+    - Safe version bumps: `firebase` 12.18, `firebase-admin` 14.3, `@aws-sdk/client-s3`,
+      `prettyjson`, `vite` 8.2.2, `sass`, `@firebase/rules-unit-testing`, `fast-stats`.
+    - **`glicko2` 0.8.7 → 1.2.1** was mis-filed as a safe bump — it is a MAJOR version of the
+      **ranked rating algorithm**. Verified properly rather than by API shape: the same
+      `makePlayer`/`updateRatings` inputs produce **identical output to six decimal places** on
+      both versions, checked by installing 0.8.7 side by side.
   - [x] **Deleted `test/rest`, removing `supertest` (101 → 90).** Five files, referenced by no
     script, no vitest config, no workflow and no compose service — so they had not run in a very
     long time. Confirmed dead by actually running them under a temporary config rather than

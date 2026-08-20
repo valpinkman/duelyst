@@ -17,7 +17,6 @@ const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const DuelystFirebase = require('../lib/duelyst_firebase_module');
 const Promise = require('bluebird');
-const uuid = require('node-uuid');
 const moment = require('moment');
 const hashHelpers = require('../lib/hash_helpers');
 const DataAccessHelpers = require('../lib/data_access/helpers');

@@ -8,7 +8,7 @@
  * build (it needs the generated app/data/packages.js).
  *
  * Legacy semantics preserved:
- * - .hbs templates precompile against hbsfy/runtime (hbsfy equivalent)
+ * - .hbs templates precompile against handlebars/runtime
  * - glslify('<path>') CALL SITES are statically replaced with the compiled
  *   shader source (glslify-transform equivalent), via the glslify v7
  *   compiler; the runtime `require 'glslify'` is aliased to a stub
@@ -76,7 +76,7 @@ define['process.env'] = '{}';
 
 function hbsPlugin() {
   return {
-    name: 'duelyst:hbsfy',
+    name: 'duelyst:hbs',
     transform(code, id) {
       if (!id.endsWith('.hbs')) return null;
       const precompiled = Handlebars.precompile(code);
@@ -88,7 +88,7 @@ function hbsPlugin() {
       // restoring the behaviour explicitly lets us take the fixed version.
       // Tightening this means passing plain objects to templates instead.
       return {
-        code: `var HandlebarsRuntime = require('hbsfy/runtime');
+        code: `var HandlebarsRuntime = require('handlebars/runtime').default;
 var __tpl = HandlebarsRuntime.template(${precompiled});
 module.exports = function (context, options) {
   return __tpl(context, Object.assign({ allowProtoPropertiesByDefault: true, allowProtoMethodsByDefault: true }, options));

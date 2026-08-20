@@ -14,7 +14,6 @@ const fbUtil = require('../../../app/common/utils/utils_firebase');
 const Logger = require('../../../app/common/logger');
 const colors = require('colors');
 const validator = require('validator');
-const uuid = require('node-uuid');
 const moment = require('moment');
 const _ = require('underscore');
 const SyncModule = require('./sync');

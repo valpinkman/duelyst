@@ -12,7 +12,6 @@ const DuelystFirebase = require('../duelyst_firebase_module');
 const fbUtil = require('../../../app/common/utils/utils_firebase');
 const Logger = require('../../../app/common/logger');
 const colors = require('colors');
-const uuid = require('node-uuid');
 const moment = require('moment');
 const _ = require('underscore');
 const CONFIG = require('../../../app/common/config');

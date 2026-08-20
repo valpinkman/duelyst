@@ -8,7 +8,7 @@ const _ = require('underscore');
 const Promise = require('bluebird');
 const moment = require('moment');
 const crypto = require('crypto');
-const uuid = require('node-uuid');
+const { v4: uuidv4 } = require('uuid');
 const warlock = require('@counterplay/warlock');
 const Logger = require('../../app/common/logger');
 const config = require('../../config/config');
@@ -25,7 +25,7 @@ const keyPrefix = () => `${env}:matchmaking:tokens`;
  * @return {String} url safe token id
  */
 const createTokenId = function () {
-  const id = new Buffer(uuid.v4()).toString('base64');
+  const id = Buffer.from(uuidv4()).toString('base64');
   id.replace(/\+/g, '-').replace(/\//g, '_').replace(/\=/g, '');
 
   return id;

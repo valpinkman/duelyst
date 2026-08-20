@@ -10,7 +10,6 @@
 const Promise = require('bluebird');
 const util = require('util');
 const colors = require('colors');
-const uuid = require('node-uuid');
 const moment = require('moment');
 const _ = require('underscore');
 

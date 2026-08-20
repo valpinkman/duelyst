@@ -1,5 +1,4 @@
 const electron = require('electron');
-const uuid = require('node-uuid');
 
 const { ipcRenderer } = electron;
 
@@ -9,7 +8,12 @@ window.isDesktop = true;
 // The `remote` module was removed in Electron 14, so quitting goes through
 // IPC instead of reaching into the main process from here.
 window.quitDesktop = () => ipcRenderer.send('quit-app');
-window.uuid = uuid;
+/*
+ * `window.uuid = uuid` used to expose the whole node-uuid module to the page.
+ * Nothing in the client ever read it - removed with node-uuid rather than
+ * re-wired, since re-exposing a global no one consumes only widens the
+ * preload's surface.
+ */
 window.openUrl = (url) => electron.shell.openExternal(url);
 
 const ipcWhiteList = ['create-window', 'quit-app']; // Removed discord, discord-update-presence.
