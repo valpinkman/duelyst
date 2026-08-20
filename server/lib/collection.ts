@@ -72,7 +72,11 @@ const grantFullCollection = function (userId) {
       }
     }));
 
-  return txPromise.then(() => Logger.module('INVENTORY')(`Granted full collection to user ${userId}`));
+  // was `Logger.module('INVENTORY')(...)` -- calling the module object itself
+  // rather than one of its methods, which throws. grantFullCollection is
+  // invoked fire-and-forget on every user creation, so this surfaced only as an
+  // unhandled rejection and never failed registration.
+  return txPromise.then(() => Logger.module('INVENTORY').log(`Granted full collection to user ${userId}`));
 };
 
 module.exports = grantFullCollection;

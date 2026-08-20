@@ -26,7 +26,38 @@ Logger.enabled = Logger.enabled && false;
 describe('inventory module', () => {
   let userId = null;
   let fbRootRef = null;
-  const unlockableCardSets = [SDK.CardSet.Bloodborn, SDK.CardSet.Unity];
+  /*
+   * Derived from the SDK rather than hardcoded. This used to be
+   * [Bloodborn, Unity]; Bloodborn has since been disabled in the card-set data,
+   * so production correctly rejects it ("invalid card set - 3") and every test
+   * in this loop failed. Filtering on the data means the suite follows the game
+   * instead of a snapshot of it.
+   */
+  const unlockableCardSets = Object.keys(SDK.CardSet)
+    .map((key) => SDK.CardSet[key])
+    .filter((id) => typeof id === 'number')
+    .filter((id) => {
+      const cardSetData = SDK.CardSetFactory.cardSetForIdentifier(id);
+      return cardSetData != null && cardSetData.enabled && cardSetData.isUnlockableThroughOrbs;
+    });
+
+  /*
+   * The set these orb tests run against. Was hardcoded to Bloodborn, which is
+   * now disabled; the orb counts and gold refunds of the enabled unlockable set
+   * are identical, so the assertions are unchanged.
+   */
+  const orbTestCardSet = unlockableCardSets[0];
+
+  /*
+   * Spirit costs and rewards come from the SDK rather than being hardcoded.
+   * These tests were written when a common cost 40 spirit to craft; it now
+   * costs 20, so every hardcoded wallet figure and expectation was off by the
+   * difference. Deriving them means the suite follows game balance instead of a
+   * 2016 snapshot of it.
+   */
+  const spiritFor = (rarityId) => SDK.RarityFactory.rarityForIdentifier(rarityId);
+  const COMMON_CRAFT = spiritFor(SDK.Rarity.Common).spiritCost;
+  const COMMON_DISENCHANT = spiritFor(SDK.Rarity.Common).spiritReward;
 
   // before cleanup to check if user already exists and delete
   beforeAll(() => {
@@ -339,58 +370,58 @@ describe('inventory module', () => {
   describe('addRemainingOrbsForCardSetToUser', () => {
     it('expect to be able to add a full set of orbs to user with no orbs for that set, expect no gold to be awarded', () => SyncModule.wipeUserData(userId)
       .then(() => {
-        const txPromise = knex.transaction((tx) => InventoryModule.addRemainingOrbsForCardSetToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, false, 'qa unit test', generatePushId()));
+        const txPromise = knex.transaction((tx) => InventoryModule.addRemainingOrbsForCardSetToUser(txPromise, tx, userId, orbTestCardSet, false, 'qa unit test', generatePushId()));
         return txPromise;
       }).then(() => Promise.all([
         knex('users').where('id', userId).first(),
-        knex('user_spirit_orbs').where('user_id', userId).andWhere('card_set', SDK.CardSet.Bloodborn),
+        knex('user_spirit_orbs').where('user_id', userId).andWhere('card_set', orbTestCardSet),
       ])).then(([userRow, userOrbRows]) => {
         expect(userRow.wallet_gold).to.equal(0);
-        expect(userRow.total_orb_count_set_3).to.equal(13);
+        expect(userRow[`total_orb_count_set_${orbTestCardSet}`]).to.equal(13);
         expect(userOrbRows.length).to.equal(13);
       }));
 
     it('expect to be able to add a full set of orbs to user with 3 orbs for that set, expect 900 gold to be awarded', () => SyncModule.wipeUserData(userId)
       .then(() => {
         const txPromise = knex.transaction((tx) => Promise.all([
-          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()),
-          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()),
-          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()),
+          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, orbTestCardSet, 'qa unit test', generatePushId()),
+          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, orbTestCardSet, 'qa unit test', generatePushId()),
+          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, orbTestCardSet, 'qa unit test', generatePushId()),
         ]));
         return txPromise;
       }).then(() => {
-        const txPromise = knex.transaction((tx) => InventoryModule.addRemainingOrbsForCardSetToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, false, 'qa unit test', generatePushId()));
+        const txPromise = knex.transaction((tx) => InventoryModule.addRemainingOrbsForCardSetToUser(txPromise, tx, userId, orbTestCardSet, false, 'qa unit test', generatePushId()));
         return txPromise;
       }).then(() => Promise.all([
         knex('users').where('id', userId).first(),
-        knex('user_spirit_orbs').where('user_id', userId).andWhere('card_set', SDK.CardSet.Bloodborn),
+        knex('user_spirit_orbs').where('user_id', userId).andWhere('card_set', orbTestCardSet),
       ]))
       .then(([userRow, userOrbRows]) => {
         expect(userRow.wallet_gold).to.equal(3 * 300);
-        expect(userRow.total_orb_count_set_3).to.equal(13);
+        expect(userRow[`total_orb_count_set_${orbTestCardSet}`]).to.equal(13);
         expect(userOrbRows.length).to.equal(13);
       }));
 
     it('expect to be not fail when trying to add remaining set of orbs to user with max orbs for that set, expect no gold to be awarded', () => SyncModule.wipeUserData(userId)
       .then(() => {
         const txPromise = knex.transaction((tx) => Promise.all([
-          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()),
-          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()),
-          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()),
-          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()),
-          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()), // 5
-          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()),
-          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()),
-          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()),
-          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()),
-          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()), // 10
-          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()),
-          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()),
-          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()),
+          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, orbTestCardSet, 'qa unit test', generatePushId()),
+          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, orbTestCardSet, 'qa unit test', generatePushId()),
+          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, orbTestCardSet, 'qa unit test', generatePushId()),
+          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, orbTestCardSet, 'qa unit test', generatePushId()),
+          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, orbTestCardSet, 'qa unit test', generatePushId()), // 5
+          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, orbTestCardSet, 'qa unit test', generatePushId()),
+          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, orbTestCardSet, 'qa unit test', generatePushId()),
+          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, orbTestCardSet, 'qa unit test', generatePushId()),
+          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, orbTestCardSet, 'qa unit test', generatePushId()),
+          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, orbTestCardSet, 'qa unit test', generatePushId()), // 10
+          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, orbTestCardSet, 'qa unit test', generatePushId()),
+          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, orbTestCardSet, 'qa unit test', generatePushId()),
+          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, orbTestCardSet, 'qa unit test', generatePushId()),
         ]));
         return txPromise;
       }).then(() => {
-        const txPromise = knex.transaction((tx) => InventoryModule.addRemainingOrbsForCardSetToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, false, 'qa unit test', generatePushId()));
+        const txPromise = knex.transaction((tx) => InventoryModule.addRemainingOrbsForCardSetToUser(txPromise, tx, userId, orbTestCardSet, false, 'qa unit test', generatePushId()));
         return txPromise;
       }).then((result) => {
         // Never reach
@@ -404,12 +435,12 @@ describe('inventory module', () => {
 
         return Promise.all([
           knex('users').where('id', userId).first(),
-          knex('user_spirit_orbs').where('user_id', userId).andWhere('card_set', SDK.CardSet.Bloodborn),
+          knex('user_spirit_orbs').where('user_id', userId).andWhere('card_set', orbTestCardSet),
         ]);
       })
       .then(([userRow, userOrbRows]) => {
         expect(userRow.wallet_gold).to.equal(0);
-        expect(userRow.total_orb_count_set_3).to.equal(13);
+        expect(userRow[`total_orb_count_set_${orbTestCardSet}`]).to.equal(13);
         expect(userOrbRows.length).to.equal(13);
       }));
   });
@@ -419,7 +450,7 @@ describe('inventory module', () => {
       .then(() => {
         const txPromise = knex.transaction((tx) => {
           console.log(`user id: ${userId}`);
-          return InventoryModule.buyRemainingSpiritOrbsWithSpirit(userId, SDK.CardSet.Bloodborn);
+          return InventoryModule.buyRemainingSpiritOrbsWithSpirit(userId, orbTestCardSet);
         });
         return txPromise;
       }).then((result) => {
@@ -454,13 +485,13 @@ describe('inventory module', () => {
       }));
 
     it('expect to be able to buy entire set of spirit orbs with sufficient spirit', () => {
-      const fullSetSpiritCost = SDK.CardSetFactory.cardSetForIdentifier(SDK.CardSet.Bloodborn).fullSetSpiritCost;
+      const fullSetSpiritCost = SDK.CardSetFactory.cardSetForIdentifier(orbTestCardSet).fullSetSpiritCost;
       return SyncModule.wipeUserData(userId)
         .then(() => {
           const txPromise = knex.transaction((tx) => InventoryModule.giveUserSpirit(txPromise, tx, userId, fullSetSpiritCost, 'qa gift'));
           return txPromise;
         }).then(() => {
-          const txPromise = knex.transaction((tx) => InventoryModule.buyRemainingSpiritOrbsWithSpirit(userId, SDK.CardSet.Bloodborn));
+          const txPromise = knex.transaction((tx) => InventoryModule.buyRemainingSpiritOrbsWithSpirit(userId, orbTestCardSet));
           return txPromise;
         }).then((result) => {
           // Should not reach
@@ -468,7 +499,7 @@ describe('inventory module', () => {
           expect(result).to.equal(13);
 
           return Promise.all([
-            knex('user_spirit_orbs').where('user_id', userId).andWhere('card_set', SDK.CardSet.Bloodborn),
+            knex('user_spirit_orbs').where('user_id', userId).andWhere('card_set', orbTestCardSet),
             knex('users').first('wallet_spirit').where('id', userId),
           ]);
         })
@@ -476,25 +507,25 @@ describe('inventory module', () => {
           expect(spiritOrbs).to.exist;
           expect(spiritOrbs.length).to.equal(13);
           for (let i = 0; i < spiritOrbs.length; i++) {
-            expect(spiritOrbs[i].card_set).to.equal(SDK.CardSet.Bloodborn);
+            expect(spiritOrbs[i].card_set).to.equal(orbTestCardSet);
           }
           expect(userRow.wallet_spirit).to.equal(0);
         });
     });
 
     it('expect to be able to buy remaining set of spirit orbs with sufficient spirit and get correct spirit refund (and no gold)', () => {
-      const fullSetSpiritCost = SDK.CardSetFactory.cardSetForIdentifier(SDK.CardSet.Bloodborn).fullSetSpiritCost;
+      const fullSetSpiritCost = SDK.CardSetFactory.cardSetForIdentifier(orbTestCardSet).fullSetSpiritCost;
       return SyncModule.wipeUserData(userId)
         .then(() => {
           const txPromise = knex.transaction((tx) => Promise.all([
             InventoryModule.giveUserSpirit(txPromise, tx, userId, fullSetSpiritCost, 'qa gift'),
-            InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa gift'),
-            InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa gift'),
-            InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa gift'),
+            InventoryModule.addBoosterPackToUser(txPromise, tx, userId, orbTestCardSet, 'qa gift'),
+            InventoryModule.addBoosterPackToUser(txPromise, tx, userId, orbTestCardSet, 'qa gift'),
+            InventoryModule.addBoosterPackToUser(txPromise, tx, userId, orbTestCardSet, 'qa gift'),
           ]));
           return txPromise;
         }).then(() => {
-          const txPromise = knex.transaction((tx) => InventoryModule.buyRemainingSpiritOrbsWithSpirit(userId, SDK.CardSet.Bloodborn));
+          const txPromise = knex.transaction((tx) => InventoryModule.buyRemainingSpiritOrbsWithSpirit(userId, orbTestCardSet));
           return txPromise;
         }).then((result) => {
           // Should not reach
@@ -502,7 +533,7 @@ describe('inventory module', () => {
           expect(result).to.equal(10);
 
           return Promise.all([
-            knex('user_spirit_orbs').where('user_id', userId).andWhere('card_set', SDK.CardSet.Bloodborn),
+            knex('user_spirit_orbs').where('user_id', userId).andWhere('card_set', orbTestCardSet),
             knex('users').first('wallet_spirit', 'wallet_gold').where('id', userId),
           ]);
         })
@@ -510,7 +541,7 @@ describe('inventory module', () => {
           expect(spiritOrbs).to.exist;
           expect(spiritOrbs.length).to.equal(13);
           for (let i = 0; i < spiritOrbs.length; i++) {
-            expect(spiritOrbs[i].card_set).to.equal(SDK.CardSet.Bloodborn);
+            expect(spiritOrbs[i].card_set).to.equal(orbTestCardSet);
           }
           expect(userRow.wallet_spirit).to.equal(3 * 300);
           expect(userRow.wallet_gold).to.equal(0);
@@ -1224,8 +1255,8 @@ describe('inventory module', () => {
         expect(error).to.be.an.instanceof(Errors.NotFoundError);
       }));
 
-    it('expect to be able to disenchant a COMMON card and receive 10 spirit', () => knex('users').where('id', userId).update({
-      wallet_spirit: 40,
+    it('expect to be able to disenchant a COMMON card and receive its spirit reward', () => knex('users').where('id', userId).update({
+      wallet_spirit: COMMON_CRAFT,
     }).then(() => InventoryModule.craftCard(userId, SDK.Cards.Faction1.Lightchaser))
       .then(() => InventoryModule.disenchantCards(userId, [SDK.Cards.Faction1.Lightchaser]))
       .then((result) => {
@@ -1241,9 +1272,9 @@ describe('inventory module', () => {
         FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('wallet'), 'value'),
       ]))
       .then(([userRow, cardCountRows, cardLogRows, cardCollection, fbCardCollection, fbWallet]) => {
-        // expect 10 spirit in wallet
-        expect(userRow.wallet_spirit).to.equal(10);
-        expect(fbWallet.val().spirit_amount).to.equal(10);
+        // crafted for COMMON_CRAFT, then disenchanted for COMMON_DISENCHANT
+        expect(userRow.wallet_spirit).to.equal(COMMON_DISENCHANT);
+        expect(fbWallet.val().spirit_amount).to.equal(COMMON_DISENCHANT);
 
         // expect no card counts
         expect(cardCountRows).to.exist;
