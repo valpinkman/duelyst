@@ -605,7 +605,7 @@ var PremiumPurchaseDialogView = Backbone.Marionette.LayoutView.extend({
         _self.flashSuccessInDialog('SUCCESS!', true);
       })
       .catch(function (err) {
-        var errorMessage = response.responseJSON && response.responseJSON.message || 'There was a problem deleting your card.';
+        var errorMessage = err.responseJSON && err.responseJSON.message || 'There was a problem deleting your card.';
         _self.showError(errorMessage);
       });
   },

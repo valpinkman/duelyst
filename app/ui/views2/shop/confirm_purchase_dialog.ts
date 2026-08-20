@@ -696,7 +696,7 @@ var ConfirmPurchaseDialogView = Backbone.Marionette.ItemView.extend({
         _self.flashSuccessInDialog(i18next.t('common.success_title'), true);
       })
       .catch(function (err) {
-        var errorMessage = response.responseJSON && response.responseJSON.message || 'There was a problem deleting your card.';
+        var errorMessage = err.responseJSON && err.responseJSON.message || 'There was a problem deleting your card.';
         _self.showError(errorMessage);
       });
   },

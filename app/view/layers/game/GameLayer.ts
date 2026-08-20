@@ -5273,7 +5273,7 @@ var GameLayer = FXCompositeLayer.extend({
         // inspect triggers rebuild so it must be done before using content size
         this._inspectCardNode.showInspect(sdkCard, showBaseState, actionToShowStateFor, actionEventTypeToShowStateFor, showAsIfOwnedByPlayer2, null, this.getShouldShowCardInstructionals());
         if (sdkCard.getReferencedCardData()) {
-          referencedCard = SDK.GameSession.getInstance().createCardForIdentifier(sdkCard.getReferencedCardData().id);
+          const referencedCard = SDK.GameSession.getInstance().createCardForIdentifier(sdkCard.getReferencedCardData().id);
           referencedCard.setOwner(sdkCard.getOwner());
           this._referencedCardNode.showInspect(referencedCard, true, actionToShowStateFor, actionEventTypeToShowStateFor, showAsIfOwnedByPlayer2, null, this.getShouldShowCardInstructionals());
         }

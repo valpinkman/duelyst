@@ -976,9 +976,9 @@ proto.rebuild = function () {
   if (!this.getNeedsDepthTest() || width == null || width <= 0 || height == null || height <= 0) {
     this.releaseDepthTestPasses();
   } else if (this._depthTestPass == null) {
-    this._depthTestPass = RenderPass.create(cc.Texture2D.PIXEL_FORMAT_RGBA8888, width, height, 1, node.antiAlias);
+    this._depthTestPass = RenderPass.create(cc.Texture2D.PIXEL_FORMAT_RGBA8888, width, height, 1, this.antiAlias);
   } else if (this._depthTestPass.getWidth() != width || this._depthTestPass.getHeight() != height) {
-    this._depthTestPass.rebuild(cc.Texture2D.PIXEL_FORMAT_RGBA8888, width, height, 1, node.antiAlias);
+    this._depthTestPass.rebuild(cc.Texture2D.PIXEL_FORMAT_RGBA8888, width, height, 1, this.antiAlias);
   }
 };
 

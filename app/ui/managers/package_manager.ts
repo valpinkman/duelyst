@@ -1642,7 +1642,7 @@ cc.textureCache.handleLoadedTexture = function (referencePath, options) {
   tex.handleLoadedTexture(options);
 };
 
-cc.textureCache.addImage = function (url, cb, target) {
+cc.textureCache.addImage = function (url, cb, target, pixelFormat) {
   cc.assert(url, cc._LogInfos.Texture2D_addImage_2);
 
   var locTexs = this._textures;

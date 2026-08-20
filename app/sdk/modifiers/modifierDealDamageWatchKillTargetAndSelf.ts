@@ -59,7 +59,9 @@ class ModifierDealDamageWatchKillTargetAndSelf extends ModifierDealDamageWatch {
       let killAction = new KillAction(this.getGameSession());
       killAction.setOwnerId(this.getCard().getOwnerId());
       killAction.setSource(this.getCard());
-      killAction.setTarget(target);
+      // `target` is local to onDealDamage; upstream referenced it here too,
+      // where the only thing in scope is the action itself
+      killAction.setTarget(a.getTarget());
       actionEvent.actions.push(killAction);
 
       // kill self

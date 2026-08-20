@@ -686,7 +686,9 @@ class Modifier extends SDKObject {
         if (_.isArray(val)) {
           contextObject[key] = val.slice(0);
         } else if (_.isObject(val)) {
-          cardData[key] = UtilsJavascript.fastExtend({}, val);
+          // `cardData` was an upstream typo; every other branch of this loop
+          // writes to contextObject, and cardData is not defined here at all.
+          contextObject[key] = UtilsJavascript.fastExtend({}, val);
         } else {
           contextObject[key] = val;
         }

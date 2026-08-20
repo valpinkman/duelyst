@@ -669,7 +669,7 @@ const LadderProgressLayer = RewardLayer.extend({
       // unknown division, default to bronze dimensions and warn
       medalSpriteWidth = 298.0;
       medalSpriteHeight = 180.0;
-      console.warn(`LadderProgressLayer: Unknown division key - Rank ${model.get('rank_before')} gave division key ${divisionKey}`);
+      console.warn(`LadderProgressLayer: Unknown division key - Rank ${rank} gave division key ${divisionKey}`);
     }
 
     rankMedalSprite.scaleX = medalSpriteWidth / rankMedalSprite.getContentSize().width * 0.8;

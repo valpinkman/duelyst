@@ -27,6 +27,7 @@ const ZodiacNode = require('app/view/nodes/draw/Zodiac');
 const FXGlowImageMap = require('app/view/nodes/fx/FXGlowImageMap');
 const i18next = require('i18next');
 const moment = require('moment');
+const CrateManager = require('app/ui/managers/crate_manager');
 const KeyRewardNode = require('./KeyRewardNode');
 const CardBackRewardNode = require('./CardBackRewardNode');
 const CardSkinRewardNode = require('./CardSkinRewardNode');

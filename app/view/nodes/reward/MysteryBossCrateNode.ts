@@ -3,6 +3,7 @@
 const SDK = require('app/sdk');
 const RSX = require('app/data/resources');
 const PKGS = require('app/data/packages');
+const CrateManager = require('app/ui/managers/crate_manager');
 const MysteryCrateNode = require('./MysteryCrateNode');
 
 /** **************************************************************************

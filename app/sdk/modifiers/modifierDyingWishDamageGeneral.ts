@@ -20,7 +20,7 @@ class ModifierDyingWishDamageGeneral extends ModifierDyingWish {
 
   static getAppliedDescription(contextObject) {
     if (this.damageAmount) {
-      return `When this minion dies, deal ${damageAmount} damage to its general`;
+      return `When this minion dies, deal ${this.damageAmount} damage to its general`;
     }
     return 'When this minion dies, deal its attack in damage to its general';
   }
