@@ -321,7 +321,7 @@ class Entity extends Card {
     return Math.max(0, this.getMaxHP() - this.getDamage());
   }
 
-  getMaxHP(withAuras) {
+  getMaxHP(withAuras?) {
     return this.getBuffedAttribute(this.maxHP, 'maxHP', withAuras);
   }
 
@@ -356,7 +356,7 @@ class Entity extends Card {
     return this.getHP() < this.getMaxHP();
   }
 
-  getATK(withAuras) {
+  getATK(withAuras?) {
     return this.getBuffedAttribute(this.atk, 'atk', withAuras);
   }
 
@@ -369,7 +369,7 @@ class Entity extends Card {
     return this.flushCachedAttackPattern();
   }
 
-  getReach(withAuras) {
+  getReach(withAuras?) {
     return this.getBuffedAttribute(this.reach, 'reach', withAuras);
   }
 
@@ -431,7 +431,7 @@ class Entity extends Card {
     return this.flushCachedMovementPattern();
   }
 
-  getSpeed(withAuras) {
+  getSpeed(withAuras?) {
     return this.getBuffedAttribute(this.speed, 'speed', withAuras);
   }
 
@@ -471,7 +471,7 @@ class Entity extends Card {
     return this.movesMade;
   }
 
-  getMoves(withAuras) {
+  getMoves(withAuras?) {
     return this.getBuffedAttribute(this.moves, 'moves', withAuras);
   }
 
@@ -494,7 +494,7 @@ class Entity extends Card {
     return this.attacksMade;
   }
 
-  getAttacks(withAuras) {
+  getAttacks(withAuras?) {
     return this.getBuffedAttribute(this.attacks, 'attacks', withAuras);
   }
 

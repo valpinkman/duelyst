@@ -1115,7 +1115,7 @@ class RiftModule {
    * @param  {Object}  riftRunRow    sql row of the run to be sanitized
    * @return  {Promise}        Promise that will resolve to the new (or same if not changed) rift run row data
    */
-  static sanitizeRunCardChoicesIfNeeded(riftRunRow, systemTime) {
+  static sanitizeRunCardChoicesIfNeeded(riftRunRow, systemTime?) {
     const _chainState: Record<string, any> = {};
     const NOW_UTC_MOMENT = systemTime || moment.utc();
 

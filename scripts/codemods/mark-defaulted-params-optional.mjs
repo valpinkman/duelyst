@@ -45,9 +45,40 @@ const walk = (node, fn, parent = null) => {
   }
 };
 
-/** does the body open by defaulting `name` when it is null/undefined? */
+/**
+ * Does the body default `name` itself?
+ *
+ * Two spellings, both from decaffeinate:
+ *   if (name == null) { name = X; }          <- CoffeeScript default parameter
+ *   const NOW = name || moment.utc();        <- `name ? default` idiom
+ * The second is how ~81 data_access functions treat their trailing `systemTime`
+ * parameter, which is why they all reported TS2554 at every caller.
+ */
 const defaultsParam = (body, name) => {
   if (!body || body.type !== 'BlockStatement') return false;
+
+  /*
+   * `const NOW = name || moment.utc()`.
+   *
+   * Deliberately requires the fallback to be a moment() call rather than
+   * accepting any `name || X`. A bare `||` is NOT evidence of optionality --
+   * `const limit = maxCount || 100` is falsy-tolerance for a required
+   * parameter, and an earlier, looser version of this rule happily produced
+   * `setIsDeveloperMode(val?)`, which is wrong. The moment form is the
+   * "systemTime defaults to now" idiom used by ~81 data_access functions, and
+   * it does mean the parameter is optional.
+   */
+  let timeDefaulted = false;
+  walk(body, (n) => {
+    if (n.type !== 'LogicalExpression' || n.operator !== '||') return;
+    if (n.left.type !== 'Identifier' || n.left.name !== name) return;
+    let right = n.right;
+    if (right.type === 'CallExpression') right = right.callee;
+    while (right && right.type === 'MemberExpression') right = right.object;
+    if (right && right.type === 'Identifier' && right.name === 'moment') timeDefaulted = true;
+  });
+  if (timeDefaulted) return true;
+
   for (const stmt of body.body) {
     if (stmt.type !== 'IfStatement') continue;
     const t = stmt.test;

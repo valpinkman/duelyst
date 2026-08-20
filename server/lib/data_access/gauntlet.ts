@@ -180,7 +180,7 @@ class GauntletModule {
    * @param  {String}  ticketId  Arena ticket ID to use
    * @return  {Promise}        Promise that will return the arena data on completion.
    */
-  static startRun(userId, ticketId, systemTime) {
+  static startRun(userId, ticketId, systemTime?) {
     const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId) {

@@ -390,7 +390,7 @@ class InventoryModule {
     * @param  {CosmeticsType}    cosmeticType       CosmeticsTypeLookup to filter cosmetics to (optional, defaults to all types)
     * @return  {Promise}  Promise that will resolve to either {cosmetic_id:XXX} if they received cosmetic or {cosmetic_id:XXX,spirit:XXX} if they received spirit for a duplicate.
     */
-  static giveUserNewPurchasableCosmetic(trxPromise, trx, userId, transactionType, transactionId, rarityId, cosmeticType, cosmeticIdsOwned, systemTime) {
+  static giveUserNewPurchasableCosmetic(trxPromise, trx, userId, transactionType, transactionId, rarityId, cosmeticType, cosmeticIdsOwned, systemTime?) {
     // userId must be defined
     if (!userId) {
       Logger.module('InventoryModule').debug(`giveUserNewPurchasableCosmetic() -> invalid user ID - ${userId}.`.red);
@@ -491,7 +491,7 @@ class InventoryModule {
    * @param  {String}    transactionId   id of purchase if hard, or source id related for soft
    * @return  {Promise}  Promise that will resolve to either {cosmetic_id:XXX} if they received cosmetic or {cosmetic_id:XXX,spirit:XXX} if they received spirit for a duplicate.
    */
-  static giveUserCosmeticId(trxPromise, trx, userId, cosmeticId, transactionType, transactionId, manualSpiritOverrideAmount, systemTime) {
+  static giveUserCosmeticId(trxPromise, trx, userId, cosmeticId, transactionType, transactionId, manualSpiritOverrideAmount, systemTime?) {
     const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId) {
@@ -1087,7 +1087,7 @@ class InventoryModule {
    * @param  {Object}    additionalBoosterAttrs    (OPTIONAL) Additional attributes to attach to the booster pack data.
    * @return  {Promise}    Promise that will post BOOSTER PACK DATA on completion.
    */
-  static addBoosterPackToUser(trxPromise, trx, userId, cardSetId, transactionType, transactionId = null, additionalBoosterAttrs = null, systemTime) {
+  static addBoosterPackToUser(trxPromise, trx, userId, cardSetId, transactionType, transactionId = null, additionalBoosterAttrs = null, systemTime?) {
     const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId) {
@@ -1194,7 +1194,7 @@ class InventoryModule {
    * @param  {Integer}    cardSetId            CardSetLookup value
    * @return  {Promise}    Promise that will post BOOSTER PACK DATA on completion.
    */
-  static buyRemainingSpiritOrbsWithSpirit(userId, cardSetId, systemTime) {
+  static buyRemainingSpiritOrbsWithSpirit(userId, cardSetId?, systemTime?) {
     const _chainState: Record<string, any> = {};
     let txPromise;
     const NOW_UTC_MOMENT = systemTime || moment.utc();
@@ -1262,7 +1262,7 @@ class InventoryModule {
   * @param  {String}    transactionId        the identifier for the transaction that caused this booster to be added.
   * @return  {Promise}    Promise that will post BOOSTER PACK DATA on completion.
   */
-  static addRemainingOrbsForCardSetToUser(txPromise, tx, userId, cardSetId, refundWithSpirit, transactionType, transactionId = null, systemTime) {
+  static addRemainingOrbsForCardSetToUser(txPromise, tx, userId, cardSetId, refundWithSpirit, transactionType, transactionId = null, systemTime?) {
     const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId) {
@@ -1338,7 +1338,7 @@ class InventoryModule {
    * @return  {Promise}            Promise that will post UNLOCKED BOOSTER PACK DATA on completion.
    * Tag: openBoosterPack openSpiritOrb
    */
-  static unlockBoosterPack(userId, boosterPackId, systemTime) {
+  static unlockBoosterPack(userId, boosterPackId, systemTime?) {
     const _chainState: Record<string, any> = {};
     // userId must be defined
     let txPromise;
@@ -1851,7 +1851,7 @@ class InventoryModule {
    * @return  {Promise}    Promise that will post the given chapter ids on completion
    */
   // TODO: better error types
-  static giveUserMissingCodexChapters(userId, systemTime) {
+  static giveUserMissingCodexChapters(userId, systemTime?) {
     let txPromise;
     Logger.module('InventoryModule').time(`giveUserMissingCodexChapters() -> checking for missing codex chapters for user ID ${userId.blue}.`.green);
 
@@ -1911,7 +1911,7 @@ class InventoryModule {
    * @return  {Promise}    Promise that will post the given chapter id on completion IF GIVEN (will not give duplicates).
    */
   // TODO: better error types
-  static giveUserCodexChapter(txPromise, tx, userId, chapterId, systemTime) {
+  static giveUserCodexChapter(txPromise, tx, userId, chapterId, systemTime?) {
     const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId) {
@@ -1999,7 +1999,7 @@ class InventoryModule {
    * @param  {Array}    cardIds    Array of Integers for cardIds to dis-enchant.
    * @return  {Promise}        Resulting data object containing spirit and bonuses
    */
-  static disenchantCards(userId, cardIds, systemTime) {
+  static disenchantCards(userId, cardIds, systemTime?) {
     const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId) {
@@ -2061,7 +2061,7 @@ class InventoryModule {
    * @param  {Array}      cardIds      Array of INT card IDs to disenchant.
    * @return  {Promise}            Resulting data object containing spirit and bonuses
    */
-  static _disenchantCards(trxPromise, trx, userId, cardIds, systemTime) {
+  static _disenchantCards(trxPromise, trx, userId, cardIds, systemTime?) {
     const _chainState: Record<string, any> = {};
     // used to make sure all updates have the same "updated_at" date
     const NOW_UTC_MOMENT = systemTime || moment.utc();
@@ -2248,7 +2248,7 @@ class InventoryModule {
    * @param  {String}  userId    User ID.
    * @return  {Promise}        Resulting data object containing spirit and bonuses
    */
-  static disenchantDuplicateCards(userId, systemTime) {
+  static disenchantDuplicateCards(userId, systemTime?) {
     const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId) {
@@ -2950,7 +2950,7 @@ class InventoryModule {
    * @param  {String}    userId      User ID.
    * @return  {Promise}            Promise.
    */
-  static softWipeUserCardInventory(userId, systemTime) {
+  static softWipeUserCardInventory(userId, systemTime?) {
     const _chainState: Record<string, any> = {};
     const NOW_UTC_MOMENT = systemTime || moment.utc();
 
@@ -3074,7 +3074,7 @@ class InventoryModule {
    * @public
    * @param  {String}    userId      User ID.
    */
-  static claimFreeCardOfTheDay(userId, systemTime) {
+  static claimFreeCardOfTheDay(userId, systemTime?) {
     const _chainState: Record<string, any> = {};
     const NOW_UTC_MOMENT = systemTime || moment.utc();
     const this_obj: Record<string, any> = {};
