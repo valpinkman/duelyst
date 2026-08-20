@@ -22,11 +22,17 @@ step it describes, so it can never drift from the code.
   4. **Modern bundler** — gulp deleted; Vite/rolldown builds the client in ~2.4s (was ~35s).
   Playwright e2e **is** committed now (`test/e2e/play-practice-game.spec.mjs`): it boots the
   client and plays a practice game vs the AI, asserting 0 console errors.
-- **Verified working**, not just building: `pnpm build` from a clean tree, all four services
-  in Docker, and a **practice game played end-to-end against the TypeScript stack** with a real
+- **Verified working**, not just building: `pnpm build` from a clean tree, all six services
+  in Docker (api, game, sp, worker, plus db/redis; worker-ui is profile-gated), and a **practice game played end-to-end against the TypeScript stack** with a real
   Firebase RTDB (register → login → main menu → mulligan → play a minion → AI responds →
   concede), 0 console errors.
-- **Next, in order (the dependency chain is real, do not reorder):**
+- **Current state (2026-08-20):** typecheck **365** (TS2304 at **0**, and gated in CI),
+  **1,366** unit tests, **80** advisories, data_access integration at **493 / 575**.
+  CI gates: lint + `check:promise-utils` + `check:bluebird-orphans` + `check:undefined-names`,
+  unit, `integration:misc`, `integration:jobs`, build.
+- **What follows is the record of how each item was closed**, kept because most entries carry a
+  lesson that cost real time to learn. The genuinely-open work is listed at the end under
+  "Actually next".
   1. ~~`redis` 2 → ioredis~~ **DONE**, ~~drop bluebird~~ **DONE**, ~~replace kue~~ **DONE**
      (BullMQ). bluebird, redis@2, kue and warlock are all gone from the tree.
   2. **TS2304 is CLEARED: 73 → 0** (2026-08-20). Treating "Cannot find name" as a bug list
@@ -117,7 +123,8 @@ step it describes, so it can never drift from the code.
 
      The remaining 366 are heterogeneous and want per-case judgement: 175 TS2339 on function
      objects and narrowed types, 75 TS2554, 35 TS2345, 23 TS2403. Move directories into `tsconfig.strict.json` as they go clean.
-  4. **data_access suites revived: 0 → 402 of 506 passing** (2026-08-20). They had been
+  4. **data_access suites revived — now 493 of 575 passing** (2026-08-20; first pass took it
+     from 0 to 402 of 506, and the total grew as blocked files started collecting). They had been
      unrunnable for so long that nobody knew what was in them. **Run them with
      `source scripts/dev/data-access-test-env.sh`**, which stands up a throwaway Postgres and
      Redis and points Firebase at the local emulator — deliberately separate from
@@ -150,7 +157,7 @@ step it describes, so it can never drift from the code.
        198 since. It demanded 126 while the migration correctly granted 60. The list is now
        exported as `EMOTE_IDS_PRE_COSMETICS_20160708` and asserted against directly.
 
-     **Second pass: 455 of 575 passing.** The total grew from 506 because
+     **Second and third passes: 493 of 575 passing.** The total grew from 506 because
      `cosmetic_chests.js` was dying in a malformed `beforeAll` before collecting any of its 69
      tests. Further fixes:
 
@@ -170,7 +177,33 @@ step it describes, so it can never drift from the code.
      - `achievements.js` and `shop.js` are entirely commented out; they now carry `describe.skip`
        stubs so a deliberate decision reads as SKIPPED rather than "No test suite found".
 
-     **The remaining ~95 are two kinds, and worth separating:**
+     **Third pass — the undefined-value cluster, five more production bugs.** A second
+     `.bind(this)` artifact, distinct from the two-bag one: code reading `_chainState.X` where
+     **X is never assigned**, and in two cases the name is the function's own PARAMETER which the
+     codemod had prefixed with the bag.
+
+     - `rank.updateUsersRatingsWithGameOutcome` read `_chainState.gameId`/`.player1Id`/
+       `.player2Id` — all parameters — so every Firebase write became `.child(undefined)` and
+       threw. **Rating updates after a game could not complete.**
+     - `inventory.buyBoosterPacksWithGold` read `_chainState.cardSetData`, which lived in a
+       separate bag, so `.orbGoldCost` threw and **buying boosters with gold failed outright.**
+     - Latent: a boss-chest guard reading a progression row it never loaded; a `purchaseId`
+       whose assignment upstream had been commented out (decaffeination resurrected only the
+       `return`); and `sync` reading an `authUser` that never existed upstream either.
+
+     **The detector nearly caused a bug of its own.** Its first version flagged both `disenchant`
+     functions, whose chain state *is* populated wholesale by `_.extend(_chainState, data)` — a
+     blanket "never assigned" rule would have had me "fix" working code. Accounting for bulk
+     population dropped those two false positives.
+
+     **And one regression shipped, which is why TS2304 is now a CI gate.** The two-bag merge
+     codemod removed a `this_obj` declaration in `gift_crate.ts` and left one *write* behind, so
+     `unlockGiftCrate` threw `this_obj is not defined`. `pnpm typecheck` reported it the whole
+     time as TS2304 — the count swept to zero earlier *precisely so a new one would stand out* —
+     but lint and the unit suite ran after the codemod and typecheck did not. It is now enforced
+     by `pnpm check:undefined-names`; only TS2304 is gated, not the rest of the backlog.
+
+     **The remaining 80 are two kinds, and worth separating:**
 
      1. **Stale game-balance expectations (the majority).** Hardcoded 2016 numbers the data has
         moved past — emote counts (126 vs 60), disabled card sets (Bloodborn), spirit costs
@@ -212,7 +245,23 @@ step it describes, so it can never drift from the code.
       why, and the parameter is optional so callers are not forced to pass a value that goes
       nowhere. Verified afterwards that gold and spirit still credit correctly end to end.
 
-  - 5T.3: replace the tsx require-hook with a real build for production images.
+- **ACTUALLY NEXT — the genuinely open work, in rough value order:**
+  1. **Finish the data_access tail (80 failures) and wire the suites into CI.** They are
+     overwhelmingly stale 2016 game-balance expectations (see item 4) — production is correct in
+     every case examined, so the work is rewriting expectations to derive from SDK data, per
+     test. Low bug yield, but it is the last thing standing between these 575 tests and being a
+     CI gate, and they have now found nine production bugs in three passes.
+     One exception worth doing first: the `rift` upgrade path that reaches Postgres with `NaN`
+     where the test expects a `BadRequestError`. That one still smells like a defect rather than
+     a stale number, and it needs game-domain judgement about what the test's setup should
+     produce.
+  2. **5T.3: replace the tsx require-hook with a real build for production images.** Every
+     service currently transpiles TypeScript at require time.
+  3. **The rest of the typecheck backlog (365).** Heterogeneous and low-yield now that TS2304 is
+     zero and gated; 175 TS2339 on function objects and narrowed types, 75 TS2554, 35 TS2345.
+     Move directories into `tsconfig.strict.json` as they go clean.
+  4. **Optional, deliberately not started:** Backbone/Marionette/jQuery. That is a UI rewrite,
+     not an upgrade, and was declined once already.
 - **Known dirty state:** none.
 
 ## Rules

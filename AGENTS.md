@@ -27,9 +27,17 @@ pnpm install                                   # after clone or lockfile change
 pnpm tsc:chroma-js                             # required once before build (packages/chroma-js has no committed dist)
 FIREBASE_URL=https://test-url.firebaseio.com/ pnpm build   # client build -> dist/src (dummy URL fine unless you want to play)
 pnpm build:vite                                # JS bundle only (~2.4s); build:client:watch for the dev loop
-pnpm test:unit                                 # vitest, ~1300 tests, no external services
-pnpm test:integration:misc                     # the only integration suite that runs in CI (rest need Postgres/Redis/Firebase)
-pnpm typecheck                                 # tsc (loose config) - a METRIC during the migration, not a gate
+pnpm test:unit                                 # vitest, 1366 tests, no external services
+pnpm test:integration:misc                     # needs nothing external; runs in CI
+pnpm test:integration:jobs                     # BullMQ job seam; needs ONLY redis, so it runs in CI too
+pnpm test:integration:data_access              # 575 tests; NOT in CI yet (~80 still fail). Bring up its
+source scripts/dev/data-access-test-env.sh     #   throwaway postgres+redis+firebase emulator with this --
+                                               #   deliberately separate from `docker compose`, because
+                                               #   these suites create users and wipe inventories
+pnpm typecheck                                 # tsc (loose config) - a METRIC, not a gate... EXCEPT TS2304
+pnpm check:undefined-names                     # TS2304 only, and this IS a CI gate. Run after any codemod.
+pnpm check:promise-utils                       # PromiseUtils/onType used without being bound
+pnpm check:bluebird-orphans                    # bluebird-only API used without requiring bluebird
 pnpm test:e2e                                  # Playwright: boots the client and plays a practice game
                                                # (needs: real Firebase in .env, pnpm build, docker compose up)
 pnpm lint:js:all                               # eslint (airbnb-base), .js + .ts
@@ -63,6 +71,13 @@ token, service account) — see `docs/QUICKSTART.md`. Building and unit-testing 
 | `docs/` | `QUICKSTART.md`, `ARCHITECTURE.md`, `GULP.md`, **`MODERNIZATION_AUDIT.md`** (analysis), **`MODERNIZATION_PLAN.md`** (checklist / resume point) | |
 
 ## Conventions and gotchas that bite
+
+- **TS2304 is a CI gate; the rest of typecheck is not.** eslint's `no-undef` is off for `.ts`
+  (as typescript-eslint recommends), so TypeScript is the *only* thing that can see an undefined
+  identifier. Sweeping TS2304 to zero found 26 real bugs — missing requires, undeclared
+  variables, a `clone()` constructing the wrong class. It is kept at zero by
+  `pnpm check:undefined-names`, because a codemod regression shipped once while typecheck sat
+  unread. **Run it after any codemod.**
 
 - **Root-absolute requires.** `require 'app/sdk/…'`, `require 'server/lib/…'`, `require 'config/config'`
   resolve from the repo root via `app-module-path` (registered in `bin/*`, `gulpfile.babel.js`,
