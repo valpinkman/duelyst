@@ -134,8 +134,22 @@ class DecksModule {
     const digest = hash.digest('hex');
     Logger.module('DecksModule').debug(`hashCodeForDeck() -> digest: ${digest}`);
 
-    // FIXME: (node:27) Warning: Use Cipheriv for counter mode of aes-256-ctr
-    const cipher = crypto.createCipher('aes-256-ctr', 'dcDnVgALT39spZb');
+    /*
+     * crypto.createCipher was deprecated for exactly the reason the old FIXME
+     * here noted, and REMOVED in node 22; we run node 24, so this threw
+     * "crypto.createCipher is not a function" for anyone who called it.
+     *
+     * createCipheriv needs an explicit key and IV where createCipher derived
+     * them from the password. They are derived deterministically below, so the
+     * function stays pure: the same deck and salt give the same code. The codes
+     * this produces DIFFER from the pre-node-22 ones, which is safe here --
+     * nothing persists a deck hash (there is no such column) and the only two
+     * call sites are commented out, so there is nothing to stay compatible with.
+     */
+    const CIPHER_PASSWORD = 'dcDnVgALT39spZb';
+    const key = crypto.createHash('sha256').update(CIPHER_PASSWORD).digest();
+    const iv = crypto.createHash('md5').update(CIPHER_PASSWORD).digest();
+    const cipher = crypto.createCipheriv('aes-256-ctr', key, iv);
     let crypted = cipher.update(digest, 'utf8', 'hex');
     crypted += cipher.final('hex');
     Logger.module('DecksModule').debug(`hashCodeForDeck() -> crypted: ${crypted}`);

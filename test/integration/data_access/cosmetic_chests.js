@@ -36,14 +36,13 @@ describe('cosmetic chests module', () => {
     Logger.module('UNITTEST').log('creating user');
     const createOrInsertUser = function (userEmail, userName) {
       const _chainState = {};
-      return UsersModule.createNewUser(userEmail, userName, 'hash', 'kumite14')
+      return UsersModule.createNewUser(userName, 'hash', 'kumite14')
         .then((userIdCreated) => {
           _chainState.userId = userIdCreated;
           Logger.module('UNITTEST').log('created user ', userIdCreated);
         }).catch(onType(Errors.AlreadyExistsError, (error) => {
-          const _chainState = {};
           Logger.module('UNITTEST').log('existing user', userName);
-          return UsersModule.userIdForEmail(userEmail)
+          return UsersModule.userIdForUsername(userName)
             .then((userIdExisting) => {
               _chainState.userId = userIdExisting;
               Logger.module('UNITTEST').log('existing user retrieved', userIdExisting);

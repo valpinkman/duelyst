@@ -31,13 +31,13 @@ describe('inventory module', () => {
   // before cleanup to check if user already exists and delete
   beforeAll(() => {
     Logger.module('UNITTEST').log('creating user');
-    return UsersModule.createNewUser('unit-test@duelyst.local', 'unittest', 'hash', 'kumite14')
+    return UsersModule.createNewUser('unittest', 'hash', 'kumite14')
       .then((userIdCreated) => {
         Logger.module('UNITTEST').log('created user ', userIdCreated);
         userId = userIdCreated;
       }).catch(onType(Errors.AlreadyExistsError, (error) => {
         Logger.module('UNITTEST').log('existing user');
-        return UsersModule.userIdForEmail('unit-test@duelyst.local').then((userIdExisting) => {
+        return UsersModule.userIdForUsername('unittest').then((userIdExisting) => {
           Logger.module('UNITTEST').log('existing user retrieved', userIdExisting);
           userId = userIdExisting;
           return SyncModule.wipeUserData(userIdExisting);
@@ -3292,7 +3292,6 @@ describe('inventory module', () => {
       }));
 
     it('expect to be able to claim a free card of the day on the next day (midnight rollover)', () => {
-      const _chainState = {};
       const systemTime = moment.utc().add(1, 'day');
       return InventoryModule.claimFreeCardOfTheDay(userId, systemTime)
         .then((cardId) => {

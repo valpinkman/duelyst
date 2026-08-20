@@ -30,6 +30,84 @@ const UtilsGameSession = require('../../../app/common/utils/utils_game_session')
 const CosmeticsLookup = require('../../../app/sdk/cosmetics/cosmeticsLookup');
 const PromiseUtils = require('../../../app/common/utils/utils_promise');
 
+/*
+ * The emote set as it existed BEFORE the 2016-07-08 cosmetics patch.
+ *
+ * Exported because it is the only correct expectation for the migration: it
+ * is a fixed historical list, not "all faction emotes". The integration suite
+ * used to derive its expectation from SDK.CosmeticsLookup.Emote instead, which
+ * has grown from 66 faction emotes to 198 since, so the test demanded 126 while
+ * the migration correctly granted 60.
+ */
+const EMOTE_IDS_PRE_COSMETICS_20160708 = [
+  CosmeticsLookup.Emote.Faction1Taunt,
+  CosmeticsLookup.Emote.Faction1Angry,
+  CosmeticsLookup.Emote.Faction1Confused,
+  CosmeticsLookup.Emote.Faction1Sad,
+  CosmeticsLookup.Emote.Faction1Frustrated,
+  CosmeticsLookup.Emote.Faction1Surprised,
+  CosmeticsLookup.Emote.Faction1Bow,
+  CosmeticsLookup.Emote.Faction1Sleep,
+  CosmeticsLookup.Emote.Faction1Sunglasses,
+  CosmeticsLookup.Emote.Faction1Kiss,
+  // CosmeticsLookup.Emote.Faction1Happy
+  CosmeticsLookup.Emote.Faction2Taunt,
+  CosmeticsLookup.Emote.Faction2Happy,
+  CosmeticsLookup.Emote.Faction2Confused,
+  CosmeticsLookup.Emote.Faction2Sad,
+  CosmeticsLookup.Emote.Faction2Frustrated,
+  CosmeticsLookup.Emote.Faction2Surprised,
+  CosmeticsLookup.Emote.Faction2Bow,
+  CosmeticsLookup.Emote.Faction2Sleep,
+  CosmeticsLookup.Emote.Faction2Sunglasses,
+  CosmeticsLookup.Emote.Faction2Kiss,
+  // CosmeticsLookup.Emote.Faction2Angry
+  CosmeticsLookup.Emote.Faction3Taunt,
+  CosmeticsLookup.Emote.Faction3Happy,
+  CosmeticsLookup.Emote.Faction3Angry,
+  CosmeticsLookup.Emote.Faction3Sad,
+  CosmeticsLookup.Emote.Faction3Frustrated,
+  CosmeticsLookup.Emote.Faction3Surprised,
+  CosmeticsLookup.Emote.Faction3Bow,
+  CosmeticsLookup.Emote.Faction3Sleep,
+  CosmeticsLookup.Emote.Faction3Sunglasses,
+  CosmeticsLookup.Emote.Faction3Kiss,
+  // CosmeticsLookup.Emote.Faction3Confused
+  CosmeticsLookup.Emote.Faction4Taunt,
+  CosmeticsLookup.Emote.Faction4Happy,
+  CosmeticsLookup.Emote.Faction4Angry,
+  CosmeticsLookup.Emote.Faction4Confused,
+  CosmeticsLookup.Emote.Faction4Sad,
+  CosmeticsLookup.Emote.Faction4Surprised,
+  CosmeticsLookup.Emote.Faction4Bow,
+  CosmeticsLookup.Emote.Faction4Sleep,
+  CosmeticsLookup.Emote.Faction4Sunglasses,
+  CosmeticsLookup.Emote.Faction4Kiss,
+  // CosmeticsLookup.Emote.Faction4Frustrated
+  CosmeticsLookup.Emote.Faction5Taunt,
+  CosmeticsLookup.Emote.Faction5Happy,
+  CosmeticsLookup.Emote.Faction5Angry,
+  CosmeticsLookup.Emote.Faction5Confused,
+  CosmeticsLookup.Emote.Faction5Frustrated,
+  CosmeticsLookup.Emote.Faction5Surprised,
+  CosmeticsLookup.Emote.Faction5Bow,
+  CosmeticsLookup.Emote.Faction5Sleep,
+  CosmeticsLookup.Emote.Faction5Sunglasses,
+  CosmeticsLookup.Emote.Faction5Kiss,
+  // CosmeticsLookup.Emote.Faction5Sad
+  CosmeticsLookup.Emote.Faction6Frustrated,
+  CosmeticsLookup.Emote.Faction6Happy,
+  CosmeticsLookup.Emote.Faction6Angry,
+  CosmeticsLookup.Emote.Faction6Confused,
+  CosmeticsLookup.Emote.Faction6Sad,
+  CosmeticsLookup.Emote.Faction6Surprised,
+  CosmeticsLookup.Emote.Faction6Bow,
+  CosmeticsLookup.Emote.Faction6Sleep,
+  CosmeticsLookup.Emote.Faction6Sunglasses,
+  CosmeticsLookup.Emote.Faction6Taunt,
+  // CosmeticsLookup.Emote.Faction6Kiss
+];
+
 class MigrationsModule {
   // region PER USER MIGRATIONS
 
@@ -80,74 +158,7 @@ class MigrationsModule {
     Logger.module('MigrationsModule').time(`userMigrateEmotes20160708() -> ${userId} done`.green);
 
     // Giving players all pre cosmetics emotes if they played before cosmetics patch
-    const emoteIdsToGive = [
-      CosmeticsLookup.Emote.Faction1Taunt,
-      CosmeticsLookup.Emote.Faction1Angry,
-      CosmeticsLookup.Emote.Faction1Confused,
-      CosmeticsLookup.Emote.Faction1Sad,
-      CosmeticsLookup.Emote.Faction1Frustrated,
-      CosmeticsLookup.Emote.Faction1Surprised,
-      CosmeticsLookup.Emote.Faction1Bow,
-      CosmeticsLookup.Emote.Faction1Sleep,
-      CosmeticsLookup.Emote.Faction1Sunglasses,
-      CosmeticsLookup.Emote.Faction1Kiss,
-      // CosmeticsLookup.Emote.Faction1Happy
-      CosmeticsLookup.Emote.Faction2Taunt,
-      CosmeticsLookup.Emote.Faction2Happy,
-      CosmeticsLookup.Emote.Faction2Confused,
-      CosmeticsLookup.Emote.Faction2Sad,
-      CosmeticsLookup.Emote.Faction2Frustrated,
-      CosmeticsLookup.Emote.Faction2Surprised,
-      CosmeticsLookup.Emote.Faction2Bow,
-      CosmeticsLookup.Emote.Faction2Sleep,
-      CosmeticsLookup.Emote.Faction2Sunglasses,
-      CosmeticsLookup.Emote.Faction2Kiss,
-      // CosmeticsLookup.Emote.Faction2Angry
-      CosmeticsLookup.Emote.Faction3Taunt,
-      CosmeticsLookup.Emote.Faction3Happy,
-      CosmeticsLookup.Emote.Faction3Angry,
-      CosmeticsLookup.Emote.Faction3Sad,
-      CosmeticsLookup.Emote.Faction3Frustrated,
-      CosmeticsLookup.Emote.Faction3Surprised,
-      CosmeticsLookup.Emote.Faction3Bow,
-      CosmeticsLookup.Emote.Faction3Sleep,
-      CosmeticsLookup.Emote.Faction3Sunglasses,
-      CosmeticsLookup.Emote.Faction3Kiss,
-      // CosmeticsLookup.Emote.Faction3Confused
-      CosmeticsLookup.Emote.Faction4Taunt,
-      CosmeticsLookup.Emote.Faction4Happy,
-      CosmeticsLookup.Emote.Faction4Angry,
-      CosmeticsLookup.Emote.Faction4Confused,
-      CosmeticsLookup.Emote.Faction4Sad,
-      CosmeticsLookup.Emote.Faction4Surprised,
-      CosmeticsLookup.Emote.Faction4Bow,
-      CosmeticsLookup.Emote.Faction4Sleep,
-      CosmeticsLookup.Emote.Faction4Sunglasses,
-      CosmeticsLookup.Emote.Faction4Kiss,
-      // CosmeticsLookup.Emote.Faction4Frustrated
-      CosmeticsLookup.Emote.Faction5Taunt,
-      CosmeticsLookup.Emote.Faction5Happy,
-      CosmeticsLookup.Emote.Faction5Angry,
-      CosmeticsLookup.Emote.Faction5Confused,
-      CosmeticsLookup.Emote.Faction5Frustrated,
-      CosmeticsLookup.Emote.Faction5Surprised,
-      CosmeticsLookup.Emote.Faction5Bow,
-      CosmeticsLookup.Emote.Faction5Sleep,
-      CosmeticsLookup.Emote.Faction5Sunglasses,
-      CosmeticsLookup.Emote.Faction5Kiss,
-      // CosmeticsLookup.Emote.Faction5Sad
-      CosmeticsLookup.Emote.Faction6Frustrated,
-      CosmeticsLookup.Emote.Faction6Happy,
-      CosmeticsLookup.Emote.Faction6Angry,
-      CosmeticsLookup.Emote.Faction6Confused,
-      CosmeticsLookup.Emote.Faction6Sad,
-      CosmeticsLookup.Emote.Faction6Surprised,
-      CosmeticsLookup.Emote.Faction6Bow,
-      CosmeticsLookup.Emote.Faction6Sleep,
-      CosmeticsLookup.Emote.Faction6Sunglasses,
-      CosmeticsLookup.Emote.Faction6Taunt,
-      // CosmeticsLookup.Emote.Faction6Kiss
-    ];
+    const emoteIdsToGive = EMOTE_IDS_PRE_COSMETICS_20160708;
 
     var txPromise = knex.transaction(function (tx) {
       tx('users').first('id').where('id', userId).forUpdate()
@@ -507,3 +518,4 @@ class MigrationsModule {
 // endregion PER USER MIGRATIONS
 
 module.exports = MigrationsModule;
+module.exports.EMOTE_IDS_PRE_COSMETICS_20160708 = EMOTE_IDS_PRE_COSMETICS_20160708;

@@ -117,8 +117,44 @@ step it describes, so it can never drift from the code.
 
      The remaining 366 are heterogeneous and want per-case judgement: 175 TS2339 on function
      objects and narrowed types, 75 TS2554, 35 TS2345, 23 TS2403. Move directories into `tsconfig.strict.json` as they go clean.
-  4. 7.2 integration revival in CI for the `data_access` suites (~506 tests, stale
-     `createNewUser`/`userIdForEmail` API).
+  4. **data_access suites revived: 0 → 402 of 506 passing** (2026-08-20). They had been
+     unrunnable for so long that nobody knew what was in them. **Run them with
+     `source scripts/dev/data-access-test-env.sh`**, which stands up a throwaway Postgres and
+     Redis and points Firebase at the local emulator — deliberately separate from
+     `docker compose`, because these suites create users and wipe inventories and must never
+     touch the database you play on.
+
+     What was stale, and what was actually broken:
+
+     - **API drift** — `createNewUser(email, username, …)` lost its email parameter (Firebase owns
+       email now) and `userIdForEmail` was replaced by `userIdForUsername`. 32 calls and 17
+       renames, codemodded from the suites' own email→username pairs.
+     - **`_chainState` shadowing, ours** — the bluebird `.bind()` migration gave nested callbacks
+       their own `const _chainState = {}`, hiding the outer one, so the "user already exists"
+       path returned `undefined` and later died in `wipeUserData` on `userId.blue`. 9 sites, 6
+       files. **Production code was checked and is clean** — this only survived in the suites
+       because they were not running.
+     - **A LIVE BUG the suites caught: `knex.insert()` with no values**, in
+       `gauntlet.buyArenaTicketWithGold` and `rift`'s equivalent. Both build a
+       `userCurrencyLogItem` and never pass it. knex 0.19 treated an argument-less insert as a
+       silent no-op — so the currency-log row was simply never written — but **knex 3 rejects it
+       with "The query is empty", which turned a missing audit row into a broken purchase**. This
+       is fallout from the knex upgrade that my verification missed because it never exercised a
+       gauntlet or rift ticket purchase. Upstream had the same bug.
+     - **`crypto.createCipher` in `decks.hashForDeck`** — removed in node 22, and we run node 24.
+       Not a live outage: its only two call sites are commented out and no deck hash is persisted.
+       Moved to `createCipheriv` with a deterministic key/IV.
+     - **A stale test expectation** — the emote migration grants a *fixed historical* set (the
+       emotes that existed before the 2016-07-08 cosmetics patch), but the test derived its
+       expectation from `SDK.CosmeticsLookup.Emote`, which has grown from 66 faction emotes to
+       198 since. It demanded 126 while the migration correctly granted 60. The list is now
+       exported as `EMOTE_IDS_PRE_COSMETICS_20160708` and asserted against directly.
+
+     **The remaining 81 failures are triaged but not fixed**, clustered as:
+     `Logger.module(...) is not a function` (14, harness: the suites disable the logger and
+     production code still calls it), knex 3 rejecting undefined bindings in DELETEs (10),
+     `orbGoldCost` on undefined (4), and assorted stale data expectations. Not yet wired into CI
+     — that should wait until the suites are green, or CI starts red.
   - **Correctness pass done (2026-08-20).** That list is now closed, and two of its entries were
     already stale: the "8 latent `server/lib` bugs" from 6.2c were TS2304s, cleared in the typing
     pass, and the 6 SDK `require`s were fixed when they were found. What remained:

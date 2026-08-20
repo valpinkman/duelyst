@@ -32,13 +32,13 @@ describe('users module', () => {
   // before cleanup to check if user already exists and delete
   beforeAll(() => {
     Logger.module('UNITTEST').log('creating user');
-    return UsersModule.createNewUser('unit-test@duelyst.local', 'unittest', 'hash', 'kumite14')
+    return UsersModule.createNewUser('unittest', 'hash', 'kumite14')
       .then((userIdCreated) => {
         Logger.module('UNITTEST').log('created user ', userIdCreated);
         userId = userIdCreated;
       }).catch(onType(Errors.AlreadyExistsError, (error) => {
         Logger.module('UNITTEST').log('existing user');
-        return UsersModule.userIdForEmail('unit-test@duelyst.local').then((userIdExisting) => {
+        return UsersModule.userIdForUsername('unittest').then((userIdExisting) => {
           Logger.module('UNITTEST').log('existing user retrieved', userIdExisting);
           userId = userIdExisting;
           return SyncModule.wipeUserData(userIdExisting);
@@ -62,13 +62,13 @@ describe('users module', () => {
   //   });
   // });
   describe('userIdForEmail()', () => {
-    it('expect a user id if email exists', () => UsersModule.userIdForEmail('unit-test@duelyst.local')
+    it('expect a user id if email exists', () => UsersModule.userIdForUsername('unittest')
       .then((id) => {
         expect(id).to.exist;
         expect(id).to.have.length(20);
       }));
 
-    it('expect null if the email does not exist', () => UsersModule.userIdForEmail('does@not.exist')
+    it('expect null if the email does not exist', () => UsersModule.userIdForUsername('doesnotexist')
       .then((id) => {
         expect(id).to.be.equal(null);
       }));
@@ -99,7 +99,7 @@ describe('users module', () => {
       it('expect NOT to be able to create a user with an invalid invite code if invite codes are ACTIVE', () => {
         const rando = generatePushId();
         const email = `${rando}-unit-test@duelyst.local`;
-        return UsersModule.createNewUser(email, `testuser${rando}`, 'testpassword', 'invalid invite')
+        return UsersModule.createNewUser(`testuser${rando}`, 'testpassword', 'invalid invite')
           .then((result) => {
             expect(result).to.not.exist;
           })
@@ -116,7 +116,7 @@ describe('users module', () => {
         const email = `${rando}-unit-test@duelyst.local`;
         const username = `${rando.toLowerCase()}-unit-test`;
         return knex('invite_codes').insert({ code })
-          .then(() => UsersModule.createNewUser(email, username, 'testpassword', code))
+          .then(() => UsersModule.createNewUser(username, 'testpassword', code))
           .then((newUserId) => {
             _chainState.newUserId = newUserId;
             expect(newUserId).to.exist;
@@ -150,7 +150,7 @@ describe('users module', () => {
         const code = `fake-test-invite-${rando}`;
         const email = `${rando}-unit-test@duelyst.local`;
         const username = `${rando.toLowerCase()}-unit-test`;
-        return UsersModule.createNewUser(email, username, 'testpassword', code)
+        return UsersModule.createNewUser(username, 'testpassword', code)
           .then((newUserId) => {
             _chainState.newUserId = newUserId;
             expect(newUserId).to.exist;
@@ -182,7 +182,7 @@ describe('users module', () => {
             },
           }),
         ])
-          .then(() => UsersModule.createNewUser(email, username, 'testpassword', code, referralCode))
+          .then(() => UsersModule.createNewUser(username, 'testpassword', code, referralCode))
           .then((newUserId) => {
             _chainState.newUserId = newUserId;
             expect(newUserId).to.exist;
@@ -208,7 +208,7 @@ describe('users module', () => {
         const email = `${rando}-unit-test@duelyst.local`;
         const username = `${rando.toLowerCase()}-unit-test`;
         const referralCode = 'TEST-referral-20-Gold';
-        return UsersModule.createNewUser(email, username, 'testpassword', 'kumite14', referralCode)
+        return UsersModule.createNewUser(username, 'testpassword', 'kumite14', referralCode)
           .then((newUserId) => {
             _chainState.newUserId = newUserId;
             expect(newUserId).to.exist;
@@ -233,7 +233,7 @@ describe('users module', () => {
         const email = `${rando}-unit-test@duelyst.local`;
         const username = `${rando.toLowerCase()}-unit-test`;
         const referralCode = ' TEST-referral-20-Gold ';
-        return UsersModule.createNewUser(email, username, 'testpassword', 'kumite14', referralCode)
+        return UsersModule.createNewUser(username, 'testpassword', 'kumite14', referralCode)
           .then((newUserId) => {
             _chainState.newUserId = newUserId;
             expect(newUserId).to.exist;
@@ -301,7 +301,7 @@ describe('users module', () => {
         const email = `${rando}-unit-test@duelyst.local`;
         const username = `${rando.toLowerCase()}-unit-test`;
         return Promise.all([])
-          .then(() => UsersModule.createNewUser(email, username, 'testpassword', 'kumite14', 'invalid-code'))
+          .then(() => UsersModule.createNewUser(username, 'testpassword', 'kumite14', 'invalid-code'))
           .then((newUserId) => {
             expect(newUserId).to.not.exist;
           }).catch((error) => {
@@ -324,7 +324,7 @@ describe('users module', () => {
             },
           }),
         ])
-          .then(() => UsersModule.createNewUser(email, username, 'testpassword', 'kumite14', 'maxed-gold-code'))
+          .then(() => UsersModule.createNewUser(username, 'testpassword', 'kumite14', 'maxed-gold-code'))
           .then((newUserId) => {
             expect(newUserId).to.not.exist;
           }).catch((error) => {
@@ -362,7 +362,7 @@ describe('users module', () => {
             expires_at: expires,
           }),
         ])
-          .then(() => UsersModule.createNewUser(email, username, 'testpassword', 'kumite14', 'expired-gold-code'))
+          .then(() => UsersModule.createNewUser(username, 'testpassword', 'kumite14', 'expired-gold-code'))
           .then((newUserId) => {
             expect(newUserId).to.not.exist;
           }).catch((error) => {
@@ -399,7 +399,7 @@ describe('users module', () => {
             is_active: false,
           }),
         ])
-          .then(() => UsersModule.createNewUser(email, username, 'testpassword', 'kumite14', 'inactive-gold-code'))
+          .then(() => UsersModule.createNewUser(username, 'testpassword', 'kumite14', 'inactive-gold-code'))
           .then((newUserId) => {
             expect(newUserId).to.not.exist;
           }).catch((error) => {
@@ -440,7 +440,7 @@ describe('users module', () => {
           campaign_name: 'test_campaign_name',
           referrer: 'test_referrer',
         };
-        return UsersModule.createNewUser(email, username, 'testpassword', 'kumite14', null, campaignData)
+        return UsersModule.createNewUser(username, 'testpassword', 'kumite14', null, campaignData)
           .then((newUserId) => {
             _chainState.newUserId = newUserId;
             expect(newUserId).to.exist;
@@ -466,7 +466,7 @@ describe('users module', () => {
       const rando = generatePushId();
       const email = `${rando}-unit-test@duelyst.local`;
       const username = `${rando.toLowerCase()}-unit-test`;
-      return UsersModule.createNewUser(email, username, 'hash', 'kumite14')
+      return UsersModule.createNewUser(username, 'hash', 'kumite14')
         .then((userIdCreated) => {
           daysSeenUserId = userIdCreated;
           return knex('users').where('id', daysSeenUserId).first();
@@ -1391,7 +1391,6 @@ describe('users module', () => {
       }));
 
     it('expect first win of the day reward to re-activate after 22 hours', () => {
-      const _chainState = {};
       const systemTime = moment().utc().add(22, 'hours');
 
       return UsersModule.updateUserProgressionWithGameOutcome(userId, null, true, generatePushId(), 'ranked', false, false, systemTime)
@@ -1412,7 +1411,6 @@ describe('users module', () => {
     });
 
     it('expect win counter rewards to restart after UTC midnight', () => {
-      const _chainState = {};
       const systemTime = moment().utc().startOf('day').add(24, 'hours')
         .add(1, 'second');
 

@@ -32,13 +32,13 @@ describe('referrals module', () => {
   // before cleanup to check if user already exists and delete
   beforeAll(() => {
     Logger.module('UNITTEST').log('creating user');
-    return UsersModule.createNewUser('unit-test@duelyst.local', 'unittest', 'hash', 'kumite14')
+    return UsersModule.createNewUser('unittest', 'hash', 'kumite14')
       .then((userIdCreated) => {
         Logger.module('UNITTEST').log('created user ', userIdCreated);
         userId = userIdCreated;
       }).catch(onType(Errors.AlreadyExistsError, (error) => {
         Logger.module('UNITTEST').log('existing user');
-        return UsersModule.userIdForEmail('unit-test@duelyst.local').then((userIdExisting) => {
+        return UsersModule.userIdForUsername('unittest').then((userIdExisting) => {
           Logger.module('UNITTEST').log('existing user retrieved', userIdExisting);
           userId = userIdExisting;
           return SyncModule.wipeUserData(userIdExisting);
@@ -75,10 +75,10 @@ describe('referrals module', () => {
       const username4 = `${rando4.toLowerCase()}-unit-test`;
 
       return Promise.all([
-        UsersModule.createNewUser(email1, username1, 'testpassword', 'kumite14'),
-        UsersModule.createNewUser(email2, username2, 'testpassword', 'kumite14'),
-        UsersModule.createNewUser(email3, username3, 'testpassword', 'kumite14'),
-        UsersModule.createNewUser(email4, username4, 'testpassword', 'kumite14'),
+        UsersModule.createNewUser(username1, 'testpassword', 'kumite14'),
+        UsersModule.createNewUser(username2, 'testpassword', 'kumite14'),
+        UsersModule.createNewUser(username3, 'testpassword', 'kumite14'),
+        UsersModule.createNewUser(username4, 'testpassword', 'kumite14'),
         SyncModule.wipeUserData(userId),
       ]).then(([newUserId1, newUserId2, newUserId3, newUserId4]) => {
         newUserId = newUserId1;
@@ -269,7 +269,7 @@ describe('referrals module', () => {
         const rando = generatePushId();
         const email = `${rando}-unit-test@duelyst.local`;
         const username = `${rando.toLowerCase()}-unit-test`;
-        return UsersModule.createNewUser(email, username, 'testpassword', 'kumite14')
+        return UsersModule.createNewUser(username, 'testpassword', 'kumite14')
           .then((userId) => {
             noReferralUserId = userId;
           });

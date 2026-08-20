@@ -128,6 +128,16 @@ How we work on it:
   `generate_packages.js` and RSX paths.
 
 Status log (newest first):
+- 2026-08-20 — **data_access integration suites revived: 0 → 402 of 506 passing.** Run them with
+  `source scripts/dev/data-access-test-env.sh` (throwaway Postgres + Redis + the Firebase
+  emulator, deliberately separate from `docker compose` so they never touch the database you play
+  on). Fixed: the `createNewUser`/`userIdForEmail` API drift (49 call sites), and 9 `_chainState`
+  shadowing bugs OUR bluebird migration left in the suites (production code verified clean).
+  **They immediately caught a live bug**: `knex.insert()` with no values in
+  `gauntlet.buyArenaTicketWithGold` and `rift` — knex 0.19 silently no-op'd it, knex 3 rejects it,
+  so ticket purchases were broken by my own knex upgrade and verification had missed it. Also
+  `crypto.createCipher` (removed in node 22) in dead deck-hash code. 81 failures remain, triaged
+  in the plan; NOT wired into CI until green.
 - 2026-08-20 — **winston needed no work — it was already on 3.19.0 with 0 advisories** (the
   tier-2 table listed it as a target; the completed entry below it says otherwise). What it did
   need was coverage: the seam is opt-in, so nothing in CI or e2e ever runs it. Re-verified against

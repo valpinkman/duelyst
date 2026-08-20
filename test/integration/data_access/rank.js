@@ -36,14 +36,13 @@ describe('rank module', () => {
       rankStartingAt = moment.utc().startOf('month').toDate();
     }
 
-    return UsersModule.createNewUser(userEmail, userName, 'hash', 'kumite14')
+    return UsersModule.createNewUser(userName, 'hash', 'kumite14')
       .then((userIdCreated) => {
         _chainState.userId = userIdCreated;
         Logger.module('UNITTEST').log('created user ', userIdCreated);
       }).catch(onType(Errors.AlreadyExistsError, (error) => {
-        const _chainState = {};
         Logger.module('UNITTEST').log('existing user');
-        return UsersModule.userIdForEmail(userEmail)
+        return UsersModule.userIdForUsername(userName)
           .then((userIdExisting) => {
             _chainState.userId = userIdExisting;
             Logger.module('UNITTEST').log('existing user retrieved', userIdExisting);
@@ -79,13 +78,13 @@ describe('rank module', () => {
     SRankManager.unitTestMode = true;
 
     Logger.module('UNITTEST').log('creating user');
-    return UsersModule.createNewUser('unit-test@duelyst.local', 'unittest', 'hash', 'kumite14')
+    return UsersModule.createNewUser('unittest', 'hash', 'kumite14')
       .then((userIdCreated) => {
         Logger.module('UNITTEST').log('created user ', userIdCreated);
         userId = userIdCreated;
       }).catch(onType(Errors.AlreadyExistsError, (error) => {
         Logger.module('UNITTEST').log('existing user');
-        return UsersModule.userIdForEmail('unit-test@duelyst.local').then((userIdExisting) => {
+        return UsersModule.userIdForUsername('unittest').then((userIdExisting) => {
           Logger.module('UNITTEST').log('existing user retrieved', userIdExisting);
           userId = userIdExisting;
           return SyncModule.wipeUserData(userIdExisting);
@@ -606,17 +605,14 @@ describe('rank module', () => {
 
           return RankModule.updateUsersRatingsWithGameOutcome(player3Id, player4Id, true, generatePushId(), null, false, true, now);
         })
-        .then(() => {
-          const _chainState = {};
-          return Promise.all([
-            knex.first().from('user_rank_ratings').where('user_id', player3Id).andWhere('season_starting_at', seasonStartingAt),
-            knex.first().from('user_rank_ratings').where('user_id', player4Id).andWhere('season_starting_at', seasonStartingAt),
-          ]).then(([player3RatingRow, player4RatingRow]) => {
-            expect(player3RatingRow).to.exist;
-            expect(player3RatingRow.rating).to.exist;
-            expect(player3RatingRow.rating).to.equal(_chainState.player3RatingBefore);
-          });
-        });
+        .then(() => Promise.all([
+          knex.first().from('user_rank_ratings').where('user_id', player3Id).andWhere('season_starting_at', seasonStartingAt),
+          knex.first().from('user_rank_ratings').where('user_id', player4Id).andWhere('season_starting_at', seasonStartingAt),
+        ]).then(([player3RatingRow, player4RatingRow]) => {
+          expect(player3RatingRow).to.exist;
+          expect(player3RatingRow.rating).to.exist;
+          expect(player3RatingRow.rating).to.equal(_chainState.player3RatingBefore);
+        }));
     });
 
     it('expect a s-rank player with max rating to have a ladder position of 1', () => {
@@ -626,7 +622,6 @@ describe('rank module', () => {
       const seasonStartingAt = startOfSeasonMonth.toDate();
       const thisObjective = {};
       const txPromise = knex.transaction((tx) => {
-        const _chainState = {};
         knex('user_rank_ratings').where('user_id', player3Id).andWhere('season_starting_at', seasonStartingAt).update({
           rating: 5000,
           ladder_rating: 5000,

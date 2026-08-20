@@ -36,14 +36,13 @@ describe('migrations module', () => {
     Logger.module('UNITTEST').log('creating user');
     const createOrInsertUser = function (userEmail, userName) {
       const _chainState = {};
-      return UsersModule.createNewUser(userEmail, userName, 'hash', 'kumite14')
+      return UsersModule.createNewUser(userName, 'hash', 'kumite14')
         .then((userIdCreated) => {
           _chainState.userId = userIdCreated;
           Logger.module('UNITTEST').log('created user ', userIdCreated);
         }).catch(onType(Errors.AlreadyExistsError, (error) => {
-          const _chainState = {};
           Logger.module('UNITTEST').log('existing user', userName);
-          return UsersModule.userIdForEmail(userEmail)
+          return UsersModule.userIdForUsername(userName)
             .then((userIdExisting) => {
               _chainState.userId = userIdExisting;
               Logger.module('UNITTEST').log('existing user retrieved', userIdExisting);
@@ -93,21 +92,15 @@ describe('migrations module', () => {
     it('expect a user to have all original general emotes after migration', () => SyncModule.wipeUserData(user2Id)
       .then(() => MigrationsModule.userMigrateEmotes20160708(user2Id))
       .then(() => knex('user_cosmetic_inventory').select().where('user_id', user2Id)).then((userCosmeticRows) => {
-        let expectedEmoteIds = [];
-        for (const key in SDK.CosmeticsLookup.Emote) {
-          if (key.includes('Faction') && !key.includes('Alt')) {
-            expectedEmoteIds.push(SDK.CosmeticsLookup.Emote[key]);
-          }
-        }
-        // Remove the basic emotes
-        expectedEmoteIds = _.difference(expectedEmoteIds, [
-          SDK.CosmeticsLookup.Emote.Faction1Happy,
-          SDK.CosmeticsLookup.Emote.Faction2Angry,
-          SDK.CosmeticsLookup.Emote.Faction3Confused,
-          SDK.CosmeticsLookup.Emote.Faction4Frustrated,
-          SDK.CosmeticsLookup.Emote.Faction5Sad,
-          SDK.CosmeticsLookup.Emote.Faction6Kiss,
-        ]);
+        /*
+         * The migration grants a FIXED HISTORICAL set -- the emotes that
+         * existed before the 2016-07-08 cosmetics patch -- so that list is the
+         * only correct expectation. This used to be derived from
+         * SDK.CosmeticsLookup.Emote instead, which has grown from 66 faction
+         * emotes to 198 since, so the test demanded 126 while the migration
+         * correctly granted 60.
+         */
+        const expectedEmoteIds = MigrationsModule.EMOTE_IDS_PRE_COSMETICS_20160708;
 
         expect(userCosmeticRows).to.exist;
         expect(userCosmeticRows.length).to.equal(expectedEmoteIds.length);
@@ -123,23 +116,9 @@ describe('migrations module', () => {
         return txPromise;
       }).then(() => knex('user_cosmetic_inventory').select().where('user_id', user2Id))
       .then((userCosmeticRows) => {
-        let expectedEmoteIds = [
-          SDK.CosmeticsLookup.Emote.OtherSnowChaserHoliday2015,
-        ];
-        for (const key in SDK.CosmeticsLookup.Emote) {
-          if (key.includes('Faction') && !key.includes('Alt')) {
-            expectedEmoteIds.push(SDK.CosmeticsLookup.Emote[key]);
-          }
-        }
-        // Remove the basic emotes
-        expectedEmoteIds = _.difference(expectedEmoteIds, [
-          SDK.CosmeticsLookup.Emote.Faction1Happy,
-          SDK.CosmeticsLookup.Emote.Faction2Angry,
-          SDK.CosmeticsLookup.Emote.Faction3Confused,
-          SDK.CosmeticsLookup.Emote.Faction4Frustrated,
-          SDK.CosmeticsLookup.Emote.Faction5Sad,
-          SDK.CosmeticsLookup.Emote.Faction6Kiss,
-        ]);
+        // the migration's fixed historical set, plus the one gifted above
+        const expectedEmoteIds = MigrationsModule.EMOTE_IDS_PRE_COSMETICS_20160708
+          .concat([SDK.CosmeticsLookup.Emote.OtherSnowChaserHoliday2015]);
 
         expect(userCosmeticRows).to.exist;
         expect(userCosmeticRows.length).to.equal(expectedEmoteIds.length);

@@ -93,7 +93,12 @@ class RiftModule {
             memo: `rift ticket ${ticketId}`,
             created_at: NOW_UTC_MOMENT.toDate(),
           };
-          return knex.insert().into('user_currency_log').transacting(tx);
+          // the item above was built and then never passed to insert(). knex 0.19
+          // treated an argument-less insert as a silent no-op, so the currency log
+          // entry for this purchase was simply never written; knex 3 rejects it with
+          // "The query is empty", which turned a missing audit row into a broken
+          // purchase. Upstream had the same bug.
+          return knex.insert(userCurrencyLogItem).into('user_currency_log').transacting(tx);
         })
         .then(() => DuelystFirebase.connect().getRootRef())
 
