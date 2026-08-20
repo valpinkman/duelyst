@@ -780,7 +780,7 @@ const UpgradeCardLayer = BaseLayer.extend({
 
     if (cardCount > 1) {
       showRevealPromise
-        .then(function () {
+        .then(() => {
           cardNode.showStack(CONFIG.ANIMATE_FAST_DURATION, cardCount - 1, null, cc.p(0, -17), 10);
         });
     }
