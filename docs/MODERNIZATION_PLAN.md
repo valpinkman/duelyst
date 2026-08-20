@@ -150,11 +150,38 @@ step it describes, so it can never drift from the code.
        198 since. It demanded 126 while the migration correctly granted 60. The list is now
        exported as `EMOTE_IDS_PRE_COSMETICS_20160708` and asserted against directly.
 
-     **The remaining 81 failures are triaged but not fixed**, clustered as:
-     `Logger.module(...) is not a function` (14, harness: the suites disable the logger and
-     production code still calls it), knex 3 rejecting undefined bindings in DELETEs (10),
-     `orbGoldCost` on undefined (4), and assorted stale data expectations. Not yet wired into CI
-     — that should wait until the suites are green, or CI starts red.
+     **Second pass: 455 of 575 passing.** The total grew from 506 because
+     `cosmetic_chests.js` was dying in a malformed `beforeAll` before collecting any of its 69
+     tests. Further fixes:
+
+     - **15 data_access functions were using TWO state bags** — the `.bind(this)` migration left
+       both a `_chainState` and a `this_obj` in the same function, with a value written to one and
+       read from the other, so the read was always `undefined`. Found by property-level analysis
+       (written on one / read from the other), *not* by "declares both": 43 functions declare
+       both and only 15 genuinely cross. Affected `shop.premCurrencyPrice` (real-money purchase
+       pricing), `rank.seasonStartingAt`/`timeout`, `rift` (six properties in one function),
+       `cosmetic_chests.giveUserChest` (resolved undefined to every caller), `inventory.orbCountKey`,
+       `gift_crate.crateId`, `users.rewards`.
+     - `collection.ts` called `Logger.module('INVENTORY')(...)` — invoking the module object
+       rather than a method. It runs fire-and-forget on every user creation, so it only ever
+       surfaced as an unhandled rejection.
+     - `beforeAll('description', fn)` in `cosmetic_chests.js` is mocha's signature, not vitest's;
+       the file died before running anything. It was a test the conversion turned into a hook.
+     - `achievements.js` and `shop.js` are entirely commented out; they now carry `describe.skip`
+       stubs so a deliberate decision reads as SKIPPED rather than "No test suite found".
+
+     **The remaining ~95 are two kinds, and worth separating:**
+
+     1. **Stale game-balance expectations (the majority).** Hardcoded 2016 numbers the data has
+        moved past — emote counts (126 vs 60), disabled card sets (Bloodborn), spirit costs
+        (a common cost 40 to craft, now 20). Production is correct in every case examined; the
+        fix is deriving expectations from the SDK, which has to be done per test.
+     2. **A smaller set that is NOT stale data** and deserves a look: Firebase writes with
+        `path = "undefined"` in `rank`, knex 3 rejecting undefined bindings, and a `rift`
+        upgrade path that reaches Postgres with `NaN` where the test expects a `BadRequestError`.
+        These smell like the same undefined-value family as the two-state-bag cluster.
+
+     Still not wired into CI — that needs the suites green, or CI starts red.
   - **Correctness pass done (2026-08-20).** That list is now closed, and two of its entries were
     already stale: the "8 latent `server/lib` bugs" from 6.2c were TS2304s, cleared in the typing
     pass, and the 6 SDK `require`s were fixed when they were found. What remained:
