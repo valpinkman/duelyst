@@ -27,9 +27,9 @@ step it describes, so it can never drift from the code.
   Firebase RTDB (register → login → main menu → mulligan → play a minion → AI responds →
   concede), 0 console errors.
 - **Next, in order (the dependency chain is real, do not reorder):**
-  1. **`redis` 2 → 4** — blocker for *part* of dropping bluebird, but **less of a blocker than
-     this file assumed**, see the stage 7 measurement below. Note `kue` pins `redis: ~2.6.0` and
-     keeps its own copy regardless.
+  1. **`redis` 2 → `ioredis`** (target changed by measurement, see the tier-2 entry). The last
+     two bluebird requires live here. Note `kue` pins `redis: ~2.6.0` and keeps its own copy
+     regardless — it manages its own connections from config, so it is untouched by this.
   2. **Drop `bluebird` entirely** (stage 7). After knex 3, **bluebird is a direct dependency
      only** — nothing else in the tree pulls it in.
   3. 5T.4 incremental typing: `pnpm typecheck` is down to **2,484** errors under the loose
@@ -751,6 +751,40 @@ server and worker. What remains is *typing* (5T.4), not converting.
       **Payoff:** advisories 90 → **88**, and **bluebird is now a direct dependency only** — knex
       0.19 was the last package in the tree pulling it in. Nothing but our own code depends on it,
       which is exactly the position stage 7 needs.
+    - [~] `redis` 2.8 → **ioredis** — break surface measured 2026-08-20, and the measurement
+      **changed the target** from node-redis v4 to ioredis.
+
+      | checked | result |
+      |---|---|
+      | redis command call sites | **~39** across 11 files (all `*Async`, from `promisifyAll`) |
+      | `multi()` batches | **6** — and their results are **passed through, never destructured** |
+      | pub/sub | **0** — none at all, which removes v4's biggest migration hazard |
+      | Buffer reads relying on `detect_buffers: true` | **2** (`r-gamemanager`, gzipped game state) |
+      | warlock lock sites | **2** (`lockAsync`, `isLockedAsync`) |
+      | `kue` | **independent** — `kue.createQueue` takes host/port/auth from config and manages
+        its own connections, so it keeps its pinned `redis@2.6.5` no matter what we do |
+
+      **Why ioredis rather than node-redis v4/v5.** `server/redis/r-client.ts` exports a *connected
+      client singleton* that 11 modules `require` and use synchronously. node-redis v4 requires an
+      explicit `await client.connect()` and throws `ClientClosedError` for anything sent before it,
+      so that export would have to be restructured across every consumer — the riskiest possible
+      shape of change for a subsystem with no test coverage. ioredis connects on construction and
+      queues commands until ready, so **the export keeps its current shape and the 11 consumers do
+      not move**. It is also promise-native (so `promisifyAll` goes), and `getBuffer()` is a
+      cleaner replacement for `detect_buffers` than v4's `commandOptions({returnBuffers: true})`.
+
+      The `multi().exec()` result-shape difference (ioredis resolves to `[[err, res], ...]`,
+      node-redis to `[res, ...]`) is a non-issue **because the measurement showed none of the 6
+      sites read the value** — the one place that looked like a consumer, `r-playerqueue.ts:205`
+      reading `ts.query()`, turns out to go through a plain `zrangebyscore`, not the multi.
+
+      **warlock is being replaced, not ported** (owner decision). `@counterplay/warlock@0.3.1` is a
+      vendored fork that pulls `node-redis-scripty@0.0.5`; both are unmaintained, and we use
+      exactly three of its functions. The whole contract is `SET <key>:lock <id> PX <ttl> NX` to
+      acquire, `EXISTS <key>:lock` to test, and a Lua parity-delete to release. Reimplementing it
+      keeps the key format (`<key>:lock`) so nothing about the stored data changes, drops two
+      dependencies, and makes the lock independent of which client library we are on.
+
     - [~] `bluebird` 2.11 → **native, dropping it entirely** (owner decision). It is **the gate**
       for knex, not the endgame after it.
 
