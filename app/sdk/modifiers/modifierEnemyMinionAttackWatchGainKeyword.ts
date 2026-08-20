@@ -15,6 +15,8 @@ const ModifierForcefield = require('app/sdk/modifiers/modifierForcefield');
 var ModifierEnemyMinionAttackWatchGainKeyword = (function () {
   let allModifierContextObjects;
   ModifierEnemyMinionAttackWatchGainKeyword = class ModifierEnemyMinionAttackWatchGainKeyword extends ModifierEnemyMinionAttackWatch {
+    declare type: any;
+    declare fxResource: any;
     static initClass() {
       this.prototype.type = 'ModifierEnemyMinionAttackWatchGainKeyword';
       this.type = 'ModifierEnemyMinionAttackWatchGainKeyword';

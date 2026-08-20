@@ -18,12 +18,20 @@ var AttackRange = (function () {
   let AttackMap;
   let AttackNode;
   AttackRange = class AttackRange extends Range {
+    declare _attackAtlasesByIndex: any;
+    declare _targetsTestedForValidByIndex: any;
     static initClass() {
       this.prototype._attackAtlasesByIndex = null;
       this.prototype._targetsTestedForValidByIndex = null;
 
       // collections of attack maps for a entity and any number of potential attack positions
       AttackAtlas = class AttackAtlas {
+        declare board: any;
+        declare entity: any;
+        declare positions: any;
+        declare validNodes: any;
+        declare validNodesByPosition: any;
+        declare maps: any;
         static initClass() {
           this.prototype.board = null;
           this.prototype.entity = null;
@@ -154,6 +162,13 @@ var AttackRange = (function () {
 
       // internal map of locations that a entity can attack from a given position
       AttackMap = class AttackMap {
+        declare atlas: any;
+        declare position: any;
+        declare nodes: any;
+        declare _minRangeX: any;
+        declare _minRangeY: any;
+        declare _maxRangeX: any;
+        declare _maxRangeY: any;
         static initClass() {
           this.prototype.atlas = null;
           this.prototype.position = null;
@@ -349,6 +364,15 @@ var AttackRange = (function () {
 
       AttackNode = (function () {
         AttackNode = class AttackNode {
+          declare map: any;
+          declare entities: any;
+          declare x: any;
+          declare y: any;
+          declare visible: any;
+          declare tested: any;
+          declare withinPattern: any;
+          declare _diagonalMinThreshold: any;
+          declare _diagonalMaxThreshold: any;
           static initClass() {
             this.prototype.map = null;
             this.prototype.entities = null;

@@ -422,9 +422,21 @@ server and worker. What remains is *typing* (5T.4), not converting.
     `scripts/codemods/annotate-chainstate.mjs`.
 
   Both are type annotations only — erased at runtime, no behaviour change, suite unaffected.
-  What remains is more genuine: classes missing field declarations (`_ReplayEngine` 229,
-  `_NetworkManager` 71, `AttackMap` 62, `RedisPlayerQueue` 53), 175 on `unknown`, and ~1,392
-  further bare `{}` locals that need looking at individually rather than by codemod.
+  **Then the class-field pass: 3,081 → 2,684.** 12 files still used decaffeinate's
+  `static initClass()`, assigning ~68 defaults onto `this.prototype`, which TypeScript cannot see
+  on instances. Declared with `declare X: any;` via
+  `scripts/codemods/declare-prototype-props.mjs`.
+
+  **`declare` and not a class field, deliberately.** These are PROTOTYPE defaults and that is
+  load-bearing: the SDK's serialization is structural, so an object's own enumerable properties
+  *are* the wire format for game state and replays. A class field would create an own property on
+  every instance and silently change what gets serialized. `declare` is type-only and emits no
+  JavaScript. Verified with the wire-format fixtures (11 tests) rather than assumed, and the whole
+  diff is nothing but added `declare` lines.
+
+  What remains (2,684) needs individual judgement rather than codemods: ~1,392 further bare `{}`
+  locals, 175 on `unknown`, `RedisPlayerQueue` 53, and the assorted TS2554/TS2304 arity and
+  name errors.
 - [ ] 5T.3 Replace the tsx require-hook with a real build for production images (the hook
   compiles on every boot; fine for dev, wasteful for prod).
 

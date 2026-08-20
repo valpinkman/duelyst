@@ -14,6 +14,7 @@ const ModifierOpponentDrawCardWatch = require('./modifierOpponentDrawCardWatch')
 var ModifierOpponentDrawCardWatchGainKeyword = (function () {
   let allModifierContextObjects;
   ModifierOpponentDrawCardWatchGainKeyword = class ModifierOpponentDrawCardWatchGainKeyword extends ModifierOpponentDrawCardWatch {
+    declare type: any;
     static initClass() {
       this.prototype.type = 'ModifierOpponentDrawCardWatchGainKeyword';
       this.type = 'ModifierOpponentDrawCardWatchGainKeyword';

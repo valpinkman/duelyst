@@ -51,6 +51,27 @@ const CONFIG = require('app/common/config');
 const NavigationManager = require('app/ui/managers/navigation_manager');
 
 class _ReplayEngine {
+  declare _currentTurnIndex: any;
+  declare _currentStepIndex: any;
+  declare _currentDeserializedStep: any;
+  declare _currentStepStartedAt: any;
+  declare _currentStepTimestamp: any;
+  declare _currentStepDelay: any;
+  declare _currentStepDelayBase: any;
+  declare _currentStepDelayClamped: any;
+  declare _currentStepDelayCulled: any;
+  declare _currentStepDelayScale: any;
+  declare _currentUIEventIndex: any;
+  declare _currentUIEventStartedAt: any;
+  declare _currentUIEventDelay: any;
+  declare _gameSessionData: any;
+  declare _gameUIEventData: any;
+  declare _isPlaying: any;
+  declare _isCullingDeadtimeBeforePause: any;
+  declare _opponentStepBuffer: any;
+  declare _pausedAt: any;
+  declare _replayGameId: any;
+  declare _turns: any;
   static initClass() {
     this.prototype._currentTurnIndex = null; // index of current turn being replayed
     this.prototype._currentStepIndex = null; // index of current step into current turn being replayed

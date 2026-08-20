@@ -23,6 +23,21 @@ var NetworkManager = (function () {
       instance = null;
 
       _NetworkManager = class _NetworkManager {
+        declare connected: any;
+        declare disconnected: any;
+        declare firebaseURL: any;
+        declare gameId: any;
+        declare playerId: any;
+        declare spectatorId: any;
+        declare spectateToken: any;
+        declare gameRef: any;
+        declare socket: any;
+        declare socketManager: any;
+        declare isOpponentConnected: any;
+        declare spectators: any;
+        declare _eventBus: any;
+        declare _emitEventsAfterTimestamp: any;
+        declare _connectionCheckTimeout: any;
         static initClass() {
           this.prototype.connected = false;
           this.prototype.disconnected = true;

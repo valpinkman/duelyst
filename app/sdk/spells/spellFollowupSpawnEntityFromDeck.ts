@@ -14,6 +14,9 @@ const PlayCardSilentlyAction = require('app/sdk/actions/playCardSilentlyAction')
 var SpellFollowupSpawnEntityFromDeck = (function () {
   let hasSearchedForCardOnSendingSide;
   SpellFollowupSpawnEntityFromDeck = class SpellFollowupSpawnEntityFromDeck extends SpellSpawnEntity {
+    declare canBeAppliedAnywhere: any;
+    declare spawnSilently: any;
+    declare cardDataOrIndexToSpawn: any;
     static initClass() {
       this.prototype.canBeAppliedAnywhere = false;
       this.prototype.spawnSilently = true;

@@ -14,6 +14,7 @@ const ModifierFlying = require('app/sdk/modifiers/modifierFlying');
 var MovementRange = (function () {
   let _MoveNode;
   MovementRange = class MovementRange extends Range {
+    declare _pathsToPositionsByIndex: any;
     static initClass() {
       // movement has a different pattern step than the default
       // so movement range needs a separate cache for patterns

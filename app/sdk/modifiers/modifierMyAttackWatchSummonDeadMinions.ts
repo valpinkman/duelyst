@@ -15,6 +15,7 @@ const ModifierMyAttackWatch = require('./modifierMyAttackWatch');
 var ModifierMyAttackWatchSummonDeadMinions = (function () {
   let numMinions;
   ModifierMyAttackWatchSummonDeadMinions = class ModifierMyAttackWatchSummonDeadMinions extends ModifierMyAttackWatch {
+    declare type: any;
     static initClass() {
       this.prototype.type = 'ModifierMyAttackWatchSummonDeadMinions';
       this.type = 'ModifierMyAttackWatchSummonDeadMinions';
