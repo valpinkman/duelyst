@@ -18,6 +18,9 @@
     "lint:fix": "oxlint --fix"
   },
   "dependencies": {
-    "isomorphic-fetch": "2.2.1"
+    "isomorphic-fetch": "catalog:"
+  },
+  "devDependencies": {
+    "typescript": "catalog:"
   }
 }

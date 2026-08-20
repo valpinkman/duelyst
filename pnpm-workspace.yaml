@@ -7,3 +7,19 @@ packages:
   - 'app/common'
   # Electron shell (plan 7.4)
   - 'desktop'
+
+# Single source of truth for versions used by more than one workspace package.
+# Members reference these as `catalog:` instead of pinning their own range.
+catalog:
+  # backbone/underscore were genuinely skewed: the app runs the root's copies as
+  # vendor globals while Backbone.VirtualCollection declared backbone 1.2.1 and
+  # underscore "*" (which resolved to 1.6.0, from 2014) and bundled BOTH of its
+  # own into the client. It only touches Backbone.Collection.extend,
+  # Backbone.Events and 11 underscore helpers, all unchanged in these versions.
+  backbone: 1.1.2
+  underscore: ^1.13.8
+  isomorphic-fetch: ^2.2.1
+  # declared by the packages whose own build scripts invoke them, rather than
+  # relying on the root's node_modules/.bin being on PATH
+  typescript: ^5.9.3
+  vite: ^8.2.2

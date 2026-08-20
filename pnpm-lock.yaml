@@ -4,6 +4,24 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+catalogs:
+  default:
+    backbone:
+      specifier: 1.1.2
+      version: 1.1.2
+    isomorphic-fetch:
+      specifier: ^2.2.1
+      version: 2.2.1
+    typescript:
+      specifier: ^5.9.3
+      version: 5.9.3
+    underscore:
+      specifier: ^1.13.8
+      version: 1.13.8
+    vite:
+      specifier: ^8.2.2
+      version: 8.2.2
+
 overrides:
   jsonwebtoken: ^9.0.3
 
@@ -39,7 +57,7 @@ importers:
         specifier: ^1.0.6
         version: 1.1.0
       backbone:
-        specifier: 1.1.2
+        specifier: 'catalog:'
         version: 1.1.2
       backbone-virtual-collection:
         specifier: workspace:*
@@ -123,7 +141,7 @@ importers:
         specifier: ^6.0.0
         version: 6.0.0
       isomorphic-fetch:
-        specifier: ^2.2.1
+        specifier: 'catalog:'
         version: 2.2.1
       jquery:
         specifier: 2.1.4
@@ -201,7 +219,7 @@ importers:
         specifier: ^0.7.3
         version: 0.7.41
       underscore:
-        specifier: ^1.13.8
+        specifier: 'catalog:'
         version: 1.13.8
       uuid:
         specifier: ^13.0.2
@@ -292,13 +310,13 @@ importers:
         specifier: ^2.10.11
         version: 2.10.11
       typescript:
-        specifier: ^5.9.3
+        specifier: 'catalog:'
         version: 5.9.3
       url:
         specifier: ^0.11.4
         version: 0.11.4
       vite:
-        specifier: ^8.2.2
+        specifier: 'catalog:'
         version: 8.2.2(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.103.0)(stylus@0.54.8)(tsx@4.23.12)(yaml@2.9.0)
       vitest:
         specifier: ^4.1.11
@@ -337,21 +355,28 @@ importers:
       os-name:
         specifier: ^2.0.1
         version: 2.0.1
+      vite:
+        specifier: 'catalog:'
+        version: 8.2.2(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.103.0)(stylus@0.54.8)(tsx@4.23.12)(yaml@2.9.0)
 
   packages/Backbone.VirtualCollection:
     dependencies:
       backbone:
-        specifier: 1.2.1
-        version: 1.2.1
+        specifier: 'catalog:'
+        version: 1.1.2
       underscore:
-        specifier: '*'
-        version: 1.6.0
+        specifier: 'catalog:'
+        version: 1.13.8
 
   packages/chroma-js:
     dependencies:
       isomorphic-fetch:
-        specifier: 2.2.1
+        specifier: 'catalog:'
         version: 2.2.1
+    devDependencies:
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
 
   tooling/oxlint-config: {}
 

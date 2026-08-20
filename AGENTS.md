@@ -40,7 +40,10 @@ pnpm check:promise-utils                       # PromiseUtils/onType used withou
 pnpm check:bluebird-orphans                    # bluebird-only API used without requiring bluebird
 pnpm check:turbo-env                           # turbo.json globalEnv still covers every convict env binding
 pnpm test:e2e                                  # Playwright: boots the client and plays a practice game
-                                               # (needs: real Firebase in .env, pnpm build, docker compose up)
+set -a; . ./.env; set +a                       # a PLAYABLE build needs the whole env, not just FIREBASE_URL:
+                                               #   nothing in the build path reads .env, and a missing
+                                               #   FIREBASE_API_KEY builds fine and then fails at runtime with
+                                               #   `auth/invalid-api-key`. Then: pnpm build, docker compose up.
 pnpm lint                                      # oxlint (shared config in tooling/oxlint-config)
 pnpm lint:fix                                  # oxlint --fix
 pnpm format                                    # oxfmt -- owns JS/TS/JSON/MD/YAML style
@@ -82,6 +85,15 @@ Task orchestration is turborepo (`turbo.json`); pnpm still owns installs and lin
   its committed UMD bundle _is_ the shipped artifact.
 - Caching is on for the cheap repeatable tasks and **off for `build:client`** — `dist/` is ~1.2 GB
   once resources are copied in, which costs more disk than the ~35 s it would save.
+- **`catalog:` in `pnpm-workspace.yaml` owns versions used by more than one package.** It is a
+  short list on purpose — only `backbone`, `underscore` and `isomorphic-fetch` were genuinely
+  shared, plus `typescript`/`vite` so the packages whose own build scripts invoke them declare
+  them instead of relying on the root's `node_modules/.bin` being on PATH. It is not
+  bookkeeping: `Backbone.VirtualCollection` declared `backbone@1.2.1` and `underscore: "*"`
+  (which resolved to 1.6.0, from 2014) and shipped both of its own copies inside `duelyst.js`,
+  beside the app's. Collapsing them cut ~203 KB and removed the version skew. Transitive pins
+  (`backbone.babysitter`, `backbone.wreqr`) are out of a catalog's reach — those need
+  `pnpm.overrides`.
 
 ## Repo map (where things are)
 

@@ -26,7 +26,8 @@
     "electron-window": "^0.8.1",
     "lodash.debounce": "^4.0.6",
     "minimist": "^1.1.2",
-    "os-name": "^2.0.1"
+    "os-name": "^2.0.1",
+    "vite": "catalog:"
   },
   "productName": "Duelyst"
 }

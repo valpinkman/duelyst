@@ -17,8 +17,8 @@
     "url": "https://github.com/p3drosola/Backbone.VirtualCollection.git"
   },
   "dependencies": {
-    "backbone": "1.2.1",
-    "underscore": "*"
+    "backbone": "catalog:",
+    "underscore": "catalog:"
   },
   "scripts": {
     "lint": "oxlint --config ../../tooling/oxlint-config/base.jsonc src"
