@@ -94,8 +94,6 @@ class CosmeticChestsModule {
       return Promise.reject(new Error(`Can not give chest to user: invalid boss chest amount - ${chestAmount}`));
     }
 
-    const this_obj: Record<string, any> = {};
-
     const NOW_UTC_MOMENT = systemTime || moment.utc();
 
     const getMaxChestCountForType = function (chestType) {
@@ -114,7 +112,7 @@ class CosmeticChestsModule {
       expirationMoment.add(CosmeticChestsModule.BOSS_CHEST_EXPIRATION_HOURS, 'hours');
     }
 
-    this_obj.chestDatas = [];
+    _chainState.chestDatas = [];
 
     return trx('user_cosmetic_chests').where('user_id', userId).andWhere('chest_type', chestType).count('chest_type as count')
       .then(function (response) {
@@ -140,7 +138,7 @@ class CosmeticChestsModule {
           if (expirationMoment != null) {
             chestData.expires_at = expirationMoment.toDate();
           }
-          this_obj.chestDatas.push(chestData);
+          _chainState.chestDatas.push(chestData);
           return trx('user_cosmetic_chests').insert(chestData);
         });
       })

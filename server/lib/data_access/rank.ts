@@ -318,8 +318,7 @@ class RankModule {
       return Promise.reject(new Error(`Can not updateUserRankingWithGame(): invalid user ID - ${userId}`));
     }
 
-    const this_obj: Record<string, any> = {};
-    this_obj.timeout = setTimeout(() => Logger.module('RankModule').debug(`updateUserRankingWithGameOutcome() -> Potential timeout detected. game_id:${gameId}`),
+    _chainState.timeout = setTimeout(() => Logger.module('RankModule').debug(`updateUserRankingWithGameOutcome() -> Potential timeout detected. game_id:${gameId}`),
       10000);
 
     return knex.transaction((tx) => PromiseUtils.withTimeout(Promise.resolve(tx('users').first().where('id', userId).forUpdate())
@@ -494,19 +493,13 @@ class RankModule {
 
     const player2IsWinner = !isDraw && !player1IsWinner;
 
-    const this_obj: Record<string, any> = {
-      player1Id,
-      player2Id,
-      gameId,
-    };
-
-    this_obj.timeout = setTimeout(() => Logger.module('RankModule').debug(`updateUsersRatingsWithGameOutcome() -> Potential timeout detected. game_id:${gameId}`),
+    _chainState.timeout = setTimeout(() => Logger.module('RankModule').debug(`updateUsersRatingsWithGameOutcome() -> Potential timeout detected. game_id:${gameId}`),
       10000);
 
     const startOfSeasonMoment = moment(MOMENT_UTC_NOW).startOf('month');
     const seasonStartingAt = startOfSeasonMoment.toDate();
-    this_obj.startOfSeasonMoment = startOfSeasonMoment;
-    this_obj.seasonStartingAt = seasonStartingAt;
+    _chainState.startOfSeasonMoment = startOfSeasonMoment;
+    _chainState.seasonStartingAt = seasonStartingAt;
 
     // Transaction for updating player ratings (Ladder position in following)
     var txPromise = knex.transaction((tx) => PromiseUtils.withTimeout(Promise.all([
@@ -816,8 +809,7 @@ class RankModule {
     startOfSeasonMoment = moment.utc(startOfSeasonMoment || MOMENT_UTC_NOW).startOf('month');
     const seasonStartingAt = startOfSeasonMoment.toDate();
 
-    const this_obj: Record<string, any> = {};
-    this_obj.seasonStartingAt = seasonStartingAt;
+    _chainState.seasonStartingAt = seasonStartingAt;
 
     // First retrieves the current ladder position to determine if updates are needed to top ladder position
     return this.getUserLadderPosition(tx, playerId, startOfSeasonMoment, true, MOMENT_UTC_NOW)

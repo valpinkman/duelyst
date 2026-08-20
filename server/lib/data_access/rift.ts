@@ -1142,16 +1142,14 @@ class RiftModule {
       return Promise.resolve(riftRunRow);
     }
 
-    const this_obj: Record<string, any> = {};
+    _chainState.riftRunData = riftRunRow;
+    _chainState.userId = riftRunRow.user_id;
+    _chainState.ticketId = riftRunRow.ticket_id;
+    _chainState.factionId = riftRunRow.faction_id;
+    _chainState.cardIdToUpgrade = riftRunRow.card_id_to_upgrade;
+    _chainState.riftLevel = riftRunRow.rift_level;
 
-    this_obj.riftRunData = riftRunRow;
-    this_obj.userId = riftRunRow.user_id;
-    this_obj.ticketId = riftRunRow.ticket_id;
-    this_obj.factionId = riftRunRow.faction_id;
-    this_obj.cardIdToUpgrade = riftRunRow.card_id_to_upgrade;
-    this_obj.riftLevel = riftRunRow.rift_level;
-
-    var txPromise = knex.transaction((tx) => tx('users').first('id').where('id', this_obj.userId).forUpdate()
+    var txPromise = knex.transaction((tx) => tx('users').first('id').where('id', _chainState.userId).forUpdate()
       .then(function () {
         return RiftModule._generateCardUpgradeChoices(txPromise, tx, _chainState.userId, _chainState.ticketId, _chainState.factionId, _chainState.cardIdToUpgrade, _chainState.riftLevel);
       })

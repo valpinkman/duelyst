@@ -1961,8 +1961,7 @@ class UsersModule {
     }
 
     const MOMENT_NOW_UTC = systemTime || moment().utc();
-    const this_obj: Record<string, any> = {};
-    this_obj.rewards = [];
+    _chainState.rewards = [];
 
     var txPromise = knex.transaction((tx) => PromiseUtils.withTimeout(Promise.resolve(tx('users').first('id').where('id', userId).forUpdate())
       .then(function (userRow) {

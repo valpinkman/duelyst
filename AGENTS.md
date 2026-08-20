@@ -128,6 +128,15 @@ How we work on it:
   `generate_packages.js` and RSX paths.
 
 Status log (newest first):
+- 2026-08-20 — **the revived suites found a real cluster: 15 data_access functions used TWO
+  state bags.** The bluebird `.bind(this)` migration left both a `_chainState` and a `this_obj`
+  in the same function, with a value written to one and read from the other — so the read was
+  always `undefined`, silently. Detected at property level (write on one / read on the other),
+  not by "declares both", so functions that legitimately keep two bags were left alone. Affected:
+  `shop.premCurrencyPrice` (real-money purchases), `rank.seasonStartingAt`/`timeout` (ranking),
+  `rift` (six properties in one function), `cosmetic_chests.giveUserChest` (returned undefined to
+  every caller), `inventory.orbCountKey`, `gift_crate.crateId`, `users.rewards`. Verified live:
+  giveUserChest now returns a chest. data_access 444 → 453 passing.
 - 2026-08-20 — **data_access integration suites revived: 0 → 402 of 506 passing.** Run them with
   `source scripts/dev/data-access-test-env.sh` (throwaway Postgres + Redis + the Firebase
   emulator, deliberately separate from `docker compose` so they never touch the database you play

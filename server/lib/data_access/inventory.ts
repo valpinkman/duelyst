@@ -1234,10 +1234,8 @@ class InventoryModule {
       return Promise.reject(new Errors.InvalidRequestError(`Can not add complete card set with spirit : invalid card set for spirit purchase - ${cardSetId}`));
     }
 
-    const this_obj: Record<string, any> = {};
-
-    this_obj.orbCountKey = 'total_orb_count_set_' + cardSetId;
-    return txPromise = knex.transaction((tx) => tx('users').first(this_obj.orbCountKey, 'wallet_spirit').where('id', userId)
+    _chainState.orbCountKey = 'total_orb_count_set_' + cardSetId;
+    return txPromise = knex.transaction((tx) => tx('users').first(_chainState.orbCountKey, 'wallet_spirit').where('id', userId)
       .then(function (userRow) {
         _chainState.setTotalOrbs = userRow[_chainState.orbCountKey] || 0; // Number of orbs user already has for this set
         _chainState.orbsRemaingToCompleteSet = sdkCardSetData.numOrbsToCompleteSet - _chainState.setTotalOrbs;
@@ -1308,11 +1306,10 @@ class InventoryModule {
 
     const NOW_UTC_MOMENT = systemTime || moment.utc();
 
-    const this_obj: Record<string, any> = {};
     const orbCountTrackingPromise = Promise.resolve();
 
-    this_obj.orbCountKey = 'total_orb_count_set_' + cardSetId;
-    return tx('users').first(this_obj.orbCountKey).where('id', userId)
+    _chainState.orbCountKey = 'total_orb_count_set_' + cardSetId;
+    return tx('users').first(_chainState.orbCountKey).where('id', userId)
       .then(function (userRow) {
         _chainState.setTotalOrbs = userRow[_chainState.orbCountKey] || 0; // Number of orbs user already has for this set
 

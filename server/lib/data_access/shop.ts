@@ -210,7 +210,6 @@ class ShopModule {
     }
 
     const NOW_UTC_MOMENT = moment.utc();
-    const this_obj: Record<string, any> = {};
 
     const productData = ShopModule.productDataForSKU(sku);
 
@@ -219,9 +218,9 @@ class ShopModule {
       return Promise.reject(new Errors.NotFoundError(`Could not find product for SKU - ${sku}`));
     }
 
-    this_obj.premCurrencyPrice = productData.price;
+    _chainState.premCurrencyPrice = productData.price;
 
-    if (this_obj.premCurrencyPrice === 0) {
+    if (_chainState.premCurrencyPrice === 0) {
       return Promise.reject(new Errors.NotFoundError(`Could not find price for product: ${sku}`));
     }
 

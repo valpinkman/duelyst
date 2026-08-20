@@ -103,10 +103,9 @@ class GiftCrateModule {
       return Promise.reject(new Error(`Can not claim gift crate: no crate ID for user id - ${userId}`));
     }
 
-    const this_obj: Record<string, any> = {};
     this_obj.userId = userId;
-    this_obj.crateId = crateId;
-    this_obj.keyId = keyId;
+    _chainState.crateId = crateId;
+    _chainState.keyId = keyId;
 
     return txPromise = knex.transaction(function (tx) {
       knex.first().from('user_gift_crates').where({ user_id: userId, crate_id: crateId }).transacting(tx)
