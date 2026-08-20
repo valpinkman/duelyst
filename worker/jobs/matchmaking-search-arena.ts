@@ -15,7 +15,6 @@ const config = require('../../config/config.js');
 const Consul = require('../../server/lib/consul');
 
 const env = config.get('env');
-const kue = require('kue');
 
 // SDK
 const GameType = require('../../app/sdk/gameType');
@@ -79,16 +78,10 @@ searchRadius ${job.data.searchRadius}`,
     );
 
     // Recreate as new job with updated parameters (and delayed)
-    return new Promise((resolve, reject) => Redis.Jobs.create('matchmaking-search-arena', job.data)
-      .delay(job.data.delayMs)
-      .removeOnComplete(true)
-      .save(function (err) {
-        if (err != null) {
-          return reject(err);
-        } else {
-          return resolve();
-        }
-      }));
+    return Redis.Jobs.enqueue('matchmaking-search-arena', job.data, {
+      delay: job.data.delayMs,
+      removeOnComplete: true,
+    });
   }).then(() => done()).catch((error) => done(error));
 
 /**
@@ -266,13 +259,13 @@ module.exports = function (job, done) {
                     job.log('Matched versus %s(%s)', _chainState.token2.userId, _chainState.token2.name);
 
                     // Fire off job to setup game between both players
-                    Redis.Jobs.create('matchmaking-setup-game', {
+                    Redis.Jobs.enqueue('matchmaking-setup-game', {
                       name: 'Matchmaking Setup Game',
                       title: util.format('Game :: Setup Game :: %s versus %s', _chainState.token1.name, _chainState.token2.name),
                       token1: _chainState.token1,
                       token2: _chainState.token2,
                       gameType,
-                    }).removeOnComplete(true).save();
+                    }, { removeOnComplete: true });
 
                     // We're done
                     return done(null, { opponentName: _chainState.token2.name });

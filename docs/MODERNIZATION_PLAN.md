@@ -27,9 +27,8 @@ step it describes, so it can never drift from the code.
   Firebase RTDB (register → login → main menu → mulligan → play a minion → AI responds →
   concede), 0 console errors.
 - **Next, in order (the dependency chain is real, do not reorder):**
-  1. ~~`redis` 2 → ioredis~~ **DONE**, and with it ~~drop bluebird~~ **DONE** — bluebird is gone
-     from the repo and the dependency tree. `kue` still carries its own pinned `redis@2.6.5`;
-     replacing kue is the remaining redis-adjacent item, tracked separately.
+  1. ~~`redis` 2 → ioredis~~ **DONE**, ~~drop bluebird~~ **DONE**, ~~replace kue~~ **DONE**
+     (BullMQ). bluebird, redis@2, kue and warlock are all gone from the tree.
   2. 5T.4 incremental typing: `pnpm typecheck` is down to **2,484** errors under the loose
      config (from 5,503; a metric, not a gate). Mostly mechanical. Move directories into
      `tsconfig.strict.json` as they go clean.
@@ -823,6 +822,58 @@ server and worker. What remains is *typing* (5T.4), not converting.
       acquire, `EXISTS <key>:lock` to test, and a Lua parity-delete to release. Reimplementing it
       keeps the key format (`<key>:lock`) so nothing about the stored data changes, drops two
       dependencies, and makes the lock independent of which client library we are on.
+
+    - [x] `kue` 0.11.6 → **BullMQ 6. DONE.** kue was unmaintained since 2017 and dragged
+      express 4, pug 2-beta, stylus, nib, yargs 4 and its own pinned `redis@2.6` into the tree;
+      it was the last holder of `redis@2`, which is now gone entirely. Advisories 87 → **80**.
+
+      | measured | result |
+      |---|---|
+      | job types | 13 (+ `rotate-bosses`) |
+      | producer call sites | 42, in only **5 chain shapes** |
+      | processors | 13, concurrency 1–2 |
+      | `.ttl(15000)` | 6 sites, but only **2 distinct job types** |
+      | cross-process completion await | 2 (the game server's post-game ratings path) |
+
+      **Shape of the port.** kue used ONE queue with many job "types"; BullMQ uses a queue per
+      name, so queue name == job type, which preserves the per-type concurrency. The seam
+      (`server/redis/r-jobs.ts`) exposes `enqueue()`, `waitFor()` and `process()`. `process()`
+      adapts the 13 existing kue-shaped `(job, done)` handlers rather than rewriting them, which
+      kept this change to the queue itself. The 6 `.ttl()` sites collapse onto **two worker
+      registrations** carrying `{ ttl: 15000 }`, implemented with the `PromiseUtils.withTimeout`
+      we already had — BullMQ's stalled-job detection only covers a worker that *dies*, not a
+      handler that hangs, which is what a ttl actually guards (owner decision).
+
+      **Two bugs found while measuring, both ours, both fixed first and separately:**
+
+      - **kue's builder `.delay(ms)` had been rewritten into a promise `.then(...)`** by a stage 6
+        codemod, in all four matchmaking jobs. A kue Job is not a thenable, so every matchmaking
+        **re-queue threw** — retry and backoff had been dead since that commit. Nothing caught it:
+        server-side, so e2e never reaches it; no unit coverage for worker jobs; and the mangled
+        form is valid JavaScript. The orphan checker now only reports `.delay()` when the file
+        does not also use the job API.
+      - **`Promise.all` in `afterGameOver` waited on player 1 only.** Decaffeination moved the
+        comma separating two array elements *inside* the first `new Promise(...)` argument list,
+        making the second a stray constructor argument, so ratings could be computed before
+        player 2's post-game job had finished. The CoffeeScript original was correct.
+
+      **And one found only by running it:** `removeOnComplete: true` is incompatible with
+      `waitUntilFinished`. BullMQ reads the job's key to get its result, so deleting the job the
+      instant it completes fails the waiter with *"Missing key for job … isFinished"* — which
+      would have broken the ratings path on **every game**. kue did not have this problem because
+      it pushed completion events rather than reading job state. Completed jobs now keep a
+      bounded tail (`{ age: 300, count: 1000 }`) instead of vanishing.
+
+      Also: the kue web UI (`kue.app.listen(4000)`, itself the reason kue pulled express+pug) is
+      replaced by bull-board on the same port, so the compose service is unchanged. Queue keys are
+      NOT kue-compatible; in-flight jobs are dropped at cutover, which is fine because every
+      producer sets removeOnComplete.
+
+      **Verified against real infrastructure:** worker boots and processes `rotate-bosses` on
+      startup; a job enqueued in the **api** process is executed by the **worker** process and
+      awaited back across the boundary (success in 40ms, and the failure path propagates too);
+      e2e green with `update-user-achievements` (a ttl job) and `update-user-seen-on` visibly
+      completing in the worker log; bull-board serves 200 and enumerates every queue.
 
     - [x] `bluebird` 2.11 → **native. DONE — the dependency is deleted.** It was **the gate**
       for knex, not the endgame after it.

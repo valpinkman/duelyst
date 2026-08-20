@@ -748,13 +748,12 @@ class CosmeticChestsModule {
         for (var chestData of Array.from<any>(_chainState.awardedChestData)) {
         // Currently there is only an achievement for first bronze chest so don't bother with others
           if ((chestData.chest_type === SDK.CosmeticsChestTypeLookup.Common) && ((_chainState.userProgressionRow.last_crate_awarded_at == null))) {
-            Jobs.create('update-user-achievements', {
+            Jobs.enqueue('update-user-achievements', {
               name: 'Update User Cosmetic Chest Achievements',
               title: util.format('User %s :: Update Cosmetic Chest Achievements', userId),
               userId,
               receivedCosmeticChestType: chestData.chest_type,
-            },
-            ).removeOnComplete(true).ttl(15000).save();
+            }, { removeOnComplete: true });
           }
         }
 
@@ -898,13 +897,12 @@ class CosmeticChestsModule {
         for (var chestData of Array.from<any>(_chainState.awardedChestData)) {
         // Currently there is only an achievement for first bronze chest so don't bother with others
           if ((chestData.chest_type === SDK.CosmeticsChestTypeLookup.Common) && ((_chainState.userProgressionRow.last_crate_awarded_at == null))) {
-            Jobs.create('update-user-achievements', {
+            Jobs.enqueue('update-user-achievements', {
               name: 'Update User Cosmetic Chest Achievements',
               title: util.format('User %s :: Update Cosmetic Chest Achievements', userId),
               userId,
               receivedCosmeticChestType: chestData.chest_type,
-            },
-            ).removeOnComplete(true).ttl(15000).save();
+            }, { removeOnComplete: true });
           }
         }
 

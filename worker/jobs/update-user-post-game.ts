@@ -248,15 +248,14 @@ const onProcessStats = function (job, userId, opponentId, gameId, factionId, gen
 const onProcessAchievements = function (job, userId, opponentId, gameId, factionId, generalId, isWinner, isDraw, isUnscored, gameType, gameSessionData) {
   if (gameType !== GameType.SinglePlayer) {
     Logger.module('JOB').debug(`[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> starting achievements job ...`);
-    Jobs.create('update-user-achievements', {
+    Jobs.enqueue('update-user-achievements', {
       name: 'Update User Game Achievements',
       title: util.format('User %s :: Update Game Achievements', userId),
       userId,
       gameId,
       isDraw,
       isUnscored,
-    },
-    ).removeOnComplete(true).save();
+    }, { removeOnComplete: true });
   }
   return Promise.resolve();
 };

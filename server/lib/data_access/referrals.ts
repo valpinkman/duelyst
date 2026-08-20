@@ -207,13 +207,12 @@ class ReferralsModule {
         }).then(function () {
           if (eventType === 'purchase') {
           // kick off a job to process this referral event
-            return Jobs.create('update-user-achievements', {
+            return Jobs.enqueue('update-user-achievements', {
               name: 'Process User Referral Achievements',
               title: util.format('User %s :: Received Achievement Eligble Referral Event %s', _chainState.userRow.referred_by_user_id, 'purchase'),
               userId: _chainState.userRow.referred_by_user_id,
               referralEventType: 'purchase',
-            },
-            ).removeOnComplete(true).ttl(15000).save();
+            }, { removeOnComplete: true });
           }
         })
         .then(() => DuelystFirebase.connect().getRootRef())

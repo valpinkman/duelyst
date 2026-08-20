@@ -18,7 +18,6 @@ const colors = require('colors'); // used for console message coloring
 const jwt = require('jsonwebtoken');
 let io = require('socket.io');
 const ioJwt = require('@thream/socketio-jwt');
-const kue = require('kue');
 const moment = require('moment');
 const request = require('superagent');
 
@@ -1541,7 +1540,7 @@ var afterGameOver = function (gameId, gameSession, mouseAndUIEvents) {
     }
 
     // start the job to process the game for a user
-    return Jobs.create('update-user-post-game', {
+    return Jobs.enqueue('update-user-post-game', {
       name: 'Update User Ranking',
       title: util.format('User %s :: Game %s', userId, gameId),
       userId,
@@ -1554,8 +1553,7 @@ var afterGameOver = function (gameId, gameSession, mouseAndUIEvents) {
       isDraw,
       isUnscored,
       ticketId,
-    },
-    ).removeOnComplete(true); // wait to save job until ready to process
+    }, { removeOnComplete: true });
   };
 
   const updateUsersRatings = function (player1UserId, player2UserId, gameId, player1IsWinner, isDraw) {
@@ -1573,7 +1571,7 @@ var afterGameOver = function (gameId, gameSession, mouseAndUIEvents) {
     // Ratings only process in NON-FRIENDLY matches where at least 1 player is rank 0
     if (isRanked) {
       // start the job to process the ratings for the players
-      return Jobs.create('update-users-ratings', {
+      return Jobs.enqueue('update-users-ratings', {
         name: 'Update User Rating',
         title: util.format('Users [%s,%s] :: Game %s', player1UserId, player2UserId, gameId),
         player1UserId,
@@ -1583,8 +1581,7 @@ var afterGameOver = function (gameId, gameSession, mouseAndUIEvents) {
         gameId,
         player1IsWinner,
         isDraw,
-      },
-      ).removeOnComplete(true).save();
+      }, { removeOnComplete: true });
     } else {
       return Promise.resolve();
     }
@@ -1595,13 +1592,12 @@ var afterGameOver = function (gameId, gameSession, mouseAndUIEvents) {
     GameManager.saveGameMouseUIData(gameId, JSON.stringify(mouseAndUIEvents)),
     GameManager.saveGameSession(gameId, gameSession.serializeToJSON(gameSession)),
   ]).then(() => // Job: Archive Game
-    Jobs.create('archive-game', {
+    Jobs.enqueue('archive-game', {
       name: 'Archive Game',
       title: util.format('Archiving Game %s', gameId),
       gameId,
       gameType: gameSession.getGameType(),
-    },
-    ).removeOnComplete(true).save());
+    }, { removeOnComplete: true }));
 
   // Builds a promise for executing the user update ratings job after player update jobs have completed
   const updateUserRatingsPromise = (
@@ -1612,15 +1608,20 @@ var afterGameOver = function (gameId, gameSession, mouseAndUIEvents) {
     gameId,
     player1IsWinner,
     isDraw,
-  ) => // Wait until both players update jobs have completed before updating ratings
+  ) => // Wait until both players' update jobs have completed before updating ratings.
+    /*
+     * These are two SEPARATE array elements. Decaffeinating this had moved the
+     * comma inside the first `new Promise(...)` argument list, making the second
+     * promise a stray constructor argument, so Promise.all waited on player 1
+     * only and ratings could be computed before player 2's job had finished.
+     *
+     * The jobs are enqueued in another process, so waiting on them crosses a
+     * process boundary: kue gave each job an event emitter, BullMQ routes the
+     * same information through QueueEvents behind Jobs.waitFor().
+     */
     Promise.all([
-      // NB: these are two SEPARATE array elements. Decaffeinating this moved the
-      // comma inside the first `new Promise(...)` argument list, which made the
-      // second promise a stray constructor argument -- so Promise.all waited on
-      // player 1 only and ratings could be computed before player 2's post-game
-      // job had finished.
-      new Promise(function (resolve, reject) { updatePlayer1Job.on('complete', resolve); updatePlayer1Job.on('error', reject); }),
-      new Promise(function (resolve, reject) { updatePlayer2Job.on('complete', resolve); updatePlayer2Job.on('error', reject); }),
+      updatePlayer1Job.then((job) => Jobs.waitFor(job)),
+      updatePlayer2Job.then((job) => Jobs.waitFor(job)),
     ]).then(() => updateUsersRatings(player1Id, player2Id, gameId, player1IsWinner, isDraw)).catch(
       (error) => Logger.module('GAME-OVER').error(`[G:${gameId}]`, `ERROR: afterGameOver update player job failed ${error}`.red),
     );
@@ -1646,9 +1647,8 @@ var afterGameOver = function (gameId, gameSession, mouseAndUIEvents) {
   const updatePlayer1Job = updateUser(player1Id, player2Id, gameId, player1FactionId, player1GeneralId, (player1Id === winnerId), isDraw, player1TicketId);
   const updatePlayer2Job = updateUser(player2Id, player1Id, gameId, player2FactionId, player2GeneralId, (player2Id === winnerId), isDraw, player2TicketId);
   // wait until both players update jobs have completed before updating ratings
+  // (both jobs are already enqueued; updateUser returns the pending Job)
   promises.push(updateUserRatingsPromise(updatePlayer1Job, updatePlayer2Job, player1Id, player2Id, gameId, player1IsWinner, isDraw));
-  updatePlayer1Job.save();
-  updatePlayer2Job.save();
 
   // archive game
   promises.push(archiveGame(gameId, gameSession, mouseAndUIEvents));

@@ -153,14 +153,13 @@ class ShopModule {
 
     if ((userRow.referred_by_user_id != null) && (userRow.purchase_count === 0)) {
       // kick off a job to process this referral event
-      Jobs.create('process-user-referral-event', {
+      Jobs.enqueue('process-user-referral-event', {
         name: 'Process User Referral Event',
         title: util.format('User %s :: Generated Referral Event %s', userRow.id, 'purchase'),
         userId: userRow.id,
         eventType: 'purchase',
         referrerId: userRow.referred_by_user_id,
-      },
-      ).removeOnComplete(true).ttl(15000).save();
+      }, { removeOnComplete: true });
     }
 
     txPromise
@@ -179,13 +178,12 @@ class ShopModule {
 
     return Promise.all(allPromises)
       .then(() => // Send update to achievements job for armory purchase
-        Jobs.create('update-user-achievements', {
+        Jobs.enqueue('update-user-achievements', {
           name: 'Update User Armory Achievements',
           title: util.format('User %s :: Update Armory Achievements', userId),
           userId,
           armoryPurchaseSku: sku,
-        },
-        ).removeOnComplete(true).save());
+        }, { removeOnComplete: true }));
   }
 
   /**

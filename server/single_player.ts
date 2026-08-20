@@ -18,7 +18,6 @@ const colors = require('colors'); // used for console message coloring
 const jwt = require('jsonwebtoken');
 let io = require('socket.io');
 const ioJwt = require('@thream/socketio-jwt');
-const kue = require('kue');
 const moment = require('moment');
 const request = require('superagent');
 
@@ -1544,7 +1543,7 @@ var afterGameOver = function (gameId, gameSession, mouseAndUIEvents) {
     }
 
     // start the job to process the game for a user
-    return Jobs.create('update-user-post-game', {
+    return Jobs.enqueue('update-user-post-game', {
       name: 'Update User Ranking',
       title: util.format('User %s :: Game %s', userId, gameId),
       userId,
@@ -1558,8 +1557,7 @@ var afterGameOver = function (gameId, gameSession, mouseAndUIEvents) {
       isUnscored,
       isBotGame: true,
       ticketId,
-    },
-    ).removeOnComplete(true).save();
+    }, { removeOnComplete: true });
   };
 
   // Save then archive game session
@@ -1567,13 +1565,12 @@ var afterGameOver = function (gameId, gameSession, mouseAndUIEvents) {
     GameManager.saveGameMouseUIData(gameId, JSON.stringify(mouseAndUIEvents)),
     GameManager.saveGameSession(gameId, gameSession.serializeToJSON(gameSession)),
   ]).then(() => // Job: Archive Game
-    Jobs.create('archive-game', {
+    Jobs.enqueue('archive-game', {
       name: 'Archive Game',
       title: util.format('Archiving Game %s', gameId),
       gameId,
       gameType: gameSession.gameType,
-    },
-    ).removeOnComplete(true).save());
+    }, { removeOnComplete: true }));
 
   // update promises
   const promises = [

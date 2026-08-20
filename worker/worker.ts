@@ -23,33 +23,30 @@ events.EventEmitter.defaultMaxListeners = 20; // Default is 10.
 /*
 Job Queue Consumer // aka Worker
 */
-const kue = require('kue');
-
-/*
-Setup Kue connection
-prefix namespaces the queue
-*/
 const worker = require('../server/redis/r-jobs');
 
-// job failed
-worker.on('job failed', function (id, errorMessage) {
-  Logger.module('WORKER').error(`[J:${id}] has failed: ${errorMessage}`.red);
-  return kue.Job.get(id, function (err, job) {
-    if (err) { }
-  });
-});
+/*
+ * Per-job failure logging now lives in the seam (r-jobs `process()` attaches a
+ * 'failed' listener to every worker), because BullMQ reports failures per
+ * queue rather than through one global emitter as kue did.
+ */
+
+const workers = [];
 
 /*
-Kue Shutdown Event
-Finishes current job, 10s timeout before shutting down.
+Shutdown: stop accepting work, let running jobs finish, then close connections.
 */
-const cleanShutdown = () => worker.shutdown(10000, function (err) {
-  if (err) {
-    Logger.module('WORKER').error(`Shutdown error occured: ${err.message}`);
-  }
+const cleanShutdown = function () {
   Logger.module('WORKER').log('Shutting down.');
-  return process.exit(0);
-});
+  // Worker.close() waits for the jobs currently being processed
+  return Promise.all(workers.map((w) => w.close()))
+    .then(() => worker.shutdown())
+    .then(() => process.exit(0))
+    .catch((err) => {
+      Logger.module('WORKER').error(`Shutdown error occured: ${err.message}`);
+      return process.exit(1);
+    });
+};
 
 process.on('SIGTERM', cleanShutdown);
 process.on('SIGINT', cleanShutdown);
@@ -75,26 +72,30 @@ const updateUsersRatings = require('./jobs/update-users-ratings');
 const updateUserSeenOn = require('./jobs/update-user-seen-on');
 const rotateBosses = require('./jobs/rotate-bosses');
 
-worker.process('archive-game', 1, archiveGame);
-worker.process('update-user-post-game', 2, updateUserPostGame);
-worker.process('update-user-achievements', 1, updateUserAchievements);
-worker.process('update-user-charge-log', 1, updateUserChargeLog);
-worker.process('matchmaking-setup-game', 1, matchmakingSetupGame);
-worker.process('matchmaking-search-ranked', 1, matchmakingSearchRanked);
-worker.process('matchmaking-search-casual', 1, matchmakingSearchCasual);
-worker.process('matchmaking-search-arena', 1, matchmakingSearchArena);
-worker.process('matchmaking-search-rift', 1, matchmakingSearchRift);
-worker.process('data-sync-user-buddy-list', 1, dataSyncUserBuddyList);
-worker.process('process-user-referral-event', 1, processUserReferralEvent);
-worker.process('update-users-ratings', 1, updateUsersRatings);
-worker.process('update-user-seen-on', 1, updateUserSeenOn);
+/*
+ * `ttl` replaces kue's per-job .ttl(15000), which failed a job that had not
+ * completed in time. Its producers only ever set it on these two job types, so
+ * it is declared here rather than repeated at all six call sites.
+ */
+workers.push(worker.process('archive-game', 1, archiveGame));
+workers.push(worker.process('update-user-post-game', 2, updateUserPostGame));
+workers.push(worker.process('update-user-achievements', 1, updateUserAchievements, { ttl: 15000 }));
+workers.push(worker.process('update-user-charge-log', 1, updateUserChargeLog));
+workers.push(worker.process('matchmaking-setup-game', 1, matchmakingSetupGame));
+workers.push(worker.process('matchmaking-search-ranked', 1, matchmakingSearchRanked));
+workers.push(worker.process('matchmaking-search-casual', 1, matchmakingSearchCasual));
+workers.push(worker.process('matchmaking-search-arena', 1, matchmakingSearchArena));
+workers.push(worker.process('matchmaking-search-rift', 1, matchmakingSearchRift));
+workers.push(worker.process('data-sync-user-buddy-list', 1, dataSyncUserBuddyList));
+workers.push(worker.process('process-user-referral-event', 1, processUserReferralEvent, { ttl: 15000 }));
+workers.push(worker.process('update-users-ratings', 1, updateUsersRatings));
+workers.push(worker.process('update-user-seen-on', 1, updateUserSeenOn));
 
 // Run the rotateBosses job once on startup.
 // TODO: Find another way to trigger this hourly.
-worker.process('rotate-bosses', 1, rotateBosses);
-const runRotateBossesJob = () => Jobs.create('rotate-bosses', {
+workers.push(worker.process('rotate-bosses', 1, rotateBosses));
+const runRotateBossesJob = () => Jobs.enqueue('rotate-bosses', {
   name: 'Rotate Bosses',
   title: 'Rotating Boss Event',
-},
-).removeOnComplete(true).save();
+}, { removeOnComplete: true });
 setTimeout(runRotateBossesJob, 1000);

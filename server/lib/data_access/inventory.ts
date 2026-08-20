@@ -1831,13 +1831,12 @@ class InventoryModule {
 
         Logger.module('InventoryModule').timeEnd(`unlockBoosterPack() -> user ${userId.blue} unlocked booster ${boosterPackId}.`.green);
         // Kick off job to update acheivements based on spirit orbs opened
-        Jobs.create('update-user-achievements', {
+        Jobs.enqueue('update-user-achievements', {
           name: 'Update User Spirit Orbs Achievements',
           title: util.format('User %s :: Update Spirit Orbs Achievements', userId),
           userId,
           spiritOrbOpenedFromSet: _chainState.boosterRow.card_set,
-        },
-        ).removeOnComplete(true).save();
+        }, { removeOnComplete: true });
 
         return Promise.resolve(_chainState.boosterRow);
       });
@@ -2033,13 +2032,12 @@ class InventoryModule {
       .then(function () {
         Logger.module('InventoryModule').debug(`disenchantCards() -> user ${userId.blue}`.green + ` disenchanted cards ${util.inspect(cardIds)}`.green);
 
-        Jobs.create('update-user-achievements', {
+        Jobs.enqueue('update-user-achievements', {
           name: 'Update User Disenchanting Achievements',
           title: util.format('User %s :: Update Disenchanting Achievements', userId),
           userId,
           disenchantedCardIdList: cardIds,
-        },
-        ).removeOnComplete(true).save();
+        }, { removeOnComplete: true });
 
         return {
           wallet: {
@@ -2292,13 +2290,12 @@ class InventoryModule {
       .then(function () {
         Logger.module('InventoryModule').debug(`disenchantDuplicateCards() -> user ${userId.blue}`.green + ` disenchanted cards ${util.inspect(_chainState.cardIds)}`.green);
 
-        Jobs.create('update-user-achievements', {
+        Jobs.enqueue('update-user-achievements', {
           name: 'Update User Disenchanting Achievements',
           title: util.format('User %s :: Update Disenchanting Achievements', userId),
           userId,
           disenchantedCardIdList: _chainState.cardIds,
-        },
-        ).removeOnComplete(true).save();
+        }, { removeOnComplete: true });
 
         return {
           wallet: {
@@ -2451,13 +2448,12 @@ class InventoryModule {
       .then(function () {
         Logger.module('InventoryModule').timeEnd(`craftCard() -> user ${userId.blue} `.green + ` crafted card ${cardId}`.green);
 
-        Jobs.create('update-user-achievements', {
+        Jobs.enqueue('update-user-achievements', {
           name: 'Update User Crafting Achievements',
           title: util.format('User %s :: Update Crafting Achievements', userId),
           userId,
           craftedCardId: cardId,
-        },
-        ).removeOnComplete(true).save();
+        }, { removeOnComplete: true });
 
         return {
           wallet: {
@@ -2702,13 +2698,12 @@ class InventoryModule {
       })
       .then(function (cardCollectionRow) {
       // Kick off job to update acheivements
-        Jobs.create('update-user-achievements', {
+        Jobs.enqueue('update-user-achievements', {
           name: 'Update User Inventory Achievements',
           title: util.format('User %s :: Update Inventory Achievements', userId),
           userId,
           inventoryChanged: true,
-        },
-        ).removeOnComplete(true).save();
+        }, { removeOnComplete: true });
 
         // Logger.module("InventoryModule").timeEnd "giveUserCards() -> User #{userId.blue}".green + " received #{util.inspect(cardIds)} cards.".green
 

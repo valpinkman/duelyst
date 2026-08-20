@@ -423,7 +423,7 @@ router.post('/matchmaking', function (req, res, next) {
                     Logger.module('MATCHMAKING').debug(`${gameType.yellow} queue pushed user ${userId}, sending 200 with ${token.id}, ${velocity}`.green);
                     res.status(200).json({ tokenId: token.id, velocity });
                     // fire off matchmaking job
-                    Redis.Jobs.create('matchmaking-search-casual', {
+                    Redis.Jobs.enqueue('matchmaking-search-casual', {
                       name: 'Casual Matchmaking Search',
                       title: util.format('GAME :: %s searching for casual game', name),
                       userId,
@@ -432,13 +432,13 @@ router.post('/matchmaking', function (req, res, next) {
                       rank: token.rank,
                       deckValue: token.deckValue,
                       timeServed,
-                    }).delay(1000).removeOnComplete(true).save();
+                    }, { delay: 1000, removeOnComplete: true });
                   } else if (gameType === GameType.Ranked) {
                     velocity = results[3];
                     Logger.module('MATCHMAKING').debug(`${gameType.yellow} queue pushed user ${userId}, sending 200 with ${token.id}, ${velocity}`.green);
                     res.status(200).json({ tokenId: token.id, velocity });
                     // fire off matchmaking job
-                    Redis.Jobs.create('matchmaking-search-ranked', {
+                    Redis.Jobs.enqueue('matchmaking-search-ranked', {
                       name: 'Ranked Matchmaking Search',
                       title: util.format('GAME :: %s searching for game', name),
                       userId,
@@ -446,13 +446,13 @@ router.post('/matchmaking', function (req, res, next) {
                       tokenId: token.id,
                       rank: token.rank,
                       deckValue: token.deckValue,
-                    }).delay(1000).removeOnComplete(true).save();
+                    }, { delay: 1000, removeOnComplete: true });
                   } else if (gameType === GameType.Gauntlet) {
                     velocity = results[2];
                     Logger.module('MATCHMAKING').debug(`${gameType.yellow} queue pushed user ${userId}, sending 200 with ${token.id}, ${velocity}`.green);
                     res.status(200).json({ tokenId: token.id, velocity });
                     // fire off matchmaking job
-                    Redis.Jobs.create('matchmaking-search-arena', {
+                    Redis.Jobs.enqueue('matchmaking-search-arena', {
                       name: 'Arena Matchmaking Search',
                       title: util.format('GAME :: %s searching for arena game', name),
                       userId,
@@ -460,13 +460,13 @@ router.post('/matchmaking', function (req, res, next) {
                       tokenId: token.id,
                       rank: token.rank,
                       deckValue: token.deckValue,
-                    }).delay(1000).removeOnComplete(true).save();
+                    }, { delay: 1000, removeOnComplete: true });
                   } else if (gameType === GameType.Rift) {
                     velocity = results[2];
                     Logger.module('MATCHMAKING').log(`${gameType.yellow} queue pushed user ${userId}, sending 200 with ${token.id}, ${velocity}`.green);
                     res.status(200).json({ tokenId: token.id, velocity });
                     // fire off matchmaking job
-                    Redis.Jobs.create('matchmaking-search-rift', {
+                    Redis.Jobs.enqueue('matchmaking-search-rift', {
                       name: 'Rift Matchmaking Search',
                       title: util.format('GAME :: %s searching for rift game', name),
                       userId,
@@ -474,7 +474,7 @@ router.post('/matchmaking', function (req, res, next) {
                       tokenId: token.id,
                       rank: token.rank,
                       deckValue: token.deckValue,
-                    }).delay(1000).removeOnComplete(true).save();
+                    }, { delay: 1000, removeOnComplete: true });
                   }
                 });
             }
@@ -572,13 +572,13 @@ var setupInvite = function (inviteId) {
         })
         .then(function () {
           // Fire off job to setup game between both players
-          Redis.Jobs.create('matchmaking-setup-game', {
+          Redis.Jobs.enqueue('matchmaking-setup-game', {
             name: 'Matchmaking Setup Game',
             title: util.format('Game :: Setup Invite Game :: %s versus %s', _chainState.token1.name, _chainState.token2.name),
             token1: _chainState.token1,
             token2: _chainState.token2,
             gameType: GameType.Friendly,
-          }).removeOnComplete(true).save();
+          }, { removeOnComplete: true });
         })
         .catch((error) => Logger.module('MATCHMAKING').error(`setupInvite() failed: ${error.message}`.red));
     });

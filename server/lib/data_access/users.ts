@@ -640,13 +640,12 @@ class UsersModule {
         if (moment.utc(_chainState.userData.created_at).isBefore(moment.utc('2016-06-18')) && moment.utc(_chainState.userData.last_session_at).isBefore(moment.utc('2016-06-18'))) {
           Logger.module('UsersModule').debug(`bumpSessionCountAndSyncDataIfNeeded() -> starting inventory achievements for user - ${userId.blue}.`);
           // Kick off job to update achievements
-          Jobs.create('update-user-achievements', {
+          Jobs.enqueue('update-user-achievements', {
             name: 'Update User Inventory Achievements',
             title: util.format('User %s :: Update Inventory Achievements', userId),
             userId,
             inventoryChanged: true,
-          },
-          ).removeOnComplete(true).save();
+          }, { removeOnComplete: true });
         }
 
         if (duration.asHours() > 2) {
@@ -673,11 +672,11 @@ class UsersModule {
         return SyncModule.syncUserDataIfTrasactionCountMismatched(userId, _chainState.userData);
       })
       .then((synced) => // # Job: Sync user buddy data
-      // Jobs.create("data-sync-user-buddy-list",
+      // Jobs.enqueue("data-sync-user-buddy-list",
       //   name: "Sync User Buddy Data"
       //   title: util.format("User %s :: Sync Buddies", userId)
       //   userId: userId
-      // ).removeOnComplete(true).save()
+      // , { removeOnComplete: true })
 
         synced);
   }
@@ -692,13 +691,12 @@ class UsersModule {
   static createDaysSeenOnJob(userId, systemTime) {
     const MOMENT_NOW_UTC = systemTime || moment().utc();
 
-    Jobs.create('update-user-seen-on', {
+    Jobs.enqueue('update-user-seen-on', {
       name: 'Update User Seen On',
       title: util.format('User %s :: Update Seen On', userId),
       userId,
       userSeenOn: MOMENT_NOW_UTC.valueOf(),
-    },
-    ).removeOnComplete(true).save();
+    }, { removeOnComplete: true });
 
     return Promise.resolve();
   }
@@ -1444,13 +1442,12 @@ class UsersModule {
       .then(function () {
       // Update achievements if leveled up
         if (SDK.FactionProgression.hasLeveledUp(_chainState.factionProgressionRow.xp, _chainState.factionProgressionRow.xp_earned) || (_chainState.factionProgressionRow.game_count === 1)) {
-          Jobs.create('update-user-achievements', {
+          Jobs.enqueue('update-user-achievements', {
             name: 'Update User Faction Achievements',
             title: util.format('User %s :: Update Faction Achievements', userId),
             userId,
             factionProgressed: true,
-          },
-          ).removeOnComplete(true).save();
+          }, { removeOnComplete: true });
         }
 
         Logger.module('UsersModule').debug(`updateUserFactionProgressionWithGameOutcome() -> user ${userId.blue}`.green + ` game ${gameId} (${_chainState.factionProgressionRow.game_count}) faction progression recorded. Unscored: ${(isUnscored != null ? isUnscored.toString().cyan : undefined)}`.green);

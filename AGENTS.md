@@ -128,6 +128,16 @@ How we work on it:
   `generate_packages.js` and RSX paths.
 
 Status log (newest first):
+- 2026-08-20 — **kue → BullMQ 6**, and with it the last of `redis@2`. kue was unmaintained
+  since 2017 and pulled express 4, pug 2-beta, stylus, nib and yargs 4; advisories 87 → **80**.
+  42 producers converted to `Jobs.enqueue()`, 13 kue-shaped `(job, done)` handlers adapted in the
+  seam rather than rewritten, the 6 `.ttl()` sites collapsed onto 2 worker registrations using
+  `PromiseUtils.withTimeout`, and the game server's cross-process "wait for both post-game jobs"
+  moved to BullMQ QueueEvents. kue's web UI → bull-board on the same port. **Three bugs found:**
+  two of ours (a stage-6 codemod had rewritten kue's builder `.delay()` into a promise `.then()`,
+  killing all matchmaking retries; and decaffeination had misplaced a comma so `afterGameOver`
+  waited on only one player's job), plus `removeOnComplete: true` being incompatible with
+  BullMQ's `waitUntilFinished` — which would have broken ratings on every game.
 - 2026-08-20 — **bluebird is GONE** — from the repo and from the dependency tree. redis 2.8 →
   **ioredis 6** (target changed by measurement: node-redis v4 needs an explicit `connect()`,
   and `r-client.ts` exports a client 11 modules use synchronously; ioredis connects on

@@ -375,15 +375,14 @@ class RankModule {
             const eventType = RankFactory.rankedDivisionAssetNameForRank(rankData.rank);
 
             // kick off a job to process this referral event
-            Jobs.create('process-user-referral-event', {
+            Jobs.enqueue('process-user-referral-event', {
               name: 'Process User Referral Event',
               title: util.format('User %s :: Generated Referral Event %s', userId, eventType),
               userId,
               eventType,
               achievedRank: rankData.rank,
               referrerId: userRow.referred_by_user_id,
-            },
-            ).removeOnComplete(true).ttl(15000).save();
+            }, { removeOnComplete: true });
           }
         }
 
@@ -462,13 +461,12 @@ class RankModule {
 
         // If user earned higher rank, update rank achievements
         if (_chainState.rankData.delta.rank < 0) {
-          Jobs.create('update-user-achievements', {
+          Jobs.enqueue('update-user-achievements', {
             name: 'Update User Rank Achievements',
             title: util.format('User %s :: Update Rank Achievements', userId),
             userId,
             achievedRank: _chainState.rankData.rank,
-          },
-          ).removeOnComplete(true).ttl(15000).save();
+          }, { removeOnComplete: true });
         }
 
         return Promise.resolve(_chainState.rankData);

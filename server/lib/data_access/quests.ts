@@ -1208,13 +1208,12 @@ class QuestsModule {
 
         // Kick off a job to update user's quest achievements
         // TODO: should catch up quests advance achievements
-        Jobs.create('update-user-achievements', {
+        Jobs.enqueue('update-user-achievements', {
           name: 'Update User Quest Achievements',
           title: util.format('User %s :: Update Quest Achievements', quest.user_id),
           userId: quest.user_id,
           completedQuestId: completedQuest.quest_type_id,
-        },
-        ).removeOnComplete(true).save();
+        }, { removeOnComplete: true });
       } else {
         Logger.module('QuestsModule').debug(`_setQuestProgress() -> quest[${quest.quest_slot_index}] progressed to ${quest.progress}/${quest.params.completionProgress}: ${questModel.getName()}. User ${quest.user_id.blue}. Game [G:${gameId}].`.cyan);
 

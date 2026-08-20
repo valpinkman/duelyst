@@ -1,27 +1,51 @@
 /*
- * decaffeinate suggestions:
- * DS102: Remove unnecessary code created because of implicit returns
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
+ * Job queue dashboard.
+ *
+ * kue shipped its own express+pug app (`kue.app.listen(4000)`), which is a
+ * large part of why kue pulled express 4, pug 2-beta, stylus and nib into the
+ * tree. BullMQ has no built-in UI, so this mounts bull-board over the same
+ * queues on the same port, keeping the compose service unchanged.
  */
-const colors = require('colors');
-const kue = require('kue');
+const express = require('express');
+const { createBullBoard } = require('@bull-board/api');
+const { BullMQAdapter } = require('@bull-board/api/bullMQAdapter');
+const { ExpressAdapter } = require('@bull-board/express');
+
 const Logger = require('../app/common/logger');
-const worker = require('../server/redis/r-jobs');
+const Jobs = require('../server/redis/r-jobs');
 
 /*
-Start Kue GUI
-*/
-kue.app.listen(4000);
+ * Every job type this deployment runs. BullMQ uses one queue per type, so the
+ * dashboard has to be told about each one; kue had a single queue and
+ * discovered types at runtime.
+ */
+const JOB_TYPES = [
+  'archive-game',
+  'update-user-post-game',
+  'update-user-achievements',
+  'update-user-charge-log',
+  'matchmaking-setup-game',
+  'matchmaking-search-ranked',
+  'matchmaking-search-casual',
+  'matchmaking-search-arena',
+  'matchmaking-search-rift',
+  'data-sync-user-buddy-list',
+  'process-user-referral-event',
+  'update-users-ratings',
+  'update-user-seen-on',
+  'rotate-bosses',
+];
+
+const serverAdapter = new ExpressAdapter();
+serverAdapter.setBasePath('/');
+
+createBullBoard({
+  queues: JOB_TYPES.map((name) => new BullMQAdapter(Jobs.queueFor(name))),
+  serverAdapter,
+});
+
+const app = express();
+app.use('/', serverAdapter.getRouter());
+app.listen(4000);
+
 Logger.module('WORKER').log('Worker UI started on port 4000');
-
-/*
-Kue Events
-*/
-// job enqueue
-worker.on('job enqueue', (id, type) => Logger.module('WORKER').log(`[J:${id}] got queued`.yellow));
-
-// job complete
-worker.on('job complete', (id, result) => Logger.module('WORKER').log(`[J:${id}] complete`.blue));
-
-// job failed
-worker.on('job failed', (id, errorMessage) => Logger.module('WORKER').log(`[J:${id}] has failed: ${errorMessage}`.red));
