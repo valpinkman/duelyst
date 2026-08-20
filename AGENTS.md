@@ -128,6 +128,16 @@ How we work on it:
   `generate_packages.js` and RSX paths.
 
 Status log (newest first):
+- 2026-08-20 — **TS2554 read individually, 145 → 75; typecheck now 366.** This was the slice
+  worth reading rather than silencing, since a missing argument is a real bug — and the verdict
+  is that **almost none were**: they are signatures lying about optionality (decaffeinated default
+  parameters, pass-throughs whose default lives one level down, and `systemTime || moment()`).
+  Two codemod rules were narrowed after inspecting their output — accepting any `param || X`
+  marked 128 params to fix 5 errors and produced `setIsDeveloperMode(val?)`, so the rule now
+  requires a `moment()` fallback: 28 signatures, all provably right. Catalogued for a correctness
+  pass: `giveUserGold` records its `sourceId` but `debitGoldFromUser`/`giveUserSpirit`/
+  `debitSpiritFromUser` accept, document and silently drop it, so currency debits have no
+  source in the ledger.
 - 2026-08-20 — **typecheck 2,960 → 436** (85%). TS2339 2,467 → 175, TS2794 128 → 0, via three
   diagnostics-driven codemods that are strictly type-only: `Record<string, any>` on scratch
   objects (159), `declare` on initClass-era statics/prototype defaults (45), `new Promise<void>`

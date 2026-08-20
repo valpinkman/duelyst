@@ -68,7 +68,7 @@ class RankModule {
    * @param  {Moment}  systemTime        Pass in the current system time to override clock. Used mostly for testing.
    * @return  {BOOL}                Has a new season started since the argument timestamp?
    */
-  static _isSeasonTimestampExpired(rank_started_at, systemTime) {
+  static _isSeasonTimestampExpired(rank_started_at, systemTime?) {
     if (rank_started_at != null) {
       const current_utc = systemTime || moment().utc();
       const current_month_val = (current_utc.year() * 100) + current_utc.month(); // formats to 201411 for 1/11/2014
@@ -89,7 +89,7 @@ class RankModule {
    * @param  {Moment}  systemTime  Pass in the current system time to override clock. Used mostly for testing.
    * @return  {Promise}        Promise that will return the rank data on completion.
    */
-  static cycleUserSeasonRanking(userId, force, systemTime) {
+  static cycleUserSeasonRanking(userId, force?, systemTime?) {
     const _chainState: Record<string, any> = {};
     if (force == null) { force = false; }
     const MOMENT_UTC_NOW = systemTime || moment().utc();
@@ -309,7 +309,7 @@ class RankModule {
    * @param  {Moment}  systemTime  Pass in the current system time to override clock. Used mostly for testing.
    * @return  {Promise}        Promise that will post a RANK DATA.
    */
-  static updateUserRankingWithGameOutcome(userId, isWinner, gameId, isDraw, systemTime) {
+  static updateUserRankingWithGameOutcome(userId, isWinner, gameId, isDraw, systemTime?) {
     const _chainState: Record<string, any> = {};
     const MOMENT_UTC_NOW = systemTime || moment().utc();
 
@@ -486,7 +486,7 @@ class RankModule {
    * @param  {Moment}  systemTime  Pass in the current system time to override clock. Used mostly for testing.
    * @return  {Promise}        Promise that will post a RANK DATA.
    */
-  static updateUsersRatingsWithGameOutcome(player1Id, player2Id, player1IsWinner, gameId, isDraw, player1IsRanked, player2IsRanked, systemTime) {
+  static updateUsersRatingsWithGameOutcome(player1Id, player2Id, player1IsWinner, gameId, isDraw, player1IsRanked, player2IsRanked, systemTime?) {
     const _chainState: Record<string, any> = {};
     Logger.module('RankModule').debug(`updateUsersRatingsWithGameOutcome() -> updating for users[${player1Id},${player2Id}] game_id:${gameId}`);
 
@@ -793,7 +793,7 @@ class RankModule {
    * @param  {Moment}  systemTime  Pass in the current system time to override clock. Used mostly for testing.
    * @return  {Promise}        Promise that will return the ratings data row on completion.
    */
-  static getUserRatingData(tx, playerId, systemTime) {
+  static getUserRatingData(tx, playerId, systemTime?) {
     const MOMENT_UTC_NOW = systemTime || moment().utc();
     const startOfSeasonMoment = moment(MOMENT_UTC_NOW).utc().startOf('month');
     const seasonStartingAt = startOfSeasonMoment.toDate();
@@ -810,7 +810,7 @@ class RankModule {
    * @param  {Moment}  systemTime  Pass in the current system time to override clock. Used mostly for testing.
    * @return  {Promise}        Promise that will return the users updated ladder position
    */
-  static updateAndGetUserLadderPosition(txPromise, tx, playerId, startOfSeasonMoment, systemTime) {
+  static updateAndGetUserLadderPosition(txPromise, tx, playerId, startOfSeasonMoment, systemTime?) {
     const _chainState: Record<string, any> = {};
     const MOMENT_UTC_NOW = systemTime || moment().utc();
     startOfSeasonMoment = moment.utc(startOfSeasonMoment || MOMENT_UTC_NOW).startOf('month');
@@ -901,7 +901,7 @@ class RankModule {
    * @param  {Moment}  systemTime  Pass in the current system time to override clock. Used mostly for testing.
    * @return  {Promise}        Promise that will return the users cached ladder position or null if none exists
    */
-  static getUserLadderPosition(tx, playerId, startOfSeasonMoment, recalculateIfOldSeason, systemTime) {
+  static getUserLadderPosition(tx, playerId, startOfSeasonMoment, recalculateIfOldSeason?, systemTime?) {
     const _chainState: Record<string, any> = {};
     const MOMENT_UTC_NOW = systemTime || moment().utc();
     startOfSeasonMoment = moment.utc(startOfSeasonMoment || MOMENT_UTC_NOW).startOf('month');
@@ -1004,7 +1004,7 @@ class RankModule {
    * @param  {Moment}  systemTime      Pass in the current system time to override clock. Used mostly for testing.
    * @return  {Promise}            Promise that will return rewards array on completion.
    */
-  static claimRewardsForSeasonRank(userId, dateWithinSeason, systemTime) {
+  static claimRewardsForSeasonRank(userId, dateWithinSeason, systemTime?) {
     const _chainState: Record<string, any> = {};
     if (!userId) {
       return Promise.reject(new Error(`Can not claim season rank rewards: invalid user ID - ${userId}`));

@@ -72,9 +72,13 @@ const defaultsParam = (body, name) => {
   walk(body, (n) => {
     if (n.type !== 'LogicalExpression' || n.operator !== '||') return;
     if (n.left.type !== 'Identifier' || n.left.name !== name) return;
+    // unwrap both spellings: `moment.utc()` and `moment().utc()`
     let right = n.right;
-    if (right.type === 'CallExpression') right = right.callee;
-    while (right && right.type === 'MemberExpression') right = right.object;
+    for (let i = 0; i < 6 && right; i += 1) {
+      if (right.type === 'CallExpression') right = right.callee;
+      else if (right.type === 'MemberExpression') right = right.object;
+      else break;
+    }
     if (right && right.type === 'Identifier' && right.name === 'moment') timeDefaulted = true;
   });
   if (timeDefaulted) return true;

@@ -89,9 +89,34 @@ step it describes, so it can never drift from the code.
      (AGENTS.md). Verified every step against the wire-format round-trip and golden key-set
      fixture, and confirmed by diff that every changed line is an annotation.
 
-     The remaining 436 are heterogeneous and want per-case judgement: 175 TS2339 on function
-     objects and narrowed types, 146 TS2554 (wrong argument count — worth reading, some may be
-     real), 35 TS2345, 23 TS2403. Move directories into `tsconfig.strict.json` as they go clean.
+     **TS2554 read individually, 145 → 75.** This was the one worth reading rather than
+     silencing, because a genuinely missing argument *is* a bug. The verdict: **almost none were.**
+     They are overwhelmingly signatures that lie about optionality, in three spellings —
+
+     - decaffeinate's rendering of CoffeeScript default parameters
+       (`if (allowUntargetable == null) { allowUntargetable = true; }`), 168 parameters;
+     - pass-throughs, where the default lives one level down: the SDK attribute getters hand
+       `withAuras` to `getBuffedAttribute`, which defaults it;
+     - `const NOW = systemTime || moment.utc()`, the data_access house style, ~81 functions.
+
+     **Two codemod rules were written and then deliberately narrowed after inspecting their
+     output.** Accepting any `param || X` as evidence of optionality marked 128 parameters to
+     fix 5 errors and produced `setIsDeveloperMode(val?)` — a bare `||` is falsy-tolerance, not
+     optionality (`const limit = maxCount || 100` says nothing about `maxCount`). Requiring the
+     fallback to be a `moment()` call gives 28 signatures, every one provably right. The same
+     restraint applies to the pass-through rule, whose sinks are an explicit allowlist read by
+     hand. A codemod broad enough to clear TS2554 entirely would be broad enough to hide the
+     real arity bug this pass existed to find.
+
+     **Catalogued, not fixed — a currency audit-trail gap.** `giveUserGold` records its
+     `sourceId`; `debitGoldFromUser`, `giveUserSpirit` and `debitSpiritFromUser` all accept the
+     same parameter, document it ("Which object did this spirit come from?"), and then never use
+     it. So the ledger records where gold *credits* came from but not debits, and nothing for
+     spirit. Writing it through would need a schema check, so it belongs in a correctness pass
+     rather than a typing one.
+
+     The remaining 366 are heterogeneous and want per-case judgement: 175 TS2339 on function
+     objects and narrowed types, 75 TS2554, 35 TS2345, 23 TS2403. Move directories into `tsconfig.strict.json` as they go clean.
   4. 7.2 integration revival in CI for the `data_access` suites (~506 tests, stale
      `createNewUser`/`userIdForEmail` API).
   - Catalogued bugs awaiting a correctness pass: `GET /api/me/rank/` queries a `user_rank`

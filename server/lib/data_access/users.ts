@@ -300,7 +300,7 @@ class UsersModule {
    * @param  {Moment}  systemTime    Pass in the current system time to override clock. Used mostly for testing.
    * @return  {Promise}          Promise that will return on completion.
    */
-  static changeUsername(userId, newUsername, forceItForNoGold, systemTime) {
+  static changeUsername(userId, newUsername, forceItForNoGold?, systemTime?) {
     const _chainState: Record<string, any> = {};
     if (forceItForNoGold == null) { forceItForNoGold = false; }
     const MOMENT_NOW_UTC = systemTime || moment().utc();
@@ -688,7 +688,7 @@ class UsersModule {
    * @param  {Moment}  systemTime    Pass in the current system time to use. Used only for testing.
    * @return  {Promise}  Promise.resolve() for now since all handling is done in job
    */
-  static createDaysSeenOnJob(userId, systemTime) {
+  static createDaysSeenOnJob(userId, systemTime?) {
     const MOMENT_NOW_UTC = systemTime || moment().utc();
 
     Jobs.enqueue('update-user-seen-on', {
@@ -1036,7 +1036,7 @@ class UsersModule {
    * @param  {Moment}  systemTime    Pass in the current system time to use. Used only for testing.
    * @return  {Promise}          Promise that will notify when complete.
    */
-  static createFactionProgressionRecord(userId, factionId, gameId, gameType, systemTime) {
+  static createFactionProgressionRecord(userId, factionId, gameId, gameType, systemTime?) {
     const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId) {
@@ -1121,7 +1121,7 @@ class UsersModule {
    * @param  {Moment}  systemTime    Pass in the current system time to use. Used only for testing.
    * @return  {Promise}          Promise that will notify when complete.
    */
-  static updateUserFactionProgressionWithGameOutcome(userId, factionId, isWinner, gameId, gameType, isUnscored, isDraw, systemTime) {
+  static updateUserFactionProgressionWithGameOutcome(userId, factionId, isWinner, gameId, gameType, isUnscored, isDraw, systemTime?) {
     const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId) {
@@ -1472,7 +1472,7 @@ class UsersModule {
    * @param  {Moment}  systemTime  Pass in the current system time to use. Used only for testing.
    * @return  {Promise}        Promise that will notify when complete.
    */
-  static updateUserProgressionWithGameOutcome(userId, opponentId, isWinner, gameId, gameType, isUnscored, isDraw, systemTime) {
+  static updateUserProgressionWithGameOutcome(userId, opponentId, isWinner, gameId, gameType, isUnscored, isDraw, systemTime?) {
     const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId) {
@@ -1931,7 +1931,7 @@ class UsersModule {
    * @param  {Moment}  systemTime  Pass in the current system time to use. Used only for testing.
    * @return  {Promise}        Promise that will notify when complete.
    */
-  static updateUserBossProgressionWithGameOutcome(userId, opponentId, isWinner, gameId, gameType, isUnscored, isDraw, gameSessionData, systemTime) {
+  static updateUserBossProgressionWithGameOutcome(userId, opponentId, isWinner, gameId, gameType, isUnscored, isDraw, gameSessionData, systemTime?) {
     const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId) {
@@ -2096,7 +2096,7 @@ class UsersModule {
    * @param  {Moment}      systemTime  Pass in the current system time to use. Used only for testing.
    * @return  {Promise}            Promise that will notify when complete.
    */
-  static updateGameCounters(userId, factionId, generalId, isWinner, gameType, isUnscored, isDraw, systemTime) {
+  static updateGameCounters(userId, factionId, generalId, isWinner, gameType, isUnscored, isDraw, systemTime?) {
     const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId) {
@@ -2237,7 +2237,7 @@ class UsersModule {
    * @param  {String}  gameData  Plain object with game data
    * @return  {Promise}        Promise that will post STATDATA on completion.
    */
-  static updateUserStatsWithGame(userId, gameId, gameType, gameData, systemTime) {
+  static updateUserStatsWithGame(userId, gameId, gameType, gameData, systemTime?) {
     const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId || !gameId) {

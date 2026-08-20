@@ -85,7 +85,7 @@ class GameSession {
   * @param {moment} systemTime
   * @private
   */
-  static _buildCachesIfNeeded(systemTime) {
+  static _buildCachesIfNeeded(systemTime?) {
     const MOMENT_NOW_UTC = systemTime || moment().utc();
 
     // we don't have a cached array or if the month has changed since last cache

@@ -56,7 +56,7 @@ class QuestsModule {
    * @param  {Moment}  systemTime  Pass in the current system time to use to generate quests. Used only for testing.
    * @return  {Promise}        Promise that will post a BOOL value if the user needs new daily quests.
    */
-  static needsDailyQuests(userId, systemTime) {
+  static needsDailyQuests(userId, systemTime?) {
     // userId must be defined
     if (!userId) {
       return Promise.reject(new Error(`Can not find if user needs daily quests: invalid user ID - ${userId}`));
@@ -119,7 +119,7 @@ class QuestsModule {
    * @param  {Moment}  createdAt    OPTIONA: Custom moment date to use for created / begin_at attributes.
    * @return  {Object}          the json representation of the given quest
    */
-  static _questDataForQuest(quest, createdAt) {
+  static _questDataForQuest(quest, createdAt?) {
     createdAt = createdAt || moment().utc();
     const quest_data: Record<string, any> = {};
     quest_data.is_unread = true;
@@ -149,7 +149,7 @@ class QuestsModule {
    * @param  {Moment}  systemTime  Pass in the current system time to use to generate quests. Used only for testing.
    * @return  {Promise}        Promise that will post QUEST DATA on completion.
    */
-  static generateDailyQuests(userId, systemTime) {
+  static generateDailyQuests(userId, systemTime?) {
     const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId) {
@@ -442,7 +442,7 @@ class QuestsModule {
    * @param  {Moment}  systemTime  Pass in the current system time to use to check. Used only for testing.
    * @return  {Promise}        Promise that will return TRUE/FALSE on completion.
    */
-  static needsBeginnerQuests(userId, systemTime) {
+  static needsBeginnerQuests(userId, systemTime?) {
     throw new Error('This method has not been tested!');
 
     // userId must be defined
@@ -478,7 +478,7 @@ class QuestsModule {
    * @param  {Moment}  systemTime  Pass in the current system time to use to generate quests. Used only for testing.
    * @return  {Promise}        Promise that will post QUEST DATA on completion.
    */
-  static generateBeginnerQuests(userId, systemTime) {
+  static generateBeginnerQuests(userId, systemTime?) {
     const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId) {
@@ -618,7 +618,7 @@ class QuestsModule {
    * @param  {Moment}  systemTime  Pass in the current system time to use to generate quests. Used only for testing.
    * @return  {Promise}        Promise that will post a BOOL value if the user can mulligan the daily quest.
    */
-  static canMulliganDailyQuest(userId, questIndex, systemTime) {
+  static canMulliganDailyQuest(userId, questIndex, systemTime?) {
     // userId must be defined
     if (!userId) {
       return Promise.reject(new Error(`Can not find if user needs daily quests: invalid user ID - ${userId}`));
@@ -780,7 +780,7 @@ class QuestsModule {
    * @param  {Moment}    systemTime    Pass in the current system time to use to generate quests. Used only for testing.
    * @return  {Promise}            Promise that will post { quests:[] rewards:[] } on completion.
    */
-  static updateQuestProgressWithGame(userId, gameId, gameSessionData, systemTime) {
+  static updateQuestProgressWithGame(userId, gameId, gameSessionData, systemTime?) {
     const _chainState: Record<string, any> = {};
     // userId or gameId must be defined
     if (!userId || !gameId) {
@@ -884,7 +884,7 @@ class QuestsModule {
    * @param  {Moment}    systemTime    Pass in the current system time to use to generate quests. Used only for testing.
    * @return  {Promise}            Promise that will post { quests:[] rewards:[] } on completion.
    */
-  static updateQuestProgressWithCompletedChallenge(txPromise, tx, userId, challengeId, systemTime) {
+  static updateQuestProgressWithCompletedChallenge(txPromise, tx, userId, challengeId, systemTime?) {
     const _chainState: Record<string, any> = {};
     // userId or challengeId must be defined
     if (!userId || !challengeId) {
@@ -961,7 +961,7 @@ class QuestsModule {
    * @param  {Moment}    systemTime    Pass in the current system time to use to generate quests. Used only for testing.
    * @return  {Promise}            Promise that will post { quests:[] rewards:[] } on completion.
    */
-  static updateQuestProgressWithCompletedQuest(txPromise, tx, userId, gameId, questId, questRows, systemTime) {
+  static updateQuestProgressWithCompletedQuest(txPromise, tx, userId, gameId, questId, questRows, systemTime?) {
     const _chainState: Record<string, any> = {};
     // userId or questId must be defined
     if (!userId || !questId) {
@@ -1038,7 +1038,7 @@ class QuestsModule {
    * @param  {Moment}    systemTime    Pass in the current system time to use to generate quests. Used only for testing.
    * @return  {Promise}            Promise that will post { quests:[] rewards:[] } on completion.
    */
-  static updateQuestProgressWithProgressedFactionData(txPromise, tx, userId, progressedFactionData, systemTime) {
+  static updateQuestProgressWithProgressedFactionData(txPromise, tx, userId, progressedFactionData, systemTime?) {
     const _chainState: Record<string, any> = {};
     // userId or challengeId must be defined
     if (!userId) {
@@ -1302,7 +1302,7 @@ class QuestsModule {
    * @param  {Moment}    systemTime    Pass in the current system time to use to generate quests. Used only for testing.
    * @return  {Promise}              Promise.
    */
-  static _giveUserCatchUpQuestCharge(txPromise, tx, userId, numCharges, systemTime) {
+  static _giveUserCatchUpQuestCharge(txPromise, tx, userId, numCharges, systemTime?) {
     const _chainState: Record<string, any> = {};
     const MOMENT_NOW_UTC = systemTime || moment().utc();
 
