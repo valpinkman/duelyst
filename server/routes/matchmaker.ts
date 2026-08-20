@@ -58,6 +58,7 @@ const config = require('../../config/config.js');
 
 const env = config.get('env');
 const { version } = require('../../version');
+const PromiseUtils = require('../../app/common/utils/utils_promise');
 
 // # Require authentication
 router.use('/matchmaking', isSignedIn);
@@ -268,7 +269,7 @@ router.post('/matchmaking', function (req, res, next) {
                 // add token so we can track whether user is still in matchmaking
                 Redis.TokenManager.add(token),
                 // after 5-10s match them into bot mode
-                Promise.delay(5000 + (Math.random() * 5000)),
+                PromiseUtils.delay(5000 + (Math.random() * 5000)),
               ]).then(() => // check if player is still in matchmaking
                 Redis.TokenManager.get(userId)
                   .then(function (existingToken) {

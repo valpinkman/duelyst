@@ -49,6 +49,7 @@ const Cards = require('../../../../app/sdk/cards/cardsLookupComplete');
 const GameSetups = require('../../../ai/decks/game_setups');
 const CosmeticsFactory = require('../../../../app/sdk/cosmetics/cosmeticsFactory');
 const { onType } = require('../../../../app/common/utils/utils_promise');
+const PromiseUtils = require('../../../../app/common/utils/utils_promise');
 
 const awsRegion = config.get('aws.region');
 const awsReplaysBucket = config.get('aws.replaysBucketName');
@@ -205,7 +206,7 @@ JOIN users AS player_2 ON player_2.id = games.player_2_id;\
                 };
               });
 
-              return Promise.map(_chainState.gamesData, function (gameRow) {
+              return PromiseUtils.map(_chainState.gamesData, function (gameRow) {
                 const gameDataUrl = `https://s3.${awsRegion}.amazonaws.com/${awsReplaysBucket}/${config.get('env')}/${gameRow.id}.json`;
                 Logger.module('API').debug(`downloading game ${gameRow.id} replay data from ${gameDataUrl}`);
                 return new Promise((resolve, reject) => request.get(gameDataUrl).end(function (err, res) {

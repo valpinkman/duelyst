@@ -24,6 +24,7 @@ const NewPlayerProgressionHelper = require('../../../app/sdk/progression/newPlay
 const GiftCrateLookup = require('../../../app/sdk/giftCrates/giftCrateLookup');
 const generatePushId = require('../../../app/common/generate_push_id');
 const { onType } = require('../../../app/common/utils/utils_promise');
+const PromiseUtils = require('../../../app/common/utils/utils_promise');
 
 // disable the logger for cleaner test output
 Logger.enabled = Logger.enabled && false;
@@ -748,7 +749,7 @@ describe('quests module', () => {
         });
 
         return txPromise
-          .then(() => Promise.delay(2000)).then(() => DuelystFirebase.connect().getRootRef()).then((rootRef) => Promise.all([
+          .then(() => PromiseUtils.delay(2000)).then(() => DuelystFirebase.connect().getRootRef()).then((rootRef) => Promise.all([
             knex('user_quests').first().where('user_id', userId).andWhere('quest_slot_index', QuestsModule.CATCH_UP_QUEST_SLOT),
             FirebasePromises.once(rootRef.child('user-quests').child(userId).child('daily').child('current')
               .child('quests')
@@ -780,7 +781,7 @@ describe('quests module', () => {
         });
 
         return txPromise
-          .then(() => Promise.delay(2000)).then(() => DuelystFirebase.connect().getRootRef()).then((rootRef) => Promise.all([
+          .then(() => PromiseUtils.delay(2000)).then(() => DuelystFirebase.connect().getRootRef()).then((rootRef) => Promise.all([
             knex('user_quests').first().where('user_id', userId).andWhere('quest_slot_index', QuestsModule.CATCH_UP_QUEST_SLOT),
             FirebasePromises.once(rootRef.child('user-quests').child(userId).child('daily').child('current')
               .child('quests')
@@ -1171,7 +1172,7 @@ describe('quests module', () => {
           .then((questRows) => {
             const array = [];
             _.times(14, (i) => { array.push(i); });
-            return Promise.map(array, (i) => QuestsModule.updateQuestProgressWithCompletedQuest(Promise.resolve(), tx, userId, generatePushId(), 1, questRows), { concurrency: 1 });
+            return PromiseUtils.map(array, (i) => QuestsModule.updateQuestProgressWithCompletedQuest(Promise.resolve(), tx, userId, generatePushId(), 1, questRows), { concurrency: 1 });
           })).then(() => QuestsModule.generateDailyQuests(userId, moment.utc('2016-12-02'))).then((result) => {
           expect(result.quests[QuestsModule.SEASONAL_QUEST_SLOT]).to.not.exist;
           return DuelystFirebase.connect().getRootRef();
@@ -1264,7 +1265,7 @@ describe('quests module', () => {
             ]));
         });
 
-        it('expect completing a quest to fire updateQuestProgressWithCompletedQuest() and progress the Frostfire-2016 quest', () => Promise.map([
+        it('expect completing a quest to fire updateQuestProgressWithCompletedQuest() and progress the Frostfire-2016 quest', () => PromiseUtils.map([
           generatePushId(),
           generatePushId(),
           generatePushId(),
@@ -1286,7 +1287,7 @@ describe('quests module', () => {
               QuestsModule.mulliganDailyQuest(userId, 0, futureTime, 101),
               QuestsModule.mulliganDailyQuest(userId, 1, futureTime, 101),
             ]))
-            .then(() => Promise.map([
+            .then(() => PromiseUtils.map([
               generatePushId(),
               generatePushId(),
               generatePushId(),
@@ -1311,7 +1312,7 @@ describe('quests module', () => {
               QuestsModule.mulliganDailyQuest(userId, 1, futureTime, 101),
               knex('user_quests').where('user_id', userId).andWhere('quest_slot_index', QuestsModule.SEASONAL_QUEST_SLOT).update({ progress: 14 }),
             ]))
-            .then(() => Promise.map([
+            .then(() => PromiseUtils.map([
               generatePushId(),
               generatePushId(),
               generatePushId(),
@@ -1364,7 +1365,7 @@ describe('quests module', () => {
       //   })
       //
       //   it("expect completing a faction level quest to fire updateQuestProgressWithCompletedQuest() and progress the Frostfire-2016 quest",function(){
-      //     return Promise.map([
+      //     return PromiseUtils.map([
       //       generatePushId(),
       //       generatePushId(),
       //       generatePushId(),
@@ -1406,7 +1407,7 @@ describe('quests module', () => {
             .then((questRows) => {
               const array = [];
               _.times(14, (i) => { array.push(i); });
-              return Promise.map(array, (i) => QuestsModule.updateQuestProgressWithCompletedQuest(Promise.resolve(), tx, userId, gameId, 1, questRows), { concurrency: 1 });
+              return PromiseUtils.map(array, (i) => QuestsModule.updateQuestProgressWithCompletedQuest(Promise.resolve(), tx, userId, gameId, 1, questRows), { concurrency: 1 });
             }))
             .then(() => Promise.all([
               knex('user_gift_crates').where('user_id', userId).andWhere('crate_type', GiftCrateLookup.Frostfire2016).select(),
@@ -1473,7 +1474,7 @@ describe('quests module', () => {
           .then((questRows) => {
             const array = [];
             _.times(14, (i) => { array.push(i); });
-            return Promise.map(array, (i) => QuestsModule.updateQuestProgressWithCompletedQuest(Promise.resolve(), tx, userId, generatePushId(), 1, questRows), { concurrency: 1 });
+            return PromiseUtils.map(array, (i) => QuestsModule.updateQuestProgressWithCompletedQuest(Promise.resolve(), tx, userId, generatePushId(), 1, questRows), { concurrency: 1 });
           })).then(() => QuestsModule.generateDailyQuests(userId, moment.utc('2017-02-07'))).then((result) => {
           expect(result.quests[QuestsModule.SEASONAL_QUEST_SLOT]).to.not.exist;
           return DuelystFirebase.connect().getRootRef();
@@ -1518,7 +1519,7 @@ describe('quests module', () => {
             .then((questRows) => {
               const array = [];
               _.times(14, (i) => { array.push(i); });
-              return Promise.map(array, (i) => QuestsModule.updateQuestProgressWithCompletedQuest(Promise.resolve(), tx, userId, gameId, 1, questRows), { concurrency: 1 });
+              return PromiseUtils.map(array, (i) => QuestsModule.updateQuestProgressWithCompletedQuest(Promise.resolve(), tx, userId, gameId, 1, questRows), { concurrency: 1 });
             }))
             .then(() => Promise.all([
               knex('user_gift_crates').where('user_id', userId).andWhere('crate_type', GiftCrateLookup.Frostfire2016).select(),
@@ -1564,7 +1565,7 @@ describe('quests module', () => {
           .then((questRows) => {
             const array = [];
             _.times(14, (i) => { array.push(i); });
-            return Promise.map(array, (i) => QuestsModule.updateQuestProgressWithCompletedQuest(Promise.resolve(), tx, userId, gameId, 1, questRows), { concurrency: 1 });
+            return PromiseUtils.map(array, (i) => QuestsModule.updateQuestProgressWithCompletedQuest(Promise.resolve(), tx, userId, gameId, 1, questRows), { concurrency: 1 });
           }))
           .then(() => Promise.all([
             knex('user_gift_crates').where('user_id', userId).andWhere('crate_type', GiftCrateLookup.Frostfire2016).select(),

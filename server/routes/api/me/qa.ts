@@ -52,6 +52,7 @@ const UtilsEnv = require('app/common/utils/utils_env');
 const generatePushId = require('../../../../app/common/generate_push_id');
 
 const { Jobs } = require('../../../redis');
+const PromiseUtils = require('../../../../app/common/utils/utils_promise');
 
 // create a S3 API client
 // AWS     = require "aws-sdk"
@@ -441,7 +442,7 @@ router.delete('/inventory/unused', function (req, res, next) {
       });
     })
     .then(function () {
-      return Promise.map(_chainState.ownedUnusedCards, (cardId) => tx('user_cards').where('user_id', user_id).andWhere('card_id', cardId).delete());
+      return PromiseUtils.map(_chainState.ownedUnusedCards, (cardId) => tx('user_cards').where('user_id', user_id).andWhere('card_id', cardId).delete());
     })).then(() => SyncModule._syncUserFromSQLToFirebase(user_id)).then(() => res.status(200).json({}));
 });
 
@@ -470,7 +471,7 @@ router.delete('/inventory/bloodborn', function (req, res, next) {
       });
     })
     .then(function () {
-      return Promise.map(_chainState.ownedBloodbornCards, (cardId) => tx('user_cards').where('user_id', user_id).andWhere('card_id', cardId).delete());
+      return PromiseUtils.map(_chainState.ownedBloodbornCards, (cardId) => tx('user_cards').where('user_id', user_id).andWhere('card_id', cardId).delete());
     })
     .then(() => Promise.all([
       tx('user_spirit_orbs_opened').where('user_id', user_id).andWhere('card_set', SDK.CardSet.Bloodborn).delete(),
@@ -506,7 +507,7 @@ router.delete('/inventory/unity', function (req, res, next) {
       });
     })
     .then(function () {
-      return Promise.map(_chainState.ownedUnityCards, (cardId) => tx('user_cards').where('user_id', user_id).andWhere('card_id', cardId).delete());
+      return PromiseUtils.map(_chainState.ownedUnityCards, (cardId) => tx('user_cards').where('user_id', user_id).andWhere('card_id', cardId).delete());
     })
     .then(() => Promise.all([
       tx('user_spirit_orbs_opened').where('user_id', user_id).andWhere('card_set', SDK.CardSet.Unity).delete(),
@@ -589,7 +590,7 @@ router.put('/quests/current/progress', function (req, res, next) {
   const {
     quest_slots,
   } = req.body;
-  var txPromise = knex.transaction((tx) => Promise.each(quest_slots, (quest_slot) => tx('user_quests').first().where({ user_id: user_id, quest_slot_index: quest_slot })
+  var txPromise = knex.transaction((tx) => PromiseUtils.each(quest_slots, (quest_slot) => tx('user_quests').first().where({ user_id: user_id, quest_slot_index: quest_slot })
     .then(function (questRow) {
       if (questRow != null) {
         let newProgress = questRow.progress || 0;
@@ -829,7 +830,7 @@ router.post('/faction_progression/set_all_levels_to_10', function (req, res, nex
           }
         }
       }
-      return Promise.each(winsPerFaction, (factionId) => UsersModule.updateUserFactionProgressionWithGameOutcome(user_id, factionId, true, generatePushId(), SDK.GameType.Ranked));
+      return PromiseUtils.each(winsPerFaction, (factionId) => UsersModule.updateUserFactionProgressionWithGameOutcome(user_id, factionId, true, generatePushId(), SDK.GameType.Ranked));
     })
     .then(() => res.status(200).json({}))
     .catch((errorMessage) => res.status(500).json({ message: errorMessage }));
@@ -1178,7 +1179,7 @@ router.post('/migration/prismatic_backfill', function (req, res, next) {
     .then(function () {
       const timeBeforePrismaticFeatureAddedMoment = moment.utc('2016-07-20 20:00');
 
-      return Promise.each(__range__(1, numOrbs, true), (index) => knex('user_spirit_orbs_opened').insert({
+      return PromiseUtils.each(__range__(1, numOrbs, true), (index) => knex('user_spirit_orbs_opened').insert({
         id: generatePushId(),
         user_id,
         card_set: SDK.CardSet.Core,
@@ -1251,7 +1252,7 @@ router.put('/rift/duplicates', function (req, res, next) {
   const user_id = req.user.d.id;
 
   return knex('user_rift_runs').select().where('user_id', user_id)
-    .then((riftRuns) => Promise.each(riftRuns, function (riftRun) {
+    .then((riftRuns) => PromiseUtils.each(riftRuns, function (riftRun) {
       if (riftRun.card_choices != null) {
         return knex('user_rift_runs').where('ticket_id', riftRun.ticket_id).update({
           card_choices: [11088, 20076, 11087, 11087, 20209, 11052],

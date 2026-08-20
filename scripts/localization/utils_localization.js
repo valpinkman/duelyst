@@ -25,6 +25,7 @@ const _ = require('underscore');
 
 const helpers = require('scripts/helpers');
 const fs = require('fs');
+const PromiseUtils = require('../../app/common/utils/utils_promise');
 
 UtilsLocalization.PATH_TO_LOCALES = '../../app/localization/locales';
 
@@ -81,14 +82,14 @@ UtilsLocalization.writeMissingTranslationFiles = function (languageKey, englishD
 };
 
 UtilsLocalization.generateLastUpdatedDataForKeys = function (languageKey, translationKeys) {
-//  return Promise.map(translationKeys.slice(0,15),(key)->
+//  return PromiseUtils.map(translationKeys.slice(0,15),(key)->
   const bar = new ProgressBar(`processing ${languageKey} [:bar] :current/:total :percent :etas :elapsed`, {
     complete: '=',
     incomplete: ' ',
     width: 20,
     total: translationKeys.length,
   });
-  return Promise.map(
+  return PromiseUtils.map(
     translationKeys,
     (key) => UtilsLocalization.getLastUpdatedCommitForTranslation(languageKey, key)
       .then((lastUpdatedCommitMsg) => {

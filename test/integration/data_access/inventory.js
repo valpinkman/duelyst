@@ -19,6 +19,7 @@ const SDK = require('../../../app/sdk/index');
 const knex = require('../../../server/lib/data_access/knex');
 const generatePushId = require('../../../app/common/generate_push_id');
 const { onType } = require('../../../app/common/utils/utils_promise');
+const PromiseUtils = require('../../../app/common/utils/utils_promise');
 
 // disable the logger for cleaner test output
 Logger.enabled = Logger.enabled && false;
@@ -796,7 +797,7 @@ describe('inventory module', () => {
 
         return txPromise
         .then(function(boosterIds){
-          return Promise.map(boosterIds,function(boosterId){
+          return PromiseUtils.map(boosterIds,function(boosterId){
             return InventoryModule.unlockBoosterPack(userId,boosterId);
           });
         }).then(function(results) {
@@ -831,7 +832,7 @@ describe('inventory module', () => {
 
           return txPromise
             .then(function(boosterIds){
-              return Promise.map(boosterIds,function(boosterId){
+              return PromiseUtils.map(boosterIds,function(boosterId){
                 return InventoryModule.unlockBoosterPack(userId,boosterId);
               });
             }).then(function(results) {
@@ -864,7 +865,7 @@ describe('inventory module', () => {
                   arrayToMap.push(1);
                 }
                 //return Promise.all(promises);
-                return Promise.map(arrayToMap, function (i) {
+                return PromiseUtils.map(arrayToMap, function (i) {
                   return InventoryModule.addBoosterPackToUser(txPromise, tx, userId, 1, "soft", i)
                 }, {concurrency:2})
               });
@@ -872,7 +873,7 @@ describe('inventory module', () => {
 
           return txPromise
             .then(function(boosterIds){
-              return Promise.map(boosterIds,function(boosterId){
+              return PromiseUtils.map(boosterIds,function(boosterId){
                 return InventoryModule.unlockBoosterPack(userId,boosterId);
               });
             }).then(function(results) {
@@ -1527,7 +1528,7 @@ describe('inventory module', () => {
 
       permutations = _.filter(permutations, (permutation) => _.find(emptyPermutations, (emptyPermutation) => emptyPermutation[0] === permutation[0] && emptyPermutation[1] === permutation[1]) == null);
 
-      return Promise.each(permutations, (params) => {
+      return PromiseUtils.each(permutations, (params) => {
         const cosmeticsMatchingParams = _.filter(SDK.CosmeticsFactory.getAllCosmetics(), (cosmeticData) => {
           if (!cosmeticData.purchasable) {
             return false;
@@ -1570,7 +1571,7 @@ describe('inventory module', () => {
       const lastCosmeticToGive = rareCosmetics.pop();
 
       return SyncModule.wipeUserData(userId)
-        .then(() => Promise.map(rareCosmetics, (cosmeticData) => {
+        .then(() => PromiseUtils.map(rareCosmetics, (cosmeticData) => {
           const txPromise = knex.transaction((tx) => InventoryModule.giveUserCosmeticId(txPromise, tx, userId, cosmeticData.id, 'qa gift', generatePushId()));
           return txPromise;
         }, { concurrency: 1 })).then(() => {
@@ -1627,7 +1628,7 @@ describe('inventory module', () => {
       const lastRewardOrder = null;
 
       return SyncModule.wipeUserData(userId)
-        .then(() => Promise.each(rareCosmetics, (cosmeticData) => {
+        .then(() => PromiseUtils.each(rareCosmetics, (cosmeticData) => {
           const txPromise = knex.transaction((tx) => InventoryModule.giveUserNewPurchasableCosmetic(txPromise, tx, userId, 'qa gift', generatePushId(), SDK.Rarity.Rare, null, null));
           const retPromise = txPromise.then((rewardData) => {
             const cosmeticsData = SDK.CosmeticsFactory.cosmeticForIdentifier(rewardData.cosmetic_id);
@@ -1739,7 +1740,7 @@ describe('inventory module', () => {
       return txPromise
         .then(() =>
         // Delay for the firebase write to complete
-          Promise.delay(2000)).then(() => DuelystFirebase.connect().getRootRef()).then((rootRef) => Promise.all([
+          PromiseUtils.delay(2000)).then(() => DuelystFirebase.connect().getRootRef()).then((rootRef) => Promise.all([
           knex('user_codex_inventory').where('user_id', userId).select('chapter_id'),
           FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('codex'), 'value'),
         ])).then(([codexChapterRows, fbCodexCollection]) => {
@@ -1765,7 +1766,7 @@ describe('inventory module', () => {
       return txPromise
         .then(() =>
           // Delay for the firebase write to complete
-          Promise.delay(2000)).then(() => DuelystFirebase.connect().getRootRef()).then((rootRef) => Promise.all([
+          PromiseUtils.delay(2000)).then(() => DuelystFirebase.connect().getRootRef()).then((rootRef) => Promise.all([
           knex('user_codex_inventory').where('user_id', userId).select('chapter_id'),
           FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('codex'), 'value'),
         ])).then(([codexChapterRows, fbCodexCollection]) => {
@@ -1807,7 +1808,7 @@ describe('inventory module', () => {
           expect(chapterIdsAwarded.length).to.equal(numCodexChapters);
 
           // Delay for the firebase write to complete
-          return Promise.delay(2000);
+          return PromiseUtils.delay(2000);
         })
         .then(() => DuelystFirebase.connect().getRootRef())
         .then((rootRef) => Promise.all([

@@ -14,6 +14,7 @@ const t = require('tcomb-validation');
 const knex = require('../../../lib/data_access/knex');
 const Promise = require('bluebird');
 const _ = require('underscore');
+const PromiseUtils = require('../../../../app/common/utils/utils_promise');
 
 const router = express.Router();
 
@@ -57,7 +58,7 @@ router.get('/runs', function (req, res, next) {
   const user_id = req.user.d.id;
 
   return knex('user_rift_runs').where('user_id', user_id).orderBy('created_at', 'desc').select()
-    .then((rows) => Promise.map(rows, (riftRunRow) => RiftModule.sanitizeRunCardChoicesIfNeeded(riftRunRow)))
+    .then((rows) => PromiseUtils.map(rows, (riftRunRow) => RiftModule.sanitizeRunCardChoicesIfNeeded(riftRunRow)))
     .then(function (rows) {
       const playerFacingRows = _.map(rows, function (row) {
         row = _.omit(row, ['rating', 'rating_delta', 'is_bot_game']);

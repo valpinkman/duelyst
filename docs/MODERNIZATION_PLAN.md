@@ -842,13 +842,20 @@ server and worker. What remains is *typing* (5T.4), not converting.
       every other estimate here.
 
       ⚠️ **`Promise.map` is NOT `Promise.all(arr.map(fn))`.** Four call sites pass a concurrency
-      option: **three are `{ concurrency: 1 }`** — i.e. *serial* — and
-      `server/lib/data_access/achievements.ts` says why in a comment: *"process the achievements
-      map serially with 1 concurrency so that there's no chance of card log getting overwritten"*.
-      Converting those to `Promise.all` would parallelise them and reintroduce that overwrite bug
-      **silently**, with no test failure. The fourth is `{ concurrency: 10000 }` (effectively
-      unbounded ⇒ `Promise.all` is correct). Every other `Promise.map` has no option and is
-      unbounded. So: a `PromiseUtils.map(items, fn, {concurrency})` helper, not a blind codemod.
+      option. Resolved precisely when converting (7b), because the first count was misleading:
+
+      - **`server/lib/data_access/achievements.ts` is the only real one** — `Promise.map(..., {
+        concurrency: 1 })`, i.e. *serial*, and it says why in a comment: *"process the achievements
+        map serially with 1 concurrency so that there's no chance of card log getting overwritten"*.
+        `Promise.all` would parallelise those writes and reintroduce that bug **silently**.
+      - `app/ui/managers/package_manager.ts` passes `{ concurrency: 10000 }` — effectively
+        unbounded, so plain concurrent execution is correct.
+      - The other two `{ concurrency: 1 }` (`cosmetic_chests.ts:327`,
+        `LadderProgressLayer.ts:218`) are on **`Promise.each`, which takes no options at all** and
+        is always serial — so those options were *always* no-ops, in bluebird too. `PromiseUtils.each`
+        is likewise unconditionally serial, so behaviour is preserved exactly.
+
+      So: a `PromiseUtils.map(items, fn, {concurrency})` helper, not a blind codemod.
 
       **Revised order:** the redis-independent work (163 mechanical files + zlib/bcrypt/s3
       `promisifyAll` + `Promise.delay`) can land *before* redis v4, leaving redis to gate only the

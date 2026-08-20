@@ -18,6 +18,7 @@ var _ = require('underscore');
 var SDK = require('../../../app/sdk/index');
 var moment = require('moment');
 const { onType } = require('../../../app/common/utils/utils_promise');
+const PromiseUtils = require('../../../app/common/utils/utils_promise');
 var knex = require('../../../server/lib/data_access/knex')
 
 // disable the logger for cleaner test output
@@ -70,7 +71,7 @@ describe("achievements module", function() {
       return knex.transaction(function(tx){
         return InventoryModule.giveUserCards(null,tx,userId,allCommonCardIds)
       }).then(function(){
-        return Promise.delay(3000)
+        return PromiseUtils.delay(3000)
       }).then(function(){
         return DuelystFirebase.connect().getRootRef()
       }).then(function(rootRef){
@@ -94,7 +95,7 @@ describe("achievements module", function() {
       return knex.transaction(function(tx){
         return InventoryModule.giveUserCards(null,tx,userId,allCommonCardIds)
       }).then(function(){
-        return Promise.delay(3000)
+        return PromiseUtils.delay(3000)
       }).then(function(){
         return DuelystFirebase.connect().getRootRef()
       }).then(function(rootRef){

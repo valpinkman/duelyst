@@ -18,6 +18,7 @@ var _ = require('underscore');
 var SDK = require('../../../app/sdk/index');
 var moment = require('moment');
 const { onType } = require('../../../app/common/utils/utils_promise');
+const PromiseUtils = require('../../../app/common/utils/utils_promise');
 var knex = require('../../../server/lib/data_access/knex')
 
 // disable the logger for cleaner test output
@@ -66,7 +67,7 @@ describe("achievements module", function() {
 
       return knex("users").where('id',userId).update({wallet_spirit:10000})
       .then(function(){
-        return Promise.map(allRareCardIds,function(cardId){
+        return PromiseUtils.map(allRareCardIds,function(cardId){
           // craft 2 copies of each rare
           return Promise.all([
             InventoryModule.craftCard(userId,cardId),
@@ -74,7 +75,7 @@ describe("achievements module", function() {
           ])
         })
       }).then(function(){
-        return Promise.delay(5000)
+        return PromiseUtils.delay(5000)
       }).then(function(){
         return DuelystFirebase.connect().getRootRef()
       }).then(function(rootRef){
@@ -97,7 +98,7 @@ describe("achievements module", function() {
 
       return knex("users").where('id',userId).update({wallet_spirit:10000})
       .then(function(){
-        return Promise.map(allRareCardIds,function(cardId){
+        return PromiseUtils.map(allRareCardIds,function(cardId){
           // craft 3 copies of each rare
           return Promise.all([
             InventoryModule.craftCard(userId,cardId),
@@ -106,7 +107,7 @@ describe("achievements module", function() {
           ])
         })
       }).then(function(){
-        return Promise.delay(5000)
+        return PromiseUtils.delay(5000)
       }).then(function(){
         return DuelystFirebase.connect().getRootRef()
       }).then(function(rootRef){
@@ -131,7 +132,7 @@ describe("achievements module", function() {
 
        return InventoryModule.craftCard(userId,allRareCardIds[0])
       .then(function(){
-        return Promise.delay(5000)
+        return PromiseUtils.delay(5000)
       }).then(function(){
         return DuelystFirebase.connect().getRootRef()
       }).then(function(rootRef){
@@ -154,7 +155,7 @@ describe("achievements module", function() {
 
       return knex("users").where('id',userId).update({wallet_spirit:10000})
       .then(function(){
-        return Promise.map(allRareCardIds,function(cardId){
+        return PromiseUtils.map(allRareCardIds,function(cardId){
           // craft 3 copies of each rare
           // where the 3rd is a prismatic
           return Promise.all([
@@ -164,7 +165,7 @@ describe("achievements module", function() {
           ])
         })
       }).then(function(){
-        return Promise.delay(5000)
+        return PromiseUtils.delay(5000)
       }).then(function(){
         return DuelystFirebase.connect().getRootRef()
       }).then(function(rootRef){
@@ -188,7 +189,7 @@ describe("achievements module", function() {
 
       return knex("users").where('id',userId).update({wallet_spirit:10000})
       .then(function(){
-        return Promise.map(allRareCardIds,function(cardId){
+        return PromiseUtils.map(allRareCardIds,function(cardId){
           // craft 3 copies of each rare
           // where the 3rd is a prismatic
           return Promise.all([
@@ -198,7 +199,7 @@ describe("achievements module", function() {
           ])
         })
       }).then(function(){
-        return Promise.delay(5000)
+        return PromiseUtils.delay(5000)
       }).then(function(){
         return DuelystFirebase.connect().getRootRef()
       }).then(function(rootRef){
@@ -222,7 +223,7 @@ describe("achievements module", function() {
 
       return knex("users").where('id',userId).update({wallet_spirit:10000})
       .then(function(){
-        return Promise.map(allRareCardIds,function(cardId){
+        return PromiseUtils.map(allRareCardIds,function(cardId){
           // craft 3 copies of each rare
           // where the 3rd is a prismatic
           return Promise.all([
@@ -232,7 +233,7 @@ describe("achievements module", function() {
           ])
         })
       }).then(function(){
-        return Promise.delay(5000)
+        return PromiseUtils.delay(5000)
       }).then(function(){
         return DuelystFirebase.connect().getRootRef()
       }).then(function(rootRef){
@@ -256,7 +257,7 @@ describe("achievements module", function() {
 
       return knex("users").where('id',userId).update({wallet_spirit:10000})
       .then(function(){
-        return Promise.map(allRareCardIds,function(cardId){
+        return PromiseUtils.map(allRareCardIds,function(cardId){
           // craft 3 copies of each rare
           // where the 3rd is a prismatic
           return Promise.all([
@@ -266,7 +267,7 @@ describe("achievements module", function() {
           ])
         })
       }).then(function(){
-        return Promise.delay(5000)
+        return PromiseUtils.delay(5000)
       }).then(function(){
         return DuelystFirebase.connect().getRootRef()
       }).then(function(rootRef){
@@ -290,7 +291,7 @@ describe("achievements module", function() {
 
       return knex("users").where('id',userId).update({wallet_spirit:10000})
       .then(function(){
-        return Promise.map(allRareCardIds,function(cardId){
+        return PromiseUtils.map(allRareCardIds,function(cardId){
           // craft 3 copies of each rare
           // where the 3rd is a prismatic
           return Promise.all([
@@ -300,7 +301,7 @@ describe("achievements module", function() {
           ])
         })
       }).then(function(){
-        return Promise.delay(5000)
+        return PromiseUtils.delay(5000)
       }).then(function(){
         return DuelystFirebase.connect().getRootRef()
       }).then(function(rootRef){
@@ -326,7 +327,7 @@ describe("achievements module", function() {
         const cards = _.flatten(_.map(allRareCardIds,function(c) { return [c,c,SDK.Cards.getPrismaticCardId(c)] }))
         return InventoryModule.giveUserCards(null,tx,userId,cards)
       }).then(function(){
-        return Promise.delay(3000)
+        return PromiseUtils.delay(3000)
       }).then(function(){
         return DuelystFirebase.connect().getRootRef()
       }).then(function(rootRef){
@@ -354,7 +355,7 @@ describe("achievements module", function() {
         return knex("users").where('id',userId).update({wallet_spirit:10000})
       }).then(function(){
         const allRareCardIds = SDK.GameSession.getCardCaches().getCardSet(SDK.CardSet.Core).getFaction(SDK.Factions.Faction2).getRarity(SDK.Rarity.Rare).getIsCollectible(true).getIsUnlockable(false).getIsPrismatic(false).getCardIds();
-        return Promise.map(allRareCardIds,function(cardId){
+        return PromiseUtils.map(allRareCardIds,function(cardId){
           // craft 3 copies of each rare
           return Promise.all([
             InventoryModule.craftCard(userId,cardId),
@@ -363,7 +364,7 @@ describe("achievements module", function() {
           ])
         })
       }).then(function(){
-        return Promise.delay(3000)
+        return PromiseUtils.delay(3000)
       }).then(function(){
         return Promise.all([
           knex('user_achievements').select().where('user_id',userId).andWhere('achievement_id','lightningSister'),
@@ -377,7 +378,7 @@ describe("achievements module", function() {
         SDK.AchievementsFactory.achievementForIdentifier('sunSister').enabled = true
         return UsersModule.bumpSessionCountAndSyncDataIfNeeded(userId)
       }).then(function(){
-        return Promise.delay(1000)
+        return PromiseUtils.delay(1000)
       }).then(function(){
         return Promise.all([
           knex('user_achievements').select().where('user_id',userId).andWhere('achievement_id','lightningSister'),

@@ -125,7 +125,7 @@ router.get('/srank_ladder', function (req, res) {
   const startOfSeasonMonth = moment.utc().startOf('month');
   return SRankManager.getTopLadderUserIds(startOfSeasonMonth, 50)
     .then((topPlayerIds) => // TODO: Needs validation that this maintains order
-      Promise.map(
+      PromiseUtils.map(
         topPlayerIds,
         (playerId) => knex.first('username').from('users').where('id', playerId),
       )).then(function (topPlayerRows) {
@@ -136,7 +136,7 @@ router.get('/srank_ladder', function (req, res) {
 
 // /rift_ladder
 router.get('/rift_ladder', (req, res) => RiftManager.getTopLadderUserIdAndRunIds(50)
-  .then((topUserAndRunIds) => Promise.map(topUserAndRunIds, function (userAndRunId) {
+  .then((topUserAndRunIds) => PromiseUtils.map(topUserAndRunIds, function (userAndRunId) {
     if ((userAndRunId == null)) {
       return Promise.reject(`Top Rift Ladder: Invalid user:run id: ${userAndRunId}`);
     }

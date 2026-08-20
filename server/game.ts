@@ -125,6 +125,7 @@ const saveGameCount = (gameCount) => Redis.hsetAsync(`servers:${serverId}`, 'gam
 
 // error 'domain' to deal with io.sockets uncaught errors
 const d = require('domain').create();
+const PromiseUtils = require('../app/common/utils/utils_promise');
 
 d.on('error', shutdownLib.errorShutdown);
 d.add(io.sockets);
@@ -1676,7 +1677,7 @@ const shutdownHandler = function () {
       _.each(games, (game, id) => ids.push(id));
 
       // Map to save each game to Redis before shutdown
-      return Promise.map(ids, function (id) {
+      return PromiseUtils.map(ids, function (id) {
         const serializedData = games[id].session.serializeToJSON(games[id].session);
         return GameManager.saveGameSession(id, serializedData);
       }).then(() => Consul.getHealthyServers()).then(function (servers) {

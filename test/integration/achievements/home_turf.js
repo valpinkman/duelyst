@@ -18,6 +18,7 @@ var _ = require('underscore');
 var SDK = require('../../../app/sdk/index');
 var moment = require('moment');
 const { onType } = require('../../../app/common/utils/utils_promise');
+const PromiseUtils = require('../../../app/common/utils/utils_promise');
 var knex = require('../../../server/lib/data_access/knex')
 
 // disable the logger for cleaner test output
@@ -66,7 +67,7 @@ describe("achievements module", function() {
   //       AchievementsModule.updateAchievementsProgressWithGame(userId,generatePushId(),gameData,false,false),
   //       AchievementsModule.updateAchievementsProgressWithGame(userId,generatePushId(),gameData,false,false)
   //     ]).then(function(){
-  //       return Promise.delay(3000)
+  //       return PromiseUtils.delay(3000)
   //     }).then(function(){
   //       return Promise.all([
   //         knex('user_achievements').select().where('user_id',userId).andWhere('achievement_id','homeTurf'),

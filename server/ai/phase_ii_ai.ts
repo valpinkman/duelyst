@@ -23,6 +23,7 @@ const findBestObjectiveForCardAtTargetPosition = require('./scoring/utils/utils_
 const ScoreForCardAtTargetPosition = require('./scoring/position/position_ScoreForCardAtTargetPosition');
 const filterAttackTargetsForUnit = require('./scoring/utils/utils_filterAttackTargetsForUnit');
 const BOUNTY = require('./scoring/bounty');
+const PromiseUtils = require('../../app/common/utils/utils_promise');
 
 // Logger.enabled = false;
 // ++++++++++CLUSTER START+++++++++++
@@ -561,7 +562,7 @@ if (cluster.isMaster) {
       // run each game in sequence
       let gameSession;
       const games = _.range(numGames);
-      Promise.each(games, (i) => new Promise((gameResolve, gameReject) => {
+      PromiseUtils.each(games, (i) => new Promise((gameResolve, gameReject) => {
         // timestamp start of game
         const startTime = Date.now();
 

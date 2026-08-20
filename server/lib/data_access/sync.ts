@@ -33,6 +33,7 @@ const CosmeticsLookup = require('../../../app/sdk/cosmetics/cosmeticsLookup');
 
 // redis
 const { SRankManager } = require('../../redis');
+const PromiseUtils = require('../../../app/common/utils/utils_promise');
 
 class SyncModule {
   /**
@@ -120,7 +121,7 @@ class SyncModule {
         return knex('user_rank_ratings').where('user_id', userId).select('season_starting_at');
       })
       .then((userRatingsRows) => // User needs to be removed from redis for each season they have a rating for
-        Promise.map(userRatingsRows, function (ratingRow) {
+        PromiseUtils.map(userRatingsRows, function (ratingRow) {
           const startOfSeasonMoment = moment.utc(ratingRow.season_starting_at);
           return SRankManager._removeUserFromLadder(userId, startOfSeasonMoment);
         }))

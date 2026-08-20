@@ -7,6 +7,7 @@ const Promise = require('bluebird');
 const _ = require('underscore');
 const r = require('../r-client');
 const queue = require('../r-playerqueue');
+const PromiseUtils = require('../../../app/common/utils/utils_promise');
 
 const q = new queue(r);
 // console.log(q)
@@ -41,7 +42,7 @@ const markHits = Promise.all([queueUp1, queueUp2]).then(() => // mark 100 matche
 
 markHits.then(() => {
   console.log('marking hits done');
-  return Promise.map(divisions, (division) => {
+  return PromiseUtils.map(divisions, (division) => {
     console.log(`getting queue velocity for ${division}`);
     return q.velocity(division);
   }).then((results) => {

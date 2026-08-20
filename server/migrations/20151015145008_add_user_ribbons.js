@@ -1,6 +1,7 @@
 const _ = require('underscore');
 const moment = require('moment');
 const Promise = require('bluebird');
+const PromiseUtils = require('../../app/common/utils/utils_promise');
 
 // var FirebasePromises = require('../lib/firebase_promises')
 // var DuelystFirebase = require('../lib/duelyst_firebase_module')
@@ -26,7 +27,7 @@ exports.up = function (knex) {
         // return DuelystFirebase.connect().getRootRef()
         })
       // .then(function(rootRef){
-        .then(() => Promise.map(_chainState.rows, (row) => {
+        .then(() => PromiseUtils.map(_chainState.rows, (row) => {
           const allPromises = [];
           const ribbonCount = Math.floor(row.win_count / 100);
           const ribbonId = `f${row.faction_id}_champion`;

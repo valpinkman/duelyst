@@ -234,7 +234,7 @@ const findOpponent = function (userId, lastOpponentId, rank, timeServed, deckVal
 
       Logger.module('JOB').debug(`Found ${opponents.length} potential matches (searched ranked:${searchedRanked})`);
       // return a locked opponent and whether we're also searching ranked
-      return Promise.props({ opponent: findLockablePlayer(opponents), searchedRanked });
+      return PromiseUtils.props({ opponent: findLockablePlayer(opponents), searchedRanked });
     });
 };
 

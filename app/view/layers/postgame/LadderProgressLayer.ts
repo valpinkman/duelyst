@@ -14,6 +14,7 @@ const Promise = require('bluebird');
 const FXLensFlareSprite = require('app/view/nodes/fx/FXLensFlareSprite');
 const BaseParticleSystem = require('app/view/nodes/BaseParticleSystem');
 const i18next = require('i18next');
+const PromiseUtils = require('../../../common/utils/utils_promise');
 
 /** **************************************************************************
  LadderProgressLayer
@@ -214,7 +215,7 @@ const LadderProgressLayer = RewardLayer.extend({
             }
           }
 
-          return Promise.each(chevronDeltas, (chevronDelta) => {
+          return PromiseUtils.each(chevronDeltas, (chevronDelta) => {
             if (chevronDelta > 0) {
               return this._handleChevronIncrease();
             }

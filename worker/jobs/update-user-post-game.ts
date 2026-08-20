@@ -334,7 +334,7 @@ module.exports = function (job, done) {
 
       // this strange structure will loop through an array of functions sequentially (one-by-one)
       // each function will kick off a processing phase and return a promise
-      return Promise.each([
+      return PromiseUtils.each([
         { name: 'quests', func: onProcessQuests },
         { name: 'game_type', func: onProcessGameType },
         { name: 'progression', func: onProcessProgression },

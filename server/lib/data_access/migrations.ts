@@ -29,6 +29,7 @@ const QuestFactory = require('../../../app/sdk/quests/questFactory');
 const QuestType = require('../../../app/sdk/quests/questTypeLookup');
 const UtilsGameSession = require('../../../app/common/utils/utils_game_session');
 const CosmeticsLookup = require('../../../app/sdk/cosmetics/cosmeticsLookup');
+const PromiseUtils = require('../../../app/common/utils/utils_promise');
 
 class MigrationsModule {
   // region PER USER MIGRATIONS
@@ -151,7 +152,7 @@ class MigrationsModule {
 
     var txPromise = knex.transaction(function (tx) {
       tx('users').first('id').where('id', userId).forUpdate()
-        .then(() => Promise.map(emoteIdsToGive, function (emoteId) {
+        .then(() => PromiseUtils.map(emoteIdsToGive, function (emoteId) {
           const transactionType = 'migration gift';
           const transactionId = 'migration 20160708';
 
@@ -162,7 +163,7 @@ class MigrationsModule {
           let ownedUserEmotes = _.map(userEmoteRows, (userEmoteRow) => userEmoteRow.emote_id);
           // To be safe that no duplicates are given
           ownedUserEmotes = _.filter(ownedUserEmotes, (ownedUserEmoteId) => !_.contains(emoteIdsToGive, ownedUserEmoteId));
-          return Promise.map(ownedUserEmotes, function (emoteId) {
+          return PromiseUtils.map(ownedUserEmotes, function (emoteId) {
             const transactionType = 'migrated emote';
             const transactionId = 'migration 20160708';
 
@@ -491,14 +492,14 @@ class MigrationsModule {
     return txPromise = knex.transaction((tx) => tx('user_spirit_orbs').select('id', 'user_id', 'card_set').whereIn('card_set', [SDK.CardSet.Bloodborn, SDK.CardSet.Unity]).andWhere('user_id', userId)
       .then(function (userUnlockableSpiritOrbRows) {
         _chainState.userUnlockableSpiritOrbRows = userUnlockableSpiritOrbRows;
-        return Promise.map(_chainState.userUnlockableSpiritOrbRows, (unlockableOrbRow) => Promise.all([
+        return PromiseUtils.map(_chainState.userUnlockableSpiritOrbRows, (unlockableOrbRow) => Promise.all([
           tx('user_spirit_orbs').where('id', unlockableOrbRow.id).delete(),
           InventoryModule.giveUserGold(txPromise, tx, userId, unlockableOrbGoldRefundAmount, 'unlockable orb refund', unlockableOrbRow.id),
         ]));
       })
       .then(() => DuelystFirebase.connect().getRootRef())
       .then(function (fbRootRef) {
-        return Promise.map(_chainState.userUnlockableSpiritOrbRows, (unlockableOrbRow) => FirebasePromises.remove(fbRootRef.child('user-inventory').child(userId).child('spirit-orbs').child(unlockableOrbRow.id)));
+        return PromiseUtils.map(_chainState.userUnlockableSpiritOrbRows, (unlockableOrbRow) => FirebasePromises.remove(fbRootRef.child('user-inventory').child(userId).child('spirit-orbs').child(unlockableOrbRow.id)));
         return FirebasePromises.remove(fbRootRef.child('user-gauntlet-run').child(userId).child('current'));
       })).then(() => Logger.module('MigrationsModule').timeEnd(`userUnlockableOrbsRefund() -> ${userId} done`.green));
   }

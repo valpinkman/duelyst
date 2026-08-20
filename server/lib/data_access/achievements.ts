@@ -591,7 +591,7 @@ class AchievementsModule {
         };
 
         // process the achievements map serially with 1 concurrency so that there's no chance of card log getting overwritten
-        return Promise.map(_.keys(progressMap), processAchievementSerialy, { concurrency: 1 });
+        return PromiseUtils.map(_.keys(progressMap), processAchievementSerialy, { concurrency: 1 });
       })
       .then(() => SyncModule._bumpUserTransactionCounter(tx, userId)), 10000)
       .catch(onType(PromiseUtils.TimeoutError, function (e) {

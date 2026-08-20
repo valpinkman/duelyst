@@ -35,6 +35,7 @@ const CosmeticRewardNode = require('./CosmeticRewardNode');
 const EmoteRewardNode = require('./EmoteRewardNode');
 const SpiritOrbRewardNode = require('./SpiritOrbRewardNode');
 const CurrencyRewardNode = require('./CurrencyRewardNode');
+const PromiseUtils = require('../../../common/utils/utils_promise');
 
 const LOOT_CRATE_REWARD_SFX = [
   RSX.sfx_loot_crate_card_reward_reveal_0,
@@ -892,7 +893,7 @@ const LootCrateNode = cc.Node.extend({
         audio_engine.current().play_effect(LOOT_CRATE_REWARD_SFX[sfxIndex].audio, false);
         rewardNode.setVisible(true);
         const showDelay = rewardNode.showReveal();
-        return Promise.delay(showDelay * 1000.0);
+        return PromiseUtils.delay(showDelay * 1000.0);
       };
     } if (rewardData.emoteId) {
       // emote

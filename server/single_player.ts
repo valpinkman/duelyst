@@ -105,6 +105,7 @@ server.listen(port, () => Logger.module('AI SERVER').log(`SP server started on p
 
 // redis
 const { Redis, Jobs, GameManager } = require('./redis');
+const PromiseUtils = require('../app/common/utils/utils_promise');
 
 // server id for this game server
 const serverId = os.hostname();
@@ -1628,7 +1629,7 @@ const shutdownHandler = function () {
       _.each(games, (game, id) => ids.push(id));
 
       // Map to save each game to Redis before shutdown
-      return Promise.map(ids, function (id) {
+      return PromiseUtils.map(ids, function (id) {
         const serializedData = games[id].session.serializeToJSON(games[id].session);
         return GameManager.saveGameSession(id, serializedData);
       }).then(() => Consul.getHealthyServers()).then(function (servers) {

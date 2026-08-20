@@ -21,6 +21,7 @@ const SDK = require('../../../app/sdk/index');
 const knex = require('../../../server/lib/data_access/knex');
 const generatePushId = require('../../../app/common/generate_push_id');
 const { onType } = require('../../../app/common/utils/utils_promise');
+const PromiseUtils = require('../../../app/common/utils/utils_promise');
 
 // disable the logger for cleaner test output
 Logger.enabled = Logger.enabled && false;
@@ -483,7 +484,7 @@ describe('rift module', () => {
       .then(() => {
         _chainState.gameIds = [];
         _.times(1, () => { _chainState.gameIds.push(generatePushId()); });
-        return Promise.map(_chainState.gameIds, (gameId) => RiftModule.updateRiftRunWithGameOutcome(userId, _chainState.ticketId, true, gameId, false, 5, fakeGameSessionData));
+        return PromiseUtils.map(_chainState.gameIds, (gameId) => RiftModule.updateRiftRunWithGameOutcome(userId, _chainState.ticketId, true, gameId, false, 5, fakeGameSessionData));
       })
       .then(() => knex.first().from('user_rift_runs').where({ user_id: userId }).andWhere('ticket_id', _chainState.ticketId))
       .then((riftRow) => {
@@ -491,7 +492,7 @@ describe('rift module', () => {
         expect(riftRow.rift_level).to.equal(2);
         expect(riftRow.upgrades_available_count).to.equal(1);
         _.times(10, () => { _chainState.gameIds.push(generatePushId()); });
-        return Promise.map(_chainState.gameIds, (gameId) => RiftModule.updateRiftRunWithGameOutcome(userId, _chainState.ticketId, true, gameId, false, 10, fakeGameSessionData));
+        return PromiseUtils.map(_chainState.gameIds, (gameId) => RiftModule.updateRiftRunWithGameOutcome(userId, _chainState.ticketId, true, gameId, false, 10, fakeGameSessionData));
       })
       .then(() => knex.first().from('user_rift_runs').where({ user_id: userId }).andWhere('ticket_id', _chainState.ticketId))
       .then((riftRow) => {
@@ -534,7 +535,7 @@ describe('rift module', () => {
       let upgradeCountBefore = null;
 
       return knex.first().from('user_rift_runs').where('user_id', userId).andWhere('ticket_id', runTicketId)
-        .then((riftRow) => Promise.map(gameIds, (gameId) => RiftModule.updateRiftRunWithGameOutcome(userId, runTicketId, false, gameId, true, 10, fakeGameSessionData)))
+        .then((riftRow) => PromiseUtils.map(gameIds, (gameId) => RiftModule.updateRiftRunWithGameOutcome(userId, runTicketId, false, gameId, true, 10, fakeGameSessionData)))
         .then(([runData]) => {
           upgradeCountBefore = runData.upgrades_available_count || 0;
           return RiftModule.chooseCardToUpgrade(userId, runTicketId, runData.deck[1]);
@@ -549,7 +550,7 @@ describe('rift module', () => {
     it('expect initiating a run upgrade to generate 6 card choices', () => {
       const gameIds = [];
       _.times(10, () => { gameIds.push(generatePushId()); });
-      return Promise.map(gameIds, (gameId) => RiftModule.updateRiftRunWithGameOutcome(userId, runTicketId, true, gameId, null, 10, fakeGameSessionData)).then(([runData]) => RiftModule.chooseCardToUpgrade(userId, runTicketId, runData.deck[1])).then(() => knex.first().from('user_rift_runs').where('user_id', userId).andWhere('ticket_id', runTicketId)).then((runRow) => {
+      return PromiseUtils.map(gameIds, (gameId) => RiftModule.updateRiftRunWithGameOutcome(userId, runTicketId, true, gameId, null, 10, fakeGameSessionData)).then(([runData]) => RiftModule.chooseCardToUpgrade(userId, runTicketId, runData.deck[1])).then(() => knex.first().from('user_rift_runs').where('user_id', userId).andWhere('ticket_id', runTicketId)).then((runRow) => {
         expect(runRow.card_id_to_upgrade).to.equal(runRow.deck[1]);
         expect(runRow.upgrades_available_count).to.equal(9);
         expect(runRow.card_choices.length).to.equal(6);
@@ -608,7 +609,7 @@ describe('rift module', () => {
     it('expect NOT to be able to choose an invalid card as an upgrade', () => {
       const gameIds = [];
       _.times(10, () => { gameIds.push(generatePushId()); });
-      return Promise.map(gameIds, (gameId) => RiftModule.updateRiftRunWithGameOutcome(userId, runTicketId, true, gameId, null, 10, fakeGameSessionData)).then(([runData]) => RiftModule.chooseCardToUpgrade(userId, runTicketId, runData.deck[1])).then(() => knex.first().from('user_rift_runs').where('user_id', userId).andWhere('ticket_id', runTicketId)).then((runRow) => RiftModule.upgradeCard(userId, runTicketId, SDK.Cards.Faction1.SilverguardSquire))
+      return PromiseUtils.map(gameIds, (gameId) => RiftModule.updateRiftRunWithGameOutcome(userId, runTicketId, true, gameId, null, 10, fakeGameSessionData)).then(([runData]) => RiftModule.chooseCardToUpgrade(userId, runTicketId, runData.deck[1])).then(() => knex.first().from('user_rift_runs').where('user_id', userId).andWhere('ticket_id', runTicketId)).then((runRow) => RiftModule.upgradeCard(userId, runTicketId, SDK.Cards.Faction1.SilverguardSquire))
         .then((response) => {
           expect(response).to.not.exist;
         })
@@ -626,7 +627,7 @@ describe('rift module', () => {
       _.times(10, () => {
         gameIds.push(generatePushId());
       });
-      return Promise.map(gameIds, (gameId) => RiftModule.updateRiftRunWithGameOutcome(userId, runTicketId, true, gameId, null, 10, fakeGameSessionData)).then(([runData]) => {
+      return PromiseUtils.map(gameIds, (gameId) => RiftModule.updateRiftRunWithGameOutcome(userId, runTicketId, true, gameId, null, 10, fakeGameSessionData)).then(([runData]) => {
         deckBefore = runData.deck;
         cardIdToUpgrade = runData.deck[1];
         return RiftModule.chooseCardToUpgrade(userId, runTicketId, cardIdToUpgrade);
@@ -651,7 +652,7 @@ describe('rift module', () => {
         _.times(10, () => {
           gameIds.push(generatePushId());
         });
-        return Promise.map(gameIds, (gameId) => RiftModule.updateRiftRunWithGameOutcome(userId, runTicketId, true, gameId, null, 10, fakeGameSessionData)).then(([runData]) => {
+        return PromiseUtils.map(gameIds, (gameId) => RiftModule.updateRiftRunWithGameOutcome(userId, runTicketId, true, gameId, null, 10, fakeGameSessionData)).then(([runData]) => {
           deckBefore = runData.deck;
           cardIdToUpgrade = runData.deck[1];
           return RiftModule.chooseCardToUpgrade(userId, runTicketId, cardIdToUpgrade);

@@ -4,6 +4,7 @@
   const fs = require('fs');
   const path = require('path');
   const lineReader = require('readline');
+  const PromiseUtils = require('../app/common/utils/utils_promise');
 
   const helpers = {};
 
@@ -113,7 +114,7 @@
       }
 
       return helpers.recursivelyGetFilesStartingFrom(dir)
-        .then((files) => Promise.map(files, (file) => {
+        .then((files) => PromiseUtils.map(files, (file) => {
           if (fileNameFilter == null || !fileNameFilter.test(file)) {
             // console.log("READ", file);
             return helpers.readFile(file, fileHandler);

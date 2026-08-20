@@ -127,7 +127,7 @@ class CosmeticChestsModule {
         }
 
         Logger.module('CosmeticChestsModule').time(`giveUserChest() -> User ${userId.blue}`.green + ` received ${chestAmount} chests of type ${chestType}.`.green);
-        return Promise.map(__range__(0, chestAmount, false), function () {
+        return PromiseUtils.map(__range__(0, chestAmount, false), function () {
           const chestData = {
             user_id: userId,
             chest_id: generatePushId(),
@@ -324,7 +324,7 @@ class CosmeticChestsModule {
           _chainState.resValue = [];
 
           // Create promises to give rewards
-          return Promise.each(_chainState.rewardDatas, (rewardData) => {
+          return PromiseUtils.each(_chainState.rewardDatas, (rewardData) => {
             let prismaticCardIds,
               rewardedCardId;
             if (rewardData.cosmetic_common != null) {

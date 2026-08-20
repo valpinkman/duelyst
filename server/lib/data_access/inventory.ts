@@ -26,6 +26,7 @@ const { Redis, Jobs, GameManager } = require('../../redis');
 
 // SDK imports
 const SDK = require('../../../app/sdk');
+const PromiseUtils = require('../../../app/common/utils/utils_promise');
 
 class InventoryModule {
   declare static SOFTWIPE_AVAILABLE_UNTIL: any;
@@ -1036,7 +1037,7 @@ class InventoryModule {
         })
         .then(function (boosterIds) {
           _chainState.boosterIds = boosterIds;
-          return Promise.map(boosterIds, (boosterId) => {
+          return PromiseUtils.map(boosterIds, (boosterId) => {
             const userCurrencyLogItem = {
               id: generatePushId(),
               user_id: userId,
@@ -1886,7 +1887,7 @@ class InventoryModule {
           if (missingCodexChapterIds.length === 0) {
             return Promise.resolve([]);
           } else {
-            return Promise.map(missingCodexChapterIds, (missingCodexChapterId) => InventoryModule.giveUserCodexChapter(txPromise, tx, userId, missingCodexChapterId, NOW_UTC_MOMENT));
+            return PromiseUtils.map(missingCodexChapterIds, (missingCodexChapterId) => InventoryModule.giveUserCodexChapter(txPromise, tx, userId, missingCodexChapterId, NOW_UTC_MOMENT));
           }
         }).then((results) => this_obj.awardedChapterIds = _.filter(results, (result) => result !== null))
         .then(tx.commit)

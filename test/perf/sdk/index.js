@@ -1,8 +1,9 @@
 const Promise = require('bluebird');
 const normalizedPath = require('path').join(__dirname, './');
 const files = require('fs').readdirSync(normalizedPath);
+const PromiseUtils = require('../../../app/common/utils/utils_promise');
 
-Promise.map(files, (file) => {
+PromiseUtils.map(files, (file) => {
   /* eslint-disable import/no-dynamic-require */
   const benchmarkPromise = require(`./${file}`);
   if (benchmarkPromise instanceof Promise) {

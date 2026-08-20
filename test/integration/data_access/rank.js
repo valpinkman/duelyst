@@ -21,6 +21,7 @@ const knex = require('../../../server/lib/data_access/knex');
 
 const { SRankManager } = require('../../../server/redis/index');
 const { onType } = require('../../../app/common/utils/utils_promise');
+const PromiseUtils = require('../../../app/common/utils/utils_promise');
 
 // disable the logger
 // for cleaner test output
@@ -232,11 +233,11 @@ describe('rank module', () => {
           [player4UserName, player3UserName, true],
         ];
 
-        return Promise.map(matchTuples, (tuple) => RankModule.updateUsersRatingsWithGameOutcome(userIdsByUsername[tuple[0]], userIdsByUsername[tuple[1]], tuple[2], generatePushId(), false, true, true, MOMENT_UTC_NOW));
+        return PromiseUtils.map(matchTuples, (tuple) => RankModule.updateUsersRatingsWithGameOutcome(userIdsByUsername[tuple[0]], userIdsByUsername[tuple[1]], tuple[2], generatePushId(), false, true, true, MOMENT_UTC_NOW));
       }).then(() => {
         // cycle the test users
         const usersToCycle = [player1UserName, player2UserName, player3UserName, player4UserName];
-        return Promise.map(usersToCycle, (username) => RankModule.cycleUserSeasonRanking(userIdsByUsername[username], false, nextSeasonMoment));
+        return PromiseUtils.map(usersToCycle, (username) => RankModule.cycleUserSeasonRanking(userIdsByUsername[username], false, nextSeasonMoment));
       }).then(() =>
         // Gather data and validate
         Promise.all([
@@ -793,7 +794,7 @@ describe('rank module', () => {
           [player4Id, player5Id, true],
         ];
 
-        return Promise.each(matchUpDescriptions, (matchUpDescription) => RankModule.updateUsersRatingsWithGameOutcome(matchUpDescription[0], matchUpDescription[1], matchUpDescription[2], generatePushId(), false, true, true, startOfSeasonMoment), { concurrency: 1 });
+        return PromiseUtils.each(matchUpDescriptions, (matchUpDescription) => RankModule.updateUsersRatingsWithGameOutcome(matchUpDescription[0], matchUpDescription[1], matchUpDescription[2], generatePushId(), false, true, true, startOfSeasonMoment), { concurrency: 1 });
       });
     });
 
@@ -802,7 +803,7 @@ describe('rank module', () => {
 
     it('expect a series of s rank matches to result in an expected ladder state', () => {
       const playerLadderPositionsById = {};
-      return Promise.each([player1Id, player2Id, player3Id, player4Id, player5Id, player6Id], (playerId) => {
+      return PromiseUtils.each([player1Id, player2Id, player3Id, player4Id, player5Id, player6Id], (playerId) => {
         const txPromise = knex.transaction((tx) => {
           RankModule.updateAndGetUserLadderPosition(txPromise, tx, playerId, startOfSeasonMoment, startOfSeasonMoment)
             .then((ladderPosition) => {

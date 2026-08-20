@@ -22,6 +22,7 @@ const SDK = require('../../../app/sdk/index');
 const knex = require('../../../server/lib/data_access/knex');
 const NewPlayerProgressionStageEnum = require('../../../app/sdk/progression/newPlayerProgressionStageEnum');
 const { onType } = require('../../../app/common/utils/utils_promise');
+const PromiseUtils = require('../../../app/common/utils/utils_promise');
 
 // disable the logger for cleaner test output
 Logger.enabled = Logger.enabled && false;
@@ -864,7 +865,7 @@ describe('users module', () => {
     //   });
     // });
 
-    it('expect all game counters to work', () => Promise.map([
+    it('expect all game counters to work', () => PromiseUtils.map([
       // lyonar
       [userId, SDK.Factions.Lyonar, SDK.Cards.Faction1.General, true, 'ranked'],
       [userId, SDK.Factions.Lyonar, SDK.Cards.Faction1.General, false, 'ranked', false, true], // ranked draw
@@ -1784,7 +1785,7 @@ describe('users module', () => {
         const times = [];
         const numWinsNeeded = xpCap / SDK.FactionProgression.winXP;
         for (let i = 0; i < numWinsNeeded; i++) times.push(1);
-        return Promise.map(times, () => UsersModule.updateUserFactionProgressionWithGameOutcome(userId, SDK.Factions.Lyonar, true, generatePushId(), 'ranked', false), { concurrency: 1 });
+        return PromiseUtils.map(times, () => UsersModule.updateUserFactionProgressionWithGameOutcome(userId, SDK.Factions.Lyonar, true, generatePushId(), 'ranked', false), { concurrency: 1 });
       }).then(() => DuelystFirebase.connect().getRootRef())
       .then((rootRef) => Promise.all([
         knex('user_faction_progression').where('user_id', userId).first(),
@@ -2155,7 +2156,7 @@ describe('users module', () => {
         const numWinsToLevel = xpToLevel / SDK.FactionProgression.winXP;
         const times = [];
         for (let i = 0; i < numWinsToLevel; i++) times.push(1);
-        return Promise.map(times, () => UsersModule.updateUserFactionProgressionWithGameOutcome(userId, SDK.Factions.Lyonar, true, generatePushId(), 'ranked', false), { concurrency: 1 });
+        return PromiseUtils.map(times, () => UsersModule.updateUserFactionProgressionWithGameOutcome(userId, SDK.Factions.Lyonar, true, generatePushId(), 'ranked', false), { concurrency: 1 });
       }).then(() => knex('user_rewards').where({ user_id: userId, reward_category: 'faction xp' }).orderBy('created_at', 'desc'))
       .then((rewardRows) => {
         let cardId = null;
@@ -2726,7 +2727,7 @@ describe('users module', () => {
         expect(e).to.not.exist;
       }));
 
-    it('expect to generate correct quests for all FTUE stages', () => Promise.each(NewPlayerProgressionStageEnum.enums, (enumStage) => knex('user_quests').delete().where('user_id', userId)
+    it('expect to generate correct quests for all FTUE stages', () => PromiseUtils.each(NewPlayerProgressionStageEnum.enums, (enumStage) => knex('user_quests').delete().where('user_id', userId)
       .then(() => UsersModule.setNewPlayerFeatureProgression(userId, SDK.NewPlayerProgressionModuleLookup.Core, enumStage.key))
       .then(() => QuestsModule.generateBeginnerQuests(userId))
       .then(() => knex('user_quests').select().where('user_id', userId))

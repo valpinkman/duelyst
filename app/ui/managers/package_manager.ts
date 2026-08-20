@@ -349,6 +349,7 @@ var PKGS = require('app/data/packages');
 var Factions = require('app/sdk/cards/factionsLookup');
 var Manager = require('app/ui/managers/manager');
 var NavigationManager = require('app/ui/managers/navigation_manager');
+const PromiseUtils = require('../../common/utils/utils_promise');
 
 /**
  *  PackageManager - manages resources by organizing/tracking packages and adds the concept of strong references to resources.
@@ -1479,7 +1480,7 @@ var NonAllocatingLoader = {
       // map load requests with a concurrency limit
       var numLoading = resources.length;
       var numLoaded = 0;
-      Promise.map(resources, function (resource) {
+      PromiseUtils.map(resources, function (resource) {
         var url;
         if (resource.type) {
           url = resource.src ? resource.src : (resource.name + '.' + resource.type.toLowerCase());

@@ -1328,7 +1328,7 @@ class GauntletModule {
     return new Promise(function (resolve, reject) {
       const cardIdsOut = [];
 
-      return Promise.map(cardIds, (cardId) => GauntletModule._getSkinnedCardChoice(txPromise, tx, userId, cardId)
+      return PromiseUtils.map(cardIds, (cardId) => GauntletModule._getSkinnedCardChoice(txPromise, tx, userId, cardId)
         .then((skinnedCardId) => cardIdsOut.push(skinnedCardId))).then(() => resolve(cardIdsOut)).catch((error) => reject(error));
     });
   }

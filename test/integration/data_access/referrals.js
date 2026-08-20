@@ -22,6 +22,7 @@ const SDK = require('../../../app/sdk/index');
 const knex = require('../../../server/lib/data_access/knex');
 const FirstReferralPurchaseAchievement = require('../../../app/sdk/achievements/referralBasedAchievements/firstReferralPurchaseAchievement');
 const { onType } = require('../../../app/common/utils/utils_promise');
+const PromiseUtils = require('../../../app/common/utils/utils_promise');
 
 // disable the logger for cleaner test output
 Logger.enabled = Logger.enabled && false;
@@ -322,7 +323,7 @@ describe('referrals module', () => {
 
         // return ReferralsModule.processReferralEventForUser(newUserId,userId,'purchase')
         // .then(function(response){
-        //   return Promise.delay(500)
+        //   return PromiseUtils.delay(500)
         // })
         Promise.resolve()
           .then(() => Promise.all([

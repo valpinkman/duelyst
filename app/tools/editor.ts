@@ -9,6 +9,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const whenLocalizationReady = require('app/localization/index');
+const PromiseUtils = require('../common/utils/utils_promise');
 
 whenLocalizationReady.then(() => {
   const Logger = require('app/common/logger');
@@ -1039,7 +1040,7 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
 
       const challengeResults = {};
 
-      return Promise.each(allDateKeys, (dateKey) => new Promise((resolve, reject) => {
+      return PromiseUtils.each(allDateKeys, (dateKey) => new Promise((resolve, reject) => {
         const dailyChallengeRef = new Firebase(`${process.env.FIREBASE_URL}/daily-challenges/${dateKey}`);
         return dailyChallengeRef.once(
           'value',

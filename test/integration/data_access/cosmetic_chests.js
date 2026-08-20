@@ -22,6 +22,7 @@ const SDK = require('../../../app/sdk/index');
 const knex = require('../../../server/lib/data_access/knex');
 const generatePushId = require('../../../app/common/generate_push_id');
 const { onType } = require('../../../app/common/utils/utils_promise');
+const PromiseUtils = require('../../../app/common/utils/utils_promise');
 
 // disable the logger for cleaner test output
 Logger.enabled = Logger.enabled && false;
@@ -404,7 +405,7 @@ describe('cosmetic chests module', () => {
       .then(function([chestDatas, keyDatas]){
         chestDatas = _.flatten(chestDatas);
         keyDatas = _.flatten(keyDatas);
-        return Promise.map(chestDatas,function(chestData, i){
+        return PromiseUtils.map(chestDatas,function(chestData, i){
           const chestId = chestData.chest_id;
           const keyId = keyDatas[i].key_id;
           return CosmeticChestsModule.openChest(userId, chestId, keyId);
