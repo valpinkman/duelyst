@@ -41,23 +41,23 @@ var TwitchManager = Manager.extend({
   /* region CONNECT */
 
   onBeforeConnect: function () {
+    const _self = this;
     Manager.prototype.onBeforeConnect.call(this);
     ProfileManager.getInstance().onReady()
-      .bind(this)
       .then(function () {
         var userId = ProfileManager.getInstance().get('id');
         var username = ProfileManager.getInstance().get('username');
-        this._twitchStatusModel = new DuelystFirebase.Model(null, {
+        _self._twitchStatusModel = new DuelystFirebase.Model(null, {
           firebase: new Firebase(process.env.FIREBASE_URL + '/user-twitch-rewards/' + userId + '/status'),
         });
 
-        this._markAsReadyWhenModelsAndCollectionsSynced([this._twitchStatusModel]);
+        _self._markAsReadyWhenModelsAndCollectionsSynced([_self._twitchStatusModel]);
 
-        this.onReady().then(function () {
+        _self.onReady().then(function () {
           this._twitchStatusModel.on('change', this.onTwitchStatusChange, this);
 
           return this.onTwitchStatusChange();
-        }.bind(this));
+        }.bind(_self));
       });
   },
 

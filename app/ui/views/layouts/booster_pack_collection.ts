@@ -269,7 +269,6 @@ var BoosterPackCollectionLayout = Backbone.Marionette.LayoutView.extend({
       // unlock pack immediately
       var unlockedBoosterPackCards;
       var requestUnlockPromise = InventoryManager.getInstance().unlockBoosterPack(boosterPackId)
-        .bind(this)
         .then(function (response) {
           var unlockedBoosterPackModel = new Backbone.Model(response);
           unlockedBoosterPackCards = unlockedBoosterPackModel.get('cards');

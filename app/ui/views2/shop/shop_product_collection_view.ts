@@ -115,6 +115,7 @@ var ShopProductCollectionView = Backbone.Marionette.CompositeView.extend({
   /* region PURCHASE */
 
   onSelectProduct: function (view, saleData) {
+    const _self = this;
     var productData = view && view.model && view.model.attributes;
 
     if (productData.category_id == 'bundles') {
@@ -124,9 +125,8 @@ var ShopProductCollectionView = Backbone.Marionette.CompositeView.extend({
       });
     }
     return NavigationManager.getInstance().showDialogForConfirmPurchase(productData, saleData)
-      .bind(this)
       .then(function (purchaseData) {
-        this.onPurchaseComplete(purchaseData);
+        _self.onPurchaseComplete(purchaseData);
       })
       .catch(function () {
       // do nothing on cancel

@@ -98,7 +98,6 @@ var ChangeBattleMapItemView = FormPromptDialogItemView.extend({
       // buy profile icon
       var productData = SDK.CosmeticsFactory.cosmeticProductDataForIdentifier(cosmeticId);
       return NavigationManager.getInstance().showDialogForConfirmPurchase(productData)
-        .bind(this)
         .then(function () {
           NavigationManager.getInstance().showDialogView(new ChangeBattleMapItemView({ model: new Backbone.Model() }));
         })
@@ -117,18 +116,18 @@ var ChangeBattleMapItemView = FormPromptDialogItemView.extend({
   },
 
   onSubmit: function () {
+    const _self = this;
     FormPromptDialogItemView.prototype.onSubmit.apply(this, arguments);
 
     this.stopShowingTooltip();
 
     Session.changeBattlemap(this._cosmeticId)
-      .bind(this)
       .then(function (res) {
-        this.onSuccess(res);
+        _self.onSuccess(res);
       })
       .catch(function (e) {
       // onError expects a string not an actual error
-        this.onError(e.innerMessage || e.message);
+        _self.onError(e.innerMessage || e.message);
       });
   },
 

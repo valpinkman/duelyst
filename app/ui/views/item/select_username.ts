@@ -44,17 +44,17 @@ var SelectUsernameItemView = FormPromptDialogItemView.extend({
   },
 
   onSubmit: function (e) {
+    const _self = this;
     FormPromptDialogItemView.prototype.onSubmit.apply(this, arguments);
 
     var username = this.ui.$username.val();
     Session.changeUsername(username)
-      .bind(this)
       .then(function (res) {
-        this.onSuccess(res);
+        _self.onSuccess(res);
       })
       .catch(function (e) {
       // onError expects a string not an actual error
-        this.onError(e.innerMessage || e.message);
+        _self.onError(e.innerMessage || e.message);
       });
   },
 

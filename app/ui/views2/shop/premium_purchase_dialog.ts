@@ -463,6 +463,7 @@ var PremiumPurchaseDialogView = Backbone.Marionette.LayoutView.extend({
   /* region GOLD CHECKOUT */
 
   _goldCheckout: function (productData) {
+    const _self = this;
     var sku = productData.sku;
     var gold = productData.gold || 0;
     var quantity = this._quantity;
@@ -492,23 +493,21 @@ var PremiumPurchaseDialogView = Backbone.Marionette.LayoutView.extend({
 
     if (purchasePromise == null) {
       return Promise.resolve()
-        .bind(this)
         .then(function () {
-          this.showError('Invalid premium purchase!');
+          _self.showError('Invalid premium purchase!');
         });
     } else {
       return purchasePromise
-        .bind(this)
         .then(function () {
-          this.trigger('complete', {
+          _self.trigger('complete', {
             sku: sku,
             paymentType: 'gold',
           });
 
-          this.flashSuccessInDialog('SUCCESS!');
+          _self.flashSuccessInDialog('SUCCESS!');
         })
         .catch(function (errorMessage) {
-          this.showError(errorMessage);
+          _self.showError(errorMessage);
         });
     }
   },
@@ -552,6 +551,7 @@ var PremiumPurchaseDialogView = Backbone.Marionette.LayoutView.extend({
   /* region CRAFT */
 
   onCraftPressed: function (e) {
+    const _self = this;
     var productData = this.productData;
     var productId = productData.id;
     var sku = productData.sku;
@@ -560,18 +560,17 @@ var PremiumPurchaseDialogView = Backbone.Marionette.LayoutView.extend({
     this.ui.product_craft_button.addClass('hide');
     this.ui.card_form_error.addClass('hide');
     InventoryManager.getInstance().craftCosmetic(productId)
-      .bind(this)
       .then(function () {
-        this.trigger('complete', {
+        _self.trigger('complete', {
           sku: sku,
           paymentType: 'spirit',
         });
 
-        this.flashSuccessInDialog('SUCCESS!');
+        _self.flashSuccessInDialog('SUCCESS!');
       })
       .catch(function (errorMessage) {
-        this.ui.product_craft_button.removeClass('hide');
-        this.showError(errorMessage, false, true);
+        _self.ui.product_craft_button.removeClass('hide');
+        _self.showError(errorMessage, false, true);
       });
   },
 
@@ -589,6 +588,7 @@ var PremiumPurchaseDialogView = Backbone.Marionette.LayoutView.extend({
   },
 
   onDeleteCard: function () {
+    const _self = this;
     if (this.creditCardFormRegion == null) return;
 
     this.$el.addClass('loading');
@@ -602,13 +602,12 @@ var PremiumPurchaseDialogView = Backbone.Marionette.LayoutView.extend({
       contentType: 'application/json',
       dataType: 'json',
     }))
-      .bind(this)
       .then(function () {
-        this.flashSuccessInDialog('SUCCESS!', true);
+        _self.flashSuccessInDialog('SUCCESS!', true);
       })
       .catch(function (err) {
         var errorMessage = response.responseJSON && response.responseJSON.message || 'There was a problem deleting your card.';
-        this.showError(errorMessage);
+        _self.showError(errorMessage);
       });
   },
 

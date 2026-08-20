@@ -366,7 +366,6 @@ var CraftingCompositeView = Backbone.Marionette.CompositeView.extend({
       // buy skin
       var productData = SDK.CosmeticsFactory.cosmeticProductDataForIdentifier(skinId);
       NavigationManager.getInstance().showDialogForConfirmPurchase(productData)
-        .bind(this)
         .catch(function () {
         // do nothing on cancel
         });

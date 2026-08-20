@@ -244,14 +244,14 @@ var ArenaLayout = Backbone.Marionette.LayoutView.extend({
    * @returns {Promise}
    */
   purchaseTicket: function () {
+    const _self = this;
     var productData = ShopData.gauntlet.GAUNTLET_TICKET;
     return NavigationManager.getInstance().showDialogForConfirmPurchase(productData)
-      .bind(this)
       .then(function (purchaseData) {
         if (InventoryManager.getInstance().arenaTicketsCollection.length == 0) {
         // wait until has an arena ticket
         // NavigationManager.getInstance().showDialogView(new ActivityDialogItemView());
-          this.listenToOnce(InventoryManager.getInstance().arenaTicketsCollection, 'add', function () {
+          _self.listenToOnce(InventoryManager.getInstance().arenaTicketsCollection, 'add', function () {
             NavigationManager.getInstance().destroyDialogView();
             EventBus.getInstance().trigger(EVENTS.show_play, SDK.PlayModes.Gauntlet);
           });

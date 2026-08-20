@@ -150,6 +150,7 @@ var RegistrationItemView = FormPromptModalItemView.extend({
   },
 
   onSubmit: function () {
+    const _self = this;
     FormPromptModalItemView.prototype.onSubmit.apply(this, arguments);
 
     // register
@@ -166,13 +167,12 @@ var RegistrationItemView = FormPromptModalItemView.extend({
       friend_referral_code: friendReferralCode.length > 0 ? friendReferralCode : undefined,
       captcha: captcha,
     })
-      .bind(this)
       .then(function (res) {
-        this.onSuccess(res);
+        _self.onSuccess(res);
       })
       .catch(function (e) {
       // onError expects a string not an actual error
-        this.onError(e.innerMessage || e.message);
+        _self.onError(e.innerMessage || e.message);
       });
   },
 

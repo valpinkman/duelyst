@@ -180,6 +180,7 @@ const getConnectedSpectatorsDataForGamePlayer = function (gameId, playerId) {
  * @param  {Object}  requestData    Plain JS object with socket event data.
  */
 var onGamePlayerJoin = function (requestData) {
+  const _self = this;
   // request parameters
   const {
     gameId,
@@ -229,7 +230,6 @@ var onGamePlayerJoin = function (requestData) {
 
   // initialize a server-side game session and join it
   return initGameSession(gameId)
-    .bind(this)
     .then(function ([gameSession]) {
     // Logger.module("IO").debug "[G:#{gameId}]", "join_game -> players in data: ", gameSession.players
 
@@ -243,7 +243,7 @@ var onGamePlayerJoin = function (requestData) {
 
       if (!player) { // oops looks like this player does not exist in the requested game
       // let the socket know we had an error
-        this.emit('join_game_response',
+        _self.emit('join_game_response',
           { error: 'could not join game because your player id could not be found' });
 
         // destroy the game data loaded so far if the opponent can't be defined and no one else is connected
@@ -255,7 +255,7 @@ var onGamePlayerJoin = function (requestData) {
         Logger.module('IO').error(`[G:${gameId}]`, `join_game -> game ${gameId} ERROR: could not find opponent for ${playerId.blue}.`.red);
 
         // let the socket know we had an error
-        this.emit('join_game_response',
+        _self.emit('join_game_response',
           { error: 'could not join game because the opponent could not be found' });
 
         // destroy the game data loaded so far if the opponent can't be defined and no one else is connected
@@ -272,11 +272,11 @@ var onGamePlayerJoin = function (requestData) {
         }
 
         // set some parameters for the socket
-        this.gameId = gameId;
-        this.playerId = playerId;
+        _self.gameId = gameId;
+        _self.playerId = playerId;
 
         // join game room
-        this.join(gameId);
+        _self.join(gameId);
 
         // update user count for game room
         games[gameId].connectedPlayers.push(playerId);
@@ -302,7 +302,7 @@ var onGamePlayerJoin = function (requestData) {
         UtilsGameSession.scrubGameSessionData(gameSession, gameSessionData, playerId);
 
         // respond to client with success and a scrubbed copy of the game session
-        this.emit('join_game_response', {
+        _self.emit('join_game_response', {
           message: 'successfully joined game',
           gameSessionData,
           connectedPlayers: games[gameId].connectedPlayers,
@@ -311,13 +311,13 @@ var onGamePlayerJoin = function (requestData) {
         );
 
         // broadcast join to any other connected players
-        return this.broadcast.to(gameId).emit('player_joined', playerId);
+        return _self.broadcast.to(gameId).emit('player_joined', playerId);
       }
     }).catch(function (e) {
       Logger.module('IO').error(`[G:${gameId}]`, `join_game -> player:${playerId} failed to join game, error: ${e.message}`.red);
       Logger.module('IO').error(`[G:${gameId}]`, `join_game -> player:${playerId} failed to join game, error stack: ${e.stack}`.red);
       // if we didn't join a game, broadcast a failure
-      return this.emit('join_game_response',
+      return _self.emit('join_game_response',
         { error: 'Could not join game: ' + (e != null ? e.message : undefined) });
     });
 };
@@ -328,6 +328,7 @@ var onGamePlayerJoin = function (requestData) {
  * @param  {Object}  requestData    Plain JS object with socket event data.
  */
 var onGameSpectatorJoin = function (requestData) {
+  const _self = this;
   // request parameters
   // TODO : Sanitize these parameters to prevent crash if gameId = null
   const {
@@ -411,7 +412,6 @@ var onGameSpectatorJoin = function (requestData) {
 
   // initialize a server-side game session and join it
   return initSpectatorGameSession(gameId)
-    .bind(this)
     .then(function (spectatorGameSession) {
     // for spectators, use the delayed in-memory game session
       const gameSession = spectatorGameSession;
@@ -422,7 +422,7 @@ var onGameSpectatorJoin = function (requestData) {
 
       if (!player) {
       // let the socket know we had an error
-        this.emit('spectate_game_response',
+        _self.emit('spectate_game_response',
           { error: 'could not join game because the player id you requested could not be found' });
 
         // destroy the game data loaded so far if the opponent can't be defined and no one else is connected
@@ -433,13 +433,13 @@ var onGameSpectatorJoin = function (requestData) {
       } else {
       // set some parameters for the socket
         let gameSessionData;
-        this.gameId = gameId;
-        this.spectatorId = spectatorId;
-        this.spectateToken = spectateToken;
-        this.playerId = playerId;
+        _self.gameId = gameId;
+        _self.spectatorId = spectatorId;
+        _self.spectateToken = spectateToken;
+        _self.playerId = playerId;
 
         // join game room
-        this.join(`spectate-${gameId}`);
+        _self.join(`spectate-${gameId}`);
 
         // update user count for game room
         games[gameId].connectedSpectators.push(spectatorId);
@@ -465,14 +465,14 @@ var onGameSpectatorJoin = function (requestData) {
         scrubGameSessionDataForSpectators(gameSession, gameSessionData, opponent.playerId, true)
       */
         // respond to client with success and a scrubbed copy of the game session
-        this.emit('spectate_game_response', {
+        _self.emit('spectate_game_response', {
           message: 'successfully joined game',
           gameSessionData,
         },
         );
 
         // broadcast to the game room that a spectator has joined
-        return this.broadcast.to(gameId).emit('spectator_joined', {
+        return _self.broadcast.to(gameId).emit('spectator_joined', {
           id: spectatorId,
           playerId,
           username: spectateToken.u,
@@ -480,7 +480,7 @@ var onGameSpectatorJoin = function (requestData) {
       }
     }).catch(function (e) {
     // if we didn't join a game, broadcast a failure
-      return this.emit('spectate_game_response',
+      return _self.emit('spectate_game_response',
         { error: `could not join game: ${e.message}` });
     });
 };

@@ -48,14 +48,14 @@ var CreditCardFormView = Backbone.Marionette.ItemView.extend({
   },
 
   onSubmit: function () {
+    const _self = this;
     audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
     NavigationManager.getInstance().showDialogView(new ActivityDialogItemView());
 
     this.submit()
-      .bind(this)
       .then(function () {
         NavigationManager.getInstance().destroyDialogView();
-        this.trigger('complete');
+        _self.trigger('complete');
       })
       .catch(function (errorMessage) {
         NavigationManager.getInstance().showDialogView(new ErrorDialogItemView({ title: errorMessage }));

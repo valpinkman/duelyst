@@ -65,6 +65,7 @@ var ShopSpecialsView = Backbone.Marionette.ItemView.extend({
   /* region PURCHASE */
 
   onSelectProduct: function (e) {
+    const _self = this;
     var productSku = $(e.currentTarget).data('product-sku');
     var productData = ShopData.earned_specials[productSku];
 
@@ -78,9 +79,8 @@ var ShopSpecialsView = Backbone.Marionette.ItemView.extend({
     });
 
     return NavigationManager.getInstance().showDialogForConfirmPurchase(packProductData)
-      .bind(this)
       .then(function (purchaseData) {
-        this.onPurchaseComplete(purchaseData);
+        _self.onPurchaseComplete(purchaseData);
       })
       .catch(function () {
       // do nothing on cancel

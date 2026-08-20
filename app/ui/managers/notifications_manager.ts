@@ -60,17 +60,17 @@ var NotificationsManager = Manager.extend({
   /* region CONNECT */
 
   onBeforeConnect: function () {
+    const _self = this;
     Manager.prototype.onBeforeConnect.call(this);
     ProfileManager.getInstance().onReady()
-      .bind(this)
       .then(function () {
         var userId = ProfileManager.getInstance().get('id');
         var notificationsRef = new Firebase(process.env.FIREBASE_URL + '/user-notifications/' + userId);
 
-        this.remoteNotifications = new DuelystFirebase.Collection(null, { firebase: notificationsRef.orderByChild('created_at').startAt(moment().utc().valueOf()) });
-        this.listenTo(this.remoteNotifications, 'add', this.onRemoteNotificationAdded);
+        _self.remoteNotifications = new DuelystFirebase.Collection(null, { firebase: notificationsRef.orderByChild('created_at').startAt(moment().utc().valueOf()) });
+        _self.listenTo(_self.remoteNotifications, 'add', _self.onRemoteNotificationAdded);
 
-        ChatManager.getInstance().on(EVENTS.status, this._onStatusChanged, this);
+        ChatManager.getInstance().on(EVENTS.status, _self._onStatusChanged, _self);
       });
   },
 

@@ -65,58 +65,58 @@ var InventoryManager = Manager.extend({
   },
 
   onBeforeConnect: function () {
+    const _self = this;
     Manager.prototype.onBeforeConnect.call(this);
 
     ProfileManager.getInstance().onReady()
-      .bind(this)
       .then(function () {
         var userId = ProfileManager.getInstance().get('id');
 
-        this.walletModel = new DuelystFirebase.Model(null, {
+        _self.walletModel = new DuelystFirebase.Model(null, {
           firebase: process.env.FIREBASE_URL + 'user-inventory/' + userId + '/wallet',
         });
 
-        this.boosterPacksCollection = new DuelystFirebase.Collection(null, {
+        _self.boosterPacksCollection = new DuelystFirebase.Collection(null, {
           firebase: process.env.FIREBASE_URL + 'user-inventory/' + userId + '/spirit-orbs',
         });
 
-        this.arenaTicketsCollection = new DuelystFirebase.Collection(null, {
+        _self.arenaTicketsCollection = new DuelystFirebase.Collection(null, {
           firebase: process.env.FIREBASE_URL + 'user-inventory/' + userId + '/gauntlet-tickets',
         });
 
-        this.riftTicketsCollection = new DuelystFirebase.Collection(null, {
+        _self.riftTicketsCollection = new DuelystFirebase.Collection(null, {
           firebase: process.env.FIREBASE_URL + 'user-inventory/' + userId + '/rift-tickets',
         });
 
-        this.cardsCollection = new DuelystFirebase.Collection(null, {
+        _self.cardsCollection = new DuelystFirebase.Collection(null, {
           firebase: process.env.FIREBASE_URL + 'user-inventory/' + userId + '/card-collection',
         });
 
-        this.cardLoreCollection = new DuelystFirebase.Collection(null, {
+        _self.cardLoreCollection = new DuelystFirebase.Collection(null, {
           firebase: process.env.FIREBASE_URL + 'user-inventory/' + userId + '/card-lore',
         });
-        this.cardLoreReadRequests = [];
+        _self.cardLoreReadRequests = [];
 
-        this.decksCollection = new UserDecksCollection();
-        this.decksCollection.fetch();
+        _self.decksCollection = new UserDecksCollection();
+        _self.decksCollection.fetch();
 
-        this.cosmeticsCollection = new DuelystFirebase.Collection(null, {
+        _self.cosmeticsCollection = new DuelystFirebase.Collection(null, {
           firebase: process.env.FIREBASE_URL + 'user-inventory/' + userId + '/cosmetic-inventory',
         });
 
-        this.portraitsCollection = new DuelystFirebase.Collection(null, {
+        _self.portraitsCollection = new DuelystFirebase.Collection(null, {
           firebase: process.env.FIREBASE_URL + 'user-inventory/' + userId + '/portraits',
         });
 
-        this.codexChaptersCollection = new DuelystFirebase.Collection(null, {
+        _self.codexChaptersCollection = new DuelystFirebase.Collection(null, {
           firebase: process.env.FIREBASE_URL + 'user-inventory/' + userId + '/codex',
         });
 
-        this.totalOrbCountModel = new DuelystFirebase.Model(null, {
+        _self.totalOrbCountModel = new DuelystFirebase.Model(null, {
           firebase: process.env.FIREBASE_URL + 'user-inventory/' + userId + '/spirit-orb-total',
         });
 
-        this.onReady().then(function () {
+        _self.onReady().then(function () {
         // listen to changes immediately so we don't miss anything
           this.listenTo(this.walletModel, 'change', this.onWalletChange);
           this.listenTo(this.boosterPacksCollection, 'change add remove', this.onBoosterPackCollectionChange);
@@ -160,16 +160,16 @@ var InventoryManager = Manager.extend({
             // remove all invalid decks
             this.decksCollection.remove(invalidDeckModels);
           }.bind(this));
-        }.bind(this));
+        }.bind(_self));
 
-        this._markAsReadyWhenModelsAndCollectionsSynced([
-          this.walletModel,
-          this.boosterPacksCollection,
-          this.cardsCollection,
-          this.decksCollection,
-          this.cardLoreCollection,
-          this.codexChaptersCollection,
-          this.cosmeticsCollection,
+        _self._markAsReadyWhenModelsAndCollectionsSynced([
+          _self.walletModel,
+          _self.boosterPacksCollection,
+          _self.cardsCollection,
+          _self.decksCollection,
+          _self.cardLoreCollection,
+          _self.codexChaptersCollection,
+          _self.cosmeticsCollection,
         ]);
       });
   },

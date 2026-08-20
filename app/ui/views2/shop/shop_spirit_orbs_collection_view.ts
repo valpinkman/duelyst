@@ -296,6 +296,7 @@ var ShopSpiritOrbsCollectionView = Backbone.Marionette.ItemView.extend({
   /* region PURCHASE */
 
   onSelectProduct: function (e) {
+    const _self = this;
     var productSku = $(e.currentTarget).data('product-sku');
 
     var productData;
@@ -337,9 +338,8 @@ var ShopSpiritOrbsCollectionView = Backbone.Marionette.ItemView.extend({
     console.log(saleData);
 
     return NavigationManager.getInstance().showDialogForConfirmPurchase(packProductData, saleData)
-      .bind(this)
       .then(function (purchaseData) {
-        this.onPurchaseComplete(purchaseData);
+        _self.onPurchaseComplete(purchaseData);
       })
       .catch(function () {
       // do nothing on cancel

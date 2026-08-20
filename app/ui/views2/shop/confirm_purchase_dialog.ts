@@ -528,6 +528,7 @@ var ConfirmPurchaseDialogView = Backbone.Marionette.ItemView.extend({
   /* region GOLD CHECKOUT */
 
   _goldCheckout: function (productData) {
+    const _self = this;
     var sku = productData.sku;
     var gold = productData.gold || 0;
     var category = productData.category_id; // Purchase type e.g. "packs".
@@ -536,9 +537,8 @@ var ConfirmPurchaseDialogView = Backbone.Marionette.ItemView.extend({
 
     if (gold == null || isNaN(gold) || gold === 0) {
       return Promise.resolve()
-        .bind(this)
         .then(function () {
-          this.showError(`Invalid gold cost (${gold})!`);
+          _self.showError(`Invalid gold cost (${gold})!`);
         });
     }
 
@@ -585,23 +585,21 @@ var ConfirmPurchaseDialogView = Backbone.Marionette.ItemView.extend({
     } else {
       // TODO: Add support for bundles, emotes, etc.
       return Promise.resolve()
-        .bind(this)
         .then(function () {
-          this.showError(`Sorry, ${category} purchases are not yet enabled.`);
+          _self.showError(`Sorry, ${category} purchases are not yet enabled.`);
         });
     }
 
     return purchasePromise
-      .bind(this)
       .then(function () {
-        this.trigger('complete', {
+        _self.trigger('complete', {
           sku: sku,
           paymentType: 'gold',
         });
-        this.flashSuccessInDialog(i18next.t('common.success_title'));
+        _self.flashSuccessInDialog(i18next.t('common.success_title'));
       })
       .catch(function (errorMessage) {
-        this.showError(errorMessage);
+        _self.showError(errorMessage);
       });
   },
 
@@ -644,6 +642,7 @@ var ConfirmPurchaseDialogView = Backbone.Marionette.ItemView.extend({
   /* region CRAFT */
 
   onCraftPressed: function (e) {
+    const _self = this;
     var productData = this.productData;
     var productId = productData.id;
     var sku = productData.sku;
@@ -652,18 +651,17 @@ var ConfirmPurchaseDialogView = Backbone.Marionette.ItemView.extend({
     this.ui.product_craft_button.addClass('hide');
     this.ui.card_form_error.addClass('hide');
     InventoryManager.getInstance().craftCosmetic(productId)
-      .bind(this)
       .then(function () {
-        this.trigger('complete', {
+        _self.trigger('complete', {
           sku: sku,
           paymentType: 'spirit',
         });
 
-        this.flashSuccessInDialog(i18next.t('common.success_title'));
+        _self.flashSuccessInDialog(i18next.t('common.success_title'));
       })
       .catch(function (errorMessage) {
-        this.ui.product_craft_button.removeClass('hide');
-        this.showError(errorMessage, false, true);
+        _self.ui.product_craft_button.removeClass('hide');
+        _self.showError(errorMessage, false, true);
       });
   },
 
@@ -681,6 +679,7 @@ var ConfirmPurchaseDialogView = Backbone.Marionette.ItemView.extend({
   },
 
   onDeleteCard: function () {
+    const _self = this;
     if (this.creditCardFormRegion == null) return;
 
     this.$el.addClass('loading');
@@ -694,13 +693,12 @@ var ConfirmPurchaseDialogView = Backbone.Marionette.ItemView.extend({
       contentType: 'application/json',
       dataType: 'json',
     }))
-      .bind(this)
       .then(function () {
-        this.flashSuccessInDialog(i18next.t('common.success_title'), true);
+        _self.flashSuccessInDialog(i18next.t('common.success_title'), true);
       })
       .catch(function (err) {
         var errorMessage = response.responseJSON && response.responseJSON.message || 'There was a problem deleting your card.';
-        this.showError(errorMessage);
+        _self.showError(errorMessage);
       });
   },
 

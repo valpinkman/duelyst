@@ -78,7 +78,6 @@ const RiftProgressLayer = RewardLayer.extend({
     this._riftLevelAfter = RiftHelper.levelForPoints(this._riftPointsAfter);
 
     this.whenRequiredResourcesReady()
-      .bind(this)
       .then((requiredRequestId) => {
         if (!this.getAreResourcesValid(requiredRequestId)) return; // load invalidated or resources changed
 

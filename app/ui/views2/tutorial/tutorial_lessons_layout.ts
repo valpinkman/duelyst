@@ -237,7 +237,6 @@ var TutorialLessonsLayout = Backbone.Marionette.LayoutView.extend({
       });
 
       return Promise.all(challengeCompletionPromises)
-        .bind(this)
         .then(function () {
           return NewPlayerManager.getInstance().updateCoreState();
         }).then(function () {

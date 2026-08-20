@@ -40,11 +40,10 @@ describe('cosmetic chests module', () => {
         .then((userIdCreated) => {
           _chainState.userId = userIdCreated;
           Logger.module('UNITTEST').log('created user ', userIdCreated);
-        }).catch(onType(Errors.AlreadyExistsError, function (error) {
+        }).catch(onType(Errors.AlreadyExistsError, (error) => {
           const _chainState = {};
           Logger.module('UNITTEST').log('existing user', userName);
           return UsersModule.userIdForEmail(userEmail)
-            .bind(this)
             .then((userIdExisting) => {
               _chainState.userId = userIdExisting;
               Logger.module('UNITTEST').log('existing user retrieved', userIdExisting);

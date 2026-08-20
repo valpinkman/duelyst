@@ -35,24 +35,24 @@ var NewsManager = Manager.extend({
   /* region CONNECT */
 
   onBeforeConnect: function () {
+    const _self = this;
     Manager.prototype.onBeforeConnect.call(this);
 
     ProfileManager.getInstance().onReady()
-      .bind(this)
       .then(function () {
         var userId = ProfileManager.getInstance().get('id');
 
-        this.newsItemsIndexCollection = new DuelystFirebase.Collection(null, {
+        _self.newsItemsIndexCollection = new DuelystFirebase.Collection(null, {
           firebase: new Firebase(process.env.FIREBASE_URL).child('news').child('index').limitToLast(10),
         });
 
-        this.readNewsItemsCollection = new DuelystFirebase.Collection(null, {
+        _self.readNewsItemsCollection = new DuelystFirebase.Collection(null, {
           firebase: new Firebase(process.env.FIREBASE_URL).child('user-news').child(userId).child('read')
             .limitToLast(20),
         });
 
         // what to do when we're ready
-        this.onReady().then(function () {
+        _self.onReady().then(function () {
           if (this.readNewsItemsCollection.last()) {
             this.lastReadItemAt = this.readNewsItemsCollection.last().get('read_at');
           }
@@ -62,9 +62,9 @@ var NewsManager = Manager.extend({
           }.bind(this));
 
           this.unreadNewsItems = new Backbone.Collection(unreadItems);
-        }.bind(this));
+        }.bind(_self));
 
-        this._markAsReadyWhenModelsAndCollectionsSynced([this.newsItemsIndexCollection, this.readNewsItemsCollection]);
+        _self._markAsReadyWhenModelsAndCollectionsSynced([_self.newsItemsIndexCollection, _self.readNewsItemsCollection]);
       });
   },
 

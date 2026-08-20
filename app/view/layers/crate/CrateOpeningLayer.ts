@@ -1018,7 +1018,6 @@ const CrateOpeningLayer = RewardLayer.extend({
       });
 
       return NavigationManager.getInstance().showDialogForConfirmPurchase(productData)
-        .bind(this)
         .catch(() => {
           // do nothing on cancel
         });

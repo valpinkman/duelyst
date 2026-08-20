@@ -54,49 +54,49 @@ var ProgressionManager = Manager.extend({
   /* region CONNECT */
 
   onBeforeConnect: function () {
+    const _self = this;
     Manager.prototype.onBeforeConnect.call(this);
 
     ProfileManager.getInstance().onReady()
-      .bind(this)
       .then(function () {
-        this.checkForReferralRewards();
+        _self.checkForReferralRewards();
 
         var userId = ProfileManager.getInstance().get('id');
         var neededToBeReady = [];
 
-        this.unreadChallengeProgressionRewards = [];
+        _self.unreadChallengeProgressionRewards = [];
 
-        this.gameCounterRewardsCollection = new DuelystFirebase.Collection(null, {
+        _self.gameCounterRewardsCollection = new DuelystFirebase.Collection(null, {
           firebase: new Firebase(process.env.FIREBASE_URL)
             .child('user-progression')
             .child(userId)
             .child('game-counter-rewards'),
         });
-        neededToBeReady.push(this.gameCounterRewardsCollection);
+        neededToBeReady.push(_self.gameCounterRewardsCollection);
 
-        this.gameCounterModel = new DuelystFirebase.Model(null, {
+        _self.gameCounterModel = new DuelystFirebase.Model(null, {
           firebase: new Firebase(process.env.FIREBASE_URL)
             .child('user-progression')
             .child(userId)
             .child('game-counter'),
         });
-        neededToBeReady.push(this.gameCounterModel);
+        neededToBeReady.push(_self.gameCounterModel);
 
-        this.bossesDefeatedCollection = new DuelystFirebase.Collection(null, {
+        _self.bossesDefeatedCollection = new DuelystFirebase.Collection(null, {
           firebase: new Firebase(process.env.FIREBASE_URL)
             .child('user-bosses-defeated')
             .child(userId),
         });
-        neededToBeReady.push(this.bossesDefeatedCollection);
+        neededToBeReady.push(_self.bossesDefeatedCollection);
 
-        this.bossEventsCollection = new DuelystFirebase.Collection(null, {
+        _self.bossEventsCollection = new DuelystFirebase.Collection(null, {
           firebase: new Firebase(process.env.FIREBASE_URL)
             .child('boss-events'),
         });
-        this.bossEventsCollection.comparator = 'event_start';
-        neededToBeReady.push(this.bossEventsCollection);
+        _self.bossEventsCollection.comparator = 'event_start';
+        neededToBeReady.push(_self.bossEventsCollection);
 
-        this._factionProgressionStats = {};
+        _self._factionProgressionStats = {};
         _.each(SDK.FactionFactory.getAllPlayableFactions(), function (faction) {
           var factionId = faction.id.toString();
           var factionProgressionModel = new DuelystFirebase.Model(null, {
@@ -108,13 +108,13 @@ var ProgressionManager = Manager.extend({
           });
           this._factionProgressionStats[factionId] = factionProgressionModel;
           neededToBeReady.push(factionProgressionModel);
-        }.bind(this));
+        }.bind(_self));
 
-        this.challengeProgressionCollection = new DuelystBackbone.Collection();
-        this.challengeProgressionCollection.model = ChallengeModel;
-        this.challengeProgressionCollection.url = process.env.API_URL + '/api/me/challenges/gated';
-        this.challengeProgressionCollection.fetch();
-        neededToBeReady.push(this.challengeProgressionCollection);
+        _self.challengeProgressionCollection = new DuelystBackbone.Collection();
+        _self.challengeProgressionCollection.model = ChallengeModel;
+        _self.challengeProgressionCollection.url = process.env.API_URL + '/api/me/challenges/gated';
+        _self.challengeProgressionCollection.fetch();
+        neededToBeReady.push(_self.challengeProgressionCollection);
 
         // this.challengeProgressionCollection = new DuelystFirebase.Model(null, {
         //   firebase: new Firebase(process.env.FIREBASE_URL).child("user-challenge-progression").child(userId)
@@ -122,12 +122,12 @@ var ProgressionManager = Manager.extend({
         // neededToBeReady.push(this.challengeProgressionCollection);
 
         // what to do when we're ready
-        this.onReady()
+        _self.onReady()
           .then(function () {
             this.listenTo(this.gameCounterRewardsCollection, 'add', this.ongameCounterRewardReceived);
-          }.bind(this));
+          }.bind(_self));
 
-        this._markAsReadyWhenModelsAndCollectionsSynced(neededToBeReady);
+        _self._markAsReadyWhenModelsAndCollectionsSynced(neededToBeReady);
       });
   },
 

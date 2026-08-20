@@ -47,35 +47,35 @@ var AchievementsManager = Manager.extend({
   /* region CONNECT */
 
   onBeforeConnect: function () {
+    const _self = this;
     Manager.prototype.onBeforeConnect.call(this);
     ProfileManager.getInstance().onReady()
-      .bind(this)
       .then(function () {
         var userId = ProfileManager.getInstance().get('id');
         var username = ProfileManager.getInstance().get('username');
 
-        this._achievementsStatusModel = new DuelystFirebase.Model(null, {
+        _self._achievementsStatusModel = new DuelystFirebase.Model(null, {
           firebase: new Firebase(process.env.FIREBASE_URL + '/user-achievements/' + userId + '/status'),
         });
 
-        this._completedAchievementsCollection = new DuelystFirebase.Collection(null, {
+        _self._completedAchievementsCollection = new DuelystFirebase.Collection(null, {
           firebase: process.env.FIREBASE_URL + 'user-achievements/' + userId + '/completed',
         });
 
-        this._progressedAchievementsCollection = new DuelystFirebase.Collection(null, {
+        _self._progressedAchievementsCollection = new DuelystFirebase.Collection(null, {
           firebase: process.env.FIREBASE_URL + 'user-achievements/' + userId + '/progress',
         });
 
-        this.onReady().then(function () {
+        _self.onReady().then(function () {
         // listen to changes immediately so we don't miss anything
         // this.listenTo(this._achievementsModel, "change",this._onNewPlayerChange);
           this._completedAchievementsRef = new Firebase(process.env.FIREBASE_URL + '/user-achievements/' + userId).child('completed');
           this._completedAchievementsRef.orderByChild('completed_at').startAt(this.getAchievementsLastReadAt()).on('child_added', this._onNewCompletedAchievement.bind(this));
 
           return this._scheduleOrRequestLoginAchievements();
-        }.bind(this));
+        }.bind(_self));
 
-        this._markAsReadyWhenModelsAndCollectionsSynced([this._achievementsStatusModel, this._completedAchievementsCollection, this._progressedAchievementsCollection]);
+        _self._markAsReadyWhenModelsAndCollectionsSynced([_self._achievementsStatusModel, _self._completedAchievementsCollection, _self._progressedAchievementsCollection]);
       });
   },
 

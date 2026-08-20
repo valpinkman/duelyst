@@ -47,15 +47,15 @@ var QuestsManager = Manager.extend({
   /* region CONNECT */
 
   onBeforeConnect: function () {
+    const _self = this;
     Manager.prototype.onBeforeConnect.call(this);
 
     ProfileManager.getInstance().onReady()
-      .bind(this)
       .then(function () {
         var userId = ProfileManager.getInstance().get('id');
-        this._unreadQuestProgressNotificationModels = [];
-        this.dailyQuestsGeneratedAtModel = null;
-        this.dailyQuestsCollection = null;
+        _self._unreadQuestProgressNotificationModels = [];
+        _self.dailyQuestsGeneratedAtModel = null;
+        _self.dailyQuestsCollection = null;
 
         NewPlayerManager.getInstance().onReady().then(function () {
         // on first connect/session start request new daily quests
@@ -91,7 +91,7 @@ var QuestsManager = Manager.extend({
 
             this._markAsReadyWhenModelsAndCollectionsSynced([this.dailyQuestsGeneratedAtModel, this.dailyQuestsCollection]);
           }.bind(this));
-        }.bind(this));
+        }.bind(_self));
       });
   },
 

@@ -64,18 +64,18 @@ var ChatManager = Manager.extend({
   /* region CONNECT */
 
   onBeforeConnect: function () {
+    const _self = this;
     Manager.prototype.onBeforeConnect.call(this);
 
     ProfileManager.getInstance().onReady()
-      .bind(this)
       .then(function () {
         var userId = ProfileManager.getInstance().get('id');
         var username = ProfileManager.getInstance().get('username');
         // configure presence
-        this.conversations = new Conversations();
-        this._presenceRef = new Firebase(process.env.FIREBASE_URL + '/users/' + userId).child('presence');
-        this._connectionRef = new Firebase(process.env.FIREBASE_URL + '/.info/connected');
-        this._connectionRef.on('value', function (snapshot) {
+        _self.conversations = new Conversations();
+        _self._presenceRef = new Firebase(process.env.FIREBASE_URL + '/users/' + userId).child('presence');
+        _self._connectionRef = new Firebase(process.env.FIREBASE_URL + '/.info/connected');
+        _self._connectionRef.on('value', function (snapshot) {
           if (snapshot.val()) {
           // var sessionRef = this._presenceRef.push();
             this._presenceRef.child('status').set(this._status);
@@ -88,15 +88,15 @@ var ChatManager = Manager.extend({
 
             this._presenceRef.child('began').set(Firebase.ServerValue.TIMESTAMP);
           }
-        }, this);
-        this.userConversationsIndexRef = new Firebase(process.env.FIREBASE_URL + 'chat/users/' + userId + '/conversations');
-        this.invitesListRef = new Firebase(process.env.FIREBASE_URL + 'chat/users/' + userId + '/buddy-invites');
+        }, _self);
+        _self.userConversationsIndexRef = new Firebase(process.env.FIREBASE_URL + 'chat/users/' + userId + '/conversations');
+        _self.invitesListRef = new Firebase(process.env.FIREBASE_URL + 'chat/users/' + userId + '/buddy-invites');
 
-        this.buddiesCollection = new BuddiesCollection(null, { firebase: process.env.FIREBASE_URL + 'users/' + userId + '/buddies' });
+        _self.buddiesCollection = new BuddiesCollection(null, { firebase: process.env.FIREBASE_URL + 'users/' + userId + '/buddies' });
 
-        this.invitesListRef.on('child_added', this._onBuddyInviteReceived.bind(this));
+        _self.invitesListRef.on('child_added', _self._onBuddyInviteReceived.bind(_self));
 
-        this.onReady().then(function () {
+        _self.onReady().then(function () {
           Logger.module('UI').log('ChatManager::onReady');
           this.buddiesCollection.each(this._onBuddyAdded.bind(this));
           this.listenTo(this.buddiesCollection, 'add', this._onBuddyAdded);
@@ -105,9 +105,9 @@ var ChatManager = Manager.extend({
           this.listenTo(EventBus.getInstance(), EVENTS.pointer_down, this.onResetAwayStatus);
           this.listenTo(EventBus.getInstance(), EVENTS.pointer_up, this.onResetAwayStatus);
           this.listenTo(EventBus.getInstance(), EVENTS.pointer_move, this.onResetAwayStatus);
-        }.bind(this));
+        }.bind(_self));
 
-        this._markAsReadyWhenModelsAndCollectionsSynced([this.buddiesCollection]);
+        _self._markAsReadyWhenModelsAndCollectionsSynced([_self.buddiesCollection]);
 
       /*
       this.userConversationsIndexRef.startAt(Date.now()).on("child_added",function(snapshot) { // startAt(Firebase.ServerValue.TIMESTAMP)

@@ -121,7 +121,6 @@ var RiftDeckSelectLayout = Backbone.Marionette.LayoutView.extend({
       }
 
       this._activeRiftRequest
-        .bind(this)
         .then(function (runData) {
           this._activeRiftRequest = null;
           var runLayout = new RiftRunLayout({ model: new DuelystBackbone.Model(runData) });
@@ -172,9 +171,9 @@ var RiftDeckSelectLayout = Backbone.Marionette.LayoutView.extend({
   },
 
   _purchaseRiftRunTicketWithCurrency: function () {
+    const _self = this;
     var productData = ShopData.rift.RIFT_TICKET;
     return NavigationManager.getInstance().showDialogForConfirmPurchase(productData)
-      .bind(this)
       .then(function (purchaseData) {
         Analytics.track('buy rift ticket with currency', {
           category: Analytics.EventCategory.Rift,
@@ -186,7 +185,7 @@ var RiftDeckSelectLayout = Backbone.Marionette.LayoutView.extend({
               NavigationManager.getInstance().destroyDialogView();
               return Promise.resolve();
             });
-          }.bind(this));
+          }.bind(_self));
         } else {
         // Ticket arrived in inventory before we got here
           return Promise.resolve();

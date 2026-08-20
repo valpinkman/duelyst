@@ -394,7 +394,6 @@ class Session extends EventEmitter {
         },
       }),
     )
-      .bind(this)
       .then((res) => {
         debug(`refreshToken:fetch ${res.ok}`);
         if (!res.ok) { return null; }

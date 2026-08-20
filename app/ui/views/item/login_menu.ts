@@ -163,6 +163,7 @@ var LoginMenuItemView = Backbone.Marionette.ItemView.extend({
   /* region LOGIN */
 
   onLogin: function () {
+    const _self = this;
     var username = this.ui.$username.val();
     var password = this.ui.$password.val();
 
@@ -175,14 +176,13 @@ var LoginMenuItemView = Backbone.Marionette.ItemView.extend({
       // lockdown user triggered navigation while we login
       NavigationManager.getInstance().requestUserTriggeredNavigationLocked(this._userNavLockId);
       Session.login(username, password)
-        .bind(this)
         .catch(function (e) {
         // onError expects a string not an actual error
-          this.onError(e.codeMessage || e.innerMessage || e.message);
+          _self.onError(e.codeMessage || e.innerMessage || e.message);
         })
         .finally(function () {
         // unlock user triggered navigation
-          NavigationManager.getInstance().requestUserTriggeredNavigationUnlocked(this._userNavLockId);
+          NavigationManager.getInstance().requestUserTriggeredNavigationUnlocked(_self._userNavLockId);
         });
     } else {
       audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_error.audio, CONFIG.ERROR_SFX_PRIORITY);

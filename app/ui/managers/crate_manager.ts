@@ -41,32 +41,32 @@ var CrateManager = Manager.extend({
   /* region CONNECT */
 
   onBeforeConnect: function () {
+    const _self = this;
     Manager.prototype.onBeforeConnect.call(this);
 
     ProfileManager.getInstance().onReady()
-      .bind(this)
       .then(function () {
         var userId = ProfileManager.getInstance().get('id');
 
-        this._cosmeticChestCollection = new DuelystFirebase.Collection(null, {
+        _self._cosmeticChestCollection = new DuelystFirebase.Collection(null, {
           firebase: process.env.FIREBASE_URL + 'user-inventory/' + userId + '/cosmetic-chests',
         });
 
-        this._cosmeticChestKeyCollection = new DuelystFirebase.Collection(null, {
+        _self._cosmeticChestKeyCollection = new DuelystFirebase.Collection(null, {
           firebase: process.env.FIREBASE_URL + 'user-inventory/' + userId + '/cosmetic-chest-keys',
         });
 
-        this._giftCrateCollection = new DuelystBackbone.Collection();
-        this._giftCrateCollection.url = process.env.API_URL + '/api/me/crates/gift_crates';
-        this._giftCrateCollection.fetch();
+        _self._giftCrateCollection = new DuelystBackbone.Collection();
+        _self._giftCrateCollection.url = process.env.API_URL + '/api/me/crates/gift_crates';
+        _self._giftCrateCollection.fetch();
 
-        this._markAsReadyWhenModelsAndCollectionsSynced([
-          this._cosmeticChestCollection,
-          this._cosmeticChestKeyCollection,
-          this._giftCrateCollection,
+        _self._markAsReadyWhenModelsAndCollectionsSynced([
+          _self._cosmeticChestCollection,
+          _self._cosmeticChestKeyCollection,
+          _self._giftCrateCollection,
         ]);
 
-        this.onReady().then(function () {
+        _self.onReady().then(function () {
           this.listenTo(this._cosmeticChestCollection, 'change add remove', this.onCosmeticChestCollectionChange);
           this.listenTo(this._cosmeticChestKeyCollection, 'change add remove', this.onCosmeticChestKeyCollectionChange);
 
@@ -77,7 +77,7 @@ var CrateManager = Manager.extend({
               NewPlayerManager.getInstance().setHasReceivedCrateProduct();
             });
           }
-        }.bind(this));
+        }.bind(_self));
       });
   },
 

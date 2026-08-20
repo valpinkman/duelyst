@@ -89,7 +89,6 @@ var ChangePortraitItemView = FormPromptDialogItemView.extend({
       }
 
       return NavigationManager.getInstance().showDialogForConfirmPurchase(productData, saleData)
-        .bind(this)
         .then(function () {
           NavigationManager.getInstance().showDialogView(new ChangePortraitItemView({ model: new Backbone.Model() }));
         })
@@ -103,15 +102,15 @@ var ChangePortraitItemView = FormPromptDialogItemView.extend({
   },
 
   onSubmit: function () {
+    const _self = this;
     FormPromptDialogItemView.prototype.onSubmit.apply(this, arguments);
     Session.changePortrait(this._cosmeticId)
-      .bind(this)
       .then(function (res) {
-        this.onSuccess(res);
+        _self.onSuccess(res);
       })
       .catch(function (e) {
       // onError expects a string not an actual error
-        this.onError(e.innerMessage || e.message);
+        _self.onError(e.innerMessage || e.message);
       });
   },
 
