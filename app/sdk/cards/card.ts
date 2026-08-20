@@ -2414,7 +2414,7 @@ class Card extends SDKObject {
     return attributeValue;
   }
 
-  getBuffedAttribute(attributeValue, buffKey, withAuras, clamped) {
+  getBuffedAttribute(attributeValue, buffKey, withAuras?, clamped?) {
     let cachedValue;
     if (withAuras == null) { withAuras = true; }
     if (clamped == null) { clamped = true; }
@@ -2447,7 +2447,7 @@ class Card extends SDKObject {
     return attributeValue;
   }
 
-  getBaseAttribute(attributeValue, buffKey, withAuras, clamped) {
+  getBaseAttribute(attributeValue, buffKey, withAuras?, clamped?) {
     if (withAuras == null) { withAuras = true; }
     if (clamped == null) { clamped = true; }
     const cachedValue = this._private.cachedBaseAttributes[buffKey];
@@ -2560,7 +2560,7 @@ class Card extends SDKObject {
     return this._private.followupCard;
   }
 
-  injectFollowupPropertiesIntoCard(followupCard, followupIndex) {
+  injectFollowupPropertiesIntoCard(followupCard, followupIndex?) {
     if (followupIndex == null) { followupIndex = 0; }
     if (followupCard instanceof Card) {
       // set followup properties of action card by copying followup data into card

@@ -395,7 +395,7 @@ class Spell extends Card {
     return validPositions;
   }
 
-  _getEntitiesForFilter(allowUntargetable) {
+  _getEntitiesForFilter(allowUntargetable?) {
     if (allowUntargetable == null) { allowUntargetable = false; }
     const board = this.getGameSession().getBoard();
     if (this.filterNearGeneral) {

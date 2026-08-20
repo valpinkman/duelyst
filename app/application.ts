@@ -755,7 +755,7 @@ App._showSelectUsername = function (data) {
   );
 };
 
-App._showTerms = function (options) {
+App._showTerms = function (options?) {
   if (options == null) { options = {}; }
   Logger.module('APPLICATION').log('App:_showTerms');
   return PackageManager.getInstance().loadAndActivateMajorPackage(
@@ -2084,7 +2084,7 @@ App._subscribeToJoinGameEventsPromise = function () {
     App._unsubscribeFromJoinGameEvents());
 };
 
-App._joinGame = function (gameListingData, loadMyGameResourcesPromise, loadOpponentGameResourcesPromise) {
+App._joinGame = function (gameListingData, loadMyGameResourcesPromise?, loadOpponentGameResourcesPromise?) {
   Logger.module('APPLICATION').log('App._joinGame', gameListingData);
 
   // load my resources for game
@@ -2309,7 +2309,7 @@ App._startGame = function () {
   NotificationsManager.getInstance().dismissNotificationsThatCantBeShown();
 
   if (Discord) {
-    const getFactionImage = function (factionId, opponent) {
+    const getFactionImage = function (factionId, opponent?) {
       if (opponent == null) { opponent = false; }
       let s = { key: '', text: '' };
       switch (factionId) {

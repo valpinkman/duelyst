@@ -621,7 +621,7 @@ var onGameDisconnect = function () {
  * @param  {Socket} socket The socket which wants to leave a game.
  * @param {Boolean} [silent=false] whether to disconnect silently, as in the case of duplicate connections for same player
  */
-var playerLeaveGameIfNeeded = function (socket, silent) {
+var playerLeaveGameIfNeeded = function (socket, silent?) {
   if (silent == null) { silent = false; }
   if (socket != null) {
     const {
@@ -713,7 +713,7 @@ var spectatorLeaveGameIfNeeded = function (socket) {
  * @param  {String}  gameId    The ID of the game to destroy.
  * @param  {Boolean}  persist    Do we need to save/archive this game?
  */
-var destroyGameSessionIfNoConnectionsLeft = function (gameId, persist) {
+var destroyGameSessionIfNoConnectionsLeft = function (gameId, persist?) {
   if (persist == null) { persist = false; }
   if ((games[gameId].connectedPlayers.length === 0) && (games[gameId].connectedSpectators.length === 0)) {
     clearDisconnectedPlayerTimeout(gameId);

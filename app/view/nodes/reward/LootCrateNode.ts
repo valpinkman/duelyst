@@ -434,7 +434,7 @@ const LootCrateNode = cc.Node.extend({
     return position;
   },
 
-  showCrateMaxCountLabel(duration, fontName, fontSize, fontColor) {
+  showCrateMaxCountLabel(duration, fontName?, fontSize?, fontColor?) {
     if (fontName == null) { fontName = RSX.font_light.name; }
     if (fontSize == null) { fontSize = 20; }
     if (fontColor == null) { fontColor = { r: 194, g: 203, b: 220 }; }
@@ -975,7 +975,7 @@ const LootCrateNode = cc.Node.extend({
    * @public
    * @return {Promise}
    */
-  showReveal(scaleTo, withAudio) {
+  showReveal(scaleTo?, withAudio?) {
     if (scaleTo == null) { scaleTo = 1.0; }
     if (withAudio == null) { withAudio = true; }
 

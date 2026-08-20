@@ -520,7 +520,7 @@ var AttackRange = (function () {
       return this._targetsTestedForValidByIndex[index] = (needle = targetEntity, Array.from<any>(this.getValidTargets(board, entity)).includes(needle));
     }
 
-    getAttackAtlas(board, entity, fromPositions) {
+    getAttackAtlas(board, entity, fromPositions?) {
       if ((this._attackAtlasesByIndex == null)) { this._attackAtlasesByIndex = {}; }
       // ensure from positions is an array
       if ((fromPositions == null)) {

@@ -14,7 +14,7 @@ const i18next = require('i18next');
 const PromiseUtils = require('app/common/utils/utils_promise');
 
 class Session extends EventEmitter {
-  constructor(options) {
+  constructor(options?) {
     if (options == null) { options = {}; }
     super();
     this.url = process.env.API_URL || options.url || 'http://localhost:5000';
@@ -118,7 +118,7 @@ class Session extends EventEmitter {
     return Promise.resolve('');
   }
 
-  login(username, password, silent) {
+  login(username, password, silent?) {
     if (silent == null) { silent = false; }
     debug(`login: ${username}`);
 
@@ -271,7 +271,7 @@ class Session extends EventEmitter {
       .then(this._checkResponse.bind(this));
   }
 
-  changePortrait(portraitId) {
+  changePortrait(portraitId?) {
     if ((portraitId == null)) {
       return Promise.reject(new Error('Invalid portrait!'));
     }
@@ -321,7 +321,7 @@ class Session extends EventEmitter {
    * stored token and hands back a freshly minted firebase_token, and only then
    * authenticate to Firebase with that.
    */
-  isAuthenticated(token) {
+  isAuthenticated(token?) {
     if ((token == null)) { return Promise.resolve(false); }
 
     this.token = token;
@@ -367,7 +367,7 @@ class Session extends EventEmitter {
       });
   }
 
-  refreshToken(silent) {
+  refreshToken(silent?) {
     if (silent == null) { silent = false; }
     if ((this.token == null)) { return Promise.resolve(null); }
     return Promise.resolve(

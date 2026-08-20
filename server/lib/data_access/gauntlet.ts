@@ -90,7 +90,7 @@ class GauntletModule {
         .then(() => DuelystFirebase.connect().getRootRef())
 
         .then(function (fbRootRef) {
-          const updateWalletData = (walletData) => {
+          const updateWalletData = (walletData?) => {
             if (walletData == null) { walletData = {}; }
             walletData.gold_amount = _chainState.final_wallet_gold;
             walletData.updated_at = NOW_UTC_MOMENT.valueOf();
@@ -772,7 +772,7 @@ class GauntletModule {
    * @param  {String}  userId    User ID
    * @return  {Promise}        Promise that will return the arena deck on completion or error out with a NoArenaDeckError.
    */
-  static getArenaDeck(userId) {
+  static getArenaDeck(userId?) {
     // userId must be defined
     if ((userId == null)) {
       Logger.module('GauntletModule').debug(`getArenaDeck() -> ERROR: invalid user ID: ${userId}`.red);

@@ -95,7 +95,7 @@ class InventoryModule {
     ])
       .then(() => DuelystFirebase.connect().getRootRef())
       .then(function (fbRootRef) {
-        const updateWalletData = function (walletData) {
+        const updateWalletData = function (walletData?) {
           if (walletData == null) { walletData = {}; }
           if (walletData.gold_amount == null) { walletData.gold_amount = 0; }
           walletData.gold_amount += goldAmount;
@@ -161,7 +161,7 @@ class InventoryModule {
       })
       .then(() => DuelystFirebase.connect().getRootRef())
       .then(function (fbRootRef) {
-        const updateWalletData = function (walletData) {
+        const updateWalletData = function (walletData?) {
           if (walletData == null) { walletData = {}; }
           if (walletData.gold_amount == null) { walletData.gold_amount = 0; }
           walletData.gold_amount += goldAmount;
@@ -234,7 +234,7 @@ class InventoryModule {
       knex('user_currency_log').insert(userCurrencyLogItem).transacting(trx),
     ])
       .then(() => DuelystFirebase.connect().getRootRef()).then(function (fbRootRef) {
-        const updateWalletData = function (walletData) {
+        const updateWalletData = function (walletData?) {
           if (walletData == null) { walletData = {}; }
           if (walletData.spirit_amount == null) { walletData.spirit_amount = 0; }
           walletData.spirit_amount += spiritAmount;
@@ -296,7 +296,7 @@ class InventoryModule {
     return Promise.all(allPromises)
       .then(() => DuelystFirebase.connect().getRootRef())
       .then(function (fbRootRef) {
-        const updateWalletData = function (walletData) {
+        const updateWalletData = function (walletData?) {
           if (walletData == null) { walletData = {}; }
           if (walletData.premium_amount == null) { walletData.premium_amount = 0; }
           walletData.premium_amount += amount;
@@ -364,7 +364,7 @@ class InventoryModule {
       })
       .then(() => DuelystFirebase.connect().getRootRef())
       .then(function (fbRootRef) {
-        const updateWalletData = function (walletData) {
+        const updateWalletData = function (walletData?) {
           if (walletData == null) { walletData = {}; }
           if (walletData.premium_amount == null) { walletData.premium_amount = 0; }
           walletData.premium_amount -= amount;
@@ -769,7 +769,7 @@ class InventoryModule {
 
     // search user inventory
     return tx('user_cosmetic_inventory').where('user_id', userId).andWhere('cosmetic_id', cosmeticId).first()
-      .then(function (cosmeticRow) {
+      .then(function (cosmeticRow?) {
         if ((cosmeticRow == null)) {
           return Promise.reject(new Errors.NotFoundError('Can\'t use cosmetic that you don\'t own'));
         } else {
@@ -937,7 +937,7 @@ class InventoryModule {
       })
       .then(() => DuelystFirebase.connect().getRootRef())
       .then(function (fbRootRef) {
-        const updateWalletData = function (walletData) {
+        const updateWalletData = function (walletData?) {
           if (walletData == null) { walletData = {}; }
           if (walletData.spirit_amount == null) { walletData.spirit_amount = 0; }
           walletData.spirit_amount += spiritAmount;
@@ -1399,7 +1399,7 @@ class InventoryModule {
             // inline function for generating a random card from a specific set
               let i,
                 random;
-              const randomCardFromCollectionWithoutDupes = function (cardsArray, notInCardsList, prismaticChance, maxIterations) {
+              const randomCardFromCollectionWithoutDupes = function (cardsArray, notInCardsList, prismaticChance?, maxIterations?) {
                 if (prismaticChance == null) { prismaticChance = 0.0; }
                 if (maxIterations == null) { maxIterations = 50; }
                 let cardId = null;
@@ -2432,7 +2432,7 @@ class InventoryModule {
           return DuelystFirebase.connect().getRootRef();
         })
         .then(function (fbRootRef) {
-          const updateSpirit = (walletData) => {
+          const updateSpirit = (walletData?) => {
             if (walletData == null) { walletData = {}; }
             walletData.updated_at = NOW_UTC_MOMENT.valueOf();
             walletData.spirit_amount = _chainState.userRow.wallet_spirit;
@@ -2565,7 +2565,7 @@ class InventoryModule {
       })
       .then(() => DuelystFirebase.connect().getRootRef())
       .then(function (fbRootRef) {
-        const updateSpirit = (walletData) => {
+        const updateSpirit = (walletData?) => {
           if (walletData == null) { walletData = {}; }
           walletData.updated_at = NOW_UTC_MOMENT.valueOf();
           walletData.spirit_amount = _chainState.userRow.wallet_spirit;
@@ -2765,7 +2765,7 @@ class InventoryModule {
    * @param  {Boolean}    updateFirebase  Should we also sync firebase data? (default:true)
    * @return  {Promise}            Promise that will resolve with the user's card collection cache
    */
-  static _refreshUserCardCollection(trxPromise, trx, userId, cardCountRows, updateFirebase) {
+  static _refreshUserCardCollection(trxPromise, trx, userId, cardCountRows, updateFirebase?) {
     const _chainState: Record<string, any> = {};
     if (updateFirebase == null) { updateFirebase = true; }
     const this_obj: Record<string, any> = {};
@@ -2784,7 +2784,7 @@ class InventoryModule {
 
     return knex.first().from('user_card_collection').where('user_id', userId).transacting(trx)
       .forUpdate()
-      .then(function (collectionRow) {
+      .then(function (collectionRow?) {
       // Logger.module("InventoryModule").debug "_refreshUserCardCollection() -> collectionRow ",collectionRow
         // Logger.module("InventoryModule").debug "_refreshUserCardCollection() -> cardCountRows ",cardCountRows
 

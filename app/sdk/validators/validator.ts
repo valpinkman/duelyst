@@ -49,7 +49,7 @@ class Validator {
 
   // region VALIDATION
 
-  invalidateAction(action, position, message) {
+  invalidateAction(action, position, message?) {
     // helper method for invalidating an action at a position with a message
     if (message == null) { message = 'Invalid Action!'; }
     action.setIsValid(false);

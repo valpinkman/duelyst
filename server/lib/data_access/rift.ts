@@ -98,7 +98,7 @@ class RiftModule {
         .then(() => DuelystFirebase.connect().getRootRef())
 
         .then(function (fbRootRef) {
-          const updateWalletData = (walletData) => {
+          const updateWalletData = (walletData?) => {
             if (walletData == null) { walletData = {}; }
             walletData.gold_amount = _chainState.final_wallet_gold;
             walletData.updated_at = NOW_UTC_MOMENT.valueOf();
@@ -853,7 +853,7 @@ class RiftModule {
    * @param  {Integer}  loserRiftRating      Rift rating of loser
    * @return  {Integer}  The delta for rift rating after match
    */
-  static _getRiftRatingDeltaForGameRiftRatings(winnerRiftRating, loserRiftRating) {
+  static _getRiftRatingDeltaForGameRiftRatings(winnerRiftRating?, loserRiftRating?) {
     if ((winnerRiftRating == null)) {
       winnerRiftRating = RiftModule.RIFT_DEFAULT_RATING;
     }
@@ -993,7 +993,7 @@ class RiftModule {
     const rarities = null;
 
     // inline function for generating a random card from a specific set
-    const randomCardFromCollectionWithoutDupes = function (cardsArray, notInCardsList, prismaticChance, maxIterations) {
+    const randomCardFromCollectionWithoutDupes = function (cardsArray, notInCardsList, prismaticChance?, maxIterations?) {
       if (prismaticChance == null) { prismaticChance = 0.0; }
       if (maxIterations == null) { maxIterations = 50; }
       cardId = null;

@@ -821,7 +821,7 @@ class RankModule {
 
     // First retrieves the current ladder position to determine if updates are needed to top ladder position
     return this.getUserLadderPosition(tx, playerId, startOfSeasonMoment, true, MOMENT_UTC_NOW)
-      .then(function (ladderPosition) {
+      .then(function (ladderPosition?) {
         _chainState.newLadderPosition = ladderPosition;
         if ((ladderPosition == null)) {
         // No ladder position, clear any current data for this season
@@ -1021,7 +1021,7 @@ class RankModule {
     var txPromise = knex.transaction(function (tx) {
       knex('user_rank_history').where({ user_id: userId, starting_at: startOfSeasonMoment.toDate() }).first().forUpdate()
         .transacting(tx)
-        .then(function (rankHistoryRow) {
+        .then(function (rankHistoryRow?) {
           if ((rankHistoryRow == null)) {
             throw new Errors.NotFoundError('Could not find last month\'s rank');
           }

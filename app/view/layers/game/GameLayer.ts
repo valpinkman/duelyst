@@ -518,7 +518,7 @@ var GameLayer = FXCompositeLayer.extend({
    * @param {Int} [status=GameLayer.STATUS.NEW]
    * @see GameLayer.STATUS
    */
-  resetStatus(status) {
+  resetStatus(status?) {
     if (status == null) { status = GameLayer.STATUS.NEW; }
     this._status = null;
     this.setStatus(status);
@@ -688,7 +688,7 @@ var GameLayer = FXCompositeLayer.extend({
     }
   },
 
-  requestPlayerSelectionLocked(id) {
+  requestPlayerSelectionLocked(id?) {
     if (id == null) {
       id = this._playerSelectionLockedId;
     }
@@ -701,7 +701,7 @@ var GameLayer = FXCompositeLayer.extend({
     }
   },
 
-  requestPlayerSelectionUnlocked(id) {
+  requestPlayerSelectionUnlocked(id?) {
     if (id == null) {
       id = this._playerSelectionLockedId;
     }
@@ -3006,7 +3006,7 @@ var GameLayer = FXCompositeLayer.extend({
     return actionInterface;
   },
 
-  _getActionInterfacesDepthFirstForTriggeringSequence(sdkActionInterface, depthFirstActionInterfaces) {
+  _getActionInterfacesDepthFirstForTriggeringSequence(sdkActionInterface?, depthFirstActionInterfaces?) {
     if (depthFirstActionInterfaces == null) { depthFirstActionInterfaces = []; }
     if (sdkActionInterface == null) {
       return depthFirstActionInterfaces;
@@ -3742,7 +3742,7 @@ var GameLayer = FXCompositeLayer.extend({
     return showDuration;
   },
   */
-  _showEmphasisSprite(emphasisSprite, positionOrCardNode, duration, delay) {
+  _showEmphasisSprite(emphasisSprite, positionOrCardNode, duration?, delay?) {
     // set durations
     if (delay == null) {
       delay = 0;
@@ -4183,7 +4183,7 @@ var GameLayer = FXCompositeLayer.extend({
     return this._showInstructionalArrow(cc.p(arrowPosition.x, arrowPosition.y + CONFIG.TILESIZE * 0.25), delay, duration);
   },
 
-  _showInstructionalArrow(position, delay, duration) {
+  _showInstructionalArrow(position, delay?, duration?) {
     if (delay == null) { delay = 0; }
     if (duration == null) { duration = CONFIG.ACTION_INSTRUCTIONAL_ARROW_DURATION; }
     const showDuration = (delay + duration) * CONFIG.ACTION_INSTRUCTIONAL_ARROW_SHOW_PERCENT;
@@ -4209,7 +4209,7 @@ var GameLayer = FXCompositeLayer.extend({
     return showDuration;
   },
 
-  showPersistentInstructionalArrow(position, delay, duration) {
+  showPersistentInstructionalArrow(position, delay?, duration?) {
     // returns instructional arrow
     if (delay == null) { delay = 0; }
     if (duration == null) { duration = CONFIG.ACTION_INSTRUCTIONAL_ARROW_DURATION; }

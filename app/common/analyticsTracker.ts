@@ -154,7 +154,7 @@ class AnalyticsTracker {
     return Analytics.clearGroupPriority();
   }
 
-  static _sendAnalyticsForCurrentGameSession(gameSession) {
+  static _sendAnalyticsForCurrentGameSession(gameSession?) {
     // Check for conditions where we don't want to send game over analytics
     if ((gameSession == null)) {
       gameSession = SDK.GameSession.getInstance();

@@ -604,7 +604,7 @@ class _GameSession extends SDKObject {
    *  resolveAction: null # force the resolve parent action of this event to a specific action (useful for resolve events)
    * })
    */
-  pushEvent(event, options) {
+  pushEvent(event, options?) {
     const eventType = event.type;
     this.pushEventTypeToStack(eventType);
 
@@ -1635,7 +1635,7 @@ class _GameSession extends SDKObject {
     return this.turns.length;
   }
 
-  _getNumberOfTurnsUntilPlayerActivatesSignatureCard(player, fromTurnNumber) {
+  _getNumberOfTurnsUntilPlayerActivatesSignatureCard(player, fromTurnNumber?) {
     if (this.getIsSignatureCardAlwaysReady()) {
       return 0;
     } if (this.getIsSignatureCardAlwaysReadyForPlayer(player)) {
@@ -1656,7 +1656,7 @@ class _GameSession extends SDKObject {
     return 12 - fromTurnNumber;
   }
 
-  getNumberOfPlayerTurnsUntilPlayerActivatesSignatureCard(player, ignoreHasSignatureCard, fromTurnNumber) {
+  getNumberOfPlayerTurnsUntilPlayerActivatesSignatureCard(player, ignoreHasSignatureCard?, fromTurnNumber?) {
     if (ignoreHasSignatureCard == null) { ignoreHasSignatureCard = false; }
     if (fromTurnNumber == null) { fromTurnNumber = this.getNumberOfTurns(); }
     const hasSignatureCard = !ignoreHasSignatureCard && player.getIsSignatureCardActive();
@@ -1678,7 +1678,7 @@ class _GameSession extends SDKObject {
     return numPlayerTurns;
   }
 
-  getProgressUntilPlayerActivatesSignatureCard(player, fromTurnNumber) {
+  getProgressUntilPlayerActivatesSignatureCard(player, fromTurnNumber?) {
     const hasSignatureCard = player.getIsSignatureCardActive();
     if (hasSignatureCard) {
       return 1.0;
@@ -2299,7 +2299,7 @@ class _GameSession extends SDKObject {
    * @param {Action} action
    * @param {Boolean} [emitEventWhenInvalid=true] emits EVENTS.invalid_action if action is invalid
    */
-  validateAction(action, emitEventWhenInvalid) {
+  validateAction(action, emitEventWhenInvalid?) {
     // Logger.module("SDK").debug "[G:#{@.gameId}]", "GS.validateAction: #{action.getType()}"
     // emit modify action
     // this event allows cards to check an action and modify it before anything else happens
@@ -2622,7 +2622,7 @@ class _GameSession extends SDKObject {
    * @param {Boolean} [includeExecutingAction=false]
    * @returns {Boolean}
    */
-  getCanCardBeScheduledForRemoval(card, includeExecutingAction) {
+  getCanCardBeScheduledForRemoval(card, includeExecutingAction?) {
     if (includeExecutingAction == null) { includeExecutingAction = false; }
     if (card != null) {
       if (!card.getIsActive()) {
@@ -2909,7 +2909,7 @@ class _GameSession extends SDKObject {
    * @param {Number} [min=0]
    * @returns {Number}
    */
-  getRandomIntegerForExecution(max, min) {
+  getRandomIntegerForExecution(max?, min?) {
     if (max == null) { max = 1.0; }
     if (min == null) { min = 0.0; }
     const randomNumber = min + Math.floor(Math.random() * (max - min));
@@ -3348,7 +3348,7 @@ class _GameSession extends SDKObject {
    * @param {Boolean} [burnCard=false] if card should always be burned immediately regardless of space left in hand
    * @returns {Number|null} index in hand card was applied to, or null if not applied
    */
-  applyCardToHand(deck, cardDataOrIndex, card, indexInHand, sourceAction, burnCard) {
+  applyCardToHand(deck, cardDataOrIndex, card, indexInHand, sourceAction, burnCard?) {
     if (burnCard == null) { burnCard = false; }
     if (deck != null) {
       if (card != null) {
@@ -3765,7 +3765,7 @@ class _GameSession extends SDKObject {
    * @param {Class} [cardClass=Card] class of cards to get
    * @returns {Array}
    */
-  getCardsPlayed(playerId, cardClass) {
+  getCardsPlayed(playerId, cardClass?) {
     const cards = [];
     if (cardClass == null) { cardClass = Card; }
     const sortingMethod = (card) => card.getAppliedToBoardByActionIndex();

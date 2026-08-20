@@ -180,7 +180,7 @@ class Modifier extends SDKObject {
     return contextObject;
   }
 
-  static createAttributeBuffsObject(attackBuff, maxHPBuff) {
+  static createAttributeBuffsObject(attackBuff?, maxHPBuff?) {
     if (attackBuff == null) { attackBuff = 0; }
     if (maxHPBuff == null) { maxHPBuff = 0; }
     const attributeBuffs: Record<string, any> = {};
@@ -912,7 +912,7 @@ class Modifier extends SDKObject {
 
   // This either gives the modifier's name, or if that doesn't exist, the source played cards name
   // -this lets us use spell name/description for modifiers created by spells
-  getName(contextObject) {
+  getName(contextObject?) {
     // Much like getDescription, uses multiple possible sources for name in the following priority
     // 0. Any context object set name (using first the passed in context object, second this instance's context object)
     // 1. Class level name
@@ -954,7 +954,7 @@ class Modifier extends SDKObject {
   }
 
   // don't override this, override static method instead
-  getDescription(contextObject) {
+  getDescription(contextObject?) {
     // This will create the description with the following priority:
     // 0. Any description manually set on context object (using first the passed in context object, second this instance's context object)
     // 1. Class level description
@@ -990,7 +990,7 @@ class Modifier extends SDKObject {
   }
 
   // get the name shown for this modifier when it is applied to a unit
-  getAppliedName(contextObject) {
+  getAppliedName(contextObject?) {
     if (contextObject == null) {
       ({
         contextObject,
@@ -1027,7 +1027,7 @@ class Modifier extends SDKObject {
     return this.getDescription(contextObject, ModifierFactory);
   }
 
-  getAppliedDescription(contextObject) {
+  getAppliedDescription(contextObject?) {
     if (contextObject == null) {
       ({
         contextObject,
@@ -1599,7 +1599,7 @@ class Modifier extends SDKObject {
     }
   }
 
-  _setTriggeredByAction(action, resolveAction) {
+  _setTriggeredByAction(action, resolveAction?) {
     if (resolveAction == null) resolveAction = action;
 
     // check for valid indices
@@ -2779,7 +2779,7 @@ class Modifier extends SDKObject {
   // override this in sub classes
   // check the actionEvent.action and set isValid to block an action
 
-  invalidateAction(action, position, message) {
+  invalidateAction(action, position, message?) {
     // helper method for invalidating an action at a position with a message
     if (message == null) { message = 'Invalid Action!'; }
     action.setIsValid(false);

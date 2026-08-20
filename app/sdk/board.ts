@@ -87,7 +87,7 @@ class Board extends SDKObject {
     return positions;
   }
 
-  getUnobstructedPositionsForEntityAroundEntity(entity, aroundEntity, radius) {
+  getUnobstructedPositionsForEntityAroundEntity(entity, aroundEntity, radius?) {
     if (radius == null) { radius = 1; }
     const positions = [];
     let position = aroundEntity.getPosition();
@@ -225,7 +225,7 @@ class Board extends SDKObject {
     return cards;
   }
 
-  getUnits(allowUntargetable, allowQueued) {
+  getUnits(allowUntargetable?, allowQueued?) {
     if (allowUntargetable == null) { allowUntargetable = false; }
     if (allowQueued == null) { allowQueued = false; }
     const units = [];
@@ -239,7 +239,7 @@ class Board extends SDKObject {
     return units;
   }
 
-  getTiles(allowUntargetable, allowQueued) {
+  getTiles(allowUntargetable?, allowQueued?) {
     if (allowUntargetable == null) { allowUntargetable = false; }
     if (allowQueued == null) { allowQueued = false; }
     const tiles = [];
@@ -253,7 +253,7 @@ class Board extends SDKObject {
     return tiles;
   }
 
-  getSpells(allowQueued) {
+  getSpells(allowQueued?) {
     if (allowQueued == null) { allowQueued = false; }
     const spells = [];
 
@@ -266,7 +266,7 @@ class Board extends SDKObject {
     return spells;
   }
 
-  getCardAtPosition(pos, type, allowUntargetable, allowQueued) {
+  getCardAtPosition(pos, type, allowUntargetable?, allowQueued?) {
     if (allowUntargetable == null) { allowUntargetable = false; }
     if (allowQueued == null) { allowQueued = false; }
     if (pos != null) {
@@ -349,7 +349,7 @@ class Board extends SDKObject {
     return this.getCardAtPosition(pos, CardType.Spell, allowQueued);
   }
 
-  getObstructionAtPosition(pos, allowUntargetable, allowQueued) {
+  getObstructionAtPosition(pos, allowUntargetable?, allowQueued?) {
     if (allowUntargetable == null) { allowUntargetable = true; }
     if (allowQueued == null) { allowQueued = true; }
     const entityAtPosition = this.getEntityAtPosition(pos, allowUntargetable, allowQueued);
@@ -358,7 +358,7 @@ class Board extends SDKObject {
     }
   }
 
-  getObstructionAtPositionForEntity(pos, entity, allowUntargetable, allowQueued) {
+  getObstructionAtPositionForEntity(pos, entity, allowUntargetable?, allowQueued?) {
     if (allowUntargetable == null) { allowUntargetable = true; }
     if (allowQueued == null) { allowQueued = true; }
     const entityAtPosition = this.getEntityAtPosition(pos, allowUntargetable, allowQueued);
@@ -367,7 +367,7 @@ class Board extends SDKObject {
     }
   }
 
-  getQueuedCardAtPosition(pos, type, allowUntargetable) {
+  getQueuedCardAtPosition(pos, type, allowUntargetable?) {
     // there might be a card in the action queue to be played at this position
     // search the game session's action queue for all actions that may apply a card to board
     // return the first of those cards matching the target type
@@ -671,7 +671,7 @@ class Board extends SDKObject {
     return enemiesInfront;
   }
 
-  getIsPositionInfrontOfEntity(entity, targetPosition, maxDistanceX, maxDistanceY) {
+  getIsPositionInfrontOfEntity(entity, targetPosition, maxDistanceX?, maxDistanceY?) {
     if (maxDistanceX == null) { maxDistanceX = CONFIG.INFINITY; }
     if (maxDistanceY == null) { maxDistanceY = CONFIG.INFINITY; }
     const position = entity.getPosition();
@@ -680,7 +680,7 @@ class Board extends SDKObject {
     return (Math.abs(deltaX) <= maxDistanceX) && (Math.abs(deltaY) <= maxDistanceY) && ((entity.isOwnedByPlayer1() && (deltaX > 0)) || (entity.isOwnedByPlayer2() && (deltaX < 0)));
   }
 
-  getIsPositionBehindEntity(entity, targetPosition, maxDistanceX, maxDistanceY) {
+  getIsPositionBehindEntity(entity, targetPosition, maxDistanceX?, maxDistanceY?) {
     if (maxDistanceX == null) { maxDistanceX = CONFIG.INFINITY; }
     if (maxDistanceY == null) { maxDistanceY = CONFIG.INFINITY; }
     const position = entity.getPosition();

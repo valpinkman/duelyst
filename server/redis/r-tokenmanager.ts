@@ -53,7 +53,7 @@ class RedisTokenManager {
    * @param {Object} options
    * @return {Object} matchmaking token object
    */
-  create(opts) {
+  create(opts?) {
     if (opts == null) { opts = {}; }
     const token: Record<string, any> = {};
     token.id = createTokenId();
@@ -170,7 +170,7 @@ class RedisTokenManager {
    * @param {Integer} ttl (in seconds) on the lock
    * @return {Promise} unlock function if lock acquired
    */
-  lock(playerId, ttl) {
+  lock(playerId, ttl?) {
     if (ttl == null) { ttl = 5000; }
     return this.locker.lock(playerId, ttl);
   }

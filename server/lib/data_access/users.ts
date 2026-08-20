@@ -372,7 +372,7 @@ class UsersModule {
               })
               .then(() => DuelystFirebase.connect().getRootRef())
               .then(function (rootRef) {
-                const updateWalletData = (walletData) => {
+                const updateWalletData = (walletData?) => {
                   if (walletData == null) { walletData = {}; }
                   if (walletData.gold_amount == null) { walletData.gold_amount = 0; }
                   walletData.gold_amount -= _chainState.price;
@@ -1411,7 +1411,7 @@ class UsersModule {
         if (_chainState.ribbon) {
           let ribbonData = _.omit(_chainState.ribbon, ['user_id']);
           ribbonData = DataAccessHelpers.restifyData(ribbonData);
-          allPromises.push(FirebasePromises.safeTransaction(rootRef.child('user-ribbons').child(userId).child(ribbonData.ribbon_id), function (data) {
+          allPromises.push(FirebasePromises.safeTransaction(rootRef.child('user-ribbons').child(userId).child(ribbonData.ribbon_id), function (data?) {
             if (data == null) { data = {}; }
             if (data.ribbon_id == null) { data.ribbon_id = ribbonData.ribbon_id; }
             data.updated_at = ribbonData.created_at;
@@ -3164,7 +3164,7 @@ class UsersModule {
    * @param  {String}  gameId      Game ID to tip for
    * @return  {Promise}          Promise that will resolve when complete
    */
-  static tipAnotherPlayerForGame(userId, gameId, goldAmount) {
+  static tipAnotherPlayerForGame(userId, gameId, goldAmount?) {
     if (goldAmount == null) { goldAmount = 5; }
     const MOMENT_NOW_UTC = moment().utc();
 

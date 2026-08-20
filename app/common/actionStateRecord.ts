@@ -273,7 +273,7 @@ class ActionStateRecord {
    * Records action state for all event types at a given action index, or last action index recorded if none provided.
    * @param {String|Number} [actionIndex=last recorded] action index to record state at
   */
-  recordStateEvenIfNotChanged(actionIndex) {
+  recordStateEvenIfNotChanged(actionIndex?) {
     // fallback to index of last action recorded
     if (actionIndex == null) { actionIndex = this._getLastActionIndexRecorded(); }
 
@@ -301,7 +301,7 @@ class ActionStateRecord {
    * Records all properties for a given event type at an action index, and optionally forces the record to ignore whether the values have changed.
    * @private
   */
-  _recordProperties(eventType, actionIndex, ignoreChanged) {
+  _recordProperties(eventType, actionIndex, ignoreChanged?) {
     let propertyNamesToRecord; let
       recordingMethods;
     if (ignoreChanged == null) { ignoreChanged = false; }

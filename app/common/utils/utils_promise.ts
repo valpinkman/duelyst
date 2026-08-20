@@ -240,7 +240,7 @@ exports.props = function (obj) {
  * Every call site here is a UI guard ("is this transition still running?"),
  * where a one-tick delay is not observable.
  */
-exports.inspectable = function (promise) {
+exports.inspectable = function (promise?) {
   if (promise == null) return promise;
   if (typeof promise.isFulfilled === 'function') return promise; // already inspectable
 

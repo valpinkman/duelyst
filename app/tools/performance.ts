@@ -524,7 +524,7 @@ Performance_Stats.prototype = {
     }
   },
 
-  _to_fixed(val, places) {
+  _to_fixed(val, places?) {
     if (places == null) { places = 2; }
     return +(`${Math.round(`${val}e+${places}`)}e-${places}`);
   },

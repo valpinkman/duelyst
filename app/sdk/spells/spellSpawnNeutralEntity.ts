@@ -23,7 +23,7 @@ class SpellSpawnNeutralEntity extends SpellSpawnEntity {
     }
   }
 
-  getSpawnAction(x, y, cardDataOrIndexToSpawn) {
+  getSpawnAction(x, y, cardDataOrIndexToSpawn?) {
     let spawnEntityAction;
     const targetPosition = { x, y };
     if ((cardDataOrIndexToSpawn == null)) { cardDataOrIndexToSpawn = this.getCardDataOrIndexToSpawn(x, y); }
