@@ -364,7 +364,7 @@ class SyncModule {
               );
             }
           }
-          for (var row of Array.from(buddyRows)) {
+          for (var row of Array.from<any>(buddyRows)) {
             if (!_.find(_.keys(buddies), (buddy) => buddy === row.buddy_id)) {
               allPromises.push(knex('user_buddies').where({
                 user_id: userId,
@@ -451,7 +451,7 @@ class SyncModule {
 
         if (shouldSyncBuddyList) {
           userData.buddies = {};
-          for (row of Array.from(buddyRows)) {
+          for (row of Array.from<any>(buddyRows)) {
             userData.buddies[row.buddy_id] = { createdAt: moment.utc(row.created_at).valueOf() };
           }
         }
@@ -485,7 +485,7 @@ class SyncModule {
         }));
 
         const fbOrbs = {};
-        for (var orb of Array.from(spiritOrbRows)) {
+        for (var orb of Array.from<any>(spiritOrbRows)) {
           var orbId = orb.id;
           delete orb.user_id;
           delete orb.id;
@@ -494,7 +494,7 @@ class SyncModule {
         allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-inventory').child(userId).child('spirit-orbs'), fbOrbs));
 
         const fbTickets = {};
-        for (var ticket of Array.from(gauntletTicketRows)) {
+        for (var ticket of Array.from<any>(gauntletTicketRows)) {
           var ticketId = ticket.id;
           delete ticket.user_id;
           delete ticket.id;
@@ -511,7 +511,7 @@ class SyncModule {
         if (progression) {
           allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-progression').child(userId).child('game-counter'), DataAccessHelpers.restifyData(progression)));
         }
-        for (var factionProgression of Array.from(factionProgressionRows)) {
+        for (var factionProgression of Array.from<any>(factionProgressionRows)) {
           delete factionProgression.user_id;
           allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-faction-progression').child(userId).child(factionProgression.faction_id).child('stats'), DataAccessHelpers.restifyData(factionProgression)));
         }
@@ -523,7 +523,7 @@ class SyncModule {
         }));
 
         const fbQuests = {};
-        for (var quest of Array.from(questRows)) {
+        for (var quest of Array.from<any>(questRows)) {
           var slotIndex = quest.quest_slot_index;
           delete quest.user_id;
           delete quest.quest_slot_index;
@@ -574,7 +574,7 @@ class SyncModule {
         // Achievements
         let lastCompletedAt = null;
         const fbAchievements = {};
-        for (row of Array.from(completedAchievements)) {
+        for (row of Array.from<any>(completedAchievements)) {
           if (row.completed_at > lastCompletedAt) {
             lastCompletedAt = row.completed_at;
             allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-achievements').child(userId).child('status').child('last_read_at'), lastCompletedAt));
@@ -590,7 +590,7 @@ class SyncModule {
         allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-achievements').child(userId).child('completed'), fbAchievements));
 
         // Codex inventory
-        for (row of Array.from(userCodexRows)) {
+        for (row of Array.from<any>(userCodexRows)) {
         // Place data in fb for storage after the transaction has completed
           var fbCodexInventoryChapterData = {
             chapter_id: row.chapter_id,
@@ -603,7 +603,7 @@ class SyncModule {
 
         // Cosmetic chests
         const fbUserCosmeticChestData = {};
-        for (row of Array.from(userCosmeticChests)) {
+        for (row of Array.from<any>(userCosmeticChests)) {
         // Place data in fb for storage after the transaction has completed
           var fbCosmeticChestData = DataAccessHelpers.restifyData(row);
           fbUserCosmeticChestData[row.chest_id] = fbCosmeticChestData;
@@ -616,7 +616,7 @@ class SyncModule {
 
         // Cosmetic chest keys
         const fbUserCosmeticChestKeyData = {};
-        for (row of Array.from(userCosmeticChestKeys)) {
+        for (row of Array.from<any>(userCosmeticChestKeys)) {
         // Place data in fb for storage after the transaction has completed
           var fbCosmeticChestKeyData = DataAccessHelpers.restifyData(row);
           fbUserCosmeticChestKeyData[row.key_id] = fbCosmeticChestKeyData;
@@ -628,7 +628,7 @@ class SyncModule {
         }
 
         // Cosmetic inventory
-        for (row of Array.from(userCosmeticInventory)) {
+        for (row of Array.from<any>(userCosmeticInventory)) {
         // Place data in fb for storage after the transaction has completed
           var fbCosmeticData = {
             cosmetic_id: row.cosmetic_id,
@@ -653,7 +653,7 @@ class SyncModule {
 
         // sync ribbons
         const fbRibbonData = {};
-        for (var ribbon of Array.from(userRibbonRows)) {
+        for (var ribbon of Array.from<any>(userRibbonRows)) {
           if (fbRibbonData[ribbon.ribbon_id] == null) { fbRibbonData[ribbon.ribbon_id] = { ribbon_id: ribbon.ribbon_id, count: 0, updated_at: moment.utc(ribbon.created_at).valueOf() }; }
           fbRibbonData[ribbon.ribbon_id].count += 1;
         }
@@ -661,7 +661,7 @@ class SyncModule {
 
         // sync ladder positions
         if (userRankRatings) {
-          for (var seasonRankRating of Array.from(userRankRatings)) {
+          for (var seasonRankRating of Array.from<any>(userRankRatings)) {
             var fbSeasonStartAt = moment.utc(seasonRankRating.season_starting_at).valueOf();
             var fbUserRatingData = {
               ladder_position: seasonRankRating.ladder_position,
@@ -675,7 +675,7 @@ class SyncModule {
         allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-inventory').child(userId).child('spirit-orb-total').child(SDK.CardSet.Unity), _chainState.userData.total_orb_count_set_4));
 
         // Codex inventory
-        for (row of Array.from(userBossesDefeated)) {
+        for (row of Array.from<any>(userBossesDefeated)) {
         // Place data in fb for storage after the transaction has completed
           var fbDefeatedBossData = {
             boss_id: row.boss_id,
@@ -686,7 +686,7 @@ class SyncModule {
         }
 
         const userRiftRunsFBData = {};
-        for (var userRiftRun of Array.from(userRiftRuns)) {
+        for (var userRiftRun of Array.from<any>(userRiftRuns)) {
           var fbRiftRunData = DataAccessHelpers.restifyData(userRiftRun);
           // TODO: any data need to be trimmed here?
           userRiftRunsFBData[fbRiftRunData.ticket_id] = fbRiftRunData;
@@ -1041,7 +1041,7 @@ class SyncModule {
                 rewardIds = null;
                 if (run.rewards) {
                   rewardIds = [];
-                  for (reward of Array.from(run.rewards)) {
+                  for (reward of Array.from<any>(run.rewards)) {
                     rewardId = generatePushId();
                     inserts.push(trx.insert({
                       id: rewardId,
@@ -1088,7 +1088,7 @@ class SyncModule {
                 run = (_chainState.arenaRun != null ? _chainState.arenaRun.history : undefined)[key];
                 rewardIds = [];
 
-                for (reward of Array.from(run.rewards)) {
+                for (reward of Array.from<any>(run.rewards)) {
                   var cards = null;
                   if (reward.card_id) {
                     cards = [reward.card_id];
@@ -1567,7 +1567,7 @@ class SyncModule {
                           return memo;
                         }, []);
 
-                        for (cardId of Array.from(cards)) {
+                        for (cardId of Array.from<any>(cards)) {
                           // Logger.module("UsersModule").log "_syncUserFromFirebaseToSQL() -> earned #{cardId} via faction XP."
 
                           cardLog.push({
@@ -1605,8 +1605,8 @@ class SyncModule {
                 allRuns.push(_chainState.arenaRun != null ? _chainState.arenaRun.current : undefined);
               }
 
-              for (run of Array.from(allRuns)) {
-                for (reward of Array.from(run.rewards)) {
+              for (run of Array.from<any>(allRuns)) {
+                for (reward of Array.from<any>(run.rewards)) {
                   if (reward.card_id) {
                     cardId = reward.card_id;
 
@@ -1643,7 +1643,7 @@ class SyncModule {
                 for (var achievementId in _chainState.achievements.completed) {
                   var achievementData = _chainState.achievements.completed[achievementId];
                   if (achievementData.rewards.card_ids) {
-                    for (cardId of Array.from(achievementData.rewards.card_ids)) {
+                    for (cardId of Array.from<any>(achievementData.rewards.card_ids)) {
                       // Logger.module("UsersModule").log "_syncUserFromFirebaseToSQL() -> earned #{cardId} via achievement."
 
                       cardLog.push({
@@ -1682,7 +1682,7 @@ class SyncModule {
                 ({
                   cards,
                 } = pack);
-                for (cardId of Array.from(cards)) {
+                for (cardId of Array.from<any>(cards)) {
                   // Logger.module("UsersModule").log "_syncUserFromFirebaseToSQL() -> earned #{cardId} via packs."
 
                   cardLog.push({
@@ -1801,7 +1801,7 @@ class SyncModule {
                 cardCounts[cardId].is_new = card.is_new;
               }
 
-              for (var log of Array.from(cardLog)) {
+              for (var log of Array.from<any>(cardLog)) {
                 inserts.push(trx.insert(log).into('user_card_log'));
               }
 

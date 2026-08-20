@@ -1103,7 +1103,7 @@ class RankModule {
             allPromises.push(InventoryModule.giveUserCards(txPromise, tx, userId, rewardMap.card_ids, 'season reward', moment.utc(rankHistoryRow.starting_at).format('YYYY/MM')));
           }
 
-          for (var reward of Array.from(rewards)) {
+          for (var reward of Array.from<any>(rewards)) {
             allPromises.push(knex('user_rewards').insert(reward).transacting(tx));
           }
 

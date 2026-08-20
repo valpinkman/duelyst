@@ -82,7 +82,7 @@ class QuestsModule {
         }
 
         if (questRows != null) {
-          for (var quest of Array.from(questRows)) {
+          for (var quest of Array.from<any>(questRows)) {
           // remove any quests that are no longer in the quest factory at all
             if (!QuestFactory.questForIdentifier(quest.quest_type_id)) {
               return Promise.resolve(true);
@@ -308,9 +308,9 @@ class QuestsModule {
           }
           // TODO: should we also add the catchup quest to @.updatedQuests.push(sQuest) to somehow mark the daily_quests_updated_at as dirty?
 
-          for (var i of Array.from(QuestsModule.DAILY_QUEST_SLOTS)) {
+          for (var i of Array.from<any>(QuestsModule.DAILY_QUEST_SLOTS)) {
             var questAtSlot = undefined;
-            for (var r of Array.from(questRows)) {
+            for (var r of Array.from<any>(questRows)) {
               if (r.quest_slot_index === i) {
                 questAtSlot = r;
                 break;
@@ -377,7 +377,7 @@ class QuestsModule {
 
         const allPromises = [];
 
-        for (var q of Array.from(_chainState.removedQuests)) {
+        for (var q of Array.from<any>(_chainState.removedQuests)) {
           var slotIndex = q.previous_quest_slot_index;
 
           allPromises.push(
@@ -392,7 +392,7 @@ class QuestsModule {
       .then(function () {
         const allPromises = [];
 
-        for (var q of Array.from(_chainState.updatedQuests)) {
+        for (var q of Array.from<any>(_chainState.updatedQuests)) {
           var data = _.clone(q);
           var slotIndex = data.quest_slot_index;
           delete data.quest_slot_index;
@@ -422,7 +422,7 @@ class QuestsModule {
 
         const quests = {};
 
-        for (var quest of Array.from(_chainState.questRows)) {
+        for (var quest of Array.from<any>(_chainState.questRows)) {
           quests[quest.quest_slot_index] = quest;
         }
 
@@ -528,7 +528,7 @@ class QuestsModule {
 
               const allQueries = [];
 
-              for (sdkQuest of Array.from(questsToGenerate)) {
+              for (sdkQuest of Array.from<any>(questsToGenerate)) {
                 var questExists = _.find(questRows, (q) => q.quest_type_id === sdkQuest.id);
                 var questCompleted = _.find(questCompleteRows, (q) => q.quest_type_id === sdkQuest.id);
                 if (questExists || questCompleted) {
@@ -575,7 +575,7 @@ class QuestsModule {
           .then(function (fbRootRef) {
             const allPromises = [];
 
-            for (var q of Array.from(_chainState.updatedQuests)) {
+            for (var q of Array.from<any>(_chainState.updatedQuests)) {
               var data = _.clone(q);
               var slotIndex = data.quest_slot_index;
               delete data.quest_slot_index;
@@ -607,7 +607,7 @@ class QuestsModule {
 
         const quests = [];
 
-        for (var quest of Array.from(_chainState.questRows)) {
+        for (var quest of Array.from<any>(_chainState.questRows)) {
           quests[quest.quest_slot_index] = quest;
         }
 
@@ -698,7 +698,7 @@ class QuestsModule {
           if ((questRows != null ? questRows.length : undefined) > 0) {
             const quest_ids_generated = [];
 
-            for (var quest of Array.from(questRows)) {
+            for (var quest of Array.from<any>(questRows)) {
               quest_ids_generated.push(quest.quest_type_id);
             }
 
@@ -775,7 +775,7 @@ class QuestsModule {
       .then(function () {
         const toReturn = [];
 
-        for (var quest of Array.from(_chainState.questRows)) {
+        for (var quest of Array.from<any>(_chainState.questRows)) {
           toReturn[quest.quest_slot_index] = quest;
         }
 
@@ -825,7 +825,7 @@ class QuestsModule {
           let quest;
           const allQueries = [];
 
-          for (quest of Array.from(questRows)) {
+          for (quest of Array.from<any>(questRows)) {
             try {
             // generate a quest model object based on quest ID
               var questModel = QuestFactory.questForIdentifier(quest.quest_type_id);
@@ -851,7 +851,7 @@ class QuestsModule {
           }
 
           // check for any completed quests and if we need to progress "quest based" quests
-          for (quest of Array.from(questRows)) {
+          for (quest of Array.from<any>(questRows)) {
             if (quest.completed_at) {
               var completedQuest = quest;
               // if any "quest completion" quests need to be progressed
@@ -875,7 +875,7 @@ class QuestsModule {
       .then(function () {
         const quests = [];
 
-        for (var quest of Array.from(_chainState.questRows)) {
+        for (var quest of Array.from<any>(_chainState.questRows)) {
           quests[quest.quest_slot_index] = quest;
         }
 
@@ -927,7 +927,7 @@ class QuestsModule {
         if ((questRows != null ? questRows.length : undefined) > 0) {
           const allQueries = [];
 
-          for (var quest of Array.from(questRows)) {
+          for (var quest of Array.from<any>(questRows)) {
             try {
             // generate a quest model object based on quest ID
               var questModel = QuestFactory.questForIdentifier(quest.quest_type_id);
@@ -957,7 +957,7 @@ class QuestsModule {
       .then(function () {
         const quests = [];
 
-        for (var quest of Array.from(_chainState.questRows)) {
+        for (var quest of Array.from<any>(_chainState.questRows)) {
           quests[quest.quest_slot_index] = quest;
         }
 
@@ -1002,7 +1002,7 @@ class QuestsModule {
         if ((questRows != null ? questRows.length : undefined) > 0) {
           const allQueries = [];
 
-          for (var quest of Array.from(questRows)) {
+          for (var quest of Array.from<any>(questRows)) {
             try {
             // generate a quest model object based on quest ID
               var questModel = QuestFactory.questForIdentifier(quest.quest_type_id);
@@ -1037,7 +1037,7 @@ class QuestsModule {
       .then(function () {
         const quests = {};
 
-        for (var quest of Array.from(_chainState.questRows)) {
+        for (var quest of Array.from<any>(_chainState.questRows)) {
           quests[quest.quest_slot_index] = quest;
         }
 
@@ -1095,7 +1095,7 @@ class QuestsModule {
         _chainState.questRows = questRows;
         if ((questRows != null ? questRows.length : undefined) > 0) {
           const allQueries = [];
-          for (var quest of Array.from(questRows)) {
+          for (var quest of Array.from<any>(questRows)) {
             try {
             // generate a quest model object based on quest ID
               var questModel = QuestFactory.questForIdentifier(quest.quest_type_id);
@@ -1123,7 +1123,7 @@ class QuestsModule {
       }).then(function (rewards) { return _chainState.rewards = _.flatten(_.compact(rewards)); })
       .then(function () {
         const quests = [];
-        for (var quest of Array.from(_chainState.questRows)) {
+        for (var quest of Array.from<any>(_chainState.questRows)) {
           quests[quest.quest_slot_index] = quest;
         }
 
@@ -1220,14 +1220,14 @@ class QuestsModule {
 
         if (QuestFactory.questForIdentifier(quest.quest_type_id).giftChests != null) {
           // add gift chests to user
-          for (var type of Array.from(QuestFactory.questForIdentifier(quest.quest_type_id).giftChests)) {
+          for (var type of Array.from<any>(QuestFactory.questForIdentifier(quest.quest_type_id).giftChests)) {
             allQueries.push(GiftCrateModule.addGiftCrateToUser(txPromise, tx, quest.user_id, type));
           }
         }
 
         if (QuestFactory.questForIdentifier(quest.quest_type_id).cosmeticKeys != null) {
           // add cosmetic keys to user
-          for (var cosmeticKeyType of Array.from(QuestFactory.questForIdentifier(quest.quest_type_id).cosmeticKeys)) {
+          for (var cosmeticKeyType of Array.from<any>(QuestFactory.questForIdentifier(quest.quest_type_id).cosmeticKeys)) {
             // allQueries.push(GiftCrateModule.addGiftCrateToUser(txPromise, tx, quest.user_id, type))
             allQueries.push(CosmeticChestsModule.giveUserChestKey(txPromise, tx, quest.user_id, cosmeticKeyType, 1, 'daily quest', completedQuest.id));
           }

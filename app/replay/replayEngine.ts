@@ -144,7 +144,7 @@ class _ReplayEngine {
       currentTurn,
     } = this._gameSessionData;
     let needsCurrentTurn = true;
-    for (const turn of Array.from(this._turns)) {
+    for (const turn of Array.from<any>(this._turns)) {
       if (currentTurn.createdAt === turn.createdAt) {
         needsCurrentTurn = false;
         break;
@@ -422,7 +422,7 @@ class _ReplayEngine {
         if (this._opponentStepBuffer.length > 0) {
           const opponentStepBuffer = this._opponentStepBuffer;
           this._opponentStepBuffer = [];
-          for (const bufferedStep of Array.from(opponentStepBuffer)) {
+          for (const bufferedStep of Array.from<any>(opponentStepBuffer)) {
             SDK.GameSession.getInstance().executeAuthoritativeStep(bufferedStep);
           }
         }

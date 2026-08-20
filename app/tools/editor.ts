@@ -176,16 +176,16 @@ whenLocalizationReady.then(() => {
     };
 
     const resourceKeys = Object.keys(RSX);
-    for (var resourceName of Array.from(resourceKeys)) {
+    for (var resourceName of Array.from<any>(resourceKeys)) {
       addResourceAsUsableFXAsNeeded(resourceName);
     }
 
     const folderNames = Object.keys(usableFXByFolder);
-    for (var folderName of Array.from(folderNames)) {
+    for (var folderName of Array.from<any>(folderNames)) {
       var usableFXInFolder = usableFXByFolder[folderName];
       var usableFXSubFolder = usableFXFolder.addFolder(folderName);
       usableFXInFolder = _.sortBy(usableFXInFolder, 'name');
-      for (var resourcePreview of Array.from(usableFXInFolder)) {
+      for (var resourcePreview of Array.from<any>(usableFXInFolder)) {
         usableFXSubFolder.add(resourcePreview, resourcePreview.name);
       }
     }
@@ -396,7 +396,7 @@ whenLocalizationReady.then(() => {
       }
 
       const questIds = [];
-      for (var questIdString of Array.from(questIdStrings)) {
+      for (var questIdString of Array.from<any>(questIdStrings)) {
         var questId = parseInt(questIdString);
         if (Number.isNaN(questId) || (SDK.QuestFactory.questForIdentifier(questId) == null)) {
           alert('Invalid usage.');
@@ -1066,7 +1066,7 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
     const btBossCardIds = [];
     let factionId = SDK.Factions.Boss;
     const generalIds = SDK.FactionFactory.generalIdsForFaction(factionId);
-    for (id of Array.from(generalIds)) {
+    for (id of Array.from<any>(generalIds)) {
       var sdkCard = SDK.GameSession.getCardCaches().getCardById(id);
       btBossNames.push(sdkCard.getName());
       btBossCardIds.push(sdkCard.getId());
@@ -1445,7 +1445,7 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
       return sortVal;
     });
 
-    for (card of Array.from(gtCards)) {
+    for (card of Array.from<any>(gtCards)) {
       cardId = card.getBaseCardId();
       gtCardIds.push(cardId);
       factionId = card.getFactionId();
@@ -1950,7 +1950,7 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
     for (path in brokenResourcesByPath) {
       var values = brokenResourcesByPath[path];
       brokenResources += `${path}:\n`;
-      for (var value of Array.from(values)) {
+      for (var value of Array.from<any>(values)) {
         brokenResources += ` > ${value}\n`;
       }
       brokenResources += '\n';
@@ -1959,7 +1959,7 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
     // make over selectable limit unique and format
     overSelectableLimitPaths = _.uniq(overSelectableLimitPaths);
     let overSelectableLimit = '';
-    for (path of Array.from(overSelectableLimitPaths)) {
+    for (path of Array.from<any>(overSelectableLimitPaths)) {
       overSelectableLimit += `${path}\n`;
     }
 
@@ -2006,7 +2006,7 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
 
     return (() => {
       const result = [];
-      for (key of Array.from(keys)) {
+      for (key of Array.from<any>(keys)) {
         result.push(Editor.listDataItem(data, gui, key, path, selectableKeyMatches));
       }
       return result;
@@ -2046,7 +2046,7 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
 
   Editor.getSelectableMatched = function (key, selectableKeyMatches) {
     if ((key != null) && (selectableKeyMatches != null)) {
-      for (var keyMatch of Array.from(selectableKeyMatches)) {
+      for (var keyMatch of Array.from<any>(selectableKeyMatches)) {
         if (key.lastIndexOf(keyMatch) !== -1) { return keyMatch; }
       }
     }
@@ -2055,7 +2055,7 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
 
   Editor.getSelectableTopLevelItemMatched = function (key, selectableKeyMatches) {
     if ((key != null) && (selectableKeyMatches != null)) {
-      for (var keyMatch of Array.from(selectableKeyMatches)) {
+      for (var keyMatch of Array.from<any>(selectableKeyMatches)) {
         if ((key.lastIndexOf(keyMatch) !== -1) && (new RegExp(`${keyMatch}\$`, 'i').test(key) || new RegExp(`${keyMatch}\\.\\d\+\$`, 'i').test(key))) { return keyMatch; }
       }
     }
@@ -2625,7 +2625,7 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
       if (gameLayer != null) {
         return gameLayer.addNodes(Editor.fxNodesPreviewing);
       }
-      return Array.from(Editor.fxNodesPreviewing).map((fxNode) =>
+      return Array.from<any>(Editor.fxNodesPreviewing).map((fxNode) =>
         Scene.getInstance().addChild(fxNode, 9999));
     }).catch((error) => alert(`Editor.previewFXData -> error: ${error}`));
   };
@@ -2641,7 +2641,7 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
       if (gameLayer != null) {
         gameLayer.removeNodes(Editor.fxNodesPreviewing);
       } else {
-        for (var fxNode of Array.from(Editor.fxNodesPreviewing)) {
+        for (var fxNode of Array.from<any>(Editor.fxNodesPreviewing)) {
           fxNode.destroy();
         }
       }
@@ -2652,12 +2652,12 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
   Editor.walkFXDataForResources = function (data) {
     let resources = [];
     const properties = Object.keys(data);
-    for (var property of Array.from(properties)) {
+    for (var property of Array.from<any>(properties)) {
       var value = data[property];
       if (value != null) {
         if (/spriteIdentifier|plistFile/.test(property)) {
           if (!_.isArray(value)) { value = [value]; }
-          for (var resourceIdentifier of Array.from(value)) {
+          for (var resourceIdentifier of Array.from<any>(value)) {
             var resourcesForIdentifier = RSX.getResourcesByPath(resourceIdentifier);
 
             // found missing/invalid resources

@@ -82,7 +82,7 @@ class TwitchModule {
     Profile Icon
     */
 
-    for (var item of Array.from(items)) {
+    for (var item of Array.from<any>(items)) {
       var rngSeed;
       var twitchRewardId = generatePushId();
 
@@ -193,12 +193,12 @@ class TwitchModule {
       if (rewardObject.cards) { allRewardPromises.push(InventoryModule.giveUserCards(txPromise, tx, userId, rewardObject.cards, 'twitch', twitchRewardId)); }
       if (rewardObject.gauntlet_tickets) { allRewardPromises.push(InventoryModule.addArenaTicketToUser(txPromise, tx, userId, 'twitch', twitchRewardId)); }
       if (rewardObject.cosmetics) {
-        for (var cosmeticId of Array.from(rewardObject.cosmetics)) {
+        for (var cosmeticId of Array.from<any>(rewardObject.cosmetics)) {
           allRewardPromises.push(InventoryModule.giveUserCosmeticId(txPromise, tx, userId, cosmeticId, 'twitch', twitchRewardId, null, MOMENT_NOW_UTC));
         }
       }
       if (rewardObject.cosmetic_keys) {
-        for (var keyType of Array.from(rewardObject.cosmetic_keys)) {
+        for (var keyType of Array.from<any>(rewardObject.cosmetic_keys)) {
           allRewardPromises.push(CosmeticChestsModule.giveUserChestKey(txPromise, tx, userId, keyType, 1, 'twitch', twitchRewardId, MOMENT_NOW_UTC));
         }
       }

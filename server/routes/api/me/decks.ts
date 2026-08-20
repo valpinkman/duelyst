@@ -22,7 +22,7 @@ router.get('/', function (req, res, next) {
     .then(function (decks) {
     // for each deck
     // map integer arrays to card objects for deck builder
-      for (var deckData of Array.from(decks)) {
+      for (var deckData of Array.from<any>(decks)) {
         deckData.cards = _.map(deckData.cards, (cardId) => ({
           id: cardId,
         }));

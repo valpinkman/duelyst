@@ -627,10 +627,10 @@ class InventoryModule {
       // map faction level by faction id
         let factionLevel;
         const factionLevel_FactionId = {};
-        for (var factionData of Array.from(SDK.FactionFactory.getAllEnabledFactions())) {
+        for (var factionData of Array.from<any>(SDK.FactionFactory.getAllEnabledFactions())) {
           var factionId = factionData.id;
           factionLevel = 0;
-          for (var factionProgressionRow of Array.from(factionProgression)) {
+          for (var factionProgressionRow of Array.from<any>(factionProgression)) {
             if ((factionProgressionRow != null) && (factionProgressionRow.faction_id === factionId)) {
               factionLevel = SDK.FactionProgression.levelForXP(factionProgressionRow.xp);
             }
@@ -700,10 +700,10 @@ class InventoryModule {
 
         // map faction level by faction id
         const factionLevel_FactionId = {};
-        for (var factionData of Array.from(SDK.FactionFactory.getAllEnabledFactions())) {
+        for (var factionData of Array.from<any>(SDK.FactionFactory.getAllEnabledFactions())) {
           var factionId = factionData.id;
           factionLevel = 0;
-          for (var factionProgressionRow of Array.from(factionProgression)) {
+          for (var factionProgressionRow of Array.from<any>(factionProgression)) {
             if ((factionProgressionRow != null) && (factionProgressionRow.faction_id === factionId)) {
               factionLevel = SDK.FactionProgression.levelForXP(factionProgressionRow.xp);
             }
@@ -808,7 +808,7 @@ class InventoryModule {
       return query
         .bind({})
         .then(function (cosmeticRows) {
-          for (var cosmeticId of Array.from(cosmeticIds)) {
+          for (var cosmeticId of Array.from<any>(cosmeticIds)) {
             cosmeticId = parseInt(cosmeticId);
             var cosmeticData = SDK.CosmeticsFactory.cosmeticForIdentifier(cosmeticId);
             if ((cosmeticData == null) || !cosmeticData.enabled) {
@@ -818,7 +818,7 @@ class InventoryModule {
             if (cosmeticData.purchasable || cosmeticData.unlockable) {
               var found = false;
               // all users have all non-purchasable and non-unlockable cosmetics
-              for (var row of Array.from(cosmeticRows)) {
+              for (var row of Array.from<any>(cosmeticRows)) {
                 if (parseInt(row.cosmetic_id) === cosmeticId) {
                   found = true;
                   break;
@@ -865,7 +865,7 @@ class InventoryModule {
         return query
           .bind({})
           .then(function (cosmeticRows) {
-            for (var cosmeticId of Array.from(cosmeticIds)) {
+            for (var cosmeticId of Array.from<any>(cosmeticIds)) {
               cosmeticId = parseInt(cosmeticId);
               var cosmeticData = SDK.CosmeticsFactory.cosmeticForIdentifier(cosmeticId);
               if ((cosmeticData != null) && cosmeticData.enabled) {
@@ -873,7 +873,7 @@ class InventoryModule {
                 // all users have all non-purchasable and non-unlockable cosmetics
                   usableCosmeticIds.push(cosmeticId);
                 } else {
-                  for (var row of Array.from(cosmeticRows)) {
+                  for (var row of Array.from<any>(cosmeticRows)) {
                     var cosmeticRowId = parseInt(row.cosmetic_id);
                     if (cosmeticRowId === cosmeticId) {
                       usableCosmeticIds.push(cosmeticId);
@@ -1435,7 +1435,7 @@ class InventoryModule {
               const randomUnownedCardFromCollection = function (ownedCardsData, potentialCardPool) {
                 const shuffledCardPool = _.shuffle(potentialCardPool);
 
-                for (var cardId of Array.from(shuffledCardPool)) {
+                for (var cardId of Array.from<any>(shuffledCardPool)) {
                   if ((ownedCardsData[cardId] != null ? ownedCardsData[cardId].count : undefined) && ((ownedCardsData[cardId] != null ? ownedCardsData[cardId].count : undefined) > 0)) {
                     continue;
                   } else {
@@ -2138,7 +2138,7 @@ class InventoryModule {
         _chainState.rewards = [];
         _chainState.total_spirit_gained = 0;
 
-        for (var cardId of Array.from(cardIds)) {
+        for (var cardId of Array.from<any>(cardIds)) {
         // STEP1 ... compute and roll/generate all the dis-enchanting rewards
           var spirit_gained = 0;
 
@@ -2237,7 +2237,7 @@ class InventoryModule {
           }
         }
 
-        for (var cardId of Array.from(cardIds)) {
+        for (var cardId of Array.from<any>(cardIds)) {
         // update card log
           allQueries.push(knex.insert({
             id: generatePushId(),
@@ -2643,7 +2643,7 @@ class InventoryModule {
     }
 
     // Can not give a user skinned card ids (they exist in cosmetics)
-    for (cardId of Array.from(cardIds)) {
+    for (cardId of Array.from<any>(cardIds)) {
       if (SDK.Cards.getIsSkinnedCardId(cardId)) {
         Logger.module('InventoryModule').debug(`giveUserCards() -> attempted to give skinned card id (${cardId}) to user ${userId.blue}`.red);
         return Promise.reject(new Errors.BadRequestError('Invalid card data'));
@@ -2827,7 +2827,7 @@ class InventoryModule {
 
         _chainState.updatedCardsData = {};
 
-        for (var cardRow of Array.from(cardCountRows)) {
+        for (var cardRow of Array.from<any>(cardCountRows)) {
           if (cardRow.count > 0) {
             if (collectionRow.cards[cardRow.card_id] == null) { collectionRow.cards[cardRow.card_id] = {}; }
             collectionRow.cards[cardRow.card_id].count = cardRow.count;
@@ -3008,7 +3008,7 @@ class InventoryModule {
           const cardCounts = [];
           let anyWiped = false;
 
-          for (cardLog of Array.from(cardLogRows)) {
+          for (cardLog of Array.from<any>(cardLogRows)) {
             cumulativeCardLog.push(cardLog);
             if ((cardLog.source_type === 'spirit orb') || (cardLog.source_type === 'craft') || (cardLog.source_type === 'disenchant')) {
               Logger.module('InventoryModule').debug(`softWipeUserCardInventory() -> reversing card ${cardLog.card_id} log type: ${cardLog.source_type} ${userId.blue}`);
@@ -3028,7 +3028,7 @@ class InventoryModule {
             throw new Errors.BadRequestError('User does not appear to have any cards that need to be wiped.');
           }
 
-          for (cardLog of Array.from(cumulativeCardLog)) {
+          for (cardLog of Array.from<any>(cumulativeCardLog)) {
             cardCountRow = _.find(cardCounts, (c) => c.card_id === cardLog.card_id);
             if ((cardCountRow == null)) {
               cardCountRow = {
@@ -3054,7 +3054,7 @@ class InventoryModule {
           _chainState.cardCountRows = cardCounts;
           allPromises.push(tx('user_cards').delete().where('user_id', userId));
 
-          for (cardCountRow of Array.from(cardCounts)) {
+          for (cardCountRow of Array.from<any>(cardCounts)) {
             if (cardCountRow.count > 0) {
               allPromises.push(tx('user_cards').insert(cardCountRow));
             }

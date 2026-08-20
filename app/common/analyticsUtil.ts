@@ -22,7 +22,7 @@ class AnalyticsUtil {
       dataTarget = {};
     }
 
-    for (const recordedDayIndex of Array.from(this.RecordedDaysSeenOn)) {
+    for (const recordedDayIndex of Array.from<any>(this.RecordedDaysSeenOn)) {
       if (_.contains(daysSeenOn, recordedDayIndex)) {
         dataTarget[this.nameForSeenOnDay(recordedDayIndex)] = 1;
       }

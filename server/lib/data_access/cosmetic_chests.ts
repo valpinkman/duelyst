@@ -153,7 +153,7 @@ class CosmeticChestsModule {
           .then(() => DuelystFirebase.connect().getRootRef()).then(function (rootRef) {
             _chainState.rootRef = rootRef;
             const allFbPromises = [];
-            for (var chestData of Array.from(_chainState.chestDatas)) {
+            for (var chestData of Array.from<any>(_chainState.chestDatas)) {
               var fbChestData = _.extend({}, chestData);
               fbChestData.created_at = NOW_UTC_MOMENT.valueOf();
               if (expirationMoment != null) {
@@ -430,7 +430,7 @@ class CosmeticChestsModule {
                 .then(() => _chainState.resValue.push({ card_id: rewardedCardId }));
             } else if (rewardData.card_ids != null) {
               return InventoryModule.giveUserCards(txPromise, tx, userId, rewardData.card_ids, 'cosmetic chest', _chainState.chestRow.chest_id)
-                .then(() => Array.from(rewardData.card_ids).map((card_id) =>
+                .then(() => Array.from<any>(rewardData.card_ids).map((card_id) =>
                   _chainState.resValue.push({ card_id })));
             } else if (rewardData.gauntlet_tickets != null) {
               return InventoryModule.addArenaTicketToUser(txPromise, tx, userId, 'cosmetic chest', _chainState.chestRow.chest_id)
@@ -751,7 +751,7 @@ class CosmeticChestsModule {
         throw e;
       })).bind(this_obj)
       .then(function () {
-        for (var chestData of Array.from(_chainState.awardedChestData)) {
+        for (var chestData of Array.from<any>(_chainState.awardedChestData)) {
         // Currently there is only an achievement for first bronze chest so don't bother with others
           if ((chestData.chest_type === SDK.CosmeticsChestTypeLookup.Common) && ((_chainState.userProgressionRow.last_crate_awarded_at == null))) {
             Jobs.create('update-user-achievements', {
@@ -903,7 +903,7 @@ class CosmeticChestsModule {
         throw e;
       })).bind(this_obj)
       .then(function () {
-        for (var chestData of Array.from(_chainState.awardedChestData)) {
+        for (var chestData of Array.from<any>(_chainState.awardedChestData)) {
         // Currently there is only an achievement for first bronze chest so don't bother with others
           if ((chestData.chest_type === SDK.CosmeticsChestTypeLookup.Common) && ((_chainState.userProgressionRow.last_crate_awarded_at == null))) {
             Jobs.create('update-user-achievements', {

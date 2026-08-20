@@ -891,7 +891,7 @@ class UsersModule {
       const cardSkinsToValidateAgainstInventory = [];
       let basicsOnly = true;
 
-      for (var card of Array.from(deck)) {
+      for (var card of Array.from<any>(deck)) {
         cardId = card.id;
         var sdkCard = SDK.GameSession.getCardCaches().getCardById(cardId);
         if (sdkCard.rarityId !== SDK.Rarity.Fixed) {
@@ -953,7 +953,7 @@ class UsersModule {
         return SDK.GameSession.getCardCaches().getCardById(cardId);
       });
       let generalCount = 0;
-      for (var gameSessionCard of Array.from(gameSessionCards)) {
+      for (var gameSessionCard of Array.from<any>(gameSessionCards)) {
         if (gameSessionCard instanceof Entity && gameSessionCard.getIsGeneral()) {
           generalCount += 1;
         }
@@ -1340,7 +1340,7 @@ class UsersModule {
 
               // update emotes inventory
               const emotes_promises = [];
-              for (var emote_id of Array.from(rewardData.emotes)) {
+              for (var emote_id of Array.from<any>(rewardData.emotes)) {
                 rewardRowData.cosmetics.push(emote_id);
                 allPromises.push(InventoryModule.giveUserCosmeticId(txPromise, tx, userId, emote_id, 'faction xp reward', rewardRowData.id, null, MOMENT_NOW_UTC));
               }
@@ -1866,7 +1866,7 @@ class UsersModule {
 
             if (_chainState.codexChapterIdsEarned && (_chainState.codexChapterIdsEarned.length !== 0)) {
               Logger.module('UsersModule').debug(`updateUserProgressionWithGameOutcome() -> user ${userId.blue} HAS earned codex chapters ${_chainState.codexChapterIdsEarned} reward!`);
-              for (var codexChapterIdEarned of Array.from(_chainState.codexChapterIdsEarned)) {
+              for (var codexChapterIdEarned of Array.from<any>(_chainState.codexChapterIdsEarned)) {
               // set up reward data
                 rewardData = {
                   id: generatePushId(),
@@ -2331,7 +2331,7 @@ class UsersModule {
           }
 
           const cardIndices = Object.keys(gameData.cardsByIndex);
-          for (var cardIndex of Array.from(cardIndices)) {
+          for (var cardIndex of Array.from<any>(cardIndices)) {
             var card = gameData.cardsByIndex[cardIndex];
             if (card.ownerId === userId) {
               factionStatsData.cardsPlayedCounts[card.id] = (factionStatsData.cardsPlayedCounts[card.id] || 0) + 1;
@@ -2568,7 +2568,7 @@ class UsersModule {
                 if (_chainState.challengeRow && (__guard__(questProgressResponse != null ? questProgressResponse.rewards : undefined, (x) => x.length) > 0)) {
                   Logger.module('UsersModule').debug(`completeChallengeWithType() -> user ${userId.blue} completed challenge quest rewards count: ${(questProgressResponse != null ? questProgressResponse.rewards.length : undefined)}`);
 
-                  for (var reward of Array.from(questProgressResponse.rewards)) {
+                  for (var reward of Array.from<any>(questProgressResponse.rewards)) {
                     _chainState.rewards.push(reward);
                     _chainState.challengeRow.reward_ids.push(reward.id);
                   }
@@ -2765,7 +2765,7 @@ class UsersModule {
 
             // calculate the next linear stage point for core progression
             var nextStage = null;
-            for (var s of Array.from(NewPlayerProgressionStageEnum.enums)) {
+            for (var s of Array.from<any>(NewPlayerProgressionStageEnum.enums)) {
               if (s.value > stage.value) {
                 Logger.module('SDK').debug(`iterateNewPlayerCoreProgression() -> from stage ${stage.key} to next stage ${s.key} for ${userId.blue}`);
                 nextStage = s;

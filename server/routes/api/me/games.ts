@@ -226,10 +226,10 @@ JOIN users AS player_2 ON player_2.id = games.player_2_id;\
                   gameSession.deserializeSessionFromFirebase(JSON.parse(gameSessionDataString));
                   gameRow.player_1_key_cards = [];
                   gameRow.player_2_key_cards = [];
-                  return Array.from(gameSession.turns).map((turn) =>
+                  return Array.from<any>(gameSession.turns).map((turn) =>
                     (() => {
                       const result1 = [];
-                      for (var step of Array.from(turn.steps)) {
+                      for (var step of Array.from<any>(turn.steps)) {
                         if ((step.action.type === 'PlayCardFromHandAction') && (step.action.getCard().getType() === CardType.Unit)) {
                           var playerId = step.getPlayerId();
                           var cardId = step.action.getCard().getId();

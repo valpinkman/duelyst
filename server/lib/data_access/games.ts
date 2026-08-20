@@ -56,7 +56,7 @@ class GamesModule {
 
       // find generals
       const cardsIndices = Object.keys(gameData.cardsByIndex);
-      for (var index of Array.from(cardsIndices)) {
+      for (var index of Array.from<any>(cardsIndices)) {
         var card = gameData.cardsByIndex[index];
         if (card.isGeneral && (card.ownerId === gameData.players[0].playerId)) {
           player1General = card;

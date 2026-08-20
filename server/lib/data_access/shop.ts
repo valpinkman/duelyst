@@ -349,7 +349,7 @@ class ShopModule {
     // NOTE: "cosmetics_bundle" is a product type that ONLY bundles cosmetics, but any product can bundle cosmetics
     // Create an array of promises
     if ((productData.bundle_cosmetic_ids != null ? productData.bundle_cosmetic_ids.length : undefined) > 0) {
-      for (cosmeticId of Array.from(productData.bundle_cosmetic_ids)) {
+      for (cosmeticId of Array.from<any>(productData.bundle_cosmetic_ids)) {
         allPromises.push(InventoryModule.giveUserCosmeticId(txPromise, tx, userId, cosmeticId, 'hard', chargeId));
       }
     }
@@ -359,7 +359,7 @@ class ShopModule {
     }
 
     if (productData.type === 'starter_bundle') {
-      for (var orbsData of Array.from(productData.spirit_orbs)) {
+      for (var orbsData of Array.from<any>(productData.spirit_orbs)) {
         var asc2,
           end2;
         for (i = 1, end2 = orbsData.count, asc2 = end2 >= 1; asc2 ? i <= end2 : i >= end2; asc2 ? i++ : i--) {
@@ -370,7 +370,7 @@ class ShopModule {
 
     if (productData.type === 'newbie_bundle') {
       allPromises.push(InventoryModule.giveUserCards(txPromise, tx, userId, productData.cards, 'hard', chargeId));
-      for (cosmeticId of Array.from(productData.cosmeticIds)) {
+      for (cosmeticId of Array.from<any>(productData.cosmeticIds)) {
         allPromises.push(InventoryModule.giveUserCosmeticId(txPromise, tx, userId, cosmeticId, 'hard', chargeId));
       }
     }

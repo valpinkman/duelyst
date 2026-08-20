@@ -38,7 +38,7 @@ class Analytics {
   static identify(id, params, utmParams) {
     return (() => {
       const result = [];
-      for (const module of Array.from(this._getAnalyticsModules())) {
+      for (const module of Array.from<any>(this._getAnalyticsModules())) {
         if (module.identify !== undefined) {
           result.push(module.identify(id, params, utmParams));
         } else {
@@ -52,7 +52,7 @@ class Analytics {
   static page(title, params) {
     return (() => {
       const result = [];
-      for (const module of Array.from(this._getAnalyticsModules())) {
+      for (const module of Array.from<any>(this._getAnalyticsModules())) {
         if (module.page !== undefined) {
           result.push(module.page(title, params));
         } else {
@@ -66,7 +66,7 @@ class Analytics {
   static screen(title, params) {
     return (() => {
       const result = [];
-      for (const module of Array.from(this._getAnalyticsModules())) {
+      for (const module of Array.from<any>(this._getAnalyticsModules())) {
         if (module.screen !== undefined) {
           result.push(module.screen(title, params));
         } else {
@@ -97,7 +97,7 @@ class Analytics {
 
     return (() => {
       const result = [];
-      for (const module of Array.from(this._getAnalyticsModules())) {
+      for (const module of Array.from<any>(this._getAnalyticsModules())) {
         if (module.track !== undefined) {
           // Check priority filter
           if (_.isUndefined(module.minPriorityToReportEvent) || (priority >= module.minPriorityToReportEvent)) {
@@ -124,7 +124,7 @@ class Analytics {
 
     return (() => {
       const result = [];
-      for (const module of Array.from(this._getAnalyticsModules())) {
+      for (const module of Array.from<any>(this._getAnalyticsModules())) {
         if (module.trackMonetizationEvent !== undefined) {
           // Check priority filter
           if (_.isUndefined(module.minPriorityToReportEvent) || (priority >= module.minPriorityToReportEvent)) {
@@ -143,7 +143,7 @@ class Analytics {
   static reset() {
     return (() => {
       const result = [];
-      for (const module of Array.from(this._getAnalyticsModules())) {
+      for (const module of Array.from<any>(this._getAnalyticsModules())) {
         if (module.reset !== undefined) {
           result.push(module.reset());
         } else {
@@ -166,7 +166,7 @@ class Analytics {
   static toggleLoggingEnabled() {
     return (() => {
       const result = [];
-      for (const module of Array.from(this._getAnalyticsModules())) {
+      for (const module of Array.from<any>(this._getAnalyticsModules())) {
         if (module.toggleLoggingEnabled !== undefined) {
           result.push(module.toggleLoggingEnabled());
         } else {

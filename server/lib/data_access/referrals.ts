@@ -264,7 +264,7 @@ class ReferralsModule {
           const rewards = (_chainState.rewards = []);
 
           // for each referral event type, check for unclaimed rewards
-          for (var referralEvent of Array.from(referralEventRows)) {
+          for (var referralEvent of Array.from<any>(referralEventRows)) {
             if (referralEvent.event_type === 'silver') {
               rewards.push({
                 id: generatePushId(),
@@ -310,7 +310,7 @@ class ReferralsModule {
           //
           //   allPromises.push InventoryModule.giveUserGold(trxPromise,tx,userId,10,"referral #{referralEvent.event_type} reward")
 
-          for (var reward of Array.from(rewards)) {
+          for (var reward of Array.from<any>(rewards)) {
             allPromises.push(tx('user_rewards').insert(reward));
           }
 

@@ -190,7 +190,7 @@ class GiftCrateModule {
             rewardRows.push(cardsRewardRow);
 
             if ((giftTemplateData.rewards.random_cards != null ? giftTemplateData.rewards.random_cards.length : undefined) > 0) {
-              for (var randomCardInfo of Array.from(giftTemplateData.rewards.random_cards)) {
+              for (var randomCardInfo of Array.from<any>(giftTemplateData.rewards.random_cards)) {
                 var cardsToSampleFrom = SDK.GameSession.getCardCaches().getCardSet(SDK.CardSet.Core).getRarity(randomCardInfo.rarity).getIsUnlockable(false)
                   .getIsCollectible(true)
                   .getIsPrismatic(false)
@@ -249,7 +249,7 @@ class GiftCrateModule {
           }
 
           if ((giftTemplateData.rewards.crate_keys != null ? giftTemplateData.rewards.crate_keys.length : undefined) > 0) {
-            for (var keyType of Array.from(giftTemplateData.rewards.crate_keys)) {
+            for (var keyType of Array.from<any>(giftTemplateData.rewards.crate_keys)) {
               rewardRows.push({
                 id: generatePushId(),
                 user_id: userId,
@@ -267,7 +267,7 @@ class GiftCrateModule {
           }
 
           if ((giftTemplateData.rewards.cosmetics != null ? giftTemplateData.rewards.cosmetics.length : undefined) > 0) {
-            for (cosmetic_id of Array.from(giftTemplateData.rewards.cosmetics)) {
+            for (cosmetic_id of Array.from<any>(giftTemplateData.rewards.cosmetics)) {
               rewardRows.push({
                 id: generatePushId(),
                 user_id: userId,
@@ -356,7 +356,7 @@ class GiftCrateModule {
             }
           }
 
-          for (var reward of Array.from(rewardRows)) {
+          for (var reward of Array.from<any>(rewardRows)) {
             allPromises.push(knex('user_rewards').insert(reward).transacting(tx));
           }
 

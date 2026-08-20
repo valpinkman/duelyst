@@ -22,7 +22,7 @@ router.get('/', function (req, res, next) {
     .then(function (progressionRows) {
       progressionRows = DataAccessHelpers.restifyData(progressionRows);
       const responseData = {};
-      for (var row of Array.from(progressionRows)) {
+      for (var row of Array.from<any>(progressionRows)) {
         responseData[row.faction_id] = row;
       }
       return res.status(200).json(responseData);

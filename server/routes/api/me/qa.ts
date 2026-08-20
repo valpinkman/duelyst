@@ -744,7 +744,7 @@ router.post('/faction_progression/set_all_win_counts_to_99', function (req, res,
       const all = [];
       const factionIds = _.map(FactionFactory.getAllPlayableFactions(), (f) => f.id);
       Logger.module('QA').log('factionIds ', factionIds);
-      for (var factionId of Array.from(factionIds)) {
+      for (var factionId of Array.from<any>(factionIds)) {
         var row = _.find(rows, (r) => r.faction_id === factionId);
         Logger.module('QA').log(`faction ${factionId}`, row != null ? row.user_id : undefined);
         if (row != null) {
@@ -804,7 +804,7 @@ router.post('/faction_progression/set_all_levels_to_10', function (req, res, nex
     .then(function (rows) {
       const factionIds = _.map(FactionFactory.getAllPlayableFactions(), (f) => f.id);
       const allPromises = [];
-      for (var factionId of Array.from(factionIds)) {
+      for (var factionId of Array.from<any>(factionIds)) {
         var row = _.find(rows, (r) => r.faction_id === factionId);
         if ((row == null)) {
           allPromises.push(UsersModule.createFactionProgressionRecord(user_id, factionId, generatePushId(), SDK.GameType.SinglePlayer));
@@ -815,7 +815,7 @@ router.post('/faction_progression/set_all_levels_to_10', function (req, res, nex
     .then(function (factionRows) {
       const factionIds = _.map(FactionFactory.getAllPlayableFactions(), (f) => f.id);
       let winsPerFaction = [];
-      for (var factionId of Array.from(factionIds)) {
+      for (var factionId of Array.from<any>(factionIds)) {
         var row = _.find(factionRows, (r) => r.faction_id === factionId);
         if ((row == null)) {
           return Promise.reject(`No row found for faction - ${factionId}`);

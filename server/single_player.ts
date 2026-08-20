@@ -911,7 +911,7 @@ var onGameTimeTick = function (gameId) {
         // force draw starting hand with current cards
         return (() => {
           const result = [];
-          for (player of Array.from(gameSession.players)) {
+          for (player of Array.from<any>(gameSession.players)) {
             if (!player.getHasStartingHand()) {
               Logger.module('IO').log(`[G:${gameId}]`, `onGameTimeTick:: mulligan timer up, submitting player ${player.playerId.blue} mulligan`.red);
               var drawStartingHandAction = player.actionDrawStartingHand([]);
@@ -1065,7 +1065,7 @@ var flushSpectatorNetworkEventBuffer = function (gameId) {
 var _logSpectatorTickInfo = _.debounce(function (gameId) {
   Logger.module('Game').debug(`onSpectatorDelayedGameTick() ... ${__guard__(games[gameId] != null ? games[gameId].spectatorGameEventBuffer : undefined, (x) => x.length)} buffered`);
   if (games[gameId] != null ? games[gameId].spectatorGameEventBuffer : undefined) {
-    return Array.from((games[gameId] != null ? games[gameId].spectatorGameEventBuffer : undefined)).map((eventData, i) =>
+    return Array.from<any>((games[gameId] != null ? games[gameId].spectatorGameEventBuffer : undefined)).map((eventData, i) =>
       Logger.module('Game').debug('onSpectatorDelayedGameTick() eventData: ', eventData));
   }
 },
@@ -1275,7 +1275,7 @@ var initSpectatorGameSession = function (gameId) {
         // if we're in the middle of a followup and we have some buffered events, we need to copy them over to the spectate buffer
         if (games[gameId].session.getIsBufferingEvents() && (games[gameId].opponentEventDataBuffer.length > 0)) {
           games[gameId].spectatorOpponentEventDataBuffer.length = 0;
-          for (var eventData of Array.from(games[gameId].opponentEventDataBuffer)) {
+          for (var eventData of Array.from<any>(games[gameId].opponentEventDataBuffer)) {
             var eventDataCopy = JSON.parse(JSON.stringify(eventData));
             games[gameId].spectatorOpponentEventDataBuffer.push(eventDataCopy);
           }
@@ -1495,7 +1495,7 @@ var afterGameOver = function (gameId, gameSession, mouseAndUIEvents) {
         let playerActionCount = 0;
         let meaningfulActionCount = 0;
         let moveActionCount = 0;
-        for (var a of Array.from(gameSession.getActions())) {
+        for (var a of Array.from<any>(gameSession.getActions())) {
           // explicit actions
           if ((a.getOwnerId() === userId) && (a.getIsImplicit() === false)) {
             playerActionCount++;
@@ -1581,7 +1581,7 @@ var afterGameOver = function (gameId, gameSession, mouseAndUIEvents) {
     archiveGame(gameId, gameSession, mouseAndUIEvents),
   ];
 
-  for (var player of Array.from(gameSession.players)) {
+  for (var player of Array.from<any>(gameSession.players)) {
     var playerId = player.getPlayerId();
     // don't update normal AI (non-bot user)
     if (playerId !== CONFIG.AI_PLAYER_ID) {
@@ -2386,19 +2386,19 @@ var ai_emoteForLastStep = function (gameId) {
 
         // use ai faction emote that were most present in last step
         if (maxEmotion === numAngryActions) {
-          for (emoteData of Array.from(factionEmotesData)) {
+          for (emoteData of Array.from<any>(factionEmotesData)) {
             if (emoteData.enabled && ((emoteData.title === 'Angry') || (emoteData.title === 'Sad') || (emoteData.title === 'Frustrated')) && (emoteData.generalId === myGeneralId)) {
               emoteIds.push(emoteData.id);
             }
           }
         } else if (maxEmotion === numHappyActions) {
-          for (emoteData of Array.from(factionEmotesData)) {
+          for (emoteData of Array.from<any>(factionEmotesData)) {
             if (emoteData.enabled && (emoteData.title === 'Happy') && (emoteData.generalId === myGeneralId)) {
               emoteIds.push(emoteData.id);
             }
           }
         } else if (maxEmotion === numTauntingActions) {
-          for (emoteData of Array.from(factionEmotesData)) {
+          for (emoteData of Array.from<any>(factionEmotesData)) {
             if (emoteData.enabled && ((emoteData.title === 'Taunt') || (emoteData.title === 'Sunglasses') || (emoteData.title === 'Kiss')) && (emoteData.generalId === myGeneralId)) {
               emoteIds.push(emoteData.id);
             }

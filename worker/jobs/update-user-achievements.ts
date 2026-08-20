@@ -70,7 +70,7 @@ module.exports = function (job, done) {
   const disenchantedCardIdList = job.data.disenchantedCardIdList || null;
   if (disenchantedCardIdList != null) {
     const disenchantProgressPromises = [];
-    for (var disenchantedCardId of Array.from(disenchantedCardIdList)) {
+    for (var disenchantedCardId of Array.from<any>(disenchantedCardIdList)) {
       disenchantProgressPromises.push(AchievementsModule.updateAchievementsProgressWithDisenchantedCard(userId, disenchantedCardId));
     }
     return Promise.all(disenchantProgressPromises)

@@ -31,7 +31,7 @@ DATA.dataForIdentifier = function (identifier) {
       const keys = identifier.split('.');
 
       data = DATA;
-      for (const key of Array.from(keys)) {
+      for (const key of Array.from<any>(keys)) {
         data = data[key];
         if ((data == null)) {
           return null;
@@ -56,7 +56,7 @@ DATA.dataForIdentifiers = function (identifiers) {
 
   if (identifiers) {
     if (!_.isArray(identifiers)) { identifiers = [identifiers]; }
-    for (const identifier of Array.from(identifiers)) {
+    for (const identifier of Array.from<any>(identifiers)) {
       const datum = DATA.dataForIdentifier(identifier);
       if (datum != null) { data = data.concat(datum); }
     }
@@ -89,7 +89,7 @@ DATA.dataForIdentifiersWithFilter = function (identifiers, filterKeys, foundFilt
         var lastKey;
         const identifier = identifiers[i];
         let lastDotIndex = (lastKey = null);
-        for (const filterKey of Array.from(filterKeys)) {
+        for (const filterKey of Array.from<any>(filterKeys)) {
           // only find filter key once
           if (!foundFilterKeys[filterKey]) {
             const filteredIdentifier = `${identifier}.${filterKey}`;
@@ -135,7 +135,7 @@ DATA.dataForMappedIdentifiersWithFilter = function (filterKeyedIdentifiers, iden
     // enforce arrays
     if (!_.isArray(filterKeyedIdentifiers)) { filterKeyedIdentifiers = [filterKeyedIdentifiers]; }
 
-    for (const map of Array.from(filterKeyedIdentifiers)) {
+    for (const map of Array.from<any>(filterKeyedIdentifiers)) {
       data = data.concat(DATA.dataForIdentifiersWithFilter(map[identifierKey], map[filterKeysKey], foundFilterKeys));
     }
   }
@@ -162,7 +162,7 @@ DATA.getFilterKeyedIdentifiers = function (identifiers, filterKeys) {
         const identifier = identifiers[i];
         const lastDotIndex = identifier.lastIndexOf('.');
         const lastKey = (lastDotIndex !== -1 ? identifier.slice(lastDotIndex + 1) : identifier);
-        for (const filterKey of Array.from(filterKeys)) {
+        for (const filterKey of Array.from<any>(filterKeys)) {
           let filterKeyedIdentifier = identifier;
           if (lastKey !== filterKey) { filterKeyedIdentifier += `.${filterKey}`; }
           filterKeyedIdentifiers.push(filterKeyedIdentifier);

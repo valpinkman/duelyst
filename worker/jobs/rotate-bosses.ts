@@ -13,7 +13,7 @@ const Cards = require('../../app/sdk/cards/cardsLookup');
 const moment = require('moment');
 
 // Collect valid boss IDs.
-let BossIds = Object.values(Cards.Boss);
+let BossIds = Object.values<any>(Cards.Boss);
 const BrokenBossIds = [200106]; // These bosses are missing resources and cause login crashes.
 BossIds = BossIds.filter((id) => BrokenBossIds.indexOf(id) === -1);
 

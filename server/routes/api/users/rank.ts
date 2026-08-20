@@ -131,7 +131,7 @@ router.get('/division_stats', function (req, res, next) {
         var rankValue = RankDivisionLookup[rankKey];
         stats[rankKey] = { count: 0 };
       }
-      for (var row of Array.from(rankHistoryRows)) {
+      for (var row of Array.from<any>(rankHistoryRows)) {
         var divisionKey = RankFactory.rankedDivisionKeyForRank(row.rank);
         stats[divisionKey].count += 1;
       }

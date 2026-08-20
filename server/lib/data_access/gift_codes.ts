@@ -195,7 +195,7 @@ class GiftCodesModule {
             }
 
             if (cosmetics) {
-              for (var cosmetic of Array.from(cosmetics)) {
+              for (var cosmetic of Array.from<any>(cosmetics)) {
                 allPromises.push(InventoryModule.giveUserCosmeticId(txPromise, tx, userId, cosmetic, 'gift code', _chainState.giftCodeRow.code));
               }
             }
@@ -205,13 +205,13 @@ class GiftCodesModule {
             }
 
             if (crates != null) {
-              for (var crateType of Array.from(crates)) {
+              for (var crateType of Array.from<any>(crates)) {
                 allPromises.push(CosmeticChestsModule.giveUserChest(txPromise, tx, userId, crateType, null, null, 1, 'gift code', _chainState.giftCodeRow.code));
               }
             }
 
             if (crate_keys != null) {
-              for (var keyType of Array.from(crate_keys)) {
+              for (var keyType of Array.from<any>(crate_keys)) {
                 allPromises.push(CosmeticChestsModule.giveUserChestKey(txPromise, tx, userId, keyType, 1, 'gift code', _chainState.giftCodeRow.code));
               }
             }

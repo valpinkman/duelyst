@@ -596,7 +596,7 @@ App._resizeAndScale = function () {
   CONFIG.pixelScaleCSS = CONFIG.globalScale * window.devicePixelRatio;
   $html.removeClass(`resource-scale-${String(CONFIG.resourceScaleCSS).replace('.', '\.')}`);
   CONFIG.resourceScaleCSS = 1;
-  for (const resourceScale of Array.from(CONFIG.RESOURCE_SCALES)) {
+  for (const resourceScale of Array.from<any>(CONFIG.RESOURCE_SCALES)) {
     const scaleDiff = Math.abs(CONFIG.pixelScaleCSS - resourceScale);
     const currentScaleDiff = Math.abs(CONFIG.pixelScaleCSS - CONFIG.resourceScaleCSS);
     if ((scaleDiff < currentScaleDiff) || ((scaleDiff === currentScaleDiff) && (resourceScale > CONFIG.resourceScaleCSS))) {

@@ -561,7 +561,7 @@ class GauntletModule {
           }
 
           // set arena rewards in db
-          for (reward of Array.from(rewards)) {
+          for (reward of Array.from<any>(rewards)) {
             if (reward instanceof String || (typeof reward === 'string')) {
               var parts = reward.split(' ');
               if (parts[1] === 'G') {
@@ -577,7 +577,7 @@ class GauntletModule {
 
               // get all cards that match rarity reward
               var cardsToSampleFrom = [];
-              for (var factionData of Array.from(SDK.FactionFactory.getAllEnabledFactions())) {
+              for (var factionData of Array.from<any>(SDK.FactionFactory.getAllEnabledFactions())) {
                 var cardsForFaction = SDK.GameSession.getCardCaches().getCardSet(SDK.CardSet.Core).getFaction(factionData.id).getRarity(rarityId)
                   .getIsUnlockable(false)
                   .getIsCollectible(true)
@@ -651,7 +651,7 @@ class GauntletModule {
           _chainState.runData.rewards = rewardsData;
 
           const allPromises = [];
-          for (reward of Array.from(rewardsData)) {
+          for (reward of Array.from<any>(rewardsData)) {
           // card data is done separately
             if (reward.card_id) {
               continue;
@@ -683,7 +683,7 @@ class GauntletModule {
 
             if (reward.cosmetic_keys) {
               rewardInsertData.cosmetic_keys = reward.cosmetic_keys;
-              for (var key of Array.from(reward.cosmetic_keys)) {
+              for (var key of Array.from<any>(reward.cosmetic_keys)) {
                 allPromises.push(CosmeticChestsModule.giveUserChestKey(txPromise, tx, userId, key, 1, 'gauntlet', _chainState.runData.ticket_id, NOW_UTC_MOMENT));
               }
             }
@@ -691,7 +691,7 @@ class GauntletModule {
             if (reward.spirit_orbs != null) {
               rewardInsertData.spirit_orbs = reward.spirit_orbs;
               if (_.isArray(reward.spirit_orbs)) {
-                for (var orbCardSet of Array.from(reward.spirit_orbs)) {
+                for (var orbCardSet of Array.from<any>(reward.spirit_orbs)) {
                   allPromises.push(InventoryModule.addBoosterPackToUser(txPromise, tx, userId, orbCardSet, 'gauntlet', _chainState.runData.ticket_id));
                 }
               } else if (_.isNumber(reward.spirit_orbs)) {
@@ -1321,9 +1321,9 @@ class GauntletModule {
     // get all general ids
     const allGeneralIds = [];
     const allFactions = SDK.FactionFactory.getAllPlayableFactions();
-    for (var faction of Array.from(allFactions)) {
+    for (var faction of Array.from<any>(allFactions)) {
       var generalIdsForFaction = SDK.FactionFactory.generalIdsForFaction(faction.id);
-      for (var generalId of Array.from(generalIdsForFaction)) {
+      for (var generalId of Array.from<any>(generalIdsForFaction)) {
         allGeneralIds.push(generalId);
       }
     }

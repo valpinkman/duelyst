@@ -125,7 +125,7 @@ class AnalyticsTracker {
     } else if (action instanceof SDK.DrawStartingHandAction && (action.getOwnerId() === gameSession.getMyPlayerId())) {
       const mulliganedCardData = action.mulliganedHandCardsData;
       if (mulliganedCardData != null) {
-        for (const cardData of Array.from(mulliganedCardData)) {
+        for (const cardData of Array.from<any>(mulliganedCardData)) {
           card = SDK.GameSession.getCardCaches().getCardById(cardData.id);
           Analytics.track('mulliganed card', {
             category: Analytics.EventCategory.Game,

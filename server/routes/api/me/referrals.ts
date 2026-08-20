@@ -36,7 +36,7 @@ router.get('/summary', function (req, res, next) {
 
       const stats = {};
 
-      for (row of Array.from(referralRows)) {
+      for (row of Array.from<any>(referralRows)) {
         if (stats.signups == null) { stats.signups = 0; }
         stats.signups++;
         if (row.level_reached > 0) {
@@ -51,7 +51,7 @@ router.get('/summary', function (req, res, next) {
 
       const unclaimedRewards = {};
 
-      for (row of Array.from(unreadEventRows)) {
+      for (row of Array.from<any>(unreadEventRows)) {
         switch (row.event_type) {
         case 'silver':
           if (unclaimedRewards.spirit_orbs == null) { unclaimedRewards.spirit_orbs = 0; }

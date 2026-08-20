@@ -194,7 +194,7 @@ if (process.env.AI_TOOLS_ENABLED) {
     request.done((res) => {
       const actionsData = JSON.parse(res.actions);
       const actions = [];
-      for (const actionData of Array.from(actionsData)) {
+      for (const actionData of Array.from<any>(actionsData)) {
         const action = SDK.GameSession.getInstance().deserializeActionFromFirebase(actionData);
         actions.push(action);
       }
@@ -2424,7 +2424,7 @@ App._startGame = function () {
 
   // load all cards in my player's hand
   const preloaded_package_ids = [];
-  for (const cardIndex of Array.from(gameSession.getMyPlayer().getDeck().getHand())) {
+  for (const cardIndex of Array.from<any>(gameSession.getMyPlayer().getDeck().getHand())) {
     card = gameSession.getCardByIndex(cardIndex);
     if (card != null) {
       // get unique id for card preload
@@ -2437,7 +2437,7 @@ App._startGame = function () {
   }
 
   // load all cards and modifiers on board
-  for (card of Array.from(gameSession.getBoard().getCards(null, (allowUntargetable = true)))) {
+  for (card of Array.from<any>(gameSession.getBoard().getCards(null, (allowUntargetable = true)))) {
     // get unique id for card preload
     card_id = card.getId();
     card_pkg_id = PKGS.getCardGamePkgIdentifier(card_id);
@@ -2460,7 +2460,7 @@ App._startGame = function () {
     load_promises.push(PackageManager.getInstance().loadMinorPackage(card_preload_pkg_id, card_resources_pkg, 'game'));
 
     // modifiers
-    for (const modifier of Array.from(card.getModifiers())) {
+    for (const modifier of Array.from<any>(card.getModifiers())) {
       if (modifier != null) {
         // get unique id for modifier preload
         const modifier_type = modifier.getType();
@@ -2766,7 +2766,7 @@ App._startLoadingGameOverData = function () {
       }
 
       if (this.challengeModel != null ? this.challengeModel.get('reward_ids') : undefined) {
-        for (rewardId of Array.from(this.challengeModel.get('reward_ids'))) {
+        for (rewardId of Array.from<any>(this.challengeModel.get('reward_ids'))) {
           rewardIds.push(rewardId);
         }
       }
@@ -2775,7 +2775,7 @@ App._startLoadingGameOverData = function () {
     }).then((rewardIds) => {
       const allPromises = [];
       if (rewardIds != null) {
-        for (const rewardId of Array.from(rewardIds)) {
+        for (const rewardId of Array.from<any>(rewardIds)) {
           const rewardModel = new DuelystBackbone.Model();
           rewardModel.url = `${process.env.API_URL}/api/me/rewards/${rewardId}`;
           rewardModel.fetch();
@@ -3791,7 +3791,7 @@ App._resizeAndScale = function () {
   CONFIG.pixelScaleCSS = CONFIG.globalScale * window.devicePixelRatio;
   $html.removeClass(`resource-scale-${String(CONFIG.resourceScaleCSS).replace('.', '\.')}`);
   CONFIG.resourceScaleCSS = 1;
-  for (const resourceScale of Array.from(CONFIG.RESOURCE_SCALES)) {
+  for (const resourceScale of Array.from<any>(CONFIG.RESOURCE_SCALES)) {
     const scaleDiff = Math.abs(CONFIG.pixelScaleCSS - resourceScale);
     const currentScaleDiff = Math.abs(CONFIG.pixelScaleCSS - CONFIG.resourceScaleCSS);
     if ((scaleDiff < currentScaleDiff) || ((scaleDiff === currentScaleDiff) && (resourceScale > CONFIG.resourceScaleCSS))) {

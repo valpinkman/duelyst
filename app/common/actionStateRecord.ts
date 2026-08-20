@@ -177,7 +177,7 @@ class ActionStateRecord {
       // listeners for events
       const eventTypes = Object.keys(this._propertyNamesToRecordByEventType);
       if (eventTypes.length > 0) {
-        return Array.from(eventTypes).map((eventType) =>
+        return Array.from<any>(eventTypes).map((eventType) =>
           this._eventBus.on(eventType, this.onStateRecordingActionEvent, this));
       }
     }
@@ -194,7 +194,7 @@ class ActionStateRecord {
         // listeners for events
         const eventTypes = Object.keys(this._propertyNamesToRecordByEventType);
         if (eventTypes.length > 0) {
-          for (const eventType of Array.from(eventTypes)) {
+          for (const eventType of Array.from<any>(eventTypes)) {
             this._eventBus.off(eventType, this.onStateRecordingActionEvent, this);
           }
         }
@@ -222,7 +222,7 @@ class ActionStateRecord {
       // Logger.module("COMMON").log("ActionStateRecord.recordCurrentState", eventType)
       const propertyNamesToRecord = Object.keys(propertiesToRecord);
       const recordingMethods = {};
-      for (const propertyName of Array.from(propertyNamesToRecord)) {
+      for (const propertyName of Array.from<any>(propertyNamesToRecord)) {
         recordingMethods[propertyName] = propertiesToRecord[propertyName];
       }
       if ((this._propertyNamesToRecordByEventType[eventType] == null)) {
@@ -257,7 +257,7 @@ class ActionStateRecord {
   teardownRecordingStateOnAllEvents() {
     const eventTypes = Object.keys(this._propertyNamesToRecordByEventType);
     if (eventTypes.length > 0) {
-      for (const eventType of Array.from(eventTypes)) {
+      for (const eventType of Array.from<any>(eventTypes)) {
         if (this._eventBus != null) {
           this._eventBus.off(eventType, this.onStateRecordingActionEvent, this);
         }
@@ -282,7 +282,7 @@ class ActionStateRecord {
 
     // record for each event type
     const eventTypes = Object.keys(this._propertyNamesToRecordByEventType);
-    return Array.from(eventTypes).map((eventType) =>
+    return Array.from<any>(eventTypes).map((eventType) =>
       this._recordProperties(eventType, actionIndex, ignoreChanged));
   }
 
@@ -293,7 +293,7 @@ class ActionStateRecord {
     // record for each event type
     const actionIndex = this._getLastActionIndexRecorded();
     const eventTypes = Object.keys(this._propertyNamesToRecordByEventType);
-    return Array.from(eventTypes).map((eventType) =>
+    return Array.from<any>(eventTypes).map((eventType) =>
       this._recordProperties(eventType, actionIndex));
   }
 
@@ -317,7 +317,7 @@ class ActionStateRecord {
     // record each property
     let propertyRecorded = false;
     const stateRecord = {};
-    for (const propertyName of Array.from(propertyNamesToRecord)) {
+    for (const propertyName of Array.from<any>(propertyNamesToRecord)) {
       // get property value by recording method
       const recordingMethod = recordingMethods[propertyName];
       const value = recordingMethod();

@@ -409,7 +409,7 @@ class AchievementsModule {
                 rewardObject.spirit_orbs = rewardValue;
               } else if (rewardType === 'cards') {
                 var cardIds = [];
-                for (var c of Array.from(rewardValue)) {
+                for (var c of Array.from<any>(rewardValue)) {
                   if (parseInt(c)) {
                     Logger.module('AchievementsModule').debug('_applyAchievementProgressMapToUser() -> giving user card', c);
                     cardIds.push(parseInt(c));
@@ -506,7 +506,7 @@ class AchievementsModule {
                 }
               } else if (rewardType === 'giftChests') {
                 if (rewardObject.gift_chests == null) { rewardObject.gift_chests = []; }
-                for (type of Array.from(rewardValue)) {
+                for (type of Array.from<any>(rewardValue)) {
                   rewardObject.gift_chests.push(type);
                 }
               }
@@ -518,24 +518,24 @@ class AchievementsModule {
             if (rewardObject.spirit_orbs) { allPromises.push(InventoryModule.addBoosterPackToUser(txPromise, tx, userId, 1, 'achievement', achievementId)); }
             if (rewardObject.gauntlet_tickets) { allPromises.push(InventoryModule.addArenaTicketToUser(txPromise, tx, userId, 'achievement', achievementId)); }
             if (rewardObject.cosmetics) {
-              for (var cosmeticId of Array.from(rewardObject.cosmetics)) {
+              for (var cosmeticId of Array.from<any>(rewardObject.cosmetics)) {
                 allPromises.push(InventoryModule.giveUserCosmeticId(txPromise, tx, userId, cosmeticId, 'achievement reward', achievementId, null, MOMENT_NOW_UTC));
               }
             }
             if (rewardObject.cosmetic_keys) {
-              for (var keyType of Array.from(rewardObject.cosmetic_keys)) {
+              for (var keyType of Array.from<any>(rewardObject.cosmetic_keys)) {
                 allPromises.push(CosmeticChestsModule.giveUserChestKey(txPromise, tx, userId, keyType, 1, 'achievement reward', achievementId, MOMENT_NOW_UTC));
               }
             }
             if (rewardObject.gift_chests) {
-              for (type of Array.from(rewardObject.gift_chests)) {
+              for (type of Array.from<any>(rewardObject.gift_chests)) {
                 allPromises.push(GiftCrateModule.addGiftCrateToUser(txPromise, tx, userId, type, achievementId, MOMENT_NOW_UTC));
               }
             }
 
             // random un-owned cosmetic needs special handling
             if (rewardType === 'newRandomCosmetics') {
-              for (var cosmeticParams of Array.from(rewardValue)) {
+              for (var cosmeticParams of Array.from<any>(rewardValue)) {
                 allPromises.push(InventoryModule.giveUserNewPurchasableCosmetic(txPromise, tx, userId, 'achievement reward', achievementId, cosmeticParams.rarity, cosmeticParams.type, null, MOMENT_NOW_UTC).then((cosmeticReward) => {
                   if ((cosmeticReward != null) && (cosmeticReward.cosmetic_id != null)) {
                     if (rewardObject.cosmetics == null) { rewardObject.cosmetics = []; }
@@ -611,7 +611,7 @@ class AchievementsModule {
         //   delete reward.user_id
         //   allPromises.push FirebasePromises.set(fbRootRef.child("user-rewards").child(userId).child(reward_id),Helpers.restifyData(reward))
 
-        for (var row of Array.from(_chainState.updatedAchievements)) {
+        for (var row of Array.from<any>(_chainState.updatedAchievements)) {
           var sdkAchievement = SDK.AchievementsFactory.achievementForIdentifier(row.achievement_id);
 
           if (sdkAchievement.tracksProgress) {
@@ -651,7 +651,7 @@ class AchievementsModule {
           .getIsPrismatic(false)
           .getCards();
         const unownedMythronCards = [];
-        for (var mythronCard of Array.from(mythronCards)) {
+        for (var mythronCard of Array.from<any>(mythronCards)) {
           if (!(card_collection_data.cards[mythronCard.getId()]) || (__guard__(card_collection_data.cards[mythronCard.getId()], (x) => x.count) < 1)) {
             unownedMythronCards.push(mythronCard);
           }

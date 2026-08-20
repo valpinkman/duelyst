@@ -217,7 +217,7 @@ class ChallengesModule {
                 if (_chainState.challengeRow && (__guard__(questProgressResponse != null ? questProgressResponse.rewards : undefined, (x) => x.length) > 0)) {
                   Logger.module('ChallengesModule').debug(`completeChallengeWithType() -> user ${userId.blue} completed challenge quest rewards count: ${(questProgressResponse != null ? questProgressResponse.rewards.length : undefined)}`);
 
-                  for (var reward of Array.from(questProgressResponse.rewards)) {
+                  for (var reward of Array.from<any>(questProgressResponse.rewards)) {
                     _chainState.rewards.push(reward);
                     _chainState.challengeRow.reward_ids.push(reward.id);
                   }

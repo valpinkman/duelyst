@@ -32,7 +32,7 @@ UtilsGameSession.getWinningPlayerId = function (gameSessionData) {
 };
 
 UtilsGameSession.getOpponentIdToPlayerId = function (gameSessionData, playerId) {
-  for (const playerData of Array.from(gameSessionData.players)) {
+  for (const playerData of Array.from<any>(gameSessionData.players)) {
     if (playerData.playerId !== playerId) {
       return playerData.playerId;
     }
@@ -41,7 +41,7 @@ UtilsGameSession.getOpponentIdToPlayerId = function (gameSessionData, playerId) 
 };
 
 UtilsGameSession.getPlayerDataForId = function (gameSessionData, playerId) {
-  for (const playerData of Array.from(gameSessionData.players)) {
+  for (const playerData of Array.from<any>(gameSessionData.players)) {
     if (playerData.playerId === playerId) {
       return playerData;
     }
@@ -65,7 +65,7 @@ UtilsGameSession.getPlayerSetupDataForPlayerId = function (gameSessionData, play
 UtilsGameSession.groupModifiersBySourceCard = function (modifiers) {
   // hash modifiers by the index of the action that played their source card
   const modifiersBySourceCardActionIndex = {};
-  for (const m of Array.from(modifiers)) {
+  for (const m of Array.from<any>(modifiers)) {
     var sourceCardActionIndex;
     const sourceCard = m.getSourceCard();
     if (sourceCard != null) { sourceCardActionIndex = sourceCard.getAppliedToBoardByActionIndex(); } else { sourceCardActionIndex = -1; }
@@ -76,7 +76,7 @@ UtilsGameSession.groupModifiersBySourceCard = function (modifiers) {
   // create list of modifiers by source card in order of when the cards were played
   const modifiersGroupedBySourceCard = [];
   const sourceCardActionIndices = Object.keys(modifiersBySourceCardActionIndex).sort((a, b) => parseInt(a) - parseInt(b));
-  for (const index of Array.from(sourceCardActionIndices)) {
+  for (const index of Array.from<any>(sourceCardActionIndices)) {
     modifiersGroupedBySourceCard.push(modifiersBySourceCardActionIndex[index]);
   }
   return modifiersGroupedBySourceCard;
@@ -109,7 +109,7 @@ UtilsGameSession.getValidBoardPositionsFromPattern = function (board, boardPosit
     bpy = boardPosition.y;
   }
 
-  for (const offset of Array.from(pattern)) {
+  for (const offset of Array.from<any>(pattern)) {
     const patternPosition = { x: offset.x + bpx, y: offset.y + bpy };
     if (board.isOnBoard(patternPosition) && (allowObstructions || !board.getObstructionAtPosition(patternPosition))) {
       boardPositions.push(patternPosition);
@@ -132,7 +132,7 @@ UtilsGameSession.getSmartSpawnPositionsFromPattern = function (gameSession, sour
   const spawnPositions = [];
   if ((pattern == null)) { pattern = CONFIG.PATTERN_1x1; }
 
-  for (const offset of Array.from(pattern)) {
+  for (const offset of Array.from<any>(pattern)) {
     // make sure the potential spawn location is on the board and spawn only when not obstructing or position is unobstructed
     const spawnPosition = { x: sourcePosition.x + offset.x, y: sourcePosition.y + offset.y };
     if (board.isOnBoard(spawnPosition) && !board.getObstructionAtPositionForEntity(spawnPosition, cardToSpawn)) {
@@ -285,7 +285,7 @@ UtilsGameSession.getRandomNonConflictingSmartSpawnPositionsFromPatterns = functi
     // find conflicts
     let numConflicts = 0;
     const conflictScoringMethod = (conflictDataForPosition) => conflictDataForPosition.conflicts.length;
-    for (spawnData of Array.from(spawnPositionsWithSource)) {
+    for (spawnData of Array.from<any>(spawnPositionsWithSource)) {
       ({
         validSpawnPositions,
       } = spawnData);
@@ -296,7 +296,7 @@ UtilsGameSession.getRandomNonConflictingSmartSpawnPositionsFromPatterns = functi
         nonConflictingPositions,
       } = spawnData);
       let numConflictsForSpawnData = 0;
-      for (position of Array.from(validSpawnPositions)) {
+      for (position of Array.from<any>(validSpawnPositions)) {
         const {
           x,
         } = position;
@@ -304,7 +304,7 @@ UtilsGameSession.getRandomNonConflictingSmartSpawnPositionsFromPatterns = functi
           y,
         } = position;
         conflictDataForPosition = null;
-        for (const otherSpawnData of Array.from(spawnPositionsWithSource)) {
+        for (const otherSpawnData of Array.from<any>(spawnPositionsWithSource)) {
           if (otherSpawnData !== spawnData) {
             const otherSpawnPositions = otherSpawnData.validSpawnPositions;
             for (let otherIndex = 0; otherIndex < otherSpawnPositions.length; otherIndex++) {
@@ -359,7 +359,7 @@ UtilsGameSession.getRandomNonConflictingSmartSpawnPositionsFromPatterns = functi
         } else {
           // resolve conflicted position for this source
           let resolvedConflict = false;
-          for (const conflictingSpawnData of Array.from(conflictDataForPosition.conflicts)) {
+          for (const conflictingSpawnData of Array.from<any>(conflictDataForPosition.conflicts)) {
             const conflictingSpawnPositions = conflictingSpawnData.validSpawnPositions;
             const numSpawnPositions = conflictingSpawnPositions.length;
             if (numSpawnPositions > 1) {
@@ -390,7 +390,7 @@ UtilsGameSession.getRandomNonConflictingSmartSpawnPositionsFromPatterns = functi
   }
 
   // pick random spawn positions for all sources that have valid spawn positions
-  for (spawnData of Array.from(spawnPositionsWithSource)) {
+  for (spawnData of Array.from<any>(spawnPositionsWithSource)) {
     var asc; var
       end;
     ({
@@ -430,7 +430,7 @@ UtilsGameSession.getRandomNonConflictingSmartSpawnPositionsForModifier = functio
   const patterns = [];
   const cardsToSpawn = [];
   const spawnCounts = [];
-  for (const coordinatingModifier of Array.from(modifiersToCoordinateWith)) {
+  for (const coordinatingModifier of Array.from<any>(modifiersToCoordinateWith)) {
     const card = coordinatingModifier.getCard();
     positions.push(card.getPosition());
     patterns.push(coordinatingModifier.spawnPattern);
@@ -474,7 +474,7 @@ UtilsGameSession.scrubGameSessionData = function (gameSession, gameSessionData, 
 
   // scrub opponent cards that aren't yet played and are not a signature card
   const cardsIndices = Object.keys(gameSessionData.cardsByIndex);
-  for (index of Array.from(cardsIndices)) {
+  for (index of Array.from<any>(cardsIndices)) {
     const card = gameSession.getCardByIndex(index);
     if ((card == null) || card.isScrubbable(scrubFromPerspectiveOfPlayerId, forSpectator)) {
       delete gameSessionData.cardsByIndex[index];
@@ -487,7 +487,7 @@ UtilsGameSession.scrubGameSessionData = function (gameSession, gameSessionData, 
 
   // scrub modifiers and context objects that are on cards that have been scrubbed
   const modifierIndices = Object.keys(gameSessionData.modifiersByIndex);
-  for (index of Array.from(modifierIndices)) {
+  for (index of Array.from<any>(modifierIndices)) {
     const modifierData = gameSessionData.modifiersByIndex[index];
     if ((modifierData.cardAffectedIndex != null) && (gameSessionData.cardsByIndex[modifierData.cardAffectedIndex] == null)) {
       delete gameSessionData.modifiersByIndex[index];
@@ -502,13 +502,13 @@ UtilsGameSession.scrubGameSessionData = function (gameSession, gameSessionData, 
   }
 
   // scrub data from current step actions
-  for (step of Array.from(gameSessionData.currentTurn.steps)) {
+  for (step of Array.from<any>(gameSessionData.currentTurn.steps)) {
     UtilsGameSession.scrubSensitiveActionData(gameSession, step.action, scrubFromPerspectiveOfPlayerId, forSpectator);
   }
 
   // scrub data for step actions
-  for (const turn of Array.from(gameSessionData.turns)) {
-    for (step of Array.from(turn.steps)) {
+  for (const turn of Array.from<any>(gameSessionData.turns)) {
+    for (step of Array.from<any>(turn.steps)) {
       UtilsGameSession.scrubSensitiveActionData(gameSession, step.action, scrubFromPerspectiveOfPlayerId, forSpectator);
     }
   }

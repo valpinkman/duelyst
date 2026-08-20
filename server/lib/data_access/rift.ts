@@ -330,7 +330,7 @@ class RiftModule {
         })
         .then(function () {
           const storedUpgradeUpdatePromises = [];
-          for (var row of Array.from(_chainState.storedUpgradeRows)) {
+          for (var row of Array.from<any>(_chainState.storedUpgradeRows)) {
             storedUpgradeUpdatePromises.push(tx('user_rift_run_stored_upgrades').where('id', row.id).update({
               assigned_ticket_id: ticketId,
             }),

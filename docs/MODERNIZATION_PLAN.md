@@ -454,8 +454,22 @@ server and worker. What remains is *typing* (5T.4), not converting.
     redundant arguments, e.g. `popCardFromStack(card)` where the method pops the stack and ignores
     its parameter. Marking these `?` is annotation tidying, not bug fixing.
 
-  What remains (2,676) needs individual judgement rather than codemods: ~1,392 further bare `{}`
-  locals, 175 on `unknown`, `RedisPlayerQueue` 53, and ~143 optional-parameter annotations.
+  **`unknown` errors: 190 → 0 (2,676 → 2,484).** Triaged expecting real bugs at data boundaries;
+  **found none.** Every one traced to a bare `Array.from(x)`, which infers `unknown[]`, making the
+  loop variable `unknown` so each property access in the body errors — which is why they reported
+  on body lines, not on the `Array.from` line. decaffeinate emitted this inconsistently: 834 sites
+  already carried `<any>`, 194 did not. Codemod: `scripts/codemods/array-from-any.mjs`. Plus one
+  `Object.values(Cards.Boss)` in `worker/jobs/rotate-bosses.ts`.
+
+  **Be clear about what that bought: consistency, not safety.** `<any>` silences rather than
+  describes. Real typing at these boundaries means defining interfaces for the data crossing them
+  — game session data, knex row shapes — which is where actual bug-catching would come from, and
+  is a much larger separate exercise.
+
+  What remains (2,484) is the same shape: ~1,392 bare `{}` locals, `RedisPlayerQueue` 53, and
+  ~143 optional-parameter annotations. None of it looks bug-bearing — **the two categories that
+  could hide bugs (TS2304, TS2554) are triaged, and the one real haul was the six missing
+  requires.**
 - [ ] 5T.3 Replace the tsx require-hook with a real build for production images (the hook
   compiles on every boot; fine for dev, wasteful for prod).
 
