@@ -134,3 +134,91 @@ exports.nodeify = function (promise, callback) {
     (err) => { callback(err); },
   );
 };
+
+/**
+ * Replacement for bluebird's `Promise.map(items, mapper, {concurrency})`.
+ *
+ * NOT equivalent to `Promise.all(items.map(fn))`, which is why this is a
+ * helper. bluebird's version:
+ *   - accepts a promise for the list, and resolves promises *inside* it
+ *     before handing each value to the mapper;
+ *   - calls the mapper as `(item, index, length)`;
+ *   - honours `{concurrency: n}`, and **`{concurrency: 1}` means serial**.
+ *
+ * That last point is load-bearing here rather than a performance knob:
+ * `data_access/achievements.ts` runs its mapper with concurrency 1 precisely
+ * "so that there's no chance of card log getting overwritten". Converting such
+ * a site to `Promise.all` would run the writes concurrently and reintroduce
+ * that overwrite bug with no test failure to show for it.
+ */
+exports.map = function (items, mapper, options) {
+  const concurrency = options && options.concurrency > 0 ? options.concurrency : Infinity;
+  return Promise.resolve(items).then((list) => {
+    const arr = Array.from(list);
+    const { length } = arr;
+    const results = new Array(length);
+    if (length === 0) return results;
+
+    const limit = Math.min(concurrency, length);
+    let next = 0;
+    let completed = 0;
+    let failed = false;
+
+    return new Promise((resolve, reject) => {
+      const launch = function () {
+        while (next < length && !failed && (next - completed) < limit) {
+          const i = next;
+          next += 1;
+          Promise.resolve(arr[i])
+            .then((item) => mapper(item, i, length))
+            .then((value) => {
+              results[i] = value;
+              completed += 1;
+              if (completed === length) {
+                resolve(results);
+              } else {
+                launch();
+              }
+            }, (err) => {
+              failed = true;
+              reject(err);
+            });
+        }
+      };
+      launch();
+    });
+  });
+};
+
+/**
+ * Replacement for bluebird's `Promise.each(items, iterator)`: always serial,
+ * and resolves to the ORIGINAL list rather than the iterator's return values
+ * (that is bluebird's contract, and callers rely on it).
+ */
+exports.each = function (items, iterator) {
+  return Promise.resolve(items).then((list) => {
+    const arr = Array.from(list);
+    let chain = Promise.resolve();
+    arr.forEach((item, i) => {
+      chain = chain
+        .then(() => item)
+        .then((value) => iterator(value, i, arr.length));
+    });
+    return chain.then(() => arr);
+  });
+};
+
+/**
+ * Replacement for bluebird's `Promise.props(obj)`: `Promise.all` for the
+ * values of an object, resolving to an object with the same keys.
+ */
+exports.props = function (obj) {
+  return Promise.resolve(obj).then((o) => {
+    const keys = Object.keys(o);
+    return Promise.all(keys.map((k) => o[k])).then((values) => {
+      const out = {};
+      keys.forEach((k, i) => { out[k] = values[i]; });
+      return out;
+    });
+  });
+};
