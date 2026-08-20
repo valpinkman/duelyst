@@ -43,6 +43,7 @@ router.post('/core', function (req, res, next) {
 });
 
 router.post('/:module_name/stage', function (req, res, next) {
+  const _chainState = {};
   let module_name = t.validate(req.params.module_name, t.Str);
   if (!module_name.isValid()) {
     return next();
@@ -57,9 +58,8 @@ router.post('/:module_name/stage', function (req, res, next) {
   stage = stage.value;
 
   return UsersModule.setNewPlayerFeatureProgression(user_id, module_name, stage)
-    .bind({})
     .then(function (progressionData) {
-      this.progressionData = progressionData;
+      _chainState.progressionData = progressionData;
       if ((module_name === NewPlayerProgressionModuleLookup.Core) && NewPlayerProgressionHelper.questsForStage(stage)) {
         return QuestsModule.generateBeginnerQuests(user_id);
       } else {
@@ -67,9 +67,9 @@ router.post('/:module_name/stage', function (req, res, next) {
       }
     }).then(function (questData) {
       if (questData) {
-        this.questData = questData;
+        _chainState.questData = questData;
       }
-      return res.status(200).json(DataAccessHelpers.restifyData(this));
+      return res.status(200).json(DataAccessHelpers.restifyData(_chainState));
     })
     .catch((error) => next(error));
 });

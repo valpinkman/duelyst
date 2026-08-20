@@ -32,26 +32,25 @@ describe('sync module', () => {
   beforeAll(() => {
     Logger.module('UNITTEST').log('creating user');
     const createOrInsertUser = function (userEmail, userName) {
+      const _chainState = {};
       return UsersModule.createNewUser(userEmail, userName, 'hash', 'kumite14')
-        .bind({})
-        .then(function (userIdCreated) {
-          this.userId = userIdCreated;
+        .then((userIdCreated) => {
+          _chainState.userId = userIdCreated;
           Logger.module('UNITTEST').log('created user ', userIdCreated);
         }).catch(onType(Errors.AlreadyExistsError, function (error) {
+          const _chainState = {};
           Logger.module('UNITTEST').log('existing user', userName);
           return UsersModule.userIdForEmail(userEmail)
             .bind(this)
-            .then(function (userIdExisting) {
-              this.userId = userIdExisting;
+            .then((userIdExisting) => {
+              _chainState.userId = userIdExisting;
               Logger.module('UNITTEST').log('existing user retrieved', userIdExisting);
               return SyncModule.wipeUserData(userIdExisting);
-            }).then(function () {
-              Logger.module('UNITTEST').log('existing user data wiped', this.userId);
+            }).then(() => {
+              Logger.module('UNITTEST').log('existing user data wiped', _chainState.userId);
             });
         }))
-        .then(function () {
-          return Promise.resolve(this.userId);
-        });
+        .then(() => Promise.resolve(_chainState.userId));
     };
 
     return Promise.all([
@@ -65,6 +64,7 @@ describe('sync module', () => {
 
   describe('_syncUserFromSQLToFirebase()', () => {
     it('card-collection in firebase to be removed if user collection data empty in SQL', () => {
+      const _chainState = {};
       const txPromise = knex.transaction((tx) => {
         InventoryModule.giveUserCards(txPromise, tx, userId, [20157, 10974, 20052, 10014, 10965])
           .then(() => {
@@ -74,13 +74,13 @@ describe('sync module', () => {
             Logger.module('UNITTEST').log(e);
             tx.rollback();
           });
-      }).bind({}).then(() => SyncModule._syncUserFromSQLToFirebase(userId)).then(() => DuelystFirebase.connect().getRootRef())
-        .then(function (rootRef) {
-          this.rootRef = rootRef;
+      }).then(() => SyncModule._syncUserFromSQLToFirebase(userId)).then(() => DuelystFirebase.connect().getRootRef())
+        .then((rootRef) => {
+          _chainState.rootRef = rootRef;
           return Promise.all([
             knex.select().from('user_cards').where({ user_id: userId }),
             knex.first().from('user_card_collection').where({ user_id: userId }),
-            FirebasePromises.once(this.rootRef.child('user-inventory').child(userId).child('card-collection'), 'value'),
+            FirebasePromises.once(_chainState.rootRef.child('user-inventory').child(userId).child('card-collection'), 'value'),
           ]);
         })
         .then(([cardCountRows, cardCollection, fbCardCollection]) => {
@@ -89,9 +89,7 @@ describe('sync module', () => {
         })
         .then(() => SyncModule.wipeUserData(userId))
         .then(() => SyncModule._syncUserFromSQLToFirebase(userId))
-        .then(function () {
-          return FirebasePromises.once(this.rootRef.child('user-inventory').child(userId).child('card-collection'), 'value');
-        })
+        .then(() => FirebasePromises.once(_chainState.rootRef.child('user-inventory').child(userId).child('card-collection'), 'value'))
         .then((fbCardCollection) => {
           expect(fbCardCollection.val()).to.equal(null);
         });

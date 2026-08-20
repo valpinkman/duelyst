@@ -24,6 +24,7 @@ const awsReplaysBucket = config.get('aws.replaysBucketName');
 const router = express.Router();
 
 router.get('/:replay_id', function (req, res, next) {
+  const _chainState = {};
   const result = t.validate(req.params.replay_id, t.subtype(t.Str, (s) => s.length <= 36));
   if (!result.isValid()) {
     return next();
@@ -32,9 +33,8 @@ router.get('/:replay_id', function (req, res, next) {
   const replay_id = result.value;
 
   return knex('user_replays').where('replay_id', replay_id).first()
-    .bind({})
     .then(function (replayData) {
-      this.replayData = replayData;
+      _chainState.replayData = replayData;
       if (replayData != null) {
         const {
           game_id,
@@ -90,13 +90,13 @@ router.get('/:replay_id', function (req, res, next) {
         // scrub the data here
         const gameSession = GameSession.create();
         gameSession.deserializeSessionFromFirebase(JSON.parse(gameDataString));
-        Logger.module('API').debug(`scrubbing replay from perspective of ${this.replayData.user_id}`);
-        gameSessionData = UtilsGameSession.scrubGameSessionData(gameSession, gameSessionData, this.replayData.user_id, true);
+        Logger.module('API').debug(`scrubbing replay from perspective of ${_chainState.replayData.user_id}`);
+        gameSessionData = UtilsGameSession.scrubGameSessionData(gameSession, gameSessionData, _chainState.replayData.user_id, true);
 
         return res.status(200).json({
           gameSessionData,
           mouseUIData,
-          replayData: this.replayData,
+          replayData: _chainState.replayData,
         });
       }
     })

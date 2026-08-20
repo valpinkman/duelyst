@@ -20,6 +20,7 @@ const Logger = require('../../app/common/logger');
  * @param  {Function} done   Callback when job is complete
  */
 module.exports = function (job, done) {
+  const _chainState = {};
   const token1 = job.data.token1 || null;
   const token2 = job.data.token2 || null;
   const {
@@ -39,9 +40,8 @@ module.exports = function (job, done) {
   Logger.module('JOB').debug(`[J:${job.id}] setup ${gameType.yellow} game (${token1.name} versus ${token2.name}) starting`);
 
   return getGameServerAsync()
-    .bind({})
     .then(function (gameServer) {
-      this.gameServer = gameServer;
+      _chainState.gameServer = gameServer;
       if (!gameServer) {
         job.log('Not assigning to specific server.');
       } else {
@@ -49,7 +49,7 @@ module.exports = function (job, done) {
       }
       return createGameAsync(gameType, token1, token2, gameServer);
     }).then(function (gameId) {
-      Logger.module('JOB').debug(`[J:${job.id}] Setup ${gameType.toUpperCase()} Game ID:${gameId} SERVER:${this.gameServer} (${token1.name} versus ${token2.name}) done()`);
+      Logger.module('JOB').debug(`[J:${job.id}] Setup ${gameType.toUpperCase()} Game ID:${gameId} SERVER:${_chainState.gameServer} (${token1.name} versus ${token2.name}) done()`);
       return done(null, { gameId });
     })
     .catch((error) => // Note we are leaking a 'unsanitized' error message here

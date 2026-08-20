@@ -52,6 +52,7 @@ const router = express.Router();
 //   .catch (error) -> next(error)
 
 router.get('/:player_id', function (req, res, next) {
+  const _chainState = {};
   const result = t.validate(req.params.player_id, types.UserId);
   if (!result.isValid()) {
     return next();
@@ -72,21 +73,20 @@ router.get('/:player_id', function (req, res, next) {
   }
 
   return systemStatusPromise
-    .bind({})
     .then(function (consulSystemRuntimeParams) {
       if (!__guard__(consulSystemRuntimeParams != null ? consulSystemRuntimeParams.spectate : undefined, (x) => x.enabled)) {
         throw new Errors.SystemDisabledError('The spectate system is temporarily disabled.');
       }
     }).then(() => knex('users').first('username').where('id', user_id))
-    .then(function (userRow) { return this.username = userRow.username; })
+    .then(function (userRow) { return _chainState.username = userRow.username; })
     .then(() => knex('users').first('username').where('id', player_id))
-    .then(function (userRow) { return this.buddyName = userRow.buddyName; })
+    .then(function (userRow) { return _chainState.buddyName = userRow.buddyName; })
     .then(() => knex('user_games').where('user_id', player_id).orderBy('created_at', 'desc').first())
     .then(function (gameRow) {
       if (gameRow.ended_at != null) {
         throw new Errors.NotFoundError('The player\'s last game is over.');
       } else {
-        return this.gameRow = gameRow;
+        return _chainState.gameRow = gameRow;
       }
     })
     .then(() => DuelystFirebase.connect().getRootRef())
@@ -103,12 +103,12 @@ router.get('/:player_id', function (req, res, next) {
       }
 
       if (!_.contains(buddyIds, player_id)) {
-        throw new Errors.NotFoundError(`You must be buddies with ${this.buddyName} to spectate this game.`);
+        throw new Errors.NotFoundError(`You must be buddies with ${_chainState.buddyName} to spectate this game.`);
       }
 
       const payload = {
         b: buddyIds,
-        u: this.username,
+        u: _chainState.username,
         iat: Math.floor(new Date().getTime() / 1000),
       };
 
@@ -118,12 +118,12 @@ router.get('/:player_id', function (req, res, next) {
       };
 
       // We are encoding the payload inside the token
-      return this.token = jwt.sign(payload, config.get('firebase.legacyToken'), options);
+      return _chainState.token = jwt.sign(payload, config.get('firebase.legacyToken'), options);
     })
     .then(function () {
       const responseData = {
-        gameData: DataAccessHelpers.restifyData(this.gameRow),
-        token: this.token,
+        gameData: DataAccessHelpers.restifyData(_chainState.gameRow),
+        token: _chainState.token,
       };
       return res.status(200).json(responseData);
     })

@@ -129,6 +129,7 @@ describe('rift module', () => {
   });
 
   describe('startRun()', () => {
+    const _chainState = {};
     const otherUserTicketId = 'invalid-ticket-for-other-user';
 
     // before cleanup to check if user already exists and delete
@@ -176,22 +177,19 @@ describe('rift module', () => {
       }));
 
     it('expect to be able to start a run with a valid ticket', () => knex('user_rift_tickets').where('user_id', userId).first()
-      .bind({})
-      .then(function (ticketRow) {
-        this.ticketId = ticketRow.id;
+      .then((ticketRow) => {
+        _chainState.ticketId = ticketRow.id;
         return RiftModule.startRun(userId, ticketRow.id);
       })
       .then((runData) => {
         expect(runData).to.exist;
         return DuelystFirebase.connect().getRootRef();
       })
-      .then(function (rootRef) {
-        return Promise.all([
-          knex.select().from('user_rift_tickets').where({ user_id: userId }),
-          knex.first().from('user_rift_runs').where('user_id', userId).andWhere('ticket_id', this.ticketId),
-          FirebasePromises.once(rootRef.child('user-rift-runs').child(userId).child(this.ticketId), 'value'),
-        ]);
-      })
+      .then((rootRef) => Promise.all([
+        knex.select().from('user_rift_tickets').where({ user_id: userId }),
+        knex.first().from('user_rift_runs').where('user_id', userId).andWhere('ticket_id', _chainState.ticketId),
+        FirebasePromises.once(rootRef.child('user-rift-runs').child(userId).child(_chainState.ticketId), 'value'),
+      ]))
       .then(([ticketRows, runRow, fbRun]) => {
         expect(ticketRows.length).to.equal(0);
         expect(runRow).to.exist;
@@ -199,7 +197,6 @@ describe('rift module', () => {
       }));
 
     it('expect the started run to have 4 different general choices', () => knex.first().from('user_rift_runs').where('user_id', userId)
-      .bind({})
       .then((runRow) => {
         expect(runRow.general_choices.length).to.equal(4);
         _.each(runRow.general_choices, (generalId) => {
@@ -225,7 +222,6 @@ describe('rift module', () => {
       let runTicketId = null;
 
       return knex('users').where('id', userId).update({ wallet_gold: 300 })
-        .bind({})
         .then(() => RiftModule.buyRiftTicketWithGold(userId))
         .then((ticketId) => {
           runTicketId = ticketId;
@@ -249,7 +245,6 @@ describe('rift module', () => {
     });
 
     it('expect choosing an invalid general to fail', () => knex('users').where('id', userId).update({ wallet_gold: 300 })
-      .bind({})
       .then(() => RiftModule.buyRiftTicketWithGold(userId))
       .then((ticketId) => RiftModule.startRun(userId, ticketId))
       .then((riftData) => RiftModule.chooseGeneral(userId, riftData.ticket_id, -100))
@@ -259,7 +254,6 @@ describe('rift module', () => {
       }));
 
     it('expect to NOT be able to choose a general twice', () => knex('users').where('id', userId).update({ wallet_gold: 300 })
-      .bind({})
       .then(() => RiftModule.buyRiftTicketWithGold(userId))
       .then((ticketId) => RiftModule.startRun(userId, ticketId))
       .then((riftData) => {
@@ -277,7 +271,6 @@ describe('rift module', () => {
     let runTicketId = null;
 
     beforeAll(() => SyncModule.wipeUserData(userId)
-      .bind({})
       .then(() => knex('users').where('id', userId).update({ wallet_gold: CONFIG.RIFT_TICKET_GOLD_PRICE })).then(() => RiftModule.buyRiftTicketWithGold(userId))
       .then((ticketId) => {
         runTicketId = ticketId;
@@ -305,7 +298,6 @@ describe('rift module', () => {
     let runTicketId = null;
 
     beforeAll(() => SyncModule.wipeUserData(userId)
-      .bind({})
       .then(() => knex('users').where('id', userId).update({ wallet_gold: CONFIG.RIFT_TICKET_GOLD_PRICE })).then(() => RiftModule.buyRiftTicketWithGold(userId))
       .then((ticketId) => {
         runTicketId = ticketId;
@@ -335,10 +327,10 @@ describe('rift module', () => {
   });
 
   describe('updateRiftRunWithGameOutcome()', () => {
+    const _chainState = {};
     let runTicketId = null;
 
     beforeAll(() => SyncModule.wipeUserData(userId)
-      .bind({})
       .then(() => knex('users').where('id', userId).update({ wallet_gold: CONFIG.RIFT_TICKET_GOLD_PRICE })).then(() => RiftModule.buyRiftTicketWithGold(userId))
       .then((ticketId) => {
         runTicketId = ticketId;
@@ -463,20 +455,16 @@ describe('rift module', () => {
 
     it('expect to earn rift points for dealing damage', () => knex('users').where('id', userId).update({ wallet_gold: CONFIG.RIFT_TICKET_GOLD_PRICE })
       .then(() => RiftModule.buyRiftTicketWithGold(userId))
-      .then(function (ticketId) {
-        this.ticketId = ticketId;
+      .then((ticketId) => {
+        _chainState.ticketId = ticketId;
         return RiftModule.startRun(userId, ticketId);
       })
       .then((riftData) => {
         expect(riftData.general_choices).to.exist;
         return RiftModule.chooseGeneral(userId, riftData.ticket_id, riftData.general_choices[0]);
       })
-      .then(function () {
-        return RiftModule.updateRiftRunWithGameOutcome(userId, this.ticketId, false, 'game 2', true, 7, fakeGameSessionData);
-      })
-      .then(function () {
-        return knex.first().from('user_rift_runs').where({ user_id: userId }).andWhere('ticket_id', this.ticketId);
-      })
+      .then(() => RiftModule.updateRiftRunWithGameOutcome(userId, _chainState.ticketId, false, 'game 2', true, 7, fakeGameSessionData))
+      .then(() => knex.first().from('user_rift_runs').where({ user_id: userId }).andWhere('ticket_id', _chainState.ticketId))
       .then((riftRow) => {
         expect(riftRow.rift_points).to.equal(7);
         expect(riftRow.rift_level).to.equal(1);
@@ -484,32 +472,28 @@ describe('rift module', () => {
 
     it('expect to earn upgrade tokens for leveling up your rift deck', () => knex('users').where('id', userId).update({ wallet_gold: CONFIG.RIFT_TICKET_GOLD_PRICE })
       .then(() => RiftModule.buyRiftTicketWithGold(userId))
-      .then(function (ticketId) {
-        this.ticketId = ticketId;
+      .then((ticketId) => {
+        _chainState.ticketId = ticketId;
         return RiftModule.startRun(userId, ticketId);
       })
       .then((riftData) => {
         expect(riftData.general_choices).to.exist;
         return RiftModule.chooseGeneral(userId, riftData.ticket_id, riftData.general_choices[0]);
       })
-      .then(function () {
-        this.gameIds = [];
-        _.times(1, () => { this.gameIds.push(generatePushId()); });
-        return Promise.map(this.gameIds, (gameId) => RiftModule.updateRiftRunWithGameOutcome(userId, this.ticketId, true, gameId, false, 5, fakeGameSessionData));
+      .then(() => {
+        _chainState.gameIds = [];
+        _.times(1, () => { _chainState.gameIds.push(generatePushId()); });
+        return Promise.map(_chainState.gameIds, (gameId) => RiftModule.updateRiftRunWithGameOutcome(userId, _chainState.ticketId, true, gameId, false, 5, fakeGameSessionData));
       })
-      .then(function () {
-        return knex.first().from('user_rift_runs').where({ user_id: userId }).andWhere('ticket_id', this.ticketId);
-      })
-      .then(function (riftRow) {
+      .then(() => knex.first().from('user_rift_runs').where({ user_id: userId }).andWhere('ticket_id', _chainState.ticketId))
+      .then((riftRow) => {
         expect(riftRow.rift_points).to.equal(15);
         expect(riftRow.rift_level).to.equal(2);
         expect(riftRow.upgrades_available_count).to.equal(1);
-        _.times(10, () => { this.gameIds.push(generatePushId()); });
-        return Promise.map(this.gameIds, (gameId) => RiftModule.updateRiftRunWithGameOutcome(userId, this.ticketId, true, gameId, false, 10, fakeGameSessionData));
+        _.times(10, () => { _chainState.gameIds.push(generatePushId()); });
+        return Promise.map(_chainState.gameIds, (gameId) => RiftModule.updateRiftRunWithGameOutcome(userId, _chainState.ticketId, true, gameId, false, 10, fakeGameSessionData));
       })
-      .then(function () {
-        return knex.first().from('user_rift_runs').where({ user_id: userId }).andWhere('ticket_id', this.ticketId);
-      })
+      .then(() => knex.first().from('user_rift_runs').where({ user_id: userId }).andWhere('ticket_id', _chainState.ticketId))
       .then((riftRow) => {
         expect(riftRow.rift_points).to.equal(235);
         expect(riftRow.rift_level).to.equal(7);
@@ -521,7 +505,6 @@ describe('rift module', () => {
     let runTicketId = null;
 
     beforeEach(() => SyncModule.wipeUserData(userId)
-      .bind({})
       .then(() => knex('users').where('id', userId).update({ wallet_gold: CONFIG.RIFT_TICKET_GOLD_PRICE })).then(() => RiftModule.buyRiftTicketWithGold(userId))
       .then((ticketId) => {
         runTicketId = ticketId;
@@ -604,7 +587,6 @@ describe('rift module', () => {
     let runTicketId = null;
 
     beforeEach(() => SyncModule.wipeUserData(userId)
-      .bind({})
       .then(() => knex('users').where('id', userId).update({ wallet_gold: CONFIG.RIFT_TICKET_GOLD_PRICE })).then(() => RiftModule.buyRiftTicketWithGold(userId))
       .then((ticketId) => {
         runTicketId = ticketId;
@@ -703,7 +685,6 @@ describe('rift module', () => {
       }));
 
     it('expect NOT to be able to store an upgrade if not currently performing an upgrade', () => SyncModule.wipeUserData(userId)
-      .bind({})
       .then(() => knex('users').where('id', userId).update({ wallet_gold: CONFIG.RIFT_TICKET_GOLD_PRICE })).then(() => RiftModule.buyRiftTicketWithGold(userId))
       .then((ticketId) => {
         runTicketId = ticketId;
@@ -726,7 +707,6 @@ describe('rift module', () => {
       let cardChoices = null;
       let runTicketId = null;
       return SyncModule.wipeUserData(userId)
-        .bind({})
         .then(() => knex('users').where('id', userId).update({ wallet_gold: CONFIG.RIFT_TICKET_GOLD_PRICE })).then(() => RiftModule.buyRiftTicketWithGold(userId))
         .then((ticketId) => {
           runTicketId = ticketId;
@@ -752,7 +732,6 @@ describe('rift module', () => {
       let firstTicketId = null;
       let secondTicketId = null;
       return SyncModule.wipeUserData(userId)
-        .bind({})
         .then(() => knex('users').where('id', userId).update({ wallet_gold: CONFIG.RIFT_TICKET_GOLD_PRICE * 2 })).then(() => RiftModule.buyRiftTicketWithGold(userId))
         .then((ticketId) => {
           firstTicketId = ticketId;
@@ -859,7 +838,6 @@ describe('rift module', () => {
       }));
 
     it('expect NOT to be able to reroll an upgrade if not currently performing an upgrade', () => SyncModule.wipeUserData(userId)
-      .bind({})
       .then(() => knex('users').where('id', userId).update({
         wallet_gold: CONFIG.RIFT_TICKET_GOLD_PRICE,
         wallet_spirit: 1000,
@@ -884,7 +862,6 @@ describe('rift module', () => {
       let prevCardChoices = null;
       let runTicketId = null;
       return SyncModule.wipeUserData(userId)
-        .bind({})
         .then(() => knex('users').where('id', userId).update({
           wallet_gold: CONFIG.RIFT_TICKET_GOLD_PRICE,
           wallet_spirit: 20,
@@ -914,7 +891,6 @@ describe('rift module', () => {
       let prevCardChoices = null;
       let runTicketId = null;
       return SyncModule.wipeUserData(userId)
-        .bind({})
         .then(() => knex('users').where('id', userId).update({
           wallet_gold: CONFIG.RIFT_TICKET_GOLD_PRICE,
           wallet_spirit: 1000,
@@ -954,7 +930,6 @@ describe('rift module', () => {
       let firstTicketId = null;
       const secondTicketId = null;
       return SyncModule.wipeUserData(userId)
-        .bind({})
         .then(() => knex('users').where('id', userId).update({
           wallet_gold: CONFIG.RIFT_TICKET_GOLD_PRICE,
           wallet_spirit: 1000,
@@ -990,7 +965,6 @@ describe('rift module', () => {
     beforeEach(() => SyncModule.wipeUserData(userId));
 
     it('expect to NOT sanitize a run without card choices (after upgrading a card)', () => SyncModule.wipeUserData(userId)
-      .bind({})
       .then(() => knex('users').where('id', userId).update({
         wallet_gold: CONFIG.RIFT_TICKET_GOLD_PRICE,
         wallet_spirit: 1000,
@@ -1056,7 +1030,6 @@ describe('rift module', () => {
     it('expect to sanitize a run with duplicate card choices after reroll', () => {
       let ticketId = null;
       return SyncModule.wipeUserData(userId)
-        .bind({})
         .then(() => knex('users').where('id', userId).update({
           wallet_gold: CONFIG.RIFT_TICKET_GOLD_PRICE,
           wallet_spirit: 1000,
@@ -1091,7 +1064,6 @@ describe('rift module', () => {
     it('expect to sanitize a run with duplicate card choices after choosing card to upgrade', () => {
       let ticketId = null;
       return SyncModule.wipeUserData(userId)
-        .bind({})
         .then(() => knex('users').where('id', userId).update({
           wallet_gold: CONFIG.RIFT_TICKET_GOLD_PRICE,
           wallet_spirit: 1000,

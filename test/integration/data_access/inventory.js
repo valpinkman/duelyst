@@ -116,6 +116,7 @@ describe('inventory module', () => {
   });
 
   describe('buyBoosterPacksWithGold()', () => {
+    const _chainState = {};
     it('expect NOT to be able to buy booster packs with NO gold', () => InventoryModule.buyBoosterPacksWithGold(userId, 1, SDK.CardSet.Core)
       .then((result) => {
         expect(result).to.not.exist;
@@ -126,24 +127,21 @@ describe('inventory module', () => {
       }));
 
     it('expect to be able to buy a booster pack for 100 GOLD', () => knex('users').where('id', userId).update({ wallet_gold: 100 })
-      .bind({})
       .then(() => InventoryModule.buyBoosterPacksWithGold(userId, 1, SDK.CardSet.Core))
-      .then(function (boosterIds) {
+      .then((boosterIds) => {
         expect(boosterIds).to.exist;
         expect(boosterIds.length).to.equal(1);
-        this.spiritOrbId = boosterIds[0];
+        _chainState.spiritOrbId = boosterIds[0];
         return DuelystFirebase.connect().getRootRef();
       })
-      .then(function (rootRef) {
-        return Promise.all([
-          knex.first().from('users').where('id', userId),
-          knex.select().from('user_spirit_orbs').where('user_id', userId),
-          knex.first().from('user_currency_log').where({ user_id: userId, memo: `spirit orb ${this.spiritOrbId}` }),
-          FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('wallet'), 'value'),
-          FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('spirit-orbs'), 'value'),
-        ]);
-      })
-      .then(function ([userRow, spiritOrbRows, currencyLogRow, firebaseWalletSnapshot, firebaseBoostersSnapshot]) {
+      .then((rootRef) => Promise.all([
+        knex.first().from('users').where('id', userId),
+        knex.select().from('user_spirit_orbs').where('user_id', userId),
+        knex.first().from('user_currency_log').where({ user_id: userId, memo: `spirit orb ${_chainState.spiritOrbId}` }),
+        FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('wallet'), 'value'),
+        FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('spirit-orbs'), 'value'),
+      ]))
+      .then(([userRow, spiritOrbRows, currencyLogRow, firebaseWalletSnapshot, firebaseBoostersSnapshot]) => {
         expect(userRow.wallet_gold).to.equal(0);
         expect(currencyLogRow).to.exist;
         expect(currencyLogRow.gold).to.equal(-100);
@@ -151,7 +149,7 @@ describe('inventory module', () => {
         let numOrbsFound = 0;
         for (let j = 0, jl = spiritOrbRows.length; j < jl; j++) {
           const spiritOrbRow = spiritOrbRows[j];
-          if (spiritOrbRow.id === this.spiritOrbId) {
+          if (spiritOrbRow.id === _chainState.spiritOrbId) {
             numOrbsFound++;
             break;
           }
@@ -168,31 +166,28 @@ describe('inventory module', () => {
       }));
 
     it('expect to be able to buy 3 booster packs for 300 GOLD', () => knex('users').where('id', userId).update({ wallet_gold: 300 })
-      .bind({})
       .then(() => InventoryModule.buyBoosterPacksWithGold(userId, 3, SDK.CardSet.Core))
-      .then(function (boosterIds) {
-        this.boosterIds = boosterIds;
+      .then((boosterIds) => {
+        _chainState.boosterIds = boosterIds;
         expect(boosterIds).to.exist;
         expect(boosterIds.length).to.equal(3);
         return DuelystFirebase.connect().getRootRef();
       })
-      .then(function (rootRef) {
-        return Promise.all([
-          knex.first().from('users').where('id', userId),
-          knex.select().from('user_spirit_orbs').where('user_id', userId),
-          knex.first().from('user_currency_log').where({ user_id: userId, memo: `spirit orb ${this.boosterIds[this.boosterIds.length - 1]}` }),
-          FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('wallet'), 'value'),
-          FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('spirit-orbs'), 'value'),
-        ]);
-      })
-      .then(function ([userRow, spiritOrbRows, currencyLogRow, firebaseWalletSnapshot, firebaseBoostersSnapshot]) {
+      .then((rootRef) => Promise.all([
+        knex.first().from('users').where('id', userId),
+        knex.select().from('user_spirit_orbs').where('user_id', userId),
+        knex.first().from('user_currency_log').where({ user_id: userId, memo: `spirit orb ${_chainState.boosterIds[_chainState.boosterIds.length - 1]}` }),
+        FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('wallet'), 'value'),
+        FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('spirit-orbs'), 'value'),
+      ]))
+      .then(([userRow, spiritOrbRows, currencyLogRow, firebaseWalletSnapshot, firebaseBoostersSnapshot]) => {
         expect(userRow.wallet_gold).to.equal(0);
         expect(currencyLogRow).to.exist;
         expect(currencyLogRow.gold).to.equal(-100);
 
         let numOrbsFound = 0;
-        for (let i = 0, il = this.boosterIds.length; i < il; i++) {
-          const boosterId = this.boosterIds[i];
+        for (let i = 0, il = _chainState.boosterIds.length; i < il; i++) {
+          const boosterId = _chainState.boosterIds[i];
           for (let j = 0, jl = spiritOrbRows.length; j < jl; j++) {
             const spiritOrbRow = spiritOrbRows[j];
             if (spiritOrbRow.id === boosterId) {
@@ -224,24 +219,21 @@ describe('inventory module', () => {
       }));
 
     it('expect to be able to buy a shimzar booster pack for 100 GOLD', () => knex('users').where('id', userId).update({ wallet_gold: 100 })
-      .bind({})
       .then(() => InventoryModule.buyBoosterPacksWithGold(userId, 1, SDK.CardSet.Shimzar))
-      .then(function (boosterIds) {
+      .then((boosterIds) => {
         expect(boosterIds).to.exist;
         expect(boosterIds.length).to.equal(1);
-        this.spiritOrbId = boosterIds[0];
+        _chainState.spiritOrbId = boosterIds[0];
         return DuelystFirebase.connect().getRootRef();
       })
-      .then(function (rootRef) {
-        return Promise.all([
-          knex.first().from('users').where('id', userId),
-          knex.select().from('user_spirit_orbs').where('user_id', userId),
-          knex.first().from('user_currency_log').where({ user_id: userId, memo: `spirit orb ${this.spiritOrbId}` }),
-          FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('wallet'), 'value'),
-          FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('spirit-orbs'), 'value'),
-        ]);
-      })
-      .then(function ([userRow, spiritOrbRows, currencyLogRow, firebaseWalletSnapshot, firebaseBoostersSnapshot]) {
+      .then((rootRef) => Promise.all([
+        knex.first().from('users').where('id', userId),
+        knex.select().from('user_spirit_orbs').where('user_id', userId),
+        knex.first().from('user_currency_log').where({ user_id: userId, memo: `spirit orb ${_chainState.spiritOrbId}` }),
+        FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('wallet'), 'value'),
+        FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('spirit-orbs'), 'value'),
+      ]))
+      .then(([userRow, spiritOrbRows, currencyLogRow, firebaseWalletSnapshot, firebaseBoostersSnapshot]) => {
         expect(userRow.wallet_gold).to.equal(0);
         expect(currencyLogRow).to.exist;
         expect(currencyLogRow.gold).to.equal(-100);
@@ -249,7 +241,7 @@ describe('inventory module', () => {
         let numOrbsFound = 0;
         for (let j = 0, jl = spiritOrbRows.length; j < jl; j++) {
           const spiritOrbRow = spiritOrbRows[j];
-          if (spiritOrbRow.id === this.spiritOrbId) {
+          if (spiritOrbRow.id === _chainState.spiritOrbId) {
             numOrbsFound++;
             break;
           }
@@ -596,6 +588,7 @@ describe('inventory module', () => {
   */
 
   describe('unlockBoosterPack()', () => {
+    const _chainState = {};
     const openedBoosterId = null;
 
     it('expect NOT to be able to unlock and INVALID booster pack ID', () => InventoryModule.unlockBoosterPack(userId, 'invalid-pack-id')
@@ -620,31 +613,28 @@ describe('inventory module', () => {
       }));
 
     it('expect to get 5 core set cards for unlocking one of your core set boosters', () => knex('users').where('id', userId).update({ wallet_gold: 100 })
-      .bind({})
       .then(() => InventoryModule.buyBoosterPacksWithGold(userId, 1, SDK.CardSet.Core))
-      .then(function (boosterIds) {
+      .then((boosterIds) => {
         expect(boosterIds).to.exist;
         expect(boosterIds.length).to.equal(1);
         const openedBoosterId = boosterIds[0];
-        this.boosterId = openedBoosterId;
+        _chainState.boosterId = openedBoosterId;
         return InventoryModule.unlockBoosterPack(userId, openedBoosterId);
       })
       .then((result) => {
         expect(result).to.exist;
         return DuelystFirebase.connect().getRootRef();
       })
-      .then(function (rootRef) {
-        return Promise.all([
-          knex.first().from('user_spirit_orbs').where({ id: this.boosterId }),
-          knex.first().from('user_spirit_orbs_opened').where({ id: this.boosterId }),
-          knex.select().from('user_cards').where({ user_id: userId }),
-          knex.select().from('user_card_log').where({ user_id: userId }),
-          knex.first().from('user_card_collection').where({ user_id: userId }),
-          FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('spirit-orbs').child(this.boosterId), 'value'),
-          FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('spirit-orbs-opened').child(this.boosterId), 'value'),
-          FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('card-collection'), 'value'),
-        ]);
-      })
+      .then((rootRef) => Promise.all([
+        knex.first().from('user_spirit_orbs').where({ id: _chainState.boosterId }),
+        knex.first().from('user_spirit_orbs_opened').where({ id: _chainState.boosterId }),
+        knex.select().from('user_cards').where({ user_id: userId }),
+        knex.select().from('user_card_log').where({ user_id: userId }),
+        knex.first().from('user_card_collection').where({ user_id: userId }),
+        FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('spirit-orbs').child(_chainState.boosterId), 'value'),
+        FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('spirit-orbs-opened').child(_chainState.boosterId), 'value'),
+        FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('card-collection'), 'value'),
+      ]))
       .then(([spiritOrb, spiritOrbUsed, cardCountRows, cardLogRows, cardCollection, fbPack, fbPackUsed, fbCardCollection]) => {
         expect(spiritOrb).to.not.exist;
 
@@ -688,31 +678,28 @@ describe('inventory module', () => {
       }));
 
     it('expect to get 5 shimzar set cards for unlocking one of your shimzar set boosters', () => knex('users').where('id', userId).update({ wallet_gold: 100 })
-      .bind({})
       .then(() => InventoryModule.buyBoosterPacksWithGold(userId, 1, SDK.CardSet.Shimzar))
-      .then(function (boosterIds) {
+      .then((boosterIds) => {
         expect(boosterIds).to.exist;
         expect(boosterIds.length).to.equal(1);
         const openedBoosterId = boosterIds[0];
-        this.boosterId = openedBoosterId;
+        _chainState.boosterId = openedBoosterId;
         return InventoryModule.unlockBoosterPack(userId, openedBoosterId);
       })
       .then((result) => {
         expect(result).to.exist;
         return DuelystFirebase.connect().getRootRef();
       })
-      .then(function (rootRef) {
-        return Promise.all([
-          knex.first().from('user_spirit_orbs').where({ id: this.boosterId }),
-          knex.first().from('user_spirit_orbs_opened').where({ id: this.boosterId }),
-          knex.select().from('user_cards').where({ user_id: userId }),
-          knex.select().from('user_card_log').where({ user_id: userId }),
-          knex.first().from('user_card_collection').where({ user_id: userId }),
-          FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('spirit-orbs').child(this.boosterId), 'value'),
-          FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('spirit-orbs-opened').child(this.boosterId), 'value'),
-          FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('card-collection'), 'value'),
-        ]);
-      })
+      .then((rootRef) => Promise.all([
+        knex.first().from('user_spirit_orbs').where({ id: _chainState.boosterId }),
+        knex.first().from('user_spirit_orbs_opened').where({ id: _chainState.boosterId }),
+        knex.select().from('user_cards').where({ user_id: userId }),
+        knex.select().from('user_card_log').where({ user_id: userId }),
+        knex.first().from('user_card_collection').where({ user_id: userId }),
+        FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('spirit-orbs').child(_chainState.boosterId), 'value'),
+        FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('spirit-orbs-opened').child(_chainState.boosterId), 'value'),
+        FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('card-collection'), 'value'),
+      ]))
       .then(([spiritOrb, spiritOrbUsed, cardCountRows, cardLogRows, cardCollection, fbPack, fbPackUsed, fbCardCollection]) => {
         expect(spiritOrb).to.not.exist;
 
@@ -784,7 +771,6 @@ describe('inventory module', () => {
       }));
 
     it('expect that unlocking 5 packs concurrently works', () => knex('users').where('id', userId).update({ wallet_gold: 500 })
-      .bind({})
       .then(() => InventoryModule.buyBoosterPacksWithGold(userId, 5, SDK.CardSet.Core))
       .then((boosterIds) => {
         const all = [];
@@ -916,6 +902,7 @@ describe('inventory module', () => {
   });
 
   describe('giveUserCosmeticId()', () => {
+    const _chainState = {};
     const openedBoosterId = null;
 
     it('expect a user to be able to receive a cosmetic by id', () => knex('user_cosmetic_inventory').where('user_id', userId).delete()
@@ -940,10 +927,9 @@ describe('inventory module', () => {
       }));
 
     it('expect a user to receive spirit the second time they receive the same cosmetic by id', () => knex('user_cosmetic_inventory').where('user_id', userId).delete()
-      .bind({})
       .then(() => knex('users').where('id', userId).first('wallet_spirit'))
-      .then(function (userRow) {
-        this.userSpiritBefore = userRow.wallet_spirit;
+      .then((userRow) => {
+        _chainState.userSpiritBefore = userRow.wallet_spirit;
 
         const txPromise = knex.transaction((tx) => InventoryModule.giveUserCosmeticId(txPromise, tx, userId, SDK.CosmeticsLookup.Emote.HealingMysticHappy, 'QA GIFT', 'QA GIFT 1'));
         return txPromise;
@@ -959,8 +945,8 @@ describe('inventory module', () => {
 
         return knex('users').where('id', userId).first('wallet_spirit');
       })
-      .then(function (userRow) {
-        expect(userRow.wallet_spirit > this.userSpiritBefore).to.equal(true);
+      .then((userRow) => {
+        expect(userRow.wallet_spirit > _chainState.userSpiritBefore).to.equal(true);
       }));
   });
 
@@ -977,7 +963,6 @@ describe('inventory module', () => {
         config.set('allCardsAvailable', false);
         InventoryModule._allCollectibleCards = null;
         return DuelystFirebase.connect().getRootRef()
-          .bind({})
           .then((fbRootRef) => Promise.all([
             FirebasePromises.remove(fbRootRef.child('user-inventory').child(userId).child('card-collection')),
             knex('user_cards').where('user_id', userId).delete(),
@@ -1200,7 +1185,6 @@ describe('inventory module', () => {
         config.set('allCardsAvailable', true);
         InventoryModule._allCollectibleCards = null;
         return DuelystFirebase.connect().getRootRef()
-          .bind({})
           .then((fbRootRef) => Promise.all([
             FirebasePromises.remove(fbRootRef.child('user-inventory').child(userId).child('card-collection')),
             knex('user_cards').where('user_id', userId).delete(),
@@ -1233,7 +1217,6 @@ describe('inventory module', () => {
   describe('disenchantCard()', () => {
     // before cleanup to check if user already exists and delete
     beforeAll(() => DuelystFirebase.connect().getRootRef()
-      .bind({})
       .then((fbRootRef) => Promise.all([
         FirebasePromises.remove(fbRootRef.child('user-inventory').child(userId).child('card-collection')),
         knex('user_cards').where('user_id', userId).delete(),
@@ -1671,7 +1654,6 @@ describe('inventory module', () => {
   describe('giveUserCards()', () => {
     // before cleanup to check if user already exists and delete
     beforeAll(() => DuelystFirebase.connect().getRootRef()
-      .bind({})
       .then((fbRootRef) => Promise.all([
         FirebasePromises.remove(fbRootRef.child('user-inventory').child(userId).child('card-collection')),
         knex('user_cards').where('user_id', userId).delete(),
@@ -1744,7 +1726,6 @@ describe('inventory module', () => {
 
   describe('giveUserCodexChapter()', () => {
     beforeAll(() => DuelystFirebase.connect().getRootRef()
-      .bind({})
       .then((fbRootRef) => Promise.all([
         FirebasePromises.remove(fbRootRef.child('user-inventory').child(userId).child('codex')),
         knex('user_codex_inventory').where('user_id', userId).delete(),
@@ -1805,7 +1786,6 @@ describe('inventory module', () => {
 
   describe('giveUserMissingCodexChapters()', () => {
     beforeAll(() => DuelystFirebase.connect().getRootRef()
-      .bind({})
       .then((fbRootRef) => Promise.all([
         FirebasePromises.remove(fbRootRef.child('user-inventory').child(userId).child('codex')),
         knex('user_codex_inventory').where('user_id', userId).delete(),
@@ -1856,7 +1836,6 @@ describe('inventory module', () => {
   describe('markCardAsReadInUserCollection()', () => {
     // before cleanup to check if user already exists and delete
     beforeAll(() => DuelystFirebase.connect().getRootRef()
-      .bind({})
       .then((fbRootRef) => Promise.all([
         FirebasePromises.remove(fbRootRef.child('user-inventory').child(userId).child('card-collection')),
         FirebasePromises.remove(fbRootRef.child('user-inventory').child(userId).child('card-lore')),
@@ -2347,8 +2326,8 @@ describe('inventory module', () => {
     });
 
     describe('if a user has opened some orbs and has some BASIC cards and ACHIEVEMENT cards and disenchanted their entire collection', () => {
+      const _chainState = {};
       beforeAll(() => SyncModule.wipeUserData(userId)
-        .bind({})
         .then(() => knex('users').where('id', userId).update({ wallet_gold: 300 })).then(() => InventoryModule.buyBoosterPacksWithGold(userId, 2, SDK.CardSet.Core))
         .then((boosterIds) => {
           const all = [];
@@ -2357,21 +2336,19 @@ describe('inventory module', () => {
           });
           return Promise.all(all);
         })
-        .then(function (orbs) {
-          this.orbs = orbs;
+        .then((orbs) => {
+          _chainState.orbs = orbs;
           return knex.transaction((tx) => Promise.all([
             InventoryModule.giveUserCards(null, tx, userId, [11, 11, 11], 'faction xp'),
             InventoryModule.giveUserCards(null, tx, userId, [19005, 19005], 'bogus achievement'),
             InventoryModule.giveUserCards(null, tx, userId, [10307, 10307], 'gauntlet'),
           ]));
         })
-        .then(function (orbResults) {
-          return Promise.all([
-            InventoryModule.disenchantCards(userId, this.orbs[0].cards),
-            InventoryModule.disenchantCards(userId, this.orbs[1].cards),
-            InventoryModule.disenchantCards(userId, [19005, 19005, 10307, 10307]),
-          ]);
-        })
+        .then((orbResults) => Promise.all([
+          InventoryModule.disenchantCards(userId, _chainState.orbs[0].cards),
+          InventoryModule.disenchantCards(userId, _chainState.orbs[1].cards),
+          InventoryModule.disenchantCards(userId, [19005, 19005, 10307, 10307]),
+        ]))
         .then(() => InventoryModule.softWipeUserCardInventory(userId)));
 
       it('should restore BASIC and ACHIEVEMENT cards in the inventory', () => Promise.all([
@@ -2428,8 +2405,8 @@ describe('inventory module', () => {
     });
 
     describe('if a user has opened some orbs and has some BASIC cards and ACHIEVEMENT cards and disenchanted all non-basic cards and crafted other cards', () => {
+      const _chainState = {};
       beforeAll(() => SyncModule.wipeUserData(userId)
-        .bind({})
         .then(() => knex('users').where('id', userId).update({ wallet_gold: 300 })).then(() => InventoryModule.buyBoosterPacksWithGold(userId, 2, SDK.CardSet.Core))
         .then((boosterIds) => {
           const all = [];
@@ -2438,21 +2415,19 @@ describe('inventory module', () => {
           });
           return Promise.all(all);
         })
-        .then(function (orbs) {
-          this.orbs = orbs;
+        .then((orbs) => {
+          _chainState.orbs = orbs;
           return knex.transaction((tx) => Promise.all([
             InventoryModule.giveUserCards(null, tx, userId, [11, 11, 11], 'faction xp'),
             InventoryModule.giveUserCards(null, tx, userId, [19005, 19005], 'bogus achievement'),
             InventoryModule.giveUserCards(null, tx, userId, [10307, 10307], 'gauntlet'),
           ]));
         })
-        .then(function (orbResults) {
-          return Promise.all([
-            InventoryModule.disenchantCards(userId, this.orbs[0].cards),
-            InventoryModule.disenchantCards(userId, this.orbs[1].cards),
-            InventoryModule.disenchantCards(userId, [19005, 19005, 10307, 10307]),
-          ]);
-        })
+        .then((orbResults) => Promise.all([
+          InventoryModule.disenchantCards(userId, _chainState.orbs[0].cards),
+          InventoryModule.disenchantCards(userId, _chainState.orbs[1].cards),
+          InventoryModule.disenchantCards(userId, [19005, 19005, 10307, 10307]),
+        ]))
         .then((orbResults) => Promise.all([
           InventoryModule.craftCard(userId, 10985),
         ]))
@@ -3295,24 +3270,24 @@ describe('inventory module', () => {
   });
 
   describe('claimFreeCardOfTheDay', () => {
+    const _chainState = {};
     beforeAll(() => SyncModule.wipeUserData(userId));
 
     it('expect to be able to claim a free card of the day', () => InventoryModule.claimFreeCardOfTheDay(userId)
-      .bind({})
-      .then(function (cardId) {
+      .then((cardId) => {
         expect(cardId).to.exist;
-        this.cardId = cardId;
+        _chainState.cardId = cardId;
         return DuelystFirebase.connect().getRootRef();
       }).then((rootRef) => Promise.all([
         knex('users').first().where('id', userId),
         knex('user_cards').select().where('user_id', userId),
         FirebasePromises.once(rootRef.child('users').child(userId), 'value'),
       ]))
-      .then(function ([userRow, cardCountRows, userSnapshot]) {
+      .then(([userRow, cardCountRows, userSnapshot]) => {
         expect(userRow.free_card_of_the_day_claimed_at).to.exist;
         expect(userRow.free_card_of_the_day_claimed_count).to.equal(1);
         expect(cardCountRows.length).to.equal(1);
-        expect(cardCountRows[0].card_id).to.equal(this.cardId);
+        expect(cardCountRows[0].card_id).to.equal(_chainState.cardId);
         expect(userSnapshot.val().free_card_of_the_day_claimed_at).to.equal(userRow.free_card_of_the_day_claimed_at.valueOf());
       }));
 
@@ -3326,23 +3301,23 @@ describe('inventory module', () => {
       }));
 
     it('expect to be able to claim a free card of the day on the next day (midnight rollover)', () => {
+      const _chainState = {};
       const systemTime = moment.utc().add(1, 'day');
       return InventoryModule.claimFreeCardOfTheDay(userId, systemTime)
-        .bind({})
-        .then(function (cardId) {
+        .then((cardId) => {
           expect(cardId).to.exist;
-          this.cardId = cardId;
+          _chainState.cardId = cardId;
           return DuelystFirebase.connect().getRootRef();
         }).then((rootRef) => Promise.all([
           knex('users').first().where('id', userId),
           knex('user_cards').select().where('user_id', userId),
           FirebasePromises.once(rootRef.child('users').child(userId), 'value'),
         ]))
-        .then(function ([userRow, cardCountRows, userSnapshot]) {
+        .then(([userRow, cardCountRows, userSnapshot]) => {
           expect(userRow.free_card_of_the_day_claimed_at.valueOf()).to.equal(systemTime.valueOf());
           expect(userRow.free_card_of_the_day_claimed_count).to.equal(2);
           expect(cardCountRows.length).to.equal(2);
-          expect(cardCountRows[1].card_id).to.equal(this.cardId);
+          expect(cardCountRows[1].card_id).to.equal(_chainState.cardId);
           expect(userSnapshot.val().free_card_of_the_day_claimed_at).to.equal(userRow.free_card_of_the_day_claimed_at.valueOf());
         });
     });

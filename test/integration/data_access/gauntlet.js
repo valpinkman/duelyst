@@ -132,6 +132,7 @@ describe('gauntlet module', () => {
   });
 
   describe('startRun()', () => {
+    const _chainState = {};
     const otherUserTicketId = 'invalid-ticket-for-other-user';
 
     // before cleanup to check if user already exists and delete
@@ -179,9 +180,8 @@ describe('gauntlet module', () => {
       }));
 
     it('expect to be able to start a run with a valid ticket', () => knex('user_gauntlet_tickets').where('user_id', userId).first()
-      .bind({})
-      .then(function (ticketRow) {
-        this.ticketId = ticketRow.id;
+      .then((ticketRow) => {
+        _chainState.ticketId = ticketRow.id;
         return GauntletModule.startRun(userId, ticketRow.id);
       })
       .then((runData) => {
@@ -564,7 +564,6 @@ describe('gauntlet module', () => {
       }));
 
     it('expect to be able to resign an active arena run', () => knex('users').where('id', userId).update({ wallet_gold: 150 })
-      .bind({})
       .then(() => GauntletModule.buyArenaTicketWithGold(userId))
       .then((ticketId) => GauntletModule.startRun(userId, ticketId))
       .then((arenaData) => GauntletModule.resignRun(userId))
@@ -607,7 +606,6 @@ describe('gauntlet module', () => {
       }));
 
     it('expect to ERROR out attempts to start a run before claiming rewards on a resigned run', () => knex('users').where('id', userId).update({ wallet_gold: 150 })
-      .bind({})
       .then(() => GauntletModule.buyArenaTicketWithGold(userId))
       .then((ticketId) => GauntletModule.startRun(userId, ticketId))
       .then((response) => {
@@ -621,6 +619,7 @@ describe('gauntlet module', () => {
   });
 
   describe('updateArenaRunWithGameOutcome()', () => {
+    const _chainState = {};
     const tickets = [];
 
     beforeAll(() => knex('users').where('id', userId).update({ wallet_gold: 2500 }).then((numUpdates) => knex('user_gauntlet_run').where({ user_id: userId }).delete())
@@ -773,9 +772,8 @@ describe('gauntlet module', () => {
       }));
 
     it('expect NOT to be able to claim rewards TWICE for a complete run', () => knex.select().from('user_rewards').where({ user_id: userId })
-      .bind({})
-      .then(function (rewardRows) {
-        this.rewardCount = rewardRows.length;
+      .then((rewardRows) => {
+        _chainState.rewardCount = rewardRows.length;
         return GauntletModule.claimRewards(userId);
       })
       .then((arenaData) => {
@@ -790,11 +788,11 @@ describe('gauntlet module', () => {
         knex.first().from('user_gauntlet_run').where({ user_id: userId }),
         knex.select().from('user_rewards').where({ user_id: userId }),
       ]))
-      .then(function ([gauntletRow, rewardRows]) {
+      .then(([gauntletRow, rewardRows]) => {
         const arenaRewards = _.filter(rewardRows, (row) => row.source_id === gauntletRow.ticket_id);
 
         expect(arenaRewards).to.exist;
-        expect(arenaRewards.length).to.be.equal(this.rewardCount);
+        expect(arenaRewards.length).to.be.equal(_chainState.rewardCount);
       }));
 
     it('expect an arena run with 3 wins to generate 4 reward slots', () => GauntletModule.startRun(userId, tickets.pop())
@@ -956,6 +954,7 @@ describe('gauntlet module', () => {
   });
 
   describe('claimRewards()', () => {
+    const _chainState = {};
     const tickets = [];
 
     beforeAll(() => knex('users').where('id', userId).update({ wallet_gold: 2500 }).then((numUpdates) => knex('user_gauntlet_run').where({ user_id: userId }).delete())
@@ -982,11 +981,11 @@ describe('gauntlet module', () => {
       knex('user_card_collection').first().where('user_id', userId),
       knex('user_spirit_orbs').select().where('user_id', userId),
       knex('user_gauntlet_tickets').select().where('user_id', userId),
-    ]).then(function ([userRow, collectionRow, boosterRows, ticketRows]) {
-      this.userRow = userRow;
-      this.collectionRow = collectionRow;
-      this.boosterRows = boosterRows;
-      this.ticketRows = ticketRows;
+    ]).then(([userRow, collectionRow, boosterRows, ticketRows]) => {
+      _chainState.userRow = userRow;
+      _chainState.collectionRow = collectionRow;
+      _chainState.boosterRows = boosterRows;
+      _chainState.ticketRows = ticketRows;
 
       return GauntletModule.startRun(userId, tickets.pop());
     }).then((arenaData) => GauntletModule.chooseCard(userId, arenaData.general_choices[0])).then((arenaData) => fillOutArenaDeck(userId))
@@ -1005,29 +1004,27 @@ describe('gauntlet module', () => {
         GauntletModule.updateArenaRunWithGameOutcome(userId, false, 'game 10'),
       ]))
       .then(() => GauntletModule.claimRewards(userId))
-      .then(function (arenaData) {
+      .then((arenaData) => {
         expect(arenaData).to.exist;
         expect(arenaData.loss_count).to.equal(3);
         expect(arenaData.ended_at).to.exist;
         expect(arenaData.rewards).to.exist;
         expect(arenaData.rewards.length).to.be.above(4); // 5 or 6 reward slots because one could include 2 card rewards
-        this.rewards = arenaData.reward_ids;
+        _chainState.rewards = arenaData.reward_ids;
         return DuelystFirebase.connect().getRootRef();
       })
-      .then(function (rootRef) {
-        return Promise.all([
-          knex('user_rewards').select().whereIn('id', this.rewards),
-          knex('users').first().where('id', userId),
-          knex('user_card_collection').first().where('user_id', userId),
-          knex('user_spirit_orbs').select().where('user_id', userId),
-          knex('user_gauntlet_tickets').select().where('user_id', userId),
-          FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('wallet'), 'value'),
-          FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('card-collection'), 'value'),
-          FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('spirit-orbs'), 'value'),
-          FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('gauntlet-tickets'), 'value'),
-        ]);
-      })
-      .then(function ([rewardRows, userRow, collectionRow, boosterRows, ticketRows, walletSnapshot, collectionSnapshot, boosterPacksSnapshot, ticketsSnapshot]) {
+      .then((rootRef) => Promise.all([
+        knex('user_rewards').select().whereIn('id', _chainState.rewards),
+        knex('users').first().where('id', userId),
+        knex('user_card_collection').first().where('user_id', userId),
+        knex('user_spirit_orbs').select().where('user_id', userId),
+        knex('user_gauntlet_tickets').select().where('user_id', userId),
+        FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('wallet'), 'value'),
+        FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('card-collection'), 'value'),
+        FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('spirit-orbs'), 'value'),
+        FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('gauntlet-tickets'), 'value'),
+      ]))
+      .then(([rewardRows, userRow, collectionRow, boosterRows, ticketRows, walletSnapshot, collectionSnapshot, boosterPacksSnapshot, ticketsSnapshot]) => {
         const newCollectionData = collectionSnapshot.val();
         let totalGoldEarned = 0;
         let totalSpiritEarned = 0;
@@ -1038,7 +1035,7 @@ describe('gauntlet module', () => {
             // Logger.module("UNITTEST").log("checking card "+cardId);
             const newCount = newCollectionData[cardId].count;
             let oldCount = 0;
-            if (this.collectionRow && this.collectionRow.cards[cardId]) oldCount = this.collectionRow.cards[cardId].count;
+            if (_chainState.collectionRow && _chainState.collectionRow.cards[cardId]) oldCount = _chainState.collectionRow.cards[cardId].count;
 
             expect(oldCount + 1).to.equal(newCount);
             expect(oldCount + 1).to.equal(collectionRow.cards[cardId].count);
@@ -1052,22 +1049,22 @@ describe('gauntlet module', () => {
         // Logger.module("UNITTEST").log("wallet",walletSnapshot.val())
 
         // check gold
-        const oldGold = this.userRow.wallet_gold || 0;
+        const oldGold = _chainState.userRow.wallet_gold || 0;
         expect(userRow.wallet_gold).to.equal(oldGold + totalGoldEarned);
         expect((walletSnapshot.val().gold_amount || 0)).to.equal(oldGold + totalGoldEarned);
 
         // check spirit
-        const oldSpirit = this.userRow.wallet_spirit || 0;
+        const oldSpirit = _chainState.userRow.wallet_spirit || 0;
         expect(userRow.wallet_spirit).to.equal(oldSpirit + totalSpiritEarned);
         expect((walletSnapshot.val().spirit_amount || 0)).to.equal(oldSpirit + totalSpiritEarned);
 
         // check boosters
-        expect(boosterRows.length).to.equal(this.boosterRows.length + 1);
-        expect(boosterPacksSnapshot.numChildren()).to.equal(this.boosterRows.length + 1);
+        expect(boosterRows.length).to.equal(_chainState.boosterRows.length + 1);
+        expect(boosterPacksSnapshot.numChildren()).to.equal(_chainState.boosterRows.length + 1);
 
         // check tickets (same as before because we used one and got one)
-        expect(ticketRows.length).to.equal(this.ticketRows.length);
-        expect(ticketsSnapshot.numChildren()).to.equal(this.ticketRows.length);
+        expect(ticketRows.length).to.equal(_chainState.ticketRows.length);
+        expect(ticketsSnapshot.numChildren()).to.equal(_chainState.ticketRows.length);
       }));
 
     it('expect not to be able to claim rewards twice', () => GauntletModule.claimRewards(userId)

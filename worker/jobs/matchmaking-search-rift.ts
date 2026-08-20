@@ -149,23 +149,25 @@ var findLockablePlayer = function (players) {
  * @param   {Integer}   radius
  * @return   {Object} lock, see 'findLockablePlayer'
  */
-const findOpponent = (userId, lastOpponentId, rank, radius) => getRequeueParams()
-  .bind({})
-  .then(function (params) {
-    this.allowMatchWithLastOpponent = params.allowMatchWithLastOpponent;
-    return riftQueue.search({ score: rank, searchRadius: radius });
-  }).then(function (players) {
-  // exclude the user that's looking
-    players = _.filter(players, (id) => id !== userId);
+const findOpponent = (userId, lastOpponentId, rank, radius) => {
+  const _chainState = {};
+  return getRequeueParams()
+    .then(function (params) {
+      _chainState.allowMatchWithLastOpponent = params.allowMatchWithLastOpponent;
+      return riftQueue.search({ score: rank, searchRadius: radius });
+    }).then(function (players) {
+      // exclude the user that's looking
+      players = _.filter(players, (id) => id !== userId);
 
-    // exclude last opponent
-    if (!this.allowMatchWithLastOpponent && lastOpponentId) {
-      Logger.module('MATCHMAKING-RIFT-JOB').debug(`excluding last opponent ${(lastOpponentId != null ? lastOpponentId.blue : undefined)}`);
-      players = _.filter(players, (id) => id !== lastOpponentId);
-    }
+      // exclude last opponent
+      if (!_chainState.allowMatchWithLastOpponent && lastOpponentId) {
+        Logger.module('MATCHMAKING-RIFT-JOB').debug(`excluding last opponent ${(lastOpponentId != null ? lastOpponentId.blue : undefined)}`);
+        players = _.filter(players, (id) => id !== lastOpponentId);
+      }
 
-    return findLockablePlayer(players);
-  });
+      return findLockablePlayer(players);
+    });
+};
 
 /**
  * Job - 'matchmaking-search-rift'

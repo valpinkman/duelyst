@@ -20,6 +20,7 @@ const types = require('../validators/types');
 Make sure users routes have a User ID parameter
 */
 module.exports = function (req, res, next) {
+  const _chainState = {};
   const result = t.validate(req.params.user_id, types.UserId);
   if (!result.isValid()) {
     return res.status(400).json(result.errors);
@@ -35,10 +36,9 @@ module.exports = function (req, res, next) {
   }
 
   return DuelystFirebase.connect().getRootRef()
-    .bind({})
     .then(function (fbRootRef) {
-      this.fbRootRef = fbRootRef;
-      return FirebasePromises.once(this.fbRootRef.child('users').child(requrester_id).child('buddies').child(user_id), 'value');
+      _chainState.fbRootRef = fbRootRef;
+      return FirebasePromises.once(_chainState.fbRootRef.child('users').child(requrester_id).child('buddies').child(user_id), 'value');
     })
     .then(function (snapshot) {
       if (snapshot.val() != null) {

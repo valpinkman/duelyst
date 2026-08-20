@@ -35,6 +35,7 @@ const Errors = require('./custom_errors');
 const Consul = require('./consul');
 
 const createSinglePlayerGame = function (userId, name, gameType, deck, cardBackId, battleMapIndexesToSampleFrom, aiPlayerId, aiUsername, aiGeneralId, aiDeckId, aiDifficulty, aiNumRandomCards, ticketId, gameSetupOptions) {
+  const _chainState = {};
   if ((gameType == null)) { gameType = GameType.SinglePlayer; }
 
   let playerIsPlayer1 = true;
@@ -55,7 +56,6 @@ const createSinglePlayerGame = function (userId, name, gameType, deck, cardBackI
   const MOMENT_NOW_UTC = moment.utc();
 
   return getSinglePlayerStatusPromise
-    .bind({})
     .then(function (matchmakingStatus) {
     // matchmakingEnabled is currently a string
       if (matchmakingStatus.enabled) {
@@ -180,25 +180,25 @@ const createSinglePlayerGame = function (userId, name, gameType, deck, cardBackI
       }
 
       // create GameSession
-      this.newGameSession = GameSession.create();
-      this.newGameSession.gameType = gameType;
-      this.newGameSession.gameFormat = GameFormat.Legacy;
-      this.newGameSession.version = version;
-      this.newGameSession.setIsRunningAsAuthoritative(true);
-      GameSetup.setupNewSession(this.newGameSession, player1DataForGame, player2DataForGame, withoutManaTiles);
+      _chainState.newGameSession = GameSession.create();
+      _chainState.newGameSession.gameType = gameType;
+      _chainState.newGameSession.gameFormat = GameFormat.Legacy;
+      _chainState.newGameSession.version = version;
+      _chainState.newGameSession.setIsRunningAsAuthoritative(true);
+      GameSetup.setupNewSession(_chainState.newGameSession, player1DataForGame, player2DataForGame, withoutManaTiles);
 
       // set ai properties for later retrieval by ai
-      this.newGameSession.setAiPlayerId(aiPlayerId);
-      this.newGameSession.setAiDifficulty(aiDifficulty);
+      _chainState.newGameSession.setAiPlayerId(aiPlayerId);
+      _chainState.newGameSession.setAiDifficulty(aiDifficulty);
 
       // generate game id
       return GameManager.generateGameId();
     })
     .then(function (gameId) { // save game to redis
-      this.gameId = gameId;
+      _chainState.gameId = gameId;
       Logger.module('SINGLE-PLAYER').debug(`New Game ID: ${gameId}`);
-      this.newGameSession.gameId = gameId;
-      return GameManager.saveGameSession(gameId, this.newGameSession.serializeToJSON(this.newGameSession));
+      _chainState.newGameSession.gameId = gameId;
+      return GameManager.saveGameSession(gameId, _chainState.newGameSession.serializeToJSON(_chainState.newGameSession));
     })
     .then(function () { // assign the player to a server
     // Consul flow (disabled).
@@ -235,25 +235,25 @@ const createSinglePlayerGame = function (userId, name, gameType, deck, cardBackI
         opponentGeneral,
         opponentSetupData;
       const createdDate = moment().utc().valueOf();
-      this.newGameSession.createdAt = createdDate;
-      this.newGameSession.gameServer = gameServer;
+      _chainState.newGameSession.createdAt = createdDate;
+      _chainState.newGameSession.gameServer = gameServer;
 
       if (playerIsPlayer1) {
-        myGeneral = this.newGameSession.getGeneralForPlayer1();
-        myPlayerSetupData = this.newGameSession.getPlayer1SetupData();
-        opponentGeneral = this.newGameSession.getGeneralForPlayer2();
-        opponentSetupData = this.newGameSession.getPlayer2SetupData();
+        myGeneral = _chainState.newGameSession.getGeneralForPlayer1();
+        myPlayerSetupData = _chainState.newGameSession.getPlayer1SetupData();
+        opponentGeneral = _chainState.newGameSession.getGeneralForPlayer2();
+        opponentSetupData = _chainState.newGameSession.getPlayer2SetupData();
       } else {
-        myGeneral = this.newGameSession.getGeneralForPlayer2();
-        myPlayerSetupData = this.newGameSession.getPlayer2SetupData();
-        opponentGeneral = this.newGameSession.getGeneralForPlayer1();
-        opponentSetupData = this.newGameSession.getPlayer1SetupData();
+        myGeneral = _chainState.newGameSession.getGeneralForPlayer2();
+        myPlayerSetupData = _chainState.newGameSession.getPlayer2SetupData();
+        opponentGeneral = _chainState.newGameSession.getGeneralForPlayer1();
+        opponentSetupData = _chainState.newGameSession.getPlayer1SetupData();
       }
 
       // set up game data to save
       const gameData = {
         game_type: gameType,
-        game_id: this.gameId,
+        game_id: _chainState.gameId,
         is_player_1: playerIsPlayer1,
         opponent_username: aiUsername,
         opponent_id: aiPlayerId,
@@ -270,9 +270,9 @@ const createSinglePlayerGame = function (userId, name, gameType, deck, cardBackI
       };
 
       // response data to send back to the REST client
-      this.responseData = {
+      _chainState.responseData = {
         game_type: gameType,
-        game_id: this.gameId,
+        game_id: _chainState.gameId,
         is_player_1: playerIsPlayer1,
         opponent_username: aiUsername,
         opponent_id: aiPlayerId,
@@ -288,10 +288,10 @@ const createSinglePlayerGame = function (userId, name, gameType, deck, cardBackI
       };
 
       // ...
-      return GamesModule.newUserGame(userId, this.gameId, gameData);
+      return GamesModule.newUserGame(userId, _chainState.gameId, gameData);
     })
     .then(function () { // send data back to the player
-      return this.responseData;
+      return _chainState.responseData;
     });
 };
 

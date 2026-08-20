@@ -409,6 +409,7 @@ var NewPlayerManager = Manager.extend({
   },
 
   setModuleStage: function (moduleName, stage) {
+    const _chainState = {};
     if (this.newPlayerModulesCollection == null) {
       return;
     }
@@ -435,7 +436,6 @@ var NewPlayerManager = Manager.extend({
       contentType: 'application/json',
       dataType: 'json',
     }))
-      .bind({})
       .then(function (progressionData) {
         Analytics.track('module stage reached', {
           category: Analytics.EventCategory.FTUE,
@@ -459,8 +459,8 @@ var NewPlayerManager = Manager.extend({
           }
         }
 
-        this.progressionData = progressionData;
-        return this;
+        _chainState.progressionData = progressionData;
+        return _chainState;
       });
   },
 
@@ -568,8 +568,9 @@ var NewPlayerManager = Manager.extend({
   },
 
   _completeProgression: function () {
+    const _chainState = {};
     _.each(this._moduleNames, function (moduleName) {
-      this.setModuleStage(moduleName, this._moduleStages.read);
+      _chainState.setModuleStage(moduleName, _chainState._moduleStages.read);
     }, this);
 
     this.setCurrentCoreStage(NewPlayerProgressionHelper.FinalStage);

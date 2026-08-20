@@ -656,11 +656,11 @@ describe('quests module', () => {
       });
 
       it('expect to recieve a spirit orb for completing win 1 practice game quest', () => {
+        const _chainState = {};
         const systemTime = moment().utc();
         return knex.select().from('user_spirit_orbs').where('user_id', userId)
-          .bind({})
-          .then(function (userSpiritOrbRows) {
-            this.userSpiritOrbRows = userSpiritOrbRows;
+          .then((userSpiritOrbRows) => {
+            _chainState.userSpiritOrbRows = userSpiritOrbRows;
             return QuestsModule.updateQuestProgressWithGame(userId, generatePushId(), fakeGameSessionData, systemTime);
           })
           .then((result) => {
@@ -674,8 +674,8 @@ describe('quests module', () => {
             knex.select().from('user_spirit_orbs').where('user_id', userId),
             FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('spirit-orbs'), 'value'),
           ]))
-          .then(function ([userSpiritOrbRows, firebaseSpiritOrbsSnapshot]) {
-            expect(userSpiritOrbRows.length).to.equal(this.userSpiritOrbRows.length + 1);
+          .then(([userSpiritOrbRows, firebaseSpiritOrbsSnapshot]) => {
+            expect(userSpiritOrbRows.length).to.equal(_chainState.userSpiritOrbRows.length + 1);
 
             const fbBoosters = firebaseSpiritOrbsSnapshot.val();
             expect(fbBoosters).to.exist;
@@ -815,12 +815,12 @@ describe('quests module', () => {
       });
 
       it('expect to not generate a catch up quest when user has completed all of their quests and can generate quests 1 day later', () => {
+        const _chainState = {};
         const systemTime = moment().utc();
 
         return DuelystFirebase.connect().getRootRef()
-          .bind({})
-          .then(function (fbRootRef) {
-            this.fbRootRef = fbRootRef;
+          .then((fbRootRef) => {
+            _chainState.fbRootRef = fbRootRef;
           })
           .then(() => Promise.all([
             knex('user_quests').delete().where('user_id', userId),
@@ -829,12 +829,10 @@ describe('quests module', () => {
             }),
           ]))
           .then(() => QuestsModule.generateDailyQuests(userId, systemTime.clone().add(1, 'days')))
-          .then(function () {
-            return Promise.all([
-              knex.select().from('user_quests').where('user_id', userId),
-              FirebasePromises.once(this.fbRootRef.child('user-quests').child(userId), 'value'),
-            ]);
-          })
+          .then(() => Promise.all([
+            knex.select().from('user_quests').where('user_id', userId),
+            FirebasePromises.once(_chainState.fbRootRef.child('user-quests').child(userId), 'value'),
+          ]))
           .then(([questRows, firebaseQuestsSnapshot]) => {
             expect(questRows.length).to.equal(2);
             const catchUpQuestRows = _.filter(questRows, (questRow) => questRow.quest_slot_index === QuestsModule.CATCH_UP_QUEST_SLOT);
@@ -848,12 +846,12 @@ describe('quests module', () => {
       });
 
       it('expect to generate a catch up quest with 1 charge when user has completed 1 of their quests and can generate quests 1 day later', () => {
+        const _chainState = {};
         const systemTime = moment().utc();
 
         return DuelystFirebase.connect().getRootRef()
-          .bind({})
-          .then(function (fbRootRef) {
-            this.fbRootRef = fbRootRef;
+          .then((fbRootRef) => {
+            _chainState.fbRootRef = fbRootRef;
           })
           .then(() => Promise.all([
             knex('user_quests').delete().where('user_id', userId),
@@ -864,12 +862,10 @@ describe('quests module', () => {
           .then(() => QuestsModule.generateDailyQuests(userId, systemTime.clone().add(1, 'days')))
           .then(() => knex('user_quests').delete().where('user_id', userId).andWhere('quest_slot_index', QuestsModule.DAILY_QUEST_SLOTS[0]))
           .then(() => QuestsModule.generateDailyQuests(userId, systemTime.clone().add(2, 'days')))
-          .then(function () {
-            return Promise.all([
-              knex.select().from('user_quests').where('user_id', userId),
-              FirebasePromises.once(this.fbRootRef.child('user-quests').child(userId), 'value'),
-            ]);
-          })
+          .then(() => Promise.all([
+            knex.select().from('user_quests').where('user_id', userId),
+            FirebasePromises.once(_chainState.fbRootRef.child('user-quests').child(userId), 'value'),
+          ]))
           .then(([questRows, firebaseQuestsSnapshot]) => {
             expect(questRows.length).to.equal(3);
             const catchUpQuestRows = _.filter(questRows, (questRow) => questRow.quest_slot_index === QuestsModule.CATCH_UP_QUEST_SLOT);
@@ -889,12 +885,12 @@ describe('quests module', () => {
       });
 
       it('expect to generate a catch up quest with 2 charges when user has completed none of their quests and can generate quests 1 day later', () => {
+        const _chainState = {};
         const systemTime = moment().utc();
 
         return DuelystFirebase.connect().getRootRef()
-          .bind({})
-          .then(function (fbRootRef) {
-            this.fbRootRef = fbRootRef;
+          .then((fbRootRef) => {
+            _chainState.fbRootRef = fbRootRef;
           })
           .then(() => Promise.all([
             knex('user_quests').delete().where('user_id', userId),
@@ -904,12 +900,10 @@ describe('quests module', () => {
           ]))
           .then(() => QuestsModule.generateDailyQuests(userId, systemTime.clone().add(1, 'days')))
           .then(() => QuestsModule.generateDailyQuests(userId, systemTime.clone().add(2, 'days')))
-          .then(function () {
-            return Promise.all([
-              knex.select().from('user_quests').where('user_id', userId),
-              FirebasePromises.once(this.fbRootRef.child('user-quests').child(userId), 'value'),
-            ]);
-          })
+          .then(() => Promise.all([
+            knex.select().from('user_quests').where('user_id', userId),
+            FirebasePromises.once(_chainState.fbRootRef.child('user-quests').child(userId), 'value'),
+          ]))
           .then(([questRows, firebaseQuestsSnapshot]) => {
             expect(questRows.length).to.equal(3);
             const catchUpQuestRows = _.filter(questRows, (questRow) => questRow.quest_slot_index === QuestsModule.CATCH_UP_QUEST_SLOT);
@@ -929,12 +923,12 @@ describe('quests module', () => {
       });
 
       it('expect to generate a catch up quest with 3 charges when user has completed 1 of their quests and can generate quests 2 days later', () => {
+        const _chainState = {};
         const systemTime = moment().utc();
 
         return DuelystFirebase.connect().getRootRef()
-          .bind({})
-          .then(function (fbRootRef) {
-            this.fbRootRef = fbRootRef;
+          .then((fbRootRef) => {
+            _chainState.fbRootRef = fbRootRef;
           })
           .then(() => Promise.all([
             knex('user_quests').delete().where('user_id', userId),
@@ -945,12 +939,10 @@ describe('quests module', () => {
           .then(() => QuestsModule.generateDailyQuests(userId, systemTime.clone().add(1, 'days')))
           .then(() => knex('user_quests').delete().where('user_id', userId).andWhere('quest_slot_index', QuestsModule.DAILY_QUEST_SLOTS[0]))
           .then(() => QuestsModule.generateDailyQuests(userId, systemTime.clone().add(3, 'days')))
-          .then(function () {
-            return Promise.all([
-              knex.select().from('user_quests').where('user_id', userId),
-              FirebasePromises.once(this.fbRootRef.child('user-quests').child(userId), 'value'),
-            ]);
-          })
+          .then(() => Promise.all([
+            knex.select().from('user_quests').where('user_id', userId),
+            FirebasePromises.once(_chainState.fbRootRef.child('user-quests').child(userId), 'value'),
+          ]))
           .then(([questRows, firebaseQuestsSnapshot]) => {
             expect(questRows.length).to.equal(3);
             const catchUpQuestRows = _.filter(questRows, (questRow) => questRow.quest_slot_index === QuestsModule.CATCH_UP_QUEST_SLOT);
@@ -970,12 +962,12 @@ describe('quests module', () => {
       });
 
       it('expect to generate a catch up quest with 2 charges when doesn\'t complete 1 of their quests 2 days in a row', () => {
+        const _chainState = {};
         const systemTime = moment().utc();
 
         return DuelystFirebase.connect().getRootRef()
-          .bind({})
-          .then(function (fbRootRef) {
-            this.fbRootRef = fbRootRef;
+          .then((fbRootRef) => {
+            _chainState.fbRootRef = fbRootRef;
           })
           .then(() => Promise.all([
             knex('user_quests').delete().where('user_id', userId),
@@ -988,12 +980,10 @@ describe('quests module', () => {
           .then(() => QuestsModule.generateDailyQuests(userId, systemTime.clone().add(2, 'days')))
           .then(() => knex('user_quests').delete().where('user_id', userId).andWhere('quest_slot_index', QuestsModule.DAILY_QUEST_SLOTS[0]))
           .then(() => QuestsModule.generateDailyQuests(userId, systemTime.clone().add(3, 'days')))
-          .then(function () {
-            return Promise.all([
-              knex.select().from('user_quests').where('user_id', userId),
-              FirebasePromises.once(this.fbRootRef.child('user-quests').child(userId), 'value'),
-            ]);
-          })
+          .then(() => Promise.all([
+            knex.select().from('user_quests').where('user_id', userId),
+            FirebasePromises.once(_chainState.fbRootRef.child('user-quests').child(userId), 'value'),
+          ]))
           .then(([questRows, firebaseQuestsSnapshot]) => {
             expect(questRows.length).to.equal(3);
             const catchUpQuestRows = _.filter(questRows, (questRow) => questRow.quest_slot_index === QuestsModule.CATCH_UP_QUEST_SLOT);
@@ -1013,12 +1003,12 @@ describe('quests module', () => {
       });
 
       it('expect to generate a catch up quest with max charges when user has completed 1 quest and can generate quests 10 days later', () => {
+        const _chainState = {};
         const systemTime = moment().utc();
 
         return DuelystFirebase.connect().getRootRef()
-          .bind({})
-          .then(function (fbRootRef) {
-            this.fbRootRef = fbRootRef;
+          .then((fbRootRef) => {
+            _chainState.fbRootRef = fbRootRef;
           })
           .then(() => Promise.all([
             knex('user_quests').delete().where('user_id', userId),
@@ -1029,12 +1019,10 @@ describe('quests module', () => {
           .then(() => QuestsModule.generateDailyQuests(userId, systemTime.clone().add(1, 'days')))
           .then(() => knex('user_quests').delete().where('user_id', userId).andWhere('quest_slot_index', QuestsModule.DAILY_QUEST_SLOTS[0]))
           .then(() => QuestsModule.generateDailyQuests(userId, systemTime.clone().add(10, 'days')))
-          .then(function () {
-            return Promise.all([
-              knex.select().from('user_quests').where('user_id', userId),
-              FirebasePromises.once(this.fbRootRef.child('user-quests').child(userId), 'value'),
-            ]);
-          })
+          .then(() => Promise.all([
+            knex.select().from('user_quests').where('user_id', userId),
+            FirebasePromises.once(_chainState.fbRootRef.child('user-quests').child(userId), 'value'),
+          ]))
           .then(([questRows, firebaseQuestsSnapshot]) => {
             expect(questRows.length).to.equal(3);
             const catchUpQuestRows = _.filter(questRows, (questRow) => questRow.quest_slot_index === QuestsModule.CATCH_UP_QUEST_SLOT);
@@ -1069,12 +1057,12 @@ describe('quests module', () => {
 
     describe('generateDailyQuests() - catch up quest', () => {
       it('expect to not generate a catch up quest when user has completed 1 of their quests and the has 1 beginner quest and can generate quests 1 day later', () => {
+        const _chainState = {};
         const systemTime = moment().utc();
 
         return DuelystFirebase.connect().getRootRef()
-          .bind({})
-          .then(function (fbRootRef) {
-            this.fbRootRef = fbRootRef;
+          .then((fbRootRef) => {
+            _chainState.fbRootRef = fbRootRef;
           })
           .then(() => Promise.all([
             knex('user_quests').delete().where('user_id', userId).andWhere('quest_slot_index', QuestsModule.DAILY_QUEST_SLOTS[1]),
@@ -1083,12 +1071,10 @@ describe('quests module', () => {
             }),
           ]))
           .then(() => QuestsModule.generateDailyQuests(userId, systemTime.clone().add(1, 'days')))
-          .then(function () {
-            return Promise.all([
-              knex.select().from('user_quests').where('user_id', userId),
-              FirebasePromises.once(this.fbRootRef.child('user-quests').child(userId), 'value'),
-            ]);
-          })
+          .then(() => Promise.all([
+            knex.select().from('user_quests').where('user_id', userId),
+            FirebasePromises.once(_chainState.fbRootRef.child('user-quests').child(userId), 'value'),
+          ]))
           .then(([questRows, firebaseQuestsSnapshot]) => {
             const catchUpQuestRows = _.filter(questRows, (questRow) => questRow.quest_slot_index === QuestsModule.CATCH_UP_QUEST_SLOT);
             expect(catchUpQuestRows.length).to.equal(0);
@@ -1101,12 +1087,12 @@ describe('quests module', () => {
       });
 
       it('expect to generate a catch up quest with 2 charges when user doesn\'t complete 1 of their quests and the other is a beginner quest 2 days in a row', () => {
+        const _chainState = {};
         const systemTime = moment().utc();
 
         return DuelystFirebase.connect().getRootRef()
-          .bind({})
-          .then(function (fbRootRef) {
-            this.fbRootRef = fbRootRef;
+          .then((fbRootRef) => {
+            _chainState.fbRootRef = fbRootRef;
           })
           .then(() => Promise.all([
             knex('user_quests').delete().where('user_id', userId),
@@ -1116,12 +1102,10 @@ describe('quests module', () => {
           ]))
           .then(() => QuestsModule.generateDailyQuests(userId, systemTime.clone().add(1, 'days')))
           .then(() => QuestsModule.generateDailyQuests(userId, systemTime.clone().add(2, 'days')))
-          .then(function () {
-            return Promise.all([
-              knex.select().from('user_quests').where('user_id', userId),
-              FirebasePromises.once(this.fbRootRef.child('user-quests').child(userId), 'value'),
-            ]);
-          })
+          .then(() => Promise.all([
+            knex.select().from('user_quests').where('user_id', userId),
+            FirebasePromises.once(_chainState.fbRootRef.child('user-quests').child(userId), 'value'),
+          ]))
           .then(([questRows, firebaseQuestsSnapshot]) => {
             const catchUpQuestRows = _.filter(questRows, (questRow) => questRow.quest_slot_index === QuestsModule.CATCH_UP_QUEST_SLOT);
             expect(catchUpQuestRows.length).to.equal(1);

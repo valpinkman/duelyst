@@ -36,26 +36,25 @@ describe('migrations module', () => {
   beforeAll(() => {
     Logger.module('UNITTEST').log('creating user');
     const createOrInsertUser = function (userEmail, userName) {
+      const _chainState = {};
       return UsersModule.createNewUser(userEmail, userName, 'hash', 'kumite14')
-        .bind({})
-        .then(function (userIdCreated) {
-          this.userId = userIdCreated;
+        .then((userIdCreated) => {
+          _chainState.userId = userIdCreated;
           Logger.module('UNITTEST').log('created user ', userIdCreated);
         }).catch(onType(Errors.AlreadyExistsError, function (error) {
+          const _chainState = {};
           Logger.module('UNITTEST').log('existing user', userName);
           return UsersModule.userIdForEmail(userEmail)
             .bind(this)
-            .then(function (userIdExisting) {
-              this.userId = userIdExisting;
+            .then((userIdExisting) => {
+              _chainState.userId = userIdExisting;
               Logger.module('UNITTEST').log('existing user retrieved', userIdExisting);
               return SyncModule.wipeUserData(userIdExisting);
-            }).then(function () {
-              Logger.module('UNITTEST').log('existing user data wiped', this.userId);
+            }).then(() => {
+              Logger.module('UNITTEST').log('existing user data wiped', _chainState.userId);
             });
         }))
-        .then(function () {
-          return Promise.resolve(this.userId);
-        });
+        .then(() => Promise.resolve(_chainState.userId));
     };
 
     return Promise.all([

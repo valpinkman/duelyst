@@ -122,9 +122,9 @@ router.post('/matchmaking', function (req, res, next) {
   }
 
   return isMatchmakingActiveAsync()
-    .bind({})
     .then(() => // check if the player is already waiting for a game, ie. they have a 'game' token
       Redis.TokenManager.get(userId)).then(function (token) {
+      const _chainState = {};
       if (token != null) {
       // player is already waiting for a game
         return res.status(200).json({ tokenId: token.id });
@@ -158,7 +158,6 @@ router.post('/matchmaking', function (req, res, next) {
           findDeckPromise(),
           findRiftRatingIfNeeded(),
         ])
-          .bind({})
           .then(function ([deck, riftRunRating]) {
             // map deck for correct formatting and anti-cheat
             deck = _.map(deck, function (card) {
@@ -170,15 +169,15 @@ router.post('/matchmaking', function (req, res, next) {
             });
 
             // Logger.module("MATCHMAKING").debug("deck:", @.deck)
-            this.deck = deck;
-            this.riftRunRating = riftRunRating;
+            _chainState.deck = deck;
+            _chainState.riftRunRating = riftRunRating;
 
             return Promise.all([
               // if no selected battlemap, but user wants a random battlemap from their set, grab the battlemaps they own and add them to the list
               (hasPremiumBattleMaps && (battleMapId == null) ? knex('user_cosmetic_inventory').select('cosmetic_id').where('cosmetic_id', '>', 50000).andWhere('cosmetic_id', '<', 60000)
                 .andWhere('user_id', userId) : Promise.resolve()),
               // check whether user is allowed to use this deck
-              ((gameType === GameType.Gauntlet) || (gameType === GameType.Rift) ? Promise.resolve() : UsersModule.isAllowedToUseDeck(userId, this.deck, gameType, ticketId)),
+              ((gameType === GameType.Gauntlet) || (gameType === GameType.Rift) ? Promise.resolve() : UsersModule.isAllowedToUseDeck(userId, _chainState.deck, gameType, ticketId)),
               // check whether user is allowed to use this card back
               ((cardBackId != null) ? InventoryModule.isAllowedToUseCosmetic(Promise.resolve(), knex, userId, cardBackId) : Promise.resolve()),
               // check if user is allowed to use the selected battlemap
@@ -253,7 +252,7 @@ router.post('/matchmaking', function (req, res, next) {
               token = Redis.TokenManager.create({
                 userId,
                 name,
-                deck: this.deck,
+                deck: _chainState.deck,
                 factionId,
                 cardBackId,
                 battleMapIndexes: battleMapIndexesToSampleFrom,
@@ -261,7 +260,7 @@ router.post('/matchmaking', function (req, res, next) {
                 ticketId,
                 inviteId,
                 rank: rankMetric,
-                riftRating: this.riftRunRating,
+                riftRating: _chainState.riftRunRating,
               });
 
               // start bot game process, but don't return this promise
@@ -321,7 +320,7 @@ router.post('/matchmaking', function (req, res, next) {
 
               // calculate spirit value of the deck
               let deckSpiritValue = _.reduce(
-                this.deck,
+                _chainState.deck,
                 function (memo, deckCard) {
                   const deckCardId = deckCard.id;
                   const sdkCard = _.find(GameSession.getCardCaches().getCards(), (c) => c.getId() === deckCardId);
@@ -358,7 +357,7 @@ router.post('/matchmaking', function (req, res, next) {
               const tokenData = {
                 userId,
                 name,
-                deck: this.deck,
+                deck: _chainState.deck,
                 factionId,
                 cardBackId,
                 battleMapIndexes: battleMapIndexesToSampleFrom,
@@ -368,7 +367,7 @@ router.post('/matchmaking', function (req, res, next) {
                 rank: rankMetric,
                 deckValue: deckSpiritValue,
                 lastOpponentId: last_opponent_id,
-                riftRating: this.riftRunRating,
+                riftRating: _chainState.riftRunRating,
               };
 
               if (inviteId != null) {
@@ -550,33 +549,33 @@ var setupInvite = function (inviteId) {
 
   return Redis.InviteQueue.count(inviteId)
     .then(function (playerCount) {
+      const _chainState = {};
       if (playerCount < 2) {
         return; // there's only 1 player
       }
 
       return Redis.InviteQueue.grab(inviteId)
-        .bind({})
         .then(function (results) { // TODO: we should verify results
-          this.playerId1 = results[0];
-          this.playerId2 = results[1];
+          _chainState.playerId1 = results[0];
+          _chainState.playerId2 = results[1];
 
           return Promise.all([
-            Redis.TokenManager.get(this.playerId1),
-            Redis.TokenManager.get(this.playerId2),
+            Redis.TokenManager.get(_chainState.playerId1),
+            Redis.TokenManager.get(_chainState.playerId2),
           ]);
         }).then(function (results) { // TODO: we should verify results
-          this.token1 = results[0];
-          this.token2 = results[1];
+          _chainState.token1 = results[0];
+          _chainState.token2 = results[1];
 
-          return Redis.TokenManager.remove([this.playerId1, this.playerId2]);
+          return Redis.TokenManager.remove([_chainState.playerId1, _chainState.playerId2]);
         })
         .then(function () {
           // Fire off job to setup game between both players
           Redis.Jobs.create('matchmaking-setup-game', {
             name: 'Matchmaking Setup Game',
-            title: util.format('Game :: Setup Invite Game :: %s versus %s', this.token1.name, this.token2.name),
-            token1: this.token1,
-            token2: this.token2,
+            title: util.format('Game :: Setup Invite Game :: %s versus %s', _chainState.token1.name, _chainState.token2.name),
+            token1: _chainState.token1,
+            token2: _chainState.token2,
             gameType: GameType.Friendly,
           }).removeOnComplete(true).save();
         })

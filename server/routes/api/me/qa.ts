@@ -105,6 +105,7 @@ router.put('/rank/history/:season_key/top_rank', function (req, res, next) {
 
 // Updates the users current rank (and top rank if appropriate)
 router.put('/rank', function (req, res, next) {
+  const _chainState = {};
   const MOMENT_UTC_NOW = moment().utc();
 
   const user_id = req.user.d.id;
@@ -113,40 +114,39 @@ router.put('/rank', function (req, res, next) {
   } = req.body;
 
   return knex('users').where({ id: user_id }).first()
-    .bind({})
     .then(function (row) {
-      this.userRow = row;
-      this.updateData = {
+      _chainState.userRow = row;
+      _chainState.updateData = {
         rank,
         rank_stars: 0,
       };
       if (rank < row.rank_top_rank) {
-        this.updateData.rank_top_rank = rank;
+        _chainState.updateData.rank_top_rank = rank;
       }
       if (rank < row.top_rank) {
-        this.updateData.top_rank = rank;
+        _chainState.updateData.top_rank = rank;
       }
 
-      return knex('users').where({ id: user_id }).update(this.updateData);
+      return knex('users').where({ id: user_id }).update(_chainState.updateData);
     })
     .then(() => DuelystFirebase.connect().getRootRef())
     .then(function (fbRootRef) {
-      this.fbRootRef = fbRootRef;
-      FirebasePromises.set(this.fbRootRef.child('user-ranking').child(user_id).child('current'), {
-        rank: parseInt(this.updateData.rank),
-        stars: this.updateData.rank_stars,
-        stars_required: RankFactory.starsNeededToAdvanceRank(this.updateData.rank) || 0,
+      _chainState.fbRootRef = fbRootRef;
+      FirebasePromises.set(_chainState.fbRootRef.child('user-ranking').child(user_id).child('current'), {
+        rank: parseInt(_chainState.updateData.rank),
+        stars: _chainState.updateData.rank_stars,
+        stars_required: RankFactory.starsNeededToAdvanceRank(_chainState.updateData.rank) || 0,
         updated_at: MOMENT_UTC_NOW.valueOf() || null,
-        created_at: moment.utc(this.userRow.rank_created_at).valueOf(),
-        starting_at: moment.utc(this.userRow.rank_starting_at).valueOf(),
+        created_at: moment.utc(_chainState.userRow.rank_created_at).valueOf(),
+        starting_at: moment.utc(_chainState.userRow.rank_starting_at).valueOf(),
       });
 
-      if (this.updateData.top_rank != null) {
-        return FirebasePromises.set(this.fbRootRef.child('user-ranking').child(user_id).child('top'), {
-          rank: parseInt(this.updateData.top_rank),
+      if (_chainState.updateData.top_rank != null) {
+        return FirebasePromises.set(_chainState.fbRootRef.child('user-ranking').child(user_id).child('top'), {
+          rank: parseInt(_chainState.updateData.top_rank),
           updated_at: MOMENT_UTC_NOW.valueOf() || null,
-          created_at: moment.utc(this.userRow.rank_created_at).valueOf(),
-          starting_at: moment.utc(this.userRow.rank_starting_at).valueOf(),
+          created_at: moment.utc(_chainState.userRow.rank_created_at).valueOf(),
+          starting_at: moment.utc(_chainState.userRow.rank_starting_at).valueOf(),
         });
       }
     })
@@ -154,8 +154,8 @@ router.put('/rank', function (req, res, next) {
       Promise.resolve())
     .then(function () {
       return res.status(200).json({
-        rank: this.updateData.rank,
-        top_rank: (this.updateData.rank_top_rank != null) ? this.updateData.rank_top_rank : this.userRow.rank_top_rank,
+        rank: _chainState.updateData.rank,
+        top_rank: (_chainState.updateData.rank_top_rank != null) ? _chainState.updateData.rank_top_rank : _chainState.userRow.rank_top_rank,
       });
     });
 });
@@ -259,6 +259,7 @@ router.get('/ladder_position', function (req, res, next) {
 
 // Marks the current season as last season (so that it is ready to be cycled) and deletes last season from history if needed
 router.delete('/rank/history/last', function (req, res, next) {
+  const _chainState = {};
   const MOMENT_UTC_NOW = moment().utc();
 
   const previous_season_key = moment().utc().subtract(1, 'month').format('YYYY-MM');
@@ -273,19 +274,18 @@ router.delete('/rank/history/last', function (req, res, next) {
     knex('user_rank_history').where({ user_id: user_id, starting_at: previous_season_starting_at.toDate() }).delete(),
     knex('user_rank_ratings').where({ user_id: user_id, season_starting_at: previous_season_starting_at.toDate() }).delete(),
   ])
-    .bind({})
     .then(function () {
-      this.updateUserData = {
+      _chainState.updateUserData = {
         rank_starting_at: previous_season_starting_at.toDate(),
       };
 
-      this.updateRankRatingData = {
+      _chainState.updateRankRatingData = {
         season_starting_at: previous_season_starting_at.toDate(),
       };
 
       return Promise.all([
-        knex('users').where({ id: user_id }).update(this.updateUserData),
-        knex('user_rank_ratings').where({ user_id: user_id, season_starting_at: current_season_starting_at }).update(this.updateRankRatingData),
+        knex('users').where({ id: user_id }).update(_chainState.updateUserData),
+        knex('user_rank_ratings').where({ user_id: user_id, season_starting_at: current_season_starting_at }).update(_chainState.updateRankRatingData),
         SRankManager._removeUserFromLadder(user_id, moment.utc(current_season_starting_at)),
       ]);
     }).then(() => res.status(200).json({}));
@@ -417,6 +417,7 @@ router.post('/inventory/fill_collection', function (req, res, next) {
 });
 
 router.delete('/inventory/unused', function (req, res, next) {
+  const _chainState = {};
   let txPromise;
   const user_id = req.user.d.id;
   const this_obj = {};
@@ -424,29 +425,30 @@ router.delete('/inventory/unused', function (req, res, next) {
   return txPromise = knex.transaction((tx) => tx('user_card_collection').where('user_id', user_id).first()
     .bind(this_obj)
     .then(function (cardCollectionRow) {
-      this.newCardCollection = {};
-      this.ownedUnusedCards = [];
+      _chainState.newCardCollection = {};
+      _chainState.ownedUnusedCards = [];
 
       for (var cardId in cardCollectionRow.cards) {
         var cardCountData = cardCollectionRow.cards[cardId];
         var sdkCard = SDK.GameSession.getCardCaches().getCardById(cardId);
         if (!sdkCard) {
-          this.ownedUnusedCards.push(cardId);
+          _chainState.ownedUnusedCards.push(cardId);
         } else {
-          this.newCardCollection[cardId] = cardCountData;
+          _chainState.newCardCollection[cardId] = cardCountData;
         }
       }
 
       return tx('user_card_collection').where('user_id', user_id).update({
-        cards: this.newCardCollection,
+        cards: _chainState.newCardCollection,
       });
     })
     .then(function () {
-      return Promise.map(this.ownedUnusedCards, (cardId) => tx('user_cards').where('user_id', user_id).andWhere('card_id', cardId).delete());
+      return Promise.map(_chainState.ownedUnusedCards, (cardId) => tx('user_cards').where('user_id', user_id).andWhere('card_id', cardId).delete());
     })).then(() => SyncModule._syncUserFromSQLToFirebase(user_id)).then(() => res.status(200).json({}));
 });
 
 router.delete('/inventory/bloodborn', function (req, res, next) {
+  const _chainState = {};
   let txPromise;
   const user_id = req.user.d.id;
   const this_obj = {};
@@ -454,25 +456,25 @@ router.delete('/inventory/bloodborn', function (req, res, next) {
   return txPromise = knex.transaction((tx) => tx('user_card_collection').where('user_id', user_id).first()
     .bind(this_obj)
     .then(function (cardCollectionRow) {
-      this.newCardCollection = {};
-      this.ownedBloodbornCards = [];
+      _chainState.newCardCollection = {};
+      _chainState.ownedBloodbornCards = [];
 
       for (var cardId in cardCollectionRow.cards) {
         var cardCountData = cardCollectionRow.cards[cardId];
         var sdkCard = SDK.GameSession.getCardCaches().getCardById(cardId);
         if (sdkCard.getCardSetId() === SDK.CardSet.Bloodborn) {
-          this.ownedBloodbornCards.push(cardId);
+          _chainState.ownedBloodbornCards.push(cardId);
         } else {
-          this.newCardCollection[cardId] = cardCountData;
+          _chainState.newCardCollection[cardId] = cardCountData;
         }
       }
 
       return tx('user_card_collection').where('user_id', user_id).update({
-        cards: this.newCardCollection,
+        cards: _chainState.newCardCollection,
       });
     })
     .then(function () {
-      return Promise.map(this.ownedBloodbornCards, (cardId) => tx('user_cards').where('user_id', user_id).andWhere('card_id', cardId).delete());
+      return Promise.map(_chainState.ownedBloodbornCards, (cardId) => tx('user_cards').where('user_id', user_id).andWhere('card_id', cardId).delete());
     })
     .then(() => Promise.all([
       tx('user_spirit_orbs_opened').where('user_id', user_id).andWhere('card_set', SDK.CardSet.Bloodborn).delete(),
@@ -484,6 +486,7 @@ router.delete('/inventory/bloodborn', function (req, res, next) {
 });
 
 router.delete('/inventory/unity', function (req, res, next) {
+  const _chainState = {};
   let txPromise;
   const user_id = req.user.d.id;
   const this_obj = {};
@@ -491,25 +494,25 @@ router.delete('/inventory/unity', function (req, res, next) {
   return txPromise = knex.transaction((tx) => tx('user_card_collection').where('user_id', user_id).first()
     .bind(this_obj)
     .then(function (cardCollectionRow) {
-      this.newCardCollection = {};
-      this.ownedUnityCards = [];
+      _chainState.newCardCollection = {};
+      _chainState.ownedUnityCards = [];
 
       for (var cardId in cardCollectionRow.cards) {
         var cardCountData = cardCollectionRow.cards[cardId];
         var sdkCard = SDK.GameSession.getCardCaches().getCardById(cardId);
         if (sdkCard.getCardSetId() === SDK.CardSet.Unity) {
-          this.ownedUnityCards.push(cardId);
+          _chainState.ownedUnityCards.push(cardId);
         } else {
-          this.newCardCollection[cardId] = cardCountData;
+          _chainState.newCardCollection[cardId] = cardCountData;
         }
       }
 
       return tx('user_card_collection').where('user_id', user_id).update({
-        cards: this.newCardCollection,
+        cards: _chainState.newCardCollection,
       });
     })
     .then(function () {
-      return Promise.map(this.ownedUnityCards, (cardId) => tx('user_cards').where('user_id', user_id).andWhere('card_id', cardId).delete());
+      return Promise.map(_chainState.ownedUnityCards, (cardId) => tx('user_cards').where('user_id', user_id).andWhere('card_id', cardId).delete());
     })
     .then(() => Promise.all([
       tx('user_spirit_orbs_opened').where('user_id', user_id).andWhere('card_set', SDK.CardSet.Unity).delete(),
@@ -521,6 +524,7 @@ router.delete('/inventory/unity', function (req, res, next) {
 });
 
 router.delete('/quests/current', function (req, res, next) {
+  const _chainState = {};
   const user_id = req.user.d.id;
 
   const twoDaysAgoMoment = moment.utc().subtract(2, 'day');
@@ -531,14 +535,14 @@ router.delete('/quests/current', function (req, res, next) {
     }))
     .then(() => DuelystFirebase.connect().getRootRef())
     .then(function (fbRootRef) {
-      this.fbRootRef = fbRootRef;
+      _chainState.fbRootRef = fbRootRef;
 
       return Promise.all([
-        FirebasePromises.remove(this.fbRootRef.child('user-quests').child(user_id).child('daily').child('current')
+        FirebasePromises.remove(_chainState.fbRootRef.child('user-quests').child(user_id).child('daily').child('current')
           .child('quests')),
-        FirebasePromises.remove(this.fbRootRef.child('user-quests').child(user_id).child('catch-up').child('current')
+        FirebasePromises.remove(_chainState.fbRootRef.child('user-quests').child(user_id).child('catch-up').child('current')
           .child('quests')),
-        FirebasePromises.set(this.fbRootRef.child('users').child(user_id).child('free_card_of_the_day_claimed_at'), twoDaysAgoMoment.valueOf()),
+        FirebasePromises.set(_chainState.fbRootRef.child('users').child(user_id).child('free_card_of_the_day_claimed_at'), twoDaysAgoMoment.valueOf()),
       ]);
     })
     .then(() => QuestsModule.generateDailyQuests(user_id))
@@ -546,6 +550,7 @@ router.delete('/quests/current', function (req, res, next) {
 });
 
 router.put('/quests/current', function (req, res, next) {
+  const _chainState = {};
   const user_id = req.user.d.id;
   const {
     quest_ids,
@@ -555,12 +560,12 @@ router.put('/quests/current', function (req, res, next) {
   return knex('user_quests').where({ user_id: user_id }).delete()
     .then(() => DuelystFirebase.connect().getRootRef())
     .then(function (fbRootRef) {
-      this.fbRootRef = fbRootRef;
+      _chainState.fbRootRef = fbRootRef;
 
       return Promise.all([
-        FirebasePromises.remove(this.fbRootRef.child('user-quests').child(user_id).child('daily').child('current')
+        FirebasePromises.remove(_chainState.fbRootRef.child('user-quests').child(user_id).child('daily').child('current')
           .child('quests')),
-        FirebasePromises.remove(this.fbRootRef.child('user-quests').child(user_id).child('catch-up').child('current')
+        FirebasePromises.remove(_chainState.fbRootRef.child('user-quests').child(user_id).child('catch-up').child('current')
           .child('quests')),
       ]);
     })
@@ -572,11 +577,11 @@ router.put('/quests/current', function (req, res, next) {
     .then(function () {
       return Promise.all([
         knex('user_quests').where({ user_id: user_id }).update({ mulliganed_at: null }),
-        FirebasePromises.remove(this.fbRootRef.child('user-quests').child(user_id).child('daily').child('current')
+        FirebasePromises.remove(_chainState.fbRootRef.child('user-quests').child(user_id).child('daily').child('current')
           .child('quests')
           .child(0)
           .child('mulliganed_at')),
-        FirebasePromises.remove(this.fbRootRef.child('user-quests').child(user_id).child('daily').child('current')
+        FirebasePromises.remove(_chainState.fbRootRef.child('user-quests').child(user_id).child('daily').child('current')
           .child('quests')
           .child(1)
           .child('mulliganed_at')),
@@ -607,37 +612,37 @@ router.put('/quests/current/progress', function (req, res, next) {
 });
 
 router.put('/quests/generated_at', function (req, res, next) {
+  const _chainState = {};
   const user_id = req.user.d.id;
   const {
     days_back,
   } = req.body;
 
   return knex('users').where({ id: user_id }).first('daily_quests_generated_at')
-    .bind({})
     .then(function (row) {
-      this.previousGeneratedAt = row.daily_quests_generated_at;
-      this.newGeneratedAtMoment = moment.utc(row.daily_quests_generated_at).subtract(days_back, 'days');
-      this.userRow = row;
-      this.updateData = {
-        daily_quests_generated_at: this.newGeneratedAtMoment.toDate(),
+      _chainState.previousGeneratedAt = row.daily_quests_generated_at;
+      _chainState.newGeneratedAtMoment = moment.utc(row.daily_quests_generated_at).subtract(days_back, 'days');
+      _chainState.userRow = row;
+      _chainState.updateData = {
+        daily_quests_generated_at: _chainState.newGeneratedAtMoment.toDate(),
       };
 
-      return knex('users').where({ id: user_id }).update(this.updateData);
+      return knex('users').where({ id: user_id }).update(_chainState.updateData);
     })
     .then(() => DuelystFirebase.connect().getRootRef())
     .then(function (fbRootRef) {
-      this.fbRootRef = fbRootRef;
+      _chainState.fbRootRef = fbRootRef;
 
       return Promise.all([
-        FirebasePromises.set(this.fbRootRef.child('user-quests').child(user_id).child('daily').child('current')
-          .child('updated_at'), this.newGeneratedAtMoment.valueOf()),
-        FirebasePromises.set(this.fbRootRef.child('user-quests').child(user_id).child('daily').child('current')
-          .child('generated_at'), this.newGeneratedAtMoment.valueOf()),
+        FirebasePromises.set(_chainState.fbRootRef.child('user-quests').child(user_id).child('daily').child('current')
+          .child('updated_at'), _chainState.newGeneratedAtMoment.valueOf()),
+        FirebasePromises.set(_chainState.fbRootRef.child('user-quests').child(user_id).child('daily').child('current')
+          .child('generated_at'), _chainState.newGeneratedAtMoment.valueOf()),
       ]);
     })
     .then(function () {
       return res.status(200).json({
-        generated_at: this.newGeneratedAtMoment.valueOf(),
+        generated_at: _chainState.newGeneratedAtMoment.valueOf(),
       });
     });
 });
@@ -848,13 +853,13 @@ router.delete('/gauntlet/current', function (req, res, next) {
 });
 
 router.delete('/gauntlet/current/general', function (req, res, next) {
+  const _chainState = {};
   const userId = req.user.d.id;
 
   // Get current gauntlet data
   return knex('user_gauntlet_run').first().where('user_id', userId)
-    .bind({})
     .then(function (gauntletData) {
-      this.gauntletData = gauntletData;
+      _chainState.gauntletData = gauntletData;
       if ((gauntletData == null)) {
         return Promise.reject(new Error('You are not currently in a Gauntlet Run'));
       }
@@ -869,13 +874,13 @@ router.delete('/gauntlet/current/general', function (req, res, next) {
         return Promise.reject(new Error('Current Gauntlet deck does not have general in expected slot'));
       }
 
-      this.newDeck = gauntletData.deck.slice(1);
+      _chainState.newDeck = gauntletData.deck.slice(1);
 
       return DuelystFirebase.connect().getRootRef();
     })
     .then(function (fbRootRef) {
       const updateData = {
-        deck: this.newDeck,
+        deck: _chainState.newDeck,
         general_id: null,
       };
       return Promise.all([
@@ -884,7 +889,7 @@ router.delete('/gauntlet/current/general', function (req, res, next) {
       ]);
     })
     .then(function () {
-      return res.status(200).json(this.gauntletData);
+      return res.status(200).json(_chainState.gauntletData);
     })
     .catch((error) => res.status(403).json({ message: error.toString() }));
 });
@@ -1113,12 +1118,13 @@ router.post('/daily_challenge/completed_at', function (req, res, next) {
 });
 
 router.post('/daily_challenge/passed_qa', function (req, res, next) {
+  const _chainState = {};
   const dateKey = req.body.date_key;
 
   return DuelystFirebase.connect().getRootRef()
     .then(function (fbRootRef) {
-      this.fbRootRef = fbRootRef;
-      return FirebasePromises.update(this.fbRootRef.child('daily-challenges').child(dateKey), {
+      _chainState.fbRootRef = fbRootRef;
+      return FirebasePromises.update(_chainState.fbRootRef.child('daily-challenges').child(dateKey), {
         isQAReady: true,
       });
     }).then(() => res.status(200).json({}))
@@ -1175,7 +1181,7 @@ router.post('/migration/prismatic_backfill', function (req, res, next) {
 
   return knex('users').where('id', user_id).update({
     last_session_version: '1.72.0',
-  }).bind({})
+  })
     .then(function () {
       const timeBeforePrismaticFeatureAddedMoment = moment.utc('2016-07-20 20:00');
 
@@ -1219,6 +1225,7 @@ router.delete('/boss_event/rewards', function (req, res, next) {
 });
 
 router.put('/boss_event', function (req, res, next) {
+  const _chainState = {};
   const adjustedMs = req.body.adjusted_ms;
   const bossId = parseInt(req.body.boss_id);
 
@@ -1234,13 +1241,12 @@ router.put('/boss_event', function (req, res, next) {
   };
 
   return DuelystFirebase.connect().getRootRef()
-    .bind({})
     .then(function (fbRootRef) {
-      this.fbRootRef = fbRootRef;
-      return FirebasePromises.remove(this.fbRootRef.child('boss-events').child(bossEventId));
+      _chainState.fbRootRef = fbRootRef;
+      return FirebasePromises.remove(_chainState.fbRootRef.child('boss-events').child(bossEventId));
     })
     .then(function () {
-      return FirebasePromises.set(this.fbRootRef.child('boss-events').child(bossEventId), bossEventData);
+      return FirebasePromises.set(_chainState.fbRootRef.child('boss-events').child(bossEventId), bossEventData);
     })
     .then(function () {
       Logger.module('QA').log('Completed setting up qa boss event');

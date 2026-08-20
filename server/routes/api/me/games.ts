@@ -101,6 +101,7 @@ router.get('/watchable/:division_name', function (req, res, next) {
 
   return WatchableGamesManager.loadGamesDataForDivision(division_name)
     .then(function (data) {
+      const _chainState = {};
       if (data) {
         Logger.module('API').debug('loaded watchable games data from REDIS');
         return res.status(200).json(data);
@@ -116,7 +117,6 @@ router.get('/watchable/:division_name', function (req, res, next) {
         Logger.module('API').debug(`GENERATING watchable games data from rank ${divisionRankMaxValue} to ${divisionRankMinValue}`);
         // first write an empty array into redis while the query is running so other servers don't step on the process toes
         return WatchableGamesManager.saveGamesDataForDivision(division_name, JSON.stringify([]))
-          .bind({})
           .then(() => knex.raw(`\
 select count(id) as game_count
 from (select * from games order by created_at DESC LIMIT ?) as games
@@ -125,7 +125,7 @@ where version LIKE ?\
             const gameCount = __guard__(__guard__(result != null ? result.rows : undefined, (x1) => x1[0]), (x) => x.game_count) || 0;
             Logger.module('API').debug(`Found ${gameCount} potential watchable games within version ${version}. Need ${requiredGameCount}`);
             if (gameCount < requiredGameCount) {
-              this.gamesData = [];
+              _chainState.gamesData = [];
               return Promise.resolve(null);
             } else {
               // NOTE: this is a very expensive query
@@ -177,7 +177,7 @@ JOIN users AS player_2 ON player_2.id = games.player_2_id;\
               const allCollectibleUnits = allCollectibleUnitsCache.getCards();
               const allCollectibleUnitsIds = allCollectibleUnitsCache.getCardIds();
 
-              this.gamesData = _.map(rows, function (row) {
+              _chainState.gamesData = _.map(rows, function (row) {
                 row.player_1_deck = _.intersection(allCollectibleUnitsIds, _.uniq(row.player_1_deck));
                 row.player_2_deck = _.intersection(allCollectibleUnitsIds, _.uniq(row.player_2_deck));
                 row.player_1_deck = _.sortBy(row.player_1_deck, (cId) => _.find(allCollectibleUnits, (u) => u.id === cId).rarityId);
@@ -205,7 +205,7 @@ JOIN users AS player_2 ON player_2.id = games.player_2_id;\
                 };
               });
 
-              return Promise.map(this.gamesData, function (gameRow) {
+              return Promise.map(_chainState.gamesData, function (gameRow) {
                 const gameDataUrl = `https://s3.${awsRegion}.amazonaws.com/${awsReplaysBucket}/${config.get('env')}/${gameRow.id}.json`;
                 Logger.module('API').debug(`downloading game ${gameRow.id} replay data from ${gameDataUrl}`);
                 return new Promise((resolve, reject) => request.get(gameDataUrl).end(function (err, res) {
@@ -256,10 +256,10 @@ JOIN users AS player_2 ON player_2.id = games.player_2_id;\
             }
           })
           .then(function () {
-            return WatchableGamesManager.saveGamesDataForDivision(division_name, JSON.stringify(this.gamesData));
+            return WatchableGamesManager.saveGamesDataForDivision(division_name, JSON.stringify(_chainState.gamesData));
           })
           .then(function () {
-            return res.status(200).json(this.gamesData);
+            return res.status(200).json(_chainState.gamesData);
           });
       }
     }).catch((error) => next(error));
@@ -436,7 +436,6 @@ router.post('/single_player', function (req, res, next) {
     ((cardBackId != null) ? InventoryModule.isAllowedToUseCosmetic(Promise.resolve(), knex, userId, cardBackId) : Promise.resolve()),
     ((battleMapId != null) ? InventoryModule.isAllowedToUseCosmetic(Promise.resolve(), knex, userId, battleMapId) : Promise.resolve()),
   ])
-    .bind({})
     .then(function ([ownedBattleMapCosmeticRows]) {
       if (battleMapId != null) {
         Logger.module('SINGLE PLAYER').debug(`${userId} selected battlemap: ${battleMapId}`);
@@ -539,7 +538,6 @@ router.post('/boss_battle', function (req, res, next) {
     ((cardBackId != null) ? InventoryModule.isAllowedToUseCosmetic(Promise.resolve(), knex, userId, cardBackId) : Promise.resolve()),
     ((battleMapId != null) ? InventoryModule.isAllowedToUseCosmetic(Promise.resolve(), knex, userId, battleMapId) : Promise.resolve()),
   ])
-    .bind({})
     .then(function () {
     // TODO: get current boss general id and deck id from firebase
       const aiGeneralId = result.value.ai_general_id;

@@ -21,6 +21,7 @@ const Promise = require('bluebird');
  * @param  {Function} done   Callback when job is complete
  */
 module.exports = function (job, done) {
+  const _chainState = {};
   const userId = job.data.userId || null;
 
   if (!userId) {
@@ -104,10 +105,9 @@ module.exports = function (job, done) {
   const factionProgressed = job.data.factionProgressed || null;
   if (factionProgressed) {
     return DuelystFirebase.connect().getRootRef()
-      .bind({})
       .then(function (fbRootRef) {
-        this.fbRootRef = fbRootRef;
-        const factionProgressionRootRef = this.fbRootRef.child('user-faction-progression').child(userId);
+        _chainState.fbRootRef = fbRootRef;
+        const factionProgressionRootRef = _chainState.fbRootRef.child('user-faction-progression').child(userId);
         return FirebasePromises.once(factionProgressionRootRef, 'value');
       })
       .then(function (factionProgressionSnapshot) {
@@ -125,10 +125,9 @@ module.exports = function (job, done) {
   const inventoryChanged = job.data.inventoryChanged || null;
   if (inventoryChanged) {
     return DuelystFirebase.connect().getRootRef()
-      .bind({})
       .then(function (fbRootRef) {
-        this.fbRootRef = fbRootRef;
-        const cardCollectionRootRef = this.fbRootRef.child('user-inventory').child(userId).child('card-collection');
+        _chainState.fbRootRef = fbRootRef;
+        const cardCollectionRootRef = _chainState.fbRootRef.child('user-inventory').child(userId).child('card-collection');
         return FirebasePromises.once(cardCollectionRootRef, 'value');
       })
       .then(function (cardCollectionSnapshot) {

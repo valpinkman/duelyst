@@ -22,6 +22,7 @@ const { version } = JSON.parse(fs.readFileSync('./version.json'));
 const env = config.get('env');
 
 const createGame = function (gameType, player1Data, player2Data, gameServer, callback) {
+  const _chainState = {};
   let error,
     newGameSession;
   let player1DataForGame = player1Data;
@@ -85,15 +86,14 @@ const createGame = function (gameType, player1Data, player2Data, gameServer, cal
 
   return GameManager.generateGameId()
     .nodeify(callback)
-    .bind({})
     .then(function (gameId) {
-      this.gameId = gameId;
+      _chainState.gameId = gameId;
       Logger.module('GAME CREATE').debug(`Unique game id ${gameId}`);
       newGameSession.gameId = gameId;
       return GameManager.saveGameSession(gameId, newGameSession.serializeToJSON(newGameSession));
     })
     .then(function () {
-      Logger.module('GAME CREATE').debug(`New game session ${this.gameId} saved to Redis.`);
+      Logger.module('GAME CREATE').debug(`New game session ${_chainState.gameId} saved to Redis.`);
 
       const player1General = newGameSession.getGeneralForPlayer1();
       const player1SetupData = newGameSession.getPlayer1SetupData();
@@ -103,7 +103,7 @@ const createGame = function (gameType, player1Data, player2Data, gameServer, cal
       // setup player data
       const gameDataForPlayer1 = {
         game_type: player1DataForGame.gameType,
-        game_id: this.gameId,
+        game_id: _chainState.gameId,
         is_player_1: true,
         opponent_username: player2DataForGame.name,
         opponent_id: player2DataForGame.userId,
@@ -121,7 +121,7 @@ const createGame = function (gameType, player1Data, player2Data, gameServer, cal
 
       const gameDataForPlayer2 = {
         game_type: player2DataForGame.gameType,
-        game_id: this.gameId,
+        game_id: _chainState.gameId,
         is_player_1: false,
         opponent_username: player1DataForGame.name,
         opponent_id: player1DataForGame.userId,
@@ -139,15 +139,15 @@ const createGame = function (gameType, player1Data, player2Data, gameServer, cal
 
       // Add newly created gameId to each users list of games
       return Promise.all([
-        GamesModule.newUserGame(player1DataForGame.userId, this.gameId, gameDataForPlayer1),
-        GamesModule.newUserGame(player2DataForGame.userId, this.gameId, gameDataForPlayer2),
+        GamesModule.newUserGame(player1DataForGame.userId, _chainState.gameId, gameDataForPlayer1),
+        GamesModule.newUserGame(player2DataForGame.userId, _chainState.gameId, gameDataForPlayer2),
       // WARNING: this code below is for testing timeouts only
       // new Promise (resolve)-> setTimeout( (()-> resolve()), 16000)
       ]);
     })
     .then(function () {
-      Logger.module('GAME CREATE').debug(`Game session ${this.gameId} added to each user's list of games.`);
-      return this.gameId;
+      Logger.module('GAME CREATE').debug(`Game session ${_chainState.gameId} added to each user's list of games.`);
+      return _chainState.gameId;
     });
 };
 

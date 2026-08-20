@@ -65,7 +65,6 @@ describe('challenges module', () => {
     });
 
     it('expect marking challenge as attempted to work', () => ChallengesModule.markChallengeAsAttempted(userId, challengeType)
-      .bind({})
       .then(() => DuelystFirebase.connect().getRootRef()).then((rootRef) => Promise.all([
         knex('user_challenges').where({
           user_id: userId,
@@ -101,7 +100,6 @@ describe('challenges module', () => {
     });
 
     it('expect to receive rewards for first time completion of challenge and challenge to be marked as completed', () => ChallengesModule.completeChallengeWithType(userId, challengeType)
-      .bind({})
       .then(() => DuelystFirebase.connect().getRootRef()).then((rootRef) => Promise.all([
         knex('users').where('id', userId).first(),
         knex('user_card_collection').where('user_id', userId).first(),
@@ -142,7 +140,6 @@ describe('challenges module', () => {
       }));
 
     it('expect to not receive rewards for second completion of challenge', () => ChallengesModule.completeChallengeWithType(userId, challengeType)
-      .bind({})
       .then(() => DuelystFirebase.connect().getRootRef()).then((rootRef) => Promise.all([
         knex('users').where('id', userId).first(),
         knex('user_card_collection').where('user_id', userId).first(),
@@ -188,7 +185,6 @@ describe('challenges module', () => {
       it('expect beginner challenge quests to progress with challenge completion', () => {
         const questChallenge1Type = 'UnitTestQuestChallenge1';
         return ChallengesModule.completeChallengeWithType(userId, questChallenge1Type, true)
-          .bind({})
           .then(() => DuelystFirebase.connect().getRootRef()).then((rootRef) => Promise.all([
             knex('users').where('id', userId).first(),
             knex('user_challenges').where('user_id', userId).andWhere('challenge_id', questChallenge1Type).first(),
@@ -210,7 +206,6 @@ describe('challenges module', () => {
         const questChallenge3Type = 'UnitTestQuestChallenge3';
 
         return ChallengesModule.completeChallengeWithType(userId, questChallenge1Type, true)
-          .bind({})
           .then(() => ChallengesModule.completeChallengeWithType(userId, questChallenge2Type, true)).then(() => ChallengesModule.completeChallengeWithType(userId, questChallenge3Type, true))
           .then(() => DuelystFirebase.connect().getRootRef())
           .then((rootRef) => Promise.all([
@@ -242,7 +237,6 @@ describe('challenges module', () => {
         })).then((rootRef) => SyncModule.wipeUserData(userId)));
 
     it('expect marking invalid challenge ID as completed to ERROR out', () => ChallengesModule.markDailyChallengeAsCompleted(userId, 'invalid-challenge', null, challengeDate, challengeDate)
-      .bind({})
       .then((result) => {
         expect(result).to.not.exist;
       })
@@ -252,7 +246,6 @@ describe('challenges module', () => {
       }));
 
     it('expect marking challenge that can\'t be found to ERROR out', () => ChallengesModule.markDailyChallengeAsCompleted(userId, challengeId, null, moment.utc('2016-05-03'), challengeDate)
-      .bind({})
       .then((result) => {
         expect(result).to.not.exist;
       })
@@ -262,7 +255,6 @@ describe('challenges module', () => {
       }));
 
     it('expect marking challenge valid as completed to SUCCEED and give REWARDS', () => ChallengesModule.markDailyChallengeAsCompleted(userId, challengeId, null, challengeDate, challengeDate)
-      .bind({})
       .then((result) => {
         expect(result).to.exist;
         return DuelystFirebase.connect().getRootRef();
@@ -281,7 +273,6 @@ describe('challenges module', () => {
       }));
 
     it('expect marking same challenge as completed twice to ERROR out', () => ChallengesModule.markDailyChallengeAsCompleted(userId, challengeId, null, challengeDate, challengeDate)
-      .bind({})
       .then((result) => {
         expect(result).to.not.exist;
       })

@@ -1936,6 +1936,7 @@ App._startBossBattleGame = function (myPlayerDeck, myPlayerFactionId, myPlayerGe
 //
 
 App._startGameForReplay = function (replayData) {
+  const _chainState = {};
   if (ChatManager.getInstance().getStatusIsInBattle()) {
     Logger.module('APPLICATION').log('App._startGameForReplay -> cannot start game when already in a game!');
     return;
@@ -1969,7 +1970,6 @@ App._startGameForReplay = function (replayData) {
 
   // show loading
   return NavigationManager.getInstance().showDialogForLoad()
-    .bind({})
     .then(() => {
     // load replay data
       let url;
@@ -1992,7 +1992,7 @@ App._startGameForReplay = function (replayData) {
       });
     })
     .then(function (replayResponseData) {
-      this.replayResponseData = replayResponseData;
+      _chainState.replayResponseData = replayResponseData;
       const {
         gameSessionData,
       } = replayResponseData;
@@ -2008,8 +2008,8 @@ App._startGameForReplay = function (replayData) {
       }
 
       // store data
-      this._loadedGameSessionData = gameSessionData;
-      this._loadedGameUIEventData = gameUIData;
+      _chainState._loadedGameSessionData = gameSessionData;
+      _chainState._loadedGameUIEventData = gameUIData;
 
       // load resources for game
       return PackageManager.getInstance().loadGamePackageWithoutActivation([
@@ -2023,25 +2023,25 @@ App._startGameForReplay = function (replayData) {
 
       if (userId != null) { // if we explicity requested to spectate a user perspective
         SDK.GameSession.getInstance().setUserId(userId);
-      } else if ((this.replayResponseData != null ? this.replayResponseData.replayData : undefined)) { // check if the server response includes a shared replay record so we can use that to determine who to spectate
-        SDK.GameSession.getInstance().setUserId(this.replayResponseData != null ? this.replayResponseData.replayData.user_id : undefined);
+      } else if ((_chainState.replayResponseData != null ? _chainState.replayResponseData.replayData : undefined)) { // check if the server response includes a shared replay record so we can use that to determine who to spectate
+        SDK.GameSession.getInstance().setUserId(_chainState.replayResponseData != null ? _chainState.replayResponseData.replayData.user_id : undefined);
       } else { // ultimately spectate player 1 if nothing provided
-        SDK.GameSession.getInstance().setUserId(this._loadedGameSessionData.players[0].playerId);
+        SDK.GameSession.getInstance().setUserId(_chainState._loadedGameSessionData.players[0].playerId);
       }
 
-      SDK.GameSession.getInstance().setGameType(this._loadedGameSessionData.gameType);
+      SDK.GameSession.getInstance().setGameType(_chainState._loadedGameSessionData.gameType);
       SDK.GameSession.getInstance().setIsRunningAsAuthoritative(false);
       SDK.GameSession.getInstance().setIsSpectateMode(true);
       SDK.GameSession.getInstance().setIsReplay(true);
 
       // setup GameSession from replay data
-      SDK.GameSetup.setupNewSessionFromExistingSessionData(SDK.GameSession.getInstance(), this._loadedGameSessionData);
+      SDK.GameSetup.setupNewSessionFromExistingSessionData(SDK.GameSession.getInstance(), _chainState._loadedGameSessionData);
 
       return App._startGame();
     })
     .then(function () {
     // start watching replay
-      return ReplayEngine.getInstance().watchReplay(this._loadedGameSessionData, this._loadedGameUIEventData);
+      return ReplayEngine.getInstance().watchReplay(_chainState._loadedGameSessionData, _chainState._loadedGameUIEventData);
     })
     .catch((errorMessage) => {
       ReplayEngine.getInstance().stopCurrentReplay();
@@ -2604,6 +2604,7 @@ App.onShowGameOver = function () {
  * @private
  */
 App._startLoadingGameOverData = function () {
+  const _chainState = {};
   // for specated games, don't load any data
   if (SDK.GameSession.current().getIsSpectateMode()) {
     App._gameOverDataThenable = Promise.resolve([null, []]);
@@ -2737,11 +2738,10 @@ App._startLoadingGameOverData = function () {
   });
 
   return App._gameOverDataThenable = whenGameJobsProcessedAsync
-    .bind({})
     .then(function ([userGameModel, challengeModel]) {
       let rewardId;
-      this.userGameModel = userGameModel;
-      this.challengeModel = challengeModel;
+      _chainState.userGameModel = userGameModel;
+      _chainState.challengeModel = challengeModel;
       const rewardIds = [];
 
       const gameSession = SDK.GameSession.getInstance();
@@ -2757,16 +2757,16 @@ App._startLoadingGameOverData = function () {
         NewPlayerManager.getInstance().setHasPlayedSinglePlayer(userGameModel);
       }
 
-      if (this.userGameModel != null ? this.userGameModel.get('rewards') : undefined) {
-        const object = this.userGameModel.get('rewards');
+      if (_chainState.userGameModel != null ? _chainState.userGameModel.get('rewards') : undefined) {
+        const object = _chainState.userGameModel.get('rewards');
         for (rewardId in object) {
           const val = object[rewardId];
           rewardIds.push(rewardId);
         }
       }
 
-      if (this.challengeModel != null ? this.challengeModel.get('reward_ids') : undefined) {
-        for (rewardId of Array.from<any>(this.challengeModel.get('reward_ids'))) {
+      if (_chainState.challengeModel != null ? _chainState.challengeModel.get('reward_ids') : undefined) {
+        for (rewardId of Array.from<any>(_chainState.challengeModel.get('reward_ids'))) {
           rewardIds.push(rewardId);
         }
       }
@@ -2784,7 +2784,7 @@ App._startLoadingGameOverData = function () {
       }
       return Promise.all(allPromises);
     }).then(function (allRewardModels) {
-      this.rewardModels = allRewardModels;
+      _chainState.rewardModels = allRewardModels;
       // if we're not done with core progression
       if (!NewPlayerManager.getInstance().isCoreProgressionDone()) {
         return NewPlayerManager.getInstance().updateCoreState();
@@ -2793,9 +2793,9 @@ App._startLoadingGameOverData = function () {
     })
     .then(function (newPlayerProgressionData) {
       if ((newPlayerProgressionData != null ? newPlayerProgressionData.quests : undefined)) {
-        return this.newBeginnerQuestsCollection = new Backbone.Collection(newPlayerProgressionData != null ? newPlayerProgressionData.quests : undefined);
+        return _chainState.newBeginnerQuestsCollection = new Backbone.Collection(newPlayerProgressionData != null ? newPlayerProgressionData.quests : undefined);
       }
-      return this.newBeginnerQuestsCollection = new Backbone.Collection();
+      return _chainState.newBeginnerQuestsCollection = new Backbone.Collection();
     })
     .then(() => {
     // if we're at a stage where we should start generating daily quests, request them in case any of the quest slots opened up
@@ -2805,7 +2805,7 @@ App._startLoadingGameOverData = function () {
       return Promise.resolve();
     })
     .then(function () {
-      return Promise.all([this.userGameModel, this.rewardModels, this.newBeginnerQuestsCollection]);
+      return Promise.all([_chainState.userGameModel, _chainState.rewardModels, _chainState.newBeginnerQuestsCollection]);
     })
     .timeout(10000);
 };

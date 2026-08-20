@@ -110,24 +110,22 @@ describe('users module', () => {
       });
 
       it('expect to be able to create a user with a valid invite code if invite codes are ACTIVE', () => {
+        const _chainState = {};
         const rando = generatePushId();
         const code = `test-invite-${rando}`;
         const email = `${rando}-unit-test@duelyst.local`;
         const username = `${rando.toLowerCase()}-unit-test`;
         return knex('invite_codes').insert({ code })
-          .bind({})
           .then(() => UsersModule.createNewUser(email, username, 'testpassword', code))
-          .then(function (newUserId) {
-            this.newUserId = newUserId;
+          .then((newUserId) => {
+            _chainState.newUserId = newUserId;
             expect(newUserId).to.exist;
             return DuelystFirebase.connect().getRootRef();
           })
-          .then(function (rootRef) {
-            return Promise.all([
-              knex('users').where('id', this.newUserId).first(),
-              FirebasePromises.once(rootRef.child('users').child(this.newUserId), 'value'),
-            ]);
-          })
+          .then((rootRef) => Promise.all([
+            knex('users').where('id', _chainState.newUserId).first(),
+            FirebasePromises.once(rootRef.child('users').child(_chainState.newUserId), 'value'),
+          ]))
           .then(([userRow, userSnapshot]) => {
             expect(userRow.username).to.equal(username);
             expect(userSnapshot.val().username).to.equal(username);
@@ -147,21 +145,20 @@ describe('users module', () => {
       afterAll(() => { config.set('inviteCodesActive', invitesActiveBefore); });
 
       it('expect to be able to create a user with an invalid invite code if invite codes are INACTIVE', () => {
+        const _chainState = {};
         const rando = generatePushId();
         const code = `fake-test-invite-${rando}`;
         const email = `${rando}-unit-test@duelyst.local`;
         const username = `${rando.toLowerCase()}-unit-test`;
         return UsersModule.createNewUser(email, username, 'testpassword', code)
-          .then(function (newUserId) {
-            this.newUserId = newUserId;
+          .then((newUserId) => {
+            _chainState.newUserId = newUserId;
             expect(newUserId).to.exist;
             return DuelystFirebase.connect().getRootRef();
-          }).then(function (rootRef) {
-            return Promise.all([
-              knex('users').where('id', this.newUserId).first(),
-              FirebasePromises.once(rootRef.child('users').child(this.newUserId), 'value'),
-            ]);
-          }).then(([userRow, userSnapshot]) => {
+          }).then((rootRef) => Promise.all([
+            knex('users').where('id', _chainState.newUserId).first(),
+            FirebasePromises.once(rootRef.child('users').child(_chainState.newUserId), 'value'),
+          ])).then(([userRow, userSnapshot]) => {
             expect(userRow.username).to.equal(username);
             expect(userSnapshot.val().username).to.equal(username);
           });
@@ -170,6 +167,7 @@ describe('users module', () => {
 
     describe('registration - with referral codes', () => {
       it('expect a referral code with 20 bonus signup GOLD to work', () => {
+        const _chainState = {};
         const rando = generatePushId();
         const code = `test-invite-${rando}`;
         const email = `${rando}-unit-test@duelyst.local`;
@@ -185,18 +183,16 @@ describe('users module', () => {
           }),
         ])
           .then(() => UsersModule.createNewUser(email, username, 'testpassword', code, referralCode))
-          .then(function (newUserId) {
-            this.newUserId = newUserId;
+          .then((newUserId) => {
+            _chainState.newUserId = newUserId;
             expect(newUserId).to.exist;
             return DuelystFirebase.connect().getRootRef();
-          }).then(function (rootRef) {
-            return Promise.all([
-              knex('users').where('id', this.newUserId).first(),
-              knex('referral_codes').where('code', referralCode).first(),
-              FirebasePromises.once(rootRef.child('users').child(this.newUserId), 'value'),
-              FirebasePromises.once(rootRef.child('user-inventory').child(this.newUserId).child('wallet'), 'value'),
-            ]);
-          })
+          }).then((rootRef) => Promise.all([
+            knex('users').where('id', _chainState.newUserId).first(),
+            knex('referral_codes').where('code', referralCode).first(),
+            FirebasePromises.once(rootRef.child('users').child(_chainState.newUserId), 'value'),
+            FirebasePromises.once(rootRef.child('user-inventory').child(_chainState.newUserId).child('wallet'), 'value'),
+          ]))
           .then(([userRow, referralCodeRow, userSnapshot, walletSnapshot]) => {
             expect(userRow.username).to.equal(username);
             expect(userRow.wallet_gold).to.equal(20);
@@ -207,23 +203,22 @@ describe('users module', () => {
       });
 
       it('expect a referral code to be CaSE insensitive', () => {
+        const _chainState = {};
         const rando = generatePushId();
         const email = `${rando}-unit-test@duelyst.local`;
         const username = `${rando.toLowerCase()}-unit-test`;
         const referralCode = 'TEST-referral-20-Gold';
         return UsersModule.createNewUser(email, username, 'testpassword', 'kumite14', referralCode)
-          .then(function (newUserId) {
-            this.newUserId = newUserId;
+          .then((newUserId) => {
+            _chainState.newUserId = newUserId;
             expect(newUserId).to.exist;
             return DuelystFirebase.connect().getRootRef();
-          }).then(function (rootRef) {
-            return Promise.all([
-              knex('users').where('id', this.newUserId).first(),
-              knex('referral_codes').where('code', referralCode.toLowerCase()).first(),
-              FirebasePromises.once(rootRef.child('users').child(this.newUserId), 'value'),
-              FirebasePromises.once(rootRef.child('user-inventory').child(this.newUserId).child('wallet'), 'value'),
-            ]);
-          }).then(([userRow, referralCodeRow, userSnapshot, walletSnapshot]) => {
+          }).then((rootRef) => Promise.all([
+            knex('users').where('id', _chainState.newUserId).first(),
+            knex('referral_codes').where('code', referralCode.toLowerCase()).first(),
+            FirebasePromises.once(rootRef.child('users').child(_chainState.newUserId), 'value'),
+            FirebasePromises.once(rootRef.child('user-inventory').child(_chainState.newUserId).child('wallet'), 'value'),
+          ])).then(([userRow, referralCodeRow, userSnapshot, walletSnapshot]) => {
             expect(userRow.username).to.equal(username);
             expect(userRow.wallet_gold).to.equal(20);
             expect(referralCodeRow.signup_count).to.equal(2);
@@ -233,23 +228,22 @@ describe('users module', () => {
       });
 
       it('expect a referral code to trim whitespace', () => {
+        const _chainState = {};
         const rando = generatePushId();
         const email = `${rando}-unit-test@duelyst.local`;
         const username = `${rando.toLowerCase()}-unit-test`;
         const referralCode = ' TEST-referral-20-Gold ';
         return UsersModule.createNewUser(email, username, 'testpassword', 'kumite14', referralCode)
-          .then(function (newUserId) {
-            this.newUserId = newUserId;
+          .then((newUserId) => {
+            _chainState.newUserId = newUserId;
             expect(newUserId).to.exist;
             return DuelystFirebase.connect().getRootRef();
-          }).then(function (rootRef) {
-            return Promise.all([
-              knex('users').where('id', this.newUserId).first(),
-              knex('referral_codes').where('code', referralCode.toLowerCase().trim()).first(),
-              FirebasePromises.once(rootRef.child('users').child(this.newUserId), 'value'),
-              FirebasePromises.once(rootRef.child('user-inventory').child(this.newUserId).child('wallet'), 'value'),
-            ]);
-          }).then(([userRow, referralCodeRow, userSnapshot, walletSnapshot]) => {
+          }).then((rootRef) => Promise.all([
+            knex('users').where('id', _chainState.newUserId).first(),
+            knex('referral_codes').where('code', referralCode.toLowerCase().trim()).first(),
+            FirebasePromises.once(rootRef.child('users').child(_chainState.newUserId), 'value'),
+            FirebasePromises.once(rootRef.child('user-inventory').child(_chainState.newUserId).child('wallet'), 'value'),
+          ])).then(([userRow, referralCodeRow, userSnapshot, walletSnapshot]) => {
             expect(userRow.username).to.equal(username);
             expect(userRow.wallet_gold).to.equal(20);
             expect(referralCodeRow.signup_count).to.equal(3);
@@ -432,6 +426,7 @@ describe('users module', () => {
 
     describe('registration - with campaign data', () => {
       it('expect campaign data to set correctly', () => {
+        const _chainState = {};
         const rando = generatePushId();
         const code = `test-invite-${rando}`;
         const email = `${rando}-unit-test@duelyst.local`;
@@ -446,11 +441,11 @@ describe('users module', () => {
           referrer: 'test_referrer',
         };
         return UsersModule.createNewUser(email, username, 'testpassword', 'kumite14', null, campaignData)
-          .then(function (newUserId) {
-            this.newUserId = newUserId;
+          .then((newUserId) => {
+            _chainState.newUserId = newUserId;
             expect(newUserId).to.exist;
 
-            return knex('users').where('id', this.newUserId).first();
+            return knex('users').where('id', _chainState.newUserId).first();
           }).then((userRow) => {
             expect(userRow.campaign_source).to.equal(campaignData.campaign_source);
             expect(userRow.campaign_medium).to.equal(campaignData.campaign_medium);
@@ -897,7 +892,6 @@ describe('users module', () => {
       [userId, SDK.Factions.Lyonar, SDK.Cards.Faction1.General, false, 'friendly', false, false, false, moment().utc().add(1, 'month')],
       [userId, SDK.Factions.Lyonar, SDK.Cards.Faction1.General, true, 'friendly', false, false, false, moment().utc().add(1, 'month')],
     ], (input) => UsersModule.updateGameCounters.apply(null, input))
-      .bind({})
       .then(() => DuelystFirebase.connect().getRootRef())
       .then((rootRef) => Promise.all([
         knex('user_game_counters').where({ user_id: userId }).select(),
@@ -957,6 +951,7 @@ describe('users module', () => {
   });
 
   describe('updateUserProgressionWithGameOutcome()', () => {
+    const _chainState = {};
     let lastProgressionRow;
 
     let currentWinRewardCount = 0;
@@ -969,7 +964,6 @@ describe('users module', () => {
     it('expect game counter to work', () => {
       const gameId = generatePushId();
       return UsersModule.updateUserProgressionWithGameOutcome(userId, null, false, gameId)
-        .bind({})
         .then(() => DuelystFirebase.connect().getRootRef())
         .then((rootRef) => Promise.all([
           knex('user_progression').where('user_id', userId).first(),
@@ -994,7 +988,6 @@ describe('users module', () => {
       UsersModule.updateUserProgressionWithGameOutcome(userId, null, false, generatePushId(), 'ranked', true),
       UsersModule.updateUserProgressionWithGameOutcome(userId, null, false, generatePushId(), 'ranked', true),
     ])
-      .bind({})
       .then(() => DuelystFirebase.connect().getRootRef())
       .then((rootRef) => Promise.all([
         knex('user_progression').where('user_id', userId).first(),
@@ -1021,7 +1014,6 @@ describe('users module', () => {
       UsersModule.updateUserProgressionWithGameOutcome(userId, null, false, generatePushId(), 'ranked', false, true),
       UsersModule.updateUserProgressionWithGameOutcome(userId, null, false, generatePushId(), 'ranked', false, true),
     ])
-      .bind({})
       .then(() => DuelystFirebase.connect().getRootRef())
       .then((rootRef) => Promise.all([
         knex('user_progression').where('user_id', userId).first(),
@@ -1049,7 +1041,6 @@ describe('users module', () => {
       UsersModule.updateUserProgressionWithGameOutcome(userId, null, false, generatePushId(), 'ranked', false),
       UsersModule.updateUserProgressionWithGameOutcome(userId, null, false, generatePushId(), 'ranked', false),
     ])
-      .bind({})
       .then(() => DuelystFirebase.connect().getRootRef())
       .then((rootRef) => Promise.all([
         knex('user_progression').where('user_id', userId).first(),
@@ -1113,24 +1104,21 @@ describe('users module', () => {
     // });
 
     it('expect a reward for the first win of the day and loss streak to reset to 0', () => UsersModule.updateUserProgressionWithGameOutcome(userId, null, true, generatePushId(), 'ranked', false)
-      .bind({})
       .then(() => Promise.all([
         knex('user_rewards').where({ user_id: userId, reward_type: 'daily win' }).first(),
         knex('users').where('id', userId).first(),
-      ])).then(function ([rewardRow, userRow]) {
+      ])).then(([rewardRow, userRow]) => {
         expect(rewardRow).to.exist;
         expect(userRow.wallet_gold - walletGoldSoFar).to.equal(rewardRow.gold);
-        this.rewardId = rewardRow.id;
+        _chainState.rewardId = rewardRow.id;
         walletGoldSoFar = userRow.wallet_gold;
         return DuelystFirebase.connect().getRootRef();
       })
-      .then(function (rootRef) {
-        return Promise.all([
-          knex('user_progression').where('user_id', userId).first(),
-          FirebasePromises.once(rootRef.child('user-progression').child(userId).child('game-counter'), 'value'),
-          FirebasePromises.once(rootRef.child('user-rewards').child(userId).child(this.rewardId), 'value'),
-        ]);
-      })
+      .then((rootRef) => Promise.all([
+        knex('user_progression').where('user_id', userId).first(),
+        FirebasePromises.once(rootRef.child('user-progression').child(userId).child('game-counter'), 'value'),
+        FirebasePromises.once(rootRef.child('user-rewards').child(userId).child(_chainState.rewardId), 'value'),
+      ]))
       .then(([progressionRow, progressionSnapshot, rewardSnapshot]) => {
         expect(progressionRow.win_count).to.equal(lastProgressionRow.win_count + 1);
         expect(progressionRow.game_count).to.equal(lastProgressionRow.game_count + 1);
@@ -1148,7 +1136,6 @@ describe('users module', () => {
       }));
 
     it('expect win streaks to count up for wins', () => UsersModule.updateUserProgressionWithGameOutcome(userId, null, true, generatePushId(), 'ranked', false)
-      .bind({})
       .then(() => DuelystFirebase.connect().getRootRef()).then((rootRef) => Promise.all([
         knex('user_progression').where('user_id', userId).first(),
         FirebasePromises.once(rootRef.child('user-progression').child(userId).child('game-counter'), 'value'),
@@ -1161,7 +1148,6 @@ describe('users module', () => {
       }));
 
     it('expect win streaks to be unaffected by draws', () => UsersModule.updateUserProgressionWithGameOutcome(userId, null, true, generatePushId(), 'ranked', false, true)
-      .bind({})
       .then(() => DuelystFirebase.connect().getRootRef()).then((rootRef) => Promise.all([
         knex('user_progression').where('user_id', userId).first(),
         FirebasePromises.once(rootRef.child('user-progression').child(userId).child('game-counter'), 'value'),
@@ -1175,16 +1161,15 @@ describe('users module', () => {
       }));
 
     it('expect to have received a gold reward for 3 wins', () => UsersModule.updateUserProgressionWithGameOutcome(userId, null, false, generatePushId(), 'ranked', false)
-      .bind({})
       .then(() => UsersModule.updateUserProgressionWithGameOutcome(userId, null, true, generatePushId(), 'ranked', false)).then(() => Promise.all([
         knex('user_progression').where('user_id', userId).first(),
         knex('user_rewards').where({ user_id: userId, reward_type: 'win count' }).first(),
         knex('users').where('id', userId).first(),
       ]))
-      .then(function ([progressionRow, rewardRow, userRow]) {
+      .then(([progressionRow, rewardRow, userRow]) => {
         expect(rewardRow).to.exist;
         expect(userRow.wallet_gold - walletGoldSoFar).to.equal(rewardRow.gold);
-        this.rewardId = rewardRow.id;
+        _chainState.rewardId = rewardRow.id;
         walletGoldSoFar = userRow.wallet_gold;
         currentWinRewardCount += 1;
         lastProgressionRow = progressionRow;
@@ -1192,7 +1177,6 @@ describe('users module', () => {
       }));
 
     it('expect only one first win of the day reward', () => UsersModule.updateUserProgressionWithGameOutcome(userId, null, true, generatePushId(), 'ranked', false)
-      .bind({})
       .then(() => Promise.all([
         knex('user_progression').where('user_id', userId).first(),
         knex('user_rewards').where({ user_id: userId, reward_type: 'daily win' }).select(),
@@ -1209,7 +1193,6 @@ describe('users module', () => {
     it('expect casual game losses to not affect win streaks but bump loss streaks', () => Promise.all([
       UsersModule.updateUserProgressionWithGameOutcome(userId, null, false, generatePushId(), 'casual', false),
     ])
-      .bind({})
       .then(() => DuelystFirebase.connect().getRootRef())
       .then((rootRef) => Promise.all([
         knex('user_progression').where('user_id', userId).first(),
@@ -1231,7 +1214,6 @@ describe('users module', () => {
       }));
 
     it('expect win streaks to reset with losses', () => UsersModule.updateUserProgressionWithGameOutcome(userId, null, false, generatePushId(), 'ranked', false)
-      .bind({})
       .then(() => DuelystFirebase.connect().getRootRef()).then((rootRef) => Promise.all([
         knex('user_progression').where('user_id', userId).first(),
         FirebasePromises.once(rootRef.child('user-progression').child(userId).child('game-counter'), 'value'),
@@ -1394,22 +1376,22 @@ describe('users module', () => {
     });
 
     it('expect that 6 daily wins have earned TWO win count rewards', () => UsersModule.updateUserProgressionWithGameOutcome(userId, null, true, generatePushId(), 'ranked', false)
-      .bind({})
       .then(() => UsersModule.updateUserProgressionWithGameOutcome(userId, null, true, generatePushId(), 'ranked', false, false)).then(() => Promise.all([
         knex('user_progression').where('user_id', userId).first(),
         knex('user_rewards').where({ user_id: userId, reward_type: 'win count' }).orderBy('created_at', 'desc').select(),
         knex('users').where('id', userId).first(),
       ]))
-      .then(function ([progressionRow, rewardRows, userRow]) {
+      .then(([progressionRow, rewardRows, userRow]) => {
         expect(rewardRows.length).to.equal(2);
         expect(userRow.wallet_gold - walletGoldSoFar).to.equal(rewardRows[0].gold);
-        this.rewardId = rewardRows[0].id;
+        _chainState.rewardId = rewardRows[0].id;
         walletGoldSoFar = userRow.wallet_gold;
         currentWinRewardCount += 1;
         lastProgressionRow = progressionRow;
       }));
 
     it('expect first win of the day reward to re-activate after 22 hours', () => {
+      const _chainState = {};
       const systemTime = moment().utc().add(22, 'hours');
 
       return UsersModule.updateUserProgressionWithGameOutcome(userId, null, true, generatePushId(), 'ranked', false, false, systemTime)
@@ -1417,24 +1399,24 @@ describe('users module', () => {
           knex('user_progression').where('user_id', userId).first(),
           knex('user_rewards').where({ user_id: userId, reward_type: 'daily win' }).orderBy('created_at', 'desc').select(),
           knex('users').where('id', userId).first(),
-        ])).then(function ([progressionRow, rewardRows, userRow]) {
+        ])).then(([progressionRow, rewardRows, userRow]) => {
           expect(rewardRows.length).to.equal(2);
           expect(userRow.wallet_gold - walletGoldSoFar).to.equal(rewardRows[0].gold);
           expect(progressionRow.last_daily_win_at.valueOf()).to.not.equal(lastDailyWinAt);
           lastDailyWinAt = progressionRow.last_daily_win_at.valueOf();
           currentDailyWinRewardCount = rewardRows.length;
-          this.rewardId = rewardRows[0].id;
+          _chainState.rewardId = rewardRows[0].id;
           walletGoldSoFar = userRow.wallet_gold;
           lastProgressionRow = progressionRow;
         });
     });
 
     it('expect win counter rewards to restart after UTC midnight', () => {
+      const _chainState = {};
       const systemTime = moment().utc().startOf('day').add(24, 'hours')
         .add(1, 'second');
 
       return knex('user_progression').where('user_id', userId).first()
-        .bind({})
         .then((progressionRow) => {
           const winsSoFarToday = progressionRow.win_count - progressionRow.last_awarded_win_count;
           gameCount = progressionRow.game_count;
@@ -1450,10 +1432,10 @@ describe('users module', () => {
           knex('user_rewards').where({ user_id: userId, reward_type: 'win count' }).orderBy('created_at', 'desc').select(),
           knex('users').where('id', userId).first(),
         ]))
-        .then(function ([progressionRow, rewardRows, userRow]) {
+        .then(([progressionRow, rewardRows, userRow]) => {
           expect(rewardRows.length).to.equal(3);
           expect(userRow.wallet_gold - walletGoldSoFar).to.equal(rewardRows[0].gold);
-          this.rewardId = rewardRows[0].id;
+          _chainState.rewardId = rewardRows[0].id;
           walletGoldSoFar = userRow.wallet_gold;
           currentPlayRewardCount = rewardRows.length;
           lastProgressionRow = progressionRow;
@@ -1558,7 +1540,6 @@ describe('users module', () => {
     it('expect casual game wins to not affect win streaks', () => Promise.all([
       UsersModule.updateUserProgressionWithGameOutcome(userId, null, true, generatePushId(), 'casual', false),
     ])
-      .bind({})
       .then(() => DuelystFirebase.connect().getRootRef())
       .then((rootRef) => Promise.all([
         knex('user_progression').where('user_id', userId).first(),
@@ -1581,7 +1562,6 @@ describe('users module', () => {
 
   describe('updateUserProgressionWithGameOutcome() - codex reward', () => {
     beforeAll(() => DuelystFirebase.connect().getRootRef()
-      .bind({})
       .then((fbRootRef) => Promise.all([
         FirebasePromises.remove(fbRootRef.child('user-inventory').child(userId)),
         knex('user_codex_inventory').where('user_id', userId).delete(),
@@ -1616,7 +1596,6 @@ describe('users module', () => {
         general_id: SDK.Cards.Faction1.General,
       };
       return GamesModule.newUserGame(userId, gameId, gameData)
-        .bind({})
         .then(() => UsersModule.updateUserProgressionWithGameOutcome(userId, null, false, gameId))
         .then(() => DuelystFirebase.connect().getRootRef())
         .then((rootRef) => Promise.all([
@@ -1643,7 +1622,6 @@ describe('users module', () => {
 
   describe('createFactionProgressionRecord()', () => {
     it('expect a 0 XP Lyonar record when used for Faction 1', () => UsersModule.createFactionProgressionRecord(userId, SDK.Factions.Lyonar, generatePushId(), 'ranked')
-      .bind({})
       .then(() => DuelystFirebase.connect().getRootRef()).then((rootRef) => Promise.all([
         knex('user_faction_progression').where({ user_id: userId, faction_id: SDK.Factions.Lyonar }).first(),
         FirebasePromises.once(rootRef.child('user-faction-progression').child(userId).child(SDK.Factions.Lyonar).child('stats'), 'value'),
@@ -1661,10 +1639,10 @@ describe('users module', () => {
   });
 
   describe('updateUserFactionProgressionWithGameOutcome()', () => {
+    const _chainState = {};
     it('expect stats counter to count games correctly after 1 loss', () => {
       const gameId = generatePushId();
       return UsersModule.updateUserFactionProgressionWithGameOutcome(userId, SDK.Factions.Lyonar, false, gameId, 'ranked', false)
-        .bind({})
         .then(() => DuelystFirebase.connect().getRootRef())
         .then((rootRef) => Promise.all([
           knex('user_faction_progression').where({ user_id: userId, faction_id: SDK.Factions.Lyonar }).first(),
@@ -1686,7 +1664,6 @@ describe('users module', () => {
     });
 
     it('expect level 1 after 1 loss', () => DuelystFirebase.connect().getRootRef()
-      .bind({})
       .then((rootRef) => Promise.all([
         knex('user_faction_progression').where('user_id', userId).first(),
         FirebasePromises.once(rootRef.child('user-faction-progression').child(userId).child(SDK.Factions.Lyonar).child('stats'), 'value'),
@@ -1704,16 +1681,13 @@ describe('users module', () => {
     it('expect a basic card reward for level 1', () => Promise.all([
       knex('user_rewards').where({ user_id: userId, reward_category: 'faction xp' }).orderBy('created_at', 'desc').select(),
     ])
-      .bind({})
-      .then(function ([rewardRows]) {
+      .then(([rewardRows]) => {
         expect(rewardRows.length).to.equal(1);
         expect(rewardRows[0].cards).to.exist;
         expect(rewardRows[0].cards.length).to.be.above(0);
-        this.rewardId = rewardRows[0].id;
+        _chainState.rewardId = rewardRows[0].id;
         return DuelystFirebase.connect().getRootRef();
-      }).then(function (rootRef) {
-        return FirebasePromises.once(rootRef.child('user-rewards').child(userId).child(this.rewardId), 'value');
-      })
+      }).then((rootRef) => FirebasePromises.once(rootRef.child('user-rewards').child(userId).child(_chainState.rewardId), 'value'))
       .then((rewardSnapshot) => {
         expect(rewardSnapshot.val()).to.not.exist;
         // expect(rewardSnapshot.val().cards).to.exist;
@@ -1721,7 +1695,6 @@ describe('users module', () => {
       }));
 
     it('expect unscored game counter to work', () => UsersModule.updateUserFactionProgressionWithGameOutcome(userId, SDK.Factions.Lyonar, false, generatePushId(), 'ranked', true)
-      .bind({})
       .then(() => DuelystFirebase.connect().getRootRef())
       .then((rootRef) => Promise.all([
         knex('user_faction_progression').where({ user_id: userId, faction_id: SDK.Factions.Lyonar }).first(),
@@ -1743,7 +1716,6 @@ describe('users module', () => {
       }));
 
     it('expect level 2 and 14 XP after 2 scored losses', () => UsersModule.updateUserFactionProgressionWithGameOutcome(userId, SDK.Factions.Lyonar, false, generatePushId(), 'ranked', false)
-      .bind({})
       .then(() => DuelystFirebase.connect().getRootRef()).then((rootRef) => Promise.all([
         knex('user_faction_progression').where('user_id', userId).first(),
         FirebasePromises.once(rootRef.child('user-faction-progression').child(userId).child(SDK.Factions.Lyonar).child('stats'), 'value'),
@@ -1760,7 +1732,6 @@ describe('users module', () => {
       }));
 
     it('expect level 3 and 24 XP after 2 losses and 1 win', () => UsersModule.updateUserFactionProgressionWithGameOutcome(userId, SDK.Factions.Lyonar, true, generatePushId(), 'ranked', false)
-      .bind({})
       .then(() => DuelystFirebase.connect().getRootRef()).then((rootRef) => Promise.all([
         knex('user_faction_progression').where('user_id', userId).first(),
         FirebasePromises.once(rootRef.child('user-faction-progression').child(userId).child(SDK.Factions.Lyonar).child('stats'), 'value'),
@@ -1777,7 +1748,6 @@ describe('users module', () => {
       }));
 
     it('expect level 3 and 24 XP after 2 losses and 1 win and 1 more UNSCORED loss', () => UsersModule.updateUserFactionProgressionWithGameOutcome(userId, SDK.Factions.Lyonar, true, generatePushId(), 'ranked', true)
-      .bind({})
       .then(() => DuelystFirebase.connect().getRootRef()).then((rootRef) => Promise.all([
         knex('user_faction_progression').where('user_id', userId).first(),
         FirebasePromises.once(rootRef.child('user-faction-progression').child(userId).child(SDK.Factions.Lyonar).child('stats'), 'value'),
@@ -1793,7 +1763,6 @@ describe('users module', () => {
       }));
 
     it('expect level 3 and 31 XP after 3 losses and 1 win', () => UsersModule.updateUserFactionProgressionWithGameOutcome(userId, SDK.Factions.Lyonar, false, generatePushId(), 'ranked', false)
-      .bind({})
       .then(() => DuelystFirebase.connect().getRootRef()).then((rootRef) => Promise.all([
         knex('user_faction_progression').where('user_id', userId).first(),
         FirebasePromises.once(rootRef.child('user-faction-progression').child(userId).child(SDK.Factions.Lyonar).child('stats'), 'value'),
@@ -1811,7 +1780,6 @@ describe('users module', () => {
     const xpCap = SDK.FactionProgression.totalXPForLevel(SDK.FactionProgression.maxLevel);
 
     it(`expect max level ${SDK.FactionProgression.maxLevel} to cap at ${xpCap} XP`, () => SyncModule.wipeUserData(userId)
-      .bind({})
       .then(() => {
         const times = [];
         const numWinsNeeded = xpCap / SDK.FactionProgression.winXP;
@@ -1833,7 +1801,6 @@ describe('users module', () => {
       for (let i = 0; i < 22; i++) allPromises.push(UsersModule.updateUserFactionProgressionWithGameOutcome(userId, SDK.Factions.Songhai, true, generatePushId(), 'ranked', false));
 
       return Promise.all(allPromises)
-        .bind({})
         .then(() => DuelystFirebase.connect().getRootRef()).then((rootRef) => Promise.all([
           knex('user_faction_progression').where({ user_id: userId, faction_id: SDK.Factions.Songhai }).first(),
           FirebasePromises.once(rootRef.child('user-faction-progression').child(userId).child(SDK.Factions.Songhai).child('stats'), 'value'),
@@ -1890,16 +1857,15 @@ describe('users module', () => {
         win_count: 99,
       }),
     ])
-      .bind({})
-      .then(function () {
-        this.gameId = generatePushId();
-        return UsersModule.updateUserFactionProgressionWithGameOutcome(userId, SDK.Factions.Songhai, true, this.gameId, 'ranked');
+      .then(() => {
+        _chainState.gameId = generatePushId();
+        return UsersModule.updateUserFactionProgressionWithGameOutcome(userId, SDK.Factions.Songhai, true, _chainState.gameId, 'ranked');
       }).then(() => DuelystFirebase.connect().getRootRef())
-      .then(function (rootRef) {
-        this.rootRef = rootRef;
+      .then((rootRef) => {
+        _chainState.rootRef = rootRef;
         return Promise.all([
           knex('user_ribbons').where({ user_id: userId, ribbon_id: 'f2_champion' }).select(),
-          knex('user_rewards').where({ user_id: userId, game_id: this.gameId }).select(),
+          knex('user_rewards').where({ user_id: userId, game_id: _chainState.gameId }).select(),
           FirebasePromises.once(rootRef.child('user-ribbons').child(userId), 'value'),
         ]);
       })
@@ -1919,10 +1885,9 @@ describe('users module', () => {
         win_count: 99,
       }),
     ])
-      .bind({})
-      .then(function () {
-        this.gameId = generatePushId();
-        return UsersModule.updateUserFactionProgressionWithGameOutcome(userId, SDK.Factions.Magmar, true, this.gameId, SDK.GameType.SinglePlayer);
+      .then(() => {
+        _chainState.gameId = generatePushId();
+        return UsersModule.updateUserFactionProgressionWithGameOutcome(userId, SDK.Factions.Magmar, true, _chainState.gameId, SDK.GameType.SinglePlayer);
       }).then(() => Promise.all([
         knex('user_ribbons').where({ user_id: userId, ribbon_id: 'f5_champion' }).select(),
       ]))
@@ -1936,10 +1901,9 @@ describe('users module', () => {
         win_count: 99,
       }),
     ])
-      .bind({})
-      .then(function () {
-        this.gameId = generatePushId();
-        return UsersModule.updateUserFactionProgressionWithGameOutcome(userId, SDK.Factions.Magmar, true, this.gameId, SDK.GameType.Ranked);
+      .then(() => {
+        _chainState.gameId = generatePushId();
+        return UsersModule.updateUserFactionProgressionWithGameOutcome(userId, SDK.Factions.Magmar, true, _chainState.gameId, SDK.GameType.Ranked);
       }).then(() => Promise.all([
         knex('user_ribbons').where({ user_id: userId, ribbon_id: 'f3_champion' }).select(),
       ]))
@@ -1959,7 +1923,6 @@ describe('users module', () => {
       }
 
       return Promise.all(allPromises)
-        .bind({})
         .then(() => DuelystFirebase.connect().getRootRef()).then((rootRef) => Promise.all([
           knex('user_faction_progression').where({ user_id: userId, faction_id: SDK.Factions.Vanar }).first(),
           FirebasePromises.once(rootRef.child('user-faction-progression').child(userId).child(SDK.Factions.Vanar).child('stats'), 'value'),
@@ -1977,9 +1940,8 @@ describe('users module', () => {
     });
 
     it('expect to NOT earn faction XP after level 11 with SINGLE PLAYER games', () => knex('user_faction_progression').where('user_id', userId).first()
-      .bind({})
-      .then(function (row) {
-        this.previousRow = row;
+      .then((row) => {
+        _chainState.previousRow = row;
         return UsersModule.updateUserFactionProgressionWithGameOutcome(userId, SDK.Factions.Vanar, false, generatePushId(), SDK.GameType.SinglePlayer, false);
       })
       .then((result) => {
@@ -1988,35 +1950,33 @@ describe('users module', () => {
           knex('user_faction_progression').where('user_id', userId).first(),
         ]);
       })
-      .then(function ([progressionRow]) {
-        expect(progressionRow.xp).to.equal(this.previousRow.xp);
-        expect(progressionRow.level).to.equal(this.previousRow.level);
-        expect(progressionRow.updated_at.valueOf()).to.equal(this.previousRow.updated_at.valueOf());
+      .then(([progressionRow]) => {
+        expect(progressionRow.xp).to.equal(_chainState.previousRow.xp);
+        expect(progressionRow.level).to.equal(_chainState.previousRow.level);
+        expect(progressionRow.updated_at.valueOf()).to.equal(_chainState.previousRow.updated_at.valueOf());
       }));
 
     it('expect to earn faction XP in casual games', () => knex('user_faction_progression').where('user_id', userId).andWhere('faction_id', SDK.Factions.Vanar).first()
-      .bind({})
-      .then(function (row) {
-        this.previousRow = row;
+      .then((row) => {
+        _chainState.previousRow = row;
         return UsersModule.updateUserFactionProgressionWithGameOutcome(userId, SDK.Factions.Vanar, true, generatePushId(), SDK.GameType.Casual, false);
       })
       .then((result) => Promise.all([
         knex('user_faction_progression').where('user_id', userId).andWhere('faction_id', SDK.Factions.Vanar).first(),
       ]))
-      .then(function ([progressionRow]) {
-        if (this.previousRow == null) {
+      .then(([progressionRow]) => {
+        if (_chainState.previousRow == null) {
           expect(progressionRow).to.exist;
           expect(progressionRow.xp).to.not.equal(0);
         } else {
-          expect(progressionRow.xp).to.not.equal(this.previousRow.xp);
-          expect(progressionRow.updated_at.valueOf()).to.not.equal(this.previousRow.updated_at.valueOf());
+          expect(progressionRow.xp).to.not.equal(_chainState.previousRow.xp);
+          expect(progressionRow.updated_at.valueOf()).to.not.equal(_chainState.previousRow.updated_at.valueOf());
         }
       }));
 
     it('expect game counter to correctly account for DRAW games', () => knex('user_faction_progression').where('user_id', userId).andWhere('faction_id', SDK.Factions.Vetruvian).first()
-      .bind({})
-      .then(function (row) {
-        this.previousRow = row;
+      .then((row) => {
+        _chainState.previousRow = row;
         return UsersModule.updateUserFactionProgressionWithGameOutcome(userId, SDK.Factions.Vetruvian, false, generatePushId(), SDK.GameType.Casual, false, true);
       })
       .then((result) => Promise.all([
@@ -2030,25 +1990,23 @@ describe('users module', () => {
       }));
 
     it('expect to earn faction XP for draws', () => knex('user_faction_progression').where('user_id', userId).andWhere('faction_id', SDK.Factions.Vetruvian).first()
-      .bind({})
-      .then(function (row) {
-        this.previousRow = row;
+      .then((row) => {
+        _chainState.previousRow = row;
         return UsersModule.updateUserFactionProgressionWithGameOutcome(userId, SDK.Factions.Vetruvian, true, generatePushId(), SDK.GameType.Casual, false, true);
       })
       .then((result) => Promise.all([
         knex('user_faction_progression').where('user_id', userId).andWhere('faction_id', SDK.Factions.Vetruvian).first(),
       ]))
-      .then(function ([progressionRow]) {
-        if (this.previousRow == null) {
+      .then(([progressionRow]) => {
+        if (_chainState.previousRow == null) {
           expect(progressionRow).to.exist;
         } else {
-          expect(progressionRow.xp).to.be.above(this.previousRow.xp);
+          expect(progressionRow.xp).to.be.above(_chainState.previousRow.xp);
         }
-        expect(progressionRow.updated_at.valueOf()).to.not.equal(this.previousRow.updated_at.valueOf());
+        expect(progressionRow.updated_at.valueOf()).to.not.equal(_chainState.previousRow.updated_at.valueOf());
       }));
 
     it('expect to earn faction XP in FRIENDLY games', () => SyncModule.wipeUserData(userId)
-      .bind({})
       .then(() => UsersModule.updateUserFactionProgressionWithGameOutcome(userId, SDK.Factions.Vanar, true, generatePushId(), SDK.GameType.Friendly, false)).then((result) => Promise.all([
         knex('user_faction_progression').where('user_id', userId).andWhere('faction_id', SDK.Factions.Vanar).first(),
       ]))
@@ -2064,7 +2022,6 @@ describe('users module', () => {
       const numGamesToLevel11 = xpToLevel11 / SDK.FactionProgression.winXP;
 
       return SyncModule.wipeUserData(userId)
-        .bind({})
         .then(() => {
           const allPromises = [];
           for (let i = 0; i < numGamesToLevel11 + 2; i++) {
@@ -2089,14 +2046,13 @@ describe('users module', () => {
     });
 
     it('expect to NOT have received a ribbon reward for FRIENDLY games', () => SyncModule.wipeUserData(userId)
-      .bind({})
       .then(() => UsersModule.createFactionProgressionRecord(userId, SDK.Factions.Magmar, generatePushId(), SDK.GameType.Ranked)).then(() => knex('user_faction_progression').where({ user_id: userId, faction_id: SDK.Factions.Magmar }).update({
         win_count: 99,
       }))
-      .then(function (updateCount) {
+      .then((updateCount) => {
         expect(updateCount).to.equal(1);
-        this.gameId = generatePushId();
-        return UsersModule.updateUserFactionProgressionWithGameOutcome(userId, SDK.Factions.Magmar, true, this.gameId, SDK.GameType.Friendly);
+        _chainState.gameId = generatePushId();
+        return UsersModule.updateUserFactionProgressionWithGameOutcome(userId, SDK.Factions.Magmar, true, _chainState.gameId, SDK.GameType.Friendly);
       })
       .then(() => Promise.all([
         knex('user_ribbons').where({ user_id: userId }).select(),
@@ -2106,7 +2062,6 @@ describe('users module', () => {
       }));
 
     it('expect to earn a prismatic faction basic card at level 13', () => SyncModule.wipeUserData(userId)
-      .bind({})
       .then(() => {
         const xpToLevel = SDK.FactionProgression.totalXPForLevel(13);
         const numWinsToLevel = xpToLevel / SDK.FactionProgression.winXP;
@@ -2114,7 +2069,7 @@ describe('users module', () => {
         for (let i = 0; i < numWinsToLevel; i++) allPromises.push(UsersModule.updateUserFactionProgressionWithGameOutcome(userId, SDK.Factions.Lyonar, true, generatePushId(), 'ranked', false));
         return Promise.all(allPromises);
       }).then(() => knex('user_rewards').where({ user_id: userId, reward_category: 'faction xp' }).orderBy('created_at', 'desc'))
-      .then(function (rewardRows) {
+      .then((rewardRows) => {
         let cardId = null;
         let rewardId = null;
         _.each(rewardRows, (rewardRow) => {
@@ -2125,24 +2080,22 @@ describe('users module', () => {
           }
         });
         expect(cardId).to.not.equal(null);
-        this.cardId = cardId;
-        this.rewardId = rewardId;
+        _chainState.cardId = cardId;
+        _chainState.rewardId = rewardId;
         return DuelystFirebase.connect().getRootRef();
       })
-      .then(function (rootRef) {
-        return Promise.all([
-          knex.select().from('user_cards').where({ user_id: userId, card_id: this.cardId }),
-          knex.first().from('user_card_collection').where({ user_id: userId }),
-          FirebasePromises.once(rootRef.child('user-rewards').child(userId).child(this.rewardId), 'value'),
-          FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('card-collection').child(this.cardId), 'value'),
-        ]);
-      })
-      .then(function ([cardCountRow, cardCollection, rewardSnapshot, fbCardEntry]) {
+      .then((rootRef) => Promise.all([
+        knex.select().from('user_cards').where({ user_id: userId, card_id: _chainState.cardId }),
+        knex.first().from('user_card_collection').where({ user_id: userId }),
+        FirebasePromises.once(rootRef.child('user-rewards').child(userId).child(_chainState.rewardId), 'value'),
+        FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('card-collection').child(_chainState.cardId), 'value'),
+      ]))
+      .then(([cardCountRow, cardCollection, rewardSnapshot, fbCardEntry]) => {
         expect(cardCountRow[0].is_new).to.equal(true);
         expect(cardCountRow[0].is_unread).to.equal(true);
-        expect(cardCollection.cards[this.cardId]).to.exist;
-        expect(cardCollection.cards[this.cardId].is_new).to.equal(true);
-        expect(cardCollection.cards[this.cardId].is_unread).to.equal(true);
+        expect(cardCollection.cards[_chainState.cardId]).to.exist;
+        expect(cardCollection.cards[_chainState.cardId].is_new).to.equal(true);
+        expect(cardCollection.cards[_chainState.cardId].is_unread).to.equal(true);
         expect(rewardSnapshot.val()).to.not.exist;
         // expect(rewardSnapshot.val().cards).to.exist;
         // expect(rewardSnapshot.val().is_unread).to.equal(true);
@@ -2151,7 +2104,6 @@ describe('users module', () => {
       }));
 
     it('expect to earn a prismatic neutral basic card at level 17', () => SyncModule.wipeUserData(userId)
-      .bind({})
       .then(() => {
         const xpToLevel = SDK.FactionProgression.totalXPForLevel(17);
         const numWinsToLevel = xpToLevel / SDK.FactionProgression.winXP;
@@ -2159,7 +2111,7 @@ describe('users module', () => {
         for (let i = 0; i < numWinsToLevel; i++) allPromises.push(UsersModule.updateUserFactionProgressionWithGameOutcome(userId, SDK.Factions.Lyonar, true, generatePushId(), 'ranked', false));
         return Promise.all(allPromises);
       }).then(() => knex('user_rewards').where({ user_id: userId, reward_category: 'faction xp' }).orderBy('created_at', 'desc'))
-      .then(function (rewardRows) {
+      .then((rewardRows) => {
         let cardId = null;
         let rewardId = null;
         _.each(rewardRows, (rewardRow) => {
@@ -2174,24 +2126,22 @@ describe('users module', () => {
           }
         });
         expect(cardId).to.not.equal(null);
-        this.cardId = cardId;
-        this.rewardId = rewardId;
+        _chainState.cardId = cardId;
+        _chainState.rewardId = rewardId;
         return DuelystFirebase.connect().getRootRef();
       })
-      .then(function (rootRef) {
-        return Promise.all([
-          knex.select().from('user_cards').where({ user_id: userId, card_id: this.cardId }),
-          knex.first().from('user_card_collection').where({ user_id: userId }),
-          FirebasePromises.once(rootRef.child('user-rewards').child(userId).child(this.rewardId), 'value'),
-          FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('card-collection').child(this.cardId), 'value'),
-        ]);
-      })
-      .then(function ([cardCountRow, cardCollection, rewardSnapshot, fbCardEntry]) {
+      .then((rootRef) => Promise.all([
+        knex.select().from('user_cards').where({ user_id: userId, card_id: _chainState.cardId }),
+        knex.first().from('user_card_collection').where({ user_id: userId }),
+        FirebasePromises.once(rootRef.child('user-rewards').child(userId).child(_chainState.rewardId), 'value'),
+        FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('card-collection').child(_chainState.cardId), 'value'),
+      ]))
+      .then(([cardCountRow, cardCollection, rewardSnapshot, fbCardEntry]) => {
         expect(cardCountRow[0].is_new).to.equal(true);
         expect(cardCountRow[0].is_unread).to.equal(true);
-        expect(cardCollection.cards[this.cardId]).to.exist;
-        expect(cardCollection.cards[this.cardId].is_new).to.equal(true);
-        expect(cardCollection.cards[this.cardId].is_unread).to.equal(true);
+        expect(cardCollection.cards[_chainState.cardId]).to.exist;
+        expect(cardCollection.cards[_chainState.cardId].is_new).to.equal(true);
+        expect(cardCollection.cards[_chainState.cardId].is_unread).to.equal(true);
         expect(rewardSnapshot.val()).to.not.exist;
         // expect(rewardSnapshot.val().cards).to.exist;
         // expect(rewardSnapshot.val().is_unread).to.equal(true);
@@ -2200,7 +2150,6 @@ describe('users module', () => {
       }));
 
     it('expect to earn a prismatic general card at max level', () => SyncModule.wipeUserData(userId)
-      .bind({})
       .then(() => {
         const xpToLevel = SDK.FactionProgression.totalXPForLevel(SDK.FactionProgression.maxLevel);
         const numWinsToLevel = xpToLevel / SDK.FactionProgression.winXP;
@@ -2208,7 +2157,7 @@ describe('users module', () => {
         for (let i = 0; i < numWinsToLevel; i++) times.push(1);
         return Promise.map(times, () => UsersModule.updateUserFactionProgressionWithGameOutcome(userId, SDK.Factions.Lyonar, true, generatePushId(), 'ranked', false), { concurrency: 1 });
       }).then(() => knex('user_rewards').where({ user_id: userId, reward_category: 'faction xp' }).orderBy('created_at', 'desc'))
-      .then(function (rewardRows) {
+      .then((rewardRows) => {
         let cardId = null;
         let rewardId = null;
         _.each(rewardRows, (rewardRow) => {
@@ -2219,24 +2168,22 @@ describe('users module', () => {
           }
         });
         expect(cardId).to.not.equal(null);
-        this.cardId = cardId;
-        this.rewardId = rewardId;
+        _chainState.cardId = cardId;
+        _chainState.rewardId = rewardId;
         return DuelystFirebase.connect().getRootRef();
       })
-      .then(function (rootRef) {
-        return Promise.all([
-          knex.select().from('user_cards').where({ user_id: userId, card_id: this.cardId }),
-          knex.first().from('user_card_collection').where({ user_id: userId }),
-          FirebasePromises.once(rootRef.child('user-rewards').child(userId).child(this.rewardId), 'value'),
-          FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('card-collection').child(this.cardId), 'value'),
-        ]);
-      })
-      .then(function ([cardCountRow, cardCollection, rewardSnapshot, fbCardEntry]) {
+      .then((rootRef) => Promise.all([
+        knex.select().from('user_cards').where({ user_id: userId, card_id: _chainState.cardId }),
+        knex.first().from('user_card_collection').where({ user_id: userId }),
+        FirebasePromises.once(rootRef.child('user-rewards').child(userId).child(_chainState.rewardId), 'value'),
+        FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('card-collection').child(_chainState.cardId), 'value'),
+      ]))
+      .then(([cardCountRow, cardCollection, rewardSnapshot, fbCardEntry]) => {
         expect(cardCountRow[0].is_new).to.equal(true);
         expect(cardCountRow[0].is_unread).to.equal(true);
-        expect(cardCollection.cards[this.cardId]).to.exist;
-        expect(cardCollection.cards[this.cardId].is_new).to.equal(true);
-        expect(cardCollection.cards[this.cardId].is_unread).to.equal(true);
+        expect(cardCollection.cards[_chainState.cardId]).to.exist;
+        expect(cardCollection.cards[_chainState.cardId].is_new).to.equal(true);
+        expect(cardCollection.cards[_chainState.cardId].is_unread).to.equal(true);
         expect(rewardSnapshot.val()).to.not.exist;
         // expect(rewardSnapshot.val().cards).to.exist;
         // expect(rewardSnapshot.val().is_unread).to.equal(true);
@@ -2263,7 +2210,6 @@ describe('users module', () => {
     */
 
     it('expect a player to NOT be able to use a full SONGHAI starter deck at level 0', () => SyncModule.wipeUserData(userId)
-      .bind({})
       .then(() => {
         const deck = SDK.FactionFactory.starterDeckForFactionLevel(SDK.Factions.Faction2, SDK.FactionProgression.maxLevel);
         return UsersModule.isAllowedToUseDeck(userId, deck, 'ranked', null, true);
@@ -2277,7 +2223,6 @@ describe('users module', () => {
       }));
 
     it('expect a player to NOT be able to use a full LYONAR starter deck with 10 xp', () => SyncModule.wipeUserData(userId)
-      .bind({})
       .then(() => knex('user_faction_progression').insert({ user_id: userId, faction_id: SDK.Factions.Lyonar, xp: 10 })).then(() => {
         const deck = SDK.FactionFactory.starterDeckForFactionLevel(SDK.Factions.Faction1, SDK.FactionProgression.maxLevel);
         return UsersModule.isAllowedToUseDeck(userId, deck, 'ranked', null, true);

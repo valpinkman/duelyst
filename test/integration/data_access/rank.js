@@ -31,34 +31,35 @@ describe('rank module', () => {
 
   const userIdsByUsername = {};
   const createOrWipeUser = function (userEmail, userName, initialRank, rankStartingAt) {
+    const _chainState = {};
     if (rankStartingAt == null) {
       rankStartingAt = moment.utc().startOf('month').toDate();
     }
 
     return UsersModule.createNewUser(userEmail, userName, 'hash', 'kumite14')
-      .bind({})
-      .then(function (userIdCreated) {
-        this.userId = userIdCreated;
+      .then((userIdCreated) => {
+        _chainState.userId = userIdCreated;
         Logger.module('UNITTEST').log('created user ', userIdCreated);
       }).catch(onType(Errors.AlreadyExistsError, function (error) {
+        const _chainState = {};
         Logger.module('UNITTEST').log('existing user');
         return UsersModule.userIdForEmail(userEmail)
           .bind(this)
-          .then(function (userIdExisting) {
-            this.userId = userIdExisting;
+          .then((userIdExisting) => {
+            _chainState.userId = userIdExisting;
             Logger.module('UNITTEST').log('existing user retrieved', userIdExisting);
             return SyncModule.wipeUserData(userIdExisting);
-          }).then(function () {
-            Logger.module('UNITTEST').log('existing user data wiped', this.userId);
+          }).then(() => {
+            Logger.module('UNITTEST').log('existing user data wiped', _chainState.userId);
           });
       }))
-      .then(function () {
+      .then(() => {
         const initialRankData = {
           rank: initialRank,
           stars: 0,
           stars_required: SDK.RankFactory.starsNeededToAdvanceRank(initialRank),
         };
-        return knex('users').where('id', this.userId).update({
+        return knex('users').where('id', _chainState.userId).update({
           rank: initialRankData.rank,
           rank_stars: initialRankData.stars,
           rank_stars_required: initialRankData.stars_required,
@@ -68,9 +69,9 @@ describe('rank module', () => {
           rank_is_unread: true,
         });
       })
-      .then(function () {
-        userIdsByUsername[userName] = this.userId;
-        return Promise.resolve(this.userId);
+      .then(() => {
+        userIdsByUsername[userName] = _chainState.userId;
+        return Promise.resolve(_chainState.userId);
       });
   };
 
@@ -133,7 +134,6 @@ describe('rank module', () => {
       }));
 
     it('expect rank data to be correctly set in DB and Firebase', () => DuelystFirebase.connect().getRootRef()
-      .bind({})
       .then((rootRef) => Promise.all([
         knex.first().from('users').where('id', userId),
         FirebasePromises.once(rootRef.child('user-ranking').child(userId).child('current'), 'value'),
@@ -169,7 +169,6 @@ describe('rank module', () => {
     });
 
     it(`expect the most recent rank in the DB and Firebase history to exist and to be unread and for the ${moment().utc().format('MMMM YYYY')} season`, () => DuelystFirebase.connect().getRootRef()
-      .bind({})
       .then((rootRef) => Promise.all([
         knex.first().from('user_rank_history').where('user_id', userId),
         FirebasePromises.once(rootRef.child('user-ranking').child(userId).child('history').limitToLast(1), 'child_added'),
@@ -188,7 +187,6 @@ describe('rank module', () => {
       }));
 
     it(`expect the top rank record in the DB and Firebase to exist and to be unread and for the ${moment().utc().format('MMMM YYYY')} season`, () => DuelystFirebase.connect().getRootRef()
-      .bind({})
       .then((rootRef) => Promise.all([
         knex.first().from('users').where('id', userId),
         FirebasePromises.once(rootRef.child('user-ranking').child(userId).child('top'), 'value'),
@@ -329,8 +327,7 @@ describe('rank module', () => {
           expect(rankData).to.exist;
           expect(rankData.rank).to.equal(19);
           expect(rankData.stars).to.equal(1);
-          return DuelystFirebase.connect().getRootRef()
-            .bind({});
+          return DuelystFirebase.connect().getRootRef();
         }).then((rootRef) => Promise.all([
           knex.first().from('users').where('id', userId),
           FirebasePromises.once(rootRef.child('user-ranking').child(userId).child('current'), 'value'),
@@ -375,7 +372,6 @@ describe('rank module', () => {
       }));
 
     it('expect rank (20) data to be correctly set in DB and Firebase', () => DuelystFirebase.connect().getRootRef()
-      .bind({})
       .then((rootRef) => Promise.all([
         knex.first().from('users').where('id', userId),
         FirebasePromises.once(rootRef.child('user-ranking').child(userId).child('current'), 'value'),
@@ -481,7 +477,6 @@ describe('rank module', () => {
 
   describe('getCurrentSeasonRank()', () => {
     it('expect non-expired rank to return correctly', () => RankModule.getCurrentSeasonRank(userId)
-      .bind({})
       .then((rank) => {
         expect(rank).to.equal(20);
       }));
@@ -489,7 +484,6 @@ describe('rank module', () => {
     it('expect expired rank to default to returning 30', () => {
       const systemTime = moment().utc().add(3, 'month');
       return RankModule.getCurrentSeasonRank(userId, systemTime)
-        .bind({})
         .then((rank) => {
           expect(rank).to.equal(30);
         });
@@ -550,6 +544,7 @@ describe('rank module', () => {
     });
 
     it('expect both s-rank player to have rating data after a match', () => {
+      const _chainState = {};
       const now = moment().utc();
       const startOfSeasonMonth = moment(now).utc().startOf('month');
       const seasonStartingAt = startOfSeasonMonth.toDate();
@@ -557,7 +552,7 @@ describe('rank module', () => {
         .then(() => Promise.all([
           knex.first().from('user_rank_ratings').where('user_id', player3Id).andWhere('season_starting_at', seasonStartingAt),
           knex.first().from('user_rank_ratings').where('user_id', player4Id).andWhere('season_starting_at', seasonStartingAt),
-        ]).bind({}).then(function ([player3RatingRow, player4RatingRow]) {
+        ]).then(([player3RatingRow, player4RatingRow]) => {
           expect(player3RatingRow).to.exist;
           expect(player3RatingRow.rating).to.exist;
           expect(player3RatingRow.ladder_position).to.exist;
@@ -568,20 +563,20 @@ describe('rank module', () => {
           expect(player4RatingRow.ladder_position).to.exist;
           expect(player4RatingRow.ladder_rating).to.exist;
 
-          this.player3RatingRow = player3RatingRow;
-          this.player4RatingRow = player4RatingRow;
+          _chainState.player3RatingRow = player3RatingRow;
+          _chainState.player4RatingRow = player4RatingRow;
 
           return DuelystFirebase.connect().getRootRef();
         }).then((rootRef) => Promise.all([
           FirebasePromises.once(rootRef.child('users').child(player3Id).child('presence').child('ladder_position'), 'value'),
           FirebasePromises.once(rootRef.child('users').child(player4Id).child('presence').child('ladder_position'), 'value'),
         ]))
-          .then(function ([player3LPSnapshot, player4LPSnapshot]) {
+          .then(([player3LPSnapshot, player4LPSnapshot]) => {
             expect(player3LPSnapshot.val()).to.exist;
-            expect(player3LPSnapshot.val()).to.equal(this.player3RatingRow.ladder_position);
+            expect(player3LPSnapshot.val()).to.equal(_chainState.player3RatingRow.ladder_position);
 
             expect(player4LPSnapshot.val()).to.exist;
-            expect(player4LPSnapshot.val()).to.equal(this.player4RatingRow.ladder_position);
+            expect(player4LPSnapshot.val()).to.equal(_chainState.player4RatingRow.ladder_position);
           }));
     });
 
@@ -600,36 +595,39 @@ describe('rank module', () => {
     });
 
     it('expect a s-rank player in casual queue to not change rating after a match with an s-rank player', () => {
+      const _chainState = {};
       const now = moment().utc();
       const startOfSeasonMonth = moment(now).utc().startOf('month');
       const seasonStartingAt = startOfSeasonMonth.toDate();
       return knex.first().from('user_rank_ratings').where('user_id', player3Id).andWhere('season_starting_at', seasonStartingAt)
-        .bind({})
-        .then(function (player3RatingRowBefore) {
+        .then((player3RatingRowBefore) => {
           expect(player3RatingRowBefore).to.exist; // Should exist due to previous tests
           expect(player3RatingRowBefore.rating).to.exist; // Should exist due to previous tests
-          this.player3RatingBefore = player3RatingRowBefore.rating;
+          _chainState.player3RatingBefore = player3RatingRowBefore.rating;
 
           return RankModule.updateUsersRatingsWithGameOutcome(player3Id, player4Id, true, generatePushId(), null, false, true, now);
         })
-        .then(function () {
+        .then(() => {
+          const _chainState = {};
           return Promise.all([
             knex.first().from('user_rank_ratings').where('user_id', player3Id).andWhere('season_starting_at', seasonStartingAt),
             knex.first().from('user_rank_ratings').where('user_id', player4Id).andWhere('season_starting_at', seasonStartingAt),
-          ]).bind(this).then(function ([player3RatingRow, player4RatingRow]) {
+          ]).bind(_chainState).then(([player3RatingRow, player4RatingRow]) => {
             expect(player3RatingRow).to.exist;
             expect(player3RatingRow.rating).to.exist;
-            expect(player3RatingRow.rating).to.equal(this.player3RatingBefore);
+            expect(player3RatingRow.rating).to.equal(_chainState.player3RatingBefore);
           });
         });
     });
 
     it('expect a s-rank player with max rating to have a ladder position of 1', () => {
+      const _chainState = {};
       const now = moment().utc();
       const startOfSeasonMonth = moment(now).utc().startOf('month');
       const seasonStartingAt = startOfSeasonMonth.toDate();
       const thisObjective = {};
       const txPromise = knex.transaction((tx) => {
+        const _chainState = {};
         knex('user_rank_ratings').where('user_id', player3Id).andWhere('season_starting_at', seasonStartingAt).update({
           rating: 5000,
           ladder_rating: 5000,
@@ -637,8 +635,8 @@ describe('rank module', () => {
           .bind(thisObjective)
           .then(() => SRankManager.updateUserLadderRating(player3Id, startOfSeasonMonth, 5000))
           .then(() => RankModule.updateAndGetUserLadderPosition(txPromise, tx, player3Id, startOfSeasonMonth, now))
-          .then(function (ladderPosition) {
-            this.ladderPosition = ladderPosition;
+          .then((ladderPosition) => {
+            _chainState.ladderPosition = ladderPosition;
             tx.commit();
           })
           .catch((e) => {
@@ -648,9 +646,9 @@ describe('rank module', () => {
       });
       return txPromise
         .bind(thisObjective)
-        .then(function () {
-          expect(this.ladderPosition).to.exist;
-          expect(this.ladderPosition).to.equal(1);
+        .then(() => {
+          expect(_chainState.ladderPosition).to.exist;
+          expect(_chainState.ladderPosition).to.equal(1);
         });
     });
 

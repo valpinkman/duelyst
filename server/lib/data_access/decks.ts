@@ -69,7 +69,6 @@ class DecksModule {
     }
 
     return isAllowedToUseCardBackPromise
-      .bind({})
       .then(() => knex('user_decks').insert(newDeckData)).then(() => newDeckData);
   }
 
@@ -110,7 +109,6 @@ class DecksModule {
     }
 
     return isAllowedToUseCardBackPromise
-      .bind({})
       .then(() => knex('user_decks').where({ user_id: userId, id: deckId }).update(newDeckData)).then(() => newDeckData);
   }
 

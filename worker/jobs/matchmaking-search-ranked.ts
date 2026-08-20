@@ -165,26 +165,27 @@ var findLockablePlayer = function (players) {
  * @param   {Date}    firstAttemptAt    first attempt time
  * @return   {Object}   lock         see 'findLockablePlayer'
  */
-const findOpponent = (userId, lastOpponentId, rank, deckValue, attempt, firstAttemptAt) => getRequeueParams()
-  .bind({})
-  .then(function (params) {
-    this.allowMatchWithLastOpponent = params.allowMatchWithLastOpponent;
+const findOpponent = (userId, lastOpponentId, rank, deckValue, attempt, firstAttemptAt) => {
+  const _chainState = {};
+  return getRequeueParams()
+    .then(function (params) {
+      _chainState.allowMatchWithLastOpponent = params.allowMatchWithLastOpponent;
 
-    let scoreRadius = Math.floor(attempt * params.searchRadiusIncrease);
-    scoreRadius = Math.min(scoreRadius, params.maxRankRadius);
-    let deckValueRadius = (attempt % 6) + Math.floor(attempt / 3) + Math.floor(attempt * params.rankedDeckRadiusIncrease);
-    deckValueRadius = Math.min(deckValueRadius, params.maxDeckValueRadius);
+      let scoreRadius = Math.floor(attempt * params.searchRadiusIncrease);
+      scoreRadius = Math.min(scoreRadius, params.maxRankRadius);
+      let deckValueRadius = (attempt % 6) + Math.floor(attempt / 3) + Math.floor(attempt * params.rankedDeckRadiusIncrease);
+      deckValueRadius = Math.min(deckValueRadius, params.maxDeckValueRadius);
 
-    // start to taper off the deck search radius at rank 20 to 15
-    const taperStart = 20;
-    const taperEnd = 15;
-    if (rank < taperStart) {
-      const delta = Math.max(0, rank - taperEnd);
-      const taperVal = 10 - (10 * (delta / (taperStart - taperEnd)));
-      // Logger.module("MATCHMAKING-JOB").debug("tapering deck limits by #{taperVal}")
-      deckValueRadius = Math.floor(deckValueRadius + taperVal);
-    }
-    /*
+      // start to taper off the deck search radius at rank 20 to 15
+      const taperStart = 20;
+      const taperEnd = 15;
+      if (rank < taperStart) {
+        const delta = Math.max(0, rank - taperEnd);
+        const taperVal = 10 - (10 * (delta / (taperStart - taperEnd)));
+        // Logger.module("MATCHMAKING-JOB").debug("tapering deck limits by #{taperVal}")
+        deckValueRadius = Math.floor(deckValueRadius + taperVal);
+      }
+      /*
   rankMin = Math.max(0,rank-scoreRadius)
   rankMax = Math.min(30,rank+scoreRadius)
 
@@ -195,28 +196,29 @@ const findOpponent = (userId, lastOpponentId, rank, deckValue, attempt, firstAtt
 
   Logger.module("MATCHMAKING-JOB").debug("Searching score #{rankMin} - #{rankMax} ... deck #{deckValueMin} - #{deckValueMax}. #{secondsPassed}s so far.")
   */
-    return Promise.all([
-      rankedQueue.search({ score: rank, searchRadius: scoreRadius }),
-      rankedDeckValueQueue.search({ score: deckValue, searchRadius: deckValueRadius }),
-    ]);
-  }).then(function ([playersWithinRank, playersWithinDeckValue]) {
-  // exclude the user that's looking
-    let rankPlayers = _.filter(playersWithinRank, (id) => id !== userId);
-    let deckPlayers = _.filter(playersWithinDeckValue, (id) => id !== userId);
+      return Promise.all([
+        rankedQueue.search({ score: rank, searchRadius: scoreRadius }),
+        rankedDeckValueQueue.search({ score: deckValue, searchRadius: deckValueRadius }),
+      ]);
+    }).then(function ([playersWithinRank, playersWithinDeckValue]) {
+      // exclude the user that's looking
+      let rankPlayers = _.filter(playersWithinRank, (id) => id !== userId);
+      let deckPlayers = _.filter(playersWithinDeckValue, (id) => id !== userId);
 
-    // exclude last opponent
-    if (!this.allowMatchWithLastOpponent && lastOpponentId) {
-      Logger.module('MATCHMAKING-JOB').debug(`excluding last opponent ${(lastOpponentId != null ? lastOpponentId.blue : undefined)}`);
-      rankPlayers = _.filter(playersWithinRank, (id) => id !== lastOpponentId);
-      deckPlayers = _.filter(playersWithinDeckValue, (id) => id !== lastOpponentId);
-    }
+      // exclude last opponent
+      if (!_chainState.allowMatchWithLastOpponent && lastOpponentId) {
+        Logger.module('MATCHMAKING-JOB').debug(`excluding last opponent ${(lastOpponentId != null ? lastOpponentId.blue : undefined)}`);
+        rankPlayers = _.filter(playersWithinRank, (id) => id !== lastOpponentId);
+        deckPlayers = _.filter(playersWithinDeckValue, (id) => id !== lastOpponentId);
+      }
 
-    // players within both RANK and DECK VALUE
-    const players = _.intersection(rankPlayers, deckPlayers);
+      // players within both RANK and DECK VALUE
+      const players = _.intersection(rankPlayers, deckPlayers);
 
-    Logger.module('MATCHMAKING-JOB').debug(`found ${players.length} potential matches within range`);
-    return findLockablePlayer(players);
-  });
+      Logger.module('MATCHMAKING-JOB').debug(`found ${players.length} potential matches within range`);
+      return findLockablePlayer(players);
+    });
+};
 
 /**
  * Job - 'matchmaking-search-ranked'
