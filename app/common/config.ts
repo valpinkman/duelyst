@@ -4,7 +4,18 @@ Shared global object for Properties/Defines/Aliases
  - dynamic properties should be defined in camelCase
  - do not include resources in this file
 *************************************************************************** */
-const CONFIG = {};
+/*
+ * CONFIG is a mutable global bag: ~600 properties are attached below, and
+ * other modules add to it at runtime. Annotated rather than left to inference,
+ * which produces `{}` and makes every single assignment a TS2339 error (605 of
+ * them - by far the largest concentration in the codebase).
+ *
+ * A real interface would be better typing, but this object is a grab-bag by
+ * design and callers already treat it as untyped; inventing 600 field
+ * declarations would be noise, not safety. The annotation is erased at
+ * runtime.
+ */
+const CONFIG: Record<string, any> = {};
 
 /**
  * Start properties that are safe to edit.

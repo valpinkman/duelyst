@@ -26,7 +26,7 @@ const SDK = require('../../../app/sdk');
 
 class GiftCodesModule {
   static redeemGiftCode(userId, giftCode, systemTime) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     let txPromise;
     const MOMENT_NOW_UTC = systemTime || moment().utc();
 

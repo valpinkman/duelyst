@@ -49,7 +49,7 @@ class RiftModule {
    * @return  {Promise}        Promise that will post RIFT TICKET ID on completion.
    */
   static buyRiftTicketWithGold(userId) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId) {
       Logger.module('RiftModule').log(`buyRiftTicketWithGold() -> invalid user ID - ${userId}.`.red);
@@ -129,7 +129,7 @@ class RiftModule {
    * @return  {Promise}    Promise that will post TICKET ID on completion.
    */
   static claimFirstFreeRiftTicket(userId) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId) {
       Logger.module('RiftModule').log(`claimFirstFreeRiftTicket() -> invalid user ID - ${userId}.`.red);
@@ -257,7 +257,7 @@ class RiftModule {
    * @return  {Promise}        Promise that will return the rift data on completion.
    */
   static startRun(userId, ticketId) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId) {
       Logger.module('RiftModule').log(`startRun() -> ERROR: invalid user ID: ${userId}`.red);
@@ -370,7 +370,7 @@ class RiftModule {
    * @return  {Promise}        Promise that will return the arena data on completion.
    */
   static chooseGeneral(userId, ticketId, generalId) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId) {
       Logger.module('RiftModule').log(`chooseGeneral() -> ERROR: invalid user ID: ${userId}`.red);
@@ -457,7 +457,7 @@ class RiftModule {
    * @return  {Promise}          Promise that will notify when complete.
    */
   static updateRiftRunWithGameOutcome(userId, ticketId, isWinner, gameId, isDraw, damageDealt, gameSessionData) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     if ((gameSessionData != null) && (gameSessionData.aiPlayerId != null) && (gameSessionData.aiPlayerId === userId)) {
       // This was a bot, return gracefully
       return Promise.resolve();
@@ -746,7 +746,7 @@ class RiftModule {
    * @return  {Promise}        Promise that will return the arena data on completion.
    */
   static chooseCardToUpgrade(userId, ticketId, cardId) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId) {
       Logger.module('RiftModule').log(`chooseCardToUpgrade() -> ERROR: invalid user ID: ${userId}`.red);
@@ -897,7 +897,7 @@ class RiftModule {
    * @return  {Promise}        Promise that will return the arena data on completion.
    */
   static upgradeCard(userId, ticketId, cardId) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId) {
       Logger.module('RiftModule').log(`upgradeCard() -> ERROR: invalid user ID: ${userId}`.red);
@@ -1126,7 +1126,7 @@ class RiftModule {
    * @return  {Promise}        Promise that will resolve to the new (or same if not changed) rift run row data
    */
   static sanitizeRunCardChoicesIfNeeded(riftRunRow, systemTime) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     const NOW_UTC_MOMENT = systemTime || moment.utc();
 
     //    testRunsLastUpdateBeforeMoment = moment.utc("2017-04-29 12:00")
@@ -1183,7 +1183,7 @@ class RiftModule {
    * @return  {Promise}        Promise that will return the arena data on completion.
    */
   static storeCurrentUpgrade(userId, riftTicketId) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId) {
       Logger.module('RiftModule').log(`storeCurrentUpgrade() -> ERROR: invalid user ID: ${userId}`.red);
@@ -1306,7 +1306,7 @@ class RiftModule {
    * @return  {Promise}        Promise that will return the arena data on completion.
    */
   static rerollCurrentUpgrade(userId, riftTicketId) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId) {
       Logger.module('RiftModule').log(`rerollCurrentUpgrade() -> ERROR: invalid user ID: ${userId}`.red);

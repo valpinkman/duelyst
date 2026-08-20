@@ -123,7 +123,7 @@ class UsersModule {
    * @return  {Promise}          Promise that will return the userId on completion.
    */
   static createNewUser(username, password, inviteCode, referralCode, campaignData, registrationSource = null) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // validate referral code and force it to lower case
     if (inviteCode == null) { inviteCode = 'kumite14'; }
     referralCode = referralCode != null ? referralCode.toLowerCase().trim() : undefined;
@@ -303,7 +303,7 @@ class UsersModule {
    * @return  {Promise}          Promise that will return on completion.
    */
   static changeUsername(userId, newUsername, forceItForNoGold, systemTime) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     if (forceItForNoGold == null) { forceItForNoGold = false; }
     const MOMENT_NOW_UTC = systemTime || moment().utc();
     const this_obj = {};
@@ -579,7 +579,7 @@ class UsersModule {
    * @return  {Promise}          Promise that will return synced when done
    */
   static bumpSessionCountAndSyncDataIfNeeded(userId, userData = null, systemTime = null) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     const MOMENT_NOW_UTC = systemTime || moment().utc();
 
     let startPromise = null;
@@ -1048,7 +1048,7 @@ class UsersModule {
    * @return  {Promise}          Promise that will notify when complete.
    */
   static createFactionProgressionRecord(userId, factionId, gameId, gameType, systemTime) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId) {
       return Promise.reject(new Error(`Can not createFactionProgressionRecord(): invalid user ID - ${userId}`));
@@ -1135,7 +1135,7 @@ class UsersModule {
    * @return  {Promise}          Promise that will notify when complete.
    */
   static updateUserFactionProgressionWithGameOutcome(userId, factionId, isWinner, gameId, gameType, isUnscored, isDraw, systemTime) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId) {
       return Promise.reject(new Error(`Can not updateUserFactionProgressionWithGameOutcome(): invalid user ID - ${userId}`));
@@ -1489,7 +1489,7 @@ class UsersModule {
    * @return  {Promise}        Promise that will notify when complete.
    */
   static updateUserProgressionWithGameOutcome(userId, opponentId, isWinner, gameId, gameType, isUnscored, isDraw, systemTime) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId) {
       return Promise.reject(new Error(`Can not updateUserProgressionWithGameOutcome(): invalid user ID - ${userId}`));
@@ -1950,7 +1950,7 @@ class UsersModule {
    * @return  {Promise}        Promise that will notify when complete.
    */
   static updateUserBossProgressionWithGameOutcome(userId, opponentId, isWinner, gameId, gameType, isUnscored, isDraw, gameSessionData, systemTime) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId) {
       return Promise.reject(new Error(`Can not updateUserBossProgressionWithGameOutcome(): invalid user ID - ${userId}`));
@@ -2117,7 +2117,7 @@ class UsersModule {
    * @return  {Promise}            Promise that will notify when complete.
    */
   static updateGameCounters(userId, factionId, generalId, isWinner, gameType, isUnscored, isDraw, systemTime) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId) {
       return Promise.reject(new Error(`Can not updateUserProgressionWithGameOutcome(): invalid user ID - ${userId}`));
@@ -2260,7 +2260,7 @@ class UsersModule {
    * @return  {Promise}        Promise that will post STATDATA on completion.
    */
   static updateUserStatsWithGame(userId, gameId, gameType, gameData, systemTime) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId || !gameId) {
       return Promise.reject(new Error(`Can not update user-stats : invalid user ID - ${userId} - or game ID - ${gameId}`));
@@ -2404,7 +2404,7 @@ class UsersModule {
    * @return  {Promise}  Promise that will resolve and give rewards if challenge hasn't been completed before, will resolve false and not give rewards if it has
    */
   static completeChallengeWithType(userId, challengeType, shouldProcessQuests) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // TODO: Error check, if the challenge type isn't recognized we shouldn't record it etc
 
     const MOMENT_NOW_UTC = moment().utc();
@@ -2645,7 +2645,7 @@ class UsersModule {
    * @return  {Promise}            Promise that will resolve on completion
    */
   static markChallengeAsAttempted(userId, challengeType) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // TODO: Error check, if the challenge type isn't recognized we shouldn't record it etc
 
     const MOMENT_NOW_UTC = moment().utc();
@@ -2711,7 +2711,7 @@ class UsersModule {
    * @return  {Promise}  Promise that will resolve when complete with the module progression data
    */
   static iterateNewPlayerCoreProgression(userId) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     return knex('user_new_player_progression').where('user_id', userId).andWhere('module_name', NewPlayerProgressionModuleLookup.Core).first()
       .bind({})
       .then(function (moduleProgression) {
@@ -2802,7 +2802,7 @@ class UsersModule {
    * @return  {Promise}  Promise that will resolve when complete with the module progression data
    */
   static setNewPlayerFeatureProgression(userId, moduleName, stage) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // TODO: Error check, if the challenge type isn't recognized we shouldn't record it etc
 
     const MOMENT_NOW_UTC = moment().utc();

@@ -90,7 +90,7 @@ class GiftCrateModule {
    * @return  {Promise}            Promise that will return rewards array on completion.
    */
   static unlockGiftCrate(userId, crateId, keyId, systemTime) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     let txPromise;
     const current_utc = systemTime || moment().utc();
 

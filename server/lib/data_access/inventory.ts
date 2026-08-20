@@ -493,7 +493,7 @@ class InventoryModule {
    * @return  {Promise}  Promise that will resolve to either {cosmetic_id:XXX} if they received cosmetic or {cosmetic_id:XXX,spirit:XXX} if they received spirit for a duplicate.
    */
   static giveUserCosmeticId(trxPromise, trx, userId, cosmeticId, transactionType, transactionId, manualSpiritOverrideAmount, systemTime) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId) {
       Logger.module('InventoryModule').debug(`giveUserCosmeticId() -> invalid user ID - ${userId}.`.red);
@@ -965,7 +965,7 @@ class InventoryModule {
    * @return  {Promise}        Promise that will post BOOSTER PACK ID on completion.
    */
   static buyBoosterPacksWithGold(userId, qty, cardSetId, sku) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     let total_gold_cost;
     if (!userId) {
       Logger.module('InventoryModule').debug(`buyBoosterPacksWithGold() -> invalid user ID - ${userId}.`.red);
@@ -1095,7 +1095,7 @@ class InventoryModule {
    * @return  {Promise}    Promise that will post BOOSTER PACK DATA on completion.
    */
   static addBoosterPackToUser(trxPromise, trx, userId, cardSetId, transactionType, transactionId = null, additionalBoosterAttrs = null, systemTime) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId) {
       Logger.module('InventoryModule').debug(`addBoosterPackToUser() -> invalid user ID - ${userId}.`.red);
@@ -1203,7 +1203,7 @@ class InventoryModule {
    * @return  {Promise}    Promise that will post BOOSTER PACK DATA on completion.
    */
   static buyRemainingSpiritOrbsWithSpirit(userId, cardSetId, systemTime) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     let txPromise;
     const NOW_UTC_MOMENT = systemTime || moment.utc();
 
@@ -1272,7 +1272,7 @@ class InventoryModule {
   * @return  {Promise}    Promise that will post BOOSTER PACK DATA on completion.
   */
   static addRemainingOrbsForCardSetToUser(txPromise, tx, userId, cardSetId, refundWithSpirit, transactionType, transactionId = null, systemTime) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId) {
       Logger.module('InventoryModule').debug(`addRemainingOrbsForCardSetToUser() -> invalid user ID - ${userId}.`.red);
@@ -1349,7 +1349,7 @@ class InventoryModule {
    * Tag: openBoosterPack openSpiritOrb
    */
   static unlockBoosterPack(userId, boosterPackId, systemTime) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // userId must be defined
     let txPromise;
     if (!userId) {
@@ -1925,7 +1925,7 @@ class InventoryModule {
    */
   // TODO: better error types
   static giveUserCodexChapter(txPromise, tx, userId, chapterId, systemTime) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId) {
       Logger.module('InventoryModule').debug(`giveUserCodexChapter() -> invalid user ID - ${userId}.`.red);
@@ -2014,7 +2014,7 @@ class InventoryModule {
    * @return  {Promise}        Resulting data object containing spirit and bonuses
    */
   static disenchantCards(userId, cardIds, systemTime) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId) {
       Logger.module('InventoryModule').debug(`disenchantCards() -> invalid user ID - ${userId.blue}.`.red);
@@ -2078,7 +2078,7 @@ class InventoryModule {
    * @return  {Promise}            Resulting data object containing spirit and bonuses
    */
   static _disenchantCards(trxPromise, trx, userId, cardIds, systemTime) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // used to make sure all updates have the same "updated_at" date
     const NOW_UTC_MOMENT = systemTime || moment.utc();
 
@@ -2266,7 +2266,7 @@ class InventoryModule {
    * @return  {Promise}        Resulting data object containing spirit and bonuses
    */
   static disenchantDuplicateCards(userId, systemTime) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId) {
       Logger.module('InventoryModule').debug(`disenchantDuplicateCards() -> invalid user ID - ${userId.blue}.`.red);
@@ -2337,7 +2337,7 @@ class InventoryModule {
    * @return  {Promise}        Resulting data object containing crafted card and resulting inventory data
    */
   static craftCard(userId, cardId) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // userId must be defined
     let spirit_cost;
     if (!userId) {
@@ -2497,7 +2497,7 @@ class InventoryModule {
    * @return  {Promise}        Resulting data object containing crafted card and resulting inventory data
    */
   static craftCosmetic(userId, cosmeticId) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId) {
       Logger.module('InventoryModule').debug(`craftCosmetic() -> invalid user ID - ${userId}.`.red);
@@ -2627,7 +2627,7 @@ class InventoryModule {
    * @return  {Promise}            Promise that will resolve with the user's card collection cache after the card has been credited
    */
   static giveUserCards(trxPromise, trx, userId, cardIds, sourceType, sourceId, memo) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // Logger.module("InventoryModule").time "giveUserCards() -> User #{userId.blue}".green + " received #{util.inspect(cardIds)} cards.".green
 
     // cardIds is not optional
@@ -2748,7 +2748,7 @@ class InventoryModule {
    */
   // TODO: Remove this and replace uses with giveUserCosmeticId
   static addEmoteToUser(trxPromise, trx, userId, transactionType, emoteId, factionId) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // all parameters must be defined
     if ((userId == null) || (transactionType == null) || (emoteId == null) || (factionId == null)) {
       Logger.module('UsersModule').debug(`addEmoteToUser() -> invalid request - ${userId}, ${transactionType}, ${emoteId}, ${factionId}.`.red);
@@ -2791,7 +2791,7 @@ class InventoryModule {
    * @return  {Promise}            Promise that will resolve with the user's card collection cache
    */
   static _refreshUserCardCollection(trxPromise, trx, userId, cardCountRows, updateFirebase) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     if (updateFirebase == null) { updateFirebase = true; }
     const this_obj = {};
 
@@ -2978,7 +2978,7 @@ class InventoryModule {
    * @return  {Promise}            Promise.
    */
   static softWipeUserCardInventory(userId, systemTime) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     const NOW_UTC_MOMENT = systemTime || moment.utc();
 
     if (!NOW_UTC_MOMENT.isBefore(InventoryModule.SOFTWIPE_AVAILABLE_UNTIL)) {
@@ -3103,7 +3103,7 @@ class InventoryModule {
    * @param  {String}    userId      User ID.
    */
   static claimFreeCardOfTheDay(userId, systemTime) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     const NOW_UTC_MOMENT = systemTime || moment.utc();
     const this_obj = {};
 

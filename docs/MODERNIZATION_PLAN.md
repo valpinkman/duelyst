@@ -407,8 +407,24 @@ mocha + vitest + both builds + wire-format tests.
 
 **The stack conversion is complete**: CoffeeScript → JS → TypeScript across client, SDK,
 server and worker. What remains is *typing* (5T.4), not converting.
-- [ ] 5T.4 Incremental typing: drive `pnpm typecheck` to zero, then move directories from
+- [~] 5T.4 Incremental typing: drive `pnpm typecheck` to zero, then move directories from
   `tsconfig.json` into `tsconfig.strict.json`.
+
+  **Progress: 5,503 → 3,081 errors (−44%).** Measured first rather than grinding file by file:
+  **93% of all errors were TS2339** ("property does not exist"), and most of those came from two
+  systemic patterns rather than from real type problems:
+  - `const CONFIG = {}` in `app/common/config.ts`, followed by ~600 property assignments —
+    **605 errors from one declaration**. Annotated `Record<string, any>`: it is a mutable global
+    bag by design, and inventing 600 field declarations would be noise rather than safety.
+  - `const _chainState = {}` — **83 declarations across 15 files, 1,817 errors**. These are the
+    scratch objects the promise-chain codemod introduced when it replaced bluebird's
+    `.bind(this)` state passing, so they are per-chain bags by construction.
+    `scripts/codemods/annotate-chainstate.mjs`.
+
+  Both are type annotations only — erased at runtime, no behaviour change, suite unaffected.
+  What remains is more genuine: classes missing field declarations (`_ReplayEngine` 229,
+  `_NetworkManager` 71, `AttackMap` 62, `RedisPlayerQueue` 53), 175 on `unknown`, and ~1,392
+  further bare `{}` locals that need looking at individually rather than by codemod.
 - [ ] 5T.3 Replace the tsx require-hook with a real build for production images (the hook
   compiles on every boot; fine for dev, wasteful for prod).
 

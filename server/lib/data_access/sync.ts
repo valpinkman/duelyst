@@ -65,7 +65,7 @@ class SyncModule {
    * @return  {Promise}            Promise that will resolve on completion
    */
   static syncUserDataIfTrasactionCountMismatched(userId) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     return DuelystFirebase.connect().getRootRef()
       .bind({})
       .then(function (fbRootRef) {
@@ -112,7 +112,7 @@ class SyncModule {
    * @return  {Promise}            Promise that will resolve on completion
    */
   static wipeUserData(userId) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     Logger.module('SyncModule').time(`wipeUserData() -> ${userId.blue} wiped`);
 
     return DuelystFirebase.connect().getRootRef()
@@ -390,7 +390,7 @@ class SyncModule {
    * @return  {Promise}              Promise that will resolve on completion
    */
   static _syncUserFromSQLToFirebase(userId, shouldSyncBuddyList) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     if (shouldSyncBuddyList == null) { shouldSyncBuddyList = false; }
     Logger.module('UsersModule').time(`_syncUserFromSQLToFirebase() -> ${userId} + buddies:${shouldSyncBuddyList}`.green);
 
@@ -710,7 +710,7 @@ class SyncModule {
   }
 
   static _syncUserFromFirebaseToSQL(srcRootRef, userId, forceResync) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     if (forceResync == null) { forceResync = false; }
     Logger.module('UsersModule').time(`_syncUserFromFirebaseToSQL() -> ${userId} done`.green);
 

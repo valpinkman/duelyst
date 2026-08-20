@@ -35,7 +35,7 @@ class ReferralsModule {
    * @return  {Promise}
    */
   static markUserAsReferredByFriend(userId, referrerId) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     const MOMENT_NOW_UTC = moment().utc();
     const this_obj = {};
 
@@ -150,7 +150,7 @@ class ReferralsModule {
    * @return  {Promise}          Promise that will resolve when complete
    */
   static processReferralEventForUser(userId, referrerId, eventType) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     const MOMENT_NOW_UTC = moment().utc();
     const this_obj = {};
 
@@ -241,7 +241,7 @@ class ReferralsModule {
    * @return  {Promise}          Promise that will resolve when complete
    */
   static claimReferralRewards(userId) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     const MOMENT_NOW_UTC = moment().utc();
     const this_obj = {};
 

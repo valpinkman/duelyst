@@ -53,7 +53,7 @@ class ChallengesModule {
    * @return  {Promise}  Promise that will resolve and give rewards if challenge hasn't been completed before, will resolve false and not give rewards if it has
    */
   static completeChallengeWithType(userId, challengeType, shouldProcessQuests) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // TODO: Error check, if the challenge type isn't recognized we shouldn't record it etc
 
     const MOMENT_NOW_UTC = moment().utc();
@@ -294,7 +294,7 @@ class ChallengesModule {
    * @return  {Promise}            Promise that will resolve on completion
    */
   static markChallengeAsAttempted(userId, challengeType) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // TODO: Error check, if the challenge type isn't recognized we shouldn't record it etc
 
     const MOMENT_NOW_UTC = moment().utc();
@@ -364,7 +364,7 @@ class ChallengesModule {
    * @return  {Promise}            Promise that will resolve on completion
    */
   static markDailyChallengeAsCompleted(userId, challengeId, solutionHash, completionTime, systemTime) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     const MOMENT_NOW_UTC = systemTime || moment().utc();
     const completionTimeUtc = completionTime || MOMENT_NOW_UTC;
     const this_obj = {};

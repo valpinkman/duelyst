@@ -197,7 +197,7 @@ class ShopModule {
    * @return  {Promise}              Promise that will resolve when done.
    */
   static purchaseProductWithPremiumCurrency(userId, sku, shopSaleId) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     Logger.module('ShopModule').debug(`purchaseProductWithPremiumCurrency() -> user ${userId} buying ${sku}`);
 
     // userId must be defined
@@ -426,7 +426,7 @@ class ShopModule {
   }
 
   static creditUserPremiumCurrency(txPromise, tx, userId, amount) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // userId must be defined
     if ((userId == null)) {
       return Promise.reject(new Error(`giveUserPremiumCurrency: invalid user ID - ${userId}`));
@@ -478,7 +478,7 @@ class ShopModule {
 
   // Amount is negative value
   static debitUserPremiumCurrency(txPromise, tx, userId, amount) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // userId must be defined
     if ((userId == null)) {
       return Promise.reject(new Error(`debitUserPremiumCurrency: invalid user ID - ${userId}`));

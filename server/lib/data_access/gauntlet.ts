@@ -40,7 +40,7 @@ class GauntletModule {
    * @return  {Promise}        Promise that will post ARENA TICKET ID on completion.
    */
   static buyArenaTicketWithGold(userId) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId) {
       Logger.module('GauntletModule').debug(`buyArenaTicketWithGold() -> invalid user ID - ${userId}.`.red);
@@ -181,7 +181,7 @@ class GauntletModule {
    * @return  {Promise}        Promise that will return the arena data on completion.
    */
   static startRun(userId, ticketId, systemTime) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId) {
       Logger.module('GauntletModule').debug(`startRun() -> ERROR: invalid user ID: ${userId}`.red);
@@ -298,7 +298,7 @@ class GauntletModule {
    * @return  {Promise}        Promise that will return the arena data on completion.
    */
   static resignRun(userId) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId) {
       Logger.module('GauntletModule').debug(`resignRun() -> ERROR: invalid user ID: ${userId}`.red);
@@ -361,7 +361,7 @@ class GauntletModule {
    * @return  {Promise}          Promise that will notify when complete.
    */
   static updateArenaRunWithGameOutcome(userId, isWinner, gameId, isDraw) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId) {
       Logger.module('GauntletModule').debug(`updateArenaRunWithGameOutcome() -> ERROR: invalid user ID: ${userId}`.red);
@@ -482,7 +482,7 @@ class GauntletModule {
    * @return  {Promise}          Promise that will notify when complete.
    */
   static claimRewards(userId) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId) {
       Logger.module('GauntletModule').debug(`claimRewards() -> ERROR: invalid user ID: ${userId}`.red);
@@ -944,7 +944,7 @@ class GauntletModule {
    * @return  {Promise}        Promise that will return the arena data on completion.
    */
   static chooseCard(userId, cardId) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId) {
       Logger.module('GauntletModule').debug(`chooseCard() -> ERROR: invalid user ID: ${userId}`.red);

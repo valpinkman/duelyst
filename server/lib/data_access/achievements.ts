@@ -330,7 +330,7 @@ class AchievementsModule {
 
   //  resolves to an array of ids for newly completed achievements
   static _applyAchievementProgressMapToUser(userId, progressMap, gameId = null) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     Logger.module('AchievementsModule').debug(`_applyAchievementProgressMapToUser() -> Updating achievement progress for ${userId.blue}`.green);
     const enabledAchievements = SDK.AchievementsFactory.getEnabledAchievementsMap();
 
@@ -641,7 +641,7 @@ class AchievementsModule {
   }
 
   static giveMythronCard(txPromise, tx, userId, achievementId) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     return tx('user_card_collection').first('cards').where('user_id', userId)
       .bind({})
       .then(function (card_collection_data) {

@@ -477,7 +477,7 @@ class MigrationsModule {
    * @return  {Promise}          Promise that resolves on completion
    */
   static userUnlockableOrbsRefund(userId, systemTime) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     let txPromise;
     const unlockableOrbGoldRefundAmount = 300;
 

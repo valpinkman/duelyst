@@ -150,7 +150,7 @@ class QuestsModule {
    * @return  {Promise}        Promise that will post QUEST DATA on completion.
    */
   static generateDailyQuests(userId, systemTime) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId) {
       return Promise.reject(new Error(`Can not find if user needs daily quests: invalid user ID - ${userId}`));
@@ -485,7 +485,7 @@ class QuestsModule {
    * @return  {Promise}        Promise that will post QUEST DATA on completion.
    */
   static generateBeginnerQuests(userId, systemTime) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId) {
       return Promise.reject(new Error(`Can not find if user needs daily quests: invalid user ID - ${userId}`));
@@ -676,7 +676,7 @@ class QuestsModule {
    * @return  {Promise}              Promise that will post the mulliganed quest data.
    */
   static mulliganDailyQuest(userId, questIndex, systemTime, replaceWithQuestId) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId) {
       return Promise.reject(new Error(`Can not mulligan daily quests: invalid user ID - ${userId}`));
@@ -795,7 +795,7 @@ class QuestsModule {
    * @return  {Promise}            Promise that will post { quests:[] rewards:[] } on completion.
    */
   static updateQuestProgressWithGame(userId, gameId, gameSessionData, systemTime) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // userId or gameId must be defined
     if (!userId || !gameId) {
       return Promise.reject(new Error(`Can not update quest progress : invalid user ID - ${userId} - or game ID - ${gameId}`));
@@ -903,7 +903,7 @@ class QuestsModule {
    * @return  {Promise}            Promise that will post { quests:[] rewards:[] } on completion.
    */
   static updateQuestProgressWithCompletedChallenge(txPromise, tx, userId, challengeId, systemTime) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // userId or challengeId must be defined
     if (!userId || !challengeId) {
       return Promise.reject(new Error(`Can not update quest progress : invalid user ID - ${userId} - or challenge ID - ${challengeId}`));
@@ -983,7 +983,7 @@ class QuestsModule {
    * @return  {Promise}            Promise that will post { quests:[] rewards:[] } on completion.
    */
   static updateQuestProgressWithCompletedQuest(txPromise, tx, userId, gameId, questId, questRows, systemTime) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // userId or questId must be defined
     if (!userId || !questId) {
       return Promise.reject(new Error(`Can not update quest progress : invalid user ID - ${userId} - or quest ID - ${questId}`));
@@ -1063,7 +1063,7 @@ class QuestsModule {
    * @return  {Promise}            Promise that will post { quests:[] rewards:[] } on completion.
    */
   static updateQuestProgressWithProgressedFactionData(txPromise, tx, userId, progressedFactionData, systemTime) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // userId or challengeId must be defined
     if (!userId) {
       return Promise.reject(new Error(`Can not update quest progress for faction data : invalid user ID - ${userId}`));
@@ -1149,7 +1149,7 @@ class QuestsModule {
    * @return  {Promise}              Promise.
    */
   static _setQuestProgress(txPromise, tx, quest, progressAmount, gameId, systemTime) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     const MOMENT_NOW_UTC = systemTime || moment().utc();
 
     const questModel = QuestFactory.questForIdentifier(quest.quest_type_id);
@@ -1321,7 +1321,7 @@ class QuestsModule {
    * @return  {Promise}              Promise.
    */
   static _giveUserCatchUpQuestCharge(txPromise, tx, userId, numCharges, systemTime) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     const MOMENT_NOW_UTC = systemTime || moment().utc();
 
     Logger.module('QuestsModule').debug(`_giveUserCatchUpQuestCharge() -> User ${userId.blue} receiving ${numCharges} quest catch up charges.`.cyan);

@@ -49,7 +49,7 @@ class CosmeticChestsModule {
    * @return  {Promise}                Promise that will resolve on completion.
    */
   static giveUserChest(trxPromise, trx, userId, chestType, bossId, eventId, chestAmount, transactionType, transactionId, systemTime) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId) {
       Logger.module('CosmeticChestsModule').debug(`giveUserChest() -> invalid user ID - ${userId}.`.red);
@@ -260,7 +260,7 @@ class CosmeticChestsModule {
    * @return  {Promise}            Promise that will post UNLOCKED BOOSTER PACK DATA on completion.
    */
   static openChest(userId, chestId, systemTime) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId) {
       Logger.module('CosmeticChestsModule').debug(`openChest() -> invalid user ID - ${userId}.`.red);
@@ -673,7 +673,7 @@ class CosmeticChestsModule {
    * @return  {Promise}          Promise that will notify when complete.
    */
   static updateUserChestRewardWithGameOutcome(userId, isWinner, gameId, gameType, isUnscored, isDraw, systemTime, probabilityOverride) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId) {
       return Promise.reject(new Error(`Can not updateUserChestRewardWithGameOutcome(): invalid user ID - ${userId}`));
@@ -783,7 +783,7 @@ class CosmeticChestsModule {
    * @return  {Promise}          Promise that will notify when complete.
    */
   static updateUserChestRewardWithBossGameOutcome(userId, isWinner, gameId, gameType, isUnscored, isDraw, gameSessionData, systemTime, probabilityOverride) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     // userId must be defined
     if (!userId) {
       return Promise.reject(new Error(`Can not updateUserChestRewardWithBossGameOutcome(): invalid user ID - ${userId}`));

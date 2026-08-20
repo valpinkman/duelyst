@@ -89,7 +89,7 @@ class RankModule {
    * @return  {Promise}        Promise that will return the rank data on completion.
    */
   static cycleUserSeasonRanking(userId, force, systemTime) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     if (force == null) { force = false; }
     const MOMENT_UTC_NOW = systemTime || moment().utc();
     const MOMENT_UTC_START_OF_MONTH = MOMENT_UTC_NOW.clone().startOf('month');
@@ -312,7 +312,7 @@ class RankModule {
    * @return  {Promise}        Promise that will post a RANK DATA.
    */
   static updateUserRankingWithGameOutcome(userId, isWinner, gameId, isDraw, systemTime) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     const MOMENT_UTC_NOW = systemTime || moment().utc();
 
     // userId must be defined
@@ -493,7 +493,7 @@ class RankModule {
    * @return  {Promise}        Promise that will post a RANK DATA.
    */
   static updateUsersRatingsWithGameOutcome(player1Id, player2Id, player1IsWinner, gameId, isDraw, player1IsRanked, player2IsRanked, systemTime) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     Logger.module('RankModule').debug(`updateUsersRatingsWithGameOutcome() -> updating for users[${player1Id},${player2Id}] game_id:${gameId}`);
 
     const MOMENT_UTC_NOW = systemTime || moment().utc();
@@ -820,7 +820,7 @@ class RankModule {
    * @return  {Promise}        Promise that will return the users updated ladder position
    */
   static updateAndGetUserLadderPosition(txPromise, tx, playerId, startOfSeasonMoment, systemTime) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     const MOMENT_UTC_NOW = systemTime || moment().utc();
     startOfSeasonMoment = moment.utc(startOfSeasonMoment || MOMENT_UTC_NOW).startOf('month');
     const seasonStartingAt = startOfSeasonMoment.toDate();
@@ -913,7 +913,7 @@ class RankModule {
    * @return  {Promise}        Promise that will return the users cached ladder position or null if none exists
    */
   static getUserLadderPosition(tx, playerId, startOfSeasonMoment, recalculateIfOldSeason, systemTime) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     const MOMENT_UTC_NOW = systemTime || moment().utc();
     startOfSeasonMoment = moment.utc(startOfSeasonMoment || MOMENT_UTC_NOW).startOf('month');
     const seasonStartingAt = startOfSeasonMoment.toDate();
@@ -1017,7 +1017,7 @@ class RankModule {
    * @return  {Promise}            Promise that will return rewards array on completion.
    */
   static claimRewardsForSeasonRank(userId, dateWithinSeason, systemTime) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     if (!userId) {
       return Promise.reject(new Error(`Can not claim season rank rewards: invalid user ID - ${userId}`));
     }
