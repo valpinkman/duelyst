@@ -1459,7 +1459,7 @@ StarterAI.prototype = {
         var columnCount = this.getGameSession().getBoard().getColumnCount();
         var bestColumn = { columnNumber: null, score: 1, enemiesKilled: 0 };
         // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] looping through " + columnCount + " columns.");
-        for (i = 0; i < columnCount; i++) {
+        for (let i = 0; i < columnCount; i++) {
           // loop through each column
           enemiesKilled = 0;
           score = 0;

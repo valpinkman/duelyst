@@ -994,7 +994,7 @@ if (cluster.isMaster) {
     gameSessionCopy.deserializeSessionFromFirebase(JSON.parse(msg.gameSession));
     if (msg.cardWaitingForFollowupsIndex != null) {
     // followup was active in parent node prior to serialization and transmission to worker. this will restore the active followup into the worker branch post-deserialization
-      gameSessionCopy = injectFollowupIntoGameSession(gameSessionCopy, cardWaitingForFollowupsIndex);
+      gameSessionCopy = injectFollowupIntoGameSession(gameSessionCopy, msg.cardWaitingForFollowupsIndex);
     }
     ai_cluster_worker_evaluateGameSessionAndSendToMaster(gameSessionCopy, msg.bestScoresByDepth, msg.depthLimit, msg.msTimeLimit, msg.includedRandomness);
   });
@@ -2198,31 +2198,6 @@ let _arePositionsEqualOrAdjacent = function (positionA, positionB) {
 //  unit
 //  position to evaluate
 
-const scoreForUnit_module_generalRetreat = function (gameSession, unit, position) {
-  let score = 0;
-  const myGeneral = gameSession.getGeneralForPlayerId(unit.getOwnerId());
-  /// /Logger.module("AI").debug("[G:" + gameSession.gameId + "] scoreForUnit_module_generalRetreat() => 1unit " + unit.getLogName() + ". score = " + score);
-  /// /Logger.module("AI").debug("[G:" + gameSession.gameId + "] scoreForUnit_module_generalRetreat() => 2unit " + unit.getLogName() + ". score = " + score + " general hp = " + myGeneral.getHP());
-  if (!_hasLethalOnEnemyGeneral && myGeneral.getHP() < THRESHOLD_HP_GENERAL_RETREAT) {
-    /// /Logger.module("AI").debug("[G:" + gameSession.gameId + "] scoreForUnit_module_generalRetreat() => 3unit " + unit.getLogName() + ". score = " + score);
-    if (unit.getIsGeneral()) {
-      // retreating generals prefer to be as far away as possible from all enemy units unless has lethal on opponent
-      const allEnemyUnits = gameSession.getBoard().getEnemyEntitiesForEntity(unit, SDK.CardType.Unit);
-      _.each(allEnemyUnits, (enemyUnit) => {
-        const distanceFromEnemyUnit = _distanceBetweenPositions(position, enemyUnit.getPosition());
-        score += distanceFromEnemyUnit - BOUNTY.MY_GENERAL_RETREAT_V2; // 12 is max distance. this provides a penalty of 12, lower the further away
-      });
-    } else if (!unit.getIsPlayed()) {
-      // when in retreating mode, always prefer to spawn units surrounding my own general
-      // todo: this sucks
-      score += distanceBetweenBoardPositions(position, myGeneral.getPosition()) * BOUNTY.DISTANCE_FROM_MY_GENERAL_RETREATING;
-    }
-    /// /Logger.module("AI").debug("[G:" + gameSession.gameId + "] scoreForUnit_module_generalRetreat() => unit " + unit.getLogName() + ". score = " + score);
-  }
-
-  return score;
-};
-
 // positioning/distance using best target
 // PARAMETERS:
 //  gameSession
@@ -2250,13 +2225,6 @@ const _getIsScoredModifier = function (modifier) {
 const _getBountyForDistanceFromMyGeneral = function (gameSession, playerId) {
   // yields exponentially increasing desire to be near general as his health declines
   return BOUNTY.DISTANCE_FROM_MY_GENERAL * (BOUNTY.DISTANCE_FROM_MY_GENERAL_FACTOR / gameSession.getGeneralForPlayer(gameSession.getPlayerById(playerId)).getHP());
-};
-
-const _getBountyForDistanceFromOpponentGeneral = function () {
-  if (_hasLethalOnEnemyGeneral) {
-    return BOUNTY.DISTANCE_FROM_OPPONENT_GENERAL_WHEN_LETHAL;
-  }
-  return BOUNTY.DISTANCE_FROM_OPPONENT_GENERAL;
 };
 
 const findNearestObjective = function (position, objectives) {
