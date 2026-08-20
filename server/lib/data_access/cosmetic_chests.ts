@@ -28,6 +28,8 @@ const SDK = require('../../../app/sdk');
 const UtilsGameSession = require('../../../app/common/utils/utils_game_session');
 
 const InventoryModule = require('./inventory');
+const PromiseUtils = require('../../../app/common/utils/utils_promise');
+const { onType } = require('../../../app/common/utils/utils_promise');
 
 class CosmeticChestsModule {
   static CHEST_GAME_COUNT_WINDOW = 10;
@@ -687,7 +689,7 @@ class CosmeticChestsModule {
     const MOMENT_NOW_UTC = systemTime || moment().utc();
     const this_obj = {};
 
-    var txPromise = knex.transaction((tx) => Promise.resolve(tx('users').where('id', userId).first('id').forUpdate())
+    var txPromise = knex.transaction((tx) => PromiseUtils.withTimeout(Promise.resolve(tx('users').where('id', userId).first('id').forUpdate())
       .then(() => tx('user_progression').where('user_id', userId).first().forUpdate()).then(function (userProgressionRow) {
         _chainState.userProgressionRow = userProgressionRow;
         if (userProgressionRow.last_game_id !== gameId) {
@@ -738,12 +740,11 @@ class CosmeticChestsModule {
           );
         }
         return Promise.all(allPromises);
-      })
-      .timeout(10000)
-      .catch(Promise.TimeoutError, function (e) {
+      }), 10000)
+      .catch(onType(PromiseUtils.TimeoutError, function (e) {
         Logger.module('CosmeticChestsModule').error(`updateUserChestRewardWithGameOutcome() -> ERROR, operation timeout for u:${userId} g:${gameId}`);
         throw e;
-      }))
+      })))
       .then(function () {
         for (var chestData of Array.from<any>(_chainState.awardedChestData)) {
         // Currently there is only an achievement for first bronze chest so don't bother with others
@@ -810,7 +811,7 @@ class CosmeticChestsModule {
     const MOMENT_NOW_UTC = systemTime || moment().utc();
     const this_obj = {};
 
-    var txPromise = knex.transaction((tx) => Promise.resolve(tx('users').where('id', userId).first('id').forUpdate())
+    var txPromise = knex.transaction((tx) => PromiseUtils.withTimeout(Promise.resolve(tx('users').where('id', userId).first('id').forUpdate())
       .then(() => DuelystFirebase.connect().getRootRef()).then(function (fbRootRef) {
         _chainState.fbRootRef = fbRootRef;
 
@@ -889,12 +890,11 @@ class CosmeticChestsModule {
           allPromises.push(GamesModule._addRewardIdToUserGame(tx, userId, gameId, rewardData.id));
         }
         return Promise.all(allPromises);
-      })
-      .timeout(10000)
-      .catch(Promise.TimeoutError, function (e) {
+      }), 10000)
+      .catch(onType(PromiseUtils.TimeoutError, function (e) {
         Logger.module('CosmeticChestsModule').error(`updateUserChestRewardWithBossGameOutcome() -> ERROR, operation timeout for u:${userId} g:${gameId}`);
         throw e;
-      }))
+      })))
       .then(function () {
         for (var chestData of Array.from<any>(_chainState.awardedChestData)) {
         // Currently there is only an achievement for first bronze chest so don't bother with others

@@ -128,6 +128,14 @@ How we work on it:
   `generate_packages.js` and RSX paths.
 
 Status log (newest first):
+- 2026-08-20 — **knex 0.19 → 3.3.0**, and with it the last of bluebird's `.timeout` (20/20
+  converted, 0 left in server+worker). `/health` pool stats now read tarn *or* generic-pool and
+  degrade to nulls rather than throwing. Advisories 90 → 88, and **bluebird is now a direct
+  dependency only** — knex was the last package pulling it in, so dropping it is unblocked once
+  redis v4 lands. Verified against a real database: migrations, all 6 services, register/login,
+  8 authenticated data_access routes, and the e2e practice game. Two pre-existing bugs
+  catalogued (not caused by the upgrade): `GET /api/me/rank/` queries a `user_rank` table no
+  migration creates, and `pnpm migrate:latest` has always needed `NODE_ENV` set.
 - 2026-08-19 — **Phase 9 done: the client is off firebase@2.0.3 and on firebase@12.** Auth moved
   from v2 legacy tokens to real custom tokens (`createCustomToken` server-side,
   `signInWithCustomToken` client-side), and the RTDB rules moved from `auth.id` to `auth.uid`

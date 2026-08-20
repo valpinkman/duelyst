@@ -36,6 +36,8 @@ const UtilsGameSession = require('../../../app/common/utils/utils_game_session')
 const QuestFactory = require('../../../app/sdk/quests/questFactory');
 const QuestType = require('../../../app/sdk/quests/questTypeLookup');
 const CosmeticsFactory = require('../../../app/sdk/cosmetics/cosmeticsFactory');
+const PromiseUtils = require('../../../app/common/utils/utils_promise');
+const { onType } = require('../../../app/common/utils/utils_promise');
 
 class AchievementsModule {
   /**
@@ -336,7 +338,7 @@ class AchievementsModule {
 
     const MOMENT_NOW_UTC = moment().utc();
 
-    var txPromise = knex.transaction((tx) => Promise.resolve(tx('users').where('id', userId).first('id').forUpdate())
+    var txPromise = knex.transaction((tx) => PromiseUtils.withTimeout(Promise.resolve(tx('users').where('id', userId).first('id').forUpdate())
       .then(function () {
         const achievementIds = _.keys(progressMap);
         return knex('user_achievements').whereIn('achievement_id', achievementIds).andWhere('user_id', userId).transacting(tx);
@@ -591,12 +593,11 @@ class AchievementsModule {
         // process the achievements map serially with 1 concurrency so that there's no chance of card log getting overwritten
         return Promise.map(_.keys(progressMap), processAchievementSerialy, { concurrency: 1 });
       })
-      .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
-      .timeout(10000)
-      .catch(Promise.TimeoutError, function (e) {
+      .then(() => SyncModule._bumpUserTransactionCounter(tx, userId)), 10000)
+      .catch(onType(PromiseUtils.TimeoutError, function (e) {
         Logger.module('AchievementsModule').error(`_applyAchievementProgressMapToUser() -> ERROR, operation timeout for u:${userId} g:${gameId}`);
         throw e;
-      }))
+      })))
     // because achievements can have rewards, to avoid a race condition we write to FB outside the transaction after all the data / rewards have been writtan and are ready to read via REST API
       .then(() => DuelystFirebase.connect().getRootRef())
       .then(function (fbRootRef) {

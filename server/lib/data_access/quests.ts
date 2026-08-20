@@ -36,6 +36,8 @@ const QuestType = require('../../../app/sdk/quests/questTypeLookup');
 const UtilsGameSession = require('../../../app/common/utils/utils_game_session');
 const NewPlayerProgressionHelper = require('../../../app/sdk/progression/newPlayerProgressionHelper');
 const NewPlayerProgressionStageEnum = require('../../../app/sdk/progression/newPlayerProgressionStageEnum');
+const PromiseUtils = require('../../../app/common/utils/utils_promise');
+const { onType } = require('../../../app/common/utils/utils_promise');
 
 class QuestsModule {
   static DAILY_QUEST_SLOTS = [0, 1];
@@ -793,7 +795,7 @@ class QuestsModule {
 
     const MOMENT_NOW_UTC = systemTime || moment().utc();
 
-    var txPromise = knex.transaction((tx) => Promise.resolve(tx('users').where({ id: userId }).first('id').forUpdate())
+    var txPromise = knex.transaction((tx) => PromiseUtils.withTimeout(Promise.resolve(tx('users').where({ id: userId }).first('id').forUpdate())
       .then((userRow) => Promise.all([
         userRow,
         tx('user_quests').select().where({ user_id: userId }).forUpdate(),
@@ -848,12 +850,11 @@ class QuestsModule {
         }
       })
       .then(function (rewards) { return _chainState.rewards = _.flatten(_.compact(rewards)); })
-      .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
-      .timeout(10000)
-      .catch(Promise.TimeoutError, function (e) {
+      .then(() => SyncModule._bumpUserTransactionCounter(tx, userId)), 10000)
+      .catch(onType(PromiseUtils.TimeoutError, function (e) {
         Logger.module('QuestsModule').error(`updateQuestProgressWithGame() -> ERROR, operation timeout for u:${userId} g:${gameId}`);
         throw e;
-      }))
+      })))
       .then(function () {
         const quests = [];
 

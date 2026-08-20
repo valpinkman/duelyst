@@ -20,18 +20,26 @@ step it describes, so it can never drift from the code.
      (which still hold the last 57 `.coffee` files — deletion candidates).
   3. **vitest** — mocha retired; unit + integration configs.
   4. **Modern bundler** — gulp deleted; Vite/rolldown builds the client in ~2.4s (was ~35s).
-  Playwright is available and was used for verification, but there is still no committed e2e
-  suite (see Later).
+  Playwright e2e **is** committed now (`test/e2e/play-practice-game.spec.mjs`): it boots the
+  client and plays a practice game vs the AI, asserting 0 console errors.
 - **Verified working**, not just building: `pnpm build` from a clean tree, all four services
   in Docker, and a **practice game played end-to-end against the TypeScript stack** with a real
   Firebase RTDB (register → login → main menu → mulligan → play a minion → AI responds →
   concede), 0 console errors.
-- **Next (all optional, in value order):**
-  - 5T.4 incremental typing: `pnpm typecheck` reports **5,503 errors** under the loose config
-    (a metric, not a gate). Start with the SDK; move directories into `tsconfig.strict.json`
-    as they go clean.
-  - 7.2 integration revival in CI (needs the referral-code seed + a CI Firebase project).
-  - 7.3 dependency upgrades (bluebird→native promises, moment, underscore, kue, winston…).
+- **Next, in order (the dependency chain is real, do not reorder):**
+  1. **`redis` 2 → 4** — the last consumer of bluebird's `promisifyAll` (redis + `warlock`).
+     This is the remaining blocker for dropping bluebird. Note `kue` pins `redis: ~2.6.0` and
+     keeps its own copy regardless.
+  2. **Drop `bluebird` entirely** (stage 7). After knex 3, **bluebird is a direct dependency
+     only** — nothing else in the tree pulls it in.
+  3. 5T.4 incremental typing: `pnpm typecheck` is down to **2,484** errors under the loose
+     config (from 5,503; a metric, not a gate). Mostly mechanical. Move directories into
+     `tsconfig.strict.json` as they go clean.
+  4. 7.2 integration revival in CI for the `data_access` suites (~506 tests, stale
+     `createNewUser`/`userIdForEmail` API).
+  - Catalogued bugs awaiting a correctness pass: `GET /api/me/rank/` queries a `user_rank`
+    table no migration creates (pre-existing, always 500'd); the 8 latent `server/lib` bugs
+    from 6.2c; the 6 missing `require`s in SDK card logic.
 
   - 5T.3: replace the tsx require-hook with a real build for production images.
 - **Known dirty state:** none.
@@ -665,7 +673,7 @@ server and worker. What remains is *typing* (5T.4), not converting.
       **`@counterplay/warlock` is handed our client** (`warlock(redis)`) and speaks redis-2
       callbacks, so it and `node-redis-scripty` would need porting too. And redis@2 stays in the
       tree regardless, because **kue pins `redis: ~2.6.0`** and gets its own copy.
-    - [~] `knex` 0.19 → 3 — **now unblocked; break surface measured, and it is small.**
+    - [x] `knex` 0.19 → **3.3.0** — DONE. Break surface measured first, and it was small.
       The gate was that knex <1.0 returned *bluebird* promises, so query sites could chain
       `.bind`/`.spread`/`.error` directly. **The bluebird work removed all of those**, which is
       what actually unblocks this.
@@ -698,6 +706,51 @@ server and worker. What remains is *typing* (5T.4), not converting.
       Remaining work is therefore: 18 promise-`.timeout` conversions, the `/health` pool stats
       (generic-pool `getPoolSize()`/`availableObjectsCount()` → tarn `numUsed()`/`numFree()`),
       and the upgrade itself.
+
+      **What actually landed.**
+
+      - **`.timeout` is gone from the runtime — 20/20 converted, 0 remain in `server/`+`worker/`.**
+        The measurement's "2 chain directly off a query builder" was **wrong**: re-reading every
+        removed line in the diff, all 20 sat after a `.then()`, a `.catch()`, a `Promise.all([...])`
+        or a `Promise.resolve(fetch(...))` — i.e. all promise-position. Nothing needed knex's own
+        builder `.timeout(ms)`, so nothing was restored. Same lesson as every other estimate in
+        this file: the count was only right once read *in chain position*.
+      - `Promise.TimeoutError` → `PromiseUtils.TimeoutError` (19 sites, 11 files), then those typed
+        catches through the `onType()` codemod.
+      - **The binding guard earned its keep again.** 9 files had `PromiseUtils` bound but used bare
+        `onType()` — `scripts/check-promise-utils-bindings.mjs` caught all 9 before they could
+        become the `ReferenceError`-at-runtime class of bug that motivated it. Fixed by adding the
+        `const { onType } = require(...)` destructure, which is the convention in all 18 files that
+        already bound it (0 files use `PromiseUtils.onType(`).
+      - `poolStats` in `server/routes/public.ts` now **handles both pool implementations** (tarn
+        `numUsed()`/`numFree()`/`numPendingAcquires()`, generic-pool `getPoolSize()`/…), and
+        degrades to nulls instead of throwing on an unknown shape — `/health` is what a load
+        balancer polls, so it must not 500 on a pool refactor. Verified returning real numbers on
+        0.19 *before* the upgrade and on tarn after it.
+
+      **Verification** (the risk here was behavioural, not API-shaped — 714 query sites and 99
+      transactions against a real database, which unit tests do not touch):
+      1,325/1,325 unit · 13/13 `integration:misc` · lint clean (real exit code) · `pnpm build` ·
+      86/86 migrations "Already up to date" against the compose Postgres · all 6 services boot ·
+      `/health` correct on tarn · **`POST /session/register` → 200** (transactions + Firebase +
+      converted timeout code) and login → token · 8 authenticated `data_access` routes 200 ·
+      **e2e green: registers an account, plays a practice game vs the AI, 0 console errors.**
+
+      **Two findings, neither caused by the upgrade:**
+
+      - **`GET /api/me/rank/` 500s and always has.** `server/routes/api/me/rank.ts:28` queries
+        `knex('user_rank')`, but **no migration creates a bare `user_rank` table** — the schema has
+        `user_rank_history`, `user_rank_events`, `user_rank_ratings`. knex 3 built and executed the
+        SQL correctly; Postgres rejected it. Untouched file, non-existent table ⇒ pre-existing
+        upstream bug. Catalogued, not fixed here (out of scope for this step).
+      - **`pnpm migrate:latest` requires `NODE_ENV` to be set** (`server/knexfile.js` throws
+        without it). Also pre-existing: knex 0.19's CLI never set `process.env.NODE_ENV` either
+        (its only mention is a help string), and CI already passes `NODE_ENV: development`
+        explicitly. Not a regression, left as-is — the throw is deliberate.
+
+      **Payoff:** advisories 90 → **88**, and **bluebird is now a direct dependency only** — knex
+      0.19 was the last package in the tree pulling it in. Nothing but our own code depends on it,
+      which is exactly the position stage 7 needs.
     - [~] `bluebird` 2.11 → **native, dropping it entirely** (owner decision). It is **the gate**
       for knex, not the endgame after it.
 
@@ -776,8 +829,14 @@ server and worker. What remains is *typing* (5T.4), not converting.
         `TimeoutError`, `delay`, `defer`. Converted: `Promise.defer()` (3), `.delay(ms)` (4),
         and the **client-side** `.timeout` in `application.ts`.
 
-        🚧 **`.timeout` inside knex transactions is BLOCKED on the knex upgrade, and this is the
-        real finding.** Converting the 29 `.timeout(ms)` sites broke registration with
+        ✅ **UNBLOCKED AND DONE** — knex 3 landed and all 20 remaining `.timeout` sites converted
+        with it; 0 remain in `server/`+`worker/`. The original blocker note is kept below because
+        its *diagnosis* was wrong in an instructive way, see the knex entry in tier 2: knex 0.19
+        and knex 3 have identical transaction auto-commit logic, so "knex 0.19 is itself built on
+        bluebird" did not explain the failure. What was true is that the conversion had to happen
+        *with* the upgrade, not before it.
+
+        🚧 (historical) **`.timeout` inside knex transactions is BLOCKED on the knex upgrade.** Converting the 29 `.timeout(ms)` sites broke registration with
         `Unhandled rejection Error: Transaction query already complete`. bluebird's `.timeout`
         **cancels** the operation it wraps; a `Promise.race` does not, and knex 0.19 is itself
         built on bluebird, so a native promise returned from a transaction callback is not

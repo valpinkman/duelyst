@@ -29,6 +29,7 @@ const QuestsModule = require('../../server/lib/data_access/quests');
 
 const { Redis, Jobs, GameManager } = require('../../server/redis');
 const { onType } = require('../../app/common/utils/utils_promise');
+const PromiseUtils = require('../../app/common/utils/utils_promise');
 
 /**
  * Start processing quests for user.
@@ -363,11 +364,11 @@ module.exports = function (job, done) {
       // mark KUE job as done
       return done();
     })
-    .catch(Promise.TimeoutError, function (e) {
+    .catch(onType(PromiseUtils.TimeoutError, function (e) {
     // custom logging for promise timeout errors
       Logger.module('JOB').error(`[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> TIMEOUT.`);
       return done(e);
-    })
+    }))
     .catch(function (e) {
     // log out and fail the job on an error
       Logger.module('JOB').error(`[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> FAILED! ${(e != null ? e.message : undefined)}`);

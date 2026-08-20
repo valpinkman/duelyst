@@ -21,18 +21,50 @@ const config = require('../../config/config.js');
 
 const env = config.get('env');
 const { version } = require('../../version');
+const PromiseUtils = require('../../app/common/utils/utils_promise');
+const { onType } = require('../../app/common/utils/utils_promise');
 
 const router = express.Router();
 
+/*
+ * Connection-pool stats for /health.
+ *
+ * knex swapped its pool implementation: 0.19 used generic-pool
+ * (`getPoolSize()` / `availableObjectsCount()` / `waitingClientsCount()`),
+ * knex 1+ uses tarn (`numUsed()` / `numFree()` / `numPendingAcquires()`).
+ *
+ * Both are handled so this endpoint keeps working either side of the upgrade -
+ * and so a pool object that grows a different shape again degrades to nulls
+ * rather than throwing, since this is the endpoint a load balancer polls.
+ */
 const poolStats = function (pool) {
-  const stats = {
+  if (!pool) {
+    return {
+      size: null, min: null, max: null, available: null, queued: null,
+    };
+  }
+
+  // tarn (knex 1+)
+  if (typeof pool.numUsed === 'function') {
+    const used = pool.numUsed();
+    const free = pool.numFree();
+    return {
+      size: used + free,
+      min: pool.min,
+      max: pool.max,
+      available: free,
+      queued: typeof pool.numPendingAcquires === 'function' ? pool.numPendingAcquires() : null,
+    };
+  }
+
+  // generic-pool (knex 0.19)
+  return {
     size: pool.getPoolSize(),
     min: pool.getMinPoolSize(),
     max: pool.getMaxPoolSize(),
     available: pool.availableObjectsCount(),
     queued: pool.waitingClientsCount(),
   };
-  return stats;
 };
 
 const serveIndex = function (req, res) {
@@ -145,10 +177,9 @@ router.get('/healthcheck', (req, res) => res.status(200).send('OK'));
 router.get('/health', function (req, res) {
   const MAX_QUEUED_ALLOWED = 25;
   const pool = poolStats(knex.client.pool);
-  return Promise.all([
+  return PromiseUtils.withTimeout(Promise.all([
     knex('knex_migrations').select('migration_time').orderBy('id', 'desc').limit(1),
-  ])
-    .timeout(5000)
+  ]), 5000)
     .then(function ([row]) {
       if (pool.queued >= MAX_QUEUED_ALLOWED) {
         res.status(500);
@@ -156,7 +187,7 @@ router.get('/health', function (req, res) {
         res.status(200);
       }
       return res.json({ pool });
-    }).catch(Promise.TimeoutError, (e) => res.status(500).json({ message: 'db timeout' }))
+    }).catch(onType(PromiseUtils.TimeoutError, (e) => res.status(500).json({ message: 'db timeout' })))
     .catch((e) => res.status(500).json({ message: 'db error' }));
 });
 

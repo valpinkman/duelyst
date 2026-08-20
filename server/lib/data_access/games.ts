@@ -22,6 +22,8 @@ const DataAccessHelpers = require('./helpers');
 // SDK imports
 const SDK = require('../../../app/sdk');
 const UtilsGameSession = require('../../../app/common/utils/utils_game_session');
+const PromiseUtils = require('../../../app/common/utils/utils_promise');
+const { onType } = require('../../../app/common/utils/utils_promise');
 
 class GamesModule {
   /**
@@ -139,19 +141,18 @@ class GamesModule {
       newGameParams.created_at = moment.utc(newGameParams.created_at).toDate();
       Logger.module('GamesModule').log(`newUserGame() -> inserting u:${userId} g:${gameId} duration: ${moment.utc() - NOW_UTC_MOMENT}ms`);
 
-      return tx('user_games').insert(newGameParams)
+      return PromiseUtils.withTimeout(tx('user_games').insert(newGameParams)
         .then(() => Logger.module('GamesModule').log(`newUserGame() -> inserted u:${userId} g:${gameId} duration: ${moment.utc() - NOW_UTC_MOMENT}ms`)).then(() => DuelystFirebase.connect().getRootRef())
         .then(function (fbRootRef) {
         // save game record to user firebase
           Logger.module('GamesModule').log(`newUserGame() -> updating firebase u:${userId} g:${gameId} duration: ${moment.utc() - NOW_UTC_MOMENT}ms`);
           return FirebasePromises.set(fbRootRef.child('user-games').child(userId).child(gameId), DataAccessHelpers.restifyData(newGameParams));
         })
-        .then(() => Logger.module('GamesModule').log(`newUserGame() -> updated firebase u:${userId} g:${gameId} duration: ${moment.utc() - NOW_UTC_MOMENT}ms`))
-        .timeout(15000) // timeout after 15 seconds
-        .catch(Promise.TimeoutError, function (e) {
+        .then(() => Logger.module('GamesModule').log(`newUserGame() -> updated firebase u:${userId} g:${gameId} duration: ${moment.utc() - NOW_UTC_MOMENT}ms`)), 15000) // timeout after 15 seconds
+        .catch(onType(PromiseUtils.TimeoutError, function (e) {
           Logger.module('GamesModule').error(`newUserGame() -> ERROR, operation timeout for u:${userId} g:${gameId}`);
           throw e;
-        });
+        }));
     }).then(() => Logger.module('GamesModule').log(`newUserGame() -> DONE for u:${userId} g:${gameId} duration: ${moment.utc() - NOW_UTC_MOMENT}ms`));
   }
 
@@ -203,7 +204,7 @@ class GamesModule {
 
     return knex.transaction(function (tx) {
       Logger.module('GamesModule').log(`updateUserGame() -> locking user (u:${userId} g:${gameId}) duration: ${moment.utc() - NOW_UTC_MOMENT}ms`);
-      return Promise.resolve(tx('users').where({ id: userId }).first('id').forUpdate())
+      return PromiseUtils.withTimeout(Promise.resolve(tx('users').where({ id: userId }).first('id').forUpdate())
         .then(() => Logger.module('GamesModule').log(`updateUserGame() -> locked user (u:${userId} g:${gameId}) duration: ${moment.utc() - NOW_UTC_MOMENT}ms`)).then(function () {
           Logger.module('GamesModule').log(`updateUserGame() -> locking game (u:${userId} g:${gameId}) duration: ${moment.utc() - NOW_UTC_MOMENT}ms`);
           return tx('user_games').where({ user_id: userId, game_id: gameId }).first('game_id').forUpdate();
@@ -231,12 +232,11 @@ class GamesModule {
           Logger.module('GamesModule').log(`updateUserGame() -> bumping tx count (u:${userId} g:${gameId}) duration: ${moment.utc() - NOW_UTC_MOMENT}ms`);
           return SyncModule._bumpUserTransactionCounter(tx, userId);
         })
-        .then(() => Logger.module('GamesModule').log(`updateUserGame() -> bumped tx count (u:${userId} g:${gameId}) duration: ${moment.utc() - NOW_UTC_MOMENT}ms`))
-        .timeout(10000)
-        .catch(Promise.TimeoutError, function (e) {
+        .then(() => Logger.module('GamesModule').log(`updateUserGame() -> bumped tx count (u:${userId} g:${gameId}) duration: ${moment.utc() - NOW_UTC_MOMENT}ms`)), 10000)
+        .catch(onType(PromiseUtils.TimeoutError, function (e) {
           Logger.module('GamesModule').error(`updateUserGame() -> ERROR, operation timeout for u:${userId} g:${gameId}`);
           throw e;
-        });
+        }));
     }).then(() => Logger.module('GamesModule').log(`updateUserGame() -> DONE for u:${userId} g:${gameId} duration: ${moment.utc() - NOW_UTC_MOMENT}ms`));
   }
 

@@ -40,6 +40,7 @@ const AnalyticsUtil = require('../../app/common/analyticsUtil');
 const config = require('../../config/config');
 const { version } = require('../../version');
 const { onType } = require('../../app/common/utils/utils_promise');
+const PromiseUtils = require('../../app/common/utils/utils_promise');
 
 /*
 Build analytics data from user data
@@ -271,7 +272,7 @@ router.post('/session/register', function (req, res, next) {
   return UsersModule.isValidInviteCode(inviteCode)
     .then(function (inviteCodeData) { // captcha verification
       if ((captcha != null) && config.get('recaptcha.secret')) {
-        return Promise.resolve(
+        return PromiseUtils.withTimeout(Promise.resolve(
           fetch('https://www.google.com/recaptcha/api/siteverify', {
             method: 'POST',
             headers: {
@@ -283,8 +284,7 @@ router.post('/session/register', function (req, res, next) {
               response: captcha,
             }),
           }),
-        )
-          .timeout(10000)
+        ), 10000)
           .then(function (res) {
             if (res.ok) {
               return res.json();
@@ -318,8 +318,7 @@ router.post('/session/register', function (req, res, next) {
       // notify twitch alerts of conversion
       if ((campaignData != null ? campaignData.campaign_id : undefined) && ((campaignData != null ? campaignData.campaign_medium : undefined) === 'openpromotion')) {
         Logger.module('Session').debug(`twitch-alerts conversion. pinging: https://promos.twitchalerts.com/webhook/conversion?advertiser_id=34&code=${campaignData.campaign_source}&ip=${req.ip}&api_key=...&campaign_id=${campaignData.campaign_id}`);
-        Promise.resolve(fetch(`https://promos.twitchalerts.com/webhook/conversion?advertiser_id=34&code=${campaignData.campaign_source}&ip=${req.ip}&api_key=2d82e8c0cf17467490467b0c77c6c08e&campaign_id=${campaignData.campaign_id}`))
-          .timeout(10000)
+        PromiseUtils.withTimeout(Promise.resolve(fetch(`https://promos.twitchalerts.com/webhook/conversion?advertiser_id=34&code=${campaignData.campaign_source}&ip=${req.ip}&api_key=2d82e8c0cf17467490467b0c77c6c08e&campaign_id=${campaignData.campaign_id}`)), 10000)
           .then((res) => res.json()).then((body) => Logger.module('Session').debug('twitch-alerts response: ', body))
           .catch((e) => Logger.module('Session').error(`twitch-alerts error processing: ${e.message}`));
       }

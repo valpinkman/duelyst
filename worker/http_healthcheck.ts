@@ -14,6 +14,8 @@ const os = require('os');
 const Promise = require('bluebird');
 const config = require('../config/config');
 const knex = require('../server/lib/data_access/knex');
+const PromiseUtils = require('../app/common/utils/utils_promise');
+const { onType } = require('../app/common/utils/utils_promise');
 
 const MAX_QUEUED_ALLOWED = 25;
 
@@ -36,17 +38,16 @@ const healthcheck = function () {
     if (pathname === '/health') {
       Logger.module('MATCHMAKER').debug('HTTP health check : /health requested.');
       const pool = poolStats(knex.client.pool);
-      return Promise.all([
+      return PromiseUtils.withTimeout(Promise.all([
         knex('knex_migrations').select('migration_time').orderBy('id', 'desc').limit(1),
-      ])
-        .timeout(5000)
+      ]), 5000)
         .then(function ([row]) {
           if (pool.queued >= MAX_QUEUED_ALLOWED) {
             return res.statusCode = 500;
           } else {
             return res.statusCode = 200;
           }
-        }).catch(Promise.TimeoutError, (e) => res.statusCode = 500)
+        }).catch(onType(PromiseUtils.TimeoutError, (e) => res.statusCode = 500))
         .catch((e) => res.statusCode = 500)
         .finally(function () {
           res.write(JSON.stringify({ pool }));

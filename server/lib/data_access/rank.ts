@@ -34,6 +34,8 @@ const GameSession = require('../../../app/sdk/gameSession');
 const UtilsGameSession = require('../../../app/common/utils/utils_game_session');
 const CardFactory = require('../../../app/sdk/cards/cardFactory');
 const Rarity = require('../../../app/sdk/cards/rarityLookup');
+const PromiseUtils = require('../../../app/common/utils/utils_promise');
+const { onType } = require('../../../app/common/utils/utils_promise');
 
 class RankModule {
   static _SRANK_WIN_COUNT_CEILING = 25;
@@ -101,7 +103,7 @@ class RankModule {
 
     const this_obj = {};
 
-    var txPromise = knex.transaction((tx) => Promise.resolve(tx('users').where('id', userId).first().forUpdate())
+    var txPromise = knex.transaction((tx) => PromiseUtils.withTimeout(Promise.resolve(tx('users').where('id', userId).first().forUpdate())
       .then(function (userRow) {
         _chainState.userRow = userRow;
 
@@ -252,12 +254,11 @@ class RankModule {
           return Promise.all(allQueries);
         }
       })
-      .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
-      .timeout(10000)
-      .catch(Promise.TimeoutError, function (e) {
+      .then(() => SyncModule._bumpUserTransactionCounter(tx, userId)), 10000)
+      .catch(onType(PromiseUtils.TimeoutError, function (e) {
         Logger.module('RankModule').error(`cycleUserSeasonRanking() -> ERROR, operation timeout for u:${userId}`);
         throw e;
-      }));
+      })));
 
     return txPromise
       .then(() => DuelystFirebase.connect().getRootRef())
@@ -322,7 +323,7 @@ class RankModule {
     this_obj.timeout = setTimeout(() => Logger.module('RankModule').debug(`updateUserRankingWithGameOutcome() -> Potential timeout detected. game_id:${gameId}`),
       10000);
 
-    return knex.transaction((tx) => Promise.resolve(tx('users').first().where('id', userId).forUpdate())
+    return knex.transaction((tx) => PromiseUtils.withTimeout(Promise.resolve(tx('users').first().where('id', userId).forUpdate())
       .then(function (userRow) {
       // Logger.module("RankModule").debug "updateUserRankingWithGameOutcome() -> ACQUIRED LOCK ON #{userId}".yellow
 
@@ -448,12 +449,11 @@ class RankModule {
       .then(function () {
         Logger.module('RankModule').debug(`updateUserRankingWithGameOutcome() -> FB done. syncing user tx counts. game_id:${gameId}`);
         return SyncModule._bumpUserTransactionCounter(tx, userId);
-      })
-      .timeout(10000)
-      .catch(Promise.TimeoutError, function (e) {
+      }), 10000)
+      .catch(onType(PromiseUtils.TimeoutError, function (e) {
         Logger.module('RankModule').error(`updateUserRankingWithGameOutcome() -> ERROR, operation timeout for u:${userId} g:${gameId}`);
         throw e;
-      })
+      }))
       .finally(() => DuelystFirebase.connect().getRootRef()
         .then((fbRootRef) => FirebasePromises.set(fbRootRef.child('user-games').child(userId).child(gameId).child('job_status')
           .child('rank'), true))))
@@ -512,7 +512,7 @@ class RankModule {
     this_obj.seasonStartingAt = seasonStartingAt;
 
     // Transaction for updating player ratings (Ladder position in following)
-    var txPromise = knex.transaction((tx) => Promise.all([
+    var txPromise = knex.transaction((tx) => PromiseUtils.withTimeout(Promise.all([
       tx('users').first('rank', 'top_rank_rating').where('id', player1Id).forUpdate(),
       tx('users').first('rank', 'top_rank_rating').where('id', player2Id).forUpdate(),
     ])
@@ -730,12 +730,11 @@ class RankModule {
             _chainState.player1LadderPositionAfter = player1LadderPositionAfter;
             return _chainState.player2LadderPositionAfter = player2LadderPositionAfter;
           });
-      })
-      .timeout(10000)
-      .catch(Promise.TimeoutError, function (e) {
+      }), 10000)
+      .catch(onType(PromiseUtils.TimeoutError, function (e) {
         Logger.module('RankModule').error(`updateUsersRatingsWithGameOutcome() -> ERROR, operation timeout for u:${userId} g:${gameId}`);
         throw e;
-      }))
+      })))
       .then(() => DuelystFirebase.connect().getRootRef())
       .then(function (fbRootRef) {
       // Perform firebase updates now that transaction is completed

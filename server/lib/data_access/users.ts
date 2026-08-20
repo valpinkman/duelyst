@@ -1054,7 +1054,7 @@ class UsersModule {
     const MOMENT_NOW_UTC = systemTime || moment().utc();
     const this_obj = {};
 
-    const txPromise = knex.transaction((tx) => Promise.resolve(tx('users').where('id', userId).first('id').forUpdate())
+    const txPromise = knex.transaction((tx) => PromiseUtils.withTimeout(Promise.resolve(tx('users').where('id', userId).first('id').forUpdate())
       .then((userRow) => Promise.all([
         userRow,
         tx('user_faction_progression').where({ user_id: userId, faction_id: factionId }).first().forUpdate(),
@@ -1102,12 +1102,11 @@ class UsersModule {
         _chainState.factionProgressionRow.updated_at = moment.utc(_chainState.factionProgressionRow.updated_at).valueOf();
         return FirebasePromises.set(rootRef.child('user-faction-progression').child(userId).child(factionId).child('stats'), _chainState.factionProgressionRow);
       })
-      .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
-      .timeout(10000)
-      .catch(Promise.TimeoutError, function (e) {
+      .then(() => SyncModule._bumpUserTransactionCounter(tx, userId)), 10000)
+      .catch(onType(PromiseUtils.TimeoutError, function (e) {
         Logger.module('UsersModule').error(`createFactionProgressionRecord() -> ERROR, operation timeout for u:${userId} g:${gameId}`);
         throw e;
-      }));
+      })));
 
     return txPromise;
   }
@@ -1140,7 +1139,7 @@ class UsersModule {
     const MOMENT_NOW_UTC = systemTime || moment().utc();
     const this_obj = {};
 
-    var txPromise = knex.transaction((tx) => Promise.resolve(tx('users').first('id', 'is_bot').where('id', userId).forUpdate())
+    var txPromise = knex.transaction((tx) => PromiseUtils.withTimeout(Promise.resolve(tx('users').first('id', 'is_bot').where('id', userId).forUpdate())
       .then((userRow) => Promise.all([
         userRow,
         tx('user_faction_progression').where({ user_id: userId, faction_id: factionId }).first().forUpdate(),
@@ -1438,12 +1437,11 @@ class UsersModule {
         return Promise.all(allPromises);
       })
       .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
-      .catch(onType(Errors.MaxFactionXPForSinglePlayerReachedError, (e) => tx.rollback(e)))
-      .timeout(10000)
-      .catch(Promise.TimeoutError, function (e) {
+      .catch(onType(Errors.MaxFactionXPForSinglePlayerReachedError, (e) => tx.rollback(e))), 10000)
+      .catch(onType(PromiseUtils.TimeoutError, function (e) {
         Logger.module('UsersModule').error(`updateUserFactionProgressionWithGameOutcome() -> ERROR, operation timeout for u:${userId} g:${gameId}`);
         throw e;
-      }))
+      })))
       .then(function () {
       // Update achievements if leveled up
         if (SDK.FactionProgression.hasLeveledUp(_chainState.factionProgressionRow.xp, _chainState.factionProgressionRow.xp_earned) || (_chainState.factionProgressionRow.game_count === 1)) {
@@ -1496,7 +1494,7 @@ class UsersModule {
     var txPromise = knex.transaction(function (tx) {
       const start_of_day_int = parseInt(moment(MOMENT_NOW_UTC).startOf('day').utc().format('YYYYMMDD'));
 
-      return Promise.resolve(tx('users').first('id').where('id', userId).forUpdate())
+      return PromiseUtils.withTimeout(Promise.resolve(tx('users').first('id').where('id', userId).forUpdate())
         .then((userRow) => Promise.all([
           userRow,
           tx('user_progression').where('user_id', userId).first().forUpdate(),
@@ -1912,12 +1910,11 @@ class UsersModule {
 
           return Promise.all(allPromises);
         })
-        .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
-        .timeout(10000)
-        .catch(Promise.TimeoutError, function (e) {
+        .then(() => SyncModule._bumpUserTransactionCounter(tx, userId)), 10000)
+        .catch(onType(PromiseUtils.TimeoutError, function (e) {
           Logger.module('UsersModule').error(`updateUserProgressionWithGameOutcome() -> ERROR, operation timeout for u:${userId} g:${gameId}`);
           throw e;
-        });
+        }));
     })
       .then(function () { return Logger.module('UsersModule').debug(`updateUserProgressionWithGameOutcome() -> user ${userId.blue}`.green + ` game ${gameId} G:${_chainState.progressionRow.game_count} W:${_chainState.progressionRow.win_count} L:${_chainState.progressionRow.loss_count} U:${_chainState.progressionRow.unscored_count} progression recorded. Unscored: ${(isUnscored != null ? isUnscored.toString().cyan : undefined)}`.green); })
       .finally(() => GamesModule.markClientGameJobStatusAsComplete(userId, gameId, 'progression'));
@@ -1971,7 +1968,7 @@ class UsersModule {
     const this_obj = {};
     this_obj.rewards = [];
 
-    var txPromise = knex.transaction((tx) => Promise.resolve(tx('users').first('id').where('id', userId).forUpdate())
+    var txPromise = knex.transaction((tx) => PromiseUtils.withTimeout(Promise.resolve(tx('users').first('id').where('id', userId).forUpdate())
       .then(function (userRow) {
         _chainState.userRow = userRow;
         return DuelystFirebase.connect().getRootRef();
@@ -2079,12 +2076,11 @@ class UsersModule {
 
         return Promise.all(allPromises);
       })
-      .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
-      .timeout(10000)
-      .catch(Promise.TimeoutError, function (e) {
+      .then(() => SyncModule._bumpUserTransactionCounter(tx, userId)), 10000)
+      .catch(onType(PromiseUtils.TimeoutError, function (e) {
         Logger.module('UsersModule').error(`updateUserBossProgressionWithGameOutcome() -> ERROR, operation timeout for u:${userId} g:${gameId}`);
         throw e;
-      }))
+      })))
       .then(() => Logger.module('UsersModule').debug(`updateUserBossProgressionWithGameOutcome() -> user ${userId.blue}`.green + ` game ${gameId} boss id:${bossId}`.green))
       .finally(() => GamesModule.markClientGameJobStatusAsComplete(userId, gameId, 'progression'));
 
@@ -2115,7 +2111,7 @@ class UsersModule {
     const MOMENT_SEASON_START_UTC = MOMENT_NOW_UTC.clone().startOf('month');
     const this_obj = {};
 
-    return knex.transaction((tx) => Promise.resolve(tx('users').first('id').where('id', userId).forUpdate())
+    return knex.transaction((tx) => PromiseUtils.withTimeout(Promise.resolve(tx('users').first('id').where('id', userId).forUpdate())
       .then((userRow) => Promise.all([
         userRow,
         tx('user_game_counters').where({
@@ -2220,12 +2216,11 @@ class UsersModule {
         _chainState.seasonCounter = seasonCounter;
 
         return Promise.all(allPromises);
-      })
-      .timeout(10000)
-      .catch(Promise.TimeoutError, function (e) {
+      }), 10000)
+      .catch(onType(PromiseUtils.TimeoutError, function (e) {
         Logger.module('UsersModule').error(`updateGameCounters() -> ERROR, operation timeout for u:${userId}`);
         throw e;
-      }))
+      })))
       .then(function () {
         Logger.module('UsersModule').debug(`updateGameCounters() -> updated ${gameType} game counters for ${userId.blue}`);
         return {

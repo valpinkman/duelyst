@@ -26,6 +26,8 @@ const generatePushId = require('../../../app/common/generate_push_id');
 // SDK imports
 const SDK = require('../../../app/sdk');
 const UtilsGameSession = require('../../../app/common/utils/utils_game_session');
+const PromiseUtils = require('../../../app/common/utils/utils_promise');
+const { onType } = require('../../../app/common/utils/utils_promise');
 
 class GauntletModule {
   declare static _GAUNTLET_SPIRIT_ORB_REWARD_SETS: any;
@@ -368,7 +370,7 @@ class GauntletModule {
 
     const NOW_UTC_MOMENT = moment.utc();
 
-    return knex.transaction((tx) => Promise.resolve(tx('users').first('top_gauntlet_win_count').where('id', userId).forUpdate())
+    return knex.transaction((tx) => PromiseUtils.withTimeout(Promise.resolve(tx('users').first('top_gauntlet_win_count').where('id', userId).forUpdate())
       .then((userRow) => Promise.all([
         userRow,
         tx('user_gauntlet_run').first().where('user_id', userId).forUpdate(),
@@ -454,12 +456,11 @@ class GauntletModule {
         }),
         );
       })
-      .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
-      .timeout(10000)
-      .catch(Promise.TimeoutError, function (e) {
+      .then(() => SyncModule._bumpUserTransactionCounter(tx, userId)), 10000)
+      .catch(onType(PromiseUtils.TimeoutError, function (e) {
         Logger.module('GauntletModule').error(`updateArenaRunWithGameOutcome() -> ERROR, operation timeout for u:${userId} g:${gameId}`);
         throw e;
-      }))
+      })))
       .then(function () { return Promise.resolve(_chainState.runData); })
       .finally(() => GamesModule.markClientGameJobStatusAsComplete(userId, gameId, 'gauntlet'));
   }

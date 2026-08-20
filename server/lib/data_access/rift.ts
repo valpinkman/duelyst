@@ -31,6 +31,8 @@ const { Redis, Jobs, RiftManager } = require('../../redis');
 const SDK = require('../../../app/sdk');
 const UtilsGameSession = require('../../../app/common/utils/utils_game_session');
 const RiftHelper = require('app/sdk/rift/riftHelper');
+const PromiseUtils = require('../../../app/common/utils/utils_promise');
+const { onType } = require('../../../app/common/utils/utils_promise');
 
 class RiftModule {
   static RIFT_MAX_WINS_FOR_MATCHMAKING = 200;
@@ -489,7 +491,7 @@ class RiftModule {
 
     const this_obj = {};
 
-    return knex.transaction((tx) => Promise.resolve(tx('users').first('id').where('id', userId).forUpdate())
+    return knex.transaction((tx) => PromiseUtils.withTimeout(Promise.resolve(tx('users').first('id').where('id', userId).forUpdate())
       .then((userRow) => Promise.all([
         userRow,
         tx('user_rift_runs').first().where('user_id', userId).andWhere('ticket_id', ticketId)
@@ -623,12 +625,11 @@ class RiftModule {
 
         return Promise.all(allFbPromises);
       })
-      .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
-      .timeout(10000)
-      .catch(Promise.TimeoutError, function (e) {
+      .then(() => SyncModule._bumpUserTransactionCounter(tx, userId)), 10000)
+      .catch(onType(PromiseUtils.TimeoutError, function (e) {
         Logger.module('RiftModule').error(`updateArenaRunWithGameOutcome() -> ERROR, operation timeout for u:${userId} g:${gameId}`);
         throw e;
-      }))
+      })))
       .then(function () { return Promise.resolve(_chainState.runData); })
       .finally(() => GamesModule.markClientGameJobStatusAsComplete(userId, gameId, 'rift'));
   }
