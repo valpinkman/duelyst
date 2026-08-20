@@ -103,7 +103,7 @@ class GiftCrateModule {
       return Promise.reject(new Error(`Can not claim gift crate: no crate ID for user id - ${userId}`));
     }
 
-    this_obj.userId = userId;
+    _chainState.userId = userId;
     _chainState.crateId = crateId;
     _chainState.keyId = keyId;
 

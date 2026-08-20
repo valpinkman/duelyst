@@ -56,3 +56,10 @@ jobs:
     # were both green.
     - name: check for bluebird orphans
       run: pnpm check:bluebird-orphans
+
+    # TS2304 is a list of identifiers that do not exist -- ReferenceErrors
+    # waiting to happen. eslint's no-undef is off for .ts, so TypeScript is the
+    # only thing that sees them. The count was swept to zero, and this keeps it
+    # there: a codemod regression that shipped once would have been caught here.
+    - name: check for undefined names (TS2304)
+      run: pnpm check:undefined-names

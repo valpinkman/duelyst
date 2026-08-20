@@ -128,6 +128,13 @@ How we work on it:
   `generate_packages.js` and RSX paths.
 
 Status log (newest first):
+- 2026-08-20 — **TS2304 is now a CI gate** (`pnpm check:undefined-names`). I shipped a
+  regression to prove why: the state-bag merge codemod removed a `this_obj` declaration in
+  `gift_crate.ts` and left one write behind, so the function threw `this_obj is not defined`.
+  `pnpm typecheck` reported it as TS2304 the whole time — I had swept that count to zero
+  precisely so a new one would stand out, then didn't run typecheck after the codemod. The guard
+  existed and went unused, so it is now enforced in CI. Only TS2304 is gated; the rest of the
+  typecheck backlog is not.
 - 2026-08-20 — **chased the undefined-value cluster: 5 more production bugs, data_access
   455 → 493 passing.** A second `.bind(this)` artifact: code reading `_chainState.X` where X is
   **never assigned** — sometimes the function's own PARAMETER. Detector had to ignore
