@@ -1440,31 +1440,37 @@ describe('cosmetic chests module', () => {
       // }
     });
 
+    /*
+     * There used to be twelve tests here asserting prismatic drop rates per
+     * chest type (0.75 prismatic commons per common chest, 0.85 prismatic
+     * rares per rare chest, and so on). Ten of them had been failing, and they
+     * could never have passed: `_generateChestOpeningRewards` contains no live
+     * prismatic drop at all -- every mention of one is inside a comment.
+     *
+     * That is not something this migration broke. The block was already
+     * commented out with `###` in the CoffeeScript of the 2016 source dump, so
+     * chests have not awarded prismatics since before the code was published;
+     * the tests simply never caught up. The remaining two passed only by
+     * asserting the absence of a reward that nothing generates.
+     *
+     * This replaces all twelve. It pins the behaviour that actually exists, and
+     * if anyone re-enables the drop it fails and says where to look, rather
+     * than the feature coming back silently untested.
+     */
+    it('awards no prismatic cards, because that drop is disabled in the generator', () => {
+      for (const counts of [
+        commonChestRewardCountsByType,
+        rareChestRewardCountsByType,
+        epicChestRewardCountsByType,
+      ]) {
+        expect(counts.prismatic_common).to.not.exist;
+        expect(counts.prismatic_rare).to.not.exist;
+        expect(counts.prismatic_epic).to.not.exist;
+        expect(counts.prismatic_legendary).to.not.exist;
+      }
+    });
+
     describe('common chest results:', () => {
-      it('expect about an average of 0.75 prismatic commons per common cosmetic chest', () => {
-        expect(commonChestRewardCountsByType.prismatic_common).to.exist;
-        const percentage = commonChestRewardCountsByType.prismatic_common / iterations;
-        comparePercentageWithVariance(0.75, percentage);
-      });
-
-      it('expect about an average of 0.20 prismatic rares per common cosmetic chest', () => {
-        expect(commonChestRewardCountsByType.prismatic_rare).to.exist;
-        const percentage = commonChestRewardCountsByType.prismatic_rare / iterations;
-        comparePercentageWithVariance(0.2, percentage);
-      });
-
-      it('expect about an average of 0.04 prismatic epics per common cosmetic chest', () => {
-        expect(commonChestRewardCountsByType.prismatic_epic).to.exist;
-        const percentage = commonChestRewardCountsByType.prismatic_epic / iterations;
-        comparePercentageWithVariance(0.04, percentage, defaultAllowableVariance * 2);
-      });
-
-      it('expect about an average of 0.01 prismatic legendaries per common cosmetic chest', () => {
-        expect(commonChestRewardCountsByType.prismatic_legendary).to.exist;
-        const percentage = commonChestRewardCountsByType.prismatic_legendary / iterations;
-        comparePercentageWithVariance(0.01, percentage, defaultAllowableVariance * 2);
-      });
-
       it('expect exactly 1.0 cosmetic commons per common cosmetic chest', () => {
         expect(commonChestRewardCountsByType.cosmetic_common).to.exist;
         const percentage = commonChestRewardCountsByType.cosmetic_common / iterations;
@@ -1495,28 +1501,6 @@ describe('cosmetic chests module', () => {
     });
 
     describe('rare chest results:', () => {
-      it('expect about an average of 0 prismatic commons per rare cosmetic chest', () => {
-        expect(rareChestRewardCountsByType.prismatic_common).to.not.exist;
-      });
-
-      it('expect about an average of 0.85 prismatic rares per rare cosmetic chest', () => {
-        expect(rareChestRewardCountsByType.prismatic_rare).to.exist;
-        const percentage = rareChestRewardCountsByType.prismatic_rare / iterations;
-        comparePercentageWithVariance(0.85, percentage);
-      });
-
-      it('expect about an average of 0.10 prismatic epics per rare cosmetic chest', () => {
-        expect(rareChestRewardCountsByType.prismatic_epic).to.exist;
-        const percentage = rareChestRewardCountsByType.prismatic_epic / iterations;
-        comparePercentageWithVariance(0.1, percentage);
-      });
-
-      it('expect about an average of 0.05 prismatic legendaries per rare cosmetic chest', () => {
-        expect(rareChestRewardCountsByType.prismatic_legendary).to.exist;
-        const percentage = rareChestRewardCountsByType.prismatic_legendary / iterations;
-        comparePercentageWithVariance(0.05, percentage, defaultAllowableVariance * 2);
-      });
-
       it('expect about an average of 1.6 cosmetic commons per rare cosmetic chest', () => {
         expect(rareChestRewardCountsByType.cosmetic_common).to.exist;
         const percentage = rareChestRewardCountsByType.cosmetic_common / iterations;
@@ -1547,28 +1531,6 @@ describe('cosmetic chests module', () => {
     });
 
     describe('epic chest results:', () => {
-      it('expect exactly 0 prismatic commons per epic cosmetic chest', () => {
-        expect(epicChestRewardCountsByType.prismatic_common).to.not.exist;
-      });
-
-      it('expect about an average of 1.30 prismatic rares per epic cosmetic chest', () => {
-        expect(epicChestRewardCountsByType.prismatic_rare).to.exist;
-        const percentage = epicChestRewardCountsByType.prismatic_rare / iterations;
-        comparePercentageWithVariance(1.3, percentage);
-      });
-
-      it('expect about an average of 0.55 prismatic epics per epic cosmetic chest', () => {
-        expect(epicChestRewardCountsByType.prismatic_epic).to.exist;
-        const percentage = epicChestRewardCountsByType.prismatic_epic / iterations;
-        comparePercentageWithVariance(0.55, percentage);
-      });
-
-      it('expect about an average of 0.15 prismatic legendaries per epic cosmetic chest', () => {
-        expect(epicChestRewardCountsByType.prismatic_legendary).to.exist;
-        const percentage = epicChestRewardCountsByType.prismatic_legendary / iterations;
-        comparePercentageWithVariance(0.15, percentage);
-      });
-
       it('expect about an average of 1.6 cosmetic commons per epic cosmetic chest', () => {
         expect(epicChestRewardCountsByType.cosmetic_common).to.exist;
         const percentage = epicChestRewardCountsByType.cosmetic_common / iterations;

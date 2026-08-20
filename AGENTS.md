@@ -214,6 +214,21 @@ How we work on it:
 
 Status log (newest first):
 
+- 2026-08-21 — **triaged the data_access failures; the suite is flaky, which is the real
+  blocker.** Three consecutive runs of an unchanged tree gave 70 / 70 / 71 failures, four tests
+  swapping verdict between them — two chest simulations over unseeded `Math.random()`, plus
+  `rift upgradeCard` and `users updateGameCounters`. **69 are stable**; the rest is noise, and a
+  gate that fails randomly is worse than no gate, so seeding those comes before the tail.
+  On the question of tests for features that no longer exist: **almost none**. Premium currency
+  (diamonds), Stripe, PayPal, Steam, Amazon, Twitch and Kongregate have **zero** tests between
+  them. The one real case was cosmetic chest prismatic drops — `_generateChestOpeningRewards`
+  has no live prismatic drop at all, and it was already commented out in the 2016 CoffeeScript,
+  so 10 tests had been asserting rates for something no published version ever did. Those 12
+  tests (10 failing, 2 passing by asserting absence) are now one test that pins the behaviour.
+  Seasonal quest tests looked deletable and are **not**: the SDK classes still exist and the
+  tests drive them with an injected clock. Separately, `user_premium_currency` is referenced 5×
+  in `shop.ts` but **no migration creates it** — the only table live code uses that the schema
+  lacks, with both its functions' only callers commented out. Dead code to delete, not tests.
 - 2026-08-21 — **5T.3 done: the services stopped compiling TypeScript at boot.** A cold
   container went **4,578 ms → ~900 ms** to reach `/health`, and the 13 MB tsx cache it wrote into
   `/tmp` on every start is gone. `pnpm build:server` transpiles 1,647 files in ~0.5 s with
