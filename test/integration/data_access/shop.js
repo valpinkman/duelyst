@@ -1,3 +1,14 @@
+/*
+ * Shop unit tests are currently disabled: the entire suite below is commented out.
+ *
+ * This placeholder exists so the runner reports it as SKIPPED rather than
+ * failing the file with "No test suite found" -- an empty test file is an
+ * error to vitest, which made a deliberate decision look like a broken suite.
+ */
+describe.skip('shop module', () => {
+  it('is disabled', () => {});
+});
+
 /* Shop unit tests are currently disabled.
 
 var path = require('path')

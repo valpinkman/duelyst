@@ -1,3 +1,14 @@
+/*
+ * Achievements tests are temporarily disabled: the entire suite below is commented out.
+ *
+ * This placeholder exists so the runner reports it as SKIPPED rather than
+ * failing the file with "No test suite found" -- an empty test file is an
+ * error to vitest, which made a deliberate decision look like a broken suite.
+ */
+describe.skip('achievements module', () => {
+  it('is disabled', () => {});
+});
+
 /* Achievements tests are temporarily disabled.
 var path = require('path')
 require('app-module-path').addPath(path.join(__dirname, '../../../'))

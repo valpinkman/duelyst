@@ -962,7 +962,15 @@ describe('cosmetic chests module', () => {
       expect(actualPercentage).to.be.at.most(expectedPercentage * upperVariance);
     };
 
-    beforeAll('expect chest opening rewards to match current design', () => {
+    /*
+     * This was `beforeAll('expect chest opening rewards to match current
+     * design', ...)`, which vitest rejects -- beforeAll takes no description,
+     * that is mocha's `before(name, fn)` signature. The body is full of
+     * expect() assertions, so it is a TEST that the mocha->vitest conversion
+     * turned into a hook; as a hook its failure would also take down the whole
+     * file rather than one case.
+     */
+    it('expect chest opening rewards to match current design', () => {
       const gameSession = SDK.GameSession.current();
       const processReward = function (rewardTypeObject, rewardObject) {
         for (const key in rewardObject) {
