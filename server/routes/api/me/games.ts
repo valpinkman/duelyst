@@ -48,6 +48,7 @@ const Rarity = require('../../../../app/sdk/cards/rarityLookup');
 const Cards = require('../../../../app/sdk/cards/cardsLookupComplete');
 const GameSetups = require('../../../ai/decks/game_setups');
 const CosmeticsFactory = require('../../../../app/sdk/cosmetics/cosmeticsFactory');
+const { onType } = require('../../../../app/common/utils/utils_promise');
 
 const awsRegion = config.get('aws.region');
 const awsReplaysBucket = config.get('aws.replaysBucketName');
@@ -377,7 +378,7 @@ router.put('/:game_id/gold_tip_amount', function (req, res, next) {
 
   return UsersModule.tipAnotherPlayerForGame(user_id, game_id, amount)
     .then(() => res.status(200).json({}))
-    .catch(Errors.AlreadyExistsError, (e) => res.status(304).json({}))
+    .catch(onType(Errors.AlreadyExistsError, (e) => res.status(304).json({})))
     .catch((error) => next(error));
 });
 
@@ -487,14 +488,14 @@ router.post('/single_player', function (req, res, next) {
     })
     .then((responseData) => // send data back to the player
       res.status(200).json(responseData))
-    .catch(Errors.InvalidDeckError, function (error) {
+    .catch(onType(Errors.InvalidDeckError, function (error) {
       Logger.module('SINGLE PLAYER').debug(`Request ${userId} : attempting to use invalid deck!`.red);
       return res.status(400).json({ error: error.message });
-    })
-    .catch(Errors.SinglePlayerModeDisabledError, function (error) {
+    }))
+    .catch(onType(Errors.SinglePlayerModeDisabledError, function (error) {
       Logger.module('SINGLE PLAYER').debug(`Request ${userId} : attempting to use invalid deck!`.red);
       return res.status(400).json({ error: error.message });
-    })
+    }))
     .catch(function (error) {
       Logger.module('SINGLE PLAYER').error(`ERROR: Request.post /single_player ${userId} failed!`.red);
       return next(error);
@@ -556,14 +557,14 @@ router.post('/boss_battle', function (req, res, next) {
       return createSinglePlayerGame(userId, 'You', GameType.BossBattle, deck, cardBackId, battleMapId, aiPlayerId, aiUsername, aiGeneralId, aiDeckId, 1.0, 0, null, gameSetupOptions);
     }).then((responseData) => // send data back to the player
       res.status(200).json(responseData))
-    .catch(Errors.InvalidDeckError, function (error) {
+    .catch(onType(Errors.InvalidDeckError, function (error) {
       Logger.module('BOSS BATTLE').debug(`Request ${userId} : attempting to use invalid deck!`.red);
       return res.status(400).json({ error: error.message });
-    })
-    .catch(Errors.SinglePlayerModeDisabledError, function (error) {
+    }))
+    .catch(onType(Errors.SinglePlayerModeDisabledError, function (error) {
       Logger.module('BOSS BATTLE').debug(`Request ${userId} : attempting to use invalid deck!`.red);
       return res.status(400).json({ error: error.message });
-    })
+    }))
     .catch(function (error) {
       Logger.module('BOSS BATTLE').error(`ERROR: Request.post /boss_battle ${userId} failed!`.red);
       return next(error);
@@ -581,8 +582,8 @@ router.post('/share_replay', function (req, res, next) {
 
   return GamesModule.shareReplay(user_id, game_id)
     .then((replayData) => res.status(200).json(replayData))
-    .catch(Errors.AlreadyExistsError, (e) => res.status(304).json({}))
-    .catch(Errors.NotFoundError, (e) => res.status(404).json(e))
+    .catch(onType(Errors.AlreadyExistsError, (e) => res.status(304).json({})))
+    .catch(onType(Errors.NotFoundError, (e) => res.status(404).json(e)))
     .catch((error) => next(error));
 });
 

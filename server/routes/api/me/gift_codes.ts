@@ -16,6 +16,7 @@ const t = require('tcomb-validation');
 const validator = require('validator');
 const validators = require('../../../validators');
 const validatorTypes = require('../../../validators/types');
+const { onType } = require('../../../../app/common/utils/utils_promise');
 
 const router = express.Router();
 
@@ -36,8 +37,8 @@ router.post('/', function (req, res, next) {
       .then(function () {
         Logger.module('API').debug(`user ${user_id} redeemed gift code`);
         return res.status(200).json({});
-      }).catch(Errors.NotFoundError, (e) => res.status(400).json(e))
-      .catch(Errors.BadRequestError, (e) => res.status(400).json(e))
+      }).catch(onType(Errors.NotFoundError, (e) => res.status(400).json(e)))
+      .catch(onType(Errors.BadRequestError, (e) => res.status(400).json(e)))
       .catch((error) => next(error));
 
   // else assume it's a referral code
@@ -50,8 +51,8 @@ router.post('/', function (req, res, next) {
           throw new Errors.NotFoundError();
         }
         return ReferralsModule.markUserAsReferredByFriend(user_id, referrer_id);
-      }).then(() => res.status(200).json({})).catch(Errors.NotFoundError, (e) => res.status(400).json(e))
-      .catch(Errors.BadRequestError, (e) => res.status(400).json(e))
+      }).then(() => res.status(200).json({})).catch(onType(Errors.NotFoundError, (e) => res.status(400).json(e)))
+      .catch(onType(Errors.BadRequestError, (e) => res.status(400).json(e)))
       .catch((error) => next(error));
   }
 });

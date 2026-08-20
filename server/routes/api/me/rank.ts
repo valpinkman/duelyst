@@ -18,6 +18,7 @@ const RankDivisionLookup = require('../../../../app/sdk/rank/rankDivisionLookup'
 const t = require('tcomb-validation');
 const types = require('../../../validators/types');
 const { SRankManager } = require('../../../redis');
+const { onType } = require('../../../../app/common/utils/utils_promise');
 
 const router = express.Router();
 
@@ -163,10 +164,10 @@ router.put('/history/:season_key/claim_rewards', function (req, res, next) {
     .then(function (data) {
       Logger.module('API').debug(`Season ${season_key} rewards claimed for user ${user_id.blue}`.cyan);
       return res.status(200).json(data);
-    }).catch(Errors.AlreadyExistsError, function (error) {
+    }).catch(onType(Errors.AlreadyExistsError, function (error) {
       Logger.module('API').debug(`ERROR: season ${season_key} rewards already claimed by user ${user_id.blue}`.red, util.inspect(error));
       return res.status(403).json({ message: `The rewards for season ${season_key} have already been claimed previously.` });
-    }).catch(function (error) {
+    })).catch(function (error) {
       Logger.module('API').debug(`ERROR claiming season ${season_key} rewards for user ${user_id.blue}`.red, util.inspect(error));
       return next(error);
     });

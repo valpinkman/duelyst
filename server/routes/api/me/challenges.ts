@@ -12,6 +12,7 @@ const Logger = require('../../../../app/common/logger');
 const t = require('tcomb-validation');
 const moment = require('moment');
 const Errors = require('../../../lib/custom_errors');
+const { onType } = require('../../../../app/common/utils/utils_promise');
 
 const router = express.Router();
 
@@ -127,13 +128,13 @@ router.put('/daily/:challenge_id/completed_at', function (req, res, next) {
       // Challenge was already completed
         return res.status(304).json({});
       }
-    }).catch(Errors.AlreadyExistsError, function (error) {
+    }).catch(onType(Errors.AlreadyExistsError, function (error) {
       Logger.module('API').error(`Challenge ID ${challenge_id} already completed for user ID ${user_id.blue}`);
       return res.status(304).json({});
-    }).catch(Errors.DailyChallengeTimeFrameError, function (error) {
+    })).catch(onType(Errors.DailyChallengeTimeFrameError, function (error) {
       Logger.module('API').error(`Daily challenge completed_at ${completed_at} outside allowable time frame for user ID ${user_id.blue}`);
       return res.status(400).json({ message: 'Daily challenge completion outside allowable time frame. Local clock may be skewed.' });
-    })
+    }))
     .catch(function (error) {
       Logger.module('API').error(`Failed to set challenge ${challenge_id} as completed for ${user_id.blue}`.red + ' ERROR: ' + util.inspect(error));
       return next(error);

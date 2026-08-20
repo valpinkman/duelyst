@@ -20,6 +20,7 @@ const validatorTypes = require('../../../validators/types');
 const zlib = require('zlib');
 const Promise = require('bluebird');
 const moment = require('moment');
+const { onType } = require('../../../../app/common/utils/utils_promise');
 // AWS = require "aws-sdk"
 
 // promisify
@@ -75,7 +76,7 @@ router.post('/card_collection/:card_id', function (req, res, next) {
     .then(function (data) {
       Logger.module('API').debug(`Crafted card ${card_id} for user ${user_id.blue}`.cyan);
       return res.status(200).json(data);
-    }).catch(Errors.InsufficientFundsError, (error) => res.status(403).json({})).catch(function (error) {
+    }).catch(onType(Errors.InsufficientFundsError, (error) => res.status(403).json({}))).catch(function (error) {
       Logger.module('API').error(`ERROR crafting card for user ${user_id.blue}`.red, util.inspect(error));
       return next(error);
     });
@@ -146,10 +147,10 @@ router.post('/spirit_orbs', function (req, res, next) {
       .then(function (value) {
         Logger.module('API').debug(`COMPLETE Buying Booster Pack with GOLD for user ${user_id.blue}`.cyan);
         return res.status(200).json(value);
-      }).catch(Errors.InsufficientFundsError, function (error) {
+      }).catch(onType(Errors.InsufficientFundsError, function (error) {
         Logger.module('API').error(`INSUFFICIENT FUNDS Buying Booster Pack with GOLD for user ${user_id.blue}`.red);
         return res.status(403).json({});
-      }).catch(function (error) {
+      })).catch(function (error) {
         Logger.module('API').error(`ERROR Buying Booster Pack with GOLD for user ${user_id.blue}`.red);
         return next(error);
       });
@@ -185,7 +186,7 @@ router.post('/gauntlet_tickets', function (req, res, next) {
     .then(function (data) {
       Logger.module('API').debug(`Arena ticket PURCHASED for user ${user_id.blue}`.cyan);
       return res.status(200).json(data);
-    }).catch(Errors.InsufficientFundsError, (error) => res.status(401).json({ message: 'Insufficient gold to buy a Gauntlet ticket.' })).catch(function (error) {
+    }).catch(onType(Errors.InsufficientFundsError, (error) => res.status(401).json({ message: 'Insufficient gold to buy a Gauntlet ticket.' }))).catch(function (error) {
       Logger.module('API').error(`ERROR buying arena ticket for user ${user_id.blue}`.red, util.inspect(error));
       return next(error);
     });
@@ -198,7 +199,7 @@ router.post('/rift_tickets', function (req, res, next) {
     .then(function (ticketId) {
       Logger.module('API').log(`Rift ticket ${ticketId} PURCHASED for user ${user_id.blue}`.cyan);
       return res.status(200).json({ id: ticketId });
-    }).catch(Errors.InsufficientFundsError, (error) => res.status(401).json({ message: 'Insufficient gold to buy a Rift ticket.' })).catch(function (error) {
+    }).catch(onType(Errors.InsufficientFundsError, (error) => res.status(401).json({ message: 'Insufficient gold to buy a Rift ticket.' }))).catch(function (error) {
       Logger.module('API').error(`ERROR buying rift ticket for user ${user_id.blue}`.red, util.inspect(error));
       return next(error);
     });
@@ -302,7 +303,7 @@ router.post('/cosmetics/:cosmetic_id', function (req, res, next) {
     .then(function (data) {
       Logger.module('API').debug(`Crafted cosmetic ${cosmetic_id} for user ${user_id.blue}`.cyan);
       return res.status(200).json(data);
-    }).catch(Errors.InsufficientFundsError, (error) => res.status(403).json({ message: 'Insufficient Spirit' })).catch(function (error) {
+    }).catch(onType(Errors.InsufficientFundsError, (error) => res.status(403).json({ message: 'Insufficient Spirit' }))).catch(function (error) {
       Logger.module('API').error(`ERROR crafting cosmetic for user ${user_id.blue}`.red, util.inspect(error));
       return next(error);
     });

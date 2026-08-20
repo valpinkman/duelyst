@@ -20,6 +20,7 @@ const SDK = require('../../../app/sdk/index');
 const knex = require('../../../server/lib/data_access/knex');
 
 const { SRankManager } = require('../../../server/redis/index');
+const { onType } = require('../../../app/common/utils/utils_promise');
 
 // disable the logger
 // for cleaner test output
@@ -39,7 +40,7 @@ describe('rank module', () => {
       .then(function (userIdCreated) {
         this.userId = userIdCreated;
         Logger.module('UNITTEST').log('created user ', userIdCreated);
-      }).catch(Errors.AlreadyExistsError, function (error) {
+      }).catch(onType(Errors.AlreadyExistsError, function (error) {
         Logger.module('UNITTEST').log('existing user');
         return UsersModule.userIdForEmail(userEmail)
           .bind(this)
@@ -50,7 +51,7 @@ describe('rank module', () => {
           }).then(function () {
             Logger.module('UNITTEST').log('existing user data wiped', this.userId);
           });
-      })
+      }))
       .then(function () {
         const initialRankData = {
           rank: initialRank,
@@ -82,7 +83,7 @@ describe('rank module', () => {
       .then((userIdCreated) => {
         Logger.module('UNITTEST').log('created user ', userIdCreated);
         userId = userIdCreated;
-      }).catch(Errors.AlreadyExistsError, (error) => {
+      }).catch(onType(Errors.AlreadyExistsError, (error) => {
         Logger.module('UNITTEST').log('existing user');
         return UsersModule.userIdForEmail('unit-test@duelyst.local').then((userIdExisting) => {
           Logger.module('UNITTEST').log('existing user retrieved', userIdExisting);
@@ -91,7 +92,7 @@ describe('rank module', () => {
         }).then(() => {
           Logger.module('UNITTEST').log('existing user data wiped', userId);
         });
-      });
+      }));
   });
 
   // after cleanup

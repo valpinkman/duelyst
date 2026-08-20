@@ -23,6 +23,7 @@ const NewPlayerProgressionModuleLookup = require('../../../app/sdk/progression/n
 const NewPlayerProgressionHelper = require('../../../app/sdk/progression/newPlayerProgressionHelper');
 const GiftCrateLookup = require('../../../app/sdk/giftCrates/giftCrateLookup');
 const generatePushId = require('../../../app/common/generate_push_id');
+const { onType } = require('../../../app/common/utils/utils_promise');
 
 // disable the logger for cleaner test output
 Logger.enabled = Logger.enabled && false;
@@ -37,7 +38,7 @@ describe('quests module', () => {
       .then((userIdCreated) => {
         Logger.module('UNITTEST').log('created user ', userIdCreated);
         userId = userIdCreated;
-      }).catch(Errors.AlreadyExistsError, (error) => {
+      }).catch(onType(Errors.AlreadyExistsError, (error) => {
         Logger.module('UNITTEST').log('existing user');
         return UsersModule.userIdForEmail('unit-test@duelyst.local').then((userIdExisting) => {
           Logger.module('UNITTEST').log('existing user retrieved', userIdExisting);
@@ -46,7 +47,7 @@ describe('quests module', () => {
         }).then(() => {
           Logger.module('UNITTEST').log('existing user data wiped', userId);
         });
-      });
+      }));
   });
 
   // // after cleanup

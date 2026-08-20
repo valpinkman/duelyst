@@ -21,6 +21,7 @@ const SDK = require('../../../app/sdk/index');
 const GiftCrateFactory = require('../../../app/sdk/giftCrates/giftCrateFactory');
 const knex = require('../../../server/lib/data_access/knex');
 const NewPlayerProgressionStageEnum = require('../../../app/sdk/progression/newPlayerProgressionStageEnum');
+const { onType } = require('../../../app/common/utils/utils_promise');
 
 // disable the logger for cleaner test output
 Logger.enabled = Logger.enabled && false;
@@ -35,7 +36,7 @@ describe('gift crates module', () => {
       .then((userIdCreated) => {
         // Logger.module("UNITTEST").log("created user ",userIdCreated);
         userId = userIdCreated;
-      }).catch(Errors.AlreadyExistsError, (error) =>
+      }).catch(onType(Errors.AlreadyExistsError, (error) =>
         // Logger.module("UNITTEST").log("existing user");
         UsersModule.userIdForEmail('unit-test@duelyst.local').then((userIdExisting) => {
           Logger.module('UNITTEST').log('existing user retrieved', userIdExisting);
@@ -43,7 +44,7 @@ describe('gift crates module', () => {
           return SyncModule.wipeUserData(userIdExisting);
         }).then(() => {
           // Logger.module("UNITTEST").log("existing user data wiped",userId);
-        })).catch((error) => {
+        }))).catch((error) => {
         Logger.module('UNITTEST').log('unexpected error: ', error);
         throw error;
       }));

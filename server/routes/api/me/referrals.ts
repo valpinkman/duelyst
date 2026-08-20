@@ -12,6 +12,7 @@ const DataAccessHelpers = require('../../../lib/data_access/helpers');
 const ReferralsModule = require('../../../lib/data_access/referrals');
 const Errors = require('../../../lib/custom_errors');
 const Logger = require('../../../../app/common/logger');
+const { onType } = require('../../../../app/common/utils/utils_promise');
 
 const router = express.Router();
 
@@ -121,7 +122,7 @@ router.post('/rewards/claim', function (req, res, next) {
   const user_id = req.user.d.id;
 
   return ReferralsModule.claimReferralRewards(user_id)
-    .then((rewards) => res.status(200).json(rewards)).catch(Errors.BadRequestError, (error) => res.status(304).json({})).catch((error) => next(error));
+    .then((rewards) => res.status(200).json(rewards)).catch(onType(Errors.BadRequestError, (error) => res.status(304).json({}))).catch((error) => next(error));
 });
 
 module.exports = router;

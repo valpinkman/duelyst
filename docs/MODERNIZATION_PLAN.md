@@ -702,8 +702,29 @@ server and worker. What remains is *typing* (5T.4), not converting.
         rather than arrowed**: these chains rely on `.bind()` to set `this`, and an arrow would
         capture the enclosing `this` instead — verified that `this` still flows through `.bind()`
         into the converted form. — (this commit)
-      - [ ] Stage 2 — `.get`/`.call` shorthands (115)
-      - [ ] Stage 3 — typed `.catch` (72), via `onType` + `ts-pattern`
+      - [x] **Stage 2 — nothing to do.** The "115 `.get`/`.call` shorthands" were **entirely
+        pollution**: chain-position `.get(` is Backbone `model.get('id')`, and `.call(` is
+        `Function.prototype.call`. Exactly **one** line-initial `.get(` exists and it is an HTTP
+        client call in `consul.ts`. Zero bluebird shorthands in the codebase.
+      - [x] **Stage 3 — typed `.catch` → `onType` (78 sites, 35 files).**
+        `app/common/utils/utils_promise.ts` + `scripts/codemods/typed-catch-to-ontype.mjs`.
+        The helper's `throw err` for non-matches is the whole point: without it a catch written
+        for one error class silently swallows every other error, turning crashes into
+        successful-looking responses. That is the single biggest hazard in this migration, which
+        is why it is one helper rather than 78 hand-written `instanceof` blocks.
+        The codemod rewrites only the call OPENING and finds the matching close paren by brace
+        counting, so multi-line handlers, `function` forms and nested parens are untouched.
+        **Verified through the live API**, not just tests: re-registering an existing username
+        still surfaces `AlreadyExistsError` as a 401.
+        27 `.catch(Promise.TimeoutError|CancellationError, …)` are deliberately left — they are
+        bluebird's OWN error classes and belong with the `.timeout()`/`.cancellable()`
+        conversion in stage 6. — (this commit)
+
+        *`ts-pattern` was not needed after all.* It was intended for the stacked sites, but
+        chained `onType` calls preserve bluebird's exact structure and read fine:
+        `.catch(onType(A, f))` `.catch(onType(B, g))` `.catch(next)`. Rewriting those into
+        `match(…).with(…).otherwise(…)` blocks would be a much larger diff for the same
+        rethrow guarantee, so the dependency was skipped.
       - [ ] Stage 4 — `.error` → `.catch` (174)
       - [ ] Stage 5 — `.bind` chains → closures (442), the delicate one
       - [ ] Stage 6 — `.map`/`.each`/`.filter`/`.timeout`/`.delay`/`.nodeify` + statics

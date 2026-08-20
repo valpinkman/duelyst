@@ -54,6 +54,7 @@ const UtilsGameSession = require('../../../app/common/utils/utils_game_session')
 const NewPlayerProgressionHelper = require('../../../app/sdk/progression/newPlayerProgressionHelper');
 const NewPlayerProgressionStageEnum = require('../../../app/sdk/progression/newPlayerProgressionStageEnum');
 const NewPlayerProgressionModuleLookup = require('../../../app/sdk/progression/newPlayerProgressionModuleLookup');
+const { onType } = require('../../../app/common/utils/utils_promise');
 
 ({ Redis, Jobs } = require('../../redis'));
 
@@ -1447,7 +1448,7 @@ class UsersModule {
         return Promise.all(allPromises);
       })
       .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
-      .catch(Errors.MaxFactionXPForSinglePlayerReachedError, (e) => tx.rollback(e))
+      .catch(onType(Errors.MaxFactionXPForSinglePlayerReachedError, (e) => tx.rollback(e)))
       .timeout(10000)
       .catch(Promise.TimeoutError, function (e) {
         Logger.module('UsersModule').error(`updateUserFactionProgressionWithGameOutcome() -> ERROR, operation timeout for u:${userId} g:${gameId}`);
@@ -1467,10 +1468,10 @@ class UsersModule {
 
         Logger.module('UsersModule').debug(`updateUserFactionProgressionWithGameOutcome() -> user ${userId.blue}`.green + ` game ${gameId} (${_chainState.factionProgressionRow.game_count}) faction progression recorded. Unscored: ${(isUnscored != null ? isUnscored.toString().cyan : undefined)}`.green);
         return _chainState.factionProgressionRow;
-      }).catch(Errors.MaxFactionXPForSinglePlayerReachedError, function (e) {
+      }).catch(onType(Errors.MaxFactionXPForSinglePlayerReachedError, function (e) {
         Logger.module('UsersModule').debug(`updateUserFactionProgressionWithGameOutcome() -> user ${userId.blue}`.green + ` game ${gameId} for faction ${factionId} not recorded. MAX LVL 11 for single player games reached.`);
         return null;
-      })
+      }))
       .finally(() => GamesModule.markClientGameJobStatusAsComplete(userId, gameId, 'faction_progression'));
     return txPromise;
   }
@@ -2753,7 +2754,7 @@ class UsersModule {
                   if (questData) {
                     return _chainState.questData = questData;
                   }
-                }).catch(Errors.NoNeedForNewBeginnerQuestsError, (e) => Logger.module('SDK').debug(`iterateNewPlayerCoreProgression() -> no need for new quests at ${nextStage.key} for ${userId.blue}`))
+                }).catch(onType(Errors.NoNeedForNewBeginnerQuestsError, (e) => Logger.module('SDK').debug(`iterateNewPlayerCoreProgression() -> no need for new quests at ${nextStage.key} for ${userId.blue}`)))
                 .then(function () {
                   _chainState.progressionData = moduleProgression;
                   return _chainState;
@@ -2784,7 +2785,7 @@ class UsersModule {
                   return _chainState.questData = questData;
                 }
               })
-              .catch(Errors.NoNeedForNewBeginnerQuestsError, (e) => Logger.module('SDK').debug(`iterateNewPlayerCoreProgression() -> no need for new quests at ${nextStage.key} for ${userId.blue}`))
+              .catch(onType(Errors.NoNeedForNewBeginnerQuestsError, (e) => Logger.module('SDK').debug(`iterateNewPlayerCoreProgression() -> no need for new quests at ${nextStage.key} for ${userId.blue}`)))
               .then(function () {
                 return _chainState;
               });

@@ -19,6 +19,7 @@ const t = require('tcomb-validation');
 const types = require('server/validators/types');
 const Consul = require('server/lib/consul');
 const Promise = require('bluebird');
+const { onType } = require('../../../../app/common/utils/utils_promise');
 
 const router = express.Router();
 
@@ -126,8 +127,8 @@ router.get('/:player_id', function (req, res, next) {
       };
       return res.status(200).json(responseData);
     })
-    .catch(Errors.UnauthorizedError, (error) => res.status(500).json({ message: error.message }))
-    .catch(Errors.SystemDisabledError, (error) => res.status(400).json({ message: error.message }))
+    .catch(onType(Errors.UnauthorizedError, (error) => res.status(500).json({ message: error.message })))
+    .catch(onType(Errors.SystemDisabledError, (error) => res.status(400).json({ message: error.message })))
     .catch((error) => next(error));
 });
 

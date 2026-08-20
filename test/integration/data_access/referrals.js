@@ -21,6 +21,7 @@ const Logger = require('../../../app/common/logger');
 const SDK = require('../../../app/sdk/index');
 const knex = require('../../../server/lib/data_access/knex');
 const FirstReferralPurchaseAchievement = require('../../../app/sdk/achievements/referralBasedAchievements/firstReferralPurchaseAchievement');
+const { onType } = require('../../../app/common/utils/utils_promise');
 
 // disable the logger for cleaner test output
 Logger.enabled = Logger.enabled && false;
@@ -35,7 +36,7 @@ describe('referrals module', () => {
       .then((userIdCreated) => {
         Logger.module('UNITTEST').log('created user ', userIdCreated);
         userId = userIdCreated;
-      }).catch(Errors.AlreadyExistsError, (error) => {
+      }).catch(onType(Errors.AlreadyExistsError, (error) => {
         Logger.module('UNITTEST').log('existing user');
         return UsersModule.userIdForEmail('unit-test@duelyst.local').then((userIdExisting) => {
           Logger.module('UNITTEST').log('existing user retrieved', userIdExisting);
@@ -44,7 +45,7 @@ describe('referrals module', () => {
         }).then(() => {
           Logger.module('UNITTEST').log('existing user data wiped', userId);
         });
-      }).catch((error) => {
+      })).catch((error) => {
         Logger.module('UNITTEST').log('unexpected error: ', error);
         throw error;
       });

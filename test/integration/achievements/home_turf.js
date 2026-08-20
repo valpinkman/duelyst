@@ -17,6 +17,7 @@ var Logger = require('../../../app/common/logger');
 var _ = require('underscore');
 var SDK = require('../../../app/sdk/index');
 var moment = require('moment');
+const { onType } = require('../../../app/common/utils/utils_promise');
 var knex = require('../../../server/lib/data_access/knex')
 
 // disable the logger for cleaner test output
@@ -33,7 +34,7 @@ describe("achievements module", function() {
     .then(function(userIdCreated){
       Logger.module("UNITTEST").log("created user ",userIdCreated);
       userId = userIdCreated;
-    }).catch(Errors.AlreadyExistsError,function(error){
+    }).catch(onType(Errors.AlreadyExistsError,function(error){
       Logger.module("UNITTEST").log("existing user");
       return UsersModule.userIdForEmail('unit-test@duelyst.local').then(function(userIdExisting){
         Logger.module("UNITTEST").log("existing user retrieved",userIdExisting);
@@ -42,7 +43,7 @@ describe("achievements module", function() {
       }).then(function(){
         Logger.module("UNITTEST").log("existing user data wiped",userId);
       })
-    })
+    }))
   });
 
   // describe("Home Turf Achievement", function() {

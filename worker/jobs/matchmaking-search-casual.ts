@@ -26,6 +26,7 @@ const RankFactory = require('../../app/sdk/rank/rankFactory');
 
 // redis
 const Redis = require('../../server/redis');
+const { onType } = require('../../app/common/utils/utils_promise');
 
 const casualQueue = new Redis.PlayerQueue(Redis.Redis, { name: 'casual' });
 const casualDeckValueQueue = new Redis.PlayerQueue(Redis.Redis, { name: 'casual-deck-value' });
@@ -389,8 +390,8 @@ module.exports = function (job, done) {
                     // We're done
                     return done(null, { opponentName: this.token2.name });
                   })
-                  .catch(Errors.NotFoundError, (error) => done(error))
-                  .catch(Errors.UnexpectedBadDataError, function (error) {
+                  .catch(onType(Errors.NotFoundError, (error) => done(error)))
+                  .catch(onType(Errors.UnexpectedBadDataError, function (error) {
                     Logger.module('JOB').error(`[J:${job.id}] searchQueue(${userId}): removing opponent token ${opponent.id} due to error`);
 
                     // dangling async removal of potentially bad opponent data
@@ -404,7 +405,7 @@ module.exports = function (job, done) {
                     unlock();
 
                     return requeueJob(job, done);
-                  });
+                  }));
               }
             });
         }

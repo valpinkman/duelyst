@@ -28,6 +28,7 @@ const GamesModule = require('../../server/lib/data_access/games');
 const QuestsModule = require('../../server/lib/data_access/quests');
 
 const { Redis, Jobs, GameManager } = require('../../server/redis');
+const { onType } = require('../../app/common/utils/utils_promise');
 
 /**
  * Start processing quests for user.
@@ -104,7 +105,7 @@ const onProcessGameType = function (job, userId, opponentId, gameId, factionId, 
       const playableOpponentFaction = _.find(playableFactions, (factionData) => factionData.id === opponentFactionId);
       if (playableOpponentFaction != null) {
         const whenCreated = UsersModule.createFactionProgressionRecord(userId, opponentFactionId, gameId, gameType)
-          .catch(Errors.AlreadyExistsError, function (e) {});
+          .catch(onType(Errors.AlreadyExistsError, function (e) {}));
           // silently catch already exist errors and move on
         return whenCreated;
       }

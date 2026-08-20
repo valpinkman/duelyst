@@ -16,6 +16,7 @@ const Errors = require('../../../lib/custom_errors');
 const CONFIG = require('../../../../app/common/config');
 const DataAccessHelpers = require('../../../lib/data_access/helpers');
 const t = require('tcomb-validation');
+const { onType } = require('../../../../app/common/utils/utils_promise');
 
 const router = express.Router();
 
@@ -96,10 +97,10 @@ router.put('/current/rewards_claimed_at', function (req, res, next) {
     .then(function (data) {
       Logger.module('API').debug(`Arena rewards claimed for user ${user_id.blue}`.cyan);
       return res.status(200).json(data);
-    }).catch(Errors.ArenaRewardsAlreadyClaimedError, function (error) {
+    }).catch(onType(Errors.ArenaRewardsAlreadyClaimedError, function (error) {
       Logger.module('API').error(`ERROR: arena rewards already claimed for user ${user_id.blue}`.red, util.inspect(error));
       return res.status(403).json({ message: 'The rewards for this run have already been claimed previously.' });
-    }).catch(function (error) {
+    })).catch(function (error) {
       Logger.module('API').error(`ERROR claiming arena rewards for user ${user_id.blue}`.red, util.inspect(error));
       return next(error);
     });

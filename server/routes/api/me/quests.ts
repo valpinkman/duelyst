@@ -11,6 +11,7 @@ const DataAccessHelpers = require('../../../lib/data_access/helpers');
 const Logger = require('../../../../app/common/logger');
 const Errors = require('../../../lib/custom_errors');
 const t = require('tcomb-validation');
+const { onType } = require('../../../../app/common/utils/utils_promise');
 
 const router = express.Router();
 
@@ -30,7 +31,7 @@ router.post('/beginner', function (req, res, next) {
 
   return QuestsModule.generateBeginnerQuests(user_id)
     .then((value) => // all good, send the quests over
-      res.status(200).json(value)).catch(Errors.NoNeedForNewBeginnerQuestsError, (e) => res.status(304).json({})).catch(function (error) {
+      res.status(200).json(value)).catch(onType(Errors.NoNeedForNewBeginnerQuestsError, (e) => res.status(304).json({}))).catch(function (error) {
     // oops, looks like we have an error
       Logger.module('API').debug(`BEGINNER quests failed to generate for ${user_id.blue}`.red + ' ERROR: ' + util.inspect(error));
       return next(error);
@@ -53,10 +54,10 @@ router.post('/daily', function (req, res, next) {
             // all good, send the quests over
             Logger.module('API').debug(`DAILY quests GENERATED for ${user_id.blue}`.cyan);
             return res.status(200).json(value);
-          }).catch(Errors.FirebaseTransactionDidNotCommitError, function (error) {
+          }).catch(onType(Errors.FirebaseTransactionDidNotCommitError, function (error) {
             Logger.module('API').debug(`DAILY quests did not need to update for ${user_id.blue}`);
             return res.status(304).json({});
-          }).catch(function (error) {
+          })).catch(function (error) {
             // oops, looks like we have an error
             Logger.module('API').debug(`DAILY quests failed to generate for ${user_id.blue}`.red + ' ERROR: ' + util.inspect(error));
             return next(error);
@@ -83,10 +84,10 @@ router.put('/daily/:quest_index', function (req, res, next) {
     // all good, send the quests over
       Logger.module('API').debug(`DAILY quest ${quest_index} MULLIGANED for ${user_id.blue}`.cyan);
       return res.status(200).json(value);
-    }).catch(Errors.QuestCantBeMulliganedError, function (error) {
+    }).catch(onType(Errors.QuestCantBeMulliganedError, function (error) {
       Logger.module('API').debug(`DAILY quest ${quest_index} can't be MULLIGANED again today for ${user_id.blue}`.yellow);
       return res.status(304).json({ message: 'quest already mulliganed' });
-    }).catch(function (error) {
+    })).catch(function (error) {
     // oops, looks like we have an error
       Logger.module('API').debug(`DAILY quest ${quest_index} failed to mulligan for ${user_id.blue}`.red + ' ERROR: ' + util.inspect(error));
       return next(error);

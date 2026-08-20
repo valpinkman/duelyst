@@ -21,6 +21,7 @@ const Logger = require('../../../app/common/logger');
 const SDK = require('../../../app/sdk/index');
 const knex = require('../../../server/lib/data_access/knex');
 const generatePushId = require('../../../app/common/generate_push_id');
+const { onType } = require('../../../app/common/utils/utils_promise');
 
 // disable the logger for cleaner test output
 Logger.enabled = Logger.enabled && false;
@@ -39,7 +40,7 @@ describe('cosmetic chests module', () => {
         .then(function (userIdCreated) {
           this.userId = userIdCreated;
           Logger.module('UNITTEST').log('created user ', userIdCreated);
-        }).catch(Errors.AlreadyExistsError, function (error) {
+        }).catch(onType(Errors.AlreadyExistsError, function (error) {
           Logger.module('UNITTEST').log('existing user', userName);
           return UsersModule.userIdForEmail(userEmail)
             .bind(this)
@@ -50,7 +51,7 @@ describe('cosmetic chests module', () => {
             }).then(function () {
               Logger.module('UNITTEST').log('existing user data wiped', this.userId);
             });
-        })
+        }))
         .then(function () {
           return Promise.resolve(this.userId);
         });

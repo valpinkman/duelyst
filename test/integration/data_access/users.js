@@ -21,6 +21,7 @@ const Logger = require('../../../app/common/logger');
 const SDK = require('../../../app/sdk/index');
 const knex = require('../../../server/lib/data_access/knex');
 const NewPlayerProgressionStageEnum = require('../../../app/sdk/progression/newPlayerProgressionStageEnum');
+const { onType } = require('../../../app/common/utils/utils_promise');
 
 // disable the logger for cleaner test output
 Logger.enabled = Logger.enabled && false;
@@ -35,7 +36,7 @@ describe('users module', () => {
       .then((userIdCreated) => {
         Logger.module('UNITTEST').log('created user ', userIdCreated);
         userId = userIdCreated;
-      }).catch(Errors.AlreadyExistsError, (error) => {
+      }).catch(onType(Errors.AlreadyExistsError, (error) => {
         Logger.module('UNITTEST').log('existing user');
         return UsersModule.userIdForEmail('unit-test@duelyst.local').then((userIdExisting) => {
           Logger.module('UNITTEST').log('existing user retrieved', userIdExisting);
@@ -44,7 +45,7 @@ describe('users module', () => {
         }).then(() => {
           Logger.module('UNITTEST').log('existing user data wiped', userId);
         });
-      }).catch((error) => {
+      })).catch((error) => {
         Logger.module('UNITTEST').log('unexpected error: ', error);
         throw error;
       });
@@ -2720,7 +2721,7 @@ describe('users module', () => {
   //     .then(function(userIdCreated){
   //       Logger.module("UNITTEST").log("created user ",userIdCreated);
   //       opponentId = userIdCreated;
-  //     }).catch(Errors.AlreadyExistsError,function(error){
+  //     }).catch(onType(Errors.AlreadyExistsError,function(error){
   //       Logger.module("UNITTEST").log("existing user");
   //       return UsersModule.userIdForEmail('unit-test-opponent@duelyst.local').then(function(userIdExisting){
   //         Logger.module("UNITTEST").log("existing user retrieved",userIdExisting);
@@ -2729,7 +2730,7 @@ describe('users module', () => {
   //       }).then(function(){
   //         Logger.module("UNITTEST").log("existing user data wiped",opponentId);
   //       })
-  //     }).then(function(){
+  //     })).then(function(){
 
   //     });
   //   });
@@ -2756,10 +2757,10 @@ describe('users module', () => {
       return UsersModule.setNewPlayerFeatureProgression(userId,"core","this_is_a_non_existant_core_stage_value")
         .then(function(response){
           expect(response).to.not.exist;
-        }).catch(Errors.BadRequestError,function(e) {
+        }).catch(onType(Errors.BadRequestError,function(e) {
           // Expect this type of error to happen
           expect(e).to.exist;
-        }).catch(function (e) {
+        })).catch(function (e) {
           // Should be the above error, not a generic error
           expect(e).to.not.exist
         })
@@ -2771,10 +2772,10 @@ describe('users module', () => {
         UsersModule.setNewPlayerFeatureProgression(userId, 'core', NewPlayerProgressionStageEnum.Tutorial);
       }).then((response) => {
         expect(response).to.not.exist;
-      }).catch(Errors.BadRequestError, (e) => {
+      }).catch(onType(Errors.BadRequestError, (e) => {
         // Expect this type of error to happen
         expect(e).to.exist;
-      })
+      }))
       .catch((e) => {
         // Should be the above error, not a generic error
         expect(e).to.not.exist;
@@ -2793,11 +2794,11 @@ describe('users module', () => {
           expect(existingQuestRow).to.exist;
         });
       })
-      .catch(Errors.NoNeedForNewBeginnerQuestsError, (e) => {
+      .catch(onType(Errors.NoNeedForNewBeginnerQuestsError, (e) => {
         // This is valid if no beginner quests were needed
         const beginnerQuests = SDK.NewPlayerProgressionHelper.questsForStage(enumStage) || [];
         expect(beginnerQuests.length).to.equal(0);
-      }), { concurrency: 1 }));
+      })), { concurrency: 1 }));
 
     // Not yet implemented
     // it('expect to not be able to skip multiple core module stages', function() {
@@ -2808,10 +2809,10 @@ describe('users module', () => {
     //      return UsersModule.setNewPlayerFeatureProgression(userId,"core",NewPlayerProgressionStageEnum.FirstGameDone)
     //    }).then(function(response){
     //      expect(response).to.not.exist;
-    //    }).catch(Errors.BadRequestError,function(e) {
+    //    }).catch(onType(Errors.BadRequestError,function(e) {
     //      // Expect this type of error to happen
     //      expect(e).to.exist;
-    //    }).catch(function (e) {
+    //    })).catch(function (e) {
     //      // Should be the above error, not a generic error
     //      expect(e).to.not.exist
     //    })

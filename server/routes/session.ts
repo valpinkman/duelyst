@@ -39,6 +39,7 @@ const AnalyticsUtil = require('../../app/common/analyticsUtil');
 // Configuration object
 const config = require('../../config/config');
 const { version } = require('../../version');
+const { onType } = require('../../app/common/utils/utils_promise');
 
 /*
 Build analytics data from user data
@@ -150,8 +151,8 @@ router.get('/session/', isSignedIn, function (req, res, next) {
 
   return logUserIn(user_id)
     .bind({})
-    .then((data) => res.status(200).json(data)).catch(Errors.NotFoundError, (e) => res.status(401).json({}))
-    .catch(Errors.AccountDisabled, (e) => res.status(401).json({ message: e.message }))
+    .then((data) => res.status(200).json(data)).catch(onType(Errors.NotFoundError, (e) => res.status(401).json({})))
+    .catch(onType(Errors.AccountDisabled, (e) => res.status(401).json({ message: e.message })))
     .catch((e) => next(e));
 });
 
@@ -236,9 +237,9 @@ router.post('/session/', function (req, res, next) {
       // firebase_token is additive in 9.1; the client ignores it until 9.3
       return res.status(200).json({ token: this.token, firebase_token: this.firebaseToken, analytics_data: analyticsData });
     })
-    .catch(Errors.AccountDisabled, (e) => res.status(401).json({ message: e.message }))
-    .catch(Errors.NotFoundError, (e) => res.status(401).json({ message: 'Invalid Username or Password' }))
-    .catch(Errors.BadPasswordError, (e) => res.status(401).json({ message: 'Invalid Username or Password' }))
+    .catch(onType(Errors.AccountDisabled, (e) => res.status(401).json({ message: e.message })))
+    .catch(onType(Errors.NotFoundError, (e) => res.status(401).json({ message: 'Invalid Username or Password' })))
+    .catch(onType(Errors.BadPasswordError, (e) => res.status(401).json({ message: 'Invalid Username or Password' })))
     .catch((e) => next(e));
 });
 
@@ -325,22 +326,22 @@ router.post('/session/register', function (req, res, next) {
       // respond back to client
       return res.status(200).json({});
     })
-    .catch(Errors.InvalidInviteCodeError, function (e) { // Specific error if the invite code is invalid
+    .catch(onType(Errors.InvalidInviteCodeError, function (e) { // Specific error if the invite code is invalid
       Logger.module('Session').error(`can not register because invite code ${(inviteCode != null ? inviteCode.yellow : undefined)} is invalid`.red);
       return res.status(400).json(e);
-    })
-    .catch(Errors.InvalidReferralCodeError, function (e) { // Specific error if the invite code is invalid
+    }))
+    .catch(onType(Errors.InvalidReferralCodeError, function (e) { // Specific error if the invite code is invalid
       Logger.module('Session').error(`can not register because referral code ${(referralCode != null ? referralCode.yellow : undefined)} is invalid`.red);
       return res.status(400).json(e);
-    })
-    .catch(Errors.AlreadyExistsError, function (e) { // Specific error if the user already exists
+    }))
+    .catch(onType(Errors.AlreadyExistsError, function (e) { // Specific error if the user already exists
       Logger.module('Session').error(`can not register because username ${(username != null ? username.blue : undefined)} already exists`.red);
       return res.status(401).json(e);
-    })
-    .catch(Errors.UnverifiedCaptchaError, function (e) { // Specific error if the captcha fails
+    }))
+    .catch(onType(Errors.UnverifiedCaptchaError, function (e) { // Specific error if the captcha fails
       Logger.module('Session').error(`can not register because captcha ${captcha} input is invalid`.red);
       return res.status(401).json(e);
-    })
+    }))
     .catch((e) => next(e));
 });
 
@@ -362,7 +363,7 @@ router.post('/session/username_available', function (req, res, next) {
       } else {
         return res.status(200).json({});
       }
-    }).catch(Errors.AlreadyExistsError, (e) => res.status(401).json(e)).catch((e) => next(e));
+    }).catch(onType(Errors.AlreadyExistsError, (e) => res.status(401).json(e))).catch((e) => next(e));
 });
 
 /*
@@ -378,13 +379,13 @@ router.post('/session/change_username', isSignedIn, function (req, res, next) {
   const new_username = result.value.toLowerCase();
 
   return UsersModule.changeUsername(user_id, new_username)
-    .then(() => res.status(200).json({})).catch(Errors.AlreadyExistsError, function (e) { // Specific error if the username already exists
+    .then(() => res.status(200).json({})).catch(onType(Errors.AlreadyExistsError, function (e) { // Specific error if the username already exists
       Logger.module('Session').error(`can not change username to ${new_username.blue} as it already exists`.red);
       return res.status(400).json(e);
-    }).catch(Errors.InsufficientFundsError, function (e) {
+    })).catch(onType(Errors.InsufficientFundsError, function (e) {
       Logger.module('Session').error(`can not change username to ${new_username.blue} due to insufficient funds`.red);
       return res.status(400).json(e);
-    })
+    }))
     .catch((e) => next(e));
 });
 
@@ -406,7 +407,7 @@ router.post('/session/change_password', isSignedIn, function (req, res, next) {
   } = result.value;
 
   return UsersModule.changePassword(user_id, current_password, new_password)
-    .then(() => res.status(200).json({ message: 'OK - password changed' })).catch(Errors.BadPasswordError, (e) => res.status(401).json({})).catch((e) => next(e));
+    .then(() => res.status(200).json({ message: 'OK - password changed' })).catch(onType(Errors.BadPasswordError, (e) => res.status(401).json({}))).catch((e) => next(e));
 });
 
 /*
