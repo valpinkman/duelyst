@@ -14,7 +14,14 @@ describe('Firebase.ServerClient.UnitTests', () => {
       .then((rootRef) => {
         expect(rootRef).to.not.exist;
       })
-      .error((e) => {
+      /*
+       * bluebird's `.error` caught only OPERATIONAL errors - explicit
+       * rejections - and deliberately skipped programmer errors thrown from a
+       * callback. Here the promise rejects explicitly, so the `.then` above
+       * never runs and `.catch` sees exactly the same error. If that ever
+       * changed, the message assertion below fails loudly rather than silently.
+       */
+      .catch((e) => {
         expect(e).to.exist;
         expect(e).to.be.instanceOf(Error);
         expect(e.message).to.eql('firebase.url must be set');

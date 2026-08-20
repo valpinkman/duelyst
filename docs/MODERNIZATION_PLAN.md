@@ -725,9 +725,24 @@ server and worker. What remains is *typing* (5T.4), not converting.
         `.catch(onType(A, f))` `.catch(onType(B, g))` `.catch(next)`. Rewriting those into
         `match(…).with(…).otherwise(…)` blocks would be a much larger diff for the same
         rethrow guarantee, so the dependency was skipped.
-      - [ ] Stage 4 — `.error` → `.catch` (174)
-      - [ ] Stage 5 — `.bind` chains → closures (442), the delicate one
-      - [ ] Stage 6 — `.map`/`.each`/`.filter`/`.timeout`/`.delay`/`.nodeify` + statics
+      - [x] **Stage 4 — `.error` → `.catch`: ONE site, not 174.** The other 173 were
+        `Logger.module('X').error(...)`, which my `\)\s*\.error\(` pattern matched.
+        The semantic difference is real and worth recording, because a naive bulk conversion
+        would have been a genuine bug: bluebird's `.error` catches only OPERATIONAL errors —
+        explicit rejections — and deliberately **skips programmer errors thrown from a callback**.
+        Verified empirically: `Promise.reject(new Error(...))` is caught, while a `TypeError` or
+        `ReferenceError` thrown inside a `.then` is not. Converting 174 sites to `.catch` would
+        have made them all start swallowing bugs. There was only one real site, and there the
+        promise rejects explicitly so `.catch` sees the same error. — (this commit)
+
+      **Remaining scope, re-measured line-initial (the earlier per-idiom numbers were polluted
+      by `Logger.error`, `Backbone.get`, `Function.prototype.bind` and `Array.map`):**
+      `.bind` 367 · `.timeout` 29 · `.finally` 11 · `.delay` 4 · `.nodeify` 3 · `.map` 1 ·
+      `.filter` 1 · `.each` 0, plus statics (`promisifyAll` 13, `join` 9, `cancellable` 7,
+      `promisify` 3, `defer` 3) and the 27 deferred `.catch(Promise.TimeoutError|CancellationError)`.
+
+      - [ ] Stage 5 — `.bind` chains → closures (367), the delicate one
+      - [ ] Stage 6 — `.timeout`/`.delay`/`.nodeify`/`.finally`/`.map`/`.filter` + statics
       - [ ] Stage 7 — drop `require('bluebird')` and the dependency; then `knex` 3
 
   **⚠ Reprioritisation, measured after the winston step.** The tier list above was written before
