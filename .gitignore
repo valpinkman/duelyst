@@ -35,3 +35,6 @@ dump.rdb
 # Electron shell build output
 /desktop/build/
 /desktop/dist/
+
+# turborepo local task cache
+.turbo/

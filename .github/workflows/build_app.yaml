@@ -31,9 +31,6 @@ jobs:
       - name: install node dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: install typescript dependencies
-        run: pnpm tsc:chroma-js
-
       - name: build the app
         run: pnpm build
         env:

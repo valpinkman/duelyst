@@ -95,7 +95,10 @@ services:
       dockerfile: docker/general.Dockerfile
     working_dir: /duelyst
     profiles: [donotstart]
-    entrypoint: ['pnpm', 'test:unit']
+    # the root vitest task directly: turbo.json and the lint configs it lists as
+    # globalDependencies are not shipped into runtime images, and there is nothing
+    # cross-package to orchestrate here anyway
+    entrypoint: ['pnpm', 'test:root']
 
   test-integration:
     build:

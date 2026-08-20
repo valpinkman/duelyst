@@ -3,5 +3,11 @@
   "version": "1.97.13",
   "private": true,
   "description": "Duelyst game engine (GameSession, actions, modifiers, spells, cards). Shared by the browser client and the game servers. Still CoffeeScript; consumed in place - physical relocation happens with the TypeScript conversion.",
-  "main": "index.js"
+  "main": "index.js",
+  "scripts": {
+    "lint": "oxlint --config ../../tooling/oxlint-config/base.jsonc .",
+    "format": "oxfmt --config ../../.oxfmtrc.json .",
+    "format:check": "oxfmt --check --config ../../.oxfmtrc.json .",
+    "lint:fix": "oxlint --fix --config ../../tooling/oxlint-config/base.jsonc ."
+  }
 }

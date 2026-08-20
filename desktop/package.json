@@ -10,7 +10,11 @@
     "package:mac:x64": "pnpm run build && electron-builder --mac --x64 --publish never",
     "package:win": "pnpm run build && electron-builder --win --x64 --publish never",
     "package:linux": "pnpm run build && electron-builder --linux --x64 --publish never",
-    "start": "pnpm run build && electron build/main.cjs"
+    "start": "pnpm run build && electron build/main.cjs",
+    "lint": "oxlint --config ../tooling/oxlint-config/base.jsonc .",
+    "format": "oxfmt --config ../.oxfmtrc.json .",
+    "format:check": "oxfmt --check --config ../.oxfmtrc.json .",
+    "lint:fix": "oxlint --fix --config ../tooling/oxlint-config/base.jsonc ."
   },
   "dependencies": {},
   "devDependencies": {

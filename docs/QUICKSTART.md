@@ -99,7 +99,6 @@ assets. This step will take a few minutes.
 
 ```bash
 pnpm install
-pnpm tsc:chroma-js
 FIREBASE_URL=<your-firebase-url> pnpm build
 ```
 

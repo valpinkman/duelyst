@@ -1,0 +1,131 @@
+{
+  "$schema": "https://turborepo.dev/schema.json",
+  "ui": "stream",
+
+  // Anything here invalidates every task's cache.
+  "globalDependencies": [
+    "pnpm-lock.yaml",
+    "tooling/oxlint-config/base.jsonc",
+    ".oxlintrc.json",
+    ".oxfmtrc.json"
+  ],
+  // Turborepo 2 runs tasks in strict env mode: undeclared variables are stripped
+  // before the task sees them. Everything config/config.js binds to an env var is
+  // resolved into the client bundle at build time, so a missing entry here does not
+  // fail -- it bakes the schema default in silently. scripts/check-turbo-env.mjs
+  // re-derives this list from the convict schema and fails CI on drift.
+  "globalEnv": [
+    "AI_TOOLS_ENABLED",
+    "ALL_CARDS_AVAILABLE",
+    "ANALYTICS_ENABLED",
+    "API_URL",
+    "AWS_ACCESS_KEY",
+    "AWS_REGION",
+    "AWS_SECRET_KEY",
+    "BUGSNAG_AI",
+    "BUGSNAG_API",
+    "BUGSNAG_DESKTOP",
+    "BUGSNAG_GAME",
+    "BUGSNAG_WEB",
+    "BUGSNAG_WORKER",
+    "CDN_DOMAIN_NAME",
+    "CDN_URL",
+    "CONSUL_ENABLE",
+    "CONSUL_GAME_SERVICE",
+    "CONSUL_IP",
+    "CONSUL_PORT",
+    "DEFAULT_GAME_SERVER",
+    "DISABLE_DECK_VALIDATION",
+    "DUELYST_BUILD_CONFIG",
+    "DUELYST_ENV",
+    "EXPRESS_LOGGING",
+    "FIREBASE_API_KEY",
+    "FIREBASE_AUTH_URL",
+    "FIREBASE_CLIENT_EMAIL",
+    "FIREBASE_LEGACY_TOKEN",
+    "FIREBASE_LOGGING_ENABLED",
+    "FIREBASE_PRIVATE_KEY",
+    "FIREBASE_PROJECT_ID",
+    "FIREBASE_URL",
+    "GAME_PORT",
+    "GA_ID",
+    "INVITE_CODES_ACTIVE",
+    "NODE_ENV",
+    "PORT",
+    "POSTGRES_CONNECTION",
+    "RECAPTCHA_SITE_KEY",
+    "REDIS_HOST",
+    "REDIS_PASSWORD",
+    "REDIS_PORT",
+    "REDIS_TTL",
+    "S3_ARCHIVE_BUCKET",
+    "S3_ARCHIVE_KEY",
+    "S3_ARCHIVE_SECRET",
+    "S3_ASSETS_BUCKET",
+    "S3_CLIENT_LOGS_BUCKET",
+    "S3_CLIENT_LOGS_SECRET",
+    "S3_CLIENT_LOGS__KEY",
+    "S3_REPLAYS_BUCKET",
+    "SP_PORT",
+    "TOKEN_EXPIRES",
+    "WINSTON_ENABLE",
+    "WINSTON_LEVEL",
+    "ZENDESK_ENABLED"
+  ],
+
+  "tasks": {
+    // ---- workspace-package tasks -------------------------------------------
+    // `^build` is the whole point of this file: @counterplay/chromajs ships no
+    // dist, so anything that consumes it has to wait for its tsc. This used to
+    // be a manual `pnpm tsc:chroma-js` documented in AGENTS.md.
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", "build/**"]
+    },
+    "typecheck": {
+      "dependsOn": ["^build"],
+      "outputs": []
+    },
+    "lint": { "outputs": [] },
+    // rewrites files, so never cached
+    "lint:fix": { "cache": false },
+    "format": { "cache": false },
+    "format:check": { "outputs": [] },
+    "test": {
+      "dependsOn": ["^build"],
+      "outputs": []
+    },
+
+    // ---- root-package tasks -------------------------------------------------
+    // The app itself still lives at the repo root, so its work is declared with
+    // turbo's `//#` root-task syntax. Each one names explicit `inputs`: the
+    // default is "every file in the package", which at the root means hashing
+    // app/resources (1.2 GB of art and audio) on every invocation.
+    "//#build:client": {
+      "dependsOn": ["^build"],
+      // dist/ is ~1.2 GB once the resources are copied in; caching that would
+      // cost more disk than the ~35 s it saves. We are here for the ordering.
+      "cache": false
+    },
+    "//#typecheck:root": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", "!app/resources/**", "!app/original_resources/**"],
+      "outputs": []
+    },
+    "//#lint:root": {
+      "inputs": ["$TURBO_DEFAULT$", "!app/resources/**", "!app/original_resources/**"],
+      "outputs": []
+    },
+    "//#lint:fix:root": { "cache": false },
+    "//#format:root": { "cache": false },
+    "//#format:check:root": {
+      "inputs": ["$TURBO_DEFAULT$", "!app/resources/**", "!app/original_resources/**"],
+      "outputs": []
+    },
+    "//#test:root": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", "!app/resources/**", "!app/original_resources/**"],
+      "outputs": []
+    }
+  }
+}

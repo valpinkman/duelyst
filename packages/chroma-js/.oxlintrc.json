@@ -1,0 +1,13 @@
+{
+  "$schema": "../../node_modules/oxlint/configuration_schema.json",
+  "extends": ["../../tooling/oxlint-config/base.jsonc"],
+  "ignorePatterns": ["node_modules", "dist", "example", "**/*.d.ts"],
+  "rules": {
+    // Key.ts maps the Razer Chroma keyboard matrix, where Korean and Japanese
+    // layout keys sit on the same physical positions as their European
+    // counterparts (KorPipe == JpnYen == 0x0015). The duplicate values are the
+    // hardware talking, not a mistake -- giving them unique values would address
+    // the wrong LED.
+    "typescript/no-duplicate-enum-values": "off"
+  }
+}

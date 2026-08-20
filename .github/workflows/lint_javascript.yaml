@@ -38,9 +38,6 @@ jobs:
       - name: install node dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: compile typescript dependencies
-        run: pnpm tsc:chroma-js
-
       - name: lint javascript code
         run: pnpm lint
 
@@ -48,6 +45,12 @@ jobs:
       # it does not (templates, styles, shaders).
       - name: check formatting
         run: pnpm format:check
+
+      # turbo 2 strips undeclared env vars from tasks, and every convict setting is
+      # baked into the client bundle at build time -- a missing entry silently ships
+      # the schema default instead of failing
+      - name: check turbo env coverage
+        run: pnpm check:turbo-env
 
       # guards the binding class of bug the bluebird codemods introduced:
       # a file using PromiseUtils/onType without requiring it passes lint and

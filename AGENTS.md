@@ -24,8 +24,8 @@ gulp + browserify. **We are in the middle of modernizing the whole stack** — r
 
 ```bash
 pnpm install                                   # after clone or lockfile change
-pnpm tsc:chroma-js                             # required once before build (packages/chroma-js has no committed dist)
 FIREBASE_URL=https://test-url.firebaseio.com/ pnpm build   # client build -> dist/src (dummy URL fine unless you want to play)
+                                               # turbo builds packages/chroma-js first; no manual prebuild any more
 pnpm build:vite                                # JS bundle only (~2.4s); build:client:watch for the dev loop
 pnpm test:unit                                 # vitest, 1366 tests, no external services
 pnpm test:integration:misc                     # needs nothing external; runs in CI
@@ -38,6 +38,7 @@ pnpm typecheck                                 # tsc (loose config) - a METRIC, 
 pnpm check:undefined-names                     # TS2304 only, and this IS a CI gate. Run after any codemod.
 pnpm check:promise-utils                       # PromiseUtils/onType used without being bound
 pnpm check:bluebird-orphans                    # bluebird-only API used without requiring bluebird
+pnpm check:turbo-env                           # turbo.json globalEnv still covers every convict env binding
 pnpm test:e2e                                  # Playwright: boots the client and plays a practice game
                                                # (needs: real Firebase in .env, pnpm build, docker compose up)
 pnpm lint                                      # oxlint (shared config in tooling/oxlint-config)
@@ -50,6 +51,37 @@ docker compose up                              # full local stack (rebuild image
 
 Playing the game locally requires a Firebase Realtime Database (`FIREBASE_URL`, legacy
 token, service account) — see `docs/QUICKSTART.md`. Building and unit-testing do not.
+
+## Monorepo layout and turbo
+
+Task orchestration is turborepo (`turbo.json`); pnpm still owns installs and linking.
+
+- **The aggregates are what you type.** `pnpm build|lint|format|format:check|typecheck|test:unit`
+  each expand to `turbo run <package-task> <root-task>`. A script cannot be named the same as
+  the task it invokes or turbo would recurse into it, so the root package's own work carries a
+  `:root` suffix — `lint:root`, `format:root`, `typecheck:root`, `test:root`, plus `build:client`.
+  Those still run standalone when you want to skip orchestration (containers use `pnpm test:root`).
+- **`dependsOn: ["^build"]` replaced a manual step.** `packages/chroma-js` ships no committed
+  `dist`, so every build used to need `pnpm tsc:chroma-js` first — documented here, wired into two
+  CI workflows, and easy to forget. Turbo now orders it. That script is gone.
+- **Turbo 2 runs tasks in strict env mode**: a variable not declared in `globalEnv` is stripped
+  before the task sees it, and since every `config/config.js` setting is resolved into the client
+  bundle at build time, an undeclared one does not fail — it silently bakes the schema default in.
+  `pnpm check:turbo-env` re-derives the list from the convict schema and fails CI on drift.
+- **One lint owner per file.** Lint emits diagnostics, so overlap would double-report: the root
+  `.oxlintrc.json` ignores every directory that is a workspace package in its own right, and each
+  package lints itself against `tooling/oxlint-config/base.jsonc`. Formatting has no such problem
+  (it is an idempotent rewrite), so `.oxfmtrc.json` at the root stays the single source of truth
+  and package `format` scripts point back at it.
+- `app/sdk` and `app/common` have no per-package `typecheck`/`test`: the root `tsconfig.json`
+  includes `app/**` and the suites live in `test/`. Splitting those out means a second, drifting
+  source of truth — it waits until the packages physically move out of `app/`.
+- `packages/chroma-js` is a fork we maintain (we build it, we lint and format it, it has one
+  documented rule exception in its own `.oxlintrc.json`). `packages/Backbone.VirtualCollection`
+  is vendored verbatim and untouched since the initial dump: lint-only, never reformatted, and
+  its committed UMD bundle _is_ the shipped artifact.
+- Caching is on for the cheap repeatable tasks and **off for `build:client`** — `dist/` is ~1.2 GB
+  once resources are copied in, which costs more disk than the ~35 s it would save.
 
 ## Repo map (where things are)
 
