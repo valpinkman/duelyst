@@ -2251,7 +2251,10 @@ App._startGameWithChallenge = function (challenge) {
   // set user as in game
   ChatManager.getInstance().setStatus(ChatManager.STATUS_CHALLENGE);
 
-  if (!challenge instanceof SDK.ChallengeRemote) {
+  // `!challenge instanceof X` parses as `(!challenge) instanceof X`, which is
+  // ALWAYS false -- a boolean is never an instance of a class. So this branch
+  // never ran and local challenges were never marked as attempted.
+  if (!(challenge instanceof SDK.ChallengeRemote)) {
     // mark challenge as attempted
     ProgressionManager.getInstance().markChallengeAsAttemptedWithType(challenge.type);
   }

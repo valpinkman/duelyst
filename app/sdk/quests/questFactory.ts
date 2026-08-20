@@ -245,7 +245,6 @@ class QuestFactory {
       2,
       'Win 2 games with a deck containing less than 5 spells.',
       ((gameSessionData, playerId) => {
-        let left;
         const playerData = UtilsGameSession.getPlayerDataForId(gameSessionData, playerId);
 
         // Player has to win to make progress
@@ -264,7 +263,14 @@ class QuestFactory {
         }
 
         // If player used less than desired number of spells makes 1 progress
-        return ((left = numSpells < 5)) != null ? left : { 1: 0 };
+        /*
+         * Upstream wrote `(numSpells < 5) ? 1 : 0` intending a JS ternary, but
+         * CoffeeScript's `?` is the EXISTENTIAL operator, so it parsed as
+         * `(numSpells < 5) ? {1: 0}` -- and a boolean is never null, so the
+         * object was dead and it returned true/false. Those coerce to 1/0, so the
+         * behaviour was accidentally right; every sibling goal returns 1 or 0.
+         */
+        return numSpells < 5 ? 1 : 0;
       }),
     ));
 

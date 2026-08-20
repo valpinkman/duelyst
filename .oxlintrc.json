@@ -1,0 +1,21 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "extends": [
+    "./tooling/oxlint-config/base.jsonc"
+  ],
+  "ignorePatterns": [
+    "node_modules",
+    "dist",
+    "desktop/dist",
+    "desktop/node_modules",
+    "**/*.d.ts",
+    "app/vendor",
+    "app/resources",
+    "app/original_resources",
+    "app/data/packages.js",
+    "app/tools/FileSaver.min.ts",
+    "app/tools/dat.gui.ts",
+    "packages",
+    "scripts/codex/CanvasText-0.4.1.js"
+  ]
+}

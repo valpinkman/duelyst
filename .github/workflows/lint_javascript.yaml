@@ -42,7 +42,7 @@ jobs:
       run: pnpm tsc:chroma-js
 
     - name: lint javascript code
-      run: pnpm lint:js:all
+      run: pnpm lint
 
     # guards the binding class of bug the bluebird codemods introduced:
     # a file using PromiseUtils/onType without requiring it passes lint and
@@ -58,7 +58,7 @@ jobs:
       run: pnpm check:bluebird-orphans
 
     # TS2304 is a list of identifiers that do not exist -- ReferenceErrors
-    # waiting to happen. eslint's no-undef is off for .ts, so TypeScript is the
+    # waiting to happen. The linter's no-undef does not apply to .ts, so TypeScript is the
     # only thing that sees them. The count was swept to zero, and this keeps it
     # there: a codemod regression that shipped once would have been caught here.
     - name: check for undefined names (TS2304)

@@ -2440,11 +2440,24 @@ class Modifier extends SDKObject {
     let potentialCards = [];
 
     if (this.auraIncludeBoard) {
-      let auraFilterByCardType;
-      let allowUntargetable = false;
-      if (auraFilterByCardType = CardType.Tile) { // when filtering for tiles, need to allow untargetable entities since tiles are always untargetable
-        allowUntargetable = true;
-      }
+      /*
+       * BEHAVIOUR PRESERVED DELIBERATELY -- see MODERNIZATION_PLAN.md.
+       *
+       * This was `if (auraFilterByCardType = CardType.Tile)`: an ASSIGNMENT, not a
+       * comparison, to a local that is never read (the call below uses
+       * `this.auraFilterByCardType`). CardType.Tile is 5, so the condition was
+       * always truthy and `allowUntargetable` has always been true for board
+       * auras. The CoffeeScript original had the same bug -- `=` inside a
+       * CoffeeScript `if` is assignment too -- so this is how the game shipped
+       * in 2016 and how it has behaved ever since.
+       *
+       * The evident intent was `this.auraFilterByCardType === CardType.Tile`,
+       * which would make it false for every non-tile aura and change which
+       * entities receive auras. That is a gameplay change, not a cleanup, so it
+       * is the owner's call rather than a silent fix. Written out plainly here
+       * so the code says what it does.
+       */
+      const allowUntargetable = true;
       potentialCards = potentialCards.concat(this.getGameSession().getBoard().getCardsWithinRadiusOfPosition(this.getCard().position, this.auraFilterByCardType, this.auraRadius, true, allowUntargetable, false));
     }
 

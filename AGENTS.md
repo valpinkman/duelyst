@@ -40,7 +40,8 @@ pnpm check:promise-utils                       # PromiseUtils/onType used withou
 pnpm check:bluebird-orphans                    # bluebird-only API used without requiring bluebird
 pnpm test:e2e                                  # Playwright: boots the client and plays a practice game
                                                # (needs: real Firebase in .env, pnpm build, docker compose up)
-pnpm lint:js:all                               # eslint (airbnb-base), .js + .ts
+pnpm lint                                      # oxlint (shared config in tooling/oxlint-config)
+pnpm lint:fix                                  # oxlint --fix
 pnpm api | pnpm game | pnpm sp | pnpm worker   # start services (need Redis/Postgres/Firebase env, see docs/QUICKSTART.md)
 docker compose up                              # full local stack (rebuild images after source changes: they are NOT live-mounted)
 ```
@@ -72,9 +73,9 @@ token, service account) — see `docs/QUICKSTART.md`. Building and unit-testing 
 
 ## Conventions and gotchas that bite
 
-- **TS2304 is a CI gate; the rest of typecheck is not.** eslint's `no-undef` is off for `.ts`
-  (as typescript-eslint recommends), so TypeScript is the *only* thing that can see an undefined
-  identifier. Sweeping TS2304 to zero found 26 real bugs — missing requires, undeclared
+- **TS2304 is a CI gate; the rest of typecheck is not.** No JS linter resolves TypeScript
+  identifiers — `no-undef` was off for `.ts` under eslint and oxlint does not cover it either —
+  so TypeScript is the *only* thing that can see an undefined identifier. Sweeping TS2304 to zero found 26 real bugs — missing requires, undeclared
   variables, a `clone()` constructing the wrong class. It is kept at zero by
   `pnpm check:undefined-names`, because a codemod regression shipped once while typecheck sat
   unread. **Run it after any codemod.**
@@ -106,8 +107,8 @@ token, service account) — see `docs/QUICKSTART.md`. Building and unit-testing 
 - **Asset packages are text-parsed** (`scripts/generate_packages.js`) — the build verifies the
   generated key set against `scripts/build/packages-manifest.json` and fails on drift.
   Regenerate deliberately with `--update-packages-manifest`.
-- Style: 2-space indent, LF, single quotes, semicolons in JS (`.editorconfig`, `.eslintrc.json`,
-  `coffeelint.json`). ESLint has many per-directory rule downgrades — don't "fix" them wholesale.
+- Style: 2-space indent, LF, single quotes, semicolons in JS (`.editorconfig`,
+  `.oxlintrc.json`). ESLint has many per-directory rule downgrades — don't "fix" them wholesale.
 
 ## Modernization program
 

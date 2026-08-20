@@ -1,5 +1,7 @@
 packages:
   - 'packages/*'
+  # shared build/lint/format configuration consumed by every package
+  - 'tooling/*'
   # in-place workspace members (physical relocation deferred to the TS phase):
   - 'app/sdk'
   - 'app/common'
