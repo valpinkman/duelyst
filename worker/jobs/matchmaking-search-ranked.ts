@@ -26,7 +26,6 @@ const RankFactory = require('../../app/sdk/rank/rankFactory');
 // redis
 const Redis = require('../../server/redis');
 const { onType } = require('../../app/common/utils/utils_promise');
-const PromiseUtils = require('../../app/common/utils/utils_promise');
 
 const rankedQueue = new Redis.PlayerQueue(Redis.Redis, { name: 'ranked' });
 const rankedDeckValueQueue = new Redis.PlayerQueue(Redis.Redis, { name: 'ranked-deck-value' });
@@ -89,7 +88,7 @@ searchRadius ${job.data.searchRadius}`,
 
     // Recreate as new job with updated parameters (and delayed)
     return new Promise((resolve, reject) => Redis.Jobs.create('matchmaking-search-ranked', job.data)
-      .then((v) => PromiseUtils.delay(job.data.delayMs, v))
+      .delay(job.data.delayMs)
       .removeOnComplete(true)
       .save(function (err) {
         if (err != null) {

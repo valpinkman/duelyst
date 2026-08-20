@@ -92,7 +92,12 @@ for (const f of files) {
   const m = live.match(STATIC);
   if (m) hits.push(`Promise.${m[1]}`);
   const c = live.match(CHAIN);
-  if (c) hits.push(`.${c[1]}()`);
+  // `.delay(ms)` is also kue's JOB BUILDER method, and conflating the two is not
+  // hypothetical: a stage 6 codemod rewrote `Jobs.create(...).delay(ms)` into
+  // `.then((v) => PromiseUtils.delay(ms, v))` in all four matchmaking jobs. A kue
+  // Job has no .then, so every matchmaking re-queue threw TypeError -- retry and
+  // backoff were dead until it was found while measuring the kue replacement.
+  if (c && !(c[1] === 'delay' && /Jobs\.create\(/.test(live))) hits.push(`.${c[1]}()`);
   const ins = live.match(INSPECT);
   if (ins && !INSPECT_OK.test(live) && ins[1] !== 'value' && ins[1] !== 'reason') hits.push(`.${ins[1]}()`);
   const cg = live.match(CALL_GET);
