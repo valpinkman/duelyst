@@ -742,7 +742,22 @@ server and worker. What remains is *typing* (5T.4), not converting.
       `promisify` 3, `defer` 3) and the 27 deferred `.catch(Promise.TimeoutError|CancellationError)`.
 
       - [ ] Stage 5 — `.bind` chains → closures (367), the delicate one
-      - [ ] Stage 6 — `.timeout`/`.delay`/`.nodeify`/`.finally`/`.map`/`.filter` + statics
+      - [~] Stage 6 — helpers in `app/common/utils/utils_promise.ts`: `withTimeout` +
+        `TimeoutError`, `delay`, `defer`. Converted: `Promise.defer()` (3), `.delay(ms)` (4),
+        and the **client-side** `.timeout` in `application.ts`.
+
+        🚧 **`.timeout` inside knex transactions is BLOCKED on the knex upgrade, and this is the
+        real finding.** Converting the 29 `.timeout(ms)` sites broke registration with
+        `Unhandled rejection Error: Transaction query already complete`. bluebird's `.timeout`
+        **cancels** the operation it wraps; a `Promise.race` does not, and knex 0.19 is itself
+        built on bluebird, so a native promise returned from a transaction callback is not
+        handled the same way. Reverted for the server; those sites keep bluebird's `.timeout`
+        until knex 3 lands. Caught by e2e, not by 1,325 unit tests.
+
+        `.map`/`.filter` turned out to be Array methods, not bluebird — 0 real sites.
+      - [ ] Stage 6b — `.nodeify` (3), `Promise.join` (9), `promisifyAll` (13), `promisify` (3),
+        `.cancellable`/`CancellationError` (7), and the 8 `.bind(this)` + `games_manager.ts` the
+        codemods refused to touch
       - [ ] Stage 7 — drop `require('bluebird')` and the dependency; then `knex` 3
 
   **⚠ Reprioritisation, measured after the winston step.** The tier list above was written before

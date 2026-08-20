@@ -155,6 +155,7 @@ const ShopSpecialProductAvailableDialogItemView = require('app/ui/views2/shop/sh
 const ReplayEngine = require('app/replay/replayEngine');
 
 const AnalyticsTracker = require('app/common/analyticsTracker');
+const PromiseUtils = require('app/common/utils/utils_promise');
 
 // require the Handlebars Template Helpers extension here since it modifies core Marionette code
 require('app/ui/extensions/handlebars_template_helpers');
@@ -1244,7 +1245,7 @@ App.onLogout = function () {
   TelemetryManager.getInstance().setSignal('session', 'not-logged-in');
 
   // create a new deferred object for managers loading process
-  App.managersReadyDeferred = new Promise.defer();
+  App.managersReadyDeferred = PromiseUtils.defer();
 
   // destroy out any login specific menus
   NavigationManager.getInstance().destroyNonContentViews();
@@ -2737,7 +2738,7 @@ App._startLoadingGameOverData = function () {
     return resolve([null, null]);
   });
 
-  return App._gameOverDataThenable = whenGameJobsProcessedAsync
+  return App._gameOverDataThenable = PromiseUtils.withTimeout(whenGameJobsProcessedAsync
     .then(function ([userGameModel, challengeModel]) {
       let rewardId;
       _chainState.userGameModel = userGameModel;
@@ -2806,8 +2807,7 @@ App._startLoadingGameOverData = function () {
     })
     .then(function () {
       return Promise.all([_chainState.userGameModel, _chainState.rewardModels, _chainState.newBeginnerQuestsCollection]);
-    })
-    .timeout(10000);
+    }), 10000);
 };
 
 /**
@@ -2831,11 +2831,11 @@ App.showVictoryWhenGameDataReady = function () {
       // show victory
       return App.showVictory(userGameModel, rewardModels, newBeginnerQuestsCollection);
     })
-    .catch(Promise.TimeoutError, (e) => {
+    .catch(onType(PromiseUtils.TimeoutError, (e) => {
     // hide dialog
       NavigationManager.getInstance().destroyDialogView();
       return App._error('We\'re experiencing some delays in processing your game. Don\'t worry, you can keep playing and you\'ll receive credit shortly.');
-    })
+    }))
     .catch((e) => {
     // hide dialog
       NavigationManager.getInstance().destroyDialogView();
@@ -3959,7 +3959,7 @@ App.on('start', (options) => {
   App._resizeAndScale();
 
   // create a defered promise object for the loading and login process... sort of an anti-pattern but best for this use case
-  App.managersReadyDeferred = new Promise.defer();
+  App.managersReadyDeferred = PromiseUtils.defer();
 
   // immediately connect the server status manager so we can get notified of any changes during the load process / on the login screen
   ServerStatusManager.getInstance().connect();

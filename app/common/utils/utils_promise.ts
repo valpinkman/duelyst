@@ -24,3 +24,55 @@ exports.onType = function (ErrorClass, handler) {
     throw err;
   };
 };
+
+/**
+ * Replacement for bluebird's `.timeout(ms)`.
+ *
+ *   somePromise.timeout(10000)
+ *   withTimeout(somePromise, 10000)
+ *
+ * Rejects with a TimeoutError if the promise has not settled in time. The
+ * error class is exported because callers catch it specifically - bluebird
+ * exposed its own `Promise.TimeoutError`, and those call sites need something
+ * to compare against.
+ *
+ * The timer is always cleared, including on the success path; leaving it
+ * pending would keep the Node event loop alive.
+ */
+class TimeoutError extends Error {
+  constructor(message) {
+    super(message || 'operation timed out');
+    this.name = 'TimeoutError';
+  }
+}
+exports.TimeoutError = TimeoutError;
+
+exports.withTimeout = function (promise, ms, message) {
+  let timer;
+  const timeout = new Promise((resolve, reject) => {
+    timer = setTimeout(() => reject(new TimeoutError(message)), ms);
+  });
+  return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
+};
+
+/**
+ * Replacement for bluebird's `.delay(ms)`: pass the value through after a wait.
+ */
+exports.delay = function (ms, value) {
+  return new Promise((resolve) => { setTimeout(() => resolve(value), ms); });
+};
+
+/**
+ * Replacement for `new Promise.defer()` - a promise plus its resolve/reject,
+ * for the cases where those are called from somewhere else entirely.
+ * Removed from bluebird 3 and never part of native promises, but the pattern
+ * is genuinely needed where resolution is triggered by an unrelated event.
+ */
+exports.defer = function () {
+  const d = {};
+  d.promise = new Promise((resolve, reject) => {
+    d.resolve = resolve;
+    d.reject = reject;
+  });
+  return d;
+};

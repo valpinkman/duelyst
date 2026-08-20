@@ -80,6 +80,7 @@ const ErrorDialogItemView = require('app/ui/views/item/error_dialog');
 const AnnouncementModalView = require('app/ui/views/item/announcement_modal');
 
 const AnalyticsTracker = require('app/common/analyticsTracker');
+const PromiseUtils = require('app/common/utils/utils_promise');
 
 // require the Handlebars Template Helpers extension here since it modifies core Marionette code
 require('app/ui/extensions/handlebars_template_helpers');
@@ -743,7 +744,7 @@ App.on('start', (options) => {
   App._resizeAndScale();
 
   // create a defered promise object for the loading and login process... sort of an anti-pattern but best for this use case
-  App.managersReadyDeferred = new Promise.defer();
+  App.managersReadyDeferred = PromiseUtils.defer();
 
   // authenticate defered, the isAuthed check must stay here so we can
   // clear the token in the event it is stale / isAuthed fails

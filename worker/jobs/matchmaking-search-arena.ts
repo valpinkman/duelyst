@@ -81,7 +81,7 @@ searchRadius ${job.data.searchRadius}`,
 
     // Recreate as new job with updated parameters (and delayed)
     return new Promise((resolve, reject) => Redis.Jobs.create('matchmaking-search-arena', job.data)
-      .delay(job.data.delayMs)
+      .then((v) => PromiseUtils.delay(job.data.delayMs, v))
       .removeOnComplete(true)
       .save(function (err) {
         if (err != null) {
