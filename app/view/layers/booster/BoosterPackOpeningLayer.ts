@@ -623,7 +623,7 @@ const BoosterPackOpeningLayer = FXCompositeLayer.extend({
    * @returns {Promise}
    */
   showRevealPack(cardIds) {
-    const revealPromise = new Promise((resolve, reject) => {
+    const revealPromise = new Promise<void>((resolve, reject) => {
       this._whenRevealResolve = resolve;
 
       this.whenRequiredResourcesReady().then((requestId) => {
@@ -761,7 +761,7 @@ const BoosterPackOpeningLayer = FXCompositeLayer.extend({
    * @returns {Promise}
    */
   _showCardMoveAndReveal(cardId, index) {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       const cardDisc = BaseSprite.create(RSX.booster_glowing_disc.img);
       cardDisc.setAnchorPoint(cc.p(0.5, 0.5));
       this.innerLayer.addChild(cardDisc);

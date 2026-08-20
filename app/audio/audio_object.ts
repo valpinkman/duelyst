@@ -413,7 +413,7 @@ audio_object.prototype = {
     this._targetVolume = volume;
 
     // return a promise for new fade once started playing
-    return this._playingPromise.then(() => new Promise((resolve, reject) => {
+    return this._playingPromise.then(() => new Promise<void>((resolve, reject) => {
       // fade has changed
       if (fadeId !== this._fadeId) {
         resolve();

@@ -205,7 +205,7 @@ var BottomDeckLayer = BaseLayer.extend({
     }
     let statusPromise = this._statusPromises[targetStatus];
     if (statusPromise == null) {
-      statusPromise = this._statusPromises[targetStatus] = new Promise((resolve, reject) => {
+      statusPromise = this._statusPromises[targetStatus] = new Promise<void>((resolve, reject) => {
         if (this.getStatus() === targetStatus) {
           resolve();
         } else {
@@ -265,7 +265,7 @@ var BottomDeckLayer = BaseLayer.extend({
    * Shows the choices for the starting hand and mulligan.
    */
   showChooseHand() {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       this._prepareCardsForStartingHand();
 
       // show cards
@@ -303,7 +303,7 @@ var BottomDeckLayer = BaseLayer.extend({
    * Shows the starting hand being drawn.
    */
   showDrawStartingHand(mulliganIndices) {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       this._prepareCardsForStartingHand();
 
       let showDelay = 0.0;

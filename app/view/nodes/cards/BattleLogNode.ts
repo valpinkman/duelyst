@@ -337,7 +337,7 @@ const BattleLogNode = SdkNode.extend({
   /* region ANIMATION */
 
   showIn(targetScreenPosition) {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       // stop any running animations
       this.stopAnimations();
 
@@ -360,7 +360,7 @@ const BattleLogNode = SdkNode.extend({
   },
 
   showOut(sourceScreenPosition) {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       // stop any running animations
       this.stopAnimations();
 
@@ -382,7 +382,7 @@ const BattleLogNode = SdkNode.extend({
   },
 
   showMoveToNext(targetScreenPosition) {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       // stop any running animations
       this.stopAnimations();
 

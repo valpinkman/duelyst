@@ -534,7 +534,7 @@ var GameLayer = FXCompositeLayer.extend({
     }
     let statusPromise = this._statusPromises[targetStatus];
     if (statusPromise == null) {
-      statusPromise = this._statusPromises[targetStatus] = new Promise((resolve, reject) => {
+      statusPromise = this._statusPromises[targetStatus] = new Promise<void>((resolve, reject) => {
         if (this.getStatus() === targetStatus) {
           resolve();
         } else {
@@ -1353,7 +1353,7 @@ var GameLayer = FXCompositeLayer.extend({
    */
   showActiveGame() {
     if (this._showActiveGamePromise == null) {
-      this._showActiveGamePromise = new Promise((resolve, reject) => {
+      this._showActiveGamePromise = new Promise<void>((resolve, reject) => {
         this.whenIsStatusForActiveGame().then(() => {
           Logger.module('ENGINE').log('GameLayer.showActiveGame');
           // bind players and change status
@@ -5557,7 +5557,7 @@ var GameLayer = FXCompositeLayer.extend({
    */
   whenHighlightedGeneralsAsync(callback) {
     if (this._highlightedGeneralsPromise == null) {
-      this._highlightedGeneralsPromise = new Promise((resolve, reject) => {
+      this._highlightedGeneralsPromise = new Promise<void>((resolve, reject) => {
         this.whenStatus(GameLayer.STATUS.NEW).then(() => {
           if (this._highlightingGeneralsPromise != null) {
             // use the highlighting generals promise
@@ -5581,7 +5581,7 @@ var GameLayer = FXCompositeLayer.extend({
   highlightGenerals() {
     return this.whenStatus(GameLayer.STATUS.NEW).then(() => {
       if (this._highlightingGeneralsPromise == null && !SDK.GameSession.getInstance().isChallenge()) {
-        this._highlightingGeneralsPromise = new Promise((resolve, reject) => {
+        this._highlightingGeneralsPromise = new Promise<void>((resolve, reject) => {
           this.bindSdkPlayers();
 
           // my player data

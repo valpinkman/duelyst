@@ -446,7 +446,7 @@ const EndOfSeasonLayer = RewardLayer.extend({
   },
 
   _beginShowLootCrate(cleanupAction) {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       const sequenceSteps = [
         cc.callFunc(() => {
           resolve();
@@ -497,7 +497,7 @@ const EndOfSeasonLayer = RewardLayer.extend({
     // disable and reset continue
     this.disablePressToContinueAndHitboxesAndCallback();
 
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       // animate out labels
       this.runAction(cc.sequence(
         cc.spawn(

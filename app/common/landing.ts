@@ -80,7 +80,7 @@ function firePixels() {
     debug('tracking pixels disabled');
     return Promise.resolve();
   }
-  return new Promise((resolve) => {
+  return new Promise<void>((resolve) => {
     const iframe = document.createElement('iframe');
     iframe.src = 'https://zulumob.go2cloud.org/SL3v5';
     iframe.scrolling = 'no';

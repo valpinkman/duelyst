@@ -763,7 +763,7 @@ const CrateOpeningLayer = RewardLayer.extend({
   },
 
   showSelectedNode(selectedNode) {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       // hide titles
       this.stopShowingTitles(CONFIG.ANIMATE_FAST_DURATION);
 

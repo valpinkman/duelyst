@@ -187,7 +187,7 @@ const ArenaDeckCardNode = SdkNode.extend({
     }
 
     if (this.sdkCard != null) {
-      return new Promise((resolve, reject) => {
+      return new Promise<void>((resolve, reject) => {
         // hide self
         this.setOpacity(0);
 
@@ -236,7 +236,7 @@ const ArenaDeckCardNode = SdkNode.extend({
   },
 
   showRemove() {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       this.whenResourcesReady(this.getCardResourceRequestId()).then((cardResourceRequestId) => {
         if (!this.getAreResourcesValid(cardResourceRequestId)) return; // card has changed
         // move card into position

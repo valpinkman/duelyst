@@ -1507,7 +1507,7 @@ var NonAllocatingLoader = {
     }
   },
   loadUrl: function (url) {
-    return new Promise(function (resolve, reject) {
+    return new Promise<void>(function (resolve, reject) {
       var xhr = new XMLHttpRequest();
       xhr.open('GET', url, true);
       xhr.responseType = UtilsResources.getExtIsForAudio(url) ? 'arraybuffer' : 'blob';

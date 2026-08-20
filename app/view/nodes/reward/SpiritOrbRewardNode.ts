@@ -54,7 +54,7 @@ const SpiritOrbRewardNode = RewardNode.extend({
 
   getRewardAnimationPromise(looping, showLabel) {
     return (looping ? this.showLoopingRewardFlare() : this.showRewardFlare())
-      .then(() => new Promise((resolve) => {
+      .then(() => new Promise<void>((resolve) => {
         // spirit orb
         const spiritOrbContainerNode = new cc.Node();
         spiritOrbContainerNode.setAnchorPoint(0.5, 0.5);

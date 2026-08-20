@@ -510,7 +510,7 @@ const UpgradeCardLayer = BaseLayer.extend({
 
     this._spiritCostForNextReroll = RiftHelper.spiritCostForNextReroll(currentUpgradeRerollCount, runTotalRerollCount);
 
-    const revealPromise = new Promise((resolve, reject) => {
+    const revealPromise = new Promise<void>((resolve, reject) => {
       this._whenRevealResolve = resolve;
 
       this.whenRequiredResourcesReady().then((requestId) => {
@@ -636,7 +636,7 @@ const UpgradeCardLayer = BaseLayer.extend({
    * @returns {Promise}
    */
   _showCardMoveAndReveal(cardId, index) {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       const cardDisc = BaseSprite.create(RSX.booster_glowing_disc.img);
       cardDisc.setAnchorPoint(cc.p(0.5, 0.5));
       this.innerLayer.addChild(cardDisc);
@@ -809,7 +809,7 @@ const UpgradeCardLayer = BaseLayer.extend({
   /* region TRANSITION */
 
   transitionIn() {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       this.setOpacity(0.0);
       this.runAction(cc.sequence(
         cc.fadeIn(CONFIG.FADE_FAST_DURATION),
@@ -821,7 +821,7 @@ const UpgradeCardLayer = BaseLayer.extend({
   },
 
   transitionOut() {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       this.runAction(cc.sequence(
         cc.fadeOut(CONFIG.FADE_FAST_DURATION),
         cc.callFunc(() => {

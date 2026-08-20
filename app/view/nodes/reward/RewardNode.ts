@@ -42,7 +42,7 @@ const RewardNode = cc.Node.extend({
   },
 
   showRewardWipeFlare() {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       const wipeFlare = FXFbmPolarFlareWipeSprite.create();
       wipeFlare.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
       wipeFlare.setTextureRect(cc.rect(0, 0, 512, 512));
@@ -67,7 +67,7 @@ const RewardNode = cc.Node.extend({
   },
 
   showRewardFlare() {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       const polarFlare = FXFbmPolarFlareSprite.create();
       polarFlare.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
       polarFlare.setTextureRect(cc.rect(0, 0, 512, 640));
@@ -92,7 +92,7 @@ const RewardNode = cc.Node.extend({
   },
 
   showLoopingRewardFlare() {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       const polarFlare = FXFbmPolarFlareSprite.create();
       polarFlare.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
       polarFlare.setTextureRect(cc.rect(0, 0, 512, 640));

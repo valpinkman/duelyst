@@ -30,7 +30,7 @@ Scene._isSetupPromise = null;
 Scene.setup = function () {
   if (Scene._isSetupPromise == null) {
     Logger.module('ENGINE').log('Scene.setup');
-    Scene._isSetupPromise = new Promise((resolve, reject) => {
+    Scene._isSetupPromise = new Promise<void>((resolve, reject) => {
       cc.game.onStart = function () {
         const scene = Scene.getInstance();
         scene.resize();

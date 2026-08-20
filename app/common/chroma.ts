@@ -9,7 +9,7 @@ function sleep(timeMs) {
 }
 
 function flashTurnTimer(timePct, color) {
-  return new Promise((resolve) => {
+  return new Promise<void>((resolve) => {
     const startColumn = Math.ceil((Keyboard.Columns - (timePct * Keyboard.Columns)));
     const endColumn = Keyboard.Columns;
 

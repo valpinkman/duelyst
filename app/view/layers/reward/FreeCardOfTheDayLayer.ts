@@ -106,7 +106,7 @@ const FreeCardOfTheDayLayer = RewardLayer.extend({
 
       audio_engine.current().play_effect(RSX.sfx_card_reward_long.audio, false);
 
-      const showCardsPromise = new Promise((resolve) => {
+      const showCardsPromise = new Promise<void>((resolve) => {
         const spacingBetweenCardCenters = 250;
         const centerPosition = cc.p(0, 70);
 

@@ -335,7 +335,7 @@ const ArenaLayer = FXCompositeLayer.extend({
    * @returns {Promise}
    */
   showShake(delay, duration, strength) {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       if (this.outerLayer != null) {
         if (delay == null) { delay = 0.0; }
         if (duration == null) { duration = 0.5; }

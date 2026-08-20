@@ -561,7 +561,7 @@ if (cluster.isMaster) {
       // run each game in sequence
       let gameSession;
       const games = _.range(numGames);
-      PromiseUtils.each(games, (i) => new Promise((gameResolve, gameReject) => {
+      PromiseUtils.each(games, (i) => new Promise<void>((gameResolve, gameReject) => {
         // timestamp start of game
         const startTime = Date.now();
 

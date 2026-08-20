@@ -308,7 +308,7 @@ const BattleLog = BaseLayer.extend({
       this._stepsProcessed.push(step);
 
       // show step
-      showEntryPromise = new Promise((resolve, reject) => {
+      showEntryPromise = new Promise<void>((resolve, reject) => {
         const battleLogNodes = this._battleLogNodesInUse;
         const battleLogNodesPositions = this._battleLogNodePositions;
         const animateNextPromises = [];

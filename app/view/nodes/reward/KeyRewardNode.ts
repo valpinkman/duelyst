@@ -48,7 +48,7 @@ const KeyRewardNode = RewardNode.extend({
 
   getRewardAnimationPromise(looping, showLabel) {
     return (looping ? this.showLoopingRewardFlare() : this.showRewardFlare())
-      .then(() => new Promise((resolve) => {
+      .then(() => new Promise<void>((resolve) => {
         // key sprite
         let spriteIdentifier;
         let chestType;

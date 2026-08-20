@@ -58,7 +58,7 @@ const CardBackRewardNode = RewardNode.extend({
 
   getRewardAnimationPromise(looping, showLabel) {
     return (looping ? this.showLoopingRewardFlare() : this.showRewardFlare())
-      .then(() => new Promise((resolve) => {
+      .then(() => new Promise<void>((resolve) => {
         // card back data
         const cardBackData = SDK.CosmeticsFactory.cosmeticForIdentifier(this._cardBackId);
 

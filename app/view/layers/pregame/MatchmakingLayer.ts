@@ -245,7 +245,7 @@ const MatchmakingLayer = ParallaxLayer.extend({
 
   showNewGame(player1GeneralId, player2GeneralId) {
     if (this._showNewGamePromise == null) {
-      this._showNewGamePromise = new Promise((resolve, reject) => {
+      this._showNewGamePromise = new Promise<void>((resolve, reject) => {
         const player1General = SDK.GameSession.getCardCaches().getCardById(player1GeneralId);
         const player2General = SDK.GameSession.getCardCaches().getCardById(player2GeneralId);
         const announcerFirstResource = player1General && player1General.getAnnouncerFirstResource();
@@ -474,7 +474,7 @@ const MatchmakingLayer = ParallaxLayer.extend({
   },
 
   movePlayer(offsetX, generalSprite, animationDuration) {
-    const movePromise = new Promise((resolve, reject) => {
+    const movePromise = new Promise<void>((resolve, reject) => {
       const { parallaxNode } = this;
       const { generalParallaxRatio } = this;
       const parallaxLayer = this;

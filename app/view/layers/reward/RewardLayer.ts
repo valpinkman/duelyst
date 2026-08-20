@@ -586,7 +586,7 @@ const RewardLayer = BaseLayer.extend({
    * @returns {Promise}
    */
   showTitles(duration, title, subtitle, titlePosition, subtitlePosition) {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       if (duration == null) { duration = 0.0; }
 
       if (this._titlesAction != null) {
@@ -699,7 +699,7 @@ const RewardLayer = BaseLayer.extend({
    * @returns {Promise}
    */
   stopShowingTitles(duration) {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       if (duration == null) { duration = 0.0; }
       const isAnimating = duration > 0.0;
 

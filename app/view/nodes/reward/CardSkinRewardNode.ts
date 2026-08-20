@@ -51,7 +51,7 @@ const CardSkinRewardNode = RewardNode.extend({
 
   getRewardAnimationPromise(looping, showLabel) {
     return (looping ? this.showLoopingRewardFlare() : this.showRewardFlare())
-      .then(() => new Promise((resolve) => {
+      .then(() => new Promise<void>((resolve) => {
         // card skin data
         const cardSkinData = SDK.CosmeticsFactory.cosmeticForIdentifier(this._cardSkinId);
         const { animResource } = cardSkinData;

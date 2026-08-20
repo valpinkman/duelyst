@@ -270,7 +270,7 @@ if (process.env.AI_TOOLS_ENABLED) {
       }
     }
 
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       const request = $.ajax({
         url: 'http://localhost:5001/stop_game',
         data: JSON.stringify({}),
@@ -402,7 +402,7 @@ if (process.env.AI_TOOLS_ENABLED) {
       SDK.GameSession.getInstance().setIsRunningAsAuthoritative(false);
 
       // request run simulation
-      return new Promise((resolve, reject) => {
+      return new Promise<void>((resolve, reject) => {
         const request = $.ajax({
           url: 'http://localhost:5001/start_game_from_data',
           data: JSON.stringify({
@@ -527,7 +527,7 @@ if (process.env.AI_TOOLS_ENABLED) {
     Logger.module('APPLICATION').log(`ai_runHeadlessAIvAIGames - > requesting ${numGames} games with v${ai1Version} vs v${ai2Version}`);
 
     // request run games
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       const request = $.ajax({
         url: 'http://localhost:5001/run_headless_games',
         data: JSON.stringify({
@@ -1723,7 +1723,7 @@ App._resumeGame = function (lastGameModel) {
   const gameResumeItemView = new ResumeGameItemView({ model: playerDataModel });
 
   // initialize continue promise
-  const continueGamePromise = new Promise((resolve, reject) => {
+  const continueGamePromise = new Promise<void>((resolve, reject) => {
     const onContinueGame = function () {
       stopListeningForContinueGame();
 

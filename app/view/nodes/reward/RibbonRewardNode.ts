@@ -50,7 +50,7 @@ const RibbonRewardNode = RewardNode.extend({
 
   getRewardAnimationPromise(looping, showLabel) {
     return (looping ? this.showLoopingRewardFlare() : this.showRewardFlare())
-      .then(() => new Promise((resolve) => {
+      .then(() => new Promise<void>((resolve) => {
         // ribbon data
         const ribbonData = SDK.RibbonFactory.ribbonForIdentifier(this._ribbonId);
 

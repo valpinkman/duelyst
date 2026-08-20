@@ -249,7 +249,7 @@ const RewardsLayer = BaseLayer.extend({
   /* region TRANSITION */
 
   transitionIn() {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       this.setOpacity(0.0);
       this.runAction(cc.sequence(
         cc.fadeIn(CONFIG.FADE_FAST_DURATION),
@@ -261,7 +261,7 @@ const RewardsLayer = BaseLayer.extend({
   },
 
   transitionOut() {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       this.runAction(cc.sequence(
         cc.delayTime(0),
         cc.fadeOut(CONFIG.FADE_FAST_DURATION),

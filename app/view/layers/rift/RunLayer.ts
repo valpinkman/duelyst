@@ -311,7 +311,7 @@ const RunLayer = BaseLayer.extend({
   /* region TRANSITION */
 
   transitionIn() {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       this.setOpacity(0.0);
       this.runAction(cc.sequence(
         cc.fadeIn(CONFIG.FADE_FAST_DURATION),
@@ -323,7 +323,7 @@ const RunLayer = BaseLayer.extend({
   },
 
   transitionOut() {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       this.runAction(cc.sequence(
         cc.fadeOut(CONFIG.FADE_FAST_DURATION),
         cc.callFunc(() => {

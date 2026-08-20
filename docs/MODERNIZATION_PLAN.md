@@ -63,9 +63,35 @@ step it describes, so it can never drift from the code.
      `referralCodeRow` that never existed — CoffeeScript's `?.` made it silently undefined, so the
      `referral_events` cleanup has never run and those rows are orphaned.
 
-  3. 5T.4 incremental typing: `pnpm typecheck` reports **2,883** errors under the loose config
-     (a metric, not a gate); **2,467 are TS2339** (property does not exist), which is the next
-     bulk target. Move directories into `tsconfig.strict.json` as they go clean.
+  3. **TS2339 + TS2794 swept: typecheck 2,960 → 436** (2026-08-20), an 85% reduction.
+     TS2339 2,467 → 175, TS2794 128 → 0. Unlike the TS2304 pass, these were **not** bugs —
+     they are TypeScript failing to see shapes that are correct at runtime, so the fix is
+     annotation, never code.
+
+     Three diagnostics-driven codemods, all **type-only, emitting no JavaScript**:
+
+     | codemod | what | count |
+     |---|---|---|
+     | `annotate-empty-object-bags.mjs` | scratch objects built up field by field → `Record<string, any>` | 159 declarations |
+     | `declare-class-members.mjs` | initClass-era statics and prototype defaults → `declare` | 45 members |
+     | `promise-void-type-arg.mjs` | `new Promise(...resolve()...)` → `new Promise<void>` | 116 promises |
+
+     **All three read the compiler's own output rather than sweeping the repo.** A blanket sweep
+     would also silence the places where TypeScript infers a real shape and would have caught a
+     genuine mistake — which is the whole reason the TS2304 pass was worth doing. Each reports
+     what it could not resolve and leaves it alone: 7–9 receivers that were not plain literal
+     declarations, and 0 promises with mixed `resolve()`/`resolve(x)` (which `<void>` would
+     mistype).
+
+     **Why `declare` and annotations rather than class fields** is load-bearing here, not
+     stylistic: a real class field creates an OWN property on every instance, and in this codebase
+     an object's own enumerable properties **are** the wire format for game state and replays
+     (AGENTS.md). Verified every step against the wire-format round-trip and golden key-set
+     fixture, and confirmed by diff that every changed line is an annotation.
+
+     The remaining 436 are heterogeneous and want per-case judgement: 175 TS2339 on function
+     objects and narrowed types, 146 TS2554 (wrong argument count — worth reading, some may be
+     real), 35 TS2345, 23 TS2403. Move directories into `tsconfig.strict.json` as they go clean.
   4. 7.2 integration revival in CI for the `data_access` suites (~506 tests, stale
      `createNewUser`/`userIdForEmail` API).
   - Catalogued bugs awaiting a correctness pass: `GET /api/me/rank/` queries a `user_rank`

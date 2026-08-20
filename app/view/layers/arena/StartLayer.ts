@@ -221,7 +221,7 @@ const StartLayer = BaseLayer.extend({
     if (this._showStartButtonPromise == null) {
       if (delayTime == null) { delayTime = 0.0; }
       this._hideStartButtonPromise = null;
-      this._showStartButtonPromise = new Promise((resolve, reject) => {
+      this._showStartButtonPromise = new Promise<void>((resolve, reject) => {
         this.costLabel.setOpacity(0.0);
         this.costLabel.stopActionByTag(CONFIG.FADE_TAG);
         var fadeAction = cc.sequence(
@@ -269,7 +269,7 @@ const StartLayer = BaseLayer.extend({
   hideStartButton() {
     if (this._hideStartButtonPromise == null) {
       this._showStartButtonPromise = null;
-      this._hideStartButtonPromise = new Promise((resolve, reject) => {
+      this._hideStartButtonPromise = new Promise<void>((resolve, reject) => {
         this.startButton.setEnabled(false);
         this.startButton.stopActionByTag(CONFIG.FADE_TAG);
         var fadeAction = cc.fadeOut(0.2);
@@ -313,7 +313,7 @@ const StartLayer = BaseLayer.extend({
 
   transitionIn() {
     return Promise.all([
-      new Promise((resolve, reject) => {
+      new Promise<void>((resolve, reject) => {
         this.titleLabel.setOpacity(0);
         this.descriptionLabel.setOpacity(0);
 
@@ -335,7 +335,7 @@ const StartLayer = BaseLayer.extend({
 
   transitionOut() {
     return Promise.all([
-      new Promise((resolve, reject) => {
+      new Promise<void>((resolve, reject) => {
         // title and description
         this.titleLabel.runAction(cc.scaleTo(0.1, 0.0));
         this.descriptionLabel.runAction(cc.sequence(

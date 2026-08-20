@@ -27,7 +27,7 @@ const TransitionLayer = BaseLayer.extend({
   empty() {
     const currentLayer = this._currentLayer;
 
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       // stop current layer
       if (currentLayer != null) {
         currentLayer.stopActionByTag(CONFIG.FADE_TAG);
@@ -66,7 +66,7 @@ const TransitionLayer = BaseLayer.extend({
     const emptyPromise = this.empty();
 
     // show second
-    const showPromise = new Promise((resolve, reject) => {
+    const showPromise = new Promise<void>((resolve, reject) => {
       // set current
       this._currentLayer = layer;
 

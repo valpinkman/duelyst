@@ -328,7 +328,7 @@ const ChooseCardLayer = BaseLayer.extend({
   },
 
   showSelectedNode(node) {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       // emphasize selected card
       node.hideKeywords();
       node.cardBackgroundSprite.highlightIntensity = 6.0;
@@ -434,7 +434,7 @@ const ChooseCardLayer = BaseLayer.extend({
   },
 
   transitionIn() {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       this.setOpacity(0.0);
       this.runAction(cc.sequence(
         cc.fadeIn(CONFIG.FADE_FAST_DURATION),
@@ -446,7 +446,7 @@ const ChooseCardLayer = BaseLayer.extend({
   },
 
   transitionOut() {
-    return (this._showingAnimationsPromise || Promise.resolve()).then(() => new Promise((resolve, reject) => {
+    return (this._showingAnimationsPromise || Promise.resolve()).then(() => new Promise<void>((resolve, reject) => {
       this.runAction(cc.sequence(
         cc.fadeOut(CONFIG.FADE_FAST_DURATION),
         cc.callFunc(() => {

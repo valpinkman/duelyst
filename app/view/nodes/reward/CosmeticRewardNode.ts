@@ -51,7 +51,7 @@ const CosmeticRewardNode = RewardNode.extend({
 
   getRewardAnimationPromise(looping, showLabel, maskWithCircle) {
     return (looping ? this.showLoopingRewardFlare() : this.showRewardFlare())
-      .then(() => new Promise((resolve) => {
+      .then(() => new Promise<void>((resolve) => {
         // cosmetic data
         const cosmeticData = SDK.CosmeticsFactory.cosmeticForIdentifier(this._cosmeticId);
 

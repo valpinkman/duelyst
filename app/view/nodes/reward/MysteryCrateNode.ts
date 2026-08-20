@@ -84,7 +84,7 @@ const MysteryCrateNode = LootCrateNode.extend({
       this._showKeyPromise = PromiseUtils.cancellable(this.whenRequiredResourcesReady().then((requestId) => {
         if (!this.getAreResourcesValid(requestId)) return; // load invalidated or resources changed
 
-        return new Promise((resolve) => {
+        return new Promise<void>((resolve) => {
           this._showKeyPromise = null;
 
           // key sprite
@@ -130,7 +130,7 @@ const MysteryCrateNode = LootCrateNode.extend({
       this._stopShowingKeyPromise = PromiseUtils.cancellable(this.whenRequiredResourcesReady().then((requestId) => {
         if (!this.getAreResourcesValid(requestId)) return; // load invalidated or resources changed
 
-        return new Promise((resolve) => {
+        return new Promise<void>((resolve) => {
           this._stopShowingKeyPromise = null;
           this._lootCrateKeySprite.fadeToInvisible(duration, () => { resolve(); });
         })
@@ -147,7 +147,7 @@ const MysteryCrateNode = LootCrateNode.extend({
   showOpeningAndRewards() {
     return this.showKey(CONFIG.ANIMATE_MEDIUM_DURATION).then(() =>
     // show unlock
-      new Promise((resolve) => {
+      new Promise<void>((resolve) => {
         // show crate as static but preserve fx
         this.showStaticState(CONFIG.ANIMATE_FAST_DURATION, true);
 

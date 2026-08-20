@@ -76,7 +76,7 @@ const CurrencyRewardNode = RewardNode.extend({
 
   getRewardAnimationPromise(looping, showLabel) {
     return (looping ? this.showLoopingRewardFlare() : this.showRewardFlare())
-      .then(() => new Promise((resolve, reject) => {
+      .then(() => new Promise<void>((resolve, reject) => {
         const type = this.getCurrencyType();
         const amount = this.getAmount();
 

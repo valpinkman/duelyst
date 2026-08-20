@@ -196,7 +196,7 @@ var BattleMap = cc.Class.extend({
     }
     let statusPromise = this._statusPromises[targetStatus];
     if (statusPromise == null) {
-      statusPromise = this._statusPromises[targetStatus] = new Promise((resolve, reject) => {
+      statusPromise = this._statusPromises[targetStatus] = new Promise<void>((resolve, reject) => {
         if (this.getStatus() === targetStatus) {
           resolve();
         } else {
@@ -1540,7 +1540,7 @@ var BattleMap = cc.Class.extend({
   showTiles(duration) {
     if (!this._isShowingTiles) {
       this._isShowingTiles = true;
-      this._showTilesPromise = new Promise((resolve, reject) => {
+      this._showTilesPromise = new Promise<void>((resolve, reject) => {
         const board = SDK.GameSession.getInstance().getBoard();
         let showDelay = 0.0;
         const floorTileMap = this._floorTileMap;
@@ -1637,7 +1637,7 @@ var BattleMap = cc.Class.extend({
     if (this._isShowingTiles) {
       this._isShowingTiles = false;
 
-      this._hideTilesPromise = new Promise((resolve, reject) => {
+      this._hideTilesPromise = new Promise<void>((resolve, reject) => {
         let showDelay = 0.0;
         const floorTileMap = this._floorTileMap;
 
@@ -1668,7 +1668,7 @@ var BattleMap = cc.Class.extend({
     if (!this._isShowingLights) {
       this._isShowingLights = true;
 
-      this._showLightsPromise = new Promise((resolve, reject) => {
+      this._showLightsPromise = new Promise<void>((resolve, reject) => {
         let showDelay = 0.0;
         const lights = this._lights;
         const ambientLightColorChangingSprites = this._ambientLightColorChangingSprites;
@@ -1708,7 +1708,7 @@ var BattleMap = cc.Class.extend({
     if (this._isShowingLights) {
       this._isShowingLights = false;
 
-      this._hideLightsPromise = new Promise((resolve, reject) => {
+      this._hideLightsPromise = new Promise<void>((resolve, reject) => {
         let showDelay = 0.0;
         const lights = this._lights;
         const ambientLightColorChangingSprites = this._ambientLightColorChangingSprites;
@@ -1750,7 +1750,7 @@ var BattleMap = cc.Class.extend({
     if (!this._isShowingEnvironmentEffects) {
       this._isShowingEnvironmentEffects = true;
 
-      this._showEnvironmentEffectsPromise = new Promise((resolve, reject) => {
+      this._showEnvironmentEffectsPromise = new Promise<void>((resolve, reject) => {
         const particleSystems = this._particleSystems;
         if (particleSystems != null) {
           for (var i = 0, il = particleSystems.length; i < il; i++) {
@@ -1785,7 +1785,7 @@ var BattleMap = cc.Class.extend({
   hideEnvironmentEffects() {
     if (this._isShowingEnvironmentEffects) {
       this._isShowingEnvironmentEffects = false;
-      this._hideEnvironmentEffectsPromise = new Promise((resolve, reject) => {
+      this._hideEnvironmentEffectsPromise = new Promise<void>((resolve, reject) => {
         const particleSystems = this._particleSystems;
         if (particleSystems != null) {
           for (var i = 0, il = particleSystems.length; i < il; i++) {

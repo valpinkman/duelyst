@@ -102,7 +102,7 @@ const DeckLayer = BaseLayer.extend({
     }
 
     if (this._cardNodes.length && duration) {
-      return new Promise((resolve) => {
+      return new Promise<void>((resolve) => {
         this.runAction(cc.sequence(
           cc.spawn(actions),
           cc.callFunc(() => {

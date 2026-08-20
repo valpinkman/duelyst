@@ -120,7 +120,7 @@ const ChooseFactionLayer = BaseLayer.extend({
 
   showFactionOptions(factionChoices) {
     // wait to show factions until animations complete
-    return (this._showingAnimationsPromise || Promise.resolve()).then(() => this._showingAnimationsPromise = PromiseUtils.inspectable(new Promise((resolve, reject) => {
+    return (this._showingAnimationsPromise || Promise.resolve()).then(() => this._showingAnimationsPromise = PromiseUtils.inspectable(new Promise<void>((resolve, reject) => {
       // reset
       if (this._crestNodes != null && this._crestNodes.length > 0) {
         for (var i = 0, il = this._crestNodes.length; i < il; i++) {
@@ -164,7 +164,7 @@ const ChooseFactionLayer = BaseLayer.extend({
   },
 
   showFactionOption(factionId, position, delay) {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       if (delay == null) { delay = 0.0; }
 
       // add a small random delay
@@ -336,7 +336,7 @@ const ChooseFactionLayer = BaseLayer.extend({
   },
 
   showSelectedNode(selectedNode) {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       // show selected node
       selectedNode._glowNode.setGlowColor(CONFIG.ARENA_FACTION_GLOW_SELECT_COLOR);
 
@@ -395,7 +395,7 @@ const ChooseFactionLayer = BaseLayer.extend({
   /* region TRANSITION */
 
   transitionIn() {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       this.setOpacity(0.0);
       this.runAction(cc.sequence(
         cc.fadeIn(CONFIG.FADE_FAST_DURATION),
@@ -407,7 +407,7 @@ const ChooseFactionLayer = BaseLayer.extend({
   },
 
   transitionOut() {
-    return (this._showingAnimationsPromise || Promise.resolve()).then(() => new Promise((resolve, reject) => {
+    return (this._showingAnimationsPromise || Promise.resolve()).then(() => new Promise<void>((resolve, reject) => {
       this.runAction(cc.sequence(
         cc.fadeOut(CONFIG.FADE_FAST_DURATION),
         cc.callFunc(() => {

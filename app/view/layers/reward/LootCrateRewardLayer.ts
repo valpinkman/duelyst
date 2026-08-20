@@ -111,7 +111,7 @@ const LootCrateRewardLayer = RewardLayer.extend({
   },
 
   _showRewardLootCrate(lootCrateType, targetScreenPosition, disableCrateDescription) {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       // loot crate
       let lootCrateNode;
       if (lootCrateType === SDK.CosmeticsChestTypeLookup.Epic) {

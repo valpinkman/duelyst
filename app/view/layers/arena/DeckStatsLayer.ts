@@ -267,7 +267,7 @@ const DeckStatsLayer = BaseLayer.extend({
   showResignButton() {
     if (this._showStartButtonPromise == null) {
       this._hideStartButtonPromise = null;
-      this._showStartButtonPromise = new Promise((resolve, reject) => {
+      this._showStartButtonPromise = new Promise<void>((resolve, reject) => {
         this.resignButton.setEnabled(true);
         this.resignButton.setOpacity(0.0);
         this.resignButton.stopActionByTag(CONFIG.FADE_TAG);
@@ -287,7 +287,7 @@ const DeckStatsLayer = BaseLayer.extend({
   hideResignButton() {
     if (this._hideStartButtonPromise == null) {
       this._showStartButtonPromise = null;
-      this._hideStartButtonPromise = new Promise((resolve, reject) => {
+      this._hideStartButtonPromise = new Promise<void>((resolve, reject) => {
         this.resignButton.setEnabled(false);
         this.resignButton.stopActionByTag(CONFIG.FADE_TAG);
         const fadeAction = cc.sequence(

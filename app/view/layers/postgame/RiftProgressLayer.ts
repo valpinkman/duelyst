@@ -187,7 +187,7 @@ const RiftProgressLayer = RewardLayer.extend({
    * @return {Promise} A promise which resolves when animation is complete
    */
   _animateInBaseState() {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       const levelRingYMovement = 20;
       const headerPlateYMovement = -20;
 
@@ -271,7 +271,7 @@ const RiftProgressLayer = RewardLayer.extend({
 
     const progressAnimationSpeed = this._getLevelProgressAnimationSpeed(afterPoints - initialPoints, newProgress - initialProgress);
 
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       this.runAction(cc.sequence(
         // Show the plate
         cc.spawn(
@@ -298,7 +298,7 @@ const RiftProgressLayer = RewardLayer.extend({
   },
 
   _animateLevelUp(currentRiftPoints) {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       const newLevelValue = RiftHelper.levelForPoints(currentRiftPoints);
       const newLevelLabel = new cc.LabelTTF(`${newLevelValue}`, RSX.font_bold.name, 50, cc.size(200, 50), cc.TEXT_ALIGNMENT_CENTER);
       newLevelLabel.setFontFillColor(CONFIG.POST_GAME_RANK_PRIMARY_COLOR);
@@ -338,7 +338,7 @@ const RiftProgressLayer = RewardLayer.extend({
       return Promise.resolve();
     }
     // Show the previous ladder position, then animate in the new position
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       if (this._riftRatingAfter < this._riftRatingBefore) {
         this._newRatingLabel.setPositionBelowSprite(this._previousRatingLabel);
       } else {

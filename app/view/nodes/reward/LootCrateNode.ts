@@ -837,7 +837,7 @@ const LootCrateNode = cc.Node.extend({
             convertedToRewardNode.setVisible(false);
             convertedToRewardNode.setPosition(rewardNode.getPosition());
             rewardNode.getParent().addChild(convertedToRewardNode, convertedToRewardNode.getLocalZOrder() + 0.5);
-            return new Promise((resolve, reject) => {
+            return new Promise<void>((resolve, reject) => {
               const replaceDelay = 0.75;
               const replaceAction = cc.spawn(
                 Shake.create(replaceDelay + CONFIG.ANIMATE_FAST_DURATION, 5.0, rewardNode.getPosition()),
@@ -988,7 +988,7 @@ const LootCrateNode = cc.Node.extend({
     return this.whenRequiredResourcesReady().then((requestId) => {
       if (!this.getAreResourcesValid(requestId)) return; // load invalidated or resources changed
 
-      return new Promise((resolve, reject) => {
+      return new Promise<void>((resolve, reject) => {
         if (withAudio) {
           audio_engine.current().play_effect(RSX.sfx_loot_crate_reveal.audio, false);
         }
@@ -1151,7 +1151,7 @@ const LootCrateNode = cc.Node.extend({
 
       this._rewardZodiacs = [];
 
-      return new Promise((resolve, reject) => {
+      return new Promise<void>((resolve, reject) => {
         // show crate as static but preserve fx
         this.showStaticState(CONFIG.FADE_FAST_DURATION, true);
 
@@ -1413,7 +1413,7 @@ const LootCrateNode = cc.Node.extend({
     return this.whenRequiredResourcesReady().then((requestId) => {
       if (!this.getAreResourcesValid(requestId)) return; // load invalidated or resources changed
 
-      return new Promise((resolve, reject) => {
+      return new Promise<void>((resolve, reject) => {
         audio_engine.current().play_effect(RSX.sfx_loot_crate_reward_disappear.audio, false);
         this.runAction(cc.sequence(
           cc.callFunc(() => {

@@ -128,6 +128,14 @@ How we work on it:
   `generate_packages.js` and RSX paths.
 
 Status log (newest first):
+- 2026-08-20 — **typecheck 2,960 → 436** (85%). TS2339 2,467 → 175, TS2794 128 → 0, via three
+  diagnostics-driven codemods that are strictly type-only: `Record<string, any>` on scratch
+  objects (159), `declare` on initClass-era statics/prototype defaults (45), `new Promise<void>`
+  (116). Unlike the TS2304 pass these were **not** bugs — TypeScript could not see shapes that
+  are correct at runtime. Every codemod reads the compiler's output rather than sweeping the
+  repo, so it cannot silence a place where TS infers a real shape; each reports what it could not
+  resolve. `declare`/annotations rather than class fields is load-bearing: a class field would
+  create own properties and change the wire format.
 - 2026-08-20 — **TS2304 cleared: 73 → 0**, and it was a bug list, not typing noise: **26 real
   defects** across SDK, client, server, worker and AI. eslint's `no-undef` is off for `.ts`, so
   TypeScript is the only thing that sees an undefined identifier, and its output sat unread in a

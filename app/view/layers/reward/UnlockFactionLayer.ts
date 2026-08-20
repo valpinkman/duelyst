@@ -421,7 +421,7 @@ const UnlockFactionLayer = RewardLayer.extend({
     if (delay == null) { delay = 0.0; }
     if (zOrder == null) { zOrder = this.zOrderCard; }
 
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       const cardDisc = BaseSprite.create(RSX.booster_glowing_disc.img);
       cardDisc.setAnchorPoint(0.5, 0.5);
       cardDisc.setPosition(sourceScreenPosition);

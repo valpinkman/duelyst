@@ -1751,7 +1751,7 @@ var CardNode = SdkNode.extend({
   /* region PLAY */
 
   showPlay(sdkCard, actionToShowStateFor, actionEventTypeToShowStateFor, sourceScreenPosition, targetScreenPosition, animateDuration, showDuration, noFlip, showInstructionals) {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       if (animateDuration == null) { animateDuration = 0.0; }
       if (showDuration == null) { showDuration = 0.0; }
 
@@ -1906,7 +1906,7 @@ var CardNode = SdkNode.extend({
   },
 
   stopShowingPlay(animateDuration) {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       if (animateDuration == null) { animateDuration = 0.0; }
       this.stopAnimations();
 
@@ -2336,7 +2336,7 @@ var CardNode = SdkNode.extend({
     }
 
     if (this.sdkCard != null) {
-      return new Promise((resolve, reject) => {
+      return new Promise<void>((resolve, reject) => {
         // stop running animations
         this.stopAnimations();
 
@@ -2457,7 +2457,7 @@ var CardNode = SdkNode.extend({
     }
 
     if (this.sdkCard != null) {
-      return new Promise((resolve, reject) => {
+      return new Promise<void>((resolve, reject) => {
         // stop running animations
         this.stopAnimations();
 
@@ -2782,7 +2782,7 @@ var CardNode = SdkNode.extend({
     }
 
     if (this.sdkCard != null) {
-      return new Promise((resolve, reject) => {
+      return new Promise<void>((resolve, reject) => {
         // speed for phase 1 of animation (rotation + outline)
         const rotationSpeed = 0.5;
         // speed for phase 2 of animation (elements appear on card)

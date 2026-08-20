@@ -323,7 +323,7 @@ const LadderProgressLayer = RewardLayer.extend({
    * @return {Promise} A promise which resolves when animation is complete
    */
   _animateInBaseState() {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       const rankedPlateYMovement = 20;
       const divisionMedalYMovement = 50;
 
@@ -380,7 +380,7 @@ const LadderProgressLayer = RewardLayer.extend({
    * @return {Promise} A promise which resolves when animation is complete
    */
   _animateInChevronSprites(numChevrons, numFullChevrons) {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       numChevrons = numChevrons || 0;
       numFullChevrons = numFullChevrons || 0;
       const oldChevronSprites = this._chevronSprites;
@@ -446,7 +446,7 @@ const LadderProgressLayer = RewardLayer.extend({
    * @return {Promise} A promise which resolves when animation is complete
    */
   _animateGainingChevron() {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       // Play gain chevron sfx
       audio_engine.current().play_effect(RSX.sfx_unit_onclick.audio, false);
 
@@ -487,7 +487,7 @@ const LadderProgressLayer = RewardLayer.extend({
    * @return {Promise} A promise which resolves when animation is complete
    */
   _animateLosingChevron() {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       // play gain chevron sfx
       audio_engine.current().play_effect(RSX.sfx_unit_onclick.audio, false);
 
@@ -532,7 +532,7 @@ const LadderProgressLayer = RewardLayer.extend({
    * @return {Promise} A promise which resolves when animation is complete
    */
   _animateGainingRank() {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       // play rank change
       audio_engine.current().play_effect(RSX.sfx_unit_deploy_3.audio, false);
 
@@ -588,7 +588,7 @@ const LadderProgressLayer = RewardLayer.extend({
    * @return {Promise} A promise which resolves when animation is complete
    */
   _animateLosingRank() {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       // play rank change
       audio_engine.current().play_effect(RSX.sfx_unit_deploy_1.audio, false);
 
@@ -684,7 +684,7 @@ const LadderProgressLayer = RewardLayer.extend({
    * @return {Promise} A promise which resolves when animation is complete
    */
   _animateDivisionIncrease() {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       this._currentShownDivisionKey = SDK.RankFactory.rankedDivisionAssetNameForRank(this._currentShownRank);
 
       const rankMedalResource = RSX[`season_rank_${this._currentShownDivisionKey}`];
@@ -784,7 +784,7 @@ const LadderProgressLayer = RewardLayer.extend({
   animateSRankLadderProgress(currentLadderPosition, previousLadderPosition) {
     if (previousLadderPosition == null || (previousLadderPosition == currentLadderPosition)) {
       // No previous ladder position ( or it stayed the same), just animate in the new position
-      return new Promise((resolve) => {
+      return new Promise<void>((resolve) => {
         this._ladderRankingStaticLabel.setScale(0.8);
         this._currentLadderRankingLabel.setScale(0.8);
         this.runAction(cc.sequence(
@@ -806,7 +806,7 @@ const LadderProgressLayer = RewardLayer.extend({
       });
     }
     // Show the previous ladder position, then animate in the new position
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       this._ladderRankingStaticLabel.setScale(0.8);
       this._previousLadderRankingLabel.setScale(0.8);
       if (currentLadderPosition < previousLadderPosition) {
