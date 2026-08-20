@@ -27,8 +27,8 @@ step it describes, so it can never drift from the code.
   Firebase RTDB (register → login → main menu → mulligan → play a minion → AI responds →
   concede), 0 console errors.
 - **Next, in order (the dependency chain is real, do not reorder):**
-  1. **`redis` 2 → 4** — the last consumer of bluebird's `promisifyAll` (redis + `warlock`).
-     This is the remaining blocker for dropping bluebird. Note `kue` pins `redis: ~2.6.0` and
+  1. **`redis` 2 → 4** — blocker for *part* of dropping bluebird, but **less of a blocker than
+     this file assumed**, see the stage 7 measurement below. Note `kue` pins `redis: ~2.6.0` and
      keeps its own copy regardless.
   2. **Drop `bluebird` entirely** (stage 7). After knex 3, **bluebird is a direct dependency
      only** — nothing else in the tree pulls it in.
@@ -823,6 +823,36 @@ server and worker. What remains is *typing* (5T.4), not converting.
       `.bind` 367 · `.timeout` 29 · `.finally` 11 · `.delay` 4 · `.nodeify` 3 · `.map` 1 ·
       `.filter` 1 · `.each` 0, plus statics (`promisifyAll` 13, `join` 9, `cancellable` 7,
       `promisify` 3, `defer` 3) and the 27 deferred `.catch(Promise.TimeoutError|CancellationError)`.
+
+      **Stage 7 measured (2026-08-20, after knex).** Of the **215 files that
+      `require('bluebird')`, 163 use no bluebird-only feature at all** — they require it and then
+      use `.then`/`.catch`/`Promise.all`, so they are a mechanical swap to native. Only **52**
+      files touch bluebird-specific API:
+
+      | feature | occurrences | notes |
+      |---|---|---|
+      | `Promise.map(...)` | **63** | ⚠️ see concurrency below |
+      | `Promise.delay(ms)` | **22** | trivial — `PromiseUtils.delay` already exists |
+      | `Promise.each(...)` | **14** | sequential by definition — needs a real loop |
+      | `promisifyAll` | 8 files | **only 2 are redis** (`r-client`, `warlock` in `r-tokenmanager`); the rest are **zlib / bcrypt / s3 and can be done now, without redis** (22 `*Async` sites across 8 files) |
+      | `cancellable` / `promisify` / `Promise.props` / `.spread` / `.bind` / typed `.catch` | 1–3 files each | rounding error |
+
+      This corrects an earlier claim in this file that every bluebird idiom was gone except
+      `.timeout` and `promisifyAll` — **the statics were never counted.** Same failure mode as
+      every other estimate here.
+
+      ⚠️ **`Promise.map` is NOT `Promise.all(arr.map(fn))`.** Four call sites pass a concurrency
+      option: **three are `{ concurrency: 1 }`** — i.e. *serial* — and
+      `server/lib/data_access/achievements.ts` says why in a comment: *"process the achievements
+      map serially with 1 concurrency so that there's no chance of card log getting overwritten"*.
+      Converting those to `Promise.all` would parallelise them and reintroduce that overwrite bug
+      **silently**, with no test failure. The fourth is `{ concurrency: 10000 }` (effectively
+      unbounded ⇒ `Promise.all` is correct). Every other `Promise.map` has no option and is
+      unbounded. So: a `PromiseUtils.map(items, fn, {concurrency})` helper, not a blind codemod.
+
+      **Revised order:** the redis-independent work (163 mechanical files + zlib/bcrypt/s3
+      `promisifyAll` + `Promise.delay`) can land *before* redis v4, leaving redis to gate only the
+      ~40 redis `*Async` sites and `warlock`.
 
       - [ ] Stage 5 — `.bind` chains → closures (367), the delicate one
       - [~] Stage 6 — helpers in `app/common/utils/utils_promise.ts`: `withTimeout` +
