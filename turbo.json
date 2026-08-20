@@ -107,6 +107,22 @@
       // cost more disk than the ~35 s it saves. We are here for the ordering.
       "cache": false
     },
+    "//#build:server:root": {
+      "dependsOn": ["^build"],
+      "inputs": [
+        "app/sdk/**",
+        "app/common/**",
+        "app/data/**",
+        "server/**",
+        "worker/**",
+        "config/**",
+        "bin/**",
+        "version.json",
+        "tsconfig.json",
+        "scripts/build/build-server.mjs"
+      ],
+      "outputs": ["build/**"]
+    },
     "//#typecheck:root": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", "!app/resources/**", "!app/original_resources/**"],

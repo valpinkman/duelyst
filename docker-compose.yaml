@@ -75,7 +75,7 @@ services:
       REDIS_HOST: redis
     profiles: [donotstart]
     ports: [4000:4000]
-    entrypoint: ['pnpm', 'worker-ui']
+    entrypoint: ['node', 'build/bin/workerui']
     depends_on: [redis]
 
   migrate:

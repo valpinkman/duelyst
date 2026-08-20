@@ -23,4 +23,5 @@ gulp
 node_modules
 public
 scripts
+!scripts/build
 terraform

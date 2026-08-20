@@ -4,6 +4,7 @@
   "ignorePatterns": [
     "node_modules",
     "dist",
+    "build",
     "desktop/dist",
     "desktop/node_modules",
     "**/*.d.ts",

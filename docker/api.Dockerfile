@@ -26,4 +26,11 @@ COPY server /duelyst/server
 COPY worker /duelyst/worker
 
 EXPOSE 3000
-ENTRYPOINT ["pnpm", "api"]
+COPY tsconfig.json /duelyst/
+COPY scripts/build /duelyst/scripts/build
+
+# Compile TypeScript once here instead of on every boot. The tsx require-hook
+# cost a cold container ~3.7s and a 13 MB /tmp cache each time it started.
+RUN pnpm build:server:root
+
+ENTRYPOINT ["node", "build/bin/api"]

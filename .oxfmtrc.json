@@ -13,6 +13,7 @@
   "ignorePatterns": [
     "**/node_modules/**",
     "dist/**",
+    "build/**",
     "desktop/dist/**",
     "app/vendor/**",
     "app/resources/**",

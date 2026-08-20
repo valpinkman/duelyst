@@ -10,6 +10,7 @@ Starts main application
 const os = require('os');
 const fs = require('fs');
 const path = require('path');
+const { PROJECT_ROOT } = require('server/lib/project_root');
 const downloadHtml = require('./lib/download_html');
 const mkdirp = require('mkdirp');
 const Logger = require('../app/common/logger');
@@ -35,7 +36,7 @@ const apiPort = config.get('port');
 // Methods to download assets from S3
 // TODO : Put in module
 const makeDirectory = function (cb) {
-  const pubDir = `${__dirname}/../public/${env}`;
+  const pubDir = path.resolve(PROJECT_ROOT, 'public', env);
   Logger.module('API').warn(`Creating directory ${pubDir}`);
   return mkdirp(pubDir, function (err) {
     if (err != null) {
@@ -48,10 +49,14 @@ const makeDirectory = function (cb) {
 };
 
 const downloadIndexHtml = (url, cb) =>
-  downloadHtml(`${url}/index.html`, `${__dirname}/../public/${env}/index.html`, cb);
+  downloadHtml(`${url}/index.html`, path.resolve(PROJECT_ROOT, 'public', env, 'index.html'), cb);
 
 const downloadRegisterHtml = (url, cb) =>
-  downloadHtml(`${url}/register.html`, `${__dirname}/../public/${env}/register.html`, cb);
+  downloadHtml(
+    `${url}/register.html`,
+    path.resolve(PROJECT_ROOT, 'public', env, 'register.html'),
+    cb,
+  );
 
 const setupDevelopment = () =>
   server.listen(apiPort, function () {

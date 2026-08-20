@@ -264,6 +264,9 @@ importers:
       decaffeinate:
         specifier: ^8.1.4
         version: 8.1.4
+      esbuild:
+        specifier: 0.28.2
+        version: 0.28.2
       events:
         specifier: ^3.3.0
         version: 3.3.0

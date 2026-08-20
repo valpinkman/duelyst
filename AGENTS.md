@@ -27,6 +27,8 @@ pnpm install                                   # after clone or lockfile change
 FIREBASE_URL=https://test-url.firebaseio.com/ pnpm build   # client build -> dist/src (dummy URL fine unless you want to play)
                                                # turbo builds packages/chroma-js first; no manual prebuild any more
 pnpm build:vite                                # JS bundle only (~2.4s); build:client:watch for the dev loop
+pnpm build:server                              # ahead-of-time TS -> build/ for the services (~0.5s);
+                                               #   images run `node build/bin/<svc>`, dev still runs from source
 pnpm test:unit                                 # vitest, 1366 tests, no external services
 pnpm test:integration:misc                     # needs nothing external; runs in CI
 pnpm test:integration:jobs                     # BullMQ job seam; needs ONLY redis, so it runs in CI too
@@ -85,6 +87,22 @@ Task orchestration is turborepo (`turbo.json`); pnpm still owns installs and lin
   its committed UMD bundle _is_ the shipped artifact.
 - Caching is on for the cheap repeatable tasks and **off for `build:client`** — `dist/` is ~1.2 GB
   once resources are copied in, which costs more disk than the ~35 s it would save.
+- **The services no longer compile TypeScript at boot.** `scripts/build/build-server.mjs`
+  transpiles the server-side trees into `build/`, mirroring the source layout so every
+  root-absolute require (`require('server/lib/x')`) still resolves through app-module-path
+  against `build/`. It is esbuild transpile-only, not `tsc`: tsx _is_ esbuild, so compiling the
+  same files with the same tsconfig ahead of time reproduces what the hook produced at runtime,
+  and it does not drag in the 364-error typecheck backlog. **The tsconfig is passed to esbuild
+  verbatim** because `useDefineForClassFields` decides whether class fields land on the instance
+  — and instance property layout IS the wire format.
+- **`bin/*` picks its mode by looking, not by being told.** `bin/_bootstrap.js` registers the
+  tsx hook only when `server/api.ts` exists on disk, so the same entrypoints work from source in
+  dev and from `build/` in production. An env var would be one more thing to forget on a deploy,
+  and forgetting it would quietly put the require hook back in production.
+- **`__dirname` paths that escape the compiled tree need `server/lib/project_root`.** build/ adds
+  a directory level, so `server/routes/../../dist` and `build/server/routes/../../dist` are not
+  the same place. Paths _inside_ the mirror (e.g. `server/templates`) are unaffected; the ones
+  reaching `dist/` and `public/` broke, and now resolve from `PROJECT_ROOT`.
 - **`catalog:` in `pnpm-workspace.yaml` owns versions used by more than one package.** It is a
   short list on purpose — only `backbone`, `underscore` and `isomorphic-fetch` were genuinely
   shared, plus `typescript`/`vite` so the packages whose own build scripts invoke them declare
@@ -196,6 +214,18 @@ How we work on it:
 
 Status log (newest first):
 
+- 2026-08-21 — **5T.3 done: the services stopped compiling TypeScript at boot.** A cold
+  container went **4,578 ms → ~900 ms** to reach `/health`, and the 13 MB tsx cache it wrote into
+  `/tmp` on every start is gone. `pnpm build:server` transpiles 1,647 files in ~0.5 s with
+  esbuild, mirroring the source tree into `build/` so root-absolute requires keep resolving; the
+  five Dockerfiles build at image-build time and run `node build/bin/<svc>`. The five bin
+  entrypoints collapsed onto `bin/_bootstrap.js`, which registers the tsx hook only when it can
+  see `.ts` on disk. **One real breakage, caught by the e2e suite and not by any unit test:**
+  the api served a 404 for `index.html` because `__dirname/../../dist/src` is `build/dist` once
+  the tree moves down a level. Eight such paths (all reaching `dist/` or `public/`, both outside
+  the mirror) now resolve from `server/lib/project_root`, which walks up to the directory owning
+  `package.json` and so gives the same answer in both layouts. Migrations deliberately stay on
+  the source path — they run once per deploy, not per boot.
 - 2026-08-20 — **TS2304 is now a CI gate** (`pnpm check:undefined-names`). I shipped a
   regression to prove why: the state-bag merge codemod removed a `this_obj` declaration in
   `gift_crate.ts` and left one write behind, so the function threw `this_obj is not defined`.

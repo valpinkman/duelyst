@@ -41,7 +41,9 @@
     "format:check:root": "oxfmt --check .",
     "test:root": "vitest run",
     "check:turbo-env": "node scripts/check-turbo-env.mjs",
-    "lint:fix:root": "oxlint --fix"
+    "lint:fix:root": "oxlint --fix",
+    "build:server": "turbo run build:server:root",
+    "build:server:root": "node scripts/build/build-server.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1114.0",
@@ -124,6 +126,7 @@
     "chai": "^3.5.0",
     "clipboard": "^1.7.1",
     "decaffeinate": "^8.1.4",
+    "esbuild": "0.28.2",
     "events": "^3.3.0",
     "fast-stats": "0.0.7",
     "firebase-tools": "^14.27.0",

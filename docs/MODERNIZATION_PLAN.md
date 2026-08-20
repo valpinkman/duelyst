@@ -264,7 +264,7 @@ step it describes, so it can never drift from the code.
 
 - **ACTUALLY NEXT — the genuinely open work, in rough value order:**
   1. **Finish the data_access tail (80 failures) and wire the suites into CI.** They are
-     overwhelmingly stale 2016 game-balance expectations (see item 4) — production is correct in
+     overwhelmingly stale 2016 game-balance expectations — production is correct in
      every case examined, so the work is rewriting expectations to derive from SDK data, per
      test. Low bug yield, but it is the last thing standing between these 575 tests and being a
      CI gate, and they have now found nine production bugs in three passes.
@@ -272,11 +272,12 @@ step it describes, so it can never drift from the code.
      where the test expects a `BadRequestError`. That one still smells like a defect rather than
      a stale number, and it needs game-domain judgement about what the test's setup should
      produce.
-  2. **5T.3: replace the tsx require-hook with a real build for production images.** Every
-     service currently transpiles TypeScript at require time.
-  3. **The rest of the typecheck backlog (365).** Heterogeneous and low-yield now that TS2304 is
+  2. **The rest of the typecheck backlog (364).** Heterogeneous and low-yield now that TS2304 is
      zero and gated; 175 TS2339 on function objects and narrowed types, 75 TS2554, 35 TS2345.
      Move directories into `tsconfig.strict.json` as they go clean.
+  3. **Decide on `pnpm.overrides` for the transitive backbone pin.** `backbone.babysitter` and
+     `backbone.wreqr` (deps of marionette 2.2.2) still pin `backbone@1.2.1`, which a catalog
+     cannot reach. Small, but it is the last version skew left in the tree.
   4. **Optional, deliberately not started:** Backbone/Marionette/jQuery. That is a UI rewrite,
      not an upgrade, and was declined once already.
 - **Known dirty state:** none.
@@ -718,8 +719,20 @@ server and worker. What remains is _typing_ (5T.4), not converting.
   could hide bugs (TS2304, TS2554) are triaged, and the one real haul was the six missing
   requires.**
 
-- [ ] 5T.3 Replace the tsx require-hook with a real build for production images (the hook
-      compiles on every boot; fine for dev, wasteful for prod).
+- [x] 5T.3 Replace the tsx require-hook with a real build for production images (the hook
+      compiles on every boot; fine for dev, wasteful for prod). **Measured first:** a cold
+      container took **4,578 ms** to reach `/health` and wrote a **13 MB** tsx cache into `/tmp`;
+      a warm restart took ~880 ms, so the hook was the difference. Now **~900 ms cold, no cache**.
+      `scripts/build/build-server.mjs` transpiles 1,647 files in ~0.5 s (esbuild, transpile-only,
+      handed the real tsconfig so `useDefineForClassFields` cannot drift — instance layout is the
+      wire format) and mirrors the source tree into `build/` so root-absolute requires resolve
+      unchanged. `bin/_bootstrap.js` replaces five near-identical entrypoints and registers the
+      hook only when `.ts` is on disk, so dev is untouched.
+      **The e2e suite earned its keep again:** the api served a 404 for `index.html`, because
+      `__dirname + '/../../dist/src'` is `build/dist/src` once the tree gains a level. Paths
+      _inside_ the mirror were fine; the eight reaching `dist/` and `public/` were not, and now
+      resolve from `server/lib/project_root`. No unit test could have seen this.
+      Migrations stay on the source path deliberately: once per deploy, not once per boot.
 
 ### Phase 6b — post-conversion correctness (found by playing the game)
 
@@ -1683,6 +1696,8 @@ _Sequencing note:_ tier-2 deps (7.3) come after this, per owner.
 
 | Date       | Decision                                                                                                  | Why                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 | ---------- | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-08-21 | Services run an ahead-of-time `build/`; esbuild transpile-only, tree mirrored not bundled                 | tsx _is_ esbuild, so AOT with the same tsconfig reproduces the runtime emit exactly, while `tsc` would change it and pull in the 364-error typecheck backlog. Mirroring rather than bundling keeps every root-absolute require working and preserves the "module.exports before require" idiom the codebase uses to survive circular requires. Cold boot 4,578 ms → ~900 ms.                                                                |
+| 2026-08-21 | The tsx hook is enabled by detection (`.ts` on disk), not by an env var                                   | a flag is one more thing to forget on a deploy, and the quiet failure mode — forgetting to set it — puts the require hook back in production while everything still appears to work.                                                                                                                                                                                                                                                        |
 | 2026-08-20 | `catalog:` for cross-package versions; transitive skew left to `pnpm.overrides`                           | only 3 deps were shared, but two were skewed: Backbone.VirtualCollection bundled its own backbone 1.2.1 + underscore 1.6.0 into the client beside the app's 1.1.2/1.13.8. Its Backbone surface is `Collection.extend` + `Events` and 11 underscore helpers, all unchanged, so collapsing was safe — verified with the e2e practice game. `backbone.babysitter`/`backbone.wreqr` still pin 1.2.1 transitively; a catalog cannot reach those. |
 | 2026-08-20 | turborepo orchestrates tasks; pnpm keeps installs/linking                                                 | `packages/chroma-js` ships no `dist`, so every build needed a manual `pnpm tsc:chroma-js` first — documented in AGENTS.md and wired into two CI workflows. `dependsOn: ["^build"]` makes the ordering the graph's job and the script is gone. Caching covers lint/format/typecheck/test; `build:client` is deliberately uncached (dist/ is ~1.2 GB).                                                                                        |
 | 2026-08-20 | Root's own tasks carry a `:root` suffix (`lint:root`, `test:root`, `build:client`)                        | the app still lives at the repo root, so it is turbo's root package. A script named `X` cannot be `turbo run X` or turbo re-invokes it; suffixing the root's work keeps the familiar aggregates (`pnpm lint`, `pnpm test:unit`) as the thing you type. Containers call the `:root` scripts directly — turbo.json and the lint configs are not shipped into runtime images.                                                                  |

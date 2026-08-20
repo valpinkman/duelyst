@@ -1,19 +1,6 @@
 #!/usr/bin/env node
 'use strict'
 
-const path = require('path')
-
-// Lets require() resolve and compile .ts during the JS -> TypeScript migration
-require('tsx/cjs')
-require('app-module-path').addPath(path.join(__dirname, '..'))
-
-// Load config first so it has chance to synchronously validate .json config files
-// *before* any other code executes
-const config = require('config/config')
-// Monkey-patches console.log to Winston/Papertrail
-if (config.get('winston')) {
-	const winston = require('server/winston')
-	winston.setup('game')
-}
+require('./_bootstrap')('game')
 
 module.exports = require('server/game')

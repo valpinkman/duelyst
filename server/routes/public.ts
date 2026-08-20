@@ -6,6 +6,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const path = require('path');
+const { PROJECT_ROOT } = require('server/lib/project_root');
 const os = require('os');
 const prettyjson = require('prettyjson');
 const express = require('express');
@@ -75,10 +76,10 @@ const serveIndex = function (req, res) {
   res.setHeader('Cache-Control', 'no-cache');
   // serve index.html file
   if (config.isDevelopment()) {
-    return res.sendFile(path.resolve(__dirname + '/../../dist/src/index.html'));
+    return res.sendFile(path.resolve(PROJECT_ROOT, 'dist/src/index.html'));
     // Staging/Production mode uses index.html from S3
   } else {
-    return res.sendFile(path.resolve(__dirname + '/../../public/' + env + '/index.html'));
+    return res.sendFile(path.resolve(PROJECT_ROOT, 'public', env, 'index.html'));
   }
 };
 
@@ -87,10 +88,10 @@ const serveRegister = function (req, res) {
   res.setHeader('Cache-Control', 'no-cache');
   // serve index.html file
   if (config.isDevelopment()) {
-    return res.sendFile(path.resolve(__dirname + '/../../dist/src/register.html'));
+    return res.sendFile(path.resolve(PROJECT_ROOT, 'dist/src/register.html'));
     // Staging/Production mode uses register.html from S3
   } else {
-    return res.sendFile(path.resolve(__dirname + '/../../public/' + env + '/register.html'));
+    return res.sendFile(path.resolve(PROJECT_ROOT, 'public', env, 'register.html'));
   }
 };
 
@@ -101,7 +102,11 @@ if (config.isDevelopment()) {
 
   // Serve enter /dist/src folder
   router.use(
-    express.static(__dirname + '/../../dist/src', { etag: false, lastModified: false, maxAge: 0 }),
+    express.static(path.resolve(PROJECT_ROOT, 'dist/src'), {
+      etag: false,
+      lastModified: false,
+      maxAge: 0,
+    }),
   );
 
   // Serve main index page /dist/src/index.html
