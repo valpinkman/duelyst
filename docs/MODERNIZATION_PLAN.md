@@ -29,9 +29,43 @@ step it describes, so it can never drift from the code.
 - **Next, in order (the dependency chain is real, do not reorder):**
   1. ~~`redis` 2 → ioredis~~ **DONE**, ~~drop bluebird~~ **DONE**, ~~replace kue~~ **DONE**
      (BullMQ). bluebird, redis@2, kue and warlock are all gone from the tree.
-  2. 5T.4 incremental typing: `pnpm typecheck` is down to **2,484** errors under the loose
-     config (from 5,503; a metric, not a gate). Mostly mechanical. Move directories into
-     `tsconfig.strict.json` as they go clean.
+  2. **TS2304 is CLEARED: 73 → 0** (2026-08-20). Treating "Cannot find name" as a bug list
+     rather than typing noise found **26 real defects** across SDK, client, server, worker and
+     AI. They survived because eslint's `no-undef` is off for `.ts` (as typescript-eslint
+     recommends, since TS covers it) — so TypeScript is the *only* thing that sees an undefined
+     identifier, and its output sat unread in a ~2,900-error backlog.
+
+     Highlights: `moment` never required, so every login-achievement job threw; `Errors` never
+     required, so "game not found" surfaced as a ReferenceError instead of a 404 (verified fixed:
+     `shareReplay` now rejects with `NotFoundError`); three SDK gameplay bugs, including
+     `modifier.createContextObject` writing to an undefined `cardData`; `GameLayer` assigning an
+     undeclared `referencedCard` on the path taken whenever an inspected card references another;
+     both shop dialogs reading `response` inside a `catch (err)`, so the error handler itself
+     threw; `App.getIsShowingMain()` referencing two view classes it never required; and
+     `GradientColorMap.clone()` constructing a **ToneCurve** — a copy-paste from the sibling
+     action, where every other action clones its own class.
+
+     Some were upstream bugs present since the 2016 dump (`= m` for `= map` in sync, the `target`
+     scoping in `modifierDealDamageWatchKillTargetAndSelf`, `cardData` in modifier), some were
+     ours from decaffeination, and two dead AI functions referencing names defined nowhere were
+     deleted rather than left as permanent errors.
+
+     **Not every TS2304 was a bug, and the distinction mattered.** `TelemetryManager`,
+     `NewPlayerManager`, `kongregate`, `grecaptcha` and the `ai_*` debug hooks resolve at runtime
+     because the boot files assign them to `window`. Those are declared in
+     `app/types/globals.d.ts` rather than "fixed", specifically so the next genuine undefined
+     identifier shows up as TS2304 instead of being lost among them.
+     `app/tools/FileSaver.min.ts` (vendored, minified) is excluded from typecheck.
+
+     Two gaps deliberately catalogued rather than guessed at: `quests._setQuestProgress` tested a
+     `gameSessionData` no caller supplies (now an explicit null-guarded parameter, so it is a
+     no-op instead of a crash that failed the whole quest update), and `sync.ts` read a
+     `referralCodeRow` that never existed — CoffeeScript's `?.` made it silently undefined, so the
+     `referral_events` cleanup has never run and those rows are orphaned.
+
+  3. 5T.4 incremental typing: `pnpm typecheck` reports **2,883** errors under the loose config
+     (a metric, not a gate); **2,467 are TS2339** (property does not exist), which is the next
+     bulk target. Move directories into `tsconfig.strict.json` as they go clean.
   4. 7.2 integration revival in CI for the `data_access` suites (~506 tests, stale
      `createNewUser`/`userIdForEmail` API).
   - Catalogued bugs awaiting a correctness pass: `GET /api/me/rank/` queries a `user_rank`

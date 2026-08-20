@@ -58,7 +58,10 @@ var GradientColorMap = cc.ActionInterval.extend({
   },
 
   clone() {
-    const action = new ToneCurve();
+    // was `new ToneCurve()` -- a copy-paste from the sibling action. Cloning a
+    // GradientColorMap has to produce a GradientColorMap: ToneCurve is not even
+    // in scope here, and its initWithDuration takes three arguments, not seven.
+    const action = new GradientColorMap();
     action.initWithDuration(this._duration, this._colorFromWhite, this._colorFromMid, this._colorFromBlack, this._colorToWhite, this._colorToMid, this._colorToBlack);
     return action;
   },

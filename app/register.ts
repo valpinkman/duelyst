@@ -66,6 +66,8 @@ const EscGameMenuItemView = require('app/ui/views/item/esc_game_menu');
 const EscMainMenuItemView = require('app/ui/views/item/esc_main_menu');
 
 const LoginMenuItemView = require('app/ui/views/item/login_menu');
+const MainMenuItemView = require('app/ui/views/item/main_menu');
+const ResumeGameItemView = require('app/ui/views/item/resume_game');
 
 const SelectUsernameItemView = require('app/ui/views/item/select_username');
 

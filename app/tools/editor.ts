@@ -1023,7 +1023,7 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
       });
 
       request.done((data) => alert('Success: Daily challenge marked as passing QA'));
-      return request.fail((response) => alert(`Failed: Daily challenge not set as passed qa\n${error.toString()}`));
+      return request.fail((response) => alert(`Failed: Daily challenge not set as passed qa\n${response.toString()}`));
     };
 
     qaChallengeButtons['Get list of daily challenges'] = function () {
@@ -1096,7 +1096,7 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
             });
 
             request.done((data) => alert('Success: QA Boss Event Created (re-enter main menu to update UI)'));
-            return request.fail((response) => alert(`Failed: Could not create QA Boss Event \n${error.toString()}`));
+            return request.fail((response) => alert(`Failed: Could not create QA Boss Event \n${response.toString()}`));
           }
         }
       }
@@ -1115,7 +1115,7 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
       });
 
       request.done((data) => alert('Success: QA Boss Event Removed (re-enter main menu to update UI)'));
-      return request.fail((response) => alert(`Failed: Could not remove QA Boss Event \n${error.toString()}`));
+      return request.fail((response) => alert(`Failed: Could not remove QA Boss Event \n${response.toString()}`));
     };
     qaBossFolder.add(qaBossButtons, 'Remove QA Boss Event');
 
@@ -1128,7 +1128,7 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
       });
 
       request.done((data) => alert('Success: Boss Rewards Removed'));
-      return request.fail((response) => alert(`Failed: Could not remove Boss Rewards \n${error.toString()}`));
+      return request.fail((response) => alert(`Failed: Could not remove Boss Rewards \n${response.toString()}`));
     };
     qaBossFolder.add(qaBossButtons, 'Reset Boss Rewards');
 
@@ -1186,7 +1186,7 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
       request.done((data) => alert('Success: Re-enter main menu to see achievement'));
       return request.fail((response) => {
         console.dir(response);
-        return alert(`Failed: Could not reset achievement:\n${error.responseJSON.message}`);
+        return alert(`Failed: Could not reset achievement:\n${response.responseJSON.message}`);
       });
     };
     mtSetupAchievementResetFolder.add(mtSetupAchievementReset, 'Achievements', mtAchievementNames);

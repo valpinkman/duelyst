@@ -128,6 +128,15 @@ How we work on it:
   `generate_packages.js` and RSX paths.
 
 Status log (newest first):
+- 2026-08-20 — **TS2304 cleared: 73 → 0**, and it was a bug list, not typing noise: **26 real
+  defects** across SDK, client, server, worker and AI. eslint's `no-undef` is off for `.ts`, so
+  TypeScript is the only thing that sees an undefined identifier, and its output sat unread in a
+  ~2,900-error backlog. Found: `moment` unrequired (every login-achievement job threw), `Errors`
+  unrequired (404s surfaced as ReferenceErrors), three SDK gameplay bugs, `GameLayer` assigning an
+  undeclared variable on a common inspect path, both shop dialogs whose catch handlers themselves
+  threw, and `GradientColorMap.clone()` constructing a ToneCurve. The genuine browser globals
+  (`TelemetryManager`, `kongregate`, `grecaptcha`, …) are declared in `app/types/globals.d.ts`
+  rather than "fixed", so the next real one is visible instead of lost in noise.
 - 2026-08-20 — **integration tests for the job seam** (`pnpm test:integration:jobs`, 12 tests).
   Needs only redis, so it **gates every push in CI**. It immediately found a race hand-probing had
   missed: `waitFor` hung for one waiter in five, every run, with a different one hanging each time

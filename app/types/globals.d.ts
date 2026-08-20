@@ -70,3 +70,31 @@ interface String {
   inverse: string;
   rainbow: string;
 }
+
+/*
+ * Managers and views that application.ts / register.ts publish onto `window`
+ * (`window.TelemetryManager = require(...)`) and that other modules then read
+ * as bare globals. These are NOT missing requires: they resolve at runtime
+ * because the boot files assign them before any of these modules run.
+ *
+ * They are declared rather than "fixed" precisely so that a real undefined
+ * identifier -- which is a ReferenceError waiting to happen, and which eslint
+ * cannot see because no-undef is off for .ts -- still shows up as TS2304
+ * instead of being lost in the noise.
+ */
+declare const TelemetryManager: any;
+declare const NewPlayerManager: any;
+
+/*
+ * Third-party globals injected by <script> tags rather than bundled:
+ * the Kongregate host API and Google reCAPTCHA.
+ */
+declare const kongregate: any;
+declare const grecaptcha: any;
+
+/*
+ * AI-vs-AI debugging hooks, assigned as `window.ai_*` in application.ts and
+ * read bare. Only present when AI_TOOLS_ENABLED.
+ */
+declare const ai_gamePromise: any;
+declare const ai_stopAIvAIGame: any;
