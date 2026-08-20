@@ -1614,8 +1614,13 @@ var afterGameOver = function (gameId, gameSession, mouseAndUIEvents) {
     isDraw,
   ) => // Wait until both players update jobs have completed before updating ratings
     Promise.all([
-      new Promise(function (resolve, reject) { updatePlayer1Job.on('complete', resolve); return updatePlayer1Job.on('error', reject); },
-        new Promise(function (resolve, reject) { updatePlayer2Job.on('complete', resolve); return updatePlayer2Job.on('error', reject); })),
+      // NB: these are two SEPARATE array elements. Decaffeinating this moved the
+      // comma inside the first `new Promise(...)` argument list, which made the
+      // second promise a stray constructor argument -- so Promise.all waited on
+      // player 1 only and ratings could be computed before player 2's post-game
+      // job had finished.
+      new Promise(function (resolve, reject) { updatePlayer1Job.on('complete', resolve); updatePlayer1Job.on('error', reject); }),
+      new Promise(function (resolve, reject) { updatePlayer2Job.on('complete', resolve); updatePlayer2Job.on('error', reject); }),
     ]).then(() => updateUsersRatings(player1Id, player2Id, gameId, player1IsWinner, isDraw)).catch(
       (error) => Logger.module('GAME-OVER').error(`[G:${gameId}]`, `ERROR: afterGameOver update player job failed ${error}`.red),
     );
