@@ -128,6 +128,15 @@ How we work on it:
   `generate_packages.js` and RSX paths.
 
 Status log (newest first):
+- 2026-08-20 — **correctness pass: the catalogued-bugs list is closed.** Two entries were
+  already stale (the 8 `server/lib` latent bugs were TS2304s cleared in the typing pass; the 6
+  SDK requires were fixed when found). Removed the `GET /api/me/rank/` handler — it queried a
+  `user_rank` table no migration creates, passed a variable to its own initializer, discarded the
+  result, and no client calls it (404 now, not 500). Removed a `referral_events` cleanup that was
+  dead twice over. **Two corrections to my own earlier claims:** there are no orphaned
+  `referral_events` rows (no such table), and `sourceId` is vestigial across the *whole* currency
+  API rather than recorded-by-one — `user_currency_log` has no source column and `giveUserSpirit`
+  never declared the parameter.
 - 2026-08-20 — **TS2554 read individually, 145 → 75; typecheck now 366.** This was the slice
   worth reading rather than silencing, since a missing argument is a real bug — and the verdict
   is that **almost none were**: they are signatures lying about optionality (decaffeinated default

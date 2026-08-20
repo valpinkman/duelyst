@@ -40,10 +40,14 @@ class InventoryModule {
    * @param  {String}    userId          User ID for which add gold.
    * @param  {String}    goldAmount        Amount of +gold to add to user.
    * @param  {String}    memo          Why did we change the wallet gold?
-   * @param  {String}    sourceId        Which object did this gold come from?
+   * @param  {String}    [sourceId]      UNUSED. Accepted for historical reasons and
+   *                                    ignored: `user_currency_log` has no source
+   *                                    column (only user_card_log and user_rewards do),
+   *                                    so nothing is recorded. Wire up a column before
+   *                                    relying on it, or drop the parameter.
    * @return  {Promise}                Promise that will resolve on completion.
    */
-  static giveUserGold(trxPromise, trx, userId, goldAmount, memo, sourceId) {
+  static giveUserGold(trxPromise, trx, userId, goldAmount, memo, sourceId?) {
     // userId must be defined
     if (!userId) {
       Logger.module('InventoryModule').debug(`modifyWalletGoldByAmount() -> invalid user ID - ${userId}.`.red);
@@ -115,10 +119,14 @@ class InventoryModule {
    * @param  {String}    userId          User ID for which add gold.
    * @param  {String}    goldAmount        Amount of gold to subtract in negative value (example: -100)
    * @param  {String}    memo          Why did we change the wallet gold?
-   * @param  {String}    sourceId        Which object did this gold come from?
+   * @param  {String}    [sourceId]      UNUSED. Accepted for historical reasons and
+   *                                    ignored: `user_currency_log` has no source
+   *                                    column (only user_card_log and user_rewards do),
+   *                                    so nothing is recorded. Wire up a column before
+   *                                    relying on it, or drop the parameter.
    * @return  {Promise}                Promise that will resolve on completion.
    */
-  static debitGoldFromUser(trxPromise, trx, userId, goldAmount, memo, sourceId) {
+  static debitGoldFromUser(trxPromise, trx, userId, goldAmount, memo, sourceId?) {
     // userId must be defined
     if (!userId) {
       Logger.module('InventoryModule').debug(`debitGoldFromUser() -> invalid user ID - ${userId}.`.red);
@@ -891,10 +899,14 @@ class InventoryModule {
    * @param  {String}    userId          User ID for which add spirit.
    * @param  {String}    spiritAmount      Amount of spirit to remove to user in negative value (example: -100)
    * @param  {String}    memo          Why did we change the wallet spirit?
-   * @param  {String}    sourceId        Which object did this spirit come from?
+   * @param  {String}    [sourceId]      UNUSED. Accepted for historical reasons and
+   *                                    ignored: `user_currency_log` has no source
+   *                                    column (only user_card_log and user_rewards do),
+   *                                    so nothing is recorded. Wire up a column before
+   *                                    relying on it, or drop the parameter.
    * @return  {Promise}                Promise that will resolve on completion.
    */
-  static debitSpiritFromUser(trxPromise, trx, userId, spiritAmount, memo, sourceId) {
+  static debitSpiritFromUser(trxPromise, trx, userId, spiritAmount, memo, sourceId?) {
     // userId must be defined
     if (!userId) {
       Logger.module('InventoryModule').debug(`debitSpiritFromUser() -> invalid user ID - ${userId}.`.red);

@@ -254,21 +254,19 @@ class SyncModule {
         ];
 
         /*
-         * UPSTREAM GAP, left as-is deliberately. `referralCodeRow` was never
-         * defined here (nor in the CoffeeScript original, which wrote
-         * `referralCodeRow?.code`). CoffeeScript's `?.` compiles to a
-         * typeof-guard, so this never threw -- it just always evaluated to
-         * undefined, which means the referral_events cleanup below has never
-         * run and those rows are orphaned on user reset.
+         * A `referral_events` cleanup used to sit here. Removed: it was dead
+         * twice over. It read a `referralCodeRow` that was never defined (the
+         * CoffeeScript original wrote `referralCodeRow?.code`, whose typeof
+         * guard made it silently undefined rather than throwing), AND it
+         * targeted a `referral_events` table that does not exist -- the schema
+         * has referral_codes, user_referrals and user_referral_events, and the
+         * latter two are already deleted above.
          *
-         * Fixing it means deciding which referral code to look up and adding a
-         * query, which is a behaviour change rather than a typing fix, so it is
-         * catalogued in MODERNIZATION_PLAN.md instead of guessed at here.
+         * Note for a future pass: this function does NOT clear the user's own
+         * row in `referral_codes` (which has a nullable user_id). Whether it
+         * should is a product question, not a bug -- this is a QA-only reset
+         * path, and a stable referral code may well be wanted across resets.
          */
-        const referralCode = null;
-        if (referralCode != null) {
-          allPromises.push(knex('referral_events').where('code', referralCode).delete());
-        }
 
         return Promise.all(allPromises);
       })

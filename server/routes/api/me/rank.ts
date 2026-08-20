@@ -22,16 +22,24 @@ const { onType } = require('../../../../app/common/utils/utils_promise');
 
 const router = express.Router();
 
-router.get('/', function (req, res, next) {
-  const user_id = req.user.d.id;
-
-  return knex('user_rank').where('user_id', user_id).select()
-    .then(function (questRows) {
-      var challengeRows = DataAccessHelpers.restifyData(challengeRows);
-      return res.status(200).json(questRows);
-    })
-    .catch((error) => next(error));
-});
+/*
+ * There was a `GET /` here. It has been removed rather than repaired, because
+ * it could never have worked and nothing called it:
+ *
+ *   - it queried `user_rank`, a table NO MIGRATION CREATES (the schema has
+ *     user_rank_history, user_rank_events and user_rank_ratings), so every
+ *     request 500'd;
+ *   - it did `var challengeRows = DataAccessHelpers.restifyData(challengeRows)`
+ *     -- passing the variable to its own initializer, i.e. undefined;
+ *   - it then discarded that value and returned the raw rows anyway;
+ *   - and the variable names (questRows/challengeRows) show it was copy-pasted
+ *     from another route.
+ *
+ * The client only ever POSTs to /api/me/rank and GETs the sub-routes below.
+ * Reconstructing what it "meant" to return would be inventing a feature, so
+ * this is deletion, not a fix. Restore from history if a current-rank endpoint
+ * is ever wanted.
+ */
 
 router.post('/', function (req, res, next) {
   const user_id = req.user.d.id;

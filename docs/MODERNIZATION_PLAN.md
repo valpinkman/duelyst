@@ -119,9 +119,35 @@ step it describes, so it can never drift from the code.
      objects and narrowed types, 75 TS2554, 35 TS2345, 23 TS2403. Move directories into `tsconfig.strict.json` as they go clean.
   4. 7.2 integration revival in CI for the `data_access` suites (~506 tests, stale
      `createNewUser`/`userIdForEmail` API).
-  - Catalogued bugs awaiting a correctness pass: `GET /api/me/rank/` queries a `user_rank`
-    table no migration creates (pre-existing, always 500'd); the 8 latent `server/lib` bugs
-    from 6.2c; the 6 missing `require`s in SDK card logic.
+  - **Correctness pass done (2026-08-20).** That list is now closed, and two of its entries were
+    already stale: the "8 latent `server/lib` bugs" from 6.2c were TS2304s, cleared in the typing
+    pass, and the 6 SDK `require`s were fixed when they were found. What remained:
+
+    - **`GET /api/me/rank/` — REMOVED, not repaired.** It queried `user_rank`, a table no
+      migration creates, so it always 500'd. It also did
+      `var challengeRows = DataAccessHelpers.restifyData(challengeRows)` — passing the variable
+      to its own initializer — then discarded the result and returned the raw rows. The
+      quest/challenge variable names show it was copy-pasted from another route, and no client
+      calls it (the client POSTs to `/api/me/rank` and GETs the sub-routes). Now 404 instead of
+      500; POST and the sub-routes verified unaffected.
+    - **The `referral_events` cleanup in `wipeUserData` — REMOVED.** Dead twice over: it read a
+      `referralCodeRow` that was never defined, *and* targeted a `referral_events` table that
+      **does not exist** (the schema has `referral_codes`, `user_referrals`,
+      `user_referral_events`, and the latter two are already deleted a few lines above).
+      **Correction:** an earlier note in this file said the cleanup "has never run and those rows
+      are orphaned". There are no orphaned rows, because there is no such table. Noted for a
+      future product decision, not a bug: `wipeUserData` does not clear the user's own row in
+      `referral_codes`, and since this is a QA-only reset path, a stable referral code across
+      resets may well be intended.
+    - **`sourceId` on the currency API — documented, not wired up. CORRECTION.** The previous
+      commit claimed `giveUserGold` records its `sourceId` while its siblings drop it. That is
+      wrong: the "use" I counted was the JSDoc of the *next* function. **None of them record it**,
+      `user_currency_log` has **no source column at all** (only `user_card_log` and `user_rewards`
+      do), and `giveUserSpirit` does not even declare the parameter. So it is vestigial across the
+      whole currency API rather than an audit-trail inconsistency. With 59 call sites and zero
+      behavioural difference, removing it is churn; instead the JSDoc now says it is unused and
+      why, and the parameter is optional so callers are not forced to pass a value that goes
+      nowhere. Verified afterwards that gold and spirit still credit correctly end to end.
 
   - 5T.3: replace the tsx require-hook with a real build for production images.
 - **Known dirty state:** none.
