@@ -16,6 +16,15 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
+import {
+  describeDrift,
+  diffSignatures,
+  MANIFEST_VERSION,
+  mergeSignatures,
+  MODE_DEFAULT,
+  MODE_FORCE_ALL,
+  signPackages,
+} from './packages-signature.mjs';
 
 const require = createRequire(import.meta.url);
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
@@ -37,43 +46,72 @@ function log(step, message) {
 
 const PACKAGES_MANIFEST = path.join(rootDir, 'scripts/build/packages-manifest.json');
 
-function step1Packages() {
-  const flags = ['-d'];
-  if (development) flags.push('-fa');
+// -fa forces every known RSX entry into the "all" package, so package contents
+// depend on which mode the generator ran in; the manifest records both.
+const GENERATOR_MODES = {
+  [MODE_DEFAULT]: ['-d'],
+  [MODE_FORCE_ALL]: ['-d', '-fa'],
+};
+
+function generatePackages(mode) {
   // remove the previous output first: a crashed generator run would otherwise
   // leave a truncated packages.js that the manifest check below reads as a
   // (false) regression
   fs.rmSync(path.join(rootDir, 'app/data/packages.js'), { force: true });
-  execFileSync('node', ['scripts/generate_packages.js', ...flags], { stdio: 'inherit' });
-  log('packages', 'app/data/packages.js generated');
+  execFileSync('node', ['scripts/generate_packages.js', ...GENERATOR_MODES[mode]], {
+    stdio: 'inherit',
+  });
+  delete require.cache[require.resolve(path.join(rootDir, 'app/data/packages'))];
+  return require(path.join(rootDir, 'app/data/packages'));
+}
 
+function step1Packages() {
   // Guard: generate_packages.js TEXT-PARSES source files, so a CoffeeScript->
   // JS conversion (or any refactor) can silently drop asset packages while the
   // build still "succeeds" (this happened in plan step 5.2c: 325 packages
-  // vanished). The committed manifest locks the exact package key set.
-  // Regenerate deliberately with --update-packages-manifest and commit the
+  // vanished). The committed manifest locks the package key set AND each
+  // package's resource set - a UI file that loses its `// pragma PKGS:` comment
+  // empties a package without touching any key, which the key set alone cannot
+  // see. Regenerate deliberately with --update-packages-manifest and commit the
   // diff together with the change that caused it.
-  delete require.cache[require.resolve(path.join(rootDir, 'app/data/packages'))];
-  const pkgs = require(path.join(rootDir, 'app/data/packages'));
-  const keys = Object.keys(pkgs)
-    .filter((k) => typeof pkgs[k] !== 'function')
-    .sort();
+  const buildMode = development ? MODE_FORCE_ALL : MODE_DEFAULT;
+  const otherMode = development ? MODE_DEFAULT : MODE_FORCE_ALL;
+
   if (args.has('--update-packages-manifest') || !fs.existsSync(PACKAGES_MANIFEST)) {
-    fs.writeFileSync(PACKAGES_MANIFEST, `${JSON.stringify(keys, null, 1)}\n`);
-    log('packages', `manifest updated (${keys.length} keys)`);
-  } else {
-    const golden = JSON.parse(fs.readFileSync(PACKAGES_MANIFEST, 'utf8'));
-    const goldenSet = new Set(golden);
-    const keySet = new Set(keys);
-    const missing = golden.filter((k) => !keySet.has(k));
-    const added = keys.filter((k) => !goldenSet.has(k));
-    if (missing.length > 0 || added.length > 0) {
-      throw new Error(
-        `asset package set changed: ${missing.length} missing (${missing.slice(0, 5).join(', ')}...), ${added.length} added (${added.slice(0, 5).join(', ')}...). If intentional, rerun with --update-packages-manifest and commit the manifest.`,
-      );
-    }
-    log('packages', `manifest verified (${keys.length} keys)`);
+    // record both generator modes, so the manifest is valid for a development
+    // build and a production one; generate the build's own mode LAST so the
+    // packages.js left on disk is the one this build ships
+    const signaturesByMode = {
+      [otherMode]: signPackages(generatePackages(otherMode)),
+      [buildMode]: signPackages(generatePackages(buildMode)),
+    };
+    log('packages', 'app/data/packages.js generated');
+    const packages = mergeSignatures(signaturesByMode);
+    // 2-space, so the written file is already what oxfmt wants
+    const manifest = { version: MANIFEST_VERSION, packages };
+    fs.writeFileSync(PACKAGES_MANIFEST, `${JSON.stringify(manifest, null, 2)}\n`);
+    const modeDependent = Object.values(packages).filter((v) => typeof v !== 'string').length;
+    log(
+      'packages',
+      `manifest updated (${Object.keys(packages).length} keys, ${modeDependent} mode-dependent)`,
+    );
+    return;
   }
+
+  const signatures = signPackages(generatePackages(buildMode));
+  log('packages', 'app/data/packages.js generated');
+  const golden = JSON.parse(fs.readFileSync(PACKAGES_MANIFEST, 'utf8'));
+  if (Array.isArray(golden) || golden.version !== MANIFEST_VERSION) {
+    throw new Error(
+      `${PACKAGES_MANIFEST} is not a version ${MANIFEST_VERSION} manifest (it predates package content locking). Rerun with --update-packages-manifest and commit it.`,
+    );
+  }
+  const drift = describeDrift(diffSignatures(golden.packages, signatures, buildMode));
+  if (drift != null) throw new Error(drift);
+  log(
+    'packages',
+    `manifest verified (${Object.keys(signatures).length} keys and their contents, mode ${buildMode})`,
+  );
 }
 
 function step2Bundle() {
