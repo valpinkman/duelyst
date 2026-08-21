@@ -1,0 +1,47 @@
+# Tag a commit on main -> deploy to Coolify.
+#
+# Coolify's own "deploy by tag" API means COOLIFY resource tags, not git tags,
+# so a git-tag deploy is this: the tag push calls Coolify's deploy endpoint,
+# which builds whatever the application's configured branch (main) points at.
+# Tag the commit you want deployed and push the tag as the last step, so main
+# and the tag agree.
+#
+# Requires two repository secrets:
+#   COOLIFY_URL    e.g. https://coolify.valpinkman.xyz
+#   COOLIFY_TOKEN  an API token with deploy permission
+# and one variable:
+#   COOLIFY_APP_UUIDS  comma-separated application uuids to deploy, web first
+name: deploy
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      uuids:
+        description: 'Comma-separated Coolify application uuids (default: the repo variable)'
+        required: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: trigger Coolify deployment
+        env:
+          COOLIFY_URL: ${{ secrets.COOLIFY_URL }}
+          COOLIFY_TOKEN: ${{ secrets.COOLIFY_TOKEN }}
+          UUIDS: ${{ github.event.inputs.uuids || vars.COOLIFY_APP_UUIDS }}
+        run: |
+          set -euo pipefail
+          if [ -z "${UUIDS:-}" ]; then
+            echo "::error::COOLIFY_APP_UUIDS is not set"; exit 1
+          fi
+          echo "Deploying ${GITHUB_REF_NAME} -> ${UUIDS}"
+          code=$(curl -sS -o /tmp/out.json -w '%{http_code}' \
+            -X GET "${COOLIFY_URL}/api/v1/deploy?uuid=${UUIDS}&force=false" \
+            -H "Authorization: Bearer ${COOLIFY_TOKEN}")
+          cat /tmp/out.json
+          echo
+          if [ "$code" -ge 300 ]; then
+            echo "::error::Coolify returned HTTP $code"; exit 1
+          fi
