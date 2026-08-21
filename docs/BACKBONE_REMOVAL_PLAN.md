@@ -192,29 +192,42 @@ and hit zero when the last one is deleted. Gate it in CI in the same spirit as
 
 ## 4. The step sequence
 
-One commit per step, each leaving `pnpm build` and `pnpm test:unit` green, per AGENTS.md.
+One commit per step, each leaving `pnpm build`, `pnpm test:unit` and `pnpm typecheck` green, per
+AGENTS.md.
+
+Every step below is filed as an issue on `myrepo` under the **`marionette-removal`** label, with
+`afk` / `hitl` marking whether it needs a human. The live tracker is the long-lived PR. Issue
+numbers are given inline; the 22 remaining screen migrations are deliberately **not** pre-filed —
+[#12](https://github.com/valpinkman/duelyst/issues/12) decides their order once the first screen has
+taught us what one actually costs.
 
 **Phase 0 — make the work verifiable**
 
-1. **Screen tour** (`test/e2e/screen-tour.spec.mjs`). One account, one login, then for each of the
+1. **Screen tour** — [#2](https://github.com/valpinkman/duelyst/issues/2), with the drift check as
+   [#1](https://github.com/valpinkman/duelyst/issues/1)
+   (`test/e2e/screen-tour.spec.mjs`). One account, one login, then for each of the
    23 layouts drive `NavigationManager.showContentViewByClass(…)` from `page.evaluate`, assert a
    DOM landmark and zero console errors, capture a named screenshot. Zero
    `CONFIG.ANIMATE_*_DURATION` from the page. **Assert on landmarks and console errors; treat
    screenshots as artifacts for human review, not assertions** — pixel diffs here will be flaky.
    Same commit: narrow the 404 allowlist and add the content-level package drift check (§5).
    Written against the current Marionette build and passing **before anything else moves**.
-2. **ESM-interop spike.** Prove a CJS view file can `require()` an ESM Lit component and survive
+2. **ESM-interop spike** — [#3](https://github.com/valpinkman/duelyst/issues/3). Prove a CJS view
+   file can `require()` an ESM Lit component and survive
    `pnpm build`. `commonjsOptions.strictRequires` is set; CJS→ESM interop is the kind of thing that
    works in dev and breaks in the production bundle. Half a day, and it is the only thing that could
    invalidate decision 5.
 
 **Phase 1 — the real dependency**
 
-3. **Characterise `backfire`.** Analysis only, no code. Answer the questions
+3. **Characterise `backfire`** — [#4](https://github.com/valpinkman/duelyst/issues/4). Analysis
+   only, no code. Answer the questions
    [`BACKBONE_AUDIT.md §7`](BACKBONE_AUDIT.md) asks and leaves open: what does
    `Backbone.Firebase.Model/Collection` guarantee on local write, conflict, delete, offline and
    ordering? Record it in the audit. **This is a gate on step 4, not part of it.**
-4. **Replace `backfire`.** ~200 lines: `onChildAdded`/`onChildChanged`/`onChildRemoved`/`onValue`
+4. **Replace `backfire`** — [#9](https://github.com/valpinkman/duelyst/issues/9). ~200 lines
+   (**an estimate made before step 3; re-scope against what it finds**):
+   `onChildAdded`/`onChildChanged`/`onChildRemoved`/`onValue`
    from the modular SDK feeding a real `Backbone.Collection`, exported under the existing
    `DuelystFirebase.Model`/`.Collection` names. All 53 call sites share one shape —
    `new DuelystFirebase.Collection(null, { firebase: <url> })` — so **zero call sites change**, no
@@ -223,33 +236,44 @@ One commit per step, each leaving `pnpm build` and `pnpm test:unit` green, per A
 
 **Phase 2 — prove the pattern**
 
-5. **`quest_log_layout` → Lit.** Layout + `quest_log_composite` (CompositeView) + `quest_item` +
-   `quest_log_empty`. Establishes `app/ui/components/`, the `BackboneController`, the shell, the
-   `repeat()` idiom, and the `{{localize}}` → `t()` conversion. **Expect this to take several times
-   longer than its 1,156 tree-lines suggest, and judge the approach on the second screen.**
+5. **`quest_log_layout` → Lit** — [#10](https://github.com/valpinkman/duelyst/issues/10). Layout +
+   `quest_log_composite` (CompositeView) + `quest_item` + `quest_log_empty`. Establishes
+   `app/ui/components/`, the `BackboneController`, the shell, the `repeat()` idiom, and the
+   `{{localize}}` → `t()` conversion. **Expect this to take several times longer than its 1,156
+   tree-lines suggest, and judge the approach on the second screen.**
+6. **CI ratchet** — [#11](https://github.com/valpinkman/duelyst/issues/11). `Marionette.` references
+   and `.hbs` count may only go down; shell count reported. Needs the first shell to exist.
 
-**Phase 3 — grind, in risk order** (see the table in §6; `collection.ts` and `play.ts` last)
+**Phase 3 — grind, in risk order.** [#12](https://github.com/valpinkman/duelyst/issues/12) decides
+the order and opens the 23-screen checklist; [#13](https://github.com/valpinkman/duelyst/issues/13)
+(jquery-ui removal) is a hard prerequisite for anything under `views2/collection/`. See §6;
+`collection.ts` and `play.ts` last.
 
 **Phase 4 — collect**
 
-6. Delete Marionette, `transition.ts`, all shells, all `.hbs`, Handlebars, `bootstrap.js`,
-   `jquery-ui`.
-7. `app/application.ts`: `new Backbone.Marionette.Application()` → a plain object with
-   `Backbone.Events`. Repo-wide there are **5 references to Marionette.Application's API and only
-   `App.start()` runs** — the 5,149-line boot file is a one-line change, not a blocker.
-8. Convert `Backbone.sync` fetches to `fetch`, then delete jQuery.
-9. Backbone 1.1.2 → 1.6.1.
+7. [#14](https://github.com/valpinkman/duelyst/issues/14) — delete Marionette, `transition.ts`, all
+   shells, all `.hbs`, Handlebars, `bootstrap.js` (the Bootstrap **SCSS stays**).
+8. [#15](https://github.com/valpinkman/duelyst/issues/15) — `app/application.ts`:
+   `new Backbone.Marionette.Application()` → a plain object with `Backbone.Events`. Repo-wide there
+   are **5 references to Marionette.Application's API and only `App.start()` runs** — the
+   5,149-line boot file is a one-line change, not a blocker.
+9. [#16](https://github.com/valpinkman/duelyst/issues/16) — convert `Backbone.sync` fetches to
+   `fetch`, then delete jQuery.
+10. [#17](https://github.com/valpinkman/duelyst/issues/17) — Backbone 1.1.2 → 1.6.1.
 
 **Unblocked filler** — none of these gate anything; use them when a screen migration stalls:
 
-- Delete the **16 of 38 Handlebars helpers that no template uses** (verify first: `imageForResourceName`
-  reads as unused but is genuinely used nested).
-- **Velocity pass** — only 4 files call `.velocity()`, and `views/animations.ts` already uses
-  `el.animate()`. Four files stand between here and deleting a `VENDOR_FILES` entry and a
-  `package.json` dependency. It is the only complete goal-(a) win available during coexistence.
-- **Typed model attributes** (§3.2).
-- `$.ajax` → `fetch` (~18 files). Good hygiene, but it does **not** remove jQuery —
-  `Backbone.sync` still routes through `Backbone.ajax`. Do not let it compete with screen work.
+- [#5](https://github.com/valpinkman/duelyst/issues/5) — delete the **16 of 38 Handlebars helpers
+  that no template uses** (verify first: `imageForResourceName` reads as unused but is genuinely
+  used nested).
+- [#6](https://github.com/valpinkman/duelyst/issues/6) — **velocity pass**. Only 4 files call
+  `.velocity()`, and `views/animations.ts` already uses `el.animate()`. Four files stand between
+  here and deleting a `VENDOR_FILES` entry and a `package.json` dependency. With `backfire`, it is
+  one of the only complete goal-(a) wins available during coexistence.
+- [#7](https://github.com/valpinkman/duelyst/issues/7) — **typed model attributes** (§3.2).
+- [#8](https://github.com/valpinkman/duelyst/issues/8) — `$.ajax` → `fetch` (~18 files). Good
+  hygiene, but it does **not** remove jQuery — `Backbone.sync` still routes through `Backbone.ajax`.
+  Do not let it compete with screen work.
 
 ## 5. Hazards found while planning
 
@@ -458,7 +482,10 @@ Everything in [`BACKBONE_AUDIT.md §8`](BACKBONE_AUDIT.md) still applies, plus:
 
 - **The tour is the gate, and it must exist before anything moves.** A net authored after a rewrite
   tests the rewrite's bugs.
-- **`pnpm check:undefined-names` after any codemod** — TS2304 is a CI gate and is currently zero.
+- **`pnpm typecheck` is a CI gate and sits at zero** (since 2026-08-21). This programme adds a lot
+  of new code to the one area of the tree that was never typed, so it is the constraint most likely
+  to bite. Run `pnpm check:undefined-names` after any codemod as well — TS2304 keeps its own faster
+  gate because it is the class that becomes a ReferenceError.
 - **Never bypass the package drift check as routine.** It will fire on every screen migration once
   it locks contents. A gate that is routinely overridden is not a gate — read what changed each
   time.
@@ -468,8 +495,23 @@ Everything in [`BACKBONE_AUDIT.md §8`](BACKBONE_AUDIT.md) still applies, plus:
 
 ## 9. Still open
 
-- **The order of the remaining 22 screens** after `quest_log`. The §6 table gives the risk ranking;
-  `collection.ts` and `play.ts` are clearly last, and jquery-ui removal is their prerequisite.
-- **What the `backfire` characterisation actually finds.** Step 3 may reveal guarantees that make
-  step 4 larger than ~200 lines — write coalescing and offline behaviour are the likely surprises.
-  Re-scope step 4 against that finding rather than against this estimate.
+- **The order of the remaining 22 screens** after `quest_log` —
+  [#12](https://github.com/valpinkman/duelyst/issues/12). The §6 table gives the risk ranking;
+  `collection.ts` and `play.ts` are clearly last, and jquery-ui removal
+  ([#13](https://github.com/valpinkman/duelyst/issues/13)) is their prerequisite. Deliberately not
+  decided up front: their scope depends on what the first screen teaches.
+- **What the `backfire` characterisation actually finds** —
+  [#4](https://github.com/valpinkman/duelyst/issues/4). It may reveal guarantees that make
+  [#9](https://github.com/valpinkman/duelyst/issues/9) much larger than ~200 lines — write coalescing
+  and offline behaviour are the likely surprises. **Re-scope #9 against that finding rather than
+  against this document's estimate**, which was made before anyone read the blob.
+
+## 10. Tracking
+
+Work is tracked as issues on `myrepo` under the **`marionette-removal`** label, split `afk` (an
+agent can land it unattended) and `hitl` (needs a human — an architectural call, a judgement call,
+or a playable stack). The **long-lived PR is the live status board**; this document is the reasoning
+behind it and changes only when a decision changes.
+
+All work lands on the long-lived branch, never directly on `modernization`, so the two stacks can be
+run and tested in isolation. Push to `myrepo`; **never** to `origin` (`open-duelyst/duelyst`).
