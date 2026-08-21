@@ -214,6 +214,21 @@ How we work on it:
 
 Status log (newest first):
 
+- 2026-08-21 — **the rift `NaN` was a dead feature, not a bad input — rift card upgrades were
+  broken in production.** The upgrade-choice generator sampled card sets that hold no cards:
+  `Bloodborn` has 0 and is flagged disabled, `Unity` has 0 too, and together they carried about
+  a third of the sampling weight. An empty pool indexes to `undefined`,
+  `getBaseCardId(undefined)` is `NaN`, and the dedupe loop passed it straight through because
+  `NaN !== null` and `_.contains(list, NaN)` is always false — so `NaN` reached Postgres inside
+  `card_choices` (`int4[]`) and threw. Six slots are drawn per upgrade, so the overwhelming
+  majority of attempts failed. Fixed at both levels: only sets that actually hold cards are
+  offered, and the picker returns `null` so an empty pool resamples. Rift suite 11–12 failures
+  → **0 of 43**. Two more bugs fell out: the sanitize test read `riftData.firstTicketId`, a
+  property nothing sets — 2016 used an implicit global and our strict-mode conversion scoped it
+  to a callback, so knex 3 rejected the `undefined` binding where knex 0.19 sent null; and an
+  unordered `SELECT` in inventory was indexed positionally. **The whole suite is now
+  deterministic: three fresh-database runs give an identical 59 / 59 / 59** (was 70 / 70 / 71),
+  which is the precondition for making it a CI gate.
 - 2026-08-21 — **seeded the flaky data_access tests; what is left is a bug, not noise.**
   `test/helpers/seeded_random.js` (mulberry32, fixed arbitrary seed) now backs the chest Monte
   Carlo simulations, and `users updateGameCounters` — which fired ~25 concurrent

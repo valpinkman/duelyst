@@ -1410,8 +1410,15 @@ describe('rift module', () => {
 
     beforeEach(() => SyncModule.wipeUserData(userId));
 
-    it('expect to NOT sanitize a run without card choices (after upgrading a card)', () =>
-      SyncModule.wipeUserData(userId)
+    it('expect to NOT sanitize a run without card choices (after upgrading a card)', () => {
+      // 2016 assigned this as an implicit global, which the conversion to
+      // strict-mode JS localised to the callback -- and the later reads became
+      // `riftData.firstTicketId`, a property nothing sets. It resolved to
+      // undefined, so knex 3 rejected the query outright ("Undefined
+      // binding(s) ... [ticket_id]") where knex 0.19 had quietly sent null.
+      // The sibling tests in this file all use a test-scoped variable.
+      let firstTicketId = null;
+      return SyncModule.wipeUserData(userId)
         .then(() =>
           knex('users').where('id', userId).update({
             wallet_gold: CONFIG.RIFT_TICKET_GOLD_PRICE,
@@ -1420,19 +1427,16 @@ describe('rift module', () => {
         )
         .then(() => RiftModule.buyRiftTicketWithGold(userId))
         .then((ticketId) => {
-          const firstTicketId = ticketId;
+          firstTicketId = ticketId;
           return RiftModule.startRun(userId, firstTicketId);
         })
         .then((riftData) =>
           RiftModule.chooseGeneral(userId, riftData.ticket_id, riftData.general_choices[0]),
         )
         .then((riftData) =>
-          RiftModule.chooseCardToUpgrade(userId, riftData.firstTicketId, riftData.deck[10]),
+          RiftModule.chooseCardToUpgrade(userId, firstTicketId, riftData.deck[10]),
         )
-        .then((riftData) => {
-          const cardChoices = riftData.card_choices;
-          return RiftModule.rerollCurrentUpgrade(userId, riftData.firstTicketId);
-        })
+        .then((riftData) => RiftModule.rerollCurrentUpgrade(userId, firstTicketId))
         .then((riftData) =>
           RiftModule.upgradeCard(userId, riftData.ticket_id, riftData.card_choices[2]),
         )
@@ -1440,7 +1444,8 @@ describe('rift module', () => {
         .then((riftData) => {
           expect(riftData.updated_at).to.not.equal(sanitizeMoment.toDate());
           expect(riftData.card_choices).to.not.exist;
-        }));
+        });
+    });
 
     // it('expect to not sanitize a run with duplicate card choices that has been updated after april 29th 12pm utc', function() {
     //  const ticketId = null;

@@ -19,6 +19,7 @@ const knex = require('../../../server/lib/data_access/knex');
 const generatePushId = require('../../../app/common/generate_push_id');
 const { onType } = require('../../../app/common/utils/utils_promise');
 const PromiseUtils = require('../../../app/common/utils/utils_promise');
+const { installSeededRandom, restoreRandom } = require('../../helpers/seeded_random');
 
 // disable the logger for cleaner test output
 Logger.enabled = Logger.enabled && false;
@@ -60,6 +61,14 @@ describe('inventory module', () => {
   const COMMON_DISENCHANT = spiritFor(SDK.Rarity.Common).spiritReward;
 
   // before cleanup to check if user already exists and delete
+  /*
+   * data_access/inventory.ts calls Math.random in fourteen places -- booster
+   * pack contents, the free card of the day -- so which cards a grant produces
+   * varied between runs and two tests traded verdicts.
+   */
+  beforeAll(() => installSeededRandom());
+  afterAll(() => restoreRandom());
+
   beforeAll(() => {
     Logger.module('UNITTEST').log('creating user');
     return UsersModule.createNewUser('unittest', 'hash', 'kumite14')
@@ -4745,7 +4754,11 @@ describe('inventory module', () => {
         .then((rootRef) =>
           Promise.all([
             knex('users').first().where('id', userId),
-            knex('user_cards').select().where('user_id', userId),
+            // ordered: the assertion below indexes [1] for "the card just
+            // claimed", and an unordered SELECT gives Postgres no reason to
+            // return the rows in insertion order -- it sometimes handed back
+            // the other card and the test failed on a card id mismatch
+            knex('user_cards').select().where('user_id', userId).orderBy('created_at'),
             FirebasePromises.once(rootRef.child('users').child(userId), 'value'),
           ]),
         )

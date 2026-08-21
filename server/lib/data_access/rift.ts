@@ -1331,18 +1331,48 @@ class RiftModule {
       if (maxIterations == null) {
         maxIterations = 50;
       }
-      cardId = null;
+      // An empty pool used to produce NaN and say nothing about it: indexing []
+      // gives undefined, getBaseCardId(undefined) is NaN, and the loop below
+      // exits immediately because NaN is not null and _.contains(list, NaN) is
+      // always false. The NaN then reached Postgres as a member of card_choices
+      // (int4[]) and killed the whole rift upgrade flow with "invalid input
+      // syntax for type integer". Return null instead and let the caller
+      // resample.
+      if (cardsArray == null || cardsArray.length === 0) {
+        return null;
+      }
+      // `let`, because this used to assign to the enclosing function's cardId
+      // parameter -- harmless only because nothing reads it afterwards.
+      let pickedCardId = null;
       let failsafe_counter = 0;
-      while (cardId === null || _.contains(notInCardsList, cardId)) {
-        var randomIndex = Math.floor(Math.random() * cardsArray.length);
-        cardId = SDK.Cards.getBaseCardId(cardsArray[randomIndex]);
+      while (pickedCardId === null || _.contains(notInCardsList, pickedCardId)) {
+        const randomIndex = Math.floor(Math.random() * cardsArray.length);
+        pickedCardId = SDK.Cards.getBaseCardId(cardsArray[randomIndex]);
         failsafe_counter++;
         if (failsafe_counter > maxIterations) {
           break;
         }
       }
-      Logger.module('RiftModule').debug(`_generateCardChoices() -> card: ${cardId}`);
-      return cardId;
+      if (!Number.isFinite(pickedCardId)) {
+        return null;
+      }
+      Logger.module('RiftModule').debug(`_generateCardChoices() -> card: ${pickedCardId}`);
+      return pickedCardId;
+    };
+
+    // does this card set hold any collectible card at all? memoised per call
+    const cardSetHasCardsCache = {};
+    const cardSetHasCards = function (cardSetId) {
+      if (cardSetHasCardsCache[cardSetId] == null) {
+        const ids = SDK.GameSession.getCardCaches()
+          .getCardSet(cardSetId)
+          .getIsPrismatic(false)
+          .getIsGeneral(false)
+          .getIsHiddenInCollection(false)
+          .getCardIds();
+        cardSetHasCardsCache[cardSetId] = ids != null && ids.length > 0;
+      }
+      return cardSetHasCardsCache[cardSetId];
     };
 
     // inline function for picking a random card set
@@ -1381,7 +1411,20 @@ class RiftModule {
         cardSetChoices.push(SDK.CardSet.Unity);
       }
 
-      const cs = _.sample(cardSetChoices);
+      /*
+       * Only offer sets that can actually produce a card. In this build
+       * Bloodborn holds 0 cards and is flagged disabled, and Unity holds 0 as
+       * well, yet both were being sampled -- roughly a third of the weight went
+       * to sets that could only ever return an empty pool, which is what was
+       * generating the NaN card ids. Filtering by what the caches really hold
+       * (rather than by a hardcoded list) keeps this correct if a set is later
+       * populated or retired.
+       *
+       * The relative weighting of the sets that DO have cards is untouched, so
+       * this removes impossible choices without re-tuning rift drops.
+       */
+      const usableCardSetChoices = _.filter(cardSetChoices, cardSetHasCards);
+      const cs = _.sample(usableCardSetChoices.length > 0 ? usableCardSetChoices : cardSetChoices);
       Logger.module('RiftModule').debug(`_generateCardChoices() -> card set: ${cs}`);
       return cs;
     };
@@ -1409,103 +1452,55 @@ class RiftModule {
       return fId;
     };
 
-    // fill slot 1 to 2
-    let randomFactionId = randomFaction();
-    cardIds.push(
-      randomCardFromCollectionWithoutDupes(
-        SDK.GameSession.getCardCaches()
-          .getCardSet(randomCardSet(SDK.Rarity.Common, randomFactionId))
-          .getFaction(randomFactionId)
-          .getRarity(SDK.Rarity.Common)
-          .getIsPrismatic(false)
-          .getIsGeneral(false)
-          .getIsHiddenInCollection(false)
-          .getCardIds(),
-        cardIds,
-        0.04,
-        50,
-      ),
-    );
-    randomFactionId = randomFaction();
-    cardIds.push(
-      randomCardFromCollectionWithoutDupes(
-        SDK.GameSession.getCardCaches()
-          .getCardSet(randomCardSet(SDK.Rarity.Common, randomFactionId, true, true))
-          .getFaction(randomFactionId)
-          .getRarity(SDK.Rarity.Common)
-          .getIsPrismatic(false)
-          .getIsGeneral(false)
-          .getIsHiddenInCollection(false)
-          .getCardIds(),
-        cardIds,
-        0.04,
-        50,
-      ),
-    );
-    randomFactionId = randomFaction();
-    cardIds.push(
-      randomCardFromCollectionWithoutDupes(
-        SDK.GameSession.getCardCaches()
-          .getCardSet(randomCardSet(SDK.Rarity.Rare, randomFactionId))
-          .getFaction(randomFactionId)
-          .getRarity(SDK.Rarity.Rare)
-          .getIsPrismatic(false)
-          .getIsGeneral(false)
-          .getIsHiddenInCollection(false)
-          .getCardIds(),
-        cardIds,
-        0.04,
-        50,
-      ),
-    );
-    randomFactionId = randomFaction();
-    cardIds.push(
-      randomCardFromCollectionWithoutDupes(
-        SDK.GameSession.getCardCaches()
-          .getCardSet(randomCardSet(SDK.Rarity.Rare, randomFactionId, true, true))
-          .getFaction(randomFactionId)
-          .getRarity(SDK.Rarity.Rare)
-          .getIsPrismatic(false)
-          .getIsGeneral(false)
-          .getIsHiddenInCollection(false)
-          .getCardIds(),
-        cardIds,
-        0.04,
-        50,
-      ),
-    );
-    randomFactionId = randomFaction();
-    cardIds.push(
-      randomCardFromCollectionWithoutDupes(
-        SDK.GameSession.getCardCaches()
-          .getCardSet(randomCardSet(SDK.Rarity.Epic, randomFactionId))
-          .getFaction(randomFactionId)
-          .getRarity(SDK.Rarity.Epic)
-          .getIsPrismatic(false)
-          .getIsGeneral(false)
-          .getIsHiddenInCollection(false)
-          .getCardIds(),
-        cardIds,
-        0.04,
-        50,
-      ),
-    );
-    randomFactionId = randomFaction();
-    cardIds.push(
-      randomCardFromCollectionWithoutDupes(
-        SDK.GameSession.getCardCaches()
-          .getCardSet(randomCardSet(SDK.Rarity.Legendary, randomFactionId))
-          .getFaction(randomFactionId)
-          .getRarity(SDK.Rarity.Legendary)
-          .getIsPrismatic(false)
-          .getIsGeneral(false)
-          .getIsHiddenInCollection(false)
-          .getCardIds(),
-        cardIds,
-        0.04,
-        50,
-      ),
-    );
+    /*
+     * The six upgrade choices. Each slot samples a faction and a card set, then
+     * draws from that pool; if the combination happens to hold nothing it
+     * resamples rather than contributing a null, so a run always gets six
+     * choices. This used to be six copies of the same sixteen lines.
+     */
+    const UPGRADE_CHOICE_SLOTS = [
+      { rarity: SDK.Rarity.Common, excludeNeutralBloodborn: false, excludeUnity: false },
+      { rarity: SDK.Rarity.Common, excludeNeutralBloodborn: true, excludeUnity: true },
+      { rarity: SDK.Rarity.Rare, excludeNeutralBloodborn: false, excludeUnity: false },
+      { rarity: SDK.Rarity.Rare, excludeNeutralBloodborn: true, excludeUnity: true },
+      { rarity: SDK.Rarity.Epic, excludeNeutralBloodborn: false, excludeUnity: false },
+      { rarity: SDK.Rarity.Legendary, excludeNeutralBloodborn: false, excludeUnity: false },
+    ];
+
+    for (const slot of UPGRADE_CHOICE_SLOTS) {
+      let picked = null;
+      for (let attempt = 0; attempt < 20 && picked === null; attempt++) {
+        const slotFactionId = randomFaction();
+        picked = randomCardFromCollectionWithoutDupes(
+          SDK.GameSession.getCardCaches()
+            .getCardSet(
+              randomCardSet(
+                slot.rarity,
+                slotFactionId,
+                slot.excludeNeutralBloodborn,
+                slot.excludeUnity,
+              ),
+            )
+            .getFaction(slotFactionId)
+            .getRarity(slot.rarity)
+            .getIsPrismatic(false)
+            .getIsGeneral(false)
+            .getIsHiddenInCollection(false)
+            .getCardIds(),
+          cardIds,
+          0.04,
+          50,
+        );
+      }
+      if (picked === null) {
+        Logger.module('RiftModule').log(
+          `_generateCardUpgradeChoices() -> WARNING: no card found for rarity ${slot.rarity} after 20 attempts`
+            .yellow,
+        );
+      } else {
+        cardIds.push(picked);
+      }
+    }
 
     Logger.module('RiftModule').debug('_generateCardChoices() -> cardIds:', cardIds);
 

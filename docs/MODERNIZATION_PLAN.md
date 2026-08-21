@@ -264,22 +264,26 @@ step it describes, so it can never drift from the code.
 
 - **ACTUALLY NEXT — the genuinely open work, in rough value order:**
 
-  1. **Fix the rift `NaN`, which is now the single highest-value item here.** All 11–12 rift
-     failures are one cascade from it: `card_id_to_upgrade` reaches Postgres as `NaN`
-     (`invalid input syntax for type integer: "NaN"`) where the test expects a
-     `BadRequestError`. Only the depth of the cascade varies between runs, which is also the
-     last source of non-determinism in these suites — so fixing the bug removes the remaining
-     flakiness as a side effect. Needs game-domain judgement about what the test's setup should
-     produce.
+  1. ~~Fix the rift `NaN`~~ **DONE (2026-08-21).** It was not a bad input: rift's upgrade-choice
+     generator was offering card sets that hold no cards. `Bloodborn` has 0 cards and is flagged
+     disabled in this build, `Unity` has 0 as well, yet both were sampled — roughly a third of
+     the weight went to pools that could only come back empty. Indexing an empty array gives
+     `undefined`, `getBaseCardId(undefined)` is `NaN`, and the dedupe loop let it straight
+     through because `NaN !== null` and `_.contains(list, NaN)` is always false. The `NaN` then
+     reached Postgres inside `card_choices` (`int4[]`). With six slots drawn per upgrade, the
+     overwhelming majority of attempts hit at least one — **rift card upgrades were effectively
+     dead in production**, not merely failing a test. Fixed at both levels: only sets that
+     actually hold cards are offered, and the picker returns `null` rather than `NaN` so an
+     empty pool resamples instead of poisoning the row. The rift suite went 11–12 failures → 0.
 
-  2. ~~The data_access suite is flaky~~ **MOSTLY FIXED (2026-08-21).** Two of the three causes
-     are gone. The chest Monte Carlo simulations now run against a seeded `Math.random`
-     (`test/helpers/seeded_random.js`, a fixed arbitrary seed — deliberately not chosen by
-     trying values until the suite went green, which would fit the seed to the assertions).
-     And `users updateGameCounters` fired ~25 concurrent read-modify-writes at the same counter
-     rows through an unbounded `PromiseUtils.map`, so it is now `{ concurrency: 1 }`; that race
-     is upstream rather than ours, since the 2016 original used bluebird's `Promise.map` with
-     no concurrency option either. What is left is item 1, which is a bug, not noise.
+  2. ~~The data_access suite is flaky~~ **DONE (2026-08-21).** Three consecutive fresh-database
+     runs now give an identical **59 / 59 / 59**, down from 70 / 70 / 71. Four causes, all
+     different: unseeded `Math.random` in the chest and inventory suites (now
+     `test/helpers/seeded_random.js`); `users updateGameCounters` firing ~25 concurrent
+     read-modify-writes at the same rows through an unbounded `PromiseUtils.map` (now
+     `{ concurrency: 1 }`); a `SELECT` with no `ORDER BY` whose result was indexed positionally;
+     and the rift cascade above. **The suite is now reproducible, which is the precondition for
+     making it a CI gate.**
 
   3. **Finish the data_access tail (69 stable failures) and wire the suites into CI.** They are
      overwhelmingly stale 2016 game-balance expectations — production is correct in
@@ -1725,6 +1729,7 @@ _Sequencing note:_ tier-2 deps (7.3) come after this, per owner.
 | ---------- | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 2026-08-21 | Deleted the 12 cosmetic-chest prismatic tests; replaced them with one that pins the real behaviour        | `_generateChestOpeningRewards` contains no live prismatic drop -- every mention is inside a comment, and it was already commented out with `###` in the 2016 CoffeeScript, so chests have never awarded prismatics in any published version. Ten of the twelve had been failing and could not have passed; the other two passed only by asserting the absence of a reward nothing generates. The replacement fails if anyone re-enables the drop, so the feature cannot come back untested. |
 | 2026-08-21 | Seasonal quest tests (Frostfire-2016, February-2017) are KEPT                                             | they looked like expired content worth deleting, but `app/sdk/quests/questFrostfire2016.ts` still exists and the tests drive it with an injected system time. Their failures are ordinary stale balance (50 vs 100 gold) and one possible real bug (0 cosmetic keys awarded instead of 1), not dead features.                                                                                                                                                                               |
+| 2026-08-21 | Rift offers only card sets that actually hold cards, and the picker returns `null` not `NaN`              | fixing only the symptom (rejecting NaN) would have left the generator silently asking for cards from empty pools and returning five choices where six were due. Filtering by what the caches really hold, rather than by a hardcoded exclusion list, keeps this correct if Bloodborn or Unity are ever populated. Relative weighting of the sets that DO have cards is untouched, so no rift drop re-tuning.                                                                                |
 | 2026-08-21 | Services run an ahead-of-time `build/`; esbuild transpile-only, tree mirrored not bundled                 | tsx _is_ esbuild, so AOT with the same tsconfig reproduces the runtime emit exactly, while `tsc` would change it and pull in the 364-error typecheck backlog. Mirroring rather than bundling keeps every root-absolute require working and preserves the "module.exports before require" idiom the codebase uses to survive circular requires. Cold boot 4,578 ms → ~900 ms.                                                                                                                |
 | 2026-08-21 | The tsx hook is enabled by detection (`.ts` on disk), not by an env var                                   | a flag is one more thing to forget on a deploy, and the quiet failure mode — forgetting to set it — puts the require hook back in production while everything still appears to work.                                                                                                                                                                                                                                                                                                        |
 | 2026-08-20 | `catalog:` for cross-package versions; transitive skew left to `pnpm.overrides`                           | only 3 deps were shared, but two were skewed: Backbone.VirtualCollection bundled its own backbone 1.2.1 + underscore 1.6.0 into the client beside the app's 1.1.2/1.13.8. Its Backbone surface is `Collection.extend` + `Events` and 11 underscore helpers, all unchanged, so collapsing was safe — verified with the e2e practice game. `backbone.babysitter`/`backbone.wreqr` still pin 1.2.1 transitively; a catalog cannot reach those.                                                 |
