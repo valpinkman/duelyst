@@ -26,11 +26,13 @@ step it describes, so it can never drift from the code.
   in Docker (api, game, sp, worker, plus db/redis; worker-ui is profile-gated), and a **practice game played end-to-end against the TypeScript stack** with a real
   Firebase RTDB (register → login → main menu → mulligan → play a minion → AI responds →
   concede), 0 console errors.
-- **Current state (2026-08-20):** typecheck **365** (TS2304 at **0**, and gated in CI),
-  **1,366** unit tests, **25** advisories, data_access integration at **493 / 575**.
-  CI gates: lint + `format:check` + `check:promise-utils` + `check:bluebird-orphans` +
-  `check:undefined-names` + `check:turbo-env`, unit, `integration:misc`, `integration:jobs`, build.
-  Tooling is oxlint + oxfmt (shared config in `tooling/oxlint-config`) orchestrated by turborepo.
+- **Current state (2026-08-21):** typecheck **362** on TypeScript 7 (TS2304 at **0**, gated),
+  **1,366** unit tests, **25** advisories, data_access at **553 / 562** with the 9 known
+  failures gated on drift. CI gates: lint, `format:check`, `check:undefined-names`,
+  `check:turbo-env`, `check:promise-utils`, `check:bluebird-orphans`, unit,
+  `integration:misc`, `integration:jobs`, `data_access_tests`, build.
+  Tooling: oxlint + oxfmt on a shared config, turborepo orchestration, pnpm catalog, and an
+  ahead-of-time server build so services no longer compile TypeScript at boot.
 - **What follows is the record of how each item was closed**, kept because most entries carry a
   lesson that cost real time to learn. The genuinely-open work is listed at the end under
   "Actually next".
@@ -122,8 +124,9 @@ step it describes, so it can never drift from the code.
      spirit. Writing it through would need a schema check, so it belongs in a correctness pass
      rather than a typing one.
 
-     The remaining 366 are heterogeneous and want per-case judgement: 175 TS2339 on function
-     objects and narrowed types, 75 TS2554, 35 TS2345, 23 TS2403. Move directories into `tsconfig.strict.json` as they go clean.
+     The remaining **362** (2026-08-21, TypeScript 7) are heterogeneous and want per-case
+     judgement: 177 TS2339 on function objects and narrowed types, 70 TS2554, 34 TS2345,
+     23 TS2403, 20 TS2551. Move directories into `tsconfig.strict.json` as they go clean.
 
   4. **data_access suites revived — now 493 of 575 passing** (2026-08-20; first pass took it
      from 0 to 402 of 506, and the total grew as blocked files started collecting). They had been
@@ -262,53 +265,29 @@ step it describes, so it can never drift from the code.
      which is also what unblocks per-package `typecheck`/`test`. Blocked on a plan for
      `generate_packages.js` (it text-parses the card factories) and the RSX paths.
 
-- **ACTUALLY NEXT — the genuinely open work, in rough value order:**
+- **ACTUALLY NEXT — the genuinely open work, in rough value order.** Items closed on
+  2026-08-21 (the rift `NaN`, the suite's non-determinism, wiring data_access into CI) have
+  moved to [MODERNIZATION_LOG.md](MODERNIZATION_LOG.md).
 
-  1. ~~Fix the rift `NaN`~~ **DONE (2026-08-21).** It was not a bad input: rift's upgrade-choice
-     generator was offering card sets that hold no cards. `Bloodborn` has 0 cards and is flagged
-     disabled in this build, `Unity` has 0 as well, yet both were sampled — roughly a third of
-     the weight went to pools that could only come back empty. Indexing an empty array gives
-     `undefined`, `getBaseCardId(undefined)` is `NaN`, and the dedupe loop let it straight
-     through because `NaN !== null` and `_.contains(list, NaN)` is always false. The `NaN` then
-     reached Postgres inside `card_choices` (`int4[]`). With six slots drawn per upgrade, the
-     overwhelming majority of attempts hit at least one — **rift card upgrades were effectively
-     dead in production**, not merely failing a test. Fixed at both levels: only sets that
-     actually hold cards are offered, and the picker returns `null` rather than `NaN` so an
-     empty pool resamples instead of poisoning the row. The rift suite went 11–12 failures → 0.
-
-  2. ~~The data_access suite is flaky~~ **DONE (2026-08-21).** Three consecutive fresh-database
-     runs now give an identical **59 / 59 / 59**, down from 70 / 70 / 71. Four causes, all
-     different: unseeded `Math.random` in the chest and inventory suites (now
-     `test/helpers/seeded_random.js`); `users updateGameCounters` firing ~25 concurrent
-     read-modify-writes at the same rows through an unbounded `PromiseUtils.map` (now
-     `{ concurrency: 1 }`); a `SELECT` with no `ORDER BY` whose result was indexed positionally;
-     and the rift cascade above. **The suite is now reproducible, which is the precondition for
-     making it a CI gate.**
-
-  3. **Finish the data_access tail (9 stable failures, plus 2 quarantined as unstable).** ~~and wire the suites into CI~~ —
-     **wired 2026-08-21** as a `data_access_tests` job that gates on drift rather than on green:
-     `scripts/check-data-access-baseline.mjs` compares the failing set against
-     `known-failures.txt` and fails if a passing test starts failing, or if a known-failing test
-     starts passing without the list being shrunk. The list can only go down.
-     The remaining work is the tail itself, overwhelmingly stale 2016 game-balance expectations
-     — inventory asserts a booster pack costs 100 gold while the SDK says
-     `defaultOrbGoldCost = 50`; a catch-up quest asserts 100 where the code gives 50. There are
-     ~670 hardcoded numeric assertions across these suites, and deriving them from SDK data is
-     the fix that stops this recurring. Each one removed is a line deleted from the baseline.
-     **Correction to the determinism claim made the same day:** the suites are deterministic
-     given a fresh Postgres _and a fresh Firebase emulator_ — five consecutive runs under
-     exactly the CI condition gave an identical 59. The earlier "59 / 59 / 59" was measured
-     against a long-lived emulator, which masked two rare flakes (each seen once in roughly
-     eight runs). Both are in `known-unstable.txt`, excluded from the gate in both directions,
-     and recorded as debt rather than as fixed.
-     The suites are also **not idempotent**: re-running against a database they have already
-     written to flips three inventory tests, because `wipeUserData` does not reset everything
-     they assume. CI gets a new service container per run, which is the condition they need —
-     never diagnose a failure here by re-running against a persistent database.
-
-  4. **Decide on `pnpm.overrides` for the transitive backbone pin.** `backbone.babysitter` and
+  1. **Finish the data_access tail: 9 stable failures left**, plus 2 quarantined in
+     `known-unstable.txt`. Down from 59 when the gate went in. What remains is users (5),
+     inventory (2), referrals (1), rank (1); gauntlet, sync, quests, gift_crate and
+     cosmetic_chests are green.
+     The method that worked: assert against the constant that drives the behaviour, not a
+     number copied from 2016 — and check whether the rule under test still fires at all, because
+     several did not. Each fix is a line deleted from `known-failures.txt`, and the ratchet makes
+     it permanent.
+  2. **The typecheck backlog: 362 errors** (TypeScript 7). Heterogeneous and low-yield now that
+     TS2304 is zero and gated — 177 TS2339, 70 TS2554, 34 TS2345, 23 TS2403, 20 TS2551. Cheaper
+     to work on than it was: a full typecheck is 0.39 s now rather than 3.5 s. Move directories
+     into `tsconfig.strict.json` as they go clean.
+  3. **Decide on `pnpm.overrides` for the transitive backbone pin.** `backbone.babysitter` and
      `backbone.wreqr` (deps of marionette 2.2.2) still pin `backbone@1.2.1`, which a catalog
-     cannot reach. Small, but it is the last version skew left in the tree.
+     cannot reach. Small, but it is the last version skew in the tree.
+  4. **Folder reorg** — `app/sdk` and `app/common` out of `app/`, the last item of the tooling
+     program above. It is also what unblocks per-package `typecheck`/`test`. Blocked on a plan
+     for `generate_packages.js` (it text-parses the card factories) and the RSX paths; wants an
+     audit of what breaks before anything moves.
   5. **Optional, deliberately not started:** Backbone/Marionette/jQuery. That is a UI rewrite,
      not an upgrade, and was declined once already.
 
