@@ -22,6 +22,7 @@ const knex = require('../../../server/lib/data_access/knex');
 const generatePushId = require('../../../app/common/generate_push_id');
 const { onType } = require('../../../app/common/utils/utils_promise');
 const PromiseUtils = require('../../../app/common/utils/utils_promise');
+const { installSeededRandom, restoreRandom } = require('../../helpers/seeded_random');
 
 // disable the logger for cleaner test output
 Logger.enabled = Logger.enabled && false;
@@ -1097,6 +1098,13 @@ describe('cosmetic chests module', () => {
   });
 
   describe('_chestTypeForProgressionData', () => {
+    /*
+     * 200-300 simulated players per case, asserting a mean/median/percentile.
+     * Unseeded, two of these flipped verdict between runs.
+     */
+    beforeAll(() => installSeededRandom());
+    afterAll(() => restoreRandom());
+
     const simulateChestsRandomDays = function (
       days,
       playProbability,
@@ -1344,6 +1352,10 @@ describe('cosmetic chests module', () => {
   });
 
   describe('_generateChestOpeningRewards', () => {
+    // 10,000 chest openings compared against expected drop rates
+    beforeAll(() => installSeededRandom());
+    afterAll(() => restoreRandom());
+
     const iterations = 10000;
     const defaultAllowableVariance = 0.1;
 

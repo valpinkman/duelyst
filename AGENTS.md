@@ -214,6 +214,17 @@ How we work on it:
 
 Status log (newest first):
 
+- 2026-08-21 — **seeded the flaky data_access tests; what is left is a bug, not noise.**
+  `test/helpers/seeded_random.js` (mulberry32, fixed arbitrary seed) now backs the chest Monte
+  Carlo simulations, and `users updateGameCounters` — which fired ~25 concurrent
+  read-modify-writes at the same counter rows through an unbounded `PromiseUtils.map` — is now
+  `{ concurrency: 1 }`. That race is upstream: the 2016 original used bluebird's `Promise.map`
+  with no concurrency option either. **The seed was picked a priori, not by trying values until
+  the suite went green** — seed-shopping would fit the seed to the assertions and hide the
+  disagreements these tests exist to surface. Chest and users flakiness: gone across three
+  fresh-database runs. The residual variance is entirely rift, and it is not flakiness: all
+  11–12 rift failures cascade from one defect, `card_id_to_upgrade` reaching Postgres as `NaN`,
+  and only the cascade depth varies. Fixing that bug removes the last non-determinism.
 - 2026-08-21 — **triaged the data_access failures; the suite is flaky, which is the real
   blocker.** Three consecutive runs of an unchanged tree gave 70 / 70 / 71 failures, four tests
   swapping verdict between them — two chest simulations over unseeded `Math.random()`, plus

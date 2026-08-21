@@ -262,15 +262,26 @@ step it describes, so it can never drift from the code.
      which is also what unblocks per-package `typecheck`/`test`. Blocked on a plan for
      `generate_packages.js` (it text-parses the card factories) and the RSX paths.
 
-- **ACTUALLY NEXT — the genuinely open work, in rough value order:** 0. **The data_access suite is FLAKY, which blocks making it a CI gate at all.** Measured
-  2026-08-21 over three consecutive runs of an unchanged tree: 70 / 70 / 71 failures, with
-  four tests changing verdict between runs — two `_chestTypeForProgressionData` cases (30-day
-  simulations over unseeded `Math.random()`), `rift upgradeCard`, and `users
- updateGameCounters`. 69 failures are stable across all three; the rest is noise. Seed or
-  rewrite the statistical cases before wiring anything into CI, or the gate will fail
-  randomly and get ignored. This ranks above the tail below, because a flaky gate is worse
-  than no gate.
-  1. **Finish the data_access tail (69 stable failures) and wire the suites into CI.** They are
+- **ACTUALLY NEXT — the genuinely open work, in rough value order:**
+
+  1. **Fix the rift `NaN`, which is now the single highest-value item here.** All 11–12 rift
+     failures are one cascade from it: `card_id_to_upgrade` reaches Postgres as `NaN`
+     (`invalid input syntax for type integer: "NaN"`) where the test expects a
+     `BadRequestError`. Only the depth of the cascade varies between runs, which is also the
+     last source of non-determinism in these suites — so fixing the bug removes the remaining
+     flakiness as a side effect. Needs game-domain judgement about what the test's setup should
+     produce.
+
+  2. ~~The data_access suite is flaky~~ **MOSTLY FIXED (2026-08-21).** Two of the three causes
+     are gone. The chest Monte Carlo simulations now run against a seeded `Math.random`
+     (`test/helpers/seeded_random.js`, a fixed arbitrary seed — deliberately not chosen by
+     trying values until the suite went green, which would fit the seed to the assertions).
+     And `users updateGameCounters` fired ~25 concurrent read-modify-writes at the same counter
+     rows through an unbounded `PromiseUtils.map`, so it is now `{ concurrency: 1 }`; that race
+     is upstream rather than ours, since the 2016 original used bluebird's `Promise.map` with
+     no concurrency option either. What is left is item 1, which is a bug, not noise.
+
+  3. **Finish the data_access tail (69 stable failures) and wire the suites into CI.** They are
      overwhelmingly stale 2016 game-balance expectations — production is correct in
      every case examined, so the work is rewriting expectations to derive from SDK data, per
      test. Low bug yield, but it is the last thing standing between these 575 tests and being a
@@ -287,14 +298,15 @@ step it describes, so it can never drift from the code.
      where the test expects a `BadRequestError`. That one still smells like a defect rather than
      a stale number, and it needs game-domain judgement about what the test's setup should
      produce.
-  2. **The rest of the typecheck backlog (364).** Heterogeneous and low-yield now that TS2304 is
+  4. **The rest of the typecheck backlog (364).** Heterogeneous and low-yield now that TS2304 is
      zero and gated; 175 TS2339 on function objects and narrowed types, 75 TS2554, 35 TS2345.
      Move directories into `tsconfig.strict.json` as they go clean.
-  3. **Decide on `pnpm.overrides` for the transitive backbone pin.** `backbone.babysitter` and
+  5. **Decide on `pnpm.overrides` for the transitive backbone pin.** `backbone.babysitter` and
      `backbone.wreqr` (deps of marionette 2.2.2) still pin `backbone@1.2.1`, which a catalog
      cannot reach. Small, but it is the last version skew left in the tree.
-  4. **Optional, deliberately not started:** Backbone/Marionette/jQuery. That is a UI rewrite,
+  6. **Optional, deliberately not started:** Backbone/Marionette/jQuery. That is a UI rewrite,
      not an upgrade, and was declined once already.
+
 - **Known dirty state:** none.
 
 ## Rules

@@ -21,6 +21,7 @@ const knex = require('../../../server/lib/data_access/knex');
 const generatePushId = require('../../../app/common/generate_push_id');
 const { onType } = require('../../../app/common/utils/utils_promise');
 const PromiseUtils = require('../../../app/common/utils/utils_promise');
+const { installSeededRandom, restoreRandom } = require('../../helpers/seeded_random');
 
 // disable the logger for cleaner test output
 Logger.enabled = Logger.enabled && false;
@@ -33,6 +34,14 @@ describe('rift module', () => {
   const swapUpgradeTestCount = 0;
 
   // before cleanup to check if user already exists and delete
+  /*
+   * data_access/rift.ts calls Math.random to pick card choices, so which cards
+   * a run offers -- and therefore whether an upgrade assertion holds -- varied
+   * between runs.
+   */
+  beforeAll(() => installSeededRandom());
+  afterAll(() => restoreRandom());
+
   beforeAll(() => {
     Logger.module('UNITTEST').log('creating user');
     return UsersModule.createNewUser('unittest', 'hash', 'kumite14')

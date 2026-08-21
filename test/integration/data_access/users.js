@@ -1076,6 +1076,13 @@ describe('users module', () => {
           ],
         ],
         (input) => UsersModule.updateGameCounters.apply(null, input),
+        // serial on purpose: these are ~25 game outcomes for ONE user, and every
+        // one is a read-modify-write of the same counter rows. Run concurrently
+        // (PromiseUtils.map defaults to unbounded, as bluebird's Promise.map did
+        // here in 2016) they race and the final counts vary between runs, which
+        // is what made this test flip verdict. A player's games finish one at a
+        // time, so serialising models reality rather than hiding a problem.
+        { concurrency: 1 },
       )
         .then(() => DuelystFirebase.connect().getRootRef())
         .then((rootRef) =>
