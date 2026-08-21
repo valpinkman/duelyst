@@ -39,6 +39,9 @@ source scripts/dev/data-access-test-env.sh     #   throwaway postgres+redis+fire
                                                #   deliberately separate from `docker compose`, because
                                                #   these suites create users and wipe inventories
 pnpm typecheck                                 # tsc (loose config) - 0 errors, and a CI gate since 2026-08-21
+                                               #   runs the root program AND @duelyst/sdk + @duelyst/common
+                                               #   scoped: the scoped ones catch what the root program hides
+pnpm vitest --project sdk|misc|firebase        # unit tests for one package's subject (102 / 7 / 1 files)
 pnpm check:undefined-names                     # TS2304 only, and this IS a CI gate. Run after any codemod.
 pnpm check:promise-utils                       # PromiseUtils/onType used without being bound
 pnpm check:bluebird-orphans                    # bluebird-only API used without requiring bluebird
@@ -122,6 +125,13 @@ Everything below is TypeScript unless noted.
   written, two rank call sites dropping the caller's clock, and a decade-old `+`-before-`==`
   precedence bug in an AI log. TS2304 keeps its own faster gate (`pnpm check:undefined-names`)
   because it is the class that becomes a ReferenceError. **Run it after any codemod.**
+- **`app/sdk` must not use the vendor globals.** `app/types/globals.d.ts` declares `_`, `$`, `cc`,
+  `Backbone` and friends because the client consumes them from `vendor.js` — but the SDK also runs
+  on the game servers, where they do not exist. `app/sdk/tsconfig.json` deliberately excludes that
+  file so the scoped typecheck fails on any such reference; that is how a missing
+  `require('underscore')` in `challengeRemote.ts` was found after years of hiding behind the root
+  program. `app/common` is the opposite case and does include it: seven of its files are
+  client-only by design.
 - **Serialization is structural.** `SDKObject` + `fastExtend(this, data)` — instance property
   layout _is_ the wire format for game state and replays. Use `declare x: any` for prototype-era
   members: a real class field creates an own property and silently changes the shape. Renaming a

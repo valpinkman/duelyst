@@ -306,6 +306,15 @@ step it describes, so it can never drift from the code.
      `generate_packages.js`. RSX paths turn out to be safe — they are runtime URL strings, not
      filesystem paths. Recommended order: per-package tsconfigs in place, then break the cycle,
      then decide what `app/data` is, and only then consider the move.
+
+     **Step 1 of that order is done (2026-08-21):** both packages carry their own `tsconfig.json`
+     and `typecheck` script (5 turbo tasks, was 2), unit tests are named vitest projects
+     (`--project sdk|misc|firebase`), and the three defects the audit found are fixed. `app/sdk`
+     typechecks at 0 with the vendor globals deliberately withheld, which is now an enforced
+     invariant rather than an assumption. **Next: step 2, break the sdk ↔ common cycle** — three
+     requires in two files (`analyticsTracker.ts`, `utils_game_session.ts`), both of which look
+     like SDK concerns misfiled into `common`.
+
   5. **Optional, deliberately not started:** Backbone/Marionette/jQuery. That is a UI rewrite,
      not an upgrade, and was declined once already. Audited 2026-08-21 —
      [`BACKBONE_AUDIT.md`](BACKBONE_AUDIT.md). The short version: Backbone is the metagame shell

@@ -1,0 +1,23 @@
+{
+  /*
+   * Package-scoped typecheck. Deliberately does NOT include app/types/globals.d.ts:
+   * the SDK runs on the game servers as well as in the browser, so it must not
+   * reach for the vendor globals (`_`, `$`, `cc`, `Backbone`) that only exist in
+   * the client bundle. The root program declares those, which is why a missing
+   * `require('underscore')` in challengeRemote.ts stayed invisible for years.
+   * Keeping them out here is the point of this file.
+   */
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    // `colors` augments String.prototype (.red/.blue/.green in log messages).
+    // The root program picks it up incidentally; a scoped program has to ask.
+    "types": ["node", "colors"],
+    "paths": {
+      "app/*": ["../../app/*"],
+      "server/*": ["../../server/*"],
+      "config/*": ["../../config/*"]
+    }
+  },
+  "include": ["**/*.ts"]
+}

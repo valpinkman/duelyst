@@ -97,27 +97,45 @@ decide what `app/data` is: a third package, part of the SDK, or a build artifact
 Scoping the typecheck to one package found things the whole-program run cannot see, which is an
 argument for per-package configs independent of any move:
 
+**All three are fixed (2026-08-21); kept here because each one says something about the packages.**
+
 1. **`challengeRemote.ts` uses `_` without requiring underscore.** It calls `_.without(…)` in its
    constructor. The root program hides this because `app/types/globals.d.ts` declares
    `declare const _: any` for the vendor globals — correct for the browser, where underscore is on
    `window`. Latent rather than live: every construction site is client-side
    (`app/application.ts`, `app/ui/views2/quests/`, `app/tools/editor.ts`), and the module is only
    _loaded_ server-side via the SDK barrel, which does not run the constructor. It would be a
-   ReferenceError the moment anything constructs it on a server.
+   ReferenceError the moment anything constructs it on a server. Fixed by requiring underscore —
+   and `app/sdk/tsconfig.json` now excludes `globals.d.ts` on purpose, so the SDK cannot pick up a
+   browser global again without failing its own typecheck. It passes at **0 errors** under that
+   rule, which is a useful thing to know: the engine is genuinely server-safe.
 2. **`app/sdk/package.json` declares `"main": "index.js"` and only `index.ts` exists.** So
    `require('app/sdk')` fails under plain Node; it works only via the tsx hook or the compiled
    `build/` tree. This is the `DEP0128 Invalid 'main' field` warning printed on every test run.
+   Fixed by deleting the field: Node's default directory-index lookup then finds `index.ts` in the
+   source tree (through tsx) and `index.js` in `build/`, verified in both.
 3. **Both manifests describe themselves as "Still CoffeeScript"** and promise that "physical
    relocation happens with the TypeScript conversion". The conversion finished; the descriptions
-   did not.
+   did not. Rewritten.
+
+Measuring `app/common` under the scoped config also sharpened §3's question. Without the browser
+globals it reports 148 errors — but **136 of them are in one file** (`utils/utils_engine.ts`,
+cocos2d helpers) and the rest in six others (`utils_resources`, `landing`, `openUrl`, `discord`,
+`session2`, `analyticsTracker`). The server requires only `config` (30 files) and `logger` (105)
+out of the package, and none of the browser-coupled ones. So `app/common` is a server-safe core
+and a client-side half sharing a directory, which is worth knowing before step 3 decides where the
+boundaries go.
 
 ## 6. Recommended sequence
 
 Cheapest-first, each step independently valuable and revertable:
 
-1. **Per-package `tsconfig` + vitest projects, in place.** Delivers the benefit the reorg was
-   supposed to deliver, today, for ~12 lines per package and no file moves. Fix the three defects
-   in §5 while there.
+1. ~~**Per-package `tsconfig` + vitest projects, in place.**~~ **Done 2026-08-21.** Both packages
+   now carry their own `tsconfig.json` and a `typecheck` script, so `pnpm typecheck` runs five
+   turbo tasks instead of two and each package is checked in isolation as well as in the whole
+   program. Unit tests are split into named vitest projects (`--project sdk|misc|firebase`,
+   102/7/1 files) along the same boundary. All three defects in §5 are fixed; §5 records what the
+   scoped typecheck proved about each package.
 2. **Break the cycle** by moving `analyticsTracker.ts` and `utils_game_session.ts` into `app/sdk`.
    Two files. After this the packages are genuinely independent, which is the property that
    actually matters.

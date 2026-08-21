@@ -1,0 +1,28 @@
+{
+  /*
+   * Package-scoped typecheck.
+   *
+   * Unlike app/sdk, this one DOES pull in app/types/globals.d.ts, because
+   * app/common genuinely contains client-only modules that use the vendor
+   * globals: utils_engine (cocos2d), utils_resources, landing, openUrl,
+   * discord, session2, analyticsTracker. Seven files out of the package, and
+   * 136 of the 148 errors you get without this line come from utils_engine
+   * alone.
+   *
+   * Worth knowing for the packaging work (docs/REORG_AUDIT.md steps 2-3): the
+   * server requires only `config` (30 files) and `logger` (105) out of this
+   * package and none of the browser-coupled ones, so app/common is really a
+   * server-safe core plus a client-side half sharing one directory.
+   */
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "types": ["node", "colors"],
+    "paths": {
+      "app/*": ["../../app/*"],
+      "server/*": ["../../server/*"],
+      "config/*": ["../../config/*"]
+    }
+  },
+  "include": ["**/*.ts", "../types/globals.d.ts"]
+}

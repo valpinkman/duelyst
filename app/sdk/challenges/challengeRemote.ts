@@ -11,6 +11,7 @@ const FactionFactory = require('app/sdk/cards/factionFactory');
 const AgentActions = require('app/sdk/agents/agentActions');
 const RSX = require('app/data/resources');
 const BattleMapTemplate = require('app/sdk/battleMapTemplate');
+const _ = require('underscore');
 const fetch = require('isomorphic-fetch');
 const i18next = require('i18next');
 const PromiseUtils = require('app/common/utils/utils_promise');
