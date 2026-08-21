@@ -290,7 +290,12 @@ step it describes, so it can never drift from the code.
      for `generate_packages.js` (it text-parses the card factories) and the RSX paths; wants an
      audit of what breaks before anything moves.
   5. **Optional, deliberately not started:** Backbone/Marionette/jQuery. That is a UI rewrite,
-     not an upgrade, and was declined once already.
+     not an upgrade, and was declined once already. Audited 2026-08-21 —
+     [`BACKBONE_AUDIT.md`](BACKBONE_AUDIT.md). The short version: Backbone is the metagame shell
+     only (`app/sdk` 0 files, `app/view` 1 of 223, `app/ui` 151 of 204), the Router and REST
+     `sync` are entirely unused, and the real lock-in is `backfire` — a 2015 unmaintained
+     Firebase-2.x binding shipped as an 8 KB blob, reached by 53 call sites in 30 files. That
+     audit is the delegable piece; the rewrite still is not.
 
 - **Known dirty state:** none.
 
