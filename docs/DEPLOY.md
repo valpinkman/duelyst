@@ -61,6 +61,25 @@ key: generate a keypair, register the private half under **Keys & Tokens →
 Private Keys**, and add the public half to the repo under **Settings → Deploy
 keys** (read access is enough).
 
+## What exists on the instance
+
+Created 2026-08-21 in project **Duelyst** (`pfeykyoqfl4sa7akslyocsjz`), environment
+`production`, server `localhost` (`ckswsw4wokcww80c4040cc8c` — the Hetzner box at
+65.108.241.38, which is what `*.valpinkman.xyz` already resolves to).
+
+| Resource         | UUID                       | Notes                                               |
+| ---------------- | -------------------------- | --------------------------------------------------- |
+| duelyst-web      | `ckmwcsoqlimmtpychbbsrmla` | `/docker/web.Dockerfile`, port 3000, domain set     |
+| duelyst-game     | `70frtu9cvrs7y95rdyj6qj9p` | `/docker/game.Dockerfile`, port 8001, custom labels |
+| duelyst-sp       | `lfjstkk2dhdyhuv0osay9soz` | `/docker/sp.Dockerfile`, port 8000, custom labels   |
+| duelyst-worker   | `5k43hxj2nqrfc8uiyxtkjqvk` | `/docker/worker.Dockerfile`, no public port         |
+| duelyst-postgres | `lx6bsx4eqaf0b8fhgxrcpzyb` | postgres:13, internal host = its uuid               |
+| duelyst-redis    | `y7pljbwsvujegc7xvf32qkvb` | redis:6, **password set** — hence `REDIS_PASSWORD`  |
+
+Source: the `duelyst-project` GitHub App, `valpinkman/duelyst`, branch `main`.
+
+Those four application uuids are what `COOLIFY_APP_UUIDS` should contain.
+
 ## Per-application configuration
 
 Four applications, all from this repository, branch `main`, each with its
@@ -106,9 +125,11 @@ traefik.http.services.duelyst-game.loadbalancer.server.port=8001
 
 ### Migrations
 
-`pnpm migrate:latest` against `POSTGRES_CONNECTION`, before the first web boot
-and after any deploy that adds migrations. Run it as a pre-deployment command on
-the web application.
+Handled by the image: `docker/web-entrypoint.sh` runs `pnpm migrate:latest` and
+then execs the API, because Coolify's API has no pre-deployment command field.
+knex takes a lock in `knex_migrations_lock`, so a simultaneous second container
+waits rather than racing, and the command is a no-op when nothing is pending.
+A container that cannot migrate deliberately fails to start.
 
 ## Deploying
 
@@ -130,9 +151,18 @@ the tag last, once main already has the commit you want live.
   excluded by `docker/web.Dockerfile.dockerignore`; do not remove that line.
 - **The client is configured at build time.** Changing `API_URL` or the Firebase
   project means rebuilding the image, not restarting the container.
-- **`config.isDevelopment()` is `!isProduction()`,** so `staging` counts as
-  development and mounts `/api/me/qa/*` — routes that grant gold, spirit and
-  diamonds and set rank. Deploy with `NODE_ENV=production`, never `staging`.
+- **`/api/me/qa/*` grants gold, spirit and diamonds and sets rank.** It is
+  mounted only when `config.isDevelopment()`, which is `!isProduction()` — and
+  `isProduction()` covers **both** `production` and `staging`, so neither
+  exposes it. Any other value for `NODE_ENV` does. Note that `qa.ts` is
+  `require()`d unconditionally, so it used to log "QA routes ACTIVE" on a
+  production boot without mounting anything; that banner now sits at the mount
+  site instead.
+- **Coolify double-escapes backslashes when it resolves an env var.** A value
+  stored as `\n` reaches the container as `\\n`. `FIREBASE_PRIVATE_KEY` is the
+  one place that matters, and `duelyst_firebase_module.ts` accepts both forms.
+  Worth remembering for any future secret carrying escapes: compare `value` with
+  `real_value` in the API response, which is how this was found.
 - **A missing client is silent.** `server/lib/bundled_client.ts` decides at boot
   whether `dist/src/index.html` exists; if the image somehow lacks it, the API
   falls back to expecting a CDN and serves nothing useful.
