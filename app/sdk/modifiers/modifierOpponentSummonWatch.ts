@@ -46,7 +46,7 @@ class ModifierOpponentSummonWatch extends Modifier {
     }
   }
 
-  onSummonWatch(action) {}
+  onSummonWatch(action?) {}
 }
 ModifierOpponentSummonWatch.prototype.type = 'ModifierOpponentSummonWatch';
 ModifierOpponentSummonWatch.prototype.activeInHand = false;

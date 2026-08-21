@@ -939,7 +939,7 @@ class UsersModule {
    * @param  {String}  username  User's username (CaSE in-sensitive)
    * @return  {Promise}        Promise that will return the userId data on completion.
    */
-  static userIdForUsername(username, callback) {
+  static userIdForUsername(username, callback?) {
     // usernames are ALWAYS lowercase, so when searching downcase by default
     username = username != null ? username.toLowerCase() : undefined;
 

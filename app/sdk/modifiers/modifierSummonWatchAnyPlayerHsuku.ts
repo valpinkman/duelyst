@@ -51,7 +51,7 @@ class ModifierSummonWatchAnyPlayerHsuku extends ModifierSummonWatchAnyPlayer {
     return contextObject;
   }
 
-  onSummonWatch(action) {
+  onSummonWatch(action?) {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
       const unit = action.getTarget();
       if (unit != null && this.isNearbyAnyGeneral(unit.getPosition())) {

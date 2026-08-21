@@ -74,7 +74,7 @@ var NetworkManager = (function () {
           gameType,
           gameId,
           playerId,
-          gameServerAddress,
+          gameServerAddress?,
           spectatorId = null,
           spectateToken = null,
         ) {

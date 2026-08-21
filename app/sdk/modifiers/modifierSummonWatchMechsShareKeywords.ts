@@ -37,7 +37,7 @@ class ModifierSummonWatchMechsShareKeywords extends ModifierSummonWatch {
     return this.onSummonWatch();
   }
 
-  onSummonWatch(action) {
+  onSummonWatch(action?) {
     let hasBackstab = false;
     let hasBlast = false;
     let hasCelerity = false;

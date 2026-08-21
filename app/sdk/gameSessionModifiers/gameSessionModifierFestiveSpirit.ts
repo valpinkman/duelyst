@@ -35,7 +35,7 @@ class GameSessionModifierFestiveSpirit extends GameSessionModifier {
     return this.spawnFrostfireChest(true);
   }
 
-  spawnFrostfireChest(isAutomatic) {
+  spawnFrostfireChest(isAutomatic?) {
     const card = this.getGameSession().getExistingCardFromIndexOrCreateCardFromData({
       id: Cards.Tile.FrostfireChest,
     });

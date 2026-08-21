@@ -29,7 +29,7 @@ class SpellOverwatch extends Spell {
     return description;
   }
 
-  createCardData(cardData) {
+  createCardData(cardData?) {
     cardData = super.createCardData(cardData);
 
     cardData.manaCost = this.getBaseManaCost();

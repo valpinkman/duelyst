@@ -95,7 +95,7 @@ exports.defer = function () {
  * `App._foundGamePromise.cancel()` - keep working unchanged.
  */
 class CancellationError extends Error {
-  constructor(message) {
+  constructor(message?) {
     super(message || 'operation cancelled');
     this.name = 'CancellationError';
   }

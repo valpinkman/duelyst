@@ -1311,7 +1311,7 @@ class RiftModule {
     ticketId,
     factionId,
     cardId,
-    riftLevel,
+    riftLevel?,
   ) {
     Logger.module('RiftModule').debug(
       `_generateCardUpgradeChoices() -> User ${userId.blue} generating choices for ${factionId} for ticket ${ticketId}`,

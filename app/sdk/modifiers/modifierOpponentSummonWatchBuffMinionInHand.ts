@@ -34,7 +34,7 @@ class ModifierOpponentSummonWatchDamageBuffMinionInHand extends ModifierOpponent
     return contextObject;
   }
 
-  onSummonWatch(action) {
+  onSummonWatch(action?) {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
       const deck = this.getOwner().getDeck();
       const cards = deck.getCardsInHand();

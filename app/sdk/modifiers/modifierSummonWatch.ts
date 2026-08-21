@@ -46,7 +46,7 @@ class ModifierSummonWatch extends Modifier {
     );
   }
 
-  onSummonWatch(action) {}
+  onSummonWatch(action?) {}
   // override me in sub classes to implement special behavior
 
   getIsCardRelevantToWatcher(card) {

@@ -2150,7 +2150,7 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`),
       return `RSX.${resourceAlias}`;
     };
 
-    var walkData = function (data, parentPath, recursiveCountSelectableItems) {
+    var walkData = function (data, parentPath?, recursiveCountSelectableItems?) {
       const dataResolved: Record<string, any> = {};
 
       const countSelectableItems = Editor.getSelectableTopLevelItemMatched(

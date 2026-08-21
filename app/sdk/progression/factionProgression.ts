@@ -150,7 +150,7 @@ class FactionProgression {
       : undefined;
   }
 
-  static unlockedCardsUpToLevel(level, factionId, excludePrismatics) {
+  static unlockedCardsUpToLevel(level, factionId, excludePrismatics?) {
     if (level != null && level > 0) {
       if (excludePrismatics) {
         if (factionId != null) {

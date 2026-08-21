@@ -45,7 +45,7 @@ class ModifierSummonWatchIfLowAttackSummonedBuffSelf extends ModifierSummonWatch
     return contextObject;
   }
 
-  onSummonWatch(action) {
+  onSummonWatch(action?) {
     const entity = action.getTarget();
     if (entity != null) {
       if (entity.getBaseATK() <= this.maxAttackTrigger) {

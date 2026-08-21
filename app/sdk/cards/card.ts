@@ -528,7 +528,7 @@ class Card extends SDKObject {
    * @param {Object} existingCardData
    * @returns {Object} cardData
    */
-  createCardData(existingCardData) {
+  createCardData(existingCardData?) {
     const cardData = this.createNewCardData();
 
     if (existingCardData != null && _.isObject(existingCardData)) {
@@ -2541,8 +2541,8 @@ class Card extends SDKObject {
     buffKey,
     modifiers,
     withAuras,
-    stopAtBase,
-    forAuras,
+    stopAtBase?,
+    forAuras?,
     stopAtNonAuraModifier = null,
   ) {
     // separate modifiers into groups for order of application: rebasing, normal, auras

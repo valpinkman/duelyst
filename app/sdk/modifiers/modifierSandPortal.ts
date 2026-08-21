@@ -40,7 +40,7 @@ class ModifierSandPortal extends ModifierSummonWatchFromActionBar {
     return cards;
   }
 
-  onSummonWatch(action) {
+  onSummonWatch(action?) {
     let playCardAction;
     super.onSummonWatch(action);
     const board = this.getGameSession().getBoard();

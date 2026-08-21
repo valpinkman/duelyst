@@ -1477,7 +1477,7 @@ var emitGameEvent = function (fromSocket, gameId, eventData) {
  * @param  {Object}    gameId      The game ID to load.
  * @param  {Function}    onComplete    Callback when done.
  */
-var initGameSession = function (gameId, onComplete) {
+var initGameSession = function (gameId, onComplete?) {
   if (games[gameId] != null ? games[gameId].loadingPromise : undefined) {
     return games[gameId].loadingPromise;
   }

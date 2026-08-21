@@ -38,7 +38,7 @@ class ModifierDyingWishApplyModifiersRandomly extends ModifierDyingWishApplyModi
     return contextObject;
   }
 
-  getAffectedEntities(action) {
+  getAffectedEntities(action?) {
     const affectedEntities = [];
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
       const potentialAffectedEntities = super.getAffectedEntities(action);

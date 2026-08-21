@@ -4015,7 +4015,7 @@ class InventoryModule {
    * @param  {String}    memo      An optional short description of the card operation
    * @return  {Promise}            Promise that will resolve with the user's card collection cache after the card has been credited
    */
-  static giveUserCards(trxPromise, trx, userId, cardIds, sourceType, sourceId, memo) {
+  static giveUserCards(trxPromise, trx, userId, cardIds, sourceType, sourceId?, memo?) {
     const _chainState: Record<string, any> = {};
     // Logger.module("InventoryModule").time "giveUserCards() -> User #{userId.blue}".green + " received #{util.inspect(cardIds)} cards.".green
 

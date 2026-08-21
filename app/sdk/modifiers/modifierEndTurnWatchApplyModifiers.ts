@@ -55,7 +55,7 @@ class ModifierEndTurnWatchApplyModifiers extends ModifierEndTurnWatch {
     }
   }
 
-  getAffectedEntities(action) {
+  getAffectedEntities(action?) {
     const entityList = this.getGameSession()
       .getBoard()
       .getCardsWithinRadiusOfPosition(

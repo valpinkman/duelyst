@@ -3289,7 +3289,7 @@ class Modifier extends SDKObject {
     return duration;
   }
 
-  _onActiveChange(event) {
+  _onActiveChange(event?) {
     // modifiers update cached state at the modifier active change phase
     // at this point we know:
     // - all cards that died have been cleaned up
@@ -3314,7 +3314,7 @@ class Modifier extends SDKObject {
     }
   }
 
-  _onRemoveAura(event) {
+  _onRemoveAura(event?) {
     if (this.isAura) {
       if (this._private.cachedIsActive) {
         this.getGameSession().pushTriggeringModifierOntoStack(this);
@@ -3330,7 +3330,7 @@ class Modifier extends SDKObject {
     }
   }
 
-  _onAddAura(event) {
+  _onAddAura(event?) {
     if (this.isAura && this._private.cachedIsActive) {
       this.getGameSession().pushTriggeringModifierOntoStack(this);
       this._refreshAuraCardsAsNeeded();

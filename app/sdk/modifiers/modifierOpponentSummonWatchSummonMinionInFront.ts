@@ -19,7 +19,7 @@ class ModifierOpponentSummonWatchSummonMinionInFront extends ModifierOpponentSum
     return contextObject;
   }
 
-  onSummonWatch(action) {
+  onSummonWatch(action?) {
     const unit = action.getTarget();
     if (unit != null && this.cardDataOrIndexToSpawn != null) {
       let playerOffset = 0;

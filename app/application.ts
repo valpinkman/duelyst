@@ -2022,7 +2022,7 @@ App._resumeGame = function (lastGameModel) {
       return resolve();
     };
 
-    const onCancelContinueGame = function (errorMessage) {
+    const onCancelContinueGame = function (errorMessage?) {
       stopListeningForContinueGame();
 
       // don't try to reconnect to this game again

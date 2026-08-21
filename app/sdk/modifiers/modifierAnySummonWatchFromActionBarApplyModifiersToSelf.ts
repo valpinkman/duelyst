@@ -33,7 +33,7 @@ class ModifierAnySummonWatchFromActionBarApplyModifiersToSelf extends ModifierAn
     return this.description;
   }
 
-  onSummonWatch(action) {
+  onSummonWatch(action?) {
     if (this.modifiersContextObjects != null) {
       return Array.from<any>(this.modifiersContextObjects).map((modifierContextObject) =>
         this.getGameSession().applyModifierContextObject(modifierContextObject, this.getCard()),

@@ -31,7 +31,7 @@ class ModifierSummonWatchApplyModifiers extends ModifierSummonWatch {
     return this.description;
   }
 
-  onSummonWatch(action) {
+  onSummonWatch(action?) {
     const summonedUnitPosition = __guard__(action.getTarget(), (x) => x.getPosition());
 
     if (this.modifiersContextObjects != null && this.getIsValidBuffPosition(summonedUnitPosition)) {

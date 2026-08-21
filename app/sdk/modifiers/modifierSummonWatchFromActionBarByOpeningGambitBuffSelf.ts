@@ -60,7 +60,7 @@ class ModifierSummonWatchFromActionBarByOpeningGambitBuffSelf extends ModifierSu
     );
   }
 
-  onSummonWatch(action) {
+  onSummonWatch(action?) {
     // apply modifiers once
     return this.applyManagedModifiersFromModifiersContextObjects(
       this.modifiersContextObjects,

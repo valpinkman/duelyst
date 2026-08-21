@@ -75,7 +75,7 @@ class ModifierSummonWatchSpawnEntity extends ModifierSummonWatch {
     return this.description;
   }
 
-  onSummonWatch(action) {
+  onSummonWatch(action?) {
     super.onSummonWatch(action);
 
     if (this.getGameSession().getIsRunningAsAuthoritative()) {

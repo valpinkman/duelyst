@@ -53,7 +53,7 @@ class ModifierOpponentSummonWatchBuffSelf extends ModifierOpponentSummonWatch {
     return this.description;
   }
 
-  onSummonWatch(action) {
+  onSummonWatch(action?) {
     // override me in sub classes to implement special behavior
     return this.applyManagedModifiersFromModifiersContextObjects(
       this.modifiersContextObjects,

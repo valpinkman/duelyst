@@ -29,7 +29,7 @@ class ModifierSummonWatchHydrax extends ModifierSummonWatch {
     return this.description;
   }
 
-  onSummonWatch(action) {
+  onSummonWatch(action?) {
     if (this.modifiersContextObjects != null) {
       const entity = action.getTarget();
       if (entity != null) {

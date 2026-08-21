@@ -50,7 +50,7 @@ class ModifierSummonWatchByEntityBuffSelf extends ModifierSummonWatch {
     return this.description;
   }
 
-  onSummonWatch(action) {
+  onSummonWatch(action?) {
     return this.applyManagedModifiersFromModifiersContextObjects(
       this.modifiersContextObjects,
       this.getCard(),

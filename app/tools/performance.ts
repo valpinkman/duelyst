@@ -496,10 +496,10 @@ var PERF: Record<string, any> = {
  */
 var Performance_Stats = function (
   max_records,
-  converter,
-  noise_threshold,
-  below_threshold,
-  above_threshold,
+  converter?,
+  noise_threshold?,
+  below_threshold?,
+  above_threshold?,
 ) {
   // preallocate an array buffer that can record for n entries
   // stats are recorded as 32-bit floating point numbers

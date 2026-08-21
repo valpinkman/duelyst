@@ -60,7 +60,7 @@ class ModifierCounter extends Modifier {
   // operates during aura phase, but is not an aura itself
 
   // remove modifiers during remove aura phase
-  _onRemoveAura(event) {
+  _onRemoveAura(event?) {
     super._onRemoveAura(event);
     if (this._private.cachedIsActive) {
       return this.updateCountIfNeeded();
@@ -80,7 +80,7 @@ class ModifierCounter extends Modifier {
   }
 
   // update count during add aura phase
-  _onAddAura(event) {
+  _onAddAura(event?) {
     super._onAddAura(event);
     if (this._private.cachedIsActive) {
       return this.updateCountIfNeeded();

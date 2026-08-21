@@ -49,7 +49,7 @@ class ModifierCollectable extends Modifier {
     }
   }
 
-  _onActiveChange(e) {
+  _onActiveChange(e?) {
     super._onActiveChange(e);
     if (this._private.cachedIsActive && !this.depleted) {
       // if there is an obstructing entity at my entity's location

@@ -25,7 +25,7 @@ class ModifierOpponentSummonWatchOpponentDrawCard extends ModifierOpponentSummon
     return this.description;
   }
 
-  onSummonWatch(action) {
+  onSummonWatch(action?) {
     if (action instanceof PlayCardFromHandAction) {
       const enemyGeneral = this.getCard()
         .getGameSession()

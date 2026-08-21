@@ -30,7 +30,7 @@ class ModifierSummonWatchPutCardInHand extends ModifierSummonWatch {
     return this.description;
   }
 
-  onSummonWatch(action) {
+  onSummonWatch(action?) {
     const a = new PutCardInHandAction(
       this.getGameSession(),
       this.getCard().getOwnerId(),

@@ -31,7 +31,7 @@ class ModifierAnySummonWatchGainGeneralKeywords extends ModifierAnySummonWatch {
 
   static type = 'ModifierAnySummonWatchGainGeneralKeywords';
 
-  onSummonWatch(action) {
+  onSummonWatch(action?) {
     let modifier;
     let hasBackstab = false;
     let hasBlast = false;

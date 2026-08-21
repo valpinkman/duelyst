@@ -72,7 +72,7 @@ class ModifierOpponentSummonWatchSpawn1HealthClone extends ModifierOpponentSummo
     return this.description;
   }
 
-  onSummonWatch(action) {
+  onSummonWatch(action?) {
     super.onSummonWatch(action);
 
     if (this.getGameSession().getIsRunningAsAuthoritative()) {

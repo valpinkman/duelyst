@@ -27,7 +27,7 @@ class ModifierSummonWatchHealSelf extends ModifierSummonWatch {
     return contextObject;
   }
 
-  onSummonWatch(action) {
+  onSummonWatch(action?) {
     const healAction = new HealAction(this.getCard().getGameSession());
     healAction.setHealAmount(this.healAmount);
     healAction.setSource(this.getCard());

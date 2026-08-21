@@ -33,7 +33,7 @@ class ModifierSummonWatchByRaceDamageEnemyMinion extends ModifierSummonWatch {
     return this.description;
   }
 
-  onSummonWatch(action) {
+  onSummonWatch(action?) {
     const radomDamageAction = new RandomDamageAction(this.getGameSession());
     radomDamageAction.setOwnerId(this.getCard().getOwnerId());
     radomDamageAction.setSource(this.getCard());

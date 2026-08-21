@@ -2843,7 +2843,7 @@ var GameLayer = FXCompositeLayer.extend({
     // add all sequences
     // order is reversed so the smaller sequences (more accurate) can be added first
     let actionInterfaceSequence = [];
-    var addSequencedActions = function (actionInterfaces, rearranged) {
+    var addSequencedActions = function (actionInterfaces, rearranged?) {
       for (let i = actionInterfaces.length - 1; i >= 0; i--) {
         const sdkActionInterface = actionInterfaces[i];
         const { rearrangedActionInterfaces } = sdkActionInterface;

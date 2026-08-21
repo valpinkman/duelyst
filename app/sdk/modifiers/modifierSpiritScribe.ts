@@ -32,7 +32,7 @@ class ModifierSpiritScribe extends ModifierSummonWatch {
     return contextObject;
   }
 
-  onSummonWatch(action) {
+  onSummonWatch(action?) {
     super.onSummonWatch(action);
 
     if (

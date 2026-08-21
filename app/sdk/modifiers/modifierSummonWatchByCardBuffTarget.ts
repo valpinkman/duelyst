@@ -45,7 +45,7 @@ class ModifierSummonWatchByCardBuffTarget extends ModifierSummonWatch {
     return this.description;
   }
 
-  onSummonWatch(action) {
+  onSummonWatch(action?) {
     const entity = action.getCard();
     if (entity != null) {
       return Array.from<any>(this.modifiersContextObjects).map((modifierContextObject) =>

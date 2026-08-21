@@ -35,7 +35,7 @@ class ModifierOpponentSummonWatchRandomTransform extends ModifierOpponentSummonW
     return contextObject;
   }
 
-  onSummonWatch(action) {
+  onSummonWatch(action?) {
     super.onSummonWatch(action);
 
     const targetUnit = action.getTarget();

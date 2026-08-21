@@ -22,7 +22,7 @@ class PlayerModifierOpponentSummonWatchSwapGeneral extends PlayerModifierOpponen
     return contextObject;
   }
 
-  onSummonWatch(action) {
+  onSummonWatch(action?) {
     super.onSummonWatch(action);
 
     const general = this.getGameSession().getGeneralForOpponentOfPlayerId(

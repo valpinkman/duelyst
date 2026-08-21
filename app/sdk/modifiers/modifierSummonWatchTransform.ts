@@ -22,7 +22,7 @@ class ModifierSummonWatchTransform extends ModifierSummonWatch {
     return contextObject;
   }
 
-  onSummonWatch(action) {
+  onSummonWatch(action?) {
     super.onSummonWatch(action);
     const entity = action.getTarget();
     if (

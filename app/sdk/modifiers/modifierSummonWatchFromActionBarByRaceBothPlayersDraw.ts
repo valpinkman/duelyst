@@ -22,7 +22,7 @@ class ModifierSummonWatchFromActionBarByRaceBothPlayersDraw extends ModifierSumm
     return contextObject;
   }
 
-  onSummonWatch(action) {
+  onSummonWatch(action?) {
     return (() => {
       const result = [];
       for (

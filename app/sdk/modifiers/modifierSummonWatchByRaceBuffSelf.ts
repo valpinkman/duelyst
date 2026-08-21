@@ -30,7 +30,7 @@ class ModifierSummonWatchByRaceBuffSelf extends ModifierSummonWatch {
     return contextObject;
   }
 
-  onSummonWatch(action) {
+  onSummonWatch(action?) {
     return this.applyManagedModifiersFromModifiersContextObjects(
       this.modifiersContextObjects,
       this.getCard(),

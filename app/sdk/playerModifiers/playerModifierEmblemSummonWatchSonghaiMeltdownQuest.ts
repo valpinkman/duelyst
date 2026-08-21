@@ -13,7 +13,7 @@ class PlayerModifierEmblemSummonWatchSonghaiMeltdownQuest extends PlayerModifier
 
   static type = 'PlayerModifierEmblemSummonWatchSonghaiMeltdownQuest';
 
-  onSummonWatch(action) {
+  onSummonWatch(action?) {
     const unit = action.getTarget();
     if (unit != null && unit.getManaCost() > 0) {
       const randomDamageAction = new RandomDamageAction(this.getGameSession());

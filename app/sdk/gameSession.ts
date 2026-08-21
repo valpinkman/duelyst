@@ -79,7 +79,7 @@ class GameSession {
    * GameSession.getCardCaches().getRarity(rarityId).getFaction(factionId).getCardSet(cardSetId).getCardIds()
    * ...etc
    */
-  static getCardCaches(systemTime) {
+  static getCardCaches(systemTime?) {
     this._buildCachesIfNeeded(systemTime);
     return this._cardCaches;
   }
@@ -1019,7 +1019,7 @@ class _GameSession extends SDKObject {
     return this._private.rollbackSnapshotData;
   }
 
-  _rollbackToSnapshot(snapshotData) {
+  _rollbackToSnapshot(snapshotData?) {
     if (!snapshotData) {
       snapshotData = this._private.rollbackSnapshotData;
       this._discardRollbackSnapshot();
@@ -1659,7 +1659,7 @@ class _GameSession extends SDKObject {
     return (this._private.isSpectateMode = val);
   }
 
-  getIsSpectateMode(val) {
+  getIsSpectateMode(val?) {
     return this._private.isSpectateMode;
   }
 
@@ -1675,7 +1675,7 @@ class _GameSession extends SDKObject {
     return (this._private.isSignatureCardAlwaysReady = val);
   }
 
-  getIsSignatureCardAlwaysReady(val) {
+  getIsSignatureCardAlwaysReady(val?) {
     return this._private.isSignatureCardAlwaysReady;
   }
 
@@ -3547,7 +3547,7 @@ class _GameSession extends SDKObject {
     return CardFactory;
   }
 
-  getCardCaches(systemTime) {
+  getCardCaches(systemTime?) {
     // method used internally to avoid circular dependencies
     return GameSession.getCardCaches(systemTime);
   }
@@ -4424,7 +4424,7 @@ class _GameSession extends SDKObject {
    * @param {Modifier} [parentModifier=null] parentModifier that applied this modifier
    * @param {Number} [auraModifierId=null] identifier for which modifier in the parentModifier aura this is
    */
-  applyModifierContextObject(modifierContextObject, card, parentModifier, auraModifierId) {
+  applyModifierContextObject(modifierContextObject, card, parentModifier, auraModifierId?) {
     if (
       modifierContextObject != null &&
       card instanceof Card &&

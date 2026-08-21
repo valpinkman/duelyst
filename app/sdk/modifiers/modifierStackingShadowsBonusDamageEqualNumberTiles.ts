@@ -50,7 +50,7 @@ class ModifierStackingShadowsBonusDamageEqualNumberTiles extends ModifierStackin
   // operates during aura phase, but is not an aura itself
 
   // remove modifiers during remove aura phase
-  _onRemoveAura(event) {
+  _onRemoveAura(event?) {
     super._onRemoveAura(event);
     if (this._private.cachedIsActive) {
       const countChange = this._private.currentCount - this._private.previousCount;
@@ -87,7 +87,7 @@ class ModifierStackingShadowsBonusDamageEqualNumberTiles extends ModifierStackin
   }
 
   // add modifiers during add modifier phase
-  _onAddAura(event) {
+  _onAddAura(event?) {
     super._onAddAura(event);
     if (this._private.cachedIsActive) {
       const countChange = this._private.currentCount - this._private.previousCount;

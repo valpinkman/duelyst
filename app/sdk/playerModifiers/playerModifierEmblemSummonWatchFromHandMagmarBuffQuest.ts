@@ -23,7 +23,7 @@ class PlayerModifierEmblemSummonWatchFromHandMagmarBuffQuest extends PlayerModif
     return contextObject;
   }
 
-  onSummonWatch(action) {
+  onSummonWatch(action?) {
     if (action instanceof PlayCardFromHandAction) {
       const entity = action.getTarget();
       if (entity != null && this.modifiersContextObjects != null) {

@@ -13,7 +13,7 @@ class PlayerModifierSummonWatchIfFlyingDrawFlyingMinion extends PlayerModifierSu
 
   static type = 'PlayerModifierSummonWatchIfFlyingDrawFlyingMinion';
 
-  onSummonWatch(action) {
+  onSummonWatch(action?) {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
       const cardSummoned = action.getTarget();
       if (cardSummoned != null && cardSummoned.hasModifierClass(ModifierFlying)) {

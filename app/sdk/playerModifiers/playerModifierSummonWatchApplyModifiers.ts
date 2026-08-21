@@ -22,7 +22,7 @@ class PlayerModifierSummonWatchApplyModifiers extends PlayerModifierSummonWatch 
     return contextObject;
   }
 
-  onSummonWatch(action) {
+  onSummonWatch(action?) {
     const entity = action.getTarget();
     if (entity != null) {
       return Array.from<any>(this.modifiersContextObjects).map((modifierContextObject) =>

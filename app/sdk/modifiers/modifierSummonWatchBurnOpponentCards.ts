@@ -25,7 +25,7 @@ class ModifierSummonWatchBurnOpponentCards extends ModifierSummonWatch {
     return contextObject;
   }
 
-  onSummonWatch(action) {
+  onSummonWatch(action?) {
     return (() => {
       const result = [];
       for (

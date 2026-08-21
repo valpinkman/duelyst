@@ -22,7 +22,7 @@ class ModifierSummonWatchByRaceSummonCopy extends ModifierSummonWatch {
     return contextObject;
   }
 
-  onSummonWatch(action) {
+  onSummonWatch(action?) {
     const minion = action.getTarget();
 
     if (

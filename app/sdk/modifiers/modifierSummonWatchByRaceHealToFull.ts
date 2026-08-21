@@ -28,7 +28,7 @@ class ModifierSummonWatchByRaceHealToFull extends ModifierSummonWatch {
     return this.description;
   }
 
-  onSummonWatch(action) {
+  onSummonWatch(action?) {
     const healAction = this.getCard().getGameSession().createActionForType(HealAction.type);
     healAction.setTarget(this.getCard());
     healAction.setHealAmount(this.getCard().getMaxHP() - this.getCard().getHP());

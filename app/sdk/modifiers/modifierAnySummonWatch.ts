@@ -39,7 +39,7 @@ class ModifierAnySummonWatch extends Modifier {
     }
   }
 
-  onSummonWatch(action) {}
+  onSummonWatch(action?) {}
   // override me in sub classes to implement special behavior
 
   onActivate() {

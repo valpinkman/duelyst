@@ -66,7 +66,7 @@ class ModifierReduceCostOfMinionsAndDamageThem extends ModifierSummonWatch {
     );
   }
 
-  onSummonWatch(action) {
+  onSummonWatch(action?) {
     const unitToDamage = action.getTarget();
     if (
       unitToDamage != null &&

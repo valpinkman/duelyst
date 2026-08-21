@@ -65,7 +65,7 @@ class ModifierFateVanarTokenQuest extends ModifierFate {
     }
   }
 
-  getTokenCount(action) {
+  getTokenCount(action?) {
     const uniqueTokenIds = [];
     let numTokensFound = 0;
     let foundBuildingToken = false;

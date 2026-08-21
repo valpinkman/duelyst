@@ -41,7 +41,7 @@ class PlayerModifierEmblemSummonWatch extends PlayerModifierEmblem {
     return false;
   }
 
-  onSummonWatch(action) {}
+  onSummonWatch(action?) {}
 }
 PlayerModifierEmblemSummonWatch.prototype.type = 'PlayerModifierEmblemSummonWatch';
 // override me in sub classes to implement special behavior

@@ -588,7 +588,7 @@ var AttackRange = (function () {
       return null;
     }
 
-    getValidTargets(board, entity, fromPositions) {
+    getValidTargets(board, entity, fromPositions?) {
       const attackAtlas = this.getAttackAtlas(board, entity, fromPositions);
       return attackAtlas.getValidTargets();
     }

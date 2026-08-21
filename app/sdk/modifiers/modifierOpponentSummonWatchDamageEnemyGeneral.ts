@@ -33,7 +33,7 @@ class ModifierOpponentSummonWatchDamageEnemyGeneral extends ModifierOpponentSumm
     return this.description;
   }
 
-  onSummonWatch(action) {
+  onSummonWatch(action?) {
     const general = this.getGameSession().getGeneralForOpponentOfPlayerId(
       this.getCard().getOwnerId(),
     );

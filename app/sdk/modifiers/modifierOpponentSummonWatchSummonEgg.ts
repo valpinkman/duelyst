@@ -28,7 +28,7 @@ class ModifierOpponentSummonWatchSummonEgg extends ModifierOpponentSummonWatch {
     return contextObject;
   }
 
-  onSummonWatch(action) {
+  onSummonWatch(action?) {
     super.onSummonWatch(action);
 
     if (this.getGameSession().getIsRunningAsAuthoritative()) {

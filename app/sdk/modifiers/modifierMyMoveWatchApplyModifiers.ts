@@ -48,7 +48,7 @@ class ModifierMyMoveWatchApplyModifiers extends ModifierMyMoveWatch {
     }
   }
 
-  getAffectedEntities(action) {
+  getAffectedEntities(action?) {
     const entityList = this.getGameSession()
       .getBoard()
       .getCardsWithinRadiusOfPosition(

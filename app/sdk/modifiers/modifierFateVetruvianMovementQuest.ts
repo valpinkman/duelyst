@@ -51,7 +51,7 @@ class ModifierFateVetruvianMovementQuest extends ModifierFate {
     }
   }
 
-  questRequirementMet(action) {
+  questRequirementMet(action?) {
     const general = this.getCard()
       .getGameSession()
       .getGeneralForPlayerId(this.getCard().getOwnerId());

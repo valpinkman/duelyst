@@ -49,7 +49,7 @@ class ModifierDyingWishApplyModifiers extends ModifierDyingWish {
     }
   }
 
-  getAffectedEntities(action) {
+  getAffectedEntities(action?) {
     const entityList = this.getGameSession()
       .getBoard()
       .getCardsWithinRadiusOfPosition(
