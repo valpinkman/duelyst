@@ -6,7 +6,7 @@
  */
 const PlayerModifier = require('./playerModifier');
 const PlayCardSilentlyAction = require('app/sdk/actions/playCardSilentlyAction');
-const UtilsGameSession = require('app/common/utils/utils_game_session');
+const UtilsGameSession = require('app/sdk/utils/utils_game_session');
 const CONFIG = require('app/common/config');
 
 class PlayerModifierEndTurnRespawnEntityAnywhere extends PlayerModifier {

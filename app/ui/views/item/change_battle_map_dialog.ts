@@ -1,6 +1,6 @@
 'use strict';
 
-var Session = require('app/common/session2');
+var Session = require('app/session2');
 var UtilsJavascript = require('app/common/utils/utils_javascript');
 var SDK = require('app/sdk');
 var InventoryManager = require('app/ui/managers/inventory_manager');

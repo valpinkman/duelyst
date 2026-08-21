@@ -8,7 +8,7 @@ const Logger = require('app/common/logger');
 const DamageAction = require('./damageAction');
 const CardType = require('app/sdk/cards/cardType');
 const CONFIG = require('app/common/config');
-const UtilsGameSession = require('app/common/utils/utils_game_session');
+const UtilsGameSession = require('app/sdk/utils/utils_game_session');
 
 class RandomDamageAction extends DamageAction {
   declare canTargetGenerals: any;

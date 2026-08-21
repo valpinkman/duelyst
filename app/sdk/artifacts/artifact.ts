@@ -11,7 +11,7 @@ const Card = require('app/sdk/cards/card');
 const CardType = require('app/sdk/cards/cardType');
 const Modifier = require('app/sdk/modifiers/modifier');
 const ModifierDestructible = require('app/sdk/modifiers/modifierDestructible');
-const UtilsGameSession = require('app/common/utils/utils_game_session');
+const UtilsGameSession = require('app/sdk/utils/utils_game_session');
 const _ = require('underscore');
 
 class Artifact extends Card {

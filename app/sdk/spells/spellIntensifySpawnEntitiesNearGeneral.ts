@@ -8,7 +8,7 @@
  */
 const SpellIntensify = require('./spellIntensify');
 const PlayCardSilentlyAction = require('app/sdk/actions/playCardSilentlyAction');
-const UtilsGameSession = require('app/common/utils/utils_game_session');
+const UtilsGameSession = require('app/sdk/utils/utils_game_session');
 const CONFIG = require('app/common/config');
 
 class SpellIntensifySpawnEntitiesNearGeneral extends SpellIntensify {

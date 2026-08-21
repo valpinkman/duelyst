@@ -25,7 +25,7 @@ var ShopData = require('app/data/shop.json');
 var RedeemGiftCodeModalView = require('app/ui/views/item/redeem_gift_code_modal');
 var PremiumPurchaseDialog = require('app/ui/views2/shop/premium_purchase_dialog');
 
-var Session = require('app/common/session2');
+var Session = require('app/session2');
 
 var ShopProductCollectionView = require('./shop_product_collection_view');
 var ShopSpiritOrbsCollectionView = require('./shop_spirit_orbs_collection_view');

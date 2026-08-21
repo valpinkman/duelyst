@@ -45,6 +45,8 @@ pnpm vitest --project sdk|misc|firebase        # unit tests for one package's su
 pnpm check:undefined-names                     # TS2304 only, and this IS a CI gate. Run after any codemod.
 pnpm check:promise-utils                       # PromiseUtils/onType used without being bound
 pnpm check:bluebird-orphans                    # bluebird-only API used without requiring bluebird
+pnpm check:package-deps                        # app/common reaches nothing; app/sdk only common+data.
+                                               #   CI gate: these two used to require each other.
 pnpm check:turbo-env                           # turbo.json globalEnv still covers every convict env binding
 pnpm check:data-access                         # data_access failures vs test/integration/data_access/known-failures.txt
                                                #   (--update to re-record; the list may shrink, not grow)

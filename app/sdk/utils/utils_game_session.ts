@@ -18,8 +18,8 @@ const CONFIG = require('app/common/config');
 const CardType = require('app/sdk/cards/cardType');
 const GameType = require('app/sdk/gameType');
 const _ = require('underscore');
-const UtilsJavascript = require('./utils_javascript');
-const UtilsPosition = require('./utils_position');
+const UtilsJavascript = require('app/common/utils/utils_javascript');
+const UtilsPosition = require('app/common/utils/utils_position');
 
 UtilsGameSession.getWinningPlayerId = function (gameSessionData) {
   // Returns the winning player's id, or undefined if neither is the winner yet

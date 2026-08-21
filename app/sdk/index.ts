@@ -6,7 +6,7 @@ const GameSession = require('app/sdk/gameSession');
 var SDK = SDK || {};
 
 SDK.Step = require('app/sdk/step');
-SDK.Utils = require('app/common/utils/utils_game_session');
+SDK.Utils = require('app/sdk/utils/utils_game_session');
 SDK.GameType = require('app/sdk/gameType');
 SDK.GameFormat = require('app/sdk/gameFormat');
 SDK.GameSetup = require('app/sdk/gameSetup');

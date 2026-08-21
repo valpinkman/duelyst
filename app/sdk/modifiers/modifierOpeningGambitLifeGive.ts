@@ -8,12 +8,12 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CONFIG = require('app/common/config');
-let UtilsGameSession = require('app/common/utils/utils_game_session');
+let UtilsGameSession = require('app/sdk/utils/utils_game_session');
 const ModifierOpeningGambit = require('./modifierOpeningGambit');
 const DieAction = require('app/sdk/actions/dieAction');
 const CardType = require('app/sdk/cards/cardType');
 const Rarity = require('app/sdk/cards/rarityLookup');
-UtilsGameSession = require('app/common/utils/utils_game_session');
+UtilsGameSession = require('app/sdk/utils/utils_game_session');
 const PlayCardSilentlyAction = require('app/sdk/actions/playCardSilentlyAction');
 const _ = require('underscore');
 

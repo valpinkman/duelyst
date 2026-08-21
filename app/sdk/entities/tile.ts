@@ -4,7 +4,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Logger = require('app/common/logger');
-const UtilsGameSession = require('app/common/utils/utils_game_session');
+const UtilsGameSession = require('app/sdk/utils/utils_game_session');
 const Entity = require('./entity');
 const CardType = require('app/sdk/cards/cardType');
 const _ = require('underscore');

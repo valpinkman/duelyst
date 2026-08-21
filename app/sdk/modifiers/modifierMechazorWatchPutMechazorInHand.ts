@@ -4,7 +4,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CONFIG = require('app/common/config');
-const UtilsGameSession = require('app/common/utils/utils_game_session');
+const UtilsGameSession = require('app/sdk/utils/utils_game_session');
 const CardType = require('app/sdk/cards/cardType');
 const Cards = require('app/sdk/cards/cardsLookupComplete');
 const PlayCardAction = require('app/sdk/actions/playCardAction');

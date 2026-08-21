@@ -34,6 +34,7 @@
     "test:rules": "firebase emulators:exec --only database \"vitest run --config vitest.rules.config.mjs\"",
     "check:promise-utils": "node scripts/check-promise-utils-bindings.mjs",
     "check:bluebird-orphans": "node scripts/check-no-bluebird-orphans.mjs",
+    "check:package-deps": "node scripts/check-package-deps.mjs",
     "check:undefined-names": "node scripts/check-no-undefined-names.mjs",
     "typecheck:root": "tsc -p tsconfig.json",
     "lint:root": "oxlint",

@@ -10,7 +10,7 @@
 
 const RSX = require('app/data/resources');
 const CONFIG = require('app/common/config');
-const UtilsGameSession = require('app/common/utils/utils_game_session');
+const UtilsGameSession = require('app/sdk/utils/utils_game_session');
 const Factions = require('./factionsLookup');
 const Cards = require('./cardsLookupComplete');
 const FactionProgression = require('app/sdk/progression/factionProgression');

@@ -1,7 +1,7 @@
 'use strict';
 
 var CONFIG = require('app/common/config');
-var Session = require('app/common/session2');
+var Session = require('app/session2');
 var SDK = require('app/sdk');
 var RSX = require('app/data/resources');
 var audio_engine = require('app/audio/audio_engine');

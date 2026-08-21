@@ -8,7 +8,7 @@
  */
 const CONFIG = require('app/common/config');
 const UtilsJavascript = require('app/common/utils/utils_javascript');
-const UtilsGameSession = require('app/common/utils/utils_game_session');
+const UtilsGameSession = require('app/sdk/utils/utils_game_session');
 const UtilsPosition = require('app/common/utils/utils_position');
 const CardType = require('app/sdk/cards/cardType');
 const PlayCardSilentlyAction = require('app/sdk/actions/playCardSilentlyAction');

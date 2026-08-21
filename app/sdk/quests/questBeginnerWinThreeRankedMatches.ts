@@ -5,7 +5,7 @@
  */
 const QuestBeginner = require('./questBeginner');
 const QuestType = require('./questTypeLookup');
-const UtilsGameSession = require('app/common/utils/utils_game_session');
+const UtilsGameSession = require('app/sdk/utils/utils_game_session');
 const GameType = require('app/sdk/gameType');
 
 class QuestBeginnerWinThreeRankedMatches extends QuestBeginner {

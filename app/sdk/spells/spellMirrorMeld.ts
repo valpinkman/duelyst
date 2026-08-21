@@ -8,7 +8,7 @@
 const CONFIG = require('app/common/config');
 const SpellApplyEntityToBoard = require('./spellApplyEntityToBoard');
 const CardType = require('app/sdk/cards/cardType');
-const UtilsGameSession = require('app/common/utils/utils_game_session');
+const UtilsGameSession = require('app/sdk/utils/utils_game_session');
 const CloneEntityAction = require('app/sdk/actions/cloneEntityAction');
 const _ = require('underscore');
 

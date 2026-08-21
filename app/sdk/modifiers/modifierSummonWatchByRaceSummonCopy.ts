@@ -6,7 +6,7 @@
  */
 const CONFIG = require('app/common/config');
 const CloneEntityAction = require('app/sdk/actions/cloneEntityAction');
-const UtilsGameSession = require('app/common/utils/utils_game_session');
+const UtilsGameSession = require('app/sdk/utils/utils_game_session');
 const ModifierSummonWatch = require('./modifierSummonWatch');
 
 class ModifierSummonWatchByRaceSummonCopy extends ModifierSummonWatch {

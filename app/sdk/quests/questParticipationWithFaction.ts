@@ -25,7 +25,7 @@
  * The parameter is used directly now, which is what the CoffeeScript did.
  */
 const Quest = require('./quest');
-const UtilsGameSession = require('app/common/utils/utils_game_session');
+const UtilsGameSession = require('app/sdk/utils/utils_game_session');
 const GameType = require('app/sdk/gameType');
 const FactionsLookup = require('app/sdk/cards/factionsLookup');
 const FactionFactory = require('app/sdk/cards/factionFactory');

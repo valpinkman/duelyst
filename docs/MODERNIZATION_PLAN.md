@@ -311,9 +311,14 @@ step it describes, so it can never drift from the code.
      and `typecheck` script (5 turbo tasks, was 2), unit tests are named vitest projects
      (`--project sdk|misc|firebase`), and the three defects the audit found are fixed. `app/sdk`
      typechecks at 0 with the vendor globals deliberately withheld, which is now an enforced
-     invariant rather than an assumption. **Next: step 2, break the sdk ↔ common cycle** — three
-     requires in two files (`analyticsTracker.ts`, `utils_game_session.ts`), both of which look
-     like SDK concerns misfiled into `common`.
+     invariant rather than an assumption. **Step 2 is done too (2026-08-21):** the cycle is
+     broken and `pnpm check:package-deps` gates the layering — `app/common` reaches nothing,
+     `app/sdk` reaches `app/common` and `app/data`. Three files moved, each to where it belonged:
+     `utils_game_session` into `app/sdk/utils/` (an engine concern, ~200 consumers), and
+     `analyticsTracker` + `session2` up to `app/` (client-only, and the latter held the last
+     outbound edge). **Next: step 3, decide what `app/data` is** — 350 requires of
+     `app/data/resources` alone, shared by both packages, owned by neither, and partly generated
+     by a script that reads `app/sdk` off disk.
 
   5. **Optional, deliberately not started:** Backbone/Marionette/jQuery. That is a UI rewrite,
      not an upgrade, and was declined once already. Audited 2026-08-21 —

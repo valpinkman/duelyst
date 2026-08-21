@@ -15,7 +15,7 @@ var VictoryLayer = require('app/view/layers/postgame/VictoryLayer');
 var ChatManager = require('app/ui/managers/chat_manager');
 var NewPlayerManager = require('app/ui/managers/new_player_manager');
 var moment = require('moment');
-var AnalyticsTracker = require('app/common/analyticsTracker');
+var AnalyticsTracker = require('app/analyticsTracker');
 var i18next = require('i18next');
 var ConfirmDialogItemView = require('./confirm_dialog');
 

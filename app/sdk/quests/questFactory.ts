@@ -54,7 +54,7 @@ const GameType = require('app/sdk/gameType');
 const CardType = require('app/sdk/cards/cardType');
 const Rarity = require('app/sdk/cards/rarityLookup');
 
-const UtilsGameSession = require('app/common/utils/utils_game_session');
+const UtilsGameSession = require('app/sdk/utils/utils_game_session');
 const _ = require('underscore');
 const moment = require('moment');
 const i18next = require('i18next');

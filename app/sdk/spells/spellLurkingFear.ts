@@ -5,7 +5,7 @@
  * DS205: Consider reworking code to avoid use of IIFEs
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-const UtilsGameSession = require('app/common/utils/utils_game_session');
+const UtilsGameSession = require('app/sdk/utils/utils_game_session');
 const Spell = require('./spell');
 const CardType = require('app/sdk/cards/cardType');
 const SpellFilterType = require('./spellFilterType');

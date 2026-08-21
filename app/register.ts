@@ -36,7 +36,7 @@ const Logger = (window.Logger = require('app/common/logger'));
 Logger.enabled = false;
 
 const Landing = require('app/common/landing');
-const Session = (window.Session = require('app/common/session2'));
+const Session = (window.Session = require('app/session2'));
 const CONFIG = (window.CONFIG = require('app/common/config'));
 const RSX = (window.RSX = require('app/data/resources'));
 const PKGS = (window.PKGS = require('app/data/packages'));
@@ -81,7 +81,7 @@ const ActivityDialogItemView = require('app/ui/views/item/activity_dialog');
 const ErrorDialogItemView = require('app/ui/views/item/error_dialog');
 const AnnouncementModalView = require('app/ui/views/item/announcement_modal');
 
-const AnalyticsTracker = require('app/common/analyticsTracker');
+const AnalyticsTracker = require('app/analyticsTracker');
 const PromiseUtils = require('app/common/utils/utils_promise');
 
 // require the Handlebars Template Helpers extension here since it modifies core Marionette code

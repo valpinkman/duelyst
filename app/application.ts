@@ -32,7 +32,7 @@ const Logger = (window.Logger = require('app/common/logger'));
 Logger.enabled = process.env.NODE_ENV !== 'production';
 
 const Landing = require('app/common/landing');
-const Session = (window.Session = require('app/common/session2'));
+const Session = (window.Session = require('app/session2'));
 const CONFIG = (window.CONFIG = require('app/common/config'));
 const RSX = (window.RSX = require('app/data/resources'));
 const PKGS = (window.PKGS = require('app/data/packages'));
@@ -160,7 +160,7 @@ const ShopSpecialProductAvailableDialogItemView = require('app/ui/views2/shop/sh
 
 const ReplayEngine = require('app/replay/replayEngine');
 
-const AnalyticsTracker = require('app/common/analyticsTracker');
+const AnalyticsTracker = require('app/analyticsTracker');
 const PromiseUtils = require('app/common/utils/utils_promise');
 const { onType } = require('app/common/utils/utils_promise');
 

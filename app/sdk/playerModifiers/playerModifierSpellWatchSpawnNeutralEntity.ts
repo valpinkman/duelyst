@@ -9,7 +9,7 @@
 const PlayerModifierSpellWatch = require('./playerModifierSpellWatch');
 const Factions = require('app/sdk/cards/factionsLookup');
 const CONFIG = require('app/common/config');
-const UtilsGameSession = require('app/common/utils/utils_game_session');
+const UtilsGameSession = require('app/sdk/utils/utils_game_session');
 const CardType = require('app/sdk/cards/cardType');
 const PlayCardSilentlyAction = require('app/sdk/actions/playCardSilentlyAction');
 

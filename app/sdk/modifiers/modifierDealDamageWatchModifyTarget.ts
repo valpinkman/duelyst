@@ -8,7 +8,7 @@
 const CardType = require('app/sdk/cards/cardType');
 const DamageAction = require('app/sdk/actions/damageAction');
 const Stringifiers = require('app/sdk/helpers/stringifiers');
-const UtilsGameSession = require('app/common/utils/utils_game_session');
+const UtilsGameSession = require('app/sdk/utils/utils_game_session');
 const ModifierDealDamageWatch = require('./modifierDealDamageWatch');
 const Modifier = require('./modifier');
 

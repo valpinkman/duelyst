@@ -9,7 +9,7 @@ const Achievement = require('app/sdk/achievements/achievement');
 const GameType = require('app/sdk/gameType');
 const Cards = require('app/sdk/cards/cardsLookupComplete');
 const Factions = require('app/sdk/cards/factionsLookup');
-const UtilsGameSession = require('app/common/utils/utils_game_session');
+const UtilsGameSession = require('app/sdk/utils/utils_game_session');
 
 // Play your first 20 Season Ranked games.
 

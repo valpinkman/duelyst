@@ -1,6 +1,6 @@
 'use strict';
 
-var Session = require('app/common/session2');
+var Session = require('app/session2');
 var Logger = require('app/common/logger');
 var EVENTS = require('app/common/event_types');
 var CONFIG = require('app/common/config');

@@ -12,7 +12,7 @@ const Cards = require('app/sdk/cards/cardsLookupComplete');
 const Factions = require('app/sdk/cards/factionsLookup');
 const Rarity = require('app/sdk/cards/rarityLookup');
 const CardType = require('app/sdk/cards/cardType');
-const UtilsGameSession = require('app/common/utils/utils_game_session');
+const UtilsGameSession = require('app/sdk/utils/utils_game_session');
 const GameFormat = require('app/sdk/gameFormat');
 const _ = require('underscore');
 

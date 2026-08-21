@@ -45,6 +45,16 @@ with four filesystem paths (`${dir}/../app/sdk` recursive read, `/cards/factory`
 
 ## 2. The real blocker: the graph is cyclic
 
+**Broken 2026-08-21.** The graph now, with `pnpm check:package-deps` keeping it this way:
+
+```
+app/sdk    ──715──▶  app/common
+app/sdk    ──127──▶  app/data
+app/common ─────────  (nothing: a leaf)
+```
+
+It was:
+
 ```
 app/sdk  ──899──▶  app/common
 app/sdk  ──127──▶  app/data/resources
@@ -56,16 +66,22 @@ Two packages that require each other are one package with a directory between th
 broken, `@duelyst/sdk` and `@duelyst/common` cannot be independently built, versioned or consumed
 no matter where the folders sit.
 
-**The good news: the cycle is three requires in two files.**
+**The cycle was three requires in two files, and the fix went where each file belonged rather than
+uniformly into `app/sdk`:**
 
-- `app/common/analyticsTracker.ts` → `app/sdk` (the barrel)
-- `app/common/utils/utils_game_session.ts` → `app/sdk/cards/cardType`, `app/sdk/gameType`
+- `utils_game_session.ts` → **`app/sdk/utils/`**. 838 lines, required by ~200 files, nearly all of
+  them `app/sdk/**` spells, modifiers, quests and actions. An engine concern that had been filed
+  under `common`.
+- `analyticsTracker.ts` → **`app/`**. It consumes the SDK heavily but every consumer is client-side
+  (`application.ts`, `register.ts`, `app/ui/**`) and no server file touches it. Putting it in
+  `app/sdk` would have moved a non-engine concern into the engine to fix a layering problem.
+- `session2.ts` → **`app/`**, same reasoning: 17 consumers, all client. It held `app/common`'s last
+  outbound edge (to `app/firebase`), so moving it makes the package a leaf.
 
-Both are plausibly the wrong way round — a game-session utility and an analytics tracker are SDK
-concerns that ended up in `common`. Moving those two files into `app/sdk` likely breaks the cycle
-outright. That is a **two-file change**, not a 1,500-file one.
-
-`app/common/session2.ts` → `app/firebase` is a fourth outbound edge to a non-package.
+Reference rewrites: 206, 11 and 17 respectively — plus **11 relative requires**
+(`require('../../common/utils/utils_game_session')` from the spell files) that a root-absolute
+search does not see. That mistake broke 101 test files before it was caught, and it is why
+`check:package-deps` resolves relative specifiers too.
 
 ## 3. `app/data` is the unowned third party
 
@@ -136,9 +152,10 @@ Cheapest-first, each step independently valuable and revertable:
    program. Unit tests are split into named vitest projects (`--project sdk|misc|firebase`,
    102/7/1 files) along the same boundary. All three defects in §5 are fixed; §5 records what the
    scoped typecheck proved about each package.
-2. **Break the cycle** by moving `analyticsTracker.ts` and `utils_game_session.ts` into `app/sdk`.
-   Two files. After this the packages are genuinely independent, which is the property that
-   actually matters.
+2. ~~**Break the cycle.**~~ **Done 2026-08-21.** Three files moved (§2), and
+   `pnpm check:package-deps` is a CI gate enforcing the layering: `app/common` reaches nothing,
+   `app/sdk` reaches `app/common` and `app/data` only. The packages are now genuinely independent,
+   which is the property that actually matters.
 3. **Decide what `app/data` is.** It is the shared dependency of both and currently belongs to
    neither.
 4. **Only then, and only if still wanted, the physical move** plus the 7,595-specifier codemod.

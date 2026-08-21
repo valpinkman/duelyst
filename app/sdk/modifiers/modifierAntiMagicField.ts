@@ -7,7 +7,7 @@
 const Logger = require('app/common/logger');
 const DamageAction = require('app/sdk/actions/damageAction');
 const ApplyCardToBoardAction = require('app/sdk/actions/applyCardToBoardAction');
-const UtilsGameSession = require('app/common/utils/utils_game_session');
+const UtilsGameSession = require('app/sdk/utils/utils_game_session');
 const UtilsPosition = require('app/common/utils/utils_position');
 const CardType = require('app/sdk/cards/cardType');
 

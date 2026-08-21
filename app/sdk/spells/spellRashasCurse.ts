@@ -11,7 +11,7 @@ const CardType = require('app/sdk/cards/cardType');
 const Cards = require('app/sdk/cards/cardsLookupComplete');
 const SpellFilterType = require('./spellFilterType');
 const CONFIG = require('app/common/config');
-const UtilsGameSession = require('app/common/utils/utils_game_session');
+const UtilsGameSession = require('app/sdk/utils/utils_game_session');
 const RemoveRandomArtifactAction = require('app/sdk/actions/removeRandomArtifactAction');
 
 class SpellRashasCurse extends Spell {

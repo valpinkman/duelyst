@@ -9,7 +9,7 @@ const CONFIG = require('app/common/config');
 const SpellSpawnEntity = require('./spellSpawnEntity');
 const SpellFilterType = require('./spellFilterType');
 const Cards = require('app/sdk/cards/cardsLookupComplete');
-const UtilsGameSession = require('app/common/utils/utils_game_session');
+const UtilsGameSession = require('app/sdk/utils/utils_game_session');
 
 class SpellAmbush extends SpellSpawnEntity {
   declare spellFilterType: any;

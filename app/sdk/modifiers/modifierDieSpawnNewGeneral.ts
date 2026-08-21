@@ -12,7 +12,7 @@ const PlayCardSilentlyAction = require('app/sdk/actions/playCardSilentlyAction')
 const PlayCardAction = require('app/sdk/actions/playCardAction');
 const KillAction = require('app/sdk/actions/killAction');
 const SwapGeneralAction = require('app/sdk/actions/swapGeneralAction');
-const UtilsGameSession = require('app/common/utils/utils_game_session');
+const UtilsGameSession = require('app/sdk/utils/utils_game_session');
 const CONFIG = require('app/common/config');
 const Modifier = require('./modifier');
 
