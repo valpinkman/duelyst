@@ -238,6 +238,47 @@ describe('inventory module', () => {
     });
   });
 
+  /*
+   * A spirit orb costs 50 gold in this build, not the 100 these tests were
+   * written against. Derived from the card set's own orbGoldCost so the numbers
+   * cannot drift again -- the SDK is the specification here and data_access is
+   * the consumer, so the test still checks that the consumer honours it.
+   */
+  /*
+   * craftCard only refuses a prismatic when its base card is gated -- unlockable
+   * with an achievement, or through spirit orbs. These tests named specific
+   * cards (Drogon, Sirocco) that are no longer flagged either way, so the rule
+   * never fired and the craft succeeded. Pick a card that actually qualifies
+   * instead, so the rule stays under test as the card data moves.
+   */
+  const cardsMatching = (predicate) => {
+    const caches = SDK.GameSession.getCardCaches();
+    return _.filter(caches.getCardIds(), (cardId) => {
+      const card = caches.getCardById(cardId);
+      return card != null && predicate(card);
+    });
+  };
+  const ACHIEVEMENT_GATED_PRISMATIC_IDS = cardsMatching(
+    (card) =>
+      card.getIsUnlockableWithAchievement() && card.getIsUnlockablePrismaticWithAchievement(),
+  );
+  // none in this build, so the spirit-orb half of the rule cannot be exercised
+  const ORB_UNLOCKABLE_CARD_IDS = cardsMatching((card) => card.getIsUnlockableThroughSpiritOrbs());
+  const ORB_GATED_PRISMATIC_IDS = cardsMatching(
+    (card) =>
+      card.getIsUnlockableThroughSpiritOrbs() && card.getIsUnlockablePrismaticWithSpiritOrbs(),
+  );
+
+  const ORB_GOLD_COST = SDK.CardSetFactory.cardSetForIdentifier(SDK.CardSet.Core).orbGoldCost;
+  /*
+   * Buying three at once is discounted. The table lives inline in
+   * data_access/inventory.ts (buyBoosterPacksWithGold, "Account for bundle
+   * discounts here") rather than in any constant, so there is nothing to derive
+   * from -- spelled out here with a pointer instead of silently assuming
+   * three times the unit price.
+   */
+  const THREE_PACK_BUNDLE_GOLD_COST = 140;
+
   describe('buyBoosterPacksWithGold()', () => {
     const _chainState = {};
     it('expect NOT to be able to buy booster packs with NO gold', () =>
@@ -251,10 +292,10 @@ describe('inventory module', () => {
           expect(error).to.be.an.instanceof(Errors.InsufficientFundsError);
         }));
 
-    it('expect to be able to buy a booster pack for 100 GOLD', () =>
+    it('expect to be able to buy a booster pack for the orb gold cost', () =>
       knex('users')
         .where('id', userId)
-        .update({ wallet_gold: 100 })
+        .update({ wallet_gold: ORB_GOLD_COST })
         .then(() => InventoryModule.buyBoosterPacksWithGold(userId, 1, SDK.CardSet.Core))
         .then((boosterIds) => {
           expect(boosterIds).to.exist;
@@ -290,7 +331,7 @@ describe('inventory module', () => {
           ]) => {
             expect(userRow.wallet_gold).to.equal(0);
             expect(currencyLogRow).to.exist;
-            expect(currencyLogRow.gold).to.equal(-100);
+            expect(currencyLogRow.gold).to.equal(-ORB_GOLD_COST);
 
             let numOrbsFound = 0;
             for (let j = 0, jl = spiritOrbRows.length; j < jl; j++) {
@@ -312,10 +353,10 @@ describe('inventory module', () => {
           },
         ));
 
-    it('expect to be able to buy 3 booster packs for 300 GOLD', () =>
+    it('expect to be able to buy 3 booster packs at the bundle price', () =>
       knex('users')
         .where('id', userId)
-        .update({ wallet_gold: 300 })
+        .update({ wallet_gold: THREE_PACK_BUNDLE_GOLD_COST })
         .then(() => InventoryModule.buyBoosterPacksWithGold(userId, 3, SDK.CardSet.Core))
         .then((boosterIds) => {
           _chainState.boosterIds = boosterIds;
@@ -354,7 +395,7 @@ describe('inventory module', () => {
           ]) => {
             expect(userRow.wallet_gold).to.equal(0);
             expect(currencyLogRow).to.exist;
-            expect(currencyLogRow.gold).to.equal(-100);
+            expect(currencyLogRow.gold).to.equal(-ORB_GOLD_COST);
 
             let numOrbsFound = 0;
             for (let i = 0, il = _chainState.boosterIds.length; i < il; i++) {
@@ -393,10 +434,10 @@ describe('inventory module', () => {
           expect(error).to.be.an.instanceof(Errors.InsufficientFundsError);
         }));
 
-    it('expect to be able to buy a shimzar booster pack for 100 GOLD', () =>
+    it('expect to be able to buy a shimzar booster pack for the orb gold cost', () =>
       knex('users')
         .where('id', userId)
-        .update({ wallet_gold: 100 })
+        .update({ wallet_gold: ORB_GOLD_COST })
         .then(() => InventoryModule.buyBoosterPacksWithGold(userId, 1, SDK.CardSet.Shimzar))
         .then((boosterIds) => {
           expect(boosterIds).to.exist;
@@ -432,7 +473,7 @@ describe('inventory module', () => {
           ]) => {
             expect(userRow.wallet_gold).to.equal(0);
             expect(currencyLogRow).to.exist;
-            expect(currencyLogRow.gold).to.equal(-100);
+            expect(currencyLogRow.gold).to.equal(-ORB_GOLD_COST);
 
             let numOrbsFound = 0;
             for (let j = 0, jl = spiritOrbRows.length; j < jl; j++) {
@@ -1017,7 +1058,7 @@ describe('inventory module', () => {
     it('expect to get 5 core set cards for unlocking one of your core set boosters', () =>
       knex('users')
         .where('id', userId)
-        .update({ wallet_gold: 100 })
+        .update({ wallet_gold: ORB_GOLD_COST })
         .then(() => InventoryModule.buyBoosterPacksWithGold(userId, 1, SDK.CardSet.Core))
         .then((boosterIds) => {
           expect(boosterIds).to.exist;
@@ -1115,7 +1156,7 @@ describe('inventory module', () => {
     it('expect to get 5 shimzar set cards for unlocking one of your shimzar set boosters', () =>
       knex('users')
         .where('id', userId)
-        .update({ wallet_gold: 100 })
+        .update({ wallet_gold: ORB_GOLD_COST })
         .then(() => InventoryModule.buyBoosterPacksWithGold(userId, 1, SDK.CardSet.Shimzar))
         .then((boosterIds) => {
           expect(boosterIds).to.exist;
@@ -1512,7 +1553,7 @@ describe('inventory module', () => {
         knex('users')
           .where('id', userId)
           .update({
-            wallet_spirit: 40,
+            wallet_spirit: COMMON_SPIRIT_COST,
           })
           .then(() => InventoryModule.craftCard(userId, SDK.Cards.Faction1.Lightchaser))
           .then((result) => {
@@ -1574,7 +1615,7 @@ describe('inventory module', () => {
         knex('users')
           .where('id', userId)
           .update({
-            wallet_spirit: 40,
+            wallet_spirit: COMMON_SPIRIT_COST,
           })
           .then(() => InventoryModule.craftCard(userId, SDK.Cards.Faction1.IroncliffeGuardian))
           .then((result) => {
@@ -1672,20 +1713,26 @@ describe('inventory module', () => {
             expect(error).to.be.an.instanceof(Errors.BadRequestError);
           }));
 
-      it('expect NOT to be able to craft a card unlocked only through spirit orbs', () =>
-        knex('users')
-          .where('id', userId)
-          .update({
-            wallet_spirit: 900,
-          })
-          .then(() => InventoryModule.craftCard(userId, SDK.Cards.Faction5.Drogon))
-          .then((result) => {
-            expect(result).to.not.exist;
-          })
-          .catch((error) => {
-            expect(error).to.not.be.an.instanceof(chai.AssertionError);
-            expect(error).to.be.an.instanceof(Errors.BadRequestError);
-          }));
+      // No card in this build is flagged unlockable through spirit orbs, so this
+      // rule has nothing to exercise. Gated on the data so it returns if one is
+      // ever added, rather than being deleted or left failing.
+      (ORB_UNLOCKABLE_CARD_IDS.length > 0 ? it : it.skip)(
+        'expect NOT to be able to craft a card unlocked only through spirit orbs',
+        () =>
+          knex('users')
+            .where('id', userId)
+            .update({
+              wallet_spirit: 900,
+            })
+            .then(() => InventoryModule.craftCard(userId, SDK.Cards.Faction5.Drogon))
+            .then((result) => {
+              expect(result).to.not.exist;
+            })
+            .catch((error) => {
+              expect(error).to.not.be.an.instanceof(chai.AssertionError);
+              expect(error).to.be.an.instanceof(Errors.BadRequestError);
+            }),
+      );
 
       it('expect NOT to be able to craft a card that becomes available in the future', () => {
         const sunstoneTemplar = _.find(
@@ -1861,6 +1908,38 @@ describe('inventory module', () => {
     });
   });
 
+  /* Rarity of a card, straight from the caches, so spirit maths can be derived. */
+  const rarityForCardId = (cardId) =>
+    SDK.RarityFactory.rarityForIdentifier(
+      SDK.GameSession.getCardCaches().getCardById(cardId).rarityId,
+    );
+
+  /*
+   * One card of each rarity. The old expectations were computed against the
+   * 2016 spirit table (a set disenchanted for 480); the values have moved since
+   * and the arithmetic below now comes from the table itself, so it cannot go
+   * stale again.
+   */
+  const ONE_OF_EACH_RARITY = [
+    SDK.Cards.Faction1.Lightchaser, // common
+    SDK.Cards.Faction1.IroncliffeGuardian, // rare
+    SDK.Cards.Faction1.Sunriser, // epic
+    SDK.Cards.Faction1.GrandmasterZir, // legendary
+  ];
+  const SPIRIT_TO_CRAFT_SET = _.reduce(
+    ONE_OF_EACH_RARITY,
+    (sum, cardId) => sum + rarityForCardId(cardId).spiritCost,
+    0,
+  );
+  const SPIRIT_FROM_DISENCHANTING_SET = _.reduce(
+    ONE_OF_EACH_RARITY,
+    (sum, cardId) => sum + rarityForCardId(cardId).spiritReward,
+    0,
+  );
+
+  const COMMON_SPIRIT_COST = rarityForCardId(SDK.Cards.Faction1.Lightchaser).spiritCost;
+  const COMMON_SPIRIT_REWARD = rarityForCardId(SDK.Cards.Faction1.Lightchaser).spiritReward;
+
   describe('disenchantCard()', () => {
     // before cleanup to check if user already exists and delete
     beforeAll(() =>
@@ -1947,11 +2026,13 @@ describe('inventory module', () => {
           },
         ));
 
-    it('expect to be able to disenchant a set of COMMON,RARE,EPIC, and LEGENDARY cards for 480 spirit', () =>
+    it('expect disenchanting one card of each rarity to return the table rewards', () =>
       knex('users')
         .where('id', userId)
+        // exactly enough to craft the set, so the wallet afterwards is purely
+        // what disenchanting gave back
         .update({
-          wallet_spirit: 1390,
+          wallet_spirit: SPIRIT_TO_CRAFT_SET,
         })
         .then(() =>
           Promise.all([
@@ -1990,7 +2071,7 @@ describe('inventory module', () => {
         )
         .then(([userRow, cardCountRows, cardLogRows, cardCollection, fbCardCollection]) => {
           // expect 480 spirit in wallet
-          expect(userRow.wallet_spirit).to.equal(480);
+          expect(userRow.wallet_spirit).to.equal(SPIRIT_FROM_DISENCHANTING_SET);
 
           // expect no card counts
           expect(cardCountRows).to.exist;
@@ -2013,7 +2094,7 @@ describe('inventory module', () => {
       knex('users')
         .where('id', userId)
         .update({
-          wallet_spirit: 40,
+          wallet_spirit: COMMON_SPIRIT_COST,
         })
         .then(() =>
           Promise.all([InventoryModule.craftCard(userId, SDK.Cards.Faction1.Lightchaser)]),
@@ -2103,7 +2184,7 @@ describe('inventory module', () => {
       knex('users')
         .where('id', userId)
         .update({
-          wallet_spirit: 160,
+          wallet_spirit: COMMON_SPIRIT_COST * 4,
         })
         .then(() =>
           Promise.all([
@@ -2116,7 +2197,7 @@ describe('inventory module', () => {
         .then(() => InventoryModule.disenchantDuplicateCards(userId))
         .then((result) => {
           expect(result).to.exist;
-          expect(result.wallet.spirit_amount).to.equal(10);
+          expect(result.wallet.spirit_amount).to.equal(COMMON_SPIRIT_REWARD);
           expect(result.rewards.length).to.equal(1);
           return DuelystFirebase.connect().getRootRef();
         })
@@ -2150,7 +2231,7 @@ describe('inventory module', () => {
     it('expect disenchanting duplicates again right after to have no effect', () =>
       InventoryModule.disenchantDuplicateCards(userId).then((result) => {
         expect(result).to.exist;
-        expect(result.wallet.spirit_amount).to.equal(10);
+        expect(result.wallet.spirit_amount).to.equal(COMMON_SPIRIT_REWARD);
         expect(result.rewards.length).to.equal(0);
       }));
 
@@ -2158,7 +2239,7 @@ describe('inventory module', () => {
       knex('users')
         .where('id', userId)
         .update({
-          wallet_spirit: 40,
+          wallet_spirit: COMMON_SPIRIT_COST,
         })
         .then(() =>
           Promise.all([InventoryModule.craftCard(userId, SDK.Cards.Faction1.Lightchaser)]),
@@ -2937,7 +3018,9 @@ describe('inventory module', () => {
     });
 
     it('to debit spirit correctly', () => {
-      const spiritBefore = null;
+      // same shadowing as its sibling below: assigned inside the block that
+      // reads the row, but asserted against further down the chain
+      let spiritBefore = null;
       const spiritToCredit = 100;
       const spiritToDebit = 25;
       return knex
@@ -2945,7 +3028,7 @@ describe('inventory module', () => {
         .from('users')
         .where({ id: userId })
         .then((userRow) => {
-          const spiritBefore = userRow.wallet_spirit;
+          spiritBefore = userRow.wallet_spirit;
 
           const txPromise = knex.transaction((tx) => {
             InventoryModule.giveUserSpirit(txPromise, tx, userId, spiritToCredit)
@@ -3204,7 +3287,11 @@ describe('inventory module', () => {
     describe('if a user has opened some orbs and has some BASIC cards and ACHIEVEMENT cards', () => {
       beforeAll(() =>
         SyncModule.wipeUserData(userId)
-          .then(() => knex('users').where('id', userId).update({ wallet_gold: 300 }))
+          .then(() =>
+            knex('users')
+              .where('id', userId)
+              .update({ wallet_gold: ORB_GOLD_COST * 3 }),
+          )
           .then(() => InventoryModule.buyBoosterPacksWithGold(userId, 3, SDK.CardSet.Core))
           .then((boosterIds) => {
             const all = [];
@@ -3295,7 +3382,11 @@ describe('inventory module', () => {
     describe('if a user has opened some orbs and has some BASIC cards and ACHIEVEMENT cards and disenchanted some orb cards', () => {
       beforeAll(() =>
         SyncModule.wipeUserData(userId)
-          .then(() => knex('users').where('id', userId).update({ wallet_gold: 300 }))
+          .then(() =>
+            knex('users')
+              .where('id', userId)
+              .update({ wallet_gold: ORB_GOLD_COST * 3 }),
+          )
           .then(() => InventoryModule.buyBoosterPacksWithGold(userId, 3, SDK.CardSet.Core))
           .then((boosterIds) => {
             const all = [];
@@ -3393,7 +3484,11 @@ describe('inventory module', () => {
     describe('if a user has opened some orbs and has some BASIC cards and ACHIEVEMENT cards and disenchanted their ACHIEVEMENT cards', () => {
       beforeAll(() =>
         SyncModule.wipeUserData(userId)
-          .then(() => knex('users').where('id', userId).update({ wallet_gold: 300 }))
+          .then(() =>
+            knex('users')
+              .where('id', userId)
+              .update({ wallet_gold: ORB_GOLD_COST * 3 }),
+          )
           .then(() => InventoryModule.buyBoosterPacksWithGold(userId, 2, SDK.CardSet.Core))
           .then((boosterIds) => {
             const all = [];
@@ -3492,7 +3587,11 @@ describe('inventory module', () => {
       const _chainState = {};
       beforeAll(() =>
         SyncModule.wipeUserData(userId)
-          .then(() => knex('users').where('id', userId).update({ wallet_gold: 300 }))
+          .then(() =>
+            knex('users')
+              .where('id', userId)
+              .update({ wallet_gold: ORB_GOLD_COST * 3 }),
+          )
           .then(() => InventoryModule.buyBoosterPacksWithGold(userId, 2, SDK.CardSet.Core))
           .then((boosterIds) => {
             const all = [];
@@ -3597,7 +3696,11 @@ describe('inventory module', () => {
       const _chainState = {};
       beforeAll(() =>
         SyncModule.wipeUserData(userId)
-          .then(() => knex('users').where('id', userId).update({ wallet_gold: 300 }))
+          .then(() =>
+            knex('users')
+              .where('id', userId)
+              .update({ wallet_gold: ORB_GOLD_COST * 3 }),
+          )
           .then(() => InventoryModule.buyBoosterPacksWithGold(userId, 2, SDK.CardSet.Core))
           .then((boosterIds) => {
             const all = [];
@@ -3933,8 +4036,8 @@ describe('inventory module', () => {
       return txPromise;
     });
 
-    it('expect to not be able to craft a prismatic bloodborn card without base card', () => {
-      const cardIdToCraft = SDK.Cards.Faction5.Drogon + SDK.Cards.Prismatic;
+    it('expect to not be able to craft an achievement-gated prismatic without its base card', () => {
+      const cardIdToCraft = ACHIEVEMENT_GATED_PRISMATIC_IDS[0];
       const gameSession = SDK.GameSession.create();
       const cardToCraft = SDK.CardFactory.cardForIdentifier(cardIdToCraft, gameSession);
       const rarityData = SDK.RarityFactory.rarityForIdentifier(cardToCraft.getRarityId());
@@ -3954,8 +4057,8 @@ describe('inventory module', () => {
         });
     });
 
-    it('expect to not be able to craft a prismatic unity card without base card', () => {
-      const cardIdToCraft = SDK.Cards.Faction3.Sirocco + SDK.Cards.Prismatic;
+    it('expect the same for a second achievement-gated prismatic', () => {
+      const cardIdToCraft = ACHIEVEMENT_GATED_PRISMATIC_IDS[1];
       const gameSession = SDK.GameSession.create();
       const cardToCraft = SDK.CardFactory.cardForIdentifier(cardIdToCraft, gameSession);
       const rarityData = SDK.RarityFactory.rarityForIdentifier(cardToCraft.getRarityId());
@@ -4058,26 +4161,32 @@ describe('inventory module', () => {
 
     /// /
 
-    it('expect to not be able to craft a spirit orb unlockable prismatic card if the normal version is locked', () => {
-      const cardIdToCraft = SDK.Cards.Faction5.Drogon + SDK.Cards.Prismatic;
-      const gameSession = SDK.GameSession.create();
-      const cardToCraft = SDK.CardFactory.cardForIdentifier(cardIdToCraft, gameSession);
-      const rarityData = SDK.RarityFactory.rarityForIdentifier(cardToCraft.getRarityId());
+    // No card in this build is both spirit-orb unlockable and prismatic-gated,
+    // so this half of the rule has nothing to exercise. Gated on the data rather
+    // than deleted, so it returns if such a card is ever added.
+    (ORB_GATED_PRISMATIC_IDS.length > 0 ? it : it.skip)(
+      'expect to not be able to craft a spirit orb unlockable prismatic card if the normal version is locked',
+      () => {
+        const cardIdToCraft = SDK.Cards.Faction5.Drogon + SDK.Cards.Prismatic;
+        const gameSession = SDK.GameSession.create();
+        const cardToCraft = SDK.CardFactory.cardForIdentifier(cardIdToCraft, gameSession);
+        const rarityData = SDK.RarityFactory.rarityForIdentifier(cardToCraft.getRarityId());
 
-      return knex('users')
-        .where('id', userId)
-        .update({
-          wallet_spirit: rarityData.spiritCostPrismatic,
-        })
-        .then(() => InventoryModule.craftCard(userId, cardIdToCraft))
-        .then((result) => {
-          expect(result).to.not.exist;
-        })
-        .catch((error) => {
-          expect(error).to.exist;
-          expect(error).to.not.be.an.instanceof(chai.AssertionError);
-        });
-    });
+        return knex('users')
+          .where('id', userId)
+          .update({
+            wallet_spirit: rarityData.spiritCostPrismatic,
+          })
+          .then(() => InventoryModule.craftCard(userId, cardIdToCraft))
+          .then((result) => {
+            expect(result).to.not.exist;
+          })
+          .catch((error) => {
+            expect(error).to.exist;
+            expect(error).to.not.be.an.instanceof(chai.AssertionError);
+          });
+      },
+    );
 
     it('expect to be able to craft a spirit orb unlockable prismatic card if the normal version is unlocked', () => {
       const cardIdToCraft = SDK.Cards.Faction5.Drogon + SDK.Cards.Prismatic;
@@ -4658,11 +4767,20 @@ describe('inventory module', () => {
     });
   });
 
+  /*
+   * A common cosmetic costs 250 spirit, not the 500 these were written against.
+   * Taken from the rarity table so the sufficient/insufficient pair stays a
+   * statement about the boundary rather than about two literals.
+   */
+  const COMMON_COSMETIC_SPIRIT_COST = SDK.RarityFactory.rarityForIdentifier(
+    SDK.Rarity.Common,
+  ).spiritCostCosmetic;
+
   describe('craftCosmetic()', () => {
-    it('expect to be able to craft a COMMON cosmetic with 500 spirit in wallet', () =>
+    it('expect to be able to craft a COMMON cosmetic with exactly its spirit cost', () =>
       Promise.all([
         knex('users').where('id', userId).update({
-          wallet_spirit: 500,
+          wallet_spirit: COMMON_COSMETIC_SPIRIT_COST,
         }),
         knex('user_cosmetic_inventory').where('user_id', userId).delete(),
       ])
@@ -4685,11 +4803,13 @@ describe('inventory module', () => {
           expect(userRow.wallet_spirit).to.equal(0);
         }));
 
-    it('expect to NOT be able to craft a COMMON cosmetic with 499 spirit in wallet', () =>
+    it('expect to NOT be able to craft a COMMON cosmetic one spirit short', () =>
       Promise.all([
-        knex('users').where('id', userId).update({
-          wallet_spirit: 499,
-        }),
+        knex('users')
+          .where('id', userId)
+          .update({
+            wallet_spirit: COMMON_COSMETIC_SPIRIT_COST - 1,
+          }),
         knex('user_cosmetic_inventory').where('user_id', userId).delete(),
       ])
         .then(() => InventoryModule.craftCosmetic(userId, SDK.CosmeticsLookup.Emote.Faction1Angry))

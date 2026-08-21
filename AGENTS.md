@@ -32,7 +32,7 @@ pnpm build:server                              # ahead-of-time TS -> build/ for 
 pnpm test:unit                                 # vitest, 1366 tests, no external services
 pnpm test:integration:misc                     # needs nothing external; runs in CI
 pnpm test:integration:jobs                     # BullMQ job seam; needs ONLY redis, so it runs in CI too
-pnpm test:integration:data_access              # 565 tests; 44 known failures + 2 unstable. IN CI as a drift gate.
+pnpm test:integration:data_access              # 565 tests; 29 known failures + 2 unstable. IN CI as a drift gate.
 source scripts/dev/data-access-test-env.sh     #   throwaway postgres+redis+firebase emulator with this --
                                                #   deliberately separate from `docker compose`, because
                                                #   these suites create users and wipe inventories
@@ -216,6 +216,20 @@ How we work on it:
 
 Status log (newest first):
 
+- 2026-08-21 — **inventory: 17 failures → 2, baseline 44 → 29.** Nearly all of it was one idea:
+  assert against the constant that drives the behaviour rather than a number copied from 2016.
+  A spirit orb costs 50 gold, not 100; a common cosmetic 250 spirit, not 500; and the whole
+  rarity table moved, so `disenchant one of each rarity` now computes its own expectation from
+  `spiritCost`/`spiritReward` instead of asserting 480. Two more shadowed `spiritBefore`
+  bindings turned up on the way, same decaffeination artifact as yesterday.
+  **Three tests were asserting rules that cannot fire in this build.** The prismatic
+  "needs the base card" guard only applies to cards flagged unlockable, and the cards those
+  tests named (Drogon, Sirocco) are no longer flagged — so the craft succeeded and the test
+  failed. They now pick a qualifying card _from the rule's own predicate_; where no card
+  qualifies at all (nothing is unlockable through spirit orbs any more) the test is skipped by
+  that fact rather than deleted, so it returns if the data ever changes.
+  One number resisted derivation and is spelled out with a pointer: buying three orbs at once
+  costs 140 rather than 150, from a hardcoded bundle table inside `buyBoosterPacksWithGold`.
 - 2026-08-21 — **cleared the crashes hiding in the data_access tail: 51 known failures → 44, and
   every remaining one is now an assertion rather than an error.** Six defects, five of them the
   same shape — a variable declared at suite scope and _re-declared_ with `const` inside a
