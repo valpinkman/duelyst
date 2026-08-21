@@ -24,7 +24,7 @@ class SpellChrysalisBloom extends SpellSpawnEntity {
 
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     // get 1 common, 1 rare, 1 epic, and 1 legendary Magmar unit to put in the eggs
-    let cardCache = [];
+    let cardCache: any = [];
     let cards = [];
 
     if (this.getGameSession().getGameFormat() === GameFormat.Standard) {

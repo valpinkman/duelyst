@@ -71,3 +71,11 @@ jobs:
       # there: a codemod regression that shipped once would have been caught here.
       - name: check for undefined names (TS2304)
         run: pnpm check:undefined-names
+
+      # The whole typecheck is a gate now that the backlog is zero (2026-08-21).
+      # It was a metric for as long as the number was 362 and nobody could tell a
+      # new error from an inherited one. TS2304 keeps its own step above because
+      # it is the class that becomes a ReferenceError at runtime, and a targeted
+      # failure message is worth more than one line inside a longer report.
+      - name: typecheck (must stay at zero)
+        run: pnpm typecheck

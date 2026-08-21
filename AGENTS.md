@@ -38,7 +38,7 @@ pnpm test:integration:data_access              # 562 tests; 0 known failures, 3 
 source scripts/dev/data-access-test-env.sh     #   throwaway postgres+redis+firebase emulator with this --
                                                #   deliberately separate from `docker compose`, because
                                                #   these suites create users and wipe inventories
-pnpm typecheck                                 # tsc (loose config) - a METRIC, not a gate... EXCEPT TS2304
+pnpm typecheck                                 # tsc (loose config) - 0 errors, and a CI gate since 2026-08-21
 pnpm check:undefined-names                     # TS2304 only, and this IS a CI gate. Run after any codemod.
 pnpm check:promise-utils                       # PromiseUtils/onType used without being bound
 pnpm check:bluebird-orphans                    # bluebird-only API used without requiring bluebird
@@ -114,11 +114,14 @@ Everything below is TypeScript unless noted.
 
 ## Conventions and gotchas that bite
 
-- **TS2304 is a CI gate; the rest of typecheck is not.** No JS linter resolves TypeScript
+- **Typecheck is a CI gate and sits at zero.** Keep it there. No JS linter resolves TypeScript
   identifiers, so `tsc` is the only thing that sees an undefined one. Sweeping TS2304 to zero
   found **26 real bugs** — missing requires, undeclared variables, a `clone()` constructing the
-  wrong class. `pnpm check:undefined-names` keeps it there, because a codemod regression once
-  shipped while typecheck sat unread. **Run it after any codemod.**
+  wrong class — and clearing the remaining 362 found more: a `Math.Infinity` that is `undefined`,
+  a `CONFIG` that was the _string_ `'app/common/config'` because the `require()` was never
+  written, two rank call sites dropping the caller's clock, and a decade-old `+`-before-`==`
+  precedence bug in an AI log. TS2304 keeps its own faster gate (`pnpm check:undefined-names`)
+  because it is the class that becomes a ReferenceError. **Run it after any codemod.**
 - **Serialization is structural.** `SDKObject` + `fastExtend(this, data)` — instance property
   layout _is_ the wire format for game state and replays. Use `declare x: any` for prototype-era
   members: a real class field creates an own property and silently changes the shape. Renaming a

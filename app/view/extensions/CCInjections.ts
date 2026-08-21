@@ -518,7 +518,7 @@ cc.inputManager.registerSystemEvent = function (element) {
     );
   }
 
-  if (window.navigator.msPointerEnabled) {
+  if ((window.navigator as any).msPointerEnabled) {
     const _pointerEventsMap = {
       MSPointerDown: selfPointer.handleTouchesBegin,
       MSPointerMove: selfPointer.handleTouchesMove,

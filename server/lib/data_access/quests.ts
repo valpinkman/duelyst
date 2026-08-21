@@ -1061,7 +1061,7 @@ class QuestsModule {
                 tx('user_quests').select().where({ user_id: userId }).forUpdate(),
               ]),
             )
-            .then(function ([userRow, questRows]) {
+            .then(function ([userRow, questRows]): Promise<any> {
               // Logger.module("QuestsModule").debug "updateQuestProgressWithGame() -> ACQUIRED LOCK ON #{userId}".yellow
 
               _chainState.userRow = userRow;
@@ -1217,7 +1217,7 @@ class QuestsModule {
       tx('users').where({ id: userId }).first('id').forUpdate(),
       tx('user_quests').select().where({ user_id: userId }).forUpdate(),
     ])
-      .then(function ([userRow, questRows]) {
+      .then(function ([userRow, questRows]): Promise<any> {
         _chainState.userRow = userRow;
         _chainState.questRows = questRows;
 
@@ -1329,7 +1329,7 @@ class QuestsModule {
     const MOMENT_NOW_UTC = systemTime || moment().utc();
 
     return Promise.resolve()
-      .then(function () {
+      .then(function (): Promise<any> {
         _chainState.questRows = questRows;
         if ((questRows != null ? questRows.length : undefined) > 0) {
           const allQueries = [];
@@ -1458,7 +1458,7 @@ class QuestsModule {
       tx('users').where({ id: userId }).first('id').forUpdate(),
       tx('user_quests').select().where({ user_id: userId }).forUpdate(),
     ])
-      .then(function ([userRow, questRows]) {
+      .then(function ([userRow, questRows]): Promise<any> {
         _chainState.userRow = userRow;
         _chainState.questRows = questRows;
         if ((questRows != null ? questRows.length : undefined) > 0) {

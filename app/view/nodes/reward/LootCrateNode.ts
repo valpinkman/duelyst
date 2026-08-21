@@ -1542,7 +1542,7 @@ const LootCrateNode = cc.Node.extend({
   },
 
   _showRewardDiscs() {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       const locResolve = resolve;
       const centerPosition = this.getCenterPosition();
       for (let i = 0; i < this._rewardNodes.length; i++) {

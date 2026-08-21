@@ -274,10 +274,21 @@ step it describes, so it can never drift from the code.
      that _starts_ failing.
      The one still worth fixing is the orb spirit refund, which needs its own setup rather than
      a different number — see the log entry for why.
-  2. **The typecheck backlog: 263 errors** (TypeScript 7; was 362 before the 2026-08-21 pass). Heterogeneous and low-yield now that
-     TS2304 is zero and gated — 115 TS2339, 65 TS2554, 34 TS2345, 22 TS2403, 14 TS2322. Cheaper
-     to work on than it was: a full typecheck is 0.39 s now rather than 3.5 s. Move directories
-     into `tsconfig.strict.json` as they go clean.
+  2. ~~**The typecheck backlog**~~ **Done 2026-08-21 — 362 → 0, and `pnpm typecheck` is now a CI
+     gate** (`.github/workflows/lint_javascript.yaml`). It was rated low-yield here; that was
+     wrong. Clearing it surfaced eight real defects that lint and 1,366 unit tests all missed:
+     `Math.Infinity` (which is `undefined`), `const CONFIG = 'app/common/config'` with the
+     `require()` missing, two rank call sites passing a spurious `false` that ate the caller's
+     clock, a `+`-before-`==` precedence bug logging `false` since 2016, a `prompt()` whose null
+     check ran after `.split()`, `parseInt`/`parseFloat` applied to numbers, and a TDZ crash in
+     a dead module. The yield was in the _small_ error codes — TS2367, TS2554, TS2362 — not the
+     large ones. The rest was honest typing: trailing parameters callers always omitted, open
+     bags inferred as `{}`, and the `var`-per-assignment artifact of the decaffeination (TS2403,
+     now zero).
+
+     Next step here, when someone wants it: `tsconfig.strict.json` per directory. The loose
+     config is clean, so strictness is the only remaining axis.
+
   3. ~~**Decide on `pnpm.overrides` for the transitive backbone pin.**~~ **Done 2026-08-21** —
      `pnpm.overrides.backbone: 'catalog:'`. `backbone@1.2.1` is gone from the lockfile and the
      store; the tree has one backbone. **It changed nothing shipped**, and that was worth

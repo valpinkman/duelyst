@@ -3320,7 +3320,7 @@ class InventoryModule {
 
         for (var cardId of Array.from<any>(cardIds)) {
           // STEP1 ... compute and roll/generate all the dis-enchanting rewards
-          var spirit_gained = 0;
+          var spirit_gained: number | string = 0;
 
           try {
             var cardData = SDK.GameSession.getCardCaches()
@@ -3704,10 +3704,10 @@ class InventoryModule {
             // when crafting prismatic unlockable achievement cards
             // ensure the normal version of the card has been unlocked
             let requiresBaseCardIdToCraft = false;
-            requiresBaseCardIdToCraft |=
+            requiresBaseCardIdToCraft ||=
               cardData.getIsUnlockableWithAchievement() &&
               cardData.getIsUnlockablePrismaticWithAchievement();
-            requiresBaseCardIdToCraft |=
+            requiresBaseCardIdToCraft ||=
               cardData.getIsUnlockableThroughSpiritOrbs() &&
               cardData.getIsUnlockablePrismaticWithSpiritOrbs();
             if (requiresBaseCardIdToCraft) {

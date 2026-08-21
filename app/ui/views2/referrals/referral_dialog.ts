@@ -209,5 +209,5 @@ var ReferralDialogView = Backbone.Marionette.ItemView.extend({
 if (typeof module == 'object' && module.exports) {
   module.exports = ReferralDialogView;
 } else {
-  this.ReferralDialogView = ReferralDialogView;
+  (this as any).ReferralDialogView = ReferralDialogView;
 }

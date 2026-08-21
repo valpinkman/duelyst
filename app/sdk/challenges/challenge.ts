@@ -412,7 +412,7 @@ class Challenge {
     }
   }
 
-  _onValidateGameOver() {
+  _onValidateGameOver(event?) {
     const gameSession = GameSession.current();
     const myGeneral = gameSession.getGeneralForPlayerId(gameSession.getMyPlayerId());
 

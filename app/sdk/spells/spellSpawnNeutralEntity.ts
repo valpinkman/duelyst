@@ -11,7 +11,7 @@ const Cards = require('app/sdk/cards/cardsLookupComplete');
 class SpellSpawnNeutralEntity extends SpellSpawnEntity {
   declare tileAsUnit: any;
 
-  getEntityToSpawn() {
+  getEntityToSpawn(cardDataOrIndexToSpawn?) {
     if (!this.tileAsUnit) {
       return super.getEntityToSpawn();
     }

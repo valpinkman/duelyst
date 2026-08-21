@@ -37,7 +37,7 @@ class ChallengeRemote extends Challenge {
         if (res.ok) {
           return res.json();
         }
-        const err = new Error(res.statusText);
+        const err = new Error(res.statusText) as Error & { status?: number; innerMessage?: string };
         err.status = res.status;
         throw err;
       })

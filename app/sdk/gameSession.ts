@@ -3787,7 +3787,7 @@ class _GameSession extends SDKObject {
         }
 
         // stop pseudo event: apply_card_to_deck
-        this.popCardFromStack(card);
+        this.popCardFromStack();
         this.popEventTypeFromStack();
 
         // sync the game state if this change occurred via a non-action source
@@ -3893,7 +3893,7 @@ class _GameSession extends SDKObject {
         }
 
         // stop pseudo event: apply_card_to_hand
-        this.popCardFromStack(card);
+        this.popCardFromStack();
         this.popEventTypeFromStack();
 
         // sync the game state if this change occurred via a non-action source
@@ -4014,7 +4014,7 @@ class _GameSession extends SDKObject {
       }
 
       // stop pseudo event: apply_card_to_signature_cards
-      this.popCardFromStack(card);
+      this.popCardFromStack();
       this.popEventTypeFromStack();
 
       // sync the game state if this change occurred via a non-action source
@@ -4196,7 +4196,7 @@ class _GameSession extends SDKObject {
       }
 
       // stop pseudo event: apply_card_to_board
-      this.popCardFromStack(card);
+      this.popCardFromStack();
       this.popEventTypeFromStack();
 
       // auto remove cards from the board that are:

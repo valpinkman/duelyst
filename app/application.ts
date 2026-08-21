@@ -575,7 +575,10 @@ if (process.env.AI_TOOLS_ENABLED) {
             return reject(errorMessage);
           });
         }).then((stepsData) => {
-          Logger.module('APPLICATION').log('ai_stepAIvAIGame -> steps:', stepsData.slice(0));
+          Logger.module('APPLICATION').log(
+            'ai_stepAIvAIGame -> steps:',
+            (stepsData as any[]).slice(0),
+          );
           return (window.ai_gameStepsData = stepsData);
         }),
       ).catch(
@@ -907,7 +910,7 @@ App._showTerms = function (options?) {
       ProfileManager.getInstance().set('hasAcceptedEula', true);
       mainPromise = App.main();
     } else {
-      window.sessionStorage.setItem(`${Storage.namespace()}.hasAcceptedEula`, true);
+      window.sessionStorage.setItem(`${Storage.namespace()}.hasAcceptedEula`, 'true');
       mainPromise = App._showLoginMenu({ type: 'register' });
     }
 
@@ -3761,7 +3764,7 @@ App.showAchievementCompletions = function () {
     Scene.getInstance().destroyOverlay();
     return Promise.resolve();
   }
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     const locResolve = resolve;
     Logger.module('APPLICATION').log('App:showAchievementCompletions');
     const completedAchievementModel =
@@ -3783,7 +3786,7 @@ App.showTwitchRewards = function () {
     Scene.getInstance().destroyOverlay();
     return Promise.resolve();
   }
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     const locResolve = resolve;
     Logger.module('APPLICATION').log('App:showTwitchRewards');
     const twitchRewardModel = TwitchManager.getInstance().popNextUnclaimedTwitchRewardModel();
@@ -3802,7 +3805,7 @@ App.showTwitchRewards = function () {
 App.showEndOfSeasonRewards = function () {
   const gamesManager = GamesManager.getInstance();
   if (gamesManager.hasUnreadSeasonReward()) {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       const locResolve = resolve;
 
       // get data

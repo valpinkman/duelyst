@@ -4,7 +4,7 @@
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-const CONFIG = 'app/common/config';
+const CONFIG = require('app/common/config');
 const UtilsJavascript = require('app/common/utils/utils_javascript');
 const Cards = require('app/sdk/cards/cardsLookupComplete');
 const CardType = require('app/sdk/cards/cardType');

@@ -620,7 +620,7 @@ Performance_Stats.prototype = {
     if (places == null) {
       places = 2;
     }
-    return +`${Math.round(`${val}e+${places}`)}e-${places}`;
+    return +`${Math.round(Number(`${val}e+${places}`))}e-${places}`;
   },
 
   /**

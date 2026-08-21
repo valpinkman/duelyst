@@ -51,9 +51,8 @@ class BlurShaderGenerator {
       MIN_KERNEL_SIZE,
       sigma * SIGMA_KERNEL_RATIO + 1.0 - ((sigma * SIGMA_KERNEL_RATIO) % 2.0),
     );
-    const brightness = parseFloat(
-      1.0 + sigma / 4 / 100.0 + (kernelSize * (kernelSize / expectedKernelSize - 1.0)) / 2000.0,
-    );
+    const brightness =
+      1.0 + sigma / 4 / 100.0 + (kernelSize * (kernelSize / expectedKernelSize - 1.0)) / 2000.0;
 
     // generate kernel
     const kernel = this.generateKernel(sigma, kernelSize, 1000);
@@ -61,7 +60,7 @@ class BlurShaderGenerator {
     const kernelRows = _.map(kernel1d, (value, i) => {
       const offset = i - Math.ceil(kernelSize / 2);
       return {
-        offset: parseFloat(Math.abs(offset)).toFixed(1),
+        offset: Math.abs(offset).toFixed(1),
         value: parseFloat(value).toFixed(6),
         operator: offset < 0 ? '-' : '+',
       };
@@ -138,7 +137,7 @@ class BlurShaderGenerator {
       5 * sigma,
       samplesPerBin,
     );
-    const allSamples = [[outsideSamplesLeft, 0]];
+    const allSamples: any[][] = [[outsideSamplesLeft, 0]];
     // now sample kernel taps and calculate tap weights
     let tap = 0;
     while (tap < kernelSize) {

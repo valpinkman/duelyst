@@ -884,7 +884,7 @@ class Modifier extends SDKObject {
   }
 
   getIsKeyworded() {
-    return this.constructor.isKeyworded;
+    return (this.constructor as any).isKeyworded;
   }
 
   getLogName() {
@@ -1185,7 +1185,7 @@ class Modifier extends SDKObject {
   }
 
   getIsHiddenToUI() {
-    return this.constructor.isHiddenToUI || this.isHiddenToUI;
+    return (this.constructor as any).isHiddenToUI || this.isHiddenToUI;
   }
 
   getIsRemovable() {
@@ -1279,7 +1279,7 @@ class Modifier extends SDKObject {
     }
     if (this._private.cachedName == null || contextObject !== this.contextObject) {
       this._private.cachedName =
-        this.constructor.getName(contextObject) ||
+        (this.constructor as any).getName(contextObject) ||
         __guard__(this.getSourceCard(), (x) => x.getName());
     }
     return this._private.cachedName;
@@ -1327,7 +1327,7 @@ class Modifier extends SDKObject {
     }
     if (this._private.cachedDescription == null || contextObject !== this.contextObject) {
       this._private.cachedDescription =
-        this.constructor.getDescription(
+        (this.constructor as any).getDescription(
           contextObject,
           this.getGameSession().getModifierFactory(),
         ) || __guard__(this.getSourceCard(), (x) => x.getDescription());
@@ -1363,7 +1363,9 @@ class Modifier extends SDKObject {
     }
     if (this._private.cachedAppliedName == null || contextObject !== this.contextObject) {
       this._private.cachedAppliedName =
-        this.constructor.getAppliedName(contextObject) || this.appliedName || this.getType();
+        (this.constructor as any).getAppliedName(contextObject) ||
+        this.appliedName ||
+        this.getType();
     }
     return this._private.cachedAppliedName;
   }
@@ -1409,7 +1411,7 @@ class Modifier extends SDKObject {
     }
     if (this._private.cachedAppliedDescription == null || contextObject !== this.contextObject) {
       this._private.cachedAppliedDescription =
-        this.constructor.getAppliedDescription(
+        (this.constructor as any).getAppliedDescription(
           contextObject,
           this.getGameSession().getModifierFactory(),
         ) || this.appliedDescription;
@@ -1503,7 +1505,7 @@ class Modifier extends SDKObject {
       // get description for this modifier only from modifier class
       // get description from this modifier attempts to use source card
       // which is not always set or valid, and can cause stacking issues
-      const description = this.constructor.getDescription(
+      const description = (this.constructor as any).getDescription(
         this.contextObject,
         this.getGameSession().getModifierFactory(),
       );
@@ -3133,7 +3135,7 @@ class Modifier extends SDKObject {
     return (this._private.listeningToEvents = false);
   }
 
-  _onTerminate() {
+  _onTerminate(event?) {
     // this method is automatically called when this object will never be used again
     return this.stopListeningToEvents();
   }

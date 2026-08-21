@@ -156,7 +156,7 @@ class RankModule {
               .first()
               .forUpdate();
           })
-          .then(function (userRatingRow) {
+          .then(function (userRatingRow): Promise<any> {
             _chainState.userRatingRow = userRatingRow;
 
             _chainState.oldRank = null;

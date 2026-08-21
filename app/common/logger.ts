@@ -31,12 +31,12 @@ class Logger {
     return (this.recordedBuffer = []);
   }
 
-  static recordingFilter() {
+  static recordingFilter(args?) {
     return true;
   }
 
-  static record() {
-    const args = _.map(arguments[0], (arg) => (arg != null ? arg.toString() : undefined));
+  static record(records?) {
+    const args = _.map(records, (arg) => (arg != null ? arg.toString() : undefined));
     if (this.recordingFilter(args)) {
       if (!(args[1] instanceof Object)) {
         this.recordedBuffer.push(args);

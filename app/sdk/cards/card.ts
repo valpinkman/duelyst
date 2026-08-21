@@ -329,7 +329,7 @@ class Card extends SDKObject {
     }
   }
 
-  _onTerminate() {
+  _onTerminate(event?) {
     // Logger.module("SDK").debug("[G:#{@.getGameSession().gameId}]", "Card._onTerminate -> #{@getLogName()} / in deck? #{@getIsLocatedInDeck()} / in hand? #{@getIsLocatedInHand()} / on board? #{@getIsPlayed()} / removed? #{@getIsRemoved()}")
     // this method is automatically called when this object will never be used again
     this._stopWaitingForTerminate();

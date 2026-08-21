@@ -65,7 +65,7 @@ class Validator {
 
   // region EVENTS
 
-  _onTerminate() {}
+  _onTerminate(event?) {}
   // this method is automatically called when this object will never be used again
 
   onValidateAction(event) {}

@@ -62,7 +62,7 @@ const PlayerLayer = BaseLayer.extend({
     // sort artifact nodes by those with an artifact card first
     this._artifactNodes = _.sortBy(this._artifactNodes, (artifactNode) => {
       const artifactCard = artifactNode.getSdkCard();
-      return artifactCard ? artifactCard.getAppliedToBoardByActionIndex() : Math.Infinity;
+      return artifactCard ? artifactCard.getAppliedToBoardByActionIndex() : Infinity;
     });
   },
 

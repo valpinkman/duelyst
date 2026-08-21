@@ -74,7 +74,7 @@ class ValidatorFollowup extends Validator {
 
   // region CARDS
 
-  clearCardsWithFollowup() {
+  clearCardsWithFollowup(event?) {
     if (this._cardStack.length > 0) {
       for (var card of Array.from<any>(this._cardStack)) {
         card.clearFollowups();

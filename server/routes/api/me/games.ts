@@ -270,7 +270,9 @@ JOIN users AS player_2 ON player_2.id = games.player_2_id;\
                   // scrub the data here
                   Logger.module('API').debug(`deserializing game ${gameRow.id} replay data`);
                   const gameSession = GameSession.create();
-                  gameSession.deserializeSessionFromFirebase(JSON.parse(gameSessionDataString));
+                  gameSession.deserializeSessionFromFirebase(
+                    JSON.parse(gameSessionDataString as string),
+                  );
                   gameRow.player_1_key_cards = [];
                   gameRow.player_2_key_cards = [];
                   return Array.from<any>(gameSession.turns).map((turn) =>

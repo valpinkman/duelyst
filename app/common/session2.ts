@@ -42,7 +42,7 @@ class Session extends EventEmitter {
         return data;
       });
     }
-    const err = new Error(res.statusText);
+    const err = new Error(res.statusText) as Error & { status?: number; innerMessage?: string };
     err.status = res.status;
     if (res.status === 400 || res.status === 401) {
       return res.json().then((data) => {

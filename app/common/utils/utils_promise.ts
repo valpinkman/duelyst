@@ -107,7 +107,7 @@ exports.cancellable = function (promise) {
   const gate = new Promise((resolve, reject) => {
     cancel = () => reject(new CancellationError());
   });
-  const raced = Promise.race([promise, gate]);
+  const raced: any = Promise.race([promise, gate]);
   raced.cancel = cancel;
   return raced;
 };
@@ -255,7 +255,7 @@ exports.inspectable = function (promise?) {
   if (typeof promise.isFulfilled === 'function') return promise; // already inspectable
 
   let state = 'pending';
-  const tracked = Promise.resolve(promise).then(
+  const tracked: any = Promise.resolve(promise).then(
     (value) => {
       state = 'fulfilled';
       return value;

@@ -191,8 +191,8 @@ _.each(listenMethods, (implementation, method) => {
 });
 
 // Aliases for backwards compatibility.
-Events.prototype.bind = Events.prototype.on;
-Events.prototype.unbind = Events.prototype.off;
+(Events.prototype as any).bind = Events.prototype.on;
+(Events.prototype as any).unbind = Events.prototype.off;
 
 // Events instance creation
 Events.instance = null;

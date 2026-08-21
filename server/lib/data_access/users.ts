@@ -2834,7 +2834,7 @@ class UsersModule {
                   .first(),
               ]);
             })
-            .then(function ([userRow, userBossDefeatedRow]) {
+            .then(function ([userRow, userBossDefeatedRow]): Promise<any> {
               if (userBossDefeatedRow != null) {
                 return Promise.resolve();
               }

@@ -1108,7 +1108,7 @@ if (cluster.isMaster) {
   };
 
   // receive messages from the master process
-  process.on('message', (msg) => {
+  process.on('message', (msg: any) => {
     Logger.module('AI').debug(
       `ai_cluster_master_receiveMessageFromWorker() *Worker#${process.pid}:* evaluating gameSession. depthlimit = ${msg.depthLimit}. mstimelimit = ${msg.msTimeLimit}`,
     );

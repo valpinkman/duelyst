@@ -55,7 +55,7 @@ var MovementRange = (function () {
         const bufferInterface = new Uint8Array(buffer);
 
         const originNode = { x: 0, y: 0, speed: 0 };
-        const nodesToProcess = [originNode];
+        const nodesToProcess: any[] = [originNode];
 
         // breadth first traversal so we always find the shortest path
         // but never allow paths longer than entity's speed

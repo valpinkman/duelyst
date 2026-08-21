@@ -84,9 +84,9 @@ function firePixels() {
     const iframe = document.createElement('iframe');
     iframe.src = 'https://zulumob.go2cloud.org/SL3v5';
     iframe.scrolling = 'no';
-    iframe.frameBorder = 0;
-    iframe.width = 1;
-    iframe.height = 1;
+    iframe.frameBorder = '0';
+    iframe.width = '1';
+    iframe.height = '1';
     iframe.addEventListener(
       'load',
       () => {

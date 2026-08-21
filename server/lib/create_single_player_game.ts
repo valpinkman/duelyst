@@ -138,7 +138,7 @@ const createSinglePlayerGame = function (
       }
 
       // generate players data
-      let player1DataForGame = {
+      let player1DataForGame: any = {
         userId,
         name,
         deck,

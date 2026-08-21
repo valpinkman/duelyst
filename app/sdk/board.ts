@@ -269,7 +269,7 @@ class Board extends SDKObject {
     }
   }
 
-  getEntities(allowUntargetable, allowQueued) {
+  getEntities(allowUntargetable?, allowQueued?) {
     let cards = [];
     cards = cards.concat(this.getUnits(allowUntargetable, allowQueued));
     cards = cards.concat(this.getTiles(allowUntargetable, allowQueued));

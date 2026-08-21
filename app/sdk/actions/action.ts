@@ -41,7 +41,7 @@ class Action extends SDKObject {
     // define public properties here that must be always be serialized
     // do not define properties here that should only serialize if different from the default
     if (this.type == null) {
-      this.type = this.constructor.type;
+      this.type = (this.constructor as any).type;
     }
     this.setOwnerId(this.getGameSession().getCurrentPlayer().getPlayerId());
   }

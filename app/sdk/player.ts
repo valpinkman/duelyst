@@ -686,12 +686,12 @@ class Player extends SDKObject {
 
   // region EVENTS
 
-  _onTerminate() {
+  _onTerminate(event?) {
     // this method is automatically called when this object will never be used again
     return this.terminateActionStateRecord();
   }
 
-  _onEndTurn() {
+  _onEndTurn(event?) {
     if (this.getIsCurrentPlayer()) {
       // reset replace counter
       return this.deck.setNumCardsReplacedThisTurn(0);
