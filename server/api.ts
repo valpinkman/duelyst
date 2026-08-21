@@ -11,6 +11,7 @@ const os = require('os');
 const fs = require('fs');
 const path = require('path');
 const { PROJECT_ROOT } = require('server/lib/project_root');
+const { hasBundledClient } = require('server/lib/bundled_client');
 const downloadHtml = require('./lib/download_html');
 const mkdirp = require('mkdirp');
 const Logger = require('../app/common/logger');
@@ -92,7 +93,8 @@ const setupProduction = () =>
 
 process.on('uncaughtException', (err) => shutdownLib.errorShutdown(err));
 
-if (config.isDevelopment()) {
+if (config.isDevelopment() || hasBundledClient) {
+  // hasBundledClient: nothing to fetch from a CDN, so just listen
   setupDevelopment();
 } else {
   setupProduction();

@@ -71,13 +71,26 @@ const poolStats = function (pool) {
   };
 };
 
+/*
+ * Upstream served the client from S3/CDN in staging and production, and only
+ * mounted dist/src in development -- there is no `public/<env>/` in this repo,
+ * so a production boot would 404 the game itself.
+ *
+ * A self-hosted deployment has no CDN: the image ships the built client. So if
+ * dist/src/index.html is present we serve it in every environment, and if it is
+ * not we fall back to the original public/<env> behaviour untouched. Nothing
+ * here changes which routes exist -- in particular /api/me/qa stays gated on
+ * config.isDevelopment() in server/routes/api.ts.
+ */
+const { CLIENT_DIST, hasBundledClient } = require('server/lib/bundled_client');
+
 const serveIndex = function (req, res) {
   // set no cache header
   res.setHeader('Cache-Control', 'no-cache');
   // serve index.html file
-  if (config.isDevelopment()) {
-    return res.sendFile(path.resolve(PROJECT_ROOT, 'dist/src/index.html'));
-    // Staging/Production mode uses index.html from S3
+  if (hasBundledClient) {
+    return res.sendFile(path.join(CLIENT_DIST, 'index.html'));
+    // no bundled client: upstream's S3/CDN layout
   } else {
     return res.sendFile(path.resolve(PROJECT_ROOT, 'public', env, 'index.html'));
   }
@@ -87,25 +100,51 @@ const serveRegister = function (req, res) {
   // set no cache header
   res.setHeader('Cache-Control', 'no-cache');
   // serve index.html file
-  if (config.isDevelopment()) {
-    return res.sendFile(path.resolve(PROJECT_ROOT, 'dist/src/register.html'));
-    // Staging/Production mode uses register.html from S3
+  if (hasBundledClient) {
+    return res.sendFile(path.join(CLIENT_DIST, 'register.html'));
+    // no bundled client: upstream's S3/CDN layout
   } else {
     return res.sendFile(path.resolve(PROJECT_ROOT, 'public', env, 'register.html'));
   }
 };
 
-// Setup routes for production / development mode
-// Development mode uses index.html from /dist folder
-if (config.isDevelopment()) {
-  Logger.module('EXPRESS').log(`Configuring for DEVELOPMENT environment ${env}`.yellow);
+// Setup routes for the bundled client / the original CDN layout
+if (hasBundledClient) {
+  Logger.module('EXPRESS').log(
+    `Serving the bundled client from dist/src (environment ${env})`.yellow,
+  );
 
-  // Serve enter /dist/src folder
+  /*
+   * dist/src is ~486 MB of art and audio. Development keeps upstream's
+   * revalidate-everything settings so an edited asset shows up on reload;
+   * anywhere else that would re-download the whole game on every visit, so
+   * validators and a short max-age are on. index.html itself is still
+   * no-cache (set in serveIndex), so a new build is always picked up.
+   */
+  const isDev = config.isDevelopment();
   router.use(
-    express.static(path.resolve(PROJECT_ROOT, 'dist/src'), {
-      etag: false,
-      lastModified: false,
-      maxAge: 0,
+    express.static(CLIENT_DIST, {
+      etag: !isDev,
+      lastModified: !isDev,
+      /*
+       * The global noCache middleware (server/middleware/basic.ts) has already
+       * set Cache-Control by the time this runs, and `send` only sets its own
+       * when the header is absent -- so the static `maxAge` option is silently
+       * ineffective here. setHeaders runs last and can override it.
+       *
+       * HTML keeps no-cache so a new build is picked up immediately; the rest
+       * is art, audio and the bundle, which are what make revalidating every
+       * asset on every visit untenable.
+       */
+      setHeaders: isDev
+        ? undefined
+        : (res, filePath) => {
+            if (filePath.endsWith('.html')) return;
+            res.setHeader('Cache-Control', 'public, max-age=3600');
+            res.removeHeader('Surrogate-Control');
+            res.removeHeader('Pragma');
+            res.removeHeader('Expires');
+          },
     }),
   );
 
@@ -116,7 +155,9 @@ if (config.isDevelopment()) {
   router.get('/login', serveRegister);
   router.post('/', serveIndex);
 } else {
-  Logger.module('EXPRESS').log(`Configuring for PRODUCTION environment ${env}`.cyan);
+  Logger.module('EXPRESS').log(
+    `No bundled client; expecting assets on a CDN (environment ${env})`.cyan,
+  );
 
   // temporarily disabled to allow iframing
   // router.get "/", helmet.frameguard('deny'), serveIndex
