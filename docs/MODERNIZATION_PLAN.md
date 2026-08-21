@@ -285,7 +285,7 @@ step it describes, so it can never drift from the code.
      and the rift cascade above. **The suite is now reproducible, which is the precondition for
      making it a CI gate.**
 
-  3. **Finish the data_access tail (23 stable failures, plus 2 quarantined as unstable).** ~~and wire the suites into CI~~ —
+  3. **Finish the data_access tail (15 stable failures, plus 2 quarantined as unstable).** ~~and wire the suites into CI~~ —
      **wired 2026-08-21** as a `data_access_tests` job that gates on drift rather than on green:
      `scripts/check-data-access-baseline.mjs` compares the failing set against
      `known-failures.txt` and fails if a passing test starts failing, or if a known-failing test

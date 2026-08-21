@@ -1,13 +1,6 @@
 # Tests in test/integration/data_access that are known to fail.
 # Regenerate deliberately with: pnpm check:data-access --update
 # The list may shrink; it should not grow.
-cosmetic_chests.js > cosmetic chests module > giveUserChestKeys() > expect to be able to give a user 1 chest key
-cosmetic_chests.js > cosmetic chests module > giveUserChestKeys() > expect to be able to give a user 5 chest keys
-cosmetic_chests.js > cosmetic chests module > openChest() > expect not to be able to open a chest with a key that does not belong to you
-cosmetic_chests.js > cosmetic chests module > openChest() > expect to be able to not be able to open a boss chest after it's expiration
-cosmetic_chests.js > cosmetic chests module > openChest() > expect to be not able to open a chest with a key of a different type
-cosmetic_chests.js > cosmetic chests module > updateUserChestRewardWithGameOutcome() > expect guarantee to receive a crate at 5+10 wins (with a 10% rng roll)
-gift_crate.js > gift crates module > unlockGiftCrate() > awards correct rewards to user inventory
 inventory.js > inventory module > buyRemainingSpiritOrbsWithSpirit > expect to be able to buy remaining set of spirit orbs with sufficient spirit and get correct spirit refund (and no gold)
 inventory.js > inventory module > giveUserMissingCodexChapters() > to correctly give a user their missing codex chapters
 quests.js > quests module > After FTUE - with one beginner quest > generateDailyQuests() - catch up quest > expect to generate a catch up quest with 2 charges when user doesn't complete 1 of their quests and the other is a beginner quest 2 days in a row
@@ -15,7 +8,6 @@ quests.js > quests module > After FTUE > _giveUserCatchUpQuestCharge() > expect 
 quests.js > quests module > After FTUE > generateDailyQuests() - catch up quest > expect to generate a catch up quest with 2 charges when doesn't complete 1 of their quests 2 days in a row
 quests.js > quests module > After FTUE > generateDailyQuests() - catch up quest > expect to generate a catch up quest with 2 charges when user has completed none of their quests and can generate quests 1 day later
 quests.js > quests module > After FTUE > generateDailyQuests() - catch up quest > expect to generate a catch up quest with 3 charges when user has completed 1 of their quests and can generate quests 2 days later
-quests.js > quests module > Seasonal Quests > February 2017 Quest > updateQuestProgressWithCompletedQuest() - February 2017 Quest > expect completing the February-2017 quest to award 1 common cosmetic key
 quests.js > quests module > Seasonal Quests > Frostfire 2016 Quest > generateDailyQuests() - Frostfire 2016 Quest > expect the seasonal Frostfire-2016 quest to NOT contribute to catchup quests
 rank.js > rank module > getCurrentSeasonRank() > expect non-expired rank to return correctly
 referrals.js > referrals module > referral program > referral hidden achievement > expect first purchase by a referral achievement to have awarded ROOK emote

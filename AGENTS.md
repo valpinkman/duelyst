@@ -32,7 +32,7 @@ pnpm build:server                              # ahead-of-time TS -> build/ for 
 pnpm test:unit                                 # vitest, 1366 tests, no external services
 pnpm test:integration:misc                     # needs nothing external; runs in CI
 pnpm test:integration:jobs                     # BullMQ job seam; needs ONLY redis, so it runs in CI too
-pnpm test:integration:data_access              # 562 tests; 23 known failures + 2 unstable. IN CI as a drift gate.
+pnpm test:integration:data_access              # 562 tests; 15 known failures + 2 unstable. IN CI as a drift gate.
 source scripts/dev/data-access-test-env.sh     #   throwaway postgres+redis+firebase emulator with this --
                                                #   deliberately separate from `docker compose`, because
                                                #   these suites create users and wipe inventories
@@ -216,6 +216,22 @@ How we work on it:
 
 Status log (newest first):
 
+- 2026-08-21 — **chased the inventory TypeError to its real cause; cosmetic chests are green and
+  the baseline is 23 → 15.** `NOW_UTC_MOMENT.toDate is not a function` was raised deep in
+  `giveUserCosmeticId`, three calls away from the mistake. **`openChest(userId, chestId,
+systemTime)` has no `keyId` parameter** — the key checks inside it are commented out, and the
+  2016 source is identical, so this is upstream rather than ours; the live route calls it
+  correctly as `openChest(user_id, chest_id)`. The tests were passing `keyId` third, so a push-id
+  string became the system time and blew up much later as a date.
+  **The tool that found it was our own AOT build.** tsx flattens stacks to
+  `inventory.ts:2:17547`; running the same reproduction against `build/` — which carries inline
+  source maps and enables `setSourceMapsEnabled` — gave a real line number immediately. Worth
+  reaching for whenever a stack in these suites is useless.
+  With that fixed, the `giveUserChestKey` restoration reverted yesterday lands safely: it grants
+  a chest key again instead of a chest. Two tests that assert key _validation_ stay skipped,
+  because openChest genuinely does not validate keys and `ChestAndKeyTypeDoNotMatchError` is
+  defined but never thrown. Also fixed the crate-guarantee test, which set `win_count` while the
+  probability reads `game_count`, and had been leaning on state accumulated by earlier tests.
 - 2026-08-21 — **cosmetic chests: baseline 29 → 23, and a production bug found but NOT shipped.**
   The chest probability tests asserted 0.33 and 0.0417, right when `CHEST_GAME_COUNT_WINDOW` was
   3 and wrong now it is 10. Rather than copy the new decimals in, they now assert the two

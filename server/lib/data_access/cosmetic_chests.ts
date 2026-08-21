@@ -238,21 +238,58 @@ class CosmeticChestsModule {
     transactionId,
     systemTime,
   ) {
-    if (keyType === SDK.CosmeticsChestTypeLookup.Boss) {
-      keyType = SDK.CosmeticsChestTypeLookup.Rare;
+    if (!userId) {
+      return Promise.reject(
+        new Error(`Can not give chest key to user: invalid user ID - ${userId}`),
+      );
     }
-    return this.giveUserChest(
-      trxPromise,
-      trx,
-      userId,
-      keyType,
-      null,
-      null,
-      keyAmount,
-      transactionType,
-      transactionId,
-      systemTime,
-    );
+    if (!keyType || !_.contains(_.values(SDK.CosmeticsChestTypeLookup), keyType)) {
+      return Promise.reject(
+        new Error(`Can not give chest key to user: invalid chest key type - ${keyType}`),
+      );
+    }
+    keyAmount = parseInt(keyAmount);
+    if (!keyAmount || keyAmount <= 0) {
+      return Promise.reject(
+        new Error(`Can not give chest key to user: invalid chest key amount - ${keyAmount}`),
+      );
+    }
+
+    const NOW_UTC_MOMENT = systemTime || moment.utc();
+    const chestKeyDatas = [];
+
+    return PromiseUtils.map(_.range(keyAmount), () => {
+      const keyData = {
+        user_id: userId,
+        key_id: generatePushId(),
+        key_type: keyType,
+        transaction_type: transactionType,
+        transaction_id: transactionId,
+        created_at: NOW_UTC_MOMENT.toDate(),
+      };
+      chestKeyDatas.push(keyData);
+      return trx('user_cosmetic_chest_keys').insert(keyData);
+    }).then(() => {
+      trxPromise
+        .then(() => DuelystFirebase.connect().getRootRef())
+        .then((rootRef) =>
+          Promise.all(
+            _.map(chestKeyDatas, (chestKeyData) => {
+              const fbChestKeyData = _.extend({}, chestKeyData);
+              fbChestKeyData.created_at = NOW_UTC_MOMENT.valueOf();
+              return FirebasePromises.set(
+                rootRef
+                  .child('user-inventory')
+                  .child(userId)
+                  .child('cosmetic-chest-keys')
+                  .child(fbChestKeyData.key_id),
+                fbChestKeyData,
+              );
+            }),
+          ),
+        );
+      return chestKeyDatas;
+    });
   }
 
   /**
