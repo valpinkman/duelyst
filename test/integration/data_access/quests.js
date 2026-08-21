@@ -29,6 +29,19 @@ const PromiseUtils = require('../../../app/common/utils/utils_promise');
 Logger.enabled = Logger.enabled && false;
 
 describe('quests module', () => {
+  /*
+   * The catch-up quest accumulates CATCH_UP_CHARGE_GOLD_VALUE per charge but is
+   * capped at CATCH_UP_MAX_GOLD_VALUE. These tests derived the per-charge part
+   * and then multiplied past the cap, which was invisible while the cap sat
+   * above the values they used -- it is 50 now, the same as one charge, so every
+   * multi-charge expectation overshot. Mirror the whole formula, cap included.
+   */
+  const catchUpGoldFor = (charges) =>
+    Math.min(
+      charges * QuestsModule.CATCH_UP_CHARGE_GOLD_VALUE,
+      QuestsModule.CATCH_UP_MAX_GOLD_VALUE,
+    );
+
   let userId = null;
 
   // before cleanup to check if user already exists and delete
@@ -994,16 +1007,12 @@ describe('quests module', () => {
           )
           .then(([catchUpQuestRow, fbCatchUpQuest]) => {
             expect(catchUpQuestRow).to.exist;
-            expect(catchUpQuestRow.gold).to.equal(
-              QuestsModule.CATCH_UP_CHARGE_GOLD_VALUE * catchUpChargesToExpect,
-            );
+            expect(catchUpQuestRow.gold).to.equal(catchUpGoldFor(catchUpChargesToExpect));
 
             expect(fbCatchUpQuest).to.exist;
             const fbCatchUpQuestData = fbCatchUpQuest.val();
             expect(fbCatchUpQuestData).to.exist;
-            expect(fbCatchUpQuestData.gold).to.equal(
-              QuestsModule.CATCH_UP_CHARGE_GOLD_VALUE * catchUpChargesToExpect,
-            );
+            expect(fbCatchUpQuestData.gold).to.equal(catchUpGoldFor(catchUpChargesToExpect));
           });
       });
 
@@ -1052,16 +1061,12 @@ describe('quests module', () => {
           )
           .then(([catchUpQuestRow, fbCatchUpQuest]) => {
             expect(catchUpQuestRow).to.exist;
-            expect(catchUpQuestRow.gold).to.equal(
-              QuestsModule.CATCH_UP_CHARGE_GOLD_VALUE * catchUpChargesToExpect,
-            );
+            expect(catchUpQuestRow.gold).to.equal(catchUpGoldFor(catchUpChargesToExpect));
 
             expect(fbCatchUpQuest).to.exist;
             const fbCatchUpQuestData = fbCatchUpQuest.val();
             expect(fbCatchUpQuestData).to.exist;
-            expect(fbCatchUpQuestData.gold).to.equal(
-              QuestsModule.CATCH_UP_CHARGE_GOLD_VALUE * catchUpChargesToExpect,
-            );
+            expect(fbCatchUpQuestData.gold).to.equal(catchUpGoldFor(catchUpChargesToExpect));
           });
       });
 
@@ -1221,7 +1226,7 @@ describe('quests module', () => {
 
             const catchUpQuestRow = catchUpQuestRows[0];
             expect(catchUpQuestRow).to.exist;
-            expect(catchUpQuestRow.gold).to.equal(1 * QuestsModule.CATCH_UP_CHARGE_GOLD_VALUE);
+            expect(catchUpQuestRow.gold).to.equal(catchUpGoldFor(1));
 
             const currentQuestsData = firebaseQuestsSnapshot.val().daily.current;
             expect(currentQuestsData).to.exist;
@@ -1229,7 +1234,7 @@ describe('quests module', () => {
             expect(currentQuestsData.quests[1]).to.exist;
             expect(currentQuestsData.quests[QuestsModule.CATCH_UP_QUEST_SLOT]).to.exist;
             expect(currentQuestsData.quests[QuestsModule.CATCH_UP_QUEST_SLOT].gold).to.equal(
-              1 * QuestsModule.CATCH_UP_CHARGE_GOLD_VALUE,
+              catchUpGoldFor(1),
             );
           });
       });
@@ -1272,7 +1277,7 @@ describe('quests module', () => {
 
             const catchUpQuestRow = catchUpQuestRows[0];
             expect(catchUpQuestRow).to.exist;
-            expect(catchUpQuestRow.gold).to.equal(2 * QuestsModule.CATCH_UP_CHARGE_GOLD_VALUE);
+            expect(catchUpQuestRow.gold).to.equal(catchUpGoldFor(2));
 
             const currentQuestsData = firebaseQuestsSnapshot.val().daily.current;
             expect(currentQuestsData).to.exist;
@@ -1280,7 +1285,7 @@ describe('quests module', () => {
             expect(currentQuestsData.quests[1]).to.exist;
             expect(currentQuestsData.quests[QuestsModule.CATCH_UP_QUEST_SLOT]).to.exist;
             expect(currentQuestsData.quests[QuestsModule.CATCH_UP_QUEST_SLOT].gold).to.equal(
-              2 * QuestsModule.CATCH_UP_CHARGE_GOLD_VALUE,
+              catchUpGoldFor(2),
             );
           });
       });
@@ -1329,7 +1334,7 @@ describe('quests module', () => {
 
             const catchUpQuestRow = catchUpQuestRows[0];
             expect(catchUpQuestRow).to.exist;
-            expect(catchUpQuestRow.gold).to.equal(3 * QuestsModule.CATCH_UP_CHARGE_GOLD_VALUE);
+            expect(catchUpQuestRow.gold).to.equal(catchUpGoldFor(3));
 
             const currentQuestsData = firebaseQuestsSnapshot.val().daily.current;
             expect(currentQuestsData).to.exist;
@@ -1337,7 +1342,7 @@ describe('quests module', () => {
             expect(currentQuestsData.quests[1]).to.exist;
             expect(currentQuestsData.quests[QuestsModule.CATCH_UP_QUEST_SLOT]).to.exist;
             expect(currentQuestsData.quests[QuestsModule.CATCH_UP_QUEST_SLOT].gold).to.equal(
-              3 * QuestsModule.CATCH_UP_CHARGE_GOLD_VALUE,
+              catchUpGoldFor(3),
             );
           });
       });
@@ -1393,7 +1398,7 @@ describe('quests module', () => {
 
             const catchUpQuestRow = catchUpQuestRows[0];
             expect(catchUpQuestRow).to.exist;
-            expect(catchUpQuestRow.gold).to.equal(2 * QuestsModule.CATCH_UP_CHARGE_GOLD_VALUE);
+            expect(catchUpQuestRow.gold).to.equal(catchUpGoldFor(2));
 
             const currentQuestsData = firebaseQuestsSnapshot.val().daily.current;
             expect(currentQuestsData).to.exist;
@@ -1401,7 +1406,7 @@ describe('quests module', () => {
             expect(currentQuestsData.quests[1]).to.exist;
             expect(currentQuestsData.quests[QuestsModule.CATCH_UP_QUEST_SLOT]).to.exist;
             expect(currentQuestsData.quests[QuestsModule.CATCH_UP_QUEST_SLOT].gold).to.equal(
-              2 * QuestsModule.CATCH_UP_CHARGE_GOLD_VALUE,
+              catchUpGoldFor(2),
             );
           });
       });
@@ -1568,7 +1573,7 @@ describe('quests module', () => {
 
             const catchUpQuestRow = catchUpQuestRows[0];
             expect(catchUpQuestRow).to.exist;
-            expect(catchUpQuestRow.gold).to.equal(2 * QuestsModule.CATCH_UP_CHARGE_GOLD_VALUE);
+            expect(catchUpQuestRow.gold).to.equal(catchUpGoldFor(2));
 
             const currentQuestsData = firebaseQuestsSnapshot.val().daily.current;
             expect(currentQuestsData).to.exist;
@@ -1576,7 +1581,7 @@ describe('quests module', () => {
             expect(currentQuestsData.quests[1]).to.exist;
             expect(currentQuestsData.quests[QuestsModule.CATCH_UP_QUEST_SLOT]).to.exist;
             expect(currentQuestsData.quests[QuestsModule.CATCH_UP_QUEST_SLOT].gold).to.equal(
-              2 * QuestsModule.CATCH_UP_CHARGE_GOLD_VALUE,
+              catchUpGoldFor(2),
             );
           });
       });
@@ -1710,14 +1715,14 @@ describe('quests module', () => {
             .then((result) => {
               expect(result.quests[QuestsModule.CATCH_UP_QUEST_SLOT]).to.exist;
               expect(result.quests[QuestsModule.CATCH_UP_QUEST_SLOT].gold).to.equal(
-                2 * QuestsModule.CATCH_UP_CHARGE_GOLD_VALUE,
+                catchUpGoldFor(2),
               );
             })
             .then(() => QuestsModule.generateDailyQuests(userId, systemTime.clone().add(2, 'day')))
             .then((result) => {
               expect(result.quests[QuestsModule.CATCH_UP_QUEST_SLOT]).to.exist;
               expect(result.quests[QuestsModule.CATCH_UP_QUEST_SLOT].gold).to.equal(
-                4 * QuestsModule.CATCH_UP_CHARGE_GOLD_VALUE,
+                catchUpGoldFor(4),
               );
 
               return knex('user_quests')
@@ -1727,7 +1732,7 @@ describe('quests module', () => {
             })
             .then((questRow) => {
               expect(questRow).to.exist;
-              expect(questRow.gold).to.equal(4 * QuestsModule.CATCH_UP_CHARGE_GOLD_VALUE);
+              expect(questRow.gold).to.equal(catchUpGoldFor(4));
             });
         });
       });

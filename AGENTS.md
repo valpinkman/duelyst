@@ -32,7 +32,7 @@ pnpm build:server                              # ahead-of-time TS -> build/ for 
 pnpm test:unit                                 # vitest, 1366 tests, no external services
 pnpm test:integration:misc                     # needs nothing external; runs in CI
 pnpm test:integration:jobs                     # BullMQ job seam; needs ONLY redis, so it runs in CI too
-pnpm test:integration:data_access              # 562 tests; 15 known failures + 2 unstable. IN CI as a drift gate.
+pnpm test:integration:data_access              # 562 tests; 9 known failures + 2 unstable. IN CI as a drift gate.
 source scripts/dev/data-access-test-env.sh     #   throwaway postgres+redis+firebase emulator with this --
                                                #   deliberately separate from `docker compose`, because
                                                #   these suites create users and wipe inventories
@@ -216,6 +216,15 @@ How we work on it:
 
 Status log (newest first):
 
+- 2026-08-21 — **quests is green; baseline 15 → 9.** All six remaining failures were one
+  omission: the tests derived the catch-up quest's gold from
+  `CATCH_UP_CHARGE_GOLD_VALUE` and multiplied by the charge count, but never applied
+  `CATCH_UP_MAX_GOLD_VALUE`, which production caps the total at. That was invisible while the cap
+  sat above the values in play; it is 50 now, the same as a single charge, so every multi-charge
+  expectation overshot. They mirror the whole formula now, cap included.
+  A seventh quests failure — the February-2017 seasonal quest awarding a cosmetic key — was
+  already fixed by yesterday's `giveUserChestKey` restoration, which is a useful measure of how
+  far that one bug reached.
 - 2026-08-21 — **chased the inventory TypeError to its real cause; cosmetic chests are green and
   the baseline is 23 → 15.** `NOW_UTC_MOMENT.toDate is not a function` was raised deep in
   `giveUserCosmeticId`, three calls away from the mistake. **`openChest(userId, chestId,
