@@ -4367,7 +4367,9 @@ class UsersModule {
         sqlUserChestKeyUsedRows,
         sqlUserRow,
       ]) {
-        const userSnapshot = {
+        // Both halves are open bags: the keys are added one-by-one below and the
+        // values are whatever the Firebase snapshot / knex row happens to hold.
+        const userSnapshot: { firebase: Record<string, any>; sql: Record<string, any> } = {
           firebase: {},
           sql: {},
         };

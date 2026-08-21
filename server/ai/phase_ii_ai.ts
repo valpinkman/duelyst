@@ -1083,8 +1083,7 @@ if (cluster.isMaster) {
       (rootNode.bestLeaf.noMoreActions == true || rootNode.bestLeaf == rootNode)
     ) {
       Logger.module('AI').debug(
-        `ai_cluster_worker_evaluateGameSessionAndSendToMaster() *Worker#${process.pid}:* gameSession tree fully built. sequence length = ${psuedoActionSequence.length}. no more actions found on bestLeaf node AND NOT TRUNCATED pushing an endTurn action onto end of sequence now. truncated = ${rootNode.truncated}. no more actions = ${rootNode.bestLeaf.noMoreActions}. rootNode.bestLeaf == rootNode = ${rootNode.bestLeaf}` ==
-          rootNode,
+        `ai_cluster_worker_evaluateGameSessionAndSendToMaster() *Worker#${process.pid}:* gameSession tree fully built. sequence length = ${psuedoActionSequence.length}. no more actions found on bestLeaf node AND NOT TRUNCATED pushing an endTurn action onto end of sequence now. truncated = ${rootNode.truncated}. no more actions = ${rootNode.bestLeaf.noMoreActions}. rootNode.bestLeaf == rootNode = ${rootNode.bestLeaf == rootNode}`,
       );
       psuedoActionSequence.push({ actionType: SDK.EndTurnAction.type });
     } else {
@@ -1187,7 +1186,9 @@ var ai_findAndExecuteActionSequence = function (gameSession, playerId, depthLimi
  */
 var ai_findActionSequence = function (gameSession, playerId, depthLimit, msTimeLimit) {
   const gameId = getGameId(gameSession);
-  return new Promise((resolve, reject) => {
+  // resolve() is stashed in ai_cluster_findActionSequenceResolveByGameId and called
+  // from the cluster message handler, so the payload shape has to be stated here.
+  return new Promise<{ sequence: any; rootNode: any }>((resolve, reject) => {
     Logger.module('AI').debug(
       `[G:${gameId}] ai_findActionSequence( ) -> depthLimit = ${depthLimit}. msTimeLimit = ${msTimeLimit}. playerId = ${playerId}`,
     );

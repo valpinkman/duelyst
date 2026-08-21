@@ -32,7 +32,8 @@ class AgentActions {
   /**
    * @param {string} type - Type of
    */
-  static _createBaseAgentAction(type) {
+  // The callers below build these up key-by-key, so the base shape is open.
+  static _createBaseAgentAction(type): Record<string, any> {
     return { type };
   }
 

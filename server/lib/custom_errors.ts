@@ -22,6 +22,8 @@ class NotFoundError extends Error {
 }
 
 class BadRequestError extends Error {
+  declare description: any;
+  declare status: any;
   constructor(message = 'Bad Request.') {
     super(message);
     this.message = message;
@@ -33,6 +35,8 @@ class BadRequestError extends Error {
 }
 
 class UnauthorizedError extends Error {
+  declare description: any;
+  declare status: any;
   constructor(message = 'Not Authorized.') {
     super(message);
     this.message = message;
@@ -53,6 +57,7 @@ class BadPasswordError extends Error {
 }
 
 class AccountDisabled extends Error {
+  declare status: any;
   constructor(message = 'Account Is Disabled.') {
     super(message);
     this.message = message;
@@ -63,6 +68,7 @@ class AccountDisabled extends Error {
 }
 
 class AlreadyExistsError extends Error {
+  declare status: any;
   constructor(message) {
     super(message);
     this.message = message;
@@ -99,6 +105,7 @@ class NoNeedForNewBeginnerQuestsError extends Error {
 }
 
 class InsufficientFundsError extends Error {
+  declare status: any;
   constructor(message) {
     super(message);
     this.message = message;
@@ -109,6 +116,7 @@ class InsufficientFundsError extends Error {
 }
 
 class InvalidInviteCodeError extends Error {
+  declare status: any;
   constructor(message) {
     super(message);
     this.message = message;
@@ -236,6 +244,8 @@ class MaxQuantityOfChestTypeError extends Error {
 }
 
 class SystemDisabledError extends Error {
+  declare description: any;
+  declare status: any;
   constructor(message = 'This system is currently disabled.') {
     super(message);
     this.message = message;
