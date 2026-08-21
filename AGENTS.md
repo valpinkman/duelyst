@@ -32,7 +32,7 @@ pnpm build:server                              # ahead-of-time TS -> build/ for 
 pnpm test:unit                                 # vitest, 1366 tests, no external services
 pnpm test:integration:misc                     # needs nothing external; runs in CI
 pnpm test:integration:jobs                     # BullMQ job seam; needs ONLY redis, so it runs in CI too
-pnpm test:integration:data_access              # 565 tests; 29 known failures + 2 unstable. IN CI as a drift gate.
+pnpm test:integration:data_access              # 562 tests; 23 known failures + 2 unstable. IN CI as a drift gate.
 source scripts/dev/data-access-test-env.sh     #   throwaway postgres+redis+firebase emulator with this --
                                                #   deliberately separate from `docker compose`, because
                                                #   these suites create users and wipe inventories
@@ -216,6 +216,25 @@ How we work on it:
 
 Status log (newest first):
 
+- 2026-08-21 — **cosmetic chests: baseline 29 → 23, and a production bug found but NOT shipped.**
+  The chest probability tests asserted 0.33 and 0.0417, right when `CHEST_GAME_COUNT_WINDOW` was
+  3 and wrong now it is 10. Rather than copy the new decimals in, they now assert the two
+  properties the formula is built from — the time factor saturates at four days and decays by
+  four per day below it — so they survive the next tuning pass. Four Monte Carlo calibration
+  tests went the same way, replaced by the shape that actually matters (play more often, earn
+  more, never run away); the four higher-frequency cases still passed and were left alone.
+  **Found and deliberately reverted:** `giveUserChestKey` grants a CHEST, not a key. The 2016
+  source defined it twice — a stub forwarding to `giveUserChest`, then the real implementation —
+  and the later definition won. Decaffeination kept the stub live and left the real one as a
+  comment, inverting that, so no chest key is ever created and chests cannot be opened.
+  Restoring it fixes the two `giveUserChestKeys` tests but unmasks a second defect deeper in the
+  path (`NOW_UTC_MOMENT.toDate is not a function`, raised inside `inventory.ts`), which turns two
+  passing tests red. Every call from the chest path was checked against its signature and they
+  match, so the cause is deeper. The fix is reverted rather than shipped half-verified — the
+  patch is straightforward to redo from this note once the inventory defect is located.
+  **Process note:** the first attempt at the chest work deleted eight tests when only four were
+  failing. The baseline gate tracks failures, so it would NOT have caught the loss of four
+  passing ones; the git diff did. Check what a bulk edit removed, not just what still fails.
 - 2026-08-21 — **inventory: 17 failures → 2, baseline 44 → 29.** Nearly all of it was one idea:
   assert against the constant that drives the behaviour rather than a number copied from 2016.
   A spirit orb costs 50 gold, not 100; a common cosmetic 250 spirit, not 500; and the whole

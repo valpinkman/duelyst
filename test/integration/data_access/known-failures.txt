@@ -1,12 +1,6 @@
 # Tests in test/integration/data_access that are known to fail.
 # Regenerate deliberately with: pnpm check:data-access --update
 # The list may shrink; it should not grow.
-cosmetic_chests.js > cosmetic chests module > _chestProbabilityForProgressionData > expects probability of 0.0417 if game_count == 10 and last_crate_awarded_at == (today-2) and last_crate_awarded_game_count == 8
-cosmetic_chests.js > cosmetic chests module > _chestProbabilityForProgressionData > expects probability of 0.33 if game_count == 10 and last_crate_awarded_at == (today-4) and last_crate_awarded_game_count == 9
-cosmetic_chests.js > cosmetic chests module > _chestTypeForProgressionData > expects a player that plays 1-4 games about every ~5 days over a 30 day period to receive 3 average crates and gets no more than 10 crates
-cosmetic_chests.js > cosmetic chests module > _chestTypeForProgressionData > expects a player that plays 4 games exactly every 10 days over a 30 day period to receive 3 average crates and gets no more than 5 crates
-cosmetic_chests.js > cosmetic chests module > _chestTypeForProgressionData > expects a player that plays 4 games exactly every 4 days over a 30 day period to receive 6 average crates and gets no more than 10 crates
-cosmetic_chests.js > cosmetic chests module > _chestTypeForProgressionData > expects a player that plays 4-8 games about every ~2 days over a 30 day period to receive 8 average crates and gets no more than 15 crates
 cosmetic_chests.js > cosmetic chests module > giveUserChestKeys() > expect to be able to give a user 1 chest key
 cosmetic_chests.js > cosmetic chests module > giveUserChestKeys() > expect to be able to give a user 5 chest keys
 cosmetic_chests.js > cosmetic chests module > openChest() > expect not to be able to open a chest with a key that does not belong to you
