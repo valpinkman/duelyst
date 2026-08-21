@@ -79,5 +79,8 @@ RUN pnpm build:server:root
 # the built client, from stage 1
 COPY --from=client /duelyst/dist/src ./dist/src
 
+COPY docker/web-entrypoint.sh /duelyst/docker/web-entrypoint.sh
+RUN chmod +x /duelyst/docker/web-entrypoint.sh
+
 EXPOSE 3000
-ENTRYPOINT ["node", "build/bin/api"]
+ENTRYPOINT ["/duelyst/docker/web-entrypoint.sh"]
