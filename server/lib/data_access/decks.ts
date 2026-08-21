@@ -16,7 +16,7 @@ const crypto = require('crypto');
 
 // SDK imports
 const SDK = require('../../../app/sdk');
-const UtilsGameSession = require('../../../app/common/utils/utils_game_session');
+const UtilsGameSession = require('../../../app/sdk/utils/utils_game_session');
 
 class DecksModule {
   /**

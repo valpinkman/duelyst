@@ -27,7 +27,7 @@ const DataAccessHelpers = require('./helpers');
 const SDK = require('../../../app/sdk');
 const QuestFactory = require('../../../app/sdk/quests/questFactory');
 const QuestType = require('../../../app/sdk/quests/questTypeLookup');
-const UtilsGameSession = require('../../../app/common/utils/utils_game_session');
+const UtilsGameSession = require('../../../app/sdk/utils/utils_game_session');
 const CosmeticsLookup = require('../../../app/sdk/cosmetics/cosmeticsLookup');
 
 // redis

@@ -26,7 +26,7 @@ const shutdownLib = require('./shutdown');
 const SDK = require('../app/sdk');
 let Logger = require('../app/common/logger');
 const EVENTS = require('../app/common/event_types');
-const UtilsGameSession = require('../app/common/utils/utils_game_session');
+const UtilsGameSession = require('../app/sdk/utils/utils_game_session');
 
 // lib Modules
 const Consul = require('./lib/consul');
