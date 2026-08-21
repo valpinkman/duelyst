@@ -309,8 +309,7 @@ whenLocalizationReady.then(() => {
     };
 
     qaButtons['Add Boss Chest'] = function () {
-      let hoursBack = prompt('Hours back to give the chest:', 0) || 0;
-      hoursBack = parseInt(hoursBack);
+      const hoursBack = parseInt(prompt('Hours back to give the chest:', '0') || '0', 10);
       const request = $.ajax({
         url: `${process.env.API_URL}/api/me/qa/cosmetic_chest/${SDK.CosmeticsChestTypeLookup.Boss}`,
         type: 'POST',
@@ -439,12 +438,16 @@ whenLocalizationReady.then(() => {
       }
       promptText += '\nExample: 401,500';
       promptText += '\nEnter Quest Ids:';
-      const dailyQuestString = prompt(promptText, 0, 0);
+      const dailyQuestString = prompt(promptText, '0');
 
       // validate and parse
+      if (dailyQuestString == null) {
+        alert('Invalid usage.');
+        return;
+      }
       const questIdStrings = dailyQuestString.split(',');
 
-      if (questIdStrings == null || questIdStrings.length !== 2) {
+      if (questIdStrings.length !== 2) {
         alert('Invalid usage.');
         return;
       }
@@ -470,7 +473,10 @@ whenLocalizationReady.then(() => {
       }).done(() => alert('done!'));
     };
     qaQuestButtons['Set Quest Generation Back X Days'] = function () {
-      let days_back = prompt('Enter how many days to set back quest generation (e.g. 2)', 1) || 1;
+      let days_back = parseInt(
+        prompt('Enter how many days to set back quest generation (e.g. 2)', '1') || '1',
+        10,
+      );
       days_back = Math.max(days_back, 1);
       const request = $.ajax({
         url: `${process.env.API_URL}/api/me/qa/quests/generated_at`,
@@ -603,7 +609,7 @@ whenLocalizationReady.then(() => {
       });
     };
     qaRankButtons['Set Last Season Top Rank'] = function () {
-      const rank = prompt('Enter Rank', 0) || 0;
+      const rank = prompt('Enter Rank', '0') || 0;
       const season_key = moment().utc().subtract(1, 'month').format('YYYY-MM');
       return $.ajax({
         url: `${process.env.API_URL}/api/me/qa/rank/history/${season_key}/top_rank`,
@@ -622,7 +628,7 @@ whenLocalizationReady.then(() => {
       });
     };
     qaRankButtons['Set Current Season Rank'] = function () {
-      const rank = prompt('Enter Rank', 30) || 0;
+      const rank = prompt('Enter Rank', '30') || 0;
       return $.ajax({
         url: `${process.env.API_URL}/api/me/qa/rank`,
         data: JSON.stringify({
@@ -638,7 +644,7 @@ Current season top_rank: ${response.top_rank}`),
       );
     };
     qaRankButtons['Set Current Season SRank Rating'] = function () {
-      let rank_rating = prompt('Enter Rating (Max 5000,Min 100)', 1500) || 1500;
+      let rank_rating = parseInt(prompt('Enter Rating (Max 5000,Min 100)', '1500') || '1500', 10);
       rank_rating = Math.max(rank_rating, 100);
       rank_rating = Math.min(rank_rating, 5000);
       return $.ajax({
@@ -696,7 +702,7 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`),
           .then(() => alert('Current season has been used to simulate a season rollover')),
       );
     qaRankButtons['Add queue time for BRONZE'] = function () {
-      const ms = prompt('Enter Rank', parseInt(Math.random() * 100) * 1000);
+      const ms = prompt('Enter Rank', String(Math.floor(Math.random() * 100) * 1000));
       return $.ajax({
         url: `${process.env.API_URL}/api/me/qa/matchmaking/time_series/bronze/values`,
         data: JSON.stringify({
@@ -918,8 +924,7 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`),
       return request.fail((response) => alert(`FAILED: \n${response.responseJSON.message}`));
     };
     qaInventoryButtons['Add X Gold'] = function () {
-      let amount = prompt('Gold amount to add:', 100) || 100;
-      amount = parseInt(amount);
+      const amount = parseInt(prompt('Gold amount to add:', '100') || '100', 10);
       const request = $.ajax({
         url: `${process.env.API_URL}/api/me/qa/inventory/gold`,
         data: JSON.stringify({
@@ -936,8 +941,7 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`),
       );
     };
     qaInventoryButtons['Add X Spirit'] = function () {
-      let amount = prompt('Spirit amount to add:', 900) || 900;
-      amount = parseInt(amount);
+      const amount = parseInt(prompt('Spirit amount to add:', '900') || '900', 10);
       const request = $.ajax({
         url: `${process.env.API_URL}/api/me/qa/inventory/spirit`,
         data: JSON.stringify({
@@ -955,8 +959,7 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`),
     };
 
     qaInventoryButtons['Add X Diamond'] = function () {
-      let amount = prompt('Diamond amount to add:', 450) || 450;
-      amount = parseInt(amount);
+      const amount = parseInt(prompt('Diamond amount to add:', '450') || '450', 10);
       const request = $.ajax({
         url: `${process.env.API_URL}/api/me/qa/inventory/premium`,
         data: JSON.stringify({
@@ -987,11 +990,9 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`),
       );
     };
     qaInventoryButtons['Add 3x Rare'] = function () {
-      let factionId = prompt('Enter Faction:', 1) || 1;
-      factionId = parseInt(factionId);
+      const factionId = parseInt(prompt('Enter Faction:', '1') || '1', 10);
 
-      let countToPop = prompt('Remove Any:', 0) || 0;
-      countToPop = parseInt(countToPop);
+      const countToPop = parseInt(prompt('Remove Any:', '0') || '0', 10);
 
       const allCommonCards = _.filter(
         __guard__(GameDataManager.getInstance().visibleCardsCollection, (x) => x.models),
@@ -1096,12 +1097,14 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`),
       return alert('Sandbox is now enabled.');
     };
     qaChallengeButtons['Set my daily challenge completion time'] = function () {
-      let relativeDays = prompt(
-        "Set daily challenge's last completion time X days relative to today:\n" +
-          'Negative numbers for past, 0 for today, positive numbers for the future',
-        0,
+      const relativeDays = parseInt(
+        prompt(
+          "Set daily challenge's last completion time X days relative to today:\n" +
+            'Negative numbers for past, 0 for today, positive numbers for the future',
+          '0',
+        ) ?? '',
+        10,
       );
-      relativeDays = parseInt(relativeDays);
       const newCompletionMoment = moment.utc().add(relativeDays, 'day');
       return $.ajax({
         url: `${process.env.API_URL}/api/me/qa/daily_challenge/completed_at`,
@@ -1179,8 +1182,7 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`),
         moment.utc().format('YYYY-MM-DD'),
       );
       const startDateMoment = moment.utc(startDateString);
-      let numDays = prompt('Enter num days to search:', 10);
-      numDays = parseInt(numDays);
+      const numDays = parseInt(prompt('Enter num days to search:', '10') ?? '', 10);
 
       const allDateKeys = [];
       for (let i = 0, end = numDays, asc = end >= 0; asc ? i <= end : i >= end; asc ? i++ : i--) {
@@ -1367,8 +1369,7 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`),
     mtSetupAchievementResetFolder.add(mtSetupAchievementReset, 'Submit');
 
     qaMiscButtons['Set up account for prismatic backfill'] = function () {
-      let numOrbs = prompt('Number of spirit orbs to add:\n', 0);
-      numOrbs = parseInt(numOrbs);
+      const numOrbs = parseInt(prompt('Number of spirit orbs to add:\n', '0') ?? '', 10);
 
       const confirmation = prompt("Please enter 'confirm' to proceed");
       if (confirmation !== 'confirm') {
@@ -1768,7 +1769,7 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`),
     gtAddCardToHandFolder.add(gtAddCardToHand, 'Remove Any Card');
 
     // game tools: change unit stats
-    const gtChangeStats = {
+    const gtChangeStats: Record<string, any> = {
       'Max HP': -1,
       Attack: -1,
       Damage: -1,
@@ -2598,7 +2599,7 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`),
       // get options
       let selectableMatched;
       let name = `${options.name}`;
-      let value = `${options.value}`;
+      let value: any = `${options.value}`;
       const { type } = options;
 
       // remove spaces from name
