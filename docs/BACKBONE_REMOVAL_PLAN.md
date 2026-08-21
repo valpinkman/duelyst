@@ -510,8 +510,84 @@ Everything in [`BACKBONE_AUDIT.md §8`](BACKBONE_AUDIT.md) still applies, plus:
 
 Work is tracked as issues on `myrepo` under the **`marionette-removal`** label, split `afk` (an
 agent can land it unattended) and `hitl` (needs a human — an architectural call, a judgement call,
-or a playable stack). The **long-lived PR is the live status board**; this document is the reasoning
-behind it and changes only when a decision changes.
+or a playable stack).
 
-All work lands on the long-lived branch, never directly on `modernization`, so the two stacks can be
-run and tested in isolation. Push to `myrepo`; **never** to `origin` (`open-duelyst/duelyst`).
+- **Board:** [Duelyst project #3](https://github.com/users/valpinkman/projects/3) — grouped by
+  `Phase`, ordered by `Iteration`, prioritised `P0`/`P1`/`P2`. **This is the single source of truth
+  for status.**
+- **Long-lived PR:** [#18](https://github.com/valpinkman/duelyst/pull/18) — the narrative summary.
+- **This document** is the reasoning, and changes only when a decision changes.
+
+Iteration dates on the board are **structural filler**. GitHub's API requires `startDate` and
+`duration` on every iteration; there is no dateless form. The ordering and the titles carry the
+meaning — ignore the dates.
+
+## 11. Working rules
+
+**These rules exist so this milestone can be worked unattended. They are not style preferences —
+an agent that breaks them produces work that cannot be reviewed or reverted cleanly.**
+
+### 11.1 Branching and PR shape
+
+| Rule                                                                                                               | Why                                                                             |
+| ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------- |
+| **Every PR targets `marionette-removal`**, never `main`                                                            | The two view stacks must be runnable in isolation until the milestone is done   |
+| **One issue → one PR.** An issue too large for one PR becomes **several PRs**, each closing nothing until the last | Reviewable units                                                                |
+| **A PR must never close more than one issue.** Exactly one `Closes #N`, or none                                    | A PR closing two issues cannot be reverted without reopening work that was fine |
+| Branch name: **`mr/<issue>-<slug>`** (e.g. `mr/6-velocity-to-web-animations`)                                      | The issue is recoverable from the branch name alone                             |
+| **Squash-merge** into `marionette-removal`                                                                         | The long-lived branch is rebased continuously; merge commits make that painful  |
+| **Never push to `origin`** (`open-duelyst/duelyst`). `myrepo` only                                                 | `origin` is upstream and read-only                                              |
+| **Never merge PR #18.** It closes when the definition of done is met, by a human                                   | It is an integration branch, not a change                                       |
+
+`marionette-removal` is **rebased onto `main` continuously**. Consequences an agent must handle:
+
+- Rebase your feature branch onto `marionette-removal` before opening the PR, and again before
+  merging if it has moved. Do not merge `marionette-removal` into your branch.
+- Force-pushing your own `mr/*` branch after a rebase is expected. Force-pushing
+  `marionette-removal` is a human action — do not do it unattended.
+- A conflict in `docs/BACKBONE_REMOVAL_PLAN.md` means two agents edited the plan. Stop and ask;
+  do not resolve it by picking a side.
+
+### 11.2 What every PR must contain
+
+- **One commit per logical step**, per AGENTS.md. Multiple commits are fine; one commit doing two
+  unrelated things is not.
+- The PR body states **which acceptance criteria from the issue are met**, and explicitly lists any
+  that are not, with the reason. Do not silently narrow scope.
+- **Green:** `pnpm build`, `pnpm test:unit`, `pnpm typecheck`, `pnpm lint`, `pnpm format:check`.
+  `pnpm typecheck` is a CI gate at zero — this milestone adds a lot of new code to the one area of
+  the tree that was never typed, so this is the gate most likely to bite.
+- `pnpm check:undefined-names` **after any codemod**.
+- If `config/config.js` was touched: `pnpm check:turbo-env`.
+
+### 11.3 When a test is required, and which
+
+"Tested when required" needs a decision procedure, not judgement. Use this table:
+
+| The change…                              | Required evidence                                                                                            |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| Analysis only, no runtime change (#4)    | The deliverable is a doc diff. No test. Say "no runtime change" in the PR body.                              |
+| Build/tooling only (#1, #11)             | A **negative test**: demonstrate the check fails when it should. A gate that has never failed is not a gate. |
+| Touches a screen's markup or behaviour   | **Screen tour green**, plus a component test for any new Lit component                                       |
+| New Lit component                        | Component test (vitest + happy-dom) covering render, the Backbone binding, and teardown                      |
+| Changes data flow but no markup (#9)     | Screen tour green **with no screen changing** — that is the assertion                                        |
+| Deletes a dependency (#6, #13, #14, #16) | Screen tour green + the dependency absent from `VENDOR_FILES` and `package.json`                             |
+| Anything the tour cannot reach           | A **hand-test checklist in the PR body**, ticked. See below.                                                 |
+
+**The tour cannot reach**: drag-and-drop gestures, real-money shop flows, animation correctness,
+booster-pack opening, and anything requiring seeded inventory. For these the PR body carries an
+explicit checklist of what was exercised by hand. An agent that cannot hand-test must say so and
+leave the PR as a draft for a human — **not** claim the criterion is met.
+
+**Until #2 lands there is no screen tour.** Any PR before then that touches `app/ui` must say
+explicitly how it was verified instead. This is why #1–#3 are the first iteration.
+
+### 11.4 Definition of ready vs done
+
+- **Ready** on the board means _no unmet blockers_, not _next up_. Anything `Ready` can be started.
+- Do not start an issue whose blockers are open. The blockers are listed in the issue body and are
+  load-bearing — #9 before #4 means reimplementing write semantics without knowing what they are.
+- An issue is **done** when its PR is squash-merged into `marionette-removal` and its acceptance
+  criteria are all ticked or explicitly waived in the PR body.
+- **A green build proves nothing in this milestone.** A wrong Backbone/Firebase version fails at
+  runtime, not at build time. The screen tour is the gate.
