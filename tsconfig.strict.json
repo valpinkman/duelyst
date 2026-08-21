@@ -8,8 +8,8 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "target": "es2015",
-    "moduleResolution": "node16",
-    "module": "CommonJS",
+    "moduleResolution": "bundler",
+    "module": "preserve",
     "allowJs": false,
     "checkJs": false,
     "strict": true,

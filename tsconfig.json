@@ -10,9 +10,9 @@
   ],
   "compilerOptions": {
     "target": "es2020",
-    "module": "commonjs",
+    "module": "preserve",
     "moduleDetection": "force",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "esModuleInterop": true,
     "allowJs": true,
     "checkJs": false,

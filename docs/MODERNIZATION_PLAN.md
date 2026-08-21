@@ -630,9 +630,11 @@ mocha + vitest + both builds + wire-format tests.
       `.mocharc.js`, a vitest setup file, `scripts/generate_packages.js` and the build
       orchestrator; Vite/eslint resolve `.ts`; eslint gets `@typescript-eslint/parser` and the
       per-directory overrides now cover `.ts` too.
-      **TypeScript pinned to 5.9**: TS 7 (the native port) is installed-able but
-      `@typescript-eslint` refuses it ("does not support TS 7.0"), and it drops `baseUrl` /
-      `moduleResolution: node`. Ecosystem support wins for a migration.
+      **TypeScript was pinned to 5.9** here: TS 7 (the native port) was installable but
+      `@typescript-eslint` refused it ("does not support TS 7.0"), and it drops `baseUrl` /
+      `moduleResolution: node`. Ecosystem support won for a migration.
+      **Superseded 2026-08-21** — eslint is gone, so the blocker went with it; the repo is on
+      TypeScript 7.0.2. See the status log in AGENTS.md.
       Hardened the build: `packages.js` is deleted before regeneration, so a crashed generator
       can no longer leave a truncated file that the manifest guard reports as a false regression
       (which is exactly what it did once here). — (this commit)

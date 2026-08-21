@@ -216,6 +216,17 @@ How we work on it:
 
 Status log (newest first):
 
+- 2026-08-21 — **TypeScript 5.9 → 7.0.2 (the native compiler).** The pin existed for one
+  reason — `@typescript-eslint` refused TS 7 — and eslint left with the oxlint switch, so the
+  blocker went with it. **A full typecheck went 3.47 s → 0.39 s**, measured A/B on the same
+  tree. Error count 360 → 362: TS2339 +2, TS2345 −1, TS2739 +1, which is compiler inference
+  differing, not new defects — and **TS2304, the only gated code, is still zero**.
+  Three config changes were needed. `moduleResolution: node10` is removed in TS 7, so both
+  tsconfigs moved to `bundler` + `module: preserve`; that costs nothing here because the
+  codebase has **zero `import` statements** — all 2,026 files use `require()`, which TS resolves
+  without consulting `moduleResolution` at all. And TS 7 defaults `strict` to **true**, which
+  broke `packages/chroma-js` (a fork that never opted in); its tsconfig now says `strict: false`
+  explicitly rather than relying on a default that moved.
 - 2026-08-21 — **quests is green; baseline 15 → 9.** All six remaining failures were one
   omission: the tests derived the catch-up quest's gold from
   `CATCH_UP_CHARGE_GOLD_VALUE` and multiplied by the charge count, but never applied
@@ -540,7 +551,7 @@ lastRewardOrder` declarations in one block, so the assertion read a binding decl
 - 2026-08-19 — app/sdk is 100% TypeScript (1,375 files). Typecheck baseline 423 errors
   (metric, not a gate). Wire format + packages manifest verified unchanged.
 - 2026-08-19 — .ts runs everywhere (tsx hook in bin/mocha/vitest/generator); first 10 SDK
-  lookups renamed to TypeScript; TS pinned to 5.9 for eslint compatibility.
+  lookups renamed to TypeScript; TS pinned to 5.9 for eslint compatibility (lifted 2026-08-21).
 - 2026-08-19 — TS toolchain in (loose tsconfig working, strict one is the destination);
   decaffeinate initClass dissolved in 1,183 files with prototype props kept off instances.
 - 2026-08-19 — GULP DELETED (4.5). Gate met against a real Firebase RTDB: registered, logged in,
