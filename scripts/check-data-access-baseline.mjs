@@ -133,6 +133,10 @@ if (update) {
 }
 
 const baseline = readList(BASELINE);
+// Unstable tests are subtracted from BOTH sides. Dropping them only from the
+// current run would make any that are also recorded in the baseline look like
+// they had just started passing.
+for (const name of unstable) baseline.delete(name);
 
 const newlyFailing = sorted.filter((n) => !baseline.has(n));
 const newlyPassing = [...baseline].filter((n) => !failing.has(n)).sort();

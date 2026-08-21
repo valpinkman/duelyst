@@ -1,15 +1,16 @@
-# Tests whose verdict is not reproducible even on a fresh database and a fresh
-# Firebase emulator. The baseline gate ignores them in BOTH directions, so they
-# can neither fail CI nor be credited as fixed.
+# Tests whose verdict is not reproducible even on a fresh database and a
+# fresh Firebase emulator. The baseline gate ignores them in BOTH
+# directions, so they can neither fail CI nor be credited as fixed.
 #
 # Everything here is debt: an ignored test guards nothing. The list exists
-# because a gate that fails randomly gets ignored, and an ignored gate is worse
-# than no gate. Keep it as close to empty as possible.
+# because a gate that fails randomly gets ignored, and an ignored gate is
+# worse than no gate. Keep it as close to empty as possible.
 #
-# Both entries currently PASS on almost every run -- each was observed to fail
-# exactly once across roughly eight CI-equivalent runs, which is precisely the
-# rate that erodes trust in a gate. Neither has been diagnosed. The chest and
-# inventory suites are seeded (test/helpers/seeded_random.js), so the remaining
-# source is state these tests assume but do not establish.
+# All three usually PASS. Each was seen to flip at least once across roughly
+# a dozen runs, which is exactly the rate that erodes trust in a gate. None
+# has been diagnosed. The chest and inventory suites are already seeded
+# (test/helpers/seeded_random.js) and TZ is pinned, so the remaining source
+# is state these tests assume but do not establish for themselves.
 inventory.js > inventory module > unlockBoosterPack() > expect cards you received from the booster to be marked as NEW and UNREAD
 gauntlet.js > gauntlet module > updateArenaRunWithGameOutcome() > expect 3 losses to end the run
+rank.js > rank module > updateUsersRatingsWithGameOutcome() expected ladder Position > expect a series of s rank matches to result in an expected ladder state

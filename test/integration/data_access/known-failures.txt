@@ -1,10 +1,6 @@
 # Tests in test/integration/data_access that are known to fail.
 # Regenerate deliberately with: pnpm check:data-access --update
 # The list may shrink; it should not grow.
-#
-# Recorded from five consecutive CI-equivalent runs (fresh Postgres and a
-# fresh Firebase emulator each time) that produced an identical set. These
-# are overwhelmingly stale 2016 game-balance numbers -- see the plan.
 cosmetic_chests.js > cosmetic chests module > _chestProbabilityForProgressionData > expects probability of 0.0417 if game_count == 10 and last_crate_awarded_at == (today-2) and last_crate_awarded_game_count == 8
 cosmetic_chests.js > cosmetic chests module > _chestProbabilityForProgressionData > expects probability of 0.33 if game_count == 10 and last_crate_awarded_at == (today-4) and last_crate_awarded_game_count == 9
 cosmetic_chests.js > cosmetic chests module > _chestTypeForProgressionData > expects a player that plays 1-4 games about every ~5 days over a 30 day period to receive 3 average crates and gets no more than 10 crates
@@ -56,7 +52,6 @@ quests.js > quests module > After FTUE > generateDailyQuests() - catch up quest 
 quests.js > quests module > Seasonal Quests > February 2017 Quest > updateQuestProgressWithCompletedQuest() - February 2017 Quest > expect completing the February-2017 quest to award 1 common cosmetic key
 quests.js > quests module > Seasonal Quests > Frostfire 2016 Quest > generateDailyQuests() - Frostfire 2016 Quest > expect the seasonal Frostfire-2016 quest to NOT contribute to catchup quests
 rank.js > rank module > getCurrentSeasonRank() > expect non-expired rank to return correctly
-rank.js > rank module > updateUsersRatingsWithGameOutcome() expected ladder Position > expect a series of s rank matches to result in an expected ladder state
 referrals.js > referrals module > referral program > referral hidden achievement > expect first purchase by a referral achievement to have awarded ROOK emote
 sync.js > sync module > _syncUserFromSQLToFirebase() > card-collection in firebase to be removed if user collection data empty in SQL
 users.js > users module > isAllowedToUseDeck() > expect a player to NOT be able to use a full LYONAR starter deck with 10 xp
