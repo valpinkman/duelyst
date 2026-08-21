@@ -71,30 +71,39 @@ describe('inventory module', () => {
 
   beforeAll(() => {
     Logger.module('UNITTEST').log('creating user');
-    return UsersModule.createNewUser('unittest', 'hash', 'kumite14')
-      .then((userIdCreated) => {
-        Logger.module('UNITTEST').log('created user ', userIdCreated);
-        userId = userIdCreated;
-      })
-      .catch(
-        onType(Errors.AlreadyExistsError, (error) => {
-          Logger.module('UNITTEST').log('existing user');
-          return UsersModule.userIdForUsername('unittest')
-            .then((userIdExisting) => {
-              Logger.module('UNITTEST').log('existing user retrieved', userIdExisting);
-              userId = userIdExisting;
-              return SyncModule.wipeUserData(userIdExisting);
-            })
-            .then(() => {
-              Logger.module('UNITTEST').log('existing user data wiped', userId);
-
-              return DuelystFirebase.connect().getRootRef();
-            })
-            .then((rootRef) => {
-              fbRootRef = rootRef;
-            });
-        }),
-      );
+    return (
+      UsersModule.createNewUser('unittest', 'hash', 'kumite14')
+        .then((userIdCreated) => {
+          Logger.module('UNITTEST').log('created user ', userIdCreated);
+          userId = userIdCreated;
+        })
+        .catch(
+          onType(Errors.AlreadyExistsError, (error) => {
+            Logger.module('UNITTEST').log('existing user');
+            return UsersModule.userIdForUsername('unittest')
+              .then((userIdExisting) => {
+                Logger.module('UNITTEST').log('existing user retrieved', userIdExisting);
+                userId = userIdExisting;
+                return SyncModule.wipeUserData(userIdExisting);
+              })
+              .then(() => {
+                Logger.module('UNITTEST').log('existing user data wiped', userId);
+              });
+          }),
+        )
+        /*
+         * Both paths need the root ref. It used to be fetched only inside the
+         * AlreadyExistsError branch, so on a fresh database -- where createNewUser
+         * succeeds and the catch never runs -- fbRootRef stayed null and every
+         * test that reaches Firebase through it died on `null.child(...)`. That is
+         * also why these tests behaved differently against a database they had
+         * already written to.
+         */
+        .then(() => DuelystFirebase.connect().getRootRef())
+        .then((rootRef) => {
+          fbRootRef = rootRef;
+        })
+    );
   });
 
   // // after cleanup
@@ -970,7 +979,13 @@ describe('inventory module', () => {
 
   describe('unlockBoosterPack()', () => {
     const _chainState = {};
-    const openedBoosterId = null;
+    /*
+     * Set when a booster is opened and read by the tests that follow. It was a
+     * `const` here and a second `const` inside each callback, so the inner ones
+     * shadowed rather than assigned and this stayed null -- which reached
+     * Firebase as .child(null) and threw "invalid path".
+     */
+    let openedBoosterId = null;
 
     it('expect NOT to be able to unlock and INVALID booster pack ID', () =>
       InventoryModule.unlockBoosterPack(userId, 'invalid-pack-id')
@@ -1007,7 +1022,7 @@ describe('inventory module', () => {
         .then((boosterIds) => {
           expect(boosterIds).to.exist;
           expect(boosterIds.length).to.equal(1);
-          const openedBoosterId = boosterIds[0];
+          openedBoosterId = boosterIds[0];
           _chainState.boosterId = openedBoosterId;
           return InventoryModule.unlockBoosterPack(userId, openedBoosterId);
         })
@@ -1105,7 +1120,7 @@ describe('inventory module', () => {
         .then((boosterIds) => {
           expect(boosterIds).to.exist;
           expect(boosterIds.length).to.equal(1);
-          const openedBoosterId = boosterIds[0];
+          openedBoosterId = boosterIds[0];
           _chainState.boosterId = openedBoosterId;
           return InventoryModule.unlockBoosterPack(userId, openedBoosterId);
         })
@@ -2489,7 +2504,14 @@ describe('inventory module', () => {
 
     it('to give a user cosmetics in order of reward order', () => {
       const rareCosmetics = _.clone(SDK.CosmeticsFactory.cosmeticsForRarity(SDK.Rarity.Rare));
-      const lastRewardOrder = null;
+      /*
+       * One mutable cursor carried across the whole loop: each cosmetic handed
+       * out must have a rewardOrder at least as high as the previous one.
+       * Decaffeination turned every assignment into its own `const`, so the
+       * assertion below read a binding declared beneath it and the test died on
+       * a TDZ ReferenceError instead of checking anything.
+       */
+      let lastRewardOrder = null;
 
       return SyncModule.wipeUserData(userId).then(() =>
         PromiseUtils.each(
@@ -2512,10 +2534,10 @@ describe('inventory module', () => {
                 rewardData.cosmetic_id,
               );
               if (lastRewardOrder == null) {
-                const lastRewardOrder = cosmeticsData.rewardOrder;
+                lastRewardOrder = cosmeticsData.rewardOrder;
               }
               expect(cosmeticsData.rewardOrder).to.be.at.least(lastRewardOrder);
-              const lastRewardOrder = cosmeticsData.rewardOrder;
+              lastRewardOrder = cosmeticsData.rewardOrder;
             });
             return retPromise;
           },
@@ -2954,14 +2976,20 @@ describe('inventory module', () => {
     });
 
     it('to NOT be able debit spirit if insufficient funds', () => {
-      const spiritBefore = null;
+      /*
+       * Read again further down the chain, after the block that sets it. It was
+       * `const` here and `const` again inside that block, so the later
+       * assertions compared the wallet against null instead of against the
+       * balance the test started from.
+       */
+      let spiritBefore = null;
 
       return knex
         .first()
         .from('users')
         .where({ id: userId })
         .then((userRow) => {
-          const spiritBefore = userRow.wallet_spirit;
+          spiritBefore = userRow.wallet_spirit;
 
           const txPromise = knex.transaction((tx) => {
             InventoryModule.debitSpiritFromUser(txPromise, tx, userId, -1 * spiritBefore - 100)
@@ -4202,9 +4230,10 @@ describe('inventory module', () => {
       expect(
         SDK.GameSession.getCardCaches().getRace(SDK.Races.BattlePet).getCards().length > 0,
       ).to.equal(true);
-      expect(
-        SDK.GameSession.getCardCaches().getRace(SDK.Races.Warmaster).getCards().length > 0,
-      ).to.equal(true);
+      // SDK.Races.Warmaster does not exist -- the enum has eight races and none of
+      // them is this one; "Warmaster" survives only inside card names such as
+      // Cards.Faction6.FenrirWarmaster. getRace(undefined) returned undefined and
+      // the test died on it, so this asserted nothing about the cache.
 
       expect(SDK.GameSession.getCardCaches().getIsCollectible(true).getCards().length > 0).to.equal(
         true,

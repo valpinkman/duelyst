@@ -32,7 +32,7 @@ pnpm build:server                              # ahead-of-time TS -> build/ for 
 pnpm test:unit                                 # vitest, 1366 tests, no external services
 pnpm test:integration:misc                     # needs nothing external; runs in CI
 pnpm test:integration:jobs                     # BullMQ job seam; needs ONLY redis, so it runs in CI too
-pnpm test:integration:data_access              # 565 tests; 51 known failures + 2 unstable. IN CI as a drift gate.
+pnpm test:integration:data_access              # 565 tests; 44 known failures + 2 unstable. IN CI as a drift gate.
 source scripts/dev/data-access-test-env.sh     #   throwaway postgres+redis+firebase emulator with this --
                                                #   deliberately separate from `docker compose`, because
                                                #   these suites create users and wipe inventories
@@ -216,6 +216,22 @@ How we work on it:
 
 Status log (newest first):
 
+- 2026-08-21 — **cleared the crashes hiding in the data_access tail: 51 known failures → 44, and
+  every remaining one is now an assertion rather than an error.** Six defects, five of them the
+  same shape — a variable declared at suite scope and _re-declared_ with `const` inside a
+  callback, so the inner one shadowed instead of assigning and every later read saw `null`. That
+  is a decaffeination artifact: CoffeeScript had one mutable binding per scope, and the
+  conversion gave each assignment its own declaration. It cost `sync` its `userId` ("Could not
+  find user" from production code), `inventory` its `openedBoosterId` (`.child(null)` →
+  "invalid path") and its `spiritBefore` (asserted the wallet against `null`), and `rift` its
+  `firstTicketId` earlier today. A sixth was the same idea one step further: three `const
+lastRewardOrder` declarations in one block, so the assertion read a binding declared beneath
+  it and died on a TDZ ReferenceError.
+  **The best of them explains the non-idempotence noted yesterday**: `inventory`'s `fbRootRef`
+  was only fetched inside the `AlreadyExistsError` branch of its setup, so on a _fresh_ database
+  — where the user is created and the catch never runs — it stayed null and every test reaching
+  Firebase through it threw. Also removed an assertion on `SDK.Races.Warmaster`, which is not a
+  race and never was; `getRace(undefined)` had been failing the test rather than checking a cache.
 - 2026-08-21 — **started on the stale-balance tail: gauntlet is green, 58 known failures → 51.**
   The headline number is that arena tickets are free now (`GAUNTLET_TICKET_GOLD_PRICE === 0`)
   and the tests hardcoded the old 150, so they failed on the price rather than the behaviour.

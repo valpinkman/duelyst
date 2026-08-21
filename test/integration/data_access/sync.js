@@ -25,7 +25,14 @@ const { onType } = require('../../../app/common/utils/utils_promise');
 Logger.enabled = Logger.enabled && false;
 
 describe('sync module', () => {
-  const userId = null;
+  /*
+   * Assigned by the beforeAll below. It was `const` here and `const` again
+   * inside the beforeAll's callback, so the inner declaration shadowed rather
+   * than assigned and every test saw null -- which surfaced as "Could not find
+   * user" from data_access/sync rather than as anything about the test setup.
+   */
+  let userId = null;
+  let user2Id = null;
 
   // before cleanup to check if user already exists and delete
   beforeAll(() => {
@@ -58,8 +65,8 @@ describe('sync module', () => {
       createOrInsertUser('unit-test-1@duelyst.local', 'player 1', 0),
       createOrInsertUser('unit-test-2@duelyst.local', 'player 2', 0),
     ]).then(([player1CreatedId, player2CreatedId]) => {
-      const userId = player1CreatedId;
-      const user2Id = player2CreatedId;
+      userId = player1CreatedId;
+      user2Id = player2CreatedId;
     });
   });
 

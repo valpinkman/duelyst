@@ -14,7 +14,6 @@ cosmetic_chests.js > cosmetic chests module > openChest() > expect to be able to
 cosmetic_chests.js > cosmetic chests module > openChest() > expect to be not able to open a chest with a key of a different type
 cosmetic_chests.js > cosmetic chests module > updateUserChestRewardWithGameOutcome() > expect guarantee to receive a crate at 5+10 wins (with a 10% rng roll)
 gift_crate.js > gift crates module > unlockGiftCrate() > awards correct rewards to user inventory
-inventory.js > inventory module > Test cached card methods > expect cache to contain cards in each major category
 inventory.js > inventory module > buyBoosterPacksWithGold() > expect to be able to buy 3 booster packs for 300 GOLD
 inventory.js > inventory module > buyBoosterPacksWithGold() > expect to be able to buy a booster pack for 100 GOLD
 inventory.js > inventory module > buyBoosterPacksWithGold() > expect to be able to buy a shimzar booster pack for 100 GOLD
@@ -23,20 +22,15 @@ inventory.js > inventory module > craftCard() > when ALL_CARDS_AVAILABLE is FALS
 inventory.js > inventory module > craftCard() > when ALL_CARDS_AVAILABLE is FALSE > expect to be left with 0 spirit in wallet
 inventory.js > inventory module > craftCosmetic() > expect to NOT be able to craft a COMMON cosmetic with 499 spirit in wallet
 inventory.js > inventory module > craftCosmetic() > expect to be able to craft a COMMON cosmetic with 500 spirit in wallet
-inventory.js > inventory module > debitSpiritFromUser() > to NOT be able debit spirit if insufficient funds
 inventory.js > inventory module > debitSpiritFromUser() > to debit spirit correctly
 inventory.js > inventory module > disenchantCard() > expect LOCKING when disenchant DUPLICATES to work to avoid race conditions
 inventory.js > inventory module > disenchantCard() > expect disenchanting duplicates again right after to have no effect
 inventory.js > inventory module > disenchantCard() > expect to be able to disenchant DUPLICATE cards
 inventory.js > inventory module > disenchantCard() > expect to be able to disenchant a set of COMMON,RARE,EPIC, and LEGENDARY cards for 480 spirit
 inventory.js > inventory module > giveUserMissingCodexChapters() > to correctly give a user their missing codex chapters
-inventory.js > inventory module > giveUserNewPurchasableCosmetic() > to give a user cosmetics in order of reward order
-inventory.js > inventory module > giveUserNewPurchasableCosmetic() > to give a user the last cosmetic id they dont have for a rarity when using optimization
-inventory.js > inventory module > giveUserNewPurchasableCosmetic() > to give a user the last cosmetic id they dont have for a rarity, and then give them spirit the next time
 inventory.js > inventory module > prismatics > expect to not be able to craft a prismatic bloodborn card without base card
 inventory.js > inventory module > prismatics > expect to not be able to craft a prismatic unity card without base card
 inventory.js > inventory module > prismatics > expect to not be able to craft a spirit orb unlockable prismatic card if the normal version is locked
-inventory.js > inventory module > unlockBoosterPack() > expect unlocking a booster to mark it as used
 quests.js > quests module > After FTUE - with one beginner quest > generateDailyQuests() - catch up quest > expect to generate a catch up quest with 2 charges when user doesn't complete 1 of their quests and the other is a beginner quest 2 days in a row
 quests.js > quests module > After FTUE > _giveUserCatchUpQuestCharge() > expect quest catch up charges to add to the current catch up quest's value
 quests.js > quests module > After FTUE > generateDailyQuests() - catch up quest > expect to generate a catch up quest with 2 charges when doesn't complete 1 of their quests 2 days in a row
@@ -46,7 +40,6 @@ quests.js > quests module > Seasonal Quests > February 2017 Quest > updateQuestP
 quests.js > quests module > Seasonal Quests > Frostfire 2016 Quest > generateDailyQuests() - Frostfire 2016 Quest > expect the seasonal Frostfire-2016 quest to NOT contribute to catchup quests
 rank.js > rank module > getCurrentSeasonRank() > expect non-expired rank to return correctly
 referrals.js > referrals module > referral program > referral hidden achievement > expect first purchase by a referral achievement to have awarded ROOK emote
-sync.js > sync module > _syncUserFromSQLToFirebase() > card-collection in firebase to be removed if user collection data empty in SQL
 users.js > users module > isAllowedToUseDeck() > expect a player to NOT be able to use a full LYONAR starter deck with 10 xp
 users.js > users module > isAllowedToUseDeck() > expect a player to NOT be able to use a full SONGHAI starter deck at level 0
 users.js > users module > updateUserFactionProgressionWithGameOutcome() > expect level 12 and 220 XP after 22 SONGHAI wins
