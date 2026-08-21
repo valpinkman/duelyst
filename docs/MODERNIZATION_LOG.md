@@ -2,6 +2,28 @@
 
 What was done, when, and — mostly — what it cost to learn. Newest first.
 
+- 2026-08-21 — **typecheck backlog 362 → 263, and the pass found four real defects rather than
+  typing noise.** The plan expected low yield here; the yield was in the small error codes, not
+  the big ones.
+  `server/lib/promisifiers.ts` did `const args = [].slice.call(...args)` — a variable used in
+  its own initializer, so calling it threw. Our conversion turned `arguments` into `...args`;
+  the file has had no callers since the 2016 dump, so it is deleted rather than fixed.
+  TS2551 ("did you mean") was the highest-signal code: 20 errors, **none a typo in our code**.
+  Five were class members the code assigns and reads consistently but never declares, including
+  `RedisTokenManager.locker`; they now carry `declare`, which emits nothing and so leaves the
+  wire format alone. The only two that looked like real typos were inside vendored dat.gui.
+  **73 errors were third-party.** `app/tools/dat.gui.ts` is Google's Apache-licensed library and
+  was already excluded from lint and format as vendored — but not from typecheck. Excluding it
+  there too is consistency, not silencing.
+  **A hypothesis I tested and disproved:** five sites read `!x > 0`, which in JavaScript is
+  `(!x) > 0`. I assumed decaffeination had mistranslated CoffeeScript's `not x > 0`. Compiling
+  the original with coffeescript@2 shows it emits `!a > 0` as well — `not` binds tighter than
+  `>` there too — so the translation is faithful and the oddity is upstream. Simplified to the
+  exactly-equivalent `!x` with a note not to "correct" it to `!(x > 0)`, which differs for
+  negative values.
+  Three spells indexed with an array literal (`entities[[3]]`), which works only by coercion and
+  is in the 2016 source too. Unwrapped; the SDK suite and the e2e practice game confirm it.
+
 - 2026-08-21 — **the data_access tail is closed: 0 known failures, from 59 when the gate went
   in.** The last nine came apart into four different causes, none of which was a stale number in
   the sense the plan assumed.

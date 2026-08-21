@@ -1677,7 +1677,12 @@ class UsersModule {
                 );
               }
 
-              if (!isUnscored && !_chainState.factionProgressionRow.xp_earned > 0) {
+              // `!x > 0` is exactly `!x` (a boolean compared to 0), and it is what
+              // CoffeeScript itself emitted for `not x > 0` -- `not` binds tighter than
+              // `>` there too, so this is the original behaviour, not a mistranslation.
+              // Simplified to the equivalent form; do NOT "correct" it to !(x > 0),
+              // which differs for negative values.
+              if (!isUnscored && !_chainState.factionProgressionRow.xp_earned) {
                 Logger.module('UsersModule').debug(
                   `updateUserFactionProgressionWithGameOutcome() -> F${factionId} MAX level reached`,
                 );

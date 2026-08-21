@@ -1554,7 +1554,12 @@ class InventoryModule {
         // If a set has a max number of orbs, make sure the user doesn't go over that
         let orbCountTrackingPromise = Promise.resolve();
 
-        if ((cardSetData.numOrbsToCompleteSet != null) > 0) {
+        // `!x > 0` is exactly `!x` (a boolean compared to 0), and it is what
+        // CoffeeScript itself emitted for `not x > 0` -- `not` binds tighter than
+        // `>` there too, so this is the original behaviour, not a mistranslation.
+        // Simplified to the equivalent form; do NOT "correct" it to !(x > 0),
+        // which differs for negative values.
+        if (cardSetData.numOrbsToCompleteSet != null) {
           _chainState.orbCountKey = 'total_orb_count_set_' + cardSetId;
           orbCountTrackingPromise = trx
             .raw('UPDATE users SET ?? = COALESCE(??,0) + 1 WHERE id = ? RETURNING ??', [

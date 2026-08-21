@@ -88,7 +88,12 @@ router.get('/history/:season_key/game_counter', function (req, res, next) {
   const season_key = result.value;
   const season_starting_at = moment(season_key + ' +0000', 'YYYY-MM Z').utc();
 
-  if (!season_starting_at.valueOf() > 0) {
+  // `!x > 0` is exactly `!x` (a boolean compared to 0), and it is what
+  // CoffeeScript itself emitted for `not x > 0` -- `not` binds tighter than
+  // `>` there too, so this is the original behaviour, not a mistranslation.
+  // Simplified to the equivalent form; do NOT "correct" it to !(x > 0),
+  // which differs for negative values.
+  if (!season_starting_at.valueOf()) {
     return res.status(400).json({});
   }
 

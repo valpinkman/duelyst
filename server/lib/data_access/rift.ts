@@ -1026,7 +1026,12 @@ class RiftModule {
                 existingRun.upgrades_available_count = 0;
               }
 
-              if (!existingRun.upgrades_available_count > 0 && !hasStoredUpgrades) {
+              // `!x > 0` is exactly `!x` (a boolean compared to 0), and it is what
+              // CoffeeScript itself emitted for `not x > 0` -- `not` binds tighter than
+              // `>` there too, so this is the original behaviour, not a mistranslation.
+              // Simplified to the equivalent form; do NOT "correct" it to !(x > 0),
+              // which differs for negative values.
+              if (!existingRun.upgrades_available_count && !hasStoredUpgrades) {
                 return Promise.reject(
                   new Errors.BadRequestError('Rift run not can not be upgraded.'),
                 );

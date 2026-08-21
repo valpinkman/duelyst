@@ -31,6 +31,13 @@ class Challenge {
   declare iconUrl: any;
   declare _instructions: any;
   declare _instructionQueueByTurnIndex: any;
+  /*
+   * What the code actually reads and writes. The prototype default above uses
+   * a different name and is never touched -- that mismatch is in the 2016
+   * source too, so it is left alone rather than renamed: these classes are
+   * serialized structurally and the prototype/instance split is the wire format.
+   */
+  declare _instructionsByTurnIndex: any;
   declare isChallengeLost: any;
   declare _musicOverride: any;
   declare _nextInstructionIndex: any;

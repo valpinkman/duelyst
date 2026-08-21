@@ -47,6 +47,7 @@
     "app/original_resources",
     "packages/chroma-js",
     "desktop",
-    "app/tools/FileSaver.min.ts"
+    "app/tools/FileSaver.min.ts",
+    "app/tools/dat.gui.ts"
   ]
 }

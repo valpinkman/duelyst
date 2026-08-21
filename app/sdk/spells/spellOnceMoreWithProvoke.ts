@@ -33,7 +33,11 @@ class SpellOnceMoreWithProvoke extends SpellSpawnEntity {
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     // find a random dead entity
     const entities = this.getDeadUnits();
-    const whichEntity = [this.getGameSession().getRandomIntegerForExecution(entities.length)];
+    // The index was wrapped in an array literal here and in the 2016 source,
+    // which only worked by coercion: entities[[3]] is entities['3'], and
+    // splice([3], 1) coerces the same way. Unwrapped -- identical behaviour,
+    // minus the landmine.
+    const whichEntity = this.getGameSession().getRandomIntegerForExecution(entities.length);
     const entityToSpawn = entities[whichEntity];
     if (entityToSpawn != null) {
       this.cardDataOrIndexToSpawn = entityToSpawn.createNewCardData();

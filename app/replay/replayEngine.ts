@@ -54,6 +54,7 @@ const NavigationManager = require('app/ui/managers/navigation_manager');
 
 class _ReplayEngine {
   declare _currentUIEventTimeoutId: any;
+  declare _currentStepTimeoutId: any;
   declare _eventBus: any;
   declare _startTimeoutId: any;
   declare _currentTurnIndex: any;

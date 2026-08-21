@@ -26,7 +26,7 @@ step it describes, so it can never drift from the code.
   in Docker (api, game, sp, worker, plus db/redis; worker-ui is profile-gated), and a **practice game played end-to-end against the TypeScript stack** with a real
   Firebase RTDB (register → login → main menu → mulligan → play a minion → AI responds →
   concede), 0 console errors.
-- **Current state (2026-08-21):** typecheck **362** on TypeScript 7 (TS2304 at **0**, gated),
+- **Current state (2026-08-21):** typecheck **263** on TypeScript 7 (TS2304 at **0**, gated),
   **1,366** unit tests, **25** advisories, data_access at **559 / 562** with 0 known failures and 3 quarantined. CI gates: lint, `format:check`, `check:undefined-names`,
   `check:turbo-env`, `check:promise-utils`, `check:bluebird-orphans`, unit,
   `integration:misc`, `integration:jobs`, `data_access_tests`, build.
@@ -274,7 +274,7 @@ step it describes, so it can never drift from the code.
      that _starts_ failing.
      The one still worth fixing is the orb spirit refund, which needs its own setup rather than
      a different number — see the log entry for why.
-  2. **The typecheck backlog: 362 errors** (TypeScript 7). Heterogeneous and low-yield now that
+  2. **The typecheck backlog: 263 errors** (TypeScript 7; was 362 before the 2026-08-21 pass). Heterogeneous and low-yield now that
      TS2304 is zero and gated — 177 TS2339, 70 TS2554, 34 TS2345, 23 TS2403, 20 TS2551. Cheaper
      to work on than it was: a full typecheck is 0.39 s now rather than 3.5 s. Move directories
      into `tsconfig.strict.json` as they go clean.

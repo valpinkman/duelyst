@@ -12,6 +12,7 @@ const UtilsPosition = require('app/common/utils/utils_position');
 
 class Range {
   declare _validPositions: any;
+  declare _gameSession: any;
   declare _positionsTestedForValidByIndex: any;
 
   static patternsByDistance = {};

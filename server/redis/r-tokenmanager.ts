@@ -38,6 +38,7 @@ const createTokenId = function () {
  */
 class RedisTokenManager {
   declare redis: any;
+  declare locker: any;
   /**
    * Constructor
    * @param {Object} redis, an ioredis client

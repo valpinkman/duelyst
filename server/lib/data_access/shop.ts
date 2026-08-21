@@ -46,7 +46,8 @@ class ShopModule {
   ) {
     let allPromises = [];
 
-    const updateParams = {
+    // widened because first_purchased_at is added conditionally below
+    const updateParams: Record<string, any> = {
       ltv: userRow.ltv + price,
       purchase_count: userRow.purchase_count + 1,
       last_purchase_at: createdAt.toDate(),
