@@ -43,7 +43,8 @@
     "check:turbo-env": "node scripts/check-turbo-env.mjs",
     "lint:fix:root": "oxlint --fix",
     "build:server": "turbo run build:server:root",
-    "build:server:root": "node scripts/build/build-server.mjs"
+    "build:server:root": "node scripts/build/build-server.mjs",
+    "check:data-access": "node scripts/check-data-access-baseline.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1114.0",

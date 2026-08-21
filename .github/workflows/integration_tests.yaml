@@ -89,3 +89,105 @@ jobs:
         if: env.FIREBASE_PROJECT_ID == ''
         run: |
           echo "::notice title=Firebase integration tests skipped::Set the         FIREBASE_URL, FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL and         FIREBASE_PRIVATE_KEY repository secrets to enable them.         FIREBASE_PRIVATE_KEY may be pasted with either real or escaped         newlines; both are handled."
+
+  # The data_access suites: 565 tests over Postgres, Redis and the Realtime
+  # Database. They have found ten production bugs across four passes, so the
+  # value of running them is not in question -- what kept them out of CI was
+  # that 59 still fail, almost all of them stale 2016 game-balance numbers
+  # (a booster pack asserted at 100 gold where the SDK says 50).
+  #
+  # So this gates on DRIFT rather than on green: the known-failing set is
+  # recorded in test/integration/data_access/known-failures.txt, and the job
+  # fails if a passing test starts failing OR if a known-failing test starts
+  # passing without the list being shrunk. The list can only go down, and going
+  # down is a deliberate edit.
+  #
+  # This is only sound because the suites are deterministic GIVEN A FRESH
+  # DATABASE. They are not idempotent against one they have already written to:
+  # re-running against the same Postgres flips three inventory tests, because
+  # wipeUserData does not reset everything they assume. CI gets a new service
+  # container per run, which is exactly the condition they need -- do not
+  # "fix" a failure here by re-running against a persistent database.
+  #
+  # Runs outside a container because the RTDB emulator is a JAR and needs a JDK.
+  data_access_tests:
+    runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis:6
+        ports: ['6379:6379']
+      db:
+        image: postgres:13
+        env:
+          POSTGRES_USER: duelyst
+          POSTGRES_PASSWORD: duelyst
+          POSTGRES_DB: duelyst
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U duelyst"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      NODE_ENV: development
+      POSTGRES_CONNECTION: 'pg://duelyst:duelyst@localhost:5432/duelyst'
+      REDIS_HOST: 127.0.0.1
+      REDIS_PORT: '6379'
+      # The emulator needs no cloud project, but firebase-admin's cert() still
+      # validates the SHAPE of a service-account key, hence the throwaway RSA
+      # key generated below. Nothing here touches a real database.
+      FIREBASE_URL: 'https://duelyst-ci-default-rtdb.firebaseio.com/'
+      FIREBASE_PROJECT_ID: duelyst-ci
+      FIREBASE_CLIENT_EMAIL: 'emulator@duelyst-ci.iam.gserviceaccount.com'
+      FIREBASE_LEGACY_SECRET: emulator
+      FIREBASE_DATABASE_EMULATOR_HOST: '127.0.0.1:9000'
+
+    steps:
+      - name: check out code
+        uses: actions/checkout@v4
+
+      - name: install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: use node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      # the database emulator is a JAR; firebase-tools 14 accepts JDK 17+
+      - name: use java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: install node dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: generate a throwaway service-account key
+        run: |
+          node -e "
+            const { generateKeyPairSync } = require('crypto');
+            const { privateKey } = generateKeyPairSync('rsa', {
+              modulusLength: 2048,
+              privateKeyEncoding: { type: 'pkcs8', format: 'pem' },
+              publicKeyEncoding: { type: 'spki', format: 'pem' },
+            });
+            require('fs').writeFileSync(process.env.RUNNER_TEMP + '/emulator-key.pem', privateKey);
+          "
+          {
+            echo 'FIREBASE_PRIVATE_KEY<<EOF_KEY'
+            cat "$RUNNER_TEMP/emulator-key.pem"
+            echo 'EOF_KEY'
+          } >> "$GITHUB_ENV"
+          rm -f "$RUNNER_TEMP/emulator-key.pem"
+
+      - name: run database migrations
+        run: pnpm migrate:latest
+
+      - name: run data_access suites against the recorded baseline
+        run: |
+          pnpm exec firebase emulators:exec \
+            --only database --project duelyst-ci \
+            "pnpm check:data-access"

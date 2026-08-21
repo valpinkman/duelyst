@@ -32,7 +32,7 @@ pnpm build:server                              # ahead-of-time TS -> build/ for 
 pnpm test:unit                                 # vitest, 1366 tests, no external services
 pnpm test:integration:misc                     # needs nothing external; runs in CI
 pnpm test:integration:jobs                     # BullMQ job seam; needs ONLY redis, so it runs in CI too
-pnpm test:integration:data_access              # 575 tests; NOT in CI yet (~80 still fail). Bring up its
+pnpm test:integration:data_access              # 565 tests; 59 known failures. IN CI as a drift gate. Bring up its
 source scripts/dev/data-access-test-env.sh     #   throwaway postgres+redis+firebase emulator with this --
                                                #   deliberately separate from `docker compose`, because
                                                #   these suites create users and wipe inventories
@@ -41,6 +41,8 @@ pnpm check:undefined-names                     # TS2304 only, and this IS a CI g
 pnpm check:promise-utils                       # PromiseUtils/onType used without being bound
 pnpm check:bluebird-orphans                    # bluebird-only API used without requiring bluebird
 pnpm check:turbo-env                           # turbo.json globalEnv still covers every convict env binding
+pnpm check:data-access                         # data_access failures vs test/integration/data_access/known-failures.txt
+                                               #   (--update to re-record; the list may shrink, not grow)
 pnpm test:e2e                                  # Playwright: boots the client and plays a practice game
 set -a; . ./.env; set +a                       # a PLAYABLE build needs the whole env, not just FIREBASE_URL:
                                                #   nothing in the build path reads .env, and a missing
@@ -214,6 +216,21 @@ How we work on it:
 
 Status log (newest first):
 
+- 2026-08-21 — **the data_access suites are in CI**, as a `data_access_tests` job that gates on
+  **drift** rather than on green: 59 of 565 still fail (stale 2016 balance numbers), so
+  `scripts/check-data-access-baseline.mjs` compares the failing set against
+  `known-failures.txt` and fails if a passing test regresses _or_ if a known-failing test starts
+  passing without the list being shrunk. The list can only go down. Runs outside a container,
+  because the RTDB emulator is a JAR and needs a JDK; Postgres and Redis are service containers
+  and the Firebase side is `firebase emulators:exec`, so no cloud project and no secrets — which
+  means it also runs on pull requests from forks.
+  **Correction to yesterday's determinism claim:** deterministic given a fresh Postgres _and a
+  fresh emulator_. The earlier measurement reused a long-lived emulator and masked two rare
+  flakes (each seen once in ~8 runs); they are in `known-unstable.txt`, excluded from the gate
+  both ways, and recorded as debt rather than as fixed. Five consecutive runs under the exact CI
+  condition give an identical 59. The suites are also **not idempotent** — re-running against a
+  database they already wrote to flips three inventory tests — so never diagnose a failure here
+  by re-running against a persistent database.
 - 2026-08-21 — **the rift `NaN` was a dead feature, not a bad input — rift card upgrades were
   broken in production.** The upgrade-choice generator sampled card sets that hold no cards:
   `Bloodborn` has 0 and is flagged disabled, `Unity` has 0 too, and together they carried about

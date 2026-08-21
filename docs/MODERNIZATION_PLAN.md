@@ -285,30 +285,31 @@ step it describes, so it can never drift from the code.
      and the rift cascade above. **The suite is now reproducible, which is the precondition for
      making it a CI gate.**
 
-  3. **Finish the data_access tail (69 stable failures) and wire the suites into CI.** They are
-     overwhelmingly stale 2016 game-balance expectations — production is correct in
-     every case examined, so the work is rewriting expectations to derive from SDK data, per
-     test. Low bug yield, but it is the last thing standing between these 575 tests and being a
-     CI gate, and they have now found nine production bugs in three passes.
-     **Categorised 2026-08-21.** No test covers a _removed_ feature: premium currency
-     (diamonds), Stripe, PayPal, Steam, Amazon, Twitch and Kongregate have zero tests between
-     them, so the dead monetisation code contributes nothing to the failures. The one clear case
-     of tests-for-a-disabled-feature was cosmetic chest prismatic drops, now removed (see below).
-     What remains is dominated by stale 2016 balance — e.g. inventory asserts a booster pack
-     costs 100 gold while the SDK says `defaultOrbGoldCost = 50`, and a catch-up quest asserts
-     100 gold where the code gives 50. There are ~670 hardcoded numeric assertions across these
-     suites; deriving them from SDK data is the fix that stops this recurring.
-     One exception worth doing first: the `rift` upgrade path that reaches Postgres with `NaN`
-     where the test expects a `BadRequestError`. That one still smells like a defect rather than
-     a stale number, and it needs game-domain judgement about what the test's setup should
-     produce.
-  4. **The rest of the typecheck backlog (364).** Heterogeneous and low-yield now that TS2304 is
-     zero and gated; 175 TS2339 on function objects and narrowed types, 75 TS2554, 35 TS2345.
-     Move directories into `tsconfig.strict.json` as they go clean.
-  5. **Decide on `pnpm.overrides` for the transitive backbone pin.** `backbone.babysitter` and
+  3. **Finish the data_access tail (59 stable failures).** ~~and wire the suites into CI~~ —
+     **wired 2026-08-21** as a `data_access_tests` job that gates on drift rather than on green:
+     `scripts/check-data-access-baseline.mjs` compares the failing set against
+     `known-failures.txt` and fails if a passing test starts failing, or if a known-failing test
+     starts passing without the list being shrunk. The list can only go down.
+     The remaining work is the tail itself, overwhelmingly stale 2016 game-balance expectations
+     — inventory asserts a booster pack costs 100 gold while the SDK says
+     `defaultOrbGoldCost = 50`; a catch-up quest asserts 100 where the code gives 50. There are
+     ~670 hardcoded numeric assertions across these suites, and deriving them from SDK data is
+     the fix that stops this recurring. Each one removed is a line deleted from the baseline.
+     **Correction to the determinism claim made the same day:** the suites are deterministic
+     given a fresh Postgres _and a fresh Firebase emulator_ — five consecutive runs under
+     exactly the CI condition gave an identical 59. The earlier "59 / 59 / 59" was measured
+     against a long-lived emulator, which masked two rare flakes (each seen once in roughly
+     eight runs). Both are in `known-unstable.txt`, excluded from the gate in both directions,
+     and recorded as debt rather than as fixed.
+     The suites are also **not idempotent**: re-running against a database they have already
+     written to flips three inventory tests, because `wipeUserData` does not reset everything
+     they assume. CI gets a new service container per run, which is the condition they need —
+     never diagnose a failure here by re-running against a persistent database.
+
+  4. **Decide on `pnpm.overrides` for the transitive backbone pin.** `backbone.babysitter` and
      `backbone.wreqr` (deps of marionette 2.2.2) still pin `backbone@1.2.1`, which a catalog
      cannot reach. Small, but it is the last version skew left in the tree.
-  6. **Optional, deliberately not started:** Backbone/Marionette/jQuery. That is a UI rewrite,
+  5. **Optional, deliberately not started:** Backbone/Marionette/jQuery. That is a UI rewrite,
      not an upgrade, and was declined once already.
 
 - **Known dirty state:** none.

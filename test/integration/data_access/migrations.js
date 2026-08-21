@@ -241,6 +241,13 @@ describe('migrations module', () => {
   });
 
   describe('userBackfillPrismaticRewards()', () => {
+    // The only test here was commented out during the conversion, which left an
+    // empty describe -- vitest reports that as a suite-level failure ("No test
+    // found in suite"), noise that looks like a broken suite. Recorded as a todo
+    // instead, so the debt is visible and the file stops failing for a
+    // structural reason.
+    it.todo('re-enable the prismatic backfill coverage disabled in the conversion');
+
     /* Test disabled: unsafe (function declaration inside loop)
     it('expect a player to receive no prismatic backfill rewards if they have opened 10 spirit orbs before cutoff', () => {
       const _chainState = {};
