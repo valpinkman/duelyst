@@ -222,3 +222,9 @@ How we work:
   the repo — a codemod that reads `tsc` output cannot silence a place where the types are right.
 - Don't move or rename `apps/client/resources`, `apps/client/vendor` or the card factories without a plan for
   `generate_packages.js` and the RSX paths.
+- **Working on the Marionette/jQuery removal milestone? Different rules apply.** That work lands on
+  the long-lived **`marionette-removal`** branch, not on `modernization`: one issue → one PR, a PR
+  never closes more than one issue, and every step carries required test evidence. Read
+  [`docs/BACKBONE_REMOVAL_PLAN.md` §11](docs/BACKBONE_REMOVAL_PLAN.md) **before opening a PR** —
+  it has the branch naming, the merge strategy, and the table saying which evidence each kind of
+  change needs.
