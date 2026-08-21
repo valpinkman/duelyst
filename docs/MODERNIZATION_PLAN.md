@@ -296,10 +296,16 @@ step it describes, so it can never drift from the code.
      UMD with babysitter and wreqr _baked in_, so the npm packages that pinned 1.2.1 were never
      loaded by anything. Both bundles read 1.1.2 before and after. Install hygiene, not a
      runtime change — verified by the e2e practice game regardless.
-  4. **Folder reorg** — `app/sdk` and `app/common` out of `app/`, the last item of the tooling
-     program above. It is also what unblocks per-package `typecheck`/`test`. Blocked on a plan
-     for `generate_packages.js` (it text-parses the card factories) and the RSX paths; wants an
-     audit of what breaks before anything moves.
+  4. **Folder reorg** — `app/sdk` and `app/common` out of `app/`. **Audited 2026-08-21:
+     [`REORG_AUDIT.md`](REORG_AUDIT.md).** The audit contradicts the justification written here:
+     per-package `typecheck` is _not_ blocked by location — both packages typecheck standalone
+     where they are (`app/common` at 0 errors) once the tsconfig names the `colors` augmentation
+     and `app/types/globals.d.ts`. The real blocker is the sdk ↔ common **cycle**, which is three
+     requires in two files. Moving would cost 7,595 specifier rewrites (`app-module-path` cannot
+     remap a prefix, so they must become `@duelyst/*`) plus four hardcoded paths in
+     `generate_packages.js`. RSX paths turn out to be safe — they are runtime URL strings, not
+     filesystem paths. Recommended order: per-package tsconfigs in place, then break the cycle,
+     then decide what `app/data` is, and only then consider the move.
   5. **Optional, deliberately not started:** Backbone/Marionette/jQuery. That is a UI rewrite,
      not an upgrade, and was declined once already. Audited 2026-08-21 —
      [`BACKBONE_AUDIT.md`](BACKBONE_AUDIT.md). The short version: Backbone is the metagame shell
