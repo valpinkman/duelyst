@@ -198,7 +198,7 @@ class RedisTokenManager {
 /**
  * Export a factory
  */
-module.exports = exports = function (redis, opts) {
-  const TokenManager = new RedisTokenManager(redis, opts);
+module.exports = exports = function (redis) {
+  const TokenManager = new RedisTokenManager(redis);
   return TokenManager;
 };

@@ -1085,7 +1085,6 @@ class RankModule {
                     tx,
                     player1Id,
                     _chainState.startOfSeasonMoment,
-                    false,
                     MOMENT_UTC_NOW,
                   ),
                 );
@@ -1100,7 +1099,6 @@ class RankModule {
                     tx,
                     player2Id,
                     _chainState.startOfSeasonMoment,
-                    false,
                     MOMENT_UTC_NOW,
                   ),
                 );

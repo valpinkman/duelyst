@@ -892,7 +892,7 @@ class _GameSession extends SDKObject {
           for (let i = 0; i < bufferedEvents.length; i++) {
             // Logger.module("SDK").debug "[G:#{@.gameId}]", "GS._flushBufferedEvents -> type #{eventData.event?.type} action? #{eventData.event?.action?.getLogName()}"
             var eventData = bufferedEvents[i];
-            this.pushEvent(eventData.event, eventData.options, true);
+            this.pushEvent(eventData.event, eventData.options);
 
             // if events started buffering again during flush
             // stop flush and move remaining buffered events back into event buffer

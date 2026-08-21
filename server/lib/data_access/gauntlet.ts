@@ -297,12 +297,7 @@ class GauntletModule {
             }
           })
           .then(function () {
-            return GauntletModule._generateGeneralChoices(
-              txPromise,
-              tx,
-              userId,
-              _chainState.runData.faction_id,
-            );
+            return GauntletModule._generateGeneralChoices(txPromise, tx, userId);
           })
           .then(function (generalChoiceIds) {
             _chainState.runData.general_choices = generalChoiceIds;
@@ -1689,12 +1684,13 @@ class GauntletModule {
   }
 
   /**
-   * Generate a general set for a specific faction .
+   * Generate a set of general choices, drawn from every playable faction --
+   * a gauntlet run picks its general first, so this is deliberately not
+   * faction-scoped. (The old doc claimed a factionId param the body never had.)
    * @private
    * @param  {Promise}  txPromise KNEX transaction promise
    * @param  {Transaction}  tx KNEX transaction to attach this operation to.
    * @param  {String}  userId    User ID for which to generate cards.
-   * @param  {Integer}  factionId    Faction ID for which to generate generals.
    * @return  {Promise}            Promise that resolves with an array of card IDs.
    */
   static _generateGeneralChoices(txPromise, tx, userId) {
