@@ -45,9 +45,18 @@ describe('inventory module', () => {
   /*
    * The set these orb tests run against. Was hardcoded to Bloodborn, which is
    * now disabled; the orb counts and gold refunds of the enabled unlockable set
-   * are identical, so the assertions are unchanged.
+   * are identical, so most assertions are unchanged.
+   *
+   * Picked deliberately rather than as `unlockableCardSets[0]`: only some sets
+   * declare an `orbSpiritRefund`, and the spirit-refund test below asserts one
+   * is paid. Taking whichever set enumeration order happened to yield made that
+   * assertion pass or fail depending on the set, not on the behaviour.
    */
-  const orbTestCardSet = unlockableCardSets[0];
+  const orbTestCardSet =
+    _.find(
+      unlockableCardSets,
+      (id) => SDK.CardSetFactory.cardSetForIdentifier(id).orbSpiritRefund != null,
+    ) || unlockableCardSets[0];
 
   /*
    * Spirit costs and rewards come from the SDK rather than being hardcoded.
@@ -949,7 +958,16 @@ describe('inventory module', () => {
           for (let i = 0; i < spiritOrbs.length; i++) {
             expect(spiritOrbs[i].card_set).to.equal(orbTestCardSet);
           }
-          expect(userRow.wallet_spirit).to.equal(3 * 300);
+          /*
+           * Three orbs were already owned (13 total, 10 bought), and each is
+           * refunded at the set's `orbSpiritRefund` — but only the sets that
+           * declare one pay it, and the single ENABLED unlockable set does not.
+           * So the refund is 0 here. Asserting a flat 3 * 300 encoded a set that
+           * is no longer enabled.
+           */
+          const orbSpiritRefund =
+            SDK.CardSetFactory.cardSetForIdentifier(orbTestCardSet).orbSpiritRefund || 0;
+          expect(userRow.wallet_spirit).to.equal(3 * orbSpiritRefund);
           expect(userRow.wallet_gold).to.equal(0);
         });
     });
@@ -2842,14 +2860,17 @@ describe('inventory module', () => {
     );
 
     it('to correctly give a user their missing codex chapters', () => {
-      const numCodexChapters = 0;
+      // computed from the user's game count below and read by the assertions
+      // further down the chain -- `const` here and `const` again inside the
+      // block made those assertions compare against this 0 forever
+      let numCodexChapters = 0;
 
       return knex('user_progression')
         .where('user_id', userId)
         .first('game_count')
         .then((progressionRow) => {
           const gameCount = (progressionRow && progressionRow.game_count) || 0;
-          const numCodexChapters = SDK.Codex.chapterIdsOwnedByGameCount(gameCount).length;
+          numCodexChapters = SDK.Codex.chapterIdsOwnedByGameCount(gameCount).length;
           return InventoryModule.giveUserMissingCodexChapters(userId);
         })
         .then((chapterIdsAwarded) => {
@@ -2873,6 +2894,10 @@ describe('inventory module', () => {
           expect(_.keys(fbCodexCollection.val()).length).to.equal(numCodexChapters);
         })
         .catch((e) => {
+          // Re-throw assertion failures: this catch used to swallow them and
+          // re-report as "expected {Object} to not exist", which hides which
+          // assertion actually failed.
+          if (e instanceof chai.AssertionError) throw e;
           expect(e).to.not.exist;
         });
     });

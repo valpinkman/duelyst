@@ -13,6 +13,7 @@ const QuestsModule = require('../../../server/lib/data_access/quests');
 const SyncModule = require('../../../server/lib/data_access/sync');
 const InventoryModule = require('../../../server/lib/data_access/inventory');
 const ReferralsModule = require('../../../server/lib/data_access/referrals');
+const AchievementsModule = require('../../../server/lib/data_access/achievements');
 const FirebasePromises = require('../../../server/lib/firebase_promises');
 const generatePushId = require('../../../app/common/generate_push_id');
 const config = require('../../../config/config');
@@ -380,13 +381,18 @@ describe('referrals module', () => {
 
     describe('referral hidden achievement', () => {
       it('expect first purchase by a referral achievement to have awarded ROOK emote', () =>
-        // NOTE: purchase event fires above no need to do here so commented out
-
-        // return ReferralsModule.processReferralEventForUser(newUserId,userId,'purchase')
-        // .then(function(response){
-        //   return PromiseUtils.delay(500)
-        // })
-        Promise.resolve()
+        /*
+         * The purchase event fired in the describe above, but the achievement it
+         * earns is granted by the `update-user-achievements` BullMQ job -- and
+         * this suite runs no worker, so nothing ever consumed it. The original
+         * worked around that with a delay, which cannot help when there is no
+         * consumer at all.
+         *
+         * Run what the job's handler runs instead
+         * (worker/jobs/update-user-achievements.ts), so this tests the
+         * achievement logic rather than job delivery.
+         */
+        AchievementsModule.updateAchievementsProgressWithReferralEvent(userId, 'purchase')
           .then(() =>
             Promise.all([
               knex('user_achievements').where('user_id', userId).select(),

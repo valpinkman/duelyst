@@ -2,6 +2,30 @@
 
 What was done, when, and — mostly — what it cost to learn. Newest first.
 
+- 2026-08-21 — **the data_access tail is closed: 0 known failures, from 59 when the gate went
+  in.** The last nine came apart into four different causes, none of which was a stale number in
+  the sense the plan assumed.
+  **Faction XP is not flat.** `winsBeforeLVLTenGiveFullLvlOfXp` grants a whole level per win
+  below level 10, so ten wins reach level 10 rather than the fifteen `totalXPForLevel(10) /
+winXP` predicts, and 22 wins are worth 279 XP rather than 220. The tests now simulate the
+  schedule with the SDK's own `xpEarnedForGameOutcome`, the same way `data_access/users` drives
+  it.
+  **Two tests were unsatisfiable.** `isAllowedToUseDeck` rejects decks holding _unreleased_
+  cards — a release-date gate, not a level gate; there is no level gate in the method at all.
+  Zero of 2,378 cards are still unreleased in 2026, so the rule is intact and nothing can
+  trigger it. Gated on the data, like the other rules that outlived their content.
+  **One depended on a worker.** The referral achievement is granted by the
+  `update-user-achievements` BullMQ job, and this suite runs no worker — the original worked
+  around it with a `delay(500)`, which cannot help when nothing consumes the queue. The test now
+  runs what the job's handler runs.
+  **Two more shadowed bindings**, in `rank` and the codex chapter count, plus a `.catch` that
+  swallowed assertion failures and re-reported them as "expected {Object} to not exist", hiding
+  which assertion actually failed.
+  One test is newly quarantined rather than fixed: the orb spirit refund asserts `3 * 300`, but
+  the refund is only paid by sets declaring `orbSpiritRefund` and the single enabled unlockable
+  set declares none. What it really measures is leftover wallet spirit, which depends on what
+  earlier tests spent — 0 alone, 900 in a full run. It needs its own setup, not a new number.
+
 This is history, not instruction: an agent starting work needs
 [`MODERNIZATION_PLAN.md`](MODERNIZATION_PLAN.md) (the checklist and resume point) and
 [`../AGENTS.md`](../AGENTS.md) (the rules that still apply). Entries here are kept because

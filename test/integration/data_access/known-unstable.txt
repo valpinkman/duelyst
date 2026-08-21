@@ -6,7 +6,7 @@
 # because a gate that fails randomly gets ignored, and an ignored gate is
 # worse than no gate. Keep it as close to empty as possible.
 #
-# Both usually PASS. Each was seen to flip at least once across roughly
+# The first two usually PASS. Each was seen to flip at least once across roughly
 # a dozen runs, which is exactly the rate that erodes trust in a gate. None
 # has been diagnosed. A third entry, a gauntlet loss counter, was removed
 # once its suite stopped firing game outcomes concurrently -- that flake had
@@ -16,3 +16,13 @@
 # is state these tests assume but do not establish for themselves.
 inventory.js > inventory module > unlockBoosterPack() > expect cards you received from the booster to be marked as NEW and UNREAD
 rank.js > rank module > updateUsersRatingsWithGameOutcome() expected ladder Position > expect a series of s rank matches to result in an expected ladder state
+inventory.js > inventory module > buyRemainingSpiritOrbsWithSpirit > expect to be able to buy remaining set of spirit orbs with sufficient spirit and get correct spirit refund (and no gold)
+#
+# The third is different and worth the detail, because it is not a flake so much
+# as an assertion with no stable answer. It asserts a spirit refund of 3 * 300 on
+# the orbs already owned, but the refund is only paid by card sets that declare
+# `orbSpiritRefund`, and the single ENABLED unlockable set (4) declares none --
+# verified at runtime inside the test. What it actually measures is the spirit
+# left in the wallet afterwards, which depends on what earlier tests in the file
+# spent: 0 when the test runs alone, 900 in a full-file run. Fixing it means
+# giving it its own setup rather than adjusting the number.

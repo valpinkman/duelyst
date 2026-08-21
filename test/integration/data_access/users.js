@@ -27,6 +27,58 @@ const PromiseUtils = require('../../../app/common/utils/utils_promise');
 Logger.enabled = Logger.enabled && false;
 
 describe('users module', () => {
+  /*
+   * Faction XP per win is NOT a flat winXP. While
+   * FactionProgression.winsBeforeLVLTenGiveFullLvlOfXp is on, a win below level
+   * 10 grants a whole level's worth instead -- so ten wins reach level 10, not
+   * the fifteen that totalXPForLevel(10) / winXP predicts, and 22 wins are worth
+   * 279 XP rather than 220. These tests were written against the flat rule.
+   *
+   * Model the schedule with the SDK's own function, the same way
+   * data_access/users does (it passes the row's current level), so the
+   * expectations follow the schedule instead of restating a number from it.
+   */
+  /*
+   * isAllowedToUseDeck rejects a deck holding cards that are not yet AVAILABLE
+   * — a release-date gate, not a level gate; there is no level gate in the
+   * method at all. The two tests below are the 2016 originals verbatim, and they
+   * passed then because a max-level starter deck contained unreleased cards.
+   * Every card's availableAt has long since passed (0 of 2,378 are unavailable),
+   * so the rule is intact but nothing can trigger it. Gated on the data rather
+   * than deleted: add a card with a future date and they come back.
+   */
+  const anyCardIsUnavailable = () => {
+    const caches = SDK.GameSession.getCardCaches();
+    return _.some(
+      caches.getCardIds(),
+      (cardId) => !caches.getCardById(cardId).getIsAvailable(null, true),
+    );
+  };
+  const itIfUnreleasedCardsExist = anyCardIsUnavailable() ? it : it.skip;
+
+  const xpAfterWins = (wins) => {
+    let xp = 0;
+    for (let i = 0; i < wins; i++) {
+      xp += SDK.FactionProgression.xpEarnedForGameOutcome(
+        true,
+        SDK.FactionProgression.levelForXP(xp),
+      );
+    }
+    return xp;
+  };
+  const winsToReachLevel = (targetLevel) => {
+    let xp = 0;
+    let wins = 0;
+    while (SDK.FactionProgression.levelForXP(xp) < targetLevel) {
+      xp += SDK.FactionProgression.xpEarnedForGameOutcome(
+        true,
+        SDK.FactionProgression.levelForXP(xp),
+      );
+      wins += 1;
+    }
+    return wins;
+  };
+
   let userId = null;
 
   // before cleanup to check if user already exists and delete
@@ -2520,7 +2572,7 @@ describe('users module', () => {
           expect(progressionRow.game_count).to.equal(22);
           expect(progressionRow.unscored_count).to.equal(0);
           expect(progressionRow.win_count).to.equal(22);
-          expect(progressionRow.xp).to.equal(22 * SDK.FactionProgression.winXP);
+          expect(progressionRow.xp).to.equal(xpAfterWins(22));
           expect(SDK.FactionProgression.levelForXP(progressionRow.xp)).to.equal(12);
 
           expect(progressionRow.xp).to.equal(progressionSnapshot.val().xp);
@@ -2662,7 +2714,7 @@ describe('users module', () => {
       const allPromises = [];
       // levels are indexed from 0 so we check 10 here instead of 11
       const xpToLevel11 = SDK.FactionProgression.totalXPForLevel(10);
-      const numGamesToLevel11 = xpToLevel11 / SDK.FactionProgression.winXP;
+      const numGamesToLevel11 = winsToReachLevel(10);
       for (let i = 0; i < numGamesToLevel11; i++) {
         allPromises.push(
           UsersModule.updateUserFactionProgressionWithGameOutcome(
@@ -2698,7 +2750,7 @@ describe('users module', () => {
           expect(progressionRow.unscored_count).to.equal(0);
           expect(progressionRow.win_count).to.equal(numGamesToLevel11);
           expect(progressionRow.single_player_win_count).to.equal(numGamesToLevel11);
-          expect(progressionRow.xp).to.equal(xpToLevel11);
+          expect(progressionRow.xp).to.equal(xpAfterWins(numGamesToLevel11));
           // levels are indexed from 0 so we check 10 here instead of 11
           expect(SDK.FactionProgression.levelForXP(progressionRow.xp)).to.equal(10);
           expect(progressionRow.xp).to.equal(progressionSnapshot.val().xp);
@@ -2865,7 +2917,7 @@ describe('users module', () => {
     it('expect to earn faction XP only up to level 11 with FRIENDLY games', () => {
       // levels are indexed from 0 so we check 10 here instead of 11
       const xpToLevel11 = SDK.FactionProgression.totalXPForLevel(10);
-      const numGamesToLevel11 = xpToLevel11 / SDK.FactionProgression.winXP;
+      const numGamesToLevel11 = winsToReachLevel(10);
 
       return SyncModule.wipeUserData(userId)
         .then(() => {
@@ -2905,7 +2957,7 @@ describe('users module', () => {
           expect(progressionRow.unscored_count).to.equal(0);
           expect(progressionRow.win_count).to.equal(numGamesToLevel11);
           expect(progressionRow.friendly_win_count).to.equal(numGamesToLevel11);
-          expect(progressionRow.xp).to.equal(xpToLevel11);
+          expect(progressionRow.xp).to.equal(xpAfterWins(numGamesToLevel11));
           // levels are indexed from 0 so we check 10 here instead of 11
           expect(SDK.FactionProgression.levelForXP(progressionRow.xp)).to.equal(10);
           expect(progressionRow.xp).to.equal(progressionSnapshot.val().xp);
@@ -3197,47 +3249,53 @@ describe('users module', () => {
     });
     */
 
-    it('expect a player to NOT be able to use a full SONGHAI starter deck at level 0', () =>
-      SyncModule.wipeUserData(userId)
-        .then(() => {
-          const deck = SDK.FactionFactory.starterDeckForFactionLevel(
-            SDK.Factions.Faction2,
-            SDK.FactionProgression.maxLevel,
-          );
-          return UsersModule.isAllowedToUseDeck(userId, deck, 'ranked', null, true);
-        })
-        .then((response) => {
-          expect(response).to.not.exist;
-        })
-        .catch((error) => {
-          Logger.module('UNITTEST').log(error);
-          expect(error).to.exist;
-          expect(error).to.be.an.instanceof(Errors.NotFoundError);
-        }));
-
-    it('expect a player to NOT be able to use a full LYONAR starter deck with 10 xp', () =>
-      SyncModule.wipeUserData(userId)
-        .then(() =>
-          knex('user_faction_progression').insert({
-            user_id: userId,
-            faction_id: SDK.Factions.Lyonar,
-            xp: 10,
+    itIfUnreleasedCardsExist(
+      'expect a player to NOT be able to use a full SONGHAI starter deck at level 0',
+      () =>
+        SyncModule.wipeUserData(userId)
+          .then(() => {
+            const deck = SDK.FactionFactory.starterDeckForFactionLevel(
+              SDK.Factions.Faction2,
+              SDK.FactionProgression.maxLevel,
+            );
+            return UsersModule.isAllowedToUseDeck(userId, deck, 'ranked', null, true);
+          })
+          .then((response) => {
+            expect(response).to.not.exist;
+          })
+          .catch((error) => {
+            Logger.module('UNITTEST').log(error);
+            expect(error).to.exist;
+            expect(error).to.be.an.instanceof(Errors.NotFoundError);
           }),
-        )
-        .then(() => {
-          const deck = SDK.FactionFactory.starterDeckForFactionLevel(
-            SDK.Factions.Faction1,
-            SDK.FactionProgression.maxLevel,
-          );
-          return UsersModule.isAllowedToUseDeck(userId, deck, 'ranked', null, true);
-        })
-        .then((response) => {
-          expect(response).to.not.exist;
-        })
-        .catch((error) => {
-          expect(error).to.exist;
-          expect(error).to.be.an.instanceof(Errors.NotFoundError);
-        }));
+    );
+
+    itIfUnreleasedCardsExist(
+      'expect a player to NOT be able to use a full LYONAR starter deck with 10 xp',
+      () =>
+        SyncModule.wipeUserData(userId)
+          .then(() =>
+            knex('user_faction_progression').insert({
+              user_id: userId,
+              faction_id: SDK.Factions.Lyonar,
+              xp: 10,
+            }),
+          )
+          .then(() => {
+            const deck = SDK.FactionFactory.starterDeckForFactionLevel(
+              SDK.Factions.Faction1,
+              SDK.FactionProgression.maxLevel,
+            );
+            return UsersModule.isAllowedToUseDeck(userId, deck, 'ranked', null, true);
+          })
+          .then((response) => {
+            expect(response).to.not.exist;
+          })
+          .catch((error) => {
+            expect(error).to.exist;
+            expect(error).to.be.an.instanceof(Errors.NotFoundError);
+          }),
+    );
 
     it('expect a player to be able to use a full SONGHAI starter deck at level 10', () => {
       const maxXp = SDK.FactionProgression.totalXPForLevel(SDK.FactionProgression.maxLevel);

@@ -27,8 +27,7 @@ step it describes, so it can never drift from the code.
   Firebase RTDB (register → login → main menu → mulligan → play a minion → AI responds →
   concede), 0 console errors.
 - **Current state (2026-08-21):** typecheck **362** on TypeScript 7 (TS2304 at **0**, gated),
-  **1,366** unit tests, **25** advisories, data_access at **553 / 562** with the 9 known
-  failures gated on drift. CI gates: lint, `format:check`, `check:undefined-names`,
+  **1,366** unit tests, **25** advisories, data_access at **559 / 562** with 0 known failures and 3 quarantined. CI gates: lint, `format:check`, `check:undefined-names`,
   `check:turbo-env`, `check:promise-utils`, `check:bluebird-orphans`, unit,
   `integration:misc`, `integration:jobs`, `data_access_tests`, build.
   Tooling: oxlint + oxfmt on a shared config, turborepo orchestration, pnpm catalog, and an
@@ -269,14 +268,12 @@ step it describes, so it can never drift from the code.
   2026-08-21 (the rift `NaN`, the suite's non-determinism, wiring data_access into CI) have
   moved to [MODERNIZATION_LOG.md](MODERNIZATION_LOG.md).
 
-  1. **Finish the data_access tail: 9 stable failures left**, plus 2 quarantined in
-     `known-unstable.txt`. Down from 59 when the gate went in. What remains is users (5),
-     inventory (2), referrals (1), rank (1); gauntlet, sync, quests, gift_crate and
-     cosmetic_chests are green.
-     The method that worked: assert against the constant that drives the behaviour, not a
-     number copied from 2016 — and check whether the rule under test still fires at all, because
-     several did not. Each fix is a line deleted from `known-failures.txt`, and the ratchet makes
-     it permanent.
+  1. ~~Finish the data_access tail~~ **DONE (2026-08-21): 0 known failures**, from 59 when the
+     gate went in. 559 of 562 pass; 3 are quarantined in `known-unstable.txt` and are the only
+     debt left in these suites. The gate still runs on drift, so it now also catches anything
+     that _starts_ failing.
+     The one still worth fixing is the orb spirit refund, which needs its own setup rather than
+     a different number — see the log entry for why.
   2. **The typecheck backlog: 362 errors** (TypeScript 7). Heterogeneous and low-yield now that
      TS2304 is zero and gated — 177 TS2339, 70 TS2554, 34 TS2345, 23 TS2403, 20 TS2551. Cheaper
      to work on than it was: a full typecheck is 0.39 s now rather than 3.5 s. Move directories

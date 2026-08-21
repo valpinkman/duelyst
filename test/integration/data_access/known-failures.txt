@@ -1,12 +1,3 @@
 # Tests in test/integration/data_access that are known to fail.
 # Regenerate deliberately with: pnpm check:data-access --update
 # The list may shrink; it should not grow.
-inventory.js > inventory module > buyRemainingSpiritOrbsWithSpirit > expect to be able to buy remaining set of spirit orbs with sufficient spirit and get correct spirit refund (and no gold)
-inventory.js > inventory module > giveUserMissingCodexChapters() > to correctly give a user their missing codex chapters
-rank.js > rank module > getCurrentSeasonRank() > expect non-expired rank to return correctly
-referrals.js > referrals module > referral program > referral hidden achievement > expect first purchase by a referral achievement to have awarded ROOK emote
-users.js > users module > isAllowedToUseDeck() > expect a player to NOT be able to use a full LYONAR starter deck with 10 xp
-users.js > users module > isAllowedToUseDeck() > expect a player to NOT be able to use a full SONGHAI starter deck at level 0
-users.js > users module > updateUserFactionProgressionWithGameOutcome() > expect level 12 and 220 XP after 22 SONGHAI wins
-users.js > users module > updateUserFactionProgressionWithGameOutcome() > expect to earn Vanar Faction XP up to level 11 with SINGLE PLAYER games
-users.js > users module > updateUserFactionProgressionWithGameOutcome() > expect to earn faction XP only up to level 11 with FRIENDLY games

@@ -625,9 +625,27 @@ describe('rank module', () => {
   });
 
   describe('getCurrentSeasonRank()', () => {
+    /*
+     * This describe had no setup at all: it read whatever rank the preceding
+     * describes happened to leave on the user, and the expected 20 was a
+     * property of the 2016 test ordering rather than of the function. Set the
+     * rank explicitly so the test is about getCurrentSeasonRank -- it reads
+     * `rank` and `rank_starting_at` from `users` and returns 30 once the season
+     * has expired.
+     */
+    const RANK_UNDER_TEST = 20;
+    beforeAll(() =>
+      knex('users')
+        .where('id', userId)
+        .update({
+          rank: RANK_UNDER_TEST,
+          rank_starting_at: moment.utc().startOf('month').toDate(),
+        }),
+    );
+
     it('expect non-expired rank to return correctly', () =>
       RankModule.getCurrentSeasonRank(userId).then((rank) => {
-        expect(rank).to.equal(20);
+        expect(rank).to.equal(RANK_UNDER_TEST);
       }));
 
     it('expect expired rank to default to returning 30', () => {
