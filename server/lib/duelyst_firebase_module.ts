@@ -42,8 +42,15 @@ try {
      * "Failed to parse private key". Decoding here (what Firebase's own docs
      * recommend) makes the same value work from every source; it is a no-op
      * when the key already has real newlines.
+     *
+     * `\\n` as well as `\n`, because Coolify escapes the backslash again when
+     * it resolves an environment variable: a value stored as `\n` arrives in
+     * the container as `\\n`, and unescaping only the single form leaves a
+     * stray backslash on every line -- a corrupt PEM that fails with the same
+     * message. A base64 key never contains a backslash, so matching both is
+     * unambiguous.
      */
-    private_key: (config.get('firebase.privateKey') || '').replace(/\\n/g, '\n'),
+    private_key: (config.get('firebase.privateKey') || '').replace(/\\{1,2}n/g, '\n'),
   };
   if (!firebaseServiceAccount.project_id) {
     throw new Error('FIREBASE_PROJECT_ID must be set!');

@@ -64,6 +64,13 @@ router.use('/replays', replaysRoutes);
 
 // QA / Testing
 if (config.isDevelopment()) {
+  /*
+   * These grant gold, spirit and diamonds and set rank, so the banner belongs
+   * here -- where the mount actually happens -- and not at the top of qa.ts,
+   * which is require()d unconditionally by ./api/me and therefore announced
+   * "QA routes ACTIVE" on every production boot without mounting anything.
+   */
+  Logger.module('EXPRESS').log('QA routes ACTIVE'.green);
   router.use('/api/me/qa', meRoutes.qa);
 
   // Just a route for secure testing

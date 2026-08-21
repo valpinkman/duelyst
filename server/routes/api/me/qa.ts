@@ -63,7 +63,6 @@ const PromiseUtils = require('../../../../app/common/utils/utils_promise');
 
 const rankedQueue = new Redis.PlayerQueue(Redis.Redis, { name: 'ranked' });
 const router = express.Router();
-Logger.module('EXPRESS').log('QA routes ACTIVE'.green);
 
 router.delete('/rank/history/:season_key/rewards', function (req, res, next) {
   const user_id = req.user.d.id;
