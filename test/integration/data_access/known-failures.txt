@@ -13,13 +13,6 @@ cosmetic_chests.js > cosmetic chests module > openChest() > expect not to be abl
 cosmetic_chests.js > cosmetic chests module > openChest() > expect to be able to not be able to open a boss chest after it's expiration
 cosmetic_chests.js > cosmetic chests module > openChest() > expect to be not able to open a chest with a key of a different type
 cosmetic_chests.js > cosmetic chests module > updateUserChestRewardWithGameOutcome() > expect guarantee to receive a crate at 5+10 wins (with a 10% rng roll)
-gauntlet.js > gauntlet module > buyArenaTicketWithGold() > expect to NOT be able to buy ticket with insufficient gold
-gauntlet.js > gauntlet module > buyArenaTicketWithGold() > expect to be able to buy a ticket for 150 gold
-gauntlet.js > gauntlet module > claimRewards() > expect inventory and wallet to update after claiming rewards
-gauntlet.js > gauntlet module > startRun() > expect to ERROR out attempting starting a run in the middle of another one and to NOT use up an arena ticket
-gauntlet.js > gauntlet module > startRun() > expect to be able to start a run with a valid ticket
-gauntlet.js > gauntlet module > updateArenaRunWithGameOutcome() > expect an arena run with 10 wins to generate 6 reward slots
-gauntlet.js > gauntlet module > updateArenaRunWithGameOutcome() > expect an arena run with 7 wins to generate 5 reward slots
 gift_crate.js > gift crates module > unlockGiftCrate() > awards correct rewards to user inventory
 inventory.js > inventory module > Test cached card methods > expect cache to contain cards in each major category
 inventory.js > inventory module > buyBoosterPacksWithGold() > expect to be able to buy 3 booster packs for 300 GOLD

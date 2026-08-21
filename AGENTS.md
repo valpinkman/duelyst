@@ -32,7 +32,7 @@ pnpm build:server                              # ahead-of-time TS -> build/ for 
 pnpm test:unit                                 # vitest, 1366 tests, no external services
 pnpm test:integration:misc                     # needs nothing external; runs in CI
 pnpm test:integration:jobs                     # BullMQ job seam; needs ONLY redis, so it runs in CI too
-pnpm test:integration:data_access              # 565 tests; 58 known failures + 3 unstable. IN CI as a drift gate.
+pnpm test:integration:data_access              # 565 tests; 51 known failures + 2 unstable. IN CI as a drift gate.
 source scripts/dev/data-access-test-env.sh     #   throwaway postgres+redis+firebase emulator with this --
                                                #   deliberately separate from `docker compose`, because
                                                #   these suites create users and wipe inventories
@@ -216,6 +216,21 @@ How we work on it:
 
 Status log (newest first):
 
+- 2026-08-21 — **started on the stale-balance tail: gauntlet is green, 58 known failures → 51.**
+  The headline number is that arena tickets are free now (`GAUNTLET_TICKET_GOLD_PRICE === 0`)
+  and the tests hardcoded the old 150, so they failed on the price rather than the behaviour.
+  They now derive from the module's own constant, and the insufficient-funds case — which cannot
+  exist at price 0 — is skipped _by the price itself_, so it returns automatically if tickets are
+  ever charged for again. The reward-slot counts each dropped by one for a single reason worth
+  recording: the run used to award a free arena ticket above 6 wins, and that was disabled when
+  tickets became free.
+  **Two real problems came out of it.** The tests fired every game outcome at once through
+  `Promise.all`, and `updateArenaRunWithGameOutcome` is a read-modify-write of `win_count` on one
+  row — so a run billed as "10 wins" reached `claimRewards` with fewer, and the wrong reward
+  count looked like stale balance rather than a race (same shape as `users updateGameCounters`).
+  And gauntlet was never seeded, so which rarities a box drew changed how many reward slots
+  collapsed into one. Fixing the race also removed one entry from `known-unstable.txt`: that
+  flake had a cause, and the cause was in the test.
 - 2026-08-21 — **the data_access suites are in CI**, as a `data_access_tests` job that gates on
   **drift** rather than on green: 59 of 565 still fail (stale 2016 balance numbers), so
   `scripts/check-data-access-baseline.mjs` compares the failing set against
