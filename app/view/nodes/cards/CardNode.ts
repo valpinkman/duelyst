@@ -2378,7 +2378,7 @@ var CardNode = SdkNode.extend({
           if (!this.getAreResourcesValid(cardResourceRequestId)) return; // card has changed
 
           // create card stack sprites
-          for (var i = this._cardStackSprites.length; i < stackCount; i++) {
+          for (let i = this._cardStackSprites.length; i < stackCount; i++) {
             var cardStackSprite = BaseSprite.create(this.getCardBackgroundSpriteIdentifier());
             cardStackSprite.setLeveled(true);
             cardStackSprite.setLevelsOutWhite(255 - (i + 1) * 75);
@@ -2408,7 +2408,7 @@ var CardNode = SdkNode.extend({
           }
 
           // animate out stack
-          for (var i = 0; i < stackCount; i++) {
+          for (let i = 0; i < stackCount; i++) {
             var cardStackSprite = this._cardStackSprites[i];
             cardStackSprite.setVisible(true);
             cardStackSprite.setPosition(centerPosition);

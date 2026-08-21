@@ -194,7 +194,7 @@ var ShopManager = Manager.extend({
     var lastKnownRank = GamesManager.getInstance().rankingModel.get('rank') || 30;
     var topRank = Math.min(topSeasonRank, lastKnownRank);
 
-    var statRequirements = {
+    statRequirements = {
       top_rank: topRank,
       win_count: ProgressionManager.getInstance().gameCounterModel.get('win_count'),
     };

@@ -1059,7 +1059,7 @@ if (cluster.isMaster) {
     // also truncates any nodes that ocurred after an action with RNG
     const nodeSequence = buildNodeSequenceFromTreeRoot(rootNode);
     if (nodeSequence.length > 0) {
-      var psuedoActionSequence = _.map(
+      psuedoActionSequence = _.map(
         nodeSequence,
         (node) =>
           // Logger.module("AI").debug("ai_cluster_worker_evaluateGameSessionAndSendToMaster() *Worker#" + process.pid + ":* Mapping actions from bestLeaf's node sequence. On action:", node.parentPsuedoAction);

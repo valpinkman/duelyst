@@ -126,7 +126,7 @@ var RankCompositeView = Backbone.Marionette.CompositeView.extend({
 
     data.rank = data.rank_before + data.rank_delta;
 
-    for (var i = data.divisions.length - 1; i >= 0; i--) {
+    for (let i = data.divisions.length - 1; i >= 0; i--) {
       var division = data.divisions[i];
       if (data.rank <= division.rank) {
         data.divisionName = division.name;
@@ -346,7 +346,7 @@ var RankCompositeView = Backbone.Marionette.CompositeView.extend({
       // step stars fromStars to toStars
       var delta = toStars - fromStars;
       if (delta > 0) {
-        for (var i = fromStars + 1; i <= toStars; i++) {
+        for (let i = fromStars + 1; i <= toStars; i++) {
           this._queueCallback(
             this._showStarsChangeGain.bind(this),
             i,
@@ -354,7 +354,7 @@ var RankCompositeView = Backbone.Marionette.CompositeView.extend({
           );
         }
       } else {
-        for (var i = fromStars - 1; i >= toStars; i--) {
+        for (let i = fromStars - 1; i >= toStars; i--) {
           this._queueCallback(
             this._showStarsChangeLoss.bind(this),
             i,
@@ -490,7 +490,7 @@ var RankCompositeView = Backbone.Marionette.CompositeView.extend({
     this._starsRequired = starsRequired;
 
     var starModels = [];
-    for (var i = 0; i < starsRequired; i++) {
+    for (let i = 0; i < starsRequired; i++) {
       starModels.push(new Backbone.Model());
     }
     this.collection.reset(starModels);

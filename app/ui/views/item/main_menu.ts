@@ -770,11 +770,11 @@ var MainMenuItemView = Backbone.Marionette.ItemView.extend({
     var timeRemainingText = '';
 
     if (ProgressionManager.getInstance().getHasActiveBossEvent()) {
-      var eventMsRemaining = ProgressionManager.getInstance().getTimeToActiveBossEventEnds();
-      var timeRemainingText = i18next.t('common.available_for_duration_label');
+      eventMsRemaining = ProgressionManager.getInstance().getTimeToActiveBossEventEnds();
+      timeRemainingText = i18next.t('common.available_for_duration_label');
     } else if (ProgressionManager.getInstance().getUpcomingBossEventModel()) {
-      var eventMsRemaining = ProgressionManager.getInstance().getTimeToUpcomingBossEventAvailable();
-      var timeRemainingText = i18next.t('common.available_in_duration_label');
+      eventMsRemaining = ProgressionManager.getInstance().getTimeToUpcomingBossEventAvailable();
+      timeRemainingText = i18next.t('common.available_in_duration_label');
     } else {
       this.ui.$bossEventPromoTimer.text('');
       return;

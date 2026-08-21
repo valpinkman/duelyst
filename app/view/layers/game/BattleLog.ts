@@ -61,7 +61,7 @@ const BattleLog = BaseLayer.extend({
     this._button.addChild(this._expandButton);
 
     // battle log node pool
-    for (var i = 0; i < CONFIG.MAX_BATTLELOG_ENTRIES + 2; i++) {
+    for (let i = 0; i < CONFIG.MAX_BATTLELOG_ENTRIES + 2; i++) {
       const battleLogNode = new BattleLogNode();
       battleLogNode.setVisible(false);
       this._battleLogNodes.push(battleLogNode);
@@ -76,7 +76,7 @@ const BattleLog = BaseLayer.extend({
     this._battleLogEntriesContainer.addChild(this._button);
 
     // add battle log nodes to container
-    for (var i = 0, il = this._battleLogNodes.length; i < il; i++) {
+    for (let i = 0, il = this._battleLogNodes.length; i < il; i++) {
       this._battleLogEntriesContainer.addChild(this._battleLogNodes[i]);
     }
 
@@ -285,7 +285,7 @@ const BattleLog = BaseLayer.extend({
     this._stepsProcessed = [];
 
     // clear all nodes
-    for (var i = 0, il = this._battleLogNodes.length; i < il; i++) {
+    for (let i = 0, il = this._battleLogNodes.length; i < il; i++) {
       const battleLogNode = this._battleLogNodes[i];
       battleLogNode.setStep(null);
       battleLogNode.setVisible(false);
@@ -298,7 +298,7 @@ const BattleLog = BaseLayer.extend({
     // get max number of recent steps
     const stepsForLog = [];
     const turns = [].concat(gameSession.getTurns(), gameSession.getCurrentTurn());
-    for (var i = turns.length - 1; i >= 0; i--) {
+    for (let i = turns.length - 1; i >= 0; i--) {
       const turn = turns[i];
       const steps = turn.getSteps();
       for (let j = steps.length - 1; j >= 0; j--) {
@@ -317,7 +317,7 @@ const BattleLog = BaseLayer.extend({
     }
 
     // add all steps as entries
-    for (var i = 0, il = stepsForLog.length; i < il; i++) {
+    for (let i = 0, il = stepsForLog.length; i < il; i++) {
       this._addStep(stepsForLog[i]);
     }
 

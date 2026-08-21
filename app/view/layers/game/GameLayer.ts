@@ -309,12 +309,12 @@ var GameLayer = FXCompositeLayer.extend({
     this._prepareForTerminate();
 
     // force all entities to show base state
-    for (var i = 0, il = this._entityNodes.length; i < il; i++) {
+    for (let i = 0, il = this._entityNodes.length; i < il; i++) {
       this._entityNodes[i].showBaseState();
     }
 
     // terminate all UI modules
-    for (var i = 0, il = this._customUIModules.length; i < il; i++) {
+    for (let i = 0, il = this._customUIModules.length; i < il; i++) {
       this._customUIModules[i].terminate();
     }
     this._customUIModules = [];
@@ -1139,7 +1139,7 @@ var GameLayer = FXCompositeLayer.extend({
       //   // find each provoking unit around the source of the action and notify
       //   var sourceBoardPosition = action.getSourcePosition();
       //   var sdkUnits = SDK.GameSession.getInstance().getBoard().getCardsAroundPosition(sourceBoardPosition, SDK.CardType.Unit, 1);
-      //   for (var i = 0, il = sdkUnits.length; i < il; i++) {
+      //   for (let i = 0, il = sdkUnits.length; i < il; i++) {
       //     var sdkCard = sdkUnits[i];
       //     if (sdkCard && sdkCard.getOwnerId() !== action.getOwnerId() && sdkCard.getModifierByClass(SDK.ModifierProvoke)) {
       //       var unitNode = this.getNodeForSdkCard(sdkCard);
@@ -1167,7 +1167,7 @@ var GameLayer = FXCompositeLayer.extend({
       //   }
 
       //   // find each ranged provoking unit and flash an instructional arrow
-      //   for (var i = 0, il = this._unitNodes.length; i < il; i++) {
+      //   for (let i = 0, il = this._unitNodes.length; i < il; i++) {
       //     var unitNode = this._unitNodes[i];
       //     var sdkCard = unitNode.getSdkCard();
       //     if (sdkCard && sdkCard.getOwnerId() !== action.getOwnerId() && sdkCard.getModifierByClass(SDK.ModifierRangedProvoke)) {
@@ -1626,7 +1626,7 @@ var GameLayer = FXCompositeLayer.extend({
 
       // set all units as spawned and in their base state
       const entityNodes = this._entityNodes;
-      for (var i = 0, il = entityNodes.length; i < il; i++) {
+      for (let i = 0, il = entityNodes.length; i < il; i++) {
         const entityNode = entityNodes[i];
         entityNode.showSpawned();
       }
@@ -1654,7 +1654,7 @@ var GameLayer = FXCompositeLayer.extend({
         // find last shown action if any exist
         const actions = SDK.GameSession.getInstance().getActions();
         if (actions.length > 0) {
-          for (var i = actions.length - 1; i >= 0; i--) {
+          for (let i = actions.length - 1; i >= 0; i--) {
             const action = actions[i];
             if (
               action != null &&
@@ -1928,13 +1928,13 @@ var GameLayer = FXCompositeLayer.extend({
 
         // update battlelog nodes
         const battleLogNodes = this._battleLog.getBattleLogNodesInUse();
-        for (var i = 0, il = battleLogNodes.length; i < il; i++) {
+        for (let i = 0, il = battleLogNodes.length; i < il; i++) {
           battleLogNodes[i].updateSpritesForOwner();
         }
 
         // update entity nodes
         const entityNodes = this._entityNodes;
-        for (var i = 0, il = entityNodes.length; i < il; i++) {
+        for (let i = 0, il = entityNodes.length; i < il; i++) {
           entityNodes[i].updateSpritesForOwner();
         }
       }
@@ -2637,7 +2637,7 @@ var GameLayer = FXCompositeLayer.extend({
           );
         } else {
           sdkActionInterface.cachedResolveSubActions = [];
-          for (var i = 0, il = resolveSubActions.length; i < il; i++) {
+          for (let i = 0, il = resolveSubActions.length; i < il; i++) {
             const resolveSubAction = resolveSubActions[i];
             if (!this._getIsActionSkippable(resolveSubAction)) {
               var parentAction = resolveSubAction.getParentAction();
@@ -2650,7 +2650,7 @@ var GameLayer = FXCompositeLayer.extend({
         }
 
         // find all depth first actions
-        for (var i = subActions.length - 1; i >= 0; i--) {
+        for (let i = subActions.length - 1; i >= 0; i--) {
           const subAction = subActions[i];
           if (subAction.getIsDepthFirst()) {
             // add to depth first actions
@@ -2676,7 +2676,7 @@ var GameLayer = FXCompositeLayer.extend({
     // gather all first sequence actions
     // an action is in the first sequence if it is either the root or one of the root's sub actions
     let firstSequenceActionInterfaces = [];
-    for (var i = 0, il = nonModifierActionInterfaces.length; i < il; i++) {
+    for (let i = 0, il = nonModifierActionInterfaces.length; i < il; i++) {
       var currentActionInterface = nonModifierActionInterfaces[i];
       currentActionInterface.isFirstSequence = true;
       firstSequenceActionInterfaces.push(currentActionInterface);
@@ -2692,7 +2692,7 @@ var GameLayer = FXCompositeLayer.extend({
     // force some flattened actions to be the root of a new sequence
     // unless the first sequence is showing all at once
     if (stepFirstSequenceShowsAllAtOnce) {
-      for (var i = 0, il = nonModifierActionInterfaces.length; i < il; i++) {
+      for (let i = 0, il = nonModifierActionInterfaces.length; i < il; i++) {
         var currentActionInterface = nonModifierActionInterfaces[i];
         if (currentActionInterface.isFirstSequence) {
           currentActionInterface.isFirstSequenceAndSequencedAsOne = true;
@@ -2701,7 +2701,7 @@ var GameLayer = FXCompositeLayer.extend({
     }
 
     // setup sequence roots and rearrange modifier actions
-    for (var i = 0, il = modifierActionInterfaces.length; i < il; i++) {
+    for (let i = 0, il = modifierActionInterfaces.length; i < il; i++) {
       var sdkActionInterface = modifierActionInterfaces[i];
       var currentAction = sdkActionInterface.getSdkAction();
       var parentAction = currentAction.getParentAction();
@@ -2783,7 +2783,7 @@ var GameLayer = FXCompositeLayer.extend({
             ) {
               // apply card to board actions that only trigger first blood are invalid sequence roots
               let hasValidTriggeringModifier = false;
-              for (var j = 0, jl = rearrangedActionInterfaces.length; j < jl; j++) {
+              for (let j = 0, jl = rearrangedActionInterfaces.length; j < jl; j++) {
                 const rearrangedActionInterface = rearrangedActionInterfaces[j];
                 const rearrangedAction = rearrangedActionInterface.getSdkAction();
                 if (
@@ -2863,7 +2863,7 @@ var GameLayer = FXCompositeLayer.extend({
     addSequencedActions(nonModifierActionInterfaces);
 
     // handle triggering modifier actions
-    for (var i = actionInterfaceSequence.length - 1; i >= 0; i--) {
+    for (let i = actionInterfaceSequence.length - 1; i >= 0; i--) {
       var sdkActionInterface = actionInterfaceSequence[i];
       var currentAction = sdkActionInterface.getSdkAction();
       if (currentAction instanceof ModifierTriggeredAction) {
@@ -2898,7 +2898,7 @@ var GameLayer = FXCompositeLayer.extend({
           // in some cases the the next action following trigger actions should be a sequence root
           if (nextActionAfterTriggeringGroupIsSequenceRoot) {
             // find next action that is not a modifier action or has a triggering modifier index
-            for (var j = i, jl = actionInterfaceSequence.length; j < jl; j++) {
+            for (let j = i, jl = actionInterfaceSequence.length; j < jl; j++) {
               var nextActionInterface = actionInterfaceSequence[j];
               var nextAction = nextActionInterface.getSdkAction();
               let nextActionRootAction = nextAction;
@@ -2927,7 +2927,7 @@ var GameLayer = FXCompositeLayer.extend({
     }
 
     // ensure certain actions directly follow their parent action
-    for (var i = 0, il = actionInterfaceSequence.length; i < il; i++) {
+    for (let i = 0, il = actionInterfaceSequence.length; i < il; i++) {
       var sdkActionInterface = actionInterfaceSequence[i];
       var currentAction = sdkActionInterface.getSdkAction();
 
@@ -2966,7 +2966,7 @@ var GameLayer = FXCompositeLayer.extend({
 
     // check that all sequences are followed correctly by a sequence root
     // do this backwards so we aren't causing new sequence root checks
-    for (var i = actionInterfaceSequence.length - 1; i >= 0; i--) {
+    for (let i = actionInterfaceSequence.length - 1; i >= 0; i--) {
       var sdkActionInterface = actionInterfaceSequence[i];
       var { rearrangedActionInterfaces } = sdkActionInterface;
 
@@ -2997,7 +2997,7 @@ var GameLayer = FXCompositeLayer.extend({
     // ensure certain actions are always sequence roots
     // this is done before sequence sorting to ensure correct ordering
     const followupTriggerActionMap = {};
-    for (var i = 0, il = actionInterfaceSequence.length; i < il; i++) {
+    for (let i = 0, il = actionInterfaceSequence.length; i < il; i++) {
       var sdkActionInterface = actionInterfaceSequence[i];
       var currentAction = sdkActionInterface.getSdkAction();
       var sequenceRootSdkActionInterface = null;
@@ -3069,7 +3069,7 @@ var GameLayer = FXCompositeLayer.extend({
     let sortedActionInterfaces = [];
     let currentSequenceRootSdkActionInterface;
     let currentSequenceActionInterfaces;
-    for (var i = 0, il = actionInterfaceSequence.length; i < il; i++) {
+    for (let i = 0, il = actionInterfaceSequence.length; i < il; i++) {
       var sdkActionInterface = actionInterfaceSequence[i];
       var currentAction = sdkActionInterface.getSdkAction();
       if (sdkActionInterface.isSequenceRoot) {
@@ -3163,12 +3163,12 @@ var GameLayer = FXCompositeLayer.extend({
         }
       }
     };
-    for (var i = 0, il = sortedActionInterfaces.length; i < il; i++) {
+    for (let i = 0, il = sortedActionInterfaces.length; i < il; i++) {
       addSortedSequence(sortedActionInterfaces[i]);
     }
 
     // complete flattening
-    for (var i = actionInterfaceSequence.length - 1; i >= 0; i--) {
+    for (let i = actionInterfaceSequence.length - 1; i >= 0; i--) {
       var sdkActionInterface = actionInterfaceSequence[i];
       var currentAction = sdkActionInterface.getSdkAction();
 
@@ -3267,7 +3267,7 @@ var GameLayer = FXCompositeLayer.extend({
             siblingActions = _.sortBy(siblingActions, 'index');
 
             // cache results with each sibling action
-            for (var j = 0, jl = siblingActions.length; j < jl; j++) {
+            for (let j = 0, jl = siblingActions.length; j < jl; j++) {
               const siblingAction = siblingActions[j];
               const siblingActionInterface =
                 this._actionInterfacesByIndex[siblingAction.getIndex()];
@@ -3456,7 +3456,7 @@ var GameLayer = FXCompositeLayer.extend({
     // trigger modifier actions
     if (triggeredModifierActionInterfaces != null && triggeredModifierActionInterfaces.length > 0) {
       // add all triggered modifier actions and their direct sub-actions
-      for (var i = 0, il = triggeredModifierActionInterfaces.length; i < il; i++) {
+      for (let i = 0, il = triggeredModifierActionInterfaces.length; i < il; i++) {
         const triggeredModifierActionInterface = triggeredModifierActionInterfaces[i];
         const triggeredModifierAction = triggeredModifierActionInterface.getSdkAction();
         const modifier = triggeredModifierAction.getModifier();
@@ -3470,7 +3470,7 @@ var GameLayer = FXCompositeLayer.extend({
               triggeredModifierAction.getParentActionIndex(),
               triggeredModifierAction.getResolveParentActionIndex(),
             );
-            for (var j = 0, jl = triggerActions.length; j < jl; j++) {
+            for (let j = 0, jl = triggerActions.length; j < jl; j++) {
               var triggerAction = triggerActions[j];
               if (!this._getIsActionSkippable(triggerAction)) {
                 var triggerActionInterface =
@@ -3485,7 +3485,7 @@ var GameLayer = FXCompositeLayer.extend({
           if (cachedResolveDepthFirstTriggerActionInterfaces == null) {
             cachedResolveDepthFirstTriggerActionInterfaces =
               triggeredModifierActionInterface.cachedResolveDepthFirstTriggerActionInterfaces = [];
-            for (var j = 0, jl = cachedResolveTriggerActionInterfaces.length; j < jl; j++) {
+            for (let j = 0, jl = cachedResolveTriggerActionInterfaces.length; j < jl; j++) {
               var triggerActionInterface = cachedResolveTriggerActionInterfaces[j];
               var triggerAction = triggerActionInterface.getSdkAction();
               if (triggerAction.getIsDepthFirst()) {
@@ -3502,7 +3502,7 @@ var GameLayer = FXCompositeLayer.extend({
           );
 
           // add depth first trigger actions
-          for (var j = 0, jl = cachedResolveDepthFirstTriggerActionInterfaces.length; j < jl; j++) {
+          for (let j = 0, jl = cachedResolveDepthFirstTriggerActionInterfaces.length; j < jl; j++) {
             var triggerActionInterface = cachedResolveDepthFirstTriggerActionInterfaces[j];
             this._addActionInterfaceToDepthFirstForTriggeringSequence(
               triggerActionInterface,
@@ -3554,7 +3554,7 @@ var GameLayer = FXCompositeLayer.extend({
     // sub actions
     const subActions = sdkActionInterface.cachedResolveSubActions;
     if (subActions != null && subActions.length > 0) {
-      for (var i = 0, il = subActions.length; i < il; i++) {
+      for (let i = 0, il = subActions.length; i < il; i++) {
         const subAction = subActions[i];
         const subActionInterface = this._actionInterfacesByIndex[subAction.getIndex()];
 
@@ -5137,7 +5137,7 @@ var GameLayer = FXCompositeLayer.extend({
     var lastDataModifierIndex = null;
     var lastDataActionIndex = null;
     var lastDataResolveActionIndex = null;
-    for (var i = 0, il = deactivatedModifiersData.length; i < il; i += 3) {
+    for (let i = 0, il = deactivatedModifiersData.length; i < il; i += 3) {
       var dataModifierIndex = deactivatedModifiersData[i];
       var dataActionIndex = deactivatedModifiersData[i + 1];
       var dataResolveActionIndex = deactivatedModifiersData[i + 2];
@@ -5189,7 +5189,7 @@ var GameLayer = FXCompositeLayer.extend({
     var lastDataModifierIndex = null;
     var lastDataActionIndex = null;
     var lastDataResolveActionIndex = null;
-    for (var i = 0, il = activatedModifiersData.length; i < il; i += 3) {
+    for (let i = 0, il = activatedModifiersData.length; i < il; i += 3) {
       var dataModifierIndex = activatedModifiersData[i];
       var dataActionIndex = activatedModifiersData[i + 1];
       var dataResolveActionIndex = activatedModifiersData[i + 2];
@@ -5241,7 +5241,7 @@ var GameLayer = FXCompositeLayer.extend({
     var lastDataActionIndex = null;
     var lastDataResolveActionIndex = null;
     const changedByModifiers = action.getChangedByModifiers();
-    for (var i = 0, il = triggeredModifiersData.length; i < il; i += 3) {
+    for (let i = 0, il = triggeredModifiersData.length; i < il; i += 3) {
       var dataModifierIndex = triggeredModifiersData[i];
       var dataActionIndex = triggeredModifiersData[i + 1];
       var dataResolveActionIndex = triggeredModifiersData[i + 2];
@@ -5357,7 +5357,7 @@ var GameLayer = FXCompositeLayer.extend({
       parentAction,
       resolveParentAction,
     );
-    for (var i = 0, il = deactivatedModifiers.length; i < il; i++) {
+    for (let i = 0, il = deactivatedModifiers.length; i < il; i++) {
       const deactivatedModifier = deactivatedModifiers[i];
       if (
         deactivatedModifier != null &&
@@ -5381,7 +5381,7 @@ var GameLayer = FXCompositeLayer.extend({
       parentAction,
       resolveParentAction,
     );
-    for (var i = 0, il = activatedModifiers.length; i < il; i++) {
+    for (let i = 0, il = activatedModifiers.length; i < il; i++) {
       var activatedModifier = activatedModifiers[i];
       if (
         activatedModifier === modifier &&
@@ -5401,7 +5401,7 @@ var GameLayer = FXCompositeLayer.extend({
     }
 
     // trigger activated modifiers
-    for (var i = 0, il = activatedModifiers.length; i < il; i++) {
+    for (let i = 0, il = activatedModifiers.length; i < il; i++) {
       var activatedModifier = activatedModifiers[i];
       if (
         activatedModifier !== modifier &&
@@ -7596,7 +7596,7 @@ var GameLayer = FXCompositeLayer.extend({
       const mouseOverSdkEntity = this._player.getMouseOverSdkEntity();
       if (mouseOverSdkEntity != null) {
         // move mouse board position when hovering a unit on board
-        var forcedBoardPosition = mouseOverSdkEntity.getPosition();
+        forcedBoardPosition = mouseOverSdkEntity.getPosition();
         this._player.setMouseBoardPosition(forcedBoardPosition);
         if (UtilsPosition.getPositionsAreEqual(mouseBoardPositionLast, forcedBoardPosition)) {
           this._player.setHoverDirty(false);

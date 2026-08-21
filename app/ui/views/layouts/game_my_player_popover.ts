@@ -59,7 +59,7 @@ var MyPlayerPopoverLayout = PlayerPopoverLayout.extend({
 
     // get categories
     var categories = [];
-    for (var categoryName in SDK.EmoteCategory) {
+    for (let categoryName in SDK.EmoteCategory) {
       // add category
       var categoryId = SDK.EmoteCategory[categoryName];
       var name = i18next.t('battle.emote_category_' + categoryName.toLowerCase());
@@ -221,7 +221,7 @@ var MyPlayerPopoverLayout = PlayerPopoverLayout.extend({
       // next page takes us into next category
       var categories = this.model.get('categories');
       var index;
-      for (var i = 0, il = categories.length; i < il; i++) {
+      for (let i = 0, il = categories.length; i < il; i++) {
         if (categories[i].id === categoryId) {
           index = i;
           break;
@@ -266,7 +266,7 @@ var MyPlayerPopoverLayout = PlayerPopoverLayout.extend({
       // previous page takes us into previous category
       var categories = this.model.get('categories');
       var index;
-      for (var i = 0, il = categories.length; i < il; i++) {
+      for (let i = 0, il = categories.length; i < il; i++) {
         if (categories[i].id === categoryId) {
           index = i;
           break;
@@ -307,7 +307,7 @@ var MyPlayerPopoverLayout = PlayerPopoverLayout.extend({
 
     // get all default text only emotes
     var emotesWithTextModels = [];
-    for (var i = 0, il = emotesData.length; i < il; i++) {
+    for (let i = 0, il = emotesData.length; i < il; i++) {
       var emoteData = emotesData[i];
       if (
         emoteData.enabled &&
@@ -347,7 +347,7 @@ var MyPlayerPopoverLayout = PlayerPopoverLayout.extend({
       }
       emoteModels.push(emoteModel);
     };
-    for (var i = 0, il = emotesData.length; i < il; i++) {
+    for (let i = 0, il = emotesData.length; i < il; i++) {
       var emoteData = emotesData[i];
       var emoteId = emoteData.id;
       if (this._emotesWithTextAlwaysVisibleCollection.get(emoteId) == null) {
@@ -372,8 +372,8 @@ var MyPlayerPopoverLayout = PlayerPopoverLayout.extend({
     }
     // reset collections
     var categoryIds = Object.keys(emoteModelsByCategoryId);
-    for (var i = 0, il = categoryIds.length; i < il; i++) {
-      var categoryId = categoryIds[i];
+    for (let i = 0, il = categoryIds.length; i < il; i++) {
+      categoryId = categoryIds[i];
       var emoteModels = emoteModelsByCategoryId[categoryId];
       this._emoteCollectionsByCategoryId[categoryId].reset(emoteModels);
     }

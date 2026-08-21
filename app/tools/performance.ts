@@ -121,7 +121,7 @@ var PERF: Record<string, any> = {
         unconverted,
       );
     } else {
-      for (var id in PERF.stats_by_id) {
+      for (let id in PERF.stats_by_id) {
         PERF.log_stats_by_id(
           id,
           noise_threshold,
@@ -636,12 +636,12 @@ Performance_Stats.prototype = {
       const buffer_interface = this._buffer_interface;
       if (unconverted) {
         // raw
-        for (var i = 0; i < num_records; i++) {
+        for (let i = 0; i < num_records; i++) {
           result.push(buffer_interface[i]);
         }
       } else {
         // converted
-        for (var i = 0; i < num_records; i++) {
+        for (let i = 0; i < num_records; i++) {
           result.push(this._converter(buffer_interface[i]));
         }
       }

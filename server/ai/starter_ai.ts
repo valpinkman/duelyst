@@ -1836,7 +1836,7 @@ StarterAI.prototype = {
           // warbird - DEPRECATED. old design, no longer used
           // Logger.module("AI").debug("[G:" + this.getGameSession().gameId + "] burn_mass_column warbird entered.");
           validTargetPositions = [];
-          var { damageAmount } = card;
+          ({ damageAmount } = card);
           var enemiesKilled = 0;
           var score = 0;
           var myGeneral = this.getMyGeneral();
