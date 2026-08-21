@@ -158,7 +158,8 @@
       "electron"
     ],
     "overrides": {
-      "jsonwebtoken": "^9.0.3"
+      "jsonwebtoken": "^9.0.3",
+      "backbone": "catalog:"
     }
   }
 }

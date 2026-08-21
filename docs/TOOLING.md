@@ -56,4 +56,10 @@ Task orchestration is turborepo (`turbo.json`); pnpm still owns installs and lin
   (which resolved to 1.6.0, from 2014) and shipped both of its own copies inside `duelyst.js`,
   beside the app's. Collapsing them cut ~203 KB and removed the version skew. Transitive pins
   (`backbone.babysitter`, `backbone.wreqr`) are out of a catalog's reach — those need
-  `pnpm.overrides`.
+  `pnpm.overrides`, which is why `backbone: 'catalog:'` appears in both places. Overrides accept
+  `catalog:`, so the version still has exactly one home.
+- **The backbone override is install hygiene, not a fix.** marionette 2.2.2 ships
+  `lib/backbone.marionette.js` as a prebuilt UMD with babysitter and wreqr _baked in_, so the npm
+  packages pinning `backbone@1.2.1` were never loaded — `vendor.js` matches "wreqr" 44 times while
+  no source file requires it. Both bundles read 1.1.2 before and after the override. Worth doing
+  (one backbone in the tree, one fewer thing to reason about), worth not overselling.

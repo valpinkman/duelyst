@@ -6,9 +6,6 @@ settings:
 
 catalogs:
   default:
-    backbone:
-      specifier: 1.1.2
-      version: 1.1.2
     isomorphic-fetch:
       specifier: ^2.2.1
       version: 2.2.1
@@ -24,6 +21,7 @@ catalogs:
 
 overrides:
   jsonwebtoken: ^9.0.3
+  backbone: 1.1.2
 
 importers:
 
@@ -57,7 +55,7 @@ importers:
         specifier: ^1.0.6
         version: 1.1.0
       backbone:
-        specifier: 'catalog:'
+        specifier: 1.1.2
         version: 1.1.2
       backbone-virtual-collection:
         specifier: workspace:*
@@ -365,7 +363,7 @@ importers:
   packages/Backbone.VirtualCollection:
     dependencies:
       backbone:
-        specifier: 'catalog:'
+        specifier: 1.1.2
         version: 1.1.2
       underscore:
         specifier: 'catalog:'
@@ -2427,9 +2425,6 @@ packages:
 
   backbone@1.1.2:
     resolution: {integrity: sha512-bdiYFVF+mXQ3712Urje2uvYClLPXOd2jsvp8AHlPyMKqpHRPCmCxZf099kCRadhA2sMxp761XB2aZ0/HYF4fDg==}
-
-  backbone@1.2.1:
-    resolution: {integrity: sha512-asKBzZd9YIkgzdGw1hWQ4zgPS+Rk2CTFb9iDcznb7/NjX6LJ+53aIdc/jLhTLSDy2pzKtq0PHReYi17NKBOFTQ==}
 
   balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
@@ -8440,7 +8435,7 @@ snapshots:
 
   backbone.babysitter@0.1.12:
     dependencies:
-      backbone: 1.2.1
+      backbone: 1.1.2
       underscore: 1.6.0
 
   backbone.marionette@2.2.2:
@@ -8452,14 +8447,10 @@ snapshots:
 
   backbone.wreqr@1.4.0:
     dependencies:
-      backbone: 1.2.1
+      backbone: 1.1.2
       underscore: 1.6.0
 
   backbone@1.1.2:
-    dependencies:
-      underscore: 1.13.8
-
-  backbone@1.2.1:
     dependencies:
       underscore: 1.13.8
 

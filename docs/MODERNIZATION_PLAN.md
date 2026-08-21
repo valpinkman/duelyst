@@ -275,12 +275,16 @@ step it describes, so it can never drift from the code.
      The one still worth fixing is the orb spirit refund, which needs its own setup rather than
      a different number — see the log entry for why.
   2. **The typecheck backlog: 263 errors** (TypeScript 7; was 362 before the 2026-08-21 pass). Heterogeneous and low-yield now that
-     TS2304 is zero and gated — 177 TS2339, 70 TS2554, 34 TS2345, 23 TS2403, 20 TS2551. Cheaper
+     TS2304 is zero and gated — 115 TS2339, 65 TS2554, 34 TS2345, 22 TS2403, 14 TS2322. Cheaper
      to work on than it was: a full typecheck is 0.39 s now rather than 3.5 s. Move directories
      into `tsconfig.strict.json` as they go clean.
-  3. **Decide on `pnpm.overrides` for the transitive backbone pin.** `backbone.babysitter` and
-     `backbone.wreqr` (deps of marionette 2.2.2) still pin `backbone@1.2.1`, which a catalog
-     cannot reach. Small, but it is the last version skew in the tree.
+  3. ~~**Decide on `pnpm.overrides` for the transitive backbone pin.**~~ **Done 2026-08-21** —
+     `pnpm.overrides.backbone: 'catalog:'`. `backbone@1.2.1` is gone from the lockfile and the
+     store; the tree has one backbone. **It changed nothing shipped**, and that was worth
+     establishing before doing it: marionette 2.2.2's `lib/backbone.marionette.js` is a prebuilt
+     UMD with babysitter and wreqr _baked in_, so the npm packages that pinned 1.2.1 were never
+     loaded by anything. Both bundles read 1.1.2 before and after. Install hygiene, not a
+     runtime change — verified by the e2e practice game regardless.
   4. **Folder reorg** — `app/sdk` and `app/common` out of `app/`, the last item of the tooling
      program above. It is also what unblocks per-package `typecheck`/`test`. Blocked on a plan
      for `generate_packages.js` (it text-parses the card factories) and the RSX paths; wants an
