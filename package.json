@@ -92,6 +92,7 @@
     "jsonwebtoken": "^9.0.3",
     "jwt-decode": "^2.0.1",
     "knex": "^3.3.0",
+    "lit": "3.3.3",
     "markdown": "0.5.0",
     "mkdirp": "^0.5.0",
     "moment": "^2.30.1",
