@@ -70,21 +70,21 @@ work happens on top of it: when a screen breaks, that must mean the migration br
 
 ## 3. Decisions
 
-| #   | Decision                                                                                           |
-| --- | -------------------------------------------------------------------------------------------------- |
-| 1   | Goals (a) + (b), per §1                                                                            |
-| 2   | Coexistence **with intent to finish**; shell count is a CI ratchet                                 |
-| 3   | Safety net: one screen-tour Playwright spec **before** any migration; component tests as you go    |
-| 4   | **`backfire` first**, gated on a behaviour-characterisation session                                |
-| 5   | **Lit 3.3.3, light DOM**, `static properties`, no `@lit-labs/signals`; CJS at the boundary         |
-| 6   | Backbone **frozen** as the state layer; typed model attributes as an independent early win         |
-| 7   | Seam = a **shell `Marionette.ItemView`** wrapping the custom element; `transition.ts` untouched    |
-| 8   | First screen: **`views2/quests/quest_log_layout.ts`**                                              |
-| 9   | jQuery: velocity pass early; Bootstrap build-forward-only; jquery-ui deferred; `$el` left to decay |
-| 10  | Content-level package drift check + narrowed 404 allowlist, in the tour commit                     |
-| 11  | New code in `app/ui/components/`, kebab-case files matching tags, inline templates                 |
-| 12  | Done = 0 Marionette / jQuery / `backfire` / Handlebars; Backbone kept and upgraded                 |
-| 13  | ESM migration **deferred**, revisited after coexistence ends                                       |
+| #   | Decision                                                                                                                    |
+| --- | --------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Goals (a) + (b), per §1                                                                                                     |
+| 2   | Coexistence **with intent to finish**; shell count is a CI ratchet                                                          |
+| 3   | Safety net: one screen-tour Playwright spec **before** any migration; component tests as you go                             |
+| 4   | **`backfire` first**, gated on a behaviour-characterisation session                                                         |
+| 5   | **Lit 3.3.3, light DOM**, `static properties`, no `@lit-labs/signals`; CJS at the boundary — **confirmed by spike, §3.1.1** |
+| 6   | Backbone **frozen** as the state layer; typed model attributes as an independent early win                                  |
+| 7   | Seam = a **shell `Marionette.ItemView`** wrapping the custom element; `transition.ts` untouched                             |
+| 8   | First screen: **`views2/quests/quest_log_layout.ts`**                                                                       |
+| 9   | jQuery: velocity pass early; Bootstrap build-forward-only; jquery-ui deferred; `$el` left to decay                          |
+| 10  | Content-level package drift check + narrowed 404 allowlist, in the tour commit                                              |
+| 11  | New code in `app/ui/components/`, kebab-case files matching tags, inline templates                                          |
+| 12  | Done = 0 Marionette / jQuery / `backfire` / Handlebars; Backbone kept and upgraded                                          |
+| 13  | ESM migration **deferred**, revisited after coexistence ends                                                                |
 
 ### 3.1 Why Lit, and why light DOM
 
@@ -117,6 +117,74 @@ bridge in §3.2.
 **Not decorators.** `tsconfig.json` has no `experimentalDecorators` and targets `es2020`. Use
 `static properties = {…}` and neither the compiler config nor the class-fields semantics this repo
 is careful about (`declare x: any`) need to change.
+
+### 3.1.1 The CJS→ESM boundary, verified — spike [#3](https://github.com/valpinkman/duelyst/issues/3)
+
+**Decision 5 is confirmed. It was measured, not argued.** The whole of §3.1 rests on one unproven
+assumption — that a CommonJS file can `require()` an ESM-only Lit module purely for its
+`customElements.define` side effect and that this survives the _production_ bundle, not just dev.
+It does.
+
+The proof (`app/ui/components/spike/`, `scripts/spike/verify-lit-interop.mjs`, marked throwaway) is a
+20-line Lit element in ESM, a `require()`-only CJS file that takes **no binding** out of it and puts
+the tag in a markup string, and a headless-Chromium check run against `dist/src/duelyst.js` from a
+real `pnpm build`. Six assertions, all passing: the CJS module executes, `customElements.define` runs,
+the tag upgrades to the Lit class, it renders into **light DOM**, `render()` output is present, and
+setting a reactive property re-renders it. That last one matters — the first five would also pass for
+an element whose reactive machinery had been bundled away.
+
+What the bundle actually does, and why it works:
+
+- **`strictRequires: true` is doing the load-bearing work.** rolldown wraps the ESM module in a lazy
+  `__esmMin` factory and emits `init_spike_probe();` as the **first statement inside** the requiring
+  CJS module's `__commonJSMin` factory. So the registration side effect fires at _require time, in
+  require order_ — it is not hoisted to the top of the bundle, and it is not dropped. That ordering
+  guarantee is exactly what the export-before-require idiom needs, and it is what makes the
+  side-effect-only require legal here.
+- **`resolve.mainFields: ['browser', 'main']` does not apply to Lit, and must not.** The config
+  comment says to prefer CJS builds and "never the ESM `module` entry"; Vite honours the `exports`
+  map ahead of `mainFields`, so `lit` resolves to its ESM `index.js` regardless. That is the correct
+  outcome — but do not read that comment as a rule that new ESM dependencies have to be fought.
+- **`build.target: 'es2015'` down-levels Lit cleanly.** `?.` and `??` come out as explicit
+  `=== null || === void 0` chains in the emitted bundle. No syntax reached the browser that the
+  target forbids.
+- **`static properties` survives as a static assignment** (`_SpikeProbe.properties = {…}`), which
+  `finalize()` reads, and `declare label` + constructor assignment leaves Lit's prototype accessor
+  unshadowed. The AGENTS.md class-fields warning applies to Lit components too; the spike shows the
+  documented workaround is sufficient.
+
+**Bundle cost when a Lit component actually ships: negligible, as predicted.** With the spike wired
+into the entry, `dist/src/duelyst.js` goes 16,261,345 → 16,290,672 bytes, **+29,327 (+0.180%)**;
+gzipped 2,298,925 → 2,306,956, **+8,031 (+0.349%)**. That is the entire Lit runtime —
+`reactive-element`, `lit-html`, `lit-element` — against a 16 MB bundle. `pnpm build:client:watch` is
+unaffected: initial build and incremental rebuild on touching the ESM module both emit the element.
+
+**The spike itself ships nothing.** Nothing requires `app/ui/components/spike/`, so it is unreachable
+from `app/index.ts` and costs the shipped bundle **zero bytes** — the figures above were measured with
+the entry require temporarily in place. That is deliberate: a throwaway proof should not ride along in
+every user's download, and "throwaway code behind a clear comment" has no expiry date. **To re-run the
+proof**, add `require('app/ui/components/spike/spike-host');` at the top of `app/index.ts`, run
+`pnpm build`, run `node scripts/spike/verify-lit-interop.mjs`, then take the line back out. Run
+against a stock bundle the verifier says exactly that rather than failing obscurely.
+
+**What the spike deliberately does not prove**, and where the next surprise would come from:
+
+- **No `.hbs` template was involved.** The tag went in as a plain markup string. Handlebars
+  precompiles the tag as inert text, so the risk is low — but the first real shell (§3.3) is where
+  that gets exercised, not here.
+- **No Marionette shell.** The seam in §3.3 is [#10](https://github.com/valpinkman/duelyst/issues/10)'s
+  job; this spike answers the bundler question only.
+- **Only the `lit` root entry point was bundled.** `lit/directives/*` (`repeat()` is already named in
+  §4 step 5) and `lit/decorators.js` are separate `exports` subpaths and were not exercised. Expect to
+  re-check `repeat()` when the first screen lands; there is no reason for it to behave differently,
+  but nothing here shows it.
+- **Nothing protects `strictRequires`, and everything depends on it.** It is an ordinary
+  `commonjsOptions` setting in `vite.config.client.mjs` with no test standing behind it. Turn it off
+  while tuning the bundle and every Lit component silently stops registering — the failure surfaces as
+  an un-upgraded tag in the browser, **not** as a build error, which is the worst shape a regression
+  can take here. A comment at the setting now points back at this section; the screen tour
+  ([#2](https://github.com/valpinkman/duelyst/issues/2)) is what would actually catch it, which is
+  another reason that net matters before [#10](https://github.com/valpinkman/duelyst/issues/10).
 
 ### 3.2 Why Backbone stays frozen as the state layer
 
@@ -217,7 +285,7 @@ taught us what one actually costs.
    file can `require()` an ESM Lit component and survive
    `pnpm build`. `commonjsOptions.strictRequires` is set; CJS→ESM interop is the kind of thing that
    works in dev and breaks in the production bundle. Half a day, and it is the only thing that could
-   invalidate decision 5.
+   invalidate decision 5. **Done — it passed; findings and caveats in §3.1.1.**
 
 **Phase 1 — the real dependency**
 
