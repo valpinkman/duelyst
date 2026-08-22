@@ -59,24 +59,10 @@ Handlebars.registerHelper('imageForResourceScale', function (path) {
   }
 });
 
-Handlebars.registerHelper('list', function (items, options) {
-  var out = '';
-  if (items) {
-    for (var i = 0, l = items.length; i < l; i++) {
-      out += options.fn(items[i]);
-    }
-  }
-  return out;
-});
-
 Handlebars.registerHelper('concat', function () {
   var arg = Array.prototype.slice.call(arguments, 0);
   arg.pop();
   return arg.join('');
-});
-
-Handlebars.registerHelper('capitalize', function (item) {
-  return item.toUpperCase();
 });
 
 Handlebars.registerHelper('downcase', function (item) {
@@ -85,18 +71,6 @@ Handlebars.registerHelper('downcase', function (item) {
 
 Handlebars.registerHelper('statOrDash', function (item) {
   return item != null ? item : '-';
-});
-
-// http://momentjs.com/
-// moment syntax example: moment(Date("2011-07-18T15:50:52")).format("MMMM YYYY")
-// usage: {{dateFormat creation_date format="MMMM YYYY"}}
-Handlebars.registerHelper('dateFormat', function (context, block) {
-  if (moment) {
-    var f = block.hash.format || 'MMM DD, YYYY hh:mm:ss A';
-    return moment(context).format(f); // had to remove Date(context)
-  } else {
-    return context; // moment plugin not available. return data as is.
-  }
 });
 
 Handlebars.registerHelper('timeAgo', function (context) {
@@ -115,12 +89,6 @@ Handlebars.registerHelper('ifUTCDayPassedSince', function (valueIn, options) {
   } else {
     return options.inverse(this); // moment plugin not available. return data as is.
   }
-});
-
-Handlebars.registerHelper('times', function (n, block) {
-  var accum = '';
-  for (var i = 0; i < n; ++i) accum += block.fn(i);
-  return accum;
 });
 
 Handlebars.registerHelper('fromTo', function (n1, n2, block) {
@@ -212,25 +180,6 @@ Handlebars.registerHelper('math', function (lvalue, operator, rvalue, options) {
   }[operator];
 });
 
-// HELPER: #key_value
-//
-// Usage: {{#key_value obj}} Key: {{key}} // Value: {{value}} {{/key_value}}
-//
-// Iterate over an object, setting 'key' and 'value' for each property in
-// the object.
-Handlebars.registerHelper('key_value', function (obj, hash) {
-  var buffer = '';
-  var key;
-
-  for (key in obj) {
-    if (obj.hasOwnProperty(key)) {
-      buffer += hash.fn({ key: key, value: obj[key] });
-    }
-  }
-
-  return buffer;
-});
-
 Handlebars.registerHelper('markdown', function (markdownContent) {
   return markdown.toHTML(markdownContent);
 });
@@ -260,20 +209,8 @@ Handlebars.registerHelper('generalPortraitHexImageForGeneralId', function (gener
   }
 });
 
-Handlebars.registerHelper('isFactionUnlockedOrCardsOwned', function (factionId, options) {
-  if (ProgressionManager.getInstance().isFactionUnlockedOrCardsOwned(factionId)) {
-    return options.fn(this);
-  }
-});
-
 Handlebars.registerHelper('isFactionDisabledInCollection', function (factionId, options) {
   if (!ProgressionManager.getInstance().isFactionUnlockedOrCardsOwned(factionId)) {
-    return options.fn(this);
-  }
-});
-
-Handlebars.registerHelper('isFactionUnlocked', function (factionId, options) {
-  if (ProgressionManager.getInstance().isFactionUnlocked(factionId)) {
     return options.fn(this);
   }
 });
