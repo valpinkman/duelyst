@@ -155,8 +155,12 @@ Everything below is TypeScript unless noted.
   bearing; keep them.
 - **Card factories** (`app/sdk/cards/factory/**`) are _text-parsed_ by `generate_packages.js`.
   Keep the `Cards.X` / `RSX.Y` literal shape or the asset packages break. The build verifies the
-  generated key set against `scripts/build/packages-manifest.json` and fails on drift; regenerate
-  deliberately with `--update-packages-manifest`.
+  generated packages against `scripts/build/packages-manifest.json` — both the key set _and_ a
+  `<count>:<hash>` signature of each package's resources, because a source file that loses its
+  `// pragma PKGS:` comment empties a package without touching any key — and fails on drift;
+  regenerate deliberately with `--update-packages-manifest`. Package contents depend on the
+  generator's `-fa` flag, so the manifest records a signature per mode wherever they differ
+  (today only `all`), and an update run generates twice.
 - **CommonJS "export before require"** (`module.exports = X` above the requires) exists to
   survive circular requires. It does not survive ESM — restructure, don't just rename.
 - **Build-time env reaches the client** through Vite `define`. The build refuses to run without a
