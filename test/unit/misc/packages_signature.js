@@ -86,6 +86,21 @@ describe('PackagesSignature.UnitTests', () => {
         forceAllResources: '8678:cccccccccccc',
       });
     });
+
+    /*
+     * Recording only the half that exists would make the manifest permanently
+     * unsatisfiable in the other mode, and it would surface there as a MISSING
+     * PACKAGE - drift, blamed on a dropped pragma that does not exist. Refuse
+     * at record time instead; see the comment on mergeSignatures.
+     */
+    it('refuses a package that only some generator modes produce', () => {
+      expect(() =>
+        signatures.mergeSignatures({
+          default: { all: '8401:aaaaaaaaaaaa' },
+          forceAllResources: { all: '8678:cccccccccccc', devonly: '3:dddddddddddd' },
+        }),
+      ).to.throw(/"devonly" is generated in mode\(s\) forceAllResources but not in default/);
+    });
   });
 
   describe('diffSignatures / describeDrift', () => {

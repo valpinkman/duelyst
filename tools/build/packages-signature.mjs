@@ -74,6 +74,23 @@ export function signPackages(pkgs) {
 /**
  * Fold per-mode signature maps into the manifest's `packages` value: a bare
  * string where the modes agree, `{ mode: signature }` where they do not.
+ *
+ * Refuses a key that only some modes generate. The manifest records what each
+ * package CONTAINS per mode; it has no way to say a package EXISTS in one mode
+ * and not another, and recording the one-sided half is worse than refusing:
+ * the mode that lacks the key then reports it as a missing package, i.e. as
+ * drift, and points the reader at a dropped `// pragma PKGS:` comment that
+ * does not exist. Re-running `--update-packages-manifest` writes the same
+ * half back, so the manifest is permanently unsatisfiable in that mode.
+ *
+ * Unreachable today: `-fa` only appends RSX entries to the existing `all`
+ * package, so both modes generate the same key set. It is a hard stop rather
+ * than a warning because whoever gets here has introduced a concept the format
+ * cannot express — per-mode package existence — and that wants deciding
+ * (absent package? empty one?) and teaching to `diffSignatures`, which
+ * compares key sets without knowing the mode. This fold cannot invent the
+ * answer, and it fails at the deliberate update run rather than leaving it for
+ * a production build to trip over later.
  */
 export function mergeSignatures(signaturesByMode) {
   const modes = Object.keys(signaturesByMode);
@@ -81,8 +98,14 @@ export function mergeSignatures(signaturesByMode) {
   const packages = {};
   for (const key of [...keys].sort()) {
     const present = modes.filter((mode) => signaturesByMode[mode][key] != null);
+    if (present.length !== modes.length) {
+      const absent = modes.filter((mode) => !present.includes(mode));
+      throw new Error(
+        `asset package "${key}" is generated in mode(s) ${present.join(', ')} but not in ${absent.join(', ')}. The manifest cannot record a package that exists in only some generator modes - see mergeSignatures in scripts/build/packages-signature.mjs.`,
+      );
+    }
     const values = new Set(present.map((mode) => signaturesByMode[mode][key]));
-    if (present.length === modes.length && values.size === 1) {
+    if (values.size === 1) {
       packages[key] = [...values][0];
     } else {
       packages[key] = Object.fromEntries(
