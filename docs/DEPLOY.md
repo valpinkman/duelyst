@@ -12,46 +12,30 @@ three of them directly:
 | Service  | Image                      | Reachable as                        |
 | -------- | -------------------------- | ----------------------------------- |
 | web      | `docker/web.Dockerfile`    | `https://duelyst.valpinkman.xyz`    |
-| game     | `docker/game.Dockerfile`   | `wss://duelyst.valpinkman.xyz:8001` |
-| sp       | `docker/sp.Dockerfile`     | `wss://duelyst.valpinkman.xyz:8000` |
+| game     | `docker/game.Dockerfile`   | `wss://game.duelyst.valpinkman.xyz` |
+| sp       | `docker/sp.Dockerfile`     | `wss://sp.duelyst.valpinkman.xyz`   |
 | worker   | `docker/worker.Dockerfile` | not public                          |
 | postgres | Coolify database           | internal                            |
 | redis    | Coolify database           | internal                            |
 
-**The ports are not a choice.** `app/networkManager.ts` builds its websocket URL
-as `${protocol}://${host}:${port}` with the port hardcoded to 8001 for
-multiplayer and 8000 for single-player, and `protocol` is `wss` in anything but
-development. Changing that is a client change; see docs/REORG_AUDIT.md-style
-reasoning in the deploy discussion. Until then, those two ports must terminate
-TLS for this domain.
+All three are ordinary HTTPS services on 443, which is the only thing the shared
+Traefik listens on.
+
+That took a client change. Upstream built the websocket URL as
+`<page hostname>:8001` (or `:8000`), with `wss` outside development, which would
+have required both ports to terminate TLS for the site domain — and Traefik
+entrypoints are _static_ configuration, so adding listeners means editing the
+proxy definition that every other service on the box shares.
+`GAME_SERVER_URL` / `SP_SERVER_URL` name each server outright instead. Unset,
+the client still builds the old URL, so local development is unchanged.
 
 ## One-time server setup
 
-### 1. Traefik entrypoints for 8000/8001
+### 1. Nothing to do to the proxy
 
-Coolify's proxy only defines `http:80` and `https:443`. Entrypoints are Traefik
-_static_ configuration, so this is an edit to the proxy definition
-(**Server → Proxy → Configuration**), not something a dynamic file can add.
-
-Add to `ports:`
-
-```yaml
-- '8000:8000'
-- '8001:8001'
-```
-
-and to `command:`
-
-```yaml
-- '--entrypoints.sp.address=:8000'
-- '--entrypoints.game.address=:8001'
-```
-
-Then redeploy the proxy. The existing `letsencrypt` resolver is reused — a
-certificate is per-domain, not per-port, so no new certificate is involved.
-
-**Also open 8000/8001 in the Hetzner firewall**, or Traefik will never see the
-connections.
+Earlier drafts of this document had you add two Traefik entrypoints and open two
+ports in the Hetzner firewall. Neither is needed: game and sp are subdomains on
+443 now. If the entrypoints were already added they are harmless, just unused.
 
 ### 2. Repository access
 
@@ -70,8 +54,8 @@ Created 2026-08-21 in project **Duelyst** (`pfeykyoqfl4sa7akslyocsjz`), environm
 | Resource         | UUID                       | Notes                                               |
 | ---------------- | -------------------------- | --------------------------------------------------- |
 | duelyst-web      | `ckmwcsoqlimmtpychbbsrmla` | `/docker/web.Dockerfile`, port 3000, domain set     |
-| duelyst-game     | `70frtu9cvrs7y95rdyj6qj9p` | `/docker/game.Dockerfile`, port 8001, custom labels |
-| duelyst-sp       | `lfjstkk2dhdyhuv0osay9soz` | `/docker/sp.Dockerfile`, port 8000, custom labels   |
+| duelyst-game     | `70frtu9cvrs7y95rdyj6qj9p` | `/docker/game.Dockerfile`, port 8001, domain on 443 |
+| duelyst-sp       | `lfjstkk2dhdyhuv0osay9soz` | `/docker/sp.Dockerfile`, port 8000, domain on 443   |
 | duelyst-worker   | `5k43hxj2nqrfc8uiyxtkjqvk` | `/docker/worker.Dockerfile`, no public port         |
 | duelyst-postgres | `lx6bsx4eqaf0b8fhgxrcpzyb` | postgres:13, internal host = its uuid               |
 | duelyst-redis    | `y7pljbwsvujegc7xvf32qkvb` | redis:6, **password set** — hence `REDIS_PASSWORD`  |
@@ -113,15 +97,14 @@ Runtime environment:
 `FIREBASE_PRIVATE_KEY` is a PEM with newlines — mark it multiline and
 **runtime-only**, not a build arg.
 
-Routing: web gets the domain normally. game and sp need a label each so Traefik
-serves them on the new entrypoints, e.g. for game:
+Routing: all three get a domain and Coolify generates the labels. The wildcard
+DNS covers arbitrary depth (`deep.nested.valpinkman.xyz` resolves), so the
+two-level names work, and Let's Encrypt HTTP-01 is per-name, so no wildcard
+certificate is involved.
 
-```
-traefik.http.routers.duelyst-game.rule=Host(`duelyst.valpinkman.xyz`)
-traefik.http.routers.duelyst-game.entrypoints=game
-traefik.http.routers.duelyst-game.tls.certresolver=letsencrypt
-traefik.http.services.duelyst-game.loadbalancer.server.port=8001
-```
+`GAME_SERVER_URL` and `SP_SERVER_URL` are **build args on web** as well as
+runtime values — they are compiled into the browser bundle, so changing where
+the game servers live means rebuilding web, not just restarting it.
 
 ### Migrations
 
