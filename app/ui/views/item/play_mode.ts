@@ -144,6 +144,24 @@ var PlayModeItemView = SlidingPanelItemView.extend({
   isModeAvailableToday: function () {
     if (UtilsEnv.getIsInStaging() || UtilsEnv.getIsInDevelopment()) return true;
 
+    /*
+     * These three helpers run from mixinTemplateHelpers, which this project
+     * overrides to CALL each helper at render time with the view as `this`
+     * (stock Marionette hands them to the template and lets Handlebars invoke
+     * them later). A view re-rendered after its model is gone therefore reaches
+     * `this.model.get` on null, and the whole render throws -- which the app
+     * shows as "We hit a snag! Cannot read properties of null (reading 'get')".
+     *
+     * Seen returning to the play menu after winning a practice game. Note the
+     * early return above: in development and staging this method never touches
+     * the model at all, so the crash is production-only, which is why nothing
+     * local reproduces it.
+     *
+     * No model means nothing says the mode is restricted, so treat it as
+     * available -- the same answer as a mode with no day restrictions.
+     */
+    if (this.model == null) return true;
+
     var days = this.model.get('availableOnDaysOfWeek');
     if (days && days.length > 0) {
       var myDate = moment().zone('-08:00'); // PDT
@@ -155,6 +173,7 @@ var PlayModeItemView = SlidingPanelItemView.extend({
   },
 
   isModeAvailableTommorrow: function () {
+    if (this.model == null) return true; // see isModeAvailableToday
     var days = this.model.get('availableOnDaysOfWeek');
     if (days && days.length > 0) {
       var myDate = moment().zone('-08:00').add(1, 'day'); // PDT
@@ -166,6 +185,7 @@ var PlayModeItemView = SlidingPanelItemView.extend({
   },
 
   getNextAvailableMoment: function () {
+    if (this.model == null) return undefined; // see isModeAvailableToday
     var now = moment().zone('-08:00'); // PDT
     var currentDay = now.weekday(); // indexed off 0
     if (this.model.get('availableOnDaysOfWeek')) {
