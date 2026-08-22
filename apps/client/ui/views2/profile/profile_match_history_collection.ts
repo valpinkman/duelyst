@@ -11,6 +11,7 @@ var ProfileManager = require('../../managers/profile_manager');
 var ErrorDialogItemView = require('../../views/item/error_dialog');
 var CopyReplayDialogView = require('./profile_match_history_copy_replay_to_clipboard_dialog');
 var Template = require('./templates/profile_match_history_collection.hbs');
+var { requestJson } = require('@duelyst/common/request');
 
 var ProfileMatchHistoryCollectionView = Backbone.Marionette.ItemView.extend({
   className: 'profile-match-history',
@@ -108,7 +109,7 @@ var ProfileMatchHistoryCollectionView = Backbone.Marionette.ItemView.extend({
 
   onClickShareReplay: function (e) {
     Promise.resolve(
-      $.ajax({
+      requestJson({
         url: process.env.API_URL + '/api/me/games/share_replay',
         type: 'POST',
         data: JSON.stringify({
