@@ -2,7 +2,7 @@
  * SPIKE — issue #3. THROWAWAY PROOF, NOT PRODUCTION CODE.
  *
  * The CommonJS half of the proof. This file is written exactly like the 200 other
- * `require()`-only files in `app/ui`: no `import`, no binding taken out of the ESM
+ * `require()`-only files in `apps/client/ui`: no `import`, no binding taken out of the ESM
  * module. The ONLY thing the require below does is run
  * `customElements.define('duelyst-spike-probe', ...)`; the boundary between the old
  * stack and the new one is the tag name in `MARKUP`, which is the whole argument for
@@ -10,22 +10,22 @@
  *
  * Nothing is rendered at load. `mount()` exists so a browser can be pointed at the
  * production bundle and asked whether the element actually upgraded — see
- * scripts/spike/verify-lit-interop.mjs.
+ * tools/spike/verify-lit-interop.mjs.
  *
  * NOT WIRED INTO THE BUILD. Nothing requires this file, so it is unreachable from
- * `app/index.ts` and costs the shipped bundle zero bytes — deliberately, so a
+ * `apps/client/index.ts` and costs the shipped bundle zero bytes — deliberately, so a
  * throwaway proof cannot outlive its usefulness by riding along in every download.
- * To re-run the proof, add this line at the top of `app/index.ts`, rebuild, run the
+ * To re-run the proof, add this line at the top of `apps/client/index.ts`, rebuild, run the
  * verifier, and take it back out:
  *
- *     require('app/ui/components/spike/spike-host');
+ *     require('./ui/components/spike/spike-host');
  *
  * Delete this directory when the spike is retired.
  */
 'use strict';
 
 // side-effect require: registers <duelyst-spike-probe>, returns nothing we use
-require('app/ui/components/spike/spike-probe');
+require('./spike-probe');
 
 var MARKUP = '<duelyst-spike-probe label="cjs-require"></duelyst-spike-probe>';
 

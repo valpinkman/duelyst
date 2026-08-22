@@ -16,9 +16,9 @@
  * The spike is deliberately NOT wired into the build, so a stock bundle does not
  * contain it and this script will say so rather than fail obscurely. To reproduce:
  *
- *   1. add `require('app/ui/components/spike/spike-host');` at the top of app/index.ts
+ *   1. add `require('./ui/components/spike/spike-host');` at the top of apps/client/index.ts
  *   2. FIREBASE_URL=https://test-url.firebaseio.com/ pnpm build
- *   3. node scripts/spike/verify-lit-interop.mjs
+ *   3. node tools/spike/verify-lit-interop.mjs
  *   4. remove the line again
  *
  * Delete with the spike.
@@ -116,9 +116,9 @@ The bundle does not contain the spike — window.__duelystLitSpike is undefined.
 This is the expected state of a stock build: the proof is kept out of the shipped
 bundle on purpose. To reproduce it, add
 
-    require('app/ui/components/spike/spike-host');
+    require('./ui/components/spike/spike-host');
 
-at the top of app/index.ts, rebuild, re-run this script, then remove the line again.
+at the top of apps/client/index.ts, rebuild, re-run this script, then remove the line again.
 `);
   process.exit(2);
 }

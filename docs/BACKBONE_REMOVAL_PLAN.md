@@ -25,14 +25,14 @@ ratchet. Backbone stays frozen as the state layer throughout — it is the one i
 share.
 
 **The first commit is not a migration.** It is a Playwright screen tour, written against the
-current Marionette build, because `app/ui` is 44,292 lines with **zero tests**.
+current Marionette build, because `apps/client/ui` is 44,292 lines with **zero tests**.
 
 ## 1. The goal, narrowed
 
 Two goals, both primary:
 
 - **(a) Delete unmaintained dependencies.** `backfire`, Marionette 2.2.2, jQuery 2.1.4, Bootstrap 3.
-- **(b) Make `app/ui` workable.** 44,292 lines of untyped ES5-in-`.ts` — `var _ = require(…)`,
+- **(b) Make `apps/client/ui` workable.** 44,292 lines of untyped ES5-in-`.ts` — `var _ = require(…)`,
   `.extend({…})` object literals, no classes, no types, no components.
 
 Goal (a) has an uncomfortable consequence that is easier to accept now than to discover in month
@@ -65,7 +65,7 @@ Three consequences, all forced:
 
 **Decision: freeze the old stack.** No intermediate Marionette bump to 2.4.7. It is abandoned
 either way, so the bump buys a version number, and it would land on `views/regions/transition.ts` —
-the least-tested, highest-consequence file in `app/ui` (§5). The old stack should be boring while
+the least-tested, highest-consequence file in `apps/client/ui` (§5). The old stack should be boring while
 work happens on top of it: when a screen breaks, that must mean the migration broke it.
 
 ## 3. Decisions
@@ -82,7 +82,7 @@ work happens on top of it: when a screen breaks, that must mean the migration br
 | 8   | First screen: **`views2/quests/quest_log_layout.ts`**                                                                       |
 | 9   | jQuery: velocity pass early; Bootstrap build-forward-only; jquery-ui deferred; `$el` left to decay                          |
 | 10  | Content-level package drift check + narrowed 404 allowlist, in the tour commit                                              |
-| 11  | New code in `app/ui/components/`, kebab-case files matching tags, inline templates                                          |
+| 11  | New code in `apps/client/ui/components/`, kebab-case files matching tags, inline templates                                  |
 | 12  | Done = 0 Marionette / jQuery / `backfire` / Handlebars; Backbone kept and upgraded                                          |
 | 13  | ESM migration **deferred**, revisited after coexistence ends                                                                |
 
@@ -90,7 +90,7 @@ work happens on top of it: when a screen breaks, that must mean the migration br
 
 Three properties of _this_ repo decide it, none of which is "web components are the standard":
 
-- **The custom element registry is the coexistence mechanism, and it is free.** `app/ui` is 100%
+- **The custom element registry is the coexistence mechanism, and it is free.** `apps/client/ui` is 100%
   CommonJS — 200 files with `require()`, zero with `import`, and `vite.config.client.mjs` says so
   ("the whole graph is CommonJS"). Every modern candidate is ESM-only. With custom elements you do
   not import at the call site: you `require()` the module once for its registration side effect and
@@ -125,7 +125,7 @@ assumption — that a CommonJS file can `require()` an ESM-only Lit module purel
 `customElements.define` side effect and that this survives the _production_ bundle, not just dev.
 It does.
 
-The proof (`app/ui/components/spike/`, `scripts/spike/verify-lit-interop.mjs`, marked throwaway) is a
+The proof (`apps/client/ui/components/spike/`, `tools/spike/verify-lit-interop.mjs`, marked throwaway) is a
 20-line Lit element in ESM, a `require()`-only CJS file that takes **no binding** out of it and puts
 the tag in a markup string, and a headless-Chromium check run against `dist/src/duelyst.js` from a
 real `pnpm build`. Six assertions, all passing: the CJS module executes, `customElements.define` runs,
@@ -159,12 +159,12 @@ gzipped 2,298,925 → 2,306,956, **+8,031 (+0.349%)**. That is the entire Lit ru
 `reactive-element`, `lit-html`, `lit-element` — against a 16 MB bundle. `pnpm build:client:watch` is
 unaffected: initial build and incremental rebuild on touching the ESM module both emit the element.
 
-**The spike itself ships nothing.** Nothing requires `app/ui/components/spike/`, so it is unreachable
-from `app/index.ts` and costs the shipped bundle **zero bytes** — the figures above were measured with
+**The spike itself ships nothing.** Nothing requires `apps/client/ui/components/spike/`, so it is unreachable
+from `apps/client/index.ts` and costs the shipped bundle **zero bytes** — the figures above were measured with
 the entry require temporarily in place. That is deliberate: a throwaway proof should not ride along in
 every user's download, and "throwaway code behind a clear comment" has no expiry date. **To re-run the
-proof**, add `require('app/ui/components/spike/spike-host');` at the top of `app/index.ts`, run
-`pnpm build`, run `node scripts/spike/verify-lit-interop.mjs`, then take the line back out. Run
+proof**, add `require('./ui/components/spike/spike-host');` at the top of `apps/client/index.ts`, run
+`pnpm build`, run `node tools/spike/verify-lit-interop.mjs`, then take the line back out. Run
 against a stock bundle the verifier says exactly that rather than failing obscurely.
 
 **What the spike deliberately does not prove**, and where the next surprise would come from:
@@ -246,7 +246,7 @@ and hit zero when the last one is deleted. Gate it in CI in the same spirit as
 
 ### 3.4 Conventions
 
-- **`app/ui/components/`, not `views3/`.** `views/` and `views2/` already exist; a third numbered
+- **`apps/client/ui/components/`, not `views3/`.** `views/` and `views2/` already exist; a third numbered
   folder reads as "another abandoned generation", which is the exact impression this plan cannot
   afford. `components/` also states something structurally true.
 - **Kebab-case filenames matching the tag**: `components/quests/quest-log.ts` ↔
@@ -307,7 +307,7 @@ taught us what one actually costs.
 
 5. **`quest_log_layout` → Lit** — [#10](https://github.com/valpinkman/duelyst/issues/10). Layout +
    `quest_log_composite` (CompositeView) + `quest_item` + `quest_log_empty`. Establishes
-   `app/ui/components/`, the `BackboneController`, the shell, the `repeat()` idiom, and the
+   `apps/client/ui/components/`, the `BackboneController`, the shell, the `repeat()` idiom, and the
    `{{localize}}` → `t()` conversion. **Expect this to take several times longer than its 1,156
    tree-lines suggest, and judge the approach on the second screen.**
 6. **CI ratchet** — [#11](https://github.com/valpinkman/duelyst/issues/11). `Marionette.` references
@@ -322,7 +322,7 @@ the order and opens the 23-screen checklist; [#13](https://github.com/valpinkman
 
 7. [#14](https://github.com/valpinkman/duelyst/issues/14) — delete Marionette, `transition.ts`, all
    shells, all `.hbs`, Handlebars, `bootstrap.js` (the Bootstrap **SCSS stays**).
-8. [#15](https://github.com/valpinkman/duelyst/issues/15) — `app/application.ts`:
+8. [#15](https://github.com/valpinkman/duelyst/issues/15) — `apps/client/application.ts`:
    `new Backbone.Marionette.Application()` → a plain object with `Backbone.Events`. Repo-wide there
    are **5 references to Marionette.Application's API and only `App.start()` runs** — the
    5,149-line boot file is a one-line change, not a blocker.
@@ -349,7 +349,7 @@ the order and opens the 23-screen checklist; [#13](https://github.com/valpinkman
 These are the things that will not announce themselves.
 
 **Asset packaging fails silently, and it will recur 23 times.** `generate_packages.js` recursively
-scans `app/ui` and assigns each file's art to a package via a `// pragma PKGS:` comment — but only
+scans `apps/client/ui` and assigns each file's art to a package via a `// pragma PKGS:` comment — but only
 **76 of 204 files** carry one. Neither protection you would assume exists actually does:
 
 - `packages-manifest.json` locks the **package key set** (~1,400 keys), not the resource list inside
@@ -369,7 +369,7 @@ component that is draggable is disconnected and reconnected mid-drag, tearing do
 subscriptions each time. This is why the collection and deck-builder screens are **not** first, and
 why jquery-ui removal is scheduled as a prerequisite immediately before them.
 
-**`views/regions/transition.ts` is the most dangerous file in `app/ui`.** 241 lines monkey-patching
+**`views/regions/transition.ts` is the most dangerous file in `apps/client/ui`.** 241 lines monkey-patching
 `Marionette.Region`, `RegionManager`, `CollectionView` and `LayoutView` prototypes to thread
 `prepareForDestroy` and async `animateOut` through teardown. Animated region transitions _are_ the
 navigation model. Nothing in this plan touches it until phase 4 deletes it.
@@ -382,16 +382,16 @@ work in phase 1 lands in exactly the areas it has already bitten (`sync`, `inven
 
 ### Scope
 
-| Area                           | Files | Lines      |
-| ------------------------------ | ----: | ---------- |
-| `app/ui` (all `.ts`)           |   204 | **44,292** |
-| ├ `views/`                     |     — | 19,290     |
-| ├ `views2/`                    |     — | 11,352     |
-| └ `managers/`                  |     — | 10,343     |
-| `app/ui/**/*.hbs`              |   153 | 4,289      |
-| `app/ui/styles/**/*.scss`      |    44 | 12,508     |
-| **Tests referencing `app/ui`** | **0** | —          |
-| `test/e2e/` (the only net)     |     1 | 224        |
+| Area                                   | Files | Lines      |
+| -------------------------------------- | ----: | ---------- |
+| `apps/client/ui` (all `.ts`)           |   204 | **44,292** |
+| ├ `views/`                             |     — | 19,290     |
+| ├ `views2/`                            |     — | 11,352     |
+| └ `managers/`                          |     — | 10,343     |
+| `apps/client/ui/**/*.hbs`              |   153 | 4,289      |
+| `apps/client/ui/styles/**/*.scss`      |    44 | 12,508     |
+| **Tests referencing `apps/client/ui`** | **0** | —          |
+| `test/e2e/` (the only net)             |     1 | 224        |
 
 The e2e covers login → register → main menu → play → practice → game. It never reaches collection,
 deck builder, crafting, shop, quests, profile, codex, rift, arena, watch, buddy list or pack opening.
@@ -400,7 +400,7 @@ deck builder, crafting, shop, quests, profile, codex, rift, arena, watch, buddy 
 
 | Backbone / Marionette                                                                | Uses                          |
 | ------------------------------------------------------------------------------------ | ----------------------------- |
-| `.get('x')` in `app/ui` (256 of them `this.model.get(`)                              | **1,011**                     |
+| `.get('x')` in `apps/client/ui` (256 of them `this.model.get(`)                      | **1,011**                     |
 | `listenTo` / `trigger` / `listenToOnce` / `stopListening` / `on` / `off`             | 239 / 182 / 74 / 63 / 68 / 36 |
 | Collection: `.remove` / `.models` / `.add` / `.reset` / `.at` / `comparator`         | 64 / 43 / 41 / 16 / 13 / 5    |
 | `Marionette.ItemView` / `LayoutView` / `CompositeView` / `Region` / `CollectionView` | 71 / 26 / 23 / 11 / 2         |
@@ -428,8 +428,8 @@ anywhere.
 
 The teeth: **Bootstrap 3 JS in 26 files** (`modal`/`popover`/`tooltip`), **jquery-ui in 7**
 (`draggable`/`droppable`, all in collection / deck-builder / booster-packs), **velocity in 4**,
-`$.ajax` in ~18. Cocos2d does **not** use jQuery, and only two files outside `app/ui` touch `$`
-(`app/view/Scene.ts`, `app/application.ts`).
+`$.ajax` in ~18. Cocos2d does **not** use jQuery, and only two files outside `apps/client/ui` touch `$`
+(`apps/client/view/Scene.ts`, `apps/client/application.ts`).
 
 ### Screens, ranked by migration risk
 
@@ -463,36 +463,36 @@ anything in `shop/` (it takes money, and the tour cannot safely assert against i
 and there is exactly **one** non-literal `require()` argument. The codemod is dumb. The cycles are
 not:
 
-| Component |   Files | What                                                     |
-| --------- | ------: | -------------------------------------------------------- |
-| 1         | **112** | `app/ui` (75) + `app/view` (37) — views ↔ managers       |
-| 2         |  **57** | `app/sdk` modifiers ↔ `modifierFactory` ↔ card factories |
-| 3–5       |       7 | small modifier pairs                                     |
+| Component |   Files | What                                                               |
+| --------- | ------: | ------------------------------------------------------------------ |
+| 1         | **112** | `apps/client/ui` (75) + `apps/client/view` (37) — views ↔ managers |
+| 2         |  **57** | `packages/sdk` modifiers ↔ `modifierFactory` ↔ card factories      |
+| 3–5       |       7 | small modifier pairs                                               |
 
 CommonJS survives these via the export-before-require guard AGENTS.md warns about — which is why
 **18 of the 25 files using that guard are UI managers**. ESM tolerates cycles unless a binding is
 used at module-evaluation time, so that was measured separately: of the 176 files in cycles, **37
-would actually throw** `Cannot access 'X' before initialization` (17 `app/ui`, 12 `app/view`, 8
-`app/sdk`) — all the same shape, a subclass whose superclass sits in its own cycle, resolved via
+would actually throw** `Cannot access 'X' before initialization` (17 `apps/client/ui`, 12 `apps/client/view`, 8
+`packages/sdk`) — all the same shape, a subclass whose superclass sits in its own cycle, resolved via
 `X.extend({…})` or `class X extends Y`.
 
 **Deferring is strictly cheaper**, because custom elements dissolve the views↔managers cycle
 structurally: a manager that shows `<duelyst-quest-log>` imports nothing. Every migrated screen
 deletes cycle edges for free. Doing ESM first means hand-untangling knots the Lit work removes.
 
-The real unknown is not the 37 files — it is that `app/sdk` is shared with the server, which runs
+The real unknown is not the 37 files — it is that `packages/sdk` is shared with the server, which runs
 from `build/` through esbuild plus `app-module-path`, and Node ESM has no `app-module-path`
 equivalent.
 
 ### Why Backbone is not the target
 
-| Remaining after the last screen                                   | Cost to remove                                                         |
-| ----------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| `Marionette.Application` in `application.ts`                      | ~1 line (only `App.start()` runs)                                      |
-| Marionette, `transition.ts`, shells, `.hbs`, Bootstrap, jquery-ui | delete together — that _is_ the last screen                            |
-| jQuery                                                            | blocked only by `Backbone.sync` → convert, then delete                 |
-| **Backbone as `Model`/`Collection`/`Events`**                     | **1,011 `.get('x')` sites, ~1,300 total**                              |
-| underscore                                                        | ~750 uses — **240 in `app/sdk`, 210 in `app/view`**, both out of scope |
+| Remaining after the last screen                                   | Cost to remove                                                                      |
+| ----------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `Marionette.Application` in `application.ts`                      | ~1 line (only `App.start()` runs)                                                   |
+| Marionette, `transition.ts`, shells, `.hbs`, Bootstrap, jquery-ui | delete together — that _is_ the last screen                                         |
+| jQuery                                                            | blocked only by `Backbone.sync` → convert, then delete                              |
+| **Backbone as `Model`/`Collection`/`Events`**                     | **1,011 `.get('x')` sites, ~1,300 total**                                           |
+| underscore                                                        | ~750 uses — **240 in `packages/sdk`, 210 in `apps/client/view`**, both out of scope |
 
 Backbone 1.6.1 is maintained; `backbone.js` is 59 KB of a 3.4 MB `vendor.js` in a 19 MB client.
 Removing it would be the largest mechanical diff in the program for the smallest remaining win, and
@@ -512,12 +512,12 @@ at **Stage 1**.
 
 ```bash
 # scope
-find app/ui -name '*.ts' -print0 | xargs -0 wc -l | tail -1
+find apps/client/ui -name '*.ts' -print0 | xargs -0 wc -l | tail -1
 find app -name '*.hbs' -print0 | xargs -0 wc -l | tail -1
-grep -rl "app/ui" test | wc -l                       # the safety net: 0
+grep -rl "apps/client/ui" test | wc -l                       # the safety net: 0
 
 # what Backbone actually provides
-grep -rhoE "\.get\('[a-zA-Z_]+'\)" app/ui --include='*.ts' | wc -l
+grep -rhoE "\.get\('[a-zA-Z_]+'\)" apps/client/ui --include='*.ts' | wc -l
 grep -rhoE 'Marionette\.[A-Za-z]+' app --include='*.ts' | sort | uniq -c | sort -rn
 
 # the hard chain
@@ -529,12 +529,12 @@ grep -rhoE '\{\{#(if|unless|each)\b' app --include='*.hbs' | sort | uniq -c | so
 grep -rn "{{>" app --include='*.hbs' | wc -l          # partials: 0
 
 # jQuery teeth
-grep -rlE '\.(modal|popover|tooltip)\(' app/ui --include='*.ts' | wc -l   # 26
-grep -rlE '\.(draggable|droppable)\(' app/ui --include='*.ts' | wc -l     #  7
-grep -rlE '\.velocity\(' app/ui --include='*.ts' | wc -l                  #  4
+grep -rlE '\.(modal|popover|tooltip)\(' apps/client/ui --include='*.ts' | wc -l   # 26
+grep -rlE '\.(draggable|droppable)\(' apps/client/ui --include='*.ts' | wc -l     #  7
+grep -rlE '\.velocity\(' apps/client/ui --include='*.ts' | wc -l                  #  4
 
 # managers are the shared interface
-grep -rhoE "[A-Za-z]+Manager\.getInstance\(\)" app/ui/views app/ui/views2 --include='*.ts' \
+grep -rhoE "[A-Za-z]+Manager\.getInstance\(\)" apps/client/ui/views apps/client/ui/views2 --include='*.ts' \
   | sort | uniq -c | sort -rn | head
 
 # ESM blockers — cycles and evaluation-time bindings
@@ -542,7 +542,7 @@ grep -rhoE "[A-Za-z]+Manager\.getInstance\(\)" app/ui/views app/ui/views2 --incl
 #  over the require graph. Re-derive before trusting the 176 / 37 split.)
 
 # packaging hazard
-grep -rc 'pragma PKGS:' app/ui --include='*.ts' | grep -v ':0' | wc -l    # 76 of 204
+grep -rc 'pragma PKGS:' apps/client/ui --include='*.ts' | grep -v ':0' | wc -l    # 76 of 204
 ```
 
 ## 8. Constraints for whoever picks this up
@@ -648,7 +648,7 @@ booster-pack opening, and anything requiring seeded inventory. For these the PR 
 explicit checklist of what was exercised by hand. An agent that cannot hand-test must say so and
 leave the PR as a draft for a human — **not** claim the criterion is met.
 
-**Until #2 lands there is no screen tour.** Any PR before then that touches `app/ui` must say
+**Until #2 lands there is no screen tour.** Any PR before then that touches `apps/client/ui` must say
 explicitly how it was verified instead. This is why #1–#3 are the first iteration.
 
 ### 11.4 Definition of ready vs done
