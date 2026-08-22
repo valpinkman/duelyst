@@ -34,6 +34,7 @@ var NavigationManager = require('./navigation_manager');
 var NotificationsManager = require('./notifications_manager');
 var NewPlayerManager = require('./new_player_manager');
 var Manager = require('./manager');
+var { requestJson, requestJsonWithStatus } = require('@duelyst/common/request');
 
 var ChallengeModel = DuelystBackbone.Model.extend({
   idAttribute: 'challenge_id',
@@ -288,7 +289,8 @@ var ProgressionManager = Manager.extend({
           }
         });
 
-        var request = $.ajax({
+        // withStatus: this call site reads the status off the response, see below
+        var request = requestJsonWithStatus({
           data: JSON.stringify({
             completed_at: moment().utc().valueOf(),
             process_quests: processQuests,
@@ -299,9 +301,10 @@ var ProgressionManager = Manager.extend({
           dataType: 'json',
         });
 
-        request.done(
-          function (response) {
-            if (request.status != 304) {
+        request.then(
+          function (result) {
+            var response = result.data;
+            if (result.status != 304) {
               // 304 Status means a challenge was already completed
               Analytics.track(
                 'challenge completed',
@@ -324,14 +327,13 @@ var ProgressionManager = Manager.extend({
               resolve({});
             }
           }.bind(this),
+          function (response) {
+            // Temporary error, should parse server response.
+            var error = 'Complete challenge request failed';
+            EventBus.getInstance().trigger(EVENTS.ajax_error, error);
+            reject(new Error('Failed to complete challenge with type ' + challengeType));
+          },
         );
-
-        request.fail(function (response) {
-          // Temporary error, should parse server response.
-          var error = 'Complete challenge request failed';
-          EventBus.getInstance().trigger(EVENTS.ajax_error, error);
-          reject(new Error('Failed to complete challenge with type ' + challengeType));
-        });
       }.bind(this),
     );
   },
@@ -341,7 +343,7 @@ var ProgressionManager = Manager.extend({
       function (resolve, reject) {
         var challengePreviouslyAttempted = this.hasAttemptedChallengeOfType(challengeType);
 
-        var request = $.ajax({
+        var request = requestJson({
           data: JSON.stringify({ last_attempted_at: moment().utc().valueOf() }),
           url:
             process.env.API_URL +
@@ -353,7 +355,7 @@ var ProgressionManager = Manager.extend({
           dataType: 'json',
         });
 
-        request.done(
+        request.then(
           function (response) {
             var challenge = response.challenge;
             this.challengeProgressionCollection.add([challenge], { merge: true });
@@ -361,14 +363,13 @@ var ProgressionManager = Manager.extend({
 
             resolve(challengeType);
           }.bind(this),
+          function (response) {
+            // Temporary error, should parse server response.
+            var error = 'Attempt challenge request failed';
+            EventBus.getInstance().trigger(EVENTS.ajax_error, error);
+            reject(new Error('Failed to attempt challenge with type ' + challengeType));
+          },
         );
-
-        request.fail(function (response) {
-          // Temporary error, should parse server response.
-          var error = 'Attempt challenge request failed';
-          EventBus.getInstance().trigger(EVENTS.ajax_error, error);
-          reject(new Error('Failed to attempt challenge with type ' + challengeType));
-        });
       }.bind(this),
     );
   },
@@ -376,7 +377,8 @@ var ProgressionManager = Manager.extend({
   completeDailyChallenge: function (challengeId) {
     var completeDailyChallengePromise = new Promise(
       function (resolve, reject) {
-        var request = $.ajax({
+        // withStatus: this call site reads the status off the response, see below
+        var request = requestJsonWithStatus({
           data: JSON.stringify({ completed_at: moment().utc().valueOf() }),
           url: process.env.API_URL + '/api/me/challenges/daily/' + challengeId + '/completed_at',
           type: 'PUT',
@@ -384,9 +386,10 @@ var ProgressionManager = Manager.extend({
           dataType: 'json',
         });
 
-        request.done(
-          function (response, textStatus, jqXHR) {
-            if (request.status != 304) {
+        request.then(
+          function (result) {
+            var response = result.data;
+            if (result.status != 304) {
               // 304 Status means a challenge was already completed
               Analytics.track(
                 'daily challenge completed',
@@ -406,16 +409,15 @@ var ProgressionManager = Manager.extend({
               resolve({});
             }
           }.bind(this),
+          function (response) {
+            var error = 'Complete daily challenge request failed';
+            if (response && response.responseJSON && response.responseJSON.message) {
+              error = response.responseJSON.message;
+            }
+            EventBus.getInstance().trigger(EVENTS.ajax_error, error);
+            resolve({});
+          },
         );
-
-        request.fail(function (response) {
-          var error = 'Complete daily challenge request failed';
-          if (response && response.responseJSON && response.responseJSON.message) {
-            error = response.responseJSON.message;
-          }
-          EventBus.getInstance().trigger(EVENTS.ajax_error, error);
-          resolve({});
-        });
       }.bind(this),
     );
 

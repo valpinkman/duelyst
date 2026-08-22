@@ -35,6 +35,7 @@ var ProgressionManager = require('./progression_manager');
 var GameDataManager = require('./game_data_manager');
 var ProfileManager = require('./profile_manager');
 var Manager = require('./manager');
+var { requestJson } = require('@duelyst/common/request');
 
 var InventoryManager = Manager.extend({
   // backbone models / collections
@@ -410,13 +411,15 @@ var InventoryManager = Manager.extend({
     if (inventoryCardModel != null && inventoryCardModel.get('is_unread')) {
       inventoryCardModel.set('is_unread', false);
       inventoryCardModel.set('is_new', false);
-      $.ajax({
+      // fire and forget, as the jqXHR was: the rejection is swallowed so a failed
+      // best-effort "mark as read" does not surface as an unhandled rejection
+      requestJson({
         data: JSON.stringify({ read_at: moment().utc() }),
         url: process.env.API_URL + '/api/me/inventory/card_collection/' + cardId + '/read_at',
         type: 'PUT',
         contentType: 'application/json',
         dataType: 'json',
-      });
+      }).catch(function () {});
     }
   },
 
@@ -428,13 +431,14 @@ var InventoryManager = Manager.extend({
       }
     });
 
-    $.ajax({
+    // fire and forget, as the jqXHR was
+    requestJson({
       data: JSON.stringify({ read_at: moment().utc() }),
       url: process.env.API_URL + '/api/me/inventory/card_collection/read_all',
       type: 'PUT',
       contentType: 'application/json',
       dataType: 'json',
-    });
+    }).catch(function () {});
   },
 
   markCardLoreAsReadInCollection: function (cardId) {
@@ -456,7 +460,7 @@ var InventoryManager = Manager.extend({
           }
         });
       }
-      $.ajax({
+      requestJson({
         data: JSON.stringify({ read_at: moment().utc() }),
         url:
           process.env.API_URL +
@@ -466,7 +470,7 @@ var InventoryManager = Manager.extend({
         type: 'PUT',
         contentType: 'application/json',
         dataType: 'json',
-      }).fail(
+      }).catch(
         function () {
           // trigger change on failure to remove request and update ui
           this.onCardLoreCollectionChangeForCardId(cardId);
@@ -487,7 +491,7 @@ var InventoryManager = Manager.extend({
 
       return new Promise(
         function (resolve, reject) {
-          var request = $.ajax({
+          var request = requestJson({
             data: JSON.stringify({
               sku,
               qty: numBoosterPacks,
@@ -500,19 +504,20 @@ var InventoryManager = Manager.extend({
             dataType: 'json',
           });
 
-          request.done(function (response) {
-            Analytics.track('spirit orb purchased with gold', {
-              category: Analytics.EventCategory.SpiritOrbs,
-            });
-            resolve(response);
-          });
-
-          request.fail(function (response) {
-            var errorMessage =
-              (response.responseJSON && response.responseJSON.message) ||
-              'Purchase failed. Please try again.';
-            reject(errorMessage);
-          });
+          request.then(
+            function (response) {
+              Analytics.track('spirit orb purchased with gold', {
+                category: Analytics.EventCategory.SpiritOrbs,
+              });
+              resolve(response);
+            },
+            function (response) {
+              var errorMessage =
+                (response.responseJSON && response.responseJSON.message) ||
+                'Purchase failed. Please try again.';
+              reject(errorMessage);
+            },
+          );
         }.bind(this),
       );
     } else {
@@ -528,7 +533,7 @@ var InventoryManager = Manager.extend({
       }
       return new Promise(
         function (resolve, reject) {
-          var request = $.ajax({
+          var request = requestJson({
             data: JSON.stringify({
               product_sku: sku,
               sale_id: saleId,
@@ -539,16 +544,17 @@ var InventoryManager = Manager.extend({
             dataType: 'json',
           });
 
-          request.done(function (response) {
-            resolve(response);
-          });
-
-          request.fail(function (response) {
-            var errorMessage =
-              (response.responseJSON && response.responseJSON.message) ||
-              'Purchase failed. Please try again.';
-            reject(errorMessage);
-          });
+          request.then(
+            function (response) {
+              resolve(response);
+            },
+            function (response) {
+              var errorMessage =
+                (response.responseJSON && response.responseJSON.message) ||
+                'Purchase failed. Please try again.';
+              reject(errorMessage);
+            },
+          );
         }.bind(this),
       );
     } else {
@@ -562,7 +568,7 @@ var InventoryManager = Manager.extend({
 
       return new Promise(
         function (resolve, reject) {
-          var request = $.ajax({
+          var request = requestJson({
             data: JSON.stringify({ product_sku: sku, card_token: cardToken }),
             url: process.env.API_URL + '/api/me/shop/purchase',
             type: 'POST',
@@ -570,16 +576,17 @@ var InventoryManager = Manager.extend({
             dataType: 'json',
           });
 
-          request.done(function (response) {
-            resolve(response);
-          });
-
-          request.fail(function (response) {
-            var errorMessage =
-              (response.responseJSON && response.responseJSON.message) ||
-              'Purchase failed. Please try again.';
-            reject(errorMessage);
-          });
+          request.then(
+            function (response) {
+              resolve(response);
+            },
+            function (response) {
+              var errorMessage =
+                (response.responseJSON && response.responseJSON.message) ||
+                'Purchase failed. Please try again.';
+              reject(errorMessage);
+            },
+          );
         }.bind(this),
       );
     } else {
@@ -590,21 +597,23 @@ var InventoryManager = Manager.extend({
   craftCosmetic: function (cosmeticId) {
     return new Promise(
       function (resolve, reject) {
-        var request = $.ajax({
+        var request = requestJson({
           url: process.env.API_URL + '/api/me/inventory/cosmetics/' + cosmeticId,
           type: 'POST',
           contentType: 'application/json',
           dataType: 'json',
         });
-        request.done(function (response) {
-          resolve(response);
-        });
-        request.fail(function (response) {
-          var errorMessage =
-            (response.responseJSON && response.responseJSON.message) ||
-            i18next.t('cosmetics.cosmetic_crafting_error_msg');
-          reject(errorMessage);
-        });
+        request.then(
+          function (response) {
+            resolve(response);
+          },
+          function (response) {
+            var errorMessage =
+              (response.responseJSON && response.responseJSON.message) ||
+              i18next.t('cosmetics.cosmetic_crafting_error_msg');
+            reject(errorMessage);
+          },
+        );
       }.bind(this),
     );
   },
@@ -615,52 +624,56 @@ var InventoryManager = Manager.extend({
         function (resolve, reject) {
           if (!boosterPackId) boosterPackId = this.boosterPacksCollection.at(0).get('id');
 
-          var request = $.ajax({
+          var request = requestJson({
             url: process.env.API_URL + '/api/me/inventory/spirit_orbs/opened/' + boosterPackId,
             type: 'PUT',
             contentType: 'application/json',
             dataType: 'json',
           });
 
-          request.done(function (response) {
-            if (response && response.cards) {
-              var rarityIds = _.map(response.cards, function (cardId) {
-                var sdkCard = SDK.CardFactory.cardForIdentifier(cardId, SDK.GameSession.current());
-                return sdkCard.getRarityId();
-              });
-              rarityIds = rarityIds.sort();
-              var spiritValue = _.reduce(
-                rarityIds,
-                function (memo, rarityId) {
-                  return memo + SDK.RarityFactory.rarityForIdentifier(rarityId).spiritCost;
-                },
-                0,
-              );
-              var raritySplit = JSON.stringify(rarityIds);
+          request.then(
+            function (response) {
+              if (response && response.cards) {
+                var rarityIds = _.map(response.cards, function (cardId) {
+                  var sdkCard = SDK.CardFactory.cardForIdentifier(
+                    cardId,
+                    SDK.GameSession.current(),
+                  );
+                  return sdkCard.getRarityId();
+                });
+                rarityIds = rarityIds.sort();
+                var spiritValue = _.reduce(
+                  rarityIds,
+                  function (memo, rarityId) {
+                    return memo + SDK.RarityFactory.rarityForIdentifier(rarityId).spiritCost;
+                  },
+                  0,
+                );
+                var raritySplit = JSON.stringify(rarityIds);
 
-              var isFirst = 0;
-              if (NewPlayerManager.getInstance().getHasOpenedSpiritOrb()) {
-                isFirst = 1;
+                var isFirst = 0;
+                if (NewPlayerManager.getInstance().getHasOpenedSpiritOrb()) {
+                  isFirst = 1;
+                }
+
+                Analytics.track('opened spirit orb', {
+                  category: Analytics.EventCategory.SpiritOrbs,
+                  rarity_split: raritySplit,
+                  spirit_value: spiritValue,
+                  is_first: isFirst,
+                });
               }
 
-              Analytics.track('opened spirit orb', {
-                category: Analytics.EventCategory.SpiritOrbs,
-                rarity_split: raritySplit,
-                spirit_value: spiritValue,
-                is_first: isFirst,
-              });
-            }
-
-            NewPlayerManager.getInstance().setHasOpenedSpiritOrb(true);
-            resolve(response);
-          });
-
-          request.fail(function (response) {
-            var errorMessage = response.responseJSON && response.responseJSON.message;
-            errorMessage = errorMessage || (response.responseJSON && response.responseJSON.error);
-            errorMessage = errorMessage || 'Booster pack unlock failed';
-            reject(errorMessage);
-          });
+              NewPlayerManager.getInstance().setHasOpenedSpiritOrb(true);
+              resolve(response);
+            },
+            function (response) {
+              var errorMessage = response.responseJSON && response.responseJSON.message;
+              errorMessage = errorMessage || (response.responseJSON && response.responseJSON.error);
+              errorMessage = errorMessage || 'Booster pack unlock failed';
+              reject(errorMessage);
+            },
+          );
         }.bind(this),
       );
     } else {
@@ -671,34 +684,35 @@ var InventoryManager = Manager.extend({
   craftCard: function (cardId) {
     return new Promise(
       function (resolve, reject) {
-        var request = $.ajax({
+        var request = requestJson({
           url: process.env.API_URL + '/api/me/inventory/card_collection/' + cardId,
           type: 'POST',
           contentType: 'application/json',
           dataType: 'json',
         });
 
-        request.done(function (response) {
-          Logger.module('UI').log('InventoryManager::craftCard() ' + cardId);
+        request.then(
+          function (response) {
+            Logger.module('UI').log('InventoryManager::craftCard() ' + cardId);
 
-          var newPlayerManager = NewPlayerManager.getInstance();
-          if (!newPlayerManager.getHasCraftedCard()) {
-            newPlayerManager.setHasCraftedCard(cardId);
-          }
+            var newPlayerManager = NewPlayerManager.getInstance();
+            if (!newPlayerManager.getHasCraftedCard()) {
+              newPlayerManager.setHasCraftedCard(cardId);
+            }
 
-          Analytics.track('crafted card', {
-            category: Analytics.EventCategory.Inventory,
-            card_id: cardId,
-          });
+            Analytics.track('crafted card', {
+              category: Analytics.EventCategory.Inventory,
+              card_id: cardId,
+            });
 
-          resolve(response);
-        });
-
-        request.fail(function (response) {
-          var errorMessage =
-            response.responseJSON != null ? response.responseJSON.message : 'Craft failed.';
-          reject(errorMessage);
-        });
+            resolve(response);
+          },
+          function (response) {
+            var errorMessage =
+              response.responseJSON != null ? response.responseJSON.message : 'Craft failed.';
+            reject(errorMessage);
+          },
+        );
       }.bind(this),
     );
   },
@@ -721,7 +735,7 @@ var InventoryManager = Manager.extend({
         );
 
         if (hasEnoughCards) {
-          var request = $.ajax({
+          var request = requestJson({
             data: JSON.stringify({ card_ids: cardIds }),
             url: process.env.API_URL + '/api/me/inventory/card_collection',
             type: 'DELETE',
@@ -729,19 +743,22 @@ var InventoryManager = Manager.extend({
             dataType: 'json',
           });
 
-          request.done(function (response) {
-            Logger.module('UI').log(
-              'InventoryManager::disenchantCards() -> ' + JSON.stringify(response),
-            );
+          request.then(
+            function (response) {
+              Logger.module('UI').log(
+                'InventoryManager::disenchantCards() -> ' + JSON.stringify(response),
+              );
 
-            resolve(response);
-          });
-
-          request.fail(function (response) {
-            var errorMessage =
-              response.responseJSON != null ? response.responseJSON.message : 'Disenchant failed.';
-            reject(errorMessage);
-          });
+              resolve(response);
+            },
+            function (response) {
+              var errorMessage =
+                response.responseJSON != null
+                  ? response.responseJSON.message
+                  : 'Disenchant failed.';
+              reject(errorMessage);
+            },
+          );
         } else {
           var errorMessage =
             'You do not have enough copies of all the cards you are trying to disenchant.';
@@ -769,26 +786,29 @@ var InventoryManager = Manager.extend({
         });
 
         if (cardIds.length > 0) {
-          var request = $.ajax({
+          var request = requestJson({
             url: process.env.API_URL + '/api/me/inventory/card_collection/duplicates',
             type: 'DELETE',
             contentType: 'application/json',
             dataType: 'json',
           });
 
-          request.done(function (response) {
-            Logger.module('UI').log(
-              'InventoryManager::disenchantCards() -> ' + JSON.stringify(response),
-            );
+          request.then(
+            function (response) {
+              Logger.module('UI').log(
+                'InventoryManager::disenchantCards() -> ' + JSON.stringify(response),
+              );
 
-            resolve(response);
-          });
-
-          request.fail(function (response) {
-            var errorMessage =
-              response.responseJSON != null ? response.responseJSON.message : 'Disenchant failed.';
-            reject(errorMessage);
-          });
+              resolve(response);
+            },
+            function (response) {
+              var errorMessage =
+                response.responseJSON != null
+                  ? response.responseJSON.message
+                  : 'Disenchant failed.';
+              reject(errorMessage);
+            },
+          );
         } else {
           reject('No duplicate cards to disenchant.');
         }
@@ -1156,29 +1176,29 @@ var InventoryManager = Manager.extend({
   claimFreeCardOfTheDay: function () {
     return new Promise(
       function (resolve, reject) {
-        var request = $.ajax({
+        var request = requestJson({
           url: process.env.API_URL + '/api/me/inventory/free_card_of_the_day',
           type: 'POST',
           contentType: 'application/json',
           dataType: 'json',
         });
-        request.done(
+        request.then(
           function (response) {
             resolve(response);
           }.bind(this),
+          function (response) {
+            var error = 'There was an error processing your request';
+            EventBus.getInstance().trigger(EVENTS.ajax_error, error);
+            reject(new Error(error));
+          },
         );
-        request.fail(function (response) {
-          var error = 'There was an error processing your request';
-          EventBus.getInstance().trigger(EVENTS.ajax_error, error);
-          reject(new Error(error));
-        });
       }.bind(this),
     );
   },
 
   /**
    * Checks against gamecount if a player is missing any codex chapter and calls an api route to award them if they are
-   * @return {Promise} $.ajax promise for the server call to acquire missing chapters
+   * @return {Promise} fetch promise for the server call to acquire missing chapters
    */
   checkForMissingCodexChapters: function () {
     if (
@@ -1215,25 +1235,24 @@ var InventoryManager = Manager.extend({
       // Return a promise that resolves when  ajax request for getting missing codex chapter completes
       return new Promise(
         function (resolve, reject) {
-          var request = $.ajax({
+          var request = requestJson({
             url: process.env.API_URL + '/api/me/inventory/codex/missing',
             type: 'POST',
             contentType: 'application/json',
             dataType: 'json',
           });
 
-          request.done(
+          request.then(
             function (response) {
               resolve(response);
             }.bind(this),
+            function (response) {
+              var error = 'Acquiring missing codex chapters request failed';
+              EventBus.getInstance().trigger(EVENTS.ajax_error, error);
+
+              reject(new Error(error));
+            },
           );
-
-          request.fail(function (response) {
-            var error = 'Acquiring missing codex chapters request failed';
-            EventBus.getInstance().trigger(EVENTS.ajax_error, error);
-
-            reject(new Error(error));
-          });
         }.bind(this),
       );
     }

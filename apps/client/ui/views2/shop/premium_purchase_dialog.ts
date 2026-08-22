@@ -27,6 +27,7 @@ var ShopPremiumPacksCollectionView = require('./shop_premium_packs_collection_vi
 var CreditCardFormView = require('./credit_card_form');
 
 var Template = require('./templates/premium_purchase_dialog.hbs');
+var { requestJson } = require('@duelyst/common/request');
 
 // TODO: based off ConfirmPurchaseDialogView
 
@@ -697,7 +698,7 @@ var PremiumPurchaseDialogView = Backbone.Marionette.LayoutView.extend({
     this.ui.card_info.addClass('hide');
 
     return Promise.resolve(
-      $.ajax({
+      requestJson({
         url: process.env.API_URL + '/api/me/shop/customer',
         type: 'DELETE',
         contentType: 'application/json',

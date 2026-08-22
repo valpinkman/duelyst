@@ -28,6 +28,7 @@ var _ = require('underscore');
 var CreditCardFormView = require('./credit_card_form');
 
 var Template = require('./templates/confirm_purchase_dialog.hbs');
+var { requestJson } = require('@duelyst/common/request');
 
 var ConfirmPurchaseDialogView = Backbone.Marionette.ItemView.extend({
   id: 'confirm_purchase_dialog',
@@ -784,7 +785,7 @@ var ConfirmPurchaseDialogView = Backbone.Marionette.ItemView.extend({
     this.ui.card_info.addClass('hide');
 
     return Promise.resolve(
-      $.ajax({
+      requestJson({
         url: process.env.API_URL + '/api/me/shop/customer',
         type: 'DELETE',
         contentType: 'application/json',
