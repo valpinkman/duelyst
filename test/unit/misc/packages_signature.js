@@ -1,7 +1,7 @@
 const { expect } = require('chai');
 
 /*
- * The build's asset-package gate (scripts/build/build-client.mjs step 1) used
+ * The build's asset-package gate (tools/build/build-client.mjs step 1) used
  * to lock only the package KEY SET. A UI file that loses its `// pragma PKGS:`
  * comment empties a package without adding or removing a single key, so the
  * build stayed green and the screen shipped with missing art
@@ -33,7 +33,7 @@ function packages() {
 
 describe('PackagesSignature.UnitTests', () => {
   beforeAll(async () => {
-    signatures = await import('../../../scripts/build/packages-signature.mjs');
+    signatures = await import('../../../tools/build/packages-signature.mjs');
   });
 
   describe('signPackages', () => {

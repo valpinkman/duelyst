@@ -6,7 +6,7 @@
  * TEXT-PARSES `// pragma PKGS:` comments, so a UI file that loses its pragma
  * keeps every package key alive while quietly emptying one of them - the build
  * stays green and the screen ships with missing art. Only 75 of 204 files in
- * `app/ui` carry a pragma, and every screen migration is a chance to drop one
+ * `apps/client/ui` carry a pragma, and every screen migration is a chance to drop one
  * (docs/BACKBONE_REMOVAL_PLAN.md section 5).
  *
  * A signature is `<resource count>:<sha256 prefix over the sorted resource
@@ -101,7 +101,7 @@ export function mergeSignatures(signaturesByMode) {
     if (present.length !== modes.length) {
       const absent = modes.filter((mode) => !present.includes(mode));
       throw new Error(
-        `asset package "${key}" is generated in mode(s) ${present.join(', ')} but not in ${absent.join(', ')}. The manifest cannot record a package that exists in only some generator modes - see mergeSignatures in scripts/build/packages-signature.mjs.`,
+        `asset package "${key}" is generated in mode(s) ${present.join(', ')} but not in ${absent.join(', ')}. The manifest cannot record a package that exists in only some generator modes - see mergeSignatures in tools/build/packages-signature.mjs.`,
       );
     }
     const values = new Set(present.map((mode) => signaturesByMode[mode][key]));
