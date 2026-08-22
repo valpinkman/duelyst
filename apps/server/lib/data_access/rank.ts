@@ -19,7 +19,7 @@ const GamesModule = require('./games');
 const SyncModule = require('./sync');
 const Errors = require('../custom_errors');
 const knex = require('./knex');
-const config = require('config/config.js');
+const config = require('@duelyst/config');
 const generatePushId = require('@duelyst/common/generate_push_id');
 
 // redis

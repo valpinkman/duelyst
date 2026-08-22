@@ -44,7 +44,7 @@ if (process.env.DUELYST_BUILD_CONFIG) {
   config = { get: (k) => ({ datGuiEditorEnabled: ENV_VARS.DAT_GUI_EDITOR_ENABLED })[k] };
 } else {
   process.env.NODE_ENV = process.env.DUELYST_ENV || 'development';
-  config = require('./config/config');
+  config = require('./packages/config/config');
   const { version } = require('./version.json');
   // same variable set as gulp/bundler.js envify()
   ENV_VARS = {

@@ -7,7 +7,7 @@ const os = require('os');
 const Logger = require('@duelyst/common/logger');
 
 // Configuration object
-const config = require('config/config.js');
+const config = require('@duelyst/config');
 
 /**
  * Shutdown server process with an unhandled error

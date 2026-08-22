@@ -1,7 +1,7 @@
 /*
 Job - Update User Seen On
 */
-const config = require('config/config.js');
+const config = require('@duelyst/config');
 const Logger = require('@duelyst/common/logger');
 const UsersModule = require('../../server/lib/data_access/users');
 const moment = require('moment');

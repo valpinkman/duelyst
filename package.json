@@ -55,6 +55,7 @@
     "@counterplay/chromajs": "workspace:*",
     "@duelyst/client": "workspace:*",
     "@duelyst/common": "workspace:*",
+    "@duelyst/config": "workspace:*",
     "@duelyst/data": "workspace:*",
     "@duelyst/sdk": "workspace:*",
     "@duelyst/server": "workspace:*",

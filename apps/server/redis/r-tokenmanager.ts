@@ -10,7 +10,7 @@ const crypto = require('crypto');
 const { v4: uuidv4 } = require('uuid');
 const makeLock = require('./r-lock');
 const Logger = require('@duelyst/common/logger');
-const config = require('config/config');
+const config = require('@duelyst/config');
 const GameType = require('@duelyst/sdk/gameType');
 
 const env = config.get('env');

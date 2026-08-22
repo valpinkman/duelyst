@@ -12,7 +12,7 @@ const morgan = require('morgan');
 const colors = require('colors');
 const { compose } = require('compose-middleware');
 const Logger = require('@duelyst/common/logger');
-const config = require('config/config');
+const config = require('@duelyst/config');
 const getRealIp = require('express-real-ip');
 
 // Request logger, gets request logstream from Morgan and sends to console

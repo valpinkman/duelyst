@@ -5,7 +5,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const os = require('os');
-const config = require('config/config.js');
+const config = require('@duelyst/config');
 const Logger = require('@duelyst/common/logger');
 const Colors = require('colors');
 const request = require('superagent');

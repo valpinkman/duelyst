@@ -23,7 +23,7 @@ const Logger = require('@duelyst/common/logger');
 const Errors = require('../lib/custom_errors');
 
 // Configuration object
-const config = require('config/config.js');
+const config = require('@duelyst/config');
 
 // set up AWS
 // AWS.config.update

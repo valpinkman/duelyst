@@ -45,7 +45,7 @@ const util = require('util');
 
 // Daily challenges
 const zlib = require('zlib');
-const config = require('config/config.js');
+const config = require('@duelyst/config');
 const CONFIG = require('@duelyst/common/config');
 const UtilsEnv = require('@duelyst/common/utils/utils_env');
 const generatePushId = require('@duelyst/common/generate_push_id');

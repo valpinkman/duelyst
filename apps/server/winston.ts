@@ -1,6 +1,6 @@
 const util = require('util');
 const winston = require('winston');
-const config = require('config/config.js');
+const config = require('@duelyst/config');
 
 /*
  * Routes console.* through winston (plan 7.3, tier 2).

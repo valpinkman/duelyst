@@ -22,7 +22,7 @@ const app = require('./express');
 const server = require('http').createServer(app);
 
 // Configuration object
-const config = require('config/config.js');
+const config = require('@duelyst/config');
 
 const env = config.get('env');
 const cdnDomain = config.get('aws.cdnDomainName');

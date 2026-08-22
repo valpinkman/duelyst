@@ -6,7 +6,7 @@
 const fs = require('fs');
 const os = require('os');
 const Logger = require('@duelyst/common/logger');
-const config = require('config/config.js');
+const config = require('@duelyst/config');
 const { Jobs } = require('../server/redis');
 
 // Long stack traces used to be switched on here via bluebird

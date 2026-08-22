@@ -3,7 +3,7 @@ const hbs = require('hbs');
 const helmet = require('helmet');
 const middleware = require('./middleware');
 const routes = require('./routes');
-const config = require('config/config');
+const config = require('@duelyst/config');
 
 const app = express();
 // enable trust proxy for production so that client IP is correctly set for requests

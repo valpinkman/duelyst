@@ -10,7 +10,7 @@
     ".oxfmtrc.json"
   ],
   // Turborepo 2 runs tasks in strict env mode: undeclared variables are stripped
-  // before the task sees them. Everything config/config.js binds to an env var is
+  // before the task sees them. Everything packages/config/config.js binds to an env var is
   // resolved into the client bundle at build time, so a missing entry here does not
   // fail -- it bakes the schema default in silently. tools/check-turbo-env.mjs
   // re-derives this list from the convict schema and fails CI on drift.
@@ -117,7 +117,7 @@
         "packages/data/**",
         "apps/server/**",
         "apps/worker/**",
-        "config/**",
+        "packages/config/**",
         "bin/**",
         "version.json",
         "tsconfig.json",

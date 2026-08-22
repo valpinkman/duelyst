@@ -10,8 +10,8 @@ const { GameManager } = require('../redis');
 const CONFIG = require('@duelyst/common/config');
 const Logger = require('@duelyst/common/logger');
 const generatePushId = require('@duelyst/common/generate_push_id');
-const config = require('config/config');
-const { version } = require('version');
+const config = require('@duelyst/config');
+const { version } = require('../../../version.json');
 
 // sdk
 const GameSetup = require('@duelyst/sdk/gameSetup');

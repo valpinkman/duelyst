@@ -26,7 +26,7 @@ process.chdir(rootDir);
 require('app-module-path').addPath(rootDir);
 require('tsx/cjs');
 
-const config = require(path.join(rootDir, 'config/config'));
+const config = require(path.join(rootDir, 'packages/config/config'));
 const env = config.get('env');
 const development = env !== 'production' && env !== 'staging';
 const args = new Set(process.argv.slice(2));

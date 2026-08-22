@@ -6,7 +6,7 @@
 /*
 Job - Update User Stats
 */
-const config = require('config/config.js');
+const config = require('@duelyst/config');
 const UsersModule = require('../../server/lib/data_access/users');
 const Logger = require('@duelyst/common/logger');
 const { GameManager } = require('../../server/redis');

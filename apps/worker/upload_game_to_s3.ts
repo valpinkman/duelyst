@@ -11,7 +11,7 @@ const { promisify } = require('util');
 const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
 
 const Logger = require('@duelyst/common/logger');
-const config = require('config/config.js');
+const config = require('@duelyst/config');
 
 // bluebird's promisifyAll gave us zlib.gzipAsync; node's promisify is the
 // direct equivalent, and a real binding rather than a mutation of the module.

@@ -18,7 +18,7 @@ const UsersModule = require('./users');
 const CONFIG = require('@duelyst/common/config');
 const Errors = require('../custom_errors');
 const knex = require('./knex');
-const config = require('config/config.js');
+const config = require('@duelyst/config');
 const generatePushId = require('@duelyst/common/generate_push_id');
 const DataAccessHelpers = require('./helpers');
 

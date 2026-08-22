@@ -17,10 +17,10 @@ const Logger = require('@duelyst/common/logger');
 const Errors = require('../lib/custom_errors');
 const knex = require('../lib/data_access/knex');
 const { Redis, SRankManager, RiftManager } = require('../redis');
-const config = require('config/config.js');
+const config = require('@duelyst/config');
 
 const env = config.get('env');
-const { version } = require('version');
+const { version } = require('../../../version.json');
 const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 const { onType } = require('@duelyst/common/utils/utils_promise');
 

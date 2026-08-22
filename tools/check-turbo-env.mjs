@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Turborepo 2 runs tasks in strict env mode: a task only sees the environment
- * variables declared in turbo.json. Every setting in config/config.js is bound
+ * variables declared in turbo.json. Every setting in packages/config/config.js is bound
  * to an env var and is resolved into the client bundle at build time, so an
  * undeclared one does not fail loudly -- it silently falls back to the schema
  * default and bakes the wrong value (a production build pointed at a localhost
@@ -16,7 +16,7 @@ import { dirname, join } from 'node:path';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 
-const convict = readFileSync(join(root, 'config/config.js'), 'utf8');
+const convict = readFileSync(join(root, 'packages/config/config.js'), 'utf8');
 const fromConvict = [...convict.matchAll(/env:\s*['"]([A-Z_][A-Z0-9_]*)['"]/g)].map((m) => m[1]);
 
 const buildFiles = ['tools/build/build-client.mjs', 'vite.config.client.mjs'];

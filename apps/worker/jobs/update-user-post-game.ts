@@ -8,7 +8,7 @@
 Job - Update User Progression
 */
 const _ = require('underscore');
-const config = require('config/config.js');
+const config = require('@duelyst/config');
 const Logger = require('@duelyst/common/logger');
 const colors = require('colors');
 const util = require('util');

@@ -6,7 +6,7 @@
 /*
 Job - Update a users charge log with data sent in wallet_update
 */
-const config = require('config/config.js');
+const config = require('@duelyst/config');
 const ShopModule = require('../../server/lib/data_access/shop');
 const Logger = require('@duelyst/common/logger');
 const generatePushId = require('@duelyst/common/generate_push_id');

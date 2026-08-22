@@ -14,7 +14,7 @@ const moment = require('moment');
 const _ = require('underscore');
 const SyncModule = require('./sync');
 const knex = require('./knex');
-const config = require('config/config.js');
+const config = require('@duelyst/config');
 const generatePushId = require('@duelyst/common/generate_push_id');
 const DataAccessHelpers = require('./helpers');
 

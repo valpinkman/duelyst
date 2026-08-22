@@ -4,7 +4,7 @@ const path = require('path');
 const _ = require('underscore');
 require('app-module-path').addPath(path.join(__dirname, '../'));
 
-const config = require('../config/config');
+const config = require('@duelyst/config');
 const knex = require('@duelyst/server/lib/data_access/knex');
 const InventoryModule = require('@duelyst/server/lib/data_access/inventory');
 const UsersModule = require('@duelyst/server/lib/data_access/users');

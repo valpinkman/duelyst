@@ -18,7 +18,7 @@
  *    only strips them.
  *
  * 2. **Mirror the source tree instead of bundling.** Root-absolute requires
- *    (`require('config/config')`, `require('@duelyst/sdk/...')`) resolve through
+ *    (`require('@duelyst/config')`, `require('@duelyst/sdk/...')`) resolve through
  *    app-module-path, so as long as build/ has the same shape, every require
  *    string keeps working untouched. Bundling would also flatten the
  *    "module.exports before require" idiom the codebase uses to survive
@@ -45,7 +45,7 @@ const TREES = [
   'packages/data',
   'apps/server',
   'apps/worker',
-  'config',
+  'packages/config',
   'bin',
 ];
 
@@ -59,6 +59,7 @@ const WORKSPACE_LINKS = [
   { name: '@duelyst/data', target: '../../packages/data' },
   { name: '@duelyst/server', target: '../../apps/server' },
   { name: '@duelyst/worker', target: '../../apps/worker' },
+  { name: '@duelyst/config', target: '../../packages/config' },
 ];
 const ROOT_FILES = ['version.json'];
 

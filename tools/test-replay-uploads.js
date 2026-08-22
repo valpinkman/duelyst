@@ -1,4 +1,4 @@
-const config = require('../config/config');
+const config = require('@duelyst/config');
 
 // Validate config.
 config.set('env', 'development');

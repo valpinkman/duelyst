@@ -45,6 +45,9 @@ importers:
       '@duelyst/common':
         specifier: workspace:*
         version: link:packages/common
+      '@duelyst/config':
+        specifier: workspace:*
+        version: link:packages/config
       '@duelyst/data':
         specifier: workspace:*
         version: link:packages/data
@@ -398,6 +401,8 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 7.0.2
+
+  packages/config: {}
 
   packages/data:
     devDependencies:

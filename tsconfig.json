@@ -28,7 +28,6 @@
       "apps/*": ["./apps/*"],
       "server/*": ["./apps/server/*"],
       "worker/*": ["./apps/worker/*"],
-      "config/*": ["./config/*"],
       "test/*": ["./test/*"]
     }
   },
@@ -38,6 +37,7 @@
     "packages/sdk/**/*.ts",
     "packages/common/**/*.ts",
     "packages/data/**/*.ts",
+    "packages/config/**/*.ts",
     "apps/server/**/*.ts",
     "apps/worker/**/*.ts",
     "test/**/*.ts",

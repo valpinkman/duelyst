@@ -1,6 +1,6 @@
 // _ = require 'underscore'
 
-const config = require('config/config.js');
+const config = require('@duelyst/config');
 const Logger = require('@duelyst/common/logger');
 // Consul = require '../server/lib/consul'
 

@@ -33,7 +33,7 @@ const UtilsGameSession = require('@duelyst/sdk/utils/utils_game_session');
 const Consul = require('./lib/consul');
 
 // Configuration object
-const config = require('config/config.js');
+const config = require('@duelyst/config');
 
 const env = config.get('env');
 

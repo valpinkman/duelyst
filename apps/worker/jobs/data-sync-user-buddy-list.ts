@@ -6,7 +6,7 @@
 /*
 Job - Update User Ranking
 */
-const config = require('config/config.js');
+const config = require('@duelyst/config');
 const SyncModule = require('../../server/lib/data_access/sync');
 const Logger = require('@duelyst/common/logger');
 

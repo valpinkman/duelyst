@@ -33,7 +33,7 @@ module.exports = function bootstrap(winstonLabel) {
 
   // Load config first so it has chance to synchronously validate .json config
   // files *before* any other code executes
-  const config = require('config/config');
+  const config = require('@duelyst/config');
   // Monkey-patches console.log to Winston/Papertrail
   if (config.get('winston')) {
     require('@duelyst/server/winston').setup(winstonLabel);

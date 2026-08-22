@@ -10,7 +10,7 @@ const colors = require('colors');
 const moment = require('moment');
 const knex = require('./knex');
 const InventoryModule = require('./inventory');
-const config = require('config/config.js');
+const config = require('@duelyst/config');
 const generatePushId = require('@duelyst/common/generate_push_id');
 const crypto = require('crypto');
 

@@ -54,10 +54,10 @@ const casualQueue = new Redis.PlayerQueue(Redis.Redis, { name: 'casual' });
 const casualDeckValueQueue = new Redis.PlayerQueue(Redis.Redis, { name: 'casual-deck-value' });
 
 // Configuration object
-const config = require('config/config.js');
+const config = require('@duelyst/config');
 
 const env = config.get('env');
-const { version } = require('version');
+const { version } = require('../../../version.json');
 const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 
 // # Require authentication

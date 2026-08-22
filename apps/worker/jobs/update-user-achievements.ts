@@ -8,7 +8,7 @@
 Job - Update User Ranking
 */
 const moment = require('moment');
-const config = require('config/config.js');
+const config = require('@duelyst/config');
 const AchievementsModule = require('../../server/lib/data_access/achievements');
 const DuelystFirebase = require('../../server/lib/duelyst_firebase_module');
 const Logger = require('@duelyst/common/logger');

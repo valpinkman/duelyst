@@ -15,8 +15,7 @@
     "types": ["node", "colors"],
     "paths": {
       "app/*": ["../../apps/client/*"],
-      "server/*": ["../../apps/server/*"],
-      "config/*": ["../../config/*"]
+      "server/*": ["../../apps/server/*"]
     }
   },
   "include": ["**/*.ts"]

@@ -6,7 +6,7 @@
  */
 const moment = require('moment');
 const Logger = require('@duelyst/common/logger');
-const config = require('config/config');
+const config = require('@duelyst/config');
 
 const env = config.get('env');
 const generatePushID = require('@duelyst/common/generate_push_id');

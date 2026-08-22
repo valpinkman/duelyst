@@ -25,6 +25,7 @@ COPY packages ./packages
 COPY packages/sdk/package.json ./packages/sdk/
 COPY packages/common/package.json ./packages/common/
 COPY packages/data/package.json ./packages/data/
+COPY packages/config/package.json ./packages/config/
 COPY apps/client/package.json ./apps/client/
 COPY apps/server/package.json ./apps/server/
 COPY apps/worker/package.json ./apps/worker/
@@ -77,6 +78,7 @@ COPY packages ./packages
 COPY packages/sdk/package.json ./packages/sdk/
 COPY packages/common/package.json ./packages/common/
 COPY packages/data/package.json ./packages/data/
+COPY packages/config/package.json ./packages/config/
 COPY apps/client/package.json ./apps/client/
 COPY apps/server/package.json ./apps/server/
 COPY apps/worker/package.json ./apps/worker/
@@ -100,6 +102,7 @@ COPY package.json pnpm-workspace.yaml ./
 COPY packages/sdk/package.json ./packages/sdk/
 COPY packages/common/package.json ./packages/common/
 COPY packages/data/package.json ./packages/data/
+COPY packages/config/package.json ./packages/config/
 COPY apps/client/package.json ./apps/client/
 COPY apps/server/package.json ./apps/server/
 COPY apps/worker/package.json ./apps/worker/

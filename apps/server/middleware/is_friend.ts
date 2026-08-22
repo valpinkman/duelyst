@@ -8,7 +8,7 @@ const express = require('express');
 
 const router = express.Router();
 const { compose } = require('compose-middleware');
-const config = require('config/config');
+const config = require('@duelyst/config');
 const DuelystFirebase = require('../lib/duelyst_firebase_module');
 const FirebasePromises = require('../lib/firebase_promises');
 const t = require('tcomb-validation');

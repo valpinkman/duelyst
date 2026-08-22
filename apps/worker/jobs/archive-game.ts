@@ -9,7 +9,7 @@ Job - Archive Game
 */
 const GamesModule = require('../../server/lib/data_access/games');
 const uploadGameToS3 = require('../upload_game_to_s3');
-const config = require('config/config.js');
+const config = require('@duelyst/config');
 
 const env = config.get('env');
 const { GameManager } = require('../../server/redis');

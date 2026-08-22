@@ -3,7 +3,7 @@ const { expressjwt } = require('express-jwt');
 const { compose } = require('compose-middleware');
 const t = require('tcomb-validation');
 const validators = require('../validators');
-const config = require('config/config');
+const config = require('@duelyst/config');
 
 /*
 Any route that requires authentication can use this middleware

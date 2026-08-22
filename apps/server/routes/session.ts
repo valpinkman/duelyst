@@ -36,8 +36,8 @@ const SyncModule = require('../lib/data_access/sync');
 const AnalyticsUtil = require('@duelyst/common/analyticsUtil');
 
 // Configuration object
-const config = require('config/config');
-const { version } = require('version');
+const config = require('@duelyst/config');
+const { version } = require('../../../version.json');
 const { onType } = require('@duelyst/common/utils/utils_promise');
 const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 

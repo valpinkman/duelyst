@@ -9,7 +9,7 @@ require('app-module-path').addPath(path.join(__dirname, '../..'));
 if (fs.existsSync(path.join(__dirname, 'api.ts'))) {
   require('tsx/cjs');
 }
-const config = require('config/config');
+const config = require('@duelyst/config');
 
 const environmentName = process.env.NODE_ENV;
 const knexConfig = {};

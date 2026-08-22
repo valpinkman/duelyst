@@ -38,7 +38,7 @@ if (cluster.isMaster) {
   const bodyParser = require('body-parser');
   const helmet = require('helmet');
   const cors = require('cors');
-  const config = require('config/config');
+  const config = require('@duelyst/config');
   const app = express();
 
   // setup middleware

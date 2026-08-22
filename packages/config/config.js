@@ -439,7 +439,7 @@ config.isDevelopment = function () {
   return !config.isProduction();
 };
 
-config.version = require('../version.json').version;
+config.version = require('../../version.json').version;
 
 const pgUrl = url.parse(config.get('postgres_connection_string'));
 console.log(`CONFIG: version:${config.version}`);

@@ -23,7 +23,7 @@ const _ = require('underscore');
 const url = require('url');
 
 const Logger = require('@duelyst/common/logger');
-const config = require('config/config.js');
+const config = require('@duelyst/config');
 
 const defaultFirebaseUrl = config.get('firebase.url');
 const firebaseLoggingEnabled = config.get('firebase.loggingEnabled');

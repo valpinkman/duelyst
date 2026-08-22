@@ -7,7 +7,7 @@
 /*
 Job - Update two Users Ratings after playing a Rank 0 match
 */
-const config = require('config/config.js');
+const config = require('@duelyst/config');
 const RankModule = require('../../server/lib/data_access/rank');
 const Logger = require('@duelyst/common/logger');
 

@@ -1,4 +1,4 @@
-const config = require('config/config.js');
+const config = require('@duelyst/config');
 
 const knex = require('knex')({
   client: 'postgres',

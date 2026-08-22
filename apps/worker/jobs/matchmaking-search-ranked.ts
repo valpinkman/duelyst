@@ -13,7 +13,7 @@ const util = require('util');
 const moment = require('moment');
 const Errors = require('../../server/lib/custom_errors');
 const Logger = require('@duelyst/common/logger');
-const config = require('config/config.js');
+const config = require('@duelyst/config');
 const Consul = require('../../server/lib/consul');
 
 const env = config.get('env');
