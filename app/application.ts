@@ -3241,18 +3241,32 @@ App._startLoadingGameOverData = function () {
     const gameSession = SDK.GameSession.getInstance();
     const lastGameModel = GamesManager.getInstance().playerGames.first();
 
+    /*
+     * These branches are mutually exclusive, and the `return`s are what makes
+     * them so. The decaffeination turned an if / else-if / else chain into
+     * three statements, which left the bare `resolve([null, null])` at the
+     * bottom running in the SAME synchronous tick as the listener registered
+     * above it. A promise keeps its first resolution, so [null, null] won
+     * every race the game model did not already win, and every network game
+     * reached App.showVictory with a null userGameModel -- which then threw
+     * "Cannot read properties of null (reading 'get')" out of the victory
+     * screen. The nested daily-challenge branch lost its `else` the same way:
+     * a daily challenge PUT both /challenges/daily and /challenges/gated, and
+     * a QA-generated one was resolved and then completed anyway.
+     */
     if (lastGameModel != null && SDK.GameType.isNetworkGameType(gameSession.getGameType())) {
       // lastGameModel.onSyncOrReady().then ()->
       if (isGameReady(lastGameModel.attributes, lastGameModel.attributes.job_status || {})) {
-        resolve([lastGameModel, null]);
+        return resolve([lastGameModel, null]);
       }
-      lastGameModel.on('change', () => {
+      return lastGameModel.on('change', () => {
         if (isGameReady(lastGameModel.attributes, lastGameModel.attributes.job_status || {})) {
           lastGameModel.off('change');
           return resolve([lastGameModel, null]);
         }
       });
     }
+
     if (gameSession.isChallenge()) {
       const challengeId = gameSession.getChallenge().type;
       if (
@@ -3261,16 +3275,16 @@ App._startLoadingGameOverData = function () {
       ) {
         // Don't process daily challenges run by qa tool
         if (gameSession.getChallenge()._generatedForQA) {
-          resolve([null, null]);
+          return resolve([null, null]);
         }
-        ProgressionManager.getInstance()
+        return ProgressionManager.getInstance()
           .completeDailyChallenge(challengeId)
           .then((challengeData) => {
             const challengeModel = new Backbone.Model(challengeData);
             return resolve([null, challengeModel]);
           });
       }
-      ProgressionManager.getInstance()
+      return ProgressionManager.getInstance()
         .completeChallengeWithType(challengeId)
         .then((challengeData) => {
           NewPlayerManager.getInstance().setHasSeenBloodbornSpellInfo();
@@ -3278,7 +3292,8 @@ App._startLoadingGameOverData = function () {
           return resolve([null, challengeModel]);
         });
     }
-    resolve([null, null]);
+
+    return resolve([null, null]);
   });
 
   return (App._gameOverDataThenable = PromiseUtils.withTimeout(
@@ -3419,10 +3434,18 @@ App.showVictoryWhenGameDataReady = function () {
 App.showVictory = function (userGameModel, rewardModels, newBeginnerQuestsCollection) {
   Logger.module('APPLICATION').log('App:showVictory');
 
-  if (
+  /*
+   * `userGameModel` is null whenever the game model did not finish processing
+   * in time -- App._startLoadingGameOverData resolves [null, null] on timeout,
+   * and for a spectated game it never loads one at all. The victory view below
+   * has always substituted an empty model for that case; the faction
+   * progression block did not, and read `.get` straight off the null.
+   */
+  const isNetworkGame =
     !SDK.GameSession.getInstance().getIsSpectateMode() &&
-    SDK.GameType.isNetworkGameType(SDK.GameSession.getInstance().getGameType())
-  ) {
+    SDK.GameType.isNetworkGameType(SDK.GameSession.getInstance().getGameType());
+
+  if (isNetworkGame && userGameModel != null) {
     const faction_id = userGameModel.get('faction_id');
     const faction_xp = userGameModel.get('faction_xp');
     const faction_xp_earned = userGameModel.get('faction_xp_earned');
@@ -3444,6 +3467,10 @@ App.showVictory = function (userGameModel, rewardModels, newBeginnerQuestsCollec
     } else {
       App.addNextScreenCallbackToVictoryFlow(rewardModels);
     }
+  } else if (isNetworkGame) {
+    // network game with no model: nothing to read progression from, so go
+    // straight to the rest of the victory flow rather than throwing on null
+    App.addNextScreenCallbackToVictoryFlow(rewardModels);
   } else {
     // local games
     if (SDK.GameSession.getInstance().isChallenge()) {
