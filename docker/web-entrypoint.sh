@@ -11,8 +11,11 @@
 # and start answering requests against a schema it does not understand.
 set -e
 
+# The BUILT tree, not the source one. server/knexfile.js registers the tsx hook
+# when it sees api.ts next to it, and build/server has no .ts at all -- so this
+# is what lets the runtime image install --prod and leave tsx behind.
 echo "[entrypoint] running database migrations"
-pnpm migrate:latest
+pnpm migrate:latest:built
 
 echo "[entrypoint] starting api"
 exec node build/bin/api

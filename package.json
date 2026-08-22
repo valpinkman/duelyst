@@ -10,6 +10,7 @@
     "worker-ui": "node ./bin/workerui",
     "build": "turbo run build:client",
     "migrate:latest": "cd ./server && knex migrate:latest",
+    "migrate:latest:built": "cd build/server && knex migrate:latest",
     "migrate:rollback": "cd ./server && knex migrate:rollback",
     "test": "turbo run test test:root",
     "test:integration": "vitest run --config vitest.integration.config.mjs",

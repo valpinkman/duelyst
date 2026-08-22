@@ -51,8 +51,16 @@ RUN test -n "${FIREBASE_URL}" || (echo "FIREBASE_URL build arg is required" && e
 
 RUN pnpm build
 
-# ---------- stage 2: the API runtime ----------
-FROM node:24-bookworm-slim
+# the server tree too, so the runtime stage needs no toolchain and no devDeps
+RUN pnpm build:server:root
+
+# ---------- stage 2: production dependencies only ----------
+#
+# A separate install rather than pruning the builder's node_modules: layers are
+# additive, so removing files in a later RUN leaves them in the image, and
+# `pnpm prune --prod` is interactive anyway and silently does nothing in a
+# non-TTY build. Installing fresh is 329 MB against 753 MB.
+FROM node:24-bookworm-slim AS deps
 
 RUN apt-get update \
   && apt-get install -y --no-install-recommends python3 make gcc g++ \
@@ -65,25 +73,28 @@ COPY package.json .npmrc pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY packages ./packages
 COPY app/sdk/package.json ./app/sdk/
 COPY app/common/package.json ./app/common/
-RUN pnpm install --frozen-lockfile && pnpm store prune
+RUN pnpm install --prod --frozen-lockfile && pnpm store prune
 
-COPY version.json ./
-COPY app/*.ts ./app/
-COPY app/common ./app/common
-COPY app/data ./app/data
-COPY app/localization ./app/localization
-COPY app/sdk ./app/sdk
-COPY bin ./bin
-COPY config ./config
-COPY server ./server
-COPY worker ./worker
-COPY tsconfig.json ./
-COPY scripts/build ./scripts/build
+# ---------- stage 3: the API runtime ----------
+#
+# No compiler, no devDependencies, no TypeScript sources. The last of those
+# matters beyond size: bin/_bootstrap.js decides whether to register the tsx
+# require-hook by looking for server/api.ts on disk, and server/knexfile.js does
+# the same for migrations. A runtime tree with no .ts in it cannot get that
+# wrong.
+FROM node:24-bookworm-slim
 
-# transpile once here, not on every boot (the tsx hook cost ~3.7s per start)
-RUN pnpm build:server:root
+WORKDIR /duelyst
+RUN npm install -g pnpm@10.12.1
 
-# the built client, from stage 1
+# manifests: pnpm needs them to run the migrate script, and node_modules holds
+# workspace links that point at these two package.json files
+COPY package.json pnpm-workspace.yaml ./
+COPY app/sdk/package.json ./app/sdk/
+COPY app/common/package.json ./app/common/
+
+COPY --from=deps /duelyst/node_modules ./node_modules
+COPY --from=client /duelyst/build ./build
 COPY --from=client /duelyst/dist/src ./dist/src
 
 COPY docker/web-entrypoint.sh /duelyst/docker/web-entrypoint.sh
