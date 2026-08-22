@@ -44,7 +44,7 @@ directories commonly used when working on the game:
 #### Code Style and Linting
 
 For JavaScript code, we use oxlint to enforce code style.
-Its configuration is the shared base in `tooling/oxlint-config/base.jsonc`, which the
+Its configuration is the shared base in `packages/oxlint-config/base.jsonc`, which the
 root `.oxlintrc.json` and every workspace package extend.
 You can run the linter with `pnpm lint:js`.
 You can automatically format JS code to meet these standards by running

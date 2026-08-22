@@ -35,7 +35,7 @@ pnpm test:unit                                 # vitest, 1366 tests, no external
 pnpm test:integration:misc                     # needs nothing external; runs in CI
 pnpm test:integration:jobs                     # BullMQ job seam; needs ONLY redis, so it runs in CI too
 pnpm test:integration:data_access              # 562 tests; 0 known failures, 3 unstable. Gated on drift in CI.
-source scripts/dev/data-access-test-env.sh     #   throwaway postgres+redis+firebase emulator with this --
+source tools/dev/data-access-test-env.sh     #   throwaway postgres+redis+firebase emulator with this --
                                                #   deliberately separate from `docker compose`, because
                                                #   these suites create users and wipe inventories
 pnpm typecheck                                 # tsc (loose config) - 0 errors, and a CI gate since 2026-08-21
@@ -79,7 +79,7 @@ Reasoning in [`docs/TOOLING.md`](docs/TOOLING.md). The rules:
   bundle at build time, it silently bakes the schema default in instead of failing.
 - **One lint owner per file.** The root `.oxlintrc.json` ignores directories that are workspace
   packages in their own right; each package lints itself against
-  `tooling/oxlint-config/base.jsonc`. Formatting is the opposite — one root `.oxfmtrc.json`
+  `packages/oxlint-config/base.jsonc`. Formatting is the opposite — one root `.oxfmtrc.json`
   owns everything, because a rewrite is idempotent and a diagnostic is not.
 - **Services run `build/`, never source.** `pnpm build:server` (esbuild, transpile-only) mirrors
   the source tree so root-absolute requires still resolve. `bin/_bootstrap.js` registers the tsx
@@ -110,10 +110,10 @@ Everything below is TypeScript unless noted.
 | `bin/`                                        | service entrypoints; `_bootstrap.js` sets up app-module-path and the tsx hook — JS                                                                                                                                                                                                                                               |
 | `config/`                                     | convict schema `config.js` + `{development,staging,production}.json` — JS                                                                                                                                                                                                                                                        |
 | `test/`                                       | vitest: `unit/`, `integration/` (`data_access`, `jobs`, `misc`, `firebase`), `e2e/` (Playwright), `rules/`, `perf/` (Benchmark.js, not a suite)                                                                                                                                                                                  |
-| `scripts/build/`                              | `build-client.mjs` (Vite bundle + vendor concat, sass, html, locales, resources) and `build-server.mjs` (esbuild → `build/`)                                                                                                                                                                                                     |
-| `scripts/generate_packages.js`                | **build-critical**: text-scans `//pragma PKGS:` and RSX refs to emit `packages/data/packages.js`                                                                                                                                                                                                                                 |
+| `tools/build/`                                | `build-client.mjs` (Vite bundle + vendor concat, sass, html, locales, resources) and `build-server.mjs` (esbuild → `build/`)                                                                                                                                                                                                     |
+| `tools/generate_packages.js`                  | **build-critical**: text-scans `//pragma PKGS:` and RSX refs to emit `packages/data/packages.js`                                                                                                                                                                                                                                 |
 | `packages/`                                   | vendored forks: `chroma-js` (ours, built), `Backbone.VirtualCollection` (verbatim)                                                                                                                                                                                                                                               |
-| `tooling/`                                    | shared config consumed by every package (`oxlint-config`)                                                                                                                                                                                                                                                                        |
+| `packages/oxlint-config/`                     | shared oxlint config consumed by every package                                                                                                                                                                                                                                                                                   |
 | `apps/desktop/`                               | Electron 43 shell: main+preload via Vite, packaged with electron-builder                                                                                                                                                                                                                                                         |
 | `docs/`                                       | [QUICKSTART](docs/QUICKSTART.md) · [ARCHITECTURE](docs/ARCHITECTURE.md) · [DOCKER](docs/DOCKER.md) · [TOOLING](docs/TOOLING.md) · modernization [PLAN](docs/MODERNIZATION_PLAN.md) / [LOG](docs/MODERNIZATION_LOG.md) / [AUDIT](docs/MODERNIZATION_AUDIT.md) · [BACKBONE](docs/BACKBONE_AUDIT.md) · [REORG](docs/REORG_AUDIT.md) |
 
@@ -146,7 +146,7 @@ Everything below is TypeScript unless noted.
   `require('@duelyst/sdk/…')` goes through `node_modules`, _not_ `app-module-path`, so it does not
   follow the repo root into `build/`. The repo-root symlink points at `packages/sdk/*.ts`, and
   production runs with no tsx hook — so a named require that works in dev, in vitest and in the
-  Vite bundle still dies in the container. `scripts/build/build-server.mjs` fixes this by emitting
+  Vite bundle still dies in the container. `tools/build/build-server.mjs` fixes this by emitting
   `build/node_modules/@duelyst/sdk -> ../../packages/sdk` (relative, so it survives `COPY`): node
   walks up from `build/server/api.js`, finds `build/node_modules` first, and lands on the
   transpiled copy. **Every gate except a container boot is a dev-mode path** — when you move a
@@ -176,7 +176,7 @@ Everything below is TypeScript unless noted.
   bearing; keep them.
 - **Card factories** (`packages/sdk/cards/factory/**`) are _text-parsed_ by `generate_packages.js`.
   Keep the `Cards.X` / `RSX.Y` literal shape or the asset packages break. The build verifies the
-  generated key set against `scripts/build/packages-manifest.json` and fails on drift; regenerate
+  generated key set against `tools/build/packages-manifest.json` and fails on drift; regenerate
   deliberately with `--update-packages-manifest`.
 - **CommonJS "export before require"** (`module.exports = X` above the requires) exists to
   survive circular requires. It does not survive ESM — restructure, don't just rename.
@@ -188,7 +188,7 @@ Everything below is TypeScript unless noted.
 - Style is **oxfmt** (`.oxfmtrc.json`): 2-space, LF, single quotes, semicolons, 100 columns, and
   it owns JS/TS/JSON/MD/YAML. `.editorconfig` covers only what oxfmt does not (templates, styles,
   shaders) so the two cannot disagree. Lint is **oxlint**, gating on `correctness` only; every
-  disabled rule says why in `tooling/oxlint-config/base.jsonc`. Don't re-enable the noisy ones —
+  disabled rule says why in `packages/oxlint-config/base.jsonc`. Don't re-enable the noisy ones —
   `no-unused-vars` alone is 6,530 legacy hits.
 
 ## Modernization program

@@ -5,14 +5,14 @@
   // Anything here invalidates every task's cache.
   "globalDependencies": [
     "pnpm-lock.yaml",
-    "tooling/oxlint-config/base.jsonc",
+    "packages/oxlint-config/base.jsonc",
     ".oxlintrc.json",
     ".oxfmtrc.json"
   ],
   // Turborepo 2 runs tasks in strict env mode: undeclared variables are stripped
   // before the task sees them. Everything config/config.js binds to an env var is
   // resolved into the client bundle at build time, so a missing entry here does not
-  // fail -- it bakes the schema default in silently. scripts/check-turbo-env.mjs
+  // fail -- it bakes the schema default in silently. tools/check-turbo-env.mjs
   // re-derives this list from the convict schema and fails CI on drift.
   "globalEnv": [
     "AI_TOOLS_ENABLED",
@@ -121,7 +121,7 @@
         "bin/**",
         "version.json",
         "tsconfig.json",
-        "scripts/build/build-server.mjs"
+        "tools/build/build-server.mjs"
       ],
       "outputs": ["build/**"]
     },

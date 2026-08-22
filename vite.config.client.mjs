@@ -33,7 +33,7 @@ const glslify = require('glslify7');
 
 // TRAP (learned the hard way): `vite build` sets NODE_ENV=production before
 // this file loads, which would make convict silently read production.json
-// (where api is ""). The build orchestrator (scripts/build/build-client.mjs)
+// (where api is ""). The build orchestrator (tools/build/build-client.mjs)
 // therefore resolves the config under the REAL environment and hands the
 // values over via DUELYST_BUILD_CONFIG. Direct `pnpm build:vite` runs fall
 // back to convict forced to development unless DUELYST_ENV says otherwise.

@@ -20,7 +20,7 @@ Task orchestration is turborepo (`turbo.json`); pnpm still owns installs and lin
   `pnpm check:turbo-env` re-derives the list from the convict schema and fails CI on drift.
 - **One lint owner per file.** Lint emits diagnostics, so overlap would double-report: the root
   `.oxlintrc.json` ignores every directory that is a workspace package in its own right, and each
-  package lints itself against `tooling/oxlint-config/base.jsonc`. Formatting has no such problem
+  package lints itself against `packages/oxlint-config/base.jsonc`. Formatting has no such problem
   (it is an idempotent rewrite), so `.oxfmtrc.json` at the root stays the single source of truth
   and package `format` scripts point back at it.
 - `packages/sdk` and `packages/common` each carry their own `typecheck`, `lint` and `format`;
@@ -33,7 +33,7 @@ Task orchestration is turborepo (`turbo.json`); pnpm still owns installs and lin
   its committed UMD bundle _is_ the shipped artifact.
 - Caching is on for the cheap repeatable tasks and **off for `build:client`** — `dist/` is ~1.2 GB
   once resources are copied in, which costs more disk than the ~35 s it would save.
-- **The services no longer compile TypeScript at boot.** `scripts/build/build-server.mjs`
+- **The services no longer compile TypeScript at boot.** `tools/build/build-server.mjs`
   transpiles the server-side trees into `build/`, mirroring the source layout so every
   root-absolute require (`require('server/lib/x')`) still resolves through app-module-path
   against `build/`. It is esbuild transpile-only, not `tsc`: tsx _is_ esbuild, so compiling the

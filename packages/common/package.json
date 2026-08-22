@@ -5,10 +5,10 @@
   "description": "Shared runtime utilities (CONFIG, Logger, EventBus, utils) used by the SDK, client and servers. Consumed via subpath imports; part of it is client-only (see tsconfig.json).",
   "scripts": {
     "typecheck": "tsc -p tsconfig.json",
-    "lint": "oxlint --config ../../tooling/oxlint-config/base.jsonc .",
+    "lint": "oxlint --config ../../packages/oxlint-config/base.jsonc .",
     "format": "oxfmt --config ../../.oxfmtrc.json .",
     "format:check": "oxfmt --check --config ../../.oxfmtrc.json .",
-    "lint:fix": "oxlint --fix --config ../../tooling/oxlint-config/base.jsonc ."
+    "lint:fix": "oxlint --fix --config ../../packages/oxlint-config/base.jsonc ."
   },
   "devDependencies": {
     "typescript": "catalog:"

@@ -39,5 +39,5 @@ dump.rdb
 # turborepo local task cache
 .turbo/
 
-# ahead-of-time server build (scripts/build/build-server.mjs)
+# ahead-of-time server build (tools/build/build-server.mjs)
 /build/

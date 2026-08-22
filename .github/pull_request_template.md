@@ -10,7 +10,7 @@ Describe your changes here. Remove any inapplicable sections.
 
 - ...
 
-**Build changes (`docker/`, `gulp/`, `scripts/`, etc.):**
+**Build changes (`docker/`, `gulp/`, `tools/`, etc.):**
 
 - ...
 

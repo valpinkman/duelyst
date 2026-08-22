@@ -41,7 +41,7 @@
     "apps/server/**/*.ts",
     "apps/worker/**/*.ts",
     "test/**/*.ts",
-    "scripts/**/*.ts"
+    "tools/**/*.ts"
   ],
   "exclude": [
     "node_modules",

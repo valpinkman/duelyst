@@ -1,7 +1,7 @@
 /*
  * Ambient declarations for the vendor libraries that are concatenated into
  * dist/src/vendor.js and consumed as globals rather than imported
- * (see scripts/build/build-client.mjs VENDOR_FILES).
+ * (see tools/build/build-client.mjs VENDOR_FILES).
  *
  * They are `any` on purpose: typing cocos2d-html5 3.3-beta0, Backbone 1.1 and
  * Marionette 2.2 is not the point of the migration. Narrow them if a

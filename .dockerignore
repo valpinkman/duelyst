@@ -22,6 +22,6 @@ firebaseRules.json
 gulp
 node_modules
 public
-scripts
-!scripts/build
+tools
+!tools/build
 terraform

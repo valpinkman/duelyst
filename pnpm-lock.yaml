@@ -390,13 +390,13 @@ importers:
         specifier: 'catalog:'
         version: 7.0.2
 
+  packages/oxlint-config: {}
+
   packages/sdk:
     devDependencies:
       typescript:
         specifier: 'catalog:'
         version: 7.0.2
-
-  tooling/oxlint-config: {}
 
 packages:
 

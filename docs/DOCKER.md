@@ -15,7 +15,7 @@ Build a container image:
 ```
 # <service> should be one of ('api', 'game', 'sp', 'worker')
 # <version> should match the latest git release; defaults to 'testing'
-scripts/build_container.sh <service> <version>
+tools/build_container.sh <service> <version>
 ```
 
 Test a container image:
@@ -35,7 +35,7 @@ Tag and publish a container image:
 # <version> should match the latest git release
 # <registry> is your AWS ECR registry alias
 # <repo> is your AWS ECR repository name
-scripts/publish_container.sh <service> <version> <registry> <repo>
+tools/publish_container.sh <service> <version> <registry> <repo>
 ```
 
 ## Notes on Image Sizes
@@ -48,7 +48,7 @@ There are a few strategies we use to keep image sizes small:
 
 #### Comparison of Base Images
 
-Sizes of Docker images built by `scripts/build_container.sh`:
+Sizes of Docker images built by `tools/build_container.sh`:
 
 | Service | Image          | Size    | ECR Size | 50 GB Limit |
 | ------- | -------------- | ------- | -------- | ----------- |

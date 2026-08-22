@@ -21,7 +21,7 @@ const shared = {
   environment: 'node',
   setupFiles: ['./test/setup-tsx.mjs'],
   // mocha ran with -t 1000 plus per-suite this.timeout() overrides up to
-  // 300s; those calls are gone (see scripts/codemods/mocha-to-vitest.mjs)
+  // 300s; those calls are gone (see tools/codemods/mocha-to-vitest.mjs)
   // and the budget lives here instead.
   testTimeout: 30000,
   hookTimeout: 60000,

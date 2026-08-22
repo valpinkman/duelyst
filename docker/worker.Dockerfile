@@ -25,7 +25,7 @@ COPY apps/server /duelyst/apps/server
 COPY apps/worker /duelyst/apps/worker
 
 COPY tsconfig.json /duelyst/
-COPY scripts/build /duelyst/scripts/build
+COPY tools/build /duelyst/tools/build
 
 # Compile TypeScript once here instead of on every boot. The tsx require-hook
 # cost a cold container ~3.7s and a 13 MB /tmp cache each time it started.

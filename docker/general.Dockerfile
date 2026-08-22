@@ -29,7 +29,7 @@ COPY vitest.config.mjs /duelyst/
 COPY vitest.integration.config.mjs /duelyst/
 COPY tsconfig.json /duelyst/
 
-COPY scripts/build /duelyst/scripts/build
+COPY tools/build /duelyst/tools/build
 
 # worker-ui runs the built tree (see docker-compose.yaml); the test containers
 # in this same image still run from source, which is why both are present.

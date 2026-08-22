@@ -22,7 +22,6 @@ RUN npm install -g pnpm@10.12.1
 # manifests first, so a source-only change does not reinstall the world
 COPY package.json .npmrc pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY packages ./packages
-COPY tooling ./tooling
 COPY packages/sdk/package.json ./packages/sdk/
 COPY packages/common/package.json ./packages/common/
 COPY packages/data/package.json ./packages/data/

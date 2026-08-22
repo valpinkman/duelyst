@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "extends": ["./tooling/oxlint-config/base.jsonc"],
+  "extends": ["./packages/oxlint-config/base.jsonc"],
   "ignorePatterns": [
     "node_modules",
     "dist",
@@ -17,6 +17,6 @@
     "packages",
     "packages/sdk",
     "packages/common",
-    "scripts/codex/CanvasText-0.4.1.js"
+    "tools/codex/CanvasText-0.4.1.js"
   ]
 }

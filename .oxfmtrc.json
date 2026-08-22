@@ -23,7 +23,7 @@
     "apps/client/tools/dat.gui.ts",
     "packages/*/dist/**",
     "packages/Backbone.VirtualCollection/**",
-    "scripts/codex/**",
+    "tools/codex/**",
     "apps/server/migrations/**",
     "**/*.hbs",
     "**/*.html",
