@@ -24,6 +24,61 @@ var SoundEffectSequence = require('../../../audio/SoundEffectSequence');
 var ErrorDialogItemView = require('../item/error_dialog');
 var ShopSpiritOrbsModalView = require('../../views2/shop/shop_spirit_orbs_modal');
 
+// cubic-bezier equivalents of the easings velocity-animate took by name;
+// velocity's default was jQuery's "swing", i.e. ease-in-out-sine
+var EASE_IN_SINE = 'cubic-bezier(0.47, 0, 0.745, 0.715)';
+var EASE_SWING = 'cubic-bezier(0.445, 0.05, 0.55, 0.95)';
+
+/*
+ * velocity drove the booster pack transform from a per-frame `progress` callback,
+ * which the Web Animations API has no equivalent of. Sampling the same functions
+ * into one keyframe per frame reproduces them: the effect easing transforms
+ * progress before the keyframes are read, so keyframe i is what velocity would
+ * have drawn at tweenValue i / TWEEN_STEPS.
+ */
+var TWEEN_STEPS = 60;
+
+function packTransform(x, y, scale) {
+  return (
+    'translateX(' + Math.round(x) + 'px) translateY(' + Math.round(y) + 'px) scale(' + scale + ')'
+  );
+}
+
+/** Spiral path from `radius` away at angle `theta` in to (deltaX, deltaY). */
+function spiralKeyframes(deltaX, deltaY, radius, theta, spin) {
+  var keyframes = [];
+  for (var i = 0; i <= TWEEN_STEPS; i++) {
+    var tweenValue = i / TWEEN_STEPS;
+    var r = radius * (1.0 - tweenValue);
+    var t = spin * tweenValue * tweenValue * tweenValue;
+    keyframes.push({
+      transform: packTransform(
+        deltaX - r * Math.cos(theta + t),
+        deltaY - r * Math.sin(theta + t),
+        1.0,
+      ),
+    });
+  }
+  return keyframes;
+}
+
+/** Random shake around (deltaX, deltaY), optionally ramping the shake and scale in. */
+function shakeKeyframes(deltaX, deltaY, magnitude, scaleStart, scaleEnd, rampIn) {
+  var keyframes = [];
+  for (var i = 0; i <= TWEEN_STEPS; i++) {
+    var tweenValue = i / TWEEN_STEPS;
+    var jitter = rampIn ? tweenValue : 1.0;
+    keyframes.push({
+      transform: packTransform(
+        deltaX + (Math.random() * magnitude - magnitude * 0.5) * jitter,
+        deltaY + (Math.random() * magnitude - magnitude * 0.5) * jitter,
+        scaleStart + (scaleEnd - scaleStart) * tweenValue,
+      ),
+    });
+  }
+  return keyframes;
+}
+
 var BoosterPackCollectionLayout = Backbone.Marionette.LayoutView.extend({
   _resetPackPromise: null,
   _boosterPacksCompositeViews: null,
@@ -33,6 +88,7 @@ var BoosterPackCollectionLayout = Backbone.Marionette.LayoutView.extend({
   _wartechSetBoosterPacksCompositeView: null,
   _combinedUnlockablesSetBoosterPacksCompositeView: null,
   _fateSetBoosterPacksCompositeView: null,
+  _unlockedBoosterPackAnimation: null,
 
   id: 'booster_pack_collection',
 
@@ -188,8 +244,16 @@ var BoosterPackCollectionLayout = Backbone.Marionette.LayoutView.extend({
     this._coreSetBoosterPacksCompositeView = null;
 
     if (this._unlockedBoosterPackEl != null) {
-      this._unlockedBoosterPackEl.velocity('stop');
+      this._stopUnlockedBoosterPackAnimation();
       this._unlockedBoosterPackEl = null;
+    }
+  },
+
+  /** Replaces the old velocity-animate "stop" call on the unlocked booster pack. */
+  _stopUnlockedBoosterPackAnimation: function () {
+    if (this._unlockedBoosterPackAnimation != null) {
+      this._unlockedBoosterPackAnimation.cancel();
+      this._unlockedBoosterPackAnimation = null;
     }
   },
 
@@ -365,87 +429,46 @@ var BoosterPackCollectionLayout = Backbone.Marionette.LayoutView.extend({
           var radius = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
           var theta = Math.atan2(deltaY, deltaX);
           var spin = -(Math.PI * 0.5 + Math.random() * Math.PI * 0.5);
-          this._unlockedBoosterPackEl.velocity('stop').velocity(
-            {
-              tween: 1,
-            },
-            {
-              easing: 'easeInSine',
-              duration: 500.0,
-              progress: function (elements, complete, remaining, start, tweenValue) {
-                var r = radius * (1.0 - tweenValue);
-                var t = spin * tweenValue * tweenValue * tweenValue;
-                var x = Math.round(deltaX - r * Math.cos(theta + t));
-                var y = Math.round(deltaY - r * Math.sin(theta + t));
-                this._unlockedBoosterPackEl.css(
-                  'transform',
-                  'translateX(' + x + 'px) translateY(' + y + 'px)',
-                );
-              }.bind(this),
-              complete: function () {
-                // start shake/scale loop
-                this._unlockedBoosterPackEl
-                  .velocity(
-                    {
-                      tween: 1,
-                    },
-                    {
-                      easing: 'easeInSine',
-                      duration: 1000.0,
-                      progress: function (elements, complete, remaining, start, tweenValue) {
-                        currentScale = 1.0 + scaleOffset * tweenValue;
-                        this._unlockedBoosterPackEl.css(
-                          'transform',
-                          'translateX(' +
-                            Math.round(
-                              deltaX +
-                                (Math.random() * shakeMagnitude - shakeMagnitude * 0.5) *
-                                  tweenValue,
-                            ) +
-                            'px) translateY(' +
-                            Math.round(
-                              deltaY +
-                                (Math.random() * shakeMagnitude - shakeMagnitude * 0.5) *
-                                  tweenValue,
-                            ) +
-                            'px) scale(' +
-                            currentScale +
-                            ')',
-                        );
-                      }.bind(this),
-                    },
-                  )
-                  .velocity(
-                    {
-                      tween: 1,
-                    },
-                    {
-                      loop: true,
-                      duration: 1000.0,
-                      progress: function (elements, complete, remaining, start, tweenValue) {
-                        this._unlockedBoosterPackEl.css(
-                          'transform',
-                          'translateX(' +
-                            Math.round(
-                              deltaX + (Math.random() * shakeMagnitude - shakeMagnitude * 0.5),
-                            ) +
-                            'px) translateY(' +
-                            Math.round(
-                              deltaY + (Math.random() * shakeMagnitude - shakeMagnitude * 0.5),
-                            ) +
-                            'px) scale(' +
-                            currentScale +
-                            ')',
-                        );
-                      }.bind(this),
-                    },
-                  );
 
-                // resolve
-                resolve();
-              }.bind(this),
-            },
+          // el.animate() is a single element API; velocity animated the collection
+          var packEl = this._unlockedBoosterPackEl[0];
+          this._stopUnlockedBoosterPackAnimation();
+          if (packEl == null) {
+            resolve();
+            return;
+          }
+
+          var spiralAnimation = packEl.animate(
+            spiralKeyframes(deltaX, deltaY, radius, theta, spin),
+            { duration: 500.0, easing: EASE_IN_SINE, fill: 'forwards' },
           );
+          this._unlockedBoosterPackAnimation = spiralAnimation;
+          spiralAnimation.onfinish = function () {
+            // start shake/scale loop; velocity queued the endless shake behind the
+            // ramp, so chain it explicitly or the two would run at once
+            var rampAnimation = packEl.animate(
+              shakeKeyframes(deltaX, deltaY, shakeMagnitude, 1.0, 1.0 + scaleOffset, true),
+              { duration: 1000.0, easing: EASE_IN_SINE, fill: 'forwards' },
+            );
+            this._unlockedBoosterPackAnimation = rampAnimation;
+            rampAnimation.onfinish = function () {
+              currentScale = 1.0 + scaleOffset;
+              // velocity's loop:true played the tween back and forth forever
+              this._unlockedBoosterPackAnimation = packEl.animate(
+                shakeKeyframes(deltaX, deltaY, shakeMagnitude, currentScale, currentScale, false),
+                {
+                  duration: 1000.0,
+                  easing: EASE_SWING,
+                  iterations: Infinity,
+                  direction: 'alternate',
+                  fill: 'forwards',
+                },
+              );
+            }.bind(this);
+
+            // resolve
+            resolve();
+          }.bind(this);
         }.bind(this),
       );
 
@@ -453,30 +476,20 @@ var BoosterPackCollectionLayout = Backbone.Marionette.LayoutView.extend({
       Promise.all([requestUnlockPromise, animateUnlockPromise, animatePackPromise]).then(
         function () {
           // delay then remove current booster pack
-          this._unlockedBoosterPackEl.velocity('stop', true).velocity(
-            {
-              tween: 1,
-            },
-            {
-              duration: 800.0,
-              progress: function (elements, complete, remaining, start, tweenValue) {
-                this._unlockedBoosterPackEl.css(
-                  'transform',
-                  'translateX(' +
-                    Math.round(deltaX + (Math.random() * shakeMagnitude - shakeMagnitude * 0.5)) +
-                    'px) translateY(' +
-                    Math.round(deltaY + (Math.random() * shakeMagnitude - shakeMagnitude * 0.5)) +
-                    'px) scale(' +
-                    currentScale +
-                    ')',
-                );
-              }.bind(this),
-              complete: function () {
-                this._unlockedBoosterPackEl.remove();
-                this._unlockedBoosterPackEl = null;
-              }.bind(this),
-            },
-          );
+          this._stopUnlockedBoosterPackAnimation();
+          var packEl = this._unlockedBoosterPackEl != null ? this._unlockedBoosterPackEl[0] : null;
+          if (packEl != null) {
+            var removeAnimation = packEl.animate(
+              shakeKeyframes(deltaX, deltaY, shakeMagnitude, currentScale, currentScale, false),
+              { duration: 800.0, easing: EASE_SWING, fill: 'forwards' },
+            );
+            this._unlockedBoosterPackAnimation = removeAnimation;
+            removeAnimation.onfinish = function () {
+              this._unlockedBoosterPackAnimation = null;
+              this._unlockedBoosterPackEl.remove();
+              this._unlockedBoosterPackEl = null;
+            }.bind(this);
+          }
 
           // reveal contents of pack
           var scene = Scene.getInstance();
