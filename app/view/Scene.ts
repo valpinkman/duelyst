@@ -65,7 +65,7 @@ module.exports = Scene;
 // why is this organized in this way? https://coderwall.com/p/myzvmg
 const EventBus = require('app/common/eventbus');
 const EVENTS = require('app/common/event_types');
-const SDK = require('app/sdk');
+const SDK = require('@duelyst/sdk');
 const NodeFactorySetup = require('app/view/helpers/NodeFactorySetup');
 const FX = require('app/view/fx/FX');
 const TransitionLayer = require('app/view/layers/TransitionLayer');

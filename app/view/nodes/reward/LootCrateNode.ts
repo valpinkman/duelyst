@@ -1,6 +1,6 @@
 // pragma PKGS: loot_crate
 
-const SDK = require('app/sdk');
+const SDK = require('@duelyst/sdk');
 const CONFIG = require('app/common/config');
 const EventBus = require('app/common/eventbus');
 const EVENTS = require('app/common/event_types');

@@ -8,7 +8,7 @@ const _ = require('underscore');
 
 const CONFIG = require('../../app/common/config');
 const Logger = require('../../app/common/logger');
-const SDK = require('../../app/sdk');
+const SDK = require('@duelyst/sdk');
 const InventoryModule = require('./data_access/inventory');
 const knex = require('./data_access/knex');
 

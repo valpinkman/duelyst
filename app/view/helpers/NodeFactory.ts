@@ -1,7 +1,7 @@
 const CONFIG = require('app/common/config');
 const Logger = require('app/common/logger');
 const UtilsEngine = require('app/common/utils/utils_engine');
-const SDK = require('app/sdk');
+const SDK = require('@duelyst/sdk');
 
 /** **************************************************************************
 Node/sprite creation factory.

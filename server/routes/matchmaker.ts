@@ -27,16 +27,16 @@ const RiftModule = require('../lib/data_access/rift');
 const RankModule = require('../lib/data_access/rank');
 const InventoryModule = require('../lib/data_access/inventory');
 
-const GameType = require('../../app/sdk/gameType');
-const GameSession = require('../../app/sdk/gameSession');
-const Cards = require('../../app/sdk/cards/cardsLookupComplete');
-const RarityFactory = require('../../app/sdk/cards/rarityFactory');
-const Rarity = require('../../app/sdk/cards/rarityLookup');
-const FactionsLookup = require('../../app/sdk/cards/factionsLookup');
-const FactionFactory = require('../../app/sdk/cards/factionFactory');
-const RankFactory = require('../../app/sdk/rank/rankFactory');
-const RankDivisionLookup = require('../../app/sdk/rank/rankDivisionLookup');
-const CosmeticsFactory = require('../../app/sdk/cosmetics/cosmeticsFactory');
+const GameType = require('@duelyst/sdk/gameType');
+const GameSession = require('@duelyst/sdk/gameSession');
+const Cards = require('@duelyst/sdk/cards/cardsLookupComplete');
+const RarityFactory = require('@duelyst/sdk/cards/rarityFactory');
+const Rarity = require('@duelyst/sdk/cards/rarityLookup');
+const FactionsLookup = require('@duelyst/sdk/cards/factionsLookup');
+const FactionFactory = require('@duelyst/sdk/cards/factionFactory');
+const RankFactory = require('@duelyst/sdk/rank/rankFactory');
+const RankDivisionLookup = require('@duelyst/sdk/rank/rankDivisionLookup');
+const CosmeticsFactory = require('@duelyst/sdk/cosmetics/cosmeticsFactory');
 
 const createSinglePlayerGame = require('../lib/create_single_player_game');
 

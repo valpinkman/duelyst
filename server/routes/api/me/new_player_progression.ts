@@ -12,9 +12,9 @@ const Logger = require('../../../../app/common/logger');
 const t = require('tcomb-validation');
 
 // sdk
-const NewPlayerProgressionHelper = require('../../../../app/sdk/progression/newPlayerProgressionHelper');
-const NewPlayerProgressionModuleLookup = require('../../../../app/sdk/progression/newPlayerProgressionModuleLookup');
-const NewPlayerProgressionStageEnum = require('../../../../app/sdk/progression/newPlayerProgressionStageEnum');
+const NewPlayerProgressionHelper = require('@duelyst/sdk/progression/newPlayerProgressionHelper');
+const NewPlayerProgressionModuleLookup = require('@duelyst/sdk/progression/newPlayerProgressionModuleLookup');
+const NewPlayerProgressionStageEnum = require('@duelyst/sdk/progression/newPlayerProgressionStageEnum');
 
 const router = express.Router();
 

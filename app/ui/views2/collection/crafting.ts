@@ -2,7 +2,7 @@
 
 var Logger = require('app/common/logger');
 var CONFIG = require('app/common/config');
-var SDK = require('app/sdk');
+var SDK = require('@duelyst/sdk');
 var RSX = require('app/data/resources');
 var audio_engine = require('app/audio/audio_engine');
 var Animations = require('app/ui/views/animations');

@@ -24,7 +24,7 @@ const generatePushId = require('../../../app/common/generate_push_id');
 const { Redis, Jobs, GameManager } = require('../../redis');
 
 // SDK imports
-const SDK = require('../../../app/sdk');
+const SDK = require('@duelyst/sdk');
 const PromiseUtils = require('../../../app/common/utils/utils_promise');
 
 class InventoryModule {

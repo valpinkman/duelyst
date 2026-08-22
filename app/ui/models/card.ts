@@ -2,7 +2,7 @@
 
 var Logger = require('app/common/logger');
 var CONFIG = require('app/common/config');
-var SDK = require('app/sdk');
+var SDK = require('@duelyst/sdk');
 
 var CardModel = Backbone.Model.extend({
   initialize: function () {

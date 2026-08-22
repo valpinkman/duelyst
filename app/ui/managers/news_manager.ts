@@ -14,7 +14,7 @@ module.exports = _NewsManager;
 
 var CONFIG = require('app/common/config');
 var Logger = require('app/common/logger');
-var SDK = require('app/sdk');
+var SDK = require('@duelyst/sdk');
 var NotificationModel = require('app/ui/models/notification');
 var DuelystFirebase = require('app/ui/extensions/duelyst_firebase');
 var Analytics = require('app/common/analytics');

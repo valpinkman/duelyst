@@ -3,10 +3,10 @@ require('app-module-path').addPath(path.join(__dirname, '../../../../../../'));
 const expect = require('chai').expect;
 const CONFIG = require('app/common/config');
 const Logger = require('app/common/logger');
-const SDK = require('app/sdk');
+const SDK = require('@duelyst/sdk');
 const UtilsSDK = require('test/utils/utils_sdk');
 const _ = require('underscore');
-const DEATHWATCH = require('app/sdk/modifiers/modifierDeathWatch');
+const DEATHWATCH = require('@duelyst/sdk/modifiers/modifierDeathWatch');
 
 // disable the logger for cleaner test output
 Logger.enabled = false;

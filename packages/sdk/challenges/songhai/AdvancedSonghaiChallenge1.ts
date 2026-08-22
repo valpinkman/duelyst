@@ -1,0 +1,124 @@
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
+ */
+const Challenge = require('@duelyst/sdk/challenges/challenge');
+const Instruction = require('@duelyst/sdk/challenges/instruction');
+const MoveAction = require('@duelyst/sdk/actions/moveAction');
+const AttackAction = require('@duelyst/sdk/actions/attackAction');
+const PlayCardFromHandAction = require('@duelyst/sdk/actions/playCardFromHandAction');
+const EndTurnAction = require('@duelyst/sdk/actions/endTurnAction');
+const Cards = require('@duelyst/sdk/cards/cardsLookupComplete');
+const Deck = require('@duelyst/sdk/cards/deck');
+const GameSession = require('@duelyst/sdk/gameSession');
+const AgentActions = require('@duelyst/sdk/agents/agentActions');
+const CONFIG = require('app/common/config');
+const RSX = require('app/data/resources');
+const ChallengeCategory = require('@duelyst/sdk/challenges/challengeCategory');
+const i18next = require('i18next');
+
+// http://forums.duelyst.com/t/stronger-scythe-otk-1/11401
+
+class AdvancedSonghaiChallenge1 extends Challenge {
+  declare type: any;
+  declare categoryType: any;
+  declare name: any;
+  declare description: any;
+  declare iconUrl: any;
+  declare _musicOverride: any;
+  declare otkChallengeStartMessage: any;
+  declare otkChallengeFailureMessages: any;
+  declare battleMapTemplateIndex: any;
+  declare snapShotOnPlayerTurn: any;
+  declare startingManaPlayer: any;
+  declare startingHandSizePlayer: any;
+
+  static type = 'AdvancedSonghaiChallenge1';
+
+  getMyPlayerDeckData(gameSession) {
+    return [
+      { id: Cards.Faction2.General },
+      { id: Cards.Spell.Juxtaposition },
+      { id: Cards.Spell.InnerFocus },
+      { id: Cards.Spell.MistDragonSeal },
+      { id: Cards.Artifact.MaskOfBloodLeech },
+      { id: Cards.Spell.Juxtaposition },
+      { id: Cards.Neutral.PhaseHound },
+    ];
+  }
+
+  getOpponentPlayerDeckData(gameSession) {
+    return [{ id: Cards.Faction3.General }, { id: Cards.TutorialSpell.TutorialFrozenFinisher }];
+  }
+
+  setupBoard(gameSession) {
+    super.setupBoard(gameSession);
+
+    const myPlayerId = gameSession.getMyPlayerId();
+    const opponentPlayerId = gameSession.getOpponentPlayerId();
+
+    const general1 = gameSession.getGeneralForPlayerId(myPlayerId);
+    general1.setPosition({ x: 5, y: 3 });
+    general1.maxHP = 25;
+    general1.setDamage(25 - 7);
+    const general2 = gameSession.getGeneralForPlayerId(opponentPlayerId);
+    general2.setPosition({ x: 8, y: 0 });
+    general2.maxHP = 25;
+    general2.setDamage(25 - 15);
+
+    this.applyCardToBoard({ id: Cards.Neutral.SyvrelTheExile }, 4, 2, myPlayerId);
+    this.applyCardToBoard({ id: Cards.Neutral.DragoneboneGolem }, 6, 2, myPlayerId);
+
+    const dioltas = this.applyCardToBoard({ id: Cards.Neutral.Dilotas }, 7, 1, opponentPlayerId);
+    this.applyCardToBoard({ id: Cards.Neutral.WhistlingBlade }, 7, 0, opponentPlayerId);
+    this.applyCardToBoard({ id: Cards.Neutral.WhistlingBlade }, 8, 1, opponentPlayerId);
+
+    this.applyCardToBoard({ id: Cards.Spell.DrainMorale }, 4, 2, opponentPlayerId);
+    this.applyCardToBoard({ id: Cards.Spell.CosmicFlesh }, 7, 1, opponentPlayerId);
+    return dioltas.setDamage(dioltas.getMaxHP() - 1);
+  }
+
+  setupOpponentAgent(gameSession) {
+    super.setupOpponentAgent(gameSession);
+
+    this._opponentAgent.addActionForTurn(
+      0,
+      AgentActions.createAgentSoftActionShowInstructionLabels([
+        {
+          label: i18next.t('challenges.advanced_songhai_1_taunt'),
+          isSpeech: true,
+          isPersistent: true,
+          yPosition: 0.7,
+          isOpponent: true,
+        },
+      ]),
+    );
+    return this._opponentAgent.addActionForTurn(
+      0,
+      AgentActions.createAgentActionPlayCardFindPosition(0, () => [
+        GameSession.getInstance().getGeneralForPlayer1().getPosition(),
+      ]),
+    );
+  }
+}
+AdvancedSonghaiChallenge1.prototype.type = 'AdvancedSonghaiChallenge1';
+AdvancedSonghaiChallenge1.prototype.categoryType = ChallengeCategory.contest1.type;
+AdvancedSonghaiChallenge1.prototype.name = i18next.t('challenges.advanced_songhai_1_title');
+AdvancedSonghaiChallenge1.prototype.description = i18next.t(
+  'challenges.advanced_songhai_1_description',
+);
+AdvancedSonghaiChallenge1.prototype.iconUrl = RSX.speech_portrait_songhai.img;
+AdvancedSonghaiChallenge1.prototype._musicOverride = RSX.music_battlemap_songhai.audio;
+AdvancedSonghaiChallenge1.prototype.otkChallengeStartMessage = i18next.t(
+  'challenges.advanced_songhai_1_start',
+);
+AdvancedSonghaiChallenge1.prototype.otkChallengeFailureMessages = [
+  i18next.t('challenges.advanced_songhai_1_fail'),
+];
+AdvancedSonghaiChallenge1.prototype.battleMapTemplateIndex = 2;
+AdvancedSonghaiChallenge1.prototype.snapShotOnPlayerTurn = 0;
+AdvancedSonghaiChallenge1.prototype.startingManaPlayer = 6;
+AdvancedSonghaiChallenge1.prototype.startingHandSizePlayer = 6;
+
+module.exports = AdvancedSonghaiChallenge1;

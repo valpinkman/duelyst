@@ -1,5 +1,5 @@
 // pragma PKGS: game
-const SDK = require('app/sdk');
+const SDK = require('@duelyst/sdk');
 const Logger = require('app/common/logger');
 const CONFIG = require('app/common/config');
 const UtilsPosition = require('app/common/utils/utils_position');

@@ -1,4 +1,4 @@
-const Cards = require('app/sdk/cards/cardsLookupComplete');
+const Cards = require('@duelyst/sdk/cards/cardsLookupComplete');
 
 const NM = [
   Cards.Neutral.Khymera,

@@ -1,0 +1,62 @@
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS205: Consider reworking code to avoid use of IIFEs
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
+ */
+const CONFIG = require('app/common/config');
+const UtilsGameSession = require('@duelyst/sdk/utils/utils_game_session');
+const UtilsPosition = require('app/common/utils/utils_position');
+const PlayCardSilentlyAction = require('@duelyst/sdk/actions/playCardSilentlyAction');
+const Rarity = require('@duelyst/sdk/cards/rarityLookup');
+const ModifierKillWatch = require('./modifierKillWatch');
+
+class ModifierKillWatchSpawnCopyNearby extends ModifierKillWatch {
+  declare type: any;
+  declare fxResource: any;
+
+  static type = 'ModifierKillWatchSpawnCopyNearby';
+
+  onKillWatch(action) {
+    super.onKillWatch(action);
+
+    if (this.getGameSession().getIsRunningAsAuthoritative()) {
+      const cardDataOrIndexToSpawn = action.getTarget().createNewCardData();
+      const cardToSpawn =
+        this.getGameSession().getExistingCardFromIndexOrCachedCardFromData(cardDataOrIndexToSpawn);
+      if (!cardToSpawn.getWasGeneral()) {
+        const spawnPositions = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(
+          this.getGameSession(),
+          this.getCard().getPosition(),
+          CONFIG.PATTERN_3x3,
+          cardToSpawn,
+          this.getCard(),
+          1,
+        );
+        return (() => {
+          const result = [];
+          for (var spawnPosition of Array.from<any>(spawnPositions)) {
+            var spawnAction = new PlayCardSilentlyAction(
+              this.getGameSession(),
+              this.getCard().getOwnerId(),
+              spawnPosition.x,
+              spawnPosition.y,
+              cardDataOrIndexToSpawn,
+            );
+            spawnAction.setSource(this.getCard());
+            result.push(this.getGameSession().executeAction(spawnAction));
+          }
+          return result;
+        })();
+      }
+    }
+  }
+}
+ModifierKillWatchSpawnCopyNearby.prototype.type = 'ModifierKillWatchSpawnCopyNearby';
+ModifierKillWatchSpawnCopyNearby.prototype.fxResource = [
+  'FX.Modifiers.ModifierKillWatch',
+  'FX.Modifiers.ModifierGenericSpawn',
+];
+
+module.exports = ModifierKillWatchSpawnCopyNearby;

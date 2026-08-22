@@ -5,14 +5,14 @@
 var EventBus = require('app/common/eventbus');
 var EVENTS = require('app/common/event_types');
 var CONFIG = require('app/common/config');
-var SDK = require('app/sdk');
+var SDK = require('@duelyst/sdk');
 var RSX = require('app/data/resources');
 var UtilsJavascript = require('app/common/utils/utils_javascript');
 var audio_engine = require('app/audio/audio_engine');
 var VirtualCollection = require('backbone-virtual-collection');
 var ProfileManager = require('app/ui/managers/profile_manager');
 var DeckSelectSandboxTmpl = require('app/ui/templates/composite/deck_select_sandbox.hbs');
-var CosmeticsFactory = require('app/sdk/cosmetics/cosmeticsFactory');
+var CosmeticsFactory = require('@duelyst/sdk/cosmetics/cosmeticsFactory');
 var _ = require('underscore');
 var DeckSelectCompositeView = require('./deck_select');
 

@@ -1,6 +1,6 @@
 'use strict';
 
-var SDK = require('app/sdk');
+var SDK = require('@duelyst/sdk');
 var moment = require('moment');
 var ProfileRankHistoryCollectionViewTempl = require('./templates/profile_rank_history_collection.hbs');
 

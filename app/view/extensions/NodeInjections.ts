@@ -1,7 +1,7 @@
 const CONFIG = require('app/common/config');
 const UtilsEngine = require('app/common/utils/utils_engine');
 const RenderPass = require('app/view/fx/RenderPass');
-const SDK = require('app/sdk');
+const SDK = require('@duelyst/sdk');
 const _ = require('underscore');
 
 /** **************************************************************************

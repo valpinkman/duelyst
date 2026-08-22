@@ -40,19 +40,19 @@ const grantFullCollection = require('../collection');
 let { Redis, Jobs, GameManager } = require('../../redis');
 
 // SDK imports
-const SDK = require('../../../app/sdk');
-const Cards = require('../../../app/sdk/cards/cardsLookupComplete');
-const CardSetFactory = require('../../../app/sdk/cards/cardSetFactory');
-const RankFactory = require('../../../app/sdk/rank/rankFactory');
-const Entity = require('../../../app/sdk/entities/entity');
-const QuestFactory = require('../../../app/sdk/quests/questFactory');
-const QuestType = require('../../../app/sdk/quests/questTypeLookup');
-const GameType = require('../../../app/sdk/gameType');
-const GameFormat = require('../../../app/sdk/gameFormat');
-const UtilsGameSession = require('../../../app/sdk/utils/utils_game_session');
-const NewPlayerProgressionHelper = require('../../../app/sdk/progression/newPlayerProgressionHelper');
-const NewPlayerProgressionStageEnum = require('../../../app/sdk/progression/newPlayerProgressionStageEnum');
-const NewPlayerProgressionModuleLookup = require('../../../app/sdk/progression/newPlayerProgressionModuleLookup');
+const SDK = require('@duelyst/sdk');
+const Cards = require('@duelyst/sdk/cards/cardsLookupComplete');
+const CardSetFactory = require('@duelyst/sdk/cards/cardSetFactory');
+const RankFactory = require('@duelyst/sdk/rank/rankFactory');
+const Entity = require('@duelyst/sdk/entities/entity');
+const QuestFactory = require('@duelyst/sdk/quests/questFactory');
+const QuestType = require('@duelyst/sdk/quests/questTypeLookup');
+const GameType = require('@duelyst/sdk/gameType');
+const GameFormat = require('@duelyst/sdk/gameFormat');
+const UtilsGameSession = require('@duelyst/sdk/utils/utils_game_session');
+const NewPlayerProgressionHelper = require('@duelyst/sdk/progression/newPlayerProgressionHelper');
+const NewPlayerProgressionStageEnum = require('@duelyst/sdk/progression/newPlayerProgressionStageEnum');
+const NewPlayerProgressionModuleLookup = require('@duelyst/sdk/progression/newPlayerProgressionModuleLookup');
 const { onType } = require('../../../app/common/utils/utils_promise');
 const PromiseUtils = require('../../../app/common/utils/utils_promise');
 

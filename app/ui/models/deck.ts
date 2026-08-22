@@ -2,7 +2,7 @@
 
 var Logger = require('app/common/logger');
 var CONFIG = require('app/common/config');
-var SDK = require('app/sdk');
+var SDK = require('@duelyst/sdk');
 var UtilsEnv = require('app/common/utils/utils_env');
 var GameDataManager = require('app/ui/managers/game_data_manager');
 var ProgressionManager = require('app/ui/managers/progression_manager');

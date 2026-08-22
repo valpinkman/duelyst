@@ -1,6 +1,6 @@
 'use strict';
 
-var SDK = require('app/sdk');
+var SDK = require('@duelyst/sdk');
 var GamePlayerLayout = require('./game_player');
 
 var GamePlayer2Layout = GamePlayerLayout.extend({

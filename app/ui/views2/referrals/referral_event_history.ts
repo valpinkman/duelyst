@@ -1,6 +1,6 @@
 'use strict';
 
-var SDK = require('app/sdk');
+var SDK = require('@duelyst/sdk');
 var moment = require('moment');
 var semver = require('semver');
 var EventBus = require('app/common/eventbus');

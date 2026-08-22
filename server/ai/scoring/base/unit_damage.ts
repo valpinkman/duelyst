@@ -1,4 +1,4 @@
-const ModifierForcefieldAbsorb = require('app/sdk/modifiers/modifierForcefieldAbsorb');
+const ModifierForcefieldAbsorb = require('@duelyst/sdk/modifiers/modifierForcefieldAbsorb');
 const BOUNTY = require('../bounty');
 const ScoreForUnit = require('./unit');
 

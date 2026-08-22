@@ -3,7 +3,7 @@ const filterAttackTargetsForUnit = require('server/ai/scoring/utils/utils_filter
 const ScoreForUnitDamage = require('server/ai/scoring/base/unit_damage');
 const distanceBetweenBoardPositions = require('server/ai/scoring/utils/utils_distanceBetweenBoardPositions');
 const _ = require('underscore');
-const SDK = require('app/sdk');
+const SDK = require('@duelyst/sdk');
 
 const findAttackObjectivesAndScoresForUnit = function (gameSession, unit, targetPosition) {
   const sourceUnit = unit.getIsPlayed()

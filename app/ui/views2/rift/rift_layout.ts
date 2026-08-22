@@ -2,7 +2,7 @@
 
 'use strict';
 
-var SDK = require('app/sdk');
+var SDK = require('@duelyst/sdk');
 var Scene = require('app/view/Scene');
 var PKGS = require('app/data/packages');
 var EventBus = require('app/common/eventbus');

@@ -1,7 +1,7 @@
 'use strict';
 
-var SDK = require('app/sdk');
-var RiftHelper = require('app/sdk/rift/riftHelper');
+var SDK = require('@duelyst/sdk');
+var RiftHelper = require('@duelyst/sdk/rift/riftHelper');
 var moment = require('moment');
 var _ = require('underscore');
 var ProfileRiftSummaryViewTempl = require('./templates/profile_rift_summary_item.hbs');

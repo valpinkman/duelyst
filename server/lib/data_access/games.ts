@@ -19,8 +19,8 @@ const generatePushId = require('../../../app/common/generate_push_id');
 const DataAccessHelpers = require('./helpers');
 
 // SDK imports
-const SDK = require('../../../app/sdk');
-const UtilsGameSession = require('../../../app/sdk/utils/utils_game_session');
+const SDK = require('@duelyst/sdk');
+const UtilsGameSession = require('@duelyst/sdk/utils/utils_game_session');
 const PromiseUtils = require('../../../app/common/utils/utils_promise');
 const { onType } = require('../../../app/common/utils/utils_promise');
 const Errors = require('../custom_errors');

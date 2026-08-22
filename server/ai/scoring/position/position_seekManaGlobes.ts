@@ -2,7 +2,7 @@ const findNearestObjective = require('server/ai/scoring/utils/utils_findNearestO
 const distanceBetweenBoardPositions = require('server/ai/scoring/utils/utils_distanceBetweenBoardPositions');
 const BOUNTY = require('server/ai/scoring/bounty');
 const _ = require('underscore');
-const SDK = require('app/sdk');
+const SDK = require('@duelyst/sdk');
 
 const position_seekManaGlobes = function (gameSession, unit, position) {
   let score = 0;

@@ -26,15 +26,15 @@ const config = require('../../../config/config.js');
 const generatePushId = require('../../../app/common/generate_push_id');
 
 // SDK imports
-const SDK = require('../../../app/sdk');
-const CardFactory = require('../../../app/sdk/cards/cardFactory');
-const Rarity = require('../../../app/sdk/cards/rarityLookup');
-const Faction = require('../../../app/sdk/cards/factionsLookup');
-const GameSession = require('../../../app/sdk/gameSession');
-const UtilsGameSession = require('../../../app/sdk/utils/utils_game_session');
-const QuestFactory = require('../../../app/sdk/quests/questFactory');
-const QuestType = require('../../../app/sdk/quests/questTypeLookup');
-const CosmeticsFactory = require('../../../app/sdk/cosmetics/cosmeticsFactory');
+const SDK = require('@duelyst/sdk');
+const CardFactory = require('@duelyst/sdk/cards/cardFactory');
+const Rarity = require('@duelyst/sdk/cards/rarityLookup');
+const Faction = require('@duelyst/sdk/cards/factionsLookup');
+const GameSession = require('@duelyst/sdk/gameSession');
+const UtilsGameSession = require('@duelyst/sdk/utils/utils_game_session');
+const QuestFactory = require('@duelyst/sdk/quests/questFactory');
+const QuestType = require('@duelyst/sdk/quests/questTypeLookup');
+const CosmeticsFactory = require('@duelyst/sdk/cosmetics/cosmeticsFactory');
 const PromiseUtils = require('../../../app/common/utils/utils_promise');
 const { onType } = require('../../../app/common/utils/utils_promise');
 

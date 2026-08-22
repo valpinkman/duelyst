@@ -1,0 +1,77 @@
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
+ */
+const EVENTS = require('app/common/event_types');
+const DamageAction = require('@duelyst/sdk/actions/damageAction');
+const CardType = require('@duelyst/sdk/cards/cardType');
+const ModifierStunned = require('@duelyst/sdk/modifiers/modifierStunned');
+const Modifier = require('./modifier');
+
+class ModifierDoubleDamageToStunnedEnemies extends Modifier {
+  declare type: any;
+  declare activeInHand: any;
+  declare activeInDeck: any;
+  declare activeInSignatureCards: any;
+  declare activeOnBoard: any;
+  declare damageBonus: any;
+  declare fxResource: any;
+
+  static type = 'ModifierDoubleDamageToStunnedEnemies';
+
+  onEvent(event) {
+    super.onEvent(event);
+
+    if (this._private.listeningToEvents) {
+      if (event.type === EVENTS.modify_action_for_entities_involved_in_attack) {
+        return this.onModifyActionForEntitiesInvolvedInAttack(event);
+      }
+    }
+  }
+
+  getIsActionRelevant(a) {
+    return (
+      a instanceof DamageAction &&
+      a.getSource() === this.getCard() &&
+      __guard__(a.getTarget(), (x) => x.hasActiveModifierClass(ModifierStunned)) &&
+      __guard__(a.getTarget(), (x1) => x1.getOwnerId()) !== this.getCard().getOwnerId()
+    );
+  }
+
+  _modifyAction(a) {
+    a.setChangedByModifier(this);
+    return a.changeDamageMultiplierBy(this.damageBonus);
+  }
+
+  onModifyActionForExecution(actionEvent) {
+    super.onModifyActionForExecution(actionEvent);
+    const a = actionEvent.action;
+    if (this.getIsActionRelevant(a)) {
+      return this._modifyAction(a);
+    }
+  }
+
+  onModifyActionForEntitiesInvolvedInAttack(actionEvent) {
+    const a = actionEvent.action;
+    if (this.getIsActive() && this.getIsActionRelevant(a)) {
+      return this._modifyAction(a);
+    }
+  }
+}
+ModifierDoubleDamageToStunnedEnemies.prototype.type = 'ModifierDoubleDamageToStunnedEnemies';
+ModifierDoubleDamageToStunnedEnemies.prototype.activeInHand = false;
+ModifierDoubleDamageToStunnedEnemies.prototype.activeInDeck = false;
+ModifierDoubleDamageToStunnedEnemies.prototype.activeInSignatureCards = false;
+ModifierDoubleDamageToStunnedEnemies.prototype.activeOnBoard = true;
+ModifierDoubleDamageToStunnedEnemies.prototype.damageBonus = 2;
+ModifierDoubleDamageToStunnedEnemies.prototype.fxResource = [
+  'FX.Modifiers.ModifierDoubleDamageToEnemyMinions',
+];
+
+module.exports = ModifierDoubleDamageToStunnedEnemies;
+
+function __guard__(value, transform) {
+  return typeof value !== 'undefined' && value !== null ? transform(value) : undefined;
+}

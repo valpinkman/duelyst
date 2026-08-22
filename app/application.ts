@@ -38,7 +38,7 @@ const RSX = (window.RSX = require('app/data/resources'));
 const PKGS = (window.PKGS = require('app/data/packages'));
 const EventBus = (window.EventBus = require('app/common/eventbus'));
 const EVENTS = require('app/common/event_types');
-const SDK = (window.SDK = require('app/sdk'));
+const SDK = (window.SDK = require('@duelyst/sdk'));
 const NetworkManager = require('app/networkManager');
 
 // Wire the SDK's network hook: non-authoritative game sessions hand submitted

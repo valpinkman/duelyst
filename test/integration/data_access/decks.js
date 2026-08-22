@@ -13,7 +13,7 @@ const DecksModule = require('../../../server/lib/data_access/decks');
 const FirebasePromises = require('../../../server/lib/firebase_promises');
 const config = require('../../../config/config');
 const Logger = require('../../../app/common/logger');
-const SDK = require('../../../app/sdk/index');
+const SDK = require('@duelyst/sdk/index');
 const knex = require('../../../server/lib/data_access/knex');
 const { onType } = require('../../../app/common/utils/utils_promise');
 

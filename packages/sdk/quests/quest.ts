@@ -1,0 +1,160 @@
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
+ */
+const GameStatus = require('@duelyst/sdk/gameStatus');
+const GameType = require('@duelyst/sdk/gameType');
+
+class Quest {
+  declare id: any;
+  declare types: any;
+  declare name: any;
+  declare goldReward: any;
+  declare spiritOrbsReward: any;
+  declare params: any;
+  declare requiresStreak: any;
+  declare friendlyMatchesCount: any;
+  declare riftMatchesCount: any;
+  declare isReplaceable: any;
+
+  constructor(id, name, typesIn, goldReward) {
+    this.id = id;
+    this.name = name;
+    this.types = typesIn;
+    this.params = {};
+    this.goldReward = goldReward;
+    this.friendlyMatchesCount = false;
+    this.riftMatchesCount = true;
+  }
+
+  // returns the amount of progress made in a given gameData, should always check if game is over
+  // gameData - a parsed representation of serialized gamesession data
+  progressForGameDataForPlayerId(gameData, playerId) {
+    // Can only make progress in a completed game
+    if (gameData.status !== GameStatus.over) {
+      return 0;
+    }
+
+    // don't make progress if this game didn't count based on being friendly
+    if (gameData.gameType === GameType.Friendly && !this.friendlyMatchesCount) {
+      return 0;
+    }
+
+    // don't make progress if this game didn't count based on being rift mode
+    if (gameData.gameType === GameType.Rift && !this.riftMatchesCount) {
+      return 0;
+    }
+
+    return this._progressForGameDataForPlayerId(gameData, playerId);
+  }
+
+  // Returns progress based on a passed in faction's stats (assumes this faction leveled)
+  progressForProgressedFactionData(progressedFactionData) {
+    return 0;
+  }
+
+  // Returns progress for completing the passed in challenge id
+  progressForChallengeId(challengeId) {
+    return 0;
+  }
+
+  // Subclasses should override this to return how much progress is made for completing a quest
+  _progressForGameDataForPlayerId(gameData, playerId) {
+    // override: calculate if this quest is satisfied by a game session for a player
+    return 0;
+  }
+
+  // Subclasses should override this to return how much progress is made for completing a quest
+  progressForQuestCompletion(questData) {
+    return 0;
+  }
+
+  getId() {
+    return this.id;
+  }
+
+  getName() {
+    return this.name;
+  }
+
+  getTypes() {
+    return this.types;
+  }
+
+  getDescription() {
+    return 'N/A';
+  }
+
+  getGoldReward() {
+    return this.goldReward;
+  }
+
+  getSpiritOrbsReward() {
+    return this.spiritOrbsReward;
+  }
+
+  getIsReplaceable() {
+    return this.isReplaceable;
+  }
+
+  setRequiresStreak(requiresStreak) {
+    if (requiresStreak == null) {
+      requiresStreak = true;
+    }
+    return (this.requiresStreak = requiresStreak);
+  }
+
+  getRequiresStreak() {
+    return this.requiresStreak || false;
+  }
+
+  setFriendlyMatchesCount(friendlyMatchesCount) {
+    if (friendlyMatchesCount == null) {
+      friendlyMatchesCount = true;
+    }
+    return (this.friendlyMatchesCount = friendlyMatchesCount);
+  }
+
+  getFriendlyMatchesCount() {
+    return this.friendlyMatchesCount;
+  }
+
+  shouldResetProgress(gameData, progressMade) {
+    // don't reset progress if this game didn't count based on being friendly
+    if (gameData.gameType === GameType.Friendly && !this.friendlyMatchesCount) {
+      return false;
+    }
+
+    // don't reset progress if game isn't over
+    if (gameData.status !== GameStatus.over) {
+      return false;
+    }
+
+    // If quest requires a streak, but no progress was made reset current progress
+    if (this.requiresStreak && progressMade === 0) {
+      return true;
+    }
+
+    return false;
+  }
+
+  // Used for seasonal and promo quests to determine if a quest is currently active
+  // Override in subclasses
+  isAvailableOn(momentUtc) {
+    return true;
+  }
+}
+Quest.prototype.id = null;
+Quest.prototype.types = null;
+Quest.prototype.name = null;
+Quest.prototype.goldReward = undefined;
+Quest.prototype.spiritOrbsReward = undefined;
+Quest.prototype.params = null;
+Quest.prototype.requiresStreak = undefined;
+Quest.prototype.friendlyMatchesCount = undefined;
+Quest.prototype.riftMatchesCount = undefined;
+Quest.prototype.isReplaceable = true;
+
+module.exports = Quest;

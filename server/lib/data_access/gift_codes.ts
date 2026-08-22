@@ -21,7 +21,7 @@ const knex = require('./knex');
 const config = require('../../../config/config.js');
 const generatePushId = require('../../../app/common/generate_push_id');
 
-const SDK = require('../../../app/sdk');
+const SDK = require('@duelyst/sdk');
 
 class GiftCodesModule {
   static redeemGiftCode(userId, giftCode, systemTime) {

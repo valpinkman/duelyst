@@ -334,6 +334,32 @@ step it describes, so it can never drift from the code.
      See [`REORG_AUDIT.md`](REORG_AUDIT.md) §"Recommended sequence" for what picking it up again
      would involve.
 
+     **Reopened 2026-08-22 as a full monorepo layout**, on request and on a branch
+     (`monorepo-layout`) for a single PR rather than straight onto `main`. Scope agreed: packages +
+     apps, assets left alone. Order: 1. `packages/sdk` · 2. `packages/common` · 3. `packages/data` · 4. `apps/client` · 5. `apps/server` · 6. `apps/desktop` · 7. `tools/` · 8. drop
+     `app-module-path`. One commit per step, each green.
+
+     **Step 1 done:** `app/sdk` → `packages/sdk` (1,378 files via `git mv`), 6,321 specifiers across
+     1,545 files rewritten to `@duelyst/sdk`. Three things the mass rewrite got wrong, all the same
+     shape — _a quoted string that was never a module specifier_: it rewrote the string literals
+     **inside `check-package-deps.mjs` itself**, so the gate silently narrowed from 1,405 files to
+     29 and still reported OK; it missed the inverse direction, relative specifiers that _resolve
+     into_ the moved tree (`../../sdk/…` from `app/ui`, and `../../common/config` from six spells,
+     which after the move pointed at a `packages/common` that does not exist); and it missed the
+     require that `generate_packages.js` **emits into** its generated output.
+
+     The lesson is to resolve specifiers rather than pattern-match them: the sweep that found the
+     stragglers normalised every relative path and asked where it landed. `check-package-deps` now
+     flags an escape to _any_ destination, not just one under `app/` — that old condition is
+     exactly what let the six spells through.
+
+     Also: **a named workspace package does not resolve like a root-absolute path.** Typecheck,
+     vitest and the Vite build all passed while the server container was broken, because
+     `@duelyst/sdk` resolves through `node_modules` to `packages/sdk/*.ts` and production has no tsx
+     hook. `build-server.mjs` now emits `build/node_modules/@duelyst/sdk` pointing at the transpiled
+     tree. Verified by booting `build/bin/api` inside the built image — every other gate is a
+     dev-mode path.
+
   5. **Optional, deliberately not started:** Backbone/Marionette/jQuery. That is a UI rewrite,
      not an upgrade, and was declined once already. Audited 2026-08-21 —
      [`BACKBONE_AUDIT.md`](BACKBONE_AUDIT.md). The short version: Backbone is the metagame shell

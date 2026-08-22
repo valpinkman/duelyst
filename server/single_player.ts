@@ -24,10 +24,10 @@ const request = require('superagent');
 // Our modules
 const shutdownLib = require('./shutdown');
 const StarterAI = require('./ai/starter_ai');
-const SDK = require('../app/sdk');
+const SDK = require('@duelyst/sdk');
 let Logger = require('../app/common/logger');
 const EVENTS = require('../app/common/event_types');
-const UtilsGameSession = require('../app/sdk/utils/utils_game_session');
+const UtilsGameSession = require('@duelyst/sdk/utils/utils_game_session');
 
 // lib Modules
 const Consul = require('./lib/consul');

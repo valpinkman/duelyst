@@ -5,7 +5,7 @@
  * package with a directory between them (docs/REORG_AUDIT.md). The cycle was
  * broken on 2026-08-21 by moving three files; this keeps it broken.
  *
- *   @duelyst/common  -> nothing else under app/ (a leaf)
+ *   @duelyst/common  -> nothing else (a leaf)
  *   @duelyst/sdk     -> app/common and app/data only
  *
  * Checks root-absolute specifiers (`require('app/x')`) and relative ones that
@@ -20,7 +20,7 @@ import path from 'node:path';
 const RULES = {
   'app/common': { allow: [] },
   'app/data': { allow: [] },
-  'app/sdk': { allow: ['app/common', 'app/data'] },
+  'packages/sdk': { allow: ['app/common', 'app/data'] },
 };
 
 /*
@@ -31,7 +31,7 @@ const RULES = {
  * a build artifact of scripts/generate_packages.js, which reads app/sdk off
  * disk. The cycle exists in the artifact, never in the source.
  */
-const files = execFileSync('git', ['ls-files', 'app/sdk', 'app/common', 'app/data'], {
+const files = execFileSync('git', ['ls-files', 'packages/sdk', 'app/common', 'app/data'], {
   encoding: 'utf8',
 })
   .split('\n')
@@ -49,9 +49,15 @@ for (const file of files) {
     if (spec.startsWith('.')) {
       // resolve relative specifiers against the file, then see where they land
       const resolved = path.normalize(path.join(path.dirname(file), spec));
-      // `require('..')` from app/sdk/giftCrates lands on 'app/sdk' itself: still inside
-      if (resolved !== pkg && !resolved.startsWith(`${pkg}/`) && resolved.startsWith('app/'))
-        target = resolved;
+      // `require('..')` from packages/sdk/giftCrates lands on the package itself: still inside
+      //
+      // Any landing spot outside the package counts, not just one under app/. This
+      // used to be gated on `resolved.startsWith('app/')`, and the packages/sdk move
+      // walked straight through the hole: six spells kept `require('../../common/config')`,
+      // which had resolved to app/common/config from app/sdk but resolves to the
+      // nonexistent packages/common/config from packages/sdk. The gate passed; 101
+      // test files did not.
+      if (resolved !== pkg && !resolved.startsWith(`${pkg}/`)) target = resolved;
     } else if (spec.startsWith('app/') && !spec.startsWith(`${pkg}/`)) {
       target = spec;
     }

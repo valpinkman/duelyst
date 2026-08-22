@@ -1,7 +1,7 @@
 'use strict';
 
 var Logger = require('app/common/logger');
-var SDK = require('app/sdk');
+var SDK = require('@duelyst/sdk');
 var FactionModel = require('app/ui/models/faction');
 var CONFIG = require('app/common/config');
 

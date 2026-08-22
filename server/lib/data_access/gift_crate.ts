@@ -21,11 +21,11 @@ const knex = require('./knex');
 const generatePushId = require('../../../app/common/generate_push_id');
 
 // SDK imports
-const SDK = require('../../../app/sdk');
-const GiftCrateFactory = require('../../../app/sdk/giftCrates/giftCrateFactory');
-const GiftCrateLookup = require('../../../app/sdk/giftCrates/giftCrateLookup');
-const CosmeticsFactory = require('../../../app/sdk/cosmetics/cosmeticsFactory');
-const CosmeticsLookup = require('../../../app/sdk/cosmetics/cosmeticsLookup');
+const SDK = require('@duelyst/sdk');
+const GiftCrateFactory = require('@duelyst/sdk/giftCrates/giftCrateFactory');
+const GiftCrateLookup = require('@duelyst/sdk/giftCrates/giftCrateLookup');
+const CosmeticsFactory = require('@duelyst/sdk/cosmetics/cosmeticsFactory');
+const CosmeticsLookup = require('@duelyst/sdk/cosmetics/cosmeticsLookup');
 
 class GiftCrateModule {
   /**

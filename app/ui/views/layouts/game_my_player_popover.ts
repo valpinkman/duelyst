@@ -2,7 +2,7 @@
 
 'use strict';
 
-var SDK = require('app/sdk');
+var SDK = require('@duelyst/sdk');
 const NetworkManager = require('app/networkManager');
 var _ = require('underscore');
 var CONFIG = require('app/common/config');

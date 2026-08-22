@@ -16,10 +16,10 @@ const FirebasePromises = require('../../../server/lib/firebase_promises');
 const generatePushId = require('../../../app/common/generate_push_id');
 const config = require('../../../config/config');
 const Logger = require('../../../app/common/logger');
-const SDK = require('../../../app/sdk/index');
-const GiftCrateFactory = require('../../../app/sdk/giftCrates/giftCrateFactory');
+const SDK = require('@duelyst/sdk/index');
+const GiftCrateFactory = require('@duelyst/sdk/giftCrates/giftCrateFactory');
 const knex = require('../../../server/lib/data_access/knex');
-const NewPlayerProgressionStageEnum = require('../../../app/sdk/progression/newPlayerProgressionStageEnum');
+const NewPlayerProgressionStageEnum = require('@duelyst/sdk/progression/newPlayerProgressionStageEnum');
 const { onType } = require('../../../app/common/utils/utils_promise');
 
 // disable the logger for cleaner test output

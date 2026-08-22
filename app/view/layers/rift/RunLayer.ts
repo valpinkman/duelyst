@@ -2,7 +2,7 @@
 const CONFIG = require('app/common/config');
 const Logger = require('app/common/logger');
 const EVENTS = require('app/common/event_types');
-const SDK = require('app/sdk');
+const SDK = require('@duelyst/sdk');
 const RSX = require('app/data/resources');
 const UtilsJavascript = require('app/common/utils/utils_javascript');
 const UtilsEngine = require('app/common/utils/utils_engine');
@@ -10,7 +10,7 @@ const FXRiftLineSprite = require('app/view/nodes/fx/FXRiftLineSprite');
 const FXHorizontalGlowFlareSprite = require('app/view/nodes/fx/FXHorizontalGlowFlareSprite');
 const FXFireRingFlareWarpedSprite = require('app/view/nodes/fx/FXFireRingFlareWarpedSprite');
 const FXRiftFireSprite = require('app/view/nodes/fx/FXRiftFireSprite');
-const RiftHelper = require('app/sdk/rift/riftHelper');
+const RiftHelper = require('@duelyst/sdk/rift/riftHelper');
 const NewPlayerManager = require('app/ui/managers/new_player_manager');
 const TooltipNode = require('app/view/nodes/cards/TooltipNode');
 const i18next = require('i18next');

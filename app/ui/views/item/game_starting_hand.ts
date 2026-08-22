@@ -1,7 +1,7 @@
 'use strict';
 
 var EVENTS = require('app/common/event_types');
-var SDK = require('app/sdk');
+var SDK = require('@duelyst/sdk');
 const NetworkManager = require('app/networkManager');
 var Animations = require('app/ui/views/animations');
 var GameStartingHandTemplate = require('app/ui/templates/item/game_starting_hand.hbs');

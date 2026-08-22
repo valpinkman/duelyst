@@ -2,7 +2,7 @@
 
 const CONFIG = require('app/common/config');
 const Logger = require('app/common/logger');
-const SDK = require('app/sdk');
+const SDK = require('@duelyst/sdk');
 const RSX = require('app/data/resources');
 const PKGS = require('app/data/packages');
 const UtilsEngine = require('app/common/utils/utils_engine');

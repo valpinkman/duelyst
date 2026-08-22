@@ -1,5 +1,5 @@
-const ModifierOpeningGambit = require('app/sdk/modifiers/modifierOpeningGambit');
-const ModifierDyingWish = require('app/sdk/modifiers/modifierDyingWish');
+const ModifierOpeningGambit = require('@duelyst/sdk/modifiers/modifierOpeningGambit');
+const ModifierDyingWish = require('@duelyst/sdk/modifiers/modifierDyingWish');
 
 /**
  * Returns whether a unit is a buffer.

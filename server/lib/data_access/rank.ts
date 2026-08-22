@@ -26,13 +26,13 @@ const generatePushId = require('../../../app/common/generate_push_id');
 const { Redis, Jobs, SRankManager } = require('../../redis');
 
 // SDK imports
-const SDK = require('../../../app/sdk');
-const Cards = require('../../../app/sdk/cards/cardsLookupComplete');
-const RankFactory = require('../../../app/sdk/rank/rankFactory');
-const GameSession = require('../../../app/sdk/gameSession');
-const UtilsGameSession = require('../../../app/sdk/utils/utils_game_session');
-const CardFactory = require('../../../app/sdk/cards/cardFactory');
-const Rarity = require('../../../app/sdk/cards/rarityLookup');
+const SDK = require('@duelyst/sdk');
+const Cards = require('@duelyst/sdk/cards/cardsLookupComplete');
+const RankFactory = require('@duelyst/sdk/rank/rankFactory');
+const GameSession = require('@duelyst/sdk/gameSession');
+const UtilsGameSession = require('@duelyst/sdk/utils/utils_game_session');
+const CardFactory = require('@duelyst/sdk/cards/cardFactory');
+const Rarity = require('@duelyst/sdk/cards/rarityLookup');
 const PromiseUtils = require('../../../app/common/utils/utils_promise');
 const { onType } = require('../../../app/common/utils/utils_promise');
 

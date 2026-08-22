@@ -1,5 +1,5 @@
-const Unit = require('app/sdk/entities/unit');
-const Spell = require('app/sdk/spells/spell');
+const Unit = require('@duelyst/sdk/entities/unit');
+const Spell = require('@duelyst/sdk/spells/spell');
 const _ = require('underscore');
 const CardIntent = require('../../card_intent/card_intent');
 const CardIntentType = require('../../card_intent/card_intent_type');

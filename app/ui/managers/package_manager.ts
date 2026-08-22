@@ -380,7 +380,7 @@ var CCInjections = require('app/view/extensions/CCInjections');
 var NodeInjections = require('app/view/extensions/NodeInjections');
 var RenderingInjections = require('app/view/extensions/RenderingInjections');
 var PKGS = require('app/data/packages');
-var Factions = require('app/sdk/cards/factionsLookup');
+var Factions = require('@duelyst/sdk/cards/factionsLookup');
 var Manager = require('app/ui/managers/manager');
 var NavigationManager = require('app/ui/managers/navigation_manager');
 

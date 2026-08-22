@@ -29,15 +29,15 @@ const hashHelpers = require('../hash_helpers');
 const AnalyticsUtil = require('../../../app/common/analyticsUtil');
 
 // SDK imports
-const SDK = require('../../../app/sdk');
-const Entity = require('../../../app/sdk/entities/entity');
-const QuestFactory = require('../../../app/sdk/quests/questFactory');
-const QuestType = require('../../../app/sdk/quests/questTypeLookup');
-const GameType = require('../../../app/sdk/gameType');
-const UtilsGameSession = require('../../../app/sdk/utils/utils_game_session');
-const NewPlayerProgressionHelper = require('../../../app/sdk/progression/newPlayerProgressionHelper');
-const NewPlayerProgressionStageEnum = require('../../../app/sdk/progression/newPlayerProgressionStageEnum');
-const NewPlayerProgressionModuleLookup = require('../../../app/sdk/progression/newPlayerProgressionModuleLookup');
+const SDK = require('@duelyst/sdk');
+const Entity = require('@duelyst/sdk/entities/entity');
+const QuestFactory = require('@duelyst/sdk/quests/questFactory');
+const QuestType = require('@duelyst/sdk/quests/questTypeLookup');
+const GameType = require('@duelyst/sdk/gameType');
+const UtilsGameSession = require('@duelyst/sdk/utils/utils_game_session');
+const NewPlayerProgressionHelper = require('@duelyst/sdk/progression/newPlayerProgressionHelper');
+const NewPlayerProgressionStageEnum = require('@duelyst/sdk/progression/newPlayerProgressionStageEnum');
+const NewPlayerProgressionModuleLookup = require('@duelyst/sdk/progression/newPlayerProgressionModuleLookup');
 
 class ChallengesModule {
   static DAILY_CHALLENGE_ALLOWABLE_CLOCK_SKEW_IN_DAYS = 2;

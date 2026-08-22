@@ -1,6 +1,6 @@
 'use strict';
 
-var SDK = require('app/sdk');
+var SDK = require('@duelyst/sdk');
 var Animations = require('app/ui/views/animations');
 var GameFollowupTemplate = require('app/ui/templates/item/game_followup.hbs');
 

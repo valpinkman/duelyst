@@ -6,7 +6,7 @@ var CONFIG = require('app/common/config');
 var NewPlayerManager = require('app/ui/managers/new_player_manager');
 var Template = require('app/ui/templates/composite/game_player_profile_preview.hbs');
 var ItemTemplate = require('app/ui/templates/item/game_player_profile_preview_ribbon_item.hbs');
-var SDK = require('app/sdk');
+var SDK = require('@duelyst/sdk');
 var i18next = require('i18next');
 
 /*

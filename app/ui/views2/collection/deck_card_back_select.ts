@@ -1,6 +1,6 @@
 'use strict';
 
-var SDK = require('app/sdk');
+var SDK = require('@duelyst/sdk');
 var audio_engine = require('app/audio/audio_engine');
 var CONFIG = require('app/common/config');
 var RSX = require('app/data/resources');

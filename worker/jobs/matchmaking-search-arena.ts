@@ -17,8 +17,8 @@ const Consul = require('../../server/lib/consul');
 const env = config.get('env');
 
 // SDK
-const GameType = require('../../app/sdk/gameType');
-const RankFactory = require('../../app/sdk/rank/rankFactory');
+const GameType = require('@duelyst/sdk/gameType');
+const RankFactory = require('@duelyst/sdk/rank/rankFactory');
 
 // redis
 const Redis = require('../../server/redis');

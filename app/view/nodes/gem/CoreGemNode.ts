@@ -2,7 +2,7 @@
 
 const RSX = require('app/data/resources');
 const PKGS = require('app/data/packages');
-const SDK = require('app/sdk');
+const SDK = require('@duelyst/sdk');
 const audio_engine = require('app/audio/audio_engine');
 const BaseSprite = require('app/view/nodes/BaseSprite');
 const CoreGemSprite = require('app/view/nodes/gem/CoreGemSprite');

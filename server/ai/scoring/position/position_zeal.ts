@@ -1,5 +1,5 @@
 const BOUNTY = require('server/ai/scoring/bounty');
-const ModifierBanding = require('app/sdk/modifiers/modifierBanding');
+const ModifierBanding = require('@duelyst/sdk/modifiers/modifierBanding');
 const arePositionsEqualOrAdjacent = require('server/ai/scoring/utils/utils_arePositionsEqualOrAdjacent');
 
 /**

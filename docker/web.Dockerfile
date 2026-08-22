@@ -23,7 +23,7 @@ RUN npm install -g pnpm@10.12.1
 COPY package.json .npmrc pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY packages ./packages
 COPY tooling ./tooling
-COPY app/sdk/package.json ./app/sdk/
+COPY packages/sdk/package.json ./packages/sdk/
 COPY app/common/package.json ./app/common/
 RUN pnpm install --frozen-lockfile
 
@@ -71,7 +71,7 @@ RUN npm install -g pnpm@10.12.1
 
 COPY package.json .npmrc pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY packages ./packages
-COPY app/sdk/package.json ./app/sdk/
+COPY packages/sdk/package.json ./packages/sdk/
 COPY app/common/package.json ./app/common/
 RUN pnpm install --prod --frozen-lockfile && pnpm store prune
 
@@ -90,7 +90,7 @@ RUN npm install -g pnpm@10.12.1
 # manifests: pnpm needs them to run the migrate script, and node_modules holds
 # workspace links that point at these two package.json files
 COPY package.json pnpm-workspace.yaml ./
-COPY app/sdk/package.json ./app/sdk/
+COPY packages/sdk/package.json ./packages/sdk/
 COPY app/common/package.json ./app/common/
 
 COPY --from=deps /duelyst/node_modules ./node_modules

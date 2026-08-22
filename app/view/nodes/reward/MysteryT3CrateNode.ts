@@ -1,6 +1,6 @@
 // pragma PKGS: mystery_t3_crate_node
 
-const SDK = require('app/sdk');
+const SDK = require('@duelyst/sdk');
 const RSX = require('app/data/resources');
 const PKGS = require('app/data/packages');
 const MysteryCrateNode = require('./MysteryCrateNode');

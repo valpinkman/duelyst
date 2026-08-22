@@ -21,7 +21,7 @@ const config = require('../../../config/config.js');
 const generatePushId = require('../../../app/common/generate_push_id');
 
 // SDK imports
-const SDK = require('../../../app/sdk');
+const SDK = require('@duelyst/sdk');
 
 class TwitchModule {
   /**

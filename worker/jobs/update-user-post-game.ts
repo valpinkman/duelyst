@@ -12,10 +12,10 @@ const config = require('../../config/config.js');
 const Logger = require('../../app/common/logger');
 const colors = require('colors');
 const util = require('util');
-const GameType = require('../../app/sdk/gameType');
-const GameStatus = require('../../app/sdk/gameStatus');
-const UtilsGameSession = require('app/sdk/utils/utils_game_session');
-const FactionFactory = require('../../app/sdk/cards/factionFactory');
+const GameType = require('@duelyst/sdk/gameType');
+const GameStatus = require('@duelyst/sdk/gameStatus');
+const UtilsGameSession = require('@duelyst/sdk/utils/utils_game_session');
+const FactionFactory = require('@duelyst/sdk/cards/factionFactory');
 
 const Errors = require('../../server/lib/custom_errors');
 const RankModule = require('../../server/lib/data_access/rank');

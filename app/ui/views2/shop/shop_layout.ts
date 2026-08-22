@@ -18,8 +18,8 @@ var InventoryManager = require('app/ui/managers/inventory_manager');
 var NavigationManager = require('app/ui/managers/navigation_manager');
 var Logger = require('app/common/logger');
 
-var CosmeticsFactory = require('app/sdk/cosmetics/cosmeticsFactory');
-var CosmeticsType = require('app/sdk/cosmetics/cosmeticsTypeLookup');
+var CosmeticsFactory = require('@duelyst/sdk/cosmetics/cosmeticsFactory');
+var CosmeticsType = require('@duelyst/sdk/cosmetics/cosmeticsTypeLookup');
 var ShopData = require('app/data/shop.json');
 
 var RedeemGiftCodeModalView = require('app/ui/views/item/redeem_gift_code_modal');

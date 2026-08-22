@@ -4,7 +4,7 @@
 
 var CONFIG = require('app/common/config');
 var RSX = require('app/data/resources');
-var SDK = require('app/sdk');
+var SDK = require('@duelyst/sdk');
 var EventBus = require('app/common/eventbus');
 var EVENTS = require('app/common/event_types');
 var UtilsEnv = require('app/common/utils/utils_env');

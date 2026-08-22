@@ -1,5 +1,5 @@
-const Cards = require('app/sdk/cards/cardsLookupComplete');
-const ModifierProvoke = require('app/sdk/modifiers/modifierProvoke');
+const Cards = require('@duelyst/sdk/cards/cardsLookupComplete');
+const ModifierProvoke = require('@duelyst/sdk/modifiers/modifierProvoke');
 const CardIntentType = require('./card_intent_type');
 const CardTargetType = require('./card_target_type');
 const CardPhaseType = require('./card_phase_type');

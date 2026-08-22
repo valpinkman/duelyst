@@ -5,8 +5,8 @@ const _ = require('underscore');
 const prettyjson = require('prettyjson');
 const { expect } = require('chai');
 
-const UtilsGameSession = require('../../../app/sdk/utils/utils_game_session');
-const SDK = require('../../../app/sdk/index');
+const UtilsGameSession = require('@duelyst/sdk/utils/utils_game_session');
+const SDK = require('@duelyst/sdk/index');
 const UtilsSDK = require('../../utils/utils_sdk');
 
 describe('UtilsGameSession', () => {

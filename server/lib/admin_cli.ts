@@ -15,7 +15,7 @@ const knex = require('server/lib/data_access/knex');
 const UsersModule = require('server/lib/data_access/users');
 const InventoryModule = require('server/lib/data_access/inventory');
 const generatePushId = require('app/common/generate_push_id');
-const SDK = require('app/sdk');
+const SDK = require('@duelyst/sdk');
 
 const log = (msg) => Logger.module('ADMIN').log(msg);
 

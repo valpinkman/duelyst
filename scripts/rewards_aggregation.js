@@ -1,7 +1,7 @@
 const _ = require('underscore');
 const prettyjson = require('prettyjson');
 
-const SDK = require('../app/sdk/index');
+const SDK = require('@duelyst/sdk/index');
 
 const rewardsData = [
   {

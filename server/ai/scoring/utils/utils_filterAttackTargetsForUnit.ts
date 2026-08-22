@@ -1,6 +1,6 @@
 const BOUNTY = require('server/ai/scoring/bounty');
 const _ = require('underscore');
-const SDK = require('app/sdk');
+const SDK = require('@duelyst/sdk');
 
 const filterAttackTargetsForUnit = function (unit, potentialTargets) {
   // filters out illegal or bad targets i.e. suicide targets for generals or illegal targets while provoked or immune units

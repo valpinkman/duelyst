@@ -15,7 +15,7 @@
     "app/tools/FileSaver.min.ts",
     "app/tools/dat.gui.ts",
     "packages",
-    "app/sdk",
+    "packages/sdk",
     "app/common",
     "scripts/codex/CanvasText-0.4.1.js"
   ]

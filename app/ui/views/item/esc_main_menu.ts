@@ -2,7 +2,7 @@
 
 var CONFIG = require('app/common/config');
 var Session = require('app/session2');
-var SDK = require('app/sdk');
+var SDK = require('@duelyst/sdk');
 var RSX = require('app/data/resources');
 var audio_engine = require('app/audio/audio_engine');
 var NavigationManager = require('app/ui/managers/navigation_manager');

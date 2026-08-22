@@ -44,7 +44,7 @@ importers:
         version: link:app/common
       '@duelyst/sdk':
         specifier: workspace:*
-        version: link:app/sdk
+        version: link:packages/sdk
       '@firebase/app-types':
         specifier: 0.7.0
         version: 0.7.0
@@ -329,12 +329,6 @@ importers:
         specifier: 'catalog:'
         version: 7.0.2
 
-  app/sdk:
-    devDependencies:
-      typescript:
-        specifier: 'catalog:'
-        version: 7.0.2
-
   desktop:
     devDependencies:
       '@electron/rebuild':
@@ -382,6 +376,12 @@ importers:
       isomorphic-fetch:
         specifier: 'catalog:'
         version: 2.2.1
+    devDependencies:
+      typescript:
+        specifier: 'catalog:'
+        version: 7.0.2
+
+  packages/sdk:
     devDependencies:
       typescript:
         specifier: 'catalog:'

@@ -1,0 +1,16 @@
+{
+  "name": "@duelyst/sdk",
+  "version": "1.97.13",
+  "private": true,
+  "description": "Duelyst game engine (GameSession, actions, modifiers, spells, cards). Shared by the browser client and the game servers. Consumed by name (@duelyst/sdk); build/node_modules links the specifier to the transpiled tree. See docs/REORG_AUDIT.md.",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "oxlint --config ../../tooling/oxlint-config/base.jsonc .",
+    "format": "oxfmt --config ../../.oxfmtrc.json .",
+    "format:check": "oxfmt --check --config ../../.oxfmtrc.json .",
+    "lint:fix": "oxlint --fix --config ../../tooling/oxlint-config/base.jsonc ."
+  },
+  "devDependencies": {
+    "typescript": "catalog:"
+  }
+}

@@ -1,7 +1,7 @@
 'use strict';
 
 var _ = require('underscore');
-var SDK = require('app/sdk');
+var SDK = require('@duelyst/sdk');
 var moment = require('moment');
 var Analytics = require('app/common/analytics');
 var EventBus = require('app/common/eventbus');

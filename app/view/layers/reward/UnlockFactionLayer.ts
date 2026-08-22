@@ -1,5 +1,5 @@
 // pragma PKGS: unlock_faction
-const SDK = require('app/sdk');
+const SDK = require('@duelyst/sdk');
 const CONFIG = require('app/common/config');
 const EVENTS = require('app/common/event_types');
 const RSX = require('app/data/resources');

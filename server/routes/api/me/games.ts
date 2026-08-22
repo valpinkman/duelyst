@@ -16,11 +16,11 @@ const { GameManager } = require('../../../redis');
 const { WatchableGamesManager } = require('../../../redis');
 
 // sdk
-const GameSetup = require('../../../../app/sdk/gameSetup');
-const GameType = require('../../../../app/sdk/gameType');
-const GameStatus = require('../../../../app/sdk/gameStatus');
-const GameSession = require('../../../../app/sdk/gameSession');
-const FactionProgression = require('../../../../app/sdk/progression/factionProgression');
+const GameSetup = require('@duelyst/sdk/gameSetup');
+const GameType = require('@duelyst/sdk/gameType');
+const GameStatus = require('@duelyst/sdk/gameStatus');
+const GameSession = require('@duelyst/sdk/gameSession');
+const FactionProgression = require('@duelyst/sdk/progression/factionProgression');
 const GamesModule = require('../../../lib/data_access/games');
 const UsersModule = require('../../../lib/data_access/users');
 const InventoryModule = require('../../../lib/data_access/inventory');
@@ -38,15 +38,15 @@ const t = require('tcomb-validation');
 const validators = require('../../../validators');
 const createSinglePlayerGame = require('../../../lib/create_single_player_game');
 const validatorTypes = require('../../../validators/types');
-const UtilsGameSession = require('../../../../app/sdk/utils/utils_game_session');
+const UtilsGameSession = require('@duelyst/sdk/utils/utils_game_session');
 
-const RankDivisionLookup = require('../../../../app/sdk/rank/rankDivisionLookup');
-const RankFactory = require('../../../../app/sdk/rank/rankFactory');
-const CardType = require('../../../../app/sdk/cards/cardType');
-const Rarity = require('../../../../app/sdk/cards/rarityLookup');
-const Cards = require('../../../../app/sdk/cards/cardsLookupComplete');
+const RankDivisionLookup = require('@duelyst/sdk/rank/rankDivisionLookup');
+const RankFactory = require('@duelyst/sdk/rank/rankFactory');
+const CardType = require('@duelyst/sdk/cards/cardType');
+const Rarity = require('@duelyst/sdk/cards/rarityLookup');
+const Cards = require('@duelyst/sdk/cards/cardsLookupComplete');
 const GameSetups = require('../../../ai/decks/game_setups');
-const CosmeticsFactory = require('../../../../app/sdk/cosmetics/cosmeticsFactory');
+const CosmeticsFactory = require('@duelyst/sdk/cosmetics/cosmeticsFactory');
 const { onType } = require('../../../../app/common/utils/utils_promise');
 const PromiseUtils = require('../../../../app/common/utils/utils_promise');
 

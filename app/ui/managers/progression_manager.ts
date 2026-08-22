@@ -16,7 +16,7 @@ var CONFIG = require('app/common/config');
 var EventBus = require('app/common/eventbus');
 var EVENTS = require('app/common/event_types');
 var Logger = require('app/common/logger');
-var SDK = require('app/sdk');
+var SDK = require('@duelyst/sdk');
 var NotificationModel = require('app/ui/models/notification');
 var DuelystFirebase = require('app/ui/extensions/duelyst_firebase');
 var DuelystBackbone = require('app/ui/extensions/duelyst_backbone');
@@ -27,7 +27,7 @@ var ErrorDialogItemView = require('app/ui/views/item/error_dialog');
 
 var i18next = require('i18next');
 
-var QuestBeginnerCompleteSoloChallenges = require('app/sdk/quests/questBeginnerCompleteSoloChallenges');
+var QuestBeginnerCompleteSoloChallenges = require('@duelyst/sdk/quests/questBeginnerCompleteSoloChallenges');
 var InventoryManager = require('./inventory_manager');
 var QuestsManager = require('./quests_manager');
 var NavigationManager = require('./navigation_manager');

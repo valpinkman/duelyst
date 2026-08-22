@@ -27,9 +27,9 @@ const generatePushId = require('../../../app/common/generate_push_id');
 const { Redis, Jobs, RiftManager } = require('../../redis');
 
 // SDK imports
-const SDK = require('../../../app/sdk');
-const UtilsGameSession = require('../../../app/sdk/utils/utils_game_session');
-const RiftHelper = require('app/sdk/rift/riftHelper');
+const SDK = require('@duelyst/sdk');
+const UtilsGameSession = require('@duelyst/sdk/utils/utils_game_session');
+const RiftHelper = require('@duelyst/sdk/rift/riftHelper');
 const PromiseUtils = require('../../../app/common/utils/utils_promise');
 const { onType } = require('../../../app/common/utils/utils_promise');
 

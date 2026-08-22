@@ -24,11 +24,11 @@ const generatePushId = require('../../../app/common/generate_push_id');
 const DataAccessHelpers = require('./helpers');
 
 // SDK imports
-const SDK = require('../../../app/sdk');
-const QuestFactory = require('../../../app/sdk/quests/questFactory');
-const QuestType = require('../../../app/sdk/quests/questTypeLookup');
-const UtilsGameSession = require('../../../app/sdk/utils/utils_game_session');
-const CosmeticsLookup = require('../../../app/sdk/cosmetics/cosmeticsLookup');
+const SDK = require('@duelyst/sdk');
+const QuestFactory = require('@duelyst/sdk/quests/questFactory');
+const QuestType = require('@duelyst/sdk/quests/questTypeLookup');
+const UtilsGameSession = require('@duelyst/sdk/utils/utils_game_session');
+const CosmeticsLookup = require('@duelyst/sdk/cosmetics/cosmeticsLookup');
 
 // redis
 const { SRankManager } = require('../../redis');

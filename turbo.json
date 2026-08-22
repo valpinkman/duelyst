@@ -112,7 +112,7 @@
     "//#build:server:root": {
       "dependsOn": ["^build"],
       "inputs": [
-        "app/sdk/**",
+        "packages/sdk/**",
         "app/common/**",
         "app/data/**",
         "server/**",

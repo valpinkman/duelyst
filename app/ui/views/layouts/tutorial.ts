@@ -2,7 +2,7 @@
 
 'use strict';
 
-var SDK = require('app/sdk');
+var SDK = require('@duelyst/sdk');
 var Scene = require('app/view/Scene');
 var BaseSprite = require('app/view/nodes/BaseSprite');
 var Light = require('app/view/nodes/fx/Light');
@@ -22,7 +22,7 @@ var NodeFactory = require('app/view/helpers/NodeFactory');
 var TutorialIntroView = require('app/ui/views/item/tutorial/tutorial_intro');
 var TutorialChallengeLostView = require('app/ui/views/item/tutorial/challenge_lost');
 var TutorialChallengeStartView = require('app/ui/views/item/tutorial/challenge_start');
-var AgentActions = require('app/sdk/agents/agentActions');
+var AgentActions = require('@duelyst/sdk/agents/agentActions');
 var Analytics = require('app/common/analytics');
 var GameLayout = require('./game');
 

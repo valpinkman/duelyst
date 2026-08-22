@@ -1,11 +1,11 @@
 const path = require('path');
 require('app-module-path').addPath(path.join(__dirname, '../../../../../'));
 const expect = require('chai').expect;
-const ModifierTranscendance = require('app/sdk/modifiers/modifierTranscendance');
-const ModifierForcefield = require('app/sdk/modifiers/modifierForcefield');
+const ModifierTranscendance = require('@duelyst/sdk/modifiers/modifierTranscendance');
+const ModifierForcefield = require('@duelyst/sdk/modifiers/modifierForcefield');
 const CONFIG = require('app/common/config');
 const Logger = require('app/common/logger');
-const SDK = require('app/sdk');
+const SDK = require('@duelyst/sdk');
 const UtilsSDK = require('test/utils/utils_sdk');
 const _ = require('underscore');
 

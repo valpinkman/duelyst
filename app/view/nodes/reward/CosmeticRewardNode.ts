@@ -1,5 +1,5 @@
 // pragma PKGS: cosmetic_reward
-const SDK = require('app/sdk');
+const SDK = require('@duelyst/sdk');
 const CONFIG = require('app/common/config');
 const Logger = require('app/common/logger');
 const EventBus = require('app/common/eventbus');

@@ -18,7 +18,7 @@
  *    only strips them.
  *
  * 2. **Mirror the source tree instead of bundling.** Root-absolute requires
- *    (`require('server/lib/x')`, `require('app/sdk/...')`) resolve through
+ *    (`require('server/lib/x')`, `require('@duelyst/sdk/...')`) resolve through
  *    app-module-path, so as long as build/ has the same shape, every require
  *    string keeps working untouched. Bundling would also flatten the
  *    "module.exports before require" idiom the codebase uses to survive
@@ -39,7 +39,13 @@ const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..')
 const outRoot = path.join(root, 'build');
 
 /** Everything a service process can reach. Mirrors what the Dockerfiles COPY. */
-const TREES = ['app/sdk', 'app/common', 'app/data', 'server', 'worker', 'config', 'bin'];
+const TREES = ['packages/sdk', 'app/common', 'app/data', 'server', 'worker', 'config', 'bin'];
+
+/*
+ * name -> path, relative to build/node_modules/<scope>/. Every tree above that
+ * is consumed as a named package needs an entry here.
+ */
+const WORKSPACE_LINKS = [{ name: '@duelyst/sdk', target: '../../packages/sdk' }];
 const ROOT_FILES = ['version.json'];
 
 /** Not reachable at runtime, or actively unwanted in a deployed tree. */
@@ -123,6 +129,25 @@ for (const f of ROOT_FILES) {
 }
 
 await Promise.all(files.map(emit));
+
+/*
+ * Workspace packages are required by package name (`require('@duelyst/sdk/...')`),
+ * which node resolves through node_modules rather than through app-module-path.
+ * The repo-root symlink points at the *source* tree, so from build/ that would
+ * reach packages/sdk/*.ts -- and production runs without the tsx hook, so the
+ * require fails outright. Giving the build tree its own node_modules makes the
+ * same specifier land on the transpiled copy: node walks up from
+ * build/server/api.js and finds build/node_modules first.
+ *
+ * The link is relative on purpose, so it still points somewhere real after
+ * `COPY build/ ...` into an image.
+ */
+for (const pkg of WORKSPACE_LINKS) {
+  const linkPath = path.join(root, 'build', 'node_modules', pkg.name);
+  fs.mkdirSync(path.dirname(linkPath), { recursive: true });
+  fs.rmSync(linkPath, { force: true, recursive: true });
+  fs.symlinkSync(pkg.target, linkPath, 'junction');
+}
 
 console.log(
   `[build-server] build/ ready in ${Date.now() - started}ms ` +

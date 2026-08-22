@@ -1,4 +1,4 @@
-const Cards = require('app/sdk/cards/cardsLookupComplete');
+const Cards = require('@duelyst/sdk/cards/cardsLookupComplete');
 
 const F1 = [
   Cards.Faction1.SilverguardSquire,

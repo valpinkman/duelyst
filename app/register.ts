@@ -42,7 +42,7 @@ const RSX = (window.RSX = require('app/data/resources'));
 const PKGS = (window.PKGS = require('app/data/packages'));
 const EventBus = (window.EventBus = require('app/common/eventbus'));
 const EVENTS = require('app/common/event_types');
-// SDK = window.SDK = require 'app/sdk'
+// SDK = window.SDK = require '@duelyst/sdk'
 const Analytics = (window.Analytics = require('app/common/analytics'));
 const AnalyticsUtil = require('app/common/analyticsUtil');
 const UtilsJavascript = require('app/common/utils/utils_javascript');

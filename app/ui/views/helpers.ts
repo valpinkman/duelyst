@@ -8,7 +8,7 @@ var InventoryManager = require('app/ui/managers/inventory_manager');
 var Handlebars = require('handlebars/runtime').default;
 var markdown = require('markdown').markdown;
 var moment = require('moment');
-var SDK = require('app/sdk');
+var SDK = require('@duelyst/sdk');
 var _ = require('underscore');
 var i18next = require('i18next');
 

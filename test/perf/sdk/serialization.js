@@ -2,7 +2,7 @@ const path = require('path');
 require('app-module-path').addPath(path.join(__dirname, '../../../'));
 const Benchmark = require('benchmark');
 const Logger = require('../../../app/common/logger');
-const SDK = require('../../../app/sdk/index');
+const SDK = require('@duelyst/sdk/index');
 const UtilsSDK = require('../../utils/utils_sdk');
 
 module.exports = new Promise((resolve, reject) => {

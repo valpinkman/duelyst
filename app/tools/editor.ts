@@ -19,7 +19,7 @@ whenLocalizationReady.then(() => {
   const UtilsEnv = require('app/common/utils/utils_env');
   const PackageManager = require('app/ui/managers/package_manager.js');
   const DATA = (window.DATA = require('app/data'));
-  const SDK = (window.SDK = require('app/sdk'));
+  const SDK = (window.SDK = require('@duelyst/sdk'));
   const RSX = (window.RSX = require('app/data/resources'));
   const PERF = (window.PERF = require('./performance'));
   const Scene = require('app/view/Scene');
@@ -32,7 +32,7 @@ whenLocalizationReady.then(() => {
   const dat = require('./dat.gui');
   const saveAs = require('./FileSaver.min');
 
-  const QuestType = require('app/sdk/quests/questTypeLookup');
+  const QuestType = require('@duelyst/sdk/quests/questTypeLookup');
   const Analytics = require('app/common/analytics');
   const GameDataManager = require('app/ui/managers/game_data_manager');
   const CrateManager = require('app/ui/managers/crate_manager');

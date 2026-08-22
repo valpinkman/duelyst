@@ -1,5 +1,5 @@
 const _ = require('underscore');
-const GameSession = require('app/sdk/gameSession');
+const GameSession = require('@duelyst/sdk/gameSession');
 const CardIntent = require('../../card_intent/card_intent');
 const CardIntentType = require('../../card_intent/card_intent_type');
 const CardPhaseType = require('../../card_intent/card_phase_type');

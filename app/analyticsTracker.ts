@@ -12,7 +12,7 @@ AnalyticsTracker - Parses through events passed to it to track analytics
 */
 
 const Analytics = require('app/common/analytics');
-const SDK = require('app/sdk');
+const SDK = require('@duelyst/sdk');
 const Logger = require('app/common/logger');
 const moment = require('moment');
 const CONFIG = require('app/common/config');

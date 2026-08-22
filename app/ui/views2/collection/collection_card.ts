@@ -1,6 +1,6 @@
 'use strict';
 
-var SDK = require('app/sdk');
+var SDK = require('@duelyst/sdk');
 var CONFIG = require('app/common/config');
 var UtilsEnv = require('app/common/utils/utils_env');
 var InventoryManager = require('app/ui/managers/inventory_manager');

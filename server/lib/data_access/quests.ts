@@ -28,13 +28,13 @@ const generatePushId = require('../../../app/common/generate_push_id');
 const { Redis, Jobs, GameManager } = require('../../redis');
 
 // SDK imports
-const SDK = require('../../../app/sdk');
-const QuestFactory = require('../../../app/sdk/quests/questFactory');
-const QuestCatchUp = require('../../../app/sdk/quests/questCatchUp');
-const QuestType = require('../../../app/sdk/quests/questTypeLookup');
-const UtilsGameSession = require('../../../app/sdk/utils/utils_game_session');
-const NewPlayerProgressionHelper = require('../../../app/sdk/progression/newPlayerProgressionHelper');
-const NewPlayerProgressionStageEnum = require('../../../app/sdk/progression/newPlayerProgressionStageEnum');
+const SDK = require('@duelyst/sdk');
+const QuestFactory = require('@duelyst/sdk/quests/questFactory');
+const QuestCatchUp = require('@duelyst/sdk/quests/questCatchUp');
+const QuestType = require('@duelyst/sdk/quests/questTypeLookup');
+const UtilsGameSession = require('@duelyst/sdk/utils/utils_game_session');
+const NewPlayerProgressionHelper = require('@duelyst/sdk/progression/newPlayerProgressionHelper');
+const NewPlayerProgressionStageEnum = require('@duelyst/sdk/progression/newPlayerProgressionStageEnum');
 const PromiseUtils = require('../../../app/common/utils/utils_promise');
 const { onType } = require('../../../app/common/utils/utils_promise');
 

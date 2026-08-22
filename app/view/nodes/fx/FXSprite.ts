@@ -1,5 +1,5 @@
 const CONFIG = require('app/common/config');
-const SDK = require('app/sdk');
+const SDK = require('@duelyst/sdk');
 const UtilsEngine = require('app/common/utils/utils_engine');
 const BaseSprite = require('app/view/nodes/BaseSprite');
 const BaseLayer = require('app/view/layers/BaseLayer');

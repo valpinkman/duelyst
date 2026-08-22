@@ -44,7 +44,7 @@ var ReplayEngine = (function () {
 
 module.exports = ReplayEngine;
 
-const SDK = require('app/sdk');
+const SDK = require('@duelyst/sdk');
 const Scene = require('app/view/Scene');
 const EventBus = require('app/common/eventbus');
 const EVENTS = require('app/common/event_types');

@@ -2,7 +2,7 @@
 
 var Logger = require('app/common/logger');
 var CONFIG = require('app/common/config');
-var SDK = require('app/sdk');
+var SDK = require('@duelyst/sdk');
 var CardModel = require('app/ui/models/card');
 var InventoryManager = require('app/ui/managers/inventory_manager');
 var AchievementsManager = require('app/ui/managers/achievements_manager');

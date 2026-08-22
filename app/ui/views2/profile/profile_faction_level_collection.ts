@@ -1,6 +1,6 @@
 'use strict';
 
-var SDK = require('app/sdk');
+var SDK = require('@duelyst/sdk');
 var CONFIG = require('app/common/config');
 var moment = require('moment');
 var _ = require('underscore');

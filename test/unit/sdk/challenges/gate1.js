@@ -4,12 +4,12 @@ const { expect } = require('chai');
 const _ = require('underscore');
 const CONFIG = require('../../../../app/common/config');
 const Logger = require('../../../../app/common/logger');
-const SDK = require('../../../../app/sdk/index');
-const BeginnerFlyingChallenge1 = require('../../../../app/sdk/challenges/tutorial/BeginnerFlyingChallenge1');
-const BeginnerSonghaiChallenge4 = require('../../../../app/sdk/challenges/songhai/BeginnerSonghaiChallenge4');
-const BeginnerVetruvianChallenge3 = require('../../../../app/sdk/challenges/vetruvian/BeginnerVetruvianChallenge3');
-const BeginnerAbyssianChallenge4 = require('../../../../app/sdk/challenges/abyssian/BeginnerAbyssianChallenge4');
-const BeginnerMagmarChallenge3 = require('../../../../app/sdk/challenges/magmar/BeginnerMagmarChallenge3');
+const SDK = require('@duelyst/sdk/index');
+const BeginnerFlyingChallenge1 = require('@duelyst/sdk/challenges/tutorial/BeginnerFlyingChallenge1');
+const BeginnerSonghaiChallenge4 = require('@duelyst/sdk/challenges/songhai/BeginnerSonghaiChallenge4');
+const BeginnerVetruvianChallenge3 = require('@duelyst/sdk/challenges/vetruvian/BeginnerVetruvianChallenge3');
+const BeginnerAbyssianChallenge4 = require('@duelyst/sdk/challenges/abyssian/BeginnerAbyssianChallenge4');
+const BeginnerMagmarChallenge3 = require('@duelyst/sdk/challenges/magmar/BeginnerMagmarChallenge3');
 const UtilsSDK = require('../../../utils/utils_sdk');
 
 // disable the logger for cleaner test output

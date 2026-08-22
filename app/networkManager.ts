@@ -12,8 +12,8 @@ const EVENTS = require('app/common/event_types');
 const Logger = require('app/common/logger');
 const CONFIG = require('app/common/config');
 const Storage = require('app/common/storage');
-const GameSession = require('app/sdk/gameSession');
-const GameType = require('app/sdk/gameType');
+const GameSession = require('@duelyst/sdk/gameSession');
+const GameType = require('@duelyst/sdk/gameType');
 
 var NetworkManager = (function () {
   let instance;

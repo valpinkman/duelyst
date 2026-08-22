@@ -4,7 +4,7 @@
 
 var _ = require('underscore');
 var moment = require('moment');
-var SDK = require('app/sdk');
+var SDK = require('@duelyst/sdk');
 var CONFIG = require('app/common/config');
 var UtilsJavascript = require('app/common/utils/utils_javascript');
 var RSX = require('app/data/resources');

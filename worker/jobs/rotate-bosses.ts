@@ -9,7 +9,7 @@ Job - Rotate Boss Battles
 */
 const DuelystFirebase = require('../../server/lib/duelyst_firebase_module');
 const Logger = require('../../app/common/logger');
-const Cards = require('../../app/sdk/cards/cardsLookup');
+const Cards = require('@duelyst/sdk/cards/cardsLookup');
 const moment = require('moment');
 
 // Collect valid boss IDs.

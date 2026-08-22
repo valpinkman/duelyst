@@ -1,4 +1,4 @@
-const Cards = require('app/sdk/cards/cardsLookupComplete');
+const Cards = require('@duelyst/sdk/cards/cardsLookupComplete');
 const UsableDecksLookup = require('./usable_decks_lookup');
 
 const F2: Record<string, any> = {};

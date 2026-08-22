@@ -34,6 +34,7 @@
   "include": [
     "app/types/*.d.ts",
     "app/**/*.ts",
+    "packages/sdk/**/*.ts",
     "server/**/*.ts",
     "worker/**/*.ts",
     "test/**/*.ts",
@@ -46,6 +47,7 @@
     "app/resources",
     "app/original_resources",
     "packages/chroma-js",
+    "packages/Backbone.VirtualCollection",
     "desktop",
     "app/tools/FileSaver.min.ts",
     "app/tools/dat.gui.ts"

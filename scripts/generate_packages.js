@@ -25,11 +25,11 @@
   require('app-module-path').addPath(path.join(__dirname, '..'));
   const _ = require('underscore');
   const helpers = require('./helpers');
-  const Cards = require('app/sdk/cards/cardsLookupComplete');
-  const FactionsLookup = require('app/sdk/cards/factionsLookup');
-  const FactionFactory = require('app/sdk/cards/factionFactory');
-  const CodexChapters = require('app/sdk/codex/codexChapterLookup');
-  const CosmeticsLookup = require('app/sdk/cosmetics/cosmeticsLookup');
+  const Cards = require('@duelyst/sdk/cards/cardsLookupComplete');
+  const FactionsLookup = require('@duelyst/sdk/cards/factionsLookup');
+  const FactionFactory = require('@duelyst/sdk/cards/factionFactory');
+  const CodexChapters = require('@duelyst/sdk/codex/codexChapterLookup');
+  const CosmeticsLookup = require('@duelyst/sdk/cosmetics/cosmeticsLookup');
   const CONFIG = require('app/common/config');
   const UtilsJavascript = require('app/common/utils/utils_javascript');
   const DATA = require('app/data');
@@ -1375,7 +1375,7 @@
       /battlemap/i,
     ),
     helpers.recursivelyReadDirectoryAndFiles(
-      `${dir}/../app/sdk`,
+      `${dir}/../packages/sdk`,
       mapResourcesForSDKFile,
       /cardFactory|factory\/|factionFactory|cosmeticsFactory|modifierFactory|actionfactory|codex/i,
     ),
@@ -1385,31 +1385,31 @@
       console.log(' [GP] Packaging resources for SPECIAL files...');
       return Promise.all([
         helpers.readFile(
-          resolveSourceFile(`${dir}/../app/sdk/cards/factionFactory`),
+          resolveSourceFile(`${dir}/../packages/sdk/cards/factionFactory`),
           parseFactionFactory,
         ),
-        helpers.readFile(resolveSourceFile(`${dir}/../app/sdk/codex/codex`), parseCodex),
+        helpers.readFile(resolveSourceFile(`${dir}/../packages/sdk/codex/codex`), parseCodex),
         helpers.readFile(
           resolveSourceFile(`${dir}/../app/view/layers/game/BattleMap`),
           parseBattleMap,
         ),
         helpers.recursivelyReadDirectoryAndFiles(
-          `${dir}/../app/sdk/modifiers`,
+          `${dir}/../packages/sdk/modifiers`,
           parseModifier,
           /modifierFactory|modifierContextObject/i,
         ),
         helpers.recursivelyReadDirectoryAndFiles(
-          `${dir}/../app/sdk/playerModifiers`,
+          `${dir}/../packages/sdk/playerModifiers`,
           parseModifier,
           /modifierFactory|modifierContextObject/i,
         ),
         helpers.recursivelyReadDirectoryAndFiles(
-          `${dir}/../app/sdk/challenges`,
+          `${dir}/../packages/sdk/challenges`,
           parseChallenge,
           /challengeCategory|challengeFactory/i,
         ),
         helpers.recursivelyReadDirectoryAndFiles(
-          `${dir}/../app/sdk/challenges`,
+          `${dir}/../packages/sdk/challenges`,
           parseChallengeSuperClass,
           /challengeCategory|challengeFactory/i,
         ),
@@ -1425,7 +1425,7 @@
       // each card factory file must be read in sequence, otherwise we'll have data conflict
       // once all lines are read and data extracted, parse the extracted data
       return helpers.recursivelyReadDirectoryAndFilesByLine(
-        `${dir}/../app/sdk/cards/factory`,
+        `${dir}/../packages/sdk/cards/factory`,
         parseCardFactoryLine,
       );
     })
@@ -1435,7 +1435,7 @@
       // that way all card resources have been gathered
       // and card skin packages can be correctly generated
       helpers.readFile(
-        resolveSourceFile(`${dir}/../app/sdk/cosmetics/cosmeticsFactory`),
+        resolveSourceFile(`${dir}/../packages/sdk/cosmetics/cosmeticsFactory`),
         parseCosmeticsFactory,
       ),
     )
@@ -1630,7 +1630,7 @@
       // write packages map
       let PKGS_CONTENT = '';
       PKGS_CONTENT += 'var RSX = require("./resources");\n';
-      PKGS_CONTENT += 'var Cards = require("./../sdk/cards/cardsLookupComplete");\n';
+      PKGS_CONTENT += 'var Cards = require("@duelyst/sdk/cards/cardsLookupComplete");\n';
       PKGS_CONTENT += '\n';
       PKGS_CONTENT += '/**\n';
       PKGS_CONTENT += ' * packages.js - map of packages to resources.\n';

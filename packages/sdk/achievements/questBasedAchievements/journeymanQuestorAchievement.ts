@@ -1,0 +1,29 @@
+/*
+ * decaffeinate suggestions:
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
+ */
+const Achievement = require('@duelyst/sdk/achievements/achievement');
+const QuestFactory = require('@duelyst/sdk/quests/questFactory');
+const i18next = require('i18next');
+
+class JourneymanQuestorAchievement extends Achievement {
+  declare static title: any;
+  declare static description: any;
+
+  static id = 'journeymanQuestor';
+  static progressRequired = 1;
+  static rewards = { neutralEpicCard: 1 };
+
+  static progressForCompletingQuestId(questId) {
+    const sdkQuest = QuestFactory.questForIdentifier(questId);
+    if (sdkQuest != null && !sdkQuest.isBeginner) {
+      return 1;
+    }
+    return 0;
+  }
+}
+JourneymanQuestorAchievement.title = i18next.t('achievements.journeyman_questor_title');
+JourneymanQuestorAchievement.description = i18next.t('achievements.journeyman_questor_desc');
+
+module.exports = JourneymanQuestorAchievement;

@@ -1,5 +1,5 @@
 // pragma PKGS: rift_progress
-const SDK = require('app/sdk');
+const SDK = require('@duelyst/sdk');
 const RSX = require('app/data/resources');
 const Logger = require('app/common/logger');
 const CONFIG = require('app/common/config');
@@ -11,7 +11,7 @@ const BaseSprite = require('app/view/nodes/BaseSprite');
 const moment = require('moment');
 const FXLensFlareSprite = require('app/view/nodes/fx/FXLensFlareSprite');
 const BaseParticleSystem = require('app/view/nodes/BaseParticleSystem');
-const RiftHelper = require('app/sdk/rift/riftHelper');
+const RiftHelper = require('@duelyst/sdk/rift/riftHelper');
 const FXRiftLineSprite = require('app/view/nodes/fx/FXRiftLineSprite');
 const MotionStreakRingNode = require('app/view//nodes/misc/MotionStreakRingNode');
 const UtilsEngine = require('app/common/utils/utils_engine');

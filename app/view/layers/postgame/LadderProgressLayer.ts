@@ -1,5 +1,5 @@
 // pragma PKGS: ladder_progress
-const SDK = require('app/sdk');
+const SDK = require('@duelyst/sdk');
 const RSX = require('app/data/resources');
 const Logger = require('app/common/logger');
 const CONFIG = require('app/common/config');

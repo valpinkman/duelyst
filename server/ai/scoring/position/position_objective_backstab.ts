@@ -1,7 +1,7 @@
 const distanceBetweenBoardPositions = require('server/ai/scoring/utils/utils_distanceBetweenBoardPositions');
 const BOUNTY = require('server/ai/scoring/bounty');
 const _ = require('underscore');
-const ModifierBackstab = require('app/sdk/modifiers/modifierBackstab');
+const ModifierBackstab = require('@duelyst/sdk/modifiers/modifierBackstab');
 
 const position_objective_backstab = function (gameSession, unit, position, bestObjective) {
   let score = 0;

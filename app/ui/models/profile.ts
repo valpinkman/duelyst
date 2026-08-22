@@ -15,7 +15,7 @@ const NotificationsManager = require('app/ui/managers/notifications_manager');
 const Analytics = require('app/common/analytics');
 const Storage = require('app/common/storage');
 const moment = require('moment');
-const CosmeticsLookup = require('app/sdk/cosmetics/cosmeticsLookup');
+const CosmeticsLookup = require('@duelyst/sdk/cosmetics/cosmeticsLookup');
 
 const Profile = DuelystFirebase.Model.extend({
   initialize() {

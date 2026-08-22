@@ -1,4 +1,4 @@
-const Entity = require('app/sdk/entities/entity');
+const Entity = require('@duelyst/sdk/entities/entity');
 const BOUNTY = require('../bounty');
 const ScoreForUnit = require('./unit');
 const ScoreForRemove = require('./unit_remove');

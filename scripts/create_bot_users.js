@@ -6,7 +6,7 @@ const FirebasePromises = require('../server/lib/firebase_promises');
 const UsersModule = require('../server/lib/data_access/users');
 const generatePushId = require('../app/common/generate_push_id');
 const knex = require('../server/lib/data_access/knex');
-// var PortraitLookup = require('../app/sdk/portraits/portraitLookup.coffee')
+// var PortraitLookup = require('@duelyst/sdk/portraits/portraitLookup.coffee')
 
 const usernames = [
   'SmoulderingJade',

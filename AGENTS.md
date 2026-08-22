@@ -2,7 +2,7 @@
 
 Duelyst is a 2016 collectible-card / tactics game (Counterplay Games), open-sourced after
 shutdown. This repo holds the browser client (Backbone/Marionette + Cocos2d-html5), the game
-engine shared by client and server (`app/sdk`), the backend services (Express API, socket.io
+engine shared by client and server (`packages/sdk`), the backend services (Express API, socket.io
 game servers, BullMQ worker) and the tooling around them.
 
 It is **entirely TypeScript** now — CoffeeScript, gulp and browserify are gone — but it carries
@@ -15,7 +15,7 @@ a decade of accumulated behaviour, and a modernization program is still running.
   `yarn.lock` / `package-lock.json`. The pinned version is in `package.json#packageManager`
   (corepack/proto/volta pick it up).
 - Workspace: `pnpm-workspace.yaml` covers `packages/*` (vendored forks), the in-place members
-  `app/sdk` + `app/common`, and `desktop/` (Electron shell; `electron` is allowlisted in
+  `packages/sdk` + `app/common`, and `desktop/` (Electron shell; `electron` is allowlisted in
   `pnpm.onlyBuiltDependencies`).
 - Local packages are `workspace:*` deps; `resolutions` live under `pnpm.overrides`;
   packages that need build scripts go in `pnpm.onlyBuiltDependencies` (currently `bcrypt`).
@@ -45,7 +45,7 @@ pnpm vitest --project sdk|misc|firebase        # unit tests for one package's su
 pnpm check:undefined-names                     # TS2304 only, and this IS a CI gate. Run after any codemod.
 pnpm check:promise-utils                       # PromiseUtils/onType used without being bound
 pnpm check:bluebird-orphans                    # bluebird-only API used without requiring bluebird
-pnpm check:package-deps                        # app/common reaches nothing; app/sdk only common+data.
+pnpm check:package-deps                        # app/common reaches nothing; packages/sdk only common+data.
                                                #   CI gate: these two used to require each other.
 pnpm check:turbo-env                           # turbo.json globalEnv still covers every convict env binding
 pnpm check:data-access                         # data_access failures vs test/integration/data_access/known-failures.txt
@@ -98,7 +98,7 @@ Everything below is TypeScript unless noted.
 
 | Path                                        | What                                                                                                                                                                                                                                                                                                                             |
 | ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `app/sdk/`                                  | Game engine shared by client and server: `gameSession`, actions, 718 modifiers, 257 spells, cards + `cards/factory/*`, challenges, quests. 1,375 files.                                                                                                                                                                          |
+| `packages/sdk/`                             | Game engine shared by client and server: `gameSession`, actions, 718 modifiers, 257 spells, cards + `cards/factory/*`, challenges, quests. 1,375 files.                                                                                                                                                                          |
 | `app/common/`                               | `config.js` (mutable global `CONFIG`), `logger`, `eventbus`, `utils/*`                                                                                                                                                                                                                                                           |
 | `app/ui/`, `app/view/`, `app/audio/`        | Marionette views/managers, Cocos2d layers/nodes/fx, audio                                                                                                                                                                                                                                                                        |
 | `app/application.ts`, `app/index.ts`        | client boot, router, `window.*` singletons                                                                                                                                                                                                                                                                                       |
@@ -127,9 +127,9 @@ Everything below is TypeScript unless noted.
   written, two rank call sites dropping the caller's clock, and a decade-old `+`-before-`==`
   precedence bug in an AI log. TS2304 keeps its own faster gate (`pnpm check:undefined-names`)
   because it is the class that becomes a ReferenceError. **Run it after any codemod.**
-- **`app/sdk` must not use the vendor globals.** `app/types/globals.d.ts` declares `_`, `$`, `cc`,
+- **`packages/sdk` must not use the vendor globals.** `app/types/globals.d.ts` declares `_`, `$`, `cc`,
   `Backbone` and friends because the client consumes them from `vendor.js` — but the SDK also runs
-  on the game servers, where they do not exist. `app/sdk/tsconfig.json` deliberately excludes that
+  on the game servers, where they do not exist. `packages/sdk/tsconfig.json` deliberately excludes that
   file so the scoped typecheck fails on any such reference; that is how a missing
   `require('underscore')` in `challengeRemote.ts` was found after years of hiding behind the root
   program. `app/common` is the opposite case and does include it: seven of its files are
@@ -138,10 +138,19 @@ Everything below is TypeScript unless noted.
   layout _is_ the wire format for game state and replays. Use `declare x: any` for prototype-era
   members: a real class field creates an own property and silently changes the shape. Renaming a
   property breaks replays. Add a round-trip test first.
-- **Root-absolute requires.** `require('app/sdk/…')`, `require('server/lib/…')`,
+- **Root-absolute requires.** `require('app/common/…')`, `require('server/lib/…')`,
   `require('config/config')` resolve from the repo root through `app-module-path`, registered in
   `bin/_bootstrap.js` and every test file, and mirrored by Vite/vitest aliases. Any new runner
   needs the same alias.
+- **Named workspace packages resolve differently from root-absolute paths.**
+  `require('@duelyst/sdk/…')` goes through `node_modules`, _not_ `app-module-path`, so it does not
+  follow the repo root into `build/`. The repo-root symlink points at `packages/sdk/*.ts`, and
+  production runs with no tsx hook — so a named require that works in dev, in vitest and in the
+  Vite bundle still dies in the container. `scripts/build/build-server.mjs` fixes this by emitting
+  `build/node_modules/@duelyst/sdk -> ../../packages/sdk` (relative, so it survives `COPY`): node
+  walks up from `build/server/api.js`, finds `build/node_modules` first, and lands on the
+  transpiled copy. **Every gate except a container boot is a dev-mode path** — when you move a
+  package, run `node build/bin/api` from `build/`, not just the test suite.
 - **Beware `const` shadowing from the decaffeination.** CoffeeScript had one mutable binding per
   scope; the conversion gave each assignment its own declaration. Where a suite-level variable is
   re-declared inside a callback, every later read sees the initial `null` — this has cost real
@@ -153,7 +162,7 @@ Everything below is TypeScript unless noted.
 - **`@type` (static) vs `type:` (prototype) on the same class** — `ModifierFactory` and
   `CardFactory` dispatch on the static while instances carry the prototype value. Both are load
   bearing; keep them.
-- **Card factories** (`app/sdk/cards/factory/**`) are _text-parsed_ by `generate_packages.js`.
+- **Card factories** (`packages/sdk/cards/factory/**`) are _text-parsed_ by `generate_packages.js`.
   Keep the `Cards.X` / `RSX.Y` literal shape or the asset packages break. The build verifies the
   generated key set against `scripts/build/packages-manifest.json` and fails on drift; regenerate
   deliberately with `--update-packages-manifest`.

@@ -20,8 +20,8 @@ var NewPlayerManager = require('app/ui/managers/new_player_manager');
 var Analytics = require('app/common/analytics');
 var _ = require('underscore');
 var moment = require('moment');
-var GiftCrateLookup = require('../../sdk/giftCrates/giftCrateLookup');
-var GiftCrateFactory = require('../../sdk/giftCrates/giftCrateFactory');
+var GiftCrateLookup = require('@duelyst/sdk/giftCrates/giftCrateLookup');
+var GiftCrateFactory = require('@duelyst/sdk/giftCrates/giftCrateFactory');
 var ProfileManager = require('./profile_manager');
 var Manager = require('./manager');
 

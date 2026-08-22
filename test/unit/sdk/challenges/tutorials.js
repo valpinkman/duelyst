@@ -6,11 +6,11 @@ const _ = require('underscore');
 
 const CONFIG = require('../../../../app/common/config');
 const Logger = require('../../../../app/common/logger');
-const SDK = require('../../../../app/sdk/index');
-const BeginnerFlyingChallenge1 = require('../../../../app/sdk/challenges/tutorial/BeginnerFlyingChallenge1');
-const Lesson1 = require('../../../../app/sdk/challenges/tutorial/lesson1');
-const Lesson2 = require('../../../../app/sdk/challenges/tutorial/lesson2');
-const Lesson4 = require('../../../../app/sdk/challenges/tutorial/lesson4');
+const SDK = require('@duelyst/sdk/index');
+const BeginnerFlyingChallenge1 = require('@duelyst/sdk/challenges/tutorial/BeginnerFlyingChallenge1');
+const Lesson1 = require('@duelyst/sdk/challenges/tutorial/lesson1');
+const Lesson2 = require('@duelyst/sdk/challenges/tutorial/lesson2');
+const Lesson4 = require('@duelyst/sdk/challenges/tutorial/lesson4');
 const UtilsSDK = require('../../../utils/utils_sdk');
 
 // disable the logger for cleaner test output

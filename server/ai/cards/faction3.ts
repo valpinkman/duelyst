@@ -1,4 +1,4 @@
-const Cards = require('app/sdk/cards/cardsLookupComplete');
+const Cards = require('@duelyst/sdk/cards/cardsLookupComplete');
 
 const F3 = [
   Cards.Faction3.WindShrike, // TODO: card intent/scoring

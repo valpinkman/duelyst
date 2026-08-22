@@ -1,7 +1,7 @@
 'use strict';
 
 // pragma PKGS: tutorial_support
-var SDK = require('app/sdk');
+var SDK = require('@duelyst/sdk');
 var TutorialIntroTmpl = require('app/ui/templates/item/tutorial/tutorial_intro.hbs');
 var ProgressionManager = require('app/ui/managers/progression_manager');
 var TutorialSupportView = require('./tutorial_support');

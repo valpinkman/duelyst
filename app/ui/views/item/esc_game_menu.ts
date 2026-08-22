@@ -2,7 +2,7 @@
 
 var CONFIG = require('app/common/config');
 var EVENTS = require('app/common/event_types');
-var SDK = require('app/sdk');
+var SDK = require('@duelyst/sdk');
 var RSX = require('app/data/resources');
 var audio_engine = require('app/audio/audio_engine');
 var Scene = require('app/view/Scene');

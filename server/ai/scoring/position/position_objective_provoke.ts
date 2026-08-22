@@ -1,8 +1,8 @@
 const distanceBetweenBoardPositions = require('server/ai/scoring/utils/utils_distanceBetweenBoardPositions');
 const BOUNTY = require('server/ai/scoring/bounty');
 const _ = require('underscore');
-const ModifierProvoke = require('app/sdk/modifiers/modifierProvoke');
-const CardType = require('app/sdk/cards/cardType');
+const ModifierProvoke = require('@duelyst/sdk/modifiers/modifierProvoke');
+const CardType = require('@duelyst/sdk/cards/cardType');
 
 const position_objective_provoke = function (gameSession, unit, position, bestObjective) {
   let score = 0;

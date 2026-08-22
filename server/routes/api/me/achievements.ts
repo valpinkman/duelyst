@@ -13,12 +13,12 @@ const t = require('tcomb-validation');
 const moment = require('moment');
 const knex = require('../../../lib/data_access/knex');
 
-const WartechGeneralFaction1Achievement = require('../../../../app/sdk/achievements/wartechAchievements/wartechGeneralFaction1Achievement');
-const WartechGeneralFaction2Achievement = require('../../../../app/sdk/achievements/wartechAchievements/wartechGeneralFaction2Achievement');
-const WartechGeneralFaction3Achievement = require('../../../../app/sdk/achievements/wartechAchievements/wartechGeneralFaction3Achievement');
-const WartechGeneralFaction4Achievement = require('../../../../app/sdk/achievements/wartechAchievements/wartechGeneralFaction4Achievement');
-const WartechGeneralFaction5Achievement = require('../../../../app/sdk/achievements/wartechAchievements/wartechGeneralFaction5Achievement');
-const WartechGeneralFaction6Achievement = require('../../../../app/sdk/achievements/wartechAchievements/wartechGeneralFaction6Achievement');
+const WartechGeneralFaction1Achievement = require('@duelyst/sdk/achievements/wartechAchievements/wartechGeneralFaction1Achievement');
+const WartechGeneralFaction2Achievement = require('@duelyst/sdk/achievements/wartechAchievements/wartechGeneralFaction2Achievement');
+const WartechGeneralFaction3Achievement = require('@duelyst/sdk/achievements/wartechAchievements/wartechGeneralFaction3Achievement');
+const WartechGeneralFaction4Achievement = require('@duelyst/sdk/achievements/wartechAchievements/wartechGeneralFaction4Achievement');
+const WartechGeneralFaction5Achievement = require('@duelyst/sdk/achievements/wartechAchievements/wartechGeneralFaction5Achievement');
+const WartechGeneralFaction6Achievement = require('@duelyst/sdk/achievements/wartechAchievements/wartechGeneralFaction6Achievement');
 
 const router = express.Router();
 

@@ -3,7 +3,7 @@
 'use strict';
 
 var _ = require('underscore');
-var SDK = require('app/sdk');
+var SDK = require('@duelyst/sdk');
 var UtilsJavascript = require('app/common/utils/utils_javascript');
 var CONFIG = require('app/common/config');
 var audio_engine = require('app/audio/audio_engine');

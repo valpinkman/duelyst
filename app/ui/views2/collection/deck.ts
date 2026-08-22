@@ -2,13 +2,13 @@
 
 'use strict';
 
-var SDK = require('app/sdk');
+var SDK = require('@duelyst/sdk');
 var UtilsEnv = require('app/common/utils/utils_env');
 var CONFIG = require('app/common/config');
 var RSX = require('app/data/resources');
 var Animations = require('app/ui/views/animations');
 var audio_engine = require('app/audio/audio_engine');
-var Cards = require('app/sdk/cards/cardsLookupComplete');
+var Cards = require('@duelyst/sdk/cards/cardsLookupComplete');
 var GameDataManager = require('app/ui/managers/game_data_manager');
 var NavigationManager = require('app/ui/managers/navigation_manager');
 var ErrorDialogItemView = require('app/ui/views/item/error_dialog');

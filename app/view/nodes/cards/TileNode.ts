@@ -2,7 +2,7 @@
 
 const CONFIG = require('app/common/config');
 const EVENTS = require('app/common/event_types');
-const SDK = require('app/sdk');
+const SDK = require('@duelyst/sdk');
 const UtilsEngine = require('app/common/utils/utils_engine');
 const UtilsPosition = require('app/common/utils/utils_position');
 const audio_engine = require('../../../audio/audio_engine');

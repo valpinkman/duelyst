@@ -1,6 +1,6 @@
 const distanceBetweenBoardPositions = require('server/ai/scoring/utils/utils_distanceBetweenBoardPositions');
 const BOUNTY = require('server/ai/scoring/bounty');
-const ModifierBlastAttack = require('app/sdk/modifiers/modifierBlastAttack');
+const ModifierBlastAttack = require('@duelyst/sdk/modifiers/modifierBlastAttack');
 const CONFIG = require('app/common/config');
 const isUnitEvasive = require('server/ai/scoring/utils/utils_isUnitEvasive');
 const Logger = require('app/common/logger');

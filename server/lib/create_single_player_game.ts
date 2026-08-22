@@ -14,14 +14,14 @@ const config = require('../../config/config');
 const { version } = require('../../version');
 
 // sdk
-const GameSetup = require('../../app/sdk/gameSetup');
-const GameType = require('../../app/sdk/gameType');
-const GameStatus = require('../../app/sdk/gameStatus');
-const GameSession = require('../../app/sdk/gameSession');
-const GameFormat = require('../../app/sdk/gameFormat');
-const Factions = require('../../app/sdk/cards/factionsLookup');
-const FactionFactory = require('../../app/sdk/cards/factionFactory');
-const Cards = require('../../app/sdk/cards/cardsLookupComplete');
+const GameSetup = require('@duelyst/sdk/gameSetup');
+const GameType = require('@duelyst/sdk/gameType');
+const GameStatus = require('@duelyst/sdk/gameStatus');
+const GameSession = require('@duelyst/sdk/gameSession');
+const GameFormat = require('@duelyst/sdk/gameFormat');
+const Factions = require('@duelyst/sdk/cards/factionsLookup');
+const FactionFactory = require('@duelyst/sdk/cards/factionFactory');
+const Cards = require('@duelyst/sdk/cards/cardsLookupComplete');
 
 // ai
 const UsableDecks = require('../ai/decks/usable_decks');

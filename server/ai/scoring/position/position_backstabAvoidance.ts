@@ -1,5 +1,5 @@
 const BOUNTY = require('server/ai/scoring/bounty');
-const ModifierBackstab = require('app/sdk/modifiers/modifierBackstab');
+const ModifierBackstab = require('@duelyst/sdk/modifiers/modifierBackstab');
 
 const position_backstabAvoidance = function (gameSession, unit, position, bestObjective) {
   let score = 0;

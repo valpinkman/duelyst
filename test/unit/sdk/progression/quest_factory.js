@@ -17,10 +17,10 @@ const path = require('path');
 require('app-module-path').addPath(path.join(__dirname, '../../../../'));
 const { expect } = require('chai');
 const Logger = require('../../../../app/common/logger');
-const QuestFactory = require('../../../../app/sdk/quests/questFactory');
-const FactionFactory = require('../../../../app/sdk/cards/factionFactory');
-const QuestParticipationWithFaction = require('../../../../app/sdk/quests/questParticipationWithFaction');
-const QuestType = require('../../../../app/sdk/quests/questTypeLookup');
+const QuestFactory = require('@duelyst/sdk/quests/questFactory');
+const FactionFactory = require('@duelyst/sdk/cards/factionFactory');
+const QuestParticipationWithFaction = require('@duelyst/sdk/quests/questParticipationWithFaction');
+const QuestType = require('@duelyst/sdk/quests/questTypeLookup');
 
 Logger.enabled = false;
 

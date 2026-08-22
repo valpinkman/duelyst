@@ -1,6 +1,6 @@
 'use strict';
 
-var SDK = require('app/sdk');
+var SDK = require('@duelyst/sdk');
 var moment = require('moment');
 var _ = require('underscore');
 var ProfileSummaryViewTempl = require('./templates/profile_summary_item.hbs');

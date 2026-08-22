@@ -19,10 +19,10 @@ const moment = require('moment');
 const CONFIG = require('app/common/config');
 
 // SDK
-const GameType = require('../../app/sdk/gameType');
-const RankFactory = require('../../app/sdk/rank/rankFactory');
-const FactionsLookup = require('app/sdk/cards/factionsLookup');
-const FactionFactory = require('app/sdk/cards/factionFactory');
+const GameType = require('@duelyst/sdk/gameType');
+const RankFactory = require('@duelyst/sdk/rank/rankFactory');
+const FactionsLookup = require('@duelyst/sdk/cards/factionsLookup');
+const FactionFactory = require('@duelyst/sdk/cards/factionFactory');
 const knex = require('server/lib/data_access/knex');
 
 const createSinglePlayerGame = require('server/lib/create_single_player_game');

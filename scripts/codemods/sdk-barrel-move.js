@@ -34,12 +34,12 @@ let changed = 0;
 for (const root of ROOTS) {
   for (const file of walk(root)) {
     const src = fs.readFileSync(file, 'utf8');
-    // root-absolute 'app/sdk.coffee' -> 'app/sdk' (dir resolution finds index.coffee);
+    // root-absolute 'app/sdk.coffee' -> '@duelyst/sdk' (dir resolution finds index.coffee);
     // relative '../..../app/sdk.coffee' -> '../..../app/sdk/index.coffee' (explicit, so
     // eslint import/extensions keeps enforcing the coffee extension on relative paths)
     let out = src.replace(/(['"])((?:\.\.\/)+app\/)sdk\.coffee(['"])/g, '$1$2sdk/index.coffee$3');
     out = out.replace(/(['"])(?:app\/)?sdk\.coffee(['"])/g, '$1app/sdk$2');
-    if (file !== 'app/sdk/index.coffee' && /\bSDK\.NetworkManager\b/.test(out)) {
+    if (file !== '@duelyst/sdk/index.coffee' && /\bSDK\.NetworkManager\b/.test(out)) {
       out = out.replace(/\bSDK\.NetworkManager\b/g, 'NetworkManager');
       if (file.endsWith('.coffee')) {
         out = out.replace(

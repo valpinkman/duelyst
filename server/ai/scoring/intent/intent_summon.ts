@@ -1,4 +1,4 @@
-const SDK = require('app/sdk');
+const SDK = require('@duelyst/sdk');
 const _ = require('underscore');
 const CardIntent = require('../../card_intent/card_intent');
 const CardIntentType = require('../../card_intent/card_intent_type');

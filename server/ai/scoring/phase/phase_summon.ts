@@ -1,5 +1,5 @@
-const Unit = require('app/sdk/entities/unit');
-const ModifierSummonWatch = require('app/sdk/modifiers/modifierSummonWatch');
+const Unit = require('@duelyst/sdk/entities/unit');
+const ModifierSummonWatch = require('@duelyst/sdk/modifiers/modifierSummonWatch');
 const _ = require('underscore');
 const CardIntent = require('../../card_intent/card_intent');
 const CardPhaseType = require('../../card_intent/card_phase_type');

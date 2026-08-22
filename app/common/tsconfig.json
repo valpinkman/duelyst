@@ -2,7 +2,7 @@
   /*
    * Package-scoped typecheck.
    *
-   * Unlike app/sdk, this one DOES pull in app/types/globals.d.ts, because
+   * Unlike packages/sdk, this one DOES pull in app/types/globals.d.ts, because
    * app/common genuinely contains client-only modules that use the vendor
    * globals: utils_engine (cocos2d), utils_resources, landing, openUrl,
    * discord, session2, analyticsTracker. Seven files out of the package, and

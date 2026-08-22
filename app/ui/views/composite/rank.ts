@@ -9,7 +9,7 @@ var audio_engine = require('app/audio/audio_engine');
 var DuelystFirebase = require('app/ui/extensions/duelyst_firebase');
 var RankTmpl = require('app/ui/templates/composite/rank.hbs');
 var RankStarItemView = require('app/ui/views/item/rank_star');
-var SDK = require('app/sdk');
+var SDK = require('@duelyst/sdk');
 
 var RankCompositeView = Backbone.Marionette.CompositeView.extend({
   initialize: function () {

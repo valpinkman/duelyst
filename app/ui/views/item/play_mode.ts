@@ -3,7 +3,7 @@
 'use strict';
 
 var _ = require('underscore');
-var SDK = require('app/sdk');
+var SDK = require('@duelyst/sdk');
 var RSX = require('app/data/resources');
 var PlayModeTmpl = require('app/ui/templates/item/play_mode.hbs');
 var moment = require('moment');
@@ -11,7 +11,7 @@ var UtilsEnv = require('app/common/utils/utils_env');
 var NewPlayerManager = require('app/ui/managers/new_player_manager');
 var ProgressionManager = require('app/ui/managers/progression_manager');
 var QuestsManager = require('app/ui/managers/quests_manager');
-var QuestBeginnerCompleteSoloChallenges = require('app/sdk/quests/questBeginnerCompleteSoloChallenges');
+var QuestBeginnerCompleteSoloChallenges = require('@duelyst/sdk/quests/questBeginnerCompleteSoloChallenges');
 var i18next = require('i18next');
 var SlidingPanelItemView = require('./sliding_panel');
 

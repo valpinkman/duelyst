@@ -2,7 +2,7 @@
 
 const CONFIG = require('app/common/config');
 const Logger = require('app/common/logger');
-const SDK = require('app/sdk');
+const SDK = require('@duelyst/sdk');
 const RSX = require('app/data/resources');
 const PKGS = require('app/data/packages');
 const UtilsEngine = require('app/common/utils/utils_engine');
@@ -23,7 +23,7 @@ const CoreGemNode = require('app/view/nodes/gem/CoreGemNode');
 const MotionStreakRingNode = require('app/view//nodes/misc/MotionStreakRingNode');
 const ConfirmDialogItemView = require('app/ui/views/item/confirm_dialog');
 const i18next = require('i18next');
-const RiftHelper = require('app/sdk/rift/riftHelper');
+const RiftHelper = require('@duelyst/sdk/rift/riftHelper');
 const ErrorDialogItemView = require('app/ui/views/item/error_dialog');
 const InventoryManager = require('app/ui/managers/inventory_manager');
 const PromiseUtils = require('../../../common/utils/utils_promise');

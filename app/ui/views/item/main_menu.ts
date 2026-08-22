@@ -9,7 +9,7 @@ var EVENTS = require('app/common/event_types');
 var RSX = require('app/data/resources');
 var UtilsEnv = require('app/common/utils/utils_env');
 var Scene = require('app/view/Scene');
-var SDK = require('app/sdk');
+var SDK = require('@duelyst/sdk');
 var Animations = require('app/ui/views/animations');
 var MainMenuTmpl = require('app/ui/templates/item/main_menu.hbs');
 var NewPlayerManager = require('app/ui/managers/new_player_manager');
@@ -27,13 +27,13 @@ var ServerStatusManager = require('app/ui/managers/server_status_manager');
 var i18next = require('i18next');
 var ShopSpiritOrbsModalView = require('app/ui/views2/shop/shop_spirit_orbs_modal');
 var PlayLayout = require('app/ui/views/layouts/play');
-var CosmeticsFactory = require('app/sdk/cosmetics/cosmeticsFactory');
+var CosmeticsFactory = require('@duelyst/sdk/cosmetics/cosmeticsFactory');
 var ShopManager = require('app/ui/managers/shop_manager');
 var ShopData = require('app/data/shop.json');
 
 var moment = require('moment');
 
-var QuestBeginnerCompleteSoloChallenges = require('app/sdk/quests/questBeginnerCompleteSoloChallenges');
+var QuestBeginnerCompleteSoloChallenges = require('@duelyst/sdk/quests/questBeginnerCompleteSoloChallenges');
 
 var MainMenuItemView = Backbone.Marionette.ItemView.extend({
   template: MainMenuTmpl,

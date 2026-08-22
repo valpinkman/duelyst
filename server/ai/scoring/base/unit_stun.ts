@@ -1,4 +1,4 @@
-const ModifierStunned = require('app/sdk/modifiers/modifierStunned');
+const ModifierStunned = require('@duelyst/sdk/modifiers/modifierStunned');
 const BOUNTY = require('../bounty');
 
 /**

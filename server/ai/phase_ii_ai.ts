@@ -5,7 +5,7 @@ process.on('uncaughtException', (err) => {
 const path = require('path');
 require('app-module-path').addPath(path.join(__dirname, '../../'));
 const Logger = require('app/common/logger');
-const SDK = require('app/sdk');
+const SDK = require('@duelyst/sdk');
 const CONFIG = require('app/common/config');
 const generatePushId = require('app/common/generate_push_id');
 const _ = require('underscore');

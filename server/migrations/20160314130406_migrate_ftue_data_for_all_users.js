@@ -1,5 +1,5 @@
-const NewPlayerProgressionStageEnum = require('../../app/sdk/progression/newPlayerProgressionStageEnum');
-const NewPlayerProgressionHelper = require('../../app/sdk/progression/newPlayerProgressionHelper');
+const NewPlayerProgressionStageEnum = require('@duelyst/sdk/progression/newPlayerProgressionStageEnum');
+const NewPlayerProgressionHelper = require('@duelyst/sdk/progression/newPlayerProgressionHelper');
 
 exports.up = function (knex) {
   return Promise.all([

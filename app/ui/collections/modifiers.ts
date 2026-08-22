@@ -1,7 +1,7 @@
 'use strict';
 
 var Logger = require('app/common/logger');
-var SDK = require('app/sdk');
+var SDK = require('@duelyst/sdk');
 var ModifierModel = require('app/ui/models/modifier');
 
 var ModifierCollection = Backbone.Collection.extend({

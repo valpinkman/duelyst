@@ -3,11 +3,11 @@ require('app-module-path').addPath(path.join(__dirname, '../../../../../'));
 const expect = require('chai').expect;
 const CONFIG = require('app/common/config');
 const Logger = require('app/common/logger');
-const SDK = require('app/sdk');
+const SDK = require('@duelyst/sdk');
 const UtilsSDK = require('test/utils/utils_sdk');
 const _ = require('underscore');
-const ModifierForcefield = require('app/sdk/modifiers/modifierForcefield');
-const ModifierProvoke = require('app/sdk/modifiers/modifierProvoke');
+const ModifierForcefield = require('@duelyst/sdk/modifiers/modifierForcefield');
+const ModifierProvoke = require('@duelyst/sdk/modifiers/modifierProvoke');
 
 // disable the logger for cleaner test output
 Logger.enabled = false;

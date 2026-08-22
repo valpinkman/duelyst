@@ -1,4 +1,4 @@
-const Spell = require('app/sdk/spells/spell');
+const Spell = require('@duelyst/sdk/spells/spell');
 const _ = require('underscore');
 const CardIntent = require('../../card_intent/card_intent');
 const CardPhaseType = require('../../card_intent/card_phase_type');

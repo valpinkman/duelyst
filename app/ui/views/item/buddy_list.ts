@@ -1,6 +1,6 @@
 'use strict';
 
-var SDK = require('app/sdk');
+var SDK = require('@duelyst/sdk');
 const PromiseUtils = require('app/common/utils/utils_promise');
 var Logger = require('app/common/logger');
 var CONFIG = require('app/common/config');
