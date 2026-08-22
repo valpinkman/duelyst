@@ -15,7 +15,7 @@ a decade of accumulated behaviour, and a modernization program is still running.
   `yarn.lock` / `package-lock.json`. The pinned version is in `package.json#packageManager`
   (corepack/proto/volta pick it up).
 - Workspace: `pnpm-workspace.yaml` covers `packages/*` (vendored forks), the in-place members
-  `packages/sdk` + `packages/common`, and `desktop/` (Electron shell; `electron` is allowlisted in
+  `packages/sdk` + `packages/common` + `packages/data`, and `apps/desktop/` (Electron shell; `electron` is allowlisted in
   `pnpm.onlyBuiltDependencies`).
 - Local packages are `workspace:*` deps; `resolutions` live under `pnpm.overrides`;
   packages that need build scripts go in `pnpm.onlyBuiltDependencies` (currently `bcrypt`).
@@ -114,7 +114,7 @@ Everything below is TypeScript unless noted.
 | `scripts/generate_packages.js`              | **build-critical**: text-scans `//pragma PKGS:` and RSX refs to emit `packages/data/packages.js`                                                                                                                                                                                                                                 |
 | `packages/`                                 | vendored forks: `chroma-js` (ours, built), `Backbone.VirtualCollection` (verbatim)                                                                                                                                                                                                                                               |
 | `tooling/`                                  | shared config consumed by every package (`oxlint-config`)                                                                                                                                                                                                                                                                        |
-| `desktop/`                                  | Electron 43 shell: main+preload via Vite, packaged with electron-builder                                                                                                                                                                                                                                                         |
+| `apps/desktop/`                             | Electron 43 shell: main+preload via Vite, packaged with electron-builder                                                                                                                                                                                                                                                         |
 | `docs/`                                     | [QUICKSTART](docs/QUICKSTART.md) · [ARCHITECTURE](docs/ARCHITECTURE.md) · [DOCKER](docs/DOCKER.md) · [TOOLING](docs/TOOLING.md) · modernization [PLAN](docs/MODERNIZATION_PLAN.md) / [LOG](docs/MODERNIZATION_LOG.md) / [AUDIT](docs/MODERNIZATION_AUDIT.md) · [BACKBONE](docs/BACKBONE_AUDIT.md) · [REORG](docs/REORG_AUDIT.md) |
 
 ## Conventions and gotchas that bite

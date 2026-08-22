@@ -50,7 +50,7 @@
     "app/original_resources",
     "packages/chroma-js",
     "packages/Backbone.VirtualCollection",
-    "desktop",
+    "apps/desktop",
     "app/tools/FileSaver.min.ts",
     "app/tools/dat.gui.ts"
   ]

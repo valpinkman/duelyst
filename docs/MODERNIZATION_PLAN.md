@@ -397,6 +397,14 @@ step it describes, so it can never drift from the code.
      edge and watching it fail. As trees become packages, every path-shaped assumption in the
      tooling has to be re-read as a name.
 
+     **Step 6 done (out of order, because it is independent):** `desktop` → `apps/desktop`, and
+     `apps/` exists. Ten files, no specifier rewrites at all — the shell reaches the client through
+     `electron-builder.yml`'s `from: ../dist/src` and its own `vite.config.mjs` resolves everything
+     against its own directory. The whole cost was one directory of depth: the config paths in
+     `package.json` (`../tooling`, `../.oxfmtrc.json`) and that `from:` each gained a `../`, plus
+     the `pnpm-workspace`, `tsconfig` exclude, `.gitignore` and oxlint/oxfmt ignore entries.
+     Verified by building main+preload from the new location.
+
   5. **Optional, deliberately not started:** Backbone/Marionette/jQuery. That is a UI rewrite,
      not an upgrade, and was declined once already. Audited 2026-08-21 —
      [`BACKBONE_AUDIT.md`](BACKBONE_AUDIT.md). The short version: Backbone is the metagame shell

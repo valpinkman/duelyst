@@ -14,7 +14,7 @@
     "**/node_modules/**",
     "dist/**",
     "build/**",
-    "desktop/dist/**",
+    "apps/desktop/dist/**",
     "app/vendor/**",
     "app/resources/**",
     "app/original_resources/**",

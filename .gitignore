@@ -33,8 +33,8 @@ dump.rdb
 /blob-report/
 
 # Electron shell build output
-/desktop/build/
-/desktop/dist/
+/apps/desktop/build/
+/apps/desktop/dist/
 
 # turborepo local task cache
 .turbo/

@@ -6,7 +6,7 @@ packages:
   - 'packages/common'
   - 'packages/data'
   # Electron shell (plan 7.4)
-  - 'desktop'
+  - 'apps/desktop'
 
 # Single source of truth for versions used by more than one workspace package.
 # Members reference these as `catalog:` instead of pinning their own range.

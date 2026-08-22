@@ -22,7 +22,7 @@ files:
   - '!node_modules/**'
 
 extraResources:
-  - from: ../dist/src
+  - from: ../../dist/src
     to: client
 
 asar: true
