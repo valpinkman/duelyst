@@ -201,7 +201,13 @@ export default defineConfig({
       extensions: ['.ts', '.js'],
       transformMixedEsModules: true,
       // preserve require-time execution order: the codebase's circular-
-      // dependency idiom (export-before-require) needs real CJS semantics
+      // dependency idiom (export-before-require) needs real CJS semantics.
+      // ALSO LOAD-BEARING FOR THE LIT MIGRATION — it is what makes rolldown emit
+      // the ESM module's init call as the first statement inside the requiring
+      // CJS factory, so `customElements.define` runs at require time. Turn this
+      // off and every Lit component silently stops registering: the failure is an
+      // un-upgraded tag at runtime, not a build error. See
+      // docs/BACKBONE_REMOVAL_PLAN.md §3.1.1.
       strictRequires: true,
     },
     rollupOptions: {
