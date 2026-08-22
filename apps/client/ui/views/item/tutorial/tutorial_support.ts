@@ -1,15 +1,15 @@
 'use strict';
 
 // pragma PKGS: tutorial_support
-var Scene = require('apps/client/view/Scene');
-var BaseParticleSystem = require('apps/client/view/nodes/BaseParticleSystem');
+var Scene = require('../../../../view/Scene');
+var BaseParticleSystem = require('../../../../view/nodes/BaseParticleSystem');
 var CONFIG = require('@duelyst/common/config');
 var EventBus = require('@duelyst/common/eventbus');
 var EVENTS = require('@duelyst/common/event_types');
 var RSX = require('@duelyst/data/resources');
 var PKGS = require('@duelyst/data/packages');
-var Animations = require('apps/client/ui/views/animations');
-var FXRipplingGlowImageMapSprite = require('apps/client/view/nodes/fx/FXRipplingGlowImageMapSprite');
+var Animations = require('../../animations');
+var FXRipplingGlowImageMapSprite = require('../../../../view/nodes/fx/FXRipplingGlowImageMapSprite');
 
 /**
  * Abstract view for tutorial support UI such as intro, restart, etc.

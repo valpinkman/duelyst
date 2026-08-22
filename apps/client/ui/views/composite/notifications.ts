@@ -1,7 +1,7 @@
 'use strict';
 
-var NotificationItemView = require('apps/client/ui/views/item/notification');
-var NotificationsViewTemplate = require('apps/client/ui/templates/composite/notifications.hbs');
+var NotificationItemView = require('../item/notification');
+var NotificationsViewTemplate = require('../../templates/composite/notifications.hbs');
 
 /**
  * Base notifications composite view used to show notification items.

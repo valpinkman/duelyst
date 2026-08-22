@@ -1,7 +1,7 @@
 'use strict';
 
-var StatsSeasonRankItemView = require('apps/client/ui/views/item/stats_season_rank');
-var StatsSeasonsCompositeViewTempl = require('apps/client/ui/templates/composite/stats_seasons.hbs');
+var StatsSeasonRankItemView = require('../item/stats_season_rank');
+var StatsSeasonsCompositeViewTempl = require('../../templates/composite/stats_seasons.hbs');
 
 var StatsSeasonsCompositeView = Backbone.Marionette.CompositeView.extend({
   className: 'stats-seasons',

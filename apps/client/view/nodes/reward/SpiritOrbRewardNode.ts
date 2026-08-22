@@ -6,10 +6,10 @@ const EventBus = require('@duelyst/common/eventbus');
 const EVENTS = require('@duelyst/common/event_types');
 const RSX = require('@duelyst/data/resources');
 const PKGS = require('@duelyst/data/packages');
-const FigureEight = require('apps/client/view/actions/FigureEight');
-const TweenTypes = require('apps/client/view/actions/TweenTypes');
-const BaseSprite = require('apps/client/view/nodes/BaseSprite');
-const FXDissolveWithDiscFromCenterSprite = require('apps/client/view/nodes/fx/FXDissolveWithDiscFromCenterSprite');
+const FigureEight = require('../../actions/FigureEight');
+const TweenTypes = require('../../actions/TweenTypes');
+const BaseSprite = require('../BaseSprite');
+const FXDissolveWithDiscFromCenterSprite = require('../fx/FXDissolveWithDiscFromCenterSprite');
 const i18next = require('i18next');
 const RewardNode = require('./RewardNode');
 

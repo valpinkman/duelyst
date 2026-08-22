@@ -1,7 +1,7 @@
 'use strict';
 
-var StatsFactionItemView = require('apps/client/ui/views/item/stats_faction');
-var StatsFactionsCompositeViewTempl = require('apps/client/ui/templates/composite/stats_factions.hbs');
+var StatsFactionItemView = require('../item/stats_faction');
+var StatsFactionsCompositeViewTempl = require('../../templates/composite/stats_factions.hbs');
 
 var StatsFactionsCompositeView = Backbone.Marionette.CompositeView.extend({
   className: 'stats-factions',

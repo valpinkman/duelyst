@@ -11,9 +11,9 @@
  * so every command here is idempotent.
  */
 const Logger = require('@duelyst/common/logger');
-const knex = require('apps/server/lib/data_access/knex');
-const UsersModule = require('apps/server/lib/data_access/users');
-const InventoryModule = require('apps/server/lib/data_access/inventory');
+const knex = require('./data_access/knex');
+const UsersModule = require('./data_access/users');
+const InventoryModule = require('./data_access/inventory');
 const generatePushId = require('@duelyst/common/generate_push_id');
 const SDK = require('@duelyst/sdk');
 

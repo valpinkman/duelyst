@@ -5,9 +5,9 @@ var EVENTS = require('@duelyst/common/event_types');
 var Logger = require('@duelyst/common/logger');
 var CONFIG = require('@duelyst/common/config');
 var SDK = require('@duelyst/sdk');
-var InventoryManager = require('apps/client/ui/managers/inventory_manager');
-var BoosterPacksCompositeViewTemplate = require('apps/client/ui/templates/composite/booster_packs.hbs');
-var BoosterPackPreviewItemView = require('apps/client/ui/views/item/booster_pack_preview');
+var InventoryManager = require('../../managers/inventory_manager');
+var BoosterPacksCompositeViewTemplate = require('../../templates/composite/booster_packs.hbs');
+var BoosterPackPreviewItemView = require('../item/booster_pack_preview');
 var i18next = require('i18next');
 
 var BoosterPacksCompositeView = Backbone.Marionette.CompositeView.extend({

@@ -3,10 +3,10 @@
 var _ = require('underscore');
 var CONFIG = require('@duelyst/common/config');
 var RSX = require('@duelyst/data/resources');
-var audio_engine = require('apps/client/audio/audio_engine');
-var Animations = require('apps/client/ui/views/animations');
+var audio_engine = require('../../../audio/audio_engine');
+var Animations = require('../animations');
 var EVENTS = require('@duelyst/common/event_types');
-var NavigationManager = require('apps/client/ui/managers/navigation_manager');
+var NavigationManager = require('../../managers/navigation_manager');
 var openUrl = require('@duelyst/common/openUrl');
 
 /**

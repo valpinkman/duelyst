@@ -3,16 +3,16 @@ const CONFIG = require('@duelyst/common/config');
 const Logger = require('@duelyst/common/logger');
 const RSX = require('@duelyst/data/resources');
 const PKGS = require('@duelyst/data/packages');
-const RewardLayer = require('apps/client/view/layers/reward/RewardLayer');
-const BaseSprite = require('apps/client/view/nodes/BaseSprite');
-const FXLensFlareSprite = require('apps/client/view/nodes/fx/FXLensFlareSprite');
-const ZodiacNode = require('apps/client/view/nodes/draw/Zodiac');
+const RewardLayer = require('../reward/RewardLayer');
+const BaseSprite = require('../../nodes/BaseSprite');
+const FXLensFlareSprite = require('../../nodes/fx/FXLensFlareSprite');
+const ZodiacNode = require('../../nodes/draw/Zodiac');
 const RankFactory = require('@duelyst/sdk/rank/rankFactory');
 const moment = require('moment');
-const TweenTypes = require('apps/client/view/actions/TweenTypes');
-const GiftCrateNode = require('apps/client/view/nodes/reward/GiftCrateNode');
-const audio_engine = require('apps/client/audio/audio_engine');
-const GamesManager = require('apps/client/ui/managers/games_manager');
+const TweenTypes = require('../../actions/TweenTypes');
+const GiftCrateNode = require('../../nodes/reward/GiftCrateNode');
+const audio_engine = require('../../../audio/audio_engine');
+const GamesManager = require('../../../ui/managers/games_manager');
 const i18next = require('i18next');
 
 /** **************************************************************************

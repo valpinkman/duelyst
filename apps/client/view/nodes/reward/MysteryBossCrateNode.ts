@@ -3,7 +3,7 @@
 const SDK = require('@duelyst/sdk');
 const RSX = require('@duelyst/data/resources');
 const PKGS = require('@duelyst/data/packages');
-const CrateManager = require('apps/client/ui/managers/crate_manager');
+const CrateManager = require('../../../ui/managers/crate_manager');
 const MysteryCrateNode = require('./MysteryCrateNode');
 
 /** **************************************************************************

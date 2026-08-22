@@ -1,9 +1,9 @@
 'use strict';
 
 var Logger = require('@duelyst/common/logger');
-var DeckModel = require('apps/client/ui/models/deck');
-var DuelystFirebase = require('apps/client/ui/extensions/duelyst_firebase');
-var DuelystBackbone = require('apps/client/ui/extensions/duelyst_backbone');
+var DeckModel = require('../models/deck');
+var DuelystFirebase = require('../extensions/duelyst_firebase');
+var DuelystBackbone = require('../extensions/duelyst_backbone');
 
 var UserDecksCollection = DuelystBackbone.Collection.extend({
   model: DeckModel,

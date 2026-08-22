@@ -5,8 +5,8 @@
 var CONFIG = require('@duelyst/common/config');
 var EVENTS = require('@duelyst/common/event_types');
 var RSX = require('@duelyst/data/resources');
-var audio_engine = require('apps/client/audio/audio_engine');
-var NavigationManager = require('apps/client/ui/managers/navigation_manager');
+var audio_engine = require('../../../audio/audio_engine');
+var NavigationManager = require('../../managers/navigation_manager');
 var ShopData = require('@duelyst/data/shop.json');
 
 var Template = require('./templates/shop_special_product_available_dialog.hbs');

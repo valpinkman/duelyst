@@ -5,21 +5,21 @@ const CONFIG = require('@duelyst/common/config');
 const UtilsPosition = require('@duelyst/common/utils/utils_position');
 const UtilsEngine = require('@duelyst/common/utils/utils_engine');
 const RSX = require('@duelyst/data/resources');
-const BaseLayer = require('apps/client/view/layers/BaseLayer');
-const BaseSprite = require('apps/client/view/nodes/BaseSprite');
-const TileMapMergedLarge0Sprite = require('apps/client/view/nodes/map/TileMapMergedLarge0Sprite');
-const TileMapMergedLarge01Sprite = require('apps/client/view/nodes/map/TileMapMergedLarge01Sprite');
-const TileMapMergedLarge0123Sprite = require('apps/client/view/nodes/map/TileMapMergedLarge0123Sprite');
-const TileMapMergedLarge013Sprite = require('apps/client/view/nodes/map/TileMapMergedLarge013Sprite');
-const TileMapMergedLarge03Sprite = require('apps/client/view/nodes/map/TileMapMergedLarge03Sprite');
-const TileMapMergedLarge0SeamSprite = require('apps/client/view/nodes/map/TileMapMergedLarge0SeamSprite');
-const TileMapMergedHover0Sprite = require('apps/client/view/nodes/map/TileMapMergedHover0Sprite');
-const TileMapMergedHover01Sprite = require('apps/client/view/nodes/map/TileMapMergedHover01Sprite');
-const TileMapMergedHover0123Sprite = require('apps/client/view/nodes/map/TileMapMergedHover0123Sprite');
-const TileMapMergedHover013Sprite = require('apps/client/view/nodes/map/TileMapMergedHover013Sprite');
-const TileMapMergedHover03Sprite = require('apps/client/view/nodes/map/TileMapMergedHover03Sprite');
-const TileMapMergedHover0SeamSprite = require('apps/client/view/nodes/map/TileMapMergedHover0SeamSprite');
-const RenderPass = require('apps/client/view/fx/RenderPass');
+const BaseLayer = require('../BaseLayer');
+const BaseSprite = require('../../nodes/BaseSprite');
+const TileMapMergedLarge0Sprite = require('../../nodes/map/TileMapMergedLarge0Sprite');
+const TileMapMergedLarge01Sprite = require('../../nodes/map/TileMapMergedLarge01Sprite');
+const TileMapMergedLarge0123Sprite = require('../../nodes/map/TileMapMergedLarge0123Sprite');
+const TileMapMergedLarge013Sprite = require('../../nodes/map/TileMapMergedLarge013Sprite');
+const TileMapMergedLarge03Sprite = require('../../nodes/map/TileMapMergedLarge03Sprite');
+const TileMapMergedLarge0SeamSprite = require('../../nodes/map/TileMapMergedLarge0SeamSprite');
+const TileMapMergedHover0Sprite = require('../../nodes/map/TileMapMergedHover0Sprite');
+const TileMapMergedHover01Sprite = require('../../nodes/map/TileMapMergedHover01Sprite');
+const TileMapMergedHover0123Sprite = require('../../nodes/map/TileMapMergedHover0123Sprite');
+const TileMapMergedHover013Sprite = require('../../nodes/map/TileMapMergedHover013Sprite');
+const TileMapMergedHover03Sprite = require('../../nodes/map/TileMapMergedHover03Sprite');
+const TileMapMergedHover0SeamSprite = require('../../nodes/map/TileMapMergedHover0SeamSprite');
+const RenderPass = require('../../fx/RenderPass');
 
 /** **************************************************************************
  TileLayer

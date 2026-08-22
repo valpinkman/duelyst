@@ -4,8 +4,8 @@
 
 var SDK = require('@duelyst/sdk');
 var RSX = require('@duelyst/data/resources');
-var audio_engine = require('apps/client/audio/audio_engine');
-var ChallengePreviewTmpl = require('apps/client/ui/templates/item/challenge_preview.hbs');
+var audio_engine = require('../../../audio/audio_engine');
+var ChallengePreviewTmpl = require('../../templates/item/challenge_preview.hbs');
 
 var ChallengePreviewItemView = Backbone.Marionette.ItemView.extend({
   tagName: 'li',

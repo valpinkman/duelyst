@@ -10,10 +10,10 @@ const RSX = require('@duelyst/data/resources');
 const UtilsEngine = require('@duelyst/common/utils/utils_engine');
 const UtilsPosition = require('@duelyst/common/utils/utils_position');
 const UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
-const FXShockWaveSprite = require('apps/client/view/nodes/fx/FXShockwaveSprite');
-const TweenTypes = require('apps/client/view/actions/TweenTypes');
-const GradientColorMap = require('apps/client/view/actions/GradientColorMap');
-const BlurShaderGenerator = require('apps/client/shaders/helpers/blurShaderGenerator');
+const FXShockWaveSprite = require('../nodes/fx/FXShockwaveSprite');
+const TweenTypes = require('../actions/TweenTypes');
+const GradientColorMap = require('../actions/GradientColorMap');
+const BlurShaderGenerator = require('../../shaders/helpers/blurShaderGenerator');
 const BatchLights = require('./BatchLights');
 const RenderPass = require('./RenderPass');
 

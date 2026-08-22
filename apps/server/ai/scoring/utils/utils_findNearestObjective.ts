@@ -1,4 +1,4 @@
-const distanceBetweenBoardPositions = require('apps/server/ai/scoring/utils/utils_distanceBetweenBoardPositions');
+const distanceBetweenBoardPositions = require('./utils_distanceBetweenBoardPositions');
 const _ = require('underscore');
 
 const findNearestObjective = function (position, objectives) {

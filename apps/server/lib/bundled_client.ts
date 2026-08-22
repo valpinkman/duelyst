@@ -14,7 +14,7 @@
  */
 const path = require('path');
 const fs = require('fs');
-const { PROJECT_ROOT } = require('apps/server/lib/project_root');
+const { PROJECT_ROOT } = require('./project_root');
 
 const CLIENT_DIST = path.resolve(PROJECT_ROOT, 'dist/src');
 const hasBundledClient = fs.existsSync(path.join(CLIENT_DIST, 'index.html'));

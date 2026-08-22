@@ -1,6 +1,6 @@
 'use strict';
 
-var Animations = require('apps/client/ui/views/animations');
+var Animations = require('../../views/animations');
 var moment = require('moment');
 var Analytics = require('@duelyst/common/analytics');
 var openUrl = require('@duelyst/common/openUrl');

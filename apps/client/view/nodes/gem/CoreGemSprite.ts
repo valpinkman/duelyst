@@ -2,9 +2,9 @@
 
 const RSX = require('@duelyst/data/resources');
 const PKGS = require('@duelyst/data/packages');
-const PackageManager = require('apps/client/ui/managers/package_manager');
-const BaseSprite = require('apps/client/view/nodes/BaseSprite');
-const CompositeHorizontalPass = require('apps/client/view/nodes/components/CompositeHorizontalPass');
+const PackageManager = require('../../../ui/managers/package_manager');
+const BaseSprite = require('../BaseSprite');
+const CompositeHorizontalPass = require('../components/CompositeHorizontalPass');
 
 /** **************************************************************************
  CoreGemSprite

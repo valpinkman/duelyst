@@ -1,17 +1,17 @@
 'use strict';
 
-var FindingGameTemplate = require('apps/client/ui/templates/item/finding_game.hbs');
+var FindingGameTemplate = require('../../templates/item/finding_game.hbs');
 var EventBus = require('@duelyst/common/eventbus');
 var EVENTS = require('@duelyst/common/event_types');
 var generatePushID = require('@duelyst/common/generate_push_id');
 var SDK = require('@duelyst/sdk');
-var Scene = require('apps/client/view/Scene');
+var Scene = require('../../../view/Scene');
 var CONFIG = require('@duelyst/common/config');
-var UtilsUI = require('apps/client/ui/utils_ui');
+var UtilsUI = require('../../utils_ui');
 var GAME_TIPS = require('@duelyst/data/game_tips');
-var GamesManager = require('apps/client/ui/managers/games_manager');
-var NavigationManager = require('apps/client/ui/managers/navigation_manager');
-var Animations = require('apps/client/ui/views/animations');
+var GamesManager = require('../../managers/games_manager');
+var NavigationManager = require('../../managers/navigation_manager');
+var Animations = require('../animations');
 var moment = require('moment');
 var momentDurationFormat = require('moment-duration-format');
 var i18next = require('i18next');

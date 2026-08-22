@@ -1,7 +1,7 @@
 'use strict';
 
 // pragma PKGS: tutorial_support
-var TutorialChallengeStartTmpl = require('apps/client/ui/templates/item/tutorial/challenge_start.hbs');
+var TutorialChallengeStartTmpl = require('../../../templates/item/tutorial/challenge_start.hbs');
 var TutorialSupportView = require('./tutorial_support');
 
 var TutorialChallengeStartView = TutorialSupportView.extend({

@@ -2,8 +2,8 @@
 
 // pragma PKGS: tutorial_support
 var SDK = require('@duelyst/sdk');
-var TutorialIntroTmpl = require('apps/client/ui/templates/item/tutorial/tutorial_intro.hbs');
-var ProgressionManager = require('apps/client/ui/managers/progression_manager');
+var TutorialIntroTmpl = require('../../../templates/item/tutorial/tutorial_intro.hbs');
+var ProgressionManager = require('../../../managers/progression_manager');
 var TutorialSupportView = require('./tutorial_support');
 
 var TutorialIntroView = TutorialSupportView.extend({

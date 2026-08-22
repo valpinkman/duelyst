@@ -5,15 +5,15 @@ const Logger = require('@duelyst/common/logger');
 const CONFIG = require('@duelyst/common/config');
 const UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
 const PKGS = require('@duelyst/data/packages');
-const audio_engine = require('apps/client/audio/audio_engine');
-const RewardLayer = require('apps/client/view/layers/reward/RewardLayer');
-const BaseSprite = require('apps/client/view/nodes/BaseSprite');
+const audio_engine = require('../../../audio/audio_engine');
+const RewardLayer = require('../reward/RewardLayer');
+const BaseSprite = require('../../nodes/BaseSprite');
 const moment = require('moment');
-const FXLensFlareSprite = require('apps/client/view/nodes/fx/FXLensFlareSprite');
-const BaseParticleSystem = require('apps/client/view/nodes/BaseParticleSystem');
+const FXLensFlareSprite = require('../../nodes/fx/FXLensFlareSprite');
+const BaseParticleSystem = require('../../nodes/BaseParticleSystem');
 const RiftHelper = require('@duelyst/sdk/rift/riftHelper');
-const FXRiftLineSprite = require('apps/client/view/nodes/fx/FXRiftLineSprite');
-const MotionStreakRingNode = require('apps/client/view//nodes/misc/MotionStreakRingNode');
+const FXRiftLineSprite = require('../../nodes/fx/FXRiftLineSprite');
+const MotionStreakRingNode = require('../../nodes/misc/MotionStreakRingNode');
 const UtilsEngine = require('@duelyst/common/utils/utils_engine');
 
 /** **************************************************************************

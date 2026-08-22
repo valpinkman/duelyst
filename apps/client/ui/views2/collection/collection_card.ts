@@ -3,9 +3,9 @@
 var SDK = require('@duelyst/sdk');
 var CONFIG = require('@duelyst/common/config');
 var UtilsEnv = require('@duelyst/common/utils/utils_env');
-var InventoryManager = require('apps/client/ui/managers/inventory_manager');
-var ProgressionManager = require('apps/client/ui/managers/progression_manager');
-var CardCompositeView = require('apps/client/ui/views/composite/card');
+var InventoryManager = require('../../managers/inventory_manager');
+var ProgressionManager = require('../../managers/progression_manager');
+var CardCompositeView = require('../../views/composite/card');
 
 var CollectionCardCompositeView = CardCompositeView.extend({
   _craftingMode: false,

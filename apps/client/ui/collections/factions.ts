@@ -2,7 +2,7 @@
 
 var Logger = require('@duelyst/common/logger');
 var SDK = require('@duelyst/sdk');
-var FactionModel = require('apps/client/ui/models/faction');
+var FactionModel = require('../models/faction');
 var CONFIG = require('@duelyst/common/config');
 
 var FactionsCollection = Backbone.Collection.extend({

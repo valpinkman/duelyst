@@ -1,10 +1,10 @@
 'use strict';
 
-var Messages = require('apps/client/ui/collections/messages');
+var Messages = require('../collections/messages');
 var Logger = require('@duelyst/common/logger');
 var Analytics = require('@duelyst/common/analytics');
-var ChatManager = require('apps/client/ui/managers/chat_manager');
-var ProfileManager = require('apps/client/ui/managers/profile_manager');
+var ChatManager = require('../managers/chat_manager');
+var ProfileManager = require('../managers/profile_manager');
 
 var Conversation = Backbone.Model.extend({
   messages: null, // chat messages

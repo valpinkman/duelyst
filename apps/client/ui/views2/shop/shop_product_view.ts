@@ -8,11 +8,11 @@ var SDK = require('@duelyst/sdk');
 var CONFIG = require('@duelyst/common/config');
 var UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
 var RSX = require('@duelyst/data/resources');
-var PackageManager = require('apps/client/ui/managers/package_manager');
-var GameDataManager = require('apps/client/ui/managers/game_data_manager');
-var InventoryManager = require('apps/client/ui/managers/inventory_manager');
-var ShopManager = require('apps/client/ui/managers/shop_manager');
-var UtilsUI = require('apps/client/ui/utils_ui');
+var PackageManager = require('../../managers/package_manager');
+var GameDataManager = require('../../managers/game_data_manager');
+var InventoryManager = require('../../managers/inventory_manager');
+var ShopManager = require('../../managers/shop_manager');
+var UtilsUI = require('../../utils_ui');
 
 var Template = require('./templates/shop_product_view.hbs');
 

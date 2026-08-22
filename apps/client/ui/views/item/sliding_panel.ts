@@ -3,8 +3,8 @@
 'use strict';
 
 var RSX = require('@duelyst/data/resources');
-var audio_engine = require('apps/client/audio/audio_engine');
-var SlidingPanelTmpl = require('apps/client/ui/templates/item/sliding_panel.hbs');
+var audio_engine = require('../../../audio/audio_engine');
+var SlidingPanelTmpl = require('../../templates/item/sliding_panel.hbs');
 
 var SlidingPanelItemView = Backbone.Marionette.ItemView.extend({
   tagName: 'li',

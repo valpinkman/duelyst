@@ -22,7 +22,7 @@ const ProgressBar = require('progress');
 
 const _ = require('underscore');
 
-const helpers = require('tools/helpers');
+const helpers = require('../helpers');
 const fs = require('fs');
 const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 

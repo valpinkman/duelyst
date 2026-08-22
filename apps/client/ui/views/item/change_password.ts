@@ -1,10 +1,10 @@
 'use strict';
 
-var Session = require('apps/client/session2');
+var Session = require('../../../session2');
 var validator = require('validator');
 var Logger = require('@duelyst/common/logger');
-var Animations = require('apps/client/ui/views/animations');
-var ChangePasswordTmpl = require('apps/client/ui/templates/item/change_password.hbs');
+var Animations = require('../animations');
+var ChangePasswordTmpl = require('../../templates/item/change_password.hbs');
 var FormPromptDialogItemView = require('./form_prompt_dialog');
 
 var ChangePasswordItemView = FormPromptDialogItemView.extend({

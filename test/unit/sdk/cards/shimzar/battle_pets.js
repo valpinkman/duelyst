@@ -5,7 +5,7 @@ const CONFIG = require('@duelyst/common/config');
 const Logger = require('@duelyst/common/logger');
 const SDK = require('@duelyst/sdk');
 const ModifierForcefieldAbsorb = require('@duelyst/sdk/modifiers/modifierForcefieldAbsorb');
-const UtilsSDK = require('test/utils/utils_sdk');
+const UtilsSDK = require('../../../../utils/utils_sdk');
 const _ = require('underscore');
 
 // disable the logger for cleaner test output

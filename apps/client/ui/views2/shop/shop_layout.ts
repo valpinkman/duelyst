@@ -2,7 +2,7 @@
 
 'use strict';
 
-var Scene = require('apps/client/view/Scene');
+var Scene = require('../../../view/Scene');
 var RSX = require('@duelyst/data/resources');
 var CONFIG = require('@duelyst/common/config');
 var openUrl = require('@duelyst/common/openUrl');
@@ -10,22 +10,22 @@ var EventBus = require('@duelyst/common/eventbus');
 var EVENTS = require('@duelyst/common/event_types');
 var moment = require('moment');
 var UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
-var UtilsUI = require('apps/client/ui/utils_ui');
-var audio_engine = require('apps/client/audio/audio_engine');
-var Animations = require('apps/client/ui/views/animations');
-var ShopManager = require('apps/client/ui/managers/shop_manager');
-var InventoryManager = require('apps/client/ui/managers/inventory_manager');
-var NavigationManager = require('apps/client/ui/managers/navigation_manager');
+var UtilsUI = require('../../utils_ui');
+var audio_engine = require('../../../audio/audio_engine');
+var Animations = require('../../views/animations');
+var ShopManager = require('../../managers/shop_manager');
+var InventoryManager = require('../../managers/inventory_manager');
+var NavigationManager = require('../../managers/navigation_manager');
 var Logger = require('@duelyst/common/logger');
 
 var CosmeticsFactory = require('@duelyst/sdk/cosmetics/cosmeticsFactory');
 var CosmeticsType = require('@duelyst/sdk/cosmetics/cosmeticsTypeLookup');
 var ShopData = require('@duelyst/data/shop.json');
 
-var RedeemGiftCodeModalView = require('apps/client/ui/views/item/redeem_gift_code_modal');
-var PremiumPurchaseDialog = require('apps/client/ui/views2/shop/premium_purchase_dialog');
+var RedeemGiftCodeModalView = require('../../views/item/redeem_gift_code_modal');
+var PremiumPurchaseDialog = require('./premium_purchase_dialog');
 
-var Session = require('apps/client/session2');
+var Session = require('../../../session2');
 
 var ShopProductCollectionView = require('./shop_product_collection_view');
 var ShopSpiritOrbsCollectionView = require('./shop_spirit_orbs_collection_view');

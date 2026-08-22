@@ -1,12 +1,12 @@
 'use strict';
 
 var Logger = require('@duelyst/common/logger');
-var ProfileManager = require('apps/client/ui/managers/profile_manager');
-var ProgressionManager = require('apps/client/ui/managers/progression_manager');
-var Template = require('apps/client/ui/templates/item/buddy_selection_empty.hbs');
-var ReferralDialogView = require('apps/client/ui/views2/referrals/referral_dialog');
-var DuelystBackbone = require('apps/client/ui/extensions/duelyst_backbone');
-var RedeemGiftCodeModalView = require('apps/client/ui/views/item/redeem_gift_code_modal');
+var ProfileManager = require('../../managers/profile_manager');
+var ProgressionManager = require('../../managers/progression_manager');
+var Template = require('../../templates/item/buddy_selection_empty.hbs');
+var ReferralDialogView = require('../../views2/referrals/referral_dialog');
+var DuelystBackbone = require('../../extensions/duelyst_backbone');
+var RedeemGiftCodeModalView = require('./redeem_gift_code_modal');
 
 var BuddySelectionEmptyItemView = Backbone.Marionette.ItemView.extend({
   className: 'buddy-selection-empty',

@@ -1,6 +1,6 @@
 'use strict';
 
-var StatsFactionItemViewTempl = require('apps/client/ui/templates/item/stats_faction.hbs');
+var StatsFactionItemViewTempl = require('../../templates/item/stats_faction.hbs');
 
 var StatsFactionItemView = Backbone.Marionette.ItemView.extend({
   className: 'stat-faction',

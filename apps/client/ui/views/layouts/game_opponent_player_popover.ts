@@ -6,11 +6,11 @@ var EventBus = require('@duelyst/common/eventbus');
 var EVENTS = require('@duelyst/common/event_types');
 var CONFIG = require('@duelyst/common/config');
 var RSX = require('@duelyst/data/resources');
-var audio_engine = require('apps/client/audio/audio_engine');
-var EmotesListCompositeView = require('apps/client/ui/views/composite/emotes-list');
-var OpponentPlayerPopoverLayoutTempl = require('apps/client/ui/templates/layouts/game_opponent_player_popover.hbs');
-var TransitionRegion = require('apps/client/ui/views/regions/transition');
-var InventoryManager = require('apps/client/ui/managers/inventory_manager');
+var audio_engine = require('../../../audio/audio_engine');
+var EmotesListCompositeView = require('../composite/emotes-list');
+var OpponentPlayerPopoverLayoutTempl = require('../../templates/layouts/game_opponent_player_popover.hbs');
+var TransitionRegion = require('../regions/transition');
+var InventoryManager = require('../../managers/inventory_manager');
 var i18next = require('i18next');
 var PlayerPopoverLayout = require('./game_player_popover');
 

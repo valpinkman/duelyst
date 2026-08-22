@@ -1,6 +1,6 @@
-const BOUNTY = require('apps/server/ai/scoring/bounty');
+const BOUNTY = require('../bounty');
 const ModifierBanding = require('@duelyst/sdk/modifiers/modifierBanding');
-const arePositionsEqualOrAdjacent = require('apps/server/ai/scoring/utils/utils_arePositionsEqualOrAdjacent');
+const arePositionsEqualOrAdjacent = require('../utils/utils_arePositionsEqualOrAdjacent');
 
 /**
  * Should be used for scoring positions for purposes of summoning/moving/teleporting.

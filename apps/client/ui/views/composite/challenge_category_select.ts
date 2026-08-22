@@ -4,15 +4,15 @@
 
 var CONFIG = require('@duelyst/common/config');
 var RSX = require('@duelyst/data/resources');
-var audio_engine = require('apps/client/audio/audio_engine');
+var audio_engine = require('../../../audio/audio_engine');
 var SDK = require('@duelyst/sdk');
-var Scene = require('apps/client/view/Scene');
+var Scene = require('../../../view/Scene');
 var Analytics = require('@duelyst/common/analytics');
-var Animations = require('apps/client/ui/views/animations');
-var ProgressionManager = require('apps/client/ui/managers/progression_manager');
-var ChallengeCategorySelectTmpl = require('apps/client/ui/templates/composite/challenge_category_select.hbs');
+var Animations = require('../animations');
+var ProgressionManager = require('../../managers/progression_manager');
+var ChallengeCategorySelectTmpl = require('../../templates/composite/challenge_category_select.hbs');
 var UtilsEnv = require('@duelyst/common/utils/utils_env');
-var PlayLayer = require('apps/client/view/layers/pregame/PlayLayer');
+var PlayLayer = require('../../../view/layers/pregame/PlayLayer');
 var ChallengeSelectCompositeView = require('./challenge_select');
 var SlidingPanelSelectCompositeView = require('./sliding_panel_select');
 

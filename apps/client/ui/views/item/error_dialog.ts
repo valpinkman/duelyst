@@ -4,10 +4,10 @@
 
 var EVENTS = require('@duelyst/common/event_types');
 var RSX = require('@duelyst/data/resources');
-var Animations = require('apps/client/ui/views/animations');
-var audio_engine = require('apps/client/audio/audio_engine');
-var ErrorDialogItemViewTempl = require('apps/client/ui/templates/item/error_dialog.hbs');
-var NavigationManager = require('apps/client/ui/managers/navigation_manager');
+var Animations = require('../animations');
+var audio_engine = require('../../../audio/audio_engine');
+var ErrorDialogItemViewTempl = require('../../templates/item/error_dialog.hbs');
+var NavigationManager = require('../../managers/navigation_manager');
 var i18next = require('i18next');
 
 var ErrorDialogItemView = Backbone.Marionette.ItemView.extend({

@@ -1,7 +1,7 @@
 'use strict';
 
 // pragma PKGS: tutorial_support
-var Template = require('apps/client/ui/templates/item/tutorial/challenge_lost.hbs');
+var Template = require('../../../templates/item/tutorial/challenge_lost.hbs');
 var TutorialSupportView = require('./tutorial_support');
 
 var TutorialChallengeLostView = TutorialSupportView.extend({

@@ -1,9 +1,9 @@
 'use strict';
 
 var Logger = require('@duelyst/common/logger');
-var audio_engine = require('apps/client/audio/audio_engine');
-var NotificationsManager = require('apps/client/ui/managers/notifications_manager');
-var NotificationTmpl = require('apps/client/ui/templates/item/notification.hbs');
+var audio_engine = require('../../../audio/audio_engine');
+var NotificationsManager = require('../../managers/notifications_manager');
+var NotificationTmpl = require('../../templates/item/notification.hbs');
 
 /**
  * Base notification item view class.

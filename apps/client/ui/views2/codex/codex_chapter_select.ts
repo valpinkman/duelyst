@@ -4,8 +4,8 @@
 
 var CONFIG = require('@duelyst/common/config');
 var RSX = require('@duelyst/data/resources');
-var Animations = require('apps/client/ui/views/animations');
-var SlidingPanelSelectCompositeView = require('apps/client/ui/views/composite/sliding_panel_select');
+var Animations = require('../../views/animations');
+var SlidingPanelSelectCompositeView = require('../../views/composite/sliding_panel_select');
 var audio_engine = require('../../../audio/audio_engine');
 var CodexChapterPreviewItemView = require('./codex_chapter_preview');
 var CodexChapterSelectTmpl = require('./templates/codex_chapter_select.hbs');

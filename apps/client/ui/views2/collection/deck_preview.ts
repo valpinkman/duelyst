@@ -3,7 +3,7 @@
 'use strict';
 
 var RSX = require('@duelyst/data/resources');
-var audio_engine = require('apps/client/audio/audio_engine');
+var audio_engine = require('../../../audio/audio_engine');
 var DeckPreviewTmpl = require('./templates/deck_preview.hbs');
 
 var DeckPreviewItemView = Backbone.Marionette.ItemView.extend({

@@ -5,14 +5,14 @@ var Logger = require('@duelyst/common/logger');
 var CONFIG = require('@duelyst/common/config');
 var generatePushID = require('@duelyst/common/generate_push_id');
 var RSX = require('@duelyst/data/resources');
-var audio_engine = require('apps/client/audio/audio_engine');
+var audio_engine = require('../../../audio/audio_engine');
 var SDK = require('@duelyst/sdk');
-var Scene = require('apps/client/view/Scene');
-var UtilsUI = require('apps/client/ui/utils_ui');
-var ResumeGameTmpl = require('apps/client/ui/templates/item/resume_game.hbs');
-var GamesManager = require('apps/client/ui/managers/games_manager');
-var NavigationManager = require('apps/client/ui/managers/navigation_manager');
-var Animations = require('apps/client/ui/views/animations');
+var Scene = require('../../../view/Scene');
+var UtilsUI = require('../../utils_ui');
+var ResumeGameTmpl = require('../../templates/item/resume_game.hbs');
+var GamesManager = require('../../managers/games_manager');
+var NavigationManager = require('../../managers/navigation_manager');
+var Animations = require('../animations');
 
 var ResumeGameItemView = Backbone.Marionette.ItemView.extend({
   id: 'app-resume-game',

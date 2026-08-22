@@ -3,18 +3,18 @@
 'use strict';
 
 var SDK = require('@duelyst/sdk');
-var Scene = require('apps/client/view/Scene');
+var Scene = require('../../../view/Scene');
 var CONFIG = require('@duelyst/common/config');
 var PKGS = require('@duelyst/data/packages');
 var RSX = require('@duelyst/data/resources');
-var CodexLayer = require('apps/client/view/layers/codex/CodexLayer');
-var CodexChapterLayer = require('apps/client/view/layers/codex/CodexChapterLayer');
-var WorldMapLayer = require('apps/client/view/layers/codex/WorldMapLayer');
-var audio_engine = require('apps/client/audio/audio_engine');
-var PackageManager = require('apps/client/ui/managers/package_manager');
-var NavigationManager = require('apps/client/ui/managers/navigation_manager');
-var ActivityDialogItemView = require('apps/client/ui/views/item/activity_dialog');
-var Animations = require('apps/client/ui/views/animations');
+var CodexLayer = require('../../../view/layers/codex/CodexLayer');
+var CodexChapterLayer = require('../../../view/layers/codex/CodexChapterLayer');
+var WorldMapLayer = require('../../../view/layers/codex/WorldMapLayer');
+var audio_engine = require('../../../audio/audio_engine');
+var PackageManager = require('../../managers/package_manager');
+var NavigationManager = require('../../managers/navigation_manager');
+var ActivityDialogItemView = require('../../views/item/activity_dialog');
+var Animations = require('../../views/animations');
 var CodexLayoutTempl = require('./templates/codex_layout.hbs');
 var CodexChapterSelectCompositeView = require('./codex_chapter_select');
 var CodexChapterItemView = require('./codex_chapter');

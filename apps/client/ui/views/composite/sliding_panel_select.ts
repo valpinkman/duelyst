@@ -6,8 +6,8 @@ var CONFIG = require('@duelyst/common/config');
 var EventBus = require('@duelyst/common/eventbus');
 var EVENTS = require('@duelyst/common/event_types');
 var RSX = require('@duelyst/data/resources');
-var Animations = require('apps/client/ui/views/animations');
-var SlidingPanelItemView = require('apps/client/ui/views/item/sliding_panel');
+var Animations = require('../animations');
+var SlidingPanelItemView = require('../item/sliding_panel');
 var _ = require('underscore');
 var SlidingPanelSelectTmpl = require('../../templates/composite/sliding_panel_select.hbs');
 

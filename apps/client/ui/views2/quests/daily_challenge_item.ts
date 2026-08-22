@@ -2,8 +2,8 @@
 
 var SDK = require('@duelyst/sdk');
 var moment = require('moment');
-var QuestsManager = require('apps/client/ui/managers/quests_manager');
-var NavigationManager = require('apps/client/ui/managers/navigation_manager');
+var QuestsManager = require('../../managers/quests_manager');
+var NavigationManager = require('../../managers/navigation_manager');
 var Logger = require('@duelyst/common/logger');
 var EventBus = require('@duelyst/common/eventbus');
 var EVENTS = require('@duelyst/common/event_types');

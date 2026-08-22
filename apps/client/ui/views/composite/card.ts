@@ -7,14 +7,14 @@ var CONFIG = require('@duelyst/common/config');
 var RSX = require('@duelyst/data/resources');
 var PKGS = require('@duelyst/data/packages');
 var UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
-var UtilsUI = require('apps/client/ui/utils_ui');
-var audio_engine = require('apps/client/audio/audio_engine');
-var CardTmpl = require('apps/client/ui/templates/composite/card.hbs');
-var PackageManager = require('apps/client/ui/managers/package_manager');
-var GameDataManager = require('apps/client/ui/managers/game_data_manager');
-var InventoryManager = require('apps/client/ui/managers/inventory_manager');
-var ProfileManager = require('apps/client/ui/managers/profile_manager');
-var Animations = require('apps/client/ui/views/animations');
+var UtilsUI = require('../../utils_ui');
+var audio_engine = require('../../../audio/audio_engine');
+var CardTmpl = require('../../templates/composite/card.hbs');
+var PackageManager = require('../../managers/package_manager');
+var GameDataManager = require('../../managers/game_data_manager');
+var InventoryManager = require('../../managers/inventory_manager');
+var ProfileManager = require('../../managers/profile_manager');
+var Animations = require('../animations');
 
 var CardCompositeView = Backbone.Marionette.CompositeView.extend({
   tagName: 'li',

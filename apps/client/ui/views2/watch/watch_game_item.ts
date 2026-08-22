@@ -7,9 +7,9 @@ var Analytics = require('@duelyst/common/analytics');
 var EventBus = require('@duelyst/common/eventbus');
 var EVENTS = require('@duelyst/common/event_types');
 var PKGS = require('@duelyst/data/packages');
-var Animations = require('apps/client/ui/views/animations');
-var GameDataManager = require('apps/client/ui/managers/game_data_manager');
-var UtilsUI = require('apps/client/ui/utils_ui');
+var Animations = require('../../views/animations');
+var GameDataManager = require('../../managers/game_data_manager');
+var UtilsUI = require('../../utils_ui');
 var Storage = require('@duelyst/common/storage');
 var Template = require('./templates/watch_game_item.hbs');
 

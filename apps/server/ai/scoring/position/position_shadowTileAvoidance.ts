@@ -1,5 +1,5 @@
 const ModifierStackingShadows = require('@duelyst/sdk/modifiers/modifierStackingShadows');
-const ScoreForUnitDamage = require('apps/server/ai/scoring/base/unit_damage');
+const ScoreForUnitDamage = require('../base/unit_damage');
 
 const position_shadowTileAvoidance = function (gameSession, unit, position) {
   let score = 0;

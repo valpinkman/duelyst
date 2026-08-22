@@ -2,7 +2,7 @@
 
 var Logger = require('@duelyst/common/logger');
 var SDK = require('@duelyst/sdk');
-var BoosterPackPreviewTmpl = require('apps/client/ui/templates/item/booster_pack_preview.hbs');
+var BoosterPackPreviewTmpl = require('../../templates/item/booster_pack_preview.hbs');
 
 var BoosterPackPreviewItemView = Backbone.Marionette.ItemView.extend({
   initialize: function () {

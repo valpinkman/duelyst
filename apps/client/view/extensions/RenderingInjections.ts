@@ -1,6 +1,6 @@
 const CONFIG = require('@duelyst/common/config');
 const UtilsEngine = require('@duelyst/common/utils/utils_engine');
-const RenderPass = require('apps/client/view/fx/RenderPass');
+const RenderPass = require('../fx/RenderPass');
 const _ = require('underscore');
 
 /** **************************************************************************

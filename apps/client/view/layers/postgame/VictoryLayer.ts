@@ -4,14 +4,14 @@ const CONFIG = require('@duelyst/common/config');
 const RSX = require('@duelyst/data/resources');
 const PKGS = require('@duelyst/data/packages');
 const SDK = require('@duelyst/sdk');
-const RewardLayer = require('apps/client/view/layers/reward/RewardLayer');
-const BaseSprite = require('apps/client/view/nodes/BaseSprite');
-const BaseParticleSystem = require('apps/client/view/nodes/BaseParticleSystem');
-const Shake = require('apps/client/view/actions/Shake');
+const RewardLayer = require('../reward/RewardLayer');
+const BaseSprite = require('../../nodes/BaseSprite');
+const BaseParticleSystem = require('../../nodes/BaseParticleSystem');
+const Shake = require('../../actions/Shake');
 const UtilsEngine = require('@duelyst/common/utils/utils_engine');
 const UtilsPosition = require('@duelyst/common/utils/utils_position');
-const FXFireLinearWaveSprite = require('apps/client/view/nodes/fx/FXFireLinearWaveSprite');
-const TweenTypes = require('apps/client/view/actions/TweenTypes');
+const FXFireLinearWaveSprite = require('../../nodes/fx/FXFireLinearWaveSprite');
+const TweenTypes = require('../../actions/TweenTypes');
 
 /** **************************************************************************
  VictoryLayer

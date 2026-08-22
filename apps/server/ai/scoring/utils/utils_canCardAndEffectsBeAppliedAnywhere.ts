@@ -1,7 +1,7 @@
 const Artifact = require('@duelyst/sdk/artifacts/artifact');
 const Spell = require('@duelyst/sdk/spells/spell');
-const CardIntent = require('apps/server/ai/card_intent/card_intent');
-const CardTargetType = require('apps/server/ai/card_intent/card_target_type');
+const CardIntent = require('../../card_intent/card_intent');
+const CardTargetType = require('../../card_intent/card_target_type');
 const _ = require('underscore');
 
 /**

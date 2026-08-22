@@ -6,11 +6,11 @@ var _ = require('underscore');
 var SDK = require('@duelyst/sdk');
 var UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
 var CONFIG = require('@duelyst/common/config');
-var audio_engine = require('apps/client/audio/audio_engine');
+var audio_engine = require('../../../audio/audio_engine');
 var RSX = require('@duelyst/data/resources');
-var GamesManager = require('apps/client/ui/managers/games_manager');
-var ProfileManager = require('apps/client/ui/managers/profile_manager');
-var DeckSelectFriendlyTmpl = require('apps/client/ui/templates/composite/deck_select_friendly.hbs');
+var GamesManager = require('../../managers/games_manager');
+var ProfileManager = require('../../managers/profile_manager');
+var DeckSelectFriendlyTmpl = require('../../templates/composite/deck_select_friendly.hbs');
 var DeckSelectCompositeView = require('./deck_select');
 
 var DeckSelectFriendlyCompositeView = DeckSelectCompositeView.extend({

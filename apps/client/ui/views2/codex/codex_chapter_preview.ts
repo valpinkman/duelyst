@@ -2,8 +2,8 @@
 
 'use strict';
 
-var SlidingPanelItemView = require('apps/client/ui/views/item/sliding_panel');
-var ProgressionManager = require('apps/client/ui/managers/progression_manager');
+var SlidingPanelItemView = require('../../views/item/sliding_panel');
+var ProgressionManager = require('../../managers/progression_manager');
 var CodexChapterPreviewTmpl = require('./templates/codex_chapter_preview.hbs');
 
 var CodexChapterPreviewItemView = SlidingPanelItemView.extend({

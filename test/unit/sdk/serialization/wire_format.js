@@ -38,7 +38,7 @@ const PlayerModifierManaModifier = require('@duelyst/sdk/playerModifiers/playerM
 const DamageAction = require('@duelyst/sdk/actions/damageAction');
 const AttackAction = require('@duelyst/sdk/actions/attackAction');
 const EndTurnAction = require('@duelyst/sdk/actions/endTurnAction');
-const UtilsSDK = require('test/utils/utils_sdk');
+const UtilsSDK = require('../../../utils/utils_sdk');
 
 // disable the logger for cleaner test output
 Logger.enabled = false;

@@ -5,10 +5,10 @@
 var SDK = require('@duelyst/sdk');
 var UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
 var CONFIG = require('@duelyst/common/config');
-var audio_engine = require('apps/client/audio/audio_engine');
+var audio_engine = require('../../../audio/audio_engine');
 var RSX = require('@duelyst/data/resources');
-var DeckSelectSandboxTmpl = require('apps/client/ui/templates/composite/deck_select_unranked.hbs');
-var NewPlayerManager = require('apps/client/ui/managers/new_player_manager');
+var DeckSelectSandboxTmpl = require('../../templates/composite/deck_select_unranked.hbs');
+var NewPlayerManager = require('../../managers/new_player_manager');
 var DeckSelectCompositeView = require('./deck_select');
 
 var DeckSelectUnrankedCompositeView = DeckSelectCompositeView.extend({

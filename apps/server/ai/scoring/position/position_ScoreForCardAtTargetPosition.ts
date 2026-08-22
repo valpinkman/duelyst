@@ -1,14 +1,14 @@
 // const position_proximityToEnemies = require("./position_proximityToEnemies");
 // const position_proximityToGenerals = require("./position_proximityToGenerals");
-const position_zeal = require('apps/server/ai/scoring/position/position_zeal');
+const position_zeal = require('./position_zeal');
 // const position_shadowTileAvoidance = require("./position_shadowTileAvoidance");
-const position_seekManaGlobes = require('apps/server/ai/scoring/position/position_seekManaGlobes');
-const position_objective_backstab = require('apps/server/ai/scoring/position/position_objective_backstab');
-const position_objective_frenzy = require('apps/server/ai/scoring/position/position_objective_frenzy');
-const position_objective_provoke = require('apps/server/ai/scoring/position/position_objective_provoke');
-const position_objective_distanceFromBestObjective = require('apps/server/ai/scoring/position/position_objective_distanceFromBestObjective');
-const position_backstabAvoidance = require('apps/server/ai/scoring/position/position_backstabAvoidance');
-const findBestObjectiveForCardAtTargetPosition = require('apps/server/ai/scoring/utils/utils_findBestObjectiveForCardAtTargetPosition');
+const position_seekManaGlobes = require('./position_seekManaGlobes');
+const position_objective_backstab = require('./position_objective_backstab');
+const position_objective_frenzy = require('./position_objective_frenzy');
+const position_objective_provoke = require('./position_objective_provoke');
+const position_objective_distanceFromBestObjective = require('./position_objective_distanceFromBestObjective');
+const position_backstabAvoidance = require('./position_backstabAvoidance');
+const findBestObjectiveForCardAtTargetPosition = require('../utils/utils_findBestObjectiveForCardAtTargetPosition');
 const _ = require('underscore');
 const Logger = require('@duelyst/common/logger');
 

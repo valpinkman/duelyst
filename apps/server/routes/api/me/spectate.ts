@@ -8,16 +8,16 @@
 const _ = require('underscore');
 const express = require('express');
 const jwt = require('jsonwebtoken');
-const knex = require('apps/server/lib/data_access/knex');
-const DataAccessHelpers = require('apps/server/lib/data_access/helpers');
-const FirebasePromises = require('apps/server/lib/firebase_promises');
-const DuelystFirebase = require('apps/server/lib/duelyst_firebase_module');
+const knex = require('../../../lib/data_access/knex');
+const DataAccessHelpers = require('../../../lib/data_access/helpers');
+const FirebasePromises = require('../../../lib/firebase_promises');
+const DuelystFirebase = require('../../../lib/duelyst_firebase_module');
 const Logger = require('@duelyst/common/logger');
-const Errors = require('apps/server/lib/custom_errors');
+const Errors = require('../../../lib/custom_errors');
 const config = require('config/config');
 const t = require('tcomb-validation');
-const types = require('apps/server/validators/types');
-const Consul = require('apps/server/lib/consul');
+const types = require('../../../validators/types');
+const Consul = require('../../../lib/consul');
 const { onType } = require('@duelyst/common/utils/utils_promise');
 
 const router = express.Router();

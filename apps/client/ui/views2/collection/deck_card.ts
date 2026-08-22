@@ -1,10 +1,10 @@
 'use strict';
 
 var CONFIG = require('@duelyst/common/config');
-var UtilsUI = require('apps/client/ui/utils_ui');
-var Animations = require('apps/client/ui/views/animations');
-var CardCompositeView = require('apps/client/ui/views/composite/card');
-var CardTempl = require('apps/client/ui/templates/composite/card.hbs');
+var UtilsUI = require('../../utils_ui');
+var Animations = require('../../views/animations');
+var CardCompositeView = require('../../views/composite/card');
+var CardTempl = require('../../templates/composite/card.hbs');
 
 var DeckCardCompositeView = CardCompositeView.extend({
   _cardData: null,

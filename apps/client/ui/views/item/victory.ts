@@ -3,19 +3,19 @@
 'use strict';
 
 var SDK = require('@duelyst/sdk');
-var Scene = require('apps/client/view/Scene');
+var Scene = require('../../../view/Scene');
 var RSX = require('@duelyst/data/resources');
 var CONFIG = require('@duelyst/common/config');
-var Animations = require('apps/client/ui/views/animations');
-var audio_engine = require('apps/client/audio/audio_engine');
-var NavigationManager = require('apps/client/ui/managers/navigation_manager');
-var InventoryManager = require('apps/client/ui/managers/inventory_manager');
-var VictoryTemplate = require('apps/client/ui/templates/item/victory.hbs');
-var VictoryLayer = require('apps/client/view/layers/postgame/VictoryLayer');
-var ChatManager = require('apps/client/ui/managers/chat_manager');
-var NewPlayerManager = require('apps/client/ui/managers/new_player_manager');
+var Animations = require('../animations');
+var audio_engine = require('../../../audio/audio_engine');
+var NavigationManager = require('../../managers/navigation_manager');
+var InventoryManager = require('../../managers/inventory_manager');
+var VictoryTemplate = require('../../templates/item/victory.hbs');
+var VictoryLayer = require('../../../view/layers/postgame/VictoryLayer');
+var ChatManager = require('../../managers/chat_manager');
+var NewPlayerManager = require('../../managers/new_player_manager');
 var moment = require('moment');
-var AnalyticsTracker = require('apps/client/analyticsTracker');
+var AnalyticsTracker = require('../../../analyticsTracker');
 var i18next = require('i18next');
 var ConfirmDialogItemView = require('./confirm_dialog');
 

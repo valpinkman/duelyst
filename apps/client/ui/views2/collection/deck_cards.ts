@@ -3,7 +3,7 @@
 var CONFIG = require('@duelyst/common/config');
 var EventBus = require('@duelyst/common/eventbus');
 var EVENTS = require('@duelyst/common/event_types');
-var UtilsUI = require('apps/client/ui/utils_ui');
+var UtilsUI = require('../../utils_ui');
 var DeckCardCompositeView = require('./deck_card');
 var DeckCardsTmpl = require('./templates/deck_cards.hbs');
 

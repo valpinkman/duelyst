@@ -1,8 +1,8 @@
 'use strict';
 
 var Logger = require('@duelyst/common/logger');
-var MessageTmpl = require('apps/client/ui/templates/item/message.hbs');
-var ProgressionManager = require('apps/client/ui/managers/progression_manager');
+var MessageTmpl = require('../../templates/item/message.hbs');
+var ProgressionManager = require('../../managers/progression_manager');
 var EventBus = require('@duelyst/common/eventbus');
 var EVENTS = require('@duelyst/common/event_types');
 

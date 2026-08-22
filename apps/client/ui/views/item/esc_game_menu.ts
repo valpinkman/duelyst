@@ -4,10 +4,10 @@ var CONFIG = require('@duelyst/common/config');
 var EVENTS = require('@duelyst/common/event_types');
 var SDK = require('@duelyst/sdk');
 var RSX = require('@duelyst/data/resources');
-var audio_engine = require('apps/client/audio/audio_engine');
-var Scene = require('apps/client/view/Scene');
-var EscGameMenuTmpl = require('apps/client/ui/templates/item/esc_game_menu.hbs');
-var NavigationManager = require('apps/client/ui/managers/navigation_manager');
+var audio_engine = require('../../../audio/audio_engine');
+var Scene = require('../../../view/Scene');
+var EscGameMenuTmpl = require('../../templates/item/esc_game_menu.hbs');
+var NavigationManager = require('../../managers/navigation_manager');
 var UtilityMenuItemView = require('./utility_menu');
 
 var EscGameMenuItemView = UtilityMenuItemView.extend({

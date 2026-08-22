@@ -4,11 +4,11 @@
 
 var RSX = require('@duelyst/data/resources');
 var CONFIG = require('@duelyst/common/config');
-var audio_engine = require('apps/client/audio/audio_engine');
-var Animations = require('apps/client/ui/views/animations');
-var InventoryManager = require('apps/client/ui/managers/inventory_manager');
+var audio_engine = require('../../../audio/audio_engine');
+var Animations = require('../../views/animations');
+var InventoryManager = require('../../managers/inventory_manager');
 var EVENTS = require('@duelyst/common/event_types');
-var ProfileManager = require('apps/client/ui/managers/profile_manager');
+var ProfileManager = require('../../managers/profile_manager');
 var Analytics = require('@duelyst/common/analytics');
 var moment = require('moment');
 var ShopSpiritOrbsCollectionView = require('./shop_spirit_orbs_collection_view');

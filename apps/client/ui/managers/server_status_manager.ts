@@ -15,7 +15,7 @@ module.exports = _ServerStatusManager;
 var EventBus = require('@duelyst/common/eventbus');
 var EVENTS = require('@duelyst/common/event_types');
 var Logger = require('@duelyst/common/logger');
-var DuelystFirebase = require('apps/client/ui/extensions/duelyst_firebase');
+var DuelystFirebase = require('../extensions/duelyst_firebase');
 var Manager = require('./manager');
 var ChatManager = require('./chat_manager');
 

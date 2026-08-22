@@ -12,8 +12,8 @@ module.exports = _GameDataManager;
 
 var Logger = require('@duelyst/common/logger');
 var UtilsEnv = require('@duelyst/common/utils/utils_env');
-var CardsCollection = require('apps/client/ui/collections/cards');
-var FactionsCollection = require('apps/client/ui/collections/factions');
+var CardsCollection = require('../collections/cards');
+var FactionsCollection = require('../collections/factions');
 var Manager = require('./manager');
 var InventoryManager = require('./inventory_manager');
 var ProgressionManager = require('./progression_manager');

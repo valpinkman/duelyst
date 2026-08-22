@@ -14,8 +14,8 @@ const _ = require('underscore');
 const moment = require('moment');
 const fs = require('fs');
 
-const helpers = require('tools/helpers');
-const UtilsLocalization = require('tools/localization/utils_localization');
+const helpers = require('../helpers');
+const UtilsLocalization = require('./utils_localization');
 
 const runCommand = (commandStr) =>
   new Promise((resolve, reject) => {

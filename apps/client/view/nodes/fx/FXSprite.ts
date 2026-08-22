@@ -1,9 +1,9 @@
 const CONFIG = require('@duelyst/common/config');
 const SDK = require('@duelyst/sdk');
 const UtilsEngine = require('@duelyst/common/utils/utils_engine');
-const BaseSprite = require('apps/client/view/nodes/BaseSprite');
-const BaseLayer = require('apps/client/view/layers/BaseLayer');
-const NodeFactory = require('apps/client/view/helpers/NodeFactory');
+const BaseSprite = require('../BaseSprite');
+const BaseLayer = require('../../layers/BaseLayer');
+const NodeFactory = require('../../helpers/NodeFactory');
 const Light = require('./Light');
 
 /** **************************************************************************

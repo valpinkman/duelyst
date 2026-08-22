@@ -17,13 +17,13 @@ var EventBus = require('@duelyst/common/eventbus');
 var EVENTS = require('@duelyst/common/event_types');
 var Logger = require('@duelyst/common/logger');
 var SDK = require('@duelyst/sdk');
-var NotificationModel = require('apps/client/ui/models/notification');
-var DuelystFirebase = require('apps/client/ui/extensions/duelyst_firebase');
-var DuelystBackbone = require('apps/client/ui/extensions/duelyst_backbone');
+var NotificationModel = require('../models/notification');
+var DuelystFirebase = require('../extensions/duelyst_firebase');
+var DuelystBackbone = require('../extensions/duelyst_backbone');
 var Analytics = require('@duelyst/common/analytics');
-var ReferralDialogView = require('apps/client/ui/views2/referrals/referral_dialog');
+var ReferralDialogView = require('../views2/referrals/referral_dialog');
 var moment = require('moment');
-var ErrorDialogItemView = require('apps/client/ui/views/item/error_dialog');
+var ErrorDialogItemView = require('../views/item/error_dialog');
 
 var i18next = require('i18next');
 

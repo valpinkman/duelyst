@@ -19,7 +19,7 @@ const userAgent = uaparser.getResult();
 const App = new Backbone.Marionette.Application();
 
 // require Firebase via browserify but temporarily alias it global scope
-const Firebase = (window.Firebase = require('apps/client/firebase'));
+const Firebase = (window.Firebase = require('./firebase'));
 const moment = require('moment');
 const semver = require('semver');
 const querystring = require('query-string');
@@ -32,14 +32,14 @@ const Logger = (window.Logger = require('@duelyst/common/logger'));
 Logger.enabled = process.env.NODE_ENV !== 'production';
 
 const Landing = require('@duelyst/common/landing');
-const Session = (window.Session = require('apps/client/session2'));
+const Session = (window.Session = require('./session2'));
 const CONFIG = (window.CONFIG = require('@duelyst/common/config'));
 const RSX = (window.RSX = require('@duelyst/data/resources'));
 const PKGS = (window.PKGS = require('@duelyst/data/packages'));
 const EventBus = (window.EventBus = require('@duelyst/common/eventbus'));
 const EVENTS = require('@duelyst/common/event_types');
 const SDK = (window.SDK = require('@duelyst/sdk'));
-const NetworkManager = require('apps/client/networkManager');
+const NetworkManager = require('./networkManager');
 
 // Wire the SDK's network hook: non-authoritative game sessions hand submitted
 // steps to the NetworkManager for transmission (the SDK itself is network-free).
@@ -51,128 +51,123 @@ const AnalyticsUtil = require('@duelyst/common/analyticsUtil');
 const UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
 const UtilsEnv = require('@duelyst/common/utils/utils_env');
 const UtilsPointer = require('@duelyst/common/utils/utils_pointer');
-const audio_engine = (window.audio_engine = require('apps/client/audio/audio_engine'));
+const audio_engine = (window.audio_engine = require('./audio/audio_engine'));
 const openUrl = require('@duelyst/common/openUrl');
 const i18next = require('i18next');
 
 // models and collections
-const CardModel = require('apps/client/ui/models/card');
-const DuelystFirebase = require('apps/client/ui/extensions/duelyst_firebase');
-const DuelystBackbone = require('apps/client/ui/extensions/duelyst_backbone');
+const CardModel = require('./ui/models/card');
+const DuelystFirebase = require('./ui/extensions/duelyst_firebase');
+const DuelystBackbone = require('./ui/extensions/duelyst_backbone');
 
 // Managers / Controllers
-const PackageManager = (window.PackageManager = require('apps/client/ui/managers/package_manager'));
-const ProfileManager = (window.ProfileManager = require('apps/client/ui/managers/profile_manager'));
-const GameDataManager =
-  (window.GameDataManager = require('apps/client/ui/managers/game_data_manager'));
-const GamesManager = (window.GamesManager = require('apps/client/ui/managers/games_manager'));
-const CrateManager = (window.CrateManager = require('apps/client/ui/managers/crate_manager'));
+const PackageManager = (window.PackageManager = require('./ui/managers/package_manager'));
+const ProfileManager = (window.ProfileManager = require('./ui/managers/profile_manager'));
+const GameDataManager = (window.GameDataManager = require('./ui/managers/game_data_manager'));
+const GamesManager = (window.GamesManager = require('./ui/managers/games_manager'));
+const CrateManager = (window.CrateManager = require('./ui/managers/crate_manager'));
 const NotificationsManager =
-  (window.NotificationsManager = require('apps/client/ui/managers/notifications_manager'));
-const NavigationManager =
-  (window.NavigationManager = require('apps/client/ui/managers/navigation_manager'));
-const ChatManager = (window.ChatManager = require('apps/client/ui/managers/chat_manager'));
-const InventoryManager =
-  (window.InventoryManager = require('apps/client/ui/managers/inventory_manager'));
-const QuestsManager = (window.QuestsManager = require('apps/client/ui/managers/quests_manager'));
-const TelemetryManager =
-  (window.TelemetryManager = require('apps/client/ui/managers/telemetry_manager'));
+  (window.NotificationsManager = require('./ui/managers/notifications_manager'));
+const NavigationManager = (window.NavigationManager = require('./ui/managers/navigation_manager'));
+const ChatManager = (window.ChatManager = require('./ui/managers/chat_manager'));
+const InventoryManager = (window.InventoryManager = require('./ui/managers/inventory_manager'));
+const QuestsManager = (window.QuestsManager = require('./ui/managers/quests_manager'));
+const TelemetryManager = (window.TelemetryManager = require('./ui/managers/telemetry_manager'));
 const ProgressionManager =
-  (window.ProgressionManager = require('apps/client/ui/managers/progression_manager'));
+  (window.ProgressionManager = require('./ui/managers/progression_manager'));
 const ServerStatusManager =
-  (window.ServerStatusManager = require('apps/client/ui/managers/server_status_manager'));
-const NewsManager = (window.NewsManager = require('apps/client/ui/managers/news_manager'));
-const NewPlayerManager =
-  (window.NewPlayerManager = require('apps/client/ui/managers/new_player_manager'));
+  (window.ServerStatusManager = require('./ui/managers/server_status_manager'));
+const NewsManager = (window.NewsManager = require('./ui/managers/news_manager'));
+const NewPlayerManager = (window.NewPlayerManager = require('./ui/managers/new_player_manager'));
 const AchievementsManager =
-  (window.AchievementsManager = require('apps/client/ui/managers/achievements_manager'));
-const TwitchManager = (window.TwitchManager = require('apps/client/ui/managers/twitch_manager'));
-const ShopManager = (window.ShopManager = require('apps/client/ui/managers/shop_manager'));
-const StreamManager = (window.StreamManager = require('apps/client/ui/managers/stream_manager'));
+  (window.AchievementsManager = require('./ui/managers/achievements_manager'));
+const TwitchManager = (window.TwitchManager = require('./ui/managers/twitch_manager'));
+const ShopManager = (window.ShopManager = require('./ui/managers/shop_manager'));
+const StreamManager = (window.StreamManager = require('./ui/managers/stream_manager'));
 
 // Views
-const Helpers = require('apps/client/ui/views/helpers');
+const Helpers = require('./ui/views/helpers');
 
-const LoaderItemView = require('apps/client/ui/views/item/loader');
+const LoaderItemView = require('./ui/views/item/loader');
 
-const UtilityLoadingLoginMenuItemView = require('apps/client/ui/views/item/utility_loading_login_menu');
-const UtilityMainMenuItemView = require('apps/client/ui/views/item/utility_main_menu');
-const UtilityMatchmakingMenuItemView = require('apps/client/ui/views/item/utility_matchmaking_menu');
-const UtilityGameMenuItemView = require('apps/client/ui/views/item/utility_game_menu');
-const EscGameMenuItemView = require('apps/client/ui/views/item/esc_game_menu');
-const EscMainMenuItemView = require('apps/client/ui/views/item/esc_main_menu');
+const UtilityLoadingLoginMenuItemView = require('./ui/views/item/utility_loading_login_menu');
+const UtilityMainMenuItemView = require('./ui/views/item/utility_main_menu');
+const UtilityMatchmakingMenuItemView = require('./ui/views/item/utility_matchmaking_menu');
+const UtilityGameMenuItemView = require('./ui/views/item/utility_game_menu');
+const EscGameMenuItemView = require('./ui/views/item/esc_game_menu');
+const EscMainMenuItemView = require('./ui/views/item/esc_main_menu');
 
-const LoginMenuItemView = require('apps/client/ui/views/item/login_menu');
+const LoginMenuItemView = require('./ui/views/item/login_menu');
 
 const Discord = window.isDesktop ? require('@duelyst/common/discord') : null;
 
-const SelectUsernameItemView = require('apps/client/ui/views/item/select_username');
+const SelectUsernameItemView = require('./ui/views/item/select_username');
 
-const Scene = require('apps/client/view/Scene');
-const GameLayer = require('apps/client/view/layers/game/GameLayer');
+const Scene = require('./view/Scene');
+const GameLayer = require('./view/layers/game/GameLayer');
 
-const MainMenuItemView = require('apps/client/ui/views/item/main_menu');
-const CollectionLayout = require('apps/client/ui/views2/collection/collection');
+const MainMenuItemView = require('./ui/views/item/main_menu');
+const CollectionLayout = require('./ui/views2/collection/collection');
 
-const PlayLayout = require('apps/client/ui/views/layouts/play');
-const PlayLayer = require('apps/client/view/layers/pregame/PlayLayer');
+const PlayLayout = require('./ui/views/layouts/play');
+const PlayLayer = require('./view/layers/pregame/PlayLayer');
 
-const WatchLayout = require('apps/client/ui/views2/watch/watch_layout');
-const ShopLayout = require('apps/client/ui/views2/shop/shop_layout');
+const WatchLayout = require('./ui/views2/watch/watch_layout');
+const ShopLayout = require('./ui/views2/shop/shop_layout');
 
-const CodexLayout = require('apps/client/ui/views2/codex/codex_layout');
-const CodexLayer = require('apps/client/view/layers/codex/CodexLayer');
+const CodexLayout = require('./ui/views2/codex/codex_layout');
+const CodexLayer = require('./view/layers/codex/CodexLayer');
 
-const TutorialLessonsLayout = require('apps/client/ui/views2/tutorial/tutorial_lessons_layout');
-const QuestLogLayout = require('apps/client/ui/views2/quests/quest_log_layout');
+const TutorialLessonsLayout = require('./ui/views2/tutorial/tutorial_lessons_layout');
+const QuestLogLayout = require('./ui/views2/quests/quest_log_layout');
 
-const BoosterPackUnlockLayout = require('apps/client/ui/views/layouts/booster_pack_collection');
-const BoosterPackOpeningLayer = require('apps/client/view/layers/booster/BoosterPackOpeningLayer');
+const BoosterPackUnlockLayout = require('./ui/views/layouts/booster_pack_collection');
+const BoosterPackOpeningLayer = require('./view/layers/booster/BoosterPackOpeningLayer');
 
-const VictoryLayer = require('apps/client/view/layers/postgame/VictoryLayer');
-const UnlockFactionLayer = require('apps/client/view/layers/reward/UnlockFactionLayer.js');
-const ProgressionRewardLayer = require('apps/client/view/layers/reward/ProgressionRewardLayer.js');
-const CosmeticKeyRewardLayer = require('apps/client/view/layers/reward/CosmeticKeyRewardLayer.js');
-const LadderProgressLayer = require('apps/client/view/layers/postgame/LadderProgressLayer');
-const RiftProgressLayer = require('apps/client/view/layers/postgame/RiftProgressLayer');
-const CurrencyRewardLayer = require('apps/client/view/layers/reward/CurrencyRewardLayer.js');
-const GauntletTicketRewardLayer = require('apps/client/view/layers/reward/GauntletTicketRewardLayer.js');
-const BoosterRewardLayer = require('apps/client/view/layers/reward/BoosterRewardLayer.js');
-const LootCrateRewardLayer = require('apps/client/view/layers/reward/LootCrateRewardLayer.js');
-const FreeCardOfTheDayLayer = require('apps/client/view/layers/reward/FreeCardOfTheDayLayer.js');
+const VictoryLayer = require('./view/layers/postgame/VictoryLayer');
+const UnlockFactionLayer = require('./view/layers/reward/UnlockFactionLayer.js');
+const ProgressionRewardLayer = require('./view/layers/reward/ProgressionRewardLayer.js');
+const CosmeticKeyRewardLayer = require('./view/layers/reward/CosmeticKeyRewardLayer.js');
+const LadderProgressLayer = require('./view/layers/postgame/LadderProgressLayer');
+const RiftProgressLayer = require('./view/layers/postgame/RiftProgressLayer');
+const CurrencyRewardLayer = require('./view/layers/reward/CurrencyRewardLayer.js');
+const GauntletTicketRewardLayer = require('./view/layers/reward/GauntletTicketRewardLayer.js');
+const BoosterRewardLayer = require('./view/layers/reward/BoosterRewardLayer.js');
+const LootCrateRewardLayer = require('./view/layers/reward/LootCrateRewardLayer.js');
+const FreeCardOfTheDayLayer = require('./view/layers/reward/FreeCardOfTheDayLayer.js');
 
-const CrateOpeningLayer = require('apps/client/view/layers/crate/CrateOpeningLayer');
-const EndOfSeasonLayer = require('apps/client/view/layers/season/EndOfSeasonLayer');
+const CrateOpeningLayer = require('./view/layers/crate/CrateOpeningLayer');
+const EndOfSeasonLayer = require('./view/layers/season/EndOfSeasonLayer');
 
-const ResumeGameItemView = require('apps/client/ui/views/item/resume_game');
-const FindingGameItemView = require('apps/client/ui/views/item/finding_game');
-const ReconnectToGameItemView = require('apps/client/ui/views/item/reconnect_to_game');
+const ResumeGameItemView = require('./ui/views/item/resume_game');
+const FindingGameItemView = require('./ui/views/item/finding_game');
+const ReconnectToGameItemView = require('./ui/views/item/reconnect_to_game');
 
-const GameLayout = require('apps/client/ui/views/layouts/game');
-const TutorialLayout = require('apps/client/ui/views/layouts/tutorial');
+const GameLayout = require('./ui/views/layouts/game');
+const TutorialLayout = require('./ui/views/layouts/tutorial');
 
-const VictoryItemView = require('apps/client/ui/views/item/victory');
+const VictoryItemView = require('./ui/views/item/victory');
 
-const MessagesCompositeView = require('apps/client/ui/views/composite/messages');
+const MessagesCompositeView = require('./ui/views/composite/messages');
 
-const ConfirmDialogItemView = require('apps/client/ui/views/item/confirm_dialog');
-const PromptDialogItemView = require('apps/client/ui/views/item/prompt_dialog');
-const ActivityDialogItemView = require('apps/client/ui/views/item/activity_dialog');
-const ErrorDialogItemView = require('apps/client/ui/views/item/error_dialog');
-const AnnouncementModalView = require('apps/client/ui/views/item/announcement_modal');
-const ShopSpecialProductAvailableDialogItemView = require('apps/client/ui/views2/shop/shop_special_product_available_dialog');
+const ConfirmDialogItemView = require('./ui/views/item/confirm_dialog');
+const PromptDialogItemView = require('./ui/views/item/prompt_dialog');
+const ActivityDialogItemView = require('./ui/views/item/activity_dialog');
+const ErrorDialogItemView = require('./ui/views/item/error_dialog');
+const AnnouncementModalView = require('./ui/views/item/announcement_modal');
+const ShopSpecialProductAvailableDialogItemView = require('./ui/views2/shop/shop_special_product_available_dialog');
 
-const ReplayEngine = require('apps/client/replay/replayEngine');
+const ReplayEngine = require('./replay/replayEngine');
 
-const AnalyticsTracker = require('apps/client/analyticsTracker');
+const AnalyticsTracker = require('./analyticsTracker');
 const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 const { onType } = require('@duelyst/common/utils/utils_promise');
 
 // require the Handlebars Template Helpers extension here since it modifies core Marionette code
-require('apps/client/ui/extensions/handlebars_template_helpers');
+require('./ui/extensions/handlebars_template_helpers');
 
 // patches bootstrap's tooltip/popover teardown; must run before any view shows one
-require('apps/client/ui/extensions/bootstrap_tooltip');
+require('./ui/extensions/bootstrap_tooltip');
 
 localStorage.debug = 'session:*';
 

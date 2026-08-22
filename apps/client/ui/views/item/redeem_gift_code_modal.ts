@@ -3,8 +3,8 @@
 var _ = require('underscore');
 var Analytics = require('@duelyst/common/analytics');
 var validator = require('validator');
-var Template = require('apps/client/ui/templates/item/redeem_gift_code_modal.hbs');
-var NavigationManager = require('apps/client/ui/managers/navigation_manager');
+var Template = require('../../templates/item/redeem_gift_code_modal.hbs');
+var NavigationManager = require('../../managers/navigation_manager');
 var i18next = require('i18next');
 var FormPromptModalItemView = require('./form_prompt_modal');
 

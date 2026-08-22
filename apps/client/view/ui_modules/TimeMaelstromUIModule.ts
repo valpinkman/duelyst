@@ -4,7 +4,7 @@ const SDK = require('@duelyst/sdk');
 const RSX = require('@duelyst/data/resources');
 const CONFIG = require('@duelyst/common/config');
 const EVENTS = require('@duelyst/common/event_types');
-const BaseParticleSystem = require('apps/client/view/nodes/BaseParticleSystem');
+const BaseParticleSystem = require('../nodes/BaseParticleSystem');
 const GameUIModule = require('./GameUIModule');
 
 const TimeMaelstromUIModule = GameUIModule.extend({

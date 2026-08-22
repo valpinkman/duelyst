@@ -1,12 +1,12 @@
 'use strict';
 
-var Session = require('apps/client/session2');
+var Session = require('../../../session2');
 var UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
 var SDK = require('@duelyst/sdk');
-var InventoryManager = require('apps/client/ui/managers/inventory_manager');
-var NavigationManager = require('apps/client/ui/managers/navigation_manager');
-var ProfileManager = require('apps/client/ui/managers/profile_manager');
-var ChangeBattleMapItemViewTempl = require('apps/client/ui/templates/item/change_battle_map_dialog.hbs');
+var InventoryManager = require('../../managers/inventory_manager');
+var NavigationManager = require('../../managers/navigation_manager');
+var ProfileManager = require('../../managers/profile_manager');
+var ChangeBattleMapItemViewTempl = require('../../templates/item/change_battle_map_dialog.hbs');
 var i18next = require('i18next');
 var FormPromptDialogItemView = require('./form_prompt_dialog');
 

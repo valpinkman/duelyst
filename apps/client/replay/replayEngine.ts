@@ -45,12 +45,12 @@ var ReplayEngine = (function () {
 module.exports = ReplayEngine;
 
 const SDK = require('@duelyst/sdk');
-const Scene = require('apps/client/view/Scene');
+const Scene = require('../view/Scene');
 const EventBus = require('@duelyst/common/eventbus');
 const EVENTS = require('@duelyst/common/event_types');
 const Logger = require('@duelyst/common/logger');
 const CONFIG = require('@duelyst/common/config');
-const NavigationManager = require('apps/client/ui/managers/navigation_manager');
+const NavigationManager = require('../ui/managers/navigation_manager');
 
 class _ReplayEngine {
   declare _currentUIEventTimeoutId: any;

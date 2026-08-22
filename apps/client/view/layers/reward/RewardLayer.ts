@@ -5,12 +5,12 @@ const EVENTS = require('@duelyst/common/event_types');
 const Logger = require('@duelyst/common/logger');
 const generatePushID = require('@duelyst/common/generate_push_id');
 const UtilsEngine = require('@duelyst/common/utils/utils_engine');
-const audio_engine = require('apps/client/audio/audio_engine');
+const audio_engine = require('../../../audio/audio_engine');
 const RSX = require('@duelyst/data/resources');
 const PKGS = require('@duelyst/data/packages');
-const BaseLayer = require('apps/client/view/layers/BaseLayer');
-const BaseSprite = require('apps/client/view/nodes/BaseSprite');
-const NavigationManager = require('apps/client/ui/managers/navigation_manager');
+const BaseLayer = require('../BaseLayer');
+const BaseSprite = require('../../nodes/BaseSprite');
+const NavigationManager = require('../../../ui/managers/navigation_manager');
 const i18next = require('i18next');
 
 /** **************************************************************************

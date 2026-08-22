@@ -6,7 +6,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const path = require('path');
-const { PROJECT_ROOT } = require('apps/server/lib/project_root');
+const { PROJECT_ROOT } = require('../lib/project_root');
 const os = require('os');
 const prettyjson = require('prettyjson');
 const express = require('express');
@@ -82,7 +82,7 @@ const poolStats = function (pool) {
  * here changes which routes exist -- in particular /api/me/qa stays gated on
  * config.isDevelopment() in server/routes/api.ts.
  */
-const { CLIENT_DIST, hasBundledClient } = require('apps/server/lib/bundled_client');
+const { CLIENT_DIST, hasBundledClient } = require('../lib/bundled_client');
 
 const serveIndex = function (req, res) {
   // set no cache header

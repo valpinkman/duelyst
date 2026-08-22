@@ -4,10 +4,10 @@ var Logger = require('@duelyst/common/logger');
 var CONFIG = require('@duelyst/common/config');
 var SDK = require('@duelyst/sdk');
 var UtilsEnv = require('@duelyst/common/utils/utils_env');
-var GameDataManager = require('apps/client/ui/managers/game_data_manager');
-var ProgressionManager = require('apps/client/ui/managers/progression_manager');
-var CardsCollection = require('apps/client/ui/collections/cards');
-var Firebase = require('apps/client/firebase');
+var GameDataManager = require('../managers/game_data_manager');
+var ProgressionManager = require('../managers/progression_manager');
+var CardsCollection = require('../collections/cards');
+var Firebase = require('../../firebase');
 var i18next = require('i18next');
 
 var DeckModel = Backbone.Model.extend({

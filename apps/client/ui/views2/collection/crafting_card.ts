@@ -1,7 +1,7 @@
 'use strict';
 
 var CONFIG = require('@duelyst/common/config');
-var CardCompositeView = require('apps/client/ui/views/composite/card');
+var CardCompositeView = require('../../views/composite/card');
 
 var CraftingCardCompositeView = CardCompositeView.extend({
   draggable: true,

@@ -6,11 +6,11 @@ var SDK = require('@duelyst/sdk');
 var _ = require('underscore');
 var CONFIG = require('@duelyst/common/config');
 var RSX = require('@duelyst/data/resources');
-var EmotesListCompositeView = require('apps/client/ui/views/composite/emotes-list');
-var EmoteItemView = require('apps/client/ui/views/item/emote');
-var TransitionRegion = require('apps/client/ui/views/regions/transition');
-var InventoryManager = require('apps/client/ui/managers/inventory_manager');
-var PlayerPopoverLayoutTempl = require('apps/client/ui/templates/layouts/game_player_popover.hbs');
+var EmotesListCompositeView = require('../composite/emotes-list');
+var EmoteItemView = require('../item/emote');
+var TransitionRegion = require('../regions/transition');
+var InventoryManager = require('../../managers/inventory_manager');
+var PlayerPopoverLayoutTempl = require('../../templates/layouts/game_player_popover.hbs');
 
 /**
  * Abstract player popover layout.

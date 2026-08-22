@@ -5,11 +5,11 @@
 var CONFIG = require('@duelyst/common/config');
 var EventBus = require('@duelyst/common/eventbus');
 var EVENTS = require('@duelyst/common/event_types');
-var UtilsUI = require('apps/client/ui/utils_ui');
+var UtilsUI = require('../../utils_ui');
 var RSX = require('@duelyst/data/resources');
 var SDK = require('@duelyst/sdk');
-var audio_engine = require('apps/client/audio/audio_engine');
-var InventoryManager = require('apps/client/ui/managers/inventory_manager');
+var audio_engine = require('../../../audio/audio_engine');
+var InventoryManager = require('../../managers/inventory_manager');
 var CollectionCardCompositeView = require('./collection_card');
 var SelectedCardLayoutTempl = require('./templates/selected_card.hbs');
 

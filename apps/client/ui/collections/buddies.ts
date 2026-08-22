@@ -2,8 +2,8 @@
 
 var CONFIG = require('@duelyst/common/config');
 var Logger = require('@duelyst/common/logger');
-var PresenceModel = require('apps/client/ui/models/presence');
-var DuelystFirebase = require('apps/client/ui/extensions/duelyst_firebase');
+var PresenceModel = require('../models/presence');
+var DuelystFirebase = require('../extensions/duelyst_firebase');
 var PresenceCollection = require('./presence');
 
 var BuddiesCollection = DuelystFirebase.Collection.extend({

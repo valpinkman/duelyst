@@ -1,5 +1,5 @@
-const distanceBetweenBoardPositions = require('apps/server/ai/scoring/utils/utils_distanceBetweenBoardPositions');
-const BOUNTY = require('apps/server/ai/scoring/bounty');
+const distanceBetweenBoardPositions = require('../utils/utils_distanceBetweenBoardPositions');
+const BOUNTY = require('../bounty');
 const _ = require('underscore');
 const ModifierBackstab = require('@duelyst/sdk/modifiers/modifierBackstab');
 

@@ -1,11 +1,11 @@
 const Logger = require('@duelyst/common/logger');
 const EVENTS = require('@duelyst/common/event_types');
 const UtilsEnv = require('@duelyst/common/utils/utils_env');
-const Scene = require('apps/client/view/Scene');
-const GameLayer = require('apps/client/view/layers/game/GameLayer');
+const Scene = require('../view/Scene');
+const GameLayer = require('../view/layers/game/GameLayer');
 const SDK = require('@duelyst/sdk');
-const NetworkManager = require('apps/client/networkManager');
-const PackageManager = require('apps/client/ui/managers/package_manager');
+const NetworkManager = require('../networkManager');
+const PackageManager = require('../ui/managers/package_manager');
 const _ = require('underscore');
 
 /**

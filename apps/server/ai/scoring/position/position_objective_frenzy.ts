@@ -1,8 +1,8 @@
-const BOUNTY = require('apps/server/ai/scoring/bounty');
+const BOUNTY = require('../bounty');
 const _ = require('underscore');
 const ModifierFrenzy = require('@duelyst/sdk/modifiers/modifierFrenzy');
 const CardType = require('@duelyst/sdk/cards/cardType');
-const distanceBetweenBoardPositions = require('apps/server/ai/scoring/utils/utils_distanceBetweenBoardPositions');
+const distanceBetweenBoardPositions = require('../utils/utils_distanceBetweenBoardPositions');
 
 const position_objective_frenzy = function (gameSession, unit, position, bestObjective) {
   // rewards bounty for spaces adjacent to best target for each adjacent enemy unit

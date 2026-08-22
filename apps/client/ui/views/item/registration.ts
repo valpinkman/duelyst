@@ -3,9 +3,9 @@
 var _ = require('underscore');
 var Analytics = require('@duelyst/common/analytics');
 var validator = require('validator');
-var Session = require('apps/client/session2');
-var RegistrationItemViewTempl = require('apps/client/ui/templates/item/registration.hbs');
-var NavigationManager = require('apps/client/ui/managers/navigation_manager');
+var Session = require('../../../session2');
+var RegistrationItemViewTempl = require('../../templates/item/registration.hbs');
+var NavigationManager = require('../../managers/navigation_manager');
 var i18next = require('i18next');
 var FormPromptModalItemView = require('./form_prompt_modal');
 

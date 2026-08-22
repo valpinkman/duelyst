@@ -2,9 +2,9 @@
 
 var EVENTS = require('@duelyst/common/event_types');
 var SDK = require('@duelyst/sdk');
-const NetworkManager = require('apps/client/networkManager');
-var Animations = require('apps/client/ui/views/animations');
-var GameChooseHandTemplate = require('apps/client/ui/templates/item/game_choose_hand.hbs');
+const NetworkManager = require('../../../networkManager');
+var Animations = require('../animations');
+var GameChooseHandTemplate = require('../../templates/item/game_choose_hand.hbs');
 
 var GameChooseHandItemView = Backbone.Marionette.ItemView.extend({
   id: 'app-game-choose-hand',

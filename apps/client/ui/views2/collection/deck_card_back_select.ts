@@ -1,12 +1,12 @@
 'use strict';
 
 var SDK = require('@duelyst/sdk');
-var audio_engine = require('apps/client/audio/audio_engine');
+var audio_engine = require('../../../audio/audio_engine');
 var CONFIG = require('@duelyst/common/config');
 var RSX = require('@duelyst/data/resources');
-var Animations = require('apps/client/ui/views/animations');
-var NavigationManager = require('apps/client/ui/managers/navigation_manager');
-var InventoryManager = require('apps/client/ui/managers/inventory_manager');
+var Animations = require('../../views/animations');
+var NavigationManager = require('../../managers/navigation_manager');
+var InventoryManager = require('../../managers/inventory_manager');
 var DeckPreviewItemView = require('./deck_preview');
 var DeckCardBackSelectTmpl = require('./templates/deck_card_back_select.hbs');
 

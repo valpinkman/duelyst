@@ -6,10 +6,10 @@ var semver = require('semver');
 var Logger = require('@duelyst/common/logger');
 var EventBus = require('@duelyst/common/eventbus');
 var EVENTS = require('@duelyst/common/event_types');
-var ChatManager = require('apps/client/ui/managers/chat_manager');
-var ProfileManager = require('apps/client/ui/managers/profile_manager');
-var ErrorDialogItemView = require('apps/client/ui/views/item/error_dialog');
-var CopyReplayDialogView = require('apps/client/ui/views2/profile/profile_match_history_copy_replay_to_clipboard_dialog');
+var ChatManager = require('../../managers/chat_manager');
+var ProfileManager = require('../../managers/profile_manager');
+var ErrorDialogItemView = require('../../views/item/error_dialog');
+var CopyReplayDialogView = require('./profile_match_history_copy_replay_to_clipboard_dialog');
 var Template = require('./templates/profile_match_history_collection.hbs');
 
 var ProfileMatchHistoryCollectionView = Backbone.Marionette.ItemView.extend({

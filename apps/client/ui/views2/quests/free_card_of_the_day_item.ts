@@ -2,13 +2,13 @@
 
 var SDK = require('@duelyst/sdk');
 var moment = require('moment');
-var InventoryManager = require('apps/client/ui/managers/inventory_manager');
-var NavigationManager = require('apps/client/ui/managers/navigation_manager');
+var InventoryManager = require('../../managers/inventory_manager');
+var NavigationManager = require('../../managers/navigation_manager');
 var Logger = require('@duelyst/common/logger');
 var EventBus = require('@duelyst/common/eventbus');
 var EVENTS = require('@duelyst/common/event_types');
-var ProgressionRewardLayer = require('apps/client/view/layers/reward/ProgressionRewardLayer');
-var Scene = require('apps/client/view/Scene');
+var ProgressionRewardLayer = require('../../../view/layers/reward/ProgressionRewardLayer');
+var Scene = require('../../../view/Scene');
 var i18next = require('i18next');
 var Template = require('./templates/free_card_of_the_day_item.hbs');
 

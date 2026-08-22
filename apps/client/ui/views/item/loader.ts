@@ -1,6 +1,6 @@
 'use strict';
 
-var LoaderTmpl = require('apps/client/ui/templates/item/loader.hbs');
+var LoaderTmpl = require('../../templates/item/loader.hbs');
 
 var LoaderItemView = Backbone.Marionette.ItemView.extend({
   template: LoaderTmpl,

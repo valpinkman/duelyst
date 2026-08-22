@@ -1,11 +1,11 @@
 'use strict';
 
-var Scene = require('apps/client/view/Scene');
-var NavigationManager = require('apps/client/ui/managers/navigation_manager');
-var InventoryManager = require('apps/client/ui/managers/inventory_manager');
+var Scene = require('../../../view/Scene');
+var NavigationManager = require('../../managers/navigation_manager');
+var InventoryManager = require('../../managers/inventory_manager');
 var Logger = require('@duelyst/common/logger');
-var SlidingPanelSelectCompositeView = require('apps/client/ui/views/composite/sliding_panel_select');
-var RiftDeckSelectLayer = require('apps/client/view/layers/rift/RiftDeckSelectLayer');
+var SlidingPanelSelectCompositeView = require('../../views/composite/sliding_panel_select');
+var RiftDeckSelectLayer = require('../../../view/layers/rift/RiftDeckSelectLayer');
 var RiftRunDeckView = require('./rift_run_deck');
 var RiftRunsEmptyView = require('./rift_runs_empty');
 var Templ = require('./templates/rift_runs_composite.hbs');

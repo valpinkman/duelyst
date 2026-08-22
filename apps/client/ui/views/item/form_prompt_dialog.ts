@@ -2,8 +2,8 @@
 
 var EVENTS = require('@duelyst/common/event_types');
 var RSX = require('@duelyst/data/resources');
-var audio_engine = require('apps/client/audio/audio_engine');
-var NavigationManager = require('apps/client/ui/managers/navigation_manager');
+var audio_engine = require('../../../audio/audio_engine');
+var NavigationManager = require('../../managers/navigation_manager');
 var FormPromptModalItemView = require('./form_prompt_modal');
 
 /**

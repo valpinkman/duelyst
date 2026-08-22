@@ -6,7 +6,7 @@
  */
 const debug = require('debug')('session');
 const { EventEmitter } = require('events');
-const Firebase = require('apps/client/firebase');
+const Firebase = require('./firebase');
 const fetch = require('isomorphic-fetch');
 const moment = require('moment');
 const Storage = require('@duelyst/common/storage');

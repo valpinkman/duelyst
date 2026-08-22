@@ -5,9 +5,9 @@ const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 
 // vendor engine extensions
 // must be required to activate
-const CCInjections = require('apps/client/view/extensions/CCInjections');
-const NodeInjections = require('apps/client/view/extensions/NodeInjections');
-const RenderingInjections = require('apps/client/view/extensions/RenderingInjections');
+const CCInjections = require('./extensions/CCInjections');
+const NodeInjections = require('./extensions/NodeInjections');
+const RenderingInjections = require('./extensions/RenderingInjections');
 
 const Scene: Record<string, any> = {};
 
@@ -66,17 +66,17 @@ module.exports = Scene;
 const EventBus = require('@duelyst/common/eventbus');
 const EVENTS = require('@duelyst/common/event_types');
 const SDK = require('@duelyst/sdk');
-const NodeFactorySetup = require('apps/client/view/helpers/NodeFactorySetup');
-const FX = require('apps/client/view/fx/FX');
-const TransitionLayer = require('apps/client/view/layers/TransitionLayer');
-const LoadLayer = require('apps/client/view/layers/start/LoadLayer');
-const MainObsidianWoodsLayer = require('apps/client/view/layers/start/MainObsidianWoodsLayer');
-const MainMagaariEmberHighlandsLayer = require('apps/client/view/layers/start/MainMagaariEmberHighlandsLayer');
-const MainFrostfireLayer = require('apps/client/view/layers/start/MainFrostfireLayer');
-const MainVetruvianLayer = require('apps/client/view/layers/start/MainVetruvianLayer');
-const MainShimzarLayer = require('apps/client/view/layers/start/MainShimzarLayer');
-const MatchmakingLayer = require('apps/client/view/layers/pregame/MatchmakingLayer');
-const GameLayer = require('apps/client/view/layers/game/GameLayer');
+const NodeFactorySetup = require('./helpers/NodeFactorySetup');
+const FX = require('./fx/FX');
+const TransitionLayer = require('./layers/TransitionLayer');
+const LoadLayer = require('./layers/start/LoadLayer');
+const MainObsidianWoodsLayer = require('./layers/start/MainObsidianWoodsLayer');
+const MainMagaariEmberHighlandsLayer = require('./layers/start/MainMagaariEmberHighlandsLayer');
+const MainFrostfireLayer = require('./layers/start/MainFrostfireLayer');
+const MainVetruvianLayer = require('./layers/start/MainVetruvianLayer');
+const MainShimzarLayer = require('./layers/start/MainShimzarLayer');
+const MatchmakingLayer = require('./layers/pregame/MatchmakingLayer');
+const GameLayer = require('./layers/game/GameLayer');
 
 /** **************************************************************************
  Scene

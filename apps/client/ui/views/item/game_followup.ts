@@ -1,8 +1,8 @@
 'use strict';
 
 var SDK = require('@duelyst/sdk');
-var Animations = require('apps/client/ui/views/animations');
-var GameFollowupTemplate = require('apps/client/ui/templates/item/game_followup.hbs');
+var Animations = require('../animations');
+var GameFollowupTemplate = require('../../templates/item/game_followup.hbs');
 
 var GameFollowupItemView = Backbone.Marionette.ItemView.extend({
   id: 'app-followup',

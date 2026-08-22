@@ -7,10 +7,10 @@ const UtilsEngine = require('@duelyst/common/utils/utils_engine');
 const PKGS = require('@duelyst/data/packages');
 const SDK = require('@duelyst/sdk');
 const RSX = require('@duelyst/data/resources');
-const audio_engine = require('apps/client/audio/audio_engine');
-const BaseSprite = require('apps/client/view/nodes/BaseSprite');
-const GlowSprite = require('apps/client/view/nodes/GlowSprite');
-const FXRipplingGlowImageMapSprite = require('apps/client/view/nodes/fx/FXRipplingGlowImageMapSprite');
+const audio_engine = require('../../../audio/audio_engine');
+const BaseSprite = require('../BaseSprite');
+const GlowSprite = require('../GlowSprite');
+const FXRipplingGlowImageMapSprite = require('../fx/FXRipplingGlowImageMapSprite');
 const SpeechNode = require('./SpeechNode');
 
 /** **************************************************************************

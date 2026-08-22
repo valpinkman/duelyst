@@ -3,31 +3,31 @@
 'use strict';
 
 var SDK = require('@duelyst/sdk');
-var Scene = require('apps/client/view/Scene');
+var Scene = require('../../../view/Scene');
 var PKGS = require('@duelyst/data/packages');
 var EventBus = require('@duelyst/common/eventbus');
 var EVENTS = require('@duelyst/common/event_types');
 var Logger = require('@duelyst/common/logger');
 var CONFIG = require('@duelyst/common/config');
 var Analytics = require('@duelyst/common/analytics');
-var AnalyticsTracker = require('apps/client/analyticsTracker');
-var audio_engine = require('apps/client/audio/audio_engine');
+var AnalyticsTracker = require('../../../analyticsTracker');
+var audio_engine = require('../../../audio/audio_engine');
 var UtilsEnv = require('@duelyst/common/utils/utils_env');
-var PackageManager = require('apps/client/ui/managers/package_manager');
-var NavigationManager = require('apps/client/ui/managers/navigation_manager');
-var GamesManager = require('apps/client/ui/managers/games_manager');
-var InventoryManager = require('apps/client/ui/managers/inventory_manager');
-var ProfileManager = require('apps/client/ui/managers/profile_manager');
+var PackageManager = require('../../managers/package_manager');
+var NavigationManager = require('../../managers/navigation_manager');
+var GamesManager = require('../../managers/games_manager');
+var InventoryManager = require('../../managers/inventory_manager');
+var ProfileManager = require('../../managers/profile_manager');
 
-var ErrorDialogItemView = require('apps/client/ui/views/item/error_dialog');
-var ActivityDialogItemView = require('apps/client/ui/views/item/activity_dialog');
+var ErrorDialogItemView = require('../../views/item/error_dialog');
+var ActivityDialogItemView = require('../../views/item/activity_dialog');
 
-var DuelystBackbone = require('apps/client/ui/extensions/duelyst_backbone');
+var DuelystBackbone = require('../../extensions/duelyst_backbone');
 var _ = require('underscore');
 var moment = require('moment');
 var ShopData = require('@duelyst/data/shop.json');
 
-// var RiftLayer = require('apps/client/view/layers/rift/RiftLayer')
+// var RiftLayer = require('../../../view/layers/rift/RiftLayer')
 var RiftRunsCompositeView = require('./rift_runs_composite');
 var RiftRunLayout = require('./rift_run_layout');
 var Templ = require('./templates/rift_layout.hbs');

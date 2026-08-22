@@ -1,7 +1,7 @@
-const BOUNTY = require('apps/server/ai/scoring/bounty');
+const BOUNTY = require('../bounty');
 const _ = require('underscore');
 const CardType = require('@duelyst/sdk/cards/cardType');
-const isUnitEvasive = require('apps/server/ai/scoring/utils/utils_isUnitEvasive');
+const isUnitEvasive = require('../utils/utils_isUnitEvasive');
 
 const position_proximityToEnemies = function (gameSession, unit, position) {
   let score = 0;

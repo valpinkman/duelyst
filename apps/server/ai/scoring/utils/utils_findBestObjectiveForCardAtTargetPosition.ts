@@ -1,5 +1,5 @@
-const findNearestObjective = require('apps/server/ai/scoring/utils/utils_findNearestObjective');
-const findAttackObjectivesAndScoresForUnit = require('apps/server/ai/scoring/utils/utils_findAttackObjectivesAndScoresForUnit');
+const findNearestObjective = require('./utils_findNearestObjective');
+const findAttackObjectivesAndScoresForUnit = require('./utils_findAttackObjectivesAndScoresForUnit');
 const SDK = require('@duelyst/sdk');
 
 const findBestObjectiveForCardAtTargetPosition = function (gameSession, card, targetPosition) {

@@ -1,6 +1,6 @@
 'use strict';
 
-var SlidingPanelItemView = require('apps/client/ui/views/item/sliding_panel');
+var SlidingPanelItemView = require('../../views/item/sliding_panel');
 var Logger = require('@duelyst/common/logger');
 var moment = require('moment');
 var Templ = require('./templates/arena_run_deck.hbs');

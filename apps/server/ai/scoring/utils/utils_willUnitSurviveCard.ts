@@ -1,6 +1,6 @@
-const CardIntent = require('apps/server/ai/card_intent/card_intent');
-const CardTargetType = require('apps/server/ai/card_intent/card_target_type');
-const CardIntentType = require('apps/server/ai/card_intent/card_intent_type');
+const CardIntent = require('../../card_intent/card_intent');
+const CardTargetType = require('../../card_intent/card_target_type');
+const CardIntentType = require('../../card_intent/card_intent_type');
 const _ = require('underscore');
 
 /**

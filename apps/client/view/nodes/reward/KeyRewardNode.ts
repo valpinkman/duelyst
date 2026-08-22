@@ -6,9 +6,9 @@ const EventBus = require('@duelyst/common/eventbus');
 const EVENTS = require('@duelyst/common/event_types');
 const RSX = require('@duelyst/data/resources');
 const PKGS = require('@duelyst/data/packages');
-const FigureEight = require('apps/client/view/actions/FigureEight');
-const BaseSprite = require('apps/client/view/nodes/BaseSprite');
-const BaseParticleSystem = require('apps/client/view/nodes/BaseParticleSystem');
+const FigureEight = require('../../actions/FigureEight');
+const BaseSprite = require('../BaseSprite');
+const BaseParticleSystem = require('../BaseParticleSystem');
 const RewardNode = require('./RewardNode');
 
 /** **************************************************************************

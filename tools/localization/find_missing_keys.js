@@ -12,8 +12,8 @@ const npmRun = require('npm-run');
 const _ = require('underscore');
 const fs = require('fs');
 
-const helpers = require('tools/helpers');
-const UtilsLocalization = require('tools/localization/utils_localization');
+const helpers = require('../helpers');
+const UtilsLocalization = require('./utils_localization');
 
 // git log -G "win_streak_message" --pretty=oneline ./rank.json
 

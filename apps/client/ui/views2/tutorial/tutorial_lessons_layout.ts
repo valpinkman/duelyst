@@ -7,21 +7,21 @@ var EventBus = require('@duelyst/common/eventbus');
 var EVENTS = require('@duelyst/common/event_types');
 var CONFIG = require('@duelyst/common/config');
 var UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
-var Scene = require('apps/client/view/Scene');
+var Scene = require('../../../view/Scene');
 var SDK = require('@duelyst/sdk');
 var moment = require('moment');
 var RSX = require('@duelyst/data/resources');
-var audio_engine = require('apps/client/audio/audio_engine');
+var audio_engine = require('../../../audio/audio_engine');
 // template
 //
-var Animations = require('apps/client/ui/views/animations');
-var NavigationManager = require('apps/client/ui/managers/navigation_manager');
-var NewPlayerManager = require('apps/client/ui/managers/new_player_manager');
-var ProgressionManager = require('apps/client/ui/managers/progression_manager');
-var UtilsUI = require('apps/client/ui/utils_ui');
-var DuelystBackbone = require('apps/client/ui/extensions/duelyst_backbone');
-var DuelystFirebase = require('apps/client/ui/extensions/duelyst_firebase');
-var ActivityDialogItemView = require('apps/client/ui/views/item/activity_dialog');
+var Animations = require('../../views/animations');
+var NavigationManager = require('../../managers/navigation_manager');
+var NewPlayerManager = require('../../managers/new_player_manager');
+var ProgressionManager = require('../../managers/progression_manager');
+var UtilsUI = require('../../utils_ui');
+var DuelystBackbone = require('../../extensions/duelyst_backbone');
+var DuelystFirebase = require('../../extensions/duelyst_firebase');
+var ActivityDialogItemView = require('../../views/item/activity_dialog');
 var i18next = require('i18next');
 var TutorialLessonsLayoutTemplate = require('./templates/tutorial_lessons_layout.hbs');
 

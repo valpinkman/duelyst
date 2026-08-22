@@ -11,7 +11,7 @@ const EVENTS = require('@duelyst/common/event_types');
 const Logger = require('@duelyst/common/logger');
 const CONFIG = require('@duelyst/common/config');
 const SDK = require('@duelyst/sdk');
-const audio_engine = require('apps/client/audio/audio_engine');
+const audio_engine = require('../audio/audio_engine');
 const UtilsEngine = require('@duelyst/common/utils/utils_engine');
 
 /**

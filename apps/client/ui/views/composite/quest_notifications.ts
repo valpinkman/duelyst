@@ -1,8 +1,8 @@
 'use strict';
 
 var CONFIG = require('@duelyst/common/config');
-var NotificationsManager = require('apps/client/ui/managers/notifications_manager');
-var QuestNotificationItemView = require('apps/client/ui/views/item/quest_notification');
+var NotificationsManager = require('../../managers/notifications_manager');
+var QuestNotificationItemView = require('../item/quest_notification');
 var NotificationsCompositeView = require('./notifications');
 
 var QuestNotificationsView = NotificationsCompositeView.extend({

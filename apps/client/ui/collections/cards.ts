@@ -3,10 +3,10 @@
 var Logger = require('@duelyst/common/logger');
 var CONFIG = require('@duelyst/common/config');
 var SDK = require('@duelyst/sdk');
-var CardModel = require('apps/client/ui/models/card');
-var InventoryManager = require('apps/client/ui/managers/inventory_manager');
-var AchievementsManager = require('apps/client/ui/managers/achievements_manager');
-var ProgressionManager = require('apps/client/ui/managers/progression_manager');
+var CardModel = require('../models/card');
+var InventoryManager = require('../managers/inventory_manager');
+var AchievementsManager = require('../managers/achievements_manager');
+var ProgressionManager = require('../managers/progression_manager');
 var i18next = require('i18next');
 
 var CardsCollection = Backbone.Collection.extend({

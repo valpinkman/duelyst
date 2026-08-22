@@ -2,13 +2,13 @@
 
 'use strict';
 
-var Scene = require('apps/client/view/Scene');
+var Scene = require('../../../view/Scene');
 var CONFIG = require('@duelyst/common/config');
 var RSX = require('@duelyst/data/resources');
 var generatePushID = require('@duelyst/common/generate_push_id');
-var Animations = require('apps/client/ui/views/animations');
-var PlayModeItemView = require('apps/client/ui/views/item/play_mode');
-var PlayLayer = require('apps/client/view/layers/pregame/PlayLayer');
+var Animations = require('../animations');
+var PlayModeItemView = require('../item/play_mode');
+var PlayLayer = require('../../../view/layers/pregame/PlayLayer');
 var audio_engine = require('../../../audio/audio_engine');
 var SlidingPanelSelectCompositeView = require('./sliding_panel_select');
 var PlayModeSelectTmpl = require('../../templates/composite/play_mode_select.hbs');

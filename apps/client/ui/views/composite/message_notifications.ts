@@ -1,10 +1,10 @@
 'use strict';
 
 var CONFIG = require('@duelyst/common/config');
-var NotificationsManager = require('apps/client/ui/managers/notifications_manager');
-var NavigationManager = require('apps/client/ui/managers/navigation_manager');
-var MessageItemView = require('apps/client/ui/views/item/message');
-var audio_engine = require('apps/client/audio/audio_engine');
+var NotificationsManager = require('../../managers/notifications_manager');
+var NavigationManager = require('../../managers/navigation_manager');
+var MessageItemView = require('../item/message');
+var audio_engine = require('../../../audio/audio_engine');
 var BuddiesLayout = require('../layouts/buddies');
 var NotificationsCompositeView = require('./notifications');
 

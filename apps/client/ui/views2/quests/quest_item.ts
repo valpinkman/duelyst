@@ -1,9 +1,9 @@
 'use strict';
 
 var Logger = require('@duelyst/common/logger');
-var QuestsManager = require('apps/client/ui/managers/quests_manager');
+var QuestsManager = require('../../managers/quests_manager');
 var QuestFactory = require('@duelyst/sdk').QuestFactory;
-var NavigationManager = require('apps/client/ui/managers/navigation_manager');
+var NavigationManager = require('../../managers/navigation_manager');
 var QuestItemViewTempl = require('./templates/quest_item.hbs');
 
 var QuestItemView = Backbone.Marionette.ItemView.extend({

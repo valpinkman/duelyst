@@ -1,6 +1,6 @@
-const findNearestObjective = require('apps/server/ai/scoring/utils/utils_findNearestObjective');
-const distanceBetweenBoardPositions = require('apps/server/ai/scoring/utils/utils_distanceBetweenBoardPositions');
-const BOUNTY = require('apps/server/ai/scoring/bounty');
+const findNearestObjective = require('../utils/utils_findNearestObjective');
+const distanceBetweenBoardPositions = require('../utils/utils_distanceBetweenBoardPositions');
+const BOUNTY = require('../bounty');
 const _ = require('underscore');
 const SDK = require('@duelyst/sdk');
 

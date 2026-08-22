@@ -8,15 +8,15 @@ const SDK = require('@duelyst/sdk');
 const RSX = require('@duelyst/data/resources');
 const UtilsEngine = require('@duelyst/common/utils/utils_engine');
 const UtilsPosition = require('@duelyst/common/utils/utils_position');
-const AmbientLightColorTo = require('apps/client/view/actions/AmbientLightColorTo');
-const BaseParticleSystem = require('apps/client/view/nodes/BaseParticleSystem');
-const BaseSprite = require('apps/client/view/nodes/BaseSprite');
-const EnvironmentSprite = require('apps/client/view/nodes/map/EnvironmentSprite');
-const GroundSprite = require('apps/client/view/nodes/map/GroundSprite');
-const TileMapGridSprite = require('apps/client/view/nodes/map/TileMapGridSprite');
-const Light = require('apps/client/view/nodes/fx/Light');
-const FXSprite = require('apps/client/view/nodes/fx/FXSprite');
-const audio_engine = require('apps/client/audio/audio_engine');
+const AmbientLightColorTo = require('../../actions/AmbientLightColorTo');
+const BaseParticleSystem = require('../../nodes/BaseParticleSystem');
+const BaseSprite = require('../../nodes/BaseSprite');
+const EnvironmentSprite = require('../../nodes/map/EnvironmentSprite');
+const GroundSprite = require('../../nodes/map/GroundSprite');
+const TileMapGridSprite = require('../../nodes/map/TileMapGridSprite');
+const Light = require('../../nodes/fx/Light');
+const FXSprite = require('../../nodes/fx/FXSprite');
+const audio_engine = require('../../../audio/audio_engine');
 const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 
 /** **************************************************************************

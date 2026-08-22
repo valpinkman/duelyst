@@ -1,6 +1,6 @@
 'use strict';
 
-var Animations = require('apps/client/ui/views/animations');
+var Animations = require('../animations');
 
 // override marionette's region's _destroyView method to call prepareForDestroy method on views
 // this allows us to ensure a method gets called

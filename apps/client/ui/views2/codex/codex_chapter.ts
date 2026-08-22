@@ -5,12 +5,12 @@
 var CONFIG = require('@duelyst/common/config');
 var EventBus = require('@duelyst/common/eventbus');
 var EVENTS = require('@duelyst/common/event_types');
-var UtilsUI = require('apps/client/ui/utils_ui');
-var audio_engine = require('apps/client/audio/audio_engine');
-var audio_object = require('apps/client/audio/audio_object');
+var UtilsUI = require('../../utils_ui');
+var audio_engine = require('../../../audio/audio_engine');
+var audio_object = require('../../../audio/audio_object');
 var RSX = require('@duelyst/data/resources');
-var Animations = require('apps/client/ui/views/animations');
-var ProfileManager = require('apps/client/ui/managers/profile_manager');
+var Animations = require('../../views/animations');
+var ProfileManager = require('../../managers/profile_manager');
 var CodexChapterTmpl = require('./templates/codex_chapter.hbs');
 
 var CodexChapterItemView = Backbone.Marionette.ItemView.extend({

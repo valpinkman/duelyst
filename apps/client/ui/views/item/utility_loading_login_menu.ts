@@ -2,8 +2,8 @@
 
 var Logger = require('@duelyst/common/logger');
 var CONFIG = require('@duelyst/common/config');
-var UtilityLoadingLoginMenuTmpl = require('apps/client/ui/templates/item/utility_loading_login_menu.hbs');
-var NavigationManager = require('apps/client/ui/managers/navigation_manager');
+var UtilityLoadingLoginMenuTmpl = require('../../templates/item/utility_loading_login_menu.hbs');
+var NavigationManager = require('../../managers/navigation_manager');
 var UtilsEngine = require('@duelyst/common/utils/utils_engine');
 var UtilityMenuItemView = require('./utility_menu');
 var EscMainMenuItemView = require('./esc_main_menu');

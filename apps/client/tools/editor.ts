@@ -8,7 +8,7 @@
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-const whenLocalizationReady = require('apps/client/localization/index');
+const whenLocalizationReady = require('../localization/index');
 const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 
 whenLocalizationReady.then(() => {
@@ -17,13 +17,13 @@ whenLocalizationReady.then(() => {
   let EVENTS = require('@duelyst/common/event_types');
   const UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
   const UtilsEnv = require('@duelyst/common/utils/utils_env');
-  const PackageManager = require('apps/client/ui/managers/package_manager.js');
+  const PackageManager = require('../ui/managers/package_manager.js');
   const DATA = (window.DATA = require('@duelyst/data'));
   const SDK = (window.SDK = require('@duelyst/sdk'));
   const RSX = (window.RSX = require('@duelyst/data/resources'));
   const PERF = (window.PERF = require('./performance'));
-  const Scene = require('apps/client/view/Scene');
-  const NodeFactory = require('apps/client/view/helpers/NodeFactory');
+  const Scene = require('../view/Scene');
+  const NodeFactory = require('../view/helpers/NodeFactory');
   const EventBus = require('@duelyst/common/eventbus');
   EVENTS = require('@duelyst/common/event_types');
 
@@ -34,8 +34,8 @@ whenLocalizationReady.then(() => {
 
   const QuestType = require('@duelyst/sdk/quests/questTypeLookup');
   const Analytics = require('@duelyst/common/analytics');
-  const GameDataManager = require('apps/client/ui/managers/game_data_manager');
-  const CrateManager = require('apps/client/ui/managers/crate_manager');
+  const GameDataManager = require('../ui/managers/game_data_manager');
+  const CrateManager = require('../ui/managers/crate_manager');
 
   const Storage = require('@duelyst/common/storage');
 

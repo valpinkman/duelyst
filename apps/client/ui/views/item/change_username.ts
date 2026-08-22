@@ -1,12 +1,12 @@
 'use strict';
 
-var Session = require('apps/client/session2');
+var Session = require('../../../session2');
 var validator = require('validator');
 var Logger = require('@duelyst/common/logger');
-var Animations = require('apps/client/ui/views/animations');
-var ChangeUsernameTmpl = require('apps/client/ui/templates/item/change_username.hbs');
+var Animations = require('../animations');
+var ChangeUsernameTmpl = require('../../templates/item/change_username.hbs');
 var moment = require('moment');
-var ProfileManager = require('apps/client/ui/managers/profile_manager');
+var ProfileManager = require('../../managers/profile_manager');
 var FormPromptDialogItemView = require('./form_prompt_dialog');
 
 var ChangeUsernameItemView = FormPromptDialogItemView.extend({

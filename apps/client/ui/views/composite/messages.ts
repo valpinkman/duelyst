@@ -1,8 +1,8 @@
 'use strict';
 
-var MessageItemView = require('apps/client/ui/views/item/message');
-var MessagesTmpl = require('apps/client/ui/templates/composite/messages.hbs');
-var ProfileManager = require('apps/client/ui/managers/profile_manager');
+var MessageItemView = require('../item/message');
+var MessagesTmpl = require('../../templates/composite/messages.hbs');
+var ProfileManager = require('../../managers/profile_manager');
 
 var MessagesView = Backbone.Marionette.CompositeView.extend({
   initialize: function () {

@@ -13,10 +13,10 @@ _ShopManager.current = _ShopManager.getInstance;
 module.exports = _ShopManager;
 
 var _ = require('underscore');
-var Firebase = require('apps/client/firebase');
+var Firebase = require('../../firebase');
 var Logger = require('@duelyst/common/logger');
-var DuelystFirebase = require('apps/client/ui/extensions/duelyst_firebase');
-var DuelystBackbone = require('apps/client/ui/extensions/duelyst_backbone');
+var DuelystFirebase = require('../extensions/duelyst_firebase');
+var DuelystBackbone = require('../extensions/duelyst_backbone');
 var moment = require('moment');
 var Analytics = require('@duelyst/common/analytics');
 var CosmeticsFactory = require('@duelyst/sdk/cosmetics/cosmeticsFactory');

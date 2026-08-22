@@ -1,6 +1,6 @@
 'use strict';
 
-var MainNotificationItemView = require('apps/client/ui/views/item/main_notification');
+var MainNotificationItemView = require('../item/main_notification');
 var NotificationsCompositeView = require('./notifications');
 
 var MainNotificationsView = NotificationsCompositeView.extend({

@@ -14,9 +14,9 @@ module.exports = _CosmeticChestManager;
 
 var EventBus = require('@duelyst/common/eventbus');
 var EVENTS = require('@duelyst/common/event_types');
-var DuelystBackbone = require('apps/client/ui/extensions/duelyst_backbone');
-var DuelystFirebase = require('apps/client/ui/extensions/duelyst_firebase');
-var NewPlayerManager = require('apps/client/ui/managers/new_player_manager');
+var DuelystBackbone = require('../extensions/duelyst_backbone');
+var DuelystFirebase = require('../extensions/duelyst_firebase');
+var NewPlayerManager = require('./new_player_manager');
 var Analytics = require('@duelyst/common/analytics');
 var _ = require('underscore');
 var moment = require('moment');

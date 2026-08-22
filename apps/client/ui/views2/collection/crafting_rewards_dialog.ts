@@ -1,6 +1,6 @@
 'use strict';
 
-var NavigationManager = require('apps/client/ui/managers/navigation_manager');
+var NavigationManager = require('../../managers/navigation_manager');
 var CraftingRewardsDialogItemViewTempl = require('./templates/crafting_rewards_dialog.hbs');
 
 var CraftingRewardsDialogItemView = Backbone.Marionette.ItemView.extend({

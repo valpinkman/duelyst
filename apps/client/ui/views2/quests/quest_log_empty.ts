@@ -1,6 +1,6 @@
 'use strict';
 
-var NavigationManager = require('apps/client/ui/managers/navigation_manager');
+var NavigationManager = require('../../managers/navigation_manager');
 var Logger = require('@duelyst/common/logger');
 var Templ = require('./templates/quest_log_empty.hbs');
 

@@ -1,7 +1,7 @@
 const CONFIG = require('@duelyst/common/config');
 const UtilsEngine = require('@duelyst/common/utils/utils_engine');
 const UtilsPosition = require('@duelyst/common/utils/utils_position');
-const NodeFactory = require('apps/client/view/helpers/NodeFactory');
+const NodeFactory = require('../../helpers/NodeFactory');
 const FXSprite = require('./FXSprite');
 const FXProjectileSprite = require('./FXProjectileSprite');
 

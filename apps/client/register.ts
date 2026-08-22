@@ -24,7 +24,7 @@ const userAgent = uaparser.getResult();
 const App = new Backbone.Marionette.Application();
 
 // require Firebase via browserify but temporarily alias it global scope
-const Firebase = (window.Firebase = require('apps/client/firebase'));
+const Firebase = (window.Firebase = require('./firebase'));
 const moment = require('moment');
 const semver = require('semver');
 const querystring = require('query-string');
@@ -36,7 +36,7 @@ const Logger = (window.Logger = require('@duelyst/common/logger'));
 Logger.enabled = false;
 
 const Landing = require('@duelyst/common/landing');
-const Session = (window.Session = require('apps/client/session2'));
+const Session = (window.Session = require('./session2'));
 const CONFIG = (window.CONFIG = require('@duelyst/common/config'));
 const RSX = (window.RSX = require('@duelyst/data/resources'));
 const PKGS = (window.PKGS = require('@duelyst/data/packages'));
@@ -48,44 +48,43 @@ const AnalyticsUtil = require('@duelyst/common/analyticsUtil');
 const UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
 const UtilsEnv = require('@duelyst/common/utils/utils_env');
 const UtilsPointer = require('@duelyst/common/utils/utils_pointer');
-const audio_engine = (window.audio_engine = require('apps/client/audio/audio_engine'));
+const audio_engine = (window.audio_engine = require('./audio/audio_engine'));
 const openUrl = require('@duelyst/common/openUrl');
 const i18next = require('i18next');
 
-const PackageManager = (window.PackageManager = require('apps/client/ui/managers/package_manager'));
-const NavigationManager =
-  (window.NavigationManager = require('apps/client/ui/managers/navigation_manager'));
+const PackageManager = (window.PackageManager = require('./ui/managers/package_manager'));
+const NavigationManager = (window.NavigationManager = require('./ui/managers/navigation_manager'));
 
-const Helpers = require('apps/client/ui/views/helpers');
-const LoaderItemView = require('apps/client/ui/views/item/loader');
+const Helpers = require('./ui/views/helpers');
+const LoaderItemView = require('./ui/views/item/loader');
 
-const UtilityLoadingLoginMenuItemView = require('apps/client/ui/views/item/utility_loading_login_menu');
-const UtilityMainMenuItemView = require('apps/client/ui/views/item/utility_main_menu');
-const UtilityMatchmakingMenuItemView = require('apps/client/ui/views/item/utility_matchmaking_menu');
-const UtilityGameMenuItemView = require('apps/client/ui/views/item/utility_game_menu');
-const EscGameMenuItemView = require('apps/client/ui/views/item/esc_game_menu');
-const EscMainMenuItemView = require('apps/client/ui/views/item/esc_main_menu');
+const UtilityLoadingLoginMenuItemView = require('./ui/views/item/utility_loading_login_menu');
+const UtilityMainMenuItemView = require('./ui/views/item/utility_main_menu');
+const UtilityMatchmakingMenuItemView = require('./ui/views/item/utility_matchmaking_menu');
+const UtilityGameMenuItemView = require('./ui/views/item/utility_game_menu');
+const EscGameMenuItemView = require('./ui/views/item/esc_game_menu');
+const EscMainMenuItemView = require('./ui/views/item/esc_main_menu');
 
-const LoginMenuItemView = require('apps/client/ui/views/item/login_menu');
-const MainMenuItemView = require('apps/client/ui/views/item/main_menu');
-const ResumeGameItemView = require('apps/client/ui/views/item/resume_game');
+const LoginMenuItemView = require('./ui/views/item/login_menu');
+const MainMenuItemView = require('./ui/views/item/main_menu');
+const ResumeGameItemView = require('./ui/views/item/resume_game');
 
-const SelectUsernameItemView = require('apps/client/ui/views/item/select_username');
+const SelectUsernameItemView = require('./ui/views/item/select_username');
 
-const Scene = require('apps/client/view/Scene');
-const GameLayer = require('apps/client/view/layers/game/GameLayer');
+const Scene = require('./view/Scene');
+const GameLayer = require('./view/layers/game/GameLayer');
 
-const ConfirmDialogItemView = require('apps/client/ui/views/item/confirm_dialog');
-const PromptDialogItemView = require('apps/client/ui/views/item/prompt_dialog');
-const ActivityDialogItemView = require('apps/client/ui/views/item/activity_dialog');
-const ErrorDialogItemView = require('apps/client/ui/views/item/error_dialog');
-const AnnouncementModalView = require('apps/client/ui/views/item/announcement_modal');
+const ConfirmDialogItemView = require('./ui/views/item/confirm_dialog');
+const PromptDialogItemView = require('./ui/views/item/prompt_dialog');
+const ActivityDialogItemView = require('./ui/views/item/activity_dialog');
+const ErrorDialogItemView = require('./ui/views/item/error_dialog');
+const AnnouncementModalView = require('./ui/views/item/announcement_modal');
 
-const AnalyticsTracker = require('apps/client/analyticsTracker');
+const AnalyticsTracker = require('./analyticsTracker');
 const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 
 // require the Handlebars Template Helpers extension here since it modifies core Marionette code
-require('apps/client/ui/extensions/handlebars_template_helpers');
+require('./ui/extensions/handlebars_template_helpers');
 
 localStorage.debug = 'session:*';
 

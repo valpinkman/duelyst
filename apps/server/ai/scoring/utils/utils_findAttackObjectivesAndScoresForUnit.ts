@@ -1,7 +1,7 @@
-const BOUNTY = require('apps/server/ai/scoring/bounty');
-const filterAttackTargetsForUnit = require('apps/server/ai/scoring/utils/utils_filterAttackTargetsForUnit');
-const ScoreForUnitDamage = require('apps/server/ai/scoring/base/unit_damage');
-const distanceBetweenBoardPositions = require('apps/server/ai/scoring/utils/utils_distanceBetweenBoardPositions');
+const BOUNTY = require('../bounty');
+const filterAttackTargetsForUnit = require('./utils_filterAttackTargetsForUnit');
+const ScoreForUnitDamage = require('../base/unit_damage');
+const distanceBetweenBoardPositions = require('./utils_distanceBetweenBoardPositions');
 const _ = require('underscore');
 const SDK = require('@duelyst/sdk');
 

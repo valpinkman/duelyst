@@ -1,9 +1,9 @@
-const BOUNTY = require('apps/server/ai/scoring/bounty');
+const BOUNTY = require('../bounty');
 const ModifierRanged = require('@duelyst/sdk/modifiers/modifierRanged');
 const ModifierBlastAttack = require('@duelyst/sdk/modifiers/modifierBlastAttack');
 const ModifierEphemeral = require('@duelyst/sdk/modifiers/modifierEphemeral');
 const ModifierForcefieldAbsorb = require('@duelyst/sdk/modifiers/modifierForcefieldAbsorb');
-const isUnitBuffer = require('apps/server/ai/scoring/utils/utils_isUnitBuffer');
+const isUnitBuffer = require('./utils_isUnitBuffer');
 
 /**
  * Returns whether a unit is evasive.

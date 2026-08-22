@@ -4,10 +4,10 @@
 
 var CONFIG = require('@duelyst/common/config');
 var RSX = require('@duelyst/data/resources');
-var audio_engine = require('apps/client/audio/audio_engine');
-var Animations = require('apps/client/ui/views/animations');
-var ActivityDialogViewTempl = require('apps/client/ui/templates/item/activity_dialog.hbs');
-var NavigationManager = require('apps/client/ui/managers/navigation_manager');
+var audio_engine = require('../../../audio/audio_engine');
+var Animations = require('../animations');
+var ActivityDialogViewTempl = require('../../templates/item/activity_dialog.hbs');
+var NavigationManager = require('../../managers/navigation_manager');
 var i18next = require('i18next');
 
 var ActivityDialogItemView = Backbone.Marionette.ItemView.extend({

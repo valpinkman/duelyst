@@ -1,6 +1,6 @@
 'use strict';
 
-var ViewTempl = require('apps/client/ui/templates/item/maintenance_announcement.hbs');
+var ViewTempl = require('../../templates/item/maintenance_announcement.hbs');
 
 var MaintenanceAnnouncementItemView = Backbone.Marionette.ItemView.extend({
   template: ViewTempl,

@@ -6,12 +6,12 @@ var CONFIG = require('@duelyst/common/config');
 var EventBus = require('@duelyst/common/eventbus');
 var EVENTS = require('@duelyst/common/event_types');
 var SDK = require('@duelyst/sdk');
-var Scene = require('apps/client/view/Scene');
+var Scene = require('../../../view/Scene');
 var RSX = require('@duelyst/data/resources');
-var audio_engine = require('apps/client/audio/audio_engine');
-var Animations = require('apps/client/ui/views/animations');
-var GameBottomBarTmpl = require('apps/client/ui/templates/composite/game_bottom_bar.hbs');
-var ReplayEngine = require('apps/client/replay/replayEngine');
+var audio_engine = require('../../../audio/audio_engine');
+var Animations = require('../animations');
+var GameBottomBarTmpl = require('../../templates/composite/game_bottom_bar.hbs');
+var ReplayEngine = require('../../../replay/replayEngine');
 var i18next = require('i18next');
 var UtilsEngine = require('@duelyst/common/utils/utils_engine');
 

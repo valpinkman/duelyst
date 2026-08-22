@@ -4,7 +4,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 // localization setup
-const whenLocalizationReady = require('apps/client/localization/index');
+const whenLocalizationReady = require('./localization/index');
 
 whenLocalizationReady.then(() => {
   let register;

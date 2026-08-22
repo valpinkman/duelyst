@@ -1,13 +1,13 @@
 'use strict';
 
 var CONFIG = require('@duelyst/common/config');
-var NotificationsManager = require('apps/client/ui/managers/notifications_manager');
-var ChatManager = require('apps/client/ui/managers/chat_manager');
-var TransitionRegion = require('apps/client/ui/views/regions/transition');
-var NotificationsTmpl = require('apps/client/ui/templates/layouts/notifications.hbs');
-var MainNotificationsCompositeView = require('apps/client/ui/views/composite/main_notifications');
-var MessageNotificationsCompositeView = require('apps/client/ui/views/composite/message_notifications');
-var QuestNotificationsCompositeView = require('apps/client/ui/views/composite/quest_notifications');
+var NotificationsManager = require('../../managers/notifications_manager');
+var ChatManager = require('../../managers/chat_manager');
+var TransitionRegion = require('../regions/transition');
+var NotificationsTmpl = require('../../templates/layouts/notifications.hbs');
+var MainNotificationsCompositeView = require('../composite/main_notifications');
+var MessageNotificationsCompositeView = require('../composite/message_notifications');
+var QuestNotificationsCompositeView = require('../composite/quest_notifications');
 
 var NotificationsLayout = Backbone.Marionette.LayoutView.extend({
   id: 'app-notifications',

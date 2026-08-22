@@ -1,12 +1,12 @@
 'use strict';
 
 var moment = require('moment');
-var Animations = require('apps/client/ui/views/animations');
-var NavigationManager = require('apps/client/ui/managers/navigation_manager');
+var Animations = require('../../views/animations');
+var NavigationManager = require('../../managers/navigation_manager');
 var Logger = require('@duelyst/common/logger');
-var ProfileManager = require('apps/client/ui/managers/profile_manager');
-var ErrorDialogItemView = require('apps/client/ui/views/item/error_dialog');
-var DuelystBackbone = require('apps/client/ui/extensions/duelyst_backbone');
+var ProfileManager = require('../../managers/profile_manager');
+var ErrorDialogItemView = require('../../views/item/error_dialog');
+var DuelystBackbone = require('../../extensions/duelyst_backbone');
 var openUrl = require('@duelyst/common/openUrl');
 
 var ReferralEventHistoryView = require('./referral_event_history');

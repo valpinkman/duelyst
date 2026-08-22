@@ -2,7 +2,7 @@
 
 var Logger = require('@duelyst/common/logger');
 var SDK = require('@duelyst/sdk');
-var ModifierModel = require('apps/client/ui/models/modifier');
+var ModifierModel = require('../models/modifier');
 
 var ModifierCollection = Backbone.Collection.extend({
   model: ModifierModel,

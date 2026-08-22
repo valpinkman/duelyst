@@ -1,6 +1,6 @@
 'use strict';
 
-var Animations = require('apps/client/ui/views/animations');
+var Animations = require('../../views/animations');
 var Template = require('./templates/watch_games_empty.hbs');
 
 var WatchGamesEmptyView = Backbone.Marionette.ItemView.extend({

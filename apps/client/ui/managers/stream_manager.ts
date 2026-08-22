@@ -15,8 +15,8 @@ module.exports = _StreamManager;
 var EventBus = require('@duelyst/common/eventbus');
 var EVENTS = require('@duelyst/common/event_types');
 var Logger = require('@duelyst/common/logger');
-var DuelystFirebase = require('apps/client/ui/extensions/duelyst_firebase');
-var DuelystBackbone = require('apps/client/ui/extensions/duelyst_backbone');
+var DuelystFirebase = require('../extensions/duelyst_firebase');
+var DuelystBackbone = require('../extensions/duelyst_backbone');
 var Manager = require('./manager');
 
 var StreamManager = Manager.extend({

@@ -375,14 +375,14 @@ var CONFIG = require('@duelyst/common/config');
 var EventBus = require('@duelyst/common/eventbus');
 var EVENTS = require('@duelyst/common/event_types');
 var UtilsResources = require('@duelyst/common/utils/utils_resources');
-var audio_engine = require('apps/client/audio/audio_engine');
-var CCInjections = require('apps/client/view/extensions/CCInjections');
-var NodeInjections = require('apps/client/view/extensions/NodeInjections');
-var RenderingInjections = require('apps/client/view/extensions/RenderingInjections');
+var audio_engine = require('../../audio/audio_engine');
+var CCInjections = require('../../view/extensions/CCInjections');
+var NodeInjections = require('../../view/extensions/NodeInjections');
+var RenderingInjections = require('../../view/extensions/RenderingInjections');
 var PKGS = require('@duelyst/data/packages');
 var Factions = require('@duelyst/sdk/cards/factionsLookup');
-var Manager = require('apps/client/ui/managers/manager');
-var NavigationManager = require('apps/client/ui/managers/navigation_manager');
+var Manager = require('./manager');
+var NavigationManager = require('./navigation_manager');
 
 /**
  *  PackageManager - manages resources by organizing/tracking packages and adds the concept of strong references to resources.

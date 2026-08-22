@@ -2,7 +2,7 @@
 
 var CONFIG = require('@duelyst/common/config');
 var Logger = require('@duelyst/common/logger');
-var DuelystFirebase = require('apps/client/ui/extensions/duelyst_firebase');
+var DuelystFirebase = require('../extensions/duelyst_firebase');
 var moment = require('moment');
 
 var PresenceModel = DuelystFirebase.Model.extend({

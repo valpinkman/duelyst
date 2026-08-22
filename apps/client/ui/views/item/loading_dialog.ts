@@ -4,9 +4,9 @@
 
 var RSX = require('@duelyst/data/resources');
 var GAME_TIPS = require('@duelyst/data/game_tips');
-var Animations = require('apps/client/ui/views/animations');
-var LoadingDialogViewTempl = require('apps/client/ui/templates/item/loading_dialog.hbs');
-var NavigationManager = require('apps/client/ui/managers/navigation_manager');
+var Animations = require('../animations');
+var LoadingDialogViewTempl = require('../../templates/item/loading_dialog.hbs');
+var NavigationManager = require('../../managers/navigation_manager');
 
 var LoadingDialogItemView = Backbone.Marionette.ItemView.extend({
   id: 'app-loading-dialog',

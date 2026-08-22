@@ -1,4 +1,4 @@
-const BOUNTY = require('apps/server/ai/scoring/bounty');
+const BOUNTY = require('../bounty');
 const _ = require('underscore');
 const SDK = require('@duelyst/sdk');
 

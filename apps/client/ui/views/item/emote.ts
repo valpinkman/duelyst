@@ -1,8 +1,8 @@
 'use strict';
 
-var EmotesLayoutTempl = require('apps/client/ui/templates/item/emote.hbs');
-var Animations = require('apps/client/ui/views/animations');
-var InventoryManager = require('apps/client/ui/managers/inventory_manager');
+var EmotesLayoutTempl = require('../../templates/item/emote.hbs');
+var Animations = require('../animations');
+var InventoryManager = require('../../managers/inventory_manager');
 
 var EmoteItemView = Backbone.Marionette.ItemView.extend({
   className: 'btn emote',

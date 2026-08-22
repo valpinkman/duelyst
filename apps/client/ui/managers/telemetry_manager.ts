@@ -14,7 +14,7 @@ var CONFIG = require('@duelyst/common/config');
 var EventBus = require('@duelyst/common/eventbus');
 var EVENTS = require('@duelyst/common/event_types');
 var Logger = require('@duelyst/common/logger');
-var Firebase = require('apps/client/firebase');
+var Firebase = require('../../firebase');
 var Manager = require('./manager');
 var ProfileManager = require('./profile_manager');
 

@@ -7,15 +7,15 @@ var CONFIG = require('@duelyst/common/config');
 var EventBus = require('@duelyst/common/eventbus');
 var EVENTS = require('@duelyst/common/event_types');
 var generatePushID = require('@duelyst/common/generate_push_id');
-var audio_engine = require('apps/client/audio/audio_engine');
+var audio_engine = require('../../../audio/audio_engine');
 var SDK = require('@duelyst/sdk');
-var Scene = require('apps/client/view/Scene');
+var Scene = require('../../../view/Scene');
 var Analytics = require('@duelyst/common/analytics');
-var Animations = require('apps/client/ui/views/animations');
-var ProgressionManager = require('apps/client/ui/managers/progression_manager');
-var ChallengePreviewItemView = require('apps/client/ui/views/item/challenge_preview');
-var ChallengeSelectTmpl = require('apps/client/ui/templates/composite/challenge_select.hbs');
-var DuelystFirebase = require('apps/client/ui/extensions/duelyst_firebase');
+var Animations = require('../animations');
+var ProgressionManager = require('../../managers/progression_manager');
+var ChallengePreviewItemView = require('../item/challenge_preview');
+var ChallengeSelectTmpl = require('../../templates/composite/challenge_select.hbs');
+var DuelystFirebase = require('../../extensions/duelyst_firebase');
 
 var ChallengeSelectCompositeView = Backbone.Marionette.CompositeView.extend({
   className: 'sliding-panel challenge-select',

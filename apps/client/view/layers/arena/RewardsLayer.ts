@@ -5,9 +5,9 @@ const EVENTS = require('@duelyst/common/event_types');
 const SDK = require('@duelyst/sdk');
 const RSX = require('@duelyst/data/resources');
 const UtilsEngine = require('@duelyst/common/utils/utils_engine');
-const BaseLayer = require('apps/client/view/layers/BaseLayer');
-const audio_engine = require('apps/client/audio/audio_engine');
-const GiftCrateNode = require('apps/client/view/nodes/reward/GiftCrateNode');
+const BaseLayer = require('../BaseLayer');
+const audio_engine = require('../../../audio/audio_engine');
+const GiftCrateNode = require('../../nodes/reward/GiftCrateNode');
 const i18next = require('i18next');
 
 /** **************************************************************************

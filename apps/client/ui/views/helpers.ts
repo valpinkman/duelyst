@@ -2,8 +2,8 @@
 
 var CONFIG = require('@duelyst/common/config');
 var RSX = require('@duelyst/data/resources');
-var ProgressionManager = require('apps/client/ui/managers/progression_manager');
-var InventoryManager = require('apps/client/ui/managers/inventory_manager');
+var ProgressionManager = require('../managers/progression_manager');
+var InventoryManager = require('../managers/inventory_manager');
 // hbsfy is deprecated; its runtime was a one-line re-export of this
 var Handlebars = require('handlebars/runtime').default;
 var markdown = require('markdown').markdown;

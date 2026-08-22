@@ -1,6 +1,6 @@
 'use strict';
 
-var ModifierTmpl = require('apps/client/ui/templates/item/modifier.hbs');
+var ModifierTmpl = require('../../templates/item/modifier.hbs');
 
 var ModifierItemView = Backbone.Marionette.ItemView.extend({
   className: 'media modifier',

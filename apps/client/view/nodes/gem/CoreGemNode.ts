@@ -3,10 +3,10 @@
 const RSX = require('@duelyst/data/resources');
 const PKGS = require('@duelyst/data/packages');
 const SDK = require('@duelyst/sdk');
-const audio_engine = require('apps/client/audio/audio_engine');
-const BaseSprite = require('apps/client/view/nodes/BaseSprite');
-const CoreGemSprite = require('apps/client/view/nodes/gem/CoreGemSprite');
-const FXFbmPolarFlareSprite = require('apps/client/view/nodes/fx/FXFbmPolarFlareSprite');
+const audio_engine = require('../../../audio/audio_engine');
+const BaseSprite = require('../BaseSprite');
+const CoreGemSprite = require('./CoreGemSprite');
+const FXFbmPolarFlareSprite = require('../fx/FXFbmPolarFlareSprite');
 
 /** **************************************************************************
  CoreGemNode

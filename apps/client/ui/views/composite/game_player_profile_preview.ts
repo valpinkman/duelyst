@@ -3,9 +3,9 @@
 'use strict';
 
 var CONFIG = require('@duelyst/common/config');
-var NewPlayerManager = require('apps/client/ui/managers/new_player_manager');
-var Template = require('apps/client/ui/templates/composite/game_player_profile_preview.hbs');
-var ItemTemplate = require('apps/client/ui/templates/item/game_player_profile_preview_ribbon_item.hbs');
+var NewPlayerManager = require('../../managers/new_player_manager');
+var Template = require('../../templates/composite/game_player_profile_preview.hbs');
+var ItemTemplate = require('../../templates/item/game_player_profile_preview_ribbon_item.hbs');
 var SDK = require('@duelyst/sdk');
 var i18next = require('i18next');
 

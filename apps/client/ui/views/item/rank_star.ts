@@ -1,6 +1,6 @@
 'use strict';
 
-var RankStarTmpl = require('apps/client/ui/templates/item/rank_star.hbs');
+var RankStarTmpl = require('../../templates/item/rank_star.hbs');
 
 var RankStarView = Backbone.Marionette.ItemView.extend({
   tagName: 'li',

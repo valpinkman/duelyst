@@ -1,12 +1,12 @@
 'use strict';
 
 var CONFIG = require('@duelyst/common/config');
-var Session = require('apps/client/session2');
+var Session = require('../../../session2');
 var SDK = require('@duelyst/sdk');
 var RSX = require('@duelyst/data/resources');
-var audio_engine = require('apps/client/audio/audio_engine');
-var NavigationManager = require('apps/client/ui/managers/navigation_manager');
-var EscMainMenuTmpl = require('apps/client/ui/templates/item/esc_main_menu.hbs');
+var audio_engine = require('../../../audio/audio_engine');
+var NavigationManager = require('../../managers/navigation_manager');
+var EscMainMenuTmpl = require('../../templates/item/esc_main_menu.hbs');
 var UtilityMenuItemView = require('./utility_menu');
 var ConfirmDialogItemView = require('./confirm_dialog');
 

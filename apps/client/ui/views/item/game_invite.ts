@@ -5,11 +5,11 @@
 var CONFIG = require('@duelyst/common/config');
 var EVENTS = require('@duelyst/common/event_types');
 var RSX = require('@duelyst/data/resources');
-var Animations = require('apps/client/ui/views/animations');
-var audio_engine = require('apps/client/audio/audio_engine');
-var GameInviteViewTempl = require('apps/client/ui/templates/item/game_invite.hbs');
-var GamesManager = require('apps/client/ui/managers/games_manager');
-var NavigationManager = require('apps/client/ui/managers/navigation_manager');
+var Animations = require('../animations');
+var audio_engine = require('../../../audio/audio_engine');
+var GameInviteViewTempl = require('../../templates/item/game_invite.hbs');
+var GamesManager = require('../../managers/games_manager');
+var NavigationManager = require('../../managers/navigation_manager');
 
 var GameInviteItemView = Backbone.Marionette.ItemView.extend({
   id: 'app-game-invite',

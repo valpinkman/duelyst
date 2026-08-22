@@ -5,10 +5,10 @@
 var CONFIG = require('@duelyst/common/config');
 var Logger = require('@duelyst/common/logger');
 var RSX = require('@duelyst/data/resources');
-var audio_engine = require('apps/client/audio/audio_engine');
-var DuelystFirebase = require('apps/client/ui/extensions/duelyst_firebase');
-var RankTmpl = require('apps/client/ui/templates/composite/rank.hbs');
-var RankStarItemView = require('apps/client/ui/views/item/rank_star');
+var audio_engine = require('../../../audio/audio_engine');
+var DuelystFirebase = require('../../extensions/duelyst_firebase');
+var RankTmpl = require('../../templates/composite/rank.hbs');
+var RankStarItemView = require('../item/rank_star');
 var SDK = require('@duelyst/sdk');
 
 var RankCompositeView = Backbone.Marionette.CompositeView.extend({

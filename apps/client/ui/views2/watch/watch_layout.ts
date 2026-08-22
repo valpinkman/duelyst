@@ -7,22 +7,22 @@ var CONFIG = require('@duelyst/common/config');
 var EventBus = require('@duelyst/common/eventbus');
 var EVENTS = require('@duelyst/common/event_types');
 var UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
-var Scene = require('apps/client/view/Scene');
+var Scene = require('../../../view/Scene');
 var SDK = require('@duelyst/sdk');
 var moment = require('moment');
 var RSX = require('@duelyst/data/resources');
-var audio_engine = require('apps/client/audio/audio_engine');
+var audio_engine = require('../../../audio/audio_engine');
 
 //
-var Animations = require('apps/client/ui/views/animations');
-var NavigationManager = require('apps/client/ui/managers/navigation_manager');
-var GamesManager = require('apps/client/ui/managers/games_manager');
-var InventoryManager = require('apps/client/ui/managers/inventory_manager');
-var StreamManager = require('apps/client/ui/managers/stream_manager');
-var UtilsUI = require('apps/client/ui/utils_ui');
-var DuelystBackbone = require('apps/client/ui/extensions/duelyst_backbone');
-var DuelystFirebase = require('apps/client/ui/extensions/duelyst_firebase');
-var ErrorDialogItemView = require('apps/client/ui/views/item/error_dialog');
+var Animations = require('../../views/animations');
+var NavigationManager = require('../../managers/navigation_manager');
+var GamesManager = require('../../managers/games_manager');
+var InventoryManager = require('../../managers/inventory_manager');
+var StreamManager = require('../../managers/stream_manager');
+var UtilsUI = require('../../utils_ui');
+var DuelystBackbone = require('../../extensions/duelyst_backbone');
+var DuelystFirebase = require('../../extensions/duelyst_firebase');
+var ErrorDialogItemView = require('../../views/item/error_dialog');
 
 // sub views
 var WatchGamesCompositeView = require('./watch_games_composite');

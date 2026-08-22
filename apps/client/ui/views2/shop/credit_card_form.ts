@@ -6,11 +6,11 @@ var EventBus = require('@duelyst/common/eventbus');
 var EVENTS = require('@duelyst/common/event_types');
 var CONFIG = require('@duelyst/common/config');
 var RSX = require('@duelyst/data/resources');
-var audio_engine = require('apps/client/audio/audio_engine');
-var NavigationManager = require('apps/client/ui/managers/navigation_manager');
-var InventoryManager = require('apps/client/ui/managers/inventory_manager');
-var ActivityDialogItemView = require('apps/client/ui/views/item/activity_dialog');
-var ErrorDialogItemView = require('apps/client/ui/views/item/error_dialog');
+var audio_engine = require('../../../audio/audio_engine');
+var NavigationManager = require('../../managers/navigation_manager');
+var InventoryManager = require('../../managers/inventory_manager');
+var ActivityDialogItemView = require('../../views/item/activity_dialog');
+var ErrorDialogItemView = require('../../views/item/error_dialog');
 var Template = require('./templates/credit_card_form.hbs');
 
 var CreditCardFormView = Backbone.Marionette.ItemView.extend({

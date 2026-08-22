@@ -5,9 +5,9 @@
 var CONFIG = require('@duelyst/common/config');
 var EVENTS = require('@duelyst/common/event_types');
 var RSX = require('@duelyst/data/resources');
-var audio_engine = require('apps/client/audio/audio_engine');
-var PromptDialogItemViewTempl = require('apps/client/ui/templates/item/prompt_dialog.hbs');
-var NavigationManager = require('apps/client/ui/managers/navigation_manager');
+var audio_engine = require('../../../audio/audio_engine');
+var PromptDialogItemViewTempl = require('../../templates/item/prompt_dialog.hbs');
+var NavigationManager = require('../../managers/navigation_manager');
 
 var PromptDialogItemView = Backbone.Marionette.ItemView.extend({
   id: 'app-prompt-dialog',

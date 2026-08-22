@@ -4,7 +4,7 @@ const RSX = require('@duelyst/data/resources');
 const PKGS = require('@duelyst/data/packages');
 const GiftCrateLookup = require('@duelyst/sdk/giftCrates/giftCrateLookup');
 const CosmeticsChestTypeLookup = require('@duelyst/sdk/cosmetics/cosmeticsChestTypeLookup');
-const CrateManager = require('apps/client/ui/managers/crate_manager');
+const CrateManager = require('../../../ui/managers/crate_manager');
 const LootCrateNode = require('./LootCrateNode');
 
 /** **************************************************************************

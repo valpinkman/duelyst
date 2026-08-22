@@ -3,12 +3,12 @@
 var semver = require('semver');
 var Logger = require('@duelyst/common/logger');
 var CONFIG = require('@duelyst/common/config');
-var MessageView = require('apps/client/ui/views/item/message');
-var ConversationTemplate = require('apps/client/ui/templates/composite/conversation.hbs');
-var ChatManager = require('apps/client/ui/managers/chat_manager');
-var NavigationManager = require('apps/client/ui/managers/navigation_manager');
-var GamesManager = require('apps/client/ui/managers/games_manager');
-var ErrorDialogItemView = require('apps/client/ui/views/item/error_dialog');
+var MessageView = require('../item/message');
+var ConversationTemplate = require('../../templates/composite/conversation.hbs');
+var ChatManager = require('../../managers/chat_manager');
+var NavigationManager = require('../../managers/navigation_manager');
+var GamesManager = require('../../managers/games_manager');
+var ErrorDialogItemView = require('../item/error_dialog');
 
 var ConversationCompositeView = Backbone.Marionette.CompositeView.extend({
   _scrollTop: 0,
