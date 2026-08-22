@@ -77,7 +77,10 @@ _PackageManager.injectClassWithResourceRequests = function (cls) {
    */
   cls.prototype.whenResourcesReady = function (requestId) {
     if (requestId == null) {
-      return Promise.resolve(requestId);
+      // inspectable everywhere, not just on the request path: callers cannot
+      // know which branch they hit. The helper is idempotent, so the already
+      // wrapped request promise below passes through untouched.
+      return PromiseUtils.inspectable(Promise.resolve(requestId));
     } else {
       // special handling for required resources
       var requiredResourcesRequestId = this.getRequiredResourcesRequestId();
@@ -89,7 +92,7 @@ _PackageManager.injectClassWithResourceRequests = function (cls) {
           }
         }
         if (this._requiredResources.length === 0) {
-          return Promise.resolve(requestId);
+          return PromiseUtils.inspectable(Promise.resolve(requestId));
         }
       }
 
@@ -223,10 +226,20 @@ _PackageManager.injectClassWithResourceRequests = function (cls) {
         resources: [],
         reject: null,
       };
-      resourceRequest.promise = new Promise(function (resolve, reject) {
-        resourceRequest.resolve = resolve;
-        resourceRequest.reject = reject;
-      });
+      /*
+       * inspectable at the point of creation, so every consumer of this promise
+       * gets `.isFulfilled()` and it costs one wrapper per REQUEST rather than
+       * one per call. UnitNode.showDeathState asks synchronously whether card
+       * resources are ready, and without this it throws
+       * "whenCardResourcesReady.isFulfilled is not a function" mid-animation
+       * the first time a unit dies.
+       */
+      resourceRequest.promise = PromiseUtils.inspectable(
+        new Promise(function (resolve, reject) {
+          resourceRequest.resolve = resolve;
+          resourceRequest.reject = reject;
+        }),
+      );
     }
     return resourceRequest;
   };

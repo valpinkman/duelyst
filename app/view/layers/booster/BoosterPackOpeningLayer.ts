@@ -872,8 +872,18 @@ const BoosterPackOpeningLayer = FXCompositeLayer.extend({
         cc.sequence(
           cc.moveTo(duration, sourceScreenPosition).easing(cc.easeBackOut()),
           // cc.delayTime(delayScaleDown),
-          cc.callFunc(function () {
-            this.stopSystem();
+          /*
+           * `particles`, not `this`. cc.callFunc with no target invokes the
+           * callback with the ACTION's target, which here is cardDisc -- a
+           * sprite with no stopSystem, so this threw
+           * "this.stopSystem is not a function" and aborted the reveal
+           * animation. The 2016 source bound it explicitly
+           * (`}.bind(particles)`); a mechanical bind-removal took the argument
+           * to be `this`. LootCrateNode and EntityNode do the same thing and
+           * kept their binding.
+           */
+          cc.callFunc(() => {
+            particles.stopSystem();
           }),
           cc.scaleTo(0.4, 0.25).easing(cc.easeExponentialOut()),
           cc.callFunc(() => {

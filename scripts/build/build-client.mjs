@@ -213,16 +213,32 @@ const RSX_KEYS = [
 ];
 
 function step7Resources() {
-  // copy non-cdn package resources (gulp/rsx.js copy)
+  /*
+   * Copy package resources (gulp/rsx.js copy).
+   *
+   * Entries marked `cdn` were served from S3 upstream and so were deliberately
+   * left out of the bundle. A self-hosted deployment has no CDN -- `cdn` is ''
+   * -- and the client then requests them at a relative path and gets a 404.
+   * That is invisible until someone opens the part of the game that uses them:
+   * it is 83 files, almost all codex chapter art and audio, so the game plays
+   * fine and the codex is broken.
+   *
+   * So they are skipped only when there is actually somewhere else to serve
+   * them from.
+   */
+  const cdnUrl = config.get('cdn');
   const pkgsAll = require(path.join(rootDir, 'app/data/packages')).all;
   const paths = new Set();
   for (const rsx of pkgsAll) {
-    if (rsx.cdn) continue;
+    if (rsx.cdn && cdnUrl) continue;
     for (const key of RSX_KEYS) {
       if (rsx[key]) paths.add(rsx[key]);
     }
   }
-  log('resources', `${paths.size} non-cdn resource paths to copy`);
+  log(
+    'resources',
+    `${paths.size} resource paths to copy${cdnUrl ? ' (cdn entries excluded)' : ''}`,
+  );
   let copied = 0;
   for (const rel of paths) {
     const src = path.join('app', rel);
