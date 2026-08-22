@@ -5,7 +5,7 @@
 //    app/sdk/index.coffee via directory resolution in both node and the bundler.
 // 2. The barrel no longer exports a network manager (that would put a
 //    client-directed edge inside app/sdk); its consumers get
-//    a direct require('app/networkManager') instead.
+//    a direct require('apps/client/networkManager') instead.
 // Run from the repo root. NOTE: the require-insertion half keys on the
 // pre-rename `SDK.NetworkManager` form, so it only fires on the first pass
 // over a given file (the extension-strip half is idempotent).
@@ -49,7 +49,7 @@ for (const root of ROOTS) {
       } else {
         out = out.replace(
           /^((?:const|var|let) SDK = require\('app\/sdk'\);)$/m,
-          "$1\nconst NetworkManager = require('app/networkManager');",
+          "$1\nconst NetworkManager = require('apps/client/networkManager');",
         );
       }
     }

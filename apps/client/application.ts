@@ -172,7 +172,7 @@ const { onType } = require('@duelyst/common/utils/utils_promise');
 require('apps/client/ui/extensions/handlebars_template_helpers');
 
 // patches bootstrap's tooltip/popover teardown; must run before any view shows one
-require('app/ui/extensions/bootstrap_tooltip');
+require('apps/client/ui/extensions/bootstrap_tooltip');
 
 localStorage.debug = 'session:*';
 
