@@ -167,6 +167,9 @@ const { onType } = require('app/common/utils/utils_promise');
 // require the Handlebars Template Helpers extension here since it modifies core Marionette code
 require('app/ui/extensions/handlebars_template_helpers');
 
+// patches bootstrap's tooltip/popover teardown; must run before any view shows one
+require('app/ui/extensions/bootstrap_tooltip');
+
 localStorage.debug = 'session:*';
 
 //
