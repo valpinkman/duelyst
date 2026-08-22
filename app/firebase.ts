@@ -64,9 +64,16 @@ if (!firebase.apps.length) {
  * Rather than edit the minified vendored build, every ref this module hands
  * out gets a callable `ref` shadowing the prototype getter on that instance.
  * Both spellings then work: `r.ref()` (backfire) and `toRef(r)` (our code).
- * Only refs created HERE are patched - snapshots and refs returned by
- * `.child()` keep the standard property, which is what the rest of the client
- * reads.
+ *
+ * Only refs created HERE are patched. A DERIVED ref does not inherit it -
+ * `new Firebase(url).push()`, `.child(...)`, `.limitToLast(n)`,
+ * `.orderByChild(...)` all return a fresh object with the plain getter - and
+ * plenty of call sites hand backfire exactly that, which threw
+ * "this.firebase.ref is not a function" from its destroy() and stranded both
+ * players on "waiting" when a game invite was cleaned up. Refs on their way
+ * into backfire are patched in app/ui/extensions/duelyst_firebase.ts, the one
+ * place they all pass through; snapshots keep the standard property, which is
+ * what the rest of the client reads.
  */
 function withCallableRef(reference) {
   if (typeof reference.ref !== 'function') {

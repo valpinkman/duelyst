@@ -23,25 +23,73 @@ if (Backbone.Firebase && Backbone.Firebase.prototype) {
 /*
  * firebase 2.x exposed `.ref()` as a METHOD on snapshots and refs; from v3 on
  * `.ref` is a plain property. Both shapes are accepted here so this file does
- * not care which SDK is underneath. (backfire's own 12 `.ref()` calls are to
- * ITS OWN Backbone.Firebase#ref method, not the SDK's, so they are unaffected.)
+ * not care which SDK is underneath.
  */
 function toRef(target) {
   if (target == null) return target;
   return typeof target.ref === 'function' ? target.ref() : target.ref || target;
 }
-exports.toRef = toRef;
+
+/*
+ * ...and backfire calls the SDK's `.ref()` too, in nine methods: create, update,
+ * add, remove, destroy, _parseModels, _removeModel and both _updateModel
+ * implementations. `this.firebase` is whatever ref it was handed (its
+ * `_determineRef` does `case "object": break`), and `this._fbref` comes from the
+ * same place, so those are SDK refs, not backfire's own `Backbone.Firebase#ref`.
+ *
+ * app/firebase.ts gives every ref built by `new Firebase(url)` a callable `ref`,
+ * which is why most of this works. It is not enough: a DERIVED ref does not
+ * inherit the patch, and half the call sites hand backfire one --
+ * `new Firebase(url).push()` (game invites), `.child(...)`, `.limitToLast(1)`,
+ * `.orderByChild(...).startAt(...)`. Sending a friend a game invite then failed
+ * in `destroy()` with "this.firebase.ref is not a function", leaving the invite
+ * live in Firebase so both players sat on "waiting".
+ *
+ * Every ref entering backfire is patched here instead, which is the one place
+ * they all pass through: nothing outside this file constructs a
+ * Backbone.Firebase model directly.
+ *
+ * Returns the ref the getter yields rather than the target itself, because they
+ * are not the same object: for a QUERY, `.ref` is the underlying Reference and
+ * has `child()`, while the query does not -- and backfire calls
+ * `.ref().child(...)`.
+ */
+function ensureCallableRef(target) {
+  if (target == null || typeof target !== 'object') return target;
+  if (typeof target.ref === 'function') return target;
+  var underlying = target.ref || target; // read the getter BEFORE shadowing it
+  Object.defineProperty(target, 'ref', {
+    value: function () {
+      return underlying;
+    },
+    configurable: true,
+    writable: true,
+  });
+  return target;
+}
+
+/*
+ * Patched before backfire runs (so the ref is already callable while it syncs)
+ * and again after (so a ref backfire resolved itself -- from a string, or from a
+ * `firebase` function on the class -- is covered too).
+ */
+function patchRefs(instance, options) {
+  if (options != null) ensureCallableRef(options.firebase);
+  ensureCallableRef(instance.firebase);
+}
 
 Backbone.DuelystFirebase = {};
 
 Backbone.DuelystFirebase.Model = Backbone.Firebase.Model.extend({
-  constructor: function () {
+  constructor: function (model, options) {
     this.isSynced = false;
     this.listenToOnce(this, 'sync', function () {
       this.isSynced = true;
       this.trigger('ready');
     });
+    patchRefs(this, options);
     Backbone.Firebase.Model.apply(this, arguments);
+    patchRefs(this, options);
   },
 
   onSyncOrReady: function (callback) {
@@ -100,13 +148,15 @@ Backbone.DuelystFirebase.Model = Backbone.Firebase.Model.extend({
 });
 
 Backbone.DuelystFirebase.Collection = Backbone.Firebase.Collection.extend({
-  constructor: function () {
+  constructor: function (models, options) {
     this.isSynced = false;
     this.listenToOnce(this, 'sync', function () {
       this.isSynced = true;
       this.trigger('ready');
     });
+    patchRefs(this, options);
     Backbone.Firebase.Collection.apply(this, arguments);
+    patchRefs(this, options);
   },
 
   onSyncOrReady: function (callback) {
@@ -125,6 +175,14 @@ Backbone.DuelystFirebase.Collection = Backbone.Firebase.Collection.extend({
     return p;
   },
 });
+
+/*
+ * Hung off the exported object rather than assigned to `exports`: the
+ * `module.exports = ...` below replaces the exports object wholesale, so an
+ * `exports.toRef = ...` earlier in the file never reached a caller.
+ */
+Backbone.DuelystFirebase.toRef = toRef;
+Backbone.DuelystFirebase.ensureCallableRef = ensureCallableRef;
 
 // Expose the class either via CommonJS or the global object
 module.exports = Backbone.DuelystFirebase;
