@@ -316,9 +316,14 @@ step it describes, so it can never drift from the code.
      `app/sdk` reaches `app/common` and `app/data`. Three files moved, each to where it belonged:
      `utils_game_session` into `app/sdk/utils/` (an engine concern, ~200 consumers), and
      `analyticsTracker` + `session2` up to `app/` (client-only, and the latter held the last
-     outbound edge). **Next: step 3, decide what `app/data` is** — 350 requires of
-     `app/data/resources` alone, shared by both packages, owned by neither, and partly generated
-     by a script that reads `app/sdk` off disk.
+     outbound edge). **Step 3 is done too (2026-08-22):** `app/data` is a leaf
+     data package and `check:package-deps` now gates it. The `sdk → data → sdk` cycle turned
+     out to live entirely in the generated `app/data/packages.js`, never in source — the gate
+     lists files with `git ls-files`, so the gitignored artifact is excluded by construction.
+     `resources` is what keeps the package honest: 221 client references and 127 from the SDK,
+     because cards name their own art. Also deleted `app/data/utils/`, three refactor scripts
+     that read `.coffee` files no longer in the repo. **Next: step 4, the physical move** — now
+     a rename with a codemod behind it, judged on its own merits.
 
   5. **Optional, deliberately not started:** Backbone/Marionette/jQuery. That is a UI rewrite,
      not an upgrade, and was declined once already. Audited 2026-08-21 —

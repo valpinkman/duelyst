@@ -19,10 +19,21 @@ import path from 'node:path';
 
 const RULES = {
   'app/common': { allow: [] },
+  'app/data': { allow: [] },
   'app/sdk': { allow: ['app/common', 'app/data'] },
 };
 
-const files = execFileSync('git', ['ls-files', 'app/sdk', 'app/common'], { encoding: 'utf8' })
+/*
+ * `git ls-files` rather than a directory walk, which is what keeps app/data
+ * honest: its tracked source is a leaf, and the only thing reaching back into
+ * app/sdk is the generated app/data/packages.js -- gitignored, so unlisted, so
+ * not checked. That is the right answer rather than an accident: packages.js is
+ * a build artifact of scripts/generate_packages.js, which reads app/sdk off
+ * disk. The cycle exists in the artifact, never in the source.
+ */
+const files = execFileSync('git', ['ls-files', 'app/sdk', 'app/common', 'app/data'], {
+  encoding: 'utf8',
+})
   .split('\n')
   .filter((f) => f.endsWith('.ts') || f.endsWith('.js'));
 
