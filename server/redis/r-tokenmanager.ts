@@ -137,8 +137,12 @@ class RedisTokenManager {
     return this.redis
       .hgetall(tokenKey) // return entire token object
       .then((token) => {
+        // ioredis resolves hgetall on a missing key to an EMPTY OBJECT, not null
+        // (redis@2 + promisifyAll returned null). Callers all test `token != null`
+        // to mean "this player is already waiting for a game", so an empty hash
+        // has to collapse back to null or every player looks permanently queued.
         // TODO: There might be other data that we want to convert to correct format here
-        if (token != null) {
+        if (token != null && Object.keys(token).length > 0) {
           if (token.deck != null) {
             token.deck = JSON.parse(token.deck);
           }
