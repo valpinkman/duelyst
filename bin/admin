@@ -1,0 +1,6 @@
+#!/usr/bin/env node
+'use strict'
+
+require('./_bootstrap')('server')
+
+module.exports = require('server/lib/admin_cli')
