@@ -152,7 +152,6 @@ function step2Bundle() {
 // same list and order as gulp/vendor.js / gulpfile watchPaths
 const VENDOR_FILES = [
   'node_modules/jquery/dist/jquery.js',
-  'node_modules/velocity-animate/velocity.js',
   'node_modules/bootstrap-sass/assets/javascripts/bootstrap.js',
   'node_modules/underscore/underscore.js',
   'node_modules/backbone/backbone.js',

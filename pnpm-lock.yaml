@@ -240,9 +240,6 @@ importers:
       validator:
         specifier: ^13.15.35
         version: 13.15.35
-      velocity-animate:
-        specifier: ~1.2.0
-        version: 1.2.3
       web-animations-js:
         specifier: 2.1.3
         version: 2.1.3
@@ -6100,9 +6097,6 @@ packages:
   vary@1.1.2:
     resolution: {integrity: sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==}
     engines: {node: '>= 0.8'}
-
-  velocity-animate@1.2.3:
-    resolution: {integrity: sha512-Ualq2Xec/7wa/6QH1COw5WEOOIwiJzKzwtW5LbwvNuhyzwDVK/hOZEyOJ6gD6HfXk9Tjc9IE5qXqtlvXtFcI+Q==}
 
   vite@8.2.2:
     resolution: {integrity: sha512-cFKLV/PRgAUlIRm5WjMjJ86jrftzpqcgH+Us+DS8mI3CDNiH30Whrz8uHL3+MOLPAgqbMBAqWdAHAphOAM+z/Q==}
@@ -12766,10 +12760,6 @@ snapshots:
   validator@13.15.35: {}
 
   vary@1.1.2: {}
-
-  velocity-animate@1.2.3:
-    dependencies:
-      jquery: 2.1.4
 
   vite@8.2.2(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.103.0)(stylus@0.54.8)(tsx@4.23.12)(yaml@2.9.0):
     dependencies:

@@ -11,6 +11,44 @@ var RankTmpl = require('../../templates/composite/rank.hbs');
 var RankStarItemView = require('../item/rank_star');
 var SDK = require('@duelyst/sdk');
 
+// cubic-bezier equivalents of the Penner easings velocity-animate used to take by name
+var EASE_IN_SINE = 'cubic-bezier(0.47, 0, 0.745, 0.715)';
+var EASE_OUT_SINE = 'cubic-bezier(0.39, 0.575, 0.565, 1)';
+var EASE_IN_OUT_SINE = 'cubic-bezier(0.445, 0.05, 0.55, 0.95)';
+
+/**
+ * Runs a Web Animations animation on the first element of a `ui` entry.
+ * `el.animate()` is a single element API, while velocity animated whole jQuery
+ * collections and no-oped on an empty one; Marionette also leaves an unmatched
+ * `ui` entry as its selector string. Unwrap defensively so neither throws.
+ * @returns {Animation|null}
+ */
+function animateUIElement($el, keyframes, options) {
+  var el = $el instanceof $ ? $el[0] : null;
+  if (el == null) {
+    return null;
+  }
+  return el.animate(keyframes, options);
+}
+
+function cancelAnimation(animation) {
+  if (animation != null) {
+    animation.cancel();
+  }
+}
+
+/**
+ * Stands in for velocity's `complete` option. Like velocity on an empty
+ * collection, a missing element runs no callback at all.
+ * @returns {Animation|null} the animation it was given
+ */
+function onAnimationFinished(animation, callback) {
+  if (animation != null) {
+    animation.onfinish = callback;
+  }
+  return animation;
+}
+
 var RankCompositeView = Backbone.Marionette.CompositeView.extend({
   initialize: function () {
     Logger.module('UI').log('initialize a RankCompositeView');
@@ -39,6 +77,10 @@ var RankCompositeView = Backbone.Marionette.CompositeView.extend({
   _stars: 0,
   _starsRequired: 0,
   _medal: null,
+  _rankValueAnimation: null,
+  _rankCenterAnimation: null,
+  _rankRingOuterAnimation: null,
+  _medalAnimation: null,
 
   templateHelpers: {
     nextDivisionName: function () {
@@ -91,18 +133,30 @@ var RankCompositeView = Backbone.Marionette.CompositeView.extend({
   },
 
   onShow: function () {
-    this.ui.$symbolRankCenter.velocity(
-      { opacity: [1.0, 0.5] },
-      { duration: CONFIG.PULSE_MEDIUM_DURATION * 1000.0, easing: 'easeInOutSine', loop: true },
+    // velocity's loop:true played the tween back and forth forever
+    this._rankCenterAnimation = animateUIElement(
+      this.ui.$symbolRankCenter,
+      [{ opacity: 0.5 }, { opacity: 1.0 }],
+      {
+        duration: CONFIG.PULSE_MEDIUM_DURATION * 1000.0,
+        easing: EASE_IN_OUT_SINE,
+        iterations: Infinity,
+        direction: 'alternate',
+      },
     );
   },
 
   onDestroy: function () {
     // cleanup animations
-    this.ui.$rankValue.velocity('stop');
-    this.ui.$symbolRankCenter.velocity('stop');
-    this.ui.$symbolRankRingOuter.velocity('stop');
-    this.ui.$symbolMedal.velocity('stop');
+    cancelAnimation(this._rankValueAnimation);
+    cancelAnimation(this._rankCenterAnimation);
+    cancelAnimation(this._rankRingOuterAnimation);
+    cancelAnimation(this._medalAnimation);
+    this._rankValueAnimation =
+      this._rankCenterAnimation =
+      this._rankRingOuterAnimation =
+      this._medalAnimation =
+        null;
     if (this._rankChangeTimeout != null) {
       clearTimeout(this._rankChangeTimeout);
       this._rankChangeTimeout = null;
@@ -203,82 +257,101 @@ var RankCompositeView = Backbone.Marionette.CompositeView.extend({
           0,
           function () {
             // rotate ring once to show gain in rank
-            this.ui.$symbolRankRingOuter.velocity(
-              { rotateZ: '+=360deg' },
-              {
-                duration: 750.0,
-                easing: 'easeInOutSine',
-                complete: function () {
-                  // shift text to simulate counter
-                  this.ui.$rankValue
-                    .velocity(
-                      { translateY: [-20, 0], opacity: [0, 1] },
-                      {
-                        duration: 250.0,
-                        easing: 'easeInSine',
-                        complete: function () {
-                          // set stars to final
-                          this._updateStars(0);
+            this._rankRingOuterAnimation = onAnimationFinished(
+              animateUIElement(
+                this.ui.$symbolRankRingOuter,
+                [{ transform: 'rotateZ(0deg)' }, { transform: 'rotateZ(360deg)' }],
+                { duration: 750.0, easing: EASE_IN_OUT_SINE, fill: 'forwards' },
+              ),
+              function () {
+                // shift text to simulate counter
+                this._rankValueAnimation = onAnimationFinished(
+                  animateUIElement(
+                    this.ui.$rankValue,
+                    [
+                      { transform: 'translateY(0px)', opacity: 1 },
+                      { transform: 'translateY(-20px)', opacity: 0 },
+                    ],
+                    { duration: 250.0, easing: EASE_IN_SINE, fill: 'forwards' },
+                  ),
+                  function () {
+                    // set stars to final
+                    this._updateStars(0);
 
-                          // play rank change
-                          audio_engine.current().play_effect(RSX.sfx_unit_deploy_3.audio, false);
+                    // play rank change
+                    audio_engine.current().play_effect(RSX.sfx_unit_deploy_3.audio, false);
 
-                          // show next rank
-                          var nextRank = fromRank + dir;
-                          var currentMedal = this._medal;
-                          this._updateRank(nextRank);
+                    // show next rank
+                    var nextRank = fromRank + dir;
+                    var currentMedal = this._medal;
+                    this._updateRank(nextRank);
 
-                          // check if medal has changed
-                          if (currentMedal != this._medal) {
-                            this._updateMedal(fromRank);
+                    // check if medal has changed
+                    if (currentMedal != this._medal) {
+                      this._updateMedal(fromRank);
 
-                            // animate medal changing
-                            this.ui.$symbolMedal.velocity(
-                              { opacity: [1, 0], scale: [1, 5] },
+                      // animate medal changing, after velocity's delay; velocity
+                      // ran `begin` once the delay elapsed, not when it was queued
+                      this._rankChangeTimeout = setTimeout(
+                        function () {
+                          this._rankChangeTimeout = null;
+                          this._updateMedal(nextRank);
+                          this._medalAnimation = onAnimationFinished(
+                            animateUIElement(
+                              this.ui.$symbolMedal,
+                              [
+                                { opacity: 0, transform: 'scale(5)' },
+                                { opacity: 1, transform: 'scale(1)' },
+                              ],
                               {
                                 duration: 350.0,
-                                delay: 250.0,
-                                easing: [0.84, 0.11, 0.3, 1.68],
-                                begin: function () {
-                                  this._updateMedal(nextRank);
-                                }.bind(this),
-                                complete: function () {
-                                  audio_engine
-                                    .current()
-                                    .play_effect(RSX.sfx_deploy_circle1.audio, false);
-                                  this._showRankChange(
-                                    nextRank,
-                                    fromRank + dir * 2,
-                                    finalRank,
-                                    0,
-                                    toStars,
-                                    toStarsRequired,
-                                    toStarsRequired,
-                                  );
-                                }.bind(this),
+                                easing: 'cubic-bezier(0.84, 0.11, 0.3, 1.68)',
+                                fill: 'forwards',
                               },
-                            );
-                          } else {
-                            // show next change
-                            this._showRankChange(
-                              nextRank,
-                              fromRank + dir * 2,
-                              finalRank,
-                              0,
-                              toStars,
-                              toStarsRequired,
-                              toStarsRequired,
-                            );
-                          }
+                            ),
+                            function () {
+                              audio_engine
+                                .current()
+                                .play_effect(RSX.sfx_deploy_circle1.audio, false);
+                              this._showRankChange(
+                                nextRank,
+                                fromRank + dir * 2,
+                                finalRank,
+                                0,
+                                toStars,
+                                toStarsRequired,
+                                toStarsRequired,
+                              );
+                            }.bind(this),
+                          );
                         }.bind(this),
-                      },
-                    )
-                    .velocity(
-                      { translateY: [0, 20], opacity: [1, 0] },
-                      { duration: 250.0, easing: 'easeOutSine' },
+                        250.0,
+                      );
+                    } else {
+                      // show next change
+                      this._showRankChange(
+                        nextRank,
+                        fromRank + dir * 2,
+                        finalRank,
+                        0,
+                        toStars,
+                        toStarsRequired,
+                        toStarsRequired,
+                      );
+                    }
+
+                    // velocity queued this behind the shift out, so chain it explicitly
+                    this._rankValueAnimation = animateUIElement(
+                      this.ui.$rankValue,
+                      [
+                        { transform: 'translateY(20px)', opacity: 0 },
+                        { transform: 'translateY(0px)', opacity: 1 },
+                      ],
+                      { duration: 250.0, easing: EASE_OUT_SINE, fill: 'forwards' },
                     );
-                }.bind(this),
-              },
+                  }.bind(this),
+                );
+              }.bind(this),
             );
           }.bind(this),
         );
@@ -290,45 +363,53 @@ var RankCompositeView = Backbone.Marionette.CompositeView.extend({
           toStars,
           function () {
             // rotate ring once to show loss in rank
-            this.ui.$symbolRankRingOuter.velocity(
-              { rotateZ: '-=360deg' },
-              {
-                duration: 750.0,
-                easing: 'easeInOutSine',
-                complete: function () {
-                  // shift text to simulate counter
-                  this.ui.$rankValue
-                    .velocity(
-                      { translateY: [20, 0], opacity: [0, 1] },
-                      {
-                        duration: 250.0,
-                        easing: 'easeInSine',
-                        complete: function () {
-                          // set stars to final
-                          this._updateStars(toStars);
+            this._rankRingOuterAnimation = onAnimationFinished(
+              animateUIElement(
+                this.ui.$symbolRankRingOuter,
+                [{ transform: 'rotateZ(0deg)' }, { transform: 'rotateZ(-360deg)' }],
+                { duration: 750.0, easing: EASE_IN_OUT_SINE, fill: 'forwards' },
+              ),
+              function () {
+                // shift text to simulate counter
+                this._rankValueAnimation = onAnimationFinished(
+                  animateUIElement(
+                    this.ui.$rankValue,
+                    [
+                      { transform: 'translateY(0px)', opacity: 1 },
+                      { transform: 'translateY(20px)', opacity: 0 },
+                    ],
+                    { duration: 250.0, easing: EASE_IN_SINE, fill: 'forwards' },
+                  ),
+                  function () {
+                    // set stars to final
+                    this._updateStars(toStars);
 
-                          // play rank change
-                          audio_engine.current().play_effect(RSX.sfx_unit_deploy_1.audio, false);
+                    // play rank change
+                    audio_engine.current().play_effect(RSX.sfx_unit_deploy_1.audio, false);
 
-                          // show next rank
-                          this._showRankChange(
-                            fromRank + dir,
-                            fromRank + dir * 2,
-                            finalRank,
-                            toStarsRequired,
-                            toStars,
-                            toStarsRequired,
-                            toStarsRequired,
-                          );
-                        }.bind(this),
-                      },
-                    )
-                    .velocity(
-                      { translateY: [0, -20], opacity: [1, 0] },
-                      { duration: 250.0, easing: 'easeOutSine' },
+                    // show next rank
+                    this._showRankChange(
+                      fromRank + dir,
+                      fromRank + dir * 2,
+                      finalRank,
+                      toStarsRequired,
+                      toStars,
+                      toStarsRequired,
+                      toStarsRequired,
                     );
-                }.bind(this),
-              },
+
+                    // velocity queued this behind the shift out, so chain it explicitly
+                    this._rankValueAnimation = animateUIElement(
+                      this.ui.$rankValue,
+                      [
+                        { transform: 'translateY(-20px)', opacity: 0 },
+                        { transform: 'translateY(0px)', opacity: 1 },
+                      ],
+                      { duration: 250.0, easing: EASE_OUT_SINE, fill: 'forwards' },
+                    );
+                  }.bind(this),
+                );
+              }.bind(this),
             );
           }.bind(this),
         );
