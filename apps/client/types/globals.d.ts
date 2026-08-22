@@ -14,7 +14,6 @@ declare const Marionette: any;
 declare const Handlebars: any;
 declare const Firebase: any;
 declare const AWS: any;
-declare const Velocity: any;
 declare const ga: any;
 declare const $: any;
 declare const jQuery: any;
