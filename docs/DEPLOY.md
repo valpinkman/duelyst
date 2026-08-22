@@ -127,6 +127,24 @@ the `COOLIFY_APP_UUIDS` repository variable, using `COOLIFY_URL` and
 `COOLIFY_TOKEN` secrets. Coolify then builds whatever `main` points at — so push
 the tag last, once main already has the commit you want live.
 
+It must be **POST**. Coolify 4.3.x answers `GET /api/v1/deploy` with 405 and
+`{"message":"This endpoint has changed to a POST request."}`, while the API
+reference still reads "Post request also accepted", which suggests GET works.
+
+### The deploy token expires
+
+|             |                                                                                                                                                    |
+| ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Name        | `duelyst deploy token`                                                                                                                             |
+| Permissions | Deploy, Read — deliberately **not** "Read sensitive data", which would expose env values including the Firebase private key and database passwords |
+| Created     | 2026-08-22                                                                                                                                         |
+| **Expires** | **2027-08-22**                                                                                                                                     |
+
+When it lapses the workflow fails with a 401 and nothing else changes, which is
+a hard thing to diagnose a year later. Recreate it under **Keys & Tokens → API
+tokens** with the same two permissions and `gh secret set COOLIFY_TOKEN
+--repo valpinkman/duelyst`.
+
 ## Things that will bite
 
 - **The web image is ~1.7 GB** (474 MB of it the built client) and the build
