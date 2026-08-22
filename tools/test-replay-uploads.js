@@ -9,7 +9,7 @@ if (!config.get('aws.accessKey') || !config.get('aws.secretKey')) {
 
 // Run the uploader.
 try {
-  const uploadGameToS3 = require('apps/worker/upload_game_to_s3');
+  const uploadGameToS3 = require('@duelyst/worker/upload_game_to_s3');
   uploadGameToS3('123', '{"game":true}', '{"mouse":true}');
 } catch (error) {
   console.log(error.message);

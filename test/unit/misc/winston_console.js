@@ -21,7 +21,7 @@ const { expect } = require('chai');
 
 require('app-module-path').addPath(path.join(__dirname, '../../../'));
 
-const winstonSeam = require('apps/server/winston');
+const winstonSeam = require('@duelyst/server/winston');
 
 const ANSI = new RegExp(`${String.fromCharCode(27)}\\[[0-9;]*m`, 'g');
 

@@ -1,11 +1,11 @@
 const path = require('path');
 require('app-module-path').addPath(path.join(__dirname, '../'));
 const _ = require('underscore');
-const DuelystFirebase = require('apps/server/lib/duelyst_firebase_module');
-const FirebasePromises = require('apps/server/lib/firebase_promises');
-const UsersModule = require('apps/server/lib/data_access/users');
+const DuelystFirebase = require('@duelyst/server/lib/duelyst_firebase_module');
+const FirebasePromises = require('@duelyst/server/lib/firebase_promises');
+const UsersModule = require('@duelyst/server/lib/data_access/users');
 const generatePushId = require('@duelyst/common/generate_push_id');
-const knex = require('apps/server/lib/data_access/knex');
+const knex = require('@duelyst/server/lib/data_access/knex');
 // var PortraitLookup = require('@duelyst/sdk/portraits/portraitLookup.coffee')
 
 const usernames = [

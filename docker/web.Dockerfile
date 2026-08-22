@@ -25,6 +25,9 @@ COPY packages ./packages
 COPY packages/sdk/package.json ./packages/sdk/
 COPY packages/common/package.json ./packages/common/
 COPY packages/data/package.json ./packages/data/
+COPY apps/client/package.json ./apps/client/
+COPY apps/server/package.json ./apps/server/
+COPY apps/worker/package.json ./apps/worker/
 RUN pnpm install --frozen-lockfile
 
 COPY . .
@@ -74,6 +77,9 @@ COPY packages ./packages
 COPY packages/sdk/package.json ./packages/sdk/
 COPY packages/common/package.json ./packages/common/
 COPY packages/data/package.json ./packages/data/
+COPY apps/client/package.json ./apps/client/
+COPY apps/server/package.json ./apps/server/
+COPY apps/worker/package.json ./apps/worker/
 RUN pnpm install --prod --frozen-lockfile && pnpm store prune
 
 # ---------- stage 3: the API runtime ----------
@@ -94,6 +100,9 @@ COPY package.json pnpm-workspace.yaml ./
 COPY packages/sdk/package.json ./packages/sdk/
 COPY packages/common/package.json ./packages/common/
 COPY packages/data/package.json ./packages/data/
+COPY apps/client/package.json ./apps/client/
+COPY apps/server/package.json ./apps/server/
+COPY apps/worker/package.json ./apps/worker/
 
 COPY --from=deps /duelyst/node_modules ./node_modules
 COPY --from=client /duelyst/build ./build

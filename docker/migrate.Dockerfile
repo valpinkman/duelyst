@@ -10,6 +10,9 @@ COPY packages /duelyst/packages
 COPY packages/sdk/package.json /duelyst/packages/sdk/
 COPY packages/common/package.json /duelyst/packages/common/
 COPY packages/data/package.json /duelyst/packages/data/
+COPY apps/client/package.json /duelyst/apps/client/
+COPY apps/server/package.json /duelyst/apps/server/
+COPY apps/worker/package.json /duelyst/apps/worker/
 RUN npm install -g pnpm@10.12.1
 RUN pnpm install --frozen-lockfile && pnpm store prune
 

@@ -5,8 +5,8 @@ const { expect } = require('chai');
 const _ = require('underscore');
 
 const UtilsSDK = require('../../../utils/utils_sdk');
-const UsableDecks = require('apps/server/ai/decks/usable_decks');
-const StarterAI = require('apps/server/ai/starter_ai');
+const UsableDecks = require('@duelyst/server/ai/decks/usable_decks');
+const StarterAI = require('@duelyst/server/ai/starter_ai');
 const CONFIG = require('@duelyst/common/config');
 const Logger = require('@duelyst/common/logger');
 const SDK = require('@duelyst/sdk/index');

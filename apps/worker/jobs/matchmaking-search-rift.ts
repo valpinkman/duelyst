@@ -23,9 +23,9 @@ const GameType = require('@duelyst/sdk/gameType');
 const RankFactory = require('@duelyst/sdk/rank/rankFactory');
 const FactionsLookup = require('@duelyst/sdk/cards/factionsLookup');
 const FactionFactory = require('@duelyst/sdk/cards/factionFactory');
-const knex = require('apps/server/lib/data_access/knex');
+const knex = require('@duelyst/server/lib/data_access/knex');
 
-const createSinglePlayerGame = require('apps/server/lib/create_single_player_game');
+const createSinglePlayerGame = require('@duelyst/server/lib/create_single_player_game');
 
 // redis
 const Redis = require('../../server/redis');

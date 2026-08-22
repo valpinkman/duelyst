@@ -26,7 +26,7 @@ module.exports = function bootstrap(winstonLabel) {
     process.setSourceMapsEnabled(true);
   }
 
-  // root-absolute requires: require('apps/server/lib/...'), require('@duelyst/common/...')
+  // still needed for the last root-absolute requires: config/config and version
   // Named packages (@duelyst/sdk) do NOT come through here -- they resolve via
   // node_modules, which is why build-server.mjs writes build/node_modules.
   require('app-module-path').addPath(root);
@@ -36,7 +36,7 @@ module.exports = function bootstrap(winstonLabel) {
   const config = require('config/config');
   // Monkey-patches console.log to Winston/Papertrail
   if (config.get('winston')) {
-    require('apps/server/winston').setup(winstonLabel);
+    require('@duelyst/server/winston').setup(winstonLabel);
   }
 
   return config;

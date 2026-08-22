@@ -5,9 +5,9 @@ const _ = require('underscore');
 require('app-module-path').addPath(path.join(__dirname, '../'));
 
 const config = require('../config/config');
-const knex = require('apps/server/lib/data_access/knex');
-const InventoryModule = require('apps/server/lib/data_access/inventory');
-const UsersModule = require('apps/server/lib/data_access/users');
+const knex = require('@duelyst/server/lib/data_access/knex');
+const InventoryModule = require('@duelyst/server/lib/data_access/inventory');
+const UsersModule = require('@duelyst/server/lib/data_access/users');
 
 if (process.argv.length !== 6) {
   console.log(

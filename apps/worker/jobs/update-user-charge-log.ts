@@ -11,7 +11,7 @@ const ShopModule = require('../../server/lib/data_access/shop');
 const Logger = require('@duelyst/common/logger');
 const generatePushId = require('@duelyst/common/generate_push_id');
 const moment = require('moment');
-const knex = require('apps/server/lib/data_access/knex');
+const knex = require('@duelyst/server/lib/data_access/knex');
 
 /**
  * Job - 'update-user-charge-log'

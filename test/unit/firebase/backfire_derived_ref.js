@@ -49,8 +49,8 @@ global.Firebase = function (url) {
 };
 global.Firebase.ServerValue = firebase.database.ServerValue;
 
-require('apps/client/vendor/backfire/backfire.min.js');
-const DuelystFirebase = require('apps/client/ui/extensions/duelyst_firebase');
+require('@duelyst/client/vendor/backfire/backfire.min.js');
+const DuelystFirebase = require('@duelyst/client/ui/extensions/duelyst_firebase');
 
 describe('backfire with a derived firebase ref', () => {
   const baseUrl = DATABASE_URL + 'matchmaking/test/invites/to/player-1/';

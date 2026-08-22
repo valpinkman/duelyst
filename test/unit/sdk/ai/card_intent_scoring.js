@@ -6,9 +6,9 @@ const Logger = require('@duelyst/common/logger');
 const SDK = require('@duelyst/sdk');
 const UtilsSDK = require('../../../utils/utils_sdk');
 const _ = require('underscore');
-const StarterAI = require('apps/server/ai/starter_ai');
-const CardIntent = require('apps/server/ai/card_intent/card_intent');
-const CardIntentType = require('apps/server/ai/card_intent/card_intent_type');
+const StarterAI = require('@duelyst/server/ai/starter_ai');
+const CardIntent = require('@duelyst/server/ai/card_intent/card_intent');
+const CardIntentType = require('@duelyst/server/ai/card_intent/card_intent_type');
 
 // disable the logger for cleaner test output
 Logger.enabled = false;

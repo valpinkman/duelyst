@@ -4,7 +4,7 @@ const { expect } = require('chai');
 const _ = require('underscore');
 
 const config = require('../../../config/config');
-const DuelystFirebase = require('apps/server/lib/duelyst_firebase_module');
+const DuelystFirebase = require('@duelyst/server/lib/duelyst_firebase_module');
 
 const firebaseUrl = config.get('firebase.url');
 const testRef = '/test-ref-server';

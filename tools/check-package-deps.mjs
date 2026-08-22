@@ -8,7 +8,7 @@
  *   @duelyst/common  -> nothing else (a leaf)
  *   @duelyst/sdk     -> packages/common and packages/data only
  *
- * Checks root-absolute specifiers (`require('apps/client/x')`) and relative ones that
+ * Checks root-absolute specifiers (`require('config/x')`) and relative ones that
  * climb out of the package (`require('../../x')`) -- the first attempt at this
  * move rewrote only the root-absolute form and left 11 relative requires
  * pointing at a file that had moved, so both forms are checked here.

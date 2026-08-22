@@ -1,0 +1,6 @@
+{
+  "name": "@duelyst/client",
+  "version": "1.97.13",
+  "private": true,
+  "description": "Browser client: Marionette views/managers, the Cocos2d board, audio and the vendored libraries it needs. Bundled by tools/build/build-client.mjs; the name exists so the few cross-tree requires (tools, tests) do not have to climb the repo root."
+}
