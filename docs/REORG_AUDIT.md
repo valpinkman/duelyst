@@ -183,13 +183,26 @@ Cheapest-first, each step independently valuable and revertable:
 3. ~~**Decide what `app/data` is.**~~ **Done 2026-08-22** — a leaf data package, now gated by
    `check:package-deps` (§3). The one edge back into `app/sdk` lives in a generated file, not in
    source.
-4. **Only then, and only if still wanted, the physical move** plus the 7,595-specifier codemod.
-   Once the graph is acyclic and the configs are per-package, this is a rename with a codemod
-   behind it rather than an architectural change — and it can be judged on its own merits, which
-   are mostly aesthetic.
+4. ~~**The physical move**~~ **Declined 2026-08-22.** The reorg is finished at step 3.
 
-Steps 1–3 capture essentially all the engineering value. Step 4 is the part that carries the risk
-and the 1,500-file diff.
+   The audit set out to decide whether moving `app/sdk` and `app/common` out of `app/` was worth
+   doing, and the answer turned out to be no — but only after steps 1–3 had taken the reasons
+   away. Per-package typechecking was the stated justification and never needed the move; the
+   cycle was the real obstacle and cost three files; `app/data`'s ownership was a question about
+   the dependency graph, not the directory layout.
+
+   What remains is 7,595 specifier rewrites across ~1,500 files and four hardcoded paths in
+   `generate_packages.js`, in exchange for tidier directory names. The properties that matter —
+   an acyclic graph, packages checkable in isolation, an enforced layering — are already true and
+   gated by `pnpm check:package-deps`.
+
+   If it is ever picked up: the graph is acyclic, so it is mechanical. Rewrite the specifiers to
+   `@duelyst/*` (pnpm's workspace symlinks resolve those natively, where `app-module-path` cannot
+   remap a prefix), and remember that a search for the root-absolute form misses relative requires
+   — that mistake broke 101 test files during step 2.
+
+Steps 1–3 captured the engineering value; step 4 carried the risk and the 1,500-file diff, and
+was declined on that basis. **The reorg is complete.**
 
 ## 7. How to re-verify
 

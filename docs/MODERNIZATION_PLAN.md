@@ -296,7 +296,8 @@ step it describes, so it can never drift from the code.
      UMD with babysitter and wreqr _baked in_, so the npm packages that pinned 1.2.1 were never
      loaded by anything. Both bundles read 1.1.2 before and after. Install hygiene, not a
      runtime change — verified by the e2e practice game regardless.
-  4. **Folder reorg** — `app/sdk` and `app/common` out of `app/`. **Audited 2026-08-21:
+  4. ~~**Folder reorg**~~ **CLOSED 2026-08-22** — steps 1-3 done, step 4 declined. Originally:
+     move `app/sdk` and `app/common` out of `app/`. **Audited 2026-08-21:
      [`REORG_AUDIT.md`](REORG_AUDIT.md).** The audit contradicts the justification written here:
      per-package `typecheck` is _not_ blocked by location — both packages typecheck standalone
      where they are (`app/common` at 0 errors) once the tsconfig names the `colors` augmentation
@@ -322,8 +323,14 @@ step it describes, so it can never drift from the code.
      lists files with `git ls-files`, so the gitignored artifact is excluded by construction.
      `resources` is what keeps the package honest: 221 client references and 127 from the SDK,
      because cards name their own art. Also deleted `app/data/utils/`, three refactor scripts
-     that read `.coffee` files no longer in the repo. **Next: step 4, the physical move** — now
-     a rename with a codemod behind it, judged on its own merits.
+     that read `.coffee` files no longer in the repo. **Step 4, the physical move, was declined (2026-08-22)
+     and the reorg is closed.** Steps 1-3 removed every reason for it: per-package typechecking
+     never needed it, the cycle cost three files, and `app/data`'s ownership was a question about
+     the dependency graph rather than the directory layout. What was left was 7,595 specifier
+     rewrites across ~1,500 files in exchange for tidier names, while the properties that matter
+     — acyclic, independently checkable, enforced by `check:package-deps` — are already true.
+     See [`REORG_AUDIT.md`](REORG_AUDIT.md) §"Recommended sequence" for what picking it up again
+     would involve.
 
   5. **Optional, deliberately not started:** Backbone/Marionette/jQuery. That is a UI rewrite,
      not an upgrade, and was declined once already. Audited 2026-08-21 —
