@@ -37,8 +37,10 @@ jobs:
             echo "::error::COOLIFY_APP_UUIDS is not set"; exit 1
           fi
           echo "Deploying ${GITHUB_REF_NAME} -> ${UUIDS}"
+          # POST, not GET: Coolify 4.3.x answers GET with 405 and
+          # {"message":"This endpoint has changed to a POST request."}
           code=$(curl -sS -o /tmp/out.json -w '%{http_code}' \
-            -X GET "${COOLIFY_URL}/api/v1/deploy?uuid=${UUIDS}&force=false" \
+            -X POST "${COOLIFY_URL}/api/v1/deploy?uuid=${UUIDS}&force=false" \
             -H "Authorization: Bearer ${COOLIFY_TOKEN}")
           cat /tmp/out.json
           echo
