@@ -78,6 +78,12 @@ function patchRefs(instance, options) {
   ensureCallableRef(instance.firebase);
 }
 
+/*
+ * As in duelyst_backbone.ts: `Backbone` is a vendor global typed `any`, so the
+ * published shape is stated once, here, and consumers annotate their require
+ * with `DuelystFirebaseStatic` to get typed attributes. See
+ * app/types/backbone_models.d.ts.
+ */
 Backbone.DuelystFirebase = {};
 
 Backbone.DuelystFirebase.Model = Backbone.Firebase.Model.extend({
@@ -185,4 +191,5 @@ Backbone.DuelystFirebase.toRef = toRef;
 Backbone.DuelystFirebase.ensureCallableRef = ensureCallableRef;
 
 // Expose the class either via CommonJS or the global object
-module.exports = Backbone.DuelystFirebase;
+const DuelystFirebase: DuelystFirebaseStatic = Backbone.DuelystFirebase;
+module.exports = DuelystFirebase;
