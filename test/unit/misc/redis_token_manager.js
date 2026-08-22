@@ -1,5 +1,5 @@
 /*
- * Covers server/redis/r-tokenmanager.ts `get()`.
+ * Covers apps/server/redis/r-tokenmanager.ts `get()`.
  *
  * A player with no matchmaking token must read back as null. Every caller -
  * POST /matchmaking, the bot-game re-check, setupInvite, and the four
@@ -13,11 +13,9 @@
  * promisifyAll resolved hgetall on a missing key to null, ioredis resolves it
  * to an empty object. No suite touched this file, so it shipped.
  */
-const path = require('path');
-require('app-module-path').addPath(path.join(__dirname, '../../../'));
 const { expect } = require('chai');
 
-const makeTokenManager = require('server/redis/r-tokenmanager');
+const makeTokenManager = require('@duelyst/server/redis/r-tokenmanager');
 
 // A fake standing in for ioredis: hgetall on a missing key resolves to {}.
 const fakeRedis = () => {
