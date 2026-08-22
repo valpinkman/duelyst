@@ -1,6 +1,7 @@
 # Removing Marionette and jQuery from OpenDuelyst — plan and decisions
 
-**Measured 2026-08-21 at `de33c72f`** (branch `modernization`). Every number below was derived by
+**Measured 2026-08-21 at `de33c72f`** (on what is now `main`; the branch was called
+`modernization` then). Every number below was derived by
 scanning the tree; the commands are in [§7](#7-how-to-re-verify). This document supersedes nothing
 in [`BACKBONE_AUDIT.md`](BACKBONE_AUDIT.md) — that audit establishes _what Backbone does here_, and
 this one decides _what to do about it_. Read the audit first, then [`../AGENTS.md`](../AGENTS.md)
