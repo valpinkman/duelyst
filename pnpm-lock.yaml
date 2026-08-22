@@ -39,21 +39,33 @@ importers:
       '@counterplay/chromajs':
         specifier: workspace:*
         version: link:packages/chroma-js
+      '@duelyst/client':
+        specifier: workspace:*
+        version: link:apps/client
       '@duelyst/common':
         specifier: workspace:*
-        version: link:app/common
+        version: link:packages/common
+      '@duelyst/config':
+        specifier: workspace:*
+        version: link:packages/config
+      '@duelyst/data':
+        specifier: workspace:*
+        version: link:packages/data
       '@duelyst/sdk':
         specifier: workspace:*
-        version: link:app/sdk
+        version: link:packages/sdk
+      '@duelyst/server':
+        specifier: workspace:*
+        version: link:apps/server
+      '@duelyst/worker':
+        specifier: workspace:*
+        version: link:apps/worker
       '@firebase/app-types':
         specifier: 0.7.0
         version: 0.7.0
       '@thream/socketio-jwt':
         specifier: 2.2.1
         version: 2.2.1(socket.io@4.8.3)
-      app-module-path:
-        specifier: ^1.0.6
-        version: 1.1.0
       backbone:
         specifier: 1.1.2
         version: 1.1.2
@@ -323,19 +335,9 @@ importers:
         specifier: ^4.1.11
         version: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@26.2.0)(vite@8.2.2(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.103.0)(stylus@0.54.8)(tsx@4.23.12)(yaml@2.9.0))
 
-  app/common:
-    devDependencies:
-      typescript:
-        specifier: 'catalog:'
-        version: 7.0.2
+  apps/client: {}
 
-  app/sdk:
-    devDependencies:
-      typescript:
-        specifier: 'catalog:'
-        version: 7.0.2
-
-  desktop:
+  apps/desktop:
     devDependencies:
       '@electron/rebuild':
         specifier: ^4.2.0
@@ -368,6 +370,10 @@ importers:
         specifier: 'catalog:'
         version: 8.2.2(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.103.0)(stylus@0.54.8)(tsx@4.23.12)(yaml@2.9.0)
 
+  apps/server: {}
+
+  apps/worker: {}
+
   packages/Backbone.VirtualCollection:
     dependencies:
       backbone:
@@ -387,7 +393,27 @@ importers:
         specifier: 'catalog:'
         version: 7.0.2
 
-  tooling/oxlint-config: {}
+  packages/common:
+    devDependencies:
+      typescript:
+        specifier: 'catalog:'
+        version: 7.0.2
+
+  packages/config: {}
+
+  packages/data:
+    devDependencies:
+      typescript:
+        specifier: 'catalog:'
+        version: 7.0.2
+
+  packages/oxlint-config: {}
+
+  packages/sdk:
+    devDependencies:
+      typescript:
+        specifier: 'catalog:'
+        version: 7.0.2
 
 packages:
 
@@ -2197,10 +2223,12 @@ packages:
   '@xmldom/xmldom@0.8.14':
     resolution: {integrity: sha512-T4EDRUBVZYRldYApjEJiU0e1stYWaRAX7CuSnKzrpwdZKo53zGV8/pqfzV6FfwNl9YThD2OumQYvqtvjvgG7aQ==}
     engines: {node: '>=10.0.0'}
+    deprecated: this version has critical issues, please update to the latest version
 
   '@xmldom/xmldom@0.9.11':
     resolution: {integrity: sha512-tW8bcK3hsG0/uqSnNz6TK4BkcuZSezoU7DlnYssILmZDktPnSHHuDJJFM0AJv+13gz2r0iGdrj6qqKeUnxXEDg==}
     engines: {node: '>=14.6'}
+    deprecated: this version has critical issues, please update to the latest version
 
   abbrev@1.1.1:
     resolution: {integrity: sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q==}
@@ -2312,9 +2340,6 @@ packages:
     peerDependencies:
       dmg-builder: 26.15.3
       electron-builder-squirrel-windows: 26.15.3
-
-  app-module-path@1.1.0:
-    resolution: {integrity: sha512-gsUszFwFJyYTiIhRKuXm1yYodlzcWMXZ0Mzp+XU3hAt6uMx3d6NAwB1OGxeBEM3ZLOAkMPay9lpLjVgHBNXQNQ==}
 
   aproba@2.1.0:
     resolution: {integrity: sha512-tLIEcj5GuR2RSTnxNKdkK0dJ/GrC7P38sUkiDmDuHfsHmbagTFAxDVIBltoklXEVIQ/f14IL8IMJ5pn9Hez1Ew==}
@@ -8338,8 +8363,6 @@ snapshots:
       which: 5.0.0
     transitivePeerDependencies:
       - supports-color
-
-  app-module-path@1.1.0: {}
 
   aproba@2.1.0: {}
 

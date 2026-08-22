@@ -1,0 +1,44 @@
+/*
+ * decaffeinate suggestions:
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
+ */
+const Quest = require('./quest');
+const GameStatus = require('@duelyst/sdk/gameStatus');
+const GameType = require('@duelyst/sdk/gameType');
+const UtilsGameSession = require('@duelyst/sdk/utils/utils_game_session');
+const GiftCrateLookup = require('@duelyst/sdk/giftCrates/giftCrateLookup');
+const QuestType = require('./questTypeLookup');
+const moment = require('moment');
+
+class QuestFrostfire2016 extends Quest {
+  declare isReplaceable: any;
+  declare giftChests: any;
+  declare rewardDetails: any;
+
+  static Identifier = 30001;
+
+  constructor() {
+    super(QuestFrostfire2016.Identifier, 'Frostfire', [QuestType.Seasonal]);
+    this.params.completionProgress = 15;
+  }
+
+  progressForQuestCompletion() {
+    return 1;
+  }
+
+  getDescription() {
+    return `Complete ${this.params.completionProgress} quests.`;
+  }
+
+  isAvailableOn(momentUtc) {
+    return (
+      momentUtc.isAfter(moment.utc('2016-12-01')) && momentUtc.isBefore(moment.utc('2017-01-01'))
+    );
+  }
+}
+QuestFrostfire2016.prototype.isReplaceable = false;
+QuestFrostfire2016.prototype.giftChests = [GiftCrateLookup.Frostfire2016];
+QuestFrostfire2016.prototype.rewardDetails =
+  'Gift Box contains: Saberspine Tiger Skin, 100 Gold, 1 Rare Crate Key.';
+
+module.exports = QuestFrostfire2016;

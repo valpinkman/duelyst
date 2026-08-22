@@ -3,13 +3,13 @@ import { defineConfig } from 'vitest/config';
 /*
  * Vitest is the project's test runner (mocha was retired in plan step 7.1).
  *
- * The suites are CommonJS and register `app-module-path` themselves, so app
- * modules load through node's require() chain; `test/setup-tsx.mjs` gives that
- * chain the ability to load TypeScript.
+ * The suites are CommonJS and reach the app trees by relative path or by
+ * workspace package name, so they load through node's own require() chain;
+ * `test/setup-tsx.mjs` gives that chain the ability to load TypeScript.
  *
  * The suites are split into named projects along package lines, so a package
  * can be exercised on its own: `pnpm vitest --project sdk`. The files still
- * live under test/ rather than inside app/sdk -- see docs/REORG_AUDIT.md. The
+ * live under test/ rather than inside packages/sdk -- see docs/REORG_AUDIT.md. The
  * names are the point: they make the boundary explicit now, so that relocating
  * the files later is a path change and not a restructuring.
  */
@@ -21,7 +21,7 @@ const shared = {
   environment: 'node',
   setupFiles: ['./test/setup-tsx.mjs'],
   // mocha ran with -t 1000 plus per-suite this.timeout() overrides up to
-  // 300s; those calls are gone (see scripts/codemods/mocha-to-vitest.mjs)
+  // 300s; those calls are gone (see tools/codemods/mocha-to-vitest.mjs)
   // and the budget lives here instead.
   testTimeout: 30000,
   hookTimeout: 60000,

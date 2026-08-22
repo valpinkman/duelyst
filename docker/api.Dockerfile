@@ -8,26 +8,31 @@ COPY .npmrc /duelyst/
 COPY pnpm-lock.yaml /duelyst/
 COPY pnpm-workspace.yaml /duelyst/
 COPY packages /duelyst/packages
-# workspace members live in-place under app/ - their manifests must exist at install time
-COPY app/sdk/package.json /duelyst/app/sdk/
-COPY app/common/package.json /duelyst/app/common/
+# workspace members live under packages/ - their manifests must exist at install time
+COPY packages/sdk/package.json /duelyst/packages/sdk/
+COPY packages/common/package.json /duelyst/packages/common/
+COPY packages/data/package.json /duelyst/packages/data/
+COPY packages/config/package.json /duelyst/packages/config/
+COPY apps/client/package.json /duelyst/apps/client/
+COPY apps/server/package.json /duelyst/apps/server/
+COPY apps/worker/package.json /duelyst/apps/worker/
 RUN npm install -g pnpm@10.12.1
 RUN pnpm install --frozen-lockfile && pnpm store prune
 
 COPY version.json /duelyst/
-COPY app/*.ts /duelyst/app/
-COPY app/common /duelyst/app/common
-COPY app/data /duelyst/app/data
-COPY app/localization /duelyst/app/localization
-COPY app/sdk /duelyst/app/sdk
+COPY apps/client/*.ts /duelyst/apps/client/
+COPY packages/common /duelyst/packages/common
+COPY packages/data /duelyst/packages/data
+COPY apps/client/localization /duelyst/apps/client/localization
+COPY packages/sdk /duelyst/packages/sdk
 COPY bin /duelyst/bin
-COPY config /duelyst/config
-COPY server /duelyst/server
-COPY worker /duelyst/worker
+COPY packages/config /duelyst/packages/config
+COPY apps/server /duelyst/apps/server
+COPY apps/worker /duelyst/apps/worker
 
 EXPOSE 3000
 COPY tsconfig.json /duelyst/
-COPY scripts/build /duelyst/scripts/build
+COPY tools/build /duelyst/tools/build
 
 # Compile TypeScript once here instead of on every boot. The tsx require-hook
 # cost a cold container ~3.7s and a 13 MB /tmp cache each time it started.

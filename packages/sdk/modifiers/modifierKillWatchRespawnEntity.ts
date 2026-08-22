@@ -1,0 +1,101 @@
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS205: Consider reworking code to avoid use of IIFEs
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
+ */
+const CONFIG = require('@duelyst/common/config');
+const UtilsGameSession = require('@duelyst/sdk/utils/utils_game_session');
+const UtilsPosition = require('@duelyst/common/utils/utils_position');
+const PlayCardSilentlyAction = require('@duelyst/sdk/actions/playCardSilentlyAction');
+const PlayCardAction = require('@duelyst/sdk/actions/playCardAction');
+const ModifierKillWatch = require('./modifierKillWatch');
+
+class ModifierKillWatchRespawnEntity extends ModifierKillWatch {
+  declare type: any;
+  declare fxResource: any;
+  declare cardDataOrIndexToSpawn: any;
+
+  static type = 'ModifierKillWatchRespawnEntity';
+  static description = 'Whenever Monolith Guardian destroys an enemy, it assimilates them';
+
+  static createContextObject(spawnCount, spawnPattern, spawnSilently, options) {
+    if (spawnCount == null) {
+      spawnCount = 1;
+    }
+    if (spawnPattern == null) {
+      spawnPattern = CONFIG.PATTERN_1x1;
+    }
+    if (spawnSilently == null) {
+      spawnSilently = true;
+    }
+    const contextObject = super.createContextObject(false, false, options);
+    contextObject.spawnCount = spawnCount;
+    contextObject.spawnPattern = spawnPattern;
+    contextObject.spawnSilently = spawnSilently;
+    return contextObject;
+  }
+
+  static getDescription(modifierContextObject) {
+    return this.description;
+  }
+
+  onKillWatch(action) {
+    super.onKillWatch(action);
+
+    if (this.getGameSession().getIsRunningAsAuthoritative()) {
+      const ownerId = this.getSpawnOwnerId(action);
+      const cardDataOrIndexToSpawn = action.getTarget().createNewCardData();
+      const cardToSpawn =
+        this.getGameSession().getExistingCardFromIndexOrCachedCardFromData(cardDataOrIndexToSpawn);
+      const spawnPositions = UtilsGameSession.getRandomSmartSpawnPositionsFromPattern(
+        this.getGameSession(),
+        action.getTargetPosition(),
+        this.spawnPattern,
+        cardToSpawn,
+        this.getCard(),
+        this.spawnCount,
+      );
+      return (() => {
+        const result = [];
+        for (var spawnPosition of Array.from<any>(spawnPositions)) {
+          var spawnAction;
+          if (this.spawnSilently) {
+            spawnAction = new PlayCardSilentlyAction(
+              this.getGameSession(),
+              ownerId,
+              spawnPosition.x,
+              spawnPosition.y,
+              cardDataOrIndexToSpawn,
+            );
+          } else {
+            spawnAction = new PlayCardAction(
+              this.getGameSession(),
+              ownerId,
+              spawnPosition.x,
+              spawnPosition.y,
+              cardDataOrIndexToSpawn,
+            );
+          }
+          spawnAction.setSource(this.getCard());
+          result.push(this.getGameSession().executeAction(spawnAction));
+        }
+        return result;
+      })();
+    }
+  }
+
+  getSpawnOwnerId(action) {
+    return this.getCard().getOwnerId();
+  }
+}
+ModifierKillWatchRespawnEntity.prototype.type = 'ModifierKillWatchRespawnEntity';
+ModifierKillWatchRespawnEntity.prototype.fxResource = [
+  'FX.Modifiers.ModifierKillWatch',
+  'FX.Modifiers.ModifierGenericSpawn',
+];
+ModifierKillWatchRespawnEntity.prototype.cardDataOrIndexToSpawn = null;
+
+module.exports = ModifierKillWatchRespawnEntity;

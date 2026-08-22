@@ -1,22 +1,19 @@
-const path = require('path');
-require('app-module-path').addPath(path.join(__dirname, '../../../../'));
-
 const { expect } = require('chai');
 const _ = require('underscore');
 
-const positionBackstabAvoidance = require('../../../../server/ai/scoring/position/position_backstabAvoidance');
-const positionObjectiveBackstab = require('../../../../server/ai/scoring/position/position_objective_backstab');
-const positionObjectiveDistanceFromBestObjective = require('../../../../server/ai/scoring/position/position_objective_distanceFromBestObjective');
-const positionObjectiveFrenzy = require('../../../../server/ai/scoring/position/position_objective_frenzy');
-const positionObjectiveProvoke = require('../../../../server/ai/scoring/position/position_objective_provoke');
-const positionProximityToEnemies = require('../../../../server/ai/scoring/position/position_proximityToEnemies');
-const positionProximityToGenerals = require('../../../../server/ai/scoring/position/position_proximityToGenerals');
-const positionShadowTileAvoidance = require('../../../../server/ai/scoring/position/position_shadowTileAvoidance');
-const positionZeal = require('../../../../server/ai/scoring/position/position_zeal');
+const positionBackstabAvoidance = require('@duelyst/server/ai/scoring/position/position_backstabAvoidance');
+const positionObjectiveBackstab = require('@duelyst/server/ai/scoring/position/position_objective_backstab');
+const positionObjectiveDistanceFromBestObjective = require('@duelyst/server/ai/scoring/position/position_objective_distanceFromBestObjective');
+const positionObjectiveFrenzy = require('@duelyst/server/ai/scoring/position/position_objective_frenzy');
+const positionObjectiveProvoke = require('@duelyst/server/ai/scoring/position/position_objective_provoke');
+const positionProximityToEnemies = require('@duelyst/server/ai/scoring/position/position_proximityToEnemies');
+const positionProximityToGenerals = require('@duelyst/server/ai/scoring/position/position_proximityToGenerals');
+const positionShadowTileAvoidance = require('@duelyst/server/ai/scoring/position/position_shadowTileAvoidance');
+const positionZeal = require('@duelyst/server/ai/scoring/position/position_zeal');
 const UtilsSDK = require('../../../utils/utils_sdk');
-const SDK = require('../../../../app/sdk/index');
-const Logger = require('../../../../app/common/logger');
-const CONFIG = require('../../../../app/common/config');
+const SDK = require('@duelyst/sdk/index');
+const Logger = require('@duelyst/common/logger');
+const CONFIG = require('@duelyst/common/config');
 
 // disable the logger for cleaner test output
 Logger.enabled = false;

@@ -1,0 +1,6 @@
+{
+  "name": "@duelyst/server",
+  "version": "1.97.13",
+  "private": true,
+  "description": "Express API (3000), game server (8001) and single-player server (8000), plus data_access, redis and the AI. Reached by name from the test suite and bin/."
+}

@@ -1,6 +1,6 @@
 const normalizedPath = require('path').join(__dirname, './');
 const files = require('fs').readdirSync(normalizedPath);
-const PromiseUtils = require('../../../app/common/utils/utils_promise');
+const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 
 PromiseUtils.map(
   files,

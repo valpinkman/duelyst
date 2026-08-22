@@ -20,19 +20,20 @@ Task orchestration is turborepo (`turbo.json`); pnpm still owns installs and lin
   `pnpm check:turbo-env` re-derives the list from the convict schema and fails CI on drift.
 - **One lint owner per file.** Lint emits diagnostics, so overlap would double-report: the root
   `.oxlintrc.json` ignores every directory that is a workspace package in its own right, and each
-  package lints itself against `tooling/oxlint-config/base.jsonc`. Formatting has no such problem
+  package lints itself against `packages/oxlint-config/base.jsonc`. Formatting has no such problem
   (it is an idempotent rewrite), so `.oxfmtrc.json` at the root stays the single source of truth
   and package `format` scripts point back at it.
-- `app/sdk` and `app/common` have no per-package `typecheck`/`test`: the root `tsconfig.json`
-  includes `app/**` and the suites live in `test/`. Splitting those out means a second, drifting
-  source of truth — it waits until the packages physically move out of `app/`.
+- `packages/sdk` and `packages/common` each carry their own `typecheck`, `lint` and `format`;
+  the suites still live in `test/` as named vitest projects. Note the root `tsconfig.json` must
+  name them in `include`: `tsc` does not follow CommonJS `require()`, so a package that is not
+  listed is simply absent from the root program — silently, with no error and no diagnostic.
 - `packages/chroma-js` is a fork we maintain (we build it, we lint and format it, it has one
   documented rule exception in its own `.oxlintrc.json`). `packages/Backbone.VirtualCollection`
   is vendored verbatim and untouched since the initial dump: lint-only, never reformatted, and
   its committed UMD bundle _is_ the shipped artifact.
 - Caching is on for the cheap repeatable tasks and **off for `build:client`** — `dist/` is ~1.2 GB
   once resources are copied in, which costs more disk than the ~35 s it would save.
-- **The services no longer compile TypeScript at boot.** `scripts/build/build-server.mjs`
+- **The services no longer compile TypeScript at boot.** `tools/build/build-server.mjs`
   transpiles the server-side trees into `build/`, mirroring the source layout so every
   root-absolute require (`require('server/lib/x')`) still resolves through app-module-path
   against `build/`. It is esbuild transpile-only, not `tsc`: tsx _is_ esbuild, so compiling the

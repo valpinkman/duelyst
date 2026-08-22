@@ -1,24 +1,21 @@
-const path = require('path');
-require('app-module-path').addPath(path.join(__dirname, '../../../'));
-
 const chai = require('chai');
 const _ = require('underscore');
 const moment = require('moment');
 
 const expect = chai.expect;
-const DuelystFirebase = require('../../../server/lib/duelyst_firebase_module');
-const Errors = require('../../../server/lib/custom_errors');
-const UsersModule = require('../../../server/lib/data_access/users');
-const InventoryModule = require('../../../server/lib/data_access/inventory');
-const SyncModule = require('../../../server/lib/data_access/sync');
-const FirebasePromises = require('../../../server/lib/firebase_promises');
-const config = require('../../../config/config');
-const Logger = require('../../../app/common/logger');
-const SDK = require('../../../app/sdk/index');
-const knex = require('../../../server/lib/data_access/knex');
-const generatePushId = require('../../../app/common/generate_push_id');
-const { onType } = require('../../../app/common/utils/utils_promise');
-const PromiseUtils = require('../../../app/common/utils/utils_promise');
+const DuelystFirebase = require('@duelyst/server/lib/duelyst_firebase_module');
+const Errors = require('@duelyst/server/lib/custom_errors');
+const UsersModule = require('@duelyst/server/lib/data_access/users');
+const InventoryModule = require('@duelyst/server/lib/data_access/inventory');
+const SyncModule = require('@duelyst/server/lib/data_access/sync');
+const FirebasePromises = require('@duelyst/server/lib/firebase_promises');
+const config = require('@duelyst/config');
+const Logger = require('@duelyst/common/logger');
+const SDK = require('@duelyst/sdk/index');
+const knex = require('@duelyst/server/lib/data_access/knex');
+const generatePushId = require('@duelyst/common/generate_push_id');
+const { onType } = require('@duelyst/common/utils/utils_promise');
+const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 const { installSeededRandom, restoreRandom } = require('../../helpers/seeded_random');
 
 // disable the logger for cleaner test output

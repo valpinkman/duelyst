@@ -12,25 +12,24 @@ describe.skip('shop module', () => {
 /* Shop unit tests are currently disabled.
 
 var path = require('path')
-require('app-module-path').addPath(path.join(__dirname, '../../../'))
 var chai = require('chai');
 chai.config.includeStack = true;
 var expect = chai.expect;
-var DuelystFirebase = require('../../../server/lib/duelyst_firebase_module');
-var Errors = require('../../../server/lib/custom_errors');
-var UsersModule = require('../../../server/lib/data_access/users');
-var SyncModule = require('../../../server/lib/data_access/sync');
-var InventoryModule = require('../../../server/lib/data_access/inventory');
-var ShopModule = require('../../../server/lib/data_access/shop');
-var FirebasePromises = require('../../../server/lib/firebase_promises');
-var generatePushId = require('../../../app/common/generate_push_id');
-var config = require('../../../config/config');
-var Logger = require('../../../app/common/logger');
+var DuelystFirebase = require('@duelyst/server/lib/duelyst_firebase_module');
+var Errors = require('@duelyst/server/lib/custom_errors');
+var UsersModule = require('@duelyst/server/lib/data_access/users');
+var SyncModule = require('@duelyst/server/lib/data_access/sync');
+var InventoryModule = require('@duelyst/server/lib/data_access/inventory');
+var ShopModule = require('@duelyst/server/lib/data_access/shop');
+var FirebasePromises = require('@duelyst/server/lib/firebase_promises');
+var generatePushId = require('@duelyst/common/generate_push_id');
+var config = require('@duelyst/config');
+var Logger = require('@duelyst/common/logger');
 var _ = require('underscore');
-var SDK = require('../../../app/sdk/index');
+var SDK = require('@duelyst/sdk/index');
 var moment = require('moment');
-var knex = require('../../../server/lib/data_access/knex');
-var ShopData = require('../../../app/data/shop.json')
+var knex = require('@duelyst/server/lib/data_access/knex');
+var ShopData = require('@duelyst/data/shop.json')
 
 // disable the logger for cleaner test output
 Logger.enabled = Logger.enabled && false;

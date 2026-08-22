@@ -21,6 +21,6 @@
     "underscore": "catalog:"
   },
   "scripts": {
-    "lint": "oxlint --config ../../tooling/oxlint-config/base.jsonc src"
+    "lint": "oxlint --config ../../packages/oxlint-config/base.jsonc src"
   }
 }

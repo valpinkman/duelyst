@@ -1,0 +1,7 @@
+{
+  "name": "@duelyst/config",
+  "version": "1.97.13",
+  "private": true,
+  "description": "convict schema plus the per-environment JSON. Every service and the client build resolve settings through this one module.",
+  "main": "config.js"
+}

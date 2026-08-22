@@ -15,8 +15,6 @@
  *    `requestProperty` because 149 route handlers read req.user.d.id; this
  *    asserts the pin holds.
  */
-const path = require('path');
-require('app-module-path').addPath(path.join(__dirname, '../../../'));
 const { expect } = require('chai');
 const jwt = require('jsonwebtoken');
 const { expressjwt } = require('express-jwt');

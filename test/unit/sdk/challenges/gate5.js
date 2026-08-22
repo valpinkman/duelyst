@@ -1,19 +1,16 @@
-const path = require('path');
-require('app-module-path').addPath(path.join(__dirname, '../../../../'));
-
 const { expect } = require('chai');
 const _ = require('underscore');
 
-const CONFIG = require('../../../../app/common/config');
-const Logger = require('../../../../app/common/logger');
-const SDK = require('../../../../app/sdk/index');
-const BeginnerAbyssianChallenge3 = require('../../../../app/sdk/challenges/abyssian/BeginnerAbyssianChallenge3');
-const BeginnerSonghaiChallenge1 = require('../../../../app/sdk/challenges/songhai/BeginnerSonghaiChallenge1');
-const BeginnerMagmarChallenge4 = require('../../../../app/sdk/challenges/magmar/BeginnerMagmarChallenge4');
-const BeginnerVetruvianChallenge2 = require('../../../../app/sdk/challenges/vetruvian/BeginnerVetruvianChallenge2');
-const BeginnerRangedChallenge1 = require('../../../../app/sdk/challenges/tutorial/BeginnerRangedChallenge1');
-const BeginnerVanarChallenge2 = require('../../../../app/sdk/challenges/vanar/BeginnerVanarChallenge2');
-const MediumVetruvianChallenge2 = require('../../../../app/sdk/challenges/vetruvian/MediumVetruvianChallenge2');
+const CONFIG = require('@duelyst/common/config');
+const Logger = require('@duelyst/common/logger');
+const SDK = require('@duelyst/sdk/index');
+const BeginnerAbyssianChallenge3 = require('@duelyst/sdk/challenges/abyssian/BeginnerAbyssianChallenge3');
+const BeginnerSonghaiChallenge1 = require('@duelyst/sdk/challenges/songhai/BeginnerSonghaiChallenge1');
+const BeginnerMagmarChallenge4 = require('@duelyst/sdk/challenges/magmar/BeginnerMagmarChallenge4');
+const BeginnerVetruvianChallenge2 = require('@duelyst/sdk/challenges/vetruvian/BeginnerVetruvianChallenge2');
+const BeginnerRangedChallenge1 = require('@duelyst/sdk/challenges/tutorial/BeginnerRangedChallenge1');
+const BeginnerVanarChallenge2 = require('@duelyst/sdk/challenges/vanar/BeginnerVanarChallenge2');
+const MediumVetruvianChallenge2 = require('@duelyst/sdk/challenges/vetruvian/MediumVetruvianChallenge2');
 const UtilsSDK = require('../../../utils/utils_sdk');
 
 // disable the logger for cleaner test output

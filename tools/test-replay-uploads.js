@@ -1,0 +1,16 @@
+const config = require('@duelyst/config');
+
+// Validate config.
+config.set('env', 'development');
+if (!config.get('aws.accessKey') || !config.get('aws.secretKey')) {
+  console.log('Cannot run without AWS credentials from environment.');
+  process.exit(1);
+}
+
+// Run the uploader.
+try {
+  const uploadGameToS3 = require('@duelyst/worker/upload_game_to_s3');
+  uploadGameToS3('123', '{"game":true}', '{"mouse":true}');
+} catch (error) {
+  console.log(error.message);
+}

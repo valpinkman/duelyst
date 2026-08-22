@@ -1,10 +1,8 @@
-const path = require('path');
-require('app-module-path').addPath(path.join(__dirname, '../../../../'));
 const { expect } = require('chai');
 const _ = require('underscore');
-const CONFIG = require('../../../../app/common/config');
-const Logger = require('../../../../app/common/logger');
-const SDK = require('../../../../app/sdk/index');
+const CONFIG = require('@duelyst/common/config');
+const Logger = require('@duelyst/common/logger');
+const SDK = require('@duelyst/sdk/index');
 const UtilsSDK = require('../../../utils/utils_sdk');
 
 // disable the logger for cleaner test output

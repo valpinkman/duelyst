@@ -3,4 +3,4 @@
 
 require('./_bootstrap')('server')
 
-module.exports = require('server/lib/admin_cli')
+module.exports = require('@duelyst/server/lib/admin_cli')

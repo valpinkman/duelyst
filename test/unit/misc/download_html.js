@@ -12,14 +12,13 @@
  * the behaviour needs to be demonstrated rather than assumed.
  */
 const path = require('path');
-require('app-module-path').addPath(path.join(__dirname, '../../../'));
 const { expect } = require('chai');
 const fs = require('fs');
 const os = require('os');
 const http = require('http');
 const zlib = require('zlib');
-const Logger = require('../../../app/common/logger');
-const downloadHtml = require('../../../server/lib/download_html');
+const Logger = require('@duelyst/common/logger');
+const downloadHtml = require('@duelyst/server/lib/download_html');
 
 Logger.enabled = false;
 

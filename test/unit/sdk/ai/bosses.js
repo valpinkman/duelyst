@@ -1,20 +1,17 @@
-const path = require('path');
-require('app-module-path').addPath(path.join(__dirname, '../../../../'));
-
 const { expect } = require('chai');
 const _ = require('underscore');
 
-const CONFIG = require('../../../../app/common/config');
-const Logger = require('../../../../app/common/logger');
-const SDK = require('../../../../app/sdk/index');
-const CardFactory = require('../../../../app/sdk/cards/cardFactory');
+const CONFIG = require('@duelyst/common/config');
+const Logger = require('@duelyst/common/logger');
+const SDK = require('@duelyst/sdk/index');
+const CardFactory = require('@duelyst/sdk/cards/cardFactory');
 const UtilsSDK = require('../../../utils/utils_sdk');
-const UsableDecks = require('../../../../server/ai/decks/usable_decks');
-const StarterAI = require('../../../../server/ai/starter_ai');
-const ModifierRanged = require('../../../../app/sdk/modifiers/modifierRanged');
-const ModifierForcefield = require('../../../../app/sdk/modifiers/modifierForcefield');
-const ModifierFlying = require('../../../../app/sdk/modifiers/modifierFlying');
-const ModifierTranscendance = require('../../../../app/sdk/modifiers/modifierTranscendance');
+const UsableDecks = require('@duelyst/server/ai/decks/usable_decks');
+const StarterAI = require('@duelyst/server/ai/starter_ai');
+const ModifierRanged = require('@duelyst/sdk/modifiers/modifierRanged');
+const ModifierForcefield = require('@duelyst/sdk/modifiers/modifierForcefield');
+const ModifierFlying = require('@duelyst/sdk/modifiers/modifierFlying');
+const ModifierTranscendance = require('@duelyst/sdk/modifiers/modifierTranscendance');
 
 // disable the logger for cleaner test output
 Logger.enabled = false;

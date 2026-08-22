@@ -1,18 +1,16 @@
-const path = require('path');
-require('app-module-path').addPath(path.join(__dirname, '../../../../'));
 const { expect } = require('chai');
 const _ = require('underscore');
 
-const CONFIG = require('../../../../app/common/config');
-const Logger = require('../../../../app/common/logger');
-const SDK = require('../../../../app/sdk/index');
-const BeginnerAbyssianChallenge2 = require('../../../../app/sdk/challenges/abyssian/BeginnerAbyssianChallenge2');
-const BeginnerSonghaiChallenge1 = require('../../../../app/sdk/challenges/songhai/BeginnerSonghaiChallenge1');
-const BeginnerMagmarChallenge2 = require('../../../../app/sdk/challenges/magmar/BeginnerMagmarChallenge2');
-const MediumVetruvianChallenge2 = require('../../../../app/sdk/challenges/vetruvian/MediumVetruvianChallenge2');
-const AdvancedLyonarChallenge2 = require('../../../../app/sdk/challenges/lyonar/AdvancedLyonarChallenge2');
-const BeginnerVanarChallenge3 = require('../../../../app/sdk/challenges/vanar/BeginnerVanarChallenge3');
-const BeginnerVetruvianChallenge2 = require('../../../../app/sdk/challenges/vetruvian/BeginnerVetruvianChallenge2');
+const CONFIG = require('@duelyst/common/config');
+const Logger = require('@duelyst/common/logger');
+const SDK = require('@duelyst/sdk/index');
+const BeginnerAbyssianChallenge2 = require('@duelyst/sdk/challenges/abyssian/BeginnerAbyssianChallenge2');
+const BeginnerSonghaiChallenge1 = require('@duelyst/sdk/challenges/songhai/BeginnerSonghaiChallenge1');
+const BeginnerMagmarChallenge2 = require('@duelyst/sdk/challenges/magmar/BeginnerMagmarChallenge2');
+const MediumVetruvianChallenge2 = require('@duelyst/sdk/challenges/vetruvian/MediumVetruvianChallenge2');
+const AdvancedLyonarChallenge2 = require('@duelyst/sdk/challenges/lyonar/AdvancedLyonarChallenge2');
+const BeginnerVanarChallenge3 = require('@duelyst/sdk/challenges/vanar/BeginnerVanarChallenge3');
+const BeginnerVetruvianChallenge2 = require('@duelyst/sdk/challenges/vetruvian/BeginnerVetruvianChallenge2');
 const UtilsSDK = require('../../../utils/utils_sdk');
 
 // disable the logger for cleaner test output

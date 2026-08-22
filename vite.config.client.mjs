@@ -2,10 +2,10 @@
  * Vite build for the browser client (MODERNIZATION_PLAN.md Phase 4).
  *
  * Replaces gulp's browserify bundle (gulp/bundler.js) only: it produces
- * dist/src/duelyst.js from app/index.ts. Everything else (vendor.js
+ * dist/src/duelyst.js from apps/client/index.ts. Everything else (vendor.js
  * concat, css, index.html, resource packages/copy, locales) still comes from
  * gulp until later Phase 4 steps. Run `pnpm build:vite` after a normal gulp
- * build (it needs the generated app/data/packages.js).
+ * build (it needs the generated packages/data/packages.js).
  *
  * Legacy semantics preserved:
  * - .hbs templates precompile against handlebars/runtime
@@ -33,7 +33,7 @@ const glslify = require('glslify7');
 
 // TRAP (learned the hard way): `vite build` sets NODE_ENV=production before
 // this file loads, which would make convict silently read production.json
-// (where api is ""). The build orchestrator (scripts/build/build-client.mjs)
+// (where api is ""). The build orchestrator (tools/build/build-client.mjs)
 // therefore resolves the config under the REAL environment and hands the
 // values over via DUELYST_BUILD_CONFIG. Direct `pnpm build:vite` runs fall
 // back to convict forced to development unless DUELYST_ENV says otherwise.
@@ -44,7 +44,7 @@ if (process.env.DUELYST_BUILD_CONFIG) {
   config = { get: (k) => ({ datGuiEditorEnabled: ENV_VARS.DAT_GUI_EDITOR_ENABLED })[k] };
 } else {
   process.env.NODE_ENV = process.env.DUELYST_ENV || 'development';
-  config = require('./config/config');
+  config = require('./packages/config/config');
   const { version } = require('./version.json');
   // same variable set as gulp/bundler.js envify()
   ENV_VARS = {
@@ -150,13 +150,13 @@ function umdThisShimPlugin() {
 // A virtual entry reproduces that multi-entry-single-bundle behavior.
 const VIRTUAL_ENTRY = '\0duelyst-entry';
 function entryPlugin() {
-  const entries = ['./app/index.ts'];
+  const entries = ['./apps/client/index.ts'];
   if (
     ENV_VARS.DAT_GUI_EDITOR_ENABLED != null
       ? ENV_VARS.DAT_GUI_EDITOR_ENABLED
       : config.get('datGuiEditorEnabled')
   )
-    entries.push('./app/tools/editor.ts');
+    entries.push('./apps/client/tools/editor.ts');
   return {
     name: 'duelyst:entry',
     resolveId(id) {
@@ -174,13 +174,10 @@ export default defineConfig({
   define,
   resolve: {
     alias: {
-      // root-absolute requires (app-module-path / browserify `paths`)
-      app: path.resolve(rootDir, 'app'),
-      test: path.resolve(rootDir, 'test'),
       // runtime glslify import is dead after static replacement; stub it
-      glslify: path.resolve(rootDir, 'app/tools/glslify-stub.js'),
+      glslify: path.resolve(rootDir, 'apps/client/tools/glslify-stub.js'),
       // node builtins used by client code (browserify shimmed these):
-      // events -> app/common/session2.ts, url -> app/common/landing.ts
+      // events -> apps/client/session2.ts, url -> packages/common/landing.ts
       events: path.resolve(rootDir, 'node_modules/events'),
       url: path.resolve(rootDir, 'node_modules/url'),
       os: path.resolve(rootDir, 'node_modules/os-browserify/browser.js'),
@@ -200,7 +197,7 @@ export default defineConfig({
     sourcemap: false,
     commonjsOptions: {
       // the entire app graph is CommonJS, not just node_modules
-      include: [/node_modules/, /app\//, /packages\//],
+      include: [/node_modules/, /apps\//, /packages\//],
       extensions: ['.ts', '.js'],
       transformMixedEsModules: true,
       // preserve require-time execution order: the codebase's circular-

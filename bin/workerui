@@ -3,5 +3,5 @@
 
 require('./_bootstrap')('worker-ui')
 
-require('worker/worker-ui')
-require('worker/http_healthcheck')()
+require('@duelyst/worker/worker-ui')
+require('@duelyst/worker/http_healthcheck')()

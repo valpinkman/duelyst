@@ -23,22 +23,21 @@
  *    of the two silently breaks either rehydration or serialization.
  */
 const path = require('path');
-require('app-module-path').addPath(path.join(__dirname, '../../../../'));
 const { expect } = require('chai');
 const fs = require('fs');
-const CONFIG = require('app/common/config');
-const Logger = require('app/common/logger');
-const SDK = require('app/sdk');
-const ModifierFactory = require('app/sdk/modifiers/modifierFactory');
-const ActionFactory = require('app/sdk/actions/actionFactory');
-const Modifier = require('app/sdk/modifiers/modifier');
-const ModifierFlying = require('app/sdk/modifiers/modifierFlying');
-const ModifierOpeningGambit = require('app/sdk/modifiers/modifierOpeningGambit');
-const PlayerModifierManaModifier = require('app/sdk/playerModifiers/playerModifierManaModifier');
-const DamageAction = require('app/sdk/actions/damageAction');
-const AttackAction = require('app/sdk/actions/attackAction');
-const EndTurnAction = require('app/sdk/actions/endTurnAction');
-const UtilsSDK = require('test/utils/utils_sdk');
+const CONFIG = require('@duelyst/common/config');
+const Logger = require('@duelyst/common/logger');
+const SDK = require('@duelyst/sdk');
+const ModifierFactory = require('@duelyst/sdk/modifiers/modifierFactory');
+const ActionFactory = require('@duelyst/sdk/actions/actionFactory');
+const Modifier = require('@duelyst/sdk/modifiers/modifier');
+const ModifierFlying = require('@duelyst/sdk/modifiers/modifierFlying');
+const ModifierOpeningGambit = require('@duelyst/sdk/modifiers/modifierOpeningGambit');
+const PlayerModifierManaModifier = require('@duelyst/sdk/playerModifiers/playerModifierManaModifier');
+const DamageAction = require('@duelyst/sdk/actions/damageAction');
+const AttackAction = require('@duelyst/sdk/actions/attackAction');
+const EndTurnAction = require('@duelyst/sdk/actions/endTurnAction');
+const UtilsSDK = require('../../../utils/utils_sdk');
 
 // disable the logger for cleaner test output
 Logger.enabled = false;

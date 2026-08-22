@@ -1,5 +1,5 @@
 /*
- * Covers worker/upload_game_to_s3.ts.
+ * Covers apps/worker/upload_game_to_s3.ts.
  *
  * Replay archiving is optional, and with no AWS credentials configured the
  * uploader must resolve null rather than reject. The archive-game job calls it
@@ -9,11 +9,9 @@
  * deployment hit: no bucket of its own, an unconditional upload, and every
  * completed game silently missing from Postgres.
  */
-const path = require('path');
-require('app-module-path').addPath(path.join(__dirname, '../../../'));
 const { expect } = require('chai');
 
-const config = require('config/config.js');
+const config = require('@duelyst/config');
 
 describe('upload_game_to_s3', function () {
   it('has no aws credentials configured in this environment', function () {
@@ -24,7 +22,7 @@ describe('upload_game_to_s3', function () {
   });
 
   it('resolves null instead of rejecting when archiving is disabled', async function () {
-    const upload = require('worker/upload_game_to_s3');
+    const upload = require('@duelyst/worker/upload_game_to_s3');
 
     const url = await upload('game-1', JSON.stringify({ players: [] }), null);
 
@@ -32,7 +30,7 @@ describe('upload_game_to_s3', function () {
   });
 
   it('does not reject when mouse/ui event data is also present', async function () {
-    const upload = require('worker/upload_game_to_s3');
+    const upload = require('@duelyst/worker/upload_game_to_s3');
 
     const url = await upload('game-2', JSON.stringify({ players: [] }), JSON.stringify([]));
 

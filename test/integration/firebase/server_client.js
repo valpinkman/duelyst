@@ -1,10 +1,8 @@
-const path = require('path');
-require('app-module-path').addPath(path.join(__dirname, '../../../'));
 const { expect } = require('chai');
 const _ = require('underscore');
 
-const config = require('../../../config/config');
-const DuelystFirebase = require('../../../server/lib/duelyst_firebase_module');
+const config = require('@duelyst/config');
+const DuelystFirebase = require('@duelyst/server/lib/duelyst_firebase_module');
 
 const firebaseUrl = config.get('firebase.url');
 const testRef = '/test-ref-server';

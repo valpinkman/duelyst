@@ -1,22 +1,22 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "extends": ["./tooling/oxlint-config/base.jsonc"],
+  "extends": ["./packages/oxlint-config/base.jsonc"],
   "ignorePatterns": [
     "node_modules",
     "dist",
     "build",
-    "desktop/dist",
-    "desktop/node_modules",
+    "apps/desktop/dist",
+    "apps/desktop/node_modules",
     "**/*.d.ts",
-    "app/vendor",
-    "app/resources",
-    "app/original_resources",
-    "app/data/packages.js",
-    "app/tools/FileSaver.min.ts",
-    "app/tools/dat.gui.ts",
+    "apps/client/vendor",
+    "apps/client/resources",
+    "apps/client/original_resources",
+    "packages/data/packages.js",
+    "apps/client/tools/FileSaver.min.ts",
+    "apps/client/tools/dat.gui.ts",
     "packages",
-    "app/sdk",
-    "app/common",
-    "scripts/codex/CanvasText-0.4.1.js"
+    "packages/sdk",
+    "packages/common",
+    "tools/codex/CanvasText-0.4.1.js"
   ]
 }

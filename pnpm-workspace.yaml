@@ -1,12 +1,8 @@
 packages:
   - 'packages/*'
   # shared build/lint/format configuration consumed by every package
-  - 'tooling/*'
-  # in-place workspace members (physical relocation deferred to the TS phase):
-  - 'app/sdk'
-  - 'app/common'
-  # Electron shell (plan 7.4)
-  - 'desktop'
+  # every app is a workspace member: client, desktop, server, worker
+  - 'apps/*'
 
 # Single source of truth for versions used by more than one workspace package.
 # Members reference these as `catalog:` instead of pinning their own range.

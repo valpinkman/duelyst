@@ -1,29 +1,27 @@
-const path = require('path');
-require('app-module-path').addPath(path.join(__dirname, '../../../'));
 const chai = require('chai');
 
 chai.config.includeStack = true;
 const { expect } = chai;
 const _ = require('underscore');
 const moment = require('moment');
-const DuelystFirebase = require('../../../server/lib/duelyst_firebase_module');
-const Errors = require('../../../server/lib/custom_errors');
-const UsersModule = require('../../../server/lib/data_access/users');
-const SyncModule = require('../../../server/lib/data_access/sync');
-const QuestsModule = require('../../../server/lib/data_access/quests');
-const FirebasePromises = require('../../../server/lib/firebase_promises');
-const config = require('../../../config/config');
-const Logger = require('../../../app/common/logger');
-const SDK = require('../../../app/sdk/index');
-const QuestType = require('../../../app/sdk/quests/questTypeLookup');
-const knex = require('../../../server/lib/data_access/knex');
-const NewPlayerProgressionStageEnum = require('../../../app/sdk/progression/newPlayerProgressionStageEnum');
-const NewPlayerProgressionModuleLookup = require('../../../app/sdk/progression/newPlayerProgressionModuleLookup');
-const NewPlayerProgressionHelper = require('../../../app/sdk/progression/newPlayerProgressionHelper');
-const GiftCrateLookup = require('../../../app/sdk/giftCrates/giftCrateLookup');
-const generatePushId = require('../../../app/common/generate_push_id');
-const { onType } = require('../../../app/common/utils/utils_promise');
-const PromiseUtils = require('../../../app/common/utils/utils_promise');
+const DuelystFirebase = require('@duelyst/server/lib/duelyst_firebase_module');
+const Errors = require('@duelyst/server/lib/custom_errors');
+const UsersModule = require('@duelyst/server/lib/data_access/users');
+const SyncModule = require('@duelyst/server/lib/data_access/sync');
+const QuestsModule = require('@duelyst/server/lib/data_access/quests');
+const FirebasePromises = require('@duelyst/server/lib/firebase_promises');
+const config = require('@duelyst/config');
+const Logger = require('@duelyst/common/logger');
+const SDK = require('@duelyst/sdk/index');
+const QuestType = require('@duelyst/sdk/quests/questTypeLookup');
+const knex = require('@duelyst/server/lib/data_access/knex');
+const NewPlayerProgressionStageEnum = require('@duelyst/sdk/progression/newPlayerProgressionStageEnum');
+const NewPlayerProgressionModuleLookup = require('@duelyst/sdk/progression/newPlayerProgressionModuleLookup');
+const NewPlayerProgressionHelper = require('@duelyst/sdk/progression/newPlayerProgressionHelper');
+const GiftCrateLookup = require('@duelyst/sdk/giftCrates/giftCrateLookup');
+const generatePushId = require('@duelyst/common/generate_push_id');
+const { onType } = require('@duelyst/common/utils/utils_promise');
+const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 
 // disable the logger for cleaner test output
 Logger.enabled = Logger.enabled && false;

@@ -1,5 +1,5 @@
 # The root .dockerignore excludes everything the browser client is built FROM
-# (app/view, app/ui, app/vendor, app/resources), because the server-only images
+# (apps/client/view, apps/client/ui, apps/client/vendor, apps/client/resources), because the server-only images
 # do not need it. This image does. BuildKit reads <dockerfile>.dockerignore in
 # preference to the root one, so the exclusions are restated here minus those.
 .git
@@ -8,9 +8,9 @@ dist
 build
 .pgdata
 .env
-# 587 MB of source art; the build reads app/resources, never this
-app/original_resources
-desktop
+# 587 MB of source art; the build reads apps/client/resources, never this
+apps/client/original_resources
+apps/desktop
 docs
 terraform
 test

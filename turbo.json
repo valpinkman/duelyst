@@ -5,14 +5,14 @@
   // Anything here invalidates every task's cache.
   "globalDependencies": [
     "pnpm-lock.yaml",
-    "tooling/oxlint-config/base.jsonc",
+    "packages/oxlint-config/base.jsonc",
     ".oxlintrc.json",
     ".oxfmtrc.json"
   ],
   // Turborepo 2 runs tasks in strict env mode: undeclared variables are stripped
-  // before the task sees them. Everything config/config.js binds to an env var is
+  // before the task sees them. Everything packages/config/config.js binds to an env var is
   // resolved into the client bundle at build time, so a missing entry here does not
-  // fail -- it bakes the schema default in silently. scripts/check-turbo-env.mjs
+  // fail -- it bakes the schema default in silently. tools/check-turbo-env.mjs
   // re-derives this list from the convict schema and fails CI on drift.
   "globalEnv": [
     "AI_TOOLS_ENABLED",
@@ -102,7 +102,7 @@
     // The app itself still lives at the repo root, so its work is declared with
     // turbo's `//#` root-task syntax. Each one names explicit `inputs`: the
     // default is "every file in the package", which at the root means hashing
-    // app/resources (1.2 GB of art and audio) on every invocation.
+    // apps/client/resources (1.2 GB of art and audio) on every invocation.
     "//#build:client": {
       "dependsOn": ["^build"],
       // dist/ is ~1.2 GB once the resources are copied in; caching that would
@@ -112,37 +112,53 @@
     "//#build:server:root": {
       "dependsOn": ["^build"],
       "inputs": [
-        "app/sdk/**",
-        "app/common/**",
-        "app/data/**",
-        "server/**",
-        "worker/**",
-        "config/**",
+        "packages/sdk/**",
+        "packages/common/**",
+        "packages/data/**",
+        "apps/server/**",
+        "apps/worker/**",
+        "packages/config/**",
         "bin/**",
         "version.json",
         "tsconfig.json",
-        "scripts/build/build-server.mjs"
+        "tools/build/build-server.mjs"
       ],
       "outputs": ["build/**"]
     },
     "//#typecheck:root": {
       "dependsOn": ["^build"],
-      "inputs": ["$TURBO_DEFAULT$", "!app/resources/**", "!app/original_resources/**"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "!apps/client/resources/**",
+        "!apps/client/original_resources/**"
+      ],
       "outputs": []
     },
     "//#lint:root": {
-      "inputs": ["$TURBO_DEFAULT$", "!app/resources/**", "!app/original_resources/**"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "!apps/client/resources/**",
+        "!apps/client/original_resources/**"
+      ],
       "outputs": []
     },
     "//#lint:fix:root": { "cache": false },
     "//#format:root": { "cache": false },
     "//#format:check:root": {
-      "inputs": ["$TURBO_DEFAULT$", "!app/resources/**", "!app/original_resources/**"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "!apps/client/resources/**",
+        "!apps/client/original_resources/**"
+      ],
       "outputs": []
     },
     "//#test:root": {
       "dependsOn": ["^build"],
-      "inputs": ["$TURBO_DEFAULT$", "!app/resources/**", "!app/original_resources/**"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "!apps/client/resources/**",
+        "!apps/client/original_resources/**"
+      ],
       "outputs": []
     }
   }

@@ -2,7 +2,7 @@
 
 Duelyst is a 2016 collectible-card / tactics game (Counterplay Games), open-sourced after
 shutdown. This repo holds the browser client (Backbone/Marionette + Cocos2d-html5), the game
-engine shared by client and server (`app/sdk`), the backend services (Express API, socket.io
+engine shared by client and server (`packages/sdk`), the backend services (Express API, socket.io
 game servers, BullMQ worker) and the tooling around them.
 
 It is **entirely TypeScript** now — CoffeeScript, gulp and browserify are gone — but it carries
@@ -15,7 +15,7 @@ a decade of accumulated behaviour, and a modernization program is still running.
   `yarn.lock` / `package-lock.json`. The pinned version is in `package.json#packageManager`
   (corepack/proto/volta pick it up).
 - Workspace: `pnpm-workspace.yaml` covers `packages/*` (vendored forks), the in-place members
-  `app/sdk` + `app/common`, and `desktop/` (Electron shell; `electron` is allowlisted in
+  `packages/sdk` + `packages/common` + `packages/data`, and `apps/desktop/` (Electron shell; `electron` is allowlisted in
   `pnpm.onlyBuiltDependencies`).
 - Local packages are `workspace:*` deps; `resolutions` live under `pnpm.overrides`;
   packages that need build scripts go in `pnpm.onlyBuiltDependencies` (currently `bcrypt`).
@@ -35,7 +35,7 @@ pnpm test:unit                                 # vitest, 1366 tests, no external
 pnpm test:integration:misc                     # needs nothing external; runs in CI
 pnpm test:integration:jobs                     # BullMQ job seam; needs ONLY redis, so it runs in CI too
 pnpm test:integration:data_access              # 562 tests; 0 known failures, 3 unstable. Gated on drift in CI.
-source scripts/dev/data-access-test-env.sh     #   throwaway postgres+redis+firebase emulator with this --
+source tools/dev/data-access-test-env.sh     #   throwaway postgres+redis+firebase emulator with this --
                                                #   deliberately separate from `docker compose`, because
                                                #   these suites create users and wipe inventories
 pnpm typecheck                                 # tsc (loose config) - 0 errors, and a CI gate since 2026-08-21
@@ -45,7 +45,7 @@ pnpm vitest --project sdk|misc|firebase        # unit tests for one package's su
 pnpm check:undefined-names                     # TS2304 only, and this IS a CI gate. Run after any codemod.
 pnpm check:promise-utils                       # PromiseUtils/onType used without being bound
 pnpm check:bluebird-orphans                    # bluebird-only API used without requiring bluebird
-pnpm check:package-deps                        # app/common reaches nothing; app/sdk only common+data.
+pnpm check:package-deps                        # packages/common reaches nothing; sdk only common+data.
                                                #   CI gate: these two used to require each other.
 pnpm check:turbo-env                           # turbo.json globalEnv still covers every convict env binding
 pnpm check:data-access                         # data_access failures vs test/integration/data_access/known-failures.txt
@@ -79,12 +79,12 @@ Reasoning in [`docs/TOOLING.md`](docs/TOOLING.md). The rules:
   bundle at build time, it silently bakes the schema default in instead of failing.
 - **One lint owner per file.** The root `.oxlintrc.json` ignores directories that are workspace
   packages in their own right; each package lints itself against
-  `tooling/oxlint-config/base.jsonc`. Formatting is the opposite — one root `.oxfmtrc.json`
+  `packages/oxlint-config/base.jsonc`. Formatting is the opposite — one root `.oxfmtrc.json`
   owns everything, because a rewrite is idempotent and a diagnostic is not.
 - **Services run `build/`, never source.** `pnpm build:server` (esbuild, transpile-only) mirrors
   the source tree so root-absolute requires still resolve. `bin/_bootstrap.js` registers the tsx
   hook only when it can see `.ts` on disk, so the same entrypoints work in dev and production.
-- **`__dirname` paths that leave the compiled tree must go through `server/lib/project_root`.**
+- **`__dirname` paths that leave the compiled tree must go through `apps/server/lib/project_root`.**
   `build/` adds a directory level, so `../../dist` is not the same place from both trees.
 - **Shared dependency versions live in `catalog:`** in `pnpm-workspace.yaml`, not in each
   package.
@@ -96,26 +96,26 @@ Reasoning in [`docs/TOOLING.md`](docs/TOOLING.md). The rules:
 
 Everything below is TypeScript unless noted.
 
-| Path                                        | What                                                                                                                                                                                                                                                                                                                             |
-| ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `app/sdk/`                                  | Game engine shared by client and server: `gameSession`, actions, 718 modifiers, 257 spells, cards + `cards/factory/*`, challenges, quests. 1,375 files.                                                                                                                                                                          |
-| `app/common/`                               | `config.js` (mutable global `CONFIG`), `logger`, `eventbus`, `utils/*`                                                                                                                                                                                                                                                           |
-| `app/ui/`, `app/view/`, `app/audio/`        | Marionette views/managers, Cocos2d layers/nodes/fx, audio                                                                                                                                                                                                                                                                        |
-| `app/application.ts`, `app/index.ts`        | client boot, router, `window.*` singletons                                                                                                                                                                                                                                                                                       |
-| `app/data/`                                 | `resources.js` (RSX manifest), `fx.js`, `packages.js` (**generated, gitignored**) — JS                                                                                                                                                                                                                                           |
-| `app/resources/`, `app/original_resources/` | 1.2 GB of art/audio — never touch, never bundle                                                                                                                                                                                                                                                                                  |
-| `app/vendor/`                               | cocos2d-html5 3.3, jquery-ui, aws-sdk, backfire — not npm managed, JS                                                                                                                                                                                                                                                            |
-| `server/`                                   | `api.ts` (3000), `game.ts` (8001), `single_player.ts` (8000), `lib/data_access` (knex), `redis/`, `routes/`, `ai/`, `migrations/` (JS)                                                                                                                                                                                           |
-| `worker/`                                   | BullMQ jobs; `worker.ts` registers them explicitly                                                                                                                                                                                                                                                                               |
-| `bin/`                                      | service entrypoints; `_bootstrap.js` sets up app-module-path and the tsx hook — JS                                                                                                                                                                                                                                               |
-| `config/`                                   | convict schema `config.js` + `{development,staging,production}.json` — JS                                                                                                                                                                                                                                                        |
-| `test/`                                     | vitest: `unit/`, `integration/` (`data_access`, `jobs`, `misc`, `firebase`), `e2e/` (Playwright), `rules/`, `perf/` (Benchmark.js, not a suite)                                                                                                                                                                                  |
-| `scripts/build/`                            | `build-client.mjs` (Vite bundle + vendor concat, sass, html, locales, resources) and `build-server.mjs` (esbuild → `build/`)                                                                                                                                                                                                     |
-| `scripts/generate_packages.js`              | **build-critical**: text-scans `//pragma PKGS:` and RSX refs to emit `app/data/packages.js`                                                                                                                                                                                                                                      |
-| `packages/`                                 | vendored forks: `chroma-js` (ours, built), `Backbone.VirtualCollection` (verbatim)                                                                                                                                                                                                                                               |
-| `tooling/`                                  | shared config consumed by every package (`oxlint-config`)                                                                                                                                                                                                                                                                        |
-| `desktop/`                                  | Electron 43 shell: main+preload via Vite, packaged with electron-builder                                                                                                                                                                                                                                                         |
-| `docs/`                                     | [QUICKSTART](docs/QUICKSTART.md) · [ARCHITECTURE](docs/ARCHITECTURE.md) · [DOCKER](docs/DOCKER.md) · [TOOLING](docs/TOOLING.md) · modernization [PLAN](docs/MODERNIZATION_PLAN.md) / [LOG](docs/MODERNIZATION_LOG.md) / [AUDIT](docs/MODERNIZATION_AUDIT.md) · [BACKBONE](docs/BACKBONE_AUDIT.md) · [REORG](docs/REORG_AUDIT.md) |
+| Path                                          | What                                                                                                                                                                                                                                                                                                                             |
+| --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `packages/sdk/`                               | Game engine shared by client and server: `gameSession`, actions, 718 modifiers, 257 spells, cards + `cards/factory/*`, challenges, quests. 1,375 files.                                                                                                                                                                          |
+| `packages/common/`                            | `config.js` (mutable global `CONFIG`), `logger`, `eventbus`, `utils/*`                                                                                                                                                                                                                                                           |
+| `apps/client/{ui,view,audio}/`                | Marionette views/managers, Cocos2d layers/nodes/fx, audio                                                                                                                                                                                                                                                                        |
+| `apps/client/{application,index}.ts`          | client boot, router, `window.*` singletons                                                                                                                                                                                                                                                                                       |
+| `packages/data/`                              | `resources.js` (RSX manifest), `fx.js`, `index.ts` (the `DATA` barrel), `packages.js` (**generated, gitignored**) — mostly JS                                                                                                                                                                                                    |
+| `apps/client/{resources,original_resources}/` | 1.2 GB of art/audio — never touch, never bundle                                                                                                                                                                                                                                                                                  |
+| `apps/client/vendor/`                         | cocos2d-html5 3.3, jquery-ui, aws-sdk, backfire — not npm managed, JS                                                                                                                                                                                                                                                            |
+| `apps/server/`                                | `api.ts` (3000), `game.ts` (8001), `single_player.ts` (8000), `lib/data_access` (knex), `redis/`, `routes/`, `ai/`, `migrations/` (JS)                                                                                                                                                                                           |
+| `apps/worker/`                                | BullMQ jobs; `worker.ts` registers them explicitly                                                                                                                                                                                                                                                                               |
+| `bin/`                                        | service entrypoints; `_bootstrap.js` sets up the tsx hook and config — JS                                                                                                                                                                                                                                                        |
+| `config/`                                     | convict schema `config.js` + `{development,staging,production}.json` — JS                                                                                                                                                                                                                                                        |
+| `test/`                                       | vitest: `unit/`, `integration/` (`data_access`, `jobs`, `misc`, `firebase`), `e2e/` (Playwright), `rules/`, `perf/` (Benchmark.js, not a suite)                                                                                                                                                                                  |
+| `tools/build/`                                | `build-client.mjs` (Vite bundle + vendor concat, sass, html, locales, resources) and `build-server.mjs` (esbuild → `build/`)                                                                                                                                                                                                     |
+| `tools/generate_packages.js`                  | **build-critical**: text-scans `//pragma PKGS:` and RSX refs to emit `packages/data/packages.js`                                                                                                                                                                                                                                 |
+| `packages/`                                   | vendored forks: `chroma-js` (ours, built), `Backbone.VirtualCollection` (verbatim)                                                                                                                                                                                                                                               |
+| `packages/oxlint-config/`                     | shared oxlint config consumed by every package                                                                                                                                                                                                                                                                                   |
+| `apps/desktop/`                               | Electron 43 shell: main+preload via Vite, packaged with electron-builder                                                                                                                                                                                                                                                         |
+| `docs/`                                       | [QUICKSTART](docs/QUICKSTART.md) · [ARCHITECTURE](docs/ARCHITECTURE.md) · [DOCKER](docs/DOCKER.md) · [TOOLING](docs/TOOLING.md) · modernization [PLAN](docs/MODERNIZATION_PLAN.md) / [LOG](docs/MODERNIZATION_LOG.md) / [AUDIT](docs/MODERNIZATION_AUDIT.md) · [BACKBONE](docs/BACKBONE_AUDIT.md) · [REORG](docs/REORG_AUDIT.md) |
 
 ## Conventions and gotchas that bite
 
@@ -127,21 +127,48 @@ Everything below is TypeScript unless noted.
   written, two rank call sites dropping the caller's clock, and a decade-old `+`-before-`==`
   precedence bug in an AI log. TS2304 keeps its own faster gate (`pnpm check:undefined-names`)
   because it is the class that becomes a ReferenceError. **Run it after any codemod.**
-- **`app/sdk` must not use the vendor globals.** `app/types/globals.d.ts` declares `_`, `$`, `cc`,
+- **`packages/sdk` must not use the vendor globals.** `apps/client/types/globals.d.ts` declares `_`, `$`, `cc`,
   `Backbone` and friends because the client consumes them from `vendor.js` — but the SDK also runs
-  on the game servers, where they do not exist. `app/sdk/tsconfig.json` deliberately excludes that
+  on the game servers, where they do not exist. `packages/sdk/tsconfig.json` deliberately excludes that
   file so the scoped typecheck fails on any such reference; that is how a missing
   `require('underscore')` in `challengeRemote.ts` was found after years of hiding behind the root
-  program. `app/common` is the opposite case and does include it: seven of its files are
+  program. `packages/common` is the opposite case and does include it: seven of its files are
   client-only by design.
 - **Serialization is structural.** `SDKObject` + `fastExtend(this, data)` — instance property
   layout _is_ the wire format for game state and replays. Use `declare x: any` for prototype-era
   members: a real class field creates an own property and silently changes the shape. Renaming a
   property breaks replays. Add a round-trip test first.
-- **Root-absolute requires.** `require('app/sdk/…')`, `require('server/lib/…')`,
-  `require('config/config')` resolve from the repo root through `app-module-path`, registered in
-  `bin/_bootstrap.js` and every test file, and mirrored by Vite/vitest aliases. Any new runner
-  needs the same alias.
+- **There are exactly two ways to name a module, and no magic.** Inside a tree, a relative path.
+  Across trees, the workspace package name — `@duelyst/{sdk,common,data,config,client,server,worker}`.
+  `app-module-path` is gone: nothing resolves "from the repo root" any more, so a new runner needs
+  no aliases, and Vite/vitest/tsconfig carry none.
+- **A package name does not follow the repo root into `build/`.**
+  `require('@duelyst/sdk/…')` goes through `node_modules`. The repo-root symlink points at `packages/sdk/*.ts`, and
+  production runs with no tsx hook — so a named require that works in dev, in vitest and in the
+  Vite bundle still dies in the container. `tools/build/build-server.mjs` fixes this by emitting
+  `build/node_modules/@duelyst/sdk -> ../../packages/sdk` (relative, so it survives `COPY`): node
+  walks up from `build/apps/server/api.js`, finds `build/node_modules` first, and lands on the
+  transpiled copy. **Every gate except a container boot is a dev-mode path** — when you move a
+  package, run `node build/bin/api` from `build/`, not just the test suite.
+- **`tsc` does not follow CommonJS `require()`.** A file enters the root program only if the root
+  `tsconfig.json` `include` lists it — so moving a tree out of `app/**` removes it from the program
+  entirely, **with no error**. Moving `app/sdk` dropped the program from 2,274 files to 873 while
+  `pnpm typecheck` and `pnpm check:undefined-names` both still reported clean, over a third of the
+  codebase. Any new top-level source directory must be added to `include`. When you move one,
+  verify with `tsc -p tsconfig.json --listFiles | wc -l` rather than trusting a green gate.
+- **A gate that reports OK is not a gate that looked.** Three separate checks silently narrowed
+  during the `packages/` moves: `check-package-deps` (its own path literals got rewritten by the
+  codemod — 1,405 files became 29), the root typecheck (above), and
+  `test/unit/sdk/package_identity.js`, whose two deliberately-different spellings were rewritten
+  into the same string, leaving it comparing a module to itself. Prefer gates that print a count,
+  and read the count.
+- **`PROJECT_ROOT` is the OUTERMOST repo-like ancestor, not the nearest `package.json`.**
+  `apps/server/lib/project_root` locates the deployment root, which is where `dist/src` and
+  `public/` live. It used to stop at the first `package.json` above it — fine until `apps/server`
+  became a workspace package and `build-server` mirrored that manifest, at which point
+  `PROJECT_ROOT` silently became `build/apps/server` and the API served 404 for its own client.
+  Adding a `package.json` anywhere is now safe; a directory counts only if it also has
+  `node_modules` or `pnpm-workspace.yaml`.
 - **Beware `const` shadowing from the decaffeination.** CoffeeScript had one mutable binding per
   scope; the conversion gave each assignment its own declaration. Where a suite-level variable is
   re-declared inside a callback, every later read sees the initial `null` — this has cost real
@@ -153,9 +180,9 @@ Everything below is TypeScript unless noted.
 - **`@type` (static) vs `type:` (prototype) on the same class** — `ModifierFactory` and
   `CardFactory` dispatch on the static while instances carry the prototype value. Both are load
   bearing; keep them.
-- **Card factories** (`app/sdk/cards/factory/**`) are _text-parsed_ by `generate_packages.js`.
+- **Card factories** (`packages/sdk/cards/factory/**`) are _text-parsed_ by `generate_packages.js`.
   Keep the `Cards.X` / `RSX.Y` literal shape or the asset packages break. The build verifies the
-  generated key set against `scripts/build/packages-manifest.json` and fails on drift; regenerate
+  generated key set against `tools/build/packages-manifest.json` and fails on drift; regenerate
   deliberately with `--update-packages-manifest`.
 - **CommonJS "export before require"** (`module.exports = X` above the requires) exists to
   survive circular requires. It does not survive ESM — restructure, don't just rename.
@@ -167,7 +194,7 @@ Everything below is TypeScript unless noted.
 - Style is **oxfmt** (`.oxfmtrc.json`): 2-space, LF, single quotes, semicolons, 100 columns, and
   it owns JS/TS/JSON/MD/YAML. `.editorconfig` covers only what oxfmt does not (templates, styles,
   shaders) so the two cannot disagree. Lint is **oxlint**, gating on `correctness` only; every
-  disabled rule says why in `tooling/oxlint-config/base.jsonc`. Don't re-enable the noisy ones —
+  disabled rule says why in `packages/oxlint-config/base.jsonc`. Don't re-enable the noisy ones —
   `no-unused-vars` alone is 6,530 legacy hits.
 
 ## Modernization program
@@ -193,5 +220,5 @@ How we work:
   tracks its `main`). `origin` = upstream `open-duelyst/duelyst`, **read-only, never push there**.
 - Prefer codemods to hand edits, and drive them from compiler diagnostics rather than sweeping
   the repo — a codemod that reads `tsc` output cannot silence a place where the types are right.
-- Don't move or rename `app/resources`, `app/vendor` or the card factories without a plan for
+- Don't move or rename `apps/client/resources`, `apps/client/vendor` or the card factories without a plan for
   `generate_packages.js` and the RSX paths.

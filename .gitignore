@@ -4,8 +4,8 @@
 serviceAccountKey.json
 
 # Build artifacts
-/app/data/packages.js
-/app/localization/locales/en/index.json
+/packages/data/packages.js
+/apps/client/localization/locales/en/index.json
 /dist
 node_modules
 .awspublish*
@@ -33,11 +33,11 @@ dump.rdb
 /blob-report/
 
 # Electron shell build output
-/desktop/build/
-/desktop/dist/
+/apps/desktop/build/
+/apps/desktop/dist/
 
 # turborepo local task cache
 .turbo/
 
-# ahead-of-time server build (scripts/build/build-server.mjs)
+# ahead-of-time server build (tools/build/build-server.mjs)
 /build/

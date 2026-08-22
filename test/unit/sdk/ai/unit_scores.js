@@ -1,13 +1,11 @@
-const path = require('path');
-require('app-module-path').addPath(path.join(__dirname, '../../../../'));
 const { expect } = require('chai');
 const _ = require('underscore');
 const UtilsSDK = require('../../../utils/utils_sdk');
-const StarterAI = require('../../../../server/ai/starter_ai');
-const ScoreForUnit = require('../../../../server/ai/scoring/base/unit');
-const SDK = require('../../../../app/sdk/index');
-const Logger = require('../../../../app/common/logger');
-const CONFIG = require('../../../../app/common/config');
+const StarterAI = require('@duelyst/server/ai/starter_ai');
+const ScoreForUnit = require('@duelyst/server/ai/scoring/base/unit');
+const SDK = require('@duelyst/sdk/index');
+const Logger = require('@duelyst/common/logger');
+const CONFIG = require('@duelyst/common/config');
 
 // disable the logger for cleaner test output
 Logger.enabled = false;

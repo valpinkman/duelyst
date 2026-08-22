@@ -15,9 +15,7 @@
  * lives in app/ui/extensions/duelyst_firebase.ts, the single point every
  * backfire model is constructed through.
  */
-const path = require('path');
 
-require('app-module-path').addPath(path.join(__dirname, '../../../'));
 const { expect } = require('chai');
 
 const firebase = require('firebase/compat/app');
@@ -49,8 +47,8 @@ global.Firebase = function (url) {
 };
 global.Firebase.ServerValue = firebase.database.ServerValue;
 
-require('app/vendor/backfire/backfire.min.js');
-const DuelystFirebase = require('app/ui/extensions/duelyst_firebase');
+require('@duelyst/client/vendor/backfire/backfire.min.js');
+const DuelystFirebase = require('@duelyst/client/ui/extensions/duelyst_firebase');
 
 describe('backfire with a derived firebase ref', () => {
   const baseUrl = DATABASE_URL + 'matchmaking/test/invites/to/player-1/';

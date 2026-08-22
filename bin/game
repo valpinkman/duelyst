@@ -3,4 +3,4 @@
 
 require('./_bootstrap')('game')
 
-module.exports = require('server/game')
+module.exports = require('@duelyst/server/game')

@@ -1,6 +1,6 @@
 {
   "$schema": "../../node_modules/oxlint/configuration_schema.json",
-  "extends": ["../../tooling/oxlint-config/base.jsonc"],
+  "extends": ["../../packages/oxlint-config/base.jsonc"],
   "ignorePatterns": ["node_modules", "dist", "example", "**/*.d.ts"],
   "rules": {
     // Key.ts maps the Razer Chroma keyboard matrix, where Korean and Japanese

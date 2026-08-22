@@ -1,0 +1,58 @@
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
+ */
+const QuestBeginner = require('./questBeginner');
+const QuestType = require('./questTypeLookup');
+const UtilsGameSession = require('@duelyst/sdk/utils/utils_game_session');
+const GameType = require('@duelyst/sdk/gameType');
+const Logger = require('@duelyst/common/logger');
+const i18next = require('i18next');
+
+class QuestBeginnerWinPracticeGames extends QuestBeginner {
+  declare spiritOrbsReward: any;
+  declare goldReward: any;
+
+  static Identifier = 9901;
+
+  constructor() {
+    super(
+      QuestBeginnerWinPracticeGames.Identifier,
+      i18next.t('quests.quest_beginner_win_practice_games_title', { count: 1 }),
+      [QuestType.Beginner],
+      QuestBeginnerWinPracticeGames.prototype.goldReward,
+    );
+    this.params.completionProgress = 1;
+  }
+
+  _progressForGameDataForPlayerId(gameData, playerId) {
+    for (var player of Array.from<any>(gameData.players)) {
+      var playerSetupData = UtilsGameSession.getPlayerSetupDataForPlayerId(
+        gameData,
+        player.playerId,
+      );
+      Logger.module('Quests').debug(
+        `QuestBeginnerWinPracticeGames checking ${player.playerId} game type ${gameData.gameType} winner: ${player.isWinner}`,
+      );
+      if (
+        player.playerId === playerId &&
+        player.isWinner &&
+        gameData.gameType === GameType.SinglePlayer
+      ) {
+        return 1;
+      }
+    }
+    return 0;
+  }
+
+  getDescription() {
+    return i18next.t('quests.quest_beginner_win_practice_games_description', {
+      count: this.params.completionProgress,
+    });
+  }
+}
+QuestBeginnerWinPracticeGames.prototype.spiritOrbsReward = 1;
+QuestBeginnerWinPracticeGames.prototype.goldReward = null;
+
+module.exports = QuestBeginnerWinPracticeGames;

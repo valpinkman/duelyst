@@ -1,8 +1,6 @@
-const path = require('path');
-require('app-module-path').addPath(path.join(__dirname, '../../../'));
 const { expect } = require('chai');
 const util = require('util');
-const SDK = require('../../../app/sdk/index');
+const SDK = require('@duelyst/sdk/index');
 
 describe('game serialization', () => {
   describe('action serialization', () => {

@@ -1,0 +1,57 @@
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
+ */
+const Quest = require('./quest');
+const GameStatus = require('@duelyst/sdk/gameStatus');
+const GameType = require('@duelyst/sdk/gameType');
+const UtilsGameSession = require('@duelyst/sdk/utils/utils_game_session');
+const GiftCrateLookup = require('@duelyst/sdk/giftCrates/giftCrateLookup');
+const QuestType = require('./questTypeLookup');
+const moment = require('moment');
+
+class QuestFrostfire2017 extends Quest {
+  declare isReplaceable: any;
+  declare giftChests: any;
+  declare rewardDetails: any;
+
+  static Identifier = 40002;
+
+  constructor() {
+    super(QuestFrostfire2017.Identifier, 'Frostfire Loot Crate', [QuestType.Promotional]);
+    this.params.completionProgress = 15;
+  }
+
+  _progressForGameDataForPlayerId(gameData, playerId) {
+    for (var player of Array.from<any>(gameData.players)) {
+      var playerSetupData = UtilsGameSession.getPlayerSetupDataForPlayerId(
+        gameData,
+        player.playerId,
+      );
+      if (gameData.gameType === GameType.Casual) {
+        return 1;
+      }
+    }
+    return 0;
+  }
+
+  getDescription() {
+    return `Play ${this.params.completionProgress} Frostfire Mode matches before Jan 4th UTC`;
+  }
+
+  isAvailableOn(momentUtc) {
+    return (
+      momentUtc.isAfter(moment.utc('2017-12-05')) && momentUtc.isBefore(moment.utc('2018-01-05'))
+    );
+  }
+
+  expiresOn() {
+    return moment.utc('2018-01-04');
+  }
+}
+QuestFrostfire2017.prototype.isReplaceable = false;
+QuestFrostfire2017.prototype.giftChests = [GiftCrateLookup.FrostfirePurchasable2017];
+QuestFrostfire2017.prototype.rewardDetails = 'Holiday Loot Crate';
+
+module.exports = QuestFrostfire2017;

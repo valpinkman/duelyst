@@ -1,24 +1,23 @@
 /* Test disabled: slow
 var path = require('path')
-require('app-module-path').addPath(path.join(__dirname, '../../../'))
 var chai = require('chai');
 var expect = chai.expect;
-var DuelystFirebase = require('../../../server/lib/duelyst_firebase_module');
-var Errors = require('../../../server/lib/custom_errors');
-var UsersModule = require('../../../server/lib/data_access/users');
-var InventoryModule = require('../../../server/lib/data_access/inventory');
-var AchievementsModule = require('../../../server/lib/data_access/achievements');
-var SyncModule = require('../../../server/lib/data_access/sync');
-var FirebasePromises = require('../../../server/lib/firebase_promises');
-var generatePushId = require('../../../app/common/generate_push_id');
-var config = require('../../../config/config');
-var Logger = require('../../../app/common/logger');
+var DuelystFirebase = require('@duelyst/server/lib/duelyst_firebase_module');
+var Errors = require('@duelyst/server/lib/custom_errors');
+var UsersModule = require('@duelyst/server/lib/data_access/users');
+var InventoryModule = require('@duelyst/server/lib/data_access/inventory');
+var AchievementsModule = require('@duelyst/server/lib/data_access/achievements');
+var SyncModule = require('@duelyst/server/lib/data_access/sync');
+var FirebasePromises = require('@duelyst/server/lib/firebase_promises');
+var generatePushId = require('@duelyst/common/generate_push_id');
+var config = require('@duelyst/config');
+var Logger = require('@duelyst/common/logger');
 var _ = require('underscore');
-var SDK = require('../../../app/sdk/index');
+var SDK = require('@duelyst/sdk/index');
 var moment = require('moment');
-const { onType } = require('../../../app/common/utils/utils_promise');
-const PromiseUtils = require('../../../app/common/utils/utils_promise');
-var knex = require('../../../server/lib/data_access/knex')
+const { onType } = require('@duelyst/common/utils/utils_promise');
+const PromiseUtils = require('@duelyst/common/utils/utils_promise');
+var knex = require('@duelyst/server/lib/data_access/knex')
 
 // disable the logger for cleaner test output
 Logger.enabled = Logger.enabled && true;

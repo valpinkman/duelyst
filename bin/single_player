@@ -5,4 +5,4 @@ require('./_bootstrap')('ai')
 
 process.on('uncaughtException', (err) => console.log(err))
 
-module.exports = require('server/single_player')
+module.exports = require('@duelyst/server/single_player')

@@ -1,0 +1,16 @@
+{
+  "name": "@duelyst/data",
+  "version": "1.97.13",
+  "private": true,
+  "description": "Static game data: the RSX resource manifest, FX definitions, shop tables and game tips, plus the generated resource-package map (packages.js). A leaf -- it requires nothing else in the repo, which check-package-deps gates.",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "oxlint --config ../../packages/oxlint-config/base.jsonc .",
+    "format": "oxfmt --config ../../.oxfmtrc.json .",
+    "format:check": "oxfmt --check --config ../../.oxfmtrc.json .",
+    "lint:fix": "oxlint --fix --config ../../packages/oxlint-config/base.jsonc ."
+  },
+  "devDependencies": {
+    "typescript": "catalog:"
+  }
+}

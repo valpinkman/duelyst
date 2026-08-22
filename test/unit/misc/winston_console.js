@@ -14,14 +14,11 @@
  * process.stdout.write, because the test runner intercepts stdout itself and
  * the two fight each other.
  */
-const path = require('path');
 const { Writable } = require('stream');
 const winston = require('winston');
 const { expect } = require('chai');
 
-require('app-module-path').addPath(path.join(__dirname, '../../../'));
-
-const winstonSeam = require('../../../server/winston');
+const winstonSeam = require('@duelyst/server/winston');
 
 const ANSI = new RegExp(`${String.fromCharCode(27)}\\[[0-9;]*m`, 'g');
 

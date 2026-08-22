@@ -1,0 +1,6 @@
+{
+  "name": "@duelyst/worker",
+  "version": "1.97.13",
+  "private": true,
+  "description": "BullMQ job runner; worker.ts registers each job explicitly."
+}

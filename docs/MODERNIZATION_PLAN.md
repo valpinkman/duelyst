@@ -17,8 +17,8 @@ step it describes, so it can never drift from the code.
 - **The four stack goals are done:**
   1. **pnpm monorepo** — workspace over `packages/*`, `app/sdk`, `app/common`, `desktop`.
   2. **TypeScript instead of CoffeeScript** — the _entire runtime_ (client, SDK, server,
-     worker) is `.ts`. Remaining `.js`: `app/data/*` (data + generated), the 86 knex
-     migrations, `server/knexfile.js`, build scripts and `cli/`+`scripts/` legacy ops
+     worker) is `.ts`. Remaining `.js`: `packages/data/*` (data + generated), the 86 knex
+     migrations, `server/knexfile.js`, build scripts and `cli/`+`tools/` legacy ops
      (which still hold the last 57 `.coffee` files — deletion candidates).
   3. **vitest** — mocha retired; unit + integration configs.
   4. **Modern bundler** — gulp deleted; Vite/rolldown builds the client in ~2.4s (was ~35s).
@@ -132,7 +132,7 @@ step it describes, so it can never drift from the code.
   4. **data_access suites revived — now 493 of 575 passing** (2026-08-20; first pass took it
      from 0 to 402 of 506, and the total grew as blocked files started collecting). They had been
      unrunnable for so long that nobody knew what was in them. **Run them with
-     `source scripts/dev/data-access-test-env.sh`**, which stands up a throwaway Postgres and
+     `source tools/dev/data-access-test-env.sh`**, which stands up a throwaway Postgres and
      Redis and points Firebase at the local emulator — deliberately separate from
      `docker compose`, because these suites create users and wipe inventories and must never
      touch the database you play on.
@@ -334,6 +334,165 @@ step it describes, so it can never drift from the code.
      See [`REORG_AUDIT.md`](REORG_AUDIT.md) §"Recommended sequence" for what picking it up again
      would involve.
 
+     **Reopened 2026-08-22 as a full monorepo layout**, on request and on a branch
+     (`monorepo-layout`) for a single PR rather than straight onto `main`. Scope agreed: packages +
+     apps, assets left alone. Order: 1. `packages/sdk` · 2. `packages/common` · 3. `packages/data` · 4. `apps/client` · 5. `apps/server` · 6. `apps/desktop` · 7. `tools/` · 8. drop
+     `app-module-path`. One commit per step, each green.
+
+     **Step 1 done:** `app/sdk` → `packages/sdk` (1,378 files via `git mv`), 6,321 specifiers across
+     1,545 files rewritten to `@duelyst/sdk`. Three things the mass rewrite got wrong, all the same
+     shape — _a quoted string that was never a module specifier_: it rewrote the string literals
+     **inside `check-package-deps.mjs` itself**, so the gate silently narrowed from 1,405 files to
+     29 and still reported OK; it missed the inverse direction, relative specifiers that _resolve
+     into_ the moved tree (`../../sdk/…` from `app/ui`, and `../../common/config` from six spells,
+     which after the move pointed at a `packages/common` that does not exist); and it missed the
+     require that `generate_packages.js` **emits into** its generated output.
+
+     The lesson is to resolve specifiers rather than pattern-match them: the sweep that found the
+     stragglers normalised every relative path and asked where it landed. `check-package-deps` now
+     flags an escape to _any_ destination, not just one under `app/` — that old condition is
+     exactly what let the six spells through.
+
+     Also: **a named workspace package does not resolve like a root-absolute path.** Typecheck,
+     vitest and the Vite build all passed while the server container was broken, because
+     `@duelyst/sdk` resolves through `node_modules` to `packages/sdk/*.ts` and production has no tsx
+     hook. `build-server.mjs` now emits `build/node_modules/@duelyst/sdk` pointing at the transpiled
+     tree. Verified by booting `build/bin/api` inside the built image — every other gate is a
+     dev-mode path.
+
+     Two further ways a **gate** narrowed silently, both found by counting rather than by reading a
+     status line: `tsc` does not follow CommonJS `require()`, so the 1,376 sdk files were in the
+     root program only because `include` listed `app/**/*.ts` — moving them out dropped the program
+     from 2,274 files to 873 with no error, and both `typecheck` and the TS2304 gate stayed green
+     over the remainder. And `test/unit/sdk/package_identity.js`, which exists to prove the two
+     spellings of a package resolve to one instance, had both of its spellings rewritten into the
+     same string by the codemod, so it compared a module to itself and passed for free. Fixed by
+     naming `packages/*` in the root `include` (folded into step 1) and by re-pointing the test at
+     `@duelyst/x` vs `packages/x`, which are still genuinely two spellings.
+
+     **Step 2 done:** `app/common` → `packages/common` (25 files), 2,135 specifiers across 1,079
+     files rewritten to `@duelyst/common`. `app/common` had 0 outbound edges to begin with — the
+     leaf property `check-package-deps` has gated since 2026-08-21 — so the move itself was the
+     easy half; the cost was again in the non-specifier strings: seven Dockerfiles, the `TREES`
+     list, three codemods that _emit_ the helper's path into source, a filesystem filter in
+     `check-promise-utils-bindings.mjs`, and the tsconfig `include` that reached
+     `../types/globals.d.ts` (meaning `app/types` from `app/common`, and nothing at all from
+     `packages/common`). Verified the same way as step 1, container boot included.
+
+     **Step 3 done:** `app/data` → `packages/data`, and it is a real workspace package now
+     (`@duelyst/data`) rather than a directory the layering gate happened to watch. 447 specifiers
+     across 362 files. Two things specific to this one: the `DATA` barrel was `app/data.ts`, a file
+     sitting _beside_ the directory it fronts (7 consumers), so it moved in as
+     `packages/data/index.ts` — the same no-`main`, `index.ts` convention `packages/sdk` already
+     used, which resolves to `index.js` from `build/` for free. And `packages.js` is generated,
+     gitignored and build-critical, so the output path in `generate_packages.js`, the three reads
+     in `build-client.mjs`, and the `.gitignore` / `.oxfmtrc` / `.oxlintrc` exclusions all had to
+     move together.
+
+     The move also exposed the next blind spot in `check-package-deps`: it inspected relative and
+     `app/`-prefixed specifiers, so a _named_ `@duelyst/…` edge was invisible. `packages/data`
+     immediately picked one up — the barrel required `@duelyst/common/logger` — and the gate said
+     OK. The import turned out to be dead (zero uses), so data stays a true leaf; the checker now
+     maps `@duelyst/x` back to `packages/x` and applies the same rules, verified by injecting the
+     edge and watching it fail. As trees become packages, every path-shaped assumption in the
+     tooling has to be re-read as a name.
+
+     **Step 6 done (out of order, because it is independent):** `desktop` → `apps/desktop`, and
+     `apps/` exists. Ten files, no specifier rewrites at all — the shell reaches the client through
+     `electron-builder.yml`'s `from: ../dist/src` and its own `vite.config.mjs` resolves everything
+     against its own directory. The whole cost was one directory of depth: the config paths in
+     `package.json` (`../tooling`, `../.oxfmtrc.json`) and that `from:` each gained a `../`, plus
+     the `pnpm-workspace`, `tsconfig` exclude, `.gitignore` and oxlint/oxfmt ignore entries.
+     Verified by building main+preload from the new location.
+
+     **Step 4 done:** all of `app/` → `apps/client/`, assets included — 10,592 renames, and no
+     top-level `app/` remains (the alternative left `app/` and `apps/` as confusable siblings).
+     Only 1,232 specifiers in 237 files, because nearly everything inside the client was already
+     relative and nothing outside it imports the client at all. The work was in the build: the Vite
+     alias and entries, the twelve vendor concat paths, the sass `loadPaths`, the hbs and locale
+     directories, the resource copy, `generate_packages.js`'s five scan roots, both dockerignores,
+     six Dockerfiles, and the `app/*` tsconfig `paths` in four tsconfigs.
+
+     Verified with the Playwright e2e — it registers an account, plays a practice game and asserts
+     zero console errors, which is the only check that exercises RSX resource URLs and the vendor
+     globals. It failed twice first, both times for reasons that were not the move: a build made
+     with the placeholder `FIREBASE_URL` (which builds fine and then hangs at login, exactly as
+     AGENTS.md warns), and then `rm -rf dist` breaking the compose bind mount's inode so the
+     container served a 404 for a file that existed on the host. Worth knowing before reading an
+     e2e failure here as a regression.
+
+     **Step 5 done:** `server` → `apps/server` and `worker` → `apps/worker` (bin/ and config/ stay
+     at the root as shared infrastructure). 261 specifiers across 61 files, plus 81 relative
+     specifiers that had escaped the moved trees and no longer landed anywhere — the step 1 lesson,
+     found by resolving each one and testing whether the target exists on disk rather than by
+     eyeballing patterns. Note that most escapes were _fine_: `../../server/redis` from
+     `apps/worker/jobs/` still resolves, because both trees moved into `apps/` together. Only the
+     ones reaching `config/` and `version` at the repo root actually broke.
+
+     The class this step adds is **runtime path arithmetic**, which no specifier scan can see:
+     `knexfile.js` and the two AI entrypoints call
+     `require('app-module-path').addPath(path.join(__dirname, '..'))`, and that `..` silently became
+     `apps/` instead of the repo root. `server/lib/project_root` was fine by construction — it
+     walks up looking for a package.json rather than counting directories, which is exactly why it
+     exists.
+
+     Verified with 2/2 e2e against api and sp containers rebuilt from the edited Dockerfiles, and
+     by running `pnpm migrate:latest:built` inside the container ("Already up to date") — the
+     deploy path that e2e never touches, and the one that `cd build/apps/server` would have broken
+     silently at the next deploy.
+
+     Left alone deliberately: four dead requires in `apps/server/ai/scoring/base/board.ts`
+     (`./position_zeal` and three `./../position/position_objective_*`) that point at files which
+     do not exist and did not exist before the move either. They are pre-existing, so fixing them
+     does not belong in a move commit.
+
+     **Step 7 done:** `scripts/` → `tools/`, and `tooling/oxlint-config` → `packages/oxlint-config`
+     — the shared config belongs with the other workspace packages (the original sketch put
+     "configs (ts, oxlint...)" under `packages/`), and it removes a `tools/` vs `tooling/` pair
+     every bit as confusable as `app/` vs `apps/`. 56 files referenced the old paths.
+
+     One more instance of the recurring lesson, this time from the crudest possible angle: a
+     blanket `scripts/` → `tools/` rewrite also hit **substrings that were not path segments**, and
+     turned `node_modules/bootstrap-sass/assets/javascripts/bootstrap.js` into `.../javatools/...`.
+     The client build caught it immediately (ENOENT on a vendor concat file), and a
+     `[A-Za-z]tools/` search confirmed it was the only one — but the same rewrite against a path
+     that was merely _read_ rather than _opened_ would have gone unnoticed. Match path segments,
+     not substrings.
+
+     **Step 8 done — `app-module-path` is gone.** Split into four commits because the halves
+     answer different questions. 8a: 1,375 intra-tree requires became relative paths. 8b:
+     `apps/client|server|worker` became workspace packages and the 204 cross-tree requires became
+     `@duelyst/*` names — a name says what it depends on, a relative path says only how far away it
+     sits today. 8c: `config/` → `packages/config` as `@duelyst/config`, and `require('version')`
+     became a relative path. 8e: 145 `addPath` registrations removed across 145 files (plus 134
+     now-unused `const path = require('path')` lines), the dependency dropped, and the `paths` /
+     `alias` blocks in tsconfig, Vite and vitest deleted — nothing resolves "from the repo root"
+     any more.
+
+     Four failures worth keeping, each a variant of the same theme: **the thing you did not think
+     of as a module specifier**.
+
+     - Rewriting the root-absolute spelling of `config` left 26 RELATIVE specifiers pointing at the
+       old location. Caught by unit tests, fixed by scanning every relative specifier in the repo
+       and asking whether it still resolves.
+     - The `bin/` entrypoints are **extensionless files**, so every codemod that filtered on
+       `.ts|.js|.mjs` skipped them silently. `bin/api` still said `apps/server/api` and only a boot
+       from `build/` surfaced it.
+     - One root-absolute `require('version.json')` survived because the sweep matched on the first
+       path segment, and `version.json` is not `version`. The definitive check turned out to be:
+       list every bare specifier that does not resolve to an installed package.
+     - And the one that was predicted and then caused anyway: `project_root` walked up to the
+       nearest `package.json`. Giving `apps/server` one in 8b moved `PROJECT_ROOT` to
+       `build/apps/server`, and the API answered 404 for the client it was serving. Step 5's notes
+       said this file was "correct by construction" because it looks for a marker rather than
+       counting directories — true, but the marker stopped being unique. It now takes the outermost
+       repo-like ancestor.
+
+     Verified at each commit, and finally with: layering 1,406 files, typecheck 0 over 2,275 files,
+     lint 0 errors across 7 tasks, 1,370 unit + 13 integration tests, client build (2,795 manifest
+     keys), all five entrypoints resolving from `build/`, api and sp containers rebuilt and serving
+     HTTP 200, `pnpm migrate:latest:built` in-container, and 3/3 e2e.
+
   5. **Optional, deliberately not started:** Backbone/Marionette/jQuery. That is a UI rewrite,
      not an upgrade, and was declined once already. Audited 2026-08-21 —
      [`BACKBONE_AUDIT.md`](BACKBONE_AUDIT.md). The short version: Backbone is the metagame shell
@@ -376,7 +535,7 @@ step it describes, so it can never drift from the code.
       repo-wide counts: within `test/unit` the only `this.timeout`/`done` usages were inside
       commented-out code. Done: deleted `test/index.js` (stale aggregator requiring non-existent
       dirs) and `test/unit/session/index.js` (0 active tests) + its `test:unit:session` script;
-      codemod `scripts/codemods/remove-dead-test-imports.js` stripped the 15 never-used
+      codemod `tools/codemods/remove-dead-test-imports.js` stripped the 15 never-used
       `require('sinon')` imports from integration files; dropped `sinon` + `power-assert`
       devDependencies. The real `this.timeout`/`done` debt lives in `test/integration` (`test/rest` deleted in 7.3)
       → handled in 7.1/7.2.
@@ -426,7 +585,7 @@ step it describes, so it can never drift from the code.
       pnpm workspace link instead of a relative path into `packages/`). — (this commit)
 - [x] 2.5 Barrel moved to `app/sdk/index.coffee` (no shim needed: extension-less
       `require 'app/sdk'` hits it via directory resolution in node and browserify). Codemod
-      `scripts/codemods/sdk-barrel-move.js`: root-absolute `app/sdk.coffee` → `app/sdk`; relative
+      `tools/codemods/sdk-barrel-move.js`: root-absolute `app/sdk.coffee` → `app/sdk`; relative
       `../…/app/sdk.coffee` → `…/app/sdk/index.coffee` (keeps eslint import/extensions honest);
       barrel no longer exports `SDK.NetworkManager` — its 8 consumer files require
       `app/networkManager` directly. — (this commit)
@@ -485,7 +644,7 @@ rewritten anyway; the package boundary, names, and consumers are already in plac
       real browser (Playwright)**: the Vite bundle boots to the LOGIN screen with the identical
       console profile as the gulp bundle (only the expected dummy-Firebase warning). SCSS stays
       with gulp for now (4.4/4.5). — (this commit)
-- [x] 4.2 `pnpm build:client` (`scripts/build/build-client.mjs`) is a complete gulp-free
+- [x] 4.2 `pnpm build:client` (`tools/build/build-client.mjs`) is a complete gulp-free
       client build: vendor concat → index.html (Handlebars) → duelyst.css (dart-sass +
       autoprefixer) → locale merge/copy → `generate_packages.js` → Vite bundle → non-cdn resource
       copy (5,821 paths, mtime-skipped) + web assets. Order matters: generate_packages scans the
@@ -505,7 +664,7 @@ rewritten anyway; the package boundary, names, and consumers are already in plac
 - [x] 4.5 **Gulp is gone.** Deleted `gulp/` (14 task files), `gulpfile.babel.js`, `.babelrc`,
       `docs/GULP.md`, `bulk-decaffeinate.config.js`, and 65 build-era devDependencies
       (browserify/coffeeify/watchify/envify/uglify, the whole gulp-* and imagemin-* stack,
-      gulp-only helpers). `pnpm build` now points at `scripts/build/build-client.mjs`.
+      gulp-only helpers). `pnpm build` now points at `tools/build/build-client.mjs`.
       Re-declared the 11 packages that source code genuinely requires but only the gulp stack had
       pulled in (glsl-fxaa + glslify for shaders, clipboard for the replay dialog, benchmark and
       fast-stats for tests, and the cli/scripts legacy-ops deps) — keeping the "declared ==
@@ -527,7 +686,7 @@ rewritten anyway; the package boundary, names, and consumers are already in plac
 
 Order (mechanical first, god-objects last). **While gulp lives (until 4.5), conversion targets
 decaffeinated JS** — browserify cannot bundle `.ts`; the `.js → .ts` rename is a later
-mechanical pass. Batch tool: `scripts/codemods/decaffeinate-batch.mjs` (decaffeinate →
+mechanical pass. Batch tool: `tools/codemods/decaffeinate-batch.mjs` (decaffeinate →
 delete `.coffee` → repo-wide require-extension rewrite → eslint --fix); every batch gates on
 mocha + vitest + both builds + wire-format tests.
 
@@ -546,7 +705,7 @@ mocha + vitest + both builds + wire-format tests.
         failures, zero manual fixes.
   - [x] 5.2c 180 meta-game files: achievements, quests, challenges, giftCrates, cosmetics,
         progression, rank, rift, codex, playModes, agents, helpers, validators. 12 quests used
-        `this` before `super` → new pre-transform `scripts/codemods/fix-this-before-super.mjs`
+        `this` before `super` → new pre-transform `tools/codemods/fix-this-before-super.mjs`
         (prototype-reads in super args; CS param-properties moved after super); 1 hand-converted
         (`questParticipationWithFaction`: bound `=>` method + a faithfully-preserved latent bug —
         its constructor always read the prototype `factionId` (null) for the quest name).
@@ -556,7 +715,7 @@ mocha + vitest + both builds + wire-format tests.
       at line end, extensionless reads of the now-renamed codex/cosmeticsFactory, comma-less object
       values). Parsers now accept both syntaxes; verified key-set parity with the pre-5.2 output
       (2,806/2,806, remaining diffs ordering-only). **New guard:** `pnpm build:client` verifies the
-      generated package key set against the committed `scripts/build/packages-manifest.json` and
+      generated package key set against the committed `tools/build/packages-manifest.json` and
       fails on any change; update deliberately with `--update-packages-manifest`. — (this commit)
 - [x] 5.3 `actions/` — all 65 files including the `action.coffee` base and `actionFactory`
       (validators/helpers already landed in 5.2c). Key finding: **class hierarchies must convert
@@ -619,7 +778,7 @@ mocha + vitest + both builds + wire-format tests.
   - [x] 6.2e Server root: `api`, `express`, `http`, `shutdown`, `winston`, and the two socket
         servers `game.coffee` (1.5k) + `single_player.coffee` (2.1k) — fully scripted, zero
         failures. **The entire runtime (app + server + worker) is CoffeeScript-free.** Remaining
-        coffee: `cli/` + `scripts/` only (dead-ops dirs, deletion candidates). — (this commit)
+        coffee: `cli/` + `tools/` only (dead-ops dirs, deletion candidates). — (this commit)
 - [x] 6.3 `coffeescript/register` removed from all `bin/*` entrypoints; every service boots
       and serves from freshly rebuilt images without it. The register hook now exists only in
       test preludes (drop in 7.1), the gulpfile (dies in 4.5), and generate_packages (no longer
@@ -636,7 +795,7 @@ mocha + vitest + both builds + wire-format tests.
       TS 7 notes: `baseUrl` and `moduleResolution: node` were removed; use relative `paths` and
       `bundler`/`node16`.
 - [x] 5T.1 **Dissolved decaffeinate's `initClass()` in 1,183 files** —
-      `scripts/codemods/dissolve-init-class.mjs`. TypeScript cannot see through
+      `tools/codemods/dissolve-init-class.mjs`. TypeScript cannot see through
       `static initClass() { this.X = … }`, so statics were invisible. **Wire-format critical:**
       the same method also carried `this.prototype.X = …`; the codemod keeps those as prototype
       assignments after the class (turning them into class fields would move them onto instances
@@ -657,7 +816,7 @@ mocha + vitest + both builds + wire-format tests.
       lookups/enums: cardType, factionsLookup, racesLookup, rarityLookup, cardSetLookup,
       cardLocation, gameStatus, gameFormat, intentType, ribbonLookup). node's CJS loader only
       knows `.js/.json/.node`, so `tsx/cjs` is registered in `bin/*` (all five services),
-      `.mocharc.js`, a vitest setup file, `scripts/generate_packages.js` and the build
+      `.mocharc.js`, a vitest setup file, `tools/generate_packages.js` and the build
       orchestrator; Vite/eslint resolve `.ts`; eslint gets `@typescript-eslint/parser` and the
       per-directory overrides now cover `.ts` too.
       **TypeScript was pinned to 5.9** here: TS 7 (the native port) was installable but
@@ -669,7 +828,7 @@ mocha + vitest + both builds + wire-format tests.
       can no longer leave a truncated file that the manifest guard reports as a false regression
       (which is exactly what it did once here). — (this commit)
 - [x] 5T.2b **`app/sdk` is 100% TypeScript** — all 1,375 files (0 `.js` left).
-      `scripts/codemods/rename-js-to-ts.mjs` inserts the type-only members TS needs before
+      `tools/codemods/rename-js-to-ts.mjs` inserts the type-only members TS needs before
       renaming: `declare x: any` for every `Klass.prototype.x = …` and `declare static y: any`
       for every `Klass.y = …`. **`declare` is essential**: TS and esbuild erase those members
       entirely, whereas a real class field would become an own instance property and change the
@@ -679,7 +838,7 @@ mocha + vitest + both builds + wire-format tests.
       collided with `class CardType` in another; (2) `Array.from(<any>)` infers `unknown[]`,
       which produced 810 of the 1,346 initial errors — annotated to `Array.from<any>(…)` rather
       than removing the wrappers, because `Array.from` _snapshots_ the collection and the engine
-      mutates entities mid-iteration; (3) `scripts/helpers.js#getIsFileReadable` is an extension
+      mutates entities mid-iteration; (3) `tools/helpers.js#getIsFileReadable` is an extension
       **whitelist**, not an existence check — it didn't know `.ts`, so the package generator's
       recursive scans were about to skip the entire SDK. Caught before it shipped; the manifest
       guard verifies 2,795 keys unchanged.
@@ -731,13 +890,13 @@ server and worker. What remains is _typing_ (5T.4), not converting.
   - `const _chainState = {}` — **83 declarations across 15 files, 1,817 errors**. These are the
     scratch objects the promise-chain codemod introduced when it replaced bluebird's
     `.bind(this)` state passing, so they are per-chain bags by construction.
-    `scripts/codemods/annotate-chainstate.mjs`.
+    `tools/codemods/annotate-chainstate.mjs`.
 
   Both are type annotations only — erased at runtime, no behaviour change, suite unaffected.
   **Then the class-field pass: 3,081 → 2,684.** 12 files still used decaffeinate's
   `static initClass()`, assigning ~68 defaults onto `this.prototype`, which TypeScript cannot see
   on instances. Declared with `declare X: any;` via
-  `scripts/codemods/declare-prototype-props.mjs`.
+  `tools/codemods/declare-prototype-props.mjs`.
 
   **`declare` and not a class field, deliberately.** These are PROTOTYPE defaults and that is
   load-bearing: the SDK's serialization is structural, so an object's own enumerable properties
@@ -770,7 +929,7 @@ server and worker. What remains is _typing_ (5T.4), not converting.
   **found none.** Every one traced to a bare `Array.from(x)`, which infers `unknown[]`, making the
   loop variable `unknown` so each property access in the body errors — which is why they reported
   on body lines, not on the `Array.from` line. decaffeinate emitted this inconsistently: 834 sites
-  already carried `<any>`, 194 did not. Codemod: `scripts/codemods/array-from-any.mjs`. Plus one
+  already carried `<any>`, 194 did not. Codemod: `tools/codemods/array-from-any.mjs`. Plus one
   `Object.values(Cards.Boss)` in `worker/jobs/rotate-bosses.ts`.
 
   **Be clear about what that bought: consistency, not safety.** `<any>` silences rather than
@@ -787,7 +946,7 @@ server and worker. What remains is _typing_ (5T.4), not converting.
       compiles on every boot; fine for dev, wasteful for prod). **Measured first:** a cold
       container took **4,578 ms** to reach `/health` and wrote a **13 MB** tsx cache into `/tmp`;
       a warm restart took ~880 ms, so the hook was the difference. Now **~900 ms cold, no cache**.
-      `scripts/build/build-server.mjs` transpiles 1,647 files in ~0.5 s (esbuild, transpile-only,
+      `tools/build/build-server.mjs` transpiles 1,647 files in ~0.5 s (esbuild, transpile-only,
       handed the real tsconfig so `useDefineForClassFields` cannot drift — instance layout is the
       wire format) and mirrors the source tree into `build/` so root-absolute requires resolve
       unchanged. `bin/_bootstrap.js` replaces five near-identical entrypoints and registers the
@@ -832,7 +991,7 @@ faction identifier: null` line the e2e suite had allowlisted **is gone, and the 
       between chain steps through accidental globals (shared across concurrent requests!).
       decaffeinate faithfully emitted `this.x`, which inside ES6 class bodies is strict-mode
       `undefined` → `TypeError` at runtime. Surfaced as a 500 on `/session` right after a
-      successful registration. Codemod `scripts/codemods/fix-then-this.mjs` (AST-based, only
+      successful registration. Codemod `tools/codemods/fix-then-this.mjs` (AST-based, only
       rewrites `this` inside callbacks passed to promise combinators) scoped **1,531 references
       across 15 files** to a per-call `_chainState` object — fixing the crash _and_ the latent
       cross-request state bleed. `this` in other callbacks (e.g. knex grouped-where, which binds
@@ -847,13 +1006,13 @@ faction identifier: null` line the e2e suite had allowlisted **is gone, and the 
 ### Phase 8 — Remove the CoffeeScript era entirely ✅
 
 - [x] 8.1 **Zero `.coffee` files in the repo.** Deleted `cli/` (paypal/mailchimp/analytics CLI
-      that rsync'd to a host that no longer exists) and 15 dead `scripts/` directories (aws-utility,
+      that rsync'd to a host that no longer exists) and 15 dead `tools/` directories (aws-utility,
       analytics, wipe, temp, user_scripts, one-offs, sarlac_prime, news, data_retrieval, sdk_to_csv,
       simulation, daily_challenges, image-utils, firebase_to_sql, codex asset-authoring). Verified
       zero external references first.
-      **Kept and converted** the tooling worth having: `scripts/localization/*` (finds missing and
+      **Kept and converted** the tooling worth having: `tools/localization/*` (finds missing and
       out-of-date i18n keys) and `generate_invite_codes`.
-      **`scripts/add_index` was later deleted** (see 8.3), and in 9.5 the rest of these went too —
+      **`tools/add_index` was later deleted** (see 8.3), and in 9.5 the rest of these went too —
       measured rather than assumed, they were all dead. `generate_invite_codes` was kept here as
       "worth having"; it never ran.
       **Dropped as unfixable:** `delete_user`, `find_user`, `find_userid_by_name` — all three
@@ -863,7 +1022,7 @@ faction identifier: null` line the e2e suite had allowlisted **is gone, and the 
       `coffeescript` + `@coffeelint/cli` dependencies, the `lint:coffee*` scripts, Vite's
       CoffeeScript plugin and `.coffee` resolution, the `coffeescript/register` calls left in
       8 test/server/script files, and 9 dependencies only the deleted ops used. — (this commit)
-- [x] 8.3 Deleted `scripts/add_index.js` — the only legacy script with Firebase tokens
+- [x] 8.3 Deleted `tools/add_index.js` — the only legacy script with Firebase tokens
       inlined. (I described its three siblings as safely reading `config.get('firebaseToken')`;
       **that config key does not exist**, so they crashed too — see 9.5, where they were deleted.) The tokens date to
       upstream commit `12b49376` (2022-03-29, "init repo with initial source dump") and are
@@ -875,7 +1034,7 @@ faction identifier: null` line the e2e suite had allowlisted **is gone, and the 
 
 ### Phase 7 — Test & dependency endgame
 
-- [x] 7.1 **Mocha retired — vitest is the runner.** `scripts/codemods/mocha-to-vitest.mjs`
+- [x] 7.1 **Mocha retired — vitest is the runner.** `tools/codemods/mocha-to-vitest.mjs`
       removed 123 `this.timeout()` calls (the budget moved to `testTimeout` in the configs, which
       loosens per-suite limits into one global limit — a deliberate trade) and promise-wrapped 69
       `done`-callback tests via AST ranges, preserving `done(err)` rejection semantics.
@@ -1052,7 +1211,7 @@ complete` failure was caused by the `withTimeout` wrapper changing what the call
       - `Promise.TimeoutError` → `PromiseUtils.TimeoutError` (19 sites, 11 files), then those typed
         catches through the `onType()` codemod.
       - **The binding guard earned its keep again.** 9 files had `PromiseUtils` bound but used bare
-        `onType()` — `scripts/check-promise-utils-bindings.mjs` caught all 9 before they could
+        `onType()` — `tools/check-promise-utils-bindings.mjs` caught all 9 before they could
         become the `ReferenceError`-at-runtime class of bug that motivated it. Fixed by adding the
         `const { onType } = require(...)` destructure, which is the convention in all 18 files that
         already bound it (0 files use `PromiseUtils.onType(`).
@@ -1263,7 +1422,7 @@ scripts` and simply never looked at `bin/`.
       where it preserves the exact call shape for a one-token diff.
 
       - [x] **Stage 1 — `.spread` → destructured `.then` (407 sites, 56 files).**
-            `scripts/codemods/spread-to-then.mjs`. The `function` form is deliberately **preserved
+            `tools/codemods/spread-to-then.mjs`. The `function` form is deliberately **preserved
             rather than arrowed**: these chains rely on `.bind()` to set `this`, and an arrow would
             capture the enclosing `this` instead — verified that `this` still flows through `.bind()`
             into the converted form. — (this commit)
@@ -1272,7 +1431,7 @@ scripts` and simply never looked at `bin/`.
             `Function.prototype.call`. Exactly **one** line-initial `.get(` exists and it is an HTTP
             client call in `consul.ts`. Zero bluebird shorthands in the codebase.
       - [x] **Stage 3 — typed `.catch` → `onType` (78 sites, 35 files).**
-            `app/common/utils/utils_promise.ts` + `scripts/codemods/typed-catch-to-ontype.mjs`.
+            `app/common/utils/utils_promise.ts` + `tools/codemods/typed-catch-to-ontype.mjs`.
             The helper's `throw err` for non-matches is the whole point: without it a catch written
             for one error class silently swallows every other error, turning crashes into
             successful-looking responses. That is the single biggest hazard in this migration, which
@@ -1363,7 +1522,7 @@ concurrency: 1 })`, i.e. _serial_, and it says why in a comment: _"process the a
          from its pattern list, so both files were cleared as "clean". The worker crash-looped
          on boot: `TypeError: Promise.longStackTraces is not a function`. Caught by booting the
          services, not by 1,350 unit tests.
-      2. **`scripts/create_bot_users.js` used `.bind(this)` without ever requiring bluebird** —
+      2. **`tools/create_bot_users.js` used `.bind(this)` without ever requiring bluebird** —
          it depended on `createNewUser` _handing back_ a bluebird promise. Converted to a closure.
       3. **bluebird's synchronous inspection API — the expensive one.** Eight files call
          `promise.isFulfilled()`, which native promises simply do not have. These look nothing
@@ -1375,7 +1534,7 @@ concurrency: 1 })`, i.e. _serial_, and it says why in a comment: _"process the a
          the promise's origin (and centrally in `package_manager.whenRequiredResourcesReady`,
          which covers `CardNode`/`UnitNode`).
 
-      **Guard added:** `scripts/check-no-bluebird-orphans.mjs` (`pnpm check:bluebird-orphans`, wired
+      **Guard added:** `tools/check-no-bluebird-orphans.mjs` (`pnpm check:bluebird-orphans`, wired
       into the lint workflow) fails on any bluebird-only API used in a file that does not require
       bluebird — statics, chain methods **and** the inspection API. It is the mirror image of
       `check-promise-utils-bindings.mjs`.
@@ -1391,7 +1550,7 @@ concurrency: 1 })`, i.e. _serial_, and it says why in a comment: _"process the a
       instrumented `showModalView` and printed the actual thrown message. Guessing cost far more
       than instrumenting.
 
-      Also fixed on the way: **`scripts/helpers.js:recursivelyGetFilesStartingFrom` was racy**.
+      Also fixed on the way: **`tools/helpers.js:recursivelyGetFilesStartingFrom` was racy**.
       It accumulated paths in `fs.stat` _completion_ order and resolved when the last-_indexed_
       callback fired rather than the last to _finish_ — so it could return files in a different
       order each run, or resolve before earlier entries were added and silently drop some.
@@ -1443,7 +1602,7 @@ concurrency: 1 })`, i.e. _serial_, and it says why in a comment: _"process the a
           `PromiseUtils` — `ReferenceError: PromiseUtils is not defined`, 500s server-side, and
           the mirror image client-side with `onType`.
 
-        `scripts/check-promise-utils-bindings.mjs` now guards that whole class and runs in CI;
+        `tools/check-promise-utils-bindings.mjs` now guards that whole class and runs in CI;
         verified to fail when the binding is removed.
 
         _Note: bluebird's `.cancel()` also tried to stop the underlying operation; the
@@ -1718,7 +1877,7 @@ custom token puts the subject on `auth.uid` and custom claims under `auth.token.
 
   Also `.name()` → `.key`, `.limit(1)` → `.limitToLast(1)`, `ref.parent()` → `ref.parent`,
   `ref.unauth()` → `auth().signOut()`, `snapshot.ref()` → `snapshot.ref`. The minified vendored
-  backfire build was never edited. `firebase-v2` stays installed for the legacy `scripts/` ops
+  backfire build was never edited. `firebase-v2` stays installed for the legacy `tools/` ops
   tools, which still speak the v2 API.
 
 - [x] 9.4 **Cutover done.** ✅ **The client runs on `firebase@12` against `duelyst-universe`.**
@@ -1777,7 +1936,7 @@ _Sequencing note:_ tier-2 deps (7.3) come after this, per owner.
 | 2026-08-19 | Dummy `FIREBASE_URL` for builds/CI; real Firebase only needed to play                                     | matches upstream CI behavior                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | 2026-08-19 | vitest lands _beside_ mocha (Phase 1) instead of a one-shot swap                                          | 1287 passing tests are the safety net for the TS conversion; never lose them                                                                                                                                                                                                                                                                                                                                                                                                                |
 | 2026-08-19 | Phantom deps added explicitly rather than enabling hoisting shims                                         | keeps pnpm strictness as a lint for the monorepo split                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| 2026-08-19 | Gate's coffee-lint criterion = CI scope (`pnpm lint:coffee app server worker`), not `lint:coffee:all`     | `lint:coffee:all` was red before this work: 59 pre-existing errors, all in dead ops dirs (`cli/`, `scripts/*`) that CI deliberately excludes; several are indentation errors that can't be auto-fixed safely in untested CoffeeScript. Those dirs are deletion candidates, not fix targets.                                                                                                                                                                                                 |
+| 2026-08-19 | Gate's coffee-lint criterion = CI scope (`pnpm lint:coffee app server worker`), not `lint:coffee:all`     | `lint:coffee:all` was red before this work: 59 pre-existing errors, all in dead ops dirs (`cli/`, `tools/*`) that CI deliberately excludes; several are indentation errors that can't be auto-fixed safely in untested CoffeeScript. Those dirs are deletion candidates, not fix targets.                                                                                                                                                                                                   |
 | 2026-08-19 | 4.3: no speculative CDN base-URL layer; regex-rewrite machinery dies with gulp                            | CDN deploys target dead AWS infra; YAGNI — build it if a CDN deployment returns                                                                                                                                                                                                                                                                                                                                                                                                             |
 | 2026-08-19 | 3.2: SDK/common become workspace packages in place; physical `packages/sdk` move deferred to the TS phase | moving 1,400 files pre-TS forces a ~7,000-site require rewrite or symlink fragility for zero functional gain; package names + boundary land now, relocation lands when imports are rewritten anyway                                                                                                                                                                                                                                                                                         |
 | 2026-08-19 | Vitest runs the CJS tests via native-require passthrough (no coffee plugin/aliases yet)                   | zero-risk parity with mocha's module loading; the Vite-pipeline transform belongs to Phase 4 where it's exercised by the client build. Cost: vitest wall-clock ~38s vs mocha 6s (each forked file re-imports the SDK); acceptable until the SDK is TS.                                                                                                                                                                                                                                      |
