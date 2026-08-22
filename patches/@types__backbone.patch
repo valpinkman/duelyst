@@ -1,0 +1,35 @@
+diff --git a/index.d.ts b/index.d.ts
+index 5d0668afaaa029b260a2b3bf5c165c44a75cbb43..a53ae1aea3026553acfeb81a891ec23ace15ee20 100644
+--- a/index.d.ts
++++ b/index.d.ts
+@@ -1,5 +1,28 @@
+-/// <reference types="jquery" />
+-/// <reference types="underscore" />
++// PATCHED by OpenDuelyst -- patches/@types__backbone.patch.
++//
++// Upstream begins with:
++//     /// <reference types="jquery" />
++//     /// <reference types="underscore" />
++//
++// Those two directives push @types/jquery's and @types/underscore's GLOBAL
++// declarations into every program that touches this file, and @types/jquery
++// describes jQuery 3.x with no plugins. This app concatenates jQuery 2.1.4
++// into vendor.js together with the Bootstrap 3 and jquery-ui plugins, so those
++// globals are wrong here: measured on the commit that installed this package,
++// they took `pnpm typecheck` from 0 errors to 25, every one of them a call
++// that works at runtime ($.trim(...), $el.popover(...)). apps/client/types/globals.d.ts
++// declares `$` and `_` as `any` and stays the single place either is declared.
++//
++// Shadowing them with stub type roots was tried first and rejected: tsconfig's
++// `typeRoots` is inherited by every config that extends it, and setting it at
++// all breaks `types: ["node", "colors"]` in packages/sdk and packages/common -- `colors`
++// ships its own types rather than living under an @types folder, and TS drops
++// the node-resolution fallback once typeRoots is explicit.
++//
++// Dropping the directives leaves JQuery/JQueryStatic/JQueryXHR/_ unresolved
++// INSIDE this declaration file, which `skipLibCheck: true` ignores. Only the
++// Backbone types this repo actually uses -- Model<T>, Collection<TModel> and
++// their attribute-keyed get/set -- have to resolve, and they do.
+ 
+ export = Backbone;
+ export as namespace Backbone;

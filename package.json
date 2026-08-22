@@ -127,6 +127,7 @@
   "devDependencies": {
     "@firebase/rules-unit-testing": "^5.0.2",
     "@playwright/test": "^1.62.1",
+    "@types/backbone": "^1.4.23",
     "@types/node": "^26.2.0",
     "async": "^1.5.2",
     "autoprefixer": "^10.5.4",
@@ -168,6 +169,9 @@
     "overrides": {
       "jsonwebtoken": "^9.0.3",
       "backbone": "catalog:"
+    },
+    "patchedDependencies": {
+      "@types/backbone": "patches/@types__backbone.patch"
     }
   }
 }
