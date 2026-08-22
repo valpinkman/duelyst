@@ -5,8 +5,9 @@
  */
 // libraries
 
-const npmRun = require('npm-run');
-
+// the helpers reach into @duelyst/common, which is TypeScript on disk;
+// let require() compile it, the same way tools/generate_packages.js does
+require('tsx/cjs');
 const _ = require('underscore');
 const fs = require('fs');
 

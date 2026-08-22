@@ -6,8 +6,11 @@
  */
 // libraries
 
-const npmRun = require('npm-run');
+const { exec } = require('child_process');
 
+// the helpers reach into @duelyst/common, which is TypeScript on disk;
+// let require() compile it, the same way tools/generate_packages.js does
+require('tsx/cjs');
 const _ = require('underscore');
 const moment = require('moment');
 const fs = require('fs');
@@ -17,7 +20,7 @@ const UtilsLocalization = require('./utils_localization');
 
 const runCommand = (commandStr) =>
   new Promise((resolve, reject) => {
-    npmRun(commandStr, {}, (err, stdOut, stdErr) => {
+    exec(commandStr, {}, (err, stdOut, stdErr) => {
       if (err != null) {
         return reject(err);
       }

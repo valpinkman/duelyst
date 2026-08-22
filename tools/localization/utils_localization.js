@@ -14,7 +14,7 @@
 const UtilsLocalization = {};
 module.exports = UtilsLocalization;
 
-const npmRun = require('npm-run');
+const { exec } = require('child_process');
 const ProgressBar = require('progress');
 
 const _ = require('underscore');
@@ -23,7 +23,16 @@ const helpers = require('../helpers');
 const fs = require('fs');
 const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 
-UtilsLocalization.PATH_TO_LOCALES = '../../apps/client/localization/locales';
+/*
+ * Anchored to this file, not to the caller's cwd: it was a bare relative path,
+ * so the scripts only worked when run from tools/localization/ and blew up with
+ * ENOENT from anywhere else. It is also interpolated into `git log ... <path>`,
+ * which takes an absolute path happily.
+ */
+UtilsLocalization.PATH_TO_LOCALES = require('path').join(
+  __dirname,
+  '../../apps/client/localization/locales',
+);
 
 UtilsLocalization.createBlankJsonForKeys = function (keys, defaultTo) {
   const jsonData = {};
@@ -163,7 +172,7 @@ UtilsLocalization.getTranslationFromFullKey = (translationData, fullTranslationK
 // Sub helpers
 var runCommand = (commandStr) =>
   new Promise((resolve, reject) => {
-    npmRun(commandStr, {}, (err, stdOut, stdErr) => {
+    exec(commandStr, {}, (err, stdOut, stdErr) => {
       if (err != null) {
         return reject(err);
       }
