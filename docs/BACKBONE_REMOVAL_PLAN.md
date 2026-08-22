@@ -153,11 +153,19 @@ What the bundle actually does, and why it works:
   unshadowed. The AGENTS.md class-fields warning applies to Lit components too; the spike shows the
   documented workaround is sufficient.
 
-**Bundle cost: negligible, as predicted.** `dist/src/duelyst.js` goes 16,261,345 → 16,290,672 bytes,
-**+29,327 (+0.180%)**; gzipped 2,298,925 → 2,306,956, **+8,031 (+0.349%)**. That is the entire Lit
-runtime — `reactive-element`, `lit-html`, `lit-element` — against a 16 MB bundle. `pnpm
-build:client:watch` is unaffected: initial build and incremental rebuild on touching the ESM module
-both emit the element.
+**Bundle cost when a Lit component actually ships: negligible, as predicted.** With the spike wired
+into the entry, `dist/src/duelyst.js` goes 16,261,345 → 16,290,672 bytes, **+29,327 (+0.180%)**;
+gzipped 2,298,925 → 2,306,956, **+8,031 (+0.349%)**. That is the entire Lit runtime —
+`reactive-element`, `lit-html`, `lit-element` — against a 16 MB bundle. `pnpm build:client:watch` is
+unaffected: initial build and incremental rebuild on touching the ESM module both emit the element.
+
+**The spike itself ships nothing.** Nothing requires `app/ui/components/spike/`, so it is unreachable
+from `app/index.ts` and costs the shipped bundle **zero bytes** — the figures above were measured with
+the entry require temporarily in place. That is deliberate: a throwaway proof should not ride along in
+every user's download, and "throwaway code behind a clear comment" has no expiry date. **To re-run the
+proof**, add `require('app/ui/components/spike/spike-host');` at the top of `app/index.ts`, run
+`pnpm build`, run `node scripts/spike/verify-lit-interop.mjs`, then take the line back out. Run
+against a stock bundle the verifier says exactly that rather than failing obscurely.
 
 **What the spike deliberately does not prove**, and where the next surprise would come from:
 
@@ -170,6 +178,13 @@ both emit the element.
   §4 step 5) and `lit/decorators.js` are separate `exports` subpaths and were not exercised. Expect to
   re-check `repeat()` when the first screen lands; there is no reason for it to behave differently,
   but nothing here shows it.
+- **Nothing protects `strictRequires`, and everything depends on it.** It is an ordinary
+  `commonjsOptions` setting in `vite.config.client.mjs` with no test standing behind it. Turn it off
+  while tuning the bundle and every Lit component silently stops registering — the failure surfaces as
+  an un-upgraded tag in the browser, **not** as a build error, which is the worst shape a regression
+  can take here. A comment at the setting now points back at this section; the screen tour
+  ([#2](https://github.com/valpinkman/duelyst/issues/2)) is what would actually catch it, which is
+  another reason that net matters before [#10](https://github.com/valpinkman/duelyst/issues/10).
 
 ### 3.2 Why Backbone stays frozen as the state layer
 
