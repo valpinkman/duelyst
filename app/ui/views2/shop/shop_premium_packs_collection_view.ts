@@ -5,10 +5,10 @@
 var _ = require('underscore');
 var moment = require('moment');
 var CONFIG = require('@duelyst/common/config');
-var RSX = require('app/data/resources');
-var ShopData = require('app/data/shop.json');
+var RSX = require('@duelyst/data/resources');
+var ShopData = require('@duelyst/data/shop.json');
 var Logger = require('@duelyst/common/logger');
-// var PremiumShopData = require('app/data/premium_shop.json')
+// var PremiumShopData = require('@duelyst/data/premium_shop.json')
 var audio_engine = require('app/audio/audio_engine');
 var SDK = require('@duelyst/sdk');
 var NavigationManager = require('app/ui/managers/navigation_manager');

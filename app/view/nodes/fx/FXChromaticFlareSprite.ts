@@ -1,7 +1,7 @@
 // pragma PKGS: alwaysloaded
 
 const CONFIG = require('@duelyst/common/config');
-const RSX = require('app/data/resources');
+const RSX = require('@duelyst/data/resources');
 const FXSprite = require('./FXSprite');
 
 /** **************************************************************************

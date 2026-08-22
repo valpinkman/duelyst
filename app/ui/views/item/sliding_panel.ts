@@ -2,7 +2,7 @@
 
 'use strict';
 
-var RSX = require('app/data/resources');
+var RSX = require('@duelyst/data/resources');
 var audio_engine = require('app/audio/audio_engine');
 var SlidingPanelTmpl = require('app/ui/templates/item/sliding_panel.hbs');
 

@@ -6,7 +6,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const _ = require('underscore');
-const RSX = require('app/data/resources');
+const RSX = require('@duelyst/data/resources');
 const PlayModes = require('./playModesLookup');
 const moment = require('moment');
 const i18next = require('i18next');

@@ -3,7 +3,7 @@
 'use strict';
 
 var EVENTS = require('@duelyst/common/event_types');
-var RSX = require('app/data/resources');
+var RSX = require('@duelyst/data/resources');
 var Animations = require('app/ui/views/animations');
 var audio_engine = require('app/audio/audio_engine');
 var ErrorDialogItemViewTempl = require('app/ui/templates/item/error_dialog.hbs');

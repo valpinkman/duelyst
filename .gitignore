@@ -4,7 +4,7 @@
 serviceAccountKey.json
 
 # Build artifacts
-/app/data/packages.js
+/packages/data/packages.js
 /app/localization/locales/en/index.json
 /dist
 node_modules

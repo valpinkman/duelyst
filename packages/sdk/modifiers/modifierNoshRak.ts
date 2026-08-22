@@ -5,7 +5,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CardType = require('@duelyst/sdk/cards/cardType');
-const RSX = require('app/data/resources');
+const RSX = require('@duelyst/data/resources');
 const i18next = require('i18next');
 const Modifier = require('./modifier');
 

@@ -4,7 +4,7 @@
 
 var SDK = require('@duelyst/sdk');
 var Scene = require('app/view/Scene');
-var PKGS = require('app/data/packages');
+var PKGS = require('@duelyst/data/packages');
 var EventBus = require('@duelyst/common/eventbus');
 var EVENTS = require('@duelyst/common/event_types');
 var Logger = require('@duelyst/common/logger');
@@ -24,7 +24,7 @@ var RiftLayer = require('app/view/layers/rift/RiftLayer');
 var DuelystFirebase = require('app/ui/extensions/duelyst_firebase');
 var _ = require('underscore');
 var moment = require('moment');
-var ShopData = require('app/data/shop.json');
+var ShopData = require('@duelyst/data/shop.json');
 var ErrorDialogItemView = require('app/ui/views/item/error_dialog');
 var NewPlayerManager = require('app/ui/managers/new_player_manager');
 var i18next = require('i18next');

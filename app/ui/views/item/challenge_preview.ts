@@ -3,7 +3,7 @@
 'use strict';
 
 var SDK = require('@duelyst/sdk');
-var RSX = require('app/data/resources');
+var RSX = require('@duelyst/data/resources');
 var audio_engine = require('app/audio/audio_engine');
 var ChallengePreviewTmpl = require('app/ui/templates/item/challenge_preview.hbs');
 

@@ -1,6 +1,6 @@
 // pragma PKGS: game
 const _ = require('underscore');
-const RSX = require('app/data/resources');
+const RSX = require('@duelyst/data/resources');
 const TileMapScaledSprite = require('./TileMapScaledSprite');
 
 /** **************************************************************************

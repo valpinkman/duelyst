@@ -38,8 +38,8 @@ Logger.enabled = false;
 const Landing = require('@duelyst/common/landing');
 const Session = (window.Session = require('app/session2'));
 const CONFIG = (window.CONFIG = require('@duelyst/common/config'));
-const RSX = (window.RSX = require('app/data/resources'));
-const PKGS = (window.PKGS = require('app/data/packages'));
+const RSX = (window.RSX = require('@duelyst/data/resources'));
+const PKGS = (window.PKGS = require('@duelyst/data/packages'));
 const EventBus = (window.EventBus = require('@duelyst/common/eventbus'));
 const EVENTS = require('@duelyst/common/event_types');
 // SDK = window.SDK = require '@duelyst/sdk'

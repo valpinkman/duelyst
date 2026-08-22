@@ -6,8 +6,8 @@ var BaseParticleSystem = require('app/view/nodes/BaseParticleSystem');
 var CONFIG = require('@duelyst/common/config');
 var EventBus = require('@duelyst/common/eventbus');
 var EVENTS = require('@duelyst/common/event_types');
-var RSX = require('app/data/resources');
-var PKGS = require('app/data/packages');
+var RSX = require('@duelyst/data/resources');
+var PKGS = require('@duelyst/data/packages');
 var Animations = require('app/ui/views/animations');
 var FXRipplingGlowImageMapSprite = require('app/view/nodes/fx/FXRipplingGlowImageMapSprite');
 

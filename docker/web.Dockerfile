@@ -25,6 +25,7 @@ COPY packages ./packages
 COPY tooling ./tooling
 COPY packages/sdk/package.json ./packages/sdk/
 COPY packages/common/package.json ./packages/common/
+COPY packages/data/package.json ./packages/data/
 RUN pnpm install --frozen-lockfile
 
 COPY . .
@@ -73,6 +74,7 @@ COPY package.json .npmrc pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY packages ./packages
 COPY packages/sdk/package.json ./packages/sdk/
 COPY packages/common/package.json ./packages/common/
+COPY packages/data/package.json ./packages/data/
 RUN pnpm install --prod --frozen-lockfile && pnpm store prune
 
 # ---------- stage 3: the API runtime ----------
@@ -88,10 +90,11 @@ WORKDIR /duelyst
 RUN npm install -g pnpm@10.12.1
 
 # manifests: pnpm needs them to run the migrate script, and node_modules holds
-# workspace links that point at these two package.json files
+# workspace links that point at these package.json files
 COPY package.json pnpm-workspace.yaml ./
 COPY packages/sdk/package.json ./packages/sdk/
 COPY packages/common/package.json ./packages/common/
+COPY packages/data/package.json ./packages/data/
 
 COPY --from=deps /duelyst/node_modules ./node_modules
 COPY --from=client /duelyst/build ./build

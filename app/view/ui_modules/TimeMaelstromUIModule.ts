@@ -1,7 +1,7 @@
 // pragma PKGS: game
 
 const SDK = require('@duelyst/sdk');
-const RSX = require('app/data/resources');
+const RSX = require('@duelyst/data/resources');
 const CONFIG = require('@duelyst/common/config');
 const EVENTS = require('@duelyst/common/event_types');
 const BaseParticleSystem = require('app/view/nodes/BaseParticleSystem');

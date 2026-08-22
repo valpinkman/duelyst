@@ -12,7 +12,7 @@ const moment = require('moment');
 const Logger = require('@duelyst/common/logger');
 
 const CONFIG = require('@duelyst/common/config');
-const RSX = require('app/data/resources');
+const RSX = require('@duelyst/data/resources');
 
 const Card = require('@duelyst/sdk/cards/card');
 const Cards = require('@duelyst/sdk/cards/cardsLookupComplete');

@@ -5,7 +5,7 @@
  * dist/src/duelyst.js from app/index.ts. Everything else (vendor.js
  * concat, css, index.html, resource packages/copy, locales) still comes from
  * gulp until later Phase 4 steps. Run `pnpm build:vite` after a normal gulp
- * build (it needs the generated app/data/packages.js).
+ * build (it needs the generated packages/data/packages.js).
  *
  * Legacy semantics preserved:
  * - .hbs templates precompile against handlebars/runtime

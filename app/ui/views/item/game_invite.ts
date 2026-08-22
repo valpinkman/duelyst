@@ -4,7 +4,7 @@
 
 var CONFIG = require('@duelyst/common/config');
 var EVENTS = require('@duelyst/common/event_types');
-var RSX = require('app/data/resources');
+var RSX = require('@duelyst/data/resources');
 var Animations = require('app/ui/views/animations');
 var audio_engine = require('app/audio/audio_engine');
 var GameInviteViewTempl = require('app/ui/templates/item/game_invite.hbs');

@@ -17,7 +17,7 @@ step it describes, so it can never drift from the code.
 - **The four stack goals are done:**
   1. **pnpm monorepo** — workspace over `packages/*`, `app/sdk`, `app/common`, `desktop`.
   2. **TypeScript instead of CoffeeScript** — the _entire runtime_ (client, SDK, server,
-     worker) is `.ts`. Remaining `.js`: `app/data/*` (data + generated), the 86 knex
+     worker) is `.ts`. Remaining `.js`: `packages/data/*` (data + generated), the 86 knex
      migrations, `server/knexfile.js`, build scripts and `cli/`+`scripts/` legacy ops
      (which still hold the last 57 `.coffee` files — deletion candidates).
   3. **vitest** — mocha retired; unit + integration configs.
@@ -378,6 +378,24 @@ step it describes, so it can never drift from the code.
      `check-promise-utils-bindings.mjs`, and the tsconfig `include` that reached
      `../types/globals.d.ts` (meaning `app/types` from `app/common`, and nothing at all from
      `packages/common`). Verified the same way as step 1, container boot included.
+
+     **Step 3 done:** `app/data` → `packages/data`, and it is a real workspace package now
+     (`@duelyst/data`) rather than a directory the layering gate happened to watch. 447 specifiers
+     across 362 files. Two things specific to this one: the `DATA` barrel was `app/data.ts`, a file
+     sitting _beside_ the directory it fronts (7 consumers), so it moved in as
+     `packages/data/index.ts` — the same no-`main`, `index.ts` convention `packages/sdk` already
+     used, which resolves to `index.js` from `build/` for free. And `packages.js` is generated,
+     gitignored and build-critical, so the output path in `generate_packages.js`, the three reads
+     in `build-client.mjs`, and the `.gitignore` / `.oxfmtrc` / `.oxlintrc` exclusions all had to
+     move together.
+
+     The move also exposed the next blind spot in `check-package-deps`: it inspected relative and
+     `app/`-prefixed specifiers, so a _named_ `@duelyst/…` edge was invisible. `packages/data`
+     immediately picked one up — the barrel required `@duelyst/common/logger` — and the gate said
+     OK. The import turned out to be dead (zero uses), so data stays a true leaf; the checker now
+     maps `@duelyst/x` back to `packages/x` and applies the same rules, verified by injecting the
+     edge and watching it fail. As trees become packages, every path-shaped assumption in the
+     tooling has to be re-read as a name.
 
   5. **Optional, deliberately not started:** Backbone/Marionette/jQuery. That is a UI rewrite,
      not an upgrade, and was declined once already. Audited 2026-08-21 —

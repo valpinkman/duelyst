@@ -2,8 +2,8 @@
 
 'use strict';
 
-var RSX = require('app/data/resources');
-var GAME_TIPS = require('app/data/game_tips');
+var RSX = require('@duelyst/data/resources');
+var GAME_TIPS = require('@duelyst/data/game_tips');
 var Animations = require('app/ui/views/animations');
 var LoadingDialogViewTempl = require('app/ui/templates/item/loading_dialog.hbs');
 var NavigationManager = require('app/ui/managers/navigation_manager');

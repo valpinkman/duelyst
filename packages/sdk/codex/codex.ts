@@ -7,7 +7,7 @@
  */
 // do not add this file to any resource package
 // it is handled by special processing
-const RSX = require('app/data/resources');
+const RSX = require('@duelyst/data/resources');
 const CodexChapters = require('./codexChapterLookup');
 
 class Codex {

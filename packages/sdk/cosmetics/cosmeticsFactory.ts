@@ -18,7 +18,7 @@ let rarityIdKey;
 let type;
 const _ = require('underscore');
 const moment = require('moment');
-const RSX = require('app/data/resources');
+const RSX = require('@duelyst/data/resources');
 const CosmeticsLookup = require('./cosmeticsLookup');
 const CosmeticsTypeLookup = require('./cosmeticsTypeLookup');
 const CosmeticsChestTypeLookup = require('./cosmeticsChestTypeLookup');

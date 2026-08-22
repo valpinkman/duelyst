@@ -6,7 +6,7 @@ var Logger = require('@duelyst/common/logger');
 var CONFIG = require('@duelyst/common/config');
 var EventBus = require('@duelyst/common/eventbus');
 var EVENTS = require('@duelyst/common/event_types');
-var RSX = require('app/data/resources');
+var RSX = require('@duelyst/data/resources');
 var UtilsEnv = require('@duelyst/common/utils/utils_env');
 var Scene = require('app/view/Scene');
 var SDK = require('@duelyst/sdk');
@@ -29,7 +29,7 @@ var ShopSpiritOrbsModalView = require('app/ui/views2/shop/shop_spirit_orbs_modal
 var PlayLayout = require('app/ui/views/layouts/play');
 var CosmeticsFactory = require('@duelyst/sdk/cosmetics/cosmeticsFactory');
 var ShopManager = require('app/ui/managers/shop_manager');
-var ShopData = require('app/data/shop.json');
+var ShopData = require('@duelyst/data/shop.json');
 
 var moment = require('moment');
 

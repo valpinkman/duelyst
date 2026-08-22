@@ -32,10 +32,10 @@
   const CosmeticsLookup = require('@duelyst/sdk/cosmetics/cosmeticsLookup');
   const CONFIG = require('@duelyst/common/config');
   const UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
-  const DATA = require('app/data');
-  const FX = require('app/data/fx');
-  const RSX = require('app/data/resources');
-  const PKGS_DEF = require('app/data/packages_predefined');
+  const DATA = require('@duelyst/data');
+  const FX = require('@duelyst/data/fx');
+  const RSX = require('@duelyst/data/resources');
+  const PKGS_DEF = require('@duelyst/data/packages_predefined');
   const PKGS = {};
 
   const getResources = function (resourceIdentifier) {
@@ -1413,8 +1413,8 @@
           parseChallengeSuperClass,
           /challengeCategory|challengeFactory/i,
         ),
-        helpers.readFile(`${dir}/../app/data/shop.json`, parseShopData),
-        helpers.readFile(`${dir}/../app/data/premium_shop.json`, parseShopData),
+        helpers.readFile(`${dir}/../packages/data/shop.json`, parseShopData),
+        helpers.readFile(`${dir}/../packages/data/premium_shop.json`, parseShopData),
       ]);
     })
     .then(() => {
@@ -1656,7 +1656,7 @@
       PKGS_CONTENT += 'module.exports = PKGS;\n';
 
       // write packages map
-      return Promise.all([helpers.writeFile(`${dir}/../app/data/packages.js`, PKGS_CONTENT)]);
+      return Promise.all([helpers.writeFile(`${dir}/../packages/data/packages.js`, PKGS_CONTENT)]);
     })
     .then(() => {
       console.log(' [GP] Packages wrapped!');

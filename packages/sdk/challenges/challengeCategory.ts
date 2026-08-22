@@ -2,7 +2,7 @@
  * decaffeinate suggestions:
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-const RSX = require('app/data/resources');
+const RSX = require('@duelyst/data/resources');
 const i18next = require('i18next');
 
 class ChallengeCategory {

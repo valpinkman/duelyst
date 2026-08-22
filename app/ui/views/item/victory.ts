@@ -4,7 +4,7 @@
 
 var SDK = require('@duelyst/sdk');
 var Scene = require('app/view/Scene');
-var RSX = require('app/data/resources');
+var RSX = require('@duelyst/data/resources');
 var CONFIG = require('@duelyst/common/config');
 var Animations = require('app/ui/views/animations');
 var audio_engine = require('app/audio/audio_engine');

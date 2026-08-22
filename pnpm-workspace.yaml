@@ -4,6 +4,7 @@ packages:
   - 'tooling/*'
   # in-place workspace members (physical relocation deferred to the TS phase):
   - 'packages/common'
+  - 'packages/data'
   # Electron shell (plan 7.4)
   - 'desktop'
 

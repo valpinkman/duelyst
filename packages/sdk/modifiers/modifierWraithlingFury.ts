@@ -5,7 +5,7 @@
  */
 const CardType = require('@duelyst/sdk/cards/cardType');
 const Stringifiers = require('@duelyst/sdk/helpers/stringifiers');
-const RSX = require('app/data/resources');
+const RSX = require('@duelyst/data/resources');
 const i18next = require('i18next');
 const Modifier = require('./modifier');
 

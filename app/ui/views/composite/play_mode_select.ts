@@ -4,7 +4,7 @@
 
 var Scene = require('app/view/Scene');
 var CONFIG = require('@duelyst/common/config');
-var RSX = require('app/data/resources');
+var RSX = require('@duelyst/data/resources');
 var generatePushID = require('@duelyst/common/generate_push_id');
 var Animations = require('app/ui/views/animations');
 var PlayModeItemView = require('app/ui/views/item/play_mode');

@@ -6,7 +6,7 @@
  * broken on 2026-08-21 by moving three files; this keeps it broken.
  *
  *   @duelyst/common  -> nothing else (a leaf)
- *   @duelyst/sdk     -> packages/common and app/data only
+ *   @duelyst/sdk     -> packages/common and packages/data only
  *
  * Checks root-absolute specifiers (`require('app/x')`) and relative ones that
  * climb out of the package (`require('../../x')`) -- the first attempt at this
@@ -19,21 +19,25 @@ import path from 'node:path';
 
 const RULES = {
   'packages/common': { allow: [] },
-  'app/data': { allow: [] },
-  'packages/sdk': { allow: ['packages/common', 'app/data'] },
+  'packages/data': { allow: [] },
+  'packages/sdk': { allow: ['packages/common', 'packages/data'] },
 };
 
 /*
- * `git ls-files` rather than a directory walk, which is what keeps app/data
+ * `git ls-files` rather than a directory walk, which is what keeps packages/data
  * honest: its tracked source is a leaf, and the only thing reaching back into
- * app/sdk is the generated app/data/packages.js -- gitignored, so unlisted, so
+ * the sdk is the generated packages/data/packages.js -- gitignored, so unlisted, so
  * not checked. That is the right answer rather than an accident: packages.js is
  * a build artifact of scripts/generate_packages.js, which reads app/sdk off
  * disk. The cycle exists in the artifact, never in the source.
  */
-const files = execFileSync('git', ['ls-files', 'packages/sdk', 'packages/common', 'app/data'], {
-  encoding: 'utf8',
-})
+const files = execFileSync(
+  'git',
+  ['ls-files', 'packages/sdk', 'packages/common', 'packages/data'],
+  {
+    encoding: 'utf8',
+  },
+)
   .split('\n')
   .filter((f) => f.endsWith('.ts') || f.endsWith('.js'));
 
@@ -60,6 +64,16 @@ for (const file of files) {
       if (resolved !== pkg && !resolved.startsWith(`${pkg}/`)) target = resolved;
     } else if (spec.startsWith('app/') && !spec.startsWith(`${pkg}/`)) {
       target = spec;
+    } else if (spec.startsWith('@duelyst/')) {
+      /*
+       * Workspace packages are reached by NAME, not by path -- so once a tree
+       * moves under packages/ the old `app/`-prefix test goes blind exactly
+       * where the layering matters. Map the name back to its directory and
+       * apply the same rules. packages/data picked up an outbound edge to
+       * @duelyst/common this way (a dead Logger import) while the gate said OK.
+       */
+      const dir = `packages/${spec.slice('@duelyst/'.length).split('/')[0]}`;
+      if (dir !== pkg) target = dir;
     }
     if (!target) continue;
     if (!allow.some((a) => target === a || target.startsWith(`${a}/`))) {

@@ -1,7 +1,7 @@
 // pragma PKGS: motion_streak
 
-const RSX = require('app/data/resources');
-const PKGS = require('app/data/packages');
+const RSX = require('@duelyst/data/resources');
+const PKGS = require('@duelyst/data/packages');
 const _ = require('underscore');
 
 const MotionStreakRingNode = cc.Node.extend({

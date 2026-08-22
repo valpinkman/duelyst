@@ -3,7 +3,7 @@
 'use strict';
 
 var CONFIG = require('@duelyst/common/config');
-var RSX = require('app/data/resources');
+var RSX = require('@duelyst/data/resources');
 var audio_engine = require('app/audio/audio_engine');
 var Animations = require('app/ui/views/animations');
 var ActivityDialogViewTempl = require('app/ui/templates/item/activity_dialog.hbs');

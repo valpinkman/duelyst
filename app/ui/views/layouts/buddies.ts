@@ -4,7 +4,7 @@
 
 var Logger = require('@duelyst/common/logger');
 var CONFIG = require('@duelyst/common/config');
-var RSX = require('app/data/resources');
+var RSX = require('@duelyst/data/resources');
 var audio_engine = require('app/audio/audio_engine');
 var SDK = require('@duelyst/sdk');
 var ChatManager = require('app/ui/managers/chat_manager');

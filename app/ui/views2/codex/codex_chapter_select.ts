@@ -3,7 +3,7 @@
 'use strict';
 
 var CONFIG = require('@duelyst/common/config');
-var RSX = require('app/data/resources');
+var RSX = require('@duelyst/data/resources');
 var Animations = require('app/ui/views/animations');
 var SlidingPanelSelectCompositeView = require('app/ui/views/composite/sliding_panel_select');
 var audio_engine = require('../../../audio/audio_engine');

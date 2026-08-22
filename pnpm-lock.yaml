@@ -42,6 +42,9 @@ importers:
       '@duelyst/common':
         specifier: workspace:*
         version: link:packages/common
+      '@duelyst/data':
+        specifier: workspace:*
+        version: link:packages/data
       '@duelyst/sdk':
         specifier: workspace:*
         version: link:packages/sdk
@@ -376,6 +379,12 @@ importers:
         version: 7.0.2
 
   packages/common:
+    devDependencies:
+      typescript:
+        specifier: 'catalog:'
+        version: 7.0.2
+
+  packages/data:
     devDependencies:
       typescript:
         specifier: 'catalog:'

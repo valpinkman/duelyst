@@ -36,6 +36,7 @@
     "app/**/*.ts",
     "packages/sdk/**/*.ts",
     "packages/common/**/*.ts",
+    "packages/data/**/*.ts",
     "server/**/*.ts",
     "worker/**/*.ts",
     "test/**/*.ts",

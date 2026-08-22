@@ -1,6 +1,6 @@
 'use strict';
 
-var RSX = require('app/data/resources');
+var RSX = require('@duelyst/data/resources');
 
 var NotificationModel = Backbone.Model.extend({
   initialize: function () {

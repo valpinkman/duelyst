@@ -3,7 +3,7 @@
 'use strict';
 
 var SDK = require('@duelyst/sdk');
-var RSX = require('app/data/resources');
+var RSX = require('@duelyst/data/resources');
 var Events = require('@duelyst/common/eventbus');
 var audio_engine = require('app/audio/audio_engine');
 var ProgressionManager = require('app/ui/managers/progression_manager');

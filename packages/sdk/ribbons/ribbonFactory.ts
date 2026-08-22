@@ -3,7 +3,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const _ = require('underscore');
-const RSX = require('app/data/resources');
+const RSX = require('@duelyst/data/resources');
 const Ribbons = require('./ribbonLookup');
 
 class RibbonFactory {

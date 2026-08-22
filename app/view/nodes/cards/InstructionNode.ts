@@ -1,7 +1,7 @@
 // pragma PKGS: instruction
 
-const RSX = require('app/data/resources');
-const PKGS = require('app/data/packages');
+const RSX = require('@duelyst/data/resources');
+const PKGS = require('@duelyst/data/packages');
 const Logger = require('@duelyst/common/logger');
 const CONFIG = require('@duelyst/common/config');
 const audio_engine = require('app/audio/audio_engine');

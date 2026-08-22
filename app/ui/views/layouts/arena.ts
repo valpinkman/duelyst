@@ -4,7 +4,7 @@
 
 var SDK = require('@duelyst/sdk');
 var Scene = require('app/view/Scene');
-var PKGS = require('app/data/packages');
+var PKGS = require('@duelyst/data/packages');
 var EventBus = require('@duelyst/common/eventbus');
 var EVENTS = require('@duelyst/common/event_types');
 var Logger = require('@duelyst/common/logger');
@@ -25,7 +25,7 @@ var ArenaLayer = require('app/view/layers/arena/ArenaLayer');
 var DuelystFirebase = require('app/ui/extensions/duelyst_firebase');
 var _ = require('underscore');
 var moment = require('moment');
-var ShopData = require('app/data/shop.json');
+var ShopData = require('@duelyst/data/shop.json');
 var i18next = require('i18next');
 
 var ArenaLayout = Backbone.Marionette.LayoutView.extend({

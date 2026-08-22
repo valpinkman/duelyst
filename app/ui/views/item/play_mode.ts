@@ -4,7 +4,7 @@
 
 var _ = require('underscore');
 var SDK = require('@duelyst/sdk');
-var RSX = require('app/data/resources');
+var RSX = require('@duelyst/data/resources');
 var PlayModeTmpl = require('app/ui/templates/item/play_mode.hbs');
 var moment = require('moment');
 var UtilsEnv = require('@duelyst/common/utils/utils_env');

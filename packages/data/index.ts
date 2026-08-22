@@ -5,12 +5,11 @@
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-const Logger = require('@duelyst/common/logger');
 const _ = require('underscore');
 
 var DATA = DATA || {};
 
-DATA.FX = require('app/data/fx');
+DATA.FX = require('./fx');
 
 // init caches
 let _cache = {};

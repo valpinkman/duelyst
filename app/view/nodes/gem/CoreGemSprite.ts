@@ -1,7 +1,7 @@
 // pragma PKGS: core_gem_sprite
 
-const RSX = require('app/data/resources');
-const PKGS = require('app/data/packages');
+const RSX = require('@duelyst/data/resources');
+const PKGS = require('@duelyst/data/packages');
 const PackageManager = require('app/ui/managers/package_manager');
 const BaseSprite = require('app/view/nodes/BaseSprite');
 const CompositeHorizontalPass = require('app/view/nodes/components/CompositeHorizontalPass');

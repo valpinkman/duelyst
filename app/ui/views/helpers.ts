@@ -1,7 +1,7 @@
 'use strict';
 
 var CONFIG = require('@duelyst/common/config');
-var RSX = require('app/data/resources');
+var RSX = require('@duelyst/data/resources');
 var ProgressionManager = require('app/ui/managers/progression_manager');
 var InventoryManager = require('app/ui/managers/inventory_manager');
 // hbsfy is deprecated; its runtime was a one-line re-export of this

@@ -1,8 +1,8 @@
 // pragma PKGS: mystery_boss_crate_node
 
 const SDK = require('@duelyst/sdk');
-const RSX = require('app/data/resources');
-const PKGS = require('app/data/packages');
+const RSX = require('@duelyst/data/resources');
+const PKGS = require('@duelyst/data/packages');
 const CrateManager = require('app/ui/managers/crate_manager');
 const MysteryCrateNode = require('./MysteryCrateNode');
 

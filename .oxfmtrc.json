@@ -18,7 +18,7 @@
     "app/vendor/**",
     "app/resources/**",
     "app/original_resources/**",
-    "app/data/packages.js",
+    "packages/data/packages.js",
     "app/tools/FileSaver.min.ts",
     "app/tools/dat.gui.ts",
     "packages/*/dist/**",

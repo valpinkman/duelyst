@@ -2,8 +2,8 @@
 
 const CONFIG = require('@duelyst/common/config');
 const Logger = require('@duelyst/common/logger');
-const RSX = require('app/data/resources');
-const PKGS = require('app/data/packages');
+const RSX = require('@duelyst/data/resources');
+const PKGS = require('@duelyst/data/packages');
 const SDK = require('@duelyst/sdk');
 const UtilsEngine = require('@duelyst/common/utils/utils_engine');
 const GiftCrateNode = require('app/view/nodes/reward/GiftCrateNode');

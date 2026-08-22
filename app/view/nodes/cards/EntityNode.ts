@@ -1,11 +1,11 @@
 // pragma PKGS: game
 
-const RSX = require('app/data/resources');
+const RSX = require('@duelyst/data/resources');
 const Logger = require('@duelyst/common/logger');
 const CONFIG = require('@duelyst/common/config');
 const EVENTS = require('@duelyst/common/event_types');
 const SDK = require('@duelyst/sdk');
-const DATA = require('app/data');
+const DATA = require('@duelyst/data');
 const UtilsEngine = require('@duelyst/common/utils/utils_engine');
 const UtilsPosition = require('@duelyst/common/utils/utils_position');
 const ActionStateRecord = require('@duelyst/common/actionStateRecord');

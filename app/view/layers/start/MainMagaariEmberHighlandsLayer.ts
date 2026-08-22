@@ -1,7 +1,7 @@
 // pragma PKGS: MagaariEmberHighlands
 
-const RSX = require('app/data/resources');
-const PKGS = require('app/data/packages');
+const RSX = require('@duelyst/data/resources');
+const PKGS = require('@duelyst/data/packages');
 const Logger = require('@duelyst/common/logger');
 const UtilsEngine = require('@duelyst/common/utils/utils_engine');
 const audio_engine = require('app/audio/audio_engine');

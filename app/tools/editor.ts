@@ -18,9 +18,9 @@ whenLocalizationReady.then(() => {
   const UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
   const UtilsEnv = require('@duelyst/common/utils/utils_env');
   const PackageManager = require('app/ui/managers/package_manager.js');
-  const DATA = (window.DATA = require('app/data'));
+  const DATA = (window.DATA = require('@duelyst/data'));
   const SDK = (window.SDK = require('@duelyst/sdk'));
-  const RSX = (window.RSX = require('app/data/resources'));
+  const RSX = (window.RSX = require('@duelyst/data/resources'));
   const PERF = (window.PERF = require('./performance'));
   const Scene = require('app/view/Scene');
   const NodeFactory = require('app/view/helpers/NodeFactory');

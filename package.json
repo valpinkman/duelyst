@@ -54,6 +54,7 @@
     "@bull-board/express": "^9.3.2",
     "@counterplay/chromajs": "workspace:*",
     "@duelyst/common": "workspace:*",
+    "@duelyst/data": "workspace:*",
     "@duelyst/sdk": "workspace:*",
     "@firebase/app-types": "0.7.0",
     "@thream/socketio-jwt": "2.2.1",

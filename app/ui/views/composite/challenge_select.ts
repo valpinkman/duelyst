@@ -2,7 +2,7 @@
 
 'use strict';
 
-var RSX = require('app/data/resources');
+var RSX = require('@duelyst/data/resources');
 var CONFIG = require('@duelyst/common/config');
 var EventBus = require('@duelyst/common/eventbus');
 var EVENTS = require('@duelyst/common/event_types');

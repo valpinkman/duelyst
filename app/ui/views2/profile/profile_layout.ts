@@ -9,7 +9,7 @@ var generatePushID = require('@duelyst/common/generate_push_id');
 var Scene = require('app/view/Scene');
 var SDK = require('@duelyst/sdk');
 var moment = require('moment');
-var RSX = require('app/data/resources');
+var RSX = require('@duelyst/data/resources');
 var audio_engine = require('app/audio/audio_engine');
 // template
 //

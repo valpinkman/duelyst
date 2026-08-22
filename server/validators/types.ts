@@ -1,7 +1,7 @@
 const t = require('tcomb');
 const validator = require('validator');
 const RankDivisionLookup = require('@duelyst/sdk/rank/rankDivisionLookup');
-const ShopData = require('../../app/data/shop.json');
+const ShopData = require('@duelyst/data/shop.json');
 const CosmeticsFactory = require('@duelyst/sdk/cosmetics/cosmeticsFactory');
 
 const Password = t.subtype(t.Str, (s) => s.length >= 6, 'Password');

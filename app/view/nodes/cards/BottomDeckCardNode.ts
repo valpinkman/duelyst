@@ -1,9 +1,9 @@
 // pragma PKGS: game rift
-const DATA = require('app/data');
+const DATA = require('@duelyst/data');
 const CONFIG = require('@duelyst/common/config');
 const SDK = require('@duelyst/sdk');
-const RSX = require('app/data/resources');
-const PKGS = require('app/data/packages');
+const RSX = require('@duelyst/data/resources');
+const PKGS = require('@duelyst/data/packages');
 const UtilsEngine = require('@duelyst/common/utils/utils_engine');
 const UtilsPosition = require('@duelyst/common/utils/utils_position');
 const audio_engine = require('../../../audio/audio_engine');

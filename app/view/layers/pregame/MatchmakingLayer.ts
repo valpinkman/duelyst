@@ -1,7 +1,7 @@
 // pragma PKGS: matchmaking
 
-const RSX = require('app/data/resources');
-const PKGS = require('app/data/packages');
+const RSX = require('@duelyst/data/resources');
+const PKGS = require('@duelyst/data/packages');
 const Logger = require('@duelyst/common/logger');
 const CONFIG = require('@duelyst/common/config');
 const generatePushID = require('@duelyst/common/generate_push_id');

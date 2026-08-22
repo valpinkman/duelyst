@@ -1,0 +1,17 @@
+{
+  /*
+   * Package-scoped typecheck. Only index.ts is TypeScript -- the data itself
+   * (resources, fx, shop tables) is plain JS and JSON, and packages.js is
+   * generated, gitignored and excluded everywhere else too.
+   */
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "paths": {
+      "app/*": ["../../app/*"],
+      "server/*": ["../../server/*"],
+      "config/*": ["../../config/*"]
+    }
+  },
+  "include": ["**/*.ts", "../../app/types/globals.d.ts"]
+}

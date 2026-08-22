@@ -3,7 +3,7 @@
 'use strict';
 
 var Scene = require('app/view/Scene');
-var RSX = require('app/data/resources');
+var RSX = require('@duelyst/data/resources');
 var CONFIG = require('@duelyst/common/config');
 var openUrl = require('@duelyst/common/openUrl');
 var EventBus = require('@duelyst/common/eventbus');
@@ -20,7 +20,7 @@ var Logger = require('@duelyst/common/logger');
 
 var CosmeticsFactory = require('@duelyst/sdk/cosmetics/cosmeticsFactory');
 var CosmeticsType = require('@duelyst/sdk/cosmetics/cosmeticsTypeLookup');
-var ShopData = require('app/data/shop.json');
+var ShopData = require('@duelyst/data/shop.json');
 
 var RedeemGiftCodeModalView = require('app/ui/views/item/redeem_gift_code_modal');
 var PremiumPurchaseDialog = require('app/ui/views2/shop/premium_purchase_dialog');

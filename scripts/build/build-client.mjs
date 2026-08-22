@@ -5,7 +5,7 @@
  * order (generate_packages.js scans dist/src/duelyst.css, so css must come
  * before packages):
  *   vendor.js -> index.html -> duelyst.css -> locales
- *   -> resource packages (scripts/generate_packages.js -> app/data/packages.js)
+ *   -> resource packages (scripts/generate_packages.js -> packages/data/packages.js)
  *   -> JS bundle (vite build) -> resource copy (non-cdn packages + web assets)
  *
  * Usage: FIREBASE_URL=... node scripts/build/build-client.mjs [--skip-packages] [--skip-resources]
@@ -21,7 +21,7 @@ const require = createRequire(import.meta.url);
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 process.chdir(rootDir);
 
-// app/data/packages.js requires SDK modules with root-absolute paths, and the
+// packages/data/packages.js requires SDK modules by package name, and the
 // tree is mid-migration to TypeScript - give require() both abilities
 require('app-module-path').addPath(rootDir);
 require('tsx/cjs');
@@ -43,9 +43,9 @@ function step1Packages() {
   // remove the previous output first: a crashed generator run would otherwise
   // leave a truncated packages.js that the manifest check below reads as a
   // (false) regression
-  fs.rmSync(path.join(rootDir, 'app/data/packages.js'), { force: true });
+  fs.rmSync(path.join(rootDir, 'packages/data/packages.js'), { force: true });
   execFileSync('node', ['scripts/generate_packages.js', ...flags], { stdio: 'inherit' });
-  log('packages', 'app/data/packages.js generated');
+  log('packages', 'packages/data/packages.js generated');
 
   // Guard: generate_packages.js TEXT-PARSES source files, so a CoffeeScript->
   // JS conversion (or any refactor) can silently drop asset packages while the
@@ -53,8 +53,8 @@ function step1Packages() {
   // vanished). The committed manifest locks the exact package key set.
   // Regenerate deliberately with --update-packages-manifest and commit the
   // diff together with the change that caused it.
-  delete require.cache[require.resolve(path.join(rootDir, 'app/data/packages'))];
-  const pkgs = require(path.join(rootDir, 'app/data/packages'));
+  delete require.cache[require.resolve(path.join(rootDir, 'packages/data/packages'))];
+  const pkgs = require(path.join(rootDir, 'packages/data/packages'));
   const keys = Object.keys(pkgs)
     .filter((k) => typeof pkgs[k] !== 'function')
     .sort();
@@ -227,7 +227,7 @@ function step7Resources() {
    * them from.
    */
   const cdnUrl = config.get('cdn');
-  const pkgsAll = require(path.join(rootDir, 'app/data/packages')).all;
+  const pkgsAll = require(path.join(rootDir, 'packages/data/packages')).all;
   const paths = new Set();
   for (const rsx of pkgsAll) {
     if (rsx.cdn && cdnUrl) continue;

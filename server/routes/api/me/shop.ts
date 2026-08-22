@@ -17,8 +17,8 @@ const t = require('tcomb-validation');
 const validators = require('../../../validators');
 
 // TODO: replace this with info in database?
-const PremiumShopData = require('app/data/premium_shop.json');
-const ShopData = require('app/data/shop.json');
+const PremiumShopData = require('@duelyst/data/premium_shop.json');
+const ShopData = require('@duelyst/data/shop.json');
 
 const router = express.Router();
 

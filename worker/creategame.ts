@@ -6,7 +6,7 @@
 // # ALL LOGIC FOR CREATING A GAME HERE
 // # SHOULD BE PLACE WHERE SDK IS USED
 const SDK = require('@duelyst/sdk');
-const RSX = require('../app/data/resources.js');
+const RSX = require('@duelyst/data/resources.js');
 const Logger = require('@duelyst/common/logger');
 const _ = require('underscore');
 const request = require('superagent');

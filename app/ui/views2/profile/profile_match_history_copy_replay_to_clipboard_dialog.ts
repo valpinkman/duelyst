@@ -3,7 +3,7 @@
 'use strict';
 
 var EVENTS = require('@duelyst/common/event_types');
-var RSX = require('app/data/resources');
+var RSX = require('@duelyst/data/resources');
 var Animations = require('app/ui/views/animations');
 var audio_engine = require('app/audio/audio_engine');
 var Templ = require('app/ui/views2/profile/templates/profile_match_history_copy_replay_to_clipboard_dialog.hbs');

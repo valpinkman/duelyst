@@ -30,7 +30,7 @@ var _ = require('underscore');
 var SDK = require('@duelyst/sdk/index');
 var moment = require('moment');
 var knex = require('../../../server/lib/data_access/knex');
-var ShopData = require('../../../app/data/shop.json')
+var ShopData = require('@duelyst/data/shop.json')
 
 // disable the logger for cleaner test output
 Logger.enabled = Logger.enabled && false;

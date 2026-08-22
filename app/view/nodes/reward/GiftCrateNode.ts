@@ -1,7 +1,7 @@
 // pragma PKGS: gift_loot_crate
 
-const RSX = require('app/data/resources');
-const PKGS = require('app/data/packages');
+const RSX = require('@duelyst/data/resources');
+const PKGS = require('@duelyst/data/packages');
 const CrateManager = require('app/ui/managers/crate_manager');
 const LootCrateNode = require('./LootCrateNode');
 

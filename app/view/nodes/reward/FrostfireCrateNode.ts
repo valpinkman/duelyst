@@ -1,7 +1,7 @@
 // pragma PKGS: frostfire_loot_crate
 
-const RSX = require('app/data/resources');
-const PKGS = require('app/data/packages');
+const RSX = require('@duelyst/data/resources');
+const PKGS = require('@duelyst/data/packages');
 const GiftCrateLookup = require('@duelyst/sdk/giftCrates/giftCrateLookup');
 const CosmeticsChestTypeLookup = require('@duelyst/sdk/cosmetics/cosmeticsChestTypeLookup');
 const CrateManager = require('app/ui/managers/crate_manager');

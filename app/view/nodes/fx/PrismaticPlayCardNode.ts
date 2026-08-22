@@ -1,8 +1,8 @@
 // pragma PKGS: prismatic_play_card
 
 const CONFIG = require('@duelyst/common/config');
-const RSX = require('app/data/resources');
-const PKGS = require('app/data/packages');
+const RSX = require('@duelyst/data/resources');
+const PKGS = require('@duelyst/data/packages');
 const BaseSprite = require('../BaseSprite');
 const BaseParticleSystem = require('../BaseParticleSystem');
 const VoronoiPrismaticSprite = require('./VoronoiPrismaticSprite');

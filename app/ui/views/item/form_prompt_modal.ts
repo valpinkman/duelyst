@@ -2,7 +2,7 @@
 
 var _ = require('underscore');
 var CONFIG = require('@duelyst/common/config');
-var RSX = require('app/data/resources');
+var RSX = require('@duelyst/data/resources');
 var audio_engine = require('app/audio/audio_engine');
 var Animations = require('app/ui/views/animations');
 var EVENTS = require('@duelyst/common/event_types');

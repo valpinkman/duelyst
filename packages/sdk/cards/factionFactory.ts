@@ -8,7 +8,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 
-const RSX = require('app/data/resources');
+const RSX = require('@duelyst/data/resources');
 const CONFIG = require('@duelyst/common/config');
 const UtilsGameSession = require('@duelyst/sdk/utils/utils_game_session');
 const Factions = require('./factionsLookup');

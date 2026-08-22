@@ -3,7 +3,7 @@
 'use strict';
 
 var SDK = require('@duelyst/sdk');
-var RSX = require('app/data/resources');
+var RSX = require('@duelyst/data/resources');
 var CONFIG = require('@duelyst/common/config');
 var UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
 var UtilsUI = require('app/ui/utils_ui');

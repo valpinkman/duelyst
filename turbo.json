@@ -114,7 +114,7 @@
       "inputs": [
         "packages/sdk/**",
         "packages/common/**",
-        "app/data/**",
+        "packages/data/**",
         "server/**",
         "worker/**",
         "config/**",

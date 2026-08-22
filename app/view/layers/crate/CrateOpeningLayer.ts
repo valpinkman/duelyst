@@ -4,8 +4,8 @@ const EventBus = require('@duelyst/common/eventbus');
 const EVENTS = require('@duelyst/common/event_types');
 const Logger = require('@duelyst/common/logger');
 const SDK = require('@duelyst/sdk');
-const RSX = require('app/data/resources');
-const PKGS = require('app/data/packages');
+const RSX = require('@duelyst/data/resources');
+const PKGS = require('@duelyst/data/packages');
 const UtilsEngine = require('@duelyst/common/utils/utils_engine');
 const RewardLayer = require('app/view/layers/reward/RewardLayer');
 const BaseSprite = require('app/view/nodes/BaseSprite');
@@ -31,7 +31,7 @@ const i18next = require('i18next');
 const _ = require('underscore');
 
 const NavigationManager = require('app/ui/managers/navigation_manager');
-const ShopData = require('app/data/shop.json');
+const ShopData = require('@duelyst/data/shop.json');
 
 /** **************************************************************************
  CrateOpeningLayer

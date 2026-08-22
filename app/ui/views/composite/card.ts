@@ -4,8 +4,8 @@
 
 var SDK = require('@duelyst/sdk');
 var CONFIG = require('@duelyst/common/config');
-var RSX = require('app/data/resources');
-var PKGS = require('app/data/packages');
+var RSX = require('@duelyst/data/resources');
+var PKGS = require('@duelyst/data/packages');
 var UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
 var UtilsUI = require('app/ui/utils_ui');
 var audio_engine = require('app/audio/audio_engine');

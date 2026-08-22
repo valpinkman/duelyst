@@ -1,7 +1,7 @@
 // pragma PKGS: core_gem_node
 
-const RSX = require('app/data/resources');
-const PKGS = require('app/data/packages');
+const RSX = require('@duelyst/data/resources');
+const PKGS = require('@duelyst/data/packages');
 const SDK = require('@duelyst/sdk');
 const audio_engine = require('app/audio/audio_engine');
 const BaseSprite = require('app/view/nodes/BaseSprite');

@@ -4,9 +4,9 @@ const Logger = require('@duelyst/common/logger');
 const CONFIG = require('@duelyst/common/config');
 const EVENTS = require('@duelyst/common/event_types');
 const UtilsEngine = require('@duelyst/common/utils/utils_engine');
-const PKGS = require('app/data/packages');
+const PKGS = require('@duelyst/data/packages');
 const audio_engine = require('app/audio/audio_engine');
-const RSX = require('app/data/resources');
+const RSX = require('@duelyst/data/resources');
 const BaseSprite = require('../BaseSprite');
 const BaseLabel = require('../BaseLabel');
 

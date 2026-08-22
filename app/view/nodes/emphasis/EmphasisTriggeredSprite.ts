@@ -1,5 +1,5 @@
 // pragma PKGS: game
-const RSX = require('app/data/resources');
+const RSX = require('@duelyst/data/resources');
 const BaseSprite = require('../BaseSprite');
 
 /** **************************************************************************

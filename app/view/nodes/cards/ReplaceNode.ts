@@ -1,7 +1,7 @@
 // pragma PKGS: game
 
 const CONFIG = require('@duelyst/common/config');
-const RSX = require('app/data/resources');
+const RSX = require('@duelyst/data/resources');
 const _ = require('underscore');
 const i18next = require('i18next');
 const BaseSprite = require('../BaseSprite');

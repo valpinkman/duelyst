@@ -1,5 +1,5 @@
 // pragma PKGS: gauntlet
-const RSX = require('app/data/resources');
+const RSX = require('@duelyst/data/resources');
 const Logger = require('@duelyst/common/logger');
 const CONFIG = require('@duelyst/common/config');
 const generatePushID = require('@duelyst/common/generate_push_id');

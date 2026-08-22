@@ -3,7 +3,7 @@
 const Logger = require('@duelyst/common/logger');
 const CONFIG = require('@duelyst/common/config');
 const EVENTS = require('@duelyst/common/event_types');
-const RSX = require('app/data/resources');
+const RSX = require('@duelyst/data/resources');
 const EntitySupportNode = require('./EntitySupportNode');
 const BaseSprite = require('../BaseSprite');
 
