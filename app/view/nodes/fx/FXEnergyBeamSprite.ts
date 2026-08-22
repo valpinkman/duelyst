@@ -1,5 +1,5 @@
-const Logger = require('app/common/logger');
-const UtilsEngine = require('app/common/utils/utils_engine');
+const Logger = require('@duelyst/common/logger');
+const UtilsEngine = require('@duelyst/common/utils/utils_engine');
 const FXSprite = require('./FXSprite');
 const FXProjectileSprite = require('./FXProjectileSprite');
 

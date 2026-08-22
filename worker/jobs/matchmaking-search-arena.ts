@@ -10,7 +10,7 @@ Job - Search for Matches
 const _ = require('underscore');
 const util = require('util');
 const Errors = require('../../server/lib/custom_errors');
-const Logger = require('../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const config = require('../../config/config.js');
 const Consul = require('../../server/lib/consul');
 
@@ -22,7 +22,7 @@ const RankFactory = require('@duelyst/sdk/rank/rankFactory');
 
 // redis
 const Redis = require('../../server/redis');
-const { onType } = require('../../app/common/utils/utils_promise');
+const { onType } = require('@duelyst/common/utils/utils_promise');
 
 const arenaQueue = new Redis.PlayerQueue(Redis.Redis, { name: 'gauntlet' });
 

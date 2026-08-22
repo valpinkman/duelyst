@@ -10,7 +10,7 @@ const getGameServerAsync = require('../get_gameserver');
 const createGameAsync = require('../creategame');
 const DuelystFirebaseModule = require('../../server/lib/duelyst_firebase_module');
 const FirebasePromises = require('../../server/lib/firebase_promises');
-const Logger = require('../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 
 /**
  * Job - 'matchmaking-setupmatch'

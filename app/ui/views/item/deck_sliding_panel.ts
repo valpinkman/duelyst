@@ -4,7 +4,7 @@
 
 var SDK = require('@duelyst/sdk');
 var RSX = require('app/data/resources');
-var Events = require('app/common/eventbus');
+var Events = require('@duelyst/common/eventbus');
 var audio_engine = require('app/audio/audio_engine');
 var ProgressionManager = require('app/ui/managers/progression_manager');
 var DeckSlidingPanelTmpl = require('app/ui/templates/item/deck_sliding_panel.hbs');

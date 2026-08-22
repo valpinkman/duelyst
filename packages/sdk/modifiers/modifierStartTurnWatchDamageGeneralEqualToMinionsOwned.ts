@@ -7,7 +7,7 @@
 const DamageAction = require('@duelyst/sdk/actions/damageAction');
 const CardType = require('@duelyst/sdk/cards/cardType');
 const i18next = require('i18next');
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const ModifierStartTurnWatch = require('./modifierStartTurnWatch');
 
 class ModifierStartTurnWatchDamageGeneralEqualToMinionsOwned extends ModifierStartTurnWatch {

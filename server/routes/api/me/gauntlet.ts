@@ -10,12 +10,12 @@ const moment = require('moment');
 const _ = require('underscore');
 const GauntletModule = require('../../../lib/data_access/gauntlet');
 const knex = require('../../../lib/data_access/knex');
-const Logger = require('../../../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const Errors = require('../../../lib/custom_errors');
-const CONFIG = require('../../../../app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const DataAccessHelpers = require('../../../lib/data_access/helpers');
 const t = require('tcomb-validation');
-const { onType } = require('../../../../app/common/utils/utils_promise');
+const { onType } = require('@duelyst/common/utils/utils_promise');
 
 const router = express.Router();
 

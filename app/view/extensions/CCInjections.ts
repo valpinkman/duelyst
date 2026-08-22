@@ -1,5 +1,5 @@
-const Logger = require('app/common/logger');
-const CONFIG = require('app/common/config');
+const Logger = require('@duelyst/common/logger');
+const CONFIG = require('@duelyst/common/config');
 
 /** **************************************************************************
  Core injections into the base cocos classes.

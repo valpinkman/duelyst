@@ -9,7 +9,7 @@
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-const UtilsPosition = require('app/common/utils/utils_position');
+const UtilsPosition = require('@duelyst/common/utils/utils_position');
 const Range = require('./range');
 const _ = require('underscore');
 

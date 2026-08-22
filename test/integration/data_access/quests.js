@@ -13,7 +13,7 @@ const SyncModule = require('../../../server/lib/data_access/sync');
 const QuestsModule = require('../../../server/lib/data_access/quests');
 const FirebasePromises = require('../../../server/lib/firebase_promises');
 const config = require('../../../config/config');
-const Logger = require('../../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const SDK = require('@duelyst/sdk/index');
 const QuestType = require('@duelyst/sdk/quests/questTypeLookup');
 const knex = require('../../../server/lib/data_access/knex');
@@ -21,9 +21,9 @@ const NewPlayerProgressionStageEnum = require('@duelyst/sdk/progression/newPlaye
 const NewPlayerProgressionModuleLookup = require('@duelyst/sdk/progression/newPlayerProgressionModuleLookup');
 const NewPlayerProgressionHelper = require('@duelyst/sdk/progression/newPlayerProgressionHelper');
 const GiftCrateLookup = require('@duelyst/sdk/giftCrates/giftCrateLookup');
-const generatePushId = require('../../../app/common/generate_push_id');
-const { onType } = require('../../../app/common/utils/utils_promise');
-const PromiseUtils = require('../../../app/common/utils/utils_promise');
+const generatePushId = require('@duelyst/common/generate_push_id');
+const { onType } = require('@duelyst/common/utils/utils_promise');
+const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 
 // disable the logger for cleaner test output
 Logger.enabled = Logger.enabled && false;

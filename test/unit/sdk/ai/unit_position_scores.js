@@ -15,8 +15,8 @@ const positionShadowTileAvoidance = require('../../../../server/ai/scoring/posit
 const positionZeal = require('../../../../server/ai/scoring/position/position_zeal');
 const UtilsSDK = require('../../../utils/utils_sdk');
 const SDK = require('@duelyst/sdk/index');
-const Logger = require('../../../../app/common/logger');
-const CONFIG = require('../../../../app/common/config');
+const Logger = require('@duelyst/common/logger');
+const CONFIG = require('@duelyst/common/config');
 
 // disable the logger for cleaner test output
 Logger.enabled = false;

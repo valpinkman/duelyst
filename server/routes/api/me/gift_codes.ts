@@ -11,12 +11,12 @@ const GiftCodesModule = require('../../../lib/data_access/gift_codes');
 const knex = require('../../../lib/data_access/knex');
 const DataAccessHelpers = require('../../../lib/data_access/helpers');
 const Errors = require('../../../lib/custom_errors');
-const Logger = require('../../../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const t = require('tcomb-validation');
 const validator = require('validator');
 const validators = require('../../../validators');
 const validatorTypes = require('../../../validators/types');
-const { onType } = require('../../../../app/common/utils/utils_promise');
+const { onType } = require('@duelyst/common/utils/utils_promise');
 
 const router = express.Router();
 

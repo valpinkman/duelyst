@@ -1,6 +1,6 @@
 const _ = require('underscore');
 const moment = require('moment');
-const PromiseUtils = require('../../app/common/utils/utils_promise');
+const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 
 // var FirebasePromises = require('../lib/firebase_promises')
 // var DuelystFirebase = require('../lib/duelyst_firebase_module')

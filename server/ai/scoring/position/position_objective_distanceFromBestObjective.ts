@@ -1,9 +1,9 @@
 const distanceBetweenBoardPositions = require('server/ai/scoring/utils/utils_distanceBetweenBoardPositions');
 const BOUNTY = require('server/ai/scoring/bounty');
 const ModifierBlastAttack = require('@duelyst/sdk/modifiers/modifierBlastAttack');
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const isUnitEvasive = require('server/ai/scoring/utils/utils_isUnitEvasive');
-const Logger = require('app/common/logger');
+const Logger = require('@duelyst/common/logger');
 
 /**
  * Returns a score for a unit's distance from their best objective.

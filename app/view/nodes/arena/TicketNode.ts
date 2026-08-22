@@ -1,11 +1,11 @@
 // pragma PKGS: gauntlet_ticket
 
-const Logger = require('app/common/logger');
-const CONFIG = require('app/common/config');
+const Logger = require('@duelyst/common/logger');
+const CONFIG = require('@duelyst/common/config');
 const SDK = require('@duelyst/sdk');
 const RSX = require('app/data/resources');
 const PKGS = require('app/data/packages');
-const UtilsEngine = require('app/common/utils/utils_engine');
+const UtilsEngine = require('@duelyst/common/utils/utils_engine');
 const XYZRotateBy = require('app/view/actions/XYZRotateBy');
 const TweenTypes = require('app/view/actions/TweenTypes');
 const BaseSprite = require('../BaseSprite');

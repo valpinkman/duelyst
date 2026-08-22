@@ -14,12 +14,12 @@
 const UtilsGameSession: Record<string, any> = {};
 module.exports = UtilsGameSession;
 
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const CardType = require('@duelyst/sdk/cards/cardType');
 const GameType = require('@duelyst/sdk/gameType');
 const _ = require('underscore');
-const UtilsJavascript = require('app/common/utils/utils_javascript');
-const UtilsPosition = require('app/common/utils/utils_position');
+const UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
+const UtilsPosition = require('@duelyst/common/utils/utils_position');
 
 UtilsGameSession.getWinningPlayerId = function (gameSessionData) {
   // Returns the winning player's id, or undefined if neither is the winner yet

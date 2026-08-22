@@ -8,16 +8,16 @@
 const util = require('util');
 const FirebasePromises = require('../firebase_promises');
 const DuelystFirebase = require('../duelyst_firebase_module');
-const fbUtil = require('../../../app/common/utils/utils_firebase');
-const Logger = require('../../../app/common/logger');
+const fbUtil = require('@duelyst/common/utils/utils_firebase');
+const Logger = require('@duelyst/common/logger');
 const colors = require('colors');
 const moment = require('moment');
 const _ = require('underscore');
-const CONFIG = require('../../../app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const Errors = require('../custom_errors');
 const knex = require('./knex');
 const config = require('../../../config/config.js');
-const generatePushId = require('../../../app/common/generate_push_id');
+const generatePushId = require('@duelyst/common/generate_push_id');
 const DataAccessHelpers = require('./helpers');
 const InventoryModule = require('./inventory');
 const semver = require('semver');
@@ -28,7 +28,7 @@ const QuestFactory = require('@duelyst/sdk/quests/questFactory');
 const QuestType = require('@duelyst/sdk/quests/questTypeLookup');
 const UtilsGameSession = require('@duelyst/sdk/utils/utils_game_session');
 const CosmeticsLookup = require('@duelyst/sdk/cosmetics/cosmeticsLookup');
-const PromiseUtils = require('../../../app/common/utils/utils_promise');
+const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 
 /*
  * The emote set as it existed BEFORE the 2016-07-08 cosmetics patch.

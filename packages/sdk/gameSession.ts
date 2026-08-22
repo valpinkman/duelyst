@@ -406,7 +406,7 @@ module.exports = GameSession;
 
 var moment = require('moment');
 var _ = require('underscore');
-var Logger = require('app/common/logger');
+var Logger = require('@duelyst/common/logger');
 
 Logger.module('SDK').log('Loading cards...'); // Takes 10-15 seconds.
 const Card = require('./cards/card');
@@ -422,12 +422,12 @@ var Rarity = require('@duelyst/sdk/cards/rarityLookup');
 
 Logger.module('SDK').log('Finishing SDK initialization...');
 const SDKObject = require('./object');
-const CONFIG = require('app/common/config');
-const EventBus = require('app/common/eventbus');
-const EVENTS = require('app/common/event_types');
-const UtilsJavascript = require('app/common/utils/utils_javascript');
+const CONFIG = require('@duelyst/common/config');
+const EventBus = require('@duelyst/common/eventbus');
+const EVENTS = require('@duelyst/common/event_types');
+const UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
 const UtilsGameSession = require('@duelyst/sdk/utils/utils_game_session');
-const UtilsPosition = require('app/common/utils/utils_position');
+const UtilsPosition = require('@duelyst/common/utils/utils_position');
 const GameType = require('./gameType');
 const GameFormat = require('./gameFormat');
 const Player = require('./player');

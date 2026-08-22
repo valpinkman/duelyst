@@ -1,6 +1,6 @@
 'use strict';
 
-var Logger = require('app/common/logger');
+var Logger = require('@duelyst/common/logger');
 var Message = require('app/ui/models/message');
 var DuelystFirebase = require('app/ui/extensions/duelyst_firebase');
 

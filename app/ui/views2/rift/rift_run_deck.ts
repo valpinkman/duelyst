@@ -1,7 +1,7 @@
 'use strict';
 
 var SlidingPanelItemView = require('app/ui/views/item/sliding_panel');
-var Logger = require('app/common/logger');
+var Logger = require('@duelyst/common/logger');
 var RiftHelper = require('@duelyst/sdk/rift/riftHelper');
 var Templ = require('./templates/rift_run_deck.hbs');
 

@@ -8,7 +8,7 @@ Job - Update User Ranking
 */
 const config = require('../../config/config.js');
 const ReferralsModule = require('../../server/lib/data_access/referrals');
-const Logger = require('../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 
 /**
  * @param  {Object} job    Kue job

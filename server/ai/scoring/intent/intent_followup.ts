@@ -1,4 +1,4 @@
-const UtilsPosition = require('app/common/utils/utils_position');
+const UtilsPosition = require('@duelyst/common/utils/utils_position');
 const Entity = require('@duelyst/sdk/entities/entity');
 const Spell = require('@duelyst/sdk/spells/spell');
 const SpellApplyEntityToBoard = require('@duelyst/sdk/spells/spellApplyEntityToBoard');

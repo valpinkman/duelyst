@@ -10,7 +10,7 @@ const PlayCardFromHandAction = require('@duelyst/sdk/actions/playCardFromHandAct
 const PlayCardAction = require('@duelyst/sdk/actions/playCardAction');
 const ApplyCardToBoardAction = require('@duelyst/sdk/actions/applyCardToBoardAction');
 const GameSession = require('@duelyst/sdk/gameSession');
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 
 /*
 AgentActions - Creates agent style actions and later interprets them into sdk actions

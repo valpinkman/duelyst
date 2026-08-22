@@ -13,19 +13,19 @@ const _ = require('underscore');
 
 const FirebasePromises = require('../firebase_promises');
 const DuelystFirebase = require('../duelyst_firebase_module');
-const Logger = require('../../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const SyncModule = require('./sync');
 const Errors = require('../custom_errors');
 const knex = require('./knex');
 const config = require('../../../config/config.js');
-const generatePushId = require('../../../app/common/generate_push_id');
+const generatePushId = require('@duelyst/common/generate_push_id');
 
 // redis
 const { Redis, Jobs, GameManager } = require('../../redis');
 
 // SDK imports
 const SDK = require('@duelyst/sdk');
-const PromiseUtils = require('../../../app/common/utils/utils_promise');
+const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 
 class InventoryModule {
   declare static SOFTWIPE_AVAILABLE_UNTIL: any;

@@ -1,5 +1,5 @@
-const EVENTS = require('app/common/event_types');
-const UtilsEngine = require('app/common/utils/utils_engine');
+const EVENTS = require('@duelyst/common/event_types');
+const UtilsEngine = require('@duelyst/common/utils/utils_engine');
 const BaseLayer = require('./BaseLayer');
 const ParallaxNode = require('../nodes/ParallaxNode');
 

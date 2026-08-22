@@ -1,9 +1,9 @@
 // pragma PKGS: world_map
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const RSX = require('app/data/resources');
 const PKGS = require('app/data/packages');
-const EVENTS = require('app/common/event_types');
-const UtilsEngine = require('../../../common/utils/utils_engine');
+const EVENTS = require('@duelyst/common/event_types');
+const UtilsEngine = require('@duelyst/common/utils/utils_engine');
 const FXCompositeLayer = require('../FXCompositeLayer');
 const BaseSprite = require('../../nodes/BaseSprite');
 

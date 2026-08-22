@@ -1,7 +1,7 @@
 'use strict';
 
-var CONFIG = require('app/common/config');
-var Logger = require('app/common/logger');
+var CONFIG = require('@duelyst/common/config');
+var Logger = require('@duelyst/common/logger');
 var DuelystFirebase = require('app/ui/extensions/duelyst_firebase');
 var moment = require('moment');
 

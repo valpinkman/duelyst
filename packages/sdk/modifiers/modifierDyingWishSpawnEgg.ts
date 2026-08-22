@@ -4,8 +4,8 @@
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-const CONFIG = require('app/common/config');
-const UtilsJavascript = require('app/common/utils/utils_javascript');
+const CONFIG = require('@duelyst/common/config');
+const UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
 const Cards = require('@duelyst/sdk/cards/cardsLookupComplete');
 const CardType = require('@duelyst/sdk/cards/cardType');
 const ModifierEgg = require('@duelyst/sdk/modifiers/modifierEgg');

@@ -6,7 +6,7 @@
 const BonusManaAction = require('@duelyst/sdk/actions/bonusManaAction');
 const Cards = require('@duelyst/sdk/cards/cardsLookupComplete');
 const CardType = require('@duelyst/sdk/cards/cardType');
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 let i18next = require('i18next');
 const ModifierCollectable = require('./modifierCollectable');
 

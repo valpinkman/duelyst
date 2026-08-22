@@ -4,7 +4,7 @@
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-const EVENTS = require('app/common/event_types');
+const EVENTS = require('@duelyst/common/event_types');
 const DamageAction = require('@duelyst/sdk/actions/damageAction');
 const CardType = require('@duelyst/sdk/cards/cardType');
 const ModifierStunned = require('@duelyst/sdk/modifiers/modifierStunned');

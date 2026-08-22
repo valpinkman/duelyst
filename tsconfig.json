@@ -35,6 +35,7 @@
     "app/types/*.d.ts",
     "app/**/*.ts",
     "packages/sdk/**/*.ts",
+    "packages/common/**/*.ts",
     "server/**/*.ts",
     "worker/**/*.ts",
     "test/**/*.ts",

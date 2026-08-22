@@ -15,11 +15,11 @@ const hbs = require('hbs');
 const { handlebars } = hbs;
 const moment = require('moment');
 
-const generatePushId = require('../../app/common/generate_push_id');
+const generatePushId = require('@duelyst/common/generate_push_id');
 
 // lib Modules
 const isSignedIn = require('../middleware/signed_in');
-const Logger = require('../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const Errors = require('../lib/custom_errors');
 
 // Configuration object

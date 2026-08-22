@@ -24,7 +24,7 @@ const files = execSync(
   .split('\n')
   .filter(Boolean)
   // the module that DEFINES these shows them in its own doc comments
-  .filter((f) => !f.endsWith('app/common/utils/utils_promise.ts'));
+  .filter((f) => !f.endsWith('packages/common/utils/utils_promise.ts'));
 
 const problems = [];
 for (const file of files) {

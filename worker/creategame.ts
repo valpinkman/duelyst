@@ -7,7 +7,7 @@
 // # SHOULD BE PLACE WHERE SDK IS USED
 const SDK = require('@duelyst/sdk');
 const RSX = require('../app/data/resources.js');
-const Logger = require('../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const _ = require('underscore');
 const request = require('superagent');
 const config = require('../config/config.js');
@@ -15,7 +15,7 @@ const moment = require('moment');
 const GamesModule = require('../server/lib/data_access/games');
 const { GameManager } = require('../server/redis');
 const fs = require('fs');
-const PromiseUtils = require('../app/common/utils/utils_promise');
+const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 
 const { version } = JSON.parse(fs.readFileSync('./version.json'));
 

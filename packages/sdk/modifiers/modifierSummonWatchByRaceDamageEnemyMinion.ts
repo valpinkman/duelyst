@@ -5,7 +5,7 @@
  */
 const RandomDamageAction = require('@duelyst/sdk/actions/randomDamageAction');
 const CardType = require('@duelyst/sdk/cards/cardType');
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const Modifier = require('./modifier');
 const ModifierSummonWatch = require('./modifierSummonWatch');
 

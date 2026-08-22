@@ -13,13 +13,13 @@ _AchievementsManager.current = _AchievementsManager.getInstance;
 module.exports = _AchievementsManager;
 
 var moment = require('moment');
-var CONFIG = require('app/common/config');
-var Logger = require('app/common/logger');
+var CONFIG = require('@duelyst/common/config');
+var Logger = require('@duelyst/common/logger');
 var SDK = require('@duelyst/sdk');
 var NotificationModel = require('app/ui/models/notification');
 var DuelystFirebase = require('app/ui/extensions/duelyst_firebase');
 var DuelystBackbone = require('app/ui/extensions/duelyst_backbone');
-var Analytics = require('app/common/analytics');
+var Analytics = require('@duelyst/common/analytics');
 var AnalyticsTracker = require('app/analyticsTracker');
 var AchievementsFactory = require('@duelyst/sdk/achievements/achievementsFactory');
 var i18next = require('i18next');

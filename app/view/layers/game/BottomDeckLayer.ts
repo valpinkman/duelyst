@@ -1,17 +1,17 @@
 // pragma PKGS: game
 const RSX = require('app/data/resources');
-const Logger = require('app/common/logger');
-const CONFIG = require('app/common/config');
-const EVENTS = require('app/common/event_types');
+const Logger = require('@duelyst/common/logger');
+const CONFIG = require('@duelyst/common/config');
+const EVENTS = require('@duelyst/common/event_types');
 const SDK = require('@duelyst/sdk');
-const UtilsEngine = require('app/common/utils/utils_engine');
+const UtilsEngine = require('@duelyst/common/utils/utils_engine');
 const BaseLayer = require('../BaseLayer');
 const BaseSprite = require('../../nodes/BaseSprite');
 const ReplaceNode = require('../../nodes/cards/ReplaceNode');
 const BaseParticleSystem = require('../../nodes/BaseParticleSystem');
 const BottomDeckCardNode = require('../../nodes/cards/BottomDeckCardNode');
 const CardNode = require('../../nodes/cards/CardNode');
-const PromiseUtils = require('../../../common/utils/utils_promise');
+const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 
 /** **************************************************************************
  BottomDeckLayer

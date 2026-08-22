@@ -1,7 +1,7 @@
 'use strict';
 
-var Logger = require('app/common/logger');
-var CONFIG = require('app/common/config');
+var Logger = require('@duelyst/common/logger');
+var CONFIG = require('@duelyst/common/config');
 var SDK = require('@duelyst/sdk');
 
 var CardModel = Backbone.Model.extend({

@@ -2,10 +2,10 @@
 
 const RSX = require('app/data/resources');
 const PKGS = require('app/data/packages');
-const Logger = require('app/common/logger');
-const CONFIG = require('app/common/config');
+const Logger = require('@duelyst/common/logger');
+const CONFIG = require('@duelyst/common/config');
 const audio_engine = require('app/audio/audio_engine');
-const UtilsJavascript = require('app/common/utils/utils_javascript');
+const UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
 const EntitySupportNode = require('./EntitySupportNode');
 const BaseSprite = require('../BaseSprite');
 const BaseLabel = require('../BaseLabel');

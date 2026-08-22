@@ -2,10 +2,10 @@
  * Abstract manager class, do not use directly.
  */
 
-var EventBus = require('app/common/eventbus');
-var EVENTS = require('app/common/event_types');
-var Logger = require('app/common/logger');
-const PromiseUtils = require('../../common/utils/utils_promise');
+var EventBus = require('@duelyst/common/eventbus');
+var EVENTS = require('@duelyst/common/event_types');
+var Logger = require('@duelyst/common/logger');
+const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 
 var Manager = Backbone.Marionette.Controller.extend({
   connected: null,

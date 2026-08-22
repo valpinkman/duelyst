@@ -4,10 +4,10 @@
 
 var _ = require('underscore');
 var moment = require('moment');
-var CONFIG = require('app/common/config');
+var CONFIG = require('@duelyst/common/config');
 var RSX = require('app/data/resources');
 var ShopData = require('app/data/shop.json');
-var Logger = require('app/common/logger');
+var Logger = require('@duelyst/common/logger');
 // var PremiumShopData = require('app/data/premium_shop.json')
 var audio_engine = require('app/audio/audio_engine');
 var SDK = require('@duelyst/sdk');
@@ -15,9 +15,9 @@ var NavigationManager = require('app/ui/managers/navigation_manager');
 var ProfileManager = require('app/ui/managers/profile_manager');
 var ShopManager = require('app/ui/managers/shop_manager');
 var InventoryManager = require('app/ui/managers/inventory_manager');
-var EventBus = require('app/common/eventbus');
-var EVENTS = require('app/common/event_types');
-var openUrl = require('app/common/openUrl');
+var EventBus = require('@duelyst/common/eventbus');
+var EVENTS = require('@duelyst/common/event_types');
+var openUrl = require('@duelyst/common/openUrl');
 var Template = require('./templates/shop_premium_packs_collection_view.hbs');
 
 var ShopPremiumPacksCollectionView = Backbone.Marionette.ItemView.extend({

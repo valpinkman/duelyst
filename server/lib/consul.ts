@@ -6,11 +6,11 @@
  */
 const os = require('os');
 const config = require('../../config/config.js');
-const Logger = require('../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const Colors = require('colors');
 const request = require('superagent');
 const _ = require('underscore');
-const PromiseUtils = require('../../app/common/utils/utils_promise');
+const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 
 class Consul {
   declare static baseUrl: any;

@@ -10,14 +10,14 @@ var InventoryModule = require('../../../server/lib/data_access/inventory');
 var AchievementsModule = require('../../../server/lib/data_access/achievements');
 var SyncModule = require('../../../server/lib/data_access/sync');
 var FirebasePromises = require('../../../server/lib/firebase_promises');
-var generatePushId = require('../../../app/common/generate_push_id');
+var generatePushId = require('@duelyst/common/generate_push_id');
 var config = require('../../../config/config');
-var Logger = require('../../../app/common/logger');
+var Logger = require('@duelyst/common/logger');
 var _ = require('underscore');
 var SDK = require('@duelyst/sdk/index');
 var moment = require('moment');
-const { onType } = require('../../../app/common/utils/utils_promise');
-const PromiseUtils = require('../../../app/common/utils/utils_promise');
+const { onType } = require('@duelyst/common/utils/utils_promise');
+const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 var knex = require('../../../server/lib/data_access/knex')
 
 // disable the logger for cleaner test output

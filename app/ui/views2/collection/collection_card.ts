@@ -1,8 +1,8 @@
 'use strict';
 
 var SDK = require('@duelyst/sdk');
-var CONFIG = require('app/common/config');
-var UtilsEnv = require('app/common/utils/utils_env');
+var CONFIG = require('@duelyst/common/config');
+var UtilsEnv = require('@duelyst/common/utils/utils_env');
 var InventoryManager = require('app/ui/managers/inventory_manager');
 var ProgressionManager = require('app/ui/managers/progression_manager');
 var CardCompositeView = require('app/ui/views/composite/card');

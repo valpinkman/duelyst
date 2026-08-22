@@ -18,7 +18,7 @@ const fs = require('fs');
 const os = require('os');
 const http = require('http');
 const zlib = require('zlib');
-const Logger = require('../../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const downloadHtml = require('../../../server/lib/download_html');
 
 Logger.enabled = false;

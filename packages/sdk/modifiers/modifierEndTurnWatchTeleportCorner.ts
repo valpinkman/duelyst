@@ -4,7 +4,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const RandomTeleportAction = require('@duelyst/sdk/actions/randomTeleportAction');
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const _ = require('underscore');
 const ModifierEndTurnWatch = require('./modifierEndTurnWatch');
 

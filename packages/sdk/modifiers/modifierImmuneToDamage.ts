@@ -4,8 +4,8 @@
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-const EVENTS = require('app/common/event_types');
-const Logger = require('app/common/logger');
+const EVENTS = require('@duelyst/common/event_types');
+const Logger = require('@duelyst/common/logger');
 const DamageAction = require('@duelyst/sdk/actions/damageAction');
 const ModifierImmune = require('./modifierImmune');
 

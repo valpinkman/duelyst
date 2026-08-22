@@ -113,7 +113,7 @@
       "dependsOn": ["^build"],
       "inputs": [
         "packages/sdk/**",
-        "app/common/**",
+        "packages/common/**",
         "app/data/**",
         "server/**",
         "worker/**",

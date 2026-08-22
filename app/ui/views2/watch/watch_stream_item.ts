@@ -2,8 +2,8 @@
 
 var Animations = require('app/ui/views/animations');
 var moment = require('moment');
-var Analytics = require('app/common/analytics');
-var openUrl = require('app/common/openUrl');
+var Analytics = require('@duelyst/common/analytics');
+var openUrl = require('@duelyst/common/openUrl');
 var Template = require('./templates/watch_stream_item.hbs');
 
 var WatchStreamItemView = Backbone.Marionette.ItemView.extend({

@@ -1,5 +1,5 @@
 var _ = require('underscore');
-const PromiseUtils = require('../../common/utils/utils_promise');
+const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 
 Backbone.Duelyst = {};
 

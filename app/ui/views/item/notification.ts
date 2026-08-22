@@ -1,6 +1,6 @@
 'use strict';
 
-var Logger = require('app/common/logger');
+var Logger = require('@duelyst/common/logger');
 var audio_engine = require('app/audio/audio_engine');
 var NotificationsManager = require('app/ui/managers/notifications_manager');
 var NotificationTmpl = require('app/ui/templates/item/notification.hbs');

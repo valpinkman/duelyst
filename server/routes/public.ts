@@ -13,7 +13,7 @@ const express = require('express');
 const helmet = require('helmet');
 const moment = require('moment');
 const _ = require('underscore');
-const Logger = require('../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const Errors = require('../lib/custom_errors');
 const knex = require('../lib/data_access/knex');
 const { Redis, SRankManager, RiftManager } = require('../redis');
@@ -21,8 +21,8 @@ const config = require('../../config/config.js');
 
 const env = config.get('env');
 const { version } = require('../../version');
-const PromiseUtils = require('../../app/common/utils/utils_promise');
-const { onType } = require('../../app/common/utils/utils_promise');
+const PromiseUtils = require('@duelyst/common/utils/utils_promise');
+const { onType } = require('@duelyst/common/utils/utils_promise');
 
 const router = express.Router();
 

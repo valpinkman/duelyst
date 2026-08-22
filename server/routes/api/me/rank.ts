@@ -11,14 +11,14 @@ const util = require('util');
 const RankModule = require('../../../lib/data_access/rank');
 const knex = require('../../../lib/data_access/knex');
 const DataAccessHelpers = require('../../../lib/data_access/helpers');
-const Logger = require('../../../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const Errors = require('../../../lib/custom_errors');
 const RankFactory = require('@duelyst/sdk/rank/rankFactory');
 const RankDivisionLookup = require('@duelyst/sdk/rank/rankDivisionLookup');
 const t = require('tcomb-validation');
 const types = require('../../../validators/types');
 const { SRankManager } = require('../../../redis');
-const { onType } = require('../../../../app/common/utils/utils_promise');
+const { onType } = require('@duelyst/common/utils/utils_promise');
 
 const router = express.Router();
 

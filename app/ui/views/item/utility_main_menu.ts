@@ -1,9 +1,9 @@
 'use strict';
 
-var Logger = require('app/common/logger');
-var CONFIG = require('app/common/config');
-var EventBus = require('app/common/eventbus');
-var EVENTS = require('app/common/event_types');
+var Logger = require('@duelyst/common/logger');
+var CONFIG = require('@duelyst/common/config');
+var EventBus = require('@duelyst/common/eventbus');
+var EVENTS = require('@duelyst/common/event_types');
 var UtilityMainMenuTmpl = require('app/ui/templates/item/utility_main_menu.hbs');
 var ChatManager = require('app/ui/managers/chat_manager');
 var QuestsManager = require('app/ui/managers/quests_manager');
@@ -18,7 +18,7 @@ var ProfileManager = require('app/ui/managers/profile_manager');
 var ShopManager = require('app/ui/managers/shop_manager');
 var Session = require('app/session2');
 var PremiumPurchaseDialog = require('app/ui/views2/shop/premium_purchase_dialog');
-var openUrl = require('app/common/openUrl');
+var openUrl = require('@duelyst/common/openUrl');
 var i18next = require('i18next');
 var BosterPackUnlockView = require('../layouts/booster_pack_collection');
 var UtilityMenuItemView = require('./utility_menu');

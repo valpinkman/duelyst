@@ -24,7 +24,7 @@ const _ = require('underscore');
 
 const helpers = require('scripts/helpers');
 const fs = require('fs');
-const PromiseUtils = require('../../app/common/utils/utils_promise');
+const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 
 UtilsLocalization.PATH_TO_LOCALES = '../../app/localization/locales';
 

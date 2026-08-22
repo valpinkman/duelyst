@@ -6,7 +6,7 @@
  */
 const DamageAction = require('@duelyst/sdk/actions/damageAction');
 const CardType = require('@duelyst/sdk/cards/cardType');
-const EVENTS = require('app/common/event_types');
+const EVENTS = require('@duelyst/common/event_types');
 const ModifierStrikeback = require('./modifierStrikeback');
 const Modifier = require('./modifier');
 

@@ -41,7 +41,7 @@ importers:
         version: link:packages/chroma-js
       '@duelyst/common':
         specifier: workspace:*
-        version: link:app/common
+        version: link:packages/common
       '@duelyst/sdk':
         specifier: workspace:*
         version: link:packages/sdk
@@ -323,12 +323,6 @@ importers:
         specifier: ^4.1.11
         version: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@26.2.0)(vite@8.2.2(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.103.0)(stylus@0.54.8)(tsx@4.23.12)(yaml@2.9.0))
 
-  app/common:
-    devDependencies:
-      typescript:
-        specifier: 'catalog:'
-        version: 7.0.2
-
   desktop:
     devDependencies:
       '@electron/rebuild':
@@ -376,6 +370,12 @@ importers:
       isomorphic-fetch:
         specifier: 'catalog:'
         version: 2.2.1
+    devDependencies:
+      typescript:
+        specifier: 'catalog:'
+        version: 7.0.2
+
+  packages/common:
     devDependencies:
       typescript:
         specifier: 'catalog:'

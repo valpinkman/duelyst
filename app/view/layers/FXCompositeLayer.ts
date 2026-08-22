@@ -1,5 +1,5 @@
-const Logger = require('app/common/logger');
-const EVENTS = require('app/common/event_types');
+const Logger = require('@duelyst/common/logger');
+const EVENTS = require('@duelyst/common/event_types');
 const BaseLayer = require('./BaseLayer');
 
 /** **************************************************************************

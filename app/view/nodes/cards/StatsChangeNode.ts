@@ -1,8 +1,8 @@
 // pragma PKGS: game
 
-const Logger = require('app/common/logger');
-const CONFIG = require('app/common/config');
-const UtilsEngine = require('app/common/utils/utils_engine');
+const Logger = require('@duelyst/common/logger');
+const CONFIG = require('@duelyst/common/config');
+const UtilsEngine = require('@duelyst/common/utils/utils_engine');
 const RSX = require('app/data/resources');
 const EntitySupportNode = require('./EntitySupportNode');
 const BaseSprite = require('../BaseSprite');

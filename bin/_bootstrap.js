@@ -26,7 +26,7 @@ module.exports = function bootstrap(winstonLabel) {
     process.setSourceMapsEnabled(true);
   }
 
-  // root-absolute requires: require('server/lib/...'), require('app/common/...')
+  // root-absolute requires: require('server/lib/...'), require('@duelyst/common/...')
   // Named packages (@duelyst/sdk) do NOT come through here -- they resolve via
   // node_modules, which is why build-server.mjs writes build/node_modules.
   require('app-module-path').addPath(root);

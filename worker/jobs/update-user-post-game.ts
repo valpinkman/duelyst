@@ -9,7 +9,7 @@ Job - Update User Progression
 */
 const _ = require('underscore');
 const config = require('../../config/config.js');
-const Logger = require('../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const colors = require('colors');
 const util = require('util');
 const GameType = require('@duelyst/sdk/gameType');
@@ -27,8 +27,8 @@ const GamesModule = require('../../server/lib/data_access/games');
 const QuestsModule = require('../../server/lib/data_access/quests');
 
 const { Redis, Jobs, GameManager } = require('../../server/redis');
-const { onType } = require('../../app/common/utils/utils_promise');
-const PromiseUtils = require('../../app/common/utils/utils_promise');
+const { onType } = require('@duelyst/common/utils/utils_promise');
+const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 
 /**
  * Start processing quests for user.

@@ -11,8 +11,8 @@ const knex = require('../../../lib/data_access/knex');
 const DataAccessHelpers = require('../../../lib/data_access/helpers');
 const ReferralsModule = require('../../../lib/data_access/referrals');
 const Errors = require('../../../lib/custom_errors');
-const Logger = require('../../../../app/common/logger');
-const { onType } = require('../../../../app/common/utils/utils_promise');
+const Logger = require('@duelyst/common/logger');
+const { onType } = require('@duelyst/common/utils/utils_promise');
 
 const router = express.Router();
 

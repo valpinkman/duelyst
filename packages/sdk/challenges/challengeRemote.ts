@@ -14,7 +14,7 @@ const BattleMapTemplate = require('@duelyst/sdk/battleMapTemplate');
 const _ = require('underscore');
 const fetch = require('isomorphic-fetch');
 const i18next = require('i18next');
-const PromiseUtils = require('app/common/utils/utils_promise');
+const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 
 class ChallengeRemote extends Challenge {
   declare type: any;

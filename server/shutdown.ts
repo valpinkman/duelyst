@@ -4,7 +4,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const os = require('os');
-const Logger = require('../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 
 // Configuration object
 const config = require('../config/config.js');

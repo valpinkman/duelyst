@@ -5,13 +5,13 @@
  */
 const _ = require('underscore');
 const util = require('util');
-const Logger = require('../../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const colors = require('colors');
 const moment = require('moment');
 const knex = require('./knex');
 const InventoryModule = require('./inventory');
 const config = require('../../../config/config.js');
-const generatePushId = require('../../../app/common/generate_push_id');
+const generatePushId = require('@duelyst/common/generate_push_id');
 const crypto = require('crypto');
 
 // SDK imports

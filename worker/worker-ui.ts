@@ -11,7 +11,7 @@ const { createBullBoard } = require('@bull-board/api');
 const { BullMQAdapter } = require('@bull-board/api/bullMQAdapter');
 const { ExpressAdapter } = require('@bull-board/express');
 
-const Logger = require('../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const Jobs = require('../server/redis/r-jobs');
 
 /*

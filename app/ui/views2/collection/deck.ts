@@ -3,8 +3,8 @@
 'use strict';
 
 var SDK = require('@duelyst/sdk');
-var UtilsEnv = require('app/common/utils/utils_env');
-var CONFIG = require('app/common/config');
+var UtilsEnv = require('@duelyst/common/utils/utils_env');
+var CONFIG = require('@duelyst/common/config');
 var RSX = require('app/data/resources');
 var Animations = require('app/ui/views/animations');
 var audio_engine = require('app/audio/audio_engine');

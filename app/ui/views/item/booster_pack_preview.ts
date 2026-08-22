@@ -1,6 +1,6 @@
 'use strict';
 
-var Logger = require('app/common/logger');
+var Logger = require('@duelyst/common/logger');
 var SDK = require('@duelyst/sdk');
 var BoosterPackPreviewTmpl = require('app/ui/templates/item/booster_pack_preview.hbs');
 

@@ -4,7 +4,7 @@
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const AttackAction = require('@duelyst/sdk/actions/attackAction');
 const i18next = require('i18next');
 const ModifierCannot = require('./modifierCannot');

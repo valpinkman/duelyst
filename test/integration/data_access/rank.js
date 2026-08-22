@@ -12,15 +12,15 @@ const UsersModule = require('../../../server/lib/data_access/users');
 const RankModule = require('../../../server/lib/data_access/rank');
 const SyncModule = require('../../../server/lib/data_access/sync');
 const FirebasePromises = require('../../../server/lib/firebase_promises');
-const generatePushId = require('../../../app/common/generate_push_id');
+const generatePushId = require('@duelyst/common/generate_push_id');
 const config = require('../../../config/config');
-const Logger = require('../../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const SDK = require('@duelyst/sdk/index');
 const knex = require('../../../server/lib/data_access/knex');
 
 const { SRankManager } = require('../../../server/redis/index');
-const { onType } = require('../../../app/common/utils/utils_promise');
-const PromiseUtils = require('../../../app/common/utils/utils_promise');
+const { onType } = require('@duelyst/common/utils/utils_promise');
+const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 
 // disable the logger
 // for cleaner test output

@@ -1,14 +1,14 @@
 // pragma PKGS: loot_crate
 
 const SDK = require('@duelyst/sdk');
-const CONFIG = require('app/common/config');
-const EventBus = require('app/common/eventbus');
-const EVENTS = require('app/common/event_types');
-const Logger = require('app/common/logger');
+const CONFIG = require('@duelyst/common/config');
+const EventBus = require('@duelyst/common/eventbus');
+const EVENTS = require('@duelyst/common/event_types');
+const Logger = require('@duelyst/common/logger');
 const RSX = require('app/data/resources');
 const PKGS = require('app/data/packages');
 const audio_engine = require('app/audio/audio_engine');
-const UtilsEngine = require('app/common/utils/utils_engine');
+const UtilsEngine = require('@duelyst/common/utils/utils_engine');
 const BaseSprite = require('app/view/nodes/BaseSprite');
 const BaseLabel = require('app/view/nodes/BaseLabel');
 const FXLensFlareSprite = require('app/view/nodes/fx/FXLensFlareSprite');
@@ -35,7 +35,7 @@ const CosmeticRewardNode = require('./CosmeticRewardNode');
 const EmoteRewardNode = require('./EmoteRewardNode');
 const SpiritOrbRewardNode = require('./SpiritOrbRewardNode');
 const CurrencyRewardNode = require('./CurrencyRewardNode');
-const PromiseUtils = require('../../../common/utils/utils_promise');
+const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 
 const LOOT_CRATE_REWARD_SFX = [
   RSX.sfx_loot_crate_card_reward_reveal_0,

@@ -8,11 +8,11 @@ const util = require('util');
 const knex = require('../../../lib/data_access/knex');
 const ChallengesModule = require('../../../lib/data_access/challenges');
 const DataAccessHelpers = require('../../../lib/data_access/helpers');
-const Logger = require('../../../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const t = require('tcomb-validation');
 const moment = require('moment');
 const Errors = require('../../../lib/custom_errors');
-const { onType } = require('../../../../app/common/utils/utils_promise');
+const { onType } = require('@duelyst/common/utils/utils_promise');
 
 const router = express.Router();
 

@@ -11,11 +11,11 @@ AnalyticsTracker - Parses through events passed to it to track analytics
   - these events should be called from other UI managers to reduce listener spaghetti
 */
 
-const Analytics = require('app/common/analytics');
+const Analytics = require('@duelyst/common/analytics');
 const SDK = require('@duelyst/sdk');
-const Logger = require('app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const moment = require('moment');
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 
 class AnalyticsTracker {
   // Sends the analytics pulled from the end of game

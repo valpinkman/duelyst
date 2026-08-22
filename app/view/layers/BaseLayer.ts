@@ -1,5 +1,5 @@
-const EventBus = require('app/common/eventbus');
-const EVENTS = require('app/common/event_types');
+const EventBus = require('@duelyst/common/eventbus');
+const EVENTS = require('@duelyst/common/event_types');
 
 /** **************************************************************************
  BaseLayer

@@ -1,4 +1,4 @@
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const ModifierAirdrop = require('@duelyst/sdk/modifiers/modifierAirdrop');
 const ModifierProvoked = require('@duelyst/sdk/modifiers/modifierProvoked');
 const ModifierDyingWish = require('@duelyst/sdk/modifiers/modifierDyingWish');

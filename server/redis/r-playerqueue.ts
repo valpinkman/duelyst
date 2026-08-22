@@ -8,7 +8,7 @@ let RedisPlayerQueue;
 const _ = require('underscore');
 const crypto = require('crypto');
 let ts = require('./r-timeseries');
-const Logger = require('../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const config = require('../../config/config');
 
 const env = config.get('env');

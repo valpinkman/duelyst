@@ -1,6 +1,6 @@
 // pragma PKGS: prismatic_play_card
 
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const RSX = require('app/data/resources');
 const PKGS = require('app/data/packages');
 const BaseSprite = require('../BaseSprite');

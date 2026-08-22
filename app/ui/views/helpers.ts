@@ -1,6 +1,6 @@
 'use strict';
 
-var CONFIG = require('app/common/config');
+var CONFIG = require('@duelyst/common/config');
 var RSX = require('app/data/resources');
 var ProgressionManager = require('app/ui/managers/progression_manager');
 var InventoryManager = require('app/ui/managers/inventory_manager');

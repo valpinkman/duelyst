@@ -5,12 +5,12 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const moment = require('moment');
-const Logger = require('../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const config = require('../../config/config');
 
 const env = config.get('env');
-const generatePushID = require('../../app/common/generate_push_id');
-const PromiseUtils = require('../../app/common/utils/utils_promise');
+const generatePushID = require('@duelyst/common/generate_push_id');
+const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 
 // Helper returns the Game Data Redis key prefix
 const keyPrefix = () => `${env}:watchable_games:`;

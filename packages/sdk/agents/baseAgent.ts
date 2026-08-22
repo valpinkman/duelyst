@@ -3,9 +3,9 @@
  * DS102: Remove unnecessary code created because of implicit returns
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-const CONFIG = require('app/common/config');
-const UtilsJavascript = require('app/common/utils/utils_javascript');
-const Logger = require('app/common/logger');
+const CONFIG = require('@duelyst/common/config');
+const UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
+const Logger = require('@duelyst/common/logger');
 
 const _ = require('underscore');
 

@@ -4,9 +4,9 @@ var SDK = require('@duelyst/sdk');
 var moment = require('moment');
 var QuestsManager = require('app/ui/managers/quests_manager');
 var NavigationManager = require('app/ui/managers/navigation_manager');
-var Logger = require('app/common/logger');
-var EventBus = require('app/common/eventbus');
-var EVENTS = require('app/common/event_types');
+var Logger = require('@duelyst/common/logger');
+var EventBus = require('@duelyst/common/eventbus');
+var EVENTS = require('@duelyst/common/event_types');
 var Template = require('./templates/daily_challenge_item.hbs');
 
 var DailyChallengeItemView = Backbone.Marionette.ItemView.extend({

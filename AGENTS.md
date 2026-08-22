@@ -15,7 +15,7 @@ a decade of accumulated behaviour, and a modernization program is still running.
   `yarn.lock` / `package-lock.json`. The pinned version is in `package.json#packageManager`
   (corepack/proto/volta pick it up).
 - Workspace: `pnpm-workspace.yaml` covers `packages/*` (vendored forks), the in-place members
-  `packages/sdk` + `app/common`, and `desktop/` (Electron shell; `electron` is allowlisted in
+  `packages/sdk` + `packages/common`, and `desktop/` (Electron shell; `electron` is allowlisted in
   `pnpm.onlyBuiltDependencies`).
 - Local packages are `workspace:*` deps; `resolutions` live under `pnpm.overrides`;
   packages that need build scripts go in `pnpm.onlyBuiltDependencies` (currently `bcrypt`).
@@ -45,7 +45,7 @@ pnpm vitest --project sdk|misc|firebase        # unit tests for one package's su
 pnpm check:undefined-names                     # TS2304 only, and this IS a CI gate. Run after any codemod.
 pnpm check:promise-utils                       # PromiseUtils/onType used without being bound
 pnpm check:bluebird-orphans                    # bluebird-only API used without requiring bluebird
-pnpm check:package-deps                        # app/common reaches nothing; packages/sdk only common+data.
+pnpm check:package-deps                        # packages/common reaches nothing; sdk only common+data.
                                                #   CI gate: these two used to require each other.
 pnpm check:turbo-env                           # turbo.json globalEnv still covers every convict env binding
 pnpm check:data-access                         # data_access failures vs test/integration/data_access/known-failures.txt
@@ -99,7 +99,7 @@ Everything below is TypeScript unless noted.
 | Path                                        | What                                                                                                                                                                                                                                                                                                                             |
 | ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `packages/sdk/`                             | Game engine shared by client and server: `gameSession`, actions, 718 modifiers, 257 spells, cards + `cards/factory/*`, challenges, quests. 1,375 files.                                                                                                                                                                          |
-| `app/common/`                               | `config.js` (mutable global `CONFIG`), `logger`, `eventbus`, `utils/*`                                                                                                                                                                                                                                                           |
+| `packages/common/`                          | `config.js` (mutable global `CONFIG`), `logger`, `eventbus`, `utils/*`                                                                                                                                                                                                                                                           |
 | `app/ui/`, `app/view/`, `app/audio/`        | Marionette views/managers, Cocos2d layers/nodes/fx, audio                                                                                                                                                                                                                                                                        |
 | `app/application.ts`, `app/index.ts`        | client boot, router, `window.*` singletons                                                                                                                                                                                                                                                                                       |
 | `app/data/`                                 | `resources.js` (RSX manifest), `fx.js`, `packages.js` (**generated, gitignored**) — JS                                                                                                                                                                                                                                           |
@@ -132,13 +132,13 @@ Everything below is TypeScript unless noted.
   on the game servers, where they do not exist. `packages/sdk/tsconfig.json` deliberately excludes that
   file so the scoped typecheck fails on any such reference; that is how a missing
   `require('underscore')` in `challengeRemote.ts` was found after years of hiding behind the root
-  program. `app/common` is the opposite case and does include it: seven of its files are
+  program. `packages/common` is the opposite case and does include it: seven of its files are
   client-only by design.
 - **Serialization is structural.** `SDKObject` + `fastExtend(this, data)` — instance property
   layout _is_ the wire format for game state and replays. Use `declare x: any` for prototype-era
   members: a real class field creates an own property and silently changes the shape. Renaming a
   property breaks replays. Add a round-trip test first.
-- **Root-absolute requires.** `require('app/common/…')`, `require('server/lib/…')`,
+- **Root-absolute requires.** `require('app/data/…')`, `require('server/lib/…')`,
   `require('config/config')` resolve from the repo root through `app-module-path`, registered in
   `bin/_bootstrap.js` and every test file, and mirrored by Vite/vitest aliases. Any new runner
   needs the same alias.
@@ -151,6 +151,18 @@ Everything below is TypeScript unless noted.
   walks up from `build/server/api.js`, finds `build/node_modules` first, and lands on the
   transpiled copy. **Every gate except a container boot is a dev-mode path** — when you move a
   package, run `node build/bin/api` from `build/`, not just the test suite.
+- **`tsc` does not follow CommonJS `require()`.** A file enters the root program only if the root
+  `tsconfig.json` `include` lists it — so moving a tree out of `app/**` removes it from the program
+  entirely, **with no error**. Moving `app/sdk` dropped the program from 2,274 files to 873 while
+  `pnpm typecheck` and `pnpm check:undefined-names` both still reported clean, over a third of the
+  codebase. Any new top-level source directory must be added to `include`. When you move one,
+  verify with `tsc -p tsconfig.json --listFiles | wc -l` rather than trusting a green gate.
+- **A gate that reports OK is not a gate that looked.** Three separate checks silently narrowed
+  during the `packages/` moves: `check-package-deps` (its own path literals got rewritten by the
+  codemod — 1,405 files became 29), the root typecheck (above), and
+  `test/unit/sdk/package_identity.js`, whose two deliberately-different spellings were rewritten
+  into the same string, leaving it comparing a module to itself. Prefer gates that print a count,
+  and read the count.
 - **Beware `const` shadowing from the decaffeination.** CoffeeScript had one mutable binding per
   scope; the conversion gave each assignment its own declaration. Where a suite-level variable is
   re-declared inside a callback, every later read sees the initial `null` — this has cost real

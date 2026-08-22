@@ -1,7 +1,7 @@
 let RedisInviteQueue;
 const _ = require('underscore');
 const crypto = require('crypto');
-const Logger = require('../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const config = require('../../config/config');
 
 const env = config.get('env');

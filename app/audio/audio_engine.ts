@@ -13,9 +13,9 @@ _audio_engine.current = _audio_engine.instance;
 module.exports = _audio_engine;
 
 const _ = require('underscore');
-const Logger = require('../common/logger');
-const CONFIG = require('../common/config');
-const UtilsAudio = require('../common/utils/utils_audio');
+const Logger = require('@duelyst/common/logger');
+const CONFIG = require('@duelyst/common/config');
+const UtilsAudio = require('@duelyst/common/utils/utils_audio');
 const audio_object = require('./audio_object');
 const music_object = require('./music_object');
 const sound_effect_object = require('./sound_effect_object');

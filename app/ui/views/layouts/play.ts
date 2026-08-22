@@ -4,11 +4,11 @@
 
 var SDK = require('@duelyst/sdk');
 var RSX = require('app/data/resources');
-var CONFIG = require('app/common/config');
-var EventBus = require('app/common/eventbus');
-var EVENTS = require('app/common/event_types');
+var CONFIG = require('@duelyst/common/config');
+var EventBus = require('@duelyst/common/eventbus');
+var EVENTS = require('@duelyst/common/event_types');
 var audio_engine = require('app/audio/audio_engine');
-var UtilsEnv = require('app/common/utils/utils_env');
+var UtilsEnv = require('@duelyst/common/utils/utils_env');
 var NavigationManager = require('app/ui/managers/navigation_manager');
 var GamesManager = require('app/ui/managers/games_manager');
 var DecksCollection = require('app/ui/collections/decks');

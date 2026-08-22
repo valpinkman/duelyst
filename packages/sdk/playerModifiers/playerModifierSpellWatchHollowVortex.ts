@@ -8,7 +8,7 @@
  */
 const PlayerModifierSpellWatch = require('./playerModifierSpellWatch');
 const Factions = require('@duelyst/sdk/cards/factionsLookup');
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const UtilsGameSession = require('@duelyst/sdk/utils/utils_game_session');
 const CardType = require('@duelyst/sdk/cards/cardType');
 const PlayCardSilentlyAction = require('@duelyst/sdk/actions/playCardSilentlyAction');

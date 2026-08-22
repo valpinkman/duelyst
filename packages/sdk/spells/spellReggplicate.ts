@@ -5,7 +5,7 @@
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const SpellSpawnEntity = require('./spellSpawnEntity');
 const UtilsGameSession = require('@duelyst/sdk/utils/utils_game_session');
 const ModifierEgg = require('@duelyst/sdk/modifiers/modifierEgg');

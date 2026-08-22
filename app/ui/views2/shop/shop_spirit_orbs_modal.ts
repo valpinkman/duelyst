@@ -3,13 +3,13 @@
 'use strict';
 
 var RSX = require('app/data/resources');
-var CONFIG = require('app/common/config');
+var CONFIG = require('@duelyst/common/config');
 var audio_engine = require('app/audio/audio_engine');
 var Animations = require('app/ui/views/animations');
 var InventoryManager = require('app/ui/managers/inventory_manager');
-var EVENTS = require('app/common/event_types');
+var EVENTS = require('@duelyst/common/event_types');
 var ProfileManager = require('app/ui/managers/profile_manager');
-var Analytics = require('app/common/analytics');
+var Analytics = require('@duelyst/common/analytics');
 var moment = require('moment');
 var ShopSpiritOrbsCollectionView = require('./shop_spirit_orbs_collection_view');
 var Template = require('./templates/shop_spirit_orbs_modal.hbs');

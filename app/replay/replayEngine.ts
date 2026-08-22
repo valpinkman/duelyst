@@ -46,10 +46,10 @@ module.exports = ReplayEngine;
 
 const SDK = require('@duelyst/sdk');
 const Scene = require('app/view/Scene');
-const EventBus = require('app/common/eventbus');
-const EVENTS = require('app/common/event_types');
-const Logger = require('app/common/logger');
-const CONFIG = require('app/common/config');
+const EventBus = require('@duelyst/common/eventbus');
+const EVENTS = require('@duelyst/common/event_types');
+const Logger = require('@duelyst/common/logger');
+const CONFIG = require('@duelyst/common/config');
 const NavigationManager = require('app/ui/managers/navigation_manager');
 
 class _ReplayEngine {

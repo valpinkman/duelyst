@@ -14,11 +14,11 @@ _NavigationManager.current = _NavigationManager.getInstance;
 
 module.exports = _NavigationManager;
 
-var CONFIG = require('app/common/config');
-var EventBus = require('app/common/eventbus');
-var EVENTS = require('app/common/event_types');
-var Logger = require('app/common/logger');
-var UtilsJavascript = require('app/common/utils/utils_javascript');
+var CONFIG = require('@duelyst/common/config');
+var EventBus = require('@duelyst/common/eventbus');
+var EVENTS = require('@duelyst/common/event_types');
+var Logger = require('@duelyst/common/logger');
+var UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
 var UtilsUI = require('app/ui/utils_ui');
 var audio_engine = require('app/audio/audio_engine');
 var RSX = require('app/data/resources');

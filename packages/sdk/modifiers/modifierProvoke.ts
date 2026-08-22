@@ -2,8 +2,8 @@
  * decaffeinate suggestions:
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-const CONFIG = require('app/common/config');
-const Logger = require('app/common/logger');
+const CONFIG = require('@duelyst/common/config');
+const Logger = require('@duelyst/common/logger');
 const AttackAction = require('@duelyst/sdk/actions/attackAction');
 const _ = require('underscore');
 

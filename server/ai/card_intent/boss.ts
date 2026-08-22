@@ -1,4 +1,4 @@
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const Cards = require('@duelyst/sdk/cards/cardsLookupComplete');
 const CardIntentType = require('./card_intent_type');
 const CardTargetType = require('./card_target_type');

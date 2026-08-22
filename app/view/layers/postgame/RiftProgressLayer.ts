@@ -1,9 +1,9 @@
 // pragma PKGS: rift_progress
 const SDK = require('@duelyst/sdk');
 const RSX = require('app/data/resources');
-const Logger = require('app/common/logger');
-const CONFIG = require('app/common/config');
-const UtilsJavascript = require('app/common/utils/utils_javascript');
+const Logger = require('@duelyst/common/logger');
+const CONFIG = require('@duelyst/common/config');
+const UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
 const PKGS = require('app/data/packages');
 const audio_engine = require('app/audio/audio_engine');
 const RewardLayer = require('app/view/layers/reward/RewardLayer');
@@ -14,7 +14,7 @@ const BaseParticleSystem = require('app/view/nodes/BaseParticleSystem');
 const RiftHelper = require('@duelyst/sdk/rift/riftHelper');
 const FXRiftLineSprite = require('app/view/nodes/fx/FXRiftLineSprite');
 const MotionStreakRingNode = require('app/view//nodes/misc/MotionStreakRingNode');
-const UtilsEngine = require('app/common/utils/utils_engine');
+const UtilsEngine = require('@duelyst/common/utils/utils_engine');
 
 /** **************************************************************************
  RiftProgressLayer

@@ -8,7 +8,7 @@ Job - Update User Ranking
 */
 const config = require('../../config/config.js');
 const SyncModule = require('../../server/lib/data_access/sync');
-const Logger = require('../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 
 /**
  * Job to sync user's buddy list to SQL.

@@ -1,14 +1,14 @@
 'use strict';
 
-var CONFIG = require('app/common/config');
-var EventBus = require('app/common/eventbus');
-var EVENTS = require('app/common/event_types');
+var CONFIG = require('@duelyst/common/config');
+var EventBus = require('@duelyst/common/eventbus');
+var EVENTS = require('@duelyst/common/event_types');
 var SDK = require('@duelyst/sdk');
 const NetworkManager = require('app/networkManager');
 var Scene = require('app/view/Scene');
 var BottomDeckCardNode = require('app/view/nodes/cards/BottomDeckCardNode');
-var UtilsPosition = require('app/common/utils/utils_position');
-var UtilsEngine = require('app/common/utils/utils_engine');
+var UtilsPosition = require('@duelyst/common/utils/utils_position');
+var UtilsEngine = require('@duelyst/common/utils/utils_engine');
 var Animations = require('app/ui/views/animations');
 var GamePlayerTmpl = require('app/ui/templates/layouts/game_player.hbs');
 var Firebase = require('app/firebase');

@@ -4,7 +4,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const RandomDamageAction = require('@duelyst/sdk/actions/randomDamageAction');
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const CardType = require('@duelyst/sdk/cards/cardType');
 const ModifierTakeDamageWatch = require('./modifierTakeDamageWatch');
 

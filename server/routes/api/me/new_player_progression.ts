@@ -8,7 +8,7 @@ const UsersModule = require('../../../lib/data_access/users');
 const QuestsModule = require('../../../lib/data_access/quests');
 const knex = require('../../../lib/data_access/knex');
 const DataAccessHelpers = require('../../../lib/data_access/helpers');
-const Logger = require('../../../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const t = require('tcomb-validation');
 
 // sdk

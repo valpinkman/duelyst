@@ -9,7 +9,7 @@
 const util = require('util');
 const FirebasePromises = require('../firebase_promises');
 const DuelystFirebase = require('../duelyst_firebase_module');
-const Logger = require('../../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const colors = require('colors');
 const moment = require('moment');
 const _ = require('underscore');
@@ -17,11 +17,11 @@ const SyncModule = require('./sync');
 const InventoryModule = require('./inventory');
 const GamesModule = require('./games');
 const DataAccessHelpers = require('./helpers');
-const CONFIG = require('../../../app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const Errors = require('../custom_errors');
 const knex = require('./knex');
 const config = require('../../../config/config.js');
-const generatePushId = require('../../../app/common/generate_push_id');
+const generatePushId = require('@duelyst/common/generate_push_id');
 
 // redis
 const { Redis, Jobs, RiftManager } = require('../../redis');
@@ -30,8 +30,8 @@ const { Redis, Jobs, RiftManager } = require('../../redis');
 const SDK = require('@duelyst/sdk');
 const UtilsGameSession = require('@duelyst/sdk/utils/utils_game_session');
 const RiftHelper = require('@duelyst/sdk/rift/riftHelper');
-const PromiseUtils = require('../../../app/common/utils/utils_promise');
-const { onType } = require('../../../app/common/utils/utils_promise');
+const PromiseUtils = require('@duelyst/common/utils/utils_promise');
+const { onType } = require('@duelyst/common/utils/utils_promise');
 
 class RiftModule {
   static RIFT_MAX_WINS_FOR_MATCHMAKING = 200;

@@ -7,7 +7,7 @@ const QuestBeginner = require('./questBeginner');
 const QuestType = require('./questTypeLookup');
 const UtilsGameSession = require('@duelyst/sdk/utils/utils_game_session');
 const GameType = require('@duelyst/sdk/gameType');
-const Logger = require('app/common/logger');
+const Logger = require('@duelyst/common/logger');
 
 class QuestBeginnerPlayPracticeGames extends QuestBeginner {
   static Identifier = 9902;

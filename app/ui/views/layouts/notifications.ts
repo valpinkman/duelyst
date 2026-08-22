@@ -1,6 +1,6 @@
 'use strict';
 
-var CONFIG = require('app/common/config');
+var CONFIG = require('@duelyst/common/config');
 var NotificationsManager = require('app/ui/managers/notifications_manager');
 var ChatManager = require('app/ui/managers/chat_manager');
 var TransitionRegion = require('app/ui/views/regions/transition');

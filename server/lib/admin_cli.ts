@@ -10,11 +10,11 @@
  * one-off scheduled task, whose cron can fire more than once before cleanup,
  * so every command here is idempotent.
  */
-const Logger = require('app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const knex = require('server/lib/data_access/knex');
 const UsersModule = require('server/lib/data_access/users');
 const InventoryModule = require('server/lib/data_access/inventory');
-const generatePushId = require('app/common/generate_push_id');
+const generatePushId = require('@duelyst/common/generate_push_id');
 const SDK = require('@duelyst/sdk');
 
 const log = (msg) => Logger.module('ADMIN').log(msg);

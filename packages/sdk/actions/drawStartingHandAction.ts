@@ -8,8 +8,8 @@
  */
 const Action = require('./action');
 const GameStatus = require('@duelyst/sdk/gameStatus');
-const Logger = require('app/common/logger');
-const CONFIG = require('app/common/config');
+const Logger = require('@duelyst/common/logger');
+const CONFIG = require('@duelyst/common/config');
 const UtilsGameSession = require('@duelyst/sdk/utils/utils_game_session');
 
 const _ = require('underscore');

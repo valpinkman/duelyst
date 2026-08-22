@@ -16,14 +16,14 @@ module.exports = _InventoryManager;
 // Need to update here as well for purchase functionality.
 const ORB_GOLD_COST = 50;
 
-var CONFIG = require('app/common/config');
-var EventBus = require('app/common/eventbus');
-var EVENTS = require('app/common/event_types');
-var Logger = require('app/common/logger');
+var CONFIG = require('@duelyst/common/config');
+var EventBus = require('@duelyst/common/eventbus');
+var EVENTS = require('@duelyst/common/event_types');
+var Logger = require('@duelyst/common/logger');
 var SDK = require('@duelyst/sdk');
 var DuelystFirebase = require('app/ui/extensions/duelyst_firebase');
 var UserDecksCollection = require('app/ui/collections/user_decks');
-var Analytics = require('app/common/analytics');
+var Analytics = require('@duelyst/common/analytics');
 var AnalyticsTracker = require('app/analyticsTracker');
 var ErrorDialogItemView = require('app/ui/views/item/error_dialog');
 var Session = require('app/session2');

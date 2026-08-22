@@ -2,15 +2,15 @@
 
 'use strict';
 
-var Logger = require('app/common/logger');
+var Logger = require('@duelyst/common/logger');
 var RSX = require('app/data/resources');
-var CONFIG = require('app/common/config');
-var UtilsJavascript = require('app/common/utils/utils_javascript');
-var generatePushID = require('app/common/generate_push_id');
+var CONFIG = require('@duelyst/common/config');
+var UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
+var generatePushID = require('@duelyst/common/generate_push_id');
 var audio_engine = require('app/audio/audio_engine');
 var SDK = require('@duelyst/sdk');
 var Scene = require('app/view/Scene');
-var Analytics = require('app/common/analytics');
+var Analytics = require('@duelyst/common/analytics');
 var Animations = require('app/ui/views/animations');
 var GamesManager = require('app/ui/managers/games_manager');
 var GameDataManager = require('app/ui/managers/game_data_manager');
@@ -35,7 +35,7 @@ var DuelystBackbone = require('app/ui/extensions/duelyst_backbone');
 var RiftRunDeckView = require('app/ui/views2/rift/rift_run_deck');
 var i18next = require('i18next');
 var ArenaRunDeckView = require('app/ui/views2/arena/arena_run_deck');
-const Chroma = require('app/common/chroma');
+const Chroma = require('@duelyst/common/chroma');
 var SlidingPanelSelectCompositeView = require('./sliding_panel_select');
 
 var DeckSelectEmptyView = Backbone.Marionette.ItemView.extend({

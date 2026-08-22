@@ -1,4 +1,4 @@
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const SpellSpawnEntity = require('./spellSpawnEntity');
 const UtilsGameSession = require('@duelyst/sdk/utils/utils_game_session');
 

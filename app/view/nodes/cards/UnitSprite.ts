@@ -1,6 +1,6 @@
 // pragma PKGS: game
 
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const EntitySprite = require('./EntitySprite');
 
 /** **************************************************************************

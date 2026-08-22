@@ -1,6 +1,6 @@
 'use strict';
 
-var Logger = require('app/common/logger');
+var Logger = require('@duelyst/common/logger');
 var ProfileManager = require('app/ui/managers/profile_manager');
 var ProgressionManager = require('app/ui/managers/progression_manager');
 var Template = require('app/ui/templates/item/buddy_selection_empty.hbs');

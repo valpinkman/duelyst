@@ -39,13 +39,16 @@ const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..')
 const outRoot = path.join(root, 'build');
 
 /** Everything a service process can reach. Mirrors what the Dockerfiles COPY. */
-const TREES = ['packages/sdk', 'app/common', 'app/data', 'server', 'worker', 'config', 'bin'];
+const TREES = ['packages/sdk', 'packages/common', 'app/data', 'server', 'worker', 'config', 'bin'];
 
 /*
  * name -> path, relative to build/node_modules/<scope>/. Every tree above that
  * is consumed as a named package needs an entry here.
  */
-const WORKSPACE_LINKS = [{ name: '@duelyst/sdk', target: '../../packages/sdk' }];
+const WORKSPACE_LINKS = [
+  { name: '@duelyst/sdk', target: '../../packages/sdk' },
+  { name: '@duelyst/common', target: '../../packages/common' },
+];
 const ROOT_FILES = ['version.json'];
 
 /** Not reachable at runtime, or actively unwanted in a deployed tree. */

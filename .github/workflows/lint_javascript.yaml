@@ -63,7 +63,7 @@ jobs:
       # waiting to happen. The linter's no-undef does not apply to .ts, so TypeScript is the
       # only thing that sees them. The count was swept to zero, and this keeps it
       # there: a codemod regression that shipped once would have been caught here.
-      # packages/sdk and app/common used to require each other, which made them one
+      # packages/sdk and packages/common used to require each other, which made them one
       # package with a directory between them. Broken 2026-08-21 by moving three
       # files; this keeps it broken, and checks relative requires too -- the
       # move's first attempt rewrote only the root-absolute form.

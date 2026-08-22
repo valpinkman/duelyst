@@ -4,9 +4,9 @@
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-const Logger = require('app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const Action = require('./action');
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 
 class BonusManaCoreAction extends Action {
   static type = 'BonusManaCoreAction';

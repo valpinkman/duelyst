@@ -4,7 +4,7 @@
 
 var _ = require('underscore');
 var moment = require('moment');
-var CONFIG = require('app/common/config');
+var CONFIG = require('@duelyst/common/config');
 var RSX = require('app/data/resources');
 var ShopData = require('app/data/shop.json');
 var audio_engine = require('app/audio/audio_engine');
@@ -14,7 +14,7 @@ var ProfileManager = require('app/ui/managers/profile_manager');
 var ShopManager = require('app/ui/managers/shop_manager');
 var InventoryManager = require('app/ui/managers/inventory_manager');
 var ZodiacSymbolModel = require('app/ui/models/zodiac_symbol');
-var openUrl = require('app/common/openUrl');
+var openUrl = require('@duelyst/common/openUrl');
 var i18next = require('i18next');
 var Template = require('./templates/shop_spirit_orbs_collection_view.hbs');
 

@@ -1,6 +1,6 @@
 'use strict';
 
-var EVENTS = require('app/common/event_types');
+var EVENTS = require('@duelyst/common/event_types');
 var SDK = require('@duelyst/sdk');
 const NetworkManager = require('app/networkManager');
 var Animations = require('app/ui/views/animations');

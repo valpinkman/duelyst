@@ -1,6 +1,6 @@
 'use strict';
 
-var Logger = require('app/common/logger');
+var Logger = require('@duelyst/common/logger');
 var NavigationManager = require('app/ui/managers/navigation_manager');
 var UtilityMenuItemView = require('./utility_menu');
 

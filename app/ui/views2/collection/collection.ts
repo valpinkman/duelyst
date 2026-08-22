@@ -2,16 +2,16 @@
 
 'use strict';
 
-var Logger = require('app/common/logger');
-var CONFIG = require('app/common/config');
-var EVENTS = require('app/common/event_types');
-var EventBus = require('app/common/eventbus');
-var UtilsJavascript = require('app/common/utils/utils_javascript');
+var Logger = require('@duelyst/common/logger');
+var CONFIG = require('@duelyst/common/config');
+var EVENTS = require('@duelyst/common/event_types');
+var EventBus = require('@duelyst/common/eventbus');
+var UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
 var RSX = require('app/data/resources');
 var audio_engine = require('app/audio/audio_engine');
 var SDK = require('@duelyst/sdk');
 var Scene = require('app/view/Scene');
-var Analytics = require('app/common/analytics');
+var Analytics = require('@duelyst/common/analytics');
 var Game = require('app/ui/models/game');
 var DeckModel = require('app/ui/models/deck');
 var Animations = require('app/ui/views/animations');

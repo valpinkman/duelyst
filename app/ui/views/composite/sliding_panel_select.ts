@@ -2,9 +2,9 @@
 
 'use strict';
 
-var CONFIG = require('app/common/config');
-var EventBus = require('app/common/eventbus');
-var EVENTS = require('app/common/event_types');
+var CONFIG = require('@duelyst/common/config');
+var EventBus = require('@duelyst/common/eventbus');
+var EVENTS = require('@duelyst/common/event_types');
 var RSX = require('app/data/resources');
 var Animations = require('app/ui/views/animations');
 var SlidingPanelItemView = require('app/ui/views/item/sliding_panel');

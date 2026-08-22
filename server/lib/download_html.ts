@@ -1,7 +1,7 @@
 const fs = require('fs');
 const { Readable } = require('node:stream');
 const { pipeline } = require('node:stream/promises');
-const Logger = require('../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 
 /*
  * Fetch one file and stream it to disk.

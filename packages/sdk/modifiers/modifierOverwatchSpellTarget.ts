@@ -5,7 +5,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const ApplyCardToBoardAction = require('@duelyst/sdk/actions/applyCardToBoardAction');
-const UtilsPosition = require('app/common/utils/utils_position');
+const UtilsPosition = require('@duelyst/common/utils/utils_position');
 const CardType = require('@duelyst/sdk/cards/cardType');
 const ModifierOverwatch = require('./modifierOverwatch');
 

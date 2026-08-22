@@ -9,14 +9,14 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const whenLocalizationReady = require('app/localization/index');
-const PromiseUtils = require('../common/utils/utils_promise');
+const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 
 whenLocalizationReady.then(() => {
-  const Logger = require('app/common/logger');
-  const CONFIG = require('app/common/config');
-  let EVENTS = require('app/common/event_types');
-  const UtilsJavascript = require('app/common/utils/utils_javascript');
-  const UtilsEnv = require('app/common/utils/utils_env');
+  const Logger = require('@duelyst/common/logger');
+  const CONFIG = require('@duelyst/common/config');
+  let EVENTS = require('@duelyst/common/event_types');
+  const UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
+  const UtilsEnv = require('@duelyst/common/utils/utils_env');
   const PackageManager = require('app/ui/managers/package_manager.js');
   const DATA = (window.DATA = require('app/data'));
   const SDK = (window.SDK = require('@duelyst/sdk'));
@@ -24,8 +24,8 @@ whenLocalizationReady.then(() => {
   const PERF = (window.PERF = require('./performance'));
   const Scene = require('app/view/Scene');
   const NodeFactory = require('app/view/helpers/NodeFactory');
-  const EventBus = require('app/common/eventbus');
-  EVENTS = require('app/common/event_types');
+  const EventBus = require('@duelyst/common/eventbus');
+  EVENTS = require('@duelyst/common/event_types');
 
   const _ = require('underscore');
   const moment = require('moment');
@@ -33,11 +33,11 @@ whenLocalizationReady.then(() => {
   const saveAs = require('./FileSaver.min');
 
   const QuestType = require('@duelyst/sdk/quests/questTypeLookup');
-  const Analytics = require('app/common/analytics');
+  const Analytics = require('@duelyst/common/analytics');
   const GameDataManager = require('app/ui/managers/game_data_manager');
   const CrateManager = require('app/ui/managers/crate_manager');
 
-  const Storage = require('app/common/storage');
+  const Storage = require('@duelyst/common/storage');
 
   const i18next = require('i18next');
 

@@ -12,13 +12,13 @@ const knex = require('server/lib/data_access/knex');
 const DataAccessHelpers = require('server/lib/data_access/helpers');
 const FirebasePromises = require('server/lib/firebase_promises');
 const DuelystFirebase = require('server/lib/duelyst_firebase_module');
-const Logger = require('app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const Errors = require('server/lib/custom_errors');
 const config = require('config/config');
 const t = require('tcomb-validation');
 const types = require('server/validators/types');
 const Consul = require('server/lib/consul');
-const { onType } = require('../../../../app/common/utils/utils_promise');
+const { onType } = require('@duelyst/common/utils/utils_promise');
 
 const router = express.Router();
 

@@ -2,7 +2,7 @@
  * decaffeinate suggestions:
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const SpellSpawnEntity = require('./spellSpawnEntity');
 const CardType = require('../cards/cardType');
 const Cards = require('../cards/cardsLookupComplete');

@@ -3,7 +3,7 @@
 var moment = require('moment');
 var StatsSeasonRankItemViewTempl = require('app/ui/templates/item/stats_season_rank.hbs');
 var RankFactory = require('app/ui/sdk/rank/rankFactory');
-var UtilsJavascript = require('app/common/utils/utils_javascript');
+var UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
 
 var StatsSeasonRankItemView = Backbone.Marionette.ItemView.extend({
   className: 'stats-season-rank',

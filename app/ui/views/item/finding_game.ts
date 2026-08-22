@@ -1,12 +1,12 @@
 'use strict';
 
 var FindingGameTemplate = require('app/ui/templates/item/finding_game.hbs');
-var EventBus = require('app/common/eventbus');
-var EVENTS = require('app/common/event_types');
-var generatePushID = require('app/common/generate_push_id');
+var EventBus = require('@duelyst/common/eventbus');
+var EVENTS = require('@duelyst/common/event_types');
+var generatePushID = require('@duelyst/common/generate_push_id');
 var SDK = require('@duelyst/sdk');
 var Scene = require('app/view/Scene');
-var CONFIG = require('app/common/config');
+var CONFIG = require('@duelyst/common/config');
 var UtilsUI = require('app/ui/utils_ui');
 var GAME_TIPS = require('app/data/game_tips');
 var GamesManager = require('app/ui/managers/games_manager');

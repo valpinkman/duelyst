@@ -3,7 +3,7 @@
  * bluebird `.catch(SomeError, handler)` -> `.catch(onType(SomeError, handler))`.
  *
  * Native `.catch` cannot filter by error class. `onType`
- * (app/common/utils/utils_promise) does the `instanceof` check and - crucially
+ * (@duelyst/common/utils/utils_promise) does the `instanceof` check and - crucially
  * - RETHROWS anything that does not match. Without that rethrow, a catch
  * written for one error class silently swallows every other error, which is
  * the main way this migration could turn a crash into a quiet success.
@@ -60,8 +60,8 @@ for (const file of process.argv.slice(2)) {
         const at = lastRequire.index + lastRequire[0].length;
         const depth = (file.match(/\//g) || []).length;
         const rel = file.startsWith('app/')
-          ? 'app/common/utils/utils_promise'
-          : `${'../'.repeat(depth)}app/common/utils/utils_promise`;
+          ? '@duelyst/common/utils/utils_promise'
+          : '@duelyst/common/utils/utils_promise';
         src = `${src.slice(0, at)}\nconst { onType } = require('${rel}');${src.slice(at)}`;
       }
     }

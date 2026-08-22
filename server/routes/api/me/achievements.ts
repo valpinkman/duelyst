@@ -6,7 +6,7 @@
 const express = require('express');
 
 const AchievementsModule = require('../../../lib/data_access/achievements');
-const Logger = require('../../../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const DataAccessHelpers = require('../../../lib/data_access/helpers');
 
 const t = require('tcomb-validation');

@@ -8,7 +8,7 @@ const PlayerModifierManaModifier = require('@duelyst/sdk/playerModifiers/playerM
 const DamageAction = require('@duelyst/sdk/actions/damageAction');
 const PlayCardFromHandAction = require('@duelyst/sdk/actions/playCardFromHandAction');
 const CardType = require('@duelyst/sdk/cards/cardType');
-const UtilsPosition = require('app/common/utils/utils_position');
+const UtilsPosition = require('@duelyst/common/utils/utils_position');
 const ModifierSummonWatch = require('./modifierSummonWatch');
 
 class ModifierReduceCostOfMinionsAndDamageThem extends ModifierSummonWatch {

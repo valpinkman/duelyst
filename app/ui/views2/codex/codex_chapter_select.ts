@@ -2,7 +2,7 @@
 
 'use strict';
 
-var CONFIG = require('app/common/config');
+var CONFIG = require('@duelyst/common/config');
 var RSX = require('app/data/resources');
 var Animations = require('app/ui/views/animations');
 var SlidingPanelSelectCompositeView = require('app/ui/views/composite/sliding_panel_select');

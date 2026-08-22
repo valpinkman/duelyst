@@ -4,8 +4,8 @@ require('app-module-path').addPath(path.join(__dirname, '../../../../'));
 const _ = require('underscore');
 const { expect } = require('chai');
 
-const CONFIG = require('../../../../app/common/config');
-const Logger = require('../../../../app/common/logger');
+const CONFIG = require('@duelyst/common/config');
+const Logger = require('@duelyst/common/logger');
 const SDK = require('@duelyst/sdk/index');
 const UtilsSDK = require('../../../utils/utils_sdk');
 

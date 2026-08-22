@@ -5,7 +5,7 @@
  * DS205: Consider reworking code to avoid use of IIFEs
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-const EVENTS = require('app/common/event_types');
+const EVENTS = require('@duelyst/common/event_types');
 const AttackAction = require('@duelyst/sdk/actions/attackAction');
 const ForcedAttackAction = require('@duelyst/sdk/actions/forcedAttackAction');
 const CardType = require('@duelyst/sdk/cards/cardType');

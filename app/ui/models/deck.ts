@@ -1,9 +1,9 @@
 'use strict';
 
-var Logger = require('app/common/logger');
-var CONFIG = require('app/common/config');
+var Logger = require('@duelyst/common/logger');
+var CONFIG = require('@duelyst/common/config');
 var SDK = require('@duelyst/sdk');
-var UtilsEnv = require('app/common/utils/utils_env');
+var UtilsEnv = require('@duelyst/common/utils/utils_env');
 var GameDataManager = require('app/ui/managers/game_data_manager');
 var ProgressionManager = require('app/ui/managers/progression_manager');
 var CardsCollection = require('app/ui/collections/cards');

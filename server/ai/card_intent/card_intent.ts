@@ -1,5 +1,5 @@
-const CONFIG = require('app/common/config');
-const UtilsJavascript = require('app/common/utils/utils_javascript');
+const CONFIG = require('@duelyst/common/config');
+const UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
 const Cards = require('@duelyst/sdk/cards/cardsLookupComplete');
 const Unit = require('@duelyst/sdk/entities/unit');
 const Tile = require('@duelyst/sdk/entities/tile');

@@ -8,7 +8,7 @@
 Job - Rotate Boss Battles
 */
 const DuelystFirebase = require('../../server/lib/duelyst_firebase_module');
-const Logger = require('../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const Cards = require('@duelyst/sdk/cards/cardsLookup');
 const moment = require('moment');
 

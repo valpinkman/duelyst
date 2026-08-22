@@ -30,26 +30,26 @@ const semver = require('semver');
 const querystring = require('query-string');
 
 // core
-const Storage = (window.Storage = require('app/common/storage'));
-const Logger = (window.Logger = require('app/common/logger'));
+const Storage = (window.Storage = require('@duelyst/common/storage'));
+const Logger = (window.Logger = require('@duelyst/common/logger'));
 
 Logger.enabled = false;
 
-const Landing = require('app/common/landing');
+const Landing = require('@duelyst/common/landing');
 const Session = (window.Session = require('app/session2'));
-const CONFIG = (window.CONFIG = require('app/common/config'));
+const CONFIG = (window.CONFIG = require('@duelyst/common/config'));
 const RSX = (window.RSX = require('app/data/resources'));
 const PKGS = (window.PKGS = require('app/data/packages'));
-const EventBus = (window.EventBus = require('app/common/eventbus'));
-const EVENTS = require('app/common/event_types');
+const EventBus = (window.EventBus = require('@duelyst/common/eventbus'));
+const EVENTS = require('@duelyst/common/event_types');
 // SDK = window.SDK = require '@duelyst/sdk'
-const Analytics = (window.Analytics = require('app/common/analytics'));
-const AnalyticsUtil = require('app/common/analyticsUtil');
-const UtilsJavascript = require('app/common/utils/utils_javascript');
-const UtilsEnv = require('app/common/utils/utils_env');
-const UtilsPointer = require('app/common/utils/utils_pointer');
+const Analytics = (window.Analytics = require('@duelyst/common/analytics'));
+const AnalyticsUtil = require('@duelyst/common/analyticsUtil');
+const UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
+const UtilsEnv = require('@duelyst/common/utils/utils_env');
+const UtilsPointer = require('@duelyst/common/utils/utils_pointer');
 const audio_engine = (window.audio_engine = require('app/audio/audio_engine'));
-const openUrl = require('app/common/openUrl');
+const openUrl = require('@duelyst/common/openUrl');
 const i18next = require('i18next');
 
 const PackageManager = (window.PackageManager = require('app/ui/managers/package_manager'));
@@ -82,7 +82,7 @@ const ErrorDialogItemView = require('app/ui/views/item/error_dialog');
 const AnnouncementModalView = require('app/ui/views/item/announcement_modal');
 
 const AnalyticsTracker = require('app/analyticsTracker');
-const PromiseUtils = require('app/common/utils/utils_promise');
+const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 
 // require the Handlebars Template Helpers extension here since it modifies core Marionette code
 require('app/ui/extensions/handlebars_template_helpers');

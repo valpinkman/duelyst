@@ -3,7 +3,7 @@
  * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const SpellSpawnEntity = require('./spellSpawnEntity');
 const DieAction = require('@duelyst/sdk/actions/dieAction');
 const CardType = require('@duelyst/sdk/cards/cardType');

@@ -14,9 +14,9 @@ if (i18next.t() === undefined) {
   i18next.t = (text) => text;
 }
 
-const Logger = require('app/common/logger');
+const Logger = require('@duelyst/common/logger');
 
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const RSX = require('app/data/resources');
 
 const Card = require('@duelyst/sdk/cards/card');

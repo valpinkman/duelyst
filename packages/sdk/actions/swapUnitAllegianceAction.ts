@@ -5,7 +5,7 @@
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-const Logger = require('app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const Action = require('./action');
 const ModifierFirstBlood = require('@duelyst/sdk/modifiers/modifierFirstBlood');
 const ModifierCardControlledPlayerModifiers = require('@duelyst/sdk/modifiers/modifierCardControlledPlayerModifiers');

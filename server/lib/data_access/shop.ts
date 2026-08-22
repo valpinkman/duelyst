@@ -13,10 +13,10 @@ const _ = require('underscore');
 
 const FirebasePromises = require('../firebase_promises');
 const DuelystFirebase = require('../duelyst_firebase_module');
-const Logger = require('../../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const Errors = require('../custom_errors');
 const knex = require('./knex');
-const generatePushId = require('../../../app/common/generate_push_id');
+const generatePushId = require('@duelyst/common/generate_push_id');
 const { Jobs } = require('../../redis');
 const ShopData = require('app/data/shop.json');
 const CosmeticsFactory = require('@duelyst/sdk/cosmetics/cosmeticsFactory');

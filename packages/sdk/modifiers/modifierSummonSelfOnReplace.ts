@@ -4,7 +4,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const UtilsGameSession = require('@duelyst/sdk/utils/utils_game_session');
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const ReplaceCardFromHandAction = require('@duelyst/sdk/actions/replaceCardFromHandAction');
 const PlayCardSilentlyAction = require('@duelyst/sdk/actions/playCardSilentlyAction');
 const DamageAction = require('@duelyst/sdk/actions/damageAction');

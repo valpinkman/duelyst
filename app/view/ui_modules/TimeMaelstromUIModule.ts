@@ -2,8 +2,8 @@
 
 const SDK = require('@duelyst/sdk');
 const RSX = require('app/data/resources');
-const CONFIG = require('app/common/config');
-const EVENTS = require('app/common/event_types');
+const CONFIG = require('@duelyst/common/config');
+const EVENTS = require('@duelyst/common/event_types');
 const BaseParticleSystem = require('app/view/nodes/BaseParticleSystem');
 const GameUIModule = require('./GameUIModule');
 

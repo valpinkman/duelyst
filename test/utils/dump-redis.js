@@ -3,7 +3,7 @@ require('app-module-path').addPath(path.join(__dirname, '../..'));
 
 const Redis = require('ioredis');
 const c = require('../../config/config');
-const Logger = require('../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 
 if (process.env.NODE_ENV !== 'test') {
   Logger.module('UNITTEST').log('Must run as NODE_ENV=test');

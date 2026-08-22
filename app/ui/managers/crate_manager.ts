@@ -12,12 +12,12 @@ _CosmeticChestManager.current = _CosmeticChestManager.getInstance;
 
 module.exports = _CosmeticChestManager;
 
-var EventBus = require('app/common/eventbus');
-var EVENTS = require('app/common/event_types');
+var EventBus = require('@duelyst/common/eventbus');
+var EVENTS = require('@duelyst/common/event_types');
 var DuelystBackbone = require('app/ui/extensions/duelyst_backbone');
 var DuelystFirebase = require('app/ui/extensions/duelyst_firebase');
 var NewPlayerManager = require('app/ui/managers/new_player_manager');
-var Analytics = require('app/common/analytics');
+var Analytics = require('@duelyst/common/analytics');
 var _ = require('underscore');
 var moment = require('moment');
 var GiftCrateLookup = require('@duelyst/sdk/giftCrates/giftCrateLookup');

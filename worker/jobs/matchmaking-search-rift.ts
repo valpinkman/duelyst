@@ -10,13 +10,13 @@ Job - Search for Matches
 const _ = require('underscore');
 const util = require('util');
 const Errors = require('../../server/lib/custom_errors');
-const Logger = require('../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const config = require('../../config/config.js');
 const Consul = require('../../server/lib/consul');
 
 const env = config.get('env');
 const moment = require('moment');
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 
 // SDK
 const GameType = require('@duelyst/sdk/gameType');
@@ -29,7 +29,7 @@ const createSinglePlayerGame = require('server/lib/create_single_player_game');
 
 // redis
 const Redis = require('../../server/redis');
-const { onType } = require('../../app/common/utils/utils_promise');
+const { onType } = require('@duelyst/common/utils/utils_promise');
 
 const riftQueue = new Redis.PlayerQueue(Redis.Redis, { name: 'rift' });
 

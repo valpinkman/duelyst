@@ -1,7 +1,7 @@
 'use strict';
 
 var SDK = require('@duelyst/sdk');
-var CONFIG = require('app/common/config');
+var CONFIG = require('@duelyst/common/config');
 var moment = require('moment');
 var _ = require('underscore');
 var Template = require('./templates/profile_faction_level_collection.hbs');

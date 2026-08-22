@@ -2,14 +2,14 @@
 
 'use strict';
 
-var CONFIG = require('app/common/config');
+var CONFIG = require('@duelyst/common/config');
 var RSX = require('app/data/resources');
 var SDK = require('@duelyst/sdk');
-var EventBus = require('app/common/eventbus');
-var EVENTS = require('app/common/event_types');
-var UtilsEnv = require('app/common/utils/utils_env');
+var EventBus = require('@duelyst/common/eventbus');
+var EVENTS = require('@duelyst/common/event_types');
+var UtilsEnv = require('@duelyst/common/utils/utils_env');
 var UtilsUI = require('app/ui/utils_ui');
-var UtilsJavascript = require('app/common/utils/utils_javascript');
+var UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
 var audio_engine = require('app/audio/audio_engine');
 var CardModel = require('app/ui/models/card');
 var ProfileManager = require('app/ui/managers/profile_manager');

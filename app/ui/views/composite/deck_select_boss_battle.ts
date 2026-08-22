@@ -2,9 +2,9 @@
 
 'use strict';
 
-var EventBus = require('app/common/eventbus');
-var EVENTS = require('app/common/event_types');
-var CONFIG = require('app/common/config');
+var EventBus = require('@duelyst/common/eventbus');
+var EVENTS = require('@duelyst/common/event_types');
+var CONFIG = require('@duelyst/common/config');
 var SDK = require('@duelyst/sdk');
 var RSX = require('app/data/resources');
 var DeckSelectBossBattleTmpl = require('app/ui/templates/composite/deck_select_boss_battle.hbs');

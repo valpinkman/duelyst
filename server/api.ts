@@ -14,7 +14,7 @@ const { PROJECT_ROOT } = require('server/lib/project_root');
 const { hasBundledClient } = require('server/lib/bundled_client');
 const downloadHtml = require('./lib/download_html');
 const mkdirp = require('mkdirp');
-const Logger = require('../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const shutdownLib = require('./shutdown');
 
 // Setup http server and express app

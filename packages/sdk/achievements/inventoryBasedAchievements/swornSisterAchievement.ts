@@ -11,7 +11,7 @@ const GameSession = require('@duelyst/sdk/gameSession');
 const RarityLookup = require('@duelyst/sdk/cards/rarityLookup');
 const CardSet = require('@duelyst/sdk/cards/cardSetLookup');
 const Cards = require('@duelyst/sdk/cards/cardsLookupComplete');
-const Logger = require('app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const _ = require('underscore');
 const i18next = require('i18next');
 

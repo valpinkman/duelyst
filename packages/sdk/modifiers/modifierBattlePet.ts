@@ -5,13 +5,13 @@
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const Modifier = require('@duelyst/sdk/modifiers/modifier');
 const MoveAction = require('@duelyst/sdk/actions/moveAction');
 const AttackAction = require('@duelyst/sdk/actions/attackAction');
 const CardType = require('@duelyst/sdk/cards/cardType');
 const UtilsGameSession = require('@duelyst/sdk/utils/utils_game_session');
-const UtilsPosition = require('app/common/utils/utils_position');
+const UtilsPosition = require('@duelyst/common/utils/utils_position');
 const ModifierImmuneToAttacks = require('@duelyst/sdk/modifiers/modifierImmuneToAttacks');
 const ModifierImmuneToAttacksByGeneral = require('@duelyst/sdk/modifiers/modifierImmuneToAttacksByGeneral');
 const ModifierImmuneToAttacksByRanged = require('@duelyst/sdk/modifiers/modifierImmuneToAttacksByRanged');

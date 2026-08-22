@@ -1,6 +1,6 @@
 'use strict';
 
-var EventBus = require('app/common/eventbus');
+var EventBus = require('@duelyst/common/eventbus');
 var ReconnectToGameTemplate = require('app/ui/templates/item/reconnect_to_game.hbs');
 
 var ReconnectToGameItemView = Backbone.Marionette.ItemView.extend({

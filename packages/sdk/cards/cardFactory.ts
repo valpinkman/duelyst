@@ -9,7 +9,7 @@
 const _ = require('underscore');
 const moment = require('moment');
 
-const Logger = require('app/common/logger');
+const Logger = require('@duelyst/common/logger');
 
 const Cards = require('@duelyst/sdk/cards/cardsLookupComplete');
 const CosmeticsFactory = require('@duelyst/sdk/cosmetics/cosmeticsFactory');

@@ -1,4 +1,4 @@
-var CONFIG = require('app/common/config');
+var CONFIG = require('@duelyst/common/config');
 var Animation = require('web-animations-js');
 
 var BBMView = Backbone.Marionette.View;

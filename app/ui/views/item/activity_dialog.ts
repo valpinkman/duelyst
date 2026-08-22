@@ -2,7 +2,7 @@
 
 'use strict';
 
-var CONFIG = require('app/common/config');
+var CONFIG = require('@duelyst/common/config');
 var RSX = require('app/data/resources');
 var audio_engine = require('app/audio/audio_engine');
 var Animations = require('app/ui/views/animations');

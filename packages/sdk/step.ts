@@ -6,7 +6,7 @@
  */
 const SDKObject = require('./object');
 const _ = require('underscore');
-const UtilsJavascript = require('app/common/utils/utils_javascript');
+const UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
 
 class Step extends SDKObject {
   declare action: any;

@@ -2,12 +2,12 @@
 
 const RSX = require('app/data/resources');
 const PKGS = require('app/data/packages');
-const Logger = require('app/common/logger');
-const CONFIG = require('app/common/config');
-const generatePushID = require('app/common/generate_push_id');
+const Logger = require('@duelyst/common/logger');
+const CONFIG = require('@duelyst/common/config');
+const generatePushID = require('@duelyst/common/generate_push_id');
 const SDK = require('@duelyst/sdk');
-const UtilsEngine = require('app/common/utils/utils_engine');
-const UtilsPosition = require('app/common/utils/utils_position');
+const UtilsEngine = require('@duelyst/common/utils/utils_engine');
+const UtilsPosition = require('@duelyst/common/utils/utils_position');
 const SoundEffectSequence = require('app/audio/SoundEffectSequence');
 const _ = require('underscore');
 const ParallaxLayer = require('../ParallaxLayer');

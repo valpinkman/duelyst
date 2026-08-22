@@ -6,7 +6,7 @@
  */
 const HealAction = require('@duelyst/sdk/actions/healAction');
 const CardType = require('@duelyst/sdk/cards/cardType');
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const ModifierSummonWatch = require('./modifierSummonWatch');
 
 class ModifierSummonWatchHealSelf extends ModifierSummonWatch {

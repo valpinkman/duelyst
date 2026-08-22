@@ -4,10 +4,10 @@ process.on('uncaughtException', (err) => {
 
 const path = require('path');
 require('app-module-path').addPath(path.join(__dirname, '../../'));
-const Logger = require('app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const SDK = require('@duelyst/sdk');
-const CONFIG = require('app/common/config');
-const generatePushId = require('app/common/generate_push_id');
+const CONFIG = require('@duelyst/common/config');
+const generatePushId = require('@duelyst/common/generate_push_id');
 const _ = require('underscore');
 const cluster = require('cluster');
 const CLUSTER_NUMBEROFWORKERS = require('os').cpus().length;
@@ -22,7 +22,7 @@ const findBestObjectiveForCardAtTargetPosition = require('./scoring/utils/utils_
 const ScoreForCardAtTargetPosition = require('./scoring/position/position_ScoreForCardAtTargetPosition');
 const filterAttackTargetsForUnit = require('./scoring/utils/utils_filterAttackTargetsForUnit');
 const BOUNTY = require('./scoring/bounty');
-const PromiseUtils = require('../../app/common/utils/utils_promise');
+const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 
 // Logger.enabled = false;
 // ++++++++++CLUSTER START+++++++++++

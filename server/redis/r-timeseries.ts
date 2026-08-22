@@ -9,7 +9,7 @@ const _ = require('underscore');
 const moment = require('moment');
 const crypto = require('crypto');
 const config = require('../../config/config');
-const Logger = require('../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 
 const env = config.get('env');
 

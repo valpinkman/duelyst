@@ -9,8 +9,8 @@
 const util = require('util');
 const FirebasePromises = require('../firebase_promises');
 const DuelystFirebase = require('../duelyst_firebase_module');
-const fbUtil = require('../../../app/common/utils/utils_firebase');
-const Logger = require('../../../app/common/logger');
+const fbUtil = require('@duelyst/common/utils/utils_firebase');
+const Logger = require('@duelyst/common/logger');
 const colors = require('colors');
 const validator = require('validator');
 const moment = require('moment');
@@ -19,14 +19,14 @@ const SyncModule = require('./sync');
 const InventoryModule = require('./inventory');
 const QuestsModule = require('./quests');
 const GamesModule = require('./games');
-const CONFIG = require('../../../app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const Errors = require('../custom_errors');
 const knex = require('./knex');
 const config = require('../../../config/config.js');
-const generatePushId = require('../../../app/common/generate_push_id');
+const generatePushId = require('@duelyst/common/generate_push_id');
 const DataAccessHelpers = require('./helpers');
 const hashHelpers = require('../hash_helpers');
-const AnalyticsUtil = require('../../../app/common/analyticsUtil');
+const AnalyticsUtil = require('@duelyst/common/analyticsUtil');
 
 // SDK imports
 const SDK = require('@duelyst/sdk');

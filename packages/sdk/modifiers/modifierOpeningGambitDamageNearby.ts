@@ -5,7 +5,7 @@
  * DS205: Consider reworking code to avoid use of IIFEs
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const DamageAction = require('@duelyst/sdk/actions/damageAction');
 const CardType = require('@duelyst/sdk/cards/cardType');
 const ModifierOpeningGambit = require('./modifierOpeningGambit');

@@ -9,8 +9,8 @@ const express = require('express');
 const router = express.Router();
 
 const util = require('util');
-const Logger = require('../../app/common/logger');
-const generatePushId = require('../../app/common/generate_push_id');
+const Logger = require('@duelyst/common/logger');
+const generatePushId = require('@duelyst/common/generate_push_id');
 const _ = require('underscore');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
@@ -33,13 +33,13 @@ const UsersModule = require('../lib/data_access/users');
 const ReferralsModule = require('../lib/data_access/referrals');
 const InventoryModule = require('../lib/data_access/inventory');
 const SyncModule = require('../lib/data_access/sync');
-const AnalyticsUtil = require('../../app/common/analyticsUtil');
+const AnalyticsUtil = require('@duelyst/common/analyticsUtil');
 
 // Configuration object
 const config = require('../../config/config');
 const { version } = require('../../version');
-const { onType } = require('../../app/common/utils/utils_promise');
-const PromiseUtils = require('../../app/common/utils/utils_promise');
+const { onType } = require('@duelyst/common/utils/utils_promise');
+const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 
 /*
 Build analytics data from user data

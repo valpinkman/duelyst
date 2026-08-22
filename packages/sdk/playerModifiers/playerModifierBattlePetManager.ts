@@ -6,7 +6,7 @@
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-const EVENTS = require('app/common/event_types');
+const EVENTS = require('@duelyst/common/event_types');
 const PlayerModifier = require('@duelyst/sdk/playerModifiers/playerModifier');
 const ModifierBattlePet = require('@duelyst/sdk/modifiers/modifierBattlePet');
 const ModifierTranscendance = require('@duelyst/sdk/modifiers/modifierTranscendance');

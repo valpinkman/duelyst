@@ -30,8 +30,8 @@
   const FactionFactory = require('@duelyst/sdk/cards/factionFactory');
   const CodexChapters = require('@duelyst/sdk/codex/codexChapterLookup');
   const CosmeticsLookup = require('@duelyst/sdk/cosmetics/cosmeticsLookup');
-  const CONFIG = require('app/common/config');
-  const UtilsJavascript = require('app/common/utils/utils_javascript');
+  const CONFIG = require('@duelyst/common/config');
+  const UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
   const DATA = require('app/data');
   const FX = require('app/data/fx');
   const RSX = require('app/data/resources');

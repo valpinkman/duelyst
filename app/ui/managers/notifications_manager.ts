@@ -17,9 +17,9 @@ _NotificationsManager.NOTIFICATION_REFERRAL_REWARDS = 'referral_rewards';
 
 module.exports = _NotificationsManager;
 
-var CONFIG = require('app/common/config');
-var EVENTS = require('app/common/event_types');
-var Logger = require('app/common/logger');
+var CONFIG = require('@duelyst/common/config');
+var EVENTS = require('@duelyst/common/event_types');
+var Logger = require('@duelyst/common/logger');
 var RSX = require('app/data/resources');
 var MainMenuItemView = require('app/ui/views/item/main_menu');
 var PlayLayout = require('app/ui/views/layouts/play');

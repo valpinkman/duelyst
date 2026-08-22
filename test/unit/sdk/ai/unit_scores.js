@@ -6,8 +6,8 @@ const UtilsSDK = require('../../../utils/utils_sdk');
 const StarterAI = require('../../../../server/ai/starter_ai');
 const ScoreForUnit = require('../../../../server/ai/scoring/base/unit');
 const SDK = require('@duelyst/sdk/index');
-const Logger = require('../../../../app/common/logger');
-const CONFIG = require('../../../../app/common/config');
+const Logger = require('@duelyst/common/logger');
+const CONFIG = require('@duelyst/common/config');
 
 // disable the logger for cleaner test output
 Logger.enabled = false;

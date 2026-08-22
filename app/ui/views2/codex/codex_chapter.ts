@@ -2,9 +2,9 @@
 
 'use strict';
 
-var CONFIG = require('app/common/config');
-var EventBus = require('app/common/eventbus');
-var EVENTS = require('app/common/event_types');
+var CONFIG = require('@duelyst/common/config');
+var EventBus = require('@duelyst/common/eventbus');
+var EVENTS = require('@duelyst/common/event_types');
 var UtilsUI = require('app/ui/utils_ui');
 var audio_engine = require('app/audio/audio_engine');
 var audio_object = require('app/audio/audio_object');

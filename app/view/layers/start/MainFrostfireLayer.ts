@@ -2,8 +2,8 @@
 
 const RSX = require('app/data/resources');
 const PKGS = require('app/data/packages');
-const Logger = require('app/common/logger');
-const UtilsEngine = require('app/common/utils/utils_engine');
+const Logger = require('@duelyst/common/logger');
+const UtilsEngine = require('@duelyst/common/utils/utils_engine');
 const audio_engine = require('app/audio/audio_engine');
 const _ = require('underscore');
 const FXCompositeLayer = require('../FXCompositeLayer');

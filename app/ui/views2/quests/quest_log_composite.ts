@@ -2,16 +2,16 @@
 
 'use strict';
 
-var EventBus = require('app/common/eventbus');
-var EVENTS = require('app/common/event_types');
-var CONFIG = require('app/common/config');
+var EventBus = require('@duelyst/common/eventbus');
+var EVENTS = require('@duelyst/common/event_types');
+var CONFIG = require('@duelyst/common/config');
 var Animations = require('app/ui/views/animations');
 var QuestsManager = require('app/ui/managers/quests_manager');
 var NavigationManager = require('app/ui/managers/navigation_manager');
 var NewPlayerManager = require('app/ui/managers/new_player_manager');
 var RSX = require('app/data/resources');
-var Logger = require('app/common/logger');
-var UtilsJavascript = require('app/common/utils/utils_javascript');
+var Logger = require('@duelyst/common/logger');
+var UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
 var audio_engine = require('app/audio/audio_engine');
 var moment = require('moment');
 var DuelystFirebase = require('app/ui/extensions/duelyst_firebase');

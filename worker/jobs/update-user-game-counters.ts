@@ -8,7 +8,7 @@ Job - Update User Progression
 */
 const config = require('../../config/config.js');
 const UsersModule = require('../../server/lib/data_access/users');
-const Logger = require('../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const colors = require('colors');
 
 /**

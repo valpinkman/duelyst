@@ -1,4 +1,4 @@
-const UtilsEngine = require('../../../common/utils/utils_engine');
+const UtilsEngine = require('@duelyst/common/utils/utils_engine');
 const FXCompositeLayer = require('../FXCompositeLayer');
 const BaseSprite = require('../../nodes/BaseSprite');
 

@@ -1,5 +1,5 @@
 const _ = require('underscore');
-const UtilsAudio = require('../common/utils/utils_audio');
+const UtilsAudio = require('@duelyst/common/utils/utils_audio');
 
 let _audio_id = 0;
 

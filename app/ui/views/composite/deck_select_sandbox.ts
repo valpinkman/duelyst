@@ -2,12 +2,12 @@
 
 'use strict';
 
-var EventBus = require('app/common/eventbus');
-var EVENTS = require('app/common/event_types');
-var CONFIG = require('app/common/config');
+var EventBus = require('@duelyst/common/eventbus');
+var EVENTS = require('@duelyst/common/event_types');
+var CONFIG = require('@duelyst/common/config');
 var SDK = require('@duelyst/sdk');
 var RSX = require('app/data/resources');
-var UtilsJavascript = require('app/common/utils/utils_javascript');
+var UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
 var audio_engine = require('app/audio/audio_engine');
 var VirtualCollection = require('backbone-virtual-collection');
 var ProfileManager = require('app/ui/managers/profile_manager');

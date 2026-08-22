@@ -7,7 +7,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const PlayerModifierEmblemEndTurnWatch = require('./playerModifierEmblemEndTurnWatch');
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const ModifierTransformed = require('@duelyst/sdk/modifiers/modifierTransformed');
 const RemoveAction = require('@duelyst/sdk/actions/removeAction');
 const PlayCardAsTransformAction = require('@duelyst/sdk/actions/playCardAsTransformAction');

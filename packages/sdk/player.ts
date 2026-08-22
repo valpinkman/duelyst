@@ -7,11 +7,11 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const SDKObject = require('./object');
-const Logger = require('app/common/logger');
-const CONFIG = require('app/common/config');
-const EVENTS = require('app/common/event_types');
-const UtilsJavascript = require('app/common/utils/utils_javascript');
-const ActionStateRecord = require('app/common/actionStateRecord');
+const Logger = require('@duelyst/common/logger');
+const CONFIG = require('@duelyst/common/config');
+const EVENTS = require('@duelyst/common/event_types');
+const UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
+const ActionStateRecord = require('@duelyst/common/actionStateRecord');
 const Deck = require('./cards/deck');
 const CardType = require('./cards/cardType');
 const EndFollowupAction = require('./actions/endFollowupAction');

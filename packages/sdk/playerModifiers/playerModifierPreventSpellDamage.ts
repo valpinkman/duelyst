@@ -4,7 +4,7 @@
  */
 const PlayerModifier = require('./playerModifier');
 const ModifierImmuneToSpellDamage = require('@duelyst/sdk/modifiers/modifierImmuneToSpellDamage');
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 
 class PlayerModifierPreventSpellDamage extends PlayerModifier {
   declare type: any;

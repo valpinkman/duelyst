@@ -5,7 +5,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const SpellApplyModifiers = require('./spellApplyModifiers');
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 
 class SpellWailingOverdrive extends SpellApplyModifiers {
   _postFilterPlayPositions(validPositions) {

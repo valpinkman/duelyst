@@ -23,12 +23,12 @@ _ChatManager.STATUS_CHALLENGE = 'challenge';
 
 module.exports = _ChatManager;
 
-var CONFIG = require('app/common/config');
-var Logger = require('app/common/logger');
-var EventBus = require('app/common/eventbus');
-var EVENTS = require('app/common/event_types');
-var Analytics = require('app/common/analytics');
-var UtilsFirebase = require('app/common/utils/utils_firebase');
+var CONFIG = require('@duelyst/common/config');
+var Logger = require('@duelyst/common/logger');
+var EventBus = require('@duelyst/common/eventbus');
+var EVENTS = require('@duelyst/common/event_types');
+var Analytics = require('@duelyst/common/analytics');
+var UtilsFirebase = require('@duelyst/common/utils/utils_firebase');
 var audio_engine = require('app/audio/audio_engine');
 var Conversations = require('app/ui/collections/conversations');
 var BuddiesCollection = require('app/ui/collections/buddies');

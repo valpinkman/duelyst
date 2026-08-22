@@ -2,8 +2,8 @@
  * decaffeinate suggestions:
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-const CONFIG = require('app/common/config');
-const UtilsPosition = require('app/common/utils/utils_position');
+const CONFIG = require('@duelyst/common/config');
+const UtilsPosition = require('@duelyst/common/utils/utils_position');
 const ModifierStartTurnWatchSpawnEntity = require('./modifierStartTurnWatchSpawnEntity');
 
 class ModifierStartTurnWatchSpawnTile extends ModifierStartTurnWatchSpawnEntity {

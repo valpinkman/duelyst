@@ -1,4 +1,4 @@
-const UtilsJavascript = require('app/common/utils/utils_javascript');
+const UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
 
 /** **************************************************************************
  Batch

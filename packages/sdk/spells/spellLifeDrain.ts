@@ -5,7 +5,7 @@
  */
 const SpellKillTarget = require('./spellKillTarget');
 const HealAction = require('@duelyst/sdk/actions/healAction');
-const UtilsPosition = require('app/common/utils/utils_position');
+const UtilsPosition = require('@duelyst/common/utils/utils_position');
 
 class SpellLifeDrain extends SpellKillTarget {
   onApplyEffectToBoardTile(board, x, y, sourceAction) {

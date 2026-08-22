@@ -180,7 +180,7 @@ export default defineConfig({
       // runtime glslify import is dead after static replacement; stub it
       glslify: path.resolve(rootDir, 'app/tools/glslify-stub.js'),
       // node builtins used by client code (browserify shimmed these):
-      // events -> app/common/session2.ts, url -> app/common/landing.ts
+      // events -> app/session2.ts, url -> packages/common/landing.ts
       events: path.resolve(rootDir, 'node_modules/events'),
       url: path.resolve(rootDir, 'node_modules/url'),
       os: path.resolve(rootDir, 'node_modules/os-browserify/browser.js'),

@@ -1,5 +1,5 @@
-const CONFIG = require('app/common/config');
-const UtilsJavascript = require('app/common/utils/utils_javascript');
+const CONFIG = require('@duelyst/common/config');
+const UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
 const _ = require('underscore');
 
 /**

@@ -1,9 +1,9 @@
 // pragma PKGS: gauntlet rift
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const SDK = require('@duelyst/sdk');
 const RSX = require('app/data/resources');
 const PKGS = require('app/data/packages');
-const UtilsEngine = require('app/common/utils/utils_engine');
+const UtilsEngine = require('@duelyst/common/utils/utils_engine');
 const SdkNode = require('./SdkNode');
 const BaseSprite = require('../BaseSprite');
 

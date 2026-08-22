@@ -8,9 +8,9 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const SDKObject = require('@duelyst/sdk/object');
-const Logger = require('app/common/logger');
-const CONFIG = require('app/common/config');
-const UtilsJavascript = require('app/common/utils/utils_javascript');
+const Logger = require('@duelyst/common/logger');
+const CONFIG = require('@duelyst/common/config');
+const UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
 const PutCardInHandAction = require('@duelyst/sdk/actions/putCardInHandAction');
 const PutCardInDeckAction = require('@duelyst/sdk/actions/putCardInDeckAction');
 const DrawCardAction = require('@duelyst/sdk/actions/drawCardAction');

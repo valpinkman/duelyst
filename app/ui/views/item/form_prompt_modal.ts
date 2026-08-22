@@ -1,13 +1,13 @@
 'use strict';
 
 var _ = require('underscore');
-var CONFIG = require('app/common/config');
+var CONFIG = require('@duelyst/common/config');
 var RSX = require('app/data/resources');
 var audio_engine = require('app/audio/audio_engine');
 var Animations = require('app/ui/views/animations');
-var EVENTS = require('app/common/event_types');
+var EVENTS = require('@duelyst/common/event_types');
 var NavigationManager = require('app/ui/managers/navigation_manager');
-var openUrl = require('app/common/openUrl');
+var openUrl = require('@duelyst/common/openUrl');
 
 /**
  * Abstract form prompt modal. Do not use this class directly.

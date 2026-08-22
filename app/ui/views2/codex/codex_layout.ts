@@ -4,7 +4,7 @@
 
 var SDK = require('@duelyst/sdk');
 var Scene = require('app/view/Scene');
-var CONFIG = require('app/common/config');
+var CONFIG = require('@duelyst/common/config');
 var PKGS = require('app/data/packages');
 var RSX = require('app/data/resources');
 var CodexLayer = require('app/view/layers/codex/CodexLayer');

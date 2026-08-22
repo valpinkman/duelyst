@@ -1,5 +1,5 @@
-const Logger = require('app/common/logger');
-const UtilsJavascript = require('app/common/utils/utils_javascript');
+const Logger = require('@duelyst/common/logger');
+const UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
 
 /** **************************************************************************
  CardNodeVisualStateTag

@@ -1,7 +1,7 @@
 'use strict';
 
-var UtilsJavascript = require('app/common/utils/utils_javascript');
-var PromiseUtils = require('app/common/utils/utils_promise');
+var UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
+var PromiseUtils = require('@duelyst/common/utils/utils_promise');
 
 var _PackageManager: Record<string, any> = {};
 _PackageManager.instance = null;
@@ -371,10 +371,10 @@ _PackageManager.injectClassWithResourceRequests = function (cls) {
 module.exports = _PackageManager;
 
 var _ = require('underscore');
-var CONFIG = require('app/common/config');
-var EventBus = require('app/common/eventbus');
-var EVENTS = require('app/common/event_types');
-var UtilsResources = require('app/common/utils/utils_resources');
+var CONFIG = require('@duelyst/common/config');
+var EventBus = require('@duelyst/common/eventbus');
+var EVENTS = require('@duelyst/common/event_types');
+var UtilsResources = require('@duelyst/common/utils/utils_resources');
 var audio_engine = require('app/audio/audio_engine');
 var CCInjections = require('app/view/extensions/CCInjections');
 var NodeInjections = require('app/view/extensions/NodeInjections');

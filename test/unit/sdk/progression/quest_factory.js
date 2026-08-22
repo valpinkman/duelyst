@@ -16,7 +16,7 @@
 const path = require('path');
 require('app-module-path').addPath(path.join(__dirname, '../../../../'));
 const { expect } = require('chai');
-const Logger = require('../../../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const QuestFactory = require('@duelyst/sdk/quests/questFactory');
 const FactionFactory = require('@duelyst/sdk/cards/factionFactory');
 const QuestParticipationWithFaction = require('@duelyst/sdk/quests/questParticipationWithFaction');

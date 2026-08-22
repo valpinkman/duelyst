@@ -1,8 +1,8 @@
 'use strict';
 
 var semver = require('semver');
-var Logger = require('app/common/logger');
-var CONFIG = require('app/common/config');
+var Logger = require('@duelyst/common/logger');
+var CONFIG = require('@duelyst/common/config');
 var MessageView = require('app/ui/views/item/message');
 var ConversationTemplate = require('app/ui/templates/composite/conversation.hbs');
 var ChatManager = require('app/ui/managers/chat_manager');

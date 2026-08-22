@@ -5,9 +5,9 @@
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-const EventBus = require('app/common/eventbus');
-const EVENTS = require('app/common/event_types');
-const UtilsJavascript = require('app/common/utils/utils_javascript');
+const EventBus = require('@duelyst/common/eventbus');
+const EVENTS = require('@duelyst/common/event_types');
+const UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
 const GameSession = require('@duelyst/sdk/gameSession');
 const GameStatus = require('@duelyst/sdk/gameStatus');
 const GameType = require('@duelyst/sdk/gameType');

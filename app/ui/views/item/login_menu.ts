@@ -1,16 +1,16 @@
 'use strict';
 
 var Session = require('app/session2');
-var Logger = require('app/common/logger');
-var EVENTS = require('app/common/event_types');
-var CONFIG = require('app/common/config');
+var Logger = require('@duelyst/common/logger');
+var EVENTS = require('@duelyst/common/event_types');
+var CONFIG = require('@duelyst/common/config');
 var RSX = require('app/data/resources');
 var audio_engine = require('app/audio/audio_engine');
 var validator = require('validator');
 var Animations = require('app/ui/views/animations');
 var NavigationManager = require('app/ui/managers/navigation_manager');
 var LoginMenuTmpl = require('app/ui/templates/item/login_menu.hbs');
-var openUrl = require('app/common/openUrl');
+var openUrl = require('@duelyst/common/openUrl');
 var i18next = require('i18next');
 var RegistrationItemView = require('./registration');
 var ErrorDialogItemView = require('./error_dialog');

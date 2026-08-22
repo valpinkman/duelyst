@@ -1,12 +1,12 @@
 'use strict';
 
 var SDK = require('@duelyst/sdk');
-const PromiseUtils = require('app/common/utils/utils_promise');
-var Logger = require('app/common/logger');
-var CONFIG = require('app/common/config');
+const PromiseUtils = require('@duelyst/common/utils/utils_promise');
+var Logger = require('@duelyst/common/logger');
+var CONFIG = require('@duelyst/common/config');
 var UtilsUI = require('app/ui/utils_ui');
 var RSX = require('app/data/resources');
-var UtilsJavascript = require('app/common/utils/utils_javascript');
+var UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
 var BuddyListTemplate = require('app/ui/templates/item/buddy_list.hbs');
 var BuddyPreviewTemplate = require('app/ui/templates/item/buddy_preview.hbs');
 var ChatManager = require('app/ui/managers/chat_manager');

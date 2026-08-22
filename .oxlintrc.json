@@ -16,7 +16,7 @@
     "app/tools/dat.gui.ts",
     "packages",
     "packages/sdk",
-    "app/common",
+    "packages/common",
     "scripts/codex/CanvasText-0.4.1.js"
   ]
 }

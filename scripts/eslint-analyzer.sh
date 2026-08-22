@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# The code to analyze should be provided as the first argument, e.g. ./eslint-analyzer.sh app/common
+# The code to analyze should be provided as the first argument, e.g. ./eslint-analyzer.sh packages/common
 target=$1
 
 # Generate a JSON report of linting errors.

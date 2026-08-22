@@ -1,4 +1,4 @@
-const Logger = require('app/common/logger');
+const Logger = require('@duelyst/common/logger');
 
 // SDK Namespace Wrapper
 const GameSession = require('@duelyst/sdk/gameSession');

@@ -14,13 +14,13 @@ const InventoryModule = require('../../../server/lib/data_access/inventory');
 const SyncModule = require('../../../server/lib/data_access/sync');
 const FirebasePromises = require('../../../server/lib/firebase_promises');
 const config = require('../../../config/config');
-const CONFIG = require('../../../app/common/config');
-const Logger = require('../../../app/common/logger');
+const CONFIG = require('@duelyst/common/config');
+const Logger = require('@duelyst/common/logger');
 const SDK = require('@duelyst/sdk/index');
 const knex = require('../../../server/lib/data_access/knex');
-const generatePushId = require('../../../app/common/generate_push_id');
-const { onType } = require('../../../app/common/utils/utils_promise');
-const PromiseUtils = require('../../../app/common/utils/utils_promise');
+const generatePushId = require('@duelyst/common/generate_push_id');
+const { onType } = require('@duelyst/common/utils/utils_promise');
+const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 const { installSeededRandom, restoreRandom } = require('../../helpers/seeded_random');
 
 // disable the logger for cleaner test output

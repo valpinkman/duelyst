@@ -1,4 +1,4 @@
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const Cards = require('@duelyst/sdk/cards/cardsLookupComplete');
 const ModifierFrenzy = require('@duelyst/sdk/modifiers/modifierFrenzy');
 const ModifierGrow = require('@duelyst/sdk/modifiers/modifierGrow');

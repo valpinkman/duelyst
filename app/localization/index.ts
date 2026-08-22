@@ -6,7 +6,7 @@
 const i18next = require('i18next');
 const XHR = require('i18next-xhr-backend');
 const LngDetector = require('i18next-browser-languagedetector');
-const Storage = require('app/common/storage');
+const Storage = require('@duelyst/common/storage');
 
 const options: Record<string, any> = {
   whitelist: ['en', 'de'],

@@ -4,7 +4,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const express = require('express');
-const Logger = require('../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const Errors = require('../lib/custom_errors');
 const DuelystFirebase = require('../lib/duelyst_firebase_module');
 const FirebasePromises = require('../lib/firebase_promises');

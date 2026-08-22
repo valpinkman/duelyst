@@ -1,6 +1,6 @@
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const _ = require('underscore');
-const UtilsEngine = require('app/common/utils/utils_engine');
+const UtilsEngine = require('@duelyst/common/utils/utils_engine');
 const BaseSprite = require('../BaseSprite');
 
 /** **************************************************************************

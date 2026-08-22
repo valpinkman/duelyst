@@ -20,7 +20,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const STATICS = ['map', 'each', 'props', 'delay'];
-const HELPER = 'app/common/utils/utils_promise';
+const HELPER = '@duelyst/common/utils/utils_promise';
 const files = process.argv.slice(2);
 
 const requirePathFor = (file) => {

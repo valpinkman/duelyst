@@ -1,9 +1,9 @@
 'use strict';
 
 var moment = require('moment');
-var Logger = require('app/common/logger');
-var CONFIG = require('app/common/config');
-var generatePushID = require('app/common/generate_push_id');
+var Logger = require('@duelyst/common/logger');
+var CONFIG = require('@duelyst/common/config');
+var generatePushID = require('@duelyst/common/generate_push_id');
 var RSX = require('app/data/resources');
 var audio_engine = require('app/audio/audio_engine');
 var SDK = require('@duelyst/sdk');

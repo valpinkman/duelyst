@@ -1,10 +1,10 @@
 'use strict';
 
-var Logger = require('app/common/logger');
-var CONFIG = require('app/common/config');
+var Logger = require('@duelyst/common/logger');
+var CONFIG = require('@duelyst/common/config');
 var UtilityGameMenuTmpl = require('app/ui/templates/item/utility_game_menu.hbs');
 var NavigationManager = require('app/ui/managers/navigation_manager');
-var UtilsEngine = require('../../../common/utils/utils_engine');
+var UtilsEngine = require('@duelyst/common/utils/utils_engine');
 var UtilityMenuItemView = require('./utility_menu');
 var GameMenuItemView = require('./esc_game_menu');
 

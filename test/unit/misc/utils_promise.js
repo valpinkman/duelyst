@@ -8,7 +8,7 @@
  * plausible "simplification" of the helper would break.
  */
 const { expect } = require('chai');
-const PromiseUtils = require('../../../app/common/utils/utils_promise');
+const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 
 describe('PromiseUtils', () => {
   describe('map()', () => {

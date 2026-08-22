@@ -360,6 +360,25 @@ step it describes, so it can never drift from the code.
      tree. Verified by booting `build/bin/api` inside the built image — every other gate is a
      dev-mode path.
 
+     Two further ways a **gate** narrowed silently, both found by counting rather than by reading a
+     status line: `tsc` does not follow CommonJS `require()`, so the 1,376 sdk files were in the
+     root program only because `include` listed `app/**/*.ts` — moving them out dropped the program
+     from 2,274 files to 873 with no error, and both `typecheck` and the TS2304 gate stayed green
+     over the remainder. And `test/unit/sdk/package_identity.js`, which exists to prove the two
+     spellings of a package resolve to one instance, had both of its spellings rewritten into the
+     same string by the codemod, so it compared a module to itself and passed for free. Fixed by
+     naming `packages/*` in the root `include` (folded into step 1) and by re-pointing the test at
+     `@duelyst/x` vs `packages/x`, which are still genuinely two spellings.
+
+     **Step 2 done:** `app/common` → `packages/common` (25 files), 2,135 specifiers across 1,079
+     files rewritten to `@duelyst/common`. `app/common` had 0 outbound edges to begin with — the
+     leaf property `check-package-deps` has gated since 2026-08-21 — so the move itself was the
+     easy half; the cost was again in the non-specifier strings: seven Dockerfiles, the `TREES`
+     list, three codemods that _emit_ the helper's path into source, a filesystem filter in
+     `check-promise-utils-bindings.mjs`, and the tsconfig `include` that reached
+     `../types/globals.d.ts` (meaning `app/types` from `app/common`, and nothing at all from
+     `packages/common`). Verified the same way as step 1, container boot included.
+
   5. **Optional, deliberately not started:** Backbone/Marionette/jQuery. That is a UI rewrite,
      not an upgrade, and was declined once already. Audited 2026-08-21 —
      [`BACKBONE_AUDIT.md`](BACKBONE_AUDIT.md). The short version: Backbone is the metagame shell

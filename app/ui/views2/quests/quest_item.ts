@@ -1,6 +1,6 @@
 'use strict';
 
-var Logger = require('app/common/logger');
+var Logger = require('@duelyst/common/logger');
 var QuestsManager = require('app/ui/managers/quests_manager');
 var QuestFactory = require('@duelyst/sdk').QuestFactory;
 var NavigationManager = require('app/ui/managers/navigation_manager');

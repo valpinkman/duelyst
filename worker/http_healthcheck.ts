@@ -7,14 +7,14 @@
 // Responds to /health endpoint with status 200
 // Otherwise responds with status 404
 
-const Logger = require('../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const http = require('http');
 const url = require('url');
 const os = require('os');
 const config = require('../config/config');
 const knex = require('../server/lib/data_access/knex');
-const PromiseUtils = require('../app/common/utils/utils_promise');
-const { onType } = require('../app/common/utils/utils_promise');
+const PromiseUtils = require('@duelyst/common/utils/utils_promise');
+const { onType } = require('@duelyst/common/utils/utils_promise');
 
 const MAX_QUEUED_ALLOWED = 25;
 

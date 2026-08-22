@@ -11,7 +11,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 const colors = require('colors');
 const { compose } = require('compose-middleware');
-const Logger = require('app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const config = require('config/config');
 const getRealIp = require('express-real-ip');
 

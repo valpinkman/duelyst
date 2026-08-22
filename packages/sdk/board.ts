@@ -7,9 +7,9 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const SDKObject = require('./object');
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const UtilsGameSession = require('@duelyst/sdk/utils/utils_game_session');
-const UtilsPosition = require('app/common/utils/utils_position');
+const UtilsPosition = require('@duelyst/common/utils/utils_position');
 const Card = require('./cards/card');
 const CardType = require('./cards/cardType');
 const Entity = require('./entities/entity');

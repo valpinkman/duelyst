@@ -4,16 +4,16 @@
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-const Logger = require('app/common/logger');
-const EventBus = require('app/common/eventbus');
-const EVENTS = require('app/common/event_types');
+const Logger = require('@duelyst/common/logger');
+const EventBus = require('@duelyst/common/eventbus');
+const EVENTS = require('@duelyst/common/event_types');
 const Scene = require('app/view/Scene');
 const DuelystFirebase = require('app/ui/extensions/duelyst_firebase');
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const audio_engine = require('app/audio/audio_engine');
 const NotificationsManager = require('app/ui/managers/notifications_manager');
-const Analytics = require('app/common/analytics');
-const Storage = require('app/common/storage');
+const Analytics = require('@duelyst/common/analytics');
+const Storage = require('@duelyst/common/storage');
 const moment = require('moment');
 const CosmeticsLookup = require('@duelyst/sdk/cosmetics/cosmeticsLookup');
 

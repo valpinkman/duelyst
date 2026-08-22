@@ -1,7 +1,7 @@
 'use strict';
 
 var _ = require('underscore');
-var Analytics = require('app/common/analytics');
+var Analytics = require('@duelyst/common/analytics');
 var validator = require('validator');
 var Template = require('app/ui/templates/item/account_inventory_reset_modal.hbs');
 var NavigationManager = require('app/ui/managers/navigation_manager');

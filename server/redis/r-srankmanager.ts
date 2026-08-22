@@ -4,12 +4,12 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const moment = require('moment');
-const Logger = require('../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const config = require('../../config/config');
 
 const env = config.get('env');
 const ttl = config.get('redis.ttl');
-const generatePushID = require('../../app/common/generate_push_id');
+const generatePushID = require('@duelyst/common/generate_push_id');
 const zlib = require('zlib');
 const { promisify } = require('util');
 // bluebird's promisifyAll gave us gzipAsync/gunzipAsync; node's promisify is the

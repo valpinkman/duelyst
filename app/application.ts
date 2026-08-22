@@ -25,19 +25,19 @@ const semver = require('semver');
 const querystring = require('query-string');
 
 // core
-const Storage = require('app/common/storage');
-const Logger = (window.Logger = require('app/common/logger'));
+const Storage = require('@duelyst/common/storage');
+const Logger = (window.Logger = require('@duelyst/common/logger'));
 
 // Disable detailed logging in production.
 Logger.enabled = process.env.NODE_ENV !== 'production';
 
-const Landing = require('app/common/landing');
+const Landing = require('@duelyst/common/landing');
 const Session = (window.Session = require('app/session2'));
-const CONFIG = (window.CONFIG = require('app/common/config'));
+const CONFIG = (window.CONFIG = require('@duelyst/common/config'));
 const RSX = (window.RSX = require('app/data/resources'));
 const PKGS = (window.PKGS = require('app/data/packages'));
-const EventBus = (window.EventBus = require('app/common/eventbus'));
-const EVENTS = require('app/common/event_types');
+const EventBus = (window.EventBus = require('@duelyst/common/eventbus'));
+const EVENTS = require('@duelyst/common/event_types');
 const SDK = (window.SDK = require('@duelyst/sdk'));
 const NetworkManager = require('app/networkManager');
 
@@ -46,13 +46,13 @@ const NetworkManager = require('app/networkManager');
 SDK.GameSession.setStepSubmitter((eventData) =>
   NetworkManager.getInstance().broadcastGameEvent(eventData),
 );
-const Analytics = (window.Analytics = require('app/common/analytics'));
-const AnalyticsUtil = require('app/common/analyticsUtil');
-const UtilsJavascript = require('app/common/utils/utils_javascript');
-const UtilsEnv = require('app/common/utils/utils_env');
-const UtilsPointer = require('app/common/utils/utils_pointer');
+const Analytics = (window.Analytics = require('@duelyst/common/analytics'));
+const AnalyticsUtil = require('@duelyst/common/analyticsUtil');
+const UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
+const UtilsEnv = require('@duelyst/common/utils/utils_env');
+const UtilsPointer = require('@duelyst/common/utils/utils_pointer');
 const audio_engine = (window.audio_engine = require('app/audio/audio_engine'));
-const openUrl = require('app/common/openUrl');
+const openUrl = require('@duelyst/common/openUrl');
 const i18next = require('i18next');
 
 // models and collections
@@ -100,7 +100,7 @@ const EscMainMenuItemView = require('app/ui/views/item/esc_main_menu');
 
 const LoginMenuItemView = require('app/ui/views/item/login_menu');
 
-const Discord = window.isDesktop ? require('app/common/discord') : null;
+const Discord = window.isDesktop ? require('@duelyst/common/discord') : null;
 
 const SelectUsernameItemView = require('app/ui/views/item/select_username');
 
@@ -161,8 +161,8 @@ const ShopSpecialProductAvailableDialogItemView = require('app/ui/views2/shop/sh
 const ReplayEngine = require('app/replay/replayEngine');
 
 const AnalyticsTracker = require('app/analyticsTracker');
-const PromiseUtils = require('app/common/utils/utils_promise');
-const { onType } = require('app/common/utils/utils_promise');
+const PromiseUtils = require('@duelyst/common/utils/utils_promise');
+const { onType } = require('@duelyst/common/utils/utils_promise');
 
 // require the Handlebars Template Helpers extension here since it modifies core Marionette code
 require('app/ui/extensions/handlebars_template_helpers');

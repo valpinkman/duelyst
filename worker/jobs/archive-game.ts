@@ -13,7 +13,7 @@ const config = require('../../config/config.js');
 
 const env = config.get('env');
 const { GameManager } = require('../../server/redis');
-const Logger = require('../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 
 /**
  * Job - 'archive-game'

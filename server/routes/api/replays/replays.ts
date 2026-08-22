@@ -8,13 +8,13 @@ const express = require('express');
 const request = require('superagent');
 const knex = require('../../../lib/data_access/knex');
 const DataAccessHelpers = require('../../../lib/data_access/helpers');
-const Logger = require('../../../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const config = require('../../../../config/config');
 const t = require('tcomb-validation');
 const UtilsGameSession = require('@duelyst/sdk/utils/utils_game_session');
 const GameSession = require('@duelyst/sdk/gameSession');
 const Errors = require('../../../lib/custom_errors');
-const generatePushId = require('../../../../app/common/generate_push_id');
+const generatePushId = require('@duelyst/common/generate_push_id');
 const _ = require('underscore');
 
 const awsRegion = config.get('aws.region');

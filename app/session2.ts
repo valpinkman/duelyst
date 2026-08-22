@@ -9,9 +9,9 @@ const { EventEmitter } = require('events');
 const Firebase = require('app/firebase');
 const fetch = require('isomorphic-fetch');
 const moment = require('moment');
-const Storage = require('app/common/storage');
+const Storage = require('@duelyst/common/storage');
 const i18next = require('i18next');
-const PromiseUtils = require('app/common/utils/utils_promise');
+const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 
 class Session extends EventEmitter {
   constructor(options?) {

@@ -1,7 +1,7 @@
 'use strict';
 
 var Session = require('app/session2');
-var UtilsJavascript = require('app/common/utils/utils_javascript');
+var UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
 var SDK = require('@duelyst/sdk');
 var InventoryManager = require('app/ui/managers/inventory_manager');
 var NavigationManager = require('app/ui/managers/navigation_manager');

@@ -5,7 +5,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const SpellDamage = require('./spellDamage');
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const UtilsGameSession = require('@duelyst/sdk/utils/utils_game_session');
 
 class SpellDamageCenterColumn extends SpellDamage {

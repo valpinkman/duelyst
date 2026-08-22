@@ -6,7 +6,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Spell = require('./spell');
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const CardType = require('@duelyst/sdk/cards/cardType');
 const PlayCardAsTransformAction = require('@duelyst/sdk/actions/playCardAsTransformAction');
 const RemoveAction = require('@duelyst/sdk/actions/removeAction');

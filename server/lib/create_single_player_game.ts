@@ -7,9 +7,9 @@
 const moment = require('moment');
 const _ = require('underscore');
 const { GameManager } = require('../redis');
-const CONFIG = require('../../app/common/config');
-const Logger = require('../../app/common/logger');
-const generatePushId = require('../../app/common/generate_push_id');
+const CONFIG = require('@duelyst/common/config');
+const Logger = require('@duelyst/common/logger');
+const generatePushId = require('@duelyst/common/generate_push_id');
 const config = require('../../config/config');
 const { version } = require('../../version');
 

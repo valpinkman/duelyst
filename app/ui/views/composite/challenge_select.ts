@@ -3,14 +3,14 @@
 'use strict';
 
 var RSX = require('app/data/resources');
-var CONFIG = require('app/common/config');
-var EventBus = require('app/common/eventbus');
-var EVENTS = require('app/common/event_types');
-var generatePushID = require('app/common/generate_push_id');
+var CONFIG = require('@duelyst/common/config');
+var EventBus = require('@duelyst/common/eventbus');
+var EVENTS = require('@duelyst/common/event_types');
+var generatePushID = require('@duelyst/common/generate_push_id');
 var audio_engine = require('app/audio/audio_engine');
 var SDK = require('@duelyst/sdk');
 var Scene = require('app/view/Scene');
-var Analytics = require('app/common/analytics');
+var Analytics = require('@duelyst/common/analytics');
 var Animations = require('app/ui/views/animations');
 var ProgressionManager = require('app/ui/managers/progression_manager');
 var ChallengePreviewItemView = require('app/ui/views/item/challenge_preview');

@@ -14,13 +14,13 @@ const _ = require('underscore');
 
 const FirebasePromises = require('../firebase_promises');
 const DuelystFirebase = require('../duelyst_firebase_module');
-const fbUtil = require('../../../app/common/utils/utils_firebase');
-const Logger = require('../../../app/common/logger');
-const CONFIG = require('../../../app/common/config');
+const fbUtil = require('@duelyst/common/utils/utils_firebase');
+const Logger = require('@duelyst/common/logger');
+const CONFIG = require('@duelyst/common/config');
 const Errors = require('../custom_errors');
 const knex = require('./knex');
 const config = require('../../../config/config.js');
-const generatePushId = require('../../../app/common/generate_push_id');
+const generatePushId = require('@duelyst/common/generate_push_id');
 const DataAccessHelpers = require('./helpers');
 
 // SDK imports
@@ -32,7 +32,7 @@ const CosmeticsLookup = require('@duelyst/sdk/cosmetics/cosmeticsLookup');
 
 // redis
 const { SRankManager } = require('../../redis');
-const PromiseUtils = require('../../../app/common/utils/utils_promise');
+const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 
 class SyncModule {
   /**

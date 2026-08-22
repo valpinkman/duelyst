@@ -7,11 +7,11 @@
  */
 const _ = require('underscore');
 const io = require('socket.io-client');
-const EventBus = require('app/common/eventbus');
-const EVENTS = require('app/common/event_types');
-const Logger = require('app/common/logger');
-const CONFIG = require('app/common/config');
-const Storage = require('app/common/storage');
+const EventBus = require('@duelyst/common/eventbus');
+const EVENTS = require('@duelyst/common/event_types');
+const Logger = require('@duelyst/common/logger');
+const CONFIG = require('@duelyst/common/config');
+const Storage = require('@duelyst/common/storage');
 const GameSession = require('@duelyst/sdk/gameSession');
 const GameType = require('@duelyst/sdk/gameType');
 

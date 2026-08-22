@@ -1,11 +1,11 @@
 // pragma PKGS: loot_crate
 
-const CONFIG = require('app/common/config');
-const Logger = require('app/common/logger');
+const CONFIG = require('@duelyst/common/config');
+const Logger = require('@duelyst/common/logger');
 const RSX = require('app/data/resources');
 const PKGS = require('app/data/packages');
 const SDK = require('@duelyst/sdk');
-const UtilsEngine = require('app/common/utils/utils_engine');
+const UtilsEngine = require('@duelyst/common/utils/utils_engine');
 const GiftCrateNode = require('app/view/nodes/reward/GiftCrateNode');
 const GiftCrateLookup = require('@duelyst/sdk/giftCrates/giftCrateLookup');
 const MysteryT1CrateNode = require('app/view/nodes/reward/MysteryT1CrateNode');

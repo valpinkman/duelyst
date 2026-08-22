@@ -6,7 +6,7 @@
 const _ = require('underscore');
 const r = require('../r-client');
 const queue = require('../r-playerqueue');
-const PromiseUtils = require('../../../app/common/utils/utils_promise');
+const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 
 const q = new queue(r);
 // console.log(q)

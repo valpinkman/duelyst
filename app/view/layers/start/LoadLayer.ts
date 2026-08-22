@@ -1,9 +1,9 @@
 // pragma PKGS: preloader
 
-const Logger = require('app/common/logger');
-const CONFIG = require('app/common/config');
+const Logger = require('@duelyst/common/logger');
+const CONFIG = require('@duelyst/common/config');
 const RSX = require('app/data/resources');
-const UtilsEngine = require('../../../common/utils/utils_engine');
+const UtilsEngine = require('@duelyst/common/utils/utils_engine');
 const FXCompositeLayer = require('../FXCompositeLayer');
 const ParallaxLayer = require('../ParallaxLayer');
 const BaseSprite = require('../../nodes/BaseSprite');

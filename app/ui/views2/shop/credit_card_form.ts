@@ -2,9 +2,9 @@
 
 'use strict';
 
-var EventBus = require('app/common/eventbus');
-var EVENTS = require('app/common/event_types');
-var CONFIG = require('app/common/config');
+var EventBus = require('@duelyst/common/eventbus');
+var EVENTS = require('@duelyst/common/event_types');
+var CONFIG = require('@duelyst/common/config');
 var RSX = require('app/data/resources');
 var audio_engine = require('app/audio/audio_engine');
 var NavigationManager = require('app/ui/managers/navigation_manager');

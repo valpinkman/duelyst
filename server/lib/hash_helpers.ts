@@ -7,7 +7,7 @@
 
 const { promisify } = require('util');
 const bcrypt = require('bcrypt');
-const PromiseUtils = require('../../app/common/utils/utils_promise');
+const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 
 /* Promise-compatible wrappers around bcrypt's callback API. */
 const genSaltAsync = promisify(bcrypt.genSalt);

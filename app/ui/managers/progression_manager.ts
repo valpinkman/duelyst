@@ -12,15 +12,15 @@ _ProgressionManager.current = _ProgressionManager.getInstance;
 
 module.exports = _ProgressionManager;
 
-var CONFIG = require('app/common/config');
-var EventBus = require('app/common/eventbus');
-var EVENTS = require('app/common/event_types');
-var Logger = require('app/common/logger');
+var CONFIG = require('@duelyst/common/config');
+var EventBus = require('@duelyst/common/eventbus');
+var EVENTS = require('@duelyst/common/event_types');
+var Logger = require('@duelyst/common/logger');
 var SDK = require('@duelyst/sdk');
 var NotificationModel = require('app/ui/models/notification');
 var DuelystFirebase = require('app/ui/extensions/duelyst_firebase');
 var DuelystBackbone = require('app/ui/extensions/duelyst_backbone');
-var Analytics = require('app/common/analytics');
+var Analytics = require('@duelyst/common/analytics');
 var ReferralDialogView = require('app/ui/views2/referrals/referral_dialog');
 var moment = require('moment');
 var ErrorDialogItemView = require('app/ui/views/item/error_dialog');

@@ -1,8 +1,8 @@
 'use strict';
 
 var Messages = require('app/ui/collections/messages');
-var Logger = require('app/common/logger');
-var Analytics = require('app/common/analytics');
+var Logger = require('@duelyst/common/logger');
+var Analytics = require('@duelyst/common/analytics');
 var ChatManager = require('app/ui/managers/chat_manager');
 var ProfileManager = require('app/ui/managers/profile_manager');
 

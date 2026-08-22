@@ -16,7 +16,7 @@
  */
 const Redis = require('ioredis');
 
-const Logger = require('../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const config = require('../../config/config');
 
 const RedisClient = new Redis({

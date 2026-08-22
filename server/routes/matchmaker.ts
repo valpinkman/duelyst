@@ -10,11 +10,11 @@ const express = require('express');
 
 const router = express.Router();
 const util = require('util');
-const Logger = require('../../app/common/logger');
-const CONFIG = require('../../app/common/config');
+const Logger = require('@duelyst/common/logger');
+const CONFIG = require('@duelyst/common/config');
 const moment = require('moment');
 const CustomError = require('../lib/custom_errors');
-const { onType } = require('../../app/common/utils/utils_promise');
+const { onType } = require('@duelyst/common/utils/utils_promise');
 const isSignedIn = require('../middleware/signed_in');
 const t = require('tcomb-validation');
 const validators = require('../validators');
@@ -58,7 +58,7 @@ const config = require('../../config/config.js');
 
 const env = config.get('env');
 const { version } = require('../../version');
-const PromiseUtils = require('../../app/common/utils/utils_promise');
+const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 
 // # Require authentication
 router.use('/matchmaking', isSignedIn);

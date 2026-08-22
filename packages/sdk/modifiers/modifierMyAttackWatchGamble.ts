@@ -5,7 +5,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const ForcedAttackAction = require('@duelyst/sdk/actions/forcedAttackAction');
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const CardType = require('@duelyst/sdk/cards/cardType');
 const ModifierMyAttackWatch = require('./modifierMyAttackWatch');
 

@@ -10,7 +10,7 @@ _ProfileManager.current = _ProfileManager.getInstance;
 
 module.exports = _ProfileManager;
 
-var Logger = require('app/common/logger');
+var Logger = require('@duelyst/common/logger');
 var Profile = require('app/ui/models/profile');
 var Firebase = require('app/firebase');
 var Manager = require('./manager');

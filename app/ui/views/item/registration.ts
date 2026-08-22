@@ -1,7 +1,7 @@
 'use strict';
 
 var _ = require('underscore');
-var Analytics = require('app/common/analytics');
+var Analytics = require('@duelyst/common/analytics');
 var validator = require('validator');
 var Session = require('app/session2');
 var RegistrationItemViewTempl = require('app/ui/templates/item/registration.hbs');

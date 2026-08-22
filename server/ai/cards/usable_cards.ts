@@ -1,5 +1,5 @@
 const Factions = require('@duelyst/sdk/cards/factionsLookup');
-const UtilsJavascript = require('app/common/utils/utils_javascript');
+const UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
 const F1 = require('./faction1');
 const F2 = require('./faction2');
 const F3 = require('./faction3');

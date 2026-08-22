@@ -3,10 +3,10 @@
 'use strict';
 
 var SDK = require('@duelyst/sdk');
-var CONFIG = require('app/common/config');
+var CONFIG = require('@duelyst/common/config');
 var RSX = require('app/data/resources');
 var PKGS = require('app/data/packages');
-var UtilsJavascript = require('app/common/utils/utils_javascript');
+var UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
 var UtilsUI = require('app/ui/utils_ui');
 var audio_engine = require('app/audio/audio_engine');
 var CardTmpl = require('app/ui/templates/composite/card.hbs');

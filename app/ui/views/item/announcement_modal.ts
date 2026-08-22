@@ -4,7 +4,7 @@ var Templ = require('app/ui/templates/item/announcement_modal.hbs');
 var NavigationManager = require('app/ui/managers/navigation_manager');
 var NewsManager = require('app/ui/managers/news_manager');
 var Animations = require('app/ui/views/animations');
-var openUrl = require('app/common/openUrl');
+var openUrl = require('@duelyst/common/openUrl');
 
 var AnnouncementModalView = Backbone.Marionette.ItemView.extend({
   id: 'app-announcement-modal',

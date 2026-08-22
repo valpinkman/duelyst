@@ -1,6 +1,6 @@
 // pragma PKGS: victory
-const Logger = require('app/common/logger');
-const CONFIG = require('app/common/config');
+const Logger = require('@duelyst/common/logger');
+const CONFIG = require('@duelyst/common/config');
 const RSX = require('app/data/resources');
 const PKGS = require('app/data/packages');
 const SDK = require('@duelyst/sdk');
@@ -8,8 +8,8 @@ const RewardLayer = require('app/view/layers/reward/RewardLayer');
 const BaseSprite = require('app/view/nodes/BaseSprite');
 const BaseParticleSystem = require('app/view/nodes/BaseParticleSystem');
 const Shake = require('app/view/actions/Shake');
-const UtilsEngine = require('app/common/utils/utils_engine');
-const UtilsPosition = require('app/common/utils/utils_position');
+const UtilsEngine = require('@duelyst/common/utils/utils_engine');
+const UtilsPosition = require('@duelyst/common/utils/utils_position');
 const FXFireLinearWaveSprite = require('app/view/nodes/fx/FXFireLinearWaveSprite');
 const TweenTypes = require('app/view/actions/TweenTypes');
 

@@ -1,7 +1,7 @@
-const CONFIG = require('app/common/config');
-const Logger = require('app/common/logger');
-const UtilsEngine = require('app/common/utils/utils_engine');
-const PromiseUtils = require('app/common/utils/utils_promise');
+const CONFIG = require('@duelyst/common/config');
+const Logger = require('@duelyst/common/logger');
+const UtilsEngine = require('@duelyst/common/utils/utils_engine');
+const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 
 // vendor engine extensions
 // must be required to activate
@@ -63,8 +63,8 @@ module.exports = Scene;
 
 // now add the rest of the requires and methods
 // why is this organized in this way? https://coderwall.com/p/myzvmg
-const EventBus = require('app/common/eventbus');
-const EVENTS = require('app/common/event_types');
+const EventBus = require('@duelyst/common/eventbus');
+const EVENTS = require('@duelyst/common/event_types');
 const SDK = require('@duelyst/sdk');
 const NodeFactorySetup = require('app/view/helpers/NodeFactorySetup');
 const FX = require('app/view/fx/FX');

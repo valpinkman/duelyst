@@ -11,7 +11,7 @@ const moment = require('moment');
 const config = require('../../config/config.js');
 const AchievementsModule = require('../../server/lib/data_access/achievements');
 const DuelystFirebase = require('../../server/lib/duelyst_firebase_module');
-const Logger = require('../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const { GameManager } = require('../../server/redis');
 const FirebasePromises = require('../../server/lib/firebase_promises');
 

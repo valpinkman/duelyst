@@ -2,9 +2,9 @@
 
 'use strict';
 
-var Analytics = require('app/common/analytics');
-var Logger = require('app/common/logger');
-var CONFIG = require('app/common/config');
+var Analytics = require('@duelyst/common/analytics');
+var Logger = require('@duelyst/common/logger');
+var CONFIG = require('@duelyst/common/config');
 var RSX = require('app/data/resources');
 var audio_engine = require('app/audio/audio_engine');
 var ChatManager = require('app/ui/managers/chat_manager');

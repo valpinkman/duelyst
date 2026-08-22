@@ -2,8 +2,8 @@
 
 'use strict';
 
-var CONFIG = require('app/common/config');
-var EVENTS = require('app/common/event_types');
+var CONFIG = require('@duelyst/common/config');
+var EVENTS = require('@duelyst/common/event_types');
 var RSX = require('app/data/resources');
 var Animations = require('app/ui/views/animations');
 var audio_engine = require('app/audio/audio_engine');

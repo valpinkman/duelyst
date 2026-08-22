@@ -9,7 +9,7 @@ Job - Update two Users Ratings after playing a Rank 0 match
 */
 const config = require('../../config/config.js');
 const RankModule = require('../../server/lib/data_access/rank');
-const Logger = require('../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 
 /**
  * Job - 'update-users-ratings'

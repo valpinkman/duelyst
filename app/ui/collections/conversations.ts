@@ -1,6 +1,6 @@
 'use strict';
 
-var Logger = require('app/common/logger');
+var Logger = require('@duelyst/common/logger');
 var Conversation = require('app/ui/models/conversation');
 
 var Conversations = Backbone.Collection.extend({

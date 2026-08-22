@@ -4,7 +4,7 @@
 
 var _ = require('underscore');
 var moment = require('moment');
-var CONFIG = require('app/common/config');
+var CONFIG = require('@duelyst/common/config');
 var RSX = require('app/data/resources');
 var ShopData = require('app/data/shop.json');
 var audio_engine = require('app/audio/audio_engine');

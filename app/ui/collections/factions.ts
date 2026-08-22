@@ -1,9 +1,9 @@
 'use strict';
 
-var Logger = require('app/common/logger');
+var Logger = require('@duelyst/common/logger');
 var SDK = require('@duelyst/sdk');
 var FactionModel = require('app/ui/models/faction');
-var CONFIG = require('app/common/config');
+var CONFIG = require('@duelyst/common/config');
 
 var FactionsCollection = Backbone.Collection.extend({
   model: FactionModel,

@@ -8,12 +8,12 @@ const express = require('express');
 const util = require('util');
 const RiftModule = require('../../../lib/data_access/rift');
 const DataAccessHelpers = require('../../../lib/data_access/helpers');
-const Logger = require('../../../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const Errors = require('../../../lib/custom_errors');
 const t = require('tcomb-validation');
 const knex = require('../../../lib/data_access/knex');
 const _ = require('underscore');
-const PromiseUtils = require('../../../../app/common/utils/utils_promise');
+const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 
 const router = express.Router();
 

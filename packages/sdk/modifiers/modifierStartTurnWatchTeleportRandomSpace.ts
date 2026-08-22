@@ -5,7 +5,7 @@
  */
 const UtilsGameSession = require('@duelyst/sdk/utils/utils_game_session');
 const RandomTeleportAction = require('@duelyst/sdk/actions/randomTeleportAction');
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const _ = require('underscore');
 const ModifierStartTurnWatch = require('./modifierStartTurnWatch');
 

@@ -3,8 +3,8 @@
 'use strict';
 
 var SDK = require('@duelyst/sdk');
-var UtilsJavascript = require('app/common/utils/utils_javascript');
-var CONFIG = require('app/common/config');
+var UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
+var CONFIG = require('@duelyst/common/config');
 var audio_engine = require('app/audio/audio_engine');
 var RSX = require('app/data/resources');
 var NewPlayerManager = require('app/ui/managers/new_player_manager');

@@ -3,14 +3,14 @@
  * DS102: Remove unnecessary code created because of implicit returns
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-const Logger = require('app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const Spell = require('./spell');
 const CardType = require('@duelyst/sdk/cards/cardType');
 const SpellFilterType = require('./spellFilterType');
 const DamageAction = require('@duelyst/sdk/actions/damageAction');
 const PlayCardAction = require('@duelyst/sdk/actions/playCardAction');
 
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 
 class SpellChokingShadows extends Spell {
   declare targetType: any;

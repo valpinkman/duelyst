@@ -1,6 +1,6 @@
 'use strict';
 
-var CONFIG = require('app/common/config');
+var CONFIG = require('@duelyst/common/config');
 var Session = require('app/session2');
 var SDK = require('@duelyst/sdk');
 var RSX = require('app/data/resources');

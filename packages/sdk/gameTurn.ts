@@ -7,7 +7,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const SDKObject = require('./object');
-const UtilsJavascript = require('app/common/utils/utils_javascript');
+const UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
 
 class GameTurn extends SDKObject {
   declare steps: any;

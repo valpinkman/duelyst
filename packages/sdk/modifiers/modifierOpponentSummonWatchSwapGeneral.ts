@@ -4,7 +4,7 @@
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const SwapGeneralAction = require('@duelyst/sdk/actions/swapGeneralAction');
 const ModifierSummonWatch = require('./modifierSummonWatch');
 const ModifierOpponentSummonWatch = require('./modifierOpponentSummonWatch');

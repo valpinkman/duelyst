@@ -1,4 +1,4 @@
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const RSX = require('app/data/resources');
 const TweenTypes = require('../actions/TweenTypes');
 const RenderPass = require('../fx/RenderPass');

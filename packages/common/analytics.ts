@@ -6,9 +6,9 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const _ = require('underscore');
-const LoggerAnalyticsModule = require('app/common/analyticsModules/loggerAnalyticsModule');
-const AnalyticsEventPriority = require('app/common/analyticsModules/analyticsEventPriority');
-const AnalyticsEventCategory = require('app/common/analyticsModules/analyticsEventCategory');
+const LoggerAnalyticsModule = require('@duelyst/common/analyticsModules/loggerAnalyticsModule');
+const AnalyticsEventPriority = require('@duelyst/common/analyticsModules/analyticsEventPriority');
+const AnalyticsEventCategory = require('@duelyst/common/analyticsModules/analyticsEventCategory');
 
 /*
 Tracking options:

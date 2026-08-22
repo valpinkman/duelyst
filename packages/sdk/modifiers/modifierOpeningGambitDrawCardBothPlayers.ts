@@ -5,7 +5,7 @@
  */
 const DrawCardAction = require('@duelyst/sdk/actions/drawCardAction');
 const CardType = require('@duelyst/sdk/cards/cardType');
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const Modifier = require('./modifier');
 const ModifierOpeningGambit = require('./modifierOpeningGambit');
 

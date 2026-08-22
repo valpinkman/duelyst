@@ -4,13 +4,13 @@
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const Spell = require('./spell');
 const CardType = require('@duelyst/sdk/cards/cardType');
 const SpellFilterType = require('./spellFilterType');
 const RemoveAction = require('@duelyst/sdk/actions/removeAction');
 const PutCardInHandAction = require('@duelyst/sdk/actions/putCardInHandAction');
-const UtilsJavascript = require('app/common/utils/utils_javascript');
+const UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
 
 class SpellBounceToActionbar extends Spell {
   declare targetType: any;

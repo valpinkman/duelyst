@@ -24,8 +24,8 @@ const request = require('superagent');
 // Our modules
 const shutdownLib = require('./shutdown');
 const SDK = require('@duelyst/sdk');
-let Logger = require('../app/common/logger');
-const EVENTS = require('../app/common/event_types');
+let Logger = require('@duelyst/common/logger');
+const EVENTS = require('@duelyst/common/event_types');
 const UtilsGameSession = require('@duelyst/sdk/utils/utils_game_session');
 
 // lib Modules
@@ -40,8 +40,8 @@ const env = config.get('env');
 // Responds to /health endpoint with status 200
 // Otherwise responds with status 404
 
-Logger = require('../app/common/logger');
-const CONFIG = require('../app/common/config');
+Logger = require('@duelyst/common/logger');
+const CONFIG = require('@duelyst/common/config');
 const http = require('http');
 const url = require('url');
 
@@ -127,7 +127,7 @@ const saveGameCount = (gameCount) => Redis.hset(`servers:${serverId}`, 'games', 
 
 // error 'domain' to deal with io.sockets uncaught errors
 const d = require('domain').create();
-const PromiseUtils = require('../app/common/utils/utils_promise');
+const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 
 d.on('error', shutdownLib.errorShutdown);
 d.add(io.sockets);

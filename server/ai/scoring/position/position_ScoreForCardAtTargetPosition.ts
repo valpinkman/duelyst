@@ -10,7 +10,7 @@ const position_objective_distanceFromBestObjective = require('server/ai/scoring/
 const position_backstabAvoidance = require('server/ai/scoring/position/position_backstabAvoidance');
 const findBestObjectiveForCardAtTargetPosition = require('server/ai/scoring/utils/utils_findBestObjectiveForCardAtTargetPosition');
 const _ = require('underscore');
-const Logger = require('app/common/logger');
+const Logger = require('@duelyst/common/logger');
 
 const ScoreForCardAtTargetPosition = function (unit, positiontoEvaluate, bestObjective) {
   const gameSession = unit.getGameSession();

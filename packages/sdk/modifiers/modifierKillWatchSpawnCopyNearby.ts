@@ -5,9 +5,9 @@
  * DS205: Consider reworking code to avoid use of IIFEs
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const UtilsGameSession = require('@duelyst/sdk/utils/utils_game_session');
-const UtilsPosition = require('app/common/utils/utils_position');
+const UtilsPosition = require('@duelyst/common/utils/utils_position');
 const PlayCardSilentlyAction = require('@duelyst/sdk/actions/playCardSilentlyAction');
 const Rarity = require('@duelyst/sdk/cards/rarityLookup');
 const ModifierKillWatch = require('./modifierKillWatch');

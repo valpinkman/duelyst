@@ -7,7 +7,7 @@
 const express = require('express');
 const knex = require('../../../lib/data_access/knex');
 const DataAccessHelpers = require('../../../lib/data_access/helpers');
-const Logger = require('../../../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const t = require('tcomb-validation');
 
 const router = express.Router();

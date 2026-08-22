@@ -4,19 +4,19 @@
 
 var Scene = require('app/view/Scene');
 var RSX = require('app/data/resources');
-var CONFIG = require('app/common/config');
-var openUrl = require('app/common/openUrl');
-var EventBus = require('app/common/eventbus');
-var EVENTS = require('app/common/event_types');
+var CONFIG = require('@duelyst/common/config');
+var openUrl = require('@duelyst/common/openUrl');
+var EventBus = require('@duelyst/common/eventbus');
+var EVENTS = require('@duelyst/common/event_types');
 var moment = require('moment');
-var UtilsJavascript = require('app/common/utils/utils_javascript');
+var UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
 var UtilsUI = require('app/ui/utils_ui');
 var audio_engine = require('app/audio/audio_engine');
 var Animations = require('app/ui/views/animations');
 var ShopManager = require('app/ui/managers/shop_manager');
 var InventoryManager = require('app/ui/managers/inventory_manager');
 var NavigationManager = require('app/ui/managers/navigation_manager');
-var Logger = require('app/common/logger');
+var Logger = require('@duelyst/common/logger');
 
 var CosmeticsFactory = require('@duelyst/sdk/cosmetics/cosmeticsFactory');
 var CosmeticsType = require('@duelyst/sdk/cosmetics/cosmeticsTypeLookup');

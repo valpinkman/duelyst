@@ -14,11 +14,11 @@ module.exports = _ShopManager;
 
 var _ = require('underscore');
 var Firebase = require('app/firebase');
-var Logger = require('app/common/logger');
+var Logger = require('@duelyst/common/logger');
 var DuelystFirebase = require('app/ui/extensions/duelyst_firebase');
 var DuelystBackbone = require('app/ui/extensions/duelyst_backbone');
 var moment = require('moment');
-var Analytics = require('app/common/analytics');
+var Analytics = require('@duelyst/common/analytics');
 var CosmeticsFactory = require('@duelyst/sdk/cosmetics/cosmeticsFactory');
 var GamesManager = require('./games_manager');
 var ProgressionManager = require('./progression_manager');

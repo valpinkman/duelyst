@@ -4,7 +4,7 @@
  * DS205: Consider reworking code to avoid use of IIFEs
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-const Logger = require('app/common/logger');
+const Logger = require('@duelyst/common/logger');
 
 // regex requires into cache generation code with the following
 // find: ([A-z]+) = ([ \S])*[\n]*

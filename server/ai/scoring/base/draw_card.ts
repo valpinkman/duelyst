@@ -1,4 +1,4 @@
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const BOUNTY = require('../bounty');
 // const ScoreForUnit = require("./unit");
 

@@ -9,7 +9,7 @@ const util = require('util');
 const FirebasePromises = require('../firebase_promises');
 const DuelystFirebase = require('../duelyst_firebase_module');
 const GamesModule = require('./games');
-const Logger = require('../../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const colors = require('colors');
 const moment = require('moment');
 const _ = require('underscore');
@@ -17,7 +17,7 @@ const SyncModule = require('./sync');
 const Errors = require('../custom_errors');
 const knex = require('./knex');
 const config = require('../../../config/config.js');
-const generatePushId = require('../../../app/common/generate_push_id');
+const generatePushId = require('@duelyst/common/generate_push_id');
 
 // redis
 const { Redis, Jobs, GameManager } = require('../../redis');
@@ -27,8 +27,8 @@ const SDK = require('@duelyst/sdk');
 const UtilsGameSession = require('@duelyst/sdk/utils/utils_game_session');
 
 const InventoryModule = require('./inventory');
-const PromiseUtils = require('../../../app/common/utils/utils_promise');
-const { onType } = require('../../../app/common/utils/utils_promise');
+const PromiseUtils = require('@duelyst/common/utils/utils_promise');
+const { onType } = require('@duelyst/common/utils/utils_promise');
 
 class CosmeticChestsModule {
   static CHEST_GAME_COUNT_WINDOW = 10;

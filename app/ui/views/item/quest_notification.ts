@@ -1,6 +1,6 @@
 'use strict';
 
-var Logger = require('app/common/logger');
+var Logger = require('@duelyst/common/logger');
 var Animations = require('app/ui/views/animations');
 var QuestNotificationItemTmpl = require('app/ui/templates/item/quest_notification.hbs');
 var NotificationItemView = require('./notification');

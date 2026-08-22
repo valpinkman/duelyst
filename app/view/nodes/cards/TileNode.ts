@@ -1,10 +1,10 @@
 // pragma PKGS: game
 
-const CONFIG = require('app/common/config');
-const EVENTS = require('app/common/event_types');
+const CONFIG = require('@duelyst/common/config');
+const EVENTS = require('@duelyst/common/event_types');
 const SDK = require('@duelyst/sdk');
-const UtilsEngine = require('app/common/utils/utils_engine');
-const UtilsPosition = require('app/common/utils/utils_position');
+const UtilsEngine = require('@duelyst/common/utils/utils_engine');
+const UtilsPosition = require('@duelyst/common/utils/utils_position');
 const audio_engine = require('../../../audio/audio_engine');
 const BaseSprite = require('../BaseSprite');
 const EntitySprite = require('./EntitySprite');

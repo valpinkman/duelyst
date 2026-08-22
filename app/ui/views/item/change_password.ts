@@ -2,7 +2,7 @@
 
 var Session = require('app/session2');
 var validator = require('validator');
-var Logger = require('app/common/logger');
+var Logger = require('@duelyst/common/logger');
 var Animations = require('app/ui/views/animations');
 var ChangePasswordTmpl = require('app/ui/templates/item/change_password.hbs');
 var FormPromptDialogItemView = require('./form_prompt_dialog');

@@ -1,11 +1,11 @@
 // pragma PKGS: rift
 
-const CONFIG = require('app/common/config');
-const Logger = require('app/common/logger');
+const CONFIG = require('@duelyst/common/config');
+const Logger = require('@duelyst/common/logger');
 const SDK = require('@duelyst/sdk');
 const RSX = require('app/data/resources');
 const PKGS = require('app/data/packages');
-const UtilsEngine = require('app/common/utils/utils_engine');
+const UtilsEngine = require('@duelyst/common/utils/utils_engine');
 const audio_engine = require('app/audio/audio_engine');
 const BaseLayer = require('app/view/layers/BaseLayer');
 const BaseParticleSystem = require('app/view/nodes/BaseParticleSystem');
@@ -26,8 +26,8 @@ const i18next = require('i18next');
 const RiftHelper = require('@duelyst/sdk/rift/riftHelper');
 const ErrorDialogItemView = require('app/ui/views/item/error_dialog');
 const InventoryManager = require('app/ui/managers/inventory_manager');
-const PromiseUtils = require('../../../common/utils/utils_promise');
-const EVENTS = require('../../../common/event_types');
+const PromiseUtils = require('@duelyst/common/utils/utils_promise');
+const EVENTS = require('@duelyst/common/event_types');
 
 /** **************************************************************************
  UpgradeCardLayer

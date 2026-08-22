@@ -9,7 +9,7 @@ const knex = require('../../../lib/data_access/knex');
 const InventoryModule = require('../../../lib/data_access/inventory');
 const GauntletModule = require('../../../lib/data_access/gauntlet');
 const RiftModule = require('../../../lib/data_access/rift');
-const Logger = require('../../../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const config = require('../../../../config/config.js');
 const Errors = require('../../../lib/custom_errors');
 const colors = require('colors');
@@ -19,7 +19,7 @@ const hashHelpers = require('../../../lib/hash_helpers');
 const validatorTypes = require('../../../validators/types');
 const zlib = require('zlib');
 const moment = require('moment');
-const { onType } = require('../../../../app/common/utils/utils_promise');
+const { onType } = require('@duelyst/common/utils/utils_promise');
 // AWS = require "aws-sdk"
 
 const router = express.Router();

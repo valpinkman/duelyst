@@ -16,13 +16,13 @@ const MigrationsModule = require('../../../server/lib/data_access/migrations');
 const GauntletModule = require('../../../server/lib/data_access/gauntlet');
 const InventoryModule = require('../../../server/lib/data_access/inventory');
 const FirebasePromises = require('../../../server/lib/firebase_promises');
-const generatePushId = require('../../../app/common/generate_push_id');
+const generatePushId = require('@duelyst/common/generate_push_id');
 const config = require('../../../config/config');
-const Logger = require('../../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const SDK = require('@duelyst/sdk/index');
 const knex = require('../../../server/lib/data_access/knex');
 const NewPlayerProgressionStageEnum = require('@duelyst/sdk/progression/newPlayerProgressionStageEnum');
-const { onType } = require('../../../app/common/utils/utils_promise');
+const { onType } = require('@duelyst/common/utils/utils_promise');
 
 // disable the logger for cleaner test output
 Logger.enabled = Logger.enabled && false;

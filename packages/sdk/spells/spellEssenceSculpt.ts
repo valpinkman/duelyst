@@ -8,7 +8,7 @@
 const Spell = require('./spell');
 const ModifierStunned = require('@duelyst/sdk/modifiers/modifierStunned');
 const PutCardInHandAction = require('@duelyst/sdk/actions/putCardInHandAction');
-const UtilsJavascript = require('app/common/utils/utils_javascript');
+const UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
 
 class SpellEssenceSculpt extends Spell {
   onApplyEffectToBoardTile(board, x, y, sourceAction) {

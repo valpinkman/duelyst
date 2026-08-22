@@ -2,7 +2,7 @@
  * decaffeinate suggestions:
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-const Logger = require('app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const RemoveAction = require('./removeAction');
 const CardType = require('@duelyst/sdk/cards/cardType');
 const _ = require('underscore');

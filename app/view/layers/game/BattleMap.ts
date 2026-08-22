@@ -1,13 +1,13 @@
 // do not add this file to a package
 // it is specifically parsed by the package generation script
 
-const Logger = require('app/common/logger');
-const CONFIG = require('app/common/config');
-const EVENTS = require('app/common/event_types');
+const Logger = require('@duelyst/common/logger');
+const CONFIG = require('@duelyst/common/config');
+const EVENTS = require('@duelyst/common/event_types');
 const SDK = require('@duelyst/sdk');
 const RSX = require('app/data/resources');
-const UtilsEngine = require('app/common/utils/utils_engine');
-const UtilsPosition = require('app/common/utils/utils_position');
+const UtilsEngine = require('@duelyst/common/utils/utils_engine');
+const UtilsPosition = require('@duelyst/common/utils/utils_position');
 const AmbientLightColorTo = require('app/view/actions/AmbientLightColorTo');
 const BaseParticleSystem = require('app/view/nodes/BaseParticleSystem');
 const BaseSprite = require('app/view/nodes/BaseSprite');
@@ -17,7 +17,7 @@ const TileMapGridSprite = require('app/view/nodes/map/TileMapGridSprite');
 const Light = require('app/view/nodes/fx/Light');
 const FXSprite = require('app/view/nodes/fx/FXSprite');
 const audio_engine = require('app/audio/audio_engine');
-const PromiseUtils = require('../../../common/utils/utils_promise');
+const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 
 /** **************************************************************************
  BattleMap

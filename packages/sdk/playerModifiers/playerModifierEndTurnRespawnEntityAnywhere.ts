@@ -7,7 +7,7 @@
 const PlayerModifier = require('./playerModifier');
 const PlayCardSilentlyAction = require('@duelyst/sdk/actions/playCardSilentlyAction');
 const UtilsGameSession = require('@duelyst/sdk/utils/utils_game_session');
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 
 class PlayerModifierEndTurnRespawnEntityAnywhere extends PlayerModifier {
   declare type: any;

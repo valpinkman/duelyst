@@ -3,11 +3,11 @@
 var moment = require('moment');
 var Animations = require('app/ui/views/animations');
 var NavigationManager = require('app/ui/managers/navigation_manager');
-var Logger = require('app/common/logger');
+var Logger = require('@duelyst/common/logger');
 var ProfileManager = require('app/ui/managers/profile_manager');
 var ErrorDialogItemView = require('app/ui/views/item/error_dialog');
 var DuelystBackbone = require('app/ui/extensions/duelyst_backbone');
-var openUrl = require('app/common/openUrl');
+var openUrl = require('@duelyst/common/openUrl');
 
 var ReferralEventHistoryView = require('./referral_event_history');
 var Template = require('./templates/referral_dialog.hbs');

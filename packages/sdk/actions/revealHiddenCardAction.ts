@@ -5,8 +5,8 @@
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-const Logger = require('app/common/logger');
-const UtilsJavascript = require('app/common/utils/utils_javascript');
+const Logger = require('@duelyst/common/logger');
+const UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
 const Action = require('./action');
 const _ = require('underscore');
 

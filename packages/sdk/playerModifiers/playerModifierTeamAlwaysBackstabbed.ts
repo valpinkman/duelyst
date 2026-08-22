@@ -4,7 +4,7 @@
  */
 const PlayerModifier = require('./playerModifier');
 const ModifierAlwaysBackstabbed = require('@duelyst/sdk/modifiers/modifierAlwaysBackstabbed');
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 
 class PlayerModifierTeamAlwaysBackstabbed extends PlayerModifier {
   declare type: any;

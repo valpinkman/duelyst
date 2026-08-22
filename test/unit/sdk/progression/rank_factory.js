@@ -2,7 +2,7 @@ const path = require('path');
 require('app-module-path').addPath(path.join(__dirname, '../../../../'));
 const { expect } = require('chai');
 const _ = require('underscore');
-const Logger = require('../../../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const SDK = require('@duelyst/sdk/index');
 
 // disable the logger for cleaner test output

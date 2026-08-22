@@ -4,7 +4,7 @@
  * DS102: Remove unnecessary code created because of implicit returns
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const TeleportBehindUnitAction = require('@duelyst/sdk/actions/teleportBehindUnitAction');
 const CardType = require('@duelyst/sdk/cards/cardType');
 const ModifierSynergize = require('./modifierSynergize');

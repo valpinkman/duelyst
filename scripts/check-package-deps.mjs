@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 /*
  * The two in-place workspace packages have a layering, and it is worth a gate:
- * app/sdk and app/common used to require each other, which made them one
+ * packages/sdk and packages/common used to require each other, which made them one
  * package with a directory between them (docs/REORG_AUDIT.md). The cycle was
  * broken on 2026-08-21 by moving three files; this keeps it broken.
  *
  *   @duelyst/common  -> nothing else (a leaf)
- *   @duelyst/sdk     -> app/common and app/data only
+ *   @duelyst/sdk     -> packages/common and app/data only
  *
  * Checks root-absolute specifiers (`require('app/x')`) and relative ones that
  * climb out of the package (`require('../../x')`) -- the first attempt at this
@@ -18,9 +18,9 @@ import { execFileSync } from 'node:child_process';
 import path from 'node:path';
 
 const RULES = {
-  'app/common': { allow: [] },
+  'packages/common': { allow: [] },
   'app/data': { allow: [] },
-  'packages/sdk': { allow: ['app/common', 'app/data'] },
+  'packages/sdk': { allow: ['packages/common', 'app/data'] },
 };
 
 /*
@@ -31,7 +31,7 @@ const RULES = {
  * a build artifact of scripts/generate_packages.js, which reads app/sdk off
  * disk. The cycle exists in the artifact, never in the source.
  */
-const files = execFileSync('git', ['ls-files', 'packages/sdk', 'app/common', 'app/data'], {
+const files = execFileSync('git', ['ls-files', 'packages/sdk', 'packages/common', 'app/data'], {
   encoding: 'utf8',
 })
   .split('\n')
@@ -54,7 +54,7 @@ for (const file of files) {
       // Any landing spot outside the package counts, not just one under app/. This
       // used to be gated on `resolved.startsWith('app/')`, and the packages/sdk move
       // walked straight through the hole: six spells kept `require('../../common/config')`,
-      // which had resolved to app/common/config from app/sdk but resolves to the
+      // which had resolved to app/common/config from app/sdk but resolved to a
       // nonexistent packages/common/config from packages/sdk. The gate passed; 101
       // test files did not.
       if (resolved !== pkg && !resolved.startsWith(`${pkg}/`)) target = resolved;

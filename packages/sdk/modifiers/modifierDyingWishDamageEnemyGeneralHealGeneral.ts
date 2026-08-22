@@ -7,7 +7,7 @@
 const DamageAction = require('@duelyst/sdk/actions/damageAction');
 const HealAction = require('@duelyst/sdk/actions/healAction');
 
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const ModifierDyingWish = require('./modifierDyingWish');
 
 class ModifierDyingWishDamageEnemyGeneralHealGeneral extends ModifierDyingWish {

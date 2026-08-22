@@ -3,8 +3,8 @@
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-const CONFIG = require('app/common/config');
-const UtilsPosition = require('app/common/utils/utils_position');
+const CONFIG = require('@duelyst/common/config');
+const UtilsPosition = require('@duelyst/common/utils/utils_position');
 const SpellRemoveAndReplaceEntity = require('./spellRemoveAndReplaceEntity');
 const CloneEntityAsTransformAction = require('@duelyst/sdk/actions/cloneEntityAsTransformAction');
 const _ = require('underscore');

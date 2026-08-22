@@ -1,6 +1,6 @@
 // pragma PKGS: game
-const CONFIG = require('app/common/config');
-const UtilsEngine = require('app/common/utils/utils_engine');
+const CONFIG = require('@duelyst/common/config');
+const UtilsEngine = require('@duelyst/common/utils/utils_engine');
 const PlayerLayer = require('./PlayerLayer');
 
 /** **************************************************************************

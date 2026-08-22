@@ -2,8 +2,8 @@
 
 'use strict';
 
-var CONFIG = require('app/common/config');
-var Logger = require('app/common/logger');
+var CONFIG = require('@duelyst/common/config');
+var Logger = require('@duelyst/common/logger');
 var RSX = require('app/data/resources');
 var audio_engine = require('app/audio/audio_engine');
 var DuelystFirebase = require('app/ui/extensions/duelyst_firebase');

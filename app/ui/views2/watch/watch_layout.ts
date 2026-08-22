@@ -2,11 +2,11 @@
 
 'use strict';
 
-var Logger = require('app/common/logger');
-var CONFIG = require('app/common/config');
-var EventBus = require('app/common/eventbus');
-var EVENTS = require('app/common/event_types');
-var UtilsJavascript = require('app/common/utils/utils_javascript');
+var Logger = require('@duelyst/common/logger');
+var CONFIG = require('@duelyst/common/config');
+var EventBus = require('@duelyst/common/eventbus');
+var EVENTS = require('@duelyst/common/event_types');
+var UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
 var Scene = require('app/view/Scene');
 var SDK = require('@duelyst/sdk');
 var moment = require('moment');

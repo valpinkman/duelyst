@@ -9,7 +9,7 @@ const _ = require('underscore');
 const knex = require('../../../lib/data_access/knex');
 const DecksModule = require('../../../lib/data_access/decks');
 const DataAccessHelpers = require('../../../lib/data_access/helpers');
-const Logger = require('../../../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const t = require('tcomb-validation');
 const validators = require('../../../validators');
 

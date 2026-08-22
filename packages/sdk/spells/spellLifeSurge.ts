@@ -4,13 +4,13 @@
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-const Logger = require('app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const SpellDamage = require('./spellDamage');
 const CardType = require('@duelyst/sdk/cards/cardType');
 const SpellFilterType = require('./spellFilterType');
 const HealAction = require('@duelyst/sdk/actions/healAction');
-const CONFIG = require('app/common/config');
-const UtilsPosition = require('app/common/utils/utils_position');
+const CONFIG = require('@duelyst/common/config');
+const UtilsPosition = require('@duelyst/common/utils/utils_position');
 
 class SpellLifeSurge extends SpellDamage {
   onApplyEffectToBoardTile(board, x, y, sourceAction) {

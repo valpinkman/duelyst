@@ -5,7 +5,7 @@
  */
 const Action = require('./action');
 const GameStatus = require('@duelyst/sdk/gameStatus');
-const Logger = require('app/common/logger');
+const Logger = require('@duelyst/common/logger');
 
 const _ = require('underscore');
 

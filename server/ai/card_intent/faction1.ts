@@ -1,4 +1,4 @@
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const Cards = require('@duelyst/sdk/cards/cardsLookupComplete');
 const ModifierAirdrop = require('@duelyst/sdk/modifiers/modifierAirdrop');
 const CardIntentType = require('./card_intent_type');

@@ -5,7 +5,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const SpellKillTarget = require('./spellKillTarget');
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const UtilsGameSession = require('@duelyst/sdk/utils/utils_game_session');
 const Cards = require('@duelyst/sdk/cards/cardsLookupComplete');
 const CardType = require('@duelyst/sdk/cards/cardType');

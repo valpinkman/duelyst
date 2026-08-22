@@ -6,7 +6,7 @@
  */
 const SpellFollowupTeleport = require('./spellFollowupTeleport');
 const UtilsGameSession = require('@duelyst/sdk/utils/utils_game_session');
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const _ = require('underscore');
 
 class SpellFollowupTeleportNearMyGeneral extends SpellFollowupTeleport {

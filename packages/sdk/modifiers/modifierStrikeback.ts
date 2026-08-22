@@ -4,8 +4,8 @@
  * DS102: Remove unnecessary code created because of implicit returns
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-const EVENTS = require('app/common/event_types');
-const CONFIG = require('app/common/config');
+const EVENTS = require('@duelyst/common/event_types');
+const CONFIG = require('@duelyst/common/config');
 const AttackAction = require('@duelyst/sdk/actions/attackAction');
 const ForcedAttackAction = require('@duelyst/sdk/actions/forcedAttackAction');
 const Modifier = require('./modifier');

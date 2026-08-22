@@ -1,12 +1,12 @@
 const path = require('path');
 require('app-module-path').addPath(path.join(__dirname, '../../'));
-const Logger = require('app/common/logger');
+const Logger = require('@duelyst/common/logger');
 
 Logger.module('AI').log('Initializing AI...');
-const UtilsJavascript = require('app/common/utils/utils_javascript');
-const UtilsPosition = require('app/common/utils/utils_position');
+const UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
+const UtilsPosition = require('@duelyst/common/utils/utils_position');
 const SDK = require('@duelyst/sdk');
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const ModifierDyingWishReSpawnEntityAnywhere = require('@duelyst/sdk/modifiers/modifierDyingWishReSpawnEntityAnywhere');
 const ModifierDyingWishSpawnEntityInCorner = require('@duelyst/sdk/modifiers/modifierDyingWishSpawnEntityInCorner');
 const _ = require('underscore');

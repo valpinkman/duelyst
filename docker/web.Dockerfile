@@ -24,7 +24,7 @@ COPY package.json .npmrc pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY packages ./packages
 COPY tooling ./tooling
 COPY packages/sdk/package.json ./packages/sdk/
-COPY app/common/package.json ./app/common/
+COPY packages/common/package.json ./packages/common/
 RUN pnpm install --frozen-lockfile
 
 COPY . .
@@ -72,7 +72,7 @@ RUN npm install -g pnpm@10.12.1
 COPY package.json .npmrc pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY packages ./packages
 COPY packages/sdk/package.json ./packages/sdk/
-COPY app/common/package.json ./app/common/
+COPY packages/common/package.json ./packages/common/
 RUN pnpm install --prod --frozen-lockfile && pnpm store prune
 
 # ---------- stage 3: the API runtime ----------
@@ -91,7 +91,7 @@ RUN npm install -g pnpm@10.12.1
 # workspace links that point at these two package.json files
 COPY package.json pnpm-workspace.yaml ./
 COPY packages/sdk/package.json ./packages/sdk/
-COPY app/common/package.json ./app/common/
+COPY packages/common/package.json ./packages/common/
 
 COPY --from=deps /duelyst/node_modules ./node_modules
 COPY --from=client /duelyst/build ./build

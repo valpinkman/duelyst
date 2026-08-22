@@ -13,7 +13,7 @@ const PlayCardAction = require('@duelyst/sdk/actions/playCardAction');
 const KillAction = require('@duelyst/sdk/actions/killAction');
 const SwapGeneralAction = require('@duelyst/sdk/actions/swapGeneralAction');
 const UtilsGameSession = require('@duelyst/sdk/utils/utils_game_session');
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const Modifier = require('./modifier');
 
 class ModifierDieSpawnNewGeneral extends Modifier {

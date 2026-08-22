@@ -1,9 +1,9 @@
 // pragma PKGS: general_speech
 
-const Logger = require('app/common/logger');
-const CONFIG = require('app/common/config');
-const EVENTS = require('app/common/event_types');
-const UtilsEngine = require('app/common/utils/utils_engine');
+const Logger = require('@duelyst/common/logger');
+const CONFIG = require('@duelyst/common/config');
+const EVENTS = require('@duelyst/common/event_types');
+const UtilsEngine = require('@duelyst/common/utils/utils_engine');
 const PKGS = require('app/data/packages');
 const SDK = require('@duelyst/sdk');
 const RSX = require('app/data/resources');

@@ -4,7 +4,7 @@
 
 var SDK = require('@duelyst/sdk');
 var _ = require('underscore');
-var CONFIG = require('app/common/config');
+var CONFIG = require('@duelyst/common/config');
 var RSX = require('app/data/resources');
 var EmotesListCompositeView = require('app/ui/views/composite/emotes-list');
 var EmoteItemView = require('app/ui/views/item/emote');

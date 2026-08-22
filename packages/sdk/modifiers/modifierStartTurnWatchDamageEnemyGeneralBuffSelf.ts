@@ -7,7 +7,7 @@
 const DamageAction = require('@duelyst/sdk/actions/damageAction');
 const Stringifiers = require('@duelyst/sdk/helpers/stringifiers');
 
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const ModifierStartTurnWatchBuffSelf = require('./modifierStartTurnWatchBuffSelf');
 
 class ModifierStartTurnWatchDamageEnemyGeneralBuffSelf extends ModifierStartTurnWatchBuffSelf {

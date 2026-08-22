@@ -15,9 +15,9 @@
  */
 const { Queue, Worker, QueueEvents, Job } = require('bullmq');
 
-const Logger = require('../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const config = require('../../config/config');
-const PromiseUtils = require('../../app/common/utils/utils_promise');
+const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 
 const env = config.get('env');
 

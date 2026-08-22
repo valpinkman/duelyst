@@ -2,9 +2,9 @@
 
 'use strict';
 
-var CONFIG = require('app/common/config');
-var EventBus = require('app/common/eventbus');
-var EVENTS = require('app/common/event_types');
+var CONFIG = require('@duelyst/common/config');
+var EventBus = require('@duelyst/common/eventbus');
+var EVENTS = require('@duelyst/common/event_types');
 var SDK = require('@duelyst/sdk');
 var Scene = require('app/view/Scene');
 var RSX = require('app/data/resources');
@@ -13,7 +13,7 @@ var Animations = require('app/ui/views/animations');
 var GameBottomBarTmpl = require('app/ui/templates/composite/game_bottom_bar.hbs');
 var ReplayEngine = require('app/replay/replayEngine');
 var i18next = require('i18next');
-var UtilsEngine = require('../../../common/utils/utils_engine');
+var UtilsEngine = require('@duelyst/common/utils/utils_engine');
 
 var GameBottomBarCompositeView = Backbone.Marionette.CompositeView.extend({
   id: 'app-game-bottombar',

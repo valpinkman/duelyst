@@ -1,4 +1,4 @@
-var CONFIG = require('app/common/config');
+var CONFIG = require('@duelyst/common/config');
 /*
 
 @eanticev: YEAH YEAH i know this is a dumb use of backbone models but it was the quickest way i could prototype

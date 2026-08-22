@@ -7,7 +7,7 @@
  * Middleware for dealing with server errors
  * Should be included in app.use last
  */
-const Logger = require('../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const config = require('../../config/config');
 
 // first error middleware: internal console.logger

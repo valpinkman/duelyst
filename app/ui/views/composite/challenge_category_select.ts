@@ -2,16 +2,16 @@
 
 'use strict';
 
-var CONFIG = require('app/common/config');
+var CONFIG = require('@duelyst/common/config');
 var RSX = require('app/data/resources');
 var audio_engine = require('app/audio/audio_engine');
 var SDK = require('@duelyst/sdk');
 var Scene = require('app/view/Scene');
-var Analytics = require('app/common/analytics');
+var Analytics = require('@duelyst/common/analytics');
 var Animations = require('app/ui/views/animations');
 var ProgressionManager = require('app/ui/managers/progression_manager');
 var ChallengeCategorySelectTmpl = require('app/ui/templates/composite/challenge_category_select.hbs');
-var UtilsEnv = require('app/common/utils/utils_env');
+var UtilsEnv = require('@duelyst/common/utils/utils_env');
 var PlayLayer = require('app/view/layers/pregame/PlayLayer');
 var ChallengeSelectCompositeView = require('./challenge_select');
 var SlidingPanelSelectCompositeView = require('./sliding_panel_select');

@@ -6,7 +6,7 @@
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const Card = require('@duelyst/sdk/cards/card');
 const CardType = require('@duelyst/sdk/cards/cardType');
 const Modifier = require('@duelyst/sdk/modifiers/modifier');

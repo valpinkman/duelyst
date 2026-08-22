@@ -8,10 +8,10 @@
  */
 const PlayCardSilentlyAction = require('@duelyst/sdk/actions/playCardSilentlyAction');
 const PlayCardAction = require('@duelyst/sdk/actions/playCardAction');
-const CONFIG = require('app/common/config');
-const UtilsJavascript = require('app/common/utils/utils_javascript');
+const CONFIG = require('@duelyst/common/config');
+const UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
 const UtilsGameSession = require('@duelyst/sdk/utils/utils_game_session');
-const UtilsPosition = require('app/common/utils/utils_position');
+const UtilsPosition = require('@duelyst/common/utils/utils_position');
 const ModifierOpponentDrawCardWatch = require('./modifierOpponentDrawCardWatch');
 
 class ModifierOpponentDrawCardWatchOverdrawSummonEntity extends ModifierOpponentDrawCardWatch {

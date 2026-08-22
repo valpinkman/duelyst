@@ -22,8 +22,8 @@ monorepo, and the decisions behind it.
 
 - [Backbone](BACKBONE_AUDIT.md) — what Backbone actually does here, and why
   `backfire` is the real lock-in
-- [Folder reorg](REORG_AUDIT.md) — why `app/sdk` and `app/common` stayed where
-  they are
+- [Folder reorg](REORG_AUDIT.md) — the audit behind moving `app/sdk` and
+  `app/common` out to `packages/`
 
 Upstream's AWS deployment (Terraform, ECS, RDS, CloudFront) and its
 documentation were removed on 2026-08-22; this fork runs on Coolify. `git log

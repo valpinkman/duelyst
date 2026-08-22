@@ -1,6 +1,6 @@
-const CONFIG = require('app/common/config');
-const Logger = require('app/common/logger');
-const UtilsEngine = require('app/common/utils/utils_engine');
+const CONFIG = require('@duelyst/common/config');
+const Logger = require('@duelyst/common/logger');
+const UtilsEngine = require('@duelyst/common/utils/utils_engine');
 const SDK = require('@duelyst/sdk');
 
 /** **************************************************************************

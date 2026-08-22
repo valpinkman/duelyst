@@ -6,7 +6,7 @@
  */
 const PlayerModifier = require('./playerModifier');
 const PlayCardSilentlyAction = require('@duelyst/sdk/actions/playCardSilentlyAction');
-const UtilsJavascript = require('app/common/utils/utils_javascript');
+const UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
 const _ = require('underscore');
 
 class PlayerModifierEndTurnRespawnEntityWithBuff extends PlayerModifier {

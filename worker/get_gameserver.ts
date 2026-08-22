@@ -1,7 +1,7 @@
 // _ = require 'underscore'
 
 const config = require('../config/config.js');
-const Logger = require('../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 // Consul = require '../server/lib/consul'
 
 const getGameServer = function () {

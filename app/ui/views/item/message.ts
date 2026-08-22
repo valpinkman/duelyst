@@ -1,10 +1,10 @@
 'use strict';
 
-var Logger = require('app/common/logger');
+var Logger = require('@duelyst/common/logger');
 var MessageTmpl = require('app/ui/templates/item/message.hbs');
 var ProgressionManager = require('app/ui/managers/progression_manager');
-var EventBus = require('app/common/eventbus');
-var EVENTS = require('app/common/event_types');
+var EventBus = require('@duelyst/common/eventbus');
+var EVENTS = require('@duelyst/common/event_types');
 
 var MessageItemView = Backbone.Marionette.ItemView.extend({
   initialize: function () {},

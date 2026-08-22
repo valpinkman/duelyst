@@ -3,9 +3,9 @@
 'use strict';
 
 var Scene = require('app/view/Scene');
-var CONFIG = require('app/common/config');
+var CONFIG = require('@duelyst/common/config');
 var RSX = require('app/data/resources');
-var generatePushID = require('app/common/generate_push_id');
+var generatePushID = require('@duelyst/common/generate_push_id');
 var Animations = require('app/ui/views/animations');
 var PlayModeItemView = require('app/ui/views/item/play_mode');
 var PlayLayer = require('app/view/layers/pregame/PlayLayer');

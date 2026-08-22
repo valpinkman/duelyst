@@ -2,8 +2,8 @@
  * decaffeinate suggestions:
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-const Logger = require('app/common/logger');
-const UtilsJavascript = require('app/common/utils/utils_javascript');
+const Logger = require('@duelyst/common/logger');
+const UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
 const CloneEntityAction = require('./cloneEntityAction');
 const CardType = require('@duelyst/sdk/cards/cardType');
 const _ = require('underscore');

@@ -5,7 +5,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Action = require('./action');
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 
 class RestoreManaAction extends Action {
   declare restoreManaAmount: any;

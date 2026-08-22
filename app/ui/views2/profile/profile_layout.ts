@@ -3,9 +3,9 @@
 'use strict';
 
 // global libs
-var Logger = require('app/common/logger');
-var CONFIG = require('app/common/config');
-var generatePushID = require('app/common/generate_push_id');
+var Logger = require('@duelyst/common/logger');
+var CONFIG = require('@duelyst/common/config');
+var generatePushID = require('@duelyst/common/generate_push_id');
 var Scene = require('app/view/Scene');
 var SDK = require('@duelyst/sdk');
 var moment = require('moment');
@@ -26,7 +26,7 @@ var ChangePasswordItemView = require('app/ui/views/item/change_password');
 var ConfirmDialogItemView = require('app/ui/views/item/confirm_dialog');
 // region views
 var ProfileManager = require('app/ui/managers/profile_manager');
-var openUrl = require('app/common/openUrl');
+var openUrl = require('@duelyst/common/openUrl');
 var ProfileErrorView = require('./profile_error_item');
 var ProfileRegionLoadingView = require('./profile_region_loading_item');
 var ProfileSummaryView = require('./profile_summary_item');

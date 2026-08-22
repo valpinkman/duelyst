@@ -1,11 +1,11 @@
 // pragma PKGS: booster_opening
 
-const CONFIG = require('app/common/config');
-const Logger = require('app/common/logger');
+const CONFIG = require('@duelyst/common/config');
+const Logger = require('@duelyst/common/logger');
 const SDK = require('@duelyst/sdk');
 const RSX = require('app/data/resources');
 const PKGS = require('app/data/packages');
-const UtilsEngine = require('app/common/utils/utils_engine');
+const UtilsEngine = require('@duelyst/common/utils/utils_engine');
 const audio_engine = require('app/audio/audio_engine');
 const BaseLayer = require('app/view/layers/BaseLayer');
 const FXCompositeLayer = require('app/view/layers/FXCompositeLayer');
@@ -23,8 +23,8 @@ const Shake = require('app/view/actions/Shake');
 const CoreGemNode = require('app/view/nodes/gem/CoreGemNode');
 const MotionStreakRingNode = require('app/view//nodes/misc/MotionStreakRingNode');
 const i18next = require('i18next');
-const PromiseUtils = require('../../../common/utils/utils_promise');
-const EVENTS = require('../../../common/event_types');
+const PromiseUtils = require('@duelyst/common/utils/utils_promise');
+const EVENTS = require('@duelyst/common/event_types');
 
 /** **************************************************************************
  BoosterPackOpeningLayer

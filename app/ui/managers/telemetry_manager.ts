@@ -10,10 +10,10 @@ _TelemetryManager.current = _TelemetryManager.getInstance;
 
 module.exports = _TelemetryManager;
 
-var CONFIG = require('app/common/config');
-var EventBus = require('app/common/eventbus');
-var EVENTS = require('app/common/event_types');
-var Logger = require('app/common/logger');
+var CONFIG = require('@duelyst/common/config');
+var EventBus = require('@duelyst/common/eventbus');
+var EVENTS = require('@duelyst/common/event_types');
+var Logger = require('@duelyst/common/logger');
 var Firebase = require('app/firebase');
 var Manager = require('./manager');
 var ProfileManager = require('./profile_manager');

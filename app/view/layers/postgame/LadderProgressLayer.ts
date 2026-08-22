@@ -1,9 +1,9 @@
 // pragma PKGS: ladder_progress
 const SDK = require('@duelyst/sdk');
 const RSX = require('app/data/resources');
-const Logger = require('app/common/logger');
-const CONFIG = require('app/common/config');
-const UtilsJavascript = require('app/common/utils/utils_javascript');
+const Logger = require('@duelyst/common/logger');
+const CONFIG = require('@duelyst/common/config');
+const UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
 const PKGS = require('app/data/packages');
 const audio_engine = require('app/audio/audio_engine');
 const RewardLayer = require('app/view/layers/reward/RewardLayer');
@@ -13,7 +13,7 @@ const GiftCrateNode = require('app/view/nodes/reward/GiftCrateNode');
 const FXLensFlareSprite = require('app/view/nodes/fx/FXLensFlareSprite');
 const BaseParticleSystem = require('app/view/nodes/BaseParticleSystem');
 const i18next = require('i18next');
-const PromiseUtils = require('../../../common/utils/utils_promise');
+const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 
 /** **************************************************************************
  LadderProgressLayer

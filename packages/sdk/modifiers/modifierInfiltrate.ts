@@ -5,7 +5,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CardType = require('@duelyst/sdk/cards/cardType');
-const CONFIG = require('app/common/config');
+const CONFIG = require('@duelyst/common/config');
 const _ = require('underscore');
 const ModifierAlwaysInfiltrated = require('@duelyst/sdk/modifiers/modifierAlwaysInfiltrated');
 const ModifierProvidesAlwaysInfiltrated = require('@duelyst/sdk/modifiers/modifierProvidesAlwaysInfiltrated');

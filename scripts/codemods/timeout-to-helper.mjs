@@ -83,8 +83,8 @@ for (const file of process.argv.slice(2)) {
       const last = reqs[reqs.length - 1];
       const depth = file.startsWith('app/') ? 0 : (file.match(/\//g) || []).length;
       const rel = depth
-        ? `${'../'.repeat(depth)}app/common/utils/utils_promise`
-        : 'app/common/utils/utils_promise';
+        ? '@duelyst/common/utils/utils_promise'
+        : '@duelyst/common/utils/utils_promise';
       out = `${out.slice(0, last.index + last[0].length)}\nconst PromiseUtils = require('${rel}');${out.slice(last.index + last[0].length)}`;
     }
   }

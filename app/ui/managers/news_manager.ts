@@ -12,12 +12,12 @@ _NewsManager.current = _NewsManager.getInstance;
 
 module.exports = _NewsManager;
 
-var CONFIG = require('app/common/config');
-var Logger = require('app/common/logger');
+var CONFIG = require('@duelyst/common/config');
+var Logger = require('@duelyst/common/logger');
 var SDK = require('@duelyst/sdk');
 var NotificationModel = require('app/ui/models/notification');
 var DuelystFirebase = require('app/ui/extensions/duelyst_firebase');
-var Analytics = require('app/common/analytics');
+var Analytics = require('@duelyst/common/analytics');
 var moment = require('moment');
 var NavigationManager = require('./navigation_manager');
 var NotificationsManager = require('./notifications_manager');

@@ -3,7 +3,7 @@
   const fs = require('fs');
   const path = require('path');
   const lineReader = require('readline');
-  const PromiseUtils = require('../app/common/utils/utils_promise');
+  const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 
   const helpers = {};
 

@@ -3,7 +3,7 @@
  * DS101: Remove unnecessary use of Array.from
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-const Logger = require('app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const SpellFollowupTeleport = require('./spellFollowupTeleport');
 
 class SpellFollowupTeleportMyGeneral extends SpellFollowupTeleport {

@@ -1,6 +1,6 @@
 'use strict';
 
-var Logger = require('app/common/logger');
+var Logger = require('@duelyst/common/logger');
 var SDK = require('@duelyst/sdk');
 var ModifierModel = require('app/ui/models/modifier');
 

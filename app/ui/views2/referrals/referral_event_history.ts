@@ -3,8 +3,8 @@
 var SDK = require('@duelyst/sdk');
 var moment = require('moment');
 var semver = require('semver');
-var EventBus = require('app/common/eventbus');
-var EVENTS = require('app/common/event_types');
+var EventBus = require('@duelyst/common/eventbus');
+var EVENTS = require('@duelyst/common/event_types');
 
 var Template = require('./templates/referral_event_history.hbs');
 

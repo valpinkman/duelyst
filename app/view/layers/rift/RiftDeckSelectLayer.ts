@@ -1,9 +1,9 @@
 // pragma PKGS: play
 const RSX = require('app/data/resources');
 const PKGS = require('app/data/packages');
-const Logger = require('app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const FXRiftFireSprite = require('app/view/nodes/fx/FXRiftFireSprite');
-const UtilsEngine = require('../../../common/utils/utils_engine');
+const UtilsEngine = require('@duelyst/common/utils/utils_engine');
 const FXCompositeLayer = require('../FXCompositeLayer');
 const BaseSprite = require('../../nodes/BaseSprite');
 

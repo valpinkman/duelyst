@@ -29,7 +29,7 @@ const ShopModule = require('../../../lib/data_access/shop');
 const TwitchModule = require('../../../lib/data_access/twitch');
 const knex = require('../../../lib/data_access/knex');
 const DataAccessHelpers = require('../../../lib/data_access/helpers');
-const Logger = require('../../../../app/common/logger');
+const Logger = require('@duelyst/common/logger');
 const Errors = require('../../../lib/custom_errors');
 // sdk
 const SDK = require('@duelyst/sdk');
@@ -46,12 +46,12 @@ const util = require('util');
 // Daily challenges
 const zlib = require('zlib');
 const config = require('../../../../config/config.js');
-const CONFIG = require('app/common/config');
-const UtilsEnv = require('app/common/utils/utils_env');
-const generatePushId = require('../../../../app/common/generate_push_id');
+const CONFIG = require('@duelyst/common/config');
+const UtilsEnv = require('@duelyst/common/utils/utils_env');
+const generatePushId = require('@duelyst/common/generate_push_id');
 
 const { Jobs } = require('../../../redis');
-const PromiseUtils = require('../../../../app/common/utils/utils_promise');
+const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 
 // create a S3 API client
 // AWS     = require "aws-sdk"
