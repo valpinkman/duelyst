@@ -21,26 +21,49 @@ const gzipAsync = promisify(zlib.gzip);
 const env = config.get('env');
 const awsRegion = config.get('aws.region');
 const replaysBucket = config.get('aws.replaysBucketName');
-if (!awsRegion || !replaysBucket) {
-  throw new Error(
-    'Error: Failed to initialize S3 uploader: aws.region and aws.replaysBucketName are required',
+const accessKeyId = config.get('aws.accessKey');
+const secretAccessKey = config.get('aws.secretKey');
+
+/*
+ * Replay archiving is OPTIONAL. A self-hosted deployment has no bucket of its
+ * own -- aws.replaysBucketName still defaults to Counterplay's `duelyst-games`
+ * -- so uploading is off unless BOTH credentials are configured.
+ *
+ * This used to be unconditional, and it cost more than replays: the rejection
+ * propagated out of the archive-game job before saveGameMetadata() ran, so no
+ * finished game got its row in the `games` table. `game_data_json_url` is a
+ * nullable column that nothing reads back (the replay routes rebuild the URL
+ * from config), so returning null here is a supported value, not a stub.
+ *
+ * Note the credentials shape below: aws-sdk v3 takes a nested `credentials`
+ * object. The v2 spelling -- accessKeyId/secretAccessKey at the top level --
+ * survived the v2 -> v3 port and silently did nothing, which is why even the
+ * development path could not authenticate.
+ */
+const isUploadEnabled = Boolean(awsRegion && replaysBucket && accessKeyId && secretAccessKey);
+
+let s3Client = null;
+if (isUploadEnabled) {
+  Logger.module('REPLAYS').log(
+    `Creating S3 client with Region ${awsRegion} and Bucket ${replaysBucket}`,
+  );
+  s3Client = new S3Client({
+    region: awsRegion,
+    credentials: { accessKeyId, secretAccessKey },
+  });
+} else {
+  Logger.module('REPLAYS').log(
+    'Replay archiving is disabled: set AWS_ACCESS_KEY, AWS_SECRET_KEY and S3_REPLAYS_BUCKET to enable it',
   );
 }
-
-// Configure S3 access.
-Logger.module('REPLAYS').log(
-  `Creating S3 client with Region ${awsRegion} and Bucket ${replaysBucket}`,
-);
-const s3Opts: Record<string, any> = { region: awsRegion };
-if (config.get('env') === 'development') {
-  s3Opts.accessKeyId = config.get('aws.accessKey');
-  s3Opts.secretAccessKey = config.get('aws.secretKey');
-}
-const s3Client = new S3Client(s3Opts);
 
 // returns promise for s3 upload
 // takes *serialized* game data
 const upload = function (gameId, serializedGameSession, serializedMouseUIEventData) {
+  if (!isUploadEnabled) {
+    return Promise.resolve(null);
+  }
+
   Logger.module('REPLAYS').log(`uploading game ${gameId} to S3`);
 
   const allDeflatePromises = [gzipAsync(serializedGameSession)];

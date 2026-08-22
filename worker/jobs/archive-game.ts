@@ -46,7 +46,11 @@ module.exports = function (job, done) {
     })
     .then(function (url) {
       _chainState.url = url;
-      Logger.module('JOB').debug(`[J:${job.id}] archive-game -> (${gameId}) uploaded to ${url}.`);
+      // url is null when replay archiving is disabled; the metadata below is
+      // the part that matters and is written either way
+      if (url != null) {
+        Logger.module('JOB').debug(`[J:${job.id}] archive-game -> (${gameId}) uploaded to ${url}.`);
+      }
       Logger.module('JOB').debug(`[J:${job.id}] archive-game -> (${gameId}) saving game metadata.`);
       return GamesModule.saveGameMetadata(gameId, JSON.parse(_chainState.serializedGameData), url);
     })
