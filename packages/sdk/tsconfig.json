@@ -14,7 +14,7 @@
     // The root program picks it up incidentally; a scoped program has to ask.
     "types": ["node", "colors"],
     "paths": {
-      "app/*": ["../../app/*"],
+      "app/*": ["../../apps/client/*"],
       "server/*": ["../../server/*"],
       "config/*": ["../../config/*"]
     }

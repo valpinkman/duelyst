@@ -17,7 +17,7 @@ import fs from 'node:fs';
 import { execSync } from 'node:child_process';
 
 const files = execSync(
-  "grep -rlE '(PromiseUtils\\.|catch\\(onType\\()' app server worker test --include='*.ts' --include='*.js' | grep -v app/vendor",
+  "grep -rlE '(PromiseUtils\\.|catch\\(onType\\()' apps/client server worker test --include='*.ts' --include='*.js' | grep -v apps/client/vendor",
   { encoding: 'utf8' },
 )
   .trim()

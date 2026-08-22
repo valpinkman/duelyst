@@ -2,7 +2,7 @@
  * Vite build for the browser client (MODERNIZATION_PLAN.md Phase 4).
  *
  * Replaces gulp's browserify bundle (gulp/bundler.js) only: it produces
- * dist/src/duelyst.js from app/index.ts. Everything else (vendor.js
+ * dist/src/duelyst.js from apps/client/index.ts. Everything else (vendor.js
  * concat, css, index.html, resource packages/copy, locales) still comes from
  * gulp until later Phase 4 steps. Run `pnpm build:vite` after a normal gulp
  * build (it needs the generated packages/data/packages.js).
@@ -150,13 +150,13 @@ function umdThisShimPlugin() {
 // A virtual entry reproduces that multi-entry-single-bundle behavior.
 const VIRTUAL_ENTRY = '\0duelyst-entry';
 function entryPlugin() {
-  const entries = ['./app/index.ts'];
+  const entries = ['./apps/client/index.ts'];
   if (
     ENV_VARS.DAT_GUI_EDITOR_ENABLED != null
       ? ENV_VARS.DAT_GUI_EDITOR_ENABLED
       : config.get('datGuiEditorEnabled')
   )
-    entries.push('./app/tools/editor.ts');
+    entries.push('./apps/client/tools/editor.ts');
   return {
     name: 'duelyst:entry',
     resolveId(id) {
@@ -175,12 +175,13 @@ export default defineConfig({
   resolve: {
     alias: {
       // root-absolute requires (app-module-path / browserify `paths`)
-      app: path.resolve(rootDir, 'app'),
+      app: path.resolve(rootDir, 'apps/client'),
+      apps: path.resolve(rootDir, 'apps'),
       test: path.resolve(rootDir, 'test'),
       // runtime glslify import is dead after static replacement; stub it
-      glslify: path.resolve(rootDir, 'app/tools/glslify-stub.js'),
+      glslify: path.resolve(rootDir, 'apps/client/tools/glslify-stub.js'),
       // node builtins used by client code (browserify shimmed these):
-      // events -> app/session2.ts, url -> packages/common/landing.ts
+      // events -> apps/client/session2.ts, url -> packages/common/landing.ts
       events: path.resolve(rootDir, 'node_modules/events'),
       url: path.resolve(rootDir, 'node_modules/url'),
       os: path.resolve(rootDir, 'node_modules/os-browserify/browser.js'),
@@ -200,7 +201,7 @@ export default defineConfig({
     sourcemap: false,
     commonjsOptions: {
       // the entire app graph is CommonJS, not just node_modules
-      include: [/node_modules/, /app\//, /packages\//],
+      include: [/node_modules/, /apps\//, /packages\//],
       extensions: ['.ts', '.js'],
       transformMixedEsModules: true,
       // preserve require-time execution order: the codebase's circular-

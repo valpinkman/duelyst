@@ -102,7 +102,7 @@
     // The app itself still lives at the repo root, so its work is declared with
     // turbo's `//#` root-task syntax. Each one names explicit `inputs`: the
     // default is "every file in the package", which at the root means hashing
-    // app/resources (1.2 GB of art and audio) on every invocation.
+    // apps/client/resources (1.2 GB of art and audio) on every invocation.
     "//#build:client": {
       "dependsOn": ["^build"],
       // dist/ is ~1.2 GB once the resources are copied in; caching that would
@@ -127,22 +127,38 @@
     },
     "//#typecheck:root": {
       "dependsOn": ["^build"],
-      "inputs": ["$TURBO_DEFAULT$", "!app/resources/**", "!app/original_resources/**"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "!apps/client/resources/**",
+        "!apps/client/original_resources/**"
+      ],
       "outputs": []
     },
     "//#lint:root": {
-      "inputs": ["$TURBO_DEFAULT$", "!app/resources/**", "!app/original_resources/**"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "!apps/client/resources/**",
+        "!apps/client/original_resources/**"
+      ],
       "outputs": []
     },
     "//#lint:fix:root": { "cache": false },
     "//#format:root": { "cache": false },
     "//#format:check:root": {
-      "inputs": ["$TURBO_DEFAULT$", "!app/resources/**", "!app/original_resources/**"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "!apps/client/resources/**",
+        "!apps/client/original_resources/**"
+      ],
       "outputs": []
     },
     "//#test:root": {
       "dependsOn": ["^build"],
-      "inputs": ["$TURBO_DEFAULT$", "!app/resources/**", "!app/original_resources/**"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "!apps/client/resources/**",
+        "!apps/client/original_resources/**"
+      ],
       "outputs": []
     }
   }

@@ -24,7 +24,8 @@
     "noEmit": true,
     "types": ["node"],
     "paths": {
-      "app/*": ["./app/*"],
+      "app/*": ["./apps/client/*"],
+      "apps/*": ["./apps/*"],
       "server/*": ["./server/*"],
       "worker/*": ["./worker/*"],
       "config/*": ["./config/*"],
@@ -32,8 +33,8 @@
     }
   },
   "include": [
-    "app/types/*.d.ts",
-    "app/**/*.ts",
+    "apps/client/types/*.d.ts",
+    "apps/client/**/*.ts",
     "packages/sdk/**/*.ts",
     "packages/common/**/*.ts",
     "packages/data/**/*.ts",
@@ -45,13 +46,13 @@
   "exclude": [
     "node_modules",
     "dist",
-    "app/vendor",
-    "app/resources",
-    "app/original_resources",
+    "apps/client/vendor",
+    "apps/client/resources",
+    "apps/client/original_resources",
     "packages/chroma-js",
     "packages/Backbone.VirtualCollection",
     "apps/desktop",
-    "app/tools/FileSaver.min.ts",
-    "app/tools/dat.gui.ts"
+    "apps/client/tools/FileSaver.min.ts",
+    "apps/client/tools/dat.gui.ts"
   ]
 }

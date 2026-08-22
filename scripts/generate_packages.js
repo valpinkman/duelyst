@@ -1365,12 +1365,16 @@
 
   // read all files and exit when complete
   Promise.all([
-    helpers.readFile(resolveSourceFile(`${dir}/../app/application`), mapResourcesForFile),
-    helpers.recursivelyReadDirectoryAndFiles(`${dir}/../app/audio`, mapResourcesForFile),
-    helpers.recursivelyReadDirectoryAndFiles(`${dir}/../app/ui`, mapResourcesForFile, /\.scss/),
+    helpers.readFile(resolveSourceFile(`${dir}/../apps/client/application`), mapResourcesForFile),
+    helpers.recursivelyReadDirectoryAndFiles(`${dir}/../apps/client/audio`, mapResourcesForFile),
+    helpers.recursivelyReadDirectoryAndFiles(
+      `${dir}/../apps/client/ui`,
+      mapResourcesForFile,
+      /\.scss/,
+    ),
     helpers.readFile(`${dir}/../dist/src/duelyst.css`, mapResourcesForFile),
     helpers.recursivelyReadDirectoryAndFiles(
-      `${dir}/../app/view`,
+      `${dir}/../apps/client/view`,
       mapResourcesForFile,
       /battlemap/i,
     ),
@@ -1390,7 +1394,7 @@
         ),
         helpers.readFile(resolveSourceFile(`${dir}/../packages/sdk/codex/codex`), parseCodex),
         helpers.readFile(
-          resolveSourceFile(`${dir}/../app/view/layers/game/BattleMap`),
+          resolveSourceFile(`${dir}/../apps/client/view/layers/game/BattleMap`),
           parseBattleMap,
         ),
         helpers.recursivelyReadDirectoryAndFiles(

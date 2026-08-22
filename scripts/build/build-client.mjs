@@ -119,13 +119,13 @@ const VENDOR_FILES = [
   'node_modules/bootstrap-sass/assets/javascripts/bootstrap.js',
   'node_modules/underscore/underscore.js',
   'node_modules/backbone/backbone.js',
-  'app/vendor/backfire/backfire.min.js',
+  'apps/client/vendor/backfire/backfire.min.js',
   'node_modules/backbone.marionette/lib/backbone.marionette.js',
-  'app/vendor/jquery_ui/jquery-ui.min.js',
-  'app/vendor/ccConfig.js',
-  'app/vendor/cocos2d-html5/lib/cocos2d-js-v3.3-beta0.js',
-  'app/vendor/aws/aws-sdk.min.js',
-  'app/vendor/aws/aws-sdk-mobile-analytics.min.js',
+  'apps/client/vendor/jquery_ui/jquery-ui.min.js',
+  'apps/client/vendor/ccConfig.js',
+  'apps/client/vendor/cocos2d-html5/lib/cocos2d-js-v3.3-beta0.js',
+  'apps/client/vendor/aws/aws-sdk.min.js',
+  'apps/client/vendor/aws/aws-sdk-mobile-analytics.min.js',
 ];
 
 function step3Vendor() {
@@ -151,7 +151,7 @@ function renderHbs(srcFile, outFile) {
 }
 
 function step4Html() {
-  renderHbs('app/index.hbs', 'dist/src/index.html');
+  renderHbs('apps/client/index.hbs', 'dist/src/index.html');
   log('html', 'dist/src/index.html rendered');
 }
 
@@ -159,8 +159,8 @@ async function step5Css() {
   const sass = require('sass');
   const postcss = require('postcss');
   const autoprefixer = require('autoprefixer');
-  const compiled = sass.compile('app/ui/styles/application.scss', {
-    loadPaths: ['app/vendor', 'node_modules'],
+  const compiled = sass.compile('apps/client/ui/styles/application.scss', {
+    loadPaths: ['apps/client/vendor', 'node_modules'],
     quietDeps: true,
     silenceDeprecations: [
       'import',
@@ -178,7 +178,7 @@ async function step5Css() {
 
 function step6Locales() {
   // consolidate the en locale parts into index.json (gulp used require-dir)
-  const localeDir = 'app/localization/locales/en';
+  const localeDir = 'apps/client/localization/locales/en';
   const all = {};
   for (const file of fs.readdirSync(localeDir)) {
     if (!file.endsWith('.json') || file === 'index.json') continue;
@@ -188,7 +188,7 @@ function step6Locales() {
   }
   fs.writeFileSync(path.join(localeDir, 'index.json'), JSON.stringify(all));
   // copy every locale's index.json into dist
-  const localesRoot = 'app/localization/locales';
+  const localesRoot = 'apps/client/localization/locales';
   for (const locale of fs.readdirSync(localesRoot)) {
     const idx = path.join(localesRoot, locale, 'index.json');
     if (!fs.existsSync(idx)) continue;
@@ -241,7 +241,7 @@ function step7Resources() {
   );
   let copied = 0;
   for (const rel of paths) {
-    const src = path.join('app', rel);
+    const src = path.join('apps/client', rel);
     const dest = path.join('dist/src', rel);
     if (!fs.existsSync(src)) continue;
     fs.mkdirSync(path.dirname(dest), { recursive: true });
@@ -251,8 +251,8 @@ function step7Resources() {
     copied += 1;
   }
   // copy web assets (favicon etc., gulp/rsx.js copyWeb)
-  for (const file of fs.readdirSync('app/resources/web')) {
-    fs.copyFileSync(path.join('app/resources/web', file), path.join('dist/src', file));
+  for (const file of fs.readdirSync('apps/client/resources/web')) {
+    fs.copyFileSync(path.join('apps/client/resources/web', file), path.join('dist/src', file));
   }
   log('resources', `${copied} files copied (rest unchanged)`);
 }

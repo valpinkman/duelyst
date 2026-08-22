@@ -405,6 +405,22 @@ step it describes, so it can never drift from the code.
      the `pnpm-workspace`, `tsconfig` exclude, `.gitignore` and oxlint/oxfmt ignore entries.
      Verified by building main+preload from the new location.
 
+     **Step 4 done:** all of `app/` → `apps/client/`, assets included — 10,592 renames, and no
+     top-level `app/` remains (the alternative left `app/` and `apps/` as confusable siblings).
+     Only 1,232 specifiers in 237 files, because nearly everything inside the client was already
+     relative and nothing outside it imports the client at all. The work was in the build: the Vite
+     alias and entries, the twelve vendor concat paths, the sass `loadPaths`, the hbs and locale
+     directories, the resource copy, `generate_packages.js`'s five scan roots, both dockerignores,
+     six Dockerfiles, and the `app/*` tsconfig `paths` in four tsconfigs.
+
+     Verified with the Playwright e2e — it registers an account, plays a practice game and asserts
+     zero console errors, which is the only check that exercises RSX resource URLs and the vendor
+     globals. It failed twice first, both times for reasons that were not the move: a build made
+     with the placeholder `FIREBASE_URL` (which builds fine and then hangs at login, exactly as
+     AGENTS.md warns), and then `rm -rf dist` breaking the compose bind mount's inode so the
+     container served a 404 for a file that existed on the host. Worth knowing before reading an
+     e2e failure here as a regression.
+
   5. **Optional, deliberately not started:** Backbone/Marionette/jQuery. That is a UI rewrite,
      not an upgrade, and was declined once already. Audited 2026-08-21 —
      [`BACKBONE_AUDIT.md`](BACKBONE_AUDIT.md). The short version: Backbone is the metagame shell

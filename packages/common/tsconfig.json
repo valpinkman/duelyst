@@ -19,10 +19,10 @@
     "noEmit": true,
     "types": ["node", "colors"],
     "paths": {
-      "app/*": ["../../app/*"],
+      "app/*": ["../../apps/client/*"],
       "server/*": ["../../server/*"],
       "config/*": ["../../config/*"]
     }
   },
-  "include": ["**/*.ts", "../../app/types/globals.d.ts"]
+  "include": ["**/*.ts", "../../apps/client/types/globals.d.ts"]
 }

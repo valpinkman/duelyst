@@ -9,7 +9,7 @@ import { defineConfig } from 'vitest/config';
  *
  * The suites are split into named projects along package lines, so a package
  * can be exercised on its own: `pnpm vitest --project sdk`. The files still
- * live under test/ rather than inside app/sdk -- see docs/REORG_AUDIT.md. The
+ * live under test/ rather than inside packages/sdk -- see docs/REORG_AUDIT.md. The
  * names are the point: they make the boundary explicit now, so that relocating
  * the files later is a path change and not a restructuring.
  */

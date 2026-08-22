@@ -26,7 +26,7 @@ const helpers = require('scripts/helpers');
 const fs = require('fs');
 const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 
-UtilsLocalization.PATH_TO_LOCALES = '../../app/localization/locales';
+UtilsLocalization.PATH_TO_LOCALES = '../../apps/client/localization/locales';
 
 UtilsLocalization.createBlankJsonForKeys = function (keys, defaultTo) {
   const jsonData = {};
