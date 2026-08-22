@@ -588,7 +588,13 @@ explicitly how it was verified instead. This is why #1–#3 are the first iterat
 - **Ready** on the board means _no unmet blockers_, not _next up_. Anything `Ready` can be started.
 - Do not start an issue whose blockers are open. The blockers are listed in the issue body and are
   load-bearing — #9 before #4 means reimplementing write semantics without knowing what they are.
-- An issue is **done** when its PR is squash-merged into `marionette-removal` and its acceptance
-  criteria are all ticked or explicitly waived in the PR body.
+- An issue is **done** when its PR is merged into `marionette-removal` and its acceptance criteria
+  are all ticked or explicitly waived in the PR body.
+- **`Closes #N` will not close the issue — close it by hand.** GitHub only honours closing keywords
+  for PRs merged into the **default** branch, and every PR here targets `marionette-removal`. The
+  keyword still earns its place: it links the PR to the issue and is what §11.1's one-issue-per-PR
+  rule is checked against. But whoever merges must also close the issue and move its board Status
+  to `Done`, or the tracking drifts silently while the work lands. (Measured on #1: PR #19 merged,
+  issue stayed `OPEN`.)
 - **A green build proves nothing in this milestone.** A wrong Backbone/Firebase version fails at
   runtime, not at build time. The screen tour is the gate.
