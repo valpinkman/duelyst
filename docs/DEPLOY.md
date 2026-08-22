@@ -145,6 +145,24 @@ a hard thing to diagnose a year later. Recreate it under **Keys & Tokens → API
 tokens** with the same two permissions and `gh secret set COOLIFY_TOKEN
 --repo valpinkman/duelyst`.
 
+## Backing up the database
+
+Postgres is internal-only (`is_public: false`), so there is no port to reach from
+outside. Dump it through the container instead:
+
+```bash
+ssh root@65.108.241.38
+docker exec lx6bsx4eqaf0b8fhgxrcpzyb pg_dump -U duelyst duelyst > duelyst-$(date +%F).sql
+```
+
+Firebase holds a second half of the state — decks, presence, quests, chat, live
+game sessions — so a Postgres dump alone is not a complete backup. Whether that
+matters depends on what you would want to restore.
+
+The predecessor to this note lived in `docs/infrastructure/POSTGRES.md` and
+described an SSH tunnel to RDS through an EC2 host, which went with the AWS
+deployment.
+
 ## Things that will bite
 
 - **The web image is ~1.7 GB** (474 MB of it the built client) and the build
