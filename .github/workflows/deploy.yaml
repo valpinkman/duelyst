@@ -25,16 +25,16 @@ on:
   release:
     types: [published]
   workflow_dispatch:
+    inputs:
+      uuids:
+        description: 'Comma-separated Coolify application uuids (default: the repo variable)'
+        required: false
 
 # Both triggers can fire for one release. The group collapses that to a single
 # deployment instead of building a ~1 GB image twice.
 concurrency:
   group: deploy
   cancel-in-progress: true
-    inputs:
-      uuids:
-        description: 'Comma-separated Coolify application uuids (default: the repo variable)'
-        required: false
 
 jobs:
   deploy:
