@@ -26,8 +26,8 @@
     "paths": {
       "app/*": ["./apps/client/*"],
       "apps/*": ["./apps/*"],
-      "server/*": ["./server/*"],
-      "worker/*": ["./worker/*"],
+      "server/*": ["./apps/server/*"],
+      "worker/*": ["./apps/worker/*"],
       "config/*": ["./config/*"],
       "test/*": ["./test/*"]
     }
@@ -38,8 +38,8 @@
     "packages/sdk/**/*.ts",
     "packages/common/**/*.ts",
     "packages/data/**/*.ts",
-    "server/**/*.ts",
-    "worker/**/*.ts",
+    "apps/server/**/*.ts",
+    "apps/worker/**/*.ts",
     "test/**/*.ts",
     "scripts/**/*.ts"
   ],

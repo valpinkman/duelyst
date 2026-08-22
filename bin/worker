@@ -3,5 +3,5 @@
 
 require('./_bootstrap')('worker')
 
-require('worker/worker')
-require('worker/http_healthcheck')()
+require('apps/worker/worker')
+require('apps/worker/http_healthcheck')()

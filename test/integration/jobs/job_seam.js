@@ -21,7 +21,7 @@ const path = require('path');
 
 require('app-module-path').addPath(path.join(__dirname, '../../../'));
 const { expect } = require('chai');
-const Jobs = require('../../../server/redis/r-jobs');
+const Jobs = require('apps/server/redis/r-jobs');
 
 let counter = 0;
 const uniqueQueue = (label) => {

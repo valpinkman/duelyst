@@ -24,7 +24,7 @@
     "packages/*/dist/**",
     "packages/Backbone.VirtualCollection/**",
     "scripts/codex/**",
-    "server/migrations/**",
+    "apps/server/migrations/**",
     "**/*.hbs",
     "**/*.html",
     "**/*.scss",

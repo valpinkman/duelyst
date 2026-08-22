@@ -5,16 +5,16 @@ const chai = require('chai');
 const { expect } = chai;
 const _ = require('underscore');
 const moment = require('moment');
-const DuelystFirebase = require('../../../server/lib/duelyst_firebase_module');
-const Errors = require('../../../server/lib/custom_errors');
-const UsersModule = require('../../../server/lib/data_access/users');
-const SyncModule = require('../../../server/lib/data_access/sync');
-const DecksModule = require('../../../server/lib/data_access/decks');
-const FirebasePromises = require('../../../server/lib/firebase_promises');
+const DuelystFirebase = require('apps/server/lib/duelyst_firebase_module');
+const Errors = require('apps/server/lib/custom_errors');
+const UsersModule = require('apps/server/lib/data_access/users');
+const SyncModule = require('apps/server/lib/data_access/sync');
+const DecksModule = require('apps/server/lib/data_access/decks');
+const FirebasePromises = require('apps/server/lib/firebase_promises');
 const config = require('../../../config/config');
 const Logger = require('@duelyst/common/logger');
 const SDK = require('@duelyst/sdk/index');
-const knex = require('../../../server/lib/data_access/knex');
+const knex = require('apps/server/lib/data_access/knex');
 const { onType } = require('@duelyst/common/utils/utils_promise');
 
 // disable the logger for cleaner test output

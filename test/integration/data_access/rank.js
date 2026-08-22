@@ -6,19 +6,19 @@ chai.config.includeStack = true;
 const { expect } = chai;
 const _ = require('underscore');
 const moment = require('moment');
-const DuelystFirebase = require('../../../server/lib/duelyst_firebase_module');
-const Errors = require('../../../server/lib/custom_errors');
-const UsersModule = require('../../../server/lib/data_access/users');
-const RankModule = require('../../../server/lib/data_access/rank');
-const SyncModule = require('../../../server/lib/data_access/sync');
-const FirebasePromises = require('../../../server/lib/firebase_promises');
+const DuelystFirebase = require('apps/server/lib/duelyst_firebase_module');
+const Errors = require('apps/server/lib/custom_errors');
+const UsersModule = require('apps/server/lib/data_access/users');
+const RankModule = require('apps/server/lib/data_access/rank');
+const SyncModule = require('apps/server/lib/data_access/sync');
+const FirebasePromises = require('apps/server/lib/firebase_promises');
 const generatePushId = require('@duelyst/common/generate_push_id');
 const config = require('../../../config/config');
 const Logger = require('@duelyst/common/logger');
 const SDK = require('@duelyst/sdk/index');
-const knex = require('../../../server/lib/data_access/knex');
+const knex = require('apps/server/lib/data_access/knex');
 
-const { SRankManager } = require('../../../server/redis/index');
+const { SRankManager } = require('apps/server/redis/index');
 const { onType } = require('@duelyst/common/utils/utils_promise');
 const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 

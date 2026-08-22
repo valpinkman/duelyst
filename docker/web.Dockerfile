@@ -2,7 +2,7 @@
 #
 # Upstream served the client from S3/CDN and only the API from this image. A
 # self-hosted deployment has no CDN, so the client is built here and shipped
-# alongside; server/routes/public.ts serves dist/src whenever it is present.
+# alongside; apps/server/routes/public.ts serves dist/src whenever it is present.
 #
 # The client bundle bakes its configuration in at BUILD time (Vite `define`),
 # so API_URL / FIREBASE_URL / FIREBASE_API_KEY are build args, not runtime env.
@@ -81,7 +81,7 @@ RUN pnpm install --prod --frozen-lockfile && pnpm store prune
 #
 # No compiler, no devDependencies, no TypeScript sources. The last of those
 # matters beyond size: bin/_bootstrap.js decides whether to register the tsx
-# require-hook by looking for server/api.ts on disk, and server/knexfile.js does
+# require-hook by looking for apps/server/api.ts on disk, and apps/server/knexfile.js does
 # the same for migrations. A runtime tree with no .ts in it cannot get that
 # wrong.
 FROM node:24-bookworm-slim

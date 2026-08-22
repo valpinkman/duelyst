@@ -8,7 +8,7 @@
  * re-acquired by someone else, which is silent cross-user corruption.
  */
 const { expect } = require('chai');
-const makeLock = require('../../../server/redis/r-lock');
+const makeLock = require('apps/server/redis/r-lock');
 
 /** Minimal stand-in implementing only what r-lock uses. */
 function fakeRedis() {

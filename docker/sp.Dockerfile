@@ -21,8 +21,8 @@ COPY apps/client/localization /duelyst/apps/client/localization
 COPY packages/sdk /duelyst/packages/sdk
 COPY bin /duelyst/bin
 COPY config /duelyst/config
-COPY server /duelyst/server
-COPY worker /duelyst/worker
+COPY apps/server /duelyst/apps/server
+COPY apps/worker /duelyst/apps/worker
 
 EXPOSE 8000
 COPY tsconfig.json /duelyst/

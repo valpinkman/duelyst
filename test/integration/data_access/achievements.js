@@ -14,13 +14,13 @@ var path = require('path')
 require('app-module-path').addPath(path.join(__dirname, '../../../'))
 var chai = require('chai');
 var expect = chai.expect;
-var DuelystFirebase = require('../../../server/lib/duelyst_firebase_module');
-var Errors = require('../../../server/lib/custom_errors');
-var UsersModule = require('../../../server/lib/data_access/users');
-var InventoryModule = require('../../../server/lib/data_access/inventory');
-var AchievementsModule = require('../../../server/lib/data_access/achievements');
-var SyncModule = require('../../../server/lib/data_access/sync');
-var FirebasePromises = require('../../../server/lib/firebase_promises');
+var DuelystFirebase = require('apps/server/lib/duelyst_firebase_module');
+var Errors = require('apps/server/lib/custom_errors');
+var UsersModule = require('apps/server/lib/data_access/users');
+var InventoryModule = require('apps/server/lib/data_access/inventory');
+var AchievementsModule = require('apps/server/lib/data_access/achievements');
+var SyncModule = require('apps/server/lib/data_access/sync');
+var FirebasePromises = require('apps/server/lib/firebase_promises');
 var generatePushId = require('@duelyst/common/generate_push_id');
 var config = require('../../../config/config');
 var Logger = require('@duelyst/common/logger');
@@ -28,7 +28,7 @@ var _ = require('underscore');
 var SDK = require('@duelyst/sdk/index');
 var moment = require('moment');
 const { onType } = require('@duelyst/common/utils/utils_promise');
-var knex = require('../../../server/lib/data_access/knex')
+var knex = require('apps/server/lib/data_access/knex')
 
 // disable the logger for cleaner test output
 Logger.enabled = Logger.enabled && false;

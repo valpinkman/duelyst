@@ -421,6 +421,31 @@ step it describes, so it can never drift from the code.
      container served a 404 for a file that existed on the host. Worth knowing before reading an
      e2e failure here as a regression.
 
+     **Step 5 done:** `server` → `apps/server` and `worker` → `apps/worker` (bin/ and config/ stay
+     at the root as shared infrastructure). 261 specifiers across 61 files, plus 81 relative
+     specifiers that had escaped the moved trees and no longer landed anywhere — the step 1 lesson,
+     found by resolving each one and testing whether the target exists on disk rather than by
+     eyeballing patterns. Note that most escapes were _fine_: `../../server/redis` from
+     `apps/worker/jobs/` still resolves, because both trees moved into `apps/` together. Only the
+     ones reaching `config/` and `version` at the repo root actually broke.
+
+     The class this step adds is **runtime path arithmetic**, which no specifier scan can see:
+     `knexfile.js` and the two AI entrypoints call
+     `require('app-module-path').addPath(path.join(__dirname, '..'))`, and that `..` silently became
+     `apps/` instead of the repo root. `server/lib/project_root` was fine by construction — it
+     walks up looking for a package.json rather than counting directories, which is exactly why it
+     exists.
+
+     Verified with 2/2 e2e against api and sp containers rebuilt from the edited Dockerfiles, and
+     by running `pnpm migrate:latest:built` inside the container ("Already up to date") — the
+     deploy path that e2e never touches, and the one that `cd build/apps/server` would have broken
+     silently at the next deploy.
+
+     Left alone deliberately: four dead requires in `apps/server/ai/scoring/base/board.ts`
+     (`./position_zeal` and three `./../position/position_objective_*`) that point at files which
+     do not exist and did not exist before the move either. They are pre-existing, so fixing them
+     does not belong in a move commit.
+
   5. **Optional, deliberately not started:** Backbone/Marionette/jQuery. That is a UI rewrite,
      not an upgrade, and was declined once already. Audited 2026-08-21 —
      [`BACKBONE_AUDIT.md`](BACKBONE_AUDIT.md). The short version: Backbone is the metagame shell

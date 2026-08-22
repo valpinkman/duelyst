@@ -2,7 +2,7 @@
 /*
  * Fails if any file uses a bluebird-only Promise API without requiring bluebird.
  *
- * Written after exactly that slipped through: worker/worker.ts and server/api.ts
+ * Written after exactly that slipped through: apps/worker/worker.ts and apps/server/api.ts
  * kept calling Promise.longStackTraces() after their bluebird require was
  * dropped, because the scan that cleared them checked a hand-written list of
  * idioms that happened not to include it. The services crashed on boot with

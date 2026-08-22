@@ -9,7 +9,7 @@
     "noEmit": true,
     "paths": {
       "app/*": ["../../apps/client/*"],
-      "server/*": ["../../server/*"],
+      "server/*": ["../../apps/server/*"],
       "config/*": ["../../config/*"]
     }
   },

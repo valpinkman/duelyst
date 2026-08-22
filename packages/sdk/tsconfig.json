@@ -15,7 +15,7 @@
     "types": ["node", "colors"],
     "paths": {
       "app/*": ["../../apps/client/*"],
-      "server/*": ["../../server/*"],
+      "server/*": ["../../apps/server/*"],
       "config/*": ["../../config/*"]
     }
   },
