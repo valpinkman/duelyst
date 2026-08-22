@@ -139,8 +139,19 @@ if (hasBundledClient) {
       setHeaders: isDev
         ? undefined
         : (res, filePath) => {
+            /*
+             * duelyst.js / vendor.js / duelyst.css are NOT content-hashed, so a
+             * long max-age serves a stale client for that long after a deploy --
+             * which looks exactly like the new build never shipped. Only the
+             * art and audio under resources/ get the long cache; they are
+             * addressed by name and change with the game data, not the build.
+             */
             if (filePath.endsWith('.html')) return;
-            res.setHeader('Cache-Control', 'public, max-age=3600');
+            const immutable = /[\\/]resources[\\/]/.test(filePath);
+            res.setHeader(
+              'Cache-Control',
+              immutable ? 'public, max-age=86400' : 'public, max-age=60, must-revalidate',
+            );
             res.removeHeader('Surrogate-Control');
             res.removeHeader('Pragma');
             res.removeHeader('Expires');

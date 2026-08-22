@@ -113,19 +113,29 @@ var NetworkManager = (function () {
            * server to an absolute websocket URL instead -- typically a subdomain
            * on 443. Baked in at build time like the rest of the client config.
            *
-           * Unset, or a game the API has pinned to a specific server, both keep
-           * the original behaviour exactly: an assigned address is a machine, so
-           * it wins over a deployment-wide default.
+           * It outranks the per-game `gameServerAddress` deliberately. That is a
+           * HOST only, which the client then combines with the hardcoded port --
+           * so it cannot express a deployment that does not serve 8000/8001, and
+           * honouring it there just reintroduces the URL this setting exists to
+           * replace. A deployment that really does assign servers per game
+           * should leave these unset.
+           *
+           * The address is also checked for truthiness rather than != null: in
+           * staging and production the server always assigns one, and it is
+           * `matchmaking.defaultGameServer`, whose default is the empty string.
+           * `'' != null` is true, so a loose check accepts it and builds
+           * `wss://:8000` -- an empty host, which socket.io then resolves
+           * against the current page, silently rebuilding the old URL.
            */
           const configuredUrl = isSinglePlayer
             ? process.env.SP_SERVER_URL
             : process.env.GAME_SERVER_URL;
 
           let websocketUrl;
-          if (gameServerAddress != null) {
-            websocketUrl = `${protocol}://${gameServerAddress}:${port}`;
-          } else if (configuredUrl) {
+          if (configuredUrl) {
             websocketUrl = configuredUrl;
+          } else if (gameServerAddress) {
+            websocketUrl = `${protocol}://${gameServerAddress}:${port}`;
           } else {
             websocketUrl = `${protocol}://${window.location.hostname}:${port}`;
           }
