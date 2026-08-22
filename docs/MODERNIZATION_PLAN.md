@@ -8,7 +8,9 @@ step it describes, so it can never drift from the code.
 ## ▶ Resume here
 
 - **Where it lives:** pushed to **`valpinkman/duelyst` (private)** as `main`; the local branch
-  `modernization` tracks `myrepo/main`. `origin` still points at upstream `open-duelyst/duelyst`
+  `main` tracks `myrepo/main` (it was called `modernization` until 2026-08-22, when the
+  modernization finished and the name stopped meaning anything; the stale upstream tracking
+  branch is now `upstream-main`). `origin` still points at upstream `open-duelyst/duelyst`
   (read-only, for pulling upstream changes). GitHub skips `push` events for branch-creation
   pushes this large, so CI only started on the first _incremental_ push — all six workflows now
   also accept `workflow_dispatch`.
@@ -344,7 +346,7 @@ step it describes, so it can never drift from the code.
 
 ## Rules
 
-1. Every step lands as **one commit** on `modernization` (or a branch stacked on it).
+1. Every step lands as **one commit** on `main` (or a branch stacked on it).
 2. Every commit leaves the acceptance baseline green: `FIREBASE_URL=https://test-url.firebaseio.com/ pnpm build && pnpm test:unit` — plus any step-specific criterion below.
 3. pnpm only. Never yarn/npm. No big-bang rewrites; codemods over hand-rewrites.
 4. When a step completes: tick it here and update the status log in `AGENTS.md` in the same

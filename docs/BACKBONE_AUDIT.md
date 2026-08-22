@@ -135,7 +135,7 @@ less work than its reputation implies. Nothing is currently broken by it.
 
 ## 8. Constraints for whoever picks this up
 
-- **Work on `modernization`, one commit per step**, each leaving `pnpm build` and
+- **Work on `main`, one commit per step**, each leaving `pnpm build` and
   `pnpm test:unit` green. No big-bang rewrites. Push to `myrepo`, never to `origin`.
 - **The e2e is the real gate for anything in this area.** A wrong Backbone/Firebase version fails
   at _runtime_, not at build time — a green build proves nothing. Run `pnpm test:e2e` (it

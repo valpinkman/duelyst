@@ -187,9 +187,9 @@ work.
 
 How we work:
 
-- All work on the **`modernization`** branch, **one commit per step**, each leaving `pnpm build`
+- All work on **`main`**, **one commit per step**, each leaving `pnpm build`
   and `pnpm test:unit` green so any step can be reverted in isolation. No big-bang rewrites.
-- Remotes: `myrepo` = `valpinkman/duelyst` (private, **ours** — push here; local `modernization`
+- Remotes: `myrepo` = `valpinkman/duelyst` (private, **ours** — push here; local `main`
   tracks its `main`). `origin` = upstream `open-duelyst/duelyst`, **read-only, never push there**.
 - Prefer codemods to hand edits, and drive them from compiler diagnostics rather than sweeping
   the repo — a codemod that reads `tsc` output cannot silence a place where the types are right.
