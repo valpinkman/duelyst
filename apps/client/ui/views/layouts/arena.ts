@@ -27,6 +27,7 @@ var _ = require('underscore');
 var moment = require('moment');
 var ShopData = require('@duelyst/data/shop.json');
 var i18next = require('i18next');
+var { requestJson } = require('@duelyst/common/request');
 
 var ArenaLayout = Backbone.Marionette.LayoutView.extend({
   id: 'app-arena',
@@ -192,23 +193,24 @@ var ArenaLayout = Backbone.Marionette.LayoutView.extend({
             reject(i18next.t('gauntlet.start_error_message_insufficient_gold'));
           } else {
             // buy an arena ticket
-            var request = $.ajax({
+            var request = requestJson({
               url: process.env.API_URL + '/api/me/inventory/gauntlet_tickets',
               type: 'POST',
               contentType: 'application/json',
               dataType: 'json',
             });
 
-            request.done(function (response) {
-              resolve({ id: response });
-            });
-
-            request.fail(function (response) {
-              // Temporary error, should parse server response.
-              var errorMessage = i18next.t('gauntlet.start_error_message_generic'); // "Oops... there was a problem purchasing your Gauntlet ticket. Please try again.";
-              EventBus.getInstance().trigger(EVENTS.ajax_error, errorMessage);
-              reject(errorMessage);
-            });
+            request.then(
+              function (response) {
+                resolve({ id: response });
+              },
+              function (response) {
+                // Temporary error, should parse server response.
+                var errorMessage = i18next.t('gauntlet.start_error_message_generic'); // "Oops... there was a problem purchasing your Gauntlet ticket. Please try again.";
+                EventBus.getInstance().trigger(EVENTS.ajax_error, errorMessage);
+                reject(errorMessage);
+              },
+            );
           }
         }
       }.bind(this),
@@ -218,7 +220,7 @@ var ArenaLayout = Backbone.Marionette.LayoutView.extend({
   _startArenaRunWithTicketId: function (ticketId) {
     return new Promise(
       function (resolve, reject) {
-        var request = $.ajax({
+        var request = requestJson({
           url: process.env.API_URL + '/api/me/gauntlet/runs',
           data: JSON.stringify({ ticket_id: ticketId }),
           type: 'POST',
@@ -226,16 +228,17 @@ var ArenaLayout = Backbone.Marionette.LayoutView.extend({
           dataType: 'json',
         });
 
-        request.done(function (response) {
-          resolve(response);
-        });
-
-        request.fail(function (response) {
-          // Temporary error, should parse server response.
-          var errorMessage = i18next.t('gauntlet.start_error_message_generic');
-          EventBus.getInstance().trigger(EVENTS.ajax_error, errorMessage);
-          reject(errorMessage);
-        });
+        request.then(
+          function (response) {
+            resolve(response);
+          },
+          function (response) {
+            // Temporary error, should parse server response.
+            var errorMessage = i18next.t('gauntlet.start_error_message_generic');
+            EventBus.getInstance().trigger(EVENTS.ajax_error, errorMessage);
+            reject(errorMessage);
+          },
+        );
       }.bind(this),
     );
   },
@@ -334,7 +337,7 @@ var ArenaLayout = Backbone.Marionette.LayoutView.extend({
     // make request
     var requestPromise = new Promise(
       function (resolve, reject) {
-        var request = $.ajax({
+        var request = requestJson({
           url: process.env.API_URL + '/api/me/gauntlet/runs/current/faction_id',
           data: JSON.stringify({ faction_id: factionId }),
           type: 'PUT',
@@ -342,7 +345,7 @@ var ArenaLayout = Backbone.Marionette.LayoutView.extend({
           dataType: 'json',
         });
 
-        request.done(
+        request.then(
           function (response) {
             var unchosenFactionIds = _.without(this.model.get('faction_choices'), factionId);
             var unchosenFaction1 = unchosenFactionIds[0] || null;
@@ -357,14 +360,13 @@ var ArenaLayout = Backbone.Marionette.LayoutView.extend({
 
             resolve(response);
           }.bind(this),
+          function (response) {
+            // Temporary error, should parse server response.
+            var errorMessage = i18next.t('common.start_error_message_generic_please_retry'); // "Oops... there was a problem selecting your faction. Please try again."
+            EventBus.getInstance().trigger(EVENTS.ajax_error, errorMessage);
+            reject(errorMessage);
+          },
         );
-
-        request.fail(function (response) {
-          // Temporary error, should parse server response.
-          var errorMessage = i18next.t('common.start_error_message_generic_please_retry'); // "Oops... there was a problem selecting your faction. Please try again."
-          EventBus.getInstance().trigger(EVENTS.ajax_error, errorMessage);
-          reject(errorMessage);
-        });
       }.bind(this),
     );
 
@@ -382,7 +384,7 @@ var ArenaLayout = Backbone.Marionette.LayoutView.extend({
     // make request
     var requestPromise = new Promise(
       function (resolve, reject) {
-        var request = $.ajax({
+        var request = requestJson({
           url: process.env.API_URL + '/api/me/gauntlet/runs/current/cards',
           data: JSON.stringify({ card_id: selectedSdkCard.id }),
           type: 'POST',
@@ -390,7 +392,7 @@ var ArenaLayout = Backbone.Marionette.LayoutView.extend({
           dataType: 'json',
         });
 
-        request.done(
+        request.then(
           function (response) {
             var unchosenCard1Id = null;
             var unchosenCard2Id = null;
@@ -421,14 +423,13 @@ var ArenaLayout = Backbone.Marionette.LayoutView.extend({
 
             resolve(response);
           }.bind(this),
+          function (response) {
+            // Temporary error, should parse server response.
+            var errorMessage = i18next.t('common.start_error_message_generic_please_retry'); // "Oops... there was a problem selecting your card. Please try again.";
+            EventBus.getInstance().trigger(EVENTS.ajax_error, errorMessage);
+            reject(errorMessage);
+          },
         );
-
-        request.fail(function (response) {
-          // Temporary error, should parse server response.
-          var errorMessage = i18next.t('common.start_error_message_generic_please_retry'); // "Oops... there was a problem selecting your card. Please try again.";
-          EventBus.getInstance().trigger(EVENTS.ajax_error, errorMessage);
-          reject(errorMessage);
-        });
       }.bind(this),
     );
 
@@ -448,23 +449,24 @@ var ArenaLayout = Backbone.Marionette.LayoutView.extend({
           // make request
           var requestPromise = new Promise(
             function (resolve, reject) {
-              var request = $.ajax({
+              var request = requestJson({
                 url: process.env.API_URL + '/api/me/gauntlet/runs/current',
                 type: 'DELETE',
                 contentType: 'application/json',
                 dataType: 'json',
               });
 
-              request.done(function (response) {
-                resolve(response);
-              });
-
-              request.fail(function (response) {
-                // Temporary error, should parse server response.
-                var errorMessage = i18next.t('common.start_error_message_generic_please_retry'); // "Oops... there was a problem resigning your run. Please try again.";
-                EventBus.getInstance().trigger(EVENTS.ajax_error, errorMessage);
-                reject(errorMessage);
-              });
+              request.then(
+                function (response) {
+                  resolve(response);
+                },
+                function (response) {
+                  // Temporary error, should parse server response.
+                  var errorMessage = i18next.t('common.start_error_message_generic_please_retry'); // "Oops... there was a problem resigning your run. Please try again.";
+                  EventBus.getInstance().trigger(EVENTS.ajax_error, errorMessage);
+                  reject(errorMessage);
+                },
+              );
             }.bind(this),
           );
 
@@ -482,14 +484,14 @@ var ArenaLayout = Backbone.Marionette.LayoutView.extend({
     // make request
     var requestPromise = new Promise(
       function (resolve, reject) {
-        var request = $.ajax({
+        var request = requestJson({
           url: process.env.API_URL + '/api/me/gauntlet/runs/current/rewards_claimed_at',
           type: 'PUT',
           contentType: 'application/json',
           dataType: 'json',
         });
 
-        request.done(
+        request.then(
           function (response) {
             var winCount = this.model.get('win_count') || 0;
             var didResign = 0;
@@ -513,14 +515,13 @@ var ArenaLayout = Backbone.Marionette.LayoutView.extend({
             );
             resolve(response);
           }.bind(this),
+          function (response) {
+            // Temporary error, should parse server response.
+            var errorMessage = i18next.t('common.start_error_message_generic_please_retry'); // "Oops... there was a problem claiming your rewards. Please try again.";
+            EventBus.getInstance().trigger(EVENTS.ajax_error, errorMessage);
+            reject(errorMessage);
+          },
         );
-
-        request.fail(function (response) {
-          // Temporary error, should parse server response.
-          var errorMessage = i18next.t('common.start_error_message_generic_please_retry'); // "Oops... there was a problem claiming your rewards. Please try again.";
-          EventBus.getInstance().trigger(EVENTS.ajax_error, errorMessage);
-          reject(errorMessage);
-        });
       }.bind(this),
     )
       .then(function (arenaRunData) {

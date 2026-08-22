@@ -6,6 +6,7 @@ var validator = require('validator');
 var Template = require('../../templates/item/account_inventory_reset_modal.hbs');
 var NavigationManager = require('../../managers/navigation_manager');
 var FormPromptModalItemView = require('./form_prompt_modal');
+var { requestJson } = require('@duelyst/common/request');
 
 var AccountInventoryResetModalView = FormPromptModalItemView.extend({
   id: 'app-account-wipe',
@@ -70,7 +71,7 @@ var AccountInventoryResetModalView = FormPromptModalItemView.extend({
     var password = this.ui.$password.val();
 
     Promise.resolve(
-      $.ajax({
+      requestJson({
         url: process.env.API_URL + '/api/me/inventory/card_collection/soft_wipe',
         type: 'POST',
         data: JSON.stringify({

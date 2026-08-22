@@ -11,6 +11,7 @@ var openUrl = require('@duelyst/common/openUrl');
 
 var ReferralEventHistoryView = require('./referral_event_history');
 var Template = require('./templates/referral_dialog.hbs');
+var { requestJson } = require('@duelyst/common/request');
 
 var ReferralDialogView = Backbone.Marionette.ItemView.extend({
   className: 'modal prompt-modal',
@@ -79,7 +80,7 @@ var ReferralDialogView = Backbone.Marionette.ItemView.extend({
     this.ui.$claimRewardsRegion.addClass('hide');
 
     Promise.resolve(
-      $.ajax({
+      requestJson({
         url: process.env.API_URL + '/api/me/referrals/rewards/claim',
         type: 'POST',
         contentType: 'application/json',

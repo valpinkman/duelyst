@@ -162,6 +162,7 @@ const ReplayEngine = require('./replay/replayEngine');
 const AnalyticsTracker = require('./analyticsTracker');
 const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 const { onType } = require('@duelyst/common/utils/utils_promise');
+const { requestJson, setDefaultHeaders } = require('@duelyst/common/request');
 
 // require the Handlebars Template Helpers extension here since it modifies core Marionette code
 require('./ui/extensions/handlebars_template_helpers');
@@ -190,7 +191,7 @@ if (process.env.AI_TOOLS_ENABLED) {
 
   window.ai_v1_findNextActions = (playerId, difficulty) =>
     new Promise((resolve, reject) => {
-      const request = $.ajax({
+      const request = requestJson({
         url: 'http://localhost:5001/v1_find_next_actions',
         data: JSON.stringify({
           game_session_data: SDK.GameSession.getInstance().generateGameSessionSnapshot(),
@@ -202,31 +203,32 @@ if (process.env.AI_TOOLS_ENABLED) {
         dataType: 'json',
       });
 
-      request.done((res) => {
-        const actionsData = JSON.parse(res.actions);
-        const actions = [];
-        for (const actionData of Array.from<any>(actionsData)) {
-          const action = SDK.GameSession.getInstance().deserializeActionFromFirebase(actionData);
-          actions.push(action);
-        }
-        console.log('v1_find_next_actions -> ', actions);
-        return resolve(actions);
-      });
-
-      request.fail((jqXHR) => {
-        let errorMessage;
-        if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
-          errorMessage = jqXHR.responseJSON.message;
-        } else {
-          errorMessage = 'Something went wrong.';
-        }
-        return reject(errorMessage);
-      });
+      request.then(
+        (res) => {
+          const actionsData = JSON.parse(res.actions);
+          const actions = [];
+          for (const actionData of Array.from<any>(actionsData)) {
+            const action = SDK.GameSession.getInstance().deserializeActionFromFirebase(actionData);
+            actions.push(action);
+          }
+          console.log('v1_find_next_actions -> ', actions);
+          return resolve(actions);
+        },
+        (error) => {
+          let errorMessage;
+          if (error.responseJSON && error.responseJSON.message) {
+            errorMessage = error.responseJSON.message;
+          } else {
+            errorMessage = 'Something went wrong.';
+          }
+          return reject(errorMessage);
+        },
+      );
     }).catch(App._error);
 
   window.ai_v2_findActionSequence = (playerId, depthLimit, msTimeLimit) =>
     new Promise((resolve, reject) => {
-      const request = $.ajax({
+      const request = requestJson({
         url: 'http://localhost:5001/v2_find_action_sequence',
         data: JSON.stringify({
           game_session_data: SDK.GameSession.getInstance().generateGameSessionSnapshot(),
@@ -239,21 +241,22 @@ if (process.env.AI_TOOLS_ENABLED) {
         dataType: 'json',
       });
 
-      request.done((res) => {
-        const sequenceActionsData = JSON.parse(res.sequence_actions);
-        console.log('ai_v2_findActionSequence -> ', sequenceActionsData);
-        return resolve(sequenceActionsData);
-      });
-
-      request.fail((jqXHR) => {
-        let errorMessage;
-        if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
-          errorMessage = jqXHR.responseJSON.message;
-        } else {
-          errorMessage = 'Something went wrong.';
-        }
-        return reject(errorMessage);
-      });
+      request.then(
+        (res) => {
+          const sequenceActionsData = JSON.parse(res.sequence_actions);
+          console.log('ai_v2_findActionSequence -> ', sequenceActionsData);
+          return resolve(sequenceActionsData);
+        },
+        (error) => {
+          let errorMessage;
+          if (error.responseJSON && error.responseJSON.message) {
+            errorMessage = error.responseJSON.message;
+          } else {
+            errorMessage = 'Something went wrong.';
+          }
+          return reject(errorMessage);
+        },
+      );
     }).catch(App._error);
 
   window.ai_gameStarted = false;
@@ -282,7 +285,7 @@ if (process.env.AI_TOOLS_ENABLED) {
     }
 
     return new Promise<void>((resolve, reject) => {
-      const request = $.ajax({
+      const request = requestJson({
         url: 'http://localhost:5001/stop_game',
         data: JSON.stringify({}),
         type: 'POST',
@@ -290,17 +293,18 @@ if (process.env.AI_TOOLS_ENABLED) {
         dataType: 'json',
       });
 
-      request.done((res) => resolve());
-
-      request.fail((jqXHR) => {
-        let errorMessage;
-        if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
-          errorMessage = jqXHR.responseJSON.message;
-        } else {
-          errorMessage = 'Something went wrong.';
-        }
-        return reject(errorMessage);
-      });
+      request.then(
+        (res) => resolve(),
+        (error) => {
+          let errorMessage;
+          if (error.responseJSON && error.responseJSON.message) {
+            errorMessage = error.responseJSON.message;
+          } else {
+            errorMessage = 'Something went wrong.';
+          }
+          return reject(errorMessage);
+        },
+      );
     }).catch(App._error);
   };
 
@@ -349,7 +353,7 @@ if (process.env.AI_TOOLS_ENABLED) {
 
           // request run simulation
           const startSimulationPromise = new Promise((resolve, reject) => {
-            const request = $.ajax({
+            const request = requestJson({
               url: 'http://localhost:5001/start_game',
               data: JSON.stringify({
                 ai_1_version: ai1Version,
@@ -366,17 +370,18 @@ if (process.env.AI_TOOLS_ENABLED) {
               dataType: 'json',
             });
 
-            request.done((res) => resolve(JSON.parse(res.game_session_data)));
-
-            request.fail((jqXHR) => {
-              let errorMessage;
-              if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
-                errorMessage = jqXHR.responseJSON.message;
-              } else {
-                errorMessage = 'Something went wrong.';
-              }
-              return reject(errorMessage);
-            });
+            request.then(
+              (res) => resolve(JSON.parse(res.game_session_data)),
+              (error) => {
+                let errorMessage;
+                if (error.responseJSON && error.responseJSON.message) {
+                  errorMessage = error.responseJSON.message;
+                } else {
+                  errorMessage = 'Something went wrong.';
+                }
+                return reject(errorMessage);
+              },
+            );
           });
 
           // start loading
@@ -464,7 +469,7 @@ if (process.env.AI_TOOLS_ENABLED) {
 
         // request run simulation
         return new Promise<void>((resolve, reject) => {
-          const request = $.ajax({
+          const request = requestJson({
             url: 'http://localhost:5001/start_game_from_data',
             data: JSON.stringify({
               ai_1_version: ai1Version,
@@ -478,17 +483,18 @@ if (process.env.AI_TOOLS_ENABLED) {
             dataType: 'json',
           });
 
-          request.done((res) => resolve());
-
-          request.fail((jqXHR) => {
-            let errorMessage;
-            if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
-              errorMessage = jqXHR.responseJSON.message;
-            } else {
-              errorMessage = 'Something went wrong.';
-            }
-            return reject(errorMessage);
-          });
+          request.then(
+            (res) => resolve(),
+            (error) => {
+              let errorMessage;
+              if (error.responseJSON && error.responseJSON.message) {
+                errorMessage = error.responseJSON.message;
+              } else {
+                errorMessage = 'Something went wrong.';
+              }
+              return reject(errorMessage);
+            },
+          );
         });
       })
       .then(() => {
@@ -550,7 +556,7 @@ if (process.env.AI_TOOLS_ENABLED) {
       // request step game
       window.ai_gameStepsDataPromise = PromiseUtils.cancellable(
         new Promise((resolve, reject) => {
-          const request = $.ajax({
+          const request = requestJson({
             url: 'http://localhost:5001/step_game',
             data: JSON.stringify({
               game_id: SDK.GameSession.getInstance().getGameId(),
@@ -560,22 +566,23 @@ if (process.env.AI_TOOLS_ENABLED) {
             dataType: 'json',
           });
 
-          request.done((res) => {
-            if (res.steps != null) {
-              return resolve(JSON.parse(res.steps));
-            }
-            return resolve([]);
-          });
-
-          request.fail((jqXHR) => {
-            let errorMessage;
-            if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
-              errorMessage = jqXHR.responseJSON.message;
-            } else {
-              errorMessage = 'Something went wrong.';
-            }
-            return reject(errorMessage);
-          });
+          request.then(
+            (res) => {
+              if (res.steps != null) {
+                return resolve(JSON.parse(res.steps));
+              }
+              return resolve([]);
+            },
+            (error) => {
+              let errorMessage;
+              if (error.responseJSON && error.responseJSON.message) {
+                errorMessage = error.responseJSON.message;
+              } else {
+                errorMessage = 'Something went wrong.';
+              }
+              return reject(errorMessage);
+            },
+          );
         }).then((stepsData) => {
           Logger.module('APPLICATION').log(
             'ai_stepAIvAIGame -> steps:',
@@ -642,7 +649,7 @@ if (process.env.AI_TOOLS_ENABLED) {
 
     // request run games
     return new Promise<void>((resolve, reject) => {
-      const request = $.ajax({
+      const request = requestJson({
         url: 'http://localhost:5001/run_headless_games',
         data: JSON.stringify({
           ai_1_version: ai1Version,
@@ -660,17 +667,18 @@ if (process.env.AI_TOOLS_ENABLED) {
         dataType: 'json',
       });
 
-      request.done((res) => resolve());
-
-      request.fail((jqXHR) => {
-        let errorMessage;
-        if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
-          errorMessage = jqXHR.responseJSON.message;
-        } else {
-          errorMessage = 'Something went wrong.';
-        }
-        return reject(errorMessage);
-      });
+      request.then(
+        (res) => resolve(),
+        (error) => {
+          let errorMessage;
+          if (error.responseJSON && error.responseJSON.message) {
+            errorMessage = error.responseJSON.message;
+          } else {
+            errorMessage = 'Something went wrong.';
+          }
+          return reject(errorMessage);
+        },
+      );
     });
   };
 }
@@ -1254,13 +1262,16 @@ App.onLogin = function (data) {
   // save token to localStorage
   Storage.set('token', data.token);
 
-  // setup ajax headers for jquery/backbone requests
-  $.ajaxSetup({
-    headers: {
-      Authorization: `Bearer ${data.token}`,
-      'Client-Version': window.BUILD_VERSION,
-    },
-  });
+  // setup ajax headers for jquery/backbone requests. jQuery still owns
+  // Backbone.sync, so both header registries have to be told (see
+  // packages/common/request); ajaxSetup deep-extends, and setDefaultHeaders merges
+  // to match.
+  const sessionHeaders = {
+    Authorization: `Bearer ${data.token}`,
+    'Client-Version': window.BUILD_VERSION,
+  };
+  $.ajaxSetup({ headers: sessionHeaders });
+  setDefaultHeaders(sessionHeaders);
 
   // check is new signup flag is passed
   // can't use analytics data since the first login may have
@@ -1474,11 +1485,8 @@ App.onLogout = function () {
   Storage.remove('token');
 
   // remove ajax headers with new call to ajaxSetup
-  $.ajaxSetup({
-    headers: {
-      Authorization: '',
-    },
-  });
+  $.ajaxSetup({ headers: { Authorization: '' } });
+  setDefaultHeaders({ Authorization: '' });
 
   // Trigger the eventbus logout event for the ui/managers
   EventBus.getInstance().trigger(EVENTS.session_logged_out);
@@ -1705,29 +1713,30 @@ App._spectateGame = function (e) {
 // See games_manager spectateBuddyGame method, works same way
 App.spectateBuddyGame = (buddyId) =>
   new Promise((resolve, reject) => {
-    const request = $.ajax({
+    const request = requestJson({
       url: `${process.env.API_URL}/api/me/spectate/${buddyId}`,
       type: 'GET',
       contentType: 'application/json',
       dataType: 'json',
     });
 
-    request.done((response) => {
-      App._spectateGame({
-        gameData: response.gameData,
-        token: response.token,
-        playerId: buddyId,
-      });
-      return resolve(response);
-    });
-
-    request.fail((response) => {
-      const error =
-        (response && response.responseJSON && response.responseJSON.error) ||
-        'SPECTATE request failed';
-      EventBus.getInstance().trigger(EVENTS.ajax_error, error);
-      return reject(new Error(error));
-    });
+    request.then(
+      (response) => {
+        App._spectateGame({
+          gameData: response.gameData,
+          token: response.token,
+          playerId: buddyId,
+        });
+        return resolve(response);
+      },
+      (response) => {
+        const error =
+          (response && response.responseJSON && response.responseJSON.error) ||
+          'SPECTATE request failed';
+        EventBus.getInstance().trigger(EVENTS.ajax_error, error);
+        return reject(new Error(error));
+      },
+    );
   });
 
 // Event handler fired when spectate is pressed in Discord with spectateSecret passed in
@@ -2143,7 +2152,7 @@ App._startSinglePlayerGame = function (
   // request single player game
   App._singlePlayerGamePromise = PromiseUtils.cancellable(
     new Promise((resolve, reject) => {
-      const request = $.ajax({
+      const request = requestJson({
         url: `${process.env.API_URL}/api/me/games/single_player`,
         data: JSON.stringify({
           deck: myPlayerDeck,
@@ -2160,15 +2169,15 @@ App._startSinglePlayerGame = function (
         dataType: 'json',
       });
 
-      request.done((res) => resolve(res));
-
-      request.fail((jqXHR) =>
-        reject(
-          (jqXHR &&
-            jqXHR.responseJSON &&
-            (jqXHR.responseJSON.error || jqXHR.responseJSON.message)) ||
-            'Connection error. Please retry.',
-        ),
+      request.then(
+        (res) => resolve(res),
+        (error) =>
+          reject(
+            (error &&
+              error.responseJSON &&
+              (error.responseJSON.error || error.responseJSON.message)) ||
+              'Connection error. Please retry.',
+          ),
       );
     }),
   );
@@ -2279,7 +2288,7 @@ App._startBossBattleGame = function (
 
   // request boss battle game
   const bossBattleGamePromise = new Promise((resolve, reject) => {
-    const request = $.ajax({
+    const request = requestJson({
       url: `${process.env.API_URL}/api/me/games/boss_battle`,
       data: JSON.stringify({
         deck: myPlayerDeck,
@@ -2293,13 +2302,15 @@ App._startBossBattleGame = function (
       dataType: 'json',
     });
 
-    request.done((res) => resolve(res));
-
-    request.fail((jqXHR) =>
-      reject(
-        (jqXHR && jqXHR.responseJSON && (jqXHR.responseJSON.error || jqXHR.responseJSON.message)) ||
-          'Connection error. Please retry.',
-      ),
+    request.then(
+      (res) => resolve(res),
+      (error) =>
+        reject(
+          (error &&
+            error.responseJSON &&
+            (error.responseJSON.error || error.responseJSON.message)) ||
+            'Connection error. Please retry.',
+        ),
     );
   });
 
@@ -2363,21 +2374,21 @@ App._startGameForReplay = function (replayData) {
       }
 
       return new Promise((resolve, reject) => {
-        const request = $.ajax({
+        const request = requestJson({
           url,
           type: 'GET',
           contentType: 'application/json',
           dataType: 'json',
         });
-        request
-          .done((response) => resolve(response))
-          .fail((response) =>
+        request.then(
+          (response) => resolve(response),
+          (response) =>
             reject(
               new Error(
                 `Error downloading replay data: ${__guard__(response != null ? response.responseJSON : undefined, (x) => x.message)}`,
               ),
             ),
-          );
+        );
       });
     })
     .then(function (replayResponseData) {
@@ -5123,11 +5134,8 @@ App.isVersionValid = function (minimumVersion) {
 // grabs configuration from server we're running on and call App.start()
 App.setup = function () {
   // mark all requests with buld version
-  $.ajaxSetup({
-    headers: {
-      'Client-Version': process.env.VERSION,
-    },
-  });
+  $.ajaxSetup({ headers: { 'Client-Version': process.env.VERSION } });
+  setDefaultHeaders({ 'Client-Version': process.env.VERSION });
 
   // check if it is a new user and we should redirect otherwise start as normal
   if (Landing.isNewUser() && Landing.shouldRedirect()) {

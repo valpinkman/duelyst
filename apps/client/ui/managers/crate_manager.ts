@@ -24,6 +24,7 @@ var GiftCrateLookup = require('@duelyst/sdk/giftCrates/giftCrateLookup');
 var GiftCrateFactory = require('@duelyst/sdk/giftCrates/giftCrateFactory');
 var ProfileManager = require('./profile_manager');
 var Manager = require('./manager');
+var { requestJson } = require('@duelyst/common/request');
 
 var CrateManager = Manager.extend({
   _cosmeticChestCollection: null,
@@ -400,7 +401,7 @@ var CrateManager = Manager.extend({
 
     return new Promise(
       function (resolve, reject) {
-        var request = $.ajax({
+        var request = requestJson({
           url: process.env.API_URL + '/api/me/crates/cosmetic_chest/' + crateId + '/unlock',
           type: 'PUT',
           contentType: 'application/json',
@@ -408,7 +409,7 @@ var CrateManager = Manager.extend({
           data: '',
         });
 
-        request.done(
+        request.then(
           function (response) {
             // convert rewards to backbone models
             var rewardModels = [];
@@ -432,9 +433,6 @@ var CrateManager = Manager.extend({
             // resolve with rewards
             resolve(rewardModels);
           }.bind(this),
-        );
-
-        request.fail(
           function (response) {
             // Temporary error, should parse server response.
             var error = 'Claim Cosmetic Chest rewards failed';
@@ -461,14 +459,14 @@ var CrateManager = Manager.extend({
   unlockGiftCrateWithId: function (crateId) {
     return new Promise(
       function (resolve, reject) {
-        var request = $.ajax({
+        var request = requestJson({
           url: process.env.API_URL + '/api/me/crates/gift_crate/' + crateId + '/unlock',
           type: 'PUT',
           contentType: 'application/json',
           dataType: 'json',
         });
 
-        request.done(
+        request.then(
           function (response) {
             // update gift crates
             // gift crates don't live in firebase
@@ -486,9 +484,6 @@ var CrateManager = Manager.extend({
               }.bind(this),
             );
           }.bind(this),
-        );
-
-        request.fail(
           function (response) {
             // Temporary error, should parse server response.
             var error = 'Claim Gift Crate rewards failed';

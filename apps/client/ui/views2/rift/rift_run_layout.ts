@@ -30,6 +30,7 @@ var NewPlayerManager = require('../../managers/new_player_manager');
 var i18next = require('i18next');
 
 var Templ = require('./templates/rift_run_layout.hbs');
+var { requestJson } = require('@duelyst/common/request');
 
 var RiftLayout = Backbone.Marionette.LayoutView.extend({
   id: 'app-rift',
@@ -190,7 +191,7 @@ var RiftLayout = Backbone.Marionette.LayoutView.extend({
     // make request
     var requestPromise = new Promise(
       function (resolve, reject) {
-        var request = $.ajax({
+        var request = requestJson({
           url:
             process.env.API_URL +
             '/api/me/rift/runs/' +
@@ -202,7 +203,7 @@ var RiftLayout = Backbone.Marionette.LayoutView.extend({
           dataType: 'json',
         });
 
-        request.done(
+        request.then(
           function (response) {
             if (selectedSdkCard != null && selectedSdkCard.id != null) {
               Analytics.track('select rift general', {
@@ -213,15 +214,14 @@ var RiftLayout = Backbone.Marionette.LayoutView.extend({
             this.model.set(response);
             resolve(response);
           }.bind(this),
+          function (response) {
+            // Temporary error, should parse server response.
+            var errorMessage =
+              'Oops... there was a problem selecting your general. Please try again.';
+            EventBus.getInstance().trigger(EVENTS.ajax_error, errorMessage);
+            reject(errorMessage);
+          },
         );
-
-        request.fail(function (response) {
-          // Temporary error, should parse server response.
-          var errorMessage =
-            'Oops... there was a problem selecting your general. Please try again.';
-          EventBus.getInstance().trigger(EVENTS.ajax_error, errorMessage);
-          reject(errorMessage);
-        });
       }.bind(this),
     );
 
@@ -239,7 +239,7 @@ var RiftLayout = Backbone.Marionette.LayoutView.extend({
     // make request
     var requestPromise = new Promise(
       function (resolve, reject) {
-        var request = $.ajax({
+        var request = requestJson({
           url:
             process.env.API_URL + '/api/me/rift/runs/' + this.model.get('ticket_id') + '/upgrade',
           data: JSON.stringify({ card_id: selectedSdkCard.id }),
@@ -248,20 +248,19 @@ var RiftLayout = Backbone.Marionette.LayoutView.extend({
           dataType: 'json',
         });
 
-        request.done(
+        request.then(
           function (response) {
             this.model.set(response);
             NewPlayerManager.getInstance().setHasUsedRiftUpgrade(true);
             resolve(response);
           }.bind(this),
+          function (response) {
+            // Temporary error, should parse server response.
+            var errorMessage = 'Oops... there was a problem selecting your card. Please try again.';
+            EventBus.getInstance().trigger(EVENTS.ajax_error, errorMessage);
+            reject(errorMessage);
+          },
         );
-
-        request.fail(function (response) {
-          // Temporary error, should parse server response.
-          var errorMessage = 'Oops... there was a problem selecting your card. Please try again.';
-          EventBus.getInstance().trigger(EVENTS.ajax_error, errorMessage);
-          reject(errorMessage);
-        });
       }.bind(this),
     );
 
@@ -294,7 +293,7 @@ var RiftLayout = Backbone.Marionette.LayoutView.extend({
           // make request
           var requestPromise = new Promise(
             function (resolve, reject) {
-              var request = $.ajax({
+              var request = requestJson({
                 url:
                   process.env.API_URL +
                   '/api/me/rift/runs/' +
@@ -306,20 +305,19 @@ var RiftLayout = Backbone.Marionette.LayoutView.extend({
                 dataType: 'json',
               });
 
-              request.done(
+              request.then(
                 function (response) {
                   this.model.set(response);
                   resolve(response);
                 }.bind(this),
+                function (response) {
+                  // Temporary error, should parse server response.
+                  var errorMessage =
+                    'Oops... there was a problem selecting your card. Please try again.';
+                  EventBus.getInstance().trigger(EVENTS.ajax_error, errorMessage);
+                  reject(errorMessage);
+                },
               );
-
-              request.fail(function (response) {
-                // Temporary error, should parse server response.
-                var errorMessage =
-                  'Oops... there was a problem selecting your card. Please try again.';
-                EventBus.getInstance().trigger(EVENTS.ajax_error, errorMessage);
-                reject(errorMessage);
-              });
             }.bind(this),
           );
 
@@ -357,7 +355,7 @@ var RiftLayout = Backbone.Marionette.LayoutView.extend({
     // make request
     var requestPromise = new Promise(
       function (resolve, reject) {
-        var request = $.ajax({
+        var request = requestJson({
           url:
             process.env.API_URL +
             '/api/me/rift/runs/' +
@@ -368,19 +366,19 @@ var RiftLayout = Backbone.Marionette.LayoutView.extend({
           dataType: 'json',
         });
 
-        request.done(
+        request.then(
           function (response) {
             this.model.set(response);
             resolve(response);
           }.bind(this),
+          function (response) {
+            // Temporary error, should parse server response.
+            var errorMessage =
+              'Oops... there was a problem storing your upgrade. Please try again.';
+            EventBus.getInstance().trigger(EVENTS.ajax_error, errorMessage);
+            reject(errorMessage);
+          },
         );
-
-        request.fail(function (response) {
-          // Temporary error, should parse server response.
-          var errorMessage = 'Oops... there was a problem storing your upgrade. Please try again.';
-          EventBus.getInstance().trigger(EVENTS.ajax_error, errorMessage);
-          reject(errorMessage);
-        });
       }.bind(this),
     );
 
@@ -396,7 +394,7 @@ var RiftLayout = Backbone.Marionette.LayoutView.extend({
     // make request
     var requestPromise = new Promise(
       function (resolve, reject) {
-        var request = $.ajax({
+        var request = requestJson({
           url:
             process.env.API_URL +
             '/api/me/rift/runs/' +
@@ -407,20 +405,19 @@ var RiftLayout = Backbone.Marionette.LayoutView.extend({
           dataType: 'json',
         });
 
-        request.done(
+        request.then(
           function (response) {
             this.model.set(response);
             resolve(response);
           }.bind(this),
+          function (response) {
+            // Temporary error, should parse server response.
+            var errorMessage =
+              'Oops... there was a problem rerolling your upgrade. Please try again.';
+            EventBus.getInstance().trigger(EVENTS.ajax_error, errorMessage);
+            reject(errorMessage);
+          },
         );
-
-        request.fail(function (response) {
-          // Temporary error, should parse server response.
-          var errorMessage =
-            'Oops... there was a problem rerolling your upgrade. Please try again.';
-          EventBus.getInstance().trigger(EVENTS.ajax_error, errorMessage);
-          reject(errorMessage);
-        });
       }.bind(this),
     );
 

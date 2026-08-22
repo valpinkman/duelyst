@@ -31,6 +31,7 @@ var NavigationManager = require('./navigation_manager');
 var NotificationsManager = require('./notifications_manager');
 var ProfileManager = require('./profile_manager');
 var Manager = require('./manager');
+var { requestJson, requestJsonWithStatus } = require('@duelyst/common/request');
 
 var QuestsManager = Manager.extend({
   dailyQuestsCollection: null,
@@ -372,26 +373,26 @@ var QuestsManager = Manager.extend({
     //   var url = process.env.API_URL + '/api/me/quests/beginner'
     // }
 
-    var request = $.ajax({
+    var request = requestJson({
       url: url,
       type: 'POST',
       contentType: 'application/json',
       dataType: 'json',
     });
 
-    request.done(
+    request.then(
       function (response) {
         this._scheduleQuestsUpdateWhenUTCdayRollsOver();
       }.bind(this),
+      function (response) {
+        // Temporary error, should parse server response.
+        var error = 'Daily quest generation failed';
+        EventBus.getInstance().trigger(EVENTS.ajax_error, error);
+      },
     );
 
-    request.fail(function (response) {
-      // Temporary error, should parse server response.
-      var error = 'Daily quest generation failed';
-      EventBus.getInstance().trigger(EVENTS.ajax_error, error);
-    });
-
-    // wrap jquery request in bluebird promise
+    // requestJson already returns a native promise; the wrapper stays so callers
+    // keep getting the same promise flavour they always did
     return Promise.resolve(request);
   },
 
@@ -419,40 +420,46 @@ var QuestsManager = Manager.extend({
     // for analytics we want to track what kinds of quests are getting replaced
     var replacedQuestId = this.dailyQuestsCollection.get(index).get('quest_type_id');
 
-    var request = $.ajax({
+    // withStatus: this call site reads the status off the response, see below
+    var request = requestJsonWithStatus({
       url: process.env.API_URL + '/api/me/quests/daily/' + index,
       type: 'PUT',
       contentType: 'application/json',
       dataType: 'json',
     });
 
-    request.done(function (response, textStatus, jqXHR) {
-      if (response) {
-        // track an event in analytics
-        Analytics.track(
-          'quest replaced',
-          {
-            category: Analytics.EventCategory.Quest,
-            quest_type_id: replacedQuestId,
-          },
-          {
-            labelKey: 'quest_type_id',
-          },
-        );
-      } else if (jqXHR.status == 304) {
-        NavigationManager.getInstance().showDialogView(
-          new ErrorDialogItemView({ title: 'Daily quest has already been mulliganed once today.' }),
-        );
-      }
-    });
-
-    request.fail(function (response) {
-      // Temporary error, should parse server response.
-      var error = 'Daily quest mulligan/replacement failed';
-      EventBus.getInstance().trigger(EVENTS.ajax_error, error);
-    });
-
-    return request;
+    // returns the parsed body, as the jqXHR handed callers before, and never
+    // rejects -- the failure is reported on the event bus, same as it was
+    return request.then(
+      function (result) {
+        var response = result.data;
+        if (response) {
+          // track an event in analytics
+          Analytics.track(
+            'quest replaced',
+            {
+              category: Analytics.EventCategory.Quest,
+              quest_type_id: replacedQuestId,
+            },
+            {
+              labelKey: 'quest_type_id',
+            },
+          );
+        } else if (result.status == 304) {
+          NavigationManager.getInstance().showDialogView(
+            new ErrorDialogItemView({
+              title: 'Daily quest has already been mulliganed once today.',
+            }),
+          );
+        }
+        return response;
+      },
+      function (response) {
+        // Temporary error, should parse server response.
+        var error = 'Daily quest mulligan/replacement failed';
+        EventBus.getInstance().trigger(EVENTS.ajax_error, error);
+      },
+    );
   },
 
   /* endregion QUEST CYCLING */
