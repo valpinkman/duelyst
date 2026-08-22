@@ -5,15 +5,8 @@ on:
   push:
     branches:
       - main
+      - marionette-removal
   pull_request:
-    paths:
-      - app/**
-      - config/**
-      - package.json
-      - server/**
-      - test/**
-      - worker/**
-      - pnpm-lock.yaml
 
 jobs:
   unit_tests:

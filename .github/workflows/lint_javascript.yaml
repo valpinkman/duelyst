@@ -5,19 +5,13 @@ on:
   push:
     branches:
       - main
+      - marionette-removal
+  # No `paths:` filter. The one that used to be here listed .mocharc.js,
+  # bulk-decaffeinate.config.js and cli/**.js -- all deleted -- and matched only
+  # `**.js`, so on a TypeScript-only pull request this job silently did not run.
+  # That is the job holding typecheck, TS2304, the package layering gate and
+  # format:check, and its absence looks identical to it passing.
   pull_request:
-    paths:
-      - .mocharc.js
-      - app/**.js
-      - bulk-decaffeinate.config.js
-      - cli/**.js
-      - config/**.js
-      - desktop/**.js
-      #- packages/**.js
-      - scripts/**.js
-      - server/**.js
-      - test/**.js
-      - worker/**.js
 
 jobs:
   linting:
