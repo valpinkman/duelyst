@@ -22,14 +22,7 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
-    "types": ["node"],
-    "paths": {
-      "app/*": ["./apps/client/*"],
-      "apps/*": ["./apps/*"],
-      "server/*": ["./apps/server/*"],
-      "worker/*": ["./apps/worker/*"],
-      "test/*": ["./test/*"]
-    }
+    "types": ["node"]
   },
   "include": [
     "apps/client/types/*.d.ts",

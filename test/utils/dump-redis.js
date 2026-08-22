@@ -1,6 +1,3 @@
-const path = require('path');
-require('app-module-path').addPath(path.join(__dirname, '../..'));
-
 const Redis = require('ioredis');
 const c = require('@duelyst/config');
 const Logger = require('@duelyst/common/logger');

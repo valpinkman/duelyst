@@ -1,5 +1,3 @@
-const path = require('path');
-require('app-module-path').addPath(path.join(__dirname, '../../../../../../'));
 const expect = require('chai').expect;
 const CONFIG = require('@duelyst/common/config');
 const Logger = require('@duelyst/common/logger');

@@ -14,9 +14,6 @@
 const UtilsLocalization = {};
 module.exports = UtilsLocalization;
 
-const path = require('path');
-require('app-module-path').addPath(path.join(__dirname, '../..'));
-
 const npmRun = require('npm-run');
 const ProgressBar = require('progress');
 

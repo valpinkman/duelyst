@@ -23,7 +23,6 @@
  *    of the two silently breaks either rehydration or serialization.
  */
 const path = require('path');
-require('app-module-path').addPath(path.join(__dirname, '../../../../'));
 const { expect } = require('chai');
 const fs = require('fs');
 const CONFIG = require('@duelyst/common/config');

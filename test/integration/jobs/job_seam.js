@@ -17,9 +17,7 @@
  * compose stack, on a dev machine) would otherwise consume these jobs itself,
  * and the failure would look like a mysterious timeout.
  */
-const path = require('path');
 
-require('app-module-path').addPath(path.join(__dirname, '../../../'));
 const { expect } = require('chai');
 const Jobs = require('@duelyst/server/redis/r-jobs');
 

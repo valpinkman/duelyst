@@ -1,8 +1,8 @@
 /*
  * @duelyst/sdk and @duelyst/common are pnpm workspace members at packages/sdk
  * and packages/common. Each is reachable by TWO spellings: the package name,
- * resolved through the node_modules symlink, and the root-absolute path,
- * resolved by app-module-path. Node caches modules by realpath, so both must
+ * resolved through the node_modules symlink, and a relative path straight at
+ * the directory. Node caches modules by realpath, so both must
  * yield the exact same instance -- critical while singletons (GameSession,
  * CONFIG) exist, because a second copy means a second GameSession.
  *
@@ -16,26 +16,23 @@
  * `require(X)` -- comparing a module to itself, which passes for free. If both
  * arguments here are ever the same string, the test has stopped testing.
  */
-const path = require('path');
-
-require('app-module-path').addPath(path.join(__dirname, '../../../'));
 const { expect } = require('chai');
 const Logger = require('@duelyst/common/logger');
 
 Logger.enabled = false;
 
 describe('workspace package identity', () => {
-  it('expect @duelyst/sdk and packages/sdk to be the same module instance', () => {
+  it('expect @duelyst/sdk and a relative path to packages/sdk to be the same module instance', () => {
     /* eslint-disable global-require */
     const byName = require('@duelyst/sdk');
-    const byPath = require('packages/sdk');
+    const byPath = require('../../../packages/sdk');
     expect(byName).to.equal(byPath);
     expect(byName.GameSession).to.exist;
   });
 
-  it('expect @duelyst/common subpaths and packages/common paths to be the same module instance', () => {
+  it('expect @duelyst/common subpaths and relative packages/common paths to be the same module instance', () => {
     const byName = require('@duelyst/common/config');
-    const byPath = require('packages/common/config');
+    const byPath = require('../../../packages/common/config');
     /* eslint-enable global-require */
     expect(byName).to.equal(byPath);
   });

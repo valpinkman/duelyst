@@ -33,7 +33,7 @@ const generatePushId = require('@duelyst/common/generate_push_id');
 const DataAccessHelpers = require('./helpers');
 const hashHelpers = require('../hash_helpers');
 const AnalyticsUtil = require('@duelyst/common/analyticsUtil');
-const { version } = require('version.json');
+const { version } = require('../../../../version.json');
 const grantFullCollection = require('../collection');
 
 // redis

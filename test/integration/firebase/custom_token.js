@@ -13,8 +13,6 @@
  * the rules would silently stop matching, so that is asserted here rather
  * than discovered in production.
  */
-const path = require('path');
-require('app-module-path').addPath(path.join(__dirname, '../../../'));
 const { expect } = require('chai');
 const config = require('@duelyst/config');
 const DuelystFirebase = require('@duelyst/server/lib/duelyst_firebase_module');

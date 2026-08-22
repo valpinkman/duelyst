@@ -5,8 +5,6 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 // libraries
-const path = require('path');
-require('app-module-path').addPath(path.join(__dirname, '../..'));
 
 const npmRun = require('npm-run');
 

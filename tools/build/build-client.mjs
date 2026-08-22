@@ -23,7 +23,6 @@ process.chdir(rootDir);
 
 // packages/data/packages.js requires SDK modules by package name, and the
 // tree is mid-migration to TypeScript - give require() both abilities
-require('app-module-path').addPath(rootDir);
 require('tsx/cjs');
 
 const config = require(path.join(rootDir, 'packages/config/config'));

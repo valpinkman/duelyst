@@ -1,8 +1,6 @@
 // Adds currency to users.
 // Requires Postgres, Redis, and FIREBASE_URL env var.
-const path = require('path');
 const _ = require('underscore');
-require('app-module-path').addPath(path.join(__dirname, '../'));
 
 const config = require('@duelyst/config');
 const knex = require('@duelyst/server/lib/data_access/knex');

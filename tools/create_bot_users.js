@@ -1,5 +1,3 @@
-const path = require('path');
-require('app-module-path').addPath(path.join(__dirname, '../'));
 const _ = require('underscore');
 const DuelystFirebase = require('@duelyst/server/lib/duelyst_firebase_module');
 const FirebasePromises = require('@duelyst/server/lib/firebase_promises');

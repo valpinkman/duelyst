@@ -22,7 +22,6 @@
   const fs = require('fs');
   // lets require() resolve and compile .ts during the JS -> TypeScript migration
   require('tsx/cjs');
-  require('app-module-path').addPath(path.join(__dirname, '..'));
   const _ = require('underscore');
   const helpers = require('./helpers');
   const Cards = require('@duelyst/sdk/cards/cardsLookupComplete');

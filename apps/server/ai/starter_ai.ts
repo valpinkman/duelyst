@@ -1,5 +1,3 @@
-const path = require('path');
-require('app-module-path').addPath(path.join(__dirname, '../../../'));
 const Logger = require('@duelyst/common/logger');
 
 Logger.module('AI').log('Initializing AI...');

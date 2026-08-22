@@ -12,7 +12,6 @@ describe.skip('shop module', () => {
 /* Shop unit tests are currently disabled.
 
 var path = require('path')
-require('app-module-path').addPath(path.join(__dirname, '../../../'))
 var chai = require('chai');
 chai.config.includeStack = true;
 var expect = chai.expect;

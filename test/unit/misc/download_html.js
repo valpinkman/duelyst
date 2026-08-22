@@ -12,7 +12,6 @@
  * the behaviour needs to be demonstrated rather than assumed.
  */
 const path = require('path');
-require('app-module-path').addPath(path.join(__dirname, '../../../'));
 const { expect } = require('chai');
 const fs = require('fs');
 const os = require('os');

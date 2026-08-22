@@ -107,7 +107,7 @@ Everything below is TypeScript unless noted.
 | `apps/client/vendor/`                         | cocos2d-html5 3.3, jquery-ui, aws-sdk, backfire — not npm managed, JS                                                                                                                                                                                                                                                            |
 | `apps/server/`                                | `api.ts` (3000), `game.ts` (8001), `single_player.ts` (8000), `lib/data_access` (knex), `redis/`, `routes/`, `ai/`, `migrations/` (JS)                                                                                                                                                                                           |
 | `apps/worker/`                                | BullMQ jobs; `worker.ts` registers them explicitly                                                                                                                                                                                                                                                                               |
-| `bin/`                                        | service entrypoints; `_bootstrap.js` sets up app-module-path and the tsx hook — JS                                                                                                                                                                                                                                               |
+| `bin/`                                        | service entrypoints; `_bootstrap.js` sets up the tsx hook and config — JS                                                                                                                                                                                                                                                        |
 | `config/`                                     | convict schema `config.js` + `{development,staging,production}.json` — JS                                                                                                                                                                                                                                                        |
 | `test/`                                       | vitest: `unit/`, `integration/` (`data_access`, `jobs`, `misc`, `firebase`), `e2e/` (Playwright), `rules/`, `perf/` (Benchmark.js, not a suite)                                                                                                                                                                                  |
 | `tools/build/`                                | `build-client.mjs` (Vite bundle + vendor concat, sass, html, locales, resources) and `build-server.mjs` (esbuild → `build/`)                                                                                                                                                                                                     |
@@ -138,17 +138,16 @@ Everything below is TypeScript unless noted.
   layout _is_ the wire format for game state and replays. Use `declare x: any` for prototype-era
   members: a real class field creates an own property and silently changes the shape. Renaming a
   property breaks replays. Add a round-trip test first.
-- **Root-absolute requires.** `require('apps/client/…')`, `require('server/lib/…')`,
-  `require('config/config')` resolve from the repo root through `app-module-path`, registered in
-  `bin/_bootstrap.js` and every test file, and mirrored by Vite/vitest aliases. Any new runner
-  needs the same alias.
-- **Named workspace packages resolve differently from root-absolute paths.**
-  `require('@duelyst/sdk/…')` goes through `node_modules`, _not_ `app-module-path`, so it does not
-  follow the repo root into `build/`. The repo-root symlink points at `packages/sdk/*.ts`, and
+- **There are exactly two ways to name a module, and no magic.** Inside a tree, a relative path.
+  Across trees, the workspace package name — `@duelyst/{sdk,common,data,config,client,server,worker}`.
+  `app-module-path` is gone: nothing resolves "from the repo root" any more, so a new runner needs
+  no aliases, and Vite/vitest/tsconfig carry none.
+- **A package name does not follow the repo root into `build/`.**
+  `require('@duelyst/sdk/…')` goes through `node_modules`. The repo-root symlink points at `packages/sdk/*.ts`, and
   production runs with no tsx hook — so a named require that works in dev, in vitest and in the
   Vite bundle still dies in the container. `tools/build/build-server.mjs` fixes this by emitting
   `build/node_modules/@duelyst/sdk -> ../../packages/sdk` (relative, so it survives `COPY`): node
-  walks up from `build/server/api.js`, finds `build/node_modules` first, and lands on the
+  walks up from `build/apps/server/api.js`, finds `build/node_modules` first, and lands on the
   transpiled copy. **Every gate except a container boot is a dev-mode path** — when you move a
   package, run `node build/bin/api` from `build/`, not just the test suite.
 - **`tsc` does not follow CommonJS `require()`.** A file enters the root program only if the root
@@ -163,6 +162,13 @@ Everything below is TypeScript unless noted.
   `test/unit/sdk/package_identity.js`, whose two deliberately-different spellings were rewritten
   into the same string, leaving it comparing a module to itself. Prefer gates that print a count,
   and read the count.
+- **`PROJECT_ROOT` is the OUTERMOST repo-like ancestor, not the nearest `package.json`.**
+  `apps/server/lib/project_root` locates the deployment root, which is where `dist/src` and
+  `public/` live. It used to stop at the first `package.json` above it — fine until `apps/server`
+  became a workspace package and `build-server` mirrored that manifest, at which point
+  `PROJECT_ROOT` silently became `build/apps/server` and the API served 404 for its own client.
+  Adding a `package.json` anywhere is now safe; a directory counts only if it also has
+  `node_modules` or `pnpm-workspace.yaml`.
 - **Beware `const` shadowing from the decaffeination.** CoffeeScript had one mutable binding per
   scope; the conversion gave each assignment its own declaration. Where a suite-level variable is
   re-declared inside a callback, every later read sees the initial `null` — this has cost real

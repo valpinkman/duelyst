@@ -66,9 +66,6 @@ importers:
       '@thream/socketio-jwt':
         specifier: 2.2.1
         version: 2.2.1(socket.io@4.8.3)
-      app-module-path:
-        specifier: ^1.0.6
-        version: 1.1.0
       backbone:
         specifier: 1.1.2
         version: 1.1.2
@@ -2343,9 +2340,6 @@ packages:
     peerDependencies:
       dmg-builder: 26.15.3
       electron-builder-squirrel-windows: 26.15.3
-
-  app-module-path@1.1.0:
-    resolution: {integrity: sha512-gsUszFwFJyYTiIhRKuXm1yYodlzcWMXZ0Mzp+XU3hAt6uMx3d6NAwB1OGxeBEM3ZLOAkMPay9lpLjVgHBNXQNQ==}
 
   aproba@2.1.0:
     resolution: {integrity: sha512-tLIEcj5GuR2RSTnxNKdkK0dJ/GrC7P38sUkiDmDuHfsHmbagTFAxDVIBltoklXEVIQ/f14IL8IMJ5pn9Hez1Ew==}
@@ -8369,8 +8363,6 @@ snapshots:
       which: 5.0.0
     transitivePeerDependencies:
       - supports-color
-
-  app-module-path@1.1.0: {}
 
   aproba@2.1.0: {}
 

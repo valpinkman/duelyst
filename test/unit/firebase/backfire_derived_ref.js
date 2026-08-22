@@ -15,9 +15,7 @@
  * lives in app/ui/extensions/duelyst_firebase.ts, the single point every
  * backfire model is constructed through.
  */
-const path = require('path');
 
-require('app-module-path').addPath(path.join(__dirname, '../../../'));
 const { expect } = require('chai');
 
 const firebase = require('firebase/compat/app');

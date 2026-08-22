@@ -1,5 +1,3 @@
-const path = require('path');
-require('app-module-path').addPath(path.join(__dirname, '../../../'));
 const { expect } = require('chai');
 const loginHelpers = require('@duelyst/server/lib/hash_helpers');
 

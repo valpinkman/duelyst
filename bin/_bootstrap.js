@@ -29,7 +29,6 @@ module.exports = function bootstrap(winstonLabel) {
   // still needed for the last root-absolute requires: config/config and version
   // Named packages (@duelyst/sdk) do NOT come through here -- they resolve via
   // node_modules, which is why build-server.mjs writes build/node_modules.
-  require('app-module-path').addPath(root);
 
   // Load config first so it has chance to synchronously validate .json config
   // files *before* any other code executes

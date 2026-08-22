@@ -13,8 +13,6 @@
  * The suite had no quest coverage at all, so it stayed green throughout. The
  * only visible trace was one console error per new account.
  */
-const path = require('path');
-require('app-module-path').addPath(path.join(__dirname, '../../../../'));
 const { expect } = require('chai');
 const Logger = require('@duelyst/common/logger');
 const QuestFactory = require('@duelyst/sdk/quests/questFactory');

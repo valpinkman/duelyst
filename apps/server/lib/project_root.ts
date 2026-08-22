@@ -19,16 +19,37 @@ const path = require('path');
  * Walking up to the directory that owns package.json gives the right answer in
  * both layouts, with nothing to keep in sync.
  */
+/*
+ * The OUTERMOST such directory, not the nearest one.
+ *
+ * This used to stop at the first package.json above it, which was the
+ * deployment root only for as long as nothing in between had one. Once
+ * apps/server became a workspace package it did, and build-server mirrors that
+ * manifest into build/ -- so PROJECT_ROOT silently became
+ * /duelyst/build/apps/server and the API answered 404 for the client it was
+ * supposed to be serving, from `PROJECT_ROOT/public/<env>/index.html`.
+ *
+ * A directory only counts as a candidate if it also carries node_modules or
+ * pnpm-workspace.yaml, so an unrelated package.json somewhere above a checkout
+ * (a home directory, say) cannot drag the root upwards.
+ */
 function findProjectRoot(from: string): string {
   let dir = from;
-  while (!fs.existsSync(path.join(dir, 'package.json'))) {
+  let found: string | null = null;
+  for (;;) {
+    const hasManifest = fs.existsSync(path.join(dir, 'package.json'));
+    const looksLikeRoot =
+      fs.existsSync(path.join(dir, 'node_modules')) ||
+      fs.existsSync(path.join(dir, 'pnpm-workspace.yaml'));
+    if (hasManifest && looksLikeRoot) found = dir;
     const parent = path.dirname(dir);
-    if (parent === dir) {
-      throw new Error(`could not locate the project root above ${from}`);
-    }
+    if (parent === dir) break;
     dir = parent;
   }
-  return dir;
+  if (!found) {
+    throw new Error(`could not locate the project root above ${from}`);
+  }
+  return found;
 }
 
 module.exports.PROJECT_ROOT = findProjectRoot(__dirname);

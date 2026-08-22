@@ -174,10 +174,6 @@ export default defineConfig({
   define,
   resolve: {
     alias: {
-      // root-absolute requires (app-module-path / browserify `paths`)
-      app: path.resolve(rootDir, 'apps/client'),
-      apps: path.resolve(rootDir, 'apps'),
-      test: path.resolve(rootDir, 'test'),
       // runtime glslify import is dead after static replacement; stub it
       glslify: path.resolve(rootDir, 'apps/client/tools/glslify-stub.js'),
       // node builtins used by client code (browserify shimmed these):

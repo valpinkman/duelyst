@@ -459,6 +459,40 @@ step it describes, so it can never drift from the code.
      that was merely _read_ rather than _opened_ would have gone unnoticed. Match path segments,
      not substrings.
 
+     **Step 8 done — `app-module-path` is gone.** Split into four commits because the halves
+     answer different questions. 8a: 1,375 intra-tree requires became relative paths. 8b:
+     `apps/client|server|worker` became workspace packages and the 204 cross-tree requires became
+     `@duelyst/*` names — a name says what it depends on, a relative path says only how far away it
+     sits today. 8c: `config/` → `packages/config` as `@duelyst/config`, and `require('version')`
+     became a relative path. 8e: 145 `addPath` registrations removed across 145 files (plus 134
+     now-unused `const path = require('path')` lines), the dependency dropped, and the `paths` /
+     `alias` blocks in tsconfig, Vite and vitest deleted — nothing resolves "from the repo root"
+     any more.
+
+     Four failures worth keeping, each a variant of the same theme: **the thing you did not think
+     of as a module specifier**.
+
+     - Rewriting the root-absolute spelling of `config` left 26 RELATIVE specifiers pointing at the
+       old location. Caught by unit tests, fixed by scanning every relative specifier in the repo
+       and asking whether it still resolves.
+     - The `bin/` entrypoints are **extensionless files**, so every codemod that filtered on
+       `.ts|.js|.mjs` skipped them silently. `bin/api` still said `apps/server/api` and only a boot
+       from `build/` surfaced it.
+     - One root-absolute `require('version.json')` survived because the sweep matched on the first
+       path segment, and `version.json` is not `version`. The definitive check turned out to be:
+       list every bare specifier that does not resolve to an installed package.
+     - And the one that was predicted and then caused anyway: `project_root` walked up to the
+       nearest `package.json`. Giving `apps/server` one in 8b moved `PROJECT_ROOT` to
+       `build/apps/server`, and the API answered 404 for the client it was serving. Step 5's notes
+       said this file was "correct by construction" because it looks for a marker rather than
+       counting directories — true, but the marker stopped being unique. It now takes the outermost
+       repo-like ancestor.
+
+     Verified at each commit, and finally with: layering 1,406 files, typecheck 0 over 2,275 files,
+     lint 0 errors across 7 tasks, 1,370 unit + 13 integration tests, client build (2,795 manifest
+     keys), all five entrypoints resolving from `build/`, api and sp containers rebuilt and serving
+     HTTP 200, `pnpm migrate:latest:built` in-container, and 3/3 e2e.
+
   5. **Optional, deliberately not started:** Backbone/Marionette/jQuery. That is a UI rewrite,
      not an upgrade, and was declined once already. Audited 2026-08-21 —
      [`BACKBONE_AUDIT.md`](BACKBONE_AUDIT.md). The short version: Backbone is the metagame shell

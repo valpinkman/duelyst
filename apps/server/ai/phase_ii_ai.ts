@@ -2,8 +2,6 @@ process.on('uncaughtException', (err) => {
   console.error(err.stack);
 });
 
-const path = require('path');
-require('app-module-path').addPath(path.join(__dirname, '../../../'));
 const Logger = require('@duelyst/common/logger');
 const SDK = require('@duelyst/sdk');
 const CONFIG = require('@duelyst/common/config');

@@ -11,7 +11,6 @@ describe.skip('achievements module', () => {
 
 /* Achievements tests are temporarily disabled.
 var path = require('path')
-require('app-module-path').addPath(path.join(__dirname, '../../../'))
 var chai = require('chai');
 var expect = chai.expect;
 var DuelystFirebase = require('@duelyst/server/lib/duelyst_firebase_module');
