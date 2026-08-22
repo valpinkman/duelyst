@@ -32,10 +32,17 @@ COPY . .
 ARG API_URL
 ARG FIREBASE_URL
 ARG FIREBASE_API_KEY
+# Optional: pin the websocket servers to absolute URLs (typically subdomains on
+# 443). Left empty the client falls back to <page hostname>:8001 / :8000, which
+# needs those ports terminating TLS. See docs/DEPLOY.md.
+ARG GAME_SERVER_URL
+ARG SP_SERVER_URL
 ENV NODE_ENV=production \
     API_URL=${API_URL} \
     FIREBASE_URL=${FIREBASE_URL} \
-    FIREBASE_API_KEY=${FIREBASE_API_KEY}
+    FIREBASE_API_KEY=${FIREBASE_API_KEY} \
+    GAME_SERVER_URL=${GAME_SERVER_URL} \
+    SP_SERVER_URL=${SP_SERVER_URL}
 
 # fail here rather than in someone's browser
 RUN test -n "${FIREBASE_URL}" || (echo "FIREBASE_URL build arg is required" && exit 1) \

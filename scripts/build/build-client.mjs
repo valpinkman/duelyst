@@ -85,6 +85,8 @@ function step2Bundle() {
     NODE_ENV: env,
     VERSION: version,
     API_URL: config.get('api'),
+    GAME_SERVER_URL: config.get('gameServerUrl'),
+    SP_SERVER_URL: config.get('spServerUrl'),
     FIREBASE_URL: config.get('firebase.url'),
     FIREBASE_API_KEY: config.get('firebase.apiKey'),
     ALL_CARDS_AVAILABLE: config.get('allCardsAvailable'),

@@ -100,16 +100,35 @@ var NetworkManager = (function () {
           const env = process.env.NODE_ENV || 'development';
           const protocol = env === 'development' ? 'ws' : 'wss';
 
-          // Determine which WebSocket host to use.
-          // Use the assigned game server if one was provided.
-          const host = gameServerAddress != null ? gameServerAddress : window.location.hostname;
-
           // Determine which WebSocket port to use.
           // SP modes use port 8000; MP modes use port 8001.
-          const port = GameType.isSinglePlayerGameType(gameType) ? 8000 : 8001;
+          const isSinglePlayer = GameType.isSinglePlayerGameType(gameType);
+          const port = isSinglePlayer ? 8000 : 8001;
 
-          // Format the WebSocket URL.
-          const websocketUrl = `${protocol}://${host}:${port}`;
+          /*
+           * Upstream always built `<hostname>:8001` (or :8000), which needs both
+           * ports terminating TLS for the site's own domain. A deployment behind
+           * an ordinary reverse proxy cannot do that without adding listeners to
+           * the shared proxy, so GAME_SERVER_URL / SP_SERVER_URL let it pin each
+           * server to an absolute websocket URL instead -- typically a subdomain
+           * on 443. Baked in at build time like the rest of the client config.
+           *
+           * Unset, or a game the API has pinned to a specific server, both keep
+           * the original behaviour exactly: an assigned address is a machine, so
+           * it wins over a deployment-wide default.
+           */
+          const configuredUrl = isSinglePlayer
+            ? process.env.SP_SERVER_URL
+            : process.env.GAME_SERVER_URL;
+
+          let websocketUrl;
+          if (gameServerAddress != null) {
+            websocketUrl = `${protocol}://${gameServerAddress}:${port}`;
+          } else if (configuredUrl) {
+            websocketUrl = configuredUrl;
+          } else {
+            websocketUrl = `${protocol}://${window.location.hostname}:${port}`;
+          }
           Logger.module('SDK').warn(`NetworkManager: connecting to game server ${websocketUrl}`);
 
           // connect using socket.io manager

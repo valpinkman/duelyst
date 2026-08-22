@@ -40,6 +40,20 @@ const config = convict({
     default: 'http://localhost:3000',
     env: 'API_URL',
   },
+  gameServerUrl: {
+    doc:
+      'Absolute websocket URL for the multiplayer game server, e.g. ' +
+      'wss://game.example.com. Empty means the client keeps the historical ' +
+      'behaviour and builds <page hostname>:8001 itself, which requires that ' +
+      'port to terminate TLS for the site domain.',
+    default: '',
+    env: 'GAME_SERVER_URL',
+  },
+  spServerUrl: {
+    doc: 'Absolute websocket URL for the single player server. See gameServerUrl.',
+    default: '',
+    env: 'SP_SERVER_URL',
+  },
   firebase: {
     url: {
       doc: 'Firebase URL, e.g. https://my-duelyst-project-12345.firebaseio.com/',
