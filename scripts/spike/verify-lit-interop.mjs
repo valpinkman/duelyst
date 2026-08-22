@@ -13,7 +13,14 @@
  *   4. is the reactive machinery alive — set a property, await `updateComplete`,
  *      see the text change. (2) alone would also pass for a dead custom element.
  *
- * Prerequisite: `pnpm build`. Run: `node scripts/spike/verify-lit-interop.mjs`.
+ * The spike is deliberately NOT wired into the build, so a stock bundle does not
+ * contain it and this script will say so rather than fail obscurely. To reproduce:
+ *
+ *   1. add `require('app/ui/components/spike/spike-host');` at the top of app/index.ts
+ *   2. FIREBASE_URL=https://test-url.firebaseio.com/ pnpm build
+ *   3. node scripts/spike/verify-lit-interop.mjs
+ *   4. remove the line again
+ *
  * Delete with the spike.
  */
 import { createServer } from 'node:http';
@@ -101,6 +108,20 @@ const result = await page.evaluate(async () => {
 
 await browser.close();
 server.close();
+
+if (!result.reached) {
+  console.error(`
+The bundle does not contain the spike — window.__duelystLitSpike is undefined.
+
+This is the expected state of a stock build: the proof is kept out of the shipped
+bundle on purpose. To reproduce it, add
+
+    require('app/ui/components/spike/spike-host');
+
+at the top of app/index.ts, rebuild, re-run this script, then remove the line again.
+`);
+  process.exit(2);
+}
 
 const checks = [
   ['CJS module executed in the bundle', result.reached === true],
