@@ -94,8 +94,11 @@ class GameSession {
 
     // we don't have a cached array or if the month has changed since last cache
     // we need to check month because monthly content cards are invisible until month rolls over
+    // month() is 0-11 and ignores the year, so compare the year too: a cache built in October
+    // 2026 must not answer a question about October 2015
     if (
       GameSession._cardsCachedAt == null ||
+      MOMENT_NOW_UTC.year() !== GameSession._cardsCachedAt.year() ||
       MOMENT_NOW_UTC.month() !== GameSession._cardsCachedAt.month()
     ) {
       GameSession._cardsCachedAt = moment(MOMENT_NOW_UTC);
