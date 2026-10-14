@@ -282,8 +282,8 @@
     "ShimzarMainMenu": "14:4ca3f02e577b",
     "VetruvianMainMenu": "11:49e40ebd728e",
     "all": {
-      "default": "8401:23f901352dc6",
-      "forceAllResources": "8678:8f911efe1afd"
+      "default": "8403:34f35b7c09ab",
+      "forceAllResources": "8680:0456da25d50f"
     },
     "alwaysloaded": "22:fdaa31274065",
     "battle_map_0": "5:31a54a000f89",
@@ -2786,7 +2786,7 @@
     "preloader": "23:7b45aacbe727",
     "prismatic_play_card": "8:3c719e792804",
     "progression_reward": "11:29709e2524f1",
-    "reward": "12:d70a8b78ce77",
+    "reward": "12:269bad36ac61",
     "ribbon_reward": "1:666532e53c78",
     "rift": "46:dcdd07149490",
     "rift_progress": "5:4912201de98a",
