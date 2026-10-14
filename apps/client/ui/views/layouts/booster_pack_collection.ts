@@ -423,6 +423,7 @@ var BoosterPackCollectionLayout = Backbone.Marionette.LayoutView.extend({
       var scaleOffset = 0.25;
       var currentScale = 1.0;
       var shakeMagnitude = 10.0;
+      var rampAnimation = null;
       var animatePackPromise = new Promise(
         function (resolve, reject) {
           // spiral path to center
@@ -446,7 +447,7 @@ var BoosterPackCollectionLayout = Backbone.Marionette.LayoutView.extend({
           spiralAnimation.onfinish = function () {
             // start shake/scale loop; velocity queued the endless shake behind the
             // ramp, so chain it explicitly or the two would run at once
-            var rampAnimation = packEl.animate(
+            rampAnimation = packEl.animate(
               shakeKeyframes(deltaX, deltaY, shakeMagnitude, 1.0, 1.0 + scaleOffset, true),
               { duration: 1000.0, easing: EASE_IN_SINE, fill: 'forwards' },
             );
@@ -475,7 +476,12 @@ var BoosterPackCollectionLayout = Backbone.Marionette.LayoutView.extend({
       // show unlocked cards when ready
       Promise.all([requestUnlockPromise, animateUnlockPromise, animatePackPromise]).then(
         function () {
-          // delay then remove current booster pack
+          // delay then remove current booster pack; velocity's progress callback kept
+          // currentScale live, so when the ramp is cut short pick up the scale it reached
+          if (rampAnimation != null && this._unlockedBoosterPackAnimation === rampAnimation) {
+            currentScale =
+              1.0 + scaleOffset * (rampAnimation.effect.getComputedTiming().progress || 0);
+          }
           this._stopUnlockedBoosterPackAnimation();
           var packEl = this._unlockedBoosterPackEl != null ? this._unlockedBoosterPackEl[0] : null;
           if (packEl != null) {
