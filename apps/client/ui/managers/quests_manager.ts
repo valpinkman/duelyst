@@ -18,8 +18,8 @@ var EVENTS = require('@duelyst/common/event_types');
 var Logger = require('@duelyst/common/logger');
 var SDK = require('@duelyst/sdk');
 var NotificationModel = require('../models/notification');
-var DuelystFirebase = require('../extensions/duelyst_firebase');
-var DuelystBackbone = require('../extensions/duelyst_backbone');
+var DuelystFirebase: DuelystFirebaseStatic = require('../extensions/duelyst_firebase');
+var DuelystBackbone: DuelystBackboneStatic = require('../extensions/duelyst_backbone');
 var Analytics = require('@duelyst/common/analytics');
 var AnalyticsTracker = require('../../analyticsTracker');
 var ErrorDialogItemView = require('../views/item/error_dialog');
@@ -78,7 +78,8 @@ var QuestsManager = Manager.extend({
                   //  firebase: dailyChallengesLastCompletedAtModelFirebaseReference
                   // })
 
-                  this.dailyChallengesLastCompletedAtModel = new DuelystBackbone.Model();
+                  this.dailyChallengesLastCompletedAtModel =
+                    new DuelystBackbone.Model<DailyChallengeCompletedAtAttributes>();
                   this.dailyChallengesLastCompletedAtModel.url =
                     process.env.API_URL + '/api/me/challenges/daily/completed_at';
                   this.dailyChallengesLastCompletedAtModel.fetch();
@@ -87,7 +88,7 @@ var QuestsManager = Manager.extend({
                     process.env.FIREBASE_URL + 'user-quests/' + userId + '/daily/current/quests';
                   var dailyquestsFirebaseReference = new Firebase(dailyQuestsPath);
 
-                  this.dailyQuestsCollection = new DuelystFirebase.Collection(null, {
+                  this.dailyQuestsCollection = new DuelystFirebase.Collection<QuestModel>(null, {
                     firebase: dailyquestsFirebaseReference,
                   });
 
@@ -121,15 +122,14 @@ var QuestsManager = Manager.extend({
   /* endregion CONNECT */
 
   // returns daily quests and catch up quests in one collection
-  getQuestCollection: function () {
+  getQuestCollection: function (): DuelystFirebaseCollection<QuestModel> {
     return this.dailyQuestsCollection;
   },
 
   getDailyChallengesLastCompletedAtMoment: function () {
-    if (this.dailyChallengesLastCompletedAtModel) {
-      var lastCompletedAt = this.dailyChallengesLastCompletedAtModel.get(
-        'daily_challenge_last_completed_at',
-      );
+    var completedAtModel: DailyChallengeCompletedAtModel = this.dailyChallengesLastCompletedAtModel;
+    if (completedAtModel) {
+      var lastCompletedAt = completedAtModel.get('daily_challenge_last_completed_at');
       return moment.utc(lastCompletedAt || '2016-01-01');
     } else {
       return moment.utc('2016-01-01');
@@ -177,7 +177,7 @@ var QuestsManager = Manager.extend({
     this.trigger('daily_quests_change');
   },
 
-  onQuestsProgressed: function (questModel) {
+  onQuestsProgressed: function (questModel: QuestModel) {
     Logger.module('UI').log('QuestsManager.onQuestsProgressed', questModel);
     if (questModel.get('progress') > 0) {
       // generate quest
@@ -417,7 +417,8 @@ var QuestsManager = Manager.extend({
 
   requestQuestReplace: function (index) {
     // for analytics we want to track what kinds of quests are getting replaced
-    var replacedQuestId = this.dailyQuestsCollection.get(index).get('quest_type_id');
+    var questCollection: DuelystFirebaseCollection<QuestModel> = this.dailyQuestsCollection;
+    var replacedQuestId = questCollection.get(index).get('quest_type_id');
 
     var request = $.ajax({
       url: process.env.API_URL + '/api/me/quests/daily/' + index,
