@@ -22,7 +22,7 @@ const CosmeticsLookup = require('@duelyst/sdk/cosmetics/cosmeticsLookup');
  * so the constructor's published type is stated here instead; the attributes
  * it binds -- both halves, the account fields the server writes and the
  * settings `defaults` below declares -- are `ProfileAttributes` in
- * app/types/backbone_models.d.ts.
+ * apps/client/types/backbone_models.d.ts.
  */
 const Profile: ProfileModelConstructor = DuelystFirebase.Model.extend({
   initialize() {

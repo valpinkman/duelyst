@@ -82,7 +82,7 @@ function patchRefs(instance, options) {
  * As in duelyst_backbone.ts: `Backbone` is a vendor global typed `any`, so the
  * published shape is stated once, here, and consumers annotate their require
  * with `DuelystFirebaseStatic` to get typed attributes. See
- * app/types/backbone_models.d.ts.
+ * apps/client/types/backbone_models.d.ts.
  */
 Backbone.DuelystFirebase = {};
 

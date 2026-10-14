@@ -2,7 +2,7 @@ var _ = require('underscore');
 const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 
 /*
- * `Backbone` is a vendor global typed `any` (app/types/globals.d.ts), so the
+ * `Backbone` is a vendor global typed `any` (apps/client/types/globals.d.ts), so the
  * two constructors below are built untyped and the shape they are published
  * under is stated once, here. Consumers annotate their require:
  *
@@ -11,7 +11,7 @@ const PromiseUtils = require('@duelyst/common/utils/utils_promise');
  *
  * and `model.get('gold_amount')` is checked from that point on.
  * `DuelystBackboneStatic` and the attribute types live in
- * app/types/backbone_models.d.ts.
+ * apps/client/types/backbone_models.d.ts.
  */
 Backbone.Duelyst = {};
 

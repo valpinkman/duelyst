@@ -5,7 +5,7 @@
  * WHY THIS FILE IS A GLOBAL `.d.ts` AND NOT A MODULE
  * --------------------------------------------------
  * `apps/client/ui` is 100% CommonJS: every consumer of a model is a `.ts` file that
- * pulls its dependencies through `require('apps/client/ui/...')`. In a `.ts` file
+ * pulls its dependencies through relative `require('../...')` calls. In a `.ts` file
  * `require()` is `NodeRequire`, which returns `any` -- so nothing a module
  * exports can reach a call site by itself, no matter how well typed it is.
  * Declaring these types globally lets a call site opt in with an annotation
