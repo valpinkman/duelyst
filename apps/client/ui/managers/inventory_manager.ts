@@ -21,7 +21,7 @@ var EventBus = require('@duelyst/common/eventbus');
 var EVENTS = require('@duelyst/common/event_types');
 var Logger = require('@duelyst/common/logger');
 var SDK = require('@duelyst/sdk');
-var DuelystFirebase = require('../extensions/duelyst_firebase');
+var DuelystFirebase: DuelystFirebaseStatic = require('../extensions/duelyst_firebase');
 var UserDecksCollection = require('../collections/user_decks');
 var Analytics = require('@duelyst/common/analytics');
 var AnalyticsTracker = require('../../analyticsTracker');
@@ -71,27 +71,27 @@ var InventoryManager = Manager.extend({
       .then(function () {
         var userId = ProfileManager.getInstance().get('id');
 
-        _self.walletModel = new DuelystFirebase.Model(null, {
+        _self.walletModel = new DuelystFirebase.Model<WalletAttributes>(null, {
           firebase: process.env.FIREBASE_URL + 'user-inventory/' + userId + '/wallet',
         });
 
-        _self.boosterPacksCollection = new DuelystFirebase.Collection(null, {
+        _self.boosterPacksCollection = new DuelystFirebase.Collection<SpiritOrbModel>(null, {
           firebase: process.env.FIREBASE_URL + 'user-inventory/' + userId + '/spirit-orbs',
         });
 
-        _self.arenaTicketsCollection = new DuelystFirebase.Collection(null, {
+        _self.arenaTicketsCollection = new DuelystFirebase.Collection<InventoryTicketModel>(null, {
           firebase: process.env.FIREBASE_URL + 'user-inventory/' + userId + '/gauntlet-tickets',
         });
 
-        _self.riftTicketsCollection = new DuelystFirebase.Collection(null, {
+        _self.riftTicketsCollection = new DuelystFirebase.Collection<InventoryTicketModel>(null, {
           firebase: process.env.FIREBASE_URL + 'user-inventory/' + userId + '/rift-tickets',
         });
 
-        _self.cardsCollection = new DuelystFirebase.Collection(null, {
+        _self.cardsCollection = new DuelystFirebase.Collection<InventoryCardModel>(null, {
           firebase: process.env.FIREBASE_URL + 'user-inventory/' + userId + '/card-collection',
         });
 
-        _self.cardLoreCollection = new DuelystFirebase.Collection(null, {
+        _self.cardLoreCollection = new DuelystFirebase.Collection<CardLoreModel>(null, {
           firebase: process.env.FIREBASE_URL + 'user-inventory/' + userId + '/card-lore',
         });
         _self.cardLoreReadRequests = [];
@@ -99,7 +99,7 @@ var InventoryManager = Manager.extend({
         _self.decksCollection = new UserDecksCollection();
         _self.decksCollection.fetch();
 
-        _self.cosmeticsCollection = new DuelystFirebase.Collection(null, {
+        _self.cosmeticsCollection = new DuelystFirebase.Collection<CosmeticInventoryModel>(null, {
           firebase: process.env.FIREBASE_URL + 'user-inventory/' + userId + '/cosmetic-inventory',
         });
 
@@ -107,11 +107,11 @@ var InventoryManager = Manager.extend({
           firebase: process.env.FIREBASE_URL + 'user-inventory/' + userId + '/portraits',
         });
 
-        _self.codexChaptersCollection = new DuelystFirebase.Collection(null, {
+        _self.codexChaptersCollection = new DuelystFirebase.Collection<CodexChapterModel>(null, {
           firebase: process.env.FIREBASE_URL + 'user-inventory/' + userId + '/codex',
         });
 
-        _self.totalOrbCountModel = new DuelystFirebase.Model(null, {
+        _self.totalOrbCountModel = new DuelystFirebase.Model<SpiritOrbTotalAttributes>(null, {
           firebase: process.env.FIREBASE_URL + 'user-inventory/' + userId + '/spirit-orb-total',
         });
 
@@ -245,7 +245,7 @@ var InventoryManager = Manager.extend({
     Logger.module('UI').log('InventoryManager::onCardsCollectionChange()');
     if (changedInventoryModel) {
       var cardId = changedInventoryModel.id;
-      var cardCollectionModel = this.cardsCollection.get(cardId);
+      var cardCollectionModel: InventoryCardModel = this.cardsCollection.get(cardId);
       var cardWasRemoved = cardCollectionModel == null;
       var inventoryCountChanged = changedInventoryModel.hasChanged('count') || cardWasRemoved;
       // if inventory count of this card has changed or reduced to 0
@@ -406,7 +406,7 @@ var InventoryManager = Manager.extend({
   /* region ACTIONS */
 
   markCardAsReadInCollection: function (cardId) {
-    var inventoryCardModel = this.cardsCollection.get(cardId);
+    var inventoryCardModel: InventoryCardModel = this.cardsCollection.get(cardId);
     if (inventoryCardModel != null && inventoryCardModel.get('is_unread')) {
       inventoryCardModel.set('is_unread', false);
       inventoryCardModel.set('is_new', false);
@@ -438,7 +438,7 @@ var InventoryManager = Manager.extend({
   },
 
   markCardLoreAsReadInCollection: function (cardId) {
-    var cardLoreModel = this.cardLoreCollection.get(cardId);
+    var cardLoreModel: CardLoreModel = this.cardLoreCollection.get(cardId);
     var isUnread;
     if (cardLoreModel == null) {
       isUnread = !_.contains(this.cardLoreReadRequests, cardId);
@@ -482,7 +482,8 @@ var InventoryManager = Manager.extend({
     if (cardSetId == null) {
       cardSetId = SDK.CardSet.Core;
     }
-    if (this.walletModel.get('gold_amount') >= numBoosterPacks * ORB_GOLD_COST) {
+    var walletModel: WalletModel = this.walletModel;
+    if (walletModel.get('gold_amount') >= numBoosterPacks * ORB_GOLD_COST) {
       NewPlayerManager.getInstance().setHasPurchasedBoosterPack();
 
       return new Promise(
@@ -557,7 +558,8 @@ var InventoryManager = Manager.extend({
   },
 
   purchaseProductSku: function (sku, cardToken) {
-    if (this.walletModel.get('card_last_four_digits') || cardToken) {
+    var walletModel: WalletModel = this.walletModel;
+    if (walletModel.get('card_last_four_digits') || cardToken) {
       NewPlayerManager.getInstance().setHasPurchasedBoosterPack();
 
       return new Promise(
@@ -800,12 +802,12 @@ var InventoryManager = Manager.extend({
 
   /* region GETTERS / SETTERS */
 
-  getWalletModel: function () {
+  getWalletModel: function (): WalletModel {
     return this.walletModel;
   },
 
   getWalletModelGoldAmount: function () {
-    var walletModel = this.getWalletModel();
+    var walletModel: WalletModel = this.getWalletModel();
     if (walletModel != null && walletModel.get('gold_amount') != null) {
       return walletModel.get('gold_amount');
     } else {
@@ -814,7 +816,7 @@ var InventoryManager = Manager.extend({
   },
 
   getWalletModelSpiritAmount: function () {
-    var walletModel = this.getWalletModel();
+    var walletModel: WalletModel = this.getWalletModel();
     if (walletModel != null && walletModel.get('spirit_amount') != null) {
       return walletModel.get('spirit_amount');
     } else {
@@ -823,7 +825,7 @@ var InventoryManager = Manager.extend({
   },
 
   getWalletModelPremiumAmount: function () {
-    var walletModel = this.getWalletModel();
+    var walletModel: WalletModel = this.getWalletModel();
     if (walletModel != null && walletModel.get('premium_amount') != null) {
       return walletModel.get('premium_amount');
     } else {
@@ -1017,7 +1019,7 @@ var InventoryManager = Manager.extend({
   },
 
   isCardUnread: function (cardId) {
-    var inventoryCardModel = this.cardsCollection.get(cardId);
+    var inventoryCardModel: InventoryCardModel = this.cardsCollection.get(cardId);
     return (inventoryCardModel != null && inventoryCardModel.get('is_unread')) || false;
   },
 
@@ -1063,7 +1065,7 @@ var InventoryManager = Manager.extend({
       return false;
     }
 
-    var cardLoreModel = this.cardLoreCollection.get(cardId);
+    var cardLoreModel: CardLoreModel = this.cardLoreCollection.get(cardId);
     if (cardLoreModel == null) {
       return !_.contains(this.cardLoreReadRequests, cardId);
     } else {
