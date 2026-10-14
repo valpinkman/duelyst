@@ -415,6 +415,17 @@ var VictoryItemView = Backbone.Marionette.ItemView.extend({
     this.ui.progressBarComplete.width(percentCurrent + '%');
     this.ui.progressBarEarned.width(0);
 
+    // a level-up calls this twice on the same bar: drop the filled-forward
+    // animations of the first pass, or its white end colour would keep
+    // overriding the inline colour below for the whole second fill
+    var progressBarEarnedEl =
+      this.ui.progressBarEarned instanceof $ ? this.ui.progressBarEarned[0] : null;
+    if (progressBarEarnedEl != null) {
+      progressBarEarnedEl.getAnimations().forEach(function (animation) {
+        animation.cancel();
+      });
+    }
+
     this.ui.progressBarEarned.css('backgroundColor', '#6dcff6');
     onAnimationFinished(
       animateUIElement(
