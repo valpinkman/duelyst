@@ -138,14 +138,15 @@ from the 2015 README. Claims are marked **[probed]** (executed), **[read]** (sou
 Firebase surface since is #22's type annotations, which add a type parameter to
 `DuelystFirebase.Model`/`.Collection` and one doc-comment mention in
 `apps/client/types/backbone_models.d.ts` (raw grep now 54). No call site was added or removed.
-Line numbers below have been re-pointed at `92180bd`.
+Line numbers below have been re-pointed at `92180bd`, and those in `duelyst_firebase.ts` at
+the header-comment fix that lands with this section.
 
 ### 7.0 Corrections to earlier statements in this document
 
 | Claimed                                                                                                      | Actually                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | ------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | §4: "without the `_getKey` patch, every synced model comes back with `id === undefined`"                     | `Backbone.Firebase.Model` never calls `_getKey`; its id is a plain attribute, and a Model works fine with the patch reverted. **[probed]** `_getKey` is used only by `Collection._parseModels` / `_childAdded` / `_childChanged` / `_childRemoved` and the dead sync adapter. Reverted, it calls `snap.name()`, which does not exist, and **throws inside the SDK's event handler**: the caller sees no error and the collection is left **empty**. **[probed]** The patch is required; the symptom is not what was described. The same wrong sentence was in the header comment of `duelyst_firebase.ts`; corrected alongside this section. |
-| §4: "53 usages across 30 files"                                                                              | 53 is the raw grep count and includes the **two definition lines** in `duelyst_firebase.ts:89,156`. Net: **51 call-site references**, 3 of them dead, **48 live roots** = 44 `new` + 4 `.extend()`. 30 client files mention the module; **18 construct a synced root**; 11 require it and never use it.                                                                                                                                                                                                                                                                                                                                      |
+| §4: "53 usages across 30 files"                                                                              | 53 is the raw grep count and includes the **two definition lines** in `duelyst_firebase.ts:91,158`. Net: **51 call-site references**, 3 of them dead, **48 live roots** = 44 `new` + 4 `.extend()`. 30 client files mention the module; **18 construct a synced root**; 11 require it and never use it.                                                                                                                                                                                                                                                                                                                                      |
 | The comment at `duelyst_firebase.ts` saying backfire's `.ref()` calls are to its own `Backbone.Firebase#ref` | Was wrong and **has been fixed in-source** by `60ab64c1`. All `.ref()` calls are on SDK refs. **12 textual `.ref()` occurrences across 9 methods.** **[probed]**                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | An earlier note on #4: `Profile` has "25 settings defaults"                                                  | **24.** Counted at `apps/client/ui/models/profile.ts:71` — `id`, `username`, `gameSpeed`, three quality keys, `bloom`, ten UI toggles, `filterCollectionCardSet` and four volume keys.                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 
@@ -194,7 +195,7 @@ so that branch is dead. **[probed]**
 ### 7.2 Every call site
 
 **51** call-site references to `DuelystFirebase.(Model|Collection)` across **30** client files
-(53 raw grep hits, less the two definitions in `duelyst_firebase.ts:89,156`). Three are dead — two
+(53 raw grep hits, less the two definitions in `duelyst_firebase.ts:91,158`). Three are dead — two
 commented out (`progression_manager.ts:125`, `quests_manager.ts:78`) and one a JSDoc `@return`
 (`inventory_manager.ts:1280`) — leaving **48 live roots**: 44 `new DuelystFirebase.X(…)` + 4
 `.extend()` subclasses.
@@ -295,7 +296,7 @@ Four subscriptions in total. **[probed]**
 _updateModel: function (b) { var c = b.changedAttributes(); … a.size(c) && this.firebase.ref().update(c, this._log) }
 ```
 
-overridden in `duelyst_firebase.ts:117` to strip `_`-prefixed keys and route through `toRef()`.
+overridden in `duelyst_firebase.ts:119` to strip `_`-prefixed keys and route through `toRef()`.
 
 - **Optimistic: yes, trivially.** `set()` mutates first; the network call follows. Nothing waits for
   or re-reads the server.
@@ -412,7 +413,7 @@ The operationally important part is **the failure path, which does not exist**:
   backfire makes: the Model registers **one** listener with **2** arguments, the Collection **four**,
   all with **2**. Never 3. **[probed]** A permission-denied read is therefore dropped on the floor —
   the SDK cancels the listener and `sync` never fires.
-- `onSyncOrReady()` (`duelyst_firebase.ts:101,168`) builds a promise whose `reject` is **declared and
+- `onSyncOrReady()` (`duelyst_firebase.ts:103,170`) builds a promise whose `reject` is **declared and
   never called**, with no timeout.
 - `Manager::_markAsReadyWhenModelsAndCollectionsSynced` (`ui/managers/manager.ts:103`) does
   `Promise.all(allPromises).then(…)` at `:112` with **no `.catch`**.
@@ -543,7 +544,7 @@ current behaviour is wrong and should not be ported.
   `onDisconnect`, `serverTimestamp`, `get`. **[probed: 21/21 present on `firebase@12.18.0`]** There
   is no missing capability.
 - **`.ref()` vs `.ref`.** The whole `withCallableRef`/`ensureCallableRef` apparatus
-  (`apps/client/firebase.ts:78`, `duelyst_firebase.ts:57`) exists only to keep v2's method spelling
+  (`apps/client/firebase.ts:78`, `duelyst_firebase.ts:59`) exists only to keep v2's method spelling
   alive. It **deletes itself** against the modular API, where refs are passed as values to free
   functions. That is the single largest simplification available.
 - **Free functions, not methods.** `ref.on('value', cb)` → `onValue(query, cb, cancelCb)`, returning
