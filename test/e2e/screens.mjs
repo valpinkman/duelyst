@@ -20,6 +20,11 @@
  *
  * `attached: true` marks a landmark asserted as present rather than visible:
  * the view is mounted but legitimately hidden or zero-sized until used.
+ *
+ * `visible` names a child that must be visible when the view's own root has
+ * no box (zero-sized container, content sized or positioned elsewhere): the
+ * root is then asserted present and the child visible. `visibleDeclaredIn`
+ * is the template that declares the child.
  */
 
 const UI = 'apps/client/ui';
@@ -82,6 +87,9 @@ export const SCREENS = [
     file: `${UI}/views/layouts/arena.ts`,
     status: 'toured',
     landmark: '#app-arena',
+    // its template (templates/layouts/arena.hbs) is 0 bytes: the Gauntlet
+    // screen is drawn entirely by cocos, so the empty root is all the DOM has
+    attached: true,
   },
   {
     name: 'RiftDeckSelectLayout',
@@ -160,12 +168,18 @@ export const SCREENS = [
     file: `${UI}/views/layouts/booster_pack_collection.ts`,
     status: 'toured',
     landmark: '#booster_pack_collection',
+    // the root is zero-sized; its content is positioned absolutely
+    visible: '.booster-buy',
+    visibleDeclaredIn: `${UI}/templates/layouts/booster_pack_collection.hbs`,
   },
   {
     name: 'ShopSpiritOrbsModalView',
     file: `${UI}/views2/shop/shop_spirit_orbs_modal.ts`,
     status: 'toured',
     landmark: '.shop-spirit-orbs-modal',
+    // shop.scss sizes only the dialog, so the root has no box of its own
+    visible: '.modal-dialog',
+    visibleDeclaredIn: `${UI}/views2/shop/templates/shop_spirit_orbs_modal.hbs`,
   },
   {
     name: 'PremiumPurchaseDialogView',

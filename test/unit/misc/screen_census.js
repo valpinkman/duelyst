@@ -126,4 +126,15 @@ describe('screen tour census', () => {
       .map((s) => `${s.name}: ${s.landmarkDeclares || s.landmark}`);
     expect(missing, 'landmarks no longer declared by their view').to.deep.equal([]);
   });
+
+  it('finds each visible child declared in the template the census names', () => {
+    const missing = SCREENS.filter((s) => s.visible)
+      .filter((s) => {
+        if (s.attached || !s.visibleDeclaredIn) return true;
+        const source = fs.readFileSync(path.join(ROOT, s.visibleDeclaredIn), 'utf8');
+        return !declares(source, s.visible);
+      })
+      .map((s) => `${s.name}: ${s.visible}`);
+    expect(missing, 'visible children no longer declared').to.deep.equal([]);
+  });
 });

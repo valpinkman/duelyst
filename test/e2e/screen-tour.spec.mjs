@@ -111,9 +111,19 @@ test.describe('screen tour', () => {
         const entry = screen(name);
         if (navigate) await navigate();
 
+        // soft, so one run reports every screen whose landmark is wrong; each
+        // step navigates on its own, so a miss does not derail the next one
         const landmark = page.locator(entry.landmark).first();
-        if (entry.attached) await expect(landmark, `${name} landmark`).toBeAttached();
-        else await expect(landmark, `${name} landmark`).toBeVisible();
+        if (entry.attached || entry.visible) {
+          await expect.soft(landmark, `${name} landmark`).toBeAttached();
+        } else {
+          await expect.soft(landmark, `${name} landmark`).toBeVisible();
+        }
+        if (entry.visible) {
+          await expect
+            .soft(landmark.locator(entry.visible).first(), `${name} ${entry.visible}`)
+            .toBeVisible();
+        }
 
         await page.waitForTimeout(SETTLE_MS);
         const file = testInfo.outputPath(
