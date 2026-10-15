@@ -18,6 +18,7 @@ var moment = require('moment');
 var AnalyticsTracker = require('../../../analyticsTracker');
 var i18next = require('i18next');
 var ConfirmDialogItemView = require('./confirm_dialog');
+var { requestJson } = require('@duelyst/common/request');
 
 // cubic-bezier equivalents of the easings velocity-animate took by name;
 // velocity's default was jQuery's "swing", i.e. ease-in-out-sine
@@ -497,13 +498,15 @@ var VictoryItemView = Backbone.Marionette.ItemView.extend({
 
     if (lastOpponentId) {
       var tipAmount = 5;
-      $.ajax({
+      // fire and forget, as the jqXHR was: the rejection is swallowed so a failed
+      // tip does not surface as an unhandled rejection
+      requestJson({
         data: JSON.stringify({ amount: tipAmount }),
         url: process.env.API_URL + '/api/me/games/' + gameId + '/gold_tip_amount',
         type: 'PUT',
         contentType: 'application/json',
         dataType: 'json',
-      });
+      }).catch(function () {});
     }
 
     var p = $(e.currentTarget).offset();
@@ -543,7 +546,8 @@ var VictoryItemView = Backbone.Marionette.ItemView.extend({
     this.ui.confirm_report_dialog.modal('hide');
 
     if (lastOpponentId) {
-      $.ajax({
+      // fire and forget, as the jqXHR was
+      requestJson({
         data: JSON.stringify({
           user_id: lastOpponentId,
           message: this.ui.report_text.val(),
@@ -552,7 +556,7 @@ var VictoryItemView = Backbone.Marionette.ItemView.extend({
         type: 'POST',
         contentType: 'application/json',
         dataType: 'json',
-      });
+      }).catch(function () {});
     }
 
     // e.isStopped = true;

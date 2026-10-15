@@ -66,6 +66,11 @@ var StreamManager = Manager.extend({
   loadStreamStatusFromTwitch: function () {
     this.liveStreamCollection.reset();
     var loadPromises = this.streamerWhitelistCollection.map(function (model) {
+      // NOT converted to fetch (#8): this is JSONP, which injects a <script>
+      // tag rather than making an XHR, and fetch has no equivalent. The Twitch
+      // Kraken endpoint it talks to also has no CORS story, so a fetch here
+      // would fail outright rather than behave differently. Its `timeout` is
+      // the one $.ajax timeout in the client, and it stays with it.
       return Promise.resolve(
         $.ajax({
           url:
