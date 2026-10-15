@@ -172,6 +172,40 @@ require('./ui/extensions/bootstrap_tooltip');
 
 localStorage.debug = 'session:*';
 
+// region E2E TEST SEAM #
+
+/*
+  Dev-only seam for test/e2e/screen-tour.spec.mjs (issue #2, decision D1). Every manager is already
+  on `window`; App, Scene and the layout classes are not, and the tour needs them to navigate the
+  way the app itself does (App.showCollection etc.) and to check which view a region holds.
+
+  The guard is a literal comparison on purpose, not UtilsEnv.getIsInProduction(): a function call is
+  opaque to the bundler, so that form ships in production and staging bundles and merely never runs.
+  `process.env.NODE_ENV` is a Vite `define`, so this condition folds and the block is eliminated from
+  both. It mirrors getIsInProduction() (production || staging, packages/common/utils/utils_env.ts);
+  keep the two in step.
+*/
+if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'staging') {
+  window.__duelystE2E = {
+    App,
+    Scene,
+    layouts: {
+      MainMenuItemView,
+      PlayLayout,
+      CollectionLayout,
+      CodexLayout,
+      ShopLayout,
+      WatchLayout,
+      TutorialLessonsLayout,
+      BoosterPackUnlockLayout,
+      GameLayout,
+      QuestLogLayout,
+    },
+  };
+}
+
+// endregion E2E TEST SEAM
+
 //
 // --- Utility ---- #
 //
