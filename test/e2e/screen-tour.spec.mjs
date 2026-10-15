@@ -40,12 +40,10 @@ import { SCREENS, screen } from './screens.mjs';
  * allowlisted (helpers/console.mjs).
  *
  * Runtime: the suite runs with `workers: 1` and a 420_000 ms default timeout
- * (playwright.config.mjs). This test raises its own budget to 900_000 ms; see
- * RUNTIME below for the measured duration.
+ * (playwright.config.mjs). Measured on a local stack (2026-10-15, af4419c): 24
+ * screens in 87 s, 88.6 s for the whole test including boot and registration,
+ * so it fits the suite default with room to spare.
  */
-
-// RUNTIME: not yet measured against a running stack.
-const TOUR_TIMEOUT = 900_000;
 
 // every runtime CONFIG key that is a timing; ANIMATE_* alone reaches 3 keys and
 // misses VIEW_TRANSITION_DURATION, which animations.ts reads for every view
@@ -97,7 +95,6 @@ function collectionMode(page, mode) {
 
 test.describe('screen tour', () => {
   test('visits every screen in one logged-in session', async ({ page }, testInfo) => {
-    test.setTimeout(TOUR_TIMEOUT);
     const startedAt = Date.now();
     const errors = watchConsole(page);
     const visited = [];
