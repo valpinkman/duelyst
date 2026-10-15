@@ -18,7 +18,7 @@
  *     alongside `$.ajaxSetup`, not instead of it: Backbone.sync goes through
  *     `Backbone.ajax` and keeps needing the jQuery-side defaults.
  *   - **304 is success.** jQuery resolves 3xx-not-modified; `fetch` reports
- *     `res.ok === false` for it. Two call sites branch on a 304 meaning
+ *     `res.ok === false` for it. Three call sites branch on a 304 meaning
  *     "already done", so this distinction is load-bearing.
  *   - **204 / 304 / HEAD resolve with `undefined`** and are never parsed, which
  *     is what jQuery does (`statusText = "nocontent"`, `success` left unset).
@@ -75,10 +75,20 @@ let defaultHeaders: Record<string, string> = {};
 
 /**
  * Mirror of `$.ajaxSetup({ headers })` for requests that no longer go through
- * jQuery. Merges, because jQuery's ajaxSetup deep-extends its settings.
+ * jQuery. Merges, because jQuery's ajaxSetup deep-extends its settings -- and
+ * like jQuery.extend it skips undefined values. Login passes
+ * `window.BUILD_VERSION`, which is undefined at runtime: jQuery keeps the
+ * `Client-Version` App.setup registered, where a spread would overwrite it and
+ * `fetch` would send the string "undefined".
  */
-function setDefaultHeaders(headers: Record<string, string>): void {
-  defaultHeaders = { ...defaultHeaders, ...headers };
+function setDefaultHeaders(headers: Record<string, string | undefined>): void {
+  const next = { ...defaultHeaders };
+  for (const [name, value] of Object.entries(headers)) {
+    if (value !== undefined) {
+      next[name] = value;
+    }
+  }
+  defaultHeaders = next;
 }
 
 function getDefaultHeaders(): Record<string, string> {

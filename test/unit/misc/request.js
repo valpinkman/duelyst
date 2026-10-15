@@ -111,6 +111,16 @@ describe('packages/common/request', () => {
       expect(calls[0].init.headers.Authorization).to.equal('');
       expect(calls[0].init.headers['Client-Version']).to.equal('1.2.3');
     });
+
+    it('ignores undefined values, as $.ajaxSetup deep-extend does', async () => {
+      // login passes `window.BUILD_VERSION`, which is undefined at runtime; jQuery
+      // keeps the earlier value, and a spread would send the string "undefined"
+      request.setDefaultHeaders({ 'Client-Version': '1.2.3' });
+      request.setDefaultHeaders({ Authorization: 'Bearer t', 'Client-Version': undefined });
+      await request.requestJson({ url: '/x', dataType: 'json' });
+      expect(calls[0].init.headers.Authorization).to.equal('Bearer t');
+      expect(calls[0].init.headers['Client-Version']).to.equal('1.2.3');
+    });
   });
 
   describe('errors -- where fetch and $.ajax disagree', () => {
