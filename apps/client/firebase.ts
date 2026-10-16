@@ -71,7 +71,7 @@ if (!firebase.apps.length) {
  * plenty of call sites hand backfire exactly that, which threw
  * "this.firebase.ref is not a function" from its destroy() and stranded both
  * players on "waiting" when a game invite was cleaned up. Refs on their way
- * into backfire are patched in app/ui/extensions/duelyst_firebase.ts, the one
+ * into backfire are patched in apps/client/ui/extensions/duelyst_firebase.ts, the one
  * place they all pass through; snapshots keep the standard property, which is
  * what the rest of the client reads.
  */

@@ -2,17 +2,19 @@ var _ = require('underscore');
 const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 
 /*
- * backfire (app/vendor/backfire) is a Backbone<->Firebase binding written for
- * firebase 2.x and shipped only as a minified build. Rather than edit that
- * blob, the one place it is incompatible with a modern SDK is corrected here.
+ * backfire (apps/client/vendor/backfire) is a Backbone<->Firebase binding
+ * written for firebase 2.x and shipped only as a minified build. Rather than
+ * edit that blob, its incompatibilities with a modern SDK are corrected here.
  *
- * backfire derives a child's id with:
+ * backfire derives a collection child's id with:
  *     typeof snap.key === 'function' ? snap.key() : snap.name()
  * In firebase 2.x `key` was a METHOD; from v3 on it is a plain string
- * property, so that test falls through to `name()`, which no longer exists -
- * every synced model would come back with `id === undefined`.
+ * property, so that test falls through to `name()`, which no longer exists.
+ * The TypeError is thrown inside the SDK's event handler, so the caller sees
+ * nothing and the collection silently stays empty. Models are unaffected:
+ * they never call `_getKey`. See docs/BACKBONE_AUDIT.md §7.0.
  *
- * See app/firebase.ts for why the rest of backfire works untouched.
+ * See apps/client/firebase.ts and ensureCallableRef below for `.ref()`.
  */
 if (Backbone.Firebase && Backbone.Firebase.prototype) {
   Backbone.Firebase.prototype._getKey = function (snapshotOrRef) {
@@ -37,7 +39,7 @@ function toRef(target) {
  * `_determineRef` does `case "object": break`), and `this._fbref` comes from the
  * same place, so those are SDK refs, not backfire's own `Backbone.Firebase#ref`.
  *
- * app/firebase.ts gives every ref built by `new Firebase(url)` a callable `ref`,
+ * apps/client/firebase.ts gives every ref built by `new Firebase(url)` a callable `ref`,
  * which is why most of this works. It is not enough: a DERIVED ref does not
  * inherit the patch, and half the call sites hand backfire one --
  * `new Firebase(url).push()` (game invites), `.child(...)`, `.limitToLast(1)`,
