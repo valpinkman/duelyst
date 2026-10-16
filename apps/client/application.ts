@@ -1377,10 +1377,19 @@ App.onLogin = function (data) {
     .catch((err) => {
       App.managersReadyDeferred.reject();
       Logger.module('APPLICATION').log('ERROR initializing managers');
-      if (err === null) {
+      if (err == null) {
         err = new Error('ERROR initializing managers');
       }
-      App._error(err.message);
+      // Not App._error: with no main screen in flight it shows the dialog only
+      // after App.main(), which waits on the managers that just failed, so the
+      // dialog never appeared and the client sat on the loading screen.
+      NavigationManager.getInstance().requestUserTriggeredNavigationUnlocked(App._userNavLockId);
+      // On a reload with a stored session no package has loaded yet, so the
+      // opaque #app-preloading screen is still up and would paint over the dialog.
+      PackageManager.getInstance()._removePreloadingUI();
+      NavigationManager.getInstance().showDialogView(
+        new ErrorDialogItemView({ message: err.message }),
+      );
       throw err;
     })
     .finally(() => {});

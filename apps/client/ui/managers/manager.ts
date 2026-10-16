@@ -10,11 +10,14 @@ const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 var Manager = Backbone.Marionette.Controller.extend({
   connected: null,
   isReady: null,
+  readyError: null,
 
   constructor: function () {
     // Define instance properties off of the prototype chain
     this.connected = null;
     this.isReady = null;
+    this.readyError = null;
+    this._connection = null;
 
     // Call the original constructor
     Backbone.Marionette.Controller.apply(this, arguments);
@@ -31,6 +34,7 @@ var Manager = Backbone.Marionette.Controller.extend({
   connect: function () {
     if (!this.connected) {
       this.connected = true;
+      this._connection = {};
       this.listenToOnce(EventBus.getInstance(), EVENTS.session_logged_out, this.disconnect);
       this.trigger('before_connect');
       this.onBeforeConnect();
@@ -46,6 +50,7 @@ var Manager = Backbone.Marionette.Controller.extend({
     if (this.connected) {
       this.connected = false;
       this.isReady = false;
+      this.readyError = null;
       this.stopListening();
       this.trigger('before_disconnect');
       this.onBeforeDisconnect();
@@ -64,6 +69,16 @@ var Manager = Backbone.Marionette.Controller.extend({
   ready: function () {
     this.isReady = true;
     this.trigger('ready');
+  },
+
+  /*
+   * The manager will never become ready: one of the models or collections it
+   * waits on failed to sync. onReady() rejects with the error, so the login
+   * flow shows it instead of sitting on the loading screen.
+   */
+  readyFailed: function (error) {
+    this.readyError = error;
+    this.trigger('ready_error', error);
   },
 
   onConnect: function (callback) {
@@ -89,8 +104,19 @@ var Manager = Backbone.Marionette.Controller.extend({
       function (resolve, reject) {
         if (this.isReady) {
           resolve();
+        } else if (this.readyError != null) {
+          reject(this.readyError);
         } else {
-          this.listenToOnce(this, 'ready', resolve);
+          var onReady = function () {
+            this.stopListening(this, 'ready_error', onError);
+            resolve();
+          };
+          var onError = function (error) {
+            this.stopListening(this, 'ready', onReady);
+            reject(error);
+          };
+          this.listenToOnce(this, 'ready', onReady);
+          this.listenToOnce(this, 'ready_error', onError);
         }
       }.bind(this),
     );
@@ -101,6 +127,7 @@ var Manager = Backbone.Marionette.Controller.extend({
   },
 
   _markAsReadyWhenModelsAndCollectionsSynced: function (modelsAndCollections) {
+    var connection = this._connection;
     var allPromises = [];
     for (var i = 0, il = modelsAndCollections.length; i < il; i++) {
       var modelOrCollection = modelsAndCollections[i];
@@ -112,6 +139,13 @@ var Manager = Backbone.Marionette.Controller.extend({
       function () {
         Logger.module('UI').log('Manager::_markAsReadyWhenModelsAndCollectionsSynced -> READY');
         this.ready();
+      }.bind(this),
+      // second argument, not .catch: an exception thrown by a 'ready' listener is not a sync failure
+      function (error) {
+        // a sync timeout can outlive a logout; it must not fail the next session's manager
+        if (this._connection !== connection) return;
+        console.error('Manager::_markAsReadyWhenModelsAndCollectionsSynced -> FAILED', error);
+        this.readyFailed(error);
       }.bind(this),
     );
   },
