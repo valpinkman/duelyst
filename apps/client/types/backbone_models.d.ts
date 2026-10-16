@@ -116,12 +116,16 @@ interface DuelystBackboneStatic {
 interface DuelystFirebaseModel<A extends DuelystAttributes = any> extends DuelystModel<A> {
   /** the `Firebase` reference backfire binds the model to */
   firebase: any;
+  /** set when the server cancelled the read; onSyncOrReady() rejects with it */
+  syncError: Error | null;
 }
 
 interface DuelystFirebaseCollection<
   M extends import('backbone').Model<any> = DuelystFirebaseModel,
 > extends DuelystCollection<M> {
   firebase: any;
+  /** set when the server cancelled the read; onSyncOrReady() rejects with it */
+  syncError: Error | null;
 }
 
 interface DuelystFirebaseModelConstructor {
@@ -156,6 +160,8 @@ interface DuelystFirebaseStatic {
   toRef(target: any): any;
   /** gives a derived ref a callable `.ref()` so backfire can use it */
   ensureCallableRef(target: any): any;
+  /** how long onSyncOrReady() waits for the first sync before rejecting */
+  SYNC_TIMEOUT_MS: number;
 }
 
 /* endregion apps/client/ui/extensions/duelyst_firebase.ts */
