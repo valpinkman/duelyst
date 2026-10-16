@@ -1384,6 +1384,9 @@ App.onLogin = function (data) {
       // after App.main(), which waits on the managers that just failed, so the
       // dialog never appeared and the client sat on the loading screen.
       NavigationManager.getInstance().requestUserTriggeredNavigationUnlocked(App._userNavLockId);
+      // On a reload with a stored session no package has loaded yet, so the
+      // opaque #app-preloading screen is still up and would paint over the dialog.
+      PackageManager.getInstance()._removePreloadingUI();
       NavigationManager.getInstance().showDialogView(
         new ErrorDialogItemView({ message: err.message }),
       );
