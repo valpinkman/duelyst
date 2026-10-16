@@ -2,7 +2,7 @@
 
 `backfire.min.js` v0.4.0 — Firebase's Backbone binding, unmaintained since 2015.
 It is concatenated into `dist/src/vendor.js` and used through the global
-`Backbone.Firebase` (see `app/ui/extensions/duelyst_firebase.ts`).
+`Backbone.Firebase` (see `apps/client/ui/extensions/duelyst_firebase.ts`).
 
 It used to live in `packages/backfire` as a workspace package, but nothing ever
 imported it by name — only this built file was ever shipped, while the package's

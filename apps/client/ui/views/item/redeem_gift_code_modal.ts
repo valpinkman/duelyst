@@ -7,6 +7,7 @@ var Template = require('../../templates/item/redeem_gift_code_modal.hbs');
 var NavigationManager = require('../../managers/navigation_manager');
 var i18next = require('i18next');
 var FormPromptModalItemView = require('./form_prompt_modal');
+var { requestJson } = require('@duelyst/common/request');
 
 var RedeemGiftCodeModalView = FormPromptModalItemView.extend({
   id: 'app-redeem-gift-code',
@@ -74,7 +75,7 @@ var RedeemGiftCodeModalView = FormPromptModalItemView.extend({
     var giftCode = this.ui.$giftCode.val();
 
     Promise.resolve(
-      $.ajax({
+      requestJson({
         url: process.env.API_URL + '/api/me/gift_codes',
         type: 'POST',
         data: JSON.stringify({

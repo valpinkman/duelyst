@@ -27,6 +27,7 @@ var NavigationManager = require('./navigation_manager');
 var ProfileManager = require('./profile_manager');
 var NotificationsManager = require('./notifications_manager');
 var Manager = require('./manager');
+var { requestJson } = require('@duelyst/common/request');
 
 var AchievementsManager = Manager.extend({
   _unreadAchievementsQueue: null, // Queue of achievements to be displayed next time we reach main menu
@@ -149,7 +150,8 @@ var AchievementsManager = Manager.extend({
     }
 
     if (completedAchievement.is_unread != false) {
-      var request = $.ajax({
+      // fire and forget, as the jqXHR was
+      requestJson({
         url:
           process.env.API_URL +
           '/api/me/achievements/' +
@@ -158,7 +160,7 @@ var AchievementsManager = Manager.extend({
         type: 'PUT',
         contentType: 'application/json',
         dataType: 'json',
-      });
+      }).catch(function () {});
     }
   },
 
@@ -217,24 +219,25 @@ var AchievementsManager = Manager.extend({
 
     return new Promise(
       function (resolve, reject) {
-        var request = $.ajax({
+        var request = requestJson({
           url: process.env.API_URL + '/api/me/achievements/login',
           type: 'POST',
           contentType: 'application/json',
           dataType: 'json',
         });
 
-        request.done(function (response) {
-          resolve(response);
-        });
-
-        request.fail(function (response) {
-          var errorMessage =
-            response.responseJSON != null
-              ? response.responseJSON.message
-              : 'Login Achievement check failed.';
-          reject(errorMessage);
-        });
+        request.then(
+          function (response) {
+            resolve(response);
+          },
+          function (response) {
+            var errorMessage =
+              response.responseJSON != null
+                ? response.responseJSON.message
+                : 'Login Achievement check failed.';
+            reject(errorMessage);
+          },
+        );
       }.bind(this),
     );
   },

@@ -65,12 +65,8 @@ var QuestLogView = Backbone.Marionette.CompositeView.extend({
       QuestsManager.getInstance().markQuestsAsRead();
     });
 
-    var request = QuestsManager.getInstance().requestQuestReplace(index);
-    request.done(
-      function (response) {
-        // nada
-      }.bind(this),
-    );
+    // the response is not used here: the collection change re-renders the quest
+    QuestsManager.getInstance().requestQuestReplace(index);
   },
 });
 

@@ -34,6 +34,7 @@ var NotificationsManager = require('./notifications_manager');
 var InventoryManager = require('./inventory_manager');
 var ProgressionManager = require('./progression_manager');
 var Manager = require('./manager');
+var { requestJson } = require('@duelyst/common/request');
 
 var NewPlayerModuleModel = DuelystBackbone.Model.extend({
   idAttribute: 'module_name',
@@ -590,7 +591,7 @@ var NewPlayerManager = Manager.extend({
     }
 
     return Promise.resolve(
-      $.ajax({
+      requestJson({
         data: JSON.stringify({ stage: stage }),
         url: process.env.API_URL + '/api/me/new_player_progression/' + moduleName + '/stage',
         type: 'POST',
@@ -681,7 +682,7 @@ var NewPlayerManager = Manager.extend({
       var quests = NewPlayerProgressionHelper.questsForStage(this.getCurrentCoreStage());
       if (quests && quests.length > 0) {
         return Promise.resolve(
-          $.ajax({
+          requestJson({
             url: process.env.API_URL + '/api/me/new_player_progression/core',
             type: 'POST',
             contentType: 'application/json',

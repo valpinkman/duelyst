@@ -13296,7 +13296,7 @@ const RSX = {
     img: 'resources/ui/button_secondary_shadow.png',
   },
   button_back: { name: 'button_back', img: 'resources/ui/button_back.png' },
-  button_back_corner: { name: 'button_back', img: 'resources/ui/button_back_corner.png' },
+  button_back_corner: { name: 'button_back_corner', img: 'resources/ui/button_back_corner.png' },
   card_rarity_common: {
     name: 'card_rarity_common',
     img: 'resources/ui/collection_card_rarity_common.png',
@@ -14383,6 +14383,14 @@ const RSX = {
   tooltip_down: { name: 'tooltip_down', img: 'resources/tutorial/tooltip_down.png' },
   tooltip_left: { name: 'tooltip_left', img: 'resources/tutorial/tooltip_left.png' },
   tooltip_right: { name: 'tooltip_right', img: 'resources/tutorial/tooltip_right.png' },
+  // CSS-only asset. The name must differ from `vignette` (resources/ui/vignette.png):
+  // the "all" package is deduplicated BY NAME, so a second `vignette` is dropped and
+  // never copied. noScale matches the SCSS (backgroundImageNoScale); there is no @2x.
+  tutorial_vignette: {
+    name: 'tutorial_vignette',
+    img: 'resources/tutorial/vignette.png',
+    noScale: true,
+  },
   unit_shadow: { name: 'unit_shadow', img: 'resources/ui/unit_shadow.png', noScale: true },
   unit_stats_instructional_bg: {
     name: 'unit_stats_instructional_bg',

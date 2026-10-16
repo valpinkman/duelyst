@@ -18,8 +18,8 @@ var EVENTS = require('@duelyst/common/event_types');
 var Logger = require('@duelyst/common/logger');
 var SDK = require('@duelyst/sdk');
 var NotificationModel = require('../models/notification');
-var DuelystFirebase = require('../extensions/duelyst_firebase');
-var DuelystBackbone = require('../extensions/duelyst_backbone');
+var DuelystFirebase: DuelystFirebaseStatic = require('../extensions/duelyst_firebase');
+var DuelystBackbone: DuelystBackboneStatic = require('../extensions/duelyst_backbone');
 var Analytics = require('@duelyst/common/analytics');
 var ReferralDialogView = require('../views2/referrals/referral_dialog');
 var moment = require('moment');
@@ -34,6 +34,7 @@ var NavigationManager = require('./navigation_manager');
 var NotificationsManager = require('./notifications_manager');
 var NewPlayerManager = require('./new_player_manager');
 var Manager = require('./manager');
+var { requestJson, requestJsonWithStatus } = require('@duelyst/common/request');
 
 var ChallengeModel = DuelystBackbone.Model.extend({
   idAttribute: 'challenge_id',
@@ -74,7 +75,7 @@ var ProgressionManager = Manager.extend({
         });
         neededToBeReady.push(_self.gameCounterRewardsCollection);
 
-        _self.gameCounterModel = new DuelystFirebase.Model(null, {
+        _self.gameCounterModel = new DuelystFirebase.Model<GameCounterAttributes>(null, {
           firebase: new Firebase(process.env.FIREBASE_URL)
             .child('user-progression')
             .child(userId)
@@ -82,14 +83,14 @@ var ProgressionManager = Manager.extend({
         });
         neededToBeReady.push(_self.gameCounterModel);
 
-        _self.bossesDefeatedCollection = new DuelystFirebase.Collection(null, {
+        _self.bossesDefeatedCollection = new DuelystFirebase.Collection<BossDefeatedModel>(null, {
           firebase: new Firebase(process.env.FIREBASE_URL)
             .child('user-bosses-defeated')
             .child(userId),
         });
         neededToBeReady.push(_self.bossesDefeatedCollection);
 
-        _self.bossEventsCollection = new DuelystFirebase.Collection(null, {
+        _self.bossEventsCollection = new DuelystFirebase.Collection<BossEventModel>(null, {
           firebase: new Firebase(process.env.FIREBASE_URL).child('boss-events'),
         });
         _self.bossEventsCollection.comparator = 'event_start';
@@ -100,13 +101,16 @@ var ProgressionManager = Manager.extend({
           SDK.FactionFactory.getAllPlayableFactions(),
           function (faction) {
             var factionId = faction.id.toString();
-            var factionProgressionModel = new DuelystFirebase.Model(null, {
-              firebase: new Firebase(process.env.FIREBASE_URL)
-                .child('user-faction-progression')
-                .child(userId)
-                .child(factionId)
-                .child('stats'),
-            });
+            var factionProgressionModel = new DuelystFirebase.Model<FactionProgressionAttributes>(
+              null,
+              {
+                firebase: new Firebase(process.env.FIREBASE_URL)
+                  .child('user-faction-progression')
+                  .child(userId)
+                  .child(factionId)
+                  .child('stats'),
+              },
+            );
             this._factionProgressionStats[factionId] = factionProgressionModel;
             neededToBeReady.push(factionProgressionModel);
           }.bind(_self),
@@ -154,11 +158,21 @@ var ProgressionManager = Manager.extend({
       this.listenTo(
         notification,
         'cta_accept',
-        function (model) {
-          var model = new DuelystBackbone.Model();
-          model.url = process.env.API_URL + '/api/me/referrals/summary';
-          model.fetch();
-          NavigationManager.getInstance().showModalView(new ReferralDialogView({ model: model }));
+        /*
+         * The `var model` here used to shadow this callback's own `model`
+         * parameter -- a decaffeination artifact (CoffeeScript had one
+         * binding per scope). Nothing read the parameter, so the rename is
+         * behaviour-preserving; typing DuelystBackbone.Model is what surfaced
+         * it, as TS2403 "Subsequent variable declarations must have the same
+         * type".
+         */
+        function (_model) {
+          var referralSummaryModel = new DuelystBackbone.Model();
+          referralSummaryModel.url = process.env.API_URL + '/api/me/referrals/summary';
+          referralSummaryModel.fetch();
+          NavigationManager.getInstance().showModalView(
+            new ReferralDialogView({ model: referralSummaryModel }),
+          );
           this.stopListening(notification);
         },
         this,
@@ -175,7 +189,7 @@ var ProgressionManager = Manager.extend({
     }
   },
 
-  getFactionProgressionStatsModel: function (factionId) {
+  getFactionProgressionStatsModel: function (factionId): FactionProgressionModel {
     if (factionId != null) {
       return this._factionProgressionStats[String(factionId)];
     }
@@ -189,7 +203,8 @@ var ProgressionManager = Manager.extend({
     if (factionId == SDK.Factions.Faction1 || factionId == SDK.Factions.Neutral) {
       return true;
     }
-    var progressionStatsModel = this.getFactionProgressionStatsModel(factionId);
+    var progressionStatsModel: FactionProgressionModel =
+      this.getFactionProgressionStatsModel(factionId);
     return progressionStatsModel != null && progressionStatsModel.get('xp') != null;
   },
 
@@ -201,7 +216,8 @@ var ProgressionManager = Manager.extend({
   },
 
   getGameCount: function () {
-    return this.gameCounterModel.get('game_count') || 0;
+    var gameCounterModel: GameCounterModel = this.gameCounterModel;
+    return gameCounterModel.get('game_count') || 0;
   },
 
   getHasActiveBossEvent: function () {
@@ -288,7 +304,8 @@ var ProgressionManager = Manager.extend({
           }
         });
 
-        var request = $.ajax({
+        // withStatus: this call site reads the status off the response, see below
+        var request = requestJsonWithStatus({
           data: JSON.stringify({
             completed_at: moment().utc().valueOf(),
             process_quests: processQuests,
@@ -299,9 +316,10 @@ var ProgressionManager = Manager.extend({
           dataType: 'json',
         });
 
-        request.done(
-          function (response) {
-            if (request.status != 304) {
+        request.then(
+          function (result) {
+            var response = result.data;
+            if (result.status != 304) {
               // 304 Status means a challenge was already completed
               Analytics.track(
                 'challenge completed',
@@ -324,14 +342,13 @@ var ProgressionManager = Manager.extend({
               resolve({});
             }
           }.bind(this),
+          function (response) {
+            // Temporary error, should parse server response.
+            var error = 'Complete challenge request failed';
+            EventBus.getInstance().trigger(EVENTS.ajax_error, error);
+            reject(new Error('Failed to complete challenge with type ' + challengeType));
+          },
         );
-
-        request.fail(function (response) {
-          // Temporary error, should parse server response.
-          var error = 'Complete challenge request failed';
-          EventBus.getInstance().trigger(EVENTS.ajax_error, error);
-          reject(new Error('Failed to complete challenge with type ' + challengeType));
-        });
       }.bind(this),
     );
   },
@@ -341,7 +358,7 @@ var ProgressionManager = Manager.extend({
       function (resolve, reject) {
         var challengePreviouslyAttempted = this.hasAttemptedChallengeOfType(challengeType);
 
-        var request = $.ajax({
+        var request = requestJson({
           data: JSON.stringify({ last_attempted_at: moment().utc().valueOf() }),
           url:
             process.env.API_URL +
@@ -353,7 +370,7 @@ var ProgressionManager = Manager.extend({
           dataType: 'json',
         });
 
-        request.done(
+        request.then(
           function (response) {
             var challenge = response.challenge;
             this.challengeProgressionCollection.add([challenge], { merge: true });
@@ -361,14 +378,13 @@ var ProgressionManager = Manager.extend({
 
             resolve(challengeType);
           }.bind(this),
+          function (response) {
+            // Temporary error, should parse server response.
+            var error = 'Attempt challenge request failed';
+            EventBus.getInstance().trigger(EVENTS.ajax_error, error);
+            reject(new Error('Failed to attempt challenge with type ' + challengeType));
+          },
         );
-
-        request.fail(function (response) {
-          // Temporary error, should parse server response.
-          var error = 'Attempt challenge request failed';
-          EventBus.getInstance().trigger(EVENTS.ajax_error, error);
-          reject(new Error('Failed to attempt challenge with type ' + challengeType));
-        });
       }.bind(this),
     );
   },
@@ -376,7 +392,8 @@ var ProgressionManager = Manager.extend({
   completeDailyChallenge: function (challengeId) {
     var completeDailyChallengePromise = new Promise(
       function (resolve, reject) {
-        var request = $.ajax({
+        // withStatus: this call site reads the status off the response, see below
+        var request = requestJsonWithStatus({
           data: JSON.stringify({ completed_at: moment().utc().valueOf() }),
           url: process.env.API_URL + '/api/me/challenges/daily/' + challengeId + '/completed_at',
           type: 'PUT',
@@ -384,9 +401,10 @@ var ProgressionManager = Manager.extend({
           dataType: 'json',
         });
 
-        request.done(
-          function (response, textStatus, jqXHR) {
-            if (request.status != 304) {
+        request.then(
+          function (result) {
+            var response = result.data;
+            if (result.status != 304) {
               // 304 Status means a challenge was already completed
               Analytics.track(
                 'daily challenge completed',
@@ -406,16 +424,15 @@ var ProgressionManager = Manager.extend({
               resolve({});
             }
           }.bind(this),
+          function (response) {
+            var error = 'Complete daily challenge request failed';
+            if (response && response.responseJSON && response.responseJSON.message) {
+              error = response.responseJSON.message;
+            }
+            EventBus.getInstance().trigger(EVENTS.ajax_error, error);
+            resolve({});
+          },
         );
-
-        request.fail(function (response) {
-          var error = 'Complete daily challenge request failed';
-          if (response && response.responseJSON && response.responseJSON.message) {
-            error = response.responseJSON.message;
-          }
-          EventBus.getInstance().trigger(EVENTS.ajax_error, error);
-          resolve({});
-        });
       }.bind(this),
     );
 

@@ -18,6 +18,38 @@ var moment = require('moment');
 var AnalyticsTracker = require('../../../analyticsTracker');
 var i18next = require('i18next');
 var ConfirmDialogItemView = require('./confirm_dialog');
+var { requestJson } = require('@duelyst/common/request');
+
+// cubic-bezier equivalents of the easings velocity-animate took by name;
+// velocity's default was jQuery's "swing", i.e. ease-in-out-sine
+var EASE_OUT_CUBIC = 'cubic-bezier(0.215, 0.61, 0.355, 1)';
+var EASE_SWING = 'cubic-bezier(0.445, 0.05, 0.55, 0.95)';
+
+/**
+ * Runs a Web Animations animation on the first element of a `ui` entry.
+ * `el.animate()` is a single element API, while velocity animated whole jQuery
+ * collections and no-oped on an empty one.
+ * @returns {Animation|null}
+ */
+function animateUIElement($el, keyframes, options) {
+  var el = $el instanceof $ ? $el[0] : null;
+  if (el == null) {
+    return null;
+  }
+  return el.animate(keyframes, options);
+}
+
+/**
+ * Stands in for velocity's `complete` option. Like velocity on an empty
+ * collection, a missing element runs no callback at all.
+ * @returns {Animation|null} the animation it was given
+ */
+function onAnimationFinished(animation, callback) {
+  if (animation != null && callback != null) {
+    animation.onfinish = callback;
+  }
+  return animation;
+}
 
 var VictoryItemView = Backbone.Marionette.ItemView.extend({
   id: 'app-victory',
@@ -307,36 +339,34 @@ var VictoryItemView = Backbone.Marionette.ItemView.extend({
 
                   this.animateFactionProgress(0, xp_next_earned_percent);
 
-                  this.ui.factionLevel.velocity(
-                    {
-                      opacity: [0, 'easeOutCubic', 1],
-                    },
-                    {
+                  onAnimationFinished(
+                    animateUIElement(this.ui.factionLevel, [{ opacity: 1 }, { opacity: 0 }], {
                       duration: 800,
-                      complete: function () {
-                        // show level indexed off of 1
-                        this.ui.factionLevel.text(
-                          factionName +
-                            ' - ' +
-                            i18next.t('common.xp_level').toUpperCase() +
-                            ' ' +
-                            (nextLevel + 1),
-                        );
-                        this.ui.factionLevel.velocity(
-                          {
-                            opacity: [1, 'easeOutCubic', 0],
-                          },
-                          {
-                            duration: 400,
-                            complete: function () {
-                              NavigationManager.getInstance().requestUserTriggeredNavigationUnlocked(
-                                this._userNavLockId,
-                              );
-                            }.bind(this),
-                          },
-                        );
-                      }.bind(this),
-                    },
+                      easing: EASE_OUT_CUBIC,
+                      fill: 'forwards',
+                    }),
+                    function () {
+                      // show level indexed off of 1
+                      this.ui.factionLevel.text(
+                        factionName +
+                          ' - ' +
+                          i18next.t('common.xp_level').toUpperCase() +
+                          ' ' +
+                          (nextLevel + 1),
+                      );
+                      onAnimationFinished(
+                        animateUIElement(this.ui.factionLevel, [{ opacity: 0 }, { opacity: 1 }], {
+                          duration: 400,
+                          easing: EASE_OUT_CUBIC,
+                          fill: 'forwards',
+                        }),
+                        function () {
+                          NavigationManager.getInstance().requestUserTriggeredNavigationUnlocked(
+                            this._userNavLockId,
+                          );
+                        }.bind(this),
+                      );
+                    }.bind(this),
                   );
                 }.bind(this),
               );
@@ -369,36 +399,51 @@ var VictoryItemView = Backbone.Marionette.ItemView.extend({
       victoryLayer.showLevelUpEffect();
     }
 
-    this.ui.levelUpNotice.velocity(
-      {
-        opacity: [1, 'easeOutCubic', 0],
-        translateY: ['0px', 'easeOutCubic', '100px'],
-      },
-      { duration: 800, complete: onComplete },
+    onAnimationFinished(
+      animateUIElement(
+        this.ui.levelUpNotice,
+        [
+          { opacity: 0, transform: 'translateY(100px)' },
+          { opacity: 1, transform: 'translateY(0px)' },
+        ],
+        { duration: 800, easing: EASE_OUT_CUBIC, fill: 'forwards' },
+      ),
+      onComplete,
     );
   },
 
   animateFactionProgress: function (percentCurrent, percentEarned, onComplete) {
-    var totalWidth = percentCurrent + percentEarned;
-
     this.ui.progressBarComplete.width(percentCurrent + '%');
     this.ui.progressBarEarned.width(0);
 
-    this.ui.progressBarEarned.css('backgroundColor', '#6dcff6');
-    this.ui.progressBarEarned.velocity(
-      { width: [percentEarned + '%', 'none', '0%'] },
-      {
-        duration: 1000,
-        complete: function () {
-          // this.ui.progressBarEarned.velocity({ width: [ "0%", "none", percentEarned+"%" ] }, { duration: 1000 });
-          // this.ui.progressBarComplete.velocity({ width: [ totalWidth+"%", "none", percentCurrent+"%" ] }, { duration: 1000, complete:onComplete });
+    // a level-up calls this twice on the same bar: drop the filled-forward
+    // animations of the first pass, or its white end colour would keep
+    // overriding the inline colour below for the whole second fill
+    var progressBarEarnedEl =
+      this.ui.progressBarEarned instanceof $ ? this.ui.progressBarEarned[0] : null;
+    if (progressBarEarnedEl != null) {
+      progressBarEarnedEl.getAnimations().forEach(function (animation) {
+        animation.cancel();
+      });
+    }
 
-          this.ui.progressBarEarned.velocity(
-            { backgroundColor: '#ffffff' },
-            { duration: 400, complete: onComplete },
-          );
-        }.bind(this),
-      },
+    this.ui.progressBarEarned.css('backgroundColor', '#6dcff6');
+    onAnimationFinished(
+      animateUIElement(
+        this.ui.progressBarEarned,
+        [{ width: '0%' }, { width: percentEarned + '%' }],
+        { duration: 1000, easing: EASE_SWING, fill: 'forwards' },
+      ),
+      function () {
+        onAnimationFinished(
+          animateUIElement(
+            this.ui.progressBarEarned,
+            [{ backgroundColor: '#6dcff6' }, { backgroundColor: '#ffffff' }],
+            { duration: 400, easing: EASE_SWING, fill: 'forwards' },
+          ),
+          onComplete,
+        );
+      }.bind(this),
     );
   },
 
@@ -453,13 +498,15 @@ var VictoryItemView = Backbone.Marionette.ItemView.extend({
 
     if (lastOpponentId) {
       var tipAmount = 5;
-      $.ajax({
+      // fire and forget, as the jqXHR was: the rejection is swallowed so a failed
+      // tip does not surface as an unhandled rejection
+      requestJson({
         data: JSON.stringify({ amount: tipAmount }),
         url: process.env.API_URL + '/api/me/games/' + gameId + '/gold_tip_amount',
         type: 'PUT',
         contentType: 'application/json',
         dataType: 'json',
-      });
+      }).catch(function () {});
     }
 
     var p = $(e.currentTarget).offset();
@@ -499,7 +546,8 @@ var VictoryItemView = Backbone.Marionette.ItemView.extend({
     this.ui.confirm_report_dialog.modal('hide');
 
     if (lastOpponentId) {
-      $.ajax({
+      // fire and forget, as the jqXHR was
+      requestJson({
         data: JSON.stringify({
           user_id: lastOpponentId,
           message: this.ui.report_text.val(),
@@ -508,7 +556,7 @@ var VictoryItemView = Backbone.Marionette.ItemView.extend({
         type: 'POST',
         contentType: 'application/json',
         dataType: 'json',
-      });
+      }).catch(function () {});
     }
 
     // e.isStopped = true;

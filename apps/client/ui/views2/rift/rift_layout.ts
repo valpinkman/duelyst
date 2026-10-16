@@ -31,6 +31,7 @@ var ShopData = require('@duelyst/data/shop.json');
 var RiftRunsCompositeView = require('./rift_runs_composite');
 var RiftRunLayout = require('./rift_run_layout');
 var Templ = require('./templates/rift_layout.hbs');
+var { requestJson } = require('@duelyst/common/request');
 
 var RiftDeckSelectLayout = Backbone.Marionette.LayoutView.extend({
   id: 'app-rift',
@@ -177,27 +178,28 @@ var RiftDeckSelectLayout = Backbone.Marionette.LayoutView.extend({
           reject('You do not have sufficient gold to start the Gauntlet run.');
         } else {
           // buy an rift ticket
-          var request = $.ajax({
+          var request = requestJson({
             url: process.env.API_URL + '/api/me/inventory/rift_tickets',
             type: 'POST',
             contentType: 'application/json',
             dataType: 'json',
           });
 
-          request.done(function (response) {
-            Analytics.track('buy rift ticket with gold', {
-              category: Analytics.EventCategory.Rift,
-            });
-            resolve(response);
-          });
-
-          request.fail(function (response) {
-            // Temporary error, should parse server response.
-            var errorMessage =
-              'Oops... there was a problem purchasing your ticket. Please try again.';
-            EventBus.getInstance().trigger(EVENTS.ajax_error, errorMessage);
-            reject(errorMessage);
-          });
+          request.then(
+            function (response) {
+              Analytics.track('buy rift ticket with gold', {
+                category: Analytics.EventCategory.Rift,
+              });
+              resolve(response);
+            },
+            function (response) {
+              // Temporary error, should parse server response.
+              var errorMessage =
+                'Oops... there was a problem purchasing your ticket. Please try again.';
+              EventBus.getInstance().trigger(EVENTS.ajax_error, errorMessage);
+              reject(errorMessage);
+            },
+          );
         }
       }.bind(this),
     );
@@ -239,7 +241,7 @@ var RiftDeckSelectLayout = Backbone.Marionette.LayoutView.extend({
   _startRiftRunWithTicketId: function (ticketId) {
     return new Promise(
       function (resolve, reject) {
-        var request = $.ajax({
+        var request = requestJson({
           url: process.env.API_URL + '/api/me/rift/runs',
           data: JSON.stringify({ ticket_id: ticketId }),
           type: 'POST',
@@ -247,19 +249,20 @@ var RiftDeckSelectLayout = Backbone.Marionette.LayoutView.extend({
           dataType: 'json',
         });
 
-        request.done(function (response) {
-          Analytics.track('start rift run with ticket', {
-            category: Analytics.EventCategory.Rift,
-          });
-          resolve(response);
-        });
-
-        request.fail(function (response) {
-          // Temporary error, should parse server response.
-          var errorMessage = 'Oops... there was a problem starting your run. Please try again.';
-          EventBus.getInstance().trigger(EVENTS.ajax_error, errorMessage);
-          reject(errorMessage);
-        });
+        request.then(
+          function (response) {
+            Analytics.track('start rift run with ticket', {
+              category: Analytics.EventCategory.Rift,
+            });
+            resolve(response);
+          },
+          function (response) {
+            // Temporary error, should parse server response.
+            var errorMessage = 'Oops... there was a problem starting your run. Please try again.';
+            EventBus.getInstance().trigger(EVENTS.ajax_error, errorMessage);
+            reject(errorMessage);
+          },
+        );
       }.bind(this),
     );
   },
@@ -267,27 +270,28 @@ var RiftDeckSelectLayout = Backbone.Marionette.LayoutView.extend({
   _startFirstFreeRiftRun: function () {
     return new Promise(
       function (resolve, reject) {
-        var request = $.ajax({
+        var request = requestJson({
           url: process.env.API_URL + '/api/me/rift/runs/free',
           type: 'POST',
           contentType: 'application/json',
           dataType: 'json',
         });
 
-        request.done(function (response) {
-          Analytics.track('claim free rift run', {
-            category: Analytics.EventCategory.Rift,
-          });
-          resolve(response);
-        });
-
-        request.fail(function (response) {
-          // Temporary error, should parse server response.
-          var errorMessage =
-            'Oops... there was a problem starting your free run. Please try again.';
-          EventBus.getInstance().trigger(EVENTS.ajax_error, errorMessage);
-          reject(errorMessage);
-        });
+        request.then(
+          function (response) {
+            Analytics.track('claim free rift run', {
+              category: Analytics.EventCategory.Rift,
+            });
+            resolve(response);
+          },
+          function (response) {
+            // Temporary error, should parse server response.
+            var errorMessage =
+              'Oops... there was a problem starting your free run. Please try again.';
+            EventBus.getInstance().trigger(EVENTS.ajax_error, errorMessage);
+            reject(errorMessage);
+          },
+        );
       }.bind(this),
     );
   },

@@ -5,14 +5,14 @@
  * both players on "waiting" after deck selection.
  *
  * backfire is written for firebase 2.x, where `ref()` was a METHOD on a ref.
- * From v3 on `.ref` is a getter property. app/firebase.ts patches a callable
+ * From v3 on `.ref` is a getter property. apps/client/firebase.ts patches a callable
  * `ref` onto every ref built by `new Firebase(url)` -- but NOT onto a derived
  * one, and games_manager hands backfire `new Firebase(url).push()`.
  *
  * The nine backfire methods that call the SDK's `.ref()` are create, update,
  * add, remove, destroy, _parseModels, _removeModel and both _updateModel
  * implementations, so this is a class of bug rather than one call site. The fix
- * lives in app/ui/extensions/duelyst_firebase.ts, the single point every
+ * lives in apps/client/ui/extensions/duelyst_firebase.ts, the single point every
  * backfire model is constructed through.
  */
 
@@ -31,7 +31,7 @@ database.goOffline();
 global.window = global;
 global._ = require('underscore');
 global.Backbone = require('backbone');
-// backfire only ever calls `new Firebase(url)`; mirror app/firebase.ts's shim
+// backfire only ever calls `new Firebase(url)`; mirror apps/client/firebase.ts's shim
 global.Firebase = function (url) {
   const reference = database.refFromURL(url || DATABASE_URL);
   if (typeof reference.ref !== 'function') {
