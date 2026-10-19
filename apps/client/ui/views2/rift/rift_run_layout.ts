@@ -21,7 +21,6 @@ var ProfileManager = require('../../managers/profile_manager');
 var ErrorDialogItemView = require('../../views/item/error_dialog');
 var ActivityDialogItemView = require('../../views/item/activity_dialog');
 var RiftLayer = require('../../../view/layers/rift/RiftLayer');
-var DuelystFirebase = require('../../extensions/duelyst_firebase');
 var _ = require('underscore');
 var moment = require('moment');
 var ShopData = require('@duelyst/data/shop.json');

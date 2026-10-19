@@ -114,7 +114,7 @@ interface DuelystBackboneStatic {
 /* region apps/client/ui/extensions/duelyst_firebase.ts */
 
 interface DuelystFirebaseModel<A extends DuelystAttributes = any> extends DuelystModel<A> {
-  /** the `Firebase` reference backfire binds the model to */
+  /** the `Firebase` reference the model is bound to (firebase_sync.ts) */
   firebase: any;
   /** set when the server cancelled the read; onSyncOrReady() rejects with it */
   syncError: Error | null;
@@ -150,24 +150,23 @@ interface DuelystFirebaseCollectionConstructor {
  * The helpers are hung off the exported object rather than assigned to
  * `exports`, because the module ends with `module.exports = ...`, which
  * replaces the exports object wholesale — an `exports.toRef = ...` earlier in
- * the file never reached a caller. `ensureCallableRef` is exercised by
- * test/unit/firebase/backfire_derived_ref.js.
+ * the file never reached a caller.
  */
 interface DuelystFirebaseStatic {
   Model: DuelystFirebaseModelConstructor;
   Collection: DuelystFirebaseCollectionConstructor;
-  /** accepts either firebase 2.x's `.ref()` method or v3+'s `.ref` property */
+  /** the Reference to write through: a Reference itself, or the one under a Query */
   toRef(target: any): any;
-  /** gives a derived ref a callable `.ref()` so backfire can use it */
-  ensureCallableRef(target: any): any;
   /** how long onSyncOrReady() waits for the first sync before rejecting */
   SYNC_TIMEOUT_MS: number;
   /** writes `attributes` (plus `id: key`) at the collection's child `key`; returns `key` */
   addChild(collection: DuelystFirebaseCollection<any>, key: string, attributes: object): string;
   /** as addChild, under a freshly minted push key, which it returns */
   pushChild(collection: DuelystFirebaseCollection<any>, attributes: object): string;
-  /** deletes the collection's child `key` */
-  removeChild(collection: DuelystFirebaseCollection<any>, key: string): void;
+  /** the key a member was read from, which writes address; a key is returned as is */
+  childKey(memberOrKey: any): string;
+  /** deletes the member's child (by its Firebase key), or the child `key` */
+  removeChild(collection: DuelystFirebaseCollection<any>, memberOrKey: any): void;
 }
 
 /* endregion apps/client/ui/extensions/duelyst_firebase.ts */

@@ -21,7 +21,6 @@ var InventoryManager = require('../../managers/inventory_manager');
 var StreamManager = require('../../managers/stream_manager');
 var UtilsUI = require('../../utils_ui');
 var DuelystBackbone = require('../../extensions/duelyst_backbone');
-var DuelystFirebase = require('../../extensions/duelyst_firebase');
 var ErrorDialogItemView = require('../../views/item/error_dialog');
 
 // sub views

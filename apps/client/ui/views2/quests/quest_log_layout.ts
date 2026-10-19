@@ -15,7 +15,6 @@ var Logger = require('@duelyst/common/logger');
 var UtilsJavascript = require('@duelyst/common/utils/utils_javascript');
 var audio_engine = require('../../../audio/audio_engine');
 var moment = require('moment');
-var DuelystFirebase = require('../../extensions/duelyst_firebase');
 var i18next = require('i18next');
 
 var Template = require('./templates/quest_log_layout.hbs');

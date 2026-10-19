@@ -57,7 +57,6 @@ const i18next = require('i18next');
 
 // models and collections
 const CardModel = require('./ui/models/card');
-const DuelystFirebase = require('./ui/extensions/duelyst_firebase');
 const DuelystBackbone = require('./ui/extensions/duelyst_backbone');
 
 // Managers / Controllers

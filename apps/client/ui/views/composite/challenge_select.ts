@@ -15,7 +15,6 @@ var Animations = require('../animations');
 var ProgressionManager = require('../../managers/progression_manager');
 var ChallengePreviewItemView = require('../item/challenge_preview');
 var ChallengeSelectTmpl = require('../../templates/composite/challenge_select.hbs');
-var DuelystFirebase = require('../../extensions/duelyst_firebase');
 
 var ChallengeSelectCompositeView = Backbone.Marionette.CompositeView.extend({
   className: 'sliding-panel challenge-select',
