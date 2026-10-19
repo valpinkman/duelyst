@@ -9,13 +9,34 @@ Job - Rotate Boss Battles
 */
 const DuelystFirebase = require('../../server/lib/duelyst_firebase_module');
 const Logger = require('@duelyst/common/logger');
+const SDK = require('@duelyst/sdk');
 const Cards = require('@duelyst/sdk/cards/cardsLookup');
 const moment = require('moment');
 
-// Collect valid boss IDs.
-let BossIds = Object.values<any>(Cards.Boss);
-const BrokenBossIds = [200106]; // These bosses are missing resources and cause login crashes.
-BossIds = BossIds.filter((id) => BrokenBossIds.indexOf(id) === -1);
+/*
+ * Cards.Boss holds every boss-faction card, not just the bosses: minions,
+ * tokens and transforms (Boss6Chassis, Boss31Treat1, FrostfireImp...) share
+ * the namespace. Those have no speech portrait, and the main menu and boss
+ * deck select read the event's boss art at login, so rotating onto one takes
+ * login down for every account. Only a general with both portraits can
+ * headline an event; the list is derived from the card data so a new boss
+ * needs no edit here.
+ */
+let rotationBossIds = null;
+const getRotationBossIds = function () {
+  if (rotationBossIds == null) {
+    rotationBossIds = Object.values<any>(Cards.Boss).filter(function (id) {
+      const card = SDK.CardFactory.cardForIdentifier(id, SDK.GameSession.getInstance());
+      return (
+        card != null &&
+        card.getIsGeneral?.() &&
+        card.getSpeechResource()?.img != null &&
+        card.getPortraitHexResource()?.img != null
+      );
+    });
+  }
+  return rotationBossIds;
+};
 
 const oneDay = 24 * 60 * 60 * 1000; // Milliseconds.
 
@@ -37,6 +58,7 @@ module.exports = function (job, done) {
         .then(function (snapshot) {
           let event;
           const currentBossEvents = snapshot.val();
+          const BossIds = getRotationBossIds();
           let nextBossId = BossIds[0];
           const now = moment().utc().valueOf();
 
@@ -50,7 +72,8 @@ module.exports = function (job, done) {
               return done();
             }
 
-            // Determine the next boss ID.
+            // Determine the next boss ID. A boss_id that is not in the
+            // rotation (an older, broken pick) has index -1 and restarts it.
             let nextBossIndex = BossIds.indexOf(event.boss_id) + 1;
             if (nextBossIndex >= BossIds.length) {
               nextBossIndex = nextBossIndex - BossIds.length;
@@ -87,3 +110,5 @@ module.exports = function (job, done) {
       return done(error);
     });
 };
+
+module.exports.getRotationBossIds = getRotationBossIds;
