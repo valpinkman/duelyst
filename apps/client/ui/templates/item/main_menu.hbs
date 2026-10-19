@@ -62,7 +62,9 @@
 			{{boss_battle_name}}
 		{{/unless}}
 	</h2>
+	{{#if boss_battle_portrait}}
 	<img class="btn-boss-promo" src="{{imageForResourceScale boss_battle_portrait}}" width="106" />
+	{{/if}}
 	<div class="boss-reward-text">
 		{{#unless boss_battle_is_defeated}}
 			{{localize 'common.reward'}}: 1 {{localize 'common.spirit_orb_plural'}}

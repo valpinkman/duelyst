@@ -110,7 +110,11 @@ var MainMenuItemView = Backbone.Marionette.ItemView.extend({
       var bossCard = SDK.CardFactory.cardForIdentifier(data.boss_battle.boss_id);
       if (bossCard != null) {
         data.boss_battle_name = bossCard.getName();
-        data.boss_battle_portrait = bossCard.getSpeechResource().img;
+        // a boss with no speech art must not take the main menu (and login) down
+        const speechResource = bossCard.getSpeechResource();
+        if (speechResource != null) {
+          data.boss_battle_portrait = speechResource.img;
+        }
       }
     }
 
