@@ -663,6 +663,30 @@ persistence.
    collection root and compare every child's key to its stored `id`, and look for scalar children.
    A mismatch is live data corruption today, not a latent trap.
 
+### 7.10 Step 3 landed (#51)
+
+`apps/client/vendor/backfire/` is deleted. `apps/client/ui/extensions/firebase_sync.ts` is the
+binding, written against `firebase/compat`; `duelyst_firebase.ts` layers `onSyncOrReady` on it.
+`test/unit/firebase/firebase_sync.js` pins the §7.5 items; its [keep] cases were run against the
+blob before deletion and passed there, and its [fix] cases failed there.
+
+Two things this section got wrong, found while doing it:
+
+- **The Collection member write path is not dead.** §7.2 class B/C missed nine call sites that
+  `set()` a member of a synced collection and so write through backfire's Collection
+  `_updateModel`: `application.ts` (`playerGames` member: `gameServer`, `cancel_reconnect`),
+  `inventory_manager` (`is_unread`/`is_new` on card and lore members), `quests_manager`
+  (`is_unread`), and `games_manager`'s received-invite `status` (#49). `firebase_sync.ts` therefore
+  keeps a member write path, with items 17, 23 and 29 fixed. Only `add`/`remove`/`create`/`reset`
+  are gone (local now); nothing calls them since #45.
+- **Item 10 under backfire also wrote back.** `_modelChanged` unset server-removed keys _before_
+  turning local-change listening off, so each one was written back as `null`. Harmless, now gone.
+
+Decisions taken: item 12 as §7.9 (defaults local only; the server writes `id`/`username` itself and
+reads none of the settings keys — checked in `apps/server/lib/data_access/{users,sync}.ts`). Items 5,
+6 and 18 kept as they were. Item 19: an unknown member's `child_changed` is logged and ignored. The
+move to the modular SDK is still open under #9.
+
 ## 8. Constraints for whoever picks this up
 
 - **Follow the working rules in `docs/BACKBONE_REMOVAL_PLAN.md` §11**: PRs target

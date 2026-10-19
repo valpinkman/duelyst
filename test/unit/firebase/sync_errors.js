@@ -1,12 +1,12 @@
 /*
  * When the server refuses a read, the client used to hang on the loading
- * screen with nothing in the console: backfire passes no cancel callback to any
+ * screen with nothing in the console: backfire passed no cancel callback to any
  * of its subscriptions, onSyncOrReady() never rejected, and the Manager waiting
  * on them had no failure path. See docs/BACKBONE_AUDIT.md §7.3 and §7.5 items
- * 26-27, and apps/client/ui/extensions/duelyst_firebase.ts.
+ * 26-27, apps/client/ui/extensions/firebase_sync.ts and duelyst_firebase.ts.
  *
  * No network here, so the SDK never cancels anything itself. Instead each test
- * ref records the arguments of every on()/once() backfire makes, and a test
+ * ref records the arguments of every on()/once() the binding makes, and a test
  * plays the server by calling the cancel callback it was given.
  */
 
@@ -25,23 +25,12 @@ database.goOffline();
 global.window = global;
 global._ = require('underscore');
 global.Backbone = require('backbone');
-// backfire only ever calls `new Firebase(url)`; mirror apps/client/firebase.ts's shim
+// mirror apps/client/firebase.ts
 global.Firebase = function (url) {
-  const reference = database.refFromURL(url || DATABASE_URL);
-  if (typeof reference.ref !== 'function') {
-    Object.defineProperty(reference, 'ref', {
-      value: function () {
-        return reference;
-      },
-      configurable: true,
-      writable: true,
-    });
-  }
-  return reference;
+  return database.refFromURL(url || DATABASE_URL);
 };
 global.Firebase.ServerValue = firebase.database.ServerValue;
 
-require('@duelyst/client/vendor/backfire/backfire.min.js');
 const DuelystFirebase = require('@duelyst/client/ui/extensions/duelyst_firebase');
 
 let pathCounter = 0;
@@ -85,11 +74,10 @@ describe('DuelystFirebase cancel callbacks', () => {
     const { ref, calls } = recordingRef();
     new DuelystFirebase.Collection(null, { firebase: ref });
 
-    // four on(child_*) and one once('value') -- the precondition, so this
-    // cannot pass because backfire stopped subscribing
+    // three on(child_*) and one once('value') -- the precondition, so this
+    // cannot pass because the binding stopped subscribing
     expect(calls.map((call) => call.method + ':' + call.args[0])).to.deep.equal([
       'on:child_added',
-      'on:child_moved',
       'on:child_changed',
       'on:child_removed',
       'once:value',

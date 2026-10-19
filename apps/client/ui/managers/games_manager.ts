@@ -702,7 +702,7 @@ var GamesManager = Manager.extend({
         function () {
           this._rejectInvite(inviteModel);
           // the collection drops it through its own child_removed listener
-          DuelystFirebase.removeChild(this.receivedInvitesCollection, inviteModel.id);
+          DuelystFirebase.removeChild(this.receivedInvitesCollection, inviteModel);
         }.bind(this),
       );
       return;
