@@ -2,7 +2,6 @@
 
 var Logger = require('@duelyst/common/logger');
 var DeckModel = require('../models/deck');
-var DuelystFirebase = require('../extensions/duelyst_firebase');
 var DuelystBackbone = require('../extensions/duelyst_backbone');
 
 var UserDecksCollection = DuelystBackbone.Collection.extend({

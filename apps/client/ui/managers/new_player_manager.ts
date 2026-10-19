@@ -18,7 +18,6 @@ var EVENTS = require('@duelyst/common/event_types');
 var Logger = require('@duelyst/common/logger');
 var SDK = require('@duelyst/sdk');
 var NotificationModel = require('../models/notification');
-var DuelystFirebase = require('../extensions/duelyst_firebase');
 var DuelystBackbone = require('../extensions/duelyst_backbone');
 var Analytics = require('@duelyst/common/analytics');
 var moment = require('moment'); // WHY WONT THIS WORK

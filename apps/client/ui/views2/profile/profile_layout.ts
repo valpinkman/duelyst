@@ -19,7 +19,6 @@ var GamesManager = require('../../managers/games_manager');
 var InventoryManager = require('../../managers/inventory_manager');
 var UtilsUI = require('../../utils_ui');
 var DuelystBackbone = require('../../extensions/duelyst_backbone');
-var DuelystFirebase = require('../../extensions/duelyst_firebase');
 var ChangePortraitItemView = require('../../views/item/change_portrait');
 var ChangeUsernameItemView = require('../../views/item/change_username');
 var ChangePasswordItemView = require('../../views/item/change_password');

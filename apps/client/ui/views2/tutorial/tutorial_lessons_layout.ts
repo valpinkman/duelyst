@@ -20,7 +20,6 @@ var NewPlayerManager = require('../../managers/new_player_manager');
 var ProgressionManager = require('../../managers/progression_manager');
 var UtilsUI = require('../../utils_ui');
 var DuelystBackbone = require('../../extensions/duelyst_backbone');
-var DuelystFirebase = require('../../extensions/duelyst_firebase');
 var ActivityDialogItemView = require('../../views/item/activity_dialog');
 var i18next = require('i18next');
 var TutorialLessonsLayoutTemplate = require('./templates/tutorial_lessons_layout.hbs');
