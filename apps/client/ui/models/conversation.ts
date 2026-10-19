@@ -1,6 +1,7 @@
 'use strict';
 
 var Messages = require('../collections/messages');
+var DuelystFirebase = require('../extensions/duelyst_firebase');
 var Logger = require('@duelyst/common/logger');
 var Analytics = require('@duelyst/common/analytics');
 var ChatManager = require('../managers/chat_manager');
@@ -19,7 +20,7 @@ var Conversation = Backbone.Model.extend({
     // only send message if buddy is not offline
     var buddyId = this.get('userId');
     if (ChatManager.getInstance().getBuddiesCollection().getIsBuddyOnlineById(buddyId)) {
-      this.messages.create({
+      this._pushMessage({
         fromId: ProfileManager.getInstance().get('id'),
         toId: buddyId,
         gameId: gameId,
@@ -40,7 +41,7 @@ var Conversation = Backbone.Model.extend({
     // only send message if buddy is not offline
     var buddyId = this.get('userId');
     if (ChatManager.getInstance().getBuddiesCollection().getIsBuddyOnlineById(buddyId)) {
-      this.messages.create({
+      this._pushMessage({
         fromId: ProfileManager.getInstance().get('id'),
         toId: buddyId,
         body: messageBody,
@@ -53,6 +54,17 @@ var Conversation = Backbone.Model.extend({
         category: Analytics.EventCategory.Chat,
       });
     }
+  },
+
+  /*
+   * Writes straight to Firebase; the message reaches `this.messages` through
+   * its child_added listener, as it did when this went through backfire's
+   * create(). The attributes go through the Message model first, as create()
+   * did, so its defaults still fill any that are missing.
+   */
+  _pushMessage: function (attributes) {
+    var message = new this.messages.model(attributes);
+    DuelystFirebase.pushChild(this.messages, message.toJSON());
   },
 
   onMessageReceived: function (m) {

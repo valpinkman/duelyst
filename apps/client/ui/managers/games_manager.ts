@@ -701,7 +701,8 @@ var GamesManager = Manager.extend({
       _.defer(
         function () {
           this._rejectInvite(inviteModel);
-          this.receivedInvitesCollection.remove(inviteModel);
+          // the collection drops it through its own child_removed listener
+          DuelystFirebase.removeChild(this.receivedInvitesCollection, inviteModel.id);
         }.bind(this),
       );
       return;
