@@ -230,10 +230,37 @@ describe('firebase_sync Model write', () => {
     expect(await stored(remote(ref))).to.equal(null);
   });
 
+  it('expect destroy() to stop listening before it deletes the node', () => {
+    // a game invite's read rule depends on its own data, so deleting it
+    // revokes a listener still attached and the cancel is reported as an error
+    const { ref } = recordingRef();
+    const calls = [];
+    const off = ref.off;
+    ref.off = function () {
+      calls.push(['off', arguments[0]]);
+      return off.apply(this, arguments);
+    };
+    const set = ref.set;
+    ref.set = function (value) {
+      calls.push(['set', value]);
+      return set.apply(this, arguments);
+    };
+    const model = new DuelystFirebase.Model(null, { firebase: ref });
+
+    model.destroy({});
+    expect(calls).to.deep.equal([
+      ['off', 'value'],
+      ['set', null],
+    ]);
+    remote(ref).set({ status: 'sent' });
+    expect(model.has('status')).to.equal(false);
+  });
+
   it('expect a refused write to be reported (item 28)', async () => {
     const refused = new Error('permission_denied');
     const fakeRef = {
       on: () => {},
+      off: () => {},
       child: () => fakeRef,
       update: () => Promise.reject(refused),
       toString: () => 'https://example/users/me',

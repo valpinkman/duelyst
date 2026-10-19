@@ -101,7 +101,8 @@ var FirebaseSyncModel = Backbone.Model.extend({
     resolveFirebase(this, options);
     // registered exactly once, so one set() is one write (item 11)
     this.on('change', this._updateModel, this);
-    this.firebase.on('value', this._modelChanged.bind(this), cancelCallback(this));
+    this._onValue = this._modelChanged.bind(this);
+    this.firebase.on('value', this._onValue, cancelCallback(this));
   },
 
   /* there is no server round trip to save to: writes follow every set() (item 13) */
@@ -109,6 +110,10 @@ var FirebaseSyncModel = Backbone.Model.extend({
 
   /* item 14 */
   destroy: function (options) {
+    // Unsubscribe first: when the read rule depends on the node's own data
+    // (a game invite is readable by its `fromId`), deleting it revokes this
+    // listener, and the cancel would be reported as a failed read.
+    this.firebase.off('value', this._onValue);
     write(toRef(this.firebase), 'set', null);
     this.trigger('destroy', this, this.collection, options);
     if (options && options.success) options.success(this, null, options);
