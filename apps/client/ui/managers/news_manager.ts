@@ -95,8 +95,8 @@ var NewsManager = Manager.extend({
       var priority = itemModel.get('created_at');
 
       if (!this.readNewsItemsCollection.get(key)) {
-        this.readNewsItemsCollection.add({
-          id: key,
+        // the collection picks the new child up through its own listener
+        DuelystFirebase.addChild(this.readNewsItemsCollection, key, {
           read_at: Firebase.ServerValue.TIMESTAMP,
           '.priority': priority,
         });

@@ -147,7 +147,7 @@ interface DuelystFirebaseCollectionConstructor {
 /**
  * The value `require('apps/client/ui/extensions/duelyst_firebase')` returns.
  *
- * The two helpers are hung off the exported object rather than assigned to
+ * The helpers are hung off the exported object rather than assigned to
  * `exports`, because the module ends with `module.exports = ...`, which
  * replaces the exports object wholesale — an `exports.toRef = ...` earlier in
  * the file never reached a caller. `ensureCallableRef` is exercised by
@@ -162,6 +162,12 @@ interface DuelystFirebaseStatic {
   ensureCallableRef(target: any): any;
   /** how long onSyncOrReady() waits for the first sync before rejecting */
   SYNC_TIMEOUT_MS: number;
+  /** writes `attributes` (plus `id: key`) at the collection's child `key`; returns `key` */
+  addChild(collection: DuelystFirebaseCollection<any>, key: string, attributes: object): string;
+  /** as addChild, under a freshly minted push key, which it returns */
+  pushChild(collection: DuelystFirebaseCollection<any>, attributes: object): string;
+  /** deletes the collection's child `key` */
+  removeChild(collection: DuelystFirebaseCollection<any>, key: string): void;
 }
 
 /* endregion apps/client/ui/extensions/duelyst_firebase.ts */

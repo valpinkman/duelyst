@@ -301,12 +301,61 @@ Backbone.DuelystFirebase.Collection = Backbone.Firebase.Collection.extend({
 });
 
 /*
+ * Direct writes into a synced collection's node. These replace backfire's
+ * Collection add()/create()/remove(), which only three call sites used
+ * (docs/BACKBONE_AUDIT.md §7.2 class C, §7.7 step 2), so that the owned
+ * replacement for the blob never has to reproduce that write path.
+ *
+ * What lands in Firebase is what backfire wrote: the same child path, and the
+ * payload with the child's key also stored as `id`. The collection itself is
+ * not touched: it updates through its own child_added/child_removed
+ * listeners, which the SDK raises locally before the server answers, exactly
+ * as it did when backfire issued the write. A `.priority` key in the payload
+ * is honoured by the SDK's set().
+ *
+ * backfire dropped a failed write silently (its completion callback defaulted
+ * to a no-op), and the SDK quietly rolled the optimistic child back. A failure
+ * is now at least reported (§7.5 item 28).
+ *
+ * `collection.firebase` may be a query (`limitToLast`, `startAt`); writes go
+ * to the reference underneath it, as backfire's `.ref().child(...)` did.
+ */
+function collectionRef(collection) {
+  return toRef(collection.firebase);
+}
+
+function reportWriteError(description) {
+  return function (error) {
+    if (error != null) console.error('Firebase write failed: ' + description + ':', error);
+  };
+}
+
+function addChild(collection, key, attributes) {
+  var ref = collectionRef(collection).child(key);
+  ref.set(_.extend({}, attributes, { id: key }), reportWriteError('set ' + String(ref)));
+  return key;
+}
+
+/* mints a push key for the new child, as backfire's create() did */
+function pushChild(collection, attributes) {
+  return addChild(collection, collectionRef(collection).push().key, attributes);
+}
+
+function removeChild(collection, key) {
+  var ref = collectionRef(collection).child(key);
+  ref.remove(reportWriteError('remove ' + String(ref)));
+}
+
+/*
  * Hung off the exported object rather than assigned to `exports`: the
  * `module.exports = ...` below replaces the exports object wholesale, so an
  * `exports.toRef = ...` earlier in the file never reached a caller.
  */
 Backbone.DuelystFirebase.toRef = toRef;
 Backbone.DuelystFirebase.ensureCallableRef = ensureCallableRef;
+Backbone.DuelystFirebase.addChild = addChild;
+Backbone.DuelystFirebase.pushChild = pushChild;
+Backbone.DuelystFirebase.removeChild = removeChild;
 
 // Expose the class either via CommonJS or the global object
 const DuelystFirebase: DuelystFirebaseStatic = Backbone.DuelystFirebase;
