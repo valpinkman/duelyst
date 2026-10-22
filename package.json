@@ -142,6 +142,7 @@
     "glslify": "2.1.2",
     "glslify7": "npm:glslify@^7.1.1",
     "handlebars": "^4.7.9",
+    "happy-dom": "^21.0.4",
     "os-browserify": "^0.3.0",
     "oxfmt": "^0.64.0",
     "oxlint": "^1.79.0",

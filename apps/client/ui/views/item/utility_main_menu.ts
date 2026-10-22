@@ -10,7 +10,7 @@ var QuestsManager = require('../../managers/quests_manager');
 var InventoryManager = require('../../managers/inventory_manager');
 var ServerStatusManager = require('../../managers/server_status_manager');
 var NavigationManager = require('../../managers/navigation_manager');
-var QuestLogLayout = require('../../views2/quests/quest_log_layout');
+var QuestLogShell = require('../../shells/quest_log_shell');
 var ProfileLayout = require('../../views2/profile/profile_layout');
 var ProgressionManager = require('../../managers/progression_manager');
 var NewPlayerManager = require('../../managers/new_player_manager');
@@ -354,7 +354,7 @@ var UtilityMainMenuItemView = UtilityMenuItemView.extend({
 
   toggleQuestLog: function () {
     NewPlayerManager.getInstance().removeQuestEmphasis();
-    NavigationManager.getInstance().toggleModalViewByClass(QuestLogLayout, {
+    NavigationManager.getInstance().toggleModalViewByClass(QuestLogShell, {
       collection: QuestsManager.getInstance().getQuestCollection(),
       model: ProgressionManager.getInstance().gameCounterModel,
     });

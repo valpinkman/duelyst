@@ -17,6 +17,7 @@ const { expect } = require('chai');
 
 const ROOT = path.resolve(__dirname, '../../..');
 const UI_ROOT = path.join(ROOT, 'apps/client/ui');
+const SHELL_ROOT = path.join(UI_ROOT, 'shells');
 const LAYOUT_SITE = /(?:var|let|const)\s+(\w+)\s*=\s*Backbone\.Marionette\.LayoutView\.extend\(/g;
 
 function walk(dir, out = []) {
@@ -65,9 +66,10 @@ describe('screen tour census', () => {
   });
 
   it('finds the LayoutView sites it is counting', () => {
-    // 23 when issue #2 was written. If this moves, the census below says
-    // which screen to add or remove - update this number with it.
-    expect(layoutSites()).to.have.length(23);
+    // 23 when issue #2 was written; 22 since the quest log became a shell
+    // (#10). If this moves, the census below says which screen to add or
+    // remove - update this number with it.
+    expect(layoutSites()).to.have.length(22);
   });
 
   it('has exactly one census entry per LayoutView, in the file that declares it', () => {
@@ -106,15 +108,32 @@ describe('screen tour census', () => {
     }
   });
 
-  it('tours 24 screens: 18 LayoutViews, 4 concrete subclasses, crafting and the main menu', () => {
+  it('tours 24 screens: 17 LayoutViews, 4 concrete subclasses, 1 shell, crafting and the main menu', () => {
     const toured = SCREENS.filter((s) => s.status === 'toured');
-    expect(toured.filter((s) => !s.kind)).to.have.length(18);
+    expect(toured.filter((s) => !s.kind)).to.have.length(17);
     expect(toured.filter((s) => s.kind === 'subclass')).to.have.length(4);
+    expect(toured.filter((s) => s.kind === 'Shell')).to.have.length(1);
     expect(toured.map((s) => s.name)).to.include.members([
       'CraftingCompositeView',
       'MainMenuItemView',
     ]);
     expect(toured).to.have.length(24);
+  });
+
+  it('has exactly one toured census entry per shell, each checking its component rendered', () => {
+    const shells = walk(SHELL_ROOT)
+      .map((file) => path.relative(ROOT, file).split(path.sep).join('/'))
+      .sort();
+    const census = SCREENS.filter((s) => s.kind === 'Shell');
+    expect(census.map((s) => s.file).sort(), 'shell files vs census').to.deep.equal(shells);
+    for (const s of census) {
+      expect(s.status, `${s.name} status`).to.equal('toured');
+      // the shell's own root renders even if the component never registered
+      expect(s.visible, `${s.name} visible`).to.be.a('string');
+      expect(s.visibleDeclaredIn, `${s.name} visibleDeclaredIn`).to.match(
+        /^apps\/client\/ui\/components\//,
+      );
+    }
   });
 
   it("finds each toured landmark declared in the screen's own source", () => {

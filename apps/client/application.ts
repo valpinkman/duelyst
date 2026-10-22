@@ -118,7 +118,7 @@ const CodexLayout = require('./ui/views2/codex/codex_layout');
 const CodexLayer = require('./view/layers/codex/CodexLayer');
 
 const TutorialLessonsLayout = require('./ui/views2/tutorial/tutorial_lessons_layout');
-const QuestLogLayout = require('./ui/views2/quests/quest_log_layout');
+const QuestLogShell = require('./ui/shells/quest_log_shell');
 
 const BoosterPackUnlockLayout = require('./ui/views/layouts/booster_pack_collection');
 const BoosterPackOpeningLayer = require('./view/layers/booster/BoosterPackOpeningLayer');
@@ -198,7 +198,7 @@ if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'staging')
       TutorialLessonsLayout,
       BoosterPackUnlockLayout,
       GameLayout,
-      QuestLogLayout,
+      QuestLogShell,
     },
   };
 }
@@ -1068,14 +1068,11 @@ App._showMainMenu = function () {
               QuestsManager.getInstance().hasUnreadQuests() ||
               QuestsManager.getInstance().hasUnreadDailyChallenges()
             ) {
-              modalPromise = NavigationManager.getInstance().toggleModalViewByClass(
-                QuestLogLayout,
-                {
-                  collection: QuestsManager.getInstance().getQuestCollection(),
-                  model: ProgressionManager.getInstance().gameCounterModel,
-                  showConfirm: true,
-                },
-              );
+              modalPromise = NavigationManager.getInstance().toggleModalViewByClass(QuestLogShell, {
+                collection: QuestsManager.getInstance().getQuestCollection(),
+                model: ProgressionManager.getInstance().gameCounterModel,
+                showConfirm: true,
+              });
             }
           }
 
@@ -4315,12 +4312,6 @@ App.showFactionXpReward = function (userGameModel, rewardModels) {
   return App.showProgressReward(nextUnreadReward);
 };
 
-App.showNewBeginnerQuests = (beginnerQuestsCollection) =>
-  NavigationManager.getInstance().toggleModalViewByClass(QuestLogLayout, {
-    collection: beginnerQuestsCollection,
-    showConfirm: true,
-  });
-
 App.showFreeCardOfTheDayReward = (opts) =>
   Promise.all([
     NavigationManager.getInstance().destroyModalView(),
@@ -4333,7 +4324,7 @@ App.showFreeCardOfTheDayReward = (opts) =>
     return App.setCallbackWhenCancel(() => {
       Scene.getInstance().destroyOverlay();
       return App._showMainMenu().then(() => {
-        NavigationManager.getInstance().toggleModalViewByClass(QuestLogLayout, {
+        NavigationManager.getInstance().toggleModalViewByClass(QuestLogShell, {
           collection: QuestsManager.getInstance().getQuestCollection(),
           model: ProgressionManager.getInstance().gameCounterModel,
         });
