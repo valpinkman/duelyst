@@ -178,6 +178,9 @@ against a stock bundle the verifier says exactly that rather than failing obscur
   §4 step 5) and `lit/decorators.js` are separate `exports` subpaths and were not exercised. Expect to
   re-check `repeat()` when the first screen lands; there is no reason for it to behave differently,
   but nothing here shows it.
+  _Since #10:_ `lit/directives/repeat.js` and `lit/directives/unsafe-html.js` ship in the quest log
+  and were checked in headless Chromium against the production bundle (keyed rows, injected
+  description markup, a tag upgraded by `innerHTML` on a detached shell).
 - **Nothing protects `strictRequires`, and everything depends on it.** It is an ordinary
   `commonjsOptions` setting in `vite.config.client.mjs` with no test standing behind it. Turn it off
   while tuning the bundle and every Lit component silently stops registering — the failure surfaces as
@@ -258,6 +261,52 @@ and hit zero when the last one is deleted. Gate it in CI in the same spirit as
 - **Do not port the helper mechanism.** `localize` → `t()` from i18next (already a dependency);
   `imageForResourceScale` → a plain function — and note that conversion changes which regex in
   `generate_packages.js` catches the art (§5). The remaining live helpers are 1–10 uses each.
+
+Established by the first screen, [#10](https://github.com/valpinkman/duelyst/issues/10) (the quest
+log). Every later screen follows these unless its own issue decides otherwise:
+
+- **Shells live in `apps/client/ui/shells/<screen>_shell.ts`** (snake_case: they are Marionette
+  code and die with it). A shell carries what the navigation manager and `transition.ts` need — the
+  old view's `id`/`className`, `animateIn`/`animateOut`, and the class identity callers pass to
+  `toggleModalViewByClass()` — and its template is the tag alone. It `require()`s the component
+  once, for its registration side effect. The old view folder is deleted in the same commit.
+- **Properties in, events out.** The shell reads the managers and sets properties on the element
+  in `onRender`; the component dispatches bubbling `CustomEvent`s (`quest-replace`,
+  `free-card-claim`) and the shell turns them into manager calls. **A component never imports a
+  manager**: the managers sit in the views↔managers require cycle (§6), and a component that
+  stays out of it can be tested with plain Backbone objects. When the shell has to tell the
+  component that a request settled, the event carries a `done()` callback in its `detail`.
+- **`BackboneController`** (`components/backbone-controller.ts`) takes a getter, not a target:
+  `new BackboneController(this, () => this.quests, 'add remove reset change sort', onEvent?)`. It
+  re-reads the target before every update, so a shell that swaps the collection moves the
+  listener with it, and it listens only while the host is connected.
+- **One element per screen**; rows and sub-parts are render methods (`#renderQuest()`), not
+  child elements, until a second screen needs the same part.
+- **Register with a guard**: `if (!customElements.get(TAG)) customElements.define(TAG, Cls)`, so a
+  watch rebuild or a second import in a test does not throw. Export the class and `TAG`.
+- **Keep the markup the stylesheets select on.** Light DOM means the old SCSS applies as is,
+  provided the element structure does too — the quest log keeps three always-present section
+  containers because `quests.scss` uses `:first-child`/`:last-child` on them. The custom element
+  itself adds a box between the shell and the old root: give it `display: contents` when the
+  shell's CSS lays out its child (`.duelyst-modal` centres `.modal-dialog`).
+- **`unsafeHTML` only for content the SDK or our locales author**, never for anything a player
+  typed. Quest descriptions carry `<br>`; that is the one use so far.
+- **Importing CommonJS from a component.** `import X from '…'` of a module that assigns
+  `module.exports` works in the bundle and in vitest (both hand over `module.exports`), but a
+  `.ts` module of that shape has no default export as far as `tsc` can see: mark each such
+  import with `// @ts-expect-error` and a reason. A JS module (`@duelyst/data/resources`) needs
+  nothing. Initialise i18next before a test loads anything from the SDK: the card factories
+  replace an uninitialised `i18next.t` with the identity at load.
+- **Art.** A component that names `RSX.x` needs its own `// pragma PKGS:` line, and so does a
+  shell that plays sounds. Expect the drift check to fire when art moves from a bare string to
+  `RSX.x`; read which resource was added and re-record on purpose.
+- **Census.** A shell is a `kind: 'Shell'` entry in `test/e2e/screens.mjs` whose `visible` child is
+  rendered only by the component (declared in the component file): the shell's own root renders
+  even when the element never registered, which is how a lost `strictRequires` would show up.
+  `screen_census.js` requires one such entry for every file in `shells/`.
+- **Tests.** Component tests are vitest project `client` (happy-dom), under
+  `test/unit/client/`, covering render, the Backbone binding (keyed re-render, live update,
+  target swap) and teardown (no listener, no timer).
 
 ## 4. The step sequence
 
