@@ -12,7 +12,7 @@ module.exports = _ProfileManager;
 
 var Logger = require('@duelyst/common/logger');
 var Profile: ProfileModelConstructor = require('../models/profile');
-var Firebase = require('../../firebase');
+var Firebase = require('../../firebase_compat');
 var Manager = require('./manager');
 
 var ProfileManager = Manager.extend({
