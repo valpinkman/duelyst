@@ -23,6 +23,7 @@ var ErrorDialogItemView = require('../item/error_dialog');
 var ActivityDialogItemView = require('../item/activity_dialog');
 var ArenaLayer = require('../../../view/layers/arena/ArenaLayer');
 var DuelystFirebase = require('../../extensions/duelyst_firebase');
+var { dbRef } = require('../../../firebase');
 var _ = require('underscore');
 var moment = require('moment');
 var ShopData = require('@duelyst/data/shop.json');
@@ -37,10 +38,7 @@ var ArenaLayout = Backbone.Marionette.LayoutView.extend({
 
   onShow: function () {
     // get arena model for current arena run if exists
-    var arenaRef = new Firebase(process.env.FIREBASE_URL)
-      .child('user-gauntlet-run')
-      .child(ProfileManager.getInstance().get('id'))
-      .child('current');
+    var arenaRef = dbRef('user-gauntlet-run', ProfileManager.getInstance().get('id'), 'current');
     this.model = new DuelystFirebase.Model(null, { firebase: arenaRef });
 
     // load gauntlet resources

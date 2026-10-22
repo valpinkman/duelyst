@@ -35,11 +35,21 @@ var InventoryManager = require('./inventory_manager');
 var NotificationsManager = require('./notifications_manager');
 var Manager = require('./manager');
 var { requestJson, requestJsonWithStatus } = require('@duelyst/common/request');
+var {
+  dbRef,
+  limitToLast,
+  onValue,
+  push,
+  query,
+  serverTimestamp,
+  setWithPriority,
+} = require('../../firebase');
 
 /** @namespace */
 var GamesManager = Manager.extend({
   // firebase
   _matchmakingErrorRef: null,
+  _stopMatchmakingErrorListener: null,
 
   // backbone models and collection
   rankingModel: null,
@@ -90,7 +100,7 @@ var GamesManager = Manager.extend({
 
         // init player games collection
         _self.playerGames = new DuelystFirebase.Collection(null, {
-          firebase: new Firebase(process.env.FIREBASE_URL + '/user-games/' + userId).limitToLast(1),
+          firebase: query(dbRef('user-games/' + userId), limitToLast(1)),
         });
 
         // init game invites collection
@@ -141,7 +151,8 @@ var GamesManager = Manager.extend({
     Manager.prototype.onBeforeDisconnect.call(this);
     this._stopWatchingForGame();
     if (this._matchmakingErrorRef) {
-      this._matchmakingErrorRef.off();
+      this._stopMatchmakingErrorListener();
+      this._stopMatchmakingErrorListener = null;
       this._matchmakingErrorRef = null;
     }
     this.stopListening(this.rankingModel);
@@ -252,15 +263,11 @@ var GamesManager = Manager.extend({
         }
 
         // start watching for errors using the intermediate game 'tokenId' returned from AJAX request
-        this._matchmakingErrorRef = new Firebase(
-          process.env.FIREBASE_URL +
-            '/user-matchmaking-errors/' +
-            ProfileManager.getInstance().get('id') +
-            '/' +
-            tokenId,
+        this._matchmakingErrorRef = dbRef(
+          'user-matchmaking-errors/' + ProfileManager.getInstance().get('id') + '/' + tokenId,
         );
-        this._matchmakingErrorRef.on(
-          'value',
+        this._stopMatchmakingErrorListener = onValue(
+          this._matchmakingErrorRef,
           function (snapshot) {
             if (snapshot.val()) {
               this._onMatchmakingError(snapshot.val());
@@ -480,14 +487,9 @@ var GamesManager = Manager.extend({
       this.cancelInvite();
 
       // create a firebase reference for the invite keyed for the user we're sending the invite to
-      var inviteRef = new Firebase(
-        process.env.FIREBASE_URL +
-          '/matchmaking/' +
-          process.env.NODE_ENV +
-          '/invites/to/' +
-          playerId +
-          '/',
-      ).push();
+      var inviteRef = push(
+        dbRef('matchmaking/' + process.env.NODE_ENV + '/invites/to/' + playerId + '/'),
+      );
 
       // initialize the invite attributes
       var inviteData: Record<string, any> = {};
@@ -499,7 +501,7 @@ var GamesManager = Manager.extend({
       inviteData.createdAt = Date.now();
 
       // update invite queue
-      inviteRef.setWithPriority(inviteData, Firebase.ServerValue.TIMESTAMP);
+      setWithPriority(inviteRef, inviteData, serverTimestamp());
 
       // creat an invite model
       this.lastSentInviteModel = new DuelystFirebase.Model(inviteData, { firebase: inviteRef });
@@ -857,7 +859,8 @@ var GamesManager = Manager.extend({
     this._stopWatchingForGame();
 
     if (this._matchmakingErrorRef) {
-      this._matchmakingErrorRef.off();
+      this._stopMatchmakingErrorListener();
+      this._stopMatchmakingErrorListener = null;
       this._matchmakingErrorRef = null;
     }
 

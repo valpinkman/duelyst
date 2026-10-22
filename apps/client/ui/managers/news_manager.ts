@@ -23,6 +23,7 @@ var NavigationManager = require('./navigation_manager');
 var NotificationsManager = require('./notifications_manager');
 var Manager = require('./manager');
 var ProfileManager = require('./profile_manager');
+var { dbRef, limitToLast, query, serverTimestamp } = require('../../firebase');
 
 var NewsManager = Manager.extend({
   newsItemsIndexCollection: null,
@@ -42,18 +43,11 @@ var NewsManager = Manager.extend({
         var userId = ProfileManager.getInstance().get('id');
 
         _self.newsItemsIndexCollection = new DuelystFirebase.Collection(null, {
-          firebase: new Firebase(process.env.FIREBASE_URL)
-            .child('news')
-            .child('index')
-            .limitToLast(10),
+          firebase: query(dbRef('news/index'), limitToLast(10)),
         });
 
         _self.readNewsItemsCollection = new DuelystFirebase.Collection(null, {
-          firebase: new Firebase(process.env.FIREBASE_URL)
-            .child('user-news')
-            .child(userId)
-            .child('read')
-            .limitToLast(20),
+          firebase: query(dbRef('user-news', userId, 'read'), limitToLast(20)),
         });
 
         // what to do when we're ready
@@ -97,7 +91,7 @@ var NewsManager = Manager.extend({
       if (!this.readNewsItemsCollection.get(key)) {
         // the collection picks the new child up through its own listener
         DuelystFirebase.addChild(this.readNewsItemsCollection, key, {
-          read_at: Firebase.ServerValue.TIMESTAMP,
+          read_at: serverTimestamp(),
           '.priority': priority,
         });
       }
@@ -128,9 +122,7 @@ var NewsManager = Manager.extend({
     var announcement = this.getFirstUnreadAnnouncement();
 
     if (announcement) {
-      var fbRef = new Firebase(process.env.FIREBASE_URL).child(
-        'news/content/' + announcement.get('id'),
-      );
+      var fbRef = dbRef('news/content/' + announcement.get('id'));
       var content = new DuelystFirebase.Model(null, {
         firebase: fbRef,
       });

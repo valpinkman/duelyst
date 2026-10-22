@@ -687,6 +687,28 @@ reads none of the settings keys — checked in `apps/server/lib/data_access/{use
 6 and 18 kept as they were. Item 19: an unknown member's `child_changed` is logged and ignored. The
 move to the modular SDK is still open under #9.
 
+### 7.11 The client is on the modular SDK (#9)
+
+Nothing in `apps/client` loads `firebase/compat` any more, and `window.Firebase` and the v2
+`Firebase(url)` constructor are gone. `apps/client/firebase.ts` is the one module that imports
+`firebase/*`. It initialises the app and exports `dbRef(path, ...segments)`, the free functions the
+client uses, and the auth helpers. `firebase_sync.ts` makes every SDK call through
+`FirebaseSync.sdk`, and that object is where `test/unit/firebase/*` records writes and
+subscriptions, since a modular ref has no methods to patch. The Query→Reference split in `toRef` is
+still needed: a modular Query has no `parent`, and its `.ref` is the Reference.
+
+What it took to learn:
+
+- **Load the SDK through one entry point, in one module format.** While compat and modular code
+  sat side by side, an `import` of `firebase/app` next to compat's `require()` bundled both the ESM
+  and the CJS build of `@firebase/app`. Each copy keeps its own app registry, so the result is a
+  second, unauthenticated Database. Only `firebase.ts` may import the SDK. A grep of the module
+  paths in `dist/src/duelyst.js` shows which builds were bundled.
+- **compat's `ref.off()` hid two listener leaks.** `game_player.ts` stored `once()`'s return value
+  (a promise) and called `.off()` on it. `achievements_manager.ts` called `off()` on a ref whose
+  listener was on a query of it, so the listener was never removed. Both now call the unsubscribe
+  that the subscription returned.
+
 ## 8. Constraints for whoever picks this up
 
 - **Follow the working rules in `docs/BACKBONE_REMOVAL_PLAN.md` §11**: PRs target

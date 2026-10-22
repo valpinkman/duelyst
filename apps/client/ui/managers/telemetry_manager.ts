@@ -14,7 +14,14 @@ var CONFIG = require('@duelyst/common/config');
 var EventBus = require('@duelyst/common/eventbus');
 var EVENTS = require('@duelyst/common/event_types');
 var Logger = require('@duelyst/common/logger');
-var Firebase = require('../../firebase_compat');
+var {
+  dbRef,
+  onDisconnect,
+  push,
+  remove,
+  serverTimestamp,
+  setWithPriority,
+} = require('../../firebase');
 var Manager = require('./manager');
 var ProfileManager = require('./profile_manager');
 
@@ -48,11 +55,7 @@ var TelemetryManager = Manager.extend({
   /* endregion CONNECT */
 
   setSignal: function (category, type, label, value) {
-    var statusRef = new Firebase(process.env.FIREBASE_URL)
-      .child('telemetry')
-      .child(category)
-      .child(type)
-      .push();
+    var statusRef = push(dbRef('telemetry', category, type));
 
     var id = 'anon';
 
@@ -60,16 +63,17 @@ var TelemetryManager = Manager.extend({
     if (ProfileManager.getInstance().isReady === true) {
       id = ProfileManager.getInstance().get('id');
     }
-    statusRef.setWithPriority(
+    setWithPriority(
+      statusRef,
       {
         u: id,
         l: label || null,
         v: value || null,
       },
-      Firebase.ServerValue.TIMESTAMP,
+      serverTimestamp(),
     );
 
-    statusRef.onDisconnect().remove();
+    onDisconnect(statusRef).remove();
 
     this._statusReferences.push(statusRef);
 
@@ -88,8 +92,8 @@ var TelemetryManager = Manager.extend({
 
   clearSignalByIndex: function (i) {
     if (this._statusReferences[i]) {
-      this._statusReferences[i].remove();
-      this._statusReferences[i].onDisconnect().cancel();
+      remove(this._statusReferences[i]);
+      onDisconnect(this._statusReferences[i]).cancel();
     }
   },
 });

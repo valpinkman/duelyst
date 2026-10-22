@@ -13,16 +13,34 @@
  * loads `firebase/*`: one entry point, so one copy of the SDK in the bundle,
  * and the Firebase surface the client depends on listed in one place.
  */
-/*
- * require(), not import, while firebase_compat.ts still exists: compat loads
- * the SDK's CommonJS build, an `import` would bundle its ESM build beside it,
- * and two copies of @firebase/app keep two app registries -- a second,
- * unauthenticated app and Database instead of the one compat signs in. The
- * last #9 PR deletes compat and turns these into imports.
- */
-const { initializeApp, getApp, getApps } = require('firebase/app');
-const database_ = require('firebase/database');
-const { getAuth, signInWithCustomToken, signOut } = require('firebase/auth');
+import { initializeApp, getApp, getApps } from 'firebase/app';
+import { child, getDatabase, ref, refFromURL } from 'firebase/database';
+import { getAuth, signInWithCustomToken, signOut } from 'firebase/auth';
+
+export {
+  child,
+  endAt,
+  equalTo,
+  get,
+  limitToFirst,
+  limitToLast,
+  off,
+  onChildAdded,
+  onChildChanged,
+  onChildRemoved,
+  onDisconnect,
+  onValue,
+  orderByChild,
+  orderByKey,
+  push,
+  query,
+  remove,
+  serverTimestamp,
+  set,
+  setWithPriority,
+  startAt,
+  update,
+} from 'firebase/database';
 
 const databaseURL = process.env.FIREBASE_URL;
 
@@ -44,7 +62,7 @@ const app = getApps().length
       apiKey: process.env.FIREBASE_API_KEY,
     });
 
-const database = database_.getDatabase(app);
+const database = getDatabase(app);
 
 /**
  * A Reference into the client's database.
@@ -52,52 +70,32 @@ const database = database_.getDatabase(app);
  * `dbRef()` is the root, `dbRef('users/' + id)` a path under it. A full URL
  * (`process.env.FIREBASE_URL + 'users/' + id`, or a URL the server sent) is
  * accepted too; it must point into this database, as it had to under v2.
+ *
+ * Further arguments are child segments, each applied with `child()`:
+ * `dbRef('user-progression', userId, 'game-counter')` is what
+ * `new Firebase(url).child('user-progression').child(userId).child(...)` was,
+ * including the throw when a segment is undefined, where concatenating it
+ * into the path would quietly address `.../undefined/...` instead.
  */
-function dbRef(pathOrUrl?: string) {
-  if (pathOrUrl == null || pathOrUrl === '') return database_.ref(database);
-  if (/^https?:\/\//.test(pathOrUrl)) return database_.refFromURL(database, pathOrUrl);
-  return database_.ref(database, pathOrUrl);
+export function dbRef(pathOrUrl?: string, ...segments: string[]) {
+  let reference;
+  if (pathOrUrl == null || pathOrUrl === '') reference = ref(database);
+  else if (/^https?:\/\//.test(pathOrUrl)) reference = refFromURL(database, pathOrUrl);
+  else reference = ref(database, pathOrUrl);
+  for (const segment of segments) reference = child(reference, segment);
+  return reference;
 }
 
 /** The Database instance, for `goOffline` / `goOnline` and tests. */
-function getFirebaseDatabase() {
+export function getFirebaseDatabase() {
   return database;
 }
 
 /** Signs the RTDB connection in with the custom token the API minted. */
-function signInWithToken(token: string) {
+export function signInWithToken(token: string) {
   return signInWithCustomToken(getAuth(app), token);
 }
 
-function signOutOfFirebase() {
+export function signOutOfFirebase() {
   return signOut(getAuth(app));
 }
-
-module.exports = {
-  dbRef,
-  getFirebaseDatabase,
-  signInWithToken,
-  signOutOfFirebase,
-  child: database_.child,
-  endAt: database_.endAt,
-  equalTo: database_.equalTo,
-  get: database_.get,
-  limitToFirst: database_.limitToFirst,
-  limitToLast: database_.limitToLast,
-  off: database_.off,
-  onChildAdded: database_.onChildAdded,
-  onChildChanged: database_.onChildChanged,
-  onChildRemoved: database_.onChildRemoved,
-  onDisconnect: database_.onDisconnect,
-  onValue: database_.onValue,
-  orderByChild: database_.orderByChild,
-  orderByKey: database_.orderByKey,
-  push: database_.push,
-  query: database_.query,
-  remove: database_.remove,
-  serverTimestamp: database_.serverTimestamp,
-  set: database_.set,
-  setWithPriority: database_.setWithPriority,
-  startAt: database_.startAt,
-  update: database_.update,
-};

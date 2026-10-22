@@ -10,6 +10,7 @@
  */
 const whenLocalizationReady = require('../localization/index');
 const PromiseUtils = require('@duelyst/common/utils/utils_promise');
+const { dbRef, onValue } = require('../firebase');
 
 whenLocalizationReady.then(() => {
   const Logger = require('@duelyst/common/logger');
@@ -1127,22 +1128,24 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`),
         moment.utc().format('YYYY-MM-DD'),
       );
 
-      const dailyChallengeRef = new Firebase(
-        `${process.env.FIREBASE_URL}/daily-challenges/${dailyChallengeDateString}`,
+      const dailyChallengeRef = dbRef(`daily-challenges/${dailyChallengeDateString}`);
+      onValue(
+        dailyChallengeRef,
+        (dailyChallengeSnapshot) => {
+          if (dailyChallengeSnapshot == null || dailyChallengeSnapshot.val() == null) {
+            alert(`No challenge found for date provided: ${dailyChallengeDateString}`);
+          } else {
+            const dailyChallengeData = dailyChallengeSnapshot.val();
+            // Insert a date key on the daily challenge to identify it when marking as QA
+            dailyChallengeData.dateKey = dailyChallengeDateString;
+            SDK.ChallengeRemote.loadAndCreateFromModelData(dailyChallengeData).then((challenge) => {
+              challenge._generatedForQA = true;
+              return EventBus.getInstance().trigger(EVENTS.start_challenge, challenge);
+            });
+          }
+        },
+        { onlyOnce: true },
       );
-      return dailyChallengeRef.once('value', (dailyChallengeSnapshot) => {
-        if (dailyChallengeSnapshot == null || dailyChallengeSnapshot.val() == null) {
-          alert(`No challenge found for date provided: ${dailyChallengeDateString}`);
-        } else {
-          const dailyChallengeData = dailyChallengeSnapshot.val();
-          // Insert a date key on the daily challenge to identify it when marking as QA
-          dailyChallengeData.dateKey = dailyChallengeDateString;
-          SDK.ChallengeRemote.loadAndCreateFromModelData(dailyChallengeData).then((challenge) => {
-            challenge._generatedForQA = true;
-            return EventBus.getInstance().trigger(EVENTS.start_challenge, challenge);
-          });
-        }
-      });
     };
     qaChallengeButtons['Mark current daily challenge as passed QA'] = function () {
       const gameSession = SDK.GameSession.getInstance();
@@ -1195,11 +1198,9 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`),
         allDateKeys,
         (dateKey) =>
           new Promise((resolve, reject) => {
-            const dailyChallengeRef = new Firebase(
-              `${process.env.FIREBASE_URL}/daily-challenges/${dateKey}`,
-            );
-            dailyChallengeRef.once(
-              'value',
+            const dailyChallengeRef = dbRef(`daily-challenges/${dateKey}`);
+            onValue(
+              dailyChallengeRef,
               (dataSnapshot) => {
                 challengeResults[dateKey] = dataSnapshot.val();
                 return resolve({
@@ -1208,6 +1209,7 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`),
                 });
               },
               (error) => reject('fb error'),
+              { onlyOnce: true },
             );
           }),
       ).then((challengesData) => {
@@ -1938,35 +1940,37 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`),
       }
 
       return new Promise((resolve, reject) => {
-        const dailyChallengeRef = new Firebase(
-          `${process.env.FIREBASE_URL}/daily-challenges/${challengeDate}`,
-        );
-        dailyChallengeRef.once('value', (dailyChallengeSnapshot) => {
-          if (dailyChallengeSnapshot == null || dailyChallengeSnapshot.val() == null) {
-            // No existing challenge
-            return resolve(null);
-          }
-          const dailyChallengeData = dailyChallengeSnapshot.val();
-          const overwriteText = prompt(
-            'Daily challenge already exists for provided date:\n' +
-              `Date: ${moment.utc(challengeDate).format('YYYY-MM-DD')}\n` +
-              `Name: ${challengeName}\n` +
-              `Description: ${challengeDesc}\n` +
-              `Difficulty: ${challengeDiff}\n` +
-              `Instructions: ${challengeInstructions}\n` +
-              `Hint: ${challengeHint}\n` +
-              '\n' +
-              "Please enter 'overwrite' to overwrite that challenge...",
-            '',
-          );
+        const dailyChallengeRef = dbRef(`daily-challenges/${challengeDate}`);
+        onValue(
+          dailyChallengeRef,
+          (dailyChallengeSnapshot) => {
+            if (dailyChallengeSnapshot == null || dailyChallengeSnapshot.val() == null) {
+              // No existing challenge
+              return resolve(null);
+            }
+            const dailyChallengeData = dailyChallengeSnapshot.val();
+            const overwriteText = prompt(
+              'Daily challenge already exists for provided date:\n' +
+                `Date: ${moment.utc(challengeDate).format('YYYY-MM-DD')}\n` +
+                `Name: ${challengeName}\n` +
+                `Description: ${challengeDesc}\n` +
+                `Difficulty: ${challengeDiff}\n` +
+                `Instructions: ${challengeInstructions}\n` +
+                `Hint: ${challengeHint}\n` +
+                '\n' +
+                "Please enter 'overwrite' to overwrite that challenge...",
+              '',
+            );
 
-          if (overwriteText === 'overwrite') {
-            return resolve(dailyChallengeData);
-          }
-          return reject(
-            new Error('Chose not to overwrite existing daily challenge at provided date'),
-          );
-        });
+            if (overwriteText === 'overwrite') {
+              return resolve(dailyChallengeData);
+            }
+            return reject(
+              new Error('Chose not to overwrite existing daily challenge at provided date'),
+            );
+          },
+          { onlyOnce: true },
+        );
       })
         .then(() => {
           const confirmText = prompt(

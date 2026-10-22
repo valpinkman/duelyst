@@ -18,8 +18,7 @@ const userAgent = uaparser.getResult();
 //
 const App = new Backbone.Marionette.Application();
 
-// require Firebase via browserify but temporarily alias it global scope
-const Firebase = (window.Firebase = require('./firebase_compat'));
+const { dbRef, onValue } = require('./firebase');
 const moment = require('moment');
 const semver = require('semver');
 const querystring = require('query-string');
@@ -4984,9 +4983,7 @@ App.getMinBrowserVersions = function () {
     return Promise.resolve();
   }
   return new Promise((resolve, reject) => {
-    const minBrowserVersionRef = new Firebase(process.env.FIREBASE_URL)
-      .child('system-status')
-      .child('browsers');
+    const minBrowserVersionRef = dbRef('system-status/browsers');
 
     const defaults = {
       Chrome: 50,
@@ -4998,17 +4995,21 @@ App.getMinBrowserVersions = function () {
 
     // create a timeout to skip check in case Firebase lags (so atleast user does not get stuck on black screen)
     const minBrowserVersionTimeout = setTimeout(() => {
-      minBrowserVersionRef.off();
+      stopListening();
       return resolve(defaults);
     }, 5000);
 
-    minBrowserVersionRef.once('value', (snapshot) => {
-      clearTimeout(minBrowserVersionTimeout);
-      if (!snapshot.val()) {
-        return resolve(defaults);
-      }
-      return resolve(snapshot.val());
-    });
+    const stopListening = onValue(
+      minBrowserVersionRef,
+      (snapshot) => {
+        clearTimeout(minBrowserVersionTimeout);
+        if (!snapshot.val()) {
+          return resolve(defaults);
+        }
+        return resolve(snapshot.val());
+      },
+      { onlyOnce: true },
+    );
   });
 };
 
@@ -5193,28 +5194,30 @@ App.getMinBrowserVersions().then((supportedBrowsers) => {
     return App.glTestFailed();
   }
 
-  App.minVersionRef = new Firebase(process.env.FIREBASE_URL)
-    .child('system-status')
-    .child('minimum_version');
+  App.minVersionRef = dbRef('system-status/minimum_version');
 
   // wrap App.setup() in _.once() just to be safe from double calling
   App.setupOnce = _.once(App.setup);
 
   // create a timeout to skip version check in case Firebase lags (so atleast user does not get stuck on black screen)
   App.versionCheckTimeout = setTimeout(() => {
-    App.minVersionRef.off();
+    App.stopMinVersionCheck();
     return App.setupOnce();
   }, 5000);
 
   // read minimum version from Firebase and perform check, if fails, show error html
   // otherwise start application as normal
-  return App.minVersionRef.once('value', (snapshot) => {
-    clearTimeout(App.versionCheckTimeout);
-    if (!App.isVersionValid(snapshot.val())) {
-      return App.versionTestFailed();
-    }
-    return App.setupOnce();
-  });
+  App.stopMinVersionCheck = onValue(
+    App.minVersionRef,
+    (snapshot) => {
+      clearTimeout(App.versionCheckTimeout);
+      if (!App.isVersionValid(snapshot.val())) {
+        return App.versionTestFailed();
+      }
+      return App.setupOnce();
+    },
+    { onlyOnce: true },
+  );
 });
 
 function __guard__(value, transform) {

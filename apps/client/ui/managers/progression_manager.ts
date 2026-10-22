@@ -19,6 +19,7 @@ var Logger = require('@duelyst/common/logger');
 var SDK = require('@duelyst/sdk');
 var NotificationModel = require('../models/notification');
 var DuelystFirebase: DuelystFirebaseStatic = require('../extensions/duelyst_firebase');
+var { dbRef } = require('../../firebase');
 var DuelystBackbone: DuelystBackboneStatic = require('../extensions/duelyst_backbone');
 var Analytics = require('@duelyst/common/analytics');
 var ReferralDialogView = require('../views2/referrals/referral_dialog');
@@ -68,30 +69,22 @@ var ProgressionManager = Manager.extend({
         _self.unreadChallengeProgressionRewards = [];
 
         _self.gameCounterRewardsCollection = new DuelystFirebase.Collection(null, {
-          firebase: new Firebase(process.env.FIREBASE_URL)
-            .child('user-progression')
-            .child(userId)
-            .child('game-counter-rewards'),
+          firebase: dbRef('user-progression', userId, 'game-counter-rewards'),
         });
         neededToBeReady.push(_self.gameCounterRewardsCollection);
 
         _self.gameCounterModel = new DuelystFirebase.Model<GameCounterAttributes>(null, {
-          firebase: new Firebase(process.env.FIREBASE_URL)
-            .child('user-progression')
-            .child(userId)
-            .child('game-counter'),
+          firebase: dbRef('user-progression', userId, 'game-counter'),
         });
         neededToBeReady.push(_self.gameCounterModel);
 
         _self.bossesDefeatedCollection = new DuelystFirebase.Collection<BossDefeatedModel>(null, {
-          firebase: new Firebase(process.env.FIREBASE_URL)
-            .child('user-bosses-defeated')
-            .child(userId),
+          firebase: dbRef('user-bosses-defeated', userId),
         });
         neededToBeReady.push(_self.bossesDefeatedCollection);
 
         _self.bossEventsCollection = new DuelystFirebase.Collection<BossEventModel>(null, {
-          firebase: new Firebase(process.env.FIREBASE_URL).child('boss-events'),
+          firebase: dbRef('boss-events'),
         });
         _self.bossEventsCollection.comparator = 'event_start';
         neededToBeReady.push(_self.bossEventsCollection);
@@ -104,11 +97,7 @@ var ProgressionManager = Manager.extend({
             var factionProgressionModel = new DuelystFirebase.Model<FactionProgressionAttributes>(
               null,
               {
-                firebase: new Firebase(process.env.FIREBASE_URL)
-                  .child('user-faction-progression')
-                  .child(userId)
-                  .child(factionId)
-                  .child('stats'),
+                firebase: dbRef('user-faction-progression', userId, factionId, 'stats'),
               },
             );
             this._factionProgressionStats[factionId] = factionProgressionModel;
@@ -123,7 +112,7 @@ var ProgressionManager = Manager.extend({
         neededToBeReady.push(_self.challengeProgressionCollection);
 
         // this.challengeProgressionCollection = new DuelystFirebase.Model(null, {
-        //   firebase: new Firebase(process.env.FIREBASE_URL).child("user-challenge-progression").child(userId)
+        //   firebase: dbRef("user-challenge-progression", userId)
         // });
         // neededToBeReady.push(this.challengeProgressionCollection);
 
