@@ -407,6 +407,11 @@ type QuestAttributes = {
   mulliganed_at: number;
   is_unread: boolean;
   read_at: number;
+  /** server-set; read by the quest log's replace button and instructions */
+  is_replaceable?: boolean;
+  /** overrides the quest type's own name when set */
+  title?: string;
+  spirit_orbs?: number;
 };
 
 /**

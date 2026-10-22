@@ -25,6 +25,13 @@
  * no box (zero-sized container, content sized or positioned elsewhere): the
  * root is then asserted present and the child visible. `visibleDeclaredIn`
  * is the template that declares the child.
+ *
+ * `kind: 'Shell'` marks a Marionette shell around a Lit component
+ * (docs/BACKBONE_REMOVAL_PLAN.md §3.3, apps/client/ui/shells/). A shell's
+ * landmark is its own root, which renders even when the component never
+ * registered (an un-upgraded tag is not an error), so every shell also names
+ * a `visible` child that only the component renders, declared in the
+ * component's file.
  */
 
 const UI = 'apps/client/ui';
@@ -57,10 +64,15 @@ export const SCREENS = [
 
   // --- modals over the main menu -------------------------------------------
   {
-    name: 'QuestLogLayout',
-    file: `${UI}/views2/quests/quest_log_layout.ts`,
+    name: 'QuestLogShell',
+    kind: 'Shell',
+    file: `${UI}/shells/quest_log_shell.ts`,
     status: 'toured',
     landmark: '#quest-log',
+    // the shell renders #quest-log whether or not its Lit component ever
+    // registered; only <duelyst-quest-log> renders this child
+    visible: 'duelyst-quest-log .modal-dialog',
+    visibleDeclaredIn: `${UI}/components/quests/quest-log.ts`,
   },
   {
     name: 'ProfileLayout',
