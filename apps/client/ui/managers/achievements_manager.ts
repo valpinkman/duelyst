@@ -28,12 +28,14 @@ var ProfileManager = require('./profile_manager');
 var NotificationsManager = require('./notifications_manager');
 var Manager = require('./manager');
 var { requestJson } = require('@duelyst/common/request');
+var { dbRef, onChildAdded, orderByChild, query, startAt } = require('../../firebase');
 
 var AchievementsManager = Manager.extend({
   _unreadAchievementsQueue: null, // Queue of achievements to be displayed next time we reach main menu
   _achievementsStatusModel: null, // Tracks any global status about this user's achievements e.g. last_read_at
 
   _completedAchievementsRef: null, // Reference to completed achievements
+  _stopCompletedAchievementsListener: null,
 
   _completedAchievementsCollection: null, // Collection of a user's completed achievements
   _checkLoginAchievementsTimeout: null,
@@ -56,9 +58,7 @@ var AchievementsManager = Manager.extend({
         var username = ProfileManager.getInstance().get('username');
 
         _self._achievementsStatusModel = new DuelystFirebase.Model(null, {
-          firebase: new Firebase(
-            process.env.FIREBASE_URL + '/user-achievements/' + userId + '/status',
-          ),
+          firebase: dbRef('user-achievements/' + userId + '/status'),
         });
 
         _self._completedAchievementsCollection = new DuelystFirebase.Collection(null, {
@@ -73,13 +73,17 @@ var AchievementsManager = Manager.extend({
           function () {
             // listen to changes immediately so we don't miss anything
             // this.listenTo(this._achievementsModel, "change",this._onNewPlayerChange);
-            this._completedAchievementsRef = new Firebase(
-              process.env.FIREBASE_URL + '/user-achievements/' + userId,
-            ).child('completed');
-            this._completedAchievementsRef
-              .orderByChild('completed_at')
-              .startAt(this.getAchievementsLastReadAt())
-              .on('child_added', this._onNewCompletedAchievement.bind(this));
+            this._completedAchievementsRef = dbRef('user-achievements/' + userId + '/completed');
+            // compat's ref.off() never reached this listener, which is on a query
+            // of the ref, not on the ref itself; the unsubscribe does
+            this._stopCompletedAchievementsListener = onChildAdded(
+              query(
+                this._completedAchievementsRef,
+                orderByChild('completed_at'),
+                startAt(this.getAchievementsLastReadAt()),
+              ),
+              this._onNewCompletedAchievement.bind(this),
+            );
 
             return this._scheduleOrRequestLoginAchievements();
           }.bind(_self),
@@ -95,8 +99,9 @@ var AchievementsManager = Manager.extend({
 
   onBeforeDisconnect: function () {
     Manager.prototype.onBeforeDisconnect.call(this);
-    if (this._completedAchievementsRef) {
-      this._completedAchievementsRef.off();
+    if (this._stopCompletedAchievementsListener) {
+      this._stopCompletedAchievementsListener();
+      this._stopCompletedAchievementsListener = null;
     }
 
     this._clearLoginAchievementsTimeout();

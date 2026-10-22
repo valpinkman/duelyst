@@ -52,11 +52,20 @@ const database = database_.getDatabase(app);
  * `dbRef()` is the root, `dbRef('users/' + id)` a path under it. A full URL
  * (`process.env.FIREBASE_URL + 'users/' + id`, or a URL the server sent) is
  * accepted too; it must point into this database, as it had to under v2.
+ *
+ * Further arguments are child segments, each applied with `child()`:
+ * `dbRef('user-progression', userId, 'game-counter')` is what
+ * `new Firebase(url).child('user-progression').child(userId).child(...)` was,
+ * including the throw when a segment is undefined, where concatenating it
+ * into the path would quietly address `.../undefined/...` instead.
  */
-function dbRef(pathOrUrl?: string) {
-  if (pathOrUrl == null || pathOrUrl === '') return database_.ref(database);
-  if (/^https?:\/\//.test(pathOrUrl)) return database_.refFromURL(database, pathOrUrl);
-  return database_.ref(database, pathOrUrl);
+function dbRef(pathOrUrl?: string, ...segments: string[]) {
+  let reference;
+  if (pathOrUrl == null || pathOrUrl === '') reference = database_.ref(database);
+  else if (/^https?:\/\//.test(pathOrUrl)) reference = database_.refFromURL(database, pathOrUrl);
+  else reference = database_.ref(database, pathOrUrl);
+  for (const segment of segments) reference = database_.child(reference, segment);
+  return reference;
 }
 
 /** The Database instance, for `goOffline` / `goOnline` and tests. */

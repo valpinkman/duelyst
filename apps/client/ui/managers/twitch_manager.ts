@@ -18,6 +18,7 @@ var Logger = require('@duelyst/common/logger');
 var SDK = require('@duelyst/sdk');
 var NotificationModel = require('../models/notification');
 var DuelystFirebase = require('../extensions/duelyst_firebase');
+var { dbRef } = require('../../firebase');
 var DuelystBackbone = require('../extensions/duelyst_backbone');
 var Analytics = require('@duelyst/common/analytics');
 var AnalyticsTracker = require('../../analyticsTracker');
@@ -49,9 +50,7 @@ var TwitchManager = Manager.extend({
         var userId = ProfileManager.getInstance().get('id');
         var username = ProfileManager.getInstance().get('username');
         _self._twitchStatusModel = new DuelystFirebase.Model(null, {
-          firebase: new Firebase(
-            process.env.FIREBASE_URL + '/user-twitch-rewards/' + userId + '/status',
-          ),
+          firebase: dbRef('user-twitch-rewards/' + userId + '/status'),
         });
 
         _self._markAsReadyWhenModelsAndCollectionsSynced([_self._twitchStatusModel]);

@@ -33,6 +33,7 @@ var InstructionNode = require('../../../view/nodes/cards/InstructionNode');
 var Analytics = require('@duelyst/common/analytics');
 var moment = require('moment');
 var DuelystFirebase = require('../../extensions/duelyst_firebase');
+var { dbRef } = require('../../../firebase');
 var i18next = require('i18next');
 const Chroma = require('@duelyst/common/chroma');
 var GamePlayer2Layout = require('./game_player2');
@@ -706,7 +707,7 @@ var GameLayout = Backbone.Marionette.LayoutView.extend({
         myRibbonCollection = new Backbone.Collection();
       } else {
         myRibbonCollection = new DuelystFirebase.Collection(null, {
-          firebase: new Firebase(process.env.FIREBASE_URL).child('user-ribbons').child(myPlayerId),
+          firebase: dbRef('user-ribbons', myPlayerId),
         });
       }
       var myProfile;
@@ -714,10 +715,7 @@ var GameLayout = Backbone.Marionette.LayoutView.extend({
         myProfile = new Backbone.Model(ProfileManager.getInstance().profile.get('presence'));
       } else {
         myProfile = new DuelystFirebase.Model(null, {
-          firebase: new Firebase(process.env.FIREBASE_URL)
-            .child('users')
-            .child(myPlayerId)
-            .child('presence'),
+          firebase: dbRef('users', myPlayerId, 'presence'),
         });
       }
       if (gameSession.getPlayer2Id() === myPlayerId) {
@@ -746,16 +744,11 @@ var GameLayout = Backbone.Marionette.LayoutView.extend({
           opponentRibbonCollection = new Backbone.Collection();
         } else {
           opponentRibbonCollection = new DuelystFirebase.Collection(null, {
-            firebase: new Firebase(process.env.FIREBASE_URL)
-              .child('user-ribbons')
-              .child(opponentPlayerId),
+            firebase: dbRef('user-ribbons', opponentPlayerId),
           });
         }
         var opponentProfile = new DuelystFirebase.Model(null, {
-          firebase: new Firebase(process.env.FIREBASE_URL)
-            .child('users')
-            .child(opponentPlayerId)
-            .child('presence'),
+          firebase: dbRef('users', opponentPlayerId, 'presence'),
         });
         if (gameSession.getPlayer2Id() === opponentPlayerId) {
           allPromises.push(

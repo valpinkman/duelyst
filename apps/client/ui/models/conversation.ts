@@ -2,6 +2,7 @@
 
 var Messages = require('../collections/messages');
 var DuelystFirebase = require('../extensions/duelyst_firebase');
+var { dbRef, query, serverTimestamp, startAt } = require('../../firebase');
 var Logger = require('@duelyst/common/logger');
 var Analytics = require('@duelyst/common/analytics');
 var ChatManager = require('../managers/chat_manager');
@@ -11,7 +12,7 @@ var Conversation = Backbone.Model.extend({
   messages: null, // chat messages
 
   initialize: function (firebase) {
-    var messagesFb = new Firebase(this.get('firebaseURL')).child('messages').startAt(Date.now());
+    var messagesFb = query(dbRef(this.get('firebaseURL'), 'messages'), startAt(Date.now()));
     this.messages = new Messages(null, { firebase: messagesFb });
     this.listenTo(this.messages, 'add', this.onMessageReceived);
   },
@@ -26,8 +27,8 @@ var Conversation = Backbone.Model.extend({
         gameId: gameId,
         generalId: generalId,
         body: messageBody || 'check out my replay',
-        timestamp: Firebase.ServerValue.TIMESTAMP,
-        '.priority': Firebase.ServerValue.TIMESTAMP,
+        timestamp: serverTimestamp(),
+        '.priority': serverTimestamp(),
       });
 
       // analytics call
@@ -45,8 +46,8 @@ var Conversation = Backbone.Model.extend({
         fromId: ProfileManager.getInstance().get('id'),
         toId: buddyId,
         body: messageBody,
-        timestamp: Firebase.ServerValue.TIMESTAMP,
-        '.priority': Firebase.ServerValue.TIMESTAMP,
+        timestamp: serverTimestamp(),
+        '.priority': serverTimestamp(),
       });
 
       // analytics call

@@ -114,7 +114,7 @@ interface DuelystBackboneStatic {
 /* region apps/client/ui/extensions/duelyst_firebase.ts */
 
 interface DuelystFirebaseModel<A extends DuelystAttributes = any> extends DuelystModel<A> {
-  /** the `Firebase` reference the model is bound to (firebase_sync.ts) */
+  /** the database Reference (or Query) the model is bound to (firebase_sync.ts) */
   firebase: any;
   /** set when the server cancelled the read; onSyncOrReady() rejects with it */
   syncError: Error | null;

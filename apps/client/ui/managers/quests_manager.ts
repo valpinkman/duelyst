@@ -19,6 +19,7 @@ var Logger = require('@duelyst/common/logger');
 var SDK = require('@duelyst/sdk');
 var NotificationModel = require('../models/notification');
 var DuelystFirebase: DuelystFirebaseStatic = require('../extensions/duelyst_firebase');
+var { dbRef } = require('../../firebase');
 var DuelystBackbone: DuelystBackboneStatic = require('../extensions/duelyst_backbone');
 var Analytics = require('@duelyst/common/analytics');
 var AnalyticsTracker = require('../../analyticsTracker');
@@ -64,11 +65,8 @@ var QuestsManager = Manager.extend({
               // on first connect/session start request new daily quests
               this.requestNewDailyQuests().finally(
                 function () {
-                  var dailyquestsFirebaseReference = new Firebase(
-                    process.env.FIREBASE_URL +
-                      'user-quests/' +
-                      userId +
-                      '/daily/current/generated_at',
+                  var dailyquestsFirebaseReference = dbRef(
+                    'user-quests/' + userId + '/daily/current/generated_at',
                   );
                   this.dailyQuestsGeneratedAtModel = new DuelystFirebase.Model(null, {
                     firebase: dailyquestsFirebaseReference,
@@ -87,7 +85,7 @@ var QuestsManager = Manager.extend({
 
                   var dailyQuestsPath =
                     process.env.FIREBASE_URL + 'user-quests/' + userId + '/daily/current/quests';
-                  var dailyquestsFirebaseReference = new Firebase(dailyQuestsPath);
+                  var dailyquestsFirebaseReference = dbRef(dailyQuestsPath);
 
                   this.dailyQuestsCollection = new DuelystFirebase.Collection<QuestModel>(null, {
                     firebase: dailyquestsFirebaseReference,
@@ -313,9 +311,7 @@ var QuestsManager = Manager.extend({
 
   fetchDailyChallengeModel: function () {
     var dailyChallengeModel = new DuelystFirebase.Model(null, {
-      firebase: new Firebase(
-        process.env.FIREBASE_URL + 'daily-challenges/' + moment.utc().format('YYYY-MM-DD'),
-      ),
+      firebase: dbRef('daily-challenges/' + moment.utc().format('YYYY-MM-DD')),
     });
 
     return dailyChallengeModel.onSyncOrReady();

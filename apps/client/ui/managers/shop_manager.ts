@@ -13,7 +13,7 @@ _ShopManager.current = _ShopManager.getInstance;
 module.exports = _ShopManager;
 
 var _ = require('underscore');
-var Firebase = require('../../firebase_compat');
+var { dbRef, onChildAdded, orderByChild, query, startAt } = require('../../firebase');
 var Logger = require('@duelyst/common/logger');
 var DuelystFirebase = require('../extensions/duelyst_firebase');
 var DuelystBackbone = require('../extensions/duelyst_backbone');
@@ -46,17 +46,15 @@ var ShopManager = Manager.extend({
       .then(function () {
         var userId = ProfileManager.getInstance().get('id');
         _self.productPurchaseCountsModel = new DuelystFirebase.Model(null, {
-          firebase: new Firebase(process.env.FIREBASE_URL)
-            .child('user-purchase-counts')
-            .child(userId),
+          firebase: dbRef('user-purchase-counts', userId),
         });
 
-        _self._userPremiumReceiptsRef = new Firebase(process.env.FIREBASE_URL)
-          .child('user-premium-receipts')
-          .child(userId)
-          .orderByChild('created_at')
-          .startAt(moment().utc().valueOf());
-        _self._userPremiumReceiptsRef.on('child_added', _self._onUserReceiptAdded.bind(_self));
+        _self._userPremiumReceiptsRef = query(
+          dbRef('user-premium-receipts', userId),
+          orderByChild('created_at'),
+          startAt(moment().utc().valueOf()),
+        );
+        onChildAdded(_self._userPremiumReceiptsRef, _self._onUserReceiptAdded.bind(_self));
 
         // this._shopSalesCollection = new Firebase(process.env.FIREBASE_URL).child('shop-sales');
         // this._shopSalesCollection.on('child_added', this._onUserReceiptAdded.bind(this));
@@ -74,7 +72,7 @@ var ShopManager = Manager.extend({
         _self._premiumProductsModel.fetch();
 
         _self._shopSalesLastUpdatedAtModel = new DuelystFirebase.Model(null, {
-          firebase: new Firebase(process.env.FIREBASE_URL).child('shop-sales'),
+          firebase: dbRef('shop-sales'),
         });
 
         _self._markAsReadyWhenModelsAndCollectionsSynced([

@@ -15,7 +15,7 @@ var AnnouncementModalView = Backbone.Marionette.ItemView.extend({
   animateOut: Animations.fadeOut,
 
   onDestroy: function () {
-    var itemId = this.model.get('id') || this.model.firebase.key();
+    var itemId = this.model.get('id') || this.model.firebase.key;
     NewsManager.getInstance().markNewsItemAsRead(itemId);
   },
 

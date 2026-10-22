@@ -29,6 +29,7 @@ var CreditCardFormView = require('./credit_card_form');
 
 var Template = require('./templates/confirm_purchase_dialog.hbs');
 var { requestJson } = require('@duelyst/common/request');
+var { off } = require('../../../firebase');
 
 var ConfirmPurchaseDialogView = Backbone.Marionette.ItemView.extend({
   id: 'confirm_purchase_dialog',
@@ -186,7 +187,7 @@ var ConfirmPurchaseDialogView = Backbone.Marionette.ItemView.extend({
       // window.ipcRenderer.off('paypal-cancel', this.onCancelConfirmPurchase.bind(this))
     }
     if (this.paypalReceiptRef) {
-      this.paypalReceiptRef.off('child_added');
+      off(this.paypalReceiptRef, 'child_added');
     }
   },
 
