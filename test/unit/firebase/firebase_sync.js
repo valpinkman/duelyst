@@ -7,31 +7,34 @@
  * No network: the SDK applies writes to its local cache and raises events from
  * it, which is also how a synced model updates before the server answers in
  * the real client. Remote changes are played by writing to the same location
- * through a second ref; writes the binding makes are recorded by wrapping its
- * own ref's update()/set().
+ * through a second ref; writes the binding makes are recorded where it makes
+ * them, at the SDK functions it calls (FirebaseSync.sdk). A modular ref has no
+ * methods to wrap, and the test's own writes do not pass through there.
  */
 
 const { expect } = require('chai');
 
-const firebase = require('firebase/compat/app');
-require('firebase/compat/database');
-
 const DATABASE_URL = 'https://duelyst-firebase-sync-test-default-rtdb.firebaseio.com/';
-
-if (!firebase.apps.length) firebase.initializeApp({ databaseURL: DATABASE_URL });
-const database = firebase.database();
-database.goOffline();
+process.env.FIREBASE_URL = DATABASE_URL;
 
 global.window = global;
 global._ = require('underscore');
 global.Backbone = require('backbone');
-// mirror apps/client/firebase.ts
-global.Firebase = function (url) {
-  return database.refFromURL(url || DATABASE_URL);
-};
-global.Firebase.ServerValue = firebase.database.ServerValue;
 
+const {
+  child,
+  dbRef,
+  getFirebaseDatabase,
+  onValue,
+  remove,
+  set,
+  update,
+} = require('@duelyst/client/firebase');
+const { goOffline } = require('firebase/database');
+const FirebaseSync = require('@duelyst/client/ui/extensions/firebase_sync');
 const DuelystFirebase = require('@duelyst/client/ui/extensions/duelyst_firebase');
+
+goOffline(getFirebaseDatabase());
 
 let pathCounter = 0;
 function freshUrl() {
@@ -39,27 +42,58 @@ function freshUrl() {
   return DATABASE_URL + 'firebase-sync/' + pathCounter;
 }
 
+/*
+ * Every SDK call the binding makes is applied as usual and then shown to the
+ * observers: observe(fn) has fn(method, ref, args, result) called for each,
+ * and a fn returning something other than undefined replaces the result.
+ */
+const observers = [];
+function observe(fn) {
+  observers.push(fn);
+}
+['update', 'set', 'remove', 'onValue'].forEach((method) => {
+  const original = FirebaseSync.sdk[method];
+  FirebaseSync.sdk[method] = function (ref) {
+    const args = Array.prototype.slice.call(arguments, 1);
+    let result = original.apply(this, arguments);
+    observers.forEach((fn) => {
+      const replaced = fn(method, ref, args, result);
+      if (replaced !== undefined) result = replaced;
+    });
+    return result;
+  };
+});
+
+function sameLocation(a, b) {
+  return a != null && b != null && a.toString() === b.toString();
+}
+
+function snapshotOf(value) {
+  return value == null ? null : JSON.parse(JSON.stringify(value));
+}
+
 // a ref whose writes are recorded (and still applied)
 function recordingRef(url) {
-  const ref = new global.Firebase(url || freshUrl());
+  const ref = dbRef(url || freshUrl());
   const writes = [];
-  ['update', 'set'].forEach((method) => {
-    const original = ref[method];
-    ref[method] = function (value) {
-      writes.push({ method, value: value === null ? null : JSON.parse(JSON.stringify(value)) });
-      return original.apply(this, arguments);
-    };
+  observe((method, target, args) => {
+    if ((method === 'update' || method === 'set') && sameLocation(target, ref)) {
+      writes.push({ method, value: snapshotOf(args[0]) });
+    }
   });
   return { ref, writes };
 }
 
 // another client's view of the same location
 function remote(ref) {
-  return new global.Firebase(ref.toString());
+  return dbRef(ref.toString());
 }
 
-async function stored(ref) {
-  return (await ref.once('value')).val();
+// what is stored at a location, from the SDK's local cache (compat's once('value'))
+function stored(ref) {
+  return new Promise((resolve) =>
+    onValue(ref, (snapshot) => resolve(snapshot.val()), { onlyOnce: true }),
+  );
 }
 
 describe('firebase_sync Model read', () => {
@@ -69,9 +103,9 @@ describe('firebase_sync Model read', () => {
     let syncs = 0;
     model.on('sync', () => (syncs += 1));
 
-    remote(ref).set({ a: 1, b: { c: 2 } });
+    set(remote(ref), { a: 1, b: { c: 2 } });
     expect(model.toJSON()).to.deep.equal({ a: 1, b: { c: 2 } });
-    remote(ref).update({ a: 3 });
+    update(remote(ref), { a: 3 });
     expect(model.get('a')).to.equal(3);
     expect(syncs).to.equal(2);
   });
@@ -79,10 +113,10 @@ describe('firebase_sync Model read', () => {
   it('expect keys the server dropped to be unset, except _-prefixed ones (item 2)', () => {
     const { ref } = recordingRef();
     const model = new DuelystFirebase.Model(null, { firebase: ref });
-    remote(ref).set({ a: 1, b: 2 });
+    set(remote(ref), { a: 1, b: 2 });
     model.set('_active', true);
 
-    remote(ref).set({ a: 1 });
+    set(remote(ref), { a: 1 });
     expect(model.has('b')).to.equal(false);
     expect(model.get('_active')).to.equal(true);
   });
@@ -90,8 +124,8 @@ describe('firebase_sync Model read', () => {
   it('expect a cached first value to make the model ready inside its constructor (item 4)', async () => {
     const { ref } = recordingRef();
     // a listener on the path puts its value in the SDK cache
-    ref.on('value', () => {});
-    ref.set({ a: 1 });
+    onValue(ref, () => {});
+    set(ref, { a: 1 });
 
     const model = new DuelystFirebase.Model(null, { firebase: remote(ref) });
     expect(model.isSynced).to.equal(true);
@@ -102,13 +136,13 @@ describe('firebase_sync Model read', () => {
   it('expect a deleted or scalar node to leave the attributes as they were (items 5, 6)', () => {
     const { ref } = recordingRef();
     const model = new DuelystFirebase.Model(null, { firebase: ref });
-    remote(ref).set({ a: 1 });
+    set(remote(ref), { a: 1 });
     let syncs = 0;
     model.on('sync', () => (syncs += 1));
 
-    remote(ref).set(null);
+    set(remote(ref), null);
     expect(model.toJSON()).to.deep.equal({ a: 1 });
-    remote(ref).set('hello');
+    set(remote(ref), 'hello');
     expect(model.toJSON()).to.deep.equal({ a: 1 });
     expect(syncs).to.equal(2);
   });
@@ -118,7 +152,7 @@ describe('firebase_sync Model write', () => {
   it('expect set() to write a shallow update of what it changed (item 7)', () => {
     const { ref, writes } = recordingRef();
     const model = new DuelystFirebase.Model(null, { firebase: ref });
-    remote(ref).set({ a: 1, nested: { x: 1, y: 2 } });
+    set(remote(ref), { a: 1, nested: { x: 1, y: 2 } });
 
     model.set({ a: 2, nested: { x: 1 } });
     model.set('b', 'two');
@@ -157,16 +191,16 @@ describe('firebase_sync Model write', () => {
     // a change handler that itself sets, as Profile.onSync does
     model.on('change:a', () => model.set('derived', model.get('a') * 2));
 
-    remote(ref).set({ a: 1, gone: 1 });
-    remote(ref).set({ a: 2 });
+    set(remote(ref), { a: 1, gone: 1 });
+    set(remote(ref), { a: 2 });
     expect(model.get('derived')).to.equal(4);
     expect(writes).to.deep.equal([]);
   });
 
   it('expect one set() on a cached path to write once, not twice (item 11, fixed)', () => {
     const { ref } = recordingRef();
-    ref.on('value', () => {});
-    ref.set({ a: 1 });
+    onValue(ref, () => {});
+    set(ref, { a: 1 });
 
     const { ref: second, writes } = recordingRef(ref.toString());
     const model = new DuelystFirebase.Model(null, { firebase: second });
@@ -184,7 +218,7 @@ describe('firebase_sync Model write', () => {
     const model = new Settings(null, { firebase: ref });
 
     // the server stores the account half and one setting
-    remote(ref).set({ id: 42, username: 'someone', volume: 0.8 });
+    set(remote(ref), { id: 42, username: 'someone', volume: 0.8 });
     expect(model.toJSON()).to.deep.equal({
       id: 42,
       username: 'someone',
@@ -192,7 +226,7 @@ describe('firebase_sync Model write', () => {
       theme: 'dark',
     });
     // and a later snapshot still lacks the default: it is refilled, not unset
-    remote(ref).update({ volume: 0.9 });
+    update(remote(ref), { volume: 0.9 });
     expect(model.get('theme')).to.equal('dark');
     expect(writes).to.deep.equal([]);
     expect(await stored(remote(ref))).to.deep.equal({ id: 42, username: 'someone', volume: 0.9 });
@@ -212,7 +246,7 @@ describe('firebase_sync Model write', () => {
 
   it('expect destroy() to delete the node and fire destroy, with or without options (item 14)', async () => {
     const { ref, writes } = recordingRef();
-    ref.set({ status: 'sent' });
+    set(ref, { status: 'sent' });
     writes.length = 0;
     const model = new DuelystFirebase.Model(null, { firebase: ref });
     let destroyed = 0;
@@ -235,16 +269,16 @@ describe('firebase_sync Model write', () => {
     // revokes a listener still attached and the cancel is reported as an error
     const { ref } = recordingRef();
     const calls = [];
-    const off = ref.off;
-    ref.off = function () {
-      calls.push(['off', arguments[0]]);
-      return off.apply(this, arguments);
-    };
-    const set = ref.set;
-    ref.set = function (value) {
-      calls.push(['set', value]);
-      return set.apply(this, arguments);
-    };
+    observe((method, target, args, result) => {
+      if (!sameLocation(target, ref)) return undefined;
+      if (method === 'set') calls.push(['set', args[0]]);
+      if (method !== 'onValue') return undefined;
+      // the modular SDK's off() for a listener is the function onValue returned
+      return function () {
+        calls.push(['off', 'value']);
+        return result.apply(this, arguments);
+      };
+    });
     const model = new DuelystFirebase.Model(null, { firebase: ref });
 
     model.destroy({});
@@ -252,20 +286,18 @@ describe('firebase_sync Model write', () => {
       ['off', 'value'],
       ['set', null],
     ]);
-    remote(ref).set({ status: 'sent' });
+    set(remote(ref), { status: 'sent' });
     expect(model.has('status')).to.equal(false);
   });
 
   it('expect a refused write to be reported (item 28)', async () => {
     const refused = new Error('permission_denied');
-    const fakeRef = {
-      on: () => {},
-      off: () => {},
-      child: () => fakeRef,
-      update: () => Promise.reject(refused),
-      toString: () => 'https://example/users/me',
-    };
-    const model = new DuelystFirebase.Model(null, { firebase: fakeRef });
+    const ref = dbRef(DATABASE_URL + 'users/me');
+    // the server refuses every update at this location
+    observe((method, target) =>
+      method === 'update' && sameLocation(target, ref) ? Promise.reject(refused) : undefined,
+    );
+    const model = new DuelystFirebase.Model(null, { firebase: ref });
 
     const original = console.error;
     const logged = [];
@@ -279,15 +311,15 @@ describe('firebase_sync Model write', () => {
       console.error = original;
     }
     expect(logged).to.deep.equal([
-      ['Firebase write failed: update https://example/users/me:', refused],
+      ['Firebase write failed: update ' + DATABASE_URL + 'users/me:', refused],
     ]);
   });
 });
 
 describe('firebase_sync Collection read', () => {
   it('expect children before sync, and sync exactly once (item 15)', async () => {
-    const seed = new global.Firebase(freshUrl());
-    seed.set({ b: { v: 2 }, a: { v: 1 } });
+    const seed = dbRef(freshUrl());
+    set(seed, { b: { v: 2 }, a: { v: 1 } });
 
     let syncs = 0;
     const lengthsAtSync = [];
@@ -302,7 +334,7 @@ describe('firebase_sync Collection read', () => {
     });
     const collection = new Counted(null, { firebase: remote(seed) });
     await collection.onSyncOrReady();
-    seed.child('c').set({ v: 3 });
+    set(child(seed, 'c'), { v: 3 });
     await new Promise((resolve) => setTimeout(resolve, 0));
     expect(syncs).to.equal(1);
     expect(lengthsAtSync).to.deep.equal([2]);
@@ -310,8 +342,8 @@ describe('firebase_sync Collection read', () => {
   });
 
   it('expect a member id to be its stored id, else its key, and sorted on it (items 16, 20)', async () => {
-    const ref = new global.Firebase(freshUrl());
-    ref.set({ k2: { v: 2 }, k1: { v: 1, id: 'stored-id' }, k0: { v: 0 } });
+    const ref = dbRef(freshUrl());
+    set(ref, { k2: { v: 2 }, k1: { v: 1, id: 'stored-id' }, k0: { v: 0 } });
     const collection = new DuelystFirebase.Collection(null, { firebase: ref });
     await collection.onSyncOrReady();
 
@@ -320,30 +352,30 @@ describe('firebase_sync Collection read', () => {
   });
 
   it('expect remote changes and removes to be applied, keeping _ keys (items 15, 29)', async () => {
-    const ref = new global.Firebase(freshUrl());
-    ref.set({ m: { a: 1, b: 2 } });
+    const ref = dbRef(freshUrl());
+    set(ref, { m: { a: 1, b: 2 } });
     const collection = new DuelystFirebase.Collection(null, { firebase: ref });
     await collection.onSyncOrReady();
     const member = collection.get('m');
     member.set('_selected', true);
 
-    remote(ref).child('m').set({ a: 5 });
+    set(child(remote(ref), 'm'), { a: 5 });
     expect(member.toJSON()).to.deep.equal({ id: 'm', a: 5, _selected: true });
-    remote(ref).child('m').remove();
+    remove(child(remote(ref), 'm'));
     expect(collection.length).to.equal(0);
   });
 
   it('expect a scalar child to arrive as {id}, as it did under backfire (item 18)', async () => {
-    const ref = new global.Firebase(freshUrl());
-    ref.set({ count: 5 });
+    const ref = dbRef(freshUrl());
+    set(ref, { count: 5 });
     const collection = new DuelystFirebase.Collection(null, { firebase: ref });
     await collection.onSyncOrReady();
     expect(collection.toJSON()).to.deep.equal([{ id: 'count' }]);
   });
 
   it('expect child_changed for an absent member not to throw (item 19, fixed)', async () => {
-    const ref = new global.Firebase(freshUrl());
-    ref.set({ m: { a: 1 } });
+    const ref = dbRef(freshUrl());
+    set(ref, { m: { a: 1 } });
     const collection = new DuelystFirebase.Collection(null, { firebase: ref });
     await collection.onSyncOrReady();
     // removed locally only, which is how backfire's throw was reachable
@@ -353,7 +385,7 @@ describe('firebase_sync Collection read', () => {
     const warned = [];
     console.warn = (message) => warned.push(message);
     try {
-      expect(() => remote(ref).child('m').update({ a: 2 })).to.not.throw();
+      expect(() => update(child(remote(ref), 'm'), { a: 2 })).to.not.throw();
     } finally {
       console.warn = original;
     }
@@ -362,8 +394,8 @@ describe('firebase_sync Collection read', () => {
   });
 
   it('expect a local add/remove/reset to write nothing', async () => {
-    const ref = new global.Firebase(freshUrl());
-    ref.set({ m: { a: 1 } });
+    const ref = dbRef(freshUrl());
+    set(ref, { m: { a: 1 } });
     const collection = new DuelystFirebase.Collection(null, { firebase: ref });
     await collection.onSyncOrReady();
 
@@ -377,19 +409,14 @@ describe('firebase_sync Collection read', () => {
 describe('firebase_sync Collection member writes', () => {
   // a collection whose member writes are recorded, keyed by child
   async function syncedCollection(seed) {
-    const ref = new global.Firebase(freshUrl());
-    ref.set(seed);
+    const ref = dbRef(freshUrl());
+    set(ref, seed);
     const writes = [];
-    const child = ref.child.bind(ref);
-    ref.child = (key) => {
-      const childRef = child(key);
-      const update = childRef.update.bind(childRef);
-      childRef.update = (value) => {
-        writes.push({ key, value: JSON.parse(JSON.stringify(value)) });
-        return update(value);
-      };
-      return childRef;
-    };
+    observe((method, target, args) => {
+      if (method === 'update' && sameLocation(target.parent, ref)) {
+        writes.push({ key: target.key, value: snapshotOf(args[0]) });
+      }
+    });
     const collection = new DuelystFirebase.Collection(null, { firebase: ref });
     await collection.onSyncOrReady();
     return { ref, collection, writes };
@@ -432,7 +459,7 @@ describe('firebase_sync Collection member writes', () => {
   it('expect remote changes not to be written back', async () => {
     const { ref, collection, writes } = await syncedCollection({ c: { a: 1, b: 2 } });
     collection.get('c').on('change:a', (member) => member.set('_seen', true));
-    remote(ref).child('c').set({ a: 2 });
+    set(child(remote(ref), 'c'), { a: 2 });
     expect(collection.get('c').get('a')).to.equal(2);
     expect(writes).to.deep.equal([]);
   });
@@ -440,7 +467,7 @@ describe('firebase_sync Collection member writes', () => {
   it('expect a member removed from the collection to stop writing (as backfire)', async () => {
     const { ref, collection, writes } = await syncedCollection({ invite: { status: 'sent' } });
     const member = collection.get('invite');
-    remote(ref).child('invite').remove();
+    remove(child(remote(ref), 'invite'));
 
     member.set('status', 'rejected');
     expect(writes).to.deep.equal([]);

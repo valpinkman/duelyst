@@ -7,7 +7,7 @@ var UtilsEnv = require('@duelyst/common/utils/utils_env');
 var GameDataManager = require('../managers/game_data_manager');
 var ProgressionManager = require('../managers/progression_manager');
 var CardsCollection = require('../collections/cards');
-var Firebase = require('../../firebase');
+var Firebase = require('../../firebase_compat');
 var i18next = require('i18next');
 
 var DeckModel = Backbone.Model.extend({

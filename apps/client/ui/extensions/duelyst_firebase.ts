@@ -154,7 +154,7 @@ function childKey(memberOrKey) {
 
 function addChild(collection, key, attributes) {
   FirebaseSync.write(
-    collectionRef(collection).child(key),
+    FirebaseSync.sdk.child(collectionRef(collection), key),
     'set',
     _.extend({}, attributes, { id: key }),
   );
@@ -163,11 +163,14 @@ function addChild(collection, key, attributes) {
 
 /* mints a push key for the new child, as backfire's create() did */
 function pushChild(collection, attributes) {
-  return addChild(collection, collectionRef(collection).push().key, attributes);
+  return addChild(collection, FirebaseSync.sdk.push(collectionRef(collection)).key, attributes);
 }
 
 function removeChild(collection, memberOrKey) {
-  FirebaseSync.write(collectionRef(collection).child(childKey(memberOrKey)), 'remove');
+  FirebaseSync.write(
+    FirebaseSync.sdk.child(collectionRef(collection), childKey(memberOrKey)),
+    'remove',
+  );
 }
 
 /*

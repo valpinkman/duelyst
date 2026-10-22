@@ -12,7 +12,7 @@ module.exports = _ProfileManager;
 
 var Logger = require('@duelyst/common/logger');
 var Profile: ProfileModelConstructor = require('../models/profile');
-var Firebase = require('../../firebase');
+var { off } = require('../../firebase');
 var Manager = require('./manager');
 
 var ProfileManager = Manager.extend({
@@ -37,7 +37,8 @@ var ProfileManager = Manager.extend({
   onBeforeDisconnect: function () {
     Manager.prototype.onBeforeDisconnect.call(this);
     this.userId = null;
-    this.profile.firebase.off();
+    // the binding built a modular ref from the URL: off() is a free function
+    off(this.profile.firebase);
     this.profile = null;
   },
 

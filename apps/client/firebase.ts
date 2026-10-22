@@ -1,25 +1,28 @@
 /*
- * The client's Firebase entry point (plan 9.3).
+ * The client's Firebase entry point, on the modular SDK (#9).
  *
- * The game was written against firebase@2.0.3 (2015), whose API is a global
- * `Firebase` constructor: `new Firebase(url)` returns a ref, and every data
- * method hangs off it. Nothing past 2.x works that way.
+ * The game was written against firebase@2.0.3 (2015), whose API was a global
+ * `Firebase` constructor with every data method hanging off the ref. The
+ * modular SDK has no methods on a ref at all: a ref is a value, and the
+ * operations are free functions that take it (`onValue(ref, cb)`,
+ * `update(ref, value)`, `child(ref, path)`). Only those functions are
+ * bundled, which is what the compat entry points could not offer.
  *
- * This module bridges the two. It initialises firebase@12 through its `compat`
- * entry points, whose ref API is byte-for-byte what the v2 code already calls
- * (`child`, `on`, `once`, `set`, `update`, `push`, `remove`, `orderByChild`,
- * `startAt`, `onDisconnect`), and re-exposes it in the shape the existing code
- * expects. That keeps ~50 `new Firebase(url)` call sites working untouched
- * instead of rewriting them all in one commit.
- *
- * `compat` is a staging post, not the destination: it exists so the SDK can be
- * modern and patched now, with a later step to move call sites onto the tree-
- * shakeable modular API. The parts that genuinely could not be bridged - the
- * auth handshake, and the three renamed methods - are changed at the call site.
+ * This module initialises the app once and hands out refs. The free functions
+ * the client uses are re-exported from here, and nothing else in the client
+ * loads `firebase/*`: one entry point, so one copy of the SDK in the bundle,
+ * and the Firebase surface the client depends on listed in one place.
  */
-const firebase = require('firebase/compat/app');
-require('firebase/compat/database');
-require('firebase/compat/auth');
+/*
+ * require(), not import, while firebase_compat.ts still exists: compat loads
+ * the SDK's CommonJS build, an `import` would bundle its ESM build beside it,
+ * and two copies of @firebase/app keep two app registries -- a second,
+ * unauthenticated app and Database instead of the one compat signs in. The
+ * last #9 PR deletes compat and turns these into imports.
+ */
+const { initializeApp, getApp, getApps } = require('firebase/app');
+const database_ = require('firebase/database');
+const { getAuth, signInWithCustomToken, signOut } = require('firebase/auth');
 
 const databaseURL = process.env.FIREBASE_URL;
 
@@ -30,43 +33,71 @@ const databaseURL = process.env.FIREBASE_URL;
  * Without it every sign-in fails with `auth/invalid-api-key` - and it fails
  * before any network call, so nothing shows up in the network log.
  *
- * The v2 SDK never needed it: legacy tokens were validated by the RTDB itself
- * and Identity Toolkit was not involved at all.
- *
  * It is NOT a secret. The web API key identifies the project, ships in every
  * Firebase web client, and grants nothing on its own - access is controlled by
  * the security rules.
  */
-if (!firebase.apps.length) {
-  firebase.initializeApp({
-    databaseURL,
-    apiKey: process.env.FIREBASE_API_KEY,
-  });
-}
+const app = getApps().length
+  ? getApp()
+  : initializeApp({
+      databaseURL,
+      apiKey: process.env.FIREBASE_API_KEY,
+    });
+
+const database = database_.getDatabase(app);
 
 /**
- * Drop-in for the v2 global `Firebase` constructor.
+ * A Reference into the client's database.
  *
- * v2: `new Firebase('https://x.firebaseio.com/some/path')` -> ref
- * v9+: `firebase.database().refFromURL(...)` -> the same ref
- *
- * A constructor that returns an object yields that object, so `new Firebase(u)`
- * keeps working at every existing call site. Called without `new` it behaves
- * identically, which some call sites rely on.
+ * `dbRef()` is the root, `dbRef('users/' + id)` a path under it. A full URL
+ * (`process.env.FIREBASE_URL + 'users/' + id`, or a URL the server sent) is
+ * accepted too; it must point into this database, as it had to under v2.
  */
-function FirebaseRef(url) {
-  return firebase.database().refFromURL(url || databaseURL);
+function dbRef(pathOrUrl?: string) {
+  if (pathOrUrl == null || pathOrUrl === '') return database_.ref(database);
+  if (/^https?:\/\//.test(pathOrUrl)) return database_.refFromURL(database, pathOrUrl);
+  return database_.ref(database, pathOrUrl);
 }
 
-// v2 exposed these as statics on the constructor; compat moved them onto the
-// database namespace. Re-attached so `Firebase.ServerValue.TIMESTAMP` (15 call
-// sites) resolves unchanged.
-FirebaseRef.ServerValue = firebase.database.ServerValue;
+/** The Database instance, for `goOffline` / `goOnline` and tests. */
+function getFirebaseDatabase() {
+  return database;
+}
 
-/** The compat auth instance, for signInWithCustomToken / signOut. */
-FirebaseRef.auth = () => firebase.auth();
+/** Signs the RTDB connection in with the custom token the API minted. */
+function signInWithToken(token: string) {
+  return signInWithCustomToken(getAuth(app), token);
+}
 
-/** Escape hatch for code that needs the namespace itself. */
-FirebaseRef.app = firebase;
+function signOutOfFirebase() {
+  return signOut(getAuth(app));
+}
 
-module.exports = FirebaseRef;
+module.exports = {
+  dbRef,
+  getFirebaseDatabase,
+  signInWithToken,
+  signOutOfFirebase,
+  child: database_.child,
+  endAt: database_.endAt,
+  equalTo: database_.equalTo,
+  get: database_.get,
+  limitToFirst: database_.limitToFirst,
+  limitToLast: database_.limitToLast,
+  off: database_.off,
+  onChildAdded: database_.onChildAdded,
+  onChildChanged: database_.onChildChanged,
+  onChildRemoved: database_.onChildRemoved,
+  onDisconnect: database_.onDisconnect,
+  onValue: database_.onValue,
+  orderByChild: database_.orderByChild,
+  orderByKey: database_.orderByKey,
+  push: database_.push,
+  query: database_.query,
+  remove: database_.remove,
+  serverTimestamp: database_.serverTimestamp,
+  set: database_.set,
+  setWithPriority: database_.setWithPriority,
+  startAt: database_.startAt,
+  update: database_.update,
+};

@@ -14,36 +14,41 @@
 
 const { expect } = require('chai');
 
-const firebase = require('firebase/compat/app');
-require('firebase/compat/database');
-
 const DATABASE_URL = 'https://duelyst-collection-writes-test-default-rtdb.firebaseio.com/';
-
-if (!firebase.apps.length) firebase.initializeApp({ databaseURL: DATABASE_URL });
-const database = firebase.database();
-database.goOffline();
+process.env.FIREBASE_URL = DATABASE_URL;
 
 global.window = global;
 global._ = require('underscore');
 global.Backbone = require('backbone');
-// mirror apps/client/firebase.ts
-global.Firebase = function (url) {
-  return database.refFromURL(url || DATABASE_URL);
-};
-global.Firebase.ServerValue = firebase.database.ServerValue;
 
+const {
+  child,
+  dbRef,
+  getFirebaseDatabase,
+  limitToLast,
+  onValue,
+  query,
+  set,
+  startAt,
+} = require('@duelyst/client/firebase');
+const { goOffline } = require('firebase/database');
+goOffline(getFirebaseDatabase());
+
+const FirebaseSync = require('@duelyst/client/ui/extensions/firebase_sync');
 const DuelystFirebase = require('@duelyst/client/ui/extensions/duelyst_firebase');
 const Message = require('@duelyst/client/ui/models/message');
 
 let pathCounter = 0;
 function freshRef() {
   pathCounter += 1;
-  return new global.Firebase(DATABASE_URL + 'collection-writes/' + pathCounter);
+  return dbRef(DATABASE_URL + 'collection-writes/' + pathCounter);
 }
 
-// value and priority of a node, from the SDK's local cache
-async function stored(ref) {
-  return (await ref.once('value')).exportVal();
+// value and priority of a node, from the SDK's local cache (compat's once('value'))
+function stored(ref) {
+  return new Promise((resolve) =>
+    onValue(ref, (snapshot) => resolve(snapshot.exportVal()), { onlyOnce: true }),
+  );
 }
 
 function messageAttributes() {
@@ -62,11 +67,11 @@ describe('DuelystFirebase collection writes', () => {
   it('expect pushChild to store what backfire create() stored', async () => {
     const MessagesCollection = DuelystFirebase.Collection.extend({ model: Message });
     const ref = freshRef();
-    const messages = new MessagesCollection(null, { firebase: ref.startAt(0) });
+    const messages = new MessagesCollection(null, { firebase: query(ref, startAt(0)) });
     const key = DuelystFirebase.pushChild(messages, new Message(messageAttributes()).toJSON());
 
     // the minted key stored as `id`, and the priority
-    expect(await stored(ref.child(key))).to.deep.equal(
+    expect(await stored(child(ref, key))).to.deep.equal(
       Object.assign({ id: key }, messageAttributes()),
     );
   });
@@ -81,19 +86,19 @@ describe('DuelystFirebase collection writes', () => {
       new MessagesCollection(null, { firebase: ref }),
       new Message(Object.assign({}, attributes)).toJSON(),
     );
-    expect((await stored(ref.child(key))).body).to.equal('<body>');
+    expect((await stored(child(ref, key))).body).to.equal('<body>');
   });
 
   it('expect addChild to store what backfire add() stored', async () => {
     const ref = freshRef();
     const returned = DuelystFirebase.addChild(
-      new DuelystFirebase.Collection(null, { firebase: ref.limitToLast(20) }),
+      new DuelystFirebase.Collection(null, { firebase: query(ref, limitToLast(20)) }),
       'news-1',
       { read_at: 1700000000000, '.priority': 1600000000000 },
     );
 
     expect(returned).to.equal('news-1');
-    expect(await stored(ref.child('news-1'))).to.deep.equal({
+    expect(await stored(child(ref, 'news-1'))).to.deep.equal({
       id: 'news-1',
       read_at: 1700000000000,
       '.priority': 1600000000000,
@@ -102,15 +107,15 @@ describe('DuelystFirebase collection writes', () => {
 
   it('expect removeChild to delete the member it is given, and only it', async () => {
     const ref = freshRef();
-    ref.child('invite-1').set({ id: 'invite-1', fromName: 'someone', status: 'pending' });
-    ref.child('invite-2').set({ id: 'invite-2' });
+    set(child(ref, 'invite-1'), { id: 'invite-1', fromName: 'someone', status: 'pending' });
+    set(child(ref, 'invite-2'), { id: 'invite-2' });
     // offline, two child writes do not make the parent complete enough to
     // sync, but its children are delivered from the cache all the same
     const invites = new DuelystFirebase.Collection(null, { firebase: ref });
 
     DuelystFirebase.removeChild(invites, invites.get('invite-1'));
-    expect(await stored(ref.child('invite-1'))).to.equal(null);
-    expect(await stored(ref.child('invite-2'))).to.deep.equal({ id: 'invite-2' });
+    expect(await stored(child(ref, 'invite-1'))).to.equal(null);
+    expect(await stored(child(ref, 'invite-2'))).to.deep.equal({ id: 'invite-2' });
     expect(invites.pluck('id')).to.deep.equal(['invite-2']);
 
     // a key works too
@@ -141,20 +146,23 @@ describe('DuelystFirebase collection writes', () => {
   it('expect a refused write to be reported', async () => {
     const refused = new Error('permission_denied');
     const writes = [];
-    const child = {
-      set: (value) => {
-        writes.push(value);
-        return Promise.reject(refused);
-      },
-      remove: () => {
-        writes.push(null);
-        return Promise.reject(refused);
-      },
-      toString: () => 'https://example/x',
+    const ref = freshRef();
+    const target = child(ref, 'x');
+    // the server refuses every write to `x`, and push() mints that key
+    const sdk = Object.assign({}, FirebaseSync.sdk);
+    FirebaseSync.sdk.push = () => ({ key: 'x' });
+    FirebaseSync.sdk.set = function (at, value) {
+      if (at.toString() !== target.toString()) return sdk.set.apply(this, arguments);
+      writes.push(value);
+      return Promise.reject(refused);
     };
-    const fakeRef = { child: () => child, push: () => ({ key: 'pushed' }) };
-    // a query: no child() of its own, its Reference under `.ref`
-    const collection = { firebase: { ref: fakeRef } };
+    FirebaseSync.sdk.remove = function (at) {
+      if (at.toString() !== target.toString()) return sdk.remove.apply(this, arguments);
+      writes.push(null);
+      return Promise.reject(refused);
+    };
+    // a query: writes go to the Reference under it
+    const collection = { firebase: query(ref, limitToLast(1)) };
 
     const original = console.error;
     const logged = [];
@@ -163,15 +171,16 @@ describe('DuelystFirebase collection writes', () => {
     };
     try {
       DuelystFirebase.pushChild(collection, { body: 'hi' });
-      DuelystFirebase.removeChild(collection, 'pushed');
+      DuelystFirebase.removeChild(collection, 'x');
       await new Promise((resolve) => setTimeout(resolve, 0));
     } finally {
       console.error = original;
+      Object.assign(FirebaseSync.sdk, sdk);
     }
-    expect(writes).to.deep.equal([{ body: 'hi', id: 'pushed' }, null]);
+    expect(writes).to.deep.equal([{ body: 'hi', id: 'x' }, null]);
     expect(logged.map((args) => args[0])).to.deep.equal([
-      'Firebase write failed: set https://example/x:',
-      'Firebase write failed: remove https://example/x:',
+      'Firebase write failed: set ' + target.toString() + ':',
+      'Firebase write failed: remove ' + target.toString() + ':',
     ]);
     expect(logged[0][1]).to.equal(refused);
   });
