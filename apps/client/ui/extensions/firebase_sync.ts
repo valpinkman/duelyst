@@ -39,23 +39,12 @@ var sdk = {
 };
 
 /*
- * The modular ref under what a caller handed in. Until the last call site
- * stops building compat refs (#9, second PR) a ref may still be a compat
- * wrapper, whose `_delegate` is the modular ref for the same location in the
- * same Database.
- */
-function toSdkRef(target) {
-  return target != null && target._delegate != null ? target._delegate : target;
-}
-
-/*
  * The Reference to write through. A Query (`limitToLast`, `startAt`, ...)
  * has no `parent`, and its `.ref` is the Reference underneath it -- which is
  * where backfire's `.ref().child(...)` wrote too. The modular SDK keeps that
  * split, so this stays (docs/BACKBONE_AUDIT.md §7.5).
  */
 function toRef(target) {
-  target = toSdkRef(target);
   if (target == null) return target;
   if ('parent' in target) return target;
   return target.ref || target;
@@ -99,7 +88,6 @@ function reportWriteError(description) {
 
 /* `method` is the SDK function's name: 'set', 'update' or 'remove' */
 function write(ref, method, value) {
-  ref = toSdkRef(ref);
   var result = method === 'remove' ? sdk.remove(ref) : sdk[method](ref, value);
   if (result != null && typeof result.catch === 'function') {
     result.catch(reportWriteError(method + ' ' + String(ref)));
@@ -134,7 +122,7 @@ var FirebaseSyncModel = Backbone.Model.extend({
     // registered exactly once, so one set() is one write (item 11)
     this.on('change', this._updateModel, this);
     this._unsubscribeValue = sdk.onValue(
-      toSdkRef(this.firebase),
+      this.firebase,
       this._modelChanged.bind(this),
       cancelCallback(this),
     );
@@ -224,7 +212,7 @@ var FirebaseSyncCollection = Backbone.Collection.extend({
     Backbone.Collection.apply(this, arguments);
     resolveFirebase(this, options);
     var onCancel = cancelCallback(this);
-    var target = toSdkRef(this.firebase);
+    var target = this.firebase;
     sdk.onChildAdded(target, this._childAdded.bind(this), onCancel);
     sdk.onChildChanged(target, this._childChanged.bind(this), onCancel);
     sdk.onChildRemoved(target, this._childRemoved.bind(this), onCancel);

@@ -12,7 +12,6 @@ declare const gl: any;
 declare const Backbone: any;
 declare const Marionette: any;
 declare const Handlebars: any;
-declare const Firebase: any;
 declare const AWS: any;
 declare const ga: any;
 declare const $: any;
