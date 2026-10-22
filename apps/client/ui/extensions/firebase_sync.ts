@@ -1,4 +1,5 @@
 var _ = require('underscore');
+var firebaseClient = require('../../firebase');
 
 /*
  * The Backbone <-> Firebase binding the client syncs through: a Model bound to
@@ -10,9 +11,9 @@ var _ = require('underscore');
  * numbers below are that checklist's. test/unit/firebase/firebase_sync.js pins
  * each of them.
  *
- * Written against the firebase/compat ref API (`on`, `once`, `update`, `set`),
- * which is what every call site hands in. Nothing here is a method the
- * modular SDK lacks, so moving to it later is a change of spelling.
+ * Written against the modular SDK (#9): a ref is a value handed to free
+ * functions. Every SDK call the binding makes goes through `sdk` below, which
+ * is the seam test/unit/firebase/* record reads and writes at.
  *
  * Errors: every subscription passes a cancel callback, delivered to the
  * owner's `_onFirebaseCancel(error)` when it has one (duelyst_firebase.ts
@@ -21,14 +22,43 @@ var _ = require('underscore');
  */
 
 /*
- * The Reference to write through. A Reference has `child()`; a Query
- * (`limitToLast`, `startAt`, ...) does not, and its `.ref` is the Reference
- * underneath it -- which is where backfire's `.ref().child(...)` wrote too.
+ * The SDK functions the binding calls, looked up here at call time rather
+ * than bound once, so a test can wrap one and see every call the binding
+ * makes. Nothing else replaces them.
+ */
+var sdk = {
+  child: firebaseClient.child,
+  onValue: firebaseClient.onValue,
+  onChildAdded: firebaseClient.onChildAdded,
+  onChildChanged: firebaseClient.onChildChanged,
+  onChildRemoved: firebaseClient.onChildRemoved,
+  update: firebaseClient.update,
+  set: firebaseClient.set,
+  remove: firebaseClient.remove,
+  push: firebaseClient.push,
+};
+
+/*
+ * The modular ref under what a caller handed in. Until the last call site
+ * stops building compat refs (#9, second PR) a ref may still be a compat
+ * wrapper, whose `_delegate` is the modular ref for the same location in the
+ * same Database.
+ */
+function toSdkRef(target) {
+  return target != null && target._delegate != null ? target._delegate : target;
+}
+
+/*
+ * The Reference to write through. A Query (`limitToLast`, `startAt`, ...)
+ * has no `parent`, and its `.ref` is the Reference underneath it -- which is
+ * where backfire's `.ref().child(...)` wrote too. The modular SDK keeps that
+ * split, so this stays (docs/BACKBONE_AUDIT.md §7.5).
  */
 function toRef(target) {
+  target = toSdkRef(target);
   if (target == null) return target;
-  if (typeof target.child === 'function') return target;
-  return typeof target.ref === 'function' ? target.ref() : target.ref || target;
+  if ('parent' in target) return target;
+  return target.ref || target;
 }
 
 /* as backfire: `firebase` from the options, else from the class; a URL string or a factory */
@@ -38,7 +68,7 @@ function resolveFirebase(owner, options) {
     case 'object':
       break;
     case 'string':
-      owner.firebase = new Firebase(owner.firebase);
+      owner.firebase = firebaseClient.dbRef(owner.firebase);
       break;
     case 'function':
       owner.firebase = owner.firebase();
@@ -67,8 +97,10 @@ function reportWriteError(description) {
   };
 }
 
+/* `method` is the SDK function's name: 'set', 'update' or 'remove' */
 function write(ref, method, value) {
-  var result = ref[method](value);
+  ref = toSdkRef(ref);
+  var result = method === 'remove' ? sdk.remove(ref) : sdk[method](ref, value);
   if (result != null && typeof result.catch === 'function') {
     result.catch(reportWriteError(method + ' ' + String(ref)));
   }
@@ -101,8 +133,11 @@ var FirebaseSyncModel = Backbone.Model.extend({
     resolveFirebase(this, options);
     // registered exactly once, so one set() is one write (item 11)
     this.on('change', this._updateModel, this);
-    this._onValue = this._modelChanged.bind(this);
-    this.firebase.on('value', this._onValue, cancelCallback(this));
+    this._unsubscribeValue = sdk.onValue(
+      toSdkRef(this.firebase),
+      this._modelChanged.bind(this),
+      cancelCallback(this),
+    );
   },
 
   /* there is no server round trip to save to: writes follow every set() (item 13) */
@@ -113,7 +148,7 @@ var FirebaseSyncModel = Backbone.Model.extend({
     // Unsubscribe first: when the read rule depends on the node's own data
     // (a game invite is readable by its `fromId`), deleting it revokes this
     // listener, and the cancel would be reported as a failed read.
-    this.firebase.off('value', this._onValue);
+    this._unsubscribeValue();
     write(toRef(this.firebase), 'set', null);
     this.trigger('destroy', this, this.collection, options);
     if (options && options.success) options.success(this, null, options);
@@ -189,18 +224,18 @@ var FirebaseSyncCollection = Backbone.Collection.extend({
     Backbone.Collection.apply(this, arguments);
     resolveFirebase(this, options);
     var onCancel = cancelCallback(this);
-    this.firebase.on('child_added', this._childAdded.bind(this), onCancel);
-    this.firebase.on('child_changed', this._childChanged.bind(this), onCancel);
-    this.firebase.on('child_removed', this._childRemoved.bind(this), onCancel);
-    var result = this.firebase.once(
-      'value',
+    var target = toSdkRef(this.firebase);
+    sdk.onChildAdded(target, this._childAdded.bind(this), onCancel);
+    sdk.onChildChanged(target, this._childChanged.bind(this), onCancel);
+    sdk.onChildRemoved(target, this._childRemoved.bind(this), onCancel);
+    sdk.onValue(
+      target,
       function () {
         this.trigger('sync', this, null, null);
       }.bind(this),
       onCancel,
+      { onlyOnce: true },
     );
-    // once() also returns a promise that rejects on cancel; onCancel reports it
-    if (result != null && typeof result.catch === 'function') result.catch(function () {});
     this.listenTo(this, 'change', this._updateMember);
   },
 
@@ -265,7 +300,9 @@ var FirebaseSyncCollection = Backbone.Collection.extend({
       if (!_.has(local, key)) delta[key] = null;
       else if (!_.isEqual(local[key], remoteAttributes[key])) delta[key] = local[key];
     });
-    if (_.size(delta)) write(toRef(this.firebase).child(member._firebaseKey), 'update', delta);
+    if (_.size(delta)) {
+      write(sdk.child(toRef(this.firebase), member._firebaseKey), 'update', delta);
+    }
   },
 
   _childRemoved: function (snapshot) {
@@ -279,4 +316,5 @@ module.exports = {
   Collection: FirebaseSyncCollection,
   toRef: toRef,
   write: write,
+  sdk: sdk,
 };

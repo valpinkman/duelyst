@@ -5,48 +5,64 @@
  * on them had no failure path. See docs/BACKBONE_AUDIT.md §7.3 and §7.5 items
  * 26-27, apps/client/ui/extensions/firebase_sync.ts and duelyst_firebase.ts.
  *
- * No network here, so the SDK never cancels anything itself. Instead each test
- * ref records the arguments of every on()/once() the binding makes, and a test
- * plays the server by calling the cancel callback it was given.
+ * No network here, so the SDK never cancels anything itself. Instead every
+ * subscription the binding makes on a test ref is recorded, at the SDK
+ * functions it calls (FirebaseSync.sdk), and a test plays the server by
+ * calling the cancel callback it was given.
  */
 
 const { expect } = require('chai');
 
-const firebase = require('firebase/compat/app');
-require('firebase/compat/database');
-
 const DATABASE_URL = 'https://duelyst-sync-errors-test-default-rtdb.firebaseio.com/';
-
-if (!firebase.apps.length) firebase.initializeApp({ databaseURL: DATABASE_URL });
-const database = firebase.database();
-// no network in a unit test: nothing syncs, which is what the timeout tests need
-database.goOffline();
+process.env.FIREBASE_URL = DATABASE_URL;
 
 global.window = global;
 global._ = require('underscore');
 global.Backbone = require('backbone');
-// mirror apps/client/firebase.ts
-global.Firebase = function (url) {
-  return database.refFromURL(url || DATABASE_URL);
-};
-global.Firebase.ServerValue = firebase.database.ServerValue;
 
+const { dbRef, getFirebaseDatabase } = require('@duelyst/client/firebase');
+const { goOffline } = require('firebase/database');
+// no network in a unit test: nothing syncs, which is what the timeout tests need
+goOffline(getFirebaseDatabase());
+
+const FirebaseSync = require('@duelyst/client/ui/extensions/firebase_sync');
 const DuelystFirebase = require('@duelyst/client/ui/extensions/duelyst_firebase');
 
 let pathCounter = 0;
 
-// a ref whose own on()/once() record every subscription and pass it through
+/*
+ * Each subscription is recorded in compat's terms, as { method, args } with
+ * args = [eventType, callback, cancelCallback]: onValue(ref, cb, cancel) is
+ * on('value'), the same with { onlyOnce: true } is once('value'), and
+ * onChildAdded(ref, ...) is on('child_added').
+ */
+const subscriptions = {
+  onValue: 'value',
+  onChildAdded: 'child_added',
+  onChildChanged: 'child_changed',
+  onChildRemoved: 'child_removed',
+};
+const recorders = new Map();
+Object.keys(subscriptions).forEach((name) => {
+  const original = FirebaseSync.sdk[name];
+  FirebaseSync.sdk[name] = function (ref, callback, cancelCallback, options) {
+    const calls = recorders.get(ref.toString());
+    if (calls) {
+      calls.push({
+        method: options && options.onlyOnce ? 'once' : 'on',
+        args: [subscriptions[name], callback, cancelCallback],
+      });
+    }
+    return original.apply(this, arguments);
+  };
+});
+
+// a ref whose every subscription is recorded and passed through
 function recordingRef() {
   pathCounter += 1;
-  const ref = new global.Firebase(DATABASE_URL + 'sync-errors/' + pathCounter);
+  const ref = dbRef(DATABASE_URL + 'sync-errors/' + pathCounter);
   const calls = [];
-  ['on', 'once'].forEach((method) => {
-    const original = ref[method];
-    ref[method] = function () {
-      calls.push({ method, args: Array.prototype.slice.call(arguments) });
-      return original.apply(this, arguments);
-    };
-  });
+  recorders.set(ref.toString(), calls);
   return { ref, calls };
 }
 
@@ -94,17 +110,19 @@ describe('DuelystFirebase cancel callbacks', () => {
   });
 
   it('expect the ref to be left as it was handed over', () => {
+    // compat-era form: the ref's own on/once were checked to be unpatched. A
+    // modular ref has no methods, so: nothing added to it, nothing replaced.
     const { ref } = recordingRef();
-    const ownOn = ref.on;
-    const ownOnce = ref.once;
-    new DuelystFirebase.Collection(null, { firebase: ref });
-    expect(ref.on).to.equal(ownOn);
-    expect(ref.once).to.equal(ownOnce);
+    const ownKeys = Object.getOwnPropertyNames(ref);
+    const collection = new DuelystFirebase.Collection(null, { firebase: ref });
+    expect(Object.getOwnPropertyNames(ref)).to.deep.equal(ownKeys);
+    expect(collection.firebase).to.equal(ref);
 
-    const plain = new global.Firebase(DATABASE_URL + 'sync-errors/plain');
-    new DuelystFirebase.Model(null, { firebase: plain });
-    expect(Object.prototype.hasOwnProperty.call(plain, 'on')).to.equal(false);
-    expect(Object.prototype.hasOwnProperty.call(plain, 'once')).to.equal(false);
+    const plain = dbRef(DATABASE_URL + 'sync-errors/plain');
+    const plainKeys = Object.getOwnPropertyNames(plain);
+    const model = new DuelystFirebase.Model(null, { firebase: plain });
+    expect(Object.getOwnPropertyNames(plain)).to.deep.equal(plainKeys);
+    expect(model.firebase).to.equal(plain);
   });
 
   it('expect a string URL to still be resolved to a ref', () => {
