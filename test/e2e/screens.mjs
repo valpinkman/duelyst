@@ -193,12 +193,6 @@ export const SCREENS = [
     visible: '.modal-dialog',
     visibleDeclaredIn: `${UI}/views2/shop/templates/shop_spirit_orbs_modal.hbs`,
   },
-  {
-    name: 'PremiumPurchaseDialogView',
-    file: `${UI}/views2/shop/premium_purchase_dialog.ts`,
-    status: 'dropped',
-    reason: 'Dead code: all three call sites are commented out.',
-  },
 
   // --- in game -------------------------------------------------------------
   {

@@ -17,7 +17,6 @@ var NewPlayerManager = require('../../managers/new_player_manager');
 var ProfileManager = require('../../managers/profile_manager');
 var ShopManager = require('../../managers/shop_manager');
 var Session = require('../../../session2');
-var PremiumPurchaseDialog = require('../../views2/shop/premium_purchase_dialog');
 var openUrl = require('@duelyst/common/openUrl');
 var i18next = require('i18next');
 var BosterPackUnlockView = require('../layouts/booster_pack_collection');
@@ -373,13 +372,7 @@ var UtilityMainMenuItemView = UtilityMenuItemView.extend({
     }
   },
 
-  onDiamondClicked: _.throttle(
-    function (e) {
-      // NavigationManager.getInstance().showModalView(new PremiumPurchaseDialog());
-    },
-    1500,
-    { trailing: false },
-  ),
+  onDiamondClicked: _.throttle(function (e) {}, 1500, { trailing: false }),
 
   onClickBoosterPackCollection: function () {
     EventBus.getInstance().trigger(EVENTS.show_booster_pack_unlock);

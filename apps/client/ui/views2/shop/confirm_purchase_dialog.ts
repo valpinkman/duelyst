@@ -23,7 +23,6 @@ var Storage = require('@duelyst/common/storage');
 var openUrl = require('@duelyst/common/openUrl');
 var i18next = require('i18next');
 var Session = require('../../../session2');
-var PremiumPurchaseDialog = require('./premium_purchase_dialog');
 var _ = require('underscore');
 var CreditCardFormView = require('./credit_card_form');
 
@@ -569,7 +568,6 @@ var ConfirmPurchaseDialogView = Backbone.Marionette.ItemView.extend({
   onRefillPressed: _.throttle(
     function (e) {
       // this.trigger("cancel");
-      // NavigationManager.getInstance().showModalView(new PremiumPurchaseDialog());
     },
     1500,
     { trailing: false },

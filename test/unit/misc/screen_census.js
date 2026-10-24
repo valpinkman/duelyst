@@ -67,9 +67,10 @@ describe('screen tour census', () => {
 
   it('finds the LayoutView sites it is counting', () => {
     // 23 when issue #2 was written; 22 since the quest log became a shell
-    // (#10). If this moves, the census below says which screen to add or
-    // remove - update this number with it.
-    expect(layoutSites()).to.have.length(22);
+    // (#10); 21 since the dead premium purchase dialog was deleted (#57). If
+    // this moves, the census below says which screen to add or remove -
+    // update this number with it.
+    expect(layoutSites()).to.have.length(21);
   });
 
   it('has exactly one census entry per LayoutView, in the file that declares it', () => {
