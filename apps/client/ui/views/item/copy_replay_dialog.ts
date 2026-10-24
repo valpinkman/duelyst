@@ -4,9 +4,9 @@
 
 var EVENTS = require('@duelyst/common/event_types');
 var RSX = require('@duelyst/data/resources');
-var Animations = require('../../views/animations');
+var Animations = require('../animations');
 var audio_engine = require('../../../audio/audio_engine');
-var Templ = require('./templates/profile_match_history_copy_replay_to_clipboard_dialog.hbs');
+var Templ = require('../../templates/item/copy_replay_dialog.hbs');
 var Clipboard = require('clipboard');
 
 var CopyReplayDialogItemView = Backbone.Marionette.ItemView.extend({

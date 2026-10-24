@@ -178,6 +178,22 @@ const riftRun = (claim) => async (page) => {
 };
 
 /**
+ * The profile modal on one of its tabs. Both sides of the profile port (#80)
+ * render the same tab bar, so a click on its item works on either; then wait
+ * for the tab's region to show something other than its loading view.
+ */
+const profileTab = (tab) => async (page) => {
+  await utilityModal('toggleProfile')(page);
+  const content = '#app-profile .content-region > *';
+  await page.waitForSelector(content);
+  if (tab != null) await page.click(`#profile_tabs li[data-value="${tab}"]`);
+  await page.waitForFunction((selector) => {
+    const shown = document.querySelector(selector);
+    return shown != null && shown.querySelector('.loading') == null;
+  }, content);
+};
+
+/**
  * The screens, in the screen tour's order, with names from its census
  * (test/e2e/screens.mjs). `go` brings the screen up from anywhere, so any
  * subset can be captured; `leave` undoes state the next screen must not see;
@@ -192,7 +208,10 @@ export const SCREENS = [
   // still revealing, and land a pixel or two apart from one capture to the next
   { name: 'MainMenuItemView', go: mainMenu, mask: ['.popover'] },
   { name: 'QuestLogShell', go: utilityModal('toggleQuestLog'), leave: closeModal },
-  { name: 'ProfileLayout', go: utilityModal('toggleProfile'), leave: closeModal },
+  { name: 'ProfileShell', go: profileTab(null), leave: closeModal },
+  { name: 'ProfileShell-faction-levels', go: profileTab('faction_levels'), leave: closeModal },
+  { name: 'ProfileShell-rank-history', go: profileTab('rank_history'), leave: closeModal },
+  { name: 'ProfileShell-match-history', go: profileTab('match_history'), leave: closeModal },
   { name: 'BuddiesLayout', go: utilityModal('toggleBuddyList'), leave: closeModal },
   { name: 'PlayLayout', go: show('showPlay', '') },
   { name: 'ArenaShell', go: show('showPlay', { playMode: 'Gauntlet' }) },
