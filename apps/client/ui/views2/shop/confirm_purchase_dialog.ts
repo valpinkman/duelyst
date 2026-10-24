@@ -23,11 +23,12 @@ var Storage = require('@duelyst/common/storage');
 var openUrl = require('@duelyst/common/openUrl');
 var i18next = require('i18next');
 var Session = require('../../../session2');
-var PremiumPurchaseDialog = require('./premium_purchase_dialog');
 var _ = require('underscore');
 var CreditCardFormView = require('./credit_card_form');
 
 var Template = require('./templates/confirm_purchase_dialog.hbs');
+var { requestJson } = require('@duelyst/common/request');
+var { off } = require('../../../firebase');
 
 var ConfirmPurchaseDialogView = Backbone.Marionette.ItemView.extend({
   id: 'confirm_purchase_dialog',
@@ -185,7 +186,7 @@ var ConfirmPurchaseDialogView = Backbone.Marionette.ItemView.extend({
       // window.ipcRenderer.off('paypal-cancel', this.onCancelConfirmPurchase.bind(this))
     }
     if (this.paypalReceiptRef) {
-      this.paypalReceiptRef.off('child_added');
+      off(this.paypalReceiptRef, 'child_added');
     }
   },
 
@@ -567,7 +568,6 @@ var ConfirmPurchaseDialogView = Backbone.Marionette.ItemView.extend({
   onRefillPressed: _.throttle(
     function (e) {
       // this.trigger("cancel");
-      // NavigationManager.getInstance().showModalView(new PremiumPurchaseDialog());
     },
     1500,
     { trailing: false },
@@ -784,7 +784,7 @@ var ConfirmPurchaseDialogView = Backbone.Marionette.ItemView.extend({
     this.ui.card_info.addClass('hide');
 
     return Promise.resolve(
-      $.ajax({
+      requestJson({
         url: process.env.API_URL + '/api/me/shop/customer',
         type: 'DELETE',
         contentType: 'application/json',

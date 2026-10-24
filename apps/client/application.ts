@@ -18,8 +18,7 @@ const userAgent = uaparser.getResult();
 //
 const App = new Backbone.Marionette.Application();
 
-// require Firebase via browserify but temporarily alias it global scope
-const Firebase = (window.Firebase = require('./firebase'));
+const { dbRef, onValue } = require('./firebase');
 const moment = require('moment');
 const semver = require('semver');
 const querystring = require('query-string');
@@ -57,7 +56,6 @@ const i18next = require('i18next');
 
 // models and collections
 const CardModel = require('./ui/models/card');
-const DuelystFirebase = require('./ui/extensions/duelyst_firebase');
 const DuelystBackbone = require('./ui/extensions/duelyst_backbone');
 
 // Managers / Controllers
@@ -110,16 +108,17 @@ const MainMenuItemView = require('./ui/views/item/main_menu');
 const CollectionLayout = require('./ui/views2/collection/collection');
 
 const PlayLayout = require('./ui/views/layouts/play');
+const RiftShell = require('./ui/shells/rift_shell');
 const PlayLayer = require('./view/layers/pregame/PlayLayer');
 
-const WatchLayout = require('./ui/views2/watch/watch_layout');
+const WatchShell = require('./ui/shells/watch_shell');
 const ShopLayout = require('./ui/views2/shop/shop_layout');
 
-const CodexLayout = require('./ui/views2/codex/codex_layout');
+const CodexShell = require('./ui/shells/codex_shell');
 const CodexLayer = require('./view/layers/codex/CodexLayer');
 
-const TutorialLessonsLayout = require('./ui/views2/tutorial/tutorial_lessons_layout');
-const QuestLogLayout = require('./ui/views2/quests/quest_log_layout');
+const TutorialLessonsShell = require('./ui/shells/tutorial_lessons_shell');
+const QuestLogShell = require('./ui/shells/quest_log_shell');
 
 const BoosterPackUnlockLayout = require('./ui/views/layouts/booster_pack_collection');
 const BoosterPackOpeningLayer = require('./view/layers/booster/BoosterPackOpeningLayer');
@@ -162,6 +161,7 @@ const ReplayEngine = require('./replay/replayEngine');
 const AnalyticsTracker = require('./analyticsTracker');
 const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 const { onType } = require('@duelyst/common/utils/utils_promise');
+const { requestJson, setDefaultHeaders } = require('@duelyst/common/request');
 
 // require the Handlebars Template Helpers extension here since it modifies core Marionette code
 require('./ui/extensions/handlebars_template_helpers');
@@ -170,6 +170,41 @@ require('./ui/extensions/handlebars_template_helpers');
 require('./ui/extensions/bootstrap_tooltip');
 
 localStorage.debug = 'session:*';
+
+// region E2E TEST SEAM #
+
+/*
+  Dev-only seam for test/e2e/screen-tour.spec.mjs (issue #2, decision D1). Every manager is already
+  on `window`; App, Scene and the layout classes are not, and the tour needs them to navigate the
+  way the app itself does (App.showCollection etc.) and to check which view a region holds.
+
+  The guard is a literal comparison on purpose, not UtilsEnv.getIsInProduction(): a function call is
+  opaque to the bundler, so that form ships in production and staging bundles and merely never runs.
+  `process.env.NODE_ENV` is a Vite `define`, so this condition folds and the block is eliminated from
+  both. It mirrors getIsInProduction() (production || staging, packages/common/utils/utils_env.ts);
+  keep the two in step.
+*/
+if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'staging') {
+  window.__duelystE2E = {
+    App,
+    Scene,
+    layouts: {
+      MainMenuItemView,
+      PlayLayout,
+      RiftShell,
+      CollectionLayout,
+      CodexShell,
+      ShopLayout,
+      WatchShell,
+      TutorialLessonsShell,
+      BoosterPackUnlockLayout,
+      GameLayout,
+      QuestLogShell,
+    },
+  };
+}
+
+// endregion E2E TEST SEAM
 
 //
 // --- Utility ---- #
@@ -190,7 +225,7 @@ if (process.env.AI_TOOLS_ENABLED) {
 
   window.ai_v1_findNextActions = (playerId, difficulty) =>
     new Promise((resolve, reject) => {
-      const request = $.ajax({
+      const request = requestJson({
         url: 'http://localhost:5001/v1_find_next_actions',
         data: JSON.stringify({
           game_session_data: SDK.GameSession.getInstance().generateGameSessionSnapshot(),
@@ -202,31 +237,32 @@ if (process.env.AI_TOOLS_ENABLED) {
         dataType: 'json',
       });
 
-      request.done((res) => {
-        const actionsData = JSON.parse(res.actions);
-        const actions = [];
-        for (const actionData of Array.from<any>(actionsData)) {
-          const action = SDK.GameSession.getInstance().deserializeActionFromFirebase(actionData);
-          actions.push(action);
-        }
-        console.log('v1_find_next_actions -> ', actions);
-        return resolve(actions);
-      });
-
-      request.fail((jqXHR) => {
-        let errorMessage;
-        if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
-          errorMessage = jqXHR.responseJSON.message;
-        } else {
-          errorMessage = 'Something went wrong.';
-        }
-        return reject(errorMessage);
-      });
+      request.then(
+        (res) => {
+          const actionsData = JSON.parse(res.actions);
+          const actions = [];
+          for (const actionData of Array.from<any>(actionsData)) {
+            const action = SDK.GameSession.getInstance().deserializeActionFromFirebase(actionData);
+            actions.push(action);
+          }
+          console.log('v1_find_next_actions -> ', actions);
+          return resolve(actions);
+        },
+        (error) => {
+          let errorMessage;
+          if (error.responseJSON && error.responseJSON.message) {
+            errorMessage = error.responseJSON.message;
+          } else {
+            errorMessage = 'Something went wrong.';
+          }
+          return reject(errorMessage);
+        },
+      );
     }).catch(App._error);
 
   window.ai_v2_findActionSequence = (playerId, depthLimit, msTimeLimit) =>
     new Promise((resolve, reject) => {
-      const request = $.ajax({
+      const request = requestJson({
         url: 'http://localhost:5001/v2_find_action_sequence',
         data: JSON.stringify({
           game_session_data: SDK.GameSession.getInstance().generateGameSessionSnapshot(),
@@ -239,21 +275,22 @@ if (process.env.AI_TOOLS_ENABLED) {
         dataType: 'json',
       });
 
-      request.done((res) => {
-        const sequenceActionsData = JSON.parse(res.sequence_actions);
-        console.log('ai_v2_findActionSequence -> ', sequenceActionsData);
-        return resolve(sequenceActionsData);
-      });
-
-      request.fail((jqXHR) => {
-        let errorMessage;
-        if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
-          errorMessage = jqXHR.responseJSON.message;
-        } else {
-          errorMessage = 'Something went wrong.';
-        }
-        return reject(errorMessage);
-      });
+      request.then(
+        (res) => {
+          const sequenceActionsData = JSON.parse(res.sequence_actions);
+          console.log('ai_v2_findActionSequence -> ', sequenceActionsData);
+          return resolve(sequenceActionsData);
+        },
+        (error) => {
+          let errorMessage;
+          if (error.responseJSON && error.responseJSON.message) {
+            errorMessage = error.responseJSON.message;
+          } else {
+            errorMessage = 'Something went wrong.';
+          }
+          return reject(errorMessage);
+        },
+      );
     }).catch(App._error);
 
   window.ai_gameStarted = false;
@@ -282,7 +319,7 @@ if (process.env.AI_TOOLS_ENABLED) {
     }
 
     return new Promise<void>((resolve, reject) => {
-      const request = $.ajax({
+      const request = requestJson({
         url: 'http://localhost:5001/stop_game',
         data: JSON.stringify({}),
         type: 'POST',
@@ -290,17 +327,18 @@ if (process.env.AI_TOOLS_ENABLED) {
         dataType: 'json',
       });
 
-      request.done((res) => resolve());
-
-      request.fail((jqXHR) => {
-        let errorMessage;
-        if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
-          errorMessage = jqXHR.responseJSON.message;
-        } else {
-          errorMessage = 'Something went wrong.';
-        }
-        return reject(errorMessage);
-      });
+      request.then(
+        (res) => resolve(),
+        (error) => {
+          let errorMessage;
+          if (error.responseJSON && error.responseJSON.message) {
+            errorMessage = error.responseJSON.message;
+          } else {
+            errorMessage = 'Something went wrong.';
+          }
+          return reject(errorMessage);
+        },
+      );
     }).catch(App._error);
   };
 
@@ -349,7 +387,7 @@ if (process.env.AI_TOOLS_ENABLED) {
 
           // request run simulation
           const startSimulationPromise = new Promise((resolve, reject) => {
-            const request = $.ajax({
+            const request = requestJson({
               url: 'http://localhost:5001/start_game',
               data: JSON.stringify({
                 ai_1_version: ai1Version,
@@ -366,17 +404,18 @@ if (process.env.AI_TOOLS_ENABLED) {
               dataType: 'json',
             });
 
-            request.done((res) => resolve(JSON.parse(res.game_session_data)));
-
-            request.fail((jqXHR) => {
-              let errorMessage;
-              if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
-                errorMessage = jqXHR.responseJSON.message;
-              } else {
-                errorMessage = 'Something went wrong.';
-              }
-              return reject(errorMessage);
-            });
+            request.then(
+              (res) => resolve(JSON.parse(res.game_session_data)),
+              (error) => {
+                let errorMessage;
+                if (error.responseJSON && error.responseJSON.message) {
+                  errorMessage = error.responseJSON.message;
+                } else {
+                  errorMessage = 'Something went wrong.';
+                }
+                return reject(errorMessage);
+              },
+            );
           });
 
           // start loading
@@ -464,7 +503,7 @@ if (process.env.AI_TOOLS_ENABLED) {
 
         // request run simulation
         return new Promise<void>((resolve, reject) => {
-          const request = $.ajax({
+          const request = requestJson({
             url: 'http://localhost:5001/start_game_from_data',
             data: JSON.stringify({
               ai_1_version: ai1Version,
@@ -478,17 +517,18 @@ if (process.env.AI_TOOLS_ENABLED) {
             dataType: 'json',
           });
 
-          request.done((res) => resolve());
-
-          request.fail((jqXHR) => {
-            let errorMessage;
-            if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
-              errorMessage = jqXHR.responseJSON.message;
-            } else {
-              errorMessage = 'Something went wrong.';
-            }
-            return reject(errorMessage);
-          });
+          request.then(
+            (res) => resolve(),
+            (error) => {
+              let errorMessage;
+              if (error.responseJSON && error.responseJSON.message) {
+                errorMessage = error.responseJSON.message;
+              } else {
+                errorMessage = 'Something went wrong.';
+              }
+              return reject(errorMessage);
+            },
+          );
         });
       })
       .then(() => {
@@ -550,7 +590,7 @@ if (process.env.AI_TOOLS_ENABLED) {
       // request step game
       window.ai_gameStepsDataPromise = PromiseUtils.cancellable(
         new Promise((resolve, reject) => {
-          const request = $.ajax({
+          const request = requestJson({
             url: 'http://localhost:5001/step_game',
             data: JSON.stringify({
               game_id: SDK.GameSession.getInstance().getGameId(),
@@ -560,22 +600,23 @@ if (process.env.AI_TOOLS_ENABLED) {
             dataType: 'json',
           });
 
-          request.done((res) => {
-            if (res.steps != null) {
-              return resolve(JSON.parse(res.steps));
-            }
-            return resolve([]);
-          });
-
-          request.fail((jqXHR) => {
-            let errorMessage;
-            if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
-              errorMessage = jqXHR.responseJSON.message;
-            } else {
-              errorMessage = 'Something went wrong.';
-            }
-            return reject(errorMessage);
-          });
+          request.then(
+            (res) => {
+              if (res.steps != null) {
+                return resolve(JSON.parse(res.steps));
+              }
+              return resolve([]);
+            },
+            (error) => {
+              let errorMessage;
+              if (error.responseJSON && error.responseJSON.message) {
+                errorMessage = error.responseJSON.message;
+              } else {
+                errorMessage = 'Something went wrong.';
+              }
+              return reject(errorMessage);
+            },
+          );
         }).then((stepsData) => {
           Logger.module('APPLICATION').log(
             'ai_stepAIvAIGame -> steps:',
@@ -642,7 +683,7 @@ if (process.env.AI_TOOLS_ENABLED) {
 
     // request run games
     return new Promise<void>((resolve, reject) => {
-      const request = $.ajax({
+      const request = requestJson({
         url: 'http://localhost:5001/run_headless_games',
         data: JSON.stringify({
           ai_1_version: ai1Version,
@@ -660,17 +701,18 @@ if (process.env.AI_TOOLS_ENABLED) {
         dataType: 'json',
       });
 
-      request.done((res) => resolve());
-
-      request.fail((jqXHR) => {
-        let errorMessage;
-        if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
-          errorMessage = jqXHR.responseJSON.message;
-        } else {
-          errorMessage = 'Something went wrong.';
-        }
-        return reject(errorMessage);
-      });
+      request.then(
+        (res) => resolve(),
+        (error) => {
+          let errorMessage;
+          if (error.responseJSON && error.responseJSON.message) {
+            errorMessage = error.responseJSON.message;
+          } else {
+            errorMessage = 'Something went wrong.';
+          }
+          return reject(errorMessage);
+        },
+      );
     });
   };
 }
@@ -946,11 +988,10 @@ App._showTutorialLessons = function (lastCompletedChallenge) {
       });
 
     // show main menu
-    const tutorialLessonsLayoutView = new TutorialLessonsLayout({
+    const tutorialLessonsShell = new TutorialLessonsShell({
       lastCompletedChallenge,
     });
-    const contentPromise =
-      NavigationManager.getInstance().showContentView(tutorialLessonsLayoutView);
+    const contentPromise = NavigationManager.getInstance().showContentView(tutorialLessonsShell);
 
     return Promise.all([viewPromise, contentPromise]);
   });
@@ -1027,14 +1068,11 @@ App._showMainMenu = function () {
               QuestsManager.getInstance().hasUnreadQuests() ||
               QuestsManager.getInstance().hasUnreadDailyChallenges()
             ) {
-              modalPromise = NavigationManager.getInstance().toggleModalViewByClass(
-                QuestLogLayout,
-                {
-                  collection: QuestsManager.getInstance().getQuestCollection(),
-                  model: ProgressionManager.getInstance().gameCounterModel,
-                  showConfirm: true,
-                },
-              );
+              modalPromise = NavigationManager.getInstance().toggleModalViewByClass(QuestLogShell, {
+                collection: QuestsManager.getInstance().getQuestCollection(),
+                model: ProgressionManager.getInstance().gameCounterModel,
+                showConfirm: true,
+              });
             }
           }
 
@@ -1110,7 +1148,7 @@ App.showPlay = function (playModeIdentifier, showingDirectlyFromGame) {
 App.showWatch = function () {
   if (
     !App.getIsLoggedIn() ||
-    NavigationManager.getInstance().getContentView() instanceof WatchLayout
+    NavigationManager.getInstance().getContentView() instanceof WatchShell
   ) {
     return Promise.reject();
   }
@@ -1124,7 +1162,7 @@ App.showWatch = function () {
     NavigationManager.getInstance().addMajorRoute('watch', App.showWatch, App);
 
     // show layout
-    return NavigationManager.getInstance().showContentView(new WatchLayout());
+    return NavigationManager.getInstance().showContentView(new WatchShell());
   });
 };
 
@@ -1178,7 +1216,7 @@ App.showCollection = function () {
 App.showCodex = function () {
   if (
     !App.getIsLoggedIn() ||
-    NavigationManager.getInstance().getContentView() instanceof CodexLayout
+    NavigationManager.getInstance().getContentView() instanceof CodexShell
   ) {
     return Promise.reject();
   }
@@ -1193,7 +1231,7 @@ App.showCodex = function () {
     return Promise.all([
       Scene.getInstance().showContent(new CodexLayer(), true),
       NavigationManager.getInstance().showContentView(
-        new CodexLayout({ model: new Backbone.Model() }),
+        new CodexShell({ model: new Backbone.Model() }),
       ),
     ]);
   });
@@ -1254,13 +1292,16 @@ App.onLogin = function (data) {
   // save token to localStorage
   Storage.set('token', data.token);
 
-  // setup ajax headers for jquery/backbone requests
-  $.ajaxSetup({
-    headers: {
-      Authorization: `Bearer ${data.token}`,
-      'Client-Version': window.BUILD_VERSION,
-    },
-  });
+  // setup ajax headers for jquery/backbone requests. jQuery still owns
+  // Backbone.sync, so both header registries have to be told (see
+  // packages/common/request); ajaxSetup deep-extends, and setDefaultHeaders merges
+  // to match.
+  const sessionHeaders = {
+    Authorization: `Bearer ${data.token}`,
+    'Client-Version': window.BUILD_VERSION,
+  };
+  $.ajaxSetup({ headers: sessionHeaders });
+  setDefaultHeaders(sessionHeaders);
 
   // check is new signup flag is passed
   // can't use analytics data since the first login may have
@@ -1332,10 +1373,19 @@ App.onLogin = function (data) {
     .catch((err) => {
       App.managersReadyDeferred.reject();
       Logger.module('APPLICATION').log('ERROR initializing managers');
-      if (err === null) {
+      if (err == null) {
         err = new Error('ERROR initializing managers');
       }
-      App._error(err.message);
+      // Not App._error: with no main screen in flight it shows the dialog only
+      // after App.main(), which waits on the managers that just failed, so the
+      // dialog never appeared and the client sat on the loading screen.
+      NavigationManager.getInstance().requestUserTriggeredNavigationUnlocked(App._userNavLockId);
+      // On a reload with a stored session no package has loaded yet, so the
+      // opaque #app-preloading screen is still up and would paint over the dialog.
+      PackageManager.getInstance()._removePreloadingUI();
+      NavigationManager.getInstance().showDialogView(
+        new ErrorDialogItemView({ message: err.message }),
+      );
       throw err;
     })
     .finally(() => {});
@@ -1474,11 +1524,8 @@ App.onLogout = function () {
   Storage.remove('token');
 
   // remove ajax headers with new call to ajaxSetup
-  $.ajaxSetup({
-    headers: {
-      Authorization: '',
-    },
-  });
+  $.ajaxSetup({ headers: { Authorization: '' } });
+  setDefaultHeaders({ Authorization: '' });
 
   // Trigger the eventbus logout event for the ui/managers
   EventBus.getInstance().trigger(EVENTS.session_logged_out);
@@ -1705,29 +1752,30 @@ App._spectateGame = function (e) {
 // See games_manager spectateBuddyGame method, works same way
 App.spectateBuddyGame = (buddyId) =>
   new Promise((resolve, reject) => {
-    const request = $.ajax({
+    const request = requestJson({
       url: `${process.env.API_URL}/api/me/spectate/${buddyId}`,
       type: 'GET',
       contentType: 'application/json',
       dataType: 'json',
     });
 
-    request.done((response) => {
-      App._spectateGame({
-        gameData: response.gameData,
-        token: response.token,
-        playerId: buddyId,
-      });
-      return resolve(response);
-    });
-
-    request.fail((response) => {
-      const error =
-        (response && response.responseJSON && response.responseJSON.error) ||
-        'SPECTATE request failed';
-      EventBus.getInstance().trigger(EVENTS.ajax_error, error);
-      return reject(new Error(error));
-    });
+    request.then(
+      (response) => {
+        App._spectateGame({
+          gameData: response.gameData,
+          token: response.token,
+          playerId: buddyId,
+        });
+        return resolve(response);
+      },
+      (response) => {
+        const error =
+          (response && response.responseJSON && response.responseJSON.error) ||
+          'SPECTATE request failed';
+        EventBus.getInstance().trigger(EVENTS.ajax_error, error);
+        return reject(new Error(error));
+      },
+    );
   });
 
 // Event handler fired when spectate is pressed in Discord with spectateSecret passed in
@@ -2143,7 +2191,7 @@ App._startSinglePlayerGame = function (
   // request single player game
   App._singlePlayerGamePromise = PromiseUtils.cancellable(
     new Promise((resolve, reject) => {
-      const request = $.ajax({
+      const request = requestJson({
         url: `${process.env.API_URL}/api/me/games/single_player`,
         data: JSON.stringify({
           deck: myPlayerDeck,
@@ -2160,15 +2208,15 @@ App._startSinglePlayerGame = function (
         dataType: 'json',
       });
 
-      request.done((res) => resolve(res));
-
-      request.fail((jqXHR) =>
-        reject(
-          (jqXHR &&
-            jqXHR.responseJSON &&
-            (jqXHR.responseJSON.error || jqXHR.responseJSON.message)) ||
-            'Connection error. Please retry.',
-        ),
+      request.then(
+        (res) => resolve(res),
+        (error) =>
+          reject(
+            (error &&
+              error.responseJSON &&
+              (error.responseJSON.error || error.responseJSON.message)) ||
+              'Connection error. Please retry.',
+          ),
       );
     }),
   );
@@ -2279,7 +2327,7 @@ App._startBossBattleGame = function (
 
   // request boss battle game
   const bossBattleGamePromise = new Promise((resolve, reject) => {
-    const request = $.ajax({
+    const request = requestJson({
       url: `${process.env.API_URL}/api/me/games/boss_battle`,
       data: JSON.stringify({
         deck: myPlayerDeck,
@@ -2293,13 +2341,15 @@ App._startBossBattleGame = function (
       dataType: 'json',
     });
 
-    request.done((res) => resolve(res));
-
-    request.fail((jqXHR) =>
-      reject(
-        (jqXHR && jqXHR.responseJSON && (jqXHR.responseJSON.error || jqXHR.responseJSON.message)) ||
-          'Connection error. Please retry.',
-      ),
+    request.then(
+      (res) => resolve(res),
+      (error) =>
+        reject(
+          (error &&
+            error.responseJSON &&
+            (error.responseJSON.error || error.responseJSON.message)) ||
+            'Connection error. Please retry.',
+        ),
     );
   });
 
@@ -2363,21 +2413,21 @@ App._startGameForReplay = function (replayData) {
       }
 
       return new Promise((resolve, reject) => {
-        const request = $.ajax({
+        const request = requestJson({
           url,
           type: 'GET',
           contentType: 'application/json',
           dataType: 'json',
         });
-        request
-          .done((response) => resolve(response))
-          .fail((response) =>
+        request.then(
+          (response) => resolve(response),
+          (response) =>
             reject(
               new Error(
                 `Error downloading replay data: ${__guard__(response != null ? response.responseJSON : undefined, (x) => x.message)}`,
               ),
             ),
-          );
+        );
       });
     })
     .then(function (replayResponseData) {
@@ -4262,12 +4312,6 @@ App.showFactionXpReward = function (userGameModel, rewardModels) {
   return App.showProgressReward(nextUnreadReward);
 };
 
-App.showNewBeginnerQuests = (beginnerQuestsCollection) =>
-  NavigationManager.getInstance().toggleModalViewByClass(QuestLogLayout, {
-    collection: beginnerQuestsCollection,
-    showConfirm: true,
-  });
-
 App.showFreeCardOfTheDayReward = (opts) =>
   Promise.all([
     NavigationManager.getInstance().destroyModalView(),
@@ -4280,7 +4324,7 @@ App.showFreeCardOfTheDayReward = (opts) =>
     return App.setCallbackWhenCancel(() => {
       Scene.getInstance().destroyOverlay();
       return App._showMainMenu().then(() => {
-        NavigationManager.getInstance().toggleModalViewByClass(QuestLogLayout, {
+        NavigationManager.getInstance().toggleModalViewByClass(QuestLogShell, {
           collection: QuestsManager.getInstance().getQuestCollection(),
           model: ProgressionManager.getInstance().gameCounterModel,
         });
@@ -4378,7 +4422,7 @@ App.onUserTriggeredCancel = function () {
         (NavigationManager.getInstance().getIsShowingContentViewClass(LoaderItemView) ||
           NavigationManager.getInstance().getIsShowingContentViewClass(LoginMenuItemView) ||
           NavigationManager.getInstance().getIsShowingContentViewClass(MainMenuItemView) ||
-          NavigationManager.getInstance().getIsShowingContentViewClass(TutorialLessonsLayout))
+          NavigationManager.getInstance().getIsShowingContentViewClass(TutorialLessonsShell))
       ) {
         // show esc main menu when on loading or login or main
         cancelPromises.push(
@@ -4940,9 +4984,7 @@ App.getMinBrowserVersions = function () {
     return Promise.resolve();
   }
   return new Promise((resolve, reject) => {
-    const minBrowserVersionRef = new Firebase(process.env.FIREBASE_URL)
-      .child('system-status')
-      .child('browsers');
+    const minBrowserVersionRef = dbRef('system-status/browsers');
 
     const defaults = {
       Chrome: 50,
@@ -4954,17 +4996,21 @@ App.getMinBrowserVersions = function () {
 
     // create a timeout to skip check in case Firebase lags (so atleast user does not get stuck on black screen)
     const minBrowserVersionTimeout = setTimeout(() => {
-      minBrowserVersionRef.off();
+      stopListening();
       return resolve(defaults);
     }, 5000);
 
-    minBrowserVersionRef.once('value', (snapshot) => {
-      clearTimeout(minBrowserVersionTimeout);
-      if (!snapshot.val()) {
-        return resolve(defaults);
-      }
-      return resolve(snapshot.val());
-    });
+    const stopListening = onValue(
+      minBrowserVersionRef,
+      (snapshot) => {
+        clearTimeout(minBrowserVersionTimeout);
+        if (!snapshot.val()) {
+          return resolve(defaults);
+        }
+        return resolve(snapshot.val());
+      },
+      { onlyOnce: true },
+    );
   });
 };
 
@@ -5123,11 +5169,8 @@ App.isVersionValid = function (minimumVersion) {
 // grabs configuration from server we're running on and call App.start()
 App.setup = function () {
   // mark all requests with buld version
-  $.ajaxSetup({
-    headers: {
-      'Client-Version': process.env.VERSION,
-    },
-  });
+  $.ajaxSetup({ headers: { 'Client-Version': process.env.VERSION } });
+  setDefaultHeaders({ 'Client-Version': process.env.VERSION });
 
   // check if it is a new user and we should redirect otherwise start as normal
   if (Landing.isNewUser() && Landing.shouldRedirect()) {
@@ -5152,28 +5195,30 @@ App.getMinBrowserVersions().then((supportedBrowsers) => {
     return App.glTestFailed();
   }
 
-  App.minVersionRef = new Firebase(process.env.FIREBASE_URL)
-    .child('system-status')
-    .child('minimum_version');
+  App.minVersionRef = dbRef('system-status/minimum_version');
 
   // wrap App.setup() in _.once() just to be safe from double calling
   App.setupOnce = _.once(App.setup);
 
   // create a timeout to skip version check in case Firebase lags (so atleast user does not get stuck on black screen)
   App.versionCheckTimeout = setTimeout(() => {
-    App.minVersionRef.off();
+    App.stopMinVersionCheck();
     return App.setupOnce();
   }, 5000);
 
   // read minimum version from Firebase and perform check, if fails, show error html
   // otherwise start application as normal
-  return App.minVersionRef.once('value', (snapshot) => {
-    clearTimeout(App.versionCheckTimeout);
-    if (!App.isVersionValid(snapshot.val())) {
-      return App.versionTestFailed();
-    }
-    return App.setupOnce();
-  });
+  App.stopMinVersionCheck = onValue(
+    App.minVersionRef,
+    (snapshot) => {
+      clearTimeout(App.versionCheckTimeout);
+      if (!App.isVersionValid(snapshot.val())) {
+        return App.versionTestFailed();
+      }
+      return App.setupOnce();
+    },
+    { onlyOnce: true },
+  );
 });
 
 function __guard__(value, transform) {

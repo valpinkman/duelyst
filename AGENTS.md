@@ -104,7 +104,7 @@ Everything below is TypeScript unless noted.
 | `apps/client/{application,index}.ts`          | client boot, router, `window.*` singletons                                                                                                                                                                                                                                                                                       |
 | `packages/data/`                              | `resources.js` (RSX manifest), `fx.js`, `index.ts` (the `DATA` barrel), `packages.js` (**generated, gitignored**) — mostly JS                                                                                                                                                                                                    |
 | `apps/client/{resources,original_resources}/` | 1.2 GB of art/audio — never touch, never bundle                                                                                                                                                                                                                                                                                  |
-| `apps/client/vendor/`                         | cocos2d-html5 3.3, jquery-ui, aws-sdk, backfire — not npm managed, JS                                                                                                                                                                                                                                                            |
+| `apps/client/vendor/`                         | cocos2d-html5 3.3, jquery-ui, aws-sdk — not npm managed, JS                                                                                                                                                                                                                                                                      |
 | `apps/server/`                                | `api.ts` (3000), `game.ts` (8001), `single_player.ts` (8000), `lib/data_access` (knex), `redis/`, `routes/`, `ai/`, `migrations/` (JS)                                                                                                                                                                                           |
 | `apps/worker/`                                | BullMQ jobs; `worker.ts` registers them explicitly                                                                                                                                                                                                                                                                               |
 | `bin/`                                        | service entrypoints; `_bootstrap.js` sets up the tsx hook and config — JS                                                                                                                                                                                                                                                        |
@@ -182,8 +182,12 @@ Everything below is TypeScript unless noted.
   bearing; keep them.
 - **Card factories** (`packages/sdk/cards/factory/**`) are _text-parsed_ by `generate_packages.js`.
   Keep the `Cards.X` / `RSX.Y` literal shape or the asset packages break. The build verifies the
-  generated key set against `tools/build/packages-manifest.json` and fails on drift; regenerate
-  deliberately with `--update-packages-manifest`.
+  generated packages against `tools/build/packages-manifest.json` — both the key set _and_ a
+  `<count>:<hash>` signature of each package's resources, because a source file that loses its
+  `// pragma PKGS:` comment empties a package without touching any key — and fails on drift;
+  regenerate deliberately with `--update-packages-manifest`. Package contents depend on the
+  generator's `-fa` flag, so the manifest records a signature per mode wherever they differ
+  (today only `all`), and an update run generates twice.
 - **CommonJS "export before require"** (`module.exports = X` above the requires) exists to
   survive circular requires. It does not survive ESM — restructure, don't just rename.
 - **Build-time env reaches the client** through Vite `define`. The build refuses to run without a
@@ -222,3 +226,9 @@ How we work:
   the repo — a codemod that reads `tsc` output cannot silence a place where the types are right.
 - Don't move or rename `apps/client/resources`, `apps/client/vendor` or the card factories without a plan for
   `generate_packages.js` and the RSX paths.
+- **Working on the Marionette/jQuery removal milestone? Different rules apply.** That work lands on
+  the long-lived **`marionette-removal`** branch, not on `main`: one issue → one PR, a PR
+  never closes more than one issue, and every step carries required test evidence. Read
+  [`docs/BACKBONE_REMOVAL_PLAN.md` §11](docs/BACKBONE_REMOVAL_PLAN.md) **before opening a PR** —
+  it has the branch naming, the merge strategy, and the table saying which evidence each kind of
+  change needs.

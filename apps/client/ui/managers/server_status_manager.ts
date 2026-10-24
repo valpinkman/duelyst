@@ -16,6 +16,7 @@ var EventBus = require('@duelyst/common/eventbus');
 var EVENTS = require('@duelyst/common/event_types');
 var Logger = require('@duelyst/common/logger');
 var DuelystFirebase = require('../extensions/duelyst_firebase');
+var { dbRef } = require('../../firebase');
 var Manager = require('./manager');
 var ChatManager = require('./chat_manager');
 
@@ -29,7 +30,7 @@ var ServerStatusManager = Manager.extend({
     this.stopListening(EventBus.getInstance(), EVENTS.session_logged_out, this.disconnect);
 
     this.serverStatusModel = new DuelystFirebase.Model(null, {
-      firebase: new Firebase(process.env.FIREBASE_URL).child('system-status'),
+      firebase: dbRef('system-status'),
     });
 
     // what to do when we're ready

@@ -11,8 +11,8 @@ _ProfileManager.current = _ProfileManager.getInstance;
 module.exports = _ProfileManager;
 
 var Logger = require('@duelyst/common/logger');
-var Profile = require('../models/profile');
-var Firebase = require('../../firebase');
+var Profile: ProfileModelConstructor = require('../models/profile');
+var { off } = require('../../firebase');
 var Manager = require('./manager');
 
 var ProfileManager = Manager.extend({
@@ -37,21 +37,35 @@ var ProfileManager = Manager.extend({
   onBeforeDisconnect: function () {
     Manager.prototype.onBeforeDisconnect.call(this);
     this.userId = null;
-    this.profile.firebase.off();
+    // the binding built a modular ref from the URL: off() is a free function
+    off(this.profile.firebase);
     this.profile = null;
   },
 
-  get: function (key) {
-    if (!this.profile) {
+  /*
+   * These two are how the rest of the app reads the profile -- 80 call sites
+   * go through `ProfileManager.getInstance().get('...')`. Naming the key and
+   * value types here means a typo in a key, or a value of the wrong type, is
+   * a compile error inside the manager; call sites pick the checking up as
+   * they stop reaching the manager through an untyped `require`.
+   */
+  get: function <K extends keyof ProfileAttributes & string>(key: K): ProfileAttributes[K] {
+    var profile: ProfileModel = this.profile;
+    if (!profile) {
       return null;
     }
-    return this.profile.get(key);
+    return profile.get(key);
   },
 
-  set: function (key, val, options) {
-    if (!this.profile) {
+  set: function <K extends keyof ProfileAttributes & string>(
+    key: K,
+    val: ProfileAttributes[K],
+    options?: any,
+  ) {
+    var profile: ProfileModel = this.profile;
+    if (!profile) {
       return;
     }
-    return this.profile.set(key, val, options);
+    return profile.set(key, val, options);
   },
 });

@@ -10,14 +10,13 @@ var QuestsManager = require('../../managers/quests_manager');
 var InventoryManager = require('../../managers/inventory_manager');
 var ServerStatusManager = require('../../managers/server_status_manager');
 var NavigationManager = require('../../managers/navigation_manager');
-var QuestLogLayout = require('../../views2/quests/quest_log_layout');
-var ProfileLayout = require('../../views2/profile/profile_layout');
+var QuestLogShell = require('../../shells/quest_log_shell');
+var ProfileShell = require('../../shells/profile_shell');
 var ProgressionManager = require('../../managers/progression_manager');
 var NewPlayerManager = require('../../managers/new_player_manager');
 var ProfileManager = require('../../managers/profile_manager');
 var ShopManager = require('../../managers/shop_manager');
 var Session = require('../../../session2');
-var PremiumPurchaseDialog = require('../../views2/shop/premium_purchase_dialog');
 var openUrl = require('@duelyst/common/openUrl');
 var i18next = require('i18next');
 var BosterPackUnlockView = require('../layouts/booster_pack_collection');
@@ -347,14 +346,14 @@ var UtilityMainMenuItemView = UtilityMenuItemView.extend({
   },
 
   toggleProfile: function () {
-    NavigationManager.getInstance().toggleModalViewByClass(ProfileLayout, {
+    NavigationManager.getInstance().toggleModalViewByClass(ProfileShell, {
       model: ProfileManager.getInstance().profile,
     });
   },
 
   toggleQuestLog: function () {
     NewPlayerManager.getInstance().removeQuestEmphasis();
-    NavigationManager.getInstance().toggleModalViewByClass(QuestLogLayout, {
+    NavigationManager.getInstance().toggleModalViewByClass(QuestLogShell, {
       collection: QuestsManager.getInstance().getQuestCollection(),
       model: ProgressionManager.getInstance().gameCounterModel,
     });
@@ -373,13 +372,7 @@ var UtilityMainMenuItemView = UtilityMenuItemView.extend({
     }
   },
 
-  onDiamondClicked: _.throttle(
-    function (e) {
-      // NavigationManager.getInstance().showModalView(new PremiumPurchaseDialog());
-    },
-    1500,
-    { trailing: false },
-  ),
+  onDiamondClicked: _.throttle(function (e) {}, 1500, { trailing: false }),
 
   onClickBoosterPackCollection: function () {
     EventBus.getInstance().trigger(EVENTS.show_booster_pack_unlock);

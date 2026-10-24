@@ -13,7 +13,7 @@ var NavigationManager = require('../../managers/navigation_manager');
 var BuddySelectionTemplate = require('../../templates/layouts/buddy_selection.hbs');
 var ConversationCompositeView = require('../composite/conversation');
 var ConfirmDialogItemView = require('../item/confirm_dialog');
-var ProfileLayout = require('../../views2/profile/profile_layout');
+var ProfileShell = require('../../shells/profile_shell');
 var i18next = require('i18next');
 
 var BuddySelectionLayout = Backbone.Marionette.LayoutView.extend({
@@ -126,7 +126,7 @@ var BuddySelectionLayout = Backbone.Marionette.LayoutView.extend({
   },
 
   onViewProfile: function () {
-    NavigationManager.getInstance().toggleModalViewByClass(ProfileLayout, { model: this.model });
+    NavigationManager.getInstance().toggleModalViewByClass(ProfileShell, { model: this.model });
   },
 
   onInviteBuddyToGame: function () {

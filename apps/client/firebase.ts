@@ -1,25 +1,46 @@
 /*
- * The client's Firebase entry point (plan 9.3).
+ * The client's Firebase entry point, on the modular SDK (#9).
  *
- * The game was written against firebase@2.0.3 (2015), whose API is a global
- * `Firebase` constructor: `new Firebase(url)` returns a ref, and every data
- * method hangs off it. Nothing past 2.x works that way.
+ * The game was written against firebase@2.0.3 (2015), whose API was a global
+ * `Firebase` constructor with every data method hanging off the ref. The
+ * modular SDK has no methods on a ref at all: a ref is a value, and the
+ * operations are free functions that take it (`onValue(ref, cb)`,
+ * `update(ref, value)`, `child(ref, path)`). Only those functions are
+ * bundled, which is what the compat entry points could not offer.
  *
- * This module bridges the two. It initialises firebase@12 through its `compat`
- * entry points, whose ref API is byte-for-byte what the v2 code already calls
- * (`child`, `on`, `once`, `set`, `update`, `push`, `remove`, `orderByChild`,
- * `startAt`, `onDisconnect`), and re-exposes it in the shape the existing code
- * expects. That keeps ~50 `new Firebase(url)` call sites working untouched
- * instead of rewriting them all in one commit.
- *
- * `compat` is a staging post, not the destination: it exists so the SDK can be
- * modern and patched now, with a later step to move call sites onto the tree-
- * shakeable modular API. The parts that genuinely could not be bridged - the
- * auth handshake, and the three renamed methods - are changed at the call site.
+ * This module initialises the app once and hands out refs. The free functions
+ * the client uses are re-exported from here, and nothing else in the client
+ * loads `firebase/*`: one entry point, so one copy of the SDK in the bundle,
+ * and the Firebase surface the client depends on listed in one place.
  */
-const firebase = require('firebase/compat/app');
-require('firebase/compat/database');
-require('firebase/compat/auth');
+import { initializeApp, getApp, getApps } from 'firebase/app';
+import { child, getDatabase, ref, refFromURL } from 'firebase/database';
+import { getAuth, signInWithCustomToken, signOut } from 'firebase/auth';
+
+export {
+  child,
+  endAt,
+  equalTo,
+  get,
+  limitToFirst,
+  limitToLast,
+  off,
+  onChildAdded,
+  onChildChanged,
+  onChildRemoved,
+  onDisconnect,
+  onValue,
+  orderByChild,
+  orderByKey,
+  push,
+  query,
+  remove,
+  serverTimestamp,
+  set,
+  setWithPriority,
+  startAt,
+  update,
+} from 'firebase/database';
 
 const databaseURL = process.env.FIREBASE_URL;
 
@@ -30,77 +51,51 @@ const databaseURL = process.env.FIREBASE_URL;
  * Without it every sign-in fails with `auth/invalid-api-key` - and it fails
  * before any network call, so nothing shows up in the network log.
  *
- * The v2 SDK never needed it: legacy tokens were validated by the RTDB itself
- * and Identity Toolkit was not involved at all.
- *
  * It is NOT a secret. The web API key identifies the project, ships in every
  * Firebase web client, and grants nothing on its own - access is controlled by
  * the security rules.
  */
-if (!firebase.apps.length) {
-  firebase.initializeApp({
-    databaseURL,
-    apiKey: process.env.FIREBASE_API_KEY,
-  });
-}
+const app = getApps().length
+  ? getApp()
+  : initializeApp({
+      databaseURL,
+      apiKey: process.env.FIREBASE_API_KEY,
+    });
+
+const database = getDatabase(app);
 
 /**
- * Drop-in for the v2 global `Firebase` constructor.
+ * A Reference into the client's database.
  *
- * v2: `new Firebase('https://x.firebaseio.com/some/path')` -> ref
- * v9+: `firebase.database().refFromURL(...)` -> the same ref
+ * `dbRef()` is the root, `dbRef('users/' + id)` a path under it. A full URL
+ * (`process.env.FIREBASE_URL + 'users/' + id`, or a URL the server sent) is
+ * accepted too; it must point into this database, as it had to under v2.
  *
- * A constructor that returns an object yields that object, so `new Firebase(u)`
- * keeps working at every existing call site. Called without `new` it behaves
- * identically, which some call sites rely on.
+ * Further arguments are child segments, each applied with `child()`:
+ * `dbRef('user-progression', userId, 'game-counter')` is what
+ * `new Firebase(url).child('user-progression').child(userId).child(...)` was,
+ * including the throw when a segment is undefined, where concatenating it
+ * into the path would quietly address `.../undefined/...` instead.
  */
-/*
- * firebase 2.x refs had a `ref()` METHOD that returned the ref itself; from v3
- * on `ref` is a getter property. backfire keeps whatever ref it is handed
- * (`case "object": break`) and then calls `this.firebase.ref().child(...)` in
- * six places, so a bare compat ref fails with "this.firebase.ref is not a
- * function".
- *
- * Rather than edit the minified vendored build, every ref this module hands
- * out gets a callable `ref` shadowing the prototype getter on that instance.
- * Both spellings then work: `r.ref()` (backfire) and `toRef(r)` (our code).
- *
- * Only refs created HERE are patched. A DERIVED ref does not inherit it -
- * `new Firebase(url).push()`, `.child(...)`, `.limitToLast(n)`,
- * `.orderByChild(...)` all return a fresh object with the plain getter - and
- * plenty of call sites hand backfire exactly that, which threw
- * "this.firebase.ref is not a function" from its destroy() and stranded both
- * players on "waiting" when a game invite was cleaned up. Refs on their way
- * into backfire are patched in app/ui/extensions/duelyst_firebase.ts, the one
- * place they all pass through; snapshots keep the standard property, which is
- * what the rest of the client reads.
- */
-function withCallableRef(reference) {
-  if (typeof reference.ref !== 'function') {
-    Object.defineProperty(reference, 'ref', {
-      value: function () {
-        return reference;
-      },
-      configurable: true,
-      writable: true,
-    });
-  }
+export function dbRef(pathOrUrl?: string, ...segments: string[]) {
+  let reference;
+  if (pathOrUrl == null || pathOrUrl === '') reference = ref(database);
+  else if (/^https?:\/\//.test(pathOrUrl)) reference = refFromURL(database, pathOrUrl);
+  else reference = ref(database, pathOrUrl);
+  for (const segment of segments) reference = child(reference, segment);
   return reference;
 }
 
-function FirebaseRef(url) {
-  return withCallableRef(firebase.database().refFromURL(url || databaseURL));
+/** The Database instance, for `goOffline` / `goOnline` and tests. */
+export function getFirebaseDatabase() {
+  return database;
 }
 
-// v2 exposed these as statics on the constructor; compat moved them onto the
-// database namespace. Re-attached so `Firebase.ServerValue.TIMESTAMP` (15 call
-// sites) resolves unchanged.
-FirebaseRef.ServerValue = firebase.database.ServerValue;
+/** Signs the RTDB connection in with the custom token the API minted. */
+export function signInWithToken(token: string) {
+  return signInWithCustomToken(getAuth(app), token);
+}
 
-/** The compat auth instance, for signInWithCustomToken / signOut. */
-FirebaseRef.auth = () => firebase.auth();
-
-/** Escape hatch for code that needs the namespace itself. */
-FirebaseRef.app = firebase;
-
-module.exports = FirebaseRef;
+export function signOutOfFirebase() {
+  return signOut(getAuth(app));
+}

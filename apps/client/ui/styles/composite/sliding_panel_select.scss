@@ -1,5 +1,10 @@
 /* ---------- SLIDING PANEL SELECT ---------- */
 
+// components/carousel/sliding-panel-select.ts carries .sliding-panel-select itself
+duelyst-sliding-panel-select {
+	display: block;
+}
+
 .sliding-panel-select {
 	@extend .panel;
 	pointer-events: none;
