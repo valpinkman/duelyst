@@ -38,7 +38,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { chromium } from '@playwright/test';
+import { chromium, devices } from '@playwright/test';
 import { register, skipTutorialToMainMenu, waitForClientBoot } from '../helpers/session.mjs';
 
 export const VIEWPORT = { width: 1280, height: 720 };
@@ -92,6 +92,8 @@ const show =
 
 /** The collection, freshly shown, then one of its modes via the layout's own handlers. */
 const collectionMode = (mode) => async (page) => {
+  // showCollection rejects while the collection is already up: leave it first
+  await mainMenu(page);
   await show('showCollection')(page);
   await page.waitForFunction(() => {
     const view = window.NavigationManager.getInstance().getContentView();
@@ -190,6 +192,8 @@ export const SCREENS = [
   {
     name: 'ShopSpiritOrbsModalView',
     go: async (page) => {
+      // like showCollection, this rejects while its layout is already up
+      await mainMenu(page);
       await show('showBoosterPackUnlock')(page);
       // the layout ignores the buy button while its reveal animation runs
       await page.waitForFunction(() => {
@@ -226,22 +230,40 @@ async function settle(page, inflight) {
   await page.waitForTimeout(AFTER_IDLE_MS);
 }
 
-/** From the login screen to the main menu, clicking through whatever pops up. */
+/**
+ * From the login screen to the main menu, clicking through whatever pops up.
+ *
+ * The client races here: now and then the session logs in and every manager
+ * comes up, but App.main() still leaves the login screen in place (seen on
+ * roughly half of headless logins). So once the managers are ready, a login
+ * screen that is still showing gets App.main() run again, which is what the
+ * login handler would have done.
+ */
 async function login(page, username) {
   const form = page.locator('#app-login');
   await form.locator('.login-username').fill(username);
   await form.locator('.login-password').fill(PASSWORD);
   await form.locator('button.login').click();
+  await page.waitForFunction(() => window.__duelystE2E.App.getIsLoggedIn(), null, {
+    timeout: 120_000,
+  });
+  await page.evaluate(() => window.__duelystE2E.App.managersReadyDeferred.promise);
   const play = page.getByRole('button', { name: 'Play', exact: true });
   const deadline = Date.now() + 120_000;
+  let nudgeAt = Date.now() + 10_000;
   while (!(await play.isVisible().catch(() => false))) {
     if (Date.now() > deadline) throw new Error(`login as ${username} never reached the main menu`);
     const gotIt = page.getByRole('button', { name: /got it|^ok$/i }).locator('visible=true');
-    if (await gotIt.count())
+    if (await gotIt.count()) {
       await gotIt
         .first()
         .click()
         .catch(() => {});
+    } else if (Date.now() > nudgeAt && (await form.isVisible().catch(() => false))) {
+      console.log('logged in but still on the login screen: running App.main() again');
+      await inApp(page, (seam) => (seam.App._mainPromise == null ? seam.App.main() : null));
+      nudgeAt = Date.now() + 10_000;
+    }
     await page.waitForTimeout(1_000);
   }
 }
@@ -285,7 +307,13 @@ export async function capture({ baseUrl, user, out, screens, setup = false, head
       '--mute-audio',
     ],
   });
-  const context = await browser.newContext({ viewport: VIEWPORT, deviceScaleFactor: 1 });
+  // the Desktop Chrome profile, as the e2e suite uses: its user agent does not
+  // say "Headless", which the client rejects as an unsupported browser
+  const context = await browser.newContext({
+    ...devices['Desktop Chrome'],
+    viewport: VIEWPORT,
+    deviceScaleFactor: 1,
+  });
   const page = await context.newPage();
   const inflight = new Set();
   page.on('request', (r) => inflight.add(r));
