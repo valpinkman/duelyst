@@ -52,9 +52,15 @@ const AFTER_IDLE_MS = 750;
  * Painted over in every shot, on both sides of a comparison. Card art is a
  * sprite sheet stepped by script, not a CSS animation, so `animations:
  * 'disabled'` does not stop it, and two captures of one build catch each
- * card on a different frame (1.3 % of the collection on its own).
+ * card on a different frame (1.3 % of the collection on its own). Same for
+ * the zodiac canvases on the main-menu buttons.
  */
-const MASK = ['.card-sprite .sprite', '.signature-card-sprite .sprite'];
+const MASK = [
+  '.card-sprite .sprite',
+  '.signature-card-sprite .sprite',
+  // the main-menu buttons each draw an animated constellation on a canvas
+  '.zodiac-symbol-canvas',
+];
 const MASK_COLOR = '#ff00ff';
 
 /** Run `fn` in the page with the seam as its first argument (see screen-tour.spec.mjs). */
