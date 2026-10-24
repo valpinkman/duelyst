@@ -180,13 +180,16 @@ const riftRun = (claim) => async (page) => {
 /**
  * The screens, in the screen tour's order, with names from its census
  * (test/e2e/screens.mjs). `go` brings the screen up from anywhere, so any
- * subset can be captured; `leave` undoes state the next screen must not see.
+ * subset can be captured; `leave` undoes state the next screen must not see;
+ * `mask` adds selectors to MASK for that screen only.
  * The game screens are not here: a practice game is random from its first
  * draw, so two runs never show the same board.
  */
 export const SCREENS = [
   { name: 'TutorialLessonsShell', go: show('_showTutorialLessons') },
-  { name: 'MainMenuItemView', go: mainMenu },
+  // the new-player hint bubbles are placed by script against buttons that are
+  // still revealing, and land a pixel or two apart from one capture to the next
+  { name: 'MainMenuItemView', go: mainMenu, mask: ['.popover'] },
   { name: 'QuestLogShell', go: utilityModal('toggleQuestLog'), leave: closeModal },
   { name: 'ProfileLayout', go: utilityModal('toggleProfile'), leave: closeModal },
   { name: 'BuddiesLayout', go: utilityModal('toggleBuddyList'), leave: closeModal },
@@ -362,7 +365,7 @@ export async function capture({ baseUrl, user, out, screens, setup = false, head
         animations: 'disabled',
         caret: 'hide',
         scale: 'css',
-        mask: MASK.map((selector) => page.locator(selector)),
+        mask: [...MASK, ...(entry.mask ?? [])].map((selector) => page.locator(selector)),
         maskColor: MASK_COLOR,
       };
       await page.screenshot({ ...shot, path: `${base}.png` });
