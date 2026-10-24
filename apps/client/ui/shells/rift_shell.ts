@@ -92,6 +92,7 @@ var RiftShell = Backbone.Marionette.ItemView.extend({
   _contentRegion: null,
   _gradientId: null,
   _runSelected: false,
+  _leaving: false,
 
   initialize: function () {
     this._gradientId = generatePushID();
@@ -109,13 +110,16 @@ var RiftShell = Backbone.Marionette.ItemView.extend({
   onShow: function () {
     this.runsCollection.onSyncOrReady().then(
       function () {
-        if (this.isDestroyed || this._element() == null) return;
+        // the runs can arrive while the shell animates out: its gradient is
+        // already cleared, so nothing would clear a new one
+        if (this._leaving || this.isDestroyed || this._element() == null) return;
         this._showRuns();
       }.bind(this),
     );
   },
 
   onPrepareForDestroy: function () {
+    this._leaving = true;
     this._clearGradient();
     if (this._contentRegion != null) this._contentRegion.prepareForDestroy();
   },
@@ -182,7 +186,7 @@ var RiftShell = Backbone.Marionette.ItemView.extend({
    * @param {Backbone.Model} model
    */
   _showRun: function (model) {
-    if (this.isDestroyed) return;
+    if (this._leaving || this.isDestroyed) return;
     // the runs list leaves, as the old composite did when the region swapped it
     this._clearGradient();
     if (this._contentRegion == null) {
