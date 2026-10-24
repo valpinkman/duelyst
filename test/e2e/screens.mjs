@@ -101,13 +101,18 @@ export const SCREENS = [
     landmark: '#app-play',
   },
   {
-    name: 'ArenaLayout',
-    file: `${UI}/views/layouts/arena.ts`,
+    name: 'ArenaShell',
+    kind: 'Shell',
+    file: `${UI}/shells/arena_shell.ts`,
     status: 'toured',
-    landmark: '#app-arena',
-    // its template (templates/layouts/arena.hbs) is 0 bytes: the Gauntlet
-    // screen is drawn entirely by cocos, so the empty root is all the DOM has
+    landmark: '#app-arena duelyst-arena',
+    landmarkDeclares: '#app-arena',
+    // no DOM (#12 D3): the Gauntlet screen is drawn entirely by cocos, so the
+    // census asserts the element registered instead of a visible child, and
+    // the tour waits for the element's ArenaLayer
     attached: true,
+    registered: 'duelyst-arena',
+    registeredIn: `${UI}/components/arena/arena.ts`,
   },
   {
     name: 'RiftDeckSelectLayout',

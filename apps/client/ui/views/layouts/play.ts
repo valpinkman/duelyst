@@ -25,7 +25,7 @@ var PlayModeSelectCompositeView = require('../composite/play_mode_select');
 var PlayLayoutTempl = require('../../templates/layouts/play.hbs');
 var RiftDeckSelectLayout = require('../../views2/rift/rift_layout');
 var VirtualCollection = require('backbone-virtual-collection');
-var ArenaLayout = require('./arena');
+var ArenaShell = require('../../shells/arena_shell');
 
 var PlayLayout = Backbone.Marionette.LayoutView.extend({
   id: 'app-play',
@@ -116,7 +116,7 @@ var PlayLayout = Backbone.Marionette.LayoutView.extend({
         }),
       );
     } else if (playModeIdentifier === SDK.PlayModes.Gauntlet) {
-      showPromise = this.modeRegion.show(new ArenaLayout());
+      showPromise = this.modeRegion.show(new ArenaShell());
     } else if (playModeIdentifier === SDK.PlayModes.BossBattle) {
       showPromise = this.modeRegion.show(
         new DeckSelectBossBattleCompositeView({
