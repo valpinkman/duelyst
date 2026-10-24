@@ -205,9 +205,17 @@ test.describe('screen tour', () => {
 
     // --- play modes -------------------------------------------------------
     await visit('PlayLayout', () => inApp(page, (seam) => seam.App.showPlay('')));
-    await visit('ArenaLayout', () =>
-      inApp(page, (seam) => seam.App.showPlay(window.SDK.PlayModes.Gauntlet)),
-    );
+    await visit('ArenaShell', async () => {
+      await inApp(page, (seam) => seam.App.showPlay(window.SDK.PlayModes.Gauntlet));
+      // the element draws nothing: wait for the cocos layer it puts on screen
+      await page.waitForFunction(() => {
+        const arena = document.querySelector('duelyst-arena');
+        return (
+          arena?.layer != null &&
+          window.__duelystE2E.Scene.getInstance().getContent() === arena.layer
+        );
+      });
+    });
     await visit('RiftDeckSelectLayout', () =>
       inApp(page, (seam) => seam.App.showPlay(window.SDK.PlayModes.Rift)),
     );
