@@ -39,10 +39,14 @@ const UI = 'apps/client/ui';
 export const SCREENS = [
   // --- reached on a fresh account's own path -------------------------------
   {
-    name: 'TutorialLessonsLayout',
-    file: `${UI}/views2/tutorial/tutorial_lessons_layout.ts`,
+    name: 'TutorialLessonsShell',
+    kind: 'Shell',
+    file: `${UI}/shells/tutorial_lessons_shell.ts`,
     status: 'toured',
     landmark: '#app-tutorial',
+    // only <duelyst-tutorial-lessons> renders the lesson row
+    visible: 'duelyst-tutorial-lessons .lessons',
+    visibleDeclaredIn: `${UI}/components/tutorial/tutorial-lessons.ts`,
   },
   {
     name: 'MainMenuItemView',

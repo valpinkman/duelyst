@@ -180,7 +180,7 @@ test.describe('screen tour', () => {
 
     // --- a fresh account's own path ---------------------------------------
     await test.step('register', () => register(page, uniqueUsername('tour'), 'e2e-duelyst-pw'));
-    await visit('TutorialLessonsLayout');
+    await visit('TutorialLessonsShell');
     await test.step('skip to the main menu', () => skipTutorialToMainMenu(page));
     await visit('MainMenuItemView');
     await visit('NotificationsLayout');
