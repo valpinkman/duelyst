@@ -161,7 +161,7 @@ describe('<duelyst-codex>', () => {
 
     // a faded-out region stops taking clicks
     const chapters = el.querySelector<HTMLElement>('.chapters-region')!;
-    animations.filter((a) => a.target === chapters).at(-1)!.onfinish!();
+    animations.filter((a) => a.target === chapters).pop()!.onfinish!();
     expect(chapters.style.visibility).toBe('hidden');
 
     el.state = 'world-map';

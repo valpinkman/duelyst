@@ -91,8 +91,8 @@ const listenerCount = (name: string) => (EventBus.getInstance()._events[name] ||
 
 describe('<duelyst-sliding-panel-select>', () => {
   beforeAll(async () => {
-    EventBus = (await import('@duelyst/common/eventbus')).default;
-    EVENTS = (await import('@duelyst/common/event_types')).default;
+    EventBus = ((await import('@duelyst/common/eventbus')) as any).default;
+    EVENTS = ((await import('@duelyst/common/event_types')) as any).default;
     component = await import('../../../../apps/client/ui/components/carousel/sliding-panel-select');
     TAG = component.TAG;
   });
