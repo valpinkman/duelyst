@@ -199,7 +199,7 @@ test.describe('screen tour', () => {
 
     // --- modals over the main menu ----------------------------------------
     await visit('QuestLogShell', utilityModal('toggleQuestLog'));
-    await visit('ProfileLayout', utilityModal('toggleProfile'));
+    await visit('ProfileShell', utilityModal('toggleProfile'));
     await visit('BuddiesLayout', utilityModal('toggleBuddyList'));
     await closeModal();
 

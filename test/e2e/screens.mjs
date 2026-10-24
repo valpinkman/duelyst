@@ -81,10 +81,14 @@ export const SCREENS = [
     visibleDeclaredIn: `${UI}/components/quests/quest-log.ts`,
   },
   {
-    name: 'ProfileLayout',
-    file: `${UI}/views2/profile/profile_layout.ts`,
+    name: 'ProfileShell',
+    kind: 'Shell',
+    file: `${UI}/shells/profile_shell.ts`,
     status: 'toured',
     landmark: '#app-profile',
+    // only <duelyst-profile> renders the tab bar
+    visible: 'duelyst-profile #profile_tabs',
+    visibleDeclaredIn: `${UI}/components/profile/profile.ts`,
   },
   {
     name: 'BuddiesLayout',

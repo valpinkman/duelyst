@@ -11,7 +11,7 @@ var InventoryManager = require('../../managers/inventory_manager');
 var ServerStatusManager = require('../../managers/server_status_manager');
 var NavigationManager = require('../../managers/navigation_manager');
 var QuestLogShell = require('../../shells/quest_log_shell');
-var ProfileLayout = require('../../views2/profile/profile_layout');
+var ProfileShell = require('../../shells/profile_shell');
 var ProgressionManager = require('../../managers/progression_manager');
 var NewPlayerManager = require('../../managers/new_player_manager');
 var ProfileManager = require('../../managers/profile_manager');
@@ -346,7 +346,7 @@ var UtilityMainMenuItemView = UtilityMenuItemView.extend({
   },
 
   toggleProfile: function () {
-    NavigationManager.getInstance().toggleModalViewByClass(ProfileLayout, {
+    NavigationManager.getInstance().toggleModalViewByClass(ProfileShell, {
       model: ProfileManager.getInstance().profile,
     });
   },
