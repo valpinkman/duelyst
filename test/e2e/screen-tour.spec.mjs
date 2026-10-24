@@ -29,7 +29,6 @@ import { SCREENS, screen } from './screens.mjs';
  *     so there is no DOM landmark to assert (D3, D6).
  *   - BuddySelectionLayout: needs a second account and an accepted friend
  *     request (D3).
- *   - PremiumPurchaseDialogView: dead code.
  * test/unit/misc/screen_census.js fails if a LayoutView appears that this
  * census does not account for.
  *
