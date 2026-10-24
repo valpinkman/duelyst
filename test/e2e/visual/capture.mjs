@@ -195,7 +195,7 @@ export const SCREENS = [
   { name: 'ProfileLayout', go: utilityModal('toggleProfile'), leave: closeModal },
   { name: 'BuddiesLayout', go: utilityModal('toggleBuddyList'), leave: closeModal },
   { name: 'PlayLayout', go: show('showPlay', '') },
-  { name: 'ArenaLayout', go: show('showPlay', { playMode: 'Gauntlet' }) },
+  { name: 'ArenaShell', go: show('showPlay', { playMode: 'Gauntlet' }) },
   { name: 'RiftDeckSelectLayout', go: riftLayout },
   // the general cards deal in on the cocos layer one by one, over ~3 s, at
   // their own pace: without the hold, captures caught one to three of four
