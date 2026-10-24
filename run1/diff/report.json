@@ -1,0 +1,116 @@
+{
+  "threshold": 0.1,
+  "maxDiff": 0.5,
+  "maxDiffDom": 0.05,
+  "rows": [
+    {
+      "name": "03-QuestLogShell.dom",
+      "percent": 0,
+      "changed": 0,
+      "sizeChanged": false,
+      "noise": 0,
+      "limit": 0.05,
+      "fail": false
+    },
+    {
+      "name": "03-QuestLogShell",
+      "percent": 0.02007378472222222,
+      "changed": 185,
+      "sizeChanged": false,
+      "noise": 0.15972222222222224,
+      "limit": 0.5,
+      "fail": false
+    },
+    {
+      "name": "04-ProfileShell.dom",
+      "percent": 0,
+      "changed": 0,
+      "sizeChanged": false,
+      "noise": 0,
+      "limit": 0.05,
+      "fail": false
+    },
+    {
+      "name": "04-ProfileShell",
+      "percent": 0,
+      "changed": 0,
+      "sizeChanged": false,
+      "noise": 0,
+      "limit": 0.5,
+      "fail": false
+    },
+    {
+      "name": "05-ProfileShell-faction-levels.dom",
+      "percent": 0.010199652777777778,
+      "changed": 94,
+      "sizeChanged": false,
+      "noise": 0,
+      "limit": 0.05,
+      "fail": false
+    },
+    {
+      "name": "05-ProfileShell-faction-levels",
+      "percent": 0.010525173611111112,
+      "changed": 97,
+      "sizeChanged": false,
+      "noise": 0,
+      "limit": 0.5,
+      "fail": false
+    },
+    {
+      "name": "06-ProfileShell-rank-history.dom",
+      "percent": 0.002604166666666667,
+      "changed": 24,
+      "sizeChanged": false,
+      "noise": 0,
+      "limit": 0.05,
+      "fail": false
+    },
+    {
+      "name": "06-ProfileShell-rank-history",
+      "percent": 0.0016276041666666667,
+      "changed": 15,
+      "sizeChanged": false,
+      "noise": 0,
+      "limit": 0.5,
+      "fail": false
+    },
+    {
+      "name": "07-ProfileShell-match-history.dom",
+      "percent": 0,
+      "changed": 0,
+      "sizeChanged": false,
+      "noise": 0,
+      "limit": 0.05,
+      "fail": false
+    },
+    {
+      "name": "07-ProfileShell-match-history",
+      "percent": 0,
+      "changed": 0,
+      "sizeChanged": false,
+      "noise": 0,
+      "limit": 0.5,
+      "fail": false
+    },
+    {
+      "name": "08-BuddiesLayout.dom",
+      "percent": 0,
+      "changed": 0,
+      "sizeChanged": false,
+      "noise": 0,
+      "limit": 0.05,
+      "fail": false
+    },
+    {
+      "name": "08-BuddiesLayout",
+      "percent": 0.2309027777777778,
+      "changed": 2128,
+      "sizeChanged": false,
+      "noise": 0.6859809027777778,
+      "limit": 1.3719618055555556,
+      "fail": false
+    }
+  ],
+  "failures": 0
+}
