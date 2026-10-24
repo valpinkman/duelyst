@@ -154,6 +154,30 @@ describe('<duelyst-sliding-panel-select>', () => {
     ]);
   });
 
+  it('takes a header, a footer and a list class from the host', async () => {
+    const el = await mount({
+      items: items(1),
+      listClass: 'rift-runs-list',
+      renderHeader: () => html`<h1>The Rift</h1>`,
+      renderFooter: () => html`<div class="sliding-panel-select-footer"><button>Go</button></div>`,
+    });
+    expect(el.querySelector('.sliding-panel-select-title')).toBeNull();
+    expect(el.querySelector('.sliding-panel-select-header > h1')!.textContent).toBe('The Rift');
+    expect(el.querySelector('ul')!.className).toBe('choices rift-runs-list');
+    // the footer closes the content, after the body, as the rift template had it
+    const content = el.querySelector('.sliding-panel-select-content')!;
+    expect(content.lastElementChild!.matches('.sliding-panel-select-footer')).toBe(true);
+    expect(
+      content.lastElementChild!.previousElementSibling!.matches('.sliding-panel-select-body'),
+    ).toBe(true);
+  });
+
+  it('has no footer and a bare list by default', async () => {
+    const el = await mount({ items: items(1) });
+    expect(el.querySelector('.sliding-panel-select-footer')).toBeNull();
+    expect(el.querySelector('ul')!.className).toBe('choices');
+  });
+
   it('shrinks the list around panels that fit, and plays them in staggered', async () => {
     const el = await mount({ items: items(3), slidingPanelsStack: false });
     // 3 x 200 in a 1000 list: the list takes 600 and the body's flexbox

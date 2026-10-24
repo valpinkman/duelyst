@@ -6,9 +6,10 @@
  * Marionette subclasses until their screens move.
  *
  * The host sets `items` (each with an `id`, or a `name`) and `renderPanel`,
- * which returns the content of one panel; the carousel lays the panels out,
- * stacks them when they fit, slides them on wheel and paging, and snaps or
- * sticks a selection when asked to. It imports no manager. Everything it
+ * which returns the content of one panel, and may replace the dashed header
+ * (`renderHeader`) or add a footer under the list (`renderFooter`, #77). The
+ * carousel lays the panels out, stacks them when they fit, slides them on
+ * wheel and paging, and snaps or sticks a selection when asked to. It imports no manager. Everything it
  * needs from outside leaves as a bubbling DOM event:
  *
  *   panel-select    detail { item }  an enabled panel was clicked (selected)
@@ -150,6 +151,9 @@ export class SlidingPanelSelect extends LitElement {
   static properties = {
     items: { attribute: false },
     heading: { attribute: false },
+    renderHeader: { attribute: false },
+    renderFooter: { attribute: false },
+    listClass: { attribute: false },
     renderPanel: { attribute: false },
     renderEmpty: { attribute: false },
     panelClass: { attribute: false },
@@ -159,6 +163,12 @@ export class SlidingPanelSelect extends LitElement {
   declare items: PanelItem[];
   /** the dashed header title */
   declare heading: string;
+  /** the header's content; the dashed `heading` title when unset */
+  declare renderHeader: (() => unknown) | null;
+  /** a footer under the list (buttons, labels); none when unset */
+  declare renderFooter: (() => unknown) | null;
+  /** extra classes for the list itself */
+  declare listClass: string;
   /** the content of one panel's <li> */
   declare renderPanel: (item: PanelItem) => unknown;
   /** what the list shows when `items` is empty; nothing when unset */
@@ -224,6 +234,9 @@ export class SlidingPanelSelect extends LitElement {
     super();
     this.items = [];
     this.heading = '';
+    this.renderHeader = null;
+    this.renderFooter = null;
+    this.listClass = '';
     this.renderPanel = () => nothing;
     this.renderEmpty = null;
     this.panelClass = () => '';
@@ -912,11 +925,11 @@ export class SlidingPanelSelect extends LitElement {
     return html`
       <div class="sliding-panel-select-content">
         <div class="sliding-panel-select-header">
-          <div class="header-dashed-text sliding-panel-select-title">${this.heading}</div>
+          ${this.renderHeader != null ? this.renderHeader() : this.#renderTitle()}
         </div>
         <div class="sliding-panel-select-body">
           <div class="sliding-panel-select-choices">
-            <ul class="choices">
+            <ul class=${this.listClass ? `choices ${this.listClass}` : 'choices'}>
               ${
                 empty
                   ? this.renderEmpty!()
@@ -935,8 +948,13 @@ export class SlidingPanelSelect extends LitElement {
             </div>
           </div>
         </div>
+        ${this.renderFooter != null ? this.renderFooter() : nothing}
       </div>
     `;
+  }
+
+  #renderTitle() {
+    return html`<div class="header-dashed-text sliding-panel-select-title">${this.heading}</div>`;
   }
 
   #renderPanel(item: PanelItem) {
