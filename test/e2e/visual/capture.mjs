@@ -48,6 +48,14 @@ const TIMING_KEY = /_(DURATION|DELAY)$/;
 const SETTLE_MS = 1_500;
 // and then this much longer, for the frame after the last asset decoded
 const AFTER_IDLE_MS = 750;
+/**
+ * Painted over in every shot, on both sides of a comparison. Card art is a
+ * sprite sheet stepped by script, not a CSS animation, so `animations:
+ * 'disabled'` does not stop it, and two captures of one build catch each
+ * card on a different frame (1.3 % of the collection on its own).
+ */
+const MASK = ['.card-sprite .sprite', '.signature-card-sprite .sprite'];
+const MASK_COLOR = '#ff00ff';
 
 /** Run `fn` in the page with the seam as its first argument (see screen-tour.spec.mjs). */
 function inApp(page, fn, arg) {
@@ -344,7 +352,13 @@ export async function capture({ baseUrl, user, out, screens, setup = false, head
       const base = path.join(out, `${index}-${entry.name}`);
       await entry.go(page);
       await settle(page, inflight);
-      const shot = { animations: 'disabled', caret: 'hide', scale: 'css' };
+      const shot = {
+        animations: 'disabled',
+        caret: 'hide',
+        scale: 'css',
+        mask: MASK.map((selector) => page.locator(selector)),
+        maskColor: MASK_COLOR,
+      };
       await page.screenshot({ ...shot, path: `${base}.png` });
       await page.screenshot({
         ...shot,
