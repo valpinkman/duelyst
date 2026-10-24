@@ -29,7 +29,7 @@ var ShopData = require('@duelyst/data/shop.json');
 
 // var RiftLayer = require('../../../view/layers/rift/RiftLayer')
 var RiftRunsCompositeView = require('./rift_runs_composite');
-var RiftRunLayout = require('./rift_run_layout');
+var RiftRunShell = require('../../shells/rift_run_shell');
 var Templ = require('./templates/rift_layout.hbs');
 var { requestJson } = require('@duelyst/common/request');
 
@@ -70,7 +70,7 @@ var RiftDeckSelectLayout = Backbone.Marionette.LayoutView.extend({
           'select',
           function (model) {
             if (model != null) {
-              var runLayout = new RiftRunLayout({ model: model });
+              var runLayout = new RiftRunShell({ model: model });
               this.contentRegion.show(runLayout);
             }
           }.bind(this),
@@ -113,7 +113,7 @@ var RiftDeckSelectLayout = Backbone.Marionette.LayoutView.extend({
         .then(
           function (runData) {
             this._activeRiftRequest = null;
-            var runLayout = new RiftRunLayout({ model: new DuelystBackbone.Model(runData) });
+            var runLayout = new RiftRunShell({ model: new DuelystBackbone.Model(runData) });
             this.contentRegion.show(runLayout);
           }.bind(this),
         )
@@ -151,7 +151,7 @@ var RiftDeckSelectLayout = Backbone.Marionette.LayoutView.extend({
         .then(
           function (runData) {
             this._activeRiftRequest = null;
-            var runLayout = new RiftRunLayout({ model: new DuelystBackbone.Model(runData) });
+            var runLayout = new RiftRunShell({ model: new DuelystBackbone.Model(runData) });
             this.contentRegion.show(runLayout);
           }.bind(this),
         )
@@ -166,7 +166,7 @@ var RiftDeckSelectLayout = Backbone.Marionette.LayoutView.extend({
   },
 
   _beginRiftRun: function (runData) {
-    var runLayout = new RiftRunLayout({ model: new DuelystBackbone.Model(runData) });
+    var runLayout = new RiftRunShell({ model: new DuelystBackbone.Model(runData) });
     this.contentRegion.show(runLayout);
   },
 
