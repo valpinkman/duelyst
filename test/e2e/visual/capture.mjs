@@ -6,7 +6,7 @@
  *
  *   node test/e2e/visual/capture.mjs --base-url http://localhost:3000 \
  *        --user vis1a2b3c --out /tmp/vis/before [--screens WatchShell,CodexLayout]
- *   node test/e2e/visual/capture.mjs --base-url ... --user vis1a2b3c --setup
+ *   node test/e2e/visual/capture.mjs --base-url ... --user vis1a2b3c --setup [--no-rift-run]
  *
  * `--setup` registers the account, skips the tutorial and claims its free
  * rift run, so that every later capture logs in to the same state. Captures
@@ -137,13 +137,21 @@ const collectionMode = (mode) => async (page) => {
 const backToBrowsing = (page) =>
   inApp(page, () => window.NavigationManager.getInstance().getContentView()?.startBrowsingMode?.());
 
-/** The rift layout inside the play layout, once its runs list has loaded. */
+/**
+ * The rift screen inside the play layout, once its runs list has loaded:
+ * the Marionette composite in the layout's region before #77, the
+ * <duelyst-rift-runs> element of RiftShell after.
+ */
 async function riftLayout(page) {
   await show('showPlay', { playMode: 'Rift' })(page);
   await page.waitForFunction(() => {
     const play = window.NavigationManager.getInstance().getContentView();
     const rift = play?.modeRegion?.currentView;
-    return rift?.runsCollection != null && rift.contentRegion?.currentView != null;
+    if (rift?.runsCollection == null) return false;
+    return (
+      rift.contentRegion?.currentView != null ||
+      rift.el?.querySelector('duelyst-rift-runs')?.ready === true
+    );
   });
 }
 
@@ -160,7 +168,10 @@ const riftRun = (claim) => async (page) => {
       const rift = window.NavigationManager.getInstance().getContentView().modeRegion.currentView;
       const run = rift.runsCollection.first();
       if (run != null) {
-        rift.contentRegion.currentView.trigger('select', run);
+        const list = rift.contentRegion?.currentView;
+        if (list != null) list.trigger('select', run);
+        // after #77: a click on the run's panel, as the player does
+        else rift.el.querySelector('li.rift-run-deck').click();
         return null;
       }
       if (!mayClaim) throw new Error('the account has no rift run: run capture.mjs --setup first');
@@ -168,13 +179,9 @@ const riftRun = (claim) => async (page) => {
     },
     claim,
   );
-  // the run screen is a cocos layer: wait for the Scene to show something
-  // other than what the runs list left there
-  await page.waitForFunction(() => {
-    const rift = window.NavigationManager.getInstance().getContentView().modeRegion.currentView;
-    const current = rift.contentRegion.currentView;
-    return current != null && current.collection == null;
-  });
+  // the run screen is a cocos layer: wait for RiftRunShell, which both sides
+  // show inside the rift screen's own #app-rift
+  await page.waitForFunction(() => document.querySelector('#app-rift #app-rift') != null);
 };
 
 /**
@@ -215,7 +222,18 @@ export const SCREENS = [
   { name: 'BuddiesLayout', go: utilityModal('toggleBuddyList'), leave: closeModal },
   { name: 'PlayLayout', go: show('showPlay', '') },
   { name: 'ArenaShell', go: show('showPlay', { playMode: 'Gauntlet' }) },
-  { name: 'RiftDeckSelectLayout', go: riftLayout },
+  { name: 'RiftShell', go: riftLayout },
+  // the hover look of the first run (an account set up without a run shows
+  // the empty state here instead, and the hover finds nothing)
+  {
+    name: 'RiftShell.hover',
+    go: async (page) => {
+      await riftLayout(page);
+      const panel = page.locator('#app-rift li.rift-run-deck').first();
+      if (await panel.count()) await panel.hover();
+    },
+    leave: (page) => page.mouse.move(0, 0),
+  },
   // the general cards deal in on the cocos layer one by one, over ~3 s, at
   // their own pace: without the hold, captures caught one to three of four
   { name: 'RiftRunShell', go: riftRun(false), holdMs: 6_000 },
@@ -336,7 +354,15 @@ async function boot(page, baseUrl) {
 }
 
 /** Capture `screens` (names) into `out`. Returns [{ name, files }]. */
-export async function capture({ baseUrl, user, out, screens, setup = false, headed = false }) {
+export async function capture({
+  baseUrl,
+  user,
+  out,
+  screens,
+  setup = false,
+  riftRunAtSetup = true,
+  headed = false,
+}) {
   const browser = await chromium.launch({
     headless: !headed,
     args: [
@@ -366,9 +392,12 @@ export async function capture({ baseUrl, user, out, screens, setup = false, head
     if (setup) {
       await register(page, user, PASSWORD);
       await skipTutorialToMainMenu(page);
-      await riftRun(true)(page);
+      // without a run the rift screen shows its empty state (--no-rift-run)
+      if (riftRunAtSetup) await riftRun(true)(page);
       await settle(page, inflight);
-      console.log(`set up ${user}: registered, tutorial skipped, rift run claimed`);
+      console.log(
+        `set up ${user}: registered, tutorial skipped, ${riftRunAtSetup ? 'rift run claimed' : 'no rift run'}`,
+      );
       return [];
     }
     await login(page, user);
@@ -412,7 +441,7 @@ function parseArgs(argv) {
   const flags = {};
   for (let i = 0; i < argv.length; i++) {
     const key = argv[i].replace(/^--/, '');
-    if (key === 'setup' || key === 'headed') flags[key] = true;
+    if (key === 'setup' || key === 'headed' || key === 'no-rift-run') flags[key] = true;
     else flags[key] = argv[++i];
   }
   return flags;
@@ -432,6 +461,7 @@ if (import.meta.url === new URL(`file://${path.resolve(process.argv[1] ?? '')}`)
     out: flags.out,
     screens: flags.screens ? flags.screens.split(',') : null,
     setup: !!flags.setup,
+    riftRunAtSetup: !flags['no-rift-run'],
     headed: !!flags.headed,
   }).catch((e) => {
     console.error(e);

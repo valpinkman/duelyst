@@ -119,21 +119,23 @@ export const SCREENS = [
     registeredIn: `${UI}/components/arena/arena.ts`,
   },
   {
-    name: 'RiftDeckSelectLayout',
-    file: `${UI}/views2/rift/rift_layout.ts`,
+    name: 'RiftShell',
+    kind: 'Shell',
+    file: `${UI}/shells/rift_shell.ts`,
     status: 'toured',
-    // RiftRunShell shares #app-rift; on a fresh account the deck-select layout
-    // shows the runs list's empty state, which RiftRunShell never renders
-    landmark: '#app-rift .rift-runs .rift-runs-empty-view',
-    landmarkDeclares: '#app-rift',
+    landmark: '#app-rift',
+    // RiftRunShell shares #app-rift; on a fresh account only <duelyst-rift-runs>
+    // renders the runs list's empty state, once the runs have loaded
+    visible: 'duelyst-rift-runs .rift-runs-empty-view',
+    visibleDeclaredIn: `${UI}/components/rift/rift-runs.ts`,
   },
   {
     name: 'RiftRunShell',
     kind: 'Shell',
     file: `${UI}/shells/rift_run_shell.ts`,
     status: 'toured',
-    // the tour account claims its free first run from the deck-select layout
-    // (D8), which shows this shell inside its own #app-rift
+    // the tour account claims its free first run from RiftShell (D8), which
+    // shows this shell inside its own #app-rift
     landmark: '#app-rift #app-rift duelyst-rift-run',
     landmarkDeclares: '#app-rift',
     // no DOM (#12 D3): the element renders nothing and everything visible is

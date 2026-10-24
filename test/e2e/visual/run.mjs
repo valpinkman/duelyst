@@ -5,7 +5,7 @@
  *
  *   node test/e2e/visual/run.mjs --before <ref> --after <ref> --dist <dir> \
  *        [--base-url http://localhost:3000] [--screens A,B] [--user <name>] \
- *        [--work <dir>] [--noise] [--keep]
+ *        [--work <dir>] [--noise] [--keep] [--no-rift-run]
  *
  * `--dist` is the directory the running stack serves the client from: the
  * api container bind-mounts `./dist/src` (docker-compose.yaml), so it is
@@ -19,7 +19,8 @@
  * built dist/src. Then it:
  *   1. backs up what --dist holds,
  *   2. swaps the after build in and, without --user, sets up a fresh account
- *      (registered, tutorial skipped, rift run claimed),
+ *      (registered, tutorial skipped, rift run claimed unless --no-rift-run,
+ *      which leaves the rift screen on its empty state),
  *   3. swaps the before build in and captures (twice with --noise),
  *   4. swaps the after build in and captures,
  *   5. restores --dist, compares, and exits non-zero if any screen is over
@@ -42,7 +43,7 @@ function parseArgs(argv) {
   const flags = {};
   for (let i = 0; i < argv.length; i++) {
     const key = argv[i].replace(/^--/, '');
-    if (key === 'noise' || key === 'keep') flags[key] = true;
+    if (key === 'noise' || key === 'keep' || key === 'no-rift-run') flags[key] = true;
     else flags[key] = argv[++i];
   }
   return flags;
@@ -99,7 +100,7 @@ async function main() {
     if (!user) {
       user = `vis${Date.now().toString(36)}`.slice(0, 18);
       swapInto(flags.dist, afterBuild);
-      await capture({ baseUrl, user, setup: true });
+      await capture({ baseUrl, user, setup: true, riftRunAtSetup: !flags['no-rift-run'] });
     }
     const dir = (name) => path.join(work, name);
     for (const d of ['before', 'before-repeat', 'after', 'diff']) {

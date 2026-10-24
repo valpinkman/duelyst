@@ -23,7 +23,7 @@ var DeckSelectSandboxCompositeView = require('../composite/deck_select_sandbox')
 var DeckSelectFriendlyCompositeView = require('../composite/deck_select_friendly');
 var PlayModeSelectCompositeView = require('../composite/play_mode_select');
 var PlayLayoutTempl = require('../../templates/layouts/play.hbs');
-var RiftDeckSelectLayout = require('../../views2/rift/rift_layout');
+var RiftShell = require('../../shells/rift_shell');
 var VirtualCollection = require('backbone-virtual-collection');
 var ArenaShell = require('../../shells/arena_shell');
 
@@ -146,7 +146,7 @@ var PlayLayout = Backbone.Marionette.LayoutView.extend({
         }),
       );
     } else if (playModeIdentifier === SDK.PlayModes.Rift) {
-      showPromise = this.modeRegion.show(new RiftDeckSelectLayout());
+      showPromise = this.modeRegion.show(new RiftShell());
     } else {
       var playModesDisplayed = SDK.PlayModeFactory.getAllVisiblePlayModes();
       if (!UtilsEnv.getIsInProduction()) {
