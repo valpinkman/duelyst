@@ -350,7 +350,9 @@ node test/e2e/visual/run.mjs --before <commit before the port> --after HEAD \
   `*.strip.png` (before | after | diff). Every difference is either fixed in the port or named in
   the PR as intended, with Valentin's OK.
 - The script runs from the port's checkout against both builds, so it navigates only through what
-  both sides share (`__duelystE2E.App`, `Scene`, the NavigationManager). The practice-game screens
+  both sides share (`__duelystE2E.App`, `Scene`, the NavigationManager); a port that renames a
+  screen's internals teaches `capture.mjs` both shapes (the rift screen, #77). `--no-rift-run` sets
+  the account up without its rift run, for the rift screen's empty state. The practice-game screens
   are out of scope: the board is random from the first draw.
 
 ## 4. The step sequence
