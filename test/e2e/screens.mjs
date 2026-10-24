@@ -174,10 +174,14 @@ export const SCREENS = [
     landmark: '.shop-layout',
   },
   {
-    name: 'WatchLayout',
-    file: `${UI}/views2/watch/watch_layout.ts`,
+    name: 'WatchShell',
+    kind: 'Shell',
+    file: `${UI}/shells/watch_shell.ts`,
     status: 'toured',
     landmark: '#app_watch',
+    // only <duelyst-watch> renders the division tabs
+    visible: 'duelyst-watch #watch_tabs_division',
+    visibleDeclaredIn: `${UI}/components/watch/watch.ts`,
   },
   {
     name: 'BoosterPackCollectionLayout',

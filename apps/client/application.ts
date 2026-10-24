@@ -110,7 +110,7 @@ const CollectionLayout = require('./ui/views2/collection/collection');
 const PlayLayout = require('./ui/views/layouts/play');
 const PlayLayer = require('./view/layers/pregame/PlayLayer');
 
-const WatchLayout = require('./ui/views2/watch/watch_layout');
+const WatchShell = require('./ui/shells/watch_shell');
 const ShopLayout = require('./ui/views2/shop/shop_layout');
 
 const CodexLayout = require('./ui/views2/codex/codex_layout');
@@ -193,7 +193,7 @@ if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'staging')
       CollectionLayout,
       CodexLayout,
       ShopLayout,
-      WatchLayout,
+      WatchShell,
       TutorialLessonsShell,
       BoosterPackUnlockLayout,
       GameLayout,
@@ -1146,7 +1146,7 @@ App.showPlay = function (playModeIdentifier, showingDirectlyFromGame) {
 App.showWatch = function () {
   if (
     !App.getIsLoggedIn() ||
-    NavigationManager.getInstance().getContentView() instanceof WatchLayout
+    NavigationManager.getInstance().getContentView() instanceof WatchShell
   ) {
     return Promise.reject();
   }
@@ -1160,7 +1160,7 @@ App.showWatch = function () {
     NavigationManager.getInstance().addMajorRoute('watch', App.showWatch, App);
 
     // show layout
-    return NavigationManager.getInstance().showContentView(new WatchLayout());
+    return NavigationManager.getInstance().showContentView(new WatchShell());
   });
 };
 

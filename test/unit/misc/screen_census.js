@@ -68,10 +68,10 @@ describe('screen tour census', () => {
   it('finds the LayoutView sites it is counting', () => {
     // 23 when issue #2 was written; 22 since the quest log became a shell
     // (#10); 21 since the dead premium purchase dialog was deleted (#57); 20
-    // since the tutorial lessons became a shell (#58). If this moves, the
-    // census below says which screen to add or remove - update this number
-    // with it.
-    expect(layoutSites()).to.have.length(20);
+    // since the tutorial lessons became a shell (#58); 19 since the watch
+    // screen did (#63). If this moves, the census below says which screen to
+    // add or remove - update this number with it.
+    expect(layoutSites()).to.have.length(19);
   });
 
   it('has exactly one census entry per LayoutView, in the file that declares it', () => {
@@ -110,11 +110,11 @@ describe('screen tour census', () => {
     }
   });
 
-  it('tours 24 screens: 16 LayoutViews, 4 concrete subclasses, 2 shells, crafting and the main menu', () => {
+  it('tours 24 screens: 15 LayoutViews, 4 concrete subclasses, 3 shells, crafting and the main menu', () => {
     const toured = SCREENS.filter((s) => s.status === 'toured');
-    expect(toured.filter((s) => !s.kind)).to.have.length(16);
+    expect(toured.filter((s) => !s.kind)).to.have.length(15);
     expect(toured.filter((s) => s.kind === 'subclass')).to.have.length(4);
-    expect(toured.filter((s) => s.kind === 'Shell')).to.have.length(2);
+    expect(toured.filter((s) => s.kind === 'Shell')).to.have.length(3);
     expect(toured.map((s) => s.name)).to.include.members([
       'CraftingCompositeView',
       'MainMenuItemView',
