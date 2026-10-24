@@ -116,7 +116,7 @@ const ShopLayout = require('./ui/views2/shop/shop_layout');
 const CodexLayout = require('./ui/views2/codex/codex_layout');
 const CodexLayer = require('./view/layers/codex/CodexLayer');
 
-const TutorialLessonsLayout = require('./ui/views2/tutorial/tutorial_lessons_layout');
+const TutorialLessonsShell = require('./ui/shells/tutorial_lessons_shell');
 const QuestLogShell = require('./ui/shells/quest_log_shell');
 
 const BoosterPackUnlockLayout = require('./ui/views/layouts/booster_pack_collection');
@@ -194,7 +194,7 @@ if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'staging')
       CodexLayout,
       ShopLayout,
       WatchLayout,
-      TutorialLessonsLayout,
+      TutorialLessonsShell,
       BoosterPackUnlockLayout,
       GameLayout,
       QuestLogShell,
@@ -986,11 +986,10 @@ App._showTutorialLessons = function (lastCompletedChallenge) {
       });
 
     // show main menu
-    const tutorialLessonsLayoutView = new TutorialLessonsLayout({
+    const tutorialLessonsShell = new TutorialLessonsShell({
       lastCompletedChallenge,
     });
-    const contentPromise =
-      NavigationManager.getInstance().showContentView(tutorialLessonsLayoutView);
+    const contentPromise = NavigationManager.getInstance().showContentView(tutorialLessonsShell);
 
     return Promise.all([viewPromise, contentPromise]);
   });
@@ -4421,7 +4420,7 @@ App.onUserTriggeredCancel = function () {
         (NavigationManager.getInstance().getIsShowingContentViewClass(LoaderItemView) ||
           NavigationManager.getInstance().getIsShowingContentViewClass(LoginMenuItemView) ||
           NavigationManager.getInstance().getIsShowingContentViewClass(MainMenuItemView) ||
-          NavigationManager.getInstance().getIsShowingContentViewClass(TutorialLessonsLayout))
+          NavigationManager.getInstance().getIsShowingContentViewClass(TutorialLessonsShell))
       ) {
         // show esc main menu when on loading or login or main
         cancelPromises.push(

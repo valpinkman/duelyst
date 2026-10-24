@@ -187,3 +187,8 @@
 		}
 	}
 }
+
+// the component's own box sits between #app-tutorial and the three flex rows
+duelyst-tutorial-lessons {
+	display: contents;
+}
