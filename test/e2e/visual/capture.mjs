@@ -181,7 +181,8 @@ const riftRun = (claim) => async (page) => {
  * The screens, in the screen tour's order, with names from its census
  * (test/e2e/screens.mjs). `go` brings the screen up from anywhere, so any
  * subset can be captured; `leave` undoes state the next screen must not see;
- * `mask` adds selectors to MASK for that screen only.
+ * `mask` adds selectors to MASK for that screen only; `holdMs` waits that much
+ * longer after settling, for a cocos animation the zeroed timings do not reach.
  * The game screens are not here: a practice game is random from its first
  * draw, so two runs never show the same board.
  */
@@ -196,7 +197,9 @@ export const SCREENS = [
   { name: 'PlayLayout', go: show('showPlay', '') },
   { name: 'ArenaLayout', go: show('showPlay', { playMode: 'Gauntlet' }) },
   { name: 'RiftDeckSelectLayout', go: riftLayout },
-  { name: 'RiftRunShell', go: riftRun(false) },
+  // the general cards deal in on the cocos layer one by one, over ~3 s, at
+  // their own pace: without the hold, captures caught one to three of four
+  { name: 'RiftRunShell', go: riftRun(false), holdMs: 6_000 },
   { name: 'CollectionLayout', go: collectionMode(null) },
   { name: 'SelectedCardLayout', go: collectionMode('selected-card') },
   { name: 'CraftingCompositeView', go: collectionMode('crafting'), leave: backToBrowsing },
@@ -361,6 +364,7 @@ export async function capture({ baseUrl, user, out, screens, setup = false, head
       const base = path.join(out, `${index}-${entry.name}`);
       await entry.go(page);
       await settle(page, inflight);
+      if (entry.holdMs) await page.waitForTimeout(entry.holdMs);
       const shot = {
         animations: 'disabled',
         caret: 'hide',
