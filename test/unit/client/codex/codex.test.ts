@@ -100,7 +100,10 @@ describe('<duelyst-codex>', () => {
     expect(
       el.querySelector('.chapters-region > duelyst-sliding-panel-select.codex-chapter-select'),
     ).not.toBeNull();
-    expect(el.querySelector('.chapters-region > .btn-user-cancel.btn-nav-back')).not.toBeNull();
+    // the back button sits outside every faded region: it stays up in all states
+    const back = el.querySelector('.btn-user-cancel.btn-nav-back')!;
+    expect(back.parentElement).toBe(el);
+    expect(back.closest('.lore')).toBeNull();
   });
 
   it('renders a panel per chapter, locked ones disabled with their unlock message', async () => {
@@ -187,7 +190,9 @@ describe('<duelyst-codex>', () => {
     expect(chapter.getAttribute('data-chapter-id')).toBe('2');
     expect(chapter.querySelector('.chapter-name')!.textContent).toBe('The Great Dragons');
     expect(chapter.querySelector('.chapter-description')!.innerHTML).toContain('a<br>b');
-    expect(chapter.querySelector('.chapter-text')!.innerHTML).toContain('one<br>two<br>three');
+    expect(chapter.querySelector('.chapter-text > .chapter-text-inner')!.innerHTML).toContain(
+      'one<br>two<br>three',
+    );
 
     el.chapter = null;
     await el.updateComplete;

@@ -121,9 +121,21 @@
 			color: #000000;
 			overflow-wrap: break-word;
 			flex: 1;
-			overflow-y: auto;
-			padding-left: 1.0rem;
 			margin-bottom: 2.0rem;
+			// laid out as UtilsUI.overlayScrollbars did: the text starts at the
+			// padding edge, as wide as the content box, its lines as centred
+			// flex items, and the 1.2rem scrollbar outside that width
+			padding: 0;
+			margin-right: -0.2rem;
+			overflow-x: hidden;
+			overflow-y: auto;
+			scrollbar-gutter: stable;
+		}
+		.chapter-text-inner {
+			display: flex;
+			flex-flow: column nowrap;
+			justify-content: flex-start;
+			align-items: center;
 		}
 		.shine {
 			width: 100%;

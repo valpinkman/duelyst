@@ -189,23 +189,29 @@ export class Codex extends LitElement {
           ${
             this.ready
               ? html`<duelyst-sliding-panel-select
-                    class="codex-chapter-select"
-                    .heading=${'Historia'}
-                    .slidingPanelsStack=${false}
-                    .items=${this.chapters}
-                    .panelClass=${() => 'codex-chapter-preview'}
-                    .renderPanel=${(item: PanelItem) => this.#renderPreview(item as ChapterPreview)}
-                    @panel-select=${this.#onPanelSelect}
-                  ></duelyst-sliding-panel-select>
-                  <button
-                    type="button"
-                    class="btn btn-clean btn-user-cancel btn-cancel-primary btn-nav-back"
-                  ></button>`
+                  class="codex-chapter-select"
+                  .heading=${'Historia'}
+                  .slidingPanelsStack=${false}
+                  .items=${this.chapters}
+                  .panelClass=${() => 'codex-chapter-preview'}
+                  .renderPanel=${(item: PanelItem) => this.#renderPreview(item as ChapterPreview)}
+                  @panel-select=${this.#onPanelSelect}
+                ></duelyst-sliding-panel-select>`
               : nothing
           }
         </div>
         <div class="chapter-region">${this.#renderChapter()}</div>
       </div>
+      ${
+        // outside the faded regions: the old view's button stayed up in the
+        // chapter and world-map states too
+        this.ready
+          ? html`<button
+              type="button"
+              class="btn btn-clean btn-user-cancel btn-cancel-primary btn-nav-back"
+            ></button>`
+          : nothing
+      }
     `;
   }
 
@@ -235,7 +241,9 @@ export class Codex extends LitElement {
         <h1 class="chapter-name">${chapter.name}</h1>
         <p class="chapter-description">${withBreaks(chapter.description)}</p>
         <hr class="shine" />
-        <p class="chapter-text">${withBreaks(chapter.text)}</p>
+        <div class="chapter-text">
+          <div class="chapter-text-inner">${withBreaks(chapter.text)}</div>
+        </div>
       </div>
     </div>`;
   }
