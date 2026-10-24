@@ -1,0 +1,7 @@
+1-start	diff=0.087%	diff(2nd pair)=0.187%	noise before=0.040%	noise after=0.015%
+3-general-choice	diff=10.393%	diff(2nd pair)=2.595%	noise before=11.427%	noise after=4.294%
+4-card-choice	diff=14.447%	diff(2nd pair)=10.454%	noise before=10.293%	noise after=13.776%
+5-resign-confirm	diff=0.944%	diff(2nd pair)=0.836%	noise before=0.824%	noise after=0.828%
+6-run-screen	diff=3.931%	diff(2nd pair)=4.195%	noise before=0.103%	noise after=0.229%
+6b-run-screen-settled-7s	diff=0.062%	diff(2nd pair)=0.405%	noise before=0.480%	noise after=0.185%
+7-rewards	diff=0.011%	diff(2nd pair)=0.015%	noise before=0.013%	noise after=0.013%
