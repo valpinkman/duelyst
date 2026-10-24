@@ -3,7 +3,8 @@
  * Compare two capture directories written by ./capture.mjs (issue #71).
  *
  *   node test/e2e/visual/compare.mjs <before-dir> <after-dir> --out <dir>
- *        [--threshold 0.1] [--max-diff 0.5] [--noise <before-repeat-dir>]
+ *        [--threshold 0.1] [--max-diff 0.5] [--max-diff-dom 0.05]
+ *        [--noise <before-repeat-dir>]
  *
  * For every PNG present in either directory it reports the share of pixels
  * that differ (pixelmatch, anti-aliasing ignored), and writes:
@@ -12,11 +13,15 @@
  *   <out>/report.json        every number below
  *   <out>/report.md          the same as a table, ready to paste on an issue
  *
- * A screen fails when its diff exceeds --max-diff percent, or when it exists
- * on one side only (a screen that stopped rendering is the loudest change
- * there is). With --noise, the before build captured a second time sets each
- * screen's noise floor, and a screen fails only when it exceeds
- * max(--max-diff, 2 x its noise). The exit code is the number of failures,
+ * A screen fails when its diff exceeds its floor, or when it exists on one
+ * side only (a screen that stopped rendering is the loudest change there
+ * is). The floor is --max-diff percent for a whole frame, which carries the
+ * animated cocos canvas, and --max-diff-dom for a `.dom` image, which does
+ * not: there a same-build pair diffs at 0 %, and a single line of text
+ * turning red and moving down (the negative test on the real stack) is only
+ * 0.15 % of a 1280x720 frame - under 0.5 %. With --noise, the before build
+ * captured a second time sets each screen's noise floor, and a screen fails
+ * only when it exceeds max(floor, 2 x its noise). The exit code is the number of failures,
  * capped at 1, so a script or CI step can gate on it.
  */
 
@@ -98,12 +103,13 @@ function pngNames(dir) {
  * build captured a second time.
  */
 export function compareDirs(beforeDir, afterDir, outDir, opts = {}) {
-  const { threshold = 0.1, maxDiff = 0.5, noiseDir = null } = opts;
+  const { threshold = 0.1, maxDiff = 0.5, maxDiffDom = 0.05, noiseDir = null } = opts;
   fs.mkdirSync(outDir, { recursive: true });
   const names = [...new Set([...pngNames(beforeDir), ...pngNames(afterDir)])].sort();
   const rows = [];
   for (const file of names) {
     const name = file.replace(/\.png$/, '');
+    const floor = name.endsWith('.dom') ? maxDiffDom : maxDiff;
     const beforeFile = path.join(beforeDir, file);
     const afterFile = path.join(afterDir, file);
     if (!fs.existsSync(beforeFile) || !fs.existsSync(afterFile)) {
@@ -111,7 +117,7 @@ export function compareDirs(beforeDir, afterDir, outDir, opts = {}) {
         name,
         percent: 100,
         noise: null,
-        limit: maxDiff,
+        limit: floor,
         fail: true,
         missing: fs.existsSync(beforeFile) ? 'after' : 'before',
       });
@@ -126,7 +132,7 @@ export function compareDirs(beforeDir, afterDir, outDir, opts = {}) {
     if (noiseFile && fs.existsSync(noiseFile)) {
       noise = diffImages(before, readPng(noiseFile), { threshold }).percent;
     }
-    const limit = noise == null ? maxDiff : Math.max(maxDiff, noise * 2);
+    const limit = noise == null ? floor : Math.max(floor, noise * 2);
 
     fs.writeFileSync(path.join(outDir, `${name}.diff.png`), PNG.sync.write(result.diff));
     fs.writeFileSync(
@@ -146,18 +152,22 @@ export function compareDirs(beforeDir, afterDir, outDir, opts = {}) {
   const failures = rows.filter((r) => r.fail).length;
   fs.writeFileSync(
     path.join(outDir, 'report.json'),
-    JSON.stringify({ threshold, maxDiff, rows, failures }, null, 2),
+    JSON.stringify({ threshold, maxDiff, maxDiffDom, rows, failures }, null, 2),
   );
-  fs.writeFileSync(path.join(outDir, 'report.md'), toMarkdown(rows, { threshold, maxDiff }));
+  fs.writeFileSync(
+    path.join(outDir, 'report.md'),
+    toMarkdown(rows, { threshold, maxDiff, maxDiffDom }),
+  );
   return { rows, failures };
 }
 
 const pct = (n) => (n == null ? '-' : `${n.toFixed(3)} %`);
 
 /** The report as a Markdown table. */
-export function toMarkdown(rows, { threshold, maxDiff }) {
+export function toMarkdown(rows, { threshold, maxDiff, maxDiffDom }) {
   const lines = [
-    `pixelmatch threshold ${threshold}; a screen fails above max(${maxDiff} %, 2 x noise).`,
+    `pixelmatch threshold ${threshold}; a screen fails above max(floor, 2 x noise), ` +
+      `the floor being ${maxDiff} % for a whole frame and ${maxDiffDom} % for a .dom image.`,
     '',
     '| Screen | Diff | Noise | Limit | Result |',
     '| --- | --- | --- | --- | --- |',
@@ -195,6 +205,7 @@ if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
   const { rows, failures } = compareDirs(beforeDir, afterDir, flags.out, {
     threshold: flags.threshold != null ? Number(flags.threshold) : undefined,
     maxDiff: flags['max-diff'] != null ? Number(flags['max-diff']) : undefined,
+    maxDiffDom: flags['max-diff-dom'] != null ? Number(flags['max-diff-dom']) : undefined,
     noiseDir: flags.noise ?? null,
   });
   process.stdout.write(fs.readFileSync(path.join(flags.out, 'report.md'), 'utf8'));

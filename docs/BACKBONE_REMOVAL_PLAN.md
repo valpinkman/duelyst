@@ -329,8 +329,12 @@ node test/e2e/visual/run.mjs --before <commit before the port> --after HEAD \
   sound muted.
 - Each screen is captured whole and with the cocos canvas hidden (`.dom.png`). A Lit port shows in
   the `.dom` row; a port that owns a cocos layer (D3) shows in the full row. `--noise` captures the
-  before build twice; a screen fails above **max(0.5 %, 2 × its own noise)**, or if its size
-  changed, or if it exists on one side only.
+  before build twice; a screen fails above **max(floor, 2 × its own noise)**, or if its size
+  changed, or if it exists on one side only. The floor is 0.5 % for a whole frame (the cocos
+  canvas animates) and 0.05 % for a `.dom` image, where two captures of one build differ by
+  ~0 %: on the real stack, a line of text turning red and moving 40 px was only 0.15 % of the
+  frame. Script-driven animation in the DOM (card sprites, the main-menu zodiac canvases) is
+  masked in `capture.mjs` rather than absorbed by a looser floor.
 - **A failing screen is not automatically a bug**, and a passing one is not proof: read the
   `*.strip.png` (before | after | diff). Every difference is either fixed in the port or named in
   the PR as intended, with Valentin's OK.

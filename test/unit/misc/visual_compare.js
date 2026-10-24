@@ -82,6 +82,21 @@ describe('visual compare', () => {
     expect(failures).to.equal(0);
   });
 
+  it('holds a .dom image to the tighter --max-diff-dom floor', () => {
+    // 8 px of 5000 is 0.16 %: passes on a whole frame, fails on a .dom image
+    // (on the real stack a line of text turning red and moving down was 0.15 %)
+    for (const name of ['01-Screen', '01-Screen.dom']) {
+      write('before', name, image());
+      write('after', name, image({ box: [0, 0, 8, 1] }));
+    }
+    const { rows, failures } = run();
+    expect(rows.find((r) => r.name === '01-Screen').fail).to.be.false;
+    const dom = rows.find((r) => r.name === '01-Screen.dom');
+    expect(dom.limit).to.equal(0.05);
+    expect(dom.fail).to.be.true;
+    expect(failures).to.equal(1);
+  });
+
   it('fails a resized frame, even when the overlap matches', () => {
     write('before', '01-Screen', image());
     write('after', '01-Screen', image({ height: H + 1 }));
