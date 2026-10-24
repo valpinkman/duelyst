@@ -482,29 +482,54 @@ The teeth: **Bootstrap 3 JS in 26 files** (`modal`/`popover`/`tooltip`), **jquer
 
 ### Screens, ranked by migration risk
 
-`own` = the layout's own lines; `tree` = view files transitively required; `treeLn` = their total
-lines.
+**Re-measured after the first screen ([#12](https://github.com/valpinkman/duelyst/issues/12),
+at `49f8fe0`).** The table measured at `de33c72f` ranked screens by `treeLn`, the lines of every
+view a screen transitively requires. That counted shared leaves and other screens, and overstated
+the quest log 1.8× (1,156 against the 629 lines #10 deleted). It has been replaced by **exclusive
+lines** (`excl`): the screen's own `.ts` + `.hbs` that nothing else imports, with traversal stopping
+at another screen's root. That is the code a screen PR deletes, and it reproduces #10 exactly
+(629 lines, 12 files).
 
-```
-screen                                   own   views  treeLn  drag   jq  helpers  velocity  managers
-views2/tutorial/tutorial_lessons_layout  283      3     951     0    28      0        0         3
-views2/quests/quest_log_layout           218      7    1156     0    29      0        0         4   <- first
-views2/rift/rift_run_layout              457      4    1189     0    20      0        0         4
-views2/watch/watch_layout                262      9    1241     0    36      0        0         3
-views/layouts/arena                      614      4    1346     0    20      0        0         5
-views2/collection/deck                   322      7    1928    52    64      2        0         5
-views2/codex/codex_layout                427      8    2476     0    76      0       35         5
-views2/profile/profile_layout            557     17    2514     0    74      1        0         6
-views/layouts/game                      1081     17    4066     0   131      1        0         7
-views/layouts/notifications              113     35    4339     0   148      2        0         8
-views2/collection/collection            1004     20    5366    74   160      3        0         7   <- last
-views/layouts/play                       185     30    6898     0   153      4       35         9   <- last
-```
+**Calibration from #10 (PR #54).** 629 excl → 499 new lines in 2 files (component 395, shell 104),
+plus one-off infrastructure (`BackboneController`, the happy-dom vitest project, census
+`kind: 'Shell'`). 1 h 38 from decision to merge; real-stack run 17 min, hand check 8 min. Diff
++1,173 / −660 over 29 files. The forecast model (decision D7 of #12):
 
-`quest_log_layout` is the only candidate clean on every hazard: 0 draggable/droppable (dodges the
-re-parent trap), 0 `templateHelpers` (dodges porting the helper mechanism on the first attempt),
-0 velocity, and 4 managers — enough to exercise the Backbone bridge for real. Ruled out early:
-anything in `shop/` (it takes money, and the tour cannot safely assert against it).
+- **new lines ≈ 0.8 × excl**
+- **wall-clock ≈ 45 min fixed + 9 min per 100 excl**, a line through one point. Re-fit it after the
+  tutorial, and have every screen PR record its actual excl, new lines and time.
+
+| #   | Screen                                             | excl        | new    | time        | Converts first (shared leaf)               |
+| --- | -------------------------------------------------- | ----------- | ------ | ----------- | ------------------------------------------ |
+| ✓   | `views2/quests/quest_log_layout` (#10)             | 629         | 499    | 1 h 38 real | `BackboneController`                       |
+| 1   | `views2/tutorial/tutorial_lessons_layout`          | 307         | ~245   | ~1 h 15     | — (re-fit the forecast here)               |
+| 2   | `views2/watch/watch_layout`                        | 643         | ~510   | ~1 h 45     | —                                          |
+| 3   | `views2/shop/premium_purchase_dialog`              | 835 deleted | 0      | ~30 min     | dropped, not migrated (#57)                |
+| 4   | `views2/rift/rift_run_layout`                      | 453         | ~360   | ~1 h 25     | — (no DOM)                                 |
+| 5   | `views/layouts/arena`                              | 615         | ~490   | ~1 h 40     | — (no DOM)                                 |
+| 6   | `views2/codex/codex_layout`                        | 808 + 1,033 | ~1,450 | ~3 h        | `sliding_panel_select` + `sliding_panel`   |
+| 7   | `views2/rift/rift_layout`                          | 473         | ~380   | ~1 h 30     | `rift_run_deck`                            |
+| 8   | `views2/profile/profile_layout`                    | 1,795       | ~1,435 | ~3 h 25     | —                                          |
+| 9   | `views/layouts/buddy_selection`                    | 324         | ~260   | ~1 h 15     | `message`                                  |
+| 10  | `views/layouts/buddies`                            | 760         | ~610   | ~1 h 55     | `redeem_gift_code_modal`                   |
+| 11  | `views/layouts/notifications`                      | 323         | ~260   | ~1 h 15     | —                                          |
+| 12  | `views/layouts/game_player_popover` (+ subclasses) | 769         | ~615   | ~1 h 55     | `emote` + `emotes-list`                    |
+| 13  | `views/layouts/game_player` (+ player1/2)          | 664         | ~530   | ~1 h 45     | —                                          |
+| 14  | `views/layouts/game`                               | 1,824       | ~1,460 | ~3 h 30     | —                                          |
+| 15  | `views2/shop/shop_spirit_orbs_modal`               | 113 + 478   | ~470   | ~1 h 40     | `shop_spirit_orbs_collection_view`         |
+| 16  | `views2/shop/shop_layout`                          | 940         | ~750   | ~2 h 10     | —                                          |
+| —   | _#13 jquery-ui removal, prerequisite for 17–21_    |             |        |             |                                            |
+| 17  | `views2/collection/deck_card_back_select`          | 233         | ~185   | ~1 h 05     | `deck_preview`                             |
+| 18  | `views2/collection/selected_card`                  | 162 + 780   | ~750   | ~2 h 10     | `card` + `collection_card`                 |
+| 19  | `views2/collection/deck`                           | 715         | ~570   | ~2 h        | `deck_card`, `deck_cards`, `deck_metadata` |
+| 20  | `views/layouts/booster_pack_collection`            | 738         | ~590   | ~1 h 55     | —                                          |
+| 21  | `views2/collection/collection`                     | 2,028       | ~1,620 | ~4 h        | —                                          |
+| 22  | `views/layouts/play`                               | 3,683       | ~2,950 | ~6 h        | deletes the old carousel base              |
+
+Totals for the 22: about 19,300 excl → ~15,500 new, ~45 h of agent wall-clock. Roughly 8,000 more
+lines sit outside the table and must go before #14: crafting (700), the main menu (899), 33 views
+no screen reaches (5,315) and the shared leaves. The order and its reasons are in [§9](#9-still-open);
+the live checklist is [#60](https://github.com/valpinkman/duelyst/issues/60).
 
 ### Why ESM is deferred
 
@@ -613,11 +638,33 @@ Everything in [`BACKBONE_AUDIT.md §8`](BACKBONE_AUDIT.md) still applies, plus:
 
 ## 9. Still open
 
-- **The order of the remaining 22 screens** after `quest_log` —
-  [#12](https://github.com/valpinkman/duelyst/issues/12). The §6 table gives the risk ranking;
-  `collection.ts` and `play.ts` are clearly last, and jquery-ui removal
-  ([#13](https://github.com/valpinkman/duelyst/issues/13)) is their prerequisite. Deliberately not
-  decided up front: their scope depends on what the first screen teaches.
+- **Screen order: decided** in [#12](https://github.com/valpinkman/duelyst/issues/12)
+  ([analysis](https://github.com/valpinkman/duelyst/issues/12#issuecomment-6352830403),
+  [decisions](https://github.com/valpinkman/duelyst/issues/12#issuecomment-6353028222)) and tracked
+  in [#60](https://github.com/valpinkman/duelyst/issues/60). The order is the §6 table. Its reasons,
+  in priority order:
+  1. **Children before parents.** Seven screens are mounted in another screen's region:
+     `play` ⊃ `arena`, `rift_layout` ⊃ `rift_run_layout`; `buddies` ⊃ `buddy_selection`; `game` ⊃
+     `game_player1/2` ⊃ the player popovers; `collection` ⊃ `deck`, `selected_card`, `crafting`,
+     `deck_card_back_select`. A converted child is still a Marionette view (its shell), so an
+     unconverted parent's region can show it; a Lit parent hosting a Marionette child is a seam
+     §3.3 does not have, and #14 would delete it again.
+  2. **The second screen is small and clean** (the tutorial), because step 5 judges the approach
+     there. The forecast is re-fitted after it.
+  3. **Screens that share a leaf sit together**, so the leaf converts once (§6, last column).
+  4. **Everything blocked on #13 goes after it**: `views2/collection/` and
+     `booster_pack_collection`, whose `droppable` / `draggable` are two of the seven jquery-ui files.
+  5. **Shop screens go where Valentin can verify money flows** by hand.
+  6. **`play` and `collection` last.**
+
+  Decided with it: `arena` and `rift_run_layout` have 0-byte templates, so each becomes a Lit
+  element with an empty `render()` that owns the cocos logic in its lifecycle callbacks. The shared
+  dialogs (`error_dialog`, `activity_dialog`, `confirm_dialog`, `form_prompt_*`) stay Marionette,
+  built by the shells, until one dialog-kit PR after the social group. The `sliding_panel_select`
+  carousel (991 lines, five subclasses in three screens) is ported once, with codex. The two
+  screens the tour skips get seeded state on `duelyst-ci` in their own PR. The dead premium dialog
+  and six unused views were deleted rather than migrated (#57).
+
 - **What the `backfire` characterisation actually finds** —
   [#4](https://github.com/valpinkman/duelyst/issues/4). It may reveal guarantees that make
   [#9](https://github.com/valpinkman/duelyst/issues/9) much larger than ~200 lines — write coalescing
