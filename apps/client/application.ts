@@ -108,6 +108,7 @@ const MainMenuItemView = require('./ui/views/item/main_menu');
 const CollectionLayout = require('./ui/views2/collection/collection');
 
 const PlayLayout = require('./ui/views/layouts/play');
+const RiftDeckSelectLayout = require('./ui/views2/rift/rift_layout');
 const PlayLayer = require('./view/layers/pregame/PlayLayer');
 
 const WatchShell = require('./ui/shells/watch_shell');
@@ -190,6 +191,7 @@ if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'staging')
     layouts: {
       MainMenuItemView,
       PlayLayout,
+      RiftDeckSelectLayout,
       CollectionLayout,
       CodexLayout,
       ShopLayout,

@@ -69,9 +69,10 @@ describe('screen tour census', () => {
     // 23 when issue #2 was written; 22 since the quest log became a shell
     // (#10); 21 since the dead premium purchase dialog was deleted (#57); 20
     // since the tutorial lessons became a shell (#58); 19 since the watch
-    // screen did (#63). If this moves, the census below says which screen to
-    // add or remove - update this number with it.
-    expect(layoutSites()).to.have.length(19);
+    // screen did (#63); 18 since the rift run did (#65). If this moves, the
+    // census below says which screen to add or remove - update this number
+    // with it.
+    expect(layoutSites()).to.have.length(18);
   });
 
   it('has exactly one census entry per LayoutView, in the file that declares it', () => {
@@ -110,16 +111,16 @@ describe('screen tour census', () => {
     }
   });
 
-  it('tours 24 screens: 15 LayoutViews, 4 concrete subclasses, 3 shells, crafting and the main menu', () => {
+  it('tours 25 screens: 15 LayoutViews, 4 concrete subclasses, 4 shells, crafting and the main menu', () => {
     const toured = SCREENS.filter((s) => s.status === 'toured');
     expect(toured.filter((s) => !s.kind)).to.have.length(15);
     expect(toured.filter((s) => s.kind === 'subclass')).to.have.length(4);
-    expect(toured.filter((s) => s.kind === 'Shell')).to.have.length(3);
+    expect(toured.filter((s) => s.kind === 'Shell')).to.have.length(4);
     expect(toured.map((s) => s.name)).to.include.members([
       'CraftingCompositeView',
       'MainMenuItemView',
     ]);
-    expect(toured).to.have.length(24);
+    expect(toured).to.have.length(25);
   });
 
   it('has exactly one toured census entry per shell, each checking its component rendered', () => {
@@ -130,11 +131,27 @@ describe('screen tour census', () => {
     expect(census.map((s) => s.file).sort(), 'shell files vs census').to.deep.equal(shells);
     for (const s of census) {
       expect(s.status, `${s.name} status`).to.equal('toured');
-      // the shell's own root renders even if the component never registered
-      expect(s.visible, `${s.name} visible`).to.be.a('string');
-      expect(s.visibleDeclaredIn, `${s.name} visibleDeclaredIn`).to.match(
-        /^apps\/client\/ui\/components\//,
-      );
+      // the shell's own root renders even if the component never registered,
+      // so each names something only the component provides: a visible child,
+      // or for a component with no DOM (#12 D3) its registration
+      if (s.registered) {
+        expect(s.visible, `${s.name} has both visible and registered`).to.be.undefined;
+        expect(s.registeredIn, `${s.name} registeredIn`).to.match(
+          /^apps\/client\/ui\/components\//,
+        );
+        const source = fs.readFileSync(path.join(ROOT, s.registeredIn), 'utf8');
+        expect(source, `${s.registeredIn} defines ${s.registered}`).to.include(
+          `TAG = '${s.registered}'`,
+        );
+        expect(source, `${s.registeredIn} registers its TAG`).to.match(
+          /customElements\.define\(TAG,/,
+        );
+      } else {
+        expect(s.visible, `${s.name} visible`).to.be.a('string');
+        expect(s.visibleDeclaredIn, `${s.name} visibleDeclaredIn`).to.match(
+          /^apps\/client\/ui\/components\//,
+        );
+      }
     }
   });
 

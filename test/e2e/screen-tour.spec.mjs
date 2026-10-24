@@ -24,9 +24,13 @@ import { SCREENS, screen } from './screens.mjs';
  * decision D1). The seam is eliminated from production and staging bundles,
  * so this spec only runs against a development build.
  *
- * Not toured (each with its reason in ./screens.mjs):
- *   - RiftLayout: needs a rift run in progress; its template is also 0 bytes,
- *     so there is no DOM landmark to assert (D3, D6).
+ * Seeded state: the rift run (RiftRunShell, #65) needs a run in progress, so
+ * the tour account claims its free first rift run through the deck-select
+ * layout's own handler, on whatever Firebase/Postgres the stack points at
+ * (.env.dev: duelyst-ci). Each run registers a fresh account, so the seed
+ * never collides with an earlier one.
+ *
+ * Not toured (with its reason in ./screens.mjs):
  *   - BuddySelectionLayout: needs a second account and an accepted friend
  *     request (D3).
  * test/unit/misc/screen_census.js fails if a LayoutView appears that this
@@ -120,6 +124,14 @@ test.describe('screen tour', () => {
             .soft(landmark.locator(entry.visible).first(), `${name} ${entry.visible}`)
             .toBeVisible();
         }
+        if (entry.registered) {
+          // a component with no DOM (#12 D3): its registration is the proof
+          const registered = await page.evaluate(
+            (tag) => !!customElements.get(tag),
+            entry.registered,
+          );
+          expect.soft(registered, `${name} <${entry.registered}> registered`).toBe(true);
+        }
 
         await page.waitForTimeout(SETTLE_MS);
         const file = testInfo.outputPath(
@@ -199,6 +211,25 @@ test.describe('screen tour', () => {
     await visit('RiftDeckSelectLayout', () =>
       inApp(page, (seam) => seam.App.showPlay(window.SDK.PlayModes.Rift)),
     );
+    await visit('RiftRunShell', async () => {
+      // seed: claim the account's free first run, the way the runs list's
+      // button does; the layout then shows the run in its content region
+      await inApp(page, (seam) => {
+        const play = window.NavigationManager.getInstance().getContentView();
+        const rift = play?.modeRegion?.currentView;
+        if (!(rift instanceof seam.layouts.RiftDeckSelectLayout)) {
+          throw new Error('the rift deck-select layout is not showing');
+        }
+        return rift.startNewRiftRunWithExisting();
+      });
+      // the element draws nothing: wait for the cocos layer it puts on screen
+      await page.waitForFunction(() => {
+        const run = document.querySelector('duelyst-rift-run');
+        return (
+          run?.layer != null && window.__duelystE2E.Scene.getInstance().getContent() === run.layer
+        );
+      });
+    });
 
     // --- the collection and its modes -------------------------------------
     await visit('CollectionLayout', () => inApp(page, (seam) => seam.App.showCollection()));

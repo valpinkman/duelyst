@@ -31,7 +31,9 @@
  * landmark is its own root, which renders even when the component never
  * registered (an un-upgraded tag is not an error), so every shell also names
  * a `visible` child that only the component renders, declared in the
- * component's file.
+ * component's file. A component with no DOM (#12 D3) names its tag as
+ * `registered` instead, with `registeredIn` the file that defines it, and the
+ * tour asserts `customElements.get(tag)`.
  */
 
 const UI = 'apps/client/ui';
@@ -111,20 +113,26 @@ export const SCREENS = [
     name: 'RiftDeckSelectLayout',
     file: `${UI}/views2/rift/rift_layout.ts`,
     status: 'toured',
-    // RiftLayout shares #app-rift; on a fresh account the deck-select layout
-    // shows the runs list's empty state, which RiftLayout never renders
+    // RiftRunShell shares #app-rift; on a fresh account the deck-select layout
+    // shows the runs list's empty state, which RiftRunShell never renders
     landmark: '#app-rift .rift-runs .rift-runs-empty-view',
     landmarkDeclares: '#app-rift',
   },
   {
-    name: 'RiftLayout',
-    file: `${UI}/views2/rift/rift_run_layout.ts`,
-    status: 'skipped',
-    reason:
-      'Needs a rift run in progress, which a fresh account does not have (D3: seeding is a ' +
-      'follow-up). Under D6 it could not be asserted anyway: its template ' +
-      '(views2/rift/templates/rift_run_layout.hbs) is 0 bytes, so #app-rift renders empty and ' +
-      'everything visible is cocos.',
+    name: 'RiftRunShell',
+    kind: 'Shell',
+    file: `${UI}/shells/rift_run_shell.ts`,
+    status: 'toured',
+    // the tour account claims its free first run from the deck-select layout
+    // (D8), which shows this shell inside its own #app-rift
+    landmark: '#app-rift #app-rift duelyst-rift-run',
+    landmarkDeclares: '#app-rift',
+    // no DOM (#12 D3): the element renders nothing and everything visible is
+    // cocos, so the census asserts the element registered instead of a
+    // visible child, and the tour waits for the element's RiftLayer
+    attached: true,
+    registered: 'duelyst-rift-run',
+    registeredIn: `${UI}/components/rift/rift-run.ts`,
   },
 
   // --- collection and its modes --------------------------------------------
