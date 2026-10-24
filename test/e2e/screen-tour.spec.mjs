@@ -25,8 +25,8 @@ import { SCREENS, screen } from './screens.mjs';
  * so this spec only runs against a development build.
  *
  * Seeded state: the rift run (RiftRunShell, #65) needs a run in progress, so
- * the tour account claims its free first rift run through the deck-select
- * layout's own handler, on whatever Firebase/Postgres the stack points at
+ * the tour account claims its free first rift run through the rift shell's
+ * own handler, on whatever Firebase/Postgres the stack points at
  * (.env.dev: duelyst-ci). Each run registers a fresh account, so the seed
  * never collides with an earlier one.
  *
@@ -216,17 +216,17 @@ test.describe('screen tour', () => {
         );
       });
     });
-    await visit('RiftDeckSelectLayout', () =>
+    await visit('RiftShell', () =>
       inApp(page, (seam) => seam.App.showPlay(window.SDK.PlayModes.Rift)),
     );
     await visit('RiftRunShell', async () => {
       // seed: claim the account's free first run, the way the runs list's
-      // button does; the layout then shows the run in its content region
+      // button does; the shell then shows the run in its content area
       await inApp(page, (seam) => {
         const play = window.NavigationManager.getInstance().getContentView();
         const rift = play?.modeRegion?.currentView;
-        if (!(rift instanceof seam.layouts.RiftDeckSelectLayout)) {
-          throw new Error('the rift deck-select layout is not showing');
+        if (!(rift instanceof seam.layouts.RiftShell)) {
+          throw new Error('the rift shell is not showing');
         }
         return rift.startNewRiftRunWithExisting();
       });

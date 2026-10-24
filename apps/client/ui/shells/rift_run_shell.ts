@@ -4,7 +4,7 @@
  * Marionette shell for <duelyst-rift-run> (docs/BACKBONE_REMOVAL_PLAN.md
  * §3.3, issue #65).
  *
- * The shell is what RiftDeckSelectLayout shows in its content region: it
+ * The shell is what RiftShell (#77) shows in its content area: it
  * carries the old view's id and is still built as `new X({ model })`. Its
  * template is the tag alone; the screen itself is cocos (#12 D3), driven by
  * the element.
