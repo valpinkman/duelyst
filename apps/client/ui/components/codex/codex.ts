@@ -241,9 +241,9 @@ export class Codex extends LitElement {
         <h1 class="chapter-name">${chapter.name}</h1>
         <p class="chapter-description">${withBreaks(chapter.description)}</p>
         <hr class="shine" />
-        <div class="chapter-text">
-          <div class="chapter-text-inner">${withBreaks(chapter.text)}</div>
-        </div>
+        <p class="chapter-text">
+          <span class="chapter-text-inner">${withBreaks(chapter.text)}</span>
+        </p>
       </div>
     </div>`;
   }
