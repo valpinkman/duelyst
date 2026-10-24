@@ -308,6 +308,40 @@ log). Every later screen follows these unless its own issue decides otherwise:
   `test/unit/client/`, covering render, the Backbone binding (keyed re-render, live update,
   target swap) and teardown (no listener, no timer).
 
+### 3.5 Before/after screenshot comparison — required for every screen port
+
+The screen tour proves a screen opens with no missing asset and no console error; it does not
+prove the port _looks_ the same. So every screen port also runs
+[`test/e2e/visual/run.mjs`](../test/e2e/visual/run.mjs) ([#71](https://github.com/valpinkman/duelyst/issues/71))
+and puts its table and images in the PR:
+
+```bash
+# a stack on .env.dev (NEVER .env) started from <stack checkout>, the shell sourced with the
+# same env, then from the port's own checkout:
+node test/e2e/visual/run.mjs --before <commit before the port> --after HEAD \
+     --dist <stack checkout>/dist/src --base-url http://localhost:<api port> \
+     --screens <the ported screen and its neighbours> --noise --work <dir>
+```
+
+- It builds both refs in throwaway worktrees and swaps each bundle into the `dist/src` the api
+  container serves, so **only the client changes**: same backend, same database, same account
+  (registered once, tutorial skipped, rift run claimed), same 1280×720 viewport, timings zeroed,
+  sound muted.
+- Each screen is captured whole and with the cocos canvas hidden (`.dom.png`). A Lit port shows in
+  the `.dom` row; a port that owns a cocos layer (D3) shows in the full row. `--noise` captures the
+  before build twice; a screen fails above **max(floor, 2 × its own noise)**, or if its size
+  changed, or if it exists on one side only. The floor is 0.5 % for a whole frame (the cocos
+  canvas animates) and 0.05 % for a `.dom` image, where two captures of one build differ by
+  ~0 %: on the real stack, a line of text turning red and moving 40 px was only 0.15 % of the
+  frame. Script-driven animation in the DOM (card sprites, the main-menu zodiac canvases) is
+  masked in `capture.mjs` rather than absorbed by a looser floor.
+- **A failing screen is not automatically a bug**, and a passing one is not proof: read the
+  `*.strip.png` (before | after | diff). Every difference is either fixed in the port or named in
+  the PR as intended, with Valentin's OK.
+- The script runs from the port's checkout against both builds, so it navigates only through what
+  both sides share (`__duelystE2E.App`, `Scene`, the NavigationManager). The practice-game screens
+  are out of scope: the board is random from the first draw.
+
 ## 4. The step sequence
 
 One commit per step, each leaving `pnpm build`, `pnpm test:unit` and `pnpm typecheck` green, per

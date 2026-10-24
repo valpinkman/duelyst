@@ -146,6 +146,8 @@
     "os-browserify": "^0.3.0",
     "oxfmt": "^0.64.0",
     "oxlint": "^1.79.0",
+    "pixelmatch": "^7.2.0",
+    "pngjs": "^7.0.0",
     "postcss": "^8.5.26",
     "progress": "^2.0.3",
     "sass": "^1.103.0",
