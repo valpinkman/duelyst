@@ -282,6 +282,17 @@ log). Every later screen follows these unless its own issue decides otherwise:
   listener with it, and it listens only while the host is connected.
 - **One element per screen**; rows and sub-parts are render methods (`#renderQuest()`), not
   child elements, until a second screen needs the same part.
+- **A part several screens share becomes its own element**, in its own folder, with the
+  screen-specific bits passed in as callbacks. The first is the carousel
+  (`components/carousel/sliding-panel-select.ts`, [#68](https://github.com/valpinkman/duelyst/issues/68)):
+  the host sets `items` and `renderPanel(item)`, the carousel's old prototype options are plain
+  fields, and selection leaves as `panel-select` / `panel-deselect` / `panel-hover`. The
+  Marionette `sliding_panel_select` stays until its last subclass moves (`play`).
+- **Measure layout sizes, not boxes.** jQuery's `width()`/`outerWidth(true)` become
+  `clientWidth`/`offsetWidth` plus computed padding and margin (the carousel's `measure()`):
+  `getBoundingClientRect()` includes the transforms the carousel is animating. happy-dom does no
+  layout, so tests replace `measure()`. Import `EventBus` in a test with `await import()`, not
+  `createRequire()`: the latter is a second instance the component never hears.
 - **Register with a guard**: `if (!customElements.get(TAG)) customElements.define(TAG, Cls)`, so a
   watch rebuild or a second import in a test does not throw. Export the class and `TAG`.
 - **Keep the markup the stylesheets select on.** Light DOM means the old SCSS applies as is,
