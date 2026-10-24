@@ -319,3 +319,9 @@
 		}
 	}
 }
+
+// the component's own box sits between #app_watch and .modal-dialog, which
+// .duelyst-modal lays out
+duelyst-watch {
+	display: contents;
+}
