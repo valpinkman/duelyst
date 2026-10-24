@@ -114,7 +114,7 @@ const PlayLayer = require('./view/layers/pregame/PlayLayer');
 const WatchShell = require('./ui/shells/watch_shell');
 const ShopLayout = require('./ui/views2/shop/shop_layout');
 
-const CodexLayout = require('./ui/views2/codex/codex_layout');
+const CodexShell = require('./ui/shells/codex_shell');
 const CodexLayer = require('./view/layers/codex/CodexLayer');
 
 const TutorialLessonsShell = require('./ui/shells/tutorial_lessons_shell');
@@ -193,7 +193,7 @@ if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'staging')
       PlayLayout,
       RiftDeckSelectLayout,
       CollectionLayout,
-      CodexLayout,
+      CodexShell,
       ShopLayout,
       WatchShell,
       TutorialLessonsShell,
@@ -1216,7 +1216,7 @@ App.showCollection = function () {
 App.showCodex = function () {
   if (
     !App.getIsLoggedIn() ||
-    NavigationManager.getInstance().getContentView() instanceof CodexLayout
+    NavigationManager.getInstance().getContentView() instanceof CodexShell
   ) {
     return Promise.reject();
   }
@@ -1231,7 +1231,7 @@ App.showCodex = function () {
     return Promise.all([
       Scene.getInstance().showContent(new CodexLayer(), true),
       NavigationManager.getInstance().showContentView(
-        new CodexLayout({ model: new Backbone.Model() }),
+        new CodexShell({ model: new Backbone.Model() }),
       ),
     ]);
   });

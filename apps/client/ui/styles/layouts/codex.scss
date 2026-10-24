@@ -1,6 +1,11 @@
 #app-codex {
 	@include fillParent();
 
+	// the element only adds a box between the shell and its children
+	duelyst-codex {
+		display: contents;
+	}
+
 	.btn-cancel-primary {
 		position: absolute;
 		top: 0;
@@ -116,6 +121,7 @@
 			color: #000000;
 			overflow-wrap: break-word;
 			flex: 1;
+			overflow-y: auto;
 			padding-left: 1.0rem;
 			margin-bottom: 2.0rem;
 		}
@@ -125,21 +131,9 @@
 			background: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(0,0,0,0.25) 50%, rgba(0, 0, 0, 0) 100%);
 			margin: 1.0rem 0;
 		}
-		.audio-controls {
-			position: relative;
-			width: 100%;
-			height: 3.2rem;
-		}
-		.audio-play, .audio-pause, .audio-stop {
-			color: #000000;
-		}
-		.audio-play, .audio-pause, .audio-stop, .audio-volume, .audio-seek {
-			font-size: 1.6rem;
-			line-height: 2.0rem;
-		}
 	}
 
-	&.state-lore {
+	.state-lore {
 		.show-world-map {
 			display: block;
 		}
@@ -148,7 +142,7 @@
 		}
 	}
 
-	&.state-world-map {
+	.state-world-map {
 		.show-world-map {
 			display: none;
 		}

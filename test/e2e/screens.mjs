@@ -175,10 +175,15 @@ export const SCREENS = [
 
   // --- the other main-menu destinations ------------------------------------
   {
-    name: 'CodexLayout',
-    file: `${UI}/views2/codex/codex_layout.ts`,
+    name: 'CodexShell',
+    kind: 'Shell',
+    file: `${UI}/shells/codex_shell.ts`,
     status: 'toured',
     landmark: '#app-codex',
+    // only <duelyst-codex> renders the chapter carousel, once the codex
+    // package has loaded
+    visible: 'duelyst-codex .codex-chapter-select',
+    visibleDeclaredIn: `${UI}/components/codex/codex.ts`,
   },
   {
     name: 'ShopLayout',

@@ -255,7 +255,7 @@ test.describe('screen tour', () => {
     await collectionMode(page, 'browsing');
 
     // --- the other main-menu destinations ---------------------------------
-    await visit('CodexLayout', () => inApp(page, (seam) => seam.App.showCodex()));
+    await visit('CodexShell', () => inApp(page, (seam) => seam.App.showCodex()));
     await visit('ShopLayout', () => inApp(page, (seam) => seam.App.showShop()));
     await visit('WatchShell', () => inApp(page, (seam) => seam.App.showWatch()));
     await visit('BoosterPackCollectionLayout', () =>
